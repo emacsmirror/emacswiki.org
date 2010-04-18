@@ -128,7 +128,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 *** Lisp:flymake-extension.el -- Some enhanced module and config (including Haskell, C, Java) for [[FlyMake]].
 
-*** Lisp:eldoc-extension.el -- Highlight function argument with [[ElDoc]].
+*** Lisp:eldoc-extension.el -- Highlight function argument with [[ElDoc]]. (Maintainer: [[rubikitch]]).
 
 *** Lisp:speedbar-extension.el -- Some enhanced functions for [[SpeedBar]].
 

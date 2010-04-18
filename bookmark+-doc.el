@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 16 16:33:07 2010 (-0700)
+;; Last-Updated: Sat Apr 17 16:19:51 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11963
+;;     Update #: 11982
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -200,8 +200,9 @@
 ;;
 ;;     - You can use (lax) completion when you set a bookmark using
 ;;       `bookmark-set' (`C-x r m'), choosing from existing bookmarks
-;;       in the same buffer.  This makes it easy to update a nearby
-;;       bookmark.
+;;       for the same buffer.  This makes it easy to update a nearby
+;;       bookmark.  With a numeric prefix argument (or if there are no
+;;       bookmarks for the buffer), you can choose from all bookmarks.
 ;;
 ;;     - You can edit a bookmark (its name and file name/location).
 ;;
@@ -1231,8 +1232,18 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/04/17 dadams
+;;     bookmark-set: Numeric prefix arg means use all bookmarks as completion candidates.
+;;                   Simplified the prompt.
+;;     bookmarkp-completing-read-1:
+;;       Use icicle-transform-multi-completion in icicle-delete-candidate-object
+;;     Ensure loaded before byte-compile (put a require after provide).
+;;     Move bookmarkp-replace-regexp-in-string before macro bookmarkp-define-sort-command (uses it).
+;;     bookmarkp-bmenu-w32-open-with-mouse, bookmarkp-bmenu-mouse-3-menu:
+;;       Use with-current-buffer, not save-excursion of set-buffer.
+;;     bookmarkp-make-dired-record, bookmarkp-jump-dired: Use dolist, not mapcar (just side effect).
+;;     bookmarkp-(some|all)-tags-jump(-other-window): Removed extraneous arg in error call.
 ;; 2010/04/16 dadams
-;;
 ;;     Added: bookmarkp-completing-read-1, bookmarkp-completing-read-lax,
 ;;            bookmarkp-selected-buffers-alist-only.
 ;;     bookmark-set: Use bookmark-completing-read-lax w/ buffer's bookmarks, not read-from-minibuffer.

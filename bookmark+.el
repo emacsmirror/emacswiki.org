@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Apr 16 17:15:56 2010 (-0700)
+;; Last-Updated: Sat Apr 17 16:08:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11916
+;;     Update #: 11952
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -466,6 +466,16 @@
 
 ;;; Code:
 
+
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(provide 'bookmark+)
+(require 'bookmark+)                    ; Ensure this library is loaded before we compile it.
+                                        ; So be sure to put this library in your `load-path' before
+                                        ; trying to byte-compile it.
+
+;;;;;;;;;;;;;;;;;;;;;;;
+
 (require 'bookmark)
 (unless (fboundp 'file-remote-p) (require 'ffap)) ;; ffap-file-remote-p
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
@@ -481,6 +491,7 @@
 
 
 ;; Quiet the byte-compiler
+(defvar bookmark-current-point)         ; Defined in `bookmark.el', but not in Emacs 23+.
 (defvar bookmark-make-record-function)  ; Defined in `bookmark.el'.
 (defvar desktop-buffer-args-list)       ; Defined in `desktop.el'.
 (defvar desktop-delay-hook)             ; Defined in `desktop.el'.
@@ -493,6 +504,8 @@
 (defvar gnus-article-current)           ; Defined in `gnus-sum.el'.
 (defvar Info-current-node)              ; Defined in `info.el'.
 (defvar Info-current-file)              ; Defined in `info.el'.
+(defvar Info-mode-map)                  ; Defined in `info.el'.
+(defvar Info-mode-menu)                 ; Defined in `info.el'.
 (defvar Man-arguments)                  ; Defined in `man.el'.
 (defvar Man-mode-map)                   ; Defined in `man.el'.
 (defvar woman-last-file-name)           ; Defined in `woman.el'.
@@ -508,6 +521,16 @@
  
 ;;(@* "Macros")
 ;;; Macros -----------------------------------------------------------
+
+;; Used in `bookmarkp-define-sort-command'.
+(defun bookmarkp-replace-regexp-in-string (regexp rep string
+                                           &optional fixedcase literal subexp start)
+  "Replace all matches for REGEXP with REP in STRING and return STRING."
+  (if (fboundp 'replace-regexp-in-string) ; Emacs > 20.
+      (replace-regexp-in-string regexp rep string fixedcase literal subexp start)
+    (if (string-match regexp string)    ; Emacs 20
+        (replace-match rep nil nil string)
+      string)))
 
 (defmacro bookmarkp-define-sort-command (sort-order comparer doc-string)
   "Define a command to sort bookmarks in the bookmark list by SORT-ORDER.
@@ -1526,7 +1549,7 @@ The names are those of the bookmarks in ALIST or, if nil,
 ;;
 ;; 1. Added optional args ALIST, PRED, and HIST.
 ;; 2. Define using helper function `bookmarkp-completing-read-1',
-;;    which binds `icicle-delete-candidate-object' to `bookmark-delete'.
+;;    which binds `icicle-delete-candidate-object' to (essentially) `bookmark-delete'.
 ;;
 (defun bookmark-completing-read (prompt &optional default alist pred hist)
   "Read a bookmark name, prompting with PROMPT.
@@ -1597,6 +1620,7 @@ pertains to the location within the buffer."
 ;; 1. Use `bookmark-make-record'.
 ;; 2. Use special default prompts for active region, W3M, and Gnus.
 ;; 3. Use `bookmarkp-completing-read-lax', choosing from current buffer's bookmarks.
+;; 4. Numeric prefix arg (diff from plain): all bookmarks as completion candidates.
 ;;
 (defun bookmark-set (&optional name parg) ; `C-x r m'
   "Set a bookmark named NAME, then run `bookmarkp-after-set-hook'.
@@ -1622,7 +1646,8 @@ While entering a bookmark name at the prompt:
 
  * You can use (lax) completion against bookmarks in the same buffer.
    If there are no bookmarks in the current buffer, then all bookmarks
-   are completion candidates.
+   are completion candidates.  (See also below, about a numeric prefix
+   argument.)
 
  * You can use `C-w' to yank words from the buffer to the minibuffer.
    Repeating `C-w' yanks successive words.
@@ -1632,20 +1657,25 @@ While entering a bookmark name at the prompt:
    through a large file.  (If no bookmark has yet been used, then
    `C-u' inserts the name of the visited file.)
 
-With a prefix argument, do not overwrite a bookmark that has the same
-name as NAME, if such a bookmark already exists.  Instead, push the
-new bookmark onto the bookmark alist.
+A prefix argument changes the behavior as follows:
 
-The most recently set bookmark named NAME is thus the one in effect at
-any given time, but any others named NAME are still available, should
-you decide to delete the most recent one.
+ * Numeric prefix arg: Use all bookmarks as completion candidates,
+   instead of just the bookmarks for the current buffer.
+
+ * Plain prefix arg (`C-u'): Do not overwrite a bookmark that has the
+   same name as NAME, if such a bookmark already exists.  Instead,
+   push the new bookmark onto the bookmark alist.
+
+   The most recently set bookmark named NAME is thus the one in effect
+   at any given time, but any others named NAME are still available,
+   should you decide to delete the most recent one.
 
 Use `\\[bookmark-delete]' to remove bookmarks (you give it a name, and it removes
 only the first instance of a bookmark with that name from the list of
 bookmarks)."
   (interactive (list nil current-prefix-arg))
   (bookmark-maybe-load-default-file)
-  (setq bookmark-current-point   (point)
+  (setq bookmark-current-point   (point) ; `bookmark-current-point' is a free var here.
         bookmark-current-buffer  (current-buffer))
   (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
   (let* ((record   (bookmark-make-record))
@@ -1674,17 +1704,16 @@ bookmarks)."
          (doc-cmd  "`\\<minibuffer-local-map>\\[next-history-element]' for default")
          (bname    (or name
                        (bookmarkp-completing-read-lax
-                        (format "Set bookmark " (if (> emacs-major-version 21)
-                                                     (substitute-command-keys doc-cmd)
-                                                   defname))
-                        defname (bookmarkp-selected-buffers-alist-only)
+                        "Set bookmark " defname
+                        (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
+                             (bookmarkp-selected-buffers-alist-only))
                         nil bookmark-history))))
     (when (string-equal bname "") (setq bname  defname))
-    (bookmark-store bname (cdr record) parg)
+    (bookmark-store bname (cdr record) (consp parg))
     (run-hooks 'bookmarkp-after-set-hook)
     (if bookmark-use-annotations
         (bookmark-edit-annotation bname)
-      (goto-char bookmark-current-point))))
+      (goto-char bookmark-current-point)))) ; `bookmark-current-point' is a free var here.
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1983,7 +2012,7 @@ candidate."
                                                (bookmarkp-default-bookmark-name))))
   (bookmark-maybe-historicize-string old)
   (bookmark-maybe-load-default-file)
-  (setq bookmark-current-point  (point))
+  (setq bookmark-current-point  (point)) ; `bookmark-current-point' is a free var here.
   (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
   (setq bookmark-current-buffer  (current-buffer))
   (let ((newname  (or new  (read-from-minibuffer
@@ -2720,7 +2749,9 @@ LAXP non-nil means use lax completion."
        (if bookmarkp-sort-comparer      ; Test whether to sort, but always use `string-lessp'.
            (sort (bookmark-all-names alist) 'string-lessp)
          (bookmark-all-names alist)))
-    (let* ((icicle-delete-candidate-object  'bookmark-delete) ; For `S-delete'.
+    (let* ((icicle-delete-candidate-object  (lambda (cand) ; For `S-delete' in Icicles.
+                                              (bookmark-delete
+                                               (icicle-transform-multi-completion cand))))
            (completion-ignore-case          bookmark-completion-ignore-case)
            (default                         default)
            (prompt                          (if default
@@ -4224,11 +4255,11 @@ use `\\[bookmarkp-switch-bookmark-file]' (`bookmarkp-switch-bookmark-file')."
   "Use `w32-browser' to open the bookmark clicked."
   (interactive "e")
   (save-excursion
-    (set-buffer (window-buffer (posn-window (event-end event))))
-    (save-excursion
-      (goto-char (posn-point (event-end event)))
-      (let ((bookmarkp-use-w32-browser-p  t))
-        (bookmark-bmenu-other-window)))))
+    (with-current-buffer (window-buffer (posn-window (event-end event)))
+      (save-excursion
+        (goto-char (posn-point (event-end event)))
+        (let ((bookmarkp-use-w32-browser-p  t))
+          (bookmark-bmenu-other-window))))))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-w32-open-select () ; `V' in bookmark-list.
@@ -5074,15 +5105,6 @@ If either name is not absolute, then it is considered relative to
   (if (fboundp 'file-remote-p)
       (file-remote-p file-name)
     (and (fboundp 'ffap-file-remote-p) (ffap-file-remote-p file-name))))
-
-(defun bookmarkp-replace-regexp-in-string (regexp rep string
-                                           &optional fixedcase literal subexp start)
-  "Replace all matches for REGEXP with REP in STRING and return STRING."
-  (if (fboundp 'replace-regexp-in-string) ; Emacs > 20.
-      (replace-regexp-in-string regexp rep string fixedcase literal subexp start)
-    (if (string-match regexp string)    ; Emacs 20
-        (replace-match rep nil nil string)
-      string)))
 
 (defun bookmarkp-float-time (&optional specified-time)
   "Same as `float-time'.  (Needed for Emacs 20.)"
@@ -6628,8 +6650,8 @@ BOOKMARK is a bookmark name or a bookmark record."
              (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
              (handler . bookmarkp-jump-dired)))
       (save-excursion			; Hide subdirs that were hidden.
-        (mapcar #'(lambda (dir) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))
-                hidden-dirs)))))
+        (dolist (dir  hidden-dirs)
+          (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))))
 
 (defun bookmarkp-dired-subdirs ()
   "Alist of inserted subdirectories, without their positions (markers).
@@ -6660,8 +6682,9 @@ Handler function for record returned by `bookmarkp-make-dired-record'."
     (let ((inhibit-read-only  t))
       (dired-insert-old-subdirs subdirs)
       (dired-mark-remembered (mapcar #'(lambda (mf) (cons (expand-file-name mf dir) 42)) mfiles))
-      (save-excursion (mapcar #'(lambda (dir) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))
-                              hidden-dirs)))
+      (save-excursion
+        (dolist (dir  hidden-dirs)
+          (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (goto-char (bookmark-get-position bookmark))))
 
 (defun bookmarkp-read-bookmark-for-type (type alist &optional other-win pred hist action)
@@ -7058,7 +7081,7 @@ You can use completion to enter the bookmark name and each tag."
                        (bookmarkp-some #'(lambda (tag) (bookmarkp-has-tag-p bmk tag)) tags))
                    bookmark-alist)))
      (unless tags (error "You did not specify any tags"))
-     (unless alist (error "No bookmarks have any of the specified tags" regexp))
+     (unless alist (error "No bookmarks have any of the specified tags"))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump bookmark))
@@ -7075,7 +7098,7 @@ You can use completion to enter the bookmark name and each tag."
                        (bookmarkp-some #'(lambda (tag) (bookmarkp-has-tag-p bmk tag)) tags))
                    bookmark-alist)))
      (unless tags (error "You did not specify any tags"))
-     (unless alist (error "No bookmarks have any of the specified tags" regexp))
+     (unless alist (error "No bookmarks have any of the specified tags"))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
@@ -7096,7 +7119,7 @@ candidate."
                               (bookmarkp-every #'(lambda (tag) (bookmarkp-has-tag-p bmk tag))
                                                tags))))
                    bookmark-alist)))
-     (unless alist (error "No bookmarks have all of the specified tags" regexp))
+     (unless alist (error "No bookmarks have all of the specified tags"))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump bookmark))
@@ -7117,7 +7140,7 @@ candidate."
                               (bookmarkp-every #'(lambda (tag) (bookmarkp-has-tag-p bmk tag))
                                                tags))))
                    bookmark-alist)))
-     (unless alist (error "No bookmarks have all of the specified tags" regexp))
+     (unless alist (error "No bookmarks have all of the specified tags"))
      (list tags (bookmark-completing-read
                  "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
@@ -8220,19 +8243,19 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
          (inhibit-field-text-motion  t) ; Just in case.
          bol eol
          (bmk-name                   (save-excursion
-                                       (set-buffer (window-buffer (posn-window mouse-pos)))
-                                       (save-excursion
-                                         (goto-char (posn-point mouse-pos))
+                                       (with-current-buffer (window-buffer (posn-window mouse-pos))
                                          (save-excursion
-                                           (setq bol (progn (beginning-of-line) (point)))
-                                           (setq eol (progn (end-of-line) (point))))
-                                         (if bookmarkp-bmenu-line-overlay ; Don't recreate.
-                                             (move-overlay bookmarkp-bmenu-line-overlay
-                                                           bol eol (current-buffer))
-                                           (setq bookmarkp-bmenu-line-overlay
-                                                 (make-overlay bol eol))
-                                           (overlay-put bookmarkp-bmenu-line-overlay 'face 'region))
-                                         (bookmark-bmenu-bookmark)))))
+                                           (goto-char (posn-point mouse-pos))
+                                           (save-excursion
+                                             (setq bol (progn (beginning-of-line) (point)))
+                                             (setq eol (progn (end-of-line) (point))))
+                                           (if bookmarkp-bmenu-line-overlay ; Don't recreate.
+                                               (move-overlay bookmarkp-bmenu-line-overlay
+                                                             bol eol (current-buffer))
+                                             (setq bookmarkp-bmenu-line-overlay
+                                                   (make-overlay bol eol))
+                                             (overlay-put bookmarkp-bmenu-line-overlay 'face 'region))
+                                           (bookmark-bmenu-bookmark))))))
     (sit-for 0)
     (let ((menu-choice
            (x-popup-menu
@@ -8275,10 +8298,6 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
            (save-excursion
              (goto-char (posn-point mouse-pos))
              (call-interactively menu-choice))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;
-
-(provide 'bookmark+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmark+.el ends here

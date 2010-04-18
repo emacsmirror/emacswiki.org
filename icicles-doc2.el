@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  9 15:53:04 2010 (-0700)
+;; Last-Updated: Sat Apr 17 11:03:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26820
+;;     Update #: 26840
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1466,7 +1466,13 @@
 ;;  `icicle-bookmark-cmd'.)
 ;;
 ;;  * With no prefix arg or a plain prefix arg (`C-u'), `C-x r m' acts
-;;    just like `bookmark-set'.
+;;    like `icicle-bookmark-set'.  This is similar to `bookmark-set',
+;;    but if you use Bookmark+ then you can use (lax) completion,
+;;    choosing from existing bookmarks for the same buffer.  This
+;;    makes it easy to update a nearby bookmark.
+;;
+;;    The same completion enhancements are available as for bookmark
+;;    jumping - see (@> "Jumping to a Bookmark"), below.
 ;;
 ;;  * With a negative prefix arg, `C-x r m' jumps to a bookmark (with
 ;;    completion).  See (@> "Jumping to a Bookmark"), below.
@@ -6095,10 +6101,10 @@
 ;;    `icicle-up-directory', which navigates to the parent directory
 ;;    and completes there instead.
 ;;
-;;  * During completion of bookmark names for `icicle-bookmark',
-;;    various keys with the prefix `C-M-' are bound to commands that
-;;    narrow the available candidates to bookmarks of a specific type.
-;;    For example, `C-M-d' narrows the choices to Dired bookmarks.
+;;  * During completion of bookmark names, various keys with the
+;;    prefix `C-M-' are bound to commands that narrow the available
+;;    candidates to bookmarks of a specific type.  For example,
+;;    `C-M-d' narrows the choices to Dired bookmarks.
 ;;
 ;;  The following bindings are made for `completion-list-mode', that
 ;;  is, for buffer `*Completions*', which shows the list of candidate

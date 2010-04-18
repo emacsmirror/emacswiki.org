@@ -62,6 +62,91 @@ Better yet, use this to separate threads (puts space before and after the horizo
 <pre>
 
 </pre>
+----
+
+Running the latest icicles as of 17 Feb, 2009 on Emacs 23.1.1
+Icicles appends a '/' when there is a single completion for a directory when running find-file.
+
+Here is the file structure:
+<pre>
+~/maindir/
+          subdir/
+                 file
+</pre>
+      
+And here is how to reproduce:
+<pre>           
+~/> emacs -q
+require 'icicles [<RET>]
+M-x icy-mode [<RET>]
+
+[C-xC-f]
++ File or directory (/): ~/
+[main<TAB>]
++ File or directory (/): ~/maindir/ [Sole prefix completion]
+[<TAB>]
++ File or directory (/): ~/maindir// [Sole prefix completion]  <-- unexpected append of '/'
+[<TAB>]
+  *Completions* opens with a listing of all the files in /
+</pre>
+ In emacs -q it works as expected
+<pre>
+[C-xC-f]
+Find file: ~/
+[main<TAB>]
+Find file: ~/maindir/
+[<TAB>]
+Find file: ~/maindir/subdir/
+[<TAB>]
+Find file: ~/maindir/subdir/file
+</pre>
+
+It works as expected when the only completion is a regular file.
+
+The following also works:
+<pre>
+[C-xC-f]
++ File or directory (/): ~/
+[main<TAB>]
++ File or directory (/): ~/maindir/ [Sole prefix completion]
+[.<S-TAB>]
+  *Completions* opens with the following content:
+
+Click <mouse-2> or type RET on a completion to select it.  (C-?: help) 
+Possible completions are:
+../						   subdir/
+</pre>
+The following also works:
+<pre>
+[C-xC-f]
++ File or directory (/): ~/
+[main<TAB>]
++ File or directory (/): ~/maindir/ [Sole prefix completion]
+[s<TAB>]
++ File or directory (/): ~/maindir/subdir/ [Sole prefix completion]
+</pre>
+
+I have tried this on 21.3.1 and it seems to work normally. -- iulianov
+
+
+
+[new:DrewAdams:2010-02-20 01:13 UTC]
+Thanks for your report, Iulianov. Yes, I know about this bug. I just haven't found the time yet to fix it. I'll get to it eventually. Sorry for the trouble. Thx -- DrewAdams
+
+
+[new:DrewAdams:2010-04-13 18:21 UTC]
+Sorry it took a while, but I think this is fixed now. Please try the latest version and let me know if you find any problems. Sorry for the trouble.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
 
 <pre>
 

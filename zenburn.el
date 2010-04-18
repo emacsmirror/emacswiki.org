@@ -6,6 +6,10 @@
 ;; URL: http://www.brockman.se/software/zenburn/zenburn.el
 ;; Updated: 2010-04-03 15:34
 
+;; changes (2010-04), Bozhidar Batsov
+;;  - themed properly rpm-spec-mode
+;;  - themed properly mew
+
 ;; Changes (2010-04), Dirk-Jan C. Binnema
 ;;  - add Wanderlust faces, based on the work by *
 ;;    change display of currently view mail (italic + underline),
@@ -942,6 +946,43 @@ static char *gnus-pointer[] = {
 
      '(wl-highlight-folder-path ((t (:inherit zenburn-orange))))
 
+     '(rpm-spec-dir ((t (:inherit zenburn-green))))
+     '(rpm-spec-doc ((t (:inherit zenburn-green))))
+     '(rpm-spec-ghost ((t (:inherit zenburn-red))))
+     '(rpm-spec-macro ((t (:inherit zenburn-yellow))))
+     '(rpm-spec-obsolete-tag ((t (:inherit zenburn-red))))
+     '(rpm-spec-package ((t (:inherit zenburn-red))))
+     '(rpm-spec-section ((t (:inherit zenburn-yellow))))
+     '(rpm-spec-tag ((t (:inherit zenburn-blue))))
+     '(rpm-spec-var ((t (:inherit zenburn-red))))
+
+     '(mew-face-header-subject ((t (:inherit zenburn-orange))))
+     '(mew-face-header-from ((t (:inherit zenburn-yellow))))
+     '(mew-face-header-date ((t (:inherit zenburn-green))))
+     '(mew-face-header-to ((t (:inherit zenburn-red))))
+     '(mew-face-header-key ((t (:inherit zenburn-green))))
+     '(mew-face-header-private ((t (:inherit zenburn-green))))
+     '(mew-face-header-important ((t (:inherit zenburn-blue))))
+     '(mew-face-header-marginal ((t (:inherit zenburn-term-dark-gray))))
+     '(mew-face-header-warning ((t (:inherit zenburn-red))))
+     '(mew-face-header-xmew ((t (:inherit zenburn-green))))
+     '(mew-face-header-xmew-bad ((t (:inherit zenburn-red))))
+     '(mew-face-body-url ((t (:inherit zenburn-orange))))
+     '(mew-face-body-comment ((t (:inherit zenburn-term-dark-gray))))
+     '(mew-face-body-cite1 ((t (:inherit zenburn-green))))
+     '(mew-face-body-cite2 ((t (:inherit zenburn-blue))))
+     '(mew-face-body-cite3 ((t (:inherit zenburn-orange))))
+     '(mew-face-body-cite4 ((t (:inherit zenburn-yellow))))
+     '(mew-face-body-cite5 ((t (:inherit zenburn-red))))
+     '(mew-face-mark-review ((t (:inherit zenburn-blue))))
+     '(mew-face-mark-escape ((t (:inherit zenburn-green))))
+     '(mew-face-mark-delete ((t (:inherit zenburn-red))))
+     '(mew-face-mark-unlink ((t (:inherit zenburn-yellow))))
+     '(mew-face-mark-refile ((t (:inherit zenburn-green))))
+     '(mew-face-mark-unread ((t (:inherit zenburn-red-2))))
+     '(mew-face-eof-message ((t (:inherit zenburn-green))))
+     '(mew-face-eof-part ((t (:inherit zenburn-yellow))))
+
       )
 
     (zenburn-make-face-alias-clauses
@@ -1190,6 +1231,15 @@ static char *gnus-pointer[] = {
        plain-widget-field-face
        plain-widget-inactive-face
        plain-widget-single-line-field-face
+       rpm-spec-dir-face
+       rpm-spec-doc-face
+       rpm-spec-ghost-face
+       rpm-spec-macro-face
+       rpm-spec-obsolete-tag-face
+       rpm-spec-package-face
+       rpm-spec-section-face
+       rpm-spec-tag-face
+       rpm-spec-var-face
        setnu-line-number-face
        show-paren-match-face
        show-paren-mismatch-face

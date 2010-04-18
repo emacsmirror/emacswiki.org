@@ -98,11 +98,11 @@ bookmark.  In ''Icicle'' mode it is bound by default to command
 bound to `bookmark-set' are remapped in ''Icicle'' mode to
 `icicle-bookmark-cmd'.)
 
-* With ''no'' prefix arg or a ''plain'' prefix arg (`C-u'), `C-x r m' acts
-  just like `bookmark-set'.
+* With ''no'' prefix arg or a ''plain'' prefix arg (`C-u'), `C-x r m' acts like '''`icicle-bookmark-set''''.  This is similar to `bookmark-set', but if you use '''[[Bookmark+]]''' then you can use (lax) [[completion]], choosing from existing bookmarks for the same buffer.  This makes it easy to update a nearby bookmark.  The same completion enhancements are available as for
+bookmark jumping -- see [[#JumpingToABookmark|Jumping to a Bookmark]], below.
 
 * With a ''negative'' prefix arg, `C-x r m' jumps to a bookmark (with
-  completion).  See [[#JumpingToABookmark]], below.
+  completion).  See [[#JumpingToABookmark|Jumping to a Bookmark]], below.
 
 * With a ''non-negative'' prefix arg, `C-x r m' sets a bookmark,
   automatically naming it.  This is like the automatic naming for

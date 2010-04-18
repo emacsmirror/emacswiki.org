@@ -77,8 +77,8 @@
 ;;; ============================
 ;;; CODE:
 
-(require 'xml-gen.el)
-(require 'html-lite.el)
+(require 'xml-gen)
+(require 'html-lite)
 
 ;;; ==============================
 (defun mon-insert-ebay-template ()

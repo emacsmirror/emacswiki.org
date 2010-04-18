@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  8 11:30:08 2010 (-0700)
+;; Last-Updated: Sat Apr 17 14:02:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1609
+;;     Update #: 1611
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2895,7 +2895,9 @@ together instead of one at a time.
    (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
    (icicle-whole-candidate-as-text-prop-p    t)
    (icicle-transform-before-sort-p           t)
-   (icicle-delete-candidate-object           'bookmark-delete)
+   (icicle-delete-candidate-object           (lambda (cand)
+                                               (bookmark-delete
+                                                (icicle-transform-multi-completion cand))))
    (bookmark-automatically-show-annotations  nil) ; Do not show annotations
    (icicle-sort-orders-alist
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
@@ -3042,7 +3044,9 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
      (icicle-transform-function                (if (interactive-p) nil icicle-transform-function))
      (icicle-whole-candidate-as-text-prop-p    t)
      (icicle-transform-before-sort-p           t)
-     (icicle-delete-candidate-object           'bookmark-delete)
+     (icicle-delete-candidate-object           (lambda (cand)
+                                                 (bookmark-delete
+                                                  (icicle-transform-multi-completion cand))))
      (regexp                                   (icicle-search-read-context-regexp))
      (bookmark-automatically-show-annotations  nil) ; Do not show annotations
      (icicle-sort-orders-alist

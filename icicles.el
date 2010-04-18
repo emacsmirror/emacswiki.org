@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  9 14:34:32 2010 (-0700)
+;; Last-Updated: Sat Apr 17 09:19:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22683
+;;     Update #: 22685
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -123,8 +123,8 @@
 ;;    `icicle-bookmark-other-window',
 ;;    `icicle-bookmark-region-other-window',
 ;;    `icicle-bookmark-remote-file-other-window',
-;;    `icicle-bookmark-w3m-other-window', `icicle-buffer',
-;;    `icicle-buffer-config', `icicle-buffer-list',
+;;    `icicle-bookmark-set', `icicle-bookmark-w3m-other-window',
+;;    `icicle-buffer', `icicle-buffer-config', `icicle-buffer-list',
 ;;    `icicle-buffer-other-window',
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-history-variable', `icicle-clear-history',

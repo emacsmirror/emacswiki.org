@@ -718,12 +718,14 @@ You can use them without configuration.
 Enjoy!"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Preconfigured Anything ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;###autoload
 (defun anything-for-files ()
   "Preconfigured `anything' for opening files.
 ffap -> recentf -> buffer -> bookmark -> file-cache -> files-in-current-dir -> locate"
   (interactive)
   (anything-other-buffer anything-for-files-prefered-list "*anything for files*"))
 
+;;;###autoload
 (defun anything-info-at-point ()
   "Preconfigured `anything' for searching info at point."
   (interactive)
@@ -732,12 +734,14 @@ ffap -> recentf -> buffer -> bookmark -> file-cache -> files-in-current-dir -> l
               anything-c-source-info-pages)
             (thing-at-point 'symbol) nil nil nil "*anything info*"))
 
+;;;###autoload
 (defun anything-show-kill-ring ()
   "Preconfigured `anything' for `kill-ring'. It is drop-in replacement of `yank-pop'.
 You may bind this command to M-y."
   (interactive)
   (anything-other-buffer 'anything-c-source-kill-ring "*anything kill-ring*"))
 
+;;;###autoload
 (defun anything-minibuffer-history ()
   "Preconfigured `anything' for `minibuffer-history'."
   (interactive)
@@ -759,6 +763,7 @@ You may bind this command to M-y."
                    minibuffer-local-ns-map))
   (define-key map "\C-r" 'anything-minibuffer-history))
 
+;;;###autoload
 (defun anything-gentoo ()
   "Preconfigured `anything' for gentoo linux."
   (interactive)
@@ -766,6 +771,7 @@ You may bind this command to M-y."
                            anything-c-source-use-flags)
                          "*anything gentoo*"))
 
+;;;###autoload
 (defun anything-surfraw-only ()
   "Preconfigured `anything' for surfraw.
 If region is marked set anything-pattern to region.
@@ -787,53 +793,63 @@ With two prefix args allow choosing in which symbol to search."
               (and pattern (replace-regexp-in-string "\n" "" pattern))
               nil nil nil "*anything surfraw*")))
 
+;;;###autoload
 (defun anything-imenu ()
   "Preconfigured `anything' for `imenu'."
   (interactive)
   (anything 'anything-c-source-imenu nil nil nil nil "*anything imenu*"))
 
+;;;###autoload
 (defun anything-google-suggest ()
   "Preconfigured `anything' for google search with google suggest."
   (interactive)
   (anything-other-buffer 'anything-c-source-google-suggest "*anything google*"))
 
+;;;###autoload
 (defun anything-yahoo-suggest ()
   "Preconfigured `anything' for Yahoo searching with Yahoo suggest."
   (interactive)
   (anything-other-buffer 'anything-c-source-yahoo-suggest "*anything yahoo*"))
 
 ;;; Converted from anything-show-*-only
+;;;###autoload
 (defun anything-for-buffers ()
   "Preconfigured `anything' for buffer."
   (interactive)
   (anything-other-buffer 'anything-c-source-buffers "*anything for buffers*"))
 
+;;;###autoload
 (defun anything-bbdb ()
   "Preconfigured `anything' for BBDB."
   (interactive)
   (anything-other-buffer 'anything-c-source-bbdb "*anything bbdb*"))
 
+;;;###autoload
 (defun anything-locate ()
   "Preconfigured `anything' for Locate."
   (interactive)
   (anything-other-buffer 'anything-c-source-locate "*anything locate*"))
 
+;;;###autoload
 (defun anything-w3m-bookmarks ()
   "Preconfigured `anything' for w3m bookmark."
   (interactive)
   (anything-other-buffer 'anything-c-source-w3m-bookmarks "*anything w3m bookmarks*"))
 
+;;;###autoload
 (defun anything-colors ()
   "Preconfigured `anything' for color."
   (interactive)
   (anything-other-buffer '(anything-c-source-colors anything-c-source-customize-face)
                          "*anything colors*"))
 
+;;;###autoload
 (defun anything-bm-list ()
   "Preconfigured `anything' for visible bookmarks."
   (interactive)
   (anything-other-buffer 'anything-c-source-bm "*anything bm list*"))
 
+;;;###autoload
 (defun anything-timers ()
   "Preconfigured `anything' for timers."
   (interactive)
@@ -843,6 +859,7 @@ With two prefix args allow choosing in which symbol to search."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Anything Applications ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; kill buffers
+;;;###autoload
 (defun anything-kill-buffers ()
   "Preconfigured `anything' to kill buffer you selected."
   (interactive)
@@ -857,6 +874,7 @@ With two prefix args allow choosing in which symbol to search."
    nil nil))
 
 ;;; Regexp
+;;;###autoload
 (defun anything-query-replace-regexp (&rest args)
   "Preconfigured `anything' : Drop-in replacement of `query-replace-regexp' with building regexp visually."
   (interactive
@@ -879,6 +897,7 @@ With two prefix args allow choosing in which symbol to search."
                (region-end)))))
   (apply 'query-replace-regexp args))
 
+;;;###autoload
 (defun anything-regexp ()
   "Preconfigured `anything' : It is like `re-builder'. It helps buliding regexp and replacement."
   (interactive)
@@ -1593,20 +1612,45 @@ If CANDIDATE is alone, open file CANDIDATE filename."
              (if (> num-lines-buf 3)
                  (insert-in-minibuffer new-pattern) (find-file candidate)))))))
 
-
 (defun anything-c-insert-file-name-completion-at-point (candidate)
   "Insert file name completion at point."
   (let* ((end         (point))
          (guess       (thing-at-point 'filename))
          (full-path-p (string-match (concat "^" (getenv "HOME")) guess)))
     (set-text-properties 0 (length candidate) nil candidate)
-    (when guess
+    (when (and guess (not (string= guess "")))
       (search-backward guess (- (point) (length guess)))
       (delete-region (point) end)
       (if full-path-p
           (insert (expand-file-name candidate))
           (insert (abbreviate-file-name candidate))))))
 
+;;; REGRESSION:
+;;; FIXME completing on regexps don't erase initial text.
+;;
+;; (defun anything-c-insert-file-name-completion-at-point (candidate)
+;;   "Insert filename completion at point."
+;;   (let* ((end         (point))
+;;          (guess       (anything-get-regexp-filename-at-point))
+;;          (full-path-p (string-match (concat "^" (getenv "HOME")) (cdr guess))))
+;;     (set-text-properties 0 (length candidate) nil candidate)
+;;     (delete-region (- (point) (car guess)) end)
+;;     (if full-path-p
+;;         (insert (expand-file-name candidate))
+;;         (insert (abbreviate-file-name candidate)))))
+
+
+;; (defun anything-get-regexp-filename-at-point ()
+;;   "Return filename at point even if filename contain regexps."
+;;   (let ((thing-at-point-file-name-chars "\\(^\\|~/\\|/\\)*[:alnum:]_.${}#%,:"))
+;;     (save-excursion
+;;       (loop with count = 0
+;;          for tap = (thing-at-point 'filename)
+;;          while (and (string= tap "") (not (looking-back "\"\\|\'\\|\n")))
+;;          do (progn (forward-char -1) (incf count))
+;;          finally return (cons (+ count (length tap)) tap)))))
+
+;;;###autoload
 (defun anything-find-files ()
   "Preconfigured `anything' for anything implementation of `find-file'."
   (interactive)
@@ -1619,7 +1663,7 @@ If CANDIDATE is alone, open file CANDIDATE filename."
   (let* ((file-p (and fap (file-exists-p fap)
                       (file-exists-p
                        (file-name-directory (expand-file-name tap)))))
-         (input (if file-p (expand-file-name tap) fap)))
+         (input  (if file-p (expand-file-name tap) fap)))
     (or input (expand-file-name default-directory))))
 
 ;;; Anything completion for `write-file'.==> C-x C-w
@@ -1634,6 +1678,7 @@ If CANDIDATE is alone, open file CANDIDATE filename."
      (("Write File" . (lambda (candidate)
                         (write-file candidate 'confirm)))))))
 
+;;;###autoload
 (defun anything-write-file ()
   "Preconfigured `anything' providing completion for `write-file'."
   (interactive)
@@ -1655,6 +1700,7 @@ If CANDIDATE is alone, open file CANDIDATE filename."
                                                 candidate anything-current-buffer))
                           (insert-file candidate))))))))
 
+;;;###autoload
 (defun anything-insert-file ()
   "Preconfigured `anything' providing completion for `insert-file'."
   (interactive)
@@ -1785,27 +1831,32 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
               (format prompt-fm fname) nil nil buffer)))
 
 
+;;;###autoload
 (defun anything-dired-rename-file ()
   "Preconfigured `anything' to rename files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'rename))
 
+;;;###autoload
 (defun anything-dired-copy-file ()
   "Preconfigured `anything' to copy files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'copy))
 
+;;;###autoload
 (defun anything-dired-symlink-file ()
   "Preconfigured `anything' to symlink files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'symlink))
 
+;;;###autoload
 (defun anything-dired-hardlink-file ()
   "Preconfigured `anything' to hardlink files from dired."
   (interactive)
   (anything-dired-do-action-on-file :action 'hardlink))
 
 (defvar anything-dired-bindings nil)
+;;;###autoload
 (defun anything-dired-bindings (&optional arg)
   "Replace usual dired commands `C' and `R' by anything ones.
 When call interactively toggle dired bindings and anything bindings.
@@ -2536,10 +2587,6 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
      for pred          = (bookmark-get-filename i)
      for bufp          = (and (fboundp 'bmkext-get-buffer-name)
                               (bmkext-get-buffer-name i))
-     for regp          = (and (fboundp 'bmkext-get-end-position)
-                              (bmkext-get-end-position i)
-                              (/= (bookmark-get-position i)
-                                  (bmkext-get-end-position i)))
      for handlerp      = (and (fboundp 'bookmark-get-handler)
                               (bookmark-get-handler i))
      for isw3m         = (and (fboundp 'bmkext-w3m-bookmark-p)
@@ -2570,17 +2617,10 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
      ;; directories
      if (and pred (file-directory-p pred))
      collect (propertize i 'face anything-c-bookmarks-face1 'help-echo pred)
-     ;; regular files with regions saved
-     if (and pred (not (file-directory-p pred)) (file-exists-p pred) regp)
-     collect (propertize i 'face 'anything-bmkext-region 'help-echo pred)
      ;; regular files
      if (and pred (not (file-directory-p pred)) (file-exists-p pred)
-             (not regp) (not (or iswoman isman)))
-     collect (propertize i 'face 'anything-bmkext-file 'help-echo pred)
-     ;; buffer non--filename
-     if (and (fboundp 'bmkext-get-buffer-name) bufp (not handlerp)
-             (if pred (not (file-exists-p pred)) (not pred)))
-     collect (propertize i 'face 'anything-bmkext-no--file)))
+             (not (or iswoman isman)))
+     collect (propertize i 'face 'anything-bmkext-file 'help-echo pred)))
        
 ;;; Faces for bookmarks
 (defface anything-bmkext-info
@@ -2601,11 +2641,6 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
 (defface anything-bmkext-man
   '((t (:foreground "Orange4")))
   "*Face used for Woman/man bookmarks."
-  :group 'anything)
-
-(defface anything-bmkext-region
-  '((t (:foreground "Indianred2")))
-  "*Face used for region bookmarks."
   :group 'anything)
 
 (defface anything-bmkext-no--file
@@ -2658,22 +2693,6 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
      for b = (car i)
      collect b into sa
      finally return (sort sa 'string-lessp)))
-
-;; Regions
-(defvar anything-c-source-bookmark-regions
-  '((name . "Bookmark Regions")
-    (init . (lambda ()
-              (require 'bookmark-extensions)
-              (bookmark-maybe-load-default-file)))
-    (candidates . anything-c-bookmark-region-setup-alist)
-    (candidate-transformer anything-c-highlight-bookmark)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
-    (type . bookmark)))
-;; (anything 'anything-c-source-bookmark-regions)
-
-(defun anything-c-bookmark-region-setup-alist ()
-  "Specialized filter function for bookmarks regions."
-  (anything-c-bmkext-filter-setup-alist 'bmkext-region-alist-only))
 
 ;; W3m
 (defvar anything-c-source-bookmark-w3m
@@ -2814,6 +2833,7 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
 
 
 ;; All bookmark-extensions sources.
+;;;###autoload
 (defun anything-bookmark-ext ()
   "Preconfigured `anything' for bookmark-extensions sources.
 See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
@@ -2823,7 +2843,6 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
               anything-c-source-bookmark-gnus
               anything-c-source-bookmark-info
               anything-c-source-bookmark-man
-              anything-c-source-bookmark-regions
               anything-c-source-bookmark-su-files&dirs
               anything-c-source-bookmark-ssh-files&dirs)))
 
@@ -3213,6 +3232,7 @@ http://cedet.sourceforge.net/"))
 ;; (anything 'anything-c-source-semantic)
 
 ;;; Function is called by
+;;;###autoload
 (defun anything-simple-call-tree ()
   "Preconfigured `anything' for simple-call-tree. List function relationships."
   (interactive)
@@ -3521,6 +3541,7 @@ If this action is executed just after `yank', replace with STR as yanked string.
 
 ;; (anything 'anything-c-source-mark-ring)
 
+;;;###autoload
 (defun anything-mark-ring ()
   "Preconfigured `anything' for `anything-c-source-mark-ring'."
   (interactive)
@@ -3565,6 +3586,7 @@ If this action is executed just after `yank', replace with STR as yanked string.
 
 ;; (anything 'anything-c-source-global-mark-ring)
 
+;;;###autoload
 (defun anything-global-mark-ring ()
   "Preconfigured `anything' for `anything-c-source-global-mark-ring'."
   (interactive)
@@ -3825,6 +3847,7 @@ See http://orgmode.org for the latest version.")
                                              (install-elisp-from-emacswiki elm)))))
       actions))
 
+;;;###autoload
 (defun anything-yaoddmuse-cache-pages (&optional load)
   "Fetch the list of files on emacswiki and create cache file.
 If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
@@ -3844,11 +3867,13 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
               load)
       (load anything-c-yaoddmuse-cache-file))))
 
+;;;###autoload
 (defun anything-yaoddmuse-emacswiki-edit-or-view ()
   "Preconfigured `anything' to edit or view EmacsWiki page."
   (interactive)
   (anything 'anything-c-source-yaoddmuse-emacswiki-edit-or-view))
 
+;;;###autoload
 (defun anything-yaoddmuse-emacswiki-post-library ()
   "Preconfigured `anything' to post library to EmacsWiki."
   (interactive)
@@ -4263,6 +4288,7 @@ A list of search engines."
 
 ;;; Emms
 
+;;;###autoload
 (defun anything-emms-stream-edit-bookmark (elm)
   "Change the information of current emms-stream bookmark from anything."
   (interactive)
@@ -4381,6 +4407,7 @@ A list of search engines."
     (persistent-help . "Show description of this source")))
 ;; (anything 'anything-c-source-call-source)
 
+;;;###autoload
 (defun anything-call-source ()
   "Preconfigured `anything' to call anything source."
   (interactive)
@@ -4422,12 +4449,14 @@ A list of search engines."
   '((name . "Occur")
     (candidates . anything-c-get-occur-candidates)
     (persistent-action . anything-c-occur-persistent-action)
+    (persistent-help . "Goto Line")
     (action . anything-c-occur-goto-line)
     (requires-pattern . 1)
     (delayed)
     (volatile)))
 ;; (anything 'anything-c-source-occur)
 
+;;;###autoload
 (defun anything-occur ()
   "Preconfigured Anything for Occur source."
   (interactive)
@@ -4449,6 +4478,7 @@ See also `anything-create--actions'.")
   (interactive)
   (anything-run-after-quit 'anything-create nil anything-pattern))
 
+;;;###autoload
 (defun anything-create (&optional string initial-input)
   "Preconfigured `anything' to do many create actions from STRING.
 See also `anything-create--actions'."
@@ -4550,6 +4580,7 @@ See also `anything-create--actions'."
   (let ((anything-source-name (assoc-default 'name anything-c-source-top))) ;UGLY HACK
     (anything-c-top-init)))
 
+;;;###autoload
 (defun anything-top ()
   "Preconfigured `anything' for top command."
   (interactive)
@@ -4629,6 +4660,7 @@ See also `anything-create--actions'."
     (persistent-action . anything-c-persistent-xfont-action)
     (persistent-help . "Switch to this font temporarily")))
 
+;;;###autoload
 (defun anything-select-xfont ()
   "Preconfigured `anything' to select Xfont."
   (interactive)
@@ -4653,6 +4685,7 @@ See also `anything-create--actions'."
 (defvar anything-c-apt-show-command "apt-cache show '%s'")
 (defvar anything-c-apt-install-command "xterm -e sudo apt-get install '%s' &")
 
+;;;###autoload
 (defun anything-apt (query)
   "Preconfigured `anything' : frontend of APT package manager."
   (interactive "sAPT search: ")
@@ -4669,6 +4702,7 @@ See also `anything-create--actions'."
 (defun anything-c-apt-display-to-real (line)
   (car (split-string line " - ")))
 
+;;;###autoload
 (defun anything-c-shell-command-if-needed (command)
   (interactive "sShell command: ")
   (if (get-buffer command)		; if the buffer already exists
@@ -4963,6 +4997,7 @@ Ask to kill buffers associated with that file, too."
                                   (anything-c-external-commands-list-1))
                  file))
 
+;;;###autoload
 (defun w32-shell-execute-open-file (file)
   (interactive "fOpen file:")
   (with-no-warnings
@@ -5101,6 +5136,7 @@ directory, open this directory."
 (anything-document-attribute 'target-file "type . line"
   "Goto line of target-file.")
 
+;;;###autoload
 (defun anything-c-call-interactively (cmd-or-name)
   "Execute CMD-OR-NAME as Emacs command.
 It is added to `extended-command-history'.
@@ -5114,6 +5150,7 @@ It is added to `extended-command-history'.
         (execute-kbd-macro (symbol-function cmd))
       (call-interactively cmd))))
 
+;;;###autoload
 (defun anything-c-set-variable (var)
   "Set value to VAR interactively."
   (interactive)
@@ -5573,14 +5610,15 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
                  (loop for i from 0 to hierarchy
                     collecting (aref curhead i)))
                (arrange (headlines)
-                 (loop with curhead = (make-vector (hierarchies headlines) "")
-                    for ((str . pt) . hierarchy) in headlines
-                    do (aset curhead hierarchy str)
-                    collecting
-                      (cons
-                       (mapconcat 'identity (vector-0-n curhead hierarchy) " / ")
-                       pt))))
-          (if (listp regexp)
+                 (unless (null headlines) ; FIX headlines empty bug!
+                   (loop with curhead = (make-vector (hierarchies headlines) "")
+                      for ((str . pt) . hierarchy) in headlines
+                      do (aset curhead hierarchy str)
+                      collecting
+                        (cons
+                         (mapconcat 'identity (vector-0-n curhead hierarchy) " / ")
+                         pt)))))
+            (if (listp regexp)
               (arrange
                (sort
                 (loop for re in regexp
@@ -5702,20 +5740,6 @@ Return nil if bmk is not a valid bookmark."
             (bookmark-delete bmk 'batch)))
       (bookmark-delete bookmark 'batch))))
 
-(defun anything-bookmark-active-region-maybe (candidate)
-  "Active saved region if this bookmark have one."
-  (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-    (condition-case nil
-        (when (and (boundp bmkext-use-region-flag)
-                   bmkext-use-region-flag)
-          (let ((bmk-name (or (bmkext-get-buffer-name bookmark)
-                              (file-name-nondirectory
-                               (bookmark-get-filename bookmark)))))
-            (when bmk-name
-              (with-current-buffer bmk-name
-                (setq deactivate-mark nil)))))
-      (error nil))))
-
 (defun anything-require-or-error (feature function)
   (or (require feature nil t)
       (error "Need %s to use `%s'." feature function)))
@@ -5819,13 +5843,11 @@ Return nil if bmk is not a valid bookmark."
                              (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate))
                                    (current-prefix-arg anything-current-prefix-arg))
                                (bookmark-jump bookmark))
-                             (anything-update)
-                             (anything-bookmark-active-region-maybe candidate)))
+                             (anything-update)))
      ("Jump to BM other window" . (lambda (candidate)
                                     (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
                                       (bookmark-jump-other-window bookmark))
-                                    (anything-update)
-                                    (anything-bookmark-active-region-maybe candidate)))
+                                    (anything-update)))
      ("Bookmark edit annotation" . (lambda (candidate)
                                      (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
                                        (bookmark-edit-annotation bookmark))))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 13 11:09:31 2010 (-0700)
+;; Last-Updated: Sat Apr 17 16:27:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5127
+;;     Update #: 5143
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/04/17 dadams
+;;     Added: icicle-bookmark-set.
+;;     icicle-bookmark-cmd: Use icicle-bookmark-set, not bookmark-set.  Simpler PARG code in that case.
+;;     icicle-bookmark(-list|-other-window), icicle-define-bookmark-other-window-command:
+;;       Use icicle-transform-multi-completion in icicle-delete-candidate-object.
 ;; 2010/04/10 dadams
 ;;     Corrected prefix arg use for icicle-find-file(-read-only)(-other-window).  Thx to M. Heerdegen.
 ;; 2010/04/09 dadams
@@ -234,6 +239,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/17 dadams
+;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
+;;       Use icicle-transform-multi-completion in icicle-delete-candidate-object.
 ;; 2010/04/08 dadams
 ;;     icicle-get-anything-candidates: Removed #' - it was preventing the fn from being functionp.
 ;; 2010/04/03 dadams

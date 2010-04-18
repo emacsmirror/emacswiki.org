@@ -65,6 +65,7 @@ EevMode is my partner for years.
 * Lisp:open-junk-file.el -- Open a junk file to try-and-error programs
 * [[Yaoddmuse]] (current maintainer) -- Edit Oddmuse wiki
 * Lisp:mode-line-frame.el -- A separate frame to provide second ModeLine
+* Lisp:eldoc-extension.el -- Eldoc extension to show new functions and docstring
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 
