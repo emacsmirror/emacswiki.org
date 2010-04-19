@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.35 2010/04/07 20:16:10 rubikitch Exp rubikitch $
+;; $Id: auto-install.el,v 1.36 2010/04/19 07:10:36 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.35 $
+;; Version: $Revision: 1.36 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.35 2010/04/07 20:16:10 rubikitch Exp rubikitch $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.36 2010/04/19 07:10:36 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -275,6 +275,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.36  2010/04/19 07:10:36  rubikitch
+;; Avoid updating time-stamp
+;;
 ;; Revision 1.35  2010/04/07 20:16:10  rubikitch
 ;; Fixed a typo
 ;;
@@ -1119,7 +1122,9 @@ This command just run when have exist old version."
                  auto-install-replace-confirm
                  (not (yes-or-no-p (format "Do you want replace file: '%s' ?" file-path))))
             (auto-install-quit)
-          (write-file file-path)
+          (let ((before-save-hook before-save-hook))
+            (remove-hook 'before-save-hook 'time-stamp)
+            (write-file file-path))
           (auto-install-install file-path)))
     (error "This command just use in `auto-install-minor-mode'.")))
 

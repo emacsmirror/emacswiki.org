@@ -8,5 +8,6 @@ would eliminate.
 * HideShow -- Hide parts of the buffer like an outline mode.
 * BasicNarrowing -- Restrict actions, including viewing, to a
 specified region of the buffer.
+* MultipleNarrowings -- Use `##C-x n x x x...##’ to cycle a ring of narrowings (buffer restrictions).
 * `set-selective-display' -- Hide lines beyond a certain level of indentation.
 * HideSearch -- hides non-matching lines incrementally

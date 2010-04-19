@@ -11,9 +11,23 @@ I use emacs mainly for
 * LaTeX (well... most the commonly used packages)
 
 
-I keep track of my emacs customisation on[http://github.com/derele/dotemacs  Github] (through [http://zagadka.vm.bytemark.co.uk/magit/ magit])
+I keep track of my emacs customisation on [http://github.com/derele/dotemacs Github] (through [http://zagadka.vm.bytemark.co.uk/magit/ magit])
 
 
+Motivation
+
+I started programming Perl and R less than two years ago for my
+Phd-thesis involving Bioinformatics. I switched to Linux for that
+reason, ... well switchted is probably wrong: Before that I was not
+really interested in computers. Since then coding somehow infected my
+mind. Using the most advanced tool was only a small step from there
+like getting into elisp from my fiddling with my .emacs is.
+
+I started a week ago to write my first own mode it is great how
+much that cleared some of my understanding of Emacs.
+I would much appreciate comments on it, here it is:
+
+Lisp:TeXMed.el
 
 [new:DrewAdams:2010-04-09 13:38 UTC]
 Welcome to the wiki. -- DrewAdams

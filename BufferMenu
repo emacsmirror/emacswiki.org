@@ -24,6 +24,7 @@ Enhancements to vanilla buffer menu:
 * BufferMenuPlus -- Highlighting using local faces. More commands. Better sorting. New columns. Column width resizing.
 * BufferMenuHighlighting -- Highlighting using font-lock faces.
 * BufferMenuSorting -- Sorting the listing in buffer menu.
+* FixBuffersList -- New modification status and colors in buffers list.
 * Open in a different frame (from smoke_ on #emacs):
 
         (defun Buffer-menu-other-frame ()

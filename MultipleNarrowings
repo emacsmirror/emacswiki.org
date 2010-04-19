@@ -1,0 +1,36 @@
+This page is about library '''[::Wide-N]''', <tt>[[wide-n.el]]</tt>, which lets you browse among multiple buffer restrictions (narrowings).
+
+== A Ring of Narrowings ==
+
+Library '''Wide-N''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer the narrowing is recorded in a buffer-local ring. You can return to any of these buffer restrictions selectively anytime.
+
+'''`C-x n x'''' is bound to command `wide-n-repeat', which is just a repeatable version of command `wide-n'. It restores the last recorded narrowing for the current buffer.
+
+The narrowings can be nested, but they need not be. They can be any [[region]]s at all.
+
+* You can repeat the `x' to cycle quickly among narrowings: `C-x n x x x'...
+
+* You can go directly to the Nth previous narrowing by using a positive [[numeric prefix argument]]. (This is the '''N''' in '''Wide-N'''.)
+
+* You can widen the buffer completely by using a plain prefix arg (`C-u') or a negative prefix arg (`C--').  A negative prefix arg also resets (empties) the ring for the current buffer.
+
+* The whole buffer (widened completely) is also at the end of the ring, so you can cycle to it.
+
+* You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.
+
+Enjoy! -- DrewAdams
+
+
+[new]
+
+This library seems to be from the future:
+{{{
+;; 2020/04/18 dadams
+;;    Created.
+}}}
+
+
+
+
+----
+CategoryRegion [[Narrowing]] CategoryHideStuff

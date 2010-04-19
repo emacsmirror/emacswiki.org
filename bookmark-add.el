@@ -1,3 +1,4 @@
+[[de:AwMuxSWPHaHIm]]
 ;;; bookmark-add.el - creates the buffer for work with bookmarks.
 ;;
 ;; $Id$

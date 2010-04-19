@@ -1,0 +1,21 @@
+This module changes the look of Buffers list and Buffer menu.
+
+* A *new modification status* meaning "modified and saved". Makes it possible to distinguish files that have never been changed from files that have been changed and saved.
+* *Colorization* of meta data columns (status, size, mode). A special face can be used for the unsaved indicator ("*") for real files (buffers connected to files).
+* *Compaction* of size and mode, when needed. (E.g. changes size indication from "12345" to "12k" if the buffer name is long.)
+* *Compaction* of file path, when possible. Show home directory path as "~/".
+* *Character syntax* for "." and some other chars changed to *symbol*, to simplify selection of a complete file name.
+
+The new modification status appears in both the Buffers list and in
+the Buffers menu. The other enhancements are only for the Buffers list.
+
+Note. This module does *not* work with Emacs-22 or later, nor with XEmacs.
+
+* Lisp:fix-buffers-list.el
+
+Other Buffers Menu enhancements can be found in the BufferMenu page.
+
+-- DavidAndersson
+
+----
+CategoryBufferSwitching

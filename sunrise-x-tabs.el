@@ -62,7 +62,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 278 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 284 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.
@@ -90,17 +90,28 @@
   :type 'boolean)
 
 (defcustom sr-tabs-max-tabsize 10
-  "Maximum length of tabs in the Sunrise Commander FM."
+  "Maximum length of a tab in the Sunrise Commander FM."
   :group 'sunrise
   :type 'integer)
 
 (defface sr-tabs-active-face
-  '((t (:inherit variable-pitch :bold t :background "white" :height 0.9)))
+  '((((type tty) (class color) (min-colors 88))
+     :background "white")
+    (((type tty) (class color) (min-colors 8))
+     :background "green" :foreground "yellow" :bold t)
+    (((type tty) (class mono)) :inverse-video t)
+    (t
+     :inherit variable-pitch :bold t :background "white" :height 0.9))
   "Face of the currently selected tab in any of the Sunrise panes."
   :group 'sunrise)
 
 (defface sr-tabs-inactive-face
-  '((t (:inherit variable-pitch :background "gray95" :height 0.9)))
+  '((((type tty) (class color) (min-colors 88))
+     :background "color-84" :foreground "white")
+    (((type tty) (class color) (min-colors 8))
+     :background "white" :foreground "cyan")
+    (t
+     :inherit variable-pitch :background "gray95" :height 0.9))
   "Face of all non-selected tabs in both Sunrise panes."
   :group 'sunrise)
 

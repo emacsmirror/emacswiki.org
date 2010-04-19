@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 283 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 284 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -55,10 +55,15 @@
 (require 'easymenu)
 (eval-when-compile (require 'cl))
 
-(defconst sr-modeline-norm-mark " ☼ ") ;; * 
-(defconst sr-modeline-sync-mark " ⚓ ") ;; &
-(defconst sr-modeline-edit-mark " ⚡ ") ;; !
-(defconst sr-modeline-virt-mark " ☯ ") ;; @
+(defcustom sr-modeline-use-utf8-marks nil
+  "Set to t to use fancy marks (using UTF-8 glyphs) in the mode line."
+  :group 'sunrise
+  :type 'boolean)
+
+(defconst sr-modeline-norm-mark '(" * " . " ☼ ")) 
+(defconst sr-modeline-sync-mark '(" & " . " ⚓ "))
+(defconst sr-modeline-edit-mark '(" ! " . " ⚡ "))
+(defconst sr-modeline-virt-mark '(" @ " . " ☯ "))
 
 ;;; ============================================================================
 ;;; Core functions:
@@ -71,19 +76,27 @@
 (define-key sr-modeline-path-map [mode-line mouse-1] 'sr-modeline-navigate-path)
 (define-key sr-modeline-path-map [mode-line mouse-2] 'sr-modeline-navigate-path)
 
+(defun sr-modeline-select-mark (mode)
+  "Selects the right mark for the given mode depending on whether UTF-8 has been
+  enabled in the mode line."
+  (let ((select (if sr-modeline-use-utf8-marks #'cdr #'car)))
+    (funcall select
+             (cond ((eq mode 'sync) sr-modeline-sync-mark)
+                   ((eq mode 'edit) sr-modeline-edit-mark)
+                   ((eq mode 'virt) sr-modeline-virt-mark)
+                   (t sr-modeline-norm-mark)))))
+
 (defun sr-modeline-setup ()
   "Determines  the mode indicator (icon) to display in the mode line. On success
   sets the mode line format by calling sr-modeline-set."
   (let ((mark nil))
     (cond ((eq major-mode 'sr-mode)
-           (cond ((not buffer-read-only)
-                  (setq mark sr-modeline-edit-mark))
-                 (sr-synchronized
-                  (setq mark sr-modeline-sync-mark))
-                 (t
-                  (setq mark sr-modeline-norm-mark))))
+           (setq mark (sr-modeline-select-mark
+                       (cond ((not buffer-read-only) 'edit)
+                             (sr-synchronized 'sync)
+                             (t 'norm)))))
           ((eq major-mode 'sr-virtual-mode)
-           (setq mark sr-modeline-virt-mark)))
+           (setq mark (sr-modeline-select-mark 'virt))))
     (if mark (sr-modeline-set mark))))
 
 (defun sr-modeline-set (mark)
@@ -104,9 +117,9 @@
   mode indicator."
   (let ((mode-name ""))
     (setq mode-name
-          (cond ((eq mark sr-modeline-sync-mark) "Synchronized Navigation")
-                ((eq mark sr-modeline-edit-mark) "Editable Pane")
-                ((eq mark sr-modeline-virt-mark) "Virtual Directory")
+          (cond ((eq mark (sr-modeline-select-mark 'sync)) "Synchronized Navigation")
+                ((eq mark (sr-modeline-select-mark 'edit)) "Editable Pane")
+                ((eq mark (sr-modeline-select-mark 'virt)) "Virtual Directory")
                 (t "Normal")))
     (propertize mark
                 'font 'bold 
@@ -179,7 +192,7 @@
   
   To totally disable this extension do: M-x sr-modeline <RET>"
 
-  nil sr-modeline-norm-mark sr-modeline-map
+  nil (sr-modeline-select-mark 'norm) sr-modeline-map
   (unless (memq major-mode '(sr-mode sr-virtual-mode))
     (setq sr-modeline nil)
     (error "Sorry, this mode can be used only within the Sunrise Commander."))

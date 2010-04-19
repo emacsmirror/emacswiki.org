@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 283 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 284 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -404,32 +404,39 @@
   "Trivial alist used by the Sunrise Commander to lookup its own passive side.")
 
 (defface sr-active-path-face
-  '((t (:background "#ace6ac" :foreground "yellow" :bold t :height 120)))
+  '((((type tty) (class color) (min-colors 8))
+     :background "green" :foreground "yellow" :bold t)
+    (((type tty) (class mono)) :inverse-video t)
+    (t :background "#ace6ac" :foreground "yellow" :bold t :height 120))
   "Face of the directory path in the active pane"
   :group 'sunrise)
 
 (defface sr-passive-path-face
-  '((t (:background "white" :foreground "lightgray" :bold t :height 120)))
+  '((((type tty) (class color) (min-colors 8) (background dark))
+     :background "black" :foreground "cyan")
+    (((type tty) (class color) (min-colors 8) (background light))
+     :background "white" :foreground "cyan")
+    (t :background "white" :foreground "lightgray" :bold t :height 120))
   "Face of the directory path in the passive pane"
   :group 'sunrise)
 
 (defface sr-editing-path-face
-  '((t (:background "red" :foreground "yellow" :bold t :height 120)))
+  '((t :background "red" :foreground "yellow" :bold t :height 120))
   "Face of the directory path in the active pane while in editable pane mode"
   :group 'sunrise)
 
 (defface sr-highlight-path-face
-  '((t (:background "yellow" :foreground "#ace6ac" :bold t :height 120)))
+  '((t :background "yellow" :foreground "#ace6ac" :bold t :height 120))
   "Face of the directory path on mouse hover"
   :group 'sunrise)
 
 (defface sr-broken-link-face
-  '((t (:foreground "red" :italic t)))
+  '((t :foreground "red" :italic t))
   "Face to highlight broken symbolic links"
   :group 'sunrise)
 
 (defface sr-clex-hotchar-face
-  '((t (:foreground "red" :bold t)))
+  '((t :foreground "red" :bold t))
   "Face of the hot character (%) in CLEX mode. Indicates that a CLEX
 substitution may be about to happen."
   :group 'sunrise)
@@ -899,16 +906,14 @@ automatically:
                                         (sr-advertised-find-file)))
 (define-key sr-mode-map [follow-link] 'mouse-face)
 
-(if window-system
-    (progn
-      (define-key sr-mode-map [(control >)]         'sr-checkpoint-save)
-      (define-key sr-mode-map [(control .)]         'sr-checkpoint-restore)
-      (define-key sr-mode-map [(control tab)]       'sr-select-viewer-window)
-      (define-key sr-mode-map [(control backspace)] 'sr-toggle-attributes)
-      (define-key sr-mode-map [(control ?\=)]       'sr-ediff)
-      (define-key sr-mode-map [(control meta ?\=)]  'sr-compare-panes)
-      (define-key sr-mode-map [(control })]         'sr-max-lock-panes)
-      (define-key sr-mode-map [(control {)]         'sr-min-lock-panes)))
+(define-key sr-mode-map [(control >)]         'sr-checkpoint-save)
+(define-key sr-mode-map [(control .)]         'sr-checkpoint-restore)
+(define-key sr-mode-map [(control tab)]       'sr-select-viewer-window)
+(define-key sr-mode-map [(control backspace)] 'sr-toggle-attributes)
+(define-key sr-mode-map [(control ?\=)]       'sr-ediff)
+(define-key sr-mode-map [(control meta ?\=)]  'sr-compare-panes)
+(define-key sr-mode-map [(control })]         'sr-max-lock-panes)
+(define-key sr-mode-map [(control {)]         'sr-min-lock-panes)
 
 (defun sunrise-mc-keys ()
   "Binds the function keys F2 to F10 the traditional MC way."
@@ -1733,12 +1738,14 @@ automatically:
   (interactive)
   (if (buffer-live-p sr-backup-buffer)
       (let ((marks (dired-remember-marks (point-min) (point-max)))
+            (focus (dired-get-filename 'verbatim t))
             (inhibit-read-only t))
         (erase-buffer)
         (insert-buffer-substring sr-backup-buffer)
         (sr-beginning-of-buffer)
         (dired-mark-remembered marks)
         (sr-highlight)
+        (sr-focus-filename focus)
         (if (eq 'sr-mode major-mode) (sr-kill-backup-buffer)))
     (sr-save-aspect (revert-buffer))))
 

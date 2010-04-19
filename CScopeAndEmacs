@@ -95,7 +95,7 @@ Fix bug of can't call history related functions except in cscope buffer.
 == cscope-fu ==
 
 There is another cscope.el out there.
-To get it, visit this MercurialMode repository: http://hg.serpentine.com/cscope-fu.
+To get it, visit this MercurialMode repository: http://hg.serpentine.com/cscope-fu. (Link down 2010-04-18)
 (To get the latest version of ''cscope.el'', click on the '''manifest'''-link, then the
 ''cscope.el'' filename and finally '''raw''' to download the file.)
 

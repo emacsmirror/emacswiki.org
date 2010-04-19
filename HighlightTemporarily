@@ -32,6 +32,7 @@ You can use these libraries to highlight text in a buffer:
 * HighlightSymbol -- highlight the current symbol throughout the buffer
 * HighlightParentheses -- highlight the parentheses surrounding point
 * PulseRegion -- Gently blink the background color around a region of text
+* TextMarker -- uses XRefMode
 
 ----
 CategoryFaces

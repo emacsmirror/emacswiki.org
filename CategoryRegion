@@ -51,5 +51,6 @@ ephemeral. Learn to use it.
 * MarkLines -- Keyboard emulation of triple-click line selection. (Incompatible with CUAMode.)
 * ModeLinePosition -- Shows the size of the region in the mode-line, whenever the mark is active in TransientMarkMode.
 * MousePlus -- Highlight the yank position while you press `mouse-2', so you hit the right spot.
+* MultipleNarrowings -- Use `##C-x n x x x...##' to cycle a ring of narrowings (buffer restrictions).
 * [[Subedit]] -- Edit part of a buffer in a new buffer
 * TextMarker -- Highlights text like a text marker, optionally annotates. Uses XRefMode.

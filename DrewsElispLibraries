@@ -77,6 +77,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[thing-cmds.el]]</tt> -- commands to select things near the [[cursor]] -- see '''ThingAtPointCommands'''
 * <tt>[[thumb-frm.el]]</tt> -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying; see also '''FisheyeWithThumbs'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `toolbar'; see also '''ToolBar'''
+* <tt>[[wide-n.el]]</tt> -- cycle among MultipleNarrowings
 * <tt>[[zoom-frm.el]]</tt> -- commands to zoom a frame or buffer (change its font size) -- see also <tt>[[doremi-frm.el]]</tt> for alternatives
 
 I make minor changes to libraries often, so check for the latest versions.
@@ -201,6 +202,7 @@ I make minor changes to libraries often, so check for the latest versions.
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode'  -- see '''DiffEnhancements'''
 * <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `tool-bar'; see also '''ToolBar'''
+* <tt>[[wide-n.el]]</tt> -- cycle among MultipleNarrowings
 
 
 

@@ -46,6 +46,10 @@ if you replace the grep command and the function-name pattern (2 times in the co
 </pre>
 -- clabom
 
+[new]
+Call to <code>bury-buffer</code> added so that buffers with preprocessed content don't show up in EasyBufferSwitch and [[Ido]] cycles.
+-- IvanKorotkov
+
 == Alternatives ==
 For another take on c-eldoc, see this article[http://tenkan.org/~tim/c-function-signature.html].
 

@@ -24,6 +24,12 @@ in EmacsLisp programs to "temporarily" move to sections of the file, that
 some calling code has narrowed away, usually points to some design
 problems.  Widening may confuse the calling code.
 
+
+'''See Also:'''
+
+* BasicNarrowing -- background on narrowing
+* MultipleNarrowings -- cycle a ring of narrowings for each buffer
+
 ----
 CategoryGlossary
 CategoryRegion

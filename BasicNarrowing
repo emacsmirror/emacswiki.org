@@ -62,10 +62,6 @@ Just move the point back and forward one char.
 This will dehighlight the region but it is still there.
 So now C-x n n will run narrow-to-region.
 
-== Search Narrowing ==
-
-* TransientMarkMode -- Replaces can be narrowed to a region with `transient-mark-mode'.
-* [[Icicles - Search Commands, Overview]] -- A new kind of incremental search in a region, using multiple regexps, and searches on filtered results.
 
 ----
 CategoryRegion
