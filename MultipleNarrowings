@@ -1,5 +1,14 @@
 This page is about library '''[::Wide-N]''', <tt>[[wide-n.el]]</tt>, which lets you browse among multiple buffer restrictions (narrowings).
 
+== Problem: Narrowing Is Fine-Grained, But Widening Is Not ==
+
+Did you ever narrow a [[buffer]] to some restriction (region), and then later narrow it some more? Ever want to then widen back to the first (larger) restriction, rather than just widening to the whole buffer? You cannot.
+
+Narrowing always narrows to the current [[region]], which can be anywhere and have any size up to the buffer size. But command `widen' (`C-x n w') always restores the full buffer. There can be many different narrowings (one at a time), but there is only one widening: the whole buffer.
+
+Library '''Wide-N''' aims to solve this problem. It gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer).
+
+
 == A Ring of Narrowings ==
 
 Library '''Wide-N''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer the narrowing is recorded in a buffer-local ring. You can return to any of these buffer restrictions selectively anytime.
@@ -10,25 +19,15 @@ The narrowings can be nested, but they need not be. They can be any [[region]]s 
 
 * You can repeat the `x' to cycle quickly among narrowings: `C-x n x x x'...
 
-* You can go directly to the Nth previous narrowing by using a positive [[numeric prefix argument]]. (This is the '''N''' in '''Wide-N'''.)
+* You can go directly to the Nth previous narrowing by using a [[numeric prefix argument]]. (This is the '''''N''''' in '''Wide-''''''''N'''''.) If you use a negative prefix arg, then (its absolute value is used and) the latest entries through the abs(N)th one are popped off the ring. Thus, if you use only negative args then the ring acts like a stack.
 
-* You can widen the buffer completely by using a plain prefix arg (`C-u') or a negative prefix arg (`C--').  A negative prefix arg also resets (empties) the ring for the current buffer.
+* You can widen the buffer completely by using a plain prefix arg (`C-u') or a zero prefix arg (`C-0').  A zero prefix arg also resets (empties) the ring completely for the current buffer.
 
 * The whole buffer (widened completely) is also at the end of the ring, so you can cycle to it.
 
 * You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.
 
 Enjoy! -- DrewAdams
-
-
-[new]
-
-This library seems to be from the future:
-{{{
-;; 2020/04/18 dadams
-;;    Created.
-}}}
-
 
 
 

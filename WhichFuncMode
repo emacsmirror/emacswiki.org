@@ -1,41 +1,33 @@
-WhichFuncMode (also known as [::WhichFunctionMode]) is a minor mode, that when activated displays the current function name in the mode line. It works under certain major modes (eg like c-mode or perl-mode). 
+WhichFuncMode (also known as [::WhichFunctionMode]) is a minor mode, that when activated displays the current function name in the mode line. It works under certain major modes, like c-mode or perl-mode. 
 To activate it, type
 
-<code>
-M-x which-func-mode RET
-</code>
+  M-x which-func-mode RET
 
 or enter the following piece of elisp into your `.emacs` file to make it permanent :
 
-<code>
-(which-func-mode 1)
-</code>
+  (which-func-mode 1)
 
-
-= Troubleshooting =
+== Troubleshooting ==
 
 WhichFuncMode is based on ImenuMode, so if it doesn't show correct current function name (and mode supports imenu), try
 
-<code>
-M-x imenu RET
-*Rescan* RET
-C-g
-</code>
+  M-x imenu RET *Rescan* RET
+  C-g
 
 which does
 
-<pre>
+{{{
 (progn
   (imenu--cleanup)
   (setq imenu--index-alist nil)
   (imenu-update-menubar))
-</pre>
+}}}
 
-= which-func on header-line =
+== Displayed in header-line ==
 
 To show the function in the HeaderLine instead of the ModeLine,
 
-<pre>
+{{{
 (load "which-func")
 (which-func-mode)
 
@@ -49,4 +41,17 @@ To show the function in the HeaderLine instead of the ModeLine,
     (delete (assoc 'which-func-mode mode-line-format) mode-line-format)
     (setq header-line-format which-func-header-line-format)))
 
-</pre>
+}}}
+
+== Other langauges ==
+
+To get other languages to work with which-func, simple add the name of a programing mode with support for Imenu to `which-func-modes'.
+
+  (eval-after-load "which-func"
+    (unless  (member java-mode which-func-modes)
+      (add-to-list 'which-func-modes 'java-mode)))
+
+To configure a language for which-func mode, you need to configure it for Imenu.  See ImenuMode.
+
+----
+CategoryProgrammerUtils

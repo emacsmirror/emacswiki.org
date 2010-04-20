@@ -16,6 +16,31 @@ following to the first line of the file:
 
     # -*- mode: default-generic -*-
 
+= Simple Example=
+Suppose we have a little language called foo; a typical foo-file might look something like:
+
+    !! this is a comment
+    account=foo; !! another comment
+    user=jimmy;
+    password=$3cre7;
+
+Using define-generic-mode, we can easily define a mode for this:
+
+    (require 'generic-x) ;; we need this
+
+    (define-generic-mode 
+      'foo-mode                         ;; name of the mode to create
+      '("!!")                           ;; comments start with '!!'
+      '("account" "user" 
+        "password")                     ;; some keywords
+      '(("=" . 'font-lock-operator)     ;; '=' is an operator
+        (";" . 'font-lock-builtin))     ;; ';' is a a built-in 
+      '("\\.foo$")                      ;; files for which to activate this mode 
+       nil                              ;; other functions to call
+      "A mode for foo files"            ;; doc string for this mode
+    )
+
+
 = Defining New Generic Modes =
 
 For very simple languages, you can use generic mode to "generate" a new MajorMode for you.  The following example is for keymap files as used by the ##loadkeys(1)## program.

@@ -690,6 +690,16 @@ If your fingers are wired to using C-x k to kill off buffers (and you dont like 
                 (use-local-map (copy-keymap (current-local-map))))
               (local-set-key (kbd "C-x k") 'server-edit)))
 
+[new:WilliamRoe:2010-04-19 13:17 UTC]
+If there are no clients, the above code will error. I would suggest the folowing instead:
+ 
+  (add-hook 'server-switch-hook
+            (lambda ()
+              (when (current-local-map)
+                (use-local-map (copy-keymap (current-local-map))))
+	      (when server-buffer-clients
+		(local-set-key (kbd "C-x k") 'server-edit))))
+
 = Making C-c C-c end a gnuclient session =
 
 This is similar to the C-x k binding above, but uses C-c C-c -- which makes it similar to using gnus -- and is, of course, for the other protocol.

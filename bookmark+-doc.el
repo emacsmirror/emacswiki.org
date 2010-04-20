@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 17 16:19:51 2010 (-0700)
+;; Last-Updated: Mon Apr 19 17:12:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11982
+;;     Update #: 11984
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -201,8 +201,9 @@
 ;;     - You can use (lax) completion when you set a bookmark using
 ;;       `bookmark-set' (`C-x r m'), choosing from existing bookmarks
 ;;       for the same buffer.  This makes it easy to update a nearby
-;;       bookmark.  With a numeric prefix argument (or if there are no
-;;       bookmarks for the buffer), you can choose from all bookmarks.
+;;       bookmark (e.g. relocate it).  With a numeric prefix argument
+;;       (or if there are no bookmarks for the buffer), you can choose
+;;       from all bookmarks.
 ;;
 ;;     - You can edit a bookmark (its name and file name/location).
 ;;

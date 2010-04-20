@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 284 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 286 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -3200,7 +3200,8 @@ or (c)ontents? ")
   (when (buffer-live-p sr-backup-buffer)
     (kill-buffer sr-backup-buffer)
     (setq sr-backup-buffer nil)))
-(add-hook 'kill-buffer-hook 'sr-kill-backup-buffer)
+(add-hook 'kill-buffer-hook       'sr-kill-backup-buffer)
+(add-hook 'change-major-mode-hook 'sr-kill-backup-buffer)
 
 (defun sr-scrollable-viewer (buffer)
   "Sets the other-window-scroll-buffer variable to the given buffer (or nil)."

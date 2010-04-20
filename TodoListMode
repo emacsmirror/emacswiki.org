@@ -2,8 +2,8 @@ TodoListMode, by [http://www.lamberta.org/ William Lamberta], provides color hig
 
 It uses some regexp's to determine the font face of a line, so it's easy to jump in and define more numbers and different colors.
 
-* [http://github.com/biilly/scripts/raw/master/emacs/lisp/todo-list-mode.el todo-list-mode.el]
-* [http://www.lamberta.org/blog/todo-list-mode/ Screenshot and release information]
+* [http://github.com/biilly/emacs/raw/master/todo-list-mode.el todo-list-mode.el]
+* [http://lamberta.posterous.com/emacs-todo-list-mode Screenshot and release information]
 
 To include this mode automaticaly, add to your .emacs
 {{{

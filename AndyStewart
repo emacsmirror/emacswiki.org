@@ -92,6 +92,8 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 *** [[Fullscreen]] -- Fullscreen support for Emacs.
 
+*** [http://www.emacswiki.org/emacs/gtk2hs.el gtk2hs.el] -- Documentation convert tool for [http://www.mirrorservice.org/sites/www.haskell.org/gtk2hs/ gtk2hs].
+
 * Enhanced packages.
 
 : Below are enhanced packages, some packages need many depend libraries, so copy any code you like. :)

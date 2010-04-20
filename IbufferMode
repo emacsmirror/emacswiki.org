@@ -250,5 +250,12 @@ To prevent it, set <code>ibuffer-use-header-line</code> to nil and use the follo
 
 IvanKorotkov
 
+
+----
+
+How can I set the number of characters that the name will truncate to? Right now, when I use uniquify to get uniqe buffer names, many of my buffer names look like this: 'somedirectory:so...' and I have to look at the filename column to find out that the file in questions was 'somefile'. I would like to raise the number of chars displayed in the name column by ten och fifteen.
+
+/Jeff
+
 ----
 CategoryBufferSwitching

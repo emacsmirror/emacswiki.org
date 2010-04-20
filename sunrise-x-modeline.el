@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 284 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 286 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -171,12 +171,15 @@
   (setq mode-line-format (default-value 'mode-line-format))
   (sr-in-other (setq mode-line-format (default-value 'mode-line-format))))
 
-(defun sr-modeline-toggle ()
+(defun sr-modeline-toggle (&optional force)
   "Toggles the usage and enforcement of the navigation mode line format."
   (interactive)
-  (if (eq mode-line-format (default-value 'mode-line-format))
-      (sr-modeline-engage)
-    (sr-modeline-disengage)))
+  (cond ((and force (< 0 force)) (sr-modeline-engage))
+        ((and force (> 0 force)) (sr-modeline-disengage))
+        (t
+         (if (eq mode-line-format (default-value 'mode-line-format))
+             (sr-modeline-engage)
+           (sr-modeline-disengage)))))
 
 ;;; ============================================================================
 ;;; User interface:
@@ -196,7 +199,7 @@
   (unless (memq major-mode '(sr-mode sr-virtual-mode))
     (setq sr-modeline nil)
     (error "Sorry, this mode can be used only within the Sunrise Commander."))
-  (sr-modeline-toggle))
+  (sr-modeline-toggle 1))
 
 (defvar sr-modeline-menu
   (easy-menu-create-menu
@@ -236,8 +239,7 @@
                                            desktop-buffer-name
                                            desktop-buffer-misc)
   "Activates the mode line when restoring sunrise buffers using desktop."
-  (unless (string-match "windows" (symbol-name system-type))
-    (sr-modeline)))
+  (run-with-timer 0.1 nil 'sr-modeline-toggle 1))
 (add-to-list 'sr-desktop-restore-handlers 'sr-modeline-desktop-restore-buffer)
 
 (provide 'sunrise-x-modeline)
