@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 13 11:01:57 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:41:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15498
+;;     Update #: 15517
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -151,6 +151,7 @@
 ;;    `icicle-scroll-Completions-up',
 ;;    `icicle-search-define-replacement', `icicle-self-insert',
 ;;    `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency',
+;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use-as-input',
@@ -639,6 +640,7 @@ POSITION is a buffer position."
       ;; Binary search.
       (let ((cand-nb  (/ (length icicle-completion-candidates) 2))
             (last-nb  0)
+            (icicle-completions-format  nil)
             delta)
         (goto-char (point-min))
         (icicle-move-to-next-completion cand-nb t)
@@ -1124,6 +1126,12 @@ case if `completion-ignore-case' or `case-fold-search' is non-nil.")
 (icicle-define-sort-command "by last file modification time"
     icicle-last-modified-first-p        ; `icicle-sort-by-last-file-modification-time'
   "Sort file-name completion candidates in order of last modification.
+If not doing file-name completion, then sort alphabetically.")
+
+;;;###autoload
+(icicle-define-sort-command "by directories first" ; `icicle-sort-by-directories-first'
+    icicle-dirs-first-p
+  "Sort file-name completion candidates so that directories are first.
 If not doing file-name completion, then sort alphabetically.")
 
 ;;;###autoload
@@ -3543,7 +3551,7 @@ You can use this command only from buffer *Completions* (`\\<completion-list-mod
       (setq n  (icicle-row-wise-cand-nb n nb-cands rows cols))))
   (let ((beg  (icicle-start-of-candidates-in-Completions))
         (end  (point-max)))
-
+ 
     ;; Forward: n > 0.
     (while (and (> n 0) (not (eobp)))
       (when (get-text-property (point) 'mouse-face) ; If in a candidate, move to its end.

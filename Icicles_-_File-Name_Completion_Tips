@@ -10,14 +10,14 @@
 This page contains some tips about [[completion|completing]] file and directory names.
 
 ----
-[:icicle-sort-dirs-last]
-==== Sort Function icicle-dirs-last-p ====
-Function '''`icicle-dirs-last-p'''' is
-provided as a possible value for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>''''.  It treats
-file and directory names specially, sorting directory names ''after''
-file names; otherwise, it is the same as `icicle-case-string-less-p'.  (You can
-of course reach directory names ''before'', instead of after, file
-names, by [[Icicles - Cycling Completions|cycling]] using `up' and `prior' instead of `down' and `next'.)
+[:icicle-dirs-first-p]
+[:icicle-dirs-last-p]
+==== Sort Function icicle-dirs-first-p, icicle-dirs-last-p ====
+Functions '''`icicle-dirs-first-p'''' and '''`icicle-dirs-last-p'''' are
+provided as possible values for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>''''.  They treat
+file and directory names specially, sorting directory names ''before'' or ''after''
+file names; otherwise, they are the same as `icicle-case-string-less-p'. 
+
 
 ----
 [:icicle-cycle-into-subdirs-flag]

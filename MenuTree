@@ -1,0 +1,29 @@
+Loading menu-tree.el replaces the texts of menu-bar items with the various languages' translations. By default, Japanese translation data are applied.
+
+This program, originally written by YAGI Tatsuya in 1999, has been rewritten completely by current maintainer ([[irie]]), and now can be used for GNU Emacs 22 and 23. (Emacs 21 or earlier is no longer supported.)
+
+== Downloading ==
+
+: Lisp:menu-tree.el
+: [[https://code.launchpad.net/~irie/+junk/menu-tree.el Bazaar branch in Launchpad]]
+
+== Installation ==
+
+Save this file as menu-tree.el in a directory listed in load-path, and put the following into your .emacs file:
+
+ (require 'menu-tree)
+
+If many unreadable characters appear in menu-bar, set `menu-tree-coding-system' the appropriate coding system before loading this program. For example,
+
+ (if (and (= emacs-major-version 22)
+          (eq window-system 'x))
+     (setq menu-tree-coding-system 'utf-8))
+ (require 'menu-tree)
+
+== Screenshot ==
+
+[[image:MenuTreeScreenshot]]
+
+----
+
+CategoryInternationalization  CategoryDisplay  CategoryMenus

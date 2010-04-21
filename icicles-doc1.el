@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  9 15:46:08 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:23:00 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24931
+;;     Update #: 24932
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3184,7 +3184,7 @@
 ;;      by file/process name (buffer names)
 ;;    - by last file modification time (file names) - see
 ;;      (@> "Icicles Commands that Read File Names")
-;;    - by directories last (file names)
+;;    - by directories first or last (file names)
 ;;    - in book order (Info) - see
 ;;      (@file :file-name "icicles-doc2.el" :to "Icicles Completion for Info")
 ;;    - special candidates first - see

@@ -257,5 +257,8 @@ How can I set the number of characters that the name will truncate to? Right now
 
 /Jeff
 
+[new:stepnem:2010-04-20 11:23 UTC]
+Read the documentation for `ibuffer-formats' and you shall be enlightened.
+
 ----
 CategoryBufferSwitching

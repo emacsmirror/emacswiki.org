@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 286 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 287 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2870,7 +2870,8 @@ or (c)ontents? ")
 
 (defun sr-term-extern (&optional cd newterm)
   "This is the implementation of sr-term for external terminal programs."
-  (let ((dir (if sr-running sr-this-directory default-directory)))
+  (let ((dir (expand-file-name
+              (if sr-running sr-this-directory default-directory))))
     (sr-term-excursion newterm (term sr-terminal-program))
     (when cd
       (term-send-raw-string
@@ -2879,7 +2880,8 @@ or (c)ontents? ")
 
 (defun sr-term-eshell (&optional cd newterm)
   "This is the implementation of sr-term when using eshell."
-  (let ((dir (if sr-running sr-this-directory default-directory)))
+  (let ((dir (expand-file-name
+              (if sr-running sr-this-directory default-directory))))
     (sr-term-excursion newterm (eshell))
     (when cd
       (insert (concat "cd " (shell-quote-wildcard-pattern dir)))

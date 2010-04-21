@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 17 09:19:36 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:23:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22685
+;;     Update #: 22688
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -229,6 +229,7 @@
 ;;    `icicle-shell-dynamic-complete-filename',
 ;;    `icicle-skip-this-command', `icicle-sort-alphabetical',
 ;;    `icicle-sort-by-abbrev-frequency',
+;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use-as-input',
@@ -405,6 +406,7 @@
 ;;    `icicle-scroll-Completions-up',
 ;;    `icicle-search-define-replacement', `icicle-self-insert',
 ;;    `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency',
+;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use-as-input',
@@ -708,8 +710,8 @@
 ;;    `icicle-describe-opt-of-type-complete', `icicle-ding',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dired-smart-shell-command',
-;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-last-p',
-;;    `icicle-displayable-cand-from-saved-set',
+;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
+;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
 ;;    `icicle-display-candidates-in-Completions', `icicle-doc-action',

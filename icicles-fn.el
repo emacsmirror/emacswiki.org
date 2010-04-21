@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr  2 14:29:49 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:20:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11664
+;;     Update #: 11688
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -65,8 +65,8 @@
 ;;    `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dired-smart-shell-command',
-;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-last-p',
-;;    `icicle-displayable-cand-from-saved-set',
+;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
+;;    `icicle-dirs-last-p', `icicle-displayable-cand-from-saved-set',
 ;;    `icicle-display-cand-from-full-cand',
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
 ;;    `icicle-display-candidates-in-Completions',
@@ -5544,6 +5544,22 @@ Buffers not associated with files or processes are sorted last."
                    (if (memq system-type '(ms-dos windows-nt cygwin))
                        (string-lessp (icicle-upcase fp-b1) (icicle-upcase fp-b2))
                      (string-lessp fp-b1 fp-b2))))))
+
+
+(put 'icicle-dirs-first-p 'icicle-file-name-sort-predicate t)
+;; This predicate is used for file-name completion.
+(defun icicle-dirs-first-p (s1 s2)
+  "Non-nil means S1 is a dir and S2 a file, or S1 < S2 (alphabet).
+If not doing file-name completion, then this is the same as
+`icicle-case-string-less-p'."
+  (if (icicle-file-name-input-p)
+      (let ((s1-dir-p  (icicle-file-directory-p s1))
+            (s2-dir-p  (icicle-file-directory-p s2)))
+        (if (or (and s1-dir-p s2-dir-p) ; Both or neither are directories.
+                (not (or s1-dir-p s2-dir-p)))
+            (icicle-case-string-less-p s1 s2)  ; Compare equals.
+          s1-dir-p))                 ; Directories come before files.
+    (icicle-case-string-less-p s1 s2)))
 
 
 (put 'icicle-dirs-last-p 'icicle-file-name-sort-predicate t)

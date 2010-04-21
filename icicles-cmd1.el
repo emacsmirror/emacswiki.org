@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 17 16:42:06 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:35:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20715
+;;     Update #: 20717
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4913,8 +4913,7 @@ During completion:
   (icicle-file-bindings                 ; Bindings
    ((switches               (and current-prefix-arg
                                  (read-string "Dired listing switches: " dired-listing-switches)))
-    (icicle-file-sort       (or icicle-file-sort 'icicle-dirs-last-p))
-    (icicle-reverse-sort-p  t)
+    (icicle-file-sort       (or icicle-file-sort 'icicle-dirs-first-p))
     (icicle-all-candidates-list-alt-action-fn
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))
@@ -4941,8 +4940,7 @@ During completion:
   (icicle-file-bindings                 ; Bindings
    ((switches               (and current-prefix-arg
                                  (read-string "Dired listing switches: " dired-listing-switches)))
-    (icicle-file-sort       (or icicle-file-sort 'icicle-dirs-last-p))
-    (icicle-reverse-sort-p  t)
+    (icicle-file-sort       (or icicle-file-sort 'icicle-dirs-first-p))
     (icicle-all-candidates-list-alt-action-fn
      (lambda (files) (let ((enable-recursive-minibuffers  t))
                        (dired-other-window (cons (read-string "Dired buffer name: ") files)))))))

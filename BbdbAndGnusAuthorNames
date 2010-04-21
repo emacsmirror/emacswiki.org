@@ -1,5 +1,8 @@
 (slightly edited to remove email address -- AlexSchroeder)
 
+(Also note that pretty much the same functionality is provided by BBDB %uB function, just use that in your gnus-summary-line-format. -- Antoine)
+
+
  From: Francois Fleuret
  Subject: A function for a neat mail author display under Gnus (requires bbdb)
  Newsgroups: comp.emacs

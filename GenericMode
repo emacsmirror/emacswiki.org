@@ -34,12 +34,13 @@ Using define-generic-mode, we can easily define a mode for this:
       '("account" "user" 
         "password")                     ;; some keywords
       '(("=" . 'font-lock-operator)     ;; '=' is an operator
-        (";" . 'font-lock-builtin))     ;; ';' is a a built-in 
+        (";" . 'font-lock-builtin))     ;; ';' is a built-in 
       '("\\.foo$")                      ;; files for which to activate this mode 
        nil                              ;; other functions to call
       "A mode for foo files"            ;; doc string for this mode
     )
 
+(example taken from http://emacs-fu.blogspot.com/2010/04/creating-custom-modes-easy-way-with.html)
 
 = Defining New Generic Modes =
 
@@ -174,7 +175,7 @@ Now you should have a lot more modes to choose from.
 Note that the list depends on the operating system used.
 You can set the variables `generic-define-mswindows-modes'
 and `generic-define-unix-modes' before loading ##generic-x##.
-That will make sure you get the respecive defaults.
+That will make sure you get the respective defaults.
 Here's a list so that a search of the wiki will find this page:
 
 : alias-generic-mode apache-conf-generic-mode apache-log-generic-mode

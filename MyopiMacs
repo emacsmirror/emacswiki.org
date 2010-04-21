@@ -5,6 +5,8 @@ MyopiMacs -- View small portions of extremely large files using little memory or
 * Use ‘Range’ specifier with HTTP ‘GET’ verb.
 * Use ‘REST’ verb for FTP.
 
+[new:TedZ:2010-04-20 13:34 UTC]
+Is this planned or already written but not here? --TedZ
 
 ==Notes=
 

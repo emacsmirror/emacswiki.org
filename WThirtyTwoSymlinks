@@ -11,6 +11,8 @@ This module is written by Francis J. Wright and modified by Lars Hansen.
 It works with Emacs 21 and 22. If used with Emacs 21, use Lisp:ls-lisp.el -- the
 version that comes with Emacs 21 won't work.
 
+This version does not work with Emacs 23.1.
+
 From the Commentary section of w32-symlinks.el:
 
 <pre>

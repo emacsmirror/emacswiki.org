@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 17 11:03:30 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:19:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26840
+;;     Update #: 26841
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5286,13 +5286,11 @@
 ;;  This section contains some tips about completing file and
 ;;  directory names.
 ;;
-;;  * Function `icicle-dirs-last-p' is provided as a possible value
-;;    for user option `icicle-sort-comparer'.  It treats file and
-;;    directory names specially, sorting directory names after file
-;;    names; otherwise, it is the same as `icicle-case-string-less-p'.
-;;    (You can of course reach directory names before, instead of
-;;    after, file names, by cycling using `up' and `prior' instead of
-;;    `down' and `next'.)
+;;  * Functions `icicle-dirs-first-p' and `icicle-dirs-last-p' are
+;;    provided as possible values for user option
+;;    `icicle-sort-comparer'.  They treat file and directory names
+;;    specially, sorting directory names before or after file names;
+;;    otherwise, they are the same as `icicle-case-string-less-p'.
 ;;
 ;;  * User option `icicle-cycle-into-subdirs-flag' controls whether or
 ;;    not minibuffer-input cycling explores subdirectories.  By

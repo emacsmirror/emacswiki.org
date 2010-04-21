@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 17 16:27:19 2010 (-0700)
+;; Last-Updated: Tue Apr 20 17:43:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5143
+;;     Update #: 5152
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/04/20 dadams
+;;     icicle-dired(-other-window): Use icicle-dirs-first-p, not icicle-dirs-last-p, and don't reverse.
 ;; 2010/04/17 dadams
 ;;     Added: icicle-bookmark-set.
 ;;     icicle-bookmark-cmd: Use icicle-bookmark-set, not bookmark-set.  Simpler PARG code in that case.
@@ -456,6 +458,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/04/20 dadams
+;;     Added: icicle-dirs-first-p.
 ;; 2010/04/02/dadams
 ;;     icicle-completing-p: Cache t, not the keymap portion.
 ;; 2010/03/16 dadams
@@ -1859,6 +1863,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/04/20 dadams
+;;     Added: icicle-sort-by-directories-first.
+;;     icicle-nb-of-candidate-in-Completions:
+;;       Bind icicle-completions-format to nil (for calls to *-move-to-next-*).  Thx to M. Heerdegen.
 ;; 2010/04/13 dadams
 ;;     icicle-(apropos|prefix)-complete-1: Fixed recent file-name completion bugs.
 ;;       When icicle-whole-candidate-as-text-prop-p is t and icicle-expand-input-to-common-match-flag
