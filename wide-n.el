@@ -7,16 +7,16 @@
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Mon Apr 19 15:38:12 2010 (-0700)
+;; Last-Updated: Wed Apr 21 10:47:46 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 198
+;;     Update #: 201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wide-n.el
 ;; Keywords: narrow restriction widen
 ;; Compatibility: Emacs 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -78,6 +78,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2010/04/21 dadams
+;;     Bind non-repeatable version, wide-n, in Emacs 21.
 ;; 2010/04/19 dadams
 ;;     wide-n, narrow-to-region, wide-n-restrictions:
 ;;       Use nil default val & use make-local-variable, so can use destructive operations.
@@ -187,7 +189,9 @@ This is a repeatable version of `wide-n'."
 
 (if (boundp 'narrow-map)
     (define-key narrow-map "x" 'wide-n-repeat)
-  (define-key ctl-x-map "nx" 'wide-n-repeat))
+  (if (> emacs-major-version 21)
+      (define-key ctl-x-map "nx" 'wide-n-repeat)
+    (define-key ctl-x-map "nx" 'wide-n))) ; Non-repeatable version for Emacs 21.
 
 ;; Standard definition.  We copy it here so it will pick up the advised `narrow-to-region'.
 (defun narrow-to-defun (&optional arg)

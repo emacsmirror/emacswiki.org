@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Feb 26 07:25:38 2010 (-0800)
+;; Last-Updated: Wed Apr 21 10:53:47 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2837
+;;     Update #: 2840
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -20,38 +20,37 @@
 ;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
 ;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+',
 ;;   `cal-dst', `cal-julian', `cal-menu', `cal-opts', `cal-persia',
-;;   `calendar', `calendar+', `cl', `color-moccur', `color-theme',
-;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
-;;   `cus-face', `cus-load', `cus-start', `custom', `diary-lib',
-;;   `dired', `dired+', `dired-aux', `dired-details',
-;;   `dired-details+', `dired-sort-menu', `dired-sort-menu+',
-;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
-;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
-;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
-;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
-;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
-;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `header2', `help+20', `hexrgb',
-;;   `highlight', `icicles', `icicles-cmd1', `icicles-cmd2',
-;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
-;;   `icicles-mode', `icicles-opt', `icicles-var', `icomplete',
-;;   `icomplete+', `imenu', `imenu+', `info', `info+', `isearch+',
-;;   `iso-transl', `kmacro', `lacarte', `levenshtein',
+;;   `calendar', `calendar+', `cl', `color-moccur', `compile',
+;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
+;;   `cus-load', `cus-start', `custom', `diary-lib', `dired',
+;;   `dired+', `dired-aux', `dired-details', `dired-details+',
+;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
+;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
+;;   `em-joc', `emacsbug', `eshell-auto', `eyedropper', `facemenu',
+;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
+;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
+;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
+;;   `frame+', `frame-cmds', `frame-fns', `fuzzy-match', `header2',
+;;   `help+20', `hexrgb', `highlight', `icicles', `icicles-cmd1',
+;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
+;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
+;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
+;;   `isearch+', `iso-transl', `kmacro', `lacarte', `levenshtein',
 ;;   `lib-requires', `lisp-float-type', `lisp-mnt', `loadhist',
 ;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
 ;;   `mouse+', `mwheel', `occur-schroeder', `oneonone', `paren',
 ;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `replace+', `reporter', `ring', `ring+', `savehist-20+',
-;;   `second-sel', `sendmail', `setup', `setup-keys', `simple+',
-;;   `solar', `speedbar', `start', `strings', `swiss-move',
-;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
-;;   `thumb-frm', `timer', `timer+', `unaccent', `vc', `vc+', `vc-',
-;;   `vc-hooks', `vc-hooks+', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
+;;   `sendmail', `setup', `setup-keys', `simple+', `solar',
+;;   `speedbar', `start', `strings', `swiss-move', `synonyms',
+;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
+;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
+;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -87,6 +86,8 @@
 ;;
 ;; Change log:
 ;;
+;; 2010/04/21 dadams
+;;     Soft-require wide-n.el.
 ;; 2010/02/26 dadams
 ;;     Soft-require iedit.el.  Autoload insert-time-string.el.
 ;; 2010/02/20 dadams
@@ -372,6 +373,8 @@
                                (define-key dired-mode-map "\C-x\C-q" 'wdired-change-to-wdired-mode))))
 (when (fboundp 'text-scale-increase)    ; Emacs 23+
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
+(when (> emacs-major-version 20)        ; Ring/stack of narrowings.
+  (require 'wide-n nil t))
 ;; Use Francis Wright's version of `ls-lisp.el', if available.
 (when (and (< emacs-major-version 21) (memq system-type '(windows-nt ms-dos macos)))
   (require 'cl) ;; FJW's `ls-lisp.el' uses `mapc', so we need `cl.el'.  Too bad.

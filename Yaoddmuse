@@ -481,6 +481,16 @@ wiki you edit, deleting a page demands for an explanation, no?
 [new]
 Is there any way to preview the on-going editing page in browser? -- Kiwon Um
 
+[new:stepnem:2010-04-21 09:28 UTC]
+I've been thinking about that, too... and you finally made me actually do it! (-;
+
+Try this:
+<http://github.com/stepnem/emacs-libraries/raw/priv/yaoddmuse.el>
+
+It contains some other fixes, too; but I don't use Yaoddmuse that often, and
+when I do, then it's only a small part of its functionality, so it might need some
+testing. Comments welcome (best via e-mail or IRC).
+
 ----
 CategoryHypermedia
 

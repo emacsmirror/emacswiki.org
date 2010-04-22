@@ -1,0 +1,34 @@
+The EmacsChannel sometimes has vim users giving Emacs a try and disliking how search and replace works.
+
+Here's the answer for these poor souls. Invoke using `M-s s' and provide a string of the form ##foo/bar/g##.
+It will also handle ##foo## (just search), and ##foo/bar## (just do it once).
+
+{{{
+(global-set-key (kbd "M-s s") 'vi-search-replace)
+
+(defun vi-search-replace (arg)
+  "Search and optionally replace a regular expression.
+ARG has one of the following forms:
+
+REGEXP
+  a simple `re-search-forward'
+REGEXP/TO-STRING
+  replace the next occurence
+REGEXP/TO-STRING/g
+  replace all remaining occurences using `replace-regexp'"
+  (interactive "sregexp/replace: ")
+  (let ((args (split-string arg "/")))
+    (cond ((= (length args) 1)
+	   (apply 're-search-forward args))
+	  ((or (= (length args) 2)
+	       (string= (third args) ""))
+	   (when (re-search-forward (first args))
+	     (replace-match (second args))))
+	  ((and (= (length args) 3)
+		(string= (third args) "g"))
+	   (replace-regexp (first args) (second args)))
+	  (t (error "Please provide a string of the form REGEXP/TO-STRING/g")))))
+}}}
+
+----
+CategoryHumor

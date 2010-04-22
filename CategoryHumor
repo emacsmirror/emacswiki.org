@@ -32,6 +32,7 @@ Examples:
 * EndorsedByAAOS -- Emacs wins a ringing endorsement from the American Academy of Orthopaedic Surgeons.
 * EnjoyWrestlingWithEmacs
 * EscapeMetaAltControlShift
+* EveUsesEmacs
 * FarmerWolfGoatCabbage - solved!
 * GenesisProject - org-mode and the creation of the world
 * GnusMnemonics
@@ -46,6 +47,7 @@ Examples:
 * SacrificingVi -- what we do to Vi lovers
 * StarTrekTheUndiscoveredEmacs -- a parody in one act
 * SuperDuperRedundantPlus -- the package so great you don't even really need it!
+* TabsSpacesBoth
 * TheBeginning -- in the beginning was the lambda...
 * TheIciclesWampeter -- the truth about [[Icicles]]
 * TheKitchenSink
@@ -66,8 +68,9 @@ Some of the stuff is only half humorous:
 * ComparativeEmacsology -- Emacs and XEmacs incompatibilities and how to deal with them
 * MadeWithSecretAlienTechnology
 * PrettyLambda -- translate "lambda" to "&#955;"
-* TabsAreEvil -- more than you ever wanted to know about when tabs cause trouble in source code, and when they do not
+* TabsAreEvil -- more than you ever wanted to know about when tabs cause trouble in source code, and when they do not -- also: TabsSpacesBoth! ;)
 * ViMacs -- emulating Emacs in vim
+* ViSearchAndReplace -- impress vim users
 
 Other pages of "interest":
 

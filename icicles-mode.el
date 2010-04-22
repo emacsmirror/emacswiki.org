@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 11:16:51 2010 (-0700)
+;; Last-Updated: Wed Apr 21 09:28:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6463
+;;     Update #: 6471
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3222,7 +3222,9 @@ if `icicle-change-region-background-flag' is non-nil."
     (setq deactivate-mark  nil)))
 
 (defun icicle-redefine-standard-commands ()
-  "Replace some standard Emacs commands and menus with Icicles versions."
+  "Replace some standard Emacs functions and menus with Icicles versions.
+No such replacement is done if option
+`icicle-redefine-standard-commands-flag' is nil."
   (when (and (fboundp 'icicle-completing-read) icicle-redefine-standard-commands-flag)
     (when (fboundp 'old-bbdb-complete-name)
       (defalias 'bbdb-complete-name                   'icicle-bbdb-complete-name))
@@ -3260,7 +3262,8 @@ if `icicle-change-region-background-flag' is non-nil."
     ))
 
 (defun icicle-restore-standard-commands ()
-  "Restore standard Emacs commands replaced in Icicle mode."
+  "Restore standard Emacs functions replaced in Icicle mode.
+See `icicle-redefine-standard-commands'."
   (when (and (fboundp 'old-completing-read) icicle-redefine-standard-commands-flag)
     (when (fboundp 'old-bbdb-complete-name)
       (defalias 'bbdb-complete-name                   'old-bbdb-complete-name))
@@ -3338,6 +3341,8 @@ if `icicle-change-region-background-flag' is non-nil."
       (defalias 'completing-read-multiple   'icicle-completing-read-multiple)
       (setq crm-local-completion-map  icicle-crm-local-completion-map
             crm-local-must-match-map  icicle-crm-local-must-match-map))
+    (when (> emacs-major-version 22)
+      (defalias 'sit-for                    'icicle-sit-for))
     ))
 
 (defun icicle-restore-std-completion-fns ()
@@ -3373,6 +3378,8 @@ if `icicle-change-region-background-flag' is non-nil."
       (defalias 'completing-read-multiple   'old-completing-read-multiple)
       (setq crm-local-completion-map  old-crm-local-completion-map
             crm-local-must-match-map  old-crm-local-must-match-map))
+    (when (> emacs-major-version 22)
+      (defalias 'sit-for                    'old-sit-for))
     ))
 
 ;; Free vars here: `icicle-saved-kmacro-ring-max' is bound in `icicles-var.el'.

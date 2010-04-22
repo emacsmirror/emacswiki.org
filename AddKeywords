@@ -11,10 +11,9 @@ It makes "foo" a keyword in EmacsLisp mode.
 == XEmacs ==
 
 If you write a ~/.emacs for both Emacs and XEmacs, you might be using
-`font-lock-add-keywords' a lot.  Since that doesn't exist in XEmacs, I
-just ignore it.  I am sure there is a better workaround for this, so
-feel free to enhance this.  See ComparativeEmacsology for similar
-problems.
+`font-lock-add-keywords' a lot.  This function is in XEmacs 21.5, but not 
+earlier versions. If you are are using 21.4 or older, use the following workaround.
+See ComparativeEmacsology for similar problems.
 
 <pre>
 (unless (fboundp 'font-lock-add-keywords)

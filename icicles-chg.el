@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:43:18 2010 (-0700)
+;; Last-Updated: Wed Apr 21 09:40:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5152
+;;     Update #: 5159
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1863,6 +1863,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/04/21 dadams
+;;     Added: icicle-sit-for (Emacs 23+), so user input interrupts sit-for after C-u in minibuffer.
 ;; 2010/04/20 dadams
 ;;     Added: icicle-sort-by-directories-first.
 ;;     icicle-nb-of-candidate-in-Completions:
@@ -2864,6 +2866,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/04/21 dadams
+;;     icicle-(redefine|restore)-std-completion-fns: Added icicle-sit-for for Emacs 23.
 ;; 2010/04/02 dadams
 ;;     icicle-mode: Updated doc string: list of commands.
 ;; 2010/04/02 dadams

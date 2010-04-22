@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:23:52 2010 (-0700)
+;; Last-Updated: Wed Apr 21 09:36:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22688
+;;     Update #: 22690
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -226,7 +226,7 @@
 ;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
-;;    `icicle-shell-dynamic-complete-filename',
+;;    `icicle-shell-dynamic-complete-filename', `icicle-sit-for',
 ;;    `icicle-skip-this-command', `icicle-sort-alphabetical',
 ;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
@@ -442,7 +442,7 @@
 ;;    `icicle-widen-candidates', `icicle-yank', `icicle-yank-pop',
 ;;    `icicle-yank-secondary', `old-choose-completion',
 ;;    `old-exit-minibuffer', `old-minibuffer-complete-and-exit',
-;;    `old-switch-to-completions', `toggle-icicle-.',
+;;    `old-sit-for', `old-switch-to-completions', `toggle-icicle-.',
 ;;    `toggle-icicle-~-for-home-dir', `toggle-icicle-C-for-actions',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',

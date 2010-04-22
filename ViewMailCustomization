@@ -1,3 +1,13 @@
+== Changing key bindings ==
+
+To bind key strokes for VM, define them in <tt>vm-mode-map</tt>.  For instance, you can use this line to bind the '#' key to expunge messages: 
+
+        (define-key vm-mode-map "#" 'vm-expunge-folder)
+
+(Normally, one has to type "###" to expunge messages, which most users find an annoyance.) 
+
+== Customization options ==
+
 There are many variables that can be customized to get VM to behave just
 as you would like it to. They are well documented in the file
 <tt>vm-vars.el</tt>.

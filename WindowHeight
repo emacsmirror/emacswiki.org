@@ -1,4 +1,4 @@
-An example from IbufferMode:
+Use in XEmacs 21.4 or earlier.  An example from IbufferMode:
 
     (if (fboundp 'window-buffer-height)
         (defalias 'ibuffer-window-buffer-height 'window-buffer-height)   ; GNU Emacs

@@ -367,7 +367,21 @@ it may solve this problem.
 
 Also see above, where a comment from AZ says that there was a problem fixed in cc-mode to correct this. 
 
+RJK: I've had (require 'cc-mode) in my .emacs for ages.  I tried the autoload suggestion and the result is:
 
+<pre>
+Loading /home/rjk/work/random/emacs/csharp-mode.el
+Loading cc-langs...done
+Done loading /home/rjk/work/random/emacs/csharp-mode.el
+Eval error in the `c-lang-defconst' for `c-block-prefix-disallowed-chars' in csharp-mode:
+Eval error in the `c-lang-defconst' for `c-block-prefix-charset' in csharp-mode:
+Eval error in the `c-lang-defvar' or `c-lang-setver' for `c-block-prefix-charset' (source eval): (error "`c-block-prefix-disallowed-chars' got no (prior) value in csharp-mode (might be a cyclic reference)")
+Error during redisplay: (wrong-type-argument stringp nil) [3 times]
+</pre>
+
+Also (and this is true in Emacs 22 as well) if I type "/" I get "Wrong number of arguments: =, 3" and a beep.  I have to type C-Q / to actually insert a /, which makes writing well-commented code a bit of a struggle!
+
+-- Richard Kettlewell.
 
 === VJ Complete and XEmacs===
 

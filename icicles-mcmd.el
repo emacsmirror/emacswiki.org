@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:41:50 2010 (-0700)
+;; Last-Updated: Wed Apr 21 19:40:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15517
+;;     Update #: 15551
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -150,7 +150,8 @@
 ;;    `icicle-save/unsave-candidate', `icicle-scroll-Completions',
 ;;    `icicle-scroll-Completions-up',
 ;;    `icicle-search-define-replacement', `icicle-self-insert',
-;;    `icicle-sort-alphabetical', `icicle-sort-by-abbrev-frequency',
+;;    `icicle-sit-for', `icicle-sort-alphabetical',
+;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
 ;;    `icicle-sort-by-directories-last',
 ;;    `icicle-sort-by-last-file-modification-time',
@@ -193,7 +194,7 @@
 ;;    `icicle-widen-candidates', `icicle-yank', `icicle-yank-pop',
 ;;    `icicle-yank-secondary', `old-choose-completion',
 ;;    `old-exit-minibuffer', `old-minibuffer-complete-and-exit',
-;;    `old-switch-to-completions', `toggle-icicle-.',
+;;    `old-sit-for', `old-switch-to-completions', `toggle-icicle-.',
 ;;    `toggle-icicle-~-for-home-dir',
 ;;    `toggle-icicle-alternative-sorting',
 ;;    `toggle-icicle-angle-brackets',
@@ -1919,6 +1920,59 @@ you do not want this remapping, then customize option
   (interactive "P")
   (universal-argument-minus arg)
   (icicle-msg-maybe-in-minibuffer "prefix %S" prefix-arg))
+
+
+;; REPLACE ORIGINAL `sit-for' in `subr.el',
+;; saving it for restoration when you toggle `icicle-mode'.
+;;
+;; Ensure that `sit-for' after `C-u' in the minibuffer is immediately interrupted by user input.
+;; This fix is not needed for Emacs < 23.
+;;
+(unless (fboundp 'old-sit-for)
+(defalias 'old-sit-for (symbol-function 'sit-for)))
+
+;;;###autoload
+(when (> emacs-major-version 22)
+  (defun icicle-sit-for (seconds &optional nodisp obsolete)
+    "Perform redisplay, then wait for SECONDS seconds or until input is available.
+SECONDS may be a floating-point value.
+\(On operating systems that do not support waiting for fractions of a
+second, floating-point values are rounded down to the nearest integer.)
+
+If optional arg NODISP is t, don't redisplay, just wait for input.
+Redisplay does not happen if input is available before it starts.
+
+Value is t if waited the full time with no input arriving, and nil otherwise.
+
+An obsolete, but still supported form is
+\(sit-for SECONDS &optional MILLISECONDS NODISP)
+where the optional arg MILLISECONDS specifies an additional wait period,
+in milliseconds; this was useful when Emacs was built without
+floating point support."
+    (if (numberp nodisp)
+        (setq seconds  (+ seconds (* 1e-3 nodisp))
+              nodisp   obsolete)
+      (if obsolete (setq nodisp  obsolete)))
+    (cond (noninteractive
+           (sleep-for seconds)
+           t)
+          ((input-pending-p)
+           nil)
+          ((<= seconds 0)
+           (or nodisp (redisplay)))
+          (t
+           (or nodisp (redisplay))
+           (let ((read (read-event nil nil seconds)))
+             (or (null read)
+                 (progn
+                   ;; If last command was a prefix arg, e.g. C-u, push this event onto
+                   ;; unread-command-events as (t . EVENT) so it will be added to
+                   ;; this-command-keys by read-key-sequence.
+                   (if (memq overriding-terminal-local-map
+                             (list universal-argument-map icicle-universal-argument-map))
+                       (setq read (cons t read)))
+                   (push read unread-command-events)
+                   nil)))))))
 
 (defun icicle-retrieve-next-input (&optional arg) ; Bound to `C-S-l' (`C-L') in minibuffer.
   "Retrieve next minibuffer input.
