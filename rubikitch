@@ -66,6 +66,7 @@ EevMode is my partner for years.
 * [[Yaoddmuse]] (current maintainer) -- Edit Oddmuse wiki
 * Lisp:mode-line-frame.el -- A separate frame to provide second ModeLine
 * Lisp:eldoc-extension.el -- Eldoc extension to show new functions and docstring
+* AutoAsyncByteCompile -- auto byte-compile with separate emacs process
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 

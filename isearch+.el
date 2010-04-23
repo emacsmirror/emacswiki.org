@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:23:13 2010 (-0800)
+;; Last-Updated: Thu Apr 22 10:56:27 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 422
+;;     Update #: 450
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,8 +26,10 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `isearchp-goto-success-end', `isearchp-toggle-set-region',
-;;    `isearch-toggle-word', `set-region-around-search-target'.
+;;    `isearchp-goto-success-end',
+;;    `isearchp-toggle-regexp-quote-yank',
+;;    `isearchp-toggle-set-region', `isearch-toggle-word',
+;;    `set-region-around-search-target'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -35,7 +37,7 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `isearchp-set-region-flag'.
+;;    `isearchp-regexp-quote-yank-flag', `isearchp-set-region-flag'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -45,14 +47,16 @@
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
 ;;              been REDEFINED HERE:
 ;;
-;;  `isearch-mode-help' - Ends isearch.  Lists bindings.
-;;  `isearch-message'   - Highlights failed part of search string in
-;;                        echo area, in face `isearch-fail'.
+;;  `isearch-mode-help'   - Ends isearch.  Lists bindings.
+;;  `isearch-message'     - Highlights failed part of search string in
+;;                          echo area, in face `isearch-fail'.
+;;  `isearch-yank-string' - Respect `isearchp-regexp-quote-yank-flag'
 ;;
 ;;
 ;;  The following bindings are made here for incremental search mode
 ;;  (`C-s' prefix):
 ;;
+;;    `C-`'        `isearchp-toggle-regexp-quote-yank'
 ;;    `C-SPC'      `isearchp-toggle-set-region'
 ;;    `C-c'        `isearch-toggle-case-fold'
 ;;    `C-h'        `isearch-mode-help'
@@ -77,8 +81,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2010/04/22 dadams
+;;     Added: isearchp-toggle-regexp-quote-yank, isearchp-regexp-quote-yank-flag,
+;;            isearch-yank-string (redefinition).
 ;; 2009/06/09 dadams
 ;;     Bind isearch-repeat-(forward|backward) to (next|prior) in isearch-mode-map.
 ;; 2008/11/10 dadams
@@ -166,6 +173,12 @@
     "Face for highlighting failed part in Isearch echo-area message."
     :group 'isearch))
 
+(defcustom isearchp-regexp-quote-yank-flag t
+  "Non-nil means escape special chars in text yanked for a regexp isearch.
+You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
+`C-`' during isearch."
+  :type 'boolean :group 'isearch)
+
 (defcustom isearchp-set-region-flag nil
   "Non-nil means set region around search target.
 This is used only for Transient Mark mode.
@@ -178,6 +191,7 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 (add-hook 'isearch-mode-hook
           (lambda ()
+            (define-key isearch-mode-map [(control ?`)] 'isearchp-toggle-regexp-quote-yank)
             (define-key isearch-mode-map [(control ? )] 'isearchp-toggle-set-region)
             (define-key isearch-mode-map "\C-h"         'isearch-mode-help)
             (define-key isearch-mode-map "\C-t"         'isearch-toggle-regexp)
@@ -196,6 +210,14 @@ You can toggle this with `isearchp-toggle-set-region', bound to
             (when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
                        (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
               (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))))
+
+(defun isearchp-toggle-regexp-quote-yank ()
+  "Toggle `isearchp-regexp-quote-yank-flag'."
+  (interactive)
+  (setq isearchp-regexp-quote-yank-flag (not isearchp-regexp-quote-yank-flag))
+  (if isearchp-regexp-quote-yank-flag
+      (message "Escaping regexp special chars for yank is now ON")
+    (message "Escaping regexp special chars for yank is now OFF")))
 
 (defun isearchp-set-region ()
   "Set the region around the search target, if `isearchp-set-region-flag'.
@@ -238,7 +260,8 @@ This is used only for Transient Mark mode."
 ;; (setq search-exit-option 'edit) ; M- = edit search string, not exit.
 
 
-;; REPLACES ORIGINAL in `isearch.el':
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
 ;; 1. Ends isearch: does `isearch-done' and `isearch-clean-overlays'
 ;;    instead of `isearch-update'.
 ;; 2. Lists isearch bindings too.
@@ -261,8 +284,30 @@ Bindings in Isearch minor mode:
 \\{isearch-mode-map}")))))
 
 
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
+;; Respect `isearchp-regexp-quote-yank-flag'.
+;;
+(defun isearch-yank-string (string)
+  "Yank STRING into Isearch search string."
+  ;; Downcase the string if not supposed to case-fold yanked strings.
+  (if (and isearch-case-fold-search
+	   (eq 'not-yanks search-upper-case))
+      (setq string (downcase string)))
+  (when (and isearch-regexp isearchp-regexp-quote-yank-flag)
+    (setq string (regexp-quote string)))
+  (setq isearch-string (concat isearch-string string)
+	isearch-message
+	(concat isearch-message
+		(mapconcat 'isearch-text-char-description
+			   string ""))
+	;; Don't move cursor in reverse search.
+	isearch-yank-flag t)
+  (isearch-search-and-update))
 
-;; REPLACES ORIGINAL in `isearch.el':
+
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
 ;; Highlights failed part of search string in echo area, in face `isearch-fail'.
 ;;
 ;; (when (> emacs-major-version 21)        ; Emacs 22.
@@ -293,7 +338,8 @@ Bindings in Isearch minor mode:
 (defvar isearch-error)                  ; Quite the byte-compiler.
 
 
-;; REPLACES ORIGINAL in `isearch.el':
+;; REPLACE ORIGINAL in `isearch.el'.
+;;
 ;; Highlights failed part of search string in echo area, in face `isearch-fail'.
 ;;
 (when (> emacs-major-version 21)        ; Emacs 22.
@@ -335,12 +381,14 @@ Bindings in Isearch minor mode:
 
 ;;;(require 'cl) ;; when, unless, cadr
 
-;;;;; REPLACES ORIGINAL in `isearch.el':
+;;;;; REPLACE ORIGINAL in `isearch.el'.
+;;;;;
 ;;;;; 1. Prevent null `isearch-string' from giving wrong-type-arg error.
 ;;;;;    This fixes a bug: C-M-s M-p C-s with no previous regexp search.
 ;;;;; 2. The general `error' handler shows the whole error message to
 ;;;;;    user (in `isearch-invalid-regexp').  The original version showed
 ;;;;;    just (cadr lossage).
+;;;;;
 ;;;;;;###autoload
 ;;;(defun isearch-search ()
 ;;;  ;; Do the search with the current search string.

@@ -32,6 +32,8 @@ Here it is an example of Emacs-Lisp code using such a function:
   ;; .elc file doesn't exist
   (byte-recompile-directory "." 0)
 
+AutoAsyncByteCompile compiles modified *.el with batch-byte-compile automatically.
+
 If you want to know whether a function call will be replaced by something
 different in byte-compiled files, you can use `M-x apropos' -- for example, `M-x apropos mapcar'.  One of
 the results returned will be `mapcar' itself.  You'll see that it has a

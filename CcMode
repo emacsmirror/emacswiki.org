@@ -17,6 +17,7 @@ CC Mode is a powerful package that provides modes for editing C and C-like (C++,
 
 * QtMode -- Edit Qt C++ programs in emacs.
 Note: the standard C++ Mode recognises the QT macros (such as "slots"), and as done since CC Mode 5.30.  QtMode is probably very old.
+* CSharpMode - for C#
 
 == Using different styles according to source location ==
 

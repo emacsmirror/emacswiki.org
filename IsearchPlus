@@ -4,11 +4,19 @@ Features:
 
 * New option and commands to let you select the last target occurrence (set the [[region]] around it):
 ** Option '''`isearchp-set-region-flag'''' -- Non-`nil' means automatically set the region around the last search target.
-** Command '''`isearchp-toggle-set-region'''', bound to
+** Command `isearchp-toggle-set-region', bound to
 '''`C-SPC'''' during isearch -- toggle `isearchp-set-region-flag'.
 ** Command '''`set-region-around-search-target'''' -- manually set the region around the last search target.
 
+* New option ('''`isearchp-regexp-quote-yank-flag'''') and command (`isearchp-toggle-regexp-quote-yank', bound to '''`##C-`##'''') to toggle quoting (escaping) of [[regexp]] special characters.  With escaping turned off, you can yank text such as ##^\*.*## without it being transformed to ##\^\\\*\.\*##.
+
+
+* '''`C-M-y'''' yanks the secondary selection into the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
+
+
 * New command and binding to toggle (incremental) word search (from JuriLinkov): `isearch-toggle-word', bound to '''`M-w''''.
+
+
 
 * New bindings during Isearch (the standard bindings for some of these use the Meta modifier, `M-',  instead):
 ** '''`next'''', '''`prior'''' repeat the last Isearch forward and backward (easier than using the [[chord]]s `C-s', `C-r'.
@@ -27,6 +35,8 @@ Features:
 * '''ReplacePlus''' for related extensions to Emacs' standard `query-replace'. In particular, the ability to select (put the [[region]] around) the last replacement.
 * '''ThingAtPointCommands''' for commands to extend the region around different things near [[point]]. You can use it to extend the search-target region.
 * '''[[Icicles - Icompletion#HighlightNonmatch|Icicles Icompletion]]''' for similar highlighting of the non-matching portion of your input during [[completion]].
+
+* '''[[SecondarySelection#secondary-sel.el|Secondary Selection enhancements]]'''
 
 
 

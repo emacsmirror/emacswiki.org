@@ -224,6 +224,9 @@ I googled this message, and found the following (at [http://braeburn.aquamacs.or
 as its frame.
 
 The manual states that GNU Emacs 22 or later is required, and the version I am using is GNU Emacs 22.1.1. Is my old version of emacs the source of the error, and if it is, should the manual be corrected to list a newer required version of emacs (at least 22.2)?
+
+[new]
+I replaced "(window-full-width-p window)" with "t", then popup.el seems to work fine. -- Anonymous Coward
 ----
 [new]
 The gray-shaded inline expansion gets in the way when deleting characters in the midst of a line, as it overlays following existing text. This is a bit inconvenient. Is it possible to suppress completion while actively deleting?

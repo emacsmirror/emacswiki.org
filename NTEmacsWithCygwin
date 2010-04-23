@@ -7,6 +7,9 @@ Because Cygwin is wonderful ... but the Emacsen that come with it suffer from a 
 * It's kinda slow (although recent Cygwin builds of X seem faster -- 4.3.0-61, e.g.)
 * "I can't remember specific details, but I'm pretty sure the Cygwin X server is unreliable" (according to the original author of this page)
 * Using it under the Win32 console, as opposed to under X, is too painful, since there is no mouse support and the Meta key doesn't work properly (see CygwinMeta).
+[new]
+Actually the third point is not strictly true, depending on what you mean by "Win32 console". If you use a different console, such as mintty, you can have mouse support but must use the emacs-X11 binary not emacs-nox. It might even work with the MS Win32 console, but I wouldn't put money on it. And since you don't need to run X I think the first two points kind of fall out, too.
+[new]
 
 So I find myself using venerable NTEmacs, which is a native Win32 app (hence fast) with the Cygwin tools (again by the first author).
 The second editor of this page uses NTEmacs quite successfully with Cygwin with little changes.

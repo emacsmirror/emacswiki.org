@@ -1,4 +1,4 @@
-`guess-offset.el' provides a hook for c-mode and related modes. It tries
+This library provides a hook for c-mode and related modes. It tries
 to detect the `c-basic-offset' used for a visited C source file,
 transparently adapting to different code layouts.
 
@@ -19,14 +19,15 @@ Turning on indent-tab-mode for buffers which use tabs for indentation would be v
 Using SmartTabs, there's no offset to guess. :)
 
 [new]
+I've also written a package for this:  [[GuessStyle]] -- [[nschum]]
+
+== Next Generation ==
+
 I am working on a successor to `guess-offset.el' which - among other improvements - is now a minor mode, supports additional languages, provides detection of `indent-tab-mode', and has better heuristics. The working title is `dtrt-indent.el'. More information can be found in the commentary.
 
 Visit the [https://savannah.nongnu.org/projects/dtrt-indent/ project page] or follow this [http://git.savannah.nongnu.org/gitweb/?p=dtrt-indent.git;a=blob_plain;f=dtrt-indent.el;hb=HEAD direct link to HEAD].
 
-Again, suggestions are welcome. Please use Savannah's bug tracker as I won't drop by this page very often.   --JulianScheid
-
-[new]
-I've also written a package for this:  [[GuessStyle]] --[[nschum]]
+Again, suggestions are welcome. Please use Savannah's bug tracker as I won't drop by this page very often.   -- JulianScheid
 
 ----
 CategoryIndentation

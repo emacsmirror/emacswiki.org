@@ -5,7 +5,7 @@ The [[Git]] repository imports and extends the content of the
 a branch containing all files hosted on the Emacswiki but also other
 branches that only contain reasonable subsets thereof.
 
-The mirror can be found at http://github.com/emacsmirror/emacswiki.
+The mirror can be found at http://github.com/emacsmirror/emacswiki.org
 
 == Branches ==
 

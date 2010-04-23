@@ -58,5 +58,14 @@ A new freemind exporter has been integrated with Org-mode
 org-freemind.el has a number of entry points (for details, see the source code), but you can also use Org's C-c C-e m to export a file or a selected subtree.
 Thanks to Lennart Borgman for this contribution. An earlier version of this file was part of the nxhtml package, under the name freemind.el.
 
+Thanks, found it there. I cant figure out how to enable it, though. Copy paste it in my init.el file? Or just drop the whole freemind.el in my .emacs.d folder? EDIT: copied the whole freemind.el into my init.el file. I can acces M-x org-freemind-from-org-mode now, but the resulting file gives an error on opening....?
+
+[new]
+There might be some trouble with the old version freemind.el, get the new one from the Emacs source repository.
+You can browse that on Launchpad
+
+  https://code.launchpad.net/~vcs-imports/emacs/trunk
+
+You should load the file with (require 'org-freemind.el).
 ----
 CategoryOutline CategoryPersonalInformationManager 

@@ -47,7 +47,7 @@ Command '''`secondary-dwim'''' rolls several secondary-selection commands into o
 
 Its behavior depends on the [[prefix argument]]:
 
-* No prefix arg -- same as `yank-secondary': Yank the secondary selection at point.
+* No prefix arg -- same as `yank-secondary' (also defined in ##second-sel.el##): Yank the secondary selection at point.
 
 * Zero prefix arg -- same as `secondary-to-primary': Select the secondary selection as the region, popping to its buffer.
 
@@ -61,6 +61,11 @@ DWIM summary: Use `C-M-y':
 ** And put the secondary where the region is now ('''`C-- C-M-y''''), so you can easily bounce back.
 
 
+=== `isearch-yank-secondary' (`C-M-y' in Isearch) ===
+
+In [[Isearch]], `M-y' yanks the current kill into the Isearch string.  Library <tt>[[setup-keys.el]]</tt> binds command '''`isearch-yank-secondary'''' to '''`C-M-y'''' for Isearch, so you can yank the current secondary selection.
+
+
 === `yank-pop-commands' (`M-y') ===
 
 Library <tt>[[setup-keys.el]]</tt> binds command '''`yank-pop-commands'''' to '''`M-y''''. It cycles among selections in a selection ring: either the `kill-ring' or the secondary-selection ring.
@@ -69,6 +74,8 @@ Library <tt>[[setup-keys.el]]</tt> binds command '''`yank-pop-commands'''' to ''
 * If the previous command yanked the secondary selection, then cycle the secondary-selection ring.
 
 In addition, if you also use library <tt>[[browse-kill-ring+.el]]</tt>, then if the previous command was not a yank at all, browse the last-used selection ring. With a prefix arg, switch to the other selection ring and browse it.
+
+
 
 
 == See Also ==

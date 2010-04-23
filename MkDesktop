@@ -1,0 +1,153 @@
+<pre>
+#!/bin/bash
+#
+# mkdesktop:
+#  creates a desktop menu file from a sourceable list generator that
+#  produces full paths to the files, one per line, that you want
+#  associated with a named desktop.
+#
+# author: Christopher Barry <christopher-dot-r-dot-barry-at-gmail-dot-com>
+# initial revision: 04-22-2010
+#
+
+# Instructions for use:
+# 1a) create a filelist generator script, and name it the with
+#     with the same name you want this desktop to be named. This
+#     script can be as simple as a single find command. The output
+#     of  the generator script must be to the variable named ${f}.
+#
+# 1b) TODO: allow pointing to a list, or pipeing one in on stdin.
+#
+# 2.) set f=/some/where and test your script outside of mkdesktop
+#     to verify the files in the output are the ones you really want.
+#
+# 3.) edit the two vars below as required to match your preferences.
+#
+# 4.) run 'mkdesktop /path/to/your/generator' to create the desktop.
+#
+# Example:
+#  mkdesktop /home/cbarry/project1
+#     this runs the /home/cbarry/project1 script that produces a list
+#     of full paths to desired files, and creates a desktop-menu
+#     selection with those files named project1
+
+## EDIT TO MATCH YOUR ENVIRONMENT ##
+# directory location of desktop menu files
+desktops_dir=${HOME}/.emacs.d/desktop
+# temporary dir - gets created then deleted on exit
+mytmp=${HOME}/${RANDOM}-${RANDOM}-${RANDOM}-${RANDOM}
+
+## EXAMPLE SOURCEABLE FILELIST GENERATOR ##
+# sourceable by mkdesktop - the filename of
+# this file will be the desktop name. MUST
+# output to ${f} var as in this example.
+#
+#p=${HOME}/src/rackware/work/utils/uniramfs
+#find ${p}/framework/usr/local/init -type f          | sort  >${f}
+#find ${p}/framework -maxdepth 1 -type f             | sort >>${f}
+#find ${p}/framework/etc -type f -a -not -executable | sort >>${f}
+#find ${p}/framework/etc/udhcpc -type f              | sort >>${f}
+
+
+# Program start
+name=$(basename ${1})
+namedir=$(dirname ${1})
+[[ $# -lt 1 ]] && \
+    { echo "Error: name missing."
+    echo "${0} /path/to/named_filelist_generator"
+    echo "Ex: $0 ~/uniramfs"
+    echo "named_filelist_generator filename becomes the desktop-menu name"
+    exit 1
+}
+
+# create tmp space
+mkdir -p ${mytmp} \
+    || { echo "Error: cant create ${mytmp}"; exit 1; }
+
+# tmp space
+f=${mytmp}/${name}.filelist
+## ${f} is the tmpfile the sourced filelist_generator
+## script MUST write to. see example above.
+
+# gather files by sourcing a script that produces
+# a list of paths to files, ala the 'find' command
+if [[ -f ${namedir}/${name} ]]
+then
+    source ${namedir}/${name} \
+        || ( echo "Error: sourcing ${namedir}/${name} failed"; rm -rf --preserve-root ${mytmp}; exit 1; }
+else
+    echo "Missing file list generator: ${namedir:-_blank_}/${name:-_blank_}"
+    echo " this is the sourceable filelist generator you must create"
+    echo " to generate the list of files to be included in your desktop."
+    echo "see example in $0 for more info"
+    exit 1
+fi
+
+# create desktop-menu lisp file header
+dm=${f//.filelist/.desktop}
+cat >${dm} <<EOF
+;; -*- mode: emacs-lisp; coding: emacs-mule; -*-
+;; --------------------------------------------------------------------------
+;; Desktop File for Emacs
+;; --------------------------------------------------------------------------
+;; Created $(date +%a" "%b" "%d" "%H":"%M":"%S" "%Y)
+;; Desktop file format version 206
+;; Emacs version 22.2.1
+
+;; Global section:
+(setq desktop-missing-file-warning nil)
+
+;; Buffer section -- buffers listed in same order as in buffer list:
+
+EOF
+
+# add in all of the buffer code blocks
+cat ${f} | \
+while read file_path
+do
+    fmode=( $(file -b ${file_path}) )
+    case ${fmode[1]} in
+        shell)     mode=sh-mode ;;
+        text)      mode=conf-mode ;;
+        *)         mode=fundamental-mode ;;
+    esac
+
+    [[ -z ${cnt} ]] && cnt=10
+    cat >> ${dm} <<EOF
+(desktop-create-buffer 206
+  "${file_path}"
+  "$(basename ${file_path})"
+  '${mode}
+  nil
+  ${cnt}
+  '(nil nil)
+  nil
+  nil
+  '((buffer-file-coding-system . undecided-unix)))
+
+EOF
+    ((cnt++))
+done
+
+# create correct desktop file for existing menu name
+[[ $(<${desktops_dir}/.emacs.desktops) =~ \(\"${name}\"[[:blank:]]+\"([^[:blank:]]+)\"\) ]]
+df=${BASH_REMATCH[1]}
+if [[ -n ${df} ]]
+then
+    action="updated"
+    cp ${dm} ${desktops_dir}/${df} \
+        || { echo "Error: cp ${dm} ${desktops_dir}/${df} failed"; rm -rf --preserve-root ${mytmp}; exit 1; }
+else
+    Q="'";q='"';new="new ";action="created"
+    # or add a new desktop-menu item
+    sed -i -e "s/[[:blank:]]*))$/       ${Q}(${q}${name}${q} ${q}.emacs.desktop.${name}${q})/" ${desktops_dir}/.emacs.desktops \
+        || { echo "Error: modifying ${desktops_dir}/.emacs.desktops failed"; rm -rf --preserve-root ${mytmp}; exit 1; }
+    echo "        ))" >>${desktops_dir}/.emacs.desktops
+    cp ${dm} ${desktops_dir}/.emacs.desktop.${name} \
+        || { echo "Error: cp ${dm} ${desktops_dir}/.emacs.desktop.${name} failed"; rm -rf --preserve-root ${mytmp}; exit 1; }
+fi
+
+rm -rf --preserve-root ${mytmp}
+echo "* ${new}desktop ${name} ${action} successfully."
+exit 0
+</pre>

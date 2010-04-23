@@ -1616,7 +1616,8 @@ But the anything buffer has no contents. ")
 
 (defvar anything-restored-variables
   '( anything-candidate-number-limit
-     anything-source-filter)
+     anything-source-filter
+     anything-sources)
   "Variables which are restored after `anything' invocation.")
 ;; `anything-saved-sources' is removed
 
@@ -1698,7 +1699,7 @@ It is `anything-default-display-buffer' by default, which affects `anything-same
 
 (defvar anything-delayed-init-executed nil)
 
-(defvar anything-mode-line-string "(\\<anything-map>\\[anything-help]:help \\[anything-select-action]:ActionList \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:NthAction"
+(defvar anything-mode-line-string "\\<anything-map>\\[anything-help]:help \\[anything-select-action]:ActionList \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:NthAction"
   "Help string displayed in mode-line in `anything'.
 If nil, use default `mode-line-format'.")
 
@@ -2145,11 +2146,11 @@ already-bound variables. Yuck!
               ;; It is needed because `anything-source-name' is non-nil
               ;; when `anything' is invoked by action. Awful global scope.
               anything-source-name anything-in-persistent-action
-              anything-quit anything-follow-mode
+              anything-quit
               (case-fold-search t)
               (anything-buffer (or any-buffer anything-buffer))
-              (anything-sources (anything-normalize-sources any-sources))
               (anything-map (or any-keymap anything-map)))
+          (setq anything-sources (anything-normalize-sources any-sources))
           (anything-initialize-1 any-resume any-input)
           (anything-hooks 'setup)
           (if (eq any-resume t)
@@ -2905,7 +2906,8 @@ UNIT and DIRECTION."
   (if anything-mode-line-string
       (setq mode-line-format
             '(" " mode-line-buffer-identification " "
-              (line-number-mode "%l") " " anything-mode-line-string-real "-%-")
+              (line-number-mode "%l") " " (anything-follow-mode "(F)")
+              " " anything-mode-line-string-real "-%-")
             anything-mode-line-string-real
             (substitute-command-keys anything-mode-line-string))
     (setq mode-line-format

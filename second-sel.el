@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:41:12 2010 (-0800)
+;; Last-Updated: Thu Apr 22 08:42:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 243
+;;     Update #: 248
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,7 +26,7 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `primary-to-secondary',
+;;    `isearch-yank-secondary', `primary-to-secondary',
 ;;    `rotate-secondary-selection-yank-pointer', `secondary-dwim',
 ;;    `secondary-swap-region', `secondary-to-primary',
 ;;    `yank-pop-commands', `yank-pop-secondary', `yank-secondary'.
@@ -55,8 +55,9 @@
 ;;
 ;;  Suggested key bindings:
 ;;
-;;   (global-set-key [(control meta ?y)] 'secondary-dwim)
-;;   (define-key esc-map "y"             'yank-pop-commands)
+;;   (global-set-key [(control meta ?y)]     'secondary-dwim)
+;;   (define-key esc-map "y"                 'yank-pop-commands)
+;;   (define-key isearch-mode-map "\C-\M-y"  'isearch-yank-secondary)
 ;;
 ;;  You might want to also use library `browse-kill-ring+.el' (and
 ;;  `browse-kill-ring.el').  I do.  If you do that, then load
@@ -66,6 +67,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/04/22 dadams
+;;     Added: isearch-yank-secondary.
 ;; 2009/06/25 dadams
 ;;     Renamed: yank-secondary-or-swap-w-region to secondary-dwim.
 ;;     Added: secondary-swap-region.
@@ -228,6 +231,11 @@ selection yanked."
                  (set-marker (mark-marker) (point) (current-buffer)))))
   (when (eq this-command t) (setq this-command  'yank-secondary)) ; Do this last.
   nil)
+
+(defun isearch-yank-secondary ()
+  "Yank string from secondary-selection ring into search string."
+  (interactive)
+  (isearch-yank-string (current-secondary-selection 0)))
 
 ;; Tell `delete-selection-mode' to replace active region by yanked secondary selection.
 (put 'yank-secondary 'delete-selection 'yank)

@@ -7,24 +7,24 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Feb 24 22:34:26 2010 (-0800)
+;; Last-Updated: Thu Apr 22 08:44:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 990
+;;     Update #: 993
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `apropos', `apropos+', `avoid', `cl', `color-theme', `cus-face',
-;;   `doremi', `doremi-cmd', `doremi-frm', `easymenu', `eyedropper',
-;;   `faces', `faces+', `fit-frame', `frame-cmds', `frame-fns',
-;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
-;;   `iso-transl', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mouse', `mouse+', `mwheel', `pp', `pp+', `replace+',
-;;   `reporter', `ring', `ring+', `second-sel', `sendmail',
-;;   `simple+', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `apropos', `apropos+', `avoid', `doremi', `doremi-cmd',
+;;   `doremi-frm', `eyedropper', `faces', `faces+', `fit-frame',
+;;   `frame-cmds', `frame-fns', `help+20', `hexrgb', `highlight',
+;;   `info', `info+', `isearch+', `iso-transl', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
+;;   `mwheel', `pp', `pp+', `replace+', `ring', `ring+',
+;;   `second-sel', `simple+', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32browser-dlgopen', `wid-edit', `wid-edit+',
+;;   `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -67,6 +67,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/04/22 dadams
+;;     Bound C-M-y to isearch-yank-secondary in isearch-mode-map.
 ;; 2010/02/24 dadams
 ;;     Bound C-; to iedit-mode, globally and in isearch-mode-map.
 ;; 2010/02/20 dadams
@@ -291,7 +293,7 @@
                            ;; end-of-line+, goto-longest-line, kill-buffer-and-its-windows,
                            ;; mark-buffer-after-point, mark-buffer-before-point,
                            ;; recenter-top-bottom, region-to-buffer, region-to-file
-(require 'second-sel nil t) ;; (no error if not found): secondary-dwim
+(require 'second-sel nil t) ;; (no error if not found): secondary-dwim, isearch-yank-secondary
 (require 'pp+ nil t) ;; (no error if not found): pp-eval-expression
 (require 'fit-frame nil t) ;; (no error if not found):
                            ;; fit-frame, fit-frame-or-mouse-drag-vertical-line
@@ -354,8 +356,9 @@
   (global-set-key [S-down-mouse-2] 'mouse-scan-lines-or-M-:)) ; Highlight line or `M-:'.
 
 (when (fboundp 'secondary-dwim)         ; Defined in `second-sel.el'.
-  (global-set-key [(control meta ?y)] 'secondary-dwim)
-  (define-key esc-map "y" 'yank-pop-commands))
+  (global-set-key [(control meta ?y)]    'secondary-dwim)
+  (define-key esc-map "y"                'yank-pop-commands)
+  (define-key isearch-mode-map "\C-\M-y" 'isearch-yank-secondary))
 
 ;; Because M-C is being used for secondary.
 (setq foldout-mouse-modifiers '(meta shift)) ; Defined in `foldout.el'.

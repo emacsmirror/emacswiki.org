@@ -6,6 +6,7 @@ Emacs and restored when you start a new session.
 * DeskTop -- Save and restore open [[buffer]]s, [[point]], [[mark]], histories, other [[variable]]s.
 * [[http://desktopaid.sourceforge.net/ DesktopAid]] -- Save and restore [[frame]]s.
 * DesktopMenu -- DeskTop extension that lets you manage multiple desktops, possibly in a single directory.
+* MkDesktop -- For use with DesktopMenu. Automates the creation of multiple, named desktops from generated lists of files.
 * EmacsSession, ##session.el## -- Save global variables, [[register]]s, and buffer positions; does not reload visited files like DeskTop does.
 * FrameRestorePackage -- Save and restore frame configurations.
 * PolicySwitch -- Save and restore window configurations using policies.

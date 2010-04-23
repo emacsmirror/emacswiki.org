@@ -1,0 +1,35 @@
+==What is AutoAsyncByteCompile ?==
+AutoAsyncByteCompile is mode to compile *.el files automatically and asynchronously.
+
+==Install==
+Put Lisp:auto-async-byte-compile.el in your load-path, add
+{{{
+(require 'auto-async-byte-compile)
+(setq auto-async-byte-compile-exclude-files-regexp "/junk/")
+(add-hook 'emacs-lisp-mode-hook 'enable-auto-async-byte-compile-mode)
+}}}    
+in ~/.emacs
+
+==Usage==
+None:-)
+
+If you save *.el files, run byte-compile with separate emacs process automatically.
+You do not have to wait for finishing byte compilation.
+
+==Customize==
+All below option can customize by: M-x customize-group RET auto-async-byte-compile RET
+
+<pre>
+;;  `auto-async-byte-compile-init-file'
+;;    *Load this file when batch-byte-compile is running.
+;;    default = "~/.emacs.d/initfuncs.el"
+;;  `auto-async-byte-compile-display-function'
+;;    *Display function of auto byte-compile result.
+;;    default = (quote display-buffer)
+;;  `auto-async-byte-compile-hook'
+;;    *Hook after completing auto byte-compile.
+;;    default = nil
+;;  `auto-async-byte-compile-exclude-files-regexp'
+;;    *Regexp of files to exclude auto byte-compile.
+;;    default = nil
+</pre>
