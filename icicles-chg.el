@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 21 09:40:23 2010 (-0700)
+;; Last-Updated: Fri Apr 23 13:28:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5159
+;;     Update #: 5161
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -458,6 +458,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/04/21 dadams
+;;     icicle-mode-line-name-less-p: Removed bogus calls to symbol-name.  Thx to Michael Heerdegen.
 ;; 2010/04/20 dadams
 ;;     Added: icicle-dirs-first-p.
 ;; 2010/04/02/dadams
@@ -555,7 +557,7 @@
 ;; 2009/08/09 dadams
 ;;     Added: icicle-insert-cand-in-minibuffer - factored out code from icicle-next-candidate.
 ;;     eval-after-load "crm":
-;;       Test that icy-mode is available using featurep, not fboundp.  Thx to Michael_Heerdegen.
+;;       Test that icy-mode is available using featurep, not fboundp.  Thx to Michael Heerdegen.
 ;; 2009/07/26 dadams
 ;;     icicle-completing-read, icicle-read-file-name-1:
 ;;       Bind minibuffer-history-variable to itself.

@@ -18,4 +18,26 @@ I have 2 applications in particular in mind:
 == Editing SVGs ==
 To get auto completion and validation of SVGs using NxmlMode, install the schema from NxmlModeSchemas.
 
-it wouldalso be neat to integrate Inkscape and emacs, particularily with EmacsXembed patches
+it would also be neat to integrate Inkscape and emacs, particularily with EmacsXembed patches
+
+== Emacs, Inkscape and DBus ==
+There is a DBus enabled branch of Inkscape on Launchpad.
+
+Emacs has a neat DBus facility.
+
+Heres demo integration code:
+
+{{{
+(defun  inskcape-test ()
+  (let*
+    ((desktop (dbus-call-method
+               :session "org.inkscape" "/org/inkscape/application"
+               "org.inkscape.application" "desktop_new"))
+     (rect (dbus-call-method
+               :session "org.inkscape" desktop
+               "org.inkscape.document" "rectangle" :int32 100 :int32  100 :int32  100 :int32  100))
+           )))
+
+}}}
+
+--JoakimVerona

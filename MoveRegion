@@ -1,0 +1,35 @@
+Analogous to MoveLine, for a curious person on the EmacsChannel wondering about moving the [[region]] along with the text.
+
+If you want a function that does MoveLine and MoveRegion similar to Eclipse's Alt-Up/Down (i.e. determining whether to move lines or regions) then you need MoveLineRegion.
+
+{{{
+(defun move-region (start end n)
+  "Move the current region up or down by N lines."
+  (interactive "r\np")
+  (let ((line-text (delete-and-extract-region start end)))
+    (forward-line n)
+    (let ((start (point)))
+      (insert line-text)
+      (setq deactivate-mark nil)
+      (set-mark start))))
+
+(defun move-region-up (start end n)
+  "Move the current line up by N lines."
+  (interactive "r\np")
+  (move-region start end (if (null n) -1 (- n))))
+
+(defun move-region-down (start end n)
+  "Move the current line down by N lines."
+  (interactive "r\np")
+  (move-region start end (if (null n) 1 n)))
+
+(global-set-key (kbd "M-<up>") 'move-region-up)
+(global-set-key (kbd "M-<down>") 'move-region-down)
+}}}
+
+
+[new:DrewAdams:2010-04-23 17:05 UTC]
+See also standard command `transpose-sexps', bount to `C-M-t'. It doesn't move the region, but you can use it to move a [[sexp]] around. A [[prefix argument]] determines the direction of movement. -- DrewAdams
+
+----
+CategoryEditing CategoryRegion

@@ -1,4 +1,6 @@
-This is a move-line function (by Joe Smith) that was recently discussed on the gnu-help mailing list. This function allows the current line to be transposed up and down. This is useful for re-arranging lists in Emacs.
+This is a move-line function (by Joe Smith) that was discussed on the gnu-help mailing list back in 2008. This function allows the current line to be transposed up and down. This is useful for re-arranging lists in Emacs.
+
+See MoveRegion if you want to move the entire region.
 
 <pre>
 (defun move-line (n)
@@ -27,6 +29,11 @@ This is a move-line function (by Joe Smith) that was recently discussed on the g
 (global-set-key (kbd "M-<up>") 'move-line-up)
 (global-set-key (kbd "M-<down>") 'move-line-down)
 </pre>
+
+
+[new:DrewAdams:2010-04-23 17:03 UTC]
+See also standard command `transpose-lines', bound to `C-x C-t'. -- DrewAdams
+
 
 ----
 CategoryEditing

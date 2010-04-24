@@ -28,8 +28,8 @@
 
 ;; This is vanilla Emacs `savehist.el', modified slightly to work also
 ;; with versions of GNU Emacs prior to Emacs 22.  (You can of course
-;; use it with Emacs 22 too.)  All changes made are marked with
-;; "DADAMS".  - Drew Adams
+;; use it with Emacs 22 and later also.)  All changes made are marked
+;; with "DADAMS".  - Drew Adams
 
 ;; Many editors (e.g. Vim) have the feature of saving minibuffer
 ;; history to an external file after exit.  This package provides the
@@ -54,7 +54,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2007/12/08 dadams
 ;;     savehist-save, savehist-printable: Updated wrt CVS of 2007-11-28.

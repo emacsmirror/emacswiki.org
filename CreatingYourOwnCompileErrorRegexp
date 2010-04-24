@@ -19,7 +19,7 @@ Here's an example by TimOCallaghan to support the native HP/Compaq <nowiki>OpenV
 (compilation-build-compilation-error-regexp-alist)
 </pre>
 
-For more information on how to brew your own <code>compilation-error-regexp-alist</code> type <code>M-? v compilation-error-regexp-alist</code>.
+For more information on how to brew your own <code>compilation-error-regexp-alist</code> type <code>M-x describe-variable <RET> compilation-error-regexp-alist</code>.
 
 -- TimOCallaghan
 

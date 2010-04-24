@@ -1,0 +1,80 @@
+Moving lines or regions with Alt-Up/Down in Eclipse-style. 
+
+See also: MoveLine and MoveRegion
+
+--------
+<pre>
+(defun kill-yank (n)
+  (let (reg-beg reg-end beg-point end-col-no append-newline region-str new-reg-end)
+    (if (region-active-p)
+        (progn
+          (setq reg-beg (region-beginning))
+          (setq reg-end (region-end)))
+      (progn
+        (setq reg-beg (point))
+        (setq reg-end (point))))
+
+    (goto-char reg-beg)
+    (beginning-of-line)
+    (setq beg-point (point))
+
+    (goto-char reg-end)
+    (setq end-col-no (current-column))
+    (end-of-line)
+    
+    (setq append-newline (eq (point) (point-max)))
+
+    (if (eq append-newline nil)
+        (forward-char))
+
+    (setq region-str (delete-and-extract-region beg-point (point)))
+    (if (eq append-newline t)
+        (setq region-str (concat region-str "\n")))
+
+    (end-of-line) ; so that foward-line returns != 0 at the end of the file
+
+    (if (and (= n 1) (/= (forward-line n) 0)) ; remove line at end =
+        (progn
+          
+          (end-of-line)
+          (newline)
+          (insert region-str)
+          (backward-delete-char 1)
+          )
+      (progn
+        (insert region-str)
+        (forward-line -1))
+      )
+    
+    (move-to-column end-col-no)
+    (if (region-active-p)
+        (progn
+          (setq new-reg-end (point))
+          (goto-char reg-beg)
+          (forward-line n)
+          (setq deactivate-mark nil)
+          (push-mark)
+          (goto-char new-reg-end))
+      )
+    )
+)
+
+(defun kill-yank-up ()
+  (interactive)
+  (kill-yank -1)
+)
+
+(defun kill-yank-down ()  
+  (interactive)
+  (kill-yank +1)
+)
+
+(global-set-key [M-up] 'kill-yank-up)
+(global-set-key [M-down] 'kill-yank-down)
+</pre>
+
+
+
+----
+CategoryEditing CategoryRegion
+

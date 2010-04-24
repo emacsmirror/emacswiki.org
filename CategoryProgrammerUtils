@@ -90,7 +90,7 @@ Projects (code) -- Creating and managing:
 * [[Icicles - Support for Projects]]
 * IdeSkel
 * JavaDevelopmentEnvironment
-* [http://www.littleredbat.net/mk/code/mk-project.html mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
+* [http://github.com/mattkeller/mk-project mk-project] --  Quickly switch between projects and perform operations on a per-project basis.
 * MultiTerm
 * [[Profiles]] - Non-invasive user settings common to multiple projects.
 * ProjectBufferMode -- Generic mode to handle projects.

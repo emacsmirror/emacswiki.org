@@ -5,6 +5,12 @@ Provides an editing mode for C# code.  Includes code indentation, fontification,
 [new]
 The latest version is available at Lisp:csharp-mode.el. -- danielpoe
 
+[new]
+
+v0.7.3 now correctly indents and fontifies instance initializers, enum types including those that explicitly derive from a base type, and verbatim literal strings that end in slash. 
+
+http://i42.tinypic.com/a5bwhw.jpg
+
 ----
 
 Note:
@@ -13,7 +19,7 @@ Be aware: [NxhtmlMode nXhtml] includes csharp-mode.el v0.7.0, and other versions
 You will want to replace the older 0.7.0 csharp-mode.el that is included in any other package.
 
 [new]
-Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.2.
+Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.3.
 
 
 == Complementary Stuff / Minor Modes ==
@@ -23,6 +29,7 @@ Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.2.
 ||FlymakeCsharp||||check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. ||
 ||[[MSTFS]]||||Emacs integration with Team foundation server, via the tf.exe tool||
 ||[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html Linum.el]||||line numbers||
+||[http://www.gnu.org/software/emacs/manual/html_node/emacs/Reverting.html Auto-Revert]||||refresh .cs buffers, after you've edited them externally, for example, in Visual Studio.||
 ||[http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] ||||Is C# Code Completion in emacs really possible?||
 ||[http://code.google.com/p/idebridge/ ide-bridge]|||| C# Code Completion/refactoring/navigation/compilation.  Integrates Emacs with SharpDevelop ||
 
@@ -56,15 +63,15 @@ Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.2.
 
 === Works Well ===
 
-I currently use csharp-mode 0.7.2, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
+I currently use csharp-mode 0.7.3, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
 
 --DinoChiesa
 
 === Interested in Maintaining? ===
 
-The mode works well, but there are plenty of opportunities for improvement.  Among them: bbetter codedoc generation - for example automatically emit <param> elements for each parameter.  Indentation of object initializer syntax is not quite right, in v0.7.2.  
+The mode works well, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.    
 
-This thing ought to be hosted in a community project.  Dylan Moonfire had the right idea but I don't think he's maintaining it.  Suggestions on where to host csharp-mode.el?   Does googlecode make sense?  People would need to be able to file bugs and change requests easily. 
+If there's enough interest, this module ought to be hosted in a community project.  Dylan Moonfire had the right idea but I don't think he's maintaining it.  Suggestions on where to host csharp-mode.el?   Does googlecode make sense?  People would need to be able to file bugs and change requests easily. 
 
 An even better idea is to get this included into emacs formally. I don't know how to do that.  I'm interested in assistance on that. 
 Respond here, or to my email, dpchiesa at hotmail. 
@@ -295,7 +302,7 @@ I don't know why (define-key csharp-mode-map ...) doesn't work but c-mode-map do
 
 [new]
 
-There's codedoc support in the v0.7.2 version.  Type three slashes and you get a codedoc template, similar to the effect in VisualStudio.  -- DinoChiesa
+There's codedoc support in the v0.7.2 version.  fill-paragraph now works as expected.  Also, type three slashes and you get a synthetic codedoc template inserted into the buffer, similar to the effect in VisualStudio.  -- DinoChiesa
 
 type two slashes:
 
@@ -382,6 +389,10 @@ Error during redisplay: (wrong-type-argument stringp nil) [3 times]
 Also (and this is true in Emacs 22 as well) if I type "/" I get "Wrong number of arguments: =, 3" and a beep.  I have to type C-Q / to actually insert a /, which makes writing well-commented code a bit of a struggle!
 
 -- Richard Kettlewell.
+
+[new]
+
+csharp-mode v0.7.3 now includes a (require 'cc-mode) at the top.  I don't know if this will fix it for you. Try it. Or try the latest cc-mode. 
 
 === VJ Complete and XEmacs===
 

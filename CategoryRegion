@@ -24,7 +24,7 @@ The [[active region]] is essentially what some other programs call the "selectio
 * SwapRegions -- Swapping two regions.
 * Lisp:trans-regions.el -- Transpose regions command.
 * [[Anything]] -- `M-x anything-show-kill-ring' narrows kill-ring by multiple patterns.
-
+* MoveLine, MoveRegion, MoveLineRegion -- moving stuff around using M-<up> & M-<down>
 
 ===Emacs Has a Second Selection ===
 

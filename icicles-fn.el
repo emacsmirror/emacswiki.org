@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:20:03 2010 (-0700)
+;; Last-Updated: Fri Apr 23 13:24:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11688
+;;     Update #: 11689
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5520,8 +5520,8 @@ Comparison is not case-sensitive."
     "Non-nil means buffer B1 mode in mode line is `string-less-p' that of B2.
 If those names are identical, then buffer names are compared.
 Comparison is not case-sensitive."
-    (let ((bm1  (icicle-upcase (symbol-name (with-current-buffer b1 (format-mode-line mode-name)))))
-          (bm2  (icicle-upcase (symbol-name (with-current-buffer b2 (format-mode-line mode-name))))))
+    (let ((bm1  (icicle-upcase (with-current-buffer b1 (format-mode-line mode-name))))
+          (bm2  (icicle-upcase (with-current-buffer b2 (format-mode-line mode-name)))))
       (if (string= bm1 bm2)  (string-lessp b1 b2)  (string-lessp bm1 bm2)))))
 
 

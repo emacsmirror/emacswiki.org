@@ -210,3 +210,10 @@ wish.
 === Further reading ===
 
 BzrForEmacsDevs
+
+=== Comments === 
+
+At present, ubuntu jaunty's bzr package installs version 1.13, 
+and this "quick" start guide requires 1.17 and strongly recommends 2.0. 
+So to get started quickly, I'm also supposed to build my own bzr 
+from scratch, right?  -- [[Doom]]

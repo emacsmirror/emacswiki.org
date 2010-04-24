@@ -1,5 +1,5 @@
 ;;; auto-document.el --- Automatic document generator of Emacs Lisp
-;; $Id: auto-document.el,v 1.14 2009/05/25 17:57:16 rubikitch Exp $
+;; $Id: auto-document.el,v 1.15 2010/04/24 00:48:28 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -81,6 +81,9 @@
 ;;  `adoc-define-command-functions'
 ;;    *Define command functions.
 ;;    default = (quote (define-derived-mode define-compilation-mode easy-mmode-define-minor-mode define-minor-mode easy-mmode-define-global-mode ...))
+;;  `adoc-exclude-file-regexp'
+;;    *Regexp of files not to apply `auto-document'.
+;;    default = nil
 
 ;;; Installation:
 ;;
@@ -113,6 +116,9 @@
 ;;; History:
 
 ;; $Log: auto-document.el,v $
+;; Revision 1.15  2010/04/24 00:48:28  rubikitch
+;; New option: `adoc-exclude-file-regexp'
+;;
 ;; Revision 1.14  2009/05/25 17:57:16  rubikitch
 ;; Bug fix
 ;;
@@ -164,7 +170,7 @@
 
 ;;; Code:
 
-(defvar auto-document-version "$Id: auto-document.el,v 1.14 2009/05/25 17:57:16 rubikitch Exp $")
+(defvar auto-document-version "$Id: auto-document.el,v 1.15 2010/04/24 00:48:28 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup auto-document nil
   "auto-document"
@@ -218,6 +224,11 @@ See also `print-level'."
      define-global-minor-mode define-globalized-minor-mode define-generic-mode)
   "*Define command functions."
   :type 'list
+  :group 'auto-document)
+
+(defcustom adoc-exclude-file-regexp nil
+  "*Regexp of files not to apply `auto-document'."
+  :type 'string  
   :group 'auto-document)
 
 (defun adoc-construct (buf)
@@ -312,7 +323,10 @@ See also `print-level'."
 
 (defun auto-document-maybe ()
   "Insert or update command list of current buffer if the major-mode is `emacs-lisp-mode'."
-  (when (eq major-mode 'emacs-lisp-mode)
+  (when (and (eq major-mode 'emacs-lisp-mode)
+             (not (and adoc-exclude-file-regexp
+                       (string-match adoc-exclude-file-regexp
+                                     (or buffer-file-name "")))))
     (ignore-errors (auto-document))))
 
 (defun auto-document ()
