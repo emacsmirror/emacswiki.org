@@ -7,16 +7,16 @@
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Wed Apr 21 10:47:46 2010 (-0700)
+;; Last-Updated: Sat Apr 24 13:17:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 201
+;;     Update #: 268
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wide-n.el
 ;; Keywords: narrow restriction widen
 ;; Compatibility: Emacs 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -47,10 +47,23 @@
 ;;      negative arg also pops entries off the ring: it removes the
 ;;      ring entries from the most recent back through the (-)Nth one.
 ;;
-;;  NOTE: If you use Emacs 21, then the repeatable nature of `C-x n x'
-;;        is not available to you.  You can nevertheless bind command
-;;        `wide-n' (instead of `wide-n-repeat') to `C-x n x' and use
-;;        it without repeating `x'.
+;;    NOTE: If you use Emacs 21, then the repeatable nature of `C-x n
+;;          x' is not available to you.  You can nevertheless bind
+;;          command `wide-n' (instead of `wide-n-repeat') to `C-x n x'
+;;          and use it without repeating `x'.
+;;
+;;    Emacs markers are used to record restriction limits, so the same
+;;    restriction is available even if you modify its context.  If for
+;;    any reason `wide-n-restrictions' ever has any entries that use
+;;    buffer positions (numbers) instead of markers, invoking `wide-n'
+;;    corrects this by changing the positions to markers.
+;;
+;;    This means that you can serialize `wide-n-restrictions',
+;;    converting all markers to positions, save the value
+;;    persistently, and restore it later.  Library `bookmark+.el' does
+;;    this in order to let you bookmark and restore a list of
+;;    restrictions.
+;;
 ;;
 ;;  Commands defined here:
 ;;
@@ -58,7 +71,7 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `wide-n-repeat-command'.
+;;    `wide-n-markerize', `wide-n-repeat-command'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -78,6 +91,14 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2010/04/24 dadams
+;;     Added: wide-n-markerize.
+;;     Use non-destructive operations (again, as initially).
+;;       wide-n-restrictions: Use (all) cons as init value.
+;;       wide-n, narrow-to-region: Don't initialize to (all).
+;;       wide-n: Use append, not nconc.
+;;       narrow-to-region: Use remove, not delete.
+;;     wide-n: Use wide-n-markerize.
 ;; 2010/04/21 dadams
 ;;     Bind non-repeatable version, wide-n, in Emacs 21.
 ;; 2010/04/19 dadams
@@ -112,7 +133,7 @@
 ;; 
 ;;; Code:
 
-(defvar wide-n-restrictions ()
+(defvar wide-n-restrictions '(all)
   "List of buffer restrictions.
 Each entry is either `all' or a cons (START . END), where START and
 END are the limits of a buffer restriction.
@@ -132,8 +153,6 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
  (It never pops off the `all' pseudo-entry that represents complete
  widening, however.)"
   (interactive "P")
-  (when (null wide-n-restrictions)
-    (set (make-local-variable 'wide-n-restrictions) (list 'all)))
   (unless (cadr wide-n-restrictions) (error "Cannot widen; no previous narrowing"))
   (cond ((or (null (cdr wide-n-restrictions)) (consp arg))
          (widen) (message "No longer narrowed"))
@@ -151,7 +170,8 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
            (when (< arg 0)
              (setq arg     (abs arg)
                    latest  (if (member 'all latest) '(all) ())))
-           (setq wide-n-restrictions  (nconc (nthcdr arg wide-n-restrictions) latest))
+           (setq wide-n-restrictions  (append (nthcdr arg wide-n-restrictions) latest)
+                 wide-n-restrictions  (mapcar #'wide-n-markerize wide-n-restrictions))
            (if (not (eq 'all (car wide-n-restrictions)))
                (condition-case err
                    (narrow-to-region (caar wide-n-restrictions) (cdar wide-n-restrictions))
@@ -161,15 +181,26 @@ With a numeric prefix arg N, widen abs(N) times (to the abs(N)th
                  (error (error (error-message-string err))))
              (widen) (message "No longer narrowed"))))))
 
+(defun wide-n-markerize (restriction)
+  "Convert RESTRICTION to use markers if it uses only positions.
+RESTRICTION is `all' or a cons of two buffer positions or markers.
+This is a nondestructive operation: returns a new cons of the markers."
+  (unless (or (atom restriction)
+              (and (markerp (car restriction)) (markerp (cdr restriction))))
+    (let ((mrk1  (make-marker))
+          (mrk2  (make-marker)))
+      (move-marker mrk1 (car restriction))
+      (move-marker mrk2 (cdr restriction))
+      (setq restriction  (cons mrk1 mrk2))))
+  restriction)
+
 (defadvice narrow-to-region (before push-wide-n-restrictions activate)
   "Push the region limits to `wide-n-restrictions'."
   (let ((mrk1  (make-marker))
         (mrk2  (make-marker)))
     (move-marker mrk1 start)
     (move-marker mrk2 end)
-    (when (null wide-n-restrictions)
-      (set (make-local-variable 'wide-n-restrictions) (list 'all)))
-    (setq wide-n-restrictions (delete (cons mrk1 mrk2) wide-n-restrictions))
+    (setq wide-n-restrictions (remove (cons mrk1 mrk2) wide-n-restrictions))
     (unless (and (= mrk1 1) (= mrk2 (1+ (buffer-size))))
       (setq wide-n-restrictions  (cons (cons mrk1 mrk2) wide-n-restrictions)))))
 

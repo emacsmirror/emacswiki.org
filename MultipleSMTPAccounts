@@ -105,6 +105,8 @@ This version is a bit simpler than the above because it only has two SMTP accoun
 [new:DanielClemente:dt set  9 21:25:37 CEST 2008]
 Are there plans to integrate this (the first solution) in the official distribution?
 
+[new]This doesn't seem to work.
+apply: Wrong number of arguments: #[(server port key cert) "Æ^PÇ^QÈ^R^K^T^M^V^K^K^M^N^L^N^MFC^V^N^K^M^N^O^N^PFC^V^QÉÊ^K^M^N^R$?" [starttls-use-gnutls starttls-gnutls-program starttls-extra-arguments server smtpmail-smtp-server port t "gnutls-cli" nil message ...] 5 ("/home/goo/.gnus.el" . 1634)], 6
 ----
 
 ----

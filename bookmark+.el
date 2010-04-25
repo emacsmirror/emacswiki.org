@@ -7,16 +7,16 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 17 16:08:23 2010 (-0700)
+;; Last-Updated: Sat Apr 24 13:06:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11952
+;;     Update #: 12072
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `ffap', `pp'.
+;;   `bookmark', `bookmark+', `ffap', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -143,6 +143,7 @@
 ;;    `bookmarkp-bmenu-show-only-non-files',
 ;;    `bookmarkp-bmenu-show-only-omitted',
 ;;    `bookmarkp-bmenu-show-only-regions',
+;;    `bookmarkp-bmenu-show-only-varlists',
 ;;    `bookmarkp-bmenu-show-only-w3m-urls',
 ;;    `bookmarkp-bmenu-sort-by-bookmark-name',
 ;;    `bookmarkp-bmenu-sort-by-bookmark-visit-frequency',
@@ -200,7 +201,9 @@
 ;;    `bookmarkp-remove-tags-from-all', `bookmarkp-rename-tag',
 ;;    `bookmarkp-reverse-multi-sort-order',
 ;;    `bookmarkp-reverse-sort-order', `bookmarkp-send-bug-report',
-;;    `bookmarkp-set-desktop-bookmark', `bookmarkp-set-tag-value',
+;;    `bookmarkp-set-desktop-bookmark',
+;;    `bookmarkp-set-restrictions-bookmark',
+;;    `bookmarkp-set-tag-value', `bookmarkp-set-varlist-bookmark',
 ;;    `bookmarkp-some-tags-jump',
 ;;    `bookmarkp-some-tags-jump-other-window',
 ;;    `bookmarkp-some-tags-regexp-jump',
@@ -209,9 +212,10 @@
 ;;    `bookmarkp-toggle-saving-bookmark-file',
 ;;    `bookmarkp-toggle-saving-menu-list-state',
 ;;    `bookmarkp-toggle-bookmark-set-refreshes',
-;;    `bookmarkp-unomit-all', `bookmarkp-version',
-;;    `bookmarkp-w3m-jump', `bookmarkp-w3m-jump-other-window',
-;;    `old-bookmark-insert', `old-bookmark-relocate'.
+;;    `bookmarkp-unomit-all', `bookmarkp-varlist-jump',
+;;    `bookmarkp-version', `bookmarkp-w3m-jump',
+;;    `bookmarkp-w3m-jump-other-window', `old-bookmark-insert',
+;;    `old-bookmark-relocate'.
 ;;
 ;;  User options defined here:
 ;;
@@ -242,7 +246,7 @@
 ;;    `bookmarkp-local-file-with-region', `bookmarkp-man',
 ;;    `bookmarkp-non-file', `bookmarkp-remote-file',
 ;;    `bookmarkp-sequence', `bookmarkp-su-or-sudo',
-;;    `bookmarkp-t-mark', `bookmarkp-w3m'.
+;;    `bookmarkp-t-mark', `bookmarkp-varlist', `bookmarkp-w3m'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -307,7 +311,8 @@
 ;;    `bookmarkp-jump-desktop', `bookmarkp-jump-dired',
 ;;    `bookmarkp-jump-function', `bookmarkp-jump-gnus',
 ;;    `bookmarkp-jump-man', `bookmarkp-jump-sequence',
-;;    `bookmarkp-jump-w3m', `bookmarkp-jump-w3m-new-session',
+;;    `bookmarkp-jump-varlist', `bookmarkp-jump-w3m',
+;;    `bookmarkp-jump-w3m-new-session',
 ;;    `bookmarkp-jump-w3m-only-one-tab', `bookmarkp-jump-woman',
 ;;    `bookmarkp-line-number-at-pos',
 ;;    `bookmarkp-local-directory-bookmark-p',
@@ -319,7 +324,8 @@
 ;;    `bookmarkp-make-bookmark-list-record',
 ;;    `bookmarkp-make-desktop-record', `bookmarkp-make-dired-record',
 ;;    `bookmarkp-make-gnus-record', `bookmarkp-make-man-record',
-;;    `bookmarkp-make-plain-predicate', `bookmarkp-make-w3m-record',
+;;    `bookmarkp-make-plain-predicate',
+;;    `bookmarkp-make-varlist-record', `bookmarkp-make-w3m-record',
 ;;    `bookmarkp-make-woman-record' (Emacs 21+),
 ;;    `bookmarkp-man-alist-only', `bookmarkp-man-bookmark-p',
 ;;    `bookmarkp-marked-bookmark-p',
@@ -333,9 +339,11 @@
 ;;    `bookmarkp-position-post-context',
 ;;    `bookmarkp-position-post-context-region',
 ;;    `bookmarkp-position-pre-context',
-;;    `bookmarkp-position-pre-context-region', `bookmarkp-read-tags',
-;;    `bookmarkp-read-tag-completing',
-;;    `bookmarkp-read-tags-completing', `bookmarkp-record-visit',
+;;    `bookmarkp-position-pre-context-region',
+;;    `bookmarkp-printable-p', `bookmarkp-printable-vars+vals',
+;;    `bookmarkp-read-tags', `bookmarkp-read-tag-completing',
+;;    `bookmarkp-read-tags-completing', `bookmarkp-read-variable',
+;;    `bookmarkp-read-variables-completing', `bookmarkp-record-visit',
 ;;    `bookmarkp-refresh-latest-bookmark-list',
 ;;    `bookmarkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bookmarkp-regexp-filtered-file-name-alist-only',
@@ -355,7 +363,8 @@
 ;;    `bookmarkp-some', `bookmarkp-some-marked-p',
 ;;    `bookmarkp-some-unmarked-p' `bookmarkp-sort-and-remove-dups',
 ;;    `bookmarkp-tag-name', `bookmarkp-unmarked-bookmarks-only',
-;;    `bookmarkp-upcase', `bookmarkp-visited-more-cp',
+;;    `bookmarkp-upcase', `bookmarkp-varlist-alist-only',
+;;    `bookmarkp-varlist-bookmark-p', `bookmarkp-visited-more-cp',
 ;;    `bookmarkp-w3m-alist-only', `bookmarkp-w3m-bookmark-p',
 ;;    `bookmarkp-w3m-cp', `bookmarkp-w3m-set-new-buffer-name'.
 ;;
@@ -391,7 +400,7 @@
 ;;    `bookmarkp-reverse-sort-p', `bookmarkp-sorted-alist',
 ;;    `bookmarkp-tag-history', `bookmarkp-tags-list',
 ;;    `bookmarkp-types-alist', `bookmarkp-use-w32-browser-p',
-;;    `bookmarkp-version-number'.
+;;    `bookmarkp-varlist-history', `bookmarkp-version-number'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -516,6 +525,7 @@
 (defvar w3m-current-url)                ; Defined in `w3m.el'.
 (defvar w3m-minor-mode-map)             ; Defined in `w3m.el'.
 (defvar w3m-mode-map)                   ; Defined in `w3m.el'.
+(defvar wide-n-restrictions)            ; Defined in `wide-n.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;
  
@@ -774,6 +784,12 @@ Treat remote file bookmarks like non-file bookmarks."
 (defface bookmarkp-t-mark
     '((t (:background "Pink")))
   "*Face used for a tags mark (`t') in the bookmark list."
+  :group 'bookmark-plus)
+
+(defface bookmarkp-varlist
+    '((((background dark)) (:foreground "Salmon"))
+      (t (:foreground "DarkCyan")))
+  "*Face used for a bookmarked list of variables."
   :group 'bookmark-plus)
 
 (defface bookmarkp-w3m
@@ -1117,6 +1133,7 @@ Each alist element has the form (SORT-ORDER . COMPARER):
                                   ("non-file"      . bookmarkp-non-file-history)
                                   ("region"        . bookmarkp-region-history)
                                   ("remote-file"   . bookmarkp-remote-file-history)
+                                  ("variable-list" . bookmarkp-varlist-history)
                                   ("w3m"           . bookmarkp-w3m-history))
   "Alist of bookmark types.
 Keys are bookmark type names.  Values are corresponding history variables.")
@@ -1132,6 +1149,7 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bookmarkp-non-file-history ()      "History for buffer (non-file) bookmarks.")
 (defvar bookmarkp-region-history ()        "History for bookmarks that activate the region.")
 (defvar bookmarkp-remote-file-history ()   "History for remote-file bookmarks.")
+(defvar bookmarkp-varlist-history ()       "History for variable-list bookmarks.")
 (defvar bookmarkp-w3m-history ()           "History for W3M bookmarks.")
 
 (defvar bookmarkp-after-set-hook nil
@@ -2417,7 +2435,7 @@ Use `customize-face' if you want to change the appearance.
  `bookmarkp-local-file-without-region',
  `bookmarkp-local-file-with-region', `bookmarkp-man',
  `bookmarkp-non-file', `bookmarkp-remote-file', `bookmarkp-sequence',
- `bookmarkp-su-or-sudo', `bookmarkp-w3m'.
+ `bookmarkp-su-or-sudo', `bookmarkp-varlist', `bookmarkp-w3m'.
 
 Non-nil FILTEREDP means the bookmark list has been filtered, so:
  * Use `bookmarkp-bmenu-title' not the default menu-list title.
@@ -3026,6 +3044,20 @@ With a prefix argument, do not include remote files or directories."
   (when (interactive-p)
     (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
                                     "Only bookmarks with regions are shown")))
+
+;;;###autoload
+(defun bookmarkp-bmenu-show-only-varlists () ; `V S' in bookmark list
+  "Display (only) the variable-list bookmarks."
+  (interactive)
+  (bookmarkp-barf-if-not-in-menu-list)
+  (setq bookmarkp-bmenu-filter-function  'bookmarkp-varlist-alist-only
+        bookmarkp-bmenu-title            "Variable-list Bookmarks")
+  (let ((bookmark-alist  (funcall bookmarkp-bmenu-filter-function)))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bookmarkp-msg-about-sort-order (bookmarkp-current-sort-order)
+                                    "Only variable-list bookmarks are shown")))
 
 ;;;###autoload
 (defun bookmarkp-bmenu-show-only-w3m-urls () ; `W S' in bookmark list
@@ -4262,7 +4294,7 @@ use `\\[bookmarkp-switch-bookmark-file]' (`bookmarkp-switch-bookmark-file')."
           (bookmark-bmenu-other-window))))))
 
 ;;;###autoload
-(defun bookmarkp-bmenu-w32-open-select () ; `V' in bookmark-list.
+(defun bookmarkp-bmenu-w32-open-select () ; `M-v' in bookmark-list.
   "Use `w32-browser' to open this bookmark and all marked bookmarks."
   (interactive)
   (let ((bookmarkp-use-w32-browser-p  t))
@@ -4354,11 +4386,13 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
             (length bookmarkp-bmenu-omitted-list)
             bookmarkp-current-bookmark-file))
           ;; Add face legend.
-          (let ((info             "Info node\n")
-                (gnus             "Gnus\n")
+          (let ((gnus             "Gnus\n")
+                (info             "Info node\n")
+                (man              "Man page\n")
                 (w3m              "W3M (URL)\n")
                 (local-no-region  "Local file with no region\n")
                 (local-w-region   "Local file with a region\n")
+                (buffer           "Buffer\n")
                 (no-buf           "No current buffer\n")
                 (bad              "Possibly invalid bookmark\n")
                 (remote           "Remote file or directory\n")
@@ -4366,17 +4400,18 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
                 (local-dir        "Local directory\n")
                 (bookmark-list    "*Bookmark List*\n")
                 (desktop          "Desktop\n")
-                (function         "Function\n")
-                (man              "Man page\n")
                 (sequence         "Sequence\n")
-                (buffer           "Buffer\n"))
-            (put-text-property 0 (1- (length info))     'face 'bookmarkp-info         info)
+                (varlist          "Variable list\n")
+                (function         "Function\n"))
             (put-text-property 0 (1- (length gnus))     'face 'bookmarkp-gnus         gnus)
+            (put-text-property 0 (1- (length info))     'face 'bookmarkp-info         info)
+            (put-text-property 0 (1- (length man))      'face 'bookmarkp-man          man)
             (put-text-property 0 (1- (length w3m))      'face 'bookmarkp-w3m          w3m)
             (put-text-property 0 (1- (length local-no-region))
                                'face 'bookmarkp-local-file-without-region             local-no-region)
             (put-text-property 0 (1- (length local-w-region))
                                'face 'bookmarkp-local-file-with-region                local-w-region)
+            (put-text-property 0 (1- (length buffer))   'face 'bookmarkp-buffer       buffer)
             (put-text-property 0 (1- (length no-buf))   'face 'bookmarkp-non-file     no-buf)
             (put-text-property 0 (1- (length bad))      'face 'bookmarkp-bad-bookmark bad)
             (put-text-property 0 (1- (length remote))   'face 'bookmarkp-remote-file  remote)
@@ -4386,15 +4421,14 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
             (put-text-property 0 (1- (length bookmark-list))
                                'face 'bookmarkp-bookmark-list                         bookmark-list)
             (put-text-property 0 (1- (length desktop))  'face 'bookmarkp-desktop      desktop)
-            (put-text-property 0 (1- (length function)) 'face 'bookmarkp-function     function)
-            (put-text-property 0 (1- (length man))      'face 'bookmarkp-man          man)
             (put-text-property 0 (1- (length sequence)) 'face 'bookmarkp-sequence     sequence)
-            (put-text-property 0 (1- (length buffer))   'face 'bookmarkp-buffer       buffer)
+            (put-text-property 0 (1- (length varlist))  'face 'bookmarkp-varlist      varlist)
+            (put-text-property 0 (1- (length function)) 'face 'bookmarkp-function     function)
             (insert "Face Legend for Bookmark Types\n------------------------------\n\n")
-            (insert info) (insert gnus) (insert w3m) (insert local-no-region) (insert local-w-region)
-            (insert no-buf) (insert bad) (insert remote) (insert sudo) (insert local-dir)
-            (insert bookmark-list) (insert desktop) (insert function) (insert man) (insert sequence)
-            (insert buffer) (insert "\n\n")))))))
+            (insert gnus) (insert info) (insert man) (insert w3m) (insert local-no-region)
+            (insert local-w-region) (insert buffer) (insert no-buf) (insert bad) (insert remote)
+            (insert sudo) (insert local-dir) (insert bookmark-list) (insert desktop) (insert sequence)
+            (insert varlist) (insert function) (insert "\n\n")))))))
 
 (when (and (> emacs-major-version 21)
            (require 'help-mode nil t) (get 'help-xref 'button-category-symbol)) ; In `button.el'
@@ -4615,6 +4649,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
   (let* ((buffp      (bookmarkp-get-buffer-name bookmark-name))
          (sequencep  (bookmarkp-sequence-bookmark-p bookmark-name))
          (functionp  (bookmarkp-function-bookmark-p bookmark-name))
+         (varlistp   (bookmarkp-varlist-bookmark-p bookmark-name))
          (w3m-p      (bookmarkp-w3m-bookmark-p bookmark-name))
          (gnus-p     (bookmarkp-gnus-bookmark-p bookmark-name))
          (desktop-p  (bookmarkp-desktop-bookmark-p bookmark-name))
@@ -4639,6 +4674,9 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
            (functionp  (append (bookmarkp-face-prop 'bookmarkp-function)
                                '(mouse-face highlight follow-link t
                                  help-echo "mouse-2: Invoke this function bookmark")))
+           (varlistp   (append (bookmarkp-face-prop 'bookmarkp-varlist)
+                               '(mouse-face highlight follow-link t
+                                 help-echo "mouse-2: Invoke this variable-list bookmark")))
            (blist-p    (append (bookmarkp-face-prop 'bookmarkp-bookmark-list)
                                '(mouse-face highlight follow-link t
                                  help-echo "mouse-2: Invoke this bookmark-list bookmark")))
@@ -4861,6 +4899,11 @@ with handlers (Info, Gnus, and W3M)."
 BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-sequence))
 
+(defun bookmarkp-varlist-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a variable-list bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (eq (bookmark-get-handler bookmark) 'bookmarkp-jump-varlist))
+
 (defun bookmarkp-w3m-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a W3M bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -4984,6 +5027,12 @@ name.  They are therefore excluded from the returned alist."
   (bookmarkp-remove-if-not
    (lambda (bmk) (member (bookmarkp-get-buffer-name bmk) buffers))
    bookmark-alist))
+
+(defun bookmarkp-varlist-alist-only ()
+  "`bookmark-alist', filtered to retain only variable-list bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bookmarkp-remove-if-not #'bookmarkp-varlist-bookmark-p bookmark-alist))
 
 
 ;;; Marked bookmarks
@@ -6017,6 +6066,7 @@ BOOKMARK is a bookmark name or a bookmark record."
           (tags        (mapcar #'bookmarkp-tag-name (bookmarkp-get-tags bookmark)))
           (sequence-p  (bookmarkp-sequence-bookmark-p bookmark))
           (function-p  (bookmarkp-function-bookmark-p bookmark))
+          (varlist-p   (bookmarkp-varlist-bookmark-p bookmark))
           (desktop-p   (bookmarkp-desktop-bookmark-p bookmark))
           (dired-p     (bookmarkp-dired-bookmark-p bookmark))
           (gnus-p      (bookmarkp-gnus-bookmark-p bookmark))
@@ -6025,7 +6075,7 @@ BOOKMARK is a bookmark name or a bookmark record."
           (w3m-p       (bookmarkp-w3m-bookmark-p bookmark))
           (annot       (bookmark-get-annotation bookmark))
           no-position-p)
-      (when (or sequence-p function-p) (setq no-position-p  t))
+      (when (or sequence-p function-p varlist-p) (setq no-position-p  t))
       (help-setup-xref (list #'bookmarkp-describe-bookmark bookmark) (interactive-p))
       (let* ((help-text
               (concat
@@ -6039,6 +6089,8 @@ BOOKMARK is a bookmark name or a bookmark record."
                                       (format "Function:\n%s\n"
                                               (pp-to-string
                                                (bookmark-prop-get bookmark 'function))))))
+                     (varlist-p   (format "Variable list:\n%s\n"
+                                          (pp-to-string (bookmark-prop-get bookmark 'variables))))
                      (gnus-p      (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
                                           (bookmark-prop-get bookmark 'group)
                                           (bookmark-prop-get bookmark 'article)
@@ -6511,6 +6563,120 @@ in the same directory, then you will need to relock it.)"
     (when (file-exists-p desktop-file) (delete-file desktop-file)))
   (bookmark-delete bookmark-name))
 
+;; Variable-list bookmarks
+;;;###autoload
+(when (boundp 'wide-n-restrictions)
+  (defun bookmarkp-set-restrictions-bookmark ()
+    "Save the list of restrictions for the current buffer as a bookmark.
+You need library `wide-n.el' to use the bookmark created."
+    (interactive)
+    (let ((bookmark-make-record-function
+           (lambda () (bookmarkp-make-varlist-record
+                       `((wide-n-restrictions
+                          . ,(mapcar (lambda (x)
+                                       (if (eq x 'all)
+                                           'all
+                                         (let ((beg  (car x)) ; Convert number positions to markers.
+                                               (end  (cdr x)))
+                                           (cons (if (markerp beg) (marker-position beg) beg)
+                                                 (if (markerp end) (marker-position end) end)))))
+                                     wide-n-restrictions)))))))
+      (call-interactively #'bookmark-set)
+      (unless (featurep 'wide-n) (message "Bookmark created, but you need `wide-n.el' to use it")))))
+
+;;;###autoload
+(defun bookmarkp-set-varlist-bookmark (variables)
+  "Save a list of variables as a bookmark.
+Interactively, read the variables to save, using
+`bookmarkp-read-variables-completing'."
+  (interactive (list (bookmarkp-read-variables-completing)))
+  (let ((bookmark-make-record-function  #'(lambda () (bookmarkp-make-varlist-record variables))))
+    (call-interactively #'bookmark-set)))
+
+(defun bookmarkp-read-variables-completing (&optional option)
+  "Read variable names with completion, and return them as a list of symbols.
+Reads names one by one, until you hit `RET' twice consecutively.
+Non-nil argument OPTION means read only user option names."
+  (bookmark-maybe-load-default-file)
+  (let ((var   (bookmarkp-read-variable "Variable (RET for each, empty input to finish): " option))
+        (vars  ())
+        old-var)
+    (while (not (string= "" var))
+      (add-to-list 'vars var)
+      (setq var  (bookmarkp-read-variable "Variable: " option)))
+    (nreverse vars)))
+
+(defun bookmarkp-read-variable (prompt &optional option default-value)
+  "Read name of a variable and return it as a symbol.
+Prompt with string PROMPT.  
+With non-nil OPTION, read the name of a user option.
+The default value is DEFAULT-VALUE if non-nil, or the nearest symbol
+to the cursor if it is a variable."
+  (setq option  (if option 'user-variable-p 'boundp))
+  (let ((symb                          (cond ((fboundp 'symbol-nearest-point) (symbol-nearest-point))
+                                             ((fboundp 'symbol-at-point) (symbol-at-point))
+                                             (t nil)))
+        (enable-recursive-minibuffers  t))
+    (when (and default-value (symbolp default-value))
+      (setq default-value  (symbol-name default-value)))
+    (intern (completing-read prompt obarray option t nil 'minibuffer-history
+                             (or default-value (and (funcall option symb) (symbol-name symb)))
+                             t))))
+
+(defun bookmarkp-make-varlist-record (variables)
+  "Create and return a variable-list bookmark record.
+VARIABLES is the list of variables to save.
+Each entry in VARIABLES is either a variable (a symbol) or a cons
+ whose car is a variable and whose cdr is the variable's value."
+  `(,@(bookmark-make-record-default 'point-only)
+    (filename     . ,bookmarkp-non-file-filename)
+    (variables    . ,(or (bookmarkp-printable-vars+vals variables)
+                         (error "No variables to bookmark")))
+    (handler      . bookmarkp-jump-varlist)))
+
+(defun bookmarkp-printable-vars+vals (variables)
+  "Return an alist of printable VARIABLES paired with their values.
+Display a message for any variables that are not printable.
+VARIABLES is the list of variables.  Each entry in VARIABLES is either
+ a variable (a symbol) or a cons whose car is a variable and whose cdr
+ is the variable's value."
+  (let ((vars+vals     ())
+        (unprintables  ()))
+    (dolist (var  variables)
+      (let ((val  (if (consp var)
+                      (cdr var)
+                    (symbol-value var))))
+        (if (bookmarkp-printable-p val)
+            (add-to-list 'vars+vals (if (consp var) var (cons var val)))
+          (add-to-list 'unprintables var))))
+    (when unprintables (message "Unsavable (unreadable) vars: %S" unprintables)  (sit-for 3))
+    vars+vals))
+
+;; Same as `savehist-printable'.
+(defun bookmarkp-printable-p (value)
+  "Return non-nil if VALUE would be Lisp-readable if printed using `prin1'."
+  (or (stringp value) (numberp value) (symbolp value)
+      (with-temp-buffer                 ; Print and try to read.
+        (condition-case nil
+            (let ((print-readably  t)
+                  (print-level     nil))
+              (prin1 value (current-buffer))
+              (read (point-min-marker))
+              t)
+          (error nil)))))
+
+(defun bookmarkp-jump-varlist (bookmark)
+  "Jump to variable-list bookmark BOOKMARK, restoring the recorded values.
+BOOKMARK is a bookmark name or a bookmark record.
+Handler function for record returned by `bookmarkp-make-varlist-record'."
+  (let ((buf        (bookmarkp-get-buffer-name bookmark))
+        (vars+vals  (bookmark-prop-get bookmark 'variables)))
+    (with-current-buffer (or buf (current-buffer))
+      (dolist (var+val  vars+vals)
+        (set (car var+val)  (cdr var+val))))
+    (message "Variables restored in buffer `%s': %S" buf (mapcar #'car vars+vals))
+    (sit-for 3)))
+
 ;; W3M support
 (defun bookmarkp-make-w3m-record ()
   "Make a special entry for w3m buffers."
@@ -6973,6 +7139,15 @@ See `bookmarkp-remote-file-jump'."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer-other-window use-region-p))
 
 ;;;###autoload
+(defun bookmarkp-varlist-jump (bookmark-name) ; `C-x j v'
+  "Jump to a variable-list bookmark.
+This is a specialization of `bookmark-jump'."
+  (interactive
+   (let ((alist  (bookmarkp-varlist-alist-only)))
+     (list (bookmarkp-read-bookmark-for-type "varlist " alist nil nil 'bookmarkp-varlist-history))))
+  (bookmarkp-jump-1 bookmark-name 'switch-to-buffer nil))
+
+;;;###autoload
 (defun bookmarkp-w3m-jump (bookmark-name &optional use-region-p) ; `C-x j n'
   "Jump to a W3M bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
@@ -7397,7 +7572,11 @@ candidate."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "U"    'bookmarkp-bmenu-unmark-all)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "V"    'bookmarkp-bmenu-w32-open-select)
+(define-key bookmark-bmenu-mode-map "V"    nil) ; For Emacs20
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "VS"   'bookmarkp-bmenu-show-only-varlists)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-v" 'bookmarkp-bmenu-w32-open-select)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "W"    nil) ; For Emacs 20
 ;;;###autoload
@@ -7498,6 +7677,8 @@ candidate."
 (define-key bookmarkp-jump-map              "t%+"  'bookmarkp-some-tags-regexp-jump)
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "t%+"  'bookmarkp-some-tags-regexp-jump-other-window)
+;;;###autoload
+(define-key bookmarkp-jump-map              "v"    'bookmarkp-varlist-jump)
 ;;;###autoload
 (define-key bookmarkp-jump-map              "w"    'bookmarkp-w3m-jump)
 ;;;###autoload
@@ -7616,6 +7797,7 @@ Jump to (Visit)
 \\[bookmarkp-man-jump]\t- Jump to a `man'-page bookmark
 \\[bookmarkp-non-file-jump]\t- Jump to a non-file (buffer) bookmark
 \\[bookmarkp-gnus-jump]\t- Jump to a Gnus bookmark
+\\[bookmarkp-varlist-jump]\t- Jump to a variable-list bookmark
 \\[bookmarkp-w3m-jump]\t- Jump to a W3M (URL) bookmark
 \\[bookmarkp-some-tags-jump]\t- Jump to a bookmark with some tags you specify
 \\[bookmarkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
@@ -7775,6 +7957,7 @@ Hide/Show
 \\[bookmarkp-bmenu-show-only-desktops]\t- Show only desktop bookmarks
 \\[bookmarkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
 \\[bookmarkp-bmenu-show-only-regions]\t- Show only region bookmarks
+\\[bookmarkp-bmenu-show-only-varlists]\t- Show only variable-list bookmarks
 \\[bookmarkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
 \\[bookmarkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
 whose names match a regexp
@@ -7970,6 +8153,8 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-dired-jump-other-window]
   '(menu-item "Dired..." bookmarkp-dired-jump-other-window
     :help "Jump to a Dired bookmark, restoring the recorded Dired state"))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-varlist-jump]
+  '(menu-item "Variable List..." bookmarkp-varlist-jump :help "Jump to a variable-list bookmark"))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-bookmark-list-jump]
   '(menu-item "Bookmark List..." bookmarkp-bookmark-list-jump
     :help "Jump to a bookmark-list bookmark"))

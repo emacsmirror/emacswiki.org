@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.36 2010/04/19 07:10:36 rubikitch Exp $
+;; $Id: auto-install.el,v 1.42 2010/04/25 02:30:27 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.36 $
+;; Version: $Revision: 1.42 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.36 2010/04/19 07:10:36 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.42 2010/04/25 02:30:27 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -275,6 +275,25 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.42  2010/04/25 02:30:27  rubikitch
+;; Avoid `auto-async-byte-compile'
+;;
+;; Revision 1.41  2010/04/25 01:59:20  rubikitch
+;; *** empty log message ***
+;;
+;; Revision 1.40  2010/04/25 01:58:17  rubikitch
+;; Do not save/compile up-to-date files from `auto-install-batch'.
+;;
+;; Revision 1.39  2010/04/25 01:11:33  rubikitch
+;; If downloaded file is not updated, kill download buffer.
+;; (auto-install-batch support is not yet)
+;;
+;; Revision 1.38  2010/04/25 00:10:49  rubikitch
+;; code cleanup: remove unneeded `format'
+;;
+;; Revision 1.37  2010/04/24 23:59:11  rubikitch
+;; comment change (no code change)
+;;
 ;; Revision 1.36  2010/04/19 07:10:36  rubikitch
 ;; Avoid updating time-stamp
 ;;
@@ -1044,8 +1063,23 @@ HANDLE-FUNCTION is function for handle download content."
                                            auto-install-download-buffer-alist)
                             ;; if single file
                             download-buffer))
-      (unless auto-install-save-confirm
-        (auto-install-buffer-save)))))
+      (if (not (and (not auto-install-batch-using) (auto-install-check-update)))
+          (unless auto-install-save-confirm
+            (auto-install-buffer-save))
+        (message "%s is up-to-date" (url-file-nondirectory auto-install-download-url))
+        (kill-buffer))
+      ;; (unless auto-install-save-confirm
+      ;;   (auto-install-buffer-save))
+      )))
+
+(defun auto-install-check-update ()
+  (let* ((new-file (url-file-nondirectory auto-install-download-url))
+         (old-file (auto-install-get-path new-file))
+         (old-content (and old-file
+                           (with-temp-buffer
+                             (insert-file-contents-literally old-file)
+                             (buffer-string)))))
+    (equal old-content (buffer-string))))
 
 (defun auto-install-handle-emacswiki-package-name (download-buffer &optional prompt-install)
   "Handle elisp package name from `EmacsWiki'.
@@ -1104,9 +1138,8 @@ This command just run when have exist old version."
         ;; Get filename
         (unless filename
           (setq filename (url-file-nondirectory auto-install-download-url)))
-        ;; Make sure file suffix with `.el'.
-        ;; FIXME unless via `auto-install-batch'
         (unless auto-install-batch-using
+          ;; Make sure file suffix with `.el'.
           (while (not (string-match ".*\.el$" filename))
            (setq filename (read-string "Please input file name suffix with `.el': "))))
         ;; Get file path.
@@ -1122,10 +1155,14 @@ This command just run when have exist old version."
                  auto-install-replace-confirm
                  (not (yes-or-no-p (format "Do you want replace file: '%s' ?" file-path))))
             (auto-install-quit)
-          (let ((before-save-hook before-save-hook))
-            (remove-hook 'before-save-hook 'time-stamp)
-            (write-file file-path))
-          (auto-install-install file-path)))
+          (if (auto-install-check-update)
+              (auto-install-install-next-file)
+            (let ((before-save-hook before-save-hook)
+                  (auto-async-byte-compile-exclude-files-regexp
+                   (regexp-quote file-path)))
+              (remove-hook 'before-save-hook 'time-stamp)
+              (write-file file-path)
+              (auto-install-install file-path)))))
     (error "This command just use in `auto-install-minor-mode'.")))
 
 (defun auto-install-install (file-path)
@@ -1135,23 +1172,30 @@ This command just run when have exist old version."
       (auto-install-quit)
     (let (byte-compile-warnings) ;; suppress compile warnings
       ;; Compile and load file.
-      (setq auto-install-url-queue (cdr auto-install-url-queue))
       (when (and (string= "el" (file-name-extension file-path))
                  (not (ignore-errors (byte-compile-file file-path t))))
         ;; Show `ERROR' message if compile failed.
-        (message (format "Auto-Install ERROR: Compiled file '%s' failed." file-path)))
-      ;; Install next file.
-      (cond ((car auto-install-url-queue)
-             (switch-to-buffer (assoc-default (car auto-install-url-queue)
-                                              auto-install-download-buffer-alist))
-             (unless auto-install-save-confirm
-               (auto-install-buffer-save)))
-            (t                          ;completed
-             ;; cleanup
-             (setq auto-install-url-queue nil)
-             (setq auto-install-download-buffer-alist nil)
-             (setq auto-install-batch-using nil)
-             (message "Installation is completed."))))))
+        (message "Auto-Install ERROR: Compiled file '%s' failed." file-path))
+      (auto-install-install-next-file))))
+
+(defun auto-install-install-next-file ()
+  (setq auto-install-url-queue (cdr auto-install-url-queue))
+  (let (byte-compile-warnings)
+    (cond ((car auto-install-url-queue)
+           (switch-to-buffer (assoc-default (car auto-install-url-queue)
+                                            auto-install-download-buffer-alist))
+           (unless auto-install-save-confirm
+             (auto-install-buffer-save)))
+          (t                        ;completed
+           (auto-install-cleanup)
+           (message "Installation is completed.")))))
+
+(defun auto-install-cleanup ()
+  (while auto-install-minor-mode
+    (kill-buffer))
+  (setq auto-install-url-queue nil)
+  (setq auto-install-download-buffer-alist nil)
+  (setq auto-install-batch-using nil))
 
 (defun auto-install-quit ()
   "Quit auto-install."
@@ -1277,6 +1321,9 @@ If LIST is nil, return nil."
   (reverse (nthcdr (- (length list) n) (reverse list))))
 
 (provide 'auto-install)
+
+;; TestCase
+;; (find-file-other-window "~/memo/junk/2010-04-25-094621.auto-install-check-update.test.el")
 
 ;; How to save (DO NOT REMOVE!!)
 ;; (emacswiki-post "auto-install.el")

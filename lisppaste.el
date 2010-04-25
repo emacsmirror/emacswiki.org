@@ -33,15 +33,29 @@
 
 (defconst lisppaste-url "http://common-lisp.net:8185/RPC2")
 
+(defgroup lisppaste nil
+  "Emacs interface to the lisppaste bot on the Freenode IRC network."
+  :group 'xml-rpc
+  :group 'url)
+
 (defun lisppaste-send-command (command &rest stuff)
   "Send COMMAND to the lisppaste bot with STUFF as arguments."
   (apply #'xml-rpc-method-call lisppaste-url command stuff))
 
-(defvar lisppaste-display-new-paste-url nil
-  "*If non-nil, display a buffer showing the URL of newly created pastes.")
+(defcustom lisppaste-display-new-paste-url nil
+  "If non-nil, display a buffer showing the URL of newly created pastes."
+  :type 'boolean
+  :group 'lisppaste)
 
-(defvar lisppaste-add-paste-url-to-kill-ring nil
-  "*If non-nil, put the URL of a new paste at the head of the `kill-ring'.")
+(defcustom lisppaste-add-paste-url-to-kill-ring '("None")
+  "A list of channels where URL of a new paste is saved to the `kill-ring'.
+Any other non-nil value means applying to all channels."
+  :group 'lisppaste)
+
+(defcustom lisppaste-buffer-maximum-lines 128
+  "The maximum number of lines in `*paste-result*'."
+  :type 'integer
+  :group 'lisppaste)
 
 (defun lisppaste-channels ()
   "Return which channels the lisppaste bot runs on."
@@ -78,11 +92,20 @@ If ANNOTATE is non-nil, annotate that paste."
   (lisppaste-check-channel channel)
   (let ((ret (lisppaste-send-command
               'newpaste channel nick title content annotate))
-        (buf (set-buffer (generate-new-buffer "*paste-result*"))))
-    (erase-buffer)
+        (buf (set-buffer (get-buffer-create "*paste-result*"))))
+    (goto-char (point-max))
+    (unless (bolp) (insert "\n\n"))
+    (insert "* " (format-time-string "[%Y-%m-%d %a %R]") " " title "\n  ")
     (insert ret)
     (message ret)
-    (when (and lisppaste-add-paste-url-to-kill-ring
+    (when (> (count-lines (point-min) (point))
+             lisppaste-buffer-maximum-lines)
+      (save-excursion
+        (forward-line (- lisppaste-buffer-maximum-lines))
+        (delete-region (point-min) (point))))
+    (when (and (if (consp lisppaste-add-paste-url-to-kill-ring)
+                   (member channel lisppaste-add-paste-url-to-kill-ring)
+                 lisppaste-add-paste-url-to-kill-ring)
                (string-match (rx (+ anything)
                                  space (group (+ (not (in space))))
                                  " ." eos)
@@ -115,10 +138,12 @@ If CHANNEL is non-nil, only return pastes from that channel."
              (lisppaste-send-command 'pasteheadersbychannel channel n start))
     (lisppaste-send-command 'pasteheaders n start)))
 
-(defvar lisppaste-default-nick nil
-  "*The default nick for pastes.
+(defcustom lisppaste-default-nick nil
+  "The default nick for pastes.
 
-See also the function `lisppaste-default-nick'.")
+See also the function `lisppaste-default-nick'."
+  :type '(choice (const nil) string)
+  :group 'lisppaste)
 
 (defsubst lisppaste-default-nick (channel)
   "Return the default nick for CHANNEL.
@@ -416,7 +441,7 @@ channel, nick, title, and paste to annotate respectively."
   "Quit the current paste buffer."
   (interactive)
   (set-buffer-modified-p nil)
-  (kill-this-buffer))
+  (kill-buffer))
 
 ;;;###autoload
 (defun lisppaste-annotate ()

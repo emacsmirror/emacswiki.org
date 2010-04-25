@@ -4,7 +4,7 @@
 ;; Maintainer: Dylan R. E. Moonfire <contact@mfgames.com>
 ;; Created:    Feburary 2005
 ;; Modified:   February 2010
-;; Version:    0.7.3  - Dino Chiesa <dpchiesa@hotmail.com>
+;; Version:    0.7.4  - Dino Chiesa <dpchiesa@hotmail.com>
 ;; Keywords:   c# languages oop mode
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -78,7 +78,13 @@
 
 ;;; Bugs:
 ;;
+;;   Namespaces in the using statements are not fontified. Should do in
+;;   c-basic-matchers-before or c-basic-matchers-after.
+;;
 ;;   Method names with a preceding attribute are not fontified.
+;;
+;;   Field/Prop names inside object initializers are fontified only
+;;   if the null constructor is used, with no parens.
 ;;
 ;;   This code doesn't seem to work when you compile it, then
 ;;   load/require in the emacs file. You will get an error (error
@@ -92,8 +98,16 @@
 ;;
 ;;  Todo:
 ;;
-;;   file bugs against cc-mode for to get special-case conditions for
-;;   csharp model.
+;;    Get csharp-mode.el accepted as part of the emacs standard distribution.
+;;    Must contact monnier at iro.umontreal.ca to make this happen.
+;;
+;;
+;;
+;;  Acknowledgements:
+;;
+;;    Thanks to Alan Mackenzie and Stefan Monnier for answering questions
+;;    and making suggestions.
+;;
 ;;
 
 ;;; Versions:
@@ -143,6 +157,11 @@
 ;;            including those that end in slash. This edge case was not
 ;;            handled at all before; it is now handled correctly.
 ;;          - code cleanup and organization; removed the linefeed.
+;;          - intelligent curly-brace insertion
+;;    0.7.4 - added a C# style
+;;          - using is now a keyword and gets fontified
+;;          - fixed a bug that had crept into the codedoc insertion
+;;
 
 
 (require 'cc-mode)
@@ -475,6 +494,8 @@ but I could not figure out how to do it.  So I wrote this alternative.
                            (goto-char (match-end 1)))))))))
            ))
 
+
+
 ;; C# does not allow a leading qualifier operator. It also doesn't
 ;; allow the ".*" construct of Java. So, we redo this regex without
 ;; the "\\|\\*" regex.
@@ -631,9 +652,10 @@ but I could not figure out how to do it.  So I wrote this alternative.
 (c-lang-defconst c-typeless-decl-kwds
   csharp '(":"))
 
-;; Sets up the enum to handle the list properly,
-;; and also the new keyword to handle object initializers. maybe.
-;; dinoch - Sun, 04 Apr 2010  14:21
+;; Sets up the enum to handle the list properly, and also the new
+;; keyword to handle object initializers.  This requires a modified
+;; c-basic-matchers-after (see above) in order to correctly fontify C#
+;; 3.0 object initializers.
 (c-lang-defconst c-brace-list-decl-kwds
   csharp '("enum" "new"))
 
@@ -646,7 +668,7 @@ but I could not figure out how to do it.  So I wrote this alternative.
 
 ;; Statement keywords followed by a paren sexp and then by a substatement.
 (c-lang-defconst c-block-stmt-2-kwds
-  csharp '("for" "if" "switch" "while" "catch" "foreach"
+  csharp '("for" "if" "switch" "while" "catch" "foreach" "using"
            "checked" "unchecked" "lock"))
 
 
@@ -673,7 +695,8 @@ but I could not figure out how to do it.  So I wrote this alternative.
   csharp '("namespace"))
 
 (c-lang-defconst c-other-kwds
-  csharp '("in" "sizeof" "typeof" "is" "as" "yield"))
+  csharp '("in" "sizeof" "typeof" "is" "as" "yield"
+           "where" "select" "from"))
 
 (c-lang-defconst c-overloadable-operators
   ;; EMCA-344, S14.2.1
@@ -819,7 +842,7 @@ your `csharp-mode-hook' function:
 
     ;; check if two prior chars were slash
     (if (and
-         (= ?/ char ?/)
+         (= char ?/)
          cb0 (= ?/ cb0)
          cb1 (= ?/ cb1)
          )
@@ -1596,6 +1619,19 @@ The return value is meaningless, and is ignored by cc-mode.
 
 
 
+
+(defconst csharp-enum-decl-re
+  (concat
+   "\\<enum\\>\s+\\([[:alnum:]_]+\\)\s*:\s*"
+   "\\("
+   (c-make-keywords-re nil
+     (list "sbyte" "byte" "short" "ushort" "int" "uint" "long" "ulong"))
+   "\\)")
+  "Regex that captures an enum declaration in C#"
+  )
+
+
+
 (defun c-inside-bracelist-p (containing-sexp paren-state)
   ;; return the buffer position of the beginning of the brace list
   ;; statement if we're inside a brace list, otherwise return nil.
@@ -1629,13 +1665,7 @@ The return value is meaningless, and is ignored by cc-mode.
                      (and (c-major-mode-is 'csharp-mode)
                           (progn
                             (c-forward-sexp -1)
-                            (looking-at
-                             (concat
-                              "enum\s+\\([[:alnum:]_]+\\)\s*:\s*"
-                              "\\("
-                              (c-make-keywords-re nil
-                                (list "sbyte" "byte" "short" "ushort" "int" "uint" "long" "ulong"))
-                              "\\)")))))
+                            (looking-at csharp-enum-decl-re))))
 
                  (setq bracepos (c-down-list-forward (point)))
                  (not (c-crosses-statement-barrier-p (point)
@@ -1770,6 +1800,78 @@ The return value is meaningless, and is ignored by cc-mode.
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.cs$" . csharp-mode))
 
+
+
+(c-add-style "C#"
+ '("Java"
+   (c-basic-offset . 4)
+   (c-comment-only-line-offset . (0 . 0))
+   (c-offsets-alist . (
+       (access-label          . -)
+       (arglist-close         . c-lineup-arglist)
+       (arglist-cont          . 0)
+       (arglist-cont-nonempty . c-lineup-arglist)
+       (arglist-intro         . c-lineup-arglist-intro-after-paren)
+       (block-close           . 0)
+       (block-open            . 0)
+       (brace-entry-open      . 0)
+       (brace-list-close      . 0)
+       (brace-list-entry      . 0)
+       (brace-list-intro      . +)
+       (brace-list-open       . +)
+       (c                     . c-lineup-C-comments)
+       (case-label            . +)
+       (catch-clause          . 0)
+       (class-close           . 0)
+       (class-open            . 0)
+       (comment-intro         . c-lineup-comment)
+       (cpp-macro             . 0)
+       (cpp-macro-cont        . c-lineup-dont-change)
+       (defun-block-intro     . +)
+       (defun-close           . 0)
+       (defun-open            . 0)
+       (do-while-closure      . 0)
+       (else-clause           . 0)
+       (extern-lang-close     . 0)
+       (extern-lang-open      . 0)
+       (friend                . 0)
+       (func-decl-cont        . +)
+       (inclass               . +)
+       (inexpr-class          . +)
+       (inexpr-statement      . 0)
+       (inextern-lang         . +)
+       (inher-cont            . c-lineup-multi-inher)
+       (inher-intro           . +)
+       (inlambda              . c-lineup-inexpr-block)
+       (inline-close          . 0)
+       (inline-open           . 0)
+       (innamespace           . +)
+       (knr-argdecl           . 0)
+       (knr-argdecl-intro     . 5)
+       (label                 . 0)
+       (lambda-intro-cont     . +)
+       (member-init-cont      . c-lineup-multi-inher)
+       (member-init-intro     . +)
+       (namespace-close       . 0)
+       (namespace-open        . 0)
+       (statement             . 0)
+       (statement-block-intro . +)
+       (statement-case-intro  . +)
+       (statement-case-open   . +)
+       (statement-cont        . +)
+       (stream-op             . c-lineup-streamop)
+       (string                . c-lineup-dont-change)
+       (substatement          . +)
+       (substatement-open     . 0)
+       (template-args-cont c-lineup-template-args +)
+       (topmost-intro         . 0)
+       (topmost-intro-cont    . 0)
+       ))
+   ))
+
+
+
+
 ;; Custom variables
 ;;;###autoload
 (defcustom csharp-mode-hook nil
@@ -1872,4 +1974,4 @@ Key bindings:
 (provide 'csharp-mode)
 
 ;;; csharp-mode.el ends here
-;; MD5: 73AAB29E6573D10CAFE2294B5F3C0B58
+;;MD5: 4EDCB2ECE38841F407C7ED3DA8354E15

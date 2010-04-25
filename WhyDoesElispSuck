@@ -44,6 +44,8 @@ Allegedly optional lexical scoping is coming after Emacs 23 is released. (accord
 
 I don't know enough about any of these to offer any informed commentary, except to note that aside from Common Lisp, they all seems to be edge cases that either no one supports seriously, or only one or two people in the universe actually want.
 
+: Comment: That's blowing Haskell's uncommonness way out of proportion. It may not be very widespread in industry yet, but you could just have a look at the IRC channel, the mailing lists or hackage to debunk "one or two people in the universe", even taking hyperbole into account :)
+
 = The Emacs APIs Suck =
 
 I heard this a lot as well, but I have no idea what exactly is being referred to. Elucidation greatly appreciated.

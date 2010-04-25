@@ -39,7 +39,7 @@ objects as their values.
      visit.  You can sort, show/hide, or mark bookmarks based on
      this info.
 
-* You can ''combine bookmarks'', to make composite, or [[#FunctionAndSequenceBookmarks|sequence]],
+* You can ''combine bookmarks'', to make composite, or [[#FunctionSequenceVarlistBookmarks|sequence]],
   bookmarks.  Invoking a sequence bookmark invokes each of its
   component bookmarks in turn.  A component bookmark can itself
   be a sequence bookmark.
@@ -80,8 +80,10 @@ saved desktop.  A desktop includes:
 * A bookmark can represent a function, which is invoked when
 you "jump" to the bookmark.
 
-* As mentioned above, a bookmark can represent a [[#FunctionAndSequenceBookmarks|sequence]] of
+* As mentioned above, a bookmark can represent a [[#FunctionSequenceVarlistBookmarks|sequence]] of
 other bookmarks.
+
+* A bookmark can represent a set of [[variable]]s and their values.
 
 * You can bookmark buffer `##*Bookmark List*##' itself.  Jumping to such a
   bookmark restores the recorded [[#SortingBookmarks|sort]] order, [[#FilteringBookmarks|filter]], title, and [[#OmittingBookmarks|omit list]].
@@ -127,8 +129,9 @@ This is buffer `##*Bookmark List*##', aka the bookmark "menu list" (a misnomer),
 ** remote files or directories that must be accessed by `su' or `sudo' (`root')
 ** [[#BookmarkListViews|bookmark-list]] bookmarks
 ** [[DeskTop|desktop]] bookmarks
-** [[#FunctionAndSequenceBookmarks|function]] bookmarks
-** [[#FunctionAndSequenceBookmarks|sequence]] bookmarks
+** [[#FunctionSequenceVarlistBookmarks|function]] bookmarks
+** [[#FunctionSequenceVarlistBookmarks|sequence]] bookmarks
+** [[#FunctionSequenceVarlistBookmarks|variable-list]] bookmarks
 ** non-file buffers
 ** buffers that don't currently exist
 ** possibly invalid bookmarks
@@ -440,8 +443,8 @@ jump functions.
 
 
 
-[:FunctionAndSequenceBookmarks]
-== Function and Sequence Bookmarks ==
+[:FunctionSequenceVarlistBookmarks]
+== Function, Sequence, and Variable-List Bookmarks ==
 
 Bookmarks are typically thought of only as recorded locations.
 Invoking a bookmark, called "jumping" to it, traditionally means
@@ -476,7 +479,17 @@ Command '''`bookmarkp-bmenu-make-sequence-from-marked'''' creates a
 sequence from the marked bookmarks in the bookmark list, in their
 current order.
 
+A '''variable-list''' bookmark saves and restores the values of a set of
+variables.  Command '''`bookmarkp-set-varlist-bookmark'''' prompts you
+for the variables to include in the list and then sets the
+bookmark.  Command `bookmarkp-jump-varlist' ('''`C-x j v'''') restores
+the recorded variable values for the bookmark's buffer.
 
+If you use library <tt>[[wide-n.el]]</tt> (see MultipleNarrowings), then you can move among multiple
+restrictions (narrowings) in a buffer.  The restrictions are
+stored in buffer-local variable `wide-n-restrictions'.  Command '''`bookmarkp-set-restrictions-bookmark'''' bookmarks this value
+for the current buffer.  Jumping to such a bookmark restores the
+saved ring/stack of restrictions.
 
 
 
@@ -1009,7 +1022,7 @@ bookmark list.  And that's the reason for this feature: to hide
 those bookmarks that you don't care to see.
 
 The most common use for this feature is to hide the component
-bookmarks that make up a sequence bookmark (see [[#FunctionAndSequenceBookmarks]]). The default behavior when
+bookmarks that make up a sequence bookmark (see [[#FunctionSequenceVarlistBookmarks]]). The default behavior when
 you create a sequence bookmark is in fact to omit its component
 bookmarks from the displayed list.
 
@@ -1229,9 +1242,9 @@ In the bookmark list, the following keys are bound to commands
 that open bookmarks using the associated Windows `Open'
 applications:
 
-  `M-RET'     - `bookmarkp-bmenu-w32-open'
-  `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
-  `V'         - `bookmarkp-bmenu-w32-open-select' (like `v')
+  `M-RET'     -- `bookmarkp-bmenu-w32-open'
+  `M-mouse-2' -- `bookmarkp-bmenu-w32-open-with-mouse'
+  `M-v'       -- `bookmarkp-bmenu-w32-open-select' (like `v')
 
 If you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then you can use '''`M-b'''' to
 bookmark all of the marked files in a [[Dired]] buffer, even if you

@@ -27,6 +27,17 @@ The narrowings can be nested, but they need not be. They can be any [[region]]s 
 
 * You can also use `C-x n w' (standard command `widen') to widen the buffer completely, as usual.
 
+
+Emacs [[marker]]s are used to record restriction limits, so the same
+restriction is available even if you modify its context.  If for any reason `wide-n-restrictions' ever has any entries
+that use buffer positions (numbers) instead of markers, invoking
+`wide-n' corrects this by changing the positions to markers.
+
+This means that you can serialize `wide-n-restrictions',
+converting all markers to positions, save the value
+persistently, and restore it later.  Library '''[[Bookmark+]]'''' (<tt>[[bookmark+.el]]</tt>) does
+this in order to let you bookmark and restore a list of restrictions.
+
 Enjoy! -- DrewAdams
 
 

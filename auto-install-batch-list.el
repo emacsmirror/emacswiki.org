@@ -1,5 +1,5 @@
 ;;; auto-install-batch-list.el --- Data file of auto-install.el
-;; $Id: auto-install-batch-list.el,v 1.1 2010/04/01 03:46:34 rubikitch Exp $
+;; $Id: auto-install-batch-list.el,v 1.1 2010/04/01 03:46:34 rubikitch Exp rubikitch $
 
 ;;; This file is used by auto-install.el internally.  M-x
 ;;; auto-install-batch downloads this file before installation to
@@ -72,6 +72,9 @@
            "http://www.emacswiki.org/emacs/download/anything-auto-install.el" ; auto-install extension
            "http://www.emacswiki.org/emacs/download/descbinds-anything.el" ; describe-key replacement
            "http://www.emacswiki.org/emacs/download/anything-grep.el" ; Grep with anything
+           "http://www.emacswiki.org/emacs/download/anything-menu.el" ; menu selection outside emacs
+           "http://www.emacswiki.org/emacs/download/anything-gtags.el" ; GNU GLOBAL interface
+           "http://www.emacswiki.org/emacs/download/anything-ipa.el" ; In-Place-Annotation
            "http://www.emacswiki.org/emacs/download/anything-startup.el" ; Startup file
            ))
          ;; SDCV (Interface for StartDict console version)

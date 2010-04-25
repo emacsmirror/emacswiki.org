@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Apr 19 17:12:24 2010 (-0700)
+;; Last-Updated: Sat Apr 24 13:33:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11984
+;;     Update #: 12033
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -59,7 +59,7 @@
 ;;    (@> "Different Types of Jump Commands")
 ;;    (@> "Bookmark Tags")
 ;;    (@> "Bookmark Tags Can Have Values")
-;;    (@> "Function and Sequence Bookmarks")
+;;    (@> "Function, Sequence, and Variable-List Bookmarks")
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
@@ -152,6 +152,8 @@
 ;;
 ;;     - As mentioned above, a bookmark can represent a sequence of
 ;;       other bookmarks.
+;;
+;;     - A bookmark can represent a set of variables and their values.
 ;;
 ;;     - You can bookmark buffer `*Bookmark List*' itself.  Jumping to
 ;;       such a bookmark restores the recorded sort order, filter,
@@ -446,8 +448,8 @@
 ;;  own, extra jump functions.
 ;;
 ;;
-;;(@* "Function and Sequence Bookmarks")
-;;  ** Function and Sequence Bookmarks **
+;;(@* "Function, Sequence, and Variable-List Bookmarks")
+;;  ** Function, Sequence, and Variable-List Bookmarks **
 ;;
 ;;  Bookmarks are typically thought of only as recorded locations.
 ;;  Invoking a bookmark, called "jumping" to it, traditionally means
@@ -481,6 +483,19 @@
 ;;  Command `bookmarkp-bmenu-make-sequence-from-marked' creates a
 ;;  sequence from the marked bookmarks in the bookmark list, in their
 ;;  current order.
+;;
+;;  A variable-list bookmark saves and restores the values of a set of
+;;  variables.  Command `bookmarkp-set-varlist-bookmark' prompts you
+;;  for the variables to include in the list and then sets the
+;;  bookmark.  Command `bookmarkp-jump-varlist' (`C-x j v') restores
+;;  the recorded variable values for the bookmark's buffer.
+;;
+;;  If you use library `wide-n.el', then you can move among multiple
+;;  restrictions (narrowings) in a buffer.  The restrictions are
+;;  stored in buffer-local variable `wide-n-restrictions'.  Command
+;;  `bookmarkp-set-restrictions-bookmark' bookmarks this value for the
+;;  current buffer.  Jumping to such a bookmark restores the saved
+;;  list of restrictions.
 ;;
 ;;
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
@@ -965,9 +980,9 @@
 ;;
 ;;  The most common use for this feature is to hide the component
 ;;  bookmarks that make up a sequence bookmark (see
-;;  (@> "Function and Sequence Bookmarks")).  The default behavior
-;;  when you create a sequence bookmark is in fact to omit its
-;;  component bookmarks from the displayed list.
+;;  (@> "Function, Sequence, and Variable-List Bookmarks")).  The
+;;  default behavior when you create a sequence bookmark is in fact to
+;;  omit its component bookmarks from the displayed list.
 ;;
 ;;  You can omit any bookmarks by marking them and then using `O >'
 ;;  (`bookmarkp-bmenu-omit/unomit-marked').  If you are looking at the
@@ -1163,7 +1178,7 @@
 ;;
 ;;    `M-RET'     - `bookmarkp-bmenu-w32-open'
 ;;    `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
-;;    `V'         - `bookmarkp-bmenu-w32-open-select' (like `v')
+;;    `M-v'       - `bookmarkp-bmenu-w32-open-select' (like `v')
 ;;
 ;;  If you use Dired+ (library `dired+.el'), then you can use `M-b' to
 ;;  bookmark all of the marked files in a Dired buffer, even if you
@@ -1233,6 +1248,18 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/04/24 adams
+;;     Added: bookmarkp-bmenu-show-only-varlists, bookmarkp-set-restrictions-bookmark,
+;;            bookmarkp-set-varlist-bookmark, bookmarkp-varlist-jump, bookmarkp-varlist,
+;;            bookmarkp-jump-varlist, bookmarkp-make-varlist-record, bookmarkp-printable-p,
+;;            bookmarkp-printable-vars+vals, bookmarkp-read-variables-completing,
+;;            bookmarkp-read-variable, bookmarkp-varlist-alist-only, bookmarkp-varlist-bookmark-p,
+;;            bookmarkp-varlist-history.
+;;     Bound bookmarkp-bmenu-show-only-varlists to V S, bookmarkp-varlist-jump to C-x j v (and menu).
+;;     *-types-alist: Added bookmarkp-varlist-history.
+;;     *-bmenu-mode-status-help, *-bmenu-propertize-item, *-describe-bookmark: Handle varlist bmks.
+;;     *-bmenu-w32-open-select: Changed binding to M-v from V.
+;;     *-bmenu-mode: Updated doc string.
 ;; 2010/04/17 dadams
 ;;     bookmark-set: Numeric prefix arg means use all bookmarks as completion candidates.
 ;;                   Simplified the prompt.

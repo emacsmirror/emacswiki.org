@@ -19,7 +19,7 @@ Be aware: [NxhtmlMode nXhtml] includes csharp-mode.el v0.7.0, and other versions
 You will want to replace the older 0.7.0 csharp-mode.el that is included in any other package.
 
 [new]
-Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.3.
+Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.4.
 
 
 == Complementary Stuff / Minor Modes ==

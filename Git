@@ -38,8 +38,8 @@ Magit is another interface to git.
 
 Egg (Emacs got Git) is a clone (fork) of Magit.
 
-* Homepage: http://github.com/bogolisk/egg/tree/master
-* Repository: ##git clone git://github.com/bogolisk/egg.git ##
+* Homepage: http://github.com/byplayer/egg (original: http://github.com/bogolisk/egg/tree/master)
+* Repository: ##git clone git://github.com/byplayer/egg.git ##
 
 egit is an Emacs Git history interface intended to be similar to qgit or gitk. Requires git.el.
 

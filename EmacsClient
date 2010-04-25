@@ -8,6 +8,7 @@ and offer similar functionality, e.g. execute arbitrary EmacsLisp code from the 
 == How to start to use EmacsClient ==
 
 = Starting Server With Emacs 23 : Easy Way =
+=== Bash Shells ===
 RichardRiley : With emacs 23 simply do something like
 
 <pre>
@@ -25,6 +26,22 @@ export EDITOR=~/bin/edit
 Where "edit" is the small script above. The key is the "" for alternate-editor. emacsclient starts the server for you if and only if it is not already running.
 
 OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
+
+=== Windows ===
+Create an emacs.bat file in your Emacs "bin" directory. (Perhaps something like "\Program Files\emacs-23.1\bin" if you've used an installer.) Add the following commands:
+
+<pre>
+@echo off
+"%~dp0emacsclientw.exe" -na "%~dp0runemacs.exe" "%1"
+</pre>
+
+The first line suppresses command line output, but if anyone knows a quick and easy trick to prevent the batch file from popping a command window in the process, that'd be nice. The "%~dp0" returns the directory in which the batch file resides, which is why it's important to put it alongside "emacsclientw.exe" and "runemacs.exe". Everything is set in quotes to handle for spaces in path names. A script seen elsewhere suggested use of "-n/--no-wait". If you'd like Emacs to create a new window (an Emacs frame) consider adding the "-c/--create-frame" option to the beginning of the options argument.
+
+Pro tip: Under Windows Vista/7 with your emacs directory in "Program Files", do *NOT* use Emacs itself to create or edit the batch file. Windows creates a "Virtual Store" in the environment of the current user when it sees an executable messing with it's own directory under "Program Files". This could cause some confusing problems.
+
+Then it's as easy as associating whatever files you like with with the new emacs.bat file.
+
+Inspired by the original text:
 
 Under Windows I used someting like this wedit.bat:
 
@@ -73,6 +90,8 @@ For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init
 
 
 === Microsoft Windows (in Emacs often called w32) ===
+
+With Emacs 23 (and possibly any version with EmacsClient), to avoid the following VB scripting, a simple batch file solution can be found in the "Easy Way" section above.
 
 '''Note: On Windows, GnuClient works better than %%EmacsClient%% (for versions prior to 22.1). The instructions below apply to %%EmacsClient%%; head over to GnuClient for a less cumbersome solution.'''
 
