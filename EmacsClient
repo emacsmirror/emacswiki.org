@@ -91,6 +91,15 @@ For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init
 
 === Microsoft Windows (in Emacs often called w32) ===
 
+==== Using the patched version o EmacsW32 ====
+
+With the patched version of [[EmacsW32]] [[#EmacsW32Client]] will start Emacs automatically by default.
+You can use the same solution also with the unpatched version, but this requires using the patched version of emacs client + the file auto-server.el.
+
+
+==== Starting Emacs automatically from a context menu on w32 ====
+
+[new]
 With Emacs 23 (and possibly any version with EmacsClient), to avoid the following VB scripting, a simple batch file solution can be found in the "Easy Way" section above.
 
 '''Note: On Windows, GnuClient works better than %%EmacsClient%% (for versions prior to 22.1). The instructions below apply to %%EmacsClient%%; head over to GnuClient for a less cumbersome solution.'''
@@ -98,7 +107,7 @@ With Emacs 23 (and possibly any version with EmacsClient), to avoid the followin
 (I haven't found GnuClient less cumberson than EmacsClient, and in fact have always had trouble getting GnuClient set up on Windows. Not big trouble, but enough to be frustrating when I have to get it set up.  Once running, both GnuClient and EmacsClient (for 22.1 and later) work fine.  With EmacsClient, once Emacs is started, I only use emacsclient to send file edit requests.  I only use the vbs script below to launch Emacs from quicklaunch or a PowerPro script.)
 --RobDavenport
 
-==== Starting Emacs automatically from a context menu on w32 ====
+[new]
 (A trivial version of this, not using %%EmacsClient%%, is at [MsWindowsGlobalContextMenu MsWindowsGlobalContextMenu].)
 
 Save the current VBscript (shiver) in emacs/bin folder, as ''launch-emacs-client.vbs'':
@@ -329,6 +338,12 @@ You can open a file in Emacs via Windows Send To by placing a shortcut to emacsc
 
 ==== Editing with Emacs from Web Browsers ====
 
+===== With Firefox Add-on "It's All Text" + an Elisp file + =====
+
+There is a tool in [[NxhtmlMode][nXhtml]] that allows you to do this.
+You can find it in the nXhtml menus under "nXhtml / Tools / External Editor Setup".
+
+===== With a Chrome extension =====
 *Edit with Emacs - a Google Chrome browser extension*: Source: http://github.com/stsquad/emacs_chrome or https://chrome.google.com/extensions/detail/ljobjlafonikaiipfkggjbhkghgicgoh to install in Chrome.
 This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs.  It's nice to use Emacs when typing in posts or editing Wiki pages.  It uses its own edit-server.el instead of gnuclient or emacsclient currently, and doesn't let you edit page source yet.  //(This is not strictly about emacsclient, but seems related.)//
 
@@ -336,7 +351,8 @@ This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs
 
 --RobDavenport
 
-= Using the patched version of EmacsW32 to start Emacs automatically =
+[:EmacsW32Client]
+=== Using the patched version of EmacsW32 to start Emacs automatically ===
 
 The patched version of Emacs + [[EmacsW32]] may start Emacs automatically and opens the given file name.
 Note that in this case you do not have to add server-start to .emacs.

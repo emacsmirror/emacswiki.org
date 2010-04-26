@@ -137,8 +137,8 @@ T1 and T2 are time values (as returned by `current-time' for example)."
   (time-to-seconds (subtract-time t1 t2)))
 
 (defun c-eldoc-time-difference (old-time)
-  (> (c-eldoc-time-diff (current-time) old-time) c-eldoc-buffer-regenerate-time)
-  "Returns whether or not old-time is less than c-eldoc-buffer-regenerate-time seconds ago.")
+  "Returns whether or not old-time is less than c-eldoc-buffer-regenerate-time seconds ago."
+  (> (c-eldoc-time-diff (current-time) old-time) c-eldoc-buffer-regenerate-time))
 
 (defun c-eldoc-cleanup (preprocessed-buffer)
   (kill-buffer preprocessed-buffer))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Apr 17 14:02:16 2010 (-0700)
+;; Last-Updated: Sun Apr 25 16:53:10 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1611
+;;     Update #: 1622
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4705,6 +4705,8 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `icicle-mode'."
     (interactive)
     (let* ((icicle-transform-function               'icicle-remove-duplicates)
+           (orig-sort-orders-alist                  icicle-sort-orders-alist) ; For recursive use.
+           (orig-show-initially-flag                icicle-show-Completions-initially-flag)
            (icicle-show-Completions-initially-flag  t)
            (icicle-candidate-action-fn              'icicle-complete-keys-action)
            (enable-recursive-minibuffers            t)
@@ -4787,8 +4789,15 @@ Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
                     (when (eq 'negative-argument binding)
                       (icicle-msg-maybe-in-minibuffer "Negative argument"))
                     (setq last-nonmenu-event  1) ; So *Completions* mouse-click info is ignored.
-                    (condition-case try-command
-                        (call-interactively binding nil this-cmd-keys)
+                    (condition-case try-command ; Bind so vanilla context when invoke chosen cmd.
+                        (let ((icicle-show-Completions-initially-flag  orig-show-initially-flag)
+                              (icicle-candidate-action-fn              nil)
+                              (icicle-completing-keys-p                nil)
+                              (icicle-sort-orders-alist                orig-sort-orders-alist)
+                              (icicle-sort-comparer                    'icicle-case-string-less-p)
+                              (icicle-alternative-sort-comparer
+                               'icicle-historical-alphabetic-p))
+                          (call-interactively binding nil this-cmd-keys))
                       (error (error (error-message-string try-command)))))))
         (select-window action-window))))
 

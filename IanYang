@@ -12,6 +12,36 @@ I started to use Emacs in 2007. Now I use it for almost all my text editting tas
 
  
 * IyGoToChar, go to char like "f" and "t" in vim
+* Wrapper of WinRing, jump to existing configurations or create a new one:
+
+      (defun iy/winring-jump-or-create (&optional name)
+        "Jump to or create configuration by name"
+        (interactive)
+        (let* ((ring (winring-get-ring))
+               (n (1- (ring-length ring)))
+               (current (winring-name-of-current))
+               (lst (list (cons current -1)))
+               index item)
+          (while (<= 0 n)
+            (push (cons (winring-name-of (ring-ref ring n)) n) lst)
+            (setq n (1- n)))
+          (setq name
+                (or name
+                    (completing-read
+                     (format "Window configuration name (%s): " current)
+                     lst nil 'confirm nil 'winring-name-history current)))
+          (setq index (cdr (assoc name lst)))
+          (if (eq nil index)
+              (progn
+                (winring-save-current-configuration)
+                (delete-other-windows)
+                (switch-to-buffer winring-new-config-buffer-name)
+                (winring-set-name name))
+            (when (<= 0 index)
+              (setq item (ring-remove ring index))
+              (winring-save-current-configuration)
+              (winring-restore-configuration item)))))
+
 * Copy Date under the cursor in `calendar-mode'
 
       (defvar iy/calendar-copy-date-format-history '("%Y-%m-%d"))

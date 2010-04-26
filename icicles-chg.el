@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 23 13:28:23 2010 (-0700)
+;; Last-Updated: Sun Apr 25 16:56:33 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5161
+;;     Update #: 5167
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -241,6 +241,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/25 dadams
+;;     icicle-complete-keys-action:
+;;       Bind icicle-*, esp. *-initially-flag, around call of this-command-keys.  Thx to M Heerdegen.
+;;     icicle-complete-keys: Save some icicle-* vars to reuse in icicle-complete-keys-action.
 ;; 2010/04/17 dadams
 ;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
 ;;       Use icicle-transform-multi-completion in icicle-delete-candidate-object.

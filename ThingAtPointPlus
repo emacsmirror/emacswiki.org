@@ -1,7 +1,7 @@
-This page describes library Lisp:thingatpt+.el, by DrewAdams. This is an extension of standard library `<code>thingatpoint.el</code>' (See ThingAtPoint). It provides various functions for determining (returning) different objects at or near point.
+This page describes library Lisp:thingatpt+.el, by DrewAdams. This is an extension of standard library `<code>thingatpt.el</code>' (See ThingAtPoint). It provides various functions for determining (returning) different objects at or near point.
 
 
-The objects are ''THING''s for which there is a either a corresponding
+The objects are ''THING''s for which there is either a corresponding
 `forward-'''THING'' operation, or corresponding `beginning-of-'''THING'' and
 `end-of-'''THING'' operations. 
 

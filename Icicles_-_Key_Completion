@@ -99,6 +99,7 @@ Here are some screenshots, from `S-TAB' in the Buffer Menu (`C-x C-b'), to illus
 [[image:IciclesKeyCompletionsSortByCmdName]]
 
 
+[:RemapGotcha]
 : '''Gotcha:''' Commands that are ''remapped'' do not show up with the bindings you think they have. For example, `C-x C-f' is bound to `icicle-file' in ''Icicle'' mode, by default, but `C-x S-TAB' does not include the completion candidate `##C-f  =  icicle-file##'.  Instead, `S-TAB' at the top level (without first doing `C-x') shows a (pseudo) prefix key `##remap  =  ..##', and if you follow that then you'll see the candidate `##find-file  =  icicle-file##'.  The binding of `C-x C-f' does not appear as such, because `find-file' is remapped to command `icicle-file': whatever `find-file' was bound to is indirectly bound to `icicle-file'.  This indirection shows up in '''Icicles''' key completion as (pseudo) prefix key `##remap  =  ..##'.
 
 

@@ -1,7 +1,7 @@
 [new]
 ----
 <b><i>
-Last chance to test beta 2.07 of nXhtml before release (which will be 2.08).
+Current version is 2.08 - please upgrade if you have an older version!
 </i></b>
 ----
 
@@ -46,13 +46,12 @@ like /html-mumamo/, /nxhtml-mumamo/, /eruby-html-mumamo/, /django-html-mumamo/,
 Those modes handle inlined style sheets and javascript, php, jsp etc, which are interleaved with the HTML.
 
 
-Some more:
-
-* Simple file uploading based on a concept of a site. This mean that nXhtml remember where files in a certain directory tree should be uploaded and it can remember the password for you.
+There are a lot of other features like simple search and replace in directory trees, simple file upload, etc.
+The only way to find out is to download nXhtml and try.
 
 [new]
 [:ScreenShots]
-Some images showing a bit of the nXhtml functionality (visit the home page if you wonder more):
+Some images showing a bit of the nXhtml functionality (try it out if you wonder more):
 
 http://ourcomments.org/Emacs/nXhtml/doc/img/php-in-nxhtml-2.png
 http://ourcomments.org/Emacs/nXhtml/doc/img/links-appmenu.png
@@ -64,24 +63,19 @@ http://ourcomments.org/Emacs/nXhtml/doc/img/foldit-temp-opened.png
 
 === Quick Start ===
 
-Installation is easy, just unzip the archive and add one line to your .emacs.
+Installation is easy, just unzip the archive and (just as README.txt says) add one line to your .emacs:
 
-: Unfortunately, that easy, one-line change is *not* included here....
-
-:: Because I thought it would be better to look in the README.txt ..., but here it is
-:: (load "YOUR-PATH-TO/nxhtml/autostart.el")
-
+  (load "YOUR-PATH-TO/nxhtml/autostart.el")
 
 After this nXhtml is ready for use.
-
 However for a little more and where to download it see
 [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html#qg the Quick Guide to nXhtml].
 See [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml-changes.html nXhtml Notes and Changes]
 for a list of changes. You can also [http://ourcomments.org/Emacs/DL/elisp/nxhtml/beta/ try a beta].
 
-You need **Emacs 22** to use nXhtml.
-
 Note that if you have [[EmacsW32]] then nXhtml is already included, but you have to turn it on. And you may want to update to a more recent version of nXhtml. (If you do just put it in the same location where the old version was.)
+
+You need **Emacs 22** or later to use nXhtml.
 
 ----
 
@@ -114,83 +108,11 @@ If you want to report a bug please use <i>M-x nxhtml-report-bug</i> to get instr
 
 See also https://answers.launchpad.net/nxhtml
 
+Old solved bugs that was reported on Emacs Wiki are here: NxhtmlOldBugs
 
-=== Old solved EmacsWiki bug reports ===
+=== Frequently Asked Questions ===
 
-Old solved bugs are here: NxhtmlOldBugs
-
-=== Some important notes ===
-
-==== Emacs 22 can't handle XML validation in MuMaMo ====
-
-There is problem with using multi major modes based on nxhtml-mode (or nxml-mode) in Emacs 22:
-
-|| || nxhtml-mode by itself || nxhtml-mode as part of a multi major mode ||
-|| Emacs 22 || OK || Not always good ||
-|| Emacs 23 || OK || OK ||
-
-Therefore in Emacs 22 the default is to use those based on html-mode instead.
-If you want XHTML validation and completion you can use nxhtml-mode.
-
-
-[new]
-I miss this feature in Emacs 22, indeed.
-
-==== YaSnippet, nXhtml, MuMaMo and TabKey2 ====
-
-If you are using YaSnippetMode you can use the snippets for html-mode in nxhtml-mode.
-To do that just create a subdirectory named nxhtml-mode under the html-mode in your snippets directory.
-(I got [[http://groups.google.com/group/smart-snippet/browse_thread/thread/92a74427495c3f3c?hl=en this tip]] from yasnippet author.)
-
-This works also in multi major mode buffers where you can use the snippets for the major mode in the chunk.
-
-And it also works with [TabCompletion TabKey2] (which comes with nXhtml).
-The only thing you have to do to make it work is to install yasnippet (and of course turn on tabkey2-mode).
-If you hit TAB then yasnippet gets the chance to expand first
-(because it is by default first in tabkey2 list of completion functions).
-If it doesn't then the other completion functions get their chances.
-
-So for example if you in a nxhtml-mode chunk have written /h1/ and press TAB then yasnippet will expand it.
-If yasnippet does not expand the word before point then nxhtml-mode completion gets the chance next, etc.
-
-BTW, there are snippets for PHP and dojo (a javascript framework) in the [[YaSnippetMode]]s
-user contributed snippets repository.
-
-[new:bart.vandendriessche:2009-06-19 11:41 UTC]
-If you are using the yasnippet bundle version, and thus can not create a subdirectory for your html-mode snippets, you can add the following to your .emacs file to enable html-mode snippets in nxhtml-mode:
-
-;; enable yasnippet for nxhtml mode
-
-(yas/define-snippets 'nxhtml-mode nil 'html-mode)
-
-
-==== Chunk color complaints, please contribute! ====
-[new]
-
-The new default colors for the submodes are brutal on light background.  That pink, for example... :) It wasn't hard to change them, I just wanted to give you some user feedback. Maybe it's only me, though. :D
-
-[new]
-I was in a brutal mode when I selected them.
-Or, the problem is that I want the sub-sub chunks to stand out a bit because they can be mistakes.
-But suggestions for new background colors are very welcome!
-
-[new]
-
-I was thinking about if it was really worth it to make the colors mode dependent. Maybe it would be enough if the neighboring section had different colors and this way only 2 different alternating colors had to be used.
-
-I see some value in e.g having a PHP section always in the same color, but I'm not sure it's really necessary. One usually chooses similar colors anyway, so that the eye doesn't have to constantly accomodate to radically different background colors in the same buffer, so the colors are not really used to identify the type of the section, but rather to identify the switch between sections, so alternating colors may be enough.
-
-[new]
-If you want that behaviour you can just delete some of the colors from mumamo-background-colors.
-They are reused cyclically.
-
-However I believe there is a value in having different colors.
-This lets you see how far down you are in the hierarchy of chunks and may help prevent errors.
-(Note that it is the chunk level that determines the color, not the major mode.)
-
-The hard thing is then to choose good background colors.
-As I said: suggestions are welcome! ;-)
-
+There is now a FAQ section on Launchpad: https://answers.launchpad.net/nxhtml/+faqs
 
 
 ----
@@ -203,81 +125,7 @@ Please use the bug database if you can, see above.
 
 ==== Chunks in chunks - where does it end? ====
 
-I have chunk problems with 1.99. This works, it detects the PHP and JS chunks properly:
-
-<pre>
-<?
-
-
-$stuff = <<<EOTHTML
-
-    <script type="text/javascript">
-
-    //<![CDATA[
-
-    var stuff;
-
-    //]]>
-    </script>
-
-EOTHTML;
-
-</pre>
-
-
-However if I don't close the inner chunk before EOTHTML, because I want to add some conditional code after it in PHP then it thinks the part of the buffer after EOTHTML is still in JS mode which is not good: 
-
-<pre>
-
-<?
-
-
-$stuff = <<<EOTHTML
-
-    <script type="text/javascript">
-
-    //<![CDATA[
-
-    var stuff;
-
-EOTHTML;
-
-</pre>
-
-[new]
-Thanks for the thoughts.
-I can see what you mean, but I am not sure it can be solved easily.
-
-You want the inner chunk with javascript to end together with the heredoc chunk.
-It looks obvious here, but what would the general rule be?
-
-[new]
-What is the question exactly? All chunk modes should end at the end of the heredoc and NXHTML should switch back to PHP, shouldn't it? Is there any reason keeping the chunk mode beyond the EOT tag? It's clearly incorrect behavior.
-
-[new]
-Hm, so you mean that heredocs is a special case deserving attention?
-Yes, I think you are right.
-It is some work to do this of course.
-Contributions are welcome.
-
-In the mean time you can avoid using html in the heredoc.
-That will end the chunk where you want it (but will not provide the convenience of html syntax coloring and javascript dito).
-
-=== Solved problems ===
-
-For more see above, Old solved EmacsWiki bug reports.
-(And of course the bug database.)
-
-==== debug-on-error in autostart ====
-
-Since a few versions, `debug-on-error' is set to t in `nxhtml/autostart.el'.
-While this is useful for debugging it's not so great for production usage,
-especially because it's a global setting.  Is it really intended to be in
-the released package?
-
-[new]
-No, I have forgotten to remove it. Thanks George.
-
+I have moved this to a bug report on Launchpad, please add any new comments to it there: https://bugs.launchpad.net/nxhtml/+bug/569742
 
 ==== Does it work in GNU Emacs? ====
 
@@ -291,7 +139,7 @@ I can't remember I have seen that kind of problem before.
 Something in your setup is colliding with nXhtml.
 This is not the right place to try to find out what the problem since I need more information from you.
 Can you please report this on Launchpad in nXhtml bug database?
-P
+
 
 ----
 See also MultipleModes MuMaMo CategoryHypermedia HtmlMode
