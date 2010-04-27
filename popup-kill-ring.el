@@ -41,9 +41,16 @@
 
 ;;; ChangeLog:
 ;;
+;; * 0.0.8
+;;   Modify keymap setting
+;;
+;; * 0.0.7
+;;   Added the function `popup-kill-ring-current'
+;;   Added the function `popup-kill-ring-hide'
+;;
 ;; * 0.0.6
-;;   `up' to `popup-kill-ring-popup-width'
-;;   `down' to `popup-kill-ring-popup-width'
+;;   `up' to `popup-kill-ring-popup-previous'
+;;   `down' to `popup-kill-ring-popup-next'
 ;;
 ;; * 0.0.5
 ;;   New variable `popup-kill-ring-kill-ring-show-func'
@@ -70,7 +77,7 @@
 
 ;;; Variables:
 
-(defconst popup-kill-ring-version "0.0.6"
+(defconst popup-kill-ring-version "0.0.8"
   "Version of `popup-kill-ring'")
 
 
@@ -89,13 +96,20 @@ This function requires two arguments `str' and `pos'.
 `str' is string of displaying. `pos' is point of displaying.
 Default value is `popup-kill-ring-pos-tip-show'.")
 
-
-(defvar popup-kill-ring-keymap (copy-keymap popup-menu-keymap))
 ;; key setting for `popup-menu*'.
-(define-key popup-kill-ring-keymap "\C-n" 'popup-kill-ring-next)
-(define-key popup-kill-ring-keymap "\C-p" 'popup-kill-ring-previous)
-(define-key popup-kill-ring-keymap [down] 'popup-kill-ring-next)
-(define-key popup-kill-ring-keymap [up] 'popup-kill-ring-previous)
+(defvar popup-kill-ring-keymap
+  (let ((keymap (make-sparse-keymap)))
+    (set-keymap-parent keymap popup-menu-keymap)
+    (define-key keymap "\C-n" 'popup-kill-ring-next)
+    (define-key keymap "\C-p" 'popup-kill-ring-previous)
+    (define-key keymap [down] 'popup-kill-ring-next)
+    (define-key keymap [up] 'popup-kill-ring-previous)
+    (define-key keymap "\C-f" 'popup-kill-ring-current)
+    (define-key keymap "\C-b" 'popup-kill-ring-hide)
+    (define-key keymap [right] 'popup-kill-ring-current)
+    (define-key keymap [left] 'popup-kill-ring-hide)
+    keymap)
+    "A keymap for `popup-menu*' of `popup-kill-ring'.")
 
 
 ;;; Functions:
@@ -163,6 +177,25 @@ and `pos-tip.el'"
       ;; wait for timeout
       (sit-for (+ 0.5 popup-kill-ring-timeout)))))
 
+(defun popup-kill-ring-current ()
+  (interactive)
+  ;; Variable `menu' is contents of popup.
+  ;; See: `popup-menu-event-loop'
+  (let* ((m (with-no-warnings menu))
+         (num (popup-cursor m))
+         (lst (popup-list m))
+         (len (length lst))
+         (offset (popup-offset m))
+         item)
+    ;; display selected item of kill-ring by `pos-tip-show'
+    (setq item (popup-x-to-string (nth num lst)))
+    (when (string-match "^\\([0-9]*\\): " item)
+      (setq num (string-to-number (match-string 1 item))))
+    (when num
+      (funcall popup-kill-ring-kill-ring-show-func
+               (format "%s" (nth num kill-ring))
+               (popup-child-point m offset)))))
+
 (defun popup-kill-ring-previous ()
   (interactive)
   ;; Variable `menu' is contents of popup.
@@ -192,6 +225,10 @@ and `pos-tip.el'"
       (popup-previous m)
       ;; wait for timeout
       (sit-for (+ 0.5 popup-kill-ring-timeout)))))
+
+(defun popup-kill-ring-hide ()
+  (interactive)
+  (pos-tip-hide))
 
 
 (provide 'popup-kill-ring)

@@ -63,20 +63,24 @@ Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.4.
 
 === Works Well ===
 
-I currently use csharp-mode 0.7.3, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
+I currently use csharp-mode 0.7.5, on GNU emacs 22.2, on Windows (Vista). Every day.  It works very well.
 
 --DinoChiesa
 
-=== Interested in Maintaining? ===
+=== Regarding Ongoing Maintenance ===
 
-The mode works well, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.    
+The mode works well today, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.   
 
-If there's enough interest, this module ought to be hosted in a community project.  Dylan Moonfire had the right idea but I don't think he's maintaining it.  Suggestions on where to host csharp-mode.el?   Does googlecode make sense?  People would need to be able to file bugs and change requests easily. 
-
-An even better idea is to get this included into emacs formally. I don't know how to do that.  I'm interested in assistance on that. 
-Respond here, or to my email, dpchiesa at hotmail. 
+I've just hosted this code in a project on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
 
 
+
+Dylan Moonfire had the right idea with http://freshmeat.net/projects/csharp-mode  but it's no longer active, and anyway there's no good way to file bugs or track work requests on freshmeat. 
+
+
+=== Inclusion into Emacs ===
+
+An additional idea is to get this included into emacs formally. I think I know how to get started on that.  I'm interested in assistance on that as well. 
 
 === Trouble on Xemacs ===
 
@@ -399,6 +403,12 @@ csharp-mode v0.7.3 now includes a (require 'cc-mode) at the top.  I don't know i
 vj-complete does not seem to work with XEmacs.
 
 ide-complete do work under windows only (funny to read that it has to be "ported" to Linux, whereas it's written in C#!)
+
+--GM/LIAR
+
+=== Version 0.7.2 & Xemacs ===
+
+I get a "Symbol's function definition is void: line number-at-pos" when typing the third '/' in ///
 
 --GM/LIAR
 

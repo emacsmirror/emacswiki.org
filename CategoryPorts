@@ -19,7 +19,8 @@ Here are the pages for platforms / distributions with binary packages:
 * EmacsForGuardianOSS -- AKA Tandem or NSK
 * EmacsForZaurus -- compiles natively with pdaxrom
 * EmacsOnFreerunner
-* EmacsOnAndroid -- run emacs on your google phone
+* EmacsOnAndroid -- run Emacs on your google phone
+* MaemoEmacs -- Emacs on Nokia N800, N810, N900
 
 How well alternate versions of
 emacs match the capabilities of Emacs and XEmacs is documented

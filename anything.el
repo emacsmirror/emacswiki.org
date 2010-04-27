@@ -85,6 +85,8 @@
 ;;    Select the current candidate by exiting the minibuffer.
 ;;  `anything-help'
 ;;    Help of `anything'.
+;;  `anything-debug-output'
+;;    Show all anything-related variables at this time.
 ;;  `anything-delete-current-selection'
 ;;    Delete the currently selected item.
 ;;  `anything-delete-minibuffer-content'
@@ -1490,6 +1492,8 @@ See also `anything-set-source-filter'.")
     (define-key map (kbd "C-c C-f") 'anything-follow-mode)
     (define-key map (kbd "C-c C-u") 'anything-force-update)
 
+    ;; Debugging command
+    (define-key map "\C-c\C-x\C-d" 'anything-debug-output)
     ;; Use `describe-mode' key in `global-map'
     (dolist (k (where-is-internal 'describe-mode global-map))
       (define-key map k 'anything-help))
@@ -1617,6 +1621,7 @@ But the anything buffer has no contents. ")
 (defvar anything-restored-variables
   '( anything-candidate-number-limit
      anything-source-filter
+     anything-source-in-each-line-flag
      anything-sources)
   "Variables which are restored after `anything' invocation.")
 ;; `anything-saved-sources' is removed
@@ -1721,6 +1726,11 @@ To enable fitting, set both `anything-inhibit-fit-frame-flag' and
 (defvar anything-source-in-each-line-flag nil
   "If non-nil, add anything-source text-property in each candidate.
 experimental feature.")
+
+(defvar anything-debug-variables nil
+  "Variables to show in `anything-debug-output'.
+Otherwise all variables started with `anything-' are shown.
+It is useful for debug.")
 
 ;; (@* "Internal Variables")
 (defvar anything-test-candidate-list nil)
@@ -3106,18 +3116,16 @@ UNIT and DIRECTION."
 
 
 ;; (@* "Core: help")
-(defun anything-help ()
-  "Help of `anything'."
-  (interactive)
+(defun anything-help-internal (bufname insert-content-fn)
+  "Show long message during `anything' session."
   (save-window-excursion
     (select-window (anything-window))
     (delete-other-windows)
-    (switch-to-buffer (get-buffer-create " *Anything Help*"))
+    (switch-to-buffer (get-buffer-create bufname))
     (setq mode-line-format "%b (SPC,C-v:NextPage  b,M-v:PrevPage  other:Exit)")
     (setq cursor-type nil)
     (erase-buffer)
-    (insert (substitute-command-keys
-             (anything-interpret-value anything-help-message)))
+    (funcall insert-content-fn)
     (goto-char 1)
     (ignore-errors
       (loop for event = (read-event) do
@@ -3125,6 +3133,29 @@ UNIT and DIRECTION."
               ((?\C-v ? )  (scroll-up))
               ((?\M-v ?b) (scroll-down))
               (t (return)))))))
+
+(defun anything-help ()
+  "Help of `anything'."
+  (interactive)
+  (anything-help-internal
+   " *Anything Help*"
+   (lambda ()
+     (insert (substitute-command-keys
+              (anything-interpret-value anything-help-message)))
+     (org-mode))))
+
+(defun anything-debug-output ()
+  "Show all anything-related variables at this time."
+  (interactive)
+  (anything-help-internal " *Anything Debug*" 'anything-debug-output-function))
+
+(defun anything-debug-output-function (&optional vars)
+  (dolist (v (or vars
+                 anything-debug-variables
+                 (apropos-internal "^anything-" 'boundp)))
+  (insert "** "
+          (symbol-name v) "\n"
+          (pp-to-string (symbol-value v)) "\n")))
 
 ;; (@* "Core: misc")
 (defun anything-kill-buffer-hook ()

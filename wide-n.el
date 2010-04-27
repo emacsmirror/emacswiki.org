@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Sat Apr 24 13:17:25 2010 (-0700)
+;; Last-Updated: Mon Apr 26 17:03:47 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 268
+;;     Update #: 322
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wide-n.el
 ;; Keywords: narrow restriction widen
 ;; Compatibility: Emacs 21.x, 22.x, 23.x
@@ -22,15 +22,16 @@
 ;; 
 ;;; Commentary:
 ;;
-;;    Command `wide-n' cycles among previous buffer restrictions
-;;    (narrowings).  Function `narrow-to-region' is advised, so that
-;;    its restriction is added to a list of restrictions for the
-;;    current buffer, `wide-n-restrictions'.
+;;    This library modifies commands `narrow-to-region',
+;;    `narrow-to-defun', and `narrow-to-page' (`C-x n n', `C-x n d',
+;;    and `C-x n p') so that the current buffer restriction
+;;    (narrowing) is added to a list of restrictions for the current
+;;    buffer, `wide-n-restrictions'.
 ;;
-;;    A repeatable version of command `wide-n' is bound to `C-x n x'.
-;;    Repeating `x' after this repeats the action: `C-x n x x x x'
+;;    You can then use `C-x n x' to cycle among previous buffer
+;;    restrictions.  Repeating `x' repeats the action: `C-x n x x x x'
 ;;    etc.  Each time you hit `x' a different narrowing is made
-;;    current.  You can thus use this as a way to browse your past
+;;    current.  This gives you an easy way to browse your past
 ;;    narrowings.
 ;;
 ;;    Invoking `C-x n x' with a prefix argument changes the behavior
@@ -47,10 +48,10 @@
 ;;      negative arg also pops entries off the ring: it removes the
 ;;      ring entries from the most recent back through the (-)Nth one.
 ;;
-;;    NOTE: If you use Emacs 21, then the repeatable nature of `C-x n
-;;          x' is not available to you.  You can nevertheless bind
-;;          command `wide-n' (instead of `wide-n-repeat') to `C-x n x'
-;;          and use it without repeating `x'.
+;;    Be default, `C-x n x' is bound to command `wide-n-repeat'.  If
+;;    you use Emacs 21 then you will want to change this key binding
+;;    to command `wide-n', which is a non-repeatable version.
+;;    Repeatability is not available before Emacs 22.
 ;;
 ;;    Emacs markers are used to record restriction limits, so the same
 ;;    restriction is available even if you modify its context.  If for
@@ -64,6 +65,16 @@
 ;;    this in order to let you bookmark and restore a list of
 ;;    restrictions.
 ;;
+;;    In normal use, only the interactive use of commands
+;;    `narrow-to-region', `narrow-to-defun', and `narrow-to-page' is
+;;    affected by this library.  When these functions are called
+;;    non-interactively there is normally no change to the value of
+;;    variable `wide-n-restrictions'.  However, if for some reason you
+;;    want to add entries to the restrictions ring when narrowing with
+;;    some Emacs-Lisp code (i.e. non-interactively), you can do so by
+;;    binding variable `wide-n-push-anyway-p' around the narrowing
+;;    call.
+;;
 ;;
 ;;  Commands defined here:
 ;;
@@ -71,19 +82,18 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `wide-n-markerize', `wide-n-repeat-command'.
+;;    `wide-n-markerize', `wide-n-push', `wide-n-repeat-command'.
 ;;
 ;;  Internal variables defined here:
 ;;
-;;    `wide-n-restrictions'.
+;;    `wide-n-push-anyway-p', `wide-n-restrictions'.
 ;;
 ;;  ***** NOTE: This EMACS PRIMITIVE has been ADVISED HERE:
 ;;
 ;;    `narrow-to-region'.
 ;;
 ;;  ***** NOTE: The following functions defined in `lisp.el' and
-;;              `page.el' have been COPIED HERE, to take advantage of
-;;              the advised definition of `narrow-to-region':
+;;              `page.el' have been REDEFINED here:
 ;;
 ;;    `narrow-to-defun', `narrow-to-page'.
 ;;
@@ -91,6 +101,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2010/04/26 dadams
+;;     Added: wide-n-push, wide-n-push-anyway-p.
+;;     narrow-to-*: Call wide-n-push when interactive or wide-n-push-anyway-p.
 ;; 2010/04/24 dadams
 ;;     Added: wide-n-markerize.
 ;;     Use non-destructive operations (again, as initially).
@@ -139,6 +152,14 @@ Each entry is either `all' or a cons (START . END), where START and
 END are the limits of a buffer restriction.
 `all' means no restriction (completely widened).")
 (make-variable-buffer-local 'wide-n-restrictions)
+
+(defvar wide-n-push-anyway-p nil
+  "Non-nil means push to `wide-n-restrictions' even if non-interactive.
+Normally, if a narrowing command is called non-interactively the
+region limits are not pushed to `wide-n-restrictions'.  A non-nil
+value here overrides the push inhibition.  You can bind this to
+non-nil in Lisp code to populate `wide-n-restrictions' during
+narrowing.")
 
 (defun wide-n (arg)
   "Widen to a previous buffer restriction.
@@ -194,8 +215,9 @@ This is a nondestructive operation: returns a new cons of the markers."
       (setq restriction  (cons mrk1 mrk2))))
   restriction)
 
-(defadvice narrow-to-region (before push-wide-n-restrictions activate)
-  "Push the region limits to `wide-n-restrictions'."
+(defun wide-n-push (start end)
+  "Push the region limits to `wide-n-restrictions'.
+START and END are as for `narrrow-to-region'."
   (let ((mrk1  (make-marker))
         (mrk2  (make-marker)))
     (move-marker mrk1 start)
@@ -224,7 +246,19 @@ This is a repeatable version of `wide-n'."
       (define-key ctl-x-map "nx" 'wide-n-repeat)
     (define-key ctl-x-map "nx" 'wide-n))) ; Non-repeatable version for Emacs 21.
 
-;; Standard definition.  We copy it here so it will pick up the advised `narrow-to-region'.
+
+;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
+;;
+(defadvice narrow-to-region (before push-wide-n-restrictions activate)
+  "Push the region limits to `wide-n-restrictions'.
+You can use `C-x n x' to widen to a previous buffer restriction."
+  (when (or (interactive-p) wide-n-push-anyway-p)  (wide-n-push start end)))
+
+
+;; REPLACE ORIGINAL in `lisp.el'.
+;;
+;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
+;;
 (defun narrow-to-defun (&optional arg)
   "Make text outside current defun invisible.
 The defun visible is the one that contains point or follows point.
@@ -253,9 +287,14 @@ Optional ARG is ignored."
 	(setq beg (point)))
       (goto-char end)
       (re-search-backward "^\n" (- (point) 1) t)
+      (when (or (interactive-p) wide-n-push-anyway-p) (wide-n-push beg end))
       (narrow-to-region beg end))))
 
-;; Standard definition.  We copy it here so it will pick up the advised `narrow-to-region'.
+
+;; REPLACE ORIGINAL in `page.el'.
+;;
+;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
+;;
 (defun narrow-to-page (&optional arg)
   "Make text outside current page invisible.
 A numeric arg specifies to move forward or backward by that many pages,
@@ -290,17 +329,19 @@ thus showing a page other than the one point was originally in."
 	       (goto-char (match-beginning 0)) ; was (beginning-of-line)
 	       (looking-at page-delimiter)))
 	(goto-char (match-beginning 0))) ; was (beginning-of-line)
-    (narrow-to-region (point)
-		      (progn
-			;; Find the top of the page.
-			(forward-page -1)
-			;; If we found beginning of buffer, stay there.
-			;; If extra text follows page delimiter on same line,
-			;; include it.
-			;; Otherwise, show text starting with following line.
-			(if (and (eolp) (not (bobp)))
-			    (forward-line 1))
-			(point)))))
+    (let ((beg  (point))
+          (end  (progn
+                  ;; Find the top of the page.
+                  (forward-page -1)
+                  ;; If we found beginning of buffer, stay there.
+                  ;; If extra text follows page delimiter on same line,
+                  ;; include it.
+                  ;; Otherwise, show text starting with following line.
+                  (if (and (eolp) (not (bobp)))
+                      (forward-line 1))
+                  (point))))
+      (when (or (interactive-p) wide-n-push-anyway-p) (wide-n-push beg end))
+      (narrow-to-region beg end))))
 
 ;;;;;;;;;;;;;;;;;;;;
 

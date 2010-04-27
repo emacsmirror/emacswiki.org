@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 21 19:40:38 2010 (-0700)
+;; Last-Updated: Mon Apr 26 09:33:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15551
+;;     Update #: 15554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6248,11 +6248,16 @@ Bound to `C-^' in the minibuffer, except during Icicles searching."
 Bound to `C-^' in the minibuffer during Icicles searching (only)."
   (interactive)
   (setq icicle-search-highlight-all-current-flag  (not icicle-search-highlight-all-current-flag))
+  ;; Rehighlight to see effect of toggle.
   (let ((icicle-candidate-nb  icicle-candidate-nb))
-    ;; Rehighlight to see effect of toggle.
-    (icicle-erase-minibuffer)
-    (icicle-retrieve-last-input))
-  (icicle-search-action "DUMMY")        ; Get back to current, and highlight it.
+    (let ((icicle-current-input  icicle-current-input)) (icicle-erase-minibuffer))
+    (icicle-retrieve-last-input)
+    (funcall (or icicle-last-completion-command
+                 (if (eq icicle-current-completion-mode 'prefix)
+                     #'icicle-prefix-complete
+                   #'icicle-apropos-complete))))
+  (icicle-search-highlight-all-input-matches icicle-current-input)
+  (when icicle-candidate-nb (icicle-search-action "DUMMY")) ; Get back to current.
   (icicle-msg-maybe-in-minibuffer
    (if icicle-search-highlight-all-current-flag
        "Highlighting current input match in each main search hit is now ON"

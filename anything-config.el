@@ -640,7 +640,11 @@ With others windows manager you could use:
                 (string-match "^Preconfigured.+$"
                               (setq doc (or (documentation (setq sym (cdr entry)))
                                             ""))))
-        collect (format "\\[%s] : %s\n" sym (match-string 0 doc))))
+        collect (cons sym (match-string 0 doc))))
+
+(defun anything-c-format-preconfigured-anything ()
+  (mapcar (lambda (x) (format "\\[%s] : %s\n" (car x) (cdr x)))
+          (anything-c-list-preconfigured-anything)))
 
 (setq anything-help-message
       (lambda ()
@@ -693,14 +697,14 @@ Visible marks store candidate. Some actions uses marked candidates.
 \\<global-map>\\[anything-resume] revives last `anything' session.
 It is very useful, so you should bind any key.
 
-Simgle source is executed by \\[anything-call-source].
+Single source is executed by \\[anything-call-source].
 
 == Preconfigured `anything' ==
 Preconfigured `anything' is commands that uses `anything' interface.
 You can use them without configuration.
 
 "
-         (apply 'concat (anything-c-list-preconfigured-anything))
+         (apply 'concat (anything-c-format-preconfigured-anything))
          "
 Enjoy!")))
 
@@ -813,7 +817,9 @@ With two prefix args allow choosing in which symbol to search."
 
 ;;;###autoload
 (defun anything-locate ()
-  "Preconfigured `anything' for Locate."
+  "Preconfigured `anything' for Locate.
+Note you can add locate command after entering pattern.
+See man locate for more infos."
   (interactive)
   (anything-other-buffer 'anything-c-source-locate "*anything locate*"))
 
@@ -1889,25 +1895,28 @@ You can put (anything-dired-binding 1) in init file to enable anything bindings.
 ;; (anything 'anything-c-source-file-cache)
 
 ;;; Locate
-(defvar anything-c-locate-options
-  (cond
-   ((eq system-type 'darwin) '("locate"))
-   ((eq system-type 'berkeley-unix) '("locate" "-i"))
-   (t '("locate" "-i" "-r")))
-  "A list where the `car' is the name of the locat program followed by options.
-The search pattern will be appended, so the
-\"-r\" option should be the last option.")
+(defvar anything-c-locate-command
+  (case system-type
+    ('gnu/linux "locate -i -r %s")
+    ('berkeley-unix "locate -i %s")
+    (t "locate %s"))
+  "A list of arguments for locate program.
+The \"-r\" option must be the last option.")
+
+(defun anything-c-locate-init ()
+  "Initialize async locate process for `anything-c-source-locate'."
+  (start-process-shell-command "locate-process" nil
+                               (format anything-c-locate-command
+                                       anything-pattern)))
 
 (defvar anything-c-source-locate
   '((name . "Locate")
-    (candidates . (lambda ()
-                    (apply 'start-process "locate-process" nil
-                           (append anything-c-locate-options
-                                   (list anything-pattern)))))
+    (candidates . anything-c-locate-init)
     (type . file)
     (requires-pattern . 3)
     (delayed))
-  "Source for retrieving files matching the current input pattern with locate.")
+  "Find files matching the current input pattern with locate.")
+
 ;; (anything 'anything-c-source-locate)
 
 ;;; Recentf files
@@ -4408,6 +4417,24 @@ A list of search engines."
   (setq anything-input-idle-delay 0)
   (anything-set-sources '(anything-c-source-call-source)))
 
+;;; Execute Preconfigured anything.
+(defvar anything-c-source-anything-commands
+  '((name . "Preconfigured Anything")
+    (candidates . anything-c-anything-commands-candidates)
+    (type . command)))
+;; (anything 'anything-c-source-anything-commands)
+
+(defun anything-c-anything-commands-candidates ()
+  (loop for (cmd . desc) in (anything-c-list-preconfigured-anything)
+        collect (cons (substitute-command-keys (format "\\[%s] : %s" cmd desc))
+                      cmd)))
+
+;;;###autoload
+(defun anything-execute-anything-command ()
+  "Preconfigured `anything' to execute preconfigured `anything'."
+  (interactive)
+  (anything-other-buffer 'anything-c-source-anything-commands
+                         "*anything commands*"))
 
 ;; Occur
 
@@ -5854,7 +5881,7 @@ Return nil if bmk is not a valid bookmark."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Setup ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;; Type Attributes
+;;;; Type Attributes
 (define-anything-type-attribute 'buffer
   `((action
      ,@(if pop-up-frames
@@ -5905,7 +5932,8 @@ Return nil if bmk is not a valid bookmark."
             ("Add command to kill ring" . anything-c-kill-new)
             ("Go to command's definition" . anything-c-find-function))
     ;; Sort commands according to their usage count.
-    (filtered-candidate-transformer . anything-c-adaptive-sort))
+    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (persistent-action . anything-c-describe-function))
   "Command. (string or symbol)")
 
 (define-anything-type-attribute 'function
@@ -6005,6 +6033,14 @@ the center of window, otherwise at the top of window.
   '((real-to-display . anything-c-timer-real-to-display)
     (action ("Cancel Timer" . cancel-timer)))
   "Timer.")
+
+;;;; Default `anything-sources'
+;; Setting `anything-sources' is DEPRECATED, but it seems that newbies
+;; tend to invoke M-x anything directly. So I offer default setting.
+(setq anything-sources
+      '(anything-c-source-buffers+
+        anything-c-source-recentf
+        anything-c-source-files-in-current-dir+))
 
 ;;;; unit test
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")

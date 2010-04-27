@@ -54,6 +54,8 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
 
 * [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.wl] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
 
+* [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
+
 == Show trailing whitespace ==
 
 To ''show'' (highlight) trailing whitespace, see ShowWhiteSpace. There are several ways, depending on what you want and what Emacs version you have.

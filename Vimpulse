@@ -1,6 +1,6 @@
 '''Vimpulse''' extends [ViperMode Viper] with Vim features like Visual mode and text objects.
 
-: '''Latest release: [[vimpulse.el|Vimpulse 0.3.1]]''' (always on !EmacsWiki)
+: '''Latest release: [[vimpulse.el|Vimpulse 0.4]]''' (always on !EmacsWiki)
 
 If you want bleeding edge, you can [http://www.assembla.com/spaces/vimpulse/trac_git_tool clone the Git repository].
 
@@ -18,9 +18,9 @@ Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Vi
 
 * By popular request, we have moved to [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git] as our version control system.
 * Emacs-compatible Visual selection (normal, line and block).
-* New movement keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `N%', `+', `_'.
-* Modal keybinding functions: `vimpulse-map', `vimpulse-imap' and `vimpulse-vmap'.
-* Improved text objects support.
+* New keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `gq', `gu', `gU', `g~', `g?', `+', `_'.
+* Modal keybinding functions: `vimpulse-map', `vimpulse-imap', `vimpulse-vmap' and `vimpulse-omap'.
+* Operator-Pending mode: framework for defining new operator commands and text objects.
 
 == Feedback ==
 

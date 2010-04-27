@@ -160,5 +160,8 @@ Though I use email address as account label, it's not necessary. You can use any
 
 Anyone who can read Chinese, and if you are interested, you can visit original article at my site  - [http://cyberhut.org/2007/10/gnusmsmtp.html / Gnus+MSMTP] or the same article in Chinese Emacs wiki - [http://www.emacs.cn/Gnus/Msmtp / Gnus+MSMTP].
 
+[new]
+Is there any way to protect the password? I don't like the idea of leaving it in plain text in the file, and for some reason I do not get prompted in gnus if I leave it out (although it works fine from the command line).
+
 ----
 CategoryGnus

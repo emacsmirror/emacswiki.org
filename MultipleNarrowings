@@ -2,20 +2,21 @@ This page is about library '''[::Wide-N]''', <tt>[[wide-n.el]]</tt>, which lets 
 
 == Problem: Narrowing Is Fine-Grained, But Widening Is Not ==
 
+
 Did you ever narrow a [[buffer]] to some restriction (region), and then later narrow it some more? Ever want to then widen back to the first (larger) restriction, rather than just widening to the whole buffer? You cannot.
 
 Narrowing always narrows to the current [[region]], which can be anywhere and have any size up to the buffer size. But command `widen' (`C-x n w') always restores the full buffer. There can be many different narrowings (one at a time), but there is only one widening: the whole buffer.
 
-Library '''Wide-N''' aims to solve this problem. It gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer).
+Library '''Wide-N''' solves this problem. It gives you the same fine-grained behavior for widening as for narrowing. In fact, the possible widening targets are the same restrictions that you created by previous narrowings (plus the whole buffer). Instead of only a single widening, you have '''''N''''' of them.
 
 
 == A Ring of Narrowings ==
 
-Library '''Wide-N''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer the narrowing is recorded in a buffer-local ring. You can return to any of these buffer restrictions selectively anytime.
+Library '''Wide-N''' advises `narrow-to-region', the basic narrowing command, so that each time you narrow a buffer interactively the buffer restriction is recorded in a buffer-local ring. You can return to any of these narrowings selectively at any time.
 
-'''`C-x n x'''' is bound to command `wide-n-repeat', which is just a repeatable version of command `wide-n'. It restores the last recorded narrowing for the current buffer.
+'''`C-x n x'''' is bound to command `wide-n-repeat', which restores the last recorded narrowing for the current buffer.
 
-The narrowings can be nested, but they need not be. They can be any [[region]]s at all.
+The narrowings can be nested, but they need not be. They can be any regions at all.
 
 * You can repeat the `x' to cycle quickly among narrowings: `C-x n x x x'...
 
@@ -37,6 +38,15 @@ This means that you can serialize `wide-n-restrictions',
 converting all markers to positions, save the value
 persistently, and restore it later.  Library '''[[Bookmark+]]'''' (<tt>[[bookmark+.el]]</tt>) does
 this in order to let you bookmark and restore a list of restrictions.
+
+In normal use, only the ''interactive'' use of commands
+`narrow-to-region', `narrow-to-defun', and `narrow-to-page' is
+affected by this library.  When these functions are called
+non-interactively there is normally no change to the value of
+variable `wide-n-restrictions'.  However, if for some reason you
+want to add entries to the restrictions ring when narrowing with
+some EmacsLisp code (i.e. non-interactively), you can do so by
+binding variable '''`wide-n-push-anyway-p'''' around the narrowing call.
 
 Enjoy! -- DrewAdams
 

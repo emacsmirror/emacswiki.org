@@ -1,4 +1,5 @@
-Find File at Point (<code>ffap.el</code>) is a builtin Emacs library, created by MichaelangeloGrigni, for opening a filename or URL at point.  The basic features are described in the Emacs manual (Manual:ffap).
+Find File at Point
+([::ffap].el) is a builtin Emacs library, created by MichaelangeloGrigni, for opening a filename or URL at point.  The basic features are described in the Emacs manual (Manual:ffap).
 
 There's various mode-specific features hiding in ffap,
 

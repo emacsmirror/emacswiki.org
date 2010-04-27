@@ -2,14 +2,14 @@ Code to insert a file name using Emacs's file name completion.
 
   (defun my-insert-file-name (filename &optional args)
     "Insert name of file FILENAME into buffer after point.
-
+  
   Prefixed with \\[universal-argument], expand the file name to
   its fully canocalized path.  See `expand-file-name'.
-
+  
   Prefixed with \\[negative-argument], use relative path to file
   name from current directory, `default-directory'.  See
   `file-relative-name'.
-
+  
   The default with no prefix is to insert the file name exactly as
   it appears in the minibuffer prompt."
     ;; Based on insert-file in Emacs -- ashawley 20080926
@@ -20,10 +20,12 @@ Code to insert a file name using Emacs's file name completion.
            (insert (expand-file-name filename)))
           (t
            (insert filename))))
+  
+  (global-set-key "\C-c\C-i" 'my-insert-file-name)
 
 Running
 
-  M-x my-insert-file-name ~/.emacs RET
+  C-c C-i ~/.emacs RET
 
 will insert the file name as it appears in the MiniBuffer.
 
@@ -31,7 +33,7 @@ If you want the full path to the file, you can have it "expanded" with a PrefixA
 
 Running
 
-  C-u M-x my-insert-file-name ~/.emacs RET
+  C-c C-i ~/.emacs RET
 
 will insert
 
@@ -41,7 +43,7 @@ into the buffer.
 
 Running
 
-  M-- M-x my-insert-file-name ~/.emacs RET
+  M-- C-c C-i ~/.emacs RET
 
 will insert the relative path to the file, in this case just the file name.
 
@@ -49,9 +51,44 @@ will insert the relative path to the file, in this case just the file name.
 
 Based on a [http://rlazo.org/blog/entry/2008/sep/13/insert-a-path-into-the-current-buffer/ blog post]  by RodrigoLazo.
 
-----
-See also CompleteFileName, FindFileAtPoint.
+To replace the file at point, you can use the following extension of FindFileAtPoint.
 
+  (autoload 'ffap-guesser "ffap")
+  (autoload 'ffap-read-file-or-url "ffap")
+  
+  (defun my-replace-file-at-point (currfile newfile)
+    "Replace CURRFILE at point with NEWFILE.
+  
+  When interactive, CURRFILE will need to be confirmed by user.
+  
+  NEWFILE does not need to exist.  However, Emacs's minibuffer
+  completion can help if it needs to be.
+  
+  Based on `ffap'."
+    (interactive
+     (let ((currfile (ffap-read-file-or-url "Replace filename: "
+                                            (ffap-guesser))))
+       (list currfile
+             (ffap-read-file-or-url (format "Replace `%s' with: "
+                                            currfile) currfile))))
+    (save-match-data
+      (if (or (looking-at (regexp-quote currfile))
+              (let ((filelen (length currfile))
+                    (opoint (point))
+                    (limit (+ (point) (length currfile))))
+                (save-excursion
+                  (goto-char (1- filelen))
+                  (and (search-forward currfile limit
+                                       'noerror)
+                       (< (match-beginning 0) opoint))
+                       (>= (match-end 0) opoint))))
+          (replace-match newfile)
+        (error "No file at point to replace"))))
+  
+  (global-set-key "\C-c\C-v" 'my-replace-file-at-point)
+
+See also CompleteFileName, FindFileAtPoint.
+  
 ----
 CategoryEditing
 CategoryFiles

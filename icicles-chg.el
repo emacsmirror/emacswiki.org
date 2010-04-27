@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 25 16:56:33 2010 (-0700)
+;; Last-Updated: Mon Apr 26 09:35:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5167
+;;     Update #: 5170
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1869,6 +1869,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/04/26 dadams
+;;     icicle-toggle-highlight-all-current:
+;;       Save/restore cand nb.  Re-complete, rehighlight.  Go to current cand only if it is defined.
 ;; 2010/04/21 dadams
 ;;     Added: icicle-sit-for (Emacs 23+), so user input interrupts sit-for after C-u in minibuffer.
 ;; 2010/04/20 dadams
