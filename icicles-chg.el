@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 26 09:35:57 2010 (-0700)
+;; Last-Updated: Tue Apr 27 10:31:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5170
+;;     Update #: 5177
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -462,6 +462,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/04/27 dadams
+;;     icicle-show-help-in-mode-line: Test value, not just boundp, of icicle-completing-keys-p.
 ;; 2010/04/21 dadams
 ;;     icicle-mode-line-name-less-p: Removed bogus calls to symbol-name.  Thx to Michael Heerdegen.
 ;; 2010/04/20 dadams
@@ -1869,6 +1871,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/04/27 dadams
+;;     icicle-apply-to-saved-candidate: Added sit-for for non-C-u case, to see any msg displayed.
+;;     icicle-help-on-candidate: Test value, not just boundp, of icicle-completing-keys-p.
 ;; 2010/04/26 dadams
 ;;     icicle-toggle-highlight-all-current:
 ;;       Save/restore cand nb.  Re-complete, rehighlight.  Go to current cand only if it is defined.

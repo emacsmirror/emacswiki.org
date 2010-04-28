@@ -221,6 +221,12 @@ This is a refinement of the above. It adds two features:
 ===== Problem using advice to reset to completing-read =====
 I like using ido for (almost) everything a lot but it gets slow for a long list of possible completions (e.g. for describe-function). Using the defadvice as described does not work for me? Is it just me or is this a bug? TIA
 -- sebhofer
+[new:stepnem:2010-04-27 19:55 UTC]
+Yeah, doesn't work for me either. IMO you have to change ##(boundp
+'ido-cur-list)## to just ##ido-cur-list## (##ido-cur-list## appears to be
+bound all the time after loading ido, so the test doesn't make sense; but I'm
+not changing it in the example in case it's version specific or whatnot (23
+here)).
 
 == Ido Hacks (modifying Ido's behavior) ==
 
@@ -236,9 +242,8 @@ It's a lot easier to scan long path names if they're displayed vertically, inste
 You'll want to set truncate-lines to nil if you do this.
 
   (defun my-ido-minibuffer-setup-hook ()
-    ;; allow wrapping in the minibuffer
-    (make-local-variable 'truncate-lines)
-    (setq truncate-lines nil))
+    ;; allow line wrapping in the minibuffer
+    (set (make-local-variable 'truncate-lines) nil))
   (add-hook 'ido-minibuffer-setup-hook 'my-ido-minibuffer-setup-hook)
 
 === Control-TAB buffer switching with Ido ===

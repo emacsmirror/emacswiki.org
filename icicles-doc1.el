@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:23:00 2010 (-0700)
+;; Last-Updated: Tue Apr 27 09:57:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24932
+;;     Update #: 24935
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3701,12 +3701,15 @@
 ;;  `icicle-type-actions-alist' for your own particular use.
 ;;
 ;;  Some such functions you can choose produce no side effect; they
-;;  simply return a value.  But if you use `C-u' before choosing one,
-;;  then the result of applying it is pretty-printed (in the echo area
-;;  or buffer `*Pp Eval Output*').  For example, if you cycle to the
-;;  function candidate `file-attributes' and use `C-u C-RET', then the
-;;  properties of the current candidate file are displayed.  With just
-;;  `C-RET', the list of properties is computed, but not displayed.
+;;  simply return a value.  But if you use `C-u' before `C-S-RET',
+;;  then the result of applying the function is pretty-printed (in the
+;;  echo area or buffer `*Pp Eval Output*').  For example, if you use
+;;  `C-x C-f', you hit `C-u C-S-RET' on the candidate file name
+;;  `icicles-doc1.el', and you choose the function candidate
+;;  `file-attributes' at the completion prompt `How (action): ', then
+;;  the properties of the candidate file (`icicles-doc1.el') are
+;;  displayed.  With just `C-S-RET' (no prefix arg), the list of
+;;  properties is computed, but not displayed.
 ;;
 ;;  Be aware of this gotcha: The alternative action for commands that
 ;;  use `icicle-type-actions-alist' prompts for a function.  If you

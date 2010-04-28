@@ -14,6 +14,16 @@ Please go through the support channels [http://aquamacs.org/support.shtml] if yo
  
  (osx-key-mode -1)  ; no Mac-specific key bindings
  
+ ;; if you instead decide to leave osx-key-mode on:
+
+ (define-key osx-key-mode-map "\C-z" nil)  ;; reinstate  C-z to minimize 
+ ;; (define-key osx-key-mode-map "\C-z" 'ns-do-hide-emacs)  ;; C-z to hide the application
+ 
+ (unless window-system   ;; in TTY (terminal) mode
+   (normal-erase-is-backspace-mode nil)
+   (set-face-inverse-video-p 'mode-line-inactive t)
+   (define-key osx-key-mode-map "\C-z" 'suspend-emacs))
+
  (setq
          ns-command-modifier 'meta         ; Apple/Command key is Meta
  	ns-alternate-modifier nil         ; Option is the Mac Option key

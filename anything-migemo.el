@@ -1,5 +1,5 @@
 ;;; anything-migemo.el --- Migemo plug-in for anything
-;; $Id: anything-migemo.el,v 1.18 2009/06/07 17:52:22 rubikitch Exp $
+;; $Id: anything-migemo.el,v 1.18 2009-06-07 17:52:22 rubikitch Exp $
 
 ;; Copyright (C) 2007, 2008, 2009  rubikitch
 
@@ -60,7 +60,7 @@
 ;;; History:
 
 ;; $Log: anything-migemo.el,v $
-;; Revision 1.18  2009/06/07 17:52:22  rubikitch
+;; Revision 1.18  2009-06-07 17:52:22  rubikitch
 ;; New macro `anything-migemize-command'.
 ;;
 ;; Revision 1.17  2009/06/04 20:32:00  rubikitch
@@ -338,5 +338,5 @@ Bind `anything-use-migemo' = t in COMMAND."
 (provide 'anything-migemo)
 
 ;; How to save (DO NOT REMOVE!!)
-;; (emacswiki-post "anything-migemo.el")
+;; (progn (magit-push) (emacswiki-post "anything-migemo.el"))
 ;;; anything-migemo.el ends here

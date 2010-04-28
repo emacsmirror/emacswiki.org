@@ -59,7 +59,9 @@ To replace the file at point, you can use the following extension of FindFileAtP
   (defun my-replace-file-at-point (currfile newfile)
     "Replace CURRFILE at point with NEWFILE.
   
-  When interactive, CURRFILE will need to be confirmed by user.
+  When interactive, CURRFILE will need to be confirmed by user
+  and will need to exist on the file system to be recognized,
+  unless it is a URL.
   
   NEWFILE does not need to exist.  However, Emacs's minibuffer
   completion can help if it needs to be.

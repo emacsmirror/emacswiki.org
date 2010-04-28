@@ -1,7 +1,7 @@
 ;;; fix-buffers-list.el --- New M status and colors in buffers list
 ;;--------------------------------------------------------------------
 ;;
-;; Copyright (C) 2004, David Andersson <david(at)symsoft.se>
+;; Copyright (C) 2004, David Andersson <l.david.andersson(at)sverige.nu>
 ;;
 ;; This file is NOT part of Emacs.
 ;;
@@ -22,9 +22,9 @@
 ;;
 ;;-------------------------------------------------------------------
 ;;
-;; Author: David Andersson <david(at)symsoft.se>
+;; Author: David Andersson <l.david.andersson(at)sverige.nu>
 ;; Created: 26 Nov 2004
-;; Version: 1.3
+;; Version: 1.5
 ;;
 ;;; Commentary:
 ;;
@@ -116,6 +116,7 @@
 ;; (msb.el).
 ;;
 ;; History:
+;;  1.5 david 2010-04-27 Update email
 ;;  1.4 david 2010-04-18 Incompatibility comment about Emacs-22
 ;;  1.3 david 2006-05-16 Colour special buffer names
 ;;  1.2 david 2006-02-21 Compact mode name with list-buffers-mode-alist

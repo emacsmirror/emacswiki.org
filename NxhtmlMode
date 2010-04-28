@@ -12,7 +12,7 @@ http://ourcomments.org/Emacs/nXhtml/doc/img/use-nXhtml-trans2.png
 
 [new]
 : To download nXhtml go to [http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html nXhtml homepage]. It is also included in [[EmacsW32]].
-: You can also download nXhtml directly from the repository (without bzr). To do that download the file [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/web-vcs.el web-vcs.el], eval it and do <b>M-x nxhtml-setup-install</b>. This can be used both for initial download and updating.
+: You can also download nXhtml directly from the repository (without bzr). To do that download the file [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/web-vcs.el web-vcs.el], eval it and do <b>M-x web-vcs-nxhtml</b>. This can be used both for initial download and updating.
 : With the web download I now recommend downloading part by part if you like it. I have the impression that many wanted a smaller download than the whole of nXhtml. Here you have it!
 : To report a bug go to https://bugs.launchpad.net/nxhtml.
 

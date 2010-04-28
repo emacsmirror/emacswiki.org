@@ -23,7 +23,7 @@ Keybindings in a mediawiki mode
 * M-p -- previous page in the page ring
 * M-g -- reload the current page
 
-Please send any bug reports to me [mailto:mhershberger@intrahealth.org via email] (Delivery to the following FAILED, 550 No Such user, This e-mail is dead).
+Please send any bug reports to me [mailto:mah@everybody.org via email].
 
 (I plan on committing those changes that allow for an easier http post back to emacs, but I'd like to shake out any bugs here, first.)
 

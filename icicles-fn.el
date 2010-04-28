@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 23 13:24:02 2010 (-0700)
+;; Last-Updated: Tue Apr 27 09:18:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11689
+;;     Update #: 11694
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1294,8 +1294,8 @@ functions, which use zero-indexing for POSITION."
   ;; Use this as `minibuffer-default-add-function'.
   (defun icicle-minibuffer-default-add-completions ()
     "Like `old-minibuffer-default-add-completions', but respect global filters."
-    (let ((def minibuffer-default)
-          (all (all-completions "" minibuffer-completion-table minibuffer-completion-predicate t)))
+    (let ((def  minibuffer-default)
+          (all  (all-completions "" minibuffer-completion-table minibuffer-completion-predicate t)))
       (setq all  (icicle-remove-if-not (lambda (cand)
                                          (let ((case-fold-search  completion-ignore-case))
                                            (icicle-filter-wo-input cand)))
@@ -3433,7 +3433,7 @@ Do this only if `icicle-help-in-mode-line-flag' is non-nil."
                               (consp lacarte-menu-items-alist)
                               (cdr (assoc candidate lacarte-menu-items-alist)))
                              (;; Key-completion candidate.  Get command from candidate.
-                              (boundp 'icicle-completing-keys-p)
+                              (and (boundp 'icicle-completing-keys-p) icicle-completing-keys-p)
                               (if (string= ".." candidate)
                                   "GO UP"
                                 (let ((cmd-name  (save-match-data
@@ -4113,8 +4113,8 @@ MESSAGE is the confirmation message to display in the minibuffer."
 ;; $$ No longer used.
 (defun icicle-display-Completions ()
   "Display *Completions* buffer."
-  (let ((completions (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
-                                      icicle-ignore-space-prefix-flag)))
+  (let ((completions  (all-completions "" minibuffer-completion-table minibuffer-completion-predicate
+                                       icicle-ignore-space-prefix-flag)))
     (when (> (length icicle-completion-candidates) icicle-incremental-completion-threshold)
       (message "Displaying completion candidates..."))
     (with-output-to-temp-buffer "*Completions*"

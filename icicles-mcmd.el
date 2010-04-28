@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Apr 26 09:33:21 2010 (-0700)
+;; Last-Updated: Tue Apr 27 10:25:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15554
+;;     Update #: 15558
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4426,7 +4426,7 @@ You can use this command only from the minibuffer or *Completions*
              (icicle-msg-maybe-in-minibuffer "No help"))) ; Menu item with lambda definition.
 
           (;; A key-completion candidate.  Get the true command from the candidate.
-           (boundp 'icicle-completing-keys-p)
+           (and (boundp 'icicle-completing-keys-p) icicle-completing-keys-p)
            (save-match-data
              (string-match "\\(.+\\)  =  \\(.+\\)" icicle-last-completion-candidate)
              (setq cand-symb  (intern-soft (substring icicle-last-completion-candidate
@@ -4602,7 +4602,8 @@ If that returns nil, then read string FUNCTION."
     (condition-case icicle-apply-to-saved-candidate
         (if current-prefix-arg
             (icicle-pp-eval-expression '(funcall real-fn icicle-saved-completion-candidate))
-          (funcall real-fn icicle-saved-completion-candidate))
+          (funcall real-fn icicle-saved-completion-candidate)
+          (sit-for 3))                  ; In case the function displays a message.
       (error (message  (format "ERROR invoking `%S' on `%s': %s" real-fn
                                icicle-saved-completion-candidate
                                (error-message-string icicle-apply-to-saved-candidate)))
