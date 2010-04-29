@@ -1,25 +1,8 @@
-;;; TeXMed.el --- query and retrieve BibTeX from NCBI pubmed via TeXMed
-
-;;; Author:  Emanuel Heitlinger <emanuelheitlinger@gmail.com>
+;;; TeXMed.el - Query and retrieve BibTeX from NCBI pubmed via TeXMed in Emacs
 ;;
-;; Created: 18 Apr 2010
-;; Version: 1.0
-
-;; This file is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation; either version 2 of
-;; the License, or (at your option) any later version.
-
-;; This file is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty
-;; of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
-;; See the GNU General Public License for more details.
-
-;; You should have received a copy of the GNU General Public
-;; License along with GNU Emacs; if not, write to the Free
-;; Software Foundation, 51 Franklin Street, Fifth Floor,
-;; Boston, MA 02110-1301, USA.
-
+;;; AUTHOR:  Emanuel Heitlinger <emanuelheitlinger@gmail.com>
+;; LICENCE: GPL2
+;;
 ;;; Commentary:
 ;;
 ;; Based on: TeXMed - http://www.bioinformatics.org/texmed/
@@ -30,17 +13,18 @@
 ;; This mode adds some convenience functions to the w3m-buffers opened
 ;; searching on TexMed
 ;;
-;; Installation:
+;; How to install:
 ;; 1). Download this file and put in your emacs's load-path
 ;; 2). Put the following in your .emacs:
 ;;     (require 'TeXMed)
 ;;     (global-set-key "\C-ct" 'TeXMed-search)
 ;;
-;; Dependencies: 
+;; DEPENDENCIES: 
 ;; 1). emacs-w3m http://emacs-w3m.namazu.org/ 
 ;;
-;; Usage:
-;; 1). Type C-ct (or whatever you bind it to) to start a query
+;; How to use:
+;; 1). Type C-ct to start a query (that's press Control and c together then
+;;     t alone)
 ;; 2). Presented with the results of the query you have these options:
 ;;     a) Type C-cea to export all results to a bibtex-file
 ;;     b) Type C-cel to go through results and choose one by one
@@ -58,10 +42,9 @@
 ;;
 ;; Only tested with Gnu-Emacs 23.1.1 on Linux.
 
-;; This is my very first minor mode for Emacs: It probabely has bugs,
-;; uses maybe bad elisp and fails following some of the conventions
-
-;;; Code:
+;; This is my very first minor mode for Emacs:
+;; It probabely has many bugs, uses maybe bad elisp
+;; and fails following some of the conventions
 
 ;; load dependencies
 (require 'w3m-search)
@@ -88,7 +71,7 @@
 for possible replacements in TeXMed export files. See also help
 of `format-time-string'")
 
-;; global function Texmed search 
+;; global functions Texmed search 
 (defun TeXMed-search ()
   "Search for a querry you are prompted for on TeXMed,
 an online-service, which allows retieval of bibtex from
@@ -100,10 +83,9 @@ pubmed"
     (if (string-match "^$" query) ; user entered empty string
         (TeXMed-search) ; search again 
       (progn ; else go agead
-        (TeXMed-mode) 
+        (TeXMed-mode t) 
         (add-to-list 'TeXMed-search-history query)))))
 
-;; functions for the mode
 (defun TeXMed-tick-field (proceeding)
   "Tick the field proceeding the argument"
   (beginning-of-buffer)
@@ -166,7 +148,7 @@ export the chosen"
      With no argument, this command toggles the mode.
      Non-null prefix argument turns on the mode.
      Null prefix argument turns off the mode."     
-  ;; The initial value
+  ;; The initial value.
   :init-value nil
   ;; The indicator for the mode line.
   :lighter " TeXMed")

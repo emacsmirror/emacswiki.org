@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 1.0
-;; Last-Updated: Thu Apr  8 19:05:24 2010 (-0700)
+;; Last-Updated: Wed Apr 28 14:32:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 193
+;;     Update #: 196
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp-c-l.el
 ;; Keywords: display, convenience, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -60,6 +60,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2010/04/28 dadams
+;;     Added autoload cookie for pp^L-^L-display-table-entry.  Thx to Peter Galbraith.
 ;; 2010/04/08 dadams
 ;;     Added autoload cookies.  Thx to Peter Galbraith.
 ;; 2009/03/02 dadams
@@ -179,6 +181,7 @@ use either \\[customize] or command `pretty-control-l-mode'."
     :initialize 'custom-initialize-default
     :type 'boolean :group 'Pretty-Control-L))
 
+;;;###autoload
 (defun pp^L-^L-display-table-entry (window)
   "Returns the display-table entry for Control-l (`^L') char in WINDOW.
 A vector determining how a Control-l character is displayed in WINDOW.

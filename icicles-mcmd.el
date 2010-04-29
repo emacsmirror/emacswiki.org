@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 27 10:25:03 2010 (-0700)
+;; Last-Updated: Wed Apr 28 10:54:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15558
+;;     Update #: 15564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4291,7 +4291,7 @@ If any of these conditions is true, remove all occurrences of CAND:
             (delete (funcall icicle-get-alist-candidate-function disp-cand) icicle-candidates-alist))))
   (when (consp icicle-completion-candidates)
     (setq icicle-completion-candidates
-          (if allp                      ; Delete only the first occurrence, or all if ALLP.
+          (if allp ; Delete only the first occurrence, or all if ALLP.
               (delete disp-cand icicle-completion-candidates)
             (icicle-delete-count disp-cand icicle-completion-candidates 1))))
   ;; Update `minibuffer-completion-predicate' or `read-file-name-predicate'
@@ -4303,7 +4303,7 @@ If any of these conditions is true, remove all occurrences of CAND:
                (if read-file-name-predicate
                    (lexical-let ((curr-pred read-file-name-predicate))
                      `(lambda (file-cand)
-                       (and (not (equal ',disp-cand file-cand)) (funcall ',curr-pred file-cand))))
+                        (and (not (equal ',disp-cand file-cand)) (funcall ',curr-pred file-cand))))
                  `(lambda (file-cand) (not (equal ',disp-cand file-cand))))))
         ;; < Emacs 22.  Do nothing for file name.
         ;; `TAB' or `S-TAB' will bring it back as a candidate.
@@ -4311,9 +4311,16 @@ If any of these conditions is true, remove all occurrences of CAND:
         (minibuffer-completion-predicate ; Add excluding candidate to existing predicate.
          (setq minibuffer-completion-predicate
                (lexical-let ((curr-pred minibuffer-completion-predicate))
-                 `(lambda (cand) (and (not (equal ',mct-cand cand)) (funcall ',curr-pred cand))))))
-        (t                              ; Set predicate to excluding candidate.
-         (setq minibuffer-completion-predicate  `(lambda (cand) (not (equal ',mct-cand cand)))))))
+                 `(lambda (cand)             ; This corresponds to what we do in `icicle-mctize-all'.
+                    (and (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
+                                                (cdr mct-cand)
+                                                mct-cand)))
+                         (funcall ',curr-pred cand))))))
+        (t                     ; Set predicate to excluding candidate.
+         (setq minibuffer-completion-predicate ; This corresponds to what we do in `icicle-mctize-all'.
+               `(lambda (cand) (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
+                                                 (cdr mct-cand)
+                                                 mct-cand))))))))
 ;; $$$$$$$$$$$$ COULD USE THIS INSTEAD of updating the predicate,
 ;; but it works only when `minibuffer-completion-table' is an alist.
 ;;   (when (consp minibuffer-completion-table)

@@ -39,6 +39,8 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * ViewMailWishlist -- discuss ideas for VM and their feasibility.
 
+* ViewMailHeadersOnly -- blueprint for an experimental headers-only mode.
+
 === Documentation ===
 
 * [[http://www.wonderworks.com/vm/user-manual| Info manual on VM version 7]], Kyle Jones at Wonderworks, May 2003.  Even though it is out of date, this continues to be good reference for the basics.  See the info manual in your VM distribution for up to date documentation.

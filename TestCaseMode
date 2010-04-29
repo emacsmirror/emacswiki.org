@@ -5,6 +5,7 @@ The back-ends probably need some more path options to work correctly. Please let
 
 http://nschum.de/src/emacs/test-case-mode/test-case-mode.png
 
+There is a [http://github.com/ieure/test-case-mode version with changes by ieure] that supports tramp mode (and has a phpunit backend).
 
 ----
 CategoryModes

@@ -1,0 +1,7 @@
+= Message Outlook = 
+
+Allows outlook to act as a "mail-server" for message-mode.  To setup put Lisp:message-outlook.el into the load path, and put the following in ~/.emacs:
+
+  (setq mail-user-agent 'message-user-agent)
+  (require 'message-outlook)
+

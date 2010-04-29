@@ -1,0 +1,68 @@
+= How to use the Git repository to contribute to Aquamacs =
+
+
+Install Git here (point&click):  http://code.google.com/p/git-osx-installer/downloads/list?can=3
+
+Download Aquamacs repository (will take a bit depending on your network connection):
+
+ git clone git://github.com/davidswelt/aquamacs-emacs.git
+
+(Use "--depth 3" with this to speed up the process.)
+
+ cd aquamacs-emacs
+
+View the latest changes:
+
+ git log
+
+Let's create our own branch to work on:
+
+ git checkout -b topic/fancystuff
+
+... make some changes.  Let's check them in:
+
+ git commit -a 
+
+This will prompt for a commit message. Always enter a summary as the first line, and a more detailed description, if any, in the following lines.  Exit the editor.  The changes are now saved locally in the history.  To publish your branch, if you have write access at Github:
+
+ git push -u git@github.com:GITHUBUSERNAME/aquamacs-emacs.git topic/fancystuff
+
+(Of course, replace GITHUBUSERNAME with your user name on Github.
+If you do have write access to our repository, use "davidswelt".)
+
+From now on, "git push" will suffice, and "git pull" will pull the latest changes.
+
+To go back to the master branch, ensure all changes are checked in (or stashed away with "git stash").
+
+ git checkout master 
+
+To update from the Github repository:
+
+ git pull
+
+Now let's synchronize our topic branch (not normally necessary)
+
+ git checkout topic/fancystuff
+ git merge master
+
+This will merge new changes into your topic branch.  In case of conflicts, there will be a message.  Convenient resolution with "git mergetool", or manual resolution by editing the files, then "git add <filenames>", "git commit".
+Remember, the "merge" command will always only change the branch that you are in.
+
+Once you're done, push your commits to Github communicate your changes on aquamacs-devel so people can try them out.
+
+If anything goes wrong, don't despair.  Rolling back is easy.  To restore the local checkout to what's in the branch (the tip):
+
+ git reset --hard
+
+To roll back the tip of the branch to an earlier change, use "git log" to find out the revision ID of the change, then do
+
+ git reset --hard <revid>
+
+You can also see a log of recent changes to the repository:
+
+ git reflog
+ 
+... and use "git reset --hard" to go back to one of these states.
+
+
+Rules for the Aquamacs repository:  Do not reset (or rebase) beyond the published state of the repository.  Publish your changes often.  Have fun!

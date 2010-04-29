@@ -131,7 +131,17 @@ You can use [[Icicles]] [[completion]] in Shell mode. Whenever there are multipl
 
 You can also use `##C-`##' to quickly find, reuse, and edit a previous shell input, matching it in several ways. See [[Icicles - Other Search Commands#IciclesShell|Icicles - Reuse Shell Inputs]].
 
+== Clearing Shell Mode Output ==
+
+This is what I use to clear the shell output.
+
+ (defun clear-shell ()
+   (interactive)
+   (let ((old-max comint-buffer-maximum-size))
+     (setq comint-buffer-maximum-size 0)
+     (comint-truncate-buffer)
+     (setq comint-buffer-maximum-size old-max))) 
+
 ----
 CategoryExternalUtilities
 CategoryShell
-

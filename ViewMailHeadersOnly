@@ -1,0 +1,67 @@
+Headers-only messages in a VM folder have only their headers stored in the folder.  The bodies of the messages are stored somewhere externally and fetched on demand.
+
+== Motivation ==
+The purpose of the headers-only operation is to allow:
+
+* ''faster download times'', especially for large folders on IMAP servers, and
+
+* ''small folder buffers'', to fit within Emacs's limitations as well as for faster operation (during loading, saving, auto-saving and garbage collections).
+
+== Background ==
+It is sometimes said that VM does not have a "folder API", that is to say that it does not keep a separate index file through which remote folders can be accessed. This rules out the use of IMAP and maildir mail stores.  When pressed, Kyle Jones said [http://groups.google.com/group/gnu.emacs.vm.info/browse_thread/thread/2452dac3f8f816da/c2097279b22d2fd8?lnk=gst&q=maildir#c2097279b22d2fd8]:
+
+[new]
+The main reason is that no one seemed to want them, and it would 
+be some trouble to implement.  The people who want a directory 
+that contains thousands of files seem to have abandoned monolithic 
+mailers like VM a long time ago.
+
+Maildir certain wins on updates.  But as is typical of systems 
+that are write friendly, it loses on reads.  It also loses on 
+searches unless you have a very good index.  VM, being a mail 
+reader, does much more reading and searching than writing, so I 
+think optimizing for reads is a better choice.
+
+[new]
+Headers-only messages provide a partial solution to this problem.
+
+== Idea ==
+
+An experimental method for headers-only operation was devised by [http://www.robf.de/Hacking/elisp/index.html|Robert Fenk] when he was an active maintainer of ViewMail.  Normally, VM stores email mesasges in a '''Folder''' buffer.  It generates a '''Presentation''' buffer when needed to display individual message bodies.  Robert's idea is summarized in three points:
+
+* A headers-only message has only the headers stored in the Folder buffer and no body.  (It has hooks to find the message body in external storage.)  
+
+* When a message is viewed, its body is retrieved from external storage and loaded into the '''Presentation''' buffer and displayed.
+
+* When the user moves to a new message, the previous message body in the '''Presentation''' buffer is discarded and the new message body is loaded.
+
+== Advantages ==
+
+# Folders can have a mixture of headers-only messages and full messages.  (So, for instance, one can have recent messages in full and older messages in headers-only mode.)
+
+# Only the needed message bodies are fetched and they are immediately discarded when the user moves to another message.  No special action is needed to discard the message bodies.
+
+== Disadvantages ==
+
+# Since the message bodies are not cached, they need to be fetched every time a message is viewed.
+
+# For MIME messages, the Presentation buffer often displays only buttons for attachments.  The message body needs to be fetched each time one of the attachments is opened.
+
+# If one cycles through the MIME display states using the `D' command (`vm-decode-mime-message'), each step of `D' requires the message body to be fetched again.
+
+== Implementation ==
+
+The problems 2 and 3 can be solved in principle by maintaining a separate '''Cache''' buffer in which a single message body is maintained.  But this is delicate because most of VM code expects the body to be found in the '''Folder''' buffer.
+
+The experimental implementation of these ideas are planned for VM 8.2.0 and its prereleases.  Initially, there will be no '''Cache''' buffer.  Instead VM will provide operations `vm-load-message' (and `vm-unload-message') through which message bodies can be loaded into (respectively, unloaded from) the '''Folder''' buffer.
+
+It will not be possible to open attachments without loading a message body into the '''Folder''' buffer.  As far as possible, VM will load messages automatically whenever needed.  The user will be responsible for unloading them if necessary.  Both of these commands can operate on marked messages.  So they can be executed in bulk.
+
+[new:reddyuday:2010-04-28 21:33 UTC]
+
+----
+
+ViewMail; ViewMailWishlist
+
+
+

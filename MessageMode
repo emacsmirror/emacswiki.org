@@ -70,6 +70,9 @@ put it manually in message mode by typing <code>M-x message-mode</code>. There i
 
 Finally, recall that you can activate mail adresses in any buffer at any time by typing <code> M-x goto-address</code>. Cliking on a mail address will then bring a message buffer.
 
+= integrating with outlook = 
+
+There is an additional mode that allows the emacs buffer to create a outlook message.  This is described in MessageOutlook
 
 ----
 CategoryGnus CategoryMail
