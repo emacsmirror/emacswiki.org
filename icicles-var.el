@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Apr  3 11:05:55 2010 (-0700)
+;; Last-Updated: Thu Apr 29 10:16:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1296
+;;     Update #: 1301
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -104,9 +104,10 @@
 ;;    `icicle-previous-raw-non-file-name-inputs',
 ;;    `icicle-progressive-completing-p',
 ;;    `icicle-proxy-candidate-regexp', `icicle-proxy-candidates',
-;;    `icicle-read-expression-map', `icicle-re-no-dot',
-;;    `icicle-require-match-p', `icicle-reverse-multi-sort-p',
-;;    `icicle-reverse-sort-p', `icicle-saved-candidate-overlays',
+;;    `icicle-read-expression-map', `icicle-remove-icicles-props-p',
+;;    `icicle-re-no-dot', `icicle-require-match-p',
+;;    `icicle-reverse-multi-sort-p', `icicle-reverse-sort-p',
+;;    `icicle-saved-candidate-overlays',
 ;;    `icicle-saved-candidates-variables-obarray',
 ;;    `icicle-saved-completion-candidate',
 ;;    `icicle-saved-completion-candidates',
@@ -1068,6 +1069,16 @@ Several Emacs-Lisp mode key bindings are used.")
     ;;(define-key map "\177" 'backward-delete-char-untabify)
     (set-keymap-parent map minibuffer-local-map)
     (setq icicle-read-expression-map  map)))
+
+(defvar icicle-remove-icicles-props-p t
+  "Non-nil means to remove Icicles text properties from completion result.
+Icicles binds this internal variable to nil in contexts where it needs
+the completion result string to retain its Icicles text properties.
+
+Otherwise, function `icicle-unpropertize' removes at least the Icicles
+internal text properties from the final completion result.  Depending
+on the value of option `icicle-unpropertize-completion-result-flag',
+it may also remove all text properties.")
 
 (defvar icicle-re-no-dot "^\\([^.]\\|\\.\\([^.]\\|\\..\\)\\).*"
   "Regexp that matches anything except `.' and `..'.")

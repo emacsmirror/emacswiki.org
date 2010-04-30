@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:35:30 2010 (-0700)
+;; Last-Updated: Thu Apr 29 09:12:40 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20717
+;;     Update #: 20728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -360,6 +360,8 @@
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
 (defvar bbdb-hashtable)                 ; In `bbdb.el'
+(defvar color-theme)                    ; In `color-theme.el'
+(defvar color-theme-initialized)        ; In `color-theme.el'
 (defvar ess-current-process-name)       ; In `ess-inf.el'
 (defvar ess-mode-syntax-table)          ; In `ess-cust.el'
 (defvar ess-use-R-completion)           ; In `ess-cust.el'
@@ -371,6 +373,7 @@
 (defvar icicle-window-alist)            ; In `icicle-select-window'
 (defvar shell-completion-execonly)      ; In `shell.el'
 (defvar snarf-tag-function)             ; In `etags.el'
+(defvar w3m-current-title)              ; In `w3m.el'.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -1855,8 +1858,9 @@ use `(filesets-init)', and ensure that option
                               (append filesets-data icicle-saved-completion-sets)
                             icicle-saved-completion-sets)
                           nil t nil 'icicle-completion-set-history)))
-  (let* ((file-name   (cdr (assoc set-name icicle-saved-completion-sets)))
-         (candidates  (icicle-get-candidates-from-saved-set set-name 'dont-expand))
+  (let* ((file-name                              (cdr (assoc set-name icicle-saved-completion-sets)))
+         (candidates                             (icicle-get-candidates-from-saved-set
+                                                  set-name 'dont-expand))
          (icicle-whole-candidate-as-text-prop-p  t)
          (entry
           (funcall icicle-get-alist-candidate-function
@@ -2174,7 +2178,7 @@ Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save c
 
 ;; Utility function.  Use it to define multi-commands that navigate.
 (defun icicle-explore (define-candidates-fn final-action-fn quit-fn error-fn cleanup-fn prompt
-                                            &rest compl-read-args)
+                       &rest compl-read-args)
   "Icicle explorer: explore complex completion candidates.
 Navigate among locations or other entities represented by a set of
 completion candidates.  See `icicle-search' for a typical example.
@@ -2229,7 +2233,8 @@ commands, it need not be.  It can be useful anytime you need to use
              (progn
                (unless icicle-explore-final-choice
                  (setq icicle-explore-final-choice
-                       (apply #'completing-read prompt icicle-candidates-alist compl-read-args)))
+                       (let ((icicle-remove-icicles-props-p  nil)) ; Keep Icicles text properties.
+                         (apply #'completing-read prompt icicle-candidates-alist compl-read-args))))
                (setq icicle-explore-final-choice-full
                      (funcall icicle-get-alist-candidate-function
                               icicle-explore-final-choice 'no-error-p))
@@ -2240,6 +2245,7 @@ commands, it need not be.  It can be useful anytime you need to use
            (quit (if quit-fn (funcall quit-fn) (keyboard-quit)))
            (error (when error-fn (funcall error-fn))
                   (error "%s" (error-message-string failure))))
+      (setq result  (icicle-unpropertize result)) ; Finally remove any Icicles text properties.
       (when cleanup-fn (funcall cleanup-fn)))
     result))
 

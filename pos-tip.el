@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.3.3")
+(defconst pos-tip-version "0.3.6")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -20,8 +20,8 @@
 
 ;; You should have received a copy of the GNU General Public
 ;; License along with this program; if not, write to the Free
-;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-;; MA 02111-1307 USA
+;; Software Foundation, Inc., 51 Franklin St, Fifth Floor, Boston,
+;; MA  02110-1301 USA
 
 ;;; Commentary:
 
@@ -69,6 +69,23 @@
 
 
 ;;; History:
+;; 2010-04-29  S. Irie
+;;         * Modified to avoid byte-compile warning
+;;         * Bug fix
+;;         * Version 0.3.6
+;;
+;; 2010-04-29  S. Irie
+;;         * Renamed argument MAX-HEIGHT of `pos-tip-fill-string' to MAX-ROWS
+;;         * Modified old FSF address
+;;         * Version 0.3.5
+;;
+;; 2010-04-29  S. Irie
+;;         * Modified `pos-tip-show' to truncate string exceeding display size
+;;         * Added function `pos-tip-truncate-string'
+;;         * Added optional argument MAX-ROWS to `pos-tip-split-string'
+;;         * Added optional argument MAX-HEIGHT to `pos-tip-fill-string'
+;;         * Version 0.3.4
+;;
 ;; 2010-04-16  S. Irie
 ;;         * Changed `pos-tip-show' not to fill paragraph unless exceeding WIDTH
 ;;         * Version 0.3.3
@@ -241,23 +258,24 @@ Users can also get the frame coordinates by referring the variable
      ((null winsys)
       (error "text-only frame: %S" frame))
      ((eq winsys 'x)
-      (ignore-errors
-	(with-current-buffer (get-buffer-create " *xwininfo*")
-	  (let ((case-fold-search nil))
-	    (buffer-disable-undo)
-	    (erase-buffer)
-	    (call-process shell-file-name nil t nil shell-command-switch
-			  (concat "xwininfo -id "
-				  (frame-parameter frame 'window-id)))
-	    (goto-char (point-min))
-	    (search-forward "\n  Absolute")
-	    (setq pos-tip-saved-frame-coordinates
-		  (cons (string-to-number (buffer-substring-no-properties
-					   (search-forward "X: ")
-					   (line-end-position)))
-			(string-to-number (buffer-substring-no-properties
-					   (search-forward "Y: ")
-					   (line-end-position)))))))))
+      (condition-case nil
+	  (with-current-buffer (get-buffer-create " *xwininfo*")
+	    (let ((case-fold-search nil))
+	      (buffer-disable-undo)
+	      (erase-buffer)
+	      (call-process shell-file-name nil t nil shell-command-switch
+			    (concat "xwininfo -id "
+				    (frame-parameter frame 'window-id)))
+	      (goto-char (point-min))
+	      (search-forward "\n  Absolute")
+	      (setq pos-tip-saved-frame-coordinates
+		    (cons (string-to-number (buffer-substring-no-properties
+					     (search-forward "X: ")
+					     (line-end-position)))
+			  (string-to-number (buffer-substring-no-properties
+					     (search-forward "Y: ")
+					     (line-end-position)))))))
+	(error nil)))
      (t
       (and (or pos-tip-frame-offset
 	       (pos-tip-calibrate-frame-offset frame))
@@ -518,7 +536,7 @@ Example:
 	(pos-tip-cancel-timer))
     (cons rx ry)))
 
-(defun pos-tip-split-string (string &optional width margin justify squeeze)
+(defun pos-tip-split-string (string &optional width margin justify squeeze max-rows)
   "Split STRING into fixed width strings. Return a list of these strings.
 
 WIDTH specifies the width of filling each paragraph. WIDTH nil means use
@@ -533,7 +551,10 @@ to do: `full', `left', `right', `center', or `none'. A value of t means handle
 each paragraph as specified by its text properties. Omitting JUSTIFY means
 don't perform justification, word wrap and kinsoku shori (禁則処理).
 
-SQUEEZE nil means leave whitespaces other than line breaks untouched."
+SQUEEZE nil means leave whitespaces other than line breaks untouched.
+
+MAX-ROWS, if given, specifies maximum number of elements of return value.
+The elements exceeding this number are discarded."
   (with-temp-buffer
     (let* ((tab-width (or pos-tip-tab-width tab-width))
 	   (fill-column (or width (frame-width)))
@@ -560,9 +581,11 @@ SQUEEZE nil means leave whitespaces other than line breaks untouched."
 				  (setq line (substring line (length row))))))))
 		 (< (point) (point-max))
 	       (beginning-of-line 2)))
-      (nreverse rows))))
+      (nreverse (if max-rows
+		    (last rows max-rows)
+		  rows)))))
 
-(defun pos-tip-fill-string (string &optional width margin justify squeeze)
+(defun pos-tip-fill-string (string &optional width margin justify squeeze max-rows)
   "Fill each of the paragraphs in STRING.
 
 WIDTH specifies the width of filling each paragraph. WIDTH nil means use
@@ -577,7 +600,10 @@ to do: `full', `left', `right', `center', or `none'. A value of t means handle
 each paragraph as specified by its text properties. Omitting JUSTIFY means
 don't perform justification, word wrap and kinsoku shori (禁則処理).
 
-SQUEEZE nil means leave whitespaces other than line breaks untouched."
+SQUEEZE nil means leave whitespaces other than line breaks untouched.
+
+MAX-ROWS, if given, specifies maximum number of rows. The rows exceeding
+this number are discarded."
   (if justify
       (with-temp-buffer
 	(let* ((tab-width (or pos-tip-tab-width tab-width))
@@ -588,10 +614,31 @@ SQUEEZE nil means leave whitespaces other than line breaks untouched."
 	  (insert string)
 	  (untabify (point-min) (point-max))
 	  (fill-region (point-min) (point-max) justify (not squeeze))
-	  (buffer-string)))
+	  (if max-rows
+	      (buffer-substring (goto-char (point-min))
+				(line-end-position max-rows))
+	    (buffer-string))))
     (mapconcat 'identity
-	       (pos-tip-split-string string width margin)
+	       (pos-tip-split-string string width margin nil nil max-rows)
 	       "\n")))
+
+(defun pos-tip-truncate-string (string width height)
+  "Truncate each line of STRING to WIDTH and discard lines exceeding HEIGHT."
+  (with-temp-buffer
+    (insert string)
+    (goto-char (point-min))
+    (let ((nrow 0)
+	  rows)
+      (while (and (< nrow height)
+		  (prog2
+		      (push (truncate-string-to-width
+			     (buffer-substring (point) (progn (end-of-line) (point)))
+			     width)
+			    rows)
+		      (< (point) (point-max))
+		    (beginning-of-line 2)
+		    (setq nrow (1+ nrow)))))
+      (mapconcat 'identity (nreverse rows) "\n"))))
 
 (defun pos-tip-string-width-height (string)
   "Count columns and rows of STRING. Return a cons cell like (WIDTH . HEIGHT).
@@ -681,11 +728,18 @@ hidden by the tooltip.
 
 See also `pos-tip-show-no-propertize'."
   (let ((frame (window-frame (or window (selected-window))))
+	(max-width (1+ (/ (x-display-pixel-width) (frame-char-width))))
+	(max-height (1+ (/ (x-display-pixel-height) (frame-char-height))))
 	(w-h (pos-tip-string-width-height string)))
-    (if (and width
-	     (> (car w-h) width))
-	(setq string (pos-tip-fill-string string width nil 'none)
-	      w-h (pos-tip-string-width-height string)))
+    (cond
+     ((and width
+	   (> (car w-h) width))
+      (setq string (pos-tip-fill-string string width nil 'none nil max-height)
+	    w-h (pos-tip-string-width-height string)))
+     ((or (> (car w-h) max-width)
+	  (> (cdr w-h) max-height))
+      (setq string (pos-tip-truncate-string string max-width max-height)
+	    w-h (pos-tip-string-width-height string))))
     (face-spec-reset-face 'pos-tip-temp)
     (set-face-font 'pos-tip-temp (frame-parameter frame 'font))
     (pos-tip-show-no-propertize
@@ -738,8 +792,10 @@ KEEP-MAXIMIZE non-nil means leave the frame maximized.
 
 Note that this function is usable only in Emacs 23 for MS-Windows."
   (interactive)
+  (unless (eq window-system 'w32)
+    (error "`pos-tip-w32-max-width-height' can be used only in w32 frame."))
   ;; Maximize frame
-  (w32-send-sys-command 61488)
+  (with-no-warnings (w32-send-sys-command 61488))
   (sit-for 0)
   (let ((offset (pos-tip-calibrate-frame-offset)))
     (prog1
@@ -751,7 +807,7 @@ Note that this function is usable only in Emacs 23 for MS-Windows."
 	  (message "%S" pos-tip-w32-saved-max-width-height))
       (unless keep-maximize
 	;; Restore frame
-	(w32-send-sys-command 61728)))))
+	(with-no-warnings (w32-send-sys-command 61728))))))
 
 
 (provide 'pos-tip)

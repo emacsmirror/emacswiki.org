@@ -44,7 +44,8 @@ can do anything you like.
 === Using `icicle-explore' ===
 
 '''`icicle-explore'''' is a higher-order function that takes as
-arguments the following functions.  
+arguments the following functions, in addition to accepting
+the optional `completing-read' arguments.  
 
 * A function to build a candidates alist (##COLLECTION##) for
   [[completion]].  It fills `icicle-candidates-alist' with the

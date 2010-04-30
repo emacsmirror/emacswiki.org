@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Apr 25 16:53:10 2010 (-0700)
+;; Last-Updated: Thu Apr 29 11:33:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1622
+;;     Update #: 1652
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1509,7 +1509,7 @@ Return the list of matches."
 
 (defalias 'icicle-map 'icicle-apply)
 ;;;###autoload
-(defun icicle-apply (alist fn &optional nomsg)
+(defun icicle-apply (alist fn &optional nomsg predicate initial-input hist def inherit-input-method)
   "Selectively apply a function to elements in an alist.
 Argument ALIST is an alist such as can be used as the COLLECTION
 argument for Icicles `completing-read'.  Its elements can represent
@@ -1522,6 +1522,12 @@ Optional argument NOMSG non-nil means do not display an informative
 message each time FN is applied.  If nil, then a message shows the key
 of the alist element that FN is applied to and the result of the
 application.
+
+The remaining arguments are optional.  They are the arguments
+PREDICATE, INITIAL-INPUT, HIST, DEF, and INHERIT-INPUT-METHOD for
+`completing-read' (that is, all of the `completing-read' args other
+than PROMPT, COLLECTION, and REQUIRE-MATCH).  During `icicle-apply'
+completion, a match is required (REQUIRE-MATCH is t).
 
 Interactively, you are prompted for both arguments.  Completion is
 available for each.  The completion list for ALIST candidates is the
@@ -1635,7 +1641,7 @@ to nil so that candidates with initial spaces can be matched."
            (unless nomsg
              (message "Key: %s,  Result: %s" (car icicle-explore-final-choice-full) result))
            result))                     ; Return result.
-     nil nil nil "Choose an occurrence: " nil t)))
+     nil nil nil "Choose an occurrence: " predicate t initial-input hist def inherit-input-method)))
 
 (defun icicle-apply-action (string)
   "Completion action function for `icicle-apply'."
@@ -1745,11 +1751,13 @@ marker's buffer, to facilitate orientation."
   "Helper function for `icicle-goto-marker', `icicle-goto-global-marker'.
 RING is the marker ring to use."
   (unwind-protect
-       (let* ((global-ring-p  (memq this-command '(icicle-goto-global-marker
-                                                   icicle-goto-global-marker-or-pop-global-mark)))
-              (markers        (if (and (not global-ring-p) (marker-buffer (mark-marker)))
-                                  (cons (mark-marker) (icicle-markers ring))
-                                (icicle-markers ring)))
+       (let* ((global-ring-p
+               (memq this-command '(icicle-goto-global-marker
+                                    icicle-goto-global-marker-or-pop-global-mark)))
+              (markers
+               (if (and (not global-ring-p) (marker-buffer (mark-marker)))
+                   (cons (mark-marker) (icicle-markers ring))
+                 (icicle-markers ring)))
               (icicle-delete-candidate-object
                #'(lambda (cand)
                    (let ((mrkr+txt  (funcall icicle-get-alist-candidate-function cand)))
@@ -1763,7 +1771,9 @@ RING is the marker ring to use."
                 (icicle-apply (mapcar #'(lambda (mrkr) (icicle-marker+text mrkr global-ring-p))
                                       markers)
                               #'icicle-goto-marker-1-action
-                              'nomsg))
+                              'nomsg
+                              (lambda (cand)
+                                (marker-buffer (cdr cand)))))
                ((= (point) (car markers)) (message "Already at marker: %d" (point)))
                (t
                 (icicle-goto-marker-1-action (icicle-marker+text (car markers) global-ring-p)))))

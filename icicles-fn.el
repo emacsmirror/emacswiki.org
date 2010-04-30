@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 27 09:18:34 2010 (-0700)
+;; Last-Updated: Thu Apr 29 08:25:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11694
+;;     Update #: 11702
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5115,18 +5115,20 @@ Optional arg NOMSG non-nil means don't display an error message."
 (defun icicle-unpropertize (string)
   "Remove text properties from STRING.
 If STRING is not a string, just return it (raise no error).
-If option `icicle-unpropertize-completion-result-flag' is non-nil,
- then remove all text properties.
-Otherwise:
- 1. Remove any text properties in `icicle-candidate-properties-alist'.
- 2. Remove the internal text properties added by Icicles.
-    These are the internal text properties removed here:
+If `icicle-remove-icicles-props-p' is nil, just return STRING.  This
+ is the case for some Icicles functions that need to further process
+ the completion result.
+Otherwise, if option `icicle-unpropertize-completion-result-flag' is
+ non-nil, then remove all text properties.
+Otherwise remove only Icicles internal text properties:
+ 1. any text properties in `icicle-candidate-properties-alist'.
+ 2. The following internal text properties added by Icicles:
     `display', `help-echo', `icicle-fancy-candidates',
     `icicle-keep-newline', `icicle-mode-line-help',
     `icicle-special-candidate', `icicle-user-plain-dot',
     `icicle-whole-candidate', `invisible'.
     \(Property `mouse-face' is removed by `choose-completion-string'.\)"
-  (when (stringp string)
+  (when (and (stringp string) icicle-remove-icicles-props-p) ; Do nothing if we're inhibiting removal.
     (let ((len  (length string)))
       (if icicle-unpropertize-completion-result-flag
           (set-text-properties 0 len nil string)

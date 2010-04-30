@@ -3,8 +3,10 @@
 ;; Copyright (C) 2010  S. Irie
 
 ;; Author: S. Irie
+;; Maintainer: S. Irie
 ;; Keywords: Tooltip
-;; Version: 0.1.1
+
+(defconst popup-pos-tip-version "0.1.2")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -38,6 +40,12 @@
 ;;     ad-do-it))
 
 ;; History:
+;; 2010-04-29  S. Irie
+;;         * Changed `popup-pos-tip' to hide tooltip after waiting key event
+;;         * Fixed incorrect tooltip width for multibyte character string
+;;         * Added constant `popup-pos-tip-version'
+;;         * Version 0.1.2
+;;
 ;; 2010-04-16  S. Irie
 ;;         * Changed `popup-pos-tip' not to fill paragraph unless exceeding :width
 ;;         * Version 0.1.1
@@ -93,7 +101,7 @@
                                                 (concat rmargin-str "\n"))
                                      rmargin-str)
                              'face 'pos-tip-temp))
-        width (+ (apply 'max (mapcar 'length rows))
+        width (+ (apply 'max (mapcar 'string-width rows))
                  margin-right)
         height (length rows))
 
@@ -113,7 +121,9 @@
 
   (unless nowait
     (clear-this-command-keys)
-    (push (read-event prompt) unread-command-events)
+    (unwind-protect
+        (push (read-event prompt) unread-command-events)
+      (pos-tip-hide))
     t))
 
 (defun popup-pos-tip-show-quick-help (menu &optional item &rest args)

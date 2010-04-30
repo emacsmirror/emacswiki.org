@@ -14,13 +14,15 @@ Here are some other libraries and modes extending <code>ffap</code>,
 * PerlDevelopEnvironment - another find perl modules
 * PythonMode (the python.el one) -- module file in python path
 * RpmSpecMode -- find patches in <code>../SOURCES</code>
-* Lisp:ffap-.el -- inhibit using ffap in Dired, so you can use [[Completion]] for the file name instead of just getting the file name under the TextCursor (see DrewsElispLibraries)
-* [[Icicles - Inserting Text from Cursor]] -- using FFAP with Icicles
+* <tt>[[ffap-.el]]</tt> -- inhibit using ffap in Dired, so you can use [[completion]] for the file name instead of just getting the file name under the [[cursor]]
+* [[Icicles - Inserting Text from Cursor]] -- using FFAP with [[Icicles]]
 * [http://user42.tuxfamily.org/ffap-gcc-path/index.html ffap-gcc-path.el] -- <code>ffap-c-path</code> from GCC include path
+* [http://user42.tuxfamily.org/ffap-href/index.html ffap-href.el] -- URL/file in <code><a href=""></code> etc
 * [http://user42.tuxfamily.org/ffap-include-start/index.html ffap-include-start.el] -- at start of C <code>#include</code>
 * [http://user42.tuxfamily.org/ffap-makefile-vars/index.html ffap-makefile-vars.el] -- expand <code>$(FOO)</code>
 * [http://user42.tuxfamily.org/ffap-mml/index.html ffap-mml.el] -- Gnus MML <code><#part></code> files
 * [http://user42.tuxfamily.org/ffap-perl-module/index.html ffap-perl-module.el] -- source file for a perl module
+* [http://user42.tuxfamily.org/ffap-pod-F/index.html ffap-pod-F.el] -- filename in <code>F<></code> markup
 * [http://user42.tuxfamily.org/ffap-rfc-directories/index.html ffap-rfc-directories.el] -- RFCs in local directories (Emacs 22)
 * [http://user42.tuxfamily.org/ffap-rfc-space/index.html ffap-rfc-space.el] -- RFCs with a space before the number
 

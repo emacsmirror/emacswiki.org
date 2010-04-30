@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 20 17:19:15 2010 (-0700)
+;; Last-Updated: Thu Apr 29 11:44:07 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26841
+;;     Update #: 26842
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -7319,7 +7319,8 @@
 ;;  ** Using `icicle-explore' **
 ;;
 ;;  `icicle-explore' is a higher-order function that takes as
-;;  arguments the following functions.
+;;  arguments the following functions, in addition to accepting
+;;  the optional `completing-read' arguments.
 ;;
 ;;  * A function to build a candidates alist (COLLECTION) for
 ;;    completion.  It fills `icicle-candidates-alist' with the

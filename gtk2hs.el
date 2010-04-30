@@ -6,7 +6,7 @@
 ;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Copyright (C) 2010, Andy Stewart, all rights reserved.
 ;; Created: 2010-03-21 03:13:45
-;; Version: 0.1
+;; Version: 0.2
 ;; Last-Updated: 2010-03-21 03:13:45
 ;;           By: Andy Stewart
 ;; URL: http://www.emacswiki.org/emacs/download/gtk2hs.el
@@ -115,92 +115,10 @@
       (with-temp-buffer
         ;; Insert documentation that need transform.
         (insert transform-doc)
-        ;; Don't ignore case
-        (setq case-fold-search nil)
         ;; Fill buffer with speical column.
         (fill-region (point-min) (point-max))
-        ;; Transform function name to Haskell style.
-        ;; `gtk_text_buffer_new()` to 'textBufferNew'.
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "[a-zA-Z]+_[a-zA-Z_]*[ ]?(.*)" nil t)
-              (let (temp-str)
-                (setq temp-str (match-string 0))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat "'" (gtk2hs-format-function-name temp-str) "'")))
-            (goto-char (point-max))))
-        ;; Transform signal name.
-        ;; GtkWidget::realize to 'realize'
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "[a-zA-Z]*::\\([a-zA-Z-]+\\)" nil t)
-              (let (temp-str signal-name)
-                (setq temp-str (match-string 0))
-                (setq signal-name (match-string 1))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'")))
-            (goto-char (point-max))))
-        ;; Transform singal name.
-        ;; From "mnemonic-activate" signal to 'mnemonicAcivate' signal.
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "\"\\([a-zA-Z]+-[a-zA-Z-]*[a-zA-Z]+\\)\" signal" nil t)
-              (let (temp-str signal-name)
-                (setq temp-str (match-string 0))
-                (setq signal-name (match-string 1))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'" " signal")))
-            (goto-char (point-max))))
-        ;; Transform rest "foo-bar" to 'fooBar'
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "\"\\([a-zA-Z]+-[a-zA-Z-]*[a-zA-Z]+\\)\"" nil t)
-              (let (temp-str signal-name)
-                (setq temp-str (match-string 0))
-                (setq signal-name (match-string 1))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'")))
-            (goto-char (point-max))))
-        ;; Transform enum name
-        ;; FOO_BAR to 'FooBar'
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "[A-Z]+_[A-Z_]*[A-Z]+" nil t)
-              (let (temp-str signal-name)
-                (setq temp-str (match-string 0))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat (mapconcat 'capitalize (split-string temp-str "_") ""))))
-            (goto-char (point-max))))
-        ;; Transform variable name.
-        ;; From group_cycling to @groupCycling@
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "[a-z]+_[a-z_]*[a-z]+" nil t)
-              (let (temp-str signal-name)
-                (setq temp-str (match-string 0))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat "@" (gtk2hs-format-variable-name temp-str) "@")))
-            (goto-char (point-max))))
-        ;; Transform `GtkFooBar` to 'FooBar'
-        (goto-char (point-min))
-        (while (not (eobp))
-          (if (search-forward-regexp "\\(Gtk\\|Gdk\\)\\([A-Z].[a-zA-Z]*\\)" nil t)
-              (let (temp-str type-name)
-                (setq temp-str (match-string 0))
-                (setq type-name (match-string 2))
-                (delete-region (point) (- (point) (length temp-str)))
-                (insert (concat "'" type-name "'")))
-            (goto-char (point-max))))
-        ;; Replace type.
-        (dolist (type gtk2hs-replace-type-list)
-          (goto-char (point-min))
-          (while (not (eobp))
-            (if (search-forward (car type) nil t)
-                (let (temp-str signal-name)
-                  (setq temp-str (match-string 0))
-                  (delete-region (point) (- (point) (length temp-str)))
-                  (insert (concat "'" (cdr type) "'")))
-              (goto-char (point-max)))))
+        ;; Format docs.
+        (gtk2hs-format-docs-internal)
         ;; Comment docs.
         (gtk2hs-comment-docs)
         ;; Record new docs.
@@ -208,7 +126,7 @@
         )
       ;; Copy transform documentation to yank
       (kill-new transform-doc)
-      (message "Transforming docs...done, use C-y to insert Haskell style doc.")
+      (message "Transforming functions ...done, use C-y to insert Haskell style functions.")
       )))
 
 (defun gtk2hs-format-fun ()
@@ -243,6 +161,56 @@
                 (replace-regexp-in-string "\\s-" "" (buffer-string)) ; remove blank
                 ))
     (message "Pick up function done, use C-y to insert Haskell function name.")))
+
+(defun gtk2hs-format-args ()
+  "interactive function for pick up function arguments."
+  (interactive)
+  (let (transform-start
+        transform-end
+        transform-arg
+        transform-body
+        transform-doc)
+    ;; Get region string, or all buffer if region not active.
+    (if (region-active-p)
+        (setq transform-start (region-beginning)
+              transform-end (region-end))
+      (setq transform-start (point-min)
+            transform-end (point-max)))
+    ;; Keep current edit status and postion.
+    (save-excursion
+      ;; Get transform documentation.
+      (setq transform-doc
+            (buffer-substring-no-properties transform-start
+                                            transform-end))
+      ;; Do transform in temp buffer.
+      (message "Transforming arguments...")
+      (with-temp-buffer
+        ;; Insert documentation that need transform.
+        (insert transform-doc)
+        ;; Pick argument and docs body.
+        (goto-char (point-min))
+        (while (not (eobp))
+          (if (search-forward-regexp "\\(^[a-zA-Z_]+\\) :\\(.*$\\)" nil t)
+              (let (arg-name arg-body)
+                (setq transform-arg (match-string 1))
+                (setq transform-body (match-string 2)))
+            (goto-char (point-max))))
+        ;; Format args.
+        (setq transform-arg (if (string-equal transform-arg "Returns")
+                                "returns"
+                              (concat "@" (gtk2hs-format-variable-name transform-arg) "@")))
+        ;; Format body.
+        (with-temp-buffer
+          (insert transform-body)
+          (gtk2hs-format-docs-internal)
+          (setq transform-body (buffer-string)))
+        ;; Record new docs.
+        (setq transform-doc (concat " -- ^ " transform-arg transform-body))
+        )
+      ;; Copy transform documentation to yank
+      (kill-new transform-doc)
+      (message "Transforming arguments ...done, use C-y to insert Haskell style arguments.")
+      )))
 
 (defun gtk2hs-format-function-name (str)
   "This is format C function name with Haskell style.
@@ -299,6 +267,93 @@ And C function name match regex : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
               (not (eobp)))
     ;; Just comment when current blank line not last line.
     (insert comment-start)))
+
+(defun gtk2hs-format-docs-internal ()
+  "Internal functions for format document."
+  ;; Don't ignore case
+  (setq case-fold-search nil)
+  ;; Transform function name to Haskell style.
+  ;; `gtk_text_buffer_new()` to 'textBufferNew'.
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "[a-zA-Z]+_[a-zA-Z_]*[ ]?(.*)" nil t)
+        (let (temp-str)
+          (setq temp-str (match-string 0))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "'" (gtk2hs-format-function-name temp-str) "'")))
+      (goto-char (point-max))))
+  ;; Transform signal name.
+  ;; GtkWidget::realize to 'realize'
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "[a-zA-Z]*::\\([a-zA-Z-]+\\)" nil t)
+        (let (temp-str signal-name)
+          (setq temp-str (match-string 0))
+          (setq signal-name (match-string 1))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'")))
+      (goto-char (point-max))))
+  ;; Transform singal name.
+  ;; From "mnemonic-activate" signal to 'mnemonicAcivate' signal.
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "\"\\([a-zA-Z]+-[a-zA-Z-]*[a-zA-Z]+\\)\" signal" nil t)
+        (let (temp-str signal-name)
+          (setq temp-str (match-string 0))
+          (setq signal-name (match-string 1))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'" " signal")))
+      (goto-char (point-max))))
+  ;; Transform rest "foo-bar" to 'fooBar'
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "\"\\([a-zA-Z]+-[a-zA-Z-]*[a-zA-Z]+\\)\"" nil t)
+        (let (temp-str signal-name)
+          (setq temp-str (match-string 0))
+          (setq signal-name (match-string 1))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'")))
+      (goto-char (point-max))))
+  ;; Transform enum name
+  ;; FOO_BAR to 'FooBar'
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "[A-Z]+_[A-Z_]*[A-Z]+" nil t)
+        (let (temp-str signal-name)
+          (setq temp-str (match-string 0))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat (mapconcat 'capitalize (split-string temp-str "_") ""))))
+      (goto-char (point-max))))
+  ;; Transform variable name.
+  ;; From group_cycling to @groupCycling@
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "[a-z]+_[a-z_]*[a-z]+" nil t)
+        (let (temp-str signal-name)
+          (setq temp-str (match-string 0))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "@" (gtk2hs-format-variable-name temp-str) "@")))
+      (goto-char (point-max))))
+  ;; Transform `GtkFooBar` to 'FooBar'
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "\\(Gtk\\|Gdk\\)\\([A-Z].[a-zA-Z]*\\)" nil t)
+        (let (temp-str type-name)
+          (setq temp-str (match-string 0))
+          (setq type-name (match-string 2))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "'" type-name "'")))
+      (goto-char (point-max))))
+  ;; Replace type.
+  (dolist (type gtk2hs-replace-type-list)
+    (goto-char (point-min))
+    (while (not (eobp))
+      (if (search-forward (car type) nil t)
+          (let (temp-str signal-name)
+            (setq temp-str (match-string 0))
+            (delete-region (point) (- (point) (length temp-str)))
+            (insert (concat "'" (cdr type) "'")))
+        (goto-char (point-max))))))
 
 (provide 'gtk2hs)
 

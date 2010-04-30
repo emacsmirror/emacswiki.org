@@ -1,18 +1,25 @@
 ;;; -*- coding: utf-8 -*-
+;;; pretty-mode.el
+;; 
 ;; Minor mode for redisplaying parts of the buffer as pretty symbols
 ;; originally modified from Trent Buck's version at http://paste.lisp.org/display/42335,2/raw
 ;; Also includes code from `sml-mode'
 ;; See also http://www.emacswiki.org/cgi-bin/wiki/PrettyLambda
-;; written by Arthur Danskin <arthurdanskin@gmail.com>
+;; 
+;; Released under the GPL. No implied warranties, etc. Use at your own risk.
+;; Arthur Danskin <arthurdanskin@gmail.com>, March 2008
 ;;
 ;; to install:
 ;; (require 'pretty-mode)
+;; and 
 ;; (global-pretty-mode 1)
 ;; or
 ;; (add-hook 'my-pretty-language-hook 'turn-on-pretty-mode)
-
+;; 
 
 (require 'cl)
+
+(defvar pretty-syntax-types '(?_ ?w))
 
 ;; modified from `sml-mode'
 (defun pretty-font-lock-compose-symbol (alist)
@@ -20,9 +27,9 @@
   (let* ((start (match-beginning 0))
 	 (end (match-end 0))
          (syntax (char-syntax (char-after start))))
-    (if (or (if (eq syntax ?w)
-                (or (eq (char-syntax (char-before start)) ?w)
-                    (eq (char-syntax (char-after end)) ?w))
+    (if (or (if (memq syntax pretty-syntax-types)
+                (or (memq (char-syntax (char-before start)) pretty-syntax-types)
+                    (memq (char-syntax (char-after end)) pretty-syntax-types))
               (memq (char-syntax (char-before start)) '(?. ?\\)))
             (memq (get-text-property start 'face)
                   '(font-lock-doc-face font-lock-string-face
@@ -66,7 +73,7 @@ MODE is nil. Return nil if there are no keywords."
                     (assoc (cdr-safe
                             (assoc mode pretty-interaction-mode-alist))
                            pretty-patterns)))))
-    (pretty-font-lock-keywords kwds)))
+    (pretty-font-lock-keywords kwds))
 
 (defgroup pretty nil "Minor mode for replacing text with symbols "
   :group 'faces)
@@ -77,9 +84,9 @@ With arg, turn Pretty minor mode on if arg is positive, off otherwise.
 
 Pretty mode builds on `font-lock-mode'. Instead of highlighting
 keywords, it replaces them with symbols. For example, lambda is
-displayed as λ in lisp modes."
+displayed as Œª in lisp modes."
   :group 'pretty
-;  :lighter " λ"
+;  :lighter " Œª"
   (if pretty-mode
       (progn
         (font-lock-add-keywords nil (pretty-keywords) t)
@@ -127,107 +134,108 @@ expected by `pretty-patterns'"
                                 pretty-patterns))))))
     pretty-patterns))
 
-;;; (setq-default pretty-patterns pretty-patterns-default)
-(defconst pretty-patterns-default
+(defvar pretty-patterns
   (let* ((lispy '(scheme emacs-lisp lisp))
          (mley '(tuareg haskell sml))
          (c-like '(c c++ perl sh python java ess ruby))
          (all (append lispy mley c-like (list 'octave))))
     (pretty-compile-patterns
      `(
-       (?≠ ("!=" ,@c-like scheme octave)
+       (?‚â† ("!=" ,@c-like scheme octave)
            ("<>" tuareg octave)
            ("~=" octave)
-           ("/=" haskell))
-       (?≤ ("<=" ,@all))
-       (?≥ (">=" ,@all))
-       (?← ("<-" ,@mley ess))
-       (?→ ("->" ,@mley ess c c++ perl))
-       (?↑ ("\\^" tuareg))
-       (?⇒ ("=>" sml perl ruby))
-       (?∅ ("nil" emacs-lisp ruby)
+           ("/=" haskell emacs-lisp))
+       (?‚â§ ("<=" ,@all))
+       (?‚â• (">=" ,@all))
+       (?‚Üê ("<-" ,@mley ess))
+       (?‚Üí ("->" ,@mley ess c c++ perl))
+       (?‚Üë ("\\^" tuareg))
+       (?‚áí ("=>" sml perl ruby haskell))
+       (?‚àÖ ("nil" emacs-lisp ruby)
            ("null" scheme java)
            ("NULL" c c++)
 ;;;         ("None" python)
            ("()" ,@mley))
-;;;     (?… ("\\.\\.\\." scheme))
-;;;      (?∀ ("List.for_all" tuareg))
-;;;      (?∃ ("List.exists" tuareg))
-;;;        (?∈ ("List.mem" tuareg)
+;;;     (?‚Ä¶ ("\\.\\.\\." scheme))
+;;;      (?‚àÄ ("List.for_all" tuareg))
+;;;      (?‚àÉ ("List.exists" tuareg))
+;;;        (?‚àà ("List.mem" tuareg)
 ;;;            ("member" ,@lispy))
-;;;        (?∉ ())
-       (?√ ("sqrt" ,@all))
-       (?∑ ("sum" python))
-       (?α ("alpha" ,@all)
+;;;        (?‚àâ ())
+       (?‚àö ("sqrt" ,@all))
+       (?‚àë ("sum" python))
+       (?Œ± ("alpha" ,@all)
            ("'a" ,@mley))
-       (?β ("beta" ,@all)
+       (?Œ≤ ("beta" ,@all)
            ("'b" ,@mley))
-       (?γ ("gamma" ,@all)
+       (?Œ≥ ("gamma" ,@all)
            ("'c" ,@mley))
-       (?δ ("delta" ,@all)
+       (?Œî ("delta" ,@all)
            ("'d" ,@mley))
-       (?ε ("epsilon" ,@all))
-       (?θ ("theta" ,@all))
-       (?λ ("lambda" ,@all)
+       (?Œµ ("epsilon" ,@all))
+       (?Œ∏ ("theta" ,@all))
+       (?Œª ("lambda" ,@all)
 ;;;            ("case-\\(lambda\\)" scheme)
            ("fn" sml)
            ("fun" tuareg)
-           ("\\\\" haskell))
-       (?π ("pi" ,@all)
+           ("\\" haskell))
+       (?œÄ ("pi" ,@all)
            ("M_PI" c c++))
-       (?φ ("psi" ,@all))
+       (?œÜ ("psi" ,@all))
 
-       (?² ("**2" python tuareg octave))
-       (?³ ("**3" python tuareg octave))
-       (?ⁿ ("**n" python tuareg octave))
-       (?₀ ("[0]" ,@c-like)
+       (?¬≤ ("**2" python tuareg octave)
+           ("^2" octave haskell))
+       (?¬≥ ("**3" python tuareg octave)
+           ("^3" octave haskell))
+       (?‚Åø ("**n" python tuareg octave)
+           ("^n" octave haskell))
+       (?‚ÇÄ ("[0]" ,@c-like)
            ("(0)" octave)
            (".(0)" tuareg))
-       (?₁ ("[1]" ,@c-like)
+       (?‚ÇÅ ("[1]" ,@c-like)
            ("(1)" octave)
            (".(1)" tuareg))
-       (?₂ ("[2]" ,@c-like)
+       (?‚ÇÇ ("[2]" ,@c-like)
            ("(2)" octave)
            (".(2)" tuareg))
-       (?₃ ("[3]" ,@c-like)
+       (?‚ÇÉ ("[3]" ,@c-like)
            ("(3)" octave)
            (".(3)" tuareg))
-       (?₄ ("[4]" ,@c-like)
+       (?‚ÇÑ ("[4]" ,@c-like)
            ("(4)" octave)
            (".(4)" tuareg))
-;;;        (?ₐ ("[a]" ,@c-like)
-;;;            ("(a)" octave))
-;;;        (?ₓ ("[x]" ,@c-like)
-;;;            ("(x)" octave))
-;;;      (?₅ ("[5]") ,@c-like)
-;;;      (?₆ ("[6]") ,@c-like)
-;;;      (?₇ ("[7]") ,@c-like)
-;;;      (?₈ ("[8]") ,@c-like)
-;;;      (?₉ ("[9]") ,@c-like)
 
-;;;        (?⋂ "\\<intersection\\>"   (,@lispen))
-;;;        (?⋃ "\\<union\\>"          (,@lispen))
+       (?‚àû ("HUGE_VAL" c c++))
+
+;;;        (?‚àô ())
+;;;        (?√ó ())
+;;;        (?‚Çê ("[a]" ,@c-like)
+;;;            ("(a)" octave))
+;;;        (?‚Çì ("[x]" ,@c-like)
+;;;            ("(x)" octave))
+;;;      (?‚ÇÖ ("[5]") ,@c-like)
+;;;      (?‚ÇÜ ("[6]") ,@c-like)
+;;;      (?‚Çá ("[7]") ,@c-like)
+;;;      (?‚Çà ("[8]") ,@c-like)
+;;;      (?‚Çâ ("[9]") ,@c-like)
+
+;;;        (?‚ãÇ "\\<intersection\\>"   (,@lispen))
+;;;        (?‚ãÉ "\\<union\\>"          (,@lispen))
 
    
-;;;    (?∧ ("\\<And\\>"     emacs-lisp lisp python)
+;;;    (?‚àß ("\\<And\\>"     emacs-lisp lisp python)
 ;;;        ("\\<andalso\\>" sml)
 ;;;        ("&&"            c c++ perl haskell))
-;;;    (?∨ ("\\<or\\>"      emacs-lisp lisp)
+;;;    (?‚à® ("\\<or\\>"      emacs-lisp lisp)
 ;;;        ("\\<orelse\\>"  sml)
 ;;;        ("||"            c c++ perl haskell))
-;;;    (?¬ ("\\<!\\>"       c c++ perl sh)
+;;;    (?¬¨ ("\\<!\\>"       c c++ perl sh)
 ;;;        ("\\<not\\>"     lisp emacs-lisp scheme haskell sml))
 
        )))
-  "default value for `pretty-patterns'")
+    "*List of pretty patterns.
 
-;; TODO fix type
-(defcustom pretty-patterns pretty-patterns-default
-  "*List of pretty patterns.
-
-Should be a list of the form ((MODE ((REGEXP . GLYPH) ...)) ...)"
-  :group 'pretty
-  :type '(alist :key-type variable :value-type (alist :key-type (string) :value-type (character))))
+Should be a list of the form ((MODE ((REGEXP . GLYPH) ...)) ...)")
 
 
 (defun pretty-add-keywords (mode keywords)
@@ -239,11 +247,11 @@ buffer. KEYWORDS should be a list where each element has the
 form (REGEXP . CHAR). REGEXP will be replaced with CHAR in the
 relevant buffer(s)."
   (font-lock-add-keywords
-   mode (mapcar (lambda (kw) `((,(car kw)
-                           (0 (prog1 nil
-                                (compose-region (match-beginning 0)
-                                                (match-end 0)
-                                                ,(cdr kw)))))))
+   mode (mapcar (lambda (kw) `(,(car kw)
+                          (0 (prog1 nil
+                               (compose-region (match-beginning 0)
+                                               (match-end 0)
+                                               ,(cdr kw))))))
                 keywords)))
 
 (defun pretty-regexp (regexp glyph)
@@ -257,4 +265,3 @@ MCharacter to replace with: ")
 
 
 (provide 'pretty-mode)
-

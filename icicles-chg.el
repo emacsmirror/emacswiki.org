@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 28 10:58:58 2010 (-0700)
+;; Last-Updated: Thu Apr 29 11:34:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5180
+;;     Update #: 5194
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/04/29 dadams
+;;     icicle-explore: Bind icicle-remove-icicles-props-p to nil around call to completing-read.
+;;                     Call icicle-unpropertize at the end (without that binding).
 ;; 2010/04/20 dadams
 ;;     icicle-dired(-other-window): Use icicle-dirs-first-p, not icicle-dirs-last-p, and don't reverse.
 ;; 2010/04/17 dadams
@@ -241,6 +244,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/29 dadams
+;;     icicle-apply: Added optional args predicate initial-input hist def inherit-input-method.
+;;                   Pass them to icicle-explore.
+;;     icicle-goto-marker-1: Pass a PREDICATE arg that ensures the marker points somewhere.
 ;; 2010/04/25 dadams
 ;;     icicle-complete-keys-action:
 ;;       Bind icicle-*, esp. *-initially-flag, around call of this-command-keys.  Thx to M Heerdegen.
@@ -462,6 +469,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/04/29 dadams
+;;     icicle-unpropertize: Do nothing unless icicle-remove-icicles-props-p.
 ;; 2010/04/27 dadams
 ;;     icicle-show-help-in-mode-line: Test value, not just boundp, of icicle-completing-keys-p.
 ;; 2010/04/21 dadams
@@ -4258,6 +4267,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/04/29 dadams
+;;     Added: icicle-remove-icicles-props-p.
 ;; 2010/04/02 dadams
 ;;     icicle-general-help-string: Updated.
 ;; 2010/04/02 dadams
