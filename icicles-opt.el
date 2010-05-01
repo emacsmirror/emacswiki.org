@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 15 10:51:53 2010 (-0700)
+;; Last-Updated: Thu Apr 29 14:48:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3647
+;;     Update #: 3650
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -119,7 +119,7 @@
 ;;    `icicle-modal-cycle-up-keys',
 ;;    `icicle-modal-cycle-up-action-keys',
 ;;    `icicle-modal-cycle-up-alt-action-keys',
-;;    `icicle-modal-cycle-up-help-keys',
+;;    `icicle-modal-cycle-up-help-keys', `icicle-no-match-hook',
 ;;    `icicle-option-type-prefix-arg-list',
 ;;    `icicle-point-position-in-candidate',
 ;;    `icicle-populate-interactive-history-flag',
@@ -1618,6 +1618,11 @@ different keyboards.
 This is used only if `icicle-cycling-respects-completion-mode' is
 non-nil."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
+
+;;;###autoload
+(defcustom icicle-no-match-hook nil
+  "*List of hook functions run during completion when there are no matches."
+  :type 'hook :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
 (defcustom icicle-option-type-prefix-arg-list '(direct inherit inherit-or-value direct-or-value

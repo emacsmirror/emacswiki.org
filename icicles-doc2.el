@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 11:44:07 2010 (-0700)
+;; Last-Updated: Fri Apr 30 16:19:54 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26842
+;;     Update #: 26846
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4025,6 +4025,11 @@
 ;;  * User option `icicle-update-input-hook' is a list of functions to
 ;;    be run when minibuffer input is updated (typing or deleting).
 ;;    This is nil, by default.
+;;
+;;  * User option `icicle-no-match-hook' is a list of functions to be
+;;    run during completion (`TAB' or `S-TAB') when there are no
+;;    completion candidates that match the current input.  This is
+;;    nil, by default.
 ;;
 ;;  * Case sensitivity: The following standard user options control
 ;;    whether completion distinguishes between uppercase and lowercase

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 28 10:54:30 2010 (-0700)
+;; Last-Updated: Fri Apr 30 16:11:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15564
+;;     Update #: 15570
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2964,6 +2964,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                         icicle-incremental-completion-flag)))
                (icicle-highlight-input-noncompletion))
              (save-selected-window (icicle-remove-Completions-window))
+             (run-hooks 'icicle-no-match-hook)
              (unless (eq no-display-p 'no-msg)
                (minibuffer-message (case icicle-current-TAB-method
                                      (fuzzy   "  [No fuzzy completions]")
@@ -3292,6 +3293,7 @@ message either.  NO-DISPLAY-P is passed to
                       icicle-incremental-completion-flag)))
              (icicle-highlight-input-noncompletion))
            (save-selected-window (icicle-remove-Completions-window))
+           (run-hooks 'icicle-no-match-hook)
            (unless (eq no-display-p 'no-msg)
              (minibuffer-message (let ((typ  (car (rassq icicle-apropos-complete-match-fn
                                                          icicle-S-TAB-completion-methods-alist))))

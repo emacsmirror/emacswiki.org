@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 08:22:18 2010 (-0700)
+;; Last-Updated: Fri Apr 30 15:52:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22691
+;;     Update #: 22692
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -570,7 +570,8 @@
 ;;    `icicle-modal-cycle-up-action-keys',
 ;;    `icicle-modal-cycle-up-alt-action-keys',
 ;;    `icicle-modal-cycle-up-help-keys', `icicle-mode',
-;;    `icicle-mode-hook', `icicle-option-type-prefix-arg-list',
+;;    `icicle-mode-hook', `icicle-no-match-hook',
+;;    `icicle-option-type-prefix-arg-list',
 ;;    `icicle-point-position-in-candidate',
 ;;    `icicle-populate-interactive-history-flag',
 ;;    `icicle-pp-eval-expression-print-length',

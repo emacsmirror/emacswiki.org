@@ -58,6 +58,11 @@
 
 ;;; ChangeLog:
 ;;
+;; * 0.2.3 (2010/05/01)
+;;   * Add variable `popup-kill-ring-interactive-insert-face'.
+;;   * Now add face for interactive inserted string when
+;;     `popup-kill-ring-interactive-insert-face' is `t'.
+;;
 ;; * 0.2.2 (2010/04/29)
 ;;   * Fix the broken `popup-menu*' overlay window when
 ;;     `popup-kill-ring-interactive-insert' is `t'.
@@ -65,7 +70,6 @@
 ;; * 0.2.1 (2010/04/29)
 ;;   New variable `popup-kill-ring-item-size-max'.
 ;;   Now tested on `pos-tip' 0.3.6
-;;   Version 0.2.1.
 ;;
 ;; * 0.2.0 (2010/04/29)
 ;;   New variable `popup-kill-ring-popup-margin-left'
@@ -122,7 +126,7 @@
 
 ;;; Variables:
 
-(defconst popup-kill-ring-version "0.2.2"
+(defconst popup-kill-ring-version "0.2.3"
   "Version of `popup-kill-ring'")
 
 
@@ -162,6 +166,10 @@ of `popup-menu*'")
   "*The number that means max each item size of `popup-menu'.
 If item size is longer than this number, it's truncated.
 Nil means that item does not be truncate.")
+
+(defvar popup-kill-ring-interactive-insert-face 'highlight
+  "*The face for interactively inserted string when
+`popup-kill-ring-interactive-insert' is `t'.")
 
 ;; key setting for `popup-menu*'.
 (defvar popup-kill-ring-keymap
@@ -369,10 +377,17 @@ and `pos-tip.el'"
 (defun popup-kill-ring-insert-item (num)
     (let* ((item (format "%s" (nth num kill-ring)))
            (s (point))
-           (e (+ s (length item))))
+           (e (+ s (length item)))
+           ol)
       (puthash (buffer-name) (cons s e)
                popup-kill-ring-buffer-point-hash)
-      (insert item)))
+      (unwind-protect
+          (with-timeout (1.0 (if ol (delete-overlay ol)))
+            (insert item)
+            (setq ol (make-overlay s e))
+            (overlay-put ol 'face popup-kill-ring-interactive-insert-face)
+            (sit-for 0.5))
+        (if ol (delete-overlay ol)))))
 
 (defun popup-kill-ring-clear-inserted ()
   (when popup-kill-ring-interactive-insert

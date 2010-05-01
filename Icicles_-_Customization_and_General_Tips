@@ -80,6 +80,15 @@ User option '''`icicle-update-input-hook'''' is a list of functions to
 be run when minibuffer input is updated (typing or deleting).
 This is `nil', by default.
 
+
+----
+[:icicle-no-match-hook]
+==== Option icicle-no-match-hook ====
+
+User option '''`icicle-no-match-hook'''' is a list of functions to be
+run during completion (`TAB' or `S-TAB') when there are no
+completion candidates that match the current input.  This is `nil', by default.
+
 ----
 [:CaseSensitivity]
 [:completion-ignore-case]

@@ -1,0 +1,32 @@
+Daniel L. Murphy invented '''TECO''', Emacs's mother.
+
+TECO introduced the spirit and approach behind Emacs. Emacs was not simply "''implemented'' in TECO", as you sometimes hear.
+
+What did ''Emacs'' add then?
+
+* The idea that ''everything'' is a [[command]], including self-inserting characters. That is, every [[key]] is bound to an "editor macro".
+* And (later) Lisp.
+
+'''Dan:'''
+
+* Home page: http://opost.com/dlm/
+* Blog: http://www.opost.com/dlm/blog/
+* Bio: http://www.linkedin.com/pub/dan-murphy/6/183/428
+* Dan also helped create the [[http://tenex.opost.com/hbook.html|TWENEX/TOPS-20]] OS
+
+
+
+
+'''See Also (TECO):'''
+
+* [[http://en.wikipedia.org/wiki/Text_Editor_and_Corrector|Text Editor and Corrector (Wikipedia)]]
+
+* [[http://c2.com/cgi/wiki?TecoEditor|TECO Editor]]
+
+* [[http://linuxfinances.info/info/teco.html|The Original "One True Editor"]]
+
+* [[http://almy.us/teco.html|Text Editor and COrrector (Tom Almy)]]
+
+
+----
+CategoryHomepage

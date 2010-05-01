@@ -1936,10 +1936,15 @@ INITIAL-INPUT is a valid path, TEST is a predicate that take one arg."
 ;; (anything 'anything-c-source-file-cache)
 
 ;;; Locate
+;; NOTE for WINDOZE users:
+;; You have to install Everything with his command line interface here:
+;; http://www.voidtools.com/download.php
+
 (defvar anything-c-locate-command
   (case system-type
     ('gnu/linux "locate -i -r %s")
     ('berkeley-unix "locate -i %s")
+    ('windows-nt "es -i -r %s")
     (t "locate %s"))
   "A list of arguments for locate program.
 The \"-r\" option must be the last option.")
@@ -5069,7 +5074,8 @@ You can set your own list of commands with
                (shell-command anything-back-to-emacs-shell-command)))))
       (setq anything-c-external-commands-list
             (push (pop (nthcdr (anything-c-position
-                                program anything-c-external-commands-list)
+                                program anything-c-external-commands-list
+                                :test 'equal)
                                anything-c-external-commands-list))
                   anything-c-external-commands-list))))
 
@@ -5193,7 +5199,7 @@ directory, open this directory."
     (error "Line number not found")))
 
 (defun anything-c-action-line-goto (lineno-and-content)
-  (apply #'anything-goto-file-line (anything-attr 'target-file)
+  (apply #'anything-goto-file-line (anything-interpret-value (anything-attr 'target-file))
          (append lineno-and-content
                  (list (if (and (anything-attr-defined 'target-file)
                                 (not anything-in-persistent-action))
@@ -5218,12 +5224,10 @@ directory, open this directory."
                        content)
                (list (expand-file-name
                       filename
-                      (anything-aif (anything-attr 'default-directory)
-                          (if (functionp it) (funcall it) it)
-                        (and (anything-candidate-buffer)
-                             (buffer-local-value
-                              'default-directory
-                              (anything-candidate-buffer)))))
+                      (or (anything-interpret-value (anything-attr 'default-directory))
+                          (and (anything-candidate-buffer)
+                               (buffer-local-value
+                                'default-directory (anything-candidate-buffer)))))
                      (string-to-number lineno) content)))))
    candidates))
 
@@ -5678,7 +5682,7 @@ candidate can be in (DISPLAY . REAL) format."
     (action ("Goto node" . anything-c-info-goto))))
 
 (defun anything-compile-source--info-index (source)
-  (anything-aif (assoc-default 'info-index source)
+  (anything-aif (anything-interpret-value (assoc-default 'info-index source))
       (anything-c-make-info-source it)
     source))
 (add-to-list 'anything-compile-source-functions 'anything-compile-source--info-index)
@@ -5729,7 +5733,7 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
 (defun anything-compile-source--anything-headline (source)
   (if (assoc-default 'headline source)
       (append '((init . anything-headline-init)
-                (get-line-fn . buffer-substring)
+                (get-line . buffer-substring)
                 (type . line))
               source
               '((candidates-in-buffer)
@@ -5742,8 +5746,8 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
              (with-current-buffer anything-current-buffer
                (eval (or (anything-attr 'condition) t))))
     (anything-headline-make-candidate-buffer
-     (anything-attr 'headline)
-     (anything-attr 'subexp))))
+     (anything-interpret-value (anything-attr 'headline))
+     (anything-interpret-value (anything-attr 'subexp)))))
 
 (anything-document-attribute 'headline "Headline plug-in"
   "Regexp string for anything-headline to scan.")
@@ -5830,7 +5834,7 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
 (defun anything-persistent-help-string ()
   (substitute-command-keys
    (concat "\\<anything-map>\\[anything-execute-persistent-action]: "
-           (or (anything-attr 'persistent-help)
+           (or (anything-interpret-value (anything-attr 'persistent-help))
                (anything-aif (or (assoc-default 'persistent-action (anything-get-current-source))
                                  (assoc-default 'action (anything-get-current-source))
                                  )

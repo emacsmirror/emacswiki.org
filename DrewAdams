@@ -2,18 +2,37 @@
 
 Cette page est aussi disponible en franglais ;-): Français:DrewAdamsFrançais
 
+[new:DrewAdams:2010-04-30 14:44 UTC]
 
-; '''Emacs''': The "''spirit of building up gigantic, complicated programs to use in your own editing, and then exchanging them with other people''" -- [[RMS]], [http://www.gnu.org/gnu/rms-lisp.html|Lisp conf speech, 2002-10-28] (taken slightly out of context).
+== EMACS ==
+
+[new:DrewAdams:2010-04-30 15:27 UTC]
+: "Many of the subsequent
+enhancements were ''done simply because
+something occurred to me'' that I could easily
+do or someone suggested something, and it
+''seemed like a cool idea''. Our mindset was
+that ''cool ideas were fun to pursue, even if
+we couldn’t think of a practical use or need
+right away''." -- DanMurphy, inventor of TECO, [http://tenex.opost.com/anhc-31-4-anec.pdf|The Beginnings of TECO, 2009-10-31]
+
+----
+
+[new:DrewAdams:2010-04-30 14:51 UTC]
+
+: The "''spirit of building up gigantic, complicated programs to use in your own editing, and then exchanging them with other people''" -- RichardStallman, [http://www.gnu.org/gnu/rms-lisp.html|Lisp conf speech, 2002-10-28] (taken slightly out of context).
+
+
+
+[new:DrewAdams:2010-04-30 14:44 UTC]
 
 See EmacsHistory for info on the various Emacs incarnations mentioned here, and [http://www.jwz.org/doc/emacs-timeline.html] for the Emacs family tree.
 
 
 == Where's the Glue? ==
 
-Favorite Emacs quote:
-
 [new]
-|| || || ||  || '''EMACS exists because I felt free to make individually useful small improvements on a path whose end was not in sight.''' -- RichardStallman, ''EMACS: The Extensible, Customizable Display Editor'', <tt>http://www.gnu.org/software/emacs/emacs-paper.html </tt> || ||  ||  || ||
+|| || || ||  || '''EMACS exists because I felt free to make individually useful small improvements on a path whose end was not in sight.''' -- RMS, ''EMACS: The Extensible, Customizable Display Editor'', <tt>http://www.gnu.org/software/emacs/emacs-paper.html </tt> || ||  ||  || ||
 [new]
 
 That's not a bad summary of what free/open software development is all about, IMO:
@@ -92,11 +111,17 @@ Coming back to free/open software development -- By analogy, what is the "glue" 
 * open source code (your output is my input)
 * Internet communication (pipes, if you will)
 
+
+
+
+
+
 [new]
 <pre>
 
 </pre>
 [new]
+
 == I Use Emacs ==
 
 ... though sometimes I think ''Emacs uses me''.  In fact, Emacs and I have used each other since the mid 1980s. 

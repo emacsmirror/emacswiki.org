@@ -1,5 +1,5 @@
 ;;; auto-install-batch-list.el --- Data file of auto-install.el
-;; $Id: auto-install-batch-list.el,v 1.1 2010/04/01 03:46:34 rubikitch Exp rubikitch $
+;; $Id: auto-install-batch-list.el,v 1.3 2010/05/01 01:32:55 rubikitch Exp $
 
 ;;; This file is used by auto-install.el internally.  M-x
 ;;; auto-install-batch downloads this file before installation to
@@ -61,11 +61,21 @@
            "http://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
            ))
          ;; Anything
-         ("anything" nil nil
+         ("anything-minimal" nil nil
           (
            "http://www.emacswiki.org/emacs/download/anything.el" ; Main library
            "http://www.emacswiki.org/emacs/download/anything-config.el" ; Configuration for anything.el
            "http://www.emacswiki.org/emacs/download/anything-match-plugin.el" ; Matching algorithm humanely
+           ))
+         ("anything-completion-minimal" nil nil
+          (
+           "anything-minimal"
+           "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
+           
+           ))
+         ("anything" 21 10
+          (
+           "anything-minimal"
            "http://www.emacswiki.org/emacs/download/anything-migemo.el" ; Migemo extension for Japanese
            "http://www.emacswiki.org/emacs/download/anything-complete.el" ; Completion
            "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
@@ -92,17 +102,13 @@
          ;; PHP completion
          ("php-completion" nil nil
           (
-           "http://www.emacswiki.org/emacs/download/anything.el"
-           "http://www.emacswiki.org/emacs/download/anything-match-plugin.el"
-           "http://www.emacswiki.org/emacs/download/anything-show-completion.el"
+           "anything-completion-minimal"
            "http://www.emacswiki.org/emacs/download/php-completion.el"
            ))
          ;; Perl completion
          ("perl-completion" nil nil
           (
-           "http://www.emacswiki.org/emacs/download/anything.el"
-           "http://www.emacswiki.org/emacs/download/anything-match-plugin.el"
-           "http://www.emacswiki.org/emacs/download/anything-show-completion.el"
+           "anything-completion-minimal"
            "http://www.emacswiki.org/emacs/download/perl-completion.el"
            ))
          ;; Text Translator
@@ -112,6 +118,10 @@
            "http://www.emacswiki.org/emacs/download/text-translator-vars.el"
            "http://www.emacswiki.org/emacs/download/text-translator-load.el"
            ))
+         ("test-case-mode" nil nil
+          (
+           "http://nschum.de/src/emacs/fringe-helper/fringe-helper.el"
+           "http://nschum.de/src/emacs/test-case-mode/test-case-mode.el"))
          )
        auto-install-batch-list))
 

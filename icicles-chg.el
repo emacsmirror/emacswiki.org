@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 11:34:23 2010 (-0700)
+;; Last-Updated: Fri Apr 30 16:13:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5194
+;;     Update #: 5205
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -244,6 +244,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/04/30 dadams
+;;     icicle-search: Delete icicle-search-current-overlay via icicle-no-match-hook (& restore hook). 
 ;; 2010/04/29 dadams
 ;;     icicle-apply: Added optional args predicate initial-input hist def inherit-input-method.
 ;;                   Pass them to icicle-explore.
@@ -469,6 +471,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/04/30 dadams
+;;     icicle(-file-name)-unsorted-(apropos|prefix)-candidates, icicle-fuzzy-candidates:
+;;       Set icicle-common-match-string to nil when no candidates.
 ;; 2010/04/29 dadams
 ;;     icicle-unpropertize: Do nothing unless icicle-remove-icicles-props-p.
 ;; 2010/04/27 dadams
@@ -1533,8 +1538,7 @@
 ;; 2006/08/27 dadams
 ;;     Bind Quit in Minibuf menu to icicle-abort-minibuffer-input.
 ;; 2006/08/22 dadams
-;;     icicle-save-or-restore-input:
-;;       If icicle-last-completion-candidate is nil, don't try to restore.
+;;     icicle-save-or-restore-input: If icicle-last-completion-candidate is nil, don't try to restore.
 ;; 2006/08/18 dadams
 ;;     icicle-minibuffer-setup: Reset icicle-last-completion-candidate to nil.
 ;;     icicle-rebind-completion-maps:
@@ -1880,6 +1884,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/04/30 dadams
+;;     icicle-(apropos|prefix)-complete-1: Run icicle-no-match-hook when no candidates.
 ;; 2010/04/28 dadams
 ;;     icicle-remove-cand-from-lists: Fix pred a la icicle-mctize-all.  Thx to M. Heerdegen.
 ;; 2010/04/27 dadams
@@ -3781,6 +3787,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/04/30 dadams
+;;     Added: icicle-no-match-hook.
 ;; 2010/04/09 dadams
 ;;     Remap find-file-read-only(-other-window) to icicle-find-file-read-only(-other-window).
 ;; 2010/04/02 dadams

@@ -1,0 +1,74 @@
+Viperre (Viper REmap) is a remapping of the Viper keyboard layout (Viper is a Vi mode for Emacs).
+
+== Goals ==
+
+# Minimize chording (i heard chording is bad for the hands)
+# Minimize number of keystrokes and hand movement
+# Maximize speed
+
+
+
+== Code so far ==
+The code consists of two files which may be downloaded from http://bitbucket.org/bshanks/viperre/src/
+
+To use it, put the following in your .emacs (not .viper) after loading viper:
+
+<pre>
+(load "viperre")
+(viper-remap-qwerty)
+</pre>
+
+If you are using the Colemak keyboard layout, replace (viperre-qwerty) with (viperre-colemak).
+
+
+== The map ==
+
+Here is a picture of a qwerty keyboard layout. 
+
+ ` qwer ty uiop []  BACK
+   asdf gh jkl; '
+   zcxv bn m,./
+                    \
+   SPACEBAR
+ 
+
+Below is the remapping. Each key K' has been labeled with the name of the key K that, in standard Viper, did what K' does now. For example, the spacebar is labeled "i", because in the remap, the spacebar is used to enter insert mode, which is what the "i" key does in standard Viper. Another example is that the "z" key is labeled "u", because it is used to undo in the remap, which is what the "u" key did in standard Viper. Some keys are labeled with numbers; except for 0 (which indicates the BOL function), these are footnotes used to refer to functions which are not assigned to keys (or at least not keys with single-letter names) in standard viper.
+
+
+ % Og{2 ?/ 1}co 56   v 
+   0jbh Tt kwl$ e
+   udyp 34 s`".
+                    \
+      i
+
+ 1 c-D (half page dwn)
+ 2 c-U (half page up)
+ 3 backsp
+ 4 delete (like the x key in std viper)
+ 5 delete word backwards
+ 6 delete word forwards
+
+In insert mode, the keys are not remapped.
+
+Many of the capital and control keys have not yet been remapped (i.e. they retain their standard bindings as of now). Those that have are:
+
+ Z -> redo
+ shift-t, shift-T -> f,F
+ shift-x,c,v -> D, Y, P
+
+Other changes:
+* If you hit a and ; (the t and T "till" functions), or A and : (f and F "find"), or t and y (? and / "search" functions), consecutively, the repeated hits act like the "repeat search" keys do in standard viper (n and N or ; and ,)
+* If you activate the s "substitute" function (now bound to the m key), when you move outside s area, viper remap switches to command mode, not insert mode as in standard viper
+* The Yank command (now bound to the V key) is y$, not yy as in standard viper
+* the functions of q and z have been consolidated under g
+* the functions of m are consolidated under ` (which is now bound to the , key)
+
+List of functions which have been removed:
+
+ m (consolidated under `)
+ q, z (consolidated under g)
+ r
+ |
+
+
+"Project" home page: http://bayleshanks.com/tips-computer-viperRemap

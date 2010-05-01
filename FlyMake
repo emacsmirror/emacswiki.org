@@ -38,6 +38,8 @@ You can use it with pylint. See PythonMode||
 == Hints And Questions ==
 
 === LaTeX ===
+Note: If your latex file has digits immediately before the dot (e.g. <code>design2.tex</code>), flymake will assume it is a portion of a larger work and try to find another file that <code>\include</code>s it!
+
 Is it possible to use latex with flymake on linux machines? I try it today and it seems that the mode works only under miktex.
 
 This mode works on linux machines with customization. The default program (texify) is incorrect, so I used [http://baruch.ev-en.org/proj/chktex/ chktex]:

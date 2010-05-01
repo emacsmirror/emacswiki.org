@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 11:33:09 2010 (-0700)
+;; Last-Updated: Fri Apr 30 16:01:17 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1652
+;;     Update #: 1685
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2206,8 +2206,11 @@ This command is intended for use only in Icicle mode."
         (icicle-list-use-nth-parts          '(1))
         (icicle-sort-comparer               nil)
         (icicle-inhibit-sort-p              t)
+        (icicle-no-match-hook               icicle-no-match-hook)
         (completion-ignore-case             case-fold-search)
         (replace-count                      0)) ; Defined in `replace.el'.  Used for replacement.
+    (add-hook 'icicle-no-match-hook (lambda () (when (overlayp icicle-search-current-overlay)
+                                                 (delete-overlay icicle-search-current-overlay))))
     (setq icicle-search-final-choice
           (icicle-explore #'(lambda () (icicle-search-define-candidates beg end scan-fn-or-regexp
                                                                         require-match where args))

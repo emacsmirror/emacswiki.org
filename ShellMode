@@ -142,6 +142,15 @@ This is what I use to clear the shell output.
      (comint-truncate-buffer)
      (setq comint-buffer-maximum-size old-max))) 
 
+[new]
+Shouldn't this work?
+
+ (defun clear-shell ()
+   (interactive)
+   (let ((comint-buffer-maximum-size 0))
+     (comint-truncate-buffer)))
+
+
 ----
 CategoryExternalUtilities
 CategoryShell

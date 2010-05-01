@@ -17,6 +17,7 @@ Move among windows -- alternatives to `C-x o' (`other-window') and `next-window'
 ** NumberedWindows
 ** WindowNumberingMode
 ** `C-u C-x o' in [[Icicles]] -- Cycle/filter/complete window names
+** Lisp:switch-window.el shows big numbers in each window, you input the number to get where you want to.
 
 == Complex Window Configurations ==
 

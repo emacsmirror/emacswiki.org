@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 08:25:48 2010 (-0700)
+;; Last-Updated: Fri Apr 30 15:57:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11702
+;;     Update #: 11711
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2913,6 +2913,7 @@ INPUT is a string.  Each candidate is a string."
            (setq candidates  (FM-all-fuzzy-matches input candidates))))
     (when (consp candidates)
       (setq icicle-common-match-string  (icicle-expanded-common-match input candidates)))
+    (unless candidates  (setq icicle-common-match-string  nil))
     candidates))
 
 (defun icicle-unsorted-prefix-candidates (input)
@@ -2955,6 +2956,7 @@ prefix over all candidates."
                    (try-completion input minibuffer-completion-table
                                    minibuffer-completion-predicate))))
             (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
+        (unless filtered-candidates  (setq icicle-common-match-string  nil))
         filtered-candidates)
     (quit (top-level))))                ; Let `C-g' stop it.
 
@@ -3019,6 +3021,7 @@ prefix over all candidates."
                        (save-match-data (string-match "/\\.$" common-prefix))) ; Matches /., /..
               (setq common-prefix  (substring common-prefix 0 (- (length common-prefix) 2))))
             (setq icicle-common-match-string  (if (eq t common-prefix) input common-prefix))))
+        (unless filtered-candidates  (setq icicle-common-match-string  nil))
         filtered-candidates)
     (quit (top-level))))                ; Let `C-g' stop it.
  
@@ -3075,6 +3078,7 @@ input over all candidates."
           (when (and icicle-expand-input-to-common-match-flag (consp filtered-candidates))
             (setq icicle-common-match-string  (icicle-expanded-common-match input
                                                                             filtered-candidates)))
+          (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates))         ; Return candidates.
     (quit (top-level))))                ; Let `C-g' stop it.
 
@@ -3138,6 +3142,7 @@ input over all candidates."
                                                  (icicle-expanded-common-match
                                                   input filtered-candidates)
                                                nil)))
+          (unless filtered-candidates  (setq icicle-common-match-string  nil))
           filtered-candidates))         ; Return candidates.
     (quit (top-level))))                ; Let `C-g' stop it.
 
