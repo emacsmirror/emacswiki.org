@@ -23,10 +23,10 @@ Here's how to execute the macro 37 times (you use `C-u' to provide the 37):
 You want to add the text "-- foobar was here" at the end of ''each'' of the lines in a file.
 # Place the TextCursor at the beginning of the first line.
 # `<code>C-x (</code>' to start recording a keyboard macro.
-# `C-e' (or `<code>M-x end-of-line</code>') to move the cursor to the end of the first line.
+# `C-e' (or `<code>M-x end-of-line</code>') to move the cursor to the end of the line.
 # Type "<code>-- foobar was here</code>"
-# `C-a' (or `<code>M-x beginning-of-line</code>') to move the cursor to the beginning of the first line.
-# `C-n' (or `<code>M-x next-line</code>') to move the cursor to the beginning of the second line.
+# `C-a' (or `<code>M-x beginning-of-line</code>') to move the cursor to the beginning of the line.
+# `C-n' (or `<code>M-x next-line</code>') to move the cursor to the beginning of the next line.
 # `<code>C-x )</code>' to stop recording the keyboard macro.
 # `C-u 0 C-x e' to execute the macro an infinite number of times until the end of the file is reached (See InfiniteArgument).
 

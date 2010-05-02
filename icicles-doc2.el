@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 30 16:19:54 2010 (-0700)
+;; Last-Updated: Sat May  1 08:43:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26846
+;;     Update #: 26854
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -545,8 +545,9 @@
 ;;     controls whether the input matches are highlighted within each
 ;;     search context or only within the current context.  It,
 ;;     together with `icicle-expand-input-to-common-match-flag',
-;;     control whether the input-match highlighting covers an expanded
-;;     common match among all matches or just the exact input match.
+;;     controls whether the input-match highlighting covers an
+;;     expanded common match among all matches or just the exact input
+;;     match.
 ;;
 ;;  13. If you do not use a subgroup to define the search context (as
 ;;     in #3, above), that is, if the search context corresponds to
@@ -692,6 +693,30 @@
 ;;    `icicles-doc1.el' highlights not `edit' but
 ;;    ``abort-recursive-edit'', which is the longest common match
 ;;    among all input matches.
+;;
+;;    Gotcha: Remember that the expanded common match pertains to the
+;;            entire completion candidate.  In the context of Icicles
+;;            search, if you are interested in multiple matches of
+;;            your input within the same search context, and you want
+;;            to be sure to catch each match, then turn off
+;;            common-match expansion.
+;;
+;;            Why?  The search context as a whole is compared with the
+;;            other search contexts when looking for the expanded
+;;            common match.  Your input is matched against the entire
+;;            context (search hit), and the expanded common match is
+;;            (typically) the longest match that is common to the
+;;            other search contexts.  Do not expect the longest common
+;;            match of your input against all occurrences in the
+;;            search contexts.  What counts is the longest single
+;;            match for a given context.
+;;
+;;            For example, if your input is `then' and two of the
+;;            search hits are `But then X and then Y' and `W and then
+;;            Z', the expanded common match will be `and then', not
+;;            `then'.  The matches highlighted for your input thus do
+;;            not include each occurrence of `then' in the search
+;;            hits, but rather each occurrence of `and then'.
 ;;
 ;;    If `icicle-expand-input-to-common-match-flag',
 ;;    `icicle-search-highlight-all-current-flag', and

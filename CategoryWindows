@@ -1,64 +1,64 @@
 Click on the heading to find all pages related to window management in Emacs.
 
-== Introduction to Windows ==
+== Emacs Windows - Basics ==
 
-* [[Window]] -- what a window is
+* [[Window]] -- what a window is in Emacs
 * WindowConfiguration -- what a window configuration is
 * ModeLine, ModeLinePosition -- the mode-line of a window
 
 == Windows Navigation (Selection) ==
 
-Move among windows -- alternatives to `C-x o' (`other-window') and `next-window'.
+Move among windows -- alternatives to `C-x o' (`other-window').
 
-* Use arrow keys
+* Use arrow keys to choose
 ** WindMove
 ** WindowNavigation
-* Use a window name or number
+* Use a window name or number to choose
+** [[Icicles]]: `C-u C-x o' in Icicle mode -- Cycle/filter/complete window names to choose a window
 ** NumberedWindows
-** WindowNumberingMode
-** `C-u C-x o' in [[Icicles]] -- Cycle/filter/complete window names
 ** Lisp:switch-window.el shows big numbers in each window, you input the number to get where you want to.
+** WindowNumberingMode
 
-== Complex Window Configurations ==
 
-* TransposeWindows -- rearranging windows within a [[Frame]]
-* ToggleWindowSplit -- toggle between vertical and horizontal split
-* WindowResize -- resizing windows using simple keybindings
-** DoReMi -- resize windows incrementally, using arrow keys or mouse wheel. Hold Meta key to boost resizing increment.
+== Resizing, Splitting,... Windows ==
 
-* OneWindow -- adapting Emacs to always use only one window for whatever it does
-* HorizontalSplitting -- force Emacs to always use split-window-horizontally instead of split-window for temporary buffers, like C-x C-b and describe-function.
-* WidenWindow -- widening the active window
+* DoReMi -- Resize windows incrementally, using arrow keys or mouse wheel. Hold Meta key to boost resizing increment.
+* HorizontalSplitting -- Force Emacs to always use split-window-horizontally instead of split-window for temporary buffers, like C-x C-b and describe-function.
+* OneWindow -- Make Emacs always use only one window for whatever it does
+* TransposeWindows -- Rearrange windows within a [[Frame]]
+* ToggleWindowSplit -- Toggle between vertical and horizontal split
+* WidenWindow -- Widen the active window
+* WindowResize -- Resize windows using simple keybindings
+
 
 == Switching Window Configurations ==
 
-* WinnerMode -- undoing and redoing changes to the window configuration
-* WindowsAndRegisters -- storing window configurations in registers
-* EmacsLispScreen (elscreen.el) -- switch between numbered screens with the C-\ prefix command
+* WinnerMode -- Undo and redo changes to the window configuration
+* WindowsAndRegisters -- Store window configurations in registers
+* EmacsLispScreen (elscreen.el) -- Switch between numbered screens with the C-\ prefix command
 * EmacsScreen (escreen.el) -- same thing
-* PolicySwitch -- Manages lists of window configurations as policies.  Offers persistence across sessions.
-* WinRing -- switch between named window configurations ("mail", "irc", "gnus" etc.) with the C-x 7 prefix command.
-* WindowsMode -- open new configurations, keep track of them, and store them to disk (SessionManagement)
-* TaskMode -- switch between tasks just by switching between buffers
-* LayoutRestore -- save multi-window layout and restore it simply
-* CategorizingInformationManager -- provides ee-windows for switching between window configurations
-* RecursiveEditPreservingWindowConfig -- temporarily changing the window configuration using RecursiveEdit
-* BFocus ([[bfocus.el]]) -- Simple script to temporarly fill a frame with a window and then change back to previous configuration.
+* PolicySwitch -- Manage lists of window configurations as policies.  Persistence across sessions.
+* WinRing -- Switch between named window configurations ("mail", "irc", "gnus" etc.) using prefix key `C-x 7'.
+* WindowsMode -- Open new configurations, keep track of them, and store them to disk (SessionManagement)
+* LayoutRestore -- Save multi-window layout and restore it
+* CategorizingInformationManager -- Ee-windows for switching between window configurations
+* RecursiveEditPreservingWindowConfig -- Temporarily change the window configuration using RecursiveEdit
+* BFocus ([[bfocus.el]]) -- Temporarly fill a frame with a window and then change back to previous configuration
 
 '''See also:'''
 
-* CategoryBufferSwitching -- Rather than switching window configurations, maybe you just want a more advanced buffer switching algorithm.
+* CategoryBufferSwitching -- Rather than switching window configurations, maybe you just want to switch buffers?
+
 
 == Frame Configurations ==
 
-To save the current configuration of ''frames'' and later restore it, use `C-x r f' (<code>frame-configuration-to-register</code>) and `C-x r j' (<code>jump-to-register</code>), respectively. See FramesAndRegisters.
+To save the current configuration of ''[[frame]]s'' and later restore it, use `C-x r f' (`frame-configuration-to-register') and `C-x r j' (`jump-to-register'), respectively. See FramesAndRegisters.
 
 '''See also:'''
 
-* [[Shrink-Wrapping Frames]] for commands to resize frames.
-* [[FrameModes#FrameCommands]] for commands to:
-** Resize and move frames incrementally, using the arrow keys.
+* DoReMi -- Commands to resize and move frames incrementally, using the arrow keys or mouse wheel.
+* [[FrameModes#FrameCommands]] -- Commands to manipulate frames:
 ** Iconify/hide all frames and restore them using `C-M-z'.
+** Resize and move frames incrementally, using the arrow keys.
 ** Tile all visible frames horizontally or vertically. Particularly useful before comparing buffers with Ediff.
-
-* DoReMi for commands to resize and move frames incrementally, using the arrow keys or mouse wheel.
+* [[Shrink-Wrapping Frames]] -- Commands to resize frames.

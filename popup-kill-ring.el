@@ -58,14 +58,20 @@
 
 ;;; ChangeLog:
 ;;
+;; * 0.2.5 (2010/05/02)
+;;   When `point' is on minibuffer, do ordinary `yank' command.
+;;
+;; * 0.2.4 (2010/05/01)
+;;   Fixed change a place the doing `receter'.
+;;
 ;; * 0.2.3 (2010/05/01)
-;;   * Add variable `popup-kill-ring-interactive-insert-face'.
-;;   * Now add face for interactive inserted string when
-;;     `popup-kill-ring-interactive-insert-face' is `t'.
+;;   Add variable `popup-kill-ring-interactive-insert-face'.
+;;   Now add face for interactive inserted string when
+;;   `popup-kill-ring-interactive-insert-face' is `t'.
 ;;
 ;; * 0.2.2 (2010/04/29)
-;;   * Fix the broken `popup-menu*' overlay window when
-;;     `popup-kill-ring-interactive-insert' is `t'.
+;;   Fix the broken `popup-menu*' overlay window when
+;;   `popup-kill-ring-interactive-insert' is `t'.
 ;;
 ;; * 0.2.1 (2010/04/29)
 ;;   New variable `popup-kill-ring-item-size-max'.
@@ -126,7 +132,7 @@
 
 ;;; Variables:
 
-(defconst popup-kill-ring-version "0.2.3"
+(defconst popup-kill-ring-version "0.2.5"
   "Version of `popup-kill-ring'")
 
 
@@ -201,55 +207,59 @@ this is internal variable for `popup-kill-ring'.")
   "Interactively insert selected item from `key-ring' by `popup.el'
 and `pos-tip.el'"
   (interactive)
-  (let* ((index 0)
-         (summary 0)
-         (kring (let (l p-max)
-                  (dolist (i kill-ring)
-                    (when (or (null popup-kill-ring-item-min-width)
-                              (>= (length i) popup-kill-ring-item-min-width))
-                      (setq l
-                            (cons
-                             (propertize
-                              (with-temp-buffer
-                                (erase-buffer)
-                                (insert (replace-regexp-in-string
-                                         "[ \t]+" " "
-                                         (replace-regexp-in-string
-                                          "\n" " " i)))
-                                (cond
-                                 ((and popup-kill-ring-item-size-max
-                                       (>= (point-max)
-                                           popup-kill-ring-item-size-max))
-                                  (setq p-max popup-kill-ring-item-size-max))
-                                 (t
-                                  (setq p-max (point-max))))
-                                (buffer-substring-no-properties
-                                 (point-min) p-max))
-                              'index index
-                              'summary (concat "("
-                                               (int-to-string summary)
-                                               ")"))
-                             l))
-                      (setq summary (1+ summary)))
-                    (setq index (1+ index)))
-                  (when l
-                    (nreverse l))))
-         (popup-kill-ring-buffer-point-hash (make-hash-table :test 'equal))
-         num item)
-    (when popup-kill-ring-interactive-insert
-      (popup-kill-ring-insert-item 0)
-      (recenter))
-    (setq item (popup-menu* kring
-                            :width popup-kill-ring-popup-width
-                            :keymap popup-kill-ring-keymap
-                            :margin-left popup-kill-ring-popup-margin-left
-                            :margin-right popup-kill-ring-popup-margin-right
-                            :scroll-bar t
-                            :isearch popup-kill-ring-isearch))
-    (when item
-      (setq num (popup-kill-ring-get-index item))
-      (when num
-        (insert (nth num kill-ring))))))
+  (cond
+   ((minibufferp)
+    (yank))
+   (t (let* ((index 0)
+             (summary 0)
+             (kring (let (l p-max)
+                      (dolist (i kill-ring)
+                        (when (or (null popup-kill-ring-item-min-width)
+                                  (>= (length i)
+                                      popup-kill-ring-item-min-width))
+                          (setq l
+                                (cons
+                                 (propertize
+                                  (with-temp-buffer
+                                    (erase-buffer)
+                                    (insert (replace-regexp-in-string
+                                             "[ \t]+" " "
+                                             (replace-regexp-in-string
+                                              "\n" " " i)))
+                                    (cond
+                                     ((and popup-kill-ring-item-size-max
+                                           (>= (point-max)
+                                               popup-kill-ring-item-size-max))
+                                      (setq p-max
+                                            popup-kill-ring-item-size-max))
+                                     (t
+                                      (setq p-max (point-max))))
+                                    (buffer-substring-no-properties
+                                     (point-min) p-max))
+                                  'index index
+                                  'summary (concat "("
+                                                   (int-to-string summary)
+                                                   ")"))
+                                 l))
+                          (setq summary (1+ summary)))
+                        (setq index (1+ index)))
+                      (when l
+                        (nreverse l))))
+             (popup-kill-ring-buffer-point-hash (make-hash-table :test 'equal))
+             num item)
+        (when popup-kill-ring-interactive-insert
+          (popup-kill-ring-insert-item 0))
+        (setq item (popup-menu* kring
+                                :width popup-kill-ring-popup-width
+                                :keymap popup-kill-ring-keymap
+                                :margin-left popup-kill-ring-popup-margin-left
+                                :margin-right popup-kill-ring-popup-margin-right
+                                :scroll-bar t
+                                :isearch popup-kill-ring-isearch))
+        (when item
+          (setq num (popup-kill-ring-get-index item))
+          (when num
+            (insert (nth num kill-ring))))))))
 
 (defun popup-kill-ring-pos-tip-show (str pos)
   (when (eq window-system 'x)
@@ -305,8 +315,7 @@ and `pos-tip.el'"
       (pos-tip-hide)
       (popup-next m)
       (when popup-kill-ring-interactive-insert
-        (popup-kill-ring-insert-item num)
-        (recenter))
+        (popup-kill-ring-insert-item num))
       ;; wait for timeout
       (sit-for (+ 0.5 popup-kill-ring-timeout)))))
 
@@ -359,8 +368,7 @@ and `pos-tip.el'"
       (pos-tip-hide)
       (popup-previous m)
       (when popup-kill-ring-interactive-insert
-        (popup-kill-ring-insert-item num)
-        (recenter))
+        (popup-kill-ring-insert-item num))
       ;; wait for timeout
       (sit-for (+ 0.5 popup-kill-ring-timeout)))))
 
@@ -384,6 +392,7 @@ and `pos-tip.el'"
       (unwind-protect
           (with-timeout (1.0 (if ol (delete-overlay ol)))
             (insert item)
+            (recenter)
             (setq ol (make-overlay s e))
             (overlay-put ol 'face popup-kill-ring-interactive-insert-face)
             (sit-for 0.5))

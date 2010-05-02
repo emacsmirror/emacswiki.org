@@ -127,6 +127,10 @@ With dynamic let we still get our buttons _but_ selecting them signals an error:
 Unlike the `lexical-let' version above here the second lambda form never gets to
 see the binding for textsymbol. --[[mon_key]]
 
+[new]
+
+We can generalize the very first approach and are almost there : [[closure2.el]] 
+-ap
 
 ----
 CategoryCode

@@ -115,6 +115,8 @@
 ;;    Store current selection to kill ring.
 ;;  `anything-follow-mode'
 ;;    If this mode is on, persistent action is executed everytime the cursor is moved.
+;;  `anything-migrate-sources'
+;;    Help to migrate to new `anything' way.
 ;;  `anything-isearch'
 ;;    Start incremental search within results. (UNMAINTAINED)
 ;;  `anything-isearch-printing-char'
@@ -206,6 +208,11 @@
 ;;   defined.
 
 ;;; (@* "Tips")
+
+;;
+;; For `anything' users, setting `anything-sources' directly and
+;; invoke M-x anything is obsolete way for now. Try M-x
+;; `anything-migrate-sources'!
 
 ;;
 ;; If you want to create anything sources, yasnippet would help you.
@@ -1297,6 +1304,7 @@
 (defvar anything-version nil)
 (setq anything-version "$Id: anything.el,v 1.280 2010-04-01 02:22:22 rubikitch Exp $")
 (require 'cl)
+;; (require 'anything-match-plugin nil t)
 
 ;; (@* "User Configuration")
 
@@ -1642,10 +1650,6 @@ But the anything buffer has no contents. ")
 (defvar anything-buffer-file-name nil
   "`buffer-file-name' when `anything' is invoked.")
 
-(defvar anything-current-position nil
-  "Cons of (point) and (window-start) when `anything' is invoked.
-It is needed because restoring position when `anything' is keyboard-quitted.")
-
 (defvar anything-saved-action nil
   "Saved value of the currently selected action by key.")
 
@@ -1727,10 +1731,11 @@ To enable fitting, set both `anything-inhibit-fit-frame-flag' and
   "If non-nil, add anything-source text-property in each candidate.
 experimental feature.")
 
-(defvar anything-debug-variables nil
-  "Variables to show in `anything-debug-output'.
+(defvar anything-debug-forms nil
+  "Forms to show in `anything-debug-output'.
 Otherwise all variables started with `anything-' are shown.
 It is useful for debug.")
+(defvaralias 'anything-debug-variables 'anything-debug-forms)
 
 ;; (@* "Internal Variables")
 (defvar anything-test-candidate-list nil)
@@ -2042,12 +2047,6 @@ Otherwise, return VALUE itself."
       (push spec anything-once-called-functions))))
 
 ;; (@* "Core: tools")
-(defun anything-current-frame/window-configuration ()
-  (funcall (cdr anything-save-configuration-functions)))
-
-(defun anything-set-frame/window-configuration (conf)
-  (funcall (car anything-save-configuration-functions) conf))
-
 (defun anything-funcall-with-source (source func &rest args)
   (let ((anything-source-name (assoc-default 'name source)))
     (apply func args)))
@@ -2158,43 +2157,47 @@ already-bound variables. Yuck!
   (interactive)
   (condition-case v
       (with-anything-restore-variables
-        (let ((frameconfig (anything-current-frame/window-configuration))
-              ;; It is needed because `anything-source-name' is non-nil
+        (let (;; It is needed because `anything-source-name' is non-nil
               ;; when `anything' is invoked by action. Awful global scope.
               anything-source-name anything-in-persistent-action
               anything-quit
               (case-fold-search t)
               (anything-buffer (or any-buffer anything-buffer))
               (anything-map (or any-keymap anything-map)))
+          (anything-frame/window-configuration 'save)
           (setq anything-sources (anything-normalize-sources any-sources))
           (anything-initialize-1 any-resume any-input)
           (anything-hooks 'setup)
           (if (eq any-resume t)
               (condition-case x
-                  (anything-window-configuration 'set)
+                  (anything-window-configuration 'restore)
                 (error (anything-display-buffer anything-buffer)))
             (anything-display-buffer anything-buffer))
           (unwind-protect
               (anything-read-pattern-maybe any-prompt any-input any-preselect any-resume)
             (anything-cleanup)
             (anything-hooks 'cleanup)
-            (anything-set-frame/window-configuration frameconfig))
+            (anything-frame/window-configuration 'restore))
           (unless anything-quit
             (anything-execute-selection-action-1))))
     (quit
      (anything-on-quit)
      nil)))
 
+(defun anything-resume-p (any-resume)
+  "Whethre current anything session is resumed or not."
+  (memq any-resume '(t window-only)))
+
 (defun anything-initialize-1 (any-resume any-input)
-  (setq anything-current-position (cons (point) (window-start)))
-  (if (eq any-resume t)
+  (anything-current-position 'save)
+  (if (anything-resume-p any-resume)
       (anything-initialize-overlays (anything-buffer-get))
     (anything-initialize))
   (unless (eq any-resume 'noresume)
     (anything-recent-push anything-buffer 'anything-buffers)
     (setq anything-last-buffer anything-buffer))
   (when any-input (setq anything-input any-input anything-pattern any-input))
-  (and (eq any-resume t) (anything-funcall-foreach 'resume)))
+  (and (anything-resume-p any-resume) (anything-funcall-foreach 'resume)))
 
 (defun anything-execute-selection-action-1 ()
   (unwind-protect
@@ -2205,8 +2208,7 @@ already-bound variables. Yuck!
 
 (defun anything-on-quit ()
   (setq minibuffer-history (cons anything-input minibuffer-history))
-  (goto-char (car anything-current-position))
-  (set-window-start (selected-window) (cdr anything-current-position)))
+  (anything-current-position 'restore))
 
 (defun anything-resume-select-buffer (input)
   (anything '(((name . "Resume anything buffer")
@@ -2214,7 +2216,7 @@ already-bound variables. Yuck!
                (action . identity)))
             input nil 'noresume nil "*anything resume*"))
 
-(defun* anything-resume (&optional (any-buffer anything-last-buffer) buffer-pattern)
+(defun* anything-resume (&optional (any-buffer anything-last-buffer) buffer-pattern (any-resume t))
   "Resurrect previously invoked `anything'."
   (interactive)
   (when (or current-prefix-arg buffer-pattern)
@@ -2223,26 +2225,60 @@ already-bound variables. Yuck!
   (anything
    (or (buffer-local-value 'anything-last-sources-local (get-buffer any-buffer))
        anything-last-sources anything-sources)
-   (buffer-local-value 'anything-input-local (get-buffer any-buffer)) nil t nil any-buffer))
+   (buffer-local-value 'anything-input-local (get-buffer any-buffer)) nil any-resume nil any-buffer))
 
-(defvar anything-window-configuration nil)
-;;; (set-window-configuration (buffer-local-value 'anything-window-configuration (get-buffer "*anything buffers*")))
-(defun anything-window-configuration (store-or-set)
-  (case store-or-set
-    ('store
-     (with-current-buffer anything-buffer
-       (set (make-local-variable 'anything-window-configuration)
-            (current-window-configuration))))
-    ('set
-     (with-current-buffer anything-buffer
-       (set-window-configuration anything-window-configuration))
-     (select-window (anything-window)))))
+;;; rubikitch: experimental
+;;; I use this and check it whether I am convenient.
+;;; I may introduce an option to control the behavior.
+(defun* anything-resume-window-only (&optional (any-buffer anything-last-buffer) buffer-pattern)
+  (interactive)
+  (anything-resume any-buffer buffer-pattern 'window-only))
 
 (defun anything-recent-push (elt list-var)
   "Add ELT to the value of LIST-VAR as most recently used value."
   (let ((m (member elt (symbol-value list-var))))
     (and m (set list-var (delq (car m) (symbol-value list-var))))
     (push elt (symbol-value list-var))))
+
+;;; (@* "Core: Accessors")
+(defvar anything-window-configuration nil)
+;;; (set-window-configuration (buffer-local-value 'anything-window-configuration (get-buffer "*anything buffers*")))
+(defun anything-window-configuration (save-or-restore)
+  (case save-or-restore
+    ((save store)
+     (with-current-buffer anything-buffer
+       (set (make-local-variable 'anything-window-configuration)
+            (current-window-configuration))))
+    ((restore set)
+     (with-current-buffer anything-buffer
+       (set-window-configuration anything-window-configuration))
+     (select-window (anything-window)))))
+
+(defvar anything-current-position nil
+  "Cons of (point) and (window-start) when `anything' is invoked.
+It is needed because restoring position when `anything' is keyboard-quitted.")
+(defun anything-current-position (save-or-restore)
+  (case save-or-restore
+    (save
+     (setq anything-current-position (cons (point) (window-start))))
+    (restore
+     (goto-char (car anything-current-position))
+     (set-window-start (selected-window) (cdr anything-current-position)))))
+
+;;; FIXME I want to remove them. But anything-iswitchb uses them.
+(defun anything-current-frame/window-configuration ()
+  (funcall (cdr anything-save-configuration-functions)))
+(defun anything-set-frame/window-configuration (conf)
+  (funcall (car anything-save-configuration-functions) conf))
+
+(declare-function 'anything-frame/window-configuration "anything")
+(lexical-let (conf)
+  (defun anything-frame/window-configuration (save-or-restore)
+    (case save-or-restore
+      (save    (setq conf (funcall (cdr anything-save-configuration-functions))))
+      (restore (funcall (car anything-save-configuration-functions) conf)))))
+
+
 
 ;;;###autoload
 (defun anything-at-point (&optional any-sources any-input any-prompt any-resume any-preselect any-buffer)
@@ -2290,7 +2326,7 @@ already-bound variables. Yuck!
   (run-hooks 'anything-after-initialize-hook))
 
 (defun anything-read-pattern-maybe (any-prompt any-input any-preselect any-resume)
-  (if (eq any-resume t) (anything-mark-current-line) (anything-update))
+  (if (anything-resume-p any-resume) (anything-mark-current-line) (anything-update))
   (select-frame-set-input-focus (window-frame (minibuffer-window)))
   (anything-preselect any-preselect)
   (let ((ncandidate (anything-approximate-candidate-number))
@@ -2353,7 +2389,7 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
 (defun anything-hooks (setup-or-cleanup)
   (let ((hooks '((post-command-hook anything-check-minibuffer-input)
                  (minibuffer-setup-hook anything-print-error-messages)
-                 (minibuffer-exit-hook (lambda () (anything-window-configuration 'store))))))
+                 (minibuffer-exit-hook (lambda () (anything-window-configuration 'save))))))
     (if (eq setup-or-cleanup 'setup)
         (dolist (args hooks) (apply 'add-hook args))
       (dolist (args (reverse hooks)) (apply 'remove-hook args)))))
@@ -2433,7 +2469,7 @@ SOURCE."
     (unless (member name anything-delayed-init-executed)
       (anything-aif (assoc-default 'delayed-init source)
           (when (functionp it)
-            (funcall it)
+            (with-current-buffer anything-current-buffer (funcall it))
             (add-to-list 'anything-delayed-init-executed name)))))
   (let* ((candidate-source (assoc-default 'candidates source))
          (candidates (anything-interpret-value candidate-source source)))
@@ -3152,10 +3188,10 @@ UNIT and DIRECTION."
 
 (defun anything-debug-output-function (&optional vars)
   (message "Calculating all anything-related values...")
-  (insert "If you debug some variables, set `anything-debug-variables'
-to a list of variable names.\n\n")
+  (insert "If you debug some variables or forms, set `anything-debug-forms'
+to a list of forms.\n\n")
   (dolist (v (or vars
-                 anything-debug-variables
+                 anything-debug-forms
                  (apropos-internal "^anything-" 'boundp)))
     (insert "** "
             (pp-to-string v) "\n"
@@ -3756,6 +3792,40 @@ You can paste it by typing C-y."
        (anything-get-selection)
        (save-excursion
          (anything-execute-persistent-action))))
+
+;; (@* "Utility: Migrate `anything-sources' to my-anything command")
+(defun anything-migrate-sources ()
+  "Help to migrate to new `anything' way."
+  (interactive)
+  (with-current-buffer (get-buffer-create "*anything migrate*")
+    (erase-buffer)
+    (insert (format "\
+Setting `anything-sources' directly is not good because
+`anything' is not for one command.  For now, interactive use of
+`anything' (M-x anything) is only for demonstration purpose.
+So you should define commands calling `anything'.
+I help you to migrate to the new way.
+
+The code below is automatically generated from current
+`anything-sources' value. You can use the `my-anything' command
+now!
+
+Copy and paste it to your .emacs. Then substitute `my-anything'
+for `anything' bindings in all `define-key', `local-set-key' and
+`global-set-key' calls.
+
+\(defun my-anything ()
+  \"Anything command for you.
+
+It is automatically generated by `anything-migrate-sources'.\"
+  (interactive)
+  (anything-other-buffer
+    '%S
+    \"*my-anything*\"))
+" anything-sources))
+    (eval-last-sexp nil)
+    (substitute-key-definition 'anything 'my-anything global-map)
+    (pop-to-buffer (current-buffer))))
 
 ;; (@* "Utility: Incremental search within results (unmaintained)")
 
@@ -5962,6 +6032,17 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
                                        (requires-pattern . 2)))
                                     "abc")
           value))
+      (expect t
+        (let (value)
+          (with-temp-buffer
+            (anything-test-candidates '(((name . "test")
+                                         (delayed-init
+                                          . (lambda () (setq value
+                                                             (eq anything-current-buffer (current-buffer)))))
+                                         (candiates "abc")
+                                         (requires-pattern . 2)))
+                                      "abc")
+            value)))
       (desc "pattern-transformer attribute")
       (expect '(("test2" ("foo")) ("test3" ("bar")))
         (anything-test-candidates '(((name . "test1")
