@@ -64,8 +64,9 @@
     (hoge))
   )
 
-
-
 ;; How to save (DO NOT REMOVE!!)
 ;; (emacswiki-post "el-expectations-failure-sample.el")
+;; Local Variables:
+;; no-byte-compile:   t
+;; End:
 ;;; el-expectations-failure-sample.el ends here

@@ -1,3 +1,5 @@
+[2010/05/02/] I have submitted a patch to emacs-devel (see http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6076). -- [[Leo]]
+-----
 This will change [[rcirc]] TAB completion such that it will also try to complete defined commands:
 
 {{{

@@ -1,0 +1,10 @@
+YARI (Yet Another Ri Interface) provides an Emacs frontend to Ruby's `ri' documentation tool. It offers lookup and completion.
+
+This packages is completely replacement for RiEmacs and RiEl. I have tried to test this extension against every RDoc version. Please, report any problems to [::hron].
+
+The sources: http://github.com/hron/yari.el
+
+Lisp:yari.el
+
+= Dialog =
+Interesting! I am a Rubyist. Why do you develop this? I want to know differences with RiEmacs and RiEl. -- [[rubikitch]]

@@ -36,6 +36,8 @@ testing.
 
 ##<tt>''"[[test.el]]"''</tt>## --> <tt>''"[[test.el]]"''</tt> -- quotes outside and italics
 
+Go to [[#foo barish]]
+
 Test of yaoddmuse!
 
 Editing as a minor edit this time ^-^ sorry about that
@@ -55,4 +57,4 @@ türkçe
 
 Contact me if you want Turkish support. :) -- AlexSchroeder
 
-[[rubikitch]] EmacsNewbie
+[:foo barish]

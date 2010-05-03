@@ -1,4 +1,4 @@
-== OS X Binaries ==
+== Binaries for OS X (and OS 9) ==
 
 Here are some Emacs and XEmacs binaries for OS X.
 
@@ -12,15 +12,15 @@ If you've used Emacs before and already have your own emacs initialization file,
 
 [http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Auf Deutsch] (in German).
 
-=== Binary Vanilla builds ===
+=== OS X Binary Vanilla builds ===
 
-These builds are based on the CVS version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super).
+These builds are based on the BZR version of GNU Emacs and do not contain any additional packages or patches. Popular Mac keyboard shortcuts are available though (e.g. Command-O for opening a file); these are mapped to the Super modifier (i.e., the Apple/Command key functions as Super).
 
 * [http://emacsformacosx.com/ GNU Emacs 23.1 (Cocoa)]
 
-* [http://atomized.org/wp-content/cocoa-emacs-nightly/ Nightly builds] of GNU Emacs 23 (Cocoa) from CVS, provided by IanEure
+* [http://atomized.org/wp-content/cocoa-emacs-nightly/ Nightly builds] of GNU Emacs 23 (Cocoa) from BZR, provided by IanEure
 
-=== Distributions with extras ===
+=== OS X Distributions with extras ===
 
 Custom distributions contain startup routines and tweaks to make Emacs' UI behavior more "Mac-like". In addition to that, they typically include recent versions of popular packages.
 
@@ -30,7 +30,7 @@ Custom distributions contain startup routines and tweaks to make Emacs' UI behav
 
 * [http://members.shaw.ca/akochoi-xemacs/ XEmacs 21.5.18 *beta*], AndrewChoi.  Also available via !DarwinPorts.  Via patches from his home page, you can fix a number of issues, and the patches apply to XEmacs 21.5.22 (See AkochoiXEmacsGplCompliance).
 
-=== OS 9 ===
+=== OS 9 Binaries ===
 
 The newest available version is 20.6.  It does not support asynchronous processes or network connections, so Gnus and ViewMail do not work.  A hack using AppleEvents has been used to make RMAIL interface with Eudora if it exists on the Macintosh.
 
@@ -38,22 +38,24 @@ The most recent available version of XEmacs is Pitts Jarvis's [http://homepage.m
 
 Thanks to SebastienKirche, a precompiled development release of [http://sebastien.kirche.free.fr/emacs_stuff/en.html GNU Emacs 21.3.50] is available for Mac OS 9. The cut/copy/paste buffer is not shared with the OS, so no pasting from other applications.  Drag and drop is not supported on the command line, but draging a text file to the application icon is.  Also, it works when QuickTime 5.0.5 is installed, but not with 4.1.2   If you're missing QT5 you should be able to get it [http://docs.info.apple.com/article.html?artnum=120132 here].
 
-== Build From Source ==
+== Building Emacs From Source ==
 
 === Getting the Source ===
 
-==== CVS ====
+==== BZR ====
 
-Directions for accessing the emacs CVS are found at ##<http://savannah.gnu.org/cvs/?group=emacs>##. To download emacs, use the command:
+Directions for accessing the emacs BZR repository are found at [http://savannah.gnu.org/projects/emacs http://savannah.gnu.org/projects/emacs]. 
+To download emacs, use the command:
 
-   cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
-   (or `cvs -z3 up', if you already had checked it out)
+    bzr branch http://bzr.savannah.gnu.org/r/emacs/trunk
+
+    (or `bzr revert; bzr pull', if you already had checked it out)
 
 ==== Tarball ====
 
 Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] page.  Click on "Download Area" under "Quick Overview".
 
-=== OS X ===
+=== Building Emacs for OS X ===
 
 There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
@@ -63,6 +65,7 @@ Emacs 23.1 ships with Cocoa support.  You can build it by running something like
 
 <pre>
   ./configure --with-ns
+  make
   make install
 </pre>
 
@@ -70,19 +73,34 @@ When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  S
 
 For more detailed instructions, see the <tt>nextstep/INSTALL</tt> [http://cvs.savannah.gnu.org/viewvc/emacs/nextstep/INSTALL?root=emacs&view=markup file].  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
 
-Note that 10.6.n (Snow Leopard) does not build from the June/July 23.1 release source tarball.  You need the latest CVS version of the trunk.  Emacs.app now builds x86-64 by default on platforms which are 64-bit capable.
+Note that 10.6.n (Snow Leopard) does not build from the June/July 23.1 release source tarball.  You need the latest BZR version of the trunk.  Emacs.app now builds x86-64 by default on platforms which are 64-bit capable.
+
+==== X11 Emacs ====
+
+Directions to build and install may be found in the INSTALL or INSTALL.BZR files. The basic build and installation of the X11 Emacs application uses the commands:
+
+<pre>
+    ./configure --with-x
+    make
+    sudo make install
+</pre>
 
 ==== Carbon Emacs (deprecated) ====
 
 Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
 
+<pre>
     ./configure --enable-carbon-app
     make
     sudo make install
+</pre>
 
 Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.1.
 
-=== OS 9 ===
+
+
+
+=== Building Emacs for OS 9 ===
 
 Emacs can be compiled on the classic MacOS using the Macintosh
 Programmer's Workshop.  MPW is a unix-like environment for the
@@ -99,37 +117,32 @@ Then, follow the instructions in the Emacs source, in the file $EMACS/mac/INSTAL
 
 === Fink ===
 
-Fink includes the following packages:
+As of May 2nd, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes the following packages:
 
 * XEmacs 21.4.20
-* Emacs 21.3.50 from CVS (no X11)
-* Emacs 21.3.50 from CVS (Xaw3d)
-* Emacs 21.3.50 from CVS (GTK)
-* Emacs 22.1 (no X11)
-* Emacs 22.1 (GTK)
-* Emacs 22.1 (Carbon)
+* Emacs  23.1   from BZR   (no X11)
+* Emacs  23.1   from BZR   (X11 Xaw3d)
+* Emacs  9.0rc3 from BZR (Cocoa)
 * color-theme, ecb, edb, eieio, emacs-w3, emacs-w3m, jdee, mew, nxml-mode, planner-el, speedbar, ...
-
 and even AucTeX!
+ 
 
-* http://fink.sourceforge.net/
-
-Note: OS X 10.2.2 changed the unexec-mechanism used by Emacs, so the prepackaged Emacs cannot be used for 10.2.2.  You may want to either get the latest source from Emacs CVS and build it yourself (see Andrews page for the FAQ) or use XEmacs instead. -- ThorbjoernRavnAndersen
+Note: OS X 10.2.2 changed the unexec-mechanism used by Emacs, so the prepackaged Emacs cannot be used for 10.2.2.  
+You may want to either get the latest source from Emacs BZR and build it yourself (see Andrews page for the FAQ) 
+or use XEmacs instead. -- ThorbjoernRavnAndersen
 
 === MacPorts ===
 
-!MacPorts is another means of installing Emacs on OS X (and other unix-alikes for that matter). It provides the following packages:
+!MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
+(and other unix-alikes for that matter). 
+As of May 2nd, 2010 it provides the following packages:
 
-* emacs -- version 22.3 command line only
-* emacs-app -- 23.0.0_NS-9.0rc3 aqua/NextStep
-* emacs-app-devel  -- same as emacs-app, but with a less old CVS development version (20090104 as of October 2009)
-* xemacs -- 21.4.21 X11
+* Emacs -- version 23.1 (X11 Xaw3d)
+* Emacs-app -- 23.1 (Cocoa)
+* Emacs-app-devel  -- same as emacs-app, but with a newer BZR development version (20090104 as of October 2009)
+* XEmacs -- 21.4.21 (X11)
 
-!MacPorts homepage:
-
-* http://www.macports.org/
-
-For the OS-X native(aqua) versions, once you've got !MacPorts installed, run
+For the OS-X native (Cocoa) versions, once you've got !MacPorts installed, run
 
    sudo port install emacs-app
 
@@ -138,6 +151,7 @@ or (if you prefer a more recent version)
    sudo port install emacs-app-devel
 
 It's also possible to build the development version of GNU Emacs with ATSUI -- Apple Type Services for Unicode Imaging. 
+
 
 == Tips ==
 

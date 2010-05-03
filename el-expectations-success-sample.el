@@ -105,5 +105,8 @@
   )
 ;; How to save (DO NOT REMOVE!!)
 ;; (emacswiki-post "el-expectations-success-sample.el")
+;; Local Variables:
+;; no-byte-compile:   t
+;; End:
 ;;; el-expectations-success-sample.el ends here
 

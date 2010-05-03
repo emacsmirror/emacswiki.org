@@ -57,7 +57,7 @@ objects as their values.
 
 
 
-
+[:AdditionalTypes]
 === Additional types of bookmarks. ===
 
 * You can bookmark a [[DiredMode|Dired]] buffer, recording and restoring its
@@ -291,8 +291,7 @@ tags in a given ''set'', ''some'' tags in a given ''set'', ''all'' tags matching
 ''regexp'', or ''some'' tags matching a ''regexp''.  You are prompted for the
 set of tags or the regexp to match.  These commands all have the
 [[prefix key]] '''`##C-x j## <tt>__t__</tt>'''', with the regexp-matching ones having the
-prefix key '''`##C-x j t %##''''.  The key suffix is '''`##*##'''' for "all" and '''`##+##''''
-for "some".
+prefix key '''`##C-x j## <tt>__t %__</tt>''''.  The key suffix is '''`##*##'''' for "all" and '''`##+##'''' for "some".  For example, `##C-x j t % +##' jumps to a bookmark you choose that has one or more tags that match the regexp you input.
 
 
 There is an other-window version of most jump commands, and it is
@@ -785,7 +784,7 @@ tagged both `Java' and `ide'?
 
 # `##T m * Java RET ide RET RET##', to mark them.
 
-# `##T + Java IDE Projects RET RET##, to tag them.
+# `##T > + Java IDE Projects RET RET##, to tag them.
 
 
 How would you sort your bookmarks, to show all those tagged both `blue' and `moon' first?
@@ -961,7 +960,15 @@ These are the keys for hiding or showing bookmarks:
 
 * '''`##I S##'''' -- Show only __I__nfo bookmarks.
 
+* '''`##K S##'''' -- Show only des__K__top bookmarks (see [[#AdditionalTypes]]).
+
+* '''`##M S##'''' -- Show only __m__an-page bookmarks.
+
+* '''`##O S##'''' -- Show only __o__mitted bookmarks (see [[#OmittingBookmarks]]).
+
 * '''`##R S##'''' -- Show only bookmarks with __r__egion information.
+
+* '''`##V S##'''' -- Show only __v__ariable-list bookmarks (see [[#FunctionSequenceVarlistBookmarks|variable-list]]).
 
 * '''`##W S##'''' -- Show only __W__3M bookmarks.
 

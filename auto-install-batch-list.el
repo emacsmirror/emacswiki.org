@@ -1,5 +1,5 @@
 ;;; auto-install-batch-list.el --- Data file of auto-install.el
-;; $Id: auto-install-batch-list.el,v 1.3 2010/05/01 01:32:55 rubikitch Exp $
+;; $Id: auto-install-batch-list.el,v 1.3 2010/05/01 01:32:55 rubikitch Exp rubikitch $
 
 ;;; This file is used by auto-install.el internally.  M-x
 ;;; auto-install-batch downloads this file before installation to
@@ -122,6 +122,12 @@
           (
            "http://nschum.de/src/emacs/fringe-helper/fringe-helper.el"
            "http://nschum.de/src/emacs/test-case-mode/test-case-mode.el"))
+         ("el-expectations" nil nil
+          (
+           "http://www.emacswiki.org/emacs/download/el-expectations.el"
+           "http://www.emacswiki.org/emacs/download/el-mock.el"
+           "http://www.emacswiki.org/emacs/download/el-expectations-success-sample.el"))
+           "http://www.emacswiki.org/emacs/download/el-expectations-failure-sample.el"))
          )
        auto-install-batch-list))
 

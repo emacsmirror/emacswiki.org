@@ -270,6 +270,27 @@ Hey Drew, I just wanted to let you know that your emacs libraries are so much aw
 [new:DrewAdams:2009-05-18 16:20 UTC]
 Thank you Jonathan. Enjoy! Bug reports and suggestions welcome. Thx -- DrewAdams
 
+[new:rubikitch:2010-05-03 07:51 UTC]
+Hi Drew! There is `reporter-submit-bug-report', a autoload function to send a bug report with dumping variables. I wonder why you do not use it. -- [[rubikitch]]
+
+[new:DrewAdams:2010-05-02 23:42 UTC]
+Hi Rubikitch. I have used it. I don't recall why I don't use it more now. Why do you ask? -- DrewAdams
+
+[new:rubikitch:2010-05-03 11:17 UTC]
+I think `reporter-submit-bug-report' is useful especially variable dump. I want to know the drawback of it because you do not use it. I'll try to use it. Thanks. -- [[rubikitch]]
+
+[new:DrewAdams:2010-05-03 04:21 UTC]
+It doesn't mean anything special that I don't use it. ;-) I agree that it can be useful to dump a select set of relevant variables (as opposed to a humongous list, for instance) into a bug-report mail skeleton. I've just never bothered. The only info I gather automatically is ##(emacs-version)## -- e.g. command `bookmarkp-send-bug-report'.
+
+Typically, I'm interested in other things the user can describe about the problem, and I'll just ask about any vars I think might be pertinent if they aren't spontaneously reported. But that's not a reason not to use `reporter'.  Regards -- DrewAdams
+
+
+
+
+
+
+
+
 
 
 

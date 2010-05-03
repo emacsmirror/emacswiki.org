@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 24 13:33:57 2010 (-0700)
+;; Last-Updated: Sun May  2 16:03:47 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12033
+;;     Update #: 12039
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -311,7 +311,8 @@
 ;;  set of tags or the regexp to match.  These commands all have the
 ;;  prefix key `C-x j t', with the regexp-matching ones having the
 ;;  prefix key `C-x j t %'.  The key suffix is `*' for "all" and `+'
-;;  for "some".
+;;  for "some".  For example, `C-x j t % +' jumps to a bookmark you
+;;  choose that has one or more tags that match the regexp you input.
 ;;
 ;;  There is an other-window version of most jump commands, and it is
 ;;  bound to the same key as the same-window command, except the
@@ -495,7 +496,7 @@
 ;;  stored in buffer-local variable `wide-n-restrictions'.  Command
 ;;  `bookmarkp-set-restrictions-bookmark' bookmarks this value for the
 ;;  current buffer.  Jumping to such a bookmark restores the saved
-;;  list of restrictions.
+;;  ring/stack of restrictions.
 ;;
 ;;
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
@@ -780,7 +781,7 @@
 ;;  already tagged both `Java' and `ide'?
 ;;
 ;;  1. `T m * Java RET ide RET RET', to mark them.
-;;  2. `T + Java IDE Projects RET RET, to tag them.
+;;  2. `T > + Java IDE Projects RET RET, to tag them.
 ;;
 ;;  How would you sort your bookmarks, to show all those tagged both
 ;;  `blue' and `moon' first?
