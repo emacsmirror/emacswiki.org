@@ -8,6 +8,7 @@ interpreters are supported:
 
 * psql by '''<nowiki>PostgreSQL</nowiki>'''
 * mysql by '''<nowiki>MySQL</nowiki>'''
+* sqlite or sqlite3 for [[SQLite]]
 * solsql by '''Solid'''
 * SQL*Plus by '''Oracle'''
 * dbaccess by '''Informix'''

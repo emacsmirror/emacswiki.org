@@ -50,7 +50,7 @@ This code first verifies it is running under windows with cygwin installed, so t
 You will also need Lisp:cygwin-mount.el if you want Emacs to understand Cygwin paths.
 
 Note that this is substantially the same as the bit of code given in
-the Cygwin FAQ: http://www.cygwin.com/faq/faq_3.html#SEC63
+the Cygwin FAQ: http://www.cygwin.com/faq/faq.using.html#faq.using.ntemacs
 
 See CustomizingBoth to get fancier.
 
@@ -113,5 +113,9 @@ I found w32-grep.el in the latest zip file in the [http://ourcomments.org/Emacs/
 
 After loading w32-grep.el, <code>C-u C-u M-x rgrep RET</code> returns an invalid prompt:
 <code>grep -r <C> -nH . --include=</code>
+
+[new]
+The other option is setting `null-device' to "/dev/null" permanently in the Cygwin section of your .emacs.
+
 ----
 CygWin

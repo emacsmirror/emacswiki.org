@@ -1,6 +1,6 @@
 ;;; point-undo.el --- undo/redo position
 
-;;  Copyright (C) 2006,2008 rubikitch <rubikitch@ruby-lang.org>
+;;  Copyright (C) 2006,2008 rubikitch <rubikitch atmark ruby-lang.org>
 ;;  Version: $Id: point-undo.el,v 1.6 2009/10/16 20:37:37 rubikitch Exp rubikitch $
 
 ;;  This program is free software; you can redistribute it and/or modify
@@ -40,6 +40,25 @@
 ;; (define-key global-map [f5] 'point-undo)
 ;; (define-key global-map [f6] 'point-redo)
 
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x point-undo-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of point-undo.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "point-undo.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x point-undo-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; History:
 ;; 
@@ -103,6 +122,30 @@
   (when (or (eq last-command 'point-undo)
             (eq last-command 'point-redo))
     (point-undo-doit 'point-redo-list 'point-undo-list)))
+
+;;;; Bug report
+(defvar point-undo-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar point-undo-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of point-undo.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"point-undo.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun point-undo-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   point-undo-maintainer-mail-address
+   "point-undo.el"
+   (apropos-internal "^point-undo-" 'boundp)
+   nil nil
+   point-undo-bug-report-salutation))
 
 (provide 'point-undo)
 

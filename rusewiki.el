@@ -3,7 +3,7 @@
 ;;
 ;; Based on oddmuse.el by Alex Schroeder
 ;;
-;; $Id: rusewiki.el,v 1.3 2007/01/09 17:16:35 rubikitch Exp $
+;; $Id: rusewiki.el,v 1.4 2007/07/12 06:56:52 rubikitch Exp $
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -25,6 +25,33 @@
 ;; A simple mode to edit pages on RuseWiki wikis using Emacs and a
 ;; command-line HTTP client such as curl.
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `rusewiki-mode'
+;;    Simple mode to edit wiki pages.
+;;  `rusewiki-edit'
+;;    Edit a page on a wiki.
+;;  `rusewiki-follow'
+;;    Figure out what page we need to visit
+;;  `rusewiki-post'
+;;    Post the current buffer to the current wiki.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `rusewiki-wikis'
+;;    Alist mapping wiki names to URLs.
+;;    default = (quote (("Ruby" "http://wiki.rubygarden.org/Ruby/" iso-8859-1) ("Ruse" "http://wikis.onestepback.org/Ruse/" utf-8)))
+;;  `rusewiki-username'
+;;    Username to use when posting.
+;;    default = user-full-name
+;;  `rusewiki-password'
+;;    Password to use when posting.
+;;    default = ""
+
 ;; Since text formatting rules depend on the wiki you're writing for,
 ;; the font-locking can only be an approximation.
 
@@ -33,9 +60,33 @@
 ;; (autoload 'rusewiki-edit "rusewiki" "Edit a page on an RuseWiki wiki." t)
 ;; And then use M-x rusewiki-edit to start editing.
 
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x rusewiki-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of rusewiki.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "rusewiki.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x rusewiki-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
 ;;; History:
 
 ;; $Log: rusewiki.el,v $
+;; Revision 1.4  2007/07/12 06:56:52  rubikitch
+;; Use emacswiki-post at `How to save'.
+;;
 ;; Revision 1.3  2007/01/09 17:16:35  rubikitch
 ;; fixed a typo.
 ;;
@@ -229,8 +280,32 @@ The current wiki is taken from `rusewiki-wiki'."
     (shell-command-on-region (point-min) (point-max) command)
     (delete-file tempfile)))
 
+;;;; Bug report
+(defvar rusewiki-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar rusewiki-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of rusewiki.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"rusewiki.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun rusewiki-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   rusewiki-maintainer-mail-address
+   "rusewiki.el"
+   (apropos-internal "^rusewiki-" 'boundp)
+   nil nil
+   rusewiki-bug-report-salutation))
+
 (provide 'rusewiki)
 
 ;; How to save (DO NOT REMOVE!!)
-;; (let ((oddmuse-wiki "EmacsWiki")(oddmuse-page-name "rusewiki.el")) (call-interactively 'oddmuse-post))
+;; (emacswiki-post "rusewiki.el")
 ;;; rusewiki.el ends here

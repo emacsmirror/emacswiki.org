@@ -1404,6 +1404,7 @@ Keys (digit/alphabet) are listed in `anything-digit-shortcut-index-alist'.")
 
 (defvar anything-shortcut-keys-alist
   '((alphabet . "asdfghjklzxcvbnmqwertyuiop")
+    (prefix   . "asdfghjklzxcvbnmqwertyuiop1234567890") ;EXPERIMENTAL
     (t        . "123456789")))
 
 (defvar anything-display-source-at-screen-top t
@@ -1614,8 +1615,15 @@ Global variables are initialized and the anything buffer is created.
 But the anything buffer has no contents. ")
 
 (defvar anything-update-hook nil
-  "Run after the anything buffer was updated according the new
-  input pattern.")
+  "Run after the anything buffer was updated according the new input pattern.
+This hook is run at the beginning of buffer.
+The first candidate is selected after running this hook.
+See also `anything-after-update-hook'.")
+
+(defvar anything-after-update-hook nil
+  "Run after the anything buffer was updated according the new input pattern.
+This is very similar to `anything-update-hook' but selection is not moved.
+It is useful to select a particular object instead of the first one. ")
 
 (defvar anything-cleanup-hook nil
   "Run after anything minibuffer is closed, IOW this hook is executed BEFORE performing action. ")
@@ -1911,7 +1919,8 @@ If FORCE-DISPLAY-PART is non-nil, return the display string."
                               (overlay-start anything-selection-overlay)
                               (1- (overlay-end anything-selection-overlay))))
                        (source (anything-get-current-source)))
-                   (anything-aif (assoc-default 'display-to-real source)
+                   (anything-aif (and (not force-display-part)
+                                      (assoc-default 'display-to-real source))
                        (anything-funcall-with-source source it disp)
                      disp)))))
         (unless (equal selection "")
@@ -2048,8 +2057,12 @@ Otherwise, return VALUE itself."
 
 ;; (@* "Core: tools")
 (defun anything-funcall-with-source (source func &rest args)
-  (let ((anything-source-name (assoc-default 'name source)))
-    (apply func args)))
+  "Call FUNC with ARGS with variable `anything-source-name' and `source' is bound.
+FUNC can be function list. Return the result of last function call."
+  (let ((anything-source-name (assoc-default 'name source))
+        result)
+    (dolist (func (if (functionp func) (list func) func) result)
+      (setq result (apply func args)))))
 
 (defun anything-funcall-foreach (sym)
   "Call the sym function(s) for each source if any."
@@ -2057,8 +2070,7 @@ Otherwise, return VALUE itself."
     (when (symbolp source)
       (setq source (symbol-value source)))
     (anything-aif (assoc-default sym source)
-        (dolist (func (if (functionp it) (list it) it))
-          (anything-funcall-with-source source func)))))
+        (anything-funcall-with-source source it))))
 
 (defun anything-normalize-sources (sources)
   "If SOURCES is only one source, make a list."
@@ -2468,9 +2480,10 @@ SOURCE."
   (let ((name (assoc-default 'name source)))
     (unless (member name anything-delayed-init-executed)
       (anything-aif (assoc-default 'delayed-init source)
-          (when (functionp it)
-            (with-current-buffer anything-current-buffer (funcall it))
-            (add-to-list 'anything-delayed-init-executed name)))))
+          (with-current-buffer anything-current-buffer
+            (anything-funcall-with-source source it)
+            (dolist (f (if (functionp it) (list it) it))
+              (add-to-list 'anything-delayed-init-executed name))))))
   (let* ((candidate-source (assoc-default 'candidates source))
          (candidates (anything-interpret-value candidate-source source)))
     (cond ((processp candidates) candidates)
@@ -2703,30 +2716,37 @@ the current pattern."
                                    0)
                                  nil
                                  'anything-process-delayed-sources
-                                 delayed-sources)))))))
+                                 delayed-sources))
+          ;; FIXME I want to execute anything-after-update-hook
+          ;; AFTER processing delayed sources
+          (run-hooks 'anything-after-update-hook))))))
 
 (defun anything-force-update ()
   "Recalculate and update candidates.
 If current source has `update' attribute, a function without argument, call it before update."
   (interactive)
-  (anything-aif (anything-attr 'update)
-      (anything-funcall-with-source (anything-get-current-source) it))
-  ;; Remove from candidate cache to recalculate candidates
-  (setq anything-candidate-cache
-        (delete (assoc (assoc-default 'name (anything-get-current-source)) anything-candidate-cache)
-                anything-candidate-cache))
-  ;; Go to original selection after update
-  (let ((selection (anything-get-selection))
-        (source (anything-get-current-source)))
-    (anything-update)
-    (with-anything-window
-      (anything-goto-source source)
-      (forward-char -1)                 ;back to \n
-      (if (search-forward (concat "\n" selection "\n") nil t)
-          (forward-line -1)
-        (goto-char (point-min))
-        (forward-line 1))
-      (anything-mark-current-line))))
+  (let ((source (anything-get-current-source)))
+    (anything-aif (anything-candidate-buffer)
+        (kill-buffer it))
+    (anything-aif (assoc-default 'init source)
+        (anything-funcall-with-source source it))
+    (anything-aif (assoc-default 'update source)
+        (anything-funcall-with-source source it))
+    ;; Remove from candidate cache to recalculate candidates
+    (setq anything-candidate-cache
+          (delete (assoc (assoc-default 'name source) anything-candidate-cache)
+                  anything-candidate-cache))
+    ;; Go to original selection after update
+    (let ((selection (anything-get-selection nil t)))
+      (anything-update)
+      (with-anything-window
+        (anything-goto-source source)
+        (forward-char -1)                ;back to \n
+        (if (search-forward (concat "\n" selection "\n") nil t)
+            (forward-line -1)
+          (goto-char (point-min))
+          (forward-line 1))
+        (anything-mark-current-line)))))
 
 (defun anything-insert-match (match insert-function source)
   "Insert MATCH into the anything buffer. If MATCH is a list then
@@ -3097,6 +3117,27 @@ UNIT and DIRECTION."
             (anything-mark-current-line)
             (anything-exit-minibuffer))))
     (self-insert-command 1)))
+
+;;; EXPERIMENTAL TODO documentation 
+(defun anything-select-with-prefix-shortcut ()
+  (interactive)
+  (if (eq anything-enable-shortcuts 'prefix)
+      (save-selected-window
+        (select-window (anything-window))          
+        (let* ((key (read-event "Select shortcut key: "))
+               (index (position key anything-shortcut-keys))
+               (overlay (ignore-errors (nth index anything-digit-overlays))))
+          (if (not (and overlay (overlay-buffer overlay)))
+              (when (numberp key)
+                (select-window (minibuffer-window))
+                (self-insert-command 1))
+            (goto-char (overlay-start overlay))
+            (anything-mark-current-line)
+            (anything-exit-minibuffer))))
+    (self-insert-command 1)))
+;; (setq anything-enable-shortcuts 'prefix)
+;; (define-key anything-map "@" 'anything-select-with-prefix-shortcut)
+;; (define-key anything-map (kbd "<f18>") 'anything-select-with-prefix-shortcut)
 
 (defun anything-exit-minibuffer ()
   "Select the current candidate by exiting the minibuffer."
@@ -6028,6 +6069,15 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
         (let ((value 0))
           (anything-test-candidates '(((name . "test")
                                        (delayed-init . (lambda () (incf value)))
+                                       (candiates "abc")
+                                       (requires-pattern . 2)))
+                                    "abc")
+          value))
+      (expect 2
+        (let ((value 0))
+          (anything-test-candidates '(((name . "test")
+                                       (delayed-init (lambda () (incf value))
+                                                     (lambda () (incf value)))
                                        (candiates "abc")
                                        (requires-pattern . 2)))
                                     "abc")

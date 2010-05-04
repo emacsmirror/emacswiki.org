@@ -325,5 +325,64 @@ there  is more than one possible target you can prefix the command with a number
 path found is used.
 
 ----
+[:AlternativeUsagePatterns]
+==Alternative usage patterns.==
+
+You  can  use the Sunrise functions to make your own Sunrise Commander. Is there
+anything you don't like in Sunrise, or would you like it to have some additional
+functions  it doesn't have yet? Of course you can always write to the author and
+ask whether he likes the idea and has the time to implement it, but you can also
+read the code and do it yourself in the //Ol' Good Open Source// Tradition.
+
+This section is intended for contributed ways of using / tweaking Sunrise, so it
+works better for concrete users. If you have your own original way of using the
+Sunrise Commander, consider adding it here -- someone else will probably benefit
+from it, or maybe the author likes the idea and adds it to the official code ;-)
+
+[new]
+//From Tom Short://
+
+Both  my  laptop screen and my desktop monitor are quite wide, so I use a lot of
+horizontal split screen. In sr-mode, I don't use the viewer much. I like to  use
+windows  split horizontally with the right window used as both the viewer/editor
+and the passive directory window. To do that, I use  sr-setup-windows  from  the
+PopViewer  Extension  to  get two windows in sr-mode, and I use sr-open-in-other
+defined below to open the directory or file in the passive window. I assign  the
+space key to sr-open-in-other. I also redefine sr-select-viewer-window.
+
+My usage is as follows:
+
+* hit space to open the file or directory in the other window
+* hit enter to open the file or directory in the existing window
+*  hit  v to temporarily open the file or directory in the other pane (works the
+same as space for directories)
+* hit \ to bring back both directory window
+
+For me, this works pretty well in practice.
+
+    (defun sr-open-in-other (&optional arg)
+     "Opens files/directories in the other pane."
+     (interactive "P")
+     (let ((name (dired-get-filename nil t)))
+       (cond ((file-directory-p name) (sr-quick-view-directory name))
+             ((file-symlink-p name) (sr-quick-view-symlink name))
+             (t (sr-open-in-other-file)))))
+     
+    (defun sr-open-in-other-file ()
+     "Opens the selected file in the viewer window. "
+     (let ((split-width-threshold (* 10 (window-width))))
+       (save-selected-window
+         (condition-case description
+             (progn
+               (dired-find-file-other-window)
+               (sr-scrollable-viewer (current-buffer)))
+           (error (message "%s" (second description)))))))
+     
+    (defun sr-select-viewer-window (&optional force-setup)
+     "Tries to select a window that is not a sr pane."
+     (interactive)
+     (other-window 1))
+
+----
 CategoryDirectories
 CategoryEmulation

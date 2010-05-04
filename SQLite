@@ -1,0 +1,12 @@
+The SQLite library creates and maintains a database in a single file with basic SQL commands to add data and query.  A front-end "sqlite3" program can be used interactively and for scripting.  Read more at 
+
+: http://www.sqlite.org/
+
+Here are some things for working with SQLite in Emacs,
+
+* SqlMode -- run sqlite interaction, and more
+* [http://user42.tuxfamily.org/sqlite-dump/index.html sqlite-dump.el] -- view and edit an sqlite database file in ".dump" form
+
+----
+CategorySql
+

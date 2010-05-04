@@ -1,4 +1,4 @@
-;;; sunrise-x-popviewer.el  ---  Improves accessibility of the Sunrise Commander
+;;; sunrise-x-popviewer.el  --- Improves  accessibility of the Sunrise Commander
 ;; file manager by eliminating the lower window (a.k.a. the "viewer" window) and
 ;; popping  up  a  new  emacs  frame  instead  for  file  viewing  and  terminal
 ;; integration.
@@ -33,7 +33,7 @@
 ;; together, if you're using the Buttons extension remove  it  first  from  your
 ;; .emacs file.
 
-;; This is version 1 $Rev: 262 $ of the Sunrise Commander PopViewer Extension.
+;; This is version 1 $Rev: 288 $ of the Sunrise Commander PopViewer Extension.
 
 ;; This  piece  of code is still in alpha stage. If you find it useful and think
 ;; you may contribute to it with suggestions of even more code,  please  let  me
@@ -59,6 +59,8 @@
 ;; 5) Enjoy ;-)
 
 ;;; Code:
+
+(require 'sunrise-commander)
 
 (remove-hook 'window-size-change-functions 'sr-lock-window)
 
@@ -91,7 +93,7 @@
 (defun sr-select-viewer-window (&optional force-setup)
   "Tries to select a window that is not a sr pane."
   (interactive)
-  (make-frame)
-  (other-frame 1))
+  (make-frame '((name . "Sunrise Viewer Frame")))
+  (select-frame-by-name "Sunrise Viewer Frame"))
 
 (provide 'sunrise-x-popviewer)

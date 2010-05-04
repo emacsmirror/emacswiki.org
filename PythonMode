@@ -3,6 +3,7 @@ There are two implementations of a Python mode for Emacs.
 (RichardRiley : this is a very, very confusing page. It's hard to make head nor tail of what could and should be used in emacs 23 and I will try to annotate/clip this page when I know more. The whole python.el v python-mode.el thing is really messy)
 : Couldn't agree more. I wanted to program in python with emacs, but getting my python-mode just right with all the feature has been a pain - This page is a bit of a mess of information - maybe we could collaborate to make a page that gives easier instruction for creating a usable python configuration?
 How about PythonProgrammingInEmacs --CH
+:: I've had no replies from anyone about the changes I've proposed to the structure of this page, in the meanwhile this page, and the ones I've created will just diverge; Should I just delete this page and redirect it to PythonProgrammingInEmacs ? --CH
 
 == python-mode.el ===
 
