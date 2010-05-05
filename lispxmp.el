@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.19 2010/04/16 12:07:26 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.20 2010/05/04 09:01:42 rubikitch Exp $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -85,9 +85,32 @@
 ;;
 
 
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x lispxmp-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of lispxmp.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "lispxmp.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x lispxmp-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.20  2010/05/04 09:01:42  rubikitch
+;; Added bug report command
+;;
 ;; Revision 1.19  2010/04/16 12:07:26  rubikitch
 ;; New algorithm. Fix result compound object such as rings.
 ;;
@@ -150,7 +173,7 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.19 2010/04/16 12:07:26 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.20 2010/05/04 09:01:42 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
 (defgroup lispxmp nil
@@ -290,6 +313,30 @@ http://mumble.net/~campbell/emacs/paredit.el"
        ad-do-it)))
 (lispxmp-comment-advice comment-dwim)
 (lispxmp-comment-advice paredit-comment-dwim)
+
+;;;; Bug report
+(defvar lispxmp-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar lispxmp-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of lispxmp.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"lispxmp.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun lispxmp-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   lispxmp-maintainer-mail-address
+   "lispxmp.el"
+   (apropos-internal "^lispxmp-" 'boundp)
+   nil nil
+   lispxmp-bug-report-salutation))
 
 ;;;; unit test
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")

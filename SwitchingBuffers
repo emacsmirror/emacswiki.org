@@ -4,7 +4,7 @@
 I recommend BSBufferSelection, because it is easy to understand and still has configurations.  I don't need the power of IbufferMode. -- AlexSchroeder
 
 [new:DrewAdams:2004-12-25 18:30 UTC]
-DrewAdams recommends BufferMenuPlus, because it is straightforward and lets you do multiple operations to multiple buffers, at once.
+I recommend BufferMenuPlus, because it is straightforward and lets you do multiple operations to multiple buffers, at once. -- DrewAdams
 
 == Recommendations for Name-Based Switching ==
 
@@ -13,13 +13,13 @@ I recommend IswitchBuffers, because it is easy to understand.  I don't need the 
 
 
 [new:DrewAdams:2004-12-25 18:30 UTC]
-DrewAdams recommends `icicle-buffer' combined with `icomplete-mode'. Together, these provide:
+I recommend `icicle-buffer' combined with `icomplete-mode'. Together, these provide:
 
 : 1. '''''buffer cycling''''' using arrow keys. Just one example of cycling among the ''default input values'' for a command -- in this case, a command that expects a buffer-name input. Regexp matching to narrow the set of [[Completion]] (and cycling) candidates, if you want. See '''[[Icicles]]'''.
 
 : 2. '''''incremental completion help'''''. See [[IcompleteMode#IcompleteModePlus|Icomplete+]] and Lisp:icomplete+.el.
 
-Nothing is simpler or quicker. You are not limited to cycling: you can also use completion. And you can open a new, non-existant buffer.
+Nothing is simpler or quicker. You are not limited to cycling: you can also use completion. And you can open a new, non-existant buffer. -- DrewAdams
 
 
 [:BufferCycling]

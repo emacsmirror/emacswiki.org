@@ -1,6 +1,6 @@
 ;;; usage-memo.el --- integration of Emacs help system and memo
 
-;; $Id: usage-memo.el,v 1.12 2010/03/23 08:26:53 rubikitch Exp $
+;; $Id: usage-memo.el,v 1.13 2010/05/04 08:43:01 rubikitch Exp $
 
 ;; Copyright (C) 2007, 2010  rubikitch
 
@@ -30,6 +30,27 @@
 ;; Emacs help system (ie. describe-function). Do you want to take a
 ;; note in the *Help* buffer and want Emacs to show your note later?
 ;; In other words, integration of Emacs help and your memo!
+
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x umemo-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of usage-memo.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "usage-memo.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x umemo-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; Commands:
 ;;
@@ -97,6 +118,9 @@
 ;;; History:
 
 ;; $Log: usage-memo.el,v $
+;; Revision 1.13  2010/05/04 08:43:01  rubikitch
+;; Added bug report command
+;;
 ;; Revision 1.12  2010/03/23 08:26:53  rubikitch
 ;; `describe-mode' support
 ;;
@@ -373,6 +397,30 @@ If you want to adjust to other CL implementations, redefine this function."
               (or (srch "#<PACKAGE \"\\(.+\\)\">" 1)
                   (srch "in the \\(.+\\) package" 1)
                   (srch "#<PACKAGE \\(.+\\)>" 1))))))))
+
+;;;; Bug report
+(defvar umemo-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar umemo-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of usage-memo.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"usage-memo.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun umemo-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   umemo-maintainer-mail-address
+   "usage-memo.el"
+   (apropos-internal "^u\\(sage-\\)memo-" 'boundp)
+   nil nil
+   umemo-bug-report-salutation))
 
 (provide 'usage-memo)
 

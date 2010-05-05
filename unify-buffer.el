@@ -1,5 +1,5 @@
 ;;; unify-buffer.el --- Concatenate multiple buffers
-;; $Id: unify-buffer.el,v 1.5 2008/11/27 19:33:23 rubikitch Exp $
+;; $Id: unify-buffer.el,v 1.6 2008/12/02 09:17:35 rubikitch Exp $
 
 ;; Copyright (C) 2008  rubikitch
 
@@ -27,13 +27,54 @@
 ;; Concatenate multiple buffers into one buffer.
 ;; It is useful to view multiple buffers simultaneously.
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `unify-buffers'
+;;    Concatenate multiple buffers into one big buffer. Then display it.
+;;  `unify-file-buffers'
+;;    Concatenate multiple file buffers into one big buffer. Then display it.
+;;  `unify-buffer-goto'
+;;    Go to the original buffer.
+;;  `unify-buffers-mode'
+;;    Unify buffers minor mode.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+
 ;; This package provides two commands:
 ;;  `unify-buffers': unifies buffers
 ;;  `unify-file-buffers': unifies buffers with file-name
+         
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x unify-buffers-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of unify-buffers.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "unify-buffers.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x unify-buffers-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; History:
 
 ;; $Log: unify-buffer.el,v $
+;; Revision 1.6  2008/12/02 09:17:35  rubikitch
+;; `unify-buffer-next-header', `unify-buffer-previous-header': Display at the top of the window.
+;;
 ;; Revision 1.5  2008/11/27 19:33:23  rubikitch
 ;; Implemented `unify-buffer-goto'
 ;;
@@ -53,7 +94,7 @@
 
 ;;; Code:
 
-(defvar unify-buffer-version "$Id: unify-buffer.el,v 1.5 2008/11/27 19:33:23 rubikitch Exp $")
+(defvar unify-buffer-version "$Id: unify-buffer.el,v 1.6 2008/12/02 09:17:35 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 
 (defface unify-buffer-header-face
@@ -132,7 +173,8 @@
     (forward-line 1))
   (ub-aif (next-single-property-change (point) 'unify-buffer-header)
       (goto-char it)
-    (forward-line -1)))
+    (forward-line -1))
+  (recenter 0))
 
 (defun unify-buffer-previous-header ()
   (interactive)
@@ -140,7 +182,8 @@
     (forward-line -1))
   (ub-aif (previous-single-property-change (point) 'unify-buffer-header)
       (goto-char it))
-  (forward-line -1))
+  (forward-line -1)
+  (recenter 0))
 
 (defun unify-buffer-goto ()
   "Go to the original buffer."
@@ -173,7 +216,30 @@
          (view-mode 1))
         (t
          (view-mode 0))))
-         
+
+;;;; Bug report
+(defvar unify-buffers-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar unify-buffers-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of unify-buffers.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"unify-buffers.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun unify-buffers-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   unify-buffers-maintainer-mail-address
+   "unify-buffers.el"
+   (apropos-internal "^unify-buffers-" 'boundp)
+   nil nil
+   unify-buffers-bug-report-salutation))
 
 (provide 'unify-buffer)
 

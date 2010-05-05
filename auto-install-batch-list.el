@@ -126,7 +126,7 @@
           (
            "http://www.emacswiki.org/emacs/download/el-expectations.el"
            "http://www.emacswiki.org/emacs/download/el-mock.el"
-           "http://www.emacswiki.org/emacs/download/el-expectations-success-sample.el"))
+           "http://www.emacswiki.org/emacs/download/el-expectations-success-sample.el"
            "http://www.emacswiki.org/emacs/download/el-expectations-failure-sample.el"))
          )
        auto-install-batch-list))

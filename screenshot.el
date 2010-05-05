@@ -1,5 +1,5 @@
 ;;; screenshot.el --- Take a screenshot in Emacs
-;; $Id: screenshot.el,v 1.7 2009/03/07 18:11:40 rubikitch Exp rubikitch $
+;; $Id: screenshot.el,v 1.9 2010/05/04 08:59:08 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -105,9 +105,35 @@
 ;;
 
 
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x screenshot-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of screenshot.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "screenshot.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x screenshot-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
 ;;; History:
 
 ;; $Log: screenshot.el,v $
+;; Revision 1.9  2010/05/04 08:59:08  rubikitch
+;; Added bug report command
+;;
+;; Revision 1.8  2010/05/04 08:58:41  rubikitch
+;; bugfix
+;;
 ;; Revision 1.7  2009/03/07 18:11:40  rubikitch
 ;; screenshot-take: use `run-with-idle-timer' instead of `sit-for'
 ;;
@@ -138,7 +164,7 @@
 
 ;;; Code:
 
-(defvar screenshot-version "$Id: screenshot.el,v 1.7 2009/03/07 18:11:40 rubikitch Exp rubikitch $")
+(defvar screenshot-version "$Id: screenshot.el,v 1.9 2010/05/04 08:59:08 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (require 'yaoddmuse nil t)              ;optional
 
@@ -258,6 +284,30 @@ See also `screenshot-take' docstring. "
   (call-process "import" nil nil nil filename))
 (defun screenshot-do-scp (filename dir)
   (start-process "scp" "scp" "scp" filename dir))
+
+;;;; Bug report
+(defvar screenshot-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar screenshot-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of screenshot.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"screenshot.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun screenshot-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   screenshot-maintainer-mail-address
+   "screenshot.el"
+   (apropos-internal "^screenshot-" 'boundp)
+   nil nil
+   screenshot-bug-report-salutation))
 
 ;;;; (@* "unit test")
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el")

@@ -1,5 +1,5 @@
 ;;;; display-hatebu.el --- はてなブックマークでブックマークされた数をモードラインに表示する
-;; $Id: display-hatebu.el,v 1.6 2010/02/12 20:23:08 rubikitch Exp $
+;; $Id: display-hatebu.el,v 1.7 2010/05/04 09:07:47 rubikitch Exp $
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -67,9 +67,32 @@
 ;;
 
 
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x display-hatebu-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of display-hatebu.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "display-hatebu.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x display-hatebu-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
 ;;; History:
 
 ;; $Log: display-hatebu.el,v $
+;; Revision 1.7  2010/05/04 09:07:47  rubikitch
+;; Added bug report command
+;;
 ;; Revision 1.6  2010/02/12 20:23:08  rubikitch
 ;; `update-display-hatebu-string': append space
 ;;
@@ -92,7 +115,7 @@
 
 ;;; Code:
 
-(defvar display-hatebu-version "$Id: display-hatebu.el,v 1.6 2010/02/12 20:23:08 rubikitch Exp $")
+(defvar display-hatebu-version "$Id: display-hatebu.el,v 1.7 2010/05/04 09:07:47 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup display-hatebu nil
   "display-hatebu"
@@ -143,6 +166,30 @@
 
 (setq display-hatebu-string-timer
       (run-with-timer 0 display-hatebu-interval 'update-display-hatebu-string))
+
+;;;; Bug report
+(defvar display-hatebu-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar display-hatebu-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of display-hatebu.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"display-hatebu.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun display-hatebu-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   display-hatebu-maintainer-mail-address
+   "display-hatebu.el"
+   (apropos-internal "^display-hatebu-" 'boundp)
+   nil nil
+   display-hatebu-bug-report-salutation))
 
 (provide 'display-hatebu)
 

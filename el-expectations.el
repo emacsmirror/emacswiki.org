@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.60 2010/04/10 22:00:51 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.61 2010/05/04 08:48:22 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -115,9 +115,33 @@
 ;; Success example http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations-success-sample.el
 ;; Failure example http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations-failure-sample.el
 
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x exps-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of el-expectations.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "el-expectations.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x exps-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.61  2010/05/04 08:48:22  rubikitch
+;; Added bug report command
+;;
 ;; Revision 1.60  2010/04/10 22:00:51  rubikitch
 ;; avoid test duplication
 ;;
@@ -932,6 +956,32 @@ If `expectations-execute-at-once' is non-nil, execute expectations if it is an e
                                   (string= "0" (match-string 2)))
                              exps-green-face
                            exps-red-face)))))
+
+;;;; Bug report
+(defvar exps-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar exps-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of el-expectations.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"el-expectations.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun exps-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   exps-maintainer-mail-address
+   "el-expectations.el"
+   (apropos-internal "^exps-" 'boundp)
+   nil nil
+   exps-bug-report-salutation))
+
+
 (provide 'el-expectations)
 
 ;; How to save (DO NOT REMOVE!!)

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May  2 16:03:47 2010 (-0700)
+;; Last-Updated: Tue May  4 14:50:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12039
+;;     Update #: 12041
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1249,6 +1249,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/04 dadams
+;;     Added: bookmarkp-create-varlist-bookmark.
+;;     bookmarkp-jump-varlist: If bookmark's buffer doesn't exist, use current buffer and show msg.
 ;; 2010/04/24 adams
 ;;     Added: bookmarkp-bmenu-show-only-varlists, bookmarkp-set-restrictions-bookmark,
 ;;            bookmarkp-set-varlist-bookmark, bookmarkp-varlist-jump, bookmarkp-varlist,

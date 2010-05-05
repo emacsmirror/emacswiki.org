@@ -4,7 +4,7 @@
 ;; Description: Some extension for eldoc
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;; Maintainer: rubikitch <rubikitch@ruby-lang.org>
-;; Time-stamp: <2010-04-18 17:09:22 rubikitch>
+;; Time-stamp: <2010-05-04 18:13:43 rubikitch>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2010, rubikitch, all rights reserved.
 ;; Created: 2008-12-07 21:44:29
@@ -64,6 +64,27 @@
 ;; (require 'eldoc-extension)
 ;;
 ;; No need more.
+
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x eldoc-extension-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of eldoc-extension.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "eldoc-extension.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x eldoc-extension-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; Change log:
 ;;
@@ -838,6 +859,30 @@
                    (setq spec (substring spec (- (length fulldoc) ea-width)))
                    (format "%s: %s" spec docstring))))))
     ad-do-it))
+
+;;;; Bug report
+(defvar eldoc-extension-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar eldoc-extension-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of eldoc-extension.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"eldoc-extension.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun eldoc-extension-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   eldoc-extension-maintainer-mail-address
+   "eldoc-extension.el"
+   (apropos-internal "^eldoc-" 'boundp)
+   nil nil
+   eldoc-extension-bug-report-salutation))
 
 (provide 'eldoc-extension)
 

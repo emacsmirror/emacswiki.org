@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.45 2010/05/01 01:24:25 rubikitch Exp $
+;; $Id: auto-install.el,v 1.46 2010/05/04 08:46:21 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.45 $
+;; Version: $Revision: 1.46 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.45 2010/05/01 01:24:25 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.46 2010/05/04 08:46:21 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -272,9 +272,33 @@
 ;;      M-x RET customize-group RET auto-install RET
 ;;
 
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x auto-install-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of auto-install.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "auto-install.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x auto-install-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.46  2010/05/04 08:46:21  rubikitch
+;; Added bug report command
+;;
 ;; Revision 1.45  2010/05/01 01:24:25  rubikitch
 ;; auto-install-batch: Dependency support
 ;;
@@ -1381,6 +1405,31 @@ If LIST is nil, return nil."
 If LIST length below N, return entire list.
 If LIST is nil, return nil."
   (reverse (nthcdr (- (length list) n) (reverse list))))
+
+;;;; Bug report
+(defvar auto-install-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar auto-install-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of auto-install.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"auto-install.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun auto-install-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   auto-install-maintainer-mail-address
+   "auto-install.el"
+   (apropos-internal "^auto-install-" 'boundp)
+   nil nil
+   auto-install-bug-report-salutation))
+
 
 (provide 'auto-install)
 

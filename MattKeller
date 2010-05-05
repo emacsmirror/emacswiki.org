@@ -10,21 +10,7 @@ For the dot-file peepers, I keep my emacs configuration in a [http://www.littler
 
 I've written a library called mk-project.el to manage emacs "projects" (see [[CategoryProgrammerUtils#ProjectSupport]]). 
 
-Details are on the [http://www.littleredbat.net/mk/code/mk-project.html mk-project.el homepage]; see Lisp:mk-project.el for the source. 
-
-[new]
-There is a slight problem with the mk-proj-find-cmd-ignore-args function if ignore-patterns is nil.
-Here is a fix:
-
- (defun mk-proj-find-cmd-ignore-args (ignore-patterns)
-   "Generate the -not ( -name <pat1> -o -name <pat2> ...) pattern for find cmd"
-   (if ignore-patterns
-       (concat " -not " (mk-proj-find-cmd-src-args ignore-patterns))
-     ""))
-
-[[JoeBloggs]]
-
-Joe - thanks for noticing. However that bug was fixed in version 1.1. Cheers --[[MattKeller]]
+Details are on the [http://github.com/mattkeller/mk-project mk-project.el homepage]; see Lisp:mk-project.el for the source. 
 
 
 === etags-update.el ===

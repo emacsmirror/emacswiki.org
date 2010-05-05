@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Apr 24 13:06:39 2010 (-0700)
+;; Last-Updated: Tue May  4 14:46:44 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12072
+;;     Update #: 12088
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -273,6 +273,7 @@
 ;;    `bookmarkp-bookmark-list-alist-only',
 ;;    `bookmarkp-bookmark-list-bookmark-p',
 ;;    `bookmarkp-buffer-last-access-cp',
+;;    `bookmarkp-create-varlist-bookmark',
 ;;    `bookmarkp-completing-read-1', `bookmarkp-completing-read-lax',
 ;;    `bookmarkp-cp-not', `bookmarkp-current-sort-order',
 ;;    `bookmarkp-desktop-alist-only', `bookmarkp-desktop-bookmark-p',
@@ -488,7 +489,7 @@
 (require 'bookmark)
 (unless (fboundp 'file-remote-p) (require 'ffap)) ;; ffap-file-remote-p
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
-(eval-when-compile (require 'cl)) ;; case
+(eval-when-compile (require 'cl)) ;; case, multiple-value-bind
 
 
 (defconst bookmarkp-version-number "2.7.2")
@@ -6567,7 +6568,7 @@ in the same directory, then you will need to relock it.)"
 ;;;###autoload
 (when (boundp 'wide-n-restrictions)
   (defun bookmarkp-set-restrictions-bookmark ()
-    "Save the list of restrictions for the current buffer as a bookmark.
+    "Save the ring of restrictions for the current buffer as a bookmark.
 You need library `wide-n.el' to use the bookmark created."
     (interactive)
     (let ((bookmark-make-record-function
@@ -6576,7 +6577,7 @@ You need library `wide-n.el' to use the bookmark created."
                           . ,(mapcar (lambda (x)
                                        (if (eq x 'all)
                                            'all
-                                         (let ((beg  (car x)) ; Convert number positions to markers.
+                                         (let ((beg  (car x)) ; Convert markers to number positions.
                                                (end  (cdr x)))
                                            (cons (if (markerp beg) (marker-position beg) beg)
                                                  (if (markerp end) (marker-position end) end)))))
@@ -6592,6 +6593,14 @@ Interactively, read the variables to save, using
   (interactive (list (bookmarkp-read-variables-completing)))
   (let ((bookmark-make-record-function  #'(lambda () (bookmarkp-make-varlist-record variables))))
     (call-interactively #'bookmark-set)))
+
+(defun bookmarkp-create-varlist-bookmark (bookmark-name vars vals)
+  "Create a varlist bookmark named BOOKMARK-NAME from VARS and VALS.
+VARS and VALS are corresponding lists of variables and their values."
+  (eval `(multiple-value-bind ,vars ',vals
+          (let ((bookmark-make-record-function
+                 (lambda () (bookmarkp-make-varlist-record ',vars))))
+            (bookmark-set ,bookmark-name)))))
 
 (defun bookmarkp-read-variables-completing (&optional option)
   "Read variable names with completion, and return them as a list of symbols.
@@ -6671,7 +6680,10 @@ BOOKMARK is a bookmark name or a bookmark record.
 Handler function for record returned by `bookmarkp-make-varlist-record'."
   (let ((buf        (bookmarkp-get-buffer-name bookmark))
         (vars+vals  (bookmark-prop-get bookmark 'variables)))
-    (with-current-buffer (or buf (current-buffer))
+    (unless (get-buffer buf)
+      (message "Bookmarked for non-existent buffer `%s', so using current buffer" buf) (sit-for 3)
+      (setq buf (current-buffer)))
+    (with-current-buffer buf
       (dolist (var+val  vars+vals)
         (set (car var+val)  (cdr var+val))))
     (message "Variables restored in buffer `%s': %S" buf (mapcar #'car vars+vals))

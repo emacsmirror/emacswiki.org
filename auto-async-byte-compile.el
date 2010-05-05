@@ -1,5 +1,5 @@
 ;;;; auto-async-byte-compile.el --- Automatically byte-compile when saved
-;; Time-stamp: <2010-04-23 16:22:01 rubikitch>
+;; Time-stamp: <2010-05-04 18:15:04 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -78,6 +78,26 @@
 ;;      M-x customize-group RET auto-async-byte-compile RET
 ;;
 
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x aabc/-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of auto-async-byte-compile.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "auto-async-byte-compile.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x aabc/-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; History:
 
@@ -176,6 +196,31 @@ This minor-mode performs `batch-byte-compile' automatically after saving elisp f
           (if (file-exists-p auto-async-byte-compile-init-file)
               (list "-l" auto-async-byte-compile-init-file))
           (list "-f" "batch-byte-compile" file)))
+
+;;;; Bug report
+(defvar aabc/maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar aabc/bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of auto-async-byte-compile.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"auto-async-byte-compile.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun aabc/-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   aabc/-maintainer-mail-address
+   "auto-async-byte-compile.el"
+   (apropos-internal "^\\(aabc\\|auto-async-byte-compile\\)" 'boundp)
+   nil nil
+   aabc/-bug-report-salutation))
+
 (provide 'auto-async-byte-compile)
 
 ;; How to save (DO NOT REMOVE!!)

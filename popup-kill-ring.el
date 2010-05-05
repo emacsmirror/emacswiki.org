@@ -53,10 +53,17 @@
 ;; * popup.el
 ;;   * 0.4
 ;; * pos-tip.el
-;;   * 0.3.6
+;;   * 0.4.0
 ;;
 
 ;;; ChangeLog:
+;;
+;; * 0.2.7 (2010/05/05)
+;;   If `popup-kill-ring-interactive-insert' is `t' and
+;;   `C-g' was typed, clear the inserted string.
+;;
+;; * 0.2.6 (2010/05/05)
+;;   Change `popup-kill-ring' to execute `pos-tip-hide' at all time.
 ;;
 ;; * 0.2.5 (2010/05/02)
 ;;   When `point' is on minibuffer, do ordinary `yank' command.
@@ -132,7 +139,7 @@
 
 ;;; Variables:
 
-(defconst popup-kill-ring-version "0.2.5"
+(defconst popup-kill-ring-version "0.2.7"
   "Version of `popup-kill-ring'")
 
 
@@ -190,7 +197,6 @@ Nil means that item does not be truncate.")
     (define-key keymap "\C-b" 'popup-kill-ring-hide)
     (define-key keymap [right] 'popup-kill-ring-current)
     (define-key keymap [left] 'popup-kill-ring-hide)
-    ;; (define-key keymap "\C-g" 'popup-kill-ring-quit)
     keymap)
     "A keymap for `popup-menu*' of `popup-kill-ring'.")
 
@@ -249,17 +255,26 @@ and `pos-tip.el'"
              num item)
         (when popup-kill-ring-interactive-insert
           (popup-kill-ring-insert-item 0))
-        (setq item (popup-menu* kring
-                                :width popup-kill-ring-popup-width
-                                :keymap popup-kill-ring-keymap
-                                :margin-left popup-kill-ring-popup-margin-left
-                                :margin-right popup-kill-ring-popup-margin-right
-                                :scroll-bar t
-                                :isearch popup-kill-ring-isearch))
-        (when item
-          (setq num (popup-kill-ring-get-index item))
-          (when num
-            (insert (nth num kill-ring))))))))
+        ;; always execute `pos-tip-hide'
+        ;; (the case that the item was selected.
+        ;;  the case that it was typed `C-g'.)
+        (unwind-protect
+            (progn (setq item (popup-menu* kring
+                                           :width popup-kill-ring-popup-width
+                                           :keymap popup-kill-ring-keymap
+                                           :margin-left popup-kill-ring-popup-margin-left
+                                           :margin-right popup-kill-ring-popup-margin-right
+                                           :scroll-bar t
+                                           :isearch popup-kill-ring-isearch))
+                   (when item
+                     (setq num (popup-kill-ring-get-index item))
+                     (when num
+                       (insert (nth num kill-ring)))))
+          (pos-tip-hide)
+          ;; If `C-g' was typed, clear the inserted string. (7 is `C-g'.)
+          (when (and popup-kill-ring-interactive-insert
+                     (= last-input-event 7))
+            (popup-kill-ring-clear-inserted)))))))
 
 (defun popup-kill-ring-pos-tip-show (str pos)
   (when (eq window-system 'x)
@@ -405,13 +420,6 @@ and `pos-tip.el'"
       (when (and p (listp p))
         (delete-region (car p) (cdr p))
         (goto-char (car p))))))
-
-;; (defun popup-kill-ring-quit ()
-;;   (let ((ch last-input-event))
-;;     (when popup-kill-ring-interactive-insert
-;;       (popup-kill-ring-clear-inserted))
-;;     (call-interactively (key-binding (vector ch)))))
-
 
 (provide 'popup-kill-ring)
 

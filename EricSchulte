@@ -1,9 +1,11 @@
 Eric Schulte [:eschulte] (using Emacs since 2006)
 
+[http://cs.unm.edu/~eschulte http://cs.unm.edu/~eschulte]
+
 == Some elisp tools and packages on which I have worked... (many of which may be very old) ==
 
 === Org Babel ===
-[http://github.com/eschulte/org-babel/tree/master Org Babel] implements source-code evaluation including the passing of data between source-code blocks, org-mode tables, and org-mode quoted examples.  Org-mode with Org-babel is a kind of multi-language meta-functional programming spreadsheet cum executable document format which is suitable for taking executable notes, composing works of [http://www.literateprogramming.com/ literate programming] and [http://www.reproducibleresearch.org/ reproducible research], or cobbling together multi-language prose and code frankensteins.
+[http://orgmode.org/worg/org-contrib/babel/ Org Babel] implements source-code evaluation including the passing of data between source-code blocks, org-mode tables, and org-mode quoted examples.  Org-mode with Org-babel is a kind of multi-language meta-functional programming spreadsheet cum executable document format which is suitable for taking executable notes, composing works of [http://www.literateprogramming.com/ literate programming] and [http://www.reproducibleresearch.org/ reproducible research], or cobbling together multi-language prose and code frankensteins.
 
 === Rinari ===
 I'm the current maintainer for [http://github.com/eschulte/rinari/tree/master Rinari] (A Minor Mode for working on Ruby on Rails projects), focusing on a small code footprint, quick navigation inside the rails project, and the execution of tests, consoles, and servers with output dumped into a proper compilation buffer.

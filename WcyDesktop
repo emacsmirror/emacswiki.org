@@ -12,3 +12,13 @@ to install this packeges
 </pre>
 
 download it Lisp:wcy-desktop.el(WcyDesktop)
+
+For Emacs 23, the following initialization works. (Otherwise, when exiting Emacs you get an error about "remove-if-not" not being defined.)
+<pre>
+(when (require 'erc-compat nil t)
+  (defalias 'remove-if-not 'erc-remove-if-not)
+  (load "wcy-desktop")
+  (wcy-desktop-init))
+</pre>
+
+Note that WcyDesktop supports one desktop, not one per directory.

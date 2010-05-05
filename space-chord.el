@@ -29,6 +29,18 @@
 ;; This package depends on key-chord.el:
 ;;  http://www.emacswiki.org/cgi-bin/wiki/download/key-chord.el
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `space-chord-define-global'
+;;    Define a key-chord of KEY with space starting a COMMAND.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+
 ;;; Usage:
 
 ;; Bind Space-f to `find-file' in global-map
@@ -40,6 +52,26 @@
 ;;   (space-chord-define c-mode-map "c" 'compile)
 ;;      or
 ;;   (space-chord-define c-mode-map ?c 'compile)
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x space-chord-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of space-chord.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "space-chord.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x space-chord-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; History:
 
@@ -88,6 +120,30 @@ If COMMAND is nil, the key-chord is removed."
 ;; (space-chord-define-global "f" 'find-file)
 ;; (space-chord-define-global ?f 'view-file)
 ;; (space-chord-define-global "f" nil)
+
+;;;; Bug report
+(defvar space-chord-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar space-chord-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of space-chord.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"space-chord.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun space-chord-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   space-chord-maintainer-mail-address
+   "space-chord.el"
+   (apropos-internal "^space-chord-" 'boundp)
+   nil nil
+   space-chord-bug-report-salutation))
 
 (provide 'space-chord)
 

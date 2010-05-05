@@ -32,6 +32,41 @@
 ;; (4) load
 ;; (5) show Emacs Lisp
 
+;;; Commands:
+;;
+;; Below are complete command list:
+;;
+;;  `install-elisp'
+;;    Retrieve Emacs Lisp program from URL and save and byte-compile and load.
+;;  `install-elisp-from-emacswiki'
+;;    Install Emacs Lisp program from the EmacsWiki.
+;;  `install-elisp-from-gist'
+;;    Install Emacs Lisp program from gist.
+;;  `dired-install-elisp-from-emacswiki'
+;;    Upgrade the current Emacs Lisp program from the EmacsWiki.
+;;  `install-elisp-confirmation-minor-mode'
+;;    Emacs Lisp install confirmation.
+;;
+;;; Customizable Options:
+;;
+;; Below are customizable option list:
+;;
+;;  `install-elisp-repository-directory'
+;;    Directory to save Emacs Lisp programs downloaded by install-elisp.el. 
+;;    default = "~/.emacs.d/"
+;;  `install-elisp-use-view-mode'
+;;    If non-nil, turn on `view-mode' for installed Emacs Lisp program.
+;;    default = t
+;;  `install-elisp-use-url-retrieve'
+;;    If nil, use external command-line HTTP client instead.
+;;    default = (fboundp (quote url-retrieve-synchronously))
+;;  `install-elisp-confirm-flag'
+;;    If non-nil, do install confirmation.
+;;    default = t
+;;  `install-elisp-retrieval-program'
+;;    URL retrieving program used when `install-elisp-use-url-retrieve' is nil.
+;;    default = "wget -q -O- '%s'"
+
 ;;; Installation:
 
 ;; If you use Emacs21 and under, you must have wget or other
@@ -64,6 +99,28 @@
 ;;; Related project:
 
 ;; Emacs Lisp Package Archive: http://tromey.com/elpa/
+;; auto-install.el is successor of this:
+;;   http://www.emacswiki.org/cgi-bin/wiki/download/auto-install.el
+
+;;; Bug Report:
+;;
+;; If you have problem, send a bug report via M-x install-elisp-send-bug-report.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of install-elisp.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "install-elisp.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) M-x install-elisp-send-bug-report and M-x insert-buffer *Backtrace*
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
 
 ;;; History:
 
@@ -278,6 +335,29 @@ For example: (setq install-elisp-repository-directory \"~/emacs/lisp/\")"))
                     (file-name-nondirectory install-elisp-filename)))
     (setq mode-line-format default-mode-line-format)))
 
+;;;; Bug report
+(defvar install-elisp-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar install-elisp-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of install-elisp.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"install-elisp.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defun install-elisp-send-bug-report ()
+  (interactive)
+  (reporter-submit-bug-report
+   install-elisp-maintainer-mail-address
+   "install-elisp.el"
+   (apropos-internal "^install-elisp-" 'boundp)
+   nil nil
+   install-elisp-bug-report-salutation))
 
 (provide 'install-elisp)
 
