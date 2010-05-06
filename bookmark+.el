@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May  4 14:46:44 2010 (-0700)
+;; Last-Updated: Wed May  5 09:03:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12088
+;;     Update #: 12105
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1293,30 +1293,33 @@ except for the following differences.
  TIME-LAST-VISITED is an Emacs time representation, such as is
  returned by function `current-time'.
 
-2. Bookmarks can be tagged by users.  The tag information is recorded
+2. The buffer name is recorded, using entry `buffer-name'.  It need
+not be associated with a file.
+
+3. Bookmarks can be tagged by users.  The tag information is recorded
 using entry `tags':
 
  (tags . TAGS-ALIST)
 
  TAGS-ALIST is an alist with string keys. 
 
-3. If no file is associated with the bookmark, then FILENAME is
+4. If no file is associated with the bookmark, then FILENAME is
    `   - no file -'.
 
-4. The following additional entries are used to record region
-information.  The values are non-nil only when a region is bookmarked.
-When a region is bookmarked, POS represents the region start position.
+5. The following additional entries are used to record region
+information.  When a region is bookmarked, POS represents the region
+start position.
 
- (buffer-name . BUFFER-NAME)
  (end-position . END-POS)
  (front-context-region-string . STR-BEFORE-END-POS)
  (rear-context-region-string . STR-AFTER-END-POS))
 
- BUFFER-NAME is the name of a bookmarked buffer, which might not be
-  associated with any file (see #1).
  END-POS is the region end position.
  STR-BEFORE-END-POS is buffer text that precedes END-POS.
  STR-AFTER-END-POS is buffer text that follows END-POS.
+
+The two context region strings are non-nil only when a region is
+bookmarked.
 
  NOTE: The relative locations of `front-context-region-string' and
  `rear-context-region-string' are reversed from those of
@@ -1324,7 +1327,7 @@ When a region is bookmarked, POS represents the region start position.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' that *precedes* `end-position'.
 
-5. The following additional entries are used for a Dired bookmark.
+6. The following additional entries are used for a Dired bookmark.
 
  (dired-marked . MARKED-FILES)
  (dired-switches . SWITCHES)
@@ -1332,7 +1335,7 @@ When a region is bookmarked, POS represents the region start position.
  MARKED-FILES is the list of files that were marked.
  SWITCHES is the string of `dired-listing-switches'.
 
-6. The following additional entries are used for a Gnus bookmark.
+7. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -1342,20 +1345,20 @@ When a region is bookmarked, POS represents the region start position.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-7. For a W3M bookmark, FILENAME is a W3M URL.
+8. For a W3M bookmark, FILENAME is a W3M URL.
 
-8. A sequence bookmark has this additional entry:
+9. A sequence bookmark has this additional entry:
 
  (sequence . COMPONENT-BOOKMARKS)
 
  COMPONENT-BOOKMARKS is the list of component bookmark names.
 
-9. A function bookmark has this additional entry, which records the
+10. A function bookmark has this additional entry, which records the
 FUNCTION:
 
  (function . FUNCTION)
 
-10. A bookmark-list bookmark has this additional entry, which records
+11. A bookmark-list bookmark has this additional entry, which records
 the state of buffer `*Bookmark List*' at the time it is created:
 
  (bookmark-list . STATE)
@@ -6594,12 +6597,16 @@ Interactively, read the variables to save, using
   (let ((bookmark-make-record-function  #'(lambda () (bookmarkp-make-varlist-record variables))))
     (call-interactively #'bookmark-set)))
 
-(defun bookmarkp-create-varlist-bookmark (bookmark-name vars vals)
+(defun bookmarkp-create-varlist-bookmark (bookmark-name vars vals &optional buffer-name)
   "Create a varlist bookmark named BOOKMARK-NAME from VARS and VALS.
-VARS and VALS are corresponding lists of variables and their values."
+VARS and VALS are corresponding lists of variables and their values.
+
+Optional arg BUFFER-NAME is the buffer name to use for the bookmark (a
+string).  This is useful if some of the variables are buffer-local.
+If BUFFER-NAME is nil, the current buffer name is recorded."
   (eval `(multiple-value-bind ,vars ',vals
           (let ((bookmark-make-record-function
-                 (lambda () (bookmarkp-make-varlist-record ',vars))))
+                 (lambda () (bookmarkp-make-varlist-record ',vars ,buffer-name))))
             (bookmark-set ,bookmark-name)))))
 
 (defun bookmarkp-read-variables-completing (&optional option)
@@ -6632,16 +6639,22 @@ to the cursor if it is a variable."
                              (or default-value (and (funcall option symb) (symbol-name symb)))
                              t))))
 
-(defun bookmarkp-make-varlist-record (variables)
+(defun bookmarkp-make-varlist-record (variables &optional buffer-name)
   "Create and return a variable-list bookmark record.
 VARIABLES is the list of variables to save.
 Each entry in VARIABLES is either a variable (a symbol) or a cons
- whose car is a variable and whose cdr is the variable's value."
-  `(,@(bookmark-make-record-default 'point-only)
-    (filename     . ,bookmarkp-non-file-filename)
-    (variables    . ,(or (bookmarkp-printable-vars+vals variables)
-                         (error "No variables to bookmark")))
-    (handler      . bookmarkp-jump-varlist)))
+ whose car is a variable and whose cdr is the variable's value.
+
+Optional arg BUFFER-NAME is the buffer to use for the bookmark.  This
+is useful if some of the variables are buffer-local.  If BUFFER-NAME
+is nil, the current buffer is used."
+  (let ((record  `(,@(bookmark-make-record-default 'point-only)
+                   (filename     . ,bookmarkp-non-file-filename)
+                   (variables    . ,(or (bookmarkp-printable-vars+vals variables)
+                                        (error "No variables to bookmark")))
+                   (handler      . bookmarkp-jump-varlist))))
+    (when buffer-name  (let ((bname  (assq 'buffer-name record)))  (setcdr bname buffer-name)))
+    record))
 
 (defun bookmarkp-printable-vars+vals (variables)
   "Return an alist of printable VARIABLES paired with their values.

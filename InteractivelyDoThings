@@ -32,6 +32,7 @@ To find a file, press "C-x C-f".
 * RET - type to go down inside the directory in front of the list.
 * [backspace] - go up to the parent directory.
 * // - go to the root directory.
+* ~/ - go to the home directory.
 * C-f - to go back temporarly to the normal find-file.
 * C-d - enter Dired for this directory (used to be C-x C-d in older versions)
 * C-j - create a new file named with the text you entered (note: this is needed if the text you entered matches an existing file, because RET would open the existing one)
@@ -401,4 +402,3 @@ The relevant zsh config is here: http://zshwiki.org/home/examples/compquickstart
 CategoryCommands
 CategoryBufferSwitching
 CategoryCompletion
-

@@ -80,6 +80,13 @@ Aleblanc, please check my suggestion with `jit-lock-fontify-now' above -- PeterT
 
 See `font-lock-support-mode'. Instant fontification could be slow for large buffers, though. That's why it is not usually used as a source of syntax information. - anon
 
+[new]
+
+As we need to call `jit-lock-fontify-now', why not adding it in simple-call-tree-analyse, just before the `let' ? -- DanielDehennin
+
+[new]
+Shouldn't you call `font-lock-fontify-buffer' if you want the buffer to be fontified right now? -- LennartBorgman
+
 == Pretty Printing ==
 
 To show a pretty-printed representation of functions and their callers, you could use something like:

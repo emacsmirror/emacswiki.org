@@ -69,7 +69,7 @@ This is what I use to write out a tsv file each time I save a ses buffer (PeterJ
 
   (add-hook 'ses-mode-hook
     (lambda () 
-      (add-hook 'after-save-hook 'pmade:ses-export-buffer-to-tsv)))
+      (add-hook 'after-save-hook 'pmade:ses-export-buffer-to-tsv t t)))
 
 
 [new]

@@ -115,8 +115,33 @@ The comment you quote is out of date (I've just changed it). `backtab' is not us
 The value you were trying to get is in fact the default value. It means that ##[S-tab]## and ##[S-iso-lefttab]## will be bound for '''Icicles''' apropos completion. Things should work OK if you get the latest files. If not, let me know. Thx -- DrewAdams
 
 
+<pre>
 
+ </pre>
+ ----
+ <pre>
 
+ </pre>
+
+[new]
+With the latest icicles files updated via icicles-install there is a problem with the GNU emacs 23.1.97 final release candidate for 23.2 that doesn't occur for 23.1.
+
+(add-to-list 'load-path "...")
+(require 'icicles-install)
+(require 'icicles)
+
+fails with:
+
+debugger entered--Lisp error: (wrong-type-argument listp 2C-command)
+
+Adding the following lines fixes the problem
+
+(add-to-list 'load-path "...")
+(require 'icicles-install)
+(require 'two-column)
+(require 'icicles)
+
+Sorry - wiki formatting is perplexing.
 
 <pre>
 

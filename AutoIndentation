@@ -41,6 +41,7 @@ The following code (inspired by [http://emacs.wordpress.com/2007/01/22/killing-y
                        (indent-region (region-beginning) (region-end) nil))))))
 
 Just put the above in your ##.emacs## file and enjoy automatic indentation of yanked text in the listed programming modes.
+
 Fall back to default, non-indented yanking by preceding the yanking commands with C-u. (To add your own modes, check the value of the ##major-mode## variable (##C-h v## or ##M-x describe-variable##) and add it to the list.)
 
 Alternatively, you may define a separate ##yank-and-indent## command as such:
@@ -53,6 +54,15 @@ Alternatively, you may define a separate ##yank-and-indent## command as such:
 
 and then bind it as you see fit, e.g., ##(global-set-key "\C-y" 'yank-and-indent)##. However, note that the ##defadvice## method is recommended if you use modes such as CuaMode.
 
+Another simple ##defadvice## for e.g. ##html-mode## is the following:
+
+    (defadvice yank (around html-yank-indent)
+      "Indents after yanking."
+      (let ((point-before (point)))
+        ad-do-it
+        (when (eq major-mode 'html-mode) ;; check what mode we're in
+          (indent-region point-before (point)))))
+    (ad-activate 'yank)
 
 ----
 

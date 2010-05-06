@@ -7,7 +7,7 @@ Colored nicks for [[rcirc]].
 Source:
 
 * Lisp:rcirc-color.el
-* Lisp:rcirc-color-23.el (for Emacs 23)
+* Lisp:rcirc-color-22.el (for Emacs 22 and earlier)
 
 To install, put it in your LoadPath and add the following to your InitFile:
 

@@ -1,5 +1,5 @@
 ;;; lispxmp.el --- Automagic emacs lisp code annotation
-;; $Id: lispxmp.el,v 1.20 2010/05/04 09:01:42 rubikitch Exp $
+;; $Id: lispxmp.el,v 1.34 2010/05/06 01:28:32 rubikitch Exp $
 
 ;; Copyright (C) 2009, 2010  rubikitch
 
@@ -108,6 +108,48 @@
 ;;; History:
 
 ;; $Log: lispxmp.el,v $
+;; Revision 1.34  2010/05/06 01:28:32  rubikitch
+;; pass pp reexecute #2
+;;
+;; Revision 1.33  2010/05/06 01:25:51  rubikitch
+;; fix tests
+;;
+;; Revision 1.32  2010/05/06 01:20:42  rubikitch
+;; ensure last newline
+;;
+;; Revision 1.31  2010/05/06 01:16:22  rubikitch
+;; pass pp test #5-6
+;;
+;; Revision 1.30  2010/05/06 01:04:25  rubikitch
+;; pass pp reexecute
+;;
+;; Revision 1.29  2010/05/06 00:52:34  rubikitch
+;; silence byte-compiler
+;;
+;; Revision 1.28  2010/05/06 00:50:06  rubikitch
+;; lispxmp-create-code: disable after-change-major-mode-hook
+;;
+;; Revision 1.27  2010/05/06 00:40:29  rubikitch
+;; refactor tests 2
+;;
+;; Revision 1.26  2010/05/06 00:39:09  rubikitch
+;; refactor tests
+;;
+;; Revision 1.25  2010/05/06 00:36:13  rubikitch
+;; pp test3-4 passed
+;;
+;; Revision 1.24  2010/05/06 00:12:23  rubikitch
+;; pp test2 passed
+;;
+;; Revision 1.23  2010/05/06 00:03:10  rubikitch
+;; pp test1 passed
+;;
+;; Revision 1.22  2010/05/05 23:27:32  rubikitch
+;; add flag `use-pp'
+;;
+;; Revision 1.21  2010/05/05 23:11:13  rubikitch
+;; allow more spaces between ";" and "=>"
+;;
 ;; Revision 1.20  2010/05/04 09:01:42  rubikitch
 ;; Added bug report command
 ;;
@@ -173,9 +215,11 @@
 
 ;;; Code:
 
-(defvar lispxmp-version "$Id: lispxmp.el,v 1.20 2010/05/04 09:01:42 rubikitch Exp $")
+(defvar lispxmp-version "$Id: lispxmp.el,v 1.34 2010/05/06 01:28:32 rubikitch Exp $")
 (require 'cl)
 (require 'newcomment)
+(require 'pp)
+(eval-when-compile (require 'paredit nil t))
 (defgroup lispxmp nil
   "lispxmp"
   :group 'emacs)
@@ -215,16 +259,40 @@ http://mumble.net/~campbell/emacs/paredit.el"
   (with-current-buffer (get-buffer-create lispxmp-temp-buffer)
     (buffer-disable-undo)
     (erase-buffer) 
-    (let (emacs-lisp-mode-hook) (emacs-lisp-mode))
+    (let (emacs-lisp-mode-hook after-change-major-mode-hook) (emacs-lisp-mode))
     (insert-buffer-substring buf)
+    (goto-char (point-max))
+    (or (bolp) (insert "\n"))
     (goto-char 1)
-    (loop while (re-search-forward "\\(;+\\) =>" nil t)
+    (lispxmp-adjust-pp-annotations)
+    (lispxmp-add-out-markers)))
+
+(defun lispxmp-adjust-pp-annotations ()
+  (save-excursion
+    (loop while (re-search-forward "^\\(;+\\)\\( +=> \\)" nil t)
+          for next-line-re = (concat
+                              "^"
+                              (regexp-quote
+                               (concat (match-string 1)
+                                       (make-string (- (match-end 2) (match-beginning 2))
+                                                    ?\s)))
+                              ".+\n")
+          do
+          (forward-line 1)
+          (while (looking-at next-line-re)
+            (delete-region (point) (progn (forward-line 1) (point)))))))
+
+(defun lispxmp-add-out-markers ()
+  (save-excursion
+    (loop while (re-search-forward "\\(;+\\) +=>" nil t)
+          for use-pp = (eq (point-at-bol) (match-beginning 0))
           for semicolons = (match-string 1)
           for i from 0
           when (lispxmp-annotation-p) do
           (delete-region (match-beginning 0) (point-at-eol))
-          (lispxmp-out-make-sexp i)
-          (insert (format "%s <<%%lispxmp-out-marker %d>>" semicolons i)))))
+          (lispxmp-out-make-sexp use-pp (length semicolons) i)
+          (insert (format "%s <<%%lispxmp-out-marker %d %d>>"
+                          semicolons (length semicolons) i)))))
 ;; (progn (lispxmp-create-code (current-buffer))(display-buffer lispxmp-temp-buffer))
 (defun lispxmp-debug-buffer ()
   (interactive)
@@ -238,56 +306,63 @@ http://mumble.net/~campbell/emacs/paredit.el"
       (ignore-errors (comment-search-forward (point-at-eol) t))
       (looking-at "=>"))))
 
-(defun lispxmp-out-make-sexp (i)
+(defun lispxmp-out-make-sexp (use-pp semicolons-len i)
   (end-of-line)
   (let ((e (make-marker)))
     (set-marker e (point))
     (forward-sexp -1)
-    (insert (format "(%%lispxmp-out %s " i))
+    (insert (format "(%%lispxmp-out %s %d %s " use-pp semicolons-len i))
     (goto-char e)
     (insert ")")))
 
 (defun lispxmp-out-remove ()
   (goto-char (point-min))
-  (while (re-search-forward "(%lispxmp-out [0-9]+ " nil t)
+  (while (re-search-forward "(%lispxmp-out [a-z]+ [0-9]+ [0-9]+ " nil t)
     (replace-match "")
     (save-excursion
       (forward-sexp)
       (and (search-forward ")" nil t) (replace-match "")))))
 
 (defvar lispxmp-results nil)
-(defun %lispxmp-out (index result)
-  (push (cons index (%lispxmp-prin1-to-string result)) lispxmp-results)
+(defun %lispxmp-out (use-pp semicolons-len index result)
+  (push (cons index (%lispxmp-prin1-to-string use-pp semicolons-len result)) lispxmp-results)
   result)
 
-(defun %lispxmp-prin1-to-string (object)
-  (if (and lispxmp-string-no-properties
-           (require 'paredit nil t))
-      (%lispxmp-prin1-to-string-no-properties object)
-    (prin1-to-string object)))
-
-(defun %lispxmp-prin1-to-string-no-properties (object)
-  (with-temp-buffer
-    (let ((standard-output (current-buffer)))
-      (save-excursion (prin1 object)))
-    (save-excursion
-      (while (search-forward "#(\"" nil t)
-        (forward-char -1)
-        (paredit-raise-sexp)
-        (delete-backward-char 1)
-        (forward-sexp 1)))
-    (save-excursion
-      (while (search-forward "\n" nil t)
-        (replace-match "\\\\n")))
-    (buffer-string)))
-
+(defun %lispxmp-prin1-to-string (use-pp semicolons-len object)
+  (let ((print-func (if use-pp 'pp-to-string 'prin1-to-string)))
+    (with-temp-buffer
+      (insert (let (pp-escape-newlines) (funcall print-func object)))
+      (goto-char 1)
+      (save-excursion
+        (when (and lispxmp-string-no-properties
+                   (require 'paredit nil t))
+          (while (search-forward "#(\"" nil t)
+            (forward-char -1)
+            (paredit-raise-sexp)
+            (delete-backward-char 1)
+            (forward-sexp 1))))
+      (save-excursion
+        (if (eq print-func 'prin1-to-string)
+            ;; escape newlines
+            (while (search-forward "\n" nil t)
+              (replace-match "\\\\n"))
+          ;; add paddings
+          (goto-char 1)
+          (forward-line 1)
+          (unless (eobp)
+            (string-rectangle (point) (point-max)
+                             (concat (make-string semicolons-len ?\;)  "    ")))
+          ;; delete last newline
+          (goto-char (point-max))
+          (and (bolp) (delete-backward-char 1))))
+      (buffer-string))))
 
 (defun lispxmp-create-annotations (buf results)
   (set-buffer buf)
   (save-excursion
     (goto-char (point-min))
-    (while (re-search-forward "\\(;+\\) <<%lispxmp-out-marker \\([0-9]+\\)>> *$" nil t)
-      (let ((index (string-to-number (match-string 2)))
+    (while (re-search-forward "\\(;+\\) <<%lispxmp-out-marker \\([0-9]+\\) \\([0-9]+\\)>> *$" nil t)
+      (let ((index (string-to-number (match-string 3)))
             (semicolons (match-string 1)))
         ;; I do not use `replace-match', because it interprets backslashes.
         ;; Insert replacement string literally.
@@ -343,51 +418,138 @@ How to send a bug report:
 ;; (install-elisp "http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el")
 (dont-compile
   (when (fboundp 'expectations)
-    (defun lispxmp-to-string (from)
+    (defun lispxmp-to-string (lispxmp-string-no-properties from)
       (with-temp-buffer
         (insert from)
         (lispxmp)
         (buffer-string)))
     (expectations
-      (desc "%lispxmp-prin1-to-string")
-      (expect "\"a\\nb\""
-        (%lispxmp-prin1-to-string-no-properties "a\nb"))
-      (expect "\"aaaa\""
-        (%lispxmp-prin1-to-string-no-properties (propertize "aaaa" 'face 'match)))
-      (expect "(\"a\" \"b\")"
-        (%lispxmp-prin1-to-string-no-properties
-         (list (propertize "a" 'face 'match) (propertize "b" 'face 'match))))
+      (desc "lispxmp-string-no-properties = t")
+      (expect "\"a\\nb\" ; => \"a\\nb\"
+"
+        (lispxmp-to-string t "\"a\\nb\" ; => "))
+      (expect "(propertize \"aaaa\" 'face 'match) ; => \"aaaa\"
+"
+        (lispxmp-to-string t "(propertize \"aaaa\" 'face 'match) ; => "))
+      (expect "
+ (list (propertize \"a\" 'face 'match)
+ (propertize \"b\" 'face 'match)) ; => (\"a\" \"b\")
+"
+        (lispxmp-to-string t "
+ (list (propertize \"a\" 'face 'match)
+ (propertize \"b\" 'face 'match)) ; => "))
+      (desc "lispxmp-string-no-properties = nil")
+      (expect "\"a\\nb\" ; => \"a\\nb\"
+"
+        (lispxmp-to-string nil "\"a\\nb\" ; => "))
+      (expect "(propertize \"aaaa\" 'face 'match) ; => #(\"aaaa\" 0 4 (face match))
+"
+        (lispxmp-to-string nil "(propertize \"aaaa\" 'face 'match) ; => "))
+      (expect "
+ (list (propertize \"a\" 'face 'match)
+ (propertize \"b\" 'face 'match)) ; =>\
+ (#(\"a\" 0 1 (face match)) #(\"b\" 0 1 (face match)))
+"
+        (lispxmp-to-string nil "
+ (list (propertize \"a\" 'face 'match)
+ (propertize \"b\" 'face 'match)) ; => "))
       (desc "destructive annotation test")
       (expect "
          (setq l (list 1 2)) ; => (1 2)
          (setcar l 100)      ; => 100
          l                   ; => (100 2)
-        "
-        (lispxmp-to-string "
+"
+        (lispxmp-to-string t "
          (setq l (list 1 2)) ; =>
          (setcar l 100)      ; =>
          l                   ; =>
-        "))
+"))
       (expect "
          (setq s (copy-sequence \"abcd\")) ; => \"abcd\"
          (aset s 0 ?A)                     ; => 65
          s                                 ; => \"Abcd\"
-        "
-        (lispxmp-to-string "
+"
+        (lispxmp-to-string t "
          (setq s (copy-sequence \"abcd\")) ; =>
          (aset s 0 ?A)                     ; =>
          s                                 ; =>
-        "))
+"))
       (expect "
          (setq c (cons 1 2)) ; => (1 . 2)
          (setcar c 100)      ; => 100
          c                   ; => (100 . 2)
-        "
-        (lispxmp-to-string "
+"
+        (lispxmp-to-string t "
          (setq c (cons 1 2)) ; =>
          (setcar c 100)      ; =>
          c                   ; =>
-        "))
+"))
+      (desc "pp test")
+      (expect "'((\"a\") \"b\" (\"c\"))
+;;; => ((\"a\")
+;;;     \"b\"
+;;;     (\"c\"))
+"
+        (lispxmp-to-string t "'((\"a\") \"b\" (\"c\"))
+;;; =>
+"))
+      (expect "'((\"a\") \"b\" (\"c\"))
+;; => ((\"a\")
+;;     \"b\"
+;;     (\"c\"))
+"
+        (lispxmp-to-string t "'((\"a\") \"b\" (\"c\"))
+;; =>
+"))
+      (expect "'((\"a\") \"b\" (\"c\"))
+;;; => ((\"a\")
+;;;     \"b\"
+;;;     (\"c\"))
+"
+        (lispxmp-to-string nil "'((\"a\") \"b\" (\"c\"))
+;;; =>
+"))
+      (expect "'((\"a\") \"b\" (\"c\"))
+;; => ((\"a\")
+;;     \"b\"
+;;     (\"c\"))
+"
+        (lispxmp-to-string nil "'((\"a\") \"b\" (\"c\"))
+;; =>
+"))
+      (expect "'a
+;;; => a
+"
+        (lispxmp-to-string t "'a
+;;; =>
+"))
+      (expect "'(\"a\")
+;;; => (\"a\")
+"
+        (lispxmp-to-string t "'(\"a\")
+;;; =>
+"))
+      (desc "pp reexecute")
+      (expect "'((\"a\") \"b\" (\"c\"))
+;;; => ((\"a\")
+;;;     \"b\"
+;;;     (\"c\"))
+"
+        (lispxmp-to-string t "'((\"a\") \"b\" (\"c\"))
+;;; => ((\"a\")
+;;;     \"b\"
+;;;     (\"c\"))
+"))
+      (expect "1
+;;; => 1
+;;; 2
+;;;    3
+"
+        (lispxmp-to-string t "1
+;;; => 1
+;;; 2
+;;;    3
+"))
       )))
 
 (provide 'lispxmp)

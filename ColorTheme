@@ -260,6 +260,12 @@ for mac, etc.
 
 Fixed: The (window-system) to window-system since it's a variable and not a function shouldn't have the ().
 
+Question: Any idea how to detect if emacs has been started as a daemon? I think we need logic like:
+
+    (if window-system or started-as-daemon
+        (color-theme-subtle-hacker)
+	(color-theme-hober))
+
 The following code in your .emacs file will test whether each frame is opened in a GUI or console and select according to the colors you select for each in the variable, color-theme-choices (based on the comments by Pierre on [http://emacs-fu.blogspot.com/2009/03/color-theming.html Emacs-Fu]):
 
     ;; select theme - first list element is for windowing system, second is for console/terminal

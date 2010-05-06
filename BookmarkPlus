@@ -482,7 +482,9 @@ A '''variable-list''' bookmark saves and restores the values of a set of
 variables.  Command '''`bookmarkp-set-varlist-bookmark'''' prompts you
 for the variables to include in the list and then sets the
 bookmark.  Command `bookmarkp-jump-varlist' ('''`C-x j v'''') restores
-the recorded variable values for the bookmark's buffer.
+the recorded variable values for the bookmark's buffer.  You can
+also create varlist bookmarks non-interactively, using function
+`bookmarkp-create-varlist-bookmark'.
 
 If you use library <tt>[[wide-n.el]]</tt> (see MultipleNarrowings), then you can move among multiple
 restrictions (narrowings) in a buffer.  The restrictions are

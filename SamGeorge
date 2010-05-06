@@ -15,13 +15,17 @@ I created the first version of HtmlOutline.
 
 ==About me==
 
-I also have a [http://dracoquies.us/~cira/ web page] and am
-currently working on a masters
-[http://dracoquies.us/~cira/school/thesis/thesis.html thesis] in
-computer science.  I also run a small
-[http://surroundviewmedia.com/ company] which doesn't make much
-money, but has taught me an enormous amount about human relations
-and economics.
+I have a [http://dracoquies.us/cira/ web page].  I also worked
+on a masters
+[http://dracoquies.us/cira/school/thesis/thesis.html thesis] in
+computer science but the idea was far too ambitious and I never finished,
+though I still think about it from time to time.
+I also ran a couple of small companies: a flower store and a
+photography shop specializing spherical and high dynamic range
+work.  Neither made much money, but they were good experiences
+and taught me an enormous amount about human relations
+and economics.  Currently I'm finishing up a masters in Architecture
+(finally!)
 
 ==How I came to use Emacs==
 
@@ -53,9 +57,12 @@ still a commercial product at the time, and asked if they had or
 were developing such functionality.  They replied that they were
 not developing outline view and outline manipulation features as
 M$ Office .doc compatibility was a higher priority at the time.
-Even today in Open Office 1.1.3 there is no outline view.
+Even today, the  
+[http://serendipity.ruwenzori.net/index.php/2006/11/05/openoffice-outline-mode 
+Open Office 3.2 outlining functions] are not up
+to the standard of MSWord6.
 
-In the meanwhile I had suffered from pain in my arms from
+Meanwhile I had suffered from pain in my arms from
 mousing and keyboarding.  I found that switching to the dvorak
 key layout helped a great deal and eliminated almost all
 of my symptoms.  I had also taken a compiler class where we
@@ -72,18 +79,21 @@ emacs once again through friends, I decided it was time to give
 the one true editor another go.  I knew I would have to create
 a relatively complex .emacs file to give it some slightly more
 sane key bindings, and to provide some of the vim functions I
-couldn't live without.  I had just previously given up on trying
-to figure out how to customize vim sufficiently for the folding
-mechanism to do what I wanted but had come up short of success.
-I took a couple weeks brushing up on my elisp and learning the
+couldn't live without.  I had just previously put in a couple
+weeks trying
+to figure out how to customize vim sufficiently to get the folding
+mechanism to do what I needed, but had come up short of success.
+I spent another couple weeks brushing up on my elisp and learning the
 basic ropes.  After a third week I had things working sufficiently
 to do the basics of what I wanted.
 
 Hardly am I finished, but then I ask for quite a bit.  I'm hoping
 to unify the different .emacs files I use for OSX, macOS9, linux,
-and windows so that everything runs from my user dir on the
+windows, and various terminals so that everything runs from my user dir on the
 server and I get what I want regardless of which machine I start
-emacs on.  I'm not there yet, but things are getting better.
+emacs on.  I'm not there yet, but things are getting better.  The
+keys are largest sticky bit these days, as the various systems pass
+some key combinations and not others.
 
 If you need to get a hold of me send a message to linux@dracoquies.us
 

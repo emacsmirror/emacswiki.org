@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue May  4 14:50:12 2010 (-0700)
+;; Last-Updated: Wed May  5 09:17:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12041
+;;     Update #: 12048
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -489,7 +489,9 @@
 ;;  variables.  Command `bookmarkp-set-varlist-bookmark' prompts you
 ;;  for the variables to include in the list and then sets the
 ;;  bookmark.  Command `bookmarkp-jump-varlist' (`C-x j v') restores
-;;  the recorded variable values for the bookmark's buffer.
+;;  the recorded variable values for the bookmark's buffer.  You can
+;;  also create varlist bookmarks non-interactively, using function
+;;  `bookmarkp-create-varlist-bookmark'.
 ;;
 ;;  If you use library `wide-n.el', then you can move among multiple
 ;;  restrictions (narrowings) in a buffer.  The restrictions are
@@ -1249,6 +1251,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/05 dadams
+;;     bookmarkp-create-varlist-bookmark, bookmarkp-make-varlist-record:
+;;       Added optional arg BUFFER-NAME.
+;;     bookmark-alist: Corrected doc string wrt BUFFER-NAME and region context strings.
 ;; 2010/05/04 dadams
 ;;     Added: bookmarkp-create-varlist-bookmark.
 ;;     bookmarkp-jump-varlist: If bookmark's buffer doesn't exist, use current buffer and show msg.

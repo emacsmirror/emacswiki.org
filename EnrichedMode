@@ -42,5 +42,7 @@ When I try to print enriched buffers (either from GNU Emacs or from
 XEmacs) the background color (as in highlighting) is lost. All other faces information seems to 
 be preserved. Any ideas?  
 
+Try `M-x ps-print-buffer-with-faces'.  Works for me in GNU Emacs 23.
+
 ----
 CategoryModes

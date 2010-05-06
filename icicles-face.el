@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:19:43 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr  8 08:20:28 2010 (-0700)
+;; Last-Updated: Wed May  5 10:53:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 517
+;;     Update #: 518
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-face.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -417,7 +417,7 @@ Not used for versions of Emacs before version 21."
 ;;;###autoload
 (defface icicle-mustmatch-completion
     '((((type x w32 mac graphic) (class color))
-       (:box (:line-width 2 :color "Blue"))) ; blue box
+       (:box (:line-width -2 :color "Blue"))) ; blue box
       (t (:inverse-video t)))
   "*Face used to indicate strict minibuffer completion.
 It highlights the minibuffer indicator and the `Icy' or `Icy+'
