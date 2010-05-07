@@ -48,13 +48,13 @@ On Sourceforge, I am also `kensanata'. On Savannah, however, I am
 
 == Init Files ==
 
-* AlexSchroederConfigConfusibombus -- the iBook @ home running Ubuntu
+* AlexSchroederConfigOrientalibombus -- the new iBook using Ubuntu 10.04 Lucid Lynx
 * AlexSchroederConfigPyrobombus -- the Mac Mini @ home running Mac OS 10.4
 * AlexSchroederConfigWindows -- the workstation @ work running Windows; get grep and friends from [http://gnuwin32.sourceforge.net/packages.html GnuWin32]
-* AlexSchroederConfigSSH -- what I use on one of my webhosts
-* AlexSchroederErcConfig -- no longer used as I switched to [[rcirc]]
+* AlexSchroederConfigConfusibombus -- no longer used for an old Ubuntu installation
 * AlexSchroederConfigAlpinobombus -- no longer used as I switched the iBook from Mac OS 10.3 to Ubuntu
-* AlexSchroederConfigOrientalibombus -- the new iBook using Ubuntu 10.04 Lucid Lynx
+* AlexSchroederErcConfig -- no longer used as I switched to [[rcirc]]
+* AlexSchroederConfigSSH -- what I use on one of my webhosts
 
 == RSI ==
 

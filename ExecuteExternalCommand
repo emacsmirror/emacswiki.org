@@ -33,7 +33,7 @@ completion features ([[Icicles - Cycling Completions|cycling]], [[progressive co
 You can run a shell command asynchronously by adding an ampersand (##&##) after it, if you have a UNIX or UXIX-like enviornment.
 
 Here is a simple Emacs command that you can use to run several commands asynchronously:
-
+<pre>
     (defun my-shell-command (command &optional output-buffer) 
       "Same as shell-command but rename uniquely the buffers for asynch commands.
 Each command that is run spawns a bash shell" 
@@ -58,6 +58,7 @@ Each command that is run spawns a bash shell"
 	       (rename-uniquely))
 	     (setq output-buffer command-buffer-name)))
       (shell-command command output-buffer)))
+</pre>
 
 == Discussion ==
 
@@ -100,6 +101,9 @@ Quote each argument seperately, join with spaces and call shell-command-to-strin
 </pre>
 
 Then, calling (execvp "touch" "'a'" "b" "$x") will create files called 'a', b, and $x in whatever directory you happen to be in.
+
+[new]
+Is it possible (desirable?) to automatically close the ##*Shell Command Output##* buffer for commands that report "Shell command succeeded with no output"?
 
 == See Also == 
 

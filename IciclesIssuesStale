@@ -58,6 +58,41 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+
+I have a problem with apropos completion, as described in IciclesIssuesClosed, but I do not quite understand the discussion there. I would appreciate any help or a suggestion of where to look for help, and I can move this question to the thread in the Closed Issues page. 
+
+I put the Icicles libraries on my load path, add ##(require 'icicles)## to my file ~/.emacs, start emacs, and execute ##M-x icy-mode##; The echo area shows "Turning ON Icicle mode...done". Then I type ##M-x buffer S-Tab##, and the echo area shows ##<backtab> is undefined##. I use Emacs 22.2.1. File <tt>[[icicles-opt.el]]</tt> says:
+
+<pre>
+In Emacs 22 and later, `backtab' is the canonical key that represents
+both `S-tab' and `S-iso-lefttab', so that is used in the default
+value.  If, for some reason, `backtab' is not being translated to
+`S-tab' and `S-iso-lefttab' on your platform, you might want to
+customize the value to ([S-tab] [S-iso-lefttab]).  And if your Emacs
+version is 22 or later, please file an Emacs bug about the lack of
+translation.
+</pre>
+
+I did not find a way to customize "backtab" to the value "([S-tab] [S-iso-lefttab])". Also, putting ##(setq icicle-generic-S-tab-keys '([S-tab] [S-iso-lefttab]))## in my init files did not help. -- PhilipGanchev
+
+
+[new:DrewAdams:2010-04-15 17:45 UTC]
+First, please make sure you have the latest '''Icicles''' files. `backtab' is not used as the default value, and `icicle-generic-S-tab-keys' no longer exists (it is called `icicle-key-complete-keys' now).
+
+The comment you quote is out of date (I've just changed it). `backtab' is not used as the default value because of what is mentioned in the other comment just before that one -- see Emacs bug #1281.
+
+The value you were trying to get is in fact the default value. It means that ##[S-tab]## and ##[S-iso-lefttab]## will be bound for '''Icicles''' apropos completion. Things should work OK if you get the latest files. If not, let me know. Thx -- DrewAdams
+
+
+
 
 
 <pre>

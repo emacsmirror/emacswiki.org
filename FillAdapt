@@ -5,6 +5,10 @@ Filladapt by KyleJones enhances Emacs' fill functions by guessing a fill prefix,
 
 Emacs has a builtin <code>adaptive-fill-mode</code> (see [[Manual:adaptive-fill-mode]]), but filladapt does a much better job, and is easier to customize.
 
+[new]
+What works better and what is easier to customize compared with adaptive-fill-mode in Emacs 23?
+
+[new]
 Filladapt works by matching prefix patterns from <code>filladapt-token-table</code>.  That table has for example <code>//</code> for C++ comments.  Lines with the same prefix, or same multiple prefixes, are considered a paragraph.  You can see this process in action dynamically with <code>filladapt-debug</code>.
 
     M-: (filladapt-debug)

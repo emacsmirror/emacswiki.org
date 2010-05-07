@@ -67,7 +67,7 @@
 
 ;;; Variables:
 
-(defconst sdic-inline-version "0.4.3"
+(defconst sdic-inline-version "0.4.5"
   "Version of sdic-inline.")
 
 
@@ -122,6 +122,11 @@ Others, Always search.")
   "*Specify user definition function.
 If specified function returns t, sdic-inline-mode is enabled.")
 
+(defvar sdic-inline-word-at-point-strict nil
+  "*If this variable is non-nil, return nil unless point is within
+or adjacent to a symbol or word.
+Option for 1st argument of `current-word'.")
+
 
 (defvar sdic-inline-last-word nil)
 
@@ -133,9 +138,11 @@ If specified function returns t, sdic-inline-mode is enabled.")
 
 (defvar sdic-inline-display-popup-now nil)
 
-(defvar sdic-inline-map (make-sparse-keymap))
-(define-key sdic-inline-map "\C-c\@\C-c" 'sdic-inline-clear-last-word)
-(define-key sdic-inline-map "\C-c\C-p" 'sdic-inline-display-popup)
+(defvar sdic-inline-map
+  (let ((keymap (make-sparse-keymap)))
+    (define-key keymap "\C-c\@\C-c" 'sdic-inline-clear-last-word)
+    (define-key keymap "\C-c\C-p" 'sdic-inline-display-popup)
+    keymap))
 
 
 ;; Functions:
@@ -211,9 +218,11 @@ If specified function returns t, sdic-inline-mode is enabled.")
 
 (defun sdic-inline-word-at-point ()
   "Get word under the point."
-  (let ((cw (current-word))
+  (let ((cw (current-word sdic-inline-word-at-point-strict))
         (sw (sdic-word-at-point)))
-    (when (and (string-match "\\w" cw) sw)
+    (when (and cw
+               (string-match "\\w" cw)
+               sw)
       sw)))
 
 (defun sdic-inline-do-search (w)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 09:12:40 2010 (-0700)
+;; Last-Updated: Thu May  6 06:30:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20728
+;;     Update #: 20732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3138,12 +3138,12 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                   (doc-cmd  "`\\<minibuffer-local-map>\\[next-history-element]' for default")
                   (bname    (or name
                                 (icicle-transform-multi-completion
-                                 (bookmarkp-completing-read-lax
-                                  (format "Set bookmark " (if (> emacs-major-version 21)
-                                                              (substitute-command-keys doc-cmd)
-                                                            defname))
-                                  defname icicle-candidates-alist
-                                  nil bookmark-history)))))
+                                 (bookmarkp-completing-read-lax "Set bookmark "
+                                                                (if (> emacs-major-version 21)
+                                                                    (substitute-command-keys doc-cmd)
+                                                                  defname)
+                                                                icicle-candidates-alist
+                                                                nil bookmark-history)))))
              (when (string-equal bname "") (setq bname  defname))
              (bookmark-store bname (cdr record) (consp parg))
              (run-hooks 'bookmarkp-after-set-hook)

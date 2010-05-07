@@ -3928,26 +3928,21 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
 ;;; Eev anchors
 (defvar anything-c-source-eev-anchor
   '((name . "Anchors")
-    (init . (lambda ()
-              (setq anything-c-eev-anchor-buffer
-                    (current-buffer))))
-    (candidates . (lambda ()
-                    (condition-case nil
-                        (save-excursion
-                          (with-current-buffer anything-c-eev-anchor-buffer
-                            (goto-char (point-min))
-                            (let (anchors)
-                              (while (re-search-forward (format ee-anchor-format "\\([^\.].+\\)") nil t)
-                                (push (match-string-no-properties 1) anchors))
-                              (setq anchors (reverse anchors)))))
-                      (error nil))))
+    (candidates
+     . (lambda ()
+         (ignore-errors
+           (with-current-buffer anything-current-buffer
+             (loop initially (goto-char (point-min))
+                   while (re-search-forward (format ee-anchor-format "\\([^\.].+\\)") nil t)
+                   for anchor = (match-string-no-properties 1)
+                   collect (cons (format "%5d:%s"
+                                         (line-number-at-pos (match-beginning 0))
+                                         (format ee-anchor-format anchor)) anchor))))))
     (persistent-action . (lambda (item)
                            (ee-to item)
                            (anything-match-line-color-current-line)))
     (persistent-help . "Show this entry")
-    (action . (("Goto link" . (lambda (item)
-                                (ee-to item)))))))
-
+    (action . (("Goto link" . ee-to)))))
 ;; (anything 'anything-c-source-eev-anchor)
 
 ;;;; <Misc>
@@ -5128,6 +5123,43 @@ You can set your own list of commands with
   (loop for i in seq for index from 0
      when (funcall test i item) return index))
 
+(defvar anything-c-source-ratpoison-commands
+  '((name . "Ratpoison Commands")
+    (init . anything-c-ratpoison-commands-init)
+    (candidates-in-buffer)
+    (action ("Execute the command" . anything-c-ratpoison-commands-execute))
+    (display-to-real . anything-c-ratpoison-commands-display-to-real)
+    (candidate-number-limit)))
+;; (anything 'anything-c-source-ratpoison-commands)
+
+(defun anything-c-ratpoison-commands-init ()
+  (unless (anything-candidate-buffer)
+    (with-current-buffer (anything-candidate-buffer 'global)
+      ;; with ratpoison prefix key
+      (save-excursion
+        (call-process "ratpoison" nil (current-buffer) nil "-c" "help"))
+      (while (re-search-forward "^\\([^ ]+\\) \\(.+\\)$" nil t)
+        (replace-match "<ratpoison> \\1: \\2"))
+      (goto-char (point-max))
+      ;; direct binding
+      (save-excursion
+        (call-process "ratpoison" nil (current-buffer) nil "-c" "help top"))
+      (while (re-search-forward "^\\([^ ]+\\) \\(.+\\)$" nil t)
+        (replace-match "\\1: \\2")))))
+
+(defun anything-c-ratpoison-commands-display-to-real (display)
+  (and (string-match ": " display)
+       (substring display (match-end 0))))
+
+(defun anything-c-ratpoison-commands-execute (candidate)
+  (call-process "ratpoison" nil nil nil "-ic" candidate))
+
+;;;###autoload
+(defun anything-ratpoison-commands ()
+  "Preconfigured `anything' to execute ratpoison commands."
+  (interactive)
+  (anything-other-buffer 'anything-c-source-ratpoison-commands
+                         "*anything ratpoison commands*"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Action Helpers ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Files

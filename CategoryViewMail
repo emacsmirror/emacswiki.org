@@ -7,25 +7,22 @@ The code base and the latest pre-releases of VM can be browsed at https://launch
 
 VM is very well documented. It comes with a fine set of info pages, and there are two EmacsNewsgroups dealing with VM. These pages attempt to distill some of the useful information from the other sources.
 
-=== Getting Started ===
+== Getting Started ==
 
 * ViewMailQuickStart
 * ViewMailSevenQuickStart -- old quick-start for version 7.19
 
 
-=== VM Folders ===
-
-* ViewMailVirtualFolders
-
-=== VM Customization ===
+== VM Customization ==
 
 * ViewMailCustomization -- basic customization
 * ViewMailAndImap -- using VM with IMAP folders
 * ViewMailAndPop -- using VM with Pop folders
 * ViewMailAndMime -- customizing Mime support
+* ViewMailVirtualFolders -- using virtual folders
 * ViewMailOtherCustomizations -- nifty tricks &c. for VM.
 
-=== VM and Other Packages ===
+== VM and Other Packages ==
 
 * ViewMailAndBbdb -- using VM with BbdbMode (for an address book functionality)
 * ViewMailAndMailCrypt -- using VM with MailCrypt (for encrypting/decrypting email)
@@ -35,13 +32,13 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * ViewMailAddons
 
-=== VM Wishlist ===
+== VM Wishlist ==
 
 * ViewMailWishlist -- discuss ideas for VM and their feasibility.
 
 * ViewMailHeadersOnly -- blueprint for an experimental headers-only mode.
 
-=== Documentation ===
+== Documentation ==
 
 * [[http://www.wonderworks.com/vm/user-manual| Info manual on VM version 7]], Kyle Jones at Wonderworks, May 2003.  Even though it is out of date, this continues to be good reference for the basics.  See the info manual in your VM distribution for up to date documentation.
 
@@ -49,7 +46,7 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * [[http://www.wonderworks.com/vm/vm-procmail.html| FAQ: Using VM with Procmail]], Samuel Mikes at Wonderworks,  April 1998.  Explanation of integrating VM with external mail filtering.
 
-=== External tutorials and blogs ===
+== External tutorials and blogs ==
 
 * V. L. Simpson, [[http://linuxgazette.net/109/simpson.html| Emacs and Email: The VM Mail Package]], Linux Gazette, December 2004.  A very nice tutorial, which is still valuable despite its age.
 
