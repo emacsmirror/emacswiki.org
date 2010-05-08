@@ -13,6 +13,7 @@ Here's some things using file formats to help the way they view or save, without
 
 * LongLines -- writing soft newlines as spaces
 * [[Pcf2Bdf]] -- view <code>pcf</code> font file as <code>bdf</code> source
+* SqliteDump -- view/edit dump of an SQLite database file
 * TcdFormat -- decoding xtide <code>tcd</code> tide constituent database files
 * TsvMode -- hiding some settings saved in the document
 

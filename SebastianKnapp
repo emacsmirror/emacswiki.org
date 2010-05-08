@@ -50,6 +50,10 @@ nice wiki place.
 
 }}}
 
+(autoload 'php-mode "php-mode" "PHP source code major mode." t)
+(add-to-list 'auto-mode-alist '("\\.\\(php\\|inc\\)$" . php-mode))
+(require 'php-mode)
+
 
 [new:DrewAdams:2009-04-02 20:36 UTC]
 Welcome to the wiki! -- DrewAdams

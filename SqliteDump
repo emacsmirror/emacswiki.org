@@ -1,0 +1,8 @@
+<code>sqlite-dump.el</code> uses the FileFormat mechanism to display the contents of an [[SQLite]] database file using the <code>sqlite</code> or <code>sqlite3</code> command <code>.dump</code>, including saving by an undump to re-write the file.
+
+: http://user42.tuxfamily.org/sqlite-dump/index.html
+
+<code>.dump</code> is raw SQL creating the tables and contents.  It can be a bit hard to read, but at least lets you nose around random database files (as long as they're not too huge).  For example recent mozilla uses <code>.sqlite</code> files for things like cookies (under <code>~/.mozilla</code>).
+
+----
+[[SQLite]] FileFormat

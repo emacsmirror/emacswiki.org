@@ -164,5 +164,34 @@ You can also get Grep-O-Matic with git:
 
     git clone git://github.com/ZungBang/emacs-grep-o-matic.git
 
+== Find/Grep from shell-mode ==
+
+While not explicitly about emacs grep, I use the following recipe to intelligently pattern search a really large source tree like Chromium or the Linux kernel.  The three steps:
+
+1) build a persistent subset of target files to search, the ##filelist##,
+2) interactively use grep to reduce the ##filelist## to a ##targetlist##,
+3) search the ##targetlist## for patterns.
+
+Step #1, use ##find## to build the ##filelist## and save in a local temp file.  For example, to build a list of files from the Chromium source:
+
+  find /opt/chromium/src -wholename '*/.svn' -prune -o -type f -regex ".*\.\(c\|cc\|h\|js\)" -print > CSRC.LST
+
+Then I hand-edit the ##filelist## to remove files in which I am not interested (or redundant in the case of the Linux kernel source tree.)  This saves *A LOT* of time a large trees.
+
+Step #2 and #3 are a pipe of 
+Then I create a temp file to execute a lisp eval on a shell-command and capture output for Steps #2 and #3. The shell-command invokes a pipe of `grep' calls to filter down to the ##targetlist## and then one final call to search the ##targetlist## for matching patterns.
+
+Example elisp calls:
+
+  (shell-command "grep '\\.cc' CSRC.LST | xargs grep -n CONTEXT_VALID_ESI" 1)
+  (shell-command "grep '.' CSRC.LST | xargs grep -n CHROMIUM" 1)
+  (shell-command "grep '.' CSRC.LST | xargs grep -l NACL_OSX | xargs grep -n NACL_LINUX" 1)
+
+Put the cursor at the end of the expression and run `eval-last-sexp' and the `grep -n' output will appear after the shell-command expression.
+
+A simple macro can be triggered on a match line to load the file/lineno into another window or frame depending on your desires.
+
+I have found this to be far easier and quicker than etags or source browsing tools to inspect code.  It also uses standard tools with a large number of recipes to follow.  I extensively use registers and bookmarks for later referral.
+
 ----
 CategoryRegexp CategoryExternalUtilities CategorySearchAndReplace CategoryProgrammerUtils

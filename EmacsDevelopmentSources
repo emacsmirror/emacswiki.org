@@ -5,10 +5,10 @@ Some people would like to use the new features available in the next release.  O
 
 For information on how to get them directly, see:
 
-* EmacsFromCVS -- how to get the development sources from CVS
 * EmacsFromArch -- how to get the current development sources using the arch (aka tla) revision control system
 * EmacsFromBazaar -- get emacs with bzr
 * EmacsFromGit -- how to get emacs from the semi-official git mirror
+* (EmacsFromCVS -- the sources where previously in CVS but it is now in Bazaar)
 
 See BuildingEmacs for how to build Emacs from the source package.
 

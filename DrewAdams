@@ -270,6 +270,8 @@ Hey Drew, I just wanted to let you know that your emacs libraries are so much aw
 [new:DrewAdams:2009-05-18 16:20 UTC]
 Thank you Jonathan. Enjoy! Bug reports and suggestions welcome. Thx -- DrewAdams
 
+----
+
 [new:rubikitch:2010-05-03 07:51 UTC]
 Hi Drew! There is `reporter-submit-bug-report', a autoload function to send a bug report with dumping variables. I wonder why you do not use it. -- [[rubikitch]]
 
@@ -284,11 +286,14 @@ It doesn't mean anything special that I don't use it. ;-) I agree that it can be
 
 Typically, I'm interested in other things the user can describe about the problem, and I'll just ask about any vars I think might be pertinent if they aren't spontaneously reported. But that's not a reason not to use `reporter'.  Regards -- DrewAdams
 
+----
 
+[new]
+Hi there. There are many free SCM web services out there like GitHub and BitBucket... why not use a repository for easy access to your great libraries? -- RyanKaskel
 
+Sorry, not interested. But you are welcome to set up a mirror with RSS feed or whatever. ;-) -- DrewAdams
 
-
-
+----
 
 
 

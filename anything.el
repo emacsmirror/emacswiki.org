@@ -107,6 +107,8 @@
 ;;    Scroll other window (not *Anything* window) upward.
 ;;  `anything-scroll-other-window-down'
 ;;    Scroll other window (not *Anything* window) downward.
+;;  `anything-display-all-visible-marks'
+;;    Show all `anything' visible marks strings.
 ;;  `anything-quit-and-find-file'
 ;;    Drop into `find-file' from `anything' like `iswitchb-find-file'.
 ;;  `anything-yank-selection'
@@ -1503,6 +1505,7 @@ See also `anything-set-source-filter'.")
 
     ;; Debugging command
     (define-key map "\C-c\C-x\C-d" 'anything-debug-output)
+    (define-key map "\C-c\C-x\C-m" 'anything-display-all-visible-marks)
     ;; Use `describe-mode' key in `global-map'
     (dolist (k (where-is-internal 'describe-mode global-map))
       (define-key map k 'anything-help))
@@ -2726,7 +2729,7 @@ the current pattern."
 If current source has `update' attribute, a function without argument, call it before update."
   (interactive)
   (let ((source (anything-get-current-source)))
-    (anything-aif (anything-candidate-buffer)
+    (anything-aif (anything-funcall-with-source source 'anything-candidate-buffer)
         (kill-buffer it))
     (anything-aif (assoc-default 'init source)
         (anything-funcall-with-source source it))
@@ -2911,7 +2914,8 @@ If action buffer is selected, back to the anything buffer."
   (interactive)
   (cond ((get-buffer-window anything-action-buffer 'visible)
          (set-window-buffer (get-buffer-window anything-action-buffer) anything-buffer)
-         (kill-buffer anything-action-buffer))
+         (kill-buffer anything-action-buffer)
+         (insert anything-input))
         (t
          (setq anything-saved-selection (anything-get-selection))
          (unless anything-saved-selection
@@ -3718,6 +3722,15 @@ Otherwise ignores `special-display-buffer-names' and `special-display-regexps'."
           (push display anything-c-marked-candidate-list)
           (push (cons source selection) anything-marked-candidates)))
       (anything-next-line))))
+
+(defun anything-display-all-visible-marks ()
+  "Show all `anything' visible marks strings."
+  (interactive)
+  (lexical-let ((overlays (reverse anything-visible-mark-overlays)))
+    (anything-run-after-quit
+     (lambda ()
+       (with-output-to-temp-buffer "*anything visible marks*"
+         (dolist (o overlays) (princ (overlay-get o 'string))))))))
 
 (defun anything-marked-candidates ()
   "Marked candidates (real value) of current source if any,

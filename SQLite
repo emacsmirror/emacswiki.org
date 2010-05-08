@@ -5,7 +5,7 @@ The SQLite library creates and maintains a database in a single file with basic 
 Here are some things for working with SQLite in Emacs,
 
 * SqlMode -- run sqlite interaction, and more
-* [http://user42.tuxfamily.org/sqlite-dump/index.html sqlite-dump.el] -- view and edit an sqlite database file in ".dump" form
+* SqliteDump -- view and edit an sqlite database file in ".dump" form
 
 ----
 CategorySql

@@ -230,6 +230,9 @@ in my .emacs. -- Randolf Schultz
 A simple example of moving the desktop file save locations ~/.emacs.desktop(.lock) to ~/.emacs.d/desktop/emacs.desktop(.lock) would be very helpful.
 
 ----
+[new]
+Is there any way of stopping the infuriating "Desktop saved in XYZ" messages? They almost always show up while I am trying to do something in the minibuffer. Saving is, after all, the expected result. By all means notify me if it all goes **** up, but there's no need otherwise.
+----
 
 See SessionManagement for other similar packages.
 

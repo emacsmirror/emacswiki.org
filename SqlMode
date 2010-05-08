@@ -60,8 +60,7 @@ were [http://lists.gnu.org/archive/html/help-gnu-emacs/2008-04/msg00094.html pos
 == Miscellaneous Settings ==
 
 If you don't like window splittings related to the *SQL* buffer, try
-the following (and read the docs -- EmacsManual, InfoMode node
-"Forcing Display in the Same Window"):
+the following, per [[Manual:Force Same Window]].
 
     (add-to-list 'same-window-buffer-names "*SQL*")
 
