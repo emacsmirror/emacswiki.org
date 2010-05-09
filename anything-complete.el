@@ -557,15 +557,15 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
     candidates))
 
 (defun alcs-describe-function (name)
-  (describe-function (intern name)))
+  (describe-function (anything-c-symbolify name)))
 (defun alcs-describe-variable (name)
-  (describe-variable (intern name)))
+  (describe-variable (anything-c-symbolify name)))
 (defun alcs-describe-face (name)
-  (describe-face (intern name)))
+  (describe-face (anything-c-symbolify name)))
 (defun alcs-find-function (name)
-  (find-function (intern name)))
+  (find-function (anything-c-symbolify name)))
 (defun alcs-find-variable (name)
-  (find-variable (intern name)))
+  (find-variable (anything-c-symbolify name)))
 
 (defvar anything-c-source-complete-emacs-functions
   '((name . "Functions")
@@ -695,7 +695,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
     (persistent-action . alcs-describe-face)))
 
 (defvar alcs-this-command nil)
-(defun anything-lisp-complete-symbol-1 (update sources input)
+(defun* anything-lisp-complete-symbol-1 (update sources input &optional (buffer "*anything complete*"))
   (setq alcs-this-command this-command)
   (when (or update (null (get-buffer alcs-variables-buffer)))
     (alcs-make-candidates))
@@ -703,7 +703,9 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
         (anything-input-idle-delay
          (or anything-lisp-complete-symbol-input-idle-delay
              anything-input-idle-delay)))
-    (anything-noresume sources input nil nil nil "*anything complete*")))
+    (funcall
+     (if (equal buffer "*anything complete*") 'anything-noresume 'anything)
+     sources input nil nil nil buffer)))
 
 ;; Test alcs-update-restart (with-current-buffer alcs-commands-buffer (erase-buffer))
 ;; Test alcs-update-restart (kill-buffer alcs-commands-buffer)
@@ -734,7 +736,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
 (defun anything-apropos (update)
   "`apropos' replacement using `anything'."
   (interactive "P")
-  (anything-lisp-complete-symbol-1 update anything-apropos-sources nil))
+  (anything-lisp-complete-symbol-1 update anything-apropos-sources nil "*anything apropos*"))
 
 ;; (@* "anything attribute completion")
 (defvar anything-c-source-complete-anything-attributes
@@ -748,7 +750,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
 ;; (anything 'anything-c-source-complete-anything-attributes)
 
 (defun acaa-describe-anything-attribute (str)
-  (anything-describe-anything-attribute (intern str)))
+  (anything-describe-anything-attribute (anything-c-symbolify str)))
 
 (defun acaa-candidates ()
   (with-current-buffer anything-current-buffer
@@ -1303,5 +1305,5 @@ It accepts one argument, selected candidate.")
 (provide 'anything-complete)
 
 ;; How to save (DO NOT REMOVE!!)
-;; (emacswiki-post "anything-complete.el")
+;; (progn (magit-push) (emacswiki-post "anything-complete.el"))
 ;;; anything-complete.el ends here

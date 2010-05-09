@@ -124,7 +124,7 @@
 ;; `anything-regexp'
 ;; Preconfigured `anything' : It is like `re-builder'. It helps buliding regexp and replacement.
 ;; `anything-insert-buffer-name'
-;; Insert buffer name.
+;; Not documented.
 ;; `anything-insert-symbol'
 ;; Insert current symbol.
 ;; `anything-insert-selection'
@@ -171,6 +171,8 @@
 ;; Preconfigured `anything' to hardlink files from dired.
 ;; `anything-dired-bindings'
 ;; Replace usual dired commands `C' and `R' by anything ones.
+;; `anything-manage-advice'
+;; Preconfigured `anything' to disable/enable function advices.
 ;; `anything-bookmark-ext'
 ;; Preconfigured `anything' for bookmark-extensions sources.
 ;; `anything-simple-call-tree'
@@ -211,6 +213,8 @@
 ;; Not documented.
 ;; `anything-c-run-external-command'
 ;; Run External PROGRAM asyncronously from Emacs.
+;; `anything-ratpoison-commands'
+;; Preconfigured `anything' to execute ratpoison commands.
 ;; `anything-c-set-variable'
 ;; Set value to VAR interactively.
 ;; `anything-c-adaptive-save-history'
@@ -332,6 +336,7 @@
 ;; `anything-c-source-lacarte'                            (Lacarte)
 ;; `anything-c-source-emacs-functions'                    (Emacs Functions)
 ;; `anything-c-source-emacs-functions-with-abbrevs'       (Emacs Functions)
+;; `anything-c-source-advice'                             (Function Advice)
 ;; `anything-c-source-emacs-variables'                    (Emacs Variables)
 ;; `anything-c-source-bookmarks'                          (Bookmarks)
 ;; `anything-c-source-bookmark-set'                       (Set Bookmark)
@@ -399,6 +404,7 @@
 ;; `anything-c-source-gentoo'                             (Portage sources)
 ;; `anything-c-source-use-flags'                          (Use Flags)
 ;; `anything-c-source-emacs-process'                      (Emacs Process)
+;; `anything-c-source-ratpoison-commands'                 (Ratpoison Commands)
 
 ;;  *** END auto-documentation
 
@@ -2499,6 +2505,79 @@ word in the function's name, e.g. \"bb\" is an abbrev for
                           (setq str (concat (substring str 0 (1- (length str))) "$"))
                           (setq anything-c-function-abbrev-regexp str))))))))
 ;; (anything 'anything-c-source-emacs-functions-with-abbrevs)
+
+(defvar anything-c-source-advice
+  '((name . "Function Advice")
+    (candidates . anything-c-advice-candidates)
+    (action ("Toggle Enable/Disable" . anything-c-advice-toggle))
+;;    (real-to-display . anything-c-advice-real-to-display)
+    
+    
+    (persistent-action . anything-c-advice-persistent-action)
+    (persistent-help . "Describe function / C-u C-z: Toggle advice")))
+;; (anything 'anything-c-source-advice)
+;; (let ((debug-on-signal t))(anything 'anything-c-source-advice))
+;; (testadvice)
+
+(defun anything-c-advice-candidates ()
+  (require 'advice)
+  (loop for (fname) in ad-advised-functions
+        for function = (intern fname)
+        append
+        (loop for class in ad-advice-classes append
+              (loop for advice in (ad-get-advice-info-field function class) 
+                    for enabled = (ad-advice-enabled advice)
+                    collect
+                    (cons (format "%s %s %s"
+                                  (if enabled "Enabled " "Disabled")
+                                  (propertize fname 'face 'font-lock-function-name-face) 
+                                  (ad-make-single-advice-docstring advice class nil))
+                          (list function class advice))))))
+
+(defun anything-c-advice-persistent-action (func-class-advice)
+  (if current-prefix-arg
+      (anything-c-advice-toggle func-class-advice)
+    (describe-function (car func-class-advice))))
+
+(defun anything-c-advice-toggle (func-class-advice)
+  (destructuring-bind (function class advice) func-class-advice
+    (cond ((ad-advice-enabled advice)
+           (ad-advice-set-enabled advice nil)
+           (message "Disabled"))
+          (t                            ;disabled
+           (ad-advice-set-enabled advice t)
+           (message "Enabled")))
+    (ad-activate function)
+    (and anything-in-persistent-action
+         (anything-c-advice-update-current-display-string))))
+
+(defun anything-c-advice-update-current-display-string ()
+  (with-anything-window
+    (beginning-of-line)
+    (let ((newword (cond ((looking-at "Disabled") "Enabled")
+                         ((looking-at "Enabled")  "Disabled")))
+          realvalue)
+      (when newword
+        (setq realvalue (get-text-property (point) 'anything-realvalue))
+        (delete-region (point) (progn (forward-word 1) (point)))
+        (insert newword)
+        (beginning-of-line)
+        (put-text-property (point) (point-at-eol) 'anything-realvalue realvalue)
+        (anything-mark-current-line)))))
+
+(defun anything-c-advice-update-current-display-string ()
+  (anything-edit-current-selection
+    (let ((newword (cond ((looking-at "Disabled") "Enabled")
+                         ((looking-at "Enabled")  "Disabled")))
+          realvalue)
+      (when newword
+        (delete-region (point) (progn (forward-word 1) (point)))
+        (insert newword)))))
+;;;###autoload
+(defun anything-manage-advice ()
+  "Preconfigured `anything' to disable/enable function advices."
+  (interactive)
+   (anything-other-buffer 'anything-c-source-advice "*anything advice*"))
 
 ;;;; <Variable>
 ;;; Emacs variables
@@ -4723,7 +4802,7 @@ See also `anything-create--actions'."
 
 ;; (anything 'anything-c-source-xfonts)
 
-;; Source for Debian/Ubuntu users
+;;; Source for Debian/Ubuntu users
 (defvar anything-c-source-apt
   '((name . "APT")
     (init . anything-c-apt-init)
@@ -4733,7 +4812,8 @@ See also `anything-create--actions'."
     (candidate-number-limit . 9999)
     (action
      ("Show package description" . anything-c-apt-cache-show)
-     ("Install package" . anything-c-apt-install))
+     ("Install package" . anything-c-apt-install)
+     ("Uninstall package" . anything-c-apt-uninstall))
     (persistent-action . anything-c-apt-persistent-action)
     (persistent-help . "Show - C-u Refresh")))
 ;; (anything 'anything-c-source-apt)
@@ -4741,7 +4821,6 @@ See also `anything-create--actions'."
 (defvar anything-c-apt-query "emacs")
 (defvar anything-c-apt-search-command "apt-cache search '%s'")
 (defvar anything-c-apt-show-command "apt-cache show '%s'")
-(defvar anything-c-apt-install-command "xterm -e sudo apt-get install '%s' &")
 (defvar anything-c-apt-installed-packages nil)
 
 (defface anything-apt-installed
@@ -4790,6 +4869,7 @@ See also `anything-create--actions'."
   (with-current-buffer
       (anything-candidate-buffer
        (get-buffer-create (format "*anything-apt:%s*" anything-c-apt-query)))
+    (erase-buffer)
     (call-process-shell-command
      (format anything-c-apt-search-command anything-c-apt-query)
      nil (current-buffer)))
@@ -4813,11 +4893,31 @@ package name - description."
   (anything-c-shell-command-if-needed (format anything-c-apt-show-command package)))
 
 (defun anything-c-apt-install (package)
-  (setq anything-c-apt-installed-packages nil)
-  (shell-command (format anything-c-apt-install-command package) "*apt install*"))
+  (anything-c-apt-install1 package :action 'install))
 
+(defun anything-c-apt-uninstall (package)
+  (anything-c-apt-install1 package :action 'uninstall))
+
+(defun* anything-c-apt-install1 (candidate &key action)
+  (ansi-term (getenv "SHELL") "anything apt")
+  (term-line-mode)
+  (let ((command (case action
+                   ('install "sudo apt-get install '%s'")
+                   ('uninstall "sudo apt-get remove '%s'")
+                   (t (error "Unknow action"))))
+        (beg (point)) end)
+    (goto-char (point-max))
+    (insert (format command candidate))
+    (setq end (point))
+    (if (y-or-n-p (format "%s package" (symbol-name action)))
+        (progn
+          (setq anything-c-apt-installed-packages nil)
+          (term-char-mode) (term-send-input))
+        (delete-region beg end) (term-send-eof) (kill-buffer))))
+        
 ;; (anything-c-apt-install "jed")
-;; Sources for gentoo users
+
+;;; Sources for gentoo users
 
 (defvar anything-gentoo-prefered-shell 'eshell
   "Your favorite shell to run emerge command.")

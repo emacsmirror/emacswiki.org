@@ -3,12 +3,13 @@
 ;; Filename: elisp-depend.el
 ;; Description: Parse depends library of elisp file.
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
+;; Maintainer: Tom Breton (Tehom) tehom@panix.com
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
+;; Copyright (C) 2010, Tom Breton, all rights reserved.
 ;; Created: 2009-01-11 19:40:45
-;; Version: 0.3.3a
-;; Last-Updated: 2009-02-11 11:30:43
-;;           By: Andy Stewart
+;; Version: 0.4.0
+;; Last-Updated: Sat  8 May, 2010 10:51 PM
+;;           By: Tom Breton
 ;; URL: http://www.emacswiki.org/emacs/download/elisp-depend.el
 ;; Keywords: elisp-depend
 ;; Compatibility: GNU Emacs 20 ~ GNU Emacs 23
@@ -94,6 +95,9 @@
 ;;
 
 ;;; Change log:
+;; 2010/05/08
+;;      * Added require for `thingatpt'
+;;      * Now slash-style module names are treated correctly.
 ;;
 ;; 2009/02/11
 ;;      * Add new option `build-in' to function `elisp-depend-map'
@@ -129,7 +133,7 @@
 ;;
 
 ;;; Require
-
+(require 'thingatpt)
 ;;; Code:
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Customize ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -229,10 +233,42 @@ Return depend map as format: (filepath symbol-A symbol-B symbol-C)."
             (setq deps (cons (cons filepath (list symbol)) deps)))))
       deps)))
 
+(defun elisp-depend-get-load-history-line (path-sans-ext extension)
+   "Return line in load-history correspoding to PATH-SANS-EXT with
+   EXTENSION.
+Return nil if there is none."
+   (assoc 
+      (concat path-sans-ext extension) 
+      load-history))
+
 (defun elisp-depend-filename (fullpath)
   "Return filename without extension and path.
 FULLPATH is the full path of file."
-  (file-name-sans-extension (file-name-nondirectory fullpath)))
+   
+   (let*
+      (  
+	 (true-path-sans-ext
+	    (file-name-sans-extension
+	       (file-truename fullpath)))
+	 (file-history
+	    (cdr
+	       (or
+		  (elisp-depend-get-load-history-line 
+		     true-path-sans-ext ".elc")
+		  (elisp-depend-get-load-history-line 
+		     true-path-sans-ext ".el"))))
+	 (lib-name
+	    (when file-history
+	       (cdr
+		  (assq 'provide file-history)))))
+
+      (if lib-name
+	 (symbol-name lib-name)
+	 ;;Fallback: Just use the base filename
+	 (file-name-sans-extension 
+	    (file-name-nondirectory fullpath)))))
+
+
 
 (defun elisp-depend-skip-string ()
   "Skip string for fast check."

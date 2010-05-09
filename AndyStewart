@@ -42,7 +42,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 *** ElispFormat -- Automatic format elisp code, not need format line by line.
 
-*** ElispDepend -- Parse elisp file and generate depend information, convenient for elisp developer.
+*** ElispDepend -- Parse elisp file and generate depend information, convenient for elisp developer. (Maintainer: [TomBreton Tom Breton (Tehom)])
 
 *** GnusSwitch -- Smart switch Gnus layout.
 

@@ -4,11 +4,7 @@ Homepage: http://www.gnu.org/software/auctex/preview-latex.html
 
 == PreviewLaTeX and NTEmacs ==
 
-By far the easiest way to get this combination going is by downloading th latest precompiled Emacs for NT including AUCTeX from ftp://alpha.gnu.org/pub/gnu/auctex and adhering to the installation instructions in the same place.
-
-=== precompiled Emacs including AUCTeX no longer available ===
-
-The ftp site linked above is empty. Does anyone know if precompiled Emacs with AUCTeX is still available?
+By far the easiest way to get this combination going is by downloading the latest precompiled Emacs for NT including AUCTeX from http://www.gnu.org/software/auctex/download-for-windows.html and adhering to the installation instructions in the same place.
 
 == LatexMk as alternative to preview-latex ==
 

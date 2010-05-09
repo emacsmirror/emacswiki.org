@@ -60,6 +60,10 @@ So i describe some detail in function `elisp-depend-map':
 ==Bug==
 * This still have bug when some local-variable symbol have same name with exist function, then it will generate unnecessary depend information.
 
+==News==
+
+As of 8 may, 2010, the maintainer is [TomBreton Tom Breton (Tehom)], at Andy Stewart's suggestion. 
+
 ==Comment==
 [new:DrewAdams:2009-01-11 17:45 UTC]
 ''Very nice.'' You might also want to relate it to Lisp:lib-requires.el. IIUC, this is generally complementary, but there is also some overlap. One important difference seems to be the method of determining dependencies: ##elisp-depend.el## does not rely on `load-history'; instead, it parses the buffer code. -- DrewAdams

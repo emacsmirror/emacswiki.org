@@ -75,6 +75,8 @@ For more detailed instructions, see the <tt>nextstep/INSTALL</tt> [http://cvs.sa
 
 Note that 10.6.n (Snow Leopard) does not build from the June/July 23.1 release source tarball.  You need the latest BZR version of the trunk.  Emacs.app now builds x86-64 by default on platforms which are 64-bit capable.
 
+As of 05.08.2010 builds fine on Snow Leopard.  Just built: GNU Emacs 23.2.1 (x86_64-apple-darwin10.0.0, NS apple-appkit-1038.00) of 2010-05-08 on ...
+
 ==== X11 Emacs ====
 
 Directions to build and install may be found in the INSTALL or INSTALL.BZR files. The basic build and installation of the X11 Emacs application uses the commands:

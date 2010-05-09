@@ -80,6 +80,34 @@ And then there are brackets and braces in music: http://www.coloradocollege.edu/
 [new]
 KeyChord generalizes this functionality 
 
+== Using an input method instead ==
+
+I finally sat down and figured out how to create an input method for this instead. Turns out it is really easy. Just eval this and you will have a new input method called `easy-parentheses' available:
+
+<pre>
+(progn
+  (quail-define-package
+   "easy-parentheses" "Latin-1" "EP<" t
+   "Easy parentheses input method (rule: ,, -> (   .. -> ))
+
+Doubling the postfix separates the letter and postfix: e.g. ,,, -> ,,
+" nil t nil nil nil nil nil nil nil nil t)
+
+  (quail-define-rules
+   (",," ?()
+    (".." ?))
+   (",,," [",,"])
+   ("..." [".."])
+   ))
+</pre>
+
+Apart from being much simpler than the old hack I did, this also works well together with `paredit-mode'.
+
+-- MaDa
+
+[new]
+Using Lisp:electric-dot-and-dash.el seems better way to me, because apparently input method is language-agnostic (it depends on what alphabet you use), while rules to replace double comma or dot do not depend on language. -- IvanKorotkov
+
 ----
 CategoryParentheses
 CategoryExperiments

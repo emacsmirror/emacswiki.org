@@ -3,12 +3,31 @@ Filladapt by KyleJones enhances Emacs' fill functions by guessing a fill prefix,
 : http://www.wonderworks.com/
 : http://www.wonderworks.com/download/filladapt.el
 
-Emacs has a builtin <code>adaptive-fill-mode</code> (see [[Manual:adaptive-fill-mode]]), but filladapt does a much better job, and is easier to customize.
+Here are some things adding to filladapt (in addition to the sections below),
+
+* HaskellMode -- recognising haskell style comments
+* HtmlMode -- <nowiki><li></nowiki> and <nowiki><p></nowiki> bullet points
+* [http://user42.tuxfamily.org/filladapt-pat/index.html filladapt-pat.el] -- add or remove various patterns
+* [http://user42.tuxfamily.org/nroff-filladapt/index.html nroff-filladapt.el] -- setup nroff comment prefixes for [[NroffMode]]
+
+== Compared to Adaptive Fill ==
+
+Emacs has a builtin AdaptiveFillMode, but filladapt tends to do a better job.  The token table makes filladapt largely mode-agnostic, so common commenting styles work without a specific <code>adaptive-fill-regexp</code> setup.  And even better compounded forms like email cited text within a lisp comment fills as you'd hope.
+
+When you do have to customize the token table tends to be easier than a single <code>adaptive-fill-regexp</code>.  If something mis-matches it can be removed by name, perhaps just in particular modes.  <code>filladapt-pat.el</code> (above) has a few interactive commands for that.
+
+Of course both filladapt and adaptive-fill are matters of personal preference.  You don't have to use either!
 
 [new]
-What works better and what is easier to customize compared with adaptive-fill-mode in Emacs 23?
+Thanks Kevin for the clarifications.
+However it looks like filladapt.el redefines some functions in Emacs.
+(To see this you can use the tool "Investigate Elisp File" in the [NxhtmlMode nXhtml] menu.)
+So perhaps you can not compare what adaptive-fill-mode does to what filladapt does in the same Emacs?
 
-[new]
+I think filladapt.el needs a bit rewriting to fit into Emacs today.
+
+== Mechanism ==
+
 Filladapt works by matching prefix patterns from <code>filladapt-token-table</code>.  That table has for example <code>//</code> for C++ comments.  Lines with the same prefix, or same multiple prefixes, are considered a paragraph.  You can see this process in action dynamically with <code>filladapt-debug</code>.
 
     M-: (filladapt-debug)
@@ -16,15 +35,6 @@ Filladapt works by matching prefix patterns from <code>filladapt-token-table</co
 The default setups suit most comment styles and bullet point styles.  They don't look at the major mode, so a mixture of styles in one buffer works fine.  If you need to restrict styles to a particular major mode the easiest way is to make a buffer-local change to <code>filladapt-token-table</code> from the mode hook.
 
 It's worth noting filladapt still goes through <code>fill-paragraph-function</code>, so if it doesn't seem to be working (even when the debug above shows a correct line/paragraph analysis), then perhaps a major mode function in that variable is to blame.  (An example of that is <code>makefile-mode</code> on indented comments in Emacs 21 and 22; see the MakefileMode page for a fix.)
-
-
-Here are some things adding to filladapt (in addition to the sections below),
-
-* HaskellMode -- recognising haskell style comments
-* HtmlMode -- <nowiki><li></nowiki> and <nowiki><p></nowiki> bullet points
-* [http://user42.tuxfamily.org/filladapt-pat/index.html filladapt-pat.el] -- add or remove some patterns
-* [http://user42.tuxfamily.org/nroff-filladapt/index.html nroff-filladapt.el] -- setup nroff comment prefixes for [[NroffMode]]
-
 
 == C/C++/Java and javadoc/doxygen comments ==
 Filladapt is very cool, but to if you want it to be useful while editing C/C++/Java comments and javadoc/doxygen documentation, you need fix the token table.  Here is what I use:

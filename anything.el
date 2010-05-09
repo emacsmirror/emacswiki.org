@@ -212,6 +212,10 @@
 ;;; (@* "Tips")
 
 ;;
+;; You can edit current selection using `anything-edit-current-selection'.
+;; It is useful after persistent-action.
+
+;;
 ;; For `anything' users, setting `anything-sources' directly and
 ;; invoke M-x anything is obsolete way for now. Try M-x
 ;; `anything-migrate-sources'!
@@ -374,6 +378,10 @@
 ;; There is an unit-test by Emacs Lisp Expectations at the tail of this file.
 ;; http://www.emacswiki.org/cgi-bin/wiki/download/el-expectations.el
 ;; http://www.emacswiki.org/cgi-bin/wiki/download/el-mock.el
+
+;;
+;; If you want to create anything sources, see anything-config.el.
+;; It is huge collection of sources. You can learn from examples.
 
 
 ;; (@* "TODO")
@@ -3306,6 +3314,23 @@ You can set user options `fit-frame-max-width-percent' and
            (delete-region (point-at-bol) (1+ (point-at-eol)))
            (when (eobp) (forward-line -1))))
     (anything-mark-current-line)))
+
+(defun anything-edit-current-selection-1 (func)
+  (with-anything-window
+    (beginning-of-line)
+    (let ((realvalue (get-text-property (point) 'anything-realvalue)))
+      (funcall func)
+      (beginning-of-line)
+      (and realvalue
+           (put-text-property (point) (point-at-eol) 'anything-realvalue realvalue))
+      (anything-mark-current-line))))
+
+(defmacro anything-edit-current-selection (&rest forms)
+  "Evaluate FORMS at current selection in the anything buffer.
+You can edit the line."
+  `(anything-edit-current-selection-1
+    (lambda () ,@forms)))
+(put 'anything-edit-current-selection 'lisp-indent-function 0)
 
 (defun anything-delete-minibuffer-content ()
   "Same as `delete-minibuffer-contents' but this is a command."

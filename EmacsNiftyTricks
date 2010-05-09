@@ -32,7 +32,7 @@ Nifty tricks for Dired are on their own page: '''DiredPower'''.
 For those of us using earlier versions, use the PictureModeTrailingWhitespaceTrick.
 * M-x auto-insert-mode -- have your files start up with a user defined template.
 ** See also library Lisp:header2.el. -- DrewAdams
-* FillAdapt is a better adaptive fill; it teaches auto-fill-mode about bulleted and numbered lists.
+* FillAdapt is a better AdaptiveFillMode; it teaches auto-fill-mode about bulleted and numbered lists.
 * Insert the character just above/below the TextCursor with LineCopyChar
 ** Emacs 21 comes with vcursor.el which is an extension of LineCopyChar.  It gives you a second cursor, and there are keybindings for copying the character at the second cursor to point, or the word at the second cursor, and so on.  vcursor.el is also good for seeing two locations in the same file at the same time, due to the auto-splitting of windows.  (If the second cursor would move out of view, vcursor.el splits the current window into two and shows the area around point in one of them and the area around the second cursor in the other window.)
 
