@@ -14,7 +14,7 @@ This section provides an overview of '''Icicles''' search.
 
 '''See also:'''
 
-* The ''[[doc string]]'' (`C-h f') of [[command]] '''`icicle-search''''; it provides general information on '''Icicles''' search.
+* The ''[[doc string]]'' (`C-h f') of [[command]] '''`icicle-search''''; it provides a boatload of general information on '''Icicles''' search.
 * [[Icicles - Other Search Commands]] for specialized '''Icicles''' search commands, including search in particular [[buffer]]s.
 * [[Icicles - Info Enhancements]] for information on using '''Icicles''' to search in [[InfoMode|Info]].
 * [[Icicles - Bookmark Enhancements]] for information about searching bookmarks.
@@ -185,6 +185,18 @@ remove individual search hits.  These techniques let you [[Icicles - Nutshell Vi
 search-and-replace (see next), and it constitutes a '''_sixth way_'''
 to limit the set of search contexts.
 
+# You can ''sort the search hits'' in various ways.  This can
+facilitate navigation and comparison of hits, as well as
+search-and-replace (see #11).  And you can define your own
+'''Icicles''' search commands that provide custom search orders for
+particular kinds of search.  It is likely that you have never
+considered being able to sort search hits, but if you think
+about it you will see that this can be handy.  If you are
+searching across multiple buffers, files, or bookmarks, sorting
+helps you compare, visit, and replace related hits from the
+different sources, instead of having to handle all of the hits
+from each source in turn.
+
 
 # You can ''replace text while you search'', forward, backward, or
 randomly.  You can replace entire search contexts or just the parts that match your current input.  You can use any
@@ -216,7 +228,7 @@ highlighting is not done if user option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-search-highlight-context-levels-flag|icicle-search-highlight-context-levels-flag]]</tt>'''' is `nil'. 
 
 [:SearchHighlightingContextLevels]
-: Here is a screenshot (from <tt>[[icicles-cmd.el]]</tt>) that shows context-level highlighting. The regexp defining the search context is this:
+: Here is a screenshot (from <tt>[[icicles-cmd1.el]]</tt>) that shows context-level highlighting. The regexp defining the search context is this:
 
 ::: ##(##'''##\(##'''##[-a-z*]+##'''##\)##'''## *##'''##\(##'''##(##'''##\(##'''##([-a-z]+ *##'''##\(##'''##[^)]*##'''##\)##'''##)##'''##\)##'''##)##'''##\)##'''##.*##
 
@@ -224,10 +236,12 @@ highlighting is not done if user option
 
 : If you type input in the minibuffer, then its matches are highlighted on top of this. For example, if your current input is `e', then each `e' in the search context of the screenshot would be highlighted with face `icicle-search-current-input' (black text on bright green background, by default). Your input match always takes highest priority.
 
-You might have noticed that out of these 13 search features, 6
+You might have noticed that out of these 14 search features, 6
 constitute independent ways in which you can narrow or limit the
-set of search hits among which you can navigate.  Restricting the
-search space is in fact what search is all about, and '''Icicles'''
+set of search hits among which you can navigate.  And another one
+(sorting) further facilitates your observation and selection of
+search hits.  Restricting the search space and making search-hit
+patterns more evident are in fact what search is all about, and '''Icicles'''
 offers you some unique tools to do this.
 
 For several '''Icicles''' search commands, including `icicle-search' (`##C-c `##'),
@@ -502,7 +516,7 @@ is the variable-definition regexp:
 
   "^\\s-*(\\(def\\(c\\(onst\\(ant\\)?\\|ustom\\)\\|ine-symbol-macro\\|parameter\\|var\\)\\)\\s-+\\(\\(\\sw\\|\\s_\\)+\\)"
 
-You certainly don't want to type a regexp like that into the minibuffer (and the
+You certainly do not want to type a regexp like that into the minibuffer (and the
 function-definition regexp is twice as complex)!  Put it into a
 variable or register once and use `C-=' or `C-x r i' from then on to retrieve it -- simple.
 

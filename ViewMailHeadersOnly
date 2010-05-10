@@ -3,7 +3,7 @@ Headers-only messages in a VM folder have only their headers stored in the folde
 == Motivation ==
 The purpose of the headers-only operation is to allow:
 
-* ''faster download times'', especially for large folders on IMAP servers, and
+* ''faster download times'', especially for large folders on IMAP servers [http://calypso.tux.org/pipermail/novalug/2008-May/095774.html], and
 
 * ''small folder buffers'', to fit within Emacs's limitations as well as for faster operation (during loading, saving, auto-saving and garbage collections).
 

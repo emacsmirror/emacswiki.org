@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 10:16:08 2010 (-0700)
+;; Last-Updated: Fri May  7 08:53:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1301
+;;     Update #: 1302
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1165,8 +1165,8 @@ The function must take two arguments:
    name and its source-file marker.
  - A replacement string, or nil, if no replacement is to be made.
 
-When the function is called, the region is narrowed to the current
-search context.")
+When the function is called, the region has been narrowed to the
+current search context.")
 
 (defvar icicle-searching-p nil "Non-nil means an Icicles search command is in progress.")
 

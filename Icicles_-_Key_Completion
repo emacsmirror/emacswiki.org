@@ -83,12 +83,10 @@ These represent prefix keys (`C-x 4', `C-x C-k', and so on). If you choose such 
 
 By default, completion candidates are sorted in buffer
 `*Completions*' with ''local bindings'' listed first.  You can use
-`##C-M-,##' at any time during completion to toggle between this order
+`##C-M-,##' at any time during key completion to toggle between this order
 and sorting with the ''prefix-key'' candidates shown first.  You can
 use `##C-,##' at any time to change the sort order among these two
-orders and sorting by ''command name''.   (Except in contexts,
-such as `icicle-search', where candidate sorting is not possible.  In
-those contexts, `##C-,##' has a different meaning.)
+orders and sorting by ''command name''.
 
 Here are some screenshots, from `S-TAB' in the Buffer Menu (`C-x C-b'), to illustrate this.
 

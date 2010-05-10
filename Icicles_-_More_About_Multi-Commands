@@ -158,7 +158,14 @@ them, to apply a function-for-functions (e.g. `find-function' or
 `symbol-function') to it.  This is a curiosity, but it can
 sometimes be useful.
 
-
+Finally, note that the completion candidate to which you apply an
+alternative action is in most cases a string.  In some cases, the
+alternative action functions expect a non-string object, and they
+will raise an error if applied to a string.
+'''Icicles''' takes care of this in the case of buffer-name candidates.
+It assumes that you really want to operate on a buffer, not its
+name (a string), so it automatically calls `get-buffer' before
+applying the alternative action function.
 
 
 

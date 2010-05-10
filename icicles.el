@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 30 15:52:43 2010 (-0700)
+;; Last-Updated: Sun May  9 09:17:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22692
+;;     Update #: 22694
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -332,7 +332,7 @@
 ;;    `icicle-delete-backward-char', `icicle-delete-candidate-object',
 ;;    `icicle-delete-char', `icicle-digit-argument',
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
-;;    `icicle-dispatch-C-comma', `icicle-dispatch-M-comma',
+;;    `icicle-dispatch-M-_', `icicle-dispatch-M-comma',
 ;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor',
 ;;    `icicle-doremi-increment-swank-prefix-length',
 ;;    `icicle-doremi-increment-swank-timeout',

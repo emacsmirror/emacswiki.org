@@ -35,6 +35,8 @@ Alternatively, if you are using the standard Emacs distribution, you can obtain 
 
 They are installed in ##C:\Program Files\GnuWin32\bin## by default. Copy ##grep.exe## and ##find.exe## to Emacs' own ##bin## directory. Emacs will then use these files over any other executables with the same name, including Windows' own ##find## utility.
 
+'''Note:''' if you don't use the installer, you need to download the [http://gnuwin32.sourceforge.net/packages/grep.htm dependencies zip file] as well and copy ##libiconv2.dll##, ##libintl3.dll##, ##pcre3.dll## and ##regex2.dll## to Emacs' ##bin## directory, otherwise you may get an "exited abnormally with code 53" error message.
+
 For some additional tweaking, do
 
     (eval-after-load 'grep

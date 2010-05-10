@@ -211,6 +211,15 @@
 
 ;;; (@* "Tips")
 
+;; 
+;; `anything-enable-shortcuts' enables us to select candidate easily.
+;; If 'prefix then they can be selected using <prefix-key> <alnum>. 
+;; The prefix key is `anything-select-with-prefix-shortcut'.
+;; If the <prefix-key> is a letter, pressing twice inputs the letter itself.
+;; e.g.
+;;  (setq anything-enable-shortcuts 'prefix)
+;;  (define-key anything-map \"@\" 'anything-select-with-prefix-shortcut)
+
 ;;
 ;; You can edit current selection using `anything-edit-current-selection'.
 ;; It is useful after persistent-action.
@@ -1404,9 +1413,18 @@ Attributes:
 (defvar anything-enable-shortcuts nil
   "*Whether to use digit/alphabet shortcut to select the first nine matches.
 If t then they can be selected using Ctrl+<number>.
-If 'alphabet then they can be selected using Shift+<alphabet>.
 
-Keys (digit/alphabet) are listed in `anything-digit-shortcut-index-alist'.")
+If 'prefix then they can be selected using <prefix-key> <alnum>. 
+The prefix key is `anything-select-with-prefix-shortcut'.
+If the <prefix-key> is a letter, pressing twice inputs the letter itself.
+e.g.
+ (setq anything-enable-shortcuts 'prefix)
+ (define-key anything-map \"@\" 'anything-select-with-prefix-shortcut)
+ 
+If 'alphabet then they can be selected using Shift+<alphabet> (deprecated).
+It is not recommended because you cannot input capital letters in pattern.
+
+Keys (digit/alphabet) are listed in `anything-shortcut-keys-alist'.")
 
 (defvaralias 'anything-enable-digit-shortcuts 'anything-enable-shortcuts
   "Alphabet shortcuts are usable now. Then `anything-enable-digit-shortcuts' should be renamed.
@@ -1414,7 +1432,7 @@ Keys (digit/alphabet) are listed in `anything-digit-shortcut-index-alist'.")
 
 (defvar anything-shortcut-keys-alist
   '((alphabet . "asdfghjklzxcvbnmqwertyuiop")
-    (prefix   . "asdfghjklzxcvbnmqwertyuiop1234567890") ;EXPERIMENTAL
+    (prefix   . "asdfghjklzxcvbnmqwertyuiop1234567890")
     (t        . "123456789")))
 
 (defvar anything-display-source-at-screen-top t
@@ -1808,11 +1826,18 @@ It is useful for debug.")
 (put 'with-anything-window 'lisp-indent-function 0)
 
 (defmacro with-anything-restore-variables(&rest body)
-  "Restore variables specified by `anything-restored-variables' after executing BODY ."
-  `(let ((--orig-vars (mapcar (lambda (v) (cons v (symbol-value v))) anything-restored-variables)))
+  "Restore variables specified by `anything-restored-variables' after executing BODY .
+`post-command-hook' is handled specially."
+  `(let ((--orig-vars (mapcar (lambda (v) (cons v (symbol-value v))) anything-restored-variables))
+         (--post-command-hook-pair (cons post-command-hook
+                                         (default-value 'post-command-hook))))
+     (setq post-command-hook '(t))
+     (setq-default post-command-hook nil)
      (unwind-protect (progn ,@body)
        (loop for (var . value) in --orig-vars
-             do (set var value)))))
+             do (set var value))
+       (setq post-command-hook (car --post-command-hook-pair))
+       (setq-default post-command-hook (cdr --post-command-hook-pair)))))
 (put 'with-anything-restore-variables 'lisp-indent-function 0)
 
 (defun* anything-attr (attribute-name &optional (src (anything-get-current-source)))

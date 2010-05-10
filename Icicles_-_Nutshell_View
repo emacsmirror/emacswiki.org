@@ -267,7 +267,7 @@ minibuffer or use '''`C-l'''' (bound to command
 your last real input -- see [[Icicles - History Enhancements]].
 
 `delete' works well to delete isolated candidates or groups of candidates
-that are in order, one right after the other, and you can of
+that are in order (the current sort order), one right after the other, and you can of
 course combine it with positive matching.
 
 '''Note:''' In Emacs releases prior to Emacs 22, `delete' has no real
@@ -641,7 +641,7 @@ Oh, can you use [[#ProgressiveCompletion|progressive completion]] with '''Icicle
 And [[#ChippingAway|chipping away the non-elephant]] (complementing)?  Yep.  Try
 using vanilla Emacs incremental search to find a line that contains a
 given set of words in any (unknown) order and that also does not
-contain another given set of words.  No can do.  It's simple with
+contain another given set of words.  No can do.  But that's simple using
 '''Icicles''' search.  (Yes, you can do it using `grep'.)
 
 And while you're searching, you can perform on-the-fly, on-demand
@@ -649,7 +649,9 @@ replacement.  You tell Emacs whenever you want to replace text,
 instead of replying to an endless litany of `query-replace'
 queries.  Unlike `query-replace', you need not visit search
 matches successively or exhaustively.  You can visit and replace
-selected matches in any order.
+selected matches in any order.  And you can even change the order
+(using `##C-,##') in which search hits appear and are navigated
+sequentially.
 
 In addition to '''Icicles''' search (which is also incremental), '''Icicles'''
 offers some enhancements to the standard Emacs incremental search,

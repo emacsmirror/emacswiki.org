@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 30 16:13:45 2010 (-0700)
+;; Last-Updated: Sun May  9 09:52:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5205
+;;     Update #: 5267
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/06 dadams
+;;     icicle-bookmark-set: Removed spurious format call with its arg.
 ;; 2010/04/29 dadams
 ;;     icicle-explore: Bind icicle-remove-icicles-props-p to nil around call to completing-read.
 ;;                     Call icicle-unpropertize at the end (without that binding).
@@ -244,6 +246,21 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/05/09 dadams
+;;     Icicles search: Change to allow sorting.  Use mctized candidates, not alist + candidate nb.
+;;       icicle-search-highlight-and-maybe-replace:
+;;         Use *-replace-cand-in-mct, not *-replace-cand-in-alist.  Do not *-input-matches-here.
+;;       icicle-search-replace-cand-in-mct: Rewrote.
+;;         Handle multi-completions also.  Update CAND+MRKER to use replacement string, but keep props.
+;;       icicle-search-in-context-default-fn: Rewrote.
+;;         Update icicle-last-completion-candidate to current candidate.  Insert that.
+;;         Recompute input-match highlighting in current context.  Remove current if no candidates.
+;;       icicle-search-action-1: Do nothing if no candidates.
+;;       icicle-search-help: Bind icicle-whole-candidate-as-text-prop-p to t, not nil.
+;; 2010/05/04 dadams
+;;     icicle-object-action: Pass TYP to icicle-apply-to-saved-candidate. (UNTESTED)
+;;     icicle-choose-anything-candidate: Pass TYPE to icicle-apply-to-saved-candidate. (UNTESTED)
+;;     icicle-apply, icicle-read-var-value-satisfying: Bug fix: Removed #'.
 ;; 2010/04/30 dadams
 ;;     icicle-search: Delete icicle-search-current-overlay via icicle-no-match-hook (& restore hook). 
 ;; 2010/04/29 dadams
@@ -389,6 +406,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-face.el'")
 ;;
+;; 2010/05/05 dadams
+;;     icicle-mustmatch-completion: Changed line-width from 2 to -2.
 ;; 2010/04/08 dadams
 ;;     Added autoload cookies.
 ;; 2010/03/13 dadams
@@ -471,6 +490,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/05/04 dadams
+;;     icicle-alt-act-fn-for-type: Pass TYPE to icicle-apply-to-saved-candidate.
 ;; 2010/04/30 dadams
 ;;     icicle(-file-name)-unsorted-(apropos|prefix)-candidates, icicle-fuzzy-candidates:
 ;;       Set icicle-common-match-string to nil when no candidates.
@@ -1884,6 +1905,19 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/05/09 dadams
+;;     Added: icicle-dispatch-M-_.
+;;     Removed: icicle-dispatch-C-comma.
+;;     icicle-help-string-completion:
+;;       Removed extra arg to format (icicle-key-descriptions-use-<>-flag).  Corrected arg order.
+;;       Updated to reflect binding changes.
+;;     icicle-toggle-highlight-all-current: Focus to minibuffer before show msg.
+;; 2010/05/04 dadams
+;;     icicle-change-sort-order: Use save-selected-window.  Thx to Michael Heerdegen.
+;;     icicle-apply-to-saved-candidate:
+;;       Only call sit-for if current-message.  Added TYPE arg.  Thx to Michael H.
+;; 2010/05/03 dadams
+;;     icicle-toggle-remote-file-testing: Updated for Emacs 23.2+  Thx to Michael Albinus.
 ;; 2010/04/30 dadams
 ;;     icicle-(apropos|prefix)-complete-1: Run icicle-no-match-hook when no candidates.
 ;; 2010/04/28 dadams
@@ -2897,6 +2931,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/05/09 dadams
+;;     Key-binding changes: icicle-change-sort-order is C-, icicle-dispatch-M-_ is M-_.
 ;; 2010/04/21 dadams
 ;;     icicle-(redefine|restore)-std-completion-fns: Added icicle-sit-for for Emacs 23.
 ;; 2010/04/02 dadams

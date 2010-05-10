@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Apr 27 09:57:34 2010 (-0700)
+;; Last-Updated: Sun May  9 12:49:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24935
+;;     Update #: 24970
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -647,8 +647,9 @@
 ;;  retrieve your last real input - see (@> "History Enhancements").
 ;;
 ;;  `delete' works well to delete isolated candidates or groups of
-;;  candidates that are in order, one right after the other, and you
-;;  can of course combine it with positive matching.
+;;  candidates that are in order (the current sort order), one right
+;;  after the other, and you can of course combine it with positive
+;;  matching.
 ;;
 ;;  Note: In Emacs releases prior to Emacs 22, `delete' has no real
 ;;  effect on file-name completion candidates (but it works fine on
@@ -1030,15 +1031,18 @@
 ;;  And chipping away the non-elephant (complementing)?  Yep.  Try
 ;;  using vanilla Emacs incremental search to find a line that
 ;;  contains a given set of words in any (unknown) order and that also
-;;  does not contain another given set of words.  No can do.  It's
-;;  simple with Icicles search.  (Yes, you can do it using `grep'.)
+;;  does not contain another given set of words.  No can do.  But
+;;  that's simple using Icicles search.  (Yes, you can do it using
+;;  `grep'.)
 ;;
 ;;  And while you're searching, you can perform on-the-fly, on-demand
 ;;  replacement.  You tell Emacs whenever you want to replace text,
 ;;  instead of replying to an endless litany of `query-replace'
 ;;  queries.  Unlike `query-replace', you need not visit search
 ;;  matches successively or exhaustively.  You can visit and replace
-;;  selected matches in any order.
+;;  selected matches in any order.  And you can even change the order
+;;  (using `C-,') in which search hits appear and are navigated
+;;  sequentially.
 ;;
 ;;  In addition to Icicles search (which is also incremental), Icicles
 ;;  offers some enhancements to the standard Emacs incremental search,
@@ -2655,8 +2659,8 @@
 ;;
 ;;    Unlike the case for vanilla Emacs, in Icicles the arrow keys in
 ;;    buffer `*Completions*' correctly reflect the candidate order
-;;    (e.g. as sorted).  This also means that candidate cycling acts
-;;    properly for a vertical layout.
+;;    (e.g. as currently sorted).  This also means that candidate
+;;    cycling acts properly for a vertical layout.
 ;;
 ;;  * In some cases, Icicles adds one or more additional, proxy
 ;;    completion candidates.  These are placeholders for real
@@ -2943,38 +2947,25 @@
 ;;  Sorting Candidates and Removing Duplicates
 ;;  ------------------------------------------
 ;;
-;;  By default, completion candidates are presented in buffer
-;;  `*Completions*' in alphabetic order.  The order in `*Completions*'
-;;  is also the order of cycling among candidates.  Also by default,
-;;  duplicate candidates are removed as completion choices.
+;;  By default, completion candidates are usually presented in buffer
+;;  `*Completions*' in alphabetic order.  But some commands use
+;;  different sort orders by default.  Whatever sort order is used for
+;;  `*Completions*' is also the order of cycling among candidates.
 ;;
-;;  Some commands however, impose different orders, which are
-;;  appropriate in their particular contexts, and some commands do not
-;;  remove duplicates.  For example, command `icicle-search' (`C-c `')
-;;  uses completion to navigate among search hits.  The order of the
-;;  hit occurrences in the buffer is retained, as are duplicate
-;;  matches.  Although some search-hit candidates might have the same
-;;  text, they are located at different buffer positions.
+;;  Also, duplicate candidates are typically removed as completion
+;;  choices, by default.  But for some commands duplicates are
+;;  appropriate, so they are not removed.  For example, command
+;;  `icicle-search' (`C-c `') uses completion to navigate among search
+;;  hits.  Duplicate search hits are retained.  Although some
+;;  search-hit candidates might have the same text, they are located
+;;  at different buffer positions.
 ;;
-;;  For a small minority of commands such as `icicle-search', the
-;;  candidate order is fixed.  The completion candidates you see in
-;;  buffer `*Completions*' are just names for (invisible) candidate
-;;  objects that contain additional information (buffer and buffer
-;;  position, in the case of `icicle-search').  Different such objects
-;;  might have the same completion-candidate name, so it is important
-;;  that the order of presentation remain constant.  Icicles picks the
-;;  candidate object to use, according to which candidate name you
-;;  click with `mouse-2' or which candidate name is current during
-;;  cycling.
-;;
-;;  Commands such as `icicle-search' are the exception.  For most
-;;  commands, you can interactively control the order of candidates
-;;  and whether duplicates are removed.  Use `C-,' during completion
-;;  to choose a different sort order or to turn off sorting altogether
-;;  (one of the available sort orders is in fact called "turned OFF").
-;;  Use `C-$' to toggle the removal of duplicate candidates.  Commands
-;;  such as `icicle-search', for which sorting is inappropriate,
-;;  prevent you from sorting.
+;;  You can interactively control the order of candidates and whether
+;;  duplicates are removed.  Use `C-,' during completion to choose a
+;;  different sort order or to turn off sorting altogether (one of the
+;;  available sort orders is in fact called "turned OFF").  Use `C-$'
+;;  to toggle the removal of duplicate candidates.  A few commands,
+;;  for which sorting is inappropriate, prevent you from sorting.
 ;;
 ;;(@* "Changing the Sort Order")
 ;;  ** Changing the Sort Order **
@@ -3071,10 +3062,11 @@
 ;;
 ;;  There are many different uses of completion in Emacs, and this
 ;;  means that sorting candidates needs to be flexible - there cannot
-;;  be a single sort order that is useful for all purposes.
-;;  Completion, and therefore also sorting of completion candidates,
-;;  needs to deal with different types of candidates and different
-;;  numbers of them, in different contexts.
+;;  be a single sort order, or even a single set of sort orders, that
+;;  is useful for all purposes.  Completion, and therefore also
+;;  sorting of completion candidates, needs to deal with different
+;;  types of candidates and different numbers of them, in different
+;;  contexts.
 ;;
 ;;  Icicles predefines many sort functions, and you can easily define
 ;;  more of your own.  You can choose a different sort at any time, as
@@ -3783,6 +3775,16 @@
 ;;  `symbol-function') to it.  This is a curiosity, but it can
 ;;  sometimes be useful.
 ;;
+;;  Finally, note that the completion candidate to which you apply an
+;;  alternative action is in most cases a string.  In some cases, the
+;;  alternative action functions expect a non-string object, and they
+;;  will raise an error if applied to a string.
+;;
+;;  Icicles takes care of this in the case of buffer-name candidates.
+;;  It assumes that you really want to operate on a buffer, not its
+;;  name (a string), so it automatically calls `get-buffer' before
+;;  applying the alternative action function.
+;;
 ;;  See Also:
 ;;
 ;;  * (@* "Perform Alternative Operations on the Fly")
@@ -4178,12 +4180,10 @@
 ;;
 ;;  By default, completion candidates are sorted in buffer
 ;;  `*Completions*' with local bindings listed first.  You can use
-;;  `C-M-,' at any time during completion to toggle between this order
-;;  and sorting with the prefix-key candidates shown first.  You can
-;;  use `C-,' at any time to change the sort order among these two
-;;  orders and sorting sorting by command name.  (Except in contexts,
-;;  such as `icicle-search', where candidate sorting is not possible.
-;;  In those contexts, `C-,' has a different meaning.)
+;;  `C-M-,' at any time during key completion to toggle between this
+;;  order and sorting with the prefix-key candidates shown first.  You
+;;  can use `C-,' at any time to change the sort order among these two
+;;  orders and sorting by command name.
 ;;
 ;;  Gotcha: Commands that are remapped do not show up with the
 ;;  bindings you think they have.  For example, `C-x C-f' is bound to
@@ -6065,14 +6065,14 @@
 ;;  At any time, two of the Icicles sort orders are immediately
 ;;  available.  These are the values of user options
 ;;  `icicle-sort-comparer' and `icicle-alternative-sort-comparer'.  By
-;;  default, the former sorts alphabetically, and the latter puts all
-;;  previously used inputs first, before the candidates you have not
-;;  yet used.  Each of these groups, used and unused candidates, is
-;;  then sorted alphabetically, separately.  So, with the default
-;;  alternative sort, you can see all matching candidates (used and
-;;  unused), but you privilege those used previously - they are the
-;;  first listed in `*Completions*' and the first available for
-;;  cycling.
+;;  default, the former usually sorts alphabetically, and the latter
+;;  puts all previously used inputs first, before the candidates you
+;;  have not yet used.  Each of these groups, used and unused
+;;  candidates, is then sorted alphabetically, separately.  So, with
+;;  the default alternative sort, you can see all matching candidates
+;;  (used and unused), but you privilege those used previously - they
+;;  are the first listed in `*Completions*' and the first available
+;;  for cycling.
 ;;
 ;;  If you prefer, by customizing these user options, you can use
 ;;  `icicle-historical-alphabetic-p' as the main sort function (option
@@ -6085,9 +6085,7 @@
 ;;  During completion, this is bound to `C-M-,'.  Together with
 ;;  toggling between normal sorting and not sorting at all, which is a
 ;;  sort-order choice available through `C-,', this gives you quite a
-;;  lot of flexibility.  Some commands, such as `icicle-complete-keys'
-;;  (bound to `S-TAB' except during completion), use different sort
-;;  orders.
+;;  lot of flexibility.
 ;;
 ;;(@* "Matching Only Historical Candidates: `M-h' and `M-pause'")
 ;;  ** Matching Only Historical Candidates: `M-h' and `M-pause' **

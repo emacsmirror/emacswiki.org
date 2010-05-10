@@ -1,6 +1,6 @@
 ;;; usage-memo.el --- integration of Emacs help system and memo
 
-;; $Id: usage-memo.el,v 1.13 2010/05/04 08:43:01 rubikitch Exp $
+;; $Id: usage-memo.el,v 1.16 2010/05/09 21:36:21 rubikitch Exp $
 
 ;; Copyright (C) 2007, 2010  rubikitch
 
@@ -118,6 +118,16 @@
 ;;; History:
 
 ;; $Log: usage-memo.el,v $
+;; Revision 1.16  2010/05/09 21:36:21  rubikitch
+;; * unbind letter chars in `usage-memo-mode-map'
+;; * Store major mode when `usage-memo-mode' is turned on.
+;;
+;; Revision 1.15  2010/05/09 21:27:55  rubikitch
+;; Automatical change major-mode in memo area.
+;;
+;; Revision 1.14  2010/05/09 04:14:26  rubikitch
+;; `umemo-send-bug-report': fix variable regexp
+;;
 ;; Revision 1.13  2010/05/04 08:43:01  rubikitch
 ;; Added bug report command
 ;;
@@ -166,6 +176,7 @@
 
 ;;; Code:
 (require 'cl)
+(require 'font-lock)
 (defvar umemo-base-directory "~/memo/umemo"
   "Directory where memo files are placed.
 You need not create directory when it does not exist.
@@ -176,6 +187,8 @@ usage-memo creates it automatically.")
   "Category of usage-memo. It is defined by `define-usage-memo'.")
 (defvar umemo-entry-name nil
   "Entry name that help buffer(per buffer) is showing. It is used as filename of annotation.")
+(defvar umemo-orig-major-mode nil
+  "Major mode when `usage-memo-mode' turn on.")
 (defvar umemo-current-entry-name nil
   "Entry name that help buffer(globally) is showing. See also `umemo-entry-name'.
 
@@ -185,6 +198,13 @@ buffer and re-create it.  In this case, the buffer-local
 variable. But it is probaby rare case.")
 (make-variable-buffer-local 'umemo-category)
 (make-variable-buffer-local 'umemo-entry-name)
+(make-variable-buffer-local 'umemo-orig-major-mode)
+
+(defvar umemo-auto-change-major-mode-flag t
+  "If non-nil, change major mode to `umemo-second-mode' when point is below the separator.")
+(defvar umemo-second-mode 'org-mode
+  "Major mode to write a usage memo.")
+(defvar umemo-change-major-mode-flag nil)
 
 ;;;; low-level utils
 (defun umemo-pathname (category entry-name)
@@ -236,9 +256,33 @@ variable. But it is probaby rare case.")
   (setq umemo-current-entry-name entry-name)
   (with-current-buffer buffer
     (setq umemo-category category
-          umemo-entry-name entry-name)))
+          umemo-entry-name entry-name
+          umemo-orig-major-mode major-mode)))
+(put 'umemo-category 'permanent-local t)
+(put 'umemo-entry-name 'permanent-local t)
+(put 'umemo-orig-major-mode 'permanent-local t)
+
+;;;; automatical major-mode change
+(defun umemo-change-mode (mode)
+  (when (and (fboundp mode)
+             (not (eq major-mode mode)))
+    (funcall mode)
+    (usage-memo-mode 1)
+    (umemo-auto-change-major-mode-setup)
+    (if (eq font-lock-mode t)
+        (font-lock-fontify-buffer)))) 
+(defun umemo-update-mode ()
+  (when (and umemo-auto-change-major-mode-flag
+             umemo-change-major-mode-flag)
+    (if (save-excursion (search-forward umemo-separator nil t)) ; help [pt] separator
+        (umemo-change-mode umemo-orig-major-mode)
+      (umemo-change-mode umemo-second-mode))))
+(add-hook 'post-command-hook 'umemo-update-mode)
+(defun umemo-auto-change-major-mode-setup ()
+  (set (make-local-variable 'umemo-change-major-mode-flag) t))
 
 ;;;; initializer
+
 (defun umemo-setup (category entry-name buffer)
   (when (get-buffer buffer)
     (with-current-buffer buffer
@@ -353,8 +397,8 @@ See also `umemo-initialize' definition.
 (defvar usage-memo-mode-map (make-sparse-keymap))
 (define-key usage-memo-mode-map "\C-x\C-s" 'umemo-save)
 (define-key usage-memo-mode-map "\r" 'umemo-electric-return)
-(loop for c from ?  to ?~ do
-      (define-key usage-memo-mode-map (char-to-string c) 'self-insert-command))
+;; (loop for c from ?  to ?~ do
+;;      (define-key usage-memo-mode-map (char-to-string c) 'self-insert-command))
       
 (define-minor-mode usage-memo-mode
   "Automatically enabled minor mode to add usage-memo feature by `define-usage-memo'.
@@ -369,6 +413,7 @@ Of course, your annotation is revived even if Emacs is restarted!
   (setq buffer-read-only nil)
   (when view-mode (view-mode -1))
   (setq header-line-format (format "[%s/%s]" umemo-category umemo-entry-name))
+  (umemo-auto-change-major-mode-setup)
   (buffer-enable-undo))
 
 ;;;; SLIME hack
@@ -418,7 +463,7 @@ How to send a bug report:
   (reporter-submit-bug-report
    umemo-maintainer-mail-address
    "usage-memo.el"
-   (apropos-internal "^u\\(sage-\\)memo-" 'boundp)
+   (apropos-internal "^u\\(sage-\\)?memo-" 'boundp)
    nil nil
    umemo-bug-report-salutation))
 

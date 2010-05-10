@@ -23,10 +23,18 @@ Lisp:lusty-explorer.el
 [http://github.com/sjbach/lusty-emacs Development repository]
 
 = Change suggestions =
-
-C-x b RET could select the most recently used buffer like switch-to-buffer, instead of selecting the current buffer.
+* <code>C-x b RET</code> could select the most recently used buffer like switch-to-buffer, instead of selecting the current buffer.
 
 = Changelist =
+
+Version 2.2:
+* New keys:
+** <code>C-f</code>: move highlight to next column.
+** <code>C-b</code>: move highlight to previous column.
+** <code>C-x e</code>: open a new buffer with current name.
+** <code>C-x d</code>: launch <code>dired</code> at the currently viewed directory.
+* Fix processing of <code>completion-ignored-extensions</code>.
+* Minor performance improvement.
 
 Version 2.1:
 * Vast performance improvement.
@@ -52,3 +60,4 @@ Version 1.0.1:
 
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion
+

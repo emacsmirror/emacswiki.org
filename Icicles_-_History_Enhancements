@@ -181,7 +181,7 @@ to the main completion.
 
 At any time,  two of the '''Icicles''' sort orders are immediately available.  These are the values of user options
 '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-alternative-sort-comparer|icicle-alternative-sort-comparer]]</tt>''''.  By
-default, the former sorts alphabetically, and the latter puts all
+default, the former usually sorts alphabetically, and the latter puts all
 previously used inputs first, before the candidates you have not
 yet used.  Each of these groups, used and unused candidates, is then 
 sorted alphabetically, separately.  So, with the default
@@ -198,9 +198,7 @@ You can toggle at any time between normal sorting and alternative
 sorting, using command `icicle-toggle-alternative-sorting'.
 During completion, this is bound to '''`##C-M-,##''''.  Together with
 toggling between normal sorting and not sorting at all, which is
-a sort-order choice available through'''`##C-,##'''', this gives you quite a lot of flexibility.  Some
-commands, such as `icicle-complete-keys' (bound to `S-TAB' except
-during completion), use different sort orders.
+a sort-order choice available through'''`##C-,##'''', this gives you quite a lot of flexibility.
 
 
 

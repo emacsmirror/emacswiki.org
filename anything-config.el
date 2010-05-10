@@ -2552,20 +2552,6 @@ word in the function's name, e.g. \"bb\" is an abbrev for
          (anything-c-advice-update-current-display-string))))
 
 (defun anything-c-advice-update-current-display-string ()
-  (with-anything-window
-    (beginning-of-line)
-    (let ((newword (cond ((looking-at "Disabled") "Enabled")
-                         ((looking-at "Enabled")  "Disabled")))
-          realvalue)
-      (when newword
-        (setq realvalue (get-text-property (point) 'anything-realvalue))
-        (delete-region (point) (progn (forward-word 1) (point)))
-        (insert newword)
-        (beginning-of-line)
-        (put-text-property (point) (point-at-eol) 'anything-realvalue realvalue)
-        (anything-mark-current-line)))))
-
-(defun anything-c-advice-update-current-display-string ()
   (anything-edit-current-selection
     (let ((newword (cond ((looking-at "Disabled") "Enabled")
                          ((looking-at "Enabled")  "Disabled")))
@@ -2573,6 +2559,7 @@ word in the function's name, e.g. \"bb\" is an abbrev for
       (when newword
         (delete-region (point) (progn (forward-word 1) (point)))
         (insert newword)))))
+
 ;;;###autoload
 (defun anything-manage-advice ()
   "Preconfigured `anything' to disable/enable function advices."
@@ -2671,7 +2658,7 @@ http://www.nongnu.org/bm/")
                                          if (string-match (format "^(%s)" anything-su-or-sudo) i)
                                          collect i))
                       (sort lis-su 'string-lessp))))
-    (candidate-transformer anything-c-highlight-bookmark-su)
+    (filtered-candidate-transformer anything-c-highlight-bookmark-su)
 
     (type . bookmark))
   "See (info \"(emacs)Bookmarks\").")
@@ -2685,16 +2672,16 @@ http://www.nongnu.org/bm/")
         (throw 'break t)))))
 
 
-(defun anything-c-highlight-bookmark-su (files)
+(defun anything-c-highlight-bookmark-su (files source)
   (if (tv-root-logged-p)
-      (anything-c-highlight-bookmark files)
-    (anything-c-highlight-not-logged files)))
+      (anything-c-highlight-bookmark files source)
+      (anything-c-highlight-not-logged files source)))
 
-(defun anything-c-highlight-not-logged (files)
+(defun anything-c-highlight-not-logged (files source)
   (loop for i in files
         collect (propertize i 'face anything-c-bookmarks-face3)))
 
-(defun anything-c-highlight-bookmark (bookmarks)
+(defun anything-c-highlight-bookmark (bookmarks source)
   "Used as `candidate-transformer' to colorize bookmarks.
 Work both with standard Emacs bookmarks and bookmark-extensions.el."
   (loop for i in bookmarks
@@ -2815,8 +2802,9 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
               (require 'bookmark-extensions)
               (bookmark-maybe-load-default-file)))
     (candidates . anything-c-bookmark-w3m-setup-alist)
-    (candidate-transformer anything-c-highlight-bookmark)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark)
     (type . bookmark)))
 ;; (anything 'anything-c-source-bookmark-w3m)
 
@@ -2831,8 +2819,9 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
               (require 'bookmark-extensions)
               (bookmark-maybe-load-default-file)))
     (candidates . anything-c-bookmark-man-setup-alist)
-    (candidate-transformer anything-c-highlight-bookmark)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark)
     (type . bookmark)))
 ;; (anything 'anything-c-source-bookmark-man)
 
@@ -2848,8 +2837,9 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
               (require 'bookmark-extensions)
               (bookmark-maybe-load-default-file)))
     (candidates . anything-c-bookmark-gnus-setup-alist)
-    (candidate-transformer anything-c-highlight-bookmark)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark)
     (type . bookmark)))
 ;; (anything 'anything-c-source-bookmark-gnus)
 
@@ -2864,8 +2854,9 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
               (require 'bookmark-extensions)
               (bookmark-maybe-load-default-file)))
     (candidates . anything-c-bookmark-info-setup-alist)
-    (candidate-transformer anything-c-highlight-bookmark)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark)
     (type . bookmark)))
 ;; (anything 'anything-c-source-bookmark-info)
 
@@ -2880,8 +2871,9 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
               (require 'bookmark-extensions)
               (bookmark-maybe-load-default-file)))
     (candidates . anything-c-bookmark-local-files-setup-alist)
-    (candidate-transformer anything-c-highlight-bookmark)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark)
     (type . bookmark)))
 ;; (anything 'anything-c-source-bookmark-files&dirs)
 
@@ -2890,19 +2882,15 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
   (anything-c-bmkext-filter-setup-alist 'bmkext-local-file-alist-only))
 
 ;; Su Files&directories
-(defun anything-c-highlight-bmkext-su (bmk)
-  (if (bmkext-root-or-sudo-logged-p)
-      (anything-c-highlight-bookmark bmk)
-      (anything-c-highlight-not-logged bmk)))
-
 (defvar anything-c-source-bookmark-su-files&dirs
   '((name . "Bookmark Root-Files&Directories")
     (init . (lambda ()
               (require 'bookmark-extensions)
               (bookmark-maybe-load-default-file)))
     (candidates . anything-c-bookmark-su-files-setup-alist)
-    (candidate-transformer anything-c-highlight-bmkext-su)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark-su)
     (type . bookmark)))
 ;; (anything 'anything-c-source-bookmark-su-files&dirs)
 

@@ -60,5 +60,9 @@ VM is very well documented. It comes with a fine set of info pages, and there ar
 
 * Andreas Viklund, [[http://obfuscatedcode.wordpress.com/2007/04/26/configuring-emacs-for-gmails-smtp/|Configuring Emacs for GMail's SMTP over SSL]], April 26, 2007.  Another article on configuring Emacs SMTP for GMail starttls.
 
+* José E. Marchesi, [[http://es.gnu.org/~jemarch/EmacsEmail.html|Email Management with Emacs]], May 12, 2009.  An example configuration for VM.
+
+* [[http://lists.gnu.org/archive/html/bug-gnu-emacs/2000-09/msg00037.html|VM and the FSF]], Sep 22, 2000.  bug-gnu-emacs mailing list discussion about why VM is not included with Emacs.
+
 ----
 CategoryMail

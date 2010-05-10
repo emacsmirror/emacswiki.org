@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 30 15:57:06 2010 (-0700)
+;; Last-Updated: Sun May  9 09:41:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11711
+;;     Update #: 11721
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -292,27 +292,10 @@
 
 
 ;; Byte-compiling this file, you will likely get some error or warning
-;; messages. All of the following are benign.  They are due to
-;; differences between different versions of Emacs.
-;;
-;; Compiling in Emacs 22:
-;;
-;; Warning: `directory-sep-char' is an obsolete variable (as of Emacs 21.1); do not use it.
-;; Warning: `make-local-hook' is an obsolete function (as of Emacs 21.1); not necessary any more.
-;;
-;; Compiling in Emacs 20:
-;;
-;; The following functions are not known to be defined:
-;;     minibufferp, minibuffer-prompt-end, field-string, minibuffer-completion-contents,
-;;     display-mouse-p, propertize, delete-dups, completing-read-multiple, test-completion,
-;;     x-font-family-list, internal-lisp-face-attribute-values, fit-window-to-buffer,
-;;     minibuffer-contents-no-properties, filesets-get-fileset-from-name, filesets-init,
-;;     filesets-entry-mode, filesets-get-filelist, filesets-directory-files,
-;;     filesets-entry-get-filter-dirs-flag, filesets-filter-dir-names, puthash, file-remote-p,
-;;     delete-minibuffer-contents, substring-no-properties, redisplay
+;; messages due to differences between different versions of Emacs.
 
 
-;;; Defvars to quiet byte-compiler
+;;; Defvars to quiet the byte-compiler:
 
 (when (< emacs-major-version 22)
   (defvar completion-common-substring)
@@ -5375,7 +5358,7 @@ current before user input is read from the minibuffer."
                    (if (boundp 'orig-window) orig-window (selected-window)) ; Punt wo `orig-window'.
                    (dolist (cand  cands)
                      (setq icicle-saved-completion-candidate  cand)
-                     (icicle-apply-to-saved-candidate fn t))))))
+                     (icicle-apply-to-saved-candidate fn t ,type))))))
              ;; Save & restore these, so `icomplete-exhibit' on `post-command-hook' has no error.
              (minibuffer-completion-table      minibuffer-completion-table)
              (minibuffer-completion-predicate  minibuffer-completion-predicate))
@@ -5408,7 +5391,7 @@ current before user input is read from the minibuffer."
                     (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))
                       (dolist (cand  cands)
                         (setq icicle-saved-completion-candidate  cand)
-                        (icicle-apply-to-saved-candidate action t))))))))))))
+                        (icicle-apply-to-saved-candidate action t ,type))))))))))))
 
 (defun icicle-toggle-icicle-mode-twice ()
   "Toggle Icicle mode twice."

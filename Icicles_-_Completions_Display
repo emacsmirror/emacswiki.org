@@ -196,7 +196,7 @@ Emacs versions, starting with Emacs 20.
 
 Unlike the case for vanilla Emacs, in '''Icicles''' the arrow keys in
 buffer `*Completions*' correctly reflect the candidate order
-(e.g. as sorted).  This also means that candidate cycling acts
+(e.g. as currently sorted).  This also means that candidate cycling acts
 properly for a vertical layout.
 
 

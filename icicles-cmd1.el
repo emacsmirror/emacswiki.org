@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May  6 06:30:16 2010 (-0700)
+;; Last-Updated: Sun May  9 09:36:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20732
+;;     Update #: 20736
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -993,7 +993,7 @@ if there is a suitable one already."
     (unless (require 'dabbrev nil t) (error "Library `dabbrev' not found"))
     (icicle-mode 1))                    ; Redefine `dabbrev-completion' to Icicles version.
   (dabbrev--reset-global-variables)
-  (let* ((dabbrev-check-other-buffers  (and arg t))
+  (let* ((dabbrev-check-other-buffers  (and arg t)) ; Must be t
          (dabbrev-check-all-buffers    (and arg (= (prefix-numeric-value arg) 16)))
          (abbrev                       (icicle-dabbrev--abbrev-at-point))
          (ignore-case-p                (and (if (eq dabbrev-case-fold-search 'case-fold-search)
@@ -2198,6 +2198,10 @@ Arguments:
  PROMPT: Prompt string for `completing-read'.
  COMPL-READ-ARGS: `completing-read' args other than PROMPT and
    COLLECTION.
+
+If there is only one candidate, then FINAL-ACTION-FN is called
+immediately.  The candidate is not available to act on (e.g. using
+``C-S-RET').
 
 Returns:
  The result of executing FINAL-ACTION-FN, if that arg is non-nil.

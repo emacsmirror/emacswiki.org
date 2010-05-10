@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Apr 30 16:01:17 2010 (-0700)
+;; Last-Updated: Sun May  9 09:53:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1685
+;;     Update #: 2051
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1395,8 +1395,7 @@ See `apropos-command' for a description of PATTERN."
         (list (completing-read
                (concat "Apropos command (regexp" (and (>= emacs-major-version 22) " or words")
                        "): ") obarray 'commandp nil nil 'regexp-history))))
-     (let ((apropos-do-all                  nil))
-       (apropos-command pattern))))
+     (let ((apropos-do-all  nil))  (apropos-command pattern))))
 
   ;; My versions are not available.  Use the vanilla Emacs versions of the `apropos...' commands.
   (t
@@ -1601,12 +1600,12 @@ to nil so that candidates with initial spaces can be matched."
                   (or icicle-all-candidates-list-alt-action-fn
                       (icicle-alt-act-fn-for-type "variable"))))
              (completing-read "Alist (variable): " obarray
-                              `#'(lambda (symb)
-                                   (and
-                                    (boundp symb) (consp (symbol-value symb))
-                                    ,(if current-prefix-arg
-                                         '(consp (car (symbol-value symb)))
-                                         '(string-match "alist$" (symbol-name symb)))))
+                              `(lambda (symb)
+                                (and
+                                 (boundp symb) (consp (symbol-value symb))
+                                 ,(if current-prefix-arg
+                                      '(consp (car (symbol-value symb)))
+                                      '(string-match "alist$" (symbol-name symb)))))
                               t nil (if (boundp 'variable-name-history)
                                         'variable-name-history
                                       'icicle-variable-name-history)))))
@@ -2170,9 +2169,9 @@ SCAN-FN-OR-REGEXP: Regexp or function that determines the set of
   arguments, the buffer to search, the beginning and end of the search
   region in that buffer, and ARGS.
 REQUIRE-MATCH is passed to `completing-read'.
-Optional arg WHERE is either a list of buffers or a list of region
-  bookmarks (in which case you must also use library `bookmark+.el').
-  If nil, then only the current buffer is used.
+Optional arg WHERE is a list of bookmarks, buffers, or files to be
+  searched.  If nil, then search only the current buffer or region.
+  (To search bookmarks you must also use library `bookmark+.el').
 ARGS are arguments that are passed to function SCAN-FN-OR-REGEXP.
 
 Note that if SCAN-FN-OR-REGEXP is a regexp string, then function
@@ -2183,11 +2182,11 @@ predicate, by using `(PREDICATE)' as ARGS: PREDICATE is then passed to
 
 This command is intended for use only in Icicle mode."
   (interactive `(,@(icicle-region-or-buffer-limits)
-                 ,(if icicle-search-whole-word-flag
-                      (icicle-search-read-word)
-                      (icicle-search-read-context-regexp))
-                 ,(not icicle-show-multi-completion-flag)
-                 ,(icicle-search-where-arg)))
+                   ,(if icicle-search-whole-word-flag
+                        (icicle-search-read-word)
+                        (icicle-search-read-context-regexp))
+                   ,(not icicle-show-multi-completion-flag)
+                   ,(icicle-search-where-arg)))
   (setq icicle-search-context-regexp  (and (stringp scan-fn-or-regexp) scan-fn-or-regexp))
   (let ((icicle-candidate-action-fn         (or icicle-candidate-action-fn 'icicle-search-action))
         (icicle-candidate-help-fn           'icicle-search-help)
@@ -2205,22 +2204,26 @@ This command is intended for use only in Icicle mode."
         (icicle-list-end-string             "")
         (icicle-list-use-nth-parts          '(1))
         (icicle-sort-comparer               nil)
-        (icicle-inhibit-sort-p              t)
+
+        ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would inhibit
+        ;; sorting, because we would be depending on the alist order.
+        ;;    (icicle-inhibit-sort-p              t)
+
         (icicle-no-match-hook               icicle-no-match-hook)
         (completion-ignore-case             case-fold-search)
         (replace-count                      0)) ; Defined in `replace.el'.  Used for replacement.
     (add-hook 'icicle-no-match-hook (lambda () (when (overlayp icicle-search-current-overlay)
-                                                 (delete-overlay icicle-search-current-overlay))))
+                                            (delete-overlay icicle-search-current-overlay))))
     (setq icicle-search-final-choice
           (icicle-explore #'(lambda () (icicle-search-define-candidates beg end scan-fn-or-regexp
-                                                                        require-match where args))
+                                                                   require-match where args))
                           #'icicle-search-final-act #'icicle-search-quit-or-error
                           #'icicle-search-quit-or-error #'icicle-search-cleanup
                           "Choose an occurrence: " nil require-match nil 'icicle-search-history))))
 
 ;; This is the same as `region-or-buffer-limits' in `misc-fns.el'.
 (defun icicle-region-or-buffer-limits ()
-    "Return the start and end of the region as a list, smallest first.
+  "Return the start and end of the region as a list, smallest first.
 If the region is not active or is empty, then use bob and eob."
   (if (or (not mark-active) (null (mark)) (= (point) (mark)))
       (list (point-min) (point-max))
@@ -2330,7 +2333,7 @@ The arguments are the same as for `icicle-search'."
          (dolist (file  where)
            (icicle-search-define-candidates-1 (find-file-noselect file 'nowarn) nil nil
                                               scan-fn-or-regexp args)))
-        ((consp where)                  ; Search all bookmarked regions.
+        ((consp where)                ; Search all bookmarked regions.
          (unless (require 'bookmark+ nil t) (error "This requires library `bookmark+.el'"))
          (let ((non-existent-buffers  ())
                buf+beg buf beg end)
@@ -2379,7 +2382,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
         (temp-list      ())
         (last-beg       nil))
     (unless buffer (setq buffer  (current-buffer)))
-    (when (bufferp buffer)              ; Do nothing if BUFFER is not a buffer.
+    (when (bufferp buffer)     ; Do nothing if BUFFER is not a buffer.
       (with-current-buffer buffer
         (unless (and beg end)
           (setq beg  (point-min)
@@ -2456,7 +2459,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
         (save-excursion
           (dolist (ov  icicle-search-overlays)
             (set-buffer (overlay-buffer ov))
-            (save-restriction             ; Search within the current search context.
+            (save-restriction ; Search within the current search context.
               (narrow-to-region (overlay-start ov) (overlay-end ov))
               (goto-char (point-min))
               (when (condition-case nil (re-search-forward input nil 'move-to-end) (error nil))
@@ -2465,7 +2468,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
             (setq icicle-search-ecm  (icicle-expanded-common-match input hits)))
           (dolist (ov  icicle-search-overlays)
             (set-buffer (overlay-buffer ov))
-            (save-restriction             ; Search within the current search context.
+            (save-restriction ; Search within the current search context.
               (narrow-to-region (overlay-start ov) (overlay-end ov))
               (when (member (buffer-substring-no-properties (point-min) (point-max)) hits)
                 (goto-char (point-min))
@@ -2483,6 +2486,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
   ;; NOTE: We allow side effects during replacement.
   ;; In particular, `icicle-completion-candidates', `icicle-candidate-nb', and `icicle-last-input'
   ;; can change.
+
   (let (;; (icicle-candidate-nb          icicle-candidate-nb)
         ;; (icicle-completion-candidates icicle-completion-candidates)
         ;; (icicle-last-input            icicle-last-input)
@@ -2534,9 +2538,9 @@ STRING is a search-hit string.  It is matched by the initial regexp
    replacement by `query-replace-regexp', including Lisp-evaluation
    constructs (`\,...')."
   (prog1
-      (let* ((icicle-whole-candidate-as-text-prop-p
-              ;; Force using the alist, because we perform side effects on it.
-              nil)
+      (let* ((icicle-whole-candidate-as-text-prop-p  t)
+             ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would bind that
+             ;; to nil to force using the alist, because we would be performing side effects on it.
              (cand+mrker  (funcall icicle-get-alist-candidate-function string)))
         (icicle-search-action-1 cand+mrker replace-string))
     (select-window (minibuffer-window))
@@ -2547,41 +2551,42 @@ STRING is a search-hit string.  It is matched by the initial regexp
   "Same as `icicle-search-action', but using full candidate, not string.
 CAND+MRKER is a full alist completion-candidate entry, not just a
 display string as in `icicle-search-action'."
-  (condition-case icicle-search-action-1
-      (progn
-        ;; Move cursor to the match in the original buffer and highlight it.
-        (let* ((candidate   (if (consp (car-safe cand+mrker))
-                                (car-safe (car-safe cand+mrker))
-                              (car-safe cand+mrker)))
-               (marker      (cdr-safe cand+mrker))
-               (icicle-search-in-context-fn
-                (or icicle-search-in-context-fn 'icicle-search-in-context-default-fn)))
-          (unless marker (error "No such occurrence"))
-          (condition-case icicle-search-action-1-save-window
-              (save-selected-window
-                (when (window-live-p orig-win-explore) (select-window orig-win-explore))
-                (let ((completion-ignore-case  case-fold-search)
-                      (buf                     (marker-buffer marker)))
-                  (unless (bufferp buf) (error "No such buffer: %s" buf))
-                  (pop-to-buffer buf)
-                  (raise-frame)
-                  (goto-char marker)
-                  ;; Highlight current search context using `icicle-search-main-regexp-current'.
-                  (icicle-place-overlay (- marker (length candidate)) marker
-                                        'icicle-search-current-overlay
-                                        'icicle-search-main-regexp-current
-                                        202 buf)
-                  (funcall icicle-search-in-context-fn cand+mrker replace-string)
-                  (icicle-highlight-candidate-in-Completions)
-                  (run-hooks 'icicle-search-hook)))
-            (error                      ; Ignore disappearance of `*Completions*'.
-             (unless (string-match "Wrong type argument: window-live-p,"
-                                   (error-message-string icicle-search-action-1-save-window))
-               (error (message (error-message-string icicle-search-action-1-save-window))
-                      (error-message-string icicle-search-action-1-save-window)))))
-          nil))                         ; Return nil for success.
-    (error (message (error-message-string icicle-search-action-1))
-           (error-message-string icicle-search-action-1))))
+  (when icicle-completion-candidates
+    (condition-case icicle-search-action-1
+        (progn
+          ;; Move cursor to the match in the original buffer and highlight it.
+          (let* ((candidate   (if (consp (car-safe cand+mrker))
+                                  (car-safe (car-safe cand+mrker))
+                                (car-safe cand+mrker)))
+                 (marker      (cdr-safe cand+mrker))
+                 (icicle-search-in-context-fn
+                  (or icicle-search-in-context-fn 'icicle-search-in-context-default-fn)))
+            (unless marker (error "No such occurrence"))
+            (condition-case icicle-search-action-1-save-window
+                (save-selected-window
+                  (when (window-live-p orig-win-explore) (select-window orig-win-explore))
+                  (let ((completion-ignore-case  case-fold-search)
+                        (buf                     (marker-buffer marker)))
+                    (unless (bufferp buf) (error "No such buffer: %s" buf))
+                    (pop-to-buffer buf)
+                    (raise-frame)
+                    (goto-char marker)
+                    ;; Highlight current search context using `icicle-search-main-regexp-current'.
+                    (icicle-place-overlay (- marker (length candidate)) marker
+                                          'icicle-search-current-overlay
+                                          'icicle-search-main-regexp-current
+                                          202 buf)
+                    (funcall icicle-search-in-context-fn cand+mrker replace-string)
+                    (icicle-highlight-candidate-in-Completions)
+                    (run-hooks 'icicle-search-hook)))
+              (error        ; Ignore disappearance of `*Completions*'.
+               (unless (string-match "Wrong type argument: window-live-p,"
+                                     (error-message-string icicle-search-action-1-save-window))
+                 (error (message (error-message-string icicle-search-action-1-save-window))
+                        (error-message-string icicle-search-action-1-save-window)))))
+            nil))                       ; Return nil for success.
+      (error (message (error-message-string icicle-search-action-1))
+             (error-message-string icicle-search-action-1)))))
 
 (defun icicle-search-in-context-default-fn (cand+mrker replace-string)
   "Default value of `icicle-search-in-context-fn'."
@@ -2593,35 +2598,49 @@ display string as in `icicle-search-action'."
     (when (save-excursion (save-restriction ; Search within the current search context.
                             (narrow-to-region (- marker (length candidate)) marker)
                             (icicle-search-highlight-and-maybe-replace cand+mrker replace-string)))
-
+      
       ;; Update, since replacement might have changed the current candidate:
       ;; Rehighlight current context, update last candidate, update candidate in minibuffer.
-      (let* ((cand+mrker  (funcall icicle-get-alist-candidate-function candidate))
-             (candidate   (if (consp (car-safe cand+mrker))
-                              (car-safe (car-safe cand+mrker))
-                            (car-safe cand+mrker)))
-             (marker      (cdr-safe cand+mrker)))
-        (with-current-buffer (marker-buffer marker)
-          (goto-char marker)
-          ;; Highlight current search context using `icicle-search-main-regexp-current'.
-          (icicle-place-overlay (- marker (length candidate)) marker
-                                'icicle-search-current-overlay
-                                'icicle-search-main-regexp-current
-                                202 (current-buffer)))
-        (setq icicle-last-completion-candidate  candidate) ; Update, for cycling.
-        (save-selected-window
-          (select-window (minibuffer-window))
-          (icicle-clear-minibuffer)
-          (setq icicle-nb-of-other-cycle-candidates  (length icicle-completion-candidates))
-          (icicle-insert-cand-in-minibuffer candidate t)
-          (icicle-show-help-in-mode-line candidate)))))
-  (let ((icicle-candidate-nb  icicle-candidate-nb)) (icicle-complete-again-update)))
+      (if icicle-search-highlight-all-current-flag
+          (let ((icicle-search-highlight-all-current-flag  nil))
+            (icicle-search-highlight-input-matches-here))
+        (let ((ov  icicle-search-current-overlay))
+          (save-restriction (narrow-to-region (overlay-start ov) (overlay-end ov))
+                            (icicle-search-highlight-input-matches-here))))
+      (if (null icicle-completion-candidates) ; If have already replaced all, then no candidates.
+          (when (overlayp icicle-search-current-overlay)
+            (delete-overlay icicle-search-current-overlay))
+        (let* ((cand+mrker  (funcall icicle-get-alist-candidate-function
+                                     (setq icicle-last-completion-candidate
+                                           (elt icicle-completion-candidates icicle-candidate-nb))))
+               (marker      (cdr-safe cand+mrker)))
+          (with-current-buffer (marker-buffer marker)
+            (goto-char marker)
+            ;; Highlight current search context using `icicle-search-main-regexp-current'.
+            (icicle-place-overlay (- marker (if (consp (car cand+mrker))
+                                                (length (caar cand+mrker))
+                                              (length (car cand+mrker))))
+                                  marker 'icicle-search-current-overlay
+                                  'icicle-search-main-regexp-current 202 (current-buffer))
+            (unless icicle-search-highlight-all-current-flag
+              (let ((ov  icicle-search-current-overlay))
+                (save-restriction (narrow-to-region (overlay-start ov) (overlay-end ov))
+                                  (icicle-search-highlight-input-matches-here)))))
+          (save-selected-window
+            (select-window (minibuffer-window))
+            (icicle-clear-minibuffer)
+            (setq icicle-nb-of-other-cycle-candidates  (length icicle-completion-candidates))
+            (icicle-insert-cand-in-minibuffer icicle-last-completion-candidate t)
+            (icicle-show-help-in-mode-line icicle-last-completion-candidate))))))
+  (let ((icicle-candidate-nb  icicle-candidate-nb))
+    (icicle-complete-again-update)))
 
 ;; Free var here: `icicle-search-ecm' is bound in `icicle-search'.
 (defun icicle-search-highlight-and-maybe-replace (cand+mrker replace-string)
   "Highlight within search context and replace using REPLACE-STRING.
 If REPLACE-STRING is nil, no replacement occurs.
-Arguments are the same as for `icicle-search-in-context-fn'."
+Arguments are the same as for `icicle-search-in-context-fn'.
+Return non-nil if replacement occurred, nil otherwise."
   (icicle-search-highlight-context-levels)
   (icicle-search-highlight-input-matches-here)
   (let ((replacement-p  nil))
@@ -2659,16 +2678,18 @@ current input matches candidate") (sit-for 2))
         (when replacement-p
           ;; Update the alist and `minibuffer-completion-table' with the new text.
 
-          ;; An alternative approach would be to use `icicle-search-replace-cand-in-mct'.  But then:
-          ;; 1. Don't bind `icicle-whole-candidate-as-text-prop-p' to nil (in `icicle-search-action'
+          ;; An ALTERNATIVE approach would be to use `icicle-search-replace-cand-in-alist'.
+          ;; In that case we would:
+          ;; 1. Bind `icicle-whole-candidate-as-text-prop-p' to nil (in `icicle-search-action'
           ;;    and `icicle-search-help').
-          ;; 2. Remove the previous two lines, then call `icicle-search-replace-cand-in-mct':
-          ;; 3. (icicle-search-replace-cand-in-mct
-          ;;      cand+mrker (buffer-substring (point-min) (point-max)))
-          ;; However, other things would need to be changed to make that approach work - non-trivial.
+          ;; 2. Use these two lines, instead of calling `icicle-search-replace-cand-in-mct'.
+          ;;    (icicle-search-replace-cand-in-alist cand+mrker
+          ;;                                         (buffer-substring (point-min) (point-max)))
+          ;;    (setq minibuffer-completion-table
+          ;;          (car (icicle-mctize-all icicle-candidates-alist nil)))
+          ;;  If we used that method (as we used to), then users could not sort the search hits.
 
-          (icicle-search-replace-cand-in-alist cand+mrker (buffer-substring (point-min) (point-max)))
-          (setq minibuffer-completion-table (car (icicle-mctize-all icicle-candidates-alist nil)))
+          (icicle-search-replace-cand-in-mct cand+mrker (buffer-substring (point-min) (point-max)))
 
           ;; If we are replacing input matches within a search context, and there are no more matches
           ;; in the current context, then this context is removed as a candidate. If the current
@@ -2703,9 +2724,8 @@ current input matches candidate") (sit-for 2))
                      (>= icicle-candidate-nb (length icicle-completion-candidates)))
             (setq icicle-candidate-nb  0))
           (icicle-highlight-candidate-in-Completions)
-          (icicle-search-highlight-context-levels)
-          (icicle-search-highlight-input-matches-here))))
-    replacement-p))                     ; Return indication of whether we tried to replace something.
+          (icicle-search-highlight-context-levels))))
+    replacement-p)) ; Return indication of whether we tried to replace something.
 
 (defun icicle-search-replace-match (replace-string fixedcase)
   "Replace current match with REPLACE-STRING, interpreting escapes.
@@ -2789,6 +2809,7 @@ Retuns non-nil if FROM is a string and one of the following holds:
  * `case-replace' or `case-fold-search' is nil"
   (and from (not (and case-fold-search case-replace (string= from (downcase from))))))
 
+;; Not used for now - this could replace using mct.  In that case, user must not be able to sort.
 (defun icicle-search-replace-cand-in-alist (cand+mrker new-cand)
   "In `icicle-candidates-alist', replace car of CAND+MRKER by NEW-CAND.
 Replace only the first occurrence of CAND+MRKER in
@@ -2802,16 +2823,42 @@ Replace only the first occurrence of CAND+MRKER in
         (setq newlist  (cdr newlist))))
     icicle-candidates-alist))
 
-;; Not used for now - this could replace using alist, but things get hairy.
 (defun icicle-search-replace-cand-in-mct (cand+mrker new-cand)
   "Replace candidate in `minibuffer-completion-table'.
+Update CAND+MRKER itself to use NEW-CAND (replacement string).
+Any text properties on CAND+MRKER's string are preserved.
 Use this only with a `minibuffer-completion-table' derived from an alist."
   (let ((newlist  minibuffer-completion-table))
     (catch 'icicle-search-replace-cand-in-mct
-      ;; We assume each entry is of the form ("aa" "aa" . c) or ("aa^G^Jbb" . (("aa" "bb") . c)).
+      ;; CAND+MRKER: ("aa" . c) or (("aa" "bb") . c)
+      ;; `minibuffer-completion-table' entry: ("aa" "aa" . c) or ("aa^G^Jbb" . (("aa" "bb") . c))
       (while newlist
         (when (equal (cdr (car newlist)) cand+mrker)
-          (setcar newlist (icicle-mctized-full-candidate (cons new-cand (cdr-safe cand+mrker))))
+          (let ((new-compl  (if (consp (car cand+mrker)) ; New completion: "QQ" or ("QQ" "bb")
+                                (cons new-cand (cdar cand+mrker))
+                              new-cand))
+                (old-cand   (if (consp (car cand+mrker)) (caar cand+mrker) (car cand+mrker)))
+                rep-cand)
+            (setcar newlist (icicle-mctized-full-candidate (cons new-compl (cdr-safe cand+mrker))))
+            ;; NEWLIST is done.
+            ;; Now update CAND+MRKER to reflect the replacement but with the text properties it had.
+            ;; (cdar NEWLIST) is the new cand+mrker.  Its car or caar is the replaced candidate.
+            ;; It is the first field of the multi-completion, in the latter case.
+            (setq rep-cand  (if (consp (car cand+mrker)) (caar (cdar newlist)) (car (cdar newlist))))
+            (let ((len-old  (length old-cand))
+                  (len-rep  (length rep-cand))
+                  (ii       0)
+                  props)
+              (while (< ii len-old)
+                (setq props  (text-properties-at ii old-cand))
+                (when (<= ii len-rep) (add-text-properties ii (1+ ii) props rep-cand))
+                (setq ii  (1+ ii)))
+              (let ((last-props  (text-properties-at (1- len-old) old-cand)))
+                (when (> len-rep len-old)
+                  (add-text-properties len-old len-rep last-props rep-cand))))
+            (if (consp (car cand+mrker))
+                (setcar (car cand+mrker) rep-cand)
+              (setcar cand+mrker rep-cand)))
           (throw 'icicle-search-replace-cand-in-mct nil))
         (setq newlist  (cdr newlist))))
     minibuffer-completion-table))
@@ -2819,9 +2866,9 @@ Use this only with a `minibuffer-completion-table' derived from an alist."
 (defun icicle-search-help (cand)
   "Use as `icicle-candidate-help-fn' for `icicle-search' commands."
   (icicle-msg-maybe-in-minibuffer
-   (let* ((icicle-whole-candidate-as-text-prop-p
-           ;; Force using the alist, because we perform side effects on it.
-           nil)
+   (let* ((icicle-whole-candidate-as-text-prop-p  t)
+          ;; Alternative: If we used `icicle-search-replace-cand-in-alist', then we would bind that
+          ;; to nil to force using the alist, because we would be performing side effects on it.
           (marker  (cdr (funcall icicle-get-alist-candidate-function cand))))
      (concat "Buffer: `" (buffer-name (marker-buffer marker))
              (format "', Position: %d" (marker-position marker))))))
@@ -2848,9 +2895,9 @@ search multiple regions, buffers, or files, see the `icicle-search'
 documentation."
   (interactive
    `(,@(icicle-region-or-buffer-limits)
-     ,(icicle-group-regexp (mapconcat #'icicle-group-regexp (icicle-keyword-list) "\\|"))
-     ,(not icicle-show-multi-completion-flag)
-     ,(icicle-search-where-arg)))
+       ,(icicle-group-regexp (mapconcat #'icicle-group-regexp (icicle-keyword-list) "\\|"))
+       ,(not icicle-show-multi-completion-flag)
+       ,(icicle-search-where-arg)))
   (icicle-search beg end keywords (not icicle-show-multi-completion-flag) where))
 
 (defalias 'icicle-regexp-list 'icicle-keyword-list)
@@ -4271,9 +4318,9 @@ This command is intended for use only in Icicle mode."
                  (error "No candidates for type `%s'" (symbol-name typ)))
                 (t (icicle-choose-candidate-of-type typ))))
          (icicle-candidate-action-fn    ; For "how".
-          #'(lambda (fn) (icicle-apply-to-saved-candidate fn anything-candidates)))
+          #'(lambda (fn) (icicle-apply-to-saved-candidate fn anything-candidates typ)))
          (icicle-candidate-alt-action-fn ; For "how".
-          (and anything-candidates #'(lambda (fn) (icicle-apply-to-saved-candidate fn t)))))
+          (and anything-candidates #'(lambda (fn) (icicle-apply-to-saved-candidate fn t typ)))))
     (funcall (icicle-alt-act-fn-for-type
               (if predicate-type-p
                   (or (cdr (assoc (symbol-name typ) icicle-predicate-types-alist)) (symbol-name typ))
@@ -4414,25 +4461,26 @@ ACTIONS is the list of all actions for type TYPE."
                 (select-frame-set-input-focus (selected-frame))
                 (icicle-raise-Completions-frame)))
            (icicle-candidate-alt-action-fn
-            #'(lambda (obj)
-                (when icicle-whole-candidate-as-text-prop-p
-                  (setq obj  (icicle-anything-candidate-value obj)))
-                (let ((icicle-show-Completions-initially-flag  t)
-                      (icicle-saved-completion-candidate       obj)
-                      (icicle-candidates-alist                 actions)
-                      (enable-recursive-minibuffers            t))
-                  (with-selected-window win
-                    (icicle-apply-to-saved-candidate
-                     (let ((enable-recursive-minibuffers      t)
-                           (icicle-last-completion-candidate  icicle-last-completion-candidate)
-                           (icicle-candidate-action-fn
-                            #'(lambda (actn) (with-selected-window win
-                                               (let ((enable-recursive-minibuffers t)
-                                                     (icicle-candidates-alist actions))
-                                                 (icicle-apply-to-saved-candidate actn t)))))
-                           (icicle-candidate-alt-action-fn    nil))
-                       (completing-read "How (action): " actions nil t))
-                     t)))))
+            `(lambda (obj)
+              (when icicle-whole-candidate-as-text-prop-p
+                (setq obj  (icicle-anything-candidate-value obj)))
+              (let ((icicle-show-Completions-initially-flag  t)
+                    (icicle-saved-completion-candidate       obj)
+                    (icicle-candidates-alist                 actions)
+                    (enable-recursive-minibuffers            t))
+                (with-selected-window win
+                  (icicle-apply-to-saved-candidate
+                   (let ((enable-recursive-minibuffers      t)
+                         (icicle-last-completion-candidate  icicle-last-completion-candidate)
+                         (icicle-candidate-alt-action-fn    nil)
+                         (icicle-candidate-action-fn
+                          `(lambda (actn) (with-selected-window win
+                                            (let ((enable-recursive-minibuffers  t)
+                                                  (icicle-candidates-alist       actions))
+                                              (icicle-apply-to-saved-candidate actn t ,type))))))
+                     (completing-read "How (action): " actions nil t))
+                   t
+                   ,type)))))
            (orig-action-fn  icicle-candidate-action-fn)
            (icicle-candidate-help-fn
             (if icicle-whole-candidate-as-text-prop-p
@@ -4643,9 +4691,9 @@ filtering:
          (icicle-all-candidates-list-alt-action-fn
           (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "variable"))))
      (intern (completing-read (format "Which (%s value of variable): " pred) obarray
-                              `#'(lambda (symb)
+                              `(lambda (symb)
                                    (and (boundp symb)
-                                        (funcall #',pred (symbol-value symb)))))))))
+                                        (funcall ',pred (symbol-value symb)))))))))
 
 ;;;###autoload
 (when (fboundp 'map-keymap)             ; Emacs 22.

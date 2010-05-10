@@ -6,36 +6,22 @@
 
 == Sorting Candidates and Removing Duplicates ==
 
-By default, [[completion]] candidates are presented in [[buffer]]
-`*Completions*' in ''alphabetic'' order.  The order in `*Completions*' is also the order of
-[[Icicles - Cycling Completions | cycling]] among candidates.  Also by default, ''duplicate'' candidates
-are removed as completion choices.
+By default, [[completion]] candidates are usually presented in [[buffer]]
+`*Completions*' in ''alphabetic'' order.  But some commands use
+different sort orders by default.  Whatever sort order is used for `*Completions*' is also the order of
+[[Icicles - Cycling Completions | cycling]] among candidates.
 
-Some [[command]]s however, impose different orders, which are
-appropriate in their particular contexts, and some commands do not
-remove duplicates.  For example, command `icicle-search' (`##C-c `##') uses
-completion to navigate among search hits.  The order of
-the hit occurrences in the buffer is retained, as are duplicate
-matches.  Although some search-hit candidates might have the same
+Also, ''duplicate'' candidates
+are typically removed as completion choices, by default.  But for some [[command]]s duplicates are appropriate, so they are not removed.
+For example, command `icicle-search' (`##C-c `##') uses
+completion to navigate among search hits.  Duplicate search hits are retained.  Although some search-hit candidates might have the same
 text, they are located at different buffer positions.
 
-For a small minority of commands such as `icicle-search', the
-candidate order is fixed.  The completion candidates you see in
-buffer `*Completions*' are just names for (invisible) candidate
-objects that contain additional information (buffer and buffer
-position, in the case of `icicle-search').  Different such objects
-might have the same completion-candidate name, so it is important
-that the order of presentation remain constant.  ''Icicles'' picks the
-candidate object to use, according to which candidate name you
-click with `mouse-2' or which candidate name is current during
-cycling.
-
-Commands such as `icicle-search' are the exception. For most commands, you can interactively control the order of candidates
+You can interactively control the order of candidates
 and whether duplicates are removed.  Use '''`##C-,##'''' during completion
 to choose a different sort order or to turn off sorting altogether
 (one of the available sort orders is in fact called "##turned OFF##").  Use
-'''`##C-$##'''' to toggle the removal of duplicate candidates.  Commands such as
-`icicle-search', for which sorting is inappropriate, prevent you
+'''`##C-$##'''' to toggle the removal of duplicate candidates.  A few commands, for which sorting is inappropriate, prevent you
 from sorting.
 
 
@@ -135,7 +121,8 @@ during [[minibuffer]] completion.
 [:DifferentSortForDifferentUses]
 === Different Sorts for Different Sorts of Uses ===
 
-There are many different uses of completion in Emacs, and this means that sorting candidates needs to be flexible -- there cannot be a single sort order that is useful for all purposes. Completion, and therefore also sorting of completion candidates, needs to deal with different types of candidates and different numbers of them, in different contexts.
+There are many different uses of completion in Emacs, and this means that sorting candidates needs to be flexible -- there cannot be a single sort order, or even a single set of sort
+orders, that is useful for all purposes. Completion, and therefore also sorting of completion candidates, needs to deal with different types of candidates and different numbers of them, in different contexts.
 
 '''Icicles''' predefines many sort functions, and you can easily define more of your own. You can choose a different sort at any time, as mentioned above. A good sort order can be a big help, depending on the context. However, sorting isn't free, and it's helpful to think for a moment about some of the consequences of sorting, in terms of performance.
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Apr 21 09:28:09 2010 (-0700)
+;; Last-Updated: Sat May  1 10:05:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6471
+;;     Update #: 6483
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -421,6 +421,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
+`icicle-toggle-search-replace-whole'   - Toggle replacing whole hit
 `icicle-toggle-search-whole-word'      - Toggle whole-word searching
 `icicle-toggle-show-multi-completion'  - Toggle multi-completions
 `icicle-toggle-sorting'                - Toggle sorting of completions
@@ -677,6 +678,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-toggle-regexp-quote'           - Toggle regexp escaping
 `icicle-toggle-search-cleanup'         - Toggle search highlighting
 `icicle-toggle-search-replace-common-match' - Toggle ECM replacement
+`icicle-toggle-search-replace-whole'   - Toggle replacing whole hit
 `icicle-toggle-search-whole-word'      - Toggle whole-word searching
 `icicle-toggle-show-multi-completion'  - Toggle multi-completions
 `icicle-toggle-sorting'                - Toggle sorting of completions
@@ -1056,7 +1058,7 @@ Used on `pre-command-hook'."
            (define-key icicle-options-menu-map [icicle-toggle-search-replace-whole]
              '(menu-item "Toggle Replacing Whole Search Hit"
                icicle-toggle-search-replace-whole :visible icicle-mode
-               :enable icicle-searching-p :keys "C-,"))
+               :enable icicle-searching-p :keys "M-_"))
            (define-key icicle-options-menu-map [icicle-toggle-highlight-all-current]
              '(menu-item "Toggle All-Current Search Highlighting"
                icicle-toggle-highlight-all-current :visible icicle-mode
@@ -1177,7 +1179,7 @@ Used on `pre-command-hook'."
                icicle-toggle-search-replace-common-match :enable icicle-searching-p :keys "M-;"))
            (define-key icicle-menu-map [icicle-toggle-search-replace-whole]
              '(menu-item "Toggle Replacing Whole Search Hit" icicle-toggle-search-replace-whole
-               :enable icicle-searching-p :keys "C-,"))
+               :enable icicle-searching-p :keys "M-_"))
            (define-key icicle-menu-map [icicle-toggle-highlight-all-current]
              '(menu-item "Toggle All-Current Search Highlighting"
                icicle-toggle-highlight-all-current :enable icicle-searching-p :keys "C-^"))
@@ -2676,11 +2678,11 @@ complete)"))
   (define-key map [(control meta ?})]        'icicle-candidate-set-save-to-variable) ; `C-M-}'
   (define-key map [(control meta ?{)]       'icicle-candidate-set-retrieve-from-variable) ; `C-M-{'
   (define-key map [(control ?})]             'icicle-candidate-set-save-persistently) ; `C-}'
-  (define-key map [(control ?{)]            'icicle-candidate-set-retrieve-persistent) ; `C-{'
+  (define-key map [(control ?{)]             'icicle-candidate-set-retrieve-persistent) ; `C-{'
   (define-key map [(control ?%)]             'icicle-candidate-set-swap) ; `C-%'
   (define-key map [(control ?:)]             'icicle-candidate-set-define) ; `C-:'
   (define-key map [(control meta ?j)]        'icicle-insert-list-join-string) ; `C-M-j'
-  (define-key map [(control ?,)]             'icicle-dispatch-C-comma) ; `C-,'
+  (define-key map [(control ?,)]             'icicle-change-sort-order) ; `C-,'
   (define-key map [(control meta ?\;)]       'icicle-regexp-quote-input) ; `C-M-;'
   (define-key map [(control ?`)]             'icicle-toggle-regexp-quote) ; `C-`'
   (define-key map [(control meta ?\.)]       'icicle-toggle-dot) ; `C-M-.'
@@ -2704,7 +2706,7 @@ complete)"))
   (define-key map [(meta ?+)]                'icicle-widen-candidates) ; `M-+'
   (define-key map [(meta ?*)]                'icicle-narrow-candidates) ; `M-*'
   (define-key map [(meta ?&)]                'icicle-narrow-candidates-with-predicate) ; `M-&'
-  (define-key map [(meta ?_)]                'icicle-toggle-ignored-space-prefix) ; `M-_'
+  (define-key map [(meta ?_)]                'icicle-dispatch-M-_) ; `M-_'
   (define-key map [(control meta ?&)]        'icicle-save-predicate-to-variable) ; `C-M-&'
   (define-key map [(shift ?\ )]              'icicle-apropos-complete-and-narrow) ; `S-SPC'
   (define-key map [(shift backspace)]        'icicle-apropos-complete-and-widen) ; `S-DEL'
@@ -2906,6 +2908,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map [(control ?:)]             nil)
   (define-key map [(control meta ?j)]        nil)
   (define-key map [(control ?,)]             nil)
+  (define-key map [(control ? )]             nil)
   (define-key map [(control meta ?\;)]       nil)
   (define-key map [(control ?`)]             nil)
   (define-key map [(control meta ?`)]        nil)
