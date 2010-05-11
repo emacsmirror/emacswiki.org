@@ -385,5 +385,114 @@ This bothers me similarly to the above since it just adds clutter for anyone who
 
 Maybe somewhere in the footer close to where the language links are too.  Then again this link ("Pages linking here") as well as the links to the translations can easily be missed.  Maybe both kinds should be placed somewhere more visible?  But if you do this please do so in a way that makes it easy to hide it using a style sheet.  -- JonasBernoulli
 
+== Discussions ==
+I use the emacswiki quite extensively primarily as a source of information. One of the confusing aspects of this wiki is that the discussions are intermingled with the content. Is it possible to have a discussion page such as the one that comes out-of-the-box with a MediaWiki package? 
+
+[new]
+Yes, that would be possible. Every page X would have a sister page Comments_on_X, Discussion_of_X, or Talk_about_X. I'm not quite familiar with any extra features Mediawiki Talk pages offer. You can see it in effect on [http://emacswiki.org/test/ the test wiki]. Since the comment pages are real, separate pages, they can be edited, show up on RecentChanges, etc. Anybody else who prefers this separation?
+
+As for myself, I'm not convinced that this will be a good move because we're often not presenting "finished" stuff like an encyclopedia or a blog. Our pages are a not as ephemereal as posting to a newsgroup, but not as solid as manual pages. People who come here expecting the same quality and consistency they have come to expect from the Emacs manual have simply come to the wrong place. -- AlexSchroeder
+
+[new:DrewAdams:2010-05-10 13:32 UTC]
+I agree that it is not a good idea, as a systematic mechanism. IOW, sometimes it can be helpful, and other times it is not helpful.
+We have different kinds of pages, and the discussions appropriate to them can take different forms. In some cases, it is useful to be able to point to relevant passages on the page being talked about (e.g. without users needing to open two browser pages).
+
+And it can sometimes be appropriate to have more than one discussion subsection on a page, with each being local to (near) the text/topic being discussed. You can see this where people have posted snippets and others have responded directly about them, right next to them. In some cases, the text and metatext (discussion) are even merged into a single conversation/discussion. That can be useful in some contexts.
+
+Obviously, any approach can be used inappropriately or become unwieldy. The solution is editing. IMO, this is a false need/problem -- as a ''general'' problem. If there is a problem for a particular page, then the solution is to better organize that page -- e.g. create an appropriate '''Discussion''' heading or separate '''DiscussionOfFoobar''' page. -- DrewAdams
+
+[new]
+I think adding a Discussion/Comments page is an excellent idea. 
+
+The current approach fails when engaged in any sort of extensive dialogue for when:
+ (and (= parties-in-discussion 2) (> exchanges-in-discussion 3)) 
+
+Likewise, it fails to convey reasonable temporal context when attempting to
+accomodate multiparty exhanges e.g. when: 
+ (> parties-in-discussion 2)
+
+Moreover, the current model encourages `inline' disccusion where it is often not
+approriate/relevant; for example, those situations when a package author
+discusses/dialogues their specific package in a generalized category because her
+package interacts with other packages which also fall under the same
+umbrella. Consider the following hypothetical EmacsPageFoo:
+
+<pre>
+ This is a page about getting Emacs to frob Foo.
+
+ Foo is blah blah blah... 
+
+ The package Lisp:KungFoo.el extends Emacs Foo by blah blah blah.
+
+ == Make Foo Mode the default ==
+
+ Here is some code that will Foo for you:
+
+ (defadvice foo-display (after set-mode activate)
+   "Set the mode of the buffer *FOO* to `foo-mode'."
+   (save-excursion
+     (set-buffer get-current-foo-buffer)
+     (foo-mode)))
+
+ Advising Foo is blah blah blah...
+
+ [new]
+ I've tried the package Lisp:KungFoo.el The `kung-foo-q' fncn breaks when advice
+ frobbing Emacs Foo w/ a-breaking-feature from Lisp:SuperFoo.el -- FailedToFoo
+
+ [new]
+ FailedToFoo, I wrote the package Lisp:KungFoo.el maybe I can help.
+ Did you try putting twist-knob-Z in your init before loading it? -- KungFooAuthor
+
+ [new]
+ Hey, KungFooAuthor. I tried adding `twist-knob-Z' (and `rotate-widget-W' FWIW)
+ to my init.  The problem was elsewhere though. It looks like the variable
+ `undo-knob-U', which (on my system), needs a twisting 33 degrees
+ counter-clockwise on each third Wednsday falling on an even numbered calendar
+ day. However, the `un-foo-berator' variable in Lisp:SuperFoo.el conflicts with
+ this causing the `berate-all-foo' function to unscrew all of my changes on each
+ fourth Thursday of a month that is divisible by 4. Maybe _you_ can adjust your
+ code b/c the Lisp:SuperFoo.el packages is old code and the original author is
+ no longer actively maintaining it -- FailedToFoo
+
+ [new]
+ FailedToFoo, glad to hear you were able get Lisp:KungFoo.el to work. I've
+ adjusted `undo-knob-U' to require its twistage in a manner which accomodates
+ the idiosyncracies of Lisp:SuperFoo.el's `un-foo-berator'. I also adjusted
+ `twist-knob-Z'. Hopefully that fixes the problem. BTW you might want to try my
+ library Lisp:auto-foo-tastic.el which supercedes most of the functionality of
+ Lisp:SuperFoo.el -- KungFooAuthor
+
+ == How To Schedule a Foo == 
+ This uses foo-schedule (defined above) and foo-remind to produce a daily
+ countdown to a foo-zero:
+
+ (defun foo-countdown (m1 d1 y1 n)
+   "Foo reminder during the day N prior to date-foo."
+   (foo-remind '(foo-date m1 d1 y1) 
+   (let (foo-value) 
+      	(dotimes (i n foo-value) (setq foo-value (cons i foo-value))))))
+
+ Then: "&%%(foo-countdown 22 4 2000 15) my-foo-deadline" shows a Foo reminder
+ for the last 15 days before the foo-date.
+
+ == How to Foo Foo ===
+
+  { ... }
+
+</pre>
+
+The inline comments in the example above happen quite a bit. 
+
+IMHO these types of interludes often have little to do with the context of the page in which they
+appear and would be of better use seperated to a new location. 
+
+I would suggest that in addtion to or alternatively adding a ``HelpFixingFoo''
+page where package authors and other interested parties can answer questions
+independent of the primary content/context.  Such a page might serve as a good
+compromise between the existing pages (not all of which can/should/will be
+modified to reflect the new functionality) and pages which would clearly benefit
+from better granularity. -- [[mon_key]]
+
 ----
 CategoryEmacsWikiSite

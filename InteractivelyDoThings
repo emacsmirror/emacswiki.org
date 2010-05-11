@@ -355,6 +355,15 @@ I eventually realized that the directory _itself_ was Too Big -- Unix directorie
 
 You could call this "garbage-collecting" a directory.
 
+----
+
+[new]
+Alternatively, you can change the value of ido-max-directory-size:
+
+ (setq ido-max-directory-size 100000)
+
+--JasonDunsmore
+
 == Wish list ==
 
 === truename files ===

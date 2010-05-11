@@ -33,7 +33,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 286 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 305 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -64,6 +64,7 @@
 (defconst sr-modeline-sync-mark '(" & " . " ⚓ "))
 (defconst sr-modeline-edit-mark '(" ! " . " ⚡ "))
 (defconst sr-modeline-virt-mark '(" @ " . " ☯ "))
+(defconst sr-modeline-tree-mark '(" T " . " ⚘ "))
 
 ;;; ============================================================================
 ;;; Core functions:
@@ -84,6 +85,7 @@
              (cond ((eq mode 'sync) sr-modeline-sync-mark)
                    ((eq mode 'edit) sr-modeline-edit-mark)
                    ((eq mode 'virt) sr-modeline-virt-mark)
+                   ((eq mode 'tree) sr-modeline-tree-mark)
                    (t sr-modeline-norm-mark)))))
 
 (defun sr-modeline-setup ()
@@ -95,6 +97,8 @@
                        (cond ((not buffer-read-only) 'edit)
                              (sr-synchronized 'sync)
                              (t 'norm)))))
+          ((eq major-mode 'sr-tree-mode)
+           (setq mark (sr-modeline-select-mark (if sr-synchronized 'sync 'tree))))
           ((eq major-mode 'sr-virtual-mode)
            (setq mark (sr-modeline-select-mark 'virt))))
     (if mark (sr-modeline-set mark))))
@@ -120,6 +124,7 @@
           (cond ((eq mark (sr-modeline-select-mark 'sync)) "Synchronized Navigation")
                 ((eq mark (sr-modeline-select-mark 'edit)) "Editable Pane")
                 ((eq mark (sr-modeline-select-mark 'virt)) "Virtual Directory")
+                ((eq mark (sr-modeline-select-mark 'tree)) "Tree View")
                 (t "Normal")))
     (propertize mark
                 'font 'bold 
@@ -196,7 +201,7 @@
   To totally disable this extension do: M-x sr-modeline <RET>"
 
   nil (sr-modeline-select-mark 'norm) sr-modeline-map
-  (unless (memq major-mode '(sr-mode sr-virtual-mode))
+  (unless (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
     (setq sr-modeline nil)
     (error "Sorry, this mode can be used only within the Sunrise Commander."))
   (sr-modeline-toggle 1))
@@ -205,7 +210,6 @@
   (easy-menu-create-menu
    "Mode Line"
    '(["Toggle navigation mode line" sr-modeline-toggle t]
-     ["Turn off navigation mode line" sr-modeline t]
      ["Navigation mode line help" (lambda ()
                                     (interactive)
                                     (describe-function 'sr-modeline))] )))
@@ -213,15 +217,21 @@
   (interactive)
   (popup-menu sr-modeline-menu))
 
-(defun sr-modeline-menu-init ()
-  (unless (fboundp 'easy-menu-binding) ;;<-- not available in emacs 22
-    (defsubst easy-menu-binding (menu &optional item-name) (ignore)))
-  (define-key sr-modeline-map
-    (vector 'menu-bar (easy-menu-intern "Sunrise"))
-    (easy-menu-binding sr-modeline-menu "Sunrise")))
-
 ;;; ============================================================================
 ;;; Bootstrap:
+
+(defun sr-modeline-menu-init ()
+  "Initializes the Sunrise Mode Line extension menu."
+  (unless (lookup-key sr-mode-map [menu-bar Sunrise])
+    (define-key sr-mode-map [menu-bar Sunrise]
+      (cons "Sunrise" (make-sparse-keymap))))
+  (let ((menu-map (make-sparse-keymap "Mode Line")))
+    (define-key sr-mode-map [menu-bar Sunrise mode-line]
+      (cons "Mode Line" menu-map))
+    (define-key menu-map [help] '("Help" . (lambda ()
+                                             (interactive)
+                                             (describe-function 'sr-modeline))))
+    (define-key menu-map [disable] '("Toggle" . sr-modeline-toggle))))
 
 (defun sr-modeline-start-once ()
   "Bootstraps  the  navigation  mode  line on the first execution of the Sunrise
@@ -229,6 +239,7 @@
   (sr-modeline t)
   (sr-modeline-menu-init)
   (remove-hook 'sr-start-hook 'sr-modeline-start-once)
+  (unintern 'sr-modeline-menu-init)
   (unintern 'sr-modeline-start-once))
 (add-hook 'sr-start-hook 'sr-modeline-start-once)
 
@@ -243,3 +254,5 @@
 (add-to-list 'sr-desktop-restore-handlers 'sr-modeline-desktop-restore-buffer)
 
 (provide 'sunrise-x-modeline)
+
+;;; sunrise-x-modeline.el ends here.

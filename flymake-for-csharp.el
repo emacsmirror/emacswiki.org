@@ -1,15 +1,15 @@
 ;;; flymake-for-csharp.el --- C# mode derived mode
 ;;
 ;; Author:     Dino Chiesa
-;; Modified:   April 2010
-;; Version:    1.1
+;; Version:    1.2
+;; Modified:   2010 May 10
 ;; Keywords:   c# flymake
 ;;
 ;; This code is distributed under the MS-Public License.
 ;; See http://opensource.org/licenses/ms-pl.html
 ;;
 ;; last saved
-;; Time-stamp: <2010-April-11 15:15:05>
+;; Time-stamp: <2010-May-10 17:39:50>
 
 
 ;; ==================================================================
@@ -54,9 +54,9 @@
 ;; .cs file, as you edit it.  flymake-for-csharp allows you the choice
 ;; of 3 ways to run the build C# files: run csc.exe directly, run
 ;; nmake.exe using a makefile that you specify, or run msbuild using a
-;; buildfile that you specify.  To allow flymake-for-csharp to work, you
-;; need to specify a particular well-known target in your makefile, or
-;; you must specify instructions in your msbuild file.
+;; buildfile that you specify.  To allow flymake-for-csharp to work with
+;; either of the latter two options, you need to specify a particular
+;; well-known target in your makefile, or in your msbuild file.
 ;;
 ;;
 ;; Option A: use the csc.exe compiler directly
@@ -70,18 +70,19 @@
 ;; contents of the currently-being-edited .cs file. You should not
 ;; include the name of the current .cs file in the
 ;; `flymake-for-csharp-csc-arguments' variable, but you can specify the
-;; names of other .cs files that should be compiled with the current
+;; names of other .cs files that should be compiled *with* the current
 ;; one.  The `flymake-for-csharp-csc-arguments' variable is only used
 ;; with the direct csc.exe build option.
 ;;
 ;; In deciding which build option to use, flymake-for-csharp searches
 ;; the list of build files in `flymake-for-csharp-buildfile-alist' to
-;; find one appropriate for use for syntax checking. Therefore, if you
-;; want to use the direct csc.exe build option, set
-;; `flymake-for-csharp-buildfile-alist' to nil, OR, insure that none of
-;; the build files in that list, exist in the directory where the .cs
-;; file resides, OR if they do exist, that the required build targets
-;; (see below for an explanation) are not present in those build files.
+;; find one appropriate for use for syntax checking, and uses the first
+;; one it finds. Therefore, if you want to use the direct csc.exe build
+;; option, set `flymake-for-csharp-buildfile-alist' to nil, OR, insure
+;; that none of the build files in that list, exist in the directory
+;; where the .cs file resides, OR if they do exist, that the required
+;; build targets (see below for an explanation) are not present in those
+;; build files.
 ;;
 ;; If you do no special setup, the direct csc.exe build will be used.
 ;;
@@ -128,10 +129,24 @@
 ;;    flymake-for-csharp-netsdk-location.
 ;;
 ;;
-;; 3. Set your make target something like so:
+;; 3. Create the check-syntax target. In the simplest case, it would look
+;;    something like so:
 ;;
 ;;        check-syntax:
-;;           %windir%\Microsoft.NET\Framework\v3.5\csc.exe /t:module $(CHK_SOURCES)
+;;           %windir%\Microsoft.NET\Framework\v3.5\csc.exe /t:module $(FLYMAKE_CHECK)
+;;
+;;    Flymake invokes nmake with several things defined on the command
+;;    line:
+;;
+;;        FLYMAKE_CHECK  - the name of the file to check.  This is a source
+;;                 file with a temporary name, copied from the current
+;;                 state of the buffer.
+;;
+;;        FLYMAKE_ORIGINAL  - the name of the original file that is being
+;;                 checked for syntax.
+;;
+;;        FLYMAKE_SYNTAX_CHECK - set to 1
+;;
 ;;
 ;;    The target name MUST be "check-syntax". You should, of course,
 ;;    specify the location of your c# compiler as appropriate.  You can
@@ -141,10 +156,46 @@
 ;;    part of the syntax check.  If you don't use /target:netmodule, you
 ;;    will get a DLL or EXE, and flymake-for-csharp won't clean it up.
 ;;
-;;    You MUST use $(CHK_SOURCES) as the end of the line.  The
-;;    CHK_SOURCES symbol is defined on the command line when
-;;    flymake-for-csharp invokes nmake.exe.  CHK_SOURCES should not be
-;;    explicitly defined in your makefile.
+;;    Now regarding the files to compile, in the simple case you just
+;;    need to compile a single file.  In more complex cases, you want to
+;;    compile the file-to-check along with a set of other files that
+;;    are included in the project, let's say, in a single DLL. In that
+;;    case you'll need to *exclude* the FLYMAKE_ORIGINAL file, and
+;;    to *include* the FLYMAKE_CHECK file. This can be done with nmake
+;;    macros, and inline files.
+;;
+;;    For example, suppose you have a project that compiles 3 source
+;;    files, Fribble,cs Zambda.cs Twoolie.cs, into a DLL. Regardless
+;;    which file you are currently editing in emacs, you want to compile
+;;    *the other two* along with the temp copy of the
+;;    currently-being-edited file into a netmodule. You can do that like
+;;    this:
+;;
+;;        CS_SOURCE=Fribble.cs Zambda.cs Twoolie.cs
+;;             ....
+;;        check-syntax :
+;;                <<flymake-build.cmd  $(CS_SOURCE)
+;;            SETLOCAL ENABLEDELAYEDEXPANSION
+;;            for %%I in (%*) do if NOT %%I == $(FLYMAKE_ORIGINAL) (
+;;               set filesToBuild=!filesToBuild! %%I
+;;            )
+;;            $(_CSC) /t:module $(FLYMAKE_CHECK) !filesToBuild!
+;;            ENDLOCAL
+;;        <<
+;;
+;;
+;;    Given that target in the makefile, all files EXCLUDING the
+;;    currently-being-edited file, but INCLUDING the temporary copy of
+;;    the currently-being-edited file, are compiled into a module.  It is
+;;    done with a little-known feature of nmake called in-line files.
+;;    What it does is create a temporary .cmd file, and invoke it.
+;;    The .cmd file includes the logic to exclude the original file
+;;    from the build, while including the temporary file.
+;;
+;;    Putting the $(FLYMAKE_CHECK) file first on the csc line, causes
+;;    the generated .netmodule file to have a name that allows
+;;    flymake-for-csharp to find it, and delete it when flymake
+;;    finishes.
 ;;
 ;;    If you don't want to put this make target into your main makefile,
 ;;    you can alternatively put it into an alternative makefile, for
@@ -158,6 +209,12 @@
 ;; will use the first suitable build file (either a makefile or a
 ;; msbuild file) that it finds.
 ;;
+;; Flymake works by copying the contents of the current buffer to a
+;; temporary source file, then compiling it.  In the case where you need
+;; to compile multiple source files together, you need to compile all
+;; files, *including* the temporary copy of the file being edited, but
+;; *excluding* the actual source file being checked.  This isn't easy to
+;; do in a makefile.  For that case I suggest msbuild.
 ;;
 ;; ==================================================================
 ;;
@@ -249,7 +306,7 @@
 ;; get fancier.  The way flymake works is, it copies the current contents
 ;; of the buffer to a temporary source file, then compiles it.  Therefore
 ;; in the case where you are compiling multiple source files together,
-;; You need to compile all files, *including* the temporary copy of the
+;; you need to compile all files, *including* the temporary copy of the
 ;; file being edited, but *excluding* the actual source file being
 ;; edited. This is easily done in msbuild with a specially-structured
 ;; Exclude qualifier. Your msbuild.flymake.xml file should look something
@@ -388,6 +445,17 @@ direct csc.exe build for syntax checking purposes.")
 
 
 
+(defvar flymake-for-csharp-most-recent-cmd  nil
+  "The most recent command line used to run flymake
+for the current csharp buffer.
+
+Use this to figure out what flymake-for-csharp decided
+to do, given your setup, variable settings, and the value
+of `flymake-for-csharp-buildfile-alist'.
+
+The value is possily nil, if flymake
+has never been run on the buffer.
+")
 
 
 
@@ -441,6 +509,49 @@ then call through to flymake-simple-cleanup."
       (re-search-forward target nil t))))
 
 
+
+(defun string-starts-with (s arg)
+  "returns t if string S starts with ARG.  Else nil."
+  (cond ((>= (length s) (length arg))
+         (string-equal (substring s 0 (length arg)) arg))
+        (t nil)))
+
+
+
+(defun flymake-for-csharp-get-csc-arguments ()
+  "gets the args for csc.exe.  You might think this could just be a variable
+reference, but it's packaged as a function to allow advice to override it.
+In particular, the flymake-for-csharp-ext.el package overrides this to
+provide a list of /R arguments, corresponding to the using statements in
+the source file.  That extension ( flymake-for-csharp-ext.el) depends on
+the CSDE package, and not everybody has CSDE installed, or wants it.
+So it remains an extension, and this needs to be a function.
+
+This func also does checking to verify the /t:module is used in the arglist,
+and burps if a different /t argument is found."
+
+  (flymake-log 3 "flymake-for-csharp-get-csc-arguments: entry")
+  (let ((args flymake-for-csharp-csc-arguments)
+        arg
+        (found nil))
+    (flymake-log 3 "flymake-for-csharp-get-csc-arguments: args: %s" args)
+    (while args
+      (setq arg (car args))
+      (cond
+       ((string-equal arg "/t:module") (setq found t))
+       ((string-starts-with arg "/t:")
+        (setq found t)
+        (message "flymake-for-csharp: WARNING /t: option present, and not /t:module; fix this.")))
+
+      (setq args (cdr args)))
+    (if found
+        (progn
+          (flymake-log 3 "flymake-for-csharp-get-csc-arguments: return %s" flymake-for-csharp-csc-arguments)
+          flymake-for-csharp-csc-arguments)
+
+      (flymake-log 1 "flymake-for-csharp-get-csc-arguments: appending /t:module")
+      (setq args
+            (append flymake-for-csharp-csc-arguments (list "/t:module"))))))
 
 
 
@@ -527,13 +638,17 @@ Use CREATE-TEMP-F for creating temp copy."
 
 
 
-; This method re-defines the defun shipped in flymake, for csharp.  Re-defining
-; this function *will* definitely break flymake for all other languages.  One
-; way to fix that problem is to make the "get-make-cmdline" function a
-; configurable hook within flymake!
 
 ;;(defun flymake-get-make-cmdline (source base-dir)
 (defun flymake-for-csharp-get-flymake-cmdline (source base-dir)
+"Gets the cmd line for running a flymake session in a csharp buffer.
+ It will invoke one of three programs: csc.exe, msbuild.exe, or nmake.exe,
+ depending on the state of the filesystem.  If an appropriate build file,
+ suitable for use with either nmake or msbuild, is found on the
+ `flymake-for-csharp-buildfile-alist', then the appropriate build tool
+ (msbuild or nmake) is invoked on that build file. If no appropriate build
+ file is found, then csc.exe is invoked"
+(setq flymake-for-csharp-most-recent-cmd
   (let* ((build (flymake-for-csharp-figure-build))
          (flavor (car build)) ;; flavor:  "msbuild" or "nmake" or "csc"
          (build-file (cadr build))
@@ -556,18 +671,21 @@ Use CREATE-TEMP-F for creating temp copy."
                   build-file
                   ;;(concat base-dir "/" build-file)
                   "/nologo"
-                  (concat "CHK_SOURCES=" source)
-                  "SYNTAX_CHECK_MODE=1"
+                  "FLYMAKE_SYNTAX_CHECK=1"
+                  (concat "FLYMAKE_CHECK=" source)
+                  (concat "FLYMAKE_ORIGINAL=" (file-relative-name buffer-file-name))
                   "check-syntax")))
      (t
       (list (concat  flymake-for-csharp-dotnet-location "\\csc.exe")
-        (append flymake-for-csharp-csc-arguments (list source)))))))
+        (append (flymake-for-csharp-get-csc-arguments) (list source))))))))
 
 
 
 
-; This fixup sets flymake to use a different cleanup routine for c# compiles
-(defun flymake-for-csharp-fixup ()
+; This fixup sets flymake to use a different cleanup routine for c# compiles.
+; need to do this only once, not every time csharp-mode is invoked.
+
+(progn
   (let (elt
         (csharp-entry nil)
         (masks flymake-allowed-file-name-masks))
@@ -582,7 +700,8 @@ Use CREATE-TEMP-F for creating temp copy."
 
     ;; Here, we remove the C# entry in the "flymake-allowed-file-name-masks"
     ;; variable, and replace it with an entry that includes a custom csharp cleanup
-    ;; routine.  That cleanup routine deletes the .netmodule file.
+    ;; routine.  That cleanup routine deletes the .netmodule file, generated
+    ;; by a successful flymake run.
 
     ;; I could just setq the "flymake-allowed-file-name-masks" var to the C# thing I
     ;; want, but that would obliterate all the masks for all other languages, which
@@ -620,8 +739,7 @@ Use CREATE-TEMP-F for creating temp copy."
     )
   )
 
-; need to do this only once, not every time csharp-mode is invoked
-(flymake-for-csharp-fixup)
+
 
 
 ;; =======================================================
@@ -632,17 +750,21 @@ Use CREATE-TEMP-F for creating temp copy."
 ;; in v23 and present in v22.
 
 (defun cheeso-reverse-string (s)
+  "Reverse a string."
   (coerce (reverse (loop for b across s
                          collect b))
           'string))
 
 (defun cheeso-string-trim (s &rest chars)
-  "Trim CHARS from the ends of S"
+  "Trim any char in string CHARS from either end of string S.
+Often this fn is called with a literal space, as with
+(cheeso-string-trim my-string ?\ ) ."
   (apply 'cheeso-string-trim-right
          (apply 'cheeso-string-trim-left s chars)
          chars))
 
 (defun cheeso-string-trim-left (s &rest chars)
+  "Trim any char in string CHARS from the left of string S."
   (let ((idx (dotimes (i (length s))
                (unless (member (elt s i) chars)
                  (return i)))))
@@ -651,6 +773,7 @@ Use CREATE-TEMP-F for creating temp copy."
       "")))
 
 (defun cheeso-string-trim-right (s &rest chars)
+  "Trim any char in string CHARS from the right of string S."
   (cheeso-reverse-string (apply 'cheeso-string-trim-left (cheeso-reverse-string s) chars)))
 
 
@@ -684,7 +807,7 @@ trailing newline to trick the tooltip logic into doing the right thing."
     (setq modified (concat modified curline " \n\n")))
   )
 
-`
+
 (defadvice tooltip-show (before
                          flymake-for-csharp-fixup-tooltip
                          (arg &optional use-echo-area)

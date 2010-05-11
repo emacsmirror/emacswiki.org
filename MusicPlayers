@@ -8,11 +8,13 @@ MP3/Ogg-Vorbis/Other music players (in alphabetical order)
 * [https://svn.musicpd.org/libmpdee/trunk/ libmpdee] -- An elisp library to interface with [http://musicpd.org/ MPD], a music player daemon. Contains a small interactive interface as well. Written by [[Ramkumar]]
 * [[Mingus]] -- [http://musicpd.org/ MPD] client based on [https://svn.musicpd.org/libmpdee/trunk/ libmpdee], contains, but not limited to, extensive playlist editing. Written by Niels Giesen (pft)
 * [http://www.asahi-net.or.jp/~pi9s-nnb/monk/ MonK] -- Multimedia Object Navigator Kluge - Interface for reading mp3, CD audio, ogg and more
+* [[Mpc]] -- A major mode providing an interface to the [http://musicpd.org/ MPD] music player daemon, which aims to look and behave a bit like Rhythmbox. Bundled with Gnu Emacs 23.2 and later.
 * [[Mpg123]] -- interface to <code>mpg123</code> and <code>ogg123</code> -- works well!
 * [[MPRIS]] -- interface to media player via dbus, http://wiki.xmms2.xmms.se/wiki/MPRIS
 * MpthreePlayer -- Interface to mpg123 by JeanPhilippeTheberge
 * tiny-xmms -- http://dishevelled.net/elisp/tiny-xmms.el
 * <nowiki>XmmsMode</nowiki> -- http://membres.lycos.fr/jbn/software/xmms-mode.el
+
 
 CD players
 

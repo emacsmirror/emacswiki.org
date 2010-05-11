@@ -28,9 +28,11 @@ Keybindings are:
 You cannot get a copy here because this link is broken
 http://youpou.lip6.fr/queinnec/Miscellaneous/foldingo.el
 
-...but this one works:
+...this one doesn't work either:
 http://www-spi.lip6.fr/~queinnec/Miscellaneous/foldingo.el
 
+...but this one works:
+http://pagesperso-systeme.lip6.fr/Christian.Queinnec/Miscellaneous/foldingo.el
 ----
 For TeX users:
 I made my "tex-mode.el" override the keybindings for C-c f i and C-c f c with the according definitions for TeX. This way I usually got C(++) foldings and TeX foldings when in (La)TeX mode accessible via the keyboard.

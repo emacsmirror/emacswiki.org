@@ -34,7 +34,7 @@
 ;; of interaction with the program you can add your own commands to the list and
 ;; let this extension manage the creation and layout of the buttons for you.
 
-;; This is version 1 $Rev: 263 $ of the Sunrise Commander Buttons Extension.
+;; This is version 1 $Rev: 305 $ of the Sunrise Commander Buttons Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -60,6 +60,9 @@
 (defvar sr-buttons-buffer-name "*Sunrise Buttons*"
   "Name of the Sunrise buttons buffer")
 
+(defvar sr-buttons-command-adapter nil
+  "(Buffer-local) function to use to execute button commands, or nil to do the default.")
+
 (defvar sr-buttons-list
   '(
     ("GotoDir([F2,]j,/)" 'sr-goto-dir                "Go to any directory in active pane")
@@ -67,9 +70,9 @@
     ("Open([F4,]Enter)"  'sr-advertised-find-file    "Visit selected file or directory")
     ("Copy([F5,]C)"      'sr-do-copy                 "Copy selected files to passive pane")
     ("Rename([F6,]R)"    'sr-do-rename               "Move selected files to passive pane")
+    ("Clone(K)"          'sr-do-clone                "Clone selected files to passive pane")
     ("NewDir([F7,]+)"    'dired-create-directory     "Create new directory in active pane")
-    ("Delete([F8,]D)"    'dired-do-delete            "Delete selected files from active pane")
-    ("Quit([F10,]q)"     'keyboard-escape-quit       "Dismiss Sunrise Commander")
+    ("Delete([F8,]D)"    'sr-do-delete               "Delete selected files from active pane")
     nil
     ("DirUp([C-PgUp,]J)" 'sr-dired-prev-subdir       "Go to parent directory in active pane")
     ("DirBack(M-y)"      'sr-history-prev            "Go to previous directory in history")
@@ -81,9 +84,9 @@
     ("Attrs(C-Bksp)"     'sr-toggle-attributes       "Hide/Show file attributes in active pane")
     nil
     ("Other(Tab)"        'sr-change-window           "Switch to passive pane")
-    ("Clone(M-o)"        'sr-synchronize-panes       "Make both panes contain the same directory")
+    ("ClonePane(M-o)"    'sr-synchronize-panes       "Make both panes contain the same directory")
     ("Swap(M-t)"         'sr-transpose-panes         "Transpose panes")
-    ("Refresh(g)"        'sr-revert-buffer           "Rescan directory in active pane")
+    ("Refresh(g)"        'revert-buffer              "Rescan directory in active pane")
     ("Align(C-cC-s)"     'sr-split-toggle            "Change panes alignment (vertical/horizontal/top)")
     ("Sort(s)"           'sr-interactive-sort        "Sort interactively entries in active pane")
     ("Mark([Ins,]m)"     'dired-mark                 "Mark selected entry in active pane")
@@ -98,7 +101,7 @@
     ("Follow(;)"         'sr-follow-file             "Follow file (go to same directory as file)")
     ("Locate(C-cC-l)"    'sr-locate                  "Find files and directories using locate database")
     nil
-    ("FindReplace(Q)"    'sr-do-query-replace-regexp "Find and replace in all selected entries")
+    ("Search(A)"         'sr-do-search               "Search for string/regexp in all marked entries")
     ("Compare(C-M-=)"    'sr-compare-dirs            "Compare directories in panes")
     ("Diff(=)"           'sr-diff                    "Compare selected entries using diff")
     ("Ediff(C-=)"        'sr-ediff                   "Compare selected entries using ediff")
@@ -107,11 +110,14 @@
     ("Home(M-a)"         'sr-beginning-of-buffer     "Go to first entry in active pane")
     ("End(M-e)"          'sr-end-of-buffer           "Go to last entry in active pane")
     nil
+    ("FindReplace(Q)"    'sr-do-query-replace-regexp "Find and replace in all selected entries")
+    ("Fuzzy(C-c/)"       'sr-fuzzy-narrow            "Narrow pane contents with fuzzy matching")
     ("CmdLine(C-ct)"     'sr-term                    "Open Command line in this window")
     ("WDired(C-xC-q)"    'sr-buttons-editable-pane   "Edit active pane using wdired")
     ("SyncNav(C-cC-z)"   'sr-sync                    "Toggle on/off synchronized navigation mode")
     ("LongLines(M-l)"    'sr-toggle-truncate-lines   "Truncate/Restore long lines in active pane")
     ("More...(h)"        'sr-describe-mode           "More commands and keybindings")
+    ("Quit([F10,]q)"     'keyboard-escape-quit       "Dismiss Sunrise Commander")
     )
   "Sunrise button definitions.")
 
@@ -163,15 +169,20 @@
   yet, then creates one."
   (apply 'require '(cus-edit))
   (sr-select-viewer-window t)
-  (switch-to-buffer sr-buttons-buffer-name)
-  (setq truncate-lines t)
-  (setq line-spacing 5)
-  (setq cursor-in-non-selected-windows nil)
-  (if (not (equal major-mode 'sr-buttons-mode))
-      (let ((line-spacing 5)
-            (cursor-in-non-selected-windows nil))
-        (sr-buttons-render)
-        (toggle-read-only)))
+  (cond ((buffer-live-p other-window-scroll-buffer) ;;<-- don't nuke quick views!
+         (switch-to-buffer other-window-scroll-buffer))
+        ((get-buffer "*terminal*")                  ;;<-- prefer terminals
+         (switch-to-buffer "*terminal*"))
+        (t
+         (switch-to-buffer sr-buttons-buffer-name)
+         (setq truncate-lines t)
+         (setq line-spacing 5)
+         (setq cursor-in-non-selected-windows nil)
+         (if (not (equal major-mode 'sr-buttons-mode))
+             (let ((line-spacing 2)
+                   (cursor-in-non-selected-windows nil))
+               (sr-buttons-render)
+               (toggle-read-only)))))
   (sr-select-window sr-selected-window))
 
 (defun sr-buttons-render ()
@@ -203,7 +214,9 @@
       (widget-create 'push-button :tag tag
                                   :action (sr-buttons-action action)
                                   :help-echo hint)
-      (insert " "))))
+      (insert-char ?  1)
+      (put-text-property
+       (1- (point)) (point) 'display (list 'space :width 0.15)))))
 
 (defun sr-buttons-eol ()
   "Terminates the current row of buttons while building the buttons buffer,
@@ -211,10 +224,8 @@
   (let* ((gap (- (window-width) (current-column) 2))
          (margin (/ gap 2)))
     (if (> margin 0)
-        (save-excursion
-          (beginning-of-line)
-          (dotimes (n margin) (insert " "))))
-    (insert "\n")))
+        (save-excursion (beginning-of-line) (insert-char ?  margin)))
+    (unless (eq ?\n (char-before)) (insert "\n"))))
 
 (defun sr-buttons-mc-keys-p ()
   "Determines whether mc style keybindings have been activated in Sunrise."
@@ -248,7 +259,9 @@
   `(lambda (&rest ignore)
      (interactive)
      (sr-select-window sr-selected-window)
-     (run-with-timer 0.01 nil 'call-interactively ,action)))
+     (if sr-buttons-command-adapter
+         (run-with-timer 0.01 nil (funcall sr-buttons-command-adapter ,action))
+       (run-with-timer 0.01 nil 'call-interactively ,action))))
 
 (defun sr-buttons-editable-pane ()
   "Calls sr-editable-pane and displays an informative message (used inside the

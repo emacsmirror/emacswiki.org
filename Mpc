@@ -1,0 +1,3 @@
+Mpc is major mode providing an interface to the MPD music player daemon, which aims to look and behave a bit like Rhythmbox, bundled with Gnu Emacs 23.2 and later. To start using it, follow the instructions at [http://mpd.wikia.com/wiki/Install] to install mpd and run <code>M-x mpc</code>. 
+
+

@@ -1,4 +1,4 @@
-;;; mon-drive-transfer-utils.el --- tools for transferring backing up larg harddrives.
+;;; mon-drive-transfer-utils.el --- tools for transferring backing up large harddrives.
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
@@ -148,7 +148,7 @@
           "# rm-force --recursive --one-file-system <FROM-MOUNT-POINT>"
           "exit"
           "chown -R <USER-ID>:<GROUP-ID> <TRANSFER-NOTES-DIR>"
-          "cp <TRANSFER-NOTES-DIR> <TO-MOUNT-POINT>"
+          "cp -R <TRANSFER-NOTES-DIR> <TO-MOUNT-POINT>"
           "chown -R <USER-ID>:<GROUP-ID> <TO-MOUNT-POINT>") "\n\n")))
 ;; 
 ;;; :TEST-ME *mon-drive-transfer-template*
@@ -359,13 +359,14 @@ We executute the following as root user.
         (mctt-fmp (directory-file-name (file-name-as-directory from-mount-point)))
         ;; Where to move the files/dirs to. Strip trailing slash.
         (mctt-2mp (directory-file-name (file-name-as-directory to-mount-point)))
-        ;; If TO-MOuNT-POINT is a dir this is its mount point.
-        (mctt-2mpm (directory-file-name (file-name-as-directory to-mount-point-mnt)))
+        ;; If TO-MOUNT-POINT is a dir this is its mount point.
+        (mctt-2mpm (when to-mount-point-mnt
+                     (directory-file-name (file-name-as-directory to-mount-point-mnt))))
         ;; Where to save the TRANSFER-LOG. :NOTE Omit trailing slash.      
         (mctt-tnd (directory-file-name (file-name-as-directory transfer-note-dir)))
         (mctt-user (if user  
                        user
-                     ;; Cosider adding an `or' w/ (getenv "USER")
+                     ;; Consider adding an `or' w/ (getenv "USER")
                      (replace-regexp-in-string "^\\(.*\\)\n*" "\\1"
                                                (shell-command-to-string "id -un"))))
         (mctt-group (if group

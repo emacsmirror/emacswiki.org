@@ -258,6 +258,22 @@ To get a copy of the Sunrise Tabs extension go to:
 * Lisp:sunrise-x-tabs.el
 
 ----
+[:TreeExt]
+==The Tree Extension==
+This extension adds to Sunrise a tree view of directories that can be
+used for fast navigation, as well as for several basic operations  on
+files and directories. It uses the excellent "tree-widget.el" library
+written by David Ponce, works in the console as well as in  graphical
+environments  and  offers three different sets of key bindings (mouse
+centric, arrow keys and alphanumeric keys) to easily adapt to a  wide
+variety of usage patterns.
+
+You can get a copy of this extension from:
+
+* http://joseito.republika.pl/sunrise-x-tree.el.gz
+* Lisp:sunrise-x-tree.el
+
+----
 [:Checkpoints]
 ==The Checkpoint Extension: checkpoints for Emacs 23==
 Beginning with version 4 of the Sunrise Commander, checkpoints were redefined to
@@ -270,6 +286,11 @@ be sure, this is the version I intend to further develop, as it has a richer set
 of functions and integrates more nicely to the rest of Emacs. The other  one  is
 deprecated  and  will  eventually  disappear once Emacs 23+ becomes the "stable"
 release.
+
+Here are two screenshots of exactly the same thing:
+
+* In graphical mode: SunriseCommanderGraphicalTreeScreenshotPage
+* In a text console emulator: SunriseCommanderTextTreeScreenshotPage
 
 You can get a copy of this extension at:
 

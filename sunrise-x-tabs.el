@@ -62,7 +62,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 284 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 305 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.
@@ -81,7 +81,6 @@
 ;;; Code:
 
 (require 'sunrise-commander)
-(require 'easymenu)
 (eval-when-compile (require 'desktop))
 
 (defcustom sr-tabs-follow-panes t
@@ -210,8 +209,9 @@
       (set (sr-symbol sr-selected-window 'directory) default-directory)
       (unless (eq from-buffer (sr-other 'buffer))
         (kill-buffer from-buffer))
-      (sr-revert-buffer)
-      (sr-history-push default-directory))))
+      (revert-buffer)
+      (sr-history-push default-directory)))
+  (sr-tabs-refresh))
 
 (defun sr-tabs-focus (name side)
   "Gives focus to the tab with the given name in the given pane."
@@ -252,7 +252,7 @@
 ;; This synchronizes the tabs with the panes if so required (see variable
 ;; sr-tabs-follow-panes). Activated in method sr-tabs-engage.
 (defadvice sr-transpose-panes
-  (after sr-advice-sr-transpose-panes ())
+  (after sr-tabs-advice-sr-transpose-panes ())
   (if sr-tabs-follow-panes (sr-tabs-transpose)))
 
 ;;; ============================================================================
@@ -355,7 +355,7 @@
 
 (defun sr-tabs-make-line ()
   "Assembles a new tab line from cached tags and puts it in the line cache."
-  (if (memq major-mode '(sr-mode sr-virtual-mode))
+  (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
       (let ((tab-set (cdr (assq sr-selected-window sr-tabs)))
             (tab-line (if (or (cdr (first sr-tabs))
                               (cdr (second sr-tabs))) "" nil))
@@ -463,19 +463,6 @@
 ;;; ============================================================================
 ;;; User interface:
 
-(defvar sr-tabs-menu
-  (easy-menu-create-menu
-   "Tabs"
-   '(["Add/Rename tab" sr-tabs-add]
-     ["Remove tab" sr-tabs-remove]
-     ["Go to next tab" sr-tabs-next]
-     ["Go to previous tab" sr-tabs-prev]
-     ["Kill buffer and go to next tab" sr-tabs-kill-and-go]
-     ["Transpose tabs" sr-tabs-transpose]
-     ["Tabs mode help" (lambda ()
-                         (interactive)
-                         (describe-function 'sr-tabs-mode))])))
-
 (defvar sr-tabs-mode-map (make-sparse-keymap))
 (define-key sr-tabs-mode-map [(control ?j)] 'sr-tabs-add)
 (define-key sr-tabs-mode-map [(control ?k)] 'sr-tabs-remove)
@@ -511,23 +498,34 @@
         C-x k ......... Kill buffer and move to the next tabbed one (if any).
 "
   nil nil sr-tabs-mode-map
-  (unless (memq major-mode '(sr-mode sr-virtual-mode))
+  (unless (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
     (setq sr-tabs-mode nil)
     (error "Sorry, this mode can be used only within the Sunrise Commander."))
   (if sr-tabs-mode
       (sr-tabs-engage)
     (sr-tabs-disengage)))
 
+
+
 ;;; ============================================================================
 ;;; Bootstrap:
 
 (defun sr-tabs-menu-init ()
   "Initializes the Sunrise Tabs extension menu."
-  (unless (fboundp 'easy-menu-binding) ;;<-- not available in emacs 22
-    (defsubst easy-menu-binding (menu &optional item-name) (ignore)))
-  (define-key sr-tabs-mode-map
-    (vector 'menu-bar (easy-menu-intern "Sunrise"))
-    (easy-menu-binding sr-tabs-menu "Sunrise")))
+  (unless (lookup-key sr-mode-map [menu-bar Sunrise])
+    (define-key sr-mode-map [menu-bar Sunrise]
+      (cons "Sunrise" (make-sparse-keymap))))
+  (let ((menu-map (make-sparse-keymap "Tabs")))
+    (define-key sr-mode-map [menu-bar Sunrise tabs] (cons "Tabs" menu-map))
+    (define-key menu-map [help] '("Help" . (lambda ()
+                                             (interactive)
+                                             (describe-function 'sr-tabs-mode))))
+    (define-key menu-map [transpose] '("Transpose" . sr-tabs-transpose))
+    (define-key menu-map [kill]      '("Kill and go to next" . sr-tabs-kill-and-go))
+    (define-key menu-map [next]      '("Next"         . sr-tabs-next))
+    (define-key menu-map [prev]      '("Previous"     . sr-tabs-prev))
+    (define-key menu-map [remove]    '("Remove"       . sr-tabs-remove))
+    (define-key menu-map [add]       '("Add/Rename"   . sr-tabs-add))))
 
 (defun sr-tabs-start-once ()
   "Bootstraps  the  tabs  mode  on the first execution of the Sunrise Commander,
@@ -535,6 +533,7 @@
   (sr-tabs-mode t)
   (sr-tabs-menu-init)
   (remove-hook 'sr-start-hook 'sr-tabs-start-once)
+  (unintern 'sr-tabs-menu-init)
   (unintern 'sr-tabs-start-once))
 (add-hook 'sr-start-hook 'sr-tabs-start-once)
 
@@ -593,7 +592,6 @@
      (add-to-list 'desktop-globals-to-clear
                   '(sr-tabs-on . (sr-tabs-reset-state))))))
 
-
 (provide 'sunrise-x-tabs)
 
-;;; sunrise-x-tabs.el ends here
+;;; sunrise-x-tabs.el ends here.
