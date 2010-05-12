@@ -64,9 +64,49 @@ the lazy dog.
 
 --- IainDalton
 
-Just fix the second line by hand and then hit M-q or run fill-paragraph. Make sure that the paragraph is surrounded by blank lines (you can add some just to delete them later) so it won’t run two paragraphs together.
+Just fix the second line by hand and then hit M-q or run fill-paragraph. Make sure that the paragraph is surrounded by blank lines (you can add some just to delete them later) so it won’t run two paragraphs together
+
 
 Response to statement about fill-paragraph: doesn't fill-paragraph modify the buffer?  If I understand correctly, IainDalton's idea is that the original buffer contains one long line, but the display of that line should wrap the line *and* indent the subsequent lines according to syntax.  So the virtual indenting I'm interested in is effectively fill-paragraph on the display only, not the underlying buffer.  --- Spezzer 
 ----
 CategoryFilling
 CategoryGlossary
+
+RE: IainDalton's question.
+
+I found this snippit on some mailing list (http://osdir.com/ml/help-gnu-emacs-gnu/2009-09/msg00346.html).  Combined with linenum+ this gives emacs the appearance of modern text editors with this feature.
+
+<pre>
+(defun srb-adaptive-indent (beg end)
+"Indent the region between BEG and END with adaptive filling."
+(goto-char beg)
+(while
+(let ((lbp (line-beginning-position))
+(lep (line-end-position)))
+(put-text-property lbp lep 'wrap-prefix (fill-context-prefix lbp lep))
+(search-forward "\n" end t))))
+
+(define-minor-mode srb-adaptive-wrap-mode
+"Wrap the buffer text with adaptive filling."
+:lighter ""
+(save-excursion
+(save-restriction
+(widen)
+(let ((buffer-undo-list t)
+(inhibit-read-only t)
+(mod (buffer-modified-p)))
+(if srb-adaptive-wrap-mode
+(progn
+(setq word-wrap t)
+(unless (member '(continuation) fringe-indicator-alist)
+(push '(continuation) fringe-indicator-alist))
+(jit-lock-register 'srb-adaptive-indent))
+(jit-lock-unregister 'srb-adaptive-indent)
+(remove-text-properties (point-min) (point-max) '(wrap-prefix pref))
+(setq fringe-indicator-alist
+(delete '(continuation) fringe-indicator-alist))
+(setq word-wrap nil))
+(restore-buffer-modified-p mod)))))
+</pre>
+
+--- Aidan McQuay

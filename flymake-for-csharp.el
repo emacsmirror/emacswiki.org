@@ -9,7 +9,7 @@
 ;; See http://opensource.org/licenses/ms-pl.html
 ;;
 ;; last saved
-;; Time-stamp: <2010-May-10 17:39:50>
+;; Time-stamp: <2010-May-11 09:56:31>
 
 
 ;; ==================================================================
@@ -48,71 +48,107 @@
 ;;     flymake-for-csharp-grep-pgm
 ;;     flymake-for-csharp-csc-arguments
 ;;
-
-
-;; flymake-for-csharp runs the c# compiler to do syntax checking on a
-;; .cs file, as you edit it.  flymake-for-csharp allows you the choice
-;; of 3 ways to run the build C# files: run csc.exe directly, run
-;; nmake.exe using a makefile that you specify, or run msbuild using a
-;; buildfile that you specify.  To allow flymake-for-csharp to work with
-;; either of the latter two options, you need to specify a particular
-;; well-known target in your makefile, or in your msbuild file.
+;;
+;;    ...and by possibly adding special check-syntax targets in
+;;    your makefile or msbuild file.
+;;
+;; Full details are provided  below.
+;;
+;;
+;; Intro:
+;;
+;; Flymake is a language-neutral mode that periodically invokes a
+;; source-code compiler to check the syntax of the currently-
+;; being-edited buffer.
+;;
+;; flymake-for-csharp is a C#-specific extension of flymake-mode, and
+;; provides the logic for invoking the C# compiler to do the syntax
+;; check on the currently-being-edited buffer.
+;;
+;;
+;; When the flymake mode timer fires, it calls into the
+;; flymake-for-csharp logic.  flymake-for-csharp copies the contents of
+;; the current C# buffer to a temporary source file, then invokes the C#
+;; compiler on that temporary source file.  flymake-for-csharp can do
+;; this in one of 3 ways:
+;;
+;; - using the csc.exe compiler directly;
+;; - using a makefile and invoking nmake
+;; - using a msbuild file and invoking msbuild.exe
+;;
+;;
+;; Which option you choose depends on your requirements.  If the .cs
+;; file you're editing is a standalone module, you can compile it with a
+;; simple invocation of csc.exe.  If the module being edited must be
+;; compiled with other source modules in order to compile correctly, you
+;; will use nmake or msbuild, as you prefer.
+;;
+;; To allow flymake-for-csharp to work with either the nmake or msbuild
+;; options, you need to specify a particular well-known target in your
+;; makefile, or in your msbuild file.
+;;
+;; Now, how to select the compile option:
 ;;
 ;;
 ;; Option A: use the csc.exe compiler directly
 ;; ============================================
 ;;
 ;; This is the simplest option, and also the most limited. With this
-;; option, flymake-for-csharp compiles the existing buffer using the
-;; csc.exe command-line compiler, and the arguments you provide, via the
-;; `flymake-for-csharp-csc-arguments' variable.  Appended to that list
-;; of arguments will be the name of a temporary .cs file, with the
-;; contents of the currently-being-edited .cs file. You should not
-;; include the name of the current .cs file in the
+;; option, flymake-for-csharp compiles the copy of the existing buffer
+;; using the csc.exe command-line compiler, and the arguments you
+;; provide, via the `flymake-for-csharp-csc-arguments' variable.
+;; Appended to that list of arguments will be the name of a temporary
+;; .cs file, with the contents of the currently-being-edited C# buffer.
+;; You should not include the name of the current .cs file in the
 ;; `flymake-for-csharp-csc-arguments' variable, but you can specify the
 ;; names of other .cs files that should be compiled *with* the current
 ;; one.  The `flymake-for-csharp-csc-arguments' variable is only used
-;; with the direct csc.exe build option.
-;;
-;; In deciding which build option to use, flymake-for-csharp searches
-;; the list of build files in `flymake-for-csharp-buildfile-alist' to
-;; find one appropriate for use for syntax checking, and uses the first
-;; one it finds. Therefore, if you want to use the direct csc.exe build
-;; option, set `flymake-for-csharp-buildfile-alist' to nil, OR, insure
-;; that none of the build files in that list, exist in the directory
-;; where the .cs file resides, OR if they do exist, that the required
-;; build targets (see below for an explanation) are not present in those
-;; build files.
+;; with the direct csc.exe build option; it is not used when
+;; flymake-for-csharp invokes nmake or msbuild to do the syntax check.
 ;;
 ;; If you do no special setup, the direct csc.exe build will be used.
 ;;
-;; The compile-directly-with-csc.exe option is limited because you use
-;; the same arguments with all .cs buffers.  Often you want to compile
-;; .cs files differently.  Each project usually requires a different set
-;; of assemblies, for instance.  If you want to use flymake in a
-;; scenario like that, you'll want to rely on the nmake.exe or
-;; msbuild.exe options for flymake-for-csharp.
+;; Here's why: in deciding which build option to use, flymake-for-csharp
+;; searches the list of build files in
+;; `flymake-for-csharp-buildfile-alist' to find one appropriate for use
+;; for syntax checking, and uses the first one it finds. If no
+;; appropriate build files are found, flymake-for-csharp falls back to
+;; invoking the csc.exe compiler directly.
+;;
+;; To determine if a build file is appropriate, flymake-for-csharp uses
+;; these criteria:
+;;
+;;     1. the name of the makefile or msbuild file is on the special
+;;        variable, `flymake-for-csharp-buildfile-alist'
+;;
+;;     2. the makefile or msbuild file contains a special target
+;;        by a well-known name.  check-syntax for makefiles, and
+;;        CheckSyntax for msbuild files.
+;;
+;; If you do *nothing*, then these criteria won't be satisfied, and
+;; flymake-for-csharp will try to use csc.exe to check the syntax of
+;; your C# buffer.
+;;
+;; If you want to explicitly insure that flymake-for-csharp will use
+;; csc.exe to check the syntax of your C# buffer, then set
+;; `flymake-for-csharp-buildfile-alist' to nil, OR, insure that none of
+;; the build files in that list, exist in the directory where the .cs
+;; file resides, OR if they do exist, that the required build targets
+;; are not present in those build files.
+;;
+;; The compile-directly-with-csc.exe option is limited because
+;; flymake-for-csharp will use the same arguments with all .cs buffers.
+;; Often you want to compile .cs files differently.  Each project
+;; usually requires a different set of assemblies, for instance.  If you
+;; want to use flymake in a scenario like that, you'll want to rely on
+;; the nmake.exe or msbuild.exe options for flymake-for-csharp.
 ;;
 ;;
 ;; Option B: use nmake and a makefile.
 ;; ============================================
 ;; If you want to use a makefile, you must:
 ;;
-;; 1. set `flymake-for-csharp-buildfile-alist' to a list of names of
-;;    makefiles. You can use wildcards.  The name of the makefile must
-;;    have the word "makefile" in it, or should end with .mk.
-;;    flymake-for-csharp looks only at files with names that fit those
-;;    constraints.  flymake-for-csharp searches for each named file in
-;;    the same directory as the currently-being-edited .cs file. If the
-;;    file exists, flymake-for-csharp searches within the file for a
-;;    make target by the name of check-syntax: .  (This fixed name is
-;;    consistent with the use of flymake for C language source files.).
-;;    If the file exists and contains the check-syntax: make target,
-;;    flymake-for-csharp runs nmake.exe on it to check the syntax of the
-;;    currently-being-edited .cs file.
-;;
-;;
-;; 2. configure the `flymake-for-csharp-netsdk-location' variable to
+;; 1. configure the `flymake-for-csharp-netsdk-location' variable to
 ;;    specify the location of the bin directory that contains nmake.exe.
 ;;    Usually it is in one of the following places:
 ;;
@@ -122,54 +158,85 @@
 ;;      example: c:\Program Files\Microsoft Visual Studio 9\SDK\v2.0
 ;;
 ;;    example:
-;;      (setq flymake-for-csharp-buildfile-alist (list "makefile"))
 ;;      (setq flymake-for-csharp-netsdk-location "c:\\Program Files\\Microsoft Visual Studio 9\\SDK\\v2.0")
 ;;
 ;;    Notice that you should not append the bin subdir on the value of
 ;;    flymake-for-csharp-netsdk-location.
 ;;
 ;;
-;; 3. Create the check-syntax target. In the simplest case, it would look
-;;    something like so:
+;; 2. set `flymake-for-csharp-buildfile-alist' to a list of filespecs
+;;    for names of makefiles. You can use wildcards.  The name of the
+;;    makefile must have the word "makefile" in it, or should end with
+;;    .mk.  flymake-for-csharp looks for files from the alist, in the
+;;    same directory as the currently-being-edited .cs file, where the
+;;    filename fits the constraint just described.
+;;
+;;    If the makefile exists, flymake-for-csharp searches within the
+;;    file for a make target by the name of "check-syntax" .  (This fixed
+;;    name is consistent with the use of flymake for C language source
+;;    files.).  If the makefile exists and contains the check-syntax make
+;;    target, flymake-for-csharp runs nmake.exe on it to check the
+;;    syntax of the currently-being-edited .cs file.
+;;
+;;    By default, `flymake-for-csharp-buildfile-alist' contains "makefile",
+;;    "flymake.mk" and "makefile.flymake".  If you put your check-syntax
+;;    target in a file by one of those names, then you won't need to
+;;    change the value of `flymake-for-csharp-buildfile-alist' .
+;;
+;;
+;;
+;; 3. Create the check-syntax target in the makefile. In the simplest
+;;    case, you compile only a single source module at a time.  The
+;;    target block to do syntax checking would look something like so:
 ;;
 ;;        check-syntax:
 ;;           %windir%\Microsoft.NET\Framework\v3.5\csc.exe /t:module $(FLYMAKE_CHECK)
 ;;
-;;    Flymake invokes nmake with several things defined on the command
-;;    line:
+;;    This works for standalone source modules; those that do not depend
+;;    on any other source modules.  If your source module depends on
+;;    particular assemblies, you could insert them on the CSC command line,
+;;    using the /R option, like so:
+;;
+;;        check-syntax:
+;;           $(_CSC) /t:module /R:foo.dll $(FLYMAKE_CHECK)
+;;
+;;
+;;    The target name MUST be "check-syntax". In the command that runs
+;;    for that target, you can run whatever commands you
+;;    like. Typically, you will invoke the c# compiler as appropriate.
+;;    You can use a make variable like $(_CSC) if one is defined in your
+;;    makefile.  If you use /target:netmodule, flymake-for-csharp will
+;;    delete any temporary .netmodule files that are created as part of
+;;    the syntax check.  If you don't, if for example you want to create
+;;    a DLL or EXE for some reason, you'll need to do your own cleanup
+;;    in the command block.
+;;
+;;    Flymake invokes nmake with several nmake macros defined on the
+;;    command line:
 ;;
 ;;        FLYMAKE_CHECK  - the name of the file to check.  This is a source
 ;;                 file with a temporary name, copied from the current
-;;                 state of the buffer.
+;;                 state of the buffer.  If you are editing Module.cs, then
+;;                 the value of this macro will be  Module_flymake.cs
 ;;
 ;;        FLYMAKE_ORIGINAL  - the name of the original file that is being
-;;                 checked for syntax.
+;;                 checked for syntax.  In the above example, it will be
+;;                 Module.cs
 ;;
 ;;        FLYMAKE_SYNTAX_CHECK - set to 1
 ;;
-;;
-;;    The target name MUST be "check-syntax". You should, of course,
-;;    specify the location of your c# compiler as appropriate.  You can
-;;    use a make variable like $(CSC) if one is defined in your
-;;    makefile.  You SHOULD use /target:netmodule.  flymake-for-csharp
-;;    will delete any temporary .netmodule files that are created as
-;;    part of the syntax check.  If you don't use /target:netmodule, you
-;;    will get a DLL or EXE, and flymake-for-csharp won't clean it up.
-;;
-;;    Now regarding the files to compile, in the simple case you just
-;;    need to compile a single file.  In more complex cases, you want to
-;;    compile the file-to-check along with a set of other files that
-;;    are included in the project, let's say, in a single DLL. In that
-;;    case you'll need to *exclude* the FLYMAKE_ORIGINAL file, and
-;;    to *include* the FLYMAKE_CHECK file. This can be done with nmake
-;;    macros, and inline files.
+;;    That covers the simple case. In more complex cases, there are a
+;;    set of other source files in a project that get compiled to a
+;;    single DLL, for example.  When editing one of those files, you'll
+;;    need to *exclude* the FLYMAKE_ORIGINAL file, and to *include* the
+;;    FLYMAKE_CHECK file, in the check-syntax make target. This can be
+;;    done with nmake macros, and inline files.
 ;;
 ;;    For example, suppose you have a project that compiles 3 source
 ;;    files, Fribble,cs Zambda.cs Twoolie.cs, into a DLL. Regardless
 ;;    which file you are currently editing in emacs, you want to compile
-;;    *the other two* along with the temp copy of the
-;;    currently-being-edited file into a netmodule. You can do that like
-;;    this:
+;;    *the other two* along with the temporary copy of the currently-
+;;    being-edited file into a netmodule. You can do that like so:
 ;;
 ;;        CS_SOURCE=Fribble.cs Zambda.cs Twoolie.cs
 ;;             ....
@@ -186,35 +253,25 @@
 ;;
 ;;    Given that target in the makefile, all files EXCLUDING the
 ;;    currently-being-edited file, but INCLUDING the temporary copy of
-;;    the currently-being-edited file, are compiled into a module.  It is
-;;    done with a little-known feature of nmake called in-line files.
-;;    What it does is create a temporary .cmd file, and invoke it.
-;;    The .cmd file includes the logic to exclude the original file
-;;    from the build, while including the temporary file.
+;;    the currently-being-edited file, are compiled into a module.  The
+;;    double-angle-bracket signifies the use of a little-known feature
+;;    of nmake called in-line files.  The above nmake snippet causes
+;;    nmake to create a temporary .cmd file, and invoke it.  The .cmd
+;;    file includes the logic to exclude the original C# file from the
+;;    build, and include the temporary C# file into the build.
 ;;
-;;    Putting the $(FLYMAKE_CHECK) file first on the csc line, causes
+;;    Putting the $(FLYMAKE_CHECK) file first on the csc line causes
 ;;    the generated .netmodule file to have a name that allows
-;;    flymake-for-csharp to find it, and delete it when flymake
+;;    flymake-for-csharp to find it and delete it when flymake
 ;;    finishes.
 ;;
-;;    If you don't want to put this make target into your main makefile,
-;;    you can alternatively put it into an alternative makefile, for
-;;    example "makefile.flymake". Specify that filename as one element
-;;    in the variable `flymake-for-csharp-buildfile-alist'.
+;;    If you don't want to put a check-syntax make target into your main
+;;    makefile, you can alternatively put it into an alternative
+;;    makefile, for example "makefile.flymake" or "flymake.mk". Insure
+;;    that the filename you use is included as one element in the
+;;    variable `flymake-for-csharp-buildfile-alist'.
 ;;
 ;;
-;; To insure that you use nmake to do the syntax checking, be sure that
-;; on the `flymake-for-csharp-buildfile-alist' list, a matching makefile
-;; file appears before any matching msbuild file.  flymake-for-csharp
-;; will use the first suitable build file (either a makefile or a
-;; msbuild file) that it finds.
-;;
-;; Flymake works by copying the contents of the current buffer to a
-;; temporary source file, then compiling it.  In the case where you need
-;; to compile multiple source files together, you need to compile all
-;; files, *including* the temporary copy of the file being edited, but
-;; *excluding* the actual source file being checked.  This isn't easy to
-;; do in a makefile.  For that case I suggest msbuild.
 ;;
 ;; ==================================================================
 ;;
@@ -224,8 +281,11 @@
 ;;
 ;; If you use msbuild, rather than nmake, specify the location of
 ;; msbuild.exe via the `flymake-for-csharp-dotnet-location' variable,
-;; and insert into `flymake-for-csharp-buildfile-alist' a list of names
-;; of files. Wildcards are allowed.  After wildcard expansion, for each
+;; and insure that `flymake-for-csharp-buildfile-alist' contains a spec
+;; for a buildfile that contains the well-known target, CheckSyntax.
+;;
+;; As described above, Wildcards are allowed in the elements in the alist.
+;; After wildcard expansion, for each
 ;; file in the list that has a name that includes "msbuild" or ends in
 ;; .xml, or .csproj, flymake-for-csharp will search the file, and check
 ;; for the well-known build target of "CheckSyntax" in the file. If that
@@ -251,6 +311,18 @@
 ;; msbuild file appears before a matching makefile.  flymake-for-csharp
 ;; will use the first suitable build file (either a makefile or a
 ;; msbuild file) that it finds.
+;;
+;; Flymake invokes msbuild with several properties defined on the
+;; command line:
+;;
+;;     SourceFileToCheck - the name of the file to check.  This is a source
+;;                 file with a temporary name, copied from the current
+;;                 state of the buffer.  If you are editing Module.cs, then
+;;                 the value of this property will be  Module_flymake.cs
+;;
+;;     OriginalSourceFile  - the name of the original file that is being
+;;                 checked for syntax.  In the above example, it will be
+;;                 Module.cs
 ;;
 ;; If the source you are editing consists of small utility programs that
 ;; each rely on a single source file, you can use a standard,
@@ -291,7 +363,9 @@
 ;;
 ;; -ends-
 ;;
-;; (This msbuild file works only with .NET 3.5.)
+;; (This msbuild file will work only with .NET 3.5 and later.)  Name
+;; that build file according to the constraints described above, and put
+;; the name of the file on `flymake-for-csharp-buildfile-alist' .
 ;;
 ;; If there are additional assemblies you need to reference, add them as
 ;; you would normally, by adding an additional <Reference> element under
@@ -303,14 +377,15 @@
 ;; assembly and if that DLL is found in the c:\ionic directory.
 ;;
 ;; If your projects consist of multiple source files, then you need to
-;; get fancier.  The way flymake works is, it copies the current contents
-;; of the buffer to a temporary source file, then compiles it.  Therefore
-;; in the case where you are compiling multiple source files together,
-;; you need to compile all files, *including* the temporary copy of the
-;; file being edited, but *excluding* the actual source file being
-;; edited. This is easily done in msbuild with a specially-structured
-;; Exclude qualifier. Your msbuild.flymake.xml file should look something
-;; like this:
+;; get fancier.  The way flymake works is, it copies the current
+;; contents of the buffer to a temporary source file, then compiles it.
+;; Therefore in the case where you are compiling multiple source files
+;; together, you need to compile all files, *including* the temporary
+;; copy of the file being edited, but *excluding* the actual source file
+;; being edited. This is easily done in msbuild with a
+;; specially-structured Exclude qualifier, referencing the
+;; OriginalSourceFile property. Your msbuild.flymake.xml file should
+;; look something like this:
 ;;
 ;; <Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003"
 ;;          DefaultTargets="CompileAll"
@@ -421,20 +496,22 @@ a bare file if you want flymake-for-csharp to find grep.exe on
 the path. ")
 
 (defvar flymake-for-csharp-buildfile-alist
-  (list "makefile.flymake" "*.flymake.xml" "makefile" "*.csproj")
+  (list "makefile" "makefile.flymake" "flymake.mk" "*.flymake.xml"
+        "*.csproj")
   "A list of build files that flymake should look for. Wildcards
 are allowed. For each filename in this list, flymake-for-csharp
 will check the existence of the file in the local directory.  If
 the file exists, it will determine if the file has the
 appropriate target, then invoke the associated build tool.  If
-the filename is 'makefile' or begins with 'makefile', it will try
-to use the file with nmake.  If the filename is '*.csproj' or
-'msbuild.*' or ends in '.xml', flymake will try to use the build
-file with msbuild.  The build file you specify should have the
-check-syntax target contained within it. If none of the build
-files on the list seem appropriate, then flymake-for-csharp will
-resort to directly compiling the current file by itself, using
-csc.exe, into a netmodule." )
+the filename is 'makefile' or begins with 'makefile' or ends in
+.mk, flymake-for-csharp will try to use the file with nmake.  If
+the filename is '*.csproj' or 'msbuild.*' or ends in '.xml',
+flymake will try to use the build file with msbuild.  The build
+file you specify should have the check-syntax target contained
+within it. If none of the build files on the list seem
+appropriate, then flymake-for-csharp will resort to directly
+compiling the current file by itself, using csc.exe.
+" )
 
 
 (defvar flymake-for-csharp-csc-arguments

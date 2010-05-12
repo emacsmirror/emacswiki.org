@@ -14,5 +14,34 @@ lines into your ~/.emacs file:
 (setq default-input-method "cyrillic-dvorak")
 </pre>
 
+== Keyboard Layout ==
+You can as well define your keyboard layout via quail. Here is an example that defines two types of dvorak layout as well as chooses one of them.
+<pre>
+;; This is inteded to be used together with
+;;
+;;   setxkbmap -layout "us(dvp)"
+;;
+
+(eval-after-load 'quail
+  '(progn
+     (add-to-list 'quail-keyboard-layout-alist
+       '("dvp" . "\
+                              \
+  %&7[5{3}1(9=0*2)4+6]8!`#    \
+  ;:,<.>pPyYfFgGcCrRlL/?@^    \
+  aAoOeEuUiIdDhHtTnNsS-_\\|    \
+  '\"qQjJkKxXbBmMwWvVzZ        \
+                              "))
+     (add-to-list 'quail-keyboard-layout-alist
+       '("dvorak" . "\
+                              \
+  1!2@3#4$5%6^7&8*9(0)[{]}`~  \
+  '\",<.>pPyYfFgGcCrRlL/?=+    \
+  aAoOeEuUiIdDhHtTnNsS-_\\|    \
+  ;:qQjJkKxXbBmMwWvVzZ         \
+                             "))
+     (quail-set-keyboard-layout "dvp")))
+</pre>
+
 ----
 CategoryInternationalization

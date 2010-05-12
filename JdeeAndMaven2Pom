@@ -7,6 +7,9 @@ There already exists a library to use Maven 1 POMs with JDEE (JdeeAndMavenPom), 
 [new]
 This library has been superseded by jde-mvn.  See [http://www.bitbucket.org/espenhw/jde-mvn/ the project site] for details.  --espenhw
 ----
+[new]
+According to the jde-mvn site, Espen is no longer maintaining this plugin.
+----
 
 Lisp:pom-parser.el fixes these issues (and probably adds a host of new ones).  Stick it somewhere in your load-path, and your prj.el can now look something like this:
 

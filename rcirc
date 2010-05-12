@@ -78,6 +78,7 @@ Please also consider visiting these pages in order to getting started:
 ; [[rcircGroupMode]]: propose an *rcirc-groups* buffer ala gnus *Group*, with refresh and catchup options (and RET to follow), in order to manage notifications in rcirc
 ; [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
 ; [[rcircFacebook]]: how to use Facebook chat
+; [[rcircOccur]]: find stuff in all your rcirc buffers
 
 ==Related stuff that might be of interest==
 

@@ -58,6 +58,24 @@ Version 1.0.1:
 * Made the completion window more useable in multi-window configurations.  Thanks to Jan Rehders.
 * Fixed two bugs in computing optimal completion content layout.
 
+= Discussion =
+
+[new]
+I tried it for a few hours. I like the larger window -- specially when finding files.
+I bound the buffer-switching to `C-x b' and the file-finding to `C-x C-f' in order to force me to use it.
+
+I also had some subtle user interface issues. How do regular users deal with these?
+
+# I expected `C-x b RET' to take me back to the previous buffer. I found that I had to start typing the buffer names a lot more often than with IswitchBuffers.
+# I expected `C-x C-f' followed by some typing and `DEL RET' (where I delete the last slash) to open dired. Now I have to use `C-x d' at the end, which is a (tiny) bit harder to type.
+# When I see the match I'm looking for, I need to use `C-n' to pick it, where as I'm used to typing `C-s'. (That one is probably the easiest to fix for end users.)
+
+-- AlexSchroeder
+
+Another issue when coming from IswitchBuffers:
+
+# I expected `C-x b C-n RET' _after_ a split-window to take me to the most recently used buffer. I use this all the time to show two buffers side-by-side. Instead it just selects the already selected buffer.
+
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion
 

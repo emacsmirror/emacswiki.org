@@ -58,7 +58,7 @@ The experimental implementation of these ideas is planned for VM 8.2.0 and its p
 It will not be possible to open attachments without loading a message body into the '''Folder''' buffer.  As far as possible, VM will load messages automatically whenever needed.  The user will be responsible for unloading them if necessary.  Both of these commands can operate on marked messages.  So they can be executed in bulk.
 
 [new:reddyuday:2010-05-08 11:52 UTC]
-This solution involves significant re-engineering of VM.  
+The solution of '''Fetch''' buffers involves significant re-engineering of VM.  
 
 VM tends to assume that there is a single buffer that a message is associated with and the identity of this buffer is stored in a slot in the message descriptor (`vm-buffer-of').  The data about the message as well as the message body are obtained from this buffer.  
 

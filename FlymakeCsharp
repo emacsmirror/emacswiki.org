@@ -63,7 +63,7 @@ To use it:
       flymake-for-csharp-csc-arguments
  
 
-For More Detail, see the source code. 
+For More Detail, see the extensive commentsin the source code for elisp. 
 
 
 

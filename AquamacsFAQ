@@ -309,6 +309,12 @@ To make sure the case is preserved in a completion, you probably have to [http:/
 To launch Aquamacs from a terminal, use the installer function in the Tools menu.  You can then launch Aquamacs using the "aquamacs" command.  Note that this pertains to starting Aquamacs from a "terminal", and not from arbitrary scripts, specifically in batch mode: unlike the "emacs" command, "aquamacs" currently does not process other arguments than filenames.  
 To compile Elisp sources, call /Applications/Aquamacs\ Emacs.app/Contents/MacOS/Aquamacs\ Emacs.
 
+To interact with a running Aquamacs instance, you can use the built-in Emacs server. Invoke <code>M-x server-start</code> to start the server, or add the line <code>(server-start)</code> to your Preferences.el or .emacs file. Then, from the terminal, use the "emacsclient" command to open a file in your running Aquamacs instance. Use <code>C-x #</code> to close an emacsclient buffer.
+
+=== Installing or Upgrading the Command-line Tools ===
+
+In order to use the "aquamacs" and "emacsclient" command-line tools, from the Aquamacs menu bar, <code>Tools->Install Command Line Tools</code>. If you are upgrading Aquamacs, you may need to re-install the Command Line Tools.
+
 == How to cleanly uninstall Aquamacs? ==
 
 I'd recommend [http://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.

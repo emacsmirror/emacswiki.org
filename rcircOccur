@@ -1,0 +1,14 @@
+Somebody said something in your [[rcirc]] session but you no longer remember where? ##/occur foo## and find all occurences of foo using `multi-occur' (see OccurMode).
+
+{{{
+(eval-after-load 'rcirc
+  '(defun-rcirc-command occur (regexp)
+     "Run `multi-occur' for all buffers in `rcirc-mode'."
+     (interactive "sList lines matching regexp: ")
+     (multi-occur (let (result)
+		    (dolist (buf (buffer-list))
+		      (with-current-buffer buf
+			(when (eq major-mode 'rcirc-mode)
+			  (setq result (cons buf result)))))
+		    result) regexp)))
+}}}

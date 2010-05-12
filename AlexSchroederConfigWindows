@@ -4,6 +4,9 @@
 ;; This is free software.
 ;; Currently for GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600) of 2008-09-09 on LENNART-69DE564 (patched)
 
+;; ╭∩╮⎝⏠_⏠⎠╭∩╮
+;; ▇█▓▒░◕~◕░▒▓█▇
+
 (require 'cl)
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
@@ -24,6 +27,9 @@
 (setenv "CVS_RSH" "ssh")
 (setenv "WikiDataDir" "test-data")
 (setq visible-bell t)
+
+;; (set-face-attribute 'default nil :family "Garamond" :height 140)
+(set-face-attribute 'default nil :family "Consolas" :height 110)
 
 ;; Tramp
 ;; Download http://www.chiark.greenend.org.uk/~sgtatham/putty/download.html
@@ -54,7 +60,8 @@
 
 (require 'generic-x)
 
-(setq vc-follow-symlinks t)
+(setq vc-follow-symlinks t
+      read-quoted-char-radix 10)
 
 ;; Less glaring face for minibuffer prompts.
 ;; (set-face-foreground 'minibuffer-noticeable-prompt "purple")
@@ -120,7 +127,8 @@
 	 (lambda (buf)
            (with-current-buffer buf
              (not (or (eq major-mode 'sql-mode)
-		      (eq major-mode 'sql-interactive-mode))))) nil)
+		      (eq major-mode 'sql-interactive-mode)
+		      (eq major-mode 'sqlplus-mode))))) nil)
         ("java" nil nil nil
 	 (lambda (buf)
            (with-current-buffer buf
@@ -233,55 +241,79 @@ Indent by DEPTH, if required"
 ;; coworkers use TAB to indent code
 (add-hook 'java-mode-hook (lambda () 
 			    (setq c-basic-offset 2
-				  tab-width 2
+				  tab-width 8
 				  indent-tabs-mode t)))
 
 ;;; sql
 
-(add-hook 'sql-mode-hook (lambda () 
-			   (setq c-basic-offset 3
-				 tab-width 3
-				 indent-tabs-mode nil)
-			   (local-set-key (kbd "C-c w") 'sql-copy-word)))
+(autoload 'sqlplus "sqlplus" nil t)
+(autoload 'sqlplus-mode "sqlplus" nil t)
 
-(defun sql-copy-word ()
-  "Copy current word to the end of the buffer."
-  (interactive)
-  (save-excursion
-    (let ((sym (symbol-at-point)))
-      (goto-char (point-max))
-      (insert sym ", "))))
+(dolist (item '(("\\.sqp\\'" . sqlplus-mode)
+		("\\.sql\\'" . sqlplus-mode)))
+  (add-to-list 'auto-mode-alist item))
 
-(global-set-key (kbd "C-c q") 'sql-oracle)
+(autoload 'plsql-mode "plsql" nil t)
 
-(setq sql-user "DEV"
-      sql-password ""
-      sql-database "BSICRM")
+(dolist (item '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
+		("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
+		("\\.sql\\'" . plsql-mode) ("\\.prc\\'" . plsql-mode)
+		("\\.fnc\\'" . plsql-mode) ("\\.trg\\'" . plsql-mode)
+		("\\.vw\\'" . plsql-mode)))
+  (add-to-list 'auto-mode-alist item))
 
-(setq sql-input-ring-file-name "~/.sql_history"
-      sql-product 'oracle
-      comint-input-ring-size 500)
-(add-to-list 'auto-mode-alist '("\\.pls\\'" . sql-mode))
+(global-set-key (kbd "C-c q") 'sqlplus)
 
-(add-hook 'sql-mode-hook
-	  (lambda ()
-	    (local-set-key (kbd "C-z") 'sql-oracle)
-	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
-	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)))
-(add-hook 'sql-interactive-mode-hook
+(add-hook 'sqlplus-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "C-z") 'bury-buffer)
-	    (set-process-coding-system (get-buffer-process sql-buffer) 'latin-1 'latin-1)))
+	    (set-process-coding-system (get-process (sqlplus-get-process-name sqlplus-connect-string))
+				       'latin-1 'latin-1)))
 
-(add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
+;; (add-hook 'sql-mode-hook (lambda () 
+;; 			   (setq c-basic-offset 3
+;; 				 tab-width 3
+;; 				 indent-tabs-mode nil)
+;; 			   (local-set-key (kbd "C-c w") 'sql-copy-word)))
 
-(defun my-sql-set-buffer ()
-  (let ((new-buffer (current-buffer)))
-    (dolist (buf (buffer-list))
-      (with-current-buffer buf
-	(unless (buffer-live-p sql-buffer)
-	  (setq sql-buffer new-buffer)
-	  (run-hooks 'sql-set-sqli-hook))))))
+;; (defun sql-copy-word ()
+;;   "Copy current word to the end of the buffer."
+;;   (interactive)
+;;   (save-excursion
+;;     (let ((sym (symbol-at-point)))
+;;       (goto-char (point-max))
+;;       (insert sym ", "))))
+
+;; (global-set-key (kbd "C-c q") 'sql-oracle)
+
+;; (setq sql-user "DEV"
+;;       sql-password ""
+;;       sql-database "BSICRM")
+
+;; (setq sql-input-ring-file-name "~/.sql_history"
+;;       sql-product 'oracle
+;;       comint-input-ring-size 500)
+;; (add-to-list 'auto-mode-alist '("\\.pls\\'" . sql-mode))
+
+;; (add-hook 'sql-mode-hook
+;; 	  (lambda ()
+;; 	    (local-set-key (kbd "C-z") 'sql-oracle)
+;; 	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
+;; 	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)))
+;; (add-hook 'sql-interactive-mode-hook
+;; 	  (lambda ()
+;; 	    (local-set-key (kbd "C-z") 'bury-buffer)
+;; 	    (set-process-coding-system (get-buffer-process sql-buffer) 'latin-1 'latin-1)))
+
+;; (add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
+
+;; (defun my-sql-set-buffer ()
+;;   (let ((new-buffer (current-buffer)))
+;;     (dolist (buf (buffer-list))
+;;       (with-current-buffer buf
+;; 	(unless (buffer-live-p sql-buffer)
+;; 	  (setq sql-buffer new-buffer)
+;; 	  (run-hooks 'sql-set-sqli-hook))))))
 
 (defcustom sql-replacements
   '(("#W#" . ""))
@@ -533,7 +565,7 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql"))
+	 "#emacs" "#sql" "#svg-edit"))
 	("irc.perl.org" :channels ("#perlde" "#perl6"))
 	("ircnet.eversible.com" :channels ("#drsrm"))
 	("irc.sorcery.net" :channels ("#rpmn"))
@@ -542,7 +574,7 @@ Each line consists of a lastname, a tab, and a firstname."
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
       ;; "#openbsd" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"
       rcirc-decode-coding-system 'undecided
-      rcirc-ignore-list '("ams" "consolers" "jordanb")
+      rcirc-ignore-list '("consolers" "jordanb" "dustpuppy")
       rcirc-authinfo (let ((file "~/.rcirc-authinfo"))
 		       (when (file-readable-p file)
 			 (with-temp-buffer
@@ -553,6 +585,16 @@ Each line consists of a lastname, a tab, and a firstname."
   "Automatically join #emacs-ops if we join #emacs."
   (when (string= (car args) "#emacs")
     (rcirc-send-string process (concat "JOIN " "#emacs-ops"))))
+
+(eval-after-load 'rcirc
+'(defun-rcirc-command whois (nick)
+   "Request information from server about NICK."
+   (interactive (list
+		 (let ((completion-ignore-case t))
+		   (completing-read "Whois: "
+				    (with-rcirc-server-buffer
+				      rcirc-nick-table)))))
+   (rcirc-send-string process (concat "WHOIS " nick))))
 
 (defun rcirc-unfill ()
   (interactive)
@@ -613,23 +655,7 @@ Limitation: in its interactive form, you can only op one nick."
 (eval-after-load 'rcirc '(require 'rcirc-color))
 (eval-after-load 'rcirc '(require 'rcirc-controls))
 (eval-after-load 'rcirc '(require 'rcirc-pounce))
-
-(setq rcirc-colors
-      (let (candidates)
-        (dolist (item color-name-rgb-alist)
-	  (destructuring-bind (color r g b) item
-	    (let ((d (sqrt (+ (* (/ r 512) (/ r 512))
-			      (* (/ g 512) (/ g 512))
-			      (* (/ b 512) (/ b 512))))))
-	      (if (and (not (= r g))
-		       (not (= r b)); grey
-		       (> d 10)
-		       (< d 150))
-		(setq candidates (cons color candidates))))))
-	candidates))
-
-;; (length rcirc-colors)
-;; (list-colors-display rcirc-colors)
+(eval-after-load 'rcirc '(require 'rcirc-groups))
 
 ;; Windows doesn't like "*foo*" filenames
 (eval-after-load 'rcirc
@@ -662,7 +688,20 @@ This is used for the initial name given to IRC buffers."
 	(nick (or nick rcirc-default-nick)))
     (rcirc-send-string process (concat "MODE " nick " +i"))))
 
-;; define faces
+;; rcirc occur
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command occur (regexp)
+     "Run `multi-occur' for all buffers in `rcirc-mode'."
+     (interactive "sList lines matching regexp: ")
+     (multi-occur (let (result)
+		    (dolist (buf (buffer-list))
+		      (with-current-buffer buf
+			(when (eq major-mode 'rcirc-mode)
+			  (setq result (cons buf result)))))
+		    result) regexp)))
+
+;; define rcirc faces
 
 (defface rcirc-nick-in-message '((t (:background "lemon chiffon")))
   "My nick when mentioned by others.")

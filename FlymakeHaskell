@@ -12,6 +12,8 @@
 
 2010-01-26 reworked the elisp version as haskell-mode now provides some flymake integration (which I disable): Rohan Hart
 
+2010-05-11 Perl script that builds using Cabal, if possible: Florian Lorenzen
+
 I've tested the following procedure on both GNU Emacs 21.2.1 and 22.1.50.1.
 I'm afraid that it may not work on another version. 
 Please revise this document if you find a problem or its solution.
@@ -84,10 +86,10 @@ $base_dir =~ s/ /\\ /g;
             '-fbyte-code',
             "-i$base_dir",
             "-i$base_dir/..",
-	    "-i$base_dir/../..",
-	    "-i$base_dir/../../..",
-	    "-i$base_dir/../../../..",
-	    "-i$base_dir/../../../../..",
+            "-i$base_dir/../..",
+            "-i$base_dir/../../..",
+            "-i$base_dir/../../../..",
+            "-i$base_dir/../../../../..",
             $source);
 
 while(@ghc_options) {
@@ -110,16 +112,16 @@ while(<MESSAGE>) {
         print $1;
         print $2;
         $rest = $3;
-	chomp $rest;
-	print $rest;
-	next;
+        chomp $rest;
+        print $rest;
+        next;
     }
     if(/\s+(.*)/) {
-	$rest = $1;
+        $rest = $1;
         chomp $rest;
-	print $rest;
+        print $rest;
         print " ";
-	next;
+        next;
     }
 }
 close($fh);
@@ -252,7 +254,7 @@ Comment out these lines in haskell-mode.el
 
     (eval-after-load "flymake"
       '(add-to-list 'flymake-allowed-file-name-masks
-    		'("\\.l?hs\\'" haskell-flymake-init)))
+                '("\\.l?hs\\'" haskell-flymake-init)))
 
 Add the following to your .emacs
 
@@ -264,9 +266,9 @@ Add the following to your .emacs
     
     (defun flymake-get-Haskell-cmdline (source base-dir)
       (list "ghc"
-    	(list "--make" "-fbyte-code"
-    	      (concat "-i"base-dir)  ;;; can be expanded for additional -i options as in the Perl script
-    	      source)))
+        (list "--make" "-fbyte-code"
+              (concat "-i"base-dir)  ;;; can be expanded for additional -i options as in the Perl script
+              source)))
     
     (defvar multiline-flymake-mode nil)
     (defvar flymake-split-output-multiline nil)
@@ -276,7 +278,7 @@ Add the following to your .emacs
       (around flymake-split-output-multiline activate protect)
       (if multiline-flymake-mode
           (let ((flymake-split-output-multiline t))
-    	    ad-do-it)
+            ad-do-it)
         ad-do-it))
     
     (defadvice flymake-split-string
@@ -288,10 +290,10 @@ Add the following to your .emacs
     (eval-after-load "flymake"
       '(progn
          (add-to-list 'flymake-allowed-file-name-masks
-    		  '("\\.l?hs$" flymake-Haskell-init flymake-simple-java-cleanup))
+                  '("\\.l?hs$" flymake-Haskell-init flymake-simple-java-cleanup))
          (add-to-list 'flymake-err-line-patterns
-    		  '("^\\(.+\\.l?hs\\):\\([0-9]+\\):\\([0-9]+\\):\\(\\(?:.\\|\\W\\)+\\)"
-    		    1 2 3 4))))
+                  '("^\\(.+\\.l?hs\\):\\([0-9]+\\):\\([0-9]+\\):\\(\\(?:.\\|\\W\\)+\\)"
+                    1 2 3 4))))
     
     (add-hook
      'haskell-mode-hook
@@ -304,6 +306,130 @@ The authors would like to thank Thomas Schilling, Gwern Branwen and
 Denis Bueno for useful suggestions. Credmp's hack for the mini-buffer
 is cool and very useful. We would also like to thank the developer
 team of flymake-mode and the anonymous reviewers.
+
+
+== Alternative Perl script to use Cabal ==
+
+The following version of the ##flycheck_haskell.pl## script first
+looks for a [http://www.haskell.org/Cabal Cabal] and ##Setup.[l]hs##
+file. If successful, it uses ##runhaskell Setup.[l]hs build## to run
+the compiler; otherwise, ##ghc --make## is used as fallback.
+
+    #!/usr/bin/env perl
+    # flycheck_haskell.pl
+
+    ### Please rewrite the following 3 variables 
+    ### ($ghc, @ghc_options and @ghc_packages)
+
+    $runhaskell = 'runhaskell';  # where is runhaskell (for Cabal)
+    $ghc = 'ghc';                # where is ghc
+    @ghc_options  = ();          # e.g. ('-fglasgow-exts')
+    @ghc_packages = ();          # e.g. ('QuickCheck')
+
+    ### the following should not been edited ###
+
+    use File::Temp qw /tempfile tempdir/;
+    File::Temp->safe_level( File::Temp::HIGH );
+
+    ($source, $base_dir) = @ARGV;
+
+    $source =~ s/ /\\ /g;
+    $base_dir =~ s/ /\\ /g;
+    $source = glob $source;
+    $base_dir = glob $base_dir;
+
+
+    ### Check if the project is Cabalized. We simply look for a
+    ### Setup.[l]lhs and a *.cabal file in the current directory and three
+    ### levels up the filesystem.
+    @levels = qw|. .. ../.. ../../..|;
+
+    undef $cabaldir;
+
+    foreach $up (@levels) {
+        undef @setup;
+        undef @cabal;
+        opendir DIR, "$base_dir/$up";
+        @files = readdir DIR;
+        closedir DIR;
+        @setup = grep /^Setup\.(lhs|hs)$/, @files;
+        @cabal = grep /^.+\.cabal$/, @files;
+        if($#setup == 0 && $#cabal == 0) {
+            $cabaldir = "$base_dir/$up";
+            last;
+        }
+    }
+
+    if($cabaldir) {
+        # Cabal file found. Use Setup.[l]hs to build.
+        @command = ('cd',
+                    $cabaldir,
+                    '&&',
+                    $runhaskell,
+                    $setup[0],
+                    'build');
+        
+    }
+    else {
+        # No cabal file found. Use ghc --make.
+        @command = ($ghc,
+                    '--make',
+                    '-fbyte-code',
+                    "-i$base_dir",
+                    "-i$base_dir/..",
+                    "-i$base_dir/../..",
+                    "-i$base_dir/../../..",
+                    "-i$base_dir/../../../..",
+                    "-i$base_dir/../../../../..",
+                    $source);
+
+        while(@ghc_options) {
+            push(@command, shift @ghc_options);
+        }
+
+        while(@ghc_packages) {
+            push(@command, '-package');
+            push(@command, shift @ghc_packages);
+        }
+    }
+
+    $dir = tempdir( CLEANUP => 1 );
+    ($fh, $filename) = tempfile( DIR => $dir );
+
+    system("@command >$filename 2>&1");
+    open(MESSAGE, $filename);
+    undef $processing;
+    while(<MESSAGE>) {
+        if(/(^\S+)(\.hs|\.lhs)(:\d*:\d*:)\s?(.*)/) {
+            $file = "$1$2";
+            # We print only those error messages that are in the source
+            # file passed on the command line.
+            if(substr($source, -length($file)) eq $file) {
+                $processing = 1;
+                print "\n";
+                print $source;
+                print $3;
+                $rest = $4;
+                chomp $rest;
+                print $rest;
+                next;
+            }
+            else {
+                undef $processing;
+            }
+        }
+        if($processing) {
+            if(/\s+(.*)/) {
+                $rest = $1;
+                chomp $rest;
+                print $rest;
+                print " ";
+                next;
+            }
+        }
+    }
+    close($fh);
+    print "\n";
 
 ----
 
@@ -418,16 +544,16 @@ Here is a perl program which prints error messages as a line:
         # if(/^\S+\.hs|\.lhs:\d*:\d*:.*/) {
         if(/^\S+(?:\.hs|\.lhs):\d*:\d*:.*/) {
         print "\n";
-    	chomp $_;
-    	print $_;
-    	next;
+        chomp $_;
+        print $_;
+        next;
         }
         if(/\s+(.*)/) {
-    	$rest = $1;
+        $rest = $1;
         chomp $rest;
-    	print $rest;
+        print $rest;
         print " ";
-    	next;
+        next;
         }
     }
     close($fh);
