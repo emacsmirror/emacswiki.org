@@ -1,5 +1,5 @@
-: Have many people use this extension, but i haven't time maintain it anymore, i'm looking Emacs hacker take over this extension. 
-: If you want take over it and have enough elisp knowledge, please send mail to me. Thanks! -- AndyStewart 
+* Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/ahei Ahei] , he’s the new maintainer. Thanks! – AndyStewart
+
 
 ==What is multi-term.el ?==
 : MultiTerm is a mode based on term.el, for managing multiple terminal buffers in Emacs.

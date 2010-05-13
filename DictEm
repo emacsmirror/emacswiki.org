@@ -6,6 +6,8 @@ On a [[Debian]] system see DebianPackage:dictem.  And read more at freshmeat
 
 : http://freshmeat.net/projects/dictem
 
+On PkgSrc (packaging system for NetBSD, DragonFlyBSD and many others) it is packaged in textproc/dictem.
+
 The package uses the command-line <code>dict</code> program (http://sourceforge.net/projects/dict).
 
 ----

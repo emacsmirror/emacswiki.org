@@ -100,4 +100,5 @@
     bmi-number))
 
 (provide 'bmi)
+
 ;;; bmi.el ends here

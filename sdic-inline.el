@@ -67,7 +67,7 @@
 
 ;;; Variables:
 
-(defconst sdic-inline-version "0.4.5"
+(defconst sdic-inline-version "0.4.5.1"
   "Version of sdic-inline.")
 
 
@@ -258,11 +258,12 @@ and call `sdic-inline-display-func'."
     (let (dic)
       (unwind-protect
           (progn
-            (setq dic (sdicf-open (if jp
-                                      sdic-inline-waei-dictionary
-                                    sdic-inline-eiwa-dictionary)
-                                  sdic-inline-dictionary-encoding
-                                  sdic-inline-search-method))
+            (setq dic
+                  (sdicf-open (expand-file-name (if jp
+                                                    sdic-inline-waei-dictionary
+                                                  sdic-inline-eiwa-dictionary))
+                              sdic-inline-dictionary-encoding
+                              sdic-inline-search-method))
             (sdicf-search dic 'exact word))
         (when (boundp 'dic)
           (sdicf-close dic))))))

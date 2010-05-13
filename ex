@@ -36,3 +36,28 @@ example code.
 
 
 </pre>
+
+----
+
+Doesn't works at least in Emacs 23. Something like following worked for me (runs Windows command line VBScript interpreter):
+
+<pre>
+(defun alien-defun (name interpreter code)
+  (lexical-let ((name name)
+                (interpreter interpreter)
+                (code code)
+                (script-name (concat (getenv "TEMP") "\\" name "." (symbol-name (gensym)))))
+    (with-temp-file script-name (insert-string code))
+    (fset (intern name) 
+          (lambda (args)       
+            (prog1 (shell-command-to-string 
+                     (concat interpreter " \"" script-name "\" " args))
+            (delete-file script-name))))))
+
+(defmacro vbs-defun (name code)
+  `(alien-defun (symbol-name ',name) "cscript //E:vbs" ,code))
+
+(vbs-defun vbs-test "MsgBox \"OK\"")
+(vbs-test "")
+
+</pre>

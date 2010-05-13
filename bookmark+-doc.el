@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May  5 09:17:15 2010 (-0700)
+;; Last-Updated: Wed May 12 09:30:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12048
+;;     Update #: 12147
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -71,6 +71,7 @@
 ;;      (@> "Filtering Bookmarks (Hiding and Showing)")
 ;;      (@> "Only Visible Bookmarks Are Affected")
 ;;      (@> "Omitting Bookmarks from Display")
+;;      (@> "Bookmarks for a Given File or Buffer")
 ;;      (@> "Sorting Bookmarks")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Open Bookmarks Using Windows File Associations")
@@ -300,7 +301,10 @@
 ;;
 ;;  In addition to these general commands, there are type-specific
 ;;  commands: `bookmarkp-dired-jump', `bookmarkp-info-jump', and so
-;;  on.  Such commands are bound to keys that have the prefix `C-x j'.
+;;  on.  And there are commands to jump to bookmarks for the current
+;;  buffer or for a particular buffer or file
+;;  (see (@> "Bookmarks for a Given File or Buffer")).  All jump
+;;  commands are bound to keys that have the prefix `C-x j'.
 ;;  `bookmarkp-dired-jump' is bound to `C-x j d',
 ;;  `bookmarkp-info-jump' to `C-x j i', and so on.
 ;;
@@ -319,7 +323,7 @@
 ;;  prefix is `C-x 4 j', not `C-x j'.  For instance,
 ;;  `bookmarkp-dired-jump-other-window' is bound to `C-x 4 j d'.
 ;;
-;;  These bindings round out the jump-command prefix keys:
+;;  These round out the jump-command prefix keys:
 ;;
 ;;    C-x j j    - bookmark-jump
 ;;    C-x j :    - bookmarkp-jump-to-type
@@ -1000,6 +1004,39 @@
 ;;  outside the bookmark-list display.
 ;;
 ;;
+;;(@* "Bookmarks for a Given File or Buffer")
+;;  *** Bookmarks for a Given File or Buffer ***
+;;
+;;  A bookmark typically records a position or a region in a file or
+;;  buffer.  Sometimes you are interested in accessing or examining
+;;  only the bookmarks for a particular file or buffer.  For example,
+;;  you might want to navigate among the bookmarks for the current
+;;  buffer.  Or you might want to search the regions recorded in the
+;;  bookmarks for a particular file.
+;;
+;;  For a bookmark, the recorded file and buffer name differ in that
+;;  the file name is absolute.  Bookmarks for buffer `foo.el' include
+;;  all files named `foo.el', whereas bookmarks for file
+;;  `/project1/lisp/foo.el' include only the files in that one
+;;  directory.
+;;
+;;  Bookmark+ provides a few commands to handle these use cases.  The
+;;  keys bound to these commands use `f' for file and `b' for buffer.
+;;  In the bookmark-list display, the following keys affect the
+;;  bookmarks for a particular file or buffer whose name you provide
+;;  (with completion).
+;;
+;;  * `= f M' and `= b M' - mark 
+;;  * `= f S' and `= b S' - show (only)
+;;
+;;  For navigation, the following keys jump to a particular file or
+;;  buffer bookmark.  (Use `C-x 4 j' for other-window.)  For the `='
+;;  keys you are prompted for the file or buffer name.
+;;
+;;  * `C-x j = f' and `C-x j = b' - specified file or buffer
+;;  * `C-x j .'                   - current buffer
+;;
+;;
 ;;(@* "Sorting Bookmarks")
 ;;  *** Sorting Bookmarks ***
 ;;
@@ -1251,6 +1288,19 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/11 dadams
+;;     Added: bookmarkp-bmenu-mark-same-(buffer|file)-bookmarks, bookmarkp-this-(buffer|file)-p,
+;;            bookmarkp-this-(buffer|file)-alist-only, bookmarkp-bmenu-show-only-same-(buffer|file),
+;;            bookmarkp-completing-read-(buffer|file)-name, bookmarkp-same-(buffer|file)-history,
+;;            bookmarkp-(same|this)-(buffer|file)-alist-only, bookmarkp-last-same-(buffer|file),
+;;            bookmarkp-(same|this)-(buffer|file)-jump(-other-window), bookmarkp-(buffer|file)-names,
+;;            bookmarkp-same-(buffer|file)-as-last-p, bookmarkp-other-window-pop-to-flag,
+;;            bookmarkp-select-buffer-other-window.
+;;     Use bookmarkp-select-buffer-other-window instead of switch-to-buffer-other-window everywhere.
+;;     Bound = (b|f) (M|S), C-x j (=|.) (b|f) to (same|current)-(buffer|file) commands.
+;;     *-types-alist: Handle same-(buffer|file) too.
+;;     *-bmenu-list, *-bmenu-define-full-snapshot-command, *-save-menu-list-state:
+;;       Handle bookmarkp-last-same-(buffer|file) as part of state.
 ;; 2010/05/05 dadams
 ;;     bookmarkp-create-varlist-bookmark, bookmarkp-make-varlist-record:
 ;;       Added optional arg BUFFER-NAME.

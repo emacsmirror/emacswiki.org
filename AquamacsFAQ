@@ -124,7 +124,7 @@ Some people have reported problems when pasting from other OS X applications if 
 
 If you want to use the option key to enter special characters (such as £) instead of functioning as Alt of Meta, you can specify this in your ~/.emacs:
 
-(setq mac-option-modifier nil)
+ (setq mac-option-modifier nil)
 
 This is equivalent to the appropriate menu function (see above).
 

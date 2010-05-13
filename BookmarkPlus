@@ -280,10 +280,11 @@ type of bookmark you want to jump to, then for a bookmark of that
 type (only).
 
 In addition to these general commands, there are type-specific
-commands: `##bookmarkp-##<tt>__dired__</tt>##-jump##', `##bookmarkp-##<tt>__info__</tt>##-jump##', and so
-on.  Such commands are bound to keys that have the prefix '''`C-x j''''.
+commands: `##bookmarkp-##<tt>__dired__</tt>##-jump##', `##bookmarkp-##<tt>__info__</tt>##-jump##', and so on.    And there are
+commands to jump to bookmarks for the current buffer or for a particular buffer or file (see [[#SpecificFileOrBuffer|Bookmarks for a Given File or Buffer]]).  All jump commands are bound to keys that have the prefix '''`C-x j''''.
 `bookmarkp-dired-jump' is bound to `##C-x j## <tt>__d__</tt>',
 `bookmarkp-info-jump' to `##C-x j## <tt>__i__</tt>', and so on.
+
 
 There are several commands for jumping to a bookmark with ''tags''.
 The completion candidates can be those bookmarks that have ''all''
@@ -298,13 +299,14 @@ There is an other-window version of most jump commands, and it is
 bound to the same key as the same-window command, except the prefix is '''`C-x 4 j'''', not `C-x j'.  for instance, `bookmarkp-dired-jump-other-window' is bound to
 `C-x 4 j d'.
 
-These bindings round out the jump-command prefix keys:
+These round out the jump-command prefix keys:
 
   C-x j j    - bookmark-jump
   C-x j :    - bookmarkp-jump-to-type
 
   C-x 4 j j  - bookmark-jump-other-window
   C-x 4 j :  - bookmarkp-jump-to-type-other-window
+
 
 The `C-x j' and `C-x 4 j' bindings are global.  In addition, in some modes '''`j'''' is
 bound to the corresponding type-specific jump command.  For
@@ -1046,6 +1048,46 @@ the opposite space.
 You can un-omit ''all'' of the omitted bookmarks at once, using '''`##O U##''''
 ('''`bookmarkp-unomit-all'''').  You can also call this command from
 outside the bookmark-list display.
+
+
+
+
+
+
+
+
+
+[:SpecificFileOrBuffer]
+=== Bookmarks for a Given File or Buffer ===
+
+A bookmark typically records a position or a region in a file or
+buffer.  Sometimes you are interested in accessing or examining
+only the bookmarks for a particular file or buffer.  For example,
+you might want to navigate among the bookmarks for the current
+buffer.  Or you might want to search the regions recorded in the
+bookmarks for a particular file.
+
+For a bookmark, the recorded file and buffer name differ in that
+the file name is absolute.  Bookmarks for buffer `##foo.el##' include
+all files named `##foo.el##', whereas bookmarks for file
+`##/project1/lisp/foo.el##' include only the files in that one directory.
+
+'''Bookmark+''' provides a few commands to handle these use cases.  The
+keys bound to these commands use `f' for file and `b' for buffer.
+In the bookmark-list display, the following keys affect the
+bookmarks for a particular file or buffer whose name you provide
+(with completion).
+
+* '''`##= f M##'''' and '''`##= b M##'''' -- mark 
+* '''`##= f S##'''' and '''`##= b S##'''' -- show (only)
+
+For navigation, the following keys jump to a particular file or
+buffer bookmark.  (Use `C-x 4 j' for other-window.)  For the `='
+keys you are prompted for the file or buffer name.
+
+* '''`##C-x j = f##'''' and '''`##C-x j = b##'''' -- specified file or buffer
+* '''`##C-x j .##''''                   -- current buffer
+
 
 
 

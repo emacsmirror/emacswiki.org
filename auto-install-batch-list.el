@@ -128,6 +128,10 @@
            "http://www.emacswiki.org/emacs/download/el-mock.el"
            "http://www.emacswiki.org/emacs/download/el-expectations-success-sample.el"
            "http://www.emacswiki.org/emacs/download/el-expectations-failure-sample.el"))
+         ("sequential-command" nil nil
+          (
+           "http://www.emacswiki.org/emacs/download/sequential-command.el"
+           "http://www.emacswiki.org/emacs/download/sequential-command-config.el"))
          )
        auto-install-batch-list))
 

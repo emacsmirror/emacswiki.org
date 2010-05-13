@@ -11,6 +11,10 @@ Where to get it:
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 * Unofficial/CVS Emacs (which means the Emacs currently in development, it is however normally very stable):
+** **Precompiled Emacs for Windows binaries** -- http://code.google.com/p/emacs-for-windows/
+*** Socuce code checked out from latest Bazzar repository
+*** Both stable and bleeding edge nightly build binaries
+*** Update about every two months
 ** **2009-11-04** -- [[EmacsW32]] -- **CVS Emacs 23.1.50.1**
 *** Does some extra setup to work better on MS-Windows and includes some unix programs (grep etc) from gnuwin32 and image libraries. It is also slightly patched for the same reason.
 *** For other reasons the packages also includes [NxmlMode nXhtml].

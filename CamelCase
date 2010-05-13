@@ -3,7 +3,7 @@ That funky naming scheme where the first letter of every word is capitalized and
 This scheme is also called StudlyCaps or "intercapping" by some people.
 GlassesMode is the StudlyCaps specific minor-mode that comes with Emacs.
 
-For those runnning an up-to-date version of Emacs (22.1 or newer) an alternative to both CamelCase and GlassesMode is already built in c-mode. Just activate the c-subword-mode and it works out of the box. As usual you can activate this minor mode manually, typing (M-x c-subword-mode) or programmatically (using hooks). It also works in non-CC Mode buffers. Enjoy!
+For those runnning an up-to-date version of Emacs (22.1 or newer) an alternative to both CamelCase and GlassesMode is already built in c-mode. Just activate the c-subword-mode (subword-mode since 23.2) and it works out of the box. As usual you can activate this minor mode manually, typing (M-x c-subword-mode) or programmatically (using hooks). It also works in non-CC Mode buffers. Enjoy!
 
 There's a minor mode for CamelCase (M-x camelCase-mode), written by C. R. Manning, that allows for forward-word and backward-word to stop at each word within a CamelCase word.  It's now available from http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.el with instructions and commentary at http://www.eecs.ucf.edu/~leavens/emacs/camelCase/camelCase-mode.html
 
