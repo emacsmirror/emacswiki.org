@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.46 2010/05/04 08:46:21 rubikitch Exp $
+;; $Id: auto-install.el,v 1.47 2010/05/14 00:09:08 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.46 $
+;; Version: $Revision: 1.47 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.46 2010/05/04 08:46:21 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.47 2010/05/14 00:09:08 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -296,6 +296,11 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.47  2010/05/14 00:09:08  rubikitch
+;; Fixed a bug of `auto-install-batch' with argument.
+;;
+;; Pass extension-name argument to `auto-install-batch-real'.
+;;
 ;; Revision 1.46  2010/05/04 08:46:21  rubikitch
 ;; Added bug report command
 ;;
@@ -908,10 +913,11 @@ Note that non-elisp can be installed only via `auto-install-batch'"
       (auto-install-batch-real extension-name)
     (auto-install-download
      auto-install-batch-list-el-url
-     (lambda (buf)
-       (with-current-buffer buf
-         (eval-buffer)
-         (run-at-time 0 nil 'auto-install-batch-real))))))
+     (lexical-let ((extension-name extension-name))
+       (lambda (buf)
+         (with-current-buffer buf
+           (eval-buffer)
+           (run-at-time 0 nil 'auto-install-batch-real extension-name)))))))
 
 (defun auto-install-batch-edit ()
   "Edit auto-install-batch-list.el"

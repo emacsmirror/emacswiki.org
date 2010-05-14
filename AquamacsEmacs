@@ -4,9 +4,9 @@
 
 * CustomizeAquamacs helps you to do special customizations in Aquamacs.
 
-* LaTeXAquamacs contains information on how to edit LaTeX documents.
+* AquamacsEmacsCompatibilitySettings shows Emacs experts how to make Aquamacs mostly like GNU Emacs.
 
-* PrintingInAquamacs explains how to print.
+* LaTeXAquamacs contains information on how to edit LaTeX documents.
 
 * PreferencesInAquamacs explains where Aquamacs finds user-supplied preference files (.emacs) and customization packages.
 

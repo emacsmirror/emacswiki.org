@@ -29,9 +29,19 @@ Change to the source directory and just do
 which will result in an Aquamacs in nextstep/Aquamacs.app
 
 The manual version: "make install", which will compile incrementally.  
-Alternatively, to build Emacs and just copy the new Emacs binary into the .app bundle, you may use "make".
+Alternatively, to build Aquamacs and just copy the new Aquamacs binary into the .app bundle, you may use "make".  This will not update the Lisp files in the bundle.
 
 That's it!
+
+Note: the binary that you've just build will only run on your machine, with the same or better OS X version, and the same CPU architecture!
+
+== Building the Emacs 24-based Aquamacs branch ==
+
+You may check out the latest revision of the Aquamacs24 branch, which contains the 2.x release series combined with Emacs 24 (in development, unstable!):
+
+  git checkout Aquamacs24
+
+Then proceed with building as above.
 
 == Building the Carbon-based branch (pre-2.0) ==
 

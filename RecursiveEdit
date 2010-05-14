@@ -1,0 +1,61 @@
+'''Recursive edit''' helps when you want to break out of the current command that you're currently doing and temporarily pursue something else, with the ability to snap back to where you were before.
+
+For example, when replacing some text with `##M-%##' or `##M-C-%##' you can replace and edit the matches with `C-w' or just edit with `C-r' to touch up some of the entries you are replacing along the way when they are a special case.  When you're done you punch `C-M-c' and you snap back into `query-replace' or `query-replace-regexp'.  You can even change buffers or visit other files -- almost anything.
+
+While saving buffers with `C-x s', type `C-r' to view the current file in ViewMode.
+
+The EmacsManual says:
+
+: ''It is possible to be in recursive edits within recursive edits.  For
+example, after typing `C-r' in a `query-replace', you may type a
+command that enters the debugger.  This begins a recursive editing level
+for the debugger, within the recursive editing level for `C-r'.  Mode
+lines display a pair of square brackets for each recursive editing
+level currently in progress.''
+
+When are you in recursive edit?:
+
+: ''The mode line shows you when you are in a recursive edit by
+displaying square brackets around the parentheses that always surround
+the major and minor mode names.  Every window's mode line shows this in
+the same way, since being in a recursive edit is true of Emacs as a
+whole rather than any particular window or buffer.''
+
+On exiting:
+
+: ''"Exiting" the recursive edit means returning to the unfinished
+command, which continues execution.  The command to exit is `C-M-c'
+(`exit-recursive-edit').''
+
+: ''You can also "abort" the recursive edit.  This is like exiting, but
+also quits the unfinished command immediately.  Use the command `C-]'
+(`abort-recursive-edit') to do this.''
+
+
+And the most important thing it says for EmacsLisp programmers:
+
+: ''In general, we try to minimize the use of recursive editing levels in
+GNU Emacs.  This is because they constrain you to "go back" in a
+particular order--from the innermost level toward the top level.  When
+possible, we present different activities in separate buffers so that
+you can switch between them as you please.  Some commands switch to a
+new major mode which provides a command to switch back.  These
+approaches give you more flexibility to go back to unfinished tasks in
+the order you choose.''
+
+Similarly, the ElispManual says this:
+
+: ''Most applications should not use recursive editing, except as part of
+using the minibuffer.  Usually it is more convenient for the user if you
+change the major mode of the current buffer temporarily to a special
+major mode, which should have a command to go back to the previous mode.
+(The `e' command in Rmail uses this technique.)  Or, if you wish to
+give the user different text to edit "recursively," create and select a
+new buffer in a special mode.  In this mode, define a command to
+complete the processing and go back to the previous buffer.  (The `m'
+command in Rmail does this.)''
+
+----
+CategoryCommands
+CategoryEditing
+

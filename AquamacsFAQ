@@ -4,6 +4,9 @@ Aquamacs Home page: http://aquamacs.org/
 
 Configuration Tips: CustomizeAquamacs
 
+== Aquamacs for Emacs traditionalists ==
+
+If you've been using Emacs for decades and find yourself surprised by some of the changes to the user interface in Aquamacs, have a look at AquamacsEmacsCompatibilitySettings, which demonstrates how to turn off features that are most surprising to Emacs-oldtimers.
 
 == Problems running LaTeX ==
 
@@ -20,6 +23,8 @@ add the path (not the full name of the binary - just its directory!) to the list
 
 
 == Problems installing Aspell Spellchecking==
+
+*In Aquamacs 2.0 and beyond, no extra spell-checking package is needed.*
 
 Firstly you can install Cocoaspell, or the "base package aspell". see: http://aquamacs.org/spelling.shtml 
 
@@ -106,7 +111,7 @@ This will disable the use of "Option" for the Emacs (Unix) Meta key. To avoid th
 
 == Change Aquamacs Meta key ==
 
-The default Meta key in the Aquamacs distribution is Option (and also Esc). If this is unusable for you (your fingers are too well trained on other platforms), you can either press Apple-; (Options -> Option Key -> Option Key for Meta) to switch to Esc only, or use the following substitutions in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
+The default Meta key in the Aquamacs distribution is Option (and also Esc). If this is unusable for you (your fingers are too well trained on other platforms), you can either press Apple-; (Options -> Option Key -> Option Key for Meta) to switch to Esc only, switch the right Command key only to Meta (same menu), or use the following commands in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
 
  (setq mac-option-modifier 'meta) - Sets the option key as Meta (this is default)
 
@@ -132,17 +137,11 @@ This is equivalent to the appropriate menu function (see above).
 
 == Opening Files In Same Frame ==
 
-If you're coming from Emacs, you may prefer the Emacs-behavior over the Aquamacs default. Uncheck the "Display Buffers in Separate Frames" option in the Options menu and then "Save Options".
-
-In version 1.4 the option has changed its name to "Show Buffers in New Frames".
+If you're coming from Emacs, you may prefer the Emacs-behavior over the Aquamacs default. Uncheck the "Show Buffers in New Frames" option in the Options menu and then "Save Options".
 
 == Changing the keyboard layout ==
 
-Making a custom keyboard layout (like Danish Dvorak layout) in Aquamacs creates conflicts with the Apple command options given by Aquamacs.  According to unsubstantiated source, the problem might have something to do with Aquamacs being based on Carbon and that the problem would go away when using Cocoa. Try EmacsApp instead.
-
-5 Jun 2007 (TorbenHoffmann): Sorry in advance if this the wrong way to communicate this. I have just installed Aquamacs 1.0 to see if my problem with Aquamacs and my Ukelele made Danish Dvorak layout had been solved. Apple-O and the likes now works as one would expect - good job! However I have noticed an odd thing: if I use "C-x C-f" for saving, the Input changes to the normal Danish layout. Same thing happens with "C-x i": instant switch to the normal Danish layout. The normal Danish layout is the default on my machine since I have to share it with my wife and she is not a Dvorakian ;-) I am not a fluent Mac user so if there is something I should know about keyboard shortcuts that changes the current Input please let me know.
-
-7 February 2008 (W. Ethan Duckworth).  I have Aquamacs 1.2a running on OSX 10.5.1 with a custom Dvorak layout (optimized for LaTeX) and do not have this problem.  "C-x i" calls the insert file command in the minibuffer.  In my International Keyboard menu I do *not* have keyboard shortcuts enabled to switch keyboards.  Instead, I switch keyboards using the pull down menu.     
+If you have made a custom keyboard layout (like Danish Dvorak layout), make sure you upgrade to Aquamacs 2.0 or later.
  
 == Changing the current and default font ==
 
@@ -260,24 +259,18 @@ Running `LaTeX' on `x' with ``%`pdflatex \nonstopmode%' x.tex''
 LaTeX exited abnormally with code 2 at Thu Jul 12 08:22:59
 </pre>
 
-is almost certainly due to an old installation of the EC Emacs plugin. Solution is to get rid of it or update to Aquamacs 1.7 (which disabled the plugin).
+is almost certainly due to an old installation of the EC Emacs plugin. Solution is to get rid of it or update to Aquamacs 1.7 or later (which disabled the plugin).
 
 == Making A Specific Color-Theme Stick ==
 
 # Start Aquamacs
 # M-x color-theme-select
 # Pick the color theme that you want to use.
-# Menu -> Options -> Frame Appearance Styles -> Use Current Style for Text Mode
-# Menu -> Options -> Frame Appearance Styles -> Use Current Style as Default
+# Menu -> Options -> Appearance -> Auto Face Mode -> Use Current Style for Text Mode
+# Menu -> Options -> Appearance -> Adopt Current Fram Parameters
 # Say yes to the dialog.
 
-You also need to ensure aquamacs-styles-mode is enabled; in your .emacs:
-
-        (custom-set-variables '(aquamacs-styles-mode t))
-
 That should do it.
-
-(To set this programmatically, use the `aquamacs-default-styles' variable.)
 
 == Option to turn off anti-aliasing of fonts? ==
  
@@ -307,7 +300,7 @@ To make sure the case is preserved in a completion, you probably have to [http:/
 == Starting Aquamacs from a terminal ==
 
 To launch Aquamacs from a terminal, use the installer function in the Tools menu.  You can then launch Aquamacs using the "aquamacs" command.  Note that this pertains to starting Aquamacs from a "terminal", and not from arbitrary scripts, specifically in batch mode: unlike the "emacs" command, "aquamacs" currently does not process other arguments than filenames.  
-To compile Elisp sources, call /Applications/Aquamacs\ Emacs.app/Contents/MacOS/Aquamacs\ Emacs.
+To compile Elisp sources, call ##/Applications/Aquamacs.app/Contents/MacOS/Aquamacs##  (from version 2.0 on)
 
 To interact with a running Aquamacs instance, you can use the built-in Emacs server. Invoke <code>M-x server-start</code> to start the server, or add the line <code>(server-start)</code> to your Preferences.el or .emacs file. Then, from the terminal, use the "emacsclient" command to open a file in your running Aquamacs instance. Use <code>C-x #</code> to close an emacsclient buffer.
 

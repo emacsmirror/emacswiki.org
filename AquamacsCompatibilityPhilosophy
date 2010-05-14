@@ -17,21 +17,7 @@ If you want all Emacsen to load settings, then go for ~/.emacs as usual. This fi
 
 With regards to the compatibility of your settings: I think there will always be some options that won't work well on Aquamacs. That's just the nature of Emacs packages and hacks - some aren't compatible with each other. But Aquamacs tries to support a large variety of things. For example,  over the last weeks I've been working with the developer of one of the packages that we use to enable color themes and random user customizations to default-frame-alist.  --David Reitter
 [new]
-Hi -- I just switched to Aquamacs due to an OSX upgrade & I had the first loss of a day's work I experienced in over a decade.  The problem was I didn't notice right away that you were deleting selections when you typed a character like it was some kind of PC program.  (of course the fact their *were* highlighted selections was also newfangled to me but far less damaging in itself)  Firstly, this is a real problem for old emacs users, could you please put this on the options menu so we are warned??  Secondly, I can't seem to turn this behaviour off!  I've found delete-selection-mode, but toggling it doesn't seem to have any effect.  Thanks -- otherwise a gorgeous thing :-)  JB
-[new]
-JB: you are probably looking for (cua-mode 0), which you can put in your .emacs.  This stops the fancy highlight-region/replace-region stuff that Aquamacs seems to do by default.  - Casey
-
-[new]
-Does anyone know how to get Apple+Shift+F / Apple+Shift+B / etc. style hotkeys to work in Aquamacs?  Right now, what seems to happen is regardless of your bindings, the Finder or some other craptastic Macintosh App will decide that it is the right person to handle a shortcut of Apple+Shift+F, and will steal the hotkey before Aquamacs even seems to see it.  I'm guessing that the only solution to this problem is for Aquamacs to actually register a global handler for these keys at startup to prevent them from being snarfed by bossy built-in programs... anyways, this situation is really unfortunate because otherwise Aquamacs has been quite good at working identically to my Win32/Linux setups, which is awesome.  - Casey
-
-[new]
-Downloaded, installed, and it works great - thanks!
-
-One question:  My synapses are burned into using ctrl-x c to kill an xemacs buffer; but in xemacs it closes only the one buffer.  In aquamacs, it closes everything including the program!  Besides the irritation of having to re-open windows, it's also slower to open them.
-
-Is there a way to remap ctrl-x c to just close the one window?  I've checked the various options under "Customize Aquamacs" menu but can't find it, nor can I seem to find a master list of key bindings that I could compare with.
-
-Thanks very much for a great package!  - John L.
+*Note*: This is not the place to get your questions answered.  The Aquamacs website points out the appropriate mailing lists under "Support"!  --DavidReitter
 ----
 AquamacsEmacs
 EmacsForMacOS
