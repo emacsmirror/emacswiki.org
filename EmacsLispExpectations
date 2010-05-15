@@ -1,105 +1,107 @@
-Emacs Lisp Expectations is the simplest unit testing framework by [[rubikitch]].
-It is very easy to use/read.
-
-Emacs Lisp Expectations is modeled after [http://expectations.rubyforge.org/ Ruby's expectations] by Jay Fields. It inherits testing policy; designed to encourage unit testing best practices such as
-* discourage setting more than one expectation at a time
-* promote maintainability by not providing a setup or teardown method
-* provide one syntax for setting up state based or behavior based expectation
-* focus on readability by providing no mechanism for describing an expectation other than the code in the expectation.
-
+'''Emacs Lisp Expectations''' is the simplest unit testing framework by [[rubikitch]]. It is very easy to use/read.
 
 Lisp:el-expectations.el
 
-Mocking is done utilizing EmacsLispMock. You should download it.
+Mocking is done utilizing '''EmacsLispMock'''. You should download it, too:
 
 Lisp:el-mock.el
 
+Emacs Lisp Expectations is modeled after [http://expectations.rubyforge.org/ Ruby's expectations] by Jay Fields. It inherits testing policy, designed to encourage unit testing best practices such as:
+
+* Discourage setting more than one expectation at a time
+* Promote maintainability by not providing a setup or teardown method
+* Provide one syntax for setting up state based or behavior based expectation
+* Focus on readability by providing no mechanism for describing an expectation other than the code in the expectation.
+
 == Usage ==
 
-1. Evaluate an expectations sexp.
+# Evaluate an expectations S-exp.
+# `M-x expectations-execute' to execute a test.
+# If there are any errors, use `M-x next-error' (##C-x `##) and `M-x previous-error' to go to expect sexp in error.
 
-2. `M-x expectations-execute' to execute a test.
-
-3. If there are any errors, use M-x next-error (C-x `) and M-x previous-error to go to expect sexp in error.
-
-`expectations' defines a expectations test case.
-Use `expect' and `desc' to verify the code.
-Note that these are neither functions nor macros.
-These are keywords in expectations Domain Specific Language(DSL).
+`expectations' defines a expectations test case. Use `expect' and
+`desc' to verify the code. Note that these are neither functions nor
+macros. These are keywords in expectations Domain Specific
+Language (DSL).
 
 === Synopsis ===
 
-* (expect EXPECTED-VALUE BODY ...)
+* ##(expect EXPECTED-VALUE BODY ...)##
 
-Assert that the evaluation result of BODY is `equal' to EXPECTED-VALUE.
+Assert that the evaluation result of ##BODY## is `equal' to ##EXPECTED-VALUE##.
 
-* (desc DESCRIPTION)
+* ##(desc DESCRIPTION)##
 
 Description of a test. It is treated only as a delimiter comment.
 
 === Synopsis of EXPECTED-VALUE ===
 
-* (buffer BUFFER-NAME)
+* ##(buffer BUFFER-NAME)##
 
-Body should eq buffer object of BUFFER-NAME.
+Body should eq buffer object of ##BUFFER-NAME##.
 
-* (regexp REGEXP)
+* ##(regexp REGEXP)##
 
-Body should match REGEXP.
+Body should match ##REGEXP##.
 
-* (type TYPE-SYMBOL)
+* ##(type TYPE-SYMBOL)##
 
-Body should be a TYPE-SYMBOL.
-TYPE-SYMBOL must be one of symbols returned by `type-of' function.
+Body should be a ##TYPE-SYMBOL##. ##TYPE-SYMBOL## must be one of symbols
+returned by `type-of' function:
 
    `symbol', `integer', `float', `string', `cons', `vector',
    `char-table', `bool-vector', `subr', `compiled-function',
    `marker', `overlay', `window', `buffer', `frame', `process',
    `window-configuration'
 
-* (error)
+* ##(error)##
 
-  Body should raise any error.
+Body should raise any error.
 
-* (error ERROR-SYMBOL)
+* ##(error ERROR-SYMBOL)##
 
-  Body should raise ERROR-SYMBOL error.
+Body should raise ##ERROR-SYMBOL## error.
 
-* (error ERROR-SYMBOL ERROR-DATA)
-  Body should raise ERROR-SYMBOL error with ERROR-DATA.
-  ERROR-DATA is 2nd argument of `signal' function.
+* ##(error ERROR-SYMBOL ERROR-DATA)##
 
-  Example:
+Body should raise ##ERROR-SYMBOL## error with ##ERROR-DATA##. ##ERROR-DATA## is
+2nd argument of `signal' function. Example:
+
     (expect (error wrong-number-of-arguments '(= 3))
       (= 1 2 3 ))
-* (error-message ERROR-MESSAGE)
-  Body should raise any error with ERROR-MESSAGE.
 
-  Example:
+* ##(error-message ERROR-MESSAGE)##
+
+Body should raise any error with ##ERROR-MESSAGE##. Example:
+
     (expect (error-message \"ERROR!!\")
       (error \"ERROR!!\"))
 
-* (mock MOCK-FUNCTION-SPEC => MOCK-RETURN-VALUE)
-  Body should call MOCK-FUNCTION-SPEC and returns MOCK-RETURN-VALUE.
-  Mock assertion depends on `el-mock' library.
-  If available, you do not have to require it: el-expectations detects it.
+* ##(mock MOCK-FUNCTION-SPEC => MOCK-RETURN-VALUE)##
 
-  Synopsis of MOCK-FUNCTION-SPEC:
+Body should call ##MOCK-FUNCTION-SPEC## and returns ##MOCK-RETURN-VALUE##.
+Mock assertion depends on `el-mock' library. If available, you do not
+have to require it: ##el-expectations## detects it.
+
+Synopsis of ##MOCK-FUNCTION-SPEC##:
+
     (FUNCTION ARGUMENT ...)
     MOCK-FUNCTION-SPEC is almost same as normal function call.
     If you should specify `*' as ARGUMENT, any value is accepted.
     Otherwise, body should call FUNCTION with specified ARGUMENTs.
 
-  Example:
+Example:
+
     (expect (mock (foo * 3) => nil)
       (foo 9 3))
 
-* any other SEXP
+* Any other ##SEXP##
 
-  Body should equal (eval SEXP).
+Body should equal (eval SEXP).
 
 === Batch Mode ===
-If you prefer batch mode, use this script (el-expectations).
+
+If you prefer batch mode, use this script (##el-expectations##):
 
   #!/bin/sh
   EMACS=emacs
@@ -148,12 +150,13 @@ If you prefer batch mode, use this script (el-expectations).
       (/ 1 0)))
 
 == Translation from Ruby's expectations ==
+
   (expectations
     ;; State based expectation where a value equals another value
     (expect 2
       (+ 1 1))
 
-    ;; State based expectation where an error is expected 
+    ;; State based expectation where an error is expected
     ;; Simply expect error symbol of the intended exception
     (expect (error void-function '(no-function))
       (no-function))
@@ -198,7 +201,3 @@ If you prefer batch mode, use this script (el-expectations).
 
 ----
 CategoryCode UnitTesting
-
-
-
-

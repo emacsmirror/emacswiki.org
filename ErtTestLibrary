@@ -1,7 +1,8 @@
-This page is about [http://github.com/ohler/ert/blob/master/ert.el ert.el] - an Emacs lisp library for regression/unit testing.
+'''[http://github.com/ohler/ert/blob/master/ert.el ert.el]''' is an '''E'''macs Lisp library for '''r'''egression/unit '''t'''esting.
 
-If you want to use ert.el there are examples at the end of the file that are used for testing ert.el.
+If you want to use ##ert.el##, there are examples at the end of the file that are used for testing ##ert.el## itself.
 
-You can also find examples in [NxhtmlMode nXhtml] which uses a slightly modified version for tests.
+You can also find examples in [NxhtmlMode nXhtml-mode], which uses a slightly modified version for tests.
+
 ----
 See also UnitTesting

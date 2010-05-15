@@ -1,132 +1,123 @@
-Emacs Lisp Mock is a DSL based mock/stub framework. It is easy to use. 
-Usage is shown by EmacsLispExpectations.
+Emacs Lisp Mock is a DSL based mock/stub framework. It is easy to use. Usage is shown by EmacsLispExpectations.
 
 Lisp:el-mock.el
 
-Emacs Lisp Mock is a library for mocking and stubbing using
-readable syntax. Most commonly Emacs Lisp Mock is used in
-conjunction with Emacs Lisp Expectations, but it can be used in
-other contexts.
+Emacs Lisp Mock is a library for mocking and stubbing using readable syntax. Most commonly Emacs Lisp Mock is used in conjunction with Emacs Lisp Expectations, but it can be used in other contexts.
 
-= Two interfaces: `with-mock' and `mocklet' =
-
-Emacs Lisp Mock provides two scope interface of mock and stub:
-`with-mock' and `mocklet'. `with-mock' only defines a
-scope. `mocklet' is more sophisticated interface than `with-mock':
-`mocklet' defines local mock and stub like `let', `flet', and
-`macrolet'.
+'''Emacs Lisp Mock provides two scope interface of mock and stub: `with-mock' and `mocklet'.''' `with-mock' only defines a scope. `mocklet' is more sophisticated interface than `with-mock': `mocklet' defines local mock and stub like `let', `flet', and `macrolet'.
 
 == with-mock ==
-`with-mock' executes the forms in BODY. You can use `mock' and `stub' in BODY.
-The value returned is the value of the last form in BODY.
-After executing BODY, mocks and stubs are guaranteed to be released.
+
+`with-mock' executes the forms in ##BODY##. You can use `mock' and `stub' in ##BODY##. The value returned is the value of the last form in ##BODY##. After executing BODY, mocks and stubs are guaranteed to be released.
 
 === Example ===
-  (with-mock
-    (stub fooz => 2)
-    (fooz 9999))                  ; => 2
+
+    (with-mock
+      (stub fooz => 2)
+      (fooz 9999))                  ; => 2
 
 == mocklet ==
+
 `let'-like interface of `with-mock', `mock' and `stub'.
 
-Create mocks and stubs described by SPECLIST then execute the forms in BODY.
-SPECLIST is a list of mock/stub spec.
-The value returned is the value of the last form in BODY.
-After executing BODY, mocks and stubs are guaranteed to be released.
+Create mocks and stubs described by ##SPECLIST## then execute the forms in ##BODY##. ##SPECLIST## is a list of mock/stub spec. The value returned is the value of the last form in ##BODY##. After executing ##BODY##, mocks and stubs are guaranteed to be released.
 
 === Synopsis of spec ===
+
 Spec is arguments of `mock' or `stub'.
-* ((FUNCTION ARGS...))                  : mock which returns nil
-* ((FUNCTION ARGS...) => RETURN-VALUE)  ; mock which returns RETURN-VALUE
-* (FUNCTION)                            : stub which returns nil
-* (FUNCTION => RETURN-VALUE)            ; stub which returns RETURN-VALUE
+
+* ##((FUNCTION ARGS...))                  :## mock which returns ##nil##
+* ##((FUNCTION ARGS...) => RETURN-VALUE)  ;## mock which returns ##RETURN-VALUE##
+* ##(FUNCTION)                            :## stub which returns ##nil##
+* ##(FUNCTION => RETURN-VALUE)            ;## stub which returns ##RETURN-VALUE##
 
 === Example ===
-  (mocklet (((mock-nil 1))
-            ((mock-1 *) => 1)
-            (stub-nil)
-            (stub-2 => 2))
-    (and (null (mock-nil 1))    (= (mock-1 4) 1)
-         (null (stub-nil 'any)) (= (stub-2) 2))) ; => t
 
+    (mocklet (((mock-nil 1))
+              ((mock-1 *) => 1)
+              (stub-nil)
+              (stub-2 => 2))
+      (and (null (mock-nil 1))    (= (mock-1 4) 1)
+           (null (stub-nil 'any)) (= (stub-2) 2))) ; => t
 
 == Using stubs ==
-Stubs are temporary functions which accept any arguments and return constant value.
-Stubs are removed outside `with-mock' (`with-stub' is an alias) and `mocklet'.
+
+Stubs are temporary functions which accept any arguments and return constant value. Stubs are removed outside `with-mock' (`with-stub' is an alias) and `mocklet'.
 
 === Synopsis ===
-* (stub FUNCTION)                  : Create a FUNCTION stub which returns nil.
-* (stub FUNCTION => RETURN-VALUE)  : Create a FUNCTION stub which returns RETURN-VALUE.
+
+* ##(stub FUNCTION)                  :## Create a ##FUNCTION## stub which returns ##nil##.
+* ##(stub FUNCTION => RETURN-VALUE)  :## Create a ##FUNCTION## stub which returns ##RETURN-VALUE##.
 
 === Example ===
-  (with-mock
-    (stub foo)
-    (stub bar => 1)
-    (and (null (foo)) (= (bar 7) 1)))     ; => t
+
+    (with-mock
+      (stub foo)
+      (stub bar => 1)
+      (and (null (foo)) (= (bar 7) 1)))     ; => t
 
 == Using mocks ==
-Mocks are temporary functions which accept specified arguments and return constant value.
-If mocked functions are not called or called by different arguments, an `mock-error' occurs.
-Mocks are removed outside `with-mock' and `mocklet'.
+
+Mocks are temporary functions which accept specified arguments and return constant value. If mocked functions are not called or called by different arguments, an `mock-error' occurs. Mocks are removed outside `with-mock' and `mocklet'.
 
 === Synopsis ===
-* (mock (FUNCTION ARGS...))                 : Create a FUNCTION mock which returns nil.
-* (mock (FUNCTION ARGS...) => RETURN-VALUE) : Create a FUNCTION mock which returns RETURN-VALUE.
+
+* ##(mock (FUNCTION ARGS...))                 :## Create a ##FUNCTION## mock which returns ##nil##.
+* ##(mock (FUNCTION ARGS...) => RETURN-VALUE) :## Create a ##FUNCTION## mock which returns ##RETURN-VALUE##.
 
 === Wildcard ===
+
 The `*' is a special symbol: it accepts any value for that argument position.
 
 === Example ===
-  (with-mock
-    (mock (f * 2) => 3)
-    (mock (g 3))
-    (and (= (f 9 2) 3) (null (g 3))))     ; => t
-  (with-mock
-    (mock (g 3))
-    (g 7))                                ; (mock-error (g 3) (g 7))
+
+    (with-mock
+      (mock (f * 2) => 3)
+      (mock (g 3))
+      (and (= (f 9 2) 3) (null (g 3))))     ; => t
+    (with-mock
+      (mock (g 3))
+      (g 7))                                ; (mock-error (g 3) (g 7))
 
 == Integration with Emacs Lisp Expectations ==
-EmacsLispExpectations utilize EmacsLispMock seamlessly.
-You can use `mock' and `stub' in `expect' body.
-You can also specify `mock' at `expect' EXPECTED-VALUE.
 
-  (expectations
-    (desc "stub function")
-    (expect 5
-      (stub wawa 5)
-      (wawa 9999))
-    (expect nil
-      (fboundp 'wawa))
+EmacsLispExpectations utilize EmacsLispMock seamlessly. You can use `mock' and `stub' in `expect' body. You can also specify `mock' at `expect' ##EXPECTED-VALUE##.
 
-    (desc "mock")
-    (expect (mock (foo 1 2) => 3)
-      (foo 1 2))
-    (expect (mock (foo * 3) => nil)
-      (foo 9 3))
-    (desc "mock with stub")
-    (expect (mock (foo 5 * 7) => nil)
-      ;; Stub function `hoge', which accepts any arguments and returns 3.
-      (stub hoge => 3)
-      (foo (+ 2 (hoge 10)) 6 7))
-    )
+    (expectations
+      (desc "stub function")
+      (expect 5
+        (stub wawa 5)
+        (wawa 9999))
+      (expect nil
+        (fboundp 'wawa))
+
+      (desc "mock")
+      (expect (mock (foo 1 2) => 3)
+        (foo 1 2))
+      (expect (mock (foo * 3) => nil)
+        (foo 9 3))
+      (desc "mock with stub")
+      (expect (mock (foo 5 * 7) => nil)
+        ;; Stub function `hoge', which accepts any arguments and returns 3.
+        (stub hoge => 3)
+        (foo (+ 2 (hoge 10)) 6 7)))
 
 === Writing unit test for functions with side-effect ===
-You can write unit test for functions with side-effect, for example `find-file'.
-It is a behavior-based testing.
 
-  (expectations
-    ;; Assume that find-file calls (find-file-noselect "foo.el" nil nil nil).
-    (expect (mock (find-file-noselect "foo.el" nil nil nil))
-      ;; Avoid side-effect of `switch-to-buffer'
-      (stub switch-to-buffer)
-      (find-file "foo.el"))
-    ;; Assume that find-file calls `switch-to-buffer' with return value of `find-file-noselect'.
-    (expect (mock (switch-to-buffer 'buf))
-      ;; Avoid side-effect of `find-file-noselect'
-      (stub find-file-noselect => 'buf)
-      (find-file "foo.el")))
+You can write unit test for functions with side-effect, for example `find-file'. It is a behavior-based testing.
+
+    (expectations
+      ;; Assume that find-file calls (find-file-noselect "foo.el" nil nil nil).
+      (expect (mock (find-file-noselect "foo.el" nil nil nil))
+        ;; Avoid side-effect of `switch-to-buffer'
+        (stub switch-to-buffer)
+        (find-file "foo.el"))
+      ;; Assume that find-file calls `switch-to-buffer'
+      ;; with return value of `find-file-noselect'.
+      (expect (mock (switch-to-buffer 'buf))
+        ;; Avoid side-effect of `find-file-noselect'
+        (stub find-file-noselect => 'buf)
+        (find-file "foo.el")))
 
 ----
 CategoryCode UnitTesting
-
-

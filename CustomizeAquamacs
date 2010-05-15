@@ -516,3 +516,41 @@ If you'd like to turn off the regular online check that Aquamacs does in order t
 Version checking allows the Aquamacs project to collect some statistical data, because the check - like any internet transaction - leaves a trace on the server.  
 
 You can get documentation about the information sent back to the Aquamacs server using M-x aquamacs-check-version-information RET, and it is easy to disable the version check. This check isn’t done upon every startup, but, more precisely, every three days. We don’t keep any information relating to the user’s documents, or information that would allow for the identification of a specific user (beyond the IP address, which is necessarily logged due to the server access). The kind of information we generate is transparently shared [http://braeburn.aquamacs.org/stats/ here].   There are two primary purposes for this “market research”: I want to make sure that Aquamacs actually gets used (otherwise I would spend my time on other pursuits), and I want to see whether there are some default settings that are changed by a large number of people. I rather use empirical data than complaints coming in on the mailing list, which are biased towards those who are unhappy and/or specifically vocal.  DavidReitter
+
+
+== How to cleanly uninstall Aquamacs? ==
+
+I'd recommend [http://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.
+
+== Ringing the bell, visible bell, sound, etc. ==
+
+By default, Aquamacs won't make a sound when a search fails or when you try to move beyond the top or bottom of the buffer.  To cause Aquamacs to make a sound, put the following in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
+
+##(setq ring-bell-function nil)##
+
+If you find an audible bell to be irritating, consider using a "visible bell", which is a momentary flash on the screen to notify you that something happened.  Aquamacs implements a visible bell as a large white square that appears in the center of the screen.  To turn on the visible bell, use
+
+##(setq visible-bell t)##
+
+The two variables interact in a way that may be confusing.  For example, you can't have a visible bell and an audible bell at the same time.  Here's a table that shows some settings the variables can take, and the resulting effect.
+
+|| || *default value* || || || ||
+||''##ring-bell-function##''||##(lambda nil (message ""))##||##nil##||##(lambda nil (message ""))##||##nil##||
+||''##visible-bell##''||##nil##||##nil##||##t##||##t##||
+||||||||||||
+||*resulting effect*||no sound, no flash||sound, no flash||no sound, no flash||no sound, flash||
+
+
+
+== How to use Cocoa-style text auto-completion? ==
+
+In Emacs it's called [http://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html#Dynamic-Abbrevs Dynamic Abbrev Expansion]. M-/ should do the job.
+
+To make sure the case is preserved in a completion, you probably have to [http://www.delorie.com/gnu/docs/emacs/emacs_357.html set variables] <code>dabbrev-case-fold-search</code> and <code>dabbrev-case-replace</code> to <code>nil</code>.
+
+
+== How can I make disappear  the labels under the icons in the toolbar ==
+<pre>
+(setq mac-tool-bar-display-mode 'icons)
+</pre>
+

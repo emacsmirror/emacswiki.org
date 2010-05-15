@@ -51,6 +51,32 @@
 ;; Here is Japanese translation of `anything-sources' attributes. Thanks.
 ;; http://d.hatena.ne.jp/sirocco634/20091012/1255336649
 
+;;; Bug Report:
+;;
+;; If you have problems, send a bug report via C-c C-x C-b in anything session (best)
+;; or M-x anything-send-bug-report outside anything session.
+;; I implemented bug report feature because I want to know your current state.
+;; It helps me to solve problems easily.
+;; The step is:
+;;  0) Setup mail in Emacs, the easiest way is:
+;;       (setq user-mail-address "your@mail.address")
+;;       (setq user-full-name "Your Full Name")
+;;       (setq smtpmail-smtp-server "your.smtp.server.jp")
+;;       (setq mail-user-agent 'message-user-agent)
+;;       (setq message-send-mail-function 'message-smtpmail-send-it)
+;;  1) Be sure to use the LATEST version of anything.el.
+;;  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+;;  3) Use Lisp version instead of compiled one: (load "anything.el")
+;;  4) Do it!
+;;  5) If you got an error, please do not close *Backtrace* buffer.
+;;  6) Type C-c C-x C-b (anything session, best!) 
+;;     or M-x anything-send-bug-report (outside)
+;;     then M-x insert-buffer *Backtrace* (if you got error)
+;;  7) Describe the bug using a precise recipe.
+;;  8) Type C-c C-c to send.
+;;  # If you are a Japanese, please write in Japanese:-)
+
+
 ;;; Commands:
 ;;
 ;; Below are complete command list:
@@ -139,6 +165,10 @@
 ;;    Cancel anything completion and return to standard iswitchb.
 ;;  `anything-describe-anything-attribute'
 ;;    Display the full documentation of ANYTHING-ATTRIBUTE (a symbol).
+;;  `anything-send-bug-report'
+;;    Send a bug report of anything.el.
+;;  `anything-send-bug-report-from-anything'
+;;    Send a bug report of anything.el in anything session.
 ;;
 ;;; Customizable Options:
 ;;
@@ -1532,6 +1562,7 @@ See also `anything-set-source-filter'.")
     ;; Debugging command
     (define-key map "\C-c\C-x\C-d" 'anything-debug-output)
     (define-key map "\C-c\C-x\C-m" 'anything-display-all-visible-marks)
+    (define-key map "\C-c\C-x\C-b" 'anything-send-bug-report-from-anything)
     ;; Use `describe-mode' key in `global-map'
     (dolist (k (where-is-internal 'describe-mode global-map))
       (define-key map k 'anything-help))
@@ -1745,7 +1776,7 @@ It is `anything-default-display-buffer' by default, which affects `anything-same
 
 (defvar anything-delayed-init-executed nil)
 
-(defvar anything-mode-line-string "\\<anything-map>\\[anything-help]:help \\[anything-select-action]:ActionList \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:NthAction"
+(defvar anything-mode-line-string "\\<anything-map>\\[anything-help]:help \\[anything-select-action]:Acts \\[anything-exit-minibuffer]/\\[anything-select-2nd-action-or-end-of-line]/\\[anything-select-3rd-action]:NthAct \\[anything-send-bug-report-from-anything]:BugReport"
   "Help string displayed in mode-line in `anything'.
 If nil, use default `mode-line-format'.")
 
@@ -2204,14 +2235,14 @@ already-bound variables. Yuck!
   ;; TODO more document
   (interactive)
   (condition-case v
-      (with-anything-restore-variables
-        (let (;; It is needed because `anything-source-name' is non-nil
-              ;; when `anything' is invoked by action. Awful global scope.
-              anything-source-name anything-in-persistent-action
-              anything-quit
-              (case-fold-search t)
-              (anything-buffer (or any-buffer anything-buffer))
-              (anything-map (or any-keymap anything-map)))
+      (let ( ;; It is needed because `anything-source-name' is non-nil
+            ;; when `anything' is invoked by action. Awful global scope.
+            anything-source-name anything-in-persistent-action
+                                 anything-quit
+                                 (case-fold-search t)
+                                 (anything-buffer (or any-buffer anything-buffer))
+                                 (anything-map (or any-keymap anything-map)))
+        (with-anything-restore-variables
           (anything-frame/window-configuration 'save)
           (setq anything-sources (anything-normalize-sources any-sources))
           (anything-initialize-1 any-resume any-input)
@@ -2225,9 +2256,9 @@ already-bound variables. Yuck!
               (anything-read-pattern-maybe any-prompt any-input any-preselect any-resume)
             (anything-cleanup)
             (anything-hooks 'cleanup)
-            (anything-frame/window-configuration 'restore))
-          (unless anything-quit
-            (anything-execute-selection-action-1))))
+            (anything-frame/window-configuration 'restore)))
+        (unless anything-quit
+          (anything-execute-selection-action-1)))
     (quit
      (anything-on-quit)
      nil)))
@@ -3144,7 +3175,7 @@ UNIT and DIRECTION."
 
 (defun anything-select-with-digit-shortcut ()
   (interactive)
-  (if anything-enable-shortcuts
+  (if (eq anything-enable-shortcuts 'alphabet)
       (save-selected-window
         (select-window (anything-window))          
         (let* ((index (position (anything-this-command-key) anything-shortcut-keys))
@@ -4675,6 +4706,57 @@ buffer as BUFFER."
   "  source local `header-line-format'.
   It accepts also variable/function name. ")
 (anything-document-attribute 'resume "optional" "  Function called with no parameters when `anything-resume' is started.")
+
+;; (@* "Bug Report")
+(defvar anything-maintainer-mail-address
+  (concat "rubiki" "tch@ru" "by-lang.org"))
+(defvar anything-bug-report-salutation
+  "Describe bug below, using a precise recipe.
+
+When I executed M-x ...
+
+How to send a bug report:
+  1) Be sure to use the LATEST version of anything.el.
+  2) Enable debugger. M-x toggle-debug-on-error or (setq debug-on-error t)
+  3) Use Lisp version instead of compiled one: (load \"anything.el\")
+  4) If you got an error, please paste *Backtrace* buffer.
+  5) Type C-c C-c to send.
+# If you are a Japanese, please write in Japanese:-)")
+(defvar anything-no-dump-variables
+  '(anything-candidate-buffer-alist
+    anything-digit-overlays
+    anything-help-message
+    anything-candidate-cache
+    )
+  "Variables not to dump in bug report.")
+
+(defun anything-dumped-variables-in-bug-report ()
+  (let ((hash (make-hash-table)))
+    (loop for var in (apropos-internal "anything-" 'boundp)
+          for vname = (symbol-name var)
+          unless (or (string-match "-map$" vname)
+                     (string-match "^anything-c-source-" vname)
+                     (string-match "-hash$" vname)
+                     (string-match "-face$" vname)
+                     (memq var anything-no-dump-variables))
+          collect var)))
+
+(defun anything-send-bug-report ()
+  "Send a bug report of anything.el."
+  (interactive)
+  (with-current-buffer (or anything-last-buffer
+                           (current-buffer))
+    (reporter-submit-bug-report
+     anything-maintainer-mail-address
+     "anything.el"
+     (anything-dumped-variables-in-bug-report)
+     nil nil
+     anything-bug-report-salutation)))
+
+(defun anything-send-bug-report-from-anything ()
+  "Send a bug report of anything.el in anything session."
+  (interactive)
+  (anything-run-after-quit 'anything-send-bug-report))
 
 ;; (@* "Unit Tests")
 

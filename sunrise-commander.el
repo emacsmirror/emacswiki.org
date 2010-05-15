@@ -139,7 +139,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 306 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 307 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -3247,7 +3247,7 @@ or (c)ontents? ")
   "Sets the other-window-scroll-buffer variable to the given buffer (or nil)."
   (setq other-window-scroll-buffer buffer)
   (if buffer
-      (message "QUICK VIEW: Press C-e/C-y to scroll, C-M-v/S-C-M-v to page, and C-u v (or C-u o) to dismiss")))
+      (message "QUICK VIEW: Press C-e/C-y to scroll, Space/M-Space to page, and C-u v (or C-u o) to dismiss")))
 
 (defun sr-describe-mode ()
   "Calls describe-mode and makes the resulting buffer C-M-v scrollable."

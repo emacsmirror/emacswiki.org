@@ -1,5 +1,5 @@
 ;;; el-expectations.el --- minimalist unit testing framework
-;; $Id: el-expectations.el,v 1.61 2010/05/04 08:48:22 rubikitch Exp $
+;; $Id: el-expectations.el,v 1.62 2010/05/14 22:46:58 rubikitch Exp $
 
 ;; Copyright (C) 2008, 2009, 2010  rubikitch
 
@@ -139,6 +139,9 @@
 ;;; History:
 
 ;; $Log: el-expectations.el,v $
+;; Revision 1.62  2010/05/14 22:46:58  rubikitch
+;; New function: `exps-tmpbuf' create temporary buffer
+;;
 ;; Revision 1.61  2010/05/04 08:48:22  rubikitch
 ;; Added bug report command
 ;;
@@ -363,6 +366,9 @@ Use `expect' and `desc' to verify the code.
 Note that these are neither functions nor macros.
 These are keywords in expectations Domain Specific Language(DSL).
 
+`exps-tmpbuf' creates temporary buffers and they are killed
+after execute expectations.
+
 Synopsis:
 * (expect EXPECTED-VALUE BODY ...)
   Assert that the evaluation result of BODY is `equal' to EXPECTED-VALUE.
@@ -509,6 +515,11 @@ Example:
      ;; Stub function `hoge', which accepts any arguments and returns 3.
      (stub hoge => 3)
      (foo (+ 2 (hoge 10)) 6 7))
+   (desc \"tmpbuf\")
+   (expect \"foo\"
+     (with-current-buffer (exps-tmpbuf)
+       (insert \"foo\")
+       (buffer-string)))
    )
 "
   (if (or noninteractive
@@ -548,7 +559,8 @@ With prefix argument, do `batch-expectations-in-emacs'."
   (if current-prefix-arg
       (batch-expectations-in-emacs)
     (exps-display
-     (mapcar 'exps-execute-test (or testcase exps-last-testcase)))))
+     (mapcar 'exps-execute-test (or testcase exps-last-testcase))))
+  (exps-cleanup))
 
 ;;;; assertions
 (defvar exps-assert-functions
@@ -868,6 +880,27 @@ Compatibility function for \\[next-error] invocations."
           (error errmsg)))
   (point))
 
+;;;; temporary buffer
+(declare-function exps-tmpbuf "el-expectations.el")
+(declare-function exps-cleanup-tmpbuf "el-expectations.el")
+(lexical-let ((count 1))
+  (defun exps-tmpbuf ()
+    (with-current-buffer (get-buffer-create (format " *el-expectations tmp:%d" count))
+      (prog1 (current-buffer)
+        (incf count)
+        (erase-buffer))))
+  (defun exps-cleanup-tmpbuf ()
+    (setq count 1)
+    (loop for buf in (buffer-list)
+          for bname = (buffer-name buf)
+          when (string-match " \\*el-expectations tmp:" bname)
+          do (kill-buffer buf))))
+(defun exps-cleanup ()
+  (exps-cleanup-tmpbuf))
+
+;; (exps-tmpbuf)
+;; (exps-cleanup)
+;; (find-function 'exps-tmpbuf)
 ;;;; edit support
 (put 'expect 'lisp-indent-function 1)
 (put 'expectations 'lisp-indent-function 0)

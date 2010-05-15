@@ -234,7 +234,7 @@ variable `elmo-multi-divide-number' to an appropriate value.
 == WL hangs when I wake from hibernation == 
 
 The problem seems to be that elmo doesn't realize that the connection its IMAP or other connection has timed out on the other side, and so keeps trying it.
-You can wok around it if you use emacs-server by issuing an emacsclient command approximately like this before hibernation:
+You can work around it if you use emacs-server by issuing an emacsclient command approximately like this before hibernation:
 
 {{{
     /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
@@ -242,7 +242,9 @@ You can wok around it if you use emacs-server by issuing an emacsclient command 
 
 and then toggle back on after resume.
 
-If you use the hibernate script for hibernation/suspend, you can also dd a spcriptlet /etc/hibernate/scriptlets.d/wanderlust that will 
+Since hibernation/suspend-to-ram sometiems happen in ways you can't control -- e.g., if you leave your laptop on somewhere and run out of battery power -- it's best to havethis doen automatically.  
+
+If you use the hibernate script for hibernation/suspend, you can add a scriptlet /etc/hibernate/scriptlets.d/wanderlust that will 
 do this for you automatically; here's a very simple example:
 
 {{{
@@ -271,5 +273,37 @@ WanderlustOptions() {
 }
 }}}
 
-A better way to do this would be to check each running emacsserver instance. 
+A better way to do this would be to check each running emacsserver instance. In any case I found this didn't always solve the problem, possibly because plugging back in after resume may occur before your new internet connection has been negotiated, which would give you the same issue.  
 
+I now use pm-utils instead, and have this in /etc/pm/sleep.d/09_wl_fix:
+
+{{{
+. "${PM_FUNCTIONS}"
+
+suspend_wl()
+{
+	# Get WL to go offline
+        /usr/bin/emacsclient --socket-name /tmp/emacs1000/server --eval "(wl-toggle-plugged 'off)"
+}
+
+resume_wl()
+{
+	# Wake up NetworkManager and make it do a new connection
+        echo "waking up -- wl is plugged off"
+}
+
+case "$1" in
+	hibernate|suspend)
+		suspend_wl
+		;;
+	thaw|resume)
+		resume_wl
+		;;
+	*) exit $NA
+		;;
+esac
+
+}}}
+
+
+for now it's doing the trick!

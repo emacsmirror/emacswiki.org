@@ -11,13 +11,16 @@ MuMaMo (short for multiple major modes) needs Emacs 22 or later. It is distribut
 = multi-mode.el =
 
 Multi Mode is an implementation of the approach referred to in Emacs' TODO.
-It probably only works in Emacs 21.
+It probably only works in Emacs 21 /and later/.
 
 - I have been using it with Emacs 23 with no issue. It also has 2009 in its copyright notice, so it seems like it is still being updated. 
 
 * http://www.loveshack.ukfsn.org/emacs/multi-mode.el
 
 See also its uses in noweb.el and haskell-latex.el in the same directory.
+
+Multi-mode is used by [http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el], which is a mode for editing ASPX files in emacs.  aspx-mode handles HTML, browser Javascript blocks, CSS blocks, and C#, with proper highlighting and indenting, all in one buffer.
+
 
 = mmm.el =
 

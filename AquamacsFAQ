@@ -272,30 +272,25 @@ is almost certainly due to an old installation of the EC Emacs plugin. Solution 
 
 That should do it.
 
+== Using the same font for all modes / Using a fixed-width font everywhere ==
+
+Turn off `aquamacs-autoface-mode' via Options / Appearance / Auto Faces / Auto Faces. 
+You can then change the global font via Options / Appearance / Font.
+Save your customization via Options / Save Options.
+
 == Option to turn off anti-aliasing of fonts? ==
  
-The first step should be enabled by default. But if it's not, in <code>~/.emacs</code> or <code>~/Library/Preferences/Aquamacs\ Emacs/Preferences.el</code> write:
+Options / Customize Aquamacs / Specific Option
+then type: ns-antialias-text  (RET)
 
-        (setq mac-allow-anti-aliasing t)
+In the customization buffer, select "Toggle" to change the setting.  You can then set it or save it for future sessions with the appropriate buttons.
 
-Note that <code>mac-allow-anti-aliasing</code> is just a very poorly named variable. It switches between Quartz 2D and Quickdraw text rendering.
-
-The next step is important. Use the following terminal command:
+For more fine-grained control, you can set a configuration resource that allows you to set a font size as a threshold for antialiasing:
+Use the following terminal command in a shell:
 
         defaults write org.gnu.AquamacsEmacs AppleAntiAliasingThreshold 128
 
 The last number should be bigger than the fonts you use. Now restart Aquamacs. 
-
-== How can I make disappear  the labels under the icons in the toolbar ==
-<pre>
-(setq mac-tool-bar-display-mode 'icons)
-</pre>
-
-== How to use Cocoa-style text auto-completion? ==
-
-In Emacs it's called [http://www.gnu.org/software/emacs/manual/html_node/emacs/Dynamic-Abbrevs.html#Dynamic-Abbrevs Dynamic Abbrev Expansion]. M-/ should do the job.
-
-To make sure the case is preserved in a completion, you probably have to [http://www.delorie.com/gnu/docs/emacs/emacs_357.html set variables] <code>dabbrev-case-fold-search</code> and <code>dabbrev-case-replace</code> to <code>nil</code>.
 
 == Starting Aquamacs from a terminal ==
 
@@ -307,25 +302,3 @@ To interact with a running Aquamacs instance, you can use the built-in Emacs ser
 === Installing or Upgrading the Command-line Tools ===
 
 In order to use the "aquamacs" and "emacsclient" command-line tools, from the Aquamacs menu bar, <code>Tools->Install Command Line Tools</code>. If you are upgrading Aquamacs, you may need to re-install the Command Line Tools.
-
-== How to cleanly uninstall Aquamacs? ==
-
-I'd recommend [http://www.freemacsoft.net/AppCleaner/ AppCleaner], just as I would for uninstalling any other application on OS X.
-
-== Ringing the bell, visible bell, sound, etc. ==
-
-By default, Aquamacs won't make a sound when a search fails or when you try to move beyond the top or bottom of the buffer.  To cause Aquamacs to make a sound, put the following in ~/Library/Preferences/Aquamacs Emacs/Preferences.el or your .emacs file:
-
-##(setq ring-bell-function nil)##
-
-If you find an audible bell to be irritating, consider using a "visible bell", which is a momentary flash on the screen to notify you that something happened.  Aquamacs implements a visible bell as a large white square that appears in the center of the screen.  To turn on the visible bell, use
-
-##(setq visible-bell t)##
-
-The two variables interact in a way that may be confusing.  For example, you can't have a visible bell and an audible bell at the same time.  Here's a table that shows some settings the variables can take, and the resulting effect.
-
-|| || *default value* || || || ||
-||''##ring-bell-function##''||##(lambda nil (message ""))##||##nil##||##(lambda nil (message ""))##||##nil##||
-||''##visible-bell##''||##nil##||##nil##||##t##||##t##||
-||||||||||||
-||*resulting effect*||no sound, no flash||sound, no flash||no sound, no flash||no sound, flash||

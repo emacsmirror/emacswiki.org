@@ -102,6 +102,12 @@
   (desc "not-called")
   (expect (not-called hoge)
     1)
+
+  (desc "tmpbuf")
+  (expect "foo"
+    (with-current-buffer (exps-tmpbuf)
+      (insert "foo")
+      (buffer-string)))
   )
 ;; How to save (DO NOT REMOVE!!)
 ;; (emacswiki-post "el-expectations-success-sample.el")

@@ -671,6 +671,10 @@ Narrow the list by typing some pattern,
 Multiple patterns are allowed by splitting by space.
 Select with natural Emacs operations, choose with RET.
 
+If you have any problems, press C-c C-x C-b!!
+Feel free to send bug reports. I'll fix them.
+The steps are described in the beginning of anything.el file.
+
 == Basic Operations ==
 C-p, Up: Previous Line
 C-n, Down : Next Line
@@ -687,6 +691,7 @@ Left : Previous Source
 Right, C-o : Next Source
 C-k : Delete pattern
 C-z : Persistent Action (Execute action with anything session kept)
+C-c C-x C-b: Send a bug report
 
 == Shortcuts For 2nd/3rd Action ==
 \\[anything-select-2nd-action-or-end-of-line] : Execute 2nd Action (if the minibuffer cursor is at end of line)
@@ -5162,9 +5167,9 @@ See `obarray'."
         ((hash-table-p collection)
          (anything-comp-hash-get-items collection))
         (t collection)))
-         
+
 (defun* anything-comp-read (prompt collection &key test initial-input
-                                   (buffer "*Anything Completions*"))
+                                   (buffer "*Anything Completions*") must-match)
   "Anything `completing-read' emulation.
 Collection can be a list, vector, obarray or hash-table."
   (when (get-buffer anything-action-buffer)
@@ -5173,7 +5178,10 @@ Collection can be a list, vector, obarray or hash-table."
        `((name . "Completions")
          (candidates
           . (lambda ()
-              (anything-comp-read-get-candidates collection test)))
+              (let ((cands (anything-comp-read-get-candidates collection test)))
+                (if (or must-match (string= anything-pattern ""))
+                    cands (append (list anything-pattern) cands)))))
+         (volatile)
          (action . (("candidate" . ,'identity))))
        initial-input prompt 'noresume nil buffer)
       (keyboard-quit)))
@@ -5201,7 +5209,8 @@ You can set your own list of commands with
   (interactive (list
                 (anything-comp-read
                  "RunProgram: "
-                 (anything-c-external-commands-list-1 'sort))))
+                 (anything-c-external-commands-list-1 'sort)
+                 :must-match t)))
   (if (or (get-process program)
           (anything-c-get-pid-from-process-name program))
       (error "Error: %s is already running" program)
@@ -5348,7 +5357,7 @@ If not found or a prefix arg is given query the user which tool to use."
                          (concat
                           (anything-comp-read
                            "Program: "
-                           collection)
+                           collection :must-match t)
                           " %s")))
          (progname   (replace-regexp-in-string " %s" "" program))
          (process    (format "%s-%s" progname fname)))

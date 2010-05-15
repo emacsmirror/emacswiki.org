@@ -14,7 +14,8 @@ highlighting syntax errors or other compile problems.
 
 == Download ==
 
-The latest version is available at Lisp:flymake-for-csharp.el 
+A version is available at Lisp:flymake-for-csharp.el 
+The latest version is [http://code.google.com/p/csharpmode/source/browse/trunk/flymake-for-csharp.el on google]
 
 
 == Rationale ==
@@ -63,7 +64,7 @@ To use it:
       flymake-for-csharp-csc-arguments
  
 
-For More Detail, see the extensive commentsin the source code for elisp. 
+For More Detail, see the extensive comments in the elisp source code. 
 
 
 

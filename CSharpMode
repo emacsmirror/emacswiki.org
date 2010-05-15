@@ -15,11 +15,7 @@ http://i42.tinypic.com/a5bwhw.jpg
 
 Note:
 
-Be aware: [NxhtmlMode nXhtml] includes csharp-mode.el v0.7.0, and other versions of csharp-mode.el may be delivered in other packages.  For now, the latest csharp-mode.el is available here.  
-You will want to replace the older 0.7.0 csharp-mode.el that is included in any other package.
-
-[new]
-Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.4.
+[NxhtmlMode nXhtml] includes csharp-mode.el v0.7.4.
 
 
 == Complementary Stuff / Minor Modes ==
@@ -27,6 +23,7 @@ Thanks, nXhtml version 2.08 will include csharp-mode.el v0.7.4.
 ||[http://code.google.com/p/yasnippet/v yasnippet.el]||||dynamically expand snippets, like dabbrev on steroids. [http://blogs.msdn.com/dotnetinterop/archive/2008/04/15/c-snippets-for-yasnippet-el-emacs-snippets.aspx How to use yasnippet with C#.]||
 ||HideShow||||hide and show regions of code.[http://blogs.msdn.com/dotnetinterop/archive/2008/04/14/making-hideshow-el-work-with-csharp-mode-el-and-region-endregion.aspx How to use hideshow.el with C#]||
 ||FlymakeCsharp||||check syntax more-or-less continually, and use overlays to highlight syntax problems in the code. ||
+||[http://code.google.com/p/csharpmode/source/browse/trunk/aspx-mode.el aspx-mode.el]||||multi-mode for editing ASPX files within emacs. Handles HTML, JS, CSS, and C#.||
 ||[[MSTFS]]||||Emacs integration with Team foundation server, via the tf.exe tool||
 ||[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html Linum.el]||||line numbers||
 ||[http://www.gnu.org/software/emacs/manual/html_node/emacs/Reverting.html Auto-Revert]||||refresh .cs buffers, after you've edited them externally, for example, in Visual Studio.||
