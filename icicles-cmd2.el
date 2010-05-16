@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 09:53:39 2010 (-0700)
+;; Last-Updated: Sat May 15 07:36:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2051
+;;     Update #: 2059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1874,8 +1874,8 @@ available as completion candidates.  You can then use apropos
 completion to filter the candidates using a different regexp, which
 you can change dynamically (as always).  You can replace individual
 matches with another string, as in `query-replace' or
-`query-replace-regexp'.  Candidates appear in order of buffer
-occurrence; you cannot sort them.
+`query-replace-regexp'.  By default, candidates appear in order of
+buffer occurrence, but you can sort them in various ways.
 
 Non-interactively, search can be for regexp matches or any other kind
 of matches.  Argument SCAN-FN-OR-REGEXP is the regexp to match, or it
@@ -2000,7 +2000,9 @@ Search and Replace
 You can replace the current search match by using any of the
 alternative action keys: `C-S-RET', `C-S-mouse-2' (in *Completions*),
 `C-S-next', `C-S-prior', `C-S-down', and `C-S-up'.  You can use `M-|'
-to replace all matches at once.
+to replace all matches at once.  (And remember that you can activate
+the region to limit the search-and-replace space.)
+
 
 At the first use of any of these, you are prompted for the replacement
 string; it is used thereafter, or until you use `M-,'
@@ -2075,18 +2077,6 @@ next context.  This behavior has these important consequences:
   replace the following one, all in the same context.  You can,
   however, replace some matches and then skip (e.g. `C-next') to the
   next context.
-
-What about replacing all search hits?  Use `M-|', not `C-|'.
-\(And remember that you can activate the region to limit the
-search-and-replace space.)
-
-Why not `C\|'?  `C-|' just repeats `C-S-RET' on the first of the set
-of candidates, which is updated after each replacement.  The `abcd'
-gotcha example above thus applies here too: If the replacement text
-does not match your input, then there's no problem.  Otherwise, the
-same candidate is operated on repeatedly when you use `C-|'.  `M-|' is
-designed to instead take a static snapshot of the current set of
-candidates, and then act once on each of them.
 
 What your input matches, hence what gets replaced if
 `icicle-search-replace-whole-candidate-flag' is nil, depends on a few
@@ -2507,9 +2497,10 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
 CANDIDATES is a list of search-hit strings.  They are all matched by
 the initial regexp (context regexp)."
   (let ((icicle-last-completion-command  icicle-last-completion-command)
-        (compl-win                       (get-buffer-window "*Completions*" 0))
-        (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
-        (icicle-help-in-mode-line-flag   nil)) ; Avoid delays for individual candidate help.
+        (compl-win                       (get-buffer-window "*Completions*" 0)))
+;;; $$$$$$ These are now avoided always for all candidates, in `icicle-all-candidates-action-1'.
+;;;     (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
+;;;     (icicle-help-in-mode-line-flag   nil)) ; Avoid delays for individual candidate help.
     (unless icicle-search-replacement
       (icicle-search-define-replacement)
       (when (and compl-win icicle-completion-candidates)
@@ -2721,7 +2712,8 @@ current input matches candidate") (sit-for 2))
 
           ;; If we are using `C-S-RET' and we are on the last candidate, then wrap to the first one.
           (when (and (not icicle-acting-on-next/prev)
-                     (>= icicle-candidate-nb (length icicle-completion-candidates)))
+                     (or (not icicle-candidate-nb)
+                         (>= icicle-candidate-nb (length icicle-completion-candidates))))
             (setq icicle-candidate-nb  0))
           (icicle-highlight-candidate-in-Completions)
           (icicle-search-highlight-context-levels))))

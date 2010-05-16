@@ -1,4 +1,4 @@
-;;; visual-basic-mode.el 
+;;; visual-basic-mode.el
 ;; This is free software.
 
 ;; A mode for editing Visual Basic programs.
@@ -16,8 +16,9 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.8 (2009-09-29)
-;; Serial Version: %Id: 18%
+;; Serial Version: %Id: 19%
 ;; Keywords: languages, basic, Evil
+;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
 
 ;; (Old) LCD Archive Entry:
@@ -54,7 +55,7 @@
 ;;  convenience functions.
 
 ;; Installation instructions
-;;  Put visual-basic-mode.el somewhere in your path, compile it, and add 
+;;  Put visual-basic-mode.el somewhere in your path, compile it, and add
 ;;  the following to your init file:
 
 ;;  (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
@@ -66,7 +67,7 @@
 ;;                                  visual-basic-mode)) auto-mode-alist))
 
 ;;  If you had visual-basic-mode already installed, you may need to call
-;;  visual-basic-upgrade-keyword-abbrev-table the first time that 
+;;  visual-basic-upgrade-keyword-abbrev-table the first time that
 ;;  visual-basic-mode is loaded.
 
 ;; Of course, under Windows 3.1, you'll have to name this file
@@ -110,10 +111,10 @@
 ;;     continuations (still fails on 'single line' if with
 ;;     continuation, ugh).
 ;; 1.4.2 RF added "class" and "null" keywords, "Rhino" script note.
-;; 1.4.3 VB1 added 
+;; 1.4.3 VB1 added
 ;;     1) function visual-basic-if-not-on-single-line to recognize single line
 ;;      if statements, even when line is broken.  variable
-;;      visual-basic-allow-single-line-if default set to t again.  
+;;      visual-basic-allow-single-line-if default set to t again.
 ;;     2) use of 'words in calling regexp-opt rather than concat \\< ...\\>
 ;;     3) new keywords Preserve and Explicit
 ;; 1.4.4 VB1 added function visual-basic-close-block
@@ -123,6 +124,9 @@
 ;; 1.4.8 VB1 correct visual-basic-close-block (Property, + add With /End With)
 ;;           add command visual-basic-insert-item
 
+;; Lennart Borgman:
+;; 2010-05-15
+;; - Minor corrections
 ;;
 ;; Notes:
 ;; Dave Love
@@ -295,7 +299,7 @@
 
 (defconst visual-basic-looked-at-continuation-regexp   "_[ \t]*$")
 
-(defconst visual-basic-continuation-regexp 
+(defconst visual-basic-continuation-regexp
   (concat "^.*" visual-basic-looked-at-continuation-regexp))
 
 (eval-and-compile
@@ -363,7 +367,7 @@
     "OpenDatabase"
     "Operator" "Option" "Optional"
     "Or" "PPmt" "PV" "Parameter" "Parameters" "Partition"
-    "Picture" "Pmt" "Preserve" "Print" "Printer" "Printers" "Private" 
+    "Picture" "Pmt" "Preserve" "Print" "Printer" "Printers" "Private"
 	"ProjectTemplate" "Property"
     "Properties" "Public" "Put" "QBColor" "QueryDef" "QueryDefs"
     "RSet" "RTrim" "Randomize" "Rate" "ReDim" "Recordset" "Recordsets"
@@ -411,6 +415,7 @@
 
 (put 'visual-basic-mode 'font-lock-keywords 'visual-basic-font-lock-keywords)
 
+;;;###autoload
 (defun visual-basic-mode ()
   "A mode for editing Microsoft Visual Basic programs.
 Features automatic indentation, font locking, keyword capitalization,
@@ -424,7 +429,8 @@ Commands:
   (setq mode-name "Visual Basic")
   (set-syntax-table visual-basic-mode-syntax-table)
 
-  (add-hook 'local-write-file-hooks 'visual-basic-untabify)
+  ;; This should be the users choice
+  ;;(add-hook 'local-write-file-hooks 'visual-basic-untabify)
 
   (setq local-abbrev-table visual-basic-mode-abbrev-table)
   (if visual-basic-capitalize-keywords-p
@@ -512,7 +518,7 @@ Commands:
 (defun visual-basic-upgrade-keyword-abbrev-table ()
   "Use this in case of upgrading visual-basic-mode.el"
   (interactive)
-  
+
   (let ((words visual-basic-all-keywords)
 		(word nil)
 		(list nil))
@@ -748,7 +754,7 @@ changed files."
              (setq level (- level 1)))))))
 
 (defun visual-basic-find-matching-stmt (open-regexp close-regexp)
-  (visual-find-matching-stmt 
+  (visual-find-matching-stmt
    (lambda () (looking-at open-regexp))
    (lambda () (looking-at close-regexp))))
 
@@ -757,10 +763,10 @@ changed files."
   point and going up to end of statement line. If you want the
   complete statement line, you have to call functions
   `visual-basic-find-original-statement' and then
-  `beginning-of-line' before" 
-  (let* ((start-point (point)) 
-	 complete-line 
-	 (line-beg start-point) 
+  `beginning-of-line' before"
+  (let* ((start-point (point))
+	 complete-line
+	 (line-beg start-point)
 	 line-end)
     (while (null line-end)
       (end-of-line)
@@ -770,19 +776,19 @@ changed files."
 	      ;; folded line
 	      (progn
 		(setq line-end (1- (point))
-		      complete-line (cons 
-				     (buffer-substring-no-properties 
-				      line-beg line-end) 
+		      complete-line (cons
+				     (buffer-substring-no-properties
+				      line-beg line-end)
 				     complete-line)
 		      line-end nil)
 		(beginning-of-line 2)
 		(setq line-beg (point)))
 	    ;; _ found, but not a folded line (this is a syntax error)
-	    (setq complete-line 
+	    (setq complete-line
 		  (cons (buffer-substring-no-properties line-beg line-end) complete-line)))
 	;; not a folded line
-	(setq complete-line 
-	      (cons (buffer-substring-no-properties line-beg line-end) 
+	(setq complete-line
+	      (cons (buffer-substring-no-properties line-beg line-end)
 		    complete-line))))
     (mapconcat 'identity (nreverse complete-line) " ")))
 
@@ -793,7 +799,7 @@ be folded over several code lines."
   (if (looking-at visual-basic-if-regexp)
       (save-excursion
 	(beginning-of-line)
-	(let (p1 
+	(let (p1
 	      p2
 	      ;; 1st reconstruct complete line
 	      (complete-line (visual-basic-get-complete-tail-of-line)) )
@@ -1016,7 +1022,7 @@ In Abbrev mode, any abbrev before point will be expanded."
 
 (defun visual-basic-detect-idom ()
   "Detects whether this is a VBA or VBS script. Returns symbol
-  `vba' if it is VBA, `nil' otherwise" 
+  `vba' if it is VBA, `nil' otherwise"
   (let (ret)
     (save-excursion
       (save-restriction
@@ -1105,8 +1111,8 @@ With' if the block is a `With ...', etc..."
 	       ((looking-at visual-basic-select-end-regexp) ; select case/end select
 		(visual-basic-find-matching-select)
 		t)
-	       
-	       
+
+
 	       ;; default is to loop again back to previous line of code.
 	       (t t))))))
     (when end-statement
@@ -1114,7 +1120,7 @@ With' if the block is a `With ...', etc..."
       (visual-basic-indent-to-column end-indent))))
 
 (defun visual-basic-insert-item ()
-  "Insert a new item in a block. 
+  "Insert a new item in a block.
 
 This function is under developement, and for the time being only Dim items are handled.
 
@@ -1140,7 +1146,7 @@ Interting an item means:
   ;; select-with-else
   ;; select-without-else
   ;; not-itemizable
-  (let (item-case 
+  (let (item-case
 	item-ident
 	split-point
 	cur-point-mark
@@ -1150,9 +1156,9 @@ Interting an item means:
     (save-excursion
       (save-match-data
 	(beginning-of-line)
-	(while 
+	(while
 	    (progn
-	      (visual-basic-find-original-statement)	      
+	      (visual-basic-find-original-statement)
 	      (cond
 	       ;; dim case
 	       ;;--------------------------------------------------------------
@@ -1162,7 +1168,7 @@ Interting an item means:
 		(setq prefix (buffer-substring-no-properties
 			      (point)
 			      (goto-char (setq split-point (match-end 0)))))
-		(while 
+		(while
 		    (progn
 		      (if
 			  (looking-at "\\s-*\\sw+\\s-*")
@@ -1170,7 +1176,7 @@ Interting an item means:
 			    (goto-char (setq tentative-split-point (match-end 0)))
 			    (if (>= tentative-split-point cur-point)
 				  nil
-			      (while (or 
+			      (while (or
 				      (looking-at "([^)\n]+)\\s-*")
 				      (looking-at visual-basic-looked-at-continuation-regexp))
 				(goto-char (setq tentative-split-point (match-end 0))))
@@ -1184,13 +1190,13 @@ Interting an item means:
 				nil)))
 			nil)))
 		(goto-char split-point)
-		(setq item-case (if (<= split-point cur-point) 'dim-split-before 'dim-split-after)
-		      delta-split-to-cur-point (- split-point cur-point))
+		(setq item-case (if (<= split-point cur-point) 'dim-split-before 'dim-split-after))
+                ;; Looks like a left over, not known to Emacs or Google:
+                ;; (setq delta-split-to-cur-point (- split-point cur-point))
 		(setq cur-point-mark (make-marker))
 		(set-marker cur-point-mark cur-point)
 		(looking-at "\\s-*")
-		(setq delta-split-to-cur-point (- delta-split-to-cur-point
-						  (- (match-end 0) (match-beginning 0))))
+		;;(setq delta-split-to-cur-point (- delta-split-to-cur-point (- (match-end 0) (match-beginning 0))))
 		(delete-region (point) (match-end 0))
 		(when (looking-back ",")
 		  (delete-region split-point (1- split-point)))
@@ -1203,7 +1209,7 @@ Interting an item means:
 		(push (list 'next) block-stack))
 	       ;; default
 	       ;;--------------------------------------------------------------
-	       (t (if (bobp) 
+	       (t (if (bobp)
 		      (setq item-case 'not-itemizable)))
 	       )
 	      (when (null item-case)

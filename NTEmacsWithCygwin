@@ -117,5 +117,10 @@ After loading w32-grep.el, <code>C-u C-u M-x rgrep RET</code> returns an invalid
 [new]
 The other option is setting `null-device' to "/dev/null" permanently in the Cygwin section of your .emacs.
 
+[new]
+Is that actually true? I would have thought making that change permanent would break any non-Cygwin functionality in NTEmacs that utilises the null-device. Surely the change needs to be made selectively, only for Cygwin-based functionality that relies upon it (as with the above advice-based solution for the rgrep issue)?
+
+I know that cygwin-mount allows you to access cygwin paths natively in emacs, so perhaps /dev/null will actually work in a cygwin-mounted emacs, but I'm unsure whether that would actually be a consistent solution in all circumstances. Can anyone confirm this categorically?
+
 ----
 CygWin

@@ -26,6 +26,7 @@
 ;; FUNCTIONS:►►►
 ;; `mon-drive-transfer-template-cln-all', `mon-insert-drive-transfer-template',
 ;; `mon-drive-transfer-template-cln-log-dest',
+;; `mon-drive-transfer-template-subst-src-dest-log',
 ;; `mon-drive-transfer-template-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -40,7 +41,8 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
-;; `*mon-drive-transfer-template*'
+;; `*mon-drive-transfer-template*',
+;; `*mon-drive-transfer-template-src-dest-log*',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
@@ -57,7 +59,7 @@
 ;; SNIPPETS:
 ;;
 ;; REQUIRES:
-;;
+;; 
 ;; THIRD-PARTY-CODE:
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-drive-transfer-utils.el
@@ -109,42 +111,132 @@
 (eval-when-compile (require 'cl))
 
 ;;; ==============================
-;;; :NOTE The `du' can take an `--exclude-from' to filter "^lost+found$". Though, 
-;;; it isn't safe to default to this behaviour unless we know that filesystem of
-;;; <FROM-MOUNT-POINT> differs from <TO-MOuNT-POINT> such that <TO-MOUNT-POINT>
-;;; contains a top-level lost+found directory where <FROM-MOUNT-POINT> doesn't,
-;;; e.g. a transfer such as vfat -> ext4 prob. should filter whereas the inverse
-;;; ext4 -> vfat shouldn't...  The point is, if you get mismatches +/-3 in your
-;;; file/dir counts these types of top-level dirs are a good place to look when
-;;; reconciling differences.
-;;;
+;;; :CHANGESET 1732
+;;; :CREATED <Timestamp: #{2010-05-15T08:32:52-04:00Z}#{10196} - by MON KEY>
+(defvar *mon-drive-transfer-template-src-dest-log* nil
+  "*A subcomponent of the template returned by `*mon-drive-transfer-template*'.
+This holds the `ls' and `grep' templates for deriving file and directory counts in 
+<FROM-MOUNT-POINT> and <TO-MOUNT-POINT>.\n
+:NOTE Template defaults to <*SRC-LOG> text variables.
+      The <*DEST-LOG> variables are substititued in with the function
+      `mon-drive-transfer-template-subst-src-dest-log'.\n
+:NOTE The `printf' statments have newlines escaped for
+      `mon-insert-drive-transfer-template' which invokes `insert'.\n
+:SEE-ALSO .\n►►►")
+;;
+(unless (bound-and-true-p *mon-drive-transfer-template-src-dest-log*)
+  (setq *mon-drive-transfer-template-src-dest-log*
+        (mapconcat 
+         'identity
+         `(
+           ;; :NOTE The `du' can take an `--exclude-from' to filter "^lost+found$". Though, 
+           ;; it isn't safe to default to this behaviour unless we know that filesystem of
+           ;; <FROM-MOUNT-POINT> differs from <TO-MOUNT-POINT> such that <TO-MOUNT-POINT>
+           ;; contains a top-level lost+found directory where <FROM-MOUNT-POINT> doesn't,
+           ;; e.g. a transfer such as vfat -> ext4 prob. should filter whereas the inverse
+           ;; ext4 -> vfat shouldn't...  The point is, if you get mismatches +/-3 in your
+           ;; file/dir counts these types of top-level dirs are a good place to look when
+           ;; reconciling differences.
+           ,(concat "\ndu --human-readable --one-file-system --max-depth=1 <FROM-MOUNT-POINT> "
+                    "| tee <TRANSFER-NOTES-DIR>/<DU-SRC-LOG>")
+
+           ;; Don't echo the ls output to transcript we only care about the grepd file/dir counts.
+           ;; Read the ls logfile if that is what is wanted :)
+           "ls -laR <TO-MOUNT-POINT>  > <TRANSFER-NOTES-DIR>/<SRC-LOG>"  
+
+           ;; Record the grep command used to generate the counts into the log-file
+           ,(concat
+             "printf \"\\n### grep --invert-match ^[.lt]  <TRANSFER-NOTES-DIR>/<SRC-LOG> "
+             "| grep --invert-match ^$ | wc -l \\n\""
+             " >> <TRANSFER-NOTES-DIR>/<SRC-LOG>")
+           ;; Now execute teh command and echo the output to log file. 
+           ;; :NOTE We use `tee' to ensure that the transcript also catches this output.  
+           ,(concat
+             "grep --invert-match ^[.lt]  <TRANSFER-NOTES-DIR>/<SRC-LOG> "
+             "| grep --invert-match ^$ | wc -l "
+             "| tee --append <TRANSFER-NOTES-DIR>/<SRC-LOG>")
+           ;; This is nearly identical to above except we invert matches for
+           ;; directories as well, e.g. `d'.
+           ,(concat
+             "printf \"\\n###grep --invert-match ^[.dlt]  <TRANSFER-NOTES-DIR>/<SRC-LOG> "
+             "| grep --invert-match ^$ | wc -l \\n\""
+             " >> <TRANSFER-NOTES-DIR>/<SRC-LOG>")
+           ,(concat
+             "grep --invert-match ^[.dlt]  <TRANSFER-NOTES-DIR>/<SRC-LOG> "
+             "| grep --invert-match ^$ | wc -l "
+             "| tee --append <TRANSFER-NOTES-DIR>/<SRC-LOG>"))
+         "\n\n")) )
+;;
+;;; :TEST-ME *mon-drive-transfer-template-src-dest-log*
+;;
+;;;(progn (makunbound '*mon-drive-transfer-template-src-dest-log*)
+;;;       (unintern    '*mon-drive-transfer-template-src-dest-log*) )
+
+;;; ==============================
+;;; :CHANGESET 1732
+;;; :CREATED <Timestamp: #{2010-05-15T08:37:41-04:00Z}#{10196} - by MON KEY>
+(defun mon-drive-transfer-template-subst-src-dest-log (&optional subst-dest)
+  "Return value of `*mon-drive-transfer-template-src-dest-log*' variable.\n
+When optional arg SUBST-DEST is non-nil substitute all occurences of 
+<SRC-LOG> with <DEST-LOG>.
+:EXAMPLE\n\n\(mon-drive-transfer-template-subst-src-dest-log\)\n
+\(mon-drive-transfer-template-subst-src-dest-log t\)\n
+:SEE-ALSO `*mon-drive-transfer-template*'.\n►►►"
+  (if subst-dest
+      (replace-regexp-in-string "SRC-LOG" "DEST-LOG" 
+                                *mon-drive-transfer-template-src-dest-log* t)
+    *mon-drive-transfer-template-src-dest-log*))
+;;
+;;; :TEST-ME (mon-drive-transfer-template-subst-src-dest-log)
+;;; :TEST-ME (mon-drive-transfer-template-subst-src-dest-log t)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-05-06T19:37:03-04:00Z}#{10184} - by MON>
 (defvar *mon-drive-transfer-template* nil
   "*A Template for interactively moving large directory trees drives and mount points.\n
 :NOTE Potentially destructive commands are prefixed with by \"#\" at BOL.\n
 :SEE Invocation example of `mon-insert-drive-transfer-template' in docstring of
 `mon-drive-transfer-template-cln-all' for usage.\n
-:SEE-ALSO `mon-drive-transfer-template-cln-log-dest', 
+:SEE-ALSO `*mon-drive-transfer-template-src-dest-log*',
+`mon-drive-transfer-template-subst-src-dest-log',
+`mon-drive-transfer-template-cln-log-dest', 
 `mon-drive-transfer-template-TEST'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-drive-transfer-template*)
   (setq *mon-drive-transfer-template*
         (mapconcat 'identity
-         '("# :MOVED <FROM-MOUNT-POINT> -> <TO-MOUNT-POINT>"
+         `("# :MOVED <FROM-MOUNT-POINT> -> <TO-MOUNT-POINT>"
            "script <TRANSFER-NOTES-DIR>/TRANSFER-LOG-<DATE>"
+           
+           ;; Make sure to mount is mounted and record the fact to transcript.
            "mount <TO-MOUNT-POINT>"
+
+           ;; Make sure we start in the SRC directory.
            "cd <FROM-MOUNT-POINT>"
-           "du --human-readable --one-file-system --max-depth=1 <FROM-MOUNT-POINT>"
-           "ls -laR <FROM-MOUNT-POINT> > <TRANSFER-NOTES-DIR>/<SRC-LOG>"
-           "grep --invert-match ^[.lt]   <TRANSFER-NOTES-DIR>/<SRC-LOG> | grep --invert-match ^$ | wc -l"
-           "grep --invert-match ^[.dlt]  <TRANSFER-NOTES-DIR>/<SRC-LOG> | grep --invert-match ^$ | wc -l"
+           
+           ;; Begin the du, ls, and grep templates for SRC-LOG
+           ,(mon-drive-transfer-template-subst-src-dest-log)
+
+           ;; Record that this is the command we used to perform the transfer.
            "# :MOVED-WITH"
+
+           ;; :NOTE Following `tar' command could just as well have been:
+           ;;       tar -C <FROM-MOUNT-POINT> -Scpf - . | tar -C <TO-MOUNT-POINT> -Sxvpf - 
+           ;;
+           ;; Which FWIW info says keeps us from using a new subshell. :SEE (info "(tar)Applications")
+           ;; However, following has a bit more clarity and the use of `-' and
+           ;; `.' seem error prone if elided or misapplied. Wrapping everthing
+           ;; in a paren'd block might help guard against that.
            "# (cd <FROM-MOUNT-POINT> && tar Scpf - .) | (cd <TO-MOUNT-POINT> && tar Sxvpf - )"
+
+           ;; The cd to DEST isn't really needed when scripted but it can be
+           ;; helpful to be there when running these commands interactively.
            "cd <TO-MOUNT-POINT>"
-           "du --human-readable --one-file-system --max-depth=1 <TO-MOUNT-POINT>"
-           "ls -laR <TO-MOUNT-POINT> >  <TRANSFER-NOTES-DIR>/<DEST-LOG>"
-           "grep --invert-match ^[.lt]  <TRANSFER-NOTES-DIR>/<DEST-LOG> | grep --invert-match ^$ | wc -l"
-           "grep --invert-match ^[.dlt] <TRANSFER-NOTES-DIR>/<DEST-LOG> | grep --invert-match ^$ | wc -l"
+
+           ;; Begin the du, ls, and grep templates for SRC-LOG
+           ,(mon-drive-transfer-template-subst-src-dest-log t)
+           
+           ;; Make sure we aren't in DEST's mount point before attempting to `unmount'
            "cd <TRANSFER-NOTES-DIR>"
            "umount <TO-MOUNT-POINT>"
            "ls -alh <TO-MOUNT-POINT>"
@@ -158,8 +250,8 @@
 ;; 
 ;;; :TEST-ME *mon-drive-transfer-template*
 ;;
-;;;(progn (makunbound '*mon-drive-transfer-template*) (unintern '*mon-drive-transfer-template*) )
-
+;;;(progn (makunbound '*mon-drive-transfer-template*)
+;;;       (unintern '*mon-drive-transfer-template*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-05-06T19:40:28-04:00Z}#{10184} - by MON>
@@ -170,6 +262,8 @@ When optional arg CLND-TEMPLATE is non-nil it is a string as generated by
 `mon-drive-transfer-template-cln-all'.\n
 :SEE Example invocation of `mon-drive-transfer-template-cln-all' for usage.\n
 :SEE-ALSO `mon-drive-transfer-template-cln-log-dest', 
+`*mon-drive-transfer-template-src-dest-log*',
+`mon-drive-transfer-template-subst-src-dest-log',
 `mon-drive-transfer-template-TEST'.\n►►►"
   (save-excursion 
     (newline)
@@ -179,19 +273,11 @@ When optional arg CLND-TEMPLATE is non-nil it is a string as generated by
 ;;
 ;;; :TEST-ME (mon-insert-drive-transfer-template)
 
-;; (subst-ds #'(lambda (dest-src)
-;;                       (let (new-ds)
-;;                         ;; :NOTE Passing INPLACE non-nil to `subst-char-in-string' problematic.
-;;                         (setq new-ds (subst-char-in-string 47 45 dest-src))
-;;                       (if (aref new-ds 0)
-;;                           (setq new-ds (substring new-ds 1))
-;;                         new-ds))))
-
 ;;; ==============================
 ;;; :CHANGESET 1726
 ;;; :CREATED <Timestamp: #{2010-05-13T12:46:20-04:00Z}#{10194} - by MON KEY>
 (defun mon-drive-transfer-template-cln-log-dest (mnt-src mnt-dest log-dir) 
-  "Replace `ls' command template variables with MNT-SRC, MNT-DEST, and LOG-DIR.\n
+  "Replace `du',`ls', `grep' text variables with MNT-SRC, MNT-DEST, and LOG-DIR.\n
 Helper function for `mon-drive-transfer-template-cln-all'.\n
 Regexps of this function specific to template elements held in the variable
 `*mon-drive-transfer-template*'.\n
@@ -201,13 +287,19 @@ The args MNT-SRC, MNT-DEST, and LOG-DIR are equivalent to first three args to
  MNT-DEST <- to-mount-point
  LOG-DIR  <- transfer-note-dir\n
 Following template elements are replaced:\n 
+ <TRANSFER-NOTES-DIR>/<DU-SRC-LOG> 
  <TRANSFER-NOTES-DIR>/<SRC-LOG> 
+ <TRANSFER-NOTES-DIR>/<DU-DEST-LOG>\n
  <TRANSFER-NOTES-DIR>/<DEST-LOG>\n
 With filenames:\n
- /TRANSFER-NOTES-DIR/source-mount-path--SRC-LOG--ls-alR--YYYY-MM-DD
- /TRANSFER-NOTES-DIR/destn-mount-path--DEST-LOG--ls-alR--YYYY-MM-DD\n
+ /TRANSFER-NOTES-DIR/source-mount-path--du-dump--SRC-LOG-YYYY-MM-DD
+ /TRANSFER-NOTES-DIR/source-mount-path--ls-alR--SRC-LOG-YYYY-MM-DD
+ /TRANSFER-NOTES-DIR/source-mount-path--du-dump--DEST-LOG-YYYY-MM-DD
+ /TRANSFER-NOTES-DIR/destn-mount-path--ls-alR--DEST-LOG-YYYY-MM-DD
 :EXAMPLE\n\n(mon-drive-transfer-template-TEST t)\n
-:SEE-ALSO `mon-drive-transfer-template-TEST'.\n►►►"
+:SEE-ALSO `mon-drive-transfer-template-TEST',
+`*mon-drive-transfer-template-src-dest-log*',
+`mon-drive-transfer-template-subst-src-dest-log'.\n►►►"
   (let ((subst-ds #'(lambda (dest-src)
                       (let ((new-ds dest-src))
                         ;; :NOTE Passing INPLACE non-nil to `subst-char-in-string' problematic.
@@ -215,18 +307,29 @@ With filenames:\n
                       (if (aref new-ds 0)
                           (setq new-ds (substring new-ds 1))
                         new-ds)))))
-    (while (search-forward-regexp "\\(<TRANSFER-NOTES-DIR>/<\\)\\(SRC\\|DEST\\)\\(-LOG>\\)*" nil t)
+    (while ;; :WAS (search-forward-regexp "\\(<TRANSFER-NOTES-DIR>/<\\)\\(SRC\\|DEST\\)\\(-LOG>\\)*" nil t)
+        (search-forward-regexp "\\(<TRANSFER-NOTES-DIR>/<\\)\\(DU-SRC\\|SRC\\|DU-DEST\\|DEST\\)\\(-LOG>\\)*" nil t)
       (let ((msnp2 (match-string-no-properties 2)))
-        (cond ((equal msnp2 "SRC")
-               (setq msnp2
-                     (concat log-dir "/" (funcall subst-ds mnt-src) 
-                             "--ls-alR--SRC-LOG-" (mon-date-stamp :as-string t))))
-              ((equal msnp2 "DEST") 
-               (setq msnp2 
-                     (concat log-dir "/" (funcall subst-ds mnt-dest) 
-                             "--ls-alR--DEST-LOG-" (mon-date-stamp :as-string t))))
-              (t (error (concat ":FUNCTION `mon-drive-transfer-template-cln-all' --\n" 
-                                "regexp cant find template <DEST-LOG> or <SRC-LOG>"))))
+        (cond 
+         ((equal msnp2 "DU-SRC")
+          (setq msnp2
+                (concat log-dir "/" (funcall subst-ds mnt-src) 
+                        "--du-dump--SRC-LOG-" (mon-date-stamp :as-string t))))
+         ((equal msnp2 "SRC")
+          (setq msnp2
+                (concat log-dir "/" (funcall subst-ds mnt-src) 
+                        "--ls-alR--SRC-LOG-" (mon-date-stamp :as-string t))))
+         ((equal msnp2 "DU-DEST")
+          (setq msnp2
+                (concat log-dir "/" (funcall subst-ds mnt-dest) 
+                        "--du-dump--DEST-LOG-" (mon-date-stamp :as-string t))))
+         ((equal msnp2 "DEST") 
+          (setq msnp2 
+                (concat log-dir "/" (funcall subst-ds mnt-dest) 
+                        "--ls-alR--DEST-LOG-" (mon-date-stamp :as-string t))))
+         ;; This can't actually happen.
+         (t (error (concat ":FUNCTION `mon-drive-transfer-template-cln-all' --\n" 
+                           "regexp cant find template <DEST-LOG> or <SRC-LOG>"))))
         (replace-match msnp2 t)))))
 ;;
 ;;; :TEST-ME (mon-drive-transfer-template-TEST t)
@@ -235,25 +338,18 @@ With filenames:\n
 ;;; :CHANGESET 1727
 ;;; :CREATED <Timestamp: #{2010-05-13T13:14:12-04:00Z}#{10194} - by MON KEY>
 (defun mon-drive-transfer-template-TEST (&optional log-dest-test)
-  "Test function for `mon-drive-transfer-template-cln'.
+  "Test function for `mon-drive-transfer-template-cln'.\n
 Return results in new buffer-name'd \"*MON-DRIVE-TRANSFER-CLN-TEST*\".
 When optional arg LOG-DEST-TEST is non-nil return results of evaluating
 `mon-drive-transfer-template-cln-log-dest' instead.\n
 :SEE-ALSO `mon-drive-transfer-template-cln-all', `mon-insert-drive-transfer-template',
-`*mon-drive-transfer-template*'.\n►►►"
+`*mon-drive-transfer-template*',`*mon-drive-transfer-template-src-dest-log*',
+`mon-drive-transfer-template-subst-src-dest-log'.\n►►►"
   (with-current-buffer (get-buffer-create "*MON-DRIVE-TRANSFER-CLN-TEST*")
     (erase-buffer)
     (if log-dest-test
-        (let ((mdtcle
-               (mapconcat 
-                'identity
-                '("ls -laR <FROM-MOUNT-POINT> > <TRANSFER-NOTES-DIR>/<SRC-LOG>"
-                  "grep --invert-match ^[.lt]   <TRANSFER-NOTES-DIR>/<SRC-LOG>  | grep --invert-match ^$ | wc -l"
-                  "grep --invert-match ^[.dlt]  <TRANSFER-NOTES-DIR>/<SRC-LOG>  | grep --invert-match ^$ | wc -l\n"
-                  "ls -laR <TO-MOUNT-POINT> >   <TRANSFER-NOTES-DIR>/<DEST-LOG>"
-                  "grep --invert-match ^[.lt]   <TRANSFER-NOTES-DIR>/<DEST-LOG> | grep --invert-match ^$ | wc -l"
-                  "grep --invert-match ^[.dlt]  <TRANSFER-NOTES-DIR>/<DEST-LOG> | grep --invert-match ^$ | wc -l\n") 
-                "\n")))
+        (let ((mdtcle (concat (mon-drive-transfer-template-subst-src-dest-log)
+                              (mon-drive-transfer-template-subst-src-dest-log t))))
           (save-excursion (insert mdtcle))
           (mon-drive-transfer-template-cln-log-dest
            "/mnt/frm-this-drv" "/mnt/to-this-other-drv/subdir" "/home/me/log-this-to-here"))
@@ -391,7 +487,9 @@ We executute the following as root user.
 
   To move the entire directory as an archive do:
 
-   (cd <FROM-MOUNT-POINT> && tar Scpvf <TO-MOUNT-POINT><TAR-FILE-NAME>.tar .)
+   (cd <FROM-MOUNT-POINT> && tar Scpvf <TO-MOUNT-POINT><TAR-FILE-NAME>.tar .)\n
+   Or if you prefer:\n
+   tar -C <FROM-MOUNT-POINT> -Scpvf <TO-MOUNT-POINT><TAR-FILE-NAME>.tar .
 
   :NOTE In this configuration we add the --verbose flag on the
   <FROM-MOUNT-POINT> side as there is no per file/dir decompression to
@@ -413,8 +511,6 @@ We executute the following as root user.
   ,----
   | # Optionally set `--interactive=once' to only prompt once when `--recursive'
   | alias rm=\"rm --interactive\" 
-  | alias mv=\"mv --interactive\" 
-  | alias mv-force=\"mv --force\"
   | alias rm-force=\"rm --force\"
   `----
 
@@ -442,7 +538,8 @@ We executute the following as root user.
  \"Le Roi est mort, vive le Roi!\"\n \"Ext3 is dead, all hail the Ext4!\"\n
 
 :SEE-ALSO `*mon-drive-transfer-template*', `mon-drive-transfer-template-cln-log-dest',
-`mon-insert-drive-transfer-template'.\n►►►"
+`mon-insert-drive-transfer-template', `*mon-drive-transfer-template-src-dest-log*',
+`mon-drive-transfer-template-subst-src-dest-log'.\n►►►"
   (let (;; :NOTE Using marker in case we decide not to dump ;;
         ;; `*mon-drive-transfer-template*' to temp-buffer i.e. adding an INTRP arg
         ;; further up.
@@ -483,12 +580,12 @@ We executute the following as root user.
       (mon-drive-transfer-template-cln-log-dest mctt-fmp mctt-2mp mctt-tnd) 
       (goto-char pre-frm-to)
       (while (search-forward-regexp "<FROM-MOUNT-POINT>" nil t)
-          (replace-match mctt-fmp t))
+          (replace-match (concat mctt-fmp " ") t))
       (goto-char pre-frm-to)
       ;; Any remaining occurences of "<TO-MOUNT-POINT>" aren't going to `[u]mount' commands,
       ;; now safe to  use value of arg TO-MOUNT-POINT.
       (while (search-forward-regexp "<TO-MOUNT-POINT>" nil t)
-        (replace-match mctt-2mp t)) 
+        (replace-match (concat mctt-2mp " ") t)) 
       (goto-char pre-frm-to)
       (while (search-forward-regexp "<TRANSFER-NOTES-DIR>" nil t)
         (replace-match mctt-tnd t)) 
@@ -514,6 +611,74 @@ We executute the following as root user.
 ;;           "user-bubba" "bubba-group")
 ;;
 ;; :TEST-ME (mon-drive-transfer-template-TEST)
+
+;;; ==============================
+
+;;; ==============================
+;;; :NOTE From :FILE mon-time-utils.el @ :CHANGESET 1734
+(unless (fboundp 'mon-date-stamp)
+;;; ==============================
+;;; :CHANGESET 1711 <Timestamp: #{2010-05-06T15:28:04-04:00Z}#{10184} - by MON KEY>
+;;; :RENAMED :FUNCTION `mon-today' -> `mon-date-stamp' 
+;;; :ADDED keywords INSRTP and INTRP
+;;; :CREATED <Timestamp: #{2009-10-23T20:57:47-04:00Z}#{09436} - by MON KEY>
+(defun* mon-date-stamp (&key as-string as-symbol as-list-str as-list-num
+                             as-vec-str as-vec-num insrtp intrp)
+  "Return today's date as YYYY-MM-DD.\n
+When keyword AS-STRING is non-nil return date as a string.
+When keyword INTRP is non-nil or called-interactivley a string at point.\n
+When keyword AS-SYMBOL is non-nil return date as a symbol.
+When keyword AS-LIST-STR is non-nil return date as a list of three strings.
+When keyword AS-LIST-NUM is non-nil return date as a list of three numbers.
+When keyword AS-VEC-STR is non-nil return date as a vector of three strings.
+When keyword AS-VEC-NUM is non-nil return date as a vector of three numbers.\n
+When keyword INSRTP is non-nil insert retrun value at point as if with `prin1'\n
+:NOTE the AS-*-NUM keywords return in decimal \(radix 10\).
+:EXAMPLE\n\(mon-date-stamp :as-string t\)\n\(mon-date-stamp :as-symbol t\)\n
+\(mon-date-stamp :as-list-str t\)\n\(mon-date-stamp :as-list-num t\)
+\(mon-date-stamp :as-vec-str t\)\(mon-date-stamp :as-vec-num t\)\n
+:ALIASED :BY `mon-stamp-date-only'
+:ALIASED :BY `mon-today-stamp'\n
+:SEE-ALSO `mon-get-current-year', `mon-format-iso-8601-time', `mon-stamp',
+`mon-accessed-stamp', `mon-timestamp', `mon-lisp-stamp', `mon-file-stamp',
+`mon-file-stamp-buffer-filename', `mon-file-stamp-minibuffer'.\n►►►"
+  (interactive (list :intrp t))
+  (let ((mds-2day (format-time-string "%Y-%m-%d")))
+    (setq mds-2day
+          (cond ((or intrp as-string) mds-2day)
+                (as-symbol 
+                 (eval-when (compile load eval)
+                   (if (fboundp 'mon-string-to-symbol)
+                       (mon-string-to-symbol mds-2day)
+                     (car (read-from-string mds-2day)))))
+                (as-list-str  `(,(substring mds-2day 0 4)
+                                ,(substring mds-2day 5 7)
+                                ,(substring mds-2day 8 10)))
+                (as-list-num  (mapcar 'string-to-number
+                                      (mon-date-stamp :as-list-str t)))
+                (as-vec-str (apply 'vector (mon-date-stamp :as-list-str t)))
+                (as-vec-num (apply 'vector (mon-date-stamp :as-list-num t)))))
+    
+    (cond (intrp (insert mds-2day))
+          (insrtp (prin1 mds-2day (current-buffer)))
+          (t mds-2day))))
+;;
+;;; :TEST-ME (mon-date-stamp :intrp t)
+;;; :TEST-ME (mon-date-stamp :as-string t)
+;;; :TEST-ME (mon-date-stamp :as-string t :insrtp t)
+;;; :TEST-ME (mon-date-stamp :as-symbol t)
+;;; :TEST-ME (mon-date-stamp :as-symbol t :insrtp t)
+;;; :TEST-ME (mon-date-stamp :as-list-str t )
+;;; :TEST-ME (mon-date-stamp :as-list-str t :insrtp t)
+;;; :TEST-ME (mon-date-stamp :as-list-num t)
+;;; :TEST-ME (mon-date-stamp :as-list-num t :insrtp t)
+;;; :TEST-ME (mon-date-stamp :as-vec-str t)
+;;; :TEST-ME (mon-date-stamp :as-vec-str t :insrtp t)
+;;; :TEST-ME (mon-date-stamp :as-vec-num t)
+;;; :TEST-ME (mon-date-stamp :as-vec-num t :insrtp t)
+;;; ==============================
+) ;; :CLOSE unless
+
 
 ;;; ==============================
 (provide 'mon-drive-transfer-utils)

@@ -1,4 +1,4 @@
-Inspired by `eev', I made this. The command below makes it possible to send commands to eshell from another buffer. Bind the some key to this command and you can then easily send the current line for execution in eshell.
+Inspired by `[[EevMode|eev]]', I made this. The command below makes it possible to send commands to eshell from another buffer. Bind the some key to this command and you can then easily send the current line for execution in eshell.
 
 <pre>
 (defun my-eshell-execute-current-line ()

@@ -260,13 +260,14 @@ To get a copy of the Sunrise Tabs extension go to:
 ----
 [:TreeExt]
 ==The Tree Extension==
-This extension adds to Sunrise a tree view of directories that can be
-used for fast navigation, as well as for several basic operations  on
-files and directories. It uses the excellent "tree-widget.el" library
-written by David Ponce, works in the console as well as in  graphical
-environments  and  offers three different sets of key bindings (mouse
-centric, arrow keys and alphanumeric keys) to easily adapt to a  wide
-variety of usage patterns.
+This  extension  adds to Sunrise a tree view of directories that can be used for
+fast  navigation,  as  well  as  for  several  basic  operations  on  files  and
+directories.  It  uses  the  excellent "tree-widget.el" library written by David
+Ponce, works in the console as well as  in  graphical  environments  and  offers
+three different sets of key bindings (mouse centric, arrow keys and alphanumeric
+keys) to easily adapt to a wide variety of usage patterns.
+
+Navigation inside compressed archives (via AVFS) is now supported in tree views.
 
 Here are two screenshots of exactly the same thing:
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 09:17:30 2010 (-0700)
+;; Last-Updated: Sat May 15 10:28:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22694
+;;     Update #: 22718
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -94,6 +94,8 @@
 ;;  Macros defined in Icicles:
 ;;
 ;;    `icicle-buffer-bindings', `icicle-define-add-to-alist-command',
+;;    `icicle-define-bookmark-command',
+;;    `icicle-define-bookmark-command-1',
 ;;    `icicle-define-bookmark-other-window-command',
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
@@ -113,18 +115,39 @@
 ;;    `icicle-apropos-function', `icicle-apropos-option',
 ;;    `icicle-apropos-variable', `icicle-apropos-zippy',
 ;;    `icicle-bbdb-complete-name', `icicle-bookmark',
-;;    `icicle-bookmark-cmd', `icicle-bookmark-dired-other-window',
-;;    `icicle-bookmark-file-other-window',
-;;    `icicle-bookmark-gnus-other-window',
-;;    `icicle-bookmark-info-other-window', `icicle-bookmark-jump',
-;;    `icicle-bookmark-jump-other-window', `icicle-bookmark-list',
+;;    `icicle-bookmark-all-tags',
+;;    `icicle-bookmark-all-tags-other-window',
+;;    `icicle-bookmark-all-tags-regexp',
+;;    `icicle-bookmark-all-tags-regexp-other-window',
+;;    `icicle-bookmark-bookmark-list', `icicle-bookmark-cmd',
+;;    `icicle-bookmark-desktop', `icicle-bookmark-dired',
+;;    `icicle-bookmark-dired-other-window',
+;;    `icicle-bookmarked-buffer-list', `icicle-bookmarked-file-list',
+;;    `icicle-bookmark-file', `icicle-bookmark-file-other-window',
+;;    `icicle-bookmark-gnus', `icicle-bookmark-gnus-other-window',
+;;    `icicle-bookmark-info', `icicle-bookmark-info-other-window',
+;;    `icicle-bookmark-jump', `icicle-bookmark-jump-other-window',
+;;    `icicle-bookmark-list', `icicle-bookmark-local-file',
 ;;    `icicle-bookmark-local-file-other-window',
+;;    `icicle-bookmark-man', `icicle-bookmark-man-other-window',
+;;    `icicle-bookmark-non-file',
 ;;    `icicle-bookmark-non-file-other-window',
-;;    `icicle-bookmark-other-window',
+;;    `icicle-bookmark-other-window', `icicle-bookmark-region',
 ;;    `icicle-bookmark-region-other-window',
+;;    `icicle-bookmark-remote-file',
 ;;    `icicle-bookmark-remote-file-other-window',
-;;    `icicle-bookmark-set', `icicle-bookmark-w3m-other-window',
-;;    `icicle-buffer', `icicle-buffer-config', `icicle-buffer-list',
+;;    `icicle-bookmark-set', `icicle-bookmark-some-tags',
+;;    `icicle-bookmark-some-tags-other-window',
+;;    `icicle-bookmark-some-tags-regexp',
+;;    `icicle-bookmark-some-tags-regexp-other-window',
+;;    `icicle-bookmark-specific-buffers',
+;;    `icicle-bookmark-specific-buffers-other-window',
+;;    `icicle-bookmark-specific-files',
+;;    `icicle-bookmark-specific-files-other-window',
+;;    `icicle-bookmark-this-buffer',
+;;    `icicle-bookmark-this-buffer-other-window',
+;;    `icicle-bookmark-w3m-other-window', `icicle-buffer',
+;;    `icicle-buffer-config', `icicle-buffer-list',
 ;;    `icicle-buffer-other-window',
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-history-variable', `icicle-clear-history',
@@ -299,10 +322,11 @@
 ;;    `icicle-backward-kill-paragraph',
 ;;    `icicle-backward-kill-sentence', `icicle-backward-kill-sexp',
 ;;    `icicle-backward-kill-word', `icicle-beginning-of-line+',
-;;    `icicle-bookmark-file-narrow', `icicle-bookmark-gnus-narrow',
-;;    `icicle-bookmark-info-narrow',
+;;    `icicle-bookmark-desktop-narrow',
+;;    `icicle-bookmark-dired-narrow',`icicle-bookmark-file-narrow',
+;;    `icicle-bookmark-gnus-narrow', `icicle-bookmark-info-narrow',
 ;;    `icicle-bookmark-local-file-narrow',
-;;    `icicle-bookmark-non-file-narrow',
+;;    `icicle-bookmark-man-narrow', `icicle-bookmark-non-file-narrow',
 ;;    `icicle-bookmark-region-narrow',
 ;;    `icicle-bookmark-remote-file-narrow',
 ;;    `icicle-bookmark-w3m-narrow', `icicle-candidate-action',

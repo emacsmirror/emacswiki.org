@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 09:36:15 2010 (-0700)
+;; Last-Updated: Sat May 15 10:28:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20736
+;;     Update #: 20831
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -49,6 +49,8 @@
 ;;
 ;;  Macros defined here:
 ;;
+;;    `icicle-define-bookmark-command',
+;;    `icicle-define-bookmark-command-1',
 ;;    `icicle-define-bookmark-other-window-command'.
 ;;
 ;;  Commands defined here - (+) means a multi-command:
@@ -57,31 +59,48 @@
 ;;    (+)`icicle-add-buffer-config',
 ;;    `icicle-add-entry-to-saved-completion-set',
 ;;    `icicle-bbdb-complete-name', (+)`icicle-bookmark',
-;;    (+)`icicle-bookmark-bookmark-list-other-window',
+;;    (+)`icicle-bookmark-all-tags',
+;;    (+)`icicle-bookmark-all-tags-other-window',
+;;    (+)`icicle-bookmark-all-tags-regexp',
+;;    (+)`icicle-bookmark-all-tags-regexp-other-window',
+;;    (+)`icicle-bookmark-bookmark-list',
 ;;    `icicle-bookmark-bookmark-list-narrow',
-;;    (+)`icicle-bookmark-cmd',
-;;    (+)`icicle-bookmark-desktop-other-window',
-;;    `icicle-bookmark-desktop-narrow',
+;;    (+)`icicle-bookmark-cmd', (+)`icicle-bookmark-desktop',
+;;    `icicle-bookmark-desktop-narrow', (+)`icicle-bookmark-dired',
 ;;    (+)`icicle-bookmark-dired-other-window',
 ;;    `icicle-bookmark-dired-narrow',
+;;    (+)`icicle-bookmarked-buffer-list',
+;;    (+)`icicle-bookmarked-file-list', (+)`icicle-bookmark-file',
 ;;    (+)`icicle-bookmark-file-other-window',
-;;    `icicle-bookmark-file-narrow',
+;;    `icicle-bookmark-file-narrow', (+)`icicle-bookmark-gnus',
 ;;    (+)`icicle-bookmark-gnus-other-window',
 ;;    `icicle-bookmark-gnus-narrow',
 ;;    (+)`icicle-bookmark-info-other-window',
 ;;    `icicle-bookmark-info-narrow', `icicle-bookmark-jump',
 ;;    `icicle-bookmark-jump-other-window', (+)`icicle-bookmark-list',
+;;    (+)`icicle-bookmark-local-file',
 ;;    (+)`icicle-bookmark-local-file-other-window',
-;;    `icicle-bookmark-local-file-narrow',
+;;    `icicle-bookmark-local-file-narrow', (+)`icicle-bookmark-man',
 ;;    (+)`icicle-bookmark-man-other-window',
-;;    `icicle-bookmark-man-narrow',
+;;    `icicle-bookmark-man-narrow', (+)`icicle-bookmark-non-file',
 ;;    (+)`icicle-bookmark-non-file-other-window',
 ;;    `icicle-bookmark-non-file-narrow',
-;;    (+)`icicle-bookmark-other-window',
+;;    (+)`icicle-bookmark-other-window', (+)`icicle-bookmark-region',
 ;;    (+)`icicle-bookmark-region-other-window',
 ;;    `icicle-bookmark-region-narrow',
+;;    (+)`icicle-bookmark-remote-file',
 ;;    (+)`icicle-bookmark-remote-file-other-window',
 ;;    `icicle-bookmark-remote-file-narrow', `icicle-bookmark-set',
+;;    (+)`icicle-bookmark-some-tags',
+;;    (+)`icicle-bookmark-some-tags-other-window',
+;;    (+)`icicle-bookmark-some-tags-regexp',
+;;    (+)`icicle-bookmark-some-tags-regexp-other-window',
+;;    (+)`icicle-bookmark-specific-buffers',
+;;    (+)`icicle-bookmark-specific-buffers-other-window',
+;;    (+)`icicle-bookmark-specific-files',
+;;    (+)`icicle-bookmark-specific-files-other-window',
+;;    (+)`icicle-bookmark-this-buffer',
+;;    (+)`icicle-bookmark-this-buffer-other-window',
 ;;    (+)`icicle-bookmark-w3m-other-window',
 ;;    `icicle-bookmark-w3m-narrow', (+)`icicle-buffer',
 ;;    (+)`icicle-buffer-config', (+)`icicle-buffer-list',
@@ -3091,7 +3110,7 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                                         guts))))
                           (bookmarkp-sort-and-remove-dups
                            (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
-                                (or (bookmarkp-selected-buffers-alist-only)
+                                (or (bookmarkp-specific-buffers-alist-only)
                                     bookmark-alist)))))))
            (require 'bookmark)
            (when (featurep 'bookmark+)
@@ -3683,18 +3702,17 @@ Remove crosshairs highlighting and unbind filtering keys."
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x) (bookmarkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
-;; A little macro just to save some source code.
-(defmacro icicle-define-bookmark-other-window-command (type &optional prompt)
-  "Define an Icicles multi-command for jumping to bookmarks of type TYPE.
-TYPE is a string to be used for the doc string, default prompt, and in
- function names.  It should be lowercase and contain no spaces.
-Optional arg PROMPT is the completion prompt."
+(defmacro icicle-define-bookmark-command-1 (otherp type prompt args)
+  "Helper macro for `icicle-define*-bookmark-command' macros."
   `(icicle-define-command
-    ,(intern (format "icicle-bookmark-%s-other-window" type)) ; Command name
-    ,(format "Jump to %s bookmark in other window.
-Like `icicle-bookmark-other-window', but with %s bookmarks only.
-You need library `bookmark+.el' for this command." type type) ; Doc string
-    (lambda (cand) (icicle-bookmark-jump-other-window (icicle-transform-multi-completion cand)))
+    ,(intern (format "icicle-bookmark-%s%s" type (if otherp "-other-window" ""))) ; Command name
+    ,(format "Jump to %s bookmark%s.
+Like `icicle-bookmark%s', but with %s bookmarks only.
+You need library `bookmark+.el' for this command."
+             type (if otherp " in other window" "")
+             (if otherp "-other-window" "") type) ; Doc string
+    (lambda (cand) (,(if otherp 'icicle-bookmark-jump-other-window 'icicle-bookmark-jump)
+                     (icicle-transform-multi-completion cand)))
     prompt1 icicle-candidates-alist nil ; `completing-read' args
     (not icicle-show-multi-completion-flag)
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
@@ -3768,7 +3786,7 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
           (mapcar #'(lambda (cand) (list (icicle-candidate-short-help
                                           (icicle-bookmark-help-string cand)
                                           (icicle-bookmark-propertize-candidate cand))))
-                  (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))
+                  (funcall ',(intern (format "bookmarkp-%s-alist-only" type)) ,@args))
         (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
         (mapcar (if icicle-show-multi-completion-flag
                     #'(lambda (bmk)
@@ -3795,38 +3813,112 @@ You need library `bookmark+.el' for this command." type type) ; Doc string
                                (icicle-bookmark-propertize-candidate bname))
                               guts))))
                 (bookmarkp-sort-and-remove-dups
-                 (funcall ',(intern (format "bookmarkp-%s-alist-only" type))))))))
+                 (funcall ',(intern (format "bookmarkp-%s-alist-only" type)) ,@args))))))
     (unless (require 'bookmark+ nil t)  ; First code
       (error "You need library `bookmark+.el' for this command"))
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (icicle-bookmark-cleanup)))         ; Last code
 
+(defmacro icicle-define-bookmark-command (type &optional prompt &rest args)
+  "Define an Icicles multi-command for jumping to bookmarks of type TYPE.
+TYPE is a string to be used for the doc string, default prompt, and in
+ function names.  It should be lowercase and contain no spaces.
+Optional arg PROMPT is the completion prompt.
+ARGS is a list of any additional arguments to be passed to the
+appropriate `bookmarkp-TYPE-alist-only' function."
+  `(icicle-define-bookmark-command-1 nil ,type ,prompt ,args))
+
+(defmacro icicle-define-bookmark-other-window-command (type &optional prompt &rest args)
+  "Same as `icicle-define-bookmark-command', but command uses other window."
+  `(icicle-define-bookmark-command-1 t ,type ,prompt ,args))
+
 ;; The following sexps macro-expand to define these commands:
-;;  `icicle-bookmark-bookmark-list-other-window',
-;;  `icicle-bookmark-desktop-other-window',
-;;  `icicle-bookmark-dired-other-window',
-;;  `icicle-bookmark-file-other-window',
-;;  `icicle-bookmark-gnus-other-window',
-;;  `icicle-bookmark-info-other-window',
-;;  `icicle-bookmark-local-file-other-window',
-;;  `icicle-bookmark-man-other-window',
-;;  `icicle-bookmark-non-file-other-window',
-;;  `icicle-bookmark-region-other-window',
-;;  `icicle-bookmark-remote-file-other-window',
-;;  `icicle-bookmark-w3m-other-window'.
-(icicle-define-bookmark-other-window-command "bookmark-list")            ; `C-x 4 j B'
-(icicle-define-bookmark-other-window-command "desktop")                  ; `C-x 4 j K'
-(icicle-define-bookmark-other-window-command "dired")                    ; `C-x 4 j d'
-(icicle-define-bookmark-other-window-command "file")                     ; `C-x 4 j f'
-(icicle-define-bookmark-other-window-command "gnus")                     ; `C-x 4 j g'
-(icicle-define-bookmark-other-window-command "info")                     ; `C-x 4 j i'
-(icicle-define-bookmark-other-window-command "local-file")               ; `C-x 4 j l'
-(icicle-define-bookmark-other-window-command "man")                      ; `C-x 4 j m'
-(icicle-define-bookmark-other-window-command "non-file")                 ; `C-x 4 j b'
-(icicle-define-bookmark-other-window-command "region" "Select region: ") ; `C-x 4 j r'
-(icicle-define-bookmark-other-window-command "remote-file")              ; `C-x 4 j n'
-(icicle-define-bookmark-other-window-command "w3m")                      ; `C-x 4 j w'
+;;  `icicle-bookmark-bookmark-list',
+;;  `icicle-bookmark-desktop',
+;;  `icicle-bookmark-dired',                `icicle-bookmark-dired-other-window',
+;;  `icicle-bookmark-file',                 `icicle-bookmark-file-other-window',
+;;  `icicle-bookmark-gnus',                 `icicle-bookmark-gnus-other-window',
+;;  `icicle-bookmark-info',                 `icicle-bookmark-info-other-window',
+;;  `icicle-bookmark-local-file',           `icicle-bookmark-local-file-other-window',
+;;  `icicle-bookmark-man',                  `icicle-bookmark-man-other-window',
+;;  `icicle-bookmark-non-file',             `icicle-bookmark-non-file-other-window',
+;;  `icicle-bookmark-region',               `icicle-bookmark-region-other-window',
+;;  `icicle-bookmark-remote-file',          `icicle-bookmark-remote-file-other-window',
+;;  `icicle-bookmark-specific-buffers',     `icicle-bookmark-specific-buffers-other-window'
+;;  `icicle-bookmark-specific-files',       `icicle-bookmark-specific-files-other-window'
+;;  `icicle-bookmark-all-tags',             `icicle-bookmark-all-tags-other-window'
+;;  `icicle-bookmark-all-tags-regexp',      `icicle-bookmark-all-tags-regexp-other-window'
+;;  `icicle-bookmark-some-tags',            `icicle-bookmark-some-tags-other-window'
+;;  `icicle-bookmark-some-tags-regexp',     `icicle-bookmark-some-tags-regexp-other-window'
+;;  `icicle-bookmark-this-buffer',          `icicle-bookmark-this-buffer-other-window'
+;;  `icicle-bookmark-w3m',                  `icicle-bookmark-w3m-other-window'
+
+;; Other-window means nothing for a bookmark list or a desktop.
+(icicle-define-bookmark-command              "bookmark-list")                 ; `C-x j B'
+(icicle-define-bookmark-command              "desktop")                       ; `C-x j K'
+(icicle-define-bookmark-command              "dired")                         ; `C-x j d'
+(icicle-define-bookmark-other-window-command "dired")                         ; `C-x 4 j d'
+(icicle-define-bookmark-command              "file")                          ; `C-x j f'
+(icicle-define-bookmark-other-window-command "file")                          ; `C-x 4 j f'
+(icicle-define-bookmark-command              "gnus")                          ; `C-x j g'
+(icicle-define-bookmark-other-window-command "gnus")                          ; `C-x 4 j g'
+(icicle-define-bookmark-command              "info")                          ; `C-x j i'
+(icicle-define-bookmark-other-window-command "info")                          ; `C-x 4 j i'
+(icicle-define-bookmark-command              "local-file")                    ; `C-x j l'
+(icicle-define-bookmark-other-window-command "local-file")                    ; `C-x 4 j l'
+(icicle-define-bookmark-command              "man")                           ; `C-x j m'
+(icicle-define-bookmark-other-window-command "man")                           ; `C-x 4 j m'
+(icicle-define-bookmark-command              "non-file")                      ; `C-x j b'
+(icicle-define-bookmark-other-window-command "non-file")                      ; `C-x 4 j b'
+(icicle-define-bookmark-command              "region" "Select region: ")      ; `C-x j r'
+(icicle-define-bookmark-other-window-command "region" "Select region: ")      ; `C-x 4 j r'
+(icicle-define-bookmark-command              "remote-file")                   ; `C-x j n'
+(icicle-define-bookmark-other-window-command "remote-file")                   ; `C-x 4 j n'
+(icicle-define-bookmark-command              "specific-buffers" nil           ; `C-x j = b'
+                                             (icicle-bookmarked-buffer-list))
+(icicle-define-bookmark-other-window-command "specific-buffers" nil           ; `C-x 4 j = b'
+                                             (icicle-bookmarked-buffer-list))
+(icicle-define-bookmark-command              "specific-files" nil             ; `C-x j = f'
+                                             (icicle-bookmarked-file-list))
+(icicle-define-bookmark-other-window-command "specific-files" nil             ; `C-x 4 j = f'
+                                             (icicle-bookmarked-file-list))
+(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'
+(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
+(icicle-define-bookmark-command              "all-tags" nil                   ; `C-x j t *'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-other-window-command "all-tags" nil                   ; `C-x 4 j t *'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-command              "all-tags-regexp" nil            ; `C-x j t % *'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "all-tags-regexp" nil            ; `C-x 4 j t % *'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "some-tags" nil                  ; `C-x j t +'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-other-window-command "some-tags" nil                  ; `C-x 4 j t +'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-command              "some-tags-regexp" nil           ; `C-x j t % +'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "some-tags-regexp" nil           ; `C-x 4 j t % +'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "w3m")                           ; `C-x j w'
+(icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
+
+;;;###autoload
+(defun icicle-bookmarked-buffer-list ()
+  "`icicle-buffer-list', but only for bookmarked buffers."
+  (interactive)
+  (let ((icicle-buffer-predicate  (lambda (buf) (member buf (bookmarkp-buffer-names)))))
+    (icicle-buffer-list)))
+  
+;;;###autoload
+(defun icicle-bookmarked-file-list ()
+  "`icicle-buffer-list', but only for bookmarked buffers."
+  (interactive)
+  (let ((use-file-dialog        nil)
+        (icicle-file-predicate  (lambda (file)
+                                  (member (expand-file-name file) (bookmarkp-file-names)))))
+    (icicle-file-list)))
 
 ;;;###autoload
 (icicle-define-command icicle-find-first-tag ; Command name

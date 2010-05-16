@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May  1 10:05:34 2010 (-0700)
+;; Last-Updated: Fri May 14 10:31:46 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6483
+;;     Update #: 6496
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -273,7 +273,8 @@ cannot take advantage of WYSIWYG)."
 Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
 Icicle mode is a global minor mode.  It binds keys in the minibuffer.
 
-The following top-level commands are also available in Icicle mode:
+The following top-level commands are also available in Icicle mode.
+In many cases there are also `other-window' versions.
 
 `clear-option' (alias)                 - Set binary option(s) to nil
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
@@ -286,20 +287,23 @@ The following top-level commands are also available in Icicle mode:
 `icicle-apropos-command'               - Enhanced `apropos-command'
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-zippy'                 - Show matching Zippy quotes
-`icicle-bookmark'(`-other-window')     - Jump to a bookmark
-`icicle-bookmark-bookmark-list-other-window' - Jump to a bookmark list
-`icicle-bookmark-desktop-other-window' - Jump to a desktop bookmark
-`icicle-bookmark-dired-other-window'   - Jump to a Dired bookmark
-`icicle-bookmark-file-other-window'    - Jump to a file bookmark
-`icicle-bookmark-gnus-other-window'    - Jump to a Gnus bookmark
-`icicle-bookmark-info-other-window'    - Jump to an Info bookmark
-`icicle-bookmark-local-file-other-window'- Jump to local-file bookmark
-`icicle-bookmark-man-other-window'     - Jump to a `man'-page bookmark
-`icicle-bookmark-non-file-other-window' - Jump to a buffer bookmark
-`icicle-bookmark-region-other-window'  - Jump to a region bookmark
-`icicle-bookmark-remote-file-other-window' - Jump to a remote file
-`icicle-bookmark-w3m-other-window'     - Jump to a W3M (URL) bookmark
-`icicle-buffer'(`-other-window')       - Switch to buffer
+`icicle-bookmark'                      - Jump to a bookmark
+`icicle-bookmark-bookmark-list'        - Jump to a bookmark list
+`icicle-bookmark-desktop'              - Jump to a desktop bookmark
+`icicle-bookmark-dired'                - Jump to a Dired bookmark
+`icicle-bookmark-file'                 - Jump to a file bookmark
+`icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
+`icicle-bookmark-info'                 - Jump to an Info bookmark
+`icicle-bookmark-local-file'           - Jump to local-file bookmark
+`icicle-bookmark-man'                  - Jump to a `man'-page bookmark
+`icicle-bookmark-non-file'             - Jump to a buffer bookmark
+`icicle-bookmark-region'               - Jump to a region bookmark
+`icicle-bookmark-remote-file'          - Jump to a remote file
+`icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
+`icicle-bookmark-specific-files'       - Jump to a bookmarked file
+`icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
+`icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
+`icicle-buffer'                        - Switch to buffer
 `icicle-buffer-config'                 - Pick `icicle-buffer' options
 `icicle-buffer-list'                   - Choose a list of buffer names
 `icicle-change-alternative-sort-order' - Choose an alternative sort
@@ -330,11 +334,11 @@ The following top-level commands are also available in Icicle mode:
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
 `icicle-face-list'                     - Choose a list of face names
 `icicle-file-list'                     - Choose a list of file names
-`icicle-file'(`-other-window')         - Visit file/directory
-`icicle-find-file'(`-other-window')    -       same: relative only
-`icicle-find-file-absolute'(`-other-window') - same: absolute only
-`icicle-find-file-in-tags-table'(`-other-window') - File in tags table
-`icicle-find-first-tag'(`-other-window')- Visit definition with tag
+`icicle-file'                          - Visit file/directory
+`icicle-find-file'                     -       same: relative only
+`icicle-find-file-absolute'            -       same: absolute only
+`icicle-find-file-in-tags-table'       - File in tags table
+`icicle-find-first-tag'                - Visit definition with tag
 `icicle-find-tag'                      - Visit definition with tag
 `icicle-font'                          - Change font of frame
 `icicle-frame-bg'                      - Change background of frame
@@ -354,7 +358,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-keyword-list'                  - Choose a list of keywords
 `icicle-kill-buffer'                   - Kill buffer
 `icicle-kmacro'                        - Execute a keyboard macro
-`icicle-locate-file'(`-other-window')  - Visit file(s) in a directory
+`icicle-locate-file'                   - Visit file(s) in a directory
 `icicle-minibuffer-help'               - Show Icicles minibuffer help
 `icicle-mode' or `icy-mode'            - Toggle Icicle mode
 `icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
@@ -362,7 +366,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-occur'                         - Incremental `occur'
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
-`icicle-recent-file'(`-other-window')  - Open recently used file(s)
+`icicle-recent-file'                   - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'
@@ -533,7 +537,8 @@ bindings are not available to you."
 Non-nil prefix ARG turns mode on if ARG > 0, else turns it off.
 Icicle mode is a global minor mode.  It binds keys in the minibuffer.
 
-The following top-level commands are also available in Icicle mode:
+The following top-level commands are also available in Icicle mode.
+In many cases there are also `other-window' versions.
 
 `clear-option' (alias)                 - Set binary option(s) to nil
 `icicle-add-buffer-candidate'          - Add always-candidate buffer
@@ -546,20 +551,23 @@ The following top-level commands are also available in Icicle mode:
 `icicle-apropos-command'               - Enhanced `apropos-command'
 `icicle-apropos-variable'              - Enhanced `apropos-variable'
 `icicle-apropos-zippy'                 - Show matching Zippy quotes
-`icicle-bookmark'(`-other-window')     - Jump to a bookmark
-`icicle-bookmark-bookmark-list-other-window' - Jump to a bookmark list
-`icicle-bookmark-desktop-other-window' - Jump to a desktop bookmark
-`icicle-bookmark-dired-other-window'   - Jump to a Dired bookmark
-`icicle-bookmark-file-other-window'    - Jump to a file bookmark
-`icicle-bookmark-gnus-other-window'    - Jump to a Gnus bookmark
-`icicle-bookmark-info-other-window'    - Jump to an Info bookmark
-`icicle-bookmark-local-file-other-window'- Jump to local-file bookmark
-`icicle-bookmark-man-other-window'     - Jump to a `man'-page bookmark
-`icicle-bookmark-non-file-other-window' - Jump to a buffer bookmark
-`icicle-bookmark-region-other-window'  - Jump to a region bookmark
-`icicle-bookmark-remote-file-other-window' - Jump to a remote file
-`icicle-bookmark-w3m-other-window'     - Jump to a W3M (URL) bookmark
-`icicle-buffer'(`-other-window')       - Switch to buffer
+`icicle-bookmark'                      - Jump to a bookmark
+`icicle-bookmark-bookmark-list'        - Jump to a bookmark list
+`icicle-bookmark-desktop'              - Jump to a desktop bookmark
+`icicle-bookmark-dired'                - Jump to a Dired bookmark
+`icicle-bookmark-file'                 - Jump to a file bookmark
+`icicle-bookmark-gnus'                 - Jump to a Gnus bookmark
+`icicle-bookmark-info'                 - Jump to an Info bookmark
+`icicle-bookmark-local-file'           - Jump to local-file bookmark
+`icicle-bookmark-man'                  - Jump to a `man'-page bookmark
+`icicle-bookmark-non-file'             - Jump to a buffer bookmark
+`icicle-bookmark-region'               - Jump to a region bookmark
+`icicle-bookmark-remote-file'          - Jump to a remote file
+`icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
+`icicle-bookmark-specific-files'       - Jump to a bookmarked file
+`icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
+`icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
+`icicle-buffer'                        - Switch to buffer
 `icicle-buffer-config'                 - Pick `icicle-buffer' options
 `icicle-buffer-list'                   - Choose a list of buffer names
 `icicle-change-alternative-sort-order' - Choose an alternative sort
@@ -589,11 +597,11 @@ The following top-level commands are also available in Icicle mode:
 `icicle-execute-named-keyboard-macro'  - Execute named keyboard macro
 `icicle-face-list'                     - Choose a list of face names
 `icicle-file-list'                     - Choose a list of file names
-`icicle-file'(`-other-window')         - Visit file/directory
-`icicle-find-file'(`-other-window')    -       same: relative only
-`icicle-find-file-absolute'(`-other-window') - same: absolute only
-`icicle-find-file-in-tags-table'(`-other-window') - File in tags table
-`icicle-find-first-tag'(`-other-window')- Visit definition with tag
+`icicle-file'                          - Visit file/directory
+`icicle-find-file'                     -       same: relative only
+`icicle-find-file-absolute'            -       same: absolute only
+`icicle-find-file-in-tags-table'       - File in tags table
+`icicle-find-first-tag'                - Visit definition with tag
 `icicle-find-tag'                      - Visit definition with tag
 `icicle-font'                          - Change font of frame
 `icicle-frame-bg'                      - Change background of frame
@@ -611,7 +619,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-insert-thesaurus-entry'        - Insert thesaurus entry(s)
 `icicle-keyword-list'                  - Choose a list of keywords
 `icicle-kill-buffer'                   - Kill buffer
-`icicle-locate-file'(`-other-window')  - Visit file(s) in a directory
+`icicle-locate-file'                   - Visit file(s) in a directory
 `icicle-minibuffer-help'               - Show Icicles minibuffer help
 `icicle-mode' or `icy-mode'            - Toggle Icicle mode
 `icicle-next-S-TAB-completion-method'  - Next S-TAB completion method
@@ -619,7 +627,7 @@ The following top-level commands are also available in Icicle mode:
 `icicle-occur'                         - Incremental `occur'
 `icicle-other-window-or-frame'         - Other window/frame or select
 `icicle-plist'                         - Show symbols, property lists
-`icicle-recent-file'(`-other-window')  - Open recently used file(s)
+`icicle-recent-file'                   - Open recently used file(s)
 `icicle-recompute-shell-command-candidates' - Update from search path
 `icicle-remove-buffer-candidate'       - Remove always-candidate buf
 `icicle-remove-buffer-config'          - From `icicle-buffer-configs'

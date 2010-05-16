@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 29 14:48:36 2010 (-0700)
+;; Last-Updated: Fri May 14 22:32:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3650
+;;     Update #: 3671
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1387,9 +1387,9 @@ they never use angle brackets."
 
 ;;;###autoload
 (defcustom icicle-keymaps-for-key-completion
-  '(bookmark-bmenu-mode-map calendar-mode-map dired-mode-map facemenu-keymap
-    jde-mode-map jde-jdb-mode-map senator-mode-map srecode-mode-map synonyms-mode-map
-    vc-dired-mode-map)
+  '(bookmark-bmenu-mode-map bookmarkp-jump-map bookmarkp-jump-other-window-map
+    calendar-mode-map dired-mode-map facemenu-keymap jde-mode-map jde-jdb-mode-map
+    senator-mode-map srecode-mode-map synonyms-mode-map vc-dired-mode-map)
   "*List of keymaps in which to bind `S-TAB' to `icicle-complete-keys'.
 List elements are symbols that are bound to keymaps.
 
@@ -2660,32 +2660,83 @@ toggle Icicle mode off and then back on."
     (switch-to-buffer-other-window  icicle-buffer-other-window         t) ; `C-x 4 b'
     (where-is                       icicle-where-is                    t) ; `C-h w'
     (,icicle-yank-function          icicle-yank-maybe-completing       t) ; `C-y'
-    ;; These are available only if you use library `bookmark+.el'.  They are bound to `C-x 4 j'
-    ;; followed by: `B', `K', `d', `f', `g', `i', `w', `r', `l', `b', `n'.
-    (bookmarkp-bookmark-list-jump       ; "other-window" means nothing for a bookmark list.
-     icicle-bookmark-bookmark-list-other-window (featurep 'bookmark+)) ; `C-x j B'
-    (bookmarkp-desktop-jump             ; "other-window" means nothing for a desktop.
-     icicle-bookmark-desktop-other-window (featurep 'bookmark+)) ; `C-x j K'
+
+    ;; These are available only if you use library `bookmark+.el'.
+    ;;
+    ;;   (Other-window means nothing for a bookmark list or a desktop.)
+    (bookmarkp-bookmark-list-jump
+     icicle-bookmark-bookmark-list (featurep 'bookmark+))                 ; `C-x j B'
+    (bookmarkp-desktop-jump
+     icicle-bookmark-desktop (featurep 'bookmark+))                       ; `C-x j K'
+    (bookmarkp-dired-jump
+     icicle-bookmark-dired (featurep 'bookmark+))                         ; `C-x j d'
     (bookmarkp-dired-jump-other-window
-     icicle-bookmark-dired-other-window (featurep 'bookmark+)) ; `C-x 4 j d'
+     icicle-bookmark-dired-other-window (featurep 'bookmark+))            ; `C-x 4 j d'
+    (bookmarkp-file-jump
+     icicle-bookmark-file (featurep 'bookmark+))                          ; `C-x j f'
     (bookmarkp-file-jump-other-window
-     icicle-bookmark-file-other-window (featurep 'bookmark+)) ; `C-x 4 j f'
+     icicle-bookmark-file-other-window (featurep 'bookmark+))             ; `C-x 4 j f'
+    (bookmarkp-gnus-jump
+     icicle-bookmark-gnus (featurep 'bookmark+))                          ; `C-x j g'
     (bookmarkp-gnus-jump-other-window
-     icicle-bookmark-gnus-other-window (featurep 'bookmark+)) ; `C-x 4 j g'
+     icicle-bookmark-gnus-other-window (featurep 'bookmark+))             ; `C-x 4 j g'
+    (bookmarkp-info-jump
+     icicle-bookmark-info (featurep 'bookmark+))                          ; `C-x j i'
     (bookmarkp-info-jump-other-window
-     icicle-bookmark-info-other-window (featurep 'bookmark+)) ; `C-x 4 j i'
+     icicle-bookmark-info-other-window (featurep 'bookmark+))             ; `C-x 4 j i'
+    (bookmarkp-local-file-jump
+     icicle-bookmark-local-file (featurep 'bookmark+))                    ; `C-x j l'
     (bookmarkp-local-file-jump-other-window
-     icicle-bookmark-local-file-other-window (featurep 'bookmark+)) ; `C-x 4 j l'
+     icicle-bookmark-local-file-other-window (featurep 'bookmark+))       ; `C-x 4 j l'
+    (bookmarkp-man-jump
+     icicle-bookmark-man  (featurep 'bookmark+))                          ; `C-x j m'
     (bookmarkp-man-jump-other-window
-     icicle-bookmark-man-other-window  (featurep 'bookmark+)) ; `C-x 4 j m'
+     icicle-bookmark-man-other-window  (featurep 'bookmark+))             ; `C-x 4 j m'
+    (bookmarkp-non-file-jump
+     icicle-bookmark-non-file (featurep 'bookmark+))                      ; `C-x j b'
     (bookmarkp-non-file-jump-other-window
-     icicle-bookmark-non-file-other-window (featurep 'bookmark+)) ; `C-x 4 j b'
+     icicle-bookmark-non-file-other-window (featurep 'bookmark+))         ; `C-x 4 j b'
+    (bookmarkp-region-jump
+     icicle-bookmark-region (featurep 'bookmark+))                        ; `C-x j r'
     (bookmarkp-region-jump-other-window
-     icicle-bookmark-region-other-window (featurep 'bookmark+)) ; `C-x 4 j r'
+     icicle-bookmark-region-other-window (featurep 'bookmark+))           ; `C-x 4 j r'
+    (bookmarkp-remote-file-jump
+     icicle-bookmark-remote-file (featurep 'bookmark+))                   ; `C-x j n'
     (bookmarkp-remote-file-jump-other-window
-     icicle-bookmark-remote-file-other-window (featurep 'bookmark+)) ; `C-x 4 j n'
+     icicle-bookmark-remote-file-other-window (featurep 'bookmark+))      ; `C-x 4 j n'
+    (bookmarkp-specific-buffers-jump
+     icicle-bookmark-specific-buffers (featurep 'bookmark+))              ; `C-x j = b'
+    (bookmarkp-specific-buffers-jump-other-window
+     icicle-bookmark-specific-buffers-other-window (featurep 'bookmark+)) ; `C-x 4 j = b'
+    (bookmarkp-specific-files-jump
+     icicle-bookmark-specific-files (featurep 'bookmark+))                ; `C-x j = f'
+    (bookmarkp-specific-files-jump-other-window
+     icicle-bookmark-specific-files-other-window (featurep 'bookmark+))   ; `C-x 4 j = f'
+    (bookmarkp-this-buffer-jump
+     icicle-bookmark-this-buffer (featurep 'bookmark+))                   ; `C-x j .'
+    (bookmarkp-this-buffer-jump-other-window
+     icicle-bookmark-this-buffer-other-window (featurep 'bookmark+))      ; `C-x 4 j .'
+    (bookmarkp-all-tags-jump
+     icicle-bookmark-all-tags (featurep 'bookmark+))                      ; `C-x j t *'
+    (bookmarkp-all-tags-jump-other-window
+     icicle-bookmark-all-tags-other-window (featurep 'bookmark+))         ; `C-x 4 j t *'
+    (bookmarkp-all-tags-jump
+     icicle-bookmark-all-tags-regexp (featurep 'bookmark+))               ; `C-x j t % *'
+    (bookmarkp-all-tags-regexp-jump-other-window
+     icicle-bookmark-all-tags-regexp-other-window (featurep 'bookmark+))  ; `C-x 4 j t % *'
+    (bookmarkp-some-tags-jump
+     icicle-bookmark-some-tags (featurep 'bookmark+))                     ; `C-x j t +'
+    (bookmarkp-some-tags-jump-other-window
+     icicle-bookmark-some-tags-other-window (featurep 'bookmark+))        ; `C-x 4 j t +'
+    (bookmarkp-some-tags-jump
+     icicle-bookmark-some-tags-regexp (featurep 'bookmark+))              ; `C-x j t % +'
+    (bookmarkp-some-tags-regexp-jump-other-window
+     icicle-bookmark-some-tags-regexp-other-window (featurep 'bookmark+)) ; `C-x 4 j t % +'
+    (bookmarkp-w3m-jump
+     icicle-bookmark-w3m-other-window (featurep 'bookmark+))              ; `C-x j w'
     (bookmarkp-w3m-jump-other-window
-     icicle-bookmark-w3m-other-window (featurep 'bookmark+)) ; `C-x 4 j w'
+     icicle-bookmark-w3m-other-window (featurep 'bookmark+))              ; `C-x 4 j w'
+
     ;; Don't let Emacs 20 or 21 use `substitute-key-definition' on `M-.' or `M-*', since we need
     ;; these keys for the minibuffer.  Leave them unbound in `icicle-mode-map' until Emacs 22+.
     (find-tag            icicle-find-tag              (fboundp 'command-remapping)) ; `M-.'

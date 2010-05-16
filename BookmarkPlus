@@ -281,7 +281,7 @@ type (only).
 
 In addition to these general commands, there are type-specific
 commands: `##bookmarkp-##<tt>__dired__</tt>##-jump##', `##bookmarkp-##<tt>__info__</tt>##-jump##', and so on.    And there are
-commands to jump to bookmarks for the current buffer or for a particular buffer or file (see [[#SpecificFileOrBuffer|Bookmarks for a Given File or Buffer]]).  All jump commands are bound to keys that have the prefix '''`C-x j''''.
+commands to jump to bookmarks for the current buffer or for particular buffers or files (see [[#SpecificFilesOrBuffers|Bookmarks for Specific Files or Buffers]]).  All jump commands are bound to keys that have the prefix '''`C-x j''''.
 `bookmarkp-dired-jump' is bound to `##C-x j## <tt>__d__</tt>',
 `bookmarkp-info-jump' to `##C-x j## <tt>__i__</tt>', and so on.
 
@@ -397,7 +397,7 @@ sorting, marking, and so on.  But you can in fact add an associated
 value to each tag.  This means that a tag can act just like an object
 ''attribute'' or property: it can be a name/value pair.
 
-To add a value to a tag, or to change the current value, you use
+To add a value to a tag that has none, or to change the current value of a tag, you use
 command '''`bookmarkp-set-tag-value'''', bound to '''`##T v##'''' in the bookmark
 list.  You are prompted for the bookmark, the tag, and the new
 value.
@@ -428,8 +428,10 @@ You can give this tag a value that is a function -- it is called
 whenever the tagged bookmark is visited.  Any Lisp-readable
 function value is allowed: a symbol or a lambda expression.
 
-For example, you can use `##T v (lambda () (message "Hello!"))##' to
-display ##Hello!## whenever a bookmark with this tag is visited.
+For example, to display ##Hello!## when a bookmark is visited
+you can use this:
+
+    T v bookmark-jump RET (lambda () (message "Hello!"))
 
 The function that is the value of a ##"bookmarkp-jump"## tag is called
 just after the the standard hook `bookmark-after-jump-hook' is invoked.
@@ -1057,43 +1059,6 @@ outside the bookmark-list display.
 
 
 
-[:SpecificFileOrBuffer]
-=== Bookmarks for a Given File or Buffer ===
-
-A bookmark typically records a position or a region in a file or
-buffer.  Sometimes you are interested in accessing or examining
-only the bookmarks for a particular file or buffer.  For example,
-you might want to navigate among the bookmarks for the current
-buffer.  Or you might want to search the regions recorded in the
-bookmarks for a particular file.
-
-For a bookmark, the recorded file and buffer name differ in that
-the file name is absolute.  Bookmarks for buffer `##foo.el##' include
-all files named `##foo.el##', whereas bookmarks for file
-`##/project1/lisp/foo.el##' include only the files in that one directory.
-
-'''Bookmark+''' provides a few commands to handle these use cases.  The
-keys bound to these commands use `f' for file and `b' for buffer.
-In the bookmark-list display, the following keys affect the
-bookmarks for a particular file or buffer whose name you provide
-(with completion).
-
-* '''`##= f M##'''' and '''`##= b M##'''' -- mark 
-* '''`##= f S##'''' and '''`##= b S##'''' -- show (only)
-
-For navigation, the following keys jump to a particular file or
-buffer bookmark.  (Use `C-x 4 j' for other-window.)  For the `='
-keys you are prompted for the file or buffer name.
-
-* '''`##C-x j = f##'''' and '''`##C-x j = b##'''' -- specified file or buffer
-* '''`##C-x j .##''''                   -- current buffer
-
-
-
-
-
-
-
 
 
 [:SortingBookmarks]
@@ -1179,6 +1144,50 @@ first according to tag `tag1', which represents the set of tags
 `tag2', which represents the set of tags `beta', `delta'.
 
 See also ApplesAndOranges for more about the sorting used in '''Bookmark+'''. See also [[#UseBookmarkPlusWithIcicles|bookmark sorting in Icicles]] -- the same technique is used in '''Icicles''' for sorting bookmarks as completion candidates.
+
+
+
+
+
+
+
+
+
+
+[:SpecificFilesOrBuffers]
+== Bookmarks for Specific Files or Buffers ==
+
+A bookmark typically records a position or a region in a file or
+buffer.  Sometimes you are interested in accessing or examining
+only the bookmarks for particular files or buffers.  For example,
+you might want to navigate among the bookmarks for the current
+buffer.  Or you might want to search the regions recorded in the
+bookmarks for a particular file.
+
+For a bookmark, the recorded file and buffer name differ in that
+the file name is absolute.  Bookmarks for buffer `##foo.el##' include
+all files named `##foo.el##', whereas bookmarks for file
+`##/project1/lisp/foo.el##' include only the files in that one directory.
+
+'''Bookmark+''' provides some commands to handle these use cases.  The
+keys bound to these commands use `f' for file and `b' for buffer.
+In the bookmark-list display, the following keys affect the
+bookmarks for a particular file or buffer whose name you provide
+(with completion).
+
+* '''`##= f M##'''' and '''`##= b M##'''' -- mark 
+* '''`##= f S##'''' and '''`##= b S##'''' -- show (only)
+
+For navigation, the following keys jump to bookmarks for particular files or
+buffers.  (Use `C-x 4 j' for other-window.)  
+
+* '''`##C-x j .##''''                   -- current buffer
+* '''`##C-x j = f##'''' and '''`##C-x j = b##'''' -- specified file(s) or buffer(s)
+
+For the `='
+keys you are prompted for one or more file names or buffer names.
+
+
 
 
 

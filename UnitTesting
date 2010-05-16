@@ -2,31 +2,53 @@
 
 This page discusses unit-testing of EmacsLisp scripts and programs.
 
-== Testing frameworks ==
+== Terminology ==
 
-Frameworks are good for making unit test writing and execution easier. The following unit test frameworks exist for Emacs Lisp:
+A '''unit test''' is a piece of a code that checks the correctness of some other code. In Emacs Lisp, meaningful "units" to test may be functions, commands and macros.
 
-'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test cases, reporting the results, and debugging test failures interactively.
+Various '''testing frameworks''' simplify the task of writing and running tests. The following terms are commonly encountered:
 
-'''[[EmacsLispExpectations|el-expectations.el]]''' by rubikitch is a small framework focused on simplicity and readability. It is modeled after [http://expectations.rubyforge.org Ruby expectations] and works with '''[[EmacsLispMock|el-mock.el]]''', a DSL based mock/stub framework.
+* '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it isn't (the comparison returns ##nil##), ##assert## signals an error.
+* '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
+* '''Test suite:''' a collection of tests. Grouping tests is useful for, say, separating time-consuming tests from the rest.
+* '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. This is useful when testing a unit which depends on that function. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, a temporary mock function may be made with ##flet##, though a framework may be simpler.
+* '''Fixtures:''' setting up (and tearing down) an environment for a test or a set of test cases.
+* '''Regression test:''' a test that exposes a bug and verifies the subsequent bugfix. If the bug reappears, the test will detect it.
+* '''Test-Driven Developent''': a methodology that integrates repeated testing into the "development cycle".
+
+The precise meanings of these terms may vary, though there is some commonality among xUnit-like frameworks (like SUnit for Smalltalk, JUnit for Java, and lisp-unit for Common Lisp).
+
+== Frameworks ==
+
+The following unit test frameworks exist for Emacs Lisp.
+
+=== xUnit-like ===
+
+'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test cases, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##.
+
+'''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides ##assert-equal##, ##assert-nil## and other specialized assertion macros.
+
+'''ElUnit''' is an experimental framework by PhilHagelberg. Its output mimics Ruby's ##Test::Unit## and depends on ##assert##. It is deprecated in favor of ##ert.el##.[http://article.gmane.org/gmane.emacs.devel/122304]
+
+=== expectations-like ===
+
+'''[[EmacsLispExpectations|el-expectations.el]]''' by [[rubikitch]] is a small framework focusing on simplicity and readability. It is modeled after [http://expectations.rubyforge.org Ruby expectations] (for example, ##(expect 4 (+ 2 2))## verifies "2 + 2 = 4") and works with '''[[EmacsLispMock|el-mock.el]]''', a DSL-based mock/stub framework.
 
 '''[[ETest]]''' (Emacs Testing Framework) by Phil Jackson also works with [[EmacsLispMock|el-mock.el]]. [http://www.shellarchive.co.uk/content/etest.html Manual].
 
-'''ElkTest''' by Nikolaj Schumacher is a framework for testing your Emacs Lisp code like your Java code with JUnit.
+=== Others ===
 
 '''[[EmacsLispForRuby|El4r]]''' (Emacs Lisp for Ruby) leverages Ruby's ##Test::Unit## framework by using the EmacsRuby extension language. You write unit tests in EmacsRuby, while the code is in EmacsLisp. In other words, you can treat the EmacsLisp code as a black box and feed it inputs and check the outputs using EmacsRuby.
 
-'''ElUnit''' is an experimental framework by PhilHagelberg. Its output mimics Ruby's ##Test::Unit##, and test writing requires typing ##(assert ...)##. Tests are divided up into suites for logical grouping and sharing setup hooks. It is deprecated in favor of ##ert.el##.[http://article.gmane.org/gmane.emacs.devel/122304]
-
 '''[http://panix.com/~tehom/my-code/regress.el regress.el]''' by [TomBreton Tom Breton]'s is a "regression test harness for Emacs Lisp code". In this framework, test comparisions can be done by equal (default) and user defined test conditions. The last developed version is from 1999.
 
-'''[http://www.wanglianghome.org/svn/test/test.el test.el]''' is developed for testing operations on a buffer (but can be used to test operations unrelated to buffers). [http://www.wanglianghome.org/images/test.png Screenshot].
+'''[http://www.wanglianghome.org/svn/test/test.el test.el]''' is developed for testing operations on a buffer (but can also be used to test operations unrelated to buffers). [http://www.wanglianghome.org/images/test.png Screenshot].
 
 '''[[Lisp:unit-test.el|unit-test.el]]''' by MarkTriggs reports the pass/fail status of your unit tests (in any language). You need to define a function that runs your unit tests and returns non-##nil## if they pass. Depending on the output, it will display green or red "light" graphic icon (##xpm##) on the Emacs window mode line.
 
-== Manually testing (without a framework) ==
+== Without a framework ==
 
-'''Where do you put your unit tests?''' In EmacsLisp, you can sprinkle your code with tests. Here is an example:
+Where do you put your unit tests? In EmacsLisp, you can sprinkle your code with tests. Here is an example:
 
     (defvar my-unit-testing nil)
     (eval-when-compile
@@ -34,29 +56,66 @@ Frameworks are good for making unit test writing and execution easier. The follo
 
 Thus, when your code is being compiled, the test variable is set to ##t##. When a user loads a compiled ##.elc## file, the ##my-unit-testing## variable will remain set to ##nil##.
 
-Then define your functions, and '''add tests right after the ##defun##''':
+Then define your functions, and add tests right after the definitions.
 
-    (defun my--get-category (char)
-      "Return category for CHAR."
-      (let ((categories my--categories)
-        (set (char-category-set char))
-        result)
-        (while (and (not result) categories)
-          (let ((category (symbol-value (car categories))))
-        (if (aref set category)
-            (setq result category)
-          (setq categories (cdr categories)))))
-        result))
+=== Assertions ===
 
-    (when my-unit-testing
+Assertions can be made with the ##assert## macro from <tt>[CommonLispForEmacs cl.el]</tt>:
+
+    (assert (eq my--category-l (my--get-category ?a)))
+    (assert (eq my--category-r (my--get-category ?A)))
+
+Remember to load ##cl.el## with ##(require 'cl)##.
+
+=== Tests ===
+
+Assertions can be grouped into tests with ##defun##:
+
+    (defun test-my--get-category ()
       (assert (eq my--category-l (my--get-category ?a)))
       (assert (eq my--category-r (my--get-category ?A))))
 
-(##assert## is a macro from <tt>[CommonLispForEmacs cl.el]</tt>. You can load it with ##(require 'cl)##.)
+=== Test suites ===
+
+Tests can be grouped into test suites with ##add-hook##:
+
+    (defvar test-suite)
+    (add-hook 'test-suite 'test-my--get-category)
+
+To run the suite:
+
+    (when my-unit-testing
+      (run-hooks 'test-suite))
+
+=== Mock functions ===
+
+Functions can be temporarily rebound with ##flet## from <tt>[CommonLispForEmacs cl.el]</tt>:
+
+    (defun test-my--get-category ()
+      (flet ((my--get-category-kernel (cat) my--category-l))
+        (assert (eq my--category-l (my--get-category ?a)))
+        (assert (eq my--category-r (my--get-category ?A)))))
+
+Assuming ##my--get-category## depends on ##my--get-category-kernel##, a mock is substituted for the latter.
+
+=== Fixtures ===
+
+While fixtures are a great syntactic simplification in other languages, they are not very useful in Lisp, where higher-order functions and ##unwind-protect## are available. One approach is
+
+    (unwind-protect
+        (progn
+          ;; Set up ...
+          (test-my--get-category))
+      ;; ... tear down
+      )
+
+The comments in [http://github.com/masatake/ert/blob/master/ert.el ert.el] sketch out a more general solution.
+
+=== More on compilation ===
 
 Thus, the tests will still be compiled into your ##.elc## files, and ##my-unit-testing## will be evaluated a lot while you load the file, but since no other code gets executed, loading the ##.elc## files is still much faster than the ##.el## files -- all the tests are skipped. Still, the ##.elc## will contain the unit test code.
 
-'''Instead of using a variable, you can wrap all tests in a macro, of course.''' The simplest solution is to do away with the ##my-unit-testing## variable and wrap all tests in an ##eval-when-compile## macro. This will save a bit of time while loading the compiled files, because the ##.elc## will no longer contain the unit test code.
+Instead of using a variable, you can wrap all tests in a macro, of course. The simplest solution is to do away with the ##my-unit-testing## variable and wrap all tests in an ##eval-when-compile## macro. This will save a bit of time while loading the compiled files, because the ##.elc## will no longer contain the unit test code.
 
 == Discussion ==
 

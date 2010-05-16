@@ -1,0 +1,24 @@
+Extensions to standard library `emacs-lock.el'
+
+
+Adds the following features:
+
+* When locking any buffer, you are prompted for a little note that
+  helps you to remember why you locked the buffer.
+  
+* If any buffer prevents Emacs from exiting, pops up this buffer
+  and displays your note, if there is one. Also displays the note
+  if you try to kill any locked buffer.
+  
+* Adds a mode-line indicator which displays a capital "L" for
+  locked buffers (and a lowercase "l" for non-locked buffers, if
+  this is enabled. You can deactivate this indicator if you don't
+  want it.)
+  If you move the mouse over the indicator, the locking note
+  is displayed.
+
+
+Lisp:emacs-lock+.el
+
+----
+CategoryFiles

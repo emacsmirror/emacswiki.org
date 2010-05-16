@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 12 09:30:18 2010 (-0700)
+;; Last-Updated: Sat May 15 09:38:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12147
+;;     Update #: 12200
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -71,8 +71,8 @@
 ;;      (@> "Filtering Bookmarks (Hiding and Showing)")
 ;;      (@> "Only Visible Bookmarks Are Affected")
 ;;      (@> "Omitting Bookmarks from Display")
-;;      (@> "Bookmarks for a Given File or Buffer")
 ;;      (@> "Sorting Bookmarks")
+;;    (@> "Bookmarks for Specific Files or Buffers")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Open Bookmarks Using Windows File Associations")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
@@ -302,8 +302,8 @@
 ;;  In addition to these general commands, there are type-specific
 ;;  commands: `bookmarkp-dired-jump', `bookmarkp-info-jump', and so
 ;;  on.  And there are commands to jump to bookmarks for the current
-;;  buffer or for a particular buffer or file
-;;  (see (@> "Bookmarks for a Given File or Buffer")).  All jump
+;;  buffer or for particular buffers or files
+;;  (see (@> "Bookmarks for Specific Files or Buffers")).  All jump
 ;;  commands are bound to keys that have the prefix `C-x j'.
 ;;  `bookmarkp-dired-jump' is bound to `C-x j d',
 ;;  `bookmarkp-info-jump' to `C-x j i', and so on.
@@ -409,10 +409,10 @@
 ;;  associated value to each tag.  This means that a tag can act just
 ;;  like an object attribute or property: it can be a name/value pair.
 ;;
-;;  To add a value to a tag, or to change the current value, you use
-;;  command `bookmarkp-set-tag-value', bound to `T v' in the bookmark
-;;  list.  You are prompted for the bookmark, the tag, and the new
-;;  value.
+;;  To add a value to a tag that has none, or to change the current
+;;  value of a tag, you use command `bookmarkp-set-tag-value', bound
+;;  to `T v' in the bookmark list.  You are prompted for the bookmark,
+;;  the tag, and the new value.
 ;;
 ;;  A tag value can be a number, symbol, string, list, vector, and so
 ;;  on.  It can be as complex as you like.  It can be any Emacs-Lisp
@@ -443,8 +443,10 @@
 ;;  whenever the tagged bookmark is visited.  Any Lisp-readable
 ;;  function value is allowed: a symbol or a lambda expression.
 ;;
-;;  For example, you can use `T v (lambda () (message "Hello!"))' to
-;;  display `Hello!' whenever a bookmark with this tag is visited.
+;;  For example, to display `Hello!' when a bookmark is visited you
+;;  can use this:
+;;
+;;    T v bookmark-jump RET (lambda () (message "Hello!"))
 ;;
 ;;  The function that is the value of a "bookmarkp-jump" tag is called
 ;;  just after the the standard hook `bookmark-after-jump-hook' is
@@ -1004,39 +1006,6 @@
 ;;  outside the bookmark-list display.
 ;;
 ;;
-;;(@* "Bookmarks for a Given File or Buffer")
-;;  *** Bookmarks for a Given File or Buffer ***
-;;
-;;  A bookmark typically records a position or a region in a file or
-;;  buffer.  Sometimes you are interested in accessing or examining
-;;  only the bookmarks for a particular file or buffer.  For example,
-;;  you might want to navigate among the bookmarks for the current
-;;  buffer.  Or you might want to search the regions recorded in the
-;;  bookmarks for a particular file.
-;;
-;;  For a bookmark, the recorded file and buffer name differ in that
-;;  the file name is absolute.  Bookmarks for buffer `foo.el' include
-;;  all files named `foo.el', whereas bookmarks for file
-;;  `/project1/lisp/foo.el' include only the files in that one
-;;  directory.
-;;
-;;  Bookmark+ provides a few commands to handle these use cases.  The
-;;  keys bound to these commands use `f' for file and `b' for buffer.
-;;  In the bookmark-list display, the following keys affect the
-;;  bookmarks for a particular file or buffer whose name you provide
-;;  (with completion).
-;;
-;;  * `= f M' and `= b M' - mark 
-;;  * `= f S' and `= b S' - show (only)
-;;
-;;  For navigation, the following keys jump to a particular file or
-;;  buffer bookmark.  (Use `C-x 4 j' for other-window.)  For the `='
-;;  keys you are prompted for the file or buffer name.
-;;
-;;  * `C-x j = f' and `C-x j = b' - specified file or buffer
-;;  * `C-x j .'                   - current buffer
-;;
-;;
 ;;(@* "Sorting Bookmarks")
 ;;  *** Sorting Bookmarks ***
 ;;
@@ -1106,6 +1075,41 @@
 ;;
 ;;  See also (@> "Use Bookmark+ with Icicles") - the same technique is
 ;;  used in Icicles for sorting bookmarks as completion candidates.
+;;
+;;
+;;(@* "Bookmarks for Specific Files or Buffers")
+;;  ** Bookmarks for Specific Files or Buffers **
+;;
+;;  A bookmark typically records a position or a region in a file or
+;;  buffer.  Sometimes you are interested in accessing or examining
+;;  only the bookmarks for particular files or buffers.  For example,
+;;  you might want to navigate among the bookmarks for the current
+;;  buffer.  Or you might want to search the regions recorded in the
+;;  bookmarks for a particular file.
+;;
+;;  For a bookmark, the recorded file and buffer name differ in that
+;;  the file name is absolute.  Bookmarks for buffer `foo.el' include
+;;  all files named `foo.el', whereas bookmarks for file
+;;  `/project1/lisp/foo.el' include only the files in that one
+;;  directory.
+;;
+;;  Bookmark+ provides some commands to handle these use cases.  The
+;;  keys bound to these commands use `f' for file and `b' for buffer.
+;;  In the bookmark-list display, the following keys affect the
+;;  bookmarks for a particular file or buffer whose name you provide
+;;  (with completion).
+;;
+;;  * `= f M' and `= b M' - mark 
+;;  * `= f S' and `= b S' - show (only)
+;;
+;;  For navigation, the following keys jump to bookmarks for
+;;  particular files or buffers.  (Use `C-x 4 j' for other-window.)
+;;
+;;  * `C-x j .'                   - current buffer
+;;  * `C-x j = f' and `C-x j = b' - specified file(s) or buffer(s)
+;;
+;;  For the `=' keys you are prompted for one or more file names or
+;;  buffer names.
 ;;
 ;;
 ;;(@* "Use Bookmark+ with Icicles")
@@ -1288,6 +1292,16 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/15 dadams
+;;     Replace *same-(buffer|file)-jump* by *specific-(buffers|files)-jump*: read multiple buff/files.
+;;     Renamed: *same-(buffer|file)* to *-last-specific-(buffer|file)* for pred, alist, and var.
+;;     Renamed: *same-(buffer|file)* to *specific-(buffer|file)* for hist, *types*, mark/show cmds.
+;;     Renamed: *-selected-buffers-alist* to *-specific-buffers-alist*.
+;;     Added: *-specific-files-alist*, *-(all|some)-tags(-regexp)-alist-only.
+;;     *-completing-read-(buffer|file)-name: Use (buffer|file)-name-history, not *-same-*-history.
+;;     *-read-tags-completing: Rewrote to correctly handle cons and string tags, error handling, etc.
+;;     *-bmenu-(add|remove)-tags-*-marked: Error handling.
+;;     *(all|some)-tags(-regexp)-jump*: Use *-(all|some)-tags(-regexp)-alist-only.
 ;; 2010/05/11 dadams
 ;;     Added: bookmarkp-bmenu-mark-same-(buffer|file)-bookmarks, bookmarkp-this-(buffer|file)-p,
 ;;            bookmarkp-this-(buffer|file)-alist-only, bookmarkp-bmenu-show-only-same-(buffer|file),

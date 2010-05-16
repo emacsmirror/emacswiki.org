@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 09:52:06 2010 (-0700)
+;; Last-Updated: Sat May 15 10:27:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5267
+;;     Update #: 5297
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/15 dadams
+;;     Added: icicle-define-bookmark-command(-1).  Added ARGS param for use as arg for *-alist-only.
+;;     Added same-window commands for bookmark jumping.
+;;     Added: *-specific-(buffers|files)*, *-this-buffer*, *-(all|some)-tags(-regexp)* jump commands,
+;;            *-bookmarked-(buffer|file)-list.
+;;     icicle-bookmark-set: *-selected-buffers-alist-only -> *-specific-buffers-alist-only.
 ;; 2010/05/06 dadams
 ;;     icicle-bookmark-set: Removed spurious format call with its arg.
 ;; 2010/04/29 dadams
@@ -246,6 +252,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/05/15 dadams
+;;     icicle-search-highlight-and-maybe-replace: If candidate number is nil, set to 0.
+;;     icicle-search: Updated doc string: Can sort.  Don't say not to use C-|.
 ;; 2010/05/09 dadams
 ;;     Icicles search: Change to allow sorting.  Use mctized candidates, not alist + candidate nb.
 ;;       icicle-search-highlight-and-maybe-replace:
@@ -1905,6 +1914,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/05/15 dadams
+;;     icicle-all-candidates-action-1: Bind *-minibuffer-message-ok-p, *-help-in-mode-line-flag to nil.
 ;; 2010/05/09 dadams
 ;;     Added: icicle-dispatch-M-_.
 ;;     Removed: icicle-dispatch-C-comma.
@@ -2931,6 +2942,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/05/15 dadams
+;;     icicle-mode: Updated doc string for bookmark commands.
 ;; 2010/05/09 dadams
 ;;     Key-binding changes: icicle-change-sort-order is C-, icicle-dispatch-M-_ is M-_.
 ;; 2010/04/21 dadams
@@ -3823,6 +3836,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/05/15 dadams
+;;     icicle-top-level-key-bindings: Updated Icicles versions of bookmark jump commands.
+;;     icicle-keymaps-for-key-completion: Added bookmarkp-jump-map bookmarkp-jump-other-window-map.
 ;; 2010/04/30 dadams
 ;;     Added: icicle-no-match-hook.
 ;; 2010/04/09 dadams

@@ -121,9 +121,6 @@ The basic idea is to convert forms to strings with `prin1-to-string' and convert
 
 This only works in the simplest cases.  Unfortunately, this doesn't work for all Emacs data types for programming or the editor.
 
-  (read (prin1-to-string (make-hash-table)))
-    ==> Lisp error: (invalid-read-syntax "#")
-
   (read (prin1-to-string (current-buffer)))
     ==> Lisp error: (invalid-read-syntax "#")
 

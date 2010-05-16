@@ -68,6 +68,7 @@ EevMode is my partner for years.
 * Lisp:eldoc-extension.el -- Eldoc extension to show new functions and docstring
 * AutoAsyncByteCompile -- auto byte-compile with separate emacs process
 * Lisp:archive-region.el -- Move region to archive file instead of killing by C-u C-w
+* Lisp:time-ext.el -- more function for time/date
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 

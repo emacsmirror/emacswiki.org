@@ -29,7 +29,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 307 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 308 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
@@ -129,7 +129,13 @@
 ;; cursor ends on is automatically opened and a new (forward) isearch starts, so
 ;; one can continue searching among the children of that folder. This allows for
 ;; extremely fast navigation across lengthy paths of directories with just a few
-;; keystrokes. To terminate a sticky search, press C-g or (once again) Return.
+;; keystrokes. To terminate a sticky search, press C-g or (once  again)  Return.
+;; Sticky searches can be made default in tree panes by customizing the variable
+;; sr-tree-isearch-always-sticky - when set prefix the command to make a regular
+;; (non-sticky) interactive search.
+
+;; *  When AVFS support is active, press "#" to toggle the display of compressed
+;; archives in Tree View panes.
 
 ;; Additionally,  most of the original keybindings from Sunrise apply (of course
 ;; wherever it makes sense). For instance switching/transposing/laying out panes
@@ -161,11 +167,21 @@
   :group 'sunrise
   :type 'boolean)
 
+(defcustom sr-tree-avfs-handlers-alist '(("\\.od[fgpst]$" . "#uzip/")
+                                         ("\\.oxt$"       . "#uzip/")
+                                         ("\\.sx[dmicw]$" . "#uzip/"))
+  "List of AVFS handlers to manage specific file extensions in Tree View mode."
+  :group 'sunrise
+  :type 'alist)
+
 (defvar sr-tree-root nil
   "Root widget of the current tree view.")
 
 (defvar sr-tree-open-paths nil
   "List of paths to all the directories open in the current tree view.")
+
+(defvar sr-tree-avfs-seen nil
+  "List of paths to big compressed archives visited through AVFS")
 
 (defvar sr-tree-cursor nil
   "Cons cell in which the CAR contains the label, and the CDR contains the file
@@ -176,6 +192,8 @@
 
 (defvar sr-buttons-command-adapter nil
   "(Compiler pacifier) See sr-buttons-command-adapter in sunrise-x-buttons.el")
+
+(defvar sr-tree-omit-archives t "")
 
 (define-widget 'sr-tree-dir-widget 'tree-widget
   "Directory Tree widget."
@@ -220,7 +238,7 @@
   (when sr-tree-cursor
     (setq sr-this-directory (cdr sr-tree-cursor))
     (sr-tree-highlight)
-    (cd (cdr sr-tree-cursor))
+    (setq default-directory (file-name-as-directory (cdr sr-tree-cursor)))
     (when (and (featurep 'sunrise-x-modeline)
                (not (eq mode-line-format (default-value 'mode-line-format))))
       (if (fboundp 'sr-modeline-refresh)
@@ -288,7 +306,29 @@
       (goto-char (point-min))
       (kill-line)
       (widget-insert (sr-tree-path-line nil) " ")
+      (forward-line 1)
+      (kill-region (line-beginning-position) (line-end-position))
+      (widget-insert
+       (format "%s" (if sr-tree-omit-archives "" "virtual directories: ON ")))
       (sr-highlight))))
+
+(defun sr-tree-check-virtual-size (entry)
+  "Allow user to abort before trying to access a large compressed archive
+  through avfs." ;; TODO: use function abort-if-file-too-large instead:
+  (if (and sr-avfs-root
+           (sr-overlapping-paths-p sr-avfs-root entry)
+           (string-match "^\\([^#]+\\)#" entry))
+      (let* ((root (match-string 1 entry))
+             (root (substring root (length sr-avfs-root)))
+             (size (nth 7 (file-attributes root))))
+        (when (and large-file-warning-threshold
+                   (not (member root sr-tree-avfs-seen))
+                   (> size large-file-warning-threshold))
+          (or (y-or-n-p
+               (format "File %s is large (%dMB), really open? "
+                       (file-name-nondirectory root) (/ size 1048576)))
+              (error "Aborted"))
+          (sr-tree-avfs-register-seen root)))))
 
 (defun sr-tree-list (dir)
   "Return the list of subdirectories in DIR."
@@ -297,12 +337,32 @@
       (setq entry (car entries)
             rel-entry (file-relative-name entry (concat entry "/.."))
             entries (cdr entries))
-      (if (and (file-directory-p entry)
-               (not (string= (substring entry -1) "."))
-               (or (not dired-omit-mode)
-                   (not (eq ?. (string-to-char rel-entry)))))
-          (setq dirs (cons entry dirs))))
+
+      (cond ((eq ?. (string-to-char (substring entry -1)))
+             (ignore))
+            
+            ((and dired-omit-mode (eq ?. (string-to-char rel-entry)))
+             (ignore))
+            
+            ((file-directory-p entry)
+             (setq dirs (cons entry dirs)))
+            
+            ((and (not sr-tree-omit-archives) (sr-avfs-directory-p entry))
+             (setq dirs (cons (sr-tree-avfs-dir entry) dirs)))
+            
+            (t (ignore))))
     (nreverse dirs)))
+
+(defun sr-tree-avfs-dir (filename)
+  "Return the virtual path for accessing FILENAME through avfs in Tree View
+  panes, or nil if avfs cannot manage this kind of file."
+  (let* ((handler
+          (or (assoc-default filename sr-tree-avfs-handlers-alist 'string-match)
+              (assoc-default filename sr-avfs-handlers-alist 'string-match)))
+          (vdir (concat filename handler)))
+    (unless (sr-overlapping-paths-p sr-avfs-root vdir)
+      (setq vdir (concat sr-avfs-root vdir)))
+    (sr-tree-path-line vdir)))
 
 (defun sr-tree-expand-dir (tree)
   "Return TREE widget children. Reuse :args cache if exists."
@@ -314,6 +374,7 @@
                 (mapcar 'sr-tree-widget (sr-tree-list dir))
               (message "Reading directory '%s'...done" dir))
           (error
+           (widget-put tree :open nil)
            (message "%s" (error-message-string err))
            nil)))))
 
@@ -327,17 +388,22 @@
             (delete path sr-tree-open-paths)))))
 (add-hook 'tree-widget-after-toggle-functions 'sr-tree-register-path)
 
+(defun sr-tree-avfs-register-seen (path)
+  "Add the PATH to the list of (big) archives visited through AVFS."
+  (setq sr-tree-avfs-seen (cons path (delete path sr-tree-avfs-seen))))
+
 (defun sr-tree-build (root)
   "Delete the current tree widget and build a new one at ROOT."
   (interactive "DSunrise Tree Root: ")
-  (cd (setq root (expand-file-name root)))
+  (setq default-directory
+        (file-name-as-directory (setq root (expand-file-name root))))
   (let ((inhibit-read-only t)
         (all (overlay-lists)))
     (erase-buffer)
     (mapc 'delete-overlay (car all))
     (mapc 'delete-overlay (cdr all))
     (tree-widget-set-theme "folder")
-    (widget-insert (format "%s \n\n" (sr-tree-path-line root)))
+    (widget-insert (format "%s\n\n" (sr-tree-path-line root)))
     (set
      (make-local-variable 'sr-tree-root)
      (widget-create (sr-tree-widget root t)))
@@ -428,7 +494,12 @@
   Optional ACTION is one of the symbols 'open or 'close and allows to specify
   whether the node has to be open only if closed, or closed only if open."
   (interactive)
-  (let ((is-open (widget-get (sr-tree-get-branch) :open)))
+  (let* ((branch (sr-tree-get-branch))
+         (is-open (widget-get branch :open))
+         (path))
+    (unless is-open
+      (setq path (widget-get branch :path))
+      (sr-tree-check-virtual-size path))
     (when (or (and is-open (eq action 'close))
               (and (not is-open) (eq action 'open))
               (null action))
@@ -493,7 +564,7 @@
               (sr-tree-search-cursor cursor t))
           (sr-tree-update-cursor))))))
 
-(defvar sr-tree-isearch-mode-commands 
+(defvar sr-tree-isearch-mode-commands
   '(([S-return]  . 'sr-tree-focus-branch)
     ([S-right]   . 'sr-tree-focus-branch)
     ([?\e right] . 'sr-tree-focus-branch)
@@ -514,7 +585,7 @@
 (defsubst sr-tree-isearch-command (binding)
   `(lambda () (interactive) (sr-tree-post-isearch ,(cdr binding))))
 
-(defun sr-tree-setup-isearch ()
+(defun sr-tree-isearch-setup ()
   "Set up isearch to perform sticky searches in Sunrise Tree panes. To be added
   to `isearch-mode-hook'"
   (add-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
@@ -526,7 +597,7 @@
             (car binding) (sr-tree-isearch-command binding)))
         sr-tree-isearch-mode-commands))
 
-(defun sr-tree-cleanup-isearch ()
+(defun sr-tree-isearch-cleanup ()
   "Clean up the isearch hook and keymap after a sticky search."
   (remove-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
   (kill-local-variable 'search-nonincremental-instead)
@@ -540,8 +611,9 @@
   starts a new isearch-forward immediately after the previous one exits as long
   as C-g is not pressed."
   (interactive "P")
-  (if (or prefix sr-tree-isearch-always-sticky)
-      (sr-tree-setup-isearch))
+  (if (or (and prefix (not sr-tree-isearch-always-sticky))
+          (and (not prefix) sr-tree-isearch-always-sticky))
+      (sr-tree-isearch-setup))
   (isearch-forward nil t))
 
 (defun sr-tree-isearch-backward (&optional prefix)
@@ -549,8 +621,9 @@
   starts a new isearch-forward immediately after the previous search exits until
   C-g not pressed."
   (interactive "P")
-  (if (or prefix sr-tree-isearch-always-sticky)
-      (sr-tree-setup-isearch))
+  (if (or (and prefix (not sr-tree-isearch-always-sticky))
+          (and (not prefix) sr-tree-isearch-always-sticky))
+      (sr-tree-isearch-setup))
   (isearch-backward nil t))
 
 (defun sr-tree-post-isearch (&optional command)
@@ -558,14 +631,15 @@
   in Sunrise Tree View mode."
   (if (or isearch-mode-end-hook-quit (equal "" isearch-string))
       (progn
-        (sr-tree-cleanup-isearch)
+        (sr-tree-isearch-cleanup)
         (isearch-done))
     (sr-tree-update-cursor)
     (sr-tree-toggle-branch 'open)
-    (when (widget-get (sr-tree-get-branch) :args)
-      (recenter (truncate (/ (window-body-height) 10.0)))
-      (if command (sr-tree-isearch-command-loop command))
-      (sr-tree-isearch-forward t))))
+    (if (widget-get (sr-tree-get-branch) :args)
+      (recenter (truncate (/ (window-body-height) 10.0))))
+    (if command (sr-tree-isearch-command-loop command))
+    (sr-tree-isearch-setup)
+    (isearch-forward nil t)))
 
 (defun sr-tree-isearch-command-loop (command)
   (funcall command)
@@ -585,7 +659,8 @@
   root node."
   (interactive)
   (unless (eq (sr-tree-get-branch) sr-tree-root)
-    (sr-tree-goto-dir (cdr sr-tree-cursor) t)))
+    (sr-tree-goto-dir (cdr sr-tree-cursor) t)
+    (if sr-tree-open-paths (revert-buffer))))
 
 (defun sr-tree-blur-branch ()
   "Replace the current tree with a new one having the parent of the current root
@@ -604,6 +679,16 @@
   (interactive)
   (setq dired-omit-mode (or force (not dired-omit-mode)))
   (revert-buffer))
+
+(defun sr-tree-avfs-toggle ()
+  "Toggle display of compressed archives in Sunrise Tree View panes."
+  (interactive)
+  (if sr-avfs-root
+      (let ((cursor sr-tree-cursor))
+        (setq sr-tree-omit-archives (not sr-tree-omit-archives))
+        (sr-tree-refresh-dir sr-tree-root)
+        (sr-tree-search-cursor cursor)
+        (recenter (truncate (/ (window-body-height) 10.0))))))
 
 (defun sr-tree-handle-mouse-event (e handler)
   "Handle mouse event E by calling function HANDLER after updating the cursor at
@@ -668,12 +753,12 @@
 (defun sr-tree-advertised-find-file ()
   "Visit the currently selected file or directory in Sunrise Tree View mode."
   (interactive)
-  (let ((sr-goto-dir-function nil)
+  (let ((target (cdr sr-tree-cursor))
+        (sr-goto-dir-function nil)
         (in-search (memq 'sr-tree-post-isearch isearch-mode-end-hook)))
-    (if in-search (sr-tree-cleanup-isearch))
-    (sr-save-aspect
-     (sr-alternate-buffer
-      (sr-goto-dir (cdr sr-tree-cursor))))))
+    (sr-tree-check-virtual-size target)
+    (if in-search (sr-tree-isearch-cleanup))
+    (sr-save-aspect (sr-alternate-buffer (sr-goto-dir target)))))
 
 (defun sr-tree-mouse-advertised-find-file (e)
   "Visit a file or directory selected using the mouse in the current pane."
@@ -685,6 +770,7 @@
   the passive pane."
   (interactive)
   (let ((target (cdr sr-tree-cursor)) (side (sr-other)))
+    (sr-tree-check-virtual-size target)
     (save-selected-window
       (select-window (sr-other 'window))
       (sr-goto-dir target)
@@ -936,6 +1022,8 @@
 (define-key sr-tree-mode-map "\C-t " 'sr-tree-dismiss)
 (define-key sr-tree-mode-map "\C-t\C-m" 'sr-tree-dismiss)
 
+(define-key sr-tree-mode-map "#" 'sr-tree-avfs-toggle)
+
 (define-key sr-tree-mode-map [up] 'sr-tree-previous-line)
 (define-key sr-tree-mode-map [down] 'sr-tree-next-line)
 
@@ -950,6 +1038,7 @@
 (define-key sr-tree-mode-map [?\e left] 'sr-tree-blur-branch)
 (define-key sr-tree-mode-map [C-left] 'sr-tree-collapse-branch)
 (define-key sr-tree-mode-map [3-left] 'sr-tree-collapse-branch) ;; "\C-c <left>"
+(define-key sr-tree-mode-map [delete] 'sr-tree-collapse-branch)
 
 (define-key sr-tree-mode-map [next] 'sr-tree-scroll-up)
 (define-key sr-tree-mode-map [prior] 'sr-tree-scroll-down)
@@ -1067,7 +1156,7 @@
                                       desktop-buffer-misc)))
 
 (add-to-list 'desktop-buffer-mode-handlers
-             '(sr-tree-mode . sr-tree-desktop-restore-buffer)) 
+             '(sr-tree-mode . sr-tree-desktop-restore-buffer))
 
 (provide 'sunrise-x-tree)
 

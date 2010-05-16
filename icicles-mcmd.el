@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 09:27:35 2010 (-0700)
+;; Last-Updated: Sat May 15 07:26:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15613
+;;     Update #: 15615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1677,7 +1677,7 @@ These are the main Icicles actions and their minibuffer key bindings:
      Save candidate (add to those saved)     insert, M-S-mouse-2
      Object-action: apply a fn to candidate  M-RET
 
- * Search and replace (e.g. `C-c `').
+ * Search and replace (e.g. `C-c `').  See also `icicle-search'.
      Use action keys (prefix `C-') to navigate.
      Use alternative action keys (prefix `C-S-') to replace matches.
      Toggle input highlighting at all hits   \\[icicle-dispatch-C-^]
@@ -3889,6 +3889,8 @@ ALTP is passed to `icicle-candidate-action-1'."
               (unless (member cand icicle-completion-candidates) (throw 'i-a-c-a-1 nil)))))
          (candidates                      (or local-saved icicle-completion-candidates))
          (failures                        nil)
+         (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
+         (icicle-help-in-mode-line-flag   nil) ; Avoid delays for individual candidate help.
          (icicle-all-candidates-action-p  t))
     (when local-saved (setq icicle-completion-candidates  local-saved))
     (if listp

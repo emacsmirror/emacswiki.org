@@ -4,7 +4,7 @@
 ;; Author: Paul M. Rodriguez <paulmrodriguez@gmail.com>
 ;; Created: 2009-12-27
 ;; Keywords: editing
-;; %Id: 1%
+;; %Id: 2%
 
 ;; This file is not part of GNU Emacs.
 
@@ -63,124 +63,226 @@
 ;;; Vars and constants
 (defvar *copyedit-this-stop* nil)
 
-(defconst copyedit-non-punctuation-re "[[:word:][:blank:] \']")
-(defconst copyedit-punctuation-re
-  (concat "^" copyedit-non-punctuation-re))
 (defconst copyedit-scene-re "^[ \t]*[ *#\t\f\n]*$")
-(defconst copyedit-stop-re "[.?!)]")
 (defconst copyedit-blank-re "[ \t]*$")
-(defconst copyedit-open-quote-re "[\"“‘]")
-(defconst copyedit-close-quote-re "[\"”’]")
-(defconst copyedit-dashes "[-—–‐‒−]")
-;; hyphen-minus, hyphen, figure dash, en dash, em dash, minus sign.
 
 ;;; Context definitions
 
-(defvar copyedit-contexts-alist '())
+;; Why contexts? -- The reason Copyedit exists is to handle the corner
+;; cases of English punctuation smoothly and invisible.  A naive
+;; implementation would require an unreadable and unmaintainable
+;; spaghetti bowl of nested conditions.  Instead Copyedit uses
+;; contexts.  Contexts are defined by `define-copyedit-context' as
+;; functions interned in the `copyedit-contexts' obarray.  These
+;; functions may be called directly with `in-context-p', but usually
+;; they are supplied to one of the context macros -- `in-one-context',
+;; `in-each-context', or `out-of-context' -- as keyword arguments.
+;; Whether the value of the argument evaluated depends on which macro
+;; is used.  `in-one-context' evaluates the value of only the first
+;; true context; `in-each-context' evaluates the value of all true
+;; contexts; `out-of-context' evaluates the value of all false
+;; contexts.  (That is, under the hood, `in-one-context' expands into
+;; a `cond' form; `in-each-context' expands into a series of `when'
+;; forms; `out-of-context' expands into a series of `unless' forms.)
 
-(defmacro copyedit-define-context (key &rest forms)
+;; one less than a power of two (2^8) is supposed to be good
+(defvar copyedit-contexts (make-vector 255 0)
+  "Obarray of copyedit contexts.")
+
+(defmacro define-copyedit-context (key &rest forms)
   "Define KEY as a context tested by FORMS.
 Forms are evaluated inside `lambda'."
   (declare (indent 1))
-  `(progn
-     (assert (keywordp ,key) t "Not a keyword: %s")
-     (push
-      (cons ,key
+  `(fset
+    (intern (symbol-name ',key) copyedit-contexts)
 	    (lambda ()
-	      ,@forms))
-      copyedit-contexts-alist)))
+	      ,@forms)))
 
-(copyedit-define-context :all
+(define-copyedit-context all
+  "Return t in all contexts."
   t)
-(copyedit-define-context :bol
-  (copyedit-bolp))
-(copyedit-define-context :boi
+
+(define-copyedit-context bol
+  "Return t at beginning of line.
+Return t after beginning of line and whitespace.
+When `auto-fill-function' is non-nil, only return t only after a blank line."
+  (labels ((this-bolp ()
+		      (or (bolp)
+			  (save-excursion
+			    (backward-char 1)
+			    (bolp)))))
+    (if auto-fill-function
+	(and (this-bolp)
+	     (copyedit-lastblank-p))
+      (this-bolp))))
+
+(define-copyedit-context boi
+  "Return t at beginning of indentation."
   (let ((boi (c-point 'boi))
 	(bol (c-point 'bol)))
     (and (not (equal boi bol))
 	 (or (equal (point) boi)
 	     (< (point) boi)))))
-(copyedit-define-context :not-bol
-  (not (copyedit-bolp)))
-(copyedit-define-context :eol
-  (copyedit-eolp))
-(copyedit-define-context :not-eol
-  (not (copyedit-eolp)))
-(copyedit-define-context :in-sentence
-  (not (or (copyedit-bolp) (copyedit-eolp))))
-(copyedit-define-context :bob
-  (copyedit-bobp))
-(copyedit-define-context :not-bob
-  (not (copyedit-bobp)))
-(copyedit-define-context :eob
-  (copyedit-eobp))
-(copyedit-define-context :not-eob
-  (not (copyedit-eobp)))
-(copyedit-define-context :stop
+
+(define-copyedit-context eol
+  "Return t at end of line.
+Return t before whitespace and end of line.
+If `auto-fill-function' is non-nil, return t only before a blank line."
+  (labels ((this-eolp ()
+		      (or (eolp)
+			  (looking-at copyedit-blank-re))))
+    (if auto-fill-function
+	(and (this-eolp)
+	     (copyedit-nextblank-p))
+      (this-eolp))))
+
+(define-copyedit-context in-sentence
+  "Return t inside a sentence.
+\"Inside a sentence\" means at neither the end or beginning of a line."
+  (copyedit-inside-thing-p 'sentence))
+
+(define-copyedit-context bob
+  "Return t at beginning of buffer.
+Return t after beginning of buffer and whitespace."
+  (or (bobp)
+      (save-excursion
+	(backward-copyedit-ws)
+	(bobp))))
+
+(define-copyedit-context eob
+  "Return t at end of buffer.
+Return t before whitespace and end of buffer."
+  (or (eobp)
+      (save-excursion
+	(forward-copyedit-ws 1)
+	(eobp))))
+
+(define-copyedit-context stop
+  "Return the last relevant stop, if there is one."
   (copyedit-get-stop))
-(copyedit-define-context :no-stop
-  (not (copyedit-get-stop)))
-(copyedit-define-context :quote
+
+(define-copyedit-context quote
+  "Return quote at point."
   (thing-at-point 'quote))
-(copyedit-define-context :eos
-  (copyedit-end-of-scene-p))
-(copyedit-define-context :not-eos
-  (and (not (copyedit-end-of-scene-p))
-       (not (copyedit-bobp))
-       (not (copyedit-eobp))))
-(copyedit-define-context :thisblank
+
+(define-copyedit-context eos
+  "Return t at end of scene."
+  (or (eobp)
+      (and
+       (looking-at copyedit-scene-re)
+       (or (save-excursion
+	     (forward-line -1)
+	     (looking-at copyedit-scene-re))
+	   (save-excursion
+	     (forward-line 1)
+	     (looking-at copyedit-scene-re))))))
+
+(define-copyedit-context thisblank
+  "Return t if this line is blank."
   (copyedit-thisblank-p))
-(copyedit-define-context :nextblank
+
+(define-copyedit-context nextblank
+  "Return t if next line is blank."
   (copyedit-nextblank-p))
-(copyedit-define-context :lastblank
+
+(define-copyedit-context lastblank
+  "Return t if last line is blank."
   (copyedit-lastblank-p))
-(copyedit-define-context :bothblank
+
+(define-copyedit-context bothblank
+  "Return t if next and last lines are both blank."
   (and (copyedit-nextblank-p)
        (copyedit-lastblank-p)))
-(copyedit-define-context :allblank
+
+(define-copyedit-context allblank
+  "Return t if this line, the last line, and the next line are all blank."
   (and (copyedit-nextblank-p)
        (copyedit-lastblank-p)
        (copyedit-thisblank-p)))
-(copyedit-define-context :noblank
+
+(define-copyedit-context noblank
+  "Return t if neither this nor the next lines are blank."
   (and (null (copyedit-thisblank-p))
        (null (copyedit-nextblank-p))))
-(copyedit-define-context :region
+
+(define-copyedit-context region
+  "Return t if region is active and appropriate to use."
   (use-region-p))
-(copyedit-define-context :between-words
-  (and (copyedit-test-last-char copyedit-non-punctuation-re)
+
+(define-copyedit-context between-words
+  "Return t when between words."
+  (and (not (copyedit-after-syntax-p ?.))
        (not (eolp))
-       (copyedit-test-next-char copyedit-non-punctuation-re)))
-(copyedit-define-context :before-word
-  (copyedit-test-next-char "[[:word:]]"))
-(copyedit-define-context :inside-word
+       (not (copyedit-before-syntax-p ?.))))
+
+(define-copyedit-context before-word
+  "Return t if next character is part of a word."
+  (copyedit-before-syntax-p ?w))
+
+(define-copyedit-context inside-word
+  "Return t if inside a word.
+Being inside a word means neither after its last nor before its first character."
   (copyedit-inside-thing-p 'word))
-(copyedit-define-context :noword
+
+(define-copyedit-context noword
+  "Return it if there is no word at point."
   (not (c-safe (thing-at-point 'word))))
-(copyedit-define-context :after-point
-  (not (copyedit-test-last-char "[[:word:]]")))
-(copyedit-define-context :before-space
-  (copyedit-test-next-char " "))
-(copyedit-define-context :after-space
-  (copyedit-test-last-char " "))
-(copyedit-define-context :before-quote
+
+(define-copyedit-context after-point
+  "Return t if last character is a punctuation mark."
+  (copyedit-after-syntax-p ?.))
+
+(define-copyedit-context before-point
+  "Return t if next character is a punctuation mark."
+  (copyedit-before-syntax-p ?.))
+
+(define-copyedit-context space-before-point
+  "Return t if a space precedes a point."
+  (save-excursion
+    (or
+     (and
+      (copyedit-before-syntax-p ?.)
+      (backward-copyedit-ws))
+     (and
+      (forward-copyedit-ws 1)
+      (copyedit-before-syntax-p ?.)))))
+
+(define-copyedit-context before-ws
+  "Return t is next character is whitespace."
+  (copyedit-before-syntax-p ? ))
+
+(define-copyedit-context after-ws
+  "Return t if last character is whitespace."
+  (copyedit-after-syntax-p ? ))
+
+(define-copyedit-context before-quote
+  "Return t if next character opens a quote."
   (and (not (quote-at-point))
-       (copyedit-test-next-char copyedit-open-quote-re)))
-(copyedit-define-context :boq
+       (copyedit-before-syntax-p ?\")))
+
+(define-copyedit-context boq
+  "Return t at beginning of a quote."
   (let ((boq (c-safe (quote-beginning-position))))
     (if boq (or (eq (point) boq)
 		(eq (save-excursion
 		      (backward-copyedit-ws)
 		      (point))
 		    boq)))))
-(copyedit-define-context :eoq
+
+(define-copyedit-context eoq
+  "Return t at end of a quote."
   (let ((eoq (c-safe
 	       (quote-end-position))))
     (if eoq (eq (point) eoq))))
-(copyedit-define-context :last-word
+
+(define-copyedit-context last-word
+  "Return t if at last word in a sentence."
   (save-excursion
     (and (forward-word 1)
-	 (looking-at copyedit-stop-re))))
-(copyedit-define-context :one-word-sentence
+	 (looking-at (sentence-end)))))
+
+(define-copyedit-context one-word-sentence
+  "Return t if context is a one-word sentence."
   (save-excursion
     (and
      (eq
@@ -188,118 +290,130 @@ Forms are evaluated inside `lambda'."
       (c-safe (beginning-of-thing 'sentence)))
      (and
       (forward-word 1)
-      (looking-at copyedit-stop-re)))))
-(copyedit-define-context :indent
+      (looking-at (sentence-end))))))
+
+(define-copyedit-context indent
+  "Return t if this paragraph is indented."
   (save-excursion
     (back-to-indentation)
     (not (zerop (current-column)))))
-(copyedit-define-context :after-stray-point
-  (save-excursion
-    (and (progn (backward-copyedit-word 1)
-		(skip-syntax-forward copyedit-punctuation-re)
-		(forward-copyedit-ws))
-	 (progn (forward-copyedit-word 1)
-		(skip-syntax-backward copyedit-punctuation-re)
-		(backward-copyedit-ws)))))
-(copyedit-define-context :before-stray-point
-  (save-excursion
-    (and (progn (forward-copyedit-word 1)
-		(skip-syntax-backward copyedit-punctuation-re)
-		(backward-copyedit-ws))
-	 (progn (backward-copyedit-word 1)
-		(skip-syntax-forward copyedit-punctuation-re)
-		(forward-copyedit-ws)))))
-(copyedit-define-context :after-dash
-  (save-excursion
-    (or (copyedit-test-last-char copyedit-dashes)
-	(and (backward-copyedit-ws)
-	     (copyedit-test-last-char copyedit-dashes)))))
-(copyedit-define-context :before-dash
-  (save-excursion
-    (or (copyedit-test-next-char copyedit-dashes)
-	(and (forward-copyedit-ws)
-	     (copyedit-test-next-char copyedit-dashes)))))
 
+(define-copyedit-context after-space
+  "Return t is last character is whitespace."
+  (copyedit-after-syntax-p ? ))
+
+(define-copyedit-context before-space
+  "Return t if next character is whitespace."
+  (copyedit-before-syntax-p ? ))
+
+(define-copyedit-context before-stray-point
+  "Return t if there is a stray point ahead."
+  (save-excursion
+    (with-copyedit-syntax
+     (and
+      (not (zerop (skip-syntax-forward " ")))
+      (not (zerop (skip-syntax-forward ".")))
+      (not (zerop (skip-syntax-forward " ")))))))
+
+(define-copyedit-context after-stray-point
+  "Return t if there is a stray point ahead."
+  (save-excursion
+    (with-copyedit-syntax
+     (and
+      (not (zerop (skip-syntax-backward " ")))
+      (not (zerop (skip-syntax-backward ".")))
+      (not (zerop (skip-syntax-backward " ")))))))
 
 ;;; Context macros
 
-(defun copyedit-check-context-args (keyword list)
-  "Return t if KEYWORD is a keyword and LIST is a list."
-  (and
-   (keywordp keyword)
-   (assoc keyword copyedit-contexts-alist)
-   (listp list)))
+(defun copyedit-keyword-name (keyword)
+  "Return name (sans colon) of keyword KEYWORD."
+  (and (keywordp keyword)
+       (let ((name (symbol-name keyword)))
+	 (substring name 1 (length name)))))
 
 (defun in-context-p (context)
-  "Test for a CONTEXT from `copyedit-contexts-alist'."
-  (funcall (cdr (assoc context copyedit-contexts-alist))))
+  "Test for a CONTEXT from `copyedit-contexts'."
+  (not (not (funcall (intern (symbol-name context) copyedit-contexts)))))
 
 (defmacro in-one-context (&rest args)
   "Test for context and evaluate appropriate form.
-ARGS should alternate between keywords from
-`copyedit-contexts-alist' and a form to evaluate in that context."
+ARGS should alternate between functions from `copyedit-contexts',
+as a keyword, and a form to evaluate in that context."
   (let (forms)
+    ;; replace nil with (ignore)
     (setq args
 	  (mapcar (lambda (arg)
 		    (if arg arg '(ignore)))
 		  args))
+    ;; build a list of conditions
     (while args
 	(let* ((keyword (pop args))
 	       (value (pop args))
-	       (func (cdr (assoc keyword copyedit-contexts-alist))))
-	  (assert (copyedit-check-context-args keyword value) t
-		  "Not a context-form pair: %s %s")
+	       (func (symbol-function
+		      (intern (copyedit-keyword-name keyword) copyedit-contexts))))
 	  (push (cons (list func) (list value)) forms)))
-      (setq forms (cons 'cond (nreverse forms)))
-      `,@forms))
+    ;; build cond form
+    (setq forms (cons 'cond (nreverse forms)))
+    `,@forms))
 
 (defmacro in-each-context (&rest args)
   "Evaluate all forms in relevant contexts.
-ARGS should alternate between keywords from
-`copyedit-contexts-alist' and a form to evaluate in that context."
+ARGS should alternate between functions from `copyedit-contexts',
+as a keyword, and a form to evaluate in that context."
   (let (forms)
+    ;; replace nil with (ignore)
     (setq args
 	  (mapcar (lambda (arg)
 		    (if arg arg '(ignore)))
 		  args))
+    ;; build a series of if-forms
     (while args
       (let* ((keyword (pop args))
 	     (value (pop args))
-	     (func (cdr (assoc keyword copyedit-contexts-alist))))
-	(assert (copyedit-check-context-args keyword value) t
-		"Not a context-form pair: %s %s")
-	(push (list 'if (list func) value) forms)))
+	     (func (symbol-function
+		    (intern (copyedit-keyword-name keyword) copyedit-contexts))))
+	(push (list 'when (list func) value) forms)))
+    ;; build a progn form
     (setq forms (cons 'progn (nreverse forms)))
     `,@forms))
 
+(defmacro out-of-context (&rest args)
+  "Evaluate all forms not in stated contexts.
+ARGS should alternate between keywords from
+`copyedit-contexts' and a form to evaluate in that context."
+  (let (forms)
+    ;; replace nil with ignore
+    (setq args
+	  (mapcar (lambda (arg)
+		    (if arg arg '(ignore)))
+		  args))
+    ;; build a series of unless-forms
+    (while args
+      (let* ((keyword (pop args))
+	     (value (pop args))
+	     (func (symbol-function
+		    (intern (copyedit-keyword-name keyword) copyedit-contexts))))
+	(push (list 'unless (list func) value) forms)))
+    ;; build a progn form
+    (setq forms (cons 'progn (nreverse forms)))
+    `,@forms))
 
 ;;; Utility functions
 
 (defun backward-copyedit-ws ()
-  "Like `c-skip-ws-backward', but return non-nil if point moves."
-  (let ((point (point)))
-    (c-skip-ws-backward)
-    (not (eq point (point)))))
-    
-(defun forward-copyedit-ws ()
-  "Like `c-skip-ws-forward', but return non-nil if point moves."
-  (let ((point (point)))
-    (c-skip-ws-forward)
-    (not (eq point (point)))))
-
-(defun bounds-of-copyedit-ws ()
-  "Return bounds of whitespace."
-  (save-excursion
-    (let ((a (and (or (forward-copyedit-ws)
-		      (backward-copyedit-ws))
-		  (point)))
-	  (b (and (or (backward-copyedit-ws)
-		      (forward-copyedit-ws))
-		  (point))))
-      (if (> a b)
-	  (cons b a)
-	(cons a b)))))
-(put 'copyedit-ws 'bounds-of-thing-at-point 'bounds-of-copyedit-ws)
+  "Skip to beginning of whitespace."
+  (interactive "p")
+  (forward-copyedit-ws -1))
+  
+(defun forward-copyedit-ws (arg)
+  "Skip to end of whitespace; with negative ARG, to beginning."
+  (interactive "p")
+  (with-copyedit-syntax
+    (not (zerop
+	  (if (natnump arg)
+	      (skip-syntax-forward " ")
+	    (skip-syntax-backward " "))))))
 
 (defun copyedit-zap (thing)
   "Kill all text between here and end of THING."
@@ -312,16 +426,6 @@ ARGS should alternate between keywords from
 (defun copyedit-nuke (thing)
   "Kill THING."
   (kill-region (beginning-of-thing thing) (end-of-thing thing)))
-
-(defun copyedit-skip-context-forward (keyword)
-  "Skip context KEYWORD from `copyedit-contexts-alist'."
-  (while (in-context-p keyword)
-    (forward-char 1)))
-
-(defun copyedit-skip-context-backward (keyword)
-  "Skip backward context KEYWORD from `copyedit-contexts-alist.'."
-  (while (in-context-p keyword)
-    (backward-char 1)))
 
 (defun copyedit-call-appropriately (function)
   "Call FUNCTION, interactively if it is a command."
@@ -357,7 +461,7 @@ Until:while::unless:if."
      (narrow-to-region
       (save-excursion
 	(beginning-of-thing 'paragraph)
-	(forward-copyedit-ws)
+	(forward-copyedit-ws 1)
 	(point))
       (save-excursion
 	(end-of-thing 'paragraph)
@@ -367,79 +471,59 @@ Until:while::unless:if."
 
 ;;; Test functions
 
-(defun copyedit-eolp ()
-  "Test for end of line."
-  (labels ((this-eolp ()
-		      (or (eolp)
-			  (looking-at copyedit-blank-re))))
-    (if auto-fill-function
-	(and (this-eolp)
-	     (copyedit-nextblank-p))
-      (this-eolp))))
-
 (defun copyedit-eobp ()
   "Test for end of buffer."
   (or (eobp)
       (save-excursion
-	(forward-copyedit-ws)
+	(forward-copyedit-ws 1)
 	(eobp))))
 
-(defun copyedit-bobp ()
-  "Test for beginning of buffer."
-  (or (bobp)
-      (save-excursion
-	(backward-copyedit-ws)
-	(bobp))))
+(defmacro with-copyedit-syntax (&rest body)
+  "Run BODY with copyedit syntax table."
+  `(with-syntax-table (copyedit-extended-syntax-table)
+     ,@body))
 
-(defun copyedit-bolp ()
-  "Test for beginning of line."
-  (labels ((this-bolp ()
-			 (or (bolp)
-			     (copyedit-test-last-char 'bolp))))
-    (if auto-fill-function
-	(and (this-bolp)
-	     (copyedit-lastblank-p))
-      (this-bolp))))
+(defun copyedit-extended-syntax-table ()
+  "Return an extended version of the current syntax table."
+  (let ((table (copy-syntax-table)))
+    (modify-syntax-entry (decode-char 'ucs #x201C) "\"" table)
+    (modify-syntax-entry (decode-char 'ucs #x201D) "\"" table)
+    (modify-syntax-entry (decode-char 'ucs #x2018) "\"" table)
+    (modify-syntax-entry (decode-char 'ucs #x2019) "\"" table)
+    (modify-syntax-entry ?' "\"" table)
+    (modify-syntax-entry ?` "\"" table)
+    ;; en-dash
+    (modify-syntax-entry (decode-char 'ucs #x2013) " " table)
+    ;; em-dash
+    (modify-syntax-entry (decode-char 'ucs #x2014) " " table)
+    (modify-syntax-entry ?-  "-" table)
+    (modify-syntax-entry ?\t "-" table)
+    (modify-syntax-entry ?\n "-" table)
+    (modify-syntax-entry ?\r "-" table)
+    (modify-syntax-entry ?\f "-" table)
+    (modify-syntax-entry ?\v "-" table)
+    table))
 
-(defun copyedit-test-last-char (string-or-function)
-  "Test STRING-OR-FUNCTION on last char.
-If STRING-OR-FUNCTION is a string, return non-nil if it matches
-the last char.
-If STRING-OR-FUNCTION is a function, return non-nil it it returns
-non-nil one char forward.
-Return non-nil if char before point matches STRING."
-  (unless (bobp)
-    (typecase string-or-function
-      (string
-       (string-match-p string-or-function
-		       (char-to-string (char-before (point)))))
-      (function
-       (save-excursion
-	 (forward-char -1)
-	 (copyedit-call-appropriately string-or-function))))))
-
-(defun copyedit-test-next-char (string-or-function)
-  "Test STRING-OR-FUNCTION on next char.
-If STRING-OR-FUNCTION is a string, return non-nil if it matches the next char.
-If STRING-OR-FUNCTION is a function, return non-nil it it returns non-nil one char forward."
+(defun copyedit-before-syntax-p (syntax)
+  "Return t when next char has syntax SYNTAX."
   (unless (eobp)
-    (typecase string-or-function
-      (string
-       (string-match-p string-or-function
-		       (char-to-string (char-after (point)))))
-      (function
-       (save-excursion
-	 (forward-char 1)
-	 (copyedit-call-appropriately string-or-function))))))
+    (with-copyedit-syntax (= (char-syntax (char-after)) syntax))))
+
+(defun copyedit-after-syntax-p (syntax)
+  "Return t when last char has syntax SYNTAX."
+  (unless (bobp)
+    (with-copyedit-syntax (= (char-syntax (char-before)) syntax))))
 
 (defun copyedit-get-stop ()
   "Return non-nil if point is at a stop."
-  (save-excursion
-    (backward-copyedit-ws)
-    (if (copyedit-test-last-char copyedit-stop-re)
-	(char-to-string
-	 (char-before))
-      nil)))
+  (with-copyedit-syntax
+   (save-excursion
+     (backward-copyedit-ws)
+     (skip-syntax-backward ".")
+     (let ((sentence-end-double-space nil))
+      (if (looking-at (sentence-end))
+	  (char-to-string (char-after))
+	nil)))))
 
 (defun copyedit-thisblank-p ()
   "Return non-nil if line at point is blank."
@@ -462,35 +546,23 @@ If STRING-OR-FUNCTION is a function, return non-nil it it returns non-nil one ch
 
 ;;; Scenes
 
-(defun copyedit-end-of-scene-p ()
-  "Return non-nil if point is at end of scene or buffer."
-  (or (eobp)
-      (and
-       (looking-at copyedit-scene-re)
-       (or (save-excursion
-	     (forward-line -1)
-	     (looking-at copyedit-scene-re))
-	   (save-excursion
-	     (forward-line 1)
-	     (looking-at copyedit-scene-re))))))
-
 (defun forward-copyedit-scene ()
   "Go to next scene break or end of buffer."
   (interactive)
   (forward-line 1)
   (until (or (eobp)
-	     (in-context-p :eos))
-    (forward-line 1))
-  (copyedit-skip-context-forward :eos))
+	     (in-context-p 'eos))
+    (forward-char 1))
+  (while (in-context-p 'eos) (forward-char 1)))
 
 (defun backward-copyedit-scene ()
   "Go to previous scene break or beginning of buffer."
   (interactive)
   (forward-line -1)
   (until (or (bobp)
-	     (in-context-p :eos))
-    (forward-line -1))
-  (copyedit-skip-context-backward :eos))
+	     (in-context-p 'eos))
+    (forward-char -1))
+  (while (in-context-p 'eos) (forward-char -1)))
 
 ;;; Quotes
 
@@ -511,7 +583,9 @@ If inside quotes, return their position as a list."
   (let ((open-quote
 	 (save-excursion
 	   (and
-	    (re-search-backward copyedit-open-quote-re nil t 1)
+	    (prog1
+		(not (zerop (with-copyedit-syntax (skip-syntax-backward "^\""))))
+		(c-safe (forward-char -1)))
 	    (in-one-context
 	     :bob		(point)
 	     :bol		(point)
@@ -520,7 +594,9 @@ If inside quotes, return their position as a list."
 	(close-quote
 	 (save-excursion
 	   (and
-	    (re-search-forward copyedit-close-quote-re nil t 1)
+	    (prog1
+		(not (zerop (with-copyedit-syntax (skip-syntax-forward "^\""))))
+		(c-safe (forward-char 1)))
 	    (in-one-context
 	     :eob		(point)
 	     :eol		(point)
@@ -582,68 +658,17 @@ If inside quotes, return their position as a list."
 			  (end-of-thing thing)
 			  (point))))))
 
-(defun copyedit-kill-subr (thing &optional direction)
-  "Kill THING in DIRECTION.
-If no DIRECTION is specified, kill entire THING.
-If inside THING, do not delete whitespace.
-Otherwise whitespaces in buffer always decrease by one."
-  ;; the idea here is to treat the number of whitespaces as an
-  ;; invariant: killing a thing should always decrease the total
-  ;; number of whitespaces by one.
-  (interactive)
-  ;; eg the thing is followed or preceded by a point, or we are
-  ;; trapped between points
-  (case direction
-    ('forward
-     (or
-      (forward-copyedit-ws)
-      (if (or
-      	   (not (c-safe (thing-at-point thing)))
-      	   (eq (point) (save-excursion (end-of-thing thing))))
-	  (forward-thing thing))))
-    ('backward
-     (or
-      (backward-copyedit-ws)
-      (if (or
-	   (not (c-safe (thing-at-point thing)))
-	   (eq (point) (save-excursion (beginning-of-thing thing))))
-	  (forward-thing thing -1)))))
-  ;; inside a thing, no changes to whitespace
-  (if (copyedit-inside-thing-p thing)
-      (case direction
-	(nil (copyedit-nuke thing))
-	('forward (copyedit-zap thing))
-	('backward (copyedit-zap-backward thing)))
-    (let ((space-before
-	   (save-excursion
-	     (beginning-of-thing thing)
-	     (if (backward-copyedit-ws)
-		 (c-safe (thing-at-point 'copyedit-ws)))))
-	  (space-after
-	   (save-excursion
-	     (end-of-thing thing)
-	     (if (forward-copyedit-ws)
-		 (c-safe (thing-at-point 'copyedit-ws))))))
-      (copyedit-nuke thing)
-      (if (c-safe (thing-at-point 'copyedit-ws))
-	  (copyedit-nuke 'copyedit-ws))
-      (cond
-       ((and space-before space-after) (insert space-before))
-       ((and (not space-before) (not space-after))
-	(kill-region (point) (progn
-			       (forward-thing thing)
-			       (beginning-of-thing thing)
-			       (point))))))))
-
 (defun copyedit-stop ()
-  "Insert a stop with one or spaces."
-  (delete-horizontal-space)
+  "Insert a stop with one or more spaces."
+  (copyedit-delete-horizontal-space)
   (copyedit-depunctuate-backward)
   ;; if inside a save-stop form, use this-stop.
   (let ((stop (or *copyedit-this-stop* "."))
 	(space (if sentence-end-double-space
 		   "  " " ")))
     (in-one-context
+     :boi               nil
+     :bol               nil
      :after-point	(insert space)
      :eoq		(insert stop)
      :eol		(insert stop)
@@ -652,37 +677,63 @@ Otherwise whitespaces in buffer always decrease by one."
 (defun copyedit-find-space (&optional arg)
   "Go to the next space.  With ARG, ignore space at point."
   (interactive "P")
-  (if arg (skip-chars-forward " "))
+  (if arg (skip-syntax-forward " "))
   (in-one-context
    :inside-word (skip-syntax-forward "^ ")))
 
 (defun copyedit-find-space-backward (&optional arg)
   "Go to the last space.  With ARG, ignore space at point."
   (interactive "P")
-  (if arg (skip-chars-backward " "))
-  (in-one-context
-   :inside-word (skip-syntax-backward "^ "))
-  (backward-char 1))
+  (if arg (skip-syntax-backward " "))
+  (skip-syntax-backward "^ "))
 
-(defun copyedit-delete-horizontal-space ()
+(defun copyedit-delete-next-space ()
   "Delete next horizontal space."
   (interactive)
   (copyedit-find-space)
   (in-one-context
    :eol (copyedit-nuke 'copyedit-ws)
-   :all (delete-horizontal-space)))
+   :all (copyedit-delete-horizontal-space)))
+
+(defun copyedit-delete-horizontal-space ()
+  "Delete all whitespace around point on this line."
+  (with-copyedit-syntax
+   (delete-region
+    (max (line-beginning-position)
+	 (save-excursion
+	   (skip-syntax-backward " ")
+	   (point)))
+    (min (line-end-position)
+	 (save-excursion
+	   (skip-syntax-forward " ")
+	   (point))))))
+
+(defun copyedit-just-one-space ()
+  "Remove whitespace around point, and insert a space if necessary.
+Don't touch whitespace characters besides spaces or tabs."
+  (interactive)
+  (with-copyedit-syntax
+   (skip-syntax-backward " ")
+   (delete-horizontal-space)
+   (skip-syntax-forward " ")
+   (delete-horizontal-space)
+   (unless 
+       (or
+	(out-of-context :eol (copyedit-before-syntax-p ? ))
+	(out-of-context :bol (copyedit-after-syntax-p ? )))
+     (insert " "))))
 
 (defun copyedit-depunctuate-forward ()
   "Remove punctuation after point."
   (save-excursion
-    (forward-copyedit-ws)
+    (forward-copyedit-ws 1)
     (let ((start (point))
 	  (end (point)))
       (save-excursion
-	(unless (zerop (skip-syntax-forward copyedit-punctuation-re))
+	(unless (zerop (skip-syntax-forward "."))
 	  (setq end (point))))
-      (kill-region start end)))
-  (in-one-context :bol (delete-horizontal-space)))
+      (delete-region start end)))
+  (in-one-context :bol (copyedit-delete-horizontal-space)))
 
 (defun copyedit-depunctuate-backward ()
   "Remove punctuation before point."
@@ -691,9 +742,9 @@ Otherwise whitespaces in buffer always decrease by one."
     (let ((start (point))
 	  (end (point)))
       (save-excursion
-	(unless (zerop (skip-syntax-backward copyedit-punctuation-re))
+	(unless (zerop (skip-syntax-backward "."))
 	  (setq end (point))))
-      (kill-region start end))))
+      (delete-region start end))))
 
 (defun copyedit-depunctuate ()
   "Remove any punctuation between words at point."
@@ -709,7 +760,8 @@ Otherwise whitespaces in buffer always decrease by one."
   (in-one-context
    :bol nil
    :boi nil
-   :all (just-one-space)))
+   :all (copyedit-just-one-space))
+  (backward-copyedit-ws))
 
 (defun copyedit-fixup ()
   "Insert the right spacing for the context."
@@ -722,16 +774,15 @@ Otherwise whitespaces in buffer always decrease by one."
 			  (copyedit-capitalize))
    :boq			(restrict-to-quote
 			 (copyedit-capitalize))
-   :stop		(in-one-context
-			 :boi nil
-			 :bol nil
-			 :all (save-stop
-			       (restrict-to-paragraph
-				(copyedit-depunctuate-backward)
-				(copyedit-depunctuate-forward)
-				(copyedit-stop)
-				(copyedit-capitalize))))
-  :eol        		(delete-horizontal-space)))
+   :stop		(restrict-to-paragraph
+			 (save-stop
+			  (copyedit-stop)
+			  (copyedit-capitalize)))
+   :before-stray-point  (copyedit-depunctuate-forward)
+   :after-stray-point   (copyedit-depunctuate-backward)
+   :space-before-point  (copyedit-delete-horizontal-space)
+   :before-point        (in-one-context :after-point
+					(copyedit-depunctuate-backward))))
 
 (defun copyedit-capitalize ()
   "Capitalize the next word."
@@ -752,13 +803,12 @@ Otherwise whitespaces in buffer always decrease by one."
       (setq string (buffer-string)))
     (insert string)))
 
-
 ;;; Commands
 (defun copyedit-mark-sentence ()
   "Mark a sentence."
   (interactive)
-  (in-one-context
-   :no-stop (backward-copyedit-sentence 1))
+  (out-of-context
+   :stop (backward-copyedit-sentence 1))
   (mark-end-of-sentence 1))
 
 (defun copyedit-open-sentence ()
@@ -770,39 +820,40 @@ Otherwise whitespaces in buffer always decrease by one."
 		  (copyedit-stop)
 		  (copyedit-capitalize))))
 
-(defun kill-copyedit-sentence (arg)
+(defun kill-copyedit-sentence ()
   "Like `kill-sentence' with ARG, but insert a stop and spaces after."
-  (interactive "p")
+  (interactive)
+  (kill-region
+   (point)
+   (progn
+     (forward-sentence 1)
+     (with-copyedit-syntax
+      (skip-syntax-backward "^.")
+      (skip-syntax-backward "."))
+     (point)))
+  (copyedit-fixup)
   (in-one-context
-   :quote	(progn
-		  (restrict-to-quote
-		   (copyedit-kill-subr 'sentence 'forward)
-		   (copyedit-stop))
-		  (copyedit-fixup))
-   :stop	(save-stop
-		 (copyedit-kill-subr 'copyedit-sentence 'forward)
-		 (copyedit-stop))
-   :all		(progn
-		  (copyedit-kill-subr 'copyedit-sentence 'forward)
-		  (copyedit-stop)
-		  (copyedit-fixup))))
+   :boi (kill-region (point) (progn (forward-copyedit-ws 1) (point)))))
 
 (defun backward-kill-copyedit-sentence ()
   "Like `backward-kill-sentence', but insert stop and fix caps after."
   (interactive)
-  (in-one-context
-   :quote	(progn
-		  (restrict-to-quote
-		   (copyedit-kill-subr 'sentence 'backward))
-		  (copyedit-fixup))
-   :all	(progn
-	  (copyedit-kill-subr 'sentence 'backward)
-	  (copyedit-fixup))))
+  (kill-region
+   (point)
+   (progn
+     (forward-sentence -1)
+     (forward-copyedit-ws 1)
+     (with-copyedit-syntax
+      (skip-syntax-forward "^w"))
+     (point)))
+  (copyedit-fixup))
 
 (defun kill-whole-copyedit-sentence ()
   "Kill an entire sentence."
   (interactive)
-  (copyedit-kill-subr 'sentence)
+  (kill-region
+   (progn (forward-sentence -1) (forward-copyedit-ws 1) (point))
+   (progn (forward-sentence 1) (point)))
   (copyedit-fixup))
 
 (defun copyedit-join-sentence ()
@@ -811,18 +862,19 @@ Otherwise whitespaces in buffer always decrease by one."
   (forward-sentence 1)
   (copyedit-depunctuate)
   (copyedit-nuke 'copyedit-ws)
-  (just-one-space)
+  (copyedit-just-one-space)
   (save-excursion (downcase-word 1)))
 
 (defun backward-copyedit-word (arg)
   "Like `backward-word' with ARG.
 When arg = 1, point is always left before or after word."
   (interactive "p")
-  (if (eq arg 1)
-      (and (zerop (skip-chars-backward "[:word:]"))
-	   (zerop (skip-chars-backward "^[:word:]"))
-	   (backward-word 1))
-    (backward-word arg)))
+  (with-copyedit-syntax
+   (if (eq arg 1)
+       (and (zerop (skip-syntax-backward "w"))
+	    (zerop (skip-syntax-backward "^w"))
+	    (backward-word 1))
+     (backward-word arg))))
    
 (defun backward-copyedit-sentence (arg)
   "Like `backward-sentence' with ARG, but never end up on a blank line."
@@ -838,71 +890,64 @@ When arg = 1, point is always left before or after word."
 (defun backward-copyedit-paragraph (arg)
   "Like `backward-paragraph' with ARG, but put point at beginning of paragraph."
   (interactive "p")
-  (backward-paragraph (+ 1 arg))
-  (forward-copyedit-ws))
+  (forward-line -1)
+  (forward-paragraph -1)
+  (forward-copyedit-ws 1))
 
 (defun backward-kill-copyedit-word ()
-  "Like `kill-word' with ARG, but don't leave extra spaces."
+  "Like `kill-word', but fix up afterwards."
   (interactive)
-  (copyedit-depunctuate-backward)
-  (copyedit-kill-subr 'word 'backward)
+  (with-copyedit-syntax
+   (skip-syntax-backward "^w"))
+  (kill-word -1)
+  (in-one-context
+   :bol nil
+   :eol nil
+   :boi (progn (delete-char -1) (forward-copyedit-ws 1))
+   :all (copyedit-just-one-space))
   (copyedit-fixup))
-  
+
 (defun forward-copyedit-word (arg)
   "Like `forward-word' with ARG.
 When arg = 1, point is always left before or after word."
   (interactive "p")
-  (if (eq arg 1)
-      (and (zerop (skip-chars-forward "[:word:]"))
-	   (zerop (skip-chars-forward "^[:word:]"))
-	   (forward-word 1))
-    (forward-word arg)))
+  (with-copyedit-syntax
+   (if (eq arg 1)
+       (and (zerop (skip-syntax-forward "w"))
+	    (zerop (skip-syntax-forward "^w"))
+	    (forward-word 1))
+     (forward-word arg))))
 
 (defun forward-copyedit-sentence (arg)
   "Like `forward-sentence' with ARG, but put point at beginning of sentence."
   (interactive "p")
   (forward-sentence arg)
-  (in-one-context :not-eol (forward-copyedit-ws)))
+  (out-of-context :eol (forward-copyedit-ws 1)))
 
 (defun forward-copyedit-paragraph (arg)
   "Like `forward-paragraph' with ARG, but put point at beginning of paragraph."
   (interactive "p")
   (forward-paragraph arg)
-  (forward-copyedit-ws))
+  (forward-copyedit-ws 1))
 
 (defun kill-copyedit-word ()
-  "Like `kill-word' with ARG, but don't leave extra spaces."
+  "Like `kill-word', but fix up afterwards."
   (interactive)
-  (copyedit-depunctuate-forward)
+  (with-copyedit-syntax
+   (skip-syntax-forward "^w"))
+  (kill-word 1)
   (in-one-context
-   :one-word-sentence	(progn
-			  (forward-copyedit-ws)
-			  (copyedit-kill-subr 'sentence)
-			  (copyedit-fixup))
-   :quote		(restrict-to-quote
-			 (copyedit-kill-subr 'word 'forward))
-   :all                 (copyedit-kill-subr 'word 'forward))
+   :bol nil
+   :boi (progn (delete-char -1) (forward-copyedit-ws 1))
+   :all (copyedit-just-one-space))
   (copyedit-fixup))
 
 (defun kill-copyedit-paragraph ()
-  "Like `kill-line', but don't leave extra spaces."
+  "Kill whole paragraph and clean up afterwards."
   (interactive)
-  (in-one-context
-   :thisblank   (progn (copyedit-nuke 'copyedit-ws)
-		       (copyedit-fixup))
-   :all		(progn
-		  (copyedit-kill-subr 'paragraph 'forward)
-		  (copyedit-fixup))))
-
-(defun backward-kill-copyedit-paragraph ()
-  "Kill paragraph backwards and fix whitespaces and points."
-  (interactive)
-  (in-one-context
-   :thisblank (progn (copyedit-nuke 'copyedit-w)
-		     (copyedit-fixup))
-   :all       (progn
-		(copyedit-kill-subr 'paragraph 'backward)
-		(copyedit-fixup))))
+  (kill-region
+   (progn (forward-paragraph -1) (forward-copyedit-ws 1) (point))
+   (progn (forward-paragraph 1) (forward-copyedit-ws 1) (point))))
 
 (defun copyedit-delete-blank-lines ()
   "Like `delete-blank-lines', but sans blank line, `join-line' forward."
@@ -910,7 +955,6 @@ When arg = 1, point is always left before or after word."
   (in-one-context
    :noblank	(join-line 1)
    :all		(delete-blank-lines)))
-
 
 ;;; Dragging
 (defun copyedit-drag (arg)
@@ -955,14 +999,15 @@ Positive ARG drags right, negative ARG drags left."
     (define-key map [remap kill-word]			'kill-copyedit-word)
     (define-key map [remap forward-word]		'forward-copyedit-word)
     (define-key map [remap forward-sentence]		'forward-copyedit-sentence)
-    (define-key map [remap backward-sentence]		'backward-copyedit-sentence)
     (define-key map [remap forward-paragraph]		'forward-copyedit-paragraph)
     (define-key map [remap backward-kill-word]		'backward-kill-copyedit-word)
     (define-key map [remap backward-word]		'backward-copyedit-word)
+    (define-key map [remap backward-sentence]		'backward-copyedit-sentence)
     (define-key map [remap backward-paragraph]		'backward-copyedit-paragraph)
     (define-key map [remap kill-sentence]		'kill-copyedit-sentence)
-    (define-key map [remap kill-line]		        'kill-copyedit-paragraph)
-    (define-key map [remap delete-horizontal-space]	'copyedit-delete-horizontal-space)
+    (define-key map [remap kill-whole-line]		'kill-copyedit-paragraph)
+    (define-key map [remap delete-horizontal-space]	'copyedit-delete-next-space)
+    (define-key map [remap just-one-space]	        'copyedit-just-one-space)
     (define-key map [remap delete-blank-lines]		'copyedit-delete-blank-lines)
     (define-key map [remap backward-page]		'backward-copyedit-scene)
     (define-key map [remap forward-page]		'forward-copyedit-scene)
@@ -971,18 +1016,17 @@ Positive ARG drags right, negative ARG drags left."
 (defvar copyedit-extra-keymap
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map copyedit-keymap)
-    (define-key map (kbd "C-S-y")	'copyedit-yank-clean)
-    (define-key map (kbd "C-j")		'copyedit-join-sentence)
-    (define-key map (kbd "M-j")		'copyedit-mark-sentence)
-    (define-key map (kbd "M-.")		'copyedit-open-sentence)
-    (define-key map (kbd "M-,")		'copyedit-depunctuate)
-    (define-key map (kbd "M-S-k")	'backward-kill-copyedit-sentence)
-    (define-key map (kbd "C-S-k")	'backward-kill-copyedit-paragraph)
-    (define-key map (kbd "C-\"")        'copyedit-kill-quote)
-    (define-key map (kbd "C-'")         'copyedit-kill-quote-forward)
-    (define-key map (kbd "M-'")         'copyedit-kill-quote-backward)
-    (define-key map (kbd "M-<right>")	'copyedit-drag-right)
-    (define-key map (kbd "M-<left>")	'copyedit-drag-left)
+    (define-key map (kbd "C-M-y")		'copyedit-yank-clean)
+    (define-key map (kbd "C-j")			'copyedit-join-sentence)
+    (define-key map (kbd "M-j")			'copyedit-mark-sentence)
+    (define-key map (kbd "M-.")			'copyedit-open-sentence)
+    (define-key map (kbd "M-,")			'copyedit-depunctuate)
+    (define-key map (kbd "M-<backspace>")	'backward-kill-copyedit-sentence)
+    (define-key map (kbd "C-\"")		'copyedit-kill-quote)
+    (define-key map (kbd "C-'")                 'copyedit-kill-quote-forward)
+    (define-key map (kbd "M-'")                 'copyedit-kill-quote-backward)
+    (define-key map (kbd "M-<right>")		'copyedit-drag-right)
+    (define-key map (kbd "M-<left>")		'copyedit-drag-left)
     map))
 
 (define-minor-mode copyedit-mode
