@@ -1,0 +1,10 @@
+NotMuch is an email indexing and search tool based on Xapian. Like Gmail, Notmuch relies on tagging and fast searching to organize mail. By default, incoming mail is given the tags "UNREAD" and "INBOX." When the mail is archived and read, the two tags, respectively, are removed.
+
+Notmuch comes bundled with an emacs mail client that relies on message-mode for composing mail.
+
+For more information about Notmuch, see [[http://notmuchmail.org/|the official wiki]].
+
+It is also possible to use NotMuch to index mail that is otherwise read in [[Gnus]]. See http://article.gmane.org/gmane.emacs.gnus.user/13308 for more details.
+
+----
+CategoryMail

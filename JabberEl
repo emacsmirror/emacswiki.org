@@ -1,7 +1,7 @@
 jabber.el aims to be a minimal Jabber client.
 
 * jabber.el is hosted at http://emacs-jabber.sourceforge.net/ -- there you'll find a quick howto too.
-* You can read the manual at http://emacs-jabber.sourceforge.net/manual-0.7.1/
+* You can read the manual at http://emacs-jabber.sourceforge.net/manual-0.8.0/
 * If you encounter bugs, please use the [http://sourceforge.net/tracker/?group_id=88346&atid=586350 bug tracker] at SF.net
 * Finally there's a mailing list too: http://lists.sourceforge.net/lists/listinfo/emacs-jabber-general
 * And the mailing list can be [http://dir.gmane.org/gmane.emacs.jabber.general accessed through Gmane] as gmane.emacs.jabber.general

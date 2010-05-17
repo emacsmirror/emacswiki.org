@@ -39,8 +39,10 @@ access''.
 
 * In Icicles search, replace-all (`##M-|##') means replace all matches of your
 current input, throughout the search space, not just all
-matches that follow the [[cursor]].   (Remember too that
-you can activate the region to limit the search space.)
+matches that follow the [[cursor]].   And remember that you
+can (a) activate the [[region]] to limit the search-and-replace
+space and (b) use [[progressive completion]] etc. to narrow the set
+of hits.
 
 * You can act across ''multiple'' [[buffer]]s, files, or [[bookmark]]s -- see
 information about the `icicle-search' [[prefix argument]].
@@ -153,21 +155,6 @@ then `__abcd__cdcd', ...
 replace the following one, all in the same context.  You can,
 however, replace some matches and then skip (e.g. `C-next') to
 the next context.
-
-
-What about replacing ''all'' search hits that match your input?  Use '''`##M-|##'''', not `##C-|##'.  And
-remember that you can (a) activate the [[region]] to limit the
-search-and-replace space  and (b) use
-progressive completion etc. to narrow the set of hits.
-
-''Why not `##C-|##' instead of `##M-|##'?''  `##C-|##' just repeats `C-S-RET' on the first of the
-set of candidates, which is updated after each replacement.  The
-`abcd' gotcha example above thus applies here too: If the
-replacement text does not match your input, then there's no
-problem.  Otherwise, the same candidate is operated on repeatedly
-when you use `##C-|##'.  `##M-|##' is designed to instead take a static
-snapshot of the current set of candidates, and then act once on
-each of them.
 
 What your input matches, hence what gets replaced if
 '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>''''  is `nil', depends on a

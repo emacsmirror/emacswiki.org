@@ -43,7 +43,7 @@ Older version is at
 
 * http://www.emacswiki.org/johnw/Emacs/planner.el
 
-If you're new to PlannerMode (or you don't mind relearning some keybindings), you can add (planner-install-extra-task-keybindings) to your .emacs to take advantage of the new task keybindings. Warning to old users of planner.el: C-c C-t becomes a prefix key; use C-c C-t C-t to create tasks.
+If you're new to PlannerMode (or you don't mind relearning some keybindings), you can add (planner-install-extra-task-keybindings) to your .emacs to take advantage of the new [http://www.college-paper.org/custom-term-paper.html custom term papers] task keybindings. Warning to old users of planner.el: C-c C-t becomes a prefix key; use C-c C-t C-t to create tasks.
 
 == Planner features ==
 

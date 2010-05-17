@@ -84,6 +84,11 @@ candidates.  This means that you need not first do `##C-M-<##' to
 retrieve the saved candidates; you can do `##C-!##' directly to act on
 them.  `##C-|##', `##M-!##', and `##M-|##' work the same way.
 
+All of the all-candidates actions inhibit candidate help display
+in the [[mode line]] and minibuffer messages that the individual
+actions might effect.  This is to avoid unnecessary delays.
+
+
 
 '''See Also:''' [[Icicles - Dired Enhancements]] for an '''Icicles''' alternative to both `A' and `Q' (search and replace) in DiredMode.
 

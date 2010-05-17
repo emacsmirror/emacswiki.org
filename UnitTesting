@@ -10,10 +10,10 @@ Various '''testing frameworks''' simplify the task of writing and running tests.
 
 * '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it isn't (the comparison returns ##nil##), ##assert## signals an error.
 * '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
-* '''Test suite:''' a collection of tests. Grouping tests is useful for, say, separating time-consuming tests from the rest.
-* '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. This is useful when testing a unit which depends on that function. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, a temporary mock function may be made with ##flet##, though a framework may be simpler.
-* '''Fixtures:''' setting up (and tearing down) an environment for a test or a set of test cases.
-* '''Regression test:''' a test that exposes a bug and verifies the subsequent bugfix. If the bug reappears, the test will detect it.
+* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest.
+* '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. This is useful when testing a unit which depends on that function.
+* '''Fixture:''' setting up (and tearing down) an environment for a test or a set of test cases.
+* '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
 * '''Test-Driven Developent''': a methodology that integrates repeated testing into the "development cycle".
 
 The precise meanings of these terms may vary, though there is some commonality among xUnit-like frameworks (like SUnit for Smalltalk, JUnit for Java, and lisp-unit for Common Lisp).
@@ -28,13 +28,13 @@ The following unit test frameworks exist for Emacs Lisp.
 
 '''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides ##assert-equal##, ##assert-nil## and other specialized assertion macros.
 
-'''ElUnit''' is an experimental framework by PhilHagelberg. Its output mimics Ruby's ##Test::Unit## and depends on ##assert##. It is deprecated in favor of ##ert.el##.[http://article.gmane.org/gmane.emacs.devel/122304]
+'''ElUnit''' is an experimental framework by PhilHagelberg. It is inspired by [http://panix.com/~tehom/my-code/regress.el regress.el], Ruby's ##Test::Unit## framework and xUnit. Currently, it is deprecated in favor of ##ert.el##,[http://article.gmane.org/gmane.emacs.devel/122304] but the author is planning a rewrite.
 
 === expectations-like ===
 
 '''[[EmacsLispExpectations|el-expectations.el]]''' by [[rubikitch]] is a small framework focusing on simplicity and readability. It is modeled after [http://expectations.rubyforge.org Ruby expectations] (for example, ##(expect 4 (+ 2 2))## verifies "2 + 2 = 4") and works with '''[[EmacsLispMock|el-mock.el]]''', a DSL-based mock/stub framework.
 
-'''[[ETest]]''' (Emacs Testing Framework) by Phil Jackson also works with [[EmacsLispMock|el-mock.el]]. [http://www.shellarchive.co.uk/content/etest.html Manual].
+'''[[ETest]]''' (Emacs Testing Framework) by Phil Jackson allows arbitrary nesting of tests. It also works with [[EmacsLispMock|el-mock.el]]. [http://www.shellarchive.co.uk/content/etest.html Manual].
 
 === Others ===
 

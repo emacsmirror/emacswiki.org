@@ -291,6 +291,9 @@ Here's a proposal for a function to get *all* the followers, not just the maximu
 }}}
 [new:DaveKerschner:2010-01-16 04:43 UTC]
 I just added support for new style retweets. I also made a git repo (link above). I'd strongly suggest we start using git instead of manual version tracking on the wiki. Manual version control is just painful. -- DaveKerschner
+
+[new]
+BUG - concat: Symbol's value as variable is void: image-load-path
 ----
 [new]
 FEATURE REQUESTS:

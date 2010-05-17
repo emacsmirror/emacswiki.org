@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May 15 07:26:57 2010 (-0700)
+;; Last-Updated: Sun May 16 10:49:37 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15615
+;;     Update #: 15617
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5049,7 +5049,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                           (minibuffer-message (format "  [Predicate SAVED to `%s']" var)))))
 
 ;;;###autoload
-(defun icicle-completing-read+insert () ; Bound to `C-M-S-c' in minibuffer.
+(defun icicle-completing-read+insert () ; Bound to `C-M-S-c' (`C-M-C') in minibuffer.
   "Read something with completion, and insert it.
 Be sure to bind `icicle-completing-read+insert-candidates' to the set
 of candidates.
@@ -5067,7 +5067,7 @@ Return the string that was inserted."
     (icicle-msg-maybe-in-minibuffer "On-demand completion not available")))
 
 ;;;###autoload
-(defun icicle-read+insert-file-name (dir-too-p) ; Bound to `C-M-f' in minibuffer.
+(defun icicle-read+insert-file-name (dir-too-p) ; Bound to `C-M-S-f' (`C-M-F') in minibuffer.
   "Read a file name and insert it, without its directory, by default.
 With a prefix argument, insert its directory also.
 Option `icicle-read+insert-file-name-keys' controls which keys are

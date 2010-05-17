@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 12:49:09 2010 (-0700)
+;; Last-Updated: Sun May 16 16:56:51 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 24970
+;;     Update #: 25000
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3666,7 +3666,7 @@
 ;;  same way that `C-!' and `M-!' apply the main action defined for it
 ;;  to all candidates.  For example, in Icicles search (e.g. `C-c `'),
 ;;  the alternative action (e.g. `C-S-RET') replaces all or part of
-;;  the current search hit, and `C-|' does the same for all search
+;;  the current search hit, and `M-|' does the same for all search
 ;;  hits.
 ;;
 ;;  It is the particular command that defines its alternative action.
@@ -3949,75 +3949,83 @@
 ;;  * `icicle-bookmark-other-window' - (`C-- C-x r m')
 ;;    Trip among bookmarks of all types.  (Also bound to `C-x 4 j j'
 ;;    if library `bookmark+.el' is used.)
-;;  * Type-specific bookmark trips (requires library `bookmark+.el'):
-;;    `icicle-bookmark-non-file-other-window'      (`C-x 4 j b')
-;;    `icicle-bookmark-bookmark-list-other-window' (`C-x 4 j B')
-;;    `icicle-bookmark-dired-other-window'         (`C-x 4 j d')
-;;    `icicle-bookmark-file-other-window'          (`C-x 4 j f')
-;;    `icicle-bookmark-gnus-other-window'          (`C-x 4 j g')
-;;    `icicle-bookmark-info-other-window'          (`C-x 4 j i')
-;;    `icicle-bookmark-desktop-other-window'       (`C-x 4 j K')
-;;    `icicle-bookmark-local-file-other-window'    (`C-x 4 j l')
-;;    `icicle-bookmark-man-other-window'           (`C-x 4 j m')
-;;    `icicle-bookmark-remote-file-other-window'   (`C-x 4 j n')
-;;    `icicle-bookmark-region-other-window'        (`C-x 4 j r',
-;;                                                  `C-u C-x C-x')
-;;    `icicle-bookmark-w3m-other-window'           (`C-x 4 j w')
-;;  * `icicle-buffer' (`C-x b') - Trip among buffers.
-;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits.
-;;  * `icicle-dired' - Trip among directories in Dired mode.
-;;  * `icicle-find-file' (`C-x C-f') - Trip among files.
-;;  * `icicle-find-file-absolute' (`C-u C-x C-f') - Trip among files.
-;;  * `icicle-find-file-in-tags-table' - Trip among the files listed
-;;    in the current tags table (think "project")
-;;  * `icicle-find-file-read-only' (`C-x C-r') - Visit read-only.
-;;  * `icicle-find-first-tag' (`C-x 4 .') - Trip among tag hits.
-;;  * `icicle-find-tag' (`M-.') - Trip among tag hits.
+;;  * Type-specific bookmark trips (requires library `bookmark+.el').
+;;    (Use prefix key `C-x 4 j' for other-window commands.)
+;;    `icicle-bookmark-non-file'         (`C-x j b')
+;;    `icicle-bookmark-bookmark-list'    (`C-x j B')
+;;    `icicle-bookmark-dired'            (`C-x j d')
+;;    `icicle-bookmark-file'             (`C-x j f')
+;;    `icicle-bookmark-gnus'             (`C-x j g')
+;;    `icicle-bookmark-info'             (`C-x j i')
+;;    `icicle-bookmark-desktop'          (`C-x j K')
+;;    `icicle-bookmark-local-file'       (`C-x j l')
+;;    `icicle-bookmark-man'              (`C-x j m')
+;;    `icicle-bookmark-region'           (`C-x j r', `C-u C-x C-x')
+;;    `icicle-bookmark-remote-file'      (`C-x j n')
+;;    `icicle-bookmark-all-tags'         (`C-x j t *')
+;;    `icicle-bookmark-some-tags'        (`C-x j t +')
+;;    `icicle-bookmark-all-tags-regexp'  (`C-x j t % *')
+;;    `icicle-bookmark-some-tags-regexp' (`C-x j t % +')
+;;    `icicle-bookmark-w3m'              (`C-x j w')
+;;    `icicle-bookmark-this-buffer'      (`C-x j .')
+;;    `icicle-bookmark-specific-buffers' (`C-x j = b')
+;;    `icicle-bookmark-specific-files'   (`C-x j = f')
+;;  * `icicle-buffer' (`C-x b')        - Trip among buffers
+;;  * `icicle-compilation-search' (`C-c `') - Trip among `grep' hits
+;;  * `icicle-dired'                   - Trip among directories
+;;  * `icicle-find-file' (`C-x C-f')   - Trip among files
+;;  * `icicle-find-file-absolute' (`C-u C-x C-f') - Trip among files
+;;  * `icicle-find-file-in-tags-table' - Trip among files listed in
+;;                                       current tags table (project)
+;;  * `icicle-find-file-read-only' (`C-x C-r') - Visit read-only
+;;  * `icicle-find-first-tag' (`C-x 4 .') - Trip among tag hits
+;;  * `icicle-find-tag' (`M-.')        - Trip among tag hits
 ;;  * `icicle-goto-global-marker' (`C-- C-x C-SPC') - Trip among
-;;    global markers.
-;;  * `icicle-goto-marker' (`C-- C-SPC') - Trip among local markers.
+;;                                       global markers
+;;  * `icicle-goto-marker' (`C-- C-SPC') - Trip among local markers
 ;;  * `icicle-imenu' (`C-c ='), `icicle-imenu-command',
-;;    `icicle-imenu-non-interactive-function' - Trip among
-;;    definitions.
-;;  * `icicle-Info-goto-node' (`g' in Info)- Trip among Info nodes.
-;;  * `icicle-Info-index' (`i' in Info) - Trip among Info nodes.
-;;  * `icicle-Info-menu' (`m' in Info)- Trip among Info nodes.
-;;  * `icicle-locate-file' - Trip among files.
-;;  * `icicle-occur' (`C-c '') - Trip among `occur' hits
-;;     (`icicle-search' among single-line hits).
-;;  * `icicle-recent-file' - Trip among recent files.
-;;  * `icicle-search' (`C-c `') - Trip among regexp search hits.
+;;    `icicle-imenu-non-interactive-function' - Trip among definitions
+;;  * `icicle-Info-goto-node' (`g' in Info)- Trip among Info nodes
+;;  * `icicle-Info-index' (`i' in Info) - Trip among Info nodes
+;;  * `icicle-Info-menu' (`m' in Info) - Trip among Info nodes
+;;  * `icicle-locate-file'             - Trip among files
+;;  * `icicle-occur' (`C-c '')         - Trip among `occur' hits
+;;                                       (`icicle-search' among
+;;                                       single-line hits)
+;;  * `icicle-recent-file'             - Trip among recent files
+;;  * `icicle-search' (`C-c `')        - Trip among regexp search hits
 ;;  * `icicle-search-bookmarks-together' (`C-u C-c `'),
-;;    `icicle-search-bookmark',  - Search multiple bookmarks.
-;;  * `icicle-search-bookmark-list-bookmark' - Search bookmark lists
-;;  * `icicle-search-char-property' - Trip among buffer strings with
-;;    some text or overlay property.
-;;  * `icicle-search-dired-bookmark'   - Search Dired bookmarks
+;;    `icicle-search-bookmark',        - Search multiple bookmarks
+;;  * Type-specific bookmark searches
+;;    `icicle-search-bookmark-list-bookmark' - Search bookmark lists
+;;    `icicle-search-dired-bookmark'   - Search Dired bookmarks
+;;    `icicle-search-file-bookmark'    - Search file bookmarks
+;;    `icicle-search-gnus-bookmark'    - Search Gnus bookmarks
+;;    `icicle-search-info-bookmark'    - Search Info bookmarks
+;;    `icicle-search-local-file-bookmark'- Search local-file bookmarks
+;;    `icicle-search-man-bookmark'     - Search `man'-page bookmarks
+;;    `icicle-search-non-file-bookmark' - Search non-file bookmarks
+;;    `icicle-search-region-bookmark'  - Search bookmarked regions
+;;    `icicle-search-remote-file-bookmark' - Search remote bookmarks
+;;    `icicle-search-w3m-bookmark'     - Search W3M (URL) bookmarks
+;;  * `icicle-search-char-property'    - Trip among buffer strings with
+;;                                       with a text/overlay property
 ;;  * `icicle-search-dired-marked'     - Search marked files in Dired
 ;;  * `icicle-search-file'             - Search multiple files
-;;  * `icicle-search-file-bookmark'    - Search file bookmarks
-;;  * `icicle-search-gnus-bookmark'    - Search Gnus bookmarks
 ;;  * `icicle-search-ibuffer-marked'   - Search marked bufs in Ibuffer
-;;  * `icicle-search-info-bookmark'    - Search Info bookmarks
 ;;  * `icicle-search-keywords' (`C-c ^') - Trip among keyword search
-;;    hits.
-;;  * `icicle-search-local-file-bookmark'- Search local-file bookmarks
-;;  * `icicle-search-man-bookmark'       - Search `man'-page bookmarks
-;;  * `icicle-search-non-file-bookmark'  - Search non-file bookmarks
+;;                                       hits.
 ;;  * `icicle-search-overlay-property' - Trip among buffer strings
 ;;    with some overlay property.
 ;;  * `icicle-search-pages'            - Search Emacs pages
 ;;  * `icicle-search-paragraphs'       - Search Emacs paragraphs
-;;  * `icicle-search-region-bookmark'  - Search bookmarked regions
-;;  * `icicle-search-remote-file-bookmark' - Search remote bookmarks
 ;;  * `icicle-search-sentences'        - Search sentences as contexts
 ;;  * `icicle-search-text-property' (`C-c "') - Trip among buffer
-;;    strings with some text property.
-;;  * `icicle-search-w3m-bookmark'     - Search W3M (URL) bookmarks
-;;  * `icicle-search-word' (`C-c $') - Trip among word-search hits.
-;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name.
+;;                                       strings with a text property
+;;  * `icicle-search-word' (`C-c $')   - Trip among word-search hits
+;;  * `icicle-select-frame' (`C-x 5 o') - Trip among frames, by name
 ;;  * `icicle-select-window' (`C-0 C-x o') - Trip among windows, by
-;;    buffer name.
+;;                                       buffer name
 ;;
 ;;(@* "Highlighting the Destination")
 ;;  ** Highlighting the Destination **
@@ -4857,6 +4865,10 @@
 ;;  candidates.  This means that you need not first do `C-M-<' to
 ;;  retrieve the saved candidates; you can do `C-!' directly to act on
 ;;  them.  `C-|', `M-!', and `M-|' work the same way.
+;;
+;;  All of the all-candidates actions inhibit candidate help display
+;;  in the mode line and minibuffer messages that the individual
+;;  actions might effect.  This is to avoid unnecessary delays.
 ;;
 ;;  See Also:
 ;;

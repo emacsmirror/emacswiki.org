@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May 15 10:28:59 2010 (-0700)
+;; Last-Updated: Sun May 16 16:31:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22718
+;;     Update #: 22728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -225,14 +225,16 @@
 ;;    `icicle-remove-saved-completion-set',
 ;;    `icicle-repeat-complex-command', `icicle-reset-option-to-nil',
 ;;    `icicle-save-string-to-variable', `icicle-search',
+;;    `icicle-search-all-tags-bookmark',
+;;    `icicle-search-all-tags-regexp-bookmark',
 ;;    `icicle-search-bookmark',
 ;;    `icicle-search-bookmark-list-bookmark',
 ;;    `icicle-search-bookmarks-together', `icicle-search-buffer',
 ;;    `icicle-search-buff-menu-marked', `icicle-search-char-property',
-;;    `icicle-search-defs', `icicle-search-dired-bookmark',
-;;    `icicle-search-dired-marked', `icicle-search-file',
-;;    `icicle-search-file-bookmark', `icicle-search-generic',
-;;    `icicle-search-gnus-bookmark',
+;;    `icicle-search-defs', `icicle-search-desktop-bookmark',
+;;    `icicle-search-dired-bookmark', `icicle-search-dired-marked',
+;;    `icicle-search-file', `icicle-search-file-bookmark',
+;;    `icicle-search-generic', `icicle-search-gnus-bookmark',
 ;;    `icicle-search-highlight-cleanup',
 ;;    `icicle-search-ibuffer-marked', `icicle-search-info-bookmark',
 ;;    `icicle-search-keywords', `icicle-search-lines',
@@ -241,12 +243,17 @@
 ;;    `icicle-search-overlay-property', `icicle-search-pages',
 ;;    `icicle-search-paragraphs', `icicle-search-region-bookmark',
 ;;    `icicle-search-remote-file-bookmark', `icicle-search-sentences',
-;;    `icicle-search-text-property', `icicle-search-w3m-bookmark',
-;;    `icicle-search-word', `icicle-select-bookmarked-region',
-;;    `icicle-select-frame', `icicle-select-frame-by-name',
-;;    `icicle-select-window', `icicle-select-window-by-name',
-;;    `icicle-send-bug-report', `icicle-set-option-to-t',
-;;    `icicle-shell-command-on-file',
+;;    `icicle-search-some-tags-bookmark',
+;;    `icicle-search-some-tags-regexp-bookmark',
+;;    `icicle-search-specific-buffers-bookmark',
+;;    `icicle-search-specific-files-bookmark',
+;;    `icicle-search-text-property',
+;;    `icicle-search-this-buffer-bookmark',
+;;    `icicle-search-w3m-bookmark', `icicle-search-word',
+;;    `icicle-select-bookmarked-region', `icicle-select-frame',
+;;    `icicle-select-frame-by-name', `icicle-select-window',
+;;    `icicle-select-window-by-name', `icicle-send-bug-report',
+;;    `icicle-set-option-to-t', `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename', `icicle-sit-for',
@@ -322,6 +329,7 @@
 ;;    `icicle-backward-kill-paragraph',
 ;;    `icicle-backward-kill-sentence', `icicle-backward-kill-sexp',
 ;;    `icicle-backward-kill-word', `icicle-beginning-of-line+',
+;;    `icicle-bookmark-bookmark-list-narrow',
 ;;    `icicle-bookmark-desktop-narrow',
 ;;    `icicle-bookmark-dired-narrow',`icicle-bookmark-file-narrow',
 ;;    `icicle-bookmark-gnus-narrow', `icicle-bookmark-info-narrow',
@@ -329,6 +337,9 @@
 ;;    `icicle-bookmark-man-narrow', `icicle-bookmark-non-file-narrow',
 ;;    `icicle-bookmark-region-narrow',
 ;;    `icicle-bookmark-remote-file-narrow',
+;;    `icicle-bookmark-specific-buffers-narrow',
+;;    `icicle-bookmark-specific-files-narrow',
+;;    `icicle-bookmark-this-buffer-narrow',
 ;;    `icicle-bookmark-w3m-narrow', `icicle-candidate-action',
 ;;    `icicle-candidate-alt-action',
 ;;    `icicle-candidate-read-fn-invoke',

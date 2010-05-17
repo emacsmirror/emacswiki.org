@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May 15 10:28:29 2010 (-0700)
+;; Last-Updated: Sun May 16 14:26:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 20831
+;;     Update #: 20936
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -96,10 +96,13 @@
 ;;    (+)`icicle-bookmark-some-tags-regexp',
 ;;    (+)`icicle-bookmark-some-tags-regexp-other-window',
 ;;    (+)`icicle-bookmark-specific-buffers',
+;;    `icicle-bookmark-specific-buffers-narrow',
 ;;    (+)`icicle-bookmark-specific-buffers-other-window',
 ;;    (+)`icicle-bookmark-specific-files',
+;;    `icicle-bookmark-specific-files-narrow',
 ;;    (+)`icicle-bookmark-specific-files-other-window',
 ;;    (+)`icicle-bookmark-this-buffer',
+;;    `icicle-bookmark-this-buffer-narrow',
 ;;    (+)`icicle-bookmark-this-buffer-other-window',
 ;;    (+)`icicle-bookmark-w3m-other-window',
 ;;    `icicle-bookmark-w3m-narrow', (+)`icicle-buffer',
@@ -3116,21 +3119,28 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
            (when (featurep 'bookmark+)
              ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
              (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-               (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow)
-               (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow)
-               (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow)
-               (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow)
-               (define-key (symbol-value map) "\C-\M-i" 'icicle-bookmark-info-narrow)
-               (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow)
-               (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow)
-               (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow)
-               (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
-               (define-key (symbol-value map) [(control meta ?B)]
-                 'icicle-bookmark-bookmark-list-narrow) ; `C-M-B'
-               (define-key (symbol-value map) [(control meta ?F)]
-                 'icicle-bookmark-local-file-narrow) ; `C-M-F'
-               (define-key (symbol-value map) [(control meta ?K)]
-                 'icicle-bookmark-desktop-narrow))) ; `C-M-K'
+               (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow) ; `C-M-b'
+               (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow) ; `C-M-d'
+               (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow) ; `C-M-f'
+               (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
+               (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
+               (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
+               (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
+               (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; C-M-@
+               (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
+                 'icicle-bookmark-specific-buffers-narrow)
+               (define-key (symbol-value map) [(control meta ?=) ?f] ; `C-M-= f'
+                 'icicle-bookmark-specific-files-narrow)
+               (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-= .'
+                 'icicle-bookmark-this-buffer-narrow)
+               (define-key (symbol-value map) [(control meta ?B)] ; `C-M-B'
+                 'icicle-bookmark-bookmark-list-narrow)
+               (define-key (symbol-value map) [(control meta ?F)] ; `C-M-F'
+                 'icicle-bookmark-local-file-narrow)
+               (define-key (symbol-value map) [(control meta ?I)] ; `C-M-I'
+                 'icicle-bookmark-info-narrow)
+               (define-key (symbol-value map) [(control meta ?K)] ; `C-M-K'
+                 'icicle-bookmark-desktop-narrow)))
            (setq bookmark-current-point   (point)
                  bookmark-current-buffer  (current-buffer))
            (save-excursion (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
@@ -3230,18 +3240,21 @@ If you also use library `bookmark+.el', then:
  * You can narrow the current completion candidates to bookmarks of a
    given type:
 
-   `C-M-b' - non-file (buffer) bookmarks
-   `C-M-B' - bookmark-list bookmarks
-   `C-M-d' - Dired bookmarks
-   `C-M-f' - file bookmarks
-   `C-M-F' - local-file bookmarks
-   `C-M-g' - Gnus bookmarks
-   `C-M-i' - Info bookmarks
-   `C-M-K' - desktop bookmarks
-   `C-M-m' - `man' pages
-   `C-M-r' - bookmarks with regions
-   `C-M-w' - W3m bookmarks
-   `C-M-@' - remote-file bookmarks
+   `C-M-b'   - non-file (buffer) bookmarks
+   `C-M-B'   - bookmark-list bookmarks
+   `C-M-d'   - Dired bookmarks
+   `C-M-f'   - file bookmarks
+   `C-M-F'   - local-file bookmarks
+   `C-M-g'   - Gnus bookmarks
+   `C-M-I'   - Info bookmarks
+   `C-M-K'   - desktop bookmarks
+   `C-M-m'   - `man' pages
+   `C-M-r'   - bookmarks with regions
+   `C-M-w'   - W3m bookmarks
+   `C-M-@'   - remote-file bookmarks
+   `C-M-.'   - bookmarks for the current buffer
+   `C-M-= b' - bookmarks for specific buffers
+   `C-M-= f' - bookmarks for specific files
 
    See also the individual multi-commands for different bookmark
    types: `icicle-bookmark-info-other-window' etc.
@@ -3345,21 +3358,28 @@ position is highlighted."               ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow)
-        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow)
-        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow)
-        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow)
-        (define-key (symbol-value map) "\C-\M-i" 'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow)
-        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow)
-        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow)
-        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
-        (define-key (symbol-value map) [(control meta ?B)]
-          'icicle-bookmark-bookmark-list-narrow) ; `C-M-B'
-        (define-key (symbol-value map) [(control meta ?F)]
-          'icicle-bookmark-local-file-narrow) ; `C-M-F'
-        (define-key (symbol-value map) [(control meta ?K)]
-          'icicle-bookmark-desktop-narrow)))) ; `C-M-K'
+        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow) ; `C-M-b'
+        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow) ; `C-M-d'
+        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow) ; `C-M-f'
+        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
+        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
+        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
+        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
+        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
+        (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
+          'icicle-bookmark-specific-buffers-narrow)
+        (define-key (symbol-value map) [(control meta ?=) ?f] ; `C-M-= f'
+          'icicle-bookmark-specific-files-narrow)
+        (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-= .'
+          'icicle-bookmark-this-buffer-narrow)
+        (define-key (symbol-value map) [(control meta ?B)] ; `C-M-B'
+          'icicle-bookmark-bookmark-list-narrow)
+        (define-key (symbol-value map) [(control meta ?F)] ; `C-M-F'
+          'icicle-bookmark-local-file-narrow)
+        (define-key (symbol-value map) [(control meta ?I)] ; `C-M-I'
+          'icicle-bookmark-info-narrow)
+        (define-key (symbol-value map) [(control meta ?K)] ; `C-M-K'
+          'icicle-bookmark-desktop-narrow))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
 
@@ -3464,21 +3484,28 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
     (when (featurep 'bookmark+)
       ;; Bind keys to narrow bookmark candidates by type.  Lax is for multi-completion case.
       (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow)
-        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow)
-        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow)
-        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow)
-        (define-key (symbol-value map) "\C-\M-i" 'icicle-bookmark-info-narrow)
-        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow)
-        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow)
-        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow)
-        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
-        (define-key (symbol-value map) [(control meta ?B)]
-          'icicle-bookmark-bookmark-list-narrow) ; `C-M-B'
-        (define-key (symbol-value map) [(control meta ?F)]
-          'icicle-bookmark-local-file-narrow) ; `C-M-F'
-        (define-key (symbol-value map) [(control meta ?K)]
-          'icicle-bookmark-desktop-narrow)))) ; `C-M-K'
+        (define-key (symbol-value map) "\C-\M-b" 'icicle-bookmark-non-file-narrow) ; `C-M-b'
+        (define-key (symbol-value map) "\C-\M-d" 'icicle-bookmark-dired-narrow) ; `C-M-d'
+        (define-key (symbol-value map) "\C-\M-f" 'icicle-bookmark-file-narrow) ; `C-M-f'
+        (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
+        (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
+        (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
+        (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
+        (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
+        (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
+          'icicle-bookmark-specific-buffers-narrow)
+        (define-key (symbol-value map) [(control meta ?=) ?f] ; `C-M-= f'
+          'icicle-bookmark-specific-files-narrow)
+        (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-= .'
+          'icicle-bookmark-this-buffer-narrow)
+        (define-key (symbol-value map) [(control meta ?B)] ; `C-M-B'
+          'icicle-bookmark-bookmark-list-narrow)
+        (define-key (symbol-value map) [(control meta ?F)] ; `C-M-F'
+          'icicle-bookmark-local-file-narrow)
+        (define-key (symbol-value map) [(control meta ?I)] ; `C-M-I'
+          'icicle-bookmark-info-narrow)
+        (define-key (symbol-value map) [(control meta ?K)] ; `C-M-K'
+          'icicle-bookmark-desktop-narrow))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (icicle-bookmark-cleanup))            ; Last code
 
@@ -3599,20 +3626,32 @@ You probably don't want to use this.  Use
                    (format "position %d" start)))
             (and annot (format ", %s" annot)))))
 
+;;; MUST keep this synchronized with any general Icicle-mode `C-M-' bindings in `icicles-mode.el'.
+;;  That includes things like `icicle-read+insert-file-name-keys'.
 (defun icicle-bookmark-cleanup ()
   "Cleanup code for `icicle-bookmark'.
 Remove crosshairs highlighting and unbind filtering keys."
   (when (fboundp 'crosshairs-unhighlight) (crosshairs-unhighlight 'even-if-frame-switch))
   (when (featurep 'bookmark+)
     (dolist (map  '(minibuffer-local-must-match-map minibuffer-local-completion-map))
-      (define-key (symbol-value map) "\C-\M-r" nil)
-      (define-key (symbol-value map) "\C-\M-g" nil)
-      (define-key (symbol-value map) "\C-\M-w" nil)
-      (define-key (symbol-value map) "\C-\M-i" nil)
-      (define-key (symbol-value map) "\C-\M-b" nil)
-      (define-key (symbol-value map) "\C-\M-f" nil)
-      (define-key (symbol-value map) "\C-\M-@" nil)
-      (define-key (symbol-value map) [(control meta ?F)] nil))))
+      (define-key (symbol-value map) "\C-\M-b" nil) ; `C-M-b'
+      (define-key (symbol-value map) [(control meta ?B)] nil) ; `C-M-B'
+      (define-key (symbol-value map) "\C-\M-d" nil) ; `C-M-d'
+      (define-key (symbol-value map) "\C-\M-f" nil) ; `C-M-f'
+      (define-key (symbol-value map) [(control meta ?F)] nil) ; `C-M-F'
+      (dolist (key  icicle-read+insert-file-name-keys) ; `C-M-F' - overrides previous.
+        (define-key (symbol-value map) key 'icicle-read+insert-file-name))
+      (define-key (symbol-value map) "\C-\M-g" nil) ; `C-M-g'
+      (define-key (symbol-value map) [(control meta ?I)] nil) ; `C-M-I' (`C-M-i' is `ESC TAB')
+      (define-key (symbol-value map) [(control meta ?K)] nil) ; `C-M-K'
+      (define-key (symbol-value map) "\C-\M-m" nil) ; `C-M-m'
+      (define-key (symbol-value map) "\C-\M-r" nil) ; `C-M-r'
+      (define-key (symbol-value map) "\C-\M-w" nil) ; `C-M-w'
+      (define-key (symbol-value map) "\C-\M-@" nil) ; `C-M-@'
+      (define-key (symbol-value map) [(control meta ?\.)] ; `C-M-.'
+        'icicle-toggle-dot)             ; `icicles-mode.el'.
+      (define-key (symbol-value map) [(control meta ?=) ?b] nil) ; `C-M-= b'
+      (define-key (symbol-value map) [(control meta ?=) ?f] nil)))) ; `C-M-= f'
 
 (defun icicle-bookmark-cleanup-on-quit ()
   "Do `icicle-bookmark-cleanup', then return to original window."
@@ -3656,7 +3695,7 @@ Remove crosshairs highlighting and unbind filtering keys."
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x) (bookmarkp-gnus-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
-(defun icicle-bookmark-info-narrow ()   ; Bound to `C-M-i' in minibuffer for bookmark completion.
+(defun icicle-bookmark-info-narrow ()   ; Bound to `C-M-I' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Info bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
@@ -3689,12 +3728,39 @@ Remove crosshairs highlighting and unbind filtering keys."
    #'(lambda (x) (bookmarkp-region-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
-(defun icicle-bookmark-remote-file-narrow () ; Bound to `C-M-@' for bookmark completion.
+(defun icicle-bookmark-remote-file-narrow () ; Bound to `C-M-@' in minibuf for bookmark completion.
   "Narrow the bookmark candidates to remote-file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x) (bookmarkp-remote-file-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
+
+(defun icicle-bookmark-specific-buffers-narrow (buffers) ; `C-M-= b' for bookmark completion.
+  "Narrow the bookmark candidates to bookmarks for specific BUFFERS.
+You are prompted for the BUFFERS."
+  (interactive (let ((icicle-completion-candidates  icicle-completion-candidates))
+                 (list (icicle-bookmarked-buffer-list))))
+  (icicle-narrow-candidates-with-predicate
+   `(lambda (x)
+     (member (bookmarkp-get-buffer-name (funcall icicle-get-alist-candidate-function (car x)))
+      ',buffers))))
+
+(defun icicle-bookmark-specific-files-narrow (files) ; `C-M-= f' in minibuf for bookmark completion.
+  "Narrow the bookmark candidates to bookmarks for specific FILES.
+You are prompted for the FILES."
+  (interactive (list (icicle-bookmarked-file-list)))
+  (icicle-narrow-candidates-with-predicate
+   `(lambda (x)
+     (member (bookmark-get-filename (funcall icicle-get-alist-candidate-function (car x)))
+      ',files))))
+
+(defun icicle-bookmark-this-buffer-narrow () ; `C-M-.' in minibuffer for bookmark completion.
+  "Narrow the bookmark candidates to bookmarks for the current buffer."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x)
+       (with-current-buffer orig-buff
+         (bookmarkp-this-buffer-p (funcall icicle-get-alist-candidate-function (car x)))))))
 
 (defun icicle-bookmark-w3m-narrow ()    ; Bound to `C-M-w' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to W3m bookmarks."
@@ -3703,7 +3769,9 @@ Remove crosshairs highlighting and unbind filtering keys."
    #'(lambda (x) (bookmarkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defmacro icicle-define-bookmark-command-1 (otherp type prompt args)
-  "Helper macro for `icicle-define*-bookmark-command' macros."
+  "Helper macro for `icicle-define*-bookmark-command' macros.
+The command defined raises an error unless library `bookmark+.el' can
+be loaded."
   `(icicle-define-command
     ,(intern (format "icicle-bookmark-%s%s" type (if otherp "-other-window" ""))) ; Command name
     ,(format "Jump to %s bookmark%s.
@@ -3717,7 +3785,11 @@ You need library `bookmark+.el' for this command."
     (not icicle-show-multi-completion-flag)
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
-    ((enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
+    ((IGNORED1                               (unless (require 'bookmark+ nil t)
+                                               (error "You need library `bookmark+.el' for this \
+command")))
+     (IGNORED2                               (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
+     (enable-recursive-minibuffers           t) ; In case we read input, e.g. File changed on disk...
      (completion-ignore-case                 bookmark-completion-ignore-case) ; Additional bindings
      (prompt1                                ,(or prompt
                                                   (format "%s%s bookmark: "
@@ -3737,85 +3809,75 @@ You need library `bookmark+.el' for this command."
                                                (bookmark-delete
                                                 (icicle-transform-multi-completion cand))))
      (icicle-sort-orders-alist
-      (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
-                ("by bookmark name" . icicle-alpha-p))
-       (and (featurep 'bookmark+)
-        (append
-         '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
-           ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p))
-         (and (member ,type '("info" "region"))
-          '(("by Info location" (bookmarkp-info-cp) icicle-alpha-p)))
-         (and (member ,type '("gnus" "region"))
-          '(("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)))
-         (and (member ,type '("w3m" "region"))
-          '(("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)))
-         (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
-          '(("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-                                 bookmarkp-local-file-type-cp bookmarkp-handler-cp)
-             icicle-alpha-p)))
-         (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
-          '(("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)))
-         (and (member ,type '("local-file" "file" "dired" "region"))
-          '(("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
-            ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
-            ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
-             icicle-alpha-p)
-            ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
-             icicle-alpha-p)))
-         (and (not (string= ,type "desktop"))
-          '(("by last buffer or file access" (bookmarkp-buffer-last-access-cp
-                                              bookmarkp-local-file-accessed-more-recently-cp)
-             icicle-alpha-p)))
-         (and (get-buffer "*Bookmark List*")
-          '(("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
-             icicle-alpha-p)))))
+      (append
+       '(("in *Bookmark List* order")   ; Renamed from "turned OFF'.
+         ("by bookmark name" . icicle-alpha-p)
+         ("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
+         ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p))
+       (and (member ,type '("info" "region"))
+        '(("by Info location" (bookmarkp-info-cp) icicle-alpha-p)))
+       (and (member ,type '("gnus" "region"))
+        '(("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)))
+       (and (member ,type '("w3m" "region"))
+        '(("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)))
+       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
+        '(("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
+                               bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+           icicle-alpha-p)))
+       (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
+        '(("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)))
+       (and (member ,type '("local-file" "file" "dired" "region"))
+        '(("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
+          ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+          ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+           icicle-alpha-p)
+          ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+           icicle-alpha-p)))
+       (and (not (string= ,type "desktop"))
+        '(("by last buffer or file access" (bookmarkp-buffer-last-access-cp
+                                            bookmarkp-local-file-accessed-more-recently-cp)
+           icicle-alpha-p)))
+       (and (get-buffer "*Bookmark List*")
+        '(("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+           icicle-alpha-p)))
        '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
-         ("case insensitive" . icicle-case-insensitive-string-less-p))))         
+         ("case insensitive" . icicle-case-insensitive-string-less-p))))
      (icicle-candidate-help-fn
       #'(lambda (cand)
-          (when (and (featurep 'bookmark+) icicle-show-multi-completion-flag)
+          (when icicle-show-multi-completion-flag
             (setq cand  (funcall icicle-get-alist-candidate-function cand))
             (setq cand  (cons (caar cand) (cdr cand))))
-          (if (featurep 'bookmark+)
-              (if current-prefix-arg
-                  (bookmarkp-describe-bookmark-internals cand)
-                (bookmarkp-describe-bookmark cand))
-            (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
+          (if current-prefix-arg
+              (bookmarkp-describe-bookmark-internals cand)
+            (bookmarkp-describe-bookmark cand))))
      (icicle-candidates-alist
-      (if (not (featurep 'bookmark+))
-          (mapcar #'(lambda (cand) (list (icicle-candidate-short-help
-                                          (icicle-bookmark-help-string cand)
-                                          (icicle-bookmark-propertize-candidate cand))))
-                  (funcall ',(intern (format "bookmarkp-%s-alist-only" type)) ,@args))
-        (bookmark-maybe-load-default-file) ; Loads bookmarks file, defining `bookmark-alist'.
-        (mapcar (if icicle-show-multi-completion-flag
-                    #'(lambda (bmk)
-                        (let* ((bname     (bookmark-name-from-full-record bmk))
-                               (guts      (bookmark-get-bookmark-record bmk))
-                               (file      (bookmark-get-filename bmk))
-                               (buf       (bookmarkp-get-buffer-name bmk))
-                               (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
-                                              buf
-                                            file))
-                               (tags      (bookmarkp-get-tags bmk)))
-                          ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
-                          (cons (append (list (icicle-candidate-short-help
-                                               (icicle-bookmark-help-string bname)
-                                               (icicle-bookmark-propertize-candidate bname))
-                                              file/buf)
-                                        (and tags (list (format "%S" tags))))
-                                guts)))
+      (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
-                      (let ((bname  (bookmark-name-from-full-record bmk))
-                            (guts   (bookmark-get-bookmark-record bmk)))
-                        (cons (icicle-candidate-short-help
-                               (icicle-bookmark-help-string bname)
-                               (icicle-bookmark-propertize-candidate bname))
-                              guts))))
-                (bookmarkp-sort-and-remove-dups
-                 (funcall ',(intern (format "bookmarkp-%s-alist-only" type)) ,@args))))))
-    (unless (require 'bookmark+ nil t)  ; First code
-      (error "You need library `bookmark+.el' for this command"))
+                      (let* ((bname     (bookmark-name-from-full-record bmk))
+                             (guts      (bookmark-get-bookmark-record bmk))
+                             (file      (bookmark-get-filename bmk))
+                             (buf       (bookmarkp-get-buffer-name bmk))
+                             (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                            buf
+                                          file))
+                             (tags      (bookmarkp-get-tags bmk)))
+                        ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
+                        (cons (append (list (icicle-candidate-short-help
+                                             (icicle-bookmark-help-string bname)
+                                             (icicle-bookmark-propertize-candidate bname))
+                                            file/buf)
+                                      (and tags (list (format "%S" tags))))
+                              guts)))
+                #'(lambda (bmk)
+                    (let ((bname  (bookmark-name-from-full-record bmk))
+                          (guts   (bookmark-get-bookmark-record bmk)))
+                      (cons (icicle-candidate-short-help
+                             (icicle-bookmark-help-string bname)
+                             (icicle-bookmark-propertize-candidate bname))
+                            guts))))
+       (bookmarkp-sort-and-remove-dups
+        (funcall ',(intern (format "bookmarkp-%s-alist-only" type)) ,@args)))))
+    nil                                 ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (icicle-bookmark-cleanup)))         ; Last code
 
@@ -3854,8 +3916,9 @@ appropriate `bookmarkp-TYPE-alist-only' function."
 ;;  `icicle-bookmark-w3m',                  `icicle-bookmark-w3m-other-window'
 
 ;; Other-window means nothing for a bookmark list or a desktop.
+(icicle-define-bookmark-command              "non-file")                      ; `C-x j b'
+(icicle-define-bookmark-other-window-command "non-file")                      ; `C-x 4 j b'
 (icicle-define-bookmark-command              "bookmark-list")                 ; `C-x j B'
-(icicle-define-bookmark-command              "desktop")                       ; `C-x j K'
 (icicle-define-bookmark-command              "dired")                         ; `C-x j d'
 (icicle-define-bookmark-other-window-command "dired")                         ; `C-x 4 j d'
 (icicle-define-bookmark-command              "file")                          ; `C-x j f'
@@ -3864,16 +3927,35 @@ appropriate `bookmarkp-TYPE-alist-only' function."
 (icicle-define-bookmark-other-window-command "gnus")                          ; `C-x 4 j g'
 (icicle-define-bookmark-command              "info")                          ; `C-x j i'
 (icicle-define-bookmark-other-window-command "info")                          ; `C-x 4 j i'
+(icicle-define-bookmark-command              "desktop")                       ; `C-x j K'
 (icicle-define-bookmark-command              "local-file")                    ; `C-x j l'
 (icicle-define-bookmark-other-window-command "local-file")                    ; `C-x 4 j l'
 (icicle-define-bookmark-command              "man")                           ; `C-x j m'
 (icicle-define-bookmark-other-window-command "man")                           ; `C-x 4 j m'
-(icicle-define-bookmark-command              "non-file")                      ; `C-x j b'
-(icicle-define-bookmark-other-window-command "non-file")                      ; `C-x 4 j b'
-(icicle-define-bookmark-command              "region" "Select region: ")      ; `C-x j r'
-(icicle-define-bookmark-other-window-command "region" "Select region: ")      ; `C-x 4 j r'
 (icicle-define-bookmark-command              "remote-file")                   ; `C-x j n'
 (icicle-define-bookmark-other-window-command "remote-file")                   ; `C-x 4 j n'
+(icicle-define-bookmark-command              "region" "Select region: ")      ; `C-x j r'
+(icicle-define-bookmark-other-window-command "region" "Select region: ")      ; `C-x 4 j r'
+(icicle-define-bookmark-command              "all-tags" nil                   ; `C-x j t *'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-other-window-command "all-tags" nil                   ; `C-x 4 j t *'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-command              "some-tags" nil                  ; `C-x j t +'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-other-window-command "some-tags" nil                  ; `C-x 4 j t +'
+                                             (bookmarkp-read-tags-completing))
+(icicle-define-bookmark-command              "all-tags-regexp" nil            ; `C-x j t % *'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "all-tags-regexp" nil            ; `C-x 4 j t % *'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "some-tags-regexp" nil           ; `C-x j t % +'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-other-window-command "some-tags-regexp" nil           ; `C-x 4 j t % +'
+                                             (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "w3m")                           ; `C-x j w'
+(icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
+(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'
+(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
 (icicle-define-bookmark-command              "specific-buffers" nil           ; `C-x j = b'
                                              (icicle-bookmarked-buffer-list))
 (icicle-define-bookmark-other-window-command "specific-buffers" nil           ; `C-x 4 j = b'
@@ -3882,26 +3964,6 @@ appropriate `bookmarkp-TYPE-alist-only' function."
                                              (icicle-bookmarked-file-list))
 (icicle-define-bookmark-other-window-command "specific-files" nil             ; `C-x 4 j = f'
                                              (icicle-bookmarked-file-list))
-(icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'
-(icicle-define-bookmark-other-window-command "this-buffer")                   ; `C-x 4 j .'
-(icicle-define-bookmark-command              "all-tags" nil                   ; `C-x j t *'
-                                             (bookmarkp-read-tags-completing))
-(icicle-define-bookmark-other-window-command "all-tags" nil                   ; `C-x 4 j t *'
-                                             (bookmarkp-read-tags-completing))
-(icicle-define-bookmark-command              "all-tags-regexp" nil            ; `C-x j t % *'
-                                             (read-string "Regexp for tags: "))
-(icicle-define-bookmark-other-window-command "all-tags-regexp" nil            ; `C-x 4 j t % *'
-                                             (read-string "Regexp for tags: "))
-(icicle-define-bookmark-command              "some-tags" nil                  ; `C-x j t +'
-                                             (bookmarkp-read-tags-completing))
-(icicle-define-bookmark-other-window-command "some-tags" nil                  ; `C-x 4 j t +'
-                                             (bookmarkp-read-tags-completing))
-(icicle-define-bookmark-command              "some-tags-regexp" nil           ; `C-x j t % +'
-                                             (read-string "Regexp for tags: "))
-(icicle-define-bookmark-other-window-command "some-tags-regexp" nil           ; `C-x 4 j t % +'
-                                             (read-string "Regexp for tags: "))
-(icicle-define-bookmark-command              "w3m")                           ; `C-x j w'
-(icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
 (defalias 'icicle-select-bookmarked-region 'icicle-bookmark-region-other-window)
 
 ;;;###autoload

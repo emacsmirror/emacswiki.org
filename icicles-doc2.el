@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 11:23:19 2010 (-0700)
+;; Last-Updated: Sat May 15 07:48:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26959
+;;     Update #: 26962
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1005,8 +1005,10 @@
 ;;
 ;;   * In Icicles search, replace-all (`M-|') means replace all
 ;;     matches of your current input, throughout the search space, not
-;;     just all matches that follow the cursor.  (Remember too that
-;;     you can activate the region to limit the search space.)
+;;     just all matches that follow the cursor.  And remember that you
+;;     can (a) activate the region to limit the search-and-replace
+;;     space and (b) use progressive completion etc. to narrow the set
+;;     of hits.
 ;;
 ;;   * You can act across multiple buffers, files, or bookmarks -
 ;;     see information about the `icicle-search' prefix arg.
@@ -1121,20 +1123,6 @@
 ;;    replace the following one, all in the same context.  You can,
 ;;    however, replace some matches and then skip (e.g. `C-next') to
 ;;    the next context.
-;;
-;;  What about replacing *all* search hits that match your input?  Use
-;;  `M-|', not `C-|'.  And remember that you can (a) activate the
-;;  region to limit the search-and-replace space and (b) use
-;;  progressive completion etc. to narrow the set of hits.
-;;
-;;  Why not `C-|' instead of `M-|'?  `C-|' just repeats `C-S-RET' on
-;;  the first of the set of candidates, which is updated after each
-;;  replacement.  The `abcd' gotcha example above thus applies here
-;;  too: If the replacement text does not match your input, then
-;;  there's no problem.  Otherwise, the same candidate is operated on
-;;  repeatedly when you use `C-|'.  `M-|' is designed to instead take
-;;  a static snapshot of the current set of candidates, and then act
-;;  once on each of them.
 ;;
 ;;  What your input matches, hence what gets replaced if
 ;;  `icicle-search-replace-whole-candidate-flag' is nil, depends on a

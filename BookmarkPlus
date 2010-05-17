@@ -173,14 +173,14 @@ The same menu is available on '''`C-mouse-3''''.
 
 :: [[image:BookmarkPlusMenuBarMenu]]
 
-: It has submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Jump''', and '''Define Command''':
+: It has submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command''':
 
 ;;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
 ;;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
 ;;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
 ;;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
 ;;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
-;;; '''Jump''': [[image:BookmarkPlusMenuBarMenuJump]]
+;;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
 ;;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
 * The vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu, is modified by adding a few items from the '''`Bookmark+'''' menu, including the '''Jump To''' submenu (called '''Jump To Bookmark''' there).

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat May 15 09:38:31 2010 (-0700)
+;; Last-Updated: Sun May 16 12:11:58 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12200
+;;     Update #: 12202
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1292,6 +1292,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/16 dadams
+;;     bookmark-set: Quoted history arg.  Thx to S. Nemec.
+;;     bookmarkp-bmenu-define-full-snapshot-command: Use quote comma, not quote, for *-specific-*.
 ;; 2010/05/15 dadams
 ;;     Replace *same-(buffer|file)-jump* by *specific-(buffers|files)-jump*: read multiple buff/files.
 ;;     Renamed: *same-(buffer|file)* to *-last-specific-(buffer|file)* for pred, alist, and var.

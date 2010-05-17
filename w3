@@ -1,13 +1,16 @@
 [::W3] 
-is a web browser completely written in elisp and runs only within
-Emacs.  As the package appears to be [http://en.wikipedia.org/wiki/Emacs/W3 obsolete], please have a look at [[emacs-w3m]].
+is a web browser completely written in elisp which runs entirely (and only) within
+Emacs.  
 
-w3 features forms, tables, frames and cascading style sheets.
+For most users who want to browse the web from within Emacs, [[emacs-w3m]] will be a better solution, not least because it is quite a bit faster, and as as of May 2010 probably offers a more bug-free browsing experience.
+
+However w3 is very featureful for a text-mode browser, and since it is implemented entirely in Emacs Lisp, it can be extended in ways that w3m cannot.  
+
+w3 features forms, tables, frames and cascading style sheets (including support for aural css).
 In combination with EmacSpeak it can also do fancy things like reading
 web pages with a speech synthesizer.
 
-There are other web browsers with names that contain "w3" but have
-nothing to do with the w3 discussed on this page:
+Note that w3 should not be confused with other text-mode web browsers with names that contain "w3." but are not related to the w3 discussed on this page:
 
 * [[w3m]] is a standalone browser/pager much like lynx. It runs on the
 console, or in xterm. It can render tables, unlike lynx.
@@ -18,14 +21,15 @@ console, or in xterm. It can render tables, unlike lynx.
 
 Emacs W3 requires Emacs 20.4 or greater.
 
-As of February 2003, it appears to be moribund: its home
-page
+As of March 2009, The latest version is available in [[ELPA]]. 
+
+Note that development seems to have stalled (around March 2008), and that w3 may have some unresolved bugs (see the [http://lists.gnu.org/archive/html/w3-dev/ dev list].
+
+The project's home page is:
 
 * http://www.gnu.org/software/w3/
 
-says "Emacs/W3 is dead, long live Emacs/W3".
-
-You can get more information including CVS access from Savannah:
+You can get more information including CVS access to the old repository from Savannah:
 
 * http://savannah.gnu.org/projects/w3/
 
@@ -35,9 +39,11 @@ the most appropriate for XEmacs.
 
 === GIT ===
 
-There is ongoing development reachable via git, at http://git.savannah.gnu.org/cgit/w3.git/
+All development since 2006 has taken place on the git repository at: http://git.savannah.gnu.org/cgit/w3.git/
 
-You can get the lastest git version executing the following command:
+(The last activity spurt was in 2006-2008).
+
+You can get the latest git version executing the following command:
 
     git clone git://git.sv.gnu.org/w3.git
 

@@ -47,7 +47,7 @@ Keys '''`##C-|##'''' and '''`##M-|##'''' apply the ''alternative'' action define
 given multi-command to '''''all''''' matching candidates at once, in the same way that
 '''`##C-!##'''' and '''`##M-!##'''' apply the main action defined for it to all candidates.  For example, in '''Icicles''' search (e.g. `##C-c `##'),
 the alternative action (e.g. `C-S-RET') replaces all or part of
-the current search hit, and `##C-|##' does the same for all search
+the current search hit, and `##M-|##' does the same for all search
 hits.
 
 It is the particular command that defines its alternative action.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat May 15 08:40:36 2010 (-0700)
+;; Last-Updated: Sun May 16 12:09:54 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12608
+;;     Update #: 12610
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1774,7 +1774,7 @@ bookmarks)."
                         "Set bookmark " defname
                         (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
                              (bookmarkp-specific-buffers-alist-only))
-                        nil bookmark-history))))
+                        nil 'bookmark-history))))
     (when (string-equal bname "") (setq bname  defname))
     (bookmark-store bname (cdr record) (consp parg))
     (run-hooks 'bookmarkp-after-set-hook)
@@ -4731,8 +4731,8 @@ only the omit list and the sort & filter information."
                                                            (with-current-buffer
                                                                (get-buffer "*Bookmark List*")
                                                              (bookmark-bmenu-bookmark)))
-                  bookmarkp-last-specific-buffer    'bookmarkp-last-specific-buffer
-                  bookmarkp-last-specific-file      'bookmarkp-last-specific-file
+                  bookmarkp-last-specific-buffer    ',bookmarkp-last-specific-buffer
+                  bookmarkp-last-specific-file      ',bookmarkp-last-specific-file
                   bookmark-bmenu-toggle-filenames   ',bookmark-bmenu-toggle-filenames
                   bookmarkp-bmenu-before-hide-marked-alist
                   ',bookmarkp-bmenu-before-hide-marked-alist

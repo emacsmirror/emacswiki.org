@@ -1,0 +1,14 @@
+Okay... I just upgraded to Ubuntu Lucid, which installed emacs23 (23.1.1). Canonical has now also removed Rudel, so I installed the latest tarball from the link above and it won't start. I get the following error on initializing with global-rudel-minor-mode:
+
+Loading /usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el (source)...done
+For information about GNU Emacs and the GNU system, type C-h C-a.
+Making completion list...
+Initializing Zeroconf ...
+eval: Wrong number of arguments: #[(type backend) " 	D
+B " [type backend rudel-zeroconf-service-types] 2 ("/usr/share/emacs23/site-lisp/rudel/zeroconf/rudel-zeroconf.elc" . 1445)], 3
+
+Help?
+
+[new]
+I'm just leaving for two days now. Expect an answer on Wednesday or Thursday.
+--JanMoringen

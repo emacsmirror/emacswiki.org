@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat May 15 10:27:55 2010 (-0700)
+;; Last-Updated: Sun May 16 16:34:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5297
+;;     Update #: 5317
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/16 dadams
+;;     icicle-define-bookmark-command-1: Defined command requires bookmark+.el.
+;;     Added: icicle-bookmark-specific-(buffers|files)-narrow, icicle-bookmark-this-buffer-narrow.
+;;     icicle-bookmark(-other-window), icicle-bookmark-set:
+;;       Bound C-M-= (b|f), C-M-. for narrowing to specific-(buffers|files), this-buffer.
+;;     icicle-bookmark-cleanup: Updated for added narrowing keys.
 ;; 2010/05/15 dadams
 ;;     Added: icicle-define-bookmark-command(-1).  Added ARGS param for use as arg for *-alist-only.
 ;;     Added same-window commands for bookmark jumping.
@@ -252,6 +258,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/05/16 dadams
+;;     Added: icicle-search-(all|some)-tags(-regexp)-bookmark, icicle-search-desktop-bookmark,
+;;            icicle-search-specific-(buffers|files)-bookmark, icicle-search-this-buffer-bookmark.
+;;     icicle-define-search-bookmark-command: Defined cmd requires bookmark+.el.  Added &rest arg ARGS.
 ;; 2010/05/15 dadams
 ;;     icicle-search-highlight-and-maybe-replace: If candidate number is nil, set to 0.
 ;;     icicle-search: Updated doc string: Can sort.  Don't say not to use C-|.

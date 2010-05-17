@@ -72,6 +72,19 @@ CLEX tags (%f, %F, %d, %D, %n, %N etc) to write fast your paths and  file  names
 in the CL.
 
 ----
+[:FlatTreeVFS]
+==How to show all files in the current directory and all its subdirectories?==
+
+//(this is called XTree or "flat tree" VFS in the OFM standard)//
+
+Use find to list everything that's not a directory: press C-c C-f and type:
+
+    -not -type d
+
+followed by Return. To get everything (including the subdirectories) use find by
+name instead: C-c C-n * [RET]
+
+----
 [:ExternalApps]
 ==Opening files in external applications.==
 
@@ -257,6 +270,15 @@ for this to work),
 * "(R)elative symlinks" - creates relative symbolic links for all files.
 
 [1] actually Copy is now implemented as a cloning operation.
+
+----
+[:CopyPathsToClipboard]
+==How to copy file names and paths to the clipboard?==
+
+This one is easy: press w to copy the name of the selected file to the clipboard
+and 0 w (first the digit zero, then  //w//) to copy the whole path. To copy more
+than one file name/path at once, mark (by pressing //m//) all the entries you're
+interested in.
 
 ----
 [:NavigationAndTracking]

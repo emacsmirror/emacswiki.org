@@ -6,3 +6,14 @@ M-x compile starts a process each time. This can slow down things when you're wo
 * More info [http://anirudhs.chaosnet.org/blog/2008.03.26.html here].
 
 FlashActionscript
+
+== FcshMode ==
+
+This is another major mode for fcsh with some interesting features.
+
+* Compiles with a simple key press ("g")
+* Support build files
+
+<code>M-x fcsh</code> will create a file named fcsh-build.el where you can set the compiler, flags, target...
+
+Lisp:fcsh-mode.el

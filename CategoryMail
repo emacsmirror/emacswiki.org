@@ -30,6 +30,7 @@ used:
 * WanderLust -- very good IMAP4 and Offline support
 * [[Mew]] -- good IMAP4 support
 * [[CategoryViewMail|VM]] -- offers virtual folders and good documentation
+* NotMuch -- an email indexing/search tool with an emacs mail client
 
 Some people also like to use a non-elisp mail client from within Emacs:
 

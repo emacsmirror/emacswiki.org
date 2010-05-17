@@ -46,6 +46,7 @@ depend on plain text.
 * [[Twitter]] -- post to twitter.com using various modes
 * [[Eblog]] - provides an MUA-like interface for posting to Blogger using the new GData API.
 * [[Tumbl]] -- Make posts to Tumblr from Emacs.
+* Post to posterous.com from Emacs http://github.com/snim2/posterous.el
 
 == RSS readers ==
 

@@ -122,5 +122,9 @@ Is that actually true? I would have thought making that change permanent would b
 
 I know that cygwin-mount allows you to access cygwin paths natively in emacs, so perhaps /dev/null will actually work in a cygwin-mounted emacs, but I'm unsure whether that would actually be a consistent solution in all circumstances. Can anyone confirm this categorically?
 
+[new]
+No, it is not true. What cygwin-mount.el does is replacing file paths when using Emacs file primitive (it installs itself as a file handler).
+
+So if `null-device' is used in a way where it is not translated cygwin-mount.el can't help.
 ----
 CygWin
