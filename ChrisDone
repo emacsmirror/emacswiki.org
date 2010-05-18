@@ -8,6 +8,9 @@ What font is that you're using in the [LinumGap line numbers screenshot]?
 [new]
 It's just Deja Vu Sans Mono, the standard Gnome-terminal font on ubuntu.
 
-
+[new]
+I tried your align-by-current-symbol, but emacs 23.1 complains, that the function align-string is unknown. 
+I searched around a bit, but couldn't find a definition anywhere. Which additional package do I need to use your
+extension?
 ----
 CategoryHomepage

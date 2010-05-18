@@ -126,5 +126,11 @@ I know that cygwin-mount allows you to access cygwin paths natively in emacs, so
 No, it is not true. What cygwin-mount.el does is replacing file paths when using Emacs file primitive (it installs itself as a file handler).
 
 So if `null-device' is used in a way where it is not translated cygwin-mount.el can't help.
+
+[new]
+Cygwin-mount is a non sequitur here, since no one would actually open ##/dev/null## in Emacs.
+
+Yes, using ##/dev/null## globally and for all scenarios would break any NT Emacs commands that use "non-Cygwin functionality" and use `null-device'.  A feature that requires such a combination doesn't exist.  If otherwise, let it be known.
+
 ----
 CygWin

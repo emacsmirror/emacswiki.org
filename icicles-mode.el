@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 14 10:31:46 2010 (-0700)
+;; Last-Updated: Mon May 17 14:54:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6496
+;;     Update #: 6499
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -982,7 +982,7 @@ Used on `pre-command-hook'."
         :enable (consp (icicle-markers global-mark-ring)) :keys "C-- C-x C-SPC"))
     (define-key icicle-menu-map [icicle-goto-marker]
       '(menu-item "+ Go To Marker..." icicle-goto-marker
-        :enable (consp (icicle-markers mark-ring)) :keys "C-- C-SPC"))
+        :enable (mark t) :keys "C-- C-SPC"))
     (define-key icicle-menu-map [icicle-separator-goto] '("--"))
     (define-key icicle-menu-map [icicle-search-bookmarks-together]
       '(menu-item "+ Search Bookmarks Together..." icicle-search-bookmarks-together

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 16 16:56:51 2010 (-0700)
+;; Last-Updated: Mon May 17 10:37:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25000
+;;     Update #: 25004
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -832,13 +832,13 @@
 ;;
 ;;    C-k TAB - Kill rest of input, then complete the prefix `ici'.
 ;;
-;;    M-|  b y t e - c TAB - Byte-compile all files matching `ici'.
+;;    C-|  b y t e - c TAB - Byte-compile all files matching `ici'.
 ;;
 ;;    TAB ... until you get to `icicles-doc1.el', then RET to visit.
 ;;
 ;;  What's going on?  `C-S-RET' invokes an alternative action on the
 ;;  current completion candidate.  Here, you do this, in turn, for the
-;;  file-name candidates `icicles-cmd1.el' and `icicles-fn.el'.  `M-|'
+;;  file-name candidates `icicles-cmd1.el' and `icicles-fn.el'.  `C-|'
 ;;  invokes an alternative action on *all* of the current completion
 ;;  candidates.  Here, you do this for all file names that begin with
 ;;  `ici'.  Finally, you cycle to `icicles-doc1.el' and hit RET to
@@ -846,7 +846,7 @@
 ;;
 ;;  The alternative action for `C-x C-f' (command `icicle-file')
 ;;  prompts you for a function to apply to the current completion
-;;  candidate (for `C-S-RET') or to all candidates (for `M-|').
+;;  candidate (for `C-S-RET') or to all candidates (for `C-|').
 ;;
 ;;  Here, you choose function `finder-commentary' to visit the
 ;;  Commentary of file `icicles-cmd1.el', function
@@ -866,7 +866,7 @@
 ;;
 ;;  You can even enter an appropriate lambda expression, instead of
 ;;  completing to one of the function candidates provided.  For
-;;  example, you could use `M-|' with the following input to copy all
+;;  example, you could use `C-|' with the following input to copy all
 ;;  Icicles libraries to directory `ICICLES':
 ;;
 ;;    (lambda (f) (copy-file f "ICICLES" t))

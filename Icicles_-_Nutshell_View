@@ -436,13 +436,13 @@ you used `C-x C-f', the prompt was "'''##+##'''## File or directory:##".  '''Ici
 
 : ##C-k TAB## -- Kill rest of input, then complete the prefix ##ici##.
 
-: ##M-|## <u>'''##b y t e - c##'''</u> ##TAB## -- Byte-compile all files matching ##ici##.
+: ##C-|## <u>'''##b y t e - c##'''</u> ##TAB## -- Byte-compile all files matching ##ici##.
 
 : ##TAB## ... until you get to ##icicles-doc1.el##, then ##RET## to visit.
 
 What's going on?  '''`C-S-RET'''' invokes an ''alternative action'' on the
 current completion candidate.  Here, you do this, in turn, for the
-file-name candidates ##icicles-cmd1.el## and ##icicles-fn.el##.  '''`##M-|##''''
+file-name candidates ##icicles-cmd1.el## and ##icicles-fn.el##.  '''`##C-|##''''
 invokes an alternative action on '''''all''''' of the current completion
 candidates.  Here, you do this for all file names that begin with
 ##ici##.  Finally, you cycle to ##icicles-doc1.el## and hit `RET' to
@@ -450,7 +450,7 @@ visit that file.
 
 The alternative action for `C-x C-f' (command `icicle-file')
 prompts you for a function to apply to the current completion
-candidate (for `C-S-RET') or to all candidates (for `##M-|##').
+candidate (for `C-S-RET') or to all candidates (for `##C-|##').
 
 Here, you choose function `finder-commentary' to visit the
 Commentary of file ##icicles-cmd1.el##, function `find-file-read-only' to
@@ -469,7 +469,7 @@ appropriate for the given type of candidate (here, file names).
 
 You can even enter an appropriate [[lambda expression]], instead of
 completing to one of the function candidates provided.  For
-example, you could use `##M-|##' with the following input to copy all
+example, you could use `##C-|##' with the following input to copy all
 '''Icicles''' libraries to directory `ICICLES':
 
   (lambda (f) (copy-file f "ICICLES" t))

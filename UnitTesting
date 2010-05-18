@@ -16,7 +16,7 @@ Various '''testing frameworks''' simplify the task of writing and running tests.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
 * '''Test-Driven Developent''': a methodology that integrates repeated testing into the "development cycle".
 
-The precise meanings of these terms may vary, though there is some commonality among xUnit-like frameworks (like SUnit for Smalltalk, JUnit for Java, and lisp-unit for Common Lisp).
+The precise meanings of these terms may vary, though there is some commonality among [http://en.wikipedia.org/wiki/XUnit xUnit]-like frameworks (like SUnit for Smalltalk, JUnit for Java, and lisp-unit for Common Lisp).
 
 == Frameworks ==
 
@@ -26,9 +26,9 @@ The following unit test frameworks exist for Emacs Lisp.
 
 '''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test cases, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##.
 
-'''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides ##assert-equal##, ##assert-nil## and other specialized assertion macros.
+'''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides visual feedback with [[FringeHelper|fringe-helper.el]] and a number of specialized assertion macros like ##assert-equal##, ##assert-nil##, etc.
 
-'''ElUnit''' is an experimental framework by PhilHagelberg. It is inspired by [http://panix.com/~tehom/my-code/regress.el regress.el], Ruby's ##Test::Unit## framework and xUnit. Currently, it is deprecated in favor of ##ert.el##,[http://article.gmane.org/gmane.emacs.devel/122304] but the author is planning a rewrite.
+'''ElUnit''' is an experimental framework by PhilHagelberg. It is inspired by [http://panix.com/~tehom/my-code/regress.el regress.el], Ruby's ##Test::Unit## framework and xUnit, and provides test suites and fixtures. Currently, it is deprecated in favor of ##ert.el##,[http://article.gmane.org/gmane.emacs.devel/122304] but the author is planning a rewrite.
 
 === expectations-like ===
 
@@ -116,6 +116,10 @@ The comments in [http://github.com/masatake/ert/blob/master/ert.el ert.el] sketc
 Thus, the tests will still be compiled into your ##.elc## files, and ##my-unit-testing## will be evaluated a lot while you load the file, but since no other code gets executed, loading the ##.elc## files is still much faster than the ##.el## files -- all the tests are skipped. Still, the ##.elc## will contain the unit test code.
 
 Instead of using a variable, you can wrap all tests in a macro, of course. The simplest solution is to do away with the ##my-unit-testing## variable and wrap all tests in an ##eval-when-compile## macro. This will save a bit of time while loading the compiled files, because the ##.elc## will no longer contain the unit test code.
+
+== External links ==
+
+* [http://www.gigamonkeys.com/book/practical-building-a-unit-test-framework.html Practical Common Lisp: Building a Unit Test Framework] -- although written for Common Lisp, provides a very readable introduction to unit testing in Lisp
 
 == Discussion ==
 

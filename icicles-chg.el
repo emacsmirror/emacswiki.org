@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May 16 16:34:23 2010 (-0700)
+;; Last-Updated: Mon May 17 13:52:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5317
+;;     Update #: 5319
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2952,6 +2952,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/05/17 dadams
+;;     icicle-define-icicle-maps: Changed :enable conditions for *-goto*-marker.  Thx to M. Heerdegen.
 ;; 2010/05/15 dadams
 ;;     icicle-mode: Updated doc string for bookmark commands.
 ;; 2010/05/09 dadams

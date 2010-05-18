@@ -317,12 +317,7 @@ To get a copy of this extension go to:
 [:Misc]
 ==Comments and Suggestions==
 [new]
-I  have some  problems  with sunrise  commander.   Is there  some mailing  list,
-project page or  other way to report bugs?  It seems  the devadvice usage breaks
-some  other stuff.  For example  listing  the files  in a  debian package  using
-debian-el  does  not work  anymore.   Btw.  is there  a  way  to unload  sunrise
-commander  without  restarting emacs?   Otherwise  it  looks  quite promising  -
-thanks!
+Is there  some mailing  list, project page or  other way to report bugs?
 
 [new]
 Currently there is no project page (other than this wiki page). Please report any

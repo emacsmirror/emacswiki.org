@@ -726,6 +726,15 @@ I have issues with the 'empty' marker. When am I writing a new source code, whit
 
 -- PraveenKumar
 
+[new]
+I am making Whitespace mode honor the setting for fill-column with:
+
+  (add-hook 'whitespace-mode-hook
+            (lambda () (set (make-local-variable 'whitespace-line-column)
+                            fill-column)))
+
+I don't think there is a solution to this on a local, per-buffer basis with `global-whitespace-mode'.
+
 ----
 
 CategoryCode,
