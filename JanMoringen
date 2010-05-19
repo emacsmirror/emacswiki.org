@@ -1,3 +1,18 @@
+== About Me ==
+
+I use GNU Emacs: as an editor since 2003, as a religion since 2008
+
+Projects:
+* [[Rudel]] (initiator)
+* [[CEDET]] (contributor)
+
+Also known as: [::scymtym] on #rudel on the freenode IRC network
+
+== Discussion ==
+
+/Paste feedback here./
+
+[new]
 Okay... I just upgraded to Ubuntu Lucid, which installed emacs23 (23.1.1). Canonical has now also removed Rudel, so I installed the latest tarball from the link above and it won't start. I get the following error on initializing with global-rudel-minor-mode:
 
 Loading /usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el (source)...done
@@ -10,5 +25,13 @@ B " [type backend rudel-zeroconf-service-types] 2 ("/usr/share/emacs23/site-
 Help?
 
 [new]
-I'm just leaving for two days now. Expect an answer on Wednesday or Thursday.
+I wasn't aware of the existence of a [[Rudel]] package for Ubuntu, but since your problem description presumably refers to the version available from sourceforge, it doesn't matter anyway.
+
+From your description, I would assume that the previously installed version of Rudel (the Ubuntu package, if I understand correctly) left behind compiled Emacs Lisp files in /usr/share/emacs23/site-lisp/rudel/. As a first step, you could make sure that only files belonging to the newly installed Rudel version remain on your system. If that does not help, please set `debug-on-error' before calling `global-rudel-minor-mode' and paste the resulting backtrace along with the contents of the %%*Messages*%% buffer. Please also include the install location of the new Rudel version.
+
+Hope that helps.
 --JanMoringen
+
+----
+
+CategoryHomepage

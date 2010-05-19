@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 16 16:31:13 2010 (-0700)
+;; Last-Updated: Tue May 18 10:31:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22728
+;;     Update #: 22731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -357,7 +357,8 @@
 ;;    `icicle-candidate-set-save-selected',
 ;;    `icicle-candidate-set-save-to-variable',
 ;;    `icicle-candidate-set-swap', `icicle-candidate-set-truncate',
-;;    `icicle-candidate-set-union',
+;;    `icicle-candidate-set-union', `icicle-cd-for-abs-files',
+;;    `icicle-cd-for-loc-files',
 ;;    `icicle-change-alternative-sort-order',
 ;;    `icicle-change-sort-order', `icicle-change-sort-order',
 ;;    `icicle-choose-completion', `icicle-clear-current-history',

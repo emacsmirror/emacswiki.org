@@ -29,6 +29,7 @@ Ordered for pedagogy:
 * VariableDefinition, BufferLocalVariable -- how to define variables
 * ComparisonFunctions -- does this variable contain that string, do these numbers match, does this equal that
 * ListStructure -- a list is made of cons cells
+** CircularLists -- an endless loop in the lisp structure
 * ListModification -- for Lisp newbies: nconc, append, cons, and friends
 ** DestructiveOperations -- for Lisp newbies: some examples using sort and explaining the use of copy-sequence
 ** ListModificationCl -- for Lisp authors: using functions from the CL library to modify lists

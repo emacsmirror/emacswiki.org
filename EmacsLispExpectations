@@ -17,7 +17,7 @@ Emacs Lisp Expectations is modeled after [http://expectations.rubyforge.org/ Rub
 
 # Evaluate an expectations S-exp.
 # `M-x expectations-execute' to execute a test.
-# If there are any errors, use `M-x next-error' (##C-x `##) and `M-x previous-error' to go to expect sexp in error.
+# If there are any errors, use `M-x next-error' (##C-x `##) and `M-x previous-error' to go to the expectations S-exp.
 
 `expectations' defines a expectations test case. Use `expect' and
 `desc' to verify the code. Note that these are neither functions nor

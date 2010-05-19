@@ -25,6 +25,11 @@ Or use `M-x toggle-scroll-bar'.
 
 ----
 
+Is it also possible to (de)activate the scrollbar only for the current buffer? How?
+-- Michael
+
+----
+
 You can also set where the scroll bars should be. For GnuEmacs, use
 one of the following:
 

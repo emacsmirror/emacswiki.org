@@ -1,0 +1,17 @@
+I use Emacs, and have since 1998.  I use it on Ubuntu Linux, OS X (I compile from source), and Windows (at work).  I dabbled in elisp scripting often, but haven't pulled anything together that I've released yet.  Maybe finally joining the wiki will motivate me. =)  I use Emacs for Python, Javascript, Bash, Ruby, Scala, Clojure and C programming, HTML/XML and LaTeX editing, life organization in org-mode and tons of other stuff.  Huge fan of so many modes; calc, ido-mode, org-mode and SLIME come to mind right now.
+
+I love the new Javascript mode in 23.2, as well as the inclusion of CEDET/Semantic.
+
+I still resent the switch to make transient-mark-mode the default in 23. =P
+
+I sometimes hang out in #emacs (and everywhere else!) as rpdillon.
+
+My blog, etc. is located at http://etherplex.org.
+
+
+
+[new:DrewAdams:2010-05-18 22:36 UTC]
+Welcome to the wiki. -- DrewAdams
+
+----
+CategoryHomepage

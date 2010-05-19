@@ -4,5 +4,9 @@ If you want to use ##ert.el##, there are examples at the end of the file that ar
 
 You can also find examples in [NxhtmlMode nXhtml-mode], which uses a slightly modified version for tests.
 
+== Discussion ==
+
+Whenever I ##(require 'ert)##, it runs a number of tests on itself. Is there a way to disable them to improve startup time? -- VegardOye
+
 ----
 See also UnitTesting

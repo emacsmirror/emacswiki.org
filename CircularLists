@@ -1,0 +1,29 @@
+Assume you want to replace all occurences of "foo" with "bar", "baz", "quux" and so on. You want to cycle through the replacements.
+
+{{{
+(let ((master '("bar" "baz" "quux"))
+      (items))
+  (while (search-forward "foo" nil t)
+    (replace-match (or (car items)
+		       (car (setq items master))))
+    (setq items (cdr items))))
+}}}
+
+The code above has a master list of replacements and a working copy called `items'. It will use the first item in the list of items, or get a copy of the master list and use that. Then it shortens the list by one item, and loops.
+
+Or we can use a circular list:
+
+{{{
+(let ((items '("bar" "baz" "quux")))
+  (nconc items items)
+  (while (search-forward "foo" nil t)
+    (replace-match (car items))
+    (setq items (cdr items))))
+}}}
+
+The `nconc' function modifies the ListStructure and makes it circular. The list of items basically holds bar, baz, quux, bar, baz, quux, ad infinitum. See ListModification for more information about nconc.
+
+With a circular list, we can now use the first item of it, and shorten it by one, and we'll never run out of items.
+
+----
+CategoryCode

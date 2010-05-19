@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon May 17 10:37:03 2010 (-0700)
+;; Last-Updated: Tue May 18 10:47:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25004
+;;     Update #: 25028
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5527,6 +5527,24 @@
 ;;    different directories (and hence are absolute), then retrieve
 ;;    that candidate set using, say, `C-u C-x C-f' (absolute), not
 ;;    `C-x C-f' (relative).
+;;
+;;  Finally, although the commands that read absolute file names are
+;;  essentially ignorant of directory hierarchies and of file names as
+;;  such, so that they treat their candidates only as simple strings,
+;;  a few of these commands nevertheless define their domain of
+;;  possible file-name candidates relative to some starting directory.
+;;
+;;  This is the case for `icicle-find-file-absolute' and
+;;  `icicle-locate-file' (and their other-window variants).  For these
+;;  commands, you can use `C-c C-d' (think `cd') during completion to
+;;  change the current working directory (`default-directory') on the
+;;  fly.  You are prompted for the directory.  The domain of possible
+;;  candidates is recomputed relative to the new `default-directory'.
+;;
+;;  Use `C-c C-d' this way as many times as you like.  You can use
+;;  this feature to add file names from different directories to a
+;;  saved set of candidates.  When the command is finished, the
+;;  original `default-directory' is restored.
 ;;
 ;;  See Also:
 ;;

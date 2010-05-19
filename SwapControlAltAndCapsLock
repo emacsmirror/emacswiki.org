@@ -21,6 +21,8 @@ REGEDIT4
 "Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00,00,00,00,00
 </pre>
 
+Now, restart your machine.
+
 ==== Swapping ALL Control and Alt Keys ====
 
 Install AutoHotKey and save the following as "swap_ctrl_alt.ahk" and then run it:

@@ -6,7 +6,7 @@ Keyboard macros are a powerful Emacs feature. A '''[::keyboard macro]''' is simp
 
 Did you note that a "''keyboard''" macro can record nearly any user actions -- ''not'' just ''keyboard'' actions?  Good.
 
-: '''Note:''' Do not confuse mention of a keyboard macro with mention of a Lisp macro. A Lisp macro is similar to a Lisp function (oops -- not that similar), and is defined using <code>defmacro</code>. 
+: '''Note:''' Do not confuse mention of a keyboard macro with mention of a Lisp macro. A Lisp macro is similar to a Lisp function (oops -- not that similar), and is defined using ##defmacro##. 
 
 Here is how to ''define'' a keyboard macro:
 * `<code>C-x (</code>' -- start defining a keyboard macro
@@ -23,17 +23,17 @@ Here's how to execute the macro 37 times (you use `C-u' to provide the 37):
 You want to add the text "-- foobar was here" at the end of ''each'' of the lines in a file.
 # Place the TextCursor at the beginning of the first line.
 # `<code>C-x (</code>' to start recording a keyboard macro.
-# `C-e' (or `<code>M-x end-of-line</code>') to move the cursor to the end of the line.
+# `C-e' (or `M-x end-of-line') to move the cursor to the end of the line.
 # Type "<code>-- foobar was here</code>"
-# `C-a' (or `<code>M-x beginning-of-line</code>') to move the cursor to the beginning of the line.
-# `C-n' (or `<code>M-x next-line</code>') to move the cursor to the beginning of the next line.
+# `C-a' (or `M-x beginning-of-line') to move the cursor to the beginning of the line.
+# `C-n' (or `M-x next-line') to move the cursor to the beginning of the next line.
 # `<code>C-x )</code>' to stop recording the keyboard macro.
 # `C-u 0 C-x e' to execute the macro an infinite number of times until the end of the file is reached (See InfiniteArgument).
 
 What's important here is to stop defining the macro at a ''similar position to where you started it'' -- so that you are in a position to execute it again, after it executes. This is a general rule that you will often follow when defining keyboard macros: try to make them executable ''N'' times in a row.
 
 Actually, although it's good to learn this general rule, there is a shortcut for just applying the last-defined keyboard macro to each of the lines of a region:
-* M-x <code>apply-macro-to-region-lines</code>
+* `M-x apply-macro-to-region-lines'
 
 Or to be more precise (from the documentation of the command): 
 
@@ -41,12 +41,12 @@ Or to be more precise (from the documentation of the command):
   of the line, and run the last keyboard macro.
 
 You can name the last-defined keyboard macro, so that you can then execute it by name:
-* M-x <code>name-last-kbd-macro</code> -- Name the last-defined keyboard macro.
+* `M-x name-last-kbd-macro' -- Name the last-defined keyboard macro.
 
-Why do that? One reason is that it lets you have more than one macro defined at the same time. Once you have named this macro, say, <code>my-macro</code>, you can define another one that does something else. Then, you can execute the second macro using `C-x e' and execute <code>my-macro</code> as if it were a standard Emacs command: `M-x <code>my-macro</code>'. If you also name the second macro, then you can define a third one...
+Why do that? One reason is that it lets you have more than one macro defined at the same time. Once you have named this macro, say, `my-macro', you can define another one that does something else. Then, you can execute the second macro using `C-x e' and execute `my-macro' as if it were a standard Emacs command: `M-x my-macro'. If you also name the second macro, then you can define a third one...
 
-Keyboard macros are only defined for your ''current Emacs session''. If you want to be able to reuse a macro in a future session, then save it in your initialization file (<code>.emacs</code> or <code>_emacs</code>). Open the file, then insert the macro definition using this command:
-* M-x <code>insert-kbd-macro</code> -- Insert a named keyboard macro into your initialization file.
+Keyboard macros are only defined for your ''current Emacs session''. If you want to be able to reuse a macro in a future session, then save it in your initialization file (##.emacs## or ##_emacs##). Open the file, then insert the macro definition using this command:
+* `M-x insert-kbd-macro' -- Insert a named keyboard macro into your initialization file.
 
 Now you can use `M-x' to execute the named keyboard macro in future
 sessions -- just as if it were a standard Emacs command of the same name.  If you want to bind it to a key, you can add code like the
@@ -54,14 +54,18 @@ following to your initialization file:
 
     (global-set-key (kbd "C-c a") 'my-macro)
 
-This binds the key sequence `C-c a' to the macro <code>my-macro</code>.
+This binds the key sequence `C-c a' to the macro `my-macro'.
+
+If you want to edit the macro in future sessions, you need to let the ##kmacro## library know that the symbol is indeed a macro by putting the ##kmacro## property on the symbol.
+
+  (put 'my-macro 'kmacro t)
 
 '''See Also:'''
 * DotMode -- An Emacs mode inspired by the Vi command of the same name that will redo a set of commands.
 * http://jfm3-repl.blogspot.com/2007/09/emacs-tricks-6-keyboard-macros.html is a tutorial on using Emacs macros to write C macros with with a nugget of wisdom from a Lisper.
 * http://www.linuxjournal.com/article/3769 for an article about Emacs Macros in the Linux Gazette by JesperPedersen
 * KeybindingGuide for an article on key bindings
-* Functions <code>local-set-key</code> and <code>global-set-key</code> for more info on key bindings
+* Functions `local-set-key' and `global-set-key' for more info on key bindings
 * TinyMacro, a simple way to assign macros to keys.
 
 == Problems with Isearch ==
@@ -70,17 +74,17 @@ This binds the key sequence `C-c a' to the macro <code>my-macro</code>.
 
 == Calling a Keyboard Macro from Emacs Lisp ==
 
-When you use <code>name-last-kbd-macro</code>, the string that defines the keyboard macro becomes the function definition of the macro name you provide. You cannot call such a macro by name in Emacs Lisp as if it were a function. For example, if you named the keyboard macro "foo", then you cannot simply write <code>(foo)</code> in Lisp to execute the macro. Instead, you must use the function <code>execute-kbd-macro</code> as follows:
+When you use `name-last-kbd-macro', the string that defines the keyboard macro becomes the function definition of the macro name you provide. You cannot call such a macro by name in Emacs Lisp as if it were a function. For example, if you named the keyboard macro "foo", then you cannot simply write ##(foo)## in Lisp to execute the macro. Instead, you must use the function `execute-kbd-macro' as follows:
 
     (execute-kbd-macro (symbol-function 'foo))
 
-(Function <code>symbol-function</code> returns the function definition of its symbol argument. In this case, it returns the string that defines the keyboard macro <code>foo</code>.)
+(Function `symbol-function' returns the function definition of its symbol argument. In this case, it returns the string that defines the keyboard macro `foo'.)
 
 == Querying the User During Keyboard Macro Execution ==
 
-You can use `C-x q' (command <code>kbd-macro-query</code>) to make Emacs pause and query the user at a certain point during keyboard macro execution.
+You can use `C-x q' (command `kbd-macro-query') to make Emacs pause and query the user at a certain point during keyboard macro execution.
 
-<pre>
+{{{
 C-x q runs the command kbd-macro-query
    which is an interactive autoloaded Lisp function in `macros'.
 [Arg list not available until function definition is loaded.]
@@ -96,7 +100,7 @@ N       Skip the rest of this iteration, and start the next.
 RET     Stop the macro entirely right now.
 C-l     Redisplay the screen, then ask again.
 C-r     Enter recursive edit; ask again when you exit from that.
-</pre>
+}}}
 
 == Prompting During Keyboard Macro Execution ==
 

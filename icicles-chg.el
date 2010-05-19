@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May 17 13:52:16 2010 (-0700)
+;; Last-Updated: Tue May 18 11:22:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5319
+;;     Update #: 5328
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010-05-18 dadams
+;;     Added: icicle-cd-for-abs-files, icicle-cd-for-loc-files.
+;;     icicle-find-file-absolute*, icicle-locate-file*: Bind C-c C-d to icicle-cd-for-(abs|loc)-files.
+;;     icicle-locate-file*: Make icicle-list-use-nth-parts be nil if no non-positive prefix arg.
 ;; 2010/05/16 dadams
 ;;     icicle-define-bookmark-command-1: Defined command requires bookmark+.el.
 ;;     Added: icicle-bookmark-specific-(buffers|files)-narrow, icicle-bookmark-this-buffer-narrow.
@@ -509,6 +513,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/05/18 dadams
+;;     icicle-save-or-restore-input:
+;;       Use icicle-file-directory-p, not file-directory-p (fails: ~/foo//usr/).  Thx to M. Heerdegen.
 ;; 2010/05/04 dadams
 ;;     icicle-alt-act-fn-for-type: Pass TYPE to icicle-apply-to-saved-candidate.
 ;; 2010/04/30 dadams

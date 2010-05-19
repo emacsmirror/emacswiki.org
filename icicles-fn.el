@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May  9 09:41:49 2010 (-0700)
+;; Last-Updated: Tue May 18 11:15:37 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11721
+;;     Update #: 11732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3621,7 +3621,10 @@ the code."
               (icicle-save-raw-input))
 
             ;; Save expanded common match as current input, unless input is a directory.
-            (unless (and (icicle-file-name-input-p)  (file-directory-p icicle-current-input))
+            ;; Use `icicle-file-directory-p'.  `file-directory-p' fails to consider "~/foo//usr/" a directory.
+            ;; $$$$$$ We could use the `icicle-file-directory-p' code with `icicle-file-name-directory'
+            ;;        instead of `icicle-file-name-directory-w-default', if that presents a problem.
+            (unless (and (icicle-file-name-input-p) (icicle-file-directory-p icicle-current-input))
               (setq icicle-current-input  common)))))
 
        ;; Save input for `C-l'.

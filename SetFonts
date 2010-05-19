@@ -26,11 +26,27 @@ This should work on all platforms.  As of Emacs 23, all of your system fonts inc
 [:ChangingFontSize]
 == Changing Font Size ==
 
-You can resize the default font of a frame, or you can resize (text-scale) the text in a buffer.
+You can resize (text-scale) the text in a buffer (in all windows showing it), or you can resize the default font of a frame.
+
+
+
+[:ZoomBuffer]
+=== Resize (Zoom) Buffer Text Incrementally ===
+
+Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in all frames displaying it:
+
+* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat). `S-mouse-1' pops up a menu where you can choose these same actions.
+
+* '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks. You can use these same commands to zoom a frame (see [[#ZoomFrame|above]]): `C-u' toggles the buffer/frame behavior.
+
+* '''`doremi-buffer-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change buffer font size incrementally using the arrow keys or the mouse wheel.
+
+* <tt>[[face-remap+.el]]</tt> -- For ''all'' of the above, let buffer font resizing also zoom the [[window]] size accordingly (horizontally, vertically, or both). That way, you can take advantage of the space freed up by resizing (text-scaling) to a smaller font.
+
 
 
 [:ZoomFrame]
-=== Frame Font Resizing ===
+=== Resize (Zoom) Frame Font Incrementally ===
 
 You can use any of the following to increase or decrease the font size for the current [[frame]], effectively resizing it incrementally -- ''zooming'' the text in or out:
 
@@ -42,19 +58,27 @@ You can use any of the following to increase or decrease the font size for the c
 * CycleFontSizes -- Cycle a sequence of font sizes.
 
 
+=== Resize Frame Font using Lisp ===
 
-[:ZoomBuffer]
-=== Buffer Text Resizing ===
+You can change the size of a font for the current frame ''non''-incrementally
+using `set-face-attribute' with a ##:height## parameter:
 
-Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in all frames displaying it:
+  (set-face-attribute 'default (selected-frame) :height 100)
 
-* Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat). `S-mouse-1' pops up a menu where you can choose these same actions.
+Alternatively, you can use `set-frame-font', `set-face-font', or `set-face-attribute' with a ##FONT## string argument that has the size you want:
 
-* '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks. You can use these same commands to zoom a frame (see [[#ZoomFrame|above]]): `C-u' toggles the buffer/frame behavior.
+  (set-frame-font
+    "-outline-Courier New-normal-normal-normal-mono-11-*-*-*-c-*-iso8859-1")
 
-* '''`doremi-buffer-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change buffer font size incrementally using the arrow keys or the mouse wheel.
+  (set-face-font
+    'default
+    (selected-frame)
+    "-outline-Courier New-normal-normal-normal-mono-11-*-*-*-c-*-iso8859-1")
 
-* <tt>[[face-remap+.el]]</tt> -- For ''all'' of the above, let buffer font resizing also zoom the [[window]] size accordingly (horizontally, vertically, or both). That way, you can take advantage of the space freed up by resizing (text-scaling) to a smaller font.
+  (set-face-attribute
+    'default (selected-frame) :font
+    "-outline-Courier New-normal-normal-normal-mono-11-*-*-*-c-*-iso8859-1")
+
 
 
 

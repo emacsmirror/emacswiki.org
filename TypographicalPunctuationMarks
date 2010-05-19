@@ -156,6 +156,20 @@ To use [http://www.typografi.org/sitat/sitatart.html Norwegian-style] quotation 
                              ,(decode-char 'ucs #x2019))) ; closing-single-q (inner)
     (setq-default typopunct-buffer-language 'norwegian)
 
+
+== Spanish quotation marks ==
+
+To use [http://en.wikipedia.org/wiki/Angle_quotes#Spanish Spanish-style] quotation marks, use the following code:
+
+    (add-to-list 'typopunct-language-alist
+                 `(spanish ,(decode-char 'ucs #xAB)     ; opening-guillemet-q (outer)
+                           ,(decode-char 'ucs #xBB)     ; closing-guillemet-q (outer)
+                           ,(decode-char 'ucs #x201C)   ; opening-double-q (inner)
+                           ,(decode-char 'ucs #x201D))) ; closing-double-q (inner)
+    (setq-default typopunct-buffer-language 'spanish)
+
+This is a bit incomplete because in Spanish there are three levels of quoting: «outer “inner ‘deeper’”»
+
 == Wrapping the region in quotes ==
 
 We may use [SkeletonMode skeletons] to wrap any [TransientMarkMode selected text] in quotes when we press '##"##' and '##'##'. All we need to do is [AdvisingFunctions advice] ##typopunct-insert-quotation-mark##:

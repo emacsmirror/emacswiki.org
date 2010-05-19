@@ -55,6 +55,15 @@ The configuration code which is explained in CEDET tutorials doesn't work anymor
 
 TODO: please explain what code you need to load the most useful IDE tools provided by CEDET
 
+I got a basic configuration to work with the following in my <code>.emacs</code>:
+
+<pre>
+(global-ede-mode 1)
+(require 'semantic/sb)
+(semantic-mode 1)
+</pre>
+
+
 
 ----
 CategoryProgrammerUtils

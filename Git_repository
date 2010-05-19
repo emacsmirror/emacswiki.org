@@ -1,34 +1,28 @@
 == About ==
 
-The [[Git]] repository imports and extends the content of the
-[[SVN repository]]. Unlike the subversion mirror it not only features
-a branch containing all files hosted on the Emacswiki but also other
-branches that only contain reasonable subsets thereof.
+The [[Git]] repository mirrores the [[SVN repository]], it contains the
+raw text of all Emacswiki pages.
 
-The mirror can be found at http://github.com/emacsmirror/emacswiki.org
-
-== Branches ==
-
-The following branches exist:
-
-* *master* -- contains the complete Emacswiki
-  (same as the [[SVN repository]])
-* *all-clean* -- like master but with cruft removed
-* *all-pages* -- contains most webpages
-* *all-elisp* -- contains most Emacs Lisp files
-* *packages* -- contains actual Emacs Lisp packages
-
-More branches might be created in the future. For example it would
-be very easy to create branches containing only [[News]] or
-[CategoryHomepage homepages].  Other branches (e.g only English pages
-or only pages describing packages) could also be created but this would
-be more work.  As of now I do not see any use for such branches so I have
-not created them yet -- please tell me about possible use cases.
+It can be found at http://github.com/emacsmirror/emacswiki.org
 
 == Packages ==
 
 The [[Emacsmirror]] contains repositories for most packages distributed
 on the EmacsWiki.
+
+The code used to synchronize these repositories with edits on the
+Emacswiki is being rewritten right now, so there won't be any updates in
+the near futur.
+
+== Branches ==
+
+The repository used to feature branches that contained only subsets of
+the files from the Emacswiki, like e.g. only web pages or Emacs lisp
+files.
+
+The code used to create these branches was to complicated and will
+eventually be replaced.  But due to the lack of interest in these branches
+I won't do this until I have more time.
 
 ----
 CategoryEmacsWikiSite, WikiDownload

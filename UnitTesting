@@ -10,8 +10,8 @@ Various '''testing frameworks''' simplify the task of writing and running tests.
 
 * '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it isn't (the comparison returns ##nil##), ##assert## signals an error.
 * '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
-* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest.
-* '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. This is useful when testing a unit which depends on that function.
+* '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object implementing the suite is often called the "test case".)
+* '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. In other words, "stubbing out" the external behavior is useful when testing a unit which depends on that function.
 * '''Fixture:''' setting up (and tearing down) an environment for a test or a set of test cases.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
 * '''Test-Driven Developent''': a methodology that integrates repeated testing into the "development cycle".
@@ -24,7 +24,7 @@ The following unit test frameworks exist for Emacs Lisp.
 
 === xUnit-like ===
 
-'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test cases, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##.
+'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##.
 
 '''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides visual feedback with [[FringeHelper|fringe-helper.el]] and a number of specialized assertion macros like ##assert-equal##, ##assert-nil##, etc.
 
@@ -119,7 +119,8 @@ Instead of using a variable, you can wrap all tests in a macro, of course. The s
 
 == External links ==
 
-* [http://www.gigamonkeys.com/book/practical-building-a-unit-test-framework.html Practical Common Lisp: Building a Unit Test Framework] -- although written for Common Lisp, provides a very readable introduction to unit testing in Lisp
+* [http://www.gigamonkeys.com/book/practical-building-a-unit-test-framework.html Practical Common Lisp: Building a Unit Test Framework] -- although written for Common Lisp, a very readable introduction to unit testing in Lisp
+* [http://aperiodic.net/phil/archives/Geekery/notes-on-lisp-testing-frameworks.html Common Lisp Testing Frameworks] -- a survey of different approaches
 
 == Discussion ==
 

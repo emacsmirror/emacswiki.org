@@ -27,6 +27,14 @@
 ;; (load "align-by-current-symbol.el")
 ;; (global-set-key (kbd "C-c C-.") 'align-by-current-symbol)
 ;;
+;; By default it requires spaces to be around the symbol.
+;;
+;; Use the following to turn this off:
+;;
+;; (global-set-key (kbd "C-c C-.") 
+;;    (lambda () 
+;;       (interactive) (align-by-current-symbol t)))
+;;
 ;; Example demonstration:
 ;;
 ;; mumumu = zotzot
@@ -41,13 +49,15 @@
 ;; popo   = k
 ;; zarlo => mu
 
-(defun align-by-current-symbol ()
+ (defun align-by-current-symbol (&optional add-space)
   "Indent all the lines above and below the current
    by the current non-whitespace symbol."
-  (interactive)
+  (interactive "P")
   (let ((symbol (current-symbol)))
     (if symbol
-        (let* ((symbol. (concat " " symbol " "))
+        (let* ((symbol. (if add-space
+                            symbol
+                          (concat " " symbol " ")))
                (start (or (first/last-occurance symbol. 'search-backward 'previous-line 'line-beginning-position)
                           (line-beginning-position)))
                (end (or (first/last-occurance symbol. 'search-forward-regexp 'next-line 'line-end-position)
@@ -74,6 +84,7 @@
 (defun current-symbol ()
   "Get the (non-whitespace) symbol at the cursor."
   (save-excursion
+    (skip-chars-forward " \t")
     (let ((start (search-backward-regexp " " nil t)))
       (if start
           (let ((start. (+ 1 start)))
