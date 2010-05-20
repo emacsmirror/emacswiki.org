@@ -1,11 +1,8 @@
 = Emacs and Xembed =
 
-Xembed is an X extension enabling X applications to embed in each other, for instance
-like browser plug-ins.
+GNU Emacs 23.1 supports the XEmbed specification. You can embed Emacs in another application on X11.  The command line option --parent-id is used to pass the parent window id to Emacs.  See http://standards.freedesktop.org/xembed-spec/xembed-spec-latest.html for details about XEmbed.
 
 == embedding emacs in other apps ==
-CVS Emacs supports embedding emacs in other applications, with --parent-id.
-Patch by Timo Savola.
 
 currently I have no good example of how this works with existing apps, but I made a small
 gtk app that creates a gtk_socket, and prints the window id of that socket.

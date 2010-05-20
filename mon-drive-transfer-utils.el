@@ -142,7 +142,7 @@ This holds the `ls' and `grep' templates for deriving file and directory counts 
 
            ;; Don't echo the ls output to transcript we only care about the grepd file/dir counts.
            ;; Read the ls logfile if that is what is wanted :)
-           "ls -laR <TO-MOUNT-POINT>  > <TRANSFER-NOTES-DIR>/<SRC-LOG>"  
+           "ls -laR <FROM-MOUNT-POINT>  > <TRANSFER-NOTES-DIR>/<SRC-LOG>"  
 
            ;; Record the grep command used to generate the counts into the log-file
            ,(concat
@@ -182,10 +182,14 @@ When optional arg SUBST-DEST is non-nil substitute all occurences of
 :EXAMPLE\n\n\(mon-drive-transfer-template-subst-src-dest-log\)\n
 \(mon-drive-transfer-template-subst-src-dest-log t\)\n
 :SEE-ALSO `*mon-drive-transfer-template*'.\n►►►"
-  (if subst-dest
-      (replace-regexp-in-string "SRC-LOG" "DEST-LOG" 
-                                *mon-drive-transfer-template-src-dest-log* t)
-    *mon-drive-transfer-template-src-dest-log*))
+  (let (mdttssdl)
+    (setq mdttssdl *mon-drive-transfer-template-src-dest-log*)
+    (when subst-dest
+      (setq mdttssdl
+            (replace-regexp-in-string "SRC-LOG" "DEST-LOG" mdttssdl t))
+      (setq mdttssdl
+            (replace-regexp-in-string "<FROM-MOUNT-POINT>" "<TO-MOUNT-POINT>" mdttssdl t)))
+    mdttssdl))
 ;;
 ;;; :TEST-ME (mon-drive-transfer-template-subst-src-dest-log)
 ;;; :TEST-ME (mon-drive-transfer-template-subst-src-dest-log t)

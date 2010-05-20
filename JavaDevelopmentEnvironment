@@ -134,6 +134,9 @@ I fear it is complex, as the CEDET inclusion changed package names but JDEE is s
 Did you install it correctly as documented?
 The website says: "Nearly all the JDEE problems that I have seen are caused by faulty setups," and "Most problems reported by users are installation/setup problems."  See the [http://jdee.sunsite.dk/trouble-shooting.htm Trouble Shooting Guide] (Dead link).
 
+== Alternatives ==
+[http://github.com/espenhw/malabar-mode malabar-mode] is an effort to create a better Java mode for Emacs.
+
 == Comments ==
 
 [new]

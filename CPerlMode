@@ -23,13 +23,13 @@ Or the more robust equivalent:
            (setcdr pair 'cperl-mode)))
      (append auto-mode-alist interpreter-mode-alist))
 
-cperl-mode is part of Emacs.  You can get the latest version here:
+cperl-mode is part of Emacs. It's derived from Ilya's original cperl-mode available here:
 
 * http://math.berkeley.edu/~ilya/software/emacs/
 
-The latest version of cperl-mode also ships with Perl itself.
-[http://www.cpan.org/modules/by-module/CPAN/ILYAZ/cperl-mode/ The version on CPAN],
-(5.19 as of 2007-02-27) is out-of-date.
+Ilya's version targets XEmacs, not GNU Emacs. So you should only use it if you're using XEmacs, otherwise use the GNU Emacs version.
+
+cperl-mode also used to ship with Perl itself, but was out of date. As of 5.12.1 it no longer ships with Perl at all.
 
 2008-Jan-18: JonathanRockway has updated CPerl mode to handle Perl 5.10: 
 

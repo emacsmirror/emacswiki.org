@@ -64,6 +64,7 @@ This is a subpage of CategoryModes.  It lists modes for programming languages or
 * LispInteractionMode
 * LogoMode -- Edit BerkeleyLogo source code and send instructions to to an interpreter.
 * LuaMode
+* MalabarMode -- new Java programming mode
 * MatlabMode
 * MaudeMode
 * MuPACS -- MuPAD editing mode

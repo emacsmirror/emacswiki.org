@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 16 12:11:58 2010 (-0700)
+;; Last-Updated: Wed May 19 17:01:46 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12202
+;;     Update #: 12212
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -218,7 +218,7 @@
 ;;       The same menu is available on `C-mouse-3'.
 ;;
 ;;     - The vanilla `Bookmarks' menu, which is typically a submenu of
-;;       the `Edit' menu-bar menu, is modified by adding a few items
+;;       the `Edit' menu-bar menu, is modified by adding several items
 ;;       from the `Bookmark+' menu, including the `Jump To' submenu
 ;;       (called `Jump To Bookmark' there).
 ;;
@@ -1111,6 +1111,10 @@
 ;;  For the `=' keys you are prompted for one or more file names or
 ;;  buffer names.
 ;;
+;;  Finally, because the bookmarks in the current buffer can be of
+;;  particular interest, `C-x p .' opens the bookmark-list display for
+;;  only those bookmarks.
+;;
 ;;
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
@@ -1292,6 +1296,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/19 dadams
+;;     Added: bookmarkp-this-buffer-bmenu-list.  Bound to `C-x p .'.
+;;     menu-bar-bookmark-map:
+;;       Added bookmarkp-this-buffer-bmenu-list.  Added separators.
+;;       Added vanilla items edit, write, load, to impose order.  Renamed item edit.
 ;; 2010/05/16 dadams
 ;;     bookmark-set: Quoted history arg.  Thx to S. Nemec.
 ;;     bookmarkp-bmenu-define-full-snapshot-command: Use quote comma, not quote, for *-specific-*.

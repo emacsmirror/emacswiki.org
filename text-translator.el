@@ -482,7 +482,7 @@ Otherwise return a translation site name."
 
 ;; by google2.el
 (defun text-translator-url-encode-string (str &optional coding)
-  (apply (function concat)
+  (funcall #'concat
          (mapcar
           (lambda (ch)
             (cond

@@ -253,3 +253,7 @@ Sometimes url-retrieve fails I know. But I do not figure out why. Try (setq auto
 If you got any trouble, send a bug report via M-x auto-install-send-bug-report .
 
 -- [[rubikitch]]
+
+(setq auto-install-use-wget t) works. Thanks a lot.
+
+-- David Young

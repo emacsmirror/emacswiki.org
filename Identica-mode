@@ -65,3 +65,8 @@ nicks and groups clickable. Should work even for Twitter users...
 }}}
 ----
 CategoryChatClient CategoryJournaling
+== Comments: ==
+I tried using it on Emacs 23.2 but unfortunately it doesnt work for me. Everytime it tries to 
+update it says Unauthorized. Though giving the same credentials into the web interface its 
+working. Any idea how to fix that?
+

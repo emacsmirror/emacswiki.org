@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 16 12:09:54 2010 (-0700)
+;; Last-Updated: Wed May 19 16:55:41 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12610
+;;     Update #: 12697
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2446,9 +2446,7 @@ the deletions."
 ;; 2. Update the menu-list title.
 ;;
 (defun bookmark-bmenu-surreptitiously-rebuild-list ()
-  "Rebuild the bookmark list, if it exists.
-Optional arg DONT-TOGGLE-FILENAMES-P is passed to
-`bookmark-bmenu-list'."
+  "Rebuild the bookmark list, if it exists."
   (when (get-buffer "*Bookmark List*")
     (save-excursion
       (save-window-excursion
@@ -2473,7 +2471,8 @@ Optional arg DONT-TOGGLE-FILENAMES-P is passed to
   "Display a list of existing bookmarks, in buffer `*Bookmark List*'.
 The leftmost column of a bookmark entry shows `D' if the bookmark is
  flagged for deletion, or `>' if it is marked normally.
-The second column shows `a' if the bookmark has an annotation.
+The second column shows `t' if the bookmark has tags.
+The third  column shows `a' if the bookmark has an annotation.
 
 The following faces are used for the list entries.
 Use `customize-face' if you want to change the appearance.
@@ -2486,7 +2485,12 @@ Use `customize-face' if you want to change the appearance.
  `bookmarkp-non-file', `bookmarkp-remote-file', `bookmarkp-sequence',
  `bookmarkp-su-or-sudo', `bookmarkp-varlist', `bookmarkp-w3m'.
 
-Non-nil FILTEREDP means the bookmark list has been filtered, so:
+If option `bookmarkp-bmenu-state-file' is non-nil then the state of
+the displayed bookmark-list is saved when you quit it, and it is
+restored when you next use this command.
+
+In Lisp code, non-nil optional argument FILTEREDP means the bookmark
+list has been filtered, which means:
  * Use `bookmarkp-bmenu-title' not the default menu-list title.
  * Do not reset `bookmarkp-latest-bookmark-alist' to `bookmark-alist'."
   (interactive)
@@ -3180,6 +3184,27 @@ If FILE is non-nil, set `bookmarkp-last-specific-file' to it."
                          (bookmarkp-current-sort-order)
                          (format "Only bookmarks for file `%s' are shown"
                                  bookmarkp-last-specific-file))))
+
+;;;###autoload
+(defun bookmarkp-this-buffer-bmenu-list () ; Bound to `C-x p .'
+  "Show the bookmark list just for bookmarks for the current buffer.
+Set `bookmarkp-last-specific-buffer' to the current buffer name."
+  (interactive)
+  (setq bookmarkp-last-specific-buffer   (buffer-name)
+        bookmarkp-bmenu-filter-function  'bookmarkp-last-specific-buffer-alist-only
+        bookmarkp-bmenu-title            (format "Buffer `%s' Bookmarks"
+                                                 bookmarkp-last-specific-buffer))
+  (let ((bookmark-alist              (funcall bookmarkp-bmenu-filter-function))
+        (bookmarkp-bmenu-state-file  nil)) ; Prevent restoring saved state.
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (unless bookmark-alist (error "No bookmarks for buffer `%s'" bookmarkp-last-specific-buffer))
+    (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order
+                         (bookmarkp-current-sort-order)
+                         (format "Only bookmarks for buffer `%s' are shown"
+                                 bookmarkp-last-specific-buffer)))
+  (raise-frame))
 
 (defun bookmarkp-completing-read-buffer-name ()
   "Read the name of a buffer associated with a bookmark.
@@ -7727,6 +7752,8 @@ Then you are prompted for the BOOKMARK (with completion)."
 ;;;###autoload
 (define-key bookmark-map "q" 'bookmark-jump-other-window)
 ;;;###autoload
+(define-key bookmark-map "." 'bookmarkp-this-buffer-bmenu-list)
+;;;###autoload
 (define-key bookmark-map "?" 'bookmarkp-describe-bookmark)
 
 ;; `bookmark-bmenu-mode-map'
@@ -8441,17 +8468,37 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
 
 
 ;; Vanilla `Bookmarks' menu (see also [jump], below).
+(define-key-after menu-bar-bookmark-map [edit] ; Just to modify text slightly.
+  '(menu-item "Bookmark List" bookmark-bmenu-list :help "Show the list of bookmarks")
+  'set)
+(define-key-after menu-bar-bookmark-map [this-buffer]
+  '(menu-item "Bookmark List for This Buffer" bookmarkp-this-buffer-bmenu-list
+    :help "Show the list of bookmarks for the current buffer only")
+  'edit)
+
+(define-key-after menu-bar-bookmark-map [separator-1] '("--") 'this-buffer)
+(define-key-after menu-bar-bookmark-map [save] ; Just to impose the order.
+  '(menu-item "Save Bookmarks" bookmark-save
+    :help ,(purecopy "Save currently defined bookmarks"))
+  'separator-1)
+(define-key-after menu-bar-bookmark-map [write] ; Just to impose the order.
+  '(menu-item "Save Bookmarks As..." bookmark-write
+    :help "Write current bookmarks to a bookmark file")
+  'save)
 (define-key-after menu-bar-bookmark-map [bookmarkp-empty-file]
   '(menu-item "New (Empty) Bookmark File..." bookmarkp-empty-file
     :help "Create a new, empty bookmark file, or empty an existing bookmark file")
   'write)
-(define-key menu-bar-bookmark-map [load] ; Just to modify text slightly.
+(define-key-after menu-bar-bookmark-map [load] ; Just to modify text slightly.
   '(menu-item "Add Bookmarks from File..." bookmark-load
-    :help "Load additional bookmarks from a bookmark file"))
+    :help "Load additional bookmarks from a bookmark file")
+  'bookmarkp-empty-file)
 (define-key-after menu-bar-bookmark-map [load-read-only]
   '(menu-item "Switch to Bookmark File..." bookmarkp-switch-bookmark-file
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks")
   'load)
+
+(define-key-after menu-bar-bookmark-map [separator-2] '("--") 'load-read-only)
 
 (defvar bookmarkp-bmenu-menubar-menu (make-sparse-keymap "Bookmark+"))
 (define-key bookmark-bmenu-mode-map [menu-bar bookmarkp]

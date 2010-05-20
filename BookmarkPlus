@@ -183,7 +183,7 @@ The same menu is available on '''`C-mouse-3''''.
 ;;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
 ;;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
 
-* The vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu, is modified by adding a few items from the '''`Bookmark+'''' menu, including the '''Jump To''' submenu (called '''Jump To Bookmark''' there).
+* The vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu, is modified by adding several items from the '''`Bookmark+'''' menu, including the '''Jump To''' submenu (called '''Jump To Bookmark''' there).
 
 
 
@@ -1187,7 +1187,9 @@ buffers.  (Use `C-x 4 j' for other-window.)
 For the `='
 keys you are prompted for one or more file names or buffer names.
 
-
+Finally, because the bookmarks in the current buffer can be of
+particular interest, '''`##C-x p .##'''' opens the bookmark-list display for
+only those bookmarks.
 
 
 

@@ -2,12 +2,13 @@
 
 Here are some Emacs and XEmacs binaries for OS X.
 
-Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.1).  Aquamacs and Emacs.app (GNU Emacs/Cocoa) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
+Cocoa is the Objective-C API (originally developed by !NeXT) that is used for native OS X applications (included in Emacs 23.2).  Aquamacs and Emacs.app (GNU Emacs/Cocoa) both run under Cocoa.  Note that Emacs.app, GNU Emacs/Cocoa, and GNU Emacs/nextstep refer to the same thing.
 
 Carbon is the C language API (developed by Apple) that lets applications written under OS 9 (or earlier) run under OS X.  Carbon Emacs runs under Carbon.  As of Emacs 23, Carbon Emacs has been deprecated in favor of Emacs.app.
 
-If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
+X11 Emacs is the "original" emacs running under X11 (installed by default in recent versions of Mac OS X)
 
+If you are a Mac user new to Emacs, many people find Aquamacs to be a good choice.  Many find it to be more Mac-like than Emacs.app.
 If you've used Emacs before and already have your own emacs initialization file, then Emacs.app is likely a better choice.  As compared to Aquamacs, Emacs.app is more traditional in its approach, prefers a single frame, and is more likely to work with existing emacs initialization files.
 
 [http://www.hoenn.net/blog/index.php?/archives/76-Die-Emacssituation-unter-OS-X.html Auf Deutsch] (in German).
@@ -63,7 +64,7 @@ There are many options for building emacs (such as whether to build the X11 vers
 
 ==== Cocoa Emacs ====
 
-Emacs 23.1 ships with Cocoa support.  You can build it by running something like the following:
+Emacs 23.2 ships with Cocoa support.  You can build it by running something like the following:
 
 <pre>
   ./configure --with-ns
@@ -73,11 +74,8 @@ Emacs 23.1 ships with Cocoa support.  You can build it by running something like
 
 When the build is complete, you should see Emacs.app in ./nextstep/Emacs.app.  Simply copy it to your applications folder and open it to run.
 
-For more detailed instructions, see the <tt>nextstep/INSTALL</tt> [http://cvs.savannah.gnu.org/viewvc/emacs/nextstep/INSTALL?root=emacs&view=markup file].  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
-
-Note that 10.6.n (Snow Leopard) does not build from the June/July 23.1 release source tarball.  You need the latest BZR version of the trunk.  Emacs.app now builds x86-64 by default on platforms which are 64-bit capable.
-
-As of 05.08.2010 builds fine on Snow Leopard.  Just built: GNU Emacs 23.2.1 (x86_64-apple-darwin10.0.0, NS apple-appkit-1038.00) of 2010-05-08 on ...
+For more detailed instructions, see the <tt>nextstep/INSTALL</tt> file.  Additionally, you may benefit from reading the build script here: http://github.com/ieure/emacs-nightly.  
+As of 2010-05-08 Cocoa Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
 
 ==== X11 Emacs ====
 
@@ -89,6 +87,8 @@ Directions to build and install may be found in the INSTALL or INSTALL.BZR files
     sudo make install
 </pre>
 
+As of 2010-05-08 X11 Emacs 23.2 builds correctly on Snow Leopard (Mac OS X 10.6.x). 
+
 ==== Carbon Emacs (deprecated) ====
 
 Directions to build and install may be found in the file newly downloaded to emacs/mac/INSTALL. The basic build and installation of the carbon Emacs application uses the commands:
@@ -99,7 +99,7 @@ Directions to build and install may be found in the file newly downloaded to ema
     sudo make install
 </pre>
 
-Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.1.
+Note: Carbon emacs has been replaced with Cocoa Emacs in Emacs 23.x.
 
 
 
@@ -111,46 +111,40 @@ Programmer's Workshop.  MPW is a unix-like environment for the
 MacOS, which used to cost thousands $$$$ USD but is
 now freely available due to believed obsolescence.  Die hard
 MacOS9 aficiondos rejoice.
-
 MPW is available from:
 ftp://ftp.apple.com/developer/Tool_Chest/Core_Mac_OS_Tools/MPW_etc./
-
 Then, follow the instructions in the Emacs source, in the file $EMACS/mac/INSTALL .
 
 == Packages ==
 
 === Fink ===
 
-As of May 2nd, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes the following packages:
+As of May 8th, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.net/] includes the following packages:
 
-* XEmacs 21.4.20
-* Emacs  23.1   from BZR   (no X11)
-* Emacs  23.1   from BZR   (X11 Xaw3d)
-* Emacs  9.0rc3 from BZR (Cocoa)
+* Emacs  -- 23.1   (no X11)
+* Emacs  -- 23.1   (X11 Xaw3d)
+* Emacs  -- 9.0rc3 (Cocoa,  quite old)
+* Emacs  -- 22.3   (Carbon, quite old)
 * color-theme, ecb, edb, eieio, emacs-w3, emacs-w3m, jdee, mew, nxml-mode, planner-el, speedbar, ...
 and even AucTeX!
- 
-
-Note: OS X 10.2.2 changed the unexec-mechanism used by Emacs, so the prepackaged Emacs cannot be used for 10.2.2.  
-You may want to either get the latest source from Emacs BZR and build it yourself (see Andrews page for the FAQ) 
-or use XEmacs instead. -- ThorbjoernRavnAndersen
+* XEmacs 21.4.20
 
 === MacPorts ===
 
 !MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 
 (and other unix-alikes for that matter). 
-As of May 2nd, 2010 it provides the following packages:
+As of May 8th, 2010 it provides the following packages:
 
-* Emacs -- version 23.1 (X11 Xaw3d)
-* Emacs-app -- 23.1 (Cocoa)
-* Emacs-app-devel  -- same as emacs-app, but with a newer BZR development version (20090104 as of October 2009)
+* Emacs -- 23.2 (X11 Xaw3d)
+* Emacs-app -- 23.2 (Cocoa)
+* Emacs-app-devel  -- same as Emacs-app, but with a BZR development version (20090104 !!! as of 2010-05-08)
 * XEmacs -- 21.4.21 (X11)
 
-For the OS-X native (Cocoa) versions, once you've got !MacPorts installed, run
+For the OS X native (Cocoa) versions, once you've got !MacPorts installed, run
 
    sudo port install emacs-app
 
-or (if you prefer a more recent version)
+or (if you prefer a -- usually more recent-- development version)
 
    sudo port install emacs-app-devel
 

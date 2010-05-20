@@ -735,6 +735,11 @@ I am making Whitespace mode honor the setting for fill-column with:
 
 I don't think there is a solution to this on a local, per-buffer basis with `global-whitespace-mode'.
 
+[new]
+In GNU Emacs 23.2.1, cursor movement in c++-mode with whitespace-mode is sloppy. When I keep pressing the arrow keys, or C-f/C-b; C-p/C-n, the cursor doesn't move smoothly. It just jumps discretely. However, when I turn off the whitespace-mode, the cursor movement is smooth again. Does anyone else face this issue?
+
+-- PraveenKumar
+
 ----
 
 CategoryCode,
