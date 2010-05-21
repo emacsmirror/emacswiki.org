@@ -1,3 +1,5 @@
+This page features mostly stuff available in malabar-mode's [http://github.com/espenhw/malabar-mode/blob/master/README.rst README]. To be sure you're reading up to date instructions you might want to visit it instead.
+
 == malabar-mode :: A better Java mode for Emacs ==
 
 You may want to skip to Installation
@@ -5,7 +7,7 @@ You may want to skip to Installation
 === Why yet another Java mode? ===
 
 After all there is java-mode, included with recent Emacsen, and
-JDEE_ if you want something more IDEish.  So why yet another?
+[http://jdee.sourceforge.net/ JDEE] if you want something more IDEish.  So why yet another?
 
 ==== java-mode ====
 
@@ -16,8 +18,8 @@ do every day.
 ==== JDEE ====
 
 Enter JDEE.  It's big, it's powerful, it probably includes more
-features than you'll ever need; I mean, who needs to `run jdb on an
-applet`_ these days?
+features than you'll ever need; I mean, who needs to [http://jdee.sourceforge.net/jdedoc/html/jde-ug/jde-ug-content.html#d0e4142 run jdb on an
+applet] these days?
 
 Yet even so, something is lacking.  It's something big, it's something
 new, it's something no Java developer can live without these days:
@@ -26,7 +28,7 @@ Generics.
 
 That's right; use generics (or enums, or foreach loops - annotations,
 on the other hand, are quite reasonably supported) and JDEE will, at
-best, get confused.  Part of the reason is that JDEE uses BeanShell_
+best, get confused.  Part of the reason is that JDEE uses [http://www.beanshell.org/ BeanShell]
 underneath; BSH is, sadly, unmaintained and lacks support for Java 5
 features.
 
@@ -35,8 +37,8 @@ features.
 Because, in my arrogant opinion, the current crop of IDEs is complete
 and utter crap, not worth the bits to store or the CPU cycles to run
 (and *definitely* not worth the enormous amounts of memory they
-require).  I have a major rant brewing on this subject; watch `my
-blog`_ if you care.
+require).  I have a major rant brewing on this subject; watch [http://blog.grumblesmurf.org/ my
+blog] if you care.
 
 You see, when it comes down to brass tacks, code is really just text.
 And Emacs beats any other text editor out there hands down (vi lovers,
@@ -59,11 +61,11 @@ anything you don't like.
 But there is more:
 ------------------
 
-- Tight integration with Maven_
+- Tight integration with [http://maven.apache.org Maven]
 
-- A Groovy_ console for rapid prototyping and exploratory programming
+- A [http://groovy.codehaus.org/ Groovy] console for rapid prototyping and exploratory programming
 
-- JUnit_ integration, both for running tests standalone and through Maven
+- [http://www.junit.org/ JUnit] integration, both for running tests standalone and through Maven
 
 - Import help; import one class or all needed classes in the buffer
   (with prompting if the class name is ambiguous)
@@ -89,7 +91,7 @@ and more.
    develop using CVS HEAD; older versions may or may not work),
    e.g. by linking the CEDET directory into your site-lisp directory.
 
-3. Clone the repository from git://github.com/espenhw/malabar-mode.git.
+3. Clone the repository from [git://github.com/espenhw/malabar-mode.git here].
    
 4. Build with ``mvn package``.  If load-test.el fails, it is most
    likely because CEDET is not on your load-path.
@@ -232,7 +234,7 @@ malabar-refactor-extract-constant : C-c C-v C-r C-c
   ``malabar-refactor-extract-constant-default-scope``, but with a
   prefix arg will prompt for the scope.
 
-In addition, `standard Semantic code completion`_ is available; trigger
+In addition, [http://cedet.sourceforge.net/intellisense.shtml standard Semantic code completion] is available; trigger
 this however you wish.  By default, ``semantic-ia-complete-symbol`` is
 bound to ``C-c C-v C-.`` and ``semantic-ia-complete-symbol-menu`` is
 bound to ``C-c C-v .``.
@@ -254,7 +256,7 @@ With point left at the position marked with ``|``.
 == Electric expansions ==
 
 In addition to the electric insertion offered by CC-mode, malabar-mode
-offers an expansion that simulates the `Elvis operator`_, although the
+offers an expansion that simulates the [http://groovy.codehaus.org/Operators#Operators-ElvisOperator%28%3F%3A%29 Elvis operator], although the
 generated code is not as efficient as a language-provided Elvis
 operator would be.  This expansion is controlled by the variable
 ``malabar-electric-elvis-p``.
@@ -268,11 +270,11 @@ useful format.
 
 === But where do I send patches? ===
 
-To the `issue tracker`_ (see the next section).
+To the [http://github.com/espenhw/malabar-mode/issues issue tracker] (see the next section).
 
 === I found a bug! ===
 
-Good for you.  Create a ticket in the `issue tracker`_ and stuff will happen.
+Good for you.  Create a ticket in the [http://github.com/espenhw/malabar-mode/issues issue tracker] and stuff will happen.
 
 Hint #1:  Tell me what you did, what you expected to happen and what
 actually happened.  Include any error messages (Emacs backtraces,

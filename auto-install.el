@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.47 2010/05/14 00:09:08 rubikitch Exp $
+;; $Id: auto-install.el,v 1.48 2010/05/20 23:29:10 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.47 $
+;; Version: $Revision: 1.48 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.47 2010/05/14 00:09:08 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.48 2010/05/20 23:29:10 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -296,6 +296,9 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.48  2010/05/20 23:29:10  rubikitch
+;; `auto-install-update-emacswiki-package-name': Check whether network is reachable
+;;
 ;; Revision 1.47  2010/05/14 00:09:08  rubikitch
 ;; Fixed a bug of `auto-install-batch' with argument.
 ;;
@@ -599,6 +602,7 @@
 (require 'find-func)
 (require 'bytecomp)
 (require 'thingatpt)
+(require 'ffap)
 (eval-when-compile (require 'cl))
 (when (<= emacs-major-version 22)       ;Compatibility with 22.
   (autoload 'ignore-errors "cl-macs"))
@@ -842,6 +846,10 @@ You can use this to download marked files in Dired asynchronously."
             (auto-install-download (concat auto-install-emacswiki-base-url (file-name-nondirectory file)))))
     (error "This command is only for `dired-mode'.")))
 
+(defun auto-install-network-available-p (host)
+  (ignore-errors (ffap-machine-p host 80 t)))
+;; (auto-install-network-available-p "www.emacswiki.org")
+
 (defun auto-install-update-emacswiki-package-name (&optional unforced)
   "Update the list of elisp package names from `EmacsWiki'.
 By default, this function will update package name forcibly.
@@ -849,8 +857,13 @@ If UNFORCED is non-nil, just update package name when `auto-install-package-name
   (interactive)
   (unless (and unforced
                auto-install-package-name-list)
-    (auto-install-download "http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1"
-                           'auto-install-handle-emacswiki-package-name)))
+    (if (auto-install-network-available-p "www.emacswiki.org")
+        (auto-install-download "http://www.emacswiki.org/cgi-bin/emacs?action=index;raw=1"
+                               'auto-install-handle-emacswiki-package-name)
+      (message
+       (concat "Network unreachable!\n"
+               "Try M-x auto-install-handle-emacswiki-package-name afterward."))
+      (sit-for 2))))
 
 (defun auto-install-dired-mark-files ()
   "Mark dired files that contain at `EmacsWiki.org'."

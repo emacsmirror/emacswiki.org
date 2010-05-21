@@ -3,7 +3,15 @@
 ;; Copyright (C) 2010 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
+;; Created: 4 May 2010
+;; Version: 1
+;; RCS Version: $Rev: 309 $
 ;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
+;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
+;; Compatibility: GNU Emacs 22+
+
+;; This file is *NOT* part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
@@ -29,7 +37,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 308 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 309 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.

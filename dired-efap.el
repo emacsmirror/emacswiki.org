@@ -412,12 +412,12 @@ necessary changes in disk. See also `dired-efap' and
       (buffer-disable-undo)
       (buffer-enable-undo))))  ; No way to undo these changes.
 
-(defun dired-efap-goto-beginning (x x)
+(defun dired-efap-goto-beginning (degb-x degb-y) ;; :WAS (x x)
   "Go to the beginning of the filename being edited."
   (interactive)
   (goto-char dired-efap-starting-point))
 
-(defun dired-efap-goto-end (x x)
+(defun dired-efap-goto-end (dege-x dege-y) ;; :WAS (x x)
   "Go to the end of the filename being edited."
   (interactive)
   (goto-char dired-efap-starting-point)

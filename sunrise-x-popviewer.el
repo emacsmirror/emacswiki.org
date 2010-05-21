@@ -1,12 +1,17 @@
-;;; sunrise-x-popviewer.el  --- Improves  accessibility of the Sunrise Commander
-;; file manager by eliminating the lower window (a.k.a. the "viewer" window) and
-;; popping  up  a  new  emacs  frame  instead  for  file  viewing  and  terminal
-;; integration.
+;;; sunrise-x-popviewer.el --- Floating viewer window for the Sunrise Commander.
 
 ;; Copyright (C) 2008-2010 José Alfredo Romero L.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
+;; Created: 20 Aug 2008
+;; Version: 1
+;; RCS Version: $Rev: 309 $
 ;; Keywords: Sunrise Commander Emacs File Manager Accessibility Viewer
+;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
+;; Compatibility: GNU Emacs 22+
+
+;; This file is *NOT* part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
@@ -33,7 +38,7 @@
 ;; together, if you're using the Buttons extension remove  it  first  from  your
 ;; .emacs file.
 
-;; This is version 1 $Rev: 288 $ of the Sunrise Commander PopViewer Extension.
+;; This is version 1 $Rev: 309 $ of the Sunrise Commander PopViewer Extension.
 
 ;; This  piece  of code is still in alpha stage. If you find it useful and think
 ;; you may contribute to it with suggestions of even more code,  please  let  me
@@ -97,3 +102,5 @@
   (select-frame-by-name "Sunrise Viewer Frame"))
 
 (provide 'sunrise-x-popviewer)
+
+;;; sunrise-x-popviewer.el ends here.

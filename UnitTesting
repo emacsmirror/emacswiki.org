@@ -8,13 +8,13 @@ A '''unit test''' is a piece of a code that checks the correctness of some other
 
 Various '''testing frameworks''' simplify the task of writing and running tests. The following terms are commonly encountered:
 
-* '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it isn't (the comparison returns ##nil##), ##assert## signals an error.
+* '''Assertion:''' a statement that verifies that something is true. In <tt>[CommonLispForEmacs cl]</tt>-extended Elisp, ##(assert (= (+ 2 2) 4))## verifies that "2 + 2 = 4"; if it wasn't (the comparison returned ##nil##), ##assert## would signal an error.
 * '''Test:''' a function that executes one or more assertions in order to verify assumptions about a code unit. A common approach is to feed certain values into the tested function and compare the output with expected output. If there is a discrepancy, the assertion signals an error and the test fails.
 * '''Test suite:''' a collection of tests. Grouping tests may be useful for separating time-consuming tests from the rest. (The object implementing the suite is often called the "test case".)
 * '''Mock/stub:''' a stand-in for actual code. A mock function for, say, "##download-webpage##" may return an appropriate value without actually connecting to the Web. In other words, "stubbing out" the external behavior is useful when testing a unit which depends on that function. (Roughly speaking, mocks and stubs do the same thing, but mocks are more sophisticated.)
-* '''Fixture:''' setting up (and tearing down) an environment for a test or a set of test cases.
+* '''Fixture:''' setting up (and tearing down) an environment for a test or a test suite.
 * '''Regression test:''' a test that exposes a bug, thereby validating the bugfix. If the bug should reappear, the test will detect it.
-* '''Test-Driven Developent''': a methodology that integrates repeated testing into the "development cycle".
+* '''Test-Driven Developent''': a methodology that emphasizes continual testing as part of the "development cycle".
 
 The precise meanings of these terms may vary, though there is some commonality among [http://en.wikipedia.org/wiki/XUnit xUnit]-like frameworks (like SUnit for Smalltalk, JUnit for Java, and lisp-unit for Common Lisp).
 
@@ -24,7 +24,7 @@ The following unit test frameworks exist for Emacs Lisp.
 
 === xUnit-like ===
 
-'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##.
+'''[http://github.com/masatake/ert/blob/master/ert.el ert.el]''' ([ErtTestLibrary Elisp Regression Testing]) by Christian M. Ohler provides facilities for defining and running test suites, reporting the results, and debugging test failures interactively. It provides ##should## as a more sophisticated alternative to ##assert##. See also ##ert2.el##, a set of extensions written by LennartBorgman and distributed with [[NxhtmlMode|nXhtml-mode]].
 
 '''ElkTest''' by Nikolaj Schumacher is inspired by JUnit for Java. It provides visual feedback with [[FringeHelper|fringe-helper.el]] and a number of specialized assertion macros like ##assert-equal##, ##assert-nil##, etc.
 

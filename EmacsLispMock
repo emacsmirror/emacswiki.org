@@ -1,10 +1,10 @@
-Emacs Lisp Mock is a DSL based mock/stub framework. It is easy to use. Usage is shown by EmacsLispExpectations.
+'''!EmacsLispMock''' is a DSL based mock/stub framework. It is easy to use and works with EmacsLispExpectations.
 
 Lisp:el-mock.el
 
-Emacs Lisp Mock is a library for mocking and stubbing using readable syntax. Most commonly Emacs Lisp Mock is used in conjunction with Emacs Lisp Expectations, but it can be used in other contexts.
+A '''mock''' is a temporary stand-in for another function. (A ''stub'' is likewise, but simpler.) !EmacsLispMock provides mocking and stubbing with readable syntax. It is commonly used in conjunction with EmacsLispExpectations (for [[UnitTesting|unit testing]]), but can be used in other contexts too.
 
-'''Emacs Lisp Mock provides two scope interface of mock and stub: `with-mock' and `mocklet'.''' `with-mock' only defines a scope. `mocklet' is more sophisticated interface than `with-mock': `mocklet' defines local mock and stub like `let', `flet', and `macrolet'.
+!EmacsLispMock provides two "scope" interfaces for mocks and stubs: `with-mock' and `mocklet'. `with-mock' only defines a scope. `mocklet' is more sophisticated and defines local mocks and stubs in the manner of `let', `flet', and `macrolet'.
 
 == with-mock ==
 

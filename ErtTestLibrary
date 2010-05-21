@@ -2,7 +2,9 @@
 
 If you want to use ##ert.el##, there are examples at the end of the file that are used for testing ##ert.el## itself.
 
-You can also find examples in [NxhtmlMode nXhtml-mode], which uses a slightly modified version for tests.
+== Extensions ==
+
+LennartBorgman has written ##ert2.el## ("additions to ##ert.el##"), which contains functions for emulating the command loop and setting up a file/buffer to play with. It is distributed with [[NxhtmlMode|nXhtml-mode]], in the ##tests## subfolder.
 
 == Discussion ==
 

@@ -806,5 +806,35 @@ I expect that this will fail if you are running multiple servers.
 
 -- Noah Hoffman
 
+== Piping into an Emacs buffer using emacsclient ==
+
+There is a script example about this issue at GnuClient, however that is using gnudoit, thus I though of sharing my solution for emacsclient.
+Being inspired by the mentioned script this solution also uses perl.
+
+<pre>
+#! /usr/bin/perl
+
+# This script uses emacsclient, be sure to have a running server session.
+# A server-session can be started by "M-x server-start".
+
+my $status = system("emacsclient -n --eval '(progn (pop-to-buffer (get-buffer-create \"*piped*\")))'");
+if($status!=0){ exit 1; }
+while(<STDIN>){ 
+     system("emacsclient -n --eval '(with-current-buffer \"*piped*\" (insert \"" . $_ . "\"))'");
+}
+</pre>
+
+This script inserts the piped content line by line into your emacs server, creating (if not already open) a buffer called <code>*piped*</code>.
+
+Usage: Put the shown script into a file (you might want to call it "emacs-pipe") and save it in your PATH (e.g. move it to /usr/bin/). Do not forget to make it executable (by chmod ugo+x emacs-pipe).
+
+Now you can experience the beauty of:
+
+<pre>
+echo "This will go into my emacs! :)" | emcas-pipe
+</pre>
+
+-- hf & gl erazortt
+
 ----
 CategoryExternalUtilities

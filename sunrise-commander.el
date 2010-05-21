@@ -1,10 +1,17 @@
-;;; sunrise-commander.el  --  Two-pane file manager for Emacs based on Dired and
-;;  inspired by MC.
+;;; sunrise-commander.el --- Two-pane file manager for Emacs based on Dired and inspired by MC.
 
 ;; Copyright (C) 2007-2010 José Alfredo Romero Latouche.
 
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
+;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
+;; Created: 24 Sep 2007
+;; Version: 4
+;; RCS Version: $Rev: 309 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
+;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
+;; Compatibility: GNU Emacs 22+
+
+;; This file is *NOT* part of GNU Emacs.
 
 ;; This program is free software: you can redistribute it and/or modify it under
 ;; the terms of the GNU General Public License as published by the Free Software
@@ -139,7 +146,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 308 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 309 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1042,7 +1049,10 @@ automatically:
   (if (buffer-live-p other-window-scroll-buffer)
       (switch-to-buffer other-window-scroll-buffer)
     (let ((start (current-buffer)))
-      (while (and start (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode)))
+      (while (and
+              start
+              (or (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+                  (memq (current-buffer) (list sr-left-buffer sr-right-buffer))))
         (bury-buffer)
         (if (eq start (current-buffer)) (setq start nil)))))
 
@@ -1600,11 +1610,9 @@ automatically:
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for dired-do-marked-files."
   (interactive "P")
-  (unwind-protect
-      (let ((files (dired-get-marked-files)))
-        (unless noselect (sr-quit))
-        (dired-simultaneous-find-file files noselect))
-    (unless noselect (sr-quit))))
+  (let ((files (dired-get-marked-files)))
+    (unless noselect (sr-quit))
+    (dired-simultaneous-find-file files noselect)))
 
 ;;; ============================================================================
 ;;; Graphical interface interaction functions:

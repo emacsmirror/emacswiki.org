@@ -26,3 +26,8 @@ Just beginning to collect resources.  I couldn't archive copies of these files i
 
 [new]
 FYI, there are copies of these files in [[EmacsW32]] (which I am going to upload to Launchpad when I get time).
+
+[new]
+I've updated Powershell.el, with a copyright and proper license, as well as some tightening of the code. 
+20 May 2010.   -- DinoChiesa
+

@@ -42,11 +42,19 @@ and import it from your DotEmacs like so:
 
 You can control options of JSLint by using special comments in your source code which are described in the documentation [http://www.jslint.com/lint.html].  For example, the following is the same as using the recommended options on jslint.com, and also the assume a browser option.  It also defines the name !MochiKit, which is imported elsewhere.
 
+
 <pre>
 /*jslint browser: true, undef: true, eqeqeq: true, nomen: true, white: true */
 
 /*global MochiKit */
 </pre>
+
+
+[new]
+
+Seems like you really want <code>(flymake-mode 1)</code> in that hook, not <code>(flymake-mode t)</code>.  According to the documentation, to turn on the minor mode explicitly requires that the arg be *positive*, not non-nil.  --DinoChiesa
+
+
 
 == With JSLint server on node.js (lintnode) ==
 
@@ -166,5 +174,23 @@ I get a lot of errors on the first line, like
   etc.
 
 That is this?
+
+== With JSLint on Windows using Cscript.exe ==
+
+There's no need for Rhino on Windows; Windows has a built-in Javascript engine in WSH.  And Douglas Crockford, creator of jslint, provides [http://www.jslint.com/wsh/ a release of jslint built specifically for WSH].
+
+There is also a [http://code.google.com/p/jslint-for-wsh/source/browse/#svn/trunk flymake-for-jslint-for-wsh.el], built to use jslint within WSH. 
+
+
+A sample of using jslint-for-wsh.js as a "compile" command in emacs:
+
+http://i49.tinypic.com/11kuypx.jpg
+
+A sample of using jslint-for-wsh in emacs, with flymake-for-jslint : 
+
+http://i47.tinypic.com/2mk1eh.jpg
+
+
+
 ----
 FlyMake

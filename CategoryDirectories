@@ -44,7 +44,8 @@ Click the heading to search for all pages related to manipulating files and dire
 * Norton Commander and Midnight Commander clones written for emacs:
 ** MidnightCommanderMode
 ** NortonCommanderMode
-** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.* SystemTrash - Set up emacs to use the same trash can as GNOME and KDE (the freedesktop.org trash spec)
+** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
+* SystemTrash - Set up emacs to use the same trash can as GNOME and KDE (the freedesktop.org trash spec)
 ----
 [new]
 Some of these packages, including lslisp, do not seem to be in xemacs

@@ -161,29 +161,16 @@ makes it easy to update a nearby bookmark (e.g. relocate it).  With a [[numeric 
 
 * You can edit a bookmark (its name and file name/location).
 
-* A popup menu is available on '''`mouse-3'''', with actions for the
+* Extensive [[#MenuScreenshots|menus]] are available, for easy access to most actions.
+
+** A complete [[menu bar]] menu, '''[[#BookmarkPlusMenu|Bookmark+]]''', is provided for the `##Bookmark List##' display.
+Use it, in particular, when you don't remember a key binding.
+The same menu is available on '''`C-mouse-3''''. It has submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command'''.
+
+** In the `##Bookmark List##' display, a '''`mouse-3'''' [[#Mouse3PopupMenu|popup menu]] has actions for the
 individual bookmark you point to.
 
-:: [[image:BookmarkPlusThisBookmarkMenu]]
-
-* A complete menu, '''`Bookmark+'''', is provided on the [[menu bar]].
-Use it, in particular, when you don't remember a key binding.
-The same menu is available on '''`C-mouse-3''''.
-
-
-:: [[image:BookmarkPlusMenuBarMenu]]
-
-: It has submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command''':
-
-;;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
-;;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
-;;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
-;;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
-;;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
-;;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
-;;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
-
-* The vanilla '''Bookmarks''' menu, which is typically a submenu of the '''Edit''' menu-bar menu, is modified by adding several items from the '''`Bookmark+'''' menu, including the '''Jump To''' submenu (called '''Jump To Bookmark''' there).
+** The vanilla '''[[#VanillaBookmarksMenu|Bookmarks]]''' menu, which is typically a submenu of the '''Edit''' menu-bar menu, is modified by adding several items from the '''`Bookmark+'''' menu, including the '''Jump To''' submenu (called '''Jump To Bookmark''' there).
 
 
 
@@ -1366,7 +1353,65 @@ Bottom line: Use '''Bookmark+''' to access bookmarks created using
 '''Bookmark+'''.
 
 
-==Comments==
+
+
+
+
+
+[:MenuScreenshots]
+== Menu Screenshots ==
+
+Here are screenshots of the various '''Bookmark+''' menus. Using the menus is a good way to learn some of the features (and their key bindings).
+
+
+[:Mouse3PopupMenu]
+=== `mouse-3' Popup Menu in `*Bookmark List*' ===
+
+It has actions for the individual bookmark you point to when you pop it up.
+
+:: [[image:BookmarkPlusThisBookmarkMenu]]
+
+
+[:BookmarkPlusMenu]
+=== Bookmark+ Menu-Bar Menu in `*Bookmark List*' ===
+
+The same menu is available on '''`C-mouse-3''''.
+
+:: [[image:BookmarkPlusMenuBarMenu]]
+
+It has submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command''':
+
+;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
+;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
+;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
+;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
+;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
+;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]
+;; '''Define Command''': [[image:BookmarkPlusMenuBarMenuDefineCommand]]
+
+
+
+[:VanillaBookmarksMenu]
+=== Vanilla Bookmarks Menu ===
+
+The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the '''Edit''' [[menu bar]] menu.  '''Bookmark+''' modifies it by adding several items from the '''`Bookmark+'''' menu (in buffer `##*Bookmark List*##'), including the '''Jump To Bookmark''' submenu (called just '''Jump To''' in `##*Bookmark List*##').
+
+:: [[image:BookmarkPlusBookmarkMenuBarMenu]]
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+== Discussion ==
 [new]
 I am finding this very useful, but it would be nice if there was a quicker way to add tags, e.g. similar to org-mode's C-c C-c C-c method. -- JoeBloggs
 

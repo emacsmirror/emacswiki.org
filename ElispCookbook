@@ -121,6 +121,9 @@ The basic idea is to convert forms to strings with `prin1-to-string' and convert
 
 This only works in the simplest cases.  Unfortunately, this doesn't work for all Emacs data types for programming or the editor.
 
+  (read (prin1-to-string (make-hash-table))) ;; Error before Emacs 23.
+    ==> #s(hash-table size 65 test eql rehash-size 1.5 [...] data ())
+
   (read (prin1-to-string (current-buffer)))
     ==> Lisp error: (invalid-read-syntax "#")
 
@@ -504,9 +507,15 @@ association list.  Here are cases when the car values are strings.
 
 Deleting:
 
-(let ((alist '(("a" . 1) ("b" . 2))))
-  (delq (assoc "a" alist) alist))
-==> (("b" . 2))
+  (let ((alist '(("a" . 1) ("b" . 2))))
+    (delq (assoc "a" alist) alist))
+  ==> (("b" . 2))
+
+Matches with a test function other than `equal':
+
+  (let ((alist '(("ab" . 1) ("bc" . 2) ("cd" . 3))))
+    (assoc-default "c" alist (lambda (x y) (string-match y x))))
+  ==> 2
 
 === Vectors ===
 

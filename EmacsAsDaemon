@@ -274,7 +274,7 @@ determines the user by its name, so you create a symbolic link
 This may be added to the boot sequence (and will run under the user's
 privileges)
 
-: rc-update add emacs.''username''
+: rc-update add emacs.''username'' default
 
 Further customizations can be done through the
 <code>/etc/conf.d/emacs</code> file, which is extensively commented.
