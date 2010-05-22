@@ -27,6 +27,8 @@ Lisp:descbinds-anything.el Yet another describe bindings with anything.
 
 Lisp:anything-slime.el Anything-sources and some utilities for [[SlimeMode]].
 
+Lisp:anything-R.el Anything-sources  for [[ESS]].
+
 === Completion ===
 Lisp:anything-complete.el replaces various completion with anything (like [[Icicles]]). Use Anything power for normal completion. Lisp:anything-match-plugin.el is needed.
 

@@ -27,6 +27,8 @@ Where "edit" is the small script above. The key is the "" for alternate-editor. 
 
 OweAndersson : Think this works fine, only I get a warning: "Emacsclient ERROR, No connection could be made because the target machine actively refused it"
 
+RobDavenport : Owe - I believe that error means the file ~/.emacs.d/server/server is for an old emacs process.  I delete that file and then it works. (On Windows at least.)
+
 === Windows ===
 Create an emacs.bat file in your Emacs "bin" directory. (Perhaps something like "\Program Files\emacs-23.1\bin" if you've used an installer.) Add the following commands:
 
@@ -806,7 +808,7 @@ I expect that this will fail if you are running multiple servers.
 
 -- Noah Hoffman
 
-== Piping into an Emacs buffer using emacsclient ==
+== Piping stdout to an Emacs buffer using emacsclient ==
 
 There is a script example about this issue at GnuClient, however that is using gnudoit, thus I though of sharing my solution for emacsclient.
 Being inspired by the mentioned script this solution also uses perl.
@@ -836,5 +838,8 @@ echo "This will go into my emacs! :)" | emcas-pipe
 
 -- hf & gl erazortt
 
+[new]
+Nice, but this does not work on w32.
+However I think on must platforms (including w32) you can pipe to putclip instead and just paste into a buffer in Emacs.
 ----
 CategoryExternalUtilities

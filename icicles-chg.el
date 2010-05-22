@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue May 18 11:22:42 2010 (-0700)
+;; Last-Updated: Fri May 21 13:42:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5328
+;;     Update #: 5332
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/21 dadams
+;;     icicle-bookmark-help-string:
+;;       Use BOOKMARK-NAME, not BMK, as arg to vanilla fns, for Emacs < 23.  Thx to Alexander Haeckel.
 ;; 2010-05-18 dadams
 ;;     Added: icicle-cd-for-abs-files, icicle-cd-for-loc-files.
 ;;     icicle-find-file-absolute*, icicle-locate-file*: Bind C-c C-d to icicle-cd-for-(abs|loc)-files.

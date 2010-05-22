@@ -12,7 +12,7 @@ Version: 0.5, Author: Vivek Sharma, Date: Oct 2008
 
 == Powershell as an Inferior Shell == 
 
-Download Lisp:Powershell.el 
+Download Lisp:Powershell.el  (updated 20 May 2010)
 
 * [http://Nabble.com/Run-powershell-as-a-shell-within-Emacs-on-Windows-td17504130.html News Item]
 * [http://Blogs.MSDN.com/dotnetinterop/archive/2008/04/10/run-powershell-as-a-shell-within-emacs.aspx Blog post]

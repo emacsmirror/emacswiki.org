@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 18 10:33:07 2010 (-0700)
+;; Last-Updated: Fri May 21 13:50:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21003
+;;     Update #: 21012
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3580,12 +3580,13 @@ You probably don't want to use this.  Use
 
 (defun icicle-bookmark-help-string (bookmark-name)
   "Return a help string for BOOKMARK-NAME." ; `bookmarkp-*' functions are defined in `bookmark+.el'.
+  ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
   (let* ((bmk         (bookmark-get-bookmark bookmark-name))
          (buf         (and (fboundp 'bookmarkp-get-buffer-name) (bookmarkp-get-buffer-name bmk)))
-         (file        (bookmark-get-filename bmk))
-         (start       (bookmark-get-position bmk))
+         (file        (bookmark-get-filename bookmark-name))
+         (start       (bookmark-get-position bookmark-name))
          (end         (and (fboundp 'bookmarkp-get-end-position) (bookmarkp-get-end-position bmk)))
-         (annot       (bookmark-get-annotation bmk))
+         (annot       (bookmark-get-annotation bookmark-name))
          (sequence-p  (and (fboundp 'bookmarkp-sequence-bookmark-p)
                            (bookmarkp-sequence-bookmark-p bmk)))
          (function-p  (and (fboundp 'bookmarkp-function-bookmark-p)
@@ -5313,6 +5314,7 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
 (defun icicle-cd-for-abs-files (dir)
   "Change `default-directory' during `icicle-find-file-absolute'."
   (interactive
+   ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
    (let ((minibuffer-completion-predicate  minibuffer-completion-predicate))
      (list (funcall (if (fboundp 'read-directory-name)
                         #'read-directory-name
@@ -5776,6 +5778,7 @@ a while)..." dir)))
 (defun icicle-cd-for-loc-files (dir)
   "Change `default-directory' during `icicle-locate-file'."
   (interactive
+   ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
    (let ((minibuffer-completion-predicate  minibuffer-completion-predicate))
      (list (funcall (if (fboundp 'read-directory-name)
                         #'read-directory-name

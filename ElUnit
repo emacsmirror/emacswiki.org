@@ -56,17 +56,15 @@ Please add. I'd like to get as much input here as I can so this can be useful to
 
 Thanks. -- PhilHagelberg
 
-[new]
-In my own elisp unit tests, I use assert in the code, thus making sure they disappear from the compiled code. Having them in the source code makes sure that I, as a developer, will run them always, whenever I load the file. -- AlexSchroeder
+----
 
-[new]
-Alex: that's a great plan for simpler embedded tests. However, what I'm targetting here is tests that require more setup and context. You want to be able to test all the edge cases at once and see immediately a report that all's well or you caused X test failures. I see that wasn't made clear by my example; I will ammend that. -- PhilHagelberg
+In my own Elisp unit tests, I use ##assert## in the code, thus making sure they disappear from the compiled code. Having them in the source code makes sure that I, as a developer, will run them always, whenever I load the file. -- AlexSchroeder
 
-[new]
-There's nothing in it that precludes complex setup for a suite of tests -- just wrap as appropriate and run multiple tests. But my style will not do any reporting, that's true. Perhaps my elisp projects were never complex enough... -- AlexSchroeder
+: Alex: that's a great plan for simpler embedded tests. However, what I'm targeting here is tests that require more setup and context. You want to be able to test all the edge cases at once and see immediately a report that all's well or you caused ''X'' test failures. I see that wasn't made clear by my example; I will amend that. -- PhilHagelberg
 
-[new]
-The other reason I prefer this approach is that it makes test-driven development possible. If your tests are well-written, they can serve as a kind of API documentation and examples for how your functions should be used. (I've found this very helpful in other languages.) Also, I think there are some tasks associated with test setup that it would be helpful to have functions for, such as save-buffer-excursion. I think it just boils down to different development styles. -- PhilHagelberg
+:: There's nothing in it that precludes complex setup for a suite of tests -- just wrap as appropriate and run multiple tests. But my style will not do any reporting, that's true. Perhaps my Elisp projects were never complex enough ... -- AlexSchroeder
+
+::: The other reason I prefer this approach is that it makes test-driven development possible. If your tests are well-written, they can serve as a kind of API documentation and examples for how your functions should be used. (I've found this very helpful in other languages.) Also, I think there are some tasks associated with test setup that it would be helpful to have functions for, such as ##save-buffer-excursion##. I think it just boils down to different development styles. -- PhilHagelberg
 
 [new]
 Here is a nice thing to put in your unit-testing scripts. I think it's self-explanatory.
