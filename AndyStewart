@@ -398,6 +398,9 @@ I wish you'd elaborate. How is elisp not powerful enough? What are you migrating
 
 :: That's OK, didn't mean any offense. Thank you for your many contributions, and good luck. :)
 
+[new:jsyjr:2010-05-22]
+While Andy has every right to remain mum regarding his opinion of elisp there is ample evidence that he has taken an interest in Haskell.  -- JohnYates
+
 [new:rubikitch:2009-05-01 22:07 UTC]
 I want to take over AutoInstall. Thank you for evolving InstallElisp. And I would
 merge Lisp:anything-auto-install.el and Lisp:anything-yaoddmuse.el into

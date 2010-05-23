@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 19 17:01:46 2010 (-0700)
+;; Last-Updated: Sat May 22 23:55:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12212
+;;     Update #: 12218
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1296,6 +1296,10 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/22 dadams
+;;     *-this-buffer-p: Return nil for bookmarks not really associated with a buffer.
+;;     *-default-handler, *-goto-position: Forgot comma to eval file-name when no-such-file error.
+;;     *-show-annotation: Bind buffer-read-only to nil for updating.
 ;; 2010/05/19 dadams
 ;;     Added: bookmarkp-this-buffer-bmenu-list.  Bound to `C-x p .'.
 ;;     menu-bar-bookmark-map:

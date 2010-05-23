@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May 15 07:48:57 2010 (-0700)
+;; Last-Updated: Sat May 22 09:46:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26962
+;;     Update #: 26964
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2859,7 +2859,9 @@
 ;;
 ;;  `M-RET' (`icicle-candidate-read-fn-invoke') during completion
 ;;  provides a typeless object-action interaction, which is always
-;;  available.  This is similar to the action choice provided for some
+;;  available.  (You can also use `ESC RET' or `ESC C-m'.)
+;;
+;;  This is similar to the action choice provided for some
 ;;  commands by `C-S-RET', except that there is no notion of the
 ;;  current object type - you can choose from among all Emacs-Lisp
 ;;  functions.

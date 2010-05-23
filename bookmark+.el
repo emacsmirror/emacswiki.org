@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 19 16:55:41 2010 (-0700)
+;; Last-Updated: Sat May 22 23:50:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12697
+;;     Update #: 12704
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1970,7 +1970,7 @@ Return nil or signal `file-error'."
             (unless (or (and buf (get-buffer buf))
                         (and bufname (get-buffer bufname) (not (string= buf bufname))))
               (signal 'file-error `("Jumping to bookmark" "No such file or directory"
-                                    (bookmark-get-filename bmk)))))
+                                    ,(bookmark-get-filename bmk)))))
           (set-buffer (or buf bufname))
           (when bookmarkp-jump-display-function
             (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer)))
@@ -2311,6 +2311,7 @@ bookmark files that were created using the bookmark functions."
 ;; Do not `save-excursion' (makes no sense, since we `pop-to-buffer').
 ;; Raise error if no annotation.
 ;; Use `view-mode'.  `q' uses `quit-window'.
+;; Bind `buffer-read-only' to nil since existing buffer is in View mode.
 ;; Fit frame to buffer if `one-windowp'.
 ;;
 (defun bookmark-show-annotation (bookmark &optional msgp)
@@ -2321,10 +2322,12 @@ bookmark files that were created using the bookmark functions."
     (if (not (and ann (not (string-equal ann ""))))
         (when msgp (message "Bookmark has no annotation"))
       (pop-to-buffer (get-buffer-create (format "*`%s' Annotation*" bmk-name)) t)
-      (delete-region (point-min) (point-max))
-      (insert (concat "Annotation for bookmark '" bmk-name "':\n\n"))
-      (put-text-property (line-beginning-position -1) (line-end-position 1) 'face 'bookmarkp-heading)
-      (insert ann)
+      (let ((buffer-read-only  nil))
+        (delete-region (point-min) (point-max))
+        (insert (concat "Annotation for bookmark '" bmk-name "':\n\n"))
+        (put-text-property (line-beginning-position -1) (line-end-position 1)
+                           'face 'bookmarkp-heading)
+        (insert ann))
       (goto-char (point-min))
       (view-mode-enter (cons (selected-window) (cons nil 'quit-window)))
       (when (fboundp 'fit-frame-if-one-window) (fit-frame-if-one-window)))))
@@ -5105,8 +5108,14 @@ with handlers (Info, Gnus, and W3M)."
     (and rem-file  (or (not handler) (eq handler 'bookmarkp-jump-dired)))))
 
 (defun bookmarkp-this-buffer-p (bookmark)
-  "Return non-nil if BOOKMARK's buffer is the current buffer."
-  (equal (bookmarkp-get-buffer-name bookmark) (buffer-name)))
+  "Return non-nil if BOOKMARK's buffer is the current buffer.
+But return nil for bookmarks, such as desktops, that are not really
+associated with a buffer, even if they have a `buffer-name' entry."
+  (and (equal (bookmarkp-get-buffer-name bookmark) (buffer-name))
+       (not (bookmarkp-desktop-bookmark-p bookmark))
+       (not (bookmarkp-sequence-bookmark-p bookmark))
+       (not (bookmarkp-function-bookmark-p bookmark))
+       (not (bookmarkp-varlist-bookmark-p bookmark))))
 
 (defun bookmarkp-this-file-p (bookmark)
   "Return non-nil if BOOKMARK's filename is the current (absolute) file name."
@@ -6662,7 +6671,7 @@ position, and the context strings for the position."
     ;; No file found.  See if a non-file buffer exists for this.  If not, raise error.
     (unless (or (and buf (get-buffer buf))
                 (and bufname (get-buffer bufname) (not (string= buf bufname))))
-      (signal 'file-error `("Jumping to bookmark" "No such file or directory" file))))
+      (signal 'file-error `("Jumping to bookmark" "No such file or directory" ,file))))
   (set-buffer (or buf bufname))
   (when bookmarkp-jump-display-function
     (save-current-buffer (funcall bookmarkp-jump-display-function (current-buffer))))

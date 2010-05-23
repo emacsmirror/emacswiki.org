@@ -57,20 +57,20 @@ The following libraries complete text in place (in a buffer other than the minib
 * CompleteFileName -- Complete a file name when writing it in a buffer.
 * Thinking Machines' completion system TmcCompletion -- complete with M-RET based on buffer contents and auto-saved dictionary.  Simple to use, not invasive, and useful.  Focused on programming language completion, but useful for human languages as well.
 * MagpieExpansion provides a method for copying useful bits of text from the buffer to where you are editing. In particular, it provides dynamic expansion of acronyms to phrases previously typed. The code can be found in Lisp:magpie.el
-* CompanyMode -- Popup-menu completion which can get completions from multiple sources, including semantic (for C/C++), eclim (for Java), Xcode (for Objective C), Rope (for Python).
+* CompanyMode -- Popup-menu completion which can get completions from multiple sources, including Semantic/CEDET (for C/C++), eclim (for Java), Xcode (for Objective C), Rope (for Python).
 * AutoComplete -- Completion based on popup menu.
 * AutoCompletePlus -- Enhancement of AutoComplete.
 * DynamicAbbreviationsInMiddle -- Like DynamicAbbreviations, but works in the middle (and at the beginning/end) of a word instead of only at the end
 * CaMode -- Ca2+ is based on CompanyMode, similar sources to AutoComplete, but with features you've never seen before :)
-Sources for dabbrev, filenames, yasnippet, elisp, gtags and semantic are included. Notable features are tab-cycling through available sources, subword matching, insertion of function arguments as ad-hoc generated yasnippet template (with semantic), sorting by occurrence of words in current buffer and C-h shows description for candidates while selecting (only for elisp currently). Code is hosted on github: [http://github.com/jeffdameth/ca2/tree/master Ca2+] 
+Sources for dabbrev, filenames, yasnippet, elisp, gtags and Semantic/CEDET are included. Notable features are tab-cycling through available sources, subword matching, insertion of function arguments as ad-hoc generated yasnippet template (with Semantic/CEDET), sorting by occurrence of words in current buffer and C-h shows description for candidates while selecting (only for elisp currently). Code is hosted on github: [http://github.com/jeffdameth/ca2/tree/master Ca2+] 
 
 
 
 === Programming-Specific Completion ===
 
+* HowSemanticFulfillsThoseNeeds -- Semantic (part of CEDET, which is part of Emacs from version 23.2) can "intellisense" style completion, but someone has to tell it how for different programming languages. (Different completion interfaces can display this information. Search for CEDET on this page.)
 * EmacsTags -- Command `complete-tag' (from `<code>etags.el</code>') -- Completes to a defined ''tag'' (that is, a defined name, such as function or variable name).
 * [[Icicles - Other Search Commands#IciclesImenu]] -- Like ImenuMode with regexp completion. Across multiple buffers, files, and saved regions, like EmacsTags.
-* HowSemanticFulfillsThoseNeeds -- "smart" completion of program identifiers.
 * ProgrammableCompletion -- Command `pcomplete' (from `<code>pcomplete.el</code>') -- Completes function ''arguments''.
 * NxmlMode and its derivative nxhtml-mode in [NxhtmlMode nXhtml] provides context sensitive completion and validation for XML/XHTML.
 

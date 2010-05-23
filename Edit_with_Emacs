@@ -5,6 +5,8 @@ Edit with Emacs is an extension for editing text areas in [[Google Chrome]].
 
 == Tips and Tricks ==
 
+* If you use proxy, you may need to add "--proxy-bypass-list=127.0.0.1:9292" parameter to chrome command line.
+
 === Customisation ===
 
 The extension has a number of variables that allow various behaviours to be customised. Currently they are:

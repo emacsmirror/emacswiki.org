@@ -1,12 +1,9 @@
 ;;; notify.el --- notification frontend
 
-;; as of 4/2010 this library doesn't seem to work - you can use
-;; notify.el from the elim project instead -
-;; http://git.savannah.gnu.org/cgit/elim.git/tree/elisp/notify.el
-
 ;; Copyright (C) 2008  Mark A. Hershberger
 
 ;; Original Author: Mark A. Hershberger <mhersberger@intrahealth.org>
+;; Modified by Andrey Kotlarski <m00naticus@gmail.com>
 ;; Keywords: extensions, convenience, lisp
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -26,78 +23,99 @@
 
 ;;; Commentary:
 
-;; This provides a single function, notify, that will produce a notify
-;; pop-up via DBus.
-
+;; This provides a single function, `notify', that will produce a notify
+;; pop-up via D-Bus, libnotify or simple message.
+;; To use, just put (autoload 'notify "notify" "Notify TITLE, BODY.")
+;;  in your init file.  You may override default chosen notification
+;;  method by assigning `notify-method' to one of 'notify-via-dbus
+;; 'notify-via-shell or 'notify-via-message
 ;;; Code:
 
-(defvar notify-last '(0 0 0))
+(defvar notify-defaults (list :app "Emacs" :icon "emacs" :timeout 5000
+			      :urgency "low"
+			      :category "emacs.message")
+  "Notification settings' defaults.
+May be overrided with key-value additional arguments to `notify'.")
+(defvar notify-delay '(0 5 0)
+  "Minimum time allowed between notifications in time format.")
+(defvar notify-last-notification '(0 0 0) "Time of last notification.")
+(defvar notify-method nil "Notification method among
+'notify-via-dbus, 'notify-via-shell or 'notify-via-message.")
 
-(defvar notify-defaults
-  (list :app "GNU Emacs"
-        :icon "/usr/share/icons/emacs22/emacs_48.png"
-        :timeout 10000
-        :urgency "low"
-        :category "emacs.message"))
+;; determine notification method unless already set
+;; prefer D-Bus > libnotify > message
+(cond
+ ((null notify-method)
+  (setq notify-method
+	(cond
+	 ((and (require 'dbus nil t)
+	       (dbus-ping :session "org.freedesktop.Notifications"))
+	  (defvar notify-id 0 "Current D-Bus notification id.")
+	  'notify-via-dbus)
+	 ((executable-find "notify-send") 'notify-via-shell)
+	 (t 'notify-via-message))))
+ ((eq notify-method 'notify-via-dbus) ;housekeeping for prechosen DBus
+  (if (and (require 'dbus nil t)
+	   (dbus-ping :session "org.freedesktop.Notifications"))
+      (defvar notify-id 0 "Current D-Bus notification id.")
+    (setq notify-method (if (executable-find "notify-send")
+			    'notify-via-shell
+			  'notify-via-message))))
+ ((and (eq notify-method 'notify-via-shell)
+       (not (executable-find "notify-send"))) ;housekeeping for prechosen libnotify
+  (setq notify-method
+	(if (and (require 'dbus nil t)
+		 (dbus-ping :session "org.freedesktop.Notifications"))
+	    (progn
+	      (defvar notify-id 0 "Current D-Bus notification id.")
+	      'notify-via-dbus)
+	  'notify-via-message))))
 
-(defvar notify-id 0)
+(defun notify-via-dbus (title body)
+  "Send notification with TITLE, BODY `D-Bus'."
+  (dbus-call-method :session "org.freedesktop.Notifications"
+		    "/org/freedesktop/Notifications"
+		    "org.freedesktop.Notifications" "Notify"
+		    (get 'notify-defaults :app)
+		    (setq notify-id (+ notify-id 1))
+		    (get 'notify-defaults :icon) title body '(:array)
+		    '(:array :signature "{sv}") ':int32
+		    (get 'notify-defaults :timeout)))
 
-(defvar notify-delay '(0 5 0))
+(defun notify-via-shell (title body)
+  "Notify with TITLE, BODY via `libnotify'."
+  (shell-command (concat "notify-send '" title "' '" body
+			 "' -t " (number-to-string
+				  (get 'notify-defaults :timeout))
+			 " -i '" (get 'notify-defaults :icon)
+			 "' -u " (get 'notify-defaults :urgency)
+			 " -c " (get 'notify-defaults :category))))
 
-(defvar notify-last-notification '(0 5 0))
-
-;; We could set up other notification methods like notify-via-shell or
-;; notify-via-pointer
-(defvar notify-method 'notify-via-dbus)
-
-(defun notify-next-id ()
-  "Return the next notification id."
-  (setq notify-id (+ notify-id 1)))
-
-(defun notify-via-dbus (title body params)
-  "Send notification via DBus."
-  (when (and (fboundp 'dbus-ping)
-             (dbus-ping :session "org.freedesktop.Notifications"))
-    (dbus-call-method :session "org.freedesktop.Notifications"
-                      "/org/freedesktop/Notifications"
-                      "org.freedesktop.Notifications" "Notify"
-                      (get 'params :app)
-                      (notify-next-id)
-                      (get 'params :icon)
-                      title
-                      body
-                      '(:array)
-                      '(:array :signature "{sv}")
-                      ':int32 (get 'params :timeout))))
-
-(defun notify (title body &rest args)
-  "Use pop-up notifications for events."
-  (when (and
-         (time-less-p notify-delay
-                      (time-since notify-last-notification))
-         (let ((params))
-           (keywords-to-properties 'params args notify-defaults)
-           (setq notify-last-notification (current-time))
-           (funcall notify-method title body params)))))
+(defun notify-via-message (title body)
+  "Notify TITLE, BODY with a simple message."
+  (message "%s: %s" title body))
 
 (defun keywords-to-properties (symbol args &optional defaults)
-  "Convert a list in the form (:keywordA valueA
-                               :keywordB valueB ...)
-to a list of propertys with the given values"
-  (when (car-safe defaults)  ; probably need to avoid recursion
+  "Add to SYMBOL's property list key-values from ARGS and DEFAULTS."
+  (when (consp defaults)
     (keywords-to-properties symbol defaults))
   (while args
-      (let ((arg (car args)))
-	(setq args (cdr args))
-	(unless (symbolp arg)
-	  (error "Junk in args %S" args))
-	(let ((keyword arg)
-	      (value (car args)))
-	  (unless args
-	    (error "Keyword %s is missing an argument" keyword))
-	  (setq args (cdr args))
-          (put symbol keyword value)))))
+    (put symbol (car args) (cadr args))
+    (setq args (cddr args))))
+
+;;;###autoload
+(defun notify (title body &rest args)
+  "Notify TITLE, BODY via `notify-method'.
+ARGS may be amongst :timeout, :icon, :urgency, :app and :category."
+  (when (time-less-p notify-delay
+		     (time-since notify-last-notification))
+    (or (eq notify-method 'notify-via-message)
+	(keywords-to-properties 'notify-defaults args
+				notify-defaults))
+    (setq notify-last-notification (current-time))
+    (funcall notify-method title body)))
 
 (provide 'notify)
 
 ;;; notify.el ends here
+

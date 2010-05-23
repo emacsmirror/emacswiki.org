@@ -8,7 +8,7 @@ Ce que j'apprécie le plus dans EMACS, c'est:
 
 
 J'utilise EMACS principalement :
-* Comme un éditeur de LaTeX et Texinfo avec AUCTeX. 
+* Comme un éditeur de LaTeX et [http://www.emacswiki.org/emacs/Texinfo Texinfo] avec AUCTeX. 
 * Comme un calculateur scientifique avec Calc (voir AdvancedDeskCalculator, ce que j'aime le plus c'est la manipulation des unités, et la polonaise inverse) 
 * Comme un tableur avec SES (voir SimpleEmacsSpreadsheet)
 * Pour écrire du code Java avec JDEE (voir JavaDevelopmentEnvironment)

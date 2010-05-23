@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Mon May 17 14:54:29 2010 (-0700)
+;; Last-Updated: Sat May 22 09:40:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6499
+;;     Update #: 6529
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2629,7 +2629,8 @@ complete)"))
   (define-key map [(control f1)]             'icicle-help-on-candidate) ; `C-f1'
   (define-key map [(control meta f1)]        'icicle-help-on-candidate) ; `C-M-f1'
   (define-key map [(control meta return)]    'icicle-help-on-candidate) ; `C-M-RET'
-  (define-key map [(meta return)]            'icicle-candidate-read-fn-invoke) ; `M-RET'
+  (define-key map [(meta return)]            'icicle-candidate-read-fn-invoke) ;`M-RET' as `M-return'
+  (define-key map "\C-\M-m"                  'icicle-candidate-read-fn-invoke) ;`M-RET' as `ESC RET'
   (define-key map [(control shift return)]   'icicle-candidate-alt-action) ; `C-S-RET'
   (define-key map [delete]                   'icicle-remove-candidate) ; `delete'
   (define-key map [(shift delete)]           'icicle-delete-candidate-object) ; `S-delete'
@@ -2860,6 +2861,7 @@ MAP is `minibuffer-local-completion-map',
   (define-key map [(control meta f1)]        nil)
   (define-key map [(control meta return)]    nil)
   (define-key map [(meta return)]            nil)
+  (define-key map "\C-\M-m"                  nil)
   (define-key map [(control shift return)]   nil)
   (define-key map [delete]                   nil)
   (define-key map [(shift delete)]           nil)

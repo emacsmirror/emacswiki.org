@@ -109,6 +109,7 @@
 ;; `mon-split-string-buffer-parent-dir'       -> `mon-string-split-buffer-parent-dir'
 ;; `mon-split-string-buffer-parent-dir-quick' -> `mon-string-split-buffer-parent-dir-quick'
 ;; `*img-hash*'                               -> `*mon-img-hash*'    
+;; `mon-map-elisp-fileset'                    -> `mon-file-map-elisp-fileset'
 ;;
 ;; MOVED:
 ;; `*mon-artist-naf-path*'                    -> mon-dir-locals-alist.el
@@ -125,6 +126,7 @@
 ;; `mon-dired-up-directory-this-buffer'       <- mon-dir-utils-switches.el
 ;; `mon-w3m-dired-file'                       -> mon-url-utils.el
 ;; `mon-w3m-kill-url-at-point'                -> mon-url-utils.el
+;; `mon-map-elisp-fileset'                    <- mon-elisp-fileset.el
 ;;
 ;; REQUIRES:
 ;; 
@@ -157,6 +159,7 @@
 ;;
 ;; :FILE mon-time-utils.el
 ;; `mon-get-new-buffer-w-stamp' -> `mon-file-stamp-vrfy-put-eof', `mon-file-stamp'
+;; `mon-file-map-elisp-fileset' -> `mon-file-stamp'
 ;; :SEE (URL `http://www.emacswiki.org/emacs/mon-time-utils.el')
 ;;
 ;; TODO:
@@ -245,9 +248,9 @@ Image directories defined in global vars:\n
  `*mon-ebay-images-path*',`*mon-ebay-images-bmp-path*',`*mon-ebay-images-jpg-path*',
  `*mon-ebay-images-temp-path*'\n
 :CALLED-BY `mon-dir-hash-images', `mon-dir-try-comp', `mon-dir-hashed-complete'.\n
-:SEE-ALSO \n►►►.")
+:SEE-ALSO .\n►►►")
 ;;
-(when (not (bound-and-true-p *mon-img-hash*))
+(unless (bound-and-true-p *mon-img-hash*)
   (setq *mon-img-hash* (make-hash-table :test 'equal)))
 ;;
 ;;; :TEST-ME (boundp '*mon-img-hash*)
@@ -263,9 +266,9 @@ Image directories defined in global variable `*mon-nefs_photos_nefs-alist*':
  `*mon-ebay-images-path*', `*mon-ebay-images-bmp-path*', `*mon-ebay-images-jpg-path*',
  `*mon-ebay-images-temp-path*'\n
 :CALLED-BY `mon-dir-hash-images', `mon-dir-try-comp', `mon-dir-hashed-complete'.\n
-:SEE-ALSO \n►►►.")
+:SEE-ALSO .\n►►►")
 ;;
-(when (not (bound-and-true-p *mon-nef-img-hash*))
+(unless (bound-and-true-p *mon-nef-img-hash*)
   (setq *mon-nef-img-hash* (make-hash-table :test 'equal)))
 ;;
 ;;; :TEST-ME (assoc ".nef1" *mon-ebay-images-lookup-path*)
@@ -282,10 +285,10 @@ Image directories defined in global variables:
  `*mon-ebay-images-path*', `*mon-ebay-images-bmp-path*', `*mon-ebay-images-jpg-path*',
  `*mon-ebay-images-temp-path*'\n
 :CALLED-BY `mon-dir-hash-images', `mon-dir-try-comp', `mon-dir-hashed-complete'.\n
-:SEE-ALSO \n►►►.")
+:SEE-ALSO .\n►►►")
 
 ;;
-(when (not (bound-and-true-p *mon-bmp-img-hash*))
+(unless (bound-and-true-p *mon-bmp-img-hash*)
   (setq *mon-bmp-img-hash* (make-hash-table :test 'equal)))
 ;;
 ;;; :TEST-ME (assoc ".bmp" *mon-ebay-images-lookup-path*)
@@ -303,7 +306,7 @@ Image directories defined in global variables: \n
 :CALLED-BY `mon-dir-hash-images', `mon-dir-try-comp', `mon-dir-hashed-complete'.\n
 :SEE-ALSO .\n►►►")
 ;;
-(when (not (bound-and-true-p *mon-jpg-img-hash*))
+(unless (bound-and-true-p *mon-jpg-img-hash*)
   (setq *mon-jpg-img-hash* (make-hash-table :test 'equal)))
 ;;
 ;;; :TEST-ME *mon-jpg-img-hash*
@@ -326,51 +329,107 @@ Image directories defined in global variables: \n
 (defalias 'mon-file-rnm     'rename-file)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-04-06T12:45:36-04:00Z}#{10142} - by MON KEY>
-(defun mon-file-map-elisp-fileset (&optional to-fileset-file insrtp intrp)
+;;; :MODIFICATIONS <Timestamp: #{2010-05-22T17:06:35-04:00Z}#{10206} - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: #{2010-04-06T12:11:52-04:00Z}#{10142} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-08-21T18:02:47-04:00Z}#{09345} - by MON KEY>
+(defun* mon-file-map-elisp-fileset (&optional (to-fileset-file nil got-tff) insrtp intrp 
+                                              &rest these-dirs 
+                                              &aux (got-tff 
+                                                    (concat *mon-naf-mode-root* "/mon-elisp-fileset.el")))
   "Return the list of *.el files in local Emacs load files.\n
-Maps the values of follwing variables: 
- `*mon-emacs-root*', `*mon-naf-mode-root*', `*mon-ebay-tmplt-mode-root*'\n
-When TO-FILESET-FILE is non-nil write the return value to the file named:
- \(concat *mon-naf-mode-root* \"/mon-elisp-fileset.el\")
+When TO-FILESET-FILE is non-nil string write return value to the file named by
+string.  Default is to write to file named:
+ \(concat *mon-naf-mode-root* \"/mon-elisp-fileset.el\")\n
 When called-interactively or INSRTP is non-nil insert return value at point.
 When INSRTP moves point. When called-interactively does not move point.
+When rest arg THESE-DIRS is non-nil these should identify existing directory
+names to search for elisp files. Default is to map the values of follwing variables: 
+ `*mon-emacs-root*', `*mon-naf-mode-root*', `*mon-ebay-tmplt-mode-root*'\n
+When THESE-DIRS is non-nil and TO-FILESET-FILE is non-nil but
+does not satisfy the predicate `stringp' signal an error.\n
 :EXAMPLE\n\n(mon-file-map-elisp-fileset)\n
+\(with-current-buffer 
+    \(get-buffer-create \"*MON-FILE-MAP-ELISP-FILESET-TEST*\"\)
+  \(mon-file-map-elisp-fileset nil nil t\)
+  \(display-buffer \(current-buffer\) t\)\)\n\n
+:NOTE Will not find files of type: *.el.gz IOW anything under subdir of Emacs'
+lisp/ source tree when Emacs was built with the\n
 :SEE-ALSO `*mon-el-library*'.\n►►►"
   (interactive "i\ni\np")
-  (dolist (ensure-mon-dir
-            '(*mon-emacs-root* *mon-naf-mode-root* *mon-ebay-tmplt-mode-root*))
-    
-  (let ((mmef (append (directory-files *mon-emacs-root* t ".*\.el$")
-                      (directory-files *mon-naf-mode-root* t ".*\.el$")
-                      (directory-files *mon-ebay-tmplt-mode-root* t ".*\.el$"))))
+  (let ((mtef (cond ((stringp to-fileset-file)
+                     to-fileset-file)
+                    ((and these-dirs (not (stringp to-fileset-file)))
+                     (unless (or insrtp intrp)
+                       (error (concat 
+                               ":FUNCTION `mon-file-map-elisp-fileset' "
+                               "-- optional arg TO-FILESET-FILE missing w/ THESE-DIRS non-nil"))))
+                    ((not (null to-fileset-file))
+                     (concat *mon-naf-mode-root* "/mon-elisp-fileset.el"))
+                    ((null to-fileset-file) t)))
+        (mmef (let (get-td)
+                (if these-dirs ;; Make sure we got strings.
+                    (dolist (mpf-df
+                             (dolist (mpf-td these-dirs these-dirs)
+                               (unless (stringp mpf-td)
+                                 (error (concat ":FUNCTION `mon-file-map-elisp-fileset' "
+                                                "-- elt %S of rest arg THESE-DIRS not stringp"
+                                                mpf-td)))) get-td)
+                      (setq get-td (nconc (directory-files mpf-df t ".*\.el$") get-td)))
+                  (setq get-td
+                        (append (directory-files *mon-emacs-root* t ".*\.el$")
+                                (directory-files *mon-naf-mode-root* t ".*\.el$")
+                                (directory-files *mon-ebay-tmplt-mode-root* t ".*\.el$"))))
+                (dolist (ensure-mon-dir 
+                         (dolist (rm-crunch get-td get-td)
+                           (when (string-match-p "\.#" (file-name-nondirectory rm-crunch))
+                             (setq get-td (delete rm-crunch get-td)))) get-td)
+                  (unless (file-exists-p ensure-mon-dir)
+                    (error (concat
+                            ":FUNCTION `mon-file-map-elisp-fileset' "
+                            "-- fileset dir %S is non-existent") 
+                           ensure-mon-dir))))))
     (cond ((or insrtp intrp)
            (if intrp
                (save-excursion
                  (newline)
                  (princ (mapconcat 'identity mmef "\n") (current-buffer)))
-               (progn
-                 (newline)
-                 (princ (mapconcat 'identity mmef "\n") (current-buffer)))))
-          (to-fileset-file 
-           (let ((mtef (concat *mon-naf-mode-root* "/mon-elisp-fileset.el")))
-             (with-temp-file mtef
+             (progn
                (newline)
-               (mapc #'(lambda (el-fl)
-                         (prin1 el-fl (current-buffer))
-                         (newline))
-                     (append (directory-files *mon-emacs-root* t ".*\.el$")
-                             (directory-files *mon-naf-mode-root* t ".*\.el$")
-                             (directory-files *mon-ebay-tmplt-mode-root* t ".*\.el$"))))
-             (with-current-buffer (find-file-noselect mtef t)
-               (mon-file-stamp t)
-               (write-file (buffer-file-name (current-buffer)))
-               (kill-buffer (current-buffer)))))
-          (t mmef)))))
+               (princ (mapconcat 'identity mmef "\n") (current-buffer)))))
+          ((stringp mtef)
+           (with-temp-file mtef
+             (newline)
+             (mapc #'(lambda (el-fl)
+                       (prin1 el-fl (current-buffer))
+                       (newline))
+                   mmef))
+           (with-current-buffer (find-file-noselect mtef t)
+             (when (intern-soft "mon-file-stamp")
+               (mon-file-stamp t))
+             (goto-char (buffer-end 0))
+             (princ ";; -*- mode: EMACS-LISP; no-byte-compile: t; -*-\n" (current-buffer))
+             (write-file (buffer-file-name (current-buffer)))
+             (kill-buffer (current-buffer)))
+           mmef)
+          (mtef mmef))))
 ;;
-;;; :TEST-ME (mon-file-map-elisp-fileset)
-;;; :TEST-ME (mon-file-map-elisp-fileset t)
-;;; :TEST-ME (mon-file-map-elisp-fileset nil t)
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;| (let (doldpth)
+;;|   (dotimes (lp 3)
+;;|     (push (nth (random (length load-path)) load-path) doldpth ))
+;;|   (apply 'mon-file-map-elisp-fileset 
+;;|          ;; nil nil doldpth)) ;; <- Default
+;;|          ;; t nil doldpth))   ;; <- INSRTP
+;;|          ;; nil t doldpth))   ;; <- INTRP
+;;|          (concat temporary-file-directory ;; <- TO-FILESET-FILE Writes to temp-file
+;;|                  "/TEST-mon-file-map-elisp-fileset.el")))
+;;| 
+;;| (find-file  (concat temporary-file-directory 
+;;|                     "/TEST-mon-file-map-elisp-fileset.el"))
+;;| 
+;;| (delete-file (concat temporary-file-directory 
+;;|                      "/TEST-mon-file-map-elisp-fileset.el"))
+;;`----
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-26T12:58:23-04:00Z}#{09441} - by MON KEY>
@@ -452,7 +511,7 @@ copy file-names such that when yanked they are inserted as quoted strings.\n
 (defun mon-file-path-for-bug (&optional file-name-path insrtp yankp intrp)
   "Provide portable file-name-path for BUGd systems.\n
 FILE-NAME-PATH \(a string\) should be a full pathname string and be located 
-beneath `*mon-emacs-root*'.
+beneath `*mon-emacs-root*'.\n
 When `*bug-HG-path*' is local return a path suitable for a remote machine.
 When `*bug-HG-path*' is remote return a path suitable for the local machine.\n
 :SEE-ALSO `mon-get-local-url-for-bug'.\n►►►"
@@ -548,7 +607,8 @@ Does not move point.\n
            (mgds-size 
             (if (file-directory-p mgds-dir)
                 (shell-command-to-string (format "du -h --max-depth=1 %s" mgds-dir))
-              (error ":FUNCTION `mon-get-dir-size' -- arg GET-DIR-SIZE does not name exististing directory"))))
+              (error (concat ":FUNCTION `mon-get-dir-size' " 
+                             "-- arg GET-DIR-SIZE does not name exististing directory")))))
       (if (or insrtp intrp)
           (save-excursion 
             (newline) 
@@ -673,15 +733,16 @@ Like `mon-dired-uninsert-subdir'.\n
 `mon-dired-srt-chrn', `mon-dired-srt-type', `mon-dired-srt-type',
 `mon-dired-srt-type-alph', `mon-dired-other-window',
 `mon-dired-insert-dirs-recursive', `mon-dired-up-directory-this-buffer'.\n►►►"
-(let (chk-tp-mrk)
-  (while (unless (or (eq (setq chk-tp-mrk (marker-position (cdar dired-subdir-alist)))
-                         (buffer-end 0))
-                     (equal (caar dired-subdir-alist)
-                            (directory-file-name (file-truename default-directory))))
-           chk-tp-mrk)
-    (save-excursion 
-      (goto-char chk-tp-mrk)
-      (mon-dired-uninsert-subdir)))))
+  (interactive)
+  (let (chk-tp-mrk)
+    (while (unless (or (eq (setq chk-tp-mrk (marker-position (cdar dired-subdir-alist)))
+                           (buffer-end 0))
+                       (equal (caar dired-subdir-alist)
+                              (directory-file-name (file-truename default-directory))))
+             chk-tp-mrk)
+      (save-excursion 
+        (goto-char chk-tp-mrk)
+        (mon-dired-uninsert-subdir)))))
 ;;
 (unless (intern-soft "dired-uninsert-subdir-all")
   (defalias 'dired-uninsert-subdir-all 'mon-dired-uninsert-subdir-all))
@@ -871,8 +932,6 @@ Elements of list have the form:
          (gthrd)
          (what-hppd))
     (setq gthrd ())
-    ;; :TODO use `mapc' or `dolist'
-    ;; :WAS (mapcar '(lambda (x)
     (mapc #'(lambda (x)
               (let ((in-here (if (and (file-directory-p x)
                                       (not (or (string= (concat gthr-in "/.") x)
@@ -880,8 +939,6 @@ Elements of list have the form:
                                            (string= to-dir x))))
                                  x)))
                 (when in-here  (setq gthrd (cons in-here gthrd))))) walk-dir)
-    ;; :TODO use `mapc' or `dolist'
-    ;; :WAS (mapcar (lambda (x) 
     ;; Now copy files per subdir to dest-dir.
     (mapc #'(lambda (x) 
               (let* ((in-dir x)
@@ -949,9 +1006,8 @@ Accepts specification of an alternate input function to use.\n
                  (cond ((string-match "\+" str)
                         (push (car stock) mmrn-var) ;; var)
                         (multiread))
-                       (t
-                        (push (car stock) mmrn-var);var)
-                        (nreverse mmrn-var))))));; var))))))
+                       (t (push (car stock) mmrn-var) ;var)
+                          (nreverse mmrn-var)))))) ;; var))))))
       (let (mmrn-var)
         (multiread)))))
 
@@ -1029,18 +1085,25 @@ Signal an error if any of the args aren't in the path.\n
 :EXAMPLE {:CALLED-PROGRAMATICALLY}
 \(apply 'mon-build-path *mon-artist-naf-path* \"C-Artists names\"
 \(split-string \"Cappiello \(Leonetto\)/Aux Trois Quartier/mmm\" \"/\" t\)\)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-get-relative-w-absolute' `mon-get-dir-name-absolute',
+`mon-file-reduce-name', `mon-build-path', 
+`mon-get-buffer-parent-dir', `mon-string-split-dir-recurse',
+`mon-dir-common-paths', `mon-get-buffer-parent-dir',
+`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
+`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir-quick',
+`mon-string-split-buffer-parent-dir', `file-relative-name',
+`expand-file-name', `file-expand-wildcards', `wildcard-to-regexp'.\n►►►"
   (let (tst-pth stack-pth f-pth)
     (setq tst-pth '(lambda (tst &optional in-sub) 
-                    (if (and (not (file-symlink-p tst))
-                             (or (file-exists-p tst) (file-directory-p tst)))
-                        t
-                        (cond (in-sub
-                               (error "The dir/file named `%s'\nIsn't in the path `%s/'" 
-                                      (file-name-nondirectory tst) in-sub))
-                              ((not in-sub)
-                               (error "The dir/file named `%s' isn't in the path" 
-                                      tst in-sub))))))
+                     (if (and (not (file-symlink-p tst))
+                              (or (file-exists-p tst) (file-directory-p tst)))
+                         t
+                       (cond (in-sub
+                              (error "The dir/file named `%s'\nIsn't in the path `%s/'" 
+                                     (file-name-nondirectory tst) in-sub))
+                             ((not in-sub)
+                              (error "The dir/file named `%s' isn't in the path" 
+                                     tst in-sub))))))
     (setq stack-pth  '(lambda (in-pth sub-pth)
                        (let* ((t-sub sub-pth)
                               (t-whole (concat (directory-file-name in-pth) "/" sub-pth)))
@@ -1086,7 +1149,7 @@ Signal an error if any of the args aren't in the path.\n
       (when (equal system-type 'windows-nt)
         (setq file-name (replace-regexp-in-string "/" "\\\\" file-name)))
       (goto-char (point-max))
-      (princ file-name (current-buffer)) ;;  (insert file-name)
+      (princ file-name (current-buffer)) ;; (insert file-name)
       (newline)
       (save-buffer)
       (message "Saved directory '%s' to %s" file-name current-sys-type)
@@ -1136,7 +1199,7 @@ Default file is held by global var `*mon-record-current-directory*'.\n
 ;;; :CREATED <Timestamp: Saturday May 23, 2009 @ 11:38.18 AM - by MON>
 (defun mon-buffer-written-p (&optional insrtp intrp)
   "Non-nil current buffer has been written to a file or created with `find-file'
-  and _can_ be written in current directory - whether it has been or not).\n
+ and _can_ be written in current directory - whether it has been or not).\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-buffer-written-p', `mon-with-file-buffer',
 `mon-buffer-name->kill-ring', `mon-get-buffer-parent-dir',
 `mon-get-proc-buffers-directories', `mon-get-buffers-directories',
@@ -1175,10 +1238,10 @@ of split strings at point.\n
 `mon-string-split-buffer-parent-dir-quick', `with-current-buffer',
 `with-temp-file', `with-temp-buffer'.\n►►►"
   (interactive "P\np")
-(let ((buf-split
-       (save-match-data
-         (if (mon-buffer-written-p)
-             (split-string (buffer-file-name) "/" t)
+  (let ((buf-split
+         (save-match-data
+           (if (mon-buffer-written-p)
+               (split-string (buffer-file-name) "/" t)
              (split-string default-directory "/" t)))))
     (when intrp (message "%S" buf-split))
     (when insrtp (insert (format "%S" buf-split)))
@@ -1239,11 +1302,11 @@ e.g. \n\(split-string \(directory-file-name \(expand-file-name \"./\"\)\)\"/\" t
 `mon-buffer-name->kill-ring', `mon-get-buffer-parent-dir',
 `mon-get-proc-buffers-directories', `mon-get-buffers-directories',
 `with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
-(interactive "P\np")
+  (interactive "P\np")
   (let* ((is-written (mon-buffer-written-p))
 	 (l-mod (if is-written ;; :WAS (split-string (buffer-file-name) "/" t))
 		    (save-match-data (split-string (buffer-file-name) "/" t))
-                      (split-string default-directory "/" t)))
+                  (split-string default-directory "/" t)))
 	 (l-last  (if (and 
 		       ;; File exists in dir.
 		       is-written  
@@ -1340,7 +1403,7 @@ It might not.\n
 Useful for passing around to helper functions that prompt.\n
 :EXAMPLE\n(mon-truncate-path-for-prompt)\n
 :SEE-ALSO `mon-file-reduce-name'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let* ((trunc-pth (directory-file-name (expand-file-name "./")))
 	 (trunc-s ;; :WAS (split-string trunc-pth "/"))
           (save-match-data (split-string trunc-pth "/")))
