@@ -1,0 +1,135 @@
+= HOWTO Read feeds in Emacs via Email with Wanderlust, or Gnus, (or mutt, or Thunderbird, etc.) =
+
+== Why? ==
+
+If you are like me, you already have a system for reading email. You
+have a program that you know well. Maybe you have email filters, or
+maybe you dump it all in one place. Maybe you keep all your email in
+your inbox, or maybe you tidily file it away when you are done with
+it. You might read your email in mutt, or Wanderlust, or Mew, or Gnus,
+or even Thunderbird. Maybe you use IMAP to keep your mail synchronized
+across multiple systems.
+
+Wouldn’t it be nice if you could use this system as a feed reader?
+
+Wouldn’t it be nice to have a feed reader that is not *similar* to an
+interface you already use, but a feed reader that is the *same* as an
+interface you already use?
+
+== How? ==
+
+Use rss2email.
+
+The rest of this document tells you how.
+
+The first step is to get rss2email, either from the official site
+http://www.allthingsrss.com/rss2email/ or with my patches.
+http://e6h.org/~egh/hg/rss2email/. While either one should work, my
+version has the following enhancements:
+
+* multi-threading, so that it processes much faster
+* better wrapping of blockquotes and list items with html2text
+* latest feedparser avoids pathological regular expressions that can
+  lock up python.
+* adds an ##X-RSS-URL## header for fast loading of the original page
+* fix for empty entry ids
+* fix for formatting of addresses
+
+Install this in a place where it can be run regularly via cron or some
+other mechanism, and has an SMTP server available to it.
+
+Choose an email address to send mail to, and an SMTP server to use.
+You probably want to send your feeds to a special email account or
+else filter them into another folder than your main email.
+
+(Keep in mind that you may be sending a significant quantity of email
+through the SMTP server. Some email systems may have quotas on the
+amount of email sent per day which you may run up against, especially
+when testing the system. Namely: gmail, which limits SMTP to a couple
+hundred messages/day.)
+
+You will probably want to run rss2email in a cron. But first, we need
+to get it running.
+
+Unpack rss2email somewhere convenient. Edit the config.py file as
+necessary or appropriate.
+
+You need these to send email:
+
+    DEFAULT_FROM = "me@example.org"
+    SMTP_SEND    = 1              # or 0, if you use sendmail
+    
+    SMTP_SERVER  = "localhost:25" # set appropriately
+    AUTHREQUIRED = 0              # if you need to use SMTP AUTH set to 1
+    SMTP_USER    = 'username'     # for SMTP AUTH, set SMTP username here
+    SMTP_PASS    = 'password'     # for SMTP AUTH, set SMTP password here
+
+It is strong opinion that you should set the following to avoid
+bounced messages to somebody who did not send the message:
+
+    FORCE_FROM = 1
+
+Personally, I think HTML email is a mistake, and that email should we
+wrapped:
+
+    HTML_MAIL  = 0
+    BODY_WIDTH = 72
+
+Finally, the default ##CHARSET_LIST## shipped with rss2email had me
+receiving messages in Big-5 encoding, which did not seem right.
+##US-ASCII## or ##UTF-8## is all I need:
+
+    CHARSET_LIST = 'US-ASCII', 'UTF-8'
+
+Having made those & any other appropriate modifications to the
+config.py, we are ready to add a feed! Add it:
+
+    ./r2e add http://newsrss.bbc.co.uk/rss/newsonline_world_edition/front_page/rss.xml
+
+Let’s try to fetch the feed and send emails:
+
+    ./r2e run
+
+If all goes well, r2e should print nothing (turn on the `VERBOSE' option
+if you want to see more).
+
+Time to check your email! If all went well, you should have the latest
+news headlines from the BBC in your inbox. If not, perhaps there are
+difficulties with sending mail. Check your SMTP settings.
+
+== Reading with Wanderlust ==
+
+A few tips & tricks for reading your news in the Wanderlust mail
+reader follow.
+
+=== Folders ===
+
+I use a filter folder to allow me to visit a folder which contains
+only unread or important news items. The folder looks like:
+
+    /flag:digest/%INBOX@me@example.org:993!
+
+I can visit this folder and only see messages that I have not seen or
+messages that I have flagged as ‘important’.
+
+=== Quickly visiting an entry ===
+
+If I want to visit an entry on the web, perhaps because it did not
+contain the full text, I want a quick way to do so. I use the
+following code to allow me to hit C-c C-c in summary mode & quickly
+visit the entry:
+
+    ;; need to add X-RSS-URL to this list
+    (setq elmo-msgdb-extra-fields
+          '([...]
+            "X-RSS-URL"))
+    
+    (defun egh:wl-summary-visit-rss-entry ()
+      (interactive)
+      (let* ((msg (elmo-message-entity
+                   wl-summary-buffer-elmo-folder wl-summary-buffer-current-msg))
+             (url (elmo-message-entity-field msg 'x-rss-url)))
+        (browse-url url)))
+    
+    (define-key wl-summary-mode-map "\C-c\C-c" 'egh:wl-summary-visit-rss-entry)
+

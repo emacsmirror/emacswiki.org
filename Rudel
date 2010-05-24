@@ -15,7 +15,7 @@ have to have a certain [MinorMode minor mode] enabled.
 The user interface of Rudel consists of a set of key bindings, a menu
 entry and some visual status indicators, which are added to the text
 and mode line of buffers for which Rudel has been activated. This user
-interface is realized as a global minor mode.
+interface is implemented as a global minor mode.
 
 The image below shows a collaborative editing session with one Gobby
 and two Rudel clients (only one of these is visible).
@@ -101,21 +101,26 @@ To install Rudel, download a releases version or the current
 development version from [http://sourceforge.net/projects/rudel/] and
 place the code in any directory you like.
 
-To make Rudel available for use, add the following to your personal
-Emacs configuration:
+To make Rudel available for use, perform these steps:
+
+# If there is no file ##rudel-loaddefs.el## in your version of Rudel, open and evaluate ##rudel-compile.el## (see below) to generate the file. If ##rudel-loaddefs.el## is already present, no action is required.
+
+# Add the following to your personal Emacs configuration:
 
   (load-file "/PATH/TO/RUDEL/rudel-loaddefs.el")
 
-This will set Rudel up to be loaded on demand (see [[AutoLoading]])
+This will set Rudel up to be loaded on demand (see [[AutoLoad]])
 when one of the commands `rudel-join-session', `rudel-host-session' or
 `global-rudel-minor-mode' is invoked. The auto loading information in
-<tt>rudel-loaddefs.el</tt> is currently distributed with Rudel.
+##rudel-loaddefs.el## is distributed with older versions of Rudel, but has
+to be generated using ##rudel-compile.el## in more recent versions.
 
 === Compiling ===
 
 In order to achieve better performance, Emacs can byte-compile the
 Rudel code. This can be done by opening <tt>rudel-compile.el</tt> in
-Emacs and invoking M-x eval-buffer.
+Emacs and invoking M-x eval-buffer. In recent versions of Rudel, this also
+generates auto loading information (see above).
 
 == Development ==
 

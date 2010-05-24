@@ -32,6 +32,34 @@ From your description, I would assume that the previously installed version of R
 Hope that helps.
 --JanMoringen
 
+[new]
+Interestingly enough, the Deb version of emacs has no `debug-on-error'; however, here is what was recorded in the messages window:
+
+Initializing Zeroconf ...
+eval: Wrong number of arguments: #[(type backend) " 	D
+B " [type backend rudel-zeroconf-service-types] 2 ("/usr/share/emacs23/site-lisp/rudel/zeroconf/rudel-zeroconf.elc" . 1445)], 3
+
+If you have any suggestions for an alternative to the `debug-on-error', let me know.
+
+--Michael
+
+[new]
+Thanks for your patience.
+
+The error seems to happen when the byte-compiled version of the Zeroconf backend is loaded from /usr/share/emacs23/site-lisp/rudel/zeroconf/rudel-zeroconf.elc. It looks like files from more than one Rudel version got mixed up on your system.
+
+To get a better picture, I need more information. Could you please answer the following questions:
+* Is the tarball installed in /usr/share/emacs23/site-lisp/rudel/?
+* If not, where is it installed?
+* Did you remove or keep the Rudel Ubuntu package?
+* How is Rudel loaded in your initialization file?
+
+Please also provide the complete contents of the %%*Messages*%% buffer if there is no confidential information in it.
+
+Regarding `debug-on-error': Did you try to call it as a function via M-x? You have to use M-x `toggle-debug-on-error' or the menu-entry Options > Debugger on Error.
+
+Good luck.
+--JanMoringen
 ----
 
 CategoryHomepage
