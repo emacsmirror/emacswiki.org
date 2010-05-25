@@ -2538,6 +2538,30 @@ FYI --
 
 7. More generally, I recommend that you wean yourself from CUA mode. I go back and forth all the time between Emacs, with its normal, non-CUA bindings, and MS Windows apps, with their CUA bindings, such as `C-v'. If I can do it, so can you. It might take some getting used to, but it is well worth it, IMO. Do as you like, of course -- just a word to the wise. -- DrewAdams
 
+[new:DirkJoos:2010-05-24 19:45 UTC]
+
+Drew Adams helped me to find a solution how to handle `C-RET' using CUA mode and '''Icicles'''.
+
+1. Define a function `my-c-return'.
+
+<pre>
+(defun my-c-return ()
+  "When in minibuffer use `icicle-candidate-action', otherwise use `cua-set-rectangle-mark'."
+  (interactive)
+  (if (window-minibuffer-p (selected-window))
+      (call-interactively 'icicle-candidate-action)
+    (call-interactively 'cua-set-rectangle-mark)))
+</pre>
+
+2. Then `M-x customize-option icicle-top-level-key-bindings':
+ 
+* Click an `INS' button (anywhere) to add a new entry.  
+* In the `Value Menu' for the new entry, choose `Command to remap' and enter this command name in place of `ignore': cua-set-rectangle-mark.  
+* In the field `Command' for the entry replace `ignore' by my-c-return. This will remap the CUA command to the command defined above, which will do the Icicles thing in the minibuffer and otherwise do the CUA thing.
+* Set the field `Command' to t.
+* Click the `State' button near the bottom of the buffer and choose `Set for Current Session' (to try it) or `Save for Future Sessions' (if you want to keep it, after testing).  
+
+3. `M-x icy-mode' twice to toggle Icicle mode off and on again. -- DirkJoos
 <pre>
 
 </pre>

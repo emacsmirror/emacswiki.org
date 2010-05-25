@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat May 22 09:41:59 2010 (-0700)
+;; Last-Updated: Mon May 24 18:21:17 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5334
+;;     Update #: 5335
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/24 dadams
+;;     icicle-comint-replace-orig-completion-fns: Rewrote to not use case.  Thx to Michael Heerdegen.
 ;; 2010/05/21 dadams
 ;;     icicle-bookmark-help-string:
 ;;       Use BOOKMARK-NAME, not BMK, as arg to vanilla fns, for Emacs < 23.  Thx to Alexander Haeckel.

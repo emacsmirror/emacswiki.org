@@ -1,0 +1,32 @@
+The '''Thrush''' operators of Clojure, ##->>## and ##->##, let one chain functions together. For example,
+
+    (->> (seq accounts)
+         (filter #(= (:type %) 'savings))
+         (map :balance)
+         (apply +))
+
+expands to
+
+    (apply +
+      (map :balance
+        (filter #(= (:type %) 'savings)
+          (seq accounts))))
+
+== Elisp implementation ==
+
+The following macros implement Thrush operators in Emacs Lisp.
+
+    (defmacro ->> (&rest body)
+      (let ((result (pop body)))
+        (dolist (form body result)
+          (setq result (append form (list result))))))
+
+    (defmacro -> (&rest body)
+      (let ((result (pop body)))
+        (dolist (form body result)
+          (setq result (append (list (car form) result)
+                               (cdr form))))))
+
+== External links ==
+
+* [http://debasishg.blogspot.com/2010/04/thrush-in-clojure.html Trush in Clojure]

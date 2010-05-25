@@ -1,3 +1,20 @@
-enter some info about the emacs bug tracker here
+Emacs has a bug tracker using Debian's bug tracking software.
 
-http://emacsbugs.donarmstrong.com/
+* http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs
+
+There is information on reporting and querying bugs from the main page.
+
+* http://debbugs.gnu.org/
+
+Here are some useful preset queries of the bug database.
+
+* [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=severity:critical;include=severity:grave;include=severity:serious;include=severity:important Bugs that are marked critical, grave, serious or important.]
+
+* [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;exclude=severity:wishlist;exclude=pending:done;exclude=tags:wontfix Non-wishlist bugs the developers have confirmed]
+
+* [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=severity:wishlist;exclude=pending:done;exclude=tags:wontfix Wishlist items under consideration]
+
+* [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=tags:patch;exclude=tags:wontfix Submitted patches]
+
+----
+CategoryWishList

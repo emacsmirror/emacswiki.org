@@ -6,6 +6,8 @@ Here are some things for working with SQLite in Emacs,
 
 * SqlMode -- run sqlite interaction, and more
 * SqliteDump -- view and edit an sqlite database file in ".dump" form
+* SqliteInterface -- use the widget library to interact with Sqlite
+
 
 ----
 CategorySql

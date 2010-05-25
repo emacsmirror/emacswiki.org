@@ -16,6 +16,10 @@ Wouldn’t it be nice to have a feed reader that is not *similar* to an
 interface you already use, but a feed reader that is the *same* as an
 interface you already use?
 
+== Screenshot ==
+
+See RssToEmailPlusWLScreenshot.
+
 == How? ==
 
 Use rss2email.
@@ -107,7 +111,7 @@ reader follow.
 I use a filter folder to allow me to visit a folder which contains
 only unread or important news items. The folder looks like:
 
-    /flag:digest/%INBOX@me@example.org:993!
+    /flag:digest/%INBOX:me@example.org:993!
 
 I can visit this folder and only see messages that I have not seen or
 messages that I have flagged as ‘important’.

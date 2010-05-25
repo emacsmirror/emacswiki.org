@@ -5,8 +5,8 @@
 ;; Maintainer: Michael Heerdegen (concat "michael_heerdegen" "@" "web" ".de")
 ;; Copyright (C) 2010, Michael Heerdegen, all rights reserved.
 ;; Created: <2010-05-14 Fr>
-;; Last-Updated: -
-;; URL: http://www.emacswiki.org/cgi-bin/wiki/emacs-lock+
+;; Last-Updated: 2010_05_21
+;; URL: http://www.emacswiki.org/emacs/EmacsLockPlus
 ;; Keywords: lock, extensions
 ;; Compatibility: Gnu Emacs 23.x (others maybe, but not tested)
 
@@ -15,21 +15,22 @@
 ;;
 ;;  emacs-lock+ - extensions to standard library `emacs-lock.el'
 ;;
-;;  Adds the following features:
+;;  Features:
 ;;
 ;;  - When locking any buffer, you are prompted for a little note that
 ;;    helps you to remember why you locked the buffer.
 ;;  
 ;;  - If any buffer prevents Emacs from exiting, pops up this buffer
-;;    and displays your note, if there is one. Also displays the note
-;;    if you try to kill any locked buffer.
+;;    and displays your note if there is one.  Also displays the note
+;;    if you try to kill any locked buffer (and, of course, prevents
+;;    from killing)
 ;;  
 ;;  - Adds a mode-line indicator which displays a capital "L" for
 ;;    locked buffers (and a lowercase "l" for non-locked buffers, if
-;;    this is enabled. You can deactivate this indicator if you don't
+;;    this is enabled.  You can deactivate the indicator if you don't
 ;;    want it.)
 ;;    If you move the mouse over the indicator, the locking note
-;;    is displayed.
+;;    is displayed, and (un-)locking can be done with the mouse.
 ;;
 ;;  Installation: Put this file into a directory in your load-path and
 ;;  byte compile it.  Add
@@ -40,6 +41,33 @@
 ;;
 ;;  See (customize-group "emacs-lock") for options.
 ;;
+;;
+;;  ***** NOTE: The following user option defined in
+;;              `emacs-lock.el' has been REDEFINED HERE:
+;;
+;;  `emacs-lock-from-exiting' - string values are handled specially
+;;
+;;  
+;;  ***** NOTE: The following variable defined in
+;;              `bindings.el' has been REDEFINED HERE:
+;;
+;;  `mode-line-modified' - buffer lock indicator appended
+;;
+;;
+;;  ***** NOTE: The following functions defined in `emacs-lock.el'
+;;              have been REDEFINED HERE:
+;;
+;;  `check-emacs-lock' -
+;;     - pop to locked buffer
+;;     - handle string values of `emacs-lock-from-exiting' ("locking notes")
+;;  `emacs-lock-check-buffer-lock' -
+;;     - handle string values of `emacs-lock-from-exiting'
+;;  `toggle-emacs-lock' -
+;;     - allows specification of notes
+;;     - uses prefix arg
+;;     - forces mode-line update
+;;
+
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -59,14 +87,23 @@
 
 ;; Change log:
 ;;
-;; created, 2010_05_14_00-44-51
+;; 2010_05_18 heerd
+;;   - added some comments and doc for `emacs-lock-from-exiting'
+;;   - corrected wrong URL
+;; 2010_05_14 heerd
+;;   created
+
+;; TODO:
+;;
+;; - make this a minor mode?
 
 ;;; Code:
 
 
 (require 'emacs-lock)
 
-(defgroup emacs-lock nil "Prevents you from exiting if a buffer is locked."
+(defgroup emacs-lock nil
+  "Prevents you from exiting if a buffer is locked."
   :tag "Emacs Lock"
   :group 'editing)
 
@@ -77,8 +114,8 @@ locked-only means show indicator only if the current buffer is locked.
 t means always show the indicator.
 
 If the indicator is visible, it shows a capital L for locked buffers
-and a lowercase l else. If you click on it with the mouse, you can
-toggle the lock status of any buffer."
+and a lowercase l else.  If you click on it with the mouse, you can
+toggle the lock status of the buffer."
   :type '(choice
           (const :tag "Never show mode-line indicator" nil)
           (const :tag "Show for locked buffers only"   locked-only)
@@ -88,7 +125,15 @@ toggle the lock status of any buffer."
 
 (defcustom emacs-lock-always-use-notes-flag t
   "*Non-nil means always prompt for a note when locking any buffer."
-  :type 'boolean :group 'emacs-lock)
+  :type 'boolean
+  :group 'emacs-lock)
+
+(put 'emacs-lock-from-exiting 'variable-documentation
+     "Whether an Emacs buffer is locked. See `check-emacs-lock'.
+This variable is buffer-local.  Any non-nil value indicates that
+the buffer is locked.  If its value is a string, it is
+interpreted as a locking note and will be displayed when the user
+tries to kill the buffer or to exit Emacs.")
 
 (defun check-emacs-lock ()
   "Check if variable `emacs-lock-from-exiting' is non-nil for any buffer.
@@ -150,7 +195,7 @@ buffer and prompt for a locking note."
     (select-window (posn-window (event-start event)))
     (toggle-emacs-lock 'note)))
 
-
+;; add indicator `to mode-line-modified'
 (let ((indicator
        `((:eval
 	  (when
@@ -165,7 +210,8 @@ buffer and prompt for a locking note."
 	       (save-selected-window
 		 (select-window window)
 		 (if (stringp emacs-lock-from-exiting)
-		     (format "Buffer locked: %s (mouse-1 unlocks)"
+		     (format "\
+Buffer locked: %s\nmouse-1 toggles\nmouse-2 sets note"
 			     emacs-lock-from-exiting)
 		   (format "\
 Buffer is %s locked\nmouse-1 toggles\nmouse-2 sets locking note"

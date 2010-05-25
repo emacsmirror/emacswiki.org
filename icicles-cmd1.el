@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 21 13:50:42 2010 (-0700)
+;; Last-Updated: Mon May 24 18:16:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21012
+;;     Update #: 21026
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -556,13 +556,12 @@ Uses Icicles completion."
 (defun icicle-comint-replace-orig-completion-fns ()
   "Return `comint-dynamic-complete-functions', but with Icicles functions."
   (let ((old  comint-dynamic-complete-functions)
-        (new  ()))
-    (while old
-      (push (eval `(case (car old)
-                    ,@icicle-comint-dynamic-complete-replacements
-                    (otherwise  (car old))))
-            new)
-      (setq old  (cdr old)))
+        (new  ())
+        pair)
+    (dolist (fn  old)
+      (if (setq pair  (assoc fn icicle-comint-dynamic-complete-replacements))
+          (push (eval (cadr pair)) new)
+        (push fn new)))
     (nreverse new)))
 
 ;;;###autoload

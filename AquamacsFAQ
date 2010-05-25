@@ -143,6 +143,16 @@ If you're coming from Emacs, you may prefer the Emacs-behavior over the Aquamacs
 
 If you have made a custom keyboard layout (like Danish Dvorak layout), make sure you upgrade to Aquamacs 2.0 or later.
  
+== Switching to a mono-spaced (fixed pitch) font throughout ==
+
+Aquamacs uses a mono-spaced font (Monaco) as a default, but uses the system's variable-width font (Lucida Grande) for all text modes, including those derived from `text-mode'.
+
+To use a monospaced font throughout (or the same font everywhere), just disable `aquamacs-autoface-mode' by selecting Options -> Appearance -> Auto Faces -> Auto Faces.  Save your options.
+You may then choose another font via Options -> Appearance -> Font if you so desire.
+
+Alternatively, if you would just like to customize specific fonts, see the next frequently asked question.
+
+
 == Changing the current and default font ==
 
 To change the font used to display the current frame, go to the font panel.  You can do this via the menu: Options -> Appearance -> Font for ___-Mode....  Once there, select the font you want.
