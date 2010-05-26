@@ -82,6 +82,13 @@ providing a missing bridge between menu use and minibuffer use.
 If you do not want to include menu-item commands in the command
 history, then set option '''`<tt>[[Icicles - Customization and General Tips#icicle-menu-items-to-history-flag|icicle-menu-items-to-history-flag]]</tt>'''' to `nil'.
 
+'''Note:''' Non-`nil' `icicle-menu-items-to-history-flag' simply makes
+Emacs handle menu items that you choose the same way that it
+handles commands that you enter using `RET'.  It does not add
+such menu items to your ''completion'' history, which you access
+using `C-l' (see [[#Which|What Input, What History?]]). 
+
+
 [:M-o]
 '''2.''' Command '''`icicle-insert-history-element'''' (bound to '''`M-o'''' in the
 minibuffer) lets you use ([[lax]]) completion to insert a history

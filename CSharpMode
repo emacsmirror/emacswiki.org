@@ -3,7 +3,7 @@
 Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation. 
 
 [new]
-The latest version is available at Lisp:csharp-mode.el. -- danielpoe
+The latest version is available at the repository (see below), but there is a (maybe older) version available here: Lisp:csharp-mode.el.
 
 [new]
 
@@ -391,9 +391,27 @@ Also (and this is true in Emacs 22 as well) if I type "/" I get "Wrong number of
 
 -- Richard Kettlewell.
 
+csharp-mode v0.7.3 now includes a (require 'cc-mode) at the top.  I don't know if this will fix it for you. Try it. Or try the latest cc-mode. 
+
 [new]
 
-csharp-mode v0.7.3 now includes a (require 'cc-mode) at the top.  I don't know if this will fix it for you. Try it. Or try the latest cc-mode. 
+RJK: As of 0.7.4:
+
+I still get the "error: `c-lang-defconst' must be used in a file"
+error under Emacs 23.  I tried the alternative approach of autoloading
+but that is also broken, albeit in a different way:
+
+<pre>
+Loading cc-langs...done
+Done loading /home/rjk/work/random/emacs/csharp-mode.el
+Eval error in the `c-lang-defconst' for `c-block-prefix-disallowed-chars' in csharp-mode:
+Eval error in the `c-lang-defconst' for `c-block-prefix-charset' in csharp-mode:
+Eval error in the `c-lang-defvar' or `c-lang-setver' for `c-block-prefix-charset' (source eval): (error "`c-block-prefix-disallowed-chars' got no (prior) value in csharp-mode (might be a cyclic reference)")
+</pre>
+
+The bug that '/' wouldn't insert is fixed, however; thanks.
+
+Emacs version is 23.1.1, cc-mode is 5.31.7, which the comments imply is supported.
 
 === VJ Complete and XEmacs===
 
@@ -413,6 +431,37 @@ I get a "Symbol's function definition is void: line number-at-pos" when typing t
 
 http://i42.tinypic.com/29pdmjd.jpg
 
+=== Hooks are run too early ===
+
+At the moment the mode hooks are run before local keys bindings are set, which means you can't modify them in a hook if you don't like them.  I modified my copy as follows:-
+
+<pre>
+--- /tmp/tmp.677.84	2010-05-25 14:37:27.000000000 +0100
++++ csharp-mode.el	2010-05-25 14:37:12.000000000 +0100
+@@ -1945,8 +1945,6 @@ Key bindings:
+        "[ \t]*\\(//+\\|\\**\\)\\([ \t]+\\|[ \t]+<.+?>\\)$\\|^\f")
+ 
+ 
+-  (c-run-mode-hooks 'c-mode-common-hook 'csharp-mode-hook)
+-
+ 
+   ;; Need the following for parse-partial-sexp to work properly with
+   ;; verbatim literal strings Setting this var to non-nil tells
+@@ -1964,7 +1962,10 @@ Key bindings:
+   (local-set-key (kbd "/") 'csharp-maybe-insert-codedoc)
+   (local-set-key (kbd "{") 'csharp-insert-open-brace)
+ 
+-  (c-update-modeline))
++  (c-update-modeline)
++
++  (c-run-mode-hooks 'c-mode-common-hook 'csharp-mode-hook)
++)
+ 
+ 
+ 
+</pre>
+
+-- Richard Kettlewell
 
 ----
 CategoryModes ProgrammingModes

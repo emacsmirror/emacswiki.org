@@ -1,60 +1,62 @@
+[:ChangeInteractively]
 == Change Frame Size Interactively or Automatically ==
 
-DrewAdams has written libraries Lisp:fit-frame.el and Lisp:autofit-frame.el, which let you "shrink-wrap" [[Frame]]s to fit their selected [[Window]] (buffer) or all of their windows (buffers). 
+DrewAdams has written various libraries that let you resize [[frame]]s:
 
-Command `fit-frame' (usually bound to `<code>C-x C-_</code>') does this. The resulting size (just big enough to display everything, with no wrap-around or truncation) is determined
+* <tt>[[frame-cmds.el]]</tt> lets you ''tile'' or ''maximize'' frames horizontally or vertically or both. These commands leave room for the Windows task bar and a standalone minibuffer frame, if present.
+
+* <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> let you ''shrink-wrap'' frames to fit their selected [[window]] ([[buffer]]) or all of their windows (buffers). 
+
+Command `fit-frame' (usually bound to `##C-x C-_##') does this. The resulting size (just big enough to display everything, with no wrap-around or truncation) is determined
 automatically, but you have control over this calculation with user variables. Alternatively, with a prefix argument, `fit-frame' prompts you for an absolute width and height. A
 negative prefix argument uses the `fill-column' value for the width.
 
-These packages also let you configure Emacs to ''automatically'' fit ''all'' frames. Library Lisp:fit-frame.el also has commands, in Windows, for maximizing and restoring a frame
+These packages also let you configure Emacs to ''automatically'' fit ''all'' frames. ##fit-frame.el## also has commands, in Windows, for maximizing and restoring a frame.
 
 
 '''See Also:'''
-* Libraries Lisp:frame-cmds.el and Lisp:doremi-frm.el have commands for ''incrementally'' resizing a frame (by using the arrow keys or mouse wheel).
+* Libraries <tt>[[frame-cmds.el]]</tt> and <tt>[[doremi-frm.el]]</tt> have commands for ''incrementally'' resizing a frame (by using the arrow keys or mouse wheel).
 
 * FisheyeWithThumbs for commands to temporarily shrink frames to thumbnail size.
 
 
-== Change Frame Size Programmatically ==
-Here's how to set Emacs frame size at startup. Recall that in Emacs terminology, a
-"frame" is what a lot of people would call a "window" - see [[Frame]].
+== Set Frame Size Programmatically ==
 
-The EmacsManual (`C-i', then pick Emacs) has a good presentation of this information - and lots more - about frame parameters (<code>geometry</code> etc.)
+You can use any of the commands and Lisp functions that work interactively (see [[#ChangeInteractively]]) to set the frame size in Lisp, of course.
+
+You can also set the default frame size at startup. The EmacsManual (`C-h r') has a good presentation about frame parameters (##geometry## etc.)
+
 
 === geometry ===
 
-Use the -geometry command line option, e.g., "-geometry 80x24" will
-start emacs at 80 characters wide by 24 characters high.
+Use the ##-geometry## command line option, e.g., ##-geometry 80x24## will
+start Emacs at 80 characters wide by 24 characters high.
 
-On w32 systems, create a shortcut to start emacs, open its property
+On MS Windows systems, create a shortcut to start emacs, open its property
 sheet, and add the command line option to the "Target" field.
 
-On w32 systems, if you want to startup with emacs maximised, you can
-do so by adding the following to your InitFile
+On Windows systems, if you want to startup with Emacs maximised, you can
+do so by adding the following to your [[init file]]
 
     (w32-send-sys-command #xf030)
 
 [new]
 Note, I (LawrenceMitchell) find that this doesn't always work perfectly,
-it's best if you have this right at the end of your InitFile, after everything
+it's best if you have this right at the end of your init file, after everything
 else has been loaded.
 
 [new]
-: Why not use <tt>`after-init-hook'</tt>? -- EdwardOConnor
+: Why not use `after-init-hook'? -- EdwardOConnor
 
 === default-frame-alist ===
 
-Also see the documentation of the <code>default-frame-alist</code>
-variable. This allows you to specify width and height (in characters)
-from your ##~/.emacs.el## initialization file. -- EricMarsden
+Also see the documentation of [[option]] `default-frame-alist'. You can [[Customize]] this variable  to specify the frame width and height you want (in characters).
 
-Here's an example for your InitFile:
+Or you can do this in your [[init file]]:
 
     (add-to-list 'default-frame-alist '(height . 24))
     (add-to-list 'default-frame-alist '(width . 80))
 
-How do you make the changes take effect in a running session?
-Use M-x make-frame to make a new frame!
 
 === making the changes persistent across sessions ===
 

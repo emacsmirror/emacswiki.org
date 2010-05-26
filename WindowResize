@@ -218,9 +218,10 @@ An iterative version of the previous command was posted on the gnu.emacs.help ma
 
 = Resizing Frames =
 
-For information on resizing Emacs ''[[Frame]]s'' (that is, window-manager "windows"), see:
-* [[Shrink-Wrapping Frames]] and library Lisp:fit-frame.el for commands to fit frames to their buffers. In Windows, Lisp:fit-frame.el also provides commands to maximize and restore frames.
-* Libraries Lisp:frame-cmds.el and Lisp:doremi-frm.el for commands to incrementally resize a frame using the arrow keys (`C-M-' left, right, up, down arrows).
+For information on resizing Emacs ''[[frame]]s'' (that is, window-manager "windows"), see:
+* FrameSize
+* [[Shrink-Wrapping Frames]] and library <tt>[[fit-frame.el]]</tt> for commands to fit frames to their buffers. In Windows, ##fit-frame.el## also provides commands to maximize and restore frames.
+* Libraries <tt>[[frame-cmds.el]]</tt> and <tt>[[doremi-frm.el]]</tt> for commands to incrementally resize a frame using the arrow keys (`C-M-' left, right, up, down arrows).
 
 ----
 CategoryWindows

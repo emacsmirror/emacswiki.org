@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jan 12 15:41:31 2010 (-0800)
+;; Last-Updated: Tue May 25 07:09:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3308
+;;     Update #: 3312
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -85,6 +85,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/05/25 dadams
+;;     Added to Frames menu: max-frame, maximize-frame-(horizontally|vertically).
 ;; 2010/01/12 dadams
 ;;     describe-menubar: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/11/07 dadams
@@ -433,6 +435,15 @@ submenu of the \"Help\" menu."))
     '(menu-item "Set Frame Parameter from Frame..." set-frame-alist-parameter-from-frame
       :help "Set parameter of a frame alist to its current value in frame"))
   (define-key menu-bar-frames-menu [separator-set-params] '("--"))
+  (define-key menu-bar-frames-menu [max-frame]
+    '(menu-item "Maximize Frame" max-frame
+      :help "Maximize the selected frame (in both directions)"))
+  (define-key menu-bar-frames-menu [maximize-frame-vertically]
+    '(menu-item "Maximize Frame Vertically" maximize-frame-vertically
+      :help "Maximize the selected frame vertically"))
+  (define-key menu-bar-frames-menu [maximize-frame-horizontally]
+    '(menu-item "Maximize Frame Horizontally" maximize-frame-horizontally
+      :help "Maximize the selected frame horizontally"))
   (define-key menu-bar-frames-menu [tile-frames-vertically]
     '(menu-item "Tile Frames Vertically..." tile-frames-vertically
       :help "Tile all visible frames vertically"))

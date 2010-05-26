@@ -2,7 +2,7 @@
 
 '''This page is part of the description of OneOnOneEmacs, by DrewAdams'''
 
-I created two commands to tile the visible [[Frame]]s either horizontally
+I created two commands to tile the visible [[frame]]s either horizontally
 or vertically: `tile-frames-horizontally' and
 `tile-frames-vertically'. I use these especially just
 before using ediff commands to compare or merge buffers.
@@ -11,7 +11,7 @@ Here's a screenshot of my Windows desktop showing comparison, using `ediff', of 
 
 [[image:DrewsEmacsTileSS]]
 
-'''See Library:''' Lisp:frame-cmds.el
+'''See Library:''' <tt>[[frame-cmds.el]]</tt>.  It also has frame other commands, such as commands to maximize in different directions.
 
 '''See Also:''' FisheyeWithThumbs for tiling frame thumbnails.
 

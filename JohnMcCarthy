@@ -1,11 +1,15 @@
 Born 1927-09-04.  Developer of the first Lisp system between 1955 and 1959 while at Dartmouth College.  As of 2001-01-01 Professor Emeritus of Computer Science at Stanford University.
 
 * [http://www-formal.stanford.edu/jmc/ John McCarthy's home page]
-----
+* [[WikiPedia:John McCarthy (computer scientist)]]
+* [http://www-formal.stanford.edu/jmc/facts.txt facts.el] -- Scientific constants and formulae.
+
+[new]
 I just realized, that JohnMcCarthy is still alive (may God keep his health), which made me wonder, isn't this guy, some kind of a legend, he invented Lisp. How come he doesn't get more attention, from the informatics press?
 
-And he seems not alone in this, same apply to EdsgerDijkstra and DonaldKnuth, maybe Knuth gets some attention, but not much. (''Note that Dijkstra doesn't live anymore.'')
+And he seems not alone in this, same applies to EdsgerDijkstra and DonaldKnuth, maybe Knuth gets some attention, but not much. [''Dijkstra's life ended in 2002 after these comments were made.'']
 
 Why doesn't companies like IBM, or free organizations like GNU, try to sponsor/hire, a Knuth/Dijkstra/McCarthy effort to create an OS or a programming language? I am sure they can make a design and provide an implementation that can be as legendary as the persons these people are.
+
 ----
 CategoryHomepage

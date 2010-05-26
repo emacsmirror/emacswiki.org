@@ -24,7 +24,7 @@ The lifetime of general and special buffers can be customized, as can what buffe
 
 To change the ''expiration date'' of all buffers, like to 1 day, set `clean-buffer-list-delay-general'.
 
-    (setq clean-buffer-list-delay-general 3)
+    (setq clean-buffer-list-delay-general 1)
 
 To change the ''expiration date'' of special buffers, to 6 hours, set `clean-buffer-list-delay-special'.
 

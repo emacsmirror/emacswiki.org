@@ -64,6 +64,11 @@ mo-git-blame is an interactive and iterative major mode for git blame.
 * Repository: ##git clone git://git.bunkus.org/mo-git-blame.git##
 * Documentation: http://www.bunkus.org/cgi-bin/gitweb.cgi?p=mo-git-blame.git;a=blob;f=README;hb=HEAD
 
+tortoise-git.el is a simple interface to TortoiseGit within emacs
+
+* Homepage: http://floatsolutions.com/blog/2010/05/tortoisegit-interface-for-emacs/
+* Repository: http://github.com/openist/tortoise-git-emacs
+
 [MdReadme]
 
 More information:

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 15:51:46 2010 (-0800)
+;; Last-Updated: Tue May 25 10:58:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 470
+;;     Update #: 562
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -51,13 +51,15 @@
 ;;    `notify-user-of-mode', `region-or-buffer-limits', `signum',
 ;;    `simple-set-difference', `simple-set-intersection',
 ;;    `simple-set-union', `undefine-keys-bound-to',
-;;    `undefine-killer-commands'.
+;;    `undefine-killer-commands', `unique-name'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
-;; 2010/10/12 dadams
+;; 2010/05/25 dadams
+;;     Added: unique-name.
+;; 2010/01/12 dadams
 ;;     fontify-buffer: save-excursion + set-buffer -> with-current-buffer.
 ;; 2007/09/25 dadams
 ;;     buffer-modifying-cmds: Respect kill-read-only-ok.
@@ -226,6 +228,66 @@ BUFFER may be either a buffer or its name (a string)."
   (and buffer (setq buffer (live-buffer-name buffer)) ; Live buffer's name.
        (or (zerop (length buffer))      ; Not an empty name.
            (not (char-equal ?\  (aref buffer 0)))))) ; Starts with non-blank.
+
+;;;###autoload
+(defun unique-name (name existing-names &optional min use-base-p maxp)
+  "Return NAME or NAME<N>, a name that is not in EXISTING-NAMES.
+Return NAME if NAME is not a member of EXISTING-NAMES.
+Otherwise, return NAME or its base name, suffixed by `<N>', where N is
+an integer.
+
+The optional args are used only when NAME is in EXISTING-NAMES.
+
+MIN is the minimum integer N to use in the new suffix.  Default: 1.
+
+Non-nil USE-BASE-P means use only the base name of NAME.  The value
+returned is of the form `BASENAME<N>' (only a single suffix).
+BASENAME is NAME truncated at the right starting with the first suffix
+`<M>'.  The base name of `a<2>' and `a<2><3>' is `a'.
+
+For example, if NAME is `a<2>', then with nil USE-BASE-P we might
+return `a<2><1>' (depending on MIN, MAX etc.).  With non-nil
+USE-BASE-P we might return `a<3>', since the base name `a' gets
+suffixed, not the full NAME `a<2>'.
+
+Optional arg MAXP is used only if USE-BASE-P is non-nil.
+
+If MAXP is nil then N is the smallest integer greater than or equal to
+MIN such that `BASENAME<N>' is not in EXISTING-NAMES.
+
+If MAXP is non-nil then N is the smallest integer greater than or
+equal to MIN and greater than the largest integer M used in a suffix
+`<M>' that immediately follows BASENAME in a name in EXISTING-NAMES.
+
+As an example, `generate-new-buffer-name' could be defined this way:
+
+ (defun generate-new-buffer-name (buf)
+   (let ((buffs  (mapcar #'buffer-name (buffer-list))))
+     (unique-name buf buffs 2)))"
+  (unless min  (setq min  1))
+  (if (and (not (member name existing-names)) (not maxp))
+      name
+    (let ((indx     min)
+          (baselen  (string-match "\<\\(-?[0-9]+\\)\>" name))
+          try)
+      (when (and use-base-p baselen)
+        (setq name  (substring name 0 baselen)))
+      (if maxp
+          (format
+           "%s<%d>" name
+           (1+ (apply
+                #'max
+                (mapcar (lambda (nn)
+                          (if (string-match "\<\\(-?[0-9]+\\)\>" nn)
+                              (string-to-number (match-string 1 nn))
+                            min))
+                        existing-names))))
+        (catch 'unique-name
+          (while t
+            (unless (member (setq try  (concat name "<" indx ">"))
+                            existing-names)
+              (throw 'unique-name try))
+            (setq indx  (max min (1+ indx)))))))))
 
 ;; Stolen from file `intes.el.2'
 ;;;###autoload

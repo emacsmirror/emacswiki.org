@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:10:45 2010 (-0800)
+;; Last-Updated: Tue May 25 07:05:01 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2498
+;;     Update #: 2508
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -93,12 +93,14 @@
 ;;    `delete-windows-for', `enlarge-font', `enlarge-frame',
 ;;    `enlarge-frame-horizontally', `hide-everything', `hide-frame',
 ;;    `iconify-everything', `iconify/map-frame',
-;;    `jump-to-frame-config-register', `mouse-iconify/map-frame',
-;;    `mouse-remove-window', `mouse-show-hide-mark-unmark',
-;;    `move-frame-down', `move-frame-left', `move-frame-right',
-;;    `move-frame-up', `other-window-or-frame', `remove-window',
-;;    `remove-windows-on', `rename-frame',
-;;    `rename-non-minibuffer-frame', `save-frame-config',
+;;    `jump-to-frame-config-register', `max-frame',
+;;    `maximize-frame-horizontally', `maximize-frame-vertically',
+;;    `mouse-iconify/map-frame', `mouse-remove-window',
+;;    `mouse-show-hide-mark-unmark', `move-frame-down',
+;;    `move-frame-left', `move-frame-right', `move-frame-up',
+;;    `other-window-or-frame', `remove-window', `remove-windows-on',
+;;    `rename-frame', `rename-non-minibuffer-frame',
+;;    `save-frame-config',
 ;;    `set-all-frame-alist-parameters-from-frame',
 ;;    `set-frame-alist-parameter-from-frame', `show-*Help*-buffer',
 ;;    `show-a-frame-on', `show-buffer-menu', `show-frame',
@@ -170,6 +172,12 @@
 ;;   (define-key menu-bar-frames-menu [set-param-from-frame]
 ;;     '("Set Frame Parameter from Frame"
 ;;       . set-frame-alist-parameter-from-frame))
+;;   (define-key menu-bar-frames-menu [max-frame]
+;;     '("Maximize Frame" . max-frame))
+;;   (define-key menu-bar-frames-menu [maximize-frame-vertically]
+;;     '("Maximize Frame Vertically" . maximize-frame-vertically))
+;;   (define-key menu-bar-frames-menu [maximize-frame-horizontally]
+;;     '("Maximize Frame Horizontally" . maximize-frame-horizontally))
 ;;   (define-key menu-bar-frames-menu [tile-frames-vertically]
 ;;     '("Tile Frames Vertically" . tile-frames-vertically))
 ;;   (define-key menu-bar-frames-menu [tile-frames-horizontally]
@@ -206,6 +214,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/05/25 dadams
+;;     Added: max-frame, maximize-frame-horizontally, maximize-frame-vertically.
 ;; 2009/10/02 dadams
 ;;     delete-windows-on: Return nil.  Make BUFFER optional: default is current buffer.
 ;; 2009/08/03 dadams
@@ -923,6 +933,64 @@ Interactively, use a prefix arg (`\\[universal-argument]') to be prompted for FR
   (when frame
     (dolist (fr (frame-list))
       (unless (eq fr frame) (condition-case nil (delete-frame fr) (error nil))))))
+
+;;;###autoload
+(defun maximize-frame-horizontally (&optional frame)
+  "Maximize selected frame horizontally."
+  (interactive (list (selected-frame)))
+  (max-frame 'horizontal frame))
+
+;;;###autoload
+(defun maximize-frame-vertically (&optional frame)
+  "Maximize selected frame vertically."
+  (interactive (list (selected-frame)))
+  (max-frame 'vertical frame))
+
+;;;###autoload
+(defun max-frame (&optional direction frame)
+  "Maximize selected frame horizontally, vertically, or both.
+With no prefix arg, maximize both directions.
+With a non-negative prefix arg, maximize vertically.
+With a negative prefix arg, maximize horizontally.
+
+In Lisp code:
+ DIRECTION is the direction: `horizontal', `vertical', or `both'.
+ FRAME is the frame to maximize."
+  (interactive (list (if current-prefix-arg
+                         (if (natnump (prefix-numeric-value current-prefix-arg))
+                             'vertical
+                           'horizontal)
+                       'both)))
+  (unless frame (setq frame  (selected-frame)))
+  (unless direction (setq direction 'both))
+  (let (;; Size of a frame that uses all of the available screen area,
+        ;; but leaving room for a minibuffer frame at bottom of display.
+        (fr-pixel-width   (available-screen-pixel-width))
+        (fr-pixel-height  (available-screen-pixel-height))
+        (fr-origin        (if (eq direction 'horizontal)
+                              (car (effective-screen-pixel-bounds))
+                            (cadr (effective-screen-pixel-bounds)))))
+    (let ((borders (* 2 (cdr (assq 'border-width (frame-parameters frame))))))
+      (set-frame-size
+       frame
+       ;; Subtract borders, scroll bars, & title bar, then convert pixel sizes to char sizes.
+       (if (memq direction '(horizontal both))
+           (/ (- fr-pixel-width borders (frame-extra-pixels-width frame))
+              (frame-char-width frame))
+         (frame-parameter frame 'width))
+       (if (memq direction '(vertical both))
+           (- (/ (- fr-pixel-height borders (frame-extra-pixels-height frame)
+                    window-mgr-title-bar-pixel-height (smart-tool-bar-pixel-height))
+                 (frame-char-height frame))
+              (if (eq window-system 'mac)
+                  0                     ; Menu bar for Carbon Emacs is not in the frame.
+                (cdr (assq 'menu-bar-lines (frame-parameters frame))))) ; Subtract `menu-bar-lines'.
+         (frame-parameter frame 'height))))
+    (set-frame-position frame
+                        (if (memq direction '(horizontal both)) fr-origin 0)
+                        (if (memq direction '(horizontal both)) 0 fr-origin))
+    (show-frame frame)
+    (incf fr-origin (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height))))
 
 ;;;###autoload
 (defun tile-frames-horizontally (&optional frames)

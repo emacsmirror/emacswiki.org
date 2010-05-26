@@ -39,7 +39,7 @@ specially. For example, I modified command
 `pop-to-frames' is non-nil) whenever a window is
 dedicated to its buffer (`window-dedicated-p').
 
-'''See Library:''' Lisp:oneonone.el
+'''See Library:''' <tt>[[oneonone.el]]</tt>
 
 = Invisible Special Frames =
 
@@ -68,7 +68,7 @@ Command `mouse-remove-window' (<code>[mode-line
 C-mouse-3]</code>) is the mouse equivalent of
 `remove-window'.
 
-'''See Libraries:''' Lisp:frame-cmds.el, Lisp:setup-keys.el
+'''See Libraries:''' <tt>[[frame-cmds.el]]</tt>, <tt>[[setup-keys.el]]</tt>
 
 ----
 OneOnOneEmacs CategoryFrames FrameModes CategoryDisplay

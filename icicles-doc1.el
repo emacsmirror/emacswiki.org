@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 18 10:47:26 2010 (-0700)
+;; Last-Updated: Tue May 25 18:21:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25028
+;;     Update #: 25030
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6002,6 +6002,12 @@
 ;;     If you do not want to include menu-item commands in the command
 ;;     history, then set option `icicle-menu-items-to-history-flag' to
 ;;     nil.
+;;
+;;     Note: Non-nil `icicle-menu-items-to-history-flag' simply makes
+;;     Emacs handle menu items that you choose the same way that it
+;;     handles commands that you enter using `RET'.  It does not add
+;;     such menu items to your completion history, which you access
+;;     using `C-l' (see (@> "What Input, What History?"), above). 
 ;;
 ;;  2. Command `icicle-insert-history-element' (bound to `M-o' in the
 ;;     minibuffer) lets you use (lax) completion to insert a history

@@ -4,7 +4,7 @@ Click the heading to find all pages related to [[Frame]]s in Emacs.
 * FisheyeWithThumbs -- thumbnail frames: a fisheye view of your frames and an alternative to iconifying
 * FramesAndRegisters -- saving and restoring a configuration of frames
 * FrameConfig -- save and restore some basic frame properties
-* FrameModes -- frame commands, including commands to move, iconify/restore, tile, and resize (e.g. zoom) frames
+* FrameModes -- frame commands, including commands to move, iconify/restore, tile, maximize, and resize (e.g. zoom) frames
 ** <tt>[[frame-cmds.el]]</tt>, <tt>[[zoom-frm.el]]</tt>
 ** [[Shrink-Wrapping Frames]] -- fit a frame to its displayed buffer
 ** [[OneOnOneEmacs]] -- frame-friendly Emacs

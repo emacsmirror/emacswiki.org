@@ -50,6 +50,7 @@ DrewAdams has written <tt>[[frame-cmds.el]]</tt>, a library of frame commands. U
 * Use `C-M-' with the arrow keys (up, down, left, right) to resize a frame incrementally.
 * Use `M-' with the arrow keys to move a frame incrementally.
 * Use `M-x tile-frames-horizontally' and `M-x tile-frames-vertically' to tile all visible frames.
+* Use `M-x maximize-frame-horizontally', `M-x maximize-frame-vertically', and `M-x max-frame' to maximize the current frame.
 * Use `C-M-z' or `C-x C-z' to iconify/hide all frames -- see `show-hide', below. 
 * Use `C-M-z' in a lone frame to restore all frames -- see `show-hide', below.
 * Use `C-mouse-1' in the minibuffer to restore all frames -- see `mouse-show-hide-mark-unmark', below.

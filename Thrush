@@ -1,4 +1,4 @@
-The '''Thrush''' operators of Clojure, ##->>## and ##->##, let one chain functions together. For example,
+The '''Thrush''' operators of [[ClojureMode|Clojure]], ##->>## and ##->##, let one chain functions together. For example,
 
     (->> (seq accounts)
          (filter #(= (:type %) 'savings))
@@ -11,6 +11,8 @@ expands to
       (map :balance
         (filter #(= (:type %) 'savings)
           (seq accounts))))
+
+It's analogous to the [http://en.wikipedia.org/wiki/Pipeline_%28Unix%29 Unix pipeline] operator.
 
 == Elisp implementation ==
 
@@ -29,4 +31,7 @@ The following macros implement Thrush operators in Emacs Lisp.
 
 == External links ==
 
-* [http://debasishg.blogspot.com/2010/04/thrush-in-clojure.html Trush in Clojure]
+* [http://debasishg.blogspot.com/2010/04/thrush-in-clojure.html Thrush in Clojure]
+
+----
+CategoryExtensionLanguage

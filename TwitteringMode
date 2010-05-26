@@ -118,5 +118,13 @@ Any chance we can have a count of characters while tweeting in the minibuffer? (
 
 [new]
 I can't see my followee's retweets. I'm following @ebertchicago(Roger Ebert, a film critik), but can't see his massive retweets. Can anybody tell me how can I fix it? -Jeongtae Roh
+
+[new]
+ Suddenly I get this error message from my twitteringmode client. Strange thing is it was working fine before. Any clues?
+
+error in process sentinel: Search failed: “^M? ^M?
+
+Thanks in advance.
+
 ----
 See also: [[Twitter]] [[Identica-mode]]
