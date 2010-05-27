@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat May 22 23:55:16 2010 (-0700)
+;; Last-Updated: Wed May 26 22:00:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12218
+;;     Update #: 12460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,7 +88,21 @@
 ;;  ** Installing Bookmark+ **
 ;;
 ;;  Put library `bookmark+.el' in your `load-path'.
-;;  Add this to your init file (~/.emacs) : (require 'bookmark+)
+;;  Add this to your init file (~/.emacs) :
+;;
+;;  (require 'bookmark+)
+;;
+;;  I recommend that you byte-compile the library.  To do that, you
+;;  must have the `bookmark+.el' in your `load-path'.
+;;
+;;  By default (see option `bookmarkp-crosshairs-flag'), when you
+;;  visit a bookmark that has no region it is highlighted temporarily
+;;  using crosshairs, for easy recognition.  For this optional feature
+;;  you also need my library `crosshairs.el', which in turn requires
+;;  libraries `col-highlight', `hl-line', `hl-line+', and `vline'.
+;;  Library `hl-line' comes with vanilla Emacs.  The others are
+;;  available from the Emacs Wiki web site: http://www.emacswiki.org/.
+;;  You also need Emacs 22 or later for this feature.
 ;;
 ;;
 ;;(@* "Bookmark+ Features")
@@ -166,6 +180,14 @@
 ;;     - When you want to jump to a bookmark of a specific type
 ;;       (e.g. Dired), you can use a command that offers only such
 ;;       bookmarks as completion candidates.
+;;
+;;  * Jump-destination highlighting.
+;;
+;;     - When you jump to a bookmark that has no region, the
+;;       destination (position) is highlighted temporarily using
+;;       crosshairs, to make it stand out.  Option
+;;       `bookmarkp-crosshairs-flag' controls this, and this feature
+;;       is available only if you also use library `crosshairs.el'.
 ;;
 ;;  * Improvements for the bookmark list (buffer `*Bookmark List*',
 ;;    aka "menu list") that is displayed using `C-x r l'.
@@ -288,25 +310,34 @@
 ;;  ** Different Types of Jump Commands **
 ;;
 ;;  When you jump to a bookmark, you can use completion to specify the
-;;  bookmark name.  With Bookmark+ you can easily have a large number
-;;  of bookmarks.  If you want to jump to a bookmark of a specific
-;;  type, such as Info, you can use a Bookmark+ command that is
-;;  specific to bookmarks of that type: only those bookmarks are
+;;  bookmark name.  `bookmark-jump' and `bookmark-jump-other-window',
+;;  bound to `C-x j j' and `C-x 4 j j', are general commands.  Their
+;;  completion candidates include all of your bookmarks.  With
+;;  Bookmark+ you can easily have a large number of bookmarks.
+;;
+;;  To provide more specificity, Bookmark+ provides many different
+;;  bookmark jump commands.  If you want to jump to a bookmark of a
+;;  specific type, such as Info, you can use a Bookmark+ command that
+;;  is specific to bookmarks of that type: only those bookmarks are
 ;;  completion candidates.
 ;;
-;;  Commands `bookmarkp-jump-to-type' and
-;;  `bookmarkp-jump-to-type-other-window' prompt you first for the
-;;  type of bookmark you want to jump to, then for a bookmark of that
-;;  type (only).
+;;  There are thus type-specific commands: `bookmarkp-dired-jump',
+;;  `bookmarkp-info-jump', and so on, bound to `C-x j d', `C-x j i',
+;;  and so on.  There are also commands to jump to bookmarks for the
+;;  current buffer or for particular buffers or files
+;;  (see (@> "Bookmarks for Specific Files or Buffers")).
 ;;
-;;  In addition to these general commands, there are type-specific
-;;  commands: `bookmarkp-dired-jump', `bookmarkp-info-jump', and so
-;;  on.  And there are commands to jump to bookmarks for the current
-;;  buffer or for particular buffers or files
-;;  (see (@> "Bookmarks for Specific Files or Buffers")).  All jump
-;;  commands are bound to keys that have the prefix `C-x j'.
-;;  `bookmarkp-dired-jump' is bound to `C-x j d',
-;;  `bookmarkp-info-jump' to `C-x j i', and so on.
+;;  All bookmark jump commands are bound to keys that have the prefix
+;;  `C-x j'.  There is an other-window version of most jump commands,
+;;  and it is bound to the same key as the same-window command, except
+;;  the prefix is `C-x 4 j', not `C-x j'.  For instance,
+;;  `bookmarkp-dired-jump-other-window' is bound to `C-x 4 j d'.
+;;
+;;  If you don't want to remember the different type-specfic bindings,
+;;  you can use commands `bookmarkp-jump-to-type' and
+;;  `bookmarkp-jump-to-type-other-window' (`C-x j :' and `C-x 4 j :').
+;;  They work for any type, prompting you first for the type, then for
+;;  a bookmark of that type (only).
 ;;
 ;;  There are several commands for jumping to a bookmark with tags.
 ;;  The completion candidates can be those bookmarks that have all
@@ -317,19 +348,6 @@
 ;;  prefix key `C-x j t %'.  The key suffix is `*' for "all" and `+'
 ;;  for "some".  For example, `C-x j t % +' jumps to a bookmark you
 ;;  choose that has one or more tags that match the regexp you input.
-;;
-;;  There is an other-window version of most jump commands, and it is
-;;  bound to the same key as the same-window command, except the
-;;  prefix is `C-x 4 j', not `C-x j'.  For instance,
-;;  `bookmarkp-dired-jump-other-window' is bound to `C-x 4 j d'.
-;;
-;;  These round out the jump-command prefix keys:
-;;
-;;    C-x j j    - bookmark-jump
-;;    C-x j :    - bookmarkp-jump-to-type
-;;
-;;    C-x 4 j j  - bookmark-jump-other-window
-;;    C-x 4 j :  - bookmarkp-jump-to-type-other-window
 ;;
 ;;  The `C-x j' and `C-x 4 j' bindings are global.  In addition, in
 ;;  some modes `j' is bound to the corresponding type-specific jump
@@ -345,20 +363,39 @@
 ;;  switches, inserted subdirectories, or hidden subdirectories for
 ;;  the same Dired directory.
 ;;
-;;  Finally, in addition to the predefined bookmark types, which you
-;;  can use as described above, you can define a "type"-specific jump
-;;  command for any set of bookmarks.  That is, you can use any
-;;  specific set of bookmarks as the completion candidates for a new
-;;  jump command.  Such a set is really only a pseudo-type: the actual
-;;  bookmarks can each be of any type.
+;;  In addition to the predefined bookmark types, which you can use as
+;;  described above, you can define a "type"-specific jump command for
+;;  any set of bookmarks.  That is, you can use any specific set of
+;;  bookmarks as the completion candidates for a new jump command.
+;;  Such a set is really only a pseudo-type: the actual bookmarks can
+;;  each be of any type.
 ;;
 ;;  You could use this feature, for example, to define a jump command
 ;;  for the bookmarks that belong to a given project.
 ;;
-;;  To define such a command, you first mark the bookmarks that you
-;;  want to be the completion candidates, then you use `M-c' (command
-;;  `bookmarkp-bmenu-define-jump-marked-command') in the bookmark
-;;  list.
+;;  One way to define such a command is to first mark the bookmarks
+;;  that you want to be the completion candidates, then use `M-c'
+;;  (command `bookmarkp-bmenu-define-jump-marked-command') in the
+;;  bookmark list.
+;;
+;;  The `*Bookmark List*' display defines a set of bookmarks, even
+;;  without markings.  So does each bookmark of type bookmark list,
+;;  that is, a bookmark corresponding to a particular `*Bookmark
+;;  List*' display state - see
+;;  (@* "State-Restoring Commands and Bookmarks").
+;;
+;;  You can capture the set of bookmarks corresponding to a `*Bookmark
+;;  List*' display for use in navigation, that is, as the current
+;;  "navigation list".  Navigation here includes jumping and cycling
+;;  - see (@> "Cycling, Navigation List, Autonaming").
+;;
+;;  To capture in the navigation list the bookmarks corresponding to
+;;  either the current `*Bookmark List*' display or a bookmark-list
+;;  bookmark, use `C-x p B', which is bound to command
+;;  `bookmarkp-choose-navlist-from-bookmark-list'.  To then jump to a
+;;  bookmark from such a navigation list, use `C-x j N' or `C-x 4 j N'
+;;  (`bookmarkp-jump-in-navlist' or
+;;  `bookmarkp-jump-in-navlist-other-window').
 ;;
 ;;
 ;;(@* "Bookmark Tags")
@@ -1116,6 +1153,202 @@
 ;;  only those bookmarks.
 ;;
 ;;
+;;(@* "Cycling, Navigation List, Autonaming")
+;;  ** "Cycling, Navigation List, Autonaming" **
+;;
+;;  Using completion to jump to a bookmark is very handy.  It lets you
+;;  choose a bookmark by its name and gives you random (direct) access
+;;  to it.
+;;
+;;  Sometimes, however, you don't much care what a bookmark is called,
+;;  and you want to cycle quickly among a few related bookmarks.
+;;  Obviously, the smaller the number of bookmarks in the set, the
+;;  more convenient cycling is - with many bookmarks cycling can
+;;  become tedious.
+;;
+;;
+;;(@* "The Bookmark Navigation List")
+;; *** "The Bookmark Navigation List ***
+;;
+;;  Bookmark+ is all about letting you define and manipulate sets of
+;;  bookmarks.  When a bookmark set can be used for cycling (as well
+;;  as jumping) it is called the "navigation list" or "navlist", for
+;;  short.
+;;
+;;  In other words, Bookmark+ lets you cycle among any set of
+;;  bookmarks.  When you cycle, it is the set that currently
+;;  constitutes the navigation list that is cycled.
+;;
+;;  Here are two ways to define the navigation list:
+;;
+;;  * `C-x p :' (`bookmarkp-choose-navlist-of-type') - As the set of
+;;    all bookmarks of a certain type.
+;;
+;;  * `C-x p B' (`bookmarkp-choose-navlist-from-bookmark-list') - As
+;;    the set of all bookmarks corresponding to a bookmark-list
+;;    bookmark, that is the bookmarks corresponding to a given
+;;    recorded state of buffer `*Bookmark List*'.
+;;
+;;  Each of these lets you choose a bookmark set using completion.
+;;  For `C-x p :' you are prompted for the type of bookmark
+;;  (e.g. `dired').
+;;
+;;  For `C-x p B' you are prompted for the name of a bookmark-list
+;;  bookmark that you created.  But you can also choose the candidate
+;;  `CURRENT *Bookmark List*' to capture the bookmarks that would be
+;;  shown currently in the `*Bookmark List*' (even if the list is not
+;;  displayed now).  See (@> "State-Restoring Commands and Bookmarks")
+;;  for information about bookmark-list bookmarks.
+;;
+;;  There is  a third way to define the navigation list.  If
+;;  you cycle among the bookmarks in a given buffer
+;;  (see (@> "Cycling in the Current Buffer")), then that cycling
+;;  switches the navlist to the set of those bookmarks.
+;;
+;;  Besides cycling among the bookmarks of the navlist (see next),
+;;  once you have defined the navigation list you can use `C-x j N' or
+;;  `C-x 4 j N' to jump to its bookmarks, as mentioned in section
+;;  (@> "Different Types of Jump Commands").
+;;
+;;  Note that just because you might have used `C-x p B' to define the
+;;  navlist using a particular bookmark-list bookmark or the current
+;;  `*Bookmark List*' state, that does not mean that the `*Bookmark
+;;  List*' state at any given time necessarily reflects the navlist
+;;  bookmarks.  The two are separate.  You can, however, open the
+;;  `*Bookmark List*' so that it reflects the current navlist, using
+;;  `C-x p N' (`bookmarkp-navlist-bmenu-list').
+;;
+;;
+;;(@* "Cycling the Navigation List")
+;; *** "Cycling the Navigation List" ***
+;;
+;;  So you choose a navigation list.  How do you then cycle among its
+;;  bookmarks?
+;;
+;;  Commands `bookmarkp-next-bookmark' and
+;;  `bookmarkp-previous-bookmark' cycle to the next and previous
+;;  bookmark in the current navigation list (with wraparound).
+;;
+;;  You can bind these to any keys you like, but it's obviously better
+;;  to choose keys that are easily repeatable (e.g. by holding them
+;;  pressed).  Some people who are used to using MS Visual Studio
+;;  might want to use `f2' and `S-f2' to cycle forward and backward.
+;;
+;;  Bookmark+ does not define such key bindings, but you can.  What it
+;;  does is define repeatable keys on the `bookmark-map' keymap, which
+;;  has prefix `C-x p'.  To do this it binds similar commands that can
+;;  be repeated by simply repeating the key-sequence suffix.  These
+;;  are the keys:
+;;
+;;  Forward:  `C-x p f', `C-x p C-f', `C-x p right'
+;;  Backward: `C-x p b', `C-x p C-b', `C-x p left'
+;;
+;;  (If you use an Emacs version prior to Emacs 22, you cannot use
+;;  this prefix-key repeatable feature.)
+;;
+;;  Being able to cycle among an arbitrary set of bookmarks is the
+;;  most important feature of Bookmark+ cycling.  The other important
+;;  feature is that if the navigation list is defined by `*Bookmark
+;;  List*' then the characteristics of that bookmark display are
+;;  respected for navigation.  Only the visible bookmarks are
+;;  included, and the sort order is used for navigation.
+;;
+;;  So you can not only choose any set of bookmarks for cycling at any
+;;  given time, you can also cycle among them in an order you choose.
+;;  For example, if in the bookmark list display (`C-x r l') you show
+;;  only those file bookmarks that belong to a given project, and you
+;;  have them sorted by file size, then cycling moves among only those
+;;  files, in file-size order.
+;;
+;;  This is a main reason you will want to define bookmark-list
+;;  bookmarks, which record a specific set of bookmarks and their sort
+;;  order: to later choose given sets in different contexts for
+;;  cycling.
+;;
+;;
+;;(@* "Cycling in the Current Buffer")
+;; *** "Cycling in the Current Buffer" ***
+;;
+;;  The bookmarks in the current buffer form another set that you can
+;;  navigate by cycling as well as jumping.  It is convenient to have
+;;  dedicated keys for this, separate from the keys to cycle the
+;;  navigation list.  Bookmark+ uses the same approach here - the
+;;  following keys are defined, corresponding to commands
+;;  `bookmarkp-next-bookmark-this-buffer-repeat' and
+;;  `bookmarkp-previous-bookmark-this-buffer-repeat':
+;;
+;;  Next:     `C-x p n', `C-x p C-n', `C-x p down'
+;;  Previous: `C-x p p', `C-x p C-p', `C-x p up'
+;;
+;;  Again, you can bind any keys you want to these commands
+;;  (e.g. `f2', `S-f2').  If you do not need to use a prefix key, then
+;;  bind commands `bookmarkp-next-bookmark-this-buffer' and
+;;  `bookmarkp-previous-bookmark-this-buffer' (no -repeat).
+;;
+;;  By default, the current-buffer bookmarks are cycled in order of
+;;  their positions in the buffer, top to bottom.  If you want a
+;;  different order, you can customize option
+;;  `bookmarkp-this-buffer-cycle-sort-comparer'.
+;;
+;;  Alternatively, you can use `C-x p .' to display the `*Bookmark
+;;  List*' with only the current buffer's bookmarks, sort them there,
+;;  and then use `C-x p B' to set the navigation list to `CURRENT
+;;  *Bookmark List*'.  In that case, you use the navlist cycling keys
+;;  (e.g. `C-x p f', not `C-x p n').
+;;
+;;
+;;(@* "Easy-Come-Easy-Go Bookmarks")
+;; *** "Easy-Come-Easy-Go Bookmarks" ***
+;;
+;;  Sometimes it is convenient to quickly create and delete bookmarks
+;;  whose names you don't really care about.  That is the purpose of
+;;  "autonamed" bookmarks.  An autonamed bookmark has a simple name
+;;  provided automatically, and it does not record any region
+;;  information - it records only a position.  It is nevertheless an
+;;  ordinary, persistent bookmark.
+;;
+;;  `C-x p RET' creates a bookmark at point without prompting you for
+;;  the name.  The bookmark is named using the current buffer name
+;;  preceded by the position in the buffer.  For example, the
+;;  autonamed bookmark in buffer `bookmark+.el' at position 58356 is
+;;  `000058356 bookmark+.el'.
+;;
+;;  (You can customize the format of autonamed bookmarks using options
+;;  `bookmarkp-autoname-bookmark-function' and
+;;  `bookmarkp-autoname-format'.)
+;;
+;;  `C-x p RET' is `bookmarkp-toggle-autoname-bookmark-set/delete',
+;;  which means that it does double duty.  If an autonamed bookmark is
+;;  under the cursor, then `C-x p RET' deletes it.  Easy creation,
+;;  easy deletion.  Because of this toggle behavior, there is at most
+;;  one autonamed bookmark at any given buffer position.
+;;
+;;  An autonamed bookmark has its position as part of its name.  When
+;;  you modify the content of a buffer, some of the bookmark positions
+;;  recorded for that buffer can lose their accuracy.  When you jump
+;;  to a bookmark, the position is automatically relocated, if
+;;  possible.
+;;
+;;  Similarly, since the name of an autonamed bookmark records its
+;;  position when it was created, that name can lose its accuracy due
+;;  to buffer changes.  And just as for a bookmark's recorded
+;;  position, when you cycle to an autonamed bookmark its name is
+;;  updated to the correct position.
+;;
+;;  This means that autonaming occurs both when you create an
+;;  autonamed bookmark and when you cycle to it.  More generally, it
+;;  occurs whenever you jump to it in any way.
+;;
+;;  `C-x p RET' has a third use: With a prefix argument, it prompts
+;;  you to confirm the deletion of *all* autonamed bookmarks for the
+;;  current buffer.
+;;
+;;  (You can also use `C-x p delete' (that's the `delete' key), bound
+;;  to `bookmarkp-delete-bookmarks', to delete individual bookmarks
+;;  under the cursor or all bookmarks in the buffer.  This is not
+;;  limited to autonamed bookmarks.)
+;;
+;;
 ;;(@* "Use Bookmark+ with Icicles")
 ;;  ** Use Bookmark+ with Icicles **
 ;;
@@ -1138,10 +1371,6 @@
 ;;  corresponding Icicles multi-commands.  A bookmark jump key thus
 ;;  becomes a bookmarks browser.  For example, `C-x j d' browses among
 ;;  any number of Dired bookmarks.
-;;
-;;  When you browse among bookmarks, visiting them, the current
-;;  destination (position) is highlighted temporarily using
-;;  crosshairs, to make it stand out.
 ;;
 ;;  A single key can set a bookmark or visit bookmarks.  This key is
 ;;  whatever command `bookmark-set' would normally be bound to -
@@ -1296,6 +1525,25 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/26 dadams
+;;     Added:
+;;       bookmarkp-choose-navlist-(from-bookmark-list|of-type), bookmarkp-crosshairs-highlight,
+;;       bookmarkp-cycle(-this-buffer)(-other-window), bookmarkp-delete-bookmarks, 
+;;       bookmarkp-jump-in-navlist(-other-window), bookmarkp-navlist-bmenu-list,
+;;       bookmarkp-(next|previous)-bookmark(-this-buffer)(-repeat),
+;;       bookmarkp-toggle-autoname-bookmark-set/delete, bookmarkp-autoname-bookmark(-function),
+;;       bookmarkp-autonamed-bookmarks-alist-only, bookmarkp-autoname-format,
+;;       bookmarkp-bookmark-autoname-p, bookmarkp-crosshairs-flag,
+;;       bookmarkp-this-buffer-cycle-sort-comparer, bookmarkp-current-bookmark-list-state,
+;;       bookmarkp-cycle-1, bookmarkp-list-position, bookmarkp-position-cp,
+;;       bookmarkp-current-nav-bookmark, bookmarkp-cycle-this-buffer-buff, bookmarkp-nav-alist,
+;;       bookmarkp-update-autonamed-bookmark, bookmarkp-delete-all-autonamed-for-this-buffer.
+;;    Bound:
+;;       bookmarkp-choose-navlist-from-bookmark-list, bookmark-insert-location,
+;;       bookmarkp-navlist-bmenu-list, bookmarkp-choose-navlist-of-type, bookmarkp-delete-bookmarks,
+;;       bookmarkp-toggle-autoname-bookmark-set/delete, bookmarkp-jump-in-navlist(-other-window),
+;;       bookmarkp-(next|previous)-bookmark(-this-buffer)-repeat.
+;;    bookmark--jump-via: Update the name and position of an autonamed bookmark.
 ;; 2010/05/22 dadams
 ;;     *-this-buffer-p: Return nil for bookmarks not really associated with a buffer.
 ;;     *-default-handler, *-goto-position: Forgot comma to eval file-name when no-such-file error.

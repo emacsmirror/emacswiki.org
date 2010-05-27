@@ -20,6 +20,20 @@ Major mode for editing PHP files
 ** Based on the Deboutv Xemacs and Sourceforge php-mode.This is mixed mode.  [http://mewde.blogspot.com/2008/10/new-update-for-emacs-php-mode.html Details here.] Some big differences from Deboutv inheritance mode; code comments inserting Sourceforge php-mode style; php-templates doesn't automatic insert; Class-function templates has shortcuts; otherwise; M-x php-template-TAB list all options, then you can select and insert.  We don't have old "Sources" menu, etc.But we have natural Imenu and outline support with additional templates menu.
 Auto-completes PHP functions and handles indentation both Sourceforge php-mode and Deboutv php-mode style. It has templating support for class, functions, and loops. Plus; all Sourceforge php-mode features supporting. I tested with emacs23 environment; both vista and Ubuntu hardy; even works with yasnippet mode together; just disable abbrev-minor-mode, or if you are insert php template, function etc; after typing and tabbing completion; type M-Space then going on; it works fine...
 
+== php-mode comparison ==
+
+* Which is better?
+
+(2010-May-26) After comparing the php-mode that comes with nxhtml vs php-mode-improved vs php-mode-new (included in Mewde Project), I found the following:
+
+** *nXHTML variant*: Most up-to-date.  Plenty of bug fixes.
+** *Mewde variant*: Includes a template menu that might be useful for new PHP programmers or could even serve as a quick reference.  Also includes helper menu for PHPDocumentor, etc.
+** *php-mode-improved.el*: Mostly incorporated into the nXHTML variant but includes a couple of toggles for font-lock that might be helpful.
+
+I may take the template functions from the Mewde variant and maintain them in a separate "add-on" for the nXHTML mode, but I would suggest that most people use the nXHTML variant.
+
+
+
 == Related modes ==
 
 Beside those php-mode there are the following possibilities to mix them with better HTML support. See also MultipleModes.
@@ -29,18 +43,6 @@ Beside those php-mode there are the following possibilities to mix them with bet
 * Lisp:two-mode-mode.el
 
 For example; I don't use any multiple major mode for php; I put all yasnipet html snippets to inside php snippets; and I use with new php-mode for complex php-html code pages.
-
-== Mewde php-mode ==
-
-[new]
-This, in comparison to the modes that primarily coerce CcMode to work nicely with PHP, has a great deal of features. Perhaps I overlooked something in the documentation, but it doesn't seem to handle comments that begin with two forward slashes. --ShadyTrees
-
-[new]
-: Looking through the php-mode.el file it looks like there is a mistake on line 2579. I just started learning elisp/how to make modes this morning though, so that's probably wrong. I fixed it in mine though, and it seems to be working. I uploaded my version of the file and more detail about what i /think/ is going on in [http://code.google.com/p/mewde/issues/detail?id=3 a bug I filed] on the mewde google code site. I have no reason to think it won't blow up, although if it does I'll comment here and at the bug -[http://blog.quodlibetor.com quodlibetor]
-
-[new]
-Is mewde php-mode better than the one included with nXhtml?
-Could someone please make a comparison and also check if this php-mode works with latest nXhtml?
 
 == Multiple modes with MuMaMo ==
 
@@ -156,6 +158,13 @@ I would like comments on both the single and multiple mode choices above. What s
 Can they be merged?
 -- LennartBorgman
 
+[new]
+For myself, I find that most PHP programming I do does not mix HTML and PHP code.  Multiple modes are almost always a mistake ... imho.
+-- MarkAHershberger
+
+[new]
+Thanks for the comments, Mark.
+Multiple major modes are often not the best, but there are a lot of files that uses them.
 
 ----
 CategoryModes

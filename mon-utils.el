@@ -493,6 +493,7 @@ buffer-name at point. Does not move point.\n
 `mon-get-buffers-directories', `mon-string-split-buffer-name',
 `mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
 `with-temp-buffer'.\n►►►"
+  (declare (indent 2) (debug t))
   (let ((buff-p (make-symbol "buff-p")))
     `(let ((,buff-p ,buffer-to-check))
        (when ,buff-p
@@ -3286,44 +3287,165 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
 
 ;;; ==============================
 ;;; :COURTESY Pascal .J Bourguignon :WAS `dolines'
-;;; :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')
+;;; :CHANGESET 1773 <Timestamp: #{2010-05-26T16:14:14-04:00Z}#{10213} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-28T15:57:08-05:00Z}#{09531} - by MON KEY>
 (defmacro* mon-line-dolines (start-end &body body)
-  "Executes the body with start-var and end-var bound to the start and the end 
-of each line of the current-buffer in turn.\n
-:EXAMPLE\(dolines \(start end\)
-  \(goto-char start\)
-  \(when \(re-search-forward 
-           \"^\\\\\( *?[0-9]*\\\\\)\\\\\( *?[0-9]*\\\\\)\\\\\( *[0-9]*\\\\\)$\" end  t\)
-     \(let \(\(day   \(match-string 1\)\)
-           \(month \(match-string 2\)\)
-           \(year  \(match-string 3\)\)\)
-        \(with-current-buffer \(get-buffer-create \"day.txt\"\)
-           \(insert day \"\\n\"\)\)
-        \(with-current-buffer \(get-buffer-create \"month.txt\"\)
-           \(insert month \"\\n\"\)\)       
-        \(with-current-buffer \(get-buffer-create \"year.txt\"\)
-           \(insert year \"\\n\"\)\)\)\)\)\n
-:SEE-ALSO `'.►►►"
-  (let ((vline (make-symbol "vline"))) ;; :WAS (gensym)))
+  "Executes the body with START-END `destructoring-bind'ed to the start and
+end of each line of the current-buffer in turn.\n
+:EXAMPLE\n\n(mon-line-dolines-TEST)\n
+:SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
+:SEE-ALSO `mon-line-dolines-TEST', `mon-line-dolines-setup-TEST'.\n►►►"
+  (declare (indent 2) (debug t))
+  (let ((mld-vline  (make-symbol "mld-vline"))
+        (mld-sm     (make-symbol "mld-sm"))
+        (mld-em     (make-symbol "mld-em")))
     (destructuring-bind (start-var end-var) start-end
-      `(let ((sm (make-marker))
-             (em (make-marker)))
+      `(let((,mld-sm (make-marker))
+            (,mld-em (make-marker)))
          (unwind-protect
-              (progn
-                (goto-char (point-min))
-                (while (< (point) (point-max))
-                  (let ((,vline (point)))
-                    (set-marker sm (point))
-                    (set-marker em (progn (end-of-line) (point)))
-                    (let ((,start-var  (marker-position sm))
-                          (,end-var    (marker-position em)))
-                      ,@body)
-                    (goto-char ,vline)
-                    (forward-line 1))))
-           (set-marker sm nil)
-           (set-marker em nil))
+             ;; :WAS (progn
+             (save-restriction
+               (when (use-region-p) ;; (region-active-p) 
+                 (narrow-to-region (region-beginning) (region-end)))
+                 (goto-char (buffer-end 0))
+                 (while (< (point) (buffer-end 1))
+                   (let ((,mld-vline (point)))
+                     (set-marker ,mld-sm (point))
+                     (set-marker ,mld-em (goto-char (line-end-position)))
+                     (let ((,start-var  (marker-position ,mld-sm))
+                           (,end-var    (marker-position ,mld-em)))
+                       ,@body)
+                     (goto-char ,mld-vline)
+                     (forward-line 1))))
+               (set-marker ,mld-sm nil)
+               (set-marker ,mld-em nil))
          nil))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-05-26T15:07:47-04:00Z}#{10213} - by MON KEY>
+(defun mon-line-dolines-setup-TEST ()
+  "Helper for `mon-line-dolines' macro's test function `mon-line-dolines-TEST'.\n
+:SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
+:SEE-ALSO .\n►►►"
+  (mon-line-dolines 
+      (start end)
+      (goto-char start)
+    (when (search-forward-regexp "^\\( *?[0-9]*\\)\\( *?[0-9]*\\)\\( *[0-9]*\\)$" end  t)
+      (let ((day   (match-string 1))
+            (month (match-string 2))
+            (year  (match-string 3)))
+        (with-current-buffer (get-buffer-create "*GOT-DAYS*")
+          (insert day "\n"))
+        (with-current-buffer (get-buffer-create "*GOT-MONTHS*")
+          (insert month "\n"))       
+        (with-current-buffer (get-buffer-create "*GOT-YEARS*")
+          (insert year "\n")))))
+  (let ((if-buff '("*GOT-YEARS*" "*GOT-MONTHS*" "*GOT-DAYS*"))
+        this-window-buff)
+    (setq this-window-buff 
+          (cons (buffer-name (current-buffer))
+                (or (get-buffer-window)
+                    (car (get-buffer-window-list (current-buffer))))))
+    (unless (and (car this-window-buff) (cdr this-window-buff) this-window-buff)
+      (progn 
+        (with-current-buffer
+            (get-buffer-create "*MON-LINE-DOLINES-TEST*")
+          (pop-to-buffer (current-buffer) t)
+          (setq this-window-buff 
+                (cons (buffer-name (current-buffer))
+                      (get-buffer-window (current-buffer)))))))
+    (unwind-protect
+        (progn
+          (when (one-window-p) (split-window-vertically))
+          (dolist (ifb if-buff 
+                       (dolist (is-b if-buff)
+                         (select-window (next-window))
+                         (set-window-buffer (selected-window) is-b)
+                         (unless (null if-buff) (pop if-buff)
+                                 (unless (null if-buff)
+                                   (split-window-horizontally)))))
+            (unless (mon-buffer-exists-p ifb) (remove ifb if-buff))))
+      (progn
+        (set-window-buffer 
+         (or (get-buffer-window (car this-window-buff)) (cdr this-window-buff))
+         (car this-window-buff))
+        (pop-to-buffer (car this-window-buff))
+        (when (equal (buffer-name (current-buffer))
+                     "*MON-LINE-DOLINES-TEST*")
+          (save-excursion (mon-line-dolines-TEST)))))))
+
+;;; ==============================
+;;; :TODO Should really be wrapped in a save-window-excursion that waits for
+;;;       some kbd event that initates an unwind.
+;;; :CREATED <Timestamp: #{2010-05-26T15:28:44-04:00Z}#{10213} - by MON>
+(defun mon-line-dolines-TEST ()
+  "Test function for `mon-line-dolines' macro.\n
+Return the output of that macro as per its original intended use.\n
+Values returned in 3 (or 4) seperate buffers named:\n
+ \"*GOT-YEARS*\" \"*GOT-MONTHS*\" \"*GOT-DAYS*\"\n
+When current-buffer does not have a display or is read-only return additional
+details in buffer named \"*MON-LINE-DOLINES-TEST*\".\n
+:SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
+:SEE-ALSO `mon-line-dolines-setup-TEST'.\n►►►"
+  (let ((mldt (mapconcat 'identity
+                         '(":DATE        :MONTH           :YEAR"
+                           ""
+                           "12              5           1955"
+                           "30              6           1931"
+                           "                3           1918"
+                           "28                          1877"
+                           "39              2           1888") "\n"))
+        (exit-c 78)
+        got-N)
+    (save-window-excursion
+      (if (and (not (equal (buffer-name) " *temp*"))
+               (not (equal (buffer-name) "*MON-LINE-DOLINES-TEST*"))
+               (or (not (get-buffer-window (current-buffer)))
+                   buffer-read-only))
+          (with-temp-buffer 
+            (save-excursion (insert  mldt))
+            (mon-line-dolines-setup-TEST))
+        (cond  ((equal (buffer-name) "*MON-LINE-DOLINES-TEST*")
+                (save-excursion
+                  (insert ";;; With this data:\n\n"
+                          mldt "\n\n"
+                          "\n;;;Evaluated `mon-line-dolines' with `mon-line-dolines-setup-TEST' as below:\n\n"
+                          (pp (symbol-function 'mon-line-dolines-setup-TEST))))
+                (emacs-lisp-mode)
+                (while (not got-N)
+                  (when (eq (read-event 
+                             (format (concat "Type `%c' to continue and kill *TEST* buffers,"
+                                             "or %s to exit without killing test buffers.")
+                                     exit-c (key-description [7])))
+                            exit-c)
+                    (let (bld-ksb)
+                      (dolist (ksb 
+                               '("*MON-LINE-DOLINES-TEST*" "*GOT-YEARS*" "*GOT-MONTHS*" "*GOT-DAYS*")
+                               (kill-some-buffers bld-ksb))
+                        (when (get-buffer ksb)
+                          (push (get-buffer ksb) bld-ksb))))
+                    (setq got-N t))))
+               (t (insert  "\n;;;Evaluated `mon-line-dolines' with `mon-line-dolines-setup-TEST'.\n\n"
+                           "\n;; With this data:\n\n")
+                  (push-mark nil nil t)
+                  (insert mldt "\n\n")
+                  (mon-line-dolines-setup-TEST)
+                  (unless (equal (buffer-name) "*MON-LINE-DOLINES-TEST*")
+                    (while (not got-N)
+                      (when (eq (read-event 
+                                 (format (concat "Type `%c' to continue and kill *TEST* buffers,"
+                                                 "or %s to exit without killing test buffers.")
+                                         exit-c (key-description [7])))
+                                exit-c)
+                        (let (bld-ksb)
+                          (dolist (ksb 
+                                   '("*MON-LINE-DOLINES-TEST*" "*GOT-YEARS*" "*GOT-MONTHS*" "*GOT-DAYS*")
+                                   (kill-some-buffers bld-ksb))
+                            (when (get-buffer ksb)
+                              (push (get-buffer ksb) bld-ksb))))
+                        (setq got-N t))))))))))
+;;
+;;; TEST-ME (mon-line-dolines-TEST)
 
 ;;; ==============================
 ;;; :NOTE (length "=> TO-COLM-NUM-19-!")

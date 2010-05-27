@@ -42,6 +42,7 @@ have sought to replace openssl dependencies with gnutls
 
 Now, assuming you've already enabled 'erc, we can continue to work with the supplied erc-tls command:
 
+ ; M-x start-irc
  (defun start-irc ()
    "Connect to IRC."
    (interactive)
@@ -66,6 +67,11 @@ will fail to trigger an auto-reconnect with certs. In the absence of valid ssl c
 this will mean repeated failed attempts to reconnect. A temporary solution would be to have
 nickserv login and password saved to an erc-auth file to be loaded by erc.
 -- ootput 
+
+=== Symbol's function definition is void: erc-tls ===
+
+[new]
+Hey, put (require 'erc) in your ~/.emacs. -- talau
 
 ----
 [[ERC]]

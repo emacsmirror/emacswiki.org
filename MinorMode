@@ -9,6 +9,18 @@ Most minor modes have a command that turns them on and off. For example:
 * `font-lock-mode' -- see EnablingFontLock
 * `line-number-mode' -- see LineNumbers
 
+Some do not.  For example:
+
+* `adaptive-fill-mode'
+* `auto-hscroll-mode'
+* `indent-tabs-mode'
+* `shift-select-mode'
+* `ediff-word-mode' -- Part of EdiffMode
+
+Some modes do not have a single-point of entry, but set a variable for whether they are turned on, or should be disabled.
+* `isearch-mode'
+* `tramp-mode'
+
 == Defining minor modes ==
 
 The easiest way to define a minor mode is with the ##define-minor-mode## macro from ##easy-mmode.el##.

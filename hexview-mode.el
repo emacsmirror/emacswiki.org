@@ -4,7 +4,7 @@
 ;; Copyright (C) 2010 Joyer Huang
 
 ;; Author: Joyer Huang <collger@eyou.com>
-;; Version: 0.0.4
+;; Version: 0.0.5
 ;; Keywords: hex, view, fast, user interface
 ;; URL: http://slimeweb.com
 
@@ -50,6 +50,10 @@
 
 
 ;;; Change Log:
+;;
+;; Version 0.0.5
+;; * fix cursor when moving 
+;; * add dummy template player (future feature)
 ;;
 ;; Version 0.0.4
 ;; * add easy menu
@@ -139,6 +143,19 @@
         ))
     t))
 
+(defun hexview:get-template (fn)
+  '(hv:till-end (hv:struct (name cdata)
+                           (member (hv:int (name abc))
+                                   (hv:array (type byte) (number (hv:varref abc)))))))
+(defun hexview:play-template (template)
+  (if (and (consp template) (listp template))
+      (insert (prin1-to-string template)))
+  )
+(defun hexview:template-info ()
+  (let ((tmpl (hexview:get-template hexview-view-file)))
+    ;(hexview:play-template tmpl)
+    ))
+
 (defun hexview:next-page ()
   "View the next page of the Hexview buffer."
   (interactive)
@@ -219,9 +236,10 @@
 
 (defun hexview:update ()
   "Use the `hexview-start-index' to update the whole buffer"
-  (let ((inhibit-read-only t))
+  (let ((inhibit-read-only t)
+        (old-point (point)))
     (erase-buffer)
-    (insert (format "Hexviewing file:\t %s (%d of %8.0f)\n" hexview-view-file (truncate hexview-start-index) (hexview:filelen hexview-view-file)))
+    (insert (format "Hexviewing file:\t %s (%8.0f of %8.0f)\n" hexview-view-file (truncate hexview-start-index) (hexview:filelen hexview-view-file)))
     (dotimes (line hexview-line-height)
       (let* ((line-index (+ (truncate hexview-start-index) (* line hexview-line-width)))
              (line-chars (hexview:read-file-part hexview-view-file line-index hexview-line-width))
@@ -233,7 +251,8 @@
       (mapc #'(lambda (x) (insert (if (hexview:textp x) x "."))) line-chars)
       (insert "\n")))
     (hexview:usage-info)
-    (goto-char 0)))
+    (hexview:template-info)
+    (goto-char old-point)))
 
 (defun hexview-mode ()
   "Major mode for viewing file in hexical mode.

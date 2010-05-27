@@ -120,6 +120,14 @@ There is now a FAQ section on Launchpad: https://answers.launchpad.net/nxhtml/+f
 
 Please use the bug database if you can, see above.
 
+[new]
+How is one supposed to set the indentation width? The brace style?
+
+[new]
+Indentation: As usual in Emacs, but there are also some indentation specific to multi major modes. Do "M-x customize-group RET mumamo RET" to change them.
+
+Brace style: I do not understand the question. Could you please rephrase it?
+
 
 === Unsolved problems ===
 

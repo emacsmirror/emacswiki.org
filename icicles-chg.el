@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon May 24 18:21:17 2010 (-0700)
+;; Last-Updated: Wed May 26 11:14:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5335
+;;     Update #: 5338
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/26 dadams
+;;     icicle-bookmark-set: Removed pseudo-default.  Thx to Michael Heerdegen.
 ;; 2010/05/24 dadams
 ;;     icicle-comint-replace-orig-completion-fns: Rewrote to not use case.  Thx to Michael Heerdegen.
 ;; 2010/05/21 dadams
@@ -2964,6 +2966,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/05/26 dadams
+;;     Add to command-history only if an interned symbol.  Thx to Michael Heerdegen.
 ;; 2010/05/22 dadams
 ;;     icicle-(bind|restore)-completion-keys: Bind icicle-candidate-read-fn-invoke to ESC C-m also.
 ;; 2010/05/17 dadams

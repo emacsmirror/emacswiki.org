@@ -1,75 +1,13 @@
-<pre>
-;;; pabbrev.el --- Predictive abbreviation expansion
+This is another abbreviation expansion in the line of DynamicAbbreviations.
+The difference is that this minor mode will analyse text
+during idle time. Thus, the *abbreviations are always displayed*!
 
-;; Author: Phillip Lord <p.lord@russet.org.uk>
-;; Maintainer: Phillip Lord <p.lord@russet.org.uk>
-;; Maintainer (XEmacs): Martin Kuehl (martin.kuehl@gmail.com)
-;; Website: http://www.russet.org.uk
+pabbrev's main entry point is through the minor mode
+`pabbrev-mode'.  There is also a global minor mode, called
+`global-pabbrev-mode', which does the same in all appropriate
+buffers.
 
-;;; Commentary:
-;;
-;; The code provides a abbreviation expansion for Emacs.  Its fairly
-;; similar to "dabbrev" expansion, which works based on the contents
-;; of the current buffer (or other buffers).
-;;
-;; Predictive abbreviation expansion works based on the previously
-;; written text.  Unlike dynamic abbreviation, the text is analysed
-;; during idle time, while Emacs is doing nothing else.  `pabbrev-mode'
-;; tells you when this is happening.  If this irritates you unset
-;; `pabbrev-idle-timer-verbose'.  The advantage of this is that its
-;; very quick to look up potential abbreviations, which means that the
-;; can be constantly displayed, without interfering with the user as
-;; they type.  Certainly it works for me, on an old laptop, typing as
-;; fast as I can (which is fast, since I learnt to type with four
-;; fingers).
-;;
-;; pabbrev's main entry point is through the minor mode
-;; `pabbrev-mode'.  There is also a global minor mode, called
-;; `global-pabbrev-mode', which does the same in all appropriate
-;; buffers.
-
-;; The current user interface looks like so...
-;;
-;; p[oint]
-;; pr[ogn]
-;; pre[-command-hook]
-;; pred[ictive]
-;;
-;; As the user types the system narrows down the possibilities.  The
-;; narrowing is based on how many times the words have been used
-;; previously.  By hitting [tab] at any point the user can complete the
-;; word.  The [tab] key is normally bound to `indent-line'.
-;; `pabbrev-mode' preserves access to this command (or whatever else
-;; [tab] was bound to), if there is not current expansion.
-;;
-;; Sometimes you do not want to select the most commonly occurring
-;; word, but a less frequently occurring word.  You can access this
-;; functionality by hitting [tab] for a second time.  This takes you
-;; into a special suggestions buffer, from where you can select
-;; secondary selections.  See `pabbrev-select-mode' for more
-;; details. There is also an option `pabbrev-minimal-expansion-p'
-;; which results in the shortest substring option being offered as the
-;; first replacement.
-;;
-;; But is this actually of any use? Well having use the system for a
-;; while now, I can say that it is sometimes.  I originally thought
-;; that it would be good for text, but in general its not so
-;; useful.  By the time you have realised that you have an expansion
-;; that you can use, hit tab, and checked that its done the right
-;; thing, you could have just typed the word directly in.  It's much
-;; nicer in code containing buffers, where there tend to be lots of
-;; long words, which is obviously where an abbreviation expansion
-;; mechanism is most useful.
-;;
-;; Currently pabbrev builds up a dictionary on a per major-mode basis.
-;; While pabbrev builds up this dictionary automatically, you can also
-;; explicitly add a buffer, or a region to the dictionary with
-;; `pabbrev-scavenge-buffer', or `pabbrev-scavenge-region'.  There is
-;; also a command `pabbrev-scavenge-some' which adds some words from
-;; around point.  pabbrev remembers the word that it has seen already,
-;; so run these commands as many times as you wish.
-
-</pre>
+Lisp:pabbrev.el
 
 == Customizations ==
 Normally hitting ##TAB## a second time after a completion will take you to a suggestions buffer where you can select from alternate completions.  This bit of elisp hackery will instead use a pop-up list via auto-competion mode.  Make sure this is executed **after** ##pabbrev## is loaded.
@@ -145,3 +83,6 @@ Normally hitting ##TAB## a second time after a completion will take you to a sug
 
 (fset 'pabbrev-suggestions-goto-buffer 'pabbrevx-suggestions-goto-buffer)
 </pre>
+
+----
+CategoryCompletion

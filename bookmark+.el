@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat May 22 23:50:08 2010 (-0700)
+;; Last-Updated: Wed May 26 17:29:00 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12704
+;;     Update #: 13103
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -24,9 +24,11 @@
 ;;
 ;;    Bookmark+: extensions to standard library `bookmark.el'.
 ;;
-;;    The documentation and change history for Bookmark+ are in the
-;;    separate, comment-only file `bookmark+-doc.el'.  That
-;;    documentation is also available in these ways:
+;;    The full documentation and change history for Bookmark+ are in
+;;    the separate, comment-only file `bookmark+-doc.el'.  This also
+;;    includes how to byte-compile and install Bookmark+.
+;;
+;;    The documentation is also available in these ways:
 ;;
 ;;    1. From the bookmark list (`C-x r l'):
 ;;       Use `?' to show the current bookmark-list status and general
@@ -176,8 +178,14 @@
 ;;    `bookmarkp-bmenu-w32-open-select',
 ;;    `bookmarkp-bmenu-w32-open-with-mouse',
 ;;    `bookmarkp-bookmark-list-jump',
+;;    `bookmarkp-choose-navlist-from-bookmark-list',
+;;    `bookmarkp-choose-navlist-of-type',
+;;    `bookmarkp-crosshairs-highlight', `bookmarkp-cycle',
+;;    `bookmarkp-cycle-other-window', `bookmarkp-cycle-this-buffer',
+;;    `bookmarkp-cycle-this-buffer-other-window',
 ;;    `bookmarkp-define-tags-sort-command',
-;;    `bookmarkp-describe-bookmark',
+;;    `bookmarkp-delete-all-autonamed-for-this-buffer',
+;;    `bookmarkp-delete-bookmarks', `bookmarkp-describe-bookmark',
 ;;    `bookmarkp-describe-bookmark-internals',
 ;;    `bookmarkp-desktop-change-dir', `bookmarkp-desktop-delete',
 ;;    `bookmarkp-desktop-jump', `bookmarkp-desktop-read',
@@ -186,8 +194,9 @@
 ;;    `bookmarkp-dired-jump-other-window', `bookmarkp-file-jump',
 ;;    `bookmarkp-file-jump-other-window', `bookmarkp-gnus-jump',
 ;;    `bookmarkp-gnus-jump-other-window', `bookmarkp-info-jump',
-;;    `bookmarkp-info-jump-other-window', `bookmarkp-jump-to-type',
-;;    `bookmarkp-jump-to-type-other-window',
+;;    `bookmarkp-info-jump-other-window', `bookmarkp-jump-in-navlist',
+;;    `bookmarkp-jump-in-navlist-other-window',
+;;    `bookmarkp-jump-to-type', `bookmarkp-jump-to-type-other-window',
 ;;    `bookmarkp-list-all-tags',
 ;;    `bookmarkp-list-defuns-in-commands-file',
 ;;    `bookmarkp-local-file-jump',
@@ -195,8 +204,16 @@
 ;;    `bookmarkp-make-function-bookmark', `bookmarkp-man-jump',
 ;;    `bookmarkp-man-jump-other-window',
 ;;    `bookmarkp-menu-jump-other-window' (Emacs 20, 21),
+;;    `bookmarkp-navlist-bmenu-list', `bookmarkp-next-bookmark',
+;;    `bookmarkp-next-bookmark-repeat',
+;;    `bookmarkp-next-bookmark-this-buffer',
+;;    `bookmarkp-next-bookmark-this-buffer-repeat',
 ;;    `bookmarkp-non-file-jump',
 ;;    `bookmarkp-non-file-jump-other-window',
+;;    `bookmarkp-previous-bookmark',
+;;    `bookmarkp-previous-bookmark-repeat',
+;;    `bookmarkp-previous-bookmark-this-buffer',
+;;    `bookmarkp-previous-bookmark-this-buffer-repeat',
 ;;    `bookmarkp-read-bookmark-for-type', `bookmarkp-region-jump',
 ;;    `bookmarkp-region-jump-other-window',
 ;;    `bookmarkp-remote-file-jump',
@@ -218,6 +235,7 @@
 ;;    `bookmarkp-specific-files-jump-other-window',
 ;;    `bookmarkp-switch-bookmark-file', `bookmarkp-this-buffer-jump',
 ;;    `bookmarkp-this-buffer-jump-other-window',
+;;    `bookmarkp-toggle-autoname-bookmark-set/delete',
 ;;    `bookmarkp-toggle-saving-bookmark-file',
 ;;    `bookmarkp-toggle-saving-menu-list-state',
 ;;    `bookmarkp-toggle-bookmark-set-refreshes',
@@ -228,10 +246,11 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `bookmarkp-bmenu-commands-file', `bookmarkp-bmenu-omitted-list',
-;;    `bookmarkp-bmenu-state-file',
+;;    `bookmarkp-autoname-bookmark-function',
+;;    `bookmarkp-autoname-format', `bookmarkp-bmenu-commands-file',
+;;    `bookmarkp-bmenu-omitted-list', `bookmarkp-bmenu-state-file',
 ;;    `bookmarkp-bookmark-name-length-max',
-;;    `bookmarkp-desktop-no-save-vars',
+;;    `bookmarkp-crosshairs-flag', `bookmarkp-desktop-no-save-vars',
 ;;    `bookmarkp-handle-region-function',
 ;;    `bookmarkp-incremental-filter-delay',
 ;;    `bookmarkp-menu-popup-max-length',
@@ -242,8 +261,9 @@
 ;;    `bookmarkp-show-end-of-region', `bookmarkp-sort-comparer',
 ;;    `bookmarkp-sort-orders-alist',
 ;;    `bookmarkp-sort-orders-for-cycling-alist',
-;;    `bookmarkp-su-or-sudo-regexp', `bookmarkp-use-region-flag',
-;;    `bookmarkp-w3m-allow-multi-tabs'.
+;;    `bookmarkp-su-or-sudo-regexp',
+;;    `bookmarkp-this-buffer-cycle-sort-comparer',
+;;    `bookmarkp-use-region-flag', `bookmarkp-w3m-allow-multi-tabs'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -269,6 +289,8 @@
 ;;    `bmkext-jump-woman', `bookmarkp-all-tags-alist-only',
 ;;    `bookmarkp-all-tags-regexp-alist-only', `bookmarkp-alpha-cp',
 ;;    `bookmarkp-alpha-p', `bookmarkp-assoc-delete-all',
+;;    `bookmarkp-autoname-bookmark',
+;;    `bookmarkp-autonamed-bookmarks-alist-only',
 ;;    `bookmarkp-barf-if-not-in-menu-list',
 ;;    `bookmarkp-bmenu-cancel-incremental-filtering',
 ;;    `bookmarkp-bmenu-filter-alist-by-bookmark-name-regexp',
@@ -279,6 +301,7 @@
 ;;    `bookmarkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bookmarkp-bmenu-propertize-item',
 ;;    `bookmarkp-bmenu-read-filter-input',
+;;    `bookmarkp-bookmark-autoname-p',
 ;;    `bookmarkp-bookmark-creation-cp',
 ;;    `bookmarkp-bookmark-last-access-cp',
 ;;    `bookmarkp-bookmark-list-alist-only',
@@ -289,10 +312,12 @@
 ;;    `bookmarkp-completing-read-file-name',
 ;;    `bookmarkp-completing-read-lax', `bookmarkp-cp-not',
 ;;    `bookmarkp-create-varlist-bookmark',
-;;    `bookmarkp-current-sort-order', `bookmarkp-desktop-alist-only',
-;;    `bookmarkp-desktop-bookmark-p', `bookmarkp-desktop-kill',
-;;    `bookmarkp-dired-alist-only', `bookmarkp-dired-bookmark-p',
-;;    `bookmarkp-dired-subdirs', `bookmarkp-edit-bookmark',
+;;    `bookmarkp-current-bookmark-list-state',
+;;    `bookmarkp-current-sort-order', `bookmarkp-cycle-1',
+;;    `bookmarkp-desktop-alist-only', `bookmarkp-desktop-bookmark-p',
+;;    `bookmarkp-desktop-kill', `bookmarkp-dired-alist-only',
+;;    `bookmarkp-dired-bookmark-p', `bookmarkp-dired-subdirs',
+;;    `bookmarkp-edit-bookmark',
 ;;    `bookmarkp-end-position-post-context',
 ;;    `bookmarkp-end-position-pre-context', `bookmarkp-every',
 ;;    `bookmarkp-face-prop', `bookmarkp-file-alist-only',
@@ -332,7 +357,7 @@
 ;;    `bookmarkp-last-specific-buffer-p',
 ;;    `bookmarkp-last-specific-file-alist-only',
 ;;    `bookmarkp-last-specific-file-p',
-;;    `bookmarkp-line-number-at-pos',
+;;    `bookmarkp-line-number-at-pos', `bookmarkp-list-position',
 ;;    `bookmarkp-local-directory-bookmark-p',
 ;;    `bookmarkp-local-file-accessed-more-recently-cp',
 ;;    `bookmarkp-local-file-alist-only',
@@ -353,7 +378,7 @@
 ;;    `bookmarkp-non-file-alist-only',
 ;;    `bookmarkp-non-file-bookmark-p', `bookmarkp-omitted-alist-only',
 ;;    `bookmarkp-position-after-whitespace',
-;;    `bookmarkp-position-before-whitespace',
+;;    `bookmarkp-position-before-whitespace', `bookmarkp-position-cp',
 ;;    `bookmarkp-position-post-context',
 ;;    `bookmarkp-position-post-context-region',
 ;;    `bookmarkp-position-pre-context',
@@ -387,6 +412,7 @@
 ;;    `bookmarkp-this-buffer-alist-only', `bookmarkp-this-buffer-p',
 ;;    `bookmarkp-this-file-alist-only', `bookmarkp-this-file-p',
 ;;    `bookmarkp-unmarked-bookmarks-only', `bookmarkp-upcase',
+;;    `bookmarkp-update-autonamed-bookmark',
 ;;    `bookmarkp-varlist-alist-only', `bookmarkp-varlist-bookmark-p',
 ;;    `bookmarkp-visited-more-cp', `bookmarkp-w3m-alist-only',
 ;;    `bookmarkp-w3m-bookmark-p', `bookmarkp-w3m-cp',
@@ -407,15 +433,18 @@
 ;;    `bookmarkp-bmenu-menubar-menu', `bookmarkp-bmenu-show-menu',
 ;;    `bookmarkp-bmenu-sort-menu', `bookmarkp-bmenu-tags-menu',
 ;;    `bookmarkp-bmenu-title', `bookmarkp-bookmark-list-history',
-;;    `bookmarkp-current-bookmark-file', `bookmarkp-desktop-history',
+;;    `bookmarkp-current-bookmark-file',
+;;    `bookmarkp-current-nav-bookmark',
+;;    `bookmarkp-cycle-this-buffer-buff', `bookmarkp-desktop-history',
 ;;    `bookmarkp-dired-history', `bookmarkp-file-history',
 ;;    `bookmarkp-gnus-history', `bookmarkp-info-history',
 ;;    `bookmarkp-last-specific-buffer',
 ;;    `bookmarkp-last-specific-file', `bookmarkp-local-file-history',
-;;    `bookmarkp-man-history', `bookmarkp-non-file-history',
-;;    `bookmarkp-region-history', `bookmarkp-remote-file-history',
-;;    `bookmarkp-w3m-history', `bookmarkp-isearch-bookmarks' (Emacs
-;;    23+), `bookmarkp-jump-display-function', `bookmarkp-jump-map',
+;;    `bookmarkp-man-history', `bookmarkp-nav-alist',
+;;    `bookmarkp-non-file-history', `bookmarkp-region-history',
+;;    `bookmarkp-remote-file-history', `bookmarkp-w3m-history',
+;;    `bookmarkp-isearch-bookmarks' (Emacs 23+),
+;;    `bookmarkp-jump-display-function', `bookmarkp-jump-map',
 ;;    `bookmarkp-jump-other-window-map',
 ;;    `bookmarkp-last-bmenu-bookmark',
 ;;    `bookmarkp-last-bmenu-state-file',
@@ -517,6 +546,7 @@
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
 (eval-when-compile (require 'cl)) ;; case, multiple-value-bind
 
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (defconst bookmarkp-version-number "2.7.2")
 
@@ -545,6 +575,14 @@
 (defvar Man-arguments)                  ; Defined in `man.el'.
 (defvar Man-mode-map)                   ; Defined in `man.el'.
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+.
+(defvar last-repeatable-command)        ; Defined in `repeat.el'.
+(defvar repeat-last-self-insert)        ; Defined in `repeat.el'.
+(defvar repeat-num-input-keys-at-repeat) ; Defined in `repeat.el'.
+(defvar repeat-num-input-keys-at-self-insert) ; Defined in `repeat.el'.
+(defvar repeat-on-final-keystroke)      ; Defined in `repeat.el'.
+(defvar repeat-previous-repeated-command) ; Defined in `repeat.el'.
+(defvar repeat-too-dangerous)           ; Defined in `repeat.el'.
+(defvar repeat-undo-count)              ; Defined in `repeat.el'.
 (defvar woman-last-file-name)           ; Defined in `woman.el'.
 (defvar woman-menu)                     ; Defined in `woman.el'.
 (defvar woman-mode-map)                 ; Defined in `woman.el'.
@@ -848,6 +886,17 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "bookmark+"))
 
 ;;;###autoload
+(defcustom bookmarkp-autoname-bookmark-function 'bookmarkp-autoname-bookmark
+  "*Function to automatically name a bookmark at point (cursor position)."
+  :type 'function :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bookmarkp-autoname-format (if (> emacs-major-version 21) "[0-9]\\{9\\} %s" "[0-9]+ %s")
+  "*Format string to match an autonamed bookmark name.
+It must have a single `%s' that to accept the buffer name."
+  :type 'string :group 'bookmark-plus)
+
+;;;###autoload
 (defcustom bookmarkp-bmenu-omitted-list ()
   "List of names of omitted bookmarks.
 They are generally not available for display in the bookmark list.
@@ -894,11 +943,39 @@ was the last time you used it."
   :group 'bookmark-plus)
 
 ;;;###autoload
+(defcustom bookmarkp-crosshairs-flag (> emacs-major-version 21)
+  "*Non-nil means highlight with crosshairs when you visit a bookmark.
+The highlighting is temporary - until your next action.
+You need library `crosshairs.el' for this feature, and you need Emacs
+22 or later."
+  :type 'boolean :group 'bookmark-plus)
+
+(when (and bookmarkp-crosshairs-flag (> emacs-major-version 21) (require 'crosshairs nil t))
+  (add-hook 'bookmark-after-jump-hook 'bookmarkp-crosshairs-highlight))
+
+;;;###autoload
 (defcustom bookmarkp-desktop-no-save-vars '(search-ring regexp-search-ring kill-ring)
   "List of variables not to save when creating a desktop bookmark.
 They are removed from `desktop-globals-to-save' for the duration of
 the save (only)."
   :type '(repeat (variable :tag "Variable")) :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bookmarkp-this-buffer-cycle-sort-comparer '((bookmarkp-position-cp))
+  "*`bookmarkp-cycle-sort-comparer' value for cycling this-buffer bookmarks.
+Some values you might want to use: ((bookmarkp-position-cp))
+                                   ((bookmarkp-bookmark-creation-cp))
+                                   ((bookmarkp-visited-more-cp))
+See `bookmarkp-cycle-sort-comparer'."
+  :type '(choice
+          (const    :tag "None (do not sort)" nil)
+          (function :tag "Sorting Predicate")
+          (list     :tag "Sorting Multi-Predicate"
+           (repeat (function :tag "Component Predicate"))
+           (choice
+            (const    :tag "None" nil)
+            (function :tag "Final Predicate"))))
+  :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bookmarkp-use-region-flag t
@@ -1206,14 +1283,22 @@ Note: The value of `bookmark-default-file' is never changed, except by
 your customizations.  Each Emacs session uses `bookmark-default-file'
 for the initial set of bookmarks.")
 
+(defvar bookmarkp-current-nav-bookmark nil "Name of current bookmark for navigation.")
+
+(defvar bookmarkp-cycle-this-buffer-buff nil
+  "Name of buffer last bookmark-cycled through.
+Set by `bookmarkp-cycle-this-buffer'.")
+
+(defvar bookmarkp-jump-display-function nil
+  "Function used currently to display a bookmark.")
+
 (defvar bookmarkp-last-specific-buffer ""
   "Name of buffer used by `bookmarkp-last-specific-buffer-p'.")
 
 (defvar bookmarkp-last-specific-file ""
   "(Absolute) file name used by `bookmarkp-last-specific-file-p'.")
 
-(defvar bookmarkp-jump-display-function nil
-  "Function used currently to display a bookmark.")
+(defvar bookmarkp-nav-alist () "Current bookmark alist used for navigation.")
 
 (defvar bookmarkp-reverse-sort-p nil
   "Non-nil means the sort direction is reversed.")
@@ -1592,8 +1677,7 @@ Lines beginning with `#' are ignored."
   (let ((annotation  (buffer-substring-no-properties (point-min) (point-max)))
 	(bookmark    bookmark-annotation-name))
     (bookmark-set-annotation bookmark annotation)
-    (setq bookmark-alist-modification-count
-          (1+ bookmark-alist-modification-count))
+    (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
     (bookmark-bmenu-surreptitiously-rebuild-list)
     (kill-buffer (current-buffer))
     (pop-to-buffer "*Bookmark List*")
@@ -1804,8 +1888,9 @@ Newline characters are stripped out."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Save DISPLAY-FUNCTION to `bookmarkp-jump-display-function' before calling
-;; `bookmark-handle-bookmark'.
+;; 1. Save DISPLAY-FUNCTION to `bookmarkp-jump-display-function' before calling
+;;    `bookmark-handle-bookmark'.
+;; 2. Update the name and position of an autonamed bookmark, in case it moved.
 ;;
 (defun bookmark--jump-via (bookmark display-function)
   "Display BOOKMARK using DISPLAY-FUNCTION.
@@ -1816,6 +1901,10 @@ BOOKMARK is a bookmark name or a bookmark record."
   (bookmark-handle-bookmark bookmark)
   (let ((win  (get-buffer-window (current-buffer) 0)))
     (when win (set-window-point win (point))))
+  ;; If this is an autonamed bookmark, update its name and position, in case it moved.
+  (let ((bmk-name  (bookmark-name-from-full-record (bookmark-get-bookmark bookmark))))
+    (when (bookmarkp-bookmark-autoname-p bmk-name (buffer-name))
+      (bookmarkp-update-autonamed-bookmark bmk-name)))
   ;; VANILLA EMACS FIXME: we used to only run `bookmark-after-jump-hook' in
   ;; `bookmark-jump' itself, but in none of the other commands.
   (run-hooks 'bookmark-after-jump-hook)
@@ -2492,6 +2581,14 @@ If option `bookmarkp-bmenu-state-file' is non-nil then the state of
 the displayed bookmark-list is saved when you quit it, and it is
 restored when you next use this command.
 
+If you call this interactively when buffer `*Bookmark List*' exists,
+that buffer is refreshed to show all current bookmarks, and any
+markings are removed.  If you instead want to show the buffer in its
+latest state then just do that: use `C-x b' or similar.  If you want
+to refresh the displayed buffer, to show the latest state, reflecting
+any additions, deletions, renamings, and so on, use \\<bookmark-bmenu-mode-map>\
+`\\[bookmarkp-bmenu-refresh-menu-list]'.
+
 In Lisp code, non-nil optional argument FILTEREDP means the bookmark
 list has been filtered, which means:
  * Use `bookmarkp-bmenu-title' not the default menu-list title.
@@ -3023,6 +3120,77 @@ still use `bookmark-default-file' for the initial set of bookmarks."
           'confirm)))
   (bookmark-load file t no-msg))
 
+;;;###autoload
+(defun bookmarkp-crosshairs-highlight ()
+  "Call `crosshairs-highlight', unless the region is active.
+You can add this to hook `bookmark-after-jump-hook'.
+You need library `crosshairs.el' to use this command."
+  (interactive)
+  (unless (require 'crosshairs nil t) (error "You need library `crosshairs.el' to use this command"))
+  (unless mark-active (crosshairs-highlight)))
+
+;;;###autoload
+(defun bookmarkp-choose-navlist-from-bookmark-list (bookmark-name &optional alist) ; `C-x p B'
+  "Choose a bookmark-list bookmark and set the bookmark navigation list.
+The navigation-list variable, `bookmarkp-nav-alist', is set to the
+list of bookmarks that would be displayed by `bookmark-bmenu-list'
+\(`C-x r l') for the chosen bookmark-list bookmark, sorted and
+filtered as appropriate.
+
+Instead of choosing a bookmark-list bookmark, you can choose the
+pseudo-bookmark `CURRENT *Bookmark List*'.  The bookmarks used for the
+navigation list are those that would be currently shown in the
+`*Bookmark List*' (even if the list is not currently displayed)."
+  (interactive
+   (let ((bookmark-alist  (cons (bookmarkp-current-bookmark-list-state)
+                                (bookmarkp-bookmark-list-alist-only))))
+     (list (bookmarkp-read-bookmark-for-type "bookmark-list " bookmark-alist
+                                             nil nil 'bookmarkp-bookmark-list-history)
+           bookmark-alist)))
+  (let ((state  (let ((bookmark-alist  (or alist (cons (bookmarkp-current-bookmark-list-state)
+                                                       (bookmarkp-bookmark-list-alist-only)))))
+                  (bookmark-prop-get bookmark-name 'bookmark-list))))
+    (let ((bookmarkp-sort-comparer          (cdr (assq 'last-sort-comparer          state)))
+          (bookmarkp-reverse-sort-p         (cdr (assq 'last-reverse-sort-p         state)))
+          (bookmarkp-reverse-multi-sort-p   (cdr (assq 'last-reverse-multi-sort-p   state)))
+          (bookmarkp-bmenu-omitted-list     (cdr (assq 'last-omitted-list           state)))
+          (bookmarkp-bmenu-filter-function  (cdr (assq 'last-bmenu-filter-function  state)))
+          (bookmarkp-bmenu-title            (cdr (assq 'last-bmenu-title            state)))
+          (bookmark-bmenu-toggle-filenames  (cdr (assq 'last-bmenu-toggle-filenames state))))
+      (setq bookmarkp-nav-alist             (bookmarkp-sort-and-remove-dups
+                                             (if bookmarkp-bmenu-filter-function
+                                                 (funcall bookmarkp-bmenu-filter-function)
+                                               (if (string= "CURRENT *Bookmark List*" bookmark-name)
+                                                   (or bookmarkp-latest-bookmark-alist bookmark-alist)
+                                                 bookmark-alist))
+                                             (and (not (eq bookmarkp-bmenu-filter-function
+                                                           'bookmarkp-omitted-alist-only))
+                                                  bookmarkp-bmenu-omitted-list))
+            bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record
+                                             (car bookmarkp-nav-alist)))))
+  (message "Bookmark navigation list is now %s"
+           (if (and (string= "CURRENT *Bookmark List*" bookmark-name)
+                    (not (get-buffer "*Bookmark List*")))
+               "the global bookmark list"
+             (format "`%s'" bookmark-name))))
+
+(defun bookmarkp-current-bookmark-list-state ()
+  "Pseudo-bookmark for the current `*Bookmark List*' state."
+  (bookmark-bmenu-surreptitiously-rebuild-list)
+  (cons "CURRENT *Bookmark List*" (bookmarkp-make-bookmark-list-record)))
+
+(defun bookmarkp-choose-navlist-of-type (type) ; Bound to `C-x p :'
+  "Set the bookmark navigation list to the bookmarks of a type you choose.
+This sets variable `bookmarkp-nav-alist'."
+  (interactive
+   (let ((completion-ignore-case  t)
+         (type                    (completing-read "Type: " bookmarkp-types-alist nil t)))
+     (list type)))
+  (setq bookmarkp-nav-alist  (funcall (intern (format "bookmarkp-%s-alist-only" type))))
+  (unless bookmarkp-nav-alist (error "No bookmarks"))
+  (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record (car bookmarkp-nav-alist)))
+  (message "Bookmark navigation list is now for type `%s'" type))
+
 
 ;;(@* "Menu-List (`*-bmenu-*') Filter Commands")
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
@@ -3199,14 +3367,36 @@ Set `bookmarkp-last-specific-buffer' to the current buffer name."
                                                  bookmarkp-last-specific-buffer))
   (let ((bookmark-alist              (funcall bookmarkp-bmenu-filter-function))
         (bookmarkp-bmenu-state-file  nil)) ; Prevent restoring saved state.
-    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (unless bookmark-alist (error "No bookmarks for buffer `%s'" bookmarkp-last-specific-buffer))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (pop-to-buffer (get-buffer-create "*Bookmark List*"))
     (bookmark-bmenu-list 'filteredp))
   (when (interactive-p) (bookmarkp-msg-about-sort-order
                          (bookmarkp-current-sort-order)
                          (format "Only bookmarks for buffer `%s' are shown"
                                  bookmarkp-last-specific-buffer)))
+  (raise-frame))
+
+;;;###autoload
+(defun bookmarkp-navlist-bmenu-list ()  ; Bound to `C-x p N'
+  "Show the bookmark list just for bookmarks from the current navlist."
+  (interactive)
+  (unless bookmarkp-nav-alist
+    (bookmark-maybe-load-default-file)
+    (setq bookmarkp-nav-alist  bookmark-alist)
+    (unless bookmarkp-nav-alist (error "No bookmarks"))
+    (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record (car bookmarkp-nav-alist)))
+    (message "Bookmark navigation list is now the global bookmark list") (sit-for 2))
+  (setq bookmarkp-bmenu-title  "Current Navlist Bookmarks")
+  (let ((bookmark-alist              bookmarkp-nav-alist)
+        (bookmarkp-bmenu-state-file  nil)) ; Prevent restoring saved state.
+    (unless bookmark-alist (error "No bookmarks"))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
+    (pop-to-buffer (get-buffer-create "*Bookmark List*"))
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p) (bookmarkp-msg-about-sort-order
+                         (bookmarkp-current-sort-order)
+                         "Only bookmarks for the current navlist are shown"))
   (raise-frame))
 
 (defun bookmarkp-completing-read-buffer-name ()
@@ -5198,6 +5388,15 @@ A new list is returned (no side effects)."
                        (bookmarkp-get-tags bmk)))
    bookmark-alist))
 
+(defun bookmarkp-autonamed-bookmarks-alist-only ()
+  "`bookmark-alist', with only autonamed bookmarks for the current buffer.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bookmarkp-remove-if-not (lambda (bmk) (bookmarkp-bookmark-autoname-p
+                                     (bookmark-name-from-full-record bmk)
+                                     (buffer-name)))
+                           bookmark-alist))
+
 (defun bookmarkp-bookmark-list-alist-only ()
   "`bookmark-alist', filtered to retain only bookmark-list bookmarks.
 A new list is returned (no side effects)."
@@ -5500,6 +5699,14 @@ final predicate."
     (let ((res  (funcall ',pred b1 b2)))
       (if res (car res) (funcall ',(or final-pred 'bookmarkp-alpha-p) b1 b2)))))
 
+(defun bookmarkp-repeat-command (command)
+  "Repeat COMMAND."
+ (let ((repeat-previous-repeated-command  command)
+       (repeat-message-function           'ignore)
+       (last-repeatable-command           'repeat))
+   (repeat nil)))
+
+
 ;;; If you need this for some reason, uncomment it.
 ;;; (defun bookmarkp-fix-bookmark-alist-and-save ()
 ;;;   "Update format of `bookmark-default-file' created in summer of 2009.
@@ -5670,13 +5877,6 @@ Similarly, SUFFIX-MSG is appended, after appending \".  \"."
 
 ;;(@* "Sorting - Commands")
 ;;  *** Sorting - Commands ***
-
-(defun bookmarkp-repeat-command (command)
-  "Repeat COMMAND."
- (let ((repeat-previous-repeated-command  command)
-       (repeat-message-function           'ignore)
-       (last-repeatable-command           'repeat))
-   (repeat nil)))
 
 (defun bookmarkp-bmenu-change-sort-order-repeat (arg) ; `s s'... in bookmark list
   "Cycle to the next sort order.
@@ -6155,6 +6355,24 @@ Return nil if neither sorts before the other."
           (w1 '(t))
           (w2 '(nil))
           (t nil))))
+
+(defun bookmarkp-position-cp (b1 b2)
+  "True if the `position' of B1 is not greater than that of B2.
+B1 and B2 are bookmarks or bookmark names.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if B1 and B2 do not bookmark the same buffer or they have
+the same `position' value."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((buf1  (bookmarkp-get-buffer-name b1))
+        (buf2  (bookmarkp-get-buffer-name b2)))
+    (and buf1 buf2 (equal buf1 buf2)
+         (let ((i1  (bookmark-get-position b1))
+               (i2  (bookmark-get-position b2)))
+           (cond ((or (not i1) (not i2)) '(t)) ; Fallback if no `position' entry.
+                 ((<= i1 i2) '(t))
+                 ((< i2 i1) '(nil)))))))
 
 (defun bookmarkp-alpha-cp (b1 b2)
   "True if bookmark B1's name sorts alphabetically before B2's.
@@ -7738,6 +7956,325 @@ Then you are prompted for the BOOKMARK (with completion)."
      (unless alist (error "No bookmarks have tags that match `%s'" rgx))
      (list rgx (bookmark-completing-read "Bookmark" (bookmarkp-default-bookmark-name alist) alist))))
   (bookmark-jump-other-window bookmark))
+
+;;;###autoload
+(defun bookmarkp-jump-in-navlist (bookmark-name &optional use-region-p) ; `C-x j n'
+  "Jump to a bookmark, choosing from those in the current navigation list."
+  (interactive
+   (progn
+     (unless bookmarkp-nav-alist
+       (bookmark-maybe-load-default-file)
+       (setq bookmarkp-nav-alist  bookmark-alist)
+       (unless bookmarkp-nav-alist (error "No bookmarks"))
+       (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record
+                                              (car bookmarkp-nav-alist)))
+       (message "Bookmark navigation list is now the global bookmark list") (sit-for 2))
+     (let ((bookmark-alist  bookmarkp-nav-alist))
+       (list (bookmark-completing-read "Jump to bookmark (in another window)"
+                                       (bookmarkp-default-bookmark-name))
+             current-prefix-arg))))
+  (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
+
+;;;###autoload
+(defun bookmarkp-jump-in-navlist-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j n'
+  "Same as `bookmarkp-jump-in-navlist', but use another window."
+  (interactive
+   (progn
+     (unless bookmarkp-nav-alist
+       (bookmark-maybe-load-default-file)
+       (setq bookmarkp-nav-alist  bookmark-alist)
+       (unless bookmarkp-nav-alist (error "No bookmarks"))
+       (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record
+                                              (car bookmarkp-nav-alist)))
+       (message "Bookmark navigation list is now the global bookmark list") (sit-for 2))
+     (let ((bookmark-alist  bookmarkp-nav-alist))
+       (list (bookmark-completing-read "Jump to bookmark (in another window)"
+                                       (bookmarkp-default-bookmark-name))
+             current-prefix-arg))))
+  (bookmarkp-jump-1 bookmark-name 'bookmarkp-select-buffer-other-window use-region-p))
+
+;;;###autoload
+(defun bookmarkp-cycle (increment &optional other-window)
+  "Cycle through bookmarks in the navlist by INCREMENT (default: 1).
+Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
+You can set the current navigation list using commands
+ `bookmarkp-choose-navlist-from-bookmark-list' and
+ `bookmarkp-choose-navlist-of-type'.
+
+You can cycle among bookmarks in the current buffer using
+`bookmarkp-cycle-this-buffer' and
+`bookmarkp-cycle-this-buffer-other-window.'
+
+In Lisp code, non-nil arg OTHER-WINDOW means jump to the bookmark in a
+different window."
+  (interactive "p")
+  (unless bookmarkp-nav-alist
+    (bookmark-maybe-load-default-file)
+    (setq bookmarkp-nav-alist  bookmark-alist)
+    (unless bookmarkp-nav-alist (error "No bookmarks"))
+    (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record (car bookmarkp-nav-alist)))
+    (message "Bookmark navigation list is now the global bookmark list") (sit-for 2))
+  (unless bookmarkp-current-nav-bookmark
+    (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record (car bookmarkp-nav-alist))))
+  (if (bookmarkp-cycle-1 increment)
+      (unless (or (bookmarkp-sequence-bookmark-p bookmarkp-current-nav-bookmark)
+                  (bookmarkp-function-bookmark-p bookmarkp-current-nav-bookmark))
+        (message "Position: %d, Bookmark: `%s'" (point) bookmarkp-current-nav-bookmark))
+    (message "Invalid bookmark: `%s'" bookmarkp-current-nav-bookmark)))
+
+;;;###autoload
+(defun bookmarkp-cycle-other-window (increment)
+  "Cycle through bookmarks by INCREMENT (default: 1) in another window.
+Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward."
+  (interactive "p")
+  (bookmarkp-cycle increment 'other-window))
+
+;;;###autoload
+(defun bookmarkp-cycle-this-buffer (increment &optional other-window)
+  "Cycle through bookmarks in this buffer by INCREMENT (default: 1).
+Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
+
+You can cycle among bookmarks beyond the current buffer using
+`bookmarkp-cycle' and `bookmarkp-cycle-other-window.'
+
+You can set your preferred sort order for this-buffer bookmarks by
+customizing option `bookmarkp-this-buffer-cycle-sort-comparer'.
+
+To change the sort order without customizing, you can use
+`\\[bookmarkp-this-buffer-bmenu-list]' to show the `*Bookmark List*' with only this buffer's
+bookmarks, sort them there, and use
+`\\[bookmarkp-choose-navlist-from-bookmark-list]', choosing
+`CURRENT *Bookmark List*' as the navigation list.
+Then you can cycle the bookmarks using `bookmark-cycle'
+\(`\\[bookmarkp-next-bookmark-repeat]' etc.), instead of `bookmark-cycle-this-buffer'.
+
+In Lisp code, non-nil arg OTHER-WINDOW means jump to the bookmark in a
+different window."
+  (interactive "p")
+  (bookmark-maybe-load-default-file)
+  (setq bookmarkp-cycle-this-buffer-buff  (buffer-name))
+  (let ((bookmarkp-sort-comparer  bookmarkp-this-buffer-cycle-sort-comparer))
+    (setq bookmarkp-nav-alist  (bookmarkp-sort-and-remove-dups (bookmarkp-this-buffer-alist-only))))
+  (unless bookmarkp-nav-alist (error "No bookmarks in this buffer"))
+  (unless (and bookmarkp-current-nav-bookmark
+               (bookmark-get-bookmark bookmarkp-current-nav-bookmark 'noerror)
+               (bookmarkp-this-buffer-p bookmarkp-current-nav-bookmark)) ; Exclude desktops etc.
+    (setq bookmarkp-current-nav-bookmark  (bookmark-name-from-full-record (car bookmarkp-nav-alist))))
+  (if (bookmarkp-cycle-1 increment)
+      (unless (or (bookmarkp-sequence-bookmark-p bookmarkp-current-nav-bookmark)
+                  (bookmarkp-function-bookmark-p bookmarkp-current-nav-bookmark))
+        (message "Position: %9d, Bookmark: `%s'" (point) bookmarkp-current-nav-bookmark))
+    (message "Invalid bookmark: `%s'" bookmarkp-current-nav-bookmark)))
+
+;;;###autoload
+(defun bookmarkp-cycle-this-buffer-other-window (increment)
+  "Cycle through bookmarks in this buffer by INCREMENT in another window.
+Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
+INCREMENT defaults to 1."
+  (interactive "p")
+  (bookmarkp-cycle-this-buffer increment 'other-window))
+
+(defun bookmarkp-cycle-1 (increment &optional other-window)
+  "Helper for `bookmark-cycle' and `bookmark-cycle-this-buffer'.
+Do nothing if `bookmarkp-current-nav-bookmark' is an invalid bookmark.
+Return `bookmarkp-current-nav-bookmark', or nil if invalid."
+  (let ((bookmark-alist  bookmarkp-nav-alist)
+        (bookmark        (bookmark-get-bookmark bookmarkp-current-nav-bookmark 'no-error)))
+    (when bookmark                      ; Skip bookmarks with bad names.
+      (setq bookmarkp-current-nav-bookmark
+            (car (nth (mod (+ increment (bookmarkp-list-position bookmark bookmark-alist))
+                           (length bookmark-alist))
+                      bookmark-alist)))
+      (if other-window
+          (bookmark-jump-other-window bookmarkp-current-nav-bookmark)
+        (bookmark-jump bookmarkp-current-nav-bookmark)))
+    (and bookmark bookmarkp-current-nav-bookmark))) ; Return nil if not a valid bookmark.
+
+(defun bookmarkp-bookmark-autoname-p (bookmark-name buffer)
+  "Return non-nil if BOOKMARK-NAME is an autonamed bookmark for BUFFER.
+BUFFER is a buffer name."
+  (string-match (format bookmarkp-autoname-format buffer) bookmark-name))
+
+(defun bookmarkp-update-autonamed-bookmark (bookmark)
+  "Update the name and position of the autonamed BOOKMARK at point.
+BOOKMARK is the name of the bookmark."
+  (bookmark-set-position bookmark (point))
+  ;; Autoname bookmarks do not have regions.  Update `end-position' to be the same as `position'.
+  (when (bookmarkp-get-end-position bookmark)
+    (bookmark-prop-set bookmark 'end-position (point)))
+  (let ((newname  (funcall bookmarkp-autoname-bookmark-function (point))))
+    (bookmark-rename bookmark newname 'batch)
+    (when (member bookmark bookmarkp-nav-alist) (setq bookmarkp-current-nav-bookmark  newname)) ; @@@@
+    (when (get-buffer-window (get-buffer-create "*Bookmark List*"))
+      (bookmarkp-refresh-menu-list))    ; So the new name is displayed.
+    (bookmarkp-maybe-save-bookmarks)))
+
+(defun bookmarkp-list-position (item items &optional test)
+  "Find the first occurrence of ITEM in list ITEMS.
+Return the index of the matching item, or nil if not found.
+Items are compared using binary predicate TEST, or `equal' if TEST is
+nil."
+  (unless test (setq test  'equal))
+  (let ((pos  0))
+    (catch 'bookmarkp-list-position
+      (dolist (itm  items)
+        (when (funcall test item itm)
+          (throw 'bookmarkp-list-position pos))
+        (setq pos  (1+ pos)))
+      nil)))
+
+;;;###autoload
+(defun bookmarkp-next-bookmark (n)      ; You can bind this to a repeatable key
+  "Jump to the Nth next bookmark in the current bookmark navigation list.
+N defaults to 1, meaning the next bookmark.
+See also `bookmarkp-cycle'."
+  (interactive "p")
+  (bookmarkp-cycle n))
+
+;;;###autoload
+(defun bookmarkp-previous-bookmark (n)  ; You can bind this to a repeatable key
+  "Jump to the Nth previous bookmark in the bookmark navigation list.
+N defaults to 1, meaning the previous bookmark.
+See also `bookmarkp-cycle'."
+  (interactive "p")
+  (bookmarkp-cycle (- n)))
+
+;;;###autoload
+(defun bookmarkp-next-bookmark-this-buffer (n) ; You can bind this to a repeatable key, e.g. `S-f2'
+  "Jump to the Nth-next bookmark in the current buffer.
+N defaults to 1, meaning the next bookmark.
+See also `bookmarkp-cycle-this-buffer'."
+  (interactive "p")
+  (bookmarkp-cycle-this-buffer n))
+
+;;;###autoload
+(defun bookmarkp-previous-bookmark-this-buffer (n) ; You can bind this to a repeatable key, e.g. `f2'
+  "Jump to the Nth-previous bookmark in the current buffer.
+N defaults to 1, meaning the previous bookmark.
+See also `bookmarkp-cycle-this-buffer'."
+  (interactive "p")
+  (bookmarkp-cycle-this-buffer (- n)))
+
+;;;###autoload
+(defun bookmarkp-next-bookmark-repeat (arg) ; `C-x p right', `C-x p f', `C-x p C-f'
+  "Jump to the Nth-next bookmark in the current bookmark navigation list.
+N defaults to 1, meaning the next bookmark.
+This is a repeatable version of `bookmarkp-next-bookmark'."
+  (interactive "P")
+  (require 'repeat)
+  (bookmarkp-repeat-command 'bookmarkp-next-bookmark))
+
+;;;###autoload
+(defun bookmarkp-previous-bookmark-repeat (arg) ; `C-x p left', `C-x p b', `C-x p C-b'
+  "Jump to the Nth-previous bookmark in the bookmark navigation list.
+N defaults to 1, meaning the previous bookmark.
+This is a repeatable version of `bookmarkp-previous-bookmark'."
+  (interactive "P")
+  (require 'repeat)
+  (bookmarkp-repeat-command 'bookmarkp-previous-bookmark))
+
+;;;###autoload
+(defun bookmarkp-next-bookmark-this-buffer-repeat (arg) ; `C-x p down', `C-x p n', `C-x p C-n'
+  "Jump to the Nth-next bookmark in the current buffer.
+N defaults to 1, meaning the next bookmark.
+This is a repeatable version of
+`bookmarkp-next-bookmark-this-buffer'."
+  (interactive "P")
+  (require 'repeat)
+  (bookmarkp-repeat-command 'bookmarkp-next-bookmark-this-buffer))
+
+;;;###autoload
+(defun bookmarkp-previous-bookmark-this-buffer-repeat (arg) ; `C-x p up', `C-x p p', `C-x p C-p'
+  "Jump to the Nth-previous bookmark in the current buffer.
+N defaults to 1, meaning the previous bookmark.
+This is a repeatable version of
+`bookmarkp-previous-bookmark-this-buffer'."
+  (interactive "P")
+  (require 'repeat)
+  (bookmarkp-repeat-command 'bookmarkp-previous-bookmark-this-buffer))
+
+;;;###autoload
+(defun bookmarkp-toggle-autoname-bookmark-set/delete (position &optional allp) ; Bound to `C-x p RET'
+  "If there is an autonamed bookmark at point, delete it, else create one.
+The bookmark created has no region.  Its name is formatted according
+to option `bookmarkp-autoname-bookmark-function'.
+
+With a prefix arg, delete *ALL* autonamed bookmarks for this buffer.
+
+Non-interactively, act at POSITION, not point."
+  (interactive "d\nP")
+  (if allp
+      (bookmarkp-delete-all-autonamed-for-this-buffer)
+    (let ((bmk-name  (funcall bookmarkp-autoname-bookmark-function position)))
+      (if (not (bookmark-get-bookmark bmk-name 'noerror))
+          (let ((mark-active  nil))    ; Do not set a region bookmark.
+            (bookmark-set bmk-name)
+            (message "Set bookmark `%s'" bmk-name))
+        (bookmark-delete bmk-name)
+        (message "Deleted bookmark `%s'" bmk-name)))))
+
+(defun bookmarkp-autoname-bookmark (position)
+  "Return a bookmark name using POSITION and the current buffer name.
+The name is composed as follows:
+ POSITION followed by a space and then the buffer name.
+ The position value is prefixed with zeros to comprise 9 characters.
+ For example, for POSITION value 31416 and current buffer `my-buffer',
+ the name returned would be `000031416 my-buffer'"
+  (format "%09d %s" (abs position) (buffer-name)))
+
+;;;###autoload
+(defun bookmarkp-delete-all-autonamed-for-this-buffer ()
+  "Delete all autonamed bookmarks for the current buffer.
+To be deleted, a bookmark name must be an autonamed bookmark whose
+buffer part names the current buffer."
+  (interactive)
+  (let ((bmks-to-delete  (mapcar #'bookmark-name-from-full-record
+                                 (bookmarkp-autonamed-bookmarks-alist-only))))
+    (if (null bmks-to-delete)
+        (message "No autonamed bookmarks for buffer `%s'" (buffer-name))
+      (when (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? " (buffer-name)))
+        (dolist (bmk bmks-to-delete) (bookmark-delete bmk))
+        (message "Deleted all bookmarks for buffer `%s'" (buffer-name))))))
+
+;;;###autoload
+(defun bookmarkp-delete-bookmarks (position allp &optional alist) ; Bound to `C-x p delete'
+  "Delete bookmarks at point or all bookmarks in the buffer.
+With no prefix argument, delete some bookmarks at point.
+If there is more than one, require confirmation for each.
+
+With a prefix argument, delete *ALL* bookmarks in the current buffer.
+
+Non-interactively, delete at POSITION.
+Optional arg ALIST is the alist of bookmarks.  It defaults to
+`bookmark-alist'."
+  (interactive "d\nP")
+  (let ((bmks-to-delete  (and allp (mapcar #'bookmark-name-from-full-record
+                                           (bookmarkp-this-buffer-alist-only))))
+        (bmks-deleted    ())
+        bmk-pos)
+    (cond ((and bmks-to-delete
+                (y-or-n-p (format "Delete ALL bookmarks in buffer `%s'? " (buffer-name))))
+           (dolist (bmk bmks-to-delete) (bookmark-delete bmk))
+           (message "Deleted all bookmarks in buffer `%s'" (buffer-name)))
+          (bmks-to-delete (message "Canceled - nothing deleted"))
+          (allp (message "No bookmarks in buffer `%s' to delete" (buffer-name)))
+          (t
+           (dolist (bmk  (or alist bookmark-alist))
+             (when (eq (setq bmk-pos  (bookmark-get-position bmk)) position)
+               (add-to-list 'bmks-to-delete (bookmark-name-from-full-record bmk))))
+           (if bmks-to-delete
+               (cond ((cadr bmks-to-delete)
+                      (dolist (bmk  bmks-to-delete)
+                        (when (y-or-n-p (format "Delete bookmark `%s'? " bmk))
+                          (bookmark-delete bmk)
+                          (add-to-list 'bmks-deleted bmk)))
+                      (message (if bmks-deleted
+                                   (format "Deleted bookmarks: %s" bmks-deleted)
+                                 "No bookmarks deleted")))
+                     (t
+                      (bookmark-delete (car bmks-to-delete))
+                      (message "Deleted bookmark `%s'" (car bmks-to-delete))))
+             (when (interactive-p) (message "No bookmarks at point to delete")))))))
  
 ;;(@* "Keymaps")
 ;;; Keymaps ----------------------------------------------------------
@@ -7751,19 +8288,51 @@ Then you are prompted for the BOOKMARK (with completion)."
 ;;;###autoload
 (define-key ctl-x-map "rK" 'bookmarkp-set-desktop-bookmark)
 ;;;###autoload
-(define-key bookmark-map "0" 'bookmarkp-empty-file)
+(define-key bookmark-map "0"      'bookmarkp-empty-file)
 ;;;###autoload
-(define-key bookmark-map "K" 'bookmarkp-set-desktop-bookmark)
+(define-key bookmark-map "B"      'bookmarkp-choose-navlist-from-bookmark-list)
 ;;;###autoload
-(define-key bookmark-map "L" 'bookmarkp-switch-bookmark-file)
+(define-key bookmark-map "I"      'bookmark-insert-location) ; The original in `bookmark.el' was `f'.
 ;;;###autoload
-(define-key bookmark-map "o" 'bookmark-jump-other-window)
+(define-key bookmark-map "K"      'bookmarkp-set-desktop-bookmark)
 ;;;###autoload
-(define-key bookmark-map "q" 'bookmark-jump-other-window)
+(define-key bookmark-map "L"      'bookmarkp-switch-bookmark-file)
 ;;;###autoload
-(define-key bookmark-map "." 'bookmarkp-this-buffer-bmenu-list)
+(define-key bookmark-map "N"      'bookmarkp-navlist-bmenu-list)
 ;;;###autoload
-(define-key bookmark-map "?" 'bookmarkp-describe-bookmark)
+(define-key bookmark-map "o"      'bookmark-jump-other-window)
+;;;###autoload
+(define-key bookmark-map "q"      'bookmark-jump-other-window)
+;;;###autoload
+(define-key bookmark-map "."      'bookmarkp-this-buffer-bmenu-list)
+;;;###autoload
+(define-key bookmark-map "?"      'bookmarkp-describe-bookmark)
+;;;###autoload
+(define-key bookmark-map ":"      'bookmarkp-choose-navlist-of-type)
+;;;###autoload
+(define-key bookmark-map "\r"     'bookmarkp-toggle-autoname-bookmark-set/delete)
+;;;###autoload
+(define-key bookmark-map [delete] 'bookmarkp-delete-bookmarks)
+
+;; If you use Emacs before Emacs 22, then you will want to bind the commands
+;; whose names do *not* end in `-repeat' to keys that are easily repeatable.
+;; For example, you might want to bind `bookmarkp-next-bookmark-this-buffer'
+;; (not `bookmarkp-next-bookmark-this-buffer-repeat') to a key such as [f2].
+;;
+;;;###autoload
+(when (> emacs-major-version 21)
+  (define-key bookmark-map [down]   'bookmarkp-next-bookmark-this-buffer-repeat)
+  (define-key bookmark-map "n"      'bookmarkp-next-bookmark-this-buffer-repeat)
+  (define-key bookmark-map "\C-n"   'bookmarkp-next-bookmark-this-buffer-repeat)
+  (define-key bookmark-map [up]     'bookmarkp-previous-bookmark-this-buffer-repeat)
+  (define-key bookmark-map "p"      'bookmarkp-previous-bookmark-this-buffer-repeat)
+  (define-key bookmark-map "\C-p"   'bookmarkp-previous-bookmark-this-buffer-repeat)
+  (define-key bookmark-map [right]  'bookmarkp-next-bookmark-repeat)
+  (define-key bookmark-map "f"      'bookmarkp-next-bookmark-repeat)
+  (define-key bookmark-map "\C-f"   'bookmarkp-next-bookmark-repeat)
+  (define-key bookmark-map [left]   'bookmarkp-previous-bookmark-repeat)
+  (define-key bookmark-map "b"      'bookmarkp-previous-bookmark-repeat)
+  (define-key bookmark-map "\C-b"   'bookmarkp-previous-bookmark-repeat))
 
 ;; `bookmark-bmenu-mode-map'
 
@@ -8096,6 +8665,10 @@ Then you are prompted for the BOOKMARK (with completion)."
 (define-key bookmarkp-jump-map              "n"    'bookmarkp-remote-file-jump) ; "_n_etwork"
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "n"    'bookmarkp-remote-file-jump-other-window)
+;;;###autoload
+(define-key bookmarkp-jump-map              "n"    'bookmarkp-jump-in-navlist)
+;;;###autoload
+(define-key bookmarkp-jump-other-window-map "n"    'bookmarkp-jump-in-navlist-other-window)
 ;;;###autoload
 (define-key bookmarkp-jump-map              "r"    'bookmarkp-region-jump)
 ;;;###autoload

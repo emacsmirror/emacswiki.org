@@ -33,5 +33,10 @@ The following macros implement Thrush operators in Emacs Lisp.
 
 * [http://debasishg.blogspot.com/2010/04/thrush-in-clojure.html Thrush in Clojure]
 
+[new]
+Why do `Clojure people' insist on reinventing lisp?  How is this any different the various forms of reduce, curry, rcurry, etc. that have been around since Maclisp days??? That these macros can so readily be implemented in elisp is a case in point.  Down with immutable objects. Down with R. Hickey's kool aid and the sheep drinking it!!! Pages like this should go to the Elisp cookbook not used as banners for promoting the Java VM --[[mon_key]]
+
+[new] 
+Hm, I don't see any link to anything like the JVM.  What do you think about, say, ABCL?  In addition to that I don't understand why you are so annoyed?  Some people, especially programmers without a lisp background, like the ##->## operator (I happen to disagree since for me it reduces readability).  And I don't see how you would thread an expression through the following expressions with reduce, curry and rcurry.  But maybe I'm just too stupid. And immutability is more related to functional programming in general than it is to Clojure, or?  Kind regards -- StefanKamphausen
 ----
 CategoryExtensionLanguage

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat May 22 09:40:03 2010 (-0700)
+;; Last-Updated: Wed May 26 13:29:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6529
+;;     Update #: 6539
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -782,10 +782,13 @@ bindings are not available to you."
 
 (defun icicle-add-menu-item-to-cmd-history ()
   "Add `this-command' to command history, if it is a menu item.
+Menu items that are not associated with a command symbol are ignored.
 Used on `pre-command-hook'."
   (condition-case nil                   ; Just in case, since this is on `pre-command-hook'.
       (when (and (> (length (this-command-keys-vector)) 0)
-                 (equal '(menu-bar) (elt (this-command-keys-vector) 0)))
+                 (equal '(menu-bar) (elt (this-command-keys-vector) 0))
+                 ;; Exclude uninterned symbols such as `menu-function-356'.
+                 (symbolp this-command) (or (< emacs-major-version 21) (intern-soft this-command)))
         (pushnew (symbol-name this-command) extended-command-history))
     (error nil)))
 
