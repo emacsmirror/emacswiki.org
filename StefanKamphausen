@@ -66,20 +66,5 @@ a link to a French website on the Gnus category page.  Perhaps we
 should start thinking about adding non-English pages to the wiki or
 host non-English wikis on this server. -- AlexSchroeder
 
-=== Interesting Wiki Pages ===
-Surfing this wiki every day and finding several interesting things w/o the time/possibility/lust/whatever to immediately insert into my xemacs configuration produces the need for a list of interesting wiki pages....
-
-* SimpleWikiEditMode -> editing in Emacs instead of the
-  browser; does this work in XEmacs, too?
-
-: <i>Should</i> work now.  AdrianAichner is using it in XEmacs.  If you
-  have any problems we would be glad if you report them to the mailing
-  list. -- DavidHansen
-
-* CategoryCode -> creating new modes (among others)
-* EmacsNiftyTricks -> treasures there....
-* SessionManagement -> like screen, maybe even saving of window configurations possible
-* KillKey -> offers the show-diff-when-killing-unsaved feature
-
 ----
 CategoryHomepage

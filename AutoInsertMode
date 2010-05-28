@@ -1,4 +1,4 @@
-A mode that comes with Emacs that automagically inserts text into new buffers based on file extension or the major mode.  See CVS:autoinsert.el
+A mode that comes with Emacs that automagically inserts text into new buffers based on file extension or the major mode.  See GIT:autoinsert.el
 
 For those of you annoyed by the "<tt>Copyright (C) YEAR  Free Software Foundation, Inc.</tt>" that's inserted by default into EmacsLisp buffers, set your <tt>ORGANIZATION</tt> environment variable.
 

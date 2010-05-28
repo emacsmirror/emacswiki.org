@@ -1,6 +1,6 @@
 Viper-mode or just [::Viper] is an Emacs mode that emulates vi key bindings. Besides being the newest variety of vi emulation, it also provides users different levels of emulation to help vi addicts kick the habit.
 
-* CVS:emulation/viper.el
+* GIT:emulation/viper.el
 * See the section "Emulation" in the EmacsManual.
 * http://www.cs.sunysb.edu/~kifer/emacs.html
 

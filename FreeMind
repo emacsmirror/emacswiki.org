@@ -6,8 +6,7 @@ Then you might want to use the little lisp library below to convert between OrgM
 [http://freemind.sourceforge.net FreeMind mindmapping]
 files.
 
-To get [http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/util/ the latest version in the nXhtml repository].
-The author maintains it as part of [[nXhtml]].
+(It used to be a part of [[nXhtml]], but now it is included in OrgMode and Emacs.)
 
 ----
 
@@ -67,5 +66,8 @@ You can browse that on Launchpad
   https://code.launchpad.net/~vcs-imports/emacs/trunk
 
 You should load the file with (require 'org-freemind.el).
+
+At this time, on ubuntu lucid, in addition to installing the emacs23 package, which comes with its own org mode support, you will also need to install the org-mode package itself (sudo apt-get install org-mode), which will have freemind export available (C-c C-e m) - Nuno Sucena Almeida
+
 ----
 CategoryOutline CategoryPersonalInformationManager 

@@ -18,14 +18,6 @@ Xft support is included and enabled by default since emacs 23.1.
 ** ftp://alpha.gnu.org/gnu/emacs/pretest/
 ** http://alpha.gnu.org/gnu/emacs/pretest/
 
-== Debian Package ==
-
-An emacs-snapshot package by Romain Francoise is available at http://emacs.orebokech.com
-
-also available at http://www.backports.org/
-(http://packages.debian.org/lenny-backports/emacs23)
-
-See also EmacsCvsAndDebian
 
 == Ubuntu Packages ==
 
@@ -85,25 +77,6 @@ here] on how to generate nightly packages of CVS on Ubuntu Edgy.
 == Fedora/RHEL Packages ==
 
 Install the YUM repository hosted by Chip Coldwell, Redhat's Emacs maintainer:
-
-=== Fedora 8/9 ===
-
-  # rpm -ivh http://people.redhat.com/coldwell/emacs/repo/fedora/emacs-release-23-1.fc8.noarch.rpm
-  NOTE: at least as of 04/01/09 this repository doesn't work
-
-=== RHEL/CentOS 5 ===
-
-  # rpm -ivh http://people.redhat.com/coldwell/emacs/repo/rhel/emacs-release-23-1.el5.noarch.rpm
-  NOTE: at least as of 04/01/09 this repository doesn't work
-
-And then:
-
-  # yum update 'emacs*'
-
-Enjoy!
-
-See also EmacsCvsAndFedora.
-
 
 == Getting the code ==
 
@@ -267,7 +240,7 @@ the end of README.unicode:
     (set-fontset-font "fontset-default" 'latin '("arial" .
 "unicode-bmp"))
 
-If you're having trouble with the euro symbol € character being
+If you're having trouble with the euro symbol £á character being
 displayed in a different font, try the following:
 
     (set-fontset-font "fontset-default" 'gb18030 '("dejavu sans mono"

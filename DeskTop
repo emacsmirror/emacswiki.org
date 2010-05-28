@@ -1,4 +1,4 @@
-Saving session information in Emacs is made possible with CVS:desktop.el. More information is available from [[Manual:Saving Emacs Sessions]].
+Saving session information in Emacs is made possible with GIT:desktop.el. More information is available from [[Manual:Saving Emacs Sessions]].
 
 == Loading a Desktop Saved from a Previous Session at Startup ==
 
@@ -232,6 +232,27 @@ A simple example of moving the desktop file save locations ~/.emacs.desktop(.loc
 ----
 [new]
 Is there any way of stopping the infuriating "Desktop saved in XYZ" messages? They almost always show up while I am trying to do something in the minibuffer. Saving is, after all, the expected result. By all means notify me if it all goes **** up, but there's no need otherwise.
+----
+[new]
+Look, let's just be honest. It doesn't work, does it?
+
+/usr/bin/emacs --no-desktop eventually results in
+<pre>
+Debugger entered--Lisp error: (error "Desktop file conflict")
+  signal(error ("Desktop file conflict"))
+  error("Desktop file conflict")
+  desktop-save("/home/jg/.desktop/")
+  desktop-save-in-desktop-dir()
+  (lambda nil (desktop-save-in-desktop-dir))()
+  run-hooks(auto-save-hook)
+</pre>
+and the request
+<pre>
+Current desktop was not loaded from a file.  Overwrite this desktop file? (y or n)
+</pre>
+which is is *impossible* to say 'n' to! (Pressing 'n' simply repeats the message.)
+
+Let's just dump this in a sack in the local canal.
 ----
 
 See SessionManagement for other similar packages.

@@ -98,7 +98,7 @@ I like the use of the "W52" at the beginning of the week, it would be great to h
 Has this code been introduced into core CVS ?
 
 [new]
-As of 2008-04-28, I have no knowledge that this has been accepted.  Looking at CVS:calendar/cal-iso.el and CVS:calendar/calendar.el it wouldn't appear so.  It hasn't been formally submitted, either.  I predict the patch would need some cleaning up to be accepted.  -- AaronHawley
+As of 2008-04-28, I have no knowledge that this has been accepted.  Looking at GIT:calendar/cal-iso.el and GIT:calendar/calendar.el it wouldn't appear so.  It hasn't been formally submitted, either.  I predict the patch would need some cleaning up to be accepted.  -- AaronHawley
 
 [new]
 In emacs 23.1 there is a variable calendar-intermonth-text that can be used for this purpose.  From 

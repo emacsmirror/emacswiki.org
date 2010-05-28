@@ -115,10 +115,11 @@ A good-enough-for-me method for pulling names / attributions from BbdbMode :
 
   (defun ejr/tc-find-attr (addr)
     (let ((attribution
-           (let* ((record (bbdb-search-simple nil addr))
-                  (possible-attribution (bbdb-record-getprop record 'attribution)))
-             (or possible-attribution (bbdb-record-name record)))))
-      (if attribution (cons t attribution) nil)))
+	   (let ((record (bbdb-search-simple nil addr)))
+	     (and record
+		  (or (bbdb-record-getprop record 'attribution)
+		      (bbdb-record-name record))))))
+      (and attribution (cons t attribution))))
   (defun ejr/tc-attribution ()
     "Produce an attribution scheme, trying to find entries in BBDB first."
     (let ((email (assoc "email-addr" tc-strings-list))

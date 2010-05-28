@@ -1,31 +1,30 @@
 ;;; mon-css-color.el --- Highlight and edit CSS colors
 
 ;; URL: http://www.emacswiki.org/emacs/mon-css-color.el
+;; ================================================================
+;; :NOTE mon-css-color.el is a verbatim copy of css-color.el version "0.03" of
+;; 2008.  It is provided here because it is no longer distributed seperate
+;; from the nXhtml package and without that packages dependencies:
+;;
+;; :SEE (URL `http://bazaar.launchpad.net/%7Enxhtml/nxhtml/main/annotate/head%3A/util/css-color.el')
+;; :SEE (URL `http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/')
+;; :SEE (URL `http://www.emacswiki.org/emacs/NxhtmlMode')
+;; 
+;; <Timestamp: #{2010-03-31T12:47:59-04:00Z}#{10133} - by MON KEY>
+;; ================================================================
 
-;;;; ================================================================
-;;;; :NOTE mon-css-color.el is a verbatim copy of css-color.el version "0.03" of
-;;;; 2008.  It is provided here because it is no longer distributed seperate
-;;;; from the nXhtml package and without that packages dependencies:
-;;;;
-;;;; :SEE (URL `http://bazaar.launchpad.net/%7Enxhtml/nxhtml/main/annotate/head%3A/util/css-color.el')
-;;;; :SEE (URL `http://bazaar.launchpad.net/~nxhtml/nxhtml/main/files/head%3A/')
-;;;; :SEE (URL `http://www.emacswiki.org/emacs/NxhtmlMode')
-;;;; 
-;;;; <Timestamp: #{2010-03-31T12:47:59-04:00Z}#{10133} - by MON KEY>
-;;;; ================================================================
-
-;;;; ================================================================
-;;;; RELATED-MATERIAL
-;;;; W3C SVG color keywords: 
-;;;; :SEE (URL `http://www.w3.org/TR/SVG/types.html#ColorKeywords')
-;;;;
-;;;; W3C Candidate Recommendation 2009-09-08
-;;;; Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification
-;;;; :SEE (URL `http://www.w3.org/TR/CSS2/colors.html')
-;;;;
-;;;; Drew Adams' hexrgb.el
-;;;; :SEE (URL `http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el')
-;;;; ================================================================
+;; ================================================================
+;; RELATED-MATERIAL
+;; W3C SVG color keywords: 
+;; :SEE (URL `http://www.w3.org/TR/SVG/types.html#ColorKeywords')
+;;
+;; W3C Candidate Recommendation 2009-09-08
+;; Cascading Style Sheets Level 2 Revision 1 (CSS 2.1) Specification
+;; :SEE (URL `http://www.w3.org/TR/CSS2/colors.html')
+;;
+;; Drew Adams' hexrgb.el
+;; :SEE (URL `http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el')
+;; ================================================================
 
 ;; Copyright (C) 2008  Niels Giesen
 
@@ -52,8 +51,8 @@
 
 ;; Usage:
 
-;; (autoload 'css-color-mode "css-color" "" t)
-;; (add-hook 'css-mode-hook 'css-color-mode-turn-on)
+;; (autoload 'css-color-mode "mon-css-color" "" t)
+;; (add-hook 'css-mode-hook 'css-color-turn-on-in-buffer)
 
 ;; Css-Css-color.el propertizes colours in a CSS stylesheet found by
 ;; font-locking code with a keymap. From that keymap, you can easily
@@ -400,19 +399,20 @@ point is at a hexadecimal colour:
         (add-hook 'font-lock-mode-hook 'css-color-font-lock-hook-fun nil t))
     (remove-hook 'font-lock-mode-hook 'css-color-font-lock-hook-fun t)
     (font-lock-remove-keywords nil css-color-keywords))
-  (font-lock-fontify-buffer)  
-  )
+  (font-lock-fontify-buffer))
   
 ;;; ==============================
-;;; <Timestamp: Tuesday May 05, 2009 @ 04:16.44 PM - by Stan>
+;;; <Timestamp: Tuesday May 05, 2009 @ 04:16.44 PM - by MON>
 ;;; commented out - was causing problems | uncommented   '(font-lock-fontify-buffer)' above.
- ;; (save-restriction
- ;;   (widen)
- ;;   (mumamo-mark-for-refontification (point-min) (point-max))))
+;;; (save-restriction
+;;;   (widen)
+;;;   (mumamo-mark-for-refontification (point-min) (point-max))))
+;;;
 ;;;
 
-
-(put 'css-color-mode 'permanent-local t)
+;;; ==============================
+;;; :COMMENTED <Timestamp: #{2010-05-27T19:48:53-04:00Z}#{10214} - by MON KEY>
+;;; (put 'css-color-mode 'permanent-local t)
 
 (defun css-color-font-lock-hook-fun ()
   "Add css-color pattern to font-lock's."
@@ -926,7 +926,8 @@ Return list of point and color-type."
 	      (goto-char (+ 1 beg)))
 	     ((= (char-after) 35)
 	      (forward-char 1))
-	     ((evenp (- (point) beg))
+             ;; :WAS ((evenp (- (point) beg))
+             ((eq (logand (- (point) beg)) 1) 
 	      (forward-char 1))
 	     (t (forward-char 2)))))))
 

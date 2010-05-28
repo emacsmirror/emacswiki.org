@@ -27,3 +27,5 @@ You know, the same principle as before. I leverage my computer to do it for me.
         (interactive) 
         (insert-string (buffer-name (current-buffer)))
       )
+----
+CategoryHomepage

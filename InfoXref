@@ -6,7 +6,7 @@ when it processes a <code>.texi</code> file, but not external references, so it'
 
 This package is included in Emacs 22 and it works in GnuEmacs 21, too.
 
-: CVS:info-xref.el
+: GIT:info-xref.el
 
 <code>M-x info-xref-check</code> checks one file.  When invoked from
 an InfoMode or [[Texinfo]] buffer, the current or corresponding <code>.info</code> file

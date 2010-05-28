@@ -494,5 +494,205 @@ compromise between the existing pages (not all of which can/should/will be
 modified to reflect the new functionality) and pages which would clearly benefit
 from better granularity. -- [[mon_key]]
 
+== Some more homepages ==
+
+I found /a few/ pages that belong in CategoryHomepage.  I do not want to add them manually or using some fragile script that has to cope with fetch restrictions and such.  Could someone with "physical" access please do the remaining work.  Thanks. -- JonasBernoulli
+
+<pre>
+AdamSpiers
+Adrian_Aichner
+AhmetUsal
+AndreyZhdanov
+AnonymousUserErikaWhoMaySomedayRegister
+AnupamSengupta
+ArmaniDeluxe
+ArtisRozentals
+AttilaLendvai
+AustinFrank
+Baloo_Ursidae
+BaoHaojun
+BartTeeuwisse
+BenignoUria
+BillStClair
+blastura
+BobDuCharme
+BobTrower
+BOfH
+boorad
+BradRobelForrest
+BrandonWMaister
+CamilleBourgoin
+chmouel
+ChrisGray
+ChristianFaulhammer
+ChristianoAnderson
+ChristofferSHansen
+ChristofHarper
+ChristopherMBalz
+ChrisWebber
+ChuckAdams
+codermattie
+ColdBlue
+DanBarlow
+DanielDehennin
+DanMcKinley
+DaveMarquardt
+DavidArroyo
+DavidElentok
+DavidO'Toole
+DavidPonce
+DaZhang
+DerekPeschel
+Devon
+diesch
+DiGash
+DirkJanBinnema
+DmitriMinaev
+DominiqueQuatravaux
+DongDong
+DoveYoung
+EdwardGarson
+EricSchulte
+FrédéricFrances
+FriedrichDelgadoFriedrichs
+fsmunoz
+fxr
+GarethEdwards
+GaryMoyer
+GrantBowman
+GregDetre
+GustavoBarbieri
+hsuh
+IainDalton
+IgorThpeak
+IntRigeri
+JaNoli
+JayXie
+jfm3
+JimOttaway
+JoeE
+JohanVromans
+JohnConnors
+JohnSwaby
+JonathanArnold
+JonathanBailleul
+JonathanLange
+JonathanRockway
+JongKyu
+jradix
+JuanGarcia
+JulianFondren
+JuriPakaste
+kcsmith
+KenColeman
+kerspoon
+KevinHammack
+kiniry
+KonstantinMalakhanov
+KragenJavierSitaker
+leandro
+LinusTorvalds
+LionelB
+LucaCapello
+MadoTsukaiNoYuutsu
+MarcGirod
+MarcoBakera
+MarcoBaringer
+MarioPeter
+MarkRandy
+MartinSvenson
+MatthieuLemerre
+MaverickWoo
+MikeElkins
+MikeHostetler
+mjmcevoy
+NanarDian
+NandanBagchee
+NeilRoberts
+NicolaPaolucci
+nimms
+NoahSussman
+orestis
+OtherMichael
+PaddyMullen
+PatricMueller
+PeterSanford
+PeterSGalbraith
+pipedings
+PrateekSrivastava
+QichenHuang
+RemVee
+RichardKlinda
+rmagere
+RodrigoLazo
+RuiAlmeida
+sabetts
+SethFalcon
+sjbach
+StefanMerten
+StefanVanDerWalt
+StevenNess
+SteveTolkin
+sword
+TamasPatrovics
+TedClaymore
+ThaddeusOlczyk
+ThierryVolpiatto
+ThomasKnoll
+TiagoChartersAzevedo
+TingWang
+TomPierce
+TomTromey
+TorbenHoffmann
+TravisJeffery
+trebor
+unhammer
+Vektor
+Vyzo
+WebMayfield
+WilliamHenney
+xuei
+Yen-Chin,Lee
+Zeth
+zhangyan
+ZhangYunfeng
+ZhuZhu
+ZwaX
+</pre>
+
+[new]
+Since I'm not going to edit the data files directly, I would have to do what anybody has to do:
+[http://www.oddmuse.org/cgi-bin/oddmuse/Automatic_Posting_and_Uploading automatic posting and uploading]
+using scripts (written in Perl or Python) such as *wikiput* or *wikiappend* (and I haven't used them in a long time).
+There's also [http://www.oddmuse.org/cgi-bin/oddmuse/Download_Using_Curl_And_Caching downloading using curl]
+for some information. You can also post using curl: You need to supply the following parameters:
+
+: title: The_Page_Title
+: text: the page text
+: uihnscuskc: 1 (to bypass the Turing test-wannabe)
+
+I think that should be enough. -- AlexSchroeder
+
+[new]
+Very nice -- didn't know about these tools. I will do this but probably not today. -- JonasBernoulli
+
+[new]
+Heh, did it! For future reference:
+
+{{{
+for f in AdamSpiers Adrian_Aichner AhmetUsal ...; do
+    echo $f
+    curl http://emacswiki.org/cgi-bin/wiki/raw/$f > $f;
+    echo "----" >> $f;
+    echo "CategoryHomepage" >> $f;
+    curl -F recent_edit=on -F summary=CategoryHomepage -F title=$f \
+         -F "text=<$f" -F uihnscuskc=1 -F username=AlexSchroeder \
+         http://emacswiki.org/cgi-bin/wiki
+    sleep 5;
+done
+}}}
+
+-- AlexSchroeder
+
 ----
 CategoryEmacsWikiSite

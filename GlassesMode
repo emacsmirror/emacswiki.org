@@ -6,7 +6,7 @@ If you are working on some legacy code and you want to stop using GlassesMode, y
 to make the overlays glasses-mode added permanent.
 
 This is available with GnuEmacs 21 but not available with [[XEmacs]]. Try
-Groups:glasses.el or CVS:progmodes/glasses.el.
+Groups:glasses.el or GIT:progmodes/glasses.el.
 
 ----
 CategoryModes

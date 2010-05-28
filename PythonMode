@@ -40,6 +40,8 @@ any reason to use it (as opposed to python.el) with Emacs.
 Emacs post version 21 has its own python mode (python.el). This is enabled by default for .py files so you don't have to add anything to your InitFile to use it.  It contains properly-integrated support for things
 like completion, symbol help, eldoc, and inferior interpreter features.
 
+* GIT:progmodes/python.el
+
 The version in Emacs 22 has a bunch of problems.  Use
 * http://www.loveshack.ukfsn.org/emacs/python.el
 It requires
@@ -52,7 +54,7 @@ and bugs) in Emacs 21 at
 * http://www.loveshack.ukfsn.org/emacs/python-21.el
 
 It requires sym-comp.el as above, and Emacs 22's syntax.el:
-* http://cvs.savannah.gnu.org/viewcvs/*checkout*/emacs/emacs/lisp/emacs-lisp/syntax.el?rev=1.16
+* GIT:emacs-lisp/syntax.el
 
 It also requires emacs.py (as above) either in data-directory
 or somewhere else Python can find it.

@@ -20,9 +20,9 @@ interpreters are supported:
 * inl by '''RELEX'''
 
 Type M-x sql-help RET to read the online help.
-The latest version is available from Emacs CVS:
+The latest version is available from Emacs's source control:
 
-* CVS:progmodes/sql.el
+* GIT:progmodes/sql.el
 
 The current maintainer of sql.el is MichaelMauger.
 

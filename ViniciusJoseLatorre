@@ -114,7 +114,7 @@ code.
 
 </pre>
 ; ([Self:action=history;id=switch-file.el history])  Download:switch-file.el  (SwitchFile) : Switch from one file to another.
-: .:: ''v0.1'' ::.
+: .:: ''v0.2'' ::.
 <pre>
 
 </pre>
@@ -534,6 +534,9 @@ No problem -- I just thought you might have made the substitution automatically 
 -----
 [new]
 Thanks for your excellent stuffs. By the way, There is a tiny bug in switch-file.el, line 220. The parameters of string-match are in reverse order. -- SeungcheolJung
+
+[new]
+Thanks for your correction. -- ViniciusJoseLatorre
 
 ------
 

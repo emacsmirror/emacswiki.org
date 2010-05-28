@@ -24,7 +24,7 @@ The EmacsManual explains how to use this feature.
 
 Rectangle commands were originally part of Emacs's PictureMode.
 
-* CVS:rect.el
+* GIT:rect.el
 
 See also RectangleMark
 and ColumnNumberMode.

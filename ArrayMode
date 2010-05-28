@@ -1,6 +1,6 @@
 Array mode comes with Emacs.  It is an extremely primitive (obsolete?) way of editing fixed width tables of text.
 
-* CVS:array.el
+* GIT:array.el
 
 ----
 CategoryTables

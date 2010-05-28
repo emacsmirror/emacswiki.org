@@ -1,4 +1,4 @@
-;;; notify.el --- notification frontend
+;;; notify.el --- notification front-end
 
 ;; Copyright (C) 2008  Mark A. Hershberger
 
@@ -35,7 +35,7 @@
 			      :urgency "low"
 			      :category "emacs.message")
   "Notification settings' defaults.
-May be overrided with key-value additional arguments to `notify'.")
+May be overridden with key-value additional arguments to `notify'.")
 (defvar notify-delay '(0 5 0)
   "Minimum time allowed between notifications in time format.")
 (defvar notify-last-notification '(0 0 0) "Time of last notification.")
@@ -54,7 +54,7 @@ May be overrided with key-value additional arguments to `notify'.")
 	  'notify-via-dbus)
 	 ((executable-find "notify-send") 'notify-via-shell)
 	 (t 'notify-via-message))))
- ((eq notify-method 'notify-via-dbus) ;housekeeping for prechosen DBus
+ ((eq notify-method 'notify-via-dbus) ;housekeeping for pre-chosen DBus
   (if (and (require 'dbus nil t)
 	   (dbus-ping :session "org.freedesktop.Notifications"))
       (defvar notify-id 0 "Current D-Bus notification id.")
@@ -82,14 +82,22 @@ May be overrided with key-value additional arguments to `notify'.")
 		    '(:array :signature "{sv}") ':int32
 		    (get 'notify-defaults :timeout)))
 
+(defun notify-via-shell-escape (str)
+  "Escape special STR characters before passing to a shell command."
+  (replace-regexp-in-string "['&]" (lambda (m)
+				     (cond ((equal m "'") "`")
+					   ((equal m "&") " and ")))
+			    str))
+
 (defun notify-via-shell (title body)
   "Notify with TITLE, BODY via `libnotify'."
-  (shell-command (concat "notify-send '" title "' '" body
-			 "' -t " (number-to-string
-				  (get 'notify-defaults :timeout))
-			 " -i '" (get 'notify-defaults :icon)
-			 "' -u " (get 'notify-defaults :urgency)
-			 " -c " (get 'notify-defaults :category))))
+  (shell-command
+   (concat "notify-send '" (notify-via-shell-escape title) "' '"
+	   (notify-via-shell-escape body)
+	   "' -t " (number-to-string (get 'notify-defaults :timeout))
+	   " -i '" (get 'notify-defaults :icon)
+	   "' -u " (get 'notify-defaults :urgency)
+	   " -c " (get 'notify-defaults :category))))
 
 (defun notify-via-message (title body)
   "Notify TITLE, BODY with a simple message."
@@ -118,4 +126,3 @@ ARGS may be amongst :timeout, :icon, :urgency, :app and :category."
 (provide 'notify)
 
 ;;; notify.el ends here
-

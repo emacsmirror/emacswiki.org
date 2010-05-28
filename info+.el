@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Apr  6 18:11:26 2010 (-0700)
+;; Last-Updated: Thu May 27 09:58:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4348
+;;     Update #: 4371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -50,8 +50,8 @@
 ;;    `info-emacs-manual', `Info-follow-nearest-node-new-window',
 ;;    `Info-merge-subnodes',
 ;;    `Info-mouse-follow-nearest-node-new-window',
-;;    `Info-save-current-node', `Info-set-breadcrumbs-depth (Emacs
-;;    23+)', `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
+;;    `Info-save-current-node', `Info-set-breadcrumbs-depth' (Emacs
+;;    23+), `Info-toggle-breadcrumbs-in-header-line' (Emacs 23+),
 ;;    `Info-virtual-book', `menu-bar-read-lispref',
 ;;    `menu-bar-read-lispintro',
 ;;
@@ -105,6 +105,7 @@
 ;;  `Info-read-node-name-1' - Treat file name entries, e.g. "(emacs)".
 ;;  `Info-search' - 1. Fits frame.
 ;;                  2. Highlights found regexp if `search-highlight'.
+;;  `Info-set-mode-line' - Handles breadcrumbs in the mode line.
 ;;  `Info-mouse-follow-nearest-node' (Emacs 21+) -
 ;;     With prefix arg, show node in new info buffer.
 ;;
@@ -177,6 +178,11 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/05/27 dadams
+;;     Added: Info-set-mode-line.
+;;     Info-find-node-2:
+;;       Added redefinition of it for Emacs 23.2 (sigh, they keep twiddling it).
+;;       Do not call Info-insert-breadcrumbs-in-mode-line.  Do that in Info-set-mode-line now.
 ;; 2010/04/06 dadams
 ;;     Added: Info-breadcrumbs-in-header-flag, Info-toggle-breadcrumbs-in-header-line,
 ;;            Info-breadcrumbs-in-mode-line-mode, Info-set-breadcrumbs-depth,
@@ -1552,7 +1558,9 @@ or file: `%s'"
                (Info-select-node)
                (goto-char (point-min))
                (forward-line 1)         ; skip header line
-               (when (and Info-breadcrumbs-in-header-flag (> Info-breadcrumbs-depth 0))
+               (when (and (not (fboundp 'Info-breadcrumbs)) ; Before Emacs 23.2
+                          Info-breadcrumbs-in-header-flag
+                          (> Info-breadcrumbs-depth 0))
                  (forward-line 1))      ; skip breadcrumbs line
                (cond (anchorpos
                       (let ((new-history  (list Info-current-file (substring-no-properties nodename))))
@@ -1577,9 +1585,108 @@ or file: `%s'"
             (setq Info-history  (cdr Info-history))
             (Info-find-node (nth 0 hist) (nth 1 hist) t)
             (goto-char (nth 2 hist)))))
+    (Info-set-mode-line)))
+
+
+
+;; REPLACE ORIGINAL in `info.el':
+;;
+;; Handle `Info-breadcrumbs-in-mode-line-mode'.
+;;
+(when (> emacs-major-version 22)
+  (defun Info-set-mode-line ()
+    "Set the Info mode line.
+If `Info-breadcrumbs-in-mode-line-mode' is non-nil, insert breadcrumbs."
     (if Info-breadcrumbs-in-mode-line-mode
         (Info-insert-breadcrumbs-in-mode-line)
-      (Info-set-mode-line))))
+      (setq mode-line-buffer-identification
+            (nconc (propertized-buffer-identification "%b")
+                   (list
+                    (concat
+                     " ("
+                     (if (stringp Info-current-file)
+                         (replace-regexp-in-string
+                          "%" "%%" (file-name-nondirectory Info-current-file))
+                       (format "*%S*" Info-current-file))
+                     ") "
+                     (if Info-current-node
+                         (propertize (replace-regexp-in-string
+                                      "%" "%%" Info-current-node)
+                                     'face 'mode-line-buffer-id
+                                     'help-echo
+                                     "mouse-1: scroll forward, mouse-3: scroll back"
+                                     'mouse-face 'mode-line-highlight
+                                     'local-map Info-mode-line-node-keymap)
+                       ""))))))))
+
+(when (> emacs-major-version 22)
+  (defun Info-insert-breadcrumbs-in-mode-line ()
+    (let ((nodes   (Info-toc-nodes Info-current-file))
+          (node    Info-current-node)
+          (crumbs  ())
+          (depth   Info-breadcrumbs-depth-internal)
+          (text    ""))
+      ;; Get ancestors from the cached parent-children node info
+      (while (and (not (equal "Top" node)) (> depth 0))
+        (setq node  (nth 1 (assoc node nodes)))
+        (when node (push node crumbs))
+        (setq depth  (1- depth)))
+      ;; Add bottom node.
+      (setq crumbs  (nconc crumbs (list Info-current-node)))
+      (when crumbs
+        ;; Add top node (and continuation if needed).
+        (setq crumbs  (cons "Top" (if (member (pop crumbs) '(nil "Top"))
+                                      crumbs
+                                    (cons nil crumbs))))
+        (dolist (node  crumbs)
+          (let ((crumbs-map  (make-sparse-keymap))
+                (menu-map    (make-sparse-keymap "Breadcrumbs in Mode Line")))
+            (define-key crumbs-map [mode-line mouse-3] menu-map)
+            (when node
+              (define-key menu-map [Info-prev]
+                `(menu-item "Previous Node" Info-prev
+                  :visible ,(Info-check-pointer "prev[ious]*") :help "Go to the previous node"))
+              (define-key menu-map [Info-next]
+                `(menu-item "Next Node" Info-next
+                  :visible ,(Info-check-pointer "next") :help "Go to the next node"))
+              (define-key menu-map [separator] '("--"))
+              (define-key menu-map [Info-breadcrumbs-in-mode-line-mode]
+                `(menu-item "Toggle Breadcrumbs" Info-breadcrumbs-in-mode-line-mode
+                  :help "Toggle displaying breadcrumbs in the Info mode-line"
+                  :button (:toggle . Info-breadcrumbs-in-mode-line-mode)))
+              (define-key menu-map [Info-set-breadcrumbs-depth]
+                `(menu-item "Set Breadcrumbs Depth" Info-set-breadcrumbs-depth
+                  :help "Set depth of breadcrumbs to show in the mode-line"))
+              (setq node  (if (equal node Info-current-node)
+                              (propertize
+                               (replace-regexp-in-string "%" "%%" Info-current-node)
+                               'face 'mode-line-buffer-id
+                               'help-echo "mouse-1: Scroll back, mouse-2: Scroll forward, mouse-3: Menu"
+                               'mouse-face 'mode-line-highlight
+                               'local-map
+                               (progn
+                                 (define-key crumbs-map [mode-line mouse-1] 'Info-mouse-scroll-down)
+                                 (define-key crumbs-map [mode-line mouse-2] 'Info-mouse-scroll-up)
+                                      crumbs-map))
+                            (propertize
+                             node
+                             'local-map (progn (define-key crumbs-map [mode-line mouse-1]
+                                                 `(lambda () (interactive) (Info-goto-node ,node)))
+                                               (define-key crumbs-map [mode-line mouse-2]
+                                                 `(lambda () (interactive) (Info-goto-node ,node)))
+                                               crumbs-map)
+                             'mouse-face 'mode-line-highlight
+                             'help-echo "mouse-1, mouse-2: Go to this node; mouse-3: Menu")))))
+          (let ((nodetext  (if (not (equal node "Top"))
+                               node
+                             (concat (format "(%s)" (if (stringp Info-current-file)
+                                                        (file-name-nondirectory Info-current-file)
+                                                      ;; Some legacy code can still use a symbol.
+                                                      Info-current-file))
+                                     node))))
+            (setq text  (concat text (if (equal node "Top") "" " > ") (if node nodetext "...")))))
+        (make-local-variable 'mode-line-format) ; Needed for Emacs 21+.
+        (setq mode-line-format  text)))))
 
 
 
@@ -2430,7 +2537,7 @@ to search again for `%s'.")
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
 ;;;###autoload
-(when (> emacs-major-version 22)
+(when (and (> emacs-major-version 22) (not (fboundp 'Info-breadcrumbs))) ; Emacs 23.1, not 23.2+
   (defun Info-fontify-node ()
     "Fontify the node."
     (save-excursion
@@ -2791,78 +2898,378 @@ to search again for `%s'.")
 
         (set-buffer-modified-p nil)))))
 
-(when (> emacs-major-version 22)
-  (defun Info-insert-breadcrumbs-in-mode-line ()
-    (let ((nodes   (Info-toc-nodes Info-current-file))
-          (node    Info-current-node)
-          (crumbs  ())
-          (depth   Info-breadcrumbs-depth-internal)
-          (text    ""))
-      ;; Get ancestors from the cached parent-children node info
-      (while (and (not (equal "Top" node)) (> depth 0))
-        (setq node  (nth 1 (assoc node nodes)))
-        (when node (push node crumbs))
-        (setq depth  (1- depth)))
-      ;; Add bottom node.
-      (setq crumbs  (nconc crumbs (list Info-current-node)))
-      (when crumbs
-        ;; Add top node (and continuation if needed).
-        (setq crumbs  (cons "Top" (if (member (pop crumbs) '(nil "Top"))
-                                      crumbs
-                                    (cons nil crumbs))))
-        (dolist (node  crumbs)
-          (let ((crumbs-map  (make-sparse-keymap))
-                (menu-map    (make-sparse-keymap "Breadcrumbs in Mode Line")))
-            (define-key crumbs-map [mode-line mouse-3] menu-map)
-            (when node
-              (define-key menu-map [Info-prev]
-                `(menu-item "Previous Node" Info-prev
-                  :visible ,(Info-check-pointer "prev[ious]*") :help "Go to the previous node"))
-              (define-key menu-map [Info-next]
-                `(menu-item "Next Node" Info-next
-                  :visible ,(Info-check-pointer "next") :help "Go to the next node"))
-              (define-key menu-map [separator] '("--"))
-              (define-key menu-map [Info-breadcrumbs-in-mode-line-mode]
-                `(menu-item "Toggle Breadcrumbs" Info-breadcrumbs-in-mode-line-mode
-                  :help "Toggle displaying breadcrumbs in the Info mode-line"
-                  :button (:toggle . Info-breadcrumbs-in-mode-line-mode)))
-              (define-key menu-map [Info-set-breadcrumbs-depth]
-                `(menu-item "Set Breadcrumbs Depth" Info-set-breadcrumbs-depth
-                  :help "Set depth of breadcrumbs to show in the mode-line"))
-              (setq node  (if (equal node Info-current-node)
-                              (propertize
-                               (replace-regexp-in-string "%" "%%" Info-current-node)
-                               'face 'mode-line-buffer-id
-                               'help-echo "mouse-1: Scroll back, mouse-2: Scroll forward, mouse-3: Menu"
-                               'mouse-face 'mode-line-highlight
-                               'local-map
-                               (progn
-                                 (define-key crumbs-map [mode-line mouse-1] 'Info-mouse-scroll-down)
-                                 (define-key crumbs-map [mode-line mouse-2] 'Info-mouse-scroll-up)
-                                      crumbs-map))
-                            (propertize
-                             node
-                             'local-map (progn (define-key crumbs-map [mode-line mouse-1]
-                                                 `(lambda () (interactive) (Info-goto-node ,node)))
-                                               (define-key crumbs-map [mode-line mouse-2]
-                                                 `(lambda () (interactive) (Info-goto-node ,node)))
-                                               crumbs-map)
-                             'mouse-face 'mode-line-highlight
-                             'help-echo "mouse-1, mouse-2: Go to this node; mouse-3: Menu")))))
-          (let ((nodetext  (if (not (equal node "Top"))
-                               node
-                             (concat (format "(%s)" (if (stringp Info-current-file)
-                                                        (file-name-nondirectory Info-current-file)
-                                                      ;; Some legacy code can still use a symbol.
-                                                      Info-current-file))
-                                     node))))
-            (setq text  (concat text (if (equal node "Top") "" " > ") (if node nodetext "...")))))
-        (make-local-variable 'mode-line-format) ; Needed for Emacs 21+.
-        (setq mode-line-format  text)))))
+
+;; REPLACES ORIGINAL in `info.el':
+;; 1. File name in face `info-file'.
+;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
+;;    "..." in face `info-string', and ' in face `info-single-quote'.
+;;
+;;;###autoload
+(when (and (> emacs-major-version 22) (fboundp 'Info-breadcrumbs)) ; Emacs 23.2+
+  (defun Info-fontify-node ()
+    "Fontify the node."
+    (save-excursion
+      (let* ((inhibit-read-only  t)
+             (case-fold-search   t)
+             paragraph-markers
+             (not-fontified-p           ; the node hasn't already been fontified
+              (not (let ((where  (next-single-property-change (point-min) 'font-lock-face)))
+                     (and where (not (= where (point-max)))))))
+             (fontify-visited-p         ; visited nodes need to be re-fontified
+              (and Info-fontify-visited-nodes
+                   ;; Don't take time to refontify visited nodes in huge nodes
+                   Info-fontify-maximum-menu-size
+                   (< (- (point-max) (point-min)) Info-fontify-maximum-menu-size)))
+             rbeg rend)
+
+        ;; Fontify header line
+        (goto-char (point-min))
+        (when (and not-fontified-p (looking-at "^File: \\([^,: \t]+\\),?[ \t]+"))
+          (put-text-property (match-beginning 1) (match-end 1) 'font-lock-face 'info-file))
+        (goto-char (point-min))
+        (when (and not-fontified-p (looking-at "^\\(File: [^,: \t]+,?[ \t]+\\)?"))
+          (while (looking-at "[ \t]*\\([^:, \t\n]+\\):[ \t]+\\([^:,\t\n]+\\),?")
+            (goto-char (match-end 0))
+            (let* ((nbeg  (match-beginning 2))
+                   (nend  (match-end 2))
+                   (tbeg  (match-beginning 1))
+                   (tag   (match-string 1)))
+              (if (string-equal (downcase tag) "node")
+                  (put-text-property nbeg nend 'font-lock-face 'info-header-node)
+                (put-text-property nbeg nend 'font-lock-face 'info-header-xref)
+                (put-text-property tbeg nend 'mouse-face 'highlight)
+                (put-text-property tbeg nend
+                                   'help-echo
+                                   (concat "mouse-2: Go to node "
+                                           (buffer-substring nbeg nend)))
+                ;; Always set up the text property keymap.
+                ;; It will either be used in the buffer
+                ;; or copied in the header line.
+                (put-text-property tbeg nend 'keymap
+                                   (cond
+                                     ((string-equal (downcase tag) "prev") Info-prev-link-keymap)
+                                     ((string-equal (downcase tag) "next") Info-next-link-keymap)
+                                     ((string-equal (downcase tag) "up"  ) Info-up-link-keymap))))))
+          
+          ;; Treat header line.
+          (when Info-use-header-line
+            (goto-char (point-min))
+            (let* ((header-end  (line-end-position))
+                   (header
+                    ;; If we find neither Next: nor Prev: link, show the entire
+                    ;; node header.  Otherwise, don't show the File: and Node:
+                    ;; parts, to avoid wasting precious space on information that
+                    ;; is available in the mode line.
+                    (if (re-search-forward "\\(next\\|up\\|prev[ious]*\\): " header-end t)
+                        (progn (goto-char (match-beginning 1))
+                               (buffer-substring (point) header-end))
+                      (if (re-search-forward "node:[ \t]*[^ \t]+[ \t]*" header-end t)
+                          (concat "No next, prev or up links  --  "
+                                  (buffer-substring (point) header-end))
+                        (buffer-substring (point) header-end)))))
+              (put-text-property (point-min) (1+ (point-min))
+                                 'header-line (replace-regexp-in-string
+                                               "%"
+                                               ;; Preserve text properties on duplicated `%'.
+                                               (lambda (s) (concat s s)) header))
+              ;; Hide the part of the first line that is in the header, if it is just part.
+              (cond ((and Info-breadcrumbs-in-header-flag (> Info-breadcrumbs-depth 0))
+                     (let ((ov (make-overlay (point-min) (1+ header-end))))
+                       (overlay-put ov 'display (Info-breadcrumbs))
+                       (overlay-put ov 'evaporate t)))
+                    ((not (bobp))
+                     ;; Hide the punctuation at the end, too.
+                     (skip-chars-backward " \t,")
+                     (put-text-property (point) header-end 'invisible t))))))
+
+        ;; Fontify `...' and "..."
+        (goto-char (point-min))
+        (when Info-fontify-quotations-flag (info-fontify-quotations))
+
+        ;;  Fontify reference items: `-- Function:', `-- Variable:', etc.
+        (goto-char (point-min))
+        (when Info-fontify-reference-items-flag (info-fontify-reference-items))
+
+        ;; Fontify titles
+        (goto-char (point-min))
+        (when (and font-lock-mode not-fontified-p)
+          (while (and (re-search-forward "\n\\([^ \t\n].+\\)\n\\(\\*\\*+\\|==+\\|--+\\|\\.\\.+\\)$"
+                                         nil t)
+                      ;; Only consider it as an underlined title if the ASCII
+                      ;; underline has the same size as the text.  A typical
+                      ;; counter example is when a continuation "..." is alone
+                      ;; on a line.
+                      (= (string-width (match-string 1))
+                         (string-width (match-string 2))))
+            (let* ((c     (preceding-char))
+                   (face  (cond ((= c ?*) 'Info-title-1-face)
+                                ((= c ?=) 'Info-title-2-face)
+                                ((= c ?-) 'Info-title-3-face)
+                                (t        'Info-title-4-face))))
+              (put-text-property (match-beginning 1) (match-end 1)
+                                 'font-lock-face face))
+            ;; This is a serious problem for trying to handle multiple
+            ;; frame types at once.  We want this text to be invisible
+            ;; on frames that can display the font above.
+            (when (memq (framep (selected-frame)) '(x pc w32 ns))
+              (add-text-properties (1- (match-beginning 2)) (match-end 2)
+                                   '(invisible t front-sticky nil rear-nonsticky t)))))
+
+        ;; Fontify cross references
+        (goto-char (point-min))
+        (when (or not-fontified-p fontify-visited-p)
+          (while (re-search-forward
+                  "\\(\\*Note[ \n\t]+\\)\\([^:]*\\)\\(:[ \t]*\\([^.,:(]*\\)\\(\\(([^)]\
+*)\\)[^.,:]*\\)?[,:]?\n?\\)"
+                  nil t)
+            (let ((start  (match-beginning 0))
+                  (next   (point))
+                  other-tag)
+              (when not-fontified-p
+                (when Info-hide-note-references
+                  (when (and (not (eq Info-hide-note-references 'hide))
+                             (> (line-number-at-pos) 4)) ; Skip breadcrumbs
+                    ;; *Note is often used where *note should have been
+                    (goto-char start)
+                    (skip-syntax-backward " ")
+                    (when (memq (char-before) '(?\( ?\[ ?\{))
+                      ;; Check whether the paren is preceded by
+                      ;; an end of sentence
+                      (skip-syntax-backward " ("))
+                    (setq other-tag  (cond ((save-match-data (looking-back "\\<see"))
+                                            "")
+                                           ((save-match-data (looking-back "\\<in"))
+                                            "")
+                                           ((memq (char-before) '(nil ?\. ?! ??))
+                                            "See ")
+                                           ((save-match-data
+                                              (save-excursion (search-forward "\n\n" start t)))
+                                            "See ")
+                                           (t "see "))))
+                  (goto-char next)
+                  (add-text-properties
+                   (match-beginning 1)
+                   (or (save-match-data
+                         ;; Don't hide \n after *Note
+                         (let ((start1  (match-beginning 1)))
+                           (and (string-match "\n" (match-string 1))
+                                (+ start1 (match-beginning 0)))))
+                       (match-end 1))
+                   (if other-tag
+                       `(display ,other-tag front-sticky nil rear-nonsticky t)
+                     '(invisible t front-sticky nil rear-nonsticky t))))
+                (add-text-properties
+                 (match-beginning 2) (match-end 2)
+                 (list
+                  'help-echo (if (or (match-end 5)
+                                     (not (equal (match-string 4) "")))
+                                 (concat "mouse-2: go to " (or (match-string 5)
+                                                               (match-string 4)))
+                               "mouse-2: go to this node")
+                  'mouse-face 'highlight)))
+              (when (or not-fontified-p fontify-visited-p)
+                (setq rbeg  (match-beginning 2)
+                      rend  (match-end 2))
+                (put-text-property
+                 rbeg rend
+                 'font-lock-face
+                 ;; Display visited nodes in a different face
+                 (if (and Info-fontify-visited-nodes
+                          (save-match-data
+                            (let* ((node
+                                    (replace-regexp-in-string
+                                     "^[ \t]+" ""
+                                     (replace-regexp-in-string
+                                      "[ \t\n]+" " "
+                                      (or (match-string-no-properties 5)
+                                          (and (not (equal (match-string 4) ""))
+                                               (match-string-no-properties 4))
+                                          (match-string-no-properties 2)))))
+                                   (external-link-p  (string-match "(\\([^)]+\\))\\([^)]*\\)" node))
+                                   (file             (if external-link-p
+                                                         (file-name-nondirectory
+                                                          (match-string-no-properties 1 node))
+                                                       Info-current-file))
+                                   (hl               Info-history-list)
+                                   res)
+                              (when external-link-p
+                                (setq node  (if (equal (match-string 2 node) "")
+                                                "Top"
+                                              (match-string-no-properties 2 node))))
+                              (while hl
+                                (if (and (string-equal node (nth 1 (car hl)))
+                                         (equal file (if (and external-link-p (stringp (caar hl)))
+                                                         (file-name-nondirectory (caar hl))
+                                                       (caar hl))))
+                                    (setq res  (car hl)
+                                          hl   nil)
+                                  (setq hl  (cdr hl))))
+                              res))) 'info-xref-visited 'info-xref))
+                ;; For multiline ref, unfontify newline and surrounding whitespace
+                (save-excursion
+                  (goto-char rbeg)
+                  (save-match-data
+                    (while (re-search-forward "\\s-*\n\\s-*" rend t nil)
+                      (remove-text-properties (match-beginning 0) (match-end 0)
+                                              '(font-lock-face t))))))
+              (when not-fontified-p
+                (when (memq Info-hide-note-references '(t hide))
+                  (add-text-properties (match-beginning 3) (match-end 3)
+                                       '(invisible t front-sticky nil rear-nonsticky t))
+                  ;; Unhide the file name of the external reference in parens
+                  (if (and (match-string 6)
+                           (not (eq Info-hide-note-references 'hide)))
+                      (remove-text-properties
+                       (match-beginning 6) (match-end 6)
+                       '(invisible t front-sticky nil rear-nonsticky t)))
+                  ;; Unhide newline because hidden newlines cause too long lines
+                  (save-match-data
+                    (let ((beg3  (match-beginning 3))
+                          (end3  (match-end 3)))
+                      (if (and (string-match "\n[ \t]*" (match-string 3))
+                               (not (save-match-data (save-excursion (goto-char (1+ end3))
+                                                                     (looking-at "[.)]*$")))))
+                          (remove-text-properties
+                           (+ beg3 (match-beginning 0))
+                           (+ beg3 (match-end 0))
+                           '(invisible t front-sticky nil rear-nonsticky t))))))
+                (when (and Info-refill-paragraphs Info-hide-note-references)
+                  (push (set-marker (make-marker) start) paragraph-markers))))))
+
+        ;; Refill paragraphs (experimental feature)
+        (when (and not-fontified-p Info-refill-paragraphs paragraph-markers)
+          (let ((fill-nobreak-invisible          t)
+                (fill-individual-varying-indent  nil)
+                (paragraph-start                 "\f\\|[ \t]*[-*]\\|[ \t]*$")
+                (paragraph-separate              ".*\\.[ \t]*\n[ \t]\\|[ \t]*[-*]\\|[ \t\f]*$")
+                (adaptive-fill-mode              nil))
+            (goto-char (point-max))
+            (dolist (m  paragraph-markers)
+              (when (< m (point))
+                (goto-char m)
+                (beginning-of-line)
+                (let ((beg  (point)))
+                  (when (zerop (forward-paragraph))
+                    (fill-individual-paragraphs beg (point) nil nil)
+                    (goto-char beg))))
+              (set-marker m nil))))
+
+        ;; Fontify menu items
+        (goto-char (point-min))
+        (when (and (or not-fontified-p fontify-visited-p)
+                   (search-forward "\n* Menu:" nil t)
+                   ;; Don't take time to annotate huge menus
+                   Info-fontify-maximum-menu-size
+                   (< (- (point-max) (point)) Info-fontify-maximum-menu-size))
+          (let ((n  0)
+                cont)
+            (while (re-search-forward
+                    (concat "^\\* Menu:\\|\\(?:^\\* +\\(" Info-menu-entry-name-re "\\)\\(:"
+                            Info-node-spec-re "\\([ \t]*\\)\\)\\)")
+                    nil t)
+              (when (match-beginning 1)
+                (when not-fontified-p
+                  (setq n  (1+ n))
+                  (if (and (<= n 9) (zerop (% n 3))) ; visual aids to help with 1-9 keys
+                      (put-text-property (match-beginning 0) (1+ (match-beginning 0))
+                                         'font-lock-face 'info-menu-5)))
+                (when not-fontified-p
+                  (add-text-properties
+                   (match-beginning 1) (match-end 1)
+                   (list 'help-echo (if (and (match-end 3)
+                                             (not (equal (match-string 3) "")))
+                                        (concat "mouse-2: go to " (match-string 3))
+                                      "mouse-2: go to this node")
+                         'mouse-face 'highlight)))
+                (when (or not-fontified-p fontify-visited-p)
+                  (put-text-property
+                   (match-beginning 1) (match-end 1)
+                   'font-lock-face
+                   ;; Display visited menu items in a different face
+                   (if (and Info-fontify-visited-nodes
+                            (save-match-data
+                              (let* ((node             (if (equal (match-string 3) "")
+                                                           (match-string-no-properties 1)
+                                                         (match-string-no-properties 3)))
+                                     (external-link-p  (string-match "(\\([^)]+\\))\\([^)]*\\)" node))
+                                     (file             (if external-link-p
+                                                           (file-name-nondirectory
+                                                            (match-string-no-properties 1 node))
+                                                         Info-current-file))
+                                     (hl               Info-history-list)
+                                     res)
+                                (when external-link-p
+                                  (setq node  (if (equal (match-string 2 node) "")
+                                                  "Top"
+                                                (match-string-no-properties 2 node))))
+                                (while hl
+                                  (if (and (string-equal node (nth 1 (car hl)))
+                                           (equal file (if (and external-link-p (stringp (caar hl)))
+                                                           (file-name-nondirectory (caar hl))
+                                                         (caar hl))))
+                                      (setq res  (car hl)
+                                            hl   nil)
+                                    (setq hl  (cdr hl))))
+                                res))) 'info-xref-visited 'info-xref)))
+                (when (and not-fontified-p
+                           (memq Info-hide-note-references '(t hide))
+                           (not (Info-index-node)))
+                  (put-text-property (match-beginning 2) (1- (match-end 6)) 'invisible t)
+                  ;; Unhide the file name in parens
+                  (if (and (match-end 4) (not (eq (char-after (match-end 4)) ?.)))
+                      (remove-text-properties (match-beginning 4) (match-end 4)
+                                              '(invisible t)))
+                  ;; We need a stretchable space like :align-to but with
+                  ;; a minimum value.
+                  (put-text-property (1- (match-end 6)) (match-end 6) 'display
+                                     (if (>= 22 (- (match-end 1)
+                                                   (match-beginning 0)))
+                                         '(space :align-to 24)
+                                       '(space :width 2)))
+                  (setq cont  (looking-at "."))
+                  (while (and (= (forward-line 1) 0)
+                              (looking-at "\\([ \t]+\\)[^*\n]"))
+                    (put-text-property (match-beginning 1) (1- (match-end 1))
+                                       'invisible t)
+                    (put-text-property (1- (match-end 1)) (match-end 1)
+                                       'display
+                                       (if cont
+                                           '(space :align-to 26)
+                                         '(space :align-to 24)))
+                    (setq cont  t)))))))
+
+        ;; Fontify menu headers
+        ;; Add the face `info-menu-header' to any header before a menu entry
+        (goto-char (point-min))
+        (when (and not-fontified-p (re-search-forward "^\\* Menu:" nil t))
+          (put-text-property (match-beginning 0) (match-end 0)
+                             'font-lock-face 'info-menu-header)
+          (while (re-search-forward "\n\n\\([^*\n ].*\\)\n\n?[*]" nil t)
+            (put-text-property (match-beginning 1) (match-end 1)
+                               'font-lock-face 'info-menu-header)))
+
+        ;; Hide index line numbers
+        (goto-char (point-min))
+        (when (and not-fontified-p (Info-index-node))
+          (while (re-search-forward "[ \t\n]*(line +[0-9]+)" nil t)
+            (put-text-property (match-beginning 0) (match-end 0)
+                               'invisible t)))
+
+        ;; Fontify http and ftp references
+        (goto-char (point-min))
+        (when not-fontified-p
+          (while (re-search-forward "\\(https?\\|ftp\\)://[^ \t\n\"`({<>})']+" nil t)
+            (add-text-properties (match-beginning 0) (match-end 0)
+                                 '(font-lock-face info-xref
+                                   mouse-face highlight
+                                   help-echo "mouse-2: go to this URL"))))
+
+        (set-buffer-modified-p nil)))))
 
 (when (> emacs-major-version 22)
   (defvar Info-breadcrumbs-depth-internal Info-breadcrumbs-depth
     "Current breadcrumbs depth for Info."))
+
 
 ;; 1. I made this a global minor mode and turned it on by default, contrary to "the rules".
 ;;    I did this so (a) users could easily customize it but (b) it would be on by default, otherwise.

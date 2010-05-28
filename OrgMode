@@ -52,7 +52,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * [http://www.astro.uva.nl/~dominik/Tools/outline-magic.el outline-magic.el] by CarstenDominik can be used to obtain the feel of org-mode outline
   navigation when you use OutlineMode or OutlineMinorMode in other types of files (for example, source code.)
 
-* [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD CVS:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
+* [http://repo.or.cz/w/org-mode.git?a=blob_plain;f=lisp/org-w3m.el;hb=HEAD GIT:org-w3m.el] -- Copy and paste from w3m buffer to [[OrgMode]].
 
 * [http://www.emacswiki.org/emacs/OrgMode-OSD Display Appointments Using OSD on Gnome]
 * [http://gitorious.org/bkuhn-small-hacks/org-mode/blobs/master/planner2org.plx A small Perl script that will convert data to orgmode] format from PlannerMode format.

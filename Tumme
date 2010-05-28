@@ -4,7 +4,7 @@ Tumme means thumb in Swedish. If you want to know how to pronounce it, download 
 
 Tumme comes with GNU Emacs starting with version 22.1 as  `image-dired':
 
-: CVS:image-dired.el
+: GIT:image-dired.el
 
 For more background and basic usage, reading the Commentary section in tumme.el is strongly recommended.
 

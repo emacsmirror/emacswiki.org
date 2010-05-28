@@ -1,6 +1,6 @@
 The ElispManual does a stand-up job of introducing some of the primitive functions for operating with association lists.  More significant tasks can be accomplished with the `alist' library that comes with [[APEL]].
 
-* CVS:apel/alist.el
+* GIT:a.el/alist.el
 
 To use the library in your code you must require it with:
 

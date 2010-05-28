@@ -123,3 +123,32 @@ unzip2ing" "bzip2" ("-d") nil t "BZh"] ["\\.tbz\\'" "bzip2ing" "bzip2" nil "bunz
 g?z\\(~\\|\\.~[0-9]+~\\)?\\'" "compressing" "gzip" ("-c") "uncompressing" "gzip" ("-c" "-d") t t "^_\x8b"] ["\\
 \.dz\\'" nil nil nil "uncompressing" "gzip" ("-c" "-d") nil t "^_\x8b"]))))
 </pre>
+
+=== Keyboard Improvements on the N810 ===
+
+The N810 doesn't have TAB or Meta keys, which makes using Emacs rather difficult. There is an escape key (the back button), but using it to simulate Meta gets boring quite fast. So Emacs users (and general keyboard junkies) will probably want to remap the keyboard. This can be done by editing /usr/share/X11/xkb/symbols/nokia_vndr/rx-44
+
+Adding the following to the "base" section of the file will set the Chr key (which normally launches a special-character selection menu, although not under the X version of Emacs) to be Meta, and the key combination Fn-SPC (which is reasonably nice to press) to TAB:
+
+    key <SPCE> { [ space, space, Tab, space ] };
+    key <COMP> { [ Meta_L, Meta_L, Multi_key, Meta_L ] };
+    modifier_map Mod1 { Meta_L };
+
+(Credit to some long-forgotten piece of the internet)
+
+Restarting the tablet will allow this to take effect. Note that, for some reason, Emacs may not recognise Fn-<key> sequences if it's the first thing that you launch after starting the tablet. Running XTerm seems to fix this problem, for some worryingly obscure reason.
+
+=== Extra keys on the N810 ===
+
+A nice feature of the N810 is that all the 'special' keys (Home, Back, Menu, etc.) just scan as function keys, which the X version of Emacs will intercept. This gives a selection of extra keys that we can rebind to make life a little easier. They scan as follows:
+
+|| Back (next to the screen) || Escape ||
+|| Menu (under the D-Pad) || F4 ||
+|| Home (next to the screen) || F5 ||
+|| Home (on the top edge) || F6 ||
+|| + (on the top edge) || F7 ||
+|| - (on the top edge) || F8 ||
+
+I'm not entirely sure where F[1-3] live.
+
+I'm working on some code to provide sticky modifiers based on the 'shoulder button' function keys. I'll post it here when it's done.

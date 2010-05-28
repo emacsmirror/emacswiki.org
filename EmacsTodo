@@ -1,4 +1,4 @@
-The EmacsTodo list is shipped with Emacs and is availabe by running `C-h C-t'( `M-x view-todo') in newer versions of Emacs.  Or [http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/etc/TODO visit the TODO file in CVS].
+The EmacsTodo list is shipped with Emacs and is availabe by running `C-h C-t'( `M-x view-todo') in newer versions of Emacs.  Or [http://repo.or.cz/w/emacs.git/blob/HEAD:/etc/TODO visit the TODO file in Bzr].
 
 According to the TODO file:
 

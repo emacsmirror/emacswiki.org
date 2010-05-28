@@ -11,9 +11,9 @@ XML editing environments:
 
 This parser by EmmanuelBriot is part of Gnus and part of Emacs 21.
 
-Here's a link to the file in Emacs CVS:
+Here's a link to the file in Emacs's sources:
 
-* http://cvs.savannah.gnu.org/viewvc/emacs/emacs/lisp/xml.el
+* GIT:xml.el
 
 See also XmlParserExamples.
 

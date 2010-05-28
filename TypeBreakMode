@@ -2,7 +2,7 @@
 
 To take a typing break, use `M-x type-break' and watch Emacs conduct some demonstration.  To make Emacs force you to take a 10 minute break very 60 minutes, use `M-x type-break-mode'.  More information at `C-h f type-break-mode'.
 
-* CVS:type-break.el
+* GIT:type-break.el
 
 See also RepeatedStrainInjury.
 

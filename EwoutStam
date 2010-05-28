@@ -1,15 +1,16 @@
-* I use Emacs
-* I've started using Emacs because I wanted to speed up editing stuff. Not having to move my hands from the home row was the biggest reason to change, and if I ever got serious about Emacs I could do lots of things with it, almost without boundaries as I can extend it myself if I really want to.
-* I've got my own [http://teraiten.vze.com website], which is a statified wiki, but not an EmacsWiki. But I'd like to change that. In fact, I'm working on it now but it doesn't have any serious priority  ;)
+* I use Emacs for work and privately.
+* Most of my Emacs experience was in the form of [http://zile.sourceforge.net/ Zile]. Cursor moving, killing, yanking etc work similarly on a bash prompt, I use those a lot.
+* I've got my own [http://www.ewoutstam.com website], I have no idea what I want with it ;)
+* Started seriously using Emacs a few years ago because of Netbeans, which I used for Rails development. It partially supported Emacs hotkeys, e.g. for moving the cursor around. But the partial implementation got on my nerves, I could not select text or move between open files without using the mouse or arrow keys. So I figured out [[ECB]] and switched completely to Emacs. And I have a reasonable idea of what I'm doing now, compared to a few years ago when I just began using Emacs, and had never programmed before.
 
 ==Tips for beginners==
 
 Here's what I did in order to learn Emacs:
 
-* Take a screwdriver and flip out the arrow keys. You are now forcing yourself to use the keybinds. Revert to the numpad in an emergency.
-* If you want simplicity for starters, use [http://zile.sourceforge.net/ Zile]. It has a little on screen mini-help thingy too. Runs in a terminal window so you can configure your fonts by configuring the terminal program. Or start emacs in a console by entering <code>emacs -nw</code>.
+* Take a screwdriver and remove the arrow keys from your keyboard. You are now forcing yourself to use the keybinds. Revert to the numpad in an emergency. Not an option if you game on the same computer.
+* If you want simplicity for starters, use [http://zile.sourceforge.net/ Zile]. It has a little on screen mini-help thingy too. Runs in a terminal window so you can configure your fonts by configuring the terminal program. Or start emacs in a console by entering <code>emacs -nw</code>
 * Take a permanent marker and write on your keyboard. Preferably the front and not the top of the keys, because permanent markers aren't that permanent at all :-/ Now you can just look at your keyboard if you forget how to do something. I wrote little arrows and stuff, which I find more pleasant to use than a cheat sheet.
-* LongLines - Get it. It makes Emacs behave like windows notepad when it wraps text. And this is exactly what I need. I organize my homework in a wiki, and all I need is any random editor which accepts plaintext. Notepad was preferred above emacs simply because it wraps lines better. I used XKeymacs in combination with notepad for my work, and this made windows the prefered platform of choice, as I didn't have XKeymacs for linux. Till I got this.
+* LongLines - part of emacs's standard elisp libraries now. It makes Emacs behave like windows notepad when it wraps text. And this is exactly what I need. I organize my homework in a wiki, and all I need is any random editor which accepts plaintext. Notepad was preferred above emacs simply because it wraps lines better. I used XKeymacs in combination with notepad for my work, and this made windows the prefered platform of choice, as I didn't have XKeymacs for linux. Till I got this.
 * To make LongLines act even more like notepad (wrapping where the window ends, not on a pre-set margin) add the following to your <code>.emacs</code>:
 <pre>
 (setq longlines-wrap-follows-window-size t)

@@ -58,3 +58,5 @@ Multiple emacs servers are possible.  Thanks to [[offby1]], in a new emacs,
 then in emacsclient
 
  emacsclient -s /tmp/emacsfoo
+----
+CategoryHomepage

@@ -22,7 +22,8 @@ An alternative to a plain link people can use if they want to make sure that bac
 
 Emacs:
 
- CVS http://savannah.gnu.org/cgi-bin/viewcvs/emacs/emacs/lisp/
+ BZR http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head:/lisp/
+ GIT http://repo.or.cz/w/emacs.git/blob/HEAD:/lisp/
  Manual /cgi-bin/info-ref?find=
 
 Debian:
@@ -50,6 +51,5 @@ Other wikis:
 
 These are necessary to bypass the BannedContent filter.  Basically they are free website farms that are abused by spammers.
 
- Geocities http://www.geocities.com/
  XWEM http://lgarc.narod.ru/xwem/
  Lukhas http://lukhas.free.fr/

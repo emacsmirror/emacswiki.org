@@ -1,5 +1,3 @@
-== What is EmacsClient? ==
-
 EmacsClient allows one to open a file for editing in an already running Emacs.  Because it doesn't start a new Emacs instance at each invocation, you can setup EmacsClient as the default editor, e.g. in the environment variable EDITOR or VISUAL.  EmacsClient is part of and works only in conjunction with GNU Emacs.  The program GnuClient provides the corresponding functionality for XEmacs, but also works with GnuEmacs.
 
 Since the release of GnuEmacs 22.1 both EmacsClient and GnuClient also work on "Windows"
@@ -85,7 +83,7 @@ Note that the above script is not perfect. It assumes that emacs will sucessfull
 ''edit'' can then be used as the value of EDITOR. If no windowing system is found, no attempt to use emacsclient is made, however if a suspended emacs session is available, it will be re-used, otherwise a new emacs session is used. Future versions might try emacsclient even without a windowing system before testing for a suspended emacs.
 
 [new:CarlGroner:2008-12-29 20:27 UTC]
-The current cvs version of [http://cvs.savannah.gnu.org/viewvc/emacs/etc/emacs.bash?root=emacs&view=markup emacs.bash] notes that this method is now obsolete, and the -a (alternate editor) option to emacsclient should be used instead if available. 
+The current cvs version of [http://repo.or.cz/w/emacs.git/blob/HEAD:/etc/emacs.bash emacs.bash] notes that this method is now obsolete, and the -a (alternate editor) option to emacsclient should be used instead if available. 
 
 [new:sylecn:2009-05-14]
 For current cvs version, I have write a [[EmacsdInitScript]] to put in /etc/init.d/emacsd for autostart emacs daemon on startup and kill emacs on shutdown.

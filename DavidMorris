@@ -1,0 +1,19 @@
+I've been using Emacs for a couple of years now, mostly for coding, though I dabble with Org and Gnus.
+
+I use/play around with/keep meaning to learn most of the interesting programming languages, although I'd tend to reach for C++ for application development and Perl for general hacking. Lisp is the language which interests me most, but I'm still looking for something big to do in it to really get to grips with the more powerful features of the language.
+
+I'm the kind of person who tends to write his own version of something if it seems do-able, so my ~/elisp directory is rather large and strange. When I get some free time, I'll go through it and see whether any of it is worth posting on here.
+
+Emacs-wise, I'm currently working on things to turn the N810 I recently acquired from an Internet Tablet to an Emacs Tablet (MaemoEmacs). First on the list are sticky modifier keys, which are nearly done; thereafter will come a think about touchscreens, and generally more invasive ways to adapt Emacs to a handheld environment. Interface design isn't really something I know that much about (although I have lots of opinions on it ;)), so comments and suggestions welcome.
+
+I'm currently studying Engineering at Cambridge University, England.
+
+
+[new:DrewAdams:2010-05-27 14:26 UTC]
+Welcome to the wiki.  -- DrewAdams
+
+
+
+
+----
+CategoryHomepage

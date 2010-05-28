@@ -2,7 +2,7 @@ This is code by JonathanYavner which detects whether some lisp expression is uns
 
 The code is part of Emacs.
 
-* CVS:emacs-lisp/unsafep.el
+* GIT:emacs-lisp/unsafep.el
 
 ----
 CategoryCode

@@ -1,15 +1,23 @@
 [[fr:SupprimerPage]]
-Any page that is marked for deletion starts with a link to DeletedPage.
-Pages cannot be deleted immediately, but all pages marked for deletion
-will be permanently deleted after 21 days of inactivity.
 
-In other words, every time somebody edits a page marked for deletion,
-"the counter is reset".
+Any page that is marked for deletion starts with a link to DeletedPage.  Pages are not deleted immediately, but are marked for deletion and are permanently deleted after 21 days of inactivity.
 
-Technically, this is implemented as a cron job that runs once every day
-to do maintenance, including the deletion of pages that fit the description
-given above.
+In other words, every time somebody edits a page marked for deletion, /the counter is reset/.
 
-Deleted pages are included in the RSS feed, since they are a significant change that needs to be reviewed.
+Pages marked for deletion are included in RecentChanges, since they are a significant change that needs to be reviewed.
 
+== Deleting a page ==
 
+To delete a page simply add a link to DeletedPage at the beginning of the page you wish to delete.  
+
+You can either remove the rest of the text on the page or leave it so others can review it until the day it gets truly deleted. If you remove the text others can still review it via the page history (diff).
+
+Before you delete a page you should also consider whether redirecting to some other page isn't a better option.  See PageRedirection.
+
+== Restoring a page ==
+
+If you disagree with a page being deleted you can simply remove the link to DeletedPage at the beginning of the marked page.
+
+However instead of simply reverting someone else's decision you might want to keep the DeletedPage link and instead discuss the subject on the page itself.  Do this by adding the summary given when the page was deleted followed by your thought below the link to DeletedPage and above the original content.
+
+Don't worry if you miss the end of the deadline for restoration it is still possible to restore valuable content from on of the repositories mirroring the Emacswiki.  See WikiDownload.

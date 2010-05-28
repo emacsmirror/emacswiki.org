@@ -10,11 +10,11 @@ The list we shall be using in our examples is this:
 
 Here's the corresponding box diagram:
 
-<pre>
+{{{
           +-------+---+    +------+---+  +-------+-----+
  list1--->| alpha | *----->| beta | *--->| gamma | nil |
           +-------+---+    +------+---+  +-------+-----+
-</pre>
+}}}
 
 See ListStructure if you don't feel comfortable with the box diagram above.
 
@@ -26,10 +26,10 @@ Try some deleting:
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
-
+ 
  ELISP> (setq list2 (delete 'beta list1))
  (alpha gamma)
-
+ 
  ELISP> (setq list3 (delete 'alpha list1))
  (gamma)
 
@@ -60,7 +60,7 @@ cell, list1 has the same value!
 Both list1 and list2 have the value ##(alpha gamma)##.
 
 What's the value of list3?
-Since alpha is the first item in the list, 
+Since alpha is the first item in the list,
 there is no pointer to repoint.
 ##delete## returns the beginning of the new list starting with the gamma cell.
 That's why the value of list3 is ##(gamma)## and
@@ -87,20 +87,20 @@ to check for duplicates.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
-
+ 
  ELISP> (add-to-list 'list1 'omega)
  (omega alpha beta gamma)
-
+ 
  ELISP> list1
  (omega alpha beta gamma)
 
 Here's the result:
 
-<pre>
+{{{
           +-------+---+   +-------+---+   +------+---+   +-------+-----+
  list1--->| omega | *---->| alpha | *---->| beta | *---->| gamma | nil |
           +-------+---+   +-------+---+   +------+---+   +-------+-----+
-</pre>
+}}}
 
 == cons ==
 
@@ -119,13 +119,13 @@ tail of the list is shared.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
-
+ 
  ELISP> (setq list2 (cdr list1))
  (beta gamma)
-
+ 
  ELISP> (setq list2 (cons 'ypsilon list2))
  (ypsilon beta gamma)
-
+ 
  ELISP> (eq list1 list2)
  nil
  ELISP> (eq (cdr list1) (cdr list2))
@@ -133,15 +133,15 @@ tail of the list is shared.
 
 And here's the box diagram:
 
-<pre>
+{{{
           +-------+---+    +------+---+  +-------+-----+
  list1--->| alpha | *----->| beta | *--->| gamma | nil |
           +-------+---+    +------+---+  +-------+-----+
-                           ^                           
-          +---------+---+  |                           
- list2--->| ypsilon | *----+                           
-          +---------+---+                              
-</pre>
+                           ^
+          +---------+---+  |
+ list2--->| ypsilon | *----+
+          +---------+---+
+}}}
 
 In terms of efficiency, "consing" is something expensive because it
 allocates new storage for a cons cell.  Usually that doesn't matter.
@@ -174,23 +174,23 @@ no longer nil.
 
 This situation looks like:
 
-<pre>
+{{{
           +-------+---+  +------+---+  +-------+---------+
  list1--->| alpha | *--->| beta | *--->| gamma | ypsilon |
           +-------+---+  +------+---+  +-------+---------+
-                         ^                               
-                         |                               
- list2-------------------+                                
-</pre>
+                         ^
+                         |
+ list2-------------------+
+}}}
 
 What you usually do is you add lists like that.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
-
+ 
  ELISP> (setq list2 '(omega ypsilon))
  (omega ypsilon)
-
+ 
  ELISP> (setq list3 (nconc list1 list2))
  (alpha beta gamma omega ypsilon)
 
@@ -198,7 +198,7 @@ Note how list1 was changed:
 
  ELISP> list1
  (alpha beta gamma omega ypsilon)
-
+ 
  ELISP> list2
  (omega ypsilon)
 
@@ -211,24 +211,27 @@ one.
 
 Anyway, here's the picture:
 
-<pre>
- list3----+                      
+{{{
+ list3----+
           |
           v
           +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
  list1--->| alpha | *--->| beta | *--->| gamma | *--->| omega | *--->| ypsilon | nil |
           +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
-                                                      ^  
-                                                      |  
- list2------------------------------------------------+   
-</pre>
+                                                      ^
+                                                      |
+ list2------------------------------------------------+
+}}}
 
 Just to prove that the tail (list2) is shared:
 
  ELISP> (eq list1 list3)
  t
- ELISP> (eq (cdr (cdr (cdr list1))) list2)
+ 
+ ELISP> (eq (nthcdr 3 list1) list2)
  t
+
+See also CircularLists.
 
 == append ==
 
@@ -238,10 +241,10 @@ copying of the list may be expensive.
 
  ELISP> (setq list1 '(alpha beta gamma))
  (alpha beta gamma)
-
+ 
  ELISP> (setq list2 '(omega ypsilon))
  (omega ypsilon)
-
+ 
  ELISP> (setq list3 (append list1 list2))
  (alpha beta gamma omega ypsilon)
 
@@ -249,11 +252,11 @@ Note how list1 has not been changed:
 
  ELISP> list1
  (alpha beta gamma)
-
+ 
  ELISP> list2
  (omega ypsilon)
 
-<pre>
+{{{
           +-------+---+    +------+---+  +-------+-----+
  list1--->| alpha | *----->| beta | *--->| gamma | nil |
           +-------+---+    +------+---+  +-------+-----+
@@ -262,19 +265,21 @@ Note how list1 has not been changed:
           +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
  list3--->| alpha | *--->| beta | *--->| gamma | *--->| omega | *--->| ypsilon | nil |
           +-------+---+  +------+---+  +-------+---+  +-------+---+  +---------+-----+
-                                                      ^  
-                                                      |  
- list2------------------------------------------------+   
-</pre>
+                                                      ^
+                                                      |
+ list2------------------------------------------------+
+}}}
 
 Just to prove that the tail (list2) is shared with list3 (and that
 list1 is not part of list3):
 
  ELISP> (eq list1 list3)
  nil
- ELISP> (eq (cdr (cdr (cdr list1))) list2)
+ 
+ ELISP> (eq (nthcdr 3 list1) list2)
  nil
- ELISP> (eq (cdr (cdr (cdr list3))) list2)
+ 
+ ELISP> (eq (nthcdr 3 list3) list2)
  t
 
 == setcar ==
@@ -286,10 +291,10 @@ the elements.
 
  ELISP> (setq list '(alpha beta gamma delta))
  (alpha beta gamma delta)
-
+ 
  ELISP> (setcar (nthcdr 2 list) 'epsilon)
  epsilon
-
+ 
  ELISP> list
  (alpha beta epsilon delta)
 
@@ -298,7 +303,7 @@ using a number of `cdr' calls one after another.  It returns the rest
 of the list.  The beginning of the list is a cons cell, therefore
 calling setcar on it changes the corresponding element of the list.
 
-<pre>
+{{{
           +-------+---+    +------+---+  +-------+---+  +-------+-----+
  list1--->| alpha | *----->| beta | *--->| gamma | *--->| delta | nil |
           +-------+---+    +------+---+  +-------+---+  +-------+-----+
@@ -306,7 +311,7 @@ calling setcar on it changes the corresponding element of the list.
                                          |
  nthcdr 2--------------------------------+
 
-</pre>
+}}}
 
 '''See Also:''' DestructiveOperations
 

@@ -1,4 +1,3 @@
-;;; shell-current-directory.el --- create new shell based on buffer directory
+This package allows you to create a new shell based on the buffer directory.
 
-;; The source for this is now maintained at:
-;; http://github.com/metaperl/emacs
+Get it from http://github.com/metaperl/emacs.

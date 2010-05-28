@@ -5,22 +5,21 @@ lore.
 
 If you are new to wikis, here is how to start:
 
-# Edit this page (see link at the bottom).
-# Add your user name to the list (*mixed case, no spaces*, eg. AlexSchroeder).
-# Put the same name in the username field further down the page (see UserName for more info).
-# Save your changes by clicking "Save".
-# Follow the link to your new homepage.
-# Edit your page.
-# Write a few words about your relationship to Emacs.
-# Declare which Emacsen you use, see "Emacs or XEmacs?" below. (optional)
-# Paste your InitFile and ##~/.gnus## file... (optional)
-# Add a category tag to your homepage: Add the following at the end of the page:
+# Edit this page (see the `##Edit this page##' link at the bottom) to add your user name.
+## Add your user name to the list (''mixed case, no spaces'', eg. AlexSchroeder).
+## Put the same name in the username field further down the page (see UserName for more info).
+## (Optional) Preview your changes by clicking the `Preview' button at the page bottom.
+## Save your changes by clicking the `Save' button at the page bottom.
+# Follow the link for your name to your new homepage, and edit the page.
+## Write a few words about your relationship to Emacs.
+## (Optional) Declare which Emacsen you use, see [[#EmacsOrXEmacs]], below. 
+## (Optional) Paste your [[init file]] and ##~/.gnus## file...
+## Add a ##CategoryHomepage## link at the end of your homepage.
+''Please do not forgot this step.''
+## Save your homepage.
 
- ----
- CategoryHomepage
 
-* Save your homepage.
-
+[:EmacsOrXEmacs]
 == Emacs or XEmacs? ==
 List the users of Emacs (GnuEmacs) or [[XEmacs]]:
 * [English:search=%22uses%3F+emacs%22+CategoryHomepage&old=1 Emacs users]
@@ -46,7 +45,7 @@ Please try to keep this list alphabetized (See AlphabetizeHomepageList). It make
 
 * CafeIne, CareyEvans, CarlLunde, CarlMeyer, CarsonReynolds, CarstenDominik, CecilioPardo, CedricLallain, CharlesPhilipChan, CharlesSebold, CharlesStewart, CharlesWaldman, CharlieMartin, [[chmouel]], ChongYidong, ChrisBall, ChrisBurgess, ChrisForno, ChrisGreen, ChrisL, ChrisLowis, ChrisMcMahan, ChrisMoore, ChrisParsons, ChristianJauvin, ChristianQueinnec, ChristianRidderstroem, ChristianRovner, ChristofferSHansen, ChristophConrad, ChristopherKelty, ChristopherMBalz, ChristopherSmith, ChristopherSuckling, ChristophWedler, ChrisVanDusen, ChrisWebber, ClairChing, ClaireConnelly, ClaudineChionh, ClausBrunzema, ClemensFischer, CliffordAdams, ClintLaskowski, ColdBlue, ColinMarquardt, ColinWalters, CraigFinseth, CraigLennox, CraigMcDaniel, CrivetiMihai, CyprianLaskowski
 
-* [[Dabian]], DaleHagglund, DaleHawkins, DaleMellor, DaleSmith, DamienElmes, DamyanPepper, DanAnderson, DanDebertin, DanielBrockman, DanielClemente, DanielColascione, DanielHackney, DanielLundin, DanielMartins, DanielNeri, DanKruchinin, DanLipsitt, DanMcCarthy, DanMoniz, DanMuller, DannyQuah, DaveBenjamin, DaveGillespie, DaveKerschner, DaveLove, DavePearson, DavePeck, DavidAndersson, DavidAspinall, DavidBakhash, DavidBoon, DavidBrady, DavidCobb ([::SuperBiskit]), DavideAngelocola, DavidEddyshaw, DavidEdmondson, DavidElentok, DavidHansen, DavidLindquist, DavidMasterson, DavidMcCabe, DavidNovogrodsky, DavidOShea, DavidOtoole, DavidReitter, DavidSpreen, DavidVázquez, DavisHerring, DeanScarff, DeDaLu, DeepakGoel, DenisHowe, DenisRevin, DennisMarti, DerekPeschel, DianeMurray, DidierRemy, DieterWilhelm, DimitriFontaine, DmitriAlenitchev, DmitriBrechalov, [[dmr]], DominicCronin, DominicMitchell, DonaldKnuth, [[dondelelcaro]], [[Doom]], DougAlcorn, DougLuce, DougRansom, DrewAdams, DrewRaines, DryiceLiu, DuncanMak, DuncanMortimer, [[dust-puppy]], DylanMoonfire
+* [[Dabian]], DaleHagglund, DaleHawkins, DaleMellor, DaleSmith, DamienElmes, DamyanPepper, DanAnderson, DanDebertin, DanielBrockman, DanielClemente, DanielColascione, DanielHackney, DanielLundin, DanielMartins, DanielNeri, DanKruchinin, DanLipsitt, DanMcCarthy, DanMoniz, DanMuller, DannyQuah, DaveBenjamin, DaveGillespie, DaveKerschner, DaveLove, DavePearson, DavePeck, DavidAndersson, DavidAspinall, DavidBakhash, DavidBoon, DavidBrady, DavidCobb ([::SuperBiskit]), DavideAngelocola, DavidEddyshaw, DavidEdmondson, DavidElentok, DavidHansen, DavidLindquist, DavidMasterson, DavidMcCabe, DavidMorris, DavidNovogrodsky, DavidOShea, DavidOtoole, DavidReitter, DavidSpreen, DavidVázquez, DavisHerring, DeanScarff, DeDaLu, DeepakGoel, DenisHowe, DenisRevin, DennisMarti, DerekPeschel, DianeMurray, DidierRemy, DieterWilhelm, DimitriFontaine, DmitriAlenitchev, DmitriBrechalov, [[dmr]], DominicCronin, DominicMitchell, DonaldKnuth, [[dondelelcaro]], [[Doom]], DougAlcorn, DougLuce, DougRansom, DrewAdams, DrewRaines, DryiceLiu, DuncanMak, DuncanMortimer, [[dust-puppy]], DylanMoonfire
 
 * [[eadmund]], [[edA-qa]], EdgarDenny, EdgarGonçalves, EduardoOchs, EdwardOConnor, EdwardReingold, EdwinDoom, EhudKarni, EliBarzilay, EliZaretskii, EmanuelHeitlinger, EmilioLopes, EmmanuelOkyere, EmreSahin, EngelkeEschner, EnigmaCurry, EraEriksson, EricAbrahamsen, EricBates, EricHanchrow, EricHansander, EricLudlam, EricMarsden, EricPement, EricSchulte, ErikBourget, ErikHetzner, ErikHilsdale, ErikNaggum, EsbenStien, EtFb, EugeneMarkov, EugeneMorozov, EvgeniySharapov, EvgueniBaldin, EwoutStam, [[Exal]]
 

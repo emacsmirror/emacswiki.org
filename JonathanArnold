@@ -43,3 +43,5 @@ Here are the various Emacs bits I use.  Some come with it, some are external. Th
 * JavaScriptMode - Major mode for editing JavaScript source code
 * ErcMode - Emacs IRC
 * [[emacs-w3m]] - an Emacs interface to w3m
+----
+CategoryHomepage

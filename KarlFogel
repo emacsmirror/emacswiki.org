@@ -6,9 +6,9 @@ KarlFogel uses Emacs.
 
 He maintains these EmacsLisp libraries:
 
-* CVS:bookmark.el
-* CVS:mail-hist.el
-* CVS:saveplace.el
+* GIT:bookmark.el
+* GIT:mail-hist.el
+* GIT:saveplace.el
 
 His extensive DotEmacs is here:
 

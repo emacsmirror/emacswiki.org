@@ -9,7 +9,7 @@ The above example in Emacs would read <code>\(?:aaa\|bbb\)</code>.
 
 Try ReBuilder to interactively build regular expressions.
 
-Or use the function [[rx]] inside Emacs (CVS:emacs-lisp/rx.el) or try [[SymbolicRegexp]]s.
+Or use the function [[rx]] inside Emacs (GIT:emacs-lisp/rx.el) or try [[SymbolicRegexp]]s.
 
 == Regular Expressions In Emacs Lisp Are Strings Not Literals ==
 

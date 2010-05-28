@@ -4110,4 +4110,3 @@ when scheme-complete can't infer the current implementation."
 ;; Local Variables:
 ;; eval: (put 'scheme-with-find-file 'lisp-indent-hook 1)
 ;; End:
-

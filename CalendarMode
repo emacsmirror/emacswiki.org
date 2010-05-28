@@ -52,13 +52,7 @@ Calendar arithmetic and motion:
 
 * DiaryMode
 * PlannerMode
-* CVS:calendar
-
-== Related links ==
-
-FreeSoftware is important because you never know if you need to use Emacs libraries to determine the exact date of Jesus's ressurection.
-
-* [http://www.dccsa.com/greatjoy/whenres.htm Locating Yeshua's resurection with Emacs 19's calendar routines]
+* GIT:calendar/calendar.el, GIT:calendar/diary-lib.el, GIT:calendar/holidays.el, GIT:calendar/solar.el, ...
 
 ----
 CategoryPersonalInformationManager

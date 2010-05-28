@@ -10,12 +10,11 @@ This guide presents a simple Bazaar workflow oriented toward the "regular contri
 "VCS means never having to say you're sorry."  It's true, but it's still worth being careful, even with bzr.  In the workflows described below, a quick "bzr status" is inserted before each commit.  This is optional, of course, but it's generally a good idea if (a) you haven't committed in that branch within your short-term memory, or (b) you've done a merge.  For more detail but less than a full diff, you can substitute "bzr diffstat" (requires an optional plugin).
 
 [:StopGap]
-
 === CVS-like workflow ===
 
 The workflow documented on this page takes advantage of the fact that Bzr is a decentralized version control system.  It is especially useful when you are working on large changes to Emacs.
 
-If you just need a quick and simple workflow, see [[BzrQuickStartForEmacsDevs]].  That page describes a simple CVS-like workflow, which allows you to contribute changes to Emacs as quickly as you can, with a minimum amount of extra effort.  One advantage of that workflow is that you can use VC-dir without complications.
+If you just need a quick and simple workflow, see BzrQuickStartForEmacsDevs.  That page describes a simple CVS-like workflow, which allows you to contribute changes to Emacs as quickly as you can, with a minimum amount of extra effort.  One advantage of that workflow is that you can use VC-dir without complications.
 
 Later, when you have a chance, come back here and learn the workflow described on this page.  This workflow hews more closely to what experienced Bazaar users are accustomed to, which will make it easier for you to get support online.  One disadvantage of this workflow is that VC-dir support is still somewhat lacking.
 
@@ -39,7 +38,7 @@ As Emacs needs some of the improvements provided by 1.17 release, this quick-sta
 
 You can browse just the top level of the Emacs repository (to see the branches) here: http://bzr.savannah.gnu.org/r/emacs/ . 
  To browse the entire repository there is a web front-end called "loggerhead" which may eventually be installed at
- http://bzr.savannah.gnu.org/lh/emacs/ (see [[https://savannah.gnu.org/support/index.php?107142 sr #107142]]). For now you can see it at [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/files Launchpad], however note this is a mirror of the trunk only.
+ http://bzr.savannah.gnu.org/lh/emacs/ (see [https://savannah.gnu.org/support/index.php?107142 sr #107142]). For now you can see it at [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/files Launchpad], however note this is a mirror of the trunk only.
 
 To make a local branch or branches based on upstream Emacs, start at [[#InitializingYourBzrRepo]] and follow instructions from there.  (This is the Bazaar equivalent of `cvs checkout`.)
 
@@ -231,7 +230,7 @@ Once you have completed the task, you'll want to send it for review or maybe eve
 
 A common practice in Bazaar is to publish your entire branch for review (most of the branch consists of stuff from upstream, and Bazaar easily shows the reviewers the differences -- that is, your changes).  Posting a branch is sort of like posting a patch, but carries more information, such as the commit messages.
 
-You can publish your branch anywhere that can host Bazaar branches.  One convenient place is [[https://launchpad.net/emacs Launchpad.net]].  Once you have a Launchpad account, publishing is just:
+You can publish your branch anywhere that can host Bazaar branches.  One convenient place is [https://launchpad.net/emacs Launchpad.net].  Once you have a Launchpad account, publishing is just:
 
       cd $DEVHOME/emacs/TASKNAME
       bzr push lp:~USERNAME/emacs/TASKNAME
@@ -329,7 +328,7 @@ If you've read this far, you should have a basic understanding of Bazaar, and ho
 [:CasualDevs]
 === Resources for Casual Developers ===
 
-Ideally, one-time contributors, beta testers, and anyone else needing to follow bleeding-edge Emacs would use the same workflow as described above for regular contributors.  However, in case that workflow feels like too much trouble, then [[BzrForEmacsCasualDevs]] offers a couple of slightly simpler setups.  
+Ideally, one-time contributors, beta testers, and anyone else needing to follow bleeding-edge Emacs would use the same workflow as described above for regular contributors.  However, in case that workflow feels like too much trouble, then BzrForEmacsCasualDevs offers a couple of slightly simpler setups.  
 
 Even if you use one of those simpler setups at first, we still encourage you to migrate to the [[#RegularContributors]] workflow as soon as you can -- not because you necessarily plan to become a regular contributor, but because then your setup will be the same as what most other people are using, so they can better help you if you have questions.
 

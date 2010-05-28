@@ -333,5 +333,13 @@ which you can use to add extra functionality to emacs.
 If you would like to expand your knowledge of programming, or add powerful code to emacs, it is a good idea.  But
 that is really up to you.
 
+=== How can I modify a list? ===
+
+See ListModification.
+
+=== How do I get things done in Emacs Lisp? ===
+
+Consult the ElispCookbook for helpful recipes.
+
 ----
 CategoryHelp

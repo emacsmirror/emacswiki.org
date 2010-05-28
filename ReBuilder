@@ -13,7 +13,7 @@ This is a nice interactive tool for building regular expressions in emacs.  From
 
 Re-builder is included in GNU Emacs 21, you can download it from CVS here:
 
-* CVS:emacs-lisp/re-builder.el
+* GIT:emacs-lisp/re-builder.el
 
 ----
 

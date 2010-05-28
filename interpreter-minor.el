@@ -1,4 +1,3 @@
-<pre>
 ;;; interpreter-minor.el --- provide navigation, clickability, folding, interpretation
 
 ;; Copyright (C) 2002  Patware Unc.
@@ -84,7 +83,3 @@
 
 (provide 'interpreter-minor)
 ;;; interpreter-minor.el ends here
-</pre>
-
-----
-PatrickAnderson

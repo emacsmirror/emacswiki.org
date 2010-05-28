@@ -6,7 +6,7 @@
 ;; Copyright (C) 2010, Michael Heerdegen, all rights reserved.
 ;; Created: <2010-05-14 Fr>
 ;; Last-Updated: 2010_05_21
-;; URL: http://www.emacswiki.org/emacs/EmacsLockPlus
+;; URL: http://www.emacswiki.org/emacs/emacs-lock+.el
 ;; Keywords: lock, extensions
 ;; Compatibility: Gnu Emacs 23.x (others maybe, but not tested)
 

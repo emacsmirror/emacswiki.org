@@ -18,7 +18,7 @@ for DiffMode (`diff-mode' provides only `diff-goto-source'):
 How is this supposed to be used, and what does it do?  My understanding is it
 takes the region of a diff and runs Ediff on it. 
 
-I just noticed a similar function in [CVS:diff-mode.el?rev=HEAD diff-mode.el] called `diff-ediff-patch'. -- AaronHawley
+I just noticed a similar function in [GIT:diff-mode.el?rev=HEAD diff-mode.el] called `diff-ediff-patch'. -- AaronHawley
 
 ----
 CategoryExternalUtilities

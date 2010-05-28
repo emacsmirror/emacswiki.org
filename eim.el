@@ -602,5 +602,5 @@ nth POS of `eim-choices'"
   (if eim-debug
       (apply 'message fmt args)))
 
-
 (provide 'eim)
+;;; eim.el ends here

@@ -4,14 +4,12 @@ Largely based on FlymakeHaskell:
 
 Quoting what is flymake-mode from the page FlyMake:
 
-<em> 
-  Flymake is implemented as an Emacs minor mode. It runs the syntax 
+''Flymake is implemented as an Emacs minor mode. It runs the syntax 
   check tool in the background, passing it a temporary copy of the
   current buffer, and parses the output for known error/warning message
   patterns. Flymake then highlights erroneous lines (that is, lines for
   which at least one error or warning has been reported), and displays
-  an overall buffer status in the mode line.
-</em>
+  an overall buffer status in the mode line.''
 
 See also FlyMake for details.
 
@@ -118,7 +116,7 @@ at first. Because of the several reasons, I don't recommend you the
 latest version of flymake-mode, but to use the revision 1.46 of the Main
 branch. You can get the library from the repository of 'flymake';
 
-http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/progmodes/flymake.el?revision=1.46
+* GIT:progmodes/flymake.el
 
 Because Emacs21 does not have the variable
 'compilation-error-regexp-alist-alist', we have to edit the flymake.el

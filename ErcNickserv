@@ -134,7 +134,7 @@ To successfully enable auto-identify in GRNET, the Greek IRC network, you will h
 
     (add-to-list 'erc-nickserv-alist
                  '(GRNET                            ;Network name
-                   "NickServ!service@irc.gr"        ;NickServ's nick!user@host
+                   "NickServ!services@irc.gr"        ;NickServ's nick!user@host
                    "This nickname is registered and protected" ; IDENTIFY request sent by NickServ
                    "NickServ"                       ;Identify to
                    "IDENTIFY"                       ;Identify keyword

@@ -71,3 +71,5 @@ becomes:
 * A new nick insertion mechanism, when you only have to press one key periodically to cycle through nicks (nicks are sorted via how many lines the talked);
 
 * When an ERC buffer with activity is not visible (it's on another frame or has got no window) the cursor line will move up one line.  That way when you change to that ERC buffer later you know where you should continue reading (the cursor will stay on the first line you have not read).  Pressing spaces will scroll down till you reach the prompt.
+----
+CategoryHomepage

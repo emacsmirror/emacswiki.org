@@ -1,26 +1,24 @@
 [[zh:Emacs开发版源码]]
-The Emacs development sources are kept in a CVS repository at http://savannah.gnu.org/. 
+The Emacs development sources are kept in a [[Bazaar]] repository. [ConcurrentVersionsSystem CVS] is not used anymore.
 
 Some people would like to use the new features available in the next release.  Others want to help contribute to Emacs by testing the development sources and maybe even report EmacsBugs.  Others are just interested in following Emacs's development.  Some other just like "living on the edge".
 
 For information on how to get them directly, see:
 
-* EmacsFromArch -- how to get the current development sources using the arch (aka tla) revision control system
-* EmacsFromBazaar -- get emacs with bzr
-* EmacsFromGit -- how to get emacs from the semi-official git mirror
-* (EmacsFromCVS -- the sources where previously in CVS but it is now in Bazaar)
+* EmacsFromBazaar -- get sources using bzr -- the vcs choosen by the maintainers
+* EmacsFromGit -- get sources using git -- another popular vcs
+* EmacsFromArch -- get sources using arch -- does this still work?
 
 See BuildingEmacs for how to build Emacs from the source package.
 
 See EmacsPretest for information about getting sources snapshots made by the Emacs maintainers before a release.
 
-See the EmacsCVSFeatures for how to find out about new features.
+See the EmacsBzrFeatures for how to find out about new features.
 
-Binary packages built from CVS snapshots are available for various systems:
+Binary packages built from Bazaar snapshots are available for various systems:
 
-* EmacsCvsAndDebian
 * EmacsApp
-* CategoryWThirtyTwo has a list of unofficial CVS Emacs binaries.
+* CategoryWThirtyTwo has a list of unofficial Emacs binaries.
 
 ----
 CategoryBuilding

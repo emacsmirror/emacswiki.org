@@ -15,8 +15,8 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.9 (2010-05-19)
-;; Serial Version: %Id: 20%
+;; Version: 1.4.9.b (2010-05-19)
+;; Serial Version: %Id: 21%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -128,6 +128,8 @@
 ;; 1.4.9 VB1 - make customizable variable accessible through defcustom
 ;;           - add support for `Select Case' in visual-basic-insert-item
 ;;           - reword of the `Dim' case in  visual-basic-insert-item
+;; 1.4.9b Lennart Borgman+VB1: correct abbreviation and support `_' as a valid
+;;        symbol character
 
 ;;
 ;; Notes:
@@ -226,15 +228,15 @@
   "*List of function templates though which visual-basic-new-sub cycles.")
 
 (defvar visual-basic-imenu-generic-expression
-   '((nil "^\\s-*\\(public\\|private\\)*\\s-+\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\sw+\\>\\)"
+   '((nil "^\\s-*\\(public\\|private\\)*\\s-+\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\)"
          4)
     ("Constants"
-     "^\\s-*\\(private\\|public\\|global\\)*\\s-*\\(const\\s-+\\)\\(\\sw+\\>\\s-*=\\s-*.+\\)$\\|'"
+     "^\\s-*\\(private\\|public\\|global\\)*\\s-*\\(const\\s-+\\)\\(\\(?:\\sw\\|\\s_\\)+\\>\\s-*=\\s-*.+\\)$\\|'"
      3)
     ("Variables"
-     "^\\(private\\|public\\|global\\|dim\\)+\\s-+\\(\\sw+\\>\\s-+as\\s-+\\sw+\\>\\)"
+     "^\\(private\\|public\\|global\\|dim\\)+\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\s-+as\\s-+\\(?:\\sw\\|\\s_\\)+\\>\\)"
      2)
-    ("Types" "^\\(public\\s-+\\)*type\\s-+\\(\\sw+\\)" 2)))
+    ("Types" "^\\(public\\s-+\\)*type\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\)" 2)))
 
 
 
@@ -245,6 +247,7 @@
   (modify-syntax-entry ?\' "\<" visual-basic-mode-syntax-table) ; Comment starter
   (modify-syntax-entry ?\n ">" visual-basic-mode-syntax-table)
   (modify-syntax-entry ?\\ "w" visual-basic-mode-syntax-table)
+  (modify-syntax-entry ?_ "_" visual-basic-mode-syntax-table)
   (modify-syntax-entry ?\= "." visual-basic-mode-syntax-table)
   (modify-syntax-entry ?\< "." visual-basic-mode-syntax-table)
   (modify-syntax-entry ?\> "." visual-basic-mode-syntax-table)) ; Make =, etc., punctuation so that dynamic abbreviations work properly
@@ -457,8 +460,9 @@ Commands:
   (setq local-abbrev-table visual-basic-mode-abbrev-table)
   (if visual-basic-capitalize-keywords-p
       (progn
-        (make-local-variable 'pre-abbrev-expand-hook)
-        (add-hook 'pre-abbrev-expand-hook 'visual-basic-pre-abbrev-expand-hook)
+        ;;(make-local-variable 'pre-abbrev-expand-hook)
+        ;;(add-hook 'pre-abbrev-expand-hook 'visual-basic-pre-abbrev-expand-hook)
+        (add-hook 'abbrev-expand-functions 'visual-basic-abbrev-expand-function nil t)
         (abbrev-mode 1)))
 
   (make-local-variable 'comment-start)
@@ -565,11 +569,13 @@ Commands:
            (null (nth 4 list))))))      ; inside comment
 
 
-(defun visual-basic-pre-abbrev-expand-hook ()
+;;(defun visual-basic-pre-abbrev-expand-hook ()
+(defun visual-basic-abbrev-expand-function (expand-fun)
   ;; Allow our abbrevs only in a code context.
   (setq local-abbrev-table
         (if (visual-basic-in-code-context-p)
-            visual-basic-mode-abbrev-table)))
+            visual-basic-mode-abbrev-table))
+  (call expand-fun))
 
 
 (defun visual-basic-newline-and-indent (&optional count)
@@ -1245,7 +1251,7 @@ Interting an item means:
 		;; from beginning until cur-point is past
 		(while
 		    (if
-			(looking-at "\\(\\s-*\\)\\sw+\\s-*"); some symbol
+			(looking-at "\\(\\s-*\\)\\(?:\\sw\\|\\s_\\)+\\s-*"); some symbol
 			(if (>  (setq tentative-split-point (match-end 0)) cur-point)
 			    (progn
 			      (setq item-case (if (>= cur-point (match-end 1)) 
@@ -1269,7 +1275,7 @@ Interting an item means:
 				      (looking-at visual-basic-looked-at-continuation-regexp) ))
 			      (goto-char (setq tentative-split-point (match-end 0))))
 			    (when loop-again
-			      (when (looking-at "As\\s-+\\sw+\\s-*")
+			      (when (looking-at "As\\s-+\\(?:\\sw\\|\\s_\\)+\\s-*")
 				(setq item-case 'dim-split-after)
 				(goto-char (setq tentative-split-point (match-end 0))))
 			      (when (looking-at visual-basic-looked-at-continuation-regexp)

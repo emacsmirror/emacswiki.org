@@ -21,12 +21,14 @@ cycling when at the end.
 
 ==Download==
 
-Css-color.el is now part of [NxhtmlMode nXhtml].
-It has no dependencies of nXhtml. (It had before, but that was a mistake.)
+Css-color.el as distributed with [NxhtmlMode nXhtml].
+
 
 == CSS Color sans nXhtml ==
 
-* Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without the NxhtmlMode dependencies. This library is required for use with Lisp:mon-rename-image-utils.el if/when nXhtml's and it's css-color.el is not provided/required/desired.
+* Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without the NxhtmlMode dependencies and without the need to download the entire nXhtml package. This library is required for use with Lisp:mon-rename-image-utils.el if/when nXhtml's and it's css-color.el is not provided/required/desired.
 
 [new]
-You may want to use the latest version that comes with nXhtml instead. You can grab it directly from the repositories using the web interface.
+You may want to use the latest version that comes with nXhtml instead. You can grab it directly from the repositories using the web interface. It has no dependencies of nXhtml. (It had before, but that was a mistake.)
+[new]
+One can use the the version of Css-color.el distributed with nXhtml only _IF_ it can be found. Where is the link to css-color.el distributed with nXhtml without the entire nXhtml package tree, bzr checkout etc. Without provision of a link for  _just_ css-color.el users are still required to download all of nXhtml and then extract the relevant library. --[[mon_key]]

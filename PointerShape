@@ -9,7 +9,7 @@ KaiGrossjohann:
 Setting the mouse-color is believed to be necessary to "refresh" the
 pointer shape.
 
-All the shapes are predefined by X in CVS:term/x-win.el.
+All the shapes are predefined by X in GIT:term/x-win.el.
 
 If you are trying to make the mouse unobtrusive, MouseAvoidance can
 move the mouse out of your way.

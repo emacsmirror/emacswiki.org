@@ -10,7 +10,7 @@ ibuffer是BufferMenu的高级替代品。作者 ColinWalters 。现由 JohnPaulW
 
 == Emacs 22开始就自带ibuffer
 
-没有这个包的自行下载 CVS:ibuffer.el 。
+没有这个包的自行下载 GIT:ibuffer.el 。
 
 == 如何使用ibuffer
 

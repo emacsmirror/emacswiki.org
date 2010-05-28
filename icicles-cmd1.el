@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May 26 10:20:14 2010 (-0700)
+;; Last-Updated: Thu May 27 14:51:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21027
+;;     Update #: 21029
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5773,13 +5773,14 @@ a while)..." dir)))
 (defun icicle-cd-for-loc-files (dir)
   "Change `default-directory' during `icicle-locate-file'."
   (interactive
-   ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
-   (let ((minibuffer-completion-predicate  minibuffer-completion-predicate))
-     (list (funcall (if (fboundp 'read-directory-name)
-                        #'read-directory-name
-                      #'read-file-name)
-                    "Change default directory: " nil nil
-                    (and (member cd-path '(nil ("./"))) (null (getenv "CDPATH")))))))
+   (save-selected-window
+     ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
+     (let ((minibuffer-completion-predicate  minibuffer-completion-predicate))
+       (list (funcall (if (fboundp 'read-directory-name)
+                          #'read-directory-name
+                        #'read-file-name)
+                      "Change default directory: " nil nil
+                      (and (member cd-path '(nil ("./"))) (null (getenv "CDPATH"))))))))
   (cd dir)
   (let* ((icicle-abs-file-candidates  (icicle-files-within
                                        (directory-files dir 'full icicle-re-no-dot) nil))

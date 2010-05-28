@@ -57,7 +57,7 @@ Various Elisp source code and contributions.
 * RotateText -- Rewrote implementation of swapping between words at point.
 * RotateWordCapitalization -- Swapping words at point.
 * DeletingSyntax -- Refactored `M-x kill-syntax' and `M-x kill-syntax-backward' proposals.
-* ThingAtPoint -- Example code that explains how to use CVS:thingatpt.el.
+* ThingAtPoint -- Example code that explains how to use GIT:thingatpt.el.
 * WikiRel -- Visit relevant pages on Emacs Wiki based on the current mode.
 
 == Comments ==

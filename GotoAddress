@@ -2,7 +2,7 @@ The command `M-x goto-address' is a builtin Emacs feature to highlight all URLs 
 
 See Manual:goto-address
 
-The library is maintained at CVS:goto-addr.el
+The library is maintained at GIT:goto-addr.el
 
 This mode will be renamed `goto-address-mode' in Emacs 23.
 

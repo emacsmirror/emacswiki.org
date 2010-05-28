@@ -76,3 +76,5 @@ the (kbd) call in the buffer. handy for executing after (local-set-key _here_
   (insert (format-kbd-macro (read-key-sequence "Key? " nil t)))
   (insert "\")"))
 </pre>
+----
+CategoryHomepage

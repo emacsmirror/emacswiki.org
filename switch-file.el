@@ -1,12 +1,12 @@
 ;;; switch-file.el --- switch from one file to another.
 
-;; Copyright (C) 2008 Vinicius Jose Latorre
+;; Copyright (C) 2008, 2009, 2010 Vinicius Jose Latorre
 
 ;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Keywords:	convenience
-;; Time-stamp:	<2008/04/11 00:12:45 vinicius>
-;; Version:	0.1
+;; Time-stamp:	<2010/05/27 23:23:17 vinicius>
+;; Version:	0.2
 ;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
@@ -123,6 +123,8 @@
 ;; Acknowledgments
 ;; ---------------
 ;;
+;; Thanks to SeungcheolJung (EmacsWiki) for code correction.
+;;
 ;; Thanks to Arndt Gulbrandsen (QtMode EmacsWiki) for very first
 ;; version.
 ;;
@@ -217,7 +219,7 @@ EXTENSION is a string used for changing the file name extension."
                                (file-name-extension buffer-file-name))
                               tmp)
                           (dolist (ext extension-list)
-                            (unless (string-match suffix (car ext))
+                            (unless (string-match (car ext) suffix)
                               (setq tmp (cons (cdr ext) tmp))))
                           (nreverse tmp)))
 	     slist dlist full-file-name found)

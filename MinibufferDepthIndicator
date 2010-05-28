@@ -2,17 +2,14 @@ Library ##mb-depth.el## provides an indicator in the [[minibuffer]] of the curre
 
   (minibuffer-depth-indicate-mode 99)
 
-Starting with Emacs 23, ##mb-depth.el## is included as part of GnuEmacs. It also works with Emacs 22, however. You can download it separately from CVSEmacs here:
+Starting with Emacs 23, ##mb-depth.el## is included as part of GnuEmacs. It also works with Emacs 22, however. You can download it separately from Emacs's sources at:
 
-http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/mb-depth.el
-
+* GIT:mb-depth.el
 
 Library <tt>[[mb-depth+.el]]</tt> enhances ##mb-depth.el## by letting you customize the depth indicator and its face (they are hard-coded in ##mb-depth.el##).
 
 
 ----
-CategoryCompletion
-CategoryHelp
-CategoryAccessibility
-CategoryCustomize
+CategoryCommands
+CategoryDotEmacs
 CategoryModes

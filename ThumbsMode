@@ -10,7 +10,7 @@ Use the 'convert' program from <nowiki>ImageMagick</nowiki> [http://www.imagemag
 * Set your desktop wallpaper (via the xloadimage program)
 * You can use ThumbsMode to post to [http://www.flickr.com/ flickr]; see FlickrClient.
 
-The thumbs page at Savannah at: http://savannah.nongnu.org/projects/thumbs/ will no longer be maintained as CVS:thumbs.el will be part of emacs.
+The thumbs page at Savannah at: http://savannah.nongnu.org/projects/thumbs/ will no longer be maintained as GIT:thumbs.el will be part of emacs.
 
 The more recent version can be found on the ElispArea as Lisp:thumbs.el
 

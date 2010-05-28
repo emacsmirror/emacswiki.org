@@ -1,1 +1,11 @@
-2009-12-27: GNU Emacs has now switched from CVS to Bazaar. Please see BzrForEmacsDevs for more.
+On 2009-12-27, GNU Emacs switched from using [[CVS]] to Bazaar.
+
+* BzrForEmacsDevs gives full instructions for Emacs hackers.
+* BzrForEmacsCasualDevs gives a quick start for other Emacs users.
+
+See also EmacsDevelopmentSources, EmacsBzrFeatures.
+
+----
+CategoryBuilding
+CategoryWishList
+

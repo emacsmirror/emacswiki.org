@@ -15,7 +15,7 @@ If you want to chat about rcirc, the place is <tt>#rcirc</tt> on freenode.
 
 If you are running Emacs 22, you already have it.  Skip this section.
 
-To check out rcirc.el from EmacsFromCVS: CVS:net/rcirc.el.
+To check out rcirc.el from EmacsFromCVS: GIT:net/rcirc.el.
 
 New versions of rcirc do not work in Emacs 21. You can get the last version of rcirc working in Emacs 21 here: Lisp:rcirc.el.
 

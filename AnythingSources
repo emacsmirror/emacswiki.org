@@ -821,7 +821,7 @@ This source don't work for me so i redefine it:
 -- ThierryVolpiatto
 
 == project-root.el files ==
-For use with [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]. This hack also requires [http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/lisp/find-cmd.el?root=emacs find-cmd.el] which comes with emacs 23 and also originates from shellarchive. If you would rather not use `find-to-string' then just add the find arguments as you might on the command line. - [[PhilJackson]]
+For use with [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]. This hack also requires GIT:find-cmd.el which comes with emacs 23 and also originates from shellarchive. If you would rather not use `find-to-string' then just add the find arguments as you might on the command line. - [[PhilJackson]]
 
 <pre>
 (defun anything-project-root-find-files (pattern)
