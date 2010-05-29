@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu May 27 14:51:11 2010 (-0700)
+;; Last-Updated: Fri May 28 15:51:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21029
+;;     Update #: 21041
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5516,13 +5516,15 @@ option `icicle-require-match-flag'."    ; Doc string
                                                      (error "No recently accessed files"))
                                                    recentf-list))
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg
                                                  '((1 (face icicle-candidate-part)))))
-    (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))))
+    (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))
+    (icicle-all-candidates-list-alt-action-fn ; M-|'
+     (lambda (files) (let ((enable-recursive-minibuffers  t))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion
+                                                         files))))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -5558,13 +5560,15 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
                                                      (error "No recently accessed files"))
                                                    recentf-list))
     (icicle-candidate-alt-action-fn         'icicle-remove-from-recentf-candidate-action)
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
     (icicle-use-candidates-only-once-alt-p  t)
     (icicle-candidate-properties-alist      (and current-prefix-arg
                                                  '((1 (face icicle-candidate-part)))))
-    (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))))
+    (icicle-list-use-nth-parts              (and current-prefix-arg '(1)))
+    (icicle-all-candidates-list-alt-action-fn ; M-|'
+     (lambda (files) (let ((enable-recursive-minibuffers  t))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion
+                                                         files))))))))
   (progn                                ; First code
     (when current-prefix-arg (put-text-property 0 1 'icicle-fancy-candidates t prompt))
     (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
@@ -5680,14 +5684,16 @@ option `icicle-require-match-flag'."    ; Doc string
 a while)..." dir)))
     (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
                                                                               icicle-re-no-dot) nil))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
     (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '(1)))))
+                                             '(1)))
+    (icicle-all-candidates-list-alt-action-fn ; M-|'
+     (lambda (files) (let ((enable-recursive-minibuffers  t))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion
+                                                         files))))))))
   (progn                                ; First code
     (when (<= (prefix-numeric-value current-prefix-arg) 0)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))
@@ -5737,14 +5743,16 @@ a while)..." dir)))
 a while)..." dir)))
     (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
                                                                               icicle-re-no-dot) nil))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ") files)))))
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
     (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '(1)))))
+                                             '(1)))
+    (icicle-all-candidates-list-alt-action-fn ; M-|'
+     (lambda (files) (let ((enable-recursive-minibuffers  t))
+                       (dired-other-window (cons (read-string "Dired buffer name: ")
+                                                 (mapcar #'icicle-transform-multi-completion
+                                                         files))))))))
   (progn                                ; First code
     (when (<= (prefix-numeric-value current-prefix-arg) 0)
       (put-text-property 0 1 'icicle-fancy-candidates t prompt))

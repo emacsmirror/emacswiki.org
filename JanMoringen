@@ -60,7 +60,7 @@ Regarding `debug-on-error': Did you try to call it as a function via M-x? You ha
 
 Good luck.
 --JanMoringen
-----
+
 [new]
 Okay... I got this sorted out. It wasn't rudel at all, actually. It was sepia. Apparently there's some issue with sepia in Ubuntu Lucid/emacs23. Once I removed sepia and let dpkg reconfigure the debian version of emacs23, then hand reinstalled rudel, it works. We're back in business! 
 

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 309 $  
+;; RCS Version: $Rev: 311 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -146,7 +146,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 309 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 311 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -748,7 +748,8 @@ automatically:
 
 (defun sr-viewer-window ()
   "Return an active window that can be used as the viewer."
-  (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+  (if (or (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
+          (memq (current-buffer) (list sr-left-buffer sr-right-buffer)))
       (let ((current-window (selected-window)) (target-window))
         (dotimes (times 2)
           (setq current-window (next-window current-window))
@@ -1057,7 +1058,7 @@ automatically:
         (if (eq start (current-buffer)) (setq start nil)))))
 
   ;;now create the viewer window
-  (unless sr-panes-height
+  (unless (and sr-panes-height (< sr-panes-height (frame-height)))
     (setq sr-panes-height (sr-get-panes-size)))
   (if (and (<= sr-panes-height (* 2 window-min-height))
            (equal sr-window-split-style 'vertical))
@@ -2416,7 +2417,7 @@ indir/d => to-dir/d using clone-op to clone all files."
 
 (defun sr-overlapping-paths-p (dir1 dir2)
   "Determines whether the directory dir2 is located inside the directory dir1."
-  (setq dir1 (expand-file-name (concat dir1 "/"))
+  (setq dir1 (expand-file-name (file-name-as-directory dir1))
         dir2 (expand-file-name dir2))
   (if (>= (length dir2) (length dir1))
       (equal (substring dir2 0 (length dir1)) dir1)

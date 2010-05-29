@@ -32,6 +32,7 @@ redirect you to a more specific list if they considered necessary.
 
 == Other Lists ==
 
+; [::info-gnu-emacs]: Emacs announcements. [http://lists.gnu.org/mailman/listinfo/info-gnu-emacs List information], [http://lists.gnu.org/archive/html/emacs-devel/ Archive]
 ; [::gnu-emacs-sources], mailto:gnu-emacs-source@gnu.org: Emacs source code posts only. [http://lists.gnu.org/mailman/listinfo/gnu-emacs-sources List information]
 (also one of the EmacsNewsgroups).
 ; [::debian-emacsen], mailto:debian-emacsen@lists.debian.org: Support and developer discussion on Emacs related packages for Debian GNU/Linux. [http://lists.debian.org/debian-emacsen/ List information]

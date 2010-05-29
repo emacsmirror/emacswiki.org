@@ -2,9 +2,12 @@ Inspired by zap-to-char, this library defines different routines operating on th
 
 For example, META-s (jump-to-char-forward) highlights the next occurrences of each character and prompts for one.  Once the user picks a char, the point is moved to that position.  Subsequent invocations of META-s before picking a character increases N, that is, the second, third, etc. occurrences are highlighted and targeted.
 
+The sprint-forward/backward commands apply iterative jumping until return/C-G is hit, making it possible to reach any point of the text with just a few keystrokes.
+
 To use it, simply put Lisp:fastnav.el under <tt>~/.emacs.d/</tt>, and add something like this to your emacs initialization file:
 
     (require 'fastnav)
+
     (global-set-key "\M-z" 'zap-up-to-char-forward)
     (global-set-key "\M-Z" 'zap-up-to-char-backward)
     (global-set-key "\M-s" 'jump-to-char-forward)
@@ -19,6 +22,9 @@ To use it, simply put Lisp:fastnav.el under <tt>~/.emacs.d/</tt>, and add someth
     (global-set-key "\M-K" 'delete-char-backward)
     (global-set-key "\M-m" 'mark-to-char-forward)
     (global-set-key "\M-M" 'mark-to-char-backward)
+
+    (global-set-key "\M-p" 'sprint-forward)
+    (global-set-key "\M-P" 'sprint-backward)
 
 Below is an screenshot showing how the first occurences of each character are highlighted:
 

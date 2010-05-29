@@ -1,6 +1,19 @@
+Support for VMS was removed in Emacs 23.  It was announced to [[info-gnu-emacs]].
+
+* http://lists.gnu.org/archive/html/info-gnu-emacs/2007-11/msg00000.html
+
+Allegedly, Emacs 21 builds are available from the "Freeware CD".
+
+* http://www.openvms.compaq.com/openvms/freeware/
+
+An Emacs cheat sheet for VMS EVE users is at:
+
+* http://www.unh.edu/cis/docs/vms-to-unix/Emacs/cheat-sheet.html
+
+[new]
 I'm currently porting GNU Emacs 21.2 to OpenVMS 7.3-1, and
 summarizing progress in this space.  When the work is done,
-only build tips will remain.  --ttn
+only build tips will remain.  --[[ttn]]
 
 ; Current status: Rather than make everyone wait while I puzzle
 out the copyright status of old VMS-specific files, I've decided to
@@ -39,6 +52,9 @@ maintenance efforts becomes desirable.
 in the distribution directory that can be used to perform the first
 half of the bootstrap relatively painlessly (on unixoid hosts).  Observant
 readers will notice a workaround for a methodology bug in the script.
+* (2008-07-24) There is a discussion on [[emacs-devel]] that suggests
+maintenance of the port will not be resurrected.
+** http://lists.gnu.org/archive/html/emacs-devel/2008-07/msg00857.html
 
 ----
 Field Reports

@@ -1,0 +1,48 @@
+Clojure ships with a macro that threads the first expression through the rest.  It's called the threading operator and sometimes thrush operator.  For some people, especially people with no background in Lisps, this may improve readability.  It is quite common in Clojure but not seen in other Lisps so far.
+
+== Usage in Clojure ==
+
+The ''thrush'' or ''threading'' operators of [[ClojureMode|Clojure]], ##->>## and ##->##, let one chain functions together. For example,
+
+    (->> (seq accounts)
+         (filter #(= (:type %) 'savings))
+         (map :balance)
+         (apply +))
+
+expands to
+
+    (apply +
+      (map :balance
+        (filter #(= (:type %) 'savings)
+          (seq accounts))))
+
+It's analogous to the [http://en.wikipedia.org/wiki/Pipeline_%28Unix%29 Unix pipeline] operator.
+
+== EmacsLisp Implementation ==
+
+The following macros implement the threading operators in Emacs Lisp.
+
+    (defmacro ->> (&rest body)
+      (let ((result (pop body)))
+        (dolist (form body result)
+          (setq result (append form (list result))))))
+
+    (defmacro -> (&rest body)
+      (let ((result (pop body)))
+        (dolist (form body result)
+          (setq result (append (list (car form) result)
+                               (cdr form))))))
+
+== External links ==
+
+* [http://debasishg.blogspot.com/2010/04/thrush-in-clojure.html Thrush in Clojure]
+* [http://richhickey.github.com/clojure/clojure.core-api.html#clojure.core/-%3E%3E API doc for -->]
+* [http://richhickey.github.com/clojure/clojure.core-api.html#clojure.core/-%3E API doc for ->]
+
+== Discussion ==
+
+Please note, that several people at the EmacsWiki disagree that such functions from other lisps belong here. At least unless they come packaged as a nice library, like cl.el.
+
+----
+CategoryCode
+ 

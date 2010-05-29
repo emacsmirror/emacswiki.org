@@ -1,1 +1,3 @@
+A [[Mercurial]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available.
+
  hg clone http://hg.intevation.org/emacs

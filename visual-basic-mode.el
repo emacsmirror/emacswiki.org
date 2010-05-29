@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.9.b (2010-05-19)
-;; Serial Version: %Id: 21%
+;; Serial Version: %Id: 22%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -378,8 +378,8 @@
     "Double" "Dynaset" "EOF" "Each" "Else" "Empty" "End" "EndProperty"
     "Enum" "Environ" "Erase" "Err" "Error" "Exit" "Exp" "Explicit" "FV" "False" "Field"
     "Fields" "FileAttr" "FileCopy" "FileDateTime" "FileLen" "Fix" "Font" "For"
-    "Form" "FormTemplate" "Format" "Forms" "FreeFile" "FreeLocks" "Friend"
-    "Function"
+    "Form" "FormTemplate" "Format" "FormatCurrency" "FormatDateTime" "FormatNumber" 
+    "FormatPercent" "Forms" "FreeFile" "FreeLocks" "Friend" "Function"
     "Get" "GetAllSettings" "GetAttr" "GetObject" "GetSetting" "Global" "GoSub"
     "GoTo" "Group" "Groups" "Hex" "Hour" "IIf" "IMEStatus" "IPmt" "IRR"
     "If" "Implements" "InStr" "Input" "Int" "Integer" "Is" "IsArray" "IsDate"
@@ -575,7 +575,7 @@ Commands:
   (setq local-abbrev-table
         (if (visual-basic-in-code-context-p)
             visual-basic-mode-abbrev-table))
-  (call expand-fun))
+  (funcall expand-fun))
 
 
 (defun visual-basic-newline-and-indent (&optional count)

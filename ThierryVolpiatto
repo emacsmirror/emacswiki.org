@@ -4,47 +4,43 @@ My nickname on IRC is thiedlec.
 
 I am one of the maintainers of 
 
-* Lisp:anything-config.el
+* [http://repo.or.cz/w/anything-config.git anything-config.el]
 
 Here are some elisp codes i wrote:
 
-* Lisp:warn-mail.el Warn you when you have a new mail in your mail directory
-
-* Lisp:thumb-page.el To create a muse page with thumbs from a picture directory
+* [http://mercurial.intuxication.org/hg/ioccur ioccur] Incremental occur.
 
 * [http://mercurial.intuxication.org/hg/traverselisp traverselisp] Look at TraverseDirectory for more info.
 
-* [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions.el]: Extensions for standard Emacs bookmarks.
-  Use hg clone http://mercurial.intuxication.org/hg/emacs-bookmark-extension
+* [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions.el] BookmarkExtension for standard Emacs bookmarks.
 
-  See BookmarkExtension
+* [http://mercurial.intuxication.org/hg/traverselisp anything-traverse.el] Anything interface for some functionalities of traverse.
 
-* Lisp:anything-traverse.el Anything interface for some functionalities of traverse.
+* [http://mercurial.intuxication.org/hg/anything-delicious anything-delicious.el] Anything interface to delicious bookmarks.
 
-* Lisp:anything-delicious.el Anything interface to delicious bookmarks.
+* [http://mercurial.intuxication.org/hg/anything-mercurial anything-mercurial.el] Anything interface to mercurial qpatchs with DistributedVersionControl (DVC)
 
-* Lisp:anything-mercurial.el Anything interface to mercurial qpatchs with DistributedVersionControl (DVC)
+* [http://mercurial.intuxication.org/hg/anythingipython anything-ipython.el] Anything interface to ipython completion. See PythonMode.
 
-* Lisp:anything-ipython.el Anything interface to ipython completion. See PythonMode.
-
-* Lisp:eiv.el Emacs-Image-Viewer - A small image viewer that allow simples manipulations.
+* [http://mercurial.intuxication.org/hg/emacs-image-viewer Emacs-Image-Viewer] - A small image viewer that allow simples manipulations.
 
 Browse Gentoo packages in Emacs with Anything (Include in Lisp:anything-config.el)
 
 Screenshot: http://farm4.static.flickr.com/3458/3403904091_3d27229f6b.jpg
 
-* Lisp:xml-weather.el Import xml-weather info in an emacs buffer or with a rolling message in minibuffer.
+* [http://mercurial.intuxication.org/hg/xml-weather xml-weather.el] Import xml-weather info in an emacs buffer or with a rolling message in minibuffer.
 
 Screenshot: http://farm3.static.flickr.com/2480/3806776285_223ab2281c.jpg
 
-* Lisp:iterator.el Now part of traverselisp.
+* Lisp:iterator.el iterators for emacs.
+
+* Lisp:warn-mail.el Warn you when you have a new mail in your mail directory
+
+* Lisp:thumb-page.el To create a muse page with thumbs from a picture directory
  
 My config files:
 
-* Lisp:eev-thierry.el Some facilities to use eev hyperlinks.
-
-* Lisp:dvc-init.el My DVC config.
-
+* [http://mercurial.intuxication.org/hg/emacs-utils Diverse Emacs utilities]
 
 Contact: thierry dot volpiatto from gmail dot com
 

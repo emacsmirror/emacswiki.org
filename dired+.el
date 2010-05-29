@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Mar 20 07:33:12 2010 (-0700)
+;; Last-Updated: Fri May 28 09:56:54 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2377
+;;     Update #: 2386
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -179,6 +179,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/05/28 dadams
+;;     Changed menu item for dired-create-directory to New Directory.  Moved it before Up Dir.
 ;; 2010/03/19 dadams
 ;;     diredp-font-lock-keywords-1: Handle date+time wrt regexp changes for Emacs 23.2.
 ;; 2010/01/31 dadams
@@ -1134,10 +1136,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
   (define-key diredp-menu-bar-subdir-menu [compare-directories]
     '(menu-item "Compare Directories..." dired-compare-directories
       :help "Mark files with different attributes in two Dired buffers")))
-(define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
-  '(menu-item "Create Directory..." dired-create-directory :help "Create a directory"))
 (define-key diredp-menu-bar-subdir-menu [up]
   '(menu-item "Up Directory" dired-up-directory :help "Dired the parent directory"))
+(define-key diredp-menu-bar-subdir-menu [create-directory] ; Moved from "Immediate".
+  '(menu-item "New Directory..." dired-create-directory :help "Create a directory"))
 (define-key diredp-menu-bar-subdir-menu [separator-dired-on-set] '("--"))
 (define-key diredp-menu-bar-subdir-menu [diredp-fileset]
   '(menu-item "Dired Fileset..." diredp-fileset

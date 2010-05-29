@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Tue May 25 07:09:08 2010 (-0700)
+;; Last-Updated: Fri May 28 10:12:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3312
+;;     Update #: 3335
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -37,8 +37,12 @@
 ;;  Functions defined here:
 ;;
 ;;    `describe-menubar', `fill-paragraph-ala-mode',
+;;    `menu-bar-create-directory', `menu-bar-next-tag-other-window',
+;;    `menu-bar-word-search-backward', `menu-bar-word-search-forward',
+;;    `nonincremental-repeat-search-backward',
+;;    `nonincremental-repeat-search-forward'
 ;;    `nonincremental-repeat-word-search-backward',
-;;    `nonincremental-repeat-word-search-forward'
+;;    `nonincremental-repeat-word-search-forward'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -60,10 +64,10 @@
 ;;
 ;;  `kill-this-buffer' -        Deletes buffer's windows as well, if
 ;;                              `sub-kill-buffer-and-its-windows'.
+;;  `menu-bar-options-save' - Added options are saved (>= Emacs 21).
+;;
 ;;  `menu-bar-select-buffer' -  1. Uses -other-frame.
 ;;                              2. defun -> defsubst.
-;;
-;;  `menu-bar-options-save' - Added options are saved (>= Emacs 21).
 ;;
 ;;  `menu-bar-select-frame' - Use Emacs 22 version for Emacs 20.
 ;;
@@ -85,6 +89,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/05/28 dadams
+;;     Added items new-file and new-directory.  Added function menu-bar-create-directory.
 ;; 2010/05/25 dadams
 ;;     Added to Frames menu: max-frame, maximize-frame-(horizontally|vertically).
 ;; 2010/01/12 dadams
@@ -589,6 +595,28 @@ submenu of the \"Help\" menu."))
       :help "Read a directory; operate on its files (Dired)"
       :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
 
+(define-key menu-bar-file-menu [new-file] ; Add for Emacs < 22.  Rename item otherwise.
+  '(menu-item "New File..." find-file
+    :enable (or (not (fboundp 'menu-bar-non-minibuffer-window-p))
+             (menu-bar-non-minibuffer-window-p))
+    :help "Create and edit a new file"))
+
+(defun menu-bar-create-directory (directory)
+  "Create a subdirectory of `default-directory' called DIRECTORY."
+  (interactive (list (read-file-name "Create directory: ")))
+  (let ((dir  (directory-file-name (expand-file-name directory))))
+    (make-directory dir)
+    (message "Created `%s'" dir)))
+
+(define-key-after menu-bar-file-menu [new-directory]
+  '(menu-item "New Directory..." menu-bar-create-directory
+    :enable (or (not (fboundp 'menu-bar-non-minibuffer-window-p))
+             (menu-bar-non-minibuffer-window-p))
+    :help "Create a directory")
+  'new-file)
+
+(define-key-after menu-bar-file-menu [separator-new] '("--") 'new-directory)
+
 (define-key-after menu-bar-file-menu [exec-cmd]
   '(menu-item "Execute Command" execute-extended-command
     :help "Prompts for a command to execute") 'separator-exit)
@@ -596,8 +624,7 @@ submenu of the \"Help\" menu."))
   '(menu-item "Repeat Earlier Command" repeat-complex-command
     :help "Edit and re-evaluate last complex command") 'exec-cmd)
 
-(define-key-after menu-bar-file-menu [separator-execute]
-  '("--") 'repeat-cmd)
+(define-key-after menu-bar-file-menu [separator-execute] '("--") 'repeat-cmd)
 (define-key-after menu-bar-file-menu [exit-emacs]
   '(menu-item "Exit Emacs" save-buffers-kill-emacs
     :help "Save unsaved buffers, then exit") 'separator-execute)

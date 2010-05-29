@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu May 27 14:54:42 2010 (-0700)
+;; Last-Updated: Fri May 28 15:56:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5339
+;;     Update #: 5345
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,8 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/28 dadams
+;;     icicle-(recent|locate)-file(-other-window), 
+;;       Use *-transform-multi-completion in *-all-candidates-list-alt-action-fn.  Thx to M. Heerdegen.
 ;; 2010/05/27 dadams
-;;    icicle-cd-for-loc-files: Wrap interactive spec in save-selected-window.  Thx to M. Heerdegen.
+;;     icicle-cd-for-loc-files: Wrap interactive spec in save-selected-window.  Thx to M. Heerdegen.
 ;; 2010/05/26 dadams
 ;;     icicle-bookmark-set: Removed pseudo-default.  Thx to Michael Heerdegen.
 ;; 2010/05/24 dadams
