@@ -2,6 +2,98 @@ ibus.el is IBus client for GNU Emacs.
 
 ibus.el provides ibus-mode minor mode, which allows users on-the-spot style input with IBus on Emacs. The input statuses are individually kept for each buffer, and prefix-keys such as C-x and C-c can be used even if IBus is active. So you can input various languages fast and comfortably.
 
-**Coming soon!**
+::: [[image:IBusModeScreenShot]]
 
-Developing: [https://launchpad.net/ibus.el ibus.el project in Launchpad]
+== System requirements ==
+
+: emacs22 or emacs23
+: python (>= 2.5)
+: ibus (>= 1.2)
+: python-xlib
+
+== Downloading ==
+
+: You can download ##ibus.el## from [https://launchpad.net/ibus.el ibus.el project in Launchpad]
+
+: If you use Ubuntu Linux, you can install ##ibus-el## package from [https://launchpad.net/~irie/+archive/elisp PPA for Irie's Elisp]
+
+== Installation ==
+
+=== Manual Installation ===
+
+: Save ##ibus.el## and byte-compile in a directory that is listed in load-path, and save ##ibus-el-agent## somewhere in your system.
+
+: Put the following in your .emacs file:
+
+        (require 'ibus)
+        (add-hook 'after-init-hook 'ibus-mode-on)
+
+: If ##ibus.el## and ##ibus-el-agent## are saved in different directories, add a setting to the above as follows:
+
+        (setq ibus-agent-file-name "/PATH/TO/ibus-el-agent")
+
+=== Using deb package in PPA ===
+
+: Add ##ppa:irie/elisp## to software sources:
+
+        sudo add-apt-repository ppa:irie/elisp
+
+: and install ##ibus-el## package:
+
+        sudo apt-get install ibus-el
+
+: Put the following in your .emacs file:
+
+        (require 'ibus)
+        (add-hook 'after-init-hook 'ibus-mode-on)
+
+== Disabling XIM ==
+
+: If XIM is enabled, key events are directly handled by IBus so ##ibus.el## can't work.
+: To disable XIM in Emacs, put the following in ##~/.Xresources## file:
+
+        Emacs*useXIM: false
+
+: and restart X session or execute a shell command:
+
+        xrdb ~/.Xresources
+
+== Customize ==
+
+: Here is the example of ##.emacs## file:
+
+        (require 'ibus)
+        ;; Turn on ibus-mode automatically after loading .emacs
+        (add-hook 'after-init-hook 'ibus-mode-on)
+        ;; Use C-SPC for Set Mark command
+        (ibus-define-common-key ?\C-\s nil)
+        ;; Use C-/ for Undo command
+        (ibus-define-common-key ?\C-/ nil)
+        ;; Change cursor color depending on IBus status
+        (setq ibus-cursor-color '("red" "blue" "limegreen"))
+
+: You can customize keybinding which toggles input status:
+
+        ;; Use s-SPC to toggle input status
+        (global-set-key (kbd "s-SPC") 'ibus-toggle)
+
+=== Using ibus-anthy ===
+
+: To toggle half-width eisu mode by C-j, add the following to .emacs:
+
+        (ibus-define-common-key ?\C-j t)
+
+: To use kana input method with jp106 keyboard, you can enable kana onbiki (prolonged sound mark) key as follows:
+
+        (setq ibus-use-kana-onbiki-key t)
+
+: If you use thumb shift input method, you have to specify the simultaneous pressing time as:
+
+        (setq ibus-ibus-simultaneous-pressing-time 0.1)
+
+=== Using ibus-chewing ===
+
+: Please set input style to "in application window" in ibus-chewing's configuration dialog.
+
+------
+CategoryInternationalization

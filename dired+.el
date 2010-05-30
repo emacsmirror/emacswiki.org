@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri May 28 09:56:54 2010 (-0700)
+;; Last-Updated: Sat May 29 22:53:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2386
+;;     Update #: 2398
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -179,6 +179,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/05/29 dadams
+;;     diredp-bookmark: Use relative file name in bookmark name.
+;;     Removed defvar of directory-listing-before-filename-regexp.
 ;; 2010/05/28 dadams
 ;;     Changed menu item for dired-create-directory to New Directory.  Moved it before Up Dir.
 ;; 2010/03/19 dadams
@@ -402,8 +405,13 @@
   :type '(choice string (repeat string))
   :group 'dired :group 'diff)
 
-;;; This is needed in Emacs versions before Emacs 22
-(defvar directory-listing-before-filename-regexp dired-move-to-filename-regexp "")
+;;; $$$$$$ Starting with Emacs 22, *-move-to* is defvaraliased to *-listing-before*.
+;;; But `files+.el' defines *-listing-before*, so we define it here too.
+;;; (unless (> emacs-major-version 21)
+;;;   (defvar directory-listing-before-filename-regexp dired-move-to-filename-regexp
+;;;     "Regular expression to match up to the file name in a directory listing.
+;;; The default value is designed to recognize dates and times
+;;; regardless of the language."))
 
  
 ;;; Macros
@@ -1548,7 +1556,7 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
                                    "\\)$")
    (and current-prefix-arg ?\040)))
 
-(defun diredp-do-bookmark (prefix &optional arg)
+(defun diredp-do-bookmark (prefix &optional arg) ; Bound to `M-b'
   "Bookmark the marked (or the next prefix ARG) files.
 Each bookmark name is PREFIX followed by the relative file name.
 Interactively, you are prompted for the PREFIX.
@@ -1564,7 +1572,7 @@ The bookmarked position is the beginning of the file."
   (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
                               (diredp-fewer-than-2-files-p arg)))
 
-(defun diredp-bookmark (prefix)         ; Bound to `M-b'
+(defun diredp-bookmark (prefix)
   "Bookmark the file or directory named on the current line.
 The bookmark name is PREFIX followed by the relative file name.
 Return nil for success, file name of unsuccessful operation otherwise."
@@ -1578,7 +1586,8 @@ Return nil for success, file name of unsuccessful operation otherwise."
                    (position . 0)
                    (front-context-string)
                    (rear-context-string)))))                   
-          (bookmark-store (concat prefix file) (cdr (bookmark-make-record)) nil))
+          (bookmark-store (concat prefix (file-name-nondirectory file))
+                          (cdr (bookmark-make-record)) nil))
       (error (setq failure  err)))
     (if (not failure)
 	nil                             ; Return nil for success.

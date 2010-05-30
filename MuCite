@@ -2,9 +2,15 @@ mu-cite.el is a powerful citation tool for (X)Emacs.
 
 Homepage: http://www.lab3.kuis.kyoto-u.ac.jp/~tsumura/emacs/mu-cite.html (Japanese) (broken link on 2008-Feb-18)
 
-Download: ftp://ftp.jpl.org/pub/elisp/mu/mu-cite-8.1.tar.gz
+Download: 
 
-mu-cite requires [[APEL]] 9.20 or later                                                                                                                                                                and [[FLIM]] 1.12.2 or later.
+ftp://ftp.jpl.org/pub/elisp/mu/mu-cite-8.1.tar.gz
+
+http://www.jpl.org/elips/mu/
+
+mu-cite 8.1 requires [[APEL]] 9.20 or later                                                                                                                                                                and [[FLIM]] 1.12.2 or later.
+
+mu-cite snapshot (14-May-2009) requires  [[APEL]] 10.7 or later and [[FLIM]] 1.12.2 or later.
 
 === Configuration ===
 

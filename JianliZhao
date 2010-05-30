@@ -1,0 +1,21 @@
+I use Emacs since 2009.08.  I use Emacs to read and write c/asm/elisp code. so I write some package for this purpose. 
+
+And my email is: jianlizhao1@gmail.com. 
+
+
+http://www.emacswiki.org/emacs/zjl-hl.el
+This package highlight things such as local variable, function call and bracket,  in C and ELISP. I think some people may like it.
+
+http://www.emacswiki.org/emacs/region-list-edit.el
+This file is used by my zjl-hl.el,  it can add/delete a region into/from a region list, such as '((4 . 7) (11 . 15) (17 . 17) (20 . 25))
+
+
+[new:DrewAdams:2010-05-30 08:12 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+----
+CategoryHomepage

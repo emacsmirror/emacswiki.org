@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 26 22:00:36 2010 (-0700)
+;; Last-Updated: Sun May 30 01:10:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12460
+;;     Update #: 12603
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -596,15 +596,17 @@
 ;;
 ;;  There are two ways to do this:
 ;;
-;;  * Create a bookmark for the `*Bookmark List*' buffer itself.
+;;  * Create a bookmark for the `*Bookmark List*' buffer itself: a
+;;    bookmark-list bookmark.
+;;
 ;;  * Define a command that restores the bookmark-list state.
 ;;
 ;;  When you use `C-x r m' (`bookmark-set') in buffer `*Bookmark
 ;;  List*' to create a bookmark, the current sort order, filter,
-;;  title, and omit list are saved as part of the bookmark.  (These
-;;  concepts are described below -
-;;  see (@> "Bookmark List (Display)").)  Jumping to such a bookmark
-;;  restores all of these.
+;;  regexp pattern, title, and omit list are saved as part of the
+;;  bookmark.  (These concepts are described below - see (@> "Bookmark
+;;  List (Display)").)  Jumping to such a bookmark restores all of
+;;  these.
 ;;
 ;;  Alternatively, you can define a command that does the same thing,
 ;;  but without creating another bookmark - use `c'
@@ -1024,8 +1026,8 @@
 ;;  don't see them in the bookmark list.  And that's the reason for
 ;;  this feature: to hide those bookmarks that you don't care to see.
 ;;
-;;  The most common use for this feature is to hide the component
-;;  bookmarks that make up a sequence bookmark (see
+;;  One use for this feature is to hide the component bookmarks that
+;;  make up a sequence bookmark (see
 ;;  (@> "Function, Sequence, and Variable-List Bookmarks")).  The
 ;;  default behavior when you create a sequence bookmark is in fact to
 ;;  omit its component bookmarks from the displayed list.
@@ -1156,15 +1158,50 @@
 ;;(@* "Cycling, Navigation List, Autonaming")
 ;;  ** "Cycling, Navigation List, Autonaming" **
 ;;
-;;  Using completion to jump to a bookmark is very handy.  It lets you
-;;  choose a bookmark by its name and gives you random (direct) access
-;;  to it.
+;;  Using completion to jump to a bookmark is handy.  It lets you
+;;  choose a bookmark by its name and gives you direct ("random")
+;;  access to it.
 ;;
-;;  Sometimes, however, you don't much care what a bookmark is called,
-;;  and you want to cycle quickly among a few related bookmarks.
-;;  Obviously, the smaller the number of bookmarks in the set, the
-;;  more convenient cycling is - with many bookmarks cycling can
-;;  become tedious.
+;;  Sometimes, however, you don't much care what a bookmark is named,
+;;  and you want to cycle quickly among relatively few, related
+;;  bookmarks.  Obviously, the smaller the number of bookmarks in the
+;;  set, the more convenient cycling is - with many bookmarks cycling
+;;  can become tedious.
+;;
+;;  An analogy: If your TV has lots of channels, then the channel
+;;  up/down buttons on the remote control are not so useful: 32, 33,
+;;  34, ..., 79!  Unless the channel you want happens to be near the
+;;  current channel, cycling around a huge ring of channels is not the
+;;  way to go.  And just because your TV receives lots of channels
+;;  does not mean that you watch them all or that you are equally
+;;  interested in them all.
+;;
+;;  Some TV remote controls have a feature that mitigates this
+;;  problem.  You can define a ring of favorite channels, and there
+;;  are two additional buttons that let you cycle forward and backward
+;;  around the ring, skipping the channels in between.  The number of
+;;  favorites is relatively small, so cycling is not tedious.  More
+;;  importantly, all of the channels in the ring are ones you are
+;;  interested in.
+;;
+;;  Extend this idea to allow for assigning different sets of channels
+;;  to the favorites ring at different times: choose the ring you want
+;;  at any time: sports, music, films, science, art, history, and so
+;;  on.  Add the possibility of sorting those sets in various ways, to
+;;  further facilitate cycling, and you arrive at the idea behind the
+;;  Bookmark+ navigation list.
+;;
+;;  Another analogy is a music playlist.  If you define a bookmark
+;;  type whose handler plays a music file, then you can use Bookmark+
+;;  as a music player.  Similarly, you can use Bookmark+ to create
+;;  slideshows, by defining a bookmark type with a handler that
+;;  displays an image file.  Cycle the navigation list to move through
+;;  the slide show.
+;;
+;;  If you use MS Windows, you can take advantage of your existing
+;;  file associations to open your bookmarks using the appropriate
+;;  program - no need to define a new bookmark type and handler.  See
+;;  (@> "Open Bookmarks Using Windows File Associations").
 ;;
 ;;
 ;;(@* "The Bookmark Navigation List")
@@ -1215,8 +1252,9 @@
 ;;  `*Bookmark List*' state, that does not mean that the `*Bookmark
 ;;  List*' state at any given time necessarily reflects the navlist
 ;;  bookmarks.  The two are separate.  You can, however, open the
-;;  `*Bookmark List*' so that it reflects the current navlist, using
-;;  `C-x p N' (`bookmarkp-navlist-bmenu-list').
+;;  `*Bookmark List*' so that it reflects the bookmarks currently in
+;;  the navigation list, using `C-x p N'
+;;  (`bookmarkp-navlist-bmenu-list').
 ;;
 ;;
 ;;(@* "Cycling the Navigation List")
@@ -1227,7 +1265,7 @@
 ;;
 ;;  Commands `bookmarkp-next-bookmark' and
 ;;  `bookmarkp-previous-bookmark' cycle to the next and previous
-;;  bookmark in the current navigation list (with wraparound).
+;;  bookmark in the navigation list (with wraparound).
 ;;
 ;;  You can bind these to any keys you like, but it's obviously better
 ;;  to choose keys that are easily repeatable (e.g. by holding them
@@ -1445,9 +1483,16 @@
 ;;(@* "Open Bookmarks Using Windows File Associations")
 ;;  ** Open Bookmarks Using Windows File Associations **
 ;;
-;;  If you use Emacs on Microsoft Windows, then you can take advantage
-;;  of Windows file associations to open bookmarks.  To do this, you
-;;  will also need library `w32-browser.el'.
+;;  You can define a new kind of bookmark for any file type,
+;;  implementing a handler for it that performs the appropriate action
+;;  on it.
+;;
+;;  But if you use Microsoft Windows, then you already have a set of
+;;  file/program associations.  You can take advantage of Windows file
+;;  associations to open bookmarks for files of all kinds.  To do
+;;  this, you also need library `w32-browser.el'.  No need to define
+;;  new bookmark types and handlers if the action you want is the one
+;;  that Windows associates with the file.
 ;;
 ;;  In the bookmark list, the following keys are bound to commands
 ;;  that open bookmarks using the associated Windows `Open'
@@ -1461,7 +1506,15 @@
 ;;  bookmark all of the marked files in a Dired buffer, even if you
 ;;  normally do not or cannot visit those files in Emacs.  For
 ;;  instance, you can bookmark music files or image files, without
-;;  ever opening them as files in Emacs.
+;;  ever visiting them as files in Emacs.
+;;
+;;  After you create individual bookmarks for each music or image file
+;;  this way, you can use `P B' in the bookmark-list display to show
+;;  only those bookmarks, and then use `C-x r m' to bookmark that
+;;  state of the bookmark-list.  That bookmark-list bookmark is in
+;;  effect a music playlist or an image slideshow.  Jump to it anytime
+;;  you want to listen to that set of music pieces or view those
+;;  images.
 ;;
 ;;  Together with the use of bookmark tags, this gives you a handy way
 ;;  to organize and access objects of any kind whose files are
@@ -1525,6 +1578,21 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/29 dadams
+;;     *-bmenu-list, *-choose-navlist-from-bookmark-list, *-bmenu-define(-full-snapshot)-command,
+;;       *-save-menu-list-state, -make-bookmark-list-record:
+;;         Add/restore bookmarkp-bmenu-filter-pattern to/from state.
+;;     *-jump-bookmark-list: Set bookmarkp-latest-bookmark-alist to  bookmark-alist.
+;;     Reordered Bookmark menu and added items:
+;;       Set Bookmark, Delete Autonamed Bookmark, Delete All Autonamed Bookmarks Here,
+;;       Delete Bookmarks Here, Delete Bookmark, Rename Bookmark, Bookmark List for This Buffer,
+;;       Bookmark List for Navlist, Set Navlist to Bookmarks of Type,
+;;       Set Navlist from Bookmark-List Bookmark, Insert Bookmark Contents, Insert Bookmark Location.
+;;     Added to Bookmark+ menu: Set Navlist *.
+;;     Added to bookmarkp-bmenu-jump-menu: In Navigation List. 
+;;     Added :enable entries for menu items.
+;;     Updated bookmark-bmenu-mode doc string for cycling, navlist, and options.
+;;     Corrected bindings of bookmarkp-jump-in-navlist(-other-window).
 ;; 2010/05/26 dadams
 ;;     Added:
 ;;       bookmarkp-choose-navlist-(from-bookmark-list|of-type), bookmarkp-crosshairs-highlight,

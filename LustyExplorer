@@ -22,9 +22,6 @@ Lisp:lusty-explorer.el
 
 [http://github.com/sjbach/lusty-emacs Development repository]
 
-= Change suggestions =
-* <code>C-x b RET</code> could select the most recently used buffer like switch-to-buffer, instead of selecting the current buffer.
-
 = Changelist =
 
 Version 2.2:
@@ -76,7 +73,11 @@ I also had some subtle user interface issues. How do regular users deal with the
 Another issue when coming from IswitchBuffers:
 
 # I expected `C-x b C-n RET' _after_ a split-window to take me to the most recently used buffer. I use this all the time to show two buffers side-by-side. Instead it just selects the already selected buffer.
+
 [new]
+Thanks! Re: (1), you're right, this only makes sense.  Re: (2), I've changed `RET' to work more like you expect.  And re: (3), I added bindings for `C-s' and `C-r' to be  more in line with IswitchBuffers.  These changes are in the github repo for now -- I'll release once I've played with them for a while.
+
+-- sjbach
 
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion

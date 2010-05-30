@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed May 26 17:29:00 2010 (-0700)
+;; Last-Updated: Sun May 30 00:31:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13103
+;;     Update #: 13345
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -962,11 +962,11 @@ the save (only)."
 
 ;;;###autoload
 (defcustom bookmarkp-this-buffer-cycle-sort-comparer '((bookmarkp-position-cp))
-  "*`bookmarkp-cycle-sort-comparer' value for cycling this-buffer bookmarks.
+  "*`bookmarkp-sort-comparer' value for cycling this-buffer bookmarks.
 Some values you might want to use: ((bookmarkp-position-cp))
                                    ((bookmarkp-bookmark-creation-cp))
                                    ((bookmarkp-visited-more-cp))
-See `bookmarkp-cycle-sort-comparer'."
+See `bookmarkp-sort-comparer'."
   :type '(choice
           (const    :tag "None (do not sort)" nil)
           (function :tag "Sorting Predicate")
@@ -2620,6 +2620,8 @@ list has been filtered, which means:
                    bookmarkp-bmenu-omitted-list      (cdr (assq 'last-omitted-list           state))
                    bookmarkp-bmenu-marked-bookmarks  (cdr (assq 'last-bmenu-marked-bookmarks state))
                    bookmarkp-bmenu-filter-function   (cdr (assq 'last-bmenu-filter-function  state))
+                   bookmarkp-bmenu-filter-pattern
+                   (or (cdr (assq 'last-bmenu-filter-pattern   state)) "")
                    bookmarkp-bmenu-title             (cdr (assq 'last-bmenu-title            state))
                    bookmarkp-last-bmenu-bookmark     (cdr (assq 'last-bmenu-bookmark         state))
                    bookmarkp-last-specific-buffer    (cdr (assq 'last-specific-buffer        state))
@@ -3155,6 +3157,7 @@ navigation list are those that would be currently shown in the
           (bookmarkp-reverse-multi-sort-p   (cdr (assq 'last-reverse-multi-sort-p   state)))
           (bookmarkp-bmenu-omitted-list     (cdr (assq 'last-omitted-list           state)))
           (bookmarkp-bmenu-filter-function  (cdr (assq 'last-bmenu-filter-function  state)))
+          (bookmarkp-bmenu-filter-pattern   (or (cdr (assq 'last-bmenu-filter-pattern   state)) ""))
           (bookmarkp-bmenu-title            (cdr (assq 'last-bmenu-title            state)))
           (bookmark-bmenu-toggle-filenames  (cdr (assq 'last-bmenu-toggle-filenames state))))
       (setq bookmarkp-nav-alist             (bookmarkp-sort-and-remove-dups
@@ -3379,7 +3382,7 @@ Set `bookmarkp-last-specific-buffer' to the current buffer name."
 
 ;;;###autoload
 (defun bookmarkp-navlist-bmenu-list ()  ; Bound to `C-x p N'
-  "Show the bookmark list just for bookmarks from the current navlist."
+  "Show the bookmark list just for bookmarks from the navigation list."
   (interactive)
   (unless bookmarkp-nav-alist
     (bookmark-maybe-load-default-file)
@@ -3396,7 +3399,7 @@ Set `bookmarkp-last-specific-buffer' to the current buffer name."
     (bookmark-bmenu-list 'filteredp))
   (when (interactive-p) (bookmarkp-msg-about-sort-order
                          (bookmarkp-current-sort-order)
-                         "Only bookmarks for the current navlist are shown"))
+                         "Only bookmarks for the navigation list are shown"))
   (raise-frame))
 
 (defun bookmarkp-completing-read-buffer-name ()
@@ -4899,6 +4902,7 @@ Use the command at any time to restore them."
                   bookmarkp-reverse-sort-p         ',bookmarkp-reverse-sort-p
                   bookmarkp-reverse-multi-sort-p   ',bookmarkp-reverse-multi-sort-p
                   bookmarkp-bmenu-filter-function  ',bookmarkp-bmenu-filter-function
+                  bookmarkp-bmenu-filter-pattern   ',bookmarkp-bmenu-filter-pattern
                   bookmarkp-bmenu-omitted-list     ',bookmarkp-bmenu-omitted-list
                   bookmarkp-bmenu-title            ',bookmarkp-bmenu-title
                   bookmark-bmenu-toggle-filenames  ',bookmark-bmenu-toggle-filenames)
@@ -4944,6 +4948,7 @@ only the omit list and the sort & filter information."
                   bookmarkp-bmenu-omitted-list      ',bookmarkp-bmenu-omitted-list
                   bookmarkp-bmenu-marked-bookmarks  ',bookmarkp-bmenu-marked-bookmarks
                   bookmarkp-bmenu-filter-function   ',bookmarkp-bmenu-filter-function
+                  bookmarkp-bmenu-filter-pattern    ',bookmarkp-bmenu-filter-pattern
                   bookmarkp-bmenu-title             ',bookmarkp-bmenu-title
                   bookmarkp-last-bmenu-bookmark     ',(and (get-buffer "*Bookmark List*")
                                                            (with-current-buffer
@@ -5158,6 +5163,7 @@ the internal lists that record menu-list markings."
              (last-omitted-list                     . ,bookmarkp-bmenu-omitted-list)
              (last-bmenu-marked-bookmarks           . ,bookmarkp-bmenu-marked-bookmarks)
              (last-bmenu-filter-function            . ,bookmarkp-bmenu-filter-function)
+             (last-bmenu-filter-pattern             . ,bookmarkp-bmenu-filter-pattern)
              (last-bmenu-title                      . ,bookmarkp-bmenu-title)
              (last-bmenu-bookmark                   . ,(and (get-buffer "*Bookmark List*")
                                                             (with-current-buffer
@@ -6924,11 +6930,12 @@ Handler function for function bookmarks."
 (defun bookmarkp-make-bookmark-list-record ()
   "Create and return a bookmark-list bookmark record.
 This records the current state of buffer `*Bookmark List*': the sort
-order, filter, title, and omit list."
+order, filter function, regexp pattern, title, and omit list."
   (let ((state  `((last-sort-comparer          . ,bookmarkp-sort-comparer)
                   (last-reverse-sort-p         . ,bookmarkp-reverse-sort-p)
                   (last-reverse-multi-sort-p   . ,bookmarkp-reverse-multi-sort-p)
                   (last-bmenu-filter-function  . ,bookmarkp-bmenu-filter-function)
+                  (last-bmenu-filter-pattern   . ,bookmarkp-bmenu-filter-pattern)
                   (last-omitted-list           . ,bookmarkp-bmenu-omitted-list)
                   (last-bmenu-title            . ,bookmarkp-bmenu-title)
                   (last-bmenu-toggle-filenames . ,bookmark-bmenu-toggle-filenames))))
@@ -6950,12 +6957,14 @@ Handler function for record returned by `bookmarkp-make-bookmark-list-record'."
           bookmarkp-reverse-sort-p         (cdr (assq 'last-reverse-sort-p         state))
           bookmarkp-reverse-multi-sort-p   (cdr (assq 'last-reverse-multi-sort-p   state))
           bookmarkp-bmenu-filter-function  (cdr (assq 'last-bmenu-filter-function  state))
+          bookmarkp-bmenu-filter-pattern   (or (cdr (assq 'last-bmenu-filter-pattern   state)) "")
           bookmarkp-bmenu-omitted-list     (cdr (assq 'last-omitted-list           state))
           bookmarkp-bmenu-title            (cdr (assq 'last-bmenu-title            state))
           bookmark-bmenu-toggle-filenames  (cdr (assq 'last-bmenu-toggle-filenames state))))
   (let ((bookmark-alist  (if bookmarkp-bmenu-filter-function
                              (funcall bookmarkp-bmenu-filter-function)
                            bookmark-alist)))
+    (setq bookmarkp-latest-bookmark-alist  bookmark-alist)
     (bookmark-bmenu-list 'filteredp)
     (when (get-buffer "*Bookmark List*") (pop-to-buffer "*Bookmark List*"))))
 
@@ -7958,8 +7967,8 @@ Then you are prompted for the BOOKMARK (with completion)."
   (bookmark-jump-other-window bookmark))
 
 ;;;###autoload
-(defun bookmarkp-jump-in-navlist (bookmark-name &optional use-region-p) ; `C-x j n'
-  "Jump to a bookmark, choosing from those in the current navigation list."
+(defun bookmarkp-jump-in-navlist (bookmark-name &optional use-region-p) ; `C-x j N'
+  "Jump to a bookmark, choosing from those in the navigation list."
   (interactive
    (progn
      (unless bookmarkp-nav-alist
@@ -7976,7 +7985,7 @@ Then you are prompted for the BOOKMARK (with completion)."
   (bookmarkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
 
 ;;;###autoload
-(defun bookmarkp-jump-in-navlist-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j n'
+(defun bookmarkp-jump-in-navlist-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j N'
   "Same as `bookmarkp-jump-in-navlist', but use another window."
   (interactive
    (progn
@@ -7997,7 +8006,7 @@ Then you are prompted for the BOOKMARK (with completion)."
 (defun bookmarkp-cycle (increment &optional other-window)
   "Cycle through bookmarks in the navlist by INCREMENT (default: 1).
 Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
-You can set the current navigation list using commands
+You can set the navigation list using commands
  `bookmarkp-choose-navlist-from-bookmark-list' and
  `bookmarkp-choose-navlist-of-type'.
 
@@ -8104,7 +8113,7 @@ BOOKMARK is the name of the bookmark."
     (bookmark-prop-set bookmark 'end-position (point)))
   (let ((newname  (funcall bookmarkp-autoname-bookmark-function (point))))
     (bookmark-rename bookmark newname 'batch)
-    (when (member bookmark bookmarkp-nav-alist) (setq bookmarkp-current-nav-bookmark  newname)) ; @@@@
+    (when (member bookmark bookmarkp-nav-alist) (setq bookmarkp-current-nav-bookmark  newname))
     (when (get-buffer-window (get-buffer-create "*Bookmark List*"))
       (bookmarkp-refresh-menu-list))    ; So the new name is displayed.
     (bookmarkp-maybe-save-bookmarks)))
@@ -8238,7 +8247,7 @@ buffer part names the current buffer."
 
 ;;;###autoload
 (defun bookmarkp-delete-bookmarks (position allp &optional alist) ; Bound to `C-x p delete'
-  "Delete bookmarks at point or all bookmarks in the buffer.
+  "Delete some bookmarks at point or all bookmarks in the buffer.
 With no prefix argument, delete some bookmarks at point.
 If there is more than one, require confirmation for each.
 
@@ -8666,9 +8675,9 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 ;;;###autoload
 (define-key bookmarkp-jump-other-window-map "n"    'bookmarkp-remote-file-jump-other-window)
 ;;;###autoload
-(define-key bookmarkp-jump-map              "n"    'bookmarkp-jump-in-navlist)
+(define-key bookmarkp-jump-map              "N"    'bookmarkp-jump-in-navlist)
 ;;;###autoload
-(define-key bookmarkp-jump-other-window-map "n"    'bookmarkp-jump-in-navlist-other-window)
+(define-key bookmarkp-jump-other-window-map "N"    'bookmarkp-jump-in-navlist-other-window)
 ;;;###autoload
 (define-key bookmarkp-jump-map              "r"    'bookmarkp-region-jump)
 ;;;###autoload
@@ -8777,6 +8786,9 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   "Major mode for editing a list of bookmarks.
 Each line represents an Emacs bookmark.\\<bookmark-bmenu-mode-map>
 
+More bookmarking help below.  Keys without prefix `C-x' are available
+only in buffer `*Bookmark List*'.  Others are available everywhere.
+
 
 Help (Describe)
 ---------------
@@ -8794,37 +8806,6 @@ internal form)
 \t- List the commands defined in `bookmarkp-bmenu-commands-file'
 
 
-Jump to (Visit)
----------------
-
-\\[bookmark-bmenu-select]\t- Jump to this bookmark and also visit bookmarks marked `>'
-\\[bookmark-bmenu-this-window]\t- Jump to this bookmark in the same window
-\\[bookmark-bmenu-other-window]\t- Jump to this bookmark in another window
-\\[bookmark-bmenu-switch-other-window]\t- Visit this bookmark in other window, without selecting it
-\\[bookmark-bmenu-1-window]\t- Jump to this bookmark in a full-frame window
-\\[bookmark-bmenu-2-window]\t- Jump to this bookmark and last-visited bookmark
-
-\\[bookmark-jump]\t- Jump to a bookmark by name
-\\[bookmarkp-jump-to-type]\t- Jump to a bookmark by type
-\\[bookmarkp-desktop-jump]\t- Jump to a desktop bookmark
-\\[bookmarkp-bookmark-list-jump]\t- Jump to a bookmark-list bookmark
-\\[bookmarkp-dired-jump]\t- Jump to a Dired bookmark
-\\[bookmarkp-file-jump]\t- Jump to a file bookmark
-\\[bookmarkp-local-file-jump]\t- Jump to a local-file bookmark
-\\[bookmarkp-remote-file-jump]\t- Jump to a remote-file bookmark
-\\[bookmarkp-region-jump]\t- Jump to a region bookmark
-\\[bookmarkp-info-jump]\t- Jump to a Info bookmark
-\\[bookmarkp-man-jump]\t- Jump to a `man'-page bookmark
-\\[bookmarkp-non-file-jump]\t- Jump to a non-file (buffer) bookmark
-\\[bookmarkp-gnus-jump]\t- Jump to a Gnus bookmark
-\\[bookmarkp-varlist-jump]\t- Jump to a variable-list bookmark
-\\[bookmarkp-w3m-jump]\t- Jump to a W3M (URL) bookmark
-\\[bookmarkp-some-tags-jump]\t- Jump to a bookmark with some tags you specify
-\\[bookmarkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
-\\[bookmarkp-all-tags-jump]\t- Jump to a bookmark with all tags you specify
-\\[bookmarkp-all-tags-regexp-jump]\t- Jump to a bookmark with all tags matching a regexp
-
-
 General
 -------
 
@@ -8838,12 +8819,64 @@ General
 \\[bookmarkp-toggle-saving-bookmark-file]\t- Toggle autosaving the bookmark file
 \\[bookmarkp-toggle-saving-menu-list-state]\t- Toggle autosaving the bookmark-list display state
 
+\\[bookmarkp-choose-navlist-of-type]\t- Set the navlist to the bookmarks of a type you choose
+\\[bookmarkp-choose-navlist-from-bookmark-list]\t- Set the navlist to the bookmarks of a \
+bookmark-list bookmark
+\\[bookmarkp-navlist-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in navlist
+\\[bookmarkp-this-buffer-bmenu-list]\t- Open `*Bookmark List*' for bookmarks in current buffer
+\\[bookmarkp-delete-bookmarks]\t- Delete some bookmarks at point or all in buffer
+
 \\[bookmarkp-toggle-bookmark-set-refreshes]
 \t- Toggle whether `bookmark-set' refreshes the bookmark list
 \\[bookmarkp-make-function-bookmark]
 \t- Create a function bookmark
 \\[bookmarkp-bmenu-make-sequence-from-marked]
 \t- Create a sequence bookmark from the marked bookmarks
+
+
+Jump to (Visit)
+---------------
+
+\\[bookmark-bmenu-select]\t- Jump to this bookmark and also visit bookmarks marked `>'
+\\[bookmark-bmenu-this-window]\t- Jump to this bookmark in the same window
+\\[bookmark-bmenu-other-window]\t- Jump to this bookmark in another window
+\\[bookmark-bmenu-switch-other-window]\t- Visit this bookmark in other window, without selecting it
+\\[bookmark-bmenu-1-window]\t- Jump to this bookmark in a full-frame window
+\\[bookmark-bmenu-2-window]\t- Jump to this bookmark and last-visited bookmark
+
+\\[bookmark-jump]\t- Jump to a bookmark by name
+\\[bookmarkp-jump-to-type]\t- Jump to a bookmark by type
+\\[bookmarkp-jump-in-navlist]\t- Jump to a bookmark in the navigation list
+\\[bookmarkp-desktop-jump]\t- Jump to a desktop bookmark
+\\[bookmarkp-bookmark-list-jump]\t- Jump to a bookmark-list bookmark
+\\[bookmarkp-dired-jump]\t- Jump to a Dired bookmark
+\\[bookmarkp-file-jump]\t- Jump to a file bookmark
+\\[bookmarkp-local-file-jump]\t- Jump to a local-file bookmark
+\\[bookmarkp-remote-file-jump]\t- Jump to a remote-file bookmark
+\\[bookmarkp-region-jump]\t- Jump to a region bookmark
+\\[bookmarkp-info-jump]\t- Jump to an Info bookmark
+\\[bookmarkp-man-jump]\t- Jump to a `man'-page bookmark
+\\[bookmarkp-non-file-jump]\t- Jump to a non-file (buffer) bookmark
+\\[bookmarkp-gnus-jump]\t- Jump to a Gnus bookmark
+\\[bookmarkp-varlist-jump]\t- Jump to a variable-list bookmark
+\\[bookmarkp-w3m-jump]\t- Jump to a W3M (URL) bookmark
+\\[bookmarkp-some-tags-jump]\t- Jump to a bookmark with some tags you specify
+\\[bookmarkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
+\\[bookmarkp-all-tags-jump]\t- Jump to a bookmark with all tags you specify
+\\[bookmarkp-all-tags-regexp-jump]\t- Jump to a bookmark with all tags matching a regexp
+
+
+Cycle Bookmarks, Autonamed Bookmarks
+------------------------------------
+
+\\[bookmarkp-toggle-autoname-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
+C-x p n n ...\t- Next bookmark in buffer      (C-x p C-n, C-x p down)
+C-x p p p ...\t- Previous bookmark in buffer    (C-x p C-p, C-x p up)
+C-x p f f ...\t- Next bookmark in navlist    (C-x p C-f, C-x p right)
+C-x p b b ...\t- Previous bookmark in navlist (C-x p C-b, C-x p left)
+
+\\[bookmarkp-delete-all-autonamed-for-this-buffer]
+\t- Delete all autonamed bookmarks in current buffer
 
 
 Search-and-Replace Targets (in sort order)
@@ -9011,33 +9044,37 @@ now marked
 Options for `*Bookmark List*'
 -----------------------------
 
-bookmarkp-sort-comparer          - Initial sort
-bookmarkp-sort-orders-for-cycling-alist
-                                 - Sort orders that \
-`\\[bookmarkp-bmenu-change-sort-order-repeat]'... cycles
-bookmark-bmenu-toggle-filenames  - Show filenames initially?
 bookmark-bmenu-file-column       - Bookmark width if files are shown
+bookmark-bmenu-toggle-filenames  - Show filenames initially?
+
+bookmarkp-bmenu-omitted-list     - List of omitted bookmarks
 bookmarkp-bmenu-state-file       - File to save bookmark-list state
                                    (\"home\") nil: do not save/restore
-bookmarkp-bmenu-omitted-list     - List of omitted bookmarks
+bookmarkp-sort-comparer          - Initial sort
+bookmarkp-sort-orders-for-cycling-alist
+\t - Sort orders that `\\[bookmarkp-bmenu-change-sort-order-repeat]'... cycles
 
 
 Other Options
 -------------
 
-bookmarkp-menu-popup-max-length  - Use menus to choose bookmarks?
+bookmark-automatically-show-annotations  - Show annotation when visit?
 bookmark-completion-ignore-case  - Case-sensitive completion?
 bookmark-default-file            - File to save bookmarks in
-bookmarkp-save-new-location-flag - Save if bookmark relocated?
+bookmark-menu-length             - Max size of bookmark-name menu item
 bookmark-save-flag               - Whether and when to save
-bookmark-default-file            - Numbered backups of bookmark file?
 bookmark-use-annotations         - Query for annotation when saving?
+bookmark-version-control         - Numbered backups of bookmark file?
 
-bookmarkp-use-region-flag        - Activate saved region when visit?
-bookmarkp-su-or-sudo-regexp      - Bounce-show each end of region?
-bookmark-automatically-show-annotations  - Show annotation when visit?
+bookmarkp-autoname-format        - Format of autonamed bookmark name
+bookmarkp-crosshairs-flag        - Highlight position when visit?
+bookmarkp-menu-popup-max-length  - Use menus to choose bookmarks?
+bookmarkp-save-new-location-flag - Save if bookmark relocated?
 bookmarkp-sequence-jump-display-function - How to display a sequence
-bookmark-menu-length             - Max size of bookmark-name menu item"
+bookmarkp-sort-comparer          - Predicates for sorting bookmarks
+bookmarkp-su-or-sudo-regexp      - Bounce-show each end of region?
+bookmarkp-this-buffer-cycle-sort-comparer -  This-buffer cycling sort
+bookmarkp-use-region-flag        - Activate saved region when visit?"
   (kill-all-local-variables)
   (use-local-map bookmark-bmenu-mode-map)
   (setq truncate-lines t)
@@ -9049,21 +9086,93 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
     (run-hooks 'bookmark-bmenu-mode-hook)))
 
 
-;; Vanilla `Bookmarks' menu (see also [jump], below).
-(define-key-after menu-bar-bookmark-map [edit] ; Just to modify text slightly.
-  '(menu-item "Bookmark List" bookmark-bmenu-list :help "Show the list of bookmarks")
-  'set)
-(define-key-after menu-bar-bookmark-map [this-buffer]
-  '(menu-item "Bookmark List for This Buffer" bookmarkp-this-buffer-bmenu-list
-    :help "Show the list of bookmarks for the current buffer only")
-  'edit)
+;;; Vanilla `Bookmarks' menu (see also [jump] from `Bookmark+' menu, below).
 
-(define-key-after menu-bar-bookmark-map [separator-1] '("--") 'this-buffer)
-(define-key-after menu-bar-bookmark-map [save] ; Just to impose the order.
+(define-key-after menu-bar-bookmark-map [set]
+  '(menu-item "Set Bookmark..." bookmark-set :help "Set a bookmark at point")
+  'jump)
+(define-key-after menu-bar-bookmark-map [bookmarkp-toggle-autoname-bookmark-set]
+  '(menu-item "Set Autonamed Bookmark" bookmarkp-toggle-autoname-bookmark-set/delete
+    :help "Set an autonamed bookmark at point"
+    :visible (not (bookmark-get-bookmark (funcall bookmarkp-autoname-bookmark-function (point))
+                   'noerror)))
+  'set)
+(define-key-after menu-bar-bookmark-map [bookmarkp-toggle-autoname-bookmark-delete]
+  '(menu-item "Delete Autonamed Bookmark" bookmarkp-toggle-autoname-bookmark-set/delete
+    :help "Delete the autonamed bookmark at point"
+    :visible (bookmark-get-bookmark (funcall bookmarkp-autoname-bookmark-function (point))
+              'noerror))
+  'set)
+(define-key-after menu-bar-bookmark-map [bookmarkp-delete-all-autonamed-for-this-buffer]
+  '(menu-item "Delete All Autonamed Bookmarks Here..."
+    bookmarkp-delete-all-autonamed-for-this-buffer
+    :help "Delete all autonamed bookmarks for the current buffer"
+    :enable (mapcar #'bookmark-name-from-full-record (bookmarkp-autonamed-bookmarks-alist-only)))
+  'bookmarkp-toggle-autoname-bookmark-set/delete)
+(define-key-after menu-bar-bookmark-map [bookmarkp-delete-bookmarks]
+  '(menu-item "Delete Bookmarks Here..." bookmarkp-delete-bookmarks
+    :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"
+    :enable (mapcar #'bookmark-name-from-full-record (bookmarkp-this-buffer-alist-only)))
+  'bookmarkp-delete-all-autonamed-for-this-buffer)
+(define-key-after menu-bar-bookmark-map [delete]
+  '(menu-item "Delete Bookmark..." bookmark-delete
+    :help "Delete the bookmark you choose by name" :enable bookmark-alist)
+  'bookmarkp-delete-bookmarks)
+(define-key-after menu-bar-bookmark-map [rename]
+  '(menu-item "Rename Bookmark..." bookmark-rename
+    :help "Rename the bookmark you choose by name" :enable bookmark-alist)
+  'delete)
+
+(define-key-after menu-bar-bookmark-map [separator-0] '("--") 'rename)
+(define-key-after menu-bar-bookmark-map [edit]
+  '(menu-item "Bookmark List" bookmark-bmenu-list
+    :help "Open the list of bookmarks in buffer `*Bookmark List*'")
+  'separator-0)
+(define-key-after menu-bar-bookmark-map [bookmarkp-this-buffer-bmenu-list]
+  '(menu-item "Bookmark List for This Buffer" bookmarkp-this-buffer-bmenu-list
+    :help "Open `*Bookmark List*' for the bookmarks in the current buffer (only)"
+    :enable (mapcar #'bookmark-name-from-full-record (bookmarkp-this-buffer-alist-only)))
+  'edit)
+(define-key-after menu-bar-bookmark-map [bookmarkp-navlist-bmenu-list]
+  '(menu-item "Bookmark List for Navlist" bookmarkp-navlist-bmenu-list
+    :help "Open `*Bookmark List*' for bookmarks in navlist (only)"
+    :enable bookmarkp-nav-alist)
+  'bookmarkp-this-buffer-bmenu-list)
+
+(define-key-after menu-bar-bookmark-map [separator-2] '("--") 'bookmarkp-navlist-bmenu-list)
+(define-key-after menu-bar-bookmark-map [bookmarkp-choose-navlist-of-type]
+  '(menu-item "Set Navlist to Bookmarks of Type..." bookmarkp-choose-navlist-of-type
+    :help "Set the navigation list to the bookmarks of a certain type")
+  'separator-2)
+(define-key-after menu-bar-bookmark-map [bookmarkp-choose-navlist-from-bookmark-list]
+  '(menu-item "Set Navlist from Bookmark-List Bookmark..." bookmarkp-choose-navlist-from-bookmark-list
+    :help "Set the navigation list from a bookmark-list bookmark")
+  'bookmarkp-choose-navlist-of-type)
+(define-key-after menu-bar-bookmark-map [bookmarkp-list-defuns-in-commands-file]
+  '(menu-item "List User-Defined Bookmark Commands" bookmarkp-list-defuns-in-commands-file
+    :help "List the functions defined in `bookmarkp-bmenu-commands-file'"
+    :enable (and bookmarkp-bmenu-commands-file (file-readable-p bookmarkp-bmenu-commands-file)))
+  'bookmarkp-choose-navlist-from-bookmark-list)
+(define-key-after menu-bar-bookmark-map [bookmarkp-make-function-bookmark]
+  '(menu-item "New Function Bookmark..." bookmarkp-make-function-bookmark
+    :help "Create a bookmark that will invoke FUNCTION when \"jumped\" to")
+  'bookmarkp-list-defuns-in-commands-file)
+
+(define-key-after menu-bar-bookmark-map [insert]
+  '(menu-item "Insert Bookmark Contents..." bookmark-insert
+    :help "Insert bookmarked text")
+  'bookmarkp-make-function-bookmark)
+(define-key-after menu-bar-bookmark-map [locate]
+  '(menu-item "Insert Bookmark Location..." bookmark-locate
+    :help "Insert a bookmark's file or buffer name")
+  'insert)
+
+(define-key-after menu-bar-bookmark-map [separator-3] '("--") 'locate)
+(define-key-after menu-bar-bookmark-map [save]
   '(menu-item "Save Bookmarks" bookmark-save
-    :help ,(purecopy "Save currently defined bookmarks"))
-  'separator-1)
-(define-key-after menu-bar-bookmark-map [write] ; Just to impose the order.
+    :help "Save currently defined bookmarks")
+  'separator-3)
+(define-key-after menu-bar-bookmark-map [write]
   '(menu-item "Save Bookmarks As..." bookmark-write
     :help "Write current bookmarks to a bookmark file")
   'save)
@@ -9071,7 +9180,7 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
   '(menu-item "New (Empty) Bookmark File..." bookmarkp-empty-file
     :help "Create a new, empty bookmark file, or empty an existing bookmark file")
   'write)
-(define-key-after menu-bar-bookmark-map [load] ; Just to modify text slightly.
+(define-key-after menu-bar-bookmark-map [load]
   '(menu-item "Add Bookmarks from File..." bookmark-load
     :help "Load additional bookmarks from a bookmark file")
   'bookmarkp-empty-file)
@@ -9080,7 +9189,8 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
     :help "Switch to a different bookmark file, *replacing* the current set of bookmarks")
   'load)
 
-(define-key-after menu-bar-bookmark-map [separator-2] '("--") 'load-read-only)
+
+;;; `Bookmark+' menu-bar menu in `*Bookmark List*'
 
 (defvar bookmarkp-bmenu-menubar-menu (make-sparse-keymap "Bookmark+"))
 (define-key bookmark-bmenu-mode-map [menu-bar bookmarkp]
@@ -9126,8 +9236,14 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-bmenu-make-sequence-from-marked]
   '(menu-item "New Sequence Bookmark from Marked..." bookmarkp-bmenu-make-sequence-from-marked
     :help "Create or update a sequence bookmark from the visible marked bookmarks"))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-choose-navlist-from-bookmark-list]
+  '(menu-item "Set Navlist from Bookmark-List Bookmark..." bookmarkp-choose-navlist-from-bookmark-list
+    :help "Set the navigation list from a bookmark-list bookmark"))
+(define-key bookmarkp-bmenu-menubar-menu [bookmarkp-choose-navlist-of-type]
+  '(menu-item "Set Navlist to Bookmarks of Type..." bookmarkp-choose-navlist-of-type
+    :help "Set the navigation list to the bookmarks of a certain type"))
 (define-key bookmarkp-bmenu-menubar-menu [bookmarkp-list-defuns-in-commands-file]
-  '(menu-item "List User-Defined Commands" bookmarkp-list-defuns-in-commands-file
+  '(menu-item "List User-Defined Bookmark Commands" bookmarkp-list-defuns-in-commands-file
     :help "List the functions defined in `bookmarkp-bmenu-commands-file'"))
 
 (defvar bookmarkp-bmenu-define-command-menu (make-sparse-keymap "Define Command"))
@@ -9174,41 +9290,65 @@ bookmark-menu-length             - Max size of bookmark-name menu item"
   '(menu-item "For Specific Buffers..." bookmarkp-specific-buffers-jump-other-window
     :help "Jump to a bookmark for specific buffers"))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-this-buffer-jump]
-  '(menu-item "For This Buffer" bookmarkp-this-buffer-jump
-    :help "Jump to a bookmark for the current buffer"))
+  '(menu-item "For This Buffer..." bookmarkp-this-buffer-jump
+    :help "Jump to a bookmark for the current buffer"
+    :enable (mapcar #'bookmark-name-from-full-record (bookmarkp-this-buffer-alist-only))))
+(define-key bookmarkp-bmenu-jump-menu [bookmarkp-jump-in-navlist-other-window]
+  '(menu-item "In Navigation List..." bookmarkp-jump-in-navlist-other-window
+    :help "Jump to a bookmark that is in the navigation list"
+    :enable bookmarkp-nav-alist))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-w3m-jump-other-window]
-  '(menu-item "URL (W3M)..." bookmarkp-w3m-jump-other-window :help "Jump to an W3M bookmark"))
+  '(menu-item "URL (W3M)..." bookmarkp-w3m-jump-other-window
+    :help "Jump to an W3M bookmark"
+    :enable (bookmarkp-w3m-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-gnus-jump-other-window]
-  '(menu-item "Gnus..." bookmarkp-gnus-jump-other-window :help "Jump to a Gnus bookmark"))
+  '(menu-item "Gnus..." bookmarkp-gnus-jump-other-window
+    :help "Jump to a Gnus bookmark"
+    :enable (bookmarkp-gnus-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-man-jump-other-window]
-  '(menu-item "Man Page..." bookmarkp-man-jump-other-window :help "Jump to a `man'-page bookmark"))
+  '(menu-item "Man Page..." bookmarkp-man-jump-other-window
+    :help "Jump to a `man'-page bookmark"
+    :enable (bookmarkp-man-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-info-jump-other-window]
-  '(menu-item "Info Node..." bookmarkp-info-jump-other-window :help "Jump to an Info bookmark"))
+  '(menu-item "Info Node..." bookmarkp-info-jump-other-window
+    :help "Jump to an Info bookmark"
+    :enable (bookmarkp-info-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-non-file-jump-other-window]
   '(menu-item "Buffer (Non-File)..." bookmarkp-non-file-jump-other-window
-    :help "Jump to a non-file (buffer) bookmark"))
+    :help "Jump to a non-file (buffer) bookmark"
+    :enable (bookmarkp-non-file-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-region-jump-other-window]
   '(menu-item "Region..." bookmarkp-region-jump-other-window
-    :help "Jump to a bookmark that defines the active region"))
+    :help "Jump to a bookmark that defines the active region"
+    :enable (bookmarkp-region-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-remote-file-jump-other-window]
   '(menu-item "Remote File..." bookmarkp-remote-file-jump-other-window
-    :help "Jump to a remote file or directory bookmark"))
+    :help "Jump to a remote file or directory bookmark"
+    :enable (bookmarkp-remote-file-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-local-file-jump-other-window]
   '(menu-item "Local File..." bookmarkp-local-file-jump-other-window
-    :help "Jump to a local file or directory bookmark"))
+    :help "Jump to a local file or directory bookmark"
+    :enable (bookmarkp-local-file-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-file-jump-other-window]
   '(menu-item "File..." bookmarkp-file-jump-other-window
-    :help "Jump to a file or directory bookmark"))
+    :help "Jump to a file or directory bookmark"
+    :enable (bookmarkp-file-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-dired-jump-other-window]
   '(menu-item "Dired..." bookmarkp-dired-jump-other-window
-    :help "Jump to a Dired bookmark, restoring the recorded Dired state"))
+    :help "Jump to a Dired bookmark, restoring the recorded Dired state"
+    :enable (bookmarkp-dired-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-varlist-jump]
-  '(menu-item "Variable List..." bookmarkp-varlist-jump :help "Jump to a variable-list bookmark"))
+  '(menu-item "Variable List..." bookmarkp-varlist-jump
+    :help "Jump to a variable-list bookmark"
+    :enable (bookmarkp-varlist-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-bookmark-list-jump]
   '(menu-item "Bookmark List..." bookmarkp-bookmark-list-jump
-    :help "Jump to a bookmark-list bookmark"))
+    :help "Jump to a bookmark-list bookmark"
+    :enable (bookmarkp-bookmark-list-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-desktop-jump]
-  '(menu-item "Desktop..." bookmarkp-desktop-jump :help "Jump to a desktop bookmark"))
+  '(menu-item "Desktop..." bookmarkp-desktop-jump
+    :help "Jump to a desktop bookmark"
+    :enable (bookmarkp-desktop-alist-only)))
 (define-key bookmarkp-bmenu-jump-menu [bookmarkp-jump-to-type-other-window]
   '(menu-item "Of Type..." bookmarkp-jump-to-type-other-window
     :help "Jump to a bookmark of a type that you specify"))

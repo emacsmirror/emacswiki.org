@@ -96,14 +96,14 @@ diff  port if you want to be able to use ediff. Unfortunately I haven't heard of
 anything like AVFS for MS Windows, so you'll have to use archive-mode, tar mode,
 etc. for your compressed files.
 
+Here's a screenshot (click to enlarge):
+
+[[image:SunriseCommanderThumbnailOnePage|Sunrise Commander basic functions (click to enlarge)|SunriseCommanderScreenshotOnePage]]
+
 You can get a copy of the Sunrise Commander at:
 
 * http://joseito.republika.pl/sunrise-commander.el.gz
 * Lisp:sunrise-commander.el
-
-Here's a screenshot:
-
-http://joseito.republika.pl/sunrise.png
 
 ----
 [:ButtonsExt]
@@ -115,9 +115,9 @@ clickable buttons that show some of the most useful actions performed by Sunrise
 and  their  respective  bindings in the bottom window every time the main panels
 are invoked.
 
-Have a look, here is a screenshot:
+Have a look, here is a screenshot (click to enlarge):
 
-http://joseito.republika.pl/sunrise-buttons.png
+[[image:SunriseCommanderThumbnailTwoPage|Sunrise Commander: Buttons extension (click to enlarge)|SunriseCommanderScreenshotTwoPage]]
 
 You can execute any of the functions by clicking the appropriate button, but the
 extension was conceived more as a simple cheat sheet (a very, very limited  one,
@@ -260,19 +260,20 @@ To get a copy of the Sunrise Tabs extension go to:
 ----
 [:TreeExt]
 ==The Tree Extension==
-This  extension  adds to Sunrise a tree view of directories that can be used for
-fast  navigation,  as  well  as  for  several  basic  operations  on  files  and
-directories.  It  uses  the  excellent "tree-widget.el" library written by David
-Ponce, works in the console as well as  in  graphical  environments  and  offers
+
+This extension adds to  Sunrise a tree view of directories that  can be used for
+extremely fast navigation, as well as  for several basic operations on files and
+directories.  It  uses the excellent  "tree-widget.el" library written  by David
+Ponce, does work in the console  as well as in graphical environments and offers
 three different sets of key bindings (mouse centric, arrow keys and alphanumeric
 keys) to easily adapt to a wide variety of usage patterns.
 
 Navigation inside compressed archives (via AVFS) is now supported in tree views.
 
-Here are two screenshots of exactly the same thing:
+Here are two screenshots of exactly the same thing: one in graphical and the
+other in console mode (click to enlarge):
 
-* In graphical mode: SunriseCommanderGraphicalTreeScreenshotPage
-* In a text console emulator: SunriseCommanderTextTreeScreenshotPage
+[[image:SunriseCommanderGraphicalTreeThumbnailPage|Sunrise Commander: Tree View (graphical mode)|SunriseCommanderGraphicalTreeScreenshotPage]] [[image:SunriseCommanderTextTreeThumbnailPage|Sunrise Commander: Tree View (text mode)|SunriseCommanderTextTreeScreenshotPage]]
 
 You can get a copy of this extension from:
 

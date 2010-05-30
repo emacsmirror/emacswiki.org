@@ -21,11 +21,16 @@
 ;; DESCRIPTION:
 ;; mon-wget-utils provides routines for pulling files with wget.
 ;;
+;; Good God man! I just remembered: 
+;; (url-copy-file "SOME-URL" "SOME-FILE" t)
+;; 
+;; Why the *%$!@#*# doesn't Emacs have a better code dictionary/thesaurus!?
+;;
 ;; FUNCTIONS:►►►
 ;; `mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
 ;; `mon-wget-list-to-script-shell-command',
-;; `mon-wget-list-give-script-to-shell-command'
-;; `mon-wget-rfc'
+;; `mon-wget-list-give-script-to-shell-command',
+;; `mon-wget-rfc', `mon-wget-unicodedata-files',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -40,6 +45,7 @@
 ;;
 ;; VARIABLES:
 ;; `*mon-show-wget-script-temp*'
+;; `*mon-unidata-file-list*'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
@@ -135,20 +141,20 @@ When non-nil FLAGS are additional flags to pass to wget. These have the form:
 `*mon-show-wget-script-temp*'.\n►►►"
   (let ((wget-p (executable-find "wget"))
         (wget-fname (if wget-fname wget-fname
-                        (concat default-directory 
-                                "wget-script-" 
-                                (format-time-string "%Y-%m-%d"))))
+                      (concat default-directory 
+                              "wget-script-" 
+                              (format-time-string "%Y-%m-%d"))))
         (sys (cond ((eq system-type 'windows-nt) 'wnz)
                    ((or (eq system-type 'gnu/linux) 
                         (eq system-type 'linux)) 'gnu)))
         (unravel-flags (if flags (mapconcat #'identity flags " ")))
         the-get)
+    ;;(when (and base-url (not (string= base-url "")))
     (when base-url
       (dolist (tg get-list (setq the-get (nreverse the-get)))
         (if (string-match-p base-url tg)
             (push tg the-get)
-            (push (concat base-url tg) the-get))))
-
+          (push (concat base-url tg) the-get))))
     (setq the-get (mapconcat #'identity the-get "\n"))
     (with-temp-file wget-fname
       (insert the-get)
@@ -160,12 +166,13 @@ When non-nil FLAGS are additional flags to pass to wget. These have the form:
                                " -i " (file-name-nondirectory wget-fname) "\n")))
               ((eq sys 'gnu)
                (insert 
-                (concat "#! /bin/sh\nwget --no-parent --no-directories" unravel-flags "\x5c\n"))
-               (while (search-forward-regexp "[a-z]$" nil t) (insert " \x5c"))
+                (concat "#! /bin/sh\nwget --no-parent --no-directories" unravel-flags " \x5c\n"))
+               (while (search-forward-regexp "[a-z]$" nil t) 
+                 (insert " \x5c"))
                (goto-char (buffer-end 1))
                (skip-chars-backward "^ \\")
                (delete-char 1))))
-      (setq the-get (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
+      (setq the-get (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
     (when (and wget-p) (set-file-modes wget-fname 480))
     `(,wget-fname . ,the-get)))
 
@@ -236,25 +243,28 @@ o Kills temp-buffer and file on exit\n
                    ((not (executable-find "wget")) 'no-exec)))
         read-wget-string)
     (unless (directory-files default-directory nil (concat fnm-tst-wgt "$"))
-      (error "File does not exist or function invoked outside file's directory"))
+      (error (concat  ":FUNCTION `mon-wget-list-to-script-shell-command' "
+              "-- file does not exist or function invoked outside file's directory")))
     (with-temp-buffer
       (save-excursion (insert-file-contents wget-fname))
       (when (eq sys 'wnz) (delete-char (- (skip-chars-forward "# "))))
       (setq read-wget-string 
             `(,(cond ((eq sys 'no-exec) '("### NO wget executable in path"))
                      ((eq sys 'gnu)
-                        (delete-region (buffer-end 0) (1+ (line-end-position 1)))
-                        (delete-and-extract-region (buffer-end 0) (1+ (line-end-position 1))))
+                      (delete-region (buffer-end 0) (1+ (line-end-position 1)))
+                      (delete-and-extract-region (buffer-end 0) (1+ (line-end-position 1))))
                      ((eq sys 'wnz)
                       (delete-and-extract-region (buffer-end 0) (line-end-position))))
-               . ,(cond ((eq sys 'gnu) 
-                         (replace-regexp-in-string 
-                          " \\\n" "\n"
-                          (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
-                        ((eq sys 'wnz)
-                         (subst-char-in-string 10 32
-                                               (buffer-substring-no-properties 
-                                                (buffer-end 0) (buffer-end 1)) t))))))
+              . ,(cond ((eq sys 'gnu) 
+                        (replace-regexp-in-string 
+                         " \\\n" "\n"
+                         (concat 
+                          (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))
+                          "\n")))
+                       ((eq sys 'wnz)
+                        (subst-char-in-string 10 32
+                                              (buffer-substring-no-properties 
+                                               (buffer-end 0) (buffer-end 1)) t))))))
     read-wget-string))
 
 ;;; ==============================
@@ -265,6 +275,8 @@ o Kills temp-buffer and file on exit\n
   "Invoke wget with WGET-FNAME containing W-THIS-LIST concat'd W-BASE-URL.\n
 W-THIS-LIST, W-BASE-URL, W-WGET-FNAME, and  W-THESE-FLAGS are as per
 `mon-wget-list-to-script'.\n
+:NOTE When WGET-FNAME is non-nil this fncn must be invoked from within the
+directory containing or which is to contain WGET-FNAME.\n
 :SEE-ALSO`mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
 `mon-wget-list-to-script-shell-command', `mon-wget-rfc',
 `*mon-show-wget-script-temp*'.\n►►►"
@@ -277,9 +289,14 @@ W-THIS-LIST, W-BASE-URL, W-WGET-FNAME, and  W-THESE-FLAGS are as per
         (erase-buffer)))
     (let ((mwlts 
            (mon-wget-list-to-script w-this-list w-base-url w-wget-fname (car w-these-flags))))
-    (shell-command 
-     (concat (car (mon-wget-list-to-script-shell-command (car mwlts))) " &")
-      UCmswst))))
+      (case system-type
+        (windows-nt
+         (shell-command 
+          (concat (car (mon-wget-list-to-script-shell-command (car mwlts))) " &")
+          UCmswst))
+        (gnu/linux
+         (mon-wget-list-to-script-shell-command (car mwlts))
+         (shell-command (concat (car mwlts) " &") UCmswst))))))
 ;;  
 ;;; :TEST-ME (cd (mon-wget-list-give-script-to-shell-command *mon-el-library* 
 ;;;  "http://www.emacswiki.org/emacs/download/" 
@@ -292,19 +309,106 @@ W-THIS-LIST, W-BASE-URL, W-WGET-FNAME, and  W-THESE-FLAGS are as per
 ;;; :TODO This is buggy on w32 paths. incorporate use the procedures above.
 ;;; :CREATED <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
 (defun mon-wget-rfc (rfc-num)
-"Fetches an RFC with RFC-NUM with wget.\n
+  "Fetches an RFC with RFC-NUM with wget.\n
 :NOTE This is buggy with w32 paths.
 :SEE-ALSO `mon-wget-list-give-script-to-shell-command', 
 `mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
 `mon-wget-list-to-script-shell-command', `mon-wget-rfc',
 `*mon-show-wget-script-temp*'.\n►►►"
-(interactive "sRFC number :")
+  (interactive "sRFC number :")
   (let* ((the-rfc rfc-num)
          (fetch-from (format 
                       "http://tools.ietf.org/rfc/rfc%s.txt" the-rfc)))
     (shell-command  (format "wget %s" fetch-from))))
 ;;
 ;;; :TEST-ME (mon-wget-rfc 2616)
+
+;;; ==============================
+;;; :CHANGESET 1792
+;;; :CREATED <Timestamp: #{2010-05-29T15:35:16-04:00Z}#{10216} - by MON KEY>
+(defun mon-wget-unicodedata-files (&optional in-wget-dir save-wget-file-name)
+  "Generate a wget script and fetch URL list in variable
+`*mon-unidata-file-list*'.  SAVE-WGET-FILE-NAME is file to save the wget script
+to.  Fetched urls will be saved to this files directory.  When SAVE-WGET-FILE-NAME
+is ommitted and `IS-MON-SYSTEM-P'is null default is to save to default-directory
+and write the wget script to the file named mon-wget-unicode-data-YYYY-MM-DD.\n
+:SEE-ALSO `mon-set-unicodedata-init', `mon-help-diacritics',
+`mon-wget-list-give-script-to-shell-command', `mon-wget-rfc'.\n►►►"
+  (let ((mwucs (cond ((and in-wget-dir save-wget-file-name)
+                      `(in-wget-dir . save-wget-file-name))
+                     ((intern-soft "IS-MON-SYSTEM-P")
+                      `(,(concat 
+                          (file-name-directory describe-char-unicodedata-file)
+                          (format-time-string "wget-unicode-data-%Y-%m-%d")) .
+                          ,(format-time-string "mon-wget-unicode-data-%Y-%m-%d")))
+                     (t `(,(concat 
+                            default-directory
+                            (format-time-string "wget-unicode-data-%Y-%m-%d")) .
+                            ,(format-time-string "mon-wget-unicode-data-%Y-%m-%d"))))))
+    (unless (file-directory-p (car mwucs))
+      (mkdir (car mwucs)))
+    (let ((dir-now default-directory))
+      (unwind-protect
+          (progn
+            (cd (car mwucs))
+            (mon-wget-list-give-script-to-shell-command 
+             *mon-unidata-file-list* "" 
+             (concat (car mwucs) "/" (cdr mwucs))))
+        (cd dir-now)))))
+;;
+;; :TEST-ME (mon-wget-unicodedata-files)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-05-29T15:08:20-04:00Z}#{10216} - by MON KEY>
+(defvar *mon-unidata-file-list* nil
+ "A list of unicode related file lists.
+This list is current to the Unicode 5.2.0 final data files for the Unicode
+Character Database \(UCD\) circa Summer/Autumn 2009.\n
+:SEE (URL `http://www.unicode.org/Public/UNIDATA/')
+:SEE (URL `http://www.unicode.org/Public/UNIDATA/UnicodeData.txt').
+:SEE (URL `ftp://www.unicode.org/Public/zipped/5.2.0/UCD.zip').
+:SEE-ALSO `describe-char-unicodedata-file', `describe-char-unidata-list',
+`mon-help-diacritics', `mon-help-char-representation'.\n►►►")
+;;
+(unless (and (not (intern-soft "IS-MON-SYSTEM-P"))
+             (bound-and-true-p *mon-unidata-file-list*))
+  (setq *mon-unidata-file-list*  
+        (let ((mufl-files 
+               '((nil ;; :TOP-DIR 
+                  "ArabicShaping.txt" "BidiMirroring.txt"
+                  "BidiTest.txt" "Blocks.txt" "CJKRadicals.txt" "CaseFolding.txt"
+                  "CompositionExclusions.txt" "DerivedAge.txt"
+                  "DerivedCoreProperties.txt" "DerivedNormalizationProps.txt"
+                  "EastAsianWidth.txt" "HangulSyllableType.txt" "Index.txt"
+                  "Jamo.txt" "LineBreak.txt" "NameAliases.txt"
+                  "NamedSequences.txt" "NamedSequencesProv.txt" "NamesList.txt"
+                  "NormalizationCorrections.txt" "NormalizationTest.txt"
+                  "PropList.txt" "PropertyAliases.txt" "PropertyValueAliases.txt"
+                  "ReadMe.txt" "Scripts.txt" "SpecialCasing.txt"
+                  "StandardizedVariants.txt" "UnicodeData.txt")
+                 (auxiliary ;; :AUXILLARY-DIR 
+                  "GraphemeBreakProperty.txt" "GraphemeBreakTest.txt"
+                  "LineBreakTest.txt" "SentenceBreakProperty.txt"
+                  "SentenceBreakTest.txt" "WordBreakProperty.txt"
+                  "WordBreakTest.txt")
+                 (extracted ;; :EXTRACTED-DIR 
+                  "DerivedBidiClass.txt" "DerivedBinaryProperties.txt"
+                  "DerivedCombiningClass.txt" "DerivedDecompositionType.txt"
+                  "DerivedEastAsianWidth.txt" "DerivedGeneralCategory.txt"
+                  "DerivedJoiningGroup.txt" "DerivedJoiningType.txt"
+                  "DerivedLineBreak.txt" "DerivedNumericType.txt"
+                  "DerivedNumericValues.txt")))
+              (mufl-url "http://www.unicode.org/Public/UNIDATA/") 
+              mufl-urls)
+          (dolist (mf mufl-files (setq mufl-urls (nreverse mufl-urls)))
+            (let ((sub-url
+                   (cond ((and (null (car mf)) (consp (cdr mf)))
+                          (pop mf) "")
+                         ((and (not (stringp (car mf))) (consp (cdr mf)))
+                          (format "%s/" (pop mf)))
+                         (t ""))))
+              (dolist (mf-sub mf)
+                (push (concat mufl-url sub-url mf-sub) mufl-urls)))))))
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichoer <stefan@xsteve.at> :HIS .emacs 

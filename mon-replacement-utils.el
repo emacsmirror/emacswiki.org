@@ -54,7 +54,7 @@
 ;; `mon-replace-string-pairs-region-no-insert', `mon-cln-xml<-parsed-strip-nil',
 ;; `mon-cln-up-colon', `mon-regexp-map-match', `mon-regexp-map-match-in-region',
 ;; `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list',
-;; `mon-cln-mail-headers'
+;; `mon-cln-mail-headers', `mon-line-find-duplicates-cln',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -81,6 +81,8 @@
 ;; ALIASED/ADVISED/SUBST'd:
 ;; `naf-delete-back-up-list' -> `mon-delete-back-up-list'
 ;; `mon-map-regexp-matches'  -> `mon-regexp-map-match'
+;; `mon-cln-duplicate-lines'    -> `mon-line-find-duplicates-cln'
+;; `mon-remove-duplicate-lines' -> `mon-line-find-duplicates-cln'
 ;;
 ;; REQUIRES:
 ;; Regexps for functions defined here are set with defvar forms in the file:
@@ -569,19 +571,22 @@ BFR-MRKR is a buffer marker to print match/replace logs to.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-11T19:30:29-05:00Z}#{10105} - by MON KEY>
 (defun mon-replace-regexps-in-file-list (file-list regexp-list)
-"Replace in FILE-LIST the match/replace pairs in REGEXP-LIST.
-FILE-LIST is a list of files to replace in it has the form:
- \(\"<FILENAME>\" \"<FILENAME1>\" \"<FILENAME2>\"\)
-REGEXP-LIST is a list of match replace pairs with the form:
- \(\(<REGEXP-STRING> <REPLACE-STRING>)
-   \(<REGEXP-STRING1> <REPLACE-STRING1>)
-   \(<REGEXP-STRING2> <REPLACE-STRING2>)\)
-Display a log of replacement results in the buffer named
-`*REGEXP-REPLACE-HISTORY*'
+  "Replace in FILE-LIST the match/replace pairs in REGEXP-LIST.\n
+FILE-LIST is a list of files to perform replacements in. It has the form:\n
+ \(\"<FILENAME>\" \"<FILENAME1>\" \"<FILENAME2>\"\)\n
+REGEXP-LIST is a list of match replace pairs with the form:\n
+ \(\(<REGEXP-STRING>  <REPLACE-STRING>)
+  \(<REGEXP-STRING1> <REPLACE-STRING1>)
+  \(<REGEXP-STRING2> <REPLACE-STRING2>)\)\n
+Display a log of replacementsin the buffer named `*REGEXP-REPLACE-HISTORY*'.\n
 Files in FILE-LIST are visited as with `find-file' and are not written to disk
 they must be saved manually.\n
-:NOTE This is an aggressive procedure be carefull looping over large file-sets
-with poorly formed regexps and consider invoking this procedure on backups
+:NOTE Don't forget; when replacing variabless with leading and trailing
+asterisks \(e.g. `*some-var*'\) asterisks is escaped with two backslashes.
+IOW do this:\n
+ \"\\\\*some-var\\\\*\"\n
+This is an aggressive procedure; be careful looping over large file-sets
+with poorly formed regexps -- consider invoking this procedure on backups
 first.\n
 :SEE-ALSO `mon-walk-regexps-in-file', `mon-get-file-mod-times'.\n►►►"
   (let ((fl file-list)
@@ -1267,7 +1272,8 @@ Zipcode: 99999\n
 	   (reg-dsw  (format "\\(: %s\\)" dsw))
 	   (reg-dsw2  (format "\"%s \"" dsw))  	  
 	   (oo))
-      (setq oo (mapconcat '(lambda (x) (prin1 x )) csv-maker dsw))
+      (setq oo ;; (mapconcat '(lambda (x) (prin1 x )) csv-maker dsw))
+            (mapconcat #'(lambda (x) (prin1 x )) csv-maker dsw))
       (setq oo (replace-regexp-in-string  reg-dsw "\" \"" oo))
       (setq oo (replace-regexp-in-string "\\(: \\)" "\"" oo))
       (setq oo (replace-regexp-in-string "\\(\" \"\\)" reg-dsw2 oo))
@@ -2006,7 +2012,8 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 04:21.17 PM - by MON KEY>
 (defun mon-cln-blank-lines (start end); &optional intrp)
   "Delete blank and empty lines in region from START to END.\n
-:SEE-ALSO `mon-cln-uniq-lines', `delete-blank-lines'.\n►►►"
+:SEE-ALSO `mon-cln-uniq-lines', `delete-blank-lines',
+`mon-line-find-duplicates-cln', `mon-line-find-duplicates'.\n►►►"
   (interactive "r\np")
   (save-excursion
     (let ((cln-start start)
@@ -2029,27 +2036,80 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 (defun mon-cln-uniq-lines (beg end)
   "Return the unique lines in region, ommitting ducplicates.\n
 Called programmatically ARGS BEG and END denote the \(region to sort\) and uniquify.
-:SEE-ALSO `mon-cln-blank-lines', `delete-blank-lines', `mon-cln-mail-headers'
-`mon-cln-csv-fields' `mon-cln-file-name-string' `mon-cln-up-colon'
-`mon-cln-whitespace'.
-:SEE `uniq-remove-dup-lines' in :FILE uniq.el for additional spec.\n►►►"
+:NOTE Use `mon-line-find-duplicates-cln' where possible esp. in `naf-mode'.\n
+This function was originally fashioned after `uniq-remove-dup-lines' and kills
+matched lines to the kill ring. Doing so allowed a kludge for working around
+longlines-mode issues before `mon-toggle-restore-llm' which appears to have
+mitigated those issues.\n
+:SEE :FILE uniq.el for additional details.
+:SEE-ALSO `mon-line-find-duplicates-cln', `mon-cln-blank-lines',
+`delete-blank-lines', `mon-cln-mail-headers', `mon-cln-csv-fields',
+`mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace'.\n►►►"
   (interactive "r")
   (let ((the-ring kill-ring))
     (unwind-protect
-         (save-excursion
-           (save-restriction
-             (setq kill-ring nil)  
-             (narrow-to-region beg end)
-             (goto-char (buffer-end 0))
-             (while (not (eobp))
-               (kill-line 1)
-               (yank)
-               (let ((next-line (point)))
-                 (while (search-forward-regexp 
-                         (format "^%s" (regexp-quote (car kill-ring))) nil t)
-                   (replace-match "")
-                   (goto-char next-line))))))
+        (save-excursion
+          (save-restriction
+            (setq kill-ring nil)  
+            (narrow-to-region beg end)
+            (goto-char (buffer-end 0))
+            (while (not (eobp))
+              (kill-line 1)
+              (yank)
+              (let ((next-line (point)))
+                (while (search-forward-regexp 
+                        (format "^%s" (regexp-quote (car kill-ring))) nil t)
+                  (replace-match "")
+                  (goto-char next-line))))))
       (setq kill-ring the-ring))))
+
+;;; ==============================
+;;; :CHANGESET 1708
+;;; :CREATED <Timestamp: #{2010-04-12T16:12:49-04:00Z}#{10151} - by MON KEY>
+(defun mon-line-find-duplicates-cln (cln-from cln-to &optional insrtp intrp)
+  "Remove duplicate lines CLN-FROM to CLN-TO return list of lines cleaned.\n
+Upon return point is at CLN-FROM.\n
+When called-interactively or INSRTP is non-nil insert the list of lines cleaned
+before CLN-FROM.\n
+:NOTE Procedure occurs inside of the `mon-toggle-restore-llm' macro so should be
+safe to evaluate in `naf-mode' buffers.\n
+:ALIASED-BY `mon-cln-duplicate-lines'
+:ALIASED-BY `mon-remove-duplicate-lines'\n
+:SEE-ALSO `mon-line-find-duplicates', `mon-cln-uniq-lines'.\n►►►"
+  (interactive "r\ni\np")
+  (mon-toggle-restore-llm nil
+    (let ((w-this-rgn (buffer-substring-no-properties cln-from cln-to))
+          this-got-clnd)
+      (with-temp-buffer 
+        (save-excursion 
+          (insert w-this-rgn)
+          (goto-char (buffer-end 0))
+          (setq this-got-clnd (mon-line-find-duplicates)))
+        (dolist (rmv-ths this-got-clnd)
+          (save-excursion 
+            (goto-char (buffer-end 0))
+            (while (search-forward-regexp (concat "^" rmv-ths "$") nil t)
+              (let ((fnd `(,(match-beginning 0) . ,(match-end 0))))
+                (when (equal (buffer-substring-no-properties (car fnd) (cdr fnd))
+                             (buffer-substring-no-properties 
+                              (line-beginning-position 2) (line-end-position 2)))
+                  (delete-region (car fnd) (cdr fnd))
+                  (unless (eobp)
+                    (when (eq (line-end-position) (line-beginning-position))
+                      (delete-char 1))))))))
+        (setq w-this-rgn (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+      (save-excursion 
+        (goto-char cln-from)
+        (delete-region cln-from cln-to)
+        (insert w-this-rgn))
+      (if (or insrtp intrp)
+          (save-excursion
+            (princ (format ";;; :W-REGION :FROM %d :TO %d :REPLACED-DUPLICATES\n%s\n;;;\n"
+                           cln-from cln-to this-got-clnd)(current-buffer)))
+        this-got-clnd))))
+;;
+(defalias 'mon-cln-duplicate-lines 'mon-line-find-duplicates-cln)
+(defalias 'mon-remove-duplicate-lines 'mon-line-find-duplicates-cln)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday May 08, 2009 @ 05:32.08 PM - by MON KEY>
@@ -2192,11 +2252,11 @@ With each successive previous line deleting until point is no longer greater tha
                      (beginning-of-line)
                      (insert the-delim)
                      (beginning-of-line)
-                     (delete-backward-char 1)
+                     (delete-char -1)
                      (if (bolp)
                          () (beginning-of-line) ))
                    (goto-char (buffer-end 1))
-                   (while (search-forward-regexp " " nil t)
+                   (while (search-forward-regexp "\1" nil t)
                      (replace-match " " nil nil)))
                  (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
          (delete-region bak-start bak-end)

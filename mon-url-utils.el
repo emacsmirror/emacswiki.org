@@ -33,7 +33,8 @@
 ;; `mon-tld-find-name', `mon-tld', `mon-get-w3m-url-at-point-maybe',
 ;; `mon-get-w3m-url-at-point' `mon-w3m-read-gnu-lists-nxt-prv',
 ;; `mon-url-encode', `mon-url-decode' `mon-get-host-address',
-;; `mon-url-retrieve-to-new-buffer', `mon-its-all-text-purge-on-quit'
+;; `mon-url-retrieve-to-new-buffer', `mon-its-all-text-purge-on-quit',
+;; `mon-html-fontify-generate-file-name'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -46,14 +47,15 @@
 ;; `*mon-tld-list*'
 ;;
 ;; VARIABLES:
-;; `*hexcolor-keywords*'
+;; `*hexcolor-keywords*',
 ;; 
 ;; ALIASES:
-;; `mon-search-wiki'                    ->  `mon-search-wikipedia'
+;; `mon-search-wiki'                    -> `mon-search-wikipedia'
 ;; `mon-url-escape'                     -> `mon-url-encode'
+;; `mon-url-unescape'                   -> `mon-url-decode'
 ;; `mon-w3m-get-url-at-point-maybe'     -> `mon-get-w3m-url-at-point-maybe'
 ;; `mon-w3m-get-url-at-point'           -> `mon-get-w3m-url-at-point'
-;; `mon-get-w3m-read-gnu-lists-nxt-prv' ->  `mon-w3m-read-gnu-lists-nxt-prv'
+;; `mon-get-w3m-read-gnu-lists-nxt-prv' -> `mon-w3m-read-gnu-lists-nxt-prv'
 ;;
 ;; SUBST:
 ;; `mon-tld-tld', `mon-tld-name' 
@@ -80,14 +82,16 @@
 ;; `mon-w3m-kill-url-at-point'   <- mon-dir-utils.el
 ;;
 ;; REQUIRES:
-;; `mon-htmlfontify-buffer-to-firefox'  -> ./mon-dir-locals-alist.el <- *ebay-images-temp-path*
-;; `mon-htmlfontify-region-to-firefox'  -> ./mon-dir-locals-alist.el <- *ebay-images-temp-path*
+;; `mon-htmlfontify-buffer-to-firefox', `mon-htmlfontify-region-to-firefox'  
+;;  | mon-dir-locals-alist.el           <-`*mon-ebay-images-temp-path*'
 ;; `mon-htmlfontify-buffer-to-firefox'  -> html-fontify.el
 ;; `mon-htmlfontify-region-to-firefox'  -> html-fontify.el
 ;; `mon-get-w3m-url-at-point-maybe'     -> w3m
 ;; `mon-get-w3m-url-at-point'           -> w3m
 ;; `mon-w3m-read-gnu-lists-nxt-prv'     -> w3m
-;; `mon-url-retrieve-to-new-buffer'    -> url.el
+;; `mon-url-retrieve-to-new-buffer'     -> lisp/url/url.el
+;; `mon-url-encode'                     -> lisp/url/url-util.el
+;; `mon-url-decode'                     -> lisp/url/url-util.el
 ;; `mon-tld-*-'                         -> cl
 ;;
 ;; TODO:
@@ -144,43 +148,78 @@
 
 ;; :REQUIRED-BY `mon-htmlfontify-buffer-to-firefox'
 ;; :REQUIRED-BY `mon-htmlfontify-region-to-firefox'
-;(eval-when-compile 
-(when (locate-library "htmlfontify") (require 'htmlfontify))
+;; :WAS (when (locate-library "htmlfontify") (require 'htmlfontify))
+(require 'htmlfontify nil t)
 
 ;; :REQUIRED-BY `mon-get-w3m-url-at-point-maybe'
 ;; :REQUIRED-BY `mon-w3m-read-gnu-lists-nxt-prv'
 ;; :REQUIRED-BY `mon-get-w3m-url-at-point'
-;(eval-when-compile  
-(when (locate-library "w3m") (require 'w3m))
+;; :WAS (when (locate-library "w3m") (require 'w3m))
+(require 'w3m nil t)
 
 ;; :REQUIRED-BY `mon-url-retrieve-to-new-buffer'
 (require 'url)
+;; :REQUIRED-BY `mon-url-encode'
+;; :REQUIRED-BY `mon-url-decode' 
+(require 'url-util)
 
+
+(declare-function 'w3m-view-this-url "ext:w3m.el" t t)
+(declare-function 'w3m-find-file   "ext:w3m.el" t t )
+(declare-function 'mon-get-w3m-url-at-point-maybe "mon-url-utils")
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-27T16:36:32-04:00Z}#{10126} - by MON KEY>
 (defun mon-its-all-text-purge-on-quit ()
-  "Remove .txt files in the current user's Mozilla profile itsalltext directory.
-To be run as a hook function on `kill-emacs-hook'.\n
+  "Remove .txt files in the current user's Mozilla profile itsalltext directory.\n
 On w32 these may get left behind when remoting field text from Firefox using the
-itsalltext add-on extension. 
-This functions invokes file-expand-wildcards with the following pattern:
+itsalltext add-on extension.\n
+This procedure invokes `file-expand-wildcards' with the following pattern:
  \"/Mozilla/Firefox/Profiles/*.default/itsalltext/*.txt*\"
 :NOTE You _should_ set/verify the path value associated with the key 
 the-itsalltext-temp-dir in the variable `*mon-misc-path-alist*'.\n
-:SEE (URL `https://addons.mozilla.org/en-US/firefox/addon/4125')
-:SEE (URL `http://trac.gerf.org/itsalltext')
-:SEE-ALSO `mon-htmlfontify-dir-purge-on-quit'.\n►►►"
-(when IS-W32-P
-  (let ((chk-i-a-t (cadr (assoc 'the-itsalltext-temp-dir *mon-misc-path-alist*))))
-    (when (and chk-i-a-t (file-exists-p chk-i-a-t))
-      (dolist (i-a-t (file-expand-wildcards (concat chk-i-a-t "/*.txt*") t))
-        (delete-file i-a-t))))))
+The intent of this procedure that it be run as a hook on `kill-emacs-hook'.\n
+When `IS-MON-SYSTEM-P', this function is evaluated with:
+`mon-purge-emacs-temp-files-on-quit' on the `kill-emacs-hook'.\n
+:SEE (URL `https://addons.mozilla.org/en-US/firefox/addon/4125')\n
+:SEE (URL `http://trac.gerf.org/itsalltext')\n
+:SEE-ALSO `mon-htmlfontify-dir-purge-on-quit', `mon-purge-doc-view-cache-directory',
+`mon-purge-thumbs-directory', `mon-purge-temporary-file-directory',
+`*mon-purge-emacs-temp-file-dir-fncns*'.\n►►►"
+  (when (or IS-MON-SYSTEM-P IS-W32-P)
+    (let ((chk-i-a-t (cadr (assoc 'the-itsalltext-temp-dir *mon-misc-path-alist*))))
+      (when (and chk-i-a-t (file-exists-p chk-i-a-t))
+        (dolist (i-a-t (file-expand-wildcards (concat chk-i-a-t "/*.txt*") t))
+          (unless (car (file-attributes i-a-t)) ;; Its a directory!
+            (delete-file i-a-t)))))))
 ;;
-(when IS-MON-P-W32
-  (add-hook 'kill-emacs-hook 'mon-htmlfontify-dir-purge-on-quit))
+;;; (add-hook 'kill-emacs-hook 'mon-its-all-text-purge-on-quit)
+;;; (remove-hook 'kill-emacs-hook 'mon-its-all-text-purge-on-quit)
+
+;;; ==============================
+;; :HTML-FONTIFY
+;; :NOTE Variables `*emacs2html-temp*', `*mon-html-fontify-file-name-template*'
+;;       are bound in :FILE mon-dir-locals-alist.el
+;;; ==============================
 
 (when (featurep 'htmlfontify)
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-04-02T12:30:11-04:00Z}#{10135} - by MON KEY>
+(defun mon-html-fontify-generate-file-name ()
+  "Generate a temporary file-name for `mon-htmlfontify-*' procedures.\n
+:EXAMPLE\n\n(mon-html-fontify-generate-file-name)\n
+:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*',
+`mon-htmlfontify-dir-purge-on-quit', `*mon-html-fontify-file-name-template*'.\n►►►"
+  (let ((mhfgfn #'(lambda ()
+                    (format *mon-html-fontify-file-name-template* *emacs2html-temp* (random t))))
+        mhfgfn-myb-regen)
+    (setq mhfgfn-myb-regen (funcall mhfgfn))
+    (while (file-exists-p mhfgfn-myb-regen)
+      (setq mhfgfn-myb-regen (funcall mhfgfn)))
+    mhfgfn-myb-regen))
+;;
+;;; :TEST-ME (mon-html-fontify-generate-file-name)
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-23T21:05:10-04:00Z}#{10123} - by MON KEY>
 (defun mon-htmlfontify-dir-purge-on-quit ()
@@ -188,17 +227,22 @@ the-itsalltext-temp-dir in the variable `*mon-misc-path-alist*'.\n
 These are temp files generated with `mon-htmlfontify-buffer-to-firefox' and
 `mon-htmlfontify-region-to-firefox'.\n
 This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
+:NOTE When `IS-MON-SYSTEM-P', this function is evaluated with
+`mon-purge-emacs-temp-files-on-quit' on the `kill-emacs-hook'.\n
 :EXAMPLE\n\(directory-files *emacs2html-temp* t \"emacs2firefox-.*\.html\")\n
 \n\(mon-htmlfontify-dir-purge-on-quit\)\n
-:SEE-ALSO `mon-its-all-text-purge-on-quit'.\n►►►"
+:SEE-ALSO `mon-its-all-text-purge-on-quit', `mon-purge-doc-view-cache-directory',
+`mon-purge-thumbs-directory', `mon-purge-temporary-file-directory'.\n►►►"
   (interactive)
-  (let ((cln-emacs2html-temp 
-         (directory-files *emacs2html-temp* t "emacs2firefox-.*\.html~?")))
-    (dolist (prg cln-emacs2html-temp)
-      (delete-file prg))))
-;; Purge the directory on quit.
-(when (and IS-MON-SYSTEM-P (file-directory-p *emacs2html-temp*))
-  (add-hook 'kill-emacs-hook 'mon-htmlfontify-dir-purge-on-quit))
+  (when (and ;; IS-MON-SYSTEM-P 
+         (not (null *emacs2html-temp*))
+         (file-exists-p *emacs2html-temp*)
+         (file-directory-p *emacs2html-temp*))
+    (let ((cln-emacs2html-temp 
+           (directory-files *emacs2html-temp* t "emacs2firefox-.*\.html~?")))
+      (dolist (prg cln-emacs2html-temp)
+        (unless (car (file-attributes prg)) ;; Its a directory!
+          (delete-file prg))))))
 ;;
 ;;; :TEST-ME (mon-htmlfontify-dir-purge-on-quit)
 
@@ -211,26 +255,29 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
   "Convert fontified buffer to an HTML file display it with Firefox.\n
 :SEE `hfy-tags-cache', `hfy-load-tags-cache', `hfy-etags-cmd', `hfy-parse-tags-buffer'
 :SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*',
+`mon-html-fontify-generate-file-name', `*mon-html-fontify-file-name-template*',
 `mon-htmlfontify-dir-purge-on-quit'.\n►►►"
   (interactive)
-  (let* ((ffox-fname (format "%s/emacs2firefox-%d.html" *emacs2html-temp* (random t)))
+  (let* ((ffox-fname mon-html-fontify-generate-file-name)
          (this-bfr-file (buffer-file-name))
          (this-bfr-dir 
-          (when this-bfr-file (directory-file-name (file-name-directory this-bfr-file))))
+          (when this-bfr-file 
+            (directory-file-name (file-name-directory this-bfr-file))))
          (this-bfr-has-TAGS 
-          (when this-bfr-dir (car (member "TAGS"  (directory-files  this-bfr-dir)))))
+          (when this-bfr-dir 
+            (car (member "TAGS"  (directory-files  this-bfr-dir)))))
          h-fnty-bfr)
     (with-current-buffer 
         (get-buffer    
          (if this-bfr-has-TAGS 
-             (setq h-fnty-bfr ;; :SEE 
-                   (htmlfontify-buffer this-bfr-dir this-bfr-file))
-             (setq h-fnty-bfr (htmlfontify-buffer))))
+             (setq h-fnty-bfr (htmlfontify-buffer this-bfr-dir this-bfr-file))
+           (setq h-fnty-bfr (htmlfontify-buffer))))
       (set (make-local-variable 'delete-auto-save-files) t)
       (set (make-local-variable 'backup-inhibited) t)
       (setq h-fnty-bfr (current-buffer))
       (write-file ffox-fname))
-    (when (get-buffer h-fnty-bfr) (kill-buffer h-fnty-bfr))
+    (when (get-buffer h-fnty-bfr) 
+      (kill-buffer h-fnty-bfr))
     (browse-url-firefox (format "file:///%s" ffox-fname))))
 ;;
 ;;; ==============================
@@ -239,11 +286,12 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-23T20:38:06-04:00Z}#{10123} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 16, 2009 @ 08:28.49 PM - by MON>
 (defun mon-htmlfontify-region-to-firefox (fontify-from fontify-to)
-  "Converts fontified region to an html file and display it with Firefox.\n
-:SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*',
-`mon-htmlfontify-dir-purge-on-quit'.\n►►►"
+  "Convert fontified region to an html file and display it with Firefox.\n
+:SEE-ALSO `mon-htmlfontify-region-to-firefox', 
+`mon-htmlfontify-dir-purge-on-quit', `mon-html-fontify-generate-file-name',
+`*mon-html-fontify-file-name-template*', `*emacs2html-temp*'.\n►►►"
   (interactive "r")
-  (let ((ffox-rg-fname (format "%s/emacs2firefox-%d.html" *emacs2html-temp* (random t)))
+  (let ((ffox-rg-fname (mon-html-fontify-generate-file-name))
         mhr2f-fontify-this
         h-fnty-bfr)
     (setq mhr2f-fontify-this 
@@ -263,7 +311,7 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
       (when (get-buffer h-fnty-bfr)
         (kill-buffer (get-buffer h-fnty-bfr))))
     (browse-url-firefox (format "file:///%s" ffox-rg-fname))))
-);; :CLOSE htmlfontify
+) ;; :CLOSE htmlfontify
 
 ;;; ==============================
 ;;; :RENAMED `*hexcolor-keywords*' -> `*regexp-hexcolor-keywords*'
@@ -272,22 +320,25 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 (defvar *regexp-hexcolor-keywords* 'nil
   "*Keywords for fontification of hex code color values \(e.g. CSS\).\n
 :SEE-ALSO `mon-hexcolor-add-to-font-lock', `*regexp-rgb-hex*'.\n►►►")
-;;
 (when (not (bound-and-true-p *regexp-hexcolor-keywords*))
-(setq *regexp-hexcolor-keywords*
-  '(("#[abcdefABCDEF[:digit:]]\\{6\\}"
-     (0 (put-text-property
-         (match-beginning 0)
-         (match-end 0)
-         'face (list :background 
-                     (match-string-no-properties 0)))))))) 
+  (setq *regexp-hexcolor-keywords*
+        '(("#[abcdefABCDEF[:digit:]]\\{6\\}"
+           (0 (put-text-property
+               (match-beginning 0)
+               (match-end 0)
+               'face (list :background 
+                           (match-string-no-properties 0)))))))) 
+;;
+;;; (progn (makunbound '*regexp-hexcolor-keywords*)
+;;;        (unintern '*regexp-hexcolor-keywords*) )
 
 ;;; ==============================
 ;;; :RENAMED `hexcolor-add-to-font-lock' -> `mon-hexcolor-add-to-font-lock'
 ;;; :NOTE `naf-mode' is `derived-mode-p' -> t
 ;;; To add them for derived modes we have to pass nil for
 ;;; `font-lock-add-keywords' MODE arg and add the call to `naf-mode-hook'.
-;;; :NOTE We call (add-hook 'naf-mode-hook 'mon-hexcolor-add-to-font-lock) from `naf-mode'
+;;; :NOTE We call this from `naf-mode' with: 
+;;;       (add-hook 'naf-mode-hook 'mon-hexcolor-add-to-font-lock)
 (defun mon-hexcolor-add-to-font-lock ()
   "Add font-lock keywords for hex code color values for fontification.\n
 :SEE-ALSO `*regexp-hexcolor-keywords*', `*regexp-rgb-hex*'.\n►►►"
@@ -296,84 +347,128 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 ;;; ==============================
 ;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs-en/AlexSchroederConfigConfusibombus')
+;;; :CHANGESET 1756 <Timestamp: #{2010-05-21T12:22:16-04:00Z}#{10205} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-27T17:08:03-05:00Z}#{09485} - by MON KEY>
-(defun mon-url-encode (str)
-  "URL-encode STR.\n
+(defun mon-url-encode (url-enc-str &optional insrtp intrp)
+  "Return the encoded url string URL-ENC-STR.\n
+When optional arg INSRTP is non-nil or called-interactively insert return value
+at point. Moves point.\n
+:EXAMPLE\n\n\(mon-url-encode 
+ \"www.encode-me.com/ cash$<change[@+make:some|steal&&lie]\"\)\n
+:ALIASED-BY `mon-url-escape'\n
 :SEE-ALSO `mon-url-decode'.\n►►►"
-  (interactive "sURL-encode: ")
-  (message "%s" (url-hexify-string str)))
+  (interactive "sURL-encode :\ni\p")
+  (let ((mud-encd (url-hexify-string url-enc-str)))
+    (if (or intrp insrtp)
+        (insert (format " %s " mud-encd))
+      mud-encd)))
 ;;
+;;; :TEST-ME (mon-url-encode "www.encode-me.com/ cash$<change[@+make:some|steal&&lie]")
+;;; 
 (defalias 'mon-url-escape 'mon-url-encode)
 
 ;;; ==============================
 ;;; :COURTESY Alex Schroeder :HIS ConfigConfusibombus :WAS `url-decode'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs-en/AlexSchroederConfigConfusibombus')
+;;; :CHANGESET 1756 <Timestamp: #{2010-05-21T12:15:42-04:00Z}#{10205} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-27T17:08:21-05:00Z}#{09485} - by MON KEY>
-(defun mon-url-decode (str)
-  "URL-decode STR.\n
+(defun mon-url-decode (url-dec-str &optional insrtp intrp)
+  "Return the decoded url string URL-DEC-STR.\n
+When optional arg insrtp is non-nil or called-interactively insert return value
+at point. Moves point.\n
+:EXAMPLE\n\n\(mon-url-decode 
+ \"www.encode-me.com%2f%20cash%24%3cchange%5b%40%2bmake%3asome%7csteal%26%26lie%5d\"\)\n
+\(mon-url-decode
+ \(mon-url-encode \"www.encode-me.com/ cash$<change[@+make:some|steal&&lie]\"\)\)\n
+:ALIASED-BY `mon-url-unescape'\n
 :SEE-ALSO `mon-url-encode'.\n►►►"
-  (interactive "sURL-decode: ")
-  (message "%s" (decode-coding-string
-		 (url-unhex-string str)
-		 'utf-8)))
+  (interactive "sURL-decode :\ni\p")
+  (let ((mud-decd
+         (decode-coding-string
+          (url-unhex-string url-dec-str)
+          'utf-8)))
+    (if (or insrtp intrp)
+        (insert (format " %s " mud-decd))
+      mud-decd)))
+;;
+(defalias 'mon-url-unescape 'mon-url-decode)
+;;
+;;; :TEST-ME (mon-url-decode 
+;;;              "www.encode-me.com%2f%20cash%24%3cchange%5b%40%2bmake%3asome%7csteal%26%26lie%5d")
+;;; :TEST-ME (mon-url-decode
+;;;              (mon-url-encode "www.encode-me.com/ cash$<change[@+make:some|steal&&lie]"))
 
 ;;; ==============================
 ;;; :NOTE Maybe better to use firefox for ULAN - conkeror doesn't scroll well :(
 ;;;       Or, better even, just retrieve url synchronously. 
+;;; :CHANGESET 1759 <Timestamp: #{2010-05-21T14:12:08-04:00Z}#{10205} - by MON KEY>
 ;;; :CREATED <Timestamp: Friday February 13, 2009 @ 07:01.59 PM - by MON>
-(defun mon-search-ulan (&optional uq)
-  "Open the ULAN in a browser. When UQ is non-nil search the ULAN artist name. 
-When the mark is active search ULAN for name in region. Attempts to rotate
+(defun mon-search-ulan (&optional w-ulan-query)
+  "Open ULAN in web browser.\n
+When W-ULAN-QUERY is non-nil search the ULAN artist name.\n
+When the region is active search ULAN for name between point and mark. Attempts to rotate
 the nameform intelligently to catch one of three different configurations:\n
 A\) Lastname \(Firstname\) 
 B\) Lastname, Firstname 
 C\) Firstname Lastname\n
 A, B, and C  are each transformed to ==> Lastname%2C+Fristname and then wrapped 
 for ULAN query to \(URL `http://www.getty.edu/vow/ULANFullDisplay?find='\).\n When region
-is not active and UQ is nil open a blank ULAN query in browser:\n
+is not active and W-ULAN-QUERY is ommitted or null open a blank ULAN query in browser at:\n
 \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/'\)\n
-`mon-search-ulan-for-name' for an interactive version which automatically
-defaults to a prompt for name to search.\n
-:SEE-ALSO `mon-search-wikipedia'\nUsed in `naf-mode'.\n►►►"
-  (interactive "P")
-  (let* ((uqp (if (and uq)
-		  t nil))
-	 (prompt-url (when (and uqp)
-		       (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="
-			       (replace-regexp-in-string ", " "%2C+"
-							 (read-string "Artist Name to Query \"Lastname, Firstname\"?: "))
-			       "&role=&page=1&nation=")))
-	 (region-url (when (and transient-mark-mode mark-active)
+:EXAMPLE\n\n\(mon-search-ulan\)\n
+\(mon-search-ulan \"Pyle, Howard\"\)\n
+\(mon-search-ulan t\)\n
+:NOTE for an interactive version which automatically defaults to a prompt for
+ULAN name to search use: `mon-search-ulan-for-name'.\n
+:SEE-ALSO `mon-search-wikipedia', `mon-search-loc', `mon-search-bnf'.\nUsed in `naf-mode'.\n►►►"
+  (interactive "p")
+  (let* ((use-empty-active-region nil)
+         (msu-uqp (cond 
+                   ((and w-ulan-query (not (use-region-p)) (stringp w-ulan-query))
+                    (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="       
+                            (replace-regexp-in-string 
+                             ", " "%2C+"
+                             (read-string "Artist Name to Query \"Lastname, Firstname\"?: ") t)
+                            "&role=&page=1&nation="))
+                   ((stringp w-ulan-query)
+                    (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="       
+                            (replace-regexp-in-string ", " "%2C+" w-ulan-query t)
+                            "&role=&page=1&nation="))
+                   ((and w-ulan-query (use-region-p) (not (stringp w-ulan-query))) t)
+                   ((and w-ulan-query (not (use-region-p)))
+                    (error (concat ":FUNCTION `mon-search-ulan' "
+                                   " -- arg W-ULAN-QUERY not a string and no active-region")))))
+	 (msu-rgn-url (when (and (use-region-p) (not (stringp msu-uqp)))
 		       (buffer-substring-no-properties (region-beginning) (region-end))))
-	 (test-region (when (and region-url)
-			(cond
-			 ((string-match "\\(\\([A-Z][a-z]+\\)\\([: :](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" region-url) 
-			  (concat (match-string 2 region-url) "%2C+"  (match-string 4 region-url)))
-			 ((string-match "\\(\\([A-Z][a-z]+\\)\\(,[: :]\\)\\([A-Z][a-z]+\\)\\)" region-url)
-			  (concat (match-string 2 region-url) "%2C+" (match-string 4 region-url)))
-			 ((string-match "\\(\\([A-Z][a-z]+\\)\\([: :]\\)\\([A-Z][a-z]+\\)\\)" region-url)
-			  (concat (match-string 4 region-url) "%2C+" (match-string 2 region-url))))))
-	 (build-url (when (and test-region)
-		      (concat
-		       "http://www.getty.edu/vow/ULANServlet?english=Y&find="
-		       test-region
-		       "&role=&page=1&nation=")))
-	 (ulan-url (cond
-		    ((and build-url)
-		     build-url)
-		    ((and prompt-url)
-		     prompt-url)
-		    ((and (not build-url) (not uqp))
-		     "http://www.getty.edu/research/conducting_research/vocabularies/ulan/"))))
-    ;;    (browse-url ulan-url)))  ;:SEE :NOTE above.
-    (browse-url-firefox ulan-url)))
+	 (msu-tst-rgn (when msu-rgn-url
+                        (save-match-data
+                          (cond  ((string-match 
+                                   "\\(\\([A-Z][a-z]+\\)\\([[:blank:]](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" msu-rgn-url) 
+                                  (concat (match-string 2 msu-rgn-url) "%2C+"  (match-string 4 msu-rgn-url)))
+                           ((string-match 
+                             "\\(\\([A-Z][a-z]+\\)\\(,[[:blank:]]\\)\\([A-Z][a-z]+\\)\\)" msu-rgn-url)
+                            (concat (match-string 2 msu-rgn-url) "%2C+" (match-string 4 msu-rgn-url)))
+                           ((string-match 
+                             "\\(\\([A-Z][a-z]+\\)\\([[:blank:]]\\)\\([A-Z][a-z]+\\)\\)" msu-rgn-url)
+                            (concat (match-string 4 msu-rgn-url) "%2C+" (match-string 2 msu-rgn-url)))))))
+	 (msu-bld-url (when msu-tst-rgn
+		      (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="
+                              msu-tst-rgn "&role=&page=1&nation=")))
+	 (msu-ulan-url (cond (msu-bld-url msu-bld-url)
+                         (msu-uqp msu-uqp)
+                         ((and (not msu-bld-url) (not msu-uqp))
+                          "http://www.getty.edu/research/conducting_research/vocabularies/ulan/"))))
+    ;; (browse-url msu-ulan-url)))  :NOTE See above w/re conkeror/generic browswer
+    (browse-url-firefox msu-ulan-url)))
 ;;
-;;; :TEST-ME  Lastname (Firstname)
-;;; :TEST-ME  Lastname, Firstname
-;;; :TEST-ME  Firstname Lastname
-;;; :TEST-ME  Pyle (Howard)
-;;; :TEST-ME  Pyle, Howard
-;;; :TEST-ME  Howard Pyle
+;;; :TEST-ME (mon-search-ulan "Pyle, Howard")
+;;; :TEST-ME (mon-search-ulan t)
+;;; :TEST-ME W/ region point and mark on following names interactively call `mon-search-ulan':
+;;,----
+;;| Pyle (Howard)
+;;| Pyle, Howard
+;;| Howard Pyle
+;;`----
 
 ;;; ==============================
 (defun mon-search-ulan-for-name ()
@@ -384,25 +479,30 @@ Default behavior is to prompt for name to search.\n
   (mon-search-ulan t))
 
 ;;; ==============================
-;;; :COURTESY Xah Lee
-;;; :SEE (URL `http://xahlee.org/emacs/emacs_lookup_ref.html')
-(defun mon-search-wikipedia ()
-  "Look up the words on Wikipedia.
-Generates a url, with active region (a phrase), lookup that phrase
-and switches to browser.\n\nUsed in `naf-mode'.
+;;; :CHANGESET 1760 <Timestamp: #{2010-05-21T14:27:09-04:00Z}#{10205} - by MON KEY>
+(defun mon-search-wikipedia (&optional wiki-word)
+  "Look up word or phrase on Wikipedia.\n
+Generate a url from with the a word or phrase in the active region
+opens it in a browser.\n
+When optional arg WIKI-WORD is non-nil use it instead.
+:EXAMPLE\n\n(mon-search-wikipedia \"monkey meat\")\n
 :SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name',
-`mon-search-loc', `mon-search-bnf'.\n►►►"
- (interactive)
- (let (myword myurl)
-   (setq myword
-         (if (and transient-mark-mode mark-active)
-	     (buffer-substring-no-properties (region-beginning) (region-end))
-           (thing-at-point 'symbol)))
-   (setq myword (replace-regexp-in-string " " "_" myword))
-   (setq myurl (concat "http://en.wikipedia.org/wiki/" myword))
-   (browse-url myurl)))
+`mon-search-loc', `mon-search-bnf'.\n\nUsed in `naf-mode'.►►►"
+  (interactive "sSearch wiki for :")
+  (let ((msw-word wiki-word))
+    (when (null msw-word)
+      (setq msw-word
+            (if (use-region-p) ;; (and transient-mark-mode mark-active)
+                (buffer-substring-no-properties (region-beginning) (region-end))
+              (thing-at-point 'symbol))))
+    (setq msw-word 
+          (concat "http://en.wikipedia.org/wiki/"
+                  (replace-regexp-in-string " " "_" msw-word t)))
+    (browse-url msw-word)))
 ;;
 (defalias 'mon-search-wiki 'mon-search-wikipedia)
+;;
+;;; :TEST-ME (mon-search-wikipedia "monkey meat")
 
 ;;; ==============================
 ;;; :NOTE `mon-search-loc' needs to take arguments to build the search.
@@ -477,19 +577,22 @@ page URL.\nUsed in `naf-mode'.\n►►►"
 ;;; :TODO Needs to be re-written using:
 ;;; (search-forward-regexp { ... } (replace-match { ... } 
 ;;; instead of the existing wacko `replace-string' calls!
+;;;
 ;;; :NOTE not 100% correct yet because doesn't detect pre-existing wrapped urls
 ;;; in _some_ buffer locations.
+;;;
+;;; :REQUIRES `*regexp-wrap-url-schemes*' <- mon-regexp-symbols.el
 ;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON>
 (defun mon-wrap-all-urls ()
   "Wraps all URLs in buffer _after point_ with (URL `*').
-Conditional prefix matching regexps in `*mon-wrap-url-schemes*' global.
+Conditional prefix matching regexps in `*regexp-wrap-url-schemes*' global.
 Won't replace recursively on pre-existing wrapped URLs.\n
 :SEE-ALSO `thing-at-point-url-at-point', `mon-wrap-url', `mon-wrap-text', 
 `mon-wrap-span', `mon-wrap-selection', `mon-wrap-with'.\n►►►"
   (interactive)
   (save-excursion
     (while
-	(if (search-forward-regexp *mon-wrap-url-schemes* nil t)
+	(if (search-forward-regexp *regexp-wrap-url-schemes* nil t)
 	    (let* ((bnd-start (car (bounds-of-thing-at-point 'url)))
 		   (bnd-pre (- bnd-start 6))
 		   (url-targ (thing-at-point-url-at-point))
@@ -501,7 +604,8 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 	       ((not (string-match-p "(URL `" (buffer-substring bnd-pre bnd-start)))
 		(skip-syntax-backward "^-")
 		(replace-string url-targ url-rep)
-		(skip-syntax-forward "^w"))))))))
+		(skip-syntax-forward "^w"))))))
+    ))
 ;;
 ;;; :TEST-ME http://www.somethign.xomthing.com/blotto
 ;;; :TEST-ME ftp://some.site.com
@@ -512,7 +616,7 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 ;;; :MODIFICATIONS <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON>
 (defun mon-wrap-one-url () ;;(&optional start end insertp)
   "Wrap 1\(one\)the URL  _after point_ with (URL `*').\n
-Conditional prefix matching regexps in `*mon-wrap-url-schemes*' global.
+Conditional prefix matching regexps in `*regexp-wrap-url-schemes*' global.
 Won't replace recursively on pre-existing wrapped URLs.\n
 :SEE-ALSO `mon-wrap-all-urls', `thing-at-point-url-at-point',
 `mon-wrap-url', `mon-wrap-text', `mon-wrap-span', `mon-wrap-with'
@@ -540,7 +644,7 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 :EXAMPLE\n http://wikipedia.org\nbecomes:\n
 <a href=\"http://en.wikipedia.org/\">http://wikipedia.org/</a>\n
 Or:\n'test' becomes <a href=\"test\">test</a>\n
-:SEE-ALSO `mon-wrap-all-urls', `mon-wrap-one-url', `*mon-wrap-url-schemes*',
+:SEE-ALSO `mon-wrap-all-urls', `mon-wrap-one-url', `*regexp-wrap-url-schemes*',
 `thing-at-point-url-at-point',`mon-wrap-text', `mon-wrap-span',
 `mon-wrap-selection', `mon-wrap-with'.\n►►►"
   (interactive)
@@ -634,12 +738,13 @@ Into the following html table:\n
   "Return FETCH-THIS-URL displayed in an new buffer-window.\n
 Fetches URL as with `url-retrieve-synchronously'.\n
 :EXAMPLE\n
-\(mon-url-retrieve-to-new-buffer \"http://tools.ietf.org/rfc/rfc2822.txt\")
-:SEE-ALSO `mon-get-w3m-url-at-point-maybe', `google-define',
+\(mon-url-retrieve-to-new-buffer \"http://tools.ietf.org/rfc/rfc2822.txt\")\n
+:SEE-ALSO `url-copy-file', `url-retrieve', `url-retrieve-synchronously', 
+`url-http', `mon-get-w3m-url-at-point-maybe', `google-define',
 `mon-get-host-address', `mon-url-encode', `mon-url-decode'
 `mon-get-w3m-url-at-point', `mon-w3m-dired-file'\n►►►"
-(let ((the-buff (url-retrieve-synchronously fetch-this-url)))
-     (when (get-buff the-buff) (display-buffer the-buff t))))
+  (let ((the-buff (url-retrieve-synchronously fetch-this-url)))
+    (when (get-buffer the-buff) (display-buffer the-buff t))))
 
 ;;; ==============================
 ;;; :COURTESY Dave Love <fx@gnu.org> :HIS fx-misc.el :WAS `gethostaddr'
@@ -663,6 +768,16 @@ corresponding to the host name arg.\n
 ;;; ==============================
 ;; :W3M-URL-GRABBER  
 
+;;; check-declare-verify
+
+;;(declare-function 'w3m-view-this-url "ext:w3m.el")
+;;(declare-function 'w3m-find-file   "ext:w3m.el")
+;;(declare-function 'mon-get-w3m-url-at-point-maybe "mon-url-utils")
+;; w3m-current-url <VARIABLE>
+
+;; (eval-when-compile (defvar w3m-current-url))
+
+(with-no-warnings
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-16T23:00:32-05:00Z}#{09513} - by MON KEY>
 (if (and (or (featurep 'w3m-load) (featurep 'w3m))
@@ -697,6 +812,7 @@ the property value on the kill ring and message user.\n
       (when (and w3mgtp (stringp w3mgtp))
         (kill-new w3mgtp)
         (message w3mgtp))))
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-22T16:50:15-05:00Z}#{09477} - by MON>
 (defun mon-get-w3m-url-at-point-maybe ()
@@ -814,8 +930,9 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 ;;; `----
 ;;
 ) ;; :CLOSE progn
-(message "Can not find the w3m executable")) ;; :CLOSE IF
-
+(message "Can not find the w3m executable")
+) ;; :CLOSE if
+) ;; :CLOSE with-no-warnings
 ;;; ==============================
 ;;; ==============================
 

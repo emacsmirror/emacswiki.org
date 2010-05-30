@@ -210,6 +210,7 @@
 ;;       | -> `mon-string-upto-index' 
 ;;       | -> `mon-string-after-index'
 ;;       | -> `mon-string-justify-left'
+;;       | -> `mon-check-feature-for-loadtime'
 ;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;
 ;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
@@ -392,9 +393,10 @@
 ;;
 
 ;;; ==============================
+;;; :TODO :RENAME `*doc-cookie*' -> `*mon-doc-cookie*'
 ;;; :CREATED <Timestamp: Friday July 03, 2009 @ 01:11.47 PM - by MON KEY>
 (defvar *doc-cookie* nil
-  "*Default 'documentation cookie' \"►►►\".
+  "*Default 'documentation cookie' \"►►►\".\n
 A Documentation cookie delimter for use with `mon-help-function-spit-doc'.\n
 Used to delimit which portion of docstring should be commented out when
 inserting into buffer. Default is \"\u25BA\u25BA\u25BA\"\n
@@ -414,7 +416,7 @@ EXAMPLE:\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-20T17:42:27-05:00Z}#{09517} - by MON KEY>
 (defvar *mon-help-docstring-help-bffr* "*MON-HELP*"
-  "*A buffer name in which to check `mon-help-*' related docstrings.
+  "*A buffer name in which to check `mon-help-*' related docstrings.\n
 Default is *MON-HELP*\n
 :SEE-ALSO `mon-help-view-file', `mon-help-temp-docstring-display'.\n►►►")
 ;;
@@ -451,7 +453,7 @@ Default is *MON-HELP*\n
 ;;;  Which is more inline with other Lisp2 documentation styles :)
 ;;; Ideally the elts of key 'meta-tags and 'meta-tags-keybindings
 ;;; would use "MATHEMATICAL LEFT/RIGHT ANGLE BRACKET" e.g.:
-;;;   ?\u27e8 "⟨" and ?\u27e9 "⟩"
+;;; ?\u27e8 "⟨" and ?\u27e9 "⟩"  (ucs-insert 10217) => ⟩ (ucs-insert 10216) => ⟨
 ;;; But, That code-point doesn't have glyph with our pref. font on current w32.
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-26T14:52:42-05:00Z}#{10085} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-20T17:41:52-05:00Z}#{09475} - by MON>
@@ -488,7 +490,7 @@ docstrings to indicated metasyntactic or idiomatic forms and types.\n
             ":DATE" 
             ":EMACS-WIKI" ":EVAL-BELOW-TO-TEST" 
             ":FIXES" ":FIXME" ":FIX-ME" ":FROM" ;; :NOTE also has ":FILE"
-            ":HIS" ":IF-NOT-FEATURE-P"
+            ":HIS" ":IF-NOT-FEATURE-P" ":INSTALL-TO" ":INSTALLED-TO"
             ":LOAD-SPECIFIC-PROCEDURES" 
             ":MODIFICATIONS" 
             ":RENAMED" ":REQUIRES" ":REQUIRED-BY"
@@ -1417,7 +1419,7 @@ When non-nil optional arg TP-BUFF names a buffer as required by
 `mon-get-text-properties-elisp-string'.\n
 :SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
 `mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.►►►"
+`mon-get-text-properties-elisp-string-pp'.\n►►►"
   (let ((mgtprt-new 
          (if tp-buff tp-buff 
              (get-buffer-create "*MGTPRT-NEW*")))
@@ -2043,6 +2045,7 @@ EXIT-CHAR or enters \7.\n
                          exit-c)
                  (setq got-N t)))))
       (delete-overlay showlay))))
+    
 ;;
 ;;,---- :UNCOMMENT-BELOW-TO-TEST
 ;;| (let ((botp #'(lambda () `(,(line-beginning-position) . ,(line-end-position))))
@@ -2157,7 +2160,7 @@ SOME-OTHER-BUFFER with name before displaying contents there.\n
 ;;;            (buffer-name (get-buffer-create "*BUBBA-TEST*")))
 
 ;;; ==============================
-;;; :NOTE this is here mostly so I don't forget it.
+;;; :NOTE This is here mostly so I don't forget it.
 ;;; :COURTESY Thinkig Machines Corp. :HIS help-hacks.el :WAS `help-tmc-hacks'
 ;;; :SEE (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/misc/gmacs/gmacs/')
 ;;; :CREATED <Timestamp: #{2009-12-31T13:12:41-05:00Z}#{09534} - by MON KEY>
@@ -3623,9 +3626,12 @@ Default is `*doc-cookie*'.\n
 `mon-help-propertize-tags-TEST'
 `mon-help-regexp-symbol-defs-TEST'
 `mon-help-wget-cl-pkgs-TEST'
+`mon-line-strings-bq-qt-sym-bol-TEST'
 `mon-insert-lisp-testme'
 `mon-insert-lisp-testme-fancy'
 `mon-insert-test-cases'
+`mon-line-dolines-setup-TEST'
+`mon-line-dolines-TEST'
 `mon-line-strings-to-list-TEST'
 `mon-user-system-conditionals-TEST'
 `mon-wget-list-to-script-TEST'
@@ -3658,8 +3664,10 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `init-file-user'
 `getenv'
 `setenv'
+`process-environment'
 `system-shell'
-`system-type'\n
+`system-type'
+`system-name'\n
 ;; :EMACS-ENVIRONMENT-PATHS-FILES
 `current-load-list'
 `load-path'
@@ -3709,6 +3717,7 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `data-directory'
 `doc-directory'
 `exec-directory'
+`find-function-C-source-directory'
 `installation-directory'
 `Info-default-directory-list'
 `internal-doc-file-name'
@@ -4063,6 +4072,9 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `string-match-p'
 `string-equal'
 `string='\n
+;; :SEARCH-CHARS
+`search-unencodable-char'
+`find-multibyte-characters'
 ;; :SEARCH-MODIFY
 `regexp-opt'
 `regexp-opt-depth'
@@ -4321,7 +4333,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `file-modes'
 `file-newest-backup'
 `file-nlinks'
-`file-set-intersect'
+`file-set-intersect'  ;:FILE lisp/loadhist.el
 `file-system-info'\n
 ;; :FILE-DIRECTORY-NAME-MODIFY
 `abbreviate-file-name'
@@ -4340,6 +4352,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `unhandled-file-name-directory'\n
 ;; :FILE-DIRECTORY-NAME-INSPECT
 `buffer-file-name'                  ; :NOTE Also a <VARIABLE>
+`buffer-file-truename'              ; <VARIABLE>
 `file-name-all-completions'
 `file-name-as-directory'
 `file-name-completion'
@@ -4394,11 +4407,11 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `find-file-read-only'
 `find-file-read-only-other-frame' 	
 `find-file-read-only-other-window'
-`find-file-text'
+`find-file-text'                        ; :FILE lisp/dos-w32.el
 `find-dired'
-`find-buffer-file-type'
-`find-buffer-file-type-coding-system'
-`find-buffer-file-type-match'
+`find-buffer-file-type'                 ; :FILE lisp/files.el
+`find-buffer-file-type-coding-system'   ; :FILE lisp/dos-w32.el
+`find-buffer-file-type-match'           ; :FILE lisp/dos-w32.el
 `hexl-find-file'
 `locate-dominating-file'
 `locate-library'\n
@@ -4406,11 +4419,11 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `w32-get-true-file-attributes'
 `w32-long-file-name'
 `w32-short-file-name'\n
-;; :FILE-DIRECTORY-ELISP
-`file-dependents'
-`file-loadhist-lookup'
-`file-provides'
-`file-requires'\n
+;; :FILE-DIRECTORY-ELISP           ;:NOTE Following from :FILE lisp/loadhist.el
+`file-dependents'         
+`file-loadhist-lookup'    
+`file-provides'           
+`file-requires'           
 ;; :FILE-DIRECTORY-RECOVER
 `after-find-file'
 `recover-file'
@@ -4885,7 +4898,6 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `clone-indirect-buffer'
 `clone-indirect-buffer-other-window'
 `display-buffer'
-`display-buffer-other-frame'
 `fit-window-to-buffer'
 `get-buffer'
 `get-buffer-create'
@@ -4894,6 +4906,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `other-buffer'
 `pop-to-buffer'
 `previous-buffer'
+`read-buffer-to-switch'
 `replace-buffer-in-windows'
 `set-buffer'
 `switch-to-buffer'
@@ -4946,6 +4959,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `get-buffer-process'
 `get-buffer-window'
 `get-buffer-window-list'
+`internal-complete-buffer-except'
+`internal-complete-buffer'
 `list-buffers-directory'
 `window-buffer'\n
 ;; :BUFFER-FORMAT-AND-CODING
@@ -5015,6 +5030,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `buffer-substring-filters'
 `buffer-stale-function'
 `buffer-undo-list'
+`save-some-buffers-action-alist'
+`special-display-buffer-names'
 `temp-buffer-max-height'
 `temp-buffer-resize-mode'
 `temp-buffer-setup-hook'
@@ -5160,6 +5177,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `handle-select-window'\n
 ;; :WINDOW-HANDLERS-MOVEMENT-TO
 `display-buffer'
+`display-buffer-other-frame'
 `find-file-other-window'
 `move-to-window-line-top-bottom'
 `switch-to-buffer-other-window'
@@ -5339,7 +5357,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `eieio-singleton'                                  <CLASS>
 `eieio-named'                                      <CLASS>\n
 :SEE-ALSO `mon-insert-defclass-template', `mon-help-eieio-functions',
-`mon-help-eieio-methods'.\n►►►"
+`mon-help-eieio-methods', `mon-help-custom-keywords', `mon-help-faces-themes',
+`mon-help-widgets'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-defclass :insertp t)
@@ -5473,8 +5492,9 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `eieio-read-xml'\n
 ;; :EIEIO-LOAD
 `eieio-defclass-autoload'     ;<PROPERTY>
-:SEE-ALSO `mon-help-eieio-methods', `mon-help-eieio-defclass', 
-`mon-insert-defclass-template'.\n►►►"
+:SEE-ALSO `mon-help-eieio-methods', `mon-help-eieio-defclass',
+`mon-insert-defclass-template', `mon-help-custom-keywords',
+`mon-help-faces-themes', `mon-help-widgets'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-functions :insertp t)
@@ -5632,7 +5652,8 @@ A generic form can be interrogated with `eieio-generic-form':\n
 \(eieio-describe-method 'acc-s367-sub-0\)\n
 \(eieio-describe-method 'acc-s367-0\)\n
 \(describe-function 'acc-s367-sub-0\)\n\n
-:SEE-ALSO `mon-help-eieio-defclass', `mon-help-eieio-functions'.\n►►►"
+:SEE-ALSO `mon-help-eieio-defclass', `mon-help-eieio-functions',
+`mon-help-custom-keywords', `mon-help-faces-themes', `mon-help-widgets'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-methods :insertp t)
@@ -5861,7 +5882,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `read-key-sequence'
 `read-key-sequence-vector'
 `substitute-command-keys'
-`substitute-key-definition'
+`substitute-key-definition'    ;; :NOTE Undocumented optional arg PREFIX
 `substitute-key-definition-key'
 `this-command-keys'
 `this-command-keys-vector'
@@ -6010,7 +6031,8 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `w32-rwindow-modifier'
 `w32-pass-multimedia-buttons-to-system'
 ;; :KEY-FUNCTIONS-MON-LOCAL
-`mon-test-keypresses'
+`mon-test-keypresses'\n
+:SEE :FILE src/keymap.c
 :SEE-ALSO `mon-help-keys', `mon-help-diacritics', `mon-help-w32-functions',
 `mon-help-slime-keys'.\n►►►"
 (interactive "i\nP")
@@ -6573,8 +6595,8 @@ It has the following format:\n
 \(provide-theme 'forest\)\n
 ;;;; end forest-theme.el\n
 :SEE info node `(elisp)Defining Faces'.\n:SEE info node `(elisp)Face Attributes'.
-:SEE-ALSO `mon-help-faces', `mon-help-faces-basic', `mon-help-color-chart'
-`mon-help-font-lock-functions', `mon-help-font-lock',
+:SEE-ALSO `mon-help-custom-keywords', `mon-help-faces', `mon-help-faces-basic',
+`mon-help-color-chart' `mon-help-font-lock-functions', `mon-help-font-lock',
 `mon-help-custom-keywords', `mon-help-widgets', `mon-help-easy-menu',
 `mon-help-plist-functions',`mon-help-eieio-defclass',
 `mon-help-eieio-functions', `mon-help-eieio-methods'.\n►►►"
@@ -7784,9 +7806,8 @@ const            <VAL-TYPEs>
 other            <VAL-TYPES>
 function-item    <FUNCTION>
 cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
-:SEE-ALSO `mon-help-widgets', `mon-help-easy-menu',
-`mon-help-plist-functions', `mon-help-color-chart',
-`mon-help-key-functions', `mon-help-package-keywords',
+:SEE-ALSO `mon-help-widgets', `mon-help-easy-menu', `mon-help-plist-functions',
+`mon-help-color-chart', `mon-help-key-functions', `mon-help-package-keywords',
 `mon-help-faces', `mon-help-faces-basic', `mon-help-faces-themes',
 `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
@@ -7894,20 +7915,32 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 ¨ - C-x 8 \" \"
 ¸ - C-x 8 , ,
 \xa0 - C-x 8 * SPC ; NO-BREAK-SPACE
-► - (ucs-insert \"25BA\")\n\n;;; ==============================\n
-;;; The Unicode latin scripts are found in several Unicode-Blocks, namely:
-;;; U+0000 - U+007F -> Controls and Basic Latin;
-;;; :SEE \(URL `http://www.decodeunicode.org/en/basic_latin'\)\n
-;;; U+0080 - U+009F -> Controls and Latin-1;
-;;; :SEE \(URL `http://www.decodeunicode.org/en/latin-1_supplement'\)\n
-;;; U+0100 - U+017F -> Latin Extended-A;
-;;; :SEE \(URL `http://www.decodeunicode.org/en/latin_extended-a'\)\n
-;;; U+0180 - U+024F -> Latin Extended-B;
-;;; :SEE \(URL `http://www.decodeunicode.org/en/latin_extended-b'\)\n
-;;; Character table for reverting ISO_8859-1 bytes -> UTF-8
-;;; :SEE \(URL `http://en.wikipedia.org/wiki/ISO_8859-1'\)\n
-;;; :SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859'\)\n
-;;; :SEE (URL `http://unicode.coeurlumiere.com/').\n
+► - (ucs-insert \"25BA\")\n
+:NOTE C-x 8 RTN is bound to `ucs-insert'\n\n
+;; :UCS-NAMES
+`ucs-insert'
+`ucs-names'
+`ucs-completions'
+`describe-char-unidata-list'
+`describe-char-unicodedata-file'
+`*mon-unidata-file-list*'
+`mon-wget-unicodedata-files'\n
+;;; ==============================\n
+The Unicode data list can be found at:
+:SEE (URL `http://www.unicode.org/Public/UNIDATA/UnicodeData.txt').
+The Unicode latin scripts are found in several Unicode-Blocks, namely:
+U+0000 - U+007F -> Controls and Basic Latin;
+:SEE \(URL `http://www.decodeunicode.org/en/basic_latin'\)\n
+U+0080 - U+009F -> Controls and Latin-1;
+:SEE \(URL `http://www.decodeunicode.org/en/latin-1_supplement'\)\n
+U+0100 - U+017F -> Latin Extended-A;
+:SEE \(URL `http://www.decodeunicode.org/en/latin_extended-a'\)\n
+U+0180 - U+024F -> Latin Extended-B;
+:SEE \(URL `http://www.decodeunicode.org/en/latin_extended-b'\)\n
+Character table for reverting ISO_8859-1 bytes -> UTF-8
+:SEE \(URL `http://en.wikipedia.org/wiki/ISO_8859-1'\)\n
+:SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859'\)\n
+:SEE (URL `http://unicode.coeurlumiere.com/').\n
 :SEE-ALSO `mon-help-key-functions', `mon-help-char-representation',
 `mon-help-char-functions', `mon-help-print-functions', `mon-help-read-functions'
 `mon-help-char-ascii', `mon-help-char-iso-8859-1', `mon-help-char-ecma-48',
@@ -7977,7 +8010,11 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 `recode-file-name'
 `insert-file-contents-literally'
 `insert-file-literally'
-\n
+;; :CHAR-SEARCHING
+`search-unencodable-char'
+`unencodable-char-position'
+`find-multibyte-characters'
+`find-auto-coding'\n
 :SEE-ALSO `mon-help-read-functions', `mon-help-print-functions', 
 `mon-help-key-functions', `mon-help-char-representation',
 `mon-help-binary-representation', `mon-help-char-raw-bytes',
@@ -8154,21 +8191,30 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 ;;; :CREATED <Timestamp: #{2010-04-25T12:42:19-04:00Z}#{10167} - by MON>
 (defun mon-help-char-raw-bytes (&optional intrp)
   "Return raw-bytes 200-377 in buffer named \"*RAW-BYTES*\".\n
-:NOTE char 4194303 is `max-char'.
-:SEE info node `(elisp)Text Representations'\n
-:SEE-ALSO `string-to-unibyte', `unibyte-char-to-multibyte',
-`multibyte-char-to-unibyte', `string-to-multibyte'
-`mon-help-binary-representation', `mon-help-char-functions',
-`mon-help-char-representation', `mon-help-key-functions', `mon-help-diacritics',
-`mon-help-char-ascii', `mon-help-char-iso-8859-1', `mon-help-char-ecma-35',
-`mon-help-char-ecma-48', `mon-help-print-functions',
-`mon-help-read-functions'.\n►►►"
+The char 4194303 of return value is `max-char'.\n
+:EXAMPLE\n\n\(mon-help-char-raw-bytes\)\n
+:NOTE Regexps w/ raw-bytes are funky; from info node `(elisp)Syntax of Regexps'\n
+ You cannot always match all non-ASCII characters with the regular expression
+ `\"[\\200-\\377]\"'.  This works when searching a unibyte buffer or string
+ \(:SEE info node `\(elisp\)Text Representations'\), but not in a multibyte
+ buffer or string, because many non-ASCII characters have codes above octal
+ 0377.  However, the regular expression `\"[^\\000-\\177]\"' does match all
+ non-ASCII characters \(see below regarding `^'\), in both multibyte and unibyte
+ representations, because only the ASCII characters are excluded.\n
+:SEE-ALSO `string-to-unibyte', `string-as-unibyte', `unibyte-char-to-multibyte',
+`multibyte-char-to-unibyte', `string-to-multibyte', `string-as-multibyte',
+`search-unencodable-char', `mon-help-binary-representation',
+`mon-help-char-functions', `mon-help-char-representation',
+`mon-help-key-functions', `mon-help-diacritics', `mon-help-char-ascii',
+`mon-help-char-iso-8859-1', `mon-help-char-ecma-35', `mon-help-char-ecma-48',
+`mon-help-print-functions', `mon-help-read-functions'.\n►►►"
   (interactive "p")
   (with-current-buffer (get-buffer-create "*RAW-BYTES*")
     (erase-buffer)
     (save-excursion
       (dolist (raw-byte (number-sequence 4194176 4194303))
-        (insert (format "%c <-%d #o%o #x%x\n"raw-byte raw-byte raw-byte raw-byte) )))
+        (insert (format "%c <- %d ¦ #o%o ¦ #x%x ¦ "raw-byte raw-byte raw-byte raw-byte)
+                    (format "(string-as-unibyte (char-to-string %d))\n" raw-byte))))
     (insert 
      (mapconcat 'identity
       '(";; The raw-bytes for character codepoints in the range:"

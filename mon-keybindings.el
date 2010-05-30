@@ -110,7 +110,7 @@
 ;;  (function   ;; :NOTE Using `function' or "#'" (sharpquote) allows later
 ;;   (lambda () ;; removal of anonymous lambda forms.
 ;;    (define-key 'some-mode-map 
-;;        [kbd "<KEY>")|[vector-of-key-chars]|"\KEY-key*\KEY-key*\\"]
+;;        [kbd "<KEY>")|[vector-of-key-chars]|"\KEY-key*\KEY-key*\"]
 ;;    'some-function-name)))
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-keybindings.el
@@ -216,14 +216,17 @@
 ;;; :ADDED `mon-w3m-dired-file' 
 ;;; :CHANGESET 1338 <Timestamp: #{2009-12-17T13:21:29-05:00Z}#{09514} - by MON>
 (add-hook 'dired-mode-hook 
-         (function 
-          (lambda () 
-              (define-key dired-mode-map "\C-c\M-dwt" 'mon-toggle-dired-dwim-target)
-              (define-key dired-mode-map "\M-^"       'dired-up-directory-this-buffer)
-              (define-key dired-mode-map [M-f2]       'dired-efap)
-              (define-key dired-mode-map "\C-c\M-wl"  'mon-copy-file-dired-as-list)   ;; Args: AS-LIST FULL-PATH
-              (define-key dired-mode-map "\C-c\M-ws"  'mon-copy-file-dired-as-string) ;; Args: UNQOUTED FULL-PATH
-              (define-key dired-mode-map "\C-cw3"     'mon-w3m-dired-file))))
+          (function 
+           (lambda () 
+             (define-key dired-mode-map "\C-c\M-dwt" 'mon-toggle-dired-dwim-target)
+             (define-key dired-mode-map "\M-^"       'mon-dired-up-directory-this-buffer)
+             (define-key dired-mode-map  (if IS-W32-P [M-f2] [f2]) 'dired-efap) 
+             (define-key dired-mode-map "\C-c\M-wl"  'mon-copy-file-dired-as-list) ;; Args: AS-LIST FULL-PATH
+             (define-key dired-mode-map "\C-c\M-ws"  'mon-copy-file-dired-as-string) ;; Args: UNQOUTED FULL-PATH
+             (define-key dired-mode-map "\C-cw3"     'mon-w3m-dired-file)
+             (define-key dired-mode-map  "\C-cui"    'mon-dired-uninsert-subdir)
+             (define-key dired-mode-map  "\C-cua"    'mon-dired-uninsert-subdir-all)
+             )))
 
 ;;; ==============================
 ;; :COMPLETION-KEYBINDINGS
@@ -259,12 +262,17 @@
 ;; :EMACS-LISP-MODE-KEYMAP
 ;;; (symbol-value 'emacs-lisp-mode-map)
 ;;; (global-set-key "\C-c\M-;"   'mon-user-evald)
-
 (when IS-MON-SYSTEM-P
   (add-hook 'emacs-lisp-mode-hook  
             (function 
              (lambda () 
                (progn
+                 ;; `recenter-top-bottom' was changed significantly w/ v23, I can't deal.
+                 ;; :SEE :FILE lisp/window.el 
+                 ;; :SEE :VARIABLE `resize-mini-windows'
+                 ;; :SEE (URL `http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6192')
+                 ;; :FIXME This needs to be globally unbound :(
+                 (local-unset-key [?\C-l])
                  (define-key emacs-lisp-mode-map "\M-i"        'indent-according-to-mode)
                  (define-key emacs-lisp-mode-map "\C-c\M-:"    'mon-eval-expression)
                  (define-key emacs-lisp-mode-map "\C-cc"       'comment-region)
@@ -343,6 +351,8 @@
             (when IS-MON-P-W32
               (define-key slime-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
               (define-key slime-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
+              (define-key slime-repl-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
+              (define-key slime-repl-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
               ;; :NOTE I don't think this is getting used. Can it hurt?
               (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol))
             )))
@@ -376,10 +386,18 @@
 ;;; (add-hook 'xhg-log-mode-hook  #'(lambda () (local-unset-key [?R]))) ;; :WAS xhg-rollback
 ;;; (add-hook 'dvc-diff-mode-hook (function (lambda () )
 
+;; (buffer-local-variables (get-buffer "*bzr-status*"))
+;;; (buffer-local-variables (get-buffer "*bzr-status"))
+;;;
+;;; dvc-fileinfo-revert-files
+
 (add-hook 'dvc-status-mode-hook 
           (function 
            (lambda () 
-            (define-key dvc-status-mode-map dvc-keyvec-revert nil))))
+             (local-unset-key dvc-status-mode-map "U") ;;; dvc-fileinfo-revert-files)
+             (define-key dvc-status-mode-map dvc-keyvec-revert nil)
+             ;;; dvc-fileinfo-revert-files
+             )))
 
 ;;; :VARIABLE `dvc-keyvec-revert' <- (char-to-string 85) -> U 
 ;;;

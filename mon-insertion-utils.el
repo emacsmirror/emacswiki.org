@@ -178,9 +178,9 @@
 Otherwise, just return the printed value of form.\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-buffer-written-p',
 `mon-buffer-exists-p', `mon-buffer-name->kill-ring', `mon-with-file-buffer',
-`mon-get-buffers-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-split-string-buffer-name',
-`mon-split-string-buffer-parent-dir'.\n►►►"
+`mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-string-split-buffer-name',
+`mon-string-split-buffer-parent-dir'.\n►►►"
   `(,print-type 
     ,form
     ,(if (and (not buffer-read-only)

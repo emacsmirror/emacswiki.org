@@ -34,6 +34,8 @@ The following unit test frameworks exist for Emacs Lisp.
 
 '''[[EmacsLispExpectations|el-expectations.el]]''' by [[rubikitch]] is a small framework focusing on simplicity and readability. It is modeled after [http://expectations.rubyforge.org Ruby expectations] (for example, ##(expect 4 (+ 2 2))## verifies "2 + 2 = 4") and works with '''[[EmacsLispMock|el-mock.el]]''', a DSL-based mock/stub framework.
 
+'''[http://github.com/technomancy/dotfiles/tree/master/.emacs.old/behave/ behave.el]''' by PhilHagelberg is a behavior-driven development framework with expectations-like syntax. [http://technomancy.us/73 Description].
+
 '''[[ETest]]''' (Emacs Testing Framework) by Phil Jackson allows arbitrary nesting of tests. It also works with [[EmacsLispMock|el-mock.el]]. [http://www.shellarchive.co.uk/content/etest.html Manual].
 
 === Others ===
