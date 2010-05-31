@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue May 18 11:15:37 2010 (-0700)
+;; Last-Updated: Sun May 30 12:40:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11732
+;;     Update #: 11742
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -82,11 +82,11 @@
 ;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',
 ;;    `icicle-file-remote-p', `icicle-file-writable-p',
 ;;    `icicle-filesets-files-under', `icicle-files-within',
-;;    `icicle-filter-alist', `icicle-filter-wo-input',
-;;    `icicle-first-matching-candidate', `icicle-first-N',
-;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
-;;    `icicle-frames-on', `icicle-fuzzy-candidates',
-;;    `icicle-get-alist-candidate',
+;;    `icicle-files-within-1', `icicle-filter-alist',
+;;    `icicle-filter-wo-input', `icicle-first-matching-candidate',
+;;    `icicle-first-N', `icicle-fit-completions-window',
+;;    `icicle-fix-default-directory', `icicle-frames-on',
+;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set',
 ;;    `icicle-dired-guess-shell-command', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file',
@@ -4677,18 +4677,35 @@ there are no such matching candidates, then LIST is returned."
   "Return non-nil if FILE (a string) names a writable file."
   (and (not (string= "" file))  (file-writable-p file)  (not (file-directory-p file))))
 
-(defun icicle-files-within (file-list accum)
+(defun icicle-files-within (file-list accum &optional no-symlinks-p)
   "List of all readable files in FILE-LIST.
 Accessible directories in FILE-LIST are processed recursively to
-include their files and the files in their subdirectories.  The list
-of files is accumulated in ACCUM, which is used for recursive calls."
-  (let ((res  accum))
+include their files and the files in their subdirectories.
+
+Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links.
+
+The list of files is accumulated in ACCUM, which is used for recursive
+calls."
+  (let ((dirs-done  ()))
+    (icicle-files-within-1 file-list accum no-symlinks-p)))
+
+(defun icicle-files-within-1 (file-list accum no-symlinks-p)
+  "Helper for `icicle-files-within'."
+  (let ((res  accum)
+        file)
     (while file-list
-      (if (file-directory-p (car file-list))
-          (when (file-accessible-directory-p (car file-list)) ; Skip inaccessible directories.
-            (setq res
-                  (icicle-files-within (directory-files (car file-list) 'full icicle-re-no-dot) res)))
-        (when (file-readable-p (car file-list))  (setq res  (cons (car file-list) res))))
+      (setq file  (car file-list))
+      (unless (and no-symlinks-p (file-symlink-p file))
+        (if (file-directory-p file)
+            ;; Skip directory if ignored, already treated, or inaccessible.
+            (when (and (not (member (file-name-nondirectory file) icicle-ignored-directories))
+                       (not (member (file-truename file) dirs-done))
+                       (file-accessible-directory-p file))
+              (setq res  (icicle-files-within-1 (directory-files file 'full icicle-re-no-dot)
+                                                res
+                                                no-symlinks-p))
+              (push (file-truename file) dirs-done))
+          (when (file-readable-p file) (setq res  (cons file res)))))
       (pop file-list))
     res))
 

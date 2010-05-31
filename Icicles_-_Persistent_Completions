@@ -119,6 +119,9 @@ set using a ''[[variable]]'' that you name, not a cache file.  See [[Icicles - C
 
 
 
+
+
+
 [:SavingInCacheFiles]
 == Saving Candidates in Cache Files ==
 
@@ -144,8 +147,11 @@ can match against exactly those candidates anytime you want.
 For example, you might have a software project that involves only
 certain directories and perhaps only certain kinds of files in
 those directories are of interest as completion candidates.  Those
-directories and files can even be in disparate locations.  Start
-with [[command]] `icicle-locate-file'.  Then use [[progressive completion]] to match the directories and files you want and [[Icicles - Nutshell View#ChippingAway|chip away]] at those you don't want.  Once you get just the set you need
+directories and files can even be in disparate locations.
+
+Start
+with [[command]] `icicle-locate-file' (or
+`icicle-locate-file-no-symlinks').  Then use [[progressive completion]] to match the directories and files you want and [[Icicles - Nutshell View#ChippingAway|chip away]] at those you don't want.  Once you get just the set you need
 for your project, save that set using '''`##C-}##''''.  You can have any
 number of saved sets, for different projects or different purposes
 in the same project.

@@ -1249,6 +1249,17 @@ Options '''`icicle-file-match-regexp'''',
 
 
 ----
+[:icicle-ignored-directories]
+==== Option icicle-ignored-directories ====
+
+Option '''`icicle-ignored-directories'''' is a list of directories
+that are ignored by commands `icicle-locate-file' and
+`icicle-locate-file-no-symlinks'.  By default, this is the value
+of `vc-directory-exclusion-list'.
+
+
+
+----
 [:icicle-buffer-sort]
 [:icicle-file-sort]
 ==== Options icicle-buffer-sort, icicle-file-sort ====

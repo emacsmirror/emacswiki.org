@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 30 00:31:21 2010 (-0700)
+;; Last-Updated: Sun May 30 09:26:47 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13345
+;;     Update #: 13363
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -208,12 +208,15 @@
 ;;    `bookmarkp-next-bookmark-repeat',
 ;;    `bookmarkp-next-bookmark-this-buffer',
 ;;    `bookmarkp-next-bookmark-this-buffer-repeat',
-;;    `bookmarkp-non-file-jump',
+;;    `bookmarkp-next-bookmark-w32',
+;;    `bookmarkp-next-bookmark-w32-repeat', `bookmarkp-non-file-jump',
 ;;    `bookmarkp-non-file-jump-other-window',
 ;;    `bookmarkp-previous-bookmark',
 ;;    `bookmarkp-previous-bookmark-repeat',
 ;;    `bookmarkp-previous-bookmark-this-buffer',
 ;;    `bookmarkp-previous-bookmark-this-buffer-repeat',
+;;    `bookmarkp-previous-bookmark-w32',
+;;    `bookmarkp-previous-bookmark-w32-repeat',
 ;;    `bookmarkp-read-bookmark-for-type', `bookmarkp-region-jump',
 ;;    `bookmarkp-region-jump-other-window',
 ;;    `bookmarkp-remote-file-jump',
@@ -2106,7 +2109,7 @@ candidate."
 ;; 4. Changed arg name: BOOKMARK -> BOOKMARK-NAME.
 ;;
 ;;;###autoload
-(defun bookmark-insert-location (bookmark-name &optional no-history) ; `C-x p f'
+(defun bookmark-insert-location (bookmark-name &optional no-history) ; `C-x p I' (original: `C-x p f')
   "Insert file or buffer name for the bookmark named BOOKMARK-NAME.
 If a file is bookmarked, insert the recorded file name.
 If a non-file buffer is bookmarked, insert the recorded buffer name.
@@ -8134,7 +8137,7 @@ nil."
 
 ;;;###autoload
 (defun bookmarkp-next-bookmark (n)      ; You can bind this to a repeatable key
-  "Jump to the Nth next bookmark in the current bookmark navigation list.
+  "Jump to the Nth next bookmark in the bookmark navigation list.
 N defaults to 1, meaning the next bookmark.
 See also `bookmarkp-cycle'."
   (interactive "p")
@@ -8166,7 +8169,7 @@ See also `bookmarkp-cycle-this-buffer'."
 
 ;;;###autoload
 (defun bookmarkp-next-bookmark-repeat (arg) ; `C-x p right', `C-x p f', `C-x p C-f'
-  "Jump to the Nth-next bookmark in the current bookmark navigation list.
+  "Jump to the Nth-next bookmark in the bookmark navigation list.
 N defaults to 1, meaning the next bookmark.
 This is a repeatable version of `bookmarkp-next-bookmark'."
   (interactive "P")
@@ -8183,8 +8186,50 @@ This is a repeatable version of `bookmarkp-previous-bookmark'."
   (bookmarkp-repeat-command 'bookmarkp-previous-bookmark))
 
 ;;;###autoload
+(defun bookmarkp-next-bookmark-w32 (n) ; You can bind this to a repeatable key
+  "Windows `Open' the Nth next bookmark in the bookmark navigation list.
+MS Windows only.  Invokes the program associated with the file type.
+N defaults to 1, meaning the next bookmark.
+See also `bookmarkp-cycle'."
+  (interactive "p")
+  (let ((bookmarkp-use-w32-browser-p  t))
+    (bookmarkp-cycle n)))
+
+;;;###autoload
+(defun bookmarkp-previous-bookmark-w32 (n) ; You can bind this to a repeatable key
+  "Windows `Open' the Nth previous bookmark in the bookmark navlist.
+MS Windows only.  Invokes the program associated with the file type.
+N defaults to 1, meaning the previous bookmark.
+See also `bookmarkp-cycle'."
+  (interactive "p")
+  (let ((bookmarkp-use-w32-browser-p  t))
+    (bookmarkp-cycle (- n))))
+
+;;;###autoload
+(defun bookmarkp-next-bookmark-w32-repeat (arg) ; `C-x p next'
+  "Windows `Open' the Nth next bookmark in the bookmark navigation list.
+MS Windows only.  Invokes the program associated with the file type.
+N defaults to 1, meaning the next bookmark.
+This is a repeatable version of `bookmarkp-next-bookmark'."
+  (interactive "P")
+  (require 'repeat)
+  (let ((bookmarkp-use-w32-browser-p  t))
+    (bookmarkp-repeat-command 'bookmarkp-next-bookmark)))
+
+;;;###autoload
+(defun bookmarkp-previous-bookmark-w32-repeat (arg) ; `C-x p prior'
+  "Windows `Open' the Nth previous bookmark in the bookmark navlist.
+MS Windows only.  Invokes the program associated with the file type.
+N defaults to 1, meaning the previous bookmark.
+This is a repeatable version of `bookmarkp-previous-bookmark'."
+  (interactive "P")
+  (require 'repeat)
+  (let ((bookmarkp-use-w32-browser-p  t))
+    (bookmarkp-repeat-command 'bookmarkp-previous-bookmark)))
+
+;;;###autoload
 (defun bookmarkp-next-bookmark-this-buffer-repeat (arg) ; `C-x p down', `C-x p n', `C-x p C-n'
-  "Jump to the Nth-next bookmark in the current buffer.
+  "Jump to the Nth next bookmark in the current buffer.
 N defaults to 1, meaning the next bookmark.
 This is a repeatable version of
 `bookmarkp-next-bookmark-this-buffer'."
@@ -8194,7 +8239,7 @@ This is a repeatable version of
 
 ;;;###autoload
 (defun bookmarkp-previous-bookmark-this-buffer-repeat (arg) ; `C-x p up', `C-x p p', `C-x p C-p'
-  "Jump to the Nth-previous bookmark in the current buffer.
+  "Jump to the Nth previous bookmark in the current buffer.
 N defaults to 1, meaning the previous bookmark.
 This is a repeatable version of
 `bookmarkp-previous-bookmark-this-buffer'."
@@ -8342,6 +8387,8 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   (define-key bookmark-map [left]   'bookmarkp-previous-bookmark-repeat)
   (define-key bookmark-map "b"      'bookmarkp-previous-bookmark-repeat)
   (define-key bookmark-map "\C-b"   'bookmarkp-previous-bookmark-repeat))
+  (define-key bookmark-map [next]   'bookmarkp-next-bookmark-w32-repeat)
+  (define-key bookmark-map [prior]  'bookmarkp-previous-bookmark-w32-repeat)
 
 ;; `bookmark-bmenu-mode-map'
 
@@ -8866,14 +8913,16 @@ Jump to (Visit)
 \\[bookmarkp-all-tags-regexp-jump]\t- Jump to a bookmark with all tags matching a regexp
 
 
-Cycle Bookmarks, Autonamed Bookmarks
-------------------------------------
+Cycle Bookmarks and Autonamed Bookmarks
+---------------------------------------
 
 \\[bookmarkp-toggle-autoname-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
 C-x p n n ...\t- Next bookmark in buffer      (C-x p C-n, C-x p down)
 C-x p p p ...\t- Previous bookmark in buffer    (C-x p C-p, C-x p up)
 C-x p f f ...\t- Next bookmark in navlist    (C-x p C-f, C-x p right)
 C-x p b b ...\t- Previous bookmark in navlist (C-x p C-b, C-x p left)
+C-x p next  ...\t- MS Windows `Open' next bookmark in navlist
+C-x p prior ...\t- MS Windows `Open' previous bookmark in navlist
 
 \\[bookmarkp-delete-all-autonamed-for-this-buffer]
 \t- Delete all autonamed bookmarks in current buffer

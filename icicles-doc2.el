@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat May 22 09:46:43 2010 (-0700)
+;; Last-Updated: Sun May 30 14:04:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26964
+;;     Update #: 26969
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4951,6 +4951,11 @@
 ;;                       (throw 'nevfp t)))
 ;;                   nil)))))
 ;;
+;;  * Option `icicle-ignored-directories' is a list of directories
+;;    that are ignored by commands `icicle-locate-file' and
+;;    `icicle-locate-file-no-symlinks'.  By default, this is the value
+;;    of `vc-directory-exclusion-list'.
+;;
 ;;  * User option `icicle-buffer-sort' is a predicate used to sort
 ;;    buffer-name candidates in Icicles buffer commands, such as
 ;;    `icicle-buffer' and `icicle-insert-buffer'.  One possible value
@@ -5488,6 +5493,20 @@
 ;;    any part of the absolute file name, including directory
 ;;    components.
 ;;    See (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
+;;
+;;  * If you have symbolic links that might get in the way of
+;;    exploring directories while locating files, you can use command
+;;    `icicle-locate-file-no-symlinks' instead of
+;;    icicle-ignored-directories' - it will not follow symbolic links.
+;;
+;;    This also gives you a way to temporarily avoid descending into a
+;;    subdirectory you are not interested in: put a symbolic link in
+;;    its place temporarily.
+;;
+;;    Another, cleaner way to skip certain directories is to customize
+;;    or `let'-bind option `icicle-ignored-directories'. By default
+;;    this is the value of `vc-directory-exclusion-list', which means
+;;    that it ignores version-control directories.
 ;;
 ;;  See Also:
 ;;

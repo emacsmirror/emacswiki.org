@@ -23,7 +23,7 @@ The reverse, use external applications from within Emacs. Note that only OrgMode
 * OrgMode which is part of Emacs also has this functionality implemented in a cross-platform manner. I would suggest that functionality of this kind use that implementation (and maybe extend it). Then the user would just need to customize it in one place.
 * TrivialMode -- register applications to open files for you
 * These work everywhere (find-file, DiredMode, etc):
-** [[BookmarkPlus|Bookmark+]] + <tt>[[w32-browser.el]]</tt> -- open bookmarked files (e.g. music, images) using Windows file associations
+** [[BookmarkPlus|Bookmark+]] + <tt>[[w32-browser.el]]</tt> -- open/cycle bookmarked files (e.g. music, images) using MS Windows file associations
 ** [[DiredPlus|Dired+]] + <tt>[[w32-browser.el]]</tt> -- use Windows file associations in [[Dired]]
 ** OpenWith -- open files with external applications.
 ** SexMode -- It is now using the platorm independent functionality offered by OrgMode for starting external applications. (Note that there are some differences, see the beginning of sex-mode.el.)

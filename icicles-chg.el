@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri May 28 15:56:52 2010 (-0700)
+;; Last-Updated: Sun May 30 14:16:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5345
+;;     Update #: 5371
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/05/30 dadams
+;;     Added: icicle-locate-file-no-symlinks(-other-window), icicle-locate-file(-other-window)-action,
+;;            icicle-locate-file-1.
+;;     icicle-locate-file*: Moved body to icicle-locate-file-1.  Use named action functions.
+;;                          Respect icicle-ignored-directories (via *-files-within).
+;;     icicle-cd-for-loc-files: Added optional arg NO-SYMLINKS-P.
+;;     icicle-dired-saved-file-candidates(-other-window): Handle multi-completion candidates.
+;;     Thx to M. Heerdegen.
 ;; 2010/05/28 dadams
 ;;     icicle-(recent|locate)-file(-other-window), 
 ;;       Use *-transform-multi-completion in *-all-candidates-list-alt-action-fn.  Thx to M. Heerdegen.
@@ -525,6 +533,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/05/30 dadams
+;;     Added: icicle-files-within-1.
+;;     icicle-files-within:
+;;       Use icicle-files-within-1.  Optionally don't follow symlinks (new arg NO-SYMLINKS-P).
+;;       Don't process same dir twice.  Respect icicle-ignored-directories.  Thx to Michael Heerdegen.
 ;; 2010/05/18 dadams
 ;;     icicle-save-or-restore-input:
 ;;       Use icicle-file-directory-p, not file-directory-p (fails: ~/foo//usr/).  Thx to M. Heerdegen.
@@ -3871,6 +3884,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/05/30 dadams
+;;     Added: icicle-ignored-directories.
 ;; 2010/05/15 dadams
 ;;     icicle-top-level-key-bindings: Updated Icicles versions of bookmark jump commands.
 ;;     icicle-keymaps-for-key-completion: Added bookmarkp-jump-map bookmarkp-jump-other-window-map.

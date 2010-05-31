@@ -29,18 +29,24 @@ Archives of released versions can be downloaded from the
 download area] of the [http://sourceforge.net/projects/rudel
 Sourceforge project page].
 
-Development versions are available via the [[Bazaar]] and [[SubVersion]]
-repositories on Sourceforge:
+Development versions are available via
 
-{{{
-bzr branch bzr://rudel.bzr.sourceforge.net/bzrroot/rudel/trunk rudel
-}}}
+* the [[Bazaar]] repository on Sourceforge:
+  {{{
+  bzr branch bzr://rudel.bzr.sourceforge.net/bzrroot/rudel/trunk rudel
+  }}}
 
-or
+* the [[SubVersion]] repository on Sourceforge:
+  {{{
+  svn co https://rudel.svn.sourceforge.net/svnroot/rudel/trunk rudel
+  }}}
 
-{{{
-svn co https://rudel.svn.sourceforge.net/svnroot/rudel/trunk rudel
-}}}
+* the (experimental, but hopefully properly synchronized) [[Git]]
+  [http://github.com/scymtym/rudel repository] at 
+  [http://www.github.com GitHub]:
+  {{{
+  git clone git://github.com/scymtym/rudel.git
+  }}}
 
 
 == Installation ==

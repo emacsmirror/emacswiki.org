@@ -45,6 +45,8 @@ Sometimes, I use OrgMode. But org-mark-ring is a circular object. Use the follow
 
 -- AlexSchroeder
 
+Can this mode replace savehist, saveplace and desktop all at once and advantageneously ? Sounds like it is really capable and as I do not like restoring all the files and things like that, that could help just activating one mode for all this stuff
+
 ----
 
 CategoryPersistence

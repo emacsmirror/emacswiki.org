@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 28 15:51:13 2010 (-0700)
+;; Last-Updated: Sun May 30 14:14:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21041
+;;     Update #: 21086
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -158,6 +158,8 @@
 ;;    (+)`icicle-increment-variable', (+)`icicle-insert-buffer',
 ;;    (+)`icicle-kill-buffer', (+)`icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', (+)`icicle-locate-file',
+;;    (+)`icicle-locate-file-no-symlinks',
+;;    (+)`icicle-locate-file-no-symlinks-other-window',
 ;;    (+)`icicle-locate-file-other-window',
 ;;    (+)`icicle-other-window-or-frame', `icicle-pop-tag-mark',
 ;;    `icicle-pp-eval-expression', (+)`icicle-recent-file',
@@ -203,8 +205,11 @@
 ;;    `icicle-find-tag-final-act', `icicle-find-tag-help',
 ;;    `icicle-find-tag-quit-or-error', `icicle-insert-for-yank',
 ;;    `icicle-kill-a-buffer-and-update-completions',
-;;    `icicle-kmacro-action', `icicle-make-file+date-candidate',
-;;    `icicle-make-frame-alist', `icicle-make-window-alist',
+;;    `icicle-kmacro-action', (+)`icicle-locate-file-1',
+;;    `icicle-locate-file-action',
+;;    `icicle-locate-file-other-window-action',
+;;    `icicle-make-file+date-candidate', `icicle-make-frame-alist',
+;;    `icicle-make-window-alist',
 ;;    `icicle-bookmark-propertize-candidate',
 ;;    `icicle-pp-display-expression',
 ;;    `icicle-remove-buffer-candidate-action',
@@ -2059,13 +2064,16 @@ directory (default directory)."
   (unless icicle-saved-completion-candidates
     (error (substitute-command-keys "No saved completion candidates.  \
 Use \\<minibuffer-local-completion-map>`\\[icicle-candidate-set-save]' to save candidates")))
-  (let* ((default-directory  (if prompt-for-dir-p
-                                 (read-file-name "Directory: " nil default-directory nil)
-                               default-directory))
-         (file-names         (icicle-remove-if
-                              #'(lambda (fil) (or (null fil) (not (file-exists-p fil))))
-                              (or icicle-saved-completion-candidates
-                                  (icicle-file-list)))))
+  (let* ((default-directory           (if prompt-for-dir-p
+                                          (read-file-name "Directory: " nil default-directory nil)
+                                        default-directory))
+         (icicle-list-use-nth-parts   '(1))
+         (file-names                  (icicle-remove-if
+                                       #'(lambda (fil) (or (null fil) (not (file-exists-p fil))))
+                                       (or (and icicle-saved-completion-candidates
+                                                (mapcar #'icicle-transform-multi-completion
+                                                        icicle-saved-completion-candidates))
+                                           (icicle-file-list)))))
     (dired (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
 (defalias 'icicle-dired-chosen-files-other-window 'icicle-dired-saved-file-candidates-other-window)
@@ -2082,13 +2090,16 @@ Existence of files with relative names is checked in the Dired
 directory (default directory)."
   (interactive "P")
   ;; $$$$$$$ Maybe filter sets to get only file-name candidate sets?
-  (let* ((default-directory  (if prompt-for-dir-p
-                                 (read-file-name "Directory: " nil default-directory nil)
-                               default-directory))
-         (file-names         (icicle-remove-if
-                              #'(lambda (fil) (or (null fil) (not (file-exists-p fil))))
-                              (or icicle-saved-completion-candidates
-                                  (icicle-file-list)))))
+  (let* ((default-directory           (if prompt-for-dir-p
+                                          (read-file-name "Directory: " nil default-directory nil)
+                                        default-directory))
+         (icicle-list-use-nth-parts   '(1))
+         (file-names                  (icicle-remove-if
+                                       #'(lambda (fil) (or (null fil) (not (file-exists-p fil))))
+                                       (or (and icicle-saved-completion-candidates
+                                                (mapcar #'icicle-transform-multi-completion
+                                                        icicle-saved-completion-candidates))
+                                           (icicle-file-list)))))
     (dired-other-window (cons (generate-new-buffer-name "Icy File Set") (nreverse file-names)))))
 
 (put 'icicle-dired-project 'icicle-Completions-window-max-height 200)
@@ -2496,7 +2507,7 @@ If ABBREV-OR-CMD is not an abbreviation or a command, raise an error."
    new-last-cmd)                        ; Set in `icicle-execute-extended-command-1'.
   nil nil
   (setq this-command  new-last-cmd)     ; Final code: this will update `last-command'.
-  t)                                    ; Do not make this function interactive.
+  'NON-INTERACTIVE)                     ; This is not a real command.
 
 (defun icicle-command-abbrev-record (abbrev command)
   "Record ABBREV and COMMAND in `icicle-command-abbrev-alist'."
@@ -2620,7 +2631,7 @@ history entries, so `C-next' and so on act on the current candidate."
   icicle-clear-history-1                ; Function to perform the action
   "History to clear: " icicle-clear-history-hist-vars ; `completing-read' args
   nil t nil nil (symbol-name minibuffer-history-variable) nil
-  ((pref-arg                        current-prefix-arg) ; Additional bindings
+  ((pref-arg                        current-prefix-arg) ; Bindings
    (enable-recursive-minibuffers    t)
    (icicle-transform-function       'icicle-remove-duplicates)
    (icicle-clear-history-hist-vars  `((,(symbol-name minibuffer-history-variable))
@@ -2674,10 +2685,10 @@ With a prefix argument, however, empty the history completely
 
 `icicle-act-before-cycle-flag' is bound to t here during completion of
 history entries, so `C-next' and so on act on the current candidate."
-  icicle-clear-history-entry            ; Function to perform the action
+  icicle-clear-history-entry            ; Action function
   "Clear input: " (mapcar #'list (symbol-value icicle-clear-history-hist)) ; `completing-read' args
   nil t nil nil nil nil
-  ((pref-arg                                current-prefix-arg) ; Additional bindings
+  ((pref-arg                                current-prefix-arg) ; Bindings
    (enable-recursive-minibuffers            t)
    (icicle-transform-function               'icicle-remove-duplicates)
    (icicle-use-candidates-only-once-flag    t)
@@ -2728,7 +2739,7 @@ candidates, as follows:
 
  - With a non-negative prefix arg, all user options are candidates.
  - With a negative prefix arg, all variables are candidates." ; Doc string
-  (lambda (opt)                         ; Function to perform the action
+  (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
       (set sym (not (eval sym))) (message "`%s' is now %s" opt (eval sym))))
   "Toggle value of option: " obarray    ; `completing-read' args
@@ -2755,7 +2766,7 @@ candidates, as follows:
 Completion candidates are limited to options that have `integer',
 `float', and `number' custom types.
 This command needs library `doremi.el'." ; Doc string
-  (lambda (opt)                         ; Function to perform the action
+  (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
       (icicle-doremi-increment-variable sym (icicle-read-number "Increment (amount): ") t)
       (message "`%s' is now %s" opt (eval sym))))
@@ -2776,7 +2787,7 @@ This command needs library `doremi.el'." ; Doc string
   "Increment variable's value using the arrow keys (`up', `down').
 With a prefix arg, only numeric user options are candidates.
 This command needs library `doremi.el'." ; Doc string
-  (lambda (opt)                         ; Function to perform the action
+  (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
       (icicle-doremi-increment-variable sym (icicle-read-number "Increment (amount): ") prefix-arg)
       (message "`%s' is now %s" opt (eval sym))))
@@ -4001,14 +4012,14 @@ By default, Icicle mode remaps all key sequences that are normally
 bound to `find-tag-other-window' to `icicle-find-first-tag'.  If you
 do not want this remapping, then customize option
 `icicle-top-level-key-bindings'."       ; Doc string
-  icicle-find-first-tag-action          ; Function to perform the action
+  icicle-find-first-tag-action          ; Action function
   "Find tag: "                          ; `completing-read' args
   (if (fboundp 'tags-lazy-completion-table) (tags-lazy-completion-table) 'tags-complete-tag)
   nil nil nil nil (funcall (or find-tag-default-function (get major-mode 'find-tag-default-function)
                                'find-tag-default))
   nil
   ((completion-ignore-case  (progn (require 'etags)
-                                   (if (and (boundp 'tags-case-fold-search) ; Additional bindings
+                                   (if (and (boundp 'tags-case-fold-search) ; Bindings
                                             (memq tags-case-fold-search '(t nil)))
                                        tags-case-fold-search
                                      case-fold-search)))
@@ -4026,14 +4037,14 @@ do not want this remapping, then customize option
 (icicle-define-command icicle-find-first-tag-other-window ; Command name
   "Find first tag in current tags table whose name matches your input.
 Same as `icicle-find-first-tag' except it uses a different window." ; Doc string
-  icicle-find-first-tag-other-window-action ; Function to perform the action
+  icicle-find-first-tag-other-window-action ; Action function
   "Find tag other window: "             ; `completing-read' args
   (if (fboundp 'tags-lazy-completion-table) (tags-lazy-completion-table) 'tags-complete-tag)
   nil nil nil nil (funcall (or find-tag-default-function (get major-mode 'find-tag-default-function)
                                'find-tag-default))
   nil
   ((completion-ignore-case  (progn (require 'etags)
-                                   (if (and (boundp 'tags-case-fold-search) ; Additional bindings
+                                   (if (and (boundp 'tags-case-fold-search) ; Bindings
                                             (memq tags-case-fold-search '(t nil)))
                                        tags-case-fold-search
                                      case-fold-search)))
@@ -4299,7 +4310,7 @@ A frame name in this context is suffixed as needed by [NUMBER], to
 make it unique.  For example, in a context where frames are named for
 their buffers and you have two frames showing buffer *Help*, one of
 the frames will be called `*Help*[2]' for use with this command." ; Doc string
-  icicle-select-frame-by-name           ; Function to perform the action
+  icicle-select-frame-by-name           ; Action function
   "Select frame: "                      ; `completing-read' args
   icicle-frame-alist nil t nil
   (if (boundp 'frame-name-history) 'frame-name-history 'icicle-frame-name-history)
@@ -4362,7 +4373,7 @@ A window name is the name of its displayed buffer, but suffixed as
 needed by [NUMBER], to make the name unique.  For example, if you have
 two windows showing buffer *Help*, one of the windows will be called
 `*Help*[2]' for use with this command." ; Doc string
-  icicle-select-window-by-name          ; Function to perform the action
+  icicle-select-window-by-name          ; Action function
   "Select window: "                     ; `completing-read' args
   icicle-window-alist nil t nil nil
   (buffer-name (window-buffer (other-window 1))) nil
@@ -4424,7 +4435,7 @@ Otherwise, use only windows from the selected frame."
 ;;;###autoload
 (icicle-define-command icicle-delete-windows ; Command name
   "Delete windows showing a buffer, anywhere." ; Doc string
-  delete-windows-on                     ; Function to perform the action
+  delete-windows-on                     ; Action function
   "Delete windows on buffer: "          ; `completing-read' args
   (let ((cand-bufs  nil))
     (dolist (buf  (buffer-list))
@@ -4499,7 +4510,7 @@ this remapping, then customize option
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
-  icicle-kill-a-buffer-and-update-completions ; Function to perform the action
+  icicle-kill-a-buffer-and-update-completions ; Action function
   "Kill buffer: "                       ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
@@ -4560,7 +4571,7 @@ this remapping, then customize option
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
-  switch-to-buffer                      ;  Function to perform the action
+  switch-to-buffer                      ; Action function
   "Switch to buffer: "                  ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
@@ -4617,7 +4628,7 @@ See also command `icicle-buffer-config'.
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
-  insert-buffer                         ;  Function to perform the action
+  insert-buffer                         ; Action function
   "Buffer: "                            ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
@@ -4628,7 +4639,7 @@ the behavior."                          ; Doc string
 (icicle-define-command icicle-buffer-other-window ; Bound to `C-x 4 b' in Icicle mode.
   "Switch to a different buffer in another window.
 Same as `icicle-buffer' except it uses a different window." ; Doc string
-  switch-to-buffer-other-window         ; Function to perform the action
+  switch-to-buffer-other-window         ; Action function
   "Switch to buffer in other window: "  ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf))) bufflist) nil ; `bufflist' is free here.
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ; Emacs23.
@@ -4695,7 +4706,7 @@ You can use `S-delete' on any configuration during completion to
 remove it.  See user option `icicle-buffer-configs'.
 See also commands `icicle-add-buffer-config' and
 `icicle-remove-buffer-config'."         ; Doc string
-  (lambda (config-name)                 ; Function to perform the action
+  (lambda (config-name)                 ; Action function
     (let ((config  (assoc config-name icicle-buffer-configs)))
       (setq icicle-buffer-match-regexp     (elt config 1)
             icicle-buffer-no-match-regexp  (elt config 2)
@@ -4704,7 +4715,7 @@ See also commands `icicle-add-buffer-config' and
             icicle-buffer-sort             (elt config 5))))
   "Configuration: " icicle-buffer-configs nil t nil ; `completing-read' args
   'icicle-buffer-config-history nil nil
-  ((icicle-delete-candidate-object  'icicle-remove-buffer-config-action))) ; Additional bindings
+  ((icicle-delete-candidate-object  'icicle-remove-buffer-config-action))) ; Bindings
 
 ;;;###autoload
 (icicle-define-add-to-alist-command icicle-add-buffer-config ; Command name
@@ -4760,7 +4771,7 @@ These options, when non-nil, control candidate matching and filtering:
 Note: The prefix arg is tested, even when this is called
 noninteractively.  Lisp code can bind `current-prefix-arg' to control
 the behavior."                          ; Doc string
-  (lambda (name) (push name buf-names)) ; Function to perform the action
+  (lambda (name) (push name buf-names)) ; Action function
   "Choose buffer (`RET' when done): "   ; `completing-read' args
   (mapcar #'(lambda (buf) (list (buffer-name buf)))
           (if current-prefix-arg
@@ -4810,7 +4821,7 @@ Save the updated option."               ; Doc string
   "Remove buffer configuration: "       ; `completing-read' args
   (mapcar #'(lambda (config) (list (car config))) icicle-buffer-configs)
   nil t nil 'icicle-buffer-config-history (caar icicle-buffer-configs) nil
-  ((icicle-use-candidates-only-once-flag  t))) ; Additional bindings
+  ((icicle-use-candidates-only-once-flag  t))) ; Bindings
 
 (defun icicle-remove-buffer-config-action (config-name)
   "Action function for command `icicle-remove-buffer-config'."
@@ -4827,7 +4838,7 @@ Save the updated option."               ; Doc string
   nil (not (stringp icicle-WYSIWYG-Completions-flag)) nil
   (if (boundp 'face-name-history) 'face-name-history 'icicle-face-name-history)
   nil nil
-  ((prompt                                "Choose face (`RET' when done): ") ; Additional bindings
+  ((prompt                                "Choose face (`RET' when done): ") ; Bindings
    (icicle-list-nth-parts-join-string     ": ")
    (icicle-list-join-string               ": ")
    (icicle-list-end-string                "")
@@ -4870,7 +4881,7 @@ To use this command, you must have loaded library `color-theme.el',
 available from http://www.emacswiki.org/cgi-bin/wiki.pl?ColorTheme." ; Doc string
   (lambda (theme)
     (when (string= "" theme) (error "No theme name entered (empty input)"))
-    (funcall  (intern theme)))          ; Action - just call the theme.
+    (funcall  (intern theme)))          ; Action function: just call the theme.
   "Theme: " icicle-color-themes nil t nil ; `completing-read' args
   (if (boundp 'color-theme-history) 'color-theme-history 'icicle-color-theme-history)
   nil nil
@@ -4919,10 +4930,10 @@ The mark is pushed first, so the yanked text becomes the region.
 You can sort the candidates to yank - use `C-,'.
 You can use `S-delete' during completion to remove a candidate entry
 from the `kill-ring'."                  ; Doc string
-  icicle-insert-for-yank                ; Function to perform the action
+  icicle-insert-for-yank                ; Action function
   "Insert: " (mapcar #'list kill-ring) nil t nil 'icicle-kill-history ; `completing-read' args
   (car kill-ring) nil
-  ((icicle-transform-function       'icicle-remove-duplicates) ; Additional bindings
+  ((icicle-transform-function       'icicle-remove-duplicates) ; Bindings
    (icicle-sort-comparer            nil)
    (icicle-delete-candidate-object  'kill-ring)))
 
@@ -5509,7 +5520,7 @@ option `icicle-require-match-flag'."    ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
   (icicle-file-bindings                 ; Bindings
-   ((prompt                                 "Recent file: ") ; Additional bindings
+   ((prompt                                 "Recent file: ")
     (icicle-abs-file-candidates             (progn (unless (boundp 'recentf-list) (require 'recentf))
                                                    (when (fboundp 'recentf-mode) (recentf-mode 99))
                                                    (unless (consp recentf-list)
@@ -5553,7 +5564,7 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history (car recentf-list) nil
   (icicle-file-bindings                 ; Bindings
-   ((prompt                                 "Recent file: ") ; Additional bindings
+   ((prompt                                 "Recent file: ")
     (icicle-abs-file-candidates             (progn (unless (boundp 'recentf-list) (require 'recentf))
                                                    (when (fboundp 'recentf-mode) (recentf-mode 99))
                                                    (unless (consp recentf-list)
@@ -5607,7 +5618,7 @@ Same as `icicle-recent-file' except it uses a different window." ; Doc string
 
 (put 'icicle-locate-file 'icicle-Completions-window-max-height 200)
 ;;;###autoload
-(icicle-define-command icicle-locate-file ; Command name
+(defun icicle-locate-file ()
   "Visit a file within a directory or its subdirectories.
 With a non-negative (>= 0) prefix argument, you are prompted for the
 directory.  Otherwise, the current directory is used.
@@ -5628,6 +5639,9 @@ You can use this command to find all files within your file system
 that match a regexp, but be aware that gathering and matching the file
 names will take some time.
 
+See also command `icicle-locate-file-no-symlinks', which does the same
+thing but without following symbolic links.
+
 Remember that you can save the set of files matching your input using
 `\\[icicle-candidate-set-save]' or \
 `\\[icicle-candidate-set-save-persistently]'.  You can then retrieve quickly them later using
@@ -5646,81 +5660,64 @@ During completion:
  You can use `S-delete' to delete a candidate file or (empty)
   directory.
 
-These options, when non-nil, control candidate matching and filtering:
+Directories in `icicle-ignored-directories' are ignored (skipped).  In
+addition, these options control candidate matching and filtering:
 
  `icicle-file-extras'           - Extra file names to display
  `icicle-file-match-regexp'     - Regexp that file names must match
  `icicle-file-no-match-regexp'  - Regexp file names must not match
  `icicle-file-predicate'        - Predicate file names must satisfy
+ `icicle-file-require-match-flag' - See `icicle-require-match-flag'
  `icicle-file-sort'             - Sort function for candidates
 
 For example, to show only names of files larger than 5000 bytes, set
 `icicle-file-predicate' to:
 
-  (lambda (file) (> (nth 5 (file-attributes file)) 5000))
-
-Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
-  prompt                                ; `completing-read' args
-  (mapcar (if (<= (prefix-numeric-value current-prefix-arg) 0)
-              #'icicle-make-file+date-candidate
-            #'list)
-          icicle-abs-file-candidates)
-  nil
-  (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
-  nil 'file-name-history nil nil
-  (icicle-file-bindings                 ; Bindings
-   ((prompt                             "File: ") ; Bindings
-    (dir                                (if (and current-prefix-arg
-                                                 (wholenump (prefix-numeric-value
-                                                             current-prefix-arg)))
-                                            (read-file-name "Locate under which directory: " nil
-                                                            default-directory nil)
-                                          default-directory))
-    (IGNORED--FOR-SIDE-EFFECT           (progn
-                                          (icicle-highlight-lighter)
-                                          (message "Gathering files within `%s' (this could take \
-a while)..." dir)))
-    (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
-                                                                              icicle-re-no-dot) nil))
-    (use-dialog-box                     nil)
-    (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '((1 (face icicle-candidate-part)))))
-    (icicle-list-use-nth-parts          (and (<= (prefix-numeric-value current-prefix-arg) 0)
-                                             '(1)))
-    (icicle-all-candidates-list-alt-action-fn ; M-|'
-     (lambda (files) (let ((enable-recursive-minibuffers  t))
-                       (dired-other-window (cons (read-string "Dired buffer name: ")
-                                                 (mapcar #'icicle-transform-multi-completion
-                                                         files))))))))
-  (progn                                ; First code
-    (when (<= (prefix-numeric-value current-prefix-arg) 0)
-      (put-text-property 0 1 'icicle-fancy-candidates t prompt))
-    (define-key minibuffer-local-completion-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-must-match-map [(control backspace)] 'icicle-up-directory)
-    (define-key minibuffer-local-completion-map "\C-c\C-d" 'icicle-cd-for-loc-files)
-    (define-key minibuffer-local-must-match-map "\C-c\C-d" 'icicle-cd-for-loc-files)
-    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-file-other-window))
-      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-file-other-window)
-      (define-key minibuffer-local-must-match-map "\C-xm" 'icicle-bookmark-file-other-window)))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Undo code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-xm"    nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"    nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil))
-  (progn (define-key minibuffer-local-completion-map [(control backspace)] nil) ; Last code
-         (define-key minibuffer-local-must-match-map [(control backspace)] nil)
-         (define-key minibuffer-local-completion-map "\C-xm"    nil)
-         (define-key minibuffer-local-must-match-map "\C-xm"    nil)
-         (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
+  (lambda (file) (> (nth 5 (file-attributes file)) 5000))"
+  (interactive)
+  (let ((icicle-locate-file-action-fn  'icicle-locate-file-action)
+        (no-symlinks-p                 nil))
+    (icicle-locate-file-1)))
 
 ;;;###autoload
-(icicle-define-command icicle-locate-file-other-window ; Command name
-  "Same as `icicle-locate-file' except visit file in a different window." ; Doc string
-  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'wildcards)) ; Action
+(defun icicle-locate-file-other-window ()
+  "Same as `icicle-locate-file' except visit file in a different window.
+See also command `icicle-locate-file-no-symlinks-other-window', which
+does not follow symbolic links."
+  (interactive)
+  (let ((icicle-locate-file-action-fn  'icicle-locate-file-other-window-action)
+        (no-symlinks-p                 nil))
+    (icicle-locate-file-1)))
+
+(put 'icicle-locate-file-no-symlinks 'icicle-Completions-window-max-height 200)
+;;;###autoload
+(defun icicle-locate-file-no-symlinks ()
+  "`icicle-locate-file' except do not follow symlinks."
+  (interactive)
+  (let ((icicle-locate-file-action-fn  'icicle-locate-file-other-window-action)
+        (no-symlinks-p                 t))
+    (icicle-locate-file-1)))
+
+;;;###autoload
+(defun icicle-locate-file-no-symlinks-other-window ()
+  "`icicle-locate-file-no-symlinks' except visit file in different window."
+  (interactive)
+  (let ((icicle-locate-file-action-fn  'icicle-locate-file-other-window-action)
+        (no-symlinks-p                 t))
+    (icicle-locate-file-1)))
+
+(defun icicle-locate-file-action (file)
+  "Action function for `icicle-locate-file'."
+  (find-file (icicle-transform-multi-completion file) 'wildcards))
+
+(defun icicle-locate-file-other-window-action (file)
+  "Action function for `icicle-locate-file-other-window'."
+  (find-file-other-window (icicle-transform-multi-completion file) 'wildcards))
+
+;;;###autoload
+(icicle-define-command icicle-locate-file-1
+  "Helper function for `icicle-locate-file(-other-window)'." ; Doc string
+  (lambda (f) (funcall icicle-locate-file-action-fn f)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if (<= (prefix-numeric-value current-prefix-arg) 0)
               #'icicle-make-file+date-candidate
@@ -5730,7 +5727,7 @@ a while)..." dir)))
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'file-name-history nil nil
   (icicle-file-bindings                 ; Bindings
-   ((prompt                             "File: ") ; Bindings
+   ((prompt                             "File: ")
     (dir                                (if (and current-prefix-arg
                                                  (wholenump (prefix-numeric-value
                                                              current-prefix-arg)))
@@ -5741,8 +5738,8 @@ a while)..." dir)))
                                           (icicle-highlight-lighter)
                                           (message "Gathering files within `%s' (this could take \
 a while)..." dir)))
-    (icicle-abs-file-candidates         (icicle-files-within (directory-files dir 'full
-                                                                              icicle-re-no-dot) nil))
+    (icicle-abs-file-candidates         ; `no-symlinks-p' is free here.
+     (icicle-files-within (directory-files dir 'full icicle-re-no-dot) nil no-symlinks-p))
     (use-dialog-box                     nil)
     (icicle-candidate-properties-alist  (and (<= (prefix-numeric-value current-prefix-arg) 0)
                                              '((1 (face icicle-candidate-part)))))
@@ -5774,12 +5771,14 @@ a while)..." dir)))
          (define-key minibuffer-local-completion-map "\C-xm"    nil)
          (define-key minibuffer-local-must-match-map "\C-xm"    nil)
          (define-key minibuffer-local-completion-map "\C-c\C-d" nil)
-         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil)))
+         (define-key minibuffer-local-must-match-map "\C-c\C-d" nil))
+  'NON-INTERACTIVE)                     ; This is not a real command.
 
 ;; This is a minibuffer command.  It is in this file because it is used only here.
 ;;;###autoload
-(defun icicle-cd-for-loc-files (dir)
-  "Change `default-directory' during `icicle-locate-file'."
+(defun icicle-cd-for-loc-files (dir &optional no-symlinks-p)
+  "Change `default-directory' during `icicle-locate-file'.
+Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
   (interactive
    (save-selected-window
      ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
@@ -5790,8 +5789,8 @@ a while)..." dir)))
                       "Change default directory: " nil nil
                       (and (member cd-path '(nil ("./"))) (null (getenv "CDPATH"))))))))
   (cd dir)
-  (let* ((icicle-abs-file-candidates  (icicle-files-within
-                                       (directory-files dir 'full icicle-re-no-dot) nil))
+  (let* ((icicle-abs-file-candidates
+          (icicle-files-within (directory-files dir 'full icicle-re-no-dot) nil no-symlinks-p))
          (collection
           (mapcar (if icicle-list-use-nth-parts #'icicle-make-file+date-candidate #'list)
                   icicle-abs-file-candidates)))
@@ -5844,7 +5843,7 @@ For example, to show only names of files larger than 5000 bytes, set
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'."    ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action
+  (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))

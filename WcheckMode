@@ -25,15 +25,30 @@ Put Lisp:wcheck-mode.el file to some directory in your `load-path' and add the f
 
 See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the spell-checker for the current buffer; command `wcheck-change-language' is used to switch languages.
 
-Example configuration for spell-checking British English (using Ispell) and Finnish (using Enchant):
+Here's an example configuration for spell-checking languages British English (using Ispell) and Finnish (using Enchant). The default language will be "Finnish". The example also configures the spell-checker to read only certain buffer areas in `message-mode' and `org-mode'.
 
-    (setq wcheck-language-data '(("British English"
-                                  (program . "/usr/bin/ispell")
-                                  (args "-l" "-d" "british"))
-                                 ("Finnish"
-                                  (program . "/usr/bin/enchant")
-                                  (args "-l" "-d" "fi"))))
+    (setq-default
+     wcheck-language "Finnish"
+     wcheck-language-data '(("British English"
+                             (program . "/usr/bin/ispell")
+                             (args "-l" "-d" "british"))
+                            ("Finnish"
+                             (program . "/usr/bin/enchant")
+                             (args "-l" "-d" "fi")))
+     wcheck-read-or-skip-faces '((message-mode 
+                                  read nil message-header-subject
+                                  message-cited-text)
+                                 (org-mode
+                                  read nil org-level-1 org-level-2
+                                  org-level-3 org-level-4
+                                  org-level-5 org-level-6 org-level-7
+                                  org-level-8)))
 
+== Questions and Other Things ==
+
+Are there any grammar checkers available that you can use with this?
+
+Suggestion: Write your example using `( ... ) so that you can for example write ,ispell-program-name instead of "/usr/bin/ispell".
 
 ----
 CategorySpelling

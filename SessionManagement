@@ -15,6 +15,7 @@ Emacs and restored when you start a new session.
 * [[WThreeMSession]] -- Manage W3M sessions.
 * WcyDesktop -- Like DeskTop, but faster loading.
 * WindowsMode, ##revive.el## -- Save and restore [[window]] configurations.
+* winsav.el, part of [NxhtmlMode nXhtml] -- Save and restore frames and window configurations.
 
 See also: http://emacs-session.sourceforge.net/related.html.
 

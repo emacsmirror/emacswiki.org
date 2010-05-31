@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 25 18:21:03 2010 (-0700)
+;; Last-Updated: Sun May 30 13:09:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25030
+;;     Update #: 25036
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5394,9 +5394,10 @@
 ;;
 ;;  Icicles commands that use `completing-read' to read file names
 ;;  include the multi-commands `icicle-find-file-absolute',
-;;  `icicle-find-file-in-tags-table', `icicle-recent-file', and
-;;  `icicle-locate-file'.  These are defined using
-;;  `icicle-define-command', not `icicle-define-file-command'.
+;;  `icicle-find-file-in-tags-table', `icicle-recent-file',
+;;  `icicle-locate-file', and `icicle-locate-file-no-symlinks'.  These
+;;  are defined using `icicle-define-command', not
+;;  `icicle-define-file-command'.
 ;;
 ;;  There are also `-other-window' versions of all of the Icicles
 ;;  commands that read file names.
@@ -5435,10 +5436,15 @@
 ;;  defined by the tags table.
 ;;
 ;;  You can use `icicle-recent-file' to open any file that you have
-;;  visited recently, perhaps in a previous Emacs session.  You can
-;;  use `icicle-locate-file' to find a file when you do not know what
-;;  directory it is in.  It looks throughout a given directory,
-;;  including throughout all of its subdirectories.
+;;  visited recently, perhaps in a previous Emacs session.
+;;
+;;  You can use `icicle-locate-file' to find a file when you do not
+;;  know what directory it is in.  It looks throughout a given
+;;  directory, including throughout all of its subdirectories.
+;;  Command `icicle-locate-file-no-symlinks' is the same, except that
+;;  it does not follow symbolic links.  Both of these locate commands
+;;  respect option `icicle-ignored-directories', which is a list of
+;;  directories to ignore - by default, version-control directories.
 ;;
 ;;  By default, the target directory for `icicle-locate-file' is the
 ;;  current directory, but if you supply a non-negative numeric prefix
@@ -5535,11 +5541,11 @@
 ;;  possible file-name candidates relative to some starting directory.
 ;;
 ;;  This is the case for `icicle-find-file-absolute' and
-;;  `icicle-locate-file' (and their other-window variants).  For these
-;;  commands, you can use `C-c C-d' (think `cd') during completion to
-;;  change the current working directory (`default-directory') on the
-;;  fly.  You are prompted for the directory.  The domain of possible
-;;  candidates is recomputed relative to the new `default-directory'.
+;;  `icicle-locate-file' (and their variants).  For these commands,
+;;  you can use `C-c C-d' (think `cd') during completion to change the
+;;  current working directory (`default-directory') on the fly.  You
+;;  are prompted for the directory.  The domain of possible candidates
+;;  is recomputed relative to the new `default-directory'.
 ;;
 ;;  Use `C-c C-d' this way as many times as you like.  You can use
 ;;  this feature to add file names from different directories to a
@@ -5620,8 +5626,10 @@
 ;;  For example, you might have a software project that involves only
 ;;  certain directories and perhaps only certain kinds of files in
 ;;  those directories are of interest as completion candidates.  Those
-;;  directories and files can even be in disparate locations.  Start
-;;  with command `icicle-locate-file'.  Then use progressive
+;;  directories and files can even be in disparate locations.
+;;
+;;  Start with command `icicle-locate-file' (or
+;;  `icicle-locate-file-no-symlinks').  Then use progressive
 ;;  completion to match the directories and files you want and chip
 ;;  away at those you don't want.  Once you get just the set you need
 ;;  for your project, save that set using `C-}'.  You can have any

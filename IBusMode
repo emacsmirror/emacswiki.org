@@ -37,6 +37,7 @@ ibus.el provides ibus-mode minor mode, which allows users on-the-spot style inpu
 : Add ##ppa:irie/elisp## to software sources:
 
         sudo add-apt-repository ppa:irie/elisp
+        sudo apt-get update
 
 : and install ##ibus-el## package:
 

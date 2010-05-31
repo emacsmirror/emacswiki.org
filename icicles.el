@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue May 18 10:31:26 2010 (-0700)
+;; Last-Updated: Sun May 30 12:40:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22731
+;;     Update #: 22738
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -211,6 +211,8 @@
 ;;    `icicle-insert-thesaurus-entry', `icicle-keyword-list',
 ;;    `icicle-kill-buffer', `icicle-kmacro',
 ;;    `icicle-lisp-complete-symbol', `icicle-locate-file',
+;;    `icicle-locate-file-no-symlinks',
+;;    `icicle-locate-file-no-symlinks-other-window',
 ;;    `icicle-locate-file-other-window', `icicle-mode', `icy-mode',
 ;;    `icicle-object-action', `icicle-occur',
 ;;    `icicle-other-window-or-frame', `icicle-plist',
@@ -583,7 +585,7 @@
 ;;    `icicle-highlight-input-completion-failure-delay',
 ;;    `icicle-highlight-input-completion-failure-threshold',
 ;;    `icicle-highlight-input-initial-whitespace-flag',
-;;    `icicle-highlight-lighter-flag',
+;;    `icicle-highlight-lighter-flag', `icicle-ignored-directories',
 ;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
@@ -767,8 +769,8 @@
 ;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',
 ;;    `icicle-file-remote-p', `icicle-file-writable-p',
 ;;    `icicle-filesets-files-under', `icicle-files-within',
-;;    `icicle-filter-alist', `icicle-filter-wo-input',
-;;    `icicle-find-first-tag-action',
+;;    `icicle-files-within-1', `icicle-filter-alist',
+;;    `icicle-filter-wo-input', `icicle-find-first-tag-action',
 ;;    `icicle-find-first-tag-other-window-action',
 ;;    `icicle-find-tag-action', `icicle-find-tag-define-candidates',
 ;;    `icicle-find-tag-define-candidates-1',
@@ -824,7 +826,9 @@
 ;;    `icicle-levenshtein-one-regexp',
 ;;    `icicle-levenshtein-strict-match',
 ;;    `icicle-lisp-vanilla-completing-read',
-;;    `icicle-local-keys-first-p',
+;;    `icicle-local-keys-first-p', `icicle-locate-file-1',
+;;    `icicle-locate-file-action',
+;;    `icicle-locate-file-other-window-action',
 ;;    `icicle-looking-at-anychar-regexp-p',
 ;;    `icicle-looking-back-at-anychar-regexp-p',
 ;;    `icicle-major-mode-name-less-p', `icicle-make-color-candidate',

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May 14 22:32:20 2010 (-0700)
+;; Last-Updated: Sun May 30 12:08:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3671
+;;     Update #: 3673
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -97,7 +97,7 @@
 ;;    `icicle-highlight-input-completion-failure-delay',
 ;;    `icicle-highlight-input-completion-failure-threshold',
 ;;    `icicle-highlight-input-initial-whitespace-flag',
-;;    `icicle-highlight-lighter-flag',
+;;    `icicle-highlight-lighter-flag', `icicle-ignored-directories',
 ;;    `icicle-ignore-space-prefix-flag',
 ;;    `icicle-incremental-completion-delay',
 ;;    `icicle-incremental-completion-flag',
@@ -1238,6 +1238,11 @@ completion failure, then only that highlighting is shown."
 See the Icicles doc, section `Nutshell View of Icicles', subsection
 `Completion Status Indicators' for more information."
   :type 'boolean :group 'Icicles-Miscellaneous)
+
+;;;###autoload
+(defcustom icicle-ignored-directories vc-directory-exclusion-list
+  "Directories ignored by `icicle-locate-file'."
+  :type '(repeat string) :group 'Icicles-Files)
 
 ;;;###autoload
 (defcustom icicle-ignore-space-prefix-flag nil ; Toggle with `M-_'.

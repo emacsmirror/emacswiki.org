@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May 16 16:30:45 2010 (-0700)
+;; Last-Updated: Sun May 30 13:01:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2110
+;;     Update #: 2129
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -329,7 +329,7 @@
     (dolist (ft  (x-list-fonts "*")  fonts) ; Just avoiding two traversals, one to remove nil elts.
       (when (setq fws  (icicle-font-w-orig-size ft)) (push fws fonts)))) ; Ignore nil entries.
   nil t nil (if (boundp 'font-name-history) 'font-name-history 'icicle-font-name-history) nil nil
-  ((orig-frame           (selected-frame)) ; Additional bindings
+  ((orig-frame           (selected-frame)) ; Bindings
    (orig-font            (frame-parameter nil 'font))
    (orig-pixelsize       (aref (x-decompose-font-name orig-font) xlfd-regexp-pixelsize-subnum))
    (orig-pointsize       (aref (x-decompose-font-name orig-font) xlfd-regexp-pointsize-subnum))
@@ -404,12 +404,12 @@ During completion, candidate help (e.g. `C-M-RET') shows you the RGB
 and HSV (hue, saturation, value) color components.
 
 This command is intended only for use in Icicle mode." ; Doc string
-  (lambda (color)                       ; Function to perform the action
+  (lambda (color)                       ; Action function
     (modify-frame-parameters
      orig-frame (list (cons 'background-color (icicle-transform-multi-completion color)))))
   prompt named-colors nil t nil         ; `completing-read' args
   (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
-  ((orig-frame                         (selected-frame)) ; Additional bindings
+  ((orig-frame                         (selected-frame)) ; Bindings
    (orig-bg                            (frame-parameter nil 'background-color))
    (prompt                             "Background color: ")
    (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
@@ -431,12 +431,12 @@ This command is intended only for use in Icicle mode." ; Doc string
 (icicle-define-command icicle-frame-fg  ; Command name
   "Change foreground of current frame.
 See `icicle-frame-bg' - but this is for foreground, not background." ; Doc string
-  (lambda (color)                       ; Function to perform the action
+  (lambda (color)                       ; Action function
     (modify-frame-parameters
      orig-frame (list (cons 'foreground-color (icicle-transform-multi-completion color)))))
   prompt named-colors nil t nil         ; `completing-read' args
   (if (boundp 'color-history) 'color-history 'icicle-color-history) nil nil
-  ((orig-frame                         (selected-frame)) ; Additional bindings
+  ((orig-frame                         (selected-frame)) ; Bindings
    (orig-bg                            (frame-parameter nil 'foreground-color))
    (prompt                             "Foreground color: ")
    (icicle-list-use-nth-parts          '(2)) ; Use RGB part.
@@ -527,7 +527,7 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
                                                   menu-eol t)
                               (match-string-no-properties 1)))))
   nil
-  ((opoint                                 (point)) ; Additional bindings
+  ((opoint                                 (point)) ; Bindings
    (completion-ignore-case                 t)
    (case-fold-search                       t)
    (icicle-sort-comparer                   nil)
@@ -764,10 +764,10 @@ build a cache file of synonyms that are used for completion.  See
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-incremental-completion] to toggle incremental completion." ; Doc string
-  icicle-insert-thesaurus-entry-cand-fn ; Function to perform the action
+  icicle-insert-thesaurus-entry-cand-fn ; Action function
   "Thesaurus entry to match: " synonyms-obarray ; `completing-read' args
   nil nil nil 'icicle-dictionary-history nil nil
-  ((icicle-track-pt  (point)))          ; Additional bindings
+  ((icicle-track-pt  (point)))          ; Bindings
   (progn                                ; First code
     (unless (or (boundp 'synonyms-obarray) (require 'synonyms nil t))
       (error "You must first load library `synonyms.el'"))
@@ -840,7 +840,7 @@ remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
                            (function-called-at-point))))
               (and fn (symbol-name fn)))
   t
-  ((pref-arg  current-prefix-arg)       ; Additional bindings
+  ((pref-arg  current-prefix-arg)       ; Bindings
    (icicle-candidate-help-fn
     #'(lambda (c)
         (with-current-buffer orig-buff
@@ -1077,7 +1077,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
         (setq icicle-vardoc-last-initial-cand-set  result)))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "VAR `C-M-j' DOC (`RET' when done): ") ; Additional bindings
+  ((prompt                             "VAR `C-M-j' DOC (`RET' when done): ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-candidate-help-fn           'icicle-funvardoc-action)
    (pref-arg                           current-prefix-arg))
@@ -1132,7 +1132,7 @@ Remember that you can use `\\<minibuffer-local-completion-map>\
       (setq icicle-fundoc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "FUNC `C-M-j' DOC (`RET' when done): ") ; Additional bindings
+  ((prompt                             "FUNC `C-M-j' DOC (`RET' when done): ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-candidate-help-fn           'icicle-funvardoc-action)
    (pref-arg                           current-prefix-arg))
@@ -1262,7 +1262,7 @@ Remember that you can use \\<minibuffer-local-completion-map>\
       (setq icicle-doc-last-initial-cand-set  result))
     result)
   nil nil nil 'icicle-doc-history nil nil
-  ((prompt                             "Find doc with regexp: ") ; Additional bindings
+  ((prompt                             "Find doc with regexp: ") ; Bindings
    (icicle-candidate-properties-alist  '((1 (face icicle-candidate-part))))
    (icicle-list-use-nth-parts          '(1))
    (icicle-transform-function          'icicle-remove-duplicates) ; Duplicates are due to `fset's.
@@ -1821,7 +1821,7 @@ prefixed by MARKER's buffer name."
 
 (defun icicle-markers (ring)
   "Marks in mark RING that are in live buffers other than a minibuffer."
-  (let ((markers  nil))
+  (let ((markers  ()))
     (dolist (mkr  ring)
       (when (and (buffer-live-p (marker-buffer mkr))
                  (not (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
@@ -2908,12 +2908,12 @@ documentation."
 You can choose from keywords entered previously or enter new keywords
 using `C-RET'.  Each keyword is a regexp.  The regexps are OR'd, and
 the resulting regexp is usable for `icicle-search'." ; Doc string
-  (lambda (name)                        ; Function to perform the action
+  (lambda (name)                        ; Action function
     (push name keywords)
     (message "Added keyword `%s'" name))
   "Choose keyword (regexp) (`RET' when done): " ; `completing-read' args
   (mapcar #'list (icicle-remove-duplicates regexp-history)) nil nil nil 'regexp-history nil nil
-  ((keywords                              nil) ; Additional bindings
+  ((keywords                              nil) ; Bindings
    (icicle-use-candidates-only-once-flag  t))
   nil nil                               ; First code, undo code
   (prog1 (setq keywords  (nreverse (delete "" keywords))) ; Last code - return the list of keywords.
@@ -2938,7 +2938,7 @@ together instead of one at a time.
 4. Navigate to matches (search hits) using `C-next' etc.
 5. Finish with that bookmark using `RET' (stay) or `C-g' (skip).
 6. (Optional) Repeat steps 2-5 for other bookmarks." ; Doc string
-  icicle-search-bookmark-action         ; Function to perform the action
+  icicle-search-bookmark-action         ; Action function
   prompt icicle-candidates-alist nil (not icicle-show-multi-completion-flag) ; `completing-read' args
   nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
   (and (boundp 'bookmark-current-bookmark) bookmark-current-bookmark) nil
@@ -3091,17 +3091,17 @@ be loaded."
     ,(format "Search %s bookmark text.
 Like `icicle-search-bookmark', but with %s bookmarks only.
 You need library `bookmark+.el' for this command." type type) ; Doc string
-    icicle-search-bookmark-action       ; Function to perform the action
+    icicle-search-bookmark-action       ; Action function
     prompt1 icicle-candidates-alist nil ; `completing-read' args
     (not icicle-show-multi-completion-flag)
     nil (if (boundp 'bookmark-history) 'bookmark-history 'icicle-bookmark-history)
     nil nil
-    ((IGNORED1                                 (unless (require 'bookmark+ nil t)
+    ((IGNORED1                                 (unless (require 'bookmark+ nil t) ; Bindings
                                                  (error "You need library `bookmark+.el' for this \
 command")))
      (IGNORED2                                 (bookmark-maybe-load-default-file)) ; `bookmark-alist'.
      (enable-recursive-minibuffers             t) ; In case we read input, e.g. File changed on...
-     (completion-ignore-case                   bookmark-completion-ignore-case) ; Additional bindings
+     (completion-ignore-case                   bookmark-completion-ignore-case)
      (prompt1                                  ,(or prompt (format "Search %s bookmark: " type)))
      (icicle-list-use-nth-parts                '(1))
      (icicle-candidate-properties-alist        (if (not icicle-show-multi-completion-flag)
@@ -3850,12 +3850,12 @@ such as the following:
 
 `shell-prompt-pattern',`telnet-prompt-pattern'.
 
-See also \\<comint-mode-map>\\[icicle-comint-search] for another way to reuse commands."
-  insert
+See also \\<comint-mode-map>\\[icicle-comint-search] for another way to reuse commands." ; Doc string
+  insert                                ; Action function
   "Choose a previous command: "         ; `completing-read' args
   (mapcar #'list (cddr comint-input-ring)) nil nil nil 'shell-command-history
   (aref (cddr comint-input-ring) 0) nil
-  ((icicle-transform-function  'icicle-remove-duplicates))) ; Additional bindings
+  ((icicle-transform-function  'icicle-remove-duplicates))) ; Bindings
 
 (defun icicle-comint-hook-fn ()
   "Hook to set up Comint mode for Icicles."

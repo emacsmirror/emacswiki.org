@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 30 01:10:59 2010 (-0700)
+;; Last-Updated: Sun May 30 09:45:53 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12603
+;;     Update #: 12615
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1193,8 +1193,8 @@
 ;;
 ;;  Another analogy is a music playlist.  If you define a bookmark
 ;;  type whose handler plays a music file, then you can use Bookmark+
-;;  as a music player.  Similarly, you can use Bookmark+ to create
-;;  slideshows, by defining a bookmark type with a handler that
+;;  as a simple music player.  Similarly, you can use Bookmark+ to
+;;  create slideshows, by defining a bookmark type with a handler that
 ;;  displays an image file.  Cycle the navigation list to move through
 ;;  the slide show.
 ;;
@@ -1283,6 +1283,15 @@
 ;;
 ;;  (If you use an Emacs version prior to Emacs 22, you cannot use
 ;;  this prefix-key repeatable feature.)
+;;
+;;  In addition, if you use MS Windows then you can invoke the Windows
+;;  `Open' action on each bookmark when you cycle, to act on its file
+;;  using the program associated with the file type.  This lets you
+;;  play music or display images in a playlist or slideshow fashion.
+;;  These are the keys to do that:
+;;
+;;  Forward:  `C-x p next'   (PageDown key)
+;;  Backward: `C-x p prior'  (PageUp key)
 ;;
 ;;  Being able to cycle among an arbitrary set of bookmarks is the
 ;;  most important feature of Bookmark+ cycling.  The other important
@@ -1514,7 +1523,9 @@
 ;;  state of the bookmark-list.  That bookmark-list bookmark is in
 ;;  effect a music playlist or an image slideshow.  Jump to it anytime
 ;;  you want to listen to that set of music pieces or view those
-;;  images.
+;;  images.  And you can use `C-x p B' and then `C-x p next.'  to
+;;  cycle among the music pieces or images (slideshow).
+;;  (see (@> "Cycling the Navigation List")).
 ;;
 ;;  Together with the use of bookmark tags, this gives you a handy way
 ;;  to organize and access objects of any kind whose files are
@@ -1578,6 +1589,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/05/30 dadams
+;;     Added: bookmarkp-(next|previous)-bookmark-w32(-repeat).  Bound to C-x p (next|prior).
 ;; 2010/05/29 dadams
 ;;     *-bmenu-list, *-choose-navlist-from-bookmark-list, *-bmenu-define(-full-snapshot)-command,
 ;;       *-save-menu-list-state, -make-bookmark-list-record:

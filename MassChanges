@@ -1,0 +1,47 @@
+== Search & Replace ==
+
+If you're one of the EmacsWikiAdministrators, you can do search and replace operations on the entire wiki.
+Unfortunately it's not that easy.
+
+First, you need to "hack the URL" using Perl regular expressions and URL-encoding the query string:
+
+* ##http://emacswiki.org/test?search=search%20(and%7cor)%20replace##
+
+If you're happy with the result, provide a replacement as well. Again, this uses Perl syntax and requires URL-encoding. Remember, you need to be [Self:action=password logged in as an administrator].
+
+* ##http://www.emacswiki.org/cgi-bin/test?search=search+%28and|or%29+replace&replace=foo+%241+bar&pwd=test##
+
+== Downloading and Uploading ==
+
+You can also communicate with the wiki using simple HTTP GET and POST requests. This makes the use of command-line tools like *curl* feasible.
+
+In this example we'll add a horizontal line and a category tag to all the pages listed in the loop:
+
+{{{
+for f in AdamSpiers Adrian_Aichner AhmetUsal ...; do
+    echo $f
+    curl http://emacswiki.org/cgi-bin/wiki/raw/$f > $f;
+    echo "----" >> $f;
+    echo "CategoryHomepage" >> $f;
+    curl -F recent_edit=on -F summary=CategoryHomepage -F title=$f \
+         -F "text=<$f" -F uihnscuskc=1 -F username=AlexSchroeder \
+         http://emacswiki.org/cgi-bin/wiki
+    sleep 5;
+done
+}}}
+
+Explanation:
+
+* The *raw* parameter returns the raw text of the current revision of foo. Note that the www subdomain is optional. The following are all equivalent: /cgi-bin/wiki, /cgi-bin/emacs, /wiki, /emacs, /emacs-en. Parameters provided as part of the path_info imply the value 1. The Perl CGI module allows both semicolon and the ampersand to separate parameters:
+** http://emacswiki.org/wiki/raw/foo
+** http://emacswiki.org/wiki?action=browse;id=foo;raw=1
+** http://emacswiki.org/wiki?action=browse&id=foo&raw=1
+* **recent_edit**=on simulates clicking on the minor edit checkbox.
+* **summary**=foo sets the change log entry.
+* **title**=foo sets the page title.
+* **text**=foo sets the page text; test=<foo reads the page text from a file. Don't forget quoting for the shell.
+* **uihnscuskc**=1 is a "secret" parameter to bypass the little test question distinguishing humans from bots.
+* **username**=foo sets the author name for the change log entry.
+* __http://emacswiki.org/cgi-bin/wiki__ is the canonical address without any URL rewriting that we need to use when posting updates
+* the *sleep* command makes sure we're not getting any 503 Service Unavailable errors as we keep hitting the wiki.
+

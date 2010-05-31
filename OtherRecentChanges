@@ -7,7 +7,7 @@ RecentChangesJunkie.
 * [EmacsWiki:action=rc;showedit=0 Show latest major changes] -- the default list of recent changes.
 * [EmacsWiki:action=rc;showedit=1 Show latest changes] -- including minor ones.
 * [EmacsWiki:action=rc;all=1;showedit=1;days=3 Show all changes for the last three days] -- including every single change.
-* [EmacsWiki:action=rc;all=1;showedit=1;days=1Show all changes for today]
+* [EmacsWiki:action=rc;all=1;showedit=1;days=1 Show all changes for today]
 * [EmacsWiki:action=rc;all=1;showedit=1;days=1;newtop=0 Show all changes for today, most recent last] -- ''Doesn't work''
 * [http://www.emacswiki.org/elisp/changelog.html Show changes to Elisp files and packages]
 * RecentChangesMinusIcicles for strategies to avoid recent changes entries related to [[Icicles]].
