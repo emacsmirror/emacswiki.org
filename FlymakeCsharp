@@ -1,6 +1,6 @@
 == Flymake for C# ==
 
-Flymake-for-csharp.el is a small elisp module that makes using flymake with C# modules, nicer. 
+Flymake-for-csharp.el is a small elisp module that makes using FlyMake with C# modules, nicer. 
 
 http://i40.tinypic.com/ifze6c.jpg
 
@@ -20,9 +20,12 @@ The latest version is [http://code.google.com/p/csharpmode/source/browse/trunk/f
 
 == Rationale ==
 
-Flymake often works "out of the box" with other languages.  But C# has a few differences that mean it doesn't work right out of the box, with flymake.   
+FlyMake often works "out of the box" with other languages.  But C# has a few differences that mean it doesn't work right out of the box, with FlyMake.   
 
-flymake is set up to use makefiles. But many C# modules are compiled as part of a project defined in a .csproj file, or an msbuild build file.  Some C# modules are small and don't use a makefile at all.   Most developers use a mixture of these build environments, so ideally, flymake would be able to use any of them. 
+# FlyMake is set up to use makefiles. But many C# modules are compiled as part of a project defined in a .csproj file, or an msbuild build file.  Some C# modules are small and don't use a makefile at all.   Most developers use a mixture of these build environments, so FlyMake should be able to use any of them. 
+
+# In contrast to C, with C#, references to external libraries are checked at compile time, not only at link time. In cases where a .csproj file or makefile is used, the user will need to compile several .cs modules together, just in order to resolve those references to perform a syntax check.  By default, FlyMake doesn't handle that.
+
 
 
 == History ==

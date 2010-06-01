@@ -2,6 +2,10 @@
 
 There are a few solutions for this.
 
+== EasyPG Assistant ==
+
+At least in my emacs 23.1.1 that comes with Ubuntu 10.04 there is EasyPG Assistant that handles gpg encrypted files out-of-the-box. So (my) mc-gpg-file-mode is now obsolete.
+
 == stock emacs ==
 
 Add this to your ##.emacs## file and any filename ending with ##.gpg## will be treated as encrypted:

@@ -1178,11 +1178,10 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
   (interactive)
   (let ((mtmb-height (frame-height)))
     (menu-bar-mode nil)
-    (set-frame-height 
-     (selected-frame)
-     (if menu-bar-mode
-	 (1- mtmb-height)
-       (1+ mtmb-height)))
+    (set-frame-height (selected-frame)
+                      (if menu-bar-mode
+                          (1- mtmp-height)
+                        (1+ mtmp-height)))
     (force-mode-line-update t)))
 
 ;;; ==============================
@@ -5087,8 +5086,11 @@ When optional arg DISPLAY-IN-BUFFER is non-nil return values to buffer named
     (mapatoms #'(lambda (sym) 
                   (when (plist-get (symbol-plist sym)  plist-sym)
                     (if display-in-buffer
-                        (princ (format "%s\n" (identity sym)) 
-                               (get-buffer mmospp))
+                        (progn
+                          ;;(princ (identity sym)  (get-buffer mmospp))
+                          (princ (format "%s\n" (identity sym))
+                                 (get-buffer mmospp)))
+                          ;;(princ "\n" (get-buffer mmospp)))
                       (push sym mmospp)))))
     (if display-in-buffer 
         (with-current-buffer mmospp

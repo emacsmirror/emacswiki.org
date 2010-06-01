@@ -96,3 +96,6 @@
                     (let ((str (buffer-substring-no-properties start. (point))))
                       (if (not (string-match "[\\r\\n]" str))
                           str))))))))))
+
+(provide 'align-by-current-symbol)
+;;; align-by-current-symbol.el ends here

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 311 $  
+;; RCS Version: $Rev: 312 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -146,7 +146,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 311 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 312 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2094,7 +2094,8 @@ automatically:
   (when as-virtual
     (sr-virtual-mode)
     (sr-force-passive-highlight t))
-  (revert-buffer))
+  (dired-build-subdir-alist)
+  (sr-revert-buffer))
 
 (defun sr-terminate-wdired (fun)
   "Restores the current pane's original mode after being edited with WDired."
@@ -2417,11 +2418,12 @@ indir/d => to-dir/d using clone-op to clone all files."
 
 (defun sr-overlapping-paths-p (dir1 dir2)
   "Determines whether the directory dir2 is located inside the directory dir1."
-  (setq dir1 (expand-file-name (file-name-as-directory dir1))
-        dir2 (expand-file-name dir2))
-  (if (>= (length dir2) (length dir1))
-      (equal (substring dir2 0 (length dir1)) dir1)
-      nil))
+  (when (and dir1 dir2)
+    (setq dir1 (expand-file-name (file-name-as-directory dir1))
+	  dir2 (expand-file-name dir2))
+    (if (>= (length dir2) (length dir1))
+	(equal (substring dir2 0 (length dir1)) dir1)
+      nil)))
 
 (defun sr-list-of-contents (dir)
   "Return the whole list of contents in DIR as a list of strings."

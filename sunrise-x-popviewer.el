@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 1
-;; RCS Version: $Rev: 309 $
+;; RCS Version: $Rev: 312 $
 ;; Keywords: Sunrise Commander Emacs File Manager Accessibility Viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
@@ -38,7 +38,7 @@
 ;; together, if you're using the Buttons extension remove  it  first  from  your
 ;; .emacs file.
 
-;; This is version 1 $Rev: 309 $ of the Sunrise Commander PopViewer Extension.
+;; This is version 1 $Rev: 312 $ of the Sunrise Commander PopViewer Extension.
 
 ;; This  piece  of code is still in alpha stage. If you find it useful and think
 ;; you may contribute to it with suggestions of even more code,  please  let  me
@@ -72,17 +72,20 @@
 (defun sr-setup-windows()
   "Setup the Sunrise window configuration (two windows in sr-mode.)"
 
+  (bury-buffer)
   (delete-other-windows)
 
   (cond 
    ((equal sr-window-split-style 'horizontal) (split-window-horizontally))
    ((equal sr-window-split-style 'vertical)   (split-window-vertically))
+   ((equal sr-window-split-style 'top)        (ignore))
    (t (error "ERROR: Don't know how to split this window: %s" sr-window-split-style)))
 
   ;;setup sunrise on both panes
   (sr-setup-pane left)
-  (other-window 1)
-  (sr-setup-pane right)
+  (unless (equal sr-window-split-style 'top)
+    (other-window 1)
+    (sr-setup-pane right))
 
   ;;select the correct window
   (sr-select-window sr-selected-window)
@@ -91,9 +94,14 @@
   (run-hooks 'sr-start-hook))
 
 (defun sr-quick-view (&optional arg)
-  "Opens  the  selected file in a new frame."
+  "Allows to quick-view the currently selected item: on regular files, it opens
+  the file in a new frame, on directories, visits the selected directory in the
+  passive pane, and on symlinks follows the file the link points to."
   (interactive)
-  (find-file-other-frame (dired-get-file-for-visit)))
+  (let ((name (dired-get-filename nil t)))
+    (cond ((file-directory-p name) (sr-quick-view-directory name))
+          ((file-symlink-p name) (sr-quick-view-symlink name))
+          (t (find-file-other-frame (dired-get-file-for-visit))))))
 
 (defun sr-select-viewer-window (&optional force-setup)
   "Tries to select a window that is not a sr pane."

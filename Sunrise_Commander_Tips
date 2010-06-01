@@ -294,6 +294,10 @@ of the panes to jump directly to that location in the file system.
 similar path in the mode line, where you can see it  all  the  time,  even  when
 scrolling long dirs.
 
+* Install the [Lisp:sunrise-x-tree.el  sunrise-x-tree] extension to rapidly move
+to any directory in the file system using a tree-like hierarchical view like the
+one offered by navigator-style file managers.
+
 * Use the listings of recent files (C-c C-r) and recent directories (C-c C-d) to
 reuse the paths to already visited  files  and  directories.  Recent  files  are
 managed  by  recentf  and  automatically persisted across emacs sessions. If you
@@ -364,13 +368,14 @@ from it, or maybe the author likes the idea and adds it to the official code ;-)
 [new]
 //From Tom Short://
 
-Both  my  laptop screen and my desktop monitor are quite wide, so I use a lot of
-horizontal split screen. In sr-mode, I don't use the viewer much. I like to  use
-windows  split horizontally with the right window used as both the viewer/editor
-and the passive directory window. To do that, I use  sr-setup-windows  from  the
-PopViewer  Extension  to  get two windows in sr-mode, and I use sr-open-in-other
-defined below to open the directory or file in the passive window. I assign  the
-space key to sr-open-in-other. I also redefine sr-select-viewer-window.
+Both my laptop screen  and my desktop monitor are quite wide, so  I use a lot of
+horizontal split screen. In sr-mode, I don't  use the viewer much. I like to use
+windows split horizontally with the  right window used as both the viewer/editor
+and the  passive directory window. To  do that, I use  sr-setup-windows from the
+[Lisp:sunrise-x-popviewer.el PopViewer Extension] to get two windows in sr-mode,
+and I  use sr-open-in-other defined below to  open the directory or  file in the
+passive  window. I assign  the space  key to  sr-open-in-other. I  also redefine
+sr-select-viewer-window.
 
 My usage is as follows:
 

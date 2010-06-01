@@ -166,6 +166,26 @@ to the .emacs init file. After the next restart of Emacs, a "Rudel" menu item sh
 In case you need additional assistance, try the #rudel IRC channel periodically. Sooner or later somebody who can help should be there. -- JanMoringen
 [new]
 
+Okay... I just had a major system crash and ended up doing a new install of Ubuntu Lucid. I've installed emacs23 and cedet, etc., but I'm getting the following error (from --debug-init) when rudel-loaddefs.el runs:
+
+͂͂͂͂͂͂͂͂͂͂͂͂Debugger entered--Lisp error: (wrong-type-argument listp :static)
+  eieio-defmethod(rudel-get-factory (:static ((this rudel-backend-factory) category) "Return the factory responsible for CATEGORY.\nIf there is no responsible factory, create one and return it." (with-slots (factories) this (or ... ...))))
+  (defmethod rudel-get-factory :static ((this rudel-backend-factory) category) "Return the factory responsible for CATEGORY.\nIf there is no responsible factory, create one and return it." (with-slots (factories) this (or ... ...)))
+  eval-buffer(#<buffer  *load*<3>> nil "/usr/share/emacs/site-lisp/rudel/rudel-backend.el" nil t)  ; Reading at buffer position 3636
+  load-with-code-conversion("/usr/share/emacs/site-lisp/rudel/rudel-backend.el" "/usr/share/emacs/site-lisp/rudel/rudel-backend.el" nil t)
+  (rudel-add-backend (rudel-backend-get-factory (quote protocol)) (quote infinote) (quote rudel-infinote-backend))
+  eval-buffer(#<buffer  *load*<2>> nil "/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" nil t)  ; Reading at buffer position 4075
+  load-with-code-conversion("/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" "/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" nil nil)
+  load("/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" nil nil t)
+  load-file("/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el")
+  eval-buffer(#<buffer  *load*> nil "/home/michael/.emacs" nil t)  ; Reading at buffer position 3813
+  load-with-code-conversion("/home/michael/.emacs" "/home/michael/.emacs" t t)
+  load("~/.emacs" t t)
+
+There's more but there's high high-ascii in it, so won't copy, of course. Hopefully you can get the jist from this. :)
+-- Michael
+[new]
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===

@@ -136,6 +136,9 @@ Github : http://github.com/tsgates/pylookup
 Pylookup Mode : http://taesoo.org/Opensource/Pylookup
 
 == Using flymake with pylint, pychecker, and pep8.py == 
+(Here is an extended, cleaned up and bug-fixed version of the script below: 
+http://bitbucket.org/tavisrudd/pylint_etc_wrapper.py/src/tip/pylint_etc_wrapper.py 
+--Tavis Rudd, *not* the original author)
 
 This is a script which runs and parses the output of various
 Python code checking programs to work with flymake.  It has 

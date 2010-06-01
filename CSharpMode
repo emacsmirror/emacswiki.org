@@ -3,7 +3,7 @@
 Provides an editing mode for C# code.  Includes code indentation, fontification, codedoc generation. 
 
 [new]
-The latest version is available at the repository (see below), but there is a (maybe older) version available here: Lisp:csharp-mode.el.
+As of May 2010, the latest version is available at  https://code.google.com/p/csharpmode/, and there is a (maybe older) version available here: Lisp:csharp-mode.el.
 
 [new]
 
@@ -15,7 +15,7 @@ http://i42.tinypic.com/a5bwhw.jpg
 
 Note:
 
-[NxhtmlMode nXhtml] includes csharp-mode.el v0.7.4.
+[NxhtmlMode nXhtml] includes a slightly modified version of latest csharp-mode.el.
 
 
 == Complementary Stuff / Minor Modes ==
@@ -29,6 +29,8 @@ Note:
 ||[http://www.gnu.org/software/emacs/manual/html_node/emacs/Reverting.html Auto-Revert]||||refresh .cs buffers, after you've edited them externally, for example, in Visual Studio.||
 ||[http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] ||||Is C# Code Completion in emacs really possible?||
 ||[http://code.google.com/p/idebridge/ ide-bridge]|||| C# Code Completion/refactoring/navigation/compilation.  Integrates Emacs with SharpDevelop ||
+||[http://code.google.com/p/csharpmode/source/browse/trunk/csharp-completion.el c# completion]|||| C# code completion, using Powershell. Still in development. Works only on Windows. ||
+
 
 
 
@@ -68,12 +70,11 @@ I currently use csharp-mode 0.7.5, on GNU emacs 22.2, on Windows (Vista). Every 
 
 The mode works well today, but there are plenty of opportunities for improvement.  Among them: better codedoc generation - for example automatically emit <param> elements for each parameter.   
 
-I've just hosted this code in a project on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
-
-
+As of May 2010, I've just hosted this code in a project on googlecode:  https://code.google.com/p/csharpmode/ .  If you have requests, file them there.  If you have changes you'd like to see added, submit them there.  
 
 Dylan Moonfire had the right idea with http://freshmeat.net/projects/csharp-mode  but it's no longer active, and anyway there's no good way to file bugs or track work requests on freshmeat. 
 
+--DinoChiesa
 
 === Inclusion into Emacs ===
 
@@ -462,6 +463,13 @@ At the moment the mode hooks are run before local keys bindings are set, which m
 </pre>
 
 -- Richard Kettlewell
+
+[new]
+
+Richard, I'll put that into the latest version. (31 May 2010)
+
+--DinoChiesa
+
 
 ----
 CategoryModes ProgrammingModes
