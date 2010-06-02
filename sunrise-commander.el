@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 312 $  
+;; RCS Version: $Rev: 313 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -146,7 +146,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 312 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 313 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1693,7 +1693,7 @@ automatically:
 (defun sr-transpose-panes ()
   "Changes the order of the panes."
   (interactive)
-  (unless (sr-equal-dirs sr-this-directory sr-other-directory)
+  (unless (eq sr-left-buffer sr-right-buffer)
     (mapc (lambda (x)
             (let ((left (sr-symbol 'left x)) (right (sr-symbol 'right x)) (tmp))
               (setq tmp (symbol-value left))

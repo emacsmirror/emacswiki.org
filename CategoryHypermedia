@@ -23,7 +23,7 @@ Examples:
 * WikiModeDiscussion -- Comparing emacs-wiki.el and wiki.el (which see).
 ** WikiMode -- wiki.el, the original mode to edit and navigate files with wiki syntax, and to translate these into static HTML pages.
 ** OddmuseMode -- A mode for editing pages in an OddMuse Wiki, including the EmacsWiki.
-** [[Yaoddmuse]] -- Edit or Post OddMuse Wiki pages *asynchronous*, including the EmacsWiki. 
+** [[Yaoddmuse]] -- Edit or Post OddMuse Wiki pages *asynchronously*, including the EmacsWiki. 
 ** PlannerMode (a PIM) -- extending EmacsMuse with day pages, diary, appointments, todo, etc.
 ** ConfluenceMode -- A mode for editing pages in a Confluence Wiki.
 ** WikiRel -- Find an EmacsWiki page based on the current mode in Emacs

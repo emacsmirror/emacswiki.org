@@ -32,5 +32,52 @@ In Emacs 21 the default host to download [[RFC]] documents is <code>ds.internic.
 
     (setq ffap-rfc-path "/anonymous@ftp.rfc-editor.org:/in-notes/rfc%s.txt")
 
+== TeX Path Search Enhancement ==
+
+The default TeX path search method cannot search all the TeX package. Here is some enhancement for the path search scheme:
+
+{{{
+
+(defvar my-texlive-db-path
+  '("D:\\texlive\\2009\\texmf" "D:\\texlive\\2009\\texmf-dist"))
+
+(defun ffap-locate-tex-path (pakname)
+  (save-excursion
+    (save-match-data
+      (when (re-search-forward (concat "^" pakname "$") nil t)
+        ;; if we found
+        (re-search-backward "\\(\\..*\\):$" nil t)
+        (concat
+         (file-name-as-directory
+          (concat (file-name-as-directory dbpath) (match-string 1)))
+         pakname)))))
+
+(defun ffap-locate-tex-file (pakname suffix paths)
+  (catch 'break
+    (let (r)
+      (dolist (dbpath paths)
+        (with-temp-buffer
+          (condition-case nil
+              (progn
+                (insert-file-contents
+                 (concat (file-name-as-directory dbpath) "ls-R"))
+                (dolist (suf suffix)
+                  (setq r (ffap-locate-tex-path (concat pakname suf)))
+                  (if r (throw 'break r))))
+            (error nil)))))))
+
+(eval-after-load "ffap"
+  '(progn
+     (defun ffap-tex-mode (name)
+       (ffap-tex-init)
+       (ffap-locate-tex-file name '(".tex" "") my-texlive-db-path))
+
+     (defun ffap-latex-mode (name)
+       (ffap-tex-init)
+       ;; only rare need for ""
+       (ffap-locate-tex-file name '(".cls" ".sty" ".tex" "") my-texlive-db-path))
+     ))
+}}}
+
 ----
 CategoryFiles OpenFilesInDifferentWays

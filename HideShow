@@ -213,6 +213,30 @@ Is there a possibility to add some small "+" sign next to the sourcecode to togg
 : S-mouse-2 toggles show/hide without need for a "+". (At least it does in CVS Emacs.)  You could map hs-toggle-hiding to a more convenient key too.  Perhaps M-+ would suit your itch for a "+".
 [new]
 : Have a look at Lisp:hideshowvis.el
+here is a patch to avoid hideshowvis to override the current-local-map:
+
+    @@ -128,6 +130,11 @@
+         hideshowvis-mode-map)
+       "Keymap for hideshowvis mode")
+     
+    +(setq minor-mode-map-alist
+    +      (cons (cons 'hideshowvis-minor-mode hideshowvis-mode-map)
+    +            minor-mode-map-alist))
+    +
+    +
+     (define-minor-mode hideshowvis-minor-mode ()
+       "Will indicate regions foldable with hideshow in the fringe"
+       :init-value nil
+    @@ -140,7 +147,7 @@
+                 (hideshowvis-highlight-hs-regions-in-fringe (point-min) (point-max) 0)
+                 (add-to-list 'after-change-functions
+                              'hideshowvis-highlight-hs-regions-in-fringe)
+    -            (use-local-map hideshowvis-mode-map))
+    +            )
+             (remove-overlays (point-min) (point-max) 'hideshowvis-hs t)
+             (setq after-change-functions
+                   (remove 'hideshowvis-highlight-hs-regions-in-fringe
+
 [new]
 Is anyone working on ruby support?
 [new]

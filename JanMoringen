@@ -8,9 +8,7 @@ Projects:
 
 Also known as: [::scymtym] on #rudel on the freenode IRC network
 
-== Discussion ==
-
-/Paste feedback here./
+== Talk ==
 
 [new]
 Okay... I just upgraded to Ubuntu Lucid, which installed emacs23 (23.1.1). Canonical has now also removed Rudel, so I installed the latest tarball from the link above and it won't start. I get the following error on initializing with global-rudel-minor-mode:
@@ -67,6 +65,7 @@ Okay... I got this sorted out. It wasn't rudel at all, actually. It was sepia. A
 (Now, why did Canonical remove rudel from their list, hmmmm? :> )
 
 --Michael
+
 [new]
 Jan,
 
@@ -75,6 +74,14 @@ Okay, after all that I had a catestrophic system crash and have had to do a comp
 Thanks!
 
 --Michael
+
+[new]
+Hi Micheal,
+
+sorry to hear that. I hope the advice on the Rudel page is of some help. Otherwise feel free to ask here or visit the #rudel IRC channel.
+
+Good luck.
+--JanMoringen
 ----
 
 CategoryHomepage

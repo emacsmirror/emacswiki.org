@@ -3,7 +3,7 @@
 Emacs trae consigo un tutorial interactivo que  le guiará paso a paso a través de una sesión de edición en la cual aprenderá los elementos básicos del uso de Emacs como editor de texto. Para realizarlo, proceda de la siguiente manera:
 * Utilice ##C-h t## (presione Control y h, suelte ambas teclas, y luego pulse t).
 * Si eso no resulta, intente mediante ##F1 t##.
-* Si eso no resulta tampoco, intente ##M x help-with-tutorial## (Pulse ##Esc##, suéltela, pulse ##x##, suéltela, escriba ##help-with-tutorial##, pulse ##Enter##).
+* Si eso no resulta tampoco, intente ##M-x help-with-tutorial## (Pulse ##Esc##, suéltela, pulse ##x##, suéltela, escriba ##help-with-tutorial##, pulse ##Enter##).
 
 No, Emacs en realidad no es tan poco confiable - simplemente puede ser que usted esté usándolo bajo un entorno X, windows, consola, emulación de terminal, sesión de ssh, etc. El entorno puede modificar el modo en que secuencias como ##C-h## o ##F1## son interpretadas.
 

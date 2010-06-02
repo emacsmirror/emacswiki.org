@@ -128,7 +128,19 @@ Indentation: As usual in Emacs, but there are also some indentation specific to 
 
 Brace style: I do not understand the question. Could you please rephrase it?
 
-
+Sorry. This actually kind of refers to the "child" php-mode (in my case). When using php-mode alone, I can do
+<code>
+(c-set-style "bsd")
+</code>
+in my php-mode startup hook function to ensure braces are automagically put in the correct (%%*cough*%%) places, i.e.
+{{{
+    function foo()
+    {
+      ...
+    }
+}}}
+Trying to do this in the nxhtml-mode-hook causes an error. I guess I'm supposed to somehow set them in the "child" mode, but how, please?
+----
 === Unsolved problems ===
 
 ==== Chunks in chunks - where does it end? ====

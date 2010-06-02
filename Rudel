@@ -149,7 +149,6 @@ project is more appropriate.
 
 [new]
 I would like to use rudel with auctex (with inline preview) for collaborative LaTeX documents.  Unfortunately, this is too hard for most mathematicians (me for example) to install.  How can this be simplified?  With a script or package of some kind?  reply here or something.
-[new]
 
 [new]
 Probably not the answer you are looking for, but with regard to installing Rudel, the procedure depends on your operating system, the Emacs version and desired install location. 
@@ -163,11 +162,12 @@ Alternatively, for a recent version (23) of Emacs, downloading Rudel from http:/
 
 to the .emacs init file. After the next restart of Emacs, a "Rudel" menu item should appear. 
 
-In case you need additional assistance, try the #rudel IRC channel periodically. Sooner or later somebody who can help should be there. -- JanMoringen
-[new]
+In case you need additional assistance, try the #rudel IRC channel periodically. Sooner or later somebody who can help should be there. --JanMoringen
 
+[new]
 Okay... I just had a major system crash and ended up doing a new install of Ubuntu Lucid. I've installed emacs23 and cedet, etc., but I'm getting the following error (from --debug-init) when rudel-loaddefs.el runs:
 
+<pre>
 ͂͂͂͂͂͂͂͂͂͂͂͂Debugger entered--Lisp error: (wrong-type-argument listp :static)
   eieio-defmethod(rudel-get-factory (:static ((this rudel-backend-factory) category) "Return the factory responsible for CATEGORY.\nIf there is no responsible factory, create one and return it." (with-slots (factories) this (or ... ...))))
   (defmethod rudel-get-factory :static ((this rudel-backend-factory) category) "Return the factory responsible for CATEGORY.\nIf there is no responsible factory, create one and return it." (with-slots (factories) this (or ... ...)))
@@ -181,10 +181,18 @@ Okay... I just had a major system crash and ended up doing a new install of Ubun
   eval-buffer(#<buffer  *load*> nil "/home/michael/.emacs" nil t)  ; Reading at buffer position 3813
   load-with-code-conversion("/home/michael/.emacs" "/home/michael/.emacs" t t)
   load("~/.emacs" t t)
+</pre>
 
 There's more but there's high high-ascii in it, so won't copy, of course. Hopefully you can get the jist from this. :)
 -- Michael
+
 [new]
+Your error looks like the error in [http://sourceforge.net/tracker/?func=detail&aid=2864765&group_id=249139&atid=1126346 this bug report] which was caused by an old CEDET version installed via the Debian package manager (The CEDET version can be checked using ##M-x cedet-version##). Also, Emacs 23 includes a version of CEDET. Installing it via the package manager should not be required (and may even cause harm as in the linked bug report).
+--JanMoringen
+[new]
+Well... I tried uninstalling CEDET (via the package manager) and it uninstalled eieio as well. And, apparently (at least on a clean install of Lucid) CEDET is *not* installed as part of deb emacs23. I couldn't find it anywhere after I removed the CEDET package and then reinstalled just emacs23. Also, I get the same errors with just a core install as without CEDET. So I reinstalled eieio. It required only "cedet-common", rather than the all the deb cedet packages. Fine. But it still generates the same errors, either way. It appears I need need a way to install cedet and eieio other than via Canonical.
+
+-- Michael
 
 == Contributed Code ==
 
