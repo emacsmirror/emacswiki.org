@@ -103,7 +103,7 @@ dependency problem, but this should get you in a working state.
 
 === Installing ===
 
-To install Rudel, download a releases version or the current
+To install Rudel, download a released version or the current
 development version from [http://sourceforge.net/projects/rudel/] and
 place the code in any directory you like.
 
@@ -136,7 +136,7 @@ reporting bugs, use the Questions and Feedback section below,
 [http://sourceforge.net/tracker/?group_id=249139 the issue tracker].
 You can also try #rudel on irc.freenode.net.
 
-When reporting bugs, please make sure to include the Emacs version,
+When reporting bugs, please make sure to include the Emacs version, the CEDET version,
 the Rudel version and a descriptions of the steps that lead to the
 bug.
 
@@ -189,10 +189,35 @@ There's more but there's high high-ascii in it, so won't copy, of course. Hopefu
 [new]
 Your error looks like the error in [http://sourceforge.net/tracker/?func=detail&aid=2864765&group_id=249139&atid=1126346 this bug report] which was caused by an old CEDET version installed via the Debian package manager (The CEDET version can be checked using ##M-x cedet-version##). Also, Emacs 23 includes a version of CEDET. Installing it via the package manager should not be required (and may even cause harm as in the linked bug report).
 --JanMoringen
+
 [new]
 Well... I tried uninstalling CEDET (via the package manager) and it uninstalled eieio as well. And, apparently (at least on a clean install of Lucid) CEDET is *not* installed as part of deb emacs23. I couldn't find it anywhere after I removed the CEDET package and then reinstalled just emacs23. Also, I get the same errors with just a core install as without CEDET. So I reinstalled eieio. It required only "cedet-common", rather than the all the deb cedet packages. Fine. But it still generates the same errors, either way. It appears I need need a way to install cedet and eieio other than via Canonical.
 
 -- Michael
+
+[new]
+The [CollectionOfEmacsDevelopmentEnvironmentTools CEDET] page says:
+: In Emacs 23.2, CEDET was merged into the main Emacs distribution.
+
+Maybe the Ubuntu version is older? In conclusion, I still assume the CEDET variants you tried were too old. Sorry for the confusion.
+
+The easiest solution, although quite unsatisfactory, is probably to install CEDET from CVS.
+--JanMoringen
+[new]
+No, Debian is just strange. They have their own unique way of doing emacs. There's a collection of emacs startup.el files in the etc tree that look like the rc.d directory. =snort= 
+
+But okay... I finally got the CVS version of CEDET working -- at least, I can get the rudel menu up without any errors showing up ( in --debug-init mode). But when I try to join a session I *now* get: 
+
+{{{
+Warning (rudel): Could not load backend `zeroconf': Wrong type argument: arrayp, nil
+Warning (rudel): Could not load backend `zeroconf': Wrong type argument: arrayp, nil
+Warning (rudel): Could not load backend `infinote': Wrong type argument: arrayp, nil
+Warning (rudel): Could not load backend `obby': Wrong type argument: arrayp, nil
+}}}
+
+This is turning into an ordeal. :P
+
+--- michael
 
 == Contributed Code ==
 

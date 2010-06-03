@@ -154,7 +154,7 @@ this).
           :icon "emacs-snapshot"
           :timeout -1))
 
-(add-hook 'erc-text-matched-hook my-notify-erc)
+(add-hook 'erc-text-matched-hook 'my-notify-erc)
 </pre>
 
 As with the previous version, you need to be using erc-match.el. The advantage

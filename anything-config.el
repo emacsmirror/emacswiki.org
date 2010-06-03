@@ -1901,9 +1901,10 @@ You can put (anything-dired-binding 1) in init file to enable anything bindings.
       (define-key dired-mode-map (kbd "H") 'dired-do-hardlink)
       (setq anything-dired-bindings nil)))
 
-(defun* anything-c-read-file-name (prompt &key (initial-input default-directory)
-                                        (buffer "*Anything Completions*")
-                                        test)
+(defun* anything-c-read-file-name (prompt &key
+                                          (initial-input (expand-file-name default-directory))
+                                          (buffer "*Anything Completions*")
+                                          test)
   "Anything `read-file-name' emulation.
 INITIAL-INPUT is a valid path, TEST is a predicate that take one arg."
   (when (get-buffer anything-action-buffer)
@@ -3892,8 +3893,8 @@ See http://orgmode.org for the latest version.")
   (insert
    (save-excursion
      (anything-goto-line (car lineno-and-content))
-     (and (looking-at "^\\*+ \\(.+?\\)\\([ \t]*:[a-zA-Z0-9_@:]+:\\)?[ \t]*$")
-          (org-make-link-string (concat "*" (match-string 1)))))))
+     (and (looking-at org-complex-heading-regexp)
+          (org-make-link-string (concat "*" (match-string 4)))))))
 
 ;; (anything 'anything-c-source-org-headline)
 

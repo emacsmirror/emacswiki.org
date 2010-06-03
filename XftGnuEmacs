@@ -240,7 +240,7 @@ the end of README.unicode:
     (set-fontset-font "fontset-default" 'latin '("arial" .
 "unicode-bmp"))
 
-If you're having trouble with the euro symbol £á character being
+If you're having trouble with the euro symbol € character being
 displayed in a different font, try the following:
 
     (set-fontset-font "fontset-default" 'gb18030 '("dejavu sans mono"
