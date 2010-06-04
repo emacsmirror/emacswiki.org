@@ -101,6 +101,10 @@ What I am using is highlight-beyond-fill-column. It only works for a specific fi
 [new:DrewAdams:2006-01-19 17:11 UTC]
 Lisp:column-marker.el does exactly what you're asking for.
 [new]
+Can someone please demonstrate how?  As stated above, column-marker.el only marks the column if there is text there, and it highlights the whole column rather than displaying a single, one-pixel-wide line, so I'm pretty sure that column-marker's default configuration is not what JohnYates was asking for.
+
+What do you need to do to make it look more like the Visual Studio guidelines feature -- for instance, http://blogs.msdn.com/b/saraford/archive/2004/11/15/257953.aspx ?  I didn't get anywhere customizing the column-marker-1 face.
+[new]
 
 ----
 See also: ColumnMarker, EightyColumnRule and HighlightLongLines.

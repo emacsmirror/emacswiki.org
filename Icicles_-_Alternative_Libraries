@@ -12,12 +12,12 @@ that provide ways to switch buffers (see SwitchingBuffers).  Some of these prese
 the [[minibuffer]] and choose one as soon as you type enough of its
 name to select it unambiguously -- without your
 needing to confirm your choice (with `RET', for example).  Library
-`<code>ido.el</code>' is an example of such a library (see [[Ido]]).  Library `##iswitchb.el##' is another such library; it is specialized for choosing a buffer.
+`<code>ido.el</code>' is an example of such a library (see [[Ido]]).  Library `##iswitchb.el##' ([[IswitchB]]) is another such library; it is specialized for choosing a buffer.
 
 Choosing without
 confirming can be very quick, but I prefer to confirm a choice.  In any case, you can also use '''Icicles''' to choose without
 confirming, if you wish -- see [[Icicles - Multi-Commands]]. See also [[Icicles - S-RET]] for how to obtain the complete-and-exit behavior of
-library `##iswitchb.el##'.  Note that you can use [[Iswitchb]] together with '''Icicles''', but Ido is incompatible.
+library `##iswitchb.el##'.  Note that you can use %%IswitchB%% together with '''Icicles''', but Ido is incompatible.
 
 
 The main reason I prefer '''Icicles''' is because of its generality.

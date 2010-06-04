@@ -173,11 +173,11 @@ I started with Emacs and switched to XEmacs because
 But it had not IMO. I switched back from XEmacs to Emacs because
 * XEmacs was much heavier - too slow on my old computer.
 * It seemed to me that Emacs was more stable.
-* I like the FSF philosophy and did not want to contribute under the XEmacs scheme (what will happen with my contributions?).
+* I like the FSF philosophy and did not want to contribute as [http://cvresumewriters.com/ cv writer] under the XEmacs scheme (what will happen with my contributions?).
 * Since I from the beginning was looking for better MS Windows support - and that is not a main goal for FSF - ;-) - I happily wrote a bit of that support myself, see [[EmacsW32]]. May that be one door to GNU/Linux!
 :: -- LennartBorgman
 
-I used XEmacs for many years because at the time I started using it, graphical support was either slow and/or non-functioning in the GNU rendition. With the purchase of my first OS X machine, I found this (rather ironically) to be the exact opposite. These days I can barely tell the difference unless I start getting into hairy macros, and I've rebound most of the default Emacs keys to emulate XEmacs anyways (M-g, etc).
+I used XEmacs for many years because at the time I started using it, graphical support was either slow and/or non-functioning in the GNU rendition. With the purchase of my first OS X machine, I found this (rather ironically) to be the exact opposite. These days I can barely tell the difference unless I start getting into hairy macros, and I've rebound most of the default Emacs keys thruogh [http://essaywritingservices.org/index.php essay service] to emulate XEmacs anyways (M-g, etc).
 
 I imagine if I spent more time tinkering with the guts, it would matter more.
 

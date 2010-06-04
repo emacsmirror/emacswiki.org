@@ -414,7 +414,7 @@ A few things to say, which might or might not help:
 
 * There is no '''Icicles''' Lite, and probably won't be (unless you write one ;-)).
 
-* If you still want to use '''Icicles''', but pare it down a little, you can try not loading <tt>[[icicles-cmd.el]]</tt>. To do that, you will need to remove the `require's of it in your copy of <tt>[[icicles.el]]</tt>, and <tt>[[icicles-mode.el]]</tt>. It's likely that the libraries are coupled a bit more than that, so you might need to fiddle a little more with `require's or even comment out some other code. Try it and see. The reason: ##icicles-cmd.el## is large, and it provides user top-level commands that you might not need.
+* If you still want to use '''Icicles''', but pare it down a little, you can try not loading <tt>[[icicles-cmd1.el]]</tt> and <tt>[[icicles-cmd2.el]]</tt>. To do that, you will need to remove the `require's of those libraries in your copy of <tt>[[icicles.el]]</tt>, and <tt>[[icicles-mode.el]]</tt>. It's likely that the libraries are coupled a bit more than that, so you might need to fiddle a little more with `require's or even comment out some other code. Try it and see. The reason: ##icicles-cmd1.el## and ##icicles-cmd2.el## are large, and they provide user top-level commands that you might not need.
 
 * Each of these files represents only commentary and can be removed to save disk space: <tt>[[icicles-doc1.el]]</tt>, <tt>[[icicles-doc2.el]]</tt>, and <tt>[[icicles-chg.el]]</tt>. 
 
@@ -422,7 +422,7 @@ A few things to say, which might or might not help:
 
 * '''Icicles''' also takes advantage of some other libraries that are optional, if they happen to be loaded -- see [[Icicles_-_Libraries#Optional]]. A few of those, such as <tt>[[lacarte.el]]</tt>, are included in the download, if you use, for example, <tt>[[icicles-install.el]]</tt> or <tt>[[get-icicles.sh]]</tt>. You can edit the download scripts to reduce download time, if that's a concern. Not loading those optional libraries will also reduce the '''Icicles''' load time and memory footprint.
 
-I can't think of any way to reduce the load time or memory footprint, short of eliminating (e.g. commenting out) code. Removing ##icicles-cmd.el(c)## and optional libraries will help with that. However, keep in mind that any code edits you make will need to be repeated if you later upgrade to a newer '''Icicles''' version. You could make yourself a smaller '''Icicles''' and decide not to upgrade for a while, and then gradually uncomment sections of code if you want to try other features later. But you're on your own for that.
+I can't think of any way to reduce the load time or memory footprint, short of eliminating (e.g. commenting out) code. Removing ##icicles-cmd[12].el(c)## and optional libraries will help with that. However, keep in mind that any code edits you make will need to be repeated if you later upgrade to a newer '''Icicles''' version. You could make yourself a smaller '''Icicles''' and decide not to upgrade for a while, and then gradually uncomment sections of code if you want to try other features later. But you're on your own for that.
 
 If size is really a problem for you, you don't want the hassle of fiddling with code, and you really want only substring completion, then I'd say try an alternative library. Sorry about that. Perhaps someday I'll break it up more and use some `autoloads', but don't hold your breath waiting. ;-) -- DrewAdams
 
@@ -947,7 +947,8 @@ It works, and thanks. But i did ##(setq icicle-fuzzy-completion-flag nil)## not 
 Did you download the latest <tt>[[icicles-opt.el]]</tt>? It sounds like you don't have the latest version of the '''Icicles''' files. I suggest you download these files, which have been modified since Sept 29: 
 
 * <tt>[[icicles.el]]</tt>
-* <tt>[[icicles-cmd.el]]</tt>
+* <tt>[[icicles-cmd1.el]]</tt>
+* <tt>[[icicles-cmd2.el]]</tt>
 * <tt>[[icicles-doc1.el]]</tt> -- just doc, but good to have
 * <tt>[[icicles-doc2.el]]</tt> -- just doc, but good to have
 * <tt>[[icicles-fn.el]]</tt>

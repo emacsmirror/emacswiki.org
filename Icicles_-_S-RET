@@ -15,7 +15,7 @@ does not correspond to any of the completion candidates.  This is
 how, for instance, you can use `C-x C-f' to open a new file or
 `C-x b' to create a new [[buffer]].
 
-However, some people prefer "'''strict'''" completion:  limiting input to the available
+However, some people prefer '''[::strict]''' completion:  limiting input to the available
 completion candidates.  This can be handy in the case of switching
 to a buffer, for instance.  If you have a buffer named
 `##new-ideas.txt##', you might like to be able to type only `new'

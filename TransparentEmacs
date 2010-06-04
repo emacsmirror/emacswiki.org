@@ -4,8 +4,8 @@ On the following platforms,
 
 * Emacs 23
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
-** Mac OS X; MacPorts.
-** EmacsNT - GNU Emacs 23.1.50.1 (i386-mingw-nt6.1.7600) works, can't confirm any other versions.
+** Mac OS X; Mac Ports.
+** Emacs NT - GNU Emacs 23.1.50.1 (i386-mingw-nt6.1.7600) works, can't confirm any other versions.
 * Emacs 22 with transparency patch
 ** X Window System and a compositing window manager (e.g. Compiz, Beryl and Compiz Fusion)
 ** Mac OS X; AquamacsEmacs, CarbonEmacsPackage and Fink's emacs
@@ -71,7 +71,8 @@ If you'd rather hack it by hand, something like the following will work:
     (custom-set-faces
      '(default ((t (:stipple nil :background ((image :type jpeg :file "/Path/to/your/image.png") :origin display) :foreground "white" :inverse-video nil :box nil :strike-through nil :overline nil :underline nil :slant normal :weight normal :height 101 :width normal :family "misc-fixed")))))
 
-
+[new]
+This doesn't work for me on GNU Emacs 23.2.1 (i386-mingw-nt5.1.2600).  I get ##(wrong-type-argument stringp ((image :type jpeg :file "...") :origin display))##. -- AlexSchroeder
 
 == (Obsolete) Transparent Emacs Branch ==
 

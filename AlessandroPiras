@@ -1,0 +1,134 @@
+I use emacs.
+== About me ==
+I'm an old casual emacs user, but a recent emacs convert.
+I started using emacs more seriously when I started working on [[Vimpulse]],
+that I don't maintain nor develop anymore, but always use.
+
+Luckily it has found a better maintainer than me :-)
+
+I also recently switched to Windows 7, after 10 years of Linux, out of frustration.
+
+I sometimes lurk on #emacs as //laynor//.
+== Miscellaneous Emacs Configuration ==
+=== Gnus + GMail on Windows (7) ===
+Accessing GMail on Windows using [[Gnus]] can be a little tricky.
+I had to google for hours to find a working configuration.
+I use [[http://www.cygwin.com/|Cygwin]]'s openssl to access my inbox,
+and [[http://freefr.dl.sourceforge.net/project/msmtp/msmtp/1.4.20/msmtp-1.4.20-w32.zip|msmtp]]
+to send messages through GMail's smtp server.
+Here's my configuration:
+==== ~/.gnus.el ====
+{{{
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+(setq sendmail-program "msmtp.exe")
+(setq message-sendmail-extra-arguments '("-a" "ale"))
+(setq mail-host-address "gmail.com")
+(setq user-full-name "Alessandro Piras")
+(setq user-mail-address "username@gmail.com")
+(setq mail-default-reply-to "username@gmail.com")
+
+(load-library "nnimap")
+(setq imap-ssl-program "c:/cygwin/bin/openssl.exe s_client -ssl3 -quiet -connect %s:%p")
+
+(setq gnus-select-method '(nntp "news2.open-news-network.org"))
+
+(add-to-list 'gnus-secondary-select-methods
+             '(nnimap "gmail"
+                      (nnimap-address "imap.gmail.com")
+                      (nnimap-server-port 993)
+                      (nnimap-authinfo-file "~/.authinfo")
+                      (nnimap-stream ssl)))
+
+(add-to-list 'gnus-secondary-select-methods
+             '(nntp "news.gmane.org"))
+}}}
+This is my authinfo file, where I store gnus authentication information:
+==== ~/.authinfo ====
+{{{
+machine news2.open-news-network.org login username@gmail.com password nntppassword
+machine imap.gmail.com login username@gmail.com password gmailpassword port 993
+}}}
+Msmtp needs a configuration file. The authentication information is stored there:
+==== ~/msmtprc.txt ====
+{{{
+account ale
+host smtp.gmail.com
+tls on
+tls_certcheck off
+auth on
+user username@gmail.com
+password gmailpassword
+port 587
+logfile c:\users\ale\msmtplog.txt
+}}}
+=== Erc tips ===
+I'm using [[EmacsW32]], version 24. So I don't know if this bug only arises for me, but
+if autojoin is activated, I get an error about erc-autojoin-enable being undefined.
+I solved the problem with an ugly kludge. I put this line at the beginning of my .emacs:
+{{{
+(defun erc-autojoin-enable (&rest args) (interactive) nil)
+}}}
+This is the rest of my erc-related configuration, minus the output of customize:
+{{{
+(load "~/.ercpass")
+(require 'erc)
+(require 'erc-join)
+(require 'erc-services)
+(erc-services-mode 1)
+(setq erc-prompt-for-nickserv-password nil)
+
+(setq erc-nick '("laynor" "laynor`"))
+
+(setq erc-nickserv-passwords
+      `((freenode (("laynor" . ,freenode-passwd-laynor)
+		   ("laynor`" . ,freenode-passwd-laynor)))))
+(defun erc-freenode-laynor ()
+  (interactive)
+  (erc :server "irc.freenode.net" :port 8000 :nick "laynor"))
+}}}
+The ~/.ercpass file contains a line like this one:
+{{{
+(setq freenode-passwd-laynor "myfreenodepassword")
+}}}
+
+=== Vimpulse tips ===
+I configured some extra keys to get folding on [[Vimpulse]]. I don't really know if
+this has been obsoleted by the current Vimpulse, but I still have it in my .emacs:
+{{{
+(define-key viper-vi-global-user-map (kbd "z M") 'hide-body)
+(define-key viper-vi-global-user-map (kbd "z A") 'show-all)
+(define-key viper-vi-global-user-map (kbd "z a") 'show-subtree)
+(define-key viper-vi-global-user-map (kbd "z m") 'hide-subtree)
+}}}
+[new]
+Just found out this has been obsoleted by the new Vimpulse.
+=== FixmeMode tips ===
+I use [[FixmeMode]] and love it. I would have liked some kind of TODO/FIXME comment tracking
+like the one I get in Visual Studio, but I didn't find one, so I hacked some elisp code
+that makes things easier for me. It searches for all the occurrences of fixme-mode's keywords
+in all the open buffers whose major mode is the same as the current buffer, which
+works nicely with [[Slime]]'s open-system functionality.
+{{{
+(require 'fixme-mode)
+(defun get-same-mode-buffers ()
+  "Get all the buffers having the same Major mode as the current
+buffer"
+  (interactive)
+  (remove-if-not (lambda (buf)
+		   (eql (with-current-buffer buf major-mode)
+			major-mode))
+		 (buffer-list)))
+
+(defun fixme-occur ()
+  "Finds all the occurrences of the fixme keywords in all buffers
+having the same major mode as the current buffer"
+  (interactive)
+  (multi-occur (get-same-mode-buffers)
+	       fixme-keyword-re-string))
+(fixme-mode 1)
+}}}
+[new]
+Nice to see some <tt>[[vimpulse.el]]</tt> updates. How about posting them on the [[vimpulse|discussion page for vimpulse]]?
+
+----
+CategoryHomepage

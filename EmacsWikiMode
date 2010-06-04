@@ -270,7 +270,7 @@ This has been implemented in emacs-wiki 2.66.
 
 == Toggle WikiLink on and off ==
 
-Depending on the type of the text you write, you might be typing a lot
+Depending on the type of the text you write via [http://essaywritingservices.org/index.php writing service], you might be typing a lot
 of <nowiki>CamelCase</nowiki> words that are, however, not
 links. Writing <nop> is cumbersome after a few iterations, and
 sometimes you'll have to remove it again. Here's a short function that
@@ -492,7 +492,7 @@ Please try sacha@free.net.ph--main/emacs-wiki--dev--1.0--patch-5, or dev current
 I started playing with the tiny-tools package from sourceforge, but
 emacs-wiki broke. This is to do with the way that tiny-path, ignores
 directories in the load path with the prefix (x)emacs. This is by
-design, for reasons that RTFM of the tiny-path docs will explain. The
+design, for reasons that RTFM of the tiny-path docs [http://custom-essay-writing-service.org/index.php custom essay writing] will explain. The
 way around this is to put the emacswiki in the load path *before*
 calling tinypath.
 

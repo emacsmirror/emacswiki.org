@@ -34,6 +34,7 @@ Flymake is part of Emacs 23 and some of the tips below works OTB there.
 ||C# ||||[FlymakeCsharp C# syntax checking with Flymake]||
 ||python-mode ||||Is it possible to use pychecker with flymake? -- Anon.
 You can use it with pylint. See PythonMode||
+||D||||FlyMakeD for the [http://www.digitalmars.com/d/index.html D programming language].||
 
 == Hints And Questions ==
 

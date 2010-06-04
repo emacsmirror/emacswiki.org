@@ -106,4 +106,117 @@ That's all.
 Have you see Lisp:thing-edit.el ?  -- AndyStewart
 
 ----
+----
+==Comment==
+-- David Young
+
+Thanks for your advise. It's cool. I evaluated thing-edit.el. Yeah I actually modified some of my functions to leverage the thingatpt.el. I love to leverage build-in functions as much as possible than to write my own ones. But anyway, it does not give me what copy-string could do fo me. 
+
+I used to do my daily work in shell mode. So I used to need some information to be copied to the command line. For example something like this, when I issue *runmqsc QMCOD* in the command line, I would get a screen like this:
+
+{{{
+-bash-3.2# runmqsc QMCOD
+5724-H72 (C) Copyright IBM Corp. 1994, 2009.  ALL RIGHTS RESERVED.
+Starting MQSC for queue manager QMCOD.
+
+
+DIS CHL(T*)
+     1 : DIS CHL(T*)
+AMQ8414: Display Channel details.
+   CHANNEL(TO.QMCM.4.FTECA)                CHLTYPE(CLUSSDR)
+AMQ8414: Display Channel details.
+   CHANNEL(TO.QMCOD.4.FTECA)               CHLTYPE(CLUSRCVR)
+
+START 
+}}}
+
+And now I would need a command like <b>START CHANNEL(TO.QMCOD.4.FTECA)</b> by copy a string like <b>CHANNEL(TO.QMCOD.4.FTECA)</b> and paste it after *START* 
+
+Or I would need a command like <b>ALTER  CHANNEL(TO.QMCOD.4.FTECA) CHLTYPE(CLUSRCVR)</b> by copy above string as well as ' *CHLTYPE(CLUSRCVR)* and paste them after *ALTER* in the command line.
+
+Both <b>thing-copy-sexp</b> and <b>thing-copy-symbol</b> do not work in this way. Maybe I am not actually understand how thing-copy-sexp works. I don't find enough document for it in thingatpt.el. 
+
+And since copy & paste are used pairs, I extended my copy-xxx stuffs to copy-xxx-to-mark like this:
+
+{{{
+
+(defun copy-symbol-to-mark (&optional arg)
+   "This is a re-write of copy-string-to-mark, using thingatpt.el 
+But it does not actually do the same as what copy-string does"
+   (interactive "P")
+   (kill-ring-save (beginning-of-thing 'symbol) (end-of-thing 'symbol))
+   (if (not arg) 
+       (if (string= "shell-mode" major-mode)  
+	   (progn (comint-next-prompt 25535) (yank))
+	   (progn (goto-char (mark)) (yank) )))
+)
+
+
+;; (defun copy-string-to-mark (&optional arg)
+;;  "Copy a sequence of string into kill-ring and then paste to the mark point"
+;;   (interactive "P")
+;;   (let (
+;;	 (onPoint (point))
+;;	 )
+;;     (let ( 
+;;	 
+;;	 ( beg 	(progn (re-search-backward "[\t ]" (line-beginning-position) 3 1) 
+;;			  (if (looking-at "[\t ]") (+ (point) 1) (point) ) )
+;;		)
+;;          ( end  (progn  (goto-char onPoint) (re-search-forward "[\t ]" (line-end-position) 3 1)
+;;			  (if (looking-back "[\t ]") (- (point) 1) (point) ) )
+;;		 )
+;;	  )
+;;       (copy-region-as-kill beg end)
+;;       (message "%s" major-mode)
+;;       (if (string= "shell-mode" major-mode)  
+;;	   (progn (comint-next-prompt 25535) (yank))
+;;	 ;; unless arg == 0, paste content to mark, else hold in kill ring
+;;	   (unless (> (or arg 0) 0) (progn (goto-char (mark)) (yank) )))
+;;
+;;       )
+;;     )
+;; )
+
+}}}
+----
+
+----
+==Comment -- thing-copy-string ==
+
+-- David Young
+
+By reading the code in thingatpt.el, I extended it to provide a 'thing-copy-string' function. It is a re-write of 'thing-copy-email'. 
+However, this is just a dirty fix. It is not practiced in my real work. I will try to practice and refine the regexp as time goes on.
+
+{{{
+
+
+(defvar thing-at-point-string-regexp
+   "[^ (][-+_.~a-zA-Z0-9@=\*\&(){}][-+_.~a-zA-Z0-9@=\*\&(){}]+"
+  "A regular expression match a string, maybe exclude all kinds of brackets")
+
+(put 'string 'bounds-of-thing-at-point
+     (lambda ()
+       (let ((thing (thing-at-point-looking-at thing-at-point-string-regexp)))
+         (if thing
+             (let ((beginning (match-beginning 0))
+                   (end (match-end 0)))
+               (cons beginning end))))))
+
+(put 'string 'thing-at-point
+     (lambda ()
+       (let ((boundary-pair (bounds-of-thing-at-point 'string)))
+         (if boundary-pair
+             (buffer-substring-no-properties
+              (car boundary-pair) (cdr boundary-pair))))))
+
+(defun thing-copy-string ()
+  "Try to get string"
+  (interactive)
+  (thing-edit 'string)
+)
+
+}}}
+
 CategoryRegion  CategoryEditing

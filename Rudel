@@ -203,6 +203,7 @@ Maybe the Ubuntu version is older? In conclusion, I still assume the CEDET varia
 
 The easiest solution, although quite unsatisfactory, is probably to install CEDET from CVS.
 --JanMoringen
+
 [new]
 No, Debian is just strange. They have their own unique way of doing emacs. There's a collection of emacs startup.el files in the etc tree that look like the rc.d directory. =snort= 
 
@@ -217,8 +218,90 @@ Warning (rudel): Could not load backend `obby': Wrong type argument: arrayp, nil
 
 This is turning into an ordeal. :P
 
---- michael
+-- michael
 
+[new]
+I'm really sorry that Rudel causes so many problems for you. I hope you can endure this a bit longer. We are probably getting close. Unfortunately, I have no idea how installation of Emacs extensions can be made easier or at least less error prone.
+
+What happens without the ##--debug-init## option?
+
+Did you delete and regenerate ##rudel-loaddefs.el## since you reinstalled CEDET?
+
+Alternatively, you can put the following into your ##.emacs##:
+{{{
+(load-file "rudel-loaddefs.el") ;; this should already be there, maybe just similar
+(require 'rudel-zeroconf
+(require 'rudel-infinote)
+(require 'rudel-obby)
+}}}
+This should immediately load the backends, hopefully working around the problems that happen when auto loading them.
+--JanMoringen
+[new]
+No, I did not delete the ##rudel-loaddefs.el##. I //did// recompile rudel, though.
+
+So now I deleted ##loaddefs## and regenerated it. It changed the errors:
+
+Here's the non--debug-init version:
+
+{{{
+Warning (initialization): An error occurred while loading `/home/michael/.emacs':
+
+error: Given parent class rudel-protocol-backend is not a class
+
+To ensure normal operation, you should investigate and remove the
+cause of the error in your initialization file.  Start Emacs with
+the `--debug-init' option to view a complete error backtrace.
+}}}
+And here's what debug-init output:
+{{{
+Debugger entered--Lisp error: (error "Given parent class rudel-protocol-backend is not a class")
+  signal(error ("Given parent class rudel-protocol-backend is not a class"))
+  error("Given parent class %s is not a class" rudel-protocol-backend)
+  eieio-defclass(rudel-infinote-backend (rudel-protocol-backend) ((capabilities :initform (quote ...))) (""))
+  (progn (eieio-defclass (quote rudel-infinote-backend) (quote ...) (quote ...) (quote ...)))
+  (eval-and-compile (eieio-defclass (quote rudel-infinote-backend) (quote ...) (quote ...) (quote ...)))
+  (defclass rudel-infinote-backend (rudel-protocol-backend) ((capabilities :initform ...)) "")
+  eval-buffer(#<buffer  *load*<2>> nil "/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" nil t)  ; Reading at buffer position 4486
+  load-with-code-conversion("/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" "/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" nil nil)
+  load("/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" nil nil t)
+  load-file("/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el")
+  eval-buffer(#<buffer  *load*> nil "/home/michael/.emacs" nil t)  ; Reading at buffer position 3814
+  load-with-code-conversion("/home/michael/.emacs" "/home/michael/.emacs" t t)
+  load("~/.emacs" t t)
+}}}
+Also, rudel will no not start //at all//. The command ##global-rudel-minor-mode## no longer exists.
+
+--michael
+
+P.S. I'm not blaming you and rudel, Jan. This is on Ubuntu, IMO. They've known that the emacs build for Lucid (which is supposed to be their flagship LTS release) was screwed up for nearly 9 months. They even it marked as "important" (if memory serves) -- and they've done nothing about it. And whose brainy idea was it at Canonical to remove rudel (and a good many other fine emacs packages) from the repositories, anyway? (Maybe it's because they all use VI, who knows. :P )
+
+[new]
+Hey Michael,
+
+is it possible that ##rudel-loaddefs.el## has been generated without eieio loaded? //Normally//, this should not happen since eieio is required in ##rudel-compile.el##, but your ##rudel-loaddefs.el## has ##(defclass rudel-infinote-backend ...## which should be ##(eieio-defclass-autoload 'rudel-infinote-backend ...##. I'm pretty sure this causes the error you now see. You could try to recreate ##rudel-loaddefs.el##, if you have any idea what went wrong.
+
+If fixing ##rudel-loaddefs.el## is not possible, you can also delete it and put the following into your ##.emacs## (at the expense of loading most of Rudel at Emacs startup):
+{{{
+(let* ((rudel-dir "/usr/share/emacs23/site-lisp/rudel/")
+        (subdirs   (mapcar 
+		   (lambda (subdir)
+		     (concat rudel-dir subdir))
+		   '("."
+		     "jupiter" "adopted" 
+		     "socket" "tls" "xmpp" "telepathy"
+		     "obby" "infinote"
+		     "zeroconf")))) 
+  (dolist (subdir subdirs) 
+    (add-to-list 'load-path subdir)))
+
+(require 'rudel-mode)
+(require 'rudel-socket)
+(require 'rudel-tls)
+(require 'rudel-obby)
+}}}
+This method should even work with a freshly extracted Rudel, without compiling or anything.
+
+--JanMoringen
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===

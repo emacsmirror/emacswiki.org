@@ -1698,6 +1698,7 @@ It is useful to select a particular object instead of the first one. ")
   '( anything-candidate-number-limit
      anything-source-filter
      anything-source-in-each-line-flag
+     anything-map
      anything-sources)
   "Variables which are restored after `anything' invocation.")
 ;; `anything-saved-sources' is removed
@@ -2249,7 +2250,6 @@ already-bound variables. Yuck!
                                  anything-quit
                                  (case-fold-search t)
                                  (anything-buffer (or any-buffer anything-buffer))
-                                 (anything-map (or any-keymap anything-map))
                                  ;; cua-mode ; avoid error when region is selected
                                  )
         (with-anything-restore-variables
@@ -2257,13 +2257,9 @@ already-bound variables. Yuck!
           (setq anything-sources (anything-normalize-sources any-sources))
           (anything-initialize-1 any-resume any-input)
           (anything-hooks 'setup)
-          (if (eq any-resume t)
-              (condition-case x
-                  (anything-window-configuration 'restore)
-                (error (anything-display-buffer anything-buffer)))
-            (anything-display-buffer anything-buffer))
+          (anything-display-buffer anything-buffer)
           (unwind-protect
-              (anything-read-pattern-maybe any-prompt any-input any-preselect any-resume)
+              (anything-read-pattern-maybe any-prompt any-input any-preselect any-resume any-keymap)
             (anything-cleanup)
             (anything-hooks 'cleanup)
             (anything-frame/window-configuration 'restore)))
@@ -2330,19 +2326,6 @@ already-bound variables. Yuck!
     (push elt (symbol-value list-var))))
 
 ;;; (@* "Core: Accessors")
-(defvar anything-window-configuration nil)
-;;; (set-window-configuration (buffer-local-value 'anything-window-configuration (get-buffer "*anything buffers*")))
-(defun anything-window-configuration (save-or-restore)
-  (case save-or-restore
-    ((save store)
-     (with-current-buffer anything-buffer
-       (set (make-local-variable 'anything-window-configuration)
-            (current-window-configuration))))
-    ((restore set)
-     (with-current-buffer anything-buffer
-       (set-window-configuration anything-window-configuration))
-     (select-window (anything-window)))))
-
 (defvar anything-current-position nil
   "Cons of (point) and (window-start) when `anything' is invoked.
 It is needed because restoring position when `anything' is keyboard-quitted.")
@@ -2387,7 +2370,7 @@ It is needed because restoring position when `anything' is keyboard-quitted.")
 ;; (@* "Core: Display *anything* buffer")
 (defun anything-display-buffer (buf)
   "Display *anything* buffer."
-  (funcall anything-display-function buf))
+  (funcall (with-current-buffer buf anything-display-function) buf))
 
 (defun anything-default-display-buffer (buf)
   (funcall (if anything-samewindow 'switch-to-buffer 'pop-to-buffer) buf))
@@ -2414,12 +2397,16 @@ It is needed because restoring position when `anything' is keyboard-quitted.")
   (anything-create-anything-buffer)
   (run-hooks 'anything-after-initialize-hook))
 
-(defun anything-read-pattern-maybe (any-prompt any-input any-preselect any-resume)
+(defun anything-read-pattern-maybe (any-prompt any-input any-preselect any-resume any-keymap)
   (if (anything-resume-p any-resume) (anything-mark-current-line) (anything-update))
   (select-frame-set-input-focus (window-frame (minibuffer-window)))
   (anything-preselect any-preselect)
   (let ((ncandidate (anything-approximate-candidate-number))
-        (minibuffer-local-map anything-map))
+        (minibuffer-local-map
+         (with-current-buffer (anything-buffer-get)
+           (and any-keymap (set (make-local-variable 'anything-map) any-keymap))
+
+           anything-map)))
     (cond ((and anything-execute-action-at-once-if-one
                 (= ncandidate 1))
            (ignore))
@@ -2441,6 +2428,7 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
     (set (make-local-variable 'inhibit-read-only) t)
     (set (make-local-variable 'anything-last-sources-local) anything-sources)
     (set (make-local-variable 'anything-follow-mode) nil)
+    (set (make-local-variable 'anything-display-function) anything-display-function)
     
     (setq cursor-type nil)
     (setq mode-name "Anything"))
@@ -2477,8 +2465,7 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
 
 (defun anything-hooks (setup-or-cleanup)
   (let ((hooks '((post-command-hook anything-check-minibuffer-input)
-                 (minibuffer-setup-hook anything-print-error-messages)
-                 (minibuffer-exit-hook (lambda () (anything-window-configuration 'save))))))
+                 (minibuffer-setup-hook anything-print-error-messages))))
     (if (eq setup-or-cleanup 'setup)
         (dolist (args hooks) (apply 'add-hook args))
       (dolist (args (reverse hooks)) (apply 'remove-hook args)))))
@@ -3361,17 +3348,17 @@ You can set user options `fit-frame-max-width-percent' and
            (top . 0))))))) ; The (top . 0) shouldn't be necessary (Emacs bug).
 
 (defun anything-preselect (candidate-or-regexp)
-  (when candidate-or-regexp
-    (with-anything-window
+  (with-anything-window
+    (when candidate-or-regexp
       (goto-char (point-min))
       ;; go to first candidate of first source
       (forward-line 1)
       (let ((start (point)))
         (unless (or (re-search-forward (concat "^" (regexp-quote candidate-or-regexp) "$") nil t)
-                (progn (goto-char start)
-                       (re-search-forward candidate-or-regexp nil t)))
-          (goto-char start))
-        (anything-mark-current-line)))))
+                    (progn (goto-char start)
+                           (re-search-forward candidate-or-regexp nil t)))
+          (goto-char start))))
+    (anything-mark-current-line)))
 
 (defun anything-delete-current-selection ()
   "Delete the currently selected item."
@@ -3780,24 +3767,11 @@ Otherwise ignores `special-display-buffer-names' and `special-display-regexps'."
 (defvar anything-visible-mark-overlays nil)
 
 (defun anything-clear-visible-mark ()
-  (mapc 'delete-overlay anything-visible-mark-overlays)
-  (setq anything-visible-mark-overlays nil))
+  (with-current-buffer (anything-buffer-get)
+    (mapc 'delete-overlay anything-visible-mark-overlays)
+    (set (make-local-variable 'anything-visible-mark-overlays)
+         nil)))
 (add-hook 'anything-after-initialize-hook 'anything-clear-visible-mark)
-
-;; (defun anything-toggle-visible-mark ()
-;;   (interactive)
-;;   (with-anything-window
-;;     (anything-aif (loop for o in anything-visible-mark-overlays
-;;                         when (equal (line-beginning-position) (overlay-start o))
-;;                         do (return o))
-;;         ;; delete
-;;         (progn (delete-overlay it)
-;;                (delq it anything-visible-mark-overlays))
-;;       (let ((o (make-overlay (line-beginning-position) (1+ (line-end-position)))))
-;;         (overlay-put o 'face anything-visible-mark-face)
-;;         (overlay-put o 'source (assoc-default 'name (anything-get-current-source)))
-;;         (overlay-put o 'string (buffer-substring (overlay-start o) (overlay-end o)))
-;;         (add-to-list 'anything-visible-mark-overlays o)))))
 
 (defvar anything-c-marked-candidate-list nil
   "[OBSOLETE] DO NOT USE!!")
@@ -3846,19 +3820,21 @@ Otherwise ignores `special-display-buffer-names' and `special-display-regexps'."
 otherwise 1-element list of current selection.
 
 It is analogous to `dired-get-marked-files'."
-  (if anything-marked-candidates
-      (loop with current-src = (anything-get-current-source)
-            for (source . real) in (reverse anything-marked-candidates)
-            when (eq current-src source)
-            collect real)
-    (list (anything-get-selection))))
+  (with-current-buffer (anything-buffer-get)
+    (if anything-marked-candidates
+        (loop with current-src = (anything-get-current-source)
+              for (source . real) in (reverse anything-marked-candidates)
+              when (equal current-src source)
+              collect real)
+      (list (anything-get-selection)))))
 
 (defun anything-reset-marked-candidates ()
-  (setq anything-c-marked-candidate-list nil)
-  (setq anything-marked-candidates nil))
+  (with-current-buffer (anything-buffer-get)
+    (set (make-local-variable 'anything-c-marked-candidate-list) nil)
+    (set (make-local-variable 'anything-marked-candidates) nil)))
 
 (add-hook 'anything-after-initialize-hook 'anything-reset-marked-candidates)
-(add-hook 'anything-after-action-hook 'anything-reset-marked-candidates)
+;; (add-hook 'anything-after-action-hook 'anything-reset-marked-candidates)
 
 (defun anything-revive-visible-mark ()
   (interactive)
@@ -6370,6 +6346,7 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
                 `((,source . "mark1")
                   (((name . "other")) . "mark2")
                   (,source . "mark3"))))
+          (stub anything-buffer-get => (current-buffer))
           (stub anything-get-current-source => source)
           (anything-marked-candidates)))
       (expect '("current")
