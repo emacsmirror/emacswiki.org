@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 14:04:57 2010 (-0700)
+;; Last-Updated: Fri Jun  4 16:52:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26969
+;;     Update #: 26983
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3666,8 +3666,8 @@
 ;;  Icicles options `icicle-swank-timeout' and
 ;;  `icicle-swank-prefix-length' give you some control over the
 ;;  behavior.  When the `TAB' completion method is `swank', you can
-;;  use `C-x 1' (`icicle-doremi-increment-swank-timeout') and `C-x 2'
-;;  (`icicle-doremi-increment-swank-prefix-length') in the minibuffer
+;;  use `C-x 1' (`icicle-doremi-increment-swank-timeout+') and `C-x 2'
+;;  (`icicle-doremi-increment-swank-prefix-length+') in the minibuffer
 ;;  to increment these options on the fly using the arrow keys `up'
 ;;  and `down'.
 ;;
@@ -4453,6 +4453,13 @@
 ;;    which is the standard Emacs behavior.  The default value is t.
 ;;    (Actually, the concerned keys are those defined by option
 ;;    `icicle-prefix-complete-keys', not necessarily `TAB'.)
+;;
+;;  * Non-nil option `icicle-max-candidates' means truncate the list
+;;    of completion candidates to at most this many.  This affects
+;;    only display in `*Completions*'.  If you use library `doremi.el'
+;;    then you can use `C-x #' during completion to increment or
+;;    decrement the option value using the vertical arrow keys or the
+;;    mouse wheel.
 ;;
 ;;  * Non-nil user option `icicle-expand-input-to-common-match-flag'
 ;;    means that completion commands `TAB' and `S-TAB' expand your
@@ -5347,6 +5354,20 @@
 ;;    `custom-file' or init file updated in this way, then customize
 ;;    `icicle-customize-save-flag' to nil.
 ;;
+;;  * If `icicle-buffers-ido-like-flag' is t then `icicle-buffer' and
+;;    similar commands act more Ido-like.  Specifically, those
+;;    commands then bind these options to t:
+;;    `icicle-show-Completions-initially-flag',
+;;    `icicle-top-level-when-sole-completion-flag', and
+;;    `icicle-default-value'.
+;;
+;;  * If `icicle-files-ido-like-flag' is t then `icicle-file' and
+;;    similar commands act more Ido-like.  Specifically, those
+;;    commands then bind these options to t:
+;;    `icicle-show-Completions-initially-flag',
+;;    `icicle-top-level-when-sole-completion-flag', and
+;;    `icicle-default-value'.
+;;
 ;;  * The value of option `icicle-customize-save-variable-function' is
 ;;    the function Icicles uses to automatically save user option
 ;;    changes made by some commands.  I recommend that you do *NOT*
@@ -5686,7 +5707,7 @@
 ;;  `icicle-delete-file'  - Delete a file or directory
 ;;  `icicle-delete-windows' - Delete all windows for a buffer
 ;;  `icicle-doc'          - Display doc of function, variable, or face
-;;  `icicle-doremi-increment-variable' -
+;;  `icicle-doremi-increment-variable+' -
 ;;                          Increment a variable using Do Re Mi
 ;;  `icicle-face-list'    - Choose a list of face names
 ;;  `icicle-file-list'    - Choose a list of file names

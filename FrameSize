@@ -3,15 +3,15 @@
 
 DrewAdams has written various libraries that let you resize [[frame]]s:
 
-* <tt>[[frame-cmds.el]]</tt> lets you ''tile'' or ''maximize'' frames horizontally or vertically or both. These commands leave room for the Windows task bar and a standalone minibuffer frame, if present.
-
 * <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> let you ''shrink-wrap'' frames to fit their selected [[window]] ([[buffer]]) or all of their windows (buffers). 
 
-Command `fit-frame' (usually bound to `##C-x C-_##') does this. The resulting size (just big enough to display everything, with no wrap-around or truncation) is determined
+: Command `fit-frame' (usually bound to `##C-x C-_##') does this. The resulting size (just big enough to display everything, with no wrap-around or truncation) is determined
 automatically, but you have control over this calculation with user variables. Alternatively, with a prefix argument, `fit-frame' prompts you for an absolute width and height. A
 negative prefix argument uses the `fill-column' value for the width.
+These packages also let you configure Emacs to ''automatically'' fit ''all'' frames.
 
-These packages also let you configure Emacs to ''automatically'' fit ''all'' frames. ##fit-frame.el## also has commands, in Windows, for maximizing and restoring a frame.
+* <tt>[[frame-cmds.el]]</tt> lets you ''tile'', ''maximize'', or ''restore'' (toggle maximize) frames horizontally or vertically or both. These commands leave room for the Windows task bar and a standalone minibuffer frame, if present.
+
 
 
 '''See Also:'''

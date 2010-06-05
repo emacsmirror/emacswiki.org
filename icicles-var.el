@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri May  7 08:53:09 2010 (-0700)
+;; Last-Updated: Fri Jun  4 17:44:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1302
+;;     Update #: 1311
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -88,11 +88,11 @@
 ;;    `icicle-last-completion-candidate',
 ;;    `icicle-last-completion-command', `icicle-last-input',
 ;;    `icicle-last-sort-comparer', `icicle-last-top-level-command',
-;;    `icicle-last-transform-function', `icicle-list-use-nth-parts',
-;;    `icicle-menu-map', `icicle-minibuffer-message-ok-p',
-;;    `icicle-minor-mode-map-entry', `icicle-ms-windows-drive-hash',
-;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
-;;    `icicle-must-pass-predicate',
+;;    `icicle-last-transform-function', `icicle-lighter-truncation',
+;;    `icicle-list-use-nth-parts', `icicle-menu-map',
+;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
+;;    `icicle-ms-windows-drive-hash', `icicle-must-match-regexp',
+;;    `icicle-must-not-match-regexp', `icicle-must-pass-predicate',
 ;;    `icicle-nb-of-other-cycle-candidates',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
@@ -711,7 +711,10 @@ input prompt is prefixed by `+'.
 + `icicle-dired'                       - Multi-command Dired
 + `icicle-doc'                         - Show doc for fn, var, or face
   `icicle-doremi-candidate-width-factor+' - +/- candidate column width
-  `icicle-doremi-increment-variable'   - Increment var using Do Re Mi
+  `icicle-doremi-increment-max-candidates+' - +/ max candidates shown
+  `icicle-doremi-increment-swank-prefix-length+' - +/- swank prefix
+  `icicle-doremi-increment-swank-timeout+' - +/- swank match timeout
+  `icicle-doremi-increment-variable+'  - Increment var using Do Re Mi
   `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
   `icicle-doremi-zoom-Completions+'    - +/- *Completions* text size
 + `icicle-execute-extended-command'    - Multi-command `M-x'
@@ -914,6 +917,9 @@ RING-ITEM is an item in `kmacro-ring' or `(kmacro-ring-head)'.")
 (defvar icicle-last-transform-function (or icicle-transform-function
                                            'icicle-remove-duplicates)
   "Local copy of `icicle-transform-function', so we can restore it.")
+
+(defvar icicle-lighter-truncation "..."
+  "String appended to Icy lighter to show candidates-list truncation.")
 
 (defvar icicle-list-use-nth-parts nil
   "List of indexes of multi-completion pieces to use.

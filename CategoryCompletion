@@ -73,9 +73,7 @@ Sources for dabbrev, filenames, yasnippet, elisp, gtags and Semantic/CEDET are i
 * [[Icicles - Other Search Commands#IciclesImenu]] -- Like ImenuMode with regexp completion. Across multiple buffers, files, and saved regions, like EmacsTags.
 * ProgrammableCompletion -- Command `pcomplete' (from `<code>pcomplete.el</code>') -- Completes function ''arguments''.
 * NxmlMode and its derivative nxhtml-mode in [NxhtmlMode nXhtml] provides context sensitive completion and validation for XML/XHTML.
-
-
-
+* SlimeMode -- provides multiple completion mechanisms that query the running Lisp program for candidates. Can be made to work with CompanyMode. See also SlimeCompleteLocals.
 
 
 [:OtherCompletion]

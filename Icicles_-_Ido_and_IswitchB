@@ -1,0 +1,218 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - S-RET]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completions Display]] ||
+
+----
+
+== Ido and IswitchB ==
+
+Libraries [[Ido]] and IswitchB are alternatives to '''Icicles''' that also
+enhance [[minibuffer]] [[completion]] in various ways.  Their UIs are
+similar to each other -- Ido essentially extends %%IswitchB%%'s
+buffer-name completion to file names as well.  Neither completes
+other kinds of candidates.  They work only for [[buffer]] names or
+file names, but you can advise the standard completion functions
+to get them to use Ido completion more generally.
+
+The behavior of Ido and %%IswitchB%% is different from the default
+'''Icicles''' behavior.  If you prefer their behavior for buffers then
+you can just use %%IswitchB%%  and '''Icicles''' together.  You cannot use
+'''Icicles''' and Ido together, however -- they use the minibuffer in
+incompatible ways.
+
+The default behavior of '''Icicles''' is different, but you can make
+'''Icicles''' behave more like Ido if you like.  It would be a mistake
+to look for a complete reproduction of the Ido behavior in
+'''Icicles''', however.  If you want exactly the same behavior as Ido,
+then use Ido. ;-)
+
+The '''Icicles''' UI is different by design.  Some of
+this difference in approach has to do with the fact that Ido is
+specialized to buffer- and file-name completion.  The generality
+of '''Icicles''' makes a different approach appropriate.  '''Icicles''' has many additional features that are not available in
+other libraries, but its main advantage is its
+generality: you use the same user interface for input of any kind. (See [[KillingBuffers#UsingIcicles|KillingBuffers]] for an illustration of this generality, as well as some musings on special vs general solutions.)  As you learn
+more about '''Icicles''' you may begin to appreciate its approach, even
+if you are a diehard Ido addict.
+
+This section summarizes some differences between '''Icicles''' and Ido
+and tells you how you can get more Ido-like behavior in '''Icicles''' if
+that's what you prefer.  It does not cover '''Icicles''' features that have no counterpart in Ido or features that they have
+in common (except to emphasize some differences).
+
+If you have the Ido habit but want to give '''Icicles''' a try, then
+this section is for you.  I recommend, however, that you give the
+default '''Icicles''' behavior a good try before convincing yourself
+that you still prefer a more Ido-like approach.
+
+See also the references at the section end for other sections that
+go into more detail about some of the things mentioned here.
+
+==== 1. Incremental completion ==== 
+
+By default, '''Icicles''' does not turn on
+   [[incremental completion]] until you have hit `TAB' or `S-TAB' to
+   display the matching candidates.  Ido turns it on immediately.
+   You can get that behavior by setting [[option]]
+   '''`<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'''' to `t'.
+
+You can get an intermediate behavior in this regard by instead
+   setting option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'''' to a value
+   other than `nil' and `t'.  That makes '''Icicles''' show the matching
+   candidates as soon as you start typing input.  See also option '''`<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>''''.
+
+
+
+
+==== 2. Matching ====
+
+By default, Ido uses substring matching for
+   completion.  You can hit a key to switch to [[prefix completion|prefix matching]],
+   "flex" matching, or [[apropos completion|regexp matching]].  '''Icicles''' gives you these
+   same matching possibilities, and more.  (What Ido calls "flex
+   matching" '''Icicles''' calls "[[scatter matching]]".)  The main
+   difference here is that '''Icicles''' [[regexp]] support is general and
+   complete.  Regexp-matching in Ido does not work with Ido-style
+   completion.
+
+
+
+==== 3. Current candidate, cycling, sorting ====
+
+Both Ido and '''Icicles'''
+   have a notion of "'''current candidate'''".  In Ido, completion
+   candidates are presented in a predefined sort order, most
+   recently used first.  The current candidate is the first one.
+   You cycle candidates by moving the first to last or the last to
+   first.
+
+In '''Icicles''', you can switch among any number of sort orders at
+   any time by hitting a key.  (And you can easily define your own
+   sort orders.)  When you [[Icicles - Cycling Completions|cycle]]  candidates, the candidates stay
+   in order.  If the candidates are displayed in `*Completions*'
+   then the current one is highlighted there, in place.  The
+   highlight moves, not the candidate.
+
+
+==== 4. Input editing ====
+
+In Ido, cycling does not replace your input by
+   the current candidate.  To edit the current candidate you hit a
+   key to enter an edit mode (recursive minibuffer).  In '''Icicles''',
+   [[Icicles - Cycling Completions|cycling]] replaces your input in the
+   minibuffer by the current candidate, so you can just edit it there normally.  You can
+   use `C-l' to retrieve your original input.
+
+
+
+==== 5. Completions shown ====
+
+In Ido, a limited number of matching
+   completion candidates are shown in the minibuffer.  You can hit
+   a key to see all matches in a separate buffer.
+
+In '''Icicles''', completion candidates are always shown in buffer
+   `*Completions*', not in the minibuffer.  You can limit the
+   number of matches shown by customizing option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>''''.  Only the first
+   `icicle-max-candidates' (in the current sort order) are shown.
+
+You can also increment and decrement this truncation value on
+   the fly during completion, by hitting '''`##C-x ###'''' and then using
+   the vertical arrow keys or the mouse wheel.  (For that feature
+   you also need library <tt>[[doremi.el]]</tt>.)
+
+
+
+==== 6. Auto-choice of sole candidate ====
+
+In Ido, if there is only one match for your input then `TAB',
+   which normally completes, also chooses that candidate -- you do
+   not need to hit `RET'.  By default, '''Icicles''' always requires you
+   to explicitly choose with `RET' (or `<tt>[[Icicles - Multi-Commands#HowDoesAMulti-CommandWork|C-RET]]</tt>').  If you set option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' to non-`nil', then
+   '''Icicles''' provides similar behavior to Ido.  See also option '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>''''.
+
+
+
+
+=== Ido-Like Behavior Everywhere: `icicle-ido-like-mode' ===
+
+If you want '''Icicles''' to be Ido-like in general, then turn on global minor
+mode '''`icicle-ido-like-mode'''' (not available in Emacs 20).  Doing
+that sets options '''`<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'''' to `t'.  Turning the
+mode off sets them to `nil'.
+
+You can simultaneously set option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'''' when you turn
+on `icicle-ido-like-mode', by using a positive [[prefix argument]].
+If you want the option to keep that value when you turn the mode
+off, then use a zero or negative prefix argument.  Otherwise, it
+is reset to `nil' (no limit on the number of candidates displayed).
+
+When you use this mode, you might also want to use `nil' or `t' as the
+value of option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-value|icicle-default-value]]</tt>'''', in order to not insert the
+default value in the minibuffer.  If you want to change that
+option dynamically for the mode, use `icicle-ido-like-mode-hook'.
+E.g.:
+
+  (add-hook 'icicle-ido-like-mode-hook
+            (lambda () (setq icicle-default-value
+                        (if icicle-ido-like-mode t 'insert-end))))
+
+
+
+
+=== Ido-Like Behavior for Buffers and Files ===
+
+
+If you want Ido-like behavior in '''Icicles '''for buffers or files, but
+not in general, then customize either or both options '''`<tt>[[Icicles - Customization and General Tips#icicle-buffers-ido-like-flag|icicle-buffers-ido-like-flag]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-files-ido-like-flag|icicle-files-ido-like-flag]]</tt>'''' to
+non-`nil'.
+
+
+
+
+
+'''See Also:'''
+
+* [[Icicles - S-RET]]
+* [[Icicles - Customization and General Tips]], options:
+** `<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-deletion-action-flag|icicle-deletion-action-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-file-require-match-flag|icicle-file-require-match-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-show-Completions-initially-flag|icicle-show-Completions-initially-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-flag|icicle-incremental-completion-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-incremental-completion-delay|icicle-incremental-completion-delay]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|icicle-regexp-quote-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag|icicle-top-level-when-sole-completion-flag]]</tt>'
+** `<tt>[[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-delay|icicle-top-level-when-sole-completion-delay]]</tt>'
+
+* [[Icicles - Fuzzy Completion]]
+* [[Icicles - Special Characters in Input Patterns]]
+* [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]]
+* [[IciclesDiscussion#IdoAndIcicles|IciclesDiscussion]]
+  (out-of-date discussion, but it might be helpful)
+
+
+
+----
+
+|| *Previous:*  [[Icicles - S-RET]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completions Display]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+
+CategoryCommands 
+CategoryBufferSwitching
+CategoryCompletion
+CategoryDocumentation
+CategoryHelp
+CategoryDirectories
+CategoryFiles
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

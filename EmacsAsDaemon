@@ -22,7 +22,7 @@ emacsclient
 
 (or emacsclient -t)
 
-will automatically start an emacs in deamon mode and connect to it if one is not found running.
+will automatically start an emacs in daemon mode and connect to it if one is not found running.
 
 == Debian/Ubuntu ==
 
@@ -252,7 +252,7 @@ DAEMON=/bin/su
 DAEMON_ARGS="${USERNAME} -l -c emacs -- -daemon -u ${USERNAME}"
 </pre>
 
-And <code>start-stop-deamon</code> should be executed *without* the <code>-c $USERNAME</code> switch.
+And <code>start-stop-daemon</code> should be executed *without* the <code>-c $USERNAME</code> switch.
 
 --RichardLewis
 

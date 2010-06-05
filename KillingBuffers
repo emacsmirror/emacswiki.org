@@ -61,6 +61,8 @@ See also: KillKey
 Killing all Dired buffers is easy with IbufferMode: simply type 
 <tt>C-x C-b * / D yes RET</tt>.
 
+
+[:UsingIcicles]
 === Using Icicles ===
 
 Here's one way to kill Dired buffers using [[Icicles]]. 

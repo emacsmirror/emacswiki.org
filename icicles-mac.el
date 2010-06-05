@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Mar  3 00:52:00 2010 (-0800)
+;; Last-Updated: Fri Jun  4 19:06:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 526
+;;     Update #: 534
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -181,16 +181,26 @@ Optional arg DONT-SAVE non-nil means do not call
 MORE-BINDINGS is a list of additional bindings, which are created
 before the others."
   `(,@more-bindings
-    (completion-ignore-case           (or (and (boundp 'read-buffer-completion-ignore-case)
-                                           read-buffer-completion-ignore-case)
-                                       completion-ignore-case))
-    (icicle-must-match-regexp         icicle-buffer-match-regexp)
-    (icicle-must-not-match-regexp     icicle-buffer-no-match-regexp)
-    (icicle-must-pass-predicate       icicle-buffer-predicate)
-    (icicle-require-match-flag        icicle-buffer-require-match-flag)
-    (icicle-extra-candidates          icicle-buffer-extras)
-    (icicle-transform-function        'icicle-remove-dups-if-extras)
-    (icicle-sort-comparer             (or icicle-buffer-sort icicle-sort-comparer))
+    (completion-ignore-case                      (or (and (boundp 'read-buffer-completion-ignore-case)
+                                                      read-buffer-completion-ignore-case)
+                                                  completion-ignore-case))
+    (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
+                                                     icicle-buffers-ido-like-flag))
+    (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
+                                                     icicle-buffers-ido-like-flag))
+    (icicle-default-value                        (if (and icicle-buffers-ido-like-flag
+                                                          icicle-default-value)
+                                                     icicle-buffers-ido-like-flag
+                                                   icicle-default-value))
+    (icicle-must-match-regexp                    icicle-buffer-match-regexp)
+    (icicle-must-not-match-regexp                icicle-buffer-no-match-regexp)
+    (icicle-must-pass-predicate                  icicle-buffer-predicate)
+    (icicle-require-match-flag                   icicle-buffer-require-match-flag)
+    (icicle-extra-candidates                     icicle-buffer-extras)
+    (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
+    (icicle-delete-candidate-object              'icicle-kill-a-buffer) ; `S-delete' kills current buf
+    (icicle-transform-function                   'icicle-remove-dups-if-extras)
+    (icicle-sort-comparer                        (or icicle-buffer-sort icicle-sort-comparer))
     (icicle-sort-orders-alist
      (append (list
               '("by last access")       ; Renamed from "turned OFF'.
@@ -201,12 +211,10 @@ before the others."
                '("by mode-line mode name" . icicle-mode-line-name-less-p))
               '("by file/process name" . icicle-buffer-file/process-name-less-p))
       (delete '("turned OFF") icicle-sort-orders-alist)))
-    (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
     (icicle-all-candidates-list-alt-action-fn
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
-    (icicle-delete-candidate-object   'icicle-kill-a-buffer) ; `S-delete' kills current buffer.
     (bufflist
      (if current-prefix-arg
          (if (wholenump (prefix-numeric-value current-prefix-arg))
@@ -219,24 +227,30 @@ before the others."
 MORE-BINDINGS is a list of additional bindings, which are created
 before the others."
   `(,@more-bindings
-    (completion-ignore-case           (or (and (boundp 'read-file-name-completion-ignore-case)
-                                           read-file-name-completion-ignore-case)
-                                       completion-ignore-case))
-    (icicle-must-match-regexp         icicle-file-match-regexp)
-    (icicle-must-not-match-regexp     icicle-file-no-match-regexp)
-    (icicle-must-pass-predicate       icicle-file-predicate)
-    (icicle-require-match-flag        icicle-file-require-match-flag)
-    (icicle-extra-candidates          icicle-file-extras)
-    (icicle-transform-function        'icicle-remove-dups-if-extras)
-    (icicle-sort-comparer             (or icicle-file-sort icicle-sort-comparer))
-    (icicle-ignore-space-prefix-flag  icicle-buffer-ignore-space-prefix-flag)
+    (completion-ignore-case
+     (or (and (boundp 'read-file-name-completion-ignore-case) read-file-name-completion-ignore-case)
+      completion-ignore-case))
+    (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
+                                                  icicle-files-ido-like-flag))
+    (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
+                                                  icicle-files-ido-like-flag))
+    (icicle-default-value                        (if (and icicle-files-ido-like-flag
+                                                          icicle-default-value)
+                                                     icicle-files-ido-like-flag
+                                                   icicle-default-value))
+    (icicle-must-match-regexp                    icicle-file-match-regexp)
+    (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
+    (icicle-must-pass-predicate                  icicle-file-predicate)
+    (icicle-require-match-flag                   icicle-file-require-match-flag)
+    (icicle-extra-candidates                     icicle-file-extras)
+    (icicle-transform-function                   'icicle-remove-dups-if-extras)
+    (icicle-sort-comparer                        (or icicle-file-sort icicle-sort-comparer))
+    (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
     (icicle-candidate-alt-action-fn
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
     (icicle-all-candidates-list-alt-action-fn
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-    (icicle-delete-candidate-object   'icicle-delete-file-or-directory) ; `S-delete' deletes file.
-    (icicle-default-value               ; Let user get default via `M-n', but don't insert it.
-     (and (memq icicle-default-value '(t nil)) icicle-default-value))))
+    (icicle-delete-candidate-object   'icicle-delete-file-or-directory)))
 
 (defmacro icicle-define-command
     (command doc-string function prompt collection &optional

@@ -11,7 +11,7 @@ Here are other pages relating to this mode,
 * [http://user42.tuxfamily.org/compilation-recenter-end/index.html compilation-recenter-end.el] -- recentre buffer to show maximum text when compile finishes
 * [http://user42.tuxfamily.org/compilation-weblint/index.html compilation-weblint.el] -- regexps for <code>weblint</code> errors
 * [http://user42.tuxfamily.org/compile-command-default/index.html compile-command-default.el] -- establish a default compile command
-
+* CheckBufferCompiled -- Checking whether current buffer's modification time is newer than the time of the last compile.
 
 == Suppress COLUMNS environment variable? ==
 

@@ -302,6 +302,35 @@ If fixing ##rudel-loaddefs.el## is not possible, you can also delete it and put 
 This method should even work with a freshly extracted Rudel, without compiling or anything.
 
 --JanMoringen
+[new]
+Hmm... Okay... Your hack seems to have gotten rudel to work. I'll have a chance to try a session later, but clicking on joining/creating didn't generate any errors.
+
+That said.. If eieio isn't being loaded then the logical conclusion is that the CVS version of cedet isn't properly installed and accessible. So I ran the the cit-test.sh script included in the package (just found it -- I can be a bit slow at times). Here's what it returned:
+
+{{{
+Debugger entered--Lisp error: (error "Compilation failed!")
+  signal(error ("Compilation failed!"))
+  error("Compilation failed!")
+  (progn (error "Compilation failed!"))
+  (if (re-search-backward " Error " nil t) (progn (error "Compilation failed!")))
+  (when (re-search-backward " Error " nil t) (error "Compilation failed!"))
+  (save-excursion (set-buffer "*compilation*") (goto-char (point-max)) (when (re-search-backward " Error " nil t) (error "Compilation failed!")))
+  cit-wait-for-compilation()
+  (let ((bufftokill ...)) (ede-proj-regenerate) (compile (concat ede-make-command ...)) (cit-wait-for-compilation) (kill-buffer bufftokill))
+  cit-compile-and-wait()
+  cit-srecode-fill-cpp("Make")
+  cedet-integ-test-proj("Make")
+  cedet-integ-test-Make()
+  command-line-1(("-l" "../common/cedet.el" "-l" "cit-load.el" "-f" "toggle-debug-on-error" "-f" "toggle-debug-on-quit" "-f" "cedet-integ-test-Make"))
+  command-line()
+  normal-top-level()
+}}}
+
+
+(I'd really like to get this damned thing working //right//. :P)
+
+--- michael
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===

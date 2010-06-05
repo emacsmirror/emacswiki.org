@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri May 28 10:12:16 2010 (-0700)
+;; Last-Updated: Fri Jun  4 10:49:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3335
+;;     Update #: 3358
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -89,6 +89,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/06/04 dadams
+;;     Frames menu: Handle fit-frame.el and frame-cmds.el separately.  Added Toggle Max stuff.
 ;; 2010/05/28 dadams
 ;;     Added items new-file and new-directory.  Added function menu-bar-create-directory.
 ;; 2010/05/25 dadams
@@ -433,39 +435,56 @@ submenu of the \"Help\" menu."))
               (and (fboundp 'show-tool-bar-for-one-command) '(pop-up-tool-bar))))
 
 ;;; FRAMES menu.
-(when (or (featurep 'frame-cmds) (featurep 'fit-frame))
+(when (and (featurep 'fit-frame) (not (featurep 'frame-cmds)) (eq window-system 'w32))
+  (define-key menu-bar-frames-menu [maximize-frame]
+    '(menu-item "Maximize Frame" maximize-frame :help "Maximize the selected frame")))
+(when (featurep 'fit-frame)
+  (define-key menu-bar-frames-menu [fit-frame]
+    '(menu-item "Fit This Frame" fit-frame :help "Resize frame to fit its selected window")))
+  
+(when (featurep 'frame-cmds)
   (define-key menu-bar-frames-menu [set-all-params-from-frame]
     '(menu-item "Set All Frame Parameters from Frame" set-all-frame-alist-parameters-from-frame
       :help "Set frame parameters of a frame to their current values in frame"))
   (define-key menu-bar-frames-menu [set-params-from-frame]
     '(menu-item "Set Frame Parameter from Frame..." set-frame-alist-parameter-from-frame
       :help "Set parameter of a frame alist to its current value in frame"))
-  (define-key menu-bar-frames-menu [separator-set-params] '("--"))
-  (define-key menu-bar-frames-menu [max-frame]
-    '(menu-item "Maximize Frame" max-frame
-      :help "Maximize the selected frame (in both directions)"))
-  (define-key menu-bar-frames-menu [maximize-frame-vertically]
-    '(menu-item "Maximize Frame Vertically" maximize-frame-vertically
-      :help "Maximize the selected frame vertically"))
-  (define-key menu-bar-frames-menu [maximize-frame-horizontally]
-    '(menu-item "Maximize Frame Horizontally" maximize-frame-horizontally
-      :help "Maximize the selected frame horizontally"))
+  (define-key menu-bar-frames-menu [separator-frame-1] '("--"))
   (define-key menu-bar-frames-menu [tile-frames-vertically]
     '(menu-item "Tile Frames Vertically..." tile-frames-vertically
       :help "Tile all visible frames vertically"))
   (define-key menu-bar-frames-menu [tile-frames-horizontally]
     '(menu-item "Tile Frames Horizontally..." tile-frames-horizontally
       :help "Tile all visible frames horizontally"))
-  (define-key menu-bar-frames-menu [separator-adjust] '("--"))
+  (define-key menu-bar-frames-menu [separator-frame-2] '("--"))
+  (define-key menu-bar-frames-menu [toggle-max-frame-vertically]
+    '(menu-item "Toggle Max Frame Vertically" toggle-max-frame-vertically
+      :help "Maximize or restore the selected frame vertically"
+      :enable (frame-parameter nil 'restore-height)))
+  (define-key menu-bar-frames-menu [toggle-max-frame-horizontally]
+    '(menu-item "Toggle Max Frame Horizontally" toggle-max-frame-horizontally
+      :help "Maximize or restore the selected frame horizontally"
+      :enable (frame-parameter nil 'restore-width)))
+  (define-key menu-bar-frames-menu [toggle-max-frame]
+    '(menu-item "Toggle Max Frame" toggle-max-frame
+      :help "Maximize or restore the selected frame (in both directions)"
+      :enable (or (frame-parameter nil 'restore-width) (frame-parameter nil 'restore-height))))
+  (define-key menu-bar-frames-menu [maximize-frame-vertically]
+    '(menu-item "Maximize Frame Vertically" maximize-frame-vertically
+      :help "Maximize the selected frame vertically"))
+  (define-key menu-bar-frames-menu [maximize-frame-horizontally]
+    '(menu-item "Maximize Frame Horizontally" maximize-frame-horizontally
+      :help "Maximize the selected frame horizontally"))
+  (define-key menu-bar-frames-menu [maximize-frame]
+    '(menu-item "Maximize Frame" maximize-frame
+      :help "Maximize the selected frame (in both directions)"))
+  (define-key menu-bar-frames-menu [separator-frame-3] '("--"))
   (define-key menu-bar-frames-menu [iconify-everything]
     '(menu-item "Iconify All Frames" iconify-everything
       :help "Iconify all frames of session at once"))
   (define-key menu-bar-frames-menu [show-hide]
     '(menu-item "Hide Frames / Show Buffers" show-hide
-      :help "Show, if only one frame visible; else hide."))
-  (define-key menu-bar-frames-menu [fit-frame]
-    '(menu-item "Fit This Frame" fit-frame ; Defined in `fit-frame.el'.
-      :help "Resize frame to fit its selected window")))
+      :help "Show, if only one frame visible; else hide.")))
 
 ;;; DO RE MI menu.
 (when (featurep 'doremi-cmd)

@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Inserting a Regexp from a Variable or Register]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Alternative Libraries]] ||
+|| *Previous:*  [[Icicles - Inserting a Regexp from a Variable or Register]] || '''[[Icicles]]''' || IciclesIndex || *Next:*  [[Icicles - S-RET]] ||
 
 ----
 
@@ -138,7 +138,7 @@ to locate and open files by regexp anywhere in your file system
 
 ----
 
-|| *Previous:*  [[Icicles - Inserting a Regexp from a Variable or Register]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Alternative Libraries]] ||
+|| *Previous:*  [[Icicles - Inserting a Regexp from a Variable or Register]] || '''[[Icicles]]''' || IciclesIndex || *Next:*  [[Icicles - S-RET]] ||
 
 DrewsElispLibraries referenced here: Lisp:icicles.el
 

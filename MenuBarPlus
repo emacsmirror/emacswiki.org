@@ -14,7 +14,7 @@ The buffer-specific (local) menus are separated from the common (global) menus b
 
 A new menu, '''Frames''', is added, with these menu items:
 
-: _Fit This Frame_, _Hide Frames or Show Buffers_, _Iconify All Frames_, _Tile Frames Horizontally_, _Tile Frames Vertically_, _Set Frame Parameter from Frame_, _Set All Frame Parameters from Frame_
+: _Hide Frames or Show Buffers_, _Iconify All Frames_, _Maximize Frame_, _Maximize Frame Horizontally_, _Maximize Frame Vertically_, _Toggle Max Frame_, _Toggle Max Frame Horizontally_, _Toggle Max Frame Vertically_, _Tile Frames Horizontally_, _Tile Frames Vertically_, _Set Frame Parameter from Frame_, _Set All Frame Parameters from Frame_, _Fit This Frame_
 
 
 === Do Re Mi Menu ===

@@ -1,0 +1,7 @@
+slime-complete-locals extends slime-complete-symbol to scan symbols that are used in the current top-level form for completion candidates. This means you get completion on function arguments, let bindings and anything else nearby that looks like it might be useful, in addition to the usual global defs that the lisp image provides.
+
+It's currently a bit basic in standard SLIME, since it only works on slime-simple-complete-symbol, but CompanyMode (with slime-company) is fully supported too.
+
+The source code is at GitHub: http://github.com/joodie/slime-complete-locals
+
+Refs: CompanyMode, CategoryCompletion, SlimeMode, CommonLisp, ClojureMode.

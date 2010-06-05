@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 16 10:49:37 2010 (-0700)
+;; Last-Updated: Fri Jun  4 17:57:17 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15617
+;;     Update #: 15667
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -78,8 +78,9 @@
 ;;    `icicle-dispatch-C-^', `icicle-dispatch-C-.',
 ;;    `icicle-dispatch-M-_', `icicle-dispatch-M-comma',
 ;;    `icicle-dispatch-M-q', `icicle-doremi-candidate-width-factor+',
-;;    `icicle-doremi-increment-swank-prefix-length',
-;;    `icicle-doremi-increment-swank-timeout',
+;;    `icicle-doremi-increment-max-candidates+',
+;;    `icicle-doremi-increment-swank-prefix-length+',
+;;    `icicle-doremi-increment-swank-timeout+',
 ;;    `icicle-doremi-inter-candidates-min-spaces+',
 ;;    `icicle-doremi-zoom-Completions+', `icicle-end-of-line+',
 ;;    `icicle-erase-minibuffer',
@@ -1260,14 +1261,54 @@ Optional arg PLAINP means convert to plain `.'.
               (replace-match (icicle-anychar-regexp) nil t))))))))
 
 ;;;###autoload
-(defun icicle-doremi-increment-swank-timeout () ; Bound to `C-x 1' in the minibuffer (swank only)
-  (interactive)
-  (icicle-doremi-increment-variable 'icicle-swank-timeout 1000))
+(defun icicle-doremi-increment-max-candidates+ (&optional increment) ; `C-x #' in minibuffer
+  "Change `icicle-max-candidates' incrementally.
+Use `up', `down' or mouse wheel to increase or decrease.  You can use
+the `Meta' key (e.g. `M-up') to increment in larger steps."
+  (interactive "p")
+  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))
+  (let ((mini  (active-minibuffer-window)))
+    (unwind-protect
+         (save-selected-window
+           (select-window (minibuffer-window))
+           (unless icicle-completion-candidates (message "Hit `TAB' or `S-TAB'"))
+           (let ((enable-recursive-minibuffers  t)
+                 (nb-cands                      (length icicle-completion-candidates)))
+             (when (or (not icicle-max-candidates) (> icicle-max-candidates nb-cands))
+               (setq icicle-max-candidates  nb-cands))
+             (when (zerop icicle-max-candidates) (setq icicle-max-candidates 10))
+             (doremi (lambda (new-val)
+                       (setq icicle-max-candidates
+                             (setq new-val (doremi-limit new-val 2 nil)))
+                       (unless (input-pending-p)
+                         (let ((icicle-edit-update-p  t)
+                               (icicle-last-input     nil))
+                           (funcall (or icicle-last-completion-command
+                                        (if (eq icicle-current-completion-mode 'prefix)
+                                            #'icicle-prefix-complete
+                                          #'icicle-apropos-complete)))
+                           (run-hooks 'icicle-update-input-hook)))
+                       new-val)
+                     icicle-max-candidates
+                     increment))
+           (setq unread-command-events  ()))
+      (unless mini (icicle-remove-Completions-window)))))
 
 ;;;###autoload
-(defun icicle-doremi-increment-swank-prefix-length () ; Bound to `C-x 2' in the minibuffer (swank only)
+(defun icicle-doremi-increment-swank-timeout+ () ; Bound to `C-x 1' in the minibuffer (swank only)
+  "Change `icicle-swank-timeout' incrementally.
+Use `up', `down' or mouse wheel to increase or decrease.  You can use
+the `Meta' key (e.g. `M-up') to increment in larger steps."
   (interactive)
-  (icicle-doremi-increment-variable 'icicle-swank-prefix-length 1))
+  (icicle-doremi-increment-variable+ 'icicle-swank-timeout 1000))
+
+;;;###autoload
+(defun icicle-doremi-increment-swank-prefix-length+ () ; Bound to `C-x 2' in the minibuffer (swank only)
+  "Change `icicle-swank-prefix-length' incrementally.
+Use `up', `down' or mouse wheel to increase or decrease.  You can use
+the `Meta' key (e.g. `M-up') to increment in larger steps."
+  (interactive)
+  (icicle-doremi-increment-variable+ 'icicle-swank-prefix-length 1))
 
 ;;;###autoload
 (defun icicle-next-TAB-completion-method () ; Bound to `C-(' in the minibuffer.
@@ -1292,13 +1333,13 @@ methods that are available."
                                          'basic))))
   (cond ((and (eq icicle-current-TAB-method 'swank) (fboundp 'doremi))
          (define-key minibuffer-local-completion-map "\C-x1"
-           'icicle-doremi-increment-swank-timeout)
+           'icicle-doremi-increment-swank-timeout+)
          (define-key minibuffer-local-must-match-map "\C-x1"
-           'icicle-doremi-increment-swank-timeout)
+           'icicle-doremi-increment-swank-timeout+)
          (define-key minibuffer-local-completion-map "\C-x2"
-           'icicle-doremi-increment-swank-prefix-length)
+           'icicle-doremi-increment-swank-prefix-length+)
          (define-key minibuffer-local-must-match-map "\C-x2"
-           'icicle-doremi-increment-swank-prefix-length))
+           'icicle-doremi-increment-swank-prefix-length+))
         ((fboundp 'doremi)
          (define-key minibuffer-local-completion-map "\C-x1" nil)
          (define-key minibuffer-local-must-match-map "\C-x1" nil)
@@ -1726,9 +1767,12 @@ with empty region
        Insert string variable as input       \\[icicle-insert-string-from-variable]
 
  * Adjust Icicles options incrementally on the fly (uses Do Re Mi).
-     `icicle-candidate-width-factor+'        \\[icicle-doremi-candidate-width-factor+]
-     `icicle-inter-candidates-min-spaces+'   \\[icicle-doremi-inter-candidates-min-spaces+]
-     `icicle-doremi-zoom-Completions+'       C-x -   (Emacs 23)
+     `icicle-candidate-width-factor'        \\[icicle-doremi-candidate-width-factor+]
+     `icicle-max-candidates'                \\[icicle-doremi-increment-max-candidates+]
+     `icicle-swank-prefix-length'           \\[icicle-doremi-increment-swank-prefix-length+]
+     `icicle-swank-timeout'                 \\[icicle-doremi-increment-swank-timeout+]
+     `icicle-inter-candidates-min-spaces'   \\[icicle-doremi-inter-candidates-min-spaces+]
+     Zoom `*Completions*' (not an option)   C-x -   (Emacs 23)
 
 Remember: You can always input any character (e.g. \\[icicle-prefix-complete]) that is bound
           to a command by preceding it with \\<global-map>\\[quoted-insert].
@@ -6014,22 +6058,22 @@ size.  You can use the `Meta' key (`M-=' or `M--') to increment in
 larger steps."
     (interactive "p")
     (unless (require 'doremi-frm nil t) (error "This command needs library `doremi-frm.el'."))
-    (if (get-buffer-window "*Completions*" 'visible)
-        (let ((mini  (active-minibuffer-window)))
-          (unwind-protect
-               (save-selected-window
-                 (select-window (get-buffer-window "*Completions*" 'visible))
-                 (let ((enable-recursive-minibuffers  t)
-                       (doremi-up-keys                '(?=))
-                       (doremi-down-keys              '(?-))
-                       (doremi-boost-up-keys          '(?\M-=))
-                       (doremi-boost-down-keys        '(?\M--)))
-                   (doremi-buffer-font-size+ increment))
-                 (setq unread-command-events  ()))
-            (unless mini (icicle-remove-Completions-window))))
+    (unless (get-buffer-window "*Completions*" 'visible)
       (if icicle-completion-candidates
           (icicle-display-candidates-in-Completions)
-        (icicle-msg-maybe-in-minibuffer "Did you hit `TAB' or `S-TAB'?")))))
+        (icicle-msg-maybe-in-minibuffer "Did you hit `TAB' or `S-TAB'?")))
+    (let ((mini  (active-minibuffer-window)))
+      (unwind-protect
+           (save-selected-window
+             (select-window (get-buffer-window "*Completions*" 'visible))
+             (let ((enable-recursive-minibuffers  t)
+                   (doremi-up-keys                '(?=))
+                   (doremi-down-keys              '(?-))
+                   (doremi-boost-up-keys          '(?\M-=))
+                   (doremi-boost-down-keys        '(?\M--)))
+               (doremi-buffer-font-size+ increment))
+             (setq unread-command-events  ()))
+        (unless mini (icicle-remove-Completions-window))))))
 
 (defun icicle-doremi-candidate-width-factor+ (&optional increment) ; Bound to `C-x w' in the minibuffer.
   "Change `icicle-candidate-width-factor' incrementally.

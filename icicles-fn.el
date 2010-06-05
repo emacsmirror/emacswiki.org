@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 12:40:11 2010 (-0700)
+;; Last-Updated: Fri Jun  4 17:04:14 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11742
+;;     Update #: 11765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -47,12 +47,13 @@
 ;;    `icicle-candidate-short-help',
 ;;    `icicle-case-insensitive-string-less-p',
 ;;    `icicle-case-string-less-p', `icicle-cdr-lessp',
-;;    `icicle-choose-completion-string', `icicle-clear-minibuffer',
-;;    `icicle-color-blue-lessp', `icicle-color-completion-setup',
-;;    `icicle-color-green-lessp', `icicle-color-help',
-;;    `icicle-color-hue-lessp', `icicle-color-name-w-bg',
-;;    `icicle-color-red-lessp', `icicle-color-saturation-lessp',
-;;    `icicle-color-value-lessp', `icicle-command-abbrev-save',
+;;    `icicle-choose-completion-string', `icicle-clear-lighter',
+;;    `icicle-clear-minibuffer', `icicle-color-blue-lessp',
+;;    `icicle-color-completion-setup', `icicle-color-green-lessp',
+;;    `icicle-color-help', `icicle-color-hue-lessp',
+;;    `icicle-color-name-w-bg', `icicle-color-red-lessp',
+;;    `icicle-color-saturation-lessp', `icicle-color-value-lessp',
+;;    `icicle-command-abbrev-save',
 ;;    `icicle-command-abbrev-used-more-p',
 ;;    `icicle-command-names-alphabetic-p',
 ;;    `icicle-complete-again-update', `icicle-completing-p',
@@ -109,7 +110,8 @@
 ;;    `icicle-local-keys-first-p', `icicle-make-color-candidate',
 ;;    `icicle-make-plain-predicate', `icicle-major-mode-name-less-p',
 ;;    `icicle-make-face-candidate',
-;;    `icicle-maybe-sort-and-strip-candidates', `icicle-mctize-all',
+;;    `icicle-maybe-sort-and-strip-candidates',
+;;    `icicle-maybe-sort-maybe-truncate', `icicle-mctize-all',
 ;;    `icicle-mctized-display-candidate',
 ;;    `icicle-mctized-full-candidate',
 ;;    `icicle-minibuffer-default-add-completions',
@@ -158,7 +160,7 @@
 ;;    `icicle-strip-ignored-files-and-sort',
 ;;    `icicle-subst-envvar-in-file-name',
 ;;    `icicle-substring-no-properties', `icicle-substrings-of-length',
-;;    `icicle-toggle-icicle-mode-twice',
+;;    `icicle-take', `icicle-toggle-icicle-mode-twice',
 ;;    `icicle-transform-candidates',
 ;;    `icicle-transform-multi-completion',
 ;;    `icicle-unhighlight-lighter', `icicle-unpropertize',
@@ -2868,7 +2870,7 @@ INPUT is a string.  Each candidate is a string."
         (quit (top-level)))             ; Let `C-g' stop it.
     (let ((cands  (icicle-unsorted-prefix-candidates input)))
       (cond (icicle-abs-file-candidates  (icicle-strip-ignored-files-and-sort cands))
-            (icicle-sort-comparer        (icicle-reversible-sort cands))
+            (icicle-sort-comparer        (icicle-maybe-sort-maybe-truncate cands))
             (t                           cands)))))
 
 (defun icicle-fuzzy-candidates (input)
@@ -3018,7 +3020,7 @@ INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
   (let ((cands  (icicle-unsorted-apropos-candidates input)))
     (cond (icicle-abs-file-candidates  (icicle-strip-ignored-files-and-sort cands))
-          (icicle-sort-comparer        (icicle-reversible-sort cands))
+          (icicle-sort-comparer        (icicle-maybe-sort-maybe-truncate cands))
           (t                           cands))))
 
 (defun icicle-unsorted-apropos-candidates (input)
@@ -3621,7 +3623,8 @@ the code."
               (icicle-save-raw-input))
 
             ;; Save expanded common match as current input, unless input is a directory.
-            ;; Use `icicle-file-directory-p'.  `file-directory-p' fails to consider "~/foo//usr/" a directory.
+            ;; Use `icicle-file-directory-p'.
+            ;; `file-directory-p' fails to consider "~/foo//usr/" a directory.
             ;; $$$$$$ We could use the `icicle-file-directory-p' code with `icicle-file-name-directory'
             ;;        instead of `icicle-file-name-directory-w-default', if that presents a problem.
             (unless (and (icicle-file-name-input-p) (icicle-file-directory-p icicle-current-input))
@@ -3767,7 +3770,7 @@ If `icicle-sort-comparer' is nil, then do not sort."
                                             candidates)))
     ;; If the only candidates have ignored extensions, then use them.
     (unless new-candidates (setq new-candidates  (icicle-remove-if pred2 candidates)))
-    (if icicle-sort-comparer (icicle-reversible-sort new-candidates) new-candidates)))
+    (icicle-maybe-sort-maybe-truncate new-candidates)))
 
 (defun icicle-transform-candidates (candidates)
   "Apply `icicle-transform-function' to CANDIDATES.
@@ -4085,8 +4088,7 @@ MESSAGE is the confirmation message to display in the minibuffer."
   (if (or (icicle-file-name-input-p) icicle-abs-file-candidates) ; File names: relative or absolute.
       (setq icicle-completion-candidates
             (icicle-strip-ignored-files-and-sort icicle-completion-candidates))
-    (when icicle-sort-comparer
-      (setq icicle-completion-candidates  (icicle-reversible-sort icicle-completion-candidates)))))
+    (icicle-maybe-sort-maybe-truncate icicle-completion-candidates)))
 
 (defun icicle-scroll-or-update-Completions (msg)
   "Scroll *Completions* if this command was repeated; else update it."
@@ -4109,8 +4111,46 @@ MESSAGE is the confirmation message to display in the minibuffer."
     (when (> (length icicle-completion-candidates) icicle-incremental-completion-threshold)
       (message "Displaying completion candidates..."))
     (with-output-to-temp-buffer "*Completions*"
-      (display-completion-list
-       (if icicle-sort-comparer (icicle-reversible-sort completions) completions)))))
+      (display-completion-list (icicle-maybe-sort-maybe-truncate completions)))))
+
+(defun icicle-maybe-sort-maybe-truncate (cands)
+  "Return a copy of candidate list CANDS, maybe sorted, maybe truncated.
+Sort according to `icicle-sort-comparer'.
+Truncate according to `icicle-max-candidates'."
+  (let ((new-cands  cands))
+    (when icicle-sort-comparer (setq new-cands  (icicle-reversible-sort new-cands)))
+    (when icicle-max-candidates
+      (let ((lighter  (cadr (assoc 'icicle-mode minor-mode-alist)))
+            (regexp   (concat (regexp-quote icicle-lighter-truncation) "$")))
+        (cond ((and new-cands (< icicle-max-candidates (length new-cands)))
+               (unless (string-match regexp lighter)
+                 (icicle-clear-lighter 'not-truncated)
+                 (add-to-list
+                  'minor-mode-alist `(icicle-mode ,(concat lighter icicle-lighter-truncation)))))
+              (new-cands
+               (when (string-match regexp lighter)
+                 (icicle-clear-lighter 'truncated)
+                 (add-to-list
+                  'minor-mode-alist
+                  `(icicle-mode
+                    ,(substring lighter 0
+                                (- (length lighter) (length icicle-lighter-truncation)))))))))
+      (setq new-cands  (icicle-take icicle-max-candidates new-cands)))
+    new-cands))
+
+(defun icicle-take (num xs)
+  "Return a copy of list XS but with only the first NUM items.
+No error handling.  NUM must be in the range 0 to (length XS)."
+  ;; Recursive version would be just this:
+  ;; (and xs (not (zerop num)) (cons (car xs) (icicle-take (1- num) (cdr xs)))))
+  (and xs (not (zerop num))
+       (let ((new-xs  ())
+             (count   0))
+         (catch 'icicle-take
+           (dolist (x  xs)
+             (when (> (setq count  (1+ count)) num) (throw 'icicle-take new-xs))
+             (setq new-xs  (cons x new-xs)))
+           new-xs))))
 
 ;; From `cl-seq.el', function `union', without keyword treatment.
 ;; Same as `simple-set-union' in `misc-fns.el'.
@@ -4699,7 +4739,7 @@ calls."
         (if (file-directory-p file)
             ;; Skip directory if ignored, already treated, or inaccessible.
             (when (and (not (member (file-name-nondirectory file) icicle-ignored-directories))
-                       (not (member (file-truename file) dirs-done))
+                       (not (member (file-truename file) dirs-done)) ; `dirs-done' is free here.
                        (file-accessible-directory-p file))
               (setq res  (icicle-files-within-1 (directory-files file 'full icicle-re-no-dot)
                                                 res
@@ -5078,10 +5118,7 @@ Highlighting indicates the current completion status."
                        (t 'icicle-completion))))
       (when icicle-candidate-action-fn (setq strg  (concat strg "+")))
       (put-text-property 0 (length strg) 'face face strg)
-      (setq minor-mode-alist  (delete '(icicle-mode " Icy")  minor-mode-alist)
-            minor-mode-alist  (delete '(icicle-mode " Icy+") minor-mode-alist)
-            minor-mode-alist  (delete '(icicle-mode " ICY")  minor-mode-alist)
-            minor-mode-alist  (delete '(icicle-mode " ICY+") minor-mode-alist))
+      (icicle-clear-lighter)
       (add-to-list 'minor-mode-alist `(icicle-mode ,strg)))
     (condition-case nil
         (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
@@ -5091,14 +5128,28 @@ Highlighting indicates the current completion status."
   "Unhighlight `Icy' mode-line indicator of Icicle mode."
   (when icicle-highlight-lighter-flag
     (let ((strg  (if case-fold-search  " ICY"  " Icy")))
-      (setq minor-mode-alist  (delete '(icicle-mode " Icy")  minor-mode-alist)
-            minor-mode-alist  (delete '(icicle-mode " Icy+") minor-mode-alist)
-            minor-mode-alist  (delete '(icicle-mode " ICY")  minor-mode-alist)
-            minor-mode-alist  (delete '(icicle-mode " ICY+") minor-mode-alist))
+      (icicle-clear-lighter)
       (add-to-list 'minor-mode-alist `(icicle-mode ,strg)))
     (condition-case nil
         (if (fboundp 'redisplay) (redisplay t) (force-mode-line-update t))
       (error nil))))                    ; Ignore errors from, e.g., killed buffers.
+
+(defun icicle-clear-lighter (&optional only)
+  "Remove Icicle mode lighter from `minor-mode-alist'."
+  (unless (eq only 'truncated)
+    (setq minor-mode-alist  (delete '(icicle-mode " Icy")  minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " Icy+") minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " ICY")  minor-mode-alist)
+          minor-mode-alist  (delete '(icicle-mode " ICY+") minor-mode-alist)))
+  (unless (eq only 'not-truncated)
+    (setq minor-mode-alist  (delete `(icicle-mode ,(concat " Icy" icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " Icy+" icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY" icicle-lighter-truncation))
+                                    minor-mode-alist)
+          minor-mode-alist  (delete `(icicle-mode ,(concat " ICY+" icicle-lighter-truncation))
+                                    minor-mode-alist))))
 
 (defun icicle-ding ()
   "Same as `ding', but respects `icicle-inhibit-ding-flag'."

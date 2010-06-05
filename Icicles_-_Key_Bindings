@@ -242,7 +242,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-delete-file]
 [:icicle-delete-windows]
 [:icicle-doc]
-[:icicle-doremi-increment-variable]
+[:icicle-doremi-increment-variable+]
 [:icicle-font]
 [:icicle-frame-bg]
 [:icicle-frame-fg]
@@ -300,7 +300,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-delete-file'  -- Delete a file or directory
 * `icicle-delete-windows' -- Delete all [[window]]s for a buffer
 * `icicle-doc'          -- Display doc of function, [[variable]], or face
-* `icicle-doremi-increment-variable' -- Increment a variable using '''[[DoReMi|Do Re Mi]]'''
+* `##icicle-doremi-increment-variable+##' -- Increment a variable using '''[[DoReMi|Do Re Mi]]'''
 * `icicle-face-list'    -- Choose a list of [[face]] names
 * `icicle-file-list'    -- Choose a list of file names
 * `icicle-font'         -- Change the [[frame]] font

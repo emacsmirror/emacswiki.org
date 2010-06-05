@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 14:14:25 2010 (-0700)
+;; Last-Updated: Wed Jun  2 23:38:58 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21086
+;;     Update #: 21092
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -135,7 +135,7 @@
 ;;    `icicle-dired-save-marked-more',
 ;;    `icicle-dired-save-marked-persistently',
 ;;    `icicle-dired-save-marked-to-variable',
-;;    `icicle-doremi-increment-variable',
+;;    `icicle-doremi-increment-variable+',
 ;;    `icicle-ess-complete-filename',
 ;;    `icicle-ess-complete-object-name',
 ;;    `icicle-ess-internal-complete-object-name',
@@ -2768,7 +2768,7 @@ Completion candidates are limited to options that have `integer',
 This command needs library `doremi.el'." ; Doc string
   (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
-      (icicle-doremi-increment-variable sym (icicle-read-number "Increment (amount): ") t)
+      (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") t)
       (message "`%s' is now %s" opt (eval sym))))
   "Increment value of option: " obarray ; `completing-read' args
   (lambda (symbol) (memq (get symbol 'custom-type) '(number integer float)))  
@@ -2789,7 +2789,7 @@ With a prefix arg, only numeric user options are candidates.
 This command needs library `doremi.el'." ; Doc string
   (lambda (opt)                         ; Action function
     (let ((sym  (intern opt)))
-      (icicle-doremi-increment-variable sym (icicle-read-number "Increment (amount): ") prefix-arg)
+      (icicle-doremi-increment-variable+ sym (icicle-read-number "Increment (amount): ") prefix-arg)
       (message "`%s' is now %s" opt (eval sym))))
   "Increment value of variable: " obarray ; `completing-read' args
   (if prefix-arg
@@ -2809,8 +2809,11 @@ This command needs library `doremi.el'." ; Doc string
   (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))) ; First code
 
 ;;;###autoload
-(defun icicle-doremi-increment-variable (variable &optional increment optionp)
+(defun icicle-doremi-increment-variable+ (variable &optional increment optionp)
   "Increment VARIABLE by INCREMENT (default 1).
+Use `up', `down' or mouse wheel to increase or decrease.  You can use
+the `Meta' key (e.g. `M-up') to increment in larger steps.
+
 Interactively, you can choose VARIABLE using completion.
 With a prefix arg, only user options are available to choose from.
 Raises an error if VARIABLE's value is not a number."
@@ -4561,6 +4564,9 @@ For example, to show only buffers that are associated with files, set
 Option `icicle-buffer-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
+Option `icicle-buffers-ido-like' non-nil gives this command a more
+Ido-like behavior.
+
 See also command `icicle-buffer-config'.
 
 By default, Icicle mode remaps all key sequences that are normally
@@ -5020,7 +5026,10 @@ For example, to show only names of files larger than 5000 bytes, set
   (lambda (file) (> (nth 5 (file-attributes file)) 5000))
 
 Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
+option `icicle-require-match-flag'.
+
+Option `icicle-files-ido-like' non-nil gives this command a more
+Ido-like behavior."                     ; Doc string
   (lambda (name) (push name file-names)) ; Function to perform the action
   "Choose file (`RET' when done): "     ; `read-file-name' args
   nil nil t nil nil
@@ -5057,7 +5066,10 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-file-sort'             - Sort function for candidates
 
 Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
+option `icicle-require-match-flag'.
+
+Option `icicle-files-ido-like' non-nil gives this command a more
+Ido-like behavior."    ; Doc string
     (lambda (name) (push name dir-names)) ; Function to perform the action
     "Choose directory (`RET' when done): " ; `read-file-name' args
     ;; $$$$$$ nil nil t nil #'(lambda (file) (eq t (car (file-attributes file)))) ; PREDICATE
@@ -5228,7 +5240,10 @@ For example, to show only names of files larger than 5000 bytes, set
   (lambda (file) (> (nth 5 (file-attributes file)) 5000))
 
 Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
+option `icicle-require-match-flag'.
+
+Option `icicle-files-ido-like' non-nil gives this command a more
+Ido-like behavior."    ; Doc string
   (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
@@ -5372,7 +5387,10 @@ For example, to show only names of files larger than 5000 bytes, set
   (lambda (file) (> (nth 5 (file-attributes file)) 5000))
 
 Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
+option `icicle-require-match-flag'.
+
+Option `icicle-files-ido-like' non-nil gives this command a more
+Ido-like behavior."    ; Doc string
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
@@ -5511,7 +5529,10 @@ For example, to show only names of files larger than 5000 bytes, set
   (lambda (file) (> (nth 5 (file-attributes file)) 5000))
 
 Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
+option `icicle-require-match-flag'.
+
+Option `icicle-files-ido-like' non-nil gives this command a more
+Ido-like behavior."    ; Doc string
   (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
@@ -5717,6 +5738,7 @@ does not follow symbolic links."
 ;;;###autoload
 (icicle-define-command icicle-locate-file-1
   "Helper function for `icicle-locate-file(-other-window)'." ; Doc string
+  ;; `icicle-locate-file-action-fn' is free here.
   (lambda (f) (funcall icicle-locate-file-action-fn f)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if (<= (prefix-numeric-value current-prefix-arg) 0)
@@ -5842,7 +5864,10 @@ For example, to show only names of files larger than 5000 bytes, set
   (lambda (file) (> (nth 5 (file-attributes file)) 5000))
 
 Option `icicle-file-require-match-flag' can be used to override
-option `icicle-require-match-flag'."    ; Doc string
+option `icicle-require-match-flag'.
+
+Option `icicle-files-ido-like' non-nil gives this command a more
+Ido-like behavior."    ; Doc string
   (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)

@@ -10,6 +10,52 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+
+
+== Conflict from my own edit 25 minutes ago? ==
+
+I edited page [[icicles-opt.el]] and saved. Later I tried to do the same thing. I got a lock message. I used the browser Back button to get to the editing again and saved again. I then got this:
+
+<pre>
+This page was changed by somebody else 25 minutes ago. The changes conflict. Please check the page again.
+
+icicles-opt.el
+Download
+
+;;; icicles-opt.el --- User options (variables) for Icicles
+;;
+;; Filename: icicles-opt.el
+;; Description: User options (variables) for Icicles
+;; Author: Drew Adams
+;; Maintainer: Drew Adams
+;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Created: Mon Feb 27 09:22:14 2006
+;; Version: 22.0
+<<<<<<< you
+;; Last-Updated: Fri Jun  4 17:34:46 2010 (-0700)
+||||||| ancestor
+;; Last-Updated: Fri Jun  4 16:52:30 2010 (-0700)
+=======
+;; Last-Updated: Fri Jun  4 17:32:35 2010 (-0700)
+>>>>>>> other
+;;           By: dradams
+<<<<<<< you
+;;     Update #: 3700
+||||||| ancestor
+;;     Update #: 3698
+=======
+;;     Update #: 3699
+>>>>>>> other
+</pre>
+
+... 
+
+
+It's telling me my two edits conflict, and it is not recognizing that I am me. ;-) -- DrewAdams
+
+
+
+
 == Apostrophes etc. not prettified in links ==
 
 * ##ain't -- it -- "nice"## => ain't -- it -- "nice"

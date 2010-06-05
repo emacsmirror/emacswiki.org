@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:07:27 2010 (-0800)
+;; Last-Updated: Fri Jun  4 08:38:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1154
+;;     Update #: 1158
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,6 +54,11 @@
 ;;
 ;;   - font sizes, other than the default frame font
 ;;   - characters, such as TAB, that have special widths
+;;
+;;  NOTE: If you also use library `frame-cmds.el', and you are on MS
+;;  Windows, then load that library after `fit-frame.el'.  This is
+;;  because the commands `maximize-frame' and `restore-frame' defined
+;;  there are more general and non-Windows-specific.
 ;;
 ;;  Suggested key bindings:
 ;;
@@ -101,7 +106,9 @@
 ;;     `autofit-frame.el' - See above.
 ;;
 ;;     `frame-cmds.el' - Various frame and window commands, including
-;;                       incrementally resizing frames.
+;;                       commands to incrementally resize frames and
+;;                       better, non-Windows-specific commands to
+;;                       maximize and restore frames.
 ;;
 ;;     `doremi-frm.el' - Incrementally adjust frame properties
 ;;                       using arrow keys and/or mouse wheel.

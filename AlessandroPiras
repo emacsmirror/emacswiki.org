@@ -127,6 +127,24 @@ having the same major mode as the current buffer"
 	       fixme-keyword-re-string))
 (fixme-mode 1)
 }}}
+=== Slime tips ===
+In the Slime REPL, filename completion on windows didn't work nicely. Hitting tab completed
+the filename inserting the absolute path, and since I had spaces inside the filename, I only
+got partial completion and couldn't hit tab anymore to complete the full filename.
+I found this in the [[|lispbox]] sourcecode:
+{{{
+(defun slime-maybe-complete-as-filename ()
+  "If point is at a string starting with \", complete it as filename.
+Return nil iff if point is not at filename."
+  (if (save-excursion (re-search-backward "\"[^ \t\n]+\\=" nil t))
+      (let ((comint-completion-addsuffix '("/" . "\"")))
+        (if slime-when-complete-filename-expand
+            (comint-replace-by-expanded-filename)
+          (comint-dynamic-complete-as-filename))
+        t)
+    nil))
+}}}
+This will allow completion of relative pathnames.
 [new]
 Nice to see some <tt>[[vimpulse.el]]</tt> updates. How about posting them on the [[vimpulse|discussion page for vimpulse]]?
 

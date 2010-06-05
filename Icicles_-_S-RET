@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Alternative Libraries]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completions Display]] ||
+|| *Previous:*  [[Icicles - Special Characters in Input Patterns]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Ido and IswitchB]] ||
 
 ----
 
@@ -34,7 +34,7 @@ creates a new buffer with that name, `new'.
 
 === Using `S-RET' to Accept a Partial Match ===
 
-By default, '''Icicles''' command '''`icicle-buffer'''', not `switch-to-buffer', is bound to `C-x b' in ''Icicle'' mode.  The default behavior of `icicle-buffer' is the same as the behavior of `switch-to-buffer' with respect to `RET'.  However, you can obtain the complete-and-exit `RET' behavior with `icicle-buffer' by
+By default, '''Icicles''' command '''`icicle-buffer'''', not vanilla command `switch-to-buffer', is bound to `C-x b' in ''Icicle'' mode.  The default behavior of `icicle-buffer' is the same as the behavior of `switch-to-buffer' with respect to `RET'.  However, you can obtain the complete-and-exit `RET' behavior with `icicle-buffer' by
 setting [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-require-match-flag|icicle-buffer-require-match-flag]]</tt>'''' to
 `partial-match-ok'.  This value overrides the `REQUIRE-MATCH'
 argument to `completing-read', in effect forcing it to `t'.
@@ -73,9 +73,11 @@ gives you a chance to forestall acceptance of the sole completion:
 editing the completion (typing or deleting a character) before the
 delay expires prevents its automatic acceptance.
 
+'''See Also:''' [[Icicles - Ido and IswitchB]]
+
 ----
 
-|| *Previous:*  [[Icicles - Alternative Libraries]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completions Display]] ||
+|| *Previous:*  [[Icicles - Special Characters in Input Patterns]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Ido and IswitchB]] ||
 
 
 

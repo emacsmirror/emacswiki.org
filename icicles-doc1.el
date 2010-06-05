@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 13:09:29 2010 (-0700)
+;; Last-Updated: Fri Jun  4 19:14:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25036
+;;     Update #: 25284
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -175,8 +175,8 @@
 ;;  (@> "Moving Between the Minibuffer and Other Buffers")
 ;;  (@> "Inserting a Regexp from a Variable or Register")
 ;;  (@> "Special Characters in Input Patterns")
-;;  (@> "Alternative Libraries: Other Methods of Choosing Default Values")
 ;;  (@> "Exiting the Minibuffer Without Confirmation")
+;;  (@> "Ido and IswitchB")
 ;;  (@> "*Completions* Display")
 ;;  (@> "Icompletion")
 ;;    (@> "icomplete+.el Displays the Number of Other Prefix Candidates")
@@ -2385,48 +2385,6 @@
 ;;
 ;;  * (@> "Progressive Completion")
  
-;;(@* "Alternative Libraries: Other Methods of Choosing Default Values")
-;;
-;;  Alternative Libraries: Other Methods of Choosing Default Values
-;;  ---------------------------------------------------------------
-;;
-;;  There are other libraries, besides Icicles, that give you
-;;  alternative ways to pick a candidate default value.  There are,
-;;  for instance, many libraries that provide ways to switch buffers.
-;;  Some of these present candidates in the minibuffer and choose one
-;;  as soon as you type enough of its name to select it unambiguously
-;;  - without your needing to confirm your choice (with `RET', for
-;;  example).  Library `ido.el' is an example of such a library.
-;;  Library `iswitchb.el' is another such library; it is specialized
-;;  for choosing a buffer.
-;;
-;;  Choosing without confirming can be very quick, but I prefer to
-;;  confirm a choice.  In any case, you can also use Icicles to choose
-;;  without confirming, if you wish - see (@> "Multi-Commands").  See
-;;  also (@> "Exiting the Minibuffer Without Confirmation") for how to
-;;  obtain the complete-and-exit behavior of library `iswitchb.el'.
-;;  Note that you can use Iswitchb together with Icicles, but Ido is
-;;  incompatible.
-;;
-;;  The main reason I prefer Icicles is because of its generality.
-;;  You use the same input, cycling, and completion method for
-;;  everything.  There is no need to be familiar with one method for
-;;  switching buffers, another method for choosing a command, another
-;;  for choosing a variable, and so on.  Library `ido.el' is quite
-;;  general too, but perhaps a little less so.
-;;
-;;  Also, I like to be able to edit the value in the minibuffer.  For
-;;  instance, for lax (permissive) completion, where you are not
-;;  required to enter one of the proposed candidates, you can use
-;;  completion to retrieve a candidate that is similar to what you
-;;  want to enter, then edit it and hit `RET' to submit the actual
-;;  value you want.  Library `ido.el' does have an "edit" command or
-;;  mode, but I find Icicles better for letting me edit input.
-;;
-;;  Icicles has many additional features that are not available in
-;;  other libraries, but its main advantage is its generality: you use
-;;  the same user interface for input of any kind.
- 
 ;;(@* "Exiting the Minibuffer Without Confirmation")
 ;;
 ;;  Exiting the Minibuffer Without Confirmation
@@ -2465,7 +2423,7 @@
 ;;(@* "Using `S-RET' to Accept a Partial Match")
 ;;  ** Using `S-RET' to Accept a Partial Match **
 ;;
-;;  By default, Icicles command `icicle-buffer', not
+;;  By default, Icicles command `icicle-buffer', not vanilla command
 ;;  `switch-to-buffer', is bound to `C-x b' in Icicle mode.  The
 ;;  default behavior of `icicle-buffer' is the same as the behavior of
 ;;  `switch-to-buffer' with respect to `RET'.  However, you can obtain
@@ -2506,6 +2464,175 @@
 ;;  gives you a chance to forestall acceptance of the sole completion:
 ;;  editing the completion (typing or deleting a character) before the
 ;;  delay expires prevents its automatic acceptance.
+;;
+;;  See Also: (@* "Ido and IswitchB")
+ 
+;;(@* "Ido and IswitchB")
+;;
+;;  Ido and IswitchB
+;;  ----------------
+;;
+;;  Libraries Ido and IswitchB are alternatives to Icicles that also
+;;  enhance minibuffer completion in various ways.  Their UIs are
+;;  similar to each other - Ido essentially extends IswitchB's
+;;  buffer-name completion to file names as well.  Neither completes
+;;  other kinds of candidates.  They work only for buffer names or
+;;  file names, but you can advise the standard completion functions
+;;  to get them to use Ido completion more generally.
+;;
+;;  The behavior of Ido and IswitchB is different from the default
+;;  Icicles behavior.  If you prefer their behavior for buffers then
+;;  you can just use IswitchB and Icicles together.  You cannot use
+;;  Icicles and Ido together, however - they use the minibuffer in
+;;  incompatible ways.
+;;
+;;  The default behavior of Icicles is different, but you can make
+;;  Icicles behave more like Ido if you like.  It would be a mistake
+;;  to look for a complete reproduction of the Ido behavior in
+;;  Icicles, however.  If you want exactly the same behavior as Ido,
+;;  then use Ido. ;-)
+;;
+;;  The Icicles UI is different by design.  Some of this difference in
+;;  approach has to do with the fact that Ido is specialized to
+;;  buffer- and file-name completion.  The generality of Icicles makes
+;;  a different approach appropriate.  Icicles has many additional
+;;  features that are not available in other libraries, but its main
+;;  advantage is its generality: you use the same user interface for
+;;  input of any kind.  As you learn more about Icicles you may begin
+;;  to appreciate its approach, even if you are a diehard Ido addict.
+;;
+;;  This section summarizes some differences between Icicles and Ido
+;;  and tells you how you can get more Ido-like behavior in Icicles if
+;;  that's what you prefer.  It does not cover Icicles features that
+;;  have no counterpart in Ido or features that they have in common
+;;  (except to emphasize some differences).
+;;
+;;  If you have the Ido habit but want to give Icicles a try, then
+;;  this section is for you.  I recommend, however, that you give the
+;;  default Icicles behavior a good try before convincing yourself
+;;  that you still prefer a more Ido-like approach.
+;;
+;;  See also the references at the section end for other sections that
+;;  go into more detail about some of the things mentioned here.
+;;  
+;;  1. Incremental completion.  By default, Icicles does not turn on
+;;     incremental completion until you have hit `TAB' or `S-TAB' to
+;;     display the matching candidates.  Ido turns it on immediately.
+;;     You can get that behavior by setting option
+;;     `icicle-show-Completions-initially-flag' to t.
+;;
+;;     You can get an intermediate behavior in this regard by instead
+;;     setting option `icicle-incremental-completion-flag' to a value
+;;     other than nil and t.  That makes Icicles show the matching
+;;     candidates as soon as you start typing input.  See also option
+;;     `icicle-incremental-completion-delay'.
+;;
+;;  2. Matching.  By default, Ido uses substring matching for
+;;     completion.  You can hit a key to switch to prefix matching,
+;;     "flex" matching, or regexp matching.  Icicles gives you these
+;;     same matching possibilities, and more.  (What Ido calls "flex"
+;;     matching Icicles calls "scatter" matching.)  The main
+;;     difference here is that Icicles regexp support is general and
+;;     complete.  Regexp-matching in Ido does not work with Ido-style
+;;     completion.
+;;
+;;  3. Current candidate, cycling, sorting.  Both Ido and Icicles have
+;;     a notion of "current candidate".  In Ido, completion candidates
+;;     are presented in a predefined sort order, most recently used
+;;     first.  The current candidate is the first one.  You cycle
+;;     candidates by moving the first to last or the last to first.
+;;
+;;     In Icicles, you can switch among any number of sort orders at
+;;     any time by hitting a key.  (And you can easily define your own
+;;     sort orders.)  When you cycle candidates, the candidates stay
+;;     in order.  If the candidates are displayed in `*Completions*'
+;;     then the current one is highlighted there, in place.  The
+;;     highlight moves, not the candidate.
+;;
+;;  4. Input editing.  In Ido, cycling does not replace your input by
+;;     the current candidate.  To edit the current candidate you hit a
+;;     key to enter an edit mode (recursive minibuffer).  In Icicles,
+;;     cycling replaces your input in the minibuffer by the current
+;;     candidate, so you can just edit it there normally.  You can use
+;;     `C-l' to retrieve your original input.
+;;
+;;  5. Completions shown.  In Ido, a limited number of matching
+;;     completion candidates are shown in the minibuffer.  You can hit
+;;     a key to see all matches in a separate buffer.
+;;
+;;     In Icicles, completion candidates are always shown in buffer
+;;     `*Completions*', not in the minibuffer.  You can limit the
+;;     number of matches shown by customizing option
+;;     `icicle-max-candidates'.  Only the first
+;;     `icicle-max-candidates' (in the current sort order) are shown.
+;;
+;;     You can also increment and decrement this truncation value on
+;;     the fly during completion, by hitting `C-x #' and then using
+;;     the vertical arrow keys or the mouse wheel.  (For that feature
+;;     you also need library `doremi.el'.)
+;;
+;;  6. Auto-choice of sole candidate.  In Ido, if there is only one
+;;     match for your input then `TAB', which normally completes, also
+;;     chooses that candidate - you do not need to hit `RET'.  By
+;;     default, Icicles always requires you to explicitly choose with
+;;     `RET' (or `C-RET').  If you set option
+;;     `icicle-top-level-when-sole-completion-flag' to non-nil, then
+;;     Icicles provides similar behavior to Ido.  See also option
+;;     `icicle-top-level-when-sole-completion-delay'.
+;;
+;;(@* "Ido-Like Behavior Everywhere: `icicle-ido-like-mode'")
+;;  ** Ido-Like Behavior Everywhere: `icicle-ido-like-mode' **
+;;
+;;  If you want Icicles to be Ido-like in general, then turn on global
+;;  minor mode `icicle-ido-like-mode' (not available in Emacs 20).
+;;  Doing that sets options `icicle-show-Completions-initially-flag'
+;;  and `icicle-top-level-when-sole-completion-flag' to t.  Turning
+;;  the mode off sets them to nil.
+;;
+;;  You can simultaneously set option `icicle-max-candidates' when you
+;;  turn on `icicle-ido-like-mode', by using a positive prefix
+;;  argument.  If you want the option to keep that value when you turn
+;;  the mode off, then use a zero or negative prefix argument.
+;;  Otherwise, it is reset to nil (no limit on the number of
+;;  candidates displayed).
+;;
+;;  When you use this mode, you might also want to use nil or t as the
+;;  value of option `icicle-default-value', in order to not insert the
+;;  default value in the minibuffer.  If you want to change that
+;;  option dynamically for the mode, use `icicle-ido-like-mode-hook'.
+;;  E.g.:
+;;
+;;  (add-hook 'icicle-ido-like-mode-hook
+;;            (lambda () (setq icicle-default-value
+;;                        (if icicle-ido-like-mode t 'insert-end))))
+;;  
+;;(@* "Ido-Like Behavior for Buffers and Files")
+;;  ** Ido-Like Behavior for Buffers and Files **
+;;
+;;  If you want Ido-like behavior in Icicles for buffers or files, but
+;;  not in general, then customize either or both options
+;;  `icicle-buffers-ido-like-flag' and `icicle-files-ido-like-flag' to
+;;  non-nil.
+;;
+;;  See Also:
+;;
+;;  * (@> "Exiting the Minibuffer Without Confirmation")
+;;  * (@file :file-name "icicles-doc2.el" :to "Customization and General Tips"):
+;;     `icicle-buffer-require-match-flag',
+;;     `icicle-deletion-action-flag',
+;;     `icicle-file-require-match-flag',
+;;     `icicle-show-Completions-initially-flag',
+;;     `icicle-incremental-completion-flag',
+;;     `icicle-incremental-completion-delay',
+;;     `icicle-max-candidates',
+;;     `icicle-regexp-quote-flag',
+;;     `icicle-top-level-when-sole-completion-flag',
+;;     `icicle-top-level-when-sole-completion-delay',
+;;  * (@file :file-name "icicles-doc2.el" :to "Fuzzy Completion")
+;;  * (@> "Special Characters in Input Patterns")
+;;  * (@> "Prefix Completion and Apropos Completion")
+;;  * http://www.emacswiki.org/emacs/IciclesDiscussion#IdoAndIcicles
+;;    (out-of-date discussion, but it might be helpful)
  
 ;;(@* "*Completions* Display")
 ;;

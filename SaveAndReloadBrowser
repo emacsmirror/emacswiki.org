@@ -1,0 +1,36 @@
+When developing anything for the web, the most common workflow for me is to edit something in a file, save it, then switch to the browser and hit F5 to reload the current page to inspect the results of my changes. I always wanted to have a shortcut for this but never succeeded remote controlling firefox. Now I'm using chromium and finally managed to set it up.
+
+Below are the steps needed to get a command save-and-reload, bound to C-x C-r (meant to be close to C-x C-s). It is heavily depending on my custom setup and won't work out of the box for you, but maybe it's still useful. Please improve if you want. 
+
+Launch chromium (or google chrome) with enabled debug port:
+
+google-chrome --remote-shell-port=9222
+
+Get the chrome_remote_shell package from here:
+
+http://pypi.python.org/pypi/chrome_remote_shell/
+
+Create a little python program called chrome-reload that looks like this:
+
+  #!/usr/bin/env python
+  import chrome_remote_shell
+
+  shell = chrome_remote_shell.open(port=9222)
+
+  response = shell.request('DevToolsService', command='list_tabs')
+  tabs = response['data']
+  first_tab = tabs[0]
+  tab_id = first_tab[0]
+
+  shell.request('V8Debugger', destination=tab_id, command='evaluate_javascript', data="window.location = window.location;")
+
+And then the following code in .emacs:
+
+  (defun save-and-reload () "Save and reload browser" (interactive)
+    (save-buffer)
+    (shell-command "chrome-reload")
+    (shell-command "stumpish 'gselect 4'")
+  )
+  (define-key global-map "\C-x\C-r" 'save-and-reload)
+
+The 'stumpish' command is to remote control the excellent stumpwm window manager that I am using. You may need to replace it with something else.

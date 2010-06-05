@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 12:08:42 2010 (-0700)
+;; Last-Updated: Fri Jun  4 17:34:46 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3673
+;;     Update #: 3700
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -60,7 +60,8 @@
 ;;    `icicle-buffer-ignore-space-prefix-flag',
 ;;    `icicle-buffer-match-regexp', `icicle-buffer-no-match-regexp',
 ;;    `icicle-buffer-predicate', `icicle-buffer-require-match-flag'
-;;    `icicle-buffer-sort', `icicle-candidate-width-factor',
+;;    `icicle-buffer-sort', `icicle-buffers-ido-like-flag',
+;;    `icicle-candidate-width-factor',
 ;;    `icicle-change-region-background-flag',
 ;;    `icicle-change-sort-order-completion-flag',
 ;;    `icicle-C-l-uses-completion-flag', `icicle-color-themes',
@@ -88,6 +89,7 @@
 ;;    `icicle-file-extras', `icicle-file-match-regexp',
 ;;    `icicle-file-no-match-regexp', `icicle-file-predicate',
 ;;    `icicle-file-require-match-flag', `icicle-file-sort',
+;;    `icicle-files-ido-like-flag',
 ;;    `icicle-filesets-as-saved-completion-sets-flag',
 ;;    `icicle-guess-commands-in-path',
 ;;    `icicle-help-in-mode-line-flag',
@@ -110,7 +112,7 @@
 ;;    `icicle-keymaps-for-key-completion', `icicle-kmacro-ring-max',
 ;;    `icicle-levenshtein-distance', `icicle-list-end-string',
 ;;    `icicle-list-join-string', `icicle-list-nth-parts-join-string',
-;;    `icicle-mark-position-in-candidate',
+;;    `icicle-mark-position-in-candidate', `icicle-max-candidates',
 ;;    `icicle-menu-items-to-history-flag',
 ;;    `icicle-minibuffer-setup-hook', `icicle-modal-cycle-down-keys',
 ;;    `icicle-modal-cycle-down-action-keys',
@@ -532,6 +534,16 @@ Examples of sort functions are `icicle-buffer-sort-*...*-last' and
 `icicle-buffer'."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Buffers :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-buffers-ido-like-flag nil
+  "t means `icicle-buffer' and similar commands act more Ido-like.
+Specifically, those commands then bind these options to t:
+ `icicle-show-Completions-initially-flag'
+ `icicle-top-level-when-sole-completion-flag'
+ `icicle-default-value'"
+  :type 'boolean
+  :group 'Icicles-Buffers :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-candidate-width-factor 80
@@ -1068,6 +1080,27 @@ sorted."
   :group 'Icicles-Files :group 'Icicles-Completions-Display)
 
 ;;;###autoload
+(defcustom icicle-files-ido-like-flag nil
+  "t means `icicle-file' and similar commands act more Ido-like.
+Specifically, those commands then bind these options to t:
+ `icicle-show-Completions-initially-flag'
+ `icicle-top-level-when-sole-completion-flag'
+ `icicle-default-value'"
+  :type 'boolean
+  :group 'Icicles-Files :group 'Icicles-Completions-Display :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-filesets-as-saved-completion-sets-flag t
+  "*Non-nil means you can use filesets to save candidates persistently.
+This means that you can save file-name candidates in a persistent
+Icicles saved completion set (cache file) or in in an Emacs fileset.
+It also means that an Icicles persistent completion set can contain
+filesets, in addition to file names: any number of filesets, and
+filesets of different type.  Available only for Emacs 22 and later,
+and you must load library `filesets.el'."
+  :type 'boolean :group 'Icicles-Matching)
+
+;;;###autoload
 (defcustom icicle-guess-commands-in-path nil
   "*Non-nil means all shell commands are available for completion.
 This is used in Icicle mode whenever a shell-command is read.
@@ -1240,7 +1273,8 @@ See the Icicles doc, section `Nutshell View of Icicles', subsection
   :type 'boolean :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-ignored-directories vc-directory-exclusion-list
+(defcustom icicle-ignored-directories (and (boundp 'vc-directory-exclusion-list)
+                                           vc-directory-exclusion-list)
   "Directories ignored by `icicle-locate-file'."
   :type '(repeat string) :group 'Icicles-Files)
 
@@ -1508,6 +1542,17 @@ expression, which sets text property `display' to \"\"."
 This has an effect on multi-completion candidates only, and only if
 the current command uses `icicle-list-use-nth-parts'."
   :type 'string :group 'Icicles-Completions-Display)
+
+;;;###autoload
+(defcustom icicle-max-candidates nil
+  "Non-nil means truncate completion candidates to at most this many.
+This affects only display in `*Completions*'.  If you use library
+`doremi.el' then you can use `C-x #' during completion to increment or
+decrement the option value using the vertical arrow keys or the mouse
+wheel."
+  :type '(choice (const :tag "None" nil) integer)
+  :group 'Icicles-Completions-Display :group 'Icicles-Matching
+  :group 'Icicles-Buffers :group 'Icicles-Files)
 
 ;;;###autoload
 (defcustom icicle-menu-items-to-history-flag t
@@ -1929,17 +1974,6 @@ Instead, you add or remove sets using commands
 `icicle-add/update-saved-completion-set' and
 `icicle-remove-saved-completion-set'."
   :type '(repeat (cons string file)) :group 'Icicles-Matching)
-
-;;;###autoload
-(defcustom icicle-filesets-as-saved-completion-sets-flag t
-  "*Non-nil means you can use filesets to save candidates persistently.
-This means that you can save file-name candidates in a persistent
-Icicles saved completion set (cache file) or in in an Emacs fileset.
-It also means that an Icicles persistent completion set can contain
-filesets, in addition to file names: any number of filesets, and
-filesets of different type.  Available only for Emacs 22 and later,
-and you must load library `filesets.el'."
-  :type 'boolean :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-search-cleanup-flag t
@@ -2423,8 +2457,8 @@ symbols.  Symbols are completed using the algorithm of library
 Icicles options `icicle-swank-timeout' and
 `icicle-swank-prefix-length' give you some control over the behavior.
 When the `TAB' completion method is `swank', you can use `C-x 1'
-\(`icicle-doremi-increment-swank-timeout') and `C-x 2'
-\(`icicle-doremi-increment-swank-prefix-length') in the minibuffer to
+\(`icicle-doremi-increment-swank-timeout+') and `C-x 2'
+\(`icicle-doremi-increment-swank-prefix-length+') in the minibuffer to
 increment these options on the fly using the arrow keys `up' and
 `down'.
 
@@ -2955,13 +2989,16 @@ duplicates, by binding it to `icicle-remove-duplicates' or
      frame-selected-window  frame-set-background-mode  frame-terminal
      frame-update-face-colors  frame-visible-p  frame-width  get-a-frame  get-frame-name
      hide-frame  icicle-select-frame-by-name  iconify-frame  lower-frame
-     make-frame-invisible  make-frame-visible  maximize-frame  menu-bar-open
-     minimize-frame  next-frame  thumfr-only-raise-frame  previous-frame  raise-frame
-     really-iconify-frame  redirect-frame-focus  redraw-frame  restore-frame  select-frame
-     select-frame-set-input-focus  set-frame-name  show-frame  thumfr-thumbify-frame
-     thumfr-thumbify-other-frames  thumfr-thumbnail-frame-p  thumfr-toggle-thumbnail-frame
-     toggle-zoom-frame  tty-color-alist  tty-color-clear  w32-focus-frame  window-list
-     window-system  window-tree  x-focus-frame  zoom-frm-in  zoom-frm-out  zoom-frm-unzoom)
+     make-frame-invisible  make-frame-visible  maximize-frame  maximize-frame-horizontally
+     maximize-frame-vertically  menu-bar-open  minimize-frame  next-frame
+     thumfr-only-raise-frame  previous-frame  raise-frame  really-iconify-frame
+     redirect-frame-focus  redraw-frame  restore-frame  restore-frame-horizontally
+     restore-frame-vertically  select-frame   select-frame-set-input-focus  set-frame-name
+     show-frame  thumfr-thumbify-frame  thumfr-thumbify-other-frames  thumfr-thumbnail-frame-p
+     thumfr-toggle-thumbnail-frame  toggle-max-frame  toggle-max-frame-horizontally
+     toggle-max-frame-vertically  toggle-zoom-frame  tty-color-alist  tty-color-clear
+     w32-focus-frame  window-list  window-system  window-tree  x-focus-frame  zoom-frm-in
+     zoom-frm-out  zoom-frm-unzoom)
     ("function"
      cancel-function-timers  describe-function  elp-instrument-function  find-function
      find-function-other-frame  find-function-other-window  symbol-function  trace-function

@@ -585,6 +585,20 @@ which is the standard Emacs behavior.  The default value is `t'. (Actually, the 
 `<tt>[[#icicle-prefix-complete-keys]]</tt>', not necessarily `TAB'.)
 
 
+
+----
+[:icicle-max-candidates]
+==== Option `icicle-max-candidates' ====
+
+Non-`nil' option '''`icicle-max-candidates'''' means truncate the list of completion
+candidates to at most this many.  This affects only display in
+`*Completions*'.  If you use library <tt>[[doremi.el]]</tt> then you can
+use '''`##C-x ###'''' during completion to increment or decrement the
+option value using the vertical arrow keys or the mouse wheel.
+
+
+
+
 ----
 [:icicle-expand-input-to-common-match-flag]
 ==== Option icicle-expand-input-to-common-match-flag ====
@@ -1779,6 +1793,32 @@ Non-`nil' user option '''`icicle-customize-save-flag'''' means that
 normal behavior.  If you for some reason do not want your
 [[custom file]] or [[init file]] updated in this way, then customize
 `icicle-customize-save-flag' to `nil'.
+
+
+----
+[:icicle-buffers-ido-like-flag]
+==== Option icicle-buffers-ido-like-flag ====
+
+If '''`icicle-buffers-ido-like-flag'''' is `t' then `icicle-buffer' and
+similar commands act more [[Ido]]-like.  Specifically, those
+commands then bind these options to `t':
+* `icicle-show-Completions-initially-flag'
+* `icicle-top-level-when-sole-completion-flag'
+* `icicle-default-value'
+
+
+
+----
+[:icicle-files-ido-like-flag]
+==== Option icicle-files-ido-like-flag ====
+
+If '''`icicle-files-ido-like-flag'''' is `t' then `icicle-file' and
+similar commands act more [[Ido]]-like.  Specifically, those
+commands then bind these options to `t':
+* `icicle-show-Completions-initially-flag'
+* `icicle-top-level-when-sole-completion-flag'
+* `icicle-default-value'
+
 
 ----
 [:icicle-customize-save-variable-function]

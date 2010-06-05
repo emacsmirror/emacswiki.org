@@ -6,6 +6,8 @@
 
 == Multi-Commands ==
 
+
+[:WhatIsAMulti-Command]
 === What Is a Multi-Command? ===
 
 A '''[::multi-command]''' is a [[command]] that lets you make multiple input
@@ -50,7 +52,7 @@ Just remember that '''`##+##''''
 means that you can choose any number of inputs. For a list of predefined '''Icicles''' multi-commands, use `##C-?##' (`icicle-minibuffer-help') in the [[minibuffer]] -- search for `##+##' at the beginning of a line. 
 
 
-
+[:HowDoesAMulti-CommandWork]
 === How Does a Multi-Command Work? ===
 
 When an '''Icicles''' multi-command prompts you for input, you can make

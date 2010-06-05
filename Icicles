@@ -110,8 +110,8 @@ The most important links are '''bold''' here.
 * [[Icicles - Moving Between the Minibuffer and Other Buffers]] -- interrupting minibuffer input to edit, search, and so on, elsewhere
 * [[Icicles - Inserting a Regexp from a Variable or Register]] -- saving and reusing regexps
 * '''[[Icicles - Special Characters in Input Patterns]]''' -- how regexp syntax works with file-name (shell) globbing and such
-* [[Icicles - Alternative Libraries]] -- comparison with other libraries such as ##iswitchb.el## and ##ido.el##
-* [[Icicles - S-RET]] -- exiting the minibuffer without confirmation (a la ##iswitchb.el## and ##ido.el##)
+* [[Icicles - S-RET]] -- exiting the minibuffer without confirmation
+* [[Icicles - Ido and IswitchB]] -- differences from libraries ##iswitchb.el## and ##ido.el##, and how to make '''Icicles''' more [[Ido]]-like
 * '''[[Icicles - Completions Display]]''' -- how '''Icicles''' uses buffer `*Completions*'
 * '''[[Icicles - Icompletion]]''' -- incremental updating of the set of completion candidates
 * '''[[Icicles - Sorting Candidates]]''' -- controlling sorting and removal of duplicates

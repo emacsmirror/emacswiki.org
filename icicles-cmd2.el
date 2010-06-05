@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 13:01:12 2010 (-0700)
+;; Last-Updated: Fri Jun  4 13:41:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2129
+;;     Update #: 2156
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -69,17 +69,17 @@
 ;;    (+)`icicle-goto-marker-or-set-mark-command', (+)`icicle-imenu',
 ;;    (+)`icicle-imenu-command',
 ;;    (+)`icicle-imenu-non-interactive-function',
-;;    (+)`icicle-Info-goto-node', (+)`icicle-Info-goto-node-cmd',
-;;    (+)`icicle-Info-index', (+)`icicle-Info-index-20',
-;;    (+)`icicle-Info-index-cmd', (+)`icicle-Info-menu',
-;;    `icicle-Info-menu-cmd', `icicle-Info-virtual-book',
-;;    `icicle-insert-char', (+)`icicle-insert-thesaurus-entry',
-;;    (+)`icicle-keyword-list', (+)`icicle-map',
-;;    `icicle-non-whitespace-string-p', (+)`icicle-object-action',
-;;    (+)`icicle-occur', (+)`icicle-plist', `icicle-read-color',
-;;    `icicle-read-kbd-macro', (+)`icicle-regexp-list',
-;;    `icicle-save-string-to-variable', (+)`icicle-search',
-;;    (+)`icicle-search-all-tags-bookmark',
+;;    `icicle-ido-like-mode', (+)`icicle-Info-goto-node',
+;;    (+)`icicle-Info-goto-node-cmd', (+)`icicle-Info-index',
+;;    (+)`icicle-Info-index-20', (+)`icicle-Info-index-cmd',
+;;    (+)`icicle-Info-menu', `icicle-Info-menu-cmd',
+;;    `icicle-Info-virtual-book', `icicle-insert-char',
+;;    (+)`icicle-insert-thesaurus-entry', (+)`icicle-keyword-list',
+;;    (+)`icicle-map', `icicle-non-whitespace-string-p',
+;;    (+)`icicle-object-action', (+)`icicle-occur', (+)`icicle-plist',
+;;    `icicle-read-color', `icicle-read-kbd-macro',
+;;    (+)`icicle-regexp-list', `icicle-save-string-to-variable',
+;;    (+)`icicle-search', (+)`icicle-search-all-tags-bookmark',
 ;;    (+)`icicle-search-all-tags-regexp-bookmark',
 ;;    (+)`icicle-search-bookmark',
 ;;    (+)`icicle-search-bookmark-list-bookmark',
@@ -5101,6 +5101,57 @@ NO-ANGLES is the same as for `icicle-read-kbd-macro'."
                         collect (if (= (logand ch ?\M-\^@) 0)
                                     ch (+ ch 128))))
         res))))
+
+;;;###autoload
+(when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
+  (eval '(define-minor-mode icicle-ido-like-mode
+          "Ido-like mode for use with Icicles.
+No, this mode does not pretend to give you exactly the Ido behavior.
+
+Turning the mode ON sets these options to t:
+ `icicle-show-Completions-initially-flag'
+ `icicle-top-level-when-sole-completion-flag'
+Turning the mode OFF sets those options to non-nil.
+
+A positive prefix arg turns the mode on and also sets option
+`icicle-max-candidates' to the prefix-arg numeric value.  By default,
+that option is nil, meaning that there is no limit to the number of
+completion candidates.
+
+Since Ido shows only a few completion candidates, you might want to
+customize that option or use a prefix arg with this mode to set it.
+You can also use `C-x #' in the minibuffer to increment or decrement
+the option at any time during completion.
+
+Turning the mode off by toggling (no prefix arg) resets option
+`icicle-max-candidates' to nil.  If you have customized that option to
+a non-nil value and do not want to lose that preference, then use a
+zero or negative prefix arg to turn the mode off.
+
+See also these options, which control how much time you have to edit
+input before automatic incremental completion and automatic acceptance
+of a sole candidate kick in:
+
+ `icicle-incremental-completion-delay'
+ `icicle-top-level-when-sole-completion-delay'
+
+When you use this mode, you might also want to use nil or t as the
+value of option `icicle-default-value', in order to not insert the
+default value in the minibuffer.  If you want to change that option
+dynamically for the mode, use `icicle-ido-like-mode-hook'.  E.g.:
+
+ (add-hook 'icicle-ido-like-mode-hook
+           (lambda () (setq icicle-default-value
+                       (if icicle-ido-like-mode t 'insert-end))))"
+          nil nil nil :global t :group 'Icicles-Miscellaneous
+          (setq
+           icicle-show-Completions-initially-flag      icicle-ido-like-mode
+           icicle-top-level-when-sole-completion-flag  icicle-ido-like-mode)
+          (if icicle-ido-like-mode
+              (when (and current-prefix-arg (not (eq 'toggle current-prefix-arg)))
+                (setq icicle-max-candidates  (prefix-numeric-value current-prefix-arg)))
+            (unless (and current-prefix-arg (not (eq 'toggle current-prefix-arg)))
+              (setq icicle-max-candidates  nil))))))
 
 ;; See also `hexrgb-read-color' in `hexrgb.el'.
 ;;;###autoload

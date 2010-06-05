@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed May 26 13:29:29 2010 (-0700)
+;; Last-Updated: Fri Jun  4 18:18:37 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6539
+;;     Update #: 6581
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -327,7 +327,10 @@ In many cases there are also `other-window' versions.
 `icicle-dired'                         - Multi-command Dired
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
-`icicle-doremi-increment-variable'     - Increment var using Do Re Mi
+`icicle-doremi-increment-max-candidates+' - +/- max number candidates
+`icicle-doremi-increment-swank-prefix-length+' - +/- swank prefix
+`icicle-doremi-increment-swank-timeout+' - +/- swank completion msec
+`icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
 `icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
 `icicle-execute-extended-command'      - Multi-command `M-x'
@@ -590,7 +593,10 @@ In many cases there are also `other-window' versions.
 `icicle-dired'                         - Multi-command Dired
 `icicle-doc'                           - Show doc for fn, var, or face
 `icicle-doremi-candidate-width-factor+' - +/- candidate column width
-`icicle-doremi-increment-variable'     - Increment var using Do Re Mi
+`icicle-doremi-increment-max-candidates+' - +/- max number candidates
+`icicle-doremi-increment-swank-prefix-length+' - +/- swank prefix
+`icicle-doremi-increment-swank-timeout+' - +/- swank completion msec
+`icicle-doremi-increment-variable+'    - Increment var using Do Re Mi
 `icicle-doremi-inter-candidates-min-spaces+' - +/- candidate spacing
 `icicle-doremi-zoom-Completions+'      - +/- *Completions* text size
 `icicle-execute-extended-command'      - Multi-command `M-x'
@@ -1146,7 +1152,10 @@ Used on `pre-command-hook'."
              '(menu-item "Change Sort Order" icicle-change-sort-order :visible icicle-mode
                :enable (not icicle-inhibit-sort-p) :keys "C-,"))
            (when (fboundp 'doremi)
-             (define-key icicle-options-menu-map [icicle-separator-options-doremi] '("--"))
+             (define-key icicle-options-menu-map [icicle-separator-options-doremi]
+               '(menu-item "--" nil :visible (or (get-buffer-window "*Completions*" 'visible)
+                                              (eq icicle-current-TAB-method 'swank)
+                                              (active-minibuffer-window))))
              (when (fboundp 'text-scale-increase) ; Emacs 23+.
                (define-key icicle-options-menu-map [icicle-doremi-zoom-Completions+]
                  '(menu-item "*Completions* Zoom Factor - Do Re Mi"
@@ -1162,7 +1171,19 @@ Used on `pre-command-hook'."
                '(menu-item "Candidate Column Width - Do Re Mi"
                  icicle-doremi-candidate-width-factor+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                 :keys "C-x w"))))
+                 :keys "C-x w"))
+             (define-key icicle-options-menu-map [icicle-doremi-increment-swank-prefix-length+]
+               '(menu-item "Swank Min Match Chars - Do Re Mi"
+                 icicle-doremi-increment-swank-prefix-length+
+                 :visible (and icicle-mode (eq icicle-current-TAB-method 'swank)) :keys "C-x 2"))
+             (define-key icicle-options-menu-map [icicle-doremi-increment-swank-timeout+]
+               '(menu-item "Swank Timeout - Do Re Mi"
+                 icicle-doremi-increment-swank-timeout+
+                 :visible (and icicle-mode (eq icicle-current-TAB-method 'swank)) :keys "C-x 1"))
+             (define-key icicle-options-menu-map [icicle-doremi-increment-max-candidates+]
+               '(menu-item "Max # of Completions - Do Re Mi"
+                 icicle-doremi-increment-max-candidates+
+                 :visible (and icicle-mode (active-minibuffer-window)) :keys "C-x #"))))
           (t
            (define-key icicle-menu-map [icicle-set-option-to-t]
              '(menu-item "+ Turn On Any Option..." icicle-set-option-to-t))
@@ -1256,7 +1277,19 @@ Used on `pre-command-hook'."
                '(menu-item "Candidate Column Width - Do Re Mi"
                  icicle-doremi-candidate-width-factor+
                  :visible (and icicle-mode (get-buffer-window "*Completions*" 'visible))
-                 :keys "C-x w")))
+                 :keys "C-x w"))
+             (define-key icicle-menu-map [icicle-doremi-increment-swank-prefix-length+]
+               '(menu-item "Swank Min Match Chars - Do Re Mi"
+                 icicle-doremi-increment-swank-prefix-length+
+                 :visible (and icicle-mode (eq icicle-current-TAB-method 'swank)) :keys "C-x 2"))
+             (define-key icicle-menu-map [icicle-doremi-increment-swank-timeout+]
+               '(menu-item "Swank Timeout - Do Re Mi"
+                 icicle-doremi-increment-swank-timeout+
+                 :visible (and icicle-mode (eq icicle-current-TAB-method 'swank)) :keys "C-x 1"))
+             (define-key icicle-menu-map [icicle-doremi-increment-max-candidates+]
+               '(menu-item "Max # of Completions - Do Re Mi"
+                 icicle-doremi-increment-max-candidates+
+                 :visible (and icicle-mode (active-minibuffer-window)) :keys "C-x #")))
            (define-key icicle-menu-map [icicle-separator-toggle] '("--"))))
 
     (cond ((and (not icicle-touche-pas-aux-menus-flag)
@@ -2730,11 +2763,12 @@ complete)"))
   (when (fboundp 'doremi)
     (define-key map "\C-xw"                  'icicle-doremi-candidate-width-factor+) ; `C-x w'
     (define-key map "\C-x|"                  'icicle-doremi-inter-candidates-min-spaces+) ; `C-x |'
+    (define-key map "\C-x#"                  'icicle-doremi-increment-max-candidates+) ; `C-x #'
     (when (fboundp 'text-scale-increase) ; Emacs 23+.
       (define-key map "\C-x-"                'icicle-doremi-zoom-Completions+)) ; `C-x -'
     (when (eq icicle-current-TAB-method 'swank)
-      (define-key map "\C-x1"                'icicle-doremi-increment-swank-timeout)
-      (define-key map "\C-x2"                'icicle-doremi-increment-swank-prefix-length)))
+      (define-key map "\C-x1"                'icicle-doremi-increment-swank-timeout+)
+      (define-key map "\C-x2"                'icicle-doremi-increment-swank-prefix-length+)))
   ;; `minibuffer-completion-help' got wiped out by remap for self-insert.
   (define-key map "?"                        'icicle-self-insert) ; `?'
   (define-key map " "                        'icicle-self-insert) ; " "
@@ -2957,6 +2991,7 @@ MAP is `minibuffer-local-completion-map',
   (when (fboundp 'doremi)
     (define-key map "\C-xw"                  nil)
     (define-key map "\C-x|"                  nil)
+    (define-key map "\C-x#"                  nil)
     (when (fboundp 'text-scale-increase)
       (define-key map "\C-x-"                nil))
     (define-key map "\C-x1"                  nil)

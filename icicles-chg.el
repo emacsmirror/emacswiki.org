@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun May 30 14:16:21 2010 (-0700)
+;; Last-Updated: Fri Jun  4 18:36:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5371
+;;     Update #: 5427
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/06/04 dadams
+;;     Applied renamings of doremi commands (added +).
+;;     icicle-(buffer|*file|directory)*: Updated doc string to mention icicle-(buffers|files)-ido-like.
 ;; 2010/05/30 dadams
 ;;     Added: icicle-locate-file-no-symlinks(-other-window), icicle-locate-file(-other-window)-action,
 ;;            icicle-locate-file-1.
@@ -282,6 +285,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/06/04 dadams
+;;     Added: icicle-ido-like-mode.
 ;; 2010/05/16 dadams
 ;;     Added: icicle-search-(all|some)-tags(-regexp)-bookmark, icicle-search-desktop-bookmark,
 ;;            icicle-search-specific-(buffers|files)-bookmark, icicle-search-this-buffer-bookmark.
@@ -533,6 +538,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/04 dadams
+;;     Added: icicle-clear-lighter, icicle-maybe-sort-maybe-truncate, icicle-take.
+;;     icicle-(prefix|apropos)-candidates, icicle-strip-ignored-files-and-sort,
+;;       icicle-maybe-sort-and-strip-candidates, icicle-display-Completions:
+;;         Use icicle-maybe-sort-maybe-truncate, not icicle-reversible-sort.
+;;     icicle-(un)highlight-lighter: Use icicle-clear-lighter (factored out).
 ;; 2010/05/30 dadams
 ;;     Added: icicle-files-within-1.
 ;;     icicle-files-within:
@@ -1871,6 +1882,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2010/06/04 dadams
+;;     icicle-(buffer|file)-bindings: Bind vars that depend on icicle-(buffers|files)-ido-like-flag.
 ;; 2010/03/03 dadams
 ;;     Applied renamings: icicle-sort-function to icicle-sort-comparer,
 ;;                        icicle-sort-functions-alist to icicle-sort-orders-alist.
@@ -1956,6 +1969,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/04 dadams
+;;     Added: icicle-doremi-increment-max-candidates+.
+;;     Renamed by adding +: icicle-doremi-increment-swank-(timeout|prefix-length).
+;;     icicle-help-string-completion: Mention missing doremi toggle keys.
+;;     icicle-doremi-zoom-Completions+: Show *Completions* if not shown.
 ;; 2010/05/15 dadams
 ;;     icicle-all-candidates-action-1: Bind *-minibuffer-message-ok-p, *-help-in-mode-line-flag to nil.
 ;; 2010/05/09 dadams
@@ -2984,6 +3002,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/06/04 dadams
+;;     icicle-mode doc string: Mention missing doremi commands.
+;;     icicle-define-icicle-maps: Added Swank items and Max # of Completions, :visible for separator.
+;;     icicle-(bind|restore)-completion-keys: Bind icicle-doremi-increment-max-candidates+ to C-x #.
+;;     Apply renamings of icicle-doremi* (added +).
 ;; 2010/05/26 dadams
 ;;     Add to command-history only if an interned symbol.  Thx to Michael Heerdegen.
 ;; 2010/05/22 dadams
@@ -3884,6 +3907,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/06/04 dadams
+;;     Added: icicle-(buffers|files)-ido-like-flag, icicle-max-candidates.
+;;     icicle-ignored-directories: Protect default value with boundp.
+;;     icicle-type-actions-alist: Added (maximize|restore|toggle-max)-frame(-horizontally|-vertically).
 ;; 2010/05/30 dadams
 ;;     Added: icicle-ignored-directories.
 ;; 2010/05/15 dadams
@@ -4377,6 +4404,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/06/04 dadams
+;;     Added: icicle-lighter-truncation.
+;;     icicle-general-help-string: Mention missing doremi commands.
 ;; 2010/04/29 dadams
 ;;     Added: icicle-remove-icicles-props-p.
 ;; 2010/04/02 dadams

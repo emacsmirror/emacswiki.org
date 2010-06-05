@@ -268,6 +268,37 @@ Alternatively, replacing the `let' with `save-excursion'.
  (string-integer-p "x1234")
    ==> nil
 
+=== String to number ===
+
+  (defun decimal-number (string)
+    (let ((n (string-to-number string)))
+      (if (and (zerop n)
+               (not (string-match "\\`\\s-*0+\\.?0*\\s-*\\'" string)))
+          nil
+        n)))
+  
+  (decimal-number "536870911")
+  536870911
+  
+  (decimal-number "536870912")
+  536870912.0
+  
+  (decimal-number "3.141592653589793")
+  3.141592653589793
+  
+  (decimal-number "042")
+  42
+  
+  (decimal-number " 0 ")
+  0
+  
+  (decimal-number "000")
+  0
+  
+  (decimal-number "0.0")
+  0.0
+  
+
 === Random numbers ===
 
   (random 2)  ;coin toss (0 or 1)
@@ -496,6 +527,24 @@ As an example here is the quick sort algorithm:
 
   (quicksort '(5 7 1 3 -9 8 7 -4 0))
   ==> (-9 -4 0 1 3 5 7 7 8)
+
+Tranposing:
+
+Convert multiple lists into a list 
+
+ ((lambda (&rest args)
+    (mapcar (lambda (n)
+              (delq nil (mapcar (lambda (arg) (nth n arg)) args)))
+            (number-sequence 0 (1- (apply 'max (mapcar 'length args))))))
+  '(1 2 3) '(a b c) '(A B C))
+  ==> ((1 a A) (2 b B) (3 c C))
+
+A more concise version is possible with the the higher-arity version of mapcar available with the `cl' library.
+
+  ((lambda (&rest args)
+     (apply (function mapcar*) (function list) args))
+   '(1 2 3) '(a b c) '(A B C))
+  ==> ((1 a A) (2 b B) (3 c C))
 
 === Association lists ===
 

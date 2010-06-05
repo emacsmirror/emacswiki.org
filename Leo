@@ -1,5 +1,7 @@
 I use Emacs. I started using GNU Emacs emacs-unicode-2 branch somewhere in Dec. 2005 for emails and TeX/LaTeX documents. [2010-02-10] These days I am running Emacs 64bit on Snow Leopard. It is handling over 80% of my computing tasks, reliably and efficiently.
 -----
+New package: TelliCopy
+-----
 kmacro-ring-list.el:
 http://permalink.gmane.org/gmane.emacs.sources/3395
 -----
@@ -8,6 +10,8 @@ If region is active, behave like normal. Otherwise, do the following:
 ** M-w copy url, email or current line, in that order
 ** M-w followed by key f, l, s or w, copy filename, list, sexp and word, respectively
 ** with numeric prefix, copy that many thing-at-point
+
+The following code is now replaced by TelliCopy.
 
 -----
 <pre>

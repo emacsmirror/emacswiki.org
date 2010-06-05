@@ -1,0 +1,23 @@
+Lisp:tellicopy
+
+This code is directly copied out of my init file and the code has been
+in intensive daily use with incremental improvements over some months
+(~ 2 years).
+
+Originally it was just a function that encompasses all the features I
+want. It has been re-designed to make it easier to extend.
+
+FEATURES:
+
+1. M-w copies one of URL EMAIL or LINE; C-u 20 copies following 20
+   lines; negative prefix is accepted as well.
+
+2. M-w follow by one of the chars: l, f, w, s, d copies the
+   corresponding thing at point as in `thing-at-point-alist'. For
+   example, `M-w l' will copy the whole thing enclosed in parentheses,
+   in LaTeX it also copies the whole inline formula at point if any.
+   It accepts prefix too i.e. 'M-w 2 w' copies two words at point. For
+   convenience 'C-u 2 M-w w' does the same.
+
+I will develop the code to be reside in the tellicopy namespace later
+on. -- Leo (2010-06-04)

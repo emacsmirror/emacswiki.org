@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue May 25 07:05:01 2010 (-0700)
+;; Last-Updated: Fri Jun  4 10:47:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2508
+;;     Update #: 2632
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -77,6 +77,12 @@
 ;;    `set-all-frame-alist-parameters-from-frame'.  Those commands are
 ;;    defined here.
 ;;
+;;  NOTE: If you also use library `fit-frame.el', and you are on MS
+;;  Windows, then load that library before `frame-cmds.el'.  The
+;;  commands `maximize-frame' and `restore-frame' defined here are
+;;  more general and non-Windows-specific than the commands of the
+;;  same name defined in `fit-frame.el'.
+;;
 ;;
 ;;  User options defined here:
 ;;
@@ -93,20 +99,23 @@
 ;;    `delete-windows-for', `enlarge-font', `enlarge-frame',
 ;;    `enlarge-frame-horizontally', `hide-everything', `hide-frame',
 ;;    `iconify-everything', `iconify/map-frame',
-;;    `jump-to-frame-config-register', `max-frame',
+;;    `jump-to-frame-config-register', `maximize-frame',
 ;;    `maximize-frame-horizontally', `maximize-frame-vertically',
 ;;    `mouse-iconify/map-frame', `mouse-remove-window',
 ;;    `mouse-show-hide-mark-unmark', `move-frame-down',
 ;;    `move-frame-left', `move-frame-right', `move-frame-up',
 ;;    `other-window-or-frame', `remove-window', `remove-windows-on',
-;;    `rename-frame', `rename-non-minibuffer-frame',
+;;    `rename-frame', `rename-non-minibuffer-frame', `restore-frame',
+;;    `restore-frame-horizontally', `restore-frame-vertically',
 ;;    `save-frame-config',
 ;;    `set-all-frame-alist-parameters-from-frame',
 ;;    `set-frame-alist-parameter-from-frame', `show-*Help*-buffer',
 ;;    `show-a-frame-on', `show-buffer-menu', `show-frame',
 ;;    `show-hide', `shrink-frame', `shrink-frame-horizontally',
 ;;    `tell-customize-var-has-changed', `tile-frames',
-;;    `tile-frames-horizontally', `tile-frames-vertically'.
+;;    `tile-frames-horizontally', `tile-frames-vertically',
+;;    `toggle-max-frame', `toggle-max-frame-horizontally',
+;;    `toggle-max-frame-vertically'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -167,25 +176,47 @@
 ;;   (define-key global-map [menu-bar frames]
 ;;     (cons "Frames" menu-bar-frames-menu)))
 ;;   (define-key menu-bar-frames-menu [set-all-params-from-frame]
-;;     '("Set All Frame Parameters from Frame"
-;;       . set-all-frame-alist-parameters-from-frame))
-;;   (define-key menu-bar-frames-menu [set-param-from-frame]
-;;     '("Set Frame Parameter from Frame"
-;;       . set-frame-alist-parameter-from-frame))
-;;   (define-key menu-bar-frames-menu [max-frame]
-;;     '("Maximize Frame" . max-frame))
-;;   (define-key menu-bar-frames-menu [maximize-frame-vertically]
-;;     '("Maximize Frame Vertically" . maximize-frame-vertically))
-;;   (define-key menu-bar-frames-menu [maximize-frame-horizontally]
-;;     '("Maximize Frame Horizontally" . maximize-frame-horizontally))
+;;     '(menu-item "Set All Frame Parameters from Frame" set-all-frame-alist-parameters-from-frame
+;;       :help "Set frame parameters of a frame to their current values in frame"))
+;;   (define-key menu-bar-frames-menu [set-params-from-frame]
+;;     '(menu-item "Set Frame Parameter from Frame..." set-frame-alist-parameter-from-frame
+;;       :help "Set parameter of a frame alist to its current value in frame"))
+;;   (define-key menu-bar-frames-menu [separator-frame-1] '("--"))
 ;;   (define-key menu-bar-frames-menu [tile-frames-vertically]
-;;     '("Tile Frames Vertically" . tile-frames-vertically))
+;;     '(menu-item "Tile Frames Vertically..." tile-frames-vertically
+;;       :help "Tile all visible frames vertically"))
 ;;   (define-key menu-bar-frames-menu [tile-frames-horizontally]
-;;     '("Tile Frames Horizontally" . tile-frames-horizontally))
+;;     '(menu-item "Tile Frames Horizontally..." tile-frames-horizontally
+;;       :help "Tile all visible frames horizontally"))
+;;   (define-key menu-bar-frames-menu [separator-frame-2] '("--"))
+;;   (define-key menu-bar-frames-menu [toggle-max-frame-vertically]
+;;     '(menu-item "Toggle Max Frame Vertically" toggle-max-frame-vertically
+;;       :help "Maximize or restore the selected frame vertically"
+;;       :enable (frame-parameter nil 'restore-height)))
+;;   (define-key menu-bar-frames-menu [toggle-max-frame-horizontally]
+;;     '(menu-item "Toggle Max Frame Horizontally" toggle-max-frame-horizontally
+;;       :help "Maximize or restore the selected frame horizontally"
+;;       :enable (frame-parameter nil 'restore-width)))
+;;   (define-key menu-bar-frames-menu [toggle-max-frame]
+;;     '(menu-item "Toggle Max Frame" toggle-max-frame
+;;       :help "Maximize or restore the selected frame (in both directions)"
+;;       :enable (or (frame-parameter nil 'restore-width) (frame-parameter nil 'restore-height))))
+;;   (define-key menu-bar-frames-menu [maximize-frame-vertically]
+;;     '(menu-item "Maximize Frame Vertically" maximize-frame-vertically
+;;       :help "Maximize the selected frame vertically"))
+;;   (define-key menu-bar-frames-menu [maximize-frame-horizontally]
+;;     '(menu-item "Maximize Frame Horizontally" maximize-frame-horizontally
+;;       :help "Maximize the selected frame horizontally"))
+;;   (define-key menu-bar-frames-menu [maximize-frame]
+;;     '(menu-item "Maximize Frame" maximize-frame
+;;       :help "Maximize the selected frame (in both directions)"))
+;;   (define-key menu-bar-frames-menu [separator-frame-3] '("--"))
 ;;   (define-key menu-bar-frames-menu [iconify-everything]
-;;     '("Iconify All Frames" . iconify-everything))
+;;     '(menu-item "Iconify All Frames" iconify-everything
+;;       :help "Iconify all frames of session at once"))
 ;;   (define-key menu-bar-frames-menu [show-hide]
-;;     '("Hide Frames / Show Buffers" . show-hide))
+;;     '(menu-item "Hide Frames / Show Buffers" show-hide
+;;       :help "Show, if only one frame visible; else hide.")))
 ;;
 ;;   (defvar menu-bar-doremi-menu (make-sparse-keymap "Do Re Mi"))
 ;;   (define-key global-map [menu-bar doremi]
@@ -214,6 +245,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/06/04 dadams
+;;     Added: (toggle-max|restore)-frame(-horizontally|-vertically).  Thx to Uday Reddy for suggestion.
+;;     Renamed max-frame to maximize-frame.
+;;     maximize-frame: Save original location & position params for later restoration.
 ;; 2010/05/25 dadams
 ;;     Added: max-frame, maximize-frame-horizontally, maximize-frame-vertically.
 ;; 2009/10/02 dadams
@@ -938,16 +973,16 @@ Interactively, use a prefix arg (`\\[universal-argument]') to be prompted for FR
 (defun maximize-frame-horizontally (&optional frame)
   "Maximize selected frame horizontally."
   (interactive (list (selected-frame)))
-  (max-frame 'horizontal frame))
+  (maximize-frame 'horizontal frame))
 
 ;;;###autoload
 (defun maximize-frame-vertically (&optional frame)
   "Maximize selected frame vertically."
   (interactive (list (selected-frame)))
-  (max-frame 'vertical frame))
+  (maximize-frame 'vertical frame))
 
 ;;;###autoload
-(defun max-frame (&optional direction frame)
+(defun maximize-frame (&optional direction frame)
   "Maximize selected frame horizontally, vertically, or both.
 With no prefix arg, maximize both directions.
 With a non-negative prefix arg, maximize vertically.
@@ -969,28 +1004,115 @@ In Lisp code:
         (fr-pixel-height  (available-screen-pixel-height))
         (fr-origin        (if (eq direction 'horizontal)
                               (car (effective-screen-pixel-bounds))
-                            (cadr (effective-screen-pixel-bounds)))))
-    (let ((borders (* 2 (cdr (assq 'border-width (frame-parameters frame))))))
-      (set-frame-size
+                            (cadr (effective-screen-pixel-bounds))))
+        (orig-left        (frame-parameter frame 'left))
+        (orig-top         (frame-parameter frame 'top))
+        (orig-width       (frame-parameter frame 'width))
+        (orig-height      (frame-parameter frame 'height)))
+    (let* ((borders     (* 2 (cdr (assq 'border-width (frame-parameters frame)))))
+           (new-left    (if (memq direction '(horizontal both)) fr-origin 0))
+           (new-top     (if (memq direction '(horizontal both)) 0         fr-origin))
+           ;; Subtract borders, scroll bars, & title bar, then convert pixel sizes to char sizes.
+           (new-width   (if (memq direction '(horizontal both))
+                            (/ (- fr-pixel-width borders (frame-extra-pixels-width frame))
+                               (frame-char-width frame))
+                          orig-width))
+           (new-height  (if (memq direction '(vertical both))
+                            (- (/ (- fr-pixel-height borders
+                                     (frame-extra-pixels-height frame)
+                                     window-mgr-title-bar-pixel-height
+                                     (smart-tool-bar-pixel-height))
+                                  (frame-char-height frame))
+                               ;; Subtract menu bar unless on Carbon Emacs (menu bar not in the frame).
+                               (if (eq window-system 'mac)
+                                   0
+                                 (cdr (assq 'menu-bar-lines (frame-parameters frame)))))
+                          orig-height)))
+      (modify-frame-parameters
        frame
-       ;; Subtract borders, scroll bars, & title bar, then convert pixel sizes to char sizes.
-       (if (memq direction '(horizontal both))
-           (/ (- fr-pixel-width borders (frame-extra-pixels-width frame))
-              (frame-char-width frame))
-         (frame-parameter frame 'width))
-       (if (memq direction '(vertical both))
-           (- (/ (- fr-pixel-height borders (frame-extra-pixels-height frame)
-                    window-mgr-title-bar-pixel-height (smart-tool-bar-pixel-height))
-                 (frame-char-height frame))
-              (if (eq window-system 'mac)
-                  0                     ; Menu bar for Carbon Emacs is not in the frame.
-                (cdr (assq 'menu-bar-lines (frame-parameters frame))))) ; Subtract `menu-bar-lines'.
-         (frame-parameter frame 'height))))
-    (set-frame-position frame
-                        (if (memq direction '(horizontal both)) fr-origin 0)
-                        (if (memq direction '(horizontal both)) 0 fr-origin))
+       `((left   . ,new-left)
+         (width  . ,new-width)
+         (top    . ,new-top)
+         (height . ,new-height)
+         ;; If we actually changed a parameter, record the old one for restoration.
+         ,(and new-left   (/= orig-left new-left)     (cons 'restore-left   orig-left))
+         ,(and new-top    (/= orig-top  new-top)      (cons 'restore-top    orig-top))
+         ,(and new-width  (/= orig-width  new-width)  (cons 'restore-width  orig-width))
+         ,(and new-height (/= orig-height new-height) (cons 'restore-height orig-height)))))
     (show-frame frame)
     (incf fr-origin (if (eq direction 'horizontal) fr-pixel-width fr-pixel-height))))
+
+;;;###autoload
+(defalias 'restore-frame-horizontally 'toggle-max-frame-horizontally)
+;;;###autoload
+(defun toggle-max-frame-horizontally (&optional frame)
+  "Toggle maximization of FRAME horizontally.
+If used once, this restores the frame.  If repeated, it maximizes.
+This affects the `left' and `width' frame parameters.
+
+FRAME defaults to the selected frame."
+  (interactive (list (selected-frame)))
+  (restore-frame 'horizontal frame))
+
+;;;###autoload
+(defalias 'restore-frame-horizontally 'toggle-max-frame-horizontally)
+;;;###autoload
+(defun toggle-max-frame-vertically (&optional frame)
+  "Toggle maximization of FRAME vertically.
+If used once, this restores the frame.  If repeated, it maximizes.
+This affects the `top' and `height' frame parameters.
+
+FRAME defaults to the selected frame."
+  (interactive (list (selected-frame)))
+  (restore-frame 'vertical frame))
+
+;;;###autoload
+(defalias 'restore-frame 'toggle-max-frame)
+;;;###autoload
+(defun toggle-max-frame (&optional direction frame)
+  "Toggle maximization of FRAME horizontally, vertically, or both.
+Reverses or (if restored) repeats the effect of the Emacs maximize
+commands.  Does not restore from maximization effected outside Emacs.
+
+With no prefix arg, toggle both directions.
+With a non-negative prefix arg, toggle only vertically.
+With a negative prefix arg, toggle horizontally.
+
+When toggling both, each is toggled from its last maximize or restore
+state.  This means that using this after `maximize-horizontal',
+`maximize-vertical', `toggle-max-horizontal', or `toggle-max-vertical'
+does not necessarily just reverse the effect of that command.
+
+In Lisp code:
+ DIRECTION is the direction: `horizontal', `vertical', or `both'.
+ FRAME is the frame to change.  It defaults to the selected frame."
+  (interactive (list (if current-prefix-arg
+                         (if (natnump (prefix-numeric-value current-prefix-arg))
+                             'vertical
+                           'horizontal)
+                       'both)))
+  (unless frame (setq frame  (selected-frame)))
+  (unless direction (setq direction 'both))
+  (let ((restore-left    (frame-parameter frame 'restore-left))
+        (restore-top     (frame-parameter frame 'restore-top))
+        (restore-width   (frame-parameter frame 'restore-width))
+        (restore-height  (frame-parameter frame 'restore-height))
+        (orig-left       (frame-parameter frame 'left))
+        (orig-top        (frame-parameter frame 'top))
+        (orig-width      (frame-parameter frame 'width))
+        (orig-height     (frame-parameter frame 'height))
+        (horiz           (memq direction '(horizontal both)))
+        (vert            (memq direction '(vertical both))))
+    (modify-frame-parameters
+     frame `(,(and horiz restore-left   (cons 'left   restore-left))
+             ,(and horiz restore-width  (cons 'width  restore-width))
+             ,(and vert  restore-top    (cons 'top    restore-top))
+             ,(and vert  restore-height (cons 'height restore-height))
+             ,(and horiz restore-left   (cons 'restore-left   orig-left))
+             ,(and horiz restore-width  (cons 'restore-width  orig-width))
+             ,(and vert  restore-top    (cons 'restore-top    orig-top))
+             ,(and vert  restore-height (cons 'restore-height orig-height)))))
+  (show-frame frame))
 
 ;;;###autoload
 (defun tile-frames-horizontally (&optional frames)
