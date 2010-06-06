@@ -509,7 +509,12 @@ multi-command completion, and the lighter is boxed for strict
 completion.  When minibuffer input is read without completion, the
 lighter is not highlighted in any way.
 
-In addition, the lighter text (with or without `##+##') is '''`Icy'''' if
+If the list of candidates shown in `*Completions*' is truncated
+(because of option `icicle-max-candidates' or your use of `##C-x ###'), then the lighter text is suffixed by `##...##'.  So if you see
+`##...##' then you know that there are actually more candidates than
+what are shown.
+
+In addition, the lighter text (with or without `##+##' and `##...##') is '''`Icy'''' if
 completion is case-sensitive and '''`ICY'''' if not.  You can toggle
 case-sensitivity at any time using `C-A' (that is, `C-S-a') in the
 minibuffer.

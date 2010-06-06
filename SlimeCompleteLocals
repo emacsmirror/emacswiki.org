@@ -2,6 +2,7 @@ slime-complete-locals extends slime-complete-symbol to scan symbols that are use
 
 It's currently a bit basic in standard SLIME, since it only works on slime-simple-complete-symbol, but CompanyMode (with slime-company) is fully supported too.
 
-The source code is at GitHub: http://github.com/joodie/slime-complete-locals
+The source code is at !GitHub: http://github.com/joodie/slime-complete-locals
 
-Refs: CompanyMode, CategoryCompletion, SlimeMode, CommonLisp, ClojureMode.
+----
+CompanyMode CategoryCompletion SlimeMode CommonLisp ClojureMode

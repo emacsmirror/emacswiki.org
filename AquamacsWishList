@@ -188,6 +188,10 @@ DavidReitter: interesting suggestion. Reasonably easy to implement,  I guess. We
  Jedit X, BBEdit, ForgEdit, MacVim, Smultron, TextWrangler, CSSEdit, JarInspector, Tag, WriteRoom, 
  Fraise, PageSpinner, XCode, CotEditor, Espresso, skEdit, mi, Text-Edit Plus, TextMate.
 
+ EditorClient (http://github.com/robtillotson/EditorClient) is a very simple shim which implements ODB and dispatches to a shell command (emacsclient). 
+ The code looks very simple (Obj-C and Python) so it should be fairly easy to adapt.  And the great thing is it works right now!  
+ See http://crypticlife.net/2009/08/20/emacs-as-an-external-editor-on-mac-os-x/ for the announcement.
+
 [new]
 Randolf Schultz:
 There should be an easy way to configure the starting size of the main window (maybe even by automatically remembering the place and size of the window from one session to the next in a configuration file), or the starting geometry should be selected in a more conservative manner. Why? Well, on my screen (which is unfortunately limited to 1024x768) Aquamacs always starts in a way, that the most important resize handle _and_ last line (minibuffer) are blocked by the Dock. You can not resize and you can not load files (because you can not see through the Dock so well what you are typing). This way I am forced to move the window and resize it manually in two annoying manual steps on each start of Aquamacs. I can configure easily using default-frame-alist/initial-frame-alist you say? No, not the very first window as those settings affect the first buffer of a loaded file, but I cannot load a file... (cat bites in tail). Changing initial geometry I could only achieve by disabling the frame specific setting mechanisms altogether which is a pity because they are quite useful. Note: To get around this problem took me frustrating 2-3 hours reading docs/scratching head/trying different configurations and I do not consider myself a total Emacs newbie...

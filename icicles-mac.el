@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 19:06:25 2010 (-0700)
+;; Last-Updated: Sat Jun  5 06:40:17 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 534
+;;     Update #: 535
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -237,7 +237,9 @@ before the others."
     (icicle-default-value                        (if (and icicle-files-ido-like-flag
                                                           icicle-default-value)
                                                      icicle-files-ido-like-flag
-                                                   icicle-default-value))
+                                                   ;;  Get default via `M-n', but do not insert it.
+                                                   (and (memq icicle-default-value '(t nil))
+                                                        icicle-default-value)))
     (icicle-must-match-regexp                    icicle-file-match-regexp)
     (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
     (icicle-must-pass-predicate                  icicle-file-predicate)

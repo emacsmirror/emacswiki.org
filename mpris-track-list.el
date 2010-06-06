@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <reivzy@gmail.com>
 ;; Created: 2009-08-12
-;; Version: 0.1
+;; Version: 0.2
 ;; Keywords: dbus, mpris
 ;; Compatibility: Emacs 23
 
@@ -29,7 +29,11 @@
 
 ;; use M-x mpris-track-list to open MPRIS track list.
 
-;;
+;;; Change Log:
+;; 2010-06-05 v0.2
+;;     replace 'length' field with 'mtime', and now works with qmmp.
+;; 2009-08-12 v0.1
+;;     initial version.
 
 ;;; Code:
 
@@ -44,7 +48,7 @@
   '((position  3  bold)
     (artist   18  mpris-face0)
     (title    -1  mpris-face1)
-    (length   10  bold))
+    (mtime   10  bold))
   "track list format"
   :type '(repeat (list (choice :tag "keyword"
                                (const position) ;; track position
@@ -52,7 +56,7 @@
                                (const title)
                                (const genre)
                                (const location)
-                               (const length)
+                               (const mtime)
                                (const album)
                                (const tracknumber)
                                (const artist)
@@ -61,9 +65,9 @@
                        (integer :tag "width")
                        (face :tag "style"))))
 
-(defcustom mpris-track-list-length-format
+(defcustom mpris-track-list-mtime-format
   'min-sec
-  "format of track length."
+  "format of track length(mtime)."
   :type '(choice :tag "length format"
                  (const :tag "minute - second" min-sec)
                  (const :tag "minute"          min)
@@ -169,10 +173,10 @@
   "Function to show uri, TODO"
   val)
 
-(defun mpris-track-list-show-length (val)
+(defun mpris-track-list-show-mtime (val)
   "Function to show track length, input unit is ms.
-Output related to `mpris-track-list-length-format'."
-  (let* ((f mpris-track-list-length-format)
+Output related to `mpris-track-list-mtime-format'."
+  (let* ((f mpris-track-list-mtime-format)
          (sec0 (/ val 1000.0)) ; for 'sec
          (min0 (/ sec0 60.0))  ; for 'min
          (min1 (/ val 60000))  ; for 'min-sec
@@ -189,7 +193,7 @@ Output related to `mpris-track-list-length-format'."
     (title       . mpris-track-list-show-string)
     (genre       . mpris-track-list-show-string)
     (location    . mpris-track-list-show-uri)
-    (length      . mpris-track-list-show-length)
+    (mtime       . mpris-track-list-show-mtime)
     (album       . mpris-track-list-show-string)
     (tracknumber . mpris-track-list-show-integer)
     (artist      . mpris-track-list-show-string)
@@ -227,10 +231,10 @@ Output related to `mpris-track-list-length-format'."
           (when (equal old-buf (buffer-name))
           ;; only restore window related pos when current buffer
           ;; is track list buffer
-            (goto-line lm)
+            (goto-char (point-min)) (forward-line (1- lm))
             (set-window-start nil (line-beginning-position)))
           ;; resotre cursor pos
-          (goto-line l0))
+          (goto-char (point-min)) (forward-line 9))
         ))))
 
 

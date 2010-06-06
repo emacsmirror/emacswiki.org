@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <reivzy@gmail.com>
 ;; Created: 2009-08-09
-;; Version: 0.1
+;; Version: 0.2
 ;; Keywords: dus, mpris
 ;; Compatibility: Emacs 23
 
@@ -38,6 +38,10 @@
 ;;   (mpris-toggle-play)
 
 ;;; Change Log:
+;; 2010-06-05 v0.2
+;;     convert 'tracknumber' filed to integer when necessary.
+;; 2009-08-09 v0.1
+;;     initial version.
 
 ;;; Code:
 
@@ -179,7 +183,16 @@ goto http://wiki.xmms2.xmms.se/wiki/MPRIS for detail."
 (defun mpris-simplify-metadata (data)
   "Simpify metadata from format ((keyword (value))) to ((keyword . value))"
   (mapcar (lambda (i)
-            `(,(intern (car i)) . ,(caadr i)))
+            (let ((field (intern (car i)))
+                  (value (caadr i)))
+              (when (and (member field '(audio-bitrate
+                                         audio-samplerate
+                                         mtime
+                                         time
+                                         tracknumber))
+                         (stringp value))
+                (setq value (string-to-number value)))
+              (cons field value)))
           data))
 
 (defun mpris-toggle-play ()

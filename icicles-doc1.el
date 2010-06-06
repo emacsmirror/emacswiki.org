@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 19:14:16 2010 (-0700)
+;; Last-Updated: Sat Jun  5 06:50:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25284
+;;     Update #: 25289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -899,10 +899,16 @@
 ;;  completion.  When minibuffer input is read without completion, the
 ;;  lighter is not highlighted in any way.
 ;;
-;;  In addition, the lighter text (with or without `+') is `Icy' if
-;;  completion is case-sensitive and `ICY' if not.  You can toggle
-;;  case-sensitivity at any time using `C-A' (that is, `C-S-a') in the
-;;  minibuffer.
+;;  If the list of candidates shown in `*Completions*' is truncated
+;;  (because of option `icicle-max-candidates' or your use of `C-x
+;;  #'), then the lighter text is suffixed by `...'.  So if you see
+;;  `...' then you know that there are actually more candidates than
+;;  what are shown.
+;;
+;;  In addition, the lighter text (with or without `+' and `...') is
+;;  `Icy' if completion is case-sensitive and `ICY' if not.  You can
+;;  toggle case-sensitivity at any time using `C-A' (that is, `C-S-a')
+;;  in the minibuffer.
 ;;
 ;;  The faces used for this highlighting in the minibuffer and the
 ;;  mode line are `icicle-completion',

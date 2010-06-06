@@ -4,4 +4,4 @@ Below are some code use new Emacs dbus interface to control remote media player.
 * [[mpris-dbus.el]]  -- basic wrapper of MPRIS.
 * [[mpris-track-list.el]]  -- media player track list view, play/stop/pause media player.
 
-
+now, it works with qmmp.

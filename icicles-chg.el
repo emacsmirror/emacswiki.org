@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 18:36:43 2010 (-0700)
+;; Last-Updated: Sat Jun  5 08:30:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5427
+;;     Update #: 5430
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1882,6 +1882,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2010/06/05 dadams
+;;     icicle-file-bindings: Put back non-insertion for non-ido-like case.
 ;; 2010/06/04 dadams
 ;;     icicle-(buffer|file)-bindings: Bind vars that depend on icicle-(buffers|files)-ido-like-flag.
 ;; 2010/03/03 dadams
@@ -3907,6 +3909,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/06/05 dadams
+;;     Set icicle-top-level-when-sole-completion-delay to 0.7 from 0.0.
 ;; 2010/06/04 dadams
 ;;     Added: icicle-(buffers|files)-ido-like-flag, icicle-max-candidates.
 ;;     icicle-ignored-directories: Protect default value with boundp.
