@@ -1,11 +1,11 @@
-[http://www.nongnu.org/stumpwm/ Stumpwm] is the emacs of window managers.  If you're using it, you'll want to put a few thing in your .stumpwmrc.
+[http://www.nongnu.org/stumpwm/ Stumpwm] is the Emacs of window managers.  If you're using it, you'll want to put a few thing in your .stumpwmrc.
 
 == SLIME ==
 
-Add this code to your .stumpwmrc for interactive control of stumpwm via slime:
+If you've enabled multi-threading, add this code to your .stumpwmrc for interactive control of Stumpwm via Slime:
 {{{
 ;; Load swank.
-;; C-z ; swank will kick this off
+;; *prefix-key* ; swank will kick this off
 (load "/path/to/slime/swank-loader.lisp")
 (swank-loader:init)
 (defcommand swank () ()
@@ -17,6 +17,8 @@ Add this code to your .stumpwmrc for interactive control of stumpwm via slime:
 	       "Starting swank. M-x slime-connect RET RET, then (in-package stumpwm)."))
 (swank)
 }}}
+
+Multi-threading is available in SBCL, though [[http://bbs.archlinux.org/viewtopic.php?pid=434724#p434724 not in CLisp]].  Running Swank (or any other command that doesn't fork or exit) on a single-threaded StumpWM will hang StumpWM.  You'll be able to move the mouse, but the prefix key won't react anymore.  You'll have to Ctrl+Alt+Backspace to start a new session.  You can still hack using the StumpWM Eval functionality though.
 
 == Controlling emacs through stumpwm commands ==
 

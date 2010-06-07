@@ -68,9 +68,6 @@ Just fix the second line by hand and then hit M-q or run fill-paragraph. Make su
 
 
 Response to statement about fill-paragraph: doesn't fill-paragraph modify the buffer?  If I understand correctly, IainDalton's idea is that the original buffer contains one long line, but the display of that line should wrap the line *and* indent the subsequent lines according to syntax.  So the virtual indenting I'm interested in is effectively fill-paragraph on the display only, not the underlying buffer.  --- Spezzer 
-----
-CategoryFilling
-CategoryGlossary
 
 RE: IainDalton's question.
 
@@ -110,3 +107,7 @@ I found this snippit on some mailing list (http://osdir.com/ml/help-gnu-emacs-gn
 </pre>
 
 --- Aidan McQuay
+
+----
+CategoryFilling
+CategoryGlossary

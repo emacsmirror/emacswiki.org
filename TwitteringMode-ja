@@ -1,0 +1,69 @@
+[[en:TwitteringMode]]
+== Description ==
+
+twittering-mode.el は Emacs で動作する Twitter クライアントです。
+
+[[image:TwitteringModeScreenshot]]
+
+Home page: http://twmode.sourceforge.net/ja/
+
+Github page: http://github.com/hayamiz/twittering-mode/tree/master
+
+##git clone git://github.com/hayamiz/twittering-mode.git##
+
+== Basic configuration ==
+
+Do the following in your .emacs file for a quick start.
+
+ (load "~/.emacs.d/twittering-mode.el")
+ (require 'twittering-mode)
+ (setq twittering-username "twitter user name here")
+ (setq twittering-password "twitter password here") ; This is optional
+
+If you don't set your password it will be asked to you when you run twittering-mode
+
+== Basic key bindings ==
+
+* `u', `C-c C-s' to write a tweet (`twittering-update-status-interactive')
+* `j' to go to the next tweet (`twittering-goto-next-status')
+* `k' to go to the previous tweet (`twittering-goto-previous-status')
+* `C-m' (Enter key) to reply to the current tweet or to open the URL under the cursor (`twittering-enter')
+* `C-c C-m' (C-c Enter) to retweet the current tweet (`twittering-retweet')
+* `C-c C-f' to read your friends' timeline (`twittering-friends-timeline')
+* `C-c C-r' to read your replies (`twittering-replies-timeline')
+* `C-c C-u' to read your own timeline (`twittering-user-timeline')
+* `C-c C-d' to read your direct messages (`twittering-direct-messages-timeline')
+* `g' to refresh the current timeline (`twittering-current-timeline')
+* `v' to view the timeline of the user under the cursor (`twittering-other-user-timeline')
+* `V' to view the timeline of any user (`twittering-other-user-timeline-interactive')
+
+== Customizing your key bindings ==
+
+You can use `twittering-mode-hook' to customize your configuration. This example shows how to define a few key bindings:
+
+ (add-hook 'twittering-mode-hook
+           (lambda ()
+             (define-key twittering-mode-map (kbd "f") 'twittering-friends-timeline)
+             (define-key twittering-mode-map (kbd "r") 'twittering-replies-timeline)
+             (define-key twittering-mode-map (kbd "u") 'twittering-user-timeline)
+             (define-key twittering-mode-map (kbd "w") 'twittering-update-status-interactive)))
+
+== Other useful options ==
+
+ (setq twittering-icon-mode t)                ; Show icons
+ (setq twittering-timer-interval 300)         ; Update your timeline each 300 seconds (5 minutes)
+
+twittering-mode also provides hooks that are run when new tweets arrive. This example calls notify-send (included in the libnotify package) to display a message when new tweets arrive:
+
+ (add-hook 'twittering-new-tweets-hook (lambda ()
+   (let ((n twittering-new-tweets-count))
+     (start-process "twittering-notify" nil "notify-send"
+                    "-i" "/usr/share/pixmaps/gnome-emacs.png"
+                    "New tweets"
+                    (format "You have %d new tweet%s"
+                            n (if (> n 1) "s" ""))))))
+
+== Discussion ==
+
+----
+See also: [[Twitter]] [[Identica-mode]]

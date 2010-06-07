@@ -311,15 +311,21 @@ Maybe this is useless with recent versions of emacs/ido, but here I'm forced to 
 
 == Icicles and Ido ==
 
-[[Icicles]] is similar to Ido in some ways, and the two are sometimes confused. In Icicles, you use the same [[minibuffer]] interface for files, buffers, commands -- everything.  Completion and ''cycling'' of completion candidates. Standard prefix completion and ''apropos'' ([[regexp]]) completion. Perform actions on selected (or all) candidates. Manipulate sets of completion candidates.
+[[Icicles]] is similar to Ido in some ways, and the two are sometimes confused. In Icicles, you use the same [[minibuffer]] interface for files, [[buffer]]s, [[command]]s -- everything (even [[key]]s).  
+Like Ido, Icicles offers [[Icicles - Cycling Completions|cycling]]  and several kinds of completion matching ([[regexp]], substring, 5 kinds of [[Icicles - Fuzzy Completion|fuzzy]], prefix).
 
+Unlike Ido, in Icicles you can:
+
+* Compose match patterns (e.g. regexps), applying them one after the other to narrow down choices (like `grep' piping) -- [[progressive completion]].
+* Perform actions on multiple candidates on the fly -- see [[Icicles - Multi-Commands|multi-commands]].
+* Manipulate (union, intersection, diff, complement) and save [[Icicles - Candidate Sets|sets of candidates]] and reuse them later.
 [:InvokeBookmarks]
-Icicles lets you access [[bookmark]]s in many ways, including according to their type. You can access a file bookmark when you use `C-x C-f', access an [[Info]] bookmark when you use `g' to go to an Info node, etc.
-
+* Access [[Icicles - Bookmark Enhancements|bookmarks]] on the fly: a file bookmark when you use `C-x C-f', an [[Info]] bookmark when you use `g' to go to an Info node, etc.
 [:SortOrder]
-Icicles lets you change the sort order on the fly during completion. There are many predefined sort orders available, and you can easily add your own. Some are general (always available, for all completion types) and some are available only in particular completion contexts. See [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|Icicles Sort Orders]].
+* Change the completion [[Icicles - Sorting Candidates#DifferentSortForDifferentUses|sort order]] on the fly.
 
-You cannot use Ido and Icicles together (with both turned on) -- they use the minibuffer differently. Icicles uses it pretty much the same as vanilla Emacs, but Ido does not.
+You cannot use Icicles and Ido together -- they use the minibuffer differently. You can, however, use Icicles and IswitchB together. (%%IswitchB%% provides buffer-switching similar to Ido, but it does not provide Ido's file visiting.)
+And you can make Icicles behave more like Ido, if you prefer that interaction -- see [[Icicles - Ido and IswitchB]].
 
 
 

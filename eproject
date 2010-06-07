@@ -1,4 +1,4 @@
-*project workspaces for emacs* - [http://tromey.com/elpa/eproject-0.3.tar download]
+*project workspaces for emacs* - [http://tromey.com/elpa/eproject-0.4.tar download]
 
 [[image:eproject-screenshot]]
 
@@ -40,6 +40,15 @@ Emacs 22.  To load eproject, add this line to your ~/.emacs:
 
 --- grischka
 
+------------------------------
+*News*
+
+2010-05-20 Version 0.4:
+* Project configuration file (eproject.cfg) may exist under a different
+  name and/or directory (This allows multiple projects in the same directory)
+* Optional support for multi-isearch in the project files
+
+------------------------------
 *Anything Integration*
 
 I have created a pair of sources for integrating [[Anything]] with eproject,
@@ -50,10 +59,10 @@ available here:
 --- DanielHackney
 
 ------------------------------
+*Comments*
 
 (Note that this eproject is completely unrelated to another eproject, http://wiki.github.com/jrockway/eproject/.  FWIW, I had the name first. :) --- Jonathan Rockway) --- (Yep, same first name but unrelated. :) --- grischka)
 
-----
-
+------------------------------
 CategoryProgrammerUtils
 CategoryProgramming

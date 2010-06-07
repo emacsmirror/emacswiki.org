@@ -1,4 +1,4 @@
-[[ja:TwitteringMode]]
+[[ja:TwitteringMode-ja]]
 == Description ==
 
 twittering-mode.el is a Twitter client
@@ -24,7 +24,7 @@ If you don't set your password it will be asked to you when you run twittering-m
 
 == Basic key bindings ==
 
-* `C-c C-s' to write a tweet (`twittering-update-status-interactive')
+* `u', `C-c C-s' to write a tweet (`twittering-update-status-interactive')
 * `j' to go to the next tweet (`twittering-goto-next-status')
 * `k' to go to the previous tweet (`twittering-goto-previous-status')
 * `C-m' (Enter key) to reply to the current tweet or to open the URL under the cursor (`twittering-enter')
@@ -32,6 +32,7 @@ If you don't set your password it will be asked to you when you run twittering-m
 * `C-c C-f' to read your friends' timeline (`twittering-friends-timeline')
 * `C-c C-r' to read your replies (`twittering-replies-timeline')
 * `C-c C-u' to read your own timeline (`twittering-user-timeline')
+* `C-c C-d' to read your direct messages (`twittering-direct-messages-timeline')
 * `g' to refresh the current timeline (`twittering-current-timeline')
 * `v' to view the timeline of the user under the cursor (`twittering-other-user-timeline')
 * `V' to view the timeline of any user (`twittering-other-user-timeline-interactive')
@@ -42,16 +43,15 @@ You can use `twittering-mode-hook' to customize your configuration. This example
 
  (add-hook 'twittering-mode-hook
            (lambda ()
-             (local-set-key "f" 'twittering-friends-timeline)
-             (local-set-key "r" 'twittering-replies-timeline)
-             (local-set-key "u" 'twittering-user-timeline)
-             (local-set-key "w" 'twittering-update-status-interactive)))
+             (define-key twittering-mode-map (kbd "f") 'twittering-friends-timeline)
+             (define-key twittering-mode-map (kbd "r") 'twittering-replies-timeline)
+             (define-key twittering-mode-map (kbd "u") 'twittering-user-timeline)
+             (define-key twittering-mode-map (kbd "w") 'twittering-update-status-interactive)))
 
 == Other useful options ==
 
- (twittering-icon-mode)                       ; Show icons (requires wget)
+ (setq twittering-icon-mode t)                ; Show icons
  (setq twittering-timer-interval 300)         ; Update your timeline each 300 seconds (5 minutes)
- (setq twittering-tmp-dir "/path/to/tmp/dir") ; Directory to store buddy icons
 
 twittering-mode also provides hooks that are run when new tweets arrive. This example calls notify-send (included in the libnotify package) to display a message when new tweets arrive:
 

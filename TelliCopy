@@ -1,4 +1,4 @@
-Lisp:tellicopy
+Lisp:tellicopy.el
 
 This code is directly copied out of my init file and the code has been
 in intensive daily use with incremental improvements over some months
@@ -21,3 +21,7 @@ FEATURES:
 
 I will develop the code to be reside in the tellicopy namespace later
 on. -- Leo (2010-06-04)
+
+[new]
+Hi. I have moved the library to Lisp:tellicopy.el. You might also want to
+provide a feature and comply to the ElispAreaConventions. -- JonasBernoulli
