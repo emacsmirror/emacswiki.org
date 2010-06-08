@@ -10,7 +10,6 @@
 (menu-bar-mode -1)
 (scroll-bar-mode -1)
 (global-font-lock-mode 1)
-(iswitchb-mode 1)
 (show-paren-mode 1)
 (winner-mode 1)
 (windmove-default-keybindings)
@@ -19,7 +18,7 @@
 (display-battery-mode 1)
 (set-face-attribute 'default nil :height 105)
 (setq visible-bell t)
-(setq x-select-enable-clipboard nil); Ubuntu
+(setq x-select-enable-clipboard t)
 
 ;; Menu
 (global-set-key (kbd "<f10>")
@@ -166,6 +165,37 @@ From a program takes two point or marker arguments, BEG and END."
   (string< (rcirc-sort-name a)
 	   (rcirc-sort-name b)))
 
+;; buffer switching and file finding
+(iswitchb-mode 1)
+;; (global-set-key (kbd "C-x C-f") 'find-file)
+
+;; clojure
+(add-to-list 'auto-mode-alist '("\\.clj$" . clojure-mode))
+(autoload 'clojure-mode "clojure-mode" nil t)
+
+(autoload 'clojure-test-mode "clojure-test-mode" "Clojure test mode" t)
+(autoload 'clojure-test-maybe-enable "clojure-test-mode" "" t)
+(add-hook 'clojure-mode-hook 'clojure-test-maybe-enable)
+
+(add-hook 'clojure-mode-hook
+	  (lambda ()
+	    (interactive)
+	    (local-set-key (kbd "C-z") 'inferior-lisp)))
+(add-hook 'inferior-lisp-mode-hook
+	  (lambda ()
+	    (interactive)
+	    (local-set-key (kbd "C-z") 'bury-buffer)))
+
+(setq inferior-lisp-program "/usr/bin/clojure")
+(setenv "CLASSPATH" "/usr/local/share/java/clojure-contrib.jar")
+
+;; lusty explorer
+
+(autoload 'lusty-file-explorer "lusty-explorer" nil t)
+(autoload 'lusty-buffer-explorer "lusty-explorer" nil t)
+;; (global-set-key (kbd "C-x C-f") 'lusty-file-explorer)
+;; (global-set-key (kbd "C-x b") 'lusty-buffer-explorer)
+
 ;; color theme and related stuff
 ;; (set-face-font 'default "fontset-osaka14")
 ;; (setq inhibit-startup-message t
@@ -260,12 +290,6 @@ in parsed XML OPML."
 (when (require 'session nil t)
   (add-hook 'after-init-hook 'session-initialize))
 
-;; slime mode, optional
-;; (setq inferior-lisp-program "/sw/bin/openmcl")
-;; (add-to-list 'load-path "~/elisp/slime-1.2.1")
-;; (when (require 'slime nil t)
-;;   (slime-setup))
-
 ;;; Unicode
 
 (setq unicode-helper-data-txt "~/Documents/Unicode/UnicodeData.txt")
@@ -324,7 +348,8 @@ in parsed XML OPML."
 		    (".+"
 		     (dired-move-to-filename)
 		     nil
-		     (0 'dired-pdf-face)))))))
+		     (0 'dired-pdf-face)))))
+	    (font-lock-mode 1)))
 	  
 ;;; aquamacs
 ;; (global-set-key (kbd "H-q") (kbd "M-q"))
@@ -462,11 +487,12 @@ in parsed XML OPML."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	  "#perl6"))
+	  "#perl6" "#svg-edit" "#clojure" "#clojure.de"))
 	("ircnet.eversible.com" :channels ("#drsrm"))
 	("irc.perl.org" :channels ("#perlde"))
-	("irc.sorcery.net" :channels ("#rpmn"))
-	("localhost" :channels ("&bitlbee")))
+	;; ("irc.sorcery.net" :channels ("#rpmn"))
+	("localhost" :channels ("&bitlbee"))
+	)
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
@@ -673,6 +699,38 @@ See advice on `rcirc-handler-PRIVMSG'."
 
 (add-hook 'text-mode-hook 'turn-on-auto-fill)
 (add-hook 'sgml-mode-hook 'turn-off-auto-fill)
+
+;;; indirect region
+
+(defvar indirect-mode-name nil
+  "Mode to set for indirect buffers.")
+(make-variable-buffer-local 'indirect-mode-name)
+
+(defun indirect-region (start end)
+  "Edit the current region in another buffer.
+If the buffer-local variable `indirect-mode-name' is not set, prompt
+for mode name to choose for the indirect buffer interactively.
+Otherwise, use the value of said variable as argument to a funcall."
+  (interactive "r")
+  (let ((buffer-name (generate-new-buffer-name "*indirect*"))
+	(mode
+	 (if (not indirect-mode-name)
+	     (setq indirect-mode-name
+		   (intern
+		    (completing-read 
+		     "Mode: "
+		     (mapcar (lambda (e) 
+			       (list (symbol-name e)))
+			     (apropos-internal "-mode$" 'commandp))
+		     nil t)))
+	   indirect-mode-name)))
+    (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))
+    (funcall mode)
+    (narrow-to-region start end)
+    (goto-char (point-min))
+    (shrink-window-if-larger-than-buffer)))
+
+(global-set-key (kbd "C-x n r") 'indirect-region)
 
 ;;; Oddmuse
 
@@ -1195,8 +1253,9 @@ This moves them into the Spam folder."
 	(?b (setq current (+ current xp (/ xp 2))) (message "bonus!"))
 	(?n (message "none!"))
 	(?q (error "Quit")))
-      (replace-match (format "|[[%s]]	| %2d%s | %8d | %8d"
-			     name lvl (if (>= current next) "!" " ")
+      (replace-match (format "|%-20s | %2d%s | %8d | %8d"
+			     (concat "[[" name "]]")
+			     lvl (if (>= current next) "!" " ")
 			     current next)))))
 
 ;;; automatic additions
@@ -1225,15 +1284,3 @@ This moves them into the Spam folder."
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  )
-
-;;; This was installed by package-install.el.
-;;; This provides support for the package system and
-;;; interfacing with ELPA, the package archive.
-;;; Move this code earlier if you want to reference
-;;; packages in your .emacs.
-(when
-    (load
-     (expand-file-name "~/.emacs.d/elpa/package.el"))
-  (package-initialize))
-
-;; describe-key: Symbol's function definition is void: lisp-eval-last-sexp

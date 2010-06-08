@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 17:57:17 2010 (-0700)
+;; Last-Updated: Sun Jun  6 16:00:58 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15667
+;;     Update #: 15672
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -420,28 +420,31 @@ With argument N, it uses the Nth following element."
 Remove `*Completions*' window.  Remove Icicles minibuffer faces."
   ;; This removal lets users retrieve candidates that have other faces, and saves input-history space.
   (interactive)
-  (let ((pos                (icicle-minibuffer-prompt-end))
-        (icy-minibuf-faces  '(icicle-input-completion-fail  icicle-input-completion-fail-lax
-                              icicle-whitespace-highlight   icicle-match-highlight-minibuffer
-                              icicle-complete-input))
-        (keep-faces         ()))
-    (while (< pos (point-max))
-      (let ((faces  (get-text-property pos 'face)))
-        (when (or (and (consp faces) (cdr faces) (atom (cdr faces))) ; (background-color . "abc")
-                  (and faces (atom faces))) ; face name
-          (setq faces  (list faces)))   ; No-op: (foo (background-color . "abc") (:foreground "abc"))
-        (setq keep-faces  (icicle-set-union keep-faces
-                                            (icicle-set-difference faces icy-minibuf-faces))))
-      (setq pos  (1+ pos)))
-    (when keep-faces                    ; Don't add a nil `face' property.
-      (put-text-property (icicle-minibuffer-prompt-end) (point-max) 'face keep-faces)))
-  ;; $$$$$  (let ((pos  (icicle-minibuffer-prompt-end)))
-  ;;     (while (< pos (point-max))
-  ;;       (when (memq (get-text-property pos 'face)
-  ;;                   '(icicle-input-completion-fail icicle-input-completion-fail-lax))
-  ;;         (remove-text-properties pos (point-max) '(face))
-  ;;         (setq pos  (point-max)))
-  ;;       (setq pos  (1+ pos))))
+  (when (active-minibuffer-window)
+    (with-current-buffer (window-buffer (minibuffer-window))
+      (let ((pos                (icicle-minibuffer-prompt-end))
+            (icy-minibuf-faces  '(icicle-input-completion-fail  icicle-input-completion-fail-lax
+                                  icicle-whitespace-highlight   icicle-match-highlight-minibuffer
+                                  icicle-complete-input))
+            (keep-faces         ()))
+        (while (< pos (point-max))
+          (let ((faces  (get-text-property pos 'face)))
+            (when (or (and (consp faces) (cdr faces) (atom (cdr faces))) ; (background-color . "abc")
+                      (and faces (atom faces))) ; face name
+              (setq faces  (list faces))) ; No-op: (foo (background-color . "abc") (:foreground "abc"))
+            (setq keep-faces  (icicle-set-union keep-faces
+                                                (icicle-set-difference faces icy-minibuf-faces))))
+          (setq pos  (1+ pos)))
+        (when keep-faces                ; Don't add a nil `face' property.
+          (put-text-property (icicle-minibuffer-prompt-end) (point-max) 'face keep-faces)))
+      ;; $$$$$  (let ((pos  (icicle-minibuffer-prompt-end)))
+      ;;     (while (< pos (point-max))
+      ;;       (when (memq (get-text-property pos 'face)
+      ;;                   '(icicle-input-completion-fail icicle-input-completion-fail-lax))
+      ;;         (remove-text-properties pos (point-max) '(face))
+      ;;         (setq pos  (point-max)))
+      ;;       (setq pos  (1+ pos))))
+      ))
   (icicle-remove-Completions-window)
   (old-exit-minibuffer))
 
@@ -3089,6 +3092,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                  (when (and (icicle-file-name-input-p)
                             (icicle-file-directory-p (icicle-abbreviate-or-expand-file-name inserted)))
                    (setq icicle-default-directory  (icicle-abbreviate-or-expand-file-name inserted)))))
+             (save-selected-window (icicle-remove-Completions-window))
              (icicle-transform-sole-candidate)
              (unless (boundp 'icicle-prefix-complete-and-exit-p)
                (icicle-highlight-complete-input)
@@ -3124,8 +3128,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                             (swank   "  [Sole swank (fuzzy symbol) completion]")
                                             (vanilla "  [Sole vanilla completion]")
                                             (t       "  [Sole prefix completion]")))
-                      (setq mode-line-help  icicle-current-input)))
-               (save-selected-window (icicle-remove-Completions-window))))
+                      (setq mode-line-help  icicle-current-input)))))
             (t                          ; Multiple candidates.
              (if icicle-edit-update-p
                  (icicle-display-candidates-in-Completions nil no-display-p)

@@ -9,9 +9,17 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+==resize buffer window on startup==
+
+[new]
+
+Hello!
+
+I'm using Emacs in Supercollider mode, which opens two buffer windows automatically, and makes them equal size. I would like to have one of them bigger then another every time i'm starting emacs with -sclang option... is it possible to put something like (enlarge-window *SCLang:workspace* 10) or any other thing which will resize buffer window after it created? thank  you!
+
 ==Swapping international characters==
 
-<code>[new]</code>
+[new]
 My keyboard layout is Turkish Q. I want to use emacs for latex so I need to type backslash extensively, but it is situated at an awkward Alt-Gr combination on my keyboard, so I want to swap it (and also brackets and braces) with Turkish characters that I don't use since I type in English.
 
 First in my .emacs file I tried

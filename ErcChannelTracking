@@ -206,6 +206,10 @@ The predicate could be a symbol, to indicate such things as to affect temperatur
 : Do these sound like sensible suggestions?
 
 -- LawrenceMitchell
+
+; I've wrote something that mimics this more or less: http://julien.danjou.info/erc-track-score.html
+-- Julien Danjou
+
 ----
 XEmacs version: Lisp:erc-track-xmas.el. 
 

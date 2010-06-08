@@ -65,6 +65,11 @@
   :type 'directory
   :group 'php-doc)
 
+(defcustom php-doc-cachefile "~/.emacs.d/php-doc"
+  "*File to save php function symbol"
+  :type 'file
+  :group 'php-doc)
+
 (defcustom php-doc-tree-windata '(frame left 0.3 delete)
   "*Arguments to set the window buffer display.
 See `windata-display-buffer' for setup the arguments."
@@ -98,19 +103,35 @@ See `windata-display-buffer' for setup the arguments."
   (expand-file-name (format "function.%s.html" (replace-regexp-in-string "_" "-" (symbol-name sym)))
                     php-doc-directory))
 
-(defun php-doc-build-tree ()
-  (let ((files (directory-files php-doc-directory nil "\\.html$"))
-        tree path subtree)
+(defun php-doc-build-tree (&optional no-cache)
+  (interactive "P")
+  (let (functions function tree path)
+    (if (and (not no-cache)
+             (file-readable-p php-doc-cachefile))
+        (with-temp-buffer
+          (insert-file-contents php-doc-cachefile)
+          (setq functions (read (current-buffer))))
+      (let ((files (directory-files php-doc-directory nil "\\.html$")))
+        (dolist (file files)
+          (when (not (string-match "^index" file))
+            (setq path (nbutlast (split-string file "\\."))
+                  function nil)
+            (when (string= (car path) "function")
+              (setq function (replace-regexp-in-string "-" "_" (cadr path)))
+              (if (string-match "-" (cadr path))
+                  (setq path (nconc (list (car path) (substring (cadr path) 0 (match-beginning 0)))
+                                    (cdr path)))))
+            (push (cons path function) functions)))
+        ;; save to cache file
+        (when (file-writable-p php-doc-cachefile)
+          (with-temp-buffer
+            (prin1 functions (current-buffer))
+            (write-file php-doc-cachefile)))))
     (setq php-doc-obarray (make-vector 1519 nil))
-    (dolist (file files)
-      (when (not (string-match "^index" file))
-        (setq path (nbutlast (split-string file "\\.")))
-        (when (string= (car path) "function")
-          (intern (replace-regexp-in-string "-" "_" (cadr path)) php-doc-obarray)
-          (if (string-match "-" (cadr path))
-              (setq path (nconc (list (car path) (substring (cadr path) 0 (match-beginning 0)))
-                                (cdr path)))))
-        (php-doc-add-to-tree 'tree path)))
+    (dolist (function functions)
+      (when (cdr function)
+        (intern (cdr function) php-doc-obarray))
+      (php-doc-add-to-tree 'tree (car function)))
     (setq php-doc-tree tree)))
 
 (defun php-doc-add-to-tree (sym list)
@@ -136,7 +157,13 @@ See `windata-display-buffer' for setup the arguments."
 (defun php-doc (sym)
   "Display document of php function"
   (interactive
-   (list (intern (completing-read "PHP Function: " php-doc-obarray nil t) php-doc-obarray)))
+   (progn
+     (or php-doc-obarray (php-doc-build-tree))
+     (let ((def (current-word)))
+       (list (intern (completing-read (if def
+                                          (format "PHP Function(default %s): " def)
+                                        "PHP Function: ")
+                                      php-doc-obarray nil t nil nil def) php-doc-obarray)))))
   (let ((browse-url-browser-function php-doc-browser-function)
         (file (php-doc-function-file sym)))
     (if (file-exists-p file)
@@ -202,6 +229,8 @@ See `windata-display-buffer' for setup the arguments."
 
 (defun php-doc-complete-function ()
   (interactive)
+  (unless php-doc-tree
+    (php-doc-build-tree))
   (let* ((end (point))
          (beg (save-excursion
                 (with-syntax-table c-mode-syntax-table

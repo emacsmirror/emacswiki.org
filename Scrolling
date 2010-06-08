@@ -87,6 +87,34 @@ This works, instead:
 
 The functions `next-line' and `previous-line' use a previously-remembered column number only if the previous command was either `next-line' or `previous-line'.  Otherwise, they save the current column number to be used in future calls.  Since the previous command was always either `sfp-page-down' or `sfp-page-up', whatever column the point landed on would be used for the next destination column.  So, I set `this-command' to trick them.  --sfp
 
+== Modern Page-up and Page-down ==
+
+The following shows how to use `condition-case' as an alternative approach to extending the behavior for `scroll-up' and `scroll-down'.
+
+When navigating the buffer with `scroll-up' and `scroll-down' -- from
+the traditional key bindings or otherwise -- reaching the end of the
+buffer isn't possible.  In many applications, scrolling with Pgup or
+Pgdn would eventually get you to the top or the bottom.  Emacs on the
+other hand will stop scrolling when the end of the buffer is reached.
+The philosophy (read: religion) is that scrolling commands are wholly
+separate from the point motion commands: Ideological purity that is
+imposed on the user because by the implementation.  Fortunately, it
+doesn't take much to customize Emacs to a more familiar behavior.
+
+The following is from [[RyanBarrett]]'s blog.[http://snarfed.org/space/emacs_page_up_page_down]
+
+  (global-set-key [next]
+    (lambda () (interactive)
+      (condition-case nil (scroll-up)
+        (end-of-buffer (goto-char (point-max))))))
+  
+  (global-set-key [prior]
+    (lambda () (interactive)
+      (condition-case nil (scroll-down)
+        (beginning-of-buffer (goto-char (point-min))))))
+
+[new]
+Another way is to just enable cua-mode, which gives you this more modern behaviour by default.
 == Other Scrolling Pages ==
 
 * BufferScrolling -- horizontal scrolling

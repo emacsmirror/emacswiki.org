@@ -1,18 +1,14 @@
+The following describes writing commands that have a different
+behavior when repeated the second time.  The discussion and code here
+is left for historical purposes.  For a more general approach see
+SequentialCommand.
+
+----
 I saw this somewhere but can't remember where. This definition allows
 me to press "End" to go to the end of the line and "End" again to go
 to the end of the buffer.
 
-Lisp:sequential-command.el
-Lisp:sequential-command-config.el
-
 [new]
-'''See Also:'''
-
-* `<code>beginning-of-line+</code>' and `<code>end-of-line+</code>' in Lisp:misc-cmds.el. They let you use `C-a' and `C-e' repeatedly to zip up & down the beginnings or ends of lines.
-
-* DoReMi -- Use the arrow keys and the mouse wheel to repeat commands or execute a sequence of commands in sequence. -- DrewAdams
-[new]
-
 This was used because the function keys did not work with the meta key
 with one PC and i got so used to it i still have in my standard
 bindings. -- PeterMielke
@@ -42,6 +38,8 @@ bindings. -- PeterMielke
           (t
            (setq my-home-end-point (point))
            (end-of-line))))
+
+[new]
 
 this looks interesting. Here is what I'd use:
 
@@ -87,22 +85,22 @@ I use something similar to type character entity references in HTML. Check it:
  (add-hook 'html-mode-hook
            (lambda ()
              (define-key html-mode-map [(<)]
-               (ted-insert-char-entity-maybe ?< "&amp;lt;"))
+               (ted-insert-char-entity-maybe ?< "&lt;"))
              (define-key html-mode-map [(>)]
-               (ted-insert-char-entity-maybe ?> "&amp;gt;"))
+               (ted-insert-char-entity-maybe ?> "&gt;"))
              (define-key html-mode-map [(&)]
-               (ted-insert-char-entity-maybe ?& "&amp;amp;"))
+               (ted-insert-char-entity-maybe ?& "&amp;"))
              (define-key html-mode-map [(\")]
-               (ted-insert-char-entity-maybe ?\" "&amp;quot;"))))
+               (ted-insert-char-entity-maybe ?\" "&quot;"))))
 
 [new]
 [:rgb-insert-if-double]
-|| This does the same thing with bit less code, plus prefix arg works.  Thanks for the idea. --[http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski rgb]||
+This does the same thing with bit less code, plus prefix arg works.  Thanks for the idea. --[http://www.emacswiki.org/cgi-bin/wiki/Rick_Bielawski rgb]
 
-<pre>
+{{{
  (defmacro rgb-insert-if-double (otherwise)
    "Insert OTHERWISE when the key mapped to this fcn is pressed twice.
-  For example typing && can result in &amp;amp; appearing in place of &&.
+  For example typing && can result in &amp; appearing in place of &&.
   Use C-u <count> <key> to insert <key> more than once without replace."
    `(lambda (cnt raw)
       (interactive "p\nP")
@@ -115,13 +113,13 @@ I use something similar to type character entity references in HTML. Check it:
  
 (add-hook 'html-mode-hook
  (lambda ()
-   (define-key html-mode-map [(<)]  (rgb-insert-if-double "&amp;lt;"))
-   (define-key html-mode-map [(>)]  (rgb-insert-if-double "&amp;gt;"))
-   (define-key html-mode-map [(&)]  (rgb-insert-if-double "&amp;amp;"))
-   (define-key html-mode-map [(\")] (rgb-insert-if-double "&amp;quot;"))))
-</pre>
+   (define-key html-mode-map [(<)]  (rgb-insert-if-double "&lt;"))
+   (define-key html-mode-map [(>)]  (rgb-insert-if-double "&gt;"))
+   (define-key html-mode-map [(&)]  (rgb-insert-if-double "&amp;"))
+   (define-key html-mode-map [(\")] (rgb-insert-if-double "&quot;"))))
+}}}
 [new]
-I use the fallowin function for sequence commands:
+I use the following function for sequence commands:
 
  ;; Sequence commands  1.0
  (defvar seq-store-times 0)
@@ -161,23 +159,27 @@ Now creating double- and more- commands is soo easy:
 It would be even simpler if there is a way of getting the name of function which called the executing one. -- mina86
 
 [new]
-: Functions don't need to have names and sometimes they have more than one name so what you want might be ambiguous or even nonexistent.  (eq last-command name) can probably be replaced with (eq last-command this-command) if that's what you were looking to do.
+: Functions don't need to have names and sometimes they have more than one name so what you want might be ambiguous or even nonexistent.  ##(eq last-command name)## can probably be replaced with ##(eq last-command this-command)## if that's what you were looking to do.
 
 [new]
 These are re-implemented in Lisp:sequential-command.el and Lisp:sequential-comand-config.el . See `seq-home' and `seq-end'. -- [[rubikitch]]
 
-[new]
-'''Related Pages:'''
-* ElectricDotAndDash
+== Electric upcase/capitalize/downcase ==
 
 [new:rubikitch:2008-11-05 10:12 UTC]
-'''Electric upcase/capitalize/downcase'''
-
 See Lisp:sequential-comand-config.el .
 
 I bound M-u/M-c/M-l to seq-(upcase|capitalize|downcase)-backward-word. -- [[rubikitch]]
+
+
+[new]
+'''See Also:'''
+
+* `<code>beginning-of-line+</code>' and `<code>end-of-line+</code>' in Lisp:misc-cmds.el. They let you use `C-a' and `C-e' repeatedly to zip up & down the beginnings or ends of lines.
+
+* DoReMi -- Use the arrow keys and the mouse wheel to repeat commands or execute a sequence of commands in sequence. -- DrewAdams
+
+* ElectricDotAndDash
+
 ----
 CategoryKeys
-
-
-

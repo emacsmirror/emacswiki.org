@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  5 08:30:18 2010 (-0700)
+;; Last-Updated: Mon Jun  7 14:29:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5430
+;;     Update #: 5434
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1971,6 +1971,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/07 dadams
+;;     icicle-exit-minibuffer: Do not fiddle with faces if not in minibuffer.  Thx to M. Heerdegen.
+;;     icicle-prefix-complete-1:
+;;       Sole completion case: Move removal of *Completions* before the top-level throw.
 ;; 2010/06/04 dadams
 ;;     Added: icicle-doremi-increment-max-candidates+.
 ;;     Renamed by adding +: icicle-doremi-increment-swank-(timeout|prefix-length).

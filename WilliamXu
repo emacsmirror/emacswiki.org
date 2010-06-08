@@ -1,4 +1,4 @@
-Hi, i'm William Xu(AKA xwl on #emacs), from Beijing, China. I
+Hi, I'm William Xu (AKA [::xwl] on EmacsChannel), from Beijing, China. I
 began to use Emacs since 2003, and can not live without it ever
 since. I love it!
 
@@ -26,7 +26,7 @@ operators. e.g., type "=", get " = "; type "+=", get " += ". Handy for writing C
 
 == Emacs Tips ==
 
-=== Revert buffer with tramp sudo without losing changes already made ===
+=== Revert buffer with tramp sudo without losing already made changes ===
 
 I often find myself editing some system config files owned by
 root, and then desperately realize that I have no permission to

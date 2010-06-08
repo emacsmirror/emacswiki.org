@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun May 30 09:26:47 2010 (-0700)
+;; Last-Updated: Mon Jun  7 17:25:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13363
+;;     Update #: 13368
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -7032,7 +7032,7 @@ Clear the desktop and load DESKTOP-FILE DIRNAME."
                                    desktop-globals-to-save)))
     (bookmarkp-desktop-kill)
     (desktop-clear)
-    (desktop-read desktop-dir)))
+    (if (< emacs-major-version 22) (desktop-read) (desktop-read desktop-dir))))
     
 ;; Derived from code in `desktop-kill'.
 (defun bookmarkp-desktop-kill ()
@@ -7053,7 +7053,7 @@ This does nothing in Emacs versions prior to Emacs 22."
       (file-error (unless (yes-or-no-p "Error while saving the desktop.  Ignore? ")
                     (signal (car err) (cdr err))))))
   ;; Just release lock, regardless of whether this Emacs process is the owner.
-  (desktop-release-lock))
+  (when (fboundp 'desktop-release-lock) (desktop-release-lock))) ; Not defined for Emacs 20.
 
 ;; Derived from code in `desktop-read'.
 ;;;###autoload
@@ -7088,7 +7088,7 @@ Return t if FILE was loaded, nil otherwise."
                  (if (< 0 desktop-buffer-fail-count)
                      (format ", %d failed to restore" desktop-buffer-fail-count)
                    "")
-                 (if desktop-buffer-args-list
+                 (if (and (boundp 'desktop-buffer-args-list) desktop-buffer-args-list)
                      (format ", %d to be restored lazily" (length desktop-buffer-args-list))
                    "")))
       t)))                              ; Return t, meaning successfully loaded.
@@ -7107,7 +7107,8 @@ in the same directory, then you will need to relock it.)"
     ;; Release the desktop lock file in the same directory as DESKTOP-FILE.
     ;; This will NOT be the right thing to do if a desktop file different from DESKTOP-FILE
     ;; is currently locked in the same directory.
-    (let ((desktop-dir  (file-name-directory desktop-file))) (desktop-release-lock))
+    (let ((desktop-dir  (file-name-directory desktop-file)))
+      (when (fboundp 'desktop-release-lock) (desktop-release-lock))) ; Not defined for Emacs 20.
     (when (file-exists-p desktop-file) (delete-file desktop-file)))
   (bookmark-delete bookmark-name))
 

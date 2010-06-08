@@ -10,5 +10,8 @@ to insure that they are not saved at all:
 
 See also RecreateScratchBuffer for more information on scratch buffer.
 
+[new]
+Emacs doesn't set the ##*scratch*## buffer to have `auto-save-mode' on by default.  Sounds like something has gone wrong with your setup somehow.
+
 ----
 CategoryFiles

@@ -232,6 +232,14 @@ I replaced "(window-full-width-p window)" with "t", then popup.el seems to work 
 The gray-shaded inline expansion gets in the way when deleting characters in the midst of a line, as it overlays following existing text. This is a bit inconvenient. Is it possible to suppress completion while actively deleting?
 
 ----
+[new]
+Is it possible to use auto-complete to translate words with a lookup at dict.cc leo.org? 
+
+[new]
+Yes, of course. auto-complete is a frame work for completion. But you have to give it the sources to complete from and take care of the output from completion.
+(You could of course use Emacs default completion frame work too. Or Icicles etc.)
+
+----
 CategoryCompletion
 
 

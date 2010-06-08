@@ -182,7 +182,7 @@ Best option in Emacs 23 is to revert to Emacs 22 settings (alt is alt, cmd is me
 
 If you're running "emacs -nw" in Terminal.app you can swap the cmd and alt keys; see the following blog post:
 http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html.
-
+Alternatively, you can use [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this patch] for iTerm, to get both Meta and normal Option modifier working at the same time.
 
 CocoaEmacs has a group of customizable options named Ns, for adjustment of GNUstep/Mac OS X specific features. 
 Some variables in this group can be set to either assign behavior to modifier keys, or remove it to make them behave as usual in Mac OS X.
