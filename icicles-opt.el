@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  5 08:21:41 2010 (-0700)
+;; Last-Updated: Tue Jun  8 21:24:07 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3702
+;;     Update #: 3714
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -444,19 +444,23 @@ arg, the name of the bookmark that is set has at most this many chars."
   :type 'integer :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-bookmark-refresh-cache-flag nil
-  "*Non-nil means `icicle-bookmark' refreshes the bookmark-list cache.
+(defcustom icicle-bookmark-refresh-cache-flag t
+  "*t means `icicle-bookmark' refreshes the bookmark-list cache.
 Use nil to speed up `icicle-bookmark(-other-window)' if you have a lot
 of bookmarks, at the cost of having the bookmark list possibly not be
-up to date.  Use non-nil if you want to be sure the list is refreshed.
+up to date.  Use t if you want to be sure the list is refreshed.
 
 If nil, the list of bookmarks is updated only if you use `C-u'.
-If non-nil, the list is always updated unless you use `C-u'.
+If t, the list is always updated unless you use `C-u'.
 
-This affects only `icicle-bookmark(-other-window)'.  It does not
-affect more specific Icicles bookmark jump commands such as
-`\\[icicle-bookmark-dired-other-window]' or the use of a negative prefix arg with \
-`\\[icicle-bookmark-cmd]'."
+This affects only commands such as `icicle-bookmark' that use the full
+bookmark list.  It does not affect more specific Icicles bookmark
+commands such as `\\[icicle-bookmark-dired-other-window]' or the use
+of a negative prefix arg with
+`\\[icicle-bookmark-cmd]'.
+
+Regardless of the option value, the cache is refreshed whenever you
+use `S-delete' to delete a candidate bookmark."
   :type 'boolean :group 'Icicles-Completions-Display :group 'Icicles-Matching)
 
 ;;;###autoload
@@ -1546,10 +1550,11 @@ the current command uses `icicle-list-use-nth-parts'."
 ;;;###autoload
 (defcustom icicle-max-candidates nil
   "Non-nil means truncate completion candidates to at most this many.
-This affects only display in `*Completions*'.  If you use library
-`doremi.el' then you can use `C-x #' during completion to increment or
-decrement the option value using the vertical arrow keys or the mouse
-wheel."
+If you use library `doremi.el' then you can use `C-x #' during
+completion to increment or decrement the option value using the
+vertical arrow keys or the mouse wheel.  A numeric prefix argument for
+`C-x #' sets the increment size.  A plain prefix argument (`C-u')
+resets `icicle-max-candidates' to nil, meaning no truncation."
   :type '(choice (const :tag "None" nil) integer)
   :group 'Icicles-Completions-Display :group 'Icicles-Matching
   :group 'Icicles-Buffers :group 'Icicles-Files)

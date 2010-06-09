@@ -42,14 +42,6 @@ Windows users read the FAQ:
 
 * http://www.gnu.org/software/emacs/windows/faq3.html#TOC36
 
-You may also want to read the following:
-
-* http://www.math.auc.dk/~dethlef/Tips/gnuserv.txt
-
-and
-
-* http://home.no.net/skund/emacs/emacs017.htm
-
 With emacs 21.3.1 and windows 98 the following init file lines (rather than the ones in the previous section) were needed for installation:
 
     (load-library "gnuserv")

@@ -591,10 +591,10 @@ which is the standard Emacs behavior.  The default value is `t'. (Actually, the 
 ==== Option `icicle-max-candidates' ====
 
 Non-`nil' option '''`icicle-max-candidates'''' means truncate the list of completion
-candidates to at most this many.  This affects only display in
-`*Completions*'.  If you use library <tt>[[doremi.el]]</tt> then you can
-use '''`##C-x ###'''' during completion to increment or decrement the
-option value using the vertical arrow keys or the mouse wheel.
+candidates to at most this many.  If you use library <tt>[[doremi.el]]</tt> then you can
+use '''`C-x #'''' during completion to increment or decrement the
+option value using the vertical arrow keys or the mouse wheel.  A numeric prefix argument for `C-x #' sets the increment size.  A plain prefix argument (`C-u') resets `icicle-max-candidates' to `nil', meaning no
+truncation.
 
 
 
@@ -1179,14 +1179,19 @@ with a non-negative [[numeric prefix argument]] automatically names a [[bookmark
 ==== Option icicle-bookmark-refresh-cache-flag ====
 
 User option '''`icicle-bookmark-refresh-cache-flag'''' determines
-whether commands `icicle-bookmark' and `icicle-bookmark-other-window'
-refresh the bookmark-list cache.  The default value of `nil',
-meaning do not refresh, speeds things up in case you have a lot
-of bookmarks, at the cost of having the bookmark list possibly
-not be up to date.  A plain [[prefix argument]] (`C-u') overrides
-the default setting for the duration of the command.  Thus, if
-the value is `nil', you can use `C-u' occasionally to refresh the
-list on demand.
+whether commands such as `icicle-bookmark' and `icicle-search-bookmark'
+refresh the bookmark-list cache.  The default value of `t',
+meaning refresh, ensures that the set of
+bookmark candidates is always up-to-date, but you can improve
+performance for a large bookmark list if you customize it to
+`nil'.
+
+In any case, a plain [[prefix argument]] (`C-u') for these commands overrides
+the default setting of the option for the duration of the command.  Thus, if
+the customized value is `nil', you can use `C-u' occasionally to refresh the
+list on demand.  In addition,
+the cache is refreshed whenever you use `S-delete' to delete a
+candidate bookmark.
 
 ----
 [:icicle-show-multi-completion-flag]

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 16:52:42 2010 (-0700)
+;; Last-Updated: Tue Jun  8 21:12:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 26983
+;;     Update #: 27001
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1644,24 +1644,30 @@
 ;;  for narrowing.  For example, `icicle-bookmark-info-other-window'
 ;;  is bound to `C-x 4 j i'.
 ;;
-;;  By default, commands `icicle-bookmark' and
-;;  `icicle-bookmark-other-window' use a cache for the set of
-;;  available bookmarks.  This improves performance, especially if you
-;;  have a lot of bookmarks.  The downside is that the list of
-;;  completion candidates is not automatically updated when you add
-;;  new bookmarks.
+;;  Commands `icicle-bookmark' and `icicle-bookmark-other-window' can
+;;  use a cache for the set of available bookmarks.  This improves
+;;  performance, especially if you have a lot of bookmarks.  The
+;;  downside is that the list of completion candidates is not
+;;  automatically updated when you add new bookmarks.
 ;;
-;;  You can turn off this caching by setting option
-;;  `icicle-bookmark-refresh-cache-flag' to non-nil.  Alternatively,
-;;  you can use a prefix argument to reverse the effect of this
-;;  option.  When the cache is temporarily turned off like that, the
-;;  command refreshes (updates) the cache.  Typically, then, you will
-;;  want to leave the option set to nil but update it occasionally by
-;;  using `C-u' for bookmark completion.
+;;  By default, this caching is off, so the set of possible bookmark
+;;  candidates is always up-to-date.  You can turn on this caching by
+;;  setting option `icicle-bookmark-refresh-cache-flag' to nil.
 ;;
-;;  The type-specific bookmark jump commands
+;;  Alternatively, you can use a prefix argument to reverse the effect
+;;  of this option.  If you have a lot of bookmarks then I recommend
+;;  that you customize the option to nil and just update it
+;;  occasionally by using `C-u' for bookmark completion.  That will
+;;  temporarily turn off caching so that the current jump command
+;;  refreshes (updates) the cache.  The default value of the option is
+;;  t only to avoid confusion for new users.
+;;
+;;  The bookmarks cache is also used for searching bookmarks (see
+;;  next).  The type-specific bookmark jump commands
 ;;  (e.g. `icicle-bookmark-info-other-window') do not use the cache,
-;;  since they typically use a smaller number of candidates.
+;;  since they typically use a smaller number of candidates.  And the
+;;  cache is automatically updated whenever you use `S-delete' to
+;;  delete a candidate bookmark.
 ;;
 ;;  See Also:
 ;;
@@ -1717,6 +1723,9 @@
 ;;
 ;;  * (@> "Icicles Search Commands, Overview") for information about
 ;;    command `icicle-search'.
+;;  * (@> "Jumping to a Bookmark") for information about bookmark
+;;    caching.  Caching is also used for bookmark searching.
+;;  * (@> "Support for Projects")
  
 ;;(@* "Icicles Tags Enhancements")
 ;;
@@ -4455,11 +4464,13 @@
 ;;    `icicle-prefix-complete-keys', not necessarily `TAB'.)
 ;;
 ;;  * Non-nil option `icicle-max-candidates' means truncate the list
-;;    of completion candidates to at most this many.  This affects
-;;    only display in `*Completions*'.  If you use library `doremi.el'
-;;    then you can use `C-x #' during completion to increment or
-;;    decrement the option value using the vertical arrow keys or the
-;;    mouse wheel.
+;;    of completion candidates to at most this many.  If you use
+;;    library `doremi.el' then you can use `C-x #' during completion
+;;    to increment or decrement the option value using the vertical
+;;    arrow keys or the mouse wheel.  A numeric prefix argument for
+;;    `C-x #' sets the increment size.  A plain prefix argument
+;;    (`C-u') resets `icicle-max-candidates' to nil, meaning no
+;;    truncation.
 ;;
 ;;  * Non-nil user option `icicle-expand-input-to-common-match-flag'
 ;;    means that completion commands `TAB' and `S-TAB' expand your
@@ -4883,14 +4894,19 @@
 ;;    names a bookmark.
 ;;
 ;;  * User option `icicle-bookmark-refresh-cache-flag' determines
-;;    whether commands `icicle-bookmark' and
-;;    `icicle-bookmark-other-window' refresh the bookmark-list cache.
-;;    The default value of nil, meaning do not refresh, speeds things
-;;    up in case you have a lot of bookmarks, at the cost of having
-;;    the bookmark list possibly not be up to date.  A plain prefix
-;;    argument (`C-u') overrides the default setting for the duration
-;;    of the command.  Thus, if the value is nil, you can use `C-u'
-;;    occasionally to refresh the list on demand.
+;;    whether commands such as `icicle-bookmark' and
+;;    `icicle-search-bookmark' refresh the bookmark-list cache.  The
+;;    default value of t, meaning refresh, ensures that the set of
+;;    bookmark candidates is always up-to-date, but you can improve
+;;    performance for a large bookmark list if you customize it to
+;;    nil.
+;;
+;;    In any case, a plain prefix argument (`C-u') for these commands
+;;    overrides the default setting of the option for the duration of
+;;    the command.  Thus if the customized value is nil, you can use
+;;    `C-u' occasionally to refresh the list on demand.  In addition,
+;;    the cache is refreshed whenever you use `S-delete' to delete a
+;;    candidate bookmark.
 ;;
 ;;  * Non-nil user option `icicle-show-multi-completion-flag' means
 ;;    that for some commands additional information is shown along

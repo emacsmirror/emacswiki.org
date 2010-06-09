@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun  6 16:00:58 2010 (-0700)
+;; Last-Updated: Tue Jun  8 10:27:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15672
+;;     Update #: 15689
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1267,35 +1267,43 @@ Optional arg PLAINP means convert to plain `.'.
 (defun icicle-doremi-increment-max-candidates+ (&optional increment) ; `C-x #' in minibuffer
   "Change `icicle-max-candidates' incrementally.
 Use `up', `down' or mouse wheel to increase or decrease.  You can use
-the `Meta' key (e.g. `M-up') to increment in larger steps."
-  (interactive "p")
-  (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))
-  (let ((mini  (active-minibuffer-window)))
-    (unwind-protect
-         (save-selected-window
-           (select-window (minibuffer-window))
-           (unless icicle-completion-candidates (message "Hit `TAB' or `S-TAB'"))
-           (let ((enable-recursive-minibuffers  t)
-                 (nb-cands                      (length icicle-completion-candidates)))
-             (when (or (not icicle-max-candidates) (> icicle-max-candidates nb-cands))
-               (setq icicle-max-candidates  nb-cands))
-             (when (zerop icicle-max-candidates) (setq icicle-max-candidates 10))
-             (doremi (lambda (new-val)
-                       (setq icicle-max-candidates
-                             (setq new-val (doremi-limit new-val 2 nil)))
-                       (unless (input-pending-p)
-                         (let ((icicle-edit-update-p  t)
-                               (icicle-last-input     nil))
-                           (funcall (or icicle-last-completion-command
-                                        (if (eq icicle-current-completion-mode 'prefix)
-                                            #'icicle-prefix-complete
-                                          #'icicle-apropos-complete)))
-                           (run-hooks 'icicle-update-input-hook)))
-                       new-val)
-                     icicle-max-candidates
-                     increment))
-           (setq unread-command-events  ()))
-      (unless mini (icicle-remove-Completions-window)))))
+ the `Meta' key (e.g. `M-up') to increment in larger steps.
+You can use a numeric prefix arg to specify the increment.
+A plain prefix arg (`C-u') resets `icicle-max-candidates' to nil,
+ meaning no limit."
+  (interactive "P")
+  (cond ((consp increment)
+         (setq icicle-max-candidates  nil)
+         (icicle-msg-maybe-in-minibuffer "No longer any limit on number of candidates"))
+        (t
+         (setq increment  (prefix-numeric-value increment))
+         (unless (require 'doremi nil t) (error "This command needs library `doremi.el'."))
+         (let ((mini  (active-minibuffer-window)))
+           (unwind-protect
+                (save-selected-window
+                  (select-window (minibuffer-window))
+                  (unless icicle-completion-candidates (message "Hit `TAB' or `S-TAB'"))
+                  (let ((enable-recursive-minibuffers  t)
+                        (nb-cands                      (length icicle-completion-candidates)))
+                    (when (or (not icicle-max-candidates) (> icicle-max-candidates nb-cands))
+                      (setq icicle-max-candidates  nb-cands))
+                    (when (zerop icicle-max-candidates) (setq icicle-max-candidates 10))
+                    (doremi (lambda (new-val)
+                              (setq icicle-max-candidates
+                                    (setq new-val (doremi-limit new-val 2 nil)))
+                              (unless (input-pending-p)
+                                (let ((icicle-edit-update-p  t)
+                                      (icicle-last-input     nil))
+                                  (funcall (or icicle-last-completion-command
+                                               (if (eq icicle-current-completion-mode 'prefix)
+                                                   #'icicle-prefix-complete
+                                                 #'icicle-apropos-complete)))
+                                  (run-hooks 'icicle-update-input-hook)))
+                              new-val)
+                            icicle-max-candidates
+                            increment))
+                  (setq unread-command-events  ()))
+             (unless mini (icicle-remove-Completions-window)))))))
 
 ;;;###autoload
 (defun icicle-doremi-increment-swank-timeout+ () ; Bound to `C-x 1' in the minibuffer (swank only)

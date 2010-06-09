@@ -375,6 +375,194 @@ Interestingly enough, not //all// DEB emacs packages have such a file in ##/etc/
 The other thing I have discovered is that cedet is intalled very differently on DEB than it's packaged at CVS. And this might be causing the rudel compile errors on Lucid Links. Rather than packaging everything in the cedet package under the ##/cedet/## parent directory, its rebundled and placed directly in site-lisp. So rather than the path to eieio being ##~site-lisp/cedet/eieio/##, it's simply ##~site-lisp/eieio/##. Too, some things are placed in different places. Cedet is in ##~site-lisp/cedet-common/##, for instance, while semantic is broken up. Part of it is in its own directory, while the tag-folding and javascript files are in ##~site-lisp/cedet-contrib/##. Meanwhile, cogre, ede, eieio, and speedbar are all broken out and live in in their own directories right under ##~site-lisp##. I find it intresting that the SID folks support this unique architecture. Maybe they have no choice.
 
 -- Michael
+[new]
+Okay... Well, I just finished compiling emacs-snapshot from right here, since the binary wouldn't install. It runs fine (great, in fact!), but still won't compile ##load-defs.el## properly:
+
+{{{
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-backend.el at Tue Jun  8 21:04:01 2010
+rudel-backend.el:73:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-display.el at Tue Jun  8 21:04:01 2010
+rudel-display.el:40:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-icons.el at Tue Jun  8 21:04:01 2010
+rudel-icons.el:80:1:Error: Symbol's value as variable is void: rudel-icons-image-formats
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-interactive.el at Tue Jun  8 21:04:01 2010
+rudel-interactive.el:39:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-mode.el at Tue Jun  8 21:04:01 2010
+rudel-mode.el:54:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-operations.el at Tue Jun  8 21:04:01 2010
+rudel-operations.el:93:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-operators.el at Tue Jun  8 21:04:02 2010
+rudel-operators.el:65:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-protocol.el at Tue Jun  8 21:04:02 2010
+rudel-protocol.el:50:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-session-initiation.el at Tue Jun  8 21:04:02 2010
+rudel-session-initiation.el:62:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-speedbar.el at Tue Jun  8 21:04:02 2010
+rudel-speedbar.el:44:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-state-machine.el at Tue Jun  8 21:04:02 2010
+rudel-state-machine.el:132:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-transport-util.el at Tue Jun  8 21:04:02 2010
+rudel-transport-util.el:53:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-transport.el at Tue Jun  8 21:04:02 2010
+rudel-transport.el:44:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-util.el at Tue Jun  8 21:04:02 2010
+rudel-util.el:82:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel.el at Tue Jun  8 21:04:02 2010
+rudel.el:52:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-compound.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/adopted/'
+adopted-compound.el:57:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-delete.el at Tue Jun  8 21:04:02 2010
+adopted-delete.el:55:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-insert.el at Tue Jun  8 21:04:02 2010
+adopted-insert.el:55:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-nop.el at Tue Jun  8 21:04:02 2010
+adopted-nop.el:51:1:Error: Symbol's value as variable is void: filename
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/adopted/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-client.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/infinote/'
+rudel-infinote-client.el:39:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-document.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group-directory.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group-directory.el:43:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group-document.el:43:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group-text-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group-text-document.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group.el:44:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-node-directory.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-node-directory.el:39:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-node.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-node.el:56:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-state.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-state.el:39:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-text-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-text-document.el:37:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-user.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-user.el:37:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-util.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-util.el:56:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote.el at Tue Jun  8 21:04:02 2010
+rudel-infinote.el:41:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/infinote/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-compound.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/jupiter/'
+jupiter-compound.el:57:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-delete.el at Tue Jun  8 21:04:02 2010
+jupiter-delete.el:55:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-insert.el at Tue Jun  8 21:04:02 2010
+jupiter-insert.el:54:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-nop.el at Tue Jun  8 21:04:02 2010
+jupiter-nop.el:51:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter.el at Tue Jun  8 21:04:02 2010
+jupiter.el:80:1:Error: Symbol's value as variable is void: filename
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/jupiter/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-client.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/obby/'
+rudel-obby-client.el:46:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-display.el at Tue Jun  8 21:04:02 2010
+rudel-obby-display.el:40:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-server.el at Tue Jun  8 21:04:02 2010
+rudel-obby-server.el:58:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-state.el at Tue Jun  8 21:04:02 2010
+rudel-obby-state.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-util.el at Tue Jun  8 21:04:02 2010
+rudel-obby-util.el:50:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby.el at Tue Jun  8 21:04:02 2010
+rudel-obby.el:49:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/obby/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/socket/rudel-socket.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/socket/'
+rudel-socket.el:43:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/socket/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/telepathy/rudel-telepathy.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/telepathy/'
+rudel-telepathy.el:42:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/telepathy/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/tls/rudel-tls.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/tls/'
+rudel-tls.el:44:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/tls/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/wave/rudel-wave.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/wave/'
+rudel-wave.el:39:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/wave/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-sasl.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/xmpp/'
+rudel-xmpp-sasl.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-state.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-state.el:40:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-tls.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-tls.el:39:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-tunnel.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-tunnel.el:37:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-util.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-util.el:43:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp.el:40:1:Error: Wrong type argument: listp, :after
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/xmpp/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/rudel-zeroconf.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/'
+rudel-zeroconf.el:56:1:Error: Wrong type argument: listp, :static
+}}}
+
+--Michael
 
 == Contributed Code ==
 

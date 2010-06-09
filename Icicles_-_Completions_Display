@@ -33,7 +33,12 @@ When you cycle completion candidates in the [[minibuffer]]:
 [:NumberOfCandidatesIndicator]
 === Number of Available Candidates ===
 The total number of completion candidates is displayed in the
-[[mode line]] of buffer `*Completions*'.
+[[mode line]] of buffer `*Completions*' -- e.g. `##567 candidates##'.
+If the number of candidates is currently truncated (because of
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>''''),
+then the total number of candidates before truncation is also
+shown -- e.g. `##149 shown / 567##'.
+
 
 
 

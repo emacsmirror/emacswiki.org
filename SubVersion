@@ -1,6 +1,6 @@
 As time passed, the limitations of [[CVS]] became obvious. [::Subversion] aka. [::SVN] was designed to fix those problems while staying as close to CVS as possible.
 
-* Homepage: http://subversion.tigris.org/
+* Homepage: http://subversion.apache.org/
 
 A small binding for Emacs' [[VersionControl]] feature is included in the source distribution starting with GNU Emacs 22.
 

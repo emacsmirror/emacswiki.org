@@ -63,7 +63,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 === :MON-DOC-UTILS ===
 
 * Lisp:mon-doc-help-utils.el -- (ReferenceSheetHelpUtils) (MonDocHelpUtilsDictionary)
-* Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars required to bootstrap mon-doc-help-utils 
+* Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars required to bootstrap mon-doc-help-utils
+* Lisp:mon-doc-help-css.el -- Extends *Lisp:mon-doc-help-utils.el with CSS related docs
 * Lisp:mon-doc-help-pacman.el -- Some help functions for using the package manager with the GNU/Linux Arch distribution.
 * Lisp:mon-doc-help-CL.el -- Some Emacs Lisp help functions for using Common-Lisp functions (loop, do, etc.)
 * Lisp:mon-doc-help-proprietary.el -- Extends mon-doc-help-utils with ms w32 related docs.

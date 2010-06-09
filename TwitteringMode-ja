@@ -1,7 +1,8 @@
 [[en:TwitteringMode]]
 == Description ==
 
-twittering-mode.el は Emacs で動作する Twitter クライアントです。
+twittering-mode.elはEmacsで動作するTwitterクライアントです。
+※注意 以下の内容は、まだ1.0.0以降に追随できていません。
 
 [[image:TwitteringModeScreenshot]]
 

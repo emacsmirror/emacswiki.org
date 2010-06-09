@@ -4,7 +4,7 @@ The second edition of the book is available online in electronic form:
 
 : http://www.cs.cmu.edu/Groups/AI/html/cltl/cltl2.html
 
-On a [http://www.debian.org Debian] system the <code>cltl</code> will download a local copy of the HTML.
+On a [http://www.debian.org Debian] system the package <code>cltl</code> will download a local copy of the HTML.
 
 The following two Emacs packages let you lookup functions and variables.
 

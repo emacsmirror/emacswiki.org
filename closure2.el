@@ -1,5 +1,5 @@
 ;;; closure.el --- closures for elisp
-;;  Author: politza@fh-trier.de
+;;  Author: ap
 ;;  $Rev: 588 $
 
 ;;; Commentary:

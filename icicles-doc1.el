@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  5 06:50:48 2010 (-0700)
+;; Last-Updated: Tue Jun  8 10:49:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25289
+;;     Update #: 25319
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -900,10 +900,12 @@
 ;;  lighter is not highlighted in any way.
 ;;
 ;;  If the list of candidates shown in `*Completions*' is truncated
-;;  (because of option `icicle-max-candidates' or your use of `C-x
-;;  #'), then the lighter text is suffixed by `...'.  So if you see
-;;  `...' then you know that there are actually more candidates than
-;;  what are shown.
+;;  (because of option `icicle-max-candidates'), then the lighter text
+;;  is suffixed by `...'.  So if you see `...' then you know that if
+;;  you increase `icicle-max-candidates' (e.g. by using `C-x #' during
+;;  completion) then more candidates will be available.  See
+;;  (@file :file-name "icicles-doc2.el" :to "Customization and General Tips")
+;;  for info about `C-x #' and option `icicle-max-candidates'.
 ;;
 ;;  In addition, the lighter text (with or without `+' and `...') is
 ;;  `Icy' if completion is case-sensitive and `ICY' if not.  You can
@@ -2663,7 +2665,12 @@
 ;;      option `icicle-help-in-mode-line-flag' is non-nil.
 ;;
 ;;  * The total number of completion candidates is displayed in the
-;;    mode-line of buffer `*Completions*'.
+;;    mode-line of buffer `*Completions*' - e.g. `567 candidates'.
+;;    If the number of candidates is currently truncated (because of
+;;    option `icicle-max-candidates' - see
+;;    (@file :file-name "icicles-doc2.el" :to "Customization and General Tips"),
+;;    then the total number of candidates before truncation is also
+;;    shown - e.g. `149 shown / 567'.
 ;;
 ;;  * You can use `C-insert' to move back and forth between the
 ;;    minibuffer and `*Completions*'.  In each direction, the current

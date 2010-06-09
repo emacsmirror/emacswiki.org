@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun  7 14:29:36 2010 (-0700)
+;; Last-Updated: Tue Jun  8 20:53:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5434
+;;     Update #: 5457
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/06/08 dadams
+;;     Added: icicle-bookmark-delete-action: Make it refresh the cache.
+;;     icicle-bookmark(-list|-other-window), icicle-define-bookmark-command-1:
+;;       Use icicle-bookmark-delete-action.
+;;       Use condition-case to filter out bad bookmarks (so no error).  Thx to M. Heerdegen.
 ;; 2010/06/04 dadams
 ;;     Applied renamings of doremi commands (added +).
 ;;     icicle-(buffer|*file|directory)*: Updated doc string to mention icicle-(buffers|files)-ido-like.
@@ -285,6 +290,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/06/08 dadams
+;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
+;;       Use icicle-bookmark-delete-action.
+;;       Use condition-case to filter out bad bookmarks (so no error).
 ;; 2010/06/04 dadams
 ;;     Added: icicle-ido-like-mode.
 ;; 2010/05/16 dadams
@@ -538,6 +547,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/08 dadams
+;;     icicle-display-candidates-in-Completions: Show also total when truncated: N shown / M.
+;;     icicle-maybe-sort-maybe-truncate: Save icicle-nb-candidates-before-truncation before truncating.
 ;; 2010/06/04 dadams
 ;;     Added: icicle-clear-lighter, icicle-maybe-sort-maybe-truncate, icicle-take.
 ;;     icicle-(prefix|apropos)-candidates, icicle-strip-ignored-files-and-sort,
@@ -1971,6 +1983,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/08 dadams
+;;     icicle-doremi-increment-max-candidates+: Plain C-u resets icicle-max-candidates to nil.
 ;; 2010/06/07 dadams
 ;;     icicle-exit-minibuffer: Do not fiddle with faces if not in minibuffer.  Thx to M. Heerdegen.
 ;;     icicle-prefix-complete-1:
@@ -3913,6 +3927,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/06/08 dadams
+;;     icicle-bookmark-refresh-cache-flag: Changed the default value to t to avoid confusion.
 ;; 2010/06/05 dadams
 ;;     Set icicle-top-level-when-sole-completion-delay to 0.7 from 0.0.
 ;; 2010/06/04 dadams
@@ -4412,6 +4428,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/06/08 dadams
+;;     Added: icicle-nb-candidates-before-truncation.
 ;; 2010/06/04 dadams
 ;;     Added: icicle-lighter-truncation.
 ;;     icicle-general-help-string: Mention missing doremi commands.

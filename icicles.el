@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 17:45:10 2010 (-0700)
+;; Last-Updated: Tue Jun  8 20:42:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22756
+;;     Update #: 22758
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -695,7 +695,8 @@
 ;;    `icicle-bind-other-keymap-keys',
 ;;    `icicle-bind-top-level-commands', `icicle-bookmark-cleanup',
 ;;    `icicle-bookmark-cleanup-on-quit',
-;;    `icicle-bookmark-help-string', `icicle-bookmark-jump-1',
+;;    `icicle-bookmark-delete-action', `icicle-bookmark-help-string',
+;;    `icicle-bookmark-jump-1',
 ;;    `icicle-buffer-file/process-name-less-p',
 ;;    `icicle-buffer-smaller-p', `icicle-buffer-sort-*...*-last',
 ;;    `icicle-call-then-update-Completions',
@@ -1039,6 +1040,7 @@
 ;;    `icicle-mode-map', `icicle-ms-windows-drive-hash',
 ;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
 ;;    `icicle-must-pass-predicate',
+;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',

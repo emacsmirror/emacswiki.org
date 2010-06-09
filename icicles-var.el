@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 17:44:34 2010 (-0700)
+;; Last-Updated: Tue Jun  8 10:03:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1311
+;;     Update #: 1313
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -93,6 +93,7 @@
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
 ;;    `icicle-ms-windows-drive-hash', `icicle-must-match-regexp',
 ;;    `icicle-must-not-match-regexp', `icicle-must-pass-predicate',
+;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates',
 ;;    `icicle-next-apropos-complete-cycles-p',
 ;;    `icicle-next-prefix-complete-cycles-p',
@@ -983,6 +984,9 @@ If nil, then this does nothing.  Otherwise, this is a function of one
 argument, a candidate, and only candidates whose display form
 satisfies the predicate are displayed.  The display form is the string
 shown in `*Completions*'.")
+
+(defvar icicle-nb-candidates-before-truncation 0
+  "Number of candidates, before truncation per `icicle-max-candidates'.")
 
 (defvar icicle-nb-of-other-cycle-candidates 0
   "Number of other candidates available for cycling.

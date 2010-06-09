@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 17:04:14 2010 (-0700)
+;; Last-Updated: Tue Jun  8 10:11:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11765
+;;     Update #: 11781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2648,7 +2648,12 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                  (setq buffer-read-only  t))))
            (with-current-buffer (get-buffer "*Completions*")
              (set (make-local-variable 'mode-line-frame-identification)
-                  (format "  %d candidates  " nb-cands))
+                  (format "  %d %s  "
+                          nb-cands
+                          (if (and icicle-max-candidates
+                                   (< icicle-max-candidates icicle-nb-candidates-before-truncation))
+                              (format "shown / %d" icicle-nb-candidates-before-truncation)
+                            "candidates")))
              (put-text-property 0 (length mode-line-frame-identification)
                                 'face 'icicle-mode-line-help
                                 mode-line-frame-identification)
@@ -4122,12 +4127,15 @@ Truncate according to `icicle-max-candidates'."
     (when icicle-max-candidates
       (let ((lighter  (cadr (assoc 'icicle-mode minor-mode-alist)))
             (regexp   (concat (regexp-quote icicle-lighter-truncation) "$")))
-        (cond ((and new-cands (< icicle-max-candidates (length new-cands)))
+        (cond ((and new-cands (< icicle-max-candidates ; Save total number before truncation
+                                 (setq icicle-nb-candidates-before-truncation  (length new-cands))))
                (unless (string-match regexp lighter)
                  (icicle-clear-lighter 'not-truncated)
                  (add-to-list
                   'minor-mode-alist `(icicle-mode ,(concat lighter icicle-lighter-truncation)))))
               (new-cands
+               ;; Save total number before truncation in `icicle-nb-candidates-before-truncation'.
+               (setq icicle-nb-candidates-before-truncation  (length new-cands))
                (when (string-match regexp lighter)
                  (icicle-clear-lighter 'truncated)
                  (add-to-list

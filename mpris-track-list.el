@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <reivzy@gmail.com>
 ;; Created: 2009-08-12
-;; Version: 0.2
+;; Version: 20100608
 ;; Keywords: dbus, mpris
 ;; Compatibility: Emacs 23
 
@@ -30,6 +30,9 @@
 ;; use M-x mpris-track-list to open MPRIS track list.
 
 ;;; Change Log:
+;; 2010-06-08
+;;     fix mistake in `mpris-track-list-revert',
+;;     (forward-line 9) -> (forward-line (1- l0))
 ;; 2010-06-05 v0.2
 ;;     replace 'length' field with 'mtime', and now works with qmmp.
 ;; 2009-08-12 v0.1
@@ -234,7 +237,8 @@ Output related to `mpris-track-list-mtime-format'."
             (goto-char (point-min)) (forward-line (1- lm))
             (set-window-start nil (line-beginning-position)))
           ;; resotre cursor pos
-          (goto-char (point-min)) (forward-line 9))
+          (goto-char (point-min))
+          (forward-line (1- l0)))
         ))))
 
 

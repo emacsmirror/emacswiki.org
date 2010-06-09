@@ -510,9 +510,9 @@ completion.  When minibuffer input is read without completion, the
 lighter is not highlighted in any way.
 
 If the list of candidates shown in `*Completions*' is truncated
-(because of option `icicle-max-candidates' or your use of `##C-x ###'), then the lighter text is suffixed by `##...##'.  So if you see
-`##...##' then you know that there are actually more candidates than
-what are shown.
+(because of option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>'''')
+then the lighter text is suffixed by `##...##'.  So if you see `##...##' then you know that
+if you increase `icicle-max-candidates' (e.g. by using '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|C-x #]]</tt>'''' during completion) then more candidates will be available.  
 
 In addition, the lighter text (with or without `##+##' and `##...##') is '''`Icy'''' if
 completion is case-sensitive and '''`ICY'''' if not.  You can toggle
