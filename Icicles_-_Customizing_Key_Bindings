@@ -93,7 +93,7 @@ Apropos-complete your input.
 
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>'''' ('''`S-TAB'''').
  Start `icicle-search' from [[Isearch]].
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`M-o'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`C-M-TAB'''', '''`M-o'''').
  Complete Isearch string using [[search ring]].
 
 

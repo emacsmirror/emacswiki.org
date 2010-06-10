@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 21:24:07 2010 (-0700)
+;; Last-Updated: Wed Jun  9 17:29:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3714
+;;     Update #: 3727
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1377,10 +1377,8 @@ Emacs 23) option `icicle-Completions-text-scale-decrease'."
 
 ;;;###autoload
 (defcustom icicle-isearch-complete-keys
-  (append
-   (and (eq system-type 'windows-nt) '([C-M-tab])) ; Windows uses ALT-TAB for something else.
-   '([M-tab] "\M-\t"                    ; Replace vanilla completion.
-     "\M-o"))                           ; Like Icicles minibuffer `M-o'.
+  '([C-M-tab] [M-tab] "\M-\t" [escape tab] ; Replace vanilla completion.
+    "\M-o")                             ; Like Icicles minibuffer `M-o'.
   "*Key sequences to use for `icicle-isearch-complete'.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.
@@ -1388,12 +1386,13 @@ argument to `define-key'.
 The default value includes `M-TAB', which replaces the vanilla binding
 of `isearch-complete'.
 
-On MS Windows, it also includes `C-M-TAB', because Windows intercepts
-`M-TAB' for its own use.  But note that you can also use
-\(w32-register-hot-key [M-tab]) to enable Emacs to use `M-TAB'.
+It also includes `ESC TAB' and `C-M-TAB', because some operating
+systems intercept `M-TAB' for their own use.  (Note: For MS Windows,
+you can use (w32-register-hot-key [M-tab]) to allow Emacs to use
+`M-TAB'.)
 
-The default binding also includes `M-o', in keeping with the Icicles
-use of `M-o' during minibuffer completion."
+It also includes `M-o', in keeping with the Icicles use of `M-o'
+during minibuffer completion."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload

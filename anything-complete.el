@@ -1188,8 +1188,10 @@ It accepts one argument, selected candidate.")
     (when cmd
       (setq extended-command-history (cons cmd (delete cmd extended-command-history)))
       (setq cmd (intern cmd))
-      (if (stringp (symbol-function cmd))
+      (if (or (stringp (symbol-function cmd))
+              (vectorp (symbol-function cmd)))
           (execute-kbd-macro (symbol-function cmd))
+        (setq this-command cmd)
         (call-interactively cmd)))))
 
 (defvar anything-find-file-additional-sources nil)

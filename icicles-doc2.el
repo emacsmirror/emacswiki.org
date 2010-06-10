@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 21:12:15 2010 (-0700)
+;; Last-Updated: Wed Jun  9 17:31:00 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27001
+;;     Update #: 27004
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4394,8 +4394,8 @@
 ;;    used in the default value.)
 ;;
 ;;  * Option `icicle-isearch-complete-keys' is the list of keys for
-;;    `icicle-isearch-complete'.  By default, these keys are `M-TAB'
-;;    and `M-o' (and, on MS Windows, `C-M-TAB').
+;;    `icicle-isearch-complete'.  By default, these keys are `M-TAB',
+;;    `ESC TAB', `C-M-TAB', and `M-o'.
 ;;
 ;;  * Option `icicle-read+insert-file-name-keys' is the list of keys
 ;;    for invoking file-name completion on demand.  By default,
@@ -6352,7 +6352,7 @@
 ;;    Completion on demand for file names.
 ;;  * `icicle-search-from-isearch-keys'                  (`S-TAB')
 ;;    Start `icicle-search' from Isearch.
-;;  * `icicle-isearch-complete-keys'                  (`M-TAB', `M-o')
+;;  * `icicle-isearch-complete-keys'       (`M-TAB', `C-M-TAB', `M-o')
 ;;    Complete incremental search string using search ring.
 ;;
 ;;  These are the main kinds of Icicles key bindings:

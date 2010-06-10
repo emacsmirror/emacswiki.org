@@ -564,6 +564,29 @@ rudel-zeroconf.el:56:1:Error: Wrong type argument: listp, :static
 
 --Michael
 
+[new]
+This may be of little help, but I can try to comment on the errors:
+{{{
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/rudel-zeroconf.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/'
+rudel-zeroconf.el:56:1:Error: Wrong type argument: listp, :static
+}}}
+This looks like an old CEDET version.
+{{{
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-compound.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/jupiter/'
+jupiter-compound.el:57:1:Error: Symbol's value as variable is void: filename
+}}}
+I saw this when I tried to compile CEDET. I have no idea, what causes this and consequently worked around it by doing
+{{{
+M-: (setq filename nil)
+}}}
+before compiling CEDET.
+
+I think, all other errors are of the same kind as one of these two.
+
+--JanMoringen
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===

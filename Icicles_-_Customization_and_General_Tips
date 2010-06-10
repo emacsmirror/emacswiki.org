@@ -490,8 +490,8 @@ used in the default value.)
 ==== Option icicle-isearch-complete-keys ====
 
 Option '''`icicle-isearch-complete-keys'''' is the list of keys for
-`icicle-isearch-complete'.  By default, these keys are `M-TAB'
-and `M-o' (and, on MS Windows, `C-M-TAB').
+`icicle-isearch-complete'.  By default, these keys are `M-TAB',
+`##ESC TAB##', `C-M-TAB', and `M-o'.
 
 
 ----

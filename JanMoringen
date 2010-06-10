@@ -82,6 +82,54 @@ sorry to hear that. I hope the advice on the Rudel page is of some help. Otherwi
 
 Good luck.
 --JanMoringen
+
+[new]
+I'm sorry to be such a pain, Jan, but I can't figure out why rudel won't work. I've never had such a problem with an emacs package in my 14 years of using emacs. Not blaming you, it's just bloody mystifying! 
+
+I compiled a version of the latest snapshot (emacs24.0.50.1) I replaced rudel with the latest version you've updated over at git (latest dated files are 6/5); and rudel acts like it can't find eieio, or some other package that it needs. I've tried installing the CVS version of cedet and forcing the cedet load-path, both in my local ##.emacs## and by editing your ##compile.el## Nothing changes the errors.
+
+This just //can't// be that hard, but I can't think of anything else to try!
+
+--- Michael
+
+[new]
+Michael, don't say that. Actually, I'm feeling like causing you a lot of pain, not the other way around. However, I wouldn't blame myself either, nor Eric, the Emacs developers or Canonical. These kinds of errors are so hard to prevent/figure out. For example, I often have problems compiling CEDET despite being a regular contributor and knowing the code quite well. It seems to me like the way compilation and dependencies work in Emacs is just very error prone.
+
+I actually use the same setup: latest Emacs snapshot and CEDET from CVS. Regarding this error, I'm out of ideas as well.
+
+You can try and disable line 82 in ##rudel-compile.el## (where byte-recompile-directory is called). Maybe you can at least generate the autoloads in ##rudel-loaddefs.el## then.
+
+--JanMoringen
+[new]
+Thanks Jan. And my last class in coding was fortan in 1978. So I'm //really// in trouble. :)
+
+Yeah, that allows the ##rudel-compile.el## to generate, but it doesn't solve the eieio problem:
+
+{{{
+Debugger entered--Lisp error: (void-function eieio-defclass-autoload)
+}}}
+
+And so everything else that extends from that, preventing rudel from running. I also notice that ##speedbar## isn't loading, even though I tell it too in my ##.emacs##:
+
+{{{
+;; Load speedbar
+
+(define-key-after (lookup-key global-map [menu-bar tools])
+      [speedbar] '("Speedbar" . speedbar-frame-mode) [calendar])
+}}}
+Doesn't generate any errors, it simply doesn't exist. Another indication that neither the CVS version of CEDET nor the one incluced in emacs24 is being found and/or used by the build. (Had the same problem with emacs23, BTW.)
+
+Just for grins, I also added a path load to CEDET, to see if that would change something:
+{{{
+(add-to-list 'load-path "../cedet/")
+(load-file "/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el")
+}}}
+As usual, it didn't change anything, which is the most mystifying part of this. No matter how I try to get CEDET (either the in included one or the CVS version, I don't care which) to be "found" and included, nothing I try seems to make a difference. 
+
+-- Michael
+
+P.S. I've been keeping the #rudel channel up, just in case. :)
+
 ----
 
 CategoryHomepage

@@ -27,8 +27,8 @@
 ;
 ;; FUNCTIONS:►►►
 ;; `google-define-get-command', `google-define-parse-buffer', `google-define',
-;; `google-define-font-lock', `google-define-kill-def-buffers', 
-;; `google-define-word-at-point'
+;; `google-define-font-lock', `google-define-kill-def-buffers',
+;; `google-define-word-at-point', `google-define-get-command-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -45,9 +45,9 @@
 ;; `*google-define-html-entry-table*'
 ;;
 ;; VARIABLES:
-;; `*google-define-view-map*', `*url-get-buffer*', 
-;; `*google-define-buffer-suffix*'
-;;
+;; `*google-define-view-map*', `*google-define-get-buffer*',
+;; `*google-define-buffer-suffix*', `*get-google-defined*',
+;; 
 ;;; ALIASED/ADVISED/SUBST'D:
 ;;
 ;; DEPRECATED:
@@ -180,8 +180,8 @@
 `google-define-parse-buffer', `google-define-font-lock',
 `google-define-kill-def-buffers', `mon-string-justify-left'
 `*google-define-buffer-suffix*' `*google-define-get-buffer*',
-`*google-define-html-entry-table*', `*google-define-get-command',
-`gg-def-base', `gg-def-num', `gg-def-delim', `gg-def-inition', `gg-def-defined'.\n►►►"
+`*google-define-html-entry-table*', `gg-def-base', `gg-def-num', `gg-def-delim',
+`gg-def-inition', `gg-def-defined'.\n►►►"
   :group 'google-define
   :prefix "google-define-"
   :link '(url-link :tag "EmacsWiki" "http://www.emacswiki.org/emacs/google-define-redux.el"))
@@ -250,7 +250,7 @@
 :NOTE When `IS-MON-SYSTEM-P' this constant _should_ be bound in:
 :FILE mon-regexp-symbols.el It is provided here for completeness.\n
 :CALLED-BY `*regexp-clean-url-utf-escape*', `*regexp-clean-html-escape*'
-:SEE-ALSO `*mon-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+:SEE-ALSO `*regexp-wrap-url-schemes*', `*regexp-clean-xml-parse*',
 `*regexp-percent-encoding-reserved-chars*', `*regexp-clean-url-utf-escape*',
 `*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*'.\n►►►")
 ) ;; :CLOSE unless
@@ -259,10 +259,26 @@
 ;;; :GOOGLE-DEFINE-ADDITIONS-EXTENSIONS-MODIFICATIONS
 
 ;;; ==============================
+;;; :TODO finish building the keymap and possibly incorporating an xref stack.
+;;
+;;; :NOTE `help-mode's `help-make-xrefs' already steals some keys
+;;;  from `view-mode-map' using `minor-mode-overriding-map-alist' e.g.:
+;;;   (set (make-local-variable 'minor-mode-overriding-map-alist)
+;;;           (list (cons 'view-mode help-xref-override-view-map)))
+;;; IOW No need to bother with our own heavy keymap... just piggy-back it.
 ;;; :CREATED <Timestamp: #{2010-02-03T16:20:02-05:00Z}#{10053} - by MON>
-(defvar *google-define-view-map* (cons (string-to-char "Q") 'View-kill-and-leave)
-  "Keybinding for `view-mode' in `google-define' help buffers.
-:SEE-ALSO `*google-define-get-command', `*google-define-html-entry-table*'.\n►►►")
+;;; (defvar *google-define-view-map* 
+;;;   (let ((gg-vm (make-sparse-keymap)))
+;;;     (set-keymap-parent gg-vm help-mode-map);;help-xref-override-view-map) ;; help-mode-map)
+;;;     (define-key gg-vm "Q" 'View-kill-and-leave)
+;;;     (define-key gg-vm "q" 'View-kill-and-leave)
+;;;     (define-key gg-vm "c" 'View-kill-and-leave)
+;;;     (define-key gg-vm "C" 'View-kill-and-leave)
+;;;     (define-key gg-vm "K" 'View-kill-and-leave)
+;;;     (define-key gg-vm "k" 'View-kill-and-leave)
+;;;     gg-vm)
+;;;   "Keybinding for `view-mode'/`help-mode' in `google-define' help buffers.\n
+;;; :SEE-ALSO `*google-define-get-comman', `*google-define-html-entry-table*'.\n►►►")
 ;;
 ;;; :TEST-ME *google-define-view-map* 
 ;;;(progn (makunbound '*google-define-view-map*) (unintern '*google-define-view-map*) )
@@ -270,26 +286,82 @@
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-03T13:43:28-05:00Z}#{10053} - by MON>
 (defvar *google-define-get-buffer* nil 
-  "*Name of buffer `google-define-get-command' should return results in.
+  "*Name of buffer `google-define-get-command' should return results in.\n
 :SEE-ALSO `*google-define-buffer-suffix*'.\n►►►")
 ;;
 (unless (bound-and-true-p *google-define-get-buffer*)
   (setq *google-define-get-buffer* (symbol-name '*google-define-get-buffer*)))
 ;;
-;;; :TEST-ME *google-define-get-buffer*
+;;; :TEST-ME (symbol-value '*google-define-get-buffer*)
 ;;;(progn (makunbound '*google-define-get-buffer*) (unintern '*google-define-get-buffer*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T14:55:41-05:00Z}#{10055} - by MON>
 (defvar *google-define-buffer-suffix* '("*" . ":gg-definition*")
   "*Prefix and suffix to attach to defition buffers created with `google-define'.\n
+:NOTE Don't change this var without verifying that `google-define-entry-setup'
+can still match the buffer on entry else we can't frob the `help-mode-hook'.
 :CALLED-BY `google-define-kill-def-buffers' when cleaning up definition buffers.\n
 :SEE-ALSO `*google-define-get-buffer*' `*google-define-html-entry-table*',
-`*google-define-get-command'.\n►►►")
+`google-define-get-command'.\n►►►")
 ;;
 ;;; :TEST-ME *google-define-buffer-suffix*
+;;
 ;;;(progn (makunbound '*google-define-buffer-suffix*) (unintern '*google-define-buffer-suffix*) )
 
+;;; ==============================
+;;; :CHANGESET 1838
+;;; :CREATED <Timestamp: #{2010-06-09T18:07:19-04:00Z}#{10233} - by MON KEY>
+(defvar *get-google-defined* nil
+  "*A process name for `google-define-get-command'. 
+The value of this variable (a string) is used as `make-network-process's keyword
+arg ``:name''. Useful for recovering/debugging hung processes e.g. with:\n
+ \(get-process *get-google-defined*\)\n
+ \(process-status \(get-process *get-google-defined*\)\)\n
+:SEE-ALSO `*google-define-get-buffer*', `*google-define-buffer-suffix*'.\n►►►")
+;;
+(unless (bound-and-true-p *get-google-defined*)
+  (setq *get-google-defined*  (symbol-name '*get-google-defined*)))
+;;
+;;; :TEST-ME (symbol-value '*get-google-defined*)
+;;;(progn (makunbound '*google-define-get-buffer*) (unintern '*google-define-get-buffer*) )
+
+
+;;; ==============================
+;;; (view-mode-exit) (view-mode-exit (nil nil t) (quit-window)
+;;; (window-buffer) 
+;;; (set-keymap-parent *google-define-view-map* view-mode-map)
+;;; (define-key *google-define-view-map* "q" help-mode-map
+;; (view-mode-exit `(,(selected-window) nil . 'quit-window))
+;; (view-mode-exit (list (selected-window) nil 'quit-window))
+;;; ==============================
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-04-01T20:06:49-04:00Z}#{10135} - by MON KEY>
+;;; (defun google-define-entry-setup ()
+;;;   "Make help-mode more google-define friendly.
+;;; Set the local keymap to `*google-define-view-map*'. 
+;;; Bind 'view-kill-and-leave to various keys.
+;;; Set the view-exit-action to kill the buffer.
+;;; :SEE-ALSO `*google-define-buffer-suffix*'.\n►►►"
+;;;   (when (string-match-p   ;; :NOTE Consider passing in the current-buffers name :)
+;;;          (concat ".*" (cdr *google-define-buffer-suffix*))
+;;;          (buffer-name (get-buffer (current-buffer))))
+;;;     (with-current-buffer (current-buffer)    
+;;;           (use-local-map *google-define-view-map*))))
+
+;;; ==============================
+;; (add-hook 'help-mode-hook ;; 'view-mode-hook
+;; (set (make-local-variable 'view-no-disable-on-exit) t)
+;; 
+;; :NOTE Following _undoes_ the `help-mode' binding of 
+;; `view-exit-action'. This is the last form eval'd just before
+;; running the `help-mode-hook'...
+;;; (set (make-local-variable 'view-exit-action)
+;;;      #'(lambda ()
+;;;          (with-current-buffer (current-buffer)
+;;;            (kill-buffer (current-buffer))))
+;;;      );;;t t)))
 
 ;;; ==============================
 ;;; :REQUIRES `mon-help-KEY-tag' <- :FILE mon-doc-help-utils.el
@@ -365,10 +437,11 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-04T21:28:01-05:00Z}#{10055} - by MON>
 (defun google-define-get-command (host path)
   "Retrieve google defnitions to process-buffer `*google-define-get-buffer*'.\n
+:EXAMPLE\n\n(google-define-get-command-TEST)\n
 :SEE-ALSO `google-define', `google-define-parse-buffer', `google-define-font-lock',
-`google-define-kill-def-buffers'.\n►►►"
-  (let* ((timeout 180)
-         (port 80) ;; http
+`google-define-kill-def-buffers', `google-define-get-command-TEST'.\n►►►"
+  (let* ((timeout 60) ;; 180)
+         (port 80)  ;; http
          (post-cmd
           (concat "GET " path " HTTP/1.0\r\n"
                   "Host: " host "\r\n"
@@ -381,27 +454,60 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
                           "image/png,*/*;q=0.5\r\n")
                   "Accept-Language: en-us,en;q=0.5\r\n"
                   "Accept-Encoding: gzip,deflate\r\n"
-                  "Accept-Charset: ISO-8859-1;q=0.7,*;q=0.7\r\n"
+                  "Accept-Charset: ISO-8859-1;q=0.7,*;q=0.7\r\n"                  
+                  ;;"Accept-Charset: UTF-8;q=0.8,ISO-8859-1;q=0.7,*;q=0.7\r\n"
                   "\r\n"))
          proc buf)
     (progn
       (when (get-buffer *google-define-get-buffer*)
         (kill-buffer *google-define-get-buffer*))
-      (setq proc (open-network-stream "url-get-command"
-                                      *google-define-get-buffer*
-                                      host
-                                      port))
+      ;;:WAS (setq proc (open-network-stream "url-get-command"
+      ;;                                 *google-define-get-buffer*
+      ;;                                 host
+      ;;                                 port))
+      (setq proc (make-network-process 
+                  :name *get-google-defined*
+                  :buffer *google-define-get-buffer*
+                  :host host
+                  :service port))
       (setq buf (process-buffer proc))
       (process-send-string proc post-cmd)
-      (message "Getting information from %s: waiting for response..." host)
+      (message (concat ":FUNCTION `google-define-get-command' "
+                       " -- Snarfing %s -- waiting for response...") host)
       (while (equal (process-status proc) 'open)
         (unless (accept-process-output proc timeout)
-          (delete-process proc)
-          (error "Server error: timed out while waiting!")))
-      (message "Response received: processing..."))
-    buf))
+          (unwind-protect
+              (error (concat ":FUNCTION `google-define-get-command' "
+                         "-- host %s timed out, deleting network process %S")
+                         host proc)
+            (delete-process proc))
+          (message (concat ":FUNCTION `google-define-get-command' "
+                         " -- response received: processing..."))))
+    buf)))
+;;
+;;; :TEST-ME (google-define-get-command-TEST)
 
-;;; :TEST-ME (google-define-get-command )
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-09T18:00:56-04:00Z}#{10233} - by MON KEY>
+(defun google-define-get-command-TEST ()
+  "Test function for `google-define-get-command'.\n
+Return the raw html for the gg definition of `snarf'.
+display results in buffer named \"*google-define-get-command-TEST*\"
+kill the leftover buffer `*google-define-get-buffer*'.\n
+:EXAMPLE\n\n\(google-define-get-command-TEST\)\n
+:SEE-ALSO `google-define', `google-define-kill-def-buffers'.\n►►►"
+  (let ((gdgc-buff 
+         (get-buffer 
+          (google-define-get-command 
+           "www.google.com" 
+           "/search?num=100&hl=en&q=define%3A%22snarf%22&btnG=Search")))
+        gdgc)
+    (setq gdgc (with-current-buffer gdgc-buff
+                 (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (when gdgc-buff (kill-buffer gdgc-buff))
+    (with-current-buffer (get-buffer-create "*google-define-get-command-TEST*")
+      (save-excursion  (insert gdgc))
+      (display-buffer (current-buffer) t))))
 
 ;;; ==============================
 ;;; :REQUIRES `mon-g2be', `mon-string-justify-left' <- mon-utils.el
@@ -411,9 +517,8 @@ Delimiters characters include: ►, |, ◄ preceded and followed by whitespace e
 Print in a temp-buffer, parse, and convert for presentation.\n
 :SEE-ALSO `google-define', `google-define-get-command',
 `google-define-font-lock', `google-define-kill-def-buffers',
-`mon-string-justify-left' `*google-define-buffer-suffix*'
-`*google-define-get-buffer*', `*google-define-html-entry-table*',
-`*google-define-get-command'.\n►►►"
+`mon-string-justify-left' `*google-define-buffer-suffix*',
+`*google-define-get-buffer*', `*google-define-html-entry-table*'.\n►►►"
   (let* ((count 0)
          (accum-buffer ;; <- *standard-output* is here
           (prog1 
@@ -424,8 +529,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
                   (erase-buffer))))))
          ;; :NOTE `accum-buffer' _should_ be empty, don't bother checking.
          (standard-output (get-buffer-create accum-buffer)))
-    (princ (format "Definitions for: %s\n\n" search-word))
-    
+    (princ (format "Definitions for: %s\n\n" search-word))    
     ;; (with-current-buffer  ??
     (set-buffer 
      ;; :NOTE "http://www.google.com/search?num=100&hl=en&q=define%3A%22big%22&btnG=Search"
@@ -436,7 +540,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
               (replace-regexp-in-string " +" "+" search-word)
               "%22&btnG=Search")))
     (unwind-protect
-         (progn
+        (progn
            (mon-g2be) ;; :NOTE `mon-g2be' <- :FILE mon-utils.el
            (while (search-forward-regexp "<li>\\([^<]+\\)" nil t)
              (incf count)
@@ -509,6 +613,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
 ;;; :REQUIRES `mon-g2be' <- :FILE mon-utils.el
 ;;; :TODO The word definition fontlocking should also find the prefix of word 
 ;;; e.g. affixed -> "ed\\_w" "ing\\_w" "ing\\_w" ".tion\\_w" "edness\\_w"
+;;;                 "ity\\_w" "ify\\_w" "ies\\_w"
 ;;; :CREATED <Timestamp: #{2010-02-04T21:33:14-05:00Z}#{10055} - by MON>
 (defun google-define-font-lock (search-word)
   "Add fontification text-properties to the definitions.\n
@@ -560,9 +665,13 @@ If there is a word at point us it as default value for prompt.\n
                       sw
                       (cdr *google-define-buffer-suffix*)))
          (defs (google-define-parse-buffer sw dfb)))
-    (prog1 (message header)
+    (prog1 
+        (message header)
+      ;;  (progn
+      ;;  (mon-help-temp-docstring-display defs dfb t))))
+      ;;(with-current-buffer (current-buffer)
+      ;;(google-define-entry-setup))))))
       (mon-help-temp-docstring-display defs dfb t))))
-      
 ;;
 ;;; :TEST-ME (google-define "define")
 ;;; :TEST-ME (google-define nil t)define
@@ -686,3 +795,4 @@ When called-interactively message with the buffers killed.\n
 ;;;    (set-text-properties 0 (length word-at-point) nil word-at-point)
 ;;;    word-at-point))
 ;;; ==============================
+

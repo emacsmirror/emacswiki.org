@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 10:49:06 2010 (-0700)
+;; Last-Updated: Wed Jun  9 17:31:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25319
+;;     Update #: 25325
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6502,11 +6502,12 @@
 ;;  completion enhancements provided by Icicles: `M-TAB' is bound to
 ;;  `icicle-isearch-complete' during Isearch.
 ;;
-;;  On MS Windows, the operating system itself grabs `M-TAB' (by
-;;  default), making it unavailable for Emacs.  For this reason, on
-;;  Windows, Icicles binds `icicle-isearch-complete' also to
-;;  `C-M-TAB'.  But note that you can also use
-;;  (w32-register-hot-key [M-tab]) to enable Emacs to use `M-TAB'.
+;;  Some operating systems grab `M-TAB' for their own use, making it
+;;  unavailable for Emacs.  They normally do not grab `ESC TAB', which
+;;  in Emacs is typically the same ase `M-TAB'.  For this reason,
+;;  Icicles also binds `icicle-isearch-complete' to both `ESC TAB' and
+;;  `C-M-TAB'.  (Note: For MS Windows, you can use
+;;  (w32-register-hot-key [M-tab]) to allow Emacs to use `M-TAB'.)
 ;;
 ;;  Icicles users are in the habit of using `M-o' to complete the
 ;;  current minibuffer input against previously entered inputs.
@@ -6515,9 +6516,9 @@
 ;;  to `M-TAB'.
 ;;
 ;;  The keys bound by default to `icicle-isearch-complete' in
-;;  `isearch-mode-map' are thus `M-o' and `M-TAB' (and `C-M-TAB' on MS
-;;  Windows).  But you can change the keys to use for this by
-;;  customizing option `icicle-isearch-complete-keys'.
+;;  `isearch-mode-map' are thus `M-TAB', `ESC TAB', `C-M-TAB', and
+;;  `M-o'.  But you can change the keys to use for this by customizing
+;;  option `icicle-isearch-complete-keys'.
 ;;
 ;;  When you use `M-o' (or `M-TAB') while searching, Isearch exits
 ;;  momentarily, giving way to Icicles completion in the minibuffer

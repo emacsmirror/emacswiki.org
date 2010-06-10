@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 10:11:30 2010 (-0700)
+;; Last-Updated: Wed Jun  9 16:49:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11781
+;;     Update #: 11783
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5217,8 +5217,10 @@ Otherwise remove only Icicles internal text properties:
     (setq isearch-string
           (completing-read
            "Search string (completing): "
-           (mapcar #'list (icicle-remove-duplicates (symbol-value 'regexp-search-ring)))
-           nil nil isearch-string 'regexp-search-ring))))
+           (mapcar #'list (icicle-remove-duplicates (symbol-value (if isearch-regexp
+                                                                      'regexp-search-ring
+                                                                    'search-ring))))
+           nil nil isearch-string (if isearch-regexp 'regexp-search-ring 'search-ring)))))
 
 (defun icicle-completion-all-completions (string table pred point)
   "Icicles version of `completion-all-completions'.

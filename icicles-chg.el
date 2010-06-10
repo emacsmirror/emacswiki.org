@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 20:53:55 2010 (-0700)
+;; Last-Updated: Wed Jun  9 17:33:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5457
+;;     Update #: 5462
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -547,6 +547,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/09 dadams
+;;     icicle-isearch-complete-past-string: Use the last-used ring.  Thx to Michael Heerdegen.
 ;; 2010/06/08 dadams
 ;;     icicle-display-candidates-in-Completions: Show also total when truncated: N shown / M.
 ;;     icicle-maybe-sort-maybe-truncate: Save icicle-nb-candidates-before-truncation before truncating.
@@ -3927,6 +3929,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/06/09 dadams
+;;     icicle-isearch-complete-keys:
+;;       Added [escape tab] to default binding (isearch bizarrie).  Added C-M-TAB for all platforms.
 ;; 2010/06/08 dadams
 ;;     icicle-bookmark-refresh-cache-flag: Changed the default value to t to avoid confusion.
 ;; 2010/06/05 dadams

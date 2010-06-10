@@ -28,7 +28,7 @@
 ;; mon-css-color.el differs in the following ways from the version provided with
 ;; the nxhtml package.
 ;;
-;; - css-color-mode related functions live in a separate namespace e.g.:
+;; - css-color-mode related functions lives in a separate namespace e.g.:
 ;;   `css-color:*' versus nxhtml's `css-color-*';
 ;; - It does not require users download the entire nXhtml package.
 ;; - It is doesn't shadow other css related library user level bindings/hooks 
@@ -46,8 +46,8 @@
 ;; :SEE (URL `http://www.emacswiki.org/emacs/NxhtmlMode')
 ;; 
 ;; USAGE:
-;; Make sure mon-css-color.el is in your loadpath an put the following two lines
-;; in your .emacs init file:
+;; Make sure mon-css-color.el is in your loadpath and put the following two
+;; lines in your .emacs init file:
 ;;
 ;; (autoload  css-color-mode "mon-css-color" "" t)
 ;; (add-hook 'css-mode-hook  css-color-turn-on-in-buffer)
@@ -103,9 +103,9 @@
 ;; `css-color:adjust-hsv-val-at-posn', `css-color:adjust-hex-at-posn',
 ;; `css-color:text-property-color-start', `css-color:text-property-color-region',
 ;; `css-color:cycle-type', `css-color:rgb-down',
-;; `css-color:text-property-color-end', `css-color:font-lock-hook',
+;; `css-color:text-property-color-end', `css-color:font-lock-hook-fun',
 ;; `css-color:foreground-color', `css-color:get-color-at-point',
-;; `css-color-global-mode', `css-color:hex-to-hsv', `css-color:hex-to-rgb',
+;; `css-color:hex-to-hsv', `css-color:hex-to-rgb',
 ;; `css-color:hexify-anystring', `css-color:hexval-beginning',
 ;; `css-color:hsl-to-hex', `css-color:hsl-to-rgb',
 ;; `css-color:hsl-to-rgb-fractions', `css-color:hsv-to-hex',
@@ -116,19 +116,21 @@
 ;; `css-color:normalize-hue', `css-color:num-down', `css-color:num-up',
 ;; `css-color:pal-lumsig', `css-color:parse-hsl', `css-color:repl-color-at-posn',
 ;; `css-color:rgb-to-hex', `css-color:rgb-to-hsl', `css-color:rgb-to-hsv',
-;; `css-color:run-tests', `css-color-hsv-saturation-down',
-;; `css-color-hsv-saturation-up', `css-color:string-hex-to-hsl',
+;; `css-color:run-tests', `css-color:hsv-saturation-down',
+;; `css-color:hsv-saturation-up', `css-color:string-hex-to-hsl',
 ;; `css-color:string-hsl-to-hex', `css-color:string-hsl-to-rgb',
 ;; `css-color:string-name-to-hex', `css-color:string-rgb-to-hex',
 ;; `css-color:string-rgb-to-name', `css-color:examine-color',
-;; `css-color:toggle-percentage', `css-color:turn-on-in-buffer',
-;; `css-color:rgb-up', `css-color:hsv-value-down', `css-color:hsv-value-up',
+;; `css-color:toggle-percentage', `css-color:rgb-up',
+;; `css-color:hsv-value-down', `css-color:hsv-value-up',
 ;; `css-color:what-channel', `css-color:within-bounds',
+;; `css-color-turn-on-in-buffer', `css-color-global-mode',
+;; `css-color:html-color-by-name', `css-color:html-color-both-cases'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; CONSTANTS:
-;; `*css-color:hex-chars*', `*css-color:html-colors*',
-;; `*css-color:type-circle*', `*css-color:version*', `*regexp-css-color-color*',
+;; `css-color:version', `*css-color:hex-chars*', `*css-color:html-colors*',
+;; `*css-color:type-circle*', `*regexp-css-color-color*',
 ;; `*regexp-css-color-hex*', `*regexp-css-color-hsl*', `*regexp-css-color-rgb*',
 ;;
 ;; VARIABLES:
@@ -157,7 +159,7 @@
 ;; FILE-CREATED: 2009-05-09
 ;;
 ;; =================================================================
-;; Following GFDL permissions apply to documented features having either the the
+;; Following GFDL permissions apply to documented features having either the
 ;; `css-color:' or `*regexp-css-color-' symbol prefixes:
 ;;
 ;; Permission is granted to copy, distribute and/or modify this
@@ -405,18 +407,43 @@
     ("YellowGreen" "#9ACD32"))
   "List of color names mapped to their hexadecimal values.\n
 W3C SVG color keywords:
-:SEE (URL `http://www.w3.org/TR/SVG/types.html#ColorKeywords')\n
+:SEE (URL `http://www.w3.org/TR/SVG/types.html#ColorKeywords ')\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
 `*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
 ;;
 ;;;(progn (makunbound '*css-color:html-colors*) (unintern '*css-color:html-colors*) )
 
+
 ;;; ==============================
+;;; :CHANGESET 1839
+;;; :CREATED <Timestamp: #{2010-06-09T20:11:33-04:00Z}#{10233} - by MON KEY>
+(defun css-color:html-color-both-cases ()
+  "Return both cases of HTML colors in car of `*css-color:html-colors*'.\n
+:EXAMPLE\n\n\(css-color:html-color-both-cases\)\n
+\(mapcar 'car *css-color:html-colors*\)\n
+:SEE-ALSO `css-color:html-color-by-name', `*css-color:html-colors*',
+`css-color:examine-color',`*regexp-css-color-html*'.\n►►►"
+  (let (html-color-up-n-down)
+   (mapc #'(lambda (hcund) 
+             (let ((up-n-down (car hcund)))
+               (push up-n-down html-color-up-n-down)
+               (push (downcase up-n-down) html-color-up-n-down)))
+         *css-color:html-colors*)
+   html-color-up-n-down))
+
+;;; ==============================
+;;; :NOTE `*regexp-css-color-html*' has false matches for colors with [.+:-] in
+;;; prefix/suffix causing font-lock to highlight color names in CSS symbols 
+;;; ids, selectors, classe etc. e.g. following are getting lit up:
+;;; ``.txtbold-black-justify'' ``.ligneg_light_brown''
+;;;
 (defvar *regexp-css-color-html*
-  (concat "\\<\\(" 
-          (funcall 'regexp-opt (mapcar 'car *css-color:html-colors*))
-	  "\\)\\>")
+  ;;  (concat "\\([^.+:_-]" (regexp-opt (css-color:html-color-both-cases)) "[^.+:_-]\\)")
+   (concat "\\<\\(" 
+           (funcall 'regexp-opt (css-color:html-color-both-cases))
+           "\\)\\>")
+
   "*Regexp generated from values of `*css-color:html-colors*'.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
@@ -437,13 +464,13 @@ W3C SVG color keywords:
 (defconst *regexp-css-color-color* 
   (concat  "\\(?:#"
            "\\(?:[a-fA-F[:digit:]]\\{6\\}\\|[a-fA-F[:digit:]]\\{3\\}\\)"
-           "\\|hsl(" ;; HSL
+           "\\|hsl("
            "\\(?:[[:digit:]]\\{1,3\\}\\)"
            ",[[:space:]]*"
            "\\(?:[[:digit:]]\\{1,3\\}\\)"
            "%,[[:space:]]*"
            "\\(?:[[:digit:]]\\{1,3\\}\\)%)"
-           "\\|rgba?(" ;; RGB
+           "\\|rgba?("
            "\\(?:[[:digit:]]\\{1,3\\}%?\\)"
            ",[[:space:]]*"
            "\\(?:[[:digit:]]\\{1,3\\}%?\\)"
@@ -656,8 +683,7 @@ otherwise return \"gray100\" (hex #ffffff).\n
          nil)
         ((= (aref hex-str->rgb 0) 35)
          (css-color:hex-to-rgb (substring hex-str->rgb 1)))
-        ( ;;(oddp (length str))
-         (= (mod (length hex-str->rgb) 2) 1)
+        ((= (mod (length hex-str->rgb) 2) 1)
          (css-color:hex-to-rgb 
           (mapconcat #'(lambda (c)
                          (make-string 2 c))
@@ -684,7 +710,7 @@ Arguments are as follows:\n R = Red;\n G = Green;\n B = Blue.\n
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
 `css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
-   (format "%02x%02x%02x" r g b))			     ;val
+   (format "%02x%02x%02x" r g b))
 
 ;;; ==============================
 (defun css-color:rgb-to-hsv (r g b)
@@ -829,8 +855,9 @@ Put the css-color property as COLOR-DATA.\n
   (propertize
    (apply 'css-color:hsv-to-hex color-data)
    'keymap *css-color:map*
-   ;; 'color-css-type color-data))    ;; 'css-color color-data))
-   'color color-data))
+   ;; 'color color-data))
+    'color-css-type color-data))
+
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-31T12:52:02-04:00Z}#{10133} - by MON KEY>
@@ -894,12 +921,12 @@ H is the hsl HUE;\n S is the hsl Saturation;\n L is the hsl lightness;\n
         (t x)))
 
 ;;; ==============================
+;;; :ADDED `save-match-data'
+;;; :MODIFICATIONS <Timestamp: #{2010-06-07T12:38:23-04:00Z}#{10231} - by MON KEY>
 (defun css-color:parse-hsl (hsl-string)
   "Parse `*regexp-css-color-hsl*' matches for HSL-STRING.\n
 Return matches for hue saturation luminance as list of numbers.\n
 :SEE-ALSO `css-color:string-hsl-to-rgb', `css-color:string-hsl-to-hex'.\n►►►"
-  ;; <Timestamp: #{2010-06-07T12:38:23-04:00Z}#{10231} - by MON KEY>
-  ;; :ADDED `save-match-data'
   (save-match-data
     (string-match *regexp-css-color-hsl* hsl-string)
     (let ((rtn-hsl-str (mapcar 'string-to-number
@@ -963,7 +990,7 @@ by INCR-REPLACE.\n
 `css-color:repl-color-at-posn'.\n►►►"
   (save-excursion
     (css-color:hexval-beginning)
-    (let ((saved-color (get-text-property (point) 'color))) ;; 'css-color)))
+    (let ((saved-color (get-text-property (point) 'color-css-type))) ;; 'color)))
       (or saved-color
 	  (css-color:hex-to-hsv
 	   (buffer-substring-no-properties (point) (+ (point) 6)))))))
@@ -1239,7 +1266,6 @@ function names so generated include:\n
     (apply 'format "rgb(%d,%d,%d)"
            (mapcar 'round (css-color:hsl-to-rgb h s l)))))
 
-
 ;;; ==============================
 (defun css-color:string-rgb-to-name (rgb-color-str->name)
   "Convert RGB-COLOR-STR->NAME to css-color name from `*css-color:html-colors*'.\n
@@ -1277,6 +1303,7 @@ function names so generated include:\n
 ;;; ==============================
 (defun css-color:string-rgb-to-hex (rgb-color-str->hex)
   "Convert the RGB-COLOR-STR->HEX value.\n
+:EXAMPLE\n\n\(css-color:string-rgb-to-hex \"rgb\(173,47,93\)\"\)\n
 :SEE-ALSO `*regexp-css-color-rgb*', `css-color:rgb-to-hex',
 `css-color:cycle-type', `*css-color:string-frob*', `css-color:next-type',
 `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
@@ -1293,6 +1320,8 @@ function names so generated include:\n
                     (list (match-string-no-properties 1 rgb-color-str->hex)
                           (match-string-no-properties 2 rgb-color-str->hex)
                           (match-string-no-properties 3 rgb-color-str->hex)))))))
+;;
+;;; :TEST-ME (css-color:string-rgb-to-hex "rgb(173,47,93)")
 
 ;;; ==============================
 (defun css-color:string-hsl-to-hex (hsl-color-str->hex)
@@ -1356,12 +1385,49 @@ function names so generated include:\n
                        "-- color-type at point not formatted as rgb(NN,NN,NN) type <SPC>")))))
 
 ;;; ==============================
-;;; :NOTE Provide some backwards-compatibility to hexcolor.el:
-(defvar *css-color:fg-history* nil)
+(defvar *css-color:fg-history* nil
+  "List used for completion history with html color lookups.
+:SEE-ALSO `css-color:html-color-by-name', `css-color:examine-color'.\n►►►")
 ;;
-(defvar *css-color:bg-history* nil)
+;; (setq *css-color:fg-history* nil)
 
 ;;; ==============================
+;;; :CHANGESET 1833
+;;; :CREATED <Timestamp: #{2010-06-08T17:31:52-04:00Z}#{10232} - by MON KEY>
+(defun css-color:html-color-by-name (&optional this-css-color insrtp intrp prompt)
+  "Complete an html css color from `*css-color:html-colors*'.\n
+Optional arg THIS-CSS-COLOR is a symbol or string name to `*css-color:html-colors*'
+When INSRTP is non-nil or called-interactively insert return value at point.
+Does not move point.\n
+Optional arg prompt is a string for `completing-read'.
+Default prompt is: \"CSS color name: \"\n
+:EXAMPLE\n\n(css-color:html-color-by-name 'aliceblue)\n
+\(css-color:html-color-by-name \"aliceblue\"\)\n
+\(css-color:html-color-by-name \"AliceBlue\"\)\n
+\(css-color:html-color-by-name\)\n
+\(css-color:html-color-by-name\)\n
+\(with-temp-buffer \(css-color:html-color-by-name nil nil t) \(buffer-string\)\)\n
+:SEE-ALSO `css-color:examine-color', `css-color:html-color-both-cases'.\n►►►"
+  (interactive "i\ni\np")
+  (let ((ht-cmp (if this-css-color
+                    (assoc-string this-css-color *css-color:html-colors* t)
+                  (assoc-string (completing-read (or prompt "CSS color name: " )
+                                                 (css-color:html-color-both-cases)
+                                                 nil nil nil '(*css-color:fg-history* . 1)
+                                                 (car *css-color:fg-history*))
+                                *css-color:html-colors* t))))
+    ;;(when (or intrp prompt) (push (car ht-cmp) *css-color:fg-history*))
+    (if (and ht-cmp (or insrtp intrp))
+        (save-excursion
+          (insert (format ":HTML-COLOR-NAME %s\n:RGB-HEX-VALUE   %s" (car ht-cmp) (cadr ht-cmp))))
+      ht-cmp)))
+;;
+;;; :TEST-ME (css-color:html-color-by-name "aliceblue")
+;;; :TEST-ME (with-temp-buffer (apply 'css-color:html-color-by-name "aliceblue" '(nil t)) (buffer-string))
+
+;;; ==============================
+;;; :CHANGESET 1839
+;;; :CREATED <Timestamp: #{2010-06-09T21:05:21-04:00Z}#{10233} - by MON KEY>
 (defun css-color:examine-color (fg-color bg-color)
   "Test css-colors interactively.\n
 The css-colors are displayed in the echo area. You can specify the
@@ -1369,21 +1435,19 @@ colors of any viable css color.\n
 :EXAMPLE\n\n\(css-color:examine-color \"Red\" \"#000\"\)\n
 \(css-color:examine-color \"#0C0\" \"#b0ff00\"\)\n
 \(css-color:examine-color \"hsla\(100, 50%, 25%\)\" \"rgb\(255,100,120\)\"\)\n
-:SEE-ALSO `css-color:hexify-anystring', `*css-color:bg-history*',
-`*css-color:fg-history*' `list-colors-display'.\n►►►"
-  (interactive (list (completing-read "Foreground color: "
-				      *css-color:html-colors*
-				      nil nil nil nil *css-color:fg-history*)
-		     (completing-read "Background color: "
-				      *css-color:html-colors*
-				      nil nil nil nil *css-color:bg-history*)))
+\(call-interactively 'css-color:examine-color\)\n 
+:SEE-ALSO `css-color:html-color-by-name', `css-color:hexify-anystring',
+`*css-color:bg-history*', `*css-color:fg-history*' `list-colors-display'.\n►►►"
+  (interactive (list 
+                (car (css-color:html-color-by-name nil nil nil "Foreground color: "))
+                (car (css-color:html-color-by-name nil nil nil "Background color: "))))
   (let* ((s (concat " Foreground: " fg-color ", Background: " bg-color " ")))
     (put-text-property 0 (length s)
                        'face `(:foreground ,(css-color:hexify-anystring fg-color)
                                :background ,(css-color:hexify-anystring bg-color)) s)
     (progn
       (message (concat ":FUNCTION `css-color:examine-color' "
-                     " -- here are the colors:\n %s") s)
+                       " -- here are the colors:\n %s") s)
       (sit-for 2))))
 
 ;;; ==============================             
