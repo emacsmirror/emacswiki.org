@@ -15,6 +15,8 @@ Library Lisp:col-highlight.el uses and extends VlineMode in several ways. It pro
 
 * `flash-column-highlight' -- Highlight the current column for `col-highlight-period' seconds. Another way to show the current column temporarily.
 
+Easy installation using AutoInstall: `M-x auto-install-batch col-highlight' -- [[rubikitch]]
+
 '''See Also:'''
 
 * HighlightCurrentLine for similar highlighting, but for the current line, not the current column.

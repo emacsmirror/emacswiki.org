@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 20:17:47 2010 (-0700)
+;; Last-Updated: Thu Jun 10 11:27:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21110
+;;     Update #: 21138
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5354,7 +5354,8 @@ Same as `icicle-find-file-absolute' except uses a different window." ; Doc strin
   "Change `default-directory' during `icicle-find-file-absolute'."
   (interactive
    ;; Should not need to bind `minibuffer-completion-predicate'.  Emacs 23.2 bug, per Stefan.
-   (let ((minibuffer-completion-predicate  minibuffer-completion-predicate))
+   (let ((enable-recursive-minibuffers     t)
+         (minibuffer-completion-predicate  minibuffer-completion-predicate))
      (list (funcall (if (fboundp 'read-directory-name)
                         #'read-directory-name
                       #'read-file-name)

@@ -1,10 +1,10 @@
-This page is about library Lisp:crosshairs.el, which combines the features of libraries Lisp:col-highlight.el (HighlightCurrentColumn) and Lisp:hl-line+.el (HighlightCurrentLine). This highlights the current line and the current column at the same time, letting you easily locate the TextCursor.
+This page is about library '''<tt>[[crosshairs.el]]</tt>''', which combines the features of libraries <tt>[[col-highlight.el]]</tt> (HighlightCurrentColumn) and <tt>[[hl-line+.el]]</tt> (HighlightCurrentLine). This highlights the current line and the current column at the same time, letting you easily locate the [[cursor]].
 
 Here's a screenshot, to show the effect:
 
 [[image:CrosshairHighlightingImage]]
 
-Library <tt>[[crosshairs.el]]</tt> provides these commands:
+Library '''##crosshairs.el##''' provides these commands:
 
 * `toggle-crosshairs-when-idle' -- Highlight the current line and column whenever Emacs is idle more than a certain number of seconds.
 
@@ -12,6 +12,7 @@ Library <tt>[[crosshairs.el]]</tt> provides these commands:
 
 * `flash-crosshairs' -- Highlight the current line and column for a few seconds. Another way to show the current line and column temporarily. You can show each for different lengths of time: line and column.
 
+Easy installation using AutoInstall: `M-x auto-install-batch col-highlight' -- [[rubikitch]]
 
 '''See Also:'''
 

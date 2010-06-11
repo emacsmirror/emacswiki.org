@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jun  9 16:49:28 2010 (-0700)
+;; Last-Updated: Thu Jun 10 15:01:01 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11783
+;;     Update #: 11788
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4093,7 +4093,8 @@ MESSAGE is the confirmation message to display in the minibuffer."
   (if (or (icicle-file-name-input-p) icicle-abs-file-candidates) ; File names: relative or absolute.
       (setq icicle-completion-candidates
             (icicle-strip-ignored-files-and-sort icicle-completion-candidates))
-    (icicle-maybe-sort-maybe-truncate icicle-completion-candidates)))
+    (setq icicle-completion-candidates  (icicle-maybe-sort-maybe-truncate
+                                         icicle-completion-candidates))))
 
 (defun icicle-scroll-or-update-Completions (msg)
   "Scroll *Completions* if this command was repeated; else update it."

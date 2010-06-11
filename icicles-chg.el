@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jun  9 17:33:48 2010 (-0700)
+;; Last-Updated: Thu Jun 10 15:05:41 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5462
+;;     Update #: 5466
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/06/10 dadams
+;;     icicle-cd-for-abs-files: Bound enable-recursive-minibuffers to t.
 ;; 2010/06/08 dadams
 ;;     Added: icicle-bookmark-delete-action: Make it refresh the cache.
 ;;     icicle-bookmark(-list|-other-window), icicle-define-bookmark-command-1:
@@ -547,6 +549,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/10 dadams
+;;     icicle-maybe-sort-and-strip-candidates:
+;;       Set icicle-completion-candidates to result of *maybe...maybe*.  (It broke C-~.)
 ;; 2010/06/09 dadams
 ;;     icicle-isearch-complete-past-string: Use the last-used ring.  Thx to Michael Heerdegen.
 ;; 2010/06/08 dadams

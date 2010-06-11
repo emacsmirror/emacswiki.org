@@ -132,8 +132,18 @@
           (
            "http://www.emacswiki.org/emacs/download/sequential-command.el"
            "http://www.emacswiki.org/emacs/download/sequential-command-config.el"))
-         )
-       auto-install-batch-list))
+         ("col-highlight" nil nil
+          (
+           "http://www.emacswiki.org/emacs/download/vline.el"
+           "http://www.emacswiki.org/emacs/download/column-marker.el"
+           "http://www.emacswiki.org/emacs/download/col-highlight.el"))
+         ("crosshairs" nil nil
+          (
+           "col-highlight"
+           "http://www.emacswiki.org/emacs/download/hl-line+.el"
+           "http://www.emacswiki.org/emacs/download/crosshairs.el"))
+         )                              ;/append
+       auto-install-batch-list))        ;/setq
 
 ;; Local Variables:
 ;; no-byte-compile:   t

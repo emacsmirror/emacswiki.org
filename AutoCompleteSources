@@ -23,20 +23,15 @@ Completion for python using [[http://code.google.com/p/pysmell/|PySmell]].
 
 -- [[TiagoCamargo]]
 
-[new]
-Here's an [[http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs|alternative Python source]] I wrote using Rope.
 
--- [[EnigmaCurry]]
+Completion for python using [[http://rope.sourceforge.net/ropemacs.html|rope]].
 
-
-: It seems broken for newer auto-complete versions, with 1.2 I simply use the following to have Rope auto completion: 
 <pre>
 (ac-ropemacs-initialize)
 (add-hook 'python-mode-hook
           (lambda ()
 	    (add-to-list 'ac-sources 'ac-source-ropemacs)))
 </pre>
-: -- [[NilugeKiWi]]
 
 == DynamicAbbreviations ==
 
