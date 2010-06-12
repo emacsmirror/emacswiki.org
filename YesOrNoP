@@ -22,6 +22,23 @@ Or you can predefine the answers for yes-or-no-p so you can select them with M-p
     (mapcar (lambda (elt) (add-to-list 'yes-or-no-p-history elt))
             '("no" "yes"))
 
+The inconvenience can be having to type "no" to cancel `yes-or-no-p'.
+
+If you would prefer to have an empty response (hitting `RET') or any
+other input to be "no" and still require the full word "yes" use this
+function as an alias for `yes-or-no-p'.
+
+  (defun my-yes-or-mumble-p (prompt)
+    "PROMPT user with a yes-or-no question, but only test for yes."
+    (if (string= "yes"
+                 (downcase
+                  (read-from-minibuffer
+                   (concat prompt "(yes or no) "))))
+        t
+      nil))
+  
+    (defalias 'yes-or-no-p 'my-yes-or-mumble-p)
+
 Other possibilities:
 
 * QuickYes -- add shortcuts <code>M-y</code> and <code>M-n</code>

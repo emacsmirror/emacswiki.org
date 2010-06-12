@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 18:18:37 2010 (-0700)
+;; Last-Updated: Fri Jun 11 07:56:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6581
+;;     Update #: 6591
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2189,19 +2189,24 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
          (define-key minibuffer-local-filename-completion-map
              "\C-xm" 'icicle-bookmark-file-other-window))
        (define-key minibuffer-local-filename-completion-map
-         [(control backspace)] 'icicle-up-directory))
+         [(control backspace)] 'icicle-up-directory)
+       (define-key minibuffer-local-filename-completion-map "\C-c+" 'icicle-make-directory))
+     ;; Use the old map name, for Emacs 22-23.1.
      (when (boundp 'minibuffer-local-must-match-filename-map)
        (when (and (featurep 'bookmark+) (fboundp 'icicle-bookmark-file-other-window))
          (define-key minibuffer-local-must-match-filename-map
              "\C-xm" 'icicle-bookmark-file-other-window))
-       (define-key minibuffer-local-must-match-filename-map ; Use the old name, for Emacs 22-23.1.
-         [(control backspace)] 'icicle-up-directory))
+       (define-key minibuffer-local-must-match-filename-map
+         [(control backspace)] 'icicle-up-directory)
+       (define-key minibuffer-local-must-match-filename-map "\C-c+" 'icicle-make-directory))
+     ;; Use the new name, for Emacs 23.2+.
      (when (boundp 'minibuffer-local-filename-must-match-map)
        (when (and (featurep 'bookmark+) (fboundp 'icicle-bookmark-file-other-window))
          (define-key minibuffer-local-filename-must-match-map
              "\C-xm" 'icicle-bookmark-file-other-window))
-       (define-key minibuffer-local-filename-must-match-map ; Use the new name, for Emacs 23.2+.
-         [(control backspace)] 'icicle-up-directory))
+       (define-key minibuffer-local-filename-must-match-map
+         [(control backspace)] 'icicle-up-directory)
+       (define-key minibuffer-local-filename-must-match-map "\C-c+" 'icicle-make-directory))
 
      ;; `completion-list-mode-map': map for *Completions* buffer.
      ;; Abort on `C-g' or `q'.  Switch to minibuffer on `C-insert'.  Do not allow normal input.
@@ -2378,16 +2383,18 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
      ;; `minibuffer-local-must-match-filename-map' is an alias for
      ;; `minibuffer-local-filename-must-match-map'.  But for Emacs 23.2, there is no such alias!
      (when (boundp 'minibuffer-local-filename-completion-map)
-       (define-key minibuffer-local-filename-completion-map "\C-xm" nil)
-       (define-key minibuffer-local-filename-completion-map [(control backspace)] nil))
+       (define-key minibuffer-local-filename-completion-map "\C-xm"               nil)
+       (define-key minibuffer-local-filename-completion-map [(control backspace)] nil)
+       (define-key minibuffer-local-filename-completion-map "\C-c+"               nil))
+     ;; Use the old name, for Emacs 22-23.1.
      (when (boundp 'minibuffer-local-must-match-filename-map)
-       (define-key minibuffer-local-must-match-filename-map "\C-xm" nil)
-       (define-key minibuffer-local-must-match-filename-map ; Use the old name, for Emacs 22-23.1.
-           [(control backspace)] nil))
+       (define-key minibuffer-local-must-match-filename-map "\C-xm"               nil)
+       (define-key minibuffer-local-must-match-filename-map [(control backspace)] nil))
+     ;; Use the new name, for Emacs 23.2+.
      (when (boundp 'minibuffer-local-filename-must-match-map)
-       (define-key minibuffer-local-filename-must-match-map "\C-xm" nil)
-       (define-key minibuffer-local-filename-must-match-map ; Use the new name, for Emacs 23.2+.
-           [(control backspace)] nil))
+       (define-key minibuffer-local-filename-must-match-map "\C-xm"               nil)
+       (define-key minibuffer-local-filename-must-match-map [(control backspace)] nil)
+       (define-key minibuffer-local-filename-must-match-map "\C-c+"               nil))
 
      ;; `completion-list-mode-map': map for *Completions* buffer.
      (let ((map  completion-list-mode-map))

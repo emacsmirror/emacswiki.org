@@ -572,11 +572,17 @@ items: it deletes the current item from the history.
 
 
 During (absolute or relative) file-name completion, the following
-minibuffer binding navigates up the directory hierarchy.  It
-removes the last directory component (and any partial file name)
-from your minibuffer input.
+minibuffer bindings are also in effect:
 
-* '''`C-backspace'''' -- `icicle-up-directory'
+* '''`C-backspace'''' -- `icicle-up-directory': Navigate up the directory hierarchy.
+
+* '''`##C-c +##''''  -- `icicle-make-directory': Create a directory.
+
+* '''`C-x m'''' -- `icicle-bookmark-file-other-window': Visit a file or directory (Dired) bookmark. See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]]. (Available only if you use <tt>[[bookmark+.el]]</tt>.)
+
+During absolute file-name completion, you can use '''`C-c C-d'''' to
+change the current directory on the fly (think UNIX command `cd').
+See also [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Different Directories]].
 
 
 

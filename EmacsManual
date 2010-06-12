@@ -4,13 +4,7 @@ or in Emacs, by typing `M-x info RET' (that's Meta- or ESC x, the word "info",
 followed by the return key), or by typing `C-h i' (that's Control-h followed by i).
 Starting with Emacs 22, you can also read the manual with `C-h r'.
 
-[new]
-if you got the error message
 
-Info-find-file: Info file emacs does not exist
-
-you need to install the emacsXX-common-non-dfsg package (in debian)
-[new]
 
 The GNU Emacs manual is also available online from any GNU ftp mirror or from here:
 
@@ -61,6 +55,14 @@ maintain a list of URLs on a wiki page somewhere, and tell the script to initial
 based on the wiki page. Let me know if you care either way. -- AlexSchroeder
 [new]
 This is a really great feature.  I'm using your script for the hypertext cross-references in the [http://php-mode.sourceforge.net/php-mode.html HTML version of the PHP mode manual].  I can always be confident that it will redirect to the right place.  Look at the ##.html## rule in the [http://php-mode.svn.sourceforge.net/svnroot/php-mode/trunk/php-mode-src/Makefile Makefile] for PHP mode. -- AaronHawley
+
+
+[new]
+if you got the error message
+
+ Info-find-file: Info file emacs does not exist
+
+you need to install the emacsXX-common-non-dfsg package (in debian) -- [[primewizard]]
 [new]
 
 ----

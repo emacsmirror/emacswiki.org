@@ -25,6 +25,9 @@ library '''[[Bookmark+]]''' (<tt>[[bookmark+.el]]</tt>).  It is a [[multi-comman
 actually visit any number of file bookmarks.  When finished, you
 can continue with non-bookmark file-name completion.
 
+* '''`##C-c +##'''' (`icicle-make-directory') to create a directory on the
+fly.
+
 * '''`S-delete'''' to delete the file named by the current completion candidate.
 
 * '''`##M-|##'''' (`icicle-all-candidates-list-alt-action') to open [[Dired]] on
@@ -258,7 +261,7 @@ possible file-name candidates relative to some starting directory.
 
 This is the case for `icicle-find-file-absolute' and
 `icicle-locate-file' (and their variants).  For these
-commands, you can use '''`C-c C-d'''' (think `cd') during completion to
+commands, you can use '''`C-c C-d'''' (think UNIX command `cd') during completion to
 change the current working directory (`default-directory') on the
 fly.  You are prompted for the directory.  The domain of possible
 candidates is recomputed relative to the new `default-directory'.

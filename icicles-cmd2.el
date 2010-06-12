@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 20:52:18 2010 (-0700)
+;; Last-Updated: Fri Jun 11 16:23:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2160
+;;     Update #: 2178
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1947,7 +1947,8 @@ file is searched.  Any existing files in the current directory can be
 chosen.  This is the same as command `icicle-search-file'.
 
 
-Navigation and Help -------------------
+Navigation and Help
+-------------------
 
 The use of completion for this command is special.  It is not unusual
 in this context to have multiple completion candidates that are
@@ -2571,6 +2572,7 @@ display string as in `icicle-search-action'."
                     (pop-to-buffer buf)
                     (raise-frame)
                     (goto-char marker)
+                    (unless (pos-visible-in-window-p) (recenter -2))
                     ;; Highlight current search context using `icicle-search-main-regexp-current'.
                     (icicle-place-overlay (- marker (length candidate)) marker
                                           'icicle-search-current-overlay

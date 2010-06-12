@@ -1,10 +1,13 @@
 ;;; extract-ical --- Import iCalendar events from buffers to OS X iCal
 
 ;; Copyright (C) 2007 Seth Falcon
+;; Copyright (C) 2009 Brian Sniffen
 
 ;; Author: Seth Falcon <seth@userprimary.net>
 ;; Keywords: icalendar, ical, vcal, gnus
 ;; URL: http://userprimary.net/user/software
+
+;; Changed by Brian Sniffen to use make-temp-file
 
 ;;; Commentary:
 
@@ -25,8 +28,8 @@
 
 (require 'gnus)
 
-(defvar extract-ical-invite-file "/tmp/current-ical-invite.ics"
-  "The file to use for writing vcal events (will be overwritten)")
+;(defvar extract-ical-invite-file "/tmp/current-ical-invite.ics"
+;  "The file to use for writing vcal events (will be overwritten)")
 
 (defun send-invite-to-ical ()
   "Write vcal event in current buffer to extract-ical-invite-file"
@@ -34,7 +37,7 @@
   (save-excursion
     (let (invite i-beg i-end
                  (content-buf (current-buffer))
-                 (invite-file extract-ical-invite-file))
+                 (invite-file (make-temp-file (expand-file-name "send-invite-to-ical" temporary-file-directory) nil ".ics")));extract-ical-invite-file))
       (goto-char (point-min))
       (if (not (re-search-forward "^BEGIN:VCALENDAR" (point-max) t))
           (message "Didn't find BEGIN:VCALENDAR, stopping")
@@ -52,8 +55,9 @@
     (when (equal major-mode 'gnus-article-mode)
       (gnus-article-show-summary))
     (when (equal major-mode 'gnus-summary-mode)
-      (gnus-summary-show-article t)
+      (gnus-summary-show-article) ; let Gnus decode b64, QP
       (gnus-summary-select-article-buffer)
+      (gnus-mime-view-all-parts) ; looking for text/calendar
       (send-invite-to-ical)
       (gnus-summary-show-article))))
 

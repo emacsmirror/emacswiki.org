@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun  7 17:31:00 2010 (-0700)
+;; Last-Updated: Fri Jun 11 17:47:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12623
+;;     Update #: 12626
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1589,6 +1589,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/06/11 dadams
+;;     Wrap all (require '* nil t) in condition-case.
 ;; 2010/06/07 dadams
 ;;     Fix deskstop bookmarks for Emacs < 22.  Protect:
 ;;       *-release-lock with fboundp, *-buffer-args-list with boundp, *-dir with Emacs version #, 

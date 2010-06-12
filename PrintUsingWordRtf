@@ -44,6 +44,6 @@ The following Elisp function call will execute this script:
 
 Where:
 
-     vbs-rtf is an Elisp variable having the pathname of the script file.
+     vbs-wrd is an Elisp variable having the pathname of the script file.
      docfile is an Elisp variable having the pathname of the RTF file.
      printer is an Elisp variable having the name of the printer.

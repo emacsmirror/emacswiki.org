@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 20:42:28 2010 (-0700)
+;; Last-Updated: Fri Jun 11 10:54:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22758
+;;     Update #: 22759
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -401,7 +401,7 @@
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
 ;;    `icicle-kill-region-wimpy', `icicle-kill-sentence',
-;;    `icicle-kill-sexp', `icicle-kill-word',
+;;    `icicle-kill-sexp', `icicle-kill-word', `icicle-make-directory',
 ;;    `icicle-minibuffer-complete-and-exit', `icicle-minibuffer-help',
 ;;    `icicle-mouse-candidate-action',
 ;;    `icicle-mouse-candidate-alt-action',

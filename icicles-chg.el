@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 10 15:05:41 2010 (-0700)
+;; Last-Updated: Fri Jun 11 16:25:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5466
+;;     Update #: 5479
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/06/11 dadams
+;;     icicle-find-file-absolute*, icicle-recent-file*, icicle-locate-file-1:
+;;       Bind C-c + to icicle-make-directory.
+;;     icicle-find-file-in-tags-table*: Removed bindings: C-x m, C-backspace.
 ;; 2010/06/10 dadams
 ;;     icicle-cd-for-abs-files: Bound enable-recursive-minibuffers to t.
 ;; 2010/06/08 dadams
@@ -292,6 +296,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/06/11 dadams
+;;     icicle-search-action-1: (unless (pos-visible-in-window-p) (recenter -2)).  Thx to M. Heerdegen.
 ;; 2010/06/08 dadams
 ;;     icicle-search-bookmark, icicle-define-search-bookmark-command:
 ;;       Use icicle-bookmark-delete-action.
@@ -1990,6 +1996,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/11 dadams
+;;     Added: icicle-make-directory.
+;;     icicle-read+insert-file-name: Bind icicle-make-directory to C-c +.
 ;; 2010/06/08 dadams
 ;;     icicle-doremi-increment-max-candidates+: Plain C-u resets icicle-max-candidates to nil.
 ;; 2010/06/07 dadams
@@ -3029,6 +3038,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/06/11 dadams
+;;     icicle-define-minibuffer-maps: Bind/restore C-c + to icicle-make-directory in file-name maps.
 ;; 2010/06/04 dadams
 ;;     icicle-mode doc string: Mention missing doremi commands.
 ;;     icicle-define-icicle-maps: Added Swank items and Max # of Completions, :visible for separator.

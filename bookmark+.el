@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun  7 17:25:25 2010 (-0700)
+;; Last-Updated: Fri Jun 11 17:45:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13368
+;;     Update #: 13379
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -953,7 +953,8 @@ You need library `crosshairs.el' for this feature, and you need Emacs
 22 or later."
   :type 'boolean :group 'bookmark-plus)
 
-(when (and bookmarkp-crosshairs-flag (> emacs-major-version 21) (require 'crosshairs nil t))
+(when (and bookmarkp-crosshairs-flag (> emacs-major-version 21)
+           (condition-case nil (require 'crosshairs nil t) (error nil)))
   (add-hook 'bookmark-after-jump-hook 'bookmarkp-crosshairs-highlight))
 
 ;;;###autoload
@@ -3131,7 +3132,8 @@ still use `bookmark-default-file' for the initial set of bookmarks."
 You can add this to hook `bookmark-after-jump-hook'.
 You need library `crosshairs.el' to use this command."
   (interactive)
-  (unless (require 'crosshairs nil t) (error "You need library `crosshairs.el' to use this command"))
+  (unless (condition-case nil (require 'crosshairs nil t) (error nil))
+    (error "You need library `crosshairs.el' to use this command"))
   (unless mark-active (crosshairs-highlight)))
 
 ;;;###autoload
@@ -4731,7 +4733,8 @@ use `\\[bookmarkp-switch-bookmark-file]' (`bookmarkp-switch-bookmark-file')."
           ;; Add buttons to access help and Customize.
           ;; Not for Emacs 21.3 - its `help-insert-xref-button' signature is different.
           (when (and (> emacs-major-version 21) ; In `help-mode.el'.
-                     (require 'help-mode nil t) (fboundp 'help-insert-xref-button))
+                     (condition-case nil (require 'help-mode nil t) (error nil))
+                     (fboundp 'help-insert-xref-button))
             (help-insert-xref-button "[Doc in Commentary]" 'bookmarkp-commentary-button)
             (insert "           ")
             (help-insert-xref-button "[Doc on the Web]" 'bookmarkp-help-button)
@@ -4835,7 +4838,8 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
             (insert varlist) (insert function) (insert "\n\n")))))))
 
 (when (and (> emacs-major-version 21)
-           (require 'help-mode nil t) (get 'help-xref 'button-category-symbol)) ; In `button.el'
+           (condition-case nil (require 'help-mode nil t) (error nil))
+           (get 'help-xref 'button-category-symbol)) ; In `button.el'
   (define-button-type 'bookmarkp-help-button
       :supertype 'help-xref
       'help-function #'(lambda () (browse-url "http://www.emacswiki.org/emacs/BookmarkPlus"))
@@ -4846,8 +4850,10 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
       'help-function #'(lambda ()
                          (message "Getting Bookmark+ doc from file commentary...")
                          (finder-commentary "bookmark+-doc")
-                         (when (require 'linkd nil t) (linkd-mode 1))
-                         (when (require 'fit-frame nil t) (fit-frame)))
+                         (when (condition-case nil (require 'linkd nil t) (error nil))
+                           (linkd-mode 1))
+                         (when (condition-case nil (require 'fit-frame nil t) (error nil))
+                           (fit-frame)))
       'help-echo (purecopy "mouse-2, RET: Bookmark+ documentation (no Internet needed)"))
   (define-button-type 'bookmarkp-customize-button
       :supertype 'help-xref
@@ -6979,7 +6985,8 @@ You are prompted for the location for saving the desktop file."
   (interactive (list (read-file-name "Save desktop in file: ")))
   (set-text-properties 0 (length desktop-file) nil desktop-file)
   (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
-  (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+  (unless (condition-case nil (require 'desktop nil t) (error nil))
+    (error "You must have library `desktop.el' to use this command"))
   (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
         (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
         (desktop-dir              (file-name-directory desktop-file))
@@ -7007,7 +7014,8 @@ DESKTOP-FILE is the absolute file name of the desktop file to use."
 BOOKMARK is a bookmark name or a bookmark record.
 Handler function for record returned by `bookmarkp-make-desktop-record'."
   (let ((desktop-file  (bookmark-prop-get bookmark 'desktop-file)))
-    (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+    (unless (condition-case nil (require 'desktop nil t) (error nil))
+      (error "You must have library `desktop.el' to use this command"))
     ;; (unless desktop-file (error "Not a desktop-bookmark: %S" bookmark)) ; Shouldn't happen.
     (bookmarkp-desktop-change-dir desktop-file)
     (unless (bookmarkp-desktop-read desktop-file) (error "Could not load desktop file"))))
@@ -7022,7 +7030,8 @@ Clear the desktop and load DESKTOP-FILE DIRNAME."
   (interactive (list (read-file-name "Change to desktop file: ")))
   (set-text-properties 0 (length desktop-file) nil desktop-file)
   (unless (file-name-absolute-p desktop-file) (setq desktop-file  (expand-file-name desktop-file)))
-  (unless (require 'desktop nil t) (error "You must have library `desktop.el' to use this command"))
+  (unless (condition-case nil (require 'desktop nil t) (error nil))
+    (error "You must have library `desktop.el' to use this command"))
   (let ((desktop-basefilename     (file-name-nondirectory desktop-file)) ; Emacs < 22
         (desktop-base-file-name   (file-name-nondirectory desktop-file)) ; Emacs 23+
         (desktop-dir              (file-name-directory desktop-file))

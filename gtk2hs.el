@@ -44,6 +44,8 @@
 ;; Because gtk2hs have *huge* code/document need convert.
 ;; So i wrote those elisp package for convert quickly in Emacs.
 ;;
+;; This tool must be use with w3m.
+;;
 
 ;;; Installation:
 ;;
@@ -92,6 +94,10 @@
                                    ("NULL" . "Nothing"))
   "C Type list for replace.")
 
+(defvar gtk2hs-replace-symbol-list '(("●" . "*") ; ● can't convert by haddock
+                                     )
+  "Documentation symbol list for replace.")
+
 (defun gtk2hs-format-docs ()
   "Format C document to Haskell style."
   (interactive)
@@ -104,7 +110,7 @@
               transform-end (region-end))
       (setq transform-start (point-min)
             transform-end (point-max)))
-    ;; Keep current edit status and postion.
+    ;; Keep current edit status and position.
     (save-excursion
       ;; Get transform documentation.
       (setq transform-doc
@@ -115,7 +121,7 @@
       (with-temp-buffer
         ;; Insert documentation that need transform.
         (insert transform-doc)
-        ;; Fill buffer with speical column.
+        ;; Fill buffer with special column.
         (fill-region (point-min) (point-max))
         ;; Format docs.
         (gtk2hs-format-docs-internal)
@@ -176,7 +182,7 @@
               transform-end (region-end))
       (setq transform-start (point-min)
             transform-end (point-max)))
-    ;; Keep current edit status and postion.
+    ;; Keep current edit status and position.
     (save-excursion
       ;; Get transform documentation.
       (setq transform-doc
@@ -214,7 +220,7 @@
 
 (defun gtk2hs-format-function-name (str)
   "This is format C function name with Haskell style.
-And C function name match regex : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
+And C function name match regexp : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
   (let (fun-list fun-name result) ;; Pick up function name.
     ;; From `gtk_text_buffer_new()` to ("text" "buffer" "new()")
     (setq fun-list (cdr (split-string str "_")))
@@ -258,7 +264,7 @@ And C function name match regex : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
   (forward-line +1)                     ; move to next line
   (unless (eobp)
     (progn
-      (setq comment-empty-lines t)      ; comment emtpy lines.
+      (setq comment-empty-lines t)      ; comment empty lines.
       (setq comment-start "-- ")
       (comment-region (point) (point-max))))
   ;; Fill blank line with "--"
@@ -293,7 +299,7 @@ And C function name match regex : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
           (delete-region (point) (- (point) (length temp-str)))
           (insert (concat "'" (gtk2hs-format-signal-name signal-name) "'")))
       (goto-char (point-max))))
-  ;; Transform singal name.
+  ;; Transform signal name.
   ;; From "mnemonic-activate" signal to 'mnemonicAcivate' signal.
   (goto-char (point-min))
   (while (not (eobp))
@@ -353,6 +359,16 @@ And C function name match regex : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
             (setq temp-str (match-string 0))
             (delete-region (point) (- (point) (length temp-str)))
             (insert (concat "'" (cdr type) "'")))
+        (goto-char (point-max)))))
+  ;; Replace symbol.
+  (dolist (type gtk2hs-replace-symbol-list)
+    (goto-char (point-min))
+    (while (not (eobp))
+      (if (search-forward (car type) nil t)
+          (let (temp-str signal-name)
+            (setq temp-str (match-string 0))
+            (delete-region (point) (- (point) (length temp-str)))
+            (insert (cdr type)))
         (goto-char (point-max))))))
 
 (provide 'gtk2hs)

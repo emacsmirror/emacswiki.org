@@ -62,7 +62,7 @@ May be overridden with key-value additional arguments to `notify'.")
 			    'notify-via-shell
 			  'notify-via-message))))
  ((and (eq notify-method 'notify-via-shell)
-       (not (executable-find "notify-send"))) ;housekeeping for prechosen libnotify
+       (not (executable-find "notify-send"))) ;housekeeping for pre-chosen libnotify
   (setq notify-method
 	(if (and (require 'dbus nil t)
 		 (dbus-ping :session "org.freedesktop.Notifications"))
@@ -86,7 +86,8 @@ May be overridden with key-value additional arguments to `notify'.")
   "Escape special STR characters before passing to a shell command."
   (replace-regexp-in-string "['&]" (lambda (m)
 				     (cond ((equal m "'") "`")
-					   ((equal m "&") " and ")))
+					   ((equal m "&") " and ")
+					   ((equal m "<") "{")))
 			    str))
 
 (defun notify-via-shell (title body)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jun  8 10:27:59 2010 (-0700)
+;; Last-Updated: Fri Jun 11 10:53:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15689
+;;     Update #: 15696
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -103,7 +103,7 @@
 ;;    `icicle-keep-only-past-inputs', `icicle-kill-line',
 ;;    `icicle-kill-paragraph', `icicle-kill-region',
 ;;    `icicle-kill-region-wimpy', `icicle-kill-sentence',
-;;    `icicle-kill-sexp', `icicle-kill-word',
+;;    `icicle-kill-sexp', `icicle-kill-word', `icicle-make-directory',
 ;;    `icicle-minibuffer-complete-and-exit', `icicle-minibuffer-help',
 ;;    `icicle-mouse-candidate-action',
 ;;    `icicle-mouse-candidate-alt-action',
@@ -890,6 +890,27 @@ See description of `kill-region'."
 See description of `kill-region-wimpy'."
     (interactive "r")
     (icicle-call-then-update-Completions #'kill-region-wimpy beg end)))
+
+;;;###autoload
+(defun icicle-make-directory (dir)
+  "Create a directory."
+  (interactive
+   (let ((enable-recursive-minibuffers  t))
+     (list (funcall (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
+                    "Create directory: " default-directory default-directory))))
+  (setq dir  (directory-file-name (expand-file-name dir)))
+  (while (file-exists-p dir)
+    (message "%s already exists" dir) (sit-for 1)
+    (let ((enable-recursive-minibuffers  t))
+      (setq dir  (funcall (if (fboundp 'read-directory-name) #'read-directory-name #'read-file-name)
+                          "Create directory: " default-directory default-directory))))
+  ;;(setq dir  (directory-file-name (expand-file-name dir)))
+  (if (not (y-or-n-p (format "Really create %s? " (file-name-as-directory dir))))
+      (message "Directory creation canceled")
+    (make-directory dir 'PARENTS-TOO)
+    (unless (file-accessible-directory-p dir)
+      (error "Could not create %s" (file-name-as-directory dir)))
+    (message "Created %s" (file-name-as-directory dir))))
 
 ;;;###autoload
 (defun icicle-up-directory () ; Bound to `C-backspace' in minibuffer, for file-name completion.
@@ -5126,7 +5147,7 @@ Return the string that was inserted."
   "Read a file name and insert it, without its directory, by default.
 With a prefix argument, insert its directory also.
 Option `icicle-read+insert-file-name-keys' controls which keys are
-bound to this command.
+ bound to this command.
 Return the string that was inserted."
   (interactive "P")
   (let ((completion-ignore-case        (memq system-type '(ms-dos windows-nt cygwin)))
@@ -5136,11 +5157,13 @@ Return the string that was inserted."
          (let ((map  (make-sparse-keymap)))
            (set-keymap-parent map minibuffer-local-completion-map)
            (define-key map [(control backspace)] 'icicle-up-directory)
+           (define-key map "\C-c+"               'icicle-make-directory)
            map))
         (minibuffer-local-must-match-map
          (let ((map  (make-sparse-keymap)))
            (set-keymap-parent map minibuffer-local-must-match-map)
            (define-key map [(control backspace)] 'icicle-up-directory)
+           (define-key map "\C-c+"               'icicle-make-directory)
            map))
         result)
     (setq result  (icicle-read-file-name "Choose file: "))

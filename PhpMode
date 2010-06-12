@@ -166,5 +166,8 @@ For myself, I find that most PHP programming I do does not mix HTML and PHP code
 Thanks for the comments, Mark.
 Multiple major modes are often not the best, but there are a lot of files that uses them.
 
+[new]
+How could I use c++ style comment as '//' instead of the old c style '/* */' to comment my codes?
+
 ----
 CategoryModes

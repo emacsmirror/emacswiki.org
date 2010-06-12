@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jun  9 17:31:00 2010 (-0700)
+;; Last-Updated: Fri Jun 11 11:24:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27004
+;;     Update #: 27019
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6005,11 +6005,21 @@
 ;;  history items: it deletes the current item from the history.
 ;;
 ;;  During (absolute or relative) file-name completion, the following
-;;  minibuffer binding navigates up the directory hierarchy.  It
-;;  removes the last directory component (and any partial file name)
-;;  from your minibuffer input.
+;;  minibuffer bindings are also in effect:
 ;;
-;;    `C-backspace'   - `icicle-up-directory'
+;;    `C-backspace'   - `icicle-up-directory':
+;;                      Navigate up the directory hierarchy.
+;;    `C-c +'         - `icicle-make-directory': Create a directory.
+;;    `C-x m'         - `icicle-bookmark-file-other-window':
+;;                      Visit a file or directory (Dired) bookmark.
+;;                      See also
+;;  (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
+;;                      (Available only if you use `bookmark+.el'.)
+;;
+;;  During absolute file-name completion, you can use `C-c C-d' to
+;;  change the current directory on the fly (think UNIX command `cd').
+;;  See also
+;;  (@file :file-name "icicles-doc1.el" :to "Absolute File Names and Different Directories").
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it

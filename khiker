@@ -11,6 +11,7 @@ I'm Japanese. I use GNU Emacs 23.1.92.2
 * Lisp:html-parse.el -- parse html
 * Lisp:sdic-inline.el -- inline dictionary
 * Lisp:popup-kill-ring.el -- interactively insert selected item from kill-ring by `popup.el' and `pos-tip.el'
+* Lisp:elscreen-edit-server.el
 
 = Link =
 

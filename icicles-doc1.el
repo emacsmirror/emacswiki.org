@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jun  9 17:31:59 2010 (-0700)
+;; Last-Updated: Fri Jun 11 08:15:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25325
+;;     Update #: 25327
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5446,6 +5446,9 @@
 ;;    (For Emacs versions before Emacs 22, this feature is available
 ;;    only for completion of absolute file names.)
 ;;
+;;  * `C-c +' (`icicle-make-directory') to create a directory on the
+;;    fly.
+;;
 ;;  * `C-x m' (`icicle-bookmark-file-other-window') to visit a
 ;;    bookmarked file or directory.  This is available only if you use
 ;;    library `bookmark+.el'.  It is a multi-command, so you can
@@ -5682,10 +5685,11 @@
 ;;
 ;;  This is the case for `icicle-find-file-absolute' and
 ;;  `icicle-locate-file' (and their variants).  For these commands,
-;;  you can use `C-c C-d' (think `cd') during completion to change the
-;;  current working directory (`default-directory') on the fly.  You
-;;  are prompted for the directory.  The domain of possible candidates
-;;  is recomputed relative to the new `default-directory'.
+;;  you can use `C-c C-d' (think UNIX command `cd') during completion
+;;  to change the current working directory (`default-directory') on
+;;  the fly.  You are prompted for the directory.  The domain of
+;;  possible candidates is recomputed relative to the new
+;;  `default-directory'.
 ;;
 ;;  Use `C-c C-d' this way as many times as you like.  You can use
 ;;  this feature to add file names from different directories to a

@@ -4,8 +4,9 @@ Furthermore, the tuareg-imenu companion improves the capabilities of tuareg-mode
 
 You can get Tuareg mode and learn more about Objective Caml at the following sites:
 
-* http://www-rocq.inria.fr/~acohen/tuareg/index.html.en
-* http://www-rocq.inria.fr/~acohen/tuareg/mode
+* http://tuareg.forge.ocamlcore.org/ (v2 and later)
+* http://www-rocq.inria.fr/~acohen/tuareg/index.html.en (v1)
+* http://www-rocq.inria.fr/~acohen/tuareg/mode (v1)
 * http://caml.inria.fr
 
 To install, put the Tuareg files in ~/.elisp/tuareg-mode and add the following to your ~/.emacs file:
