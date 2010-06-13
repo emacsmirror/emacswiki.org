@@ -13,6 +13,10 @@ I'm Japanese. I use GNU Emacs 23.1.92.2
 * Lisp:popup-kill-ring.el -- interactively insert selected item from kill-ring by `popup.el' and `pos-tip.el'
 * Lisp:elscreen-edit-server.el
 
+= Repository =
+
+* [https://code.launchpad.net/~khiker Launchpad(khiker)]
+
 = Link =
 
 * [http://d.hatena.ne.jp/khiker My Blog(Japanese)]

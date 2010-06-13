@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 10 15:01:01 2010 (-0700)
+;; Last-Updated: Sat Jun 12 08:12:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11788
+;;     Update #: 11790
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2811,16 +2811,15 @@ Scale text size initially, using
 `icicle-Completions-text-scale-decrease' (Emacs 23+).
 \(Do not scale if using `oneonone.el' with a `*Completions*' frame.)
 Useful in `temp-buffer-show-hook'."
-  (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
-    (let ((win  (selected-window)))
-      (unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
-        (fit-window-to-buffer
-         win
-         ;; Don't let it take over the frame, so we don't completely lose any other window.
-         (min (- (frame-parameter (window-frame win) 'height) 8)
-              (or (and (symbolp icicle-last-top-level-command)
-                       (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
-                  icicle-Completions-window-max-height))))))
+  (let ((window-min-height  1))		; Prevent deletion of other windows.
+    (when (and (eq major-mode 'completion-list-mode) (fboundp 'fit-window-to-buffer))
+      (let ((win  (selected-window)))
+	(unless (< (window-width win) (frame-width)) ; Don't shrink if split horizontally.
+	  (fit-window-to-buffer
+	   win
+	   (or (and (symbolp icicle-last-top-level-command)
+		    (get icicle-last-top-level-command 'icicle-Completions-window-max-height))
+	       icicle-Completions-window-max-height))))))
   (when (and (eq major-mode 'completion-list-mode) ; Emacs 23+
              (or (not (boundp '1on1-*Completions*-frame-flag)) (not 1on1-*Completions*-frame-flag))
              (boundp 'icicle-Completions-text-scale-decrease))

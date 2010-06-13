@@ -11,16 +11,39 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 
 ##git clone git://github.com/hayamiz/twittering-mode.git##
 
-== Basic configuration ==
+== Installation Guide ==
 
-Do the following in your .emacs file for a quick start.
+=== For Windows users ===
 
- (load "~/.emacs.d/twittering-mode.el")
- (require 'twittering-mode)
- (setq twittering-username "twitter user name here")
- (setq twittering-password "twitter password here") ; This is optional
+* Uncompress the archive file, and add a path of a directory containing `twittering-mode.el` to your `load-path`.
+: For example, if you uncompressed it under `%%C:\foo\%%`, there may be a directory `%%C:\foo\twittering-mode-X.X.X\%%` which contains `twittering-mode.el`. So add the following code to your `.emacs`
+{{{
+        (add-to-list 'load-path "C:/foo/twittering-mode-X.X.X")
+}}}
+* Proceed to **Set up your Emacs**
 
-If you don't set your password it will be asked to you when you run twittering-mode
+=== For Linux and other Unix users ===
+
+* Uncompress the archive file, and add a path of a directory containing `twittering-mode.el` to your `load-path`.
+: For example, if you uncompressed it under `/path/to/foo`, there may be a directory `/path/to/foo/twittering-mode-X.X.X/` which contains `twittering-mode.el`. So add the following code to your `.emacs`
+{{{
+        (add-to-list 'load-path "/path/to/foo/twittering-mode-X.X.X")
+}}}
+* Install cURL, gnutls, or openssl for using SSL connection.
+* Proceed to **Set up your Emacs**
+
+=== Set up your Emacs ===
+
+* Add following code to your `.emacs`:
+{{{
+      (require 'twittering-mode)
+}}}
+
+=== Run twittering-mode ===
+
+# Execute `M-x twit` to run twittering-mode.
+# Open OAuth authorization page with your browser, click "Allow", and enter the PIN code.
+# Your friends' timeline will appear. Enjoy!
 
 == Basic key bindings ==
 
@@ -35,7 +58,7 @@ If you don't set your password it will be asked to you when you run twittering-m
 * `C-c C-d' to read your direct messages (`twittering-direct-messages-timeline')
 * `g' to refresh the current timeline (`twittering-current-timeline')
 * `v' to view the timeline of the user under the cursor (`twittering-other-user-timeline')
-* `V' to view the timeline of any user (`twittering-other-user-timeline-interactive')
+* `V' to view the timeline of any user (`twittering-visit-timeline')
 
 == Customizing your key bindings ==
 

@@ -1,8 +1,9 @@
 [[en:TwitteringMode]]
-== Description ==
+== 説明 ==
 
 twittering-mode.elはEmacsで動作するTwitterクライアントです。
-※注意 以下の内容は、まだ1.0.0以降に追随できていません。
+
+このマニュアルでは、twittering-mode-1.0.0 について解説します。
 
 [[image:TwitteringModeScreenshot]]
 
@@ -12,33 +13,122 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 
 ##git clone git://github.com/hayamiz/twittering-mode.git##
 
-== Basic configuration ==
+== インストールの手引き ==
 
-Do the following in your .emacs file for a quick start.
+=== Windows ===
 
- (load "~/.emacs.d/twittering-mode.el")
- (require 'twittering-mode)
- (setq twittering-username "twitter user name here")
- (setq twittering-password "twitter password here") ; This is optional
+* twittering-modeのファイルを展開して現れたディレクトリを`load-path`に追加する。
+: 例: `%%C:\foo\%%`というディレクトリの下に展開したとすると、`twittering-mode.el`が入っているディレクトリ、つまり`%%C:\foo\twittering-mode-X.X.X\%%`があるはずなので、`.emacs`に次の内容を追加する。
+{{{
+        (add-to-list 'load-path "C:/foo/twittering-mode-X.X.X")
+}}}      
+* **Emacsの設定** へ進む
 
-If you don't set your password it will be asked to you when you run twittering-mode
+=== Linuxやその他Unix環境 ===
 
-== Basic key bindings ==
+* twittering-modeのファイルを展開して現れたディレクトリを`load-path`に追加する。
+: 例: `/path/to/foo`というディレクトリの下に展開したとすると、`twittering-mode.el`が入っているディレクトリ、つまり`/path/to/foo/twittering-mode-X.X.X/`があるはずなので、`.emacs`に次の内容を追加する。
+{{{
+       (add-to-list 'load-path "/path/to/foo/twittering-mode-X.X.X")
+}}}      
+* %%SSL%%通信を利用するためには、cURL、gnutls、opensslのどれかをインストールしておく。
+* **Emacsの設定** へ進む
 
-* `u', `C-c C-s' to write a tweet (`twittering-update-status-interactive')
-* `j' to go to the next tweet (`twittering-goto-next-status')
-* `k' to go to the previous tweet (`twittering-goto-previous-status')
-* `C-m' (Enter key) to reply to the current tweet or to open the URL under the cursor (`twittering-enter')
-* `C-c C-m' (C-c Enter) to retweet the current tweet (`twittering-retweet')
-* `C-c C-f' to read your friends' timeline (`twittering-friends-timeline')
-* `C-c C-r' to read your replies (`twittering-replies-timeline')
-* `C-c C-u' to read your own timeline (`twittering-user-timeline')
-* `C-c C-d' to read your direct messages (`twittering-direct-messages-timeline')
-* `g' to refresh the current timeline (`twittering-current-timeline')
-* `v' to view the timeline of the user under the cursor (`twittering-other-user-timeline')
-* `V' to view the timeline of any user (`twittering-other-user-timeline-interactive')
+=== Emacsの設定 ===
 
-== Customizing your key bindings ==
+* 次のコードを`.emacs`に追加する。
+{{{
+      (require 'twittering-mode)
+}}}      
+
+=== twittering-modeを動かす ===
+
+# `M-x twit`を実行する。
+# 画面の指示に従いOAuthの認証ページを開き、"Allow"ボタンをクリックして、表示されたPINコードをEmacsに入力する。
+# Twitterのタイムラインが表示されるはず!
+
+== キーバインド(Viewモード) ==
+
+`M-x twit`を実行すると、このモードになります。さまざまな方法で各ツイートやタイムラインを表示できます。
+
+=== 現在のタイムラインを移動する ===
+
+; `j': 次のツイートに移動する。バッファの終端で実行すると、過去`twittering-number-of-tweets-on-retrieval'数分のツイートを取得する。(`twittering-goto-next-status')
+; `k': 前のツイートに移動する。(`twittering-goto-previous-status')
+; `n': カーソル下のユーザの次のツイートに移動する。(`twittering-goto-next-status-of-user')
+; `p': カーソル下のユーザの前のツイートに移動する。(`twittering-goto-previous-status-of-user')
+; `l': 次の文字に進む。(`forward-char')
+; `h': 前の文字に進む。(`backward-char')
+; `0': 現在行の先頭にポイントを移動する。(`beginning-of-line')
+; `^': 現在行のテキストの先頭にポイントを移動する。(`beginning-of-line-text')
+; `$': 現在行の末尾にポイントを移動する。(`end-of-line')
+; `C-i': 次のユーザ名やURIに進む。(`twittering-goto-next-thing')
+; `M-C-i', `<backtab>': 前のユーザ名やURIに進む。(`twittering-goto-previous-thing')
+; `<backspace>', `M-v': 現在のバッファをスクロールダウンする。(`twittering-scroll-down')
+; `<space>', `C-v': 現在のバッファをスクロールアップする。(`twittering-scroll-up')
+; `H': 現在のバッファの先頭に移動する。(`twittering-goto-first-status')
+; `G': 現在のバッファの終端に移動する。(`end-of-buffer')
+
+=== 現在のタイムラインを操作する ===
+
+; `g': 現在のタイムラインを更新する。(`twittering-current-timeline')
+; `r': カーソル下のツイートに関係した会話を表示する。(`twittering-toggle-show-replied-statuses')
+; `C-c D': カーソル下の自分のツイートを削除する。(`twittering-delete-status')
+; `C-c C-e': 現在のバッファ内のツイートを全て消去し、最新`twittering-number-of-tweets-on-retrieval'数分のツイートを取得する。(`twittering-erase-old-statuses')
+; `q': 現在のバッファを消去する。(`twittering-kill-buffer')
+
+=== 新たなタイムラインを表示する ===
+
+新たなタイムラインを表示すると、バッファも新しく作られます。
+
+; `v': カーソル下のユーザのタイムラインを表示する。ハッシュタグの場合は検索結果を表示する。(`twittering-other-user-timeline')
+; `V': さまざまなタイムラインを表示する。TAB での補完も可能。(`twittering-visit-timeline')
+: よく使われそうなタイムラインは、以下のショートカットが用意されている。
+** `C-c C-f' あなたのfriendsタイムラインを表示する。(`twittering-friends-timeline')
+** `C-c C-u' あなた自身のツイートを表示する。(`twittering-user-timeline')
+** `C-c C-r' あなた宛の返信を表示する。(`twittering-replies-timeline')
+** `C-c C-d' あなた宛のダイレクトメッセージを表示する。(`twittering-direct-messages-timeline')
+; `L': 任意のリストを表示する。(`twittering-other-user-list-interactive')
+; `C-c C-q': 検索する。(`twittering-search')
+; `f': 次のバッファを表示する。(`twittering-switch-to-next-timeline')
+; `b': 前のバッファを表示する。(`twittering-switch-to-previous-timeline')
+
+=== 投稿する ===
+
+; `u', `C-c C-s': Editモードに移行して投稿。(`twittering-update-status-interactive')
+; `C-m', `Enter': カーソル下のユーザに返信(reply)するために、Editモードに移行する。URIの場合はbrowse-urlで表示する。(`twittering-enter')
+; `C-c C-m', `C-c Enter': カーソル下のツイートを非公式リツイートするために、Editモードに移行する。(`twittering-retweet')
+; `C-u C-c C-m', `C-u C-c Enter': カーソル下のツイートを公式リツイートする。(`twittering-retweet')
+; `d': ダイレクトメッセージを送信するために、Editモードに移行する。(`twittering-direct-message')
+
+=== 外部ブラウザで表示する ===
+
+; `<mouse-1>': クリックしたユーザ名やURIをbrowse-urlで表示する。(`twittering-click')
+; `C-c C-v': カーソル下のユーザのページをbrowse-urlで表示する。(`twittering-view-user-page')
+
+=== 状態を変化させる ===
+
+; `a': 現在のバッファで、タイムラインを自動更新しない/するを切り替える。(`twittering-toggle-activate-buffer')
+; `i': 現在のバッファで、アイコンの表示/非表示を切り替える。(`twittering-icon-mode')
+; `s': 現在のバッファで、スクロールモードのON/OFFを切り替える。(`twittering-scroll-mode')
+; `t', `C-c C-p': プロクシのON/OFFを切り替える。(`twittering-toggle-proxy')
+
+=== その他 ===
+
+; `C-c C-t': 現在のハッシュタグをセットする。(`twittering-set-current-hashtag')
+; `C-c C-l': 「λかわいいよλ」とツイートする。(`twittering-update-lambda')
+
+== キーバインド(Editモード) ==
+
+新規ツイートを編集するためのモードです。
+
+; `M-p': 一つ前のツイートを辿る。(`twittering-edit-previous-history')
+; `M-n': 一つ次のツイートを辿る。(`twittering-edit-next-history')
+; `<f4>': カーソル下のURLを短縮URLに置換する。(`twittering-edit-replace-at-point')
+; `C-c C-k': 現在のツイートを消去する。(`twittering-edit-cancel-status')
+; `C-c C-c': 現在のツイートを送信する。(`twittering-edit-post-status')
+
+== キーバインドの変更方法 ==
 
 You can use `twittering-mode-hook' to customize your configuration. This example shows how to define a few key bindings:
 
@@ -49,7 +139,7 @@ You can use `twittering-mode-hook' to customize your configuration. This example
              (define-key twittering-mode-map (kbd "u") 'twittering-user-timeline)
              (define-key twittering-mode-map (kbd "w") 'twittering-update-status-interactive)))
 
-== Other useful options ==
+== その他便利なオプション ==
 
  (setq twittering-icon-mode t)                ; Show icons
  (setq twittering-timer-interval 300)         ; Update your timeline each 300 seconds (5 minutes)
@@ -64,7 +154,7 @@ twittering-mode also provides hooks that are run when new tweets arrive. This ex
                     (format "You have %d new tweet%s"
                             n (if (> n 1) "s" ""))))))
 
-== Discussion ==
+== ディスカッション ==
 
 ----
 See also: [[Twitter]] [[Identica-mode]]

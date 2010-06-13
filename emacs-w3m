@@ -551,6 +551,18 @@ As with Debian and Ubuntu, above, the official w3m-el installed with Cygwin does
 
 -- jiri
 
+
+==Browse url on other window==
+add this into the configuraion file of the emacs, it would make the emacs work as *help* buffer. This would help if you use w3m to check document
+<pre>
+(setq browse-url-browser-function 'w3m-browse-url-other-window)
+
+(defun w3m-browse-url-other-window (url &optional newwin)
+  (let ((w3m-pop-up-windows t))
+    (if (one-window-p) (split-window))
+    (other-window 1)
+    (w3m-browse-url url newwin)))
+</pre>
 ----
 CategoryExternalUtilities
 CategoryHypermedia

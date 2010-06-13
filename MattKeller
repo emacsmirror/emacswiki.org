@@ -2,7 +2,7 @@
 
 I use Emacs on Linux and, when I have to, on Windows. I am a former vimmer who initially moved to Emacs to hack Common Lisp. Now I live in Emacs. It's my portable operating system.
 
-For the dot-file peepers, I keep my emacs configuration in a [http://www.littleredbat.net/mk/cgi-bin/gitweb/gitweb.cgi?p=elisp.git;a=blob;f=dotemacs;hb=HEAD public git repository].
+For the dot-file peepers, I keep my emacs configuration in a [http://github.com/mattkeller/elisp public git repository].
 
 == Code ==
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 16:25:02 2010 (-0700)
+;; Last-Updated: Sat Jun 12 08:33:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5479
+;;     Update #: 5484
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -296,6 +296,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/06/12 dadams
+;;     icicle-goto-marker-or-set-mark-command:
+;;       Set this-command so C-SPC C-SPC activates when not t-m mode.  Thx to Chris Hecker.
 ;; 2010/06/11 dadams
 ;;     icicle-search-action-1: (unless (pos-visible-in-window-p) (recenter -2)).  Thx to M. Heerdegen.
 ;; 2010/06/08 dadams
@@ -555,6 +558,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/12 dadams
+;;     icicle-fit-completions-window: Let-bind window-min-height to prevent deletion in Emacs 23.
 ;; 2010/06/10 dadams
 ;;     icicle-maybe-sort-and-strip-candidates:
 ;;       Set icicle-completion-candidates to result of *maybe...maybe*.  (It broke C-~.)

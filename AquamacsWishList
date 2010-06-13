@@ -1,6 +1,12 @@
 This is a list of user-contributed ideas or wishes for AquamacsEmacs. These ideas do not necessarily enjoy wide support in the user base, technically feasible, or are even internally consistent.
 ** In case you find a bug, please file a bug report using the Help / Diagnose and Report Bug menu.  Restart Aquamacs without customizations (per menu), reproduce the bug, then report using the reporting function.
 
+[new]
+cjay: The behavior of cmd-` and cmd-shift-` doesn't seem quite right. With apps like Safari and Terminal, they switch between windows in last-used-order. For example, if they switch Safari windows in order 1 2 3 4, and I have related work to do in 2 and 4, I switch to 2 and then click on 4 (with expose if it's covered). Now I can go back and forward with cmd-(shift)-` between 2 and 4 without 3 in between. With Aquamacs the order of the frames seems to be fixed, which can get quite annoying if one is used to the behavior of Safari and Terminal (and probably most other apps).
+Also, for every app I tried cmd-` switches between windows on the current workspace only, but with Aquamacs it switches between frames from all workspaces.
+EDIT: According to the latest git commit, David has already fixed it a few hours before I wrote here. Thanks :)
+
+[new]
 BryanLHarris: I would like better scrolling support for the Magic Mouse, which is currently kind of crazy.  The scrolling is so quick I just end up at either the top or bottom of the file.
 DavidReitter: I use my MagicMouse all the time to scroll and haven't observed such problems.  Please file a bug report via the usual channel.  Thanks.
 

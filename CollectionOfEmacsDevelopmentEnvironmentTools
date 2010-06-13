@@ -36,6 +36,7 @@ Links to some comments, pictures etc
 * An SWF demo: http://platypope.org/yada/emacs-demo/
 * [http://xtalk.msk.su/~ott/en/writings/emacs-devenv/EmacsCedet.html An article about Cedet] - how to install and use it.
 * Series of [http://alexott.blogspot.com/search/label/cedet blog posts] about work with Cedet
+* [http://wiki.kldp.org/wiki.php/EmacsAutoCompletionQuickNote Emacs Auto Completion Quick Note (Korean)]
 ----
 
 CEDET has changed very much and the development version is the preferred version to use.

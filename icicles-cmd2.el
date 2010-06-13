@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 16:23:11 2010 (-0700)
+;; Last-Updated: Sat Jun 12 08:34:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2178
+;;     Update #: 2181
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1687,9 +1687,10 @@ bound to `set-mark-command' to
 `icicle-goto-marker-or-set-mark-command'.  If you do not want this
 remapping, then customize option `icicle-top-level-key-bindings'."
   (interactive "P")
-  (if (wholenump (prefix-numeric-value arg))
-      (set-mark-command arg)
-    (icicle-goto-marker)))
+  (if (not (wholenump (prefix-numeric-value arg)))
+      (icicle-goto-marker)
+    (setq this-command 'set-mark-command) ; Let `C-SPC C-SPC' activate if not `transient-mark-mode'.
+    (set-mark-command arg)))
 
 ;;;###autoload
 (defun icicle-goto-global-marker-or-pop-global-mark (arg) ; Bound to `C-x C-@', `C-x C-SPC'.
