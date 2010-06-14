@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 10:53:59 2010 (-0700)
+;; Last-Updated: Sun Jun 13 17:04:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15696
+;;     Update #: 15791
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4486,6 +4486,9 @@ The help displayed depends on the type of candidate, as follows:
  buffer name - modes described using `describe-mode' (Emacs > 20)
  file name - file properties described
 
+If the same candidate names a function, a variable, and a face, or any
+two of these, then all such documentation is shown (Emacs 22+).
+
 In the minibuffer, you can also use `\\<minibuffer-local-completion-map>\
 \\[icicle-help-on-next-apropos-candidate]', `\\[icicle-help-on-previous-apropos-candidate]',
 `\\[icicle-help-on-next-prefix-candidate]', and \
@@ -4563,6 +4566,12 @@ You can use this command only from the minibuffer or *Completions*
   "Helper function for `icicle-help-on-candidate'.  The arg is a symbol."
   (cond ((and (fboundp 'describe-keymap) (boundp symb) (keymapp (symbol-value symb)))
          (describe-keymap symb))
+        ((and (fboundp 'help-follow-symbol) ; Emacs 22+
+              (or (fboundp symb) (boundp symb) (facep symb)))
+         (with-current-buffer (get-buffer-create "*Help*")
+           (let ((help-xref-following  t)) (help-xref-interned symb)))
+         (save-selected-window (select-window (get-buffer-window "*Help*" 'visible))
+                               (fit-frame-if-one-window)))
         ((fboundp symb) (describe-function symb))
         ((boundp symb) (describe-variable symb))
         ((facep symb) (describe-face symb))

@@ -136,7 +136,11 @@ Candidate help (prefix `C-M-') is available for these types of completion candid
 * [[buffer]]s
 * files
 
-In addition, any command that uses completion can define its own
+If the same candidate names a function, a variable, and a face, or
+any two of these, then all such documentation is shown (Emacs 22
+and later).
+
+In addition to the candidate types listed above, any command that uses completion can define its own
 candidate help action function and bind it to
 '''`icicle-candidate-help-fn''''.
 

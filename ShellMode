@@ -151,6 +151,44 @@ Shouldn't this work?
      (comint-truncate-buffer)))
 
 
+     
+== Switch between Term-mode and Shell-mode ==
+
+Bellow it's a function which allows you to to switch between Term mode and Shell mode, in the same buffer. 
+
+Notice that it works properly only if started from an term buffer (started with `ansi-term') which properly initialize bash for the work in a terminal.
+
+ (require 'shell)
+ (require 'term)
+
+ (defun term-switch-to-shell-mode ()
+  (interactive)
+  (if (equal major-mode 'term-mode)
+      (progn
+        (shell-mode)
+        (set-process-filter  (get-buffer-process (current-buffer)) 'comint-output-filter )
+        (local-set-key (kbd "C-j") 'term-switch-to-shell-mode)
+        (compilation-shell-minor-mode 1)
+        (comint-send-input)
+      )
+    (progn
+        (compilation-shell-minor-mode -1)
+        (font-lock-mode -1)
+        (set-process-filter  (get-buffer-process (current-buffer)) 'term-emulate-terminal)
+        (term-mode)
+        (term-char-mode)
+        (term-send-raw-string (kbd "C-l"))
+        )))
+
+I bound it to C-j to easelly switch between the two modes:
+
+  (define-key term-raw-map (kbd "C-j") 'term-switch-to-shell-mode)
+
+
+
+
+
+
 ----
 CategoryExternalUtilities
 CategoryShell

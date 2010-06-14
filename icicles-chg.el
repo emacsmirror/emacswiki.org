@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 12 08:33:03 2010 (-0700)
+;; Last-Updated: Sun Jun 13 16:52:40 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5484
+;;     Update #: 5486
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2001,6 +2001,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/13 dadams
+;;     icicle-help-on-candidate-symbol: Show combined help for fns, vars, and faces (Emacs 22+).
 ;; 2010/06/11 dadams
 ;;     Added: icicle-make-directory.
 ;;     icicle-read+insert-file-name: Bind icicle-make-directory to C-c +.

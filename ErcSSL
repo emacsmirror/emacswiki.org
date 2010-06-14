@@ -68,6 +68,8 @@ this will mean repeated failed attempts to reconnect. A temporary solution would
 nickserv login and password saved to an erc-auth file to be loaded by erc.
 -- ootput 
 
+/Yeah, that's an issue indeed. As a temporary hotfix I set erc-server-auto-reconnect to nil/
+
 === Symbol's function definition is void: erc-tls ===
 
 [new]

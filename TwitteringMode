@@ -45,20 +45,87 @@ Github page: http://github.com/hayamiz/twittering-mode/tree/master
 # Open OAuth authorization page with your browser, click "Allow", and enter the PIN code.
 # Your friends' timeline will appear. Enjoy!
 
-== Basic key bindings ==
+== Key-bindings on View mode ==
+`M-x twit', and you enter to this mode. You can see various timelines.
 
-* `u', `C-c C-s' to write a tweet (`twittering-update-status-interactive')
-* `j' to go to the next tweet (`twittering-goto-next-status')
-* `k' to go to the previous tweet (`twittering-goto-previous-status')
-* `C-m' (Enter key) to reply to the current tweet or to open the URL under the cursor (`twittering-enter')
-* `C-c C-m' (C-c Enter) to retweet the current tweet (`twittering-retweet')
-* `C-c C-f' to read your friends' timeline (`twittering-friends-timeline')
-* `C-c C-r' to read your replies (`twittering-replies-timeline')
-* `C-c C-u' to read your own timeline (`twittering-user-timeline')
-* `C-c C-d' to read your direct messages (`twittering-direct-messages-timeline')
-* `g' to refresh the current timeline (`twittering-current-timeline')
-* `v' to view the timeline of the user under the cursor (`twittering-other-user-timeline')
-* `V' to view the timeline of any user (`twittering-visit-timeline')
+=== Move the cursor on the current timeline ===
+
+; `j': Go to the next tweet. If the cursor placed on the oldest tweet, older tweets are retrieved. You can specify how many tweets will be retrieved by the variable `twittering-number-of-tweets-on-retrieval'.(`twittering-goto-next-status')
+; `k': Go to the previous tweet. (`twittering-goto-previous-status')
+; `n': Go to the next tweet whose author is the same as the current tweet. (`twittering-goto-next-status-of-user')
+; `p': Go to the previous tweet whose author is the same as the current tweet. (`twittering-goto-previous-status-of-user')
+; `l': Go to the next character. (`forward-char')
+; `h': Go to the previous character. (`backward-char')
+; `0': Go to the beginning of the current line. (`beginning-of-line')
+; `^': Go to the beginning of the text on the current line. (`beginning-of-line-text')
+; `$': Go to the end of the current line. (`end-of-line')
+; `C-i': Go to the next username, URI, or timeline symbol. (`twittering-goto-next-thing')
+; `M-C-i', `<backtab>': Go to the previous username, URI, or timeline symbol. (`twittering-goto-previous-thing')
+; `<backspace>', `M-v': Scroll down. (`twittering-scroll-down')
+; `<space>', `C-v': Scroll up. (`twittering-scroll-up')
+; `H': Go to the beginning of the current buffer. (`twittering-goto-first-status')
+; `G': Go to the end of the current buffer. (`end-of-buffer')
+
+=== Apply some operation to the current timeline ===
+
+; `g': Retrieve new tweets of the current timeline. (`twittering-current-timeline')
+; `r': Display replied tweets related to the current tweet. (`twittering-toggle-show-replied-statuses')
+; `C-c D': Delete the current tweet. You can delete only yours. (`twittering-delete-status')
+; `C-c C-e': Remove all tweets of the current timeline from Emacs cache. (`twittering-erase-old-statuses')
+; `q': Kill the current timeline buffer. (`twittering-kill-buffer')
+
+=== Open other timeline ===
+
+If you open a new timeline, a new buffer is generated.
+
+; `v': Open a timeline pointed by the cursor. (`twittering-other-user-timeline')
+; `V': Open a various timeline. You can specify the timeline by [[#timeline-spec]]. (`twittering-visit-timeline')
+: For convenience, there are following short-cuts.
+** `C-c C-f' Open your friends-timeline. (`twittering-friends-timeline')
+** `C-c C-u' Open your user-timeline. (`twittering-user-timeline')
+** `C-c C-r' Open your reply-timeline, which consists of replies to your tweets. (`twittering-replies-timeline')
+** `C-c C-d' Open direct messages timeline, which consists of direct messages to you. (`twittering-direct-messages-timeline')
+; `L': Open a list. (`twittering-other-user-list-interactive')
+; `C-c C-q': Search. (`twittering-search')
+; `f': Switch to the next timeline buffer. (`twittering-switch-to-next-timeline')
+; `b': Switch to the previous timeline buffer. (`twittering-switch-to-previous-timeline')
+
+=== Post a tweet ===
+
+; `u', `C-c C-s': Post a tweet. (`twittering-update-status-interactive')
+; `C-m', `Enter': Post a reply to the tweet pointed by the cursor. If the cursor points a URI, invoke `browse-url' for the URI. (`twittering-enter')
+; `C-c C-m', `C-c Enter': Post a non-official (organic) retweet for the tweet pointed by the cursor. (`twittering-retweet')
+; `C-u C-c C-m', `C-u C-c Enter': Post a official (native) retweet for the tweet pointed by the cursor. (`twittering-retweet')
+; `d': Send a direct message. (`twittering-direct-message')
+
+=== Invoke an external browser ===
+
+; `<mouse-1>': Open user page or URI by `browse-url'. (`twittering-click')
+; `C-c C-v': Open the pointed user's page by `browse-url'. (`twittering-view-user-page')
+
+=== Change display mode ===
+
+; `a': Toggle automatic retrieval of the current timeline. (`twittering-toggle-activate-buffer')
+; `i': Toggle displaying icons of the current timeline. (`twittering-icon-mode')
+; `s': Toggle scroll mode for the current timeline. (`twittering-scroll-mode')
+; `t', `C-c C-p': Toggle proxy. (`twittering-toggle-proxy')
+
+=== Others ===
+
+; `C-c C-t': Set the current hashtag. (`twittering-set-current-hashtag')
+; `C-c C-l': Post the message "λかわいいよλ"("Lambda is cute, lambda."). (`twittering-update-lambda')
+
+== Key-bindings on Edit mode ==
+
+; `M-p': Replace a tweet being edited with the previous tweet on history. (`twittering-edit-previous-history')
+; `M-n': Replace a tweet being edited with the next tweet on history. (`twittering-edit-next-history')
+; `<f4>': Shorten the URL pointed by the cursor. (`twittering-edit-replace-at-point')
+; `C-c C-k': Cancel editing a tweet. (`twittering-edit-cancel-status')
+; `C-c C-c': Post the current tweet. (`twittering-edit-post-status')
+
+== Timeline Spec ==
+[:timeline-spec]
+under construction...
 
 == Customizing your key bindings ==
 

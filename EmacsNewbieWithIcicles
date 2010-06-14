@@ -6,7 +6,24 @@
 This page tells you how '''[[Icicles]]''' can ''help you learn to use Emacs''. '''Icicles''' is a set of libraries that you can load into GnuEmacs.  The libraries don't come installed as part of Emacs, but loading them is trivial.
 
 
-== Why use Icicles, if I want to learn about vanilla Emacs? ==
+== I'm not even a programmer.  Why would I want to add a big library to my Emacs? ==
+
+'''Icicles''' can help you with Emacs no matter how much or how little you get involved with programming, including EmacsLisp.  It gives you understandable feedback about your ordinary, everyday use of Emacs, and many of its features are available using menus.  
+
+Here's what one non-programmer wrote to me:
+
+
+: ''"I'm writing to send my appreciation to you for being part of Icicles
+(it seems that you are the main guy), which is __the most useful package for
+non-programming users of Emacs__. I am a writer, and I am not used to
+looking at lisp code to figure out how to do things. Icicles offers all
+kinds of neat functionality to make my life easier." -- R.L., 25/09/2008
+
+Dunno if he's right that '''Icicles''' is the most useful library for non-programmers, but I have tried to make it user-friendly, and I do think it can help you, no matter how you use Emacs.
+
+
+
+== Why use Icicles, if I want to learn about VANILLA Emacs? ==
 
 You might think that it would be best to start learning about vanilla Emacs by, well, using vanilla Emacs(!), that is, using Emacs with no other libraries loaded: ##emacs -Q## or ##emacs -q -no-site-file## from the command line. Why should you try to learn both Emacs and an Emacs add-on package at the same time?
 

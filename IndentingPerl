@@ -181,5 +181,18 @@ Now I get:
 
 -- KukiYomanai
 
+Does anybody have an idea about how to influence the indentation of subs as arguments?
+I often run into situations like this:
+
+    $img_ebox->signal_connect ('button-press-event', sub {
+                                   my $bt = $_[1]->button;
+                                   $mnu->popup(undef,undef,undef,undef,$bt, 0) if $bt == 3;
+                               });
+
+where cperl-mode pushes the body of the sub so far to the right that it is almost
+impossible to limit the line length to 80 chars.
+
+-- PeterD
+
 ----
 CategoryIndentation

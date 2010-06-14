@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 08:15:38 2010 (-0700)
+;; Last-Updated: Sun Jun 13 17:23:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25327
+;;     Update #: 25331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3495,9 +3495,13 @@
 ;;  * buffers
 ;;  * files
 ;;
-;;  In addition, any command that uses completion can define its own
-;;  candidate help action function and bind it to
-;;  `icicle-candidate-help-fn'.
+;;  If the same candidate names a function, a variable, and a face, or
+;;  any two of these, then all such documentation is shown (Emacs 22
+;;  and later).
+;;
+;;  In addition to the candidate types listed above, any command that
+;;  uses completion can define its own candidate help action function
+;;  and bind it to `icicle-candidate-help-fn'.
 ;;
 ;;  A command can also provide its own mode-line and tooltip help for
 ;;  any individual candidate.  See
