@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 13 16:52:40 2010 (-0700)
+;; Last-Updated: Mon Jun 14 22:38:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5486
+;;     Update #: 5514
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -558,6 +558,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/14 dadams
+;;     icicle-read-from-minibuffer:
+;;       If add file-name default to prompt, remove dir part first.  Thx to Chris Hecker.
+;;     icicle-next-candidate: Do not icicle-recompute-candidates if this command was repeated.
+;;     icicle-increment-cand-nb+signal-end: 
+;;       Signal wrap from initial, not from 0.  Negative INCR -> start at end.  Thx to M. Heerdegen.
+;;     icicle-call-then-update-Completions:
+;;       Set icicle-last-input to nil so icicle-save-or-restore-input makes next-candidate recompute.
 ;; 2010/06/12 dadams
 ;;     icicle-fit-completions-window: Let-bind window-min-height to prevent deletion in Emacs 23.
 ;; 2010/06/10 dadams
@@ -2001,7 +2009,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
-;; 2010/06/13 dadams
+;; 2010/06/14 dadams
+;;     icicle-narrow-candidates: Handle Emacs 23.2+: Use completing-read with read-file-name-internal.
+;;     icicle-search-define-replacement:
+;;       Wrap *-remove-Completions-window in save-selected-window.  Thx to M. Heerdegen.
 ;;     icicle-help-on-candidate-symbol: Show combined help for fns, vars, and faces (Emacs 22+).
 ;; 2010/06/11 dadams
 ;;     Added: icicle-make-directory.

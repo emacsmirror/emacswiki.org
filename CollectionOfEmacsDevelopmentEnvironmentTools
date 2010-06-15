@@ -16,6 +16,7 @@ Major Components of CEDET:
 * SpeedBar
 * EmacsLispObjects (EIEIO)
 * SemanticBovinator
+** SemanticIdleBreadcrumbsMode
 * SemanticRecoder (SRecode - A template manager)
 * ConnectedGraphEditor (COGRE)
 * [http://cedet.sourceforge.net/ede.shtml Makefile Generation and Project Management] (EDE)

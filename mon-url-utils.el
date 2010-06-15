@@ -56,6 +56,8 @@
 ;; `mon-w3m-get-url-at-point-maybe'     -> `mon-get-w3m-url-at-point-maybe'
 ;; `mon-w3m-get-url-at-point'           -> `mon-get-w3m-url-at-point'
 ;; `mon-get-w3m-read-gnu-lists-nxt-prv' -> `mon-w3m-read-gnu-lists-nxt-prv'
+;; `w3m-print-this-url'                 -> `w3m-copy-this-url-as-kill'   
+;; `w3m-print-current-url'              -> `w3m-copy-current-url-as-kill'
 ;;
 ;; SUBST:
 ;; `mon-tld-tld', `mon-tld-name' 
@@ -93,6 +95,7 @@
 ;; `mon-url-encode'                     -> lisp/url/url-util.el
 ;; `mon-url-decode'                     -> lisp/url/url-util.el
 ;; `mon-tld-*-'                         -> cl
+;; 
 ;;
 ;; TODO:
 ;; Adjust `mon-search-ulan', `mon-search-ulan-for-name' to retrieve url (a)synchronously. 
@@ -143,6 +146,20 @@
 
 ;;; CODE:
 
+;;; ==============================
+;; To use all features of this package you may need to bind `IS-MON-SYSTEM-P' to
+;; a non-nil value if it isn't already. This lets Emacs know that you have
+;; configured the neccesary system types, user names, conditionals, paths,
+;; etc. required to use all features defined below.
+;; :SEE 
+;;  This file should
+;; byte-compile with `IS-MON-SYSTEM-P' null but not all features will be
+;; evaluated. To bind `IS-MON-SYSTEM-P' non-nil uncomment the line below:
+;;
+;;  (unless (bound-and-true-p IS-MON-SYSTEM-P) (setq IS-MON-SYSTEM-P t))
+;;
+;;; ==============================
+
 ;; :REQUIRED-BY in `mon-tld-xxx' functions.
 (eval-when-compile (require 'cl))
 
@@ -186,7 +203,8 @@ When `IS-MON-SYSTEM-P', this function is evaluated with:
 :SEE-ALSO `mon-htmlfontify-dir-purge-on-quit', `mon-purge-doc-view-cache-directory',
 `mon-purge-thumbs-directory', `mon-purge-temporary-file-directory',
 `*mon-purge-emacs-temp-file-dir-fncns*'.\n►►►"
-  (when (or IS-MON-SYSTEM-P IS-W32-P)
+  (when (or (and (intern-soft "IS-MON-SYSTEM-P") IS-MON-SYSTEM-P)
+            (and (intern-soft "IS-W32-P")  IS-W32-P))
     (let ((chk-i-a-t (cadr (assoc 'the-itsalltext-temp-dir *mon-misc-path-alist*))))
       (when (and chk-i-a-t (file-exists-p chk-i-a-t))
         (dolist (i-a-t (file-expand-wildcards (concat chk-i-a-t "/*.txt*") t))
@@ -211,7 +229,8 @@ When `IS-MON-SYSTEM-P', this function is evaluated with:
 :SEE-ALSO `mon-htmlfontify-region-to-firefox', `*emacs2html-temp*',
 `mon-htmlfontify-dir-purge-on-quit', `*mon-html-fontify-file-name-template*'.\n►►►"
   (let ((mhfgfn #'(lambda ()
-                    (format *mon-html-fontify-file-name-template* *emacs2html-temp* (random t))))
+                    (format *mon-html-fontify-file-name-template* 
+                            *emacs2html-temp* (random t))))
         mhfgfn-myb-regen)
     (setq mhfgfn-myb-regen (funcall mhfgfn))
     (while (file-exists-p mhfgfn-myb-regen)
@@ -234,10 +253,11 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 :SEE-ALSO `mon-its-all-text-purge-on-quit', `mon-purge-doc-view-cache-directory',
 `mon-purge-thumbs-directory', `mon-purge-temporary-file-directory'.\n►►►"
   (interactive)
-  (when (and ;; IS-MON-SYSTEM-P 
-         (not (null *emacs2html-temp*))
-         (file-exists-p *emacs2html-temp*)
-         (file-directory-p *emacs2html-temp*))
+  (when (and (and (intern-soft "IS-MON-SYSTEM-P") 
+                  (bound-and-true-p IS-MON-SYSTEM-P))
+             (not (null *emacs2html-temp*))
+             (file-exists-p *emacs2html-temp*)
+             (file-directory-p *emacs2html-temp*))
     (let ((cln-emacs2html-temp 
            (directory-files *emacs2html-temp* t "emacs2firefox-.*\.html~?")))
       (dolist (prg cln-emacs2html-temp)
@@ -258,7 +278,7 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 `mon-html-fontify-generate-file-name', `*mon-html-fontify-file-name-template*',
 `mon-htmlfontify-dir-purge-on-quit'.\n►►►"
   (interactive)
-  (let* ((ffox-fname mon-html-fontify-generate-file-name)
+  (let* ((ffox-fname (mon-html-fontify-generate-file-name))
          (this-bfr-file (buffer-file-name))
          (this-bfr-dir 
           (when this-bfr-file 
@@ -780,11 +800,10 @@ corresponding to the host name arg.\n
 (with-no-warnings
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-16T23:00:32-05:00Z}#{09513} - by MON KEY>
-(if (and (or (featurep 'w3m-load) (featurep 'w3m))
+(when (and (or (featurep 'w3m-load) (featurep 'w3m))
          ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))    
          ;;(fboundp 'w3m-dired-file)
          (executable-find "w3m"))
-(progn    
 (defun mon-w3m-dired-file (&optional file-to-w3m)
   "Browse dired file at point with w3m.\n
 :SEE-ALSO `mon-w3m-kill-url-at-point', `mon-get-w3m-url-at-point-maybe',
@@ -805,8 +824,8 @@ Examines for URL with `get-text-property' the 'w3m-href-anchor property if found
 the property value on the kill ring and message user.\n
 :SEE-ALSO `mon-get-w3m-dired-file', `mon-get-w3m-url-at-point-maybe',
 `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
-`mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
-`dired-get-marked-files'.\n►►►"
+`w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
+`mon-get-w3m-url-at-point'.\n►►►"
   (interactive)
   (let ((w3mgtp (get-text-property (point) 'w3m-href-anchor)))
       (when (and w3mgtp (stringp w3mgtp))
@@ -819,7 +838,8 @@ the property value on the kill ring and message user.\n
   "Return two elt list as \(MEHTOD \"URL\"\) when text-properties at point has
 w3m-href-anchor value and is a 'file 'http 'https.\n
 :SEE-ALSO `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv'
-`mon-w3m-dired-file'.\n►►►"
+`mon-w3m-dired-file', `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
+`mon-get-w3m-url-at-point'.\n►►►"
   (let* ((is-url (get-text-property (point) 'w3m-href-anchor))
          (match-with "\\(file\\|http\\|https\\)")
          (is-match (if (stringp is-url)
@@ -841,7 +861,8 @@ w3m-href-anchor value and is a 'file 'http 'https.\n
 When INSRTP in non-nil and BUFFER names an existing buffer insert the w3m URL in
 BUFFER. If BUFFER is nil or does no exist return URL.\n
 :SEE-ALSO `mon-get-w3m-url-at-point-maybe', `mon-w3m-read-gnu-lists-nxt-prv',
-`mon-w3m-kill-url-at-point', `mon-w3m-dired-file', `mon-w3m-dired-file'.\n►►►"
+`mon-w3m-kill-url-at-point', `mon-w3m-dired-file', `w3m-print-this-url',
+`mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point'.\n►►►"
   (interactive "i\ni\np")
   (let ((url-maybe (mon-get-w3m-url-at-point-maybe))
         (do-buff (if buffer (get-buffer buffer))))
@@ -857,11 +878,12 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 ;;; ;WORKING-BUT-BUGGY-AS-OF
 ;;; :CREATED <Timestamp: #{2009-11-22T19:00:33-05:00Z}#{09477} - by MON>
 (defun mon-w3m-read-gnu-lists-nxt-prv (prev next)
-  "Browse GNU mailing lists with w3m selecting next in thread prev in thread.
+  "Browse GNU mailing lists with w3m selecting next in thread prev in thread.\n
 :SEE \(URL `http://lists.gnu.org/archive/html/emacs-devel/'\)
-:SEE \(URL `http://lists.gnu.org'\)
+:SEE \(URL `http://lists.gnu.org'\)\n
 :SEE-ALSO `mon-get-w3m-url-at-point', `mon-get-w3m-url-at-point-maybe',
-`mon-w3m-dired-file'.\n►►►"
+`mon-w3m-dired-file', `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
+`mon-get-w3m-url-at-point'.\n►►►"
   (let ((nxt-prev-p
          (if (save-excursion
                (goto-char (buffer-end 0))
@@ -929,11 +951,19 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 ;;; |               (w3m-view-this-url)))) ))
 ;;; `----
 ;;
-) ;; :CLOSE progn
-(message "Can not find the w3m executable")
-) ;; :CLOSE if
+(unless (fboundp 'w3m-copy-this-url-as-kill)
+  (defalias 'w3m-print-this-url 'w3m-copy-this-url-as-kill))
+;;
+(unless (fboundp 'w3m-copy-current-url-as-kill)
+  (defalias 'w3m-print-current-url 'w3m-copy-current-url-as-kill))
+;;
+) ;; :CLOSE when
+(unless  (and (or (featurep 'w3m-load) (featurep 'w3m))
+              ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))    
+              ;;(fboundp 'w3m-dired-file)
+              (executable-find "w3m"))
+  (message "Can not find the w3m executable or a required feature"))
 ) ;; :CLOSE with-no-warnings
-;;; ==============================
 ;;; ==============================
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 13 17:04:16 2010 (-0700)
+;; Last-Updated: Mon Jun 14 22:17:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15791
+;;     Update #: 15829
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1501,7 +1501,8 @@ Bound to `M-,' in the minibuffer."
   "Prompt user and set new value of `icicle-search-replacement'.
 Bound to `M-,' in the minibuffer."
   (interactive)
-  (icicle-remove-Completions-window)    ; Prevent incremental completion kicking in from the get-go.
+  (save-selected-window
+    (icicle-remove-Completions-window)) ; Prevent incremental completion kicking in from the get-go.
   (setq icicle-search-replacement
         (let ((enable-recursive-minibuffers        t)
               (icicle-incremental-completion-flag  t) ; Override current upgrade to `always'.
@@ -4393,7 +4394,7 @@ If any of these conditions is true, remove all occurrences of CAND:
               read-file-name-predicate)
          (setq read-file-name-predicate
                (if read-file-name-predicate
-                   (lexical-let ((curr-pred read-file-name-predicate))
+                   (lexical-let ((curr-pred  read-file-name-predicate))
                      `(lambda (file-cand)
                         (and (not (equal ',disp-cand file-cand)) (funcall ',curr-pred file-cand))))
                  `(lambda (file-cand) (not (equal ',disp-cand file-cand))))))
@@ -4402,7 +4403,7 @@ If any of these conditions is true, remove all occurrences of CAND:
         ((icicle-file-name-input-p))
         (minibuffer-completion-predicate ; Add excluding candidate to existing predicate.
          (setq minibuffer-completion-predicate
-               (lexical-let ((curr-pred minibuffer-completion-predicate))
+               (lexical-let ((curr-pred  minibuffer-completion-predicate))
                  `(lambda (cand)             ; This corresponds to what we do in `icicle-mctize-all'.
                     (and (not (equal cand ',(if (and (consp mct-cand) (stringp (car mct-cand)))
                                                 (cdr mct-cand)
@@ -4570,8 +4571,9 @@ You can use this command only from the minibuffer or *Completions*
               (or (fboundp symb) (boundp symb) (facep symb)))
          (with-current-buffer (get-buffer-create "*Help*")
            (let ((help-xref-following  t)) (help-xref-interned symb)))
-         (save-selected-window (select-window (get-buffer-window "*Help*" 'visible))
-                               (fit-frame-if-one-window)))
+         (when (fboundp 'fit-frame-if-one-window)
+           (save-selected-window (select-window (get-buffer-window "*Help*" 'visible))
+                                 (fit-frame-if-one-window))))
         ((fboundp symb) (describe-function symb))
         ((boundp symb) (describe-variable symb))
         ((facep symb) (describe-face symb))
@@ -4947,34 +4949,45 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                     minibuffer-setup-hook))
                   (current-candidates  icicle-completion-candidates)
                   (result
-                   (if (and (> emacs-major-version 21) (icicle-file-name-input-p))
-                       (read-file-name "Match also (regexp): "
-                                       (icicle-file-name-directory-w-default icicle-current-input)
-                                       nil icicle-require-match-p nil
-                                       (lambda (file-cand) (member file-cand current-candidates)))
-                     ;; In Emacs < 22, there is no PREDICATE arg to `read-file-name', so
-                     ;; we use `completing-read' even for file-name completion.  In that case, we
-                     ;; tack the `default-directory' onto each candidate, unless it is already an
-                     ;; absolute file name.  We also let completion functions (e.g. `S-TAB') know
-                     ;; that this is not really file-name completion.
-                     (completing-read
-                      "Match also (regexp): "
-                      (cond ((icicle-file-name-input-p)
-                             (setq minibuffer-completing-file-name  nil) ; Disavow completing file.
-                             (let ((dir  (icicle-file-name-directory-w-default icicle-current-input)))
-                               (mapcar (lambda (file)
-                                         (list (if (file-name-absolute-p file)
-                                                   file
-                                                 (concat dir file))))
-                                       icicle-completion-candidates)))
-                            (icicle-whole-candidate-as-text-prop-p
-                             (mapcar (lambda (cand)
-                                       (funcall icicle-get-alist-candidate-function (car cand)))
-                                     (icicle-filter-alist minibuffer-completion-table
-                                                          icicle-completion-candidates)))
-                            (t
-                             (mapcar #'list icicle-completion-candidates)))
-                      nil icicle-require-match-p nil minibuffer-history-variable))))
+                   (cond ((and (icicle-file-name-input-p)
+                               (or (= emacs-major-version 22) ; Emacs 22 or 23.1
+                                   (and (= emacs-major-version 23) (= emacs-minor-version 1))))
+                          (read-file-name "Match also (regexp): "
+                                          (icicle-file-name-directory-w-default icicle-current-input)
+                                          nil icicle-require-match-p nil
+                                          (lambda (file-cand) (member file-cand current-candidates))))
+
+                         ((and (icicle-file-name-input-p) (> emacs-major-version 22)) ; Emacs 23.2+
+                          (completing-read "Match also (regexp): "
+                                           'read-file-name-internal
+                                           (lambda (file-cand) (member file-cand current-candidates))
+                                           icicle-require-match-p nil minibuffer-history-variable))
+
+                         (t             ; Emacs 20, 21
+                          ;; In Emacs < 22, there is no PREDICATE arg to `read-file-name', so
+                          ;; we use `completing-read' even for file-name completion.  In that case, we
+                          ;; tack the `default-directory' onto each candidate, unless it is already an
+                          ;; absolute file name.  We also let completion functions (e.g. `S-TAB') know
+                          ;; that this is not really file-name completion.
+                          (completing-read
+                           "Match also (regexp): "
+                           (cond ((icicle-file-name-input-p)
+                                  (setq minibuffer-completing-file-name  nil) ; Disavow completing file.
+                                  (let ((dir  (icicle-file-name-directory-w-default
+                                               icicle-current-input)))
+                                    (mapcar (lambda (file)
+                                              (list (if (file-name-absolute-p file)
+                                                        file
+                                                      (concat dir file))))
+                                            icicle-completion-candidates)))
+                                 (icicle-whole-candidate-as-text-prop-p
+                                  (mapcar (lambda (cand)
+                                            (funcall icicle-get-alist-candidate-function (car cand)))
+                                          (icicle-filter-alist minibuffer-completion-table
+                                                               icicle-completion-candidates)))
+                                 (t
+                                  (mapcar #'list icicle-completion-candidates)))
+                           nil icicle-require-match-p nil minibuffer-history-variable)))))
              ;; Normally, `icicle-narrow-candidates' is called from the minibuffer.
              ;; If not, just return the result read.
              (if (> (minibuffer-depth) 0)
@@ -5087,7 +5100,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                     ;; File name input, Emacs 22+.  Update `read-file-name-predicate'.
                     (setq read-file-name-predicate
                           (if read-file-name-predicate
-                              (lexical-let ((curr-pred read-file-name-predicate))
+                              (lexical-let ((curr-pred  read-file-name-predicate))
                                 `(lambda (file-cand)
                                   (and (funcall ',curr-pred file-cand) (funcall ',pred file-cand))))
                             pred)))
@@ -5099,7 +5112,7 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
                     ;; Non-file name input.  Update `minibuffer-completion-predicate'.
                     (setq minibuffer-completion-predicate
                           (if minibuffer-completion-predicate
-                              (lexical-let ((curr-pred minibuffer-completion-predicate))
+                              (lexical-let ((curr-pred  minibuffer-completion-predicate))
                                 `(lambda (cand)
                                   (and (funcall ',curr-pred cand) (funcall ',pred cand))))
                             pred)))))))

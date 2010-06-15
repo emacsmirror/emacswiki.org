@@ -286,7 +286,7 @@ Also, your (commented out) `interactive' spec and use of ##ARG## is not correct.
 But searching for a string is not trivial, because of the possibility of escaped ##"## etc.
 
 [new]
-`parse-partial-sexp' is for that. For how to use it to find a string see bug report http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6411
+: `parse-partial-sexp' is for that. For how to use it to find a string see bug report http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6411 -- LennartBorgman
 
 [new]
 It's also not clear what you mean by a "string at point". If you expect to return the string when point is somewhere in the middle of it then things are much more complicated than if you expect it to return the string only when point is at one of the quote marks (##"##).

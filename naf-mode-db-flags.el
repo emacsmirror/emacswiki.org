@@ -37,13 +37,21 @@
 ;; CONSTANTS:
 ;; `naf-mode-db-numbers-flag'    -> Flagging of national db number fields.
 ;; `*naf-mode-x-of*'             -> Keywords for name flags and x-of type relationships.
-;; `naf-mode-timestamp-flag'     -> :DOCUMENT-ME
-;; `naf-mode-accessed-by-flag'   -> :DOCUMENT-ME
-;; `naf-mode-url-flag'           -> :DOCUMENT-ME
+;; `naf-mode-timestamp-flag'
+;; `naf-mode-accessed-by-flag'
+;; `naf-mode-url-flag'
+;; `naf-mode-url-wrapper-flag'
+;; `naf-mode-db-field-flags-bnf'
+;; `naf-mode-db-field-flags'
+;; `naf-mode-alternate-name-flags'
+;; `*naf-mode-x-of*'
 ;;
 ;; FACES:
 ;;
 ;; VARIABLES:
+;; `*naf-mode-db-flags-xrefs*'
+;; `naf-alternate-name-flags'
+;; `*naf-x-of*'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
@@ -52,14 +60,21 @@
 ;; RENAMED:
 ;;
 ;; MOVED:
-;; `naf-mode-db-field-flags-ulan-paren' -> ./naf-mode-ulan-utils.el
-;;
+;; `*regexp-french-date-prefix*'        -> naf-mode-dates.el
+;; `*regexp-french-date-siecle*'        -> naf-mode-dates.el
+;; `naf-mode-db-field-flags-ulan-paren' -> naf-mode-ulan-utils.el
+;; `naf-active-date-flags'              -> naf-mode-dates.el
+;; `naf-active-date-flags-paren'        -> naf-mode-dates.el
+;; `naf-active-date-flags-solo'         -> naf-mode-dates.el
+;; `naf-mode-active-date'               -> naf-mode-dates.el
+;; `naf-mode-active-date-flags-solo'    -> naf-mode-dates.el
+;; `naf-mode-benezit-date'              -> naf-mode-dates.el
+;; 
 ;; TODO:
 ;; Following need to be :RENAMED   -> cannonical name
-;; `naf-mode-db-field-flags'       -> :DOCUMENT-ME :RENAME-ME -> -flag
-;; `naf-mode-alternate-name-flags' -> :DOCUMENT-ME :RENAME-ME -> -flag
-;; `naf-mode-benezit-date'         -> :DOCUMENT-ME :RENAME-ME -> -benezit-date-flag
-;; `*naf-mode-x-of*'               -> :DOCUMENT-ME :RENAME-ME -> -x-of-flag
+;; `naf-mode-db-field-flags'       -> :RENAME-ME -> -flag
+;; `naf-mode-alternate-name-flags' -> :RENAME-ME -> -flag
+;; `*naf-mode-x-of*'               -> :RENAME-ME -> -x-of-flag
 ;;
 ;; NOTES:
 ;; This file uses the provide/require idiom because of the defconstant forms.
@@ -125,13 +140,34 @@
 (eval-when-compile (require 'cl))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-14T12:52:09-04:00Z}#{10241} - by MON KEY>
+(defvar *naf-mode-db-flags-xrefs* nil 
+  "List of  variables which xref each other in naf-mode-db-flags package.\n
+:SEE :FILE naf-mode-events.el")
+;;
+(unless (bound-and-true-p *naf-mode-db-flags-xrefs*)
+  (setq *naf-mode-db-flags-xrefs*
+        '(naf-mode-timestamp-flag
+          naf-mode-accessed-by-flag
+          naf-mode-url-wrapper-flag
+          naf-mode-url-flag 
+          naf-mode-db-numbers-flag
+          naf-mode-db-field-flags-bnf
+          naf-mode-db-field-flags
+          naf-alternate-name-flags
+          naf-mode-alternate-name-flags 
+          *naf-x-of*
+          *naf-mode-x-of*
+          )))
+
+;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 03:44.51 PM  - by MON KEY>
 (defconst naf-mode-timestamp-flag 
   (concat "\\(<Timestamp:\\)\\(.*\\)\\( - by "
           (regexp-opt
            (let ((mon-l (number-sequence 1 9))
                  (bug-l (number-sequence 1 7))
-                 (rtn-l))
+                 rtn-l)
              (setq rtn-l '("Ebay"))
              (dolist (i mon-l)
                (setq rtn-l (cons (cadr (assoc i *MON-NAME*)) rtn-l)))
@@ -142,7 +178,7 @@
           ">\\)")
   "*Regexp matches name portion \" - NAME\" of time stamp.\n
 Used for fontlocking of timestamps generated with `mon-stamp'.
-EXAMPLE:\n\n<Timestamp: Wednesday July 29, 2009 @ 03:32.43 PM  - by MON KEY>\n
+:EXAMPLE\n\n<Timestamp: Wednesday July 29, 2009 @ 03:32.43 PM  - by MON KEY>\n
 :SEE-ALSO `mon-timestamp', `mon-accessed-time-stamp', `mon-accessed-stamp',
 `*mon-timestamp-cond*', `naf-mode-accessed-by-flag'.\n
 :USED-IN `naf-mode'.\n►►►")
@@ -191,6 +227,7 @@ accessed: #{2010-04-01T17:35:01-04:00Z}#{10134} - MON KEY
 ;;
 ;;;(progn (makunbound 'naf-mode-accessed-by-flag) 
 ;;;       (unintern 'naf-mode-accessed-by-flag) )
+
 
 ;;; ==============================
 (defconst naf-mode-url-flag 
@@ -368,153 +405,6 @@ alternative, pseudo. or pen names.
 ;;
 ;;;(progn (makunbound 'naf-mode-alternate-name-flags) 
 ;;        (unintern 'naf-mode-alternate-name-flags) )
-
-;;; ==============================
-;;; :TODO
-;;; '"\\(\\(\\(Né\\)\\|\\(Mort\\)\\) le \\)"
-;;; '"\\<Né le\\>\\|\\<Mort le\\>"
-;;; :CREATED <Timestamp: Monday June 23, 2008 @ 12:35.49 PM - by MON KEY>
-(defconst naf-mode-benezit-date  "\\<Né\\>\\|\\<Née\\>\\|\\<Mort\\>"
-  "*Regexp to matchthe beginning of the Benezit lifespan string in `naf-mode'.\n
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'.
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.
-:SEE-ALSO \n:USED-IN `naf-mode'.\n►►►")
-;;
-;;;(progn (makunbound 'naf-mode-benezit-date) 
-;;;        (unintern 'naf-mode-benezit-date) )
-
-;;; ==============================
-;;; `naf-mode-active-date'
-(defvar naf-active-date-flags
-       '("Actif en"
-         "Actif à"
-         "actif en"
-         "actif à"
-         "active circa"
-         "active Circa"
-         "active c."
-         "active ca."
-         "active ca"
-         "active cca."
-         "Active c."
-         "Active ca."
-         "Active ca"
-         "Active cca.")
-  "*List of strings commonly used to designate when an entity was active.\n
-:REGEXPS-IN `naf-mode-active-date'.
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.
-:SEE-ALSO .\n
-:USED-IN `naf-mode'.\n►►►")
-;;
-(defconst naf-mode-active-date
-  (concat "\\<" (regexp-opt naf-active-date-flags 'paren) )
-  "*Regexp to match the active period string in `naf-mode'.\n
-:KEYWORD-LISTS-IN `naf-active-date-flags'.
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
-:SEE-ALSO `naf-mode-active-date-flags-paren',
-`naf-mode-active-date-flags-solo'.\n►►►")
-;;
-;;;(progn (makunbound 'naf-mode-active-date) 
-;;;        (unintern 'naf-mode-active-date) )
-
-;;; ==============================
-;;; `naf-mode-active-date-flags-paren'
-(defvar naf-active-date-flags-paren
-  '("(active circa"
-    "(active Circa"
-    "(active c."
-    "(active ca."
-    "(active ca"
-    "(active cca."
-    "(Active c."
-    "(Active ca."
-    "(Active ca"
-    "(Active cca."
-    "(c"
-    "(c."
-    "(ca."
-    "(ca"
-    "(cca."
-    "(ca."
-    "(ca"
-    "(cca.")
-  "*List of strings the active period string in `naf-mode'.\n
-:REGEXPS-IN `naf-mode-active-date-flags-paren'
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
-:SEE-ALSO \n
-:USED-IN `naf-mode'.\n►►►")
-;;
-(defconst naf-mode-active-date-flags-paren (regexp-opt naf-active-date-flags-paren 'paren)
-  "*Regexp to match the active date and periods in `naf-mode'.
-:KEYWORD-LISTS-IN `naf-active-date-flags-paren'
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'. 
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
-:EXAMPLE\n
-\(active circa\n\(active Circa\n\(active c.\n\(active ca.\n\(active ca
-\(active cca.\n\(Active c.\n\(Active ca.\n\(Active ca\n\(Active cca.
-\(c\n\(c.\n\(ca.\n\(ca\n\(cca.\n\(ca.\n\(ca\n\(cca.\n
-:SEE-ALSO `naf-mode-active-date', `naf-mode-active-date-flags-solo'.\n►►►")
-;;
-;;;(progn (makunbound 'naf-mode-active-date-flags-paren) 
-;;;       (unintern 'naf-mode-active-date-flags-paren) )
-
-;;; ==============================
-;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 04:12.28 PM  - by MON KEY>
-;;; `naf-mode-active-date-flags-solo'
-(defvar naf-active-date-flags-solo '(" c. " " ca. " " cca. " " ca. " " cca. ")
-  "*List for matching the circa period string in `naf-mode'.
-:REGEXPS-IN naf-mode-active-date-flags-solo
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
-:SEE-ALSO .\n►►►")
-;;
-(defconst naf-mode-active-date-flags-solo (regexp-opt naf-active-date-flags-solo 'paren)
-  "*Regexp to match the active period string in `naf-mode'.\n
-:KEYWORD-LISTS-IN `naf-active-date-flags-solo'
-:FACE-FONT-LOCKING-WITH `naf-mode-date-face'.
-:FACE-DOCUMENTED-IN `naf-mode-date-fface'.\n
-EXAMPLE:\n\" c. \"\n\" ca. \"\n\" cca. \"\n\" ca. \"\n\" cca. \"\n
-:SEE-ALSO `naf-mode-active-date-flags-paren' , `naf-mode-active-date'.\n►►►")
-;;
-;;;(progn (makunbound 'naf-mode-active-date-flags-solo)
-;;;       (unintern 'naf-mode-active-date-flags-solo) )
-
-;;; ==============================
-(defvar *regexp-french-date-prefix*
-  '(("Mort en")
-    ("Mort vers")
-    ("Mort le")
-    ("Mort à")
-    ("Né en")
-    ("Né le")
-    ("Né à")
-    ("Née en")
-    ("Née à")
-    ("Née le"))                         ; Century
-  "*List of Benezit styled French birth/deatch strings.\n
-:SEE-ALSO `*regexp-french-date-prefix*'.\n
-:USED-IN `naf-mode'.\n►►►")
-
-;;; ==============================
-;;; :TODO (mon-insert-unicode "COMBINING LATIN SMALL LETTER E" t) ;-> ͤ
-(defvar *regexp-french-date-siecle*
-  '("xix siècle"
-    "XIX siècle"
-    "xix siècle"
-    "xvii-xix siècles"
-    "xvii siècle"
-    "xviiͤ siècle"
-    "XVIIͤ siècle"
-    "xixͤ siècle"
-    "XIXͤ siècle"
-    "xixͤ siècle"
-    "xviiͤ-xixͤ siècles")
-"*List of Benezit styled French century and century range strings.\n
-:SEE-ALSO `*regexp-french-date-prefix*'.\n
-:USED-IN `naf-mode'.\n►►►")
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 04:11.23 PM  - by MON KEY>

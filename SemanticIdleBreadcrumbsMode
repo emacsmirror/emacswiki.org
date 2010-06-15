@@ -1,0 +1,41 @@
+== Introduction ==
+
+The semantic idle breadcrumbs mode displays information about the structural context of point in the [HeaderLine header line] or [ModeLine mode line]. The display update is performed using [SemanticBovinator Semantic]'s idle scheduler. This means the update happens after a short period of inactivity.
+
+The screenshot below illustrates one of the display styles in the header line for the C++, Python and Emacs Lisp programming languages:
+
+[[image:SemanticIdleBreadcrumbsModeScreenshot.png]]
+
+== Usage ==
+
+In recent versions of [[CEDET]], the mode can be enabled for individual buffers using the `semantic-idle-breadcrumbs-mode' command. The command is executed by typing
+
+  M-x semantic-idle-breadcrumbs-mode RET
+
+In addition, the mode can be enabled globally (meaning that the mode will automatically be enabled in all buffers) using `global-semantic-idle-breadcrumbs-mode'. To make the activation of this global mode permanent, the following code can be added to the Emacs startup file (usually `.emacs`)
+
+  (global-semantic-idle-breadcrumbs-mode 1)
+
+The display style can be customized in the `semantic' customization group.
+
+=== Display Styles ===
+
+* The context can be displayed in a traditional [[http://en.wikipedia.org/wiki/Breadcrumb_%28navigation%29 "breadcrumbs"]] manner such that elements are displayed from left to right using an outermost to innermost order. Example:
+{{{
+outer_namespace::inner_namespace::class::member_function
+}}}
+* A variant of this style uses a configurable language-independent separator string. Example:
+{{{
+outer_namespace > inner_namespace > class > member_function
+}}}
+* It is also possible to display the innermost element with more detail followed by a "breadcrumbs" path. This style is shown in the screenshot above. Example:
+{{{
+void member_function (int a, int b) | outer_namespace::inner_namespace::class
+}}}
+
+== Alternatives ==
+
+An alternative mode that offers similar functionality for several programming languages is WhichFuncMode.
+
+----
+CategoryProgrammerUtils

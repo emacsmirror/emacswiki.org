@@ -577,7 +577,7 @@ candidate set -- how to match the regexp.
 '''See also:'''
 
 * The [[doc string]] (`C-h f') of command '''`icicle-search''''; it provides general information on '''Icicles''' search.
-* [[Icicles - Other Search Commands]] for specialized '''Icicles''' search commands `icicle-search-char-property', `icicle-comint-search', `icicle-compilation-search', `icicle-imenu', `icicle-imenu-command', `icicle-imenu-non-interactive-function', `icicle-search-overlay-property', and `icicle-search-text-property'.
+* [[Icicles - Other Search Commands]] for specialized '''Icicles''' search commands `icicle-comint-search', `icicle-compilation-search', `icicle-imenu', `icicle-imenu-command', `icicle-imenu-non-interactive-function', `icicle-search-char-property', `icicle-search-keywords', `icicle-search-overlay-property', and `icicle-search-text-property'.
 * [[Icicles - Search-And-Replace]] for information about replacing search hits or parts of search hits.
 * [[Icicles - Customization and General Tips]] for information about the
 `icicle-search-*' [[face]]s, which control '''Icicles''' search.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 12 08:12:43 2010 (-0700)
+;; Last-Updated: Mon Jun 14 21:27:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11790
+;;     Update #: 11834
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -352,7 +352,7 @@
 (defalias 'old-choose-completion-string (symbol-function 'choose-completion-string)))
 
 ;;;###autoload
-(cond ((> emacs-major-version 21)       ; Emacs 22
+(cond ((> emacs-major-version 21)       ; Emacs 22+
        (defun icicle-choose-completion-string (choice &optional buffer base-size)
          "Switch to BUFFER and insert the completion choice CHOICE.
 BASE-SIZE, if non-nil, says how many characters of BUFFER's text
@@ -1258,6 +1258,7 @@ functions, which use zero-indexing for POSITION."
                                   (char-to-string def-value)
                                 def-value)))
     (when (and def-value (eq icicle-default-value t)) ; Add DEFAULT-VALUE to PROMPT.
+      (when (icicle-file-name-input-p) (setq def-value  (file-name-nondirectory def-value)))
       (setq prompt  (if (string-match "\\(.*\\)\\(: *\\)$" prompt)
                         (concat (substring prompt (match-beginning 1) (match-end 1)) " (" def-value
                                 ")" (substring prompt (match-beginning 2) (match-end 2)))
@@ -3330,7 +3331,8 @@ current candidate is shown in the mode line."
     (icicle-save-or-restore-input)
     (when (and (icicle-file-name-input-p)  (icicle-file-directory-p icicle-current-input))
       (setq icicle-default-directory  icicle-current-input))
-    (icicle-recompute-candidates nth candidates-fn saved-last-input)
+    (unless (eq this-command last-command)
+      (icicle-recompute-candidates nth candidates-fn saved-last-input))
     (icicle-save-or-restore-input)      ; Again, based on updated `icicle-common-match-string'.
     (cond ((null icicle-completion-candidates)
            (save-selected-window (icicle-remove-Completions-window))
@@ -3683,12 +3685,13 @@ This is a destructive operation: the list structure is changed."
 
 (defun icicle-increment-cand-nb+signal-end (incr max)
   "Increment candidate number by INCR modulo MAX, and signal end of cycle."
-  (if icicle-candidate-nb
-      (setq icicle-candidate-nb  (+ incr icicle-candidate-nb))
-    (setq icicle-candidate-nb  0))      ; Reset.
-  (setq icicle-candidate-nb  (mod icicle-candidate-nb max))
-  (when (and (= 0 icicle-candidate-nb) (eq last-command this-command)) ; Signal end of cycle.
-    (let ((visible-bell  t))  (ding))))
+  (setq icicle-candidate-nb  (if icicle-candidate-nb
+                                 (+ incr icicle-candidate-nb)
+                               (if (natnump incr) 0 (1- max))))
+  (let ((wrapped  (mod icicle-candidate-nb max)))
+    (when (and (/= wrapped icicle-candidate-nb) (eq last-command this-command))
+      (let ((visible-bell  t))  (ding)))
+    (setq icicle-candidate-nb  wrapped)))
 
 (defun icicle-place-cursor (input &optional dont-activate-p)
   "Position point and mark with respect to the minibuffer candidate.
@@ -4404,6 +4407,7 @@ unless it exists."
     ;;$$$ (let ((tramp-completion-mode  t))    ; Fool Tramp into thinking it is in completion mode.
     (setq icicle-current-input   (icicle-input-from-minibuffer)
           icicle-input-fail-pos  nil)
+    (setq icicle-last-input  nil) ; $$$$$$$$ So icicle-save-or-restore-input => recompute candidates.
     (when (overlayp icicle-complete-input-overlay) (delete-overlay icicle-complete-input-overlay))
     (icicle-highlight-initial-whitespace icicle-current-input)
     (if (< (length icicle-current-input) icicle-Completions-display-min-input-chars)
@@ -5249,8 +5253,8 @@ Removes the last cdr, which might hold the base size."
     res))
 
 (defun icicle-require-match-p ()
-  "Non-nil means completion is strict.
-Non-nil if current REQUIRE-MATCH arg to `completing-read' or
+  "Return non-nil if completion is strict.
+Return non-nil if current REQUIRE-MATCH arg to `completing-read' or
 `read-file-name' really means require match (sheesh!)."
   (if (> emacs-major-version 22)  (eq t icicle-require-match-p)  icicle-require-match-p))
 

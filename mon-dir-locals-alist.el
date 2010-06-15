@@ -34,11 +34,11 @@
 ;; VARIABLES:
 ;; `*mon-artist-naf-path*', `*mon-brand-naf-path*', `*mon-nef-scan-path*', `*mon-nef-scan-nefs-path*',
 ;; `*mon-nef-scan-nef2-path*', `*mon-ebay-images-path*', `*mon-ebay-images-bmp-path*',
-;; `*mon-ebay-images-jpg-path*', `*mon-ebay-images-temp-path*', `*emacs2html-temp*'
-;; `*bug-HG-path*', `*mon-CL-scratch-path*'
-;; `*mon-buffer-mode-defaults*', `*mon-HG-root-path*', `*mon-smith-poster-HG-path*' 
-;; `*mon-record-current-directory*', `*mon-dir-locals-alist-xrefs*'
-;; `*mon-nef-scan-drive*', `*mon-nef-scan-base-path*'
+;; `*mon-ebay-images-jpg-path*', `*mon-ebay-images-temp-path*', `*emacs2html-temp*',
+;; `*bug-HG-path*', `*mon-CL-scratch-path*',
+;; `*mon-buffer-mode-defaults*', `*mon-HG-root-path*', `*mon-smith-poster-HG-path*', 
+;; `*mon-record-current-directory*', `*mon-dir-locals-alist-xrefs*',
+;; `*mon-nef-scan-drive*', `*mon-nef-scan-base-path*',
 ;;
 ;; ALIASES/ADVISED/SUBST'D:
 ;; `*mon-emacs2html-temp*' -> `*emacs2html-temp*'
@@ -131,7 +131,7 @@
 
 
 ;;; ==============================
-;;; :NOTE `IS-MON-SYSTEM-P' may be called allready use a tempory symbol and
+;;; :NOTE `IS-MON-SYSTEM-P' may be called already use a tempory symbol and
 ;;;       unintern it at BOF.
 ;;; :CHANGESET 1790
 ;;; :CREATED <Timestamp: #{2010-05-28T17:35:26-04:00Z}#{10215} - by MON KEY>
@@ -151,29 +151,30 @@
 :SEE-ALSO `*naf-mode-xref-of-xrefs*'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-dir-locals-alist-xrefs*)
-  (setq *mon-dir-locals-alist-xrefs* 
-        '(*mon-artist-naf-path*
-          *mon-brand-naf-path*
-          *mon-ebay-images-bmp-path*
-          *mon-ebay-images-jpg-path*
-          *mon-ebay-images-lookup-path*
-          *mon-ebay-images-path*
-          *mon-ebay-images-temp-path*
-          *emacs2html-temp*
-          *mon-html-fontify-file-name-template*
-          *mon-nef-scan-base-path*
-          *mon-nef-scan-drive*
-          *mon-nef-scan-nef2-path*
-          *mon-nef-scan-nefs-path*
-          *mon-nef-scan-path*
-          *mon-nefs_photos_nefs-alist*
-          *mon-smith-poster-HG-path*
-          *mon-CL-scratch-path*
-          *mon-record-current-directory*
-          *bug-HG-path*
-          *mon-HG-root-path*
-          *mon-buffer-mode-defaults*
-          *mon-dir-locals-alist-xrefs*)))
+  (when mon-bind-dir-locals-alist
+    (setq *mon-dir-locals-alist-xrefs* 
+          '(*mon-artist-naf-path*
+            *mon-brand-naf-path*
+            *mon-ebay-images-bmp-path*
+            *mon-ebay-images-jpg-path*
+            *mon-ebay-images-lookup-path*
+            *mon-ebay-images-path*
+            *mon-ebay-images-temp-path*
+            *emacs2html-temp*
+            *mon-html-fontify-file-name-template*
+            *mon-nef-scan-base-path*
+            *mon-nef-scan-drive*
+            *mon-nef-scan-nef2-path*
+            *mon-nef-scan-nefs-path*
+            *mon-nef-scan-path*
+            *mon-nefs_photos_nefs-alist*
+            *mon-smith-poster-HG-path*
+            *mon-CL-scratch-path*
+            *mon-record-current-directory*
+            *bug-HG-path*
+            *mon-HG-root-path*
+            *mon-buffer-mode-defaults*
+            *mon-dir-locals-alist-xrefs*))))
 ;;
 ;;; :TEST-ME  *mon-dir-locals-alist-xrefs*
 ;;; :TEST-ME (symbol-value (nth 3 *mon-dir-locals-alist-xrefs*))
@@ -189,7 +190,7 @@
 :SEE-ALSO `*mon-emacs-root*', `*mon-emacsd*'.\n►►►")
 ;;
 (unless (and (bound-and-true-p *mon-HG-root-path*)
-             (not mon-bind-dir-locals-alist))
+             (not mon-bind-dir-locals-alist)) 
   (let ((mhrp (nth 5 (assoc (cond (IS-MON-P-W32     1)
                                   (IS-BUG-P-REMOTE  4)
                                   (IS-BUG-P         3)
@@ -231,8 +232,8 @@ This is used to keep files transferable across machines with Mercurial.\n
 (unless (and (bound-and-true-p *mon-CL-scratch-path*)
              (not mon-bind-dir-locals-alist))
   (setq *mon-CL-scratch-path*
-        (if IS-MON-P
-            (concat *mon-HG-root-path* 
+        (when IS-MON-P
+          (concat *mon-HG-root-path* 
                     (cadr (assoc 'the-CL-path *mon-misc-path-alist*))
                     "/CL-NOTES"))))
 ;;
@@ -342,8 +343,7 @@ Used to generate temporary file-names for `mon-htmlfontify-*' procedures.\n
 ;;
 (unless (and (bound-and-true-p *mon-html-fontify-file-name-template*)
              (not mon-bind-dir-locals-alist))
-  (setq *mon-html-fontify-file-name-template*
-        "%s/emacs2firefox-%d.html"))
+  (setq *mon-html-fontify-file-name-template* "%s/emacs2firefox-%d.html"))
 ;;
 ;;;(progn (makunbound '*mon-html-fontify-file-name-template*)
 ;;;       (unintern   '*mon-html-fontify-file-name-template*) )  
@@ -486,7 +486,7 @@ directory's paths as the directory doesnt' change that much.\n
              (not mon-bind-dir-locals-alist))
   (setq *mon-nef-scan-nefs-path* 
         (cond (IS-W32-P (concat *mon-nef-scan-base-path* "NEF_Drive2"))
-              (IS-MON-P-GNU (concat *mon-nef-scan-base-path* "\x41")))))
+              (IS-MON-P-GNU (concat *mon-nef-scan-base-path* "\x42")))))
 ;;
 ;;; :TEST-ME (file-directory-p *mon-nef-scan-nefs-path*)
 ;;
@@ -520,7 +520,10 @@ with `mon-bind-nefs-photos-at-loadtime'.\n
 (unless (and (bound-and-true-p *mon-nef-scan-nef2-path*)
              (not mon-bind-dir-locals-alist))
   ;; :NOTE This needs to happen this way because of occasional filesystem shifts.
-  (setq *mon-nef-scan-nef2-path*  *mon-nef-scan-nefs-path*))
+  (setq *mon-nef-scan-nef2-path*
+        (if IS-MON-P-GNU 
+            (concat (substring *mon-nef-scan-nefs-path* 0 -1) "\x41")
+          *mon-nef-scan-nefs-path*)))
 ;;
 ;;; :TEST-ME (file-directory-p *mon-nef-scan-nef2-path*)
 ;;
@@ -631,8 +634,7 @@ source image is in the `*mon-ebay-images-bmp-path*'.\n
 	    (".jpg" *mon-ebay-images-jpg-path* "BIG-cropped-jpg") ;; *mon-jpg-img-hash*)
 	    (".bmp" *mon-ebay-images-bmp-path* "BMP-Scans"))))   ;; *mon-bmp-img-hash*))))
 ;;
-;;; :TEST-ME (file-directory-p 
-;;;           (symbol-value (cadr (assoc ".nef" *mon-ebay-images-lookup-path*))))
+;;; :TEST-ME (file-directory-p (symbol-value (cadr (assoc ".nef" *mon-ebay-images-lookup-path*))))
 ;;
 ;;;(progn (makunbound '*mon-ebay-images-lookup-path*)(unintern 'ebay-images-lookup-path*) )
 
@@ -650,7 +652,7 @@ buffers' current mode and/or extension.\n
   (setq *mon-buffer-mode-defaults*
         `(("eBay-Template"  ,*mon-ebay-images-bmp-path* ".dbc")
           ("NAF-mode" ,*mon-artist-naf-path* ".naf")
-          ("Emacs-Lisp" ,(concat *mon-emacs-root* "/naf-mode") ".el")
+          ("Emacs-Lisp" ,*mon-naf-mode-root* ".el")
           ("Lisp" ,*mon-CL-scratch-path* ".lisp"))))
 ;;
 ;;; :NESETED-SYTLE-ALIST

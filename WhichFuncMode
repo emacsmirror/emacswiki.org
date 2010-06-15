@@ -51,7 +51,22 @@ To get other languages to work with which-func, simple add the name of a program
     (unless  (member java-mode which-func-modes)
       (add-to-list 'which-func-modes 'java-mode)))
 
+Thanks for the tip, yet should this not be more like (e.g. for lua-mode)?
+
+  (eval-after-load "which-func"
+    (unless (member 'lua-mode which-func-modes)
+      (add-to-list 'which-func-modes 'lua-mode)))
+
+Yes, or just
+
+  (eval-after-load "which-func"
+      (add-to-list 'which-func-modes 'lua-mode))
+
 To configure a language for which-func mode, you need to configure it for Imenu.  See ImenuMode.
+
+== Alternatives ==
+
+An alternative mode that offers similar functionality for several programming languages is SemanticIdleBreadcrumbsMode.
 
 ----
 CategoryProgrammerUtils

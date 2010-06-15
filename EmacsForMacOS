@@ -153,9 +153,13 @@ It's also possible to build the development version of GNU Emacs with ATSUI -- A
 
 == Tips ==
 
-=== Use Alt/Option as Meta Key for Terminal.app on Snow Leopard ===
+=== Use Alt/Option as Meta Key under terminal emulators ===
 
-Terminal.app > Preferences > Settings > Keyboard > Use option as meta key
+For Terminal.app, starting from Snow Leopard: Go to  Preferences > Settings > Keyboard > Use option as meta key.
+
+For iTerm: Go to Manage Profiles > Keyboard profiles > (your profile) > Option Key as...
+
+If you want to use Option key for both international characters and [MetaKeyProblems Meta key] in Emacs, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this page] for iTerm 0.10.x patch and/or binary.
 
 Alt-b and Alt-f for navigating by word also works for your shell now.
 
@@ -212,9 +216,8 @@ result of the command forward-word (M-f). To actually get forward-sexp I must "h
 : iTerm sends C-M-keys and mouse events.  Remote emacsen run for months via iTerm + ssh + [[screen]].
 Any volunteers to hack C-M- and mouse input into Terminal.app with GDB and Objective-C?
 
-See the following blog post for swapping the cmd and meta key:
-
-http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html
+See the following [http://andrewmcdermott.blogspot.com/2009/11/cmd-key-happy-swap-cmdalt-keys-in.html
+ blog post] for swapping the cmd and meta key. Also, if you want to retain one of the Option key functions as modifier for national characters, see [http://swissarmyhammer.wordpress.com/2010/06/07/osx-terminal-meta-key-national-characters/ this] page for iTerm patch and/or binary.
 
 [new]
 : Terminals on most operating systems (including Terminal.app) have a very limited set of keys that they send to applications. Rarely will they send C-M-keys to the app.  For this and several other reasons I recommend running Emacs as a full app, not inside a terminal, except for quick changes.  You can use Esc C-f in a pinch but it's not as efficient as M-C-f.

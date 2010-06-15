@@ -1,16 +1,14 @@
 = Presentation =
-portrait:http://www.dd.chalmers.se/~bojohan/img/avatar.png
+
 A.k.a. [::bojohan]
 
 I use Emacs.
-
-http://www.dd.chalmers.se/~bojohan/emacs/
 
 : Welcome to the wiki!!  :) -- AlexSchroeder
 
 = Bits and Pieces =
 
-The right amount of active region highlighting (for emacs 22):
+The right amount of active region highlighting:
 
 *  Multiple advice, using reader macros:
 

@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.10 (2010-06-14)
-;; Serial Version: %Id: 25%
+;; Serial Version: %Id: 26%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -133,6 +133,7 @@
 ;; 1.4.10 VB1 - Add punctuation syntax for operators
 ;;            - create visual-basic-check-style
 ;;            - improve idiom detection
+;; 1.4.10b VB1 -improve visual-basic-check-style
 
 ;;
 ;; Notes:
@@ -585,18 +586,18 @@ Commands:
 
 (defun visual-basic-in-code-context-p ()
   "Predicate true when pointer is in code context."
-  (if (fboundp 'buffer-syntactic-context) ; XEmacs function.
-      (null (buffer-syntactic-context))
-    ;; Attempt to simulate buffer-syntactic-context
-    ;; I don't know how reliable this is.
-    (let* ((beg (save-excursion
-                  (beginning-of-line)
-                  (point)))
-           (list
-            (parse-partial-sexp beg (point))))
-      (and (null (nth 3 list))          ; inside string.
-           (null (nth 4 list))))))      ; inside comment
-
+  (save-match-data
+    (if (fboundp 'buffer-syntactic-context) ; XEmacs function.
+	(null (buffer-syntactic-context))
+      ;; Attempt to simulate buffer-syntactic-context
+      ;; I don't know how reliable this is.
+      (let* ((beg (save-excursion
+		    (beginning-of-line)
+		    (point)))
+	     (list
+	      (parse-partial-sexp beg (point))))
+	(and (null (nth 3 list))          ; inside string.
+	     (null (nth 4 list)))))))      ; inside comment
 
 (defun visual-basic-abbrev-expand-function (expand-fun)
   "Expansion of abbreviations.  EXPAND-FUN is called at the end of this function."
@@ -1488,9 +1489,23 @@ corrections under the control of user.
 This function is under construction"
   (interactive)
   (flet
-      ((solve-operator-without-space
+      ((insert-space-at-point
 	()
 	(insert " "))
+       ;; avoid to insert space inside a floating point number
+       (check-plus-or-minus-not-preceded-by-space-p 
+	()
+	(save-match-data
+	  (and 
+	   (visual-basic-in-code-context-p)
+	   (null (looking-back "\\([0-9]\\.\\|[0-9]\\)[eE]")))))
+       (check-minus-not-followed-by-space-p 
+	()
+	(save-match-data
+	  (and 
+	    (visual-basic-in-code-context-p)
+	    (null  (looking-back "[-+*/\\]\\(\\|\\s-+_\n\\)\\s-*"))
+	    (null (looking-back "\\([0-9]\\.\\|[0-9]\\)[eE]")))))
        )
     (let (vb-other-buffers-list 
 	  ;; list of found error styles
@@ -1501,24 +1516,37 @@ This function is under construction"
 	  (style-errors 
 	   '(
 	     ;; each element is a vector
+	     ;;   0	 1	2	3	  4		      5		    6
 	     ;; [ REGEXP PROMPT GET-POS RE-EXP-NB ERROR-SOLVE-HANDLER ERROR-CONFIRM LEVEL] 
-	     [ "\\(\\sw\\|\\s_\\)[-+/\\*]" 
+	     [ "\\(\\s\)\\|\\sw\\|\\s_\\)[-+]" 
+	       "+/- not preceded by space"
+	       match-end 1
+	       insert-space-at-point
+	       check-plus-or-minus-not-preceded-by-space-p 
+	       0 ]
+	     [ "\\(\\s\)\\|\\sw\\|\\s_\\)[/\\*]" 
 	       "Operator not preceded by space"
 	       match-end 1
-	       solve-operator-without-space
-	       nil
+	       insert-space-at-point
+	       visual-basic-in-code-context-p
 	       0 ]
-	     [ "[-+/\\*]\\(\\sw\\|\\s_\\)" 
+	     [ "[+/\\*]\\(\\s\(\\|\\sw\\|\\s_\\)" 
 	       "Operator not followed by space"
 	       match-beginning 1
-	       solve-operator-without-space
-	       nil
+	       insert-space-at-point
+	       visual-basic-in-code-context-p
+	       0 ]
+	     [ "-\\(\\s\(\\|\\sw\\|\\s_\\)" 
+	       "Minus not followed by space"
+	       match-beginning 1
+	       insert-space-at-point
+	       check-minus-not-followed-by-space-p
 	       0 ]
 	     [ ",\\(\\sw\\|\\s_\\)"
 	       "Comma not followed by space"
 	       match-beginning 1
-	       solve-operator-without-space
-	       nil
+	       insert-space-at-point
+	       visual-basic-in-code-context-p
 	       0 ]
 	     )); end of style error types
 	  )
@@ -1540,10 +1568,12 @@ This function is under construction"
 		    (when 
 			(and
 			 (re-search-forward (aref se 0) nil t)
-			 (or (null (aref se 5))
-			     (funcall  (aref se 5))))
-		      (push (list (funcall (aref se 2)
-					   (aref se 3))
+			 (progn
+			   (goto-char  (funcall (aref se 2)
+						(aref se 3)))
+			   (or (null (aref se 5))
+			       (funcall  (aref se 5)))))
+		      (push (list (point)
 				  (aref se 1)
 				  (and (> (aref se 6) visual-basic-auto-check-style-level)
 				       (aref se 4)))

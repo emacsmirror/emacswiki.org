@@ -100,12 +100,13 @@
 ;; `mon-with-inhibit-buffer-read-only-TEST', `mon-remove-if',
 ;; `mon-string-to-hex-list-cln-chars',
 ;; `mon-line-dolines-setup-TEST', `mon-line-dolines-TEST',
-;; `mon-map-obarray-symbol-plist-props', `mon-image-verify-type'
+;; `mon-map-obarray-symbol-plist-props', `mon-image-verify-type',
+;; `mon-with-buffer-undo-disabled-TEST' 
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
 ;; `mon-foreach', `mon-for', `mon-loop', `mon-moveq', `mon-line-dolines',
-;; `defconstant', `defparameter', 
+;; `defconstant', `defparameter', `mon-with-buffer-undo-disabled',
 ;; `mon-get-face-at-posn', `mon-buffer-exists-p',
 ;; `mon-check-feature-for-loadtime', `mon-with-inhibit-buffer-read-only',
 ;;
@@ -449,12 +450,12 @@ string of kind variable.\n
 ;;; :CREATED <Timestamp: #{2009-10-23T15:17:35-04:00Z}#{09435} - by MON KEY>
 (defmacro mon-with-file-buffer (buffer-var file &rest body)
   "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n
-:SEE-ALSO `mon-buffer-exists-p',`mon-buffer-written-p',
-`mon-buffer-exists-so-kill', `mon-print-in-buffer-if-p',
-`mon-buffer-exists-so-kill', `mon-get-buffer-parent-dir',
-`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
-`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir'
-`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
+:SEE-ALSO `mon-with-buffer-undo-disabled', `mon-buffer-exists-p',
+`mon-buffer-written-p', `mon-buffer-exists-so-kill', `mon-print-in-buffer-if-p',
+`mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-string-split-buffer-name',
+`mon-string-split-buffer-parent-dir' `with-current-buffer', `with-temp-file',
+`with-temp-buffer'.\n►►►"
   (let ((file-var (make-symbol "file"))
         (buffer-already-there-p-var (make-symbol "buffer-already-there-p")))
     `(let* ((,file-var ,file)
@@ -476,8 +477,9 @@ When INSRTP is non-nil or called-interactively with prefix arg insert
 buffer-name at point. Does not move point.\n
 :EXAMPLE\n(mon-buffer-name->kill-ring)
 \(call-interactively 'mon-buffer-name->kill-ring)\n
-:SEE-ALSO `mon-buffer-exists-p', `mon-buffer-exists-so-kill',
-`mon-buffer-written-p', `mon-print-in-buffer-if-p', `mon-with-file-buffer',
+:SEE-ALSO `mon-buffer-exists-p', `mon-buffer-exists-so-kill', 
+`mon-buffer-written-p', `mon-print-in-buffer-if-p', 
+`mon-with-file-buffer', `mon-with-buffer-undo-disabled',
 `mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
 `mon-get-buffers-directories', `mon-string-split-buffer-name',
 `mon-string-split-buffer-parent-dir'.\n►►►"
@@ -498,7 +500,8 @@ buffer-name at point. Does not move point.\n
     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
-`mon-buffer-written-p', `mon-print-in-buffer-if-p', `mon-buffer-name->kill-ring', 
+`mon-with-buffer-undo-disabled' `mon-buffer-written-p',
+`mon-print-in-buffer-if-p', `mon-buffer-name->kill-ring',
 `mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
 `mon-get-buffers-directories', `mon-string-split-buffer-name',
 `mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
@@ -516,6 +519,70 @@ buffer-name at point. Does not move point.\n
 ;;;     (mon-buffer-exists-p "*BAD-IF-NOT-KILLED*")
 ;;;   (kill-buffer (mon-buffer-exists-p "*BAD-IF-NOT-KILLED*")))
 
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-13T11:50:55-04:00Z}#{10237} - by MON>
+(defmacro mon-with-buffer-undo-disabled (&rest body)
+  "Evaluate BODY in an`buffer-disable-undo' set non-nil.
+Arg BODY occurs inside an `unwind-protect' which finishes with
+`buffer-enable-undo'.\n
+:EXAMPLE\n
+\(pp-macroexpand-expression
+ '\(progn
+    \(mon-with-buffer-undo-disabled
+     \(save-excursion
+       \(insert \"bubba\"\)\)
+     \(kill-line\)
+     \(if \(and buffer-undo-list \(atom buffer-undo-list\)\)
+         \(message \"Toggled buffer-undo-list %S\" buffer-undo-list\)
+       \(message \":BUFFER-UNDO-LIST -- fail!\" buffer-undo-list\)\)
+     \(sit-for 2\)\)
+    \(save-excursion \(insert \"I'm the bubba that got saved\"\)\)
+    \(kill-line\)
+    buffer-undo-list\)\)\n
+\(mon-with-buffer-undo-disabled-TEST\)\n
+\(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n\n
+:NOTE Useful for forms which programatically `erase-buffer' contents and the undo list
+is not needed.\n
+:SEE-ALSO `mon-with-buffer-undo-disabled-TEST', `buffer-undo-list', 
+`mon-buffer-exists-p', `mon-buffer-written-p', `mon-buffer-exists-so-kill',
+`mon-print-in-buffer-if-p', `mon-get-buffer-parent-dir',
+`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
+`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir'
+`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
+  `(unwind-protect
+       (progn
+         (buffer-disable-undo)
+         ,@body)
+     (buffer-enable-undo)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-14T15:41:21-04:00Z}#{10241} - by MON KEY>
+(defun mon-with-buffer-undo-disabled-TEST (&optional force-fail)
+  "Test function for `mon-with-buffer-undo-disabled' macro.\n
+When optional arg FORCE-FAIL is non-nil force test failure.\n
+:EXAMPLE\n\n\(mon-with-buffer-undo-disabled-TEST\)\n
+\(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n
+:SEE-ALSO `buffer-undo-list'.\n►►►"
+  (let ((rnd-char (shuffle-vector (vconcat (append (number-sequence 97 122)
+                                                   (number-sequence 65 90)))))
+        bul)
+    (with-temp-buffer 
+      (mon-with-buffer-undo-disabled (setq bul buffer-undo-list))
+      (unless force-fail
+        (dotimes (jnk 100) 
+          (insert (make-string (random 79) (elt rnd-char (random 52))) "\n"))
+        (delete-region (random (1- (buffer-end 1))) (random (1- (buffer-end 1)))))
+      (setq bul (cons bul buffer-undo-list)))
+    (cond ((or (not (consp bul)) (<= (length bul) 1))
+           (error (concat ":MACRO `mon-with-buffer-undo-disabled' "
+                          " -- failed to toggle `buffer-undo-list' in temp-buffer")))
+          ((and (car bul) (atom (car bul)))
+           (message (concat ":MACRO `mon-with-buffer-undo-disabled' "
+                            " -- success toggling `buffer-undo-list' in temp-buffer"))))))
+;;
+;;; :TEST-ME (mon-with-buffer-undo-disabled-TEST)
+;;; :TEST-ME (mon-with-buffer-undo-disabled-TEST t)
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T14:21:16-05:00Z}#{10055} - by MON KEY>
@@ -526,10 +593,10 @@ Return `#<killed buffer>' if buffered killed, else nil.\n
   \(mon-buffer-exists-so-kill \(buffer-name not-much-longer\)\)\)\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer', `mon-buffer-written-p',
 `mon-buffer-name->kill-ring', `mon-print-in-buffer-if-p',
-`mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-string-split-buffer-name',
-`mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
-`with-temp-buffer'.\n►►►"
+`mon-with-buffer-undo-disabled', `mon-get-buffer-parent-dir',
+`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
+`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir',
+`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
   (let ((mbep (mon-buffer-exists-p buffer-to-kill)))
     (if (when mbep (kill-buffer mbep))        
         (get-buffer mbep))))
@@ -1180,8 +1247,8 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
     (menu-bar-mode nil)
     (set-frame-height (selected-frame)
                       (if menu-bar-mode
-                          (1- mtmp-height)
-                        (1+ mtmp-height)))
+                          (1- mtmb-height)
+                        (1+ mtmb-height)))
     (force-mode-line-update t)))
 
 ;;; ==============================
@@ -5446,19 +5513,21 @@ When optional arg DO-EQ uses `memq'.\n
 ;;; Now returns the full association not just the value of key.
 ;;; :CREATED <Timestamp: #{2009-08-19T20:00:51-04:00Z}#{09344} - by MON KEY>
 (defun mon-assoc-replace (seq1 seq2)
-  "Return an alist with elts of the alist SEQ substituted with the element of VALUES
-where the car of elt SEQ matches the car of elt VALUES.\n
+  "Return alist with elts of the alist SEQ1 substituted with the element of
+SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 :EXAMPLE\n\n\(mon-assoc-replace '\(\(a \(a c d\)\) \(b \(c d e\)\) \(c \(f g h\)\)\)
                    '\(\(a \(c d g\)\) \(b \(c d f\)\) \(g \(h g f\)\)\)\)\n
 :SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
 `mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
 `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
-  (mapcar #'(lambda (elem)
-                    (let* ((key (car elem))
-                           (val (assoc key seq2)))
-                      ;; :WAS (if (cadr val) val elem))) seq1)) 
-                      (if val val elem))) seq1))
+  (let (mar-rtn)
+    (setq mar-rtn
+          (mapcar #'(lambda (elem)
+                      (let* ((key (car elem))
+                             (val (assoc key seq2)))
+                        ;; :WAS (if (cadr val) val elem))) seq1)) 
+                        (if val val elem))) seq1))))
 ;;                          
 ;;; :TEST-ME (mon-assoc-replace '((a (a c d)) (b (c d e)) (c (f g h)))
 ;;;                             '((a (c d g)) (b (c d f)) (g (h g f))))

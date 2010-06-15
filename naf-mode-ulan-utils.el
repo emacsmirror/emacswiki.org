@@ -1,94 +1,138 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; naf-mode-ulan-utils.el --- utility fncns for converting ULAN data for naf-mode
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is naf-mode-ulan-utils.el
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; naf-mode-ulan-utils {description here}.
-;;;
-;;; FUNCTIONS:
-;;; `mon-ulan-tsv-assc-rels-type->list' `mon-invert-ulan-triples' `mon-rotate-ulan-triples'
-;;;
-;;; CONSTANTS or VARIABLES:
-;;; `naf-mode-ulan-rltd-ppl-corp'
-;;; `*naf-mode-db-numbers-flag-ulan-loc-naf*'
-;;; `*naf-mode-x-of-ulan-bol*'
-;;; `naf-mode-db-field-flags-ulan-paren'
-;;; *ulan-associative-roles* *ulan-sample-data*
-;;; MACROS:
-;;;
-;;; SUBST or ALIASES:
-;;;
-;;; DEPRECATED, RENAMED, OR 
-;;;
-;;; MOVED:
-;;; `naf-mode-db-field-flags-ulan-paren' <- ./naf-mode-db-flags.el
-;;;
-;;; REQUIRES:
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;; (URL `http://www.culture.gouv.fr/culture/inventai/patrimoine/')
-;;;
-;;; (URL `http://jodi.tamu.edu/Articles/v01/i08/Doerr/#Nr.46')
-;;;
-;;; Appendix: "&" combinations from the Merimee thesaurus to the AAT
-;;; Table 3. All "&" combinations from the Merimee thesaurus to the AAT in 1997
-;;; (URL `http://jodi.tamu.edu/Articles/v01/i08/Doerr/#Nr.19')
-;;; (URL `http://www.culture.gouv.fr/culture/inventai/patrimoine/')
-;;;
-;;; (URL `http://www.getty.edu/research/conducting_research/vocabularies/training.html')
-;;; Union List of Artist Names (ULAN): Editorial Guidelines
-;;; (URL `http://www.getty.edu/research/conducting_research/vocabularies/guidelines/ulan_1_contents_intro.html')
-;;;
-;;; The majority of ULAN Fields can be presented as derivations of:
-;;; CDWA (Categories for the Description of Works of Art)
-;;; (URL `http://www.getty.edu/research/conducting_research/standards/cdwa/28person.html')
-;;; VERSION: Revised 9 June 2009 by Patricia Harpring Murtha Baca and Patricia Harpring, Editors
-;;; 
-;;; THIRD-PARTY-SOURCES:
-;;; Regexps of alists contained herein were sourced from publicly accessible 
-;;; data made available at getty.edu. The digital version of the ULAN is 
-;;; Copyright © J. Paul Getty Trust.  Code presented or contained of following file
-;;; does not in any way represent the ULAN, J. Paul Getty Trust, www.getty.edu, nor
-;;; their associates or affiliates.
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/naf-mode-ulan-utils.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-11-21T20:19:51-05:00Z}#{09477} - by MON KEY>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: #{2009-09-01T11:30:04-04:00Z}#{09362} - by MON>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: naf-mode-ulan-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-09-01T11:30:04-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: naf-mode, matching, name authority files
+
 ;;; ================================================================
-;;; (C) - MON KEY - 2009
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; naf-mode-ulan-utils provides utility fncns for converting ULAN data for
+;; `naf-mode' Name Authority Files.
+;;
+;; FUNCTIONS:►►►
+;; `mon-ulan-tsv-assc-rels-type->list', `mon-invert-ulan-triples',
+;; `mon-rotate-ulan-triples',
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;; `naf-mode-ulan-rltd-ppl-corp', `*naf-mode-db-numbers-flag-ulan-loc-naf*',
+;; `*naf-mode-x-of-ulan-bol*', `naf-mode-db-field-flags-ulan-paren',
+;; `*ulan-associative-roles*', `*ulan-sample-data*',
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;; `naf-mode-db-field-flags-ulan-paren' <- naf-mode-db-flags.el
+;;
+;; TODO:
+;;
+;; NOTES:
+;; :SEE (URL `http://www.culture.gouv.fr/culture/inventai/patrimoine/')
+;;
+;; :SEE (URL `http://jodi.tamu.edu/Articles/v01/i08/Doerr/#Nr.46')
+;;
+;; Appendix: "&" combinations from the Merimee thesaurus to the AAT
+;; Table 3. All "&" combinations from the Merimee thesaurus to the AAT in 1997
+;; :SEE (URL `http://jodi.tamu.edu/Articles/v01/i08/Doerr/#Nr.19')
+;; :SEE (URL `http://www.culture.gouv.fr/culture/inventai/patrimoine/')
+;;
+;; :SEE  (URL `http://www.getty.edu/research/conducting_research/vocabularies/training.html')
+;; Union List of Artist Names (ULAN): Editorial Guidelines:
+;; :SEE (URL `http://www.getty.edu/research/conducting_research/vocabularies/guidelines/ulan_1_contents_intro.html')
+;;
+;; The majority of ULAN Fields can be presented as derivations of:
+;; CDWA (Categories for the Description of Works of Art)
+;; :SEE  (URL `http://www.getty.edu/research/conducting_research/standards/cdwa/28person.html')
+;; VERSION: Revised 9 June 2009 by Patricia Harpring Murtha Baca and Patricia Harpring, Editors
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;;
+;; THIRD-PARTY-CODE:
+;; Regexps of alists contained herein were sourced from publicly accessible 
+;; data made available at getty.edu. The digital version of the ULAN is 
+;; Copyright © J. Paul Getty Trust.  Code presented or contained of following file
+;; does not in any way represent the ULAN, J. Paul Getty Trust, www.getty.edu, nor
+;; their associates or affiliates.
+;;
+;; URL: http://www.emacswiki.org/emacs/naf-mode-ulan-utils.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-11-21T20:19:51-05:00Z}#{09477} - by MON KEY>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing naf-mode-ulan-utils. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-09-01T11:30:04-04:00Z}#{09362} - by MON>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
-;;; Consider a defvaralias or moving:
-;;; Following VARIABLES: defined in FILE:"./naf-mode/mon-regexp-symbols.el"
+(eval-when-compile (require 'cl))
+
+;;; :NOTE Consider a defvaralias or moving the variables defined in:
+;;; :FILE: naf-mode/mon-regexp-symbols.el
 ;;; `*regexp-ulan-contribs*' `*regexp-clean-ulan-dispatch-chars*'
 ;;; `*regexp-clean-ulan-fields*' `*regexp-clean-ulan*'
 ;;; `*regexp-clean-ulan-diacritics*'
@@ -97,46 +141,25 @@
   (require 'naf-mode-ulan-help-docs))
 
 ;;; ==============================
-;;; ULAN style citation accessed stamps at EOL. "accessed 16 October 2007"
-;;; accessed DD Mmmm YYYY
-
-;;; ==============================
-;;; LCNAF LIST:
-;;; \\(\[0-9]\\{5,13\\}\\)
-;;; (prin1 (regexp-opt '("NAFL" "NAFR" "NAFO") 'paren) (current-buffer))
-;;; (while (search-forward-regexp  "\\(\\(NAF[LOR]\\)\\(\[0-9]\\{5,13\\}\\)\\)" nil t)
-;;;       (replace-match "BUBBA"))
-
-;;; TESTS:
-;;; NAFL2007044963
-;;; NAFL77002695
-;;; NAFL5016117
-;;; NAFR2001051591
-;;; NAFR91031147
-;;; NAFR8914343
-;;; NAFR905364
-;;; NAFR94909
-
-
-;;; ==============================
-;;; WAS: \\([0-9]\\{8,10\\}\\(]?\\)
-;;; NOTES:
-;;; (length "[500006383]") ;=> 11 (length "500006383");=> 9
-;;; ...1..2........3....................4......
-;;; \\(\\(\\[\\)\\([0-9]\\{8,10\\}\\)\\(]\\)\\)
-;;; CREATED: <Timestamp: #{2009-09-12T12:09:02-04:00Z}#{09376} - by MON KEY>
-(defconst *naf-mode-db-numbers-flag-ulan* "\\(\\(\\[\\)\\([0-9]\\{8,10\\}\\)\\(]\\)\\)"
-  "*Regexp for font-locking ULAN record ID numbers in `naf-mode'.
-ID's have the form '[500006383]'.
-Occurences are font-locked by `naf-mode-db-field-entry-ulan-face'.")
-
-;;;test-me; *naf-mode-db-numbers-flag-ulan*
+;;; :NOTE (length "[500006383]") ;=> 11 
+;;        (length "500006383");=> 9
+;;; :WAS \\([0-9]\\{8,10\\}\\(]?\\)
+;;; :CREATED <Timestamp: #{2009-09-12T12:09:02-04:00Z}#{09376} - by MON KEY>
+(defconst *naf-mode-db-numbers-flag-ulan* 
+  "\\(\\(\\[\\)\\([0-9]\\{8,10\\}\\)\\(]\\)\\)"
+  ;;^1^^2^^^^^^^^3^^^^^^^^^^^^^^^^^^^^4^^^^^^
+  "*Regexp for font-locking ULAN record ID numbers in `naf-mode'.\n
+ID's have the form '[500006383]'.\n
+Occurences are font-locked by `naf-mode-db-field-entry-ulan-face'.\n
+:SEE-ALSO .\n►►►")
 ;;
+;;; :TEST-ME (search-forward-regexp *naf-mode-db-numbers-flag-ulan* nil t)
+;;   [500006383]
 ;;; (progn (makunbound '*naf-mode-db-numbers-flag-ulan*)
-;;;        (unintern '*naf-mode-db-numbers-flag-ulan*)
+;;;        (unintern '*naf-mode-db-numbers-flag-ulan*) )
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-12T12:08:36-04:00Z}#{09376} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-12T12:08:36-04:00Z}#{09376} - by MON KEY>
 (defun mon-get-next-ulan-record (&optional without-brackets insertp intrp)
   "Search forward from point for next occurence of a ULAN record ID.
 ID's have the form '[500006383]'. 
@@ -144,18 +167,18 @@ When WITHOUT-BRACKETS is non-nil or called-interactively with prefix arg
 return ID matched without enclosing brackets '[' ']'. 
 When called-interactively momentarily display return value:
 When INSERTP is non-nil insert return value. Return value as the form:\n
-#{:ULAN-RECORD-START <POSN>}
-#{:ULAN-RECORD-END <POSN>}
-#{:ULAN-RECORD-NUM <INTEGER>}
-\(<POSN> <POSN> <STRING>)\n
-EXAMPLE:\n(call-interactively 'mon-get-next-ulan-record)\n\n[500006383]\n\n
-See also; `*naf-mode-db-numbers-flag-ulan*'."
+ #{:ULAN-RECORD-START <POSN>}
+ #{:ULAN-RECORD-END <POSN>}
+ #{:ULAN-RECORD-NUM <INTEGER>}
+ \(<POSN> <POSN> <STRING>)\n
+:EXAMPLE\n\n(call-interactively 'mon-get-next-ulan-record)\n\n[500006383]\n\n
+:SEE-ALSO `*naf-mode-db-numbers-flag-ulan*'.\n►►►"
   (interactive "P\ni\np")
-  (let (st-end st-str rec-str str-data str-id-num)
+  (let (st-end st-str record-str str-data str-id-int)
     (search-forward-regexp *naf-mode-db-numbers-flag-ulan* nil t)
-     ;;  ...1..2........3...................4.......     
-     ;; "\\(\\(\\[\\)\\([0-9]\\{8,10\\}\\)\\(]\\)\\)"
-    (setq st-str (match-beginning 1))
+    ;; "\\(\\(\\[\\)\\([0-9]\\{8,10\\}\\)\\(]\\)\\)"
+    ;;  ^^^1^^2^^^^^^^^3^^^^^^^^^^^^^^^^^^^4^^^^^^^       
+  (setq st-str (match-beginning 1))
     (setq st-end (match-end 1))
     (setq record-str (if without-brackets 
 			(car (mon-string-read-match-string 3))
@@ -172,39 +195,44 @@ See also; `*naf-mode-db-numbers-flag-ulan*'."
     (cond (intrp (momentary-string-display (concat "\n" str-data) (point)))
 	  (insertp (prin1 str-data (current-buffer)))
 	  (t str-data))))
-
-;;;test-me(call-interactively 'mon-get-next-ulan-record)
-;;;(progn (makunbound 'mon-tmp-ulan-record-srch) (unintern 'mon-tmp-ulan-record-srch))
+;;
+;;; :TEST-ME (call-interactively 'mon-get-next-ulan-record)
+;;
+;;;(progn (makunbound 'mon-tmp-ulan-record-srch) 
+;;;      (unintern 'mon-tmp-ulan-record-srch) )
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-12T11:49:08-04:00Z}#{09376} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-12T11:49:08-04:00Z}#{09376} - by MON KEY>
 (defconst *naf-mode-db-numbers-flag-ulan-loc-naf* "\\(\\(NAF[LOR]\\)\\(\[0-9]\\{5,13\\}\\)\\)"
-"Finds LCNAF references in ULAN field entries.
-EXAMPLE:\nNAFL2001060907\nNAFR8914343\nNAFR907811
-These are prefixed with the LCNAF flag as:
-'LCNAF Library of Congress Name Authority File' as per:
-ULAN-SOURCE-ID: 2100042617
-BRIEF-CITATION: Library of Congress Name Authority Headings
-FULL CITATION: \"Name Authority Headings.\" Library of Congress Authorities
+  "*Regexp matching LCNAF references in ULAN field entries.\n
+:EXAMPLE\nNAFL2001060907\nNAFR8914343\nNAFR907811\n
+These are prefixed with the LCNAF flag as:\n
+ 'LCNAF Library of Congress Name Authority File' as per:
+ ULAN-SOURCE-ID: 2100042617
+ BRIEF-CITATION: Library of Congress Name Authority Headings
+ FULL CITATION: \"Name Authority Headings.\" Library of Congress Authorities
 NOTE: ULAN records also conctain references to LOC naf ids as: 'n 88630604'.
-This regexp does not match on these.
-See: (URL `http://authorities.loc.gov/')
-See also; `*naf-mode-db-numbers-flag-ulan*',")
+This regexp does not match on these.\n
+:SEE (URL `http://authorities.loc.gov/')\n
+:SEE-ALSO `*naf-mode-db-numbers-flag-ulan*'.\n►►►")
 
 ;;; ==============================
-;;; MODIFICATIONS: <Timestamp: Wednesday July 29, 2009 @ 03:58.01 PM  - by MON KEY>
+;;; :MODIFICATIONS <Timestamp: Wednesday July 29, 2009 @ 03:58.01 PM  - by MON KEY>
 (defconst naf-mode-db-field-flags-ulan-paren
-  '"\\(\\((\\)\\(display\\|index\\|preferred\\|V\\|,\\| \\)+?\\()\\)\\)\\|\\((\\)\\(inhabited place\\)\\()\\)"
-  "Keyword regexp for fontlocking ULAN flags occuring after name forms.\n
-EXAMPLE:\n\(preferred, index, display, V\)\n\(inhabited place\)\n\(preferred, index, V\)
+  (concat "\\(\\((\\)\\(display\\|index\\|preferred\\|V\\|,\\| \\)+?\\()\\)\\)"
+          "\\|\\((\\)\\(inhabited place\\)\\()\\)")
+  "*Regexp for keyword fontlocking ULAN flags occuring after name forms.\n
+:EXAMPLE:\n\(preferred, index, display, V\)\n\(inhabited place\)\n\(preferred, index, V\)
 \(preferred, index\)\n\(preferred\)\n\(display, V\)\n\(display\)\n\(index\)\n\(V\)
-See also; `mon-help-naf-mode-ulan-flags'.")
-
-;;;test-me; naf-mode-db-field-flags-ulan-paren
-;;;(progn (makunbound 'naf-mode-db-field-flags-ulan-paren) (unintern 'naf-mode-db-field-flags-ulan-paren))
+:SEE-ALSO `mon-help-naf-mode-ulan-flags'.\n►►►")
+;;
+;;; :TEST-ME naf-mode-db-field-flags-ulan-paren
+;;
+;;;(progn (makunbound 'naf-mode-db-field-flags-ulan-paren)
+;;        (unintern 'naf-mode-db-field-flags-ulan-paren) )
 
 ;;; ==============================
-;;; regexp works to catch ulan flags nested in paren don't modify copy!
+;;; :NOTE regexp to match ulan flags nested in paren don't modify copy!
 ;;; \(\((\)\(display\|index\|preferred\|V\|,\| \)+?\()\)\)
 ;;;
 ;;; (preferred, index, display, V)
@@ -225,57 +253,70 @@ See also; `mon-help-naf-mode-ulan-flags'.")
 ;;; ==============================
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-12T19:36:56-04:00Z}#{09376} - by MON KEY>
-(defvar *ulan-sample-data* (concat mon-naf-mode-notes "/ULAN/ulan_rel_utf8_sample09/")
-  "Path holding ULAN sample data of relational database tables. 
+;;; :CREATED <Timestamp: #{2009-09-12T19:36:56-04:00Z}#{09376} - by MON KEY>
+(defvar *ulan-sample-data* nil
+  "*Path holding ULAN sample data of relational database tables. 
 As made available here:
 \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/ulan_rel_sample09.zip')
-\(URL `http://www.getty.edu/research/conducting_research/vocabularies/download.html')")
+\(URL `http://www.getty.edu/research/conducting_research/vocabularies/download.html')
+:SEE-ALSO .\n►►►")
+;;
+ (unless (and (bound-and-true-p *ulan-sample-data*)
+              (not (intern-soft "IS-MON-SYSTEM-P")))
+   ;; <Timestamp: #{2010-05-28T19:29:57-04:00Z}#{10215} - by MON KEY>
+   ;; :FIXME This is wrong but file-expand-wildcards on my path is not correct.
+   ;;   (let (chk-ulan-path 
+   (setq *ulan-sample-data*
+         (concat *mon-naf-mode-notes* "/ULAN/ulan_rel_utf8_sample09/")))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-12T20:12:52-04:00Z}#{09377} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-12T20:12:52-04:00Z}#{09377} - by MON KEY>
 (defvar *ulan-associative-roles* nil
-  "aist of ULAN associations generated from contents of file
-\"ASSOCIATIVE_RELS_TYPE.out\" in pathname held by `*ulan-sample-data*' 
-alist is inserted into buffer at point with `mon-ulan-tsv-assc-rels-type->list'.")
-
+  "*A list of ULAN associations generated from contents of file
+\"ASSOCIATIVE_RELS_TYPE.out\" in pathname held by `*ulan-sample-data*'.
+The alist can be inserted into buffer at point with `mon-ulan-tsv-assc-rels-type->list'
+:SEE-ALSO .\n►►►")
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-12T19:04:24-04:00Z}#{09376} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-12T19:04:24-04:00Z}#{09376} - by MON KEY>
 (defun mon-rotate-ulan-triples (triple-list)
- "Rotate alist with elements with form role-num-num:
-\(\"godchild of\" 1575 1574\) 
-to one with form num-rol-num:
-\(1575 \"godchild of\" 1574)"
-(let ((y '()))
-  (mapc (lambda (x) 
-	  (push `(,(cadr x) ,(car x) ,(caddr x)) y))
-	triple-list);test-ulan-triple
-  y))
-
-;;;test-me;(mon-rotate-ulan-triples test-ulan-triple)
+  "Rotate alist TRIPLE-LIST with elements with form <ROLE-NUM-NUM> to <NUM-ROL-NUM>.\n
+Return a TRIPLE-LIST such that:\n \(\"godchild of\" 1575 1574\)\n 
+ Becomes\n
+ \(1575 \"godchild of\" 1574)\n
+:SEE-ALSO `mon-rotate-flatten-list', `mon-rotate-get-rotations-for',
+`mon-rotate-next', `mon-rotate-region', `mon-rotate-string'.\n►►►"
+  (let ((y '()))
+    (mapc #'(lambda (x) 
+              (push `(,(cadr x) ,(car x) ,(caddr x)) y))
+          triple-list) ;; test-ulan-triple
+    y))
+;;
+;;; :TEST-ME (mon-rotate-ulan-triples test-ulan-triple)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-12T19:04:21-04:00Z}#{09376} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-12T19:04:21-04:00Z}#{09376} - by MON KEY>
 (defun mon-invert-ulan-triples (triple-list)
-  "Invert an alist of ULAN triples of form role-num-num
-to a list of role1<->role2  role2<->role1 discard keys."
+  "Invert the alist of ULAN triples TRIPLE-LIST.\n
+TRIPLE-LIST has the form <ROLE-NUM-NUM> where:
+ role1<->role2  role2<->role1 discard keys.\n
+:SEE-ALSO `mon-rotate-ulan-triples'.\n►►►"
   (let ((role-n-n triple-list)
 	(n-role-n (mon-rotate-ulan-triples triple-list))
 	(rtn))
-    (mapc (lambda (x)
-	    (let* ((r1-key (caddr x))
-		   (r1-v (car x))
-		   (r2 (cadr (assoc r1-key n-role-n))))
-	      (push `(,r1-v ,r2) rtn)))
+    (mapc #'(lambda (x)
+              (let* ((r1-key (caddr x))
+                     (r1-v (car x))
+                     (r2 (cadr (assoc r1-key n-role-n))))
+                (push `(,r1-v ,r2) rtn)))
 	  role-n-n)
     rtn))
-
-;;;test-me;(invert-ulan-triples test-ulan-triple)
+;;
+;;; :TEST-ME (invert-ulan-triples test-ulan-triple)
 
 ;;; ==============================
-
-;;; FOLLOWING MAP TO SELF:
+;;; :NOTE Following map to self:
+;;
 ;; sibling by marriage (in-law) of	1551	1551
 ;; performs with	1306	1306
 ;; associate of	1302	1302
@@ -305,25 +346,30 @@ to a list of role1<->role2  role2<->role1 discard keys."
 ;; <person to institution - professional/administrative>	2570	2570
 
 ;;; ==============================
-;;; "^\\([\\[:blank:]]\\(.*\\)\\([\\[:blank:]]\\)\\([0-9]\\{4,4\\}\\)\\([\\[:blank:]]\\)\\([0-9]\\{4,4\\}\\)\\)"
-;;; CREATED: <Timestamp: #{2009-09-12T19:46:42-04:00Z}#{09376} - by MON KEY>
+;; (concat "^\\([\\[:blank:]]\\(.*\\)\\([\\[:blank:]]\\)"
+;;         "\\([0-9]\\{4,4\\}\\)\\([\\[:blank:]]\\)"
+;;         "\\([0-9]\\{4,4\\}\\)\\)"))
+;;; :CREATED <Timestamp: #{2009-09-12T19:46:42-04:00Z}#{09376} - by MON KEY>
 (defun mon-ulan-tsv-assc-rels-type->list (&optional fname)
-  "Regexp subr to convert a ULAN list of ULAN Associative relation type triples.
+  "Regexp subr to convert a ULAN list of ULAN Associative relation type triples.\n
 FNAME is a path-filename to the file containing TSV formatted tab-separated-values
 of relational table data of ULAN associative relation types i.e. somethign like:
-\"./ulan_rel_utf8_sample09/ASSOCIATIVE_RELS_TYPE.out\" as made available here:
-\(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/ulan_rel_sample09.zip')
-\(URL `http://www.getty.edu/research/conducting_research/vocabularies/download.html')"
+\"./ulan_rel_utf8_sample09/ASSOCIATIVE_RELS_TYPE.out\" as made available here:\n
+:SEE \(URL `http://www.getty.edu/research/conducting_research/vocabularies/ulan/ulan_rel_sample09.zip')
+:SEE \(URL `http://www.getty.edu/research/conducting_research/vocabularies/download.html')\n
+:SEE-ALSO `mon-invert-ulan-triples', `*ulan-associative-roles*', `*ulan-sample-data*'.\n►►►"
   (let ((assctv-rels-type 
 	 (cond (fname (if (file-readable-p fname) 
 			  fname
 			(if (file-readable-p (concat *ulan-sample-data* "ASSOCIATIVE_RELS_TYPE.out"))
 			    (concat *ulan-sample-data* "ASSOCIATIVE_RELS_TYPE.out")
-			  (error "Provide a different file"))))
+			  (error (concat ":FUNCTION `mon-ulan-tsv-assc-rels-type->list' "
+                                         "-- arg FNAME unreadable or non-existent")))))
 	       (t (if (file-readable-p (concat *ulan-sample-data* "ASSOCIATIVE_RELS_TYPE.out"))
 		      (concat *ulan-sample-data* "ASSOCIATIVE_RELS_TYPE.out")
-		    (error "Provide a different file")))))
-	(get-ulan-list))
+		    (error (concat ":FUNCTION `mon-ulan-tsv-assc-rels-type->list' "                     
+                                   "-- arg FNAME unreadable or non-existent"))))))
+	get-ulan-list)
     (save-excursion
       (setq get-ulan-list
 	    (with-temp-buffer
@@ -345,13 +391,14 @@ of relational table data of ULAN associative relation types i.e. somethign like:
 	      (buffer-string))))
     ;;  (setq get-ulan-list (concat "(setq *ulan-associative-roles*\n" get-ulan-list ")"))  
     (princ (format "\n\n%s" get-ulan-list) (current-buffer))))
-
-;;;(mon-ulan-tsv-assc-rels-type->list (concat *ulan-sample-data* "ASSOCIATIVE_RELS_TYPE.out"))
-
+;;
+;;;(mon-ulan-tsv-assc-rels-type->list 
+;;;  (concat *ulan-sample-data* "ASSOCIATIVE_RELS_TYPE.out"))
+;;;
 ;;;(mon-invert-ulan-triples *ulan-associative-roles*)
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-01T14:04:05-04:00Z}#{09362} - by MON>
+;;; :CREATED <Timestamp: #{2009-09-01T14:04:05-04:00Z}#{09362} - by MON>
 (let ((naf-ulan-rltd-ppl-corp
        (list
         ":APPRENTICE-OF"
@@ -378,15 +425,16 @@ of relational table data of ULAN associative relation types i.e. somethign like:
 ;;
 (defconst *naf-mode-ulan-rltd-ppl-corp* (regexp-opt naf-ulan-rltd-ppl-corp 'paren)
   "*Keywords for `naf-mode' font-locking with `naf-mode-ulan-ppl-corp-face'\n
-See also; `*naf-mode-x-of-ulan-bol*', `*naf-mode-x-of*', .\nUsed in `naf-mode'.")) 
-
-;;;test-me; *naf-mode-ulan-rltd-ppl-corp*
+:SEE-ALSO `*naf-mode-x-of-ulan-bol*', `*naf-mode-x-of*'.\n
+:USED-IN `naf-mode'.\n►►►")) 
+;;
+;;; :TEST-ME *naf-mode-ulan-rltd-ppl-corp*
 ;;
 ;;;(progn (makunbound '*naf-mode-ulan-rltd-ppl-corp*) 
 ;;;       (unintern '*naf-mode-ulan-rltd-ppl-corp*))
 
 ;;; ==============================
-;;; CREATED: <Timestamp: #{2009-09-10T16:09:26-04:00Z}#{09374} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-10T16:09:26-04:00Z}#{09374} - by MON KEY>
 (let ((naf-x-of-ulan-bol
        (list 	 
 	"Apprentice of"   "apprentice of"   	"Apprentice-of"  "apprentice-of" 
@@ -417,9 +465,40 @@ See also; `*naf-mode-x-of-ulan-bol*', `*naf-mode-x-of*', .\nUsed in `naf-mode'."
 relationships primarily from ULAN but where they occor at BOL in a headword w/
 or without '-' and/or trailing whitespace. Other ULAN specific keywords flagged
 with `*naf-mode-ulan-rltd-ppl-corp*'.  The remainder are caught with
-`*naf-mode-x-of*'.\nUsed in `naf-mode'."))
+`*naf-mode-x-of*'.\n
+:SEE-ALSO .\n:USED-IN `naf-mode'.\n►►►"))
 
-;;; ad-to ulan replacement list
+;;; ==============================
+(provide 'naf-mode-ulan-utils)
+;;; ==============================
+
+;;; ====================================================================
+;;; naf-mode-ulan-utils.el ends here
+;;; EOF
+
+;;; ==============================
+;;; ULAN style citation accessed stamps at EOL. "accessed 16 October 2007"
+;;; accessed DD Mmmm YYYY
+
+;;; ==============================
+;;; :LCNAF-LIST
+;;; \\(\[0-9]\\{5,13\\}\\)
+;;; (prin1 (regexp-opt '("NAFL" "NAFR" "NAFO") 'paren) (current-buffer))
+;;; (while (search-forward-regexp  "\\(\\(NAF[LOR]\\)\\(\[0-9]\\{5,13\\}\\)\\)" nil t)
+;;;       (replace-match "BUBBA"))
+;;
+;;; :TEST-ME
+;;; NAFL2007044963
+;;; NAFL77002695
+;;; NAFL5016117
+;;; NAFR2001051591
+;;; NAFR91031147
+;;; NAFR8914343
+;;; NAFR905364
+;;; NAFR94909
+
+;;; ==============================
+;;; :TODO Add to ulan replacement list:
 ;; "partner was/is (firm to person)"
 ;; "founded by"
 ;; "assistant of"
@@ -764,10 +843,3 @@ with `*naf-mode-ulan-rltd-ppl-corp*'.  The remainder are caught with
 ;; 198	VINAIGRERIE	exact equivalence	vinegar & processing plants
 ;; 199	VOIRIE	exact equivalence	city & streets
 
-;;; ==============================
-(provide 'naf-mode-ulan-utils)
-;;; ==============================
-
-;;; ================================================================
-;;; naf-mode-ulan-utils.el ends here
-;;; EOF
