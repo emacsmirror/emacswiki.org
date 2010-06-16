@@ -1,102 +1,129 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;; mon-mysql-utils.el --- procedures for extracting from MySQL query results
 ;; -*- mode: EMACS-LISP; -*-
-;;; this is mon-mysql-utils.el
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-mysql-utils provides an alist and completion function for 
-;;; accessing MySQL's `mysql' client help facility e.g. 
-;;; mysql> help contents
-;;; mysql> help [<CATEGORY>|<TOPIC>]
-;;;
-;;; :SEE-ALSO :FILE naf-mode-sql-skeletons.el
-;;; :SEE-ALSO :FILE ../lisp/progmodes/sql.el
-;;;
-;;; :SEE (URL `http://www.emacswiki.org/cgi-bin/emacs/download/sql-completion.el')
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mysql.el')
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-help-mysql-complete', `mon-help-mysql-commands', `mon-csv-split-string', 
-;;; `mon-csv-map-col-field-pairs', `mon-csv-string-to-list', `mon-csv-string-map-list',
-;;; `mon-mysql-cln-pipes', `mon-cln-pipes-map-field-pairs', `mon-cln-pipes-get-field-col'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*regexp-clean-mysql*'
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;; `mon-mysql-cln-pipes'               -> `mon-cln-pipes'
-;;; `mon-mysql-cln-pipes-map-col-field' -> `mon-cln-pipes-map-field-pairs'
-;;; `mon-mysql-get-field-col'           -> `mon-cln-pipes-get-field-col'
-;;; `mon-mysql-csv-to-list'             -> `mon-csv-string-to-list'
-;;; `mon-mysql-csv-split-string'        -> `mon-csv-split-string'
-;;; `mon-mysql-csv-map-list'            -> `mon-csv-string-map-list'
-;;; `mon-mysql-csv-map-col-field'       -> `mon-csv-map-col-field-pairs'
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;;
-;;; SNIPPETS:
-;;;
-;;; REQUIRES:
-;;; `mon-cln-pipes' <- `mon-string-from-sequence' -> :FILE mon-utils.el
-;;; `mon-cln-pipes' <- `mon-string-to-sequence'   -> :FILE mon-utils.el
-;;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-mysql-utils.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-12-10T14:59:16-05:00Z}#{09504} - by MON>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: #{2009-12-10T11:11:41-05:00Z}#{09504} - by MON>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-mysql-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: external, editing, data, execute, programming, 
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-mysql-utils provides interactive procedures for stripping content from
+;; MySQL query result tables.Also, provides an alist of MySQL help categorys
+;; and topics and a rudimentary completion functionality for accessing MySQL's
+;; `mysql' client help facility:
+;; mysql> help contents
+;; mysql> help [<CATEGORY>|<TOPIC>]
+;;
+;; :SEE-ALSO :FILE naf-mode-sql-skeletons.el
+;; :SEE-ALSO :FILE ../lisp/progmodes/sql.el
+;; 
+;; :SEE (URL `http://www.emacswiki.org/cgi-bin/emacs/download/sql-completion.el')
+;; :SEE (URL `http://www.emacswiki.org/emacs/mysql.el')
+;;
+;; FUNCTIONS:►►►
+;; `mon-help-mysql-complete', `mon-help-mysql-commands', `mon-csv-split-string', 
+;; `mon-csv-map-col-field-pairs', `mon-csv-string-to-list', `mon-csv-string-map-list',
+;; `mon-mysql-cln-pipes', `mon-cln-pipes-map-field-pairs', `mon-cln-pipes-get-field-col'
+;; `%subst%'
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;; `*regexp-clean-mysql*'
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;; `mon-mysql-cln-pipes'               -> `mon-cln-pipes'
+;; `mon-mysql-cln-pipes-map-col-field' -> `mon-cln-pipes-map-field-pairs'
+;; `mon-mysql-get-field-col'           -> `mon-cln-pipes-get-field-col'
+;; `mon-mysql-csv-to-list'             -> `mon-csv-string-to-list'
+;; `mon-mysql-csv-split-string'        -> `mon-csv-split-string'
+;; `mon-mysql-csv-map-list'            -> `mon-csv-string-map-list'
+;; `mon-mysql-csv-map-col-field'       -> `mon-csv-map-col-field-pairs'
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;;
+;; TODO:
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;; `mon-cln-pipes' <- `mon-string-from-sequence' -> :FILE mon-utils.el
+;; `mon-cln-pipes' <- `mon-string-to-sequence'   -> :FILE mon-utils.el
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-mysql-utils.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-12-10T14:59:16-05:00Z}#{09504} - by MON>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-mysql-utils. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-12-10T11:11:41-05:00Z}#{09504} - by MON>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
 (eval-when-compile (require 'cl))
@@ -172,6 +199,36 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
 ;;
 (defalias 'mon-mysql-get-field-col 'mon-cln-pipes-get-field-col)
 
+
+;;; ==============================
+;;; :NOTE This is CL packages `subst' but as we aren't using keyword here we
+;;; just do what the `subst' function does; punt to `cl-do-subst'. 
+;;; :CHANGESET 1876
+;;; :CREATED <Timestamp: #{2010-06-15T15:20:25-04:00Z}#{10242} - by MON KEY>
+;; (defun --cl-subst-- (cl-new cl-old cl-tree)
+;;   (if (and (numberp cl-old) (not (integerp cl-old))) ;; float check.
+;;       (apply 'sublis (list (cons cl-old cl-new)) cl-tree)
+(defun %subst% (cl-new cl-old cl-tree)
+  "This is CL's `subst' without keywords and no float checking.\n
+:EXAMPLE\n
+\(let \(\(rnd-trip '\(83 89 77 66 79 76 32 70 79 82 32 83 80 65 67 69\)\)
+      catch-trip\)
+  \(push rnd-trip catch-trip\)
+  \(setq rnd-trip \(%subst% 9248 32 rnd-trip\)\)
+  \(push rnd-trip catch-trip\)
+  \(setq catch-trip 
+        \(mapcar #'\(lambda \(rnd\)
+                    \(mon-string-from-sequence rnd\)\)
+                catch-trip\)\)\)\n
+:SEE-ALSO `subst', `cl-do-subst'.\n►►►"
+  (cond ((eq cl-tree cl-old) cl-new)
+	((consp cl-tree)
+	 (let ((a (%subst% cl-new cl-old (car cl-tree)))
+	       (d (%subst% cl-new cl-old (cdr cl-tree))))
+	   (if (and (eq a (car cl-tree)) (eq d (cdr cl-tree)))
+	       cl-tree (cons a d))))
+	(t cl-tree)))
+
 ;;; ==============================
 ;;; :NOTE Following functions uses ␠ as a temporary whitespace dummy.
 ;;;       character: ␠ -> (9248, #o22040, #x2420) code point: 0x2420
@@ -179,9 +236,9 @@ Use to extract fields from mysql command:\nmysql> SHOW COLUMNS FROM THE-DB.TABLE
 ;;
 ;;; :TEST-ME
 ;;; (let ((rnd-trip '(83 89 77 66 79 76 32 70 79 82 32 83 80 65 67 69))
-;;;       (catch-trip))
+;;;       catch-trip)
 ;;;   (push rnd-trip catch-trip)
-;;;   (setq rnd-trip (subst 9248 32 rnd-trip))
+;;;   (setq rnd-trip (%subst% 9248 32 rnd-trip))
 ;;;   (push rnd-trip catch-trip)
 ;;;   (setq catch-trip 
 ;;;         (mapcar #'(lambda (rnd)
@@ -275,12 +332,13 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                ;; Replace leading whitespace - should only happend on digits?
                (while (search-forward-regexp
                        (concat
-                        ;;..1..............................
                         "\\([\\[:blank:]]|[\\[:blank:]]+\\)"
-                        ;;..2..3.................
+                        ;;^^1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
                         "\\(\\([\\[:digit:]]+\\)"
-                        ;;..4.............................
-                        "\\([\\[:blank:]]|[\\[:blank:]]\\)  \\)") nil t)
+                        ;;^^2^^3^^^^^^^^^^^^^^^^^
+                        "\\([\\[:blank:]]|[\\[:blank:]]\\)  \\)")
+                       ;;^^4^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+                       nil t)
                  (replace-match " | \\3 |")
                  (skip-chars-backward " |"))
                (goto-char (buffer-end 0))
@@ -295,18 +353,19 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                  (skip-chars-backward " |"))
                (goto-char (buffer-end 0))
                ;; Remaining _Big_ whitespace is after field data.
+               ;; (search-forward-regexp  "\\([\\[:blank:]]+|\\)[\\[:blank:]]" nil t)
                (while (search-forward-regexp  "\\([\\[:blank:]]+|\\)[\\[:blank:]]" nil t)
                  (replace-match " | "))
                (goto-char (buffer-end 0))
                ;; Replace the field data.
                (while (search-forward-regexp  
                        (concat
-                        ;;..1.
                         "\\("
-                        ;;..2.........................................3...................
+                        ;;^1^
                         "\\([^| \n][\\[:graph:]\\[:blank:]][^|]+\\)\\([\\[:blank:]]|\\)\\)"
-                        ;;.....4....5...............
+                        ;;^2^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^3^^^^^^^^^^^^^^^^^^^
                         "\\|\\(| \\([\\[:alpha:]]\\) |\\)") nil t)
+                        ;;^^^^4^^^^5^^^^^^^^^^^^^^^
                  (let* ((rep-mtch
                          (if (match-string-no-properties 2)
                              (match-string-no-properties 2)
@@ -318,13 +377,15 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                           ;; Test for whitespace.
                           (if (member 32 rep-seq)
                               (setq rep-seq (mon-string-from-sequence  ;; in :FILE `mon-utils.el'
-                                             (subst 9248 32 rep-seq)))
+                                             ;; :WAS (subst 9248 32 rep-seq)))
+                                             (%subst% 9248 32 rep-seq)))
                               ;;(format "%S | " rep-seq)
                               (replace-match (concat rep-seq " |")  nil t)
                               (replace-match (concat rep-mtch " |") nil t)))
                          ( ;; Not string _but_ contains whitespace and should be.
                           (member 32 rep-seq)                                          
-                          (setq rep-seq (subst 9248 32 rep-seq))
+                          (setq rep-seq ;; :WAS (subst 9248 32 rep-seq))
+                                (%subst% 9248 32 rep-seq))
                           (setq rep-seq (mon-string-from-sequence rep-seq))
                           (replace-match  (format "%S | " rep-seq) nil t))
                          ( ;; Got one char - in case we want to change logic.
@@ -360,7 +421,9 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
                                 (progn
                                   (setq tst-rnd (mon-string-to-sequence tst-rnd))
                                   (if (member 9248 tst-rnd)
-                                      (setq tst-rnd (mon-string-from-sequence (subst 32 9248 tst-rnd)))
+                                      (setq tst-rnd (mon-string-from-sequence 
+                                                     ;; :WAS (subst 32 9248 tst-rnd)))
+                                                     (%subst% 32 9248 tst-rnd)))
                                       (setq tst-rnd (mon-string-from-sequence tst-rnd))))
                                 tst-rnd)))
                       (pop map-tb)))
@@ -405,14 +468,15 @@ When called-interactively or TO-KILL is non-nil put retun value on kill-ring.\n
   "Map each table row COL-V-LIST to each rows FIELD-V-LIST.\n
 COL-V-LIST is a list containing the value of columns of first table row.\n
 When INSRTP in non-nil return pretty printed list at point. Does not move point.\n
-Like `mon-csv-map-col-field-pairs' but using on return value of
+Like `mon-csv-map-col-field-pairs' but used with return value of
 `mon-cln-pipes' instead of `mon-csv-string-map-list'.\n
 :EXAMPLE\n\(let \(\(r-eg `\(,\(1+ \(search-forward-regexp \"^►\" nil t\)\) . 
                ,\(1- \(search-forward-regexp \"◄\" nil t\)\)\)\)
       \(mmnt\)\)
   \(setq mmnt \(mon-cln-pipes \(car r-eg\) \(cdr r-eg\)\)\)
   \(setq mmnt \(mon-cln-pipes-map-field-pairs \(car mmnt\) \(cdr mmnt\)\)\)
-  \(momentary-string-display \(concat \"\\n=>\\n\" \(pp-to-string mmnt\)\)\(point\)\)\)\n
+  \(setq mmnt \(pp-to-string mmnt\)\)
+  \(momentary-string-display \(concat \"\\n=>\\n\" mmnt\)\(point\)\)\)\n
 ►\n+-----------------------+-------+------+----------+
 | COL0                  | COL1  | COL2 | COL3     | 
 +-----------------------+-------+------+----------+
@@ -550,7 +614,8 @@ CSV-FIELD-VALS. Return a list of lists of of key-val -> field-val for each strin
 `mon-cln-pipes-map-field-pairs', `mon-clean-pipes-get-field-col',
 `mon-string-csv-rotate'.\n►►►"
   (let (kvrt)
-    (dolist (kv (mon-mysql-csv-map-list csv-field-vals) (setq kvrt (nreverse kvrt)))
+    (dolist (kv (mon-mysql-csv-map-list csv-field-vals) 
+                (setq kvrt (nreverse kvrt)))
       (push (pairlis col-val-list kv) kvrt))
     (if insrtp
         (save-excursion 

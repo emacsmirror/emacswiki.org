@@ -1,98 +1,125 @@
 ;;; mon-name-utils.el --- procedures to rotatate or permute string-like name forms
 ;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; Utils for rotation on name-forms. Used with `naf-mode'
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-string-rotate-name', `mon-make-name-return', `mon-make-name-lispy'
-;;; `mon-make-names-list', `mon-permute-combine', `mon-permute-combine-2',
-;;; `mon-variations', `mon-permutations', `mon-perms',
-;;; `mon-test-permute-combine-functions', `mon-string-csv-regexp',
-;;; `mon-string-csv-rotate', `mon-csv-to-perms', `mon-string-permute-line'
-;;; `mon-string-splice-sep', `mon-string->strings-splice-sep'
-;;; `mon-string-to-regexp', `mon-string-infix'
-;;; `mon-rotate-region', `mon-rotate-string', `mon-rotate-next'
-;;; `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp', 
-;;; `mon-rotate-flatten-list',`mon-indent-or-rotate', `mon-string-permute'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;; `mon-intern-artist'
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;; `mon-permute-string' -> `mon-string-permute'
-;;;
-;;; DEPRECATED:
-;;; `mon-perms' USE: `mon-purmutations'
-;;;
-;;; RENAMED:
-;;; `mon-strings-splice-sep'        -> `mon-string-splice-sep'
-;;; `mon-string2strings-splice-sep' -> `mon-string->strings-splice-sep'
-;;; `rotate-next'                   -> `mon-rotate-next'
-;;; `mon-csv-string-to-regexp'      -> `mon-string-csv-regexp'
-;;; `mon-rotate-keywords'           -> `mon-string-csv-rotate'
-;;; `mon-perm-words'                -> `mon-string-permute-line'
-;;; `naf-unrotate-canonical'        -> `mon-string-rotate-name'
-;;; MOVED:
-;;;
-;;; REQUIRES:
-;;; 'cl used-by:`mon-permute-combine', `mon-perms'
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-name-utils.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
-;;; 
-;;; FILE-CREATED:
-;;; <Timestamp: Wednesday July 22, 2009 @ 01:11.57 PM - by MON KEY>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-name-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-06-22T13:11:57-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: matching, convenience, extensions
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009, 2010 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; Utils for rotation on name-forms. Used with `naf-mode'
+;;
+;; FUNCTIONS:►►►
+;; `mon-string-rotate-name', `mon-make-name-return', `mon-make-name-lispy',
+;; `mon-make-names-list', `mon-permute-combine', `mon-permute-combine-2',
+;; `mon-variations', `mon-permutations', `mon-perms',
+;; `mon-permute-combine-functions-TEST', `mon-string-csv-regexp',
+;; `mon-string-csv-rotate', `mon-csv-to-perms', `mon-string-permute-line',
+;; `mon-string-splice-sep', `mon-string->strings-splice-sep',
+;; `mon-string-to-regexp', `mon-string-infix',
+;; `mon-rotate-region', `mon-rotate-string', `mon-rotate-next'
+;; `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp', 
+;; `mon-rotate-flatten-list',`mon-indent-or-rotate', `mon-string-permute',
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;; `mon-intern-artist'
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;; `mon-permute-string' -> `mon-string-permute'
+;;
+;; DEPRECATED:
+;; `mon-perms' USE: `mon-purmutations'
+;;
+;; RENAMED:
+;; `mon-strings-splice-sep'        -> `mon-string-splice-sep'
+;; `mon-string2strings-splice-sep' -> `mon-string->strings-splice-sep'
+;; `rotate-next'                   -> `mon-rotate-next'
+;; `mon-csv-string-to-regexp'      -> `mon-string-csv-regexp'
+;; `mon-rotate-keywords'           -> `mon-string-csv-rotate'
+;; `mon-perm-words'                -> `mon-string-permute-line'
+;; `naf-unrotate-canonical'        -> `mon-string-rotate-name'
+;; `mon-test-permute-combine-functions' -> `mon-permute-combine-functions-TEST'
+;;
+;; MOVED:
+;;
+;; TODO:
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;; cl.el `mon-permute-combine', `mon-perms'
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-name-utils.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-name-utils. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-06-22T13:11:57-04:00Z} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
 
 ;; `mon-permutations', `mon-perms', `mon-permute-combine' 
@@ -103,13 +130,10 @@
   "Intern a function with name \"⍟:FUNCTIONNAME\". When invoked will insert
 the string TEXTTOINSERT. Default is ⍟ if ⍟ is `char-displayable-p' 
 Else uses @artist:\n
-:EXAMPLE
->(mon-intern-artist \"Cappiello\" \"Cappiello (Leonetto)\")
- => ⍟:Cappiello
-> (⍟:Cappiello)
- => Cappiello (Leonetto)
-:NOTE ⍟ <- \(mon-insert-unicode \"235F\"\)
-      Name: APL FUNCTIONAL SYMBOL CIRCLE STAR\n
+:EXAMPLE\n\n\(mon-intern-artist \"Cappiello\" \"Cappiello (Leonetto)\"\)\n
+ => ⍟:Cappiello\n
+ (⍟:Cappiello)\n => Cappiello (Leonetto)\n
+:NOTE \(describe-char \(point\)\)⍟\n
 :SEE-ALSO .\n►►►"
   (let ((pre-insert-char
          (if (char-displayable-p ?\u235F)
@@ -128,7 +152,7 @@ Else uses @artist:\n
 :SEE-ALSO; `mon-line-string-unrotate-namestrings'
 `mon-line-string-rotate-namestrings' `mon-line-strings-to-list', 
 `mon-make-lastname-firstname', `mon-make-name-lispy', `mon-make-names-list'.\n
-Used in `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n►►►"
   (interactive "r\ni\ni\np")
   (let (mystr)
     (setq mystr 
@@ -138,9 +162,9 @@ Used in `naf-mode'.\n►►►"
     (setq mystr
           (with-temp-buffer
             (insert mystr)
-	    (goto-char (point-min))
+	    (goto-char (buffer-end 0))
             (whitespace-cleanup)  ;; :WAS (mon-kill-whitespace)
-	    (goto-char (point-min)) ;; Needed?
+	    (goto-char (buffer-end 0)) ;; Needed?
 	    ;; Needs nested capture-groups for ", Jr." ", Sr." ", II" etc.
 	    (while (search-forward-regexp "^\\(.*\\) (\\(.*\\))$" nil t)
 	      (replace-match "\\2 \\1" ))
@@ -169,7 +193,7 @@ Used in `naf-mode'.\n►►►"
 ;;; ==============================
 ;;; :TODO :RENAME-ME mon-line-string-rotate-namestrings-fast
 (defun mon-make-lastname-firstname (start end &optional intrp)
-  "Return region as a list of names.
+  "Return region as a list of names.\n
 Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
 :EXMAMPLE\n\n\(save-excursion 
   \(goto-char \(1+ \(search-forward-regexp \"^►\" nil t\)\)\)
@@ -182,7 +206,7 @@ Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
         \(funcall mhor bdN \(mon-make-lastname-firstname \(car bdN\) \(cdr bdN\)\)\)
         \(line-move-1 1\)\)\)\)\)\n
 ►\nFirstname1 Lastname1\nFirstname2 Firstname2\nFirstname3 Lastname3\n◄\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
+:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings',
 `mon-line-string-unrotate-namestrings', `mon-make-name-lispy',
 `mon-make-names-list'.\n►►►"
   (interactive "r\np")
@@ -207,9 +231,9 @@ Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
 (defun mon-make-names-list (start end &optional insrtp intrp)
   "Return list of names escaped for double quotes and parens.\n
 :EXAMPLE\n\(mon-make-names-list
- \(1+ \(search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"►\"\) 2\)\)
-►\nSome \(Dude1 Name1\)\nSome \(Dude2 Name2\)\nSome \(Dude3 Name3\)\n►\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
+ \(1+ \(search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"◄\"\) 2\)\)
+►\nSome \(Dude1 Name1\)\nSome \(Dude2 Name2\)\nSome \(Dude3 Name3\)\n◄\n
+:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings',
 `mon-line-string-unrotate-namestrings', `mon-make-lastname-firstname',
 `mon-make-name-lispy'.\n►►►"
   (interactive "r\nP\np")
@@ -255,7 +279,10 @@ CSV-STRING may be a comma-separated string.\n
 :EXAMPLE\n\(mon-string-csv-regexp \"A,B,C\"\)
 => \\\\(A.*B.*C\\\\|A.*C.*B\\\\|B.*A.*C\\\\|B.*C.*A\\\\|C.*A.*B\\\\|C.*B.*A\\\\)
 \(mon-string-csv-regexp \"Somedudes, name\"\)\)
-=> Somedudes.*name\\\\|name.*Somedudes\n►►►"
+=> Somedudes.*name\\\\|name.*Somedudes\n
+:SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-string-permute',
+`mon-perms'.\n►►►"
   ;;(let* ((l (mon-perms (split-string str ",\\s-*"))))
   (let* ((l (mon-permutations 
              (save-match-data (split-string csv-string ",\\s-*")))))
@@ -270,7 +297,7 @@ CSV-STRING may be a comma-separated string.\n
   "Translate comma separated name into a rotated name seperated by \" | \".
 :EXAMPLE\nSomedudes, name\n transfromed to:\nSomedudes, name | name, Somedudes
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-string-permute',
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-string-permute',
 `mon-perms'.\n►►►"
   ;;(let* ((l (mon-perms (split-string str ",\\s-*"))))
   (let* ((l (mon-permutations 
@@ -282,10 +309,10 @@ CSV-STRING may be a comma-separated string.\n
 ;;; :REQUIRES CL `remove*'
 (defun mon-perms (perm-list)
   "Return a perumuted list each elt of LIST. Result is a list of permuted lists.
-DEPRECATE: This provides identical fuctionality of `mon-permutations' but 
+:DEPRECATE This provides identical fuctionality of `mon-permutations' but 
 wit CL requirements. Use `mon-permutations' instead.\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions'.\n►►►"
+`mon-permute-combine-functions-TEST'.\n►►►"
   (if (null perm-list)
       (list '())
     (mapcan #'(lambda (a)
@@ -310,7 +337,7 @@ wit CL requirements. Use `mon-permutations' instead.\n
 ITEM's postion is cycled for each possible position in LIST.\n
 :EXAMPLE\n\(mon-variations 'a '\(b c d\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-perms'.\n►►►"
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
  (if (null list)
      (list (list item))
      (cons (cons item list)
@@ -337,7 +364,7 @@ ITEM's postion is cycled for each possible position in LIST.\n
 Result is a list of permuted lists.
 :EXAMPLE\n\(mon-permutations '\(a b c d\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-perms'.\n►►►"
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
  (cond ((null elements) (list elements))
        ((null (cdr elements)) (list elements))
        (t (mapcan #'(lambda (subperm)
@@ -355,7 +382,7 @@ When called-interactively or optional arg INTRP is non-nil prompt:
  \"String to permut :\" and insert PERMUTE-STRING in current-buffer.
 :EXAMPLE\n\(mon-string-permute \"bubba\")\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-perms'.\n►►►"
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
   (interactive "i\np")
   (let ((prm-str (if intrp (read-string "String to permute :")
                      permute-string))
@@ -381,7 +408,7 @@ When called-interactively or optional arg INTRP is non-nil prompt:
 Uses dolist -> dolist-> memeber &key -> push -> nreverse.\n
 :EXAMPLE\n\(mon-permute-combine '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-perms'.\n►►►"
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
   (if (null l1)
       '(())
       (let ((l3 (mon-permute-combine (cdr l1) l2))
@@ -394,14 +421,14 @@ Uses dolist -> dolist-> memeber &key -> push -> nreverse.\n
               (push (cons (list (car l1) a) b) result))))
         (nreverse result))))
 ;;
-;;; :TEST-ME See below for `mon-test-permute-combine-functions'
+;;; :TEST-ME See below for `mon-permute-combine-functions-TEST'
 ;;
 (defun mon-permute-combine-1 (l1 l2)
   "Permutations/combinations permute L1 with L2.
 ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\n
 :EXAMPLE\n\(mon-permute-combine-1 '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-perms'.\n►►►"
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
   (if (null l1)
       '(())
     (mapcan #'(lambda (a)
@@ -409,13 +436,13 @@ ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\
                        (mon-permute-combine-1 (cdr l1) (remove a l2))))
 	      l2)))
 ;;
-;;; :TEST-ME See below for `mon-test-permute-combine-functions'
+;;; :TEST-ME See below for `mon-permute-combine-functions-TEST'
 ;;
 (defun mon-permute-combine-2 (l1 l2)
   "Permutations/combinations permute L1 withe L2.
 :EXAMPLE:\n\(mon-permute-combine-2 '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
-`mon-test-permute-combine-functions', `mon-permutations', `mon-perms'.\n►►►"
+`mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
  (let ((result nil))
    (dolist (a l2)
      (dolist (b l2)
@@ -426,16 +453,17 @@ ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\
 	 (push (list (list (first l1) a) (list (second l1) b)) result))))
    (nreverse result)))
 ;;
-;;; :TEST-ME See below for `mon-test-permute-combine-functions'
+;;; :TEST-ME See below for `mon-permute-combine-functions-TEST'
 
 ;;; ==============================
+;;; :RENAMED `mon-test-permute-combine-functions' -> `mon-permute-combine-functions-TEST'
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-09T20:23:43-05:00Z}#{10063} - by MON KEY>
-(defun mon-test-permute-combine-functions ()
+(defun mon-permute-combine-functions-TEST ()
   "Assure functional equivalence of permute/combine functionss.\n
-Return test-case results in buffer named ``*TEST-PERMUTE-COMBINE*''.\n
+Return test-case results in buffer named \"*MON-PERMUTE-COMBINE-TEST*\".\n
 Test equivalence of functions:
  `mon-permute-combine', `mon-permute-combine-1', `mon-permute-combine-2'\n
-:EXAMPLE\n\n\(mon-test-permute-combine-functions\)\n
+:EXAMPLE\n\n\(mon-permute-combine-functions-TEST\)\n
 :SEE-ALSO `mon-variations', `mon-permutations', `mon-perms'.\n►►►"
   (let* ((sab '("StringA" "StringB"))
          (s1-4 '("String1" "String2" "String3" "String4"))
@@ -466,7 +494,7 @@ Test equivalence of functions:
             (mon-permute-combine-1  (spc-2-s spc-2-n spc-str-n-2 spc-str-symb-2))
             (mon-permute-combine-2  (spc-3-s spc-3-n spc-str-n-3 spc-str-symb-3))))
          (dlm ";;; ==============================")
-         (tpc (get-buffer-create "*TEST-PERMUTE-COMBINE*"))
+         (tpc (get-buffer-create "*MON-PERMUTE-COMBINE-TEST*"))
          rslt)
     (dolist (hd (pop frmt-list)
              (setq rslt (concat dlm "\n;;; "
@@ -489,7 +517,7 @@ Test equivalence of functions:
       (goto-char (buffer-end 0)))
     (display-buffer tpc t)))
 ;; 
-;;; :TEST-ME (mon-test-permute-combine-functions)
+;;; :TEST-ME (mon-permute-combine-functions-TEST)
 
 ;;; ==============================
 ;;; :COURTESY: Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `perm-words'
@@ -527,12 +555,12 @@ Called interactively inserts converted string at point.
 When INSERT-STR is non-nil insert result in buffer as string else print as with prin1.
 When INSERTP is non-nil and INSERT-STR nil print as with prin1.
 :SEE-ALSO .\n►►►"
-(interactive (list
-              (read-string "String to Splice :")
-              (read-string "Separate with :")
-              (yes-or-no-p "Insert as string? :")
-              nil
-              t))
+  (interactive (list
+                (read-string "String to Splice :")
+                (read-string "Separate with :")
+                (yes-or-no-p "Insert as string? :")
+                nil
+                t))
   (let ((str)
 	(sep (if seperator seperator " | ")))
     (while strings
@@ -569,17 +597,17 @@ SEPERATOR \(a string\) delimits the return value - default is \" | \"
 Called interactively or when INSERTP non-nil inserts converted string at point.
 Called with prefix arg or when W-PRINC non-nil insert as with princ.\n
 :SEE-ALSO `mon-string-ify-list'.\n►►►"
-(interactive (list (read-string "String to Splice :")
-                   (read-string "Separate with :")
-                   t
-                   (yes-or-no-p "(Y) inserts unquated (N) to insert string ? :")))
+  (interactive (list (read-string "String to Splice :")
+                     (read-string "Separate with :")
+                     t
+                     (yes-or-no-p "(Y) inserts unquated (N) to insert string?: ")))
   (let* ((strs (mon-string-ify-list string2strings))
          (str-splc (mon-string-splice-sep strs seperator)))
-   (when insertp
-     (if w-princ
-         (princ str-splc (current-buffer))
-       (prin1 str-splc (current-buffer))))
-     str-splc))
+    (when insertp
+      (if w-princ
+          (princ str-splc (current-buffer))
+        (prin1 str-splc (current-buffer))))
+    str-splc))
 
 ;;; :TEST-ME (mon-string->strings-splice-sep  "Make this sentence a list of strings" "++")
 ;;; :TEST-ME (mon-string->strings-splice-sep  "Make this sentence a list of strings")
@@ -592,7 +620,7 @@ Called with prefix arg or when W-PRINC non-nil insert as with princ.\n
 ;;; =======================
 ;;; :RENAMED `mon-convert-list-regexp' -> `mon-string-to-regexp'
 (defun mon-string-to-regexp (string-to-cnv &optional insertp intrp)
-"Return a regex-opt'd list of strings.\n
+  "Return a regex-opt'd list of strings.\n
 String obtained by splitting read-string from mini-buffer.\n
 :EXAMPLE\n\n(mon-string-to-regexp \"Return a regexp-opt list of strings splitting\")\n
 :SEE-ALSO `mon-string-rotate-to-regexp', `mon-string-ify-list'.\n►►►"
@@ -602,7 +630,7 @@ String obtained by splitting read-string from mini-buffer.\n
     (if (or insertp intrp)
 	(prin1 converted (current-buffer))
       converted)))
-
+;;
 ;;; :TEST-ME (mon-string-to-regexp 
 ;;;  "Returns a regex opt list of strings obtained by breaking the string the user entered at the")
 ;;; 
@@ -614,13 +642,13 @@ String obtained by splitting read-string from mini-buffer.\n
 ;;; :COURTESY Marc Tfardy  
 ;;; :SOURCE Newsgroups: comp.emacs 
 ;;; :SUBJECT Re: re-search-forward and assoc list
-
+;;;
 ;;; :MODIFICATONS <Timestamp: Sunday May 31, 2009 @ 08:22.06 AM - by MON KEY>
 ;;; :CREATED <Timestamp: Friday March 27, 2009 @ 04:50.09 PM - by MON KEY>
 ;;; ==============================
 (defun mon-string-infix (string-list infix)
-   "Create a string by all from the STRING-LIST, which are separated by INFIX.\n
-EXAMPLE:\n;; 
+  "Create a string by all from the STRING-LIST, which are separated by INFIX.\n
+:EXAMPLE\n
 \(defun foo \(\)
 \"Convert certain strings according to a-list key-value pairs.\"
   \(interactive\)
@@ -629,13 +657,13 @@ EXAMPLE:\n;;
           \(concat \"\\\\\(\" \(mon-string-infix \(mapcar #'car replace-alist\) \"\\\\|\"\) \"\\\\\)\"\) nil t\)
     \(replace-match \(cdr \(assoc-string \(match-string 1\) replace-alist\)\)\)\)\)\n
 :SEE-ALSO .\n►►►"
-   (cond ((null string-list)
-          "")
-         ((null (cdr string-list))
-          (car string-list))
-         ((cdr string-list)
-          (concat (car string-list) infix 
-                  (mon-string-infix (cdr string-list) infix)))))
+  (cond ((null string-list)
+         "")
+        ((null (cdr string-list))
+         (car string-list))
+        ((cdr string-list)
+         (concat (car string-list) infix 
+                 (mon-string-infix (cdr string-list) infix)))))
 
 ;;; ==============================
 
@@ -692,7 +720,8 @@ EXAMPLE:\n;;
 :CALLED-BY `mon-rotate-region'
 :CALLED-BY `mon-rotate-string'
 :CALLED-BY `mon-rotate-next'
-:CALLED-BY `mon-rotate-get-rotations-for'.\n►►►")
+:CALLED-BY `mon-rotate-get-rotations-for'\n
+:SEE-ALSO .\n►►►")
 ;;)
 
 ;;; :TEST-ME
@@ -710,10 +739,10 @@ EXAMPLE:\n;;
   "Rotate all matches in `*rotate-text-rotations*' between point and mark.\n
 :SEE-ALSO `mon-rotate-string', `mon-rotate-next', `mon-rotate-region',
 `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp',
-`mon-rotate-flatten-list', `mon-indent-or-rotate' .\n►►►"
+`mon-rotate-flatten-list', `mon-indent-or-rotate'.\n►►►"
   (interactive "r")
-  (let ((regexp (mon-string-rotate-to-regexp ;rotate-convert-rotations-to-regexp
-		 (or rotations *rotate-text-rotations*)))
+  (let ((regexp ;; `rotate-convert-rotations-to-regexp'
+         (mon-string-rotate-to-regexp (or rotations *rotate-text-rotations*)))
 	(end-mark (copy-marker end)))
     (save-excursion
       (goto-char beg)
@@ -722,12 +751,11 @@ EXAMPLE:\n;;
 	       (replace (mon-rotate-next found)))
 	  (replace-match replace))))))
 
-
 ;;; ==============================
 ;;; :RENAMED `rotate-string' -> `mon-rotate-string' -> mon-name-utils.el
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:52.27 PM - by MON KEY>
 (defun mon-rotate-string (string &optional rotations)
-  "Rotate all matches in STRING using associations in ROTATIONS.
+  "Rotate all matches in STRING using associations in ROTATIONS.\n
 If ROTATIONS are not given it defaults to `*rotate-text-rotations*'.
 :SEE-ALSO `mon-rotate-string', `mon-rotate-next', `mon-rotate-region',
 `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp',
@@ -757,18 +785,19 @@ If ROTATIONS are not given it defaults to `*rotate-text-rotations*'.
 	       string
 	       (or rotations *rotate-text-rotations*))))
     (if (> (length rots) 1)
-	(error (format "Ambiguous rotation for %s" string))
+        (error (concat ":FUNCTION `mon-rotate-next' " 
+                       "-- ambiguous rotation for %s") string)
       (if (< (length rots) 1)
-	  ;; If we get this far, this should not occur:
-	  (error (format "Unknown rotation for %s" string))
+          (error  (concat ":FUNCTION `mon-rotate-next' " 
+                          "-- unknown rotation for %s") string)
 	(let ((occurs-in-rots (member string (car rots))))
 	  (if (null occurs-in-rots)
-	      ;; If we get this far, this should *never* occur:
-	      (error (format "Unknown rotation for %s" string))
-	  (if (null (cdr occurs-in-rots))
-	      (caar rots)
-	    (cadr occurs-in-rots))))))))
-
+              ;; If we get this far, this should not occur:
+              (error (concat ":FUNCTION `mon-rotate-next' " 
+                             "-- unknown rotation for %s") string)
+            (if (null (cdr occurs-in-rots))
+                (caar rots)
+              (cadr occurs-in-rots))))))))
 
 ;;; ==============================
 ;;; :RENAMED `rotate-get-rotations-for' -> `mon-rotate-get-rotations-for' -> mon-name-utils.el
@@ -860,7 +889,7 @@ EXAMPLE1:
     to-put))
 
 ;;; ==============================
-;;; :WORKG-AS-OF
+;;; :WORKING-AS-OF
 ;;; :CREATED <Timestamp: Friday February 13, 2009 @ 09:16.54 PM - by MON KEY>
 ;;; ==============================
 ;;; Regexp template for finding nameforms in regions - used in `mon-cln-ulan'.
@@ -883,7 +912,7 @@ EXAMPLE1:
 ;;;(defun make-list-of-string ()
 ;;; (interactive)
 ;;; (with-temp-buffer 
-;;;   (goto-char (point-min))
+;;;   (goto-char (buffer-end 0))
 ;;;   (while (and (line-move-1 1))
 ;;;     (let ((bol (beginning-of-line))
 ;;;	   (eol (end-of-line)))
@@ -919,12 +948,11 @@ EXAMPLE1:
 ;;;        (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
 ;;; (princ to-put (current-buffer))))
 ;;; ==============================
-;;; ==============================
 
 ;;; ==============================
 (provide 'mon-name-utils)
 ;;; ==============================
 
-;;; ==============================
+;;; ====================================================================
 ;;; mon-name-utils.el ends here
 ;;; EOF

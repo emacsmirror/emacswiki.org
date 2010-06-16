@@ -18,6 +18,7 @@ Specific Init issues:
 * ModeHooks -- basics of using mode hooks
 * ProjectSettings -- making customizations local to a project
 * RemoteDotEmacs -- eval the InitFile you have on a web server
+* ProfileDotEmacs -- Profile the InitFile to see which commands take the most time
 
 Dedicated Init File Pages:
 

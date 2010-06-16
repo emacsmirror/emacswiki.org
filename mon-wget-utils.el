@@ -114,10 +114,12 @@
 
 (eval-when-compile (require 'cl))
 
+(require 'mon-url-utils nil t) ;; <- `*mon-url-search-paths*'
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-18T16:20:22-05:00Z}#{10074} - by MON KEY>
 (defvar *mon-show-wget-script-temp* nil
-"*Buffer name for displaying output of `mon-wget-list-to-script-TEST'
+  "*Buffer name for displaying output of `mon-wget-list-to-script-TEST'
 :SEE-ALSO `mon-wget-list-give-script-to-shell-command', 
 `mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
 `mon-wget-list-to-script-shell-command', `mon-wget-rfc',
@@ -192,7 +194,7 @@ o Kills temp-buffer and file on exit\n
  o A temp-buffer with the name \"*MON-SHOW-WGET-SCRIPT-TEMP*\".\n
 :SEE-ALSO `mon-wget-list-give-script-to-shell-command', 
 `mon-wget-list-to-script', `mon-wget-list-to-script-shell-command',
- `mon-wget-rfc', `*mon-show-wget-script-temp*'.\n►►►"
+`mon-wget-rfc', `*mon-show-wget-script-temp*'.\n►►►"
   (let* ((mswst-str (symbol-name '*mon-show-wget-script-temp*))
          (tmp-wget-script (concat default-directory 
                                    (substring mswst-str 1 26)
@@ -201,7 +203,8 @@ o Kills temp-buffer and file on exit\n
          show-wget-script
          tmp-wget-spec)
     (if (file-exists-p tmp-wget-script)
-        (error "The wget-list-test file is already written")
+        (error (concat  ":FUNCTION `mon-wget-list-to-script-TEST' "
+                        "-- wget-list-test file already written"))
         (progn
           (mon-wget-list-to-script get-list base-url tmp-wget-script)
           (setq show-wget-script
@@ -244,7 +247,7 @@ o Kills temp-buffer and file on exit\n
         read-wget-string)
     (unless (directory-files default-directory nil (concat fnm-tst-wgt "$"))
       (error (concat  ":FUNCTION `mon-wget-list-to-script-shell-command' "
-              "-- file does not exist or function invoked outside file's directory")))
+                      "-- file non-existent invoked outside file's directory")))
     (with-temp-buffer
       (save-excursion (insert-file-contents wget-fname))
       (when (eq sys 'wnz) (delete-char (- (skip-chars-forward "# "))))
@@ -307,21 +310,36 @@ directory containing or which is to contain WGET-FNAME.\n
 ;
 ;;; ==============================
 ;;; :TODO This is buggy on w32 paths. incorporate use the procedures above.
+;;; :CHANGESET 1849 <Timestamp: #{2010-06-12T11:31:11-04:00Z}#{10236} - by MON KEY>
 ;;; :CREATED <Timestamp: Tuesday June 30, 2009 @ 02:30.21 PM - by MON KEY>
-(defun mon-wget-rfc (rfc-num)
-  "Fetches an RFC with RFC-NUM with wget.\n
-:NOTE This is buggy with w32 paths.
-:SEE-ALSO `mon-wget-list-give-script-to-shell-command', 
-`mon-wget-list-to-script', `mon-wget-list-to-script-TEST',
-`mon-wget-list-to-script-shell-command', `mon-wget-rfc',
-`*mon-show-wget-script-temp*'.\n►►►"
-  (interactive "sRFC number :")
-  (let* ((the-rfc rfc-num)
+(defun mon-wget-rfc (rfc-num &optional url-insert)
+  "Fetch an RFC with RFC-NUM with wget.\n
+When optional arg URL-INSERT is non-nil return the contents of RFC-NUM as if by
+`url-insert-file-contents'.\n
+:NOTE The wget routine is buggy with w32 paths.\n
+:SEE-ALSO `*mon-url-search-paths*', `mon-wget-list-to-script', `mon-wget-rfc',
+`*mon-show-wget-script-temp*' `mon-wget-list-to-script-TEST',
+`mon-wget-list-to-script-shell-command',
+`mon-wget-list-give-script-to-shell-command'.\n►►►"
+  (interactive "sRFC number: ")
+  (let* ((the-rfc (cond ((stringp rfc-num) rfc-num)
+                        ((numberp rfc-num) (number-to-string rfc-num))))
          (fetch-from (format 
-                      "http://tools.ietf.org/rfc/rfc%s.txt" the-rfc)))
-    (shell-command  (format "wget %s" fetch-from))))
+                      (or (when (and (intern-soft "*mon-url-search-paths*")
+                                     (bound-and-true-p *mon-url-search-paths*))
+                            (cdr (assoc 'ietf *mon-url-search-paths*)))
+                          "http://tools.ietf.org/rfc/rfc%s.txt")
+                      the-rfc)))
+    (if url-insert
+        (url-insert-file-contents fetch-from)
+      (shell-command  (format "wget %s" fetch-from)))))
 ;;
 ;;; :TEST-ME (mon-wget-rfc 2616)
+
+;;; ==============================
+;;; (mon-get-rfc-insert RFC-NUM-TO-INSERT
+
+;; (url-insert-file-contents fetch-from)
 
 ;;; ==============================
 ;;; :CHANGESET 1792
@@ -361,7 +379,7 @@ and write the wget script to the file named mon-wget-unicode-data-YYYY-MM-DD.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-05-29T15:08:20-04:00Z}#{10216} - by MON KEY>
 (defvar *mon-unidata-file-list* nil
- "A list of unicode related file lists.
+  "A list of unicode related file lists.
 This list is current to the Unicode 5.2.0 final data files for the Unicode
 Character Database \(UCD\) circa Summer/Autumn 2009.\n
 :SEE (URL `http://www.unicode.org/Public/UNIDATA/')
@@ -398,7 +416,10 @@ Character Database \(UCD\) circa Summer/Autumn 2009.\n
                   "DerivedJoiningGroup.txt" "DerivedJoiningType.txt"
                   "DerivedLineBreak.txt" "DerivedNumericType.txt"
                   "DerivedNumericValues.txt")))
-              (mufl-url "http://www.unicode.org/Public/UNIDATA/") 
+              (mufl-url (or (when (and (intern-soft "*mon-url-search-paths*")
+                                       (bound-and-true-p *mon-url-search-paths*))
+                              (cdr (assoc 'unicode *mon-url-search-paths*)))
+                            "http://www.unicode.org/Public/UNIDATA/"))
               mufl-urls)
           (dolist (mf mufl-files (setq mufl-urls (nreverse mufl-urls)))
             (let ((sub-url

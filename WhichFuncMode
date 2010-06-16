@@ -68,5 +68,13 @@ To configure a language for which-func mode, you need to configure it for Imenu.
 
 An alternative mode that offers similar functionality for several programming languages is SemanticIdleBreadcrumbsMode.
 
+[new:PhilHudson:2010-06-15 17:49 UTC]
+Suggestion: might someone with the required knowledge like to compare and contrast [[WhichFuncMode]] with [[ElDoc]]? Are they (should they be) mutually incompatible?
+
+[new]
+As far as I can see they are rather orthogonal.
+WhichFuncMode shows which function's source code you are in.
+ElDoc shows where you are in a parameter list to a function call.
+
 ----
 CategoryProgrammerUtils

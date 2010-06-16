@@ -47,7 +47,7 @@
 ;; `*mon-tld-list*'
 ;;
 ;; VARIABLES:
-;; `*hexcolor-keywords*',
+;; `*hexcolor-keywords*', `*mon-url-search-paths*'
 ;; 
 ;; ALIASES:
 ;; `mon-search-wiki'                    -> `mon-search-wikipedia'
@@ -180,10 +180,42 @@
 ;; :REQUIRED-BY `mon-url-decode' 
 (require 'url-util)
 
-
 (declare-function 'w3m-view-this-url "ext:w3m.el" t t)
 (declare-function 'w3m-find-file   "ext:w3m.el" t t )
 (declare-function 'mon-get-w3m-url-at-point-maybe "mon-url-utils")
+
+
+;;; ==============================
+;;; :CHANGESET 1881
+;;; :CREATED <Timestamp: #{2010-06-15T19:16:18-04:00Z}#{10242} - by MON KEY>
+(defvar *mon-url-search-paths* nil
+   "*A list of urls to search.\n
+:EXAMPLE\n\n(assoc 'bnf *mon-url-search-paths*)\n
+\(cdr (assoc 'loc *mon-url-search-paths*\)\)\n
+:SEE-ALSO `mon-search-bnf', `mon-search-loc', `mon-search-ulan',
+`mon-search-ulan-for-name', `mon-search-wiki', `mon-search-wikipedia',.
+`mon-wget-rfc', `*mon-unidata-file-list*'.\n►►►")
+;;
+(unless (bound-and-true-p *mon-url-search-paths*)
+  (setq *mon-url-search-paths*
+        `((bnf       . 
+                     "http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue")
+          (loc       . 
+                     "http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First")
+          (ulan      . 
+                     "http://www.getty.edu/vow/ULANServlet?english=Y&find=")
+          (ulan-flbk . 
+                     "http://www.getty.edu/research/conducting_research/vocabularies/ulan/")
+          (wiki      . 
+                     "http://en.wikipedia.org/wiki/")
+          (ietf      . 
+                     "http://tools.ietf.org/rfc/rfc%s.txt")
+          (unicode   . 
+                     "http://www.unicode.org/Public/UNIDATA/")
+          )))
+;; 
+;;; :TEST-ME (cdr (assoc 'loc *mon-url-search-paths*))
+;;;(progn (makunbound '*mon-url-search-paths*) (unintern '*mon-url-search-paths*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-27T16:36:32-04:00Z}#{10126} - by MON KEY>
@@ -339,7 +371,8 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 ;;; :SEE (URL `http://xahlee.org/emacs/emacs_html.html')
 (defvar *regexp-hexcolor-keywords* 'nil
   "*Keywords for fontification of hex code color values \(e.g. CSS\).\n
-:SEE-ALSO `mon-hexcolor-add-to-font-lock', `*regexp-rgb-hex*'.\n►►►")
+:SEE-ALSO `mon-hexcolor-add-to-font-lock', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-chart', `mon-help-color-functions'.\n►►►")
 (when (not (bound-and-true-p *regexp-hexcolor-keywords*))
   (setq *regexp-hexcolor-keywords*
         '(("#[abcdefABCDEF[:digit:]]\\{6\\}"
@@ -443,15 +476,16 @@ ULAN name to search use: `mon-search-ulan-for-name'.\n
 :SEE-ALSO `mon-search-wikipedia', `mon-search-loc', `mon-search-bnf'.\nUsed in `naf-mode'.\n►►►"
   (interactive "p")
   (let* ((use-empty-active-region nil)
+         (msu-base (cdr (assoc 'ulan *mon-url-search-paths*)))
          (msu-uqp (cond 
                    ((and w-ulan-query (not (use-region-p)) (stringp w-ulan-query))
-                    (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="       
+                    (concat msu-base
                             (replace-regexp-in-string 
                              ", " "%2C+"
                              (read-string "Artist Name to Query \"Lastname, Firstname\"?: ") t)
                             "&role=&page=1&nation="))
                    ((stringp w-ulan-query)
-                    (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="       
+                    (concat msu-base
                             (replace-regexp-in-string ", " "%2C+" w-ulan-query t)
                             "&role=&page=1&nation="))
                    ((and w-ulan-query (use-region-p) (not (stringp w-ulan-query))) t)
@@ -472,12 +506,12 @@ ULAN name to search use: `mon-search-ulan-for-name'.\n
                              "\\(\\([A-Z][a-z]+\\)\\([[:blank:]]\\)\\([A-Z][a-z]+\\)\\)" msu-rgn-url)
                             (concat (match-string 4 msu-rgn-url) "%2C+" (match-string 2 msu-rgn-url)))))))
 	 (msu-bld-url (when msu-tst-rgn
-		      (concat "http://www.getty.edu/vow/ULANServlet?english=Y&find="
+		      (concat msu-base
                               msu-tst-rgn "&role=&page=1&nation=")))
 	 (msu-ulan-url (cond (msu-bld-url msu-bld-url)
-                         (msu-uqp msu-uqp)
-                         ((and (not msu-bld-url) (not msu-uqp))
-                          "http://www.getty.edu/research/conducting_research/vocabularies/ulan/"))))
+                             (msu-uqp msu-uqp)
+                             ((and (not msu-bld-url) (not msu-uqp))
+                              (cdr (assoc 'ulan-flbk *mon-url-search-paths*))))))
     ;; (browse-url msu-ulan-url)))  :NOTE See above w/re conkeror/generic browswer
     (browse-url-firefox msu-ulan-url)))
 ;;
@@ -516,7 +550,7 @@ When optional arg WIKI-WORD is non-nil use it instead.
                 (buffer-substring-no-properties (region-beginning) (region-end))
               (thing-at-point 'symbol))))
     (setq msw-word 
-          (concat "http://en.wikipedia.org/wiki/"
+          (concat (cdr (assoc 'wiki *mon-url-search-paths*))
                   (replace-regexp-in-string " " "_" msw-word t)))
     (browse-url msw-word)))
 ;;
@@ -527,23 +561,25 @@ When optional arg WIKI-WORD is non-nil use it instead.
 ;;; ==============================
 ;;; :NOTE `mon-search-loc' needs to take arguments to build the search.
 (defun mon-search-loc  ()
-  "Open the LOC Authority Headings Search Page in the default browser. 
-:SEE \(URL `http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First')
-:SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-bnf',
-`mon-search-wikipedia'.\nUsed in `naf-mode'.\n►►►"
+  "Open the LOC Authority Headings Search Page in the default browser.\n
+:SEE \(URL `http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First')\n
+:SEE-ALSO `*mon-url-search-paths*', `mon-search-ulan',
+`mon-search-ulan-for-name', `mon-search-bnf', `mon-search-wikipedia'.
+:USED-IN `naf-mode'.\n►►►"
   (interactive)
-  (browse-url "http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First"))
+  (browse-url (cdr (assoc 'loc *mon-url-search-paths*))))
 
 ;;; ==============================
 ;;; :NOTE `mon-search-bnf' needs to take arguments to build the search.
 ;;; :SEE :FILE "../naf-mode/a1-working-notes.el"
 (defun mon-search-bnf  ()
-  "Open the BNF Authority Headings Search Page in the default browser. 
-:SEE \(URL `http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue')
-:SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name', `mon-search-loc',
-`mon-search-wikipedia'.\nUsed in `naf-mode'.\n►►►"
+  "Open the BNF Authority Headings Search Page in the default browser.\n
+:SEE \(URL `http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue')\n
+:SEE-ALSO `*mon-url-search-paths*', `mon-search-ulan',
+`mon-search-ulan-for-name', `mon-search-loc', `mon-search-wikipedia'.
+:USED-IN `naf-mode'.\n►►►"
   (interactive)
-  (browse-url "http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue"))
+  (browse-url (cdr (assoc 'bnf *mon-url-search-paths*))))
 
 ;;; ==============================
 (defun mon-insert-dbc-link ()
@@ -551,21 +587,12 @@ When optional arg WIKI-WORD is non-nil use it instead.
 Inserts the following:\n
 <a class=\"link_green_bold\" href=\"../insert-path-here\" \"> insert-link-text </a>\n
 Link will be colored according to to DBC .css for link_gree_bold.\n
-:SEE-ALSO `mon-insert-dbc-doc-link' for a pre-formatted href to doc-detail page.
-Used in `naf-mode'.\n►►►"
+:SEE-ALSO `mon-insert-dbc-doc-link' for a pre-formatted href to doc-detail page.\n
+:USED-IN `naf-mode'.\n►►►"
   (interactive)
   (insert "<a class=\"link_green_bold\" href=\"../insert-path-here\" \"> insert-link-text </a>"))
 
 ;;; =======================
-;;; :NOTE
-;;; ,---- CSS
-;;; | .link_green_bold {
-;;; | 	font-family: Verdana, Arial, Helvetica, sans-serif;
-;;; | 	font-size: 9px;
-;;; | 	color: #5A8F5D;
-;;; | 	font-weight:bold;
-;;; | }
-;;; `----
 (defun mon-insert-dbc-doc-link (&optional doc-num doc-type link-text)
   "Insert a vanilla \(relative path\) href template at point. 
 Called interactively prompts for:
@@ -574,23 +601,30 @@ DOC-TYPE (artist, author, brand, book, people), default is \"naf-type\";
 LINK-TEXT (text with .css class \"link_green_bold\") default is \" insert link text \".
 Inserts:\n
 <a class=\"link_green_bold\" href=\"../doc-details-DOC-NUM-DOC-TYPE.htm\" \">LINK-TEXT</a>\n
-:SEE-ALSO `mon-insert-dbc-link' which inserts a vanilla href link formatted for a
-page URL.\nUsed in `naf-mode'.\n►►►"
-(interactive "n3-4 digit document number:\nsDoc's NAF type:\nsText for link title:")
-  (let* ((dn
-	  (if (and doc-num)
-	      doc-num
-	    "####"))
+:NOTE CSS .link_green_bold is:
+ ,---- 
+ | .link_green_bold {
+ | 	font-family: Verdana, Arial, Helvetica, sans-serif;
+ | 	font-size: 9px;
+ | 	color: #5A8F5D;
+ | 	font-weight:bold;
+ | }
+ `----\n
+:SEE-ALSO `mon-insert-dbc-link'.\n:USED-IN `naf-mode'.\n►►►"
+(interactive "n3-4 digit document number:\nsDoc's NAF type:\nsText for link title: ")
+  (let* ((dn (if (and doc-num)
+                 doc-num
+               "####"))
 	 (dt (if (and doc-type)
 		 (downcase doc-type)
 	       "naf-type"))
 	 (lt (if (and link-text)
 		 link-text
 	       " insert link text "))
-	 (dbc-url 
-          (format 
-           "<a class=\"link_green_bold\" href=\"../doc-details-%d-%s.htm\" \">%s</a>" 
-           dn dt lt)))
+	 (dbc-url (format 
+                   (concat "<a class=\"link_green_bold\""
+                           "href=\"../doc-details-%d-%s.htm\" \">%s</a>")
+                   dn dt lt)))
     (insert  dbc-url)))
 
 ;;; ==============================
@@ -617,15 +651,14 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 		   (bnd-pre (- bnd-start 6))
 		   (url-targ (thing-at-point-url-at-point))
 		   (url-rep (concat "(URL `" url-targ "')")))
-	      (cond
-	       ((< bnd-pre 0)
-                (replace-string url-targ url-rep)
-		(skip-syntax-forward "^w"))
-	       ((not (string-match-p "(URL `" (buffer-substring bnd-pre bnd-start)))
-		(skip-syntax-backward "^-")
-		(replace-string url-targ url-rep)
-		(skip-syntax-forward "^w"))))))
-    ))
+              (with-no-warnings
+                (cond ((< bnd-pre 0)
+                       (replace-string url-targ url-rep)
+                       (skip-syntax-forward "^w"))
+                      ((not (string-match-p "(URL `" (buffer-substring bnd-pre bnd-start)))
+                       (skip-syntax-backward "^-")
+                       (replace-string url-targ url-rep)
+                       (skip-syntax-forward "^w")))))))))
 ;;
 ;;; :TEST-ME http://www.somethign.xomthing.com/blotto
 ;;; :TEST-ME ftp://some.site.com
@@ -639,7 +672,7 @@ Won't replace recursively on pre-existing wrapped URLs.\n
 Conditional prefix matching regexps in `*regexp-wrap-url-schemes*' global.
 Won't replace recursively on pre-existing wrapped URLs.\n
 :SEE-ALSO `mon-wrap-all-urls', `thing-at-point-url-at-point',
-`mon-wrap-url', `mon-wrap-text', `mon-wrap-span', `mon-wrap-with'
+`mon-wrap-url', `mon-wrap-text', `mon-wrap-span', `mon-wrap-with',
 `mon-wrap-selection'.\n►►►"
   (interactive)
   (save-excursion
@@ -721,12 +754,17 @@ DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR\" 1\)\) 18 4\)\"A\"\)\n :)
   (let (;; I really don't like setq'ing args outside of let bindings...
         (textblock textblock)
         (delim delim))
-    (setq textblock (replace-regexp-in-string delim "</td><td>" textblock))
-    (setq textblock (replace-regexp-in-string "\n" "</td></tr>\n<tr><td>" textblock))
+    (setq textblock 
+          (replace-regexp-in-string delim "</td><td>" textblock))
+    (setq textblock 
+          (replace-regexp-in-string "\n" "</td></tr>\n<tr><td>" textblock))
     ;; delete the beginning "<tr><td>" in last line
     (setq textblock (substring textblock 0 -8)) 
-    (concat "<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">\n<tr><td>" textblock "</table>")
-    ))
+    (concat "<table border=\"1\"" 
+            "cellpadding=\"5\""
+            "cellspacing=\"0\">\n<tr><td>" 
+            textblock 
+            "</table>")))
 
 ;;; ==============================
 (defun mon-make-html-table (sep)
@@ -737,7 +775,7 @@ text after point.\n
 With \"-\" as separator transforms this:\n
 a-b-c\n  1-2-3\n  this-and-that\n
 Into the following html table:\n
-<table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">
+ <table border=\"1\" cellpadding=\"5\" cellspacing=\"0\">
  <tr><td>a</td><td>b</td><td>c</td></tr>
  <tr><td>1</td><td>2</td><td>3</td></tr>
  <tr><td>this</td><td>and</td><td>that</td></tr>\n </table>\n
@@ -757,8 +795,8 @@ Into the following html table:\n
 (defun mon-url-retrieve-to-new-buffer (fetch-this-url)
   "Return FETCH-THIS-URL displayed in an new buffer-window.\n
 Fetches URL as with `url-retrieve-synchronously'.\n
-:EXAMPLE\n
-\(mon-url-retrieve-to-new-buffer \"http://tools.ietf.org/rfc/rfc2822.txt\")\n
+:EXAMPLE\n\n\(mon-url-retrieve-to-new-buffer 
+ \"http://tools.ietf.org/rfc/rfc2822.txt\")\n
 :SEE-ALSO `url-copy-file', `url-retrieve', `url-retrieve-synchronously', 
 `url-http', `mon-get-w3m-url-at-point-maybe', `google-define',
 `mon-get-host-address', `mon-url-encode', `mon-url-decode'
@@ -809,7 +847,7 @@ corresponding to the host name arg.\n
 :SEE-ALSO `mon-w3m-kill-url-at-point', `mon-get-w3m-url-at-point-maybe',
 `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
 `mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
-`dired-get-marked-files'.\n►►►"
+`dired-get-marked-files', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
   (interactive)
   (w3m-find-file 
    (or file-to-w3m (car (dired-get-marked-files)))))
@@ -825,7 +863,7 @@ the property value on the kill ring and message user.\n
 :SEE-ALSO `mon-get-w3m-dired-file', `mon-get-w3m-url-at-point-maybe',
 `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
 `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point'.\n►►►"
+`mon-get-w3m-url-at-point', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
   (interactive)
   (let ((w3mgtp (get-text-property (point) 'w3m-href-anchor)))
       (when (and w3mgtp (stringp w3mgtp))
@@ -837,9 +875,9 @@ the property value on the kill ring and message user.\n
 (defun mon-get-w3m-url-at-point-maybe ()
   "Return two elt list as \(MEHTOD \"URL\"\) when text-properties at point has
 w3m-href-anchor value and is a 'file 'http 'https.\n
-:SEE-ALSO `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv'
+:SEE-ALSO `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
 `mon-w3m-dired-file', `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point'.\n►►►"
+`mon-get-w3m-url-at-point', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
   (let* ((is-url (get-text-property (point) 'w3m-href-anchor))
          (match-with "\\(file\\|http\\|https\\)")
          (is-match (if (stringp is-url)
@@ -862,7 +900,8 @@ When INSRTP in non-nil and BUFFER names an existing buffer insert the w3m URL in
 BUFFER. If BUFFER is nil or does no exist return URL.\n
 :SEE-ALSO `mon-get-w3m-url-at-point-maybe', `mon-w3m-read-gnu-lists-nxt-prv',
 `mon-w3m-kill-url-at-point', `mon-w3m-dired-file', `w3m-print-this-url',
-`mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point'.\n►►►"
+`mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point', 
+`mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
   (interactive "i\ni\np")
   (let ((url-maybe (mon-get-w3m-url-at-point-maybe))
         (do-buff (if buffer (get-buffer buffer))))
@@ -883,7 +922,7 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 :SEE \(URL `http://lists.gnu.org'\)\n
 :SEE-ALSO `mon-get-w3m-url-at-point', `mon-get-w3m-url-at-point-maybe',
 `mon-w3m-dired-file', `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point'.\n►►►"
+`mon-get-w3m-url-at-point', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
   (let ((nxt-prev-p
          (if (save-excursion
                (goto-char (buffer-end 0))

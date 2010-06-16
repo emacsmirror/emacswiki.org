@@ -206,9 +206,8 @@ To be able to launch files in Aquamacs from the command line, just select "Insta
 
 Some users have not had good luck with the script that is being installed this way. An alternative is create an alias in your shell's *rc file. For example, in .bash_profile or .tcshrc
 
- alias aquamacs 'open /Applications/Aquamacs\ Emacs.app/'
+ alias aquamacs='open /Applications/Aquamacs\ Emacs.app/'
 
-This solution won't support opening Emacs via "sudo".
 This alias can either open Aquamacs:
 
 >aquamacs
@@ -217,9 +216,13 @@ or open Aquamacs with a file:
 
 >aquamacs script.pl
 
-A better alternative on the above is
+This solution won't support opening Emacs via "sudo" because the "open" command is equivalent to a click on the application icon. In order to get aquamacs on root just type:
+
+> sudo /Applications/Aquamacs\ Emacs.app/Contents/MacOS/Aquamacs\ Emacs "$@" 
+
+A better alternative on the previous open command is
  
- alias aquamacs 'open -a /Applications/Aquamacs\ Emacs.app/'
+ alias aquamacs='open -a /Applications/Aquamacs\ Emacs.app/'
 
 This allows emacs to open files which have a file-association to a different application.
 
