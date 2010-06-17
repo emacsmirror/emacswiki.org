@@ -36,6 +36,8 @@ Note, this does not actually introduce a binding for <code>my-free-variable</cod
       (boundp 'my-free-variable))
         => nil
 
+
+(see also ElispCompilerWarnings)
 ----
 CategoryCode
 ComparativeEmacsology

@@ -167,206 +167,32 @@ A `kill-syntax' command becomes easy to write, too:
 
 The thingatpt library is quintessential Emacs, powerful but minimal. View the source code with `M-x find-library RET thingatpt RET' to learn more its features and how to extend it to things of your own.
 
+
+
+
+
+
 == Extensions to library `thingatpt.el' ==
 
 Libraries are available that extend library ##thingatpt.el## in various ways.
 
-=== Copy or paste various type data at cursor ===
+* StringAtPoint -- determine a programming language string under point.
 
-* ThingEdit -- Copy or paste various type data at cursor.
+* ThingAtPointCommands -- select successive objects of different types: <tt>[[thing-cmds.el]]</tt>
 
-* Lisp:thing-edit-extension.el -- Some enhanced functions for [[ThingEdit]].
+* ThingAtPointOptional -- utilities similar to ThingAtPointCommands.
 
-=== ThingAtPointPlus and ThingAtPointCommands ===
+* ThingAtPointPlus -- general extension of ##thingatpt.el##: <tt>[[thingatpt+.el]]</tt>
 
-DrewAdams has written libraries Lisp:thingatpt+.el and Lisp:thing-cmds.el:
+* ThingEdit, <tt>[[thing-edit-extension.el]]</tt> -- copy/paste various things at point.
 
-* ThingAtPointPlus -- functions for returning different objects at or near point -- a general extension of library ##thingatpt.el##.
-
-* ThingAtPointCommands -- commands for selecting successive objects of different types.
-
-=== ThingAtPointOptional ===
-
-Simple useful utilities for ThingAtPoint similar to ThingAtPointCommands.
-
-* ThingAtPointOptional
-
-
-=== Modes that provide specific "things" ===
-
-The following modes and packages add new kinds of things at point:
+The following add new kinds of things at point. They provide examples of how to use ##thingatpt.el##.
 
 * [[Chart]] -- stock and commodity symbols (ie. ticker codes)
 * TexMathPreview -- TeX math expressions
-
-=== More things - region if selected ===
-
-Added : 22 Oct 2008 RichardRiley
-
-Not having found something which returns word at point or the region if selected, I added this for the browse-url-apropos additions I added :
-
-http://www.emacswiki.org/emacs-fr/BrowseAproposURL
-
-I'm pretty sure this is better being integrated elsewhere. But where?
-
-<pre>
-(defun rgr/region-then-thing-at-point()
-  "Function to return the currently selected region. If no region is selected then return the word at the cursor."
-  (if mark-active
-      (buffer-substring-no-properties (region-beginning)(region-end))
-    (progn
-      (let ((word (current-word)))
-	     (if (zerop (length word))
-		(setq word ""))
-	     word))))
-</pre>
-
-Note : this is pending being brought into DrewAdams's thing-at-point libraries.
-
-[new:DrewAdams:2008-10-22 16:10 UTC]
-Thanks, Richard. I added it to <tt>[[thingatpt+.el]]</tt> as function `region-or-word-at-point'. -- DrewAdams
+* ThingAtPointPlus -- things at or ''nearest'' point: list, number, word, sentence, sexp, symbol, symbol name
 
 
-
-=== Problem defining a `thing-copy-string' function ===
-
-
-[new:DavidYoung:2010-06-13 16:38 UTC]
-Execuse me but I tried these code to define a thing as 'string', and they just don't work. When I type M-x string-at-point, it could move backward to the beginning of a string, but the message displays is just 'nil'.  Does there anything wrong?
-
-{{{
-(defun forward-string(&optional arg)
-  "Move forward / backward of a string"
-;  (interactive "P")
-  (if (> (or arg 1) 0)
-  (re-search-forward "[ \t\n]")
-  (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-  )
-)
-
-(defun beginning-of-string()
-  "  "
-  (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-)
-
-(defun end-of-string()
-  " "
-  (re-search-forward "[ \t\n]")
-)
-
-(put 'string 'forward-op 'forward-string)
-(put 'string 'beginning-op 'beginning-of-string)
-(put 'string 'end-op 'end-of-string)
-
-(defun string-at-point () 
-  "   "
-  (interactive) 
-  (message "%s" (thing-at-point 'string))
-  (forward-thing 'string -1)
-)
-
-}}}
-
-
-[new:DrewAdams:2010-06-13 19:22 UTC]
-Your `*-string' functions do not move forward a string or to the beginning/end of a string. That's the first thing you need to get working correctly, before you try to use them with thing-at-point.  See existing functions such as `forward-whitespace' and `forward-symbol' as models.
-
-  (defun forward-whitespace (arg)
-    (interactive "p")
-    (if (natnump arg)
-        (re-search-forward "[ \t]+\\|\n" nil 'move arg)
-      (while (< arg 0)
-        (if (re-search-backward "[ \t]+\\|\n" nil 'move)
-	    (or (eq (char-after (match-beginning 0)) 10)
-	        (skip-chars-backward " \t")))
-        (setq arg (1+ arg)))))
-
-Also, your (commented out) `interactive' spec and use of ##ARG## is not correct. Again, see the existing functions as models.
-
-But searching for a string is not trivial, because of the possibility of escaped ##"## etc.
-
-[new]
-: `parse-partial-sexp' is for that. For how to use it to find a string see bug report http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6411 -- LennartBorgman
-
-[new]
-It's also not clear what you mean by a "string at point". If you expect to return the string when point is somewhere in the middle of it then things are much more complicated than if you expect it to return the string only when point is at one of the quote marks (##"##).
-
-If the latter, you can just do this:
-
-  (defun string-at-point ()
-    "Return the string at point, or nil if none is found."
-    (and (looking-at "\"")
-         (let ((thing  (thing-at-point 'sexp)))
-           (and (stringp thing) thing))))
-
--- DrewAdams
-
-[new]
-Bingo, it works. I just need to make sure that point is reside on a string itself, instead of on a white space between strings. So I modified the forward-string function to move one step back. 
-
-Most of my daily work are doing in shell-mode. So I used to need to copy something on the screen and paste them on the shell prompt. These kind of 'thing's are used to be a literal string, for example, some long parameter in a historical commands, or some literal string in the output message of a historical command, or even just a full path or a file name. Since I need these kind of things very frequently, I would like to treat them a 'one thing', it is a sequence of literal charactors between while spaces.
-
-So I have a function named copy-string-to-mark, it was made directly with re-search-forward & re-search-backword before I aware of thing-at-point kind of functions. It woule not only copy a string at point but also paste it to the mark. It is very convenient to me. I hate copy&paste actually. But when I only want a copy itself, I can add a prefix argument to prevent a paste.
-
-Now I just want to rewrite it in the thing-at-point way. the string-at-point() function in my previous post was just used to describe what I did for debugging. It makes nothing.
-
-
-{{{
-
-(defun forward-string(arg)
-  "Move forward / backward of a string"
-  (interactive "p")
-  (if (natnump arg)
-      (progn (re-search-forward "[ )\t\n]" (line-end-position) 3 1) 
-	     (if (looking-back "[)\t ]") (goto-char (- (point) 1)) )
-	     )
-      (progn (re-search-backward "[ (\t]" (line-beginning-position) 3 1) 
-	     (if (looking-at "[(\t ]")  (goto-char (+ (point) 1)) ) 
-	     )
-  )
-)      
-
-(defun beginning-of-string()
-  "  "
-  (re-search-backward "[ (\t]" (line-beginning-position) 3 1)
-	     (if (looking-at "[(\t ]")  (goto-char (+ (point) 1)) ) 
-)
-(defun end-of-string()
-  " "
-  (re-search-forward "[ )\t]" (line-end-position) 3 1)
-	     (if (looking-back "[)\t ]") (goto-char (- (point) 1)) )
-)
-
-(put 'string 'forward-op 'forward-string)
-(put 'string 'beginning-op 'beginning-of-string)
-(put 'string 'end-op 'end-of-string)
-
-(defun thing-copy-string ()
-  "Try to get string"
-  (interactive)
-  (thing-edit 'string)
-)
-
-(defun thing-copy-string-to-mark(&optional arg)
-  " Try to copy a string and paste it to the mark
-When used in shell-mode, it will paste string on shell prompt by default "
-  (interactive "P")
-  (thing-copy-string)
-   (if (not arg)
-       (if (string= "shell-mode" major-mode)  
-	   (progn (comint-next-prompt 25535) (yank))
-	   (progn (goto-char (mark)) (yank) )))
-)
-
-}}}
-
--- David Young
-
-[new]
-If you want to rewrite it for others to use, then I think it will be better to use the solution I proposed above.
-The version you have here will only work in certain cases.
-(The code for it is already in the bug report, just copy and paste it.)
--- LennartBorgman
 
 ----
 CategoryCode

@@ -426,11 +426,6 @@ undo-more. Comments?
 [new]
 Has anyone compiled emacs22 to work with older versions of Debian's libc6 (2.3.6.ds1-4)?
 
-[new]
-This warning shows up after uniquify is loaded. What stops it?
-
-Warning: the function `uniquify-maybe-rerationalize-w/o-cb' might not be defined at runtime.
-
 == Looking for a Mark Scope function ==
 
 In all programming languages I use, I often want to work on a scope (like inside an "if" statement, a "for" loop, or a whole "function").

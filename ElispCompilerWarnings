@@ -1,0 +1,15 @@
+advice for eliminating warnings thrown by the Emacs lisp compiler
+
+==free variables==
+see FreeVariable
+
+==not defined at runtime==
+warnings of the following form
+
+<pre>
+Warning: the function `uniquify-maybe-rerationalize-w/o-cb' might not be defined at runtime.
+</pre>
+
+are thrown when the compiler can't find the definition of a function used in the current program, they can normally  be resolved by placing a call to the `declare-function' see [http://www.gnu.org/software/emacs/elisp/html_node/Declaring-Functions.html Declaring-Functions] command in the top of the affected file.
+
+If the `declare-function' command does not work, then visit the file defining the function, and ensure that the function in question is not used in that file *before* it is defined.

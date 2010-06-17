@@ -33,10 +33,17 @@ The following macros implement the threading operators in Emacs Lisp.
           (setq result (append (list (car form) result)
                                (cdr form))))))
 
+Note: good idea ! Another implementation [http://github.com/sroccaserra/emacs/blob/master/tools.el here] (look for "trush"), ported more or less directly from the Clojure macro. Like the original, it works on examples like this :
+
+    (-> 25 sqrt (* 2)) ;; sqrt is replaced by (sqrt) while expanding the -> macro
+
+You'll find unit tests for it [http://github.com/sroccaserra/emacs/blob/master/tools.elk here] (again, look for "trush").
+Note: this implementation is for my own use, and not intended for distribution as it *will* polute your namespace.
+
 == External links ==
 
 * [http://debasishg.blogspot.com/2010/04/thrush-in-clojure.html Thrush in Clojure]
-* [http://richhickey.github.com/clojure/clojure.core-api.html#clojure.core/-%3E%3E API doc for -->]
+* [http://richhickey.github.com/clojure/clojure.core-api.html#clojure.core/-%3E%3E API doc for ->>]
 * [http://richhickey.github.com/clojure/clojure.core-api.html#clojure.core/-%3E API doc for ->]
 
 == Discussion ==

@@ -15,8 +15,8 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.10 (2010-06-14)
-;; Serial Version: %Id: 26%
+;; Version: 1.4.10c (2010-06-16)
+;; Serial Version: %Id: 27%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -133,7 +133,7 @@
 ;; 1.4.10 VB1 - Add punctuation syntax for operators
 ;;            - create visual-basic-check-style
 ;;            - improve idiom detection
-;; 1.4.10b VB1 -improve visual-basic-check-style
+;; 1.4.10b,c VB1 -improve visual-basic-check-style
 
 ;;
 ;; Notes:
@@ -1504,8 +1504,15 @@ This function is under construction"
 	(save-match-data
 	  (and 
 	    (visual-basic-in-code-context-p)
-	    (null  (looking-back "[-+*/\\]\\(\\|\\s-+_\n\\)\\s-*"))
+	    (null  (looking-at "\\(\\sw\\|\\s_\\|\\s\(\\|[.0-9]\\)"))
 	    (null (looking-back "\\([0-9]\\.\\|[0-9]\\)[eE]")))))
+       (check-comparison-sign-not-followed-by-space-p 
+	()
+	(save-match-data
+	  (and 
+	    (visual-basic-in-code-context-p)
+	    (let ((next-char (match-string 2)))
+	      (null (string-match "[<=>]" next-char ))))));
        )
     (let (vb-other-buffers-list 
 	  ;; list of found error styles
@@ -1530,17 +1537,29 @@ This function is under construction"
 	       insert-space-at-point
 	       visual-basic-in-code-context-p
 	       0 ]
-	     [ "[+/\\*]\\(\\s\(\\|\\sw\\|\\s_\\)" 
+	     [ "[+/\\*]\\(\\s\(\\|\\sw\\|\\s_\\|\\s.\\)" 
 	       "Operator not followed by space"
 	       match-beginning 1
 	       insert-space-at-point
 	       visual-basic-in-code-context-p
 	       0 ]
-	     [ "-\\(\\s\(\\|\\sw\\|\\s_\\)" 
+	     [ "-\\(\\s\(\\|\\sw\\|\\s_\\|\\s.\\)" 
 	       "Minus not followed by space"
 	       match-beginning 1
 	       insert-space-at-point
 	       check-minus-not-followed-by-space-p
+	       0 ]
+	     [ "\\(\\s\)\\|\\sw\\|\\s_\\)\\(=\\|<\\|>\\)" 
+	       "Comparison sign not preceded by space"
+	       match-end 1
+	       insert-space-at-point
+	       visual-basic-in-code-context-p
+	       0 ]
+	     [ "\\(=\\|<\\|>\\)\\(\\s\(\\|\\sw\\|\\s_\\|\\s.\\)" 
+	       "Comparison sign not followed by space"
+	       match-end 1
+	       insert-space-at-point
+	       check-comparison-sign-not-followed-by-space-p 
 	       0 ]
 	     [ ",\\(\\sw\\|\\s_\\)"
 	       "Comma not followed by space"
@@ -1572,7 +1591,15 @@ This function is under construction"
 			   (goto-char  (funcall (aref se 2)
 						(aref se 3)))
 			   (or (null (aref se 5))
-			       (funcall  (aref se 5)))))
+			       (funcall  (aref se 5))
+			       (let (found)
+				 (while (and 
+					 (setq found (re-search-forward (aref se 0) nil t))
+					 (null (progn
+						 (goto-char  (funcall (aref se 2)
+								      (aref se 3)))
+						 (funcall  (aref se 5))))))
+				 found))))
 		      (push (list (point)
 				  (aref se 1)
 				  (and (> (aref se 6) visual-basic-auto-check-style-level)
@@ -1587,7 +1614,8 @@ This function is under construction"
 					  ", solve it ? "))
 		    (funcall (pop next-se)))
 		  t; loop again
-		  ))))))))
+		  )))))
+      (message "Done Visual Basic style check"))))
 
 (provide 'visual-basic-mode)
 
