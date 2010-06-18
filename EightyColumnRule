@@ -126,4 +126,4 @@ I'm currently using Emacs 23.0.91.1 with the GTK interface.  What I'd like is a 
 [new]
 ColumnMarker. -- AlexSchroeder
 ----
-CategoryFilling
+CategoryFilling CategoryDisplay

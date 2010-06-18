@@ -21,6 +21,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 ** ModeLinePosition -- enhancements to standard minor modes ‘line-number-mode’, ‘column-number-mode’, and ‘size-indication-mode’
 ** ShowPointMode -- show the value of the point in the mode line
 ** DiminishedModes -- Abbreviate minor modes appearing in the ModeLine.
+* ShowWhiteSpace -- highlight whitespace
 * TransparentEmacs -- how to make your wallpaper shine through the buffer
 * HighlightTemporarily -- highlight parts of a buffer
 * WorkSpaces - an implementation based on registers

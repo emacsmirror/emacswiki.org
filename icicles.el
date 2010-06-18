@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 10:54:23 2010 (-0700)
+;; Last-Updated: Wed Jun 16 23:18:35 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22759
+;;     Update #: 22763
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -717,7 +717,7 @@
 ;;    `icicle-color-completion-setup', `icicle-color-green-lessp',
 ;;    `icicle-color-help', `icicle-color-hue-lessp',
 ;;    `icicle-color-red-lessp', `icicle-color-saturation-lessp',
-;;    `icicle-color-value-lessp',
+;;    `icicle-color-value-lessp', `icicle-column-wise-cand-nb',
 ;;    `icicle-comint-dynamic-complete-as-filename',
 ;;    `icicle-comint-dynamic-simple-complete',
 ;;    `icicle-comint-hook-fn',
@@ -860,6 +860,7 @@
 ;;    `icicle-msg-maybe-in-minibuffer', `icicle-ms-windows-NET-USE',
 ;;    `icicle-multi-sort', `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-candidate-in-Completions',
+;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-next-candidate',
 ;;    `icicle-next-single-char-property-change',
 ;;    `icicle-non-whitespace-string-p',

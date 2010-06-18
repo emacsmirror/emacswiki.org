@@ -61,7 +61,7 @@
 ;; `mon-remove-single-text-property', `mon-nuke-text-properties-region',
 ;; `mon-nuke-overlay-buffer', 
 ;; `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-;; `mon-flatten', `mon-combine', `mon-recursive-apply',
+;; `mon-flatten', `mon-combine', `mon-recursive-apply', `mon-mismatch',
 ;; `mon-escape-lisp-string-region', `mon-unescape-lisp-string-region',
 ;; `mon-princ-cb', `mon-eval-sexp-at-point', `mon-eval-print-last-sexp',
 ;; `mon-extend-selection', `mon-semnav-up', `mon-eval-expression',
@@ -101,7 +101,8 @@
 ;; `mon-string-to-hex-list-cln-chars',
 ;; `mon-line-dolines-setup-TEST', `mon-line-dolines-TEST',
 ;; `mon-map-obarray-symbol-plist-props', `mon-image-verify-type',
-;; `mon-with-buffer-undo-disabled-TEST' 
+;; `mon-with-buffer-undo-disabled-TEST',
+;; `mon-line-move-n', `mon-line-move-prev', `mon-line-move-next',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -171,7 +172,6 @@
 ;; `mon-maptree' uses `flet' cl--every                  -> `every'
 ;; `mon-get-process' uses `flet' cl--find-if            -> `find-if'
 ;; `mon-combine' uses `flet' cl--mapcan                 -> `mapcan'
-;; `mon-line-string-rotate-name' uses `flet' cl--subseq -> `subseq'
 ;;
 ;; SNIPPETS:
 ;;
@@ -549,6 +549,7 @@ is not needed.\n
 `mon-get-proc-buffers-directories', `mon-get-buffers-directories',
 `mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir'
 `with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
+  (declare (indent 2) (debug t))
   `(unwind-protect
        (progn
          (buffer-disable-undo)
@@ -575,14 +576,13 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
       (setq bul (cons bul buffer-undo-list)))
     (cond ((or (not (consp bul)) (<= (length bul) 1))
            (error (concat ":MACRO `mon-with-buffer-undo-disabled' "
-                          " -- failed to toggle `buffer-undo-list' in temp-buffer")))
+                          "-- failed to toggle `buffer-undo-list' in temp-buffer")))
           ((and (car bul) (atom (car bul)))
            (message (concat ":MACRO `mon-with-buffer-undo-disabled' "
-                            " -- success toggling `buffer-undo-list' in temp-buffer"))))))
+                            "-- success toggling `buffer-undo-list' in temp-buffer"))))))
 ;;
 ;;; :TEST-ME (mon-with-buffer-undo-disabled-TEST)
 ;;; :TEST-ME (mon-with-buffer-undo-disabled-TEST t)
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-05T14:21:16-05:00Z}#{10055} - by MON KEY>
@@ -625,9 +625,10 @@ convert command could be supported. For a complete list of formats supported:
 :SEE (URL `http://www.imagemagick.org/script/formats.php')
 :CALLED-BY `boxcutter-big-n-small'\n
 :ALIASED-BY `boxcutter-verify-image-type' \(when \(and \(featurep 'mon-boxcutter\)\)\)\n
-:SEE-ALSO `*boxcutter-conversion-program*', `image-type-available-p',
-`image-type-from-file-name',\n `image-file-name-extensions',
-`image-type-file-name-regexps', `image-file-name-regexps'.\n►►►"
+:SEE-ALSO `mon-check-image-type', `*boxcutter-conversion-program*',
+`image-type-available-p', `image-type-from-file-name',\n
+`image-file-name-extensions', `image-type-file-name-regexps',
+`image-file-name-regexps'.\n►►►"
   (eval-when-compile (require 'image))
   (let ((v-type verify-image-type))
     (car (member
@@ -1119,21 +1120,29 @@ When W-THIS-SCRATCH is non-nil or called-interactively with prefix arg if
 
 ;;; ==============================
 ;;; :RENAMED `scroll-down-in-place' -> `mon-scroll-down-in-place'
-(defun mon-scroll-down-in-place (n)
-  "Scroll with the cursor in place, moving the UP page instead.\n
-:SEE-ALSO `mon-scroll-up-in-place', `scroll-up', `scroll-down'.\n►►►"
+(defun mon-scroll-down-in-place (&optional down-by)
+  "Scroll with the cursor in place, moving screen DOWN-BY instead.\n
+:SEE-ALSO `mon-scroll-up-in-place', `scroll-up', `scroll-down',
+`mon-line-move-n', `mon-line-move-next'.\n►►►"
   (interactive "p")
-  (forward-line (- n))
-  (scroll-down n))
+  (let* ((inhibit-redisplay t)
+        (down-by (abs (or down-by 1)))
+        (next-screen-context-lines down-by))
+    (if (forward-line (- down-by))
+        (ignore-errors (scroll-down down-by)))))
 
 ;;; ==============================
 ;;; :RENAMED `scroll-up-in-place' -> `mon-scroll-up-in-place'
-(defun mon-scroll-up-in-place (n)
-  "Scroll with the cursor in place, moving the DOWN page instead.\n
-:SEE-ALSO `mon-scroll-down-in-place', `scroll-up', `scroll-down'.\n►►►"
-  (interactive "p")
-  (forward-line n)
-  (scroll-up n))
+(defun mon-scroll-up-in-place (&optional up-by)
+  "Scroll with the cursor in place, moving the screen UP-BY lines instead.\n
+:SEE-ALSO `mon-scroll-down-in-place', `scroll-up', `scroll-down'
+`mon-line-move-n', `mon-line-move-prev'.\n►►►"
+  (interactive "P")
+  (let* ((inhibit-redisplay t)
+         (up-by (abs (or up-by 1)))
+         (next-screen-context-lines up-by))
+    (when (forward-line up-by)
+      (ignore-errors (scroll-up up-by)))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday March 20, 2009 @ 09:17.35 PM - by MON KEY>
@@ -2008,6 +2017,54 @@ Instances of such chars are be skipped.\n
 ;;; :TODO Wrap in a function and install under bol/eol funcs in mon-utils.el
 ;;; :CREATED <Timestamp: #{2009-09-14T15:15:57-04:00Z}#{09381} - by MON KEY>
 ;;; (funcall (lambda () (if (bolp) (forward-line -1) (beginning-of-line))))
+
+
+;;; ==============================
+;;; :CHANGESET 1885
+;;; :CREATED <Timestamp: #{2010-06-16T11:43:14-04:00Z}#{10243} - by MON KEY>
+(defun mon-line-move-n (&optional move-cnt) 
+  "Move cursor as if by `line-move' with its NOERROR arg non-nil.\n
+When optional arg MOVE-CNT non-nil move cursor n lines.\n
+Default is to move 0 lines.
+:EXAMPLE\n\n\(mon-line-move-next\)
+\(mon-line-move-next 3\)\n
+\(mon-line-move-next -3\)\n
+:NOTE Function is intended for use with `mon-keybind-*' functions which would
+otherwise duplicate anonymous forms with identical behavior.\n
+:SEE-ALSO `mon-line-move-prev', `mon-line-move-next',
+`mon-scroll-down-in-place', `mon-scroll-up-in-place'.\n►►►"
+  (interactive "P")
+  (line-move (or (and (integerp move-cnt) move-cnt) 0) t))
+
+;;; ==============================
+;;; :CHANGESET 1885
+;;; :CREATED <Timestamp: #{2010-06-16T12:09:24-04:00Z}#{10243} - by MON KEY>
+(defun mon-line-move-next (&optional move-next-cnt)
+  "Move cursor vertically forward as if by `mon-line-move-n'.\n
+When optional arg MOVE-NEXT-CNT non-nil move cursor n lines. Default is 1.\n
+:EXAMPLE\n\n(mon-line-move-next)\n\n\(mon-line-move-next 3\)\n
+:NOTE Function is intended for invocation from `mon-keybind-*' functions which would
+otherwise duplicate anonymous forms with identical behavior.\n
+:SEE-ALSO `mon-line-move-prev', `mon-scroll-down-in-place',
+`mon-scroll-up-in-place'.\n►►►"
+  (interactive "P")
+  (mon-line-move-n 
+   (or (and (integerp move-next-cnt) (abs move-next-cnt)) 1)))
+
+;;; ==============================
+;;; :CHANGESET 1885
+;;; :CREATED <Timestamp: #{2010-06-16T12:09:54-04:00Z}#{10243} - by MON KEY>
+(defun mon-line-move-prev (&optional move-prev-cnt)
+  "Move cursor vertically forward as if by `mon-line-move-n'.\n
+When optional arg MOVE-PREV-CNT non-nil move cursor n lines. Default is -1.\n
+:EXAMPLE\n\n\(mon-line-move-prev\)\n\n\(mon-line-move-prev 3)\n
+:NOTE Function is intended for invocation from `mon-keybind-*' functions which would
+otherwise duplicate anonymous forms with identical behavior.\n
+:SEE-ALSO `mon-line-move-next', `mon-scroll-down-in-place',
+`mon-scroll-up-in-place'.\n►►►"
+  (interactive "P")
+  (mon-line-move-n 
+   (or (and (integerp move-prev-cnt) (- (abs move-prev-cnt))) -1)))
 
 ;;; ==============================
 ;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of May 27, 2001
@@ -3857,31 +3914,10 @@ holding a string containing one nameform.\n
        (split-len (length the-split))
        (last-in (cond ((= split-len 1) (format "%s" (car the-split)))
                       ((> split-len 1) 
-                       (flet ((cl--subseq (seq start &optional end) ;`subseq'
-                                (if (stringp seq) (substring seq start end)
-                                    (let (len)
-                                      (and end (< end 0) (setq end (+ end (setq len (length seq)))))
-                                      (if (< start 0) (setq start (+ start (or len (setq len (length seq))))))
-                                      (cond ((listp seq)
-                                             (if (> start 0) (setq seq (nthcdr start seq)))
-                                             (if end
-                                                 (let ((res nil))
-                                                   (while (>= (setq end (1- end)) start)
-                                                     (push (pop seq) res))
-                                                   (nreverse res))
-                                                 (copy-sequence seq)))
-                                            (t
-                                             (or end (setq end (or len (length seq))))
-                                             (let ((res (make-vector (max (- end start) 0) nil))
-                                                   (i 0))
-                                               (while (< start end)
-                                                 (aset res i (aref seq start))
-                                                 (setq i (1+ i) start (1+ start)))
-                                               res)))))))
-                         (let ((rot-split 
-                                (append (cl--subseq the-split -1)
-                                        (cl--subseq the-split 0 (1- split-len)))))
-                           (format "%s %s" (car rot-split) (cdr rot-split)))))
+                       (let ((rot-split 
+                              (append (edmacro-subseq the-split -1)
+                                      (edmacro-subseq the-split 0 (1- split-len)))))
+                         (format "%s %s" (car rot-split) (cdr rot-split))))
                       ((= split-len 0) nil))))
   (if as-list (list last-in) last-in)))
 ;;
@@ -5597,6 +5633,28 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 ;;
 ;;; :TEST-ME (mon-transpose '(a (bb cc) dd)))
 ;;; :TEST-ME (mon-flatten (mon-transpose '(a (bb cc) dd)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-15T14:40:11-04:00Z}#{10242} - by MON KEY>
+(defun* mon-mismatch (sqn1 sqn2 &key (sqn1-str 0)
+                                    (sqn1-end (length sqn1))
+                                    (sqn2-str 0)
+                                    (sqn2-end (length sqn2)))
+  "Implementation of `edmacro-mismatch' function with keywords.\n
+Compare sqn1 with sqn2, return index of first mismatching element.
+Return nil if the sequences match.  If one sequence is a prefix of the
+other, the return value indicates the end of the shorted sequence.\n
+:EXAMPLE\n
+\(mon-sequence-mismatch  '\(a b c 1 8\) '\(a b c 2 9\)\)\n
+\(mon-sequence-mismatch  '\(a b c 2 8\) '\(a b c 2 8\) :sqn1-str 2  :sqn2-str 2\)\n
+\(mon-sequence-mismatch  '\(a b c 2 8\) '\(a b c a b c 2 8 a b c\) :sqn2-str 3\)\n
+:NOTE `edmacro-mismatch' was a kludge needed in order to use CL `mismatch'.\n
+Should byte withouth CL package warnings.\n
+:SEE-ALSO `mon-sublist', `mon-sublist-gutted', `mon-map-append',
+`mon-string-chop-spaces', `mon-maptree', `mon-transpose',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
+`mon-flatten', `mon-combine', `mon-recursive-apply'.\n►►►"
+  (edmacro-mismatch sqn1 sqn2 sqn1-str sqn1-end  sqn2-str sqn2-end))
 
 ;;; ==============================
 ;;; :NOTE `mon-combine' uses `flet' cl--mapcan -> `mapcan'

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 14 22:38:48 2010 (-0700)
+;; Last-Updated: Thu Jun 17 14:37:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5514
+;;     Update #: 5526
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2009,6 +2009,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/16 dadams
+;;     Added: icicle-col-wise-cand-nb.
+;;     Renamed icicle-nb-of-candidate-in-Completions to icicle-nb-of-cand-in-Completions-horiz.
+;;     Rewrote icicle-nb-of-candidate-in-Completions to handle vertical format also.
+;;     icicle-candidate-set-save-selected-1:
+;;       After setting BEG to next face chg, if BEG > END then raise error.
+;;       After setting END to previous fact chg, BEG > END then swap.
+;;       After extending, if BEG > END then swap.
 ;; 2010/06/14 dadams
 ;;     icicle-narrow-candidates: Handle Emacs 23.2+: Use completing-read with read-file-name-internal.
 ;;     icicle-search-define-replacement:

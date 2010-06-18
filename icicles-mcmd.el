@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 14 22:17:12 2010 (-0700)
+;; Last-Updated: Thu Jun 17 14:30:46 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 15829
+;;     Update #: 16023
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -224,7 +224,8 @@
 ;;    `icicle-backward-delete-char-untabify-dots',
 ;;    `icicle-candidate-action-1', `icicle-candidate-set-retrieve-1',
 ;;    `icicle-candidate-set-save-1',
-;;    `icicle-candidate-set-save-selected-1', `icicle-convert-dots',
+;;    `icicle-candidate-set-save-selected-1',
+;;    `icicle-column-wise-cand-nb', `icicle-convert-dots',
 ;;    `icicle-current-completion-in-Completions',
 ;;    `icicle-current-sort-functions', `icicle-current-sort-order',
 ;;    `icicle-delete-backward-char-dots',
@@ -240,6 +241,7 @@
 ;;    `icicle-maybe-multi-completion-completing-p',
 ;;    `icicle-mouse-candidate-action-1', `icicle-nb-Completions-cols',
 ;;    `icicle-nb-of-candidate-in-Completions',
+;;    `icicle-nb-of-cand-in-Completions-horiz',
 ;;    `icicle-prefix-complete-1', `icicle-raise-Completions-frame',
 ;;    `icicle-remove-cand-from-lists',
 ;;    `icicle-remove-candidate-display-others',
@@ -629,7 +631,22 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
   icicle-candidate-nb)
 
 (defun icicle-nb-of-candidate-in-Completions (position)
-  "Return number of completion candidate at POSITION in *Completions*.
+  "Return number of candidate at POSITION in *Completions*.
+POSITION is a buffer position."
+  (let ((hor-nb  (icicle-nb-of-cand-in-Completions-horiz position)))
+    (save-excursion
+      (with-current-buffer (get-buffer "*Completions*")
+        (goto-char position)
+        (if (eq icicle-completions-format 'horizontal)
+            hor-nb
+          (let* ((cols      (icicle-nb-Completions-cols))
+                 (nb-cands  (length icicle-completion-candidates))
+                 (rows      (/ nb-cands cols)))
+            (unless (zerop (% nb-cands cols)) (setq rows  (1+ rows)))
+            (icicle-column-wise-cand-nb hor-nb nb-cands rows cols)))))))
+
+(defun icicle-nb-of-cand-in-Completions-horiz (position)
+  "Return number of horizontal candidate at POSITION in *Completions*.
 POSITION is a buffer position."
   (let ((compl-buf  (get-buffer "*Completions*")))
     (unless compl-buf (error "No *Completions* buffer"))
@@ -660,6 +677,44 @@ POSITION is a buffer position."
                  (setq cand-nb  (- cand-nb delta)))))
         (set-buffer-modified-p nil)
         (1- cand-nb)))))
+
+(defun icicle-nb-Completions-cols ()
+  "Return the number of candidate columns in *Completions*."
+  (let* ((start       (icicle-start-of-candidates-in-Completions))
+         (eol         (save-excursion (goto-char start) (line-end-position)))
+         (mouse-chgs  0)
+         mousef)
+    (save-excursion
+      (goto-char start)
+      (while (< (point) eol)
+        (setq mousef  (next-single-property-change (point) 'mouse-face nil eol))
+        (when mousef
+          (goto-char mousef)
+          (setq mouse-chgs  (1+ mouse-chgs)))))
+    (/ (1+ mouse-chgs) 2)))             ; Return # of columns.
+
+(defun icicle-column-wise-cand-nb (hor-nb nb-cands rows cols)
+  "Column-wise number of horizontal candidate number HOR-NB."
+  (let ((row-lim  (- rows (- (* rows cols) nb-cands)))
+        (row      (/ hor-nb cols))
+        (col      (mod hor-nb cols)))
+    (setq nb  (+ row (* col rows)))
+    (when (>= row row-lim)
+      (setq cols    (1- cols)
+            hor-nb  (- hor-nb row-lim)
+            row     (/ hor-nb cols)
+            col  (mod hor-nb cols)
+            nb  (+ row (* col rows))))
+    nb))
+
+(defun icicle-row-wise-cand-nb (vert-nb nb-cands rows cols)
+  "Row-wise number of vertical candidate number VERT-NB."
+  (let* ((row  (mod vert-nb rows))
+         (col  (/ vert-nb rows))
+         (nb   (+ col (* row cols)))
+         (lim  (- rows (- (* rows cols) nb-cands))))
+    (when (> row lim) (setq nb  (- nb (- row lim))))
+    nb))
 
 
 ;; REPLACE ORIGINAL `switch-to-completions' defined in `simple.el',
@@ -3727,32 +3782,6 @@ You can use this command only from buffer *Completions* (`\\<completion-list-mod
      100 (current-buffer)))
   (unless no-minibuffer-follow-p (save-excursion (save-window-excursion (icicle-insert-completion)))))
 
-(defun icicle-nb-Completions-cols ()
-  "Return the number of candidate columns in *Completions*."
-  (let* ((start       (icicle-start-of-candidates-in-Completions))
-         (eol         (save-excursion (goto-char start) (line-end-position)))
-         (mouse-chgs  0)
-         mousef)
-    (save-excursion
-      (goto-char start)
-      (while (< (point) eol)
-        (setq mousef  (next-single-property-change (point) 'mouse-face nil eol))
-        (when mousef
-          (goto-char mousef)
-          (setq mouse-chgs  (1+ mouse-chgs)))))
-    (/ (1+ mouse-chgs) 2)))             ; Return # of columns.
-
-(defun icicle-row-wise-cand-nb (cand-nb nb-cands rows cols)
-  "Row-wise number of candidate number CAND-NB.
-Used when candidates are laid out vertically, to get the equivalent
-candidate number for a horizontal layout."
-  (let* ((row  (mod cand-nb rows))
-         (col  (/ cand-nb rows))
-         (nb   (+ col (* row cols)))
-         (lim  (- rows (- (* rows cols) nb-cands))))
-    (when (> row lim) (setq nb  (- nb (- row lim))))
-    nb))
-
 ;;;###autoload
 (defun icicle-previous-line ()          ; Bound to `up' *Completions*.
   "Move up a line, in *Completions* buffer.  Wrap around first to last.
@@ -5616,6 +5645,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive "P")
   (icicle-candidate-set-save-selected-1 arg t))
 
+;; $$$$$$$ Maybe should also allow rectangle selection.
 (defun icicle-candidate-set-save-selected-1 (arg &optional morep no-error-p)
   "Helper function for `icicle-candidate-set-save(-more)(-region)'."
   (when (or (get-buffer-window "*Completions*" 0) no-error-p)
@@ -5631,22 +5661,29 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                   (beg  (region-beginning))
                   (end  (region-end))
                   temp)
+
               ;; Extend region ends to include all of first and last selected candidates.
               (unless (get-text-property beg 'mouse-face)
                 (if (setq temp  (next-single-property-change beg 'mouse-face))
                     (setq beg  temp)
                   (setq beg  (next-single-property-change temp 'mouse-face))))
+
+              (when (> beg end)
+                (error "No candidates selected")) ; Active region but none selected.
+
               (unless (get-text-property end 'mouse-face)
                 (if (setq temp  (previous-single-property-change end 'mouse-face))
                     (setq end  temp)
                   (setq end  (previous-single-property-change temp 'mouse-face))))
-              (when (> beg end) (error "No candidates selected")) ; Active region but none selected.
+              (when (> beg end) (setq beg  (prog1 end (setq end  beg)))) ; Swap them.
               (while (and (>= beg bob) (get-text-property beg 'mouse-face)) (setq beg  (1- beg)))
               (while (and (<= end eob) (get-text-property end 'mouse-face)) (setq end  (1+ end)))
               (setq beg          (1+ beg)
                     end          (1- end)
                     beg-cand-nb  (icicle-nb-of-candidate-in-Completions beg)
                     end-cand-nb  (icicle-nb-of-candidate-in-Completions end))
+              (when (> beg-cand-nb end-cand-nb) ; Swap them
+                (setq beg-cand-nb  (prog1 end-cand-nb (setq end-cand-nb  beg-cand-nb))))
               (while (<= beg-cand-nb end-cand-nb)
                 (push (elt icicle-completion-candidates beg-cand-nb) candidates)
                 (setq beg-cand-nb  (1+ beg-cand-nb)))))))

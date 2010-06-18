@@ -105,5 +105,6 @@ If you want to change spaces into TABs or the other way around, use
 `M-x tabify' or `M-x untabify'.  See also NoTabs.
 
 ----
-CategoryDotEmacs,
+CategoryDotEmacs
 CategoryFaces
+CategoryDisplay

@@ -62,6 +62,22 @@ Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] 
 
 There are many options for building emacs (such as whether to build the X11 version), which are discussed in the INSTALL file. There is also a script (emacs/mac/make-package) to create a Mac OS X package for use by the installer.
 
+==== Aquamacs ====
+
+AquamacsEmacs can be built via build script or manually (step by step).  The source is available from a Git repository.  Then, do:
+
+<pre>
+  ./configure
+  make
+  make install
+</pre>
+
+When the build is complete, find Aquamacs.app in ./nextstep/.
+
+Note: changes to any source files in src/ require a simple "make".  The binary will directly be installed into nextstep/Aquamacs.app.  Changes to source files in lisp/ require a "make install".  Changes to any lisp files directly in the .app bundle may or may not take effect (upon restarting Aquamacs): for many such files (list lisp/site-load.el), you must call "make".
+
+Detailed build instructions are available on BuildingAquamacs.
+
 ==== Cocoa Emacs ====
 
 Emacs 23.2 ships with Cocoa support.  You can build it by running something like the following:
