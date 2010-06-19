@@ -20,5 +20,7 @@ Does anyone know how to modify smex so that typing a space will insert a hyphen 
 : I disagree that not typing anything is better than typing a space. Commands often have a word-like structure, and the separation is important. So I'm adding my voice the the request for a way to restore the old functionality and have the space key insert a hyphen.
 [new]
 : This issue is not specific to Smex and a fix would benefit all Ido users. It will be addressed by the next Smex release.
-
+[new:IstaZahn:2010-06-19 03:14 UTC]
+: I did not mean to imply that the issue is specific to smex. Indeed, the same issue occurs when following the instructions to add [http://www.emacswiki.org/emacs/InteractivelyDoThings#toc5/ M-x support to ido]. Thanks for taking this on, it will really make it easier for me to use smex!
+[new]
 /Wicked cool./ Is it inspired by this [http://www.vimeo.com/1013263 video]? :)

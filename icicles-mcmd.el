@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 17 14:30:46 2010 (-0700)
+;; Last-Updated: Fri Jun 18 11:21:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16023
+;;     Update #: 16043
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -616,8 +616,7 @@ Return the number of the candidate: 0 for first, 1 for second, ..."
     ;; $$$$$ (if (eq orig-buffer (get-buffer "*Completions*"))
     ;;    (icicle-remove-Completions-window)
     ;;    (save-selected-window (icicle-remove-Completions-window)))
-    (setq icicle-candidate-nb  (icicle-nb-of-candidate-in-Completions (posn-point
-                                                                       (event-start event))))
+    (setq icicle-candidate-nb  (icicle-nb-of-candidate-in-Completions (posn-point (event-start event))))
     (when (and (icicle-file-name-input-p) insert-default-directory
                (or (not (member choice icicle-extra-candidates))
                    icicle-extra-candidates-dir-insert-p))
@@ -637,7 +636,7 @@ POSITION is a buffer position."
     (save-excursion
       (with-current-buffer (get-buffer "*Completions*")
         (goto-char position)
-        (if (eq icicle-completions-format 'horizontal)
+        (if (eq icicle-completions-format-internal 'horizontal)
             hor-nb
           (let* ((cols      (icicle-nb-Completions-cols))
                  (nb-cands  (length icicle-completion-candidates))
@@ -660,9 +659,9 @@ POSITION is a buffer position."
                                                       (icicle-start-of-candidates-in-Completions)))))
       (setq position  (point))
       ;; Binary search.
-      (let ((cand-nb  (/ (length icicle-completion-candidates) 2))
-            (last-nb  0)
-            (icicle-completions-format  nil)
+      (let ((cand-nb                             (/ (length icicle-completion-candidates) 2))
+            (last-nb                             0)
+            (icicle-completions-format-internal  nil)
             delta)
         (goto-char (point-min))
         (icicle-move-to-next-completion cand-nb t)
@@ -693,18 +692,18 @@ POSITION is a buffer position."
           (setq mouse-chgs  (1+ mouse-chgs)))))
     (/ (1+ mouse-chgs) 2)))             ; Return # of columns.
 
-(defun icicle-column-wise-cand-nb (hor-nb nb-cands rows cols)
-  "Column-wise number of horizontal candidate number HOR-NB."
+(defun icicle-column-wise-cand-nb (horiz-nb nb-cands rows cols)
+  "Column-wise number of horizontal candidate number HORIZ-NB."
   (let ((row-lim  (- rows (- (* rows cols) nb-cands)))
-        (row      (/ hor-nb cols))
-        (col      (mod hor-nb cols)))
+        (row      (/ horiz-nb cols))
+        (col      (mod horiz-nb cols)))
     (setq nb  (+ row (* col rows)))
     (when (>= row row-lim)
-      (setq cols    (1- cols)
-            hor-nb  (- hor-nb row-lim)
-            row     (/ hor-nb cols)
-            col  (mod hor-nb cols)
-            nb  (+ row (* col rows))))
+      (setq cols      (1- cols)
+            horiz-nb  (- horiz-nb row-lim)
+            row       (/ horiz-nb cols)
+            col       (mod horiz-nb cols)
+            nb        (+ row (* col rows))))
     nb))
 
 (defun icicle-row-wise-cand-nb (vert-nb nb-cands rows cols)
@@ -3743,7 +3742,7 @@ You can use this command only from buffer *Completions* (`\\<completion-list-mod
   (interactive "p")
   (when (interactive-p) (icicle-barf-if-outside-Completions))
   (setq n  (or n 0))
-  (when (eq icicle-completions-format 'vertical)
+  (when (eq icicle-completions-format-internal 'vertical)
     (let* ((cols      (icicle-nb-Completions-cols))
            (nb-cands  (length icicle-completion-candidates))
            (rows      (/ nb-cands cols)))
@@ -4805,8 +4804,7 @@ which can position mouse pointer on a standalone minibuffer frame."
           (setq beg       (previous-single-property-change beg 'mouse-face)
                 end       (or (next-single-property-change end 'mouse-face)(point-max))
                 candidate (buffer-substring-no-properties beg end)))))
-    (setq icicle-candidate-nb  (icicle-nb-of-candidate-in-Completions
-                                (posn-point (event-start event)))
+    (setq icicle-candidate-nb  (icicle-nb-of-candidate-in-Completions (posn-point (event-start event)))
           icicle-last-completion-candidate candidate
           menu-choice
           (x-popup-menu
@@ -6049,22 +6047,23 @@ Non-interactively, arg HIST-VAR is the (string) name of a history var."
 (defun icicle-scroll-Completions (&optional reverse) ; Mouse `wheel-down' in *Completions*
   "Scroll the *Completions* window down."
   (interactive "P")
-  (save-selected-window
-    (select-window (get-buffer-window "*Completions*" 0))
-    (when (if (interactive-p) reverse current-prefix-arg) ; Non-interactive use is for `TAB', `S-TAB'.
-      (setq icicle-scroll-Completions-backward-p  (not icicle-scroll-Completions-backward-p)))
-    (cond (icicle-scroll-Completions-backward-p
-           (if (not (= (window-start) (point-min)))
-               (scroll-down nil)
-             (unless (= (window-end) (point-max))
-               (goto-char (point-max))
-               (scroll-down (1- (/ (window-height) 2)))
-               (beginning-of-line))))
-          (t
-           (if (not (= (window-end) (point-max)))
-               (scroll-up nil)
-             (unless (= (window-start) (point-min))
-               (goto-char (icicle-start-of-candidates-in-Completions))))))))
+  (when (get-buffer-window "*Completions*" 0)
+    (save-selected-window
+      (select-window (get-buffer-window "*Completions*" 0))
+      (when (if (interactive-p) reverse current-prefix-arg) ; Non-interactive use is for `TAB', `S-TAB'.
+        (setq icicle-scroll-Completions-backward-p  (not icicle-scroll-Completions-backward-p)))
+      (cond (icicle-scroll-Completions-backward-p
+             (if (not (= (window-start) (point-min)))
+                 (scroll-down nil)
+               (unless (= (window-end) (point-max))
+                 (goto-char (point-max))
+                 (scroll-down (1- (/ (window-height) 2)))
+                 (beginning-of-line))))
+            (t
+             (if (not (= (window-end) (point-max)))
+                 (scroll-up nil)
+               (unless (= (window-start) (point-min))
+                 (goto-char (icicle-start-of-candidates-in-Completions)))))))))
 
 ;;;###autoload
 (defun icicle-scroll-Completions-up ()  ; Mouse `wheel-up' in *Completions*

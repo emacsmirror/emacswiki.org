@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Jun 13 17:23:31 2010 (-0700)
+;; Last-Updated: Fri Jun 18 13:41:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25331
+;;     Update #: 25338
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2801,6 +2801,11 @@
 ;;    buffer `*Completions*' correctly reflect the candidate order
 ;;    (e.g. as currently sorted).  This also means that candidate
 ;;    cycling acts properly for a vertical layout.
+;;
+;;    Note: For visual clarity, a `vertical' value is overridden
+;;    (ignored) when multi-line multi-completions are used - the
+;;    layout is horizontal.  See (@* "Customization and General Tips")
+;;    for more information.
 ;;
 ;;  * In some cases, Icicles adds one or more additional, proxy
 ;;    completion candidates.  These are placeholders for real

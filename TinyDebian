@@ -8,6 +8,7 @@ one for Gnus Summary buffer and one for standard mail modes (message-mode, mail-
 each interface, complete bug management and manipulation can be done with few keystrokes and
 menu commmands. Late in 2008, Emacs development team decided to evaluate and install Debian BTS (debbugs)
 [http://emacsbugs.donarmstrong.com/ Emacs BTS], so the inetrface was extended to support multiple BTSs.
+In 2010 [http://debbugs.gnu.org debbugs GNU project] interface support was added.
 
 ''Picture below: An example from Emacs '''Gnus''' Summary buffer''
 
@@ -17,10 +18,11 @@ The supported bug tracking systems include:
 
 * Debian BTS (full support)
 * Emacs BTS (full support)
+* GNU debbugs BTS (full support)
 * Savannah trackers (only: jump to tracker; "Goto URL by bug number")
 * Savannah trackers (only: jump to tracker; "Goto URL by bug number")
 * Sourceforge bugs (only: jump to tracker; "Goto URL by bug number")
-* Gnome bugs (only: jump to tracker; "Goto URL by bug number")
+* Gnome. KDE, MySQL, Freshmeat, Sourceforge, Perl CPAN, Mercurial bugs (only: jump to tracker; "Goto URL by bug number")
 * Sourceware aka RedHat where various GNU projects like GDB are hosted (only: jump to tracker; "Goto URL by bug number")
 
 The interface is integrated to Gnus:
@@ -39,7 +41,7 @@ Alternatively, start composing mail with `C-x m' and see menu "Tbts".
 
 == Planned features ==
 
-* Ubuntu launchpad.net bug tracking management
+* More comprehensive Ubuntu launchpad.net bug tracking management.
 
 = Configuration =
 

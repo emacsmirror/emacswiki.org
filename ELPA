@@ -4,5 +4,7 @@ http://tromey.com/elpa/
 
 "Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
 
+As of 18-Jun-2010, ##package.el## (from ELPA) has been merged with Emacs and an ELPA repository set up at http://elpa.gnu.org/
+
 --
 CategoryCode

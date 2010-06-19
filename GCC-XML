@@ -1,0 +1,7 @@
+"The purpose of the GCC-XML extension is to generate an XML description of a C++ program from GCC's internal representation. Since XML is easy to parse, other development tools will be able to work with C++ programs without the burden of a complicated C++ parser."
+
+http://www.gccxml.org/HTML/Index.html
+
+
+----
+CategoryProgrammerUtils

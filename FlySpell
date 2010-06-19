@@ -58,7 +58,7 @@ As I often need to switch between English and German I use this function:
       (global-set-key (kbd "<f8>")   'fd-switch-dictionary)
     
 
-- [[diesch]] -
+-- FlorianDiesch
 
 [new]
 Flyspell comes with a mode to check comments and strings in programming modes. Just type M-x flyspell-prog-mode or add it to your mode hooks

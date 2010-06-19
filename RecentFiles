@@ -430,5 +430,8 @@ The Opera web browser has a surprisingly useful feature called the "trash can". 
        (car recently-killed-list)))))
 </pre>
 
+
+See Also: GnomeIntegration for opening files in GNOME's recent-files list.
+
 ----
 CategoryCommands CategoryDotEmacs CategoryPersistence CategoryCompletion

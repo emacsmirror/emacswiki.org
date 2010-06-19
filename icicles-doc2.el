@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 11:24:13 2010 (-0700)
+;; Last-Updated: Fri Jun 18 13:44:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27019
+;;     Update #: 27040
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -939,8 +939,8 @@
 ;;    search commands `icicle-comint-search',
 ;;    `icicle-compilation-search', `icicle-imenu',
 ;;    `icicle-imenu-command', `icicle-imenu-non-interactive-function',
-;;    `icicle-search-keywords', `icicle-search-char-property',
-;;    `icicle-search-keywords', `icicle-search-overlay-property', and
+;;    `icicle-search-char-property', `icicle-search-keywords',
+;;    `icicle-search-overlay-property', and
 ;;    `icicle-search-text-property'.
 ;;
 ;;  * (@> "Search and Replace") for information about replacing search
@@ -1474,7 +1474,7 @@
 ;;  bookmark) can save not only a single position but a region, that
 ;;  is, two positions.  You can think of this as bookmarking, or
 ;;  saving, regions.  When you jump to a region bookmark, the region
-;;  is activated (if option `bookmarkp-use-region-flag' is non-nil).
+;;  is activated (if option `bmkp-use-region-flag' is non-nil).
 ;;
 ;;  These are the main Icicles bookmarking features:
 ;;
@@ -1495,8 +1495,8 @@
 ;;
 ;;  Saving the region just means bookmarking it.  As for any bookmark,
 ;;  it must have a name.  When you later jump to a region bookmark,
-;;  the region is activated (provided option
-;;  `bookmarkp-use-region-flag' is non-nil).
+;;  the region is activated (provided option `bmkp-use-region-flag' is
+;;  non-nil).
 ;;
 ;;  Icicles gives you quick ways to save a region and select
 ;;  (activate) a saved region.  You can do both using `C-x C-x'.
@@ -4611,6 +4611,17 @@
 ;;    option `completions-format' for this, if you want the same type
 ;;    of layout with Icicle mode turned on or off.
 ;;
+;;    Multi-completions often involve complex, multi-line text for
+;;    which a vertical `*Completions*' layout is not appropriate.  For
+;;    this reason, when multi-line multi-completions are used the
+;;    layout is horizontal, temporarily overriding any `vertical'
+;;    value for `icicle-completions-format' or `completions-format'.
+;;
+;;    If you need to override this override behavior for some command,
+;;    use `icicle-minibuffer-setup-hook' and `minibuffer-exit-hook' to
+;;    temporarily set and reset the internal variable
+;;    `icicle-completions-format-internal'.
+;;
 ;;  * Face `icicle-historical-candidate' is used to highlight
 ;;    completion candidates that you have used (entered with `RET')
 ;;    previously.  This highlighting is controlled by user option
@@ -5692,7 +5703,7 @@
 ;;  standard Emacs commands but also some commands provided by other
 ;;  libraries.  For example, if you use library `bookmark+.el', then
 ;;  type-specific bookmark jump commands such as
-;;  `bookmarkp-dired-jump-other-window' are remapped to Icicles
+;;  `bmkp-dired-jump-other-window' are remapped to Icicles
 ;;  multi-command versions.
 ;;
 ;;  Here are some other Icicles commands that you might want to bind

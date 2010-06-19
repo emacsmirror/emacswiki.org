@@ -2301,5 +2301,66 @@ Opening javadocs.
 
 -- TakeshiBanse
 
+==Wmctrl==
+
+<pre>
+;;; quickly-hacked window manipulation, loosely inspired by Quicksilver activate
+
+(defvar anything-c-wmctrl-cmd "wmctrl")
+
+(defvar anything-c-wmctrl-list-opt " -l ") ; space-padded
+(defvar anything-c-wmctrl-raise-opt " -i -a ") ; space-padded
+(defvar anything-c-wmctrl-close-opt " -i -c ") ; space-padded
+(defvar anything-c-wmctrl-maximize-opt 
+  " -b toggle,maximized_vert,maximized_horz -i -r ") ; space-padded
+
+(defvar anything-c-splitter-regexp
+  "\\([[:graph:]]+\\)[[:blank:]]+\\([[:graph:]]+\\)[[:blank:]]+\\([[:graph:]]+\\)[[:blank:]]+\\(.+\\)")
+
+(defun anything-c-wmctrl-get-windows nil
+  (split-string (shell-command-to-string 
+		 (concat anything-c-wmctrl-cmd 
+			 anything-c-wmctrl-list-opt))
+		"[\n]" t))
+
+(defun anything-c-wmctrl-wmctrl-to-id (line)
+  (string-match anything-c-splitter-regexp line)  
+  (match-string 1 line))
+
+(defun anything-c-wmctrl-wmctrl-to-display (line)
+  (string-match anything-c-splitter-regexp x)  
+  (match-string 4 line))
+
+(defun anything-c-wmctrl-raise (line)
+  (shell-command-to-string (concat anything-c-wmctrl-cmd 
+				   anything-c-wmctrl-raise-opt
+				   (anything-c-wmctrl-wmctrl-to-id line))))
+
+(defun anything-c-wmctrl-close (line)
+  (shell-command-to-string (concat anything-c-wmctrl-cmd 
+				   anything-c-wmctrl-close-opt
+				   (anything-c-wmctrl-wmctrl-to-id line))))
+
+(defun anything-c-wmctrl-maximize (line)
+  (shell-command-to-string (concat anything-c-wmctrl-cmd 
+				   anything-c-wmctrl-maximize-opt
+				   (anything-c-wmctrl-wmctrl-to-id line))))
+
+(defvar anything-c-source-wmctrl
+  '((name . "window manager")
+    (candidates . (lambda ()
+		    (mapcar (function 
+			     (lambda (x)
+			       `(,(anything-c-wmctrl-wmctrl-to-display x)
+				 . ,x)))
+			    (anything-c-wmctrl-get-windows))))
+    
+    (action . (("Raise" . anything-c-wmctrl-raise)
+	       ("Close" . anything-c-wmctrl-close)
+	       ("MaximizeToggle" . anything-c-wmctrl-maximize)
+	       )))
+"Source for retrieving files matching the current input pattern with raise.")
+;; (anything 'anything-c-source-wmctrl)
+</pre>
 ----
 [[Anything]]

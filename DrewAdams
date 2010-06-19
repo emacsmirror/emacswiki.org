@@ -282,7 +282,7 @@ Hi Rubikitch. I have used it. I don't recall why I don't use it more now. Why do
 I think `reporter-submit-bug-report' is useful especially variable dump. I want to know the drawback of it because you do not use it. I'll try to use it. Thanks. -- [[rubikitch]]
 
 [new:DrewAdams:2010-05-03 04:21 UTC]
-It doesn't mean anything special that I don't use it. ;-) I agree that it can be useful to dump a select set of relevant variables (as opposed to a humongous list, for instance) into a bug-report mail skeleton. I've just never bothered. The only info I gather automatically is ##(emacs-version)## -- e.g. command `bookmarkp-send-bug-report'.
+It doesn't mean anything special that I don't use it. ;-) I agree that it can be useful to dump a select set of relevant variables (as opposed to a humongous list, for instance) into a bug-report mail skeleton. I've just never bothered. The only info I gather automatically is ##(emacs-version)## -- e.g. command `bmkp-send-bug-report'.
 
 Typically, I'm interested in other things the user can describe about the problem, and I'll just ask about any vars I think might be pertinent if they aren't spontaneously reported. But that's not a reason not to use `reporter'.  Regards -- DrewAdams
 

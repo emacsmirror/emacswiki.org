@@ -120,6 +120,8 @@ Related tools and information:
 * CodeBeautifying -- Reindent code and rewrap comments.
 * ConnectedGraphEditor (COGRE) -- Edit and manipulate connected graphs.
 * EmacsPmd - Analyze Java source code.
+* [[GCCSense]] -- Development tool for C/C++ using GCC's code analyzers.
+* [[GCC-XML]] -- XML result of C/C++ source parsing by GCC.
 * GprofMode - Add hyperlinks to output files of the GNU profiler.
 * PopupRuler -- Measure strings report layouts etc. in source files.
 * RemoteProgramDevelopment -- Edit and run code on a remote host.

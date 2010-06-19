@@ -85,7 +85,7 @@ If you open a new timeline, a new buffer is generated.
 ** `C-c C-u' Open your user-timeline. (`twittering-user-timeline')
 ** `C-c C-r' Open your reply-timeline, which consists of replies to your tweets. (`twittering-replies-timeline')
 ** `C-c C-d' Open direct messages timeline, which consists of direct messages to you. (`twittering-direct-messages-timeline')
-; `L': Open a list. (`twittering-other-user-list-interactive')
+; `L': Open a timeline of a certain list. (`twittering-other-user-list-interactive')
 ; `C-c C-q': Search. (`twittering-search')
 ; `f': Switch to the next timeline buffer. (`twittering-switch-to-next-timeline')
 ; `b': Switch to the previous timeline buffer. (`twittering-switch-to-previous-timeline')
@@ -133,10 +133,15 @@ You can use `twittering-mode-hook' to customize your configuration. This example
 
  (add-hook 'twittering-mode-hook
            (lambda ()
-             (define-key twittering-mode-map (kbd "f") 'twittering-friends-timeline)
-             (define-key twittering-mode-map (kbd "r") 'twittering-replies-timeline)
-             (define-key twittering-mode-map (kbd "u") 'twittering-user-timeline)
-             (define-key twittering-mode-map (kbd "w") 'twittering-update-status-interactive)))
+             (mapc (lambda (pair)
+                     (let ((key (car pair))
+                           (func (cdr pair)))
+                       (define-key twittering-mode-map
+                         (read-kbd-macro key) func)))
+                   '(("F" . twittering-friends-timeline)
+                     ("R" . twittering-replies-timeline)
+                     ("U" . twittering-user-timeline)
+                     ("W" . twittering-update-status-interactive)))))
 
 == Other useful options ==
 

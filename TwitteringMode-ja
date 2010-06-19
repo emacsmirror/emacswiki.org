@@ -134,10 +134,15 @@ You can use `twittering-mode-hook' to customize your configuration. This example
 
  (add-hook 'twittering-mode-hook
            (lambda ()
-             (define-key twittering-mode-map (kbd "f") 'twittering-friends-timeline)
-             (define-key twittering-mode-map (kbd "r") 'twittering-replies-timeline)
-             (define-key twittering-mode-map (kbd "u") 'twittering-user-timeline)
-             (define-key twittering-mode-map (kbd "w") 'twittering-update-status-interactive)))
+             (mapc (lambda (pair)
+                     (let ((key (car pair))
+                           (func (cdr pair)))
+                       (define-key twittering-mode-map
+                         (read-kbd-macro key) func)))
+                   '(("F" . twittering-friends-timeline)
+                     ("R" . twittering-replies-timeline)
+                     ("U" . twittering-user-timeline)
+                     ("W" . twittering-update-status-interactive)))))
 
 == その他便利なオプション ==
 

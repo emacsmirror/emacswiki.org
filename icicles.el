@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 16 23:18:35 2010 (-0700)
+;; Last-Updated: Fri Jun 18 09:56:40 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22763
+;;     Update #: 22764
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -997,7 +997,9 @@
 ;;    `icicle-completing-read+insert-candidates',
 ;;    `icicle-completion-candidates',
 ;;    `icicle-completion-prompt-overlay',
-;;    `icicle-completion-set-history', `icicle-confirm-exit-commands',
+;;    `icicle-completion-set-history',
+;;    `icicle-completions-format-internal',
+;;    `icicle-confirm-exit-commands',
 ;;    `icicle-crm-local-completion-map',
 ;;    `icicle-crm-local-must-match-map',
 ;;    `icicle-current-completion-candidate-overlay',

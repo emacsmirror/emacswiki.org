@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 11 17:47:31 2010 (-0700)
+;; Last-Updated: Fri Jun 18 07:44:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12626
+;;     Update #: 12717
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -39,7 +39,40 @@
 ;;       `M-x customize-group bookmark-plus', then click link
 ;;       `Commentary'.
 ;;
+;;    (The commentary links in #1 and #3 work only if you this
+;;    library, `bookmark+-doc.el', in your `load-path'.)
+;;
 ;;    More description below.
+;;
+;;
+;;    ****** NOTE ******
+;;
+;;      On 2010-06-18, I changed the prefix used by package Bookmark+
+;;      from `bookmarkp-' to `bmkp-'.  THIS IS AN INCOMPATIBLE CHANGE.
+;;      I apologize for the inconvenience, but the new prefix is
+;;      preferable for a number of reasons, including easier
+;;      distinction from standard `bookmark.el' names.
+;;
+;;      This change means that YOU MUST MANUALLY REPLACE ALL
+;;      OCCURRENCES of `bookmarkp-' by `bmkp-' in the following
+;;      places, if you used Bookmark+ prior to this change:
+;;
+;;      1. In your init file (`~/.emacs') or your `custom-file', if
+;;         you have one.  This is needed if you customized any
+;;         Bookmark+ features.
+;;
+;;      2. In your default bookmark file, `bookmark-default-file'
+;;         (`.emacs.bmk'), and in any other bookmark files you might
+;;         have.
+;;
+;;      3. In your `*Bookmark List*' state file,
+;;         `bmkp-bmenu-state-file' (`~/.emacs-bmk-bmenu-state.el').
+;;
+;;      4. In your `*Bookmark List*' commands file,
+;;         `bmkp-bmenu-commands-file' (`~/.emacs-bmk-bmenu-commands.el'),
+;;         if you have one.
+;;
+;;      Again, sorry for this inconvenience.
  
 ;;(@> "Index")
 ;;
@@ -95,10 +128,10 @@
 ;;  I recommend that you byte-compile the library.  To do that, you
 ;;  must have the `bookmark+.el' in your `load-path'.
 ;;
-;;  By default (see option `bookmarkp-crosshairs-flag'), when you
-;;  visit a bookmark that has no region it is highlighted temporarily
-;;  using crosshairs, for easy recognition.  For this optional feature
-;;  you also need my library `crosshairs.el', which in turn requires
+;;  By default (see option `bmkp-crosshairs-flag'), when you visit a
+;;  bookmark that has no region it is highlighted temporarily using
+;;  crosshairs, for easy recognition.  For this optional feature you
+;;  also need my library `crosshairs.el', which in turn requires
 ;;  libraries `col-highlight', `hl-line', `hl-line+', and `vline'.
 ;;  Library `hl-line' comes with vanilla Emacs.  The others are
 ;;  available from the Emacs Wiki web site: http://www.emacswiki.org/.
@@ -134,7 +167,7 @@
 ;;
 ;;     - You can bookmark a region of text, not just a position.  When
 ;;       you jump to a bookmark that records a region, the region is
-;;       activated (see option `bookmarkp-use-region-flag').  (Region
+;;       activated (see option `bmkp-use-region-flag').  (Region
 ;;       activation is not supported for Gnus bookmarks.)
 ;;
 ;;     - Bookmarks are relocated better than for vanilla Emacs when
@@ -149,12 +182,12 @@
 ;;     - You can bookmark a buffer that is not associated with a file.
 ;;
 ;;     - You can bookmark the current desktop, as defined by library
-;;       `desktop.el' - use command `bookmarkp-set-desktop-bookmark'
-;;       (`C-x p K').  You can "jump" to (that is, restore) a saved
-;;       desktop.  A desktop includes:
+;;       `desktop.el' - use command `bmkp-set-desktop-bookmark' (`C-x
+;;       p K').  You can "jump" to (that is, restore) a saved desktop.
+;;       A desktop includes:
 ;;
 ;;         - Some global variables.  To exclude variables normally
-;;           saved, see option `bookmarkp-desktop-no-save-vars'.
+;;           saved, see option `bmkp-desktop-no-save-vars'.
 ;; 	   - The current set of buffers and their associated files.
 ;;           For each: its mode, point, mark, & some local variables.
 ;;
@@ -186,8 +219,8 @@
 ;;     - When you jump to a bookmark that has no region, the
 ;;       destination (position) is highlighted temporarily using
 ;;       crosshairs, to make it stand out.  Option
-;;       `bookmarkp-crosshairs-flag' controls this, and this feature
-;;       is available only if you also use library `crosshairs.el'.
+;;       `bmkp-crosshairs-flag' controls this, and this feature is
+;;       available only if you also use library `crosshairs.el'.
 ;;
 ;;  * Improvements for the bookmark list (buffer `*Bookmark List*',
 ;;    aka "menu list") that is displayed using `C-x r l'.
@@ -269,9 +302,9 @@
 ;;     - Information about individual bookmarks.
 ;;
 ;;       . Anywhere in Emacs, `C-x p ?'  (command
-;;         `bookmarkp-describe-bookmark') describes any bookmark.
-;;         With a prefix argument, it shows you the full information
-;;         that defines it (internal form).
+;;         `bmkp-describe-bookmark') describes any bookmark.  With a
+;;         prefix argument, it shows you the full information that
+;;         defines it (internal form).
 ;;
 ;;       . In the bookmark list, `C-h RET' (or `C-h C-RET') describes
 ;;         the bookmark under the cursor.  Again, a prefix arg means
@@ -279,8 +312,8 @@
 ;;
 ;;     - General Bookmark+ documentation.
 ;;
-;;       . Anywhere in Emacs, `M-x bookmarkp-bmenu-mode-status-help'
-;;         shows detailed information about the current state of the
+;;       . Anywhere in Emacs, `M-x bmkp-bmenu-mode-status-help' shows
+;;         detailed information about the current state of the
 ;;         bookmark list.  Click button `Doc in Commentary' or button
 ;;         `Doc on the Web' to access the complete documentation.
 ;;
@@ -288,9 +321,9 @@
 ;;         faces and options.)
 ;;
 ;;       . In the bookmark list, `?' and `C-h m' are the same as `M-x
-;;         bookmarkp-bmenu-mode-status-help'.  (`C-h m' in the
-;;         bookmark list does not show you info about minor modes.  If
-;;         you want that, use `M-x describe-mode'.)
+;;         bmkp-bmenu-mode-status-help'.  (`C-h m' in the bookmark
+;;         list does not show you info about minor modes.  If you want
+;;         that, use `M-x describe-mode'.)
 ;;
 ;;       . In the `bookmark-plus' group customization buffer (`M-x
 ;;         customize-group bookmark-plus'), click button `Commentary'.
@@ -321,21 +354,21 @@
 ;;  is specific to bookmarks of that type: only those bookmarks are
 ;;  completion candidates.
 ;;
-;;  There are thus type-specific commands: `bookmarkp-dired-jump',
-;;  `bookmarkp-info-jump', and so on, bound to `C-x j d', `C-x j i',
-;;  and so on.  There are also commands to jump to bookmarks for the
-;;  current buffer or for particular buffers or files
+;;  There are thus type-specific commands: `bmkp-dired-jump',
+;;  `bmkp-info-jump', and so on, bound to `C-x j d', `C-x j i', and so
+;;  on.  There are also commands to jump to bookmarks for the current
+;;  buffer or for particular buffers or files
 ;;  (see (@> "Bookmarks for Specific Files or Buffers")).
 ;;
 ;;  All bookmark jump commands are bound to keys that have the prefix
 ;;  `C-x j'.  There is an other-window version of most jump commands,
 ;;  and it is bound to the same key as the same-window command, except
 ;;  the prefix is `C-x 4 j', not `C-x j'.  For instance,
-;;  `bookmarkp-dired-jump-other-window' is bound to `C-x 4 j d'.
+;;  `bmkp-dired-jump-other-window' is bound to `C-x 4 j d'.
 ;;
 ;;  If you don't want to remember the different type-specfic bindings,
-;;  you can use commands `bookmarkp-jump-to-type' and
-;;  `bookmarkp-jump-to-type-other-window' (`C-x j :' and `C-x 4 j :').
+;;  you can use commands `bmkp-jump-to-type' and
+;;  `bmkp-jump-to-type-other-window' (`C-x j :' and `C-x 4 j :').
 ;;  They work for any type, prompting you first for the type, then for
 ;;  a bookmark of that type (only).
 ;;
@@ -352,14 +385,14 @@
 ;;  The `C-x j' and `C-x 4 j' bindings are global.  In addition, in
 ;;  some modes `j' is bound to the corresponding type-specific jump
 ;;  command.  For example, in Info mode, `j' is bound to
-;;  `bookmarkp-info-jump'.  (Dired is an exception here: `J' is used
+;;  `bmkp-info-jump'.  (Dired is an exception here: `J' is used
 ;;  instead of `j', since `j' is already taken for `dired-goto-file'.)
 ;;  These commands are also added to the mode's menu-bar menu.
 ;;
 ;;  In Dired mode, `C-j' is bound to a special Dired-specific jump
-;;  command, `bookmarkp-dired-jump-current', whose destinations all
-;;  use the current Dired directory.  The aim of `C-j' is not to
-;;  change directories but to change to a different set of markings,
+;;  command, `bmkp-dired-jump-current', whose destinations all use the
+;;  current Dired directory.  The aim of `C-j' is not to change
+;;  directories but to change to a different set of markings,
 ;;  switches, inserted subdirectories, or hidden subdirectories for
 ;;  the same Dired directory.
 ;;
@@ -375,8 +408,8 @@
 ;;
 ;;  One way to define such a command is to first mark the bookmarks
 ;;  that you want to be the completion candidates, then use `M-c'
-;;  (command `bookmarkp-bmenu-define-jump-marked-command') in the
-;;  bookmark list.
+;;  (command `bmkp-bmenu-define-jump-marked-command') in the bookmark
+;;  list.
 ;;
 ;;  The `*Bookmark List*' display defines a set of bookmarks, even
 ;;  without markings.  So does each bookmark of type bookmark list,
@@ -392,10 +425,9 @@
 ;;  To capture in the navigation list the bookmarks corresponding to
 ;;  either the current `*Bookmark List*' display or a bookmark-list
 ;;  bookmark, use `C-x p B', which is bound to command
-;;  `bookmarkp-choose-navlist-from-bookmark-list'.  To then jump to a
+;;  `bmkp-choose-navlist-from-bookmark-list'.  To then jump to a
 ;;  bookmark from such a navigation list, use `C-x j N' or `C-x 4 j N'
-;;  (`bookmarkp-jump-in-navlist' or
-;;  `bookmarkp-jump-in-navlist-other-window').
+;;  (`bmkp-jump-in-navlist' or `bmkp-jump-in-navlist-other-window').
 ;;
 ;;
 ;;(@* "Bookmark Tags")
@@ -447,9 +479,9 @@
 ;;  like an object attribute or property: it can be a name/value pair.
 ;;
 ;;  To add a value to a tag that has none, or to change the current
-;;  value of a tag, you use command `bookmarkp-set-tag-value', bound
-;;  to `T v' in the bookmark list.  You are prompted for the bookmark,
-;;  the tag, and the new value.
+;;  value of a tag, you use command `bmkp-set-tag-value', bound to `T
+;;  v' in the bookmark list.  You are prompted for the bookmark, the
+;;  tag, and the new value.
 ;;
 ;;  A tag value can be a number, symbol, string, list, vector, and so
 ;;  on.  It can be as complex as you like.  It can be any Emacs-Lisp
@@ -468,15 +500,14 @@
 ;;  with little effort.  You can, for example, define a predicate that
 ;;  tests whether a bookmark has a tag value that satisfies some
 ;;  property (e.g. is a number greater than 3.14159265358979), and
-;;  then you can use command
-;;  `bookmarkp-bmenu-mark-bookmarks-satisfying' to mark those
-;;  bookmarks.
+;;  then you can use command `bmkp-bmenu-mark-bookmarks-satisfying' to
+;;  mark those bookmarks.
 ;;
-;;  Tags that have the prefix "bookmarkp-" are reserved - do not name
-;;  your own tags using this prefix.
+;;  Tags that have the prefix "bmkp-" are reserved - do not name your
+;;  own tags using this prefix.
 ;;
-;;  Currently, "bookmarkp-jump" is the only predefined bookmark tag.
-;;  You can give this tag a value that is a function - it is called
+;;  Currently, "bmkp-jump" is the only predefined bookmark tag.  You
+;;  can give this tag a value that is a function - it is called
 ;;  whenever the tagged bookmark is visited.  Any Lisp-readable
 ;;  function value is allowed: a symbol or a lambda expression.
 ;;
@@ -485,11 +516,11 @@
 ;;
 ;;    T v bookmark-jump RET (lambda () (message "Hello!"))
 ;;
-;;  The function that is the value of a "bookmarkp-jump" tag is called
-;;  just after the the standard hook `bookmark-after-jump-hook' is
-;;  invoked.  You can use this tag to invoke functions that are
-;;  specific to individual bookmarks; bookmarks can thus have their
-;;  own, extra jump functions.
+;;  The function that is the value of a "bmkp-jump" tag is called just
+;;  after the the standard hook `bookmark-after-jump-hook' is invoked.
+;;  You can use this tag to invoke functions that are specific to
+;;  individual bookmarks; bookmarks can thus have their own, extra
+;;  jump functions.
 ;;
 ;;
 ;;(@* "Function, Sequence, and Variable-List Bookmarks")
@@ -522,24 +553,23 @@
 ;;  which simply records a sequence of bookmarks.  The bookmarks in a
 ;;  sequence can be of any kind, including other sequence bookmarks.
 ;;
-;;  Command `bookmarkp-make-function-bookmark' creates a function
-;;  bookmark - you give it a function symbol or a lambda expression.
-;;  Command `bookmarkp-bmenu-make-sequence-from-marked' creates a
-;;  sequence from the marked bookmarks in the bookmark list, in their
-;;  current order.
+;;  Command `bmkp-make-function-bookmark' creates a function bookmark
+;;  - you give it a function symbol or a lambda expression.  Command
+;;  `bmkp-bmenu-make-sequence-from-marked' creates a sequence from the
+;;  marked bookmarks in the bookmark list, in their current order.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
-;;  variables.  Command `bookmarkp-set-varlist-bookmark' prompts you
-;;  for the variables to include in the list and then sets the
-;;  bookmark.  Command `bookmarkp-jump-varlist' (`C-x j v') restores
-;;  the recorded variable values for the bookmark's buffer.  You can
-;;  also create varlist bookmarks non-interactively, using function
-;;  `bookmarkp-create-varlist-bookmark'.
+;;  variables.  Command `bmkp-set-varlist-bookmark' prompts you for
+;;  the variables to include in the list and then sets the bookmark.
+;;  Command `bmkp-jump-varlist' (`C-x j v') restores the recorded
+;;  variable values for the bookmark's buffer.  You can also create
+;;  varlist bookmarks non-interactively, using function
+;;  `bmkp-create-varlist-bookmark'.
 ;;
 ;;  If you use library `wide-n.el', then you can move among multiple
 ;;  restrictions (narrowings) in a buffer.  The restrictions are
 ;;  stored in buffer-local variable `wide-n-restrictions'.  Command
-;;  `bookmarkp-set-restrictions-bookmark' bookmarks this value for the
+;;  `bmkp-set-restrictions-bookmark' bookmarks this value for the
 ;;  current buffer.  Jumping to such a bookmark restores the saved
 ;;  ring/stack of restrictions.
 ;;
@@ -561,7 +591,7 @@
 ;;(@* "Quitting Saves the Bookmark-List State")
 ;;  *** Quitting Saves the Bookmark-List State ***
 ;;
-;;  If option `bookmarkp-bmenu-state-file' is non-nil, which it is by
+;;  If option `bmkp-bmenu-state-file' is non-nil, which it is by
 ;;  default, then Bookmark+ remembers the last state of the bookmark
 ;;  list when you quit it or you quit Emacs, and it restores that
 ;;  state when you show the list again (which could be in the next
@@ -577,11 +607,11 @@
 ;;  with the same markings.
 ;;
 ;;  You can turn off this automatic bookmark-list display state
-;;  saving, if you want, by customizing option
-;;  `bookmarkp-bmenu-state-file' to nil.  And you can toggle this
-;;  option at any time, using `M-l' in the bookmark list (command
-;;  `bookmarkp-toggle-saving-menu-list-state').  In particular, if you
-;;  want your next visit to the bookmark list to start out with a
+;;  saving, if you want, by customizing option `bmkp-bmenu-state-file'
+;;  to nil.  And you can toggle this option at any time, using `M-l'
+;;  in the bookmark list (command
+;;  `bmkp-toggle-saving-menu-list-state').  In particular, if you want
+;;  your next visit to the bookmark list to start out with a
 ;;  previously recorded state instead of the current state, just hit
 ;;  `M-l' before quitting the bookmark list.
 ;;
@@ -610,16 +640,16 @@
 ;;
 ;;  Alternatively, you can define a command that does the same thing,
 ;;  but without creating another bookmark - use `c'
-;;  (`bookmarkp-bmenu-define-command') in the bookmark list to do
-;;  this.  You are prompted for the name of the new command.  Use the
-;;  command anytime (including in another Emacs session) to restore
-;;  the bookmark list.
+;;  (`bmkp-bmenu-define-command') in the bookmark list to do this.
+;;  You are prompted for the name of the new command.  Use the command
+;;  anytime (including in another Emacs session) to restore the
+;;  bookmark list.
 ;;
 ;;  Define any number of such commands for the views you use.  The
 ;;  file for saving the definitions (see option
-;;  `bookmarkp-bmenu-commands-file') is never overwritten, so you can
-;;  also add other code to it manually, if you want.  The file is read
-;;  the first time the bookmark list is displayed in a given Emacs
+;;  `bmkp-bmenu-commands-file') is never overwritten, so you can also
+;;  add other code to it manually, if you want.  The file is read the
+;;  first time the bookmark list is displayed in a given Emacs
 ;;  session.
 ;;
 ;;  The state that is saved and restored using a bookmark-list
@@ -629,7 +659,7 @@
 ;;
 ;;  Sometimes, however, you really want to save the entire
 ;;  bookmark-list state, creating a full snapshot.  You can use `C'
-;;  (`bookmarkp-bmenu-define-full-snapshot-command') to do that.  This
+;;  (`bmkp-bmenu-define-full-snapshot-command') to do that.  This
 ;;  defines a command that restores the bookmark list completely.
 ;;  That is the same thing that happens automatically (by default)
 ;;  whenever you quit the bookmark list (or Emacs), but defining
@@ -669,10 +699,9 @@
 ;;  But you can also have extra, alternative bookmark files if you
 ;;  want, and at any time you can change the bookmark file that is
 ;;  current.  To do that, use `C-x p L' (uppercase `L'), which is
-;;  bound to command `bookmarkp-switch-bookmark-file'.  You can see
-;;  which file is current by using `?' or `C-h m' in the buffer
-;;  `*Bookmark List*' (or anywhere else using `M-x
-;;  bookmarkp-bmenu-mode-status-help').
+;;  bound to command `bmkp-switch-bookmark-file'.  You can see which
+;;  file is current by using `?' or `C-h m' in the buffer `*Bookmark
+;;  List*' (or anywhere else using `M-x bmkp-bmenu-mode-status-help').
 ;;
 ;;  Having multiple bookmark files gives you an added degree of
 ;;  flexibility, but you must keep track of these extra bookmark files
@@ -686,7 +715,7 @@
 ;;  You can turn off the automatic saving of the current bookmark
 ;;  file, by customizing option `bookmark-save-flag' to nil.  And you
 ;;  can toggle this option at any time, using `M-~' in the bookmark
-;;  list (command `bookmarkp-toggle-saving-bookmark-file').
+;;  list (command `bmkp-toggle-saving-bookmark-file').
 ;;
 ;;  Besides using multiple bookmark files as alternatives, you can
 ;;  combine them, using them as component bookmark subsets (like
@@ -697,7 +726,7 @@
 ;;
 ;;  To create additional bookmark files, to use as either alternatives
 ;;  or component files, you can either copy an existing bookmark file
-;;  or use `bookmarkp-empty-file' (`C-x p 0') to create a new, empty
+;;  or use `bmkp-empty-file' (`C-x p 0') to create a new, empty
 ;;  bookmark file.  If you use `C-x p 0' with an existing bookmark
 ;;  file, then its bookmarks are all deleted - it is emptied.
 ;;
@@ -876,7 +905,7 @@
 ;;
 ;;  You can, however, use the bookmark list to take advantage of
 ;;  arbitrary Dired features for file and directory bookmarks.
-;;  Command `bookmarkp-bmenu-dired-marked' (`M-d >') weds Bookmark+'s
+;;  Command `bmkp-bmenu-dired-marked' (`M-d >') weds Bookmark+'s
 ;;  set-defining and set-manipulating features (tagging, marking,
 ;;  filtering etc.) to Dired's file-manipulating features.
 ;;
@@ -1019,7 +1048,7 @@
 ;;  Omitted bookmarks are not shown in the bookmark list, no matter
 ;;  what filtering is used.  The only way to show omitted bookmarks is
 ;;  to show all of them and only them, using `O S', which is bound to
-;;  command `bookmarkp-bmenu-show-only-omitted'.
+;;  command `bmkp-bmenu-show-only-omitted'.
 ;;
 ;;  Omitted bookmarks are still available even if they are not shown,
 ;;  and you can still jump to them (e.g. using `C-x r b').  You just
@@ -1033,7 +1062,7 @@
 ;;  omit its component bookmarks from the displayed list.
 ;;
 ;;  You can omit any bookmarks by marking them and then using `O >'
-;;  (`bookmarkp-bmenu-omit/unomit-marked').  If you are looking at the
+;;  (`bmkp-bmenu-omit/unomit-marked').  If you are looking at the
 ;;  omitted bookmarks (after using `O S'), then `O >' un-omits the
 ;;  bookmarks marked there.  Think of two complementary spaces: the
 ;;  normal bookmark list and the omitted bookmark list.  When you use
@@ -1041,8 +1070,8 @@
 ;;  the opposite space.
 ;;
 ;;  You can un-omit all of the omitted bookmarks at once, using `O U'
-;;  (`bookmarkp-unomit-all').  You can also call this command from
-;;  outside the bookmark-list display.
+;;  (`bmkp-unomit-all').  You can also call this command from outside
+;;  the bookmark-list display.
 ;;
 ;;
 ;;(@* "Sorting Bookmarks")
@@ -1054,15 +1083,15 @@
 ;;  access.
 ;;
 ;;  Bookmarks shown in the bookmark list are sorted using the current
-;;  value of option `bookmarkp-sort-comparer'.  (If that is nil, they
-;;  are unsorted, which means they appear in reverse chronological
-;;  order of their creation.)
+;;  value of option `bmkp-sort-comparer'.  (If that is nil, they are
+;;  unsorted, which means they appear in reverse chronological order
+;;  of their creation.)
 ;;
 ;;  You can use `s s'... (repeat hitting the `s' key) to cycle among
 ;;  the various sort orders possible, updating the display
 ;;  accordingly.  By default, you cycle among all available sort
 ;;  orders, but you can shorten the cycling list by customizing option
-;;  `bookmarkp-sort-orders-for-cycling-alist'.
+;;  `bmkp-sort-orders-for-cycling-alist'.
 ;;
 ;;  You can also change directly to one of the main sort orders
 ;;  (without cycling) using `s n', `s f n', etc. - use `C-h m' or `?'
@@ -1085,23 +1114,23 @@
 ;;  bookmarks that are marked or unmarked.
 ;;
 ;;  Finally, you can easily define your own sorting commands and sort
-;;  orders.  See macro `bookmarkp-define-sort-command' and the
-;;  documentation for option `bookmarkp-sort-comparer'.  (Bookmark+
-;;  uses option `bookmarkp-sort-comparer'; it *ignores* vanilla Emacs
-;;  option `bookmark-sort-flag'.)
+;;  orders.  See macro `bmkp-define-sort-command' and the
+;;  documentation for option `bmkp-sort-comparer'.  (Bookmark+ uses
+;;  option `bmkp-sort-comparer'; it *ignores* vanilla Emacs option
+;;  `bookmark-sort-flag'.)
 ;;
 ;;  Of particular note is that you can interactively define commands
 ;;  that sort by a given list of tags - you use keys `T s' (command
-;;  `bookmarkp-define-tags-sort-command') to do that.  You are
-;;  prompted for the tags to sort by.  Bookmarks are sorted first
-;;  according to whether they are tagged with the first tag, then the
-;;  second tag, and so on.  Otherwise, sorting is by bookmark name.
+;;  `bmkp-define-tags-sort-command') to do that.  You are prompted for
+;;  the tags to sort by.  Bookmarks are sorted first according to
+;;  whether they are tagged with the first tag, then the second tag,
+;;  and so on.  Otherwise, sorting is by bookmark name.
 ;;
 ;;  The tags you specify are used, in order, in the name of the new
 ;;  command.  For example, if you enter tags `alpha', `beta', and
 ;;  `gamma', in that order, then the sorting command created is
-;;  `bookmarkp-bmenu-sort-alpha-beta-gamma'.  The new command is saved
-;;  in your bookmark commands file (`bookmarkp-bmenu-commands-file').
+;;  `bmkp-bmenu-sort-alpha-beta-gamma'.  The new command is saved in
+;;  your bookmark commands file (`bmkp-bmenu-commands-file').
 ;;
 ;;  Note that because you can add a new tag to all bookmarks that have
 ;;  some given set of tags, you can use that single (new) tag to
@@ -1218,13 +1247,13 @@
 ;;
 ;;  Here are two ways to define the navigation list:
 ;;
-;;  * `C-x p :' (`bookmarkp-choose-navlist-of-type') - As the set of
-;;    all bookmarks of a certain type.
+;;  * `C-x p :' (`bmkp-choose-navlist-of-type') - As the set of all
+;;    bookmarks of a certain type.
 ;;
-;;  * `C-x p B' (`bookmarkp-choose-navlist-from-bookmark-list') - As
-;;    the set of all bookmarks corresponding to a bookmark-list
-;;    bookmark, that is the bookmarks corresponding to a given
-;;    recorded state of buffer `*Bookmark List*'.
+;;  * `C-x p B' (`bmkp-choose-navlist-from-bookmark-list') - As the
+;;    set of all bookmarks corresponding to a bookmark-list bookmark,
+;;    that is the bookmarks corresponding to a given recorded state of
+;;    buffer `*Bookmark List*'.
 ;;
 ;;  Each of these lets you choose a bookmark set using completion.
 ;;  For `C-x p :' you are prompted for the type of bookmark
@@ -1253,8 +1282,7 @@
 ;;  List*' state at any given time necessarily reflects the navlist
 ;;  bookmarks.  The two are separate.  You can, however, open the
 ;;  `*Bookmark List*' so that it reflects the bookmarks currently in
-;;  the navigation list, using `C-x p N'
-;;  (`bookmarkp-navlist-bmenu-list').
+;;  the navigation list, using `C-x p N' (`bmkp-navlist-bmenu-list').
 ;;
 ;;
 ;;(@* "Cycling the Navigation List")
@@ -1263,9 +1291,9 @@
 ;;  So you choose a navigation list.  How do you then cycle among its
 ;;  bookmarks?
 ;;
-;;  Commands `bookmarkp-next-bookmark' and
-;;  `bookmarkp-previous-bookmark' cycle to the next and previous
-;;  bookmark in the navigation list (with wraparound).
+;;  Commands `bmkp-next-bookmark' and `bmkp-previous-bookmark' cycle
+;;  to the next and previous bookmark in the navigation list (with
+;;  wraparound).
 ;;
 ;;  You can bind these to any keys you like, but it's obviously better
 ;;  to choose keys that are easily repeatable (e.g. by holding them
@@ -1321,21 +1349,21 @@
 ;;  dedicated keys for this, separate from the keys to cycle the
 ;;  navigation list.  Bookmark+ uses the same approach here - the
 ;;  following keys are defined, corresponding to commands
-;;  `bookmarkp-next-bookmark-this-buffer-repeat' and
-;;  `bookmarkp-previous-bookmark-this-buffer-repeat':
+;;  `bmkp-next-bookmark-this-buffer-repeat' and
+;;  `bmkp-previous-bookmark-this-buffer-repeat':
 ;;
 ;;  Next:     `C-x p n', `C-x p C-n', `C-x p down'
 ;;  Previous: `C-x p p', `C-x p C-p', `C-x p up'
 ;;
 ;;  Again, you can bind any keys you want to these commands
 ;;  (e.g. `f2', `S-f2').  If you do not need to use a prefix key, then
-;;  bind commands `bookmarkp-next-bookmark-this-buffer' and
-;;  `bookmarkp-previous-bookmark-this-buffer' (no -repeat).
+;;  bind commands `bmkp-next-bookmark-this-buffer' and
+;;  `bmkp-previous-bookmark-this-buffer' (no -repeat).
 ;;
 ;;  By default, the current-buffer bookmarks are cycled in order of
 ;;  their positions in the buffer, top to bottom.  If you want a
 ;;  different order, you can customize option
-;;  `bookmarkp-this-buffer-cycle-sort-comparer'.
+;;  `bmkp-this-buffer-cycle-sort-comparer'.
 ;;
 ;;  Alternatively, you can use `C-x p .' to display the `*Bookmark
 ;;  List*' with only the current buffer's bookmarks, sort them there,
@@ -1361,14 +1389,13 @@
 ;;  `000058356 bookmark+.el'.
 ;;
 ;;  (You can customize the format of autonamed bookmarks using options
-;;  `bookmarkp-autoname-bookmark-function' and
-;;  `bookmarkp-autoname-format'.)
+;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.)
 ;;
-;;  `C-x p RET' is `bookmarkp-toggle-autoname-bookmark-set/delete',
-;;  which means that it does double duty.  If an autonamed bookmark is
-;;  under the cursor, then `C-x p RET' deletes it.  Easy creation,
-;;  easy deletion.  Because of this toggle behavior, there is at most
-;;  one autonamed bookmark at any given buffer position.
+;;  `C-x p RET' is `bmkp-toggle-autoname-bookmark-set/delete', which
+;;  means that it does double duty.  If an autonamed bookmark is under
+;;  the cursor, then `C-x p RET' deletes it.  Easy creation, easy
+;;  deletion.  Because of this toggle behavior, there is at most one
+;;  autonamed bookmark at any given buffer position.
 ;;
 ;;  An autonamed bookmark has its position as part of its name.  When
 ;;  you modify the content of a buffer, some of the bookmark positions
@@ -1391,9 +1418,9 @@
 ;;  current buffer.
 ;;
 ;;  (You can also use `C-x p delete' (that's the `delete' key), bound
-;;  to `bookmarkp-delete-bookmarks', to delete individual bookmarks
-;;  under the cursor or all bookmarks in the buffer.  This is not
-;;  limited to autonamed bookmarks.)
+;;  to `bmkp-delete-bookmarks', to delete individual bookmarks under
+;;  the cursor or all bookmarks in the buffer.  This is not limited to
+;;  autonamed bookmarks.)
 ;;
 ;;
 ;;(@* "Use Bookmark+ with Icicles")
@@ -1507,9 +1534,9 @@
 ;;  that open bookmarks using the associated Windows `Open'
 ;;  applications:
 ;;
-;;    `M-RET'     - `bookmarkp-bmenu-w32-open'
-;;    `M-mouse-2' - `bookmarkp-bmenu-w32-open-with-mouse'
-;;    `M-v'       - `bookmarkp-bmenu-w32-open-select' (like `v')
+;;    `M-RET'     - `bmkp-bmenu-w32-open'
+;;    `M-mouse-2' - `bmkp-bmenu-w32-open-with-mouse'
+;;    `M-o'       - `bmkp-bmenu-w32-open-select'
 ;;
 ;;  If you use Dired+ (library `dired+.el'), then you can use `M-b' to
 ;;  bookmark all of the marked files in a Dired buffer, even if you
@@ -1589,6 +1616,15 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/06/19 dadams
+;;     RENAMED bookmarkp* TO bmkp*.  ***** THIS IS AN INCOMPATIBLE CHANGE ******
+;;
+;;       If you have existing customizations, or if you have bookmarks that have the (internal) tag
+;;       "bmkp-jump", then YOU MUST REPLACE occurrences of "bookmarkp" by "bmkp" EVERYWHERE.  This
+;;       includes replacing occurrences in (1) your bookmarks file (bookmark-default-file), (2) your
+;;       state file (bmkp-bmenu-state-file), and (3) your command file (bmkp-bmenu-commands-file).
+;;
+;;     Changed *-bmenu-w32-open-select binding to M-o from M-v.
 ;; 2010/06/11 dadams
 ;;     Wrap all (require '* nil t) in condition-case.
 ;; 2010/06/07 dadams

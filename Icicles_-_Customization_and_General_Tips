@@ -778,7 +778,20 @@ displayed in `*Completions*' are laid out horizontally (the
 default) or vertically.  Set the value to `vertical' for the
 latter.  Starting with Emacs 23.2, you can just use the vanilla
 option `completions-format' for this, if you want the same type
-of layout with ''Icicle mode'' turned on or off.
+of layout with ''Icicle'' mode turned on or off.
+
+[[multi-completion|Multi-completions]] often involve complex, multi-line text for
+which a vertical `*Completions*' layout is not appropriate.  For
+this reason, when multi-line multi-completions are used the
+layout is horizontal, temporarily ''overriding'' any `vertical'
+value for `icicle-completions-format' or`completions-format'.
+
+If you need to override this override behavior for some command,
+use `icicle-minibuffer-setup-hook' and `minibuffer-exit-hook' to
+temporarily set and reset the internal variable
+`icicle-completions-format-internal'.
+
+
 
 
 ----

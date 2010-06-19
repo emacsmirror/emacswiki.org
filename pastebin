@@ -22,7 +22,7 @@ There are interfaces for other sites like codepad.org available http://github.co
 
 ----
 
-There's also an interface to App::Nopaste which can access pastebin and more using plugins: http://github.com/avar/nopaste
+There's also an interface to App::Nopaste at [[nopaste]] which can access pastebin.com and more using plugins: http://github.com/avar/nopaste
 
 ----
 CategoryModes

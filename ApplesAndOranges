@@ -168,13 +168,12 @@ define your own).
 A data structure like that just described is used to specify the
 composite predicate to use: a list of three-valued predicates and
 possibly a fallback two-valued predicate.  This is [[user option]]
-'''`bookmarkp-sort-comparer''''.  Its default value is this list:
+'''`bmkp-sort-comparer''''.  Its default value is this list:
 
-  ((bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-    bookmarkp-local-file-type-cp)
-   bookmarkp-alpha-p)
+  ((bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp bmkp-local-file-type-cp)
+   bmkp-alpha-p)
 
-The fallback two-valued predicate `bookmarkp-alpha-p' just
+The fallback two-valued predicate `bmkp-alpha-p' just
 compares bookmarks by their names, alphabetically.  The three-valued predicates collectively compare bookmarks, in order, in
 this way:
 
@@ -221,22 +220,22 @@ or a fallback truth value if indeterminate.
 The following function, for example, does that for a component predicate `PRED' that compares bookmarks.
 
 <pre>
-  (defun bookmarkp-make-plain-predicate (pred &optional final-pred)
+  (defun bmkp-make-plain-predicate (pred &optional final-pred)
     "Return a plain predicate that corresponds to component-predicate PRED.
 PRED and FINAL-PRED correspond to their namesakes in
-`bookmarkp-sort-comparer' (which see).
+`bmkp-sort-comparer' (which see).
 
 PRED should return `(t)', `(nil)', or nil.
 
 Optional arg FINAL-PRED is the final predicate to use if PRED cannot
-decide (returns nil).  If FINAL-PRED is nil, then `bookmarkp-alpha-p',
-the plain-predicate equivalent of `bookmarkp-alpha-cp' is used as the
+decide (returns nil).  If FINAL-PRED is nil, then `bmkp-alpha-p',
+the plain-predicate equivalent of `bmkp-alpha-cp' is used as the
 final predicate."
     `(lambda (b1 b2)
       (let ((res  (funcall ',pred b1 b2)))
         (if res
             (car res)
-          (funcall ',(or final-pred 'bookmarkp-alpha-p) b1 b2)))))
+          (funcall ',(or final-pred 'bmkp-alpha-p) b1 b2)))))
 </pre>
 
 
@@ -355,7 +354,7 @@ Perhaps you are focusing on the predicates examining particular attributes (e.g.
 
 The point is instead about letting a predicate report "dunno" and ''by that means'' letting another predicate take over deciding. The idea is that this lets you shuffle and combine simple predicates, to provide a gamut of combinations that would be otherwise difficult to realize or unmanageable. This same idea is just as relevant for Common Lisp. (Is this an important idea or a new idea? Nah -- please reread the 3rd sentence on the page.)
 
-I hesitate to say again what this is about, since I don't seem to be getting through. Let us not waste more words on it. I'm sorry my writing here was not clear enough. If you look at the actual code where this is used (<tt>[[bookmark+.el]]</tt>), perhaps you will see. See `bookmarkp-sort-comparer' and how it is used. Thinking in terms of sorting should help. If you want to discuss issues that are specifically related to the code, fine, but I'm not interested in a wide-ranging, abstract discussion in unclear terms. If this page stimulated you to think about something else that is interesting, that's good, whether or not I understand what that is. :-) -- DrewAdams
+I hesitate to say again what this is about, since I don't seem to be getting through. Let us not waste more words on it. I'm sorry my writing here was not clear enough. If you look at the actual code where this is used (<tt>[[bookmark+.el]]</tt>), perhaps you will see. See `bmkp-sort-comparer' and how it is used. Thinking in terms of sorting should help. If you want to discuss issues that are specifically related to the code, fine, but I'm not interested in a wide-ranging, abstract discussion in unclear terms. If this page stimulated you to think about something else that is interesting, that's good, whether or not I understand what that is. :-) -- DrewAdams
 
 [new]
 Re: 1 There is simply no easy way to implement this idiom in Emac lisp without
@@ -399,9 +398,9 @@ exist it is enlightening to compare and contrast how other lisps accomodate the
 idiom if only as an exercise in "Comparitive Lispology".
 
 FWIW I did take time to review the code in bookmark+. Your macro solution w/
-bookmarkp-sort-comparer belabors what I am pointing out here. 
+bmkp-sort-comparer belabors what I am pointing out here. 
 Hint, the tip of this iceberg began with my consideration of eql vs. equal in
-lieu of a review of bookmarkp-sort-comparer; which by the way occured prior
+lieu of a review of bmkp-sort-comparer; which by the way occured prior
 to my initial response here. :) --[[mon_key]]
 
 
@@ -418,7 +417,7 @@ Again, if you want to present specific, alternative code snippets (e.g. CL code)
 
 To be clear about CL -- I have nothing against it; quite the contrary. And I prefer it to Emacs Lisp in many ways. I used CL from the moment it existed (the first implementations available in Europe, in the early 80s -- in particular Kyoto CL, even before it was fully baked). I like CL and appreciate many of the features it has that Emacs Lisp lacks.
 
-The macro you refer to wrt sorting is, I assume, `bookmarkp-define-sort-command'. That is irrelevant to this discussion. It simply facilitates interactive choice of sort orders -- it is purely a UI thing, unrelated to how predicates are combined or how sorting works. It takes as input a comparer (list of predicates) and simply makes that particular comparer available interactively in various ways (e.g. cycling). The code for sorting using a comparer is in `bookmarkp-multi-sort' -- it is essentially `run-hook-with-args-until-success'. -- DrewAdams
+The macro you refer to wrt sorting is, I assume, `bmkp-define-sort-command'. That is irrelevant to this discussion. It simply facilitates interactive choice of sort orders -- it is purely a UI thing, unrelated to how predicates are combined or how sorting works. It takes as input a comparer (list of predicates) and simply makes that particular comparer available interactively in various ways (e.g. cycling). The code for sorting using a comparer is in `bmkp-multi-sort' -- it is essentially `run-hook-with-args-until-success'. -- DrewAdams
 
 ----
 CategoryCode

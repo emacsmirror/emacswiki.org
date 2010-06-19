@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 14 21:27:30 2010 (-0700)
+;; Last-Updated: Fri Jun 18 13:12:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11834
+;;     Update #: 11863
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -839,7 +839,8 @@ Completion ignores case when `completion-ignore-case' is non-nil."
       (setq icicle-initial-value  (car initial-input))
     (setq initial-input         (format "%s" initial-input) ; Convert symbol to string
           icicle-initial-value  initial-input))
-  (setq icicle-nb-of-other-cycle-candidates  0)
+  (setq icicle-nb-of-other-cycle-candidates  0
+        icicle-completions-format-internal   icicle-completions-format)
 
   ;; Use DEF for INITIAL-INPUT also, if `icicle-default-value' says so.
   (when (and def icicle-default-value (not (eq icicle-default-value t))
@@ -952,6 +953,8 @@ See the source code for details."
            (cond ((and (consp cand)     ; Multi-completion: (("aa" "bb") . cc) ->
                        (consp (car cand)) ; ("aa^G\nbb\n\n" ("aa" "bb") . cc)
                        (stringp (caar cand)))
+                  (when (string-match "\n" icicle-list-join-string)
+                    (setq icicle-completions-format-internal  'horizontal)) ; Override
                   (cons (concat (mapconcat #'identity (car cand) icicle-list-join-string)
                                 icicle-list-end-string)
                         cand))
@@ -2743,33 +2746,33 @@ The optional second arg is ignored."
       (unless (zerop (mod nb-cands rows)) (setq rows (1+ rows)))
       (dolist (cand  candidates)
         (setq endpos  (point))
-        (cond
-          ((eq icicle-completions-format 'vertical) ; Vertical layout.
-           (when (>= row rows)
-             (forward-line (- rows))
-             (setq row        0
-                   column-nb  (+ column-nb colwidth)))
-           (when (> column-nb 0)
-             (end-of-line)
-             (let ((cand-end  (point)))
-               (indent-to column-nb icicle-inter-candidates-min-spaces)
-               (put-text-property cand-end (point) 'mouse-face nil)))) ; Turn off `mouse-face'
-          (t                            ; Horizontal layout.
-           (unless (bolp)
-             (put-text-property (point) (point) 'mouse-face nil) ; Turn off `mouse-face'
-             (indent-to (* (max 1 column-nb) colwidth) icicle-inter-candidates-min-spaces)
-             (when (< wwidth (+ (max colwidth (if (consp cand)
-                                                  (+ (length (car cand)) (length (cadr cand)))
-                                                (length cand)))
-                                (current-column)))
-               (save-excursion          ; This is like `fixup-whitespace', but only forward.
-                 (delete-region (point) (progn (skip-chars-forward " \t") (point)))
-                 (unless (or (looking-at "^\\|\\s)")
-                             (save-excursion (forward-char -1) (looking-at "$\\|\\s(\\|\\s'")))
-                   (insert ?\ )))
-               (insert "\n")
-               (setq column-nb  columns))) ; End of the row. Simulate being in farthest column.
-           (when (< endpos (point)) (set-text-properties endpos (point) nil))))
+        (cond ((eq icicle-completions-format-internal 'vertical) ; Vertical layout.
+               (when (>= row rows)
+                 (forward-line (- rows))
+                 (setq column-nb  (+ column-nb colwidth)
+                       row        0))
+               (when (> column-nb 0)
+                 (end-of-line)
+                 (let ((cand-end  (point)))
+                   (indent-to column-nb icicle-inter-candidates-min-spaces)
+                   (put-text-property cand-end (point) 'mouse-face nil) ; Turn off `mouse-face', `face'
+                   (put-text-property cand-end (point) 'face nil))))
+              (t                        ; Horizontal layout.
+               (unless (bolp)
+                 (put-text-property (point) (point) 'mouse-face nil) ; Turn off `mouse-face'
+                 (indent-to (* (max 1 column-nb) colwidth) icicle-inter-candidates-min-spaces)
+                 (when (< wwidth (+ (max colwidth (if (consp cand)
+                                                      (+ (length (car cand)) (length (cadr cand)))
+                                                    (length cand)))
+                                    (current-column)))
+                   (save-excursion      ; This is like `fixup-whitespace', but only forward.
+                     (delete-region (point) (progn (skip-chars-forward " \t") (point)))
+                     (unless (or (looking-at "^\\|\\s)")
+                                 (save-excursion (forward-char -1) (looking-at "$\\|\\s(\\|\\s'")))
+                       (insert ?\ )))
+                   (insert "\n")
+                   (setq column-nb  columns))) ; End of the row. Simulate being in farthest column.
+               (when (< endpos (point)) (set-text-properties endpos (point) nil))))
         ;; Convert candidate (but not annotation) to unibyte or to multibyte, if needed.
         (setq string  (if (consp cand) (car cand) cand))
         (cond ((and (null enable-multibyte-characters) (multibyte-string-p string))
@@ -2798,13 +2801,10 @@ The optional second arg is ignored."
                (when (eq ?\n (char-before (point)))
                  (put-text-property (1- (point)) (point) 'icicle-keep-newline t))
                (set-text-properties (point) (progn (insert (cadr cand)) (point)) nil)))
-        (cond ((eq icicle-completions-format 'vertical)
-               ;; Vertical format
-               (if (> column-nb 0) (forward-line) (insert "\n"))
-               (setq row  (1+ row)))
-              (t
-               ;; Horizontal format
-               (setq column-nb  (mod (1+ column-nb) columns))))))))
+        (if (not (eq icicle-completions-format-internal 'vertical))
+            (setq column-nb  (mod (1+ column-nb) columns))
+          (if (> column-nb 0) (forward-line) (insert "\n")) ; Vertical layout.
+          (setq row  (1+ row)))))))
 
 (defun icicle-fit-completions-window ()
   "Fit the window showing completions to its contents.
@@ -4938,7 +4938,7 @@ compared.  If nil, then the entire item is used."
                                sort-fn)))))
   list)
 
-;; Essentially the same as `bookmarkp-multi-sort'.
+;; Essentially the same as `bmkp-multi-sort'.
 (defun icicle-multi-sort (s1 s2)
   "Try predicates in `icicle-sort-comparer', in order, until one decides.
 The (binary) predicates are applied to S1 and S2.
@@ -5008,7 +5008,7 @@ Otherwise, the full candidate is obtained from
                  (elt cand-entries (mod icicle-candidate-nb (length icicle-candidates-alist)))
                ;; If `icicle-completion-candidates' is nil, because user didn't use `TAB' or `S-TAB',
                ;; then `icicle-candidates-alist' can contain non-matches.  So, we check for more than
-               ;; one match.  However, we can't just use `assoc', because candidates might be
+               ;; one match.  However, we cannot just use `assoc', because candidates might be
                ;; multi-completions (lists).
                (let ((first-match  (icicle-first-matching-candidate string icicle-candidates-alist)))
                  (if (and first-match

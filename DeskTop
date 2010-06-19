@@ -176,7 +176,7 @@ save or restore a desktop. Restored desktops are deleted from disk.
 
 The usual way to use a desktop is to (1) define (i.e., save) it as your final Emacs state, when you exit, and (2) restore it at the beginning of a new Emacs session. Library ##desktop.el ## provides for the possibility of having multiple saved desktops, but only one per directory. It searches your `desktop-path' to find a desktop file to load.
 
-If you use '''[[BookmarkPlus|Bookmark+]]''', then you can have any number of desktops and use them as bookmarks, jumping from one to another at any time. You create a desktop bookmark using '''`C-x r K'''' (command '''`bookmarkp-set-desktop-bookmark'''').
+If you use '''[[BookmarkPlus|Bookmark+]]''', then you can have any number of desktops and use them as bookmarks, jumping from one to another at any time. You create a desktop bookmark using '''`C-x r K'''' (command '''`bmkp-set-desktop-bookmark'''').
 
 Ordinary desktop files are used to record the information.
 The bookmark itself records only the location of the desktop file. Bookmarked desktops are intended to be used only as bookmarks, not in the ordinary way (e.g. at Emacs startup), so the locations of the desktop files used are unimportant. In particular, you can have any number of (bookmark) desktop files per directory.

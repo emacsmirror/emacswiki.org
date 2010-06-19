@@ -62,6 +62,16 @@ Yes, or just
   (eval-after-load "which-func"
       (add-to-list 'which-func-modes 'lua-mode))
 
+Good point about add-to-list.  I found that the following seems to work even better here (otherwise leading to startup errors):
+
+  (eval-after-load "which-func"
+      '(add-to-list 'which-func-modes 'lua-mode))
+
+[new]
+Ah yes, of course, forgot to quote the form.
+Please clean up this discussion and just show the valid form.
+
+[new]
 To configure a language for which-func mode, you need to configure it for Imenu.  See ImenuMode.
 
 == Alternatives ==

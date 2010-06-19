@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jun 17 14:37:12 2010 (-0700)
+;; Last-Updated: Fri Jun 18 20:36:27 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5526
+;;     Update #: 5543
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/06/18 dadams
+;;     Renamed: bookmarkp-* to bmkp-*.
 ;; 2010/06/11 dadams
 ;;     icicle-find-file-absolute*, icicle-recent-file*, icicle-locate-file-1:
 ;;       Bind C-c + to icicle-make-directory.
@@ -296,6 +298,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/06/18 dadams
+;;     icicle-search-replace-match: Specific error message for read-only buffer.  Thx to M. Heerdegen.
+;;     Renamed: bookmarkp-* to bmkp-*.
 ;; 2010/06/12 dadams
 ;;     icicle-goto-marker-or-set-mark-command:
 ;;       Set this-command so C-SPC C-SPC activates when not t-m mode.  Thx to Chris Hecker.
@@ -558,6 +563,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/06/18 dadams
+;;     icicle-completing-read:
+;;       Initialize icicle-completions-format-internal to icicle-completions-format.
+;;     icicle-mctized-full-candidate:
+;;       Set icicle-completions-format-internal to horizontal for multi-line multi-completions.
+;;     icicle-insert-candidates:
+;;       Remove face property from end of candidate to next column.
+;;       Replace icicle-completions-format by icicle-completions-format-internal.
+;;     Renamed: bookmarkp-* to bmkp-*.
 ;; 2010/06/14 dadams
 ;;     icicle-read-from-minibuffer:
 ;;       If add file-name default to prompt, remove dir part first.  Thx to Chris Hecker.
@@ -2009,6 +2023,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/06/18 dadams
+;;     icicle-nb-of-candidate-in-Completions(-horiz), icicle-move-to-next-completion:
+;;       Replace icicle-completions-format by icicle-completions-format-internal.
+;;     icicle-scroll-Completions: Do nothing if *Completions* is not displayed.
 ;; 2010/06/16 dadams
 ;;     Added: icicle-col-wise-cand-nb.
 ;;     Renamed icicle-nb-of-candidate-in-Completions to icicle-nb-of-cand-in-Completions-horiz.
@@ -3971,6 +3989,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/06/18 dadams
+;;     Renamed: bookmarkp-* to bmkp-*.
 ;; 2010/06/09 dadams
 ;;     icicle-isearch-complete-keys:
 ;;       Added [escape tab] to default binding (isearch bizarrie).  Added C-M-TAB for all platforms.
@@ -4475,6 +4495,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/06/18 dadams
+;;     Added: icicle-completions-format-internal.
 ;; 2010/06/08 dadams
 ;;     Added: icicle-nb-candidates-before-truncation.
 ;; 2010/06/04 dadams

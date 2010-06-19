@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 08:51:50 2010 (-0700)
+;; Last-Updated: Wed Jun 16 12:57:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21179
+;;     Update #: 21183
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2872,38 +2872,38 @@ The list of bookmark names (strings) is returned." ; Doc string
               ("by bookmark name" . icicle-alpha-p))
             (and (featurep 'bookmark+)
                  (append
-                  '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
-                    ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p))
+                  '(("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
+                    ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p))
                   (and (icicle-set-intersection types '("info" "region"))
-                       '(("by Info location" (bookmarkp-info-cp) icicle-alpha-p)))
+                       '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
                   (and (icicle-set-intersection types '("gnus" "region"))
-                       '(("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)))
+                       '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
                   (and (icicle-set-intersection types '("w3m" "region"))
-                       '(("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)))
+                       '(("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)))
                   (and (icicle-set-difference types
                                               '("bookmark-list" "desktop" "gnus" "info" "man" "w3m"))
-                       '(("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-                                              bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                       '(("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                                              bmkp-local-file-type-cp bmkp-handler-cp)
                           icicle-alpha-p)))
                   (and (icicle-set-difference
                         types '("bookmark-list" "desktop" "dired" "non-file"))
-                       '(("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)))
+                       '(("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)))
                   (and (icicle-set-intersection types
                                                 '("local-file" "file" "dired" "region"))
-                       '(("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
-                         ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+                       '(("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+                         ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
                          ("by last local file access"
-                          (bookmarkp-local-file-accessed-more-recently-cp)
+                          (bmkp-local-file-accessed-more-recently-cp)
                           icicle-alpha-p)
-                         ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+                         ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
                           icicle-alpha-p)))
                   (and (not (equal types '("desktop")))
                        '(("by last buffer or file access"
-                          (bookmarkp-buffer-last-access-cp
-                           bookmarkp-local-file-accessed-more-recently-cp)
+                          (bmkp-buffer-last-access-cp
+                           bmkp-local-file-accessed-more-recently-cp)
                           icicle-alpha-p)))
                   (and (get-buffer "*Bookmark List*")
-                       '(("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                       '(("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
                           icicle-alpha-p)))))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))         
@@ -2914,8 +2914,8 @@ The list of bookmark names (strings) is returned." ; Doc string
           (setq cand  (cons (caar cand) (cdr cand))))
         (if (featurep 'bookmark+)
             (if current-prefix-arg
-                (bookmarkp-describe-bookmark-internals cand)
-              (bookmarkp-describe-bookmark cand))
+                (bmkp-describe-bookmark-internals cand)
+              (bmkp-describe-bookmark cand))
           (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand))))))
   (progn
     (message "Gathering bookmarks...")
@@ -2929,7 +2929,7 @@ The list of bookmark names (strings) is returned." ; Doc string
                                                        (icicle-bookmark-propertize-candidate cand))))
                                (if (eq type 'all)
                                    bookmark-alist
-                                 (funcall (intern (format "bookmarkp-%s-alist-only" type)))))
+                                 (funcall (intern (format "bmkp-%s-alist-only" type)))))
                      (bookmark-maybe-load-default-file) ; Load bookmarks, define `bookmark-alist'.
                      (mapcar (if icicle-show-multi-completion-flag
                                  #'(lambda (bmk)
@@ -2937,13 +2937,13 @@ The list of bookmark names (strings) is returned." ; Doc string
                                          (let* ((bname     (bookmark-name-from-full-record bmk))
                                                 (guts      (bookmark-get-bookmark-record bmk))
                                                 (file      (bookmark-get-filename bmk))
-                                                (buf       (bookmarkp-get-buffer-name bmk))
+                                                (buf       (bmkp-get-buffer-name bmk))
                                                 (file/buf
                                                  (if (and buf
-                                                          (equal file bookmarkp-non-file-filename))
+                                                          (equal file bmkp-non-file-filename))
                                                      buf
                                                    file))
-                                                (tags      (bookmarkp-get-tags bmk)))
+                                                (tags      (bmkp-get-tags bmk)))
                                            (cons `(,(icicle-candidate-short-help
                                                      (icicle-bookmark-help-string bname)
                                                      (icicle-bookmark-propertize-candidate bname))
@@ -2960,10 +2960,10 @@ The list of bookmark names (strings) is returned." ; Doc string
                                                 (icicle-bookmark-propertize-candidate bname))
                                                guts))
                                      (error nil))))
-                             (bookmarkp-sort-and-remove-dups
+                             (bmkp-sort-and-remove-dups
                               (if (eq type 'all)
                                   bookmark-alist
-                                (funcall (intern (format "bookmarkp-%s-alist-only" type)))))))))))
+                                (funcall (intern (format "bmkp-%s-alist-only" type)))))))))))
   (icicle-bookmark-cleanup-on-quit)     ; Undo code
   (prog1 (setq bmk-names  (nreverse (delete "" bmk-names))) ; Last code - return the list.
     (icicle-bookmark-cleanup)
@@ -3059,31 +3059,31 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                 (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
                           ("by bookmark name" . icicle-alpha-p))
                         (and (featurep 'bookmark+)
-                             '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp)
+                             '(("by last bookmark access" (bmkp-bookmark-last-access-cp)
                                 icicle-alpha-p)
-                               ("by bookmark visit frequency" (bookmarkp-visited-more-cp)
+                               ("by bookmark visit frequency" (bmkp-visited-more-cp)
                                 icicle-alpha-p)
                                ("by last buffer or file access"
-                                (bookmarkp-buffer-last-access-cp
-                                 bookmarkp-local-file-accessed-more-recently-cp)
+                                (bmkp-buffer-last-access-cp
+                                 bmkp-local-file-accessed-more-recently-cp)
                                 icicle-alpha-p)
-                               ("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                               ("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
                                 icicle-alpha-p)
-                               ("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
-                               ("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)
-                               ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
+                               ("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+                               ("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)
+                               ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
                                ("by last local file access"
-                                (bookmarkp-local-file-accessed-more-recently-cp)
+                                (bmkp-local-file-accessed-more-recently-cp)
                                 icicle-alpha-p)
                                ("by last local file update"
-                                (bookmarkp-local-file-updated-more-recently-cp)
+                                (bmkp-local-file-updated-more-recently-cp)
                                 icicle-alpha-p)
-                               ("by Info location" (bookmarkp-info-cp) icicle-alpha-p)
-                               ("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)
-                               ("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)
+                               ("by Info location" (bmkp-info-cp) icicle-alpha-p)
+                               ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
+                               ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
                                ("by bookmark type"
-                                (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-                                 bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                                (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                                 bmkp-local-file-type-cp bmkp-handler-cp)
                                 icicle-alpha-p)))
                         '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
                           ("case insensitive" . icicle-case-insensitive-string-less-p))))
@@ -3094,8 +3094,8 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                       (setq cand  (cons (caar cand) (cdr cand))))
                     (if (featurep 'bookmark+)
                         (if current-prefix-arg
-                            (bookmarkp-describe-bookmark-internals cand)
-                          (bookmarkp-describe-bookmark cand))
+                            (bmkp-describe-bookmark-internals cand)
+                          (bmkp-describe-bookmark cand))
                       (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
                (icicle-candidates-alist
                 (if (not (featurep 'bookmark+))
@@ -3109,11 +3109,11 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                               #'(lambda (bmk)
                                   (let* ((bname     (bookmark-name-from-full-record bmk))
                                          (guts      (bookmark-get-bookmark-record bmk))
-                                         (tags      (bookmarkp-get-tags bmk))
+                                         (tags      (bmkp-get-tags bmk))
                                          (file      (bookmark-get-filename bmk))
-                                         (buf       (bookmarkp-get-buffer-name bmk))
+                                         (buf       (bmkp-get-buffer-name bmk))
                                          (file/buf
-                                          (if (and buf (equal file bookmarkp-non-file-filename))
+                                          (if (and buf (equal file bmkp-non-file-filename))
                                               buf
                                             file)))
                                     (cons `(,(icicle-candidate-short-help
@@ -3129,9 +3129,9 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                                          (icicle-bookmark-help-string bname)
                                          (icicle-bookmark-propertize-candidate bname))
                                         guts))))
-                          (bookmarkp-sort-and-remove-dups
+                          (bmkp-sort-and-remove-dups
                            (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
-                                (or (bookmarkp-specific-buffers-alist-only)
+                                (or (bmkp-specific-buffers-alist-only)
                                     bookmark-alist)))))))
            (require 'bookmark)
            (when (featurep 'bookmark+)
@@ -3169,13 +3169,13 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                                                       (if regionp
                                                           (region-end)
                                                         (save-excursion (end-of-line) (point))))))
-                  (defname  (bookmarkp-replace-regexp-in-string
+                  (defname  (bmkp-replace-regexp-in-string
                              "\n" " "
                              (cond (regionp
                                     (save-excursion
                                       (goto-char (region-beginning))
                                       (skip-chars-forward " ") (setq bookmark-yank-point  (point)))
-                                    (substring regname 0 (min bookmarkp-bookmark-name-length-max
+                                    (substring regname 0 (min bmkp-bookmark-name-length-max
                                                               (length regname))))
                                    ((eq major-mode 'w3m-mode) w3m-current-title)
                                    ((eq major-mode 'gnus-summary-mode)
@@ -3188,12 +3188,12 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                                    (t (car record)))))
                   (bname    (or name
                                 (icicle-transform-multi-completion
-                                 (bookmarkp-completing-read-lax "Set bookmark " defname
+                                 (bmkp-completing-read-lax "Set bookmark " defname
                                                                 icicle-candidates-alist
                                                                 nil bookmark-history)))))
              (when (string-equal bname "") (setq bname  defname))
              (bookmark-store bname (cdr record) (consp parg))
-             (run-hooks 'bookmarkp-after-set-hook)
+             (run-hooks 'bmkp-after-set-hook)
              (if bookmark-use-annotations
                  (bookmark-edit-annotation bname)
                (goto-char bookmark-current-point))))
@@ -3220,21 +3220,21 @@ If you also use library `bookmark+.el', then:
  * In *Completions*, the candidate bookmarks are highlighted according
    to their type.  You can customize the highlighting faces used:
 
-  `bookmarkp-bad-bookmark'              - possibly bad bookmark
-  `bookmarkp-bookmark-list'             - bookmark list
-  `bookmarkp-buffer'                    - buffer
-  `bookmarkp-desktop'                   - desktop
-  `bookmarkp-function'                  - function bookmark
-  `bookmarkp-gnus'                      - Gnus article
-  `bookmarkp-info'                      - Info node
-  `bookmarkp-local-directory'           - local directory
-  `bookmarkp-local-file-with-region'    - local file with a region
-  `bookmarkp-local-file-without-region' - local file without a region
-  `bookmarkp-man'                       - `man' page
-  `bookmarkp-non-file'                  - non-file (no current buffer)
-  `bookmarkp-remote-file'               - remote-file
-  `bookmarkp-sequence'                  - sequence bookmark
-  `bookmarkp-w3m'                       - W3m URL
+  `bmkp-bad-bookmark'              - possibly bad bookmark
+  `bmkp-bookmark-list'             - bookmark list
+  `bmkp-buffer'                    - buffer
+  `bmkp-desktop'                   - desktop
+  `bmkp-function'                  - function bookmark
+  `bmkp-gnus'                      - Gnus article
+  `bmkp-info'                      - Info node
+  `bmkp-local-directory'           - local directory
+  `bmkp-local-file-with-region'    - local file with a region
+  `bmkp-local-file-without-region' - local file without a region
+  `bmkp-man'                       - `man' page
+  `bmkp-non-file'                  - non-file (no current buffer)
+  `bmkp-remote-file'               - remote-file
+  `bmkp-sequence'                  - sequence bookmark
+  `bmkp-w3m'                       - W3m URL
 
  * In *Completions*, if option `icicle-show-multi-completion-flag' is
    non-nil, then each completion candidate is a multi-completion:
@@ -3297,25 +3297,25 @@ position is highlighted."               ; Doc string
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
               ("by bookmark name" . icicle-alpha-p))
             (and (featurep 'bookmark+)
-                 '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
-                   ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p)
-                   ("by last buffer or file access" (bookmarkp-buffer-last-access-cp
-                                                     bookmarkp-local-file-accessed-more-recently-cp)
+                 '(("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
+                   ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p)
+                   ("by last buffer or file access" (bmkp-buffer-last-access-cp
+                                                     bmkp-local-file-accessed-more-recently-cp)
                     icicle-alpha-p)
-                   ("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                   ("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
                     icicle-alpha-p)
-                   ("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
-                   ("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)
-                   ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
-                   ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+                   ("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+                   ("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)
+                   ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
+                   ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
                     icicle-alpha-p)
-                   ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+                   ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
                     icicle-alpha-p)
-                   ("by Info location" (bookmarkp-info-cp) icicle-alpha-p)
-                   ("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)
-                   ("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)
-                   ("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-                                        bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                   ("by Info location" (bmkp-info-cp) icicle-alpha-p)
+                   ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
+                   ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
+                   ("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                                        bmkp-local-file-type-cp bmkp-handler-cp)
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))
@@ -3326,8 +3326,8 @@ position is highlighted."               ; Doc string
           (setq cand  (cons (caar cand) (cdr cand))))
         (if (featurep 'bookmark+)
             (if current-prefix-arg
-                (bookmarkp-describe-bookmark-internals cand)
-              (bookmarkp-describe-bookmark cand))
+                (bmkp-describe-bookmark-internals cand)
+              (bmkp-describe-bookmark cand))
           (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
@@ -3342,11 +3342,11 @@ position is highlighted."               ; Doc string
                           (let* ((bname     (bookmark-name-from-full-record bmk))
                                  (guts      (bookmark-get-bookmark-record bmk))
                                  (file      (bookmark-get-filename bmk))
-                                 (buf       (bookmarkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                 (buf       (bmkp-get-buffer-name bmk))
+                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
                                                 buf
                                               file))
-                                 (tags      (bookmarkp-get-tags bmk)))
+                                 (tags      (bmkp-get-tags bmk)))
                             (cons `(,(icicle-candidate-short-help
                                       (icicle-bookmark-help-string bname)
                                       (icicle-bookmark-propertize-candidate bname))
@@ -3366,9 +3366,9 @@ position is highlighted."               ; Doc string
               (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
                                 (not (consp current-prefix-arg)))
                            (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
-                       bookmarkp-sorted-alist)
-                  (setq bookmarkp-sorted-alist
-                        (bookmarkp-sort-and-remove-dups bookmark-alist)))))))
+                       bmkp-sorted-alist)
+                  (setq bmkp-sorted-alist
+                        (bmkp-sort-and-remove-dups bookmark-alist)))))))
   (progn                                ; First code
     (require 'bookmark)
     (when (featurep 'bookmark+)
@@ -3425,25 +3425,25 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
     (append '(("in *Bookmark List* order") ; Renamed from "turned OFF'.
               ("by bookmark name" . icicle-alpha-p))
             (and (featurep 'bookmark+)
-                 '(("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
-                   ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p)
-                   ("by last buffer or file access" (bookmarkp-buffer-last-access-cp
-                                                     bookmarkp-local-file-accessed-more-recently-cp)
+                 '(("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
+                   ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p)
+                   ("by last buffer or file access" (bmkp-buffer-last-access-cp
+                                                     bmkp-local-file-accessed-more-recently-cp)
                     icicle-alpha-p)
-                   ("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+                   ("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
                     icicle-alpha-p)
-                   ("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
-                   ("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)
-                   ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
-                   ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+                   ("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+                   ("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)
+                   ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
+                   ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
                     icicle-alpha-p)
-                   ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+                   ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
                     icicle-alpha-p)
-                   ("by Info location" (bookmarkp-info-cp) icicle-alpha-p)
-                   ("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)
-                   ("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)
-                   ("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-                                        bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+                   ("by Info location" (bmkp-info-cp) icicle-alpha-p)
+                   ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
+                   ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
+                   ("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                                        bmkp-local-file-type-cp bmkp-handler-cp)
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
               ("case insensitive" . icicle-case-insensitive-string-less-p))))
@@ -3454,8 +3454,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
           (setq cand  (cons (caar cand) (cdr cand))))
         (if (featurep 'bookmark+)
             (if current-prefix-arg
-                (bookmarkp-describe-bookmark-internals cand)
-              (bookmarkp-describe-bookmark cand))
+                (bmkp-describe-bookmark-internals cand)
+              (bmkp-describe-bookmark cand))
           (icicle-msg-maybe-in-minibuffer (icicle-bookmark-help-string cand)))))
    (icicle-candidates-alist
     (if (not (featurep 'bookmark+))
@@ -3470,11 +3470,11 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
                           (let* ((bname     (bookmark-name-from-full-record bmk))
                                  (guts      (bookmark-get-bookmark-record bmk))
                                  (file      (bookmark-get-filename bmk))
-                                 (buf       (bookmarkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                 (buf       (bmkp-get-buffer-name bmk))
+                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
                                                 buf
                                               file))
-                                 (tags      (bookmarkp-get-tags bmk)))
+                                 (tags      (bmkp-get-tags bmk)))
                             (cons `(,(icicle-candidate-short-help
                                       (icicle-bookmark-help-string bname)
                                       (icicle-bookmark-propertize-candidate bname))
@@ -3494,9 +3494,9 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
               (or (and (or (and (not icicle-bookmark-refresh-cache-flag)
                                 (not (consp current-prefix-arg)))
                            (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
-                       bookmarkp-sorted-alist)
-                  (setq bookmarkp-sorted-alist
-                        (bookmarkp-sort-and-remove-dups bookmark-alist)))))))
+                       bmkp-sorted-alist)
+                  (setq bmkp-sorted-alist
+                        (bmkp-sort-and-remove-dups bookmark-alist)))))))
   (progn                                ; First code
     (require 'bookmark)
     (when (featurep 'bookmark+)
@@ -3528,39 +3528,39 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
   (icicle-bookmark-cleanup))            ; Last code
 
 (defun icicle-bookmark-delete-action (cand)
-  "Delete bookmark candidate CAND, then update `bookmarkp-sorted-alist'."
+  "Delete bookmark candidate CAND, then update `bmkp-sorted-alist'."
   (bookmark-delete (icicle-transform-multi-completion cand))
   (when (or (and (not icicle-bookmark-refresh-cache-flag)
                  (not (consp current-prefix-arg)))
             (and icicle-bookmark-refresh-cache-flag (consp current-prefix-arg)))
-    (setq bookmarkp-sorted-alist (bookmarkp-sort-and-remove-dups bookmark-alist))))
+    (setq bmkp-sorted-alist (bmkp-sort-and-remove-dups bookmark-alist))))
 
 (defun icicle-bookmark-propertize-candidate (cand)
   "Return bookmark name CAND, with a face indicating its type."
   (when (featurep 'bookmark+)
     (put-text-property
      0 (length cand) 'face
-     (cond ((bookmarkp-sequence-bookmark-p cand)        'bookmarkp-sequence)
-           ((bookmarkp-function-bookmark-p cand)        'bookmarkp-function)
-           ((bookmarkp-bookmark-list-bookmark-p cand)   'bookmarkp-bookmark-list)
-           ((bookmarkp-desktop-bookmark-p cand)         'bookmarkp-desktop)
-           ((bookmarkp-info-bookmark-p cand)            'bookmarkp-info)
-           ((bookmarkp-man-bookmark-p cand)             'bookmarkp-man)
-           ((bookmarkp-gnus-bookmark-p cand)            'bookmarkp-gnus)
-           ((bookmarkp-w3m-bookmark-p cand)             'bookmarkp-w3m)
-           ((bookmarkp-remote-file-bookmark-p cand)     'bookmarkp-remote-file)
-           ((and (bookmarkp-file-bookmark-p cand)
+     (cond ((bmkp-sequence-bookmark-p cand)        'bmkp-sequence)
+           ((bmkp-function-bookmark-p cand)        'bmkp-function)
+           ((bmkp-bookmark-list-bookmark-p cand)   'bmkp-bookmark-list)
+           ((bmkp-desktop-bookmark-p cand)         'bmkp-desktop)
+           ((bmkp-info-bookmark-p cand)            'bmkp-info)
+           ((bmkp-man-bookmark-p cand)             'bmkp-man)
+           ((bmkp-gnus-bookmark-p cand)            'bmkp-gnus)
+           ((bmkp-w3m-bookmark-p cand)             'bmkp-w3m)
+           ((bmkp-remote-file-bookmark-p cand)     'bmkp-remote-file)
+           ((and (bmkp-file-bookmark-p cand)
                  (file-directory-p
-                  (bookmark-get-filename cand)))        'bookmarkp-local-directory)
-           ((and (bookmarkp-local-file-bookmark-p cand)
-                 (bookmarkp-region-bookmark-p cand))    'bookmarkp-local-file-with-region)
-           ((bookmarkp-local-file-bookmark-p cand)      'bookmarkp-local-file-without-region)
-           ((and (bookmarkp-get-buffer-name cand)
-                 (get-buffer (bookmarkp-get-buffer-name cand))
+                  (bookmark-get-filename cand)))        'bmkp-local-directory)
+           ((and (bmkp-local-file-bookmark-p cand)
+                 (bmkp-region-bookmark-p cand))    'bmkp-local-file-with-region)
+           ((bmkp-local-file-bookmark-p cand)      'bmkp-local-file-without-region)
+           ((and (bmkp-get-buffer-name cand)
+                 (get-buffer (bmkp-get-buffer-name cand))
                  (equal (bookmark-get-filename cand)
-                        bookmarkp-non-file-filename))   'bookmarkp-buffer)
-           ((not (bookmarkp-file-bookmark-p cand))      'bookmarkp-non-file)
-           (t                                           'bookmarkp-bad-bookmark))
+                        bmkp-non-file-filename))   'bmkp-buffer)
+           ((not (bmkp-file-bookmark-p cand))      'bmkp-non-file)
+           (t                                           'bmkp-bad-bookmark))
      cand))
   cand)
 
@@ -3595,36 +3595,36 @@ You probably don't want to use this.  Use
         (progn (run-hooks 'bookmark-after-jump-hook) t)
         ;; If there is an annotation for this bookmark, show it in a buffer.
         (when bookmark-automatically-show-annotations (bookmark-show-annotation bookmark)))))
-  ;; Unless `bookmarkp-use-region-flag' and bookmark has a region, show position using crosshairs.
-  (unless (and (boundp 'bookmarkp-use-region-flag) bookmarkp-use-region-flag
-               (fboundp 'bookmarkp-get-end-position) (bookmarkp-get-end-position bookmark)
-               (/= (bookmark-get-position bookmark) (bookmarkp-get-end-position bookmark)))
+  ;; Unless `bmkp-use-region-flag' and bookmark has a region, show position using crosshairs.
+  (unless (and (boundp 'bmkp-use-region-flag) bmkp-use-region-flag
+               (fboundp 'bmkp-get-end-position) (bmkp-get-end-position bookmark)
+               (/= (bookmark-get-position bookmark) (bmkp-get-end-position bookmark)))
     (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))))
 ;; $$$$$$   (select-window (minibuffer-window))
 ;; $$$$$$   (select-frame-set-input-focus (selected-frame)))
 
 (defun icicle-bookmark-help-string (bookmark-name)
-  "Return a help string for BOOKMARK-NAME." ; `bookmarkp-*' functions are defined in `bookmark+.el'.
+  "Return a help string for BOOKMARK-NAME." ; `bmkp-*' functions are defined in `bookmark+.el'.
   ;; Use BOOKMARK-NAME, not full bookmark BMK, as arg to vanilla bookmark functions, for Emacs < 23.
   (let* ((bmk         (bookmark-get-bookmark bookmark-name))
-         (buf         (and (fboundp 'bookmarkp-get-buffer-name) (bookmarkp-get-buffer-name bmk)))
+         (buf         (and (fboundp 'bmkp-get-buffer-name) (bmkp-get-buffer-name bmk)))
          (file        (bookmark-get-filename bookmark-name))
          (start       (bookmark-get-position bookmark-name))
-         (end         (and (fboundp 'bookmarkp-get-end-position) (bookmarkp-get-end-position bmk)))
+         (end         (and (fboundp 'bmkp-get-end-position) (bmkp-get-end-position bmk)))
          (annot       (bookmark-get-annotation bookmark-name))
-         (sequence-p  (and (fboundp 'bookmarkp-sequence-bookmark-p)
-                           (bookmarkp-sequence-bookmark-p bmk)))
-         (function-p  (and (fboundp 'bookmarkp-function-bookmark-p)
-                           (bookmarkp-function-bookmark-p bmk)))
-         (blist-p     (and (fboundp 'bookmarkp-bookmark-list-bookmark-p)
-                           (bookmarkp-bookmark-list-bookmark-p bmk)))
-         (desktop-p   (and (fboundp 'bookmarkp-desktop-bookmark-p)
-                           (bookmarkp-desktop-bookmark-p bmk)))
-         (dired-p     (and (fboundp 'bookmarkp-dired-bookmark-p) (bookmarkp-dired-bookmark-p bmk)))
-         (gnus-p      (and (fboundp 'bookmarkp-gnus-bookmark-p) (bookmarkp-gnus-bookmark-p bmk)))
-         (info-p      (and (fboundp 'bookmarkp-info-bookmark-p) (bookmarkp-info-bookmark-p bmk)))
-         (man-p       (and (fboundp 'bookmarkp-man-bookmark-p) (bookmarkp-man-bookmark-p bmk)))
-         (w3m-p       (and (fboundp 'bookmarkp-w3m-bookmark-p) (bookmarkp-w3m-bookmark-p bmk)))
+         (sequence-p  (and (fboundp 'bmkp-sequence-bookmark-p)
+                           (bmkp-sequence-bookmark-p bmk)))
+         (function-p  (and (fboundp 'bmkp-function-bookmark-p)
+                           (bmkp-function-bookmark-p bmk)))
+         (blist-p     (and (fboundp 'bmkp-bookmark-list-bookmark-p)
+                           (bmkp-bookmark-list-bookmark-p bmk)))
+         (desktop-p   (and (fboundp 'bmkp-desktop-bookmark-p)
+                           (bmkp-desktop-bookmark-p bmk)))
+         (dired-p     (and (fboundp 'bmkp-dired-bookmark-p) (bmkp-dired-bookmark-p bmk)))
+         (gnus-p      (and (fboundp 'bmkp-gnus-bookmark-p) (bmkp-gnus-bookmark-p bmk)))
+         (info-p      (and (fboundp 'bmkp-info-bookmark-p) (bmkp-info-bookmark-p bmk)))
+         (man-p       (and (fboundp 'bmkp-man-bookmark-p) (bmkp-man-bookmark-p bmk)))
+         (w3m-p       (and (fboundp 'bmkp-w3m-bookmark-p) (bmkp-w3m-bookmark-p bmk)))
          type-info-p no-position-p)
     (when (or sequence-p function-p) (setq no-position-p  t))
     (concat (setq type-info-p
@@ -3643,8 +3643,8 @@ You probably don't want to use this.  Use
                         (w3m-p      "W3M URL, ")
                         (t nil)))
             (and (not dired-p)
-                 (or (and file (or (not (boundp 'bookmarkp-non-file-filename))
-                                   (not (equal file bookmarkp-non-file-filename)))
+                 (or (and file (or (not (boundp 'bmkp-non-file-filename))
+                                   (not (equal file bmkp-non-file-filename)))
                           (format (if type-info-p "file `%s', " "File `%s', ") file))
                      (and buf (format (if type-info-p "buffer `%s', " "Buffer `%s', ") buf))))
             (and (not no-position-p)
@@ -3693,73 +3693,73 @@ Remove crosshairs highlighting and unbind filtering keys."
   "Narrow the bookmark candidates to bookmark-list bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-bookmark-list-bookmark-p
+   #'(lambda (x) (bmkp-bookmark-list-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-desktop-narrow ()   ; Bound to `C-M-K' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to desktop bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-desktop-bookmark-p
+   #'(lambda (x) (bmkp-desktop-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-dired-narrow ()   ; Bound to `C-M-d' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Dired bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-dired-bookmark-p
+   #'(lambda (x) (bmkp-dired-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-file-narrow ()   ; Bound to `C-M-f' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-file-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-file-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-gnus-narrow ()   ; Bound to `C-M-g' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Gnus bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-gnus-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-gnus-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-info-narrow ()   ; Bound to `C-M-I' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to Info bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-info-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-info-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-local-file-narrow () ; Bound to `C-M-F' for bookmark completion.
   "Narrow the bookmark candidates to local-file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-local-file-bookmark-p
+   #'(lambda (x) (bmkp-local-file-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-man-narrow () ; Bound to `C-M-m' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to `man'-page bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-man-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-man-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-non-file-narrow () ; Bound to `C-M-b' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to non-file (buffer-only) bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-non-file-bookmark-p
+   #'(lambda (x) (bmkp-non-file-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-region-narrow () ; Bound to `C-M-r' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to bookmarks with regions."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-region-bookmark-p
+   #'(lambda (x) (bmkp-region-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-remote-file-narrow () ; Bound to `C-M-@' in minibuf for bookmark completion.
   "Narrow the bookmark candidates to remote-file bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-remote-file-bookmark-p
+   #'(lambda (x) (bmkp-remote-file-bookmark-p
                   (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defun icicle-bookmark-specific-buffers-narrow (buffers) ; `C-M-= b' for bookmark completion.
@@ -3769,7 +3769,7 @@ You are prompted for the BUFFERS."
                  (list (icicle-bookmarked-buffer-list))))
   (icicle-narrow-candidates-with-predicate
    `(lambda (x)
-     (member (bookmarkp-get-buffer-name (funcall icicle-get-alist-candidate-function (car x)))
+     (member (bmkp-get-buffer-name (funcall icicle-get-alist-candidate-function (car x)))
       ',buffers))))
 
 (defun icicle-bookmark-specific-files-narrow (files) ; `C-M-= f' in minibuf for bookmark completion.
@@ -3787,13 +3787,13 @@ You are prompted for the FILES."
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x)
        (with-current-buffer orig-buff
-         (bookmarkp-this-buffer-p (funcall icicle-get-alist-candidate-function (car x)))))))
+         (bmkp-this-buffer-p (funcall icicle-get-alist-candidate-function (car x)))))))
 
 (defun icicle-bookmark-w3m-narrow ()    ; Bound to `C-M-w' in minibuffer for bookmark completion.
   "Narrow the bookmark candidates to W3m bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
-   #'(lambda (x) (bookmarkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+   #'(lambda (x) (bmkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
 
 (defmacro icicle-define-bookmark-command-1 (otherp type prompt args)
   "Helper macro for `icicle-define*-bookmark-command' macros.
@@ -3837,33 +3837,33 @@ command")))
       (append
        '(("in *Bookmark List* order")   ; Renamed from "turned OFF'.
          ("by bookmark name" . icicle-alpha-p)
-         ("by last bookmark access" (bookmarkp-bookmark-last-access-cp) icicle-alpha-p)
-         ("by bookmark visit frequency" (bookmarkp-visited-more-cp) icicle-alpha-p))
+         ("by last bookmark access" (bmkp-bookmark-last-access-cp) icicle-alpha-p)
+         ("by bookmark visit frequency" (bmkp-visited-more-cp) icicle-alpha-p))
        (and (member ,type '("info" "region"))
-        '(("by Info location" (bookmarkp-info-cp) icicle-alpha-p)))
+        '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
        (and (member ,type '("gnus" "region"))
-        '(("by Gnus thread" (bookmarkp-gnus-cp) icicle-alpha-p)))
+        '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
        (and (member ,type '("w3m" "region"))
-        '(("by w3m url" (bookmarkp-w3m-cp) icicle-alpha-p)))
+        '(("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)))
        (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
-        '(("by bookmark type" (bookmarkp-info-cp bookmarkp-gnus-cp bookmarkp-w3m-cp
-                               bookmarkp-local-file-type-cp bookmarkp-handler-cp)
+        '(("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                               bmkp-local-file-type-cp bmkp-handler-cp)
            icicle-alpha-p)))
        (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
-        '(("by file name" (bookmarkp-file-alpha-cp) icicle-alpha-p)))
+        '(("by file name" (bmkp-file-alpha-cp) icicle-alpha-p)))
        (and (member ,type '("local-file" "file" "dired" "region"))
-        '(("by local file type" (bookmarkp-local-file-type-cp) icicle-alpha-p)
-          ("by local file size" (bookmarkp-local-file-size-cp) icicle-alpha-p)
-          ("by last local file access" (bookmarkp-local-file-accessed-more-recently-cp)
+        '(("by local file type" (bmkp-local-file-type-cp) icicle-alpha-p)
+          ("by local file size" (bmkp-local-file-size-cp) icicle-alpha-p)
+          ("by last local file access" (bmkp-local-file-accessed-more-recently-cp)
            icicle-alpha-p)
-          ("by last local file update" (bookmarkp-local-file-updated-more-recently-cp)
+          ("by last local file update" (bmkp-local-file-updated-more-recently-cp)
            icicle-alpha-p)))
        (and (not (string= ,type "desktop"))
-        '(("by last buffer or file access" (bookmarkp-buffer-last-access-cp
-                                            bookmarkp-local-file-accessed-more-recently-cp)
+        '(("by last buffer or file access" (bmkp-buffer-last-access-cp
+                                            bmkp-local-file-accessed-more-recently-cp)
            icicle-alpha-p)))
        (and (get-buffer "*Bookmark List*")
-        '(("marked before unmarked (in *Bookmark List*)" (bookmarkp-marked-cp)
+        '(("marked before unmarked (in *Bookmark List*)" (bmkp-marked-cp)
            icicle-alpha-p)))
        '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
          ("case insensitive" . icicle-case-insensitive-string-less-p))))
@@ -3873,8 +3873,8 @@ command")))
             (setq cand  (funcall icicle-get-alist-candidate-function cand))
             (setq cand  (cons (caar cand) (cdr cand))))
           (if current-prefix-arg
-              (bookmarkp-describe-bookmark-internals cand)
-            (bookmarkp-describe-bookmark cand))))
+              (bmkp-describe-bookmark-internals cand)
+            (bmkp-describe-bookmark cand))))
      (icicle-candidates-alist
       (mapcar (if icicle-show-multi-completion-flag
                   #'(lambda (bmk)
@@ -3882,11 +3882,11 @@ command")))
                           (let* ((bname     (bookmark-name-from-full-record bmk))
                                  (guts      (bookmark-get-bookmark-record bmk))
                                  (file      (bookmark-get-filename bmk))
-                                 (buf       (bookmarkp-get-buffer-name bmk))
-                                 (file/buf  (if (and buf (equal file bookmarkp-non-file-filename))
+                                 (buf       (bmkp-get-buffer-name bmk))
+                                 (file/buf  (if (and buf (equal file bmkp-non-file-filename))
                                                 buf
                                               file))
-                                 (tags      (bookmarkp-get-tags bmk)))
+                                 (tags      (bmkp-get-tags bmk)))
                             ;; Emacs 20 byte-compiler bug prevents using backslash syntax here.
                             (cons (append (list (icicle-candidate-short-help
                                                  (icicle-bookmark-help-string bname)
@@ -3904,8 +3904,8 @@ command")))
                                  (icicle-bookmark-propertize-candidate bname))
                                 guts))
                       (error nil))))
-       (bookmarkp-sort-and-remove-dups
-        (funcall ',(intern (format "bookmarkp-%s-alist-only" type)) ,@args)))))
+       (bmkp-sort-and-remove-dups
+        (funcall ',(intern (format "bmkp-%s-alist-only" type)) ,@args)))))
     nil                                 ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (icicle-bookmark-cleanup)))         ; Last code
@@ -3916,7 +3916,7 @@ TYPE is a string to be used for the doc string, default prompt, and in
  function names.  It should be lowercase and contain no spaces.
 Optional arg PROMPT is the completion prompt.
 ARGS is a list of any additional arguments to be passed to the
-appropriate `bookmarkp-TYPE-alist-only' function."
+appropriate `bmkp-TYPE-alist-only' function."
   `(icicle-define-bookmark-command-1 nil ,type ,prompt ,args))
 
 (defmacro icicle-define-bookmark-other-window-command (type &optional prompt &rest args)
@@ -3966,13 +3966,13 @@ appropriate `bookmarkp-TYPE-alist-only' function."
 (icicle-define-bookmark-command              "region" "Select region: ")      ; `C-x j r'
 (icicle-define-bookmark-other-window-command "region" "Select region: ")      ; `C-x 4 j r'
 (icicle-define-bookmark-command              "all-tags" nil                   ; `C-x j t *'
-                                             (bookmarkp-read-tags-completing))
+                                             (bmkp-read-tags-completing))
 (icicle-define-bookmark-other-window-command "all-tags" nil                   ; `C-x 4 j t *'
-                                             (bookmarkp-read-tags-completing))
+                                             (bmkp-read-tags-completing))
 (icicle-define-bookmark-command              "some-tags" nil                  ; `C-x j t +'
-                                             (bookmarkp-read-tags-completing))
+                                             (bmkp-read-tags-completing))
 (icicle-define-bookmark-other-window-command "some-tags" nil                  ; `C-x 4 j t +'
-                                             (bookmarkp-read-tags-completing))
+                                             (bmkp-read-tags-completing))
 (icicle-define-bookmark-command              "all-tags-regexp" nil            ; `C-x j t % *'
                                              (read-string "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "all-tags-regexp" nil            ; `C-x 4 j t % *'
@@ -3999,7 +3999,7 @@ appropriate `bookmarkp-TYPE-alist-only' function."
 (defun icicle-bookmarked-buffer-list ()
   "`icicle-buffer-list', but only for bookmarked buffers."
   (interactive)
-  (let ((icicle-buffer-predicate  (lambda (buf) (member buf (bookmarkp-buffer-names)))))
+  (let ((icicle-buffer-predicate  (lambda (buf) (member buf (bmkp-buffer-names)))))
     (icicle-buffer-list)))
   
 ;;;###autoload
@@ -4007,8 +4007,7 @@ appropriate `bookmarkp-TYPE-alist-only' function."
   "`icicle-buffer-list', but only for bookmarked buffers."
   (interactive)
   (let ((use-file-dialog        nil)
-        (icicle-file-predicate  (lambda (file)
-                                  (member (expand-file-name file) (bookmarkp-file-names)))))
+        (icicle-file-predicate  (lambda (file) (member (expand-file-name file) (bmkp-file-names)))))
     (icicle-file-list)))
 
 ;;;###autoload

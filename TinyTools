@@ -10,10 +10,9 @@ monolithic package:
 
 == Download and Install ==
 
-''Note:'' As of 2009-2010, please only install from git. The tarballs and install structure is
-ongoing changes.
+=== From version control repository (latest code) ===
 
-To download, run these commands from shell:
+The latest code can be found from Git version control. Run these commands:
 
   mkdir -p ~/emacs.d/packages
   cd ~/emacs.d/packages
@@ -29,9 +28,28 @@ To install, add this to your <code>~/.emacs</code> InitFile:
   (add-to-list 'load-path "~/emacs.d/packages/emacs-tiny-tools/lisp/tiny")
   (add-to-list 'load-path "~/emacs.d/packages/emacs-tiny-tools/lisp/other")
 
-== Conflicts and Bugs ==
+=== From Savannah snapshot tarball ===
 
-Please report any conflicts or bugs to
+The Savannah contains a link to snapshot tarball, if you prefer it over the Git:
+
+  #   or if you prefer traditional: ~/elisp
+
+  INSTALL=$HOME/.emacs.d
+  mkdir $install
+
+  #   cd to directory where you unpacked the tarball
+  install -m 644 lisp/tiny/*.el lisp/other/*.el $INSTALL/
+
+Add following to your Emacs InitFile:
+
+ (pushnew "~/.emacs.d/" load-path)
+ 
+ ;; Optional
+ ;; (require 'tinypath)
+
+== Reporting Features and Bugs ==
+
+Please report any suggestions or bugs to
 [https://savannah.nongnu.org/bugs/?group=emacs-tiny-tools Savannah's bug tracker].
 Note that Savannah requires registration in order to use its resources.
 
@@ -42,7 +60,7 @@ This is only an excerpt:
 * MailboxMode -- berkeley style aka standard mailbox browsing minor mode
 * TinyPage -- handling ^L pages, select, cut, copy, head renumber
 * ProcmailMode -- mode for editing procmail configuration files
-* TinyDebian -- the TinyTools contains also a package with some utilities for debian users
+* TinyDebian -- BTS interface to email based "debbugs" used in Debian, Emacs, GNU projects. Limited support for other BTS's include Ubuntu Freshmeat, Sourceforge, Launchpad, Gnome, KDE, MySQL. Contains also Debian specific utilities.
 * TinyGnus -- Gnus plug-in. Additional functions. UBE fight 
 * TinyMail -- some mail add-ons
 * TinyPerl -- Accessing Perl documentation and dealing with POD documentation in general.
@@ -53,26 +71,6 @@ This is only an excerpt:
 * TinyTf -- Write plain text documents easily. Can also convert to HTML with the help of separate utility.
 
 == Other ==
-
-=== Installation from tarball ===
-
-Here's a quick synopsis of one way of doing it (tested on GNU/Linux, with Gnu Emacs 21),
-in case you downloaded the snapshot tarball:
-
-  #   or if you prefer traditional: ~/elisp
-
-  install=$HOME/.emacs.d
-  mkdir $install
-
-  #   cd to directory where you unpacked the tarball
-  install -m 644 lisp/tiny/*.el lisp/other/*.el $install/
-
-And in your Emacs InitFile (in case you used another directory):
-
- (pushnew "~/.emacs.d/" load-path)
- 
- ;; Optional
- ;; (require 'tinypath)
 
 === Documents ===
 

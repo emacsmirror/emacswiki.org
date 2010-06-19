@@ -1,5 +1,5 @@
 ;;;; open-junk-file.el --- Open a junk (memo) file to try-and-error
-;; $Id: open-junk-file.el,v 1.2 2010/05/04 09:08:48 rubikitch Exp $
+;; $Id: open-junk-file.el,v 1.3 2010/06/18 20:07:49 rubikitch Exp $
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -47,8 +47,8 @@
 ;;
 ;; Below are customizable option list:
 ;;
-;;  `open-junk-file-directory'
-;;    *Directory to put junk files.
+;;  `open-junk-file-format'
+;;    *File format to put junk files with directory.
 ;;    default = "~/junk/%Y/%m/%d-%H%M%S."
 ;;  `open-junk-file-find-file-function'
 ;;    *Function to open junk files.
@@ -98,6 +98,10 @@
 ;;; History:
 
 ;; $Log: open-junk-file.el,v $
+;; Revision 1.3  2010/06/18 20:07:49  rubikitch
+;; Rename variable: `open-junk-file-directory' -> `open-junk-file-format'
+;; `open-junk-file-directory' is an alias now, so you do not have to modify your .emacs.
+;;
 ;; Revision 1.2  2010/05/04 09:08:48  rubikitch
 ;; Added bug report command
 ;;
@@ -107,16 +111,17 @@
 
 ;;; Code:
 
-(defvar open-junk-file-version "$Id: open-junk-file.el,v 1.2 2010/05/04 09:08:48 rubikitch Exp $")
+(defvar open-junk-file-version "$Id: open-junk-file.el,v 1.3 2010/06/18 20:07:49 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup open-junk-file nil
   "open-junk-file"
   :group 'emacs)
-(defcustom open-junk-file-directory "~/junk/%Y/%m/%d-%H%M%S."
-  "*Directory to put junk files.
+(defcustom open-junk-file-format "~/junk/%Y/%m/%d-%H%M%S."
+  "*File format to put junk files with directory.
 It can include `format-time-string' format specifications."
   :type 'string  
   :group 'open-junk-file)
+(defvaralias 'open-junk-file-format 'open-junk-file-directory)
 (defcustom open-junk-file-find-file-function 'find-file-other-window
   "*Function to open junk files."
   :type 'function  
@@ -129,7 +134,7 @@ It can include `format-time-string' format specifications."
 For example, in Emacs Lisp programming, use M-x `open-junk-file'
 instead of *scratch* buffer. The junk code is SEARCHABLE."
   (interactive)
-  (let* ((file (format-time-string open-junk-file-directory (current-time)))
+  (let* ((file (format-time-string open-junk-file-format (current-time)))
          (dir (file-name-directory file)))
     (make-directory dir t)
     (funcall open-junk-file-find-file-function (read-string "Junk Code (Enter extension): " file))))

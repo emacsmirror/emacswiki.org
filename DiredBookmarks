@@ -20,18 +20,18 @@ Library '''[[BookmarkPlus|Bookmark+]]''' lets you do this. Whenever you create a
 
 And because you might have many, many bookmarks, '''Bookmark+''' has jump commands that are specialized for Dired bookmarks:
 
-* '''`bookmarkp-dired-jump'''' ('''`J'''' in Dired)
-* '''`bookmarkp-dired-jump-current'''' ('''`C-j'''' in Dired)
+* '''`bmkp-dired-jump'''' ('''`J'''' in Dired)
+* '''`bmkp-dired-jump-current'''' ('''`C-j'''' in Dired)
 
 The former presents all Dired bookmarks (and only Dired bookmarks) as completion candidates. The latter presents only Dired bookmarks for the ''current'' directory (`default-directory'). 
 
 `C-j' is particularly useful to switch among various "views" of the same project. The directory doesn't change; only its state changes: markings, switches, which subdirs are expanded, and which are hidden.
 
-You can use these commands from any buffer, not just Dired. `bookmarkp-dired-jump' is in fact bound globally to '''`C-x j d'''', and an other-window version of it is bound globally to '''`C-x 4 j d''''.
+You can use these commands from any buffer, not just Dired. `bmkp-dired-jump' is in fact bound globally to '''`C-x j d'''', and an other-window version of it is bound globally to '''`C-x 4 j d''''.
 
 '''See Also:'''
 
-* [[BookmarkPlus#TypeSpecificJumpCommands|Type-Specific Jump Commands]] for more information about `bookmarkp-dired-jump' and `bookmarkp-dired-jump-current'.
+* [[BookmarkPlus#TypeSpecificJumpCommands|Type-Specific Jump Commands]] for more information about `bmkp-dired-jump' and `bmkp-dired-jump-current'.
 
 * [[BookmarkPlus#BookmarkTags|Tagging]] for information about organizing your code projects by tagging files in different ways, [[http://delicious.com|del.icio.us]]-style.
 
