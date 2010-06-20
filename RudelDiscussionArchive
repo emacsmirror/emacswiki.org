@@ -1,0 +1,432 @@
+== Introduction ==
+
+This page contains old content from the feedback and discussion section of the [[Rudel]] page.
+
+//Please paste new questions and feedback on the //[[Rudel]]// page.//
+
+== Content ==
+
+=== Compilation-related Problem - June 2010 ===
+
+[new]
+Okay... I just had a major system crash and ended up doing a new install of Ubuntu Lucid. I've installed emacs23 and cedet, etc., but I'm getting the following error (from --debug-init) when rudel-loaddefs.el runs:
+
+<pre>
+͂͂͂͂͂͂͂͂͂͂͂͂Debugger entered--Lisp error: (wrong-type-argument listp :static)
+  eieio-defmethod(rudel-get-factory (:static ((this rudel-backend-factory) category) "Return the factory responsible for CATEGORY.\nIf there is no responsible factory, create one and return it." (with-slots (factories) this (or ... ...))))
+  (defmethod rudel-get-factory :static ((this rudel-backend-factory) category) "Return the factory responsible for CATEGORY.\nIf there is no responsible factory, create one and return it." (with-slots (factories) this (or ... ...)))
+  eval-buffer(#<buffer  *load*<3>> nil "/usr/share/emacs/site-lisp/rudel/rudel-backend.el" nil t)  ; Reading at buffer position 3636
+  load-with-code-conversion("/usr/share/emacs/site-lisp/rudel/rudel-backend.el" "/usr/share/emacs/site-lisp/rudel/rudel-backend.el" nil t)
+  (rudel-add-backend (rudel-backend-get-factory (quote protocol)) (quote infinote) (quote rudel-infinote-backend))
+  eval-buffer(#<buffer  *load*<2>> nil "/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" nil t)  ; Reading at buffer position 4075
+  load-with-code-conversion("/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" "/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" nil nil)
+  load("/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el" nil nil t)
+  load-file("/usr/share/emacs/site-lisp/rudel/rudel-loaddefs.el")
+  eval-buffer(#<buffer  *load*> nil "/home/michael/.emacs" nil t)  ; Reading at buffer position 3813
+  load-with-code-conversion("/home/michael/.emacs" "/home/michael/.emacs" t t)
+  load("~/.emacs" t t)
+</pre>
+
+There's more but there's high high-ascii in it, so won't copy, of course. Hopefully you can get the jist from this. :)
+-- Michael
+
+[new]
+Your error looks like the error in [http://sourceforge.net/tracker/?func=detail&aid=2864765&group_id=249139&atid=1126346 this bug report] which was caused by an old CEDET version installed via the Debian package manager (The CEDET version can be checked using ##M-x cedet-version##). Also, Emacs 23 includes a version of CEDET. Installing it via the package manager should not be required (and may even cause harm as in the linked bug report).
+--JanMoringen
+
+[new]
+Well... I tried uninstalling CEDET (via the package manager) and it uninstalled eieio as well. And, apparently (at least on a clean install of Lucid) CEDET is *not* installed as part of deb emacs23. I couldn't find it anywhere after I removed the CEDET package and then reinstalled just emacs23. Also, I get the same errors with just a core install as without CEDET. So I reinstalled eieio. It required only "cedet-common", rather than the all the deb cedet packages. Fine. But it still generates the same errors, either way. It appears I need need a way to install cedet and eieio other than via Canonical.
+
+-- Michael
+
+[new]
+The [CollectionOfEmacsDevelopmentEnvironmentTools CEDET] page says:
+: In Emacs 23.2, CEDET was merged into the main Emacs distribution.
+
+Maybe the Ubuntu version is older? In conclusion, I still assume the CEDET variants you tried were too old. Sorry for the confusion.
+
+The easiest solution, although quite unsatisfactory, is probably to install CEDET from CVS.
+--JanMoringen
+
+[new]
+No, Debian is just strange. They have their own unique way of doing emacs. There's a collection of emacs startup.el files in the etc tree that look like the rc.d directory. =snort= 
+
+But okay... I finally got the CVS version of CEDET working -- at least, I can get the rudel menu up without any errors showing up ( in --debug-init mode). But when I try to join a session I *now* get: 
+
+{{{
+Warning (rudel): Could not load backend `zeroconf': Wrong type argument: arrayp, nil
+Warning (rudel): Could not load backend `zeroconf': Wrong type argument: arrayp, nil
+Warning (rudel): Could not load backend `infinote': Wrong type argument: arrayp, nil
+Warning (rudel): Could not load backend `obby': Wrong type argument: arrayp, nil
+}}}
+
+This is turning into an ordeal. :P
+
+-- michael
+
+[new]
+I'm really sorry that Rudel causes so many problems for you. I hope you can endure this a bit longer. We are probably getting close. Unfortunately, I have no idea how installation of Emacs extensions can be made easier or at least less error prone.
+
+What happens without the ##--debug-init## option?
+
+Did you delete and regenerate ##rudel-loaddefs.el## since you reinstalled CEDET?
+
+Alternatively, you can put the following into your ##.emacs##:
+{{{
+(load-file "rudel-loaddefs.el") ;; this should already be there, maybe just similar
+(require 'rudel-zeroconf
+(require 'rudel-infinote)
+(require 'rudel-obby)
+}}}
+This should immediately load the backends, hopefully working around the problems that happen when auto loading them.
+--JanMoringen
+[new]
+No, I did not delete the ##rudel-loaddefs.el##. I //did// recompile rudel, though.
+
+So now I deleted ##loaddefs## and regenerated it. It changed the errors:
+
+Here's the non--debug-init version:
+
+{{{
+Warning (initialization): An error occurred while loading `/home/michael/.emacs':
+
+error: Given parent class rudel-protocol-backend is not a class
+
+To ensure normal operation, you should investigate and remove the
+cause of the error in your initialization file.  Start Emacs with
+the `--debug-init' option to view a complete error backtrace.
+}}}
+And here's what debug-init output:
+{{{
+Debugger entered--Lisp error: (error "Given parent class rudel-protocol-backend is not a class")
+  signal(error ("Given parent class rudel-protocol-backend is not a class"))
+  error("Given parent class %s is not a class" rudel-protocol-backend)
+  eieio-defclass(rudel-infinote-backend (rudel-protocol-backend) ((capabilities :initform (quote ...))) (""))
+  (progn (eieio-defclass (quote rudel-infinote-backend) (quote ...) (quote ...) (quote ...)))
+  (eval-and-compile (eieio-defclass (quote rudel-infinote-backend) (quote ...) (quote ...) (quote ...)))
+  (defclass rudel-infinote-backend (rudel-protocol-backend) ((capabilities :initform ...)) "")
+  eval-buffer(#<buffer  *load*<2>> nil "/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" nil t)  ; Reading at buffer position 4486
+  load-with-code-conversion("/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" "/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" nil nil)
+  load("/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el" nil nil t)
+  load-file("/usr/share/emacs23/site-lisp/rudel/rudel-loaddefs.el")
+  eval-buffer(#<buffer  *load*> nil "/home/michael/.emacs" nil t)  ; Reading at buffer position 3814
+  load-with-code-conversion("/home/michael/.emacs" "/home/michael/.emacs" t t)
+  load("~/.emacs" t t)
+}}}
+Also, rudel will no not start //at all//. The command ##global-rudel-minor-mode## no longer exists.
+
+--michael
+
+P.S. I'm not blaming you and rudel, Jan. This is on Ubuntu, IMO. They've known that the emacs build for Lucid (which is supposed to be their flagship LTS release) was screwed up for nearly 9 months. They even it marked as "important" (if memory serves) -- and they've done nothing about it. And whose brainy idea was it at Canonical to remove rudel (and a good many other fine emacs packages) from the repositories, anyway? (Maybe it's because they all use VI, who knows. :P )
+
+[new]
+Hey Michael,
+
+is it possible that ##rudel-loaddefs.el## has been generated without eieio loaded? //Normally//, this should not happen since eieio is required in ##rudel-compile.el##, but your ##rudel-loaddefs.el## has ##(defclass rudel-infinote-backend ...## which should be ##(eieio-defclass-autoload 'rudel-infinote-backend ...##. I'm pretty sure this causes the error you now see. You could try to recreate ##rudel-loaddefs.el##, if you have any idea what went wrong.
+
+If fixing ##rudel-loaddefs.el## is not possible, you can also delete it and put the following into your ##.emacs## (at the expense of loading most of Rudel at Emacs startup):
+{{{
+(let* ((rudel-dir "/usr/share/emacs23/site-lisp/rudel/")
+        (subdirs   (mapcar 
+		   (lambda (subdir)
+		     (concat rudel-dir subdir))
+		   '("."
+		     "jupiter" "adopted" 
+		     "socket" "tls" "xmpp" "telepathy"
+		     "obby" "infinote"
+		     "zeroconf")))) 
+  (dolist (subdir subdirs) 
+    (add-to-list 'load-path subdir)))
+
+(require 'rudel-mode)
+(require 'rudel-socket)
+(require 'rudel-tls)
+(require 'rudel-obby)
+}}}
+This method should even work with a freshly extracted Rudel, without compiling or anything.
+
+--JanMoringen
+[new]
+Hmm... Okay... Your hack seems to have gotten rudel to work. I'll have a chance to try a session later, but clicking on joining/creating didn't generate any errors.
+
+That said.. If eieio isn't being loaded then the logical conclusion is that the CVS version of cedet isn't properly installed and accessible. So I ran the the cit-test.sh script included in the package (just found it -- I can be a bit slow at times). Here's what it returned:
+
+{{{
+Debugger entered--Lisp error: (error "Compilation failed!")
+  signal(error ("Compilation failed!"))
+  error("Compilation failed!")
+  (progn (error "Compilation failed!"))
+  (if (re-search-backward " Error " nil t) (progn (error "Compilation failed!")))
+  (when (re-search-backward " Error " nil t) (error "Compilation failed!"))
+  (save-excursion (set-buffer "*compilation*") (goto-char (point-max)) (when (re-search-backward " Error " nil t) (error "Compilation failed!")))
+  cit-wait-for-compilation()
+  (let ((bufftokill ...)) (ede-proj-regenerate) (compile (concat ede-make-command ...)) (cit-wait-for-compilation) (kill-buffer bufftokill))
+  cit-compile-and-wait()
+  cit-srecode-fill-cpp("Make")
+  cedet-integ-test-proj("Make")
+  cedet-integ-test-Make()
+  command-line-1(("-l" "../common/cedet.el" "-l" "cit-load.el" "-f" "toggle-debug-on-error" "-f" "toggle-debug-on-quit" "-f" "cedet-integ-test-Make"))
+  command-line()
+  normal-top-level()
+}}}
+
+
+(I'd really like to get this damned thing working //right//. :P)
+
+--- michael
+
+[new]
+For CEDET problems, you should write to the mailing list (cedet-devel@lists.sourceforge.net) or file a bug report. Eric is generally responsive and helpful.
+
+Another option would be to install the development version of Emacs to get integrated CEDET. It has other improvements, too.
+
+
+--JanMoringen
+[new]
+Hadn't thought of that. Things get complicated when you start installing non-repo stuff. But maybe I can get it to behave in the local tree.  :)
+
+Also, still no go with rudel. It looks good. It doesn't error out, but it also won't connect to anything.
+
+-- michael
+
+[new]
+Assuming you try to connect to a Gobby instance, did you request an encrypted connection and do you have the ##gnutls-cli## program (gnutls-bin package) installed? Connections to Gobby won't work otherwise. Also, when using the trunk version, you have to select the start-tls transport backend.
+--JanMoringen
+[new]
+Okay...
+
+So I've been down several tracks here. The first was trying to install the SID. I removed emacs in its entirety and tried to install the SID. Only to find I can't install the entire development version of because it requires a 2010 build of libncurses-5.7 that is still in testing (and I can't find a repo for it). But the SID //did// have the latest DEB version of cedet. So I did a fresh Lucid install of emacs, and then installed the SID upgrades. So I'm running the latest and greatest version of cedet for Ubuntu. Great!
+
+Still no dice! Now we're back to the compiling errors, which I can't get to go away -- even if I put the CVS version of cedet right in the same directory with rudel.
+
+I have learned, however, what the problem likely is. Debian installs neither emacs nor cedet the way everyone else does (of course!). From "53cedet-contrib.el" in the ##/etc/emacs/site-start.d## directory:
+
+{{{
+;; The cedet-contrib package follows the Debian/GNU Linux 'emacsen' policy and
+;; byte-compiles its elisp files for each 'emacs flavor' (emacs19,
+;; xemacs19, emacs20, xemacs20...).  The compiled code is then
+;; installed in a subdirectory of the respective site-lisp directory.
+
+;; We have to add this to the load-path:
+(let ((package-dir (concat "/usr/share/"
+                           (symbol-name flavor)
+                           "/site-lisp/cedet-common")))
+  (when (file-directory-p package-dir)
+    (debian-pkg-add-load-path-item package-dir)))
+}}}
+Interestingly enough, not //all// DEB emacs packages have such a file in ##/etc/emacs/site-start.d##. Auctex doesn't, for example, yet it installs and runs correctly -- well, the DEB version does, anyway. And it follows the above "policy".
+
+The other thing I have discovered is that cedet is intalled very differently on DEB than it's packaged at CVS. And this might be causing the rudel compile errors on Lucid Links. Rather than packaging everything in the cedet package under the ##/cedet/## parent directory, its rebundled and placed directly in site-lisp. So rather than the path to eieio being ##~site-lisp/cedet/eieio/##, it's simply ##~site-lisp/eieio/##. Too, some things are placed in different places. Cedet is in ##~site-lisp/cedet-common/##, for instance, while semantic is broken up. Part of it is in its own directory, while the tag-folding and javascript files are in ##~site-lisp/cedet-contrib/##. Meanwhile, cogre, ede, eieio, and speedbar are all broken out and live in in their own directories right under ##~site-lisp##. I find it intresting that the SID folks support this unique architecture. Maybe they have no choice.
+
+-- Michael
+[new]
+Okay... Well, I just finished compiling emacs-snapshot from right here, since the binary wouldn't install. It runs fine (great, in fact!), but still won't compile ##load-defs.el## properly:
+
+{{{
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-backend.el at Tue Jun  8 21:04:01 2010
+rudel-backend.el:73:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-display.el at Tue Jun  8 21:04:01 2010
+rudel-display.el:40:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-icons.el at Tue Jun  8 21:04:01 2010
+rudel-icons.el:80:1:Error: Symbol's value as variable is void: rudel-icons-image-formats
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-interactive.el at Tue Jun  8 21:04:01 2010
+rudel-interactive.el:39:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-mode.el at Tue Jun  8 21:04:01 2010
+rudel-mode.el:54:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-operations.el at Tue Jun  8 21:04:01 2010
+rudel-operations.el:93:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-operators.el at Tue Jun  8 21:04:02 2010
+rudel-operators.el:65:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-protocol.el at Tue Jun  8 21:04:02 2010
+rudel-protocol.el:50:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-session-initiation.el at Tue Jun  8 21:04:02 2010
+rudel-session-initiation.el:62:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-speedbar.el at Tue Jun  8 21:04:02 2010
+rudel-speedbar.el:44:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-state-machine.el at Tue Jun  8 21:04:02 2010
+rudel-state-machine.el:132:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-transport-util.el at Tue Jun  8 21:04:02 2010
+rudel-transport-util.el:53:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-transport.el at Tue Jun  8 21:04:02 2010
+rudel-transport.el:44:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel-util.el at Tue Jun  8 21:04:02 2010
+rudel-util.el:82:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/rudel.el at Tue Jun  8 21:04:02 2010
+rudel.el:52:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-compound.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/adopted/'
+adopted-compound.el:57:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-delete.el at Tue Jun  8 21:04:02 2010
+adopted-delete.el:55:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-insert.el at Tue Jun  8 21:04:02 2010
+adopted-insert.el:55:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/adopted/adopted-nop.el at Tue Jun  8 21:04:02 2010
+adopted-nop.el:51:1:Error: Symbol's value as variable is void: filename
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/adopted/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-client.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/infinote/'
+rudel-infinote-client.el:39:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-document.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group-directory.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group-directory.el:43:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group-document.el:43:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group-text-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group-text-document.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-group.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-group.el:44:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-node-directory.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-node-directory.el:39:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-node.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-node.el:56:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-state.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-state.el:39:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-text-document.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-text-document.el:37:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-user.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-user.el:37:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote-util.el at Tue Jun  8 21:04:02 2010
+rudel-infinote-util.el:56:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/infinote/rudel-infinote.el at Tue Jun  8 21:04:02 2010
+rudel-infinote.el:41:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/infinote/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-compound.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/jupiter/'
+jupiter-compound.el:57:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-delete.el at Tue Jun  8 21:04:02 2010
+jupiter-delete.el:55:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-insert.el at Tue Jun  8 21:04:02 2010
+jupiter-insert.el:54:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-nop.el at Tue Jun  8 21:04:02 2010
+jupiter-nop.el:51:1:Error: Symbol's value as variable is void: filename
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter.el at Tue Jun  8 21:04:02 2010
+jupiter.el:80:1:Error: Symbol's value as variable is void: filename
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/jupiter/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-client.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/obby/'
+rudel-obby-client.el:46:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-display.el at Tue Jun  8 21:04:02 2010
+rudel-obby-display.el:40:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-server.el at Tue Jun  8 21:04:02 2010
+rudel-obby-server.el:58:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-state.el at Tue Jun  8 21:04:02 2010
+rudel-obby-state.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby-util.el at Tue Jun  8 21:04:02 2010
+rudel-obby-util.el:50:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/obby/rudel-obby.el at Tue Jun  8 21:04:02 2010
+rudel-obby.el:49:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/obby/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/socket/rudel-socket.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/socket/'
+rudel-socket.el:43:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/socket/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/telepathy/rudel-telepathy.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/telepathy/'
+rudel-telepathy.el:42:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/telepathy/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/tls/rudel-tls.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/tls/'
+rudel-tls.el:44:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/tls/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/wave/rudel-wave.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/wave/'
+rudel-wave.el:39:1:Error: Wrong type argument: listp, :static
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/wave/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-sasl.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/xmpp/'
+rudel-xmpp-sasl.el:42:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-state.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-state.el:40:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-tls.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-tls.el:39:1:Error: Wrong type argument: listp, :after
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-tunnel.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-tunnel.el:37:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp-util.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp-util.el:43:1:Error: Wrong type argument: listp, :static
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/xmpp/rudel-xmpp.el at Tue Jun  8 21:04:02 2010
+rudel-xmpp.el:40:1:Error: Wrong type argument: listp, :after
+Leaving directory `/usr/share/emacs-snapshot/site-lisp/rudel/xmpp/'
+ 
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/rudel-zeroconf.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/'
+rudel-zeroconf.el:56:1:Error: Wrong type argument: listp, :static
+}}}
+
+--Michael
+
+[new]
+This may be of little help, but I can try to comment on the errors:
+{{{
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/rudel-zeroconf.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/zeroconf/'
+rudel-zeroconf.el:56:1:Error: Wrong type argument: listp, :static
+}}}
+This looks like an old CEDET version.
+{{{
+Compiling file /usr/share/emacs-snapshot/site-lisp/rudel/jupiter/jupiter-compound.el at Tue Jun  8 21:04:02 2010
+Entering directory `/usr/share/emacs-snapshot/site-lisp/rudel/jupiter/'
+jupiter-compound.el:57:1:Error: Symbol's value as variable is void: filename
+}}}
+I saw this when I tried to compile CEDET. I have no idea, what causes this and consequently worked around it by doing
+{{{
+M-: (setq filename nil)
+}}}
+before compiling CEDET.
+
+I think, all other errors are of the same kind as one of these two.
+
+--JanMoringen
