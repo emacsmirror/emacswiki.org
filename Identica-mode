@@ -27,7 +27,7 @@ Here's some code to initialize your login and password from the netrc file:
           identica-username (netrc-get identica "login"))))
 }}}
 
-unlike shown in the faqs.org link above, it seems like all entries have to be on one line for `netrc-parse' to bunch them together, so something like:
+All entries have to be on one line for `netrc-parse' to bunch them together, so use something like:
 
     machine identi.ca login myusername password mydifficultpassword
 

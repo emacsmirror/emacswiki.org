@@ -13,14 +13,6 @@ example:
                         ("freenode" chanserv "bob" "#bobland" "passwd99")
                         ("bitlbee" bitlbee "robert" "sekrit")))
 
-or put the following in ~/.rcirc-authinfo:
-
- (("freenode" nickserv "bob" "p455w0rd")
-  ("freenode" chanserv "bob" "#bobland" "passwd99")
-  ("bitlbee" bitlbee "robert" "sekrit"))
-
-and it will be loaded for you when you run rcirc.
-
 Note that if you have BitlBee running locally, you need an entry using "localhost" instead of "bitlbee":
 
  ((...)

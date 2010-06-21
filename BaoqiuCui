@@ -1,7 +1,77 @@
-This is the page for Baoqiu Cui.
+== About Me and This Page ==
+
+This is the page for Baoqiu Cui.  I have used both Emacs and XEmacs:
+started with Emacs, switched to XEmacs (while XEmacs was having more
+features than Emacs) and stayed there for many years, but finally
+switched back to Emacs in 2008.
+
+I started using Emacs around 1995-1996, and I got addicted to it very
+quickly.  Nowadays I find it very hard to use any computer that does not
+have Emacs installed. :-) Many thanks to all the people who contributed
+/ are contributing to Emacs (many of them can be found on EmacsWiki),
+my daily life and work becomes very interesting.
+
+Almost everything I regularly do on a computer is done in Emacs:
+
+* programming (for //all// kinds of programming languages)
+* authoring (LaTeX, DocBook, HTML, XML, plain text, etc.)
+* reading documents (Texinfo, man pages, PDF files, etc.)
+* using version controls (RCS, CVS, SVN, GIT, CMVC)
+* reading/composing emails
+* taking notes
+* spell checking
+* grammar checking
+* calculation
+* looking up words in dictionaries
+* managing TODO lists
+* managing file systems
+* managing address book
+* IRC
+* IM
+* reading newsgroups
+* browsing webs
+* twittering
+* playing games (sometimes :-) )
+* ...
+
+To me, Emacs is a the editor for programmers; whatever you want to do on
+a computer (i.e. in Emacs), you can always write or modify some existing
+Emacs Lisp code to make it happen.  For most of the times, what you want
+to do is already done by someone somewhere on the internet.  Thanks to
+EmacsWiki, searching for the things you need becomes very convenient.
+
+I hope I can share things that are worth sharing with people.  Comments
+and feedbacks are welcome.
+
+== Packages ==
+
+* [http://code.google.com/p/bcui-emacs/source/browse/#svn/trunk/org-docbook DocBook Exporter for Org-mode] (now part of Emacs 23.2)
+* [http://code.google.com/p/bcui-emacs/source/browse/#svn/trunk/grammar Grammar Checker for Emacs]
+
+== Screenshots ==
+
+=== Screenshots of DocBook Exporter for Org-mode ===
+
+|| Org-mode Buffer [[image:org-docbook.png]] |||| First page of exported PDF file [[image:org-docbook-pdf-1.png]] ||
+|| Second page of the PDF file [[image:org-docbook-pdf-2.png]] |||| Another page [[image:org-docbook-pdf-3.png]] ||
+
+=== Screenshots of Grammar Checker ===
+
+|| Some grammar error examples: [[image:grammar-checker.png]] |||| After correcting one error: [[image:grammar-checker-2.png]] ||
+
+----
 
 [new]
 Welcome to the wiki! -- AlexSchroeder
+
+Thanks for the wonderful work of EmacsWiki, AlexSchroeder!  -- BaoqiuCui
+
+Welcome to the wiki! I think grammar checking is one area Emacs has no good solution and your project can be a valuable addition to Emacs. Have you considered posting your project info to emacs-devel and ask for their comments to include it when it's matured? -- [[Leo]]
+
+Thanks for the comments!  I am planning to post a message on emacs-devel
+and/or comp.emacs to get people's input once this project gets more
+matured.  (Thought that EmacsWiki is a better place to get some early
+comments... and turned out I was right. :-)  -- BaoqiuCui
 
 ----
 CategoryHomepage

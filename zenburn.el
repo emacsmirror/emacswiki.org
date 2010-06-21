@@ -4,7 +4,10 @@
 
 ;; Author: Daniel Brockman <daniel@brockman.se>
 ;; URL: http://www.brockman.se/software/zenburn/zenburn.el
-;; Updated: 2010-06-12 14:15
+;; Updated: 2010-06-20 13:58
+
+;; Changes (2010-06), Stefan Kangas
+;; - add diff-refine-change face to make diff-mode readable
 
 ;; Changes (2010-06), Dirk-Jan C. Binnema
 ;; - update region color (brighter)
@@ -524,6 +527,7 @@ static char *gnus-pointer[] = {
 	'(diff-added ((t (:inherit zenburn-primary-3))))
 	'(diff-removed ((t (:inherit zenburn-blue))))
 	'(diff-context ((t (:inherit font-lock-comment))))
+	'(diff-refine-change ((t (:inherit zenburn-background-2))))
 
 	`(emms-pbi-song ((t (:foreground ,zenburn-yellow))))
 	'(emms-pbi-current ((t (:inherit zenburn-primary-1))))
@@ -1047,6 +1051,7 @@ static char *gnus-pointer[] = {
 	   diff-hunk-header-face
 	   diff-index-face
 	   diff-removed-face
+	   diff-refine-change-face
 	   emms-pbi-current-face
 	   emms-pbi-mark-marked-face
 	   emms-pbi-song-face
