@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 18 07:38:56 2010 (-0700)
+;; Last-Updated: Mon Jun 21 09:07:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13783
+;;     Update #: 13842
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -246,7 +246,7 @@
 ;;    `bmkp-specific-files-jump-other-window',
 ;;    `bmkp-switch-bookmark-file', `bmkp-this-buffer-jump',
 ;;    `bmkp-this-buffer-jump-other-window',
-;;    `bmkp-toggle-autoname-bookmark-set/delete',
+;;    `bmkp-toggle-autonamed-bookmark-set/delete',
 ;;    `bmkp-toggle-saving-bookmark-file',
 ;;    `bmkp-toggle-saving-menu-list-state',
 ;;    `bmkp-toggle-bookmark-set-refreshes', `bmkp-unomit-all',
@@ -291,7 +291,10 @@
 ;;    `bmkext-jump-woman', `bmkp-all-tags-alist-only',
 ;;    `bmkp-all-tags-regexp-alist-only', `bmkp-alpha-cp',
 ;;    `bmkp-alpha-p', `bmkp-assoc-delete-all',
-;;    `bmkp-autoname-bookmark', `bmkp-autonamed-bookmarks-alist-only',
+;;    `bmkp-autoname-bookmark', `bmkp-autonamed-alist-only',
+;;    `bmkp-autonamed-bookmark-for-buffer-p',
+;;    `bmkp-autonamed-bookmark-p',
+;;    `bmkp-autonamed-this-buffer-alist-only',
 ;;    `bmkp-barf-if-not-in-menu-list',
 ;;    `bmkp-bmenu-cancel-incremental-filtering',
 ;;    `bmkp-bmenu-filter-alist-by-bookmark-name-regexp',
@@ -301,8 +304,8 @@
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
-;;    `bmkp-bookmark-autoname-p', `bmkp-bookmark-creation-cp',
-;;    `bmkp-bookmark-last-access-cp', `bmkp-bookmark-list-alist-only',
+;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-last-access-cp',
+;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-buffer-last-access-cp',
 ;;    `bmkp-buffer-names', `bmkp-completing-read-1',
 ;;    `bmkp-completing-read-buffer-name',
@@ -355,9 +358,9 @@
 ;;    `bmkp-man-bookmark-p', `bmkp-marked-bookmark-p',
 ;;    `bmkp-marked-bookmarks-only', `bmkp-marked-cp',
 ;;    `bmkp-maybe-save-bookmarks', `bmkp-msg-about-sort-order',
-;;    `bmkp-multi-sort', `bmkp-non-file-alist-only',
-;;    `bmkp-non-file-bookmark-p', `bmkp-omitted-alist-only',
-;;    `bmkp-position-after-whitespace',
+;;    `bmkp-multi-sort', `bmkp-non-autonamed-alist-only',
+;;    `bmkp-non-file-alist-only', `bmkp-non-file-bookmark-p',
+;;    `bmkp-omitted-alist-only', `bmkp-position-after-whitespace',
 ;;    `bmkp-position-before-whitespace', `bmkp-position-cp',
 ;;    `bmkp-position-post-context',
 ;;    `bmkp-position-post-context-region',
@@ -1837,9 +1840,8 @@ BOOKMARK is a bookmark name or a bookmark record."
   (let ((win  (get-buffer-window (current-buffer) 0)))
     (when win (set-window-point win (point))))
   ;; If this is an autonamed bookmark, update its name and position, in case it moved.
-  (let ((bmk-name  (bookmark-name-from-full-record (bookmark-get-bookmark bookmark))))
-    (when (bmkp-bookmark-autoname-p bmk-name (buffer-name))
-      (bmkp-update-autonamed-bookmark bmk-name)))
+  (when (bmkp-autonamed-bookmark-for-buffer-p bookmark (buffer-name))
+    (bmkp-update-autonamed-bookmark bookmark))
   ;; VANILLA EMACS FIXME: we used to only run `bookmark-after-jump-hook' in
   ;; `bookmark-jump' itself, but in none of the other commands.
   (run-hooks 'bookmark-after-jump-hook)
@@ -2856,9 +2858,10 @@ LAXP non-nil means use lax completion."
            (prompt                          (if default
                                                 (concat prompt (format " (%s): " default))
                                               (concat prompt ": ")))
-           (str                             (completing-read prompt alist pred (and (not laxp) 0)
-                                                             nil (or hist 'bookmark-history))))
-      (if (string-equal "" str) default str))))
+           (str                             (completing-read
+                                             prompt alist pred (not laxp) nil
+                                             (or hist 'bookmark-history) default)))
+      (if (and (string-equal "" str) default) default str))))
 
 (defun bmkp-jump-1 (bookmark-name display-function use-region-p)
   "Helper function for `bookmark-jump' commands."
@@ -3100,14 +3103,21 @@ navigation list are those that would be currently shown in the
 
 (defun bmkp-choose-navlist-of-type (type) ; Bound to `C-x p :'
   "Set the bookmark navigation list to the bookmarks of a type you choose.
+The pseudo-type `any' sets the navigation list to all bookmarks.
 This sets variable `bmkp-nav-alist'."
   (interactive (let ((completion-ignore-case  t)
-                     (type                    (completing-read "Type: " bmkp-types-alist nil t)))
+                     (type                    (completing-read "Type: "
+                                                               (cons '("any" . bookmark-history)
+                                                                     bmkp-types-alist)
+                                                               nil t)))
                  (list type)))
-  (setq bmkp-nav-alist  (funcall (intern (format "bmkp-%s-alist-only" type))))
+  (setq bmkp-nav-alist  (if (equal "any" type)
+                            bookmark-alist
+                          (funcall (intern (format "bmkp-%s-alist-only" type)))))
   (unless bmkp-nav-alist (error "No bookmarks"))
   (setq bmkp-current-nav-bookmark  (bookmark-name-from-full-record (car bmkp-nav-alist)))
-  (message "Bookmark navigation list is now for type `%s'" type))
+  (message "Bookmark navigation list is now %s"
+           (if (equal "any" type) "all bookmarks" (format "for type `%s'" type))))
 
 
 ;;(@* "Menu-List (`*-bmenu-*') Filter Commands")
@@ -5245,27 +5255,17 @@ A new list is returned (no side effects)."
                                    bmk-tags))))
    bookmark-alist))
 
-(defun bmkp-some-tags-alist-only (tags)
-  "`bookmark-alist', but with only bookmarks having some tags in TAGS.
+(defun bmkp-autonamed-alist-only ()
+  "`bookmark-alist', with only autonamed bookmarks (from any buffers).
 A new list is returned (no side effects)."
-  (bmkp-remove-if-not
-   #'(lambda (bmk) (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))
-   bookmark-alist))
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-autonamed-bookmark-p bookmark-alist))
 
-(defun bmkp-some-tags-regexp-alist-only (regexp)
-  "`bookmark-alist', but with only bookmarks having some tags match REGEXP.
-A new list is returned (no side effects)."
-  (bmkp-remove-if-not
-   #'(lambda (bmk)
-       (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) (bmkp-get-tags bmk)))
-   bookmark-alist))
-
-(defun bmkp-autonamed-bookmarks-alist-only ()
+(defun bmkp-autonamed-this-buffer-alist-only ()
   "`bookmark-alist', with only autonamed bookmarks for the current buffer.
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (bmkp-bookmark-autoname-p (bookmark-name-from-full-record bmk)
-                                                              (buffer-name)))
+  (bmkp-remove-if-not (lambda (bmk) (bmkp-autonamed-bookmark-for-buffer-p bmk (buffer-name)))
                       bookmark-alist))
 
 (defun bmkp-bookmark-list-alist-only ()
@@ -5330,6 +5330,12 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-local-file-bookmark-p bookmark-alist))
 
+(defun bmkp-non-autonamed-alist-only ()
+  "`bookmark-alist', with only non-autonamed bookmarks (from any buffers).
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not (lambda (bmk) (not (bmkp-autonamed-bookmark-p bmk))) bookmark-alist))
+
 (defun bmkp-non-file-alist-only ()
   "`bookmark-alist', filtered to retain only non-file bookmarks.
 A new list is returned (no side effects)."
@@ -5373,6 +5379,21 @@ A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-remote-file-bookmark-p bookmark-alist))
 
+(defun bmkp-some-tags-alist-only (tags)
+  "`bookmark-alist', but with only bookmarks having some tags in TAGS.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk) (bmkp-some #'(lambda (tag) (bmkp-has-tag-p bmk tag)) tags))
+   bookmark-alist))
+
+(defun bmkp-some-tags-regexp-alist-only (regexp)
+  "`bookmark-alist', but with only bookmarks having some tags match REGEXP.
+A new list is returned (no side effects)."
+  (bmkp-remove-if-not
+   #'(lambda (bmk)
+       (bmkp-some #'(lambda (tag) (string-match regexp (bmkp-tag-name tag))) (bmkp-get-tags bmk)))
+   bookmark-alist))
+
 (defun bmkp-specific-buffers-alist-only (&optional buffers)
   "`bookmark-alist', filtered to retain only bookmarks to buffers BUFFERS.
 BUFFERS is a list of buffer names.
@@ -5383,7 +5404,12 @@ Note: Bookmarks created by vanilla Emacs do not record the buffer
 name.  They are therefore excluded from the returned alist."
   (unless buffers  (setq buffers  (list (buffer-name))))
   (bookmark-maybe-load-default-file)
-  (bmkp-remove-if-not (lambda (bmk) (member (bmkp-get-buffer-name bmk) buffers)) bookmark-alist))
+  (bmkp-remove-if-not (lambda (bmk) (and (not (bmkp-desktop-bookmark-p  bmk)) ; Exclude desktop etc.
+                                         (not (bmkp-sequence-bookmark-p bmk))
+                                         (not (bmkp-function-bookmark-p bmk))
+                                         (not (bmkp-varlist-bookmark-p  bmk))
+                                         (member (bmkp-get-buffer-name bmk) buffers)))
+                      bookmark-alist))
 
 (defun bmkp-specific-files-alist-only (&optional files)
   "`bookmark-alist', filtered to retain only bookmarks to files FILES.
@@ -6534,8 +6560,7 @@ Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
 (defun bmkp-describe-bookmark-internals (bookmark)
   "Show the internal definition of the bookmark BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record."
-  (interactive
-   (list (bookmark-completing-read "Describe bookmark" (bmkp-default-bookmark-name))))
+  (interactive (list (bookmark-completing-read "Describe bookmark" (bmkp-default-bookmark-name))))
   (setq bookmark  (bookmark-get-bookmark bookmark))
   (help-setup-xref (list #'bmkp-describe-bookmark-internals bookmark) (interactive-p))
   (let* ((bname      (bookmark-name-from-full-record bookmark))
@@ -7932,20 +7957,35 @@ Return `bmkp-current-nav-bookmark', or nil if invalid."
         (bookmark-jump bmkp-current-nav-bookmark)))
     (and bookmark bmkp-current-nav-bookmark))) ; Return nil if not a valid bookmark.
 
-(defun bmkp-bookmark-autoname-p (bookmark-name buffer)
-  "Return non-nil if BOOKMARK-NAME is an autonamed bookmark for BUFFER.
-BUFFER is a buffer name."
-  (string-match (format bmkp-autoname-format buffer) bookmark-name))
+(defun bmkp-autonamed-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a (valid) autonamed bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (if (not bookmark)
+      nil
+    (string-match (format bmkp-autoname-format ".*")
+                  (bookmark-name-from-full-record bookmark))))
+
+(defun bmkp-autonamed-bookmark-for-buffer-p (bookmark buffer-name)
+  "Return non-nil if BOOKMARK is a (valid) autonamed bookmark for BUFFER.
+BOOKMARK is a bookmark name or a bookmark record.
+BUFFER-NAME is a string matching the buffer-name part of an autoname."
+  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (if (not bookmark)
+      nil
+    (string-match (format bmkp-autoname-format (regexp-quote buffer-name))
+                  (bookmark-name-from-full-record bookmark))))
 
 (defun bmkp-update-autonamed-bookmark (bookmark)
   "Update the name and position of the autonamed BOOKMARK at point.
-BOOKMARK is the name of the bookmark."
+BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
   (bookmark-set-position bookmark (point))
-  ;; Autoname bookmarks do not have regions.  Update `end-position' to be the same as `position'.
+  ;; Autonamed bookmarks do not have regions.  Update `end-position' to be the same as `position'.
   (when (bmkp-get-end-position bookmark)
     (bookmark-prop-set bookmark 'end-position (point)))
   (let ((newname  (funcall bmkp-autoname-bookmark-function (point))))
-    (bookmark-rename bookmark newname 'batch)
+    (bookmark-rename (bookmark-name-from-full-record bookmark) newname 'batch)
     (when (member bookmark bmkp-nav-alist) (setq bmkp-current-nav-bookmark  newname))
     (when (get-buffer-window (get-buffer-create "*Bookmark List*"))
       (bmkp-refresh-menu-list))         ; So the new name is displayed.
@@ -8071,7 +8111,7 @@ This is a repeatable version of `bmkp-previous-bookmark-this-buffer'."
   (bmkp-repeat-command 'bmkp-previous-bookmark-this-buffer))
 
 ;;;###autoload
-(defun bmkp-toggle-autoname-bookmark-set/delete (position &optional allp) ; Bound to `C-x p RET'
+(defun bmkp-toggle-autonamed-bookmark-set/delete (position &optional allp) ; Bound to `C-x p RET'
   "If there is an autonamed bookmark at point, delete it, else create one.
 The bookmark created has no region.  Its name is formatted according
 to option `bmkp-autoname-bookmark-function'.
@@ -8106,11 +8146,11 @@ To be deleted, a bookmark name must be an autonamed bookmark whose
 buffer part names the current buffer."
   (interactive)
   (let ((bmks-to-delete  (mapcar #'bookmark-name-from-full-record
-                                 (bmkp-autonamed-bookmarks-alist-only))))
+                                 (bmkp-autonamed-this-buffer-alist-only))))
     (if (null bmks-to-delete)
         (message "No autonamed bookmarks for buffer `%s'" (buffer-name))
       (when (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? " (buffer-name)))
-        (dolist (bmk bmks-to-delete) (bookmark-delete bmk))
+        (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk))
         (message "Deleted all bookmarks for buffer `%s'" (buffer-name))))))
 
 ;;;###autoload
@@ -8187,7 +8227,7 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 ;;;###autoload
 (define-key bookmark-map ":"      'bmkp-choose-navlist-of-type)
 ;;;###autoload
-(define-key bookmark-map "\r"     'bmkp-toggle-autoname-bookmark-set/delete)
+(define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete)
 ;;;###autoload
 (define-key bookmark-map [delete] 'bmkp-delete-bookmarks)
 
@@ -8735,7 +8775,7 @@ Jump to (Visit)
 Cycle Bookmarks and Autonamed Bookmarks
 ---------------------------------------
 
-\\[bmkp-toggle-autoname-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
+\\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
 C-x p n n ...\t- Next bookmark in buffer      (C-x p C-n, C-x p down)
 C-x p p p ...\t- Previous bookmark in buffer    (C-x p C-p, C-x p up)
 C-x p f f ...\t- Next bookmark in navlist    (C-x p C-f, C-x p right)
@@ -8960,13 +9000,13 @@ bmkp-use-region-flag        - Activate saved region when visit?"
   '(menu-item "Set Bookmark..." bookmark-set :help "Set a bookmark at point")
   'jump)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-set]
-  '(menu-item "Set Autonamed Bookmark" bmkp-toggle-autoname-bookmark-set/delete
+  '(menu-item "Set Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Set an autonamed bookmark at point"
     :visible (not (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
                    'noerror)))
   'set)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
-  '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autoname-bookmark-set/delete
+  '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Delete the autonamed bookmark at point"
     :visible (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
               'noerror))
@@ -8975,8 +9015,8 @@ bmkp-use-region-flag        - Activate saved region when visit?"
   '(menu-item "Delete All Autonamed Bookmarks Here..."
     bmkp-delete-all-autonamed-for-this-buffer
     :help "Delete all autonamed bookmarks for the current buffer"
-    :enable (mapcar #'bookmark-name-from-full-record (bmkp-autonamed-bookmarks-alist-only)))
-  'bmkp-toggle-autoname-bookmark-set/delete)
+    :enable (mapcar #'bookmark-name-from-full-record (bmkp-autonamed-this-buffer-alist-only)))
+  'bmkp-toggle-autonamed-bookmark-set/delete)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-bookmarks]
   '(menu-item "Delete Bookmarks Here..." bmkp-delete-bookmarks
     :help "Delete some bookmarks at point or, with `C-u', all bookmarks in the buffer"

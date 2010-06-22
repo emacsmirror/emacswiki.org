@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 20:35:44 2010 (-0700)
+;; Last-Updated: Mon Jun 21 15:39:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2184
+;;     Update #: 2185
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3819,8 +3819,10 @@ information about the arguments, see the doc for command
   (let ((orig-search-hook           icicle-search-hook)
         (icicle-transform-function  'icicle-remove-duplicates))
     (add-hook 'icicle-search-hook 'icicle-comint-search-send-input)
-    (icicle-search beg end (concat comint-prompt-regexp "\\S-.*") nil) ; Match not required (edit).
-    (remove-hook 'icicle-search-hook 'icicle-comint-search-send-input))
+    (unwind-protect
+         (icicle-search beg end
+                        (concat comint-prompt-regexp "\\S-.*") nil) ; Match not required (edit).
+      (remove-hook 'icicle-search-hook 'icicle-comint-search-send-input)))
   (goto-char (point-max)))
 
 (defun icicle-comint-search-send-input ()

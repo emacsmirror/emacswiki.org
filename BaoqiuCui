@@ -1,15 +1,16 @@
 == About Me and This Page ==
 
-This is the page for Baoqiu Cui.  I have used both Emacs and XEmacs:
-started with Emacs, switched to XEmacs (while XEmacs was having more
-features than Emacs) and stayed there for many years, but finally
-switched back to Emacs in 2008.
+This is the page for Baoqiu Cui.  I use Emacs now but have used both
+Emacs and XEmacs in the past: started with Emacs many years ago,
+switched to XEmacs while XEmacs was having more features than Emacs,
+stayed with XEmacs for many years, but finally switched back to Emacs in
+2008.
 
-I started using Emacs around 1995-1996, and I got addicted to it very
+I started using Emacs in 1995, and I got addicted to it very
 quickly.  Nowadays I find it very hard to use any computer that does not
 have Emacs installed. :-) Many thanks to all the people who contributed
-/ are contributing to Emacs (many of them can be found on EmacsWiki),
-my daily life and work becomes very interesting.
+/ are contributing to Emacs (many of them can be found on EmacsWiki), my
+daily life and work becomes very interesting.
 
 Almost everything I regularly do on a computer is done in Emacs:
 
@@ -32,6 +33,7 @@ Almost everything I regularly do on a computer is done in Emacs:
 * browsing webs
 * twittering
 * playing games (sometimes :-) )
+* editing this and other EmacsWiki pages using Yaoddmuse 
 * ...
 
 To me, Emacs is a the editor for programmers; whatever you want to do on
@@ -48,12 +50,25 @@ and feedbacks are welcome.
 * [http://code.google.com/p/bcui-emacs/source/browse/#svn/trunk/org-docbook DocBook Exporter for Org-mode] (now part of Emacs 23.2)
 * [http://code.google.com/p/bcui-emacs/source/browse/#svn/trunk/grammar Grammar Checker for Emacs]
 
+[new]
+Both the DocBook exporter and the grammar checker integration looks like nice ideas to me.
+I would like to export from org-mode to OpenOffice and perhaps I can do that via the DocBook exporter.
+Are the tags you use for the exporter within those support by OpenOffice?
+(There is a link to those on http://wiki.docbook.org/topic/OpenOffice)
+-- LennartBorgman
+
+Thanks for the comments...  however I don't know if there is a good and
+up-to-date solution to convert DocBook V5.0 documents to OpenOffice.
+All the solutions mentioned in the above link, including docbook2odf,
+are old and I don't think they an handle latest DocBook V5.0. --
+BaoqiuCui
+
 == Screenshots ==
 
 === Screenshots of DocBook Exporter for Org-mode ===
 
 || Org-mode Buffer [[image:org-docbook.png]] |||| First page of exported PDF file [[image:org-docbook-pdf-1.png]] ||
-|| Second page of the PDF file [[image:org-docbook-pdf-2.png]] |||| Another page [[image:org-docbook-pdf-3.png]] ||
+|| Second page of the PDF file [[image:org-docbook-pdf-2.png]] |||| Third page of the PDF file [[image:org-docbook-pdf-3.png]] ||
 
 === Screenshots of Grammar Checker ===
 
@@ -71,7 +86,7 @@ Welcome to the wiki! I think grammar checking is one area Emacs has no good solu
 Thanks for the comments!  I am planning to post a message on emacs-devel
 and/or comp.emacs to get people's input once this project gets more
 matured.  (Thought that EmacsWiki is a better place to get some early
-comments... and turned out I was right. :-)  -- BaoqiuCui
+comments... and turned out I was right. ;-) ) -- BaoqiuCui
 
 ----
 CategoryHomepage

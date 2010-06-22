@@ -1,0 +1,24 @@
+Here's a function to view youtube video using mplayer:
+
+<pre>
+(defun w3m-yt-view ()
+  "View a YouTube link with mplayer."
+  (interactive)
+  (let ((url (or (w3m-anchor) (w3m-image))))
+    (cond ((string-match "youtube" url)
+           (string-match "[^v]*v.\\([^&]*\\)" url)
+           (let* ((vid (match-string 1 url))
+                  (info (with-temp-buffer
+                          (w3m-retrieve 
+                           (format "http://www.youtube.com/get_video_info?video_id=%s"
+                                   vid))
+                          (buffer-string))))
+             (string-match "&token=\\([^%]*\\)" info)
+             (let ((vurl (format "http://www.youtube.com/get_video?video_id=%s&t=%s=&fmt=18"
+                                 vid
+                                 (match-string 1 info))))
+               (start-process "mplayer" nil "mplayer" "-quiet" "-cache" " 8192"
+                              (nth 5 (w3m-attributes vurl))))))
+          (t
+           (message "Not yt URL.")))))
+</pre>

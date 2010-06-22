@@ -28,7 +28,7 @@ Is there a way to get a search that will work across line boundaries as if they 
 * SearchBuffers -- Like OccurMode, but for multiple buffers.
 * SearchNear -- Using OccurMode to find words that are near each other.
 * SummaryEditMode -- List up matched strings from a buffer, and display them in summary buffer.
-
+* [[msearch]] -- Search matches of text dragged with the mouse in the current buffer.
 
 
 [:ReplaceInBuffers]

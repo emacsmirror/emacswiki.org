@@ -1946,8 +1946,10 @@ It is useful to write your sources."
   "Set `anything-sources' during `anything' invocation.
 If NO-INIT is non-nil, skip executing init functions of SOURCES.
 If NO-UPDATE is non-nil, skip executing `anything-update'."
-  (setq anything-compiled-sources nil
-        anything-sources sources)
+  (with-current-buffer anything-buffer
+    (setq anything-compiled-sources nil
+          anything-sources sources
+          anything-last-sources-local sources))
   (unless no-init (anything-funcall-foreach 'init))
   (unless no-update (anything-update)))
 
@@ -2423,6 +2425,7 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
   (when test-mode
     (setq anything-candidate-cache nil))
   (with-current-buffer (get-buffer-create anything-buffer)
+    (kill-all-local-variables)
     (buffer-disable-undo)
     (erase-buffer)
     (set (make-local-variable 'inhibit-read-only) t)

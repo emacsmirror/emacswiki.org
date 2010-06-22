@@ -1238,7 +1238,7 @@ constitutes the navigation list that is cycled.
 Here are two ways to define the navigation list:
 
 * '''`##C-x p :##'''' ('''`bmkp-choose-navlist-of-type'''') -- As the set of
-  all bookmarks of a certain ''type''.
+  all bookmarks of a certain ''type''  (`any' means use all bookmarks).
 
 * '''`C-x p B'''' ('''`bmkp-choose-navlist-from-bookmark-list'''') -- As the set of all bookmarks corresponding to a ''bookmark-list bookmark'', that is the bookmarks corresponding to a given recorded state of buffer `##*Bookmark List*##'.
 
@@ -1402,7 +1402,7 @@ autonamed bookmark in buffer ##bookmark+.el## at position 58356 is
 '''`bmkp-autoname-bookmark-function'''' and
 '''`bmkp-autoname-format''''.)
 
-`C-x p RET' is '''`bmkp-toggle-autoname-bookmark-set/delete'''',
+`C-x p RET' is '''`bmkp-toggle-autonamed-bookmark-set/delete'''',
 which means that it does double duty.  If an autonamed bookmark is
 under the cursor, then `C-x p RET' ''deletes'' it.  Easy creation,
 easy deletion.  Because of this toggle behavior, there is at most

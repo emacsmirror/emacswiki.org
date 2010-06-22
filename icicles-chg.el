@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 20:36:27 2010 (-0700)
+;; Last-Updated: Mon Jun 21 15:43:00 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5543
+;;     Update #: 5544
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -298,6 +298,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/06/21 dadams
+;;     icicle-comint-search: Wrap search with unwind-protect to remove hook.  Thx to M. Heerdegen.
 ;; 2010/06/18 dadams
 ;;     icicle-search-replace-match: Specific error message for read-only buffer.  Thx to M. Heerdegen.
 ;;     Renamed: bookmarkp-* to bmkp-*.

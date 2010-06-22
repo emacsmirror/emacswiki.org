@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 13:39:39 2010 (-0800)
+;; Last-Updated: Mon Jun 21 21:00:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 194
+;;     Update #: 196
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,6 +48,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/06/21 dadams
+;;     pp-display-expression: Set the hooks locally instead of let-binding them, to
+;;       avoid msg "Making change-major-mode-hook buffer-local while locally
+;;       let-bound!" - suggestion from Stefan M.
 ;; 2010/01/12 dadams
 ;;     Added: pp-display-expression (redefinition).
 ;;     pp-eval-expression: Use pp-display-expression.
@@ -212,9 +216,15 @@ OUT-BUFFER-NAME."
       (pp expression)
       (with-current-buffer standard-output
         (setq buffer-read-only  nil)
-        (let ((emacs-lisp-mode-hook    nil)
-              (change-major-mode-hook  nil))
-          (emacs-lisp-mode))
+        ;; Avoid `let'-binding because `change-major-mode-hook' is local.
+        ;; IOW, avoid this runtime message:
+        ;; "Making change-major-mode-hook buffer-local while locally let-bound!"
+        ;; Suggestion from Stefan: Can just set these hooks instead of binding,
+        ;; because they are not permanent-local.  They'll be emptied and
+        ;; repopulated as needed by the call to emacs-lisp-mode.
+        (set (make-local-variable 'emacs-lisp-mode-hook) nil)
+        (set (make-local-variable 'change-major-mode-hook) nil)
+        (emacs-lisp-mode)
         (set (make-local-variable 'font-lock-verbose) nil)
         (font-lock-fontify-buffer)))))
 

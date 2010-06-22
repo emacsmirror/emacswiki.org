@@ -5,7 +5,7 @@
 
 ;; Author: Jean-Baptiste Bourgoin <monsieur.camille@gmail.com>
 ;; Maintainer: Jean-Baptiste Bourgoin <monsieur.camille@gmail.com>
-;; Version: 1.2
+;; Version: 1.3
 ;; Keywords: music
 
 ;; This file is not part of GNU Emacs.
@@ -249,5 +249,5 @@
 	       (shell-command-to-string "mpc status | head -1"))
     (message "no song is playing")))
 
-
+(provide 'mpcel)
 ;;; mpcel.el ends here

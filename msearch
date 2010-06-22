@@ -1,0 +1,4 @@
+== MSearch ==
+Highlight all matches of text dragged with the mouse in the current buffer.
+
+Download: [[msearch.el]].

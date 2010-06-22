@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jun 18 07:44:19 2010 (-0700)
+;; Last-Updated: Mon Jun 21 09:11:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12717
+;;     Update #: 12738
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1248,7 +1248,7 @@
 ;;  Here are two ways to define the navigation list:
 ;;
 ;;  * `C-x p :' (`bmkp-choose-navlist-of-type') - As the set of all
-;;    bookmarks of a certain type.
+;;    bookmarks of a certain type (`any' means use all bookmarks).
 ;;
 ;;  * `C-x p B' (`bmkp-choose-navlist-from-bookmark-list') - As the
 ;;    set of all bookmarks corresponding to a bookmark-list bookmark,
@@ -1391,7 +1391,7 @@
 ;;  (You can customize the format of autonamed bookmarks using options
 ;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.)
 ;;
-;;  `C-x p RET' is `bmkp-toggle-autoname-bookmark-set/delete', which
+;;  `C-x p RET' is `bmkp-toggle-autonamed-bookmark-set/delete', which
 ;;  means that it does double duty.  If an autonamed bookmark is under
 ;;  the cursor, then `C-x p RET' deletes it.  Easy creation, easy
 ;;  deletion.  Because of this toggle behavior, there is at most one
@@ -1616,6 +1616,16 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/06/21 dadams
+;;     Renamed: bmkp-toggle-autoname-bookmark-set/delete to bmkp-toggle-autonamed-bookmark-set/delete,
+;;              bmkp-autonamed-bookmarks-alist-only to bmkp-autonamed-this-buffer-alist-only,
+;;              bmkp-bookmark-autoname-p to bmkp-autonamed-bookmark-for-buffer-p,
+;;     Added: bmkp-autonamed-alist-only, bmkp-non-autonamed-alist-only, bmkp-autonamed-bookmark-p, 
+;;     bmkp-completing-read-1: Use DEFAULT as default.  Use just (not lax) - no non-t.
+;;                             Use DEFAULT if empty input only if DEFAULT is non-nil.
+;;     bmkp-choose-navlist-of-type: Added pseudo-type "any".
+;;     bmkp-specific-buffers-alist-only: Exclude desktop etc. bookmarks.
+;;     bmkp-update-autonamed-bookmark: Arg can be a bookmark (not just name).
 ;; 2010/06/19 dadams
 ;;     RENAMED bookmarkp* TO bmkp*.  ***** THIS IS AN INCOMPATIBLE CHANGE ******
 ;;

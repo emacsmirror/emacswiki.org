@@ -1,0 +1,15 @@
+You can use [http://code.google.com/p/googlecl/ this commandline program] to edit a Google Doc with your local EDITOR:
+
+  google docs list
+  google docs edit --title "title of Google Doc you wish to edit"
+
+I put the following in my .bashrc:
+
+    alias gdl='google docs list'
+    gde() {
+	google docs edit --title "$@"
+    }
+
+    export EDITOR=/home/bshanks/bin/myemacsclient
+
+-- BayleShanks

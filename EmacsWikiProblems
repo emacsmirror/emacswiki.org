@@ -10,7 +10,30 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== Server error! ==
 
+FYI -- After editing and clicking save, I got this error:
+
+<pre>
+Server error!
+The server encountered an internal error and was unable to complete your request. 
+
+Error message: 
+Premature end of script headers: emacs 
+
+If you think this is a server error, please contact the webmaster. 
+
+Error 500
+www.emacswiki.org
+Mon Jun 21 18:15:06 2010
+Apache/2.2.9 (Debian) DAV/2 SVN/1.5.1 mod_jk/1.2.26 mod_ssl/2.2.9 OpenSSL/0.9.8g mod_wsgi/2.5 Python/2.5.2 
+
+</pre>
+
+But I just clicked the Back button and tried save again, with no problem. -- DrewAdams
+
+[new]
+If anybody else starts noticing these, speak up. I'm guessing somebody restarted Apache or some other vital system. -- AlexSchroeder
 
 == Conflict from my own edit 25 minutes ago? ==
 

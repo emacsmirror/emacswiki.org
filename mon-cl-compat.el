@@ -1,138 +1,174 @@
 ;;; mon-cl-compat.el --- cl functions prefixed as cl::some-cl-function
-;;-*- byte-compile-dynamic: t; -*-
+;; -*- mode: EMACS-LISP; byte-compile-dynamic: t; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-cl-compat.el provides Common Lisp functions from cl-*.el files.
-;;; Emacs signals compile-time warnings if these functions are called at runtime
-;;; from the CL package (as distinguished from macros and aliases).  We
-;;; reproduce the entirety of that package here with all relevant `cl-symbol's
-;;; prefixed with `cl::symbol's. This is intended to be used as a drop-in
-;;; replacement for the cl-seq.el when compiling your package and therefor
-;;; doesn't necessitate declaration of file local variable constucts using
-;;; `byte-compile-warnings' e.g.: `byte-compile-warnings': (not cl-functions)
-;;; Obv. we could silence the byte-compiler with: 
-;;; (custom-set-default 'byte-compile-warnings (not cl-functions))
-;;; Or, do like slime.el (let ((byte-compile-warnings '())) ... ,@body)
-;;; 
-;;; FUNCTIONS:►►►
-;;; `cl::reduce', `cl::fill', `cl::replace', `cl::remove-duplicates',
-;;; `cl::remove-if-not', `cl::remove-if', `cl::remove',
-;;; `cl::cl-delete-duplicates', `cl::delete-duplicates', `cl::delete-if-not',
-;;; `cl::delete-if', `cl::delete*', `cl::nsubstitute-if-not',
-;;; `cl::nsubstitute-if', `cl::nsubstitute', `cl::substitute-if-not',
-;;; `cl::substitute-if', `cl::substitute', `cl::find-if-not', `cl::find-if',
-;;; `cl::find', `cl::cl-position', `cl::position-if-not', `cl::position-if',
-;;; `cl::position', `cl::count-if-not', `cl::count-if', `cl::count',
-;;; `cl::mismatch', `cl::search', `cl::stable-sort', `cl::sort*', `cl::merge',
-;;; `cl::member-if-not', `cl::member-if', `cl::member*', `cl::cl-member',
-;;; `cl::cl-adjoin', `cl::rassoc-if-not', `cl::rassoc-if', `cl::rassoc*',
-;;; `cl::assoc-if-not', `cl::assoc-if', `cl::assoc*', `cl::nunion', `cl::union',
-;;; `cl::nintersection', `cl::intersection', `cl::nset-difference',
-;;; `cl::set-difference', `cl::nset-exclusive-or', `cl::set-exclusive-or',
-;;; `cl::subsetp', `cl::nsubst-if-not', `cl::nsubst-if', `cl::nsubst',
-;;; `cl::subst-if-not', `cl::subst-if', `cl::cl-nsublis-rec', `cl::nsublis',
-;;; `cl::cl-sublis-rec', `cl::sublis', `cl::cl-tree-equal-rec',
-;;; `cl::tree-equal', `cl::subseq', `cl::ldiff', `cl::coerce', `cl::typep',
-;;; `cl::cl-make-type-test', `cl::floatp-safe', `cl::plusp', `cl::minusp',
-;;; `cl::oddp', `cl::evenp', `cl::cl-remprop', `cl::cl-do-remf', 
-;;; `cl::gensym', `cl::gentemp', 
-;;; `cl::compiler-macroexpand', `cl::cl-byte-compile-compiler-macro'
-;;; `cl::signum', `cl::rem*', `cl::mod*', `cl::round*', `cl::truncate*',
-;;; `cl::ceiling*', `cl::floor*', `cl::isqrt', `cl::lcm', `cl::gcd',
-;;; `cl::maplist'  `cl::cl-arglist-args', `cl::cl-do-arglist'
-;;; `cl::cl-make-type-test' , `cl::typep'
-;;;
-;;; `cl::compiler-macroexpand', `cl::cl-byte-compile-compiler-macro' 
-;;; `cl::cl-byte-compile-throw', `cl::cl-byte-compile-block',
-;;; `cl::cl-transform-lambda', `cl::cl-transform-function-property'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;; `cl-parsing-keywords', `cl-check-key'
-;;; `cl-check-test-nokey', `cl-check-test'
-;;; `cl-check-match', `cl::cl-defun-expander', `cl::cl-do-proclaim',
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `cl-test-not', `cl-test', `cl-if-not', `cl-if', `cl-key', `cl::alist'
-;;;
-;;; :NOTE Following are not prefixed but are present: 
-;;; `bind-block', `bind-defs', `bind-enquote',
-;;;  `bind-inits', `bind-lets', `bind-forms'
-;;; They are some sort of byte-compiler thunks for `cl-transform-lambda'.
-;;; They are nulled post compile-time and won't appear in your environment... 
-;;; Or, at least they shouldn't! :).
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;;
-;;; TODO:
-;;; c[ad]r+s
-;;; Core functions from cl-macs.el we'll have to be be careful with:
-;;; `cl-loop-let',  `cl-parse-loop-clause', `cl-loop-handle-accum',
-;;; `cl-loop-build-ands', `cl-expand-do-loop'
-;;;
-;;; `cl-setf-make-apply', `get-setf-method', `cl-setf-do-modify',
-;;; `cl-setf-do-store', `cl-setf-simple-store-p'
-;;; `cl-do-pop'
-;;; `cl-struct-setf-expander'
-;;;
-;;; :COMPILER-MACROS in cl-macs.el with `define-compiler-macro':
-;;;  `member*' `assoc*' `adjoin' `list*' `get*' `typep'.
-;;; :NOTE Also, `eql' but doesn't get byte-compiled...???
-;;;
-;;; :INLINED in cl-macs.el 
-;;; `floatp-safe' `acons' `map' `concatenate' `notany' `notevery' `cl-set-elt'
-;;; `revappend' `nreconc' `gethash'
-;;;
-;;; :SIDE-EFFECT-FREE as proclaimed in cl-macs.el
-;;; `oddp' `evenp' `signum' `last' `butlast' `ldiff' `pairlis' `gcd' `lcm'
-;;; `isqrt' `floor*' `ceiling*' `truncate*' `round*' `mod*' `rem*' `subseq'
-;;; `list-length' `get*' `getf' `first' `second' `third' `fourth' `fifth'
-;;; `sixth' `seventh' `eighth' `ninth' `tenth' `rest' `endp' `plusp' `minusp'
-;;; `caaar' `caadr' `cadar' `caddr' `cdaar' `cdadr' `cddar' `cdddr' `caaaar'
-;;; `caaadr' `caadar' `caaddr' `cadaar' `cadadr' `caddar' `cadddr' `cdaaar'
-;;; `cdaadr' `cdadar' `cdaddr' `cddaar' `cddadr' `cdddar' `cddddr'
-;;;
-;;; :SIDE-EFFECT-AND-ERROR-FREE in cl-macs.el
-;;; `eql' `floatp-safe' `list*' `subst' `acons' `equalp' `random-state-p'
-;;; `copy-tree' `sublis'
-;;;
-;;; NOTES:
-;;; The variable `byte-compile-cl-functions' returns the list of functions
-;;; defined in CL. The goal is to eventually encorporate all of its elts.
-;;;
-;;; SNIPPETS:
-;;;
-;;; REQUIRES:
-;;; `mon-cl-compat-regexps.el' (only if present in load-path)
-;;; `mon-CL-namespace-colonic', `mon-CL-cln-colon-swap'
-;;;
-;;; THIRD-PARTY-CODE:
-;;; This file is a duplicate of cl-*.el symbols renamed with suffix `cl::'. 
-;;; They were sourced from the following files:
-;;; :FILE cl-extra.el
-;;; :FILE cl-seqs.el
-;;; :FILE cl-macs.el
-;;; :FILE cl.el
-;;;
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-cl-compat.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2010-01-17T23:06:12-05:00Z}#{10027} - by MON>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: #{2010-01-17T02:30:54-05:00Z}#{10027} - by MON KEY>
-;;; ==============================
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;;; ================================================================
+
+;; FILENAME: mon-cl-compat.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2010-01-17T02:30:54-05:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: lisp, development, extensions, 
+
+;;; ================================================================
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-cl-compat.el provides Common Lisp functions from cl-*.el files.
+;; Emacs signals compile-time warnings if these functions are called at runtime
+;; from the CL package (as distinguished from macros and aliases).  We
+;; reproduce the entirety of that package here with all relevant `cl-symbol's
+;; prefixed with `cl::symbol's. This is intended to be used as a drop-in
+;; replacement for the cl-seq.el when compiling your package and therefor
+;; doesn't necessitate declaration of file local variable constucts using
+;; `byte-compile-warnings' e.g.: `byte-compile-warnings': (not cl-functions)
+;; Obv. we could silence the byte-compiler with: 
+;; (custom-set-default 'byte-compile-warnings (not cl-functions))
+;; Or, do like slime.el (let ((byte-compile-warnings '())) ... ,@body)
+;;
+;; FUNCTIONS:►►►
+;; `cl::reduce', `cl::fill', `cl::replace', `cl::remove-duplicates',
+;; `cl::remove-if-not', `cl::remove-if', `cl::remove',
+;; `cl::cl-delete-duplicates', `cl::delete-duplicates', `cl::delete-if-not',
+;; `cl::delete-if', `cl::delete*', `cl::nsubstitute-if-not',
+;; `cl::nsubstitute-if', `cl::nsubstitute', `cl::substitute-if-not',
+;; `cl::substitute-if', `cl::substitute', `cl::find-if-not', `cl::find-if',
+;; `cl::find', `cl::cl-position', `cl::position-if-not', `cl::position-if',
+;; `cl::position', `cl::count-if-not', `cl::count-if', `cl::count',
+;; `cl::mismatch', `cl::search', `cl::stable-sort', `cl::sort*', `cl::merge',
+;; `cl::member-if-not', `cl::member-if', `cl::member*', `cl::cl-member',
+;; `cl::cl-adjoin', `cl::rassoc-if-not', `cl::rassoc-if', `cl::rassoc*',
+;; `cl::assoc-if-not', `cl::assoc-if', `cl::assoc*', `cl::nunion', `cl::union',
+;; `cl::nintersection', `cl::intersection', `cl::nset-difference',
+;; `cl::set-difference', `cl::nset-exclusive-or', `cl::set-exclusive-or',
+;; `cl::subsetp', `cl::nsubst-if-not', `cl::nsubst-if', `cl::nsubst',
+;; `cl::subst-if-not', `cl::subst-if', `cl::cl-nsublis-rec', `cl::nsublis',
+;; `cl::cl-sublis-rec', `cl::sublis', `cl::cl-tree-equal-rec',
+;; `cl::tree-equal', `cl::subseq', `cl::ldiff', `cl::coerce', `cl::typep',
+;; `cl::cl-make-type-test', `cl::floatp-safe', `cl::plusp', `cl::minusp',
+;; `cl::oddp', `cl::evenp', `cl::cl-remprop', `cl::cl-do-remf', 
+;; `cl::gensym', `cl::gentemp', 
+;; `cl::compiler-macroexpand', `cl::cl-byte-compile-compiler-macro'
+;; `cl::signum', `cl::rem*', `cl::mod*', `cl::round*', `cl::truncate*',
+;; `cl::ceiling*', `cl::floor*', `cl::isqrt', `cl::lcm', `cl::gcd',
+;; `cl::maplist'  `cl::cl-arglist-args', `cl::cl-do-arglist'
+;; `cl::cl-make-type-test' , `cl::typep'
+;;
+;; `cl::compiler-macroexpand', `cl::cl-byte-compile-compiler-macro' 
+;; `cl::cl-byte-compile-throw', `cl::cl-byte-compile-block',
+;; `cl::cl-transform-lambda', `cl::cl-transform-function-property'
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;; `cl-parsing-keywords', `cl-check-key',
+;; `cl-check-test-nokey', `cl-check-test',
+;; `cl-check-match', `cl::cl-defun-expander', `cl::cl-do-proclaim',
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;; `cl::alist'
+;;
+;; :NOTE Following defvar'd inside an `eval-when-compile' cl-seq.el will cover
+;;  these at runtime:
+;; `cl-test-not', `cl-test', `cl-if-not', `cl-if', `cl-key', 
+;;
+;; :NOTE Following are not prefixed but are present: 
+;; `bind-block', `bind-defs', `bind-enquote',
+;;  `bind-inits', `bind-lets', `bind-forms'
+;; They are some sort of byte-compiler thunks for `cl-transform-lambda'.
+;; They are nulled post compile-time and won't appear in your environment... 
+;; Or, at least they shouldn't! :).
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;;
+;; TODO:
+;; c[ad]r+s
+;; Core functions from cl-macs.el we'll have to be be careful with:
+;; `cl-loop-let',  `cl-parse-loop-clause', `cl-loop-handle-accum',
+;; `cl-loop-build-ands', `cl-expand-do-loop'
+;;
+;; `cl-setf-make-apply', `get-setf-method', `cl-setf-do-modify',
+;; `cl-setf-do-store', `cl-setf-simple-store-p'
+;; `cl-do-pop'
+;; `cl-struct-setf-expander'
+;;
+;; :COMPILER-MACROS in cl-macs.el with `define-compiler-macro':
+;;  `member*' `assoc*' `adjoin' `list*' `get*' `typep'.
+;; :NOTE Also, `eql' but doesn't get byte-compiled...???
+;;
+;; :INLINED in cl-macs.el 
+;; `floatp-safe' `acons' `map' `concatenate' `notany' `notevery' `cl-set-elt'
+;; `revappend' `nreconc' `gethash'
+;;
+;; :SIDE-EFFECT-FREE as proclaimed in cl-macs.el
+;; `oddp' `evenp' `signum' `last' `butlast' `ldiff' `pairlis' `gcd' `lcm'
+;; `isqrt' `floor*' `ceiling*' `truncate*' `round*' `mod*' `rem*' `subseq'
+;; `list-length' `get*' `getf' `first' `second' `third' `fourth' `fifth'
+;; `sixth' `seventh' `eighth' `ninth' `tenth' `rest' `endp' `plusp' `minusp'
+;; `caaar' `caadr' `cadar' `caddr' `cdaar' `cdadr' `cddar' `cdddr' `caaaar'
+;; `caaadr' `caadar' `caaddr' `cadaar' `cadadr' `caddar' `cadddr' `cdaaar'
+;; `cdaadr' `cdadar' `cdaddr' `cddaar' `cddadr' `cdddar' `cddddr'
+;;
+;; :SIDE-EFFECT-AND-ERROR-FREE in cl-macs.el
+;; `eql' `floatp-safe' `list*' `subst' `acons' `equalp' `random-state-p'
+;; `copy-tree' `sublis'
+;;
+;; NOTES:
+;; The variable `byte-compile-cl-functions' returns the list of functions
+;; defined in CL. The goal is to eventually encorporate all of its elts.
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;; `mon-cl-compat-regexps.el' (only if present in load-path)
+;; `mon-CL-namespace-colonic', `mon-CL-cln-colon-swap'
+;;
+;; THIRD-PARTY-CODE:
+;; This file is a duplicate of cl-*.el symbols renamed with suffix `cl::'. 
+;; They were sourced from the following files:
+;; :FILE cl-extra.el
+;; :FILE cl-seqs.el
+;; :FILE cl-macs.el
+;; :FILE cl.el
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-cl-compat.el
+;; FIRST-PUBLISHED: <Timestamp: #{2010-01-17T23:06:12-05:00Z}#{10027} - by MON>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-cl-compat. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2010-01-17T02:30:54-05:00Z}#{10027} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
 ;;; cl-seq.el --- Common Lisp features, part 3
 ;;; Copyright (C) 1993, 2001, 2002, 2003, 2004, 2005, 2006, 2007, 2008, 2009
 ;;; Free Software Foundation, Inc.
@@ -157,12 +193,55 @@
 ;;; in Emacs Lisp.
 ;;; This package was written by Dave Gillespie; it is a complete
 ;;; rewrite of Cesar Quiroz's original cl.el package of December 1986.
+;; =================================================================
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
+
 (eval-when-compile (require 'cl))
 
 (when (locate-library "mon-cl-compat-regexps")
   (require 'mon-cl-compat-regexps))
+
+;; silence byte-compiler warnings about free variables. 
+;; cl-seq.el  should take care of these for us.
+(eval-when-compile 
+  (defvar cl-test)
+  (defvar cl-test-not)
+  (defvar cl-if)
+  (defvar cl-if-not)
+  (defvar cl-key))
 
 ;;; Assuming that any macros should come first in this file.
 
@@ -341,14 +420,36 @@ The name is made by appending a number to PREFIX, default \"G\"."
 (defun cl::cl-defsubst-expand (argns body simple whole unsafe &rest argvs)
   (if (and whole (not (cl::cl-safe-expr-p (cons 'progn argvs)))) whole
     (if (cl::cl-simple-exprs-p argvs) (setq simple t))
-    (let ((lets (delq nil
-		      (cl::mapcar* (function
-				(lambda (argn argv)
-				  (if (or simple (cl::cl-const-expr-p argv))
-				      (progn (setq body (cl::subst argv argn body))
-					     (and unsafe (list argn argv)))
-				    (list argn argv))))
-                                   argns argvs))))
+    ;; :SEE :CHANGESET 99853 2010-04-08 15:59:47 
+    ;;      "Do the substitutions simultaneously"
+    ;;
+    ;; :WAS (let ((lets (delq nil
+    ;;                   (cl::mapcar* (function
+    ;;                                 (lambda (argn argv)
+    ;;                                   (if (or simple (cl::cl-const-expr-p argv))
+    ;;                                       (progn (setq body (cl::subst argv argn body))
+    ;;                                              (and unsafe (list argn argv)))
+    ;;                                     (list argn argv))))
+    ;;                                argns argvs))))
+    ;;   (if lets (list 'let lets body) body))))
+    (let* ((substs ())
+           (lets (delq nil
+                       (cl::mapcar* (function
+                                     (lambda (argn argv)
+                                   (if (or simple (cl::cl-const-expr-p argv))
+                                       (progn (push (cons argn argv) substs)
+                                              (and unsafe (list argn argv)))
+                                     (list argn argv))))
+                                argns argvs))))
+      ;; FIXME: `sublis/subst' will happily substitute the symbol
+      ;; `argn' in places where it's not used as a reference
+      ;; to a variable.
+      ;; FIXME: `sublis/subst' will happily copy `argv' to a different
+      ;; scope, leading to name capture.
+      (setq body (cond ((null substs) body)
+                       ((null (cdr substs))
+                        (cl::subst (cdar substs) (caar substs) body))
+                       (t (cl::sublis substs body))))
       (if lets (list 'let lets body) body))))
 
 
@@ -2196,7 +2297,7 @@ If so, return the true (non-nil) value returned by PREDICATE.
     (setq last (point))
     (goto-char (1+ pt))
     (while (search-forward "(quote " last t)
-      (delete-backward-char 7)
+      (delete-char -7)
       (insert "'")
       (forward-sexp)
       (delete-char 1))
@@ -2341,6 +2442,27 @@ This also does some trivial optimizations to make the form prettier."
     (prog1 (cl::cl-prettyprint form)
       (message ""))))
 
+
+;;; ==============================
+;;; :CHANGESET 1906
+;;; :CREATED <Timestamp: #{2010-06-21T20:31:35-04:00Z}#{10251} - by MON KEY>
+(defun mon-cl-compat-loadtime ()
+  "Purge `byte-compile-noruntime-functions' of mon-cl-compat symbol-names.\n
+Symbols with names having these prefixes are removed.\n
+ `cl::.*', `*clean-.*' `*regexp-'\n
+Evaluated at loadtime on an eval-after-load form.\n
+:SEE-ALSO `mon-help-utils-loadtime', `mon-help-utils-CL-loadtime',
+`mon-CL-cln-colon-swap', `mon-check-feature-for-loadtime',
+`mon-after-mon-utils-loadtime'.\n►►►"
+  (dolist (cl:: byte-compile-noruntime-functions)
+    (let ((cl::chk (symbol-name cl::)))
+      (when (and (not (null cl::chk))
+                 (or (string-match-p "cl::.*"  cl::chk)
+                     (string-match-p "\\*clean-" cl::chk)
+                     (string-match-p "\\*regexp-" cl::chk)))
+        (setq byte-compile-noruntime-functions 
+              (delq cl:: byte-compile-noruntime-functions))))))
+
 ;;; ==============================
 ;;; :NOTE Not sure whether to evaluate this or not. 
 ;;;       Yes, I should be more sure... less cavalier :[
@@ -2349,6 +2471,9 @@ This also does some trivial optimizations to make the form prettier."
 ;;; ==============================
 (provide 'mon-cl-compat)
 ;;; ==============================
+
+;; Remove anything that got added to `byte-compile-noruntime-functions'.
+(eval-after-load "mon-cl-compat" '(mon-cl-compat-loadtime))
 
 ;;; ================================================================
 ;;; mon-cl-compat.el ends here

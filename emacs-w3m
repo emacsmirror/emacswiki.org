@@ -48,6 +48,7 @@ being triggered.
 * WThreeMDelicious - using w3m with http://del.icio.us/
 * WThreeMSession - persistent tabbed browsing with w3m
 * WThreeMReadability - improving readability
+* WThreeMYoutube - View youtube video from emacs-w3m
 
 = Problems, questions and hopefully some answers too =
 
