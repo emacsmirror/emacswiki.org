@@ -1,5 +1,4 @@
-;;; msearch.el --- 
-
+;;; msearch.el
 ;; Copyright (C) 2010  Tobias.Naehring
 
 ;; Author: Tobias.Naehring <i@tn-home.de>
@@ -30,6 +29,19 @@
 ;; your emacs start-up file (e.g. "~/.emacs"):
 ;; (require 'msearch.el)
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Changes:
+;;
+;; 2010-06-22, 18:45, TN:
+;;
+;; Error: Infinite recursion of msearch-event-handler at re-activation
+;; of msearch-mode.
+;;
+;; Fix: Reset event handler by (local-unset-key (kbd
+;; "<drag-mouse-1>")) rather than by (local-set-key (kbd ...)
+;; msearch-next-event-handler).
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;;; Code:
 
 (defcustom msearch-face '(background-color . "yellow")
@@ -50,6 +62,14 @@
 	    (overlay-put ov 'msearch 't))
 	  ))))
 
+(defun msearch-next-handler-ok ()
+  "Checks whether the next registered handler is okay."
+  (if (or (not (boundp 'msearch-next-handler))
+	  (equal msearch-next-handler 'msearch-event-handler))
+      (progn
+	(local-unset-key (kbd "<drag-mouse-1>"))
+	(error "Invalid mouse-next-handler. Removed keybinding for drag-mouse-1."))))
+
 (defun msearch-cleanup ()
   "Remove overlays of msearch and deactivate msearch-lock-function."
   (remove-overlays nil nil 'msearch 't)
@@ -69,22 +89,22 @@
 	    (setq msearch-old-word msearch-word)
 	    (msearch-cleanup)
 	    (jit-lock-register 'msearch-lock-function)))))
-  (if msearch-next-handler (apply msearch-next-handler (list e))
-    (local-set-key (kbd "<drag-mouse-1>") 'mouse-set-region)
-    (error "Invalid mouse-next-handler. Reset drag-mouse-1 to mouse-set-region.")))
+  (if (msearch-next-handler-ok)
+      (apply msearch-next-handler (list e))))
 
 (define-minor-mode msearch-mode
   "Mouse-drag high-lightes all corresponding matches within the current buffer."
   :lighter " msearch" 
   (if msearch-mode
       (progn
-	(set (make-local-variable 'msearch-word) "")
-	(set (make-local-variable 'msearch-old-word) "")
-	(set (make-local-variable 'msearch-next-handler) (key-binding (kbd "<drag-mouse-1>")))
-	(local-set-key (kbd "<drag-mouse-1>") 'msearch-event-handler)
+	(unless (boundp 'msearch-next-handler)
+	  (set (make-local-variable 'msearch-word) "")
+	  (set (make-local-variable 'msearch-old-word) "")
+	  (set (make-local-variable 'msearch-next-handler) (key-binding (kbd "<drag-mouse-1>")))
+	  (local-set-key (kbd "<drag-mouse-1>") 'msearch-event-handler))
 	)
-    (local-set-key (kbd "<drag-mouse-1>") msearch-next-handler)
     (msearch-cleanup)
+    (local-unset-key (kbd "<drag-mouse-1>"))
     (kill-local-variable 'msearch-word)
     (kill-local-variable 'msearch-old-word)
     (kill-local-variable 'msearch-next-handler)

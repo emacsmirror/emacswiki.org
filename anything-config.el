@@ -185,6 +185,10 @@
 ;; Preconfigured `anything' to edit or view EmacsWiki page.
 ;; `anything-yaoddmuse-emacswiki-post-library'
 ;; Preconfigured `anything' to post library to EmacsWiki.
+;; `anything-eval-expression'
+;; Preconfigured anything for `anything-c-source-evaluation-result'.
+;; `anything-eval-expression-with-eldoc'
+;; Same as `anything-eval-expression' but with `eldoc' support.
 ;; `anything-surfraw'
 ;; Search PATTERN with search ENGINE.
 ;; `anything-emms-stream-edit-bookmark'
@@ -256,8 +260,8 @@
 ;; Default Value: t
 ;; `anything-tramp-verbose'
 ;; Default Value: 0
-;; `anything-back-to-emacs-shell-command'
-;; Default Value: "    (stumpish eval \"(stumpwm::emacs)\")"
+;; `anything-raise-command'
+;; Default Value: "    (stumpish eval \"(stumpwm::%s)\")"
 
 ;;  * Anything sources defined here:
 ;; [EVAL] (autodoc-document-lisp-buffer :type 'anything-source :prefix "anything-" :any-sname t)
@@ -614,12 +618,13 @@ If you want to have the default tramp messages set it to 3."
   :type 'integer
   :group 'anything-config)
 
-(defcustom anything-back-to-emacs-shell-command nil
-  "*A shell command to come back to Emacs after running externals programs.
+(defcustom anything-raise-command nil
+  "*A shell command to jump to a window running specific program.
 Stumpwm users could use:
-\"stumpish eval \"\(stumpwm::emacs\)\"\".
+\"stumpish eval \"\(stumpwm::%s\)\"\".
 With others windows manager you could use:
-\"wmctrl -xa emacs\"."
+\"wmctrl -xa %s\".
+Though wmctrl work also with stumpwm."
   :type 'string
   :group 'anything-config)
 
@@ -937,9 +942,9 @@ See man locate for more infos."
           (format "%5d: %s" (line-number-at-pos s) (buffer-substring s e))
           ;; subexps
           (loop for i from 0 to (1- (/ (length (match-data)) 2))
-                unless (zerop i)
-                collect (format "\n         $%d = %s"
-                                i (match-string i))))
+                collect (format "\n         \\%s = %s"
+                                (if (zerop i) "&" i)
+                                (match-string i))))
    ;; match beginning
    ;; KLUDGE: point of anything-candidate-buffer is +1 than that of anything-current-buffer.
    ;; It is implementation problem of candidates-in-buffer.
@@ -1485,10 +1490,8 @@ If EXPAND is non--nil expand-file-name."
         (if (string= result "~/") "~/" result)
         (if (< level 0)
             (if empty "../" (concat "../" result))
-            (cond ((and (eq system-type 'windows-nt) empty)
-                   "c:/")
-                  ((and (not empty) (eq system-type 'windows-nt))
-                   result)
+            (cond ((eq system-type 'windows-nt)
+                   (if empty "c:/" result))
                   (empty "/")
                   (t
                    (concat "/" result)))))))
@@ -1632,14 +1635,14 @@ If CANDIDATE is alone, open file CANDIDATE filename."
              (full-path-p (or (string-match (concat "^" (getenv "HOME")) guess)
                               (string-match "^[^\~]" guess))))
         (set-text-properties 0 (length candidate) nil candidate)
-        (if (and guess (not (string= guess "")))
+        (if (and guess (not (string= guess "")) (string-match "^~\\|/.*" guess))
             (progn
               (search-backward guess (- (point) (length guess)))
               (delete-region (point) end)
               (if full-path-p
                   (insert (expand-file-name candidate))
                   (insert (abbreviate-file-name candidate))))
-            (message "I see nothing to complete here!")))))
+            (error "Aborting completion: No valid file name at point")))))
 
 ;;;###autoload
 (defun anything-find-files ()
@@ -2453,6 +2456,18 @@ To get non-interactive functions listed, use
 `anything-c-source-emacs-functions'.")
 ;; (anything 'anything-c-source-emacs-commands)
 
+;; Another replacement of `M-x' that act exactly like the
+;; vanilla Emacs one, no problem of windows configuration, prefix args
+;; are passed before calling `M-x' (e.g C-u M-x..).
+(defun anything-M-x ()
+  "Anything replacement of regular `M-x' `execute-extended-command'."
+  (interactive)
+  (let ((command (anything-comp-read "M-x " obarray
+                                     :test 'commandp
+                                     :must-match t
+                                     :requires-pattern 2)))
+    (call-interactively (intern command))))
+
 ;;; LaCarte
 (defvar anything-c-source-lacarte
   '((name . "Lacarte")
@@ -3010,8 +3025,9 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
     (candidates . (lambda ()
                     (mapcar #'car
                             anything-c-firefox-bookmarks-alist)))
-    (candidate-transformer anything-c-highlight-firefox-bookmarks)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-firefox-bookmarks)
     (action . (("Browse Url" . (lambda (candidate)
                                  (w3m-browse-url
                                   (anything-c-firefox-bookmarks-get-value candidate)))) 
@@ -3029,8 +3045,8 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
                                         anything-c-firefox-bookmarks-alist))))
 
 
-(defun anything-c-highlight-firefox-bookmarks (books)
-  (loop for i in books
+(defun anything-c-highlight-firefox-bookmarks (bookmarks source)
+  (loop for i in bookmarks
         collect (propertize i
                             'face '((:foreground "YellowGreen"))
                             'help-echo (anything-c-firefox-bookmarks-get-value i))))
@@ -3058,8 +3074,9 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
                      anything-w3m-bookmarks-regexp))))
     (candidates . (lambda ()
                     (mapcar #'car anything-c-w3m-bookmarks-alist)))
-    (candidate-transformer anything-c-highlight-w3m-bookmarks)
-    (filtered-candidate-transformer . anything-c-adaptive-sort)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-w3m-bookmarks)
     (action . (("Browse Url" . (lambda (candidate)
                                  (anything-c-w3m-browse-bookmark candidate)))
                ("Copy Url" . (lambda (elm)
@@ -3088,8 +3105,8 @@ C-u \\[anything-execute-persistent-action]: Open URL with Firefox")))
          (arg (and (eq fn 'w3m-browse-url) new-tab)))
     (funcall fn (anything-c-w3m-bookmarks-get-value elm) arg)))
 
-(defun anything-c-highlight-w3m-bookmarks (books)
-  (loop for i in books
+(defun anything-c-highlight-w3m-bookmarks (bookmarks source)
+  (loop for i in bookmarks
         collect (propertize
                  i 'face 'anything-w3m-bookmarks-face
                  'help-echo (anything-c-w3m-bookmarks-get-value i))))
@@ -3567,16 +3584,18 @@ utility mdfind.")
 (defvar anything-c-source-kill-ring
   '((name . "Kill Ring")
     (init . (lambda () (anything-attrset 'last-command last-command)))
-    (candidates . (lambda ()
-                    (loop for kill in kill-ring
-                          unless (or (< (length kill) anything-kill-ring-threshold)
-                                     (string-match "^[\\s\\t]+$" kill))
-                          collect kill)))
+    (candidates . anything-c-kill-ring-candidates)
     (action . anything-c-kill-ring-action)
     (last-command)
     (migemo)
     (multiline))
   "Source for browse and insert contents of kill-ring.")
+
+(defun anything-c-kill-ring-candidates ()
+  (loop for kill in kill-ring
+        unless (or (< (length kill) anything-kill-ring-threshold)
+                   (string-match "^[\\s\\t]+$" kill))
+        collect kill))
 
 (defun anything-c-kill-ring-action (str)
   "Insert STR in `kill-ring' and set STR to the head.
@@ -4179,11 +4198,51 @@ removed."
     (filtered-candidate-transformer . (lambda (candidates source)
                                         (list
                                          (condition-case nil
-                                             (pp-to-string
-                                              (eval (read anything-pattern)))
+                                             (with-current-buffer anything-current-buffer
+                                               (pp-to-string
+                                                (eval (read anything-pattern))))
                                            (error "Error")))))
-    (action ("Do Nothing" . ignore))))
+    (action ("Copy result to kill-ring" . (lambda (candidate)
+                                            (with-current-buffer anything-buffer
+                                              (let ((end (save-excursion
+                                                           (goto-char (point-max))
+                                                           (search-backward "\n")
+                                                           (point))))
+                                                (kill-region (point) end))))))))
 ;; (anything 'anything-c-source-evaluation-result)
+
+;;;###autoload
+(defun anything-eval-expression (arg)
+  "Preconfigured anything for `anything-c-source-evaluation-result'."
+  (interactive "P")
+  (anything 'anything-c-source-evaluation-result (when arg (thing-at-point 'sexp))
+            nil nil nil "*anything eval*"))
+
+;;;###autoload
+(defun anything-eval-expression-with-eldoc ()
+  "Same as `anything-eval-expression' but with `eldoc' support."
+  (interactive)
+  (if (window-system)
+      (let ((timer (run-with-idle-timer eldoc-idle-delay
+                                        'repeat 'anything-eldoc-show-in-eval)))
+        (unwind-protect
+             (call-interactively 'anything-eval-expression)
+          (cancel-timer timer)))
+      (call-interactively 'anything-eval-expression)))
+
+(defun anything-eldoc-show-in-eval ()
+  "Return eldoc in a tooltip for current minibuffer input."
+  (let* ((str-all (minibuffer-completion-contents))
+         (sym     (when str-all
+                    (with-temp-buffer
+                      (insert str-all)
+                      (goto-char (point-max))
+                      (unless (looking-back ")\\|\"") (forward-char -1))
+                      (eldoc-current-symbol))))
+         (doc     (or (eldoc-get-var-docstring sym)
+                      (eldoc-get-fnsym-args-string
+                       (car (eldoc-fnsym-in-current-sexp))))))
+    (when doc (tooltip-show doc))))
 
 ;;; Calculation Result
 (defvar anything-c-source-calculation-result
@@ -4628,7 +4687,7 @@ See also `anything-create--actions'."
   (anything '(((name . "Anything Create")
                (header-name . (lambda (_) (format "Action for \"%s\"" string)))
                (candidates . anything-create--actions)
-               (candidate-number-limit . 9999)
+               (candidate-number-limit)
                (action . (lambda (func) (funcall func string)))))))
 
 (defun anything-create--actions (&rest ignored)
@@ -5188,7 +5247,8 @@ See `obarray'."
         (t collection)))
 
 (defun* anything-comp-read (prompt collection &key test initial-input
-                                   (buffer "*Anything Completions*") must-match)
+                                   (buffer "*Anything Completions*") must-match
+                                   (requires-pattern 0))
   "Anything `completing-read' emulation.
 Collection can be a list, vector, obarray or hash-table."
   (when (get-buffer anything-action-buffer)
@@ -5200,6 +5260,7 @@ Collection can be a list, vector, obarray or hash-table."
               (let ((cands (anything-comp-read-get-candidates collection test)))
                 (if (or must-match (string= anything-pattern ""))
                     cands (append (list anything-pattern) cands)))))
+         (requires-pattern . ,requires-pattern)
          (volatile)
          (action . (("candidate" . ,'identity))))
        initial-input prompt 'noresume nil buffer)
@@ -5207,17 +5268,43 @@ Collection can be a list, vector, obarray or hash-table."
 
 (defun anything-c-get-pid-from-process-name (process-name)
   "Get pid from running process PROCESS-NAME."
-  (let ((process-list (list-system-processes)))
-    (catch 'break
-      (dolist (i process-list)
-        (let ((process-attr (process-attributes i)))
-          (when process-attr
-            (when (string-match process-name
-                                (cdr (assq 'comm
-                                           process-attr)))
-              (throw 'break
-                i))))))))
+  (loop with process-list = (list-system-processes)
+     for pid in process-list
+     for process = (assoc-default 'comm (process-attributes pid))
+     when (and process (string-match process-name process))
+     return pid))
 
+
+(defun anything-run-or-raise (exe &optional file)
+  "Generic command that run asynchronously EXE.
+If EXE is already running just jump to his window if `anything-raise-command'
+is non--nil.
+When FILE argument is provided run EXE with FILE.
+In this case EXE must be provided as \"EXE %s\"."
+  (let ((real-com (car (split-string (replace-regexp-in-string " %s" "" exe)))))
+    (if (or (get-process real-com)
+            (anything-c-get-pid-from-process-name real-com))
+        (if anything-raise-command
+            (shell-command  (format anything-raise-command real-com))
+            (error "Error: %s is already running" real-com))
+        (when (member real-com anything-c-external-commands-list)
+          (message "Starting %s..." real-com)
+          (if file
+              (start-process-shell-command real-com nil (format exe file))
+              (start-process-shell-command real-com nil real-com))
+          (set-process-sentinel
+           (get-process real-com)
+           #'(lambda (process event)
+               (when (string= event "finished\n")
+                 (when anything-raise-command
+                   (shell-command  (format anything-raise-command "emacs")))
+                 (message "%s process...Finished." process))))
+          (setq anything-c-external-commands-list
+                (push (pop (nthcdr (anything-c-position
+                                    real-com anything-c-external-commands-list
+                                    :test 'equal)
+                                   anything-c-external-commands-list))
+                      anything-c-external-commands-list))))))
 
 ;;;###autoload
 (defun anything-c-run-external-command (program)
@@ -5230,24 +5317,7 @@ You can set your own list of commands with
                  "RunProgram: "
                  (anything-c-external-commands-list-1 'sort)
                  :must-match t)))
-  (if (or (get-process program)
-          (anything-c-get-pid-from-process-name program))
-      (error "Error: %s is already running" program)
-      (message "Starting %s..." program)
-      (start-process-shell-command program nil program)
-      (set-process-sentinel
-       (get-process program)
-       #'(lambda (process event)
-           (when (string= event "finished\n")
-             (message "%s process...Finished." process)
-             (when anything-back-to-emacs-shell-command
-               (shell-command anything-back-to-emacs-shell-command)))))
-      (setq anything-c-external-commands-list
-            (push (pop (nthcdr (anything-c-position
-                                program anything-c-external-commands-list
-                                :test 'equal)
-                               anything-c-external-commands-list))
-                  anything-c-external-commands-list))))
+  (anything-run-or-raise program))
 
 (defsubst* anything-c-position (item seq &key (test 'eq))
   "A simple and faster replacement of CL `position'."
@@ -5377,18 +5447,8 @@ If not found or a prefix arg is given query the user which tool to use."
                           (anything-comp-read
                            "Program: "
                            collection :must-match t)
-                          " %s")))
-         (progname   (replace-regexp-in-string " %s" "" program))
-         (process    (format "%s-%s" progname fname)))
-    (start-process-shell-command process
-                   nil (format program fname))
-    (when (member progname anything-c-external-commands-list)
-      (setq anything-c-external-commands-list
-            (push (pop (nthcdr (anything-c-position
-                                progname anything-c-external-commands-list
-                                :test 'equal)
-                               anything-c-external-commands-list))
-                  anything-c-external-commands-list)))))
+                          " %s"))))
+    (anything-run-or-raise program file)))
 
 ;;;###autoload
 (defun w32-shell-execute-open-file (file)

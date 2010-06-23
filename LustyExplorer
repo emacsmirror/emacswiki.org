@@ -24,6 +24,13 @@ Lisp:lusty-explorer.el
 
 = Changelist =
 
+Version 2.3:
+* For iswitchb congruity, <code>C-s</code>/<code>C-r</code>: select next/previous match.
+* Buffer explorer: put current buffer at end of matches list for more intuitive switching.  Thanks to Alex Schroeder.
+* Buffer explorer: sort first by fuzzy matching score, then by most recently used.
+* More intuitive action on <code>RET</code> key press, to differentiate from <code>TAB</code>.  Thanks to René Kyllingstad.
+* Minor performance improvement.
+
 Version 2.2:
 * New keys:
 ** <code>C-f</code>: move highlight to next column.
@@ -81,4 +88,3 @@ Thanks! Re: (1), you're right, this only makes sense.  Re: (2), I've changed `RE
 
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion
-

@@ -83,10 +83,15 @@ Thanks for the wonderful work of EmacsWiki, AlexSchroeder!  -- BaoqiuCui
 
 Welcome to the wiki! I think grammar checking is one area Emacs has no good solution and your project can be a valuable addition to Emacs. Have you considered posting your project info to emacs-devel and ask for their comments to include it when it's matured? -- [[Leo]]
 
+[new]
 Thanks for the comments!  I am planning to post a message on emacs-devel
 and/or comp.emacs to get people's input once this project gets more
 matured.  (Thought that EmacsWiki is a better place to get some early
 comments... and turned out I was right. ;-) ) -- BaoqiuCui
 
+[new]
+Thanks, but could you please explain why you think the old solutions would not work?
+They are supposed to handle a subset of DocBook tags if I understand it correctly.
+Would not that work now too?
 ----
 CategoryHomepage

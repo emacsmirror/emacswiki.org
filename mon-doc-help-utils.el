@@ -123,7 +123,7 @@
 ;; `*mon-help-custom-faces-builtins-tags*',
 ;; `*regexp-mon-doc-help-builtin-static-tags*', `*mon-help-reference-keywords*',
 ;; `*mon-tags-table-list*', `*mon-help-side-effect-free*',
-;; `*mon-help-side-effect-and-error-free*',
+;; `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `mon-insert-documentation'                -> `mon-help-insert-documentation'
@@ -856,9 +856,12 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
             \(random \(length *mon-help-side-effect-free*\)\)\)\)\)
   `\(,some-random-elt ,\(when \(get some-random-elt 'side-effect-free\)
                         '\(side-effect-free t\)\)\)\)\n
+:NOTE This list does not include the byte-code ops of the byte-code-optimizer,
+e.g. those enumerated in: `byte-compile-side-effect-free-ops'.\n
 :SEE :FILE `byte-opt.el'\n
-:SEE-ALSO `*mon-help-side-effect-and-error-free*', `byte-compile-delete-errors',
-`cl-safe-expr-p', `cl-byte-compile-compiler-macro'.\n►►►")
+:SEE-ALSO `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
+`byte-compile-delete-errors', `cl-safe-expr-p',
+`cl-byte-compile-compiler-macro'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-help-side-effect-free*)
   (setq *mon-help-side-effect-free*
@@ -910,7 +913,6 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
 ;; |                         '(side-effect-free t))))
 ;; `----
 
-
 ;;; ==============================
 ;;; :CHANGESET 1904
 ;;; :CREATED <Timestamp: #{2010-06-21T16:45:59-04:00Z}#{10251} - by MON KEY>
@@ -923,9 +925,12 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
                         '\(side-effect-free t\)\)
                      ,\(when \(memq 'error-free \(symbol-plist some-random-elt\)\)
                         '\(error-free t\)\)\)\)\n
+:NOTE This list does not include the byte-code ops of the byte-code-optimizer,
+e.g. those enumerated in: `byte-compile-side-effect-and-error-free-ops'.\n
 :SEE :FILE `byte-opt.el'\n
-:SEE :ALSO `*mon-help-side-effect-free*', `byte-optimize-form-code-walker',
-`byte-compile-delete-errors', `cl-safe-expr-p', `cl-byte-compile-compiler-macro'.\n►►►")
+:SEE :ALSO `*mon-help-side-effect-free*', `*mon-help-pure-functions*',
+`byte-optimize-form-code-walker', `byte-compile-delete-errors',
+`cl-safe-expr-p', `cl-byte-compile-compiler-macro'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-help-side-effect-and-error-free*)
   (setq *mon-help-side-effect-and-error-free*
@@ -961,6 +966,52 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
 ;;|                         '(side-effect-free t))
 ;;|                      ,(when (memq 'error-free (symbol-plist some-random-elt))
 ;;|                         '(error-free t))))
+;;`----
+
+
+;;; ==============================
+;;; :CHANGESET 1908
+;;; :CREATED <Timestamp: #{2010-06-22T11:59:47-04:00Z}#{10252} - by MON KEY>
+(defvar *mon-help-pure-functions* nil
+  "List of functions the byte-code-optimizer considers \"pure\".\n
+These have the plist property 'pure indicating they are side-effect free
+functions whose values depend only on their arguments. For these functions,
+calls with constant arguments can be evaluated at compile time. This may shift
+run time errors to compile time.\n
+The `byte-optimize-form-code-walker' looks for this property as its final
+conditional clause (along with the predicates `byte-optimize-all-constp'
+`byte-compile-constp') when making the determination that no args to the
+function can be considered to be for-effect, even if the called function is
+for-effect, because it does not know anything about that function.\n
+:NOTE All but two of the elements of this list are also present in the list
+enumerated by `*mon-help-side-effect-free*' and are considered by the
+byte-compiler to be side-effect-free.\n
+:EXAMPLE\n
+\(intersection *mon-help-side-effect-free* *mon-help-pure-functions*\)\n
+\(set-difference *mon-help-pure-functions* *mon-help-side-effect-free*\)\n
+\(let \(purity-check\)
+  \(dolist \(pf *mon-help-pure-functions* 
+              \(setq purity-check \(nreverse purity-check\)\)\)
+    \(let \(\(pf-pl \(reverse \(symbol-plist pf\)\)\)\)
+      \(push `\(,pf \(:pure ,\(plist-get pf-pl 'pure\)
+                   :side-effect-free ,\(plist-get pf-pl 'side-effect-free\)\)\)
+            purity-check\)\)\)\)\n
+:SEE :FILE `byte-opt.el'\n
+:SEE :ALSO `*mon-help-side-effect-free*',
+`*mon-help-side-effect-and-error-free*'.\n►►►")
+;;
+(unless (bound-and-true-p *mon-help-pure-functions*)
+  (setq *mon-help-pure-functions*
+        '(concat symbol-name regexp-opt regexp-quote string-to-syntax)))
+;;
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;| (let (purity-check)
+;;|   (dolist (pf *mon-help-pure-functions* 
+;;|               (setq purity-check (nreverse purity-check)))
+;;|     (let ((pf-pl (reverse (symbol-plist pf))))
+;;|       (push `(,pf (:pure ,(plist-get pf-pl 'pure)
+;;|                    :side-effect-free ,(plist-get pf-pl 'side-effect-free)))
+;;|             purity-check))))
 ;;`----
 
 ;;; ==============================
@@ -1660,7 +1711,8 @@ For use with:\n
             . ,\(mon-get-text-properties-parse-prop-val-type-chk the-bubba\)\)
           bubba-types\)\)\)\n
 :SEE-ALSO `mon-help-text-property-functions-ext',
-`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
+`mon-help-text-property-functions', `mon-help-text-property-properties',
+`typecase', `etypecase', `deftype', `typep', `type-of'.\n►►►"
   (typecase prop-val
     (string  'equal)           
     (integer 'eq)
@@ -2473,7 +2525,9 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
   nil \"content of CUT-V-STR removed\" nil\)\n\n
 \(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
 \"\\nPRE-V-STR\\n\" nil \"PST-V-STR\"\)\n
-:SEE-ALSO `mon-help-swap-var-doc-const-val', `help-add-fundoc-usage'.\n►►►"
+:SEE-ALSO `mon-help-swap-var-doc-const-val', `documentation-property',
+`byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
+`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
   (declare (indent 2) (debug t))
   (let ((putf-doc (make-symbol "putf-doc"))
         (getv-doc (make-symbol "getv-doc"))
@@ -2552,7 +2606,9 @@ of CEDET and EIEIO class properties, `naf-mode' will use it's existing faces as 
 gateway towards OO manipulation of text.  As such, this macro might be used to
 similiar functionality to any derived mode which generates font-lock keywords
 from lists bound variables.\n
-:SEE-ALSO `mon-help-put-var-doc-val->func', `help-add-fundoc-usage'.\n►►►"
+:SEE-ALSO `mon-help-put-var-doc-val->func', `documentation-property',
+`byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
+`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
   ;;  (declare (indent 2) (debug t))
   (let ((v-doc  (make-symbol "v-doc"))
         (v-val  (make-symbol "v-val"))
@@ -2669,6 +2725,7 @@ from lists bound variables.\n
 ;;;       so, pull apart the vector. :SEE (info "(elisp) Byte-Code Objects")
 ;;; (aref (symbol-function 'mon-help-xref-symbol-value) 2)
 ;;; (vconcat (symbol-function 'mon-help-xref-symbol-value))
+;;; (vconcat (indirect-function 'mon-help-xref-symbol-value))
 ;;; :CREATED <Timestamp: #{2009-09-30T16:44:24-04:00Z}#{09403} - by MON KEY>
 (defun mon-help-xref-symbol-value (sym)
   "Return the value of symbol SYM.\n
@@ -2678,15 +2735,26 @@ value returned is of the form:
 \(\(SYMBOL <FUNCTION>|<VARIABLE>\) \(VALUE-OF-FUNICTION-OR-VARIABLE\)\n
 :EXAMPLE\n(mon-help-xref-symbol-value 'mon-help-xref-symbol-value)\n
 \(mon-help-xref-symbol-value '*w32-env-variables-alist*\)\n
-:SEE-ALSO `mon-help-function-spit-doc', `mon-help-function-args',
-`mon-help-swap-var-doc-const-val', `mon-help-parse-interactive-spec'.\n►►►"
+:SEE-ALSO `mon-help-function-spit-doc', `mon-help-swap-var-doc-const-val',
+`mon-help-parse-interactive-spec', `mon-help-function-args',
+`mon-help-function-arity', `symbol-function', `indirect-function',
+`symbol-value', `indirect-variable'.\n►►►"
   (let* ((is-sym (intern-soft sym))
-         (sym-type-val (cond ((and (fboundp is-sym) (functionp is-sym))
+         (sym-type-val (cond (;; (byte-code-function-p (indirect-function 'is-sym))
+                              (and (fboundp is-sym) (functionp is-sym)) 
                               `((,is-sym ,'<FUNCTION>) ,(symbol-function is-sym)))
-                             ((bound-and-true-p is-sym)
+                             (;; (indirect-variable 'is-sym)
+                              (bound-and-true-p is-sym)
                               `((,is-sym '<VARIABLE>) ,(symbol-value is-sym))))))
     sym-type-val))
 
+;; (indirect-variable *mon-tags-table-list*)
+;; (symbol-value      '*mon-tags-table-list*) 
+;; (symbol-function   'mon-help-insert-documentation)
+;; (indirect-function 'mon-insert-documentation)
+;; (eq ;; eql equal
+;;  (symbol-function   'mon-help-insert-documentation)
+;;  (indirect-function 'mon-insert-documentation))
 
 ;;; ==============================
 ;;; :NOTE The do-var arg doesn't work for byte-compiled vars in .elc files on:
@@ -2721,8 +2789,10 @@ inside a defgroup form.\n
 \(mon-help-function-spit-doc 'font-lock-keyword-face :do-face t\) ;defface
 \(mon-help-function-spit-doc 'apropos :do-group t\) ;defgroup\n
 :SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail',
-`mon-help-xref-symbol-value', `mon-help-function-args',
-`mon-help-insert-documentation'.\n►►►"
+`mon-help-xref-symbol-value', `mon-help-insert-documentation',
+`mon-help-function-args', `documentation-property',
+`byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
+`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
   ;; (eval-when-compile (require 'mon-cl-compat nil t))
   (let (mk-docstr)
     (save-excursion
@@ -3084,7 +3154,9 @@ FUNCTION must be a function \(or special form\) according to
 as the cl-keys occurs in the &rest parameter position. This also occurs with
 functions defined with the CL packages `defun*' macro.
 :SEE `lambda-list-keywords'.\n
-:SEE-ALSO `subr-arity', `mon-help-function-args', `help-function-arglist'.\n►►►"
+:SEE-ALSO `mon-help-function-args', `documentation-property',
+`byte-compile-output-docform', `help-function-arglist', `help-add-fundoc-usage',
+`subr-arity', `mon-help-function-args'.\n►►►"
   (setq function (indirect-function function))
   (cond ((eq 'autoload (car-safe function))
 	 'unknown)
@@ -3138,7 +3210,7 @@ functions defined with the CL packages `defun*' macro.
 ;;;                                t t))
 ;;;       Further along that output gets translated to:
 ;;;       #@144 ;; chars left until we hit the `^_' eg char 31 ?\x1F
-;;;       `^_' ;<- docstring terminator followed by newline
+;;;       `^_' ;<- docstring terminator followed by newline 
 ;;;       (defalias 'FUNCNAME #[(arg1 arg2 &rest cl-keys) #@710 
 ;;;       chars left to end of list only when &keys ------'
 ;;; :CREATED <Timestamp: #{2009-08-20T21:24:31-04:00Z}#{09345} - by MON>
@@ -3146,12 +3218,13 @@ functions defined with the CL packages `defun*' macro.
   "Return arg list of FUNC.\n
 :EXAMPLE\n\(mon-help-function-args 'mon-help-function-args\)
 \(mon-help-function-args 'mon-help-function-spit-doc\) ;CL arg-list with &key
-:NOTE May return misleading results when the CL marcros are in play.
-:SEE `lambda-list-keywords', `help-add-fundoc-usage'.\n
+:NOTE May return misleading results when the CL marcros are in play.\n
+:SEE `lambda-list-keywords'.\n
 :CALLED-BY `mon-help-insert-documentation'.\n
-:SEE-ALSO `mon-help-function-arity', `subr-arity', `help-function-arglist',
-`mon-help-xref-symbol-value', `mon-help-parse-interactive-spec',
-`mon-help-function-spit-doc', `byte-compile-output-docform'.\n►►►"
+:SEE-ALSO `mon-help-function-arity', `mon-help-xref-symbol-value',
+`mon-help-parse-interactive-spec', `mon-help-function-spit-doc',
+`documentation-property', `byte-compile-output-docform', `subr-arity',
+`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
   (let ((def (help-function-arglist func))
         (test-def))
     (when (and def (member '&rest def))
@@ -3338,7 +3411,7 @@ Default is `*doc-cookie*'.\n
                      (current-buffer)))))
               (buffer-string)))
       (insert the-docstrings))))
-;;
+;; 
 (defalias 'mon-insert-documentation 'mon-help-insert-documentation)
 ;;
 ;;; :TEST-ME

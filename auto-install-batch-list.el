@@ -142,7 +142,11 @@
            "col-highlight"
            "http://www.emacswiki.org/emacs/download/hl-line+.el"
            "http://www.emacswiki.org/emacs/download/crosshairs.el"))
-         )                              ;/append
+         ("e2wm" nil nil
+          (
+           "http://github.com/kiwanami/emacs-window-layout/raw/master/window-layout.el"
+           "http://github.com/kiwanami/emacs-window-manager/raw/master/e2wm.el"))
+         )                              ;/appende
        auto-install-batch-list))        ;/setq
 
 ;; Local Variables:

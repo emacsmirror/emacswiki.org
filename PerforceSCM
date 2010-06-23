@@ -22,7 +22,6 @@ I've been using the vc-p4.el in order to use 'vc-resolve-conflicts' for conflict
 
 NB: so far I haven't gotten it to work via tramp. When I was using CVS I thought I was able to do everything via tramp, but maybe I remember incorrectly.
 
-John W Palmieri
-
+Squiddo
 ----
 CategoryVersionControl

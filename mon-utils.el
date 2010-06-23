@@ -103,6 +103,7 @@
 ;; `mon-map-obarray-symbol-plist-props', `mon-image-verify-type',
 ;; `mon-with-buffer-undo-disabled-TEST',
 ;; `mon-line-move-n', `mon-line-move-prev', `mon-line-move-next',
+;; `mon-abort-recursive-edit', `mon-rotate-ascii-cursor',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -118,6 +119,7 @@
 ;; CONSTANTS:
 ;;
 ;; VARIABLES:
+;; `*mon-ascii-cursor-state*'
 ;;
 ;; ALIASED:
 ;; `mon-scratch'                     -> `scratch'
@@ -356,7 +358,7 @@ Adds feature requirements:\n
 `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load',
 `mon-unbind-defun', `mon-after-mon-utils-loadtime', `mon-compile-when-needed'
 `mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
-`mon-nuke-and-eval'.\n►►►"
+`mon-nuke-and-eval', `mon-cl-compat-loadtime'.\n►►►"
   (progn 
     (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime))
@@ -393,18 +395,20 @@ Adds feature requirements:\n
 ;;; :CREATED <Timestamp: #{2010-01-15T15:46:09-05:00Z}#{10025} - by MON KEY>
 (defmacro defconstant (symbol initvalue &optional docstring)
   `(defconst ,symbol ,initvalue ,docstring))
+;;
 ;; Now, tack on some docs.
-(let ((defcon-d 
-       (replace-regexp-in-string "^(fn.*)$" "" (documentation 'defconst))))
-  (setq defcon-d
-        (concat defcon-d
-                ":NOTE This is a CL compatibility feature, it macro-expands to elisp's `defconst'.\n"
-                ":SEE info node `(CL)Porting Common Lisp'.\n"
-                ":SEE-ALSO `defparameter', `defvar', `defcustom', `set-variable',"
-                "`make-local-variable', `make-variable-buffer-local', `make-symbol', `intern',"
-                "`intern-soft', `obarray', `boundp', `bound-and-true-p', `makunbound', `unintern'"
-                ".\n►►►"))
-  (plist-put (symbol-plist 'defconstant) 'function-documentation defcon-d))
+(eval-when (compile load)
+  (let ((defcon-d (replace-regexp-in-string "^(fn.*)$" "" (documentation 'defconst))))
+    (setq defcon-d
+          (concat defcon-d
+                  (mapconcat 'identity
+                             '(":NOTE This is a CL compatibility feature, it macro-expands to elisp's `defconst'.\n"
+                               ":SEE info node `(CL)Porting Common Lisp'.\n"
+                               ":SEE-ALSO `defparameter', `defvar', `defcustom', `set-variable',"
+                               "`make-local-variable', `make-variable-buffer-local', `make-symbol', `intern',"
+                               "`intern-soft', `obarray', `boundp', `bound-and-true-p', `makunbound', `unintern'."
+                               "►►►") "\n")))
+    (plist-put (symbol-plist 'defconstant) 'function-documentation defcon-d)))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-cl.el :LICENSE LGPL
@@ -993,6 +997,60 @@ If *shell* exists increment by 1 and return *shell-N*.\n
 ;;; :TEST-ME (progn (mon-shell) (mon-shell))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-22T16:22:02-04:00Z}#{10252} - by MON>
+(defvar *mon-ascii-cursor-state* nil
+  "Variable to hold state for `mon-rotate-ascii-cursor'.
+Its value is set during execution by that functions ROTATE-PRED arg.
+:SEE-ALSO .\n►►►")
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-06-18T13:17:42-04:00Z}#{10245} - by MON>
+(defun mon-rotate-ascii-cursor (rotate-pred &optional rotate-message)
+  "Spin an ASCII cursor while ROTATE-PRED evaluates t.
+ROTATE-PRED is a function which modifies the value of the global variable
+`*mon-ascii-cursor-state*' after each full rotation of the cursor.  On entry to this
+function the the value of `*mon-ascii-cursor-state*' is nil. On exit it is set to
+nil. This function will signal an error if `*mon-ascii-cursor-state*' is void.\n
+Optional arg is a string to display before while cursor while it is spinning.
+Default is \"processing .... \"
+:EXAMPLE\n\n\(progn
+  \(setq *mon-ascii-cursor-state* 8\)
+  \(mon-rotate-ascii-cursor 
+   #'\(lambda \(\) 
+       \(if \(= *mon-ascii-cursor-state* 0\) 
+           \(setq *mon-ascii-cursor-state* nil\)
+         \(setq *mon-ascii-cursor-state* \(1- *mon-ascii-cursor-state*\)\)\)\)
+   \"running `mon-rotate-ascii-cursor' example ... \"\)
+  \(message \(format \":VARIABLE `*mon-ascii-cursor-state*' is: %S\"
+                   \(symbol-value *mon-ascii-cursor-state*\)\)\)\)\n
+:SEE-ALSO .\n►►►"
+  (when (null *mon-ascii-cursor-state*)
+    (error (concat ":FUNCTION `mon-rotate-ascii-cursor' "
+                   "-- global variabe `*mon-ascii-cursor-state*' null")))
+  (unwind-protect 
+      (let ((mrac-msg (or rotate-message "processing .... ")))
+        (while *mon-ascii-cursor-state*
+          (dolist (rot '(92 45 124 47 45))
+            (message (concat mrac-msg (char-to-string rot)))
+            (sit-for .1))
+          (funcall rotate-pred)))
+    (setq *mon-ascii-cursor-state* nil)))
+;;
+;;,---- :UNCOMMENT-TO-TEST
+;;| (progn
+;;|   (setq *mon-ascii-cursor-state* 8)
+;;|   (mon-rotate-ascii-cursor 
+;;|    #'(lambda () 
+;;|        (if (= *mon-ascii-cursor-state* 0) 
+;;|            (setq *mon-ascii-cursor-state* nil)
+;;|          (setq *mon-ascii-cursor-state* (1- *mon-ascii-cursor-state*))))
+;;|    "running `mon-rotate-ascii-cursor' example ... ")
+;;|   (message (format ":VARIABLE `*mon-ascii-cursor-state*' is: %S"
+;;|                    (symbol-value *mon-ascii-cursor-state*))))
+;;`----
+
+
+;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-01-19T18:51:37-05:00Z}#{10032} - by MON>
 ;;; :CREATED <Timestamp: #{2009-12-01T01:12:29-05:00Z}#{09492} - by MON KEY>
 (defun mon-async-du-dir (the-dir)
@@ -1428,6 +1486,18 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
 ;;; :TEST-ME (call-interactively 'mon-test-keypresses);-> ("cj")("cj")
 
 ;;; ==============================
+;;; :CHANGESET 1898
+;;; :CREATED <Timestamp: #{2010-06-18T15:18:46-04:00Z}#{10245} - by MON KEY>
+(defun mon-abort-recursive-edit ()
+  "Try to exit gracefully from hung/corrupted recursive mini-buffer.\n
+:SEE-ALSO `exit-recursive-edit', `abort-recursive-edit',
+`command-error-function', `throw-on-input', `mon-help-key-functions'.\n►►►"
+  (interactive)
+  (while (exit-recursive-edit)
+    (progn (abort-recursive-edit)
+           (exit-recursive-edit))))
+
+;;; ==============================
 (defun mon-inhibit-read-only (func-arg)
   "Evaluate FUNC-ARG at point with `inhibit-read-only' t.\n
 Evaluation occurs inside an unwind protect so 'safe-enough' 
@@ -1510,8 +1580,10 @@ of `buffer-read-only'.\n
               (when w-display-buffer (sit-for 1)))))
       (setq shw-msg 
             (if (buffer-local-value buffer-read-only (current-buffer))
-                "Buffer is buffer-read-only - successfully re-inhibited buffer"
-                ":MACRO `mon-with-inhibit-buffer-read-only' - failed to re-inhibit buffer-read-only"))
+                (concat ":MACRO `mon-with-inhibit-buffer-read-only' "
+                        "-- Buffer is buffer-read-only, successfully re-inhibited buffer")
+              (concat ":MACRO `mon-with-inhibit-buffer-read-only' "
+                      "-- failed to re-inhibit buffer-read-only")))
       (if (not w-display-buffer)
           (when (eq (get-buffer mwirot) (current-buffer))
             (kill-buffer mwirot))))
@@ -2692,16 +2764,23 @@ substring of str they default to 0 and (length string) respectively.
 ;;; ==============================
 ;;; :NOTE Periodically MON is completely at a loss for how to accomplish this.
 ;;;       Lets make _damn_ sure it never happens again!!
+;;; :CHANGESET 1911 <Timestamp: #{2010-06-22T15:13:06-04:00Z}#{10252} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-29T21:00:43-04:00Z}#{09403} - by MON KEY>
 (defun mon-symbol-to-string (symbol-to-frob) 
   "Return SYMBOL as a string.\n
 :EXAMPLE\n(mon-symbol-to-string 'bubba)\n
 \(mon-symbol-to-string \(mon-string-to-symbol \"bubba\"\)\)\n
+\(progn
+  \(unintern \(intern-soft \"some-uninterned-symbol\"\)\)
+  \(mon-symbol-to-string
+   \(make-symbol \"some-uninterned-symbol\"\)\)\)\n
 :SEE-ALSO `mon-string-to-symbol', `mon-string-to-sequence',
 `mon-string-from-sequence', `mon-alphabet-as-type',
-`mon-string-replace-char'.\n►►►"
-  ;;Which is more correct? (format "%s" symbol)) ; OR:
-  (format "%S" symbol-to-frob)) 
+`mon-string-replace-char', `symbol-name'.\n►►►"
+  (or (and (intern-soft symbol-to-frob)
+           (symbol-name symbol-to-frob))
+      ;;Which is more correct? (format "%s" symbol) Or:
+      (format "%S" symbol-to-frob)))
 ;;
 (defalias 'mon-symbol->string    'mon-symbol-to-string)
 (defalias 'mon-string-from-symbol 'mon-symbol-to-string)
@@ -2709,22 +2788,52 @@ substring of str they default to 0 and (length string) respectively.
 ;;
 ;;; :TEST-ME (mon-symbol->string 'bubba)
 ;;; :TEST-ME (mon-symbol->string (mon-string-to-symbol "bubba"))
-
+;;; :TEST-ME (progn (unintern (intern-soft "some-uninterned-symbol"))
+;;;            (mon-symbol-to-string (make-symbol "some-uninterned-symbol")))
+   
 ;;; ==============================
+;;; :CHANGESET 1899 <Timestamp: #{2010-06-22T14:58:14-04:00Z}#{10252} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday June 24, 2009 @ 11:50.11 AM - by MON KEY>
-(defun mon-string-to-sequence (string-to-frob)
+(defun mon-string-to-sequence (string-to-frob &rest more-strings)
   "Return string STRING-TO-FROB as a list of chars.\n
-:EXAMPLE\n(mon-string-to-sequence \"?\C-lstring\"\)\n
+When rest arg MORE-STRINGS is non-nil each additional string is converted chars
+and added to the list of returned chars.\n
+Signal an error if MORE-STRINGS does not satisfy predicate `string-or-null-p'.\n
+:EXAMPLE\n\n\(mon-string-to-sequence \"?\\C-lstring\"\)\n
+\(apply 'string \(mon-string-to-sequence \"?\\C-lstring\"\)\)\n
+\(mon-string-to-sequence \"str1\" \"str2\"\)\n
+\(mon-string-to-sequence \"str1\" \"str2\" \"str3\"\)\n
+\(mon-string-to-sequence \"str1\" \"str2\" nil \"str3\"\)\n
+\(apply 'mon-string-to-sequence \"str1\" \"str2\" nil \"str3\" nil '\(\"more string\"\)\)\n
 :SEE-ALSO `mon-string-from-sequence', `mon-string-index', `mon-string-position',
 `mon-string-alpha-list', `mon-is-alphanum', `mon-is-digit', `mon-is-letter',
-`mon-alphabet-as-type', `mon-string-replace-char'.\n►►►"
-  (let (msts-to-seq)
-    (mapc #'(lambda (stf) 
-              (push stf msts-to-seq)) string-to-frob)
-    (nreverse msts-to-seq)))
+`mon-alphabet-as-type', `mon-string-replace-char', `string-to-list',
+`string-to-vector'.\n►►►"
+  ;;:NOTE `string-to-list' does this: (append string nil)
+  (if more-strings
+      (let ((msts-w/more 
+             (progn
+               (mapc #'(lambda (msts-chk-str) 
+                         (unless (string-or-null-p msts-chk-str)
+                           (error 
+                            (concat 
+                             ":FUNCTION `mon-string-to-sequence' "
+                             "-- arg MORE-STRINGS must satisfy `string-or-null-p'"))))
+                     more-strings)
+               `(,string-to-frob ,@more-strings nil))))
+        (apply 'append (car msts-w/more) (cdr msts-w/more)))
+    (let (msts-to-seq)
+      (mapc #'(lambda (mstsL) 
+                (push mstsL msts-to-seq)) string-to-frob)
+      (nreverse msts-to-seq))))
 ;;
 ;;; :TEST-ME (mon-string-to-sequence "?\C-lstring")
 ;;; :TEST-ME (apply 'string (mon-string-to-sequence "?\C-lstring"))
+;;; :TEST-ME (mon-string-to-sequence "str1" "str2")
+;;; :TEST-ME (mon-string-to-sequence "str1" "str2" "str3")
+;;; :TEST-ME (mon-string-to-sequence "str1" "str2" nil "str3")
+;;; :TEST-ME (apply 'mon-string-to-sequence "str1" "str2" nil "str3" nil '("more string"))
+;;; :TEST-ME (mon-string-to-sequence "str1" "str2" "str3" '("str4")) ;; <- error
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-09T16:07:57-04:00Z}#{09415} - by MON>

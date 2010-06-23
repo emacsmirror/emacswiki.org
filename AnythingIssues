@@ -358,6 +358,64 @@ equal: Wrong type argument: overlayp, nil.
 [new:rubikitch:2009-12-15 05:32 UTC]
 Fixed! thanks -- [[rubikitch]]
 
+=== anything-c-source-emacs-commands doesn't work===
+I include anything-c-source-emacs-commands in my anything sources.
+However emacs commands doesn't show up when I evoke anything. 
+
+I'm on Gnu Emacs 22.3.1 but also tested it on Emacs 23, both dont't work.
+
+Here's my my-anything definition. Any suggestion?
+
+<pre>
+(defun my-anything ()
+  (interactive)
+  (anything-other-buffer
+   '(anything-c-source-emacs-commands
+     anything-c-source-buffers
+     anything-c-source-files-in-current-dir
+     anything-c-source-file-name-history
+     anything-c-source-locate)
+   " *my-anything*"))
+</pre>
+
+By the way, anything-c-source-emacs-functions works all right.
+
+-- ZhaoShenyang
+
+[new] 
+To test if anything-c-source-emacs-commands work, please use it alone:
+Eval that in scratch buffer:
+
+<pre>
+;; (anything 'anything-c-source-emacs-commands)
+</pre>
+
+And tell us what happen.
+Note that you have to enter at least 2 characters to see something.
+It is working fine here.
+
+You should not use to much sources in one function, unless these sources
+provide small output.Idem for anything-sources, don't use it it is deprecated.
+I have added yesterday anything-M-x (on git repo) you can try it.(bind it to M-x
+with global-set-key.
+
+Also, i see you are using anything-c-source-files-in-current-dir, you should use
+anything-find-files and bind it to C-x C-f.
+
+-- ThierryVolpiatto
+
+[new]
+
+Eval (anything 'anything-c-source-emacs-commands) give me an buffer. but no
+matter what I type (e.g. esh to evoke eshell), the buffer keep being empty.
+I read the source code of anything-config.el and can't see why emacs-functions
+works but emacs-commands doesn't.
+
+I used to use a very old version of anything (2007 ver?) and the Emacs commands
+thing works all right. After upgrading to the latest version, everything works better
+except the emacs commands part.
+
+-- ZhaoShenyang
 
 ----
 [[Anything]]

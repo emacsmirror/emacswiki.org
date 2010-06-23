@@ -2,8 +2,8 @@
 ;;
 ;; Copyright (C) 2008-2010 Stephen Bach <this-file@sjbach.com>
 ;;
-;; Version: 2.2
-;; Created: May 9, 2010
+;; Version: 2.3
+;; Created: June 22, 2010
 ;; Keywords: convenience, files, matching
 ;; Compatibility: GNU Emacs 22 and 23
 ;;
@@ -31,7 +31,8 @@
 ;; shows the *Lusty-Matches* buffer, which updates dynamically as you type
 ;; using a fuzzy matching algorithm.  One match is highlighted; you can move
 ;; the highlight using C-n / C-p (next, previous) and C-f / C-b (next column,
-;; previous column).  Pressing TAB or RET will select the highlighted match.
+;; previous column).  Pressing TAB or RET will select the highlighted match
+;; (with slightly different semantics).
 ;;
 ;; To create a new buffer with the given name, press C-x e.  To open dired at
 ;; the current viewed directory, press C-x d.
@@ -63,6 +64,7 @@
 ;; Hugo Schmitt
 ;; Volkan Yazici
 ;; René Kyllingstad
+;; Alex Schroeder
 ;;
 
 ;;; Code:
@@ -251,13 +253,33 @@ Additional keys can be defined in `lusty-mode-map'."
       (lusty-refresh-matches-buffer :use-previous-matrix))))
 
 ;;;###autoload
+(defun lusty-open-this ()
+  "Open the given file/directory/buffer, creating it if not already present."
+  (interactive)
+  (when lusty--active-mode
+    (if (lusty--matrix-empty-p)
+        ;; No matches - open a new buffer/file with the current name.
+        (lusty-select-current-name)
+      (ecase lusty--active-mode
+        (:file-explorer
+         (let* ((path (minibuffer-contents-no-properties))
+                (last-char (aref path (1- (length path)))))
+           (if (and (file-directory-p path)
+                   (not (eq last-char ?/))) ; <-- FIXME nonportable?
+               ;; Current path is a directory, sans-slash.  Open in dired.
+               (lusty-select-current-name)
+             ;; Just activate the current match as normal.
+             (lusty-select-match))))
+        (:buffer-explorer (lusty-select-match))))))
+
+;;;###autoload
 (defun lusty-select-match ()
-  "Select the highlighted match in *Lusty-Matches*."
+  "Activate the highlighted match in *Lusty-Matches* - recurse if dir, open if file/buffer."
   (interactive)
   (destructuring-bind (x . y) lusty--highlighted-coords
     (when (and lusty--active-mode
-               (< x (length lusty--matches-matrix))
-               (< y (length (aref lusty--matches-matrix x))))
+               (not (lusty--matrix-empty-p)))
+      (assert (lusty--matrix-coord-valid-p x y))
       (let ((selected-match
              (aref (aref lusty--matches-matrix x) y)))
         (ecase lusty--active-mode
@@ -284,7 +306,6 @@ Additional keys can be defined in `lusty-mode-map'."
 ;; TODO:
 ;; - highlight opened buffers in filesystem explorer
 ;; - FIX: deal with permission-denied
-;; - if NO ENTRIES, RET opens new buffer with current name (if nonempty)
 ;; - C-e/C-a -> last/first column?
 ;; - config var: C-x d opens highlighted dir instead of current dir
 ;; - (run-with-idle-timer 0.1 ...)
@@ -303,16 +324,6 @@ Additional keys can be defined in `lusty-mode-map'."
 (defvar lusty--matches-matrix (make-vector 0 nil))
 (defvar lusty--matrix-column-widths '())
 (defvar lusty--matrix-truncated-p nil)
-
-(defconst lusty--greatest-factors
-  (let ((vec (make-vector 1000 nil)))
-    (dotimes (n 1000)
-      (let ((factor
-             (loop for i from 2 upto (ash n -1)
-                   when (zerop (mod n i))
-                   return (/ n i))))
-      (aset vec n factor)))
-    vec))
 
 (when lusty--wrapping-ido-p
   (require 'ido))
@@ -550,13 +561,30 @@ does not begin with '.'."
       (fit-window-to-buffer (display-buffer lusty-buffer))
       (set-buffer-modified-p nil))))
 
-(defun lusty-buffer-explorer-matches (text)
+(defun lusty-buffer-explorer-matches (match-text)
   (let* ((buffers (lusty-filter-buffers (buffer-list))))
-    (if (string= text "")
+    (unless (endp (cdr buffers))
+      ;; Put the current buffer at the end of the list, like
+      ;; iswitchb.
+      (setq buffers
+            (append (cdr buffers)
+                    (list (car buffers)))))
+    (if (string= match-text "")
         buffers
-      (lusty-sort-by-fuzzy-score
-       buffers
-       text))))
+      ;; Sort first by fuzzy score, then by MRU.
+      (let* ((score-mru-table
+              (loop for b in buffers
+                    for i from 0
+                    for score = (LM-score b match-text)
+                    unless (zerop score)
+                    collect (list b score i)))
+             (sorted
+              (sort score-mru-table
+                    (lambda (a b)
+                      (if (= (second a) (second b))
+                          (< (third a) (third b))
+                        (> (second a) (second b)))))))
+        (mapcar 'car sorted)))))
 
 ;; FIXME: return an array instead of a list?
 (defun lusty-file-explorer-matches (path)
@@ -632,8 +660,7 @@ Uses `lusty-directory-face', `lusty-slash-face', `lusty-file-face'"
                ;; All fits in a single row.
                (values 1 nil))
               (t
-               (lusty--compute-optimal-row-count lengths-v
-                                                 separator-length)))
+               (lusty--compute-optimal-row-count lengths-v)))
       (let ((n-columns 0)
             (column-widths '()))
 
@@ -684,69 +711,89 @@ Uses `lusty-directory-face', `lusty-slash-face', `lusty-file-face'"
                 lusty--matrix-truncated-p truncated-p))))))
 
 ;; Returns number of rows and whether this truncates the matches.
-(defun* lusty--compute-optimal-row-count (lengths-v separator-length)
-  (let* ((n-items (length lengths-v))
+(defun* lusty--compute-optimal-row-count (lengths-v)
+  ;;
+  ;; Binary search; find the lowest number of rows at which we
+  ;; can fit all the strings.
+  ;;
+  (let* ((separator-length (length lusty-column-separator))
+         (n-items (length lengths-v))
          (max-visible-rows (1- (lusty-max-window-height)))
          (available-width (lusty-max-window-width))
-         (lengths-h (make-hash-table :test 'equal
-                                     ; not scientific
-                                     :size n-items)))
+         (lengths-h
+          ;; Hashes by cons, e.g. (0 . 2), representing the width
+          ;; of the column bounded by the range of [0..2].
+          (make-hash-table :test 'equal
+                           ; not scientific
+                           :size n-items))
+         ;; We've already failed for a single row, so start at two.
+         (lower 1)
+         (upper (1+ max-visible-rows)))
 
-    ;; FIXME: do binary search instead of linear
-    (do ((n-rows 2 (1+ n-rows)))
-        ((>= n-rows max-visible-rows)
-         (values max-visible-rows t))
-      (let ((col-start-index 0)
-            (col-end-index (1- n-rows))
-            (total-width 0)
-            (split-factor (aref lusty--greatest-factors n-rows)))
+    (while (/= (1+ lower) upper)
+      (let* ((n-rows (/ (+ lower upper) 2)) ; Mid-point
+             (col-start-index 0)
+             (col-end-index (1- n-rows))
+             (total-width 0))
 
-        ;; Calculate required total-width for this number of rows.
-        (while (< col-end-index n-items)
-          (let ((column-width
-                 (lusty--compute-column-width
-                  col-start-index col-end-index split-factor
-                  lengths-v lengths-h)))
+        (block :column-widths
+          (while (< col-end-index (length lengths-v))
+            (incf total-width
+                  (lusty--compute-column-width
+                   col-start-index col-end-index
+                   lengths-v lengths-h))
 
-            (incf total-width column-width)
-            (incf total-width separator-length))
+            (when (> total-width available-width)
+              ;; Early exit.
+              (setq total-width most-positive-fixnum)
+              (return-from :column-widths))
 
-          (incf col-start-index n-rows) ; setq col-end-index
-          (incf col-end-index n-rows)
+            (incf total-width separator-length)
 
-          (when (and (>= col-end-index n-items)
-                     (< col-start-index n-items))
-            ;; Remainder; last iteration will not be a full column.
-            (setq col-end-index (1- n-items)
-                  split-factor nil)))
+            (incf col-start-index n-rows)
+            (incf col-end-index n-rows)
+
+            (when (and (>= col-end-index (length lengths-v))
+                       (< col-start-index (length lengths-v)))
+              ;; Remainder; last iteration will not be a full column.
+              (setq col-end-index (1- (length lengths-v))))))
 
         ;; The final column doesn't need a separator.
         (decf total-width separator-length)
 
-        (when (<= total-width available-width)
-          (return-from lusty--compute-optimal-row-count
-            (values n-rows nil)))))))
+        (if (<= total-width available-width)
+            ;; This row count fits.
+            (setq upper n-rows)
+          ;; This row count doesn't fit.
+          (setq lower n-rows))))
 
-(defsubst lusty--compute-column-width (start-index end-index split-factor
-                                       lengths-v lengths-h)
-  (let ((width 0)
-        (iter start-index))
-    (cond ((= start-index end-index)
-           ;; Single-element remainder
-           (setq width (aref lengths-v iter)))
-          ((null split-factor)
-           ;; Prime number, or a remainder
-           (while (<= iter end-index)
-             (setq width (max width (aref lengths-v iter)))
-             (incf iter)))
-          (t
-           (while (<= iter end-index)
-             (setq width
-                   (max width
-                        (gethash (cons iter (+ iter (1- split-factor))) lengths-h)))
-             (incf iter split-factor))))
-    (puthash (cons start-index end-index) width lengths-h)
-    width))
+    (if (> upper max-visible-rows)
+        ;; No row count can accomodate all entries; have to truncate.
+        ;; (-1 for the truncate indicator)
+        (values (1- max-visible-rows) t)
+      (values upper nil))))
+
+(defsubst lusty--compute-column-width (start-index end-index lengths-v lengths-h)
+  (if (= start-index end-index)
+      ;; Single-element remainder
+      (aref lengths-v start-index)
+    (let* ((range (cons start-index end-index))
+           (width (gethash range lengths-h)))
+      (or width
+          (let* ((split-point
+                  (+ start-index
+                     (ash (- end-index start-index) -1)))
+                 (first-half
+                  (lusty--compute-column-width
+                   start-index split-point
+                   lengths-v lengths-h))
+                 (second-half
+                  (lusty--compute-column-width
+                   (1+ split-point) end-index
+                   lengths-v lengths-h)))
+            (puthash (cons start-index end-index)
+                     (max first-half second-half)
+                     lengths-h))))))
 
 (defun* lusty--display-matches ()
 
@@ -799,10 +846,12 @@ Uses `lusty-directory-face', `lusty-slash-face', `lusty-file-face'"
     ;; TODO: perhaps RET should be:
     ;; - if buffer explorer, same as \t
     ;; - if file explorer, opens current name (or recurses if existing dir)
-    (define-key map (kbd "RET") 'lusty-select-match)
+    (define-key map (kbd "RET") 'lusty-open-this)
     (define-key map "\t" 'lusty-select-match)
     (define-key map "\C-n" 'lusty-highlight-next)
     (define-key map "\C-p" 'lusty-highlight-previous)
+    (define-key map "\C-s" 'lusty-highlight-next)
+    (define-key map "\C-r" 'lusty-highlight-previous)
     (define-key map "\C-f" 'lusty-highlight-next-column)
     (define-key map "\C-b" 'lusty-highlight-previous-column)
     (define-key map "\C-xd" 'lusty-launch-dired)
