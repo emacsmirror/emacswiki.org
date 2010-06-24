@@ -41,6 +41,15 @@ Emacs 22.  To load eproject, add this line to your ~/.emacs:
 --- grischka
 
 ------------------------------
+*Development*
+
+eproject is at http://repo.or.cz/w/eproject.git.  Constructive suggestions and patches are welcome to be pushed on the "mob" branch there:
+
+    git push ssh://mob@repo.or.cz/srv/git/eproject.git your-branch:mob 
+
+Where "your-branch" should be based on the remote mob branch. (See also http://repo.or.cz/h/mob.html)
+
+------------------------------
 *News*
 
 2010-05-20 Version 0.4:

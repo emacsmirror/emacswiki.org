@@ -1,8 +1,15 @@
-Recent Emacs versions (how recent?) support the use of the function
-`system-move-file-to-trash' to move files to the system's trash can
-rather then deleting them outright. If the function is defined, Emacs
-will use it. However, Emacs does not provide this function --- you
-must write it yourself.
+From the NEWS file for Emacs 23.2:
+
+** The default value of `trash-directory' is now nil.
+This means that `move-file-to-trash' trashes files according to
+freedesktop.org specifications, the same method used by the Gnome,
+KDE, and XFCE desktops.  (This change has no effect on Windows, which
+uses `system-move-file-to-trash' for trashing.)
+
+** File deletion can make use of the Recycle Bin or system Trash folder.
+Set `delete-by-moving-to-trash' non-nil to use this.  Deleted files
+and directories will then be sent to the Recycle Bin on Windows, and
+to `trash-directory' on other systems.
 
 = Using the freedesktop.org trash specification =
 

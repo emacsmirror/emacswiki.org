@@ -22,24 +22,6 @@ Test validating some CSS file by running:
 
     java -jar css-validator.jar file:somecssfile.css
 
-[new]
-It did not work, I get:
-
-  C:\DL\programs\css-valid>java -jar css-validator.jar c:\EmacsW32\nxhtml\nxhtml\doc\wd\grapes\nxhtml-grapes.css
-  Exception in thread "main" java.lang.NoClassDefFoundError: org/w3c/tools/resources/ProtocolException
-  Caused by: java.lang.ClassNotFoundException: org.w3c.tools.resources.ProtocolException
-        at java.net.URLClassLoader$1.run(Unknown Source)
-        at java.security.AccessController.doPrivileged(Native Method)
-        at java.net.URLClassLoader.findClass(Unknown Source)
-        at java.lang.ClassLoader.loadClass(Unknown Source)
-        at sun.misc.Launcher$AppClassLoader.loadClass(Unknown Source)
-        at java.lang.ClassLoader.loadClass(Unknown Source)
-        at java.lang.ClassLoader.loadClassInternal(Unknown Source)
-  Could not find the main class: org.w3c.css.css.CssValidator. Program will exit.
-
-Eh, it worked when I downloaded the other libraries too...
-
-[new]
 If it works, add this to a suitable place loaded by emacs:
 {{{
 ;; Edit this
@@ -58,6 +40,7 @@ If it works, add this to a suitable place loaded by emacs:
 (push '("^file:\\([^:]+\\):\\([^:]+\\):\\(.*\\)" 1 2 nil 3) flymake-err-line-patterns)
 }}}
 
+Hope it worked out for you   &mdash;[[AntonJohansson]]
 ----
 FlyMake
 

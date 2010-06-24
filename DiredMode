@@ -44,9 +44,7 @@ These pages describe Dired tips and additional features:
 * OperatingOnFilesInDired – Opening files in associated applications.
 ** MsShellExecute -- Open any file from dired on W32 systems
 * ThumbsMode -- Modify dired for automatic image previewing.
-* <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system
-that behaves like the trash can or recycle bin of many operating
-systems.
+* <tt>[[trashcan.el]]</tt> -- A recoverable file-deletion system that behaves like the trash can or recycle bin of many operating systems. NOTE: Starting with Emacs 23.2, we have built-in support for using Recycle Bin or system Trash folder.  See NEWS by pressing C-h n.
 * [[Tumme]] -- Lets you navigate among image files in Dired, with thumbnail previews and more.
 * WThirtyTwoFindDired -- Light, w32-specific version of `find-dired'.
 

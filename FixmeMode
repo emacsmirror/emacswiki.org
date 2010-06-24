@@ -2,3 +2,8 @@ A basic minor mode for highlighting FIXME, TODO, BUG, and other warning comments
 
 
 Lisp:fixme-mode.el
+
+: It does work, but not as expected: The changes it makes to the font-locking are global, so even in buffers that are not in fixme-mode FIXMEs & Co. are highlighted and there is *no* way to disable them. I also wonder whether the call to grep could/should be replaced to a call of occur. But besides that: Cool! :-) --Tim Landscheidt
+
+[new]
+: Wow, its been a long time since I looked at this code. Ok, I replaced the grep with occur (being a Linux guy I sometimes forget that the command line tools aren't available for all OSs). The font-lock changes should also be undone when the mode is disabled now. Only thing I can't seem to do is force the highlighting to apply to currently opened files (so you need to close it and open it again to see the changes. If anyone knows how to do this please let me know.). Let me know if you notice any other problems. -- Bryan Waite

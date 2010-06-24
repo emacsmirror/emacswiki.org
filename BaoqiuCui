@@ -50,19 +50,6 @@ and feedbacks are welcome.
 * [http://code.google.com/p/bcui-emacs/source/browse/#svn/trunk/org-docbook DocBook Exporter for Org-mode] (now part of Emacs 23.2)
 * [http://code.google.com/p/bcui-emacs/source/browse/#svn/trunk/grammar Grammar Checker for Emacs]
 
-[new]
-Both the DocBook exporter and the grammar checker integration looks like nice ideas to me.
-I would like to export from org-mode to OpenOffice and perhaps I can do that via the DocBook exporter.
-Are the tags you use for the exporter within those support by OpenOffice?
-(There is a link to those on http://wiki.docbook.org/topic/OpenOffice)
--- LennartBorgman
-
-Thanks for the comments...  however I don't know if there is a good and
-up-to-date solution to convert DocBook V5.0 documents to OpenOffice.
-All the solutions mentioned in the above link, including docbook2odf,
-are old and I don't think they an handle latest DocBook V5.0. --
-BaoqiuCui
-
 == Screenshots ==
 
 === Screenshots of DocBook Exporter for Org-mode ===
@@ -79,8 +66,10 @@ BaoqiuCui
 [new]
 Welcome to the wiki! -- AlexSchroeder
 
+[new]
 Thanks for the wonderful work of EmacsWiki, AlexSchroeder!  -- BaoqiuCui
 
+[new]
 Welcome to the wiki! I think grammar checking is one area Emacs has no good solution and your project can be a valuable addition to Emacs. Have you considered posting your project info to emacs-devel and ask for their comments to include it when it's matured? -- [[Leo]]
 
 [new]
@@ -90,8 +79,30 @@ matured.  (Thought that EmacsWiki is a better place to get some early
 comments... and turned out I was right. ;-) ) -- BaoqiuCui
 
 [new]
+Both the DocBook exporter and the grammar checker integration looks like nice ideas to me.
+I would like to export from org-mode to OpenOffice and perhaps I can do that via the DocBook exporter.
+Are the tags you use for the exporter within those support by OpenOffice?
+(There is a link to those on http://wiki.docbook.org/topic/OpenOffice)
+-- LennartBorgman
+
+[new]
+Thanks for the comments...  however I don't know if there is a good and
+up-to-date solution to convert DocBook V5.0 documents to OpenOffice.
+All the solutions mentioned in the above link, including docbook2odf,
+are old and I don't think they an handle latest DocBook V5.0. --
+BaoqiuCui
+
+[new]
 Thanks, but could you please explain why you think the old solutions would not work?
 They are supposed to handle a subset of DocBook tags if I understand it correctly.
 Would not that work now too?
+
+[new:BaoqiuCui:2010-06-24 05:55 UTC]
+This is because DocBook 5.0 and 4.x are not compatible.  The current
+known solutions only work with DocBook 4.x.  Even though most of the
+elements supported by DocBook Exporter of Org-mode are not changed much
+from 4.x to 5.0, the old solutions still need to be modified to convert
+DocBook 5.0 documents to OpenOffice.  -- BaoqiuCui
+
 ----
 CategoryHomepage

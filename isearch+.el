@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Apr 22 10:56:27 2010 (-0700)
+;; Last-Updated: Wed Jun 23 10:34:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 450
+;;     Update #: 519
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -29,6 +29,8 @@
 ;;    `isearchp-goto-success-end',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-set-region', `isearch-toggle-word',
+;;    `isearchp-yank-sexp-symbol-or-char',
+;;    `isearchp-sexp-symbol-or-char',
 ;;    `set-region-around-search-target'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -83,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2010/06/23 dadams
+;;     Added: isearchp-yank(-sexp)-symbol-or-char.  Bound to C-_, C-(.
 ;; 2010/04/22 dadams
 ;;     Added: isearchp-toggle-regexp-quote-yank, isearchp-regexp-quote-yank-flag,
 ;;            isearch-yank-string (redefinition).
@@ -199,6 +203,9 @@ You can toggle this with `isearchp-toggle-set-region', bound to
             ;; This one is needed only for Emacs 20.  It is automatic after release 20.
             (define-key isearch-mode-map "\M-e"         'isearch-edit-string)
             (define-key isearch-mode-map "\M-w"         'isearch-toggle-word)
+            (when (fboundp 'isearch-yank-internal)
+              (define-key isearch-mode-map "\C-_"       'isearchp-yank-symbol-or-char)
+              (define-key isearch-mode-map [(control ?()] 'isearchp-yank-sexp-symbol-or-char))
             (when (and (fboundp 'goto-longest-line) window-system) ; Defined in `misc-cmds.el'
               (define-key isearch-mode-map [(control end)] 'goto-longest-line))
             (define-key isearch-mode-map [next]         'isearch-repeat-forward)
@@ -304,6 +311,37 @@ Bindings in Isearch minor mode:
 	;; Don't move cursor in reverse search.
 	isearch-yank-flag t)
   (isearch-search-and-update))
+
+(when (fboundp 'isearch-yank-internal) ; Emacs 22+
+  (defun isearchp-yank-symbol-or-char ()
+    "Yank char, subword, word, or symbol from buffer into search string."
+    (interactive)
+    (isearch-yank-internal
+     (lambda ()
+       (if (or (memq (char-syntax (or (char-after) 0)) '(?w ?_))
+               (memq (char-syntax (or (char-after (1+ (point))) 0)) '(?w ?_)))
+           (if (and (boundp 'subword-mode) subword-mode)
+               (subword-forward 1)
+             (forward-symbol 1))
+         (forward-char 1))
+       (point)))))
+
+(when (fboundp 'isearch-yank-internal)  ; Emacs 22+
+  (defun isearchp-yank-sexp-symbol-or-char ()
+    "Yank sexp, symbol, or char from buffer into search string."
+    (interactive)
+    (isearch-yank-internal
+     (lambda ()
+       (if (or (= (char-syntax (or (char-after) 0)) ?\( )
+               (= (char-syntax (or (char-after (1+ (point))) 0)) ?\( ))
+           (forward-sexp 1)
+         (if (or (memq (char-syntax (or (char-after) 0)) '(?w ?_))
+                 (memq (char-syntax (or (char-after (1+ (point))) 0)) '(?w ?_)))
+             (if (and (boundp 'subword-mode) subword-mode)
+                 (subword-forward 1)
+               (forward-symbol 1))
+           (forward-char 1)))
+       (point)))))
 
 
 ;; REPLACE ORIGINAL in `isearch.el'.

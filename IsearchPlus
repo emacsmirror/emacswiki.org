@@ -14,6 +14,11 @@ Features:
 * '''`C-M-y'''' yanks the secondary selection into the search string, if you also use library <tt>[[second-sel.el]]</tt> (see [[SecondarySelection#secondary-sel.el|secondary selection enhancements]]).
 
 
+* '''`##C-_##'''' yanks successive [[symbol]]s (or words or chars) into the search string.
+
+* '''`##C-(##'''' yanks successive [[sexp]]s (or symbols or words or chars) into the search string.
+
+
 * New command and binding to toggle (incremental) word search (from JuriLinkov): `isearch-toggle-word', bound to '''`M-w''''.
 
 

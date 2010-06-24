@@ -40,6 +40,17 @@
 ;; Fix: Reset event handler by (local-unset-key (kbd
 ;; "<drag-mouse-1>")) rather than by (local-set-key (kbd ...)
 ;; msearch-next-event-handler).
+;;
+;; 2010-06-23, 23:00, TN:
+;;
+;; Error: msearch-event-handler didn't call msearch-next-handler. Thus
+;; mouse-set-region was not called.
+;;
+;; Fix: Return value 't of (msearch-next-handler-ok).
+;;
+;; Feature: User can remove all highlights by dragging a region of zero length.
+;;
+;; Implementation: Allow msearch-word of zero length.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -68,7 +79,9 @@
 	  (equal msearch-next-handler 'msearch-event-handler))
       (progn
 	(local-unset-key (kbd "<drag-mouse-1>"))
-	(error "Invalid mouse-next-handler. Removed keybinding for drag-mouse-1."))))
+	(error "Invalid mouse-next-handler. Removed keybinding for drag-mouse-1.")
+	nil)
+    't))
 
 (defun msearch-cleanup ()
   "Remove overlays of msearch and deactivate msearch-lock-function."
@@ -80,15 +93,13 @@
   (interactive "e")
   (let ((start (posn-point (event-start e)))
 	(end (posn-point (event-end e))))
-    (if (/= start end)
-	(progn
-	  (if (> start end)
-	      (let ((tmp start)) (setq start end) (setq end tmp)))
-	  (setq msearch-word (buffer-substring-no-properties start end))
-	  (unless (string-equal msearch-old-word msearch-word)
-	    (setq msearch-old-word msearch-word)
-	    (msearch-cleanup)
-	    (jit-lock-register 'msearch-lock-function)))))
+    (if (> start end)
+	(let ((tmp start)) (setq start end) (setq end tmp)))
+    (setq msearch-word (buffer-substring-no-properties start end))
+    (unless (string-equal msearch-old-word msearch-word)
+      (setq msearch-old-word msearch-word)
+      (msearch-cleanup)
+      (jit-lock-register 'msearch-lock-function)))
   (if (msearch-next-handler-ok)
       (apply msearch-next-handler (list e))))
 

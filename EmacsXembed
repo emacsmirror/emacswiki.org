@@ -31,7 +31,10 @@ Its very cool!
 == getting the patch ==
 
 I've mailed it to emacs-devel.
+
 See also http://github.com/jave/emacs/tree/xembed
+
+I've now created an "xwidget" branch in the savannah emacs bzr repo, and the code will live there now.
 
 == The interface ==
 

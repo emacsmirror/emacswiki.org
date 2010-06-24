@@ -6,18 +6,15 @@ Remote read-eval-print-loop to access and modify Mozilla and Firefox apps from t
 ** NOTE: instructions link to 2.0 Beta 8 (from Dec 2006) version of javascript.el; we're up to at least  2.2.1 as of Dec, 2008
 * Main project: http://hyperstruct.net/projects/mozlab
 
-== Preview with search hits in the browser ==
-There has been live preview of the edited buffer (and css buffer) for long time in [NxhtmlMode nXhtml].
-This includes also display of point where you are in the editing buffer.
-
-New since some months are the ability to see search matches from isearch and re-builder too.
-(But this is yet only in the Launchpad repositories for nXhtml and you will need the updated re-builder there.)
-
-This support in nXhtml can however probably be made much better and faster by someone who knows more about javascript.
-If someone would like to do that it would be very nice.
-
 == Live-Preview: Mirror buffer changes instantly in the browser ==
 moz-reload-mode: http://gist.github.com/442376
+
+[NxhtmlMode nXhtml] also features a MozRepl powered live preview of the edited buffer.
+This includes also a possibility to display in the browser point where you are in the editing buffer.
+
+New since some months in nXhtml are the ability to see search matches from isearch and re-builder too. (But this is yet only in the Launchpad repositories for nXhtml and you will need the updated re-builder there.)
+
+This support in nXhtml can however probably be made much better and faster by someone who knows more about javascript. If someone would like to do that it would be very nice.
 
 == Automatically Refresh Browser After Saving HTML/CSS files ==
 
