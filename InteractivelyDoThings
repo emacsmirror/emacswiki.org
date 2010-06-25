@@ -222,7 +222,11 @@ This is a refinement of the above. It adds two features:
             ad-do-it))))
 
 ===== Problem using advice to reset to completing-read =====
-I like using ido for (almost) everything a lot but it gets slow for a long list of possible completions (e.g. for describe-function). Using the defadvice as described does not work for me? Is it just me or is this a bug? TIA
+1. Incompatible Libraries
+* kill-ring-search
+** Fix: Use a patched version: http://pastie.org/paste/1017562 (builds upon v1.1). Diff: http://pastie.org/paste/1017592
+
+2. I like using ido for (almost) everything a lot but it gets slow for a long list of possible completions (e.g. for describe-function). Using the defadvice as described does not work for me? Is it just me or is this a bug? TIA
 -- sebhofer
 [new:stepnem:2010-04-27 19:55 UTC]
 Yeah, doesn't work for me either. IMO you have to change ##(boundp
@@ -230,6 +234,7 @@ Yeah, doesn't work for me either. IMO you have to change ##(boundp
 bound all the time after loading ido, so the test doesn't make sense; but I'm
 not changing it in the example in case it's version specific or whatnot (23
 here)).
+
 
 == Ido Hacks (modifying Ido's behavior) ==
 

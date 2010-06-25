@@ -51,6 +51,12 @@
 ;; Feature: User can remove all highlights by dragging a region of zero length.
 ;;
 ;; Implementation: Allow msearch-word of zero length.
+;;
+;; 2010-06-24, 22:00, TN + SCZ:
+;;
+;; local-set-key is not buffer-local but major-mode local. Thus msearch-event-handler has been activated in all buffers with the same major-mode but local variables were missing.
+;;
+;; Fix: Introduced new mouse event handler for <drag-mouse-1>.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -73,24 +79,31 @@
 	    (overlay-put ov 'msearch 't))
 	  ))))
 
-(defun msearch-next-handler-ok ()
-  "Checks whether the next registered handler is okay."
-  (if (or (not (boundp 'msearch-next-handler))
-	  (equal msearch-next-handler 'msearch-event-handler))
-      (progn
-	(local-unset-key (kbd "<drag-mouse-1>"))
-	(error "Invalid mouse-next-handler. Removed keybinding for drag-mouse-1.")
-	nil)
-    't))
-
 (defun msearch-cleanup ()
   "Remove overlays of msearch and deactivate msearch-lock-function."
   (remove-overlays nil nil 'msearch 't)
   (jit-lock-unregister 'msearch-lock-function))
 
+(defvar drag-mouse-1-handler-list (list (key-binding (kbd "<drag-mouse-1>")))
+  "List of event handlers for <drag-mouse-1> events.
+Don't set this directly. Use the function
+register-drag-mouse-1-handler instead.")
+(make-variable-buffer-local 'drag-mouse-1-handler-list)
+
+(defun drag-mouse-1-handler (e)
+  "Generic handler for <drag-mouse-1> events."
+  (interactive "e")
+  (let ((n drag-mouse-1-handler-list))
+    (while n
+      (apply (car n) (list e))
+      (setq n (cdr n)))))
+
+(global-set-key (kbd "<drag-mouse-1>") 'drag-mouse-1-handler)
+
 (defun msearch-event-handler (e)
   "Must be bound to a mouse event."
   (interactive "e")
+  (message "Running event handler in %s" (buffer-name))
   (let ((start (posn-point (event-start e)))
 	(end (posn-point (event-end e))))
     (if (> start end)
@@ -99,26 +112,21 @@
     (unless (string-equal msearch-old-word msearch-word)
       (setq msearch-old-word msearch-word)
       (msearch-cleanup)
-      (jit-lock-register 'msearch-lock-function)))
-  (if (msearch-next-handler-ok)
-      (apply msearch-next-handler (list e))))
+      (jit-lock-register 'msearch-lock-function))))
 
 (define-minor-mode msearch-mode
   "Mouse-drag high-lightes all corresponding matches within the current buffer."
-  :lighter " msearch" 
+  :lighter " msearch"
   (if msearch-mode
       (progn
-	(unless (boundp 'msearch-next-handler)
-	  (set (make-local-variable 'msearch-word) "")
-	  (set (make-local-variable 'msearch-old-word) "")
-	  (set (make-local-variable 'msearch-next-handler) (key-binding (kbd "<drag-mouse-1>")))
-	  (local-set-key (kbd "<drag-mouse-1>") 'msearch-event-handler))
-	)
+	(set (make-local-variable 'msearch-word) "")
+	(set (make-local-variable 'msearch-old-word) "")
+	(add-to-list 'drag-mouse-1-handler-list 'msearch-event-handler))
     (msearch-cleanup)
-    (local-unset-key (kbd "<drag-mouse-1>"))
     (kill-local-variable 'msearch-word)
     (kill-local-variable 'msearch-old-word)
-    (kill-local-variable 'msearch-next-handler)
+    (setq drag-mouse-1-handler-list
+	  (delete 'msearch-event-handler drag-mouse-1-handler-list))
     ))
 
 (define-key mode-line-mode-menu [msearch-mode]

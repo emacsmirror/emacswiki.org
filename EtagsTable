@@ -17,5 +17,18 @@ In XEmacs the `etags-table-alist' is actually called `tag-table-alist' and XEmac
 (setq etags-table-search-up-depth 10)
 }}} 
 
+
+----
+
+It was not clear how to use this - after some digging I found out that the best way is to use this together with etags-select.el (from EtagsSelect) with the key bindings that redefine, for example, M-. to run etags-select-find-tag. So to make it work, download etags-select.el and etags-table.el into your emacs extensions directory (the one that is searched by 'require') and add into .emacs:
+
+{{{
+(require 'etags-select)
+(require 'etags-table)
+(global-set-key "\M-." 'etags-select-find-tag)
+}}}
+
+- AlexBolgarov
+
 ----
 CategoryProgrammerUtils

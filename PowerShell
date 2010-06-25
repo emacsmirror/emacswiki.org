@@ -31,3 +31,5 @@ FYI, there are copies of these files in [[EmacsW32]] (which I am going to upload
 I've updated Powershell.el, with a copyright and proper license, as well as some tightening of the code. 
 20 May 2010.   -- DinoChiesa
 
+[new]
+Hi Dino. I upgraded to the latest version 0.2.1 from 0.1. The new version seems to have this problem. Start powershell, then close buffer. Then, when you start standard shell, it no longer have prompts, and is in fact running powershell, not bash or cmd.ex. -- [[Xah Lee]], 2010 June 24
