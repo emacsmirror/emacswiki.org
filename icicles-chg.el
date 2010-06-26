@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 21 15:43:00 2010 (-0700)
+;; Last-Updated: Fri Jun 25 11:35:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5544
+;;     Update #: 5549
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/06/25 dadams
+;;     icicle-find-file(-other-window):
+;;       Use default-directory, not nil, as third arg to read-file-name.  Thx to Thomas Lim.
+;;       Note: This more or less reverts a change I made (why?) on 2008/12/27 (see that, below).
 ;; 2010/06/18 dadams
 ;;     Renamed: bookmarkp-* to bmkp-*.
 ;; 2010/06/11 dadams
@@ -2354,7 +2358,7 @@
 ;;     icicle-remove-cand-from-lists: Treat icicle-remove-dups-if-extras also.
 ;; 2009/01/13 dadams
 ;;     icicle-delete-windows-on: Delete frame even if it has a minibuffer, if it's not active.
-;; 2008/12 26 dadams
+;; 2008/12/26 dadams
 ;;     Added: icicle-widen-candidates, icicle-apropos-complete-and-widen.
 ;;       Added icicle-widen-candidates to icicle-Completions-mouse-3-menu.
 ;; 2008/12/25 dadams
@@ -5860,7 +5864,7 @@
 ;;     icicle-comint-dynamic-simple-complete: Map #'list over candidates (for Emacs 20).
 ;;     icicle-comint-hook-fn:
 ;;       Don't bind icicle-comint-command here - do it in icicle-bind-other-keymap-keys.
-;; 2008/12 27 dadams
+;; 2008/12/27 dadams
 ;;     Removed: icicle-find-file(-other-window)-w-wildcards.
 ;;     Removed soft require of dired+.el.
 ;;     icicle-find-file(-other-window):
@@ -7275,7 +7279,9 @@
 ;;
 ;;; Code:
 
-(provide 'icicles-chg)                  ; Not used.
+;; You need not load this file.  It contains only documentation.
+
+(provide 'icicles-chg)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; icicles-chg.el ends here

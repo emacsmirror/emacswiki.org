@@ -92,6 +92,32 @@ Better yet, use this to separate threads (puts space before and after the horizo
 </pre>
 
 [new]
+When I try icicle-find-file and if I press ENTER without changing the default value which is current working directory, nothing happens. I expect the dired buffer of current working directory would appear. Tested with ##GNU Emacs 23.1.1 (i686-pc-linux-gnu, GTK+ Version 2.10.4) of## built by me. Tested while running ##emacs -Q## and only invoking icicles.
+-- ThomasLim
+
+[new:DrewAdams:2010-06-25 18:38 UTC]
+Thanks for the report, Thomas.  Should be fixed now -- let me know.
+
+It's weird, but on 2008/12/27 I specifically changed from what I have now to what I just replaced for this fix.  I don't recall why.  So it's possible this fix will break something else ;-) -- we'll see.  Thx -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+[new]
 With the latest icicles files updated via icicles-install there is a problem with the GNU emacs 23.1.97 final release candidate for 23.2 that doesn't occur for 23.1.
 
 <pre>
@@ -121,9 +147,6 @@ I cannot reproduce the problem - please provide more info (e.g. ##*Messages*## o
 I tried with ##emacs -Q## using only the source files (##*.el##), and I tried again using the ##*.elc## files byte-compiled using the same Emacs 23-1-97 prerelease.  It's best to test using ##emacs -Q## and loading only the source files (##*.el##, not ##*.elc##). If you do test using byte-compiled files, be sure they are freshly compiled.)
 
 Also, be sure you have all the latest '''Icicles''' files. I'm not responsible for <tt>[[icicles-install.el]]</tt>, so I cannot tell you whether it always does the right thing. I assume it does, but to be sure you might want to compare the dates or the ##Update## numbers in the file headers of each file downloaded with those currently posted on the wiki at the ElispArea. Sorry for your trouble. -- DrewAdams
-
-
-
 
 
 

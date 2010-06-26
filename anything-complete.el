@@ -841,8 +841,11 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
 ;; (ac-default-source nil)
 
 ;; (@* "`completing-read' compatible read function ")
+(defvar anything-use-original-function nil
+  "If non-nil, use original implementation not anything version.")
 (defun anything-completing-read (prompt collection &optional predicate require-match initial hist default inherit-input-method)
-  (if (or (arrayp collection) (functionp collection))
+  (if (or anything-use-original-function
+          (arrayp collection) (functionp collection))
       (anything-old-completing-read prompt collection predicate require-match initial hist default inherit-input-method)
     ;; support only collection list.
     (setq hist (or (car-safe hist) hist))
@@ -857,7 +860,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
       (when (stringp result)
         (prog1 result
           (setq hist (or hist 'minibuffer-history))
-          (set hist (cons result (delete result (symbol-value hist)))))))))
+          (set hist (cons result (ignore-errors (delete result (symbol-value hist))))))))))
 
 ;; TODO obarray/predicate hacks: command/variable/symbol
 (defvar anything-completing-read-use-default t
@@ -881,9 +884,10 @@ It accepts one argument, selected candidate.")
               '(persistent-action
                 . (lambda (cand) (funcall anything-complete-persistent-action cand)))))
          (new-input-source (ac-new-input-source prompt require-match additional-attrs))
-         (history-source (unless require-match
+         (histvar (or hist 'minibuffer-history))
+         (history-source (when (and (boundp histvar) (not require-match))
                            `((name . "History")
-                             (candidates . ,(or hist 'minibuffer-history))
+                             (candidates . ,histvar)
                              ,persistent-action
                              ,@additional-attrs)))
          (default-source (and anything-completing-read-use-default (ac-default-source default t)))
@@ -901,6 +905,9 @@ It accepts one argument, selected candidate.")
           (t
            (list default-source main-source history-source new-input-source)))))
 ;; (anything-completing-read "Command: " obarray 'commandp t)
+;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil nil nil 'hoge-history)
+;; hoge-history
+;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil nil nil)
 ;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil t)
 ;; (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil t nil nil "foo")
 ;; (let ((anything-complete-persistent-action 'message)) (anything-completing-read "Test: " '(("hoge")("foo")("bar")) nil t))
@@ -1074,31 +1081,57 @@ It accepts one argument, selected candidate.")
 ;; (anything-read-string-mode 1)
 ;; (anything-read-string-mode 0)
 (defun anything-read-string-mode (arg)
-  "If this minor mode is on, use `anything' version of `completing-read' and `read-file-name'."
+  "If this minor mode is on, use `anything' version of `completing-read' and `read-file-name'.
+
+ARG also accepts a symbol list. The elements are:
+string:   replace `completing-read'
+file:     replace `read-file-name' and `find-file'
+buffer:   replace `read-buffer'
+variable: replace `read-variable'
+command:  replace `read-command' and M-x
+
+So, (anything-read-string-mode 1) and
+ (anything-read-string-mode '(string file buffer variable command) are identical."
   (interactive "P")
-  (setq anything-read-string-mode (if arg (> (prefix-numeric-value arg) 0) (not anything-read-string-mode)))
-  (cond (anything-read-string-mode
-         ;; redefine to anything version
-         (defalias 'completing-read (symbol-function 'anything-completing-read))
-         (defalias 'read-file-name (symbol-function 'anything-read-file-name))
-         (setq read-buffer-function 'anything-read-buffer)
-         (defalias 'read-buffer (symbol-function 'anything-read-buffer))
-         (defalias 'read-variable (symbol-function 'anything-read-variable))
-         (defalias 'read-command (symbol-function 'anything-read-command))
-         (substitute-key-definition 'execute-extended-command 'anything-execute-extended-command global-map)
-         (substitute-key-definition 'find-file 'anything-find-file global-map)
-         (message "Installed anything version of read functions."))
-        (t
-         ;; restore to original version
-         (defalias 'completing-read (symbol-function 'anything-old-completing-read))
-         (defalias 'read-file-name (symbol-function 'anything-old-read-file-name))
-         (setq read-buffer-function (get 'anything-read-string-mode 'orig-read-buffer-function))
-         (defalias 'read-buffer (symbol-function 'anything-old-read-buffer))
-         (defalias 'read-variable (symbol-function 'anything-old-read-variable))
-         (defalias 'read-command (symbol-function 'anything-old-read-command))
-         (substitute-key-definition 'anything-execute-extended-command 'execute-extended-command global-map)
-         (substitute-key-definition 'anything-find-file 'find-file global-map)
-         (message "Uninstalled anything version of read functions."))))
+  (when (consp anything-read-string-mode)
+    (anything-read-string-mode-uninstall))
+  (setq anything-read-string-mode
+        (cond ((listp arg) arg)                       ; not interactive
+              (arg (> (prefix-numeric-value arg) 0))  ; C-u M-x
+              (t   (not anything-read-string-mode)))) ; M-x 
+  (when (eq anything-read-string-mode t)
+    (setq anything-read-string-mode '(string file buffer variable command)))
+  (if anything-read-string-mode
+      (anything-read-string-mode-install)
+    (anything-read-string-mode-uninstall)))
+
+(defun anything-read-string-mode-install ()
+  ;; redefine to anything version
+  (when (memq 'string anything-read-string-mode)
+    (defalias 'completing-read (symbol-function 'anything-completing-read)))
+  (when (memq 'file anything-read-string-mode)
+    (defalias 'read-file-name (symbol-function 'anything-read-file-name))
+    (substitute-key-definition 'find-file 'anything-find-file global-map))
+  (when (memq 'buffer anything-read-string-mode)
+    (setq read-buffer-function 'anything-read-buffer)
+    (defalias 'read-buffer (symbol-function 'anything-read-buffer)))
+  (when (memq 'variable anything-read-string-mode)
+    (defalias 'read-variable (symbol-function 'anything-read-variable)))
+  (when (memq 'command anything-read-string-mode)
+    (defalias 'read-command (symbol-function 'anything-read-command))
+    (substitute-key-definition 'execute-extended-command 'anything-execute-extended-command global-map))
+  (message "Installed anything version of read functions."))
+(defun anything-read-string-mode-uninstall ()
+  ;; restore to original version
+  (defalias 'completing-read (symbol-function 'anything-old-completing-read))
+  (defalias 'read-file-name (symbol-function 'anything-old-read-file-name))
+  (setq read-buffer-function (get 'anything-read-string-mode 'orig-read-buffer-function))
+  (defalias 'read-buffer (symbol-function 'anything-old-read-buffer))
+  (defalias 'read-variable (symbol-function 'anything-old-read-variable))
+  (defalias 'read-command (symbol-function 'anything-old-read-command))
+  (substitute-key-definition 'anything-execute-extended-command 'execute-extended-command global-map)
+  (substitute-key-definition 'anything-find-file 'find-file global-map)
+  (message "Uninstalled anything version of read functions."))
 
 
 ;; (@* " shell history")

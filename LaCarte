@@ -127,7 +127,6 @@ You can display the complete documentation (doc string) for the command correspo
 
 In sum, if you use '''La Carte''', you will want to use it with '''[[Icicles]]''' -- ''enjoy!''
 
-
 ----
 '''See Also:'''
 
@@ -136,6 +135,19 @@ In sum, if you use '''La Carte''', you will want to use it with '''[[Icicles]]''
 * MenuAccessFromKeyboard, for alternative libraries that also give you keyboard access to menus, in different ways.
 
 * AnythingSources defines anything-c-source-lacarte, the [[Anything]] interface.
+
+[new:AlexeyRomanov:2010-06-25 20:31 UTC]
+Actually, the current version of LaCarte doesn't work without Icicles:
+
+  Symbol's value as variable is void: icicle-sort-orders-alist
+
+-- AlexeyRomanov
+
+[new::DrewAdams]
+Thanks for the heads-up. Should be fixed now -- please try the latest. -- DrewAdams
+
+[new:AlexeyRomanov:2010-06-26 07:08 UTC]
+Yes, it is. -- AlexeyRomanov
 
 ----
 

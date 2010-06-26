@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jun 16 12:57:12 2010 (-0700)
+;; Last-Updated: Fri Jun 25 11:34:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21183
+;;     Update #: 21198
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5276,7 +5276,7 @@ option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
+  (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           icicle-abs-file-candidates)
@@ -5328,7 +5328,7 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-command icicle-find-file-absolute-other-window ; Command name
   "Visit a file or directory in another window, given its absolute name.
 Same as `icicle-find-file-absolute' except uses a different window." ; Doc string
-  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'wildcards)) ; Action
+  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           icicle-abs-file-candidates)
@@ -5437,19 +5437,20 @@ Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."    ; Doc string
+Ido-like behavior."                     ; Doc string
   (lambda (file)                        ; Function to perform the action
     (let* ((r-o  (if (eq this-command 'icicle-candidate-action)
                      (or (and init-pref-arg        (not current-prefix-arg))
                          (and (not init-pref-arg)  current-prefix-arg))
                    init-pref-arg))
            (fn   (if r-o 'find-file-read-only 'find-file)))
-      (funcall fn file 'wildcards)))
+      (funcall fn file 'WILDCARDS)))
   (concat "File or directory" (and init-pref-arg " (read-only)") ": ") ; `read-file-name' args
-  nil (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit) ; Emacs 22+.
-           (condition-case nil          ; E.g. error because not on file line (ignore)
-               (abbreviate-file-name (dired-get-file-for-visit))
-             (error nil)))
+  nil (if (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit)) ; Emacs 22+.
+          (condition-case nil           ; E.g. error because not on file line (ignore)
+              (abbreviate-file-name (dired-get-file-for-visit))
+            (error nil))
+        default-directory)
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil nil
   (icicle-file-bindings                 ; Bindings
@@ -5487,12 +5488,13 @@ to visit the current directory."        ; Doc string
                          (and (not init-pref-arg)  current-prefix-arg))
                    init-pref-arg))
            (fn   (if r-o 'find-file-read-only-other-window 'find-file-other-window)))
-      (funcall fn file 'wildcards)))
+      (funcall fn file 'WILDCARDS)))
   (concat "File or directory" (and init-pref-arg " (read-only)") ": ") ; `read-file-name' args
-  nil (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit) ; Emacs 22+.
-           (condition-case nil          ; E.g. error because not on file line (ignore)
-               (abbreviate-file-name (dired-get-file-for-visit))
-             (error nil)))
+  nil (if (and (eq major-mode 'dired-mode) (fboundp 'dired-get-file-for-visit)) ; Emacs 22+.
+          (condition-case nil           ; E.g. error because not on file line (ignore)
+              (abbreviate-file-name (dired-get-file-for-visit))
+            (error nil))
+        default-directory)
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil nil
   (icicle-file-bindings                 ; Bindings
@@ -5581,7 +5583,7 @@ option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
+  (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           icicle-abs-file-candidates)
@@ -5631,7 +5633,7 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-command icicle-recent-file-other-window ; Command name
   "Open a recently used file in another window.
 Same as `icicle-recent-file' except it uses a different window." ; Doc string
-  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'wildcards)) ; Action
+  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           icicle-abs-file-candidates)
@@ -5790,11 +5792,11 @@ does not follow symbolic links."
 
 (defun icicle-locate-file-action (file)
   "Action function for `icicle-locate-file'."
-  (find-file (icicle-transform-multi-completion file) 'wildcards))
+  (find-file (icicle-transform-multi-completion file) 'WILDCARDS))
 
 (defun icicle-locate-file-other-window-action (file)
   "Action function for `icicle-locate-file-other-window'."
-  (find-file-other-window (icicle-transform-multi-completion file) 'wildcards))
+  (find-file-other-window (icicle-transform-multi-completion file) 'WILDCARDS))
 
 ;;;###autoload
 (icicle-define-command icicle-locate-file-1
@@ -5935,7 +5937,7 @@ option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'wildcards)) ; Action function
+  (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))
@@ -5961,7 +5963,7 @@ Ido-like behavior."                     ; Doc string
 (icicle-define-command icicle-find-file-in-tags-table-other-window ; Command name
   "Visit a tags-table file in another window, given its absolute name.
 Same as `icicle-find-file-in-tags-table', but uses a different window." ; Doc string
-  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'wildcards)) ; Action
+  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))

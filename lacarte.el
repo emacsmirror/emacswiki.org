@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Tue May 11 08:11:30 2010 (-0700)
+;; Last-Updated: Fri Jun 25 21:05:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 630
+;;     Update #: 632
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
@@ -258,6 +258,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/06/26 dadams
+;;    lacarte-execute-command: Protected Icicles vars with boundp.  Thx to Alexey Romanov.
 ;; 2010/05/11 dadams
 ;;     lacarte-get-a-menu-item-alist-1: Add keyboard shortcuts to item names.
 ;;     Applied Icicles renamings (belatedly):
@@ -403,14 +405,16 @@ using face `icicle-special-candidate'."
   (let ((lacarte-menu-items-alist         (lacarte-get-overall-menu-item-alist))
         (completion-ignore-case           t) ; Not case-sensitive, by default.
         (icicle-special-candidate-regexp  (and (not no-commands-p) ".* > \\(.\\|\n\\)*"))
-        (icicle-sort-orders-alist         (if no-commands-p
-                                              icicle-sort-orders-alist
-                                            (cons '("menu items first"
-                                                    .  lacarte-menu-first-p)
-                                                  icicle-sort-orders-alist)))
-        (icicle-sort-comparer             (if no-commands-p
-                                              icicle-sort-comparer
-                                            'lacarte-menu-first-p))
+        (icicle-sort-orders-alist         (and (boundp 'icicle-sort-orders-alist)
+                                               (if no-commands-p
+                                                   icicle-sort-orders-alist
+                                                 (cons '("menu items first"
+                                                         .  lacarte-menu-first-p)
+                                                       icicle-sort-orders-alist))))
+        (icicle-sort-comparer             (and (boundp 'icicle-sort-comparer)
+                                               (if no-commands-p
+                                                   icicle-sort-comparer
+                                                 'lacarte-menu-first-p)))
         choice cmd)
     (unless no-commands-p
       (mapatoms (lambda (symb)

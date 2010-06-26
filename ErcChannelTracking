@@ -40,6 +40,10 @@ Numeric arguments can be given to the keystroke, too, to specify which active ch
 
 == Useful Functions: ==
 
+== Reset Channel Tracking ==
+
+This command will clear out the list of channels.
+
 This is useful if, for instance, ChanServ restarts:
 <pre>
 ;; Clears out annoying erc-track-mode stuff for when we don't care.

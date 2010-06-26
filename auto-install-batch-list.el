@@ -57,6 +57,7 @@
          ("auto-complete development version" nil nil
           (
            "http://github.com/m2ym/auto-complete/raw/master/popup.el"
+           "http://github.com/m2ym/auto-complete/raw/master/fuzzy.el"
            "http://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
            "http://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
            ))

@@ -77,6 +77,33 @@ I also wish I could access a more emacs-lisp-like documentation system.
 [new]
 Well, I guess this won't be as naturally done as in elisp. But there is latex-doc package that tries to do that. See: http://www.ee.usyd.edu.au/~thlai/emacs/index.html
 
+
+[new: 2010-06-26:2010-06-26 08:21 UTC]
+Latex2e-help-texinfo  comes with latex documentation in .info format http://www.ctan.org/tex-archive/info/latex2e-help-texinfo/. It also contains ltx-help.el which defines latex-help function. I've just put latex2e.info in my info directory following the instructions on info installation from emacs FAQ. Put ltx-help.el in my .emacs.d. Then corrected slightly the reg expressions in latex-help-get-cmd-alist function to recognize all the entries in the doc index and oala, help of all latex commands is under my fingertips (C-c i to be more specific). 
+Here is the version of latex-help-get-cmd-alist function which worked for me:
+
+  (defun latex-help-get-cmd-alist () ;corrected version:
+  "Scoop up the commands in the index of the latex info manual.
+   The values are saved in `latex-help-cmd-alist' for speed."
+    ;; mm, does it contain any cached entries
+    (if (not (assoc "\\begin" latex-help-cmd-alist))
+        (save-window-excursion
+  	(setq latex-help-cmd-alist nil)
+  	(Info-goto-node (concat latex-help-file "Command Index"))
+          (end-of-buffer)
+          (while (re-search-backward "^\\* \\(.+\\): *\\(.+\\)\\." nil t)
+            (setq key (ltxh-buffer-substring (match-beginning 1) (match-end 1)))
+            (setq value (ltxh-buffer-substring (match-beginning 2) (match-end 2)))
+            (setq latex-help-cmd-alist
+                  (cons (cons key value) latex-help-cmd-alist))))
+      )
+    latex-help-cmd-alist
+    )
+
+PS: quite surprised though, latex-help is not integrated in auctex. Did I miss something?
+
+
+
 == Abbrev mode and AUCTeX ==
 
 By default, !AUCTeX shares its abbreviations with the major mode text-mode. This means that abbreviations saved with <code>C-x a l</code> (<code>add-mode-abbrev</code>) are saved in the table <code>text-mode-abbrev-table</code> and become available in all buffers using text-mode. This may not be the expected behavior. Here is how to define abbreviations that work in auctex modes only, without interfering with the standard text-mode. In the InitFile, put:

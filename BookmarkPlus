@@ -1794,6 +1794,22 @@ With a prefix arg, only local files are candidates."
 After you've marked the bookmarks that have the same relative file name, you can act on that set of bookmarks in various ways. You can save the set or bookmark it (e.g. creating a `bookmark-list' bookmark). Returning to the saved set is like using a multiple-choice command for the files in the set. You can search+replace the marked bookmarks (`M-a', `M-q'). You can open [[Dired]] for just those bookmarked files, which can be in different directories (`##M-d >##'). After `##M-d >##', you can bookmark that Dired buffer -- that's another way to come back to this set of files.
 
 HTH -- DrewAdams
+----
+[new:stepnem:2010-06-25 21:51 UTC]
+What I sorely miss is a way (an option perhaps similar to `bookmark-use-annotations'
+for annotations) to be prompted for tags immediately when saving a bookmark.
+I can't believe there is no such functionality already --- I find manually
+invoking the bookmark list and adding tags later way suboptimal. -- [[stepnem]]
+
+
+[new:DrewAdams:2010-06-26 04:58 UTC]
+I agree.  I considered adding that on day one of tags, actually, but I just never got around to it.  Adding it via a global option is trivial, but I was hoping I'd come up with a better (more flexible) approach -- some way to provide for prompting only when you want it (on demand).  I already make full use of prefix args, so that's not a possibility.  I thought of binding a key in the minibuffer map for use when reading the bookmark name.  Nothing wonderful has come to mind, however, so your reminder has prompted me to just go with an option, at least for now.  I won't be uploading the file for a day or two, though, because I'm in the middle of some other work in the file.  Thanks for the reminder. -- DrewAdams
+
+P.S. In any case, you don't need to access the `##*Bookmark List*##' (`C-x r l'), if that's what you meant by "invoking the bookmark list".  You can just use `M-x bmkp-add-tags'. Not as convenient as being prompted automatically, if you add tags most of the time, but a lot less suboptimal than going through the list display. ;-)
+
+[new]
+
+
 
 ----
 CategoryHypermedia CategoryPersistence 

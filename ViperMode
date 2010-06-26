@@ -239,6 +239,19 @@ the Cursor is over the "i". Then, `cw' will kill "inner-word", whilst `ciw' will
 
 This doesn't seem to be possible with simple configuration, as the prefix keys have been hardcoded into Viper source (http://stackoverflow.com/questions/2145562/how-can-i-remap-the-prefix-keys-c-d-etc-in-emacs-viper-mode)
 
+=== Changing viper-toggle-key ===
+
+I've set
+{{{
+(setq viper-toggle-key "\C-q")
+}}}
+in .viper in order to use C-z as undo. However, it only seems to work in Insert mode: in both Vi and Emacs modes C-z is still bound to viper-toggle-key-action. Neither of these lines in .viper (after setting viper-toggle-key) seems to have any effect:
+{{{
+(define-key viper-vi-global-user-map "\C-z" 'undo)
+(set-global-key "\C-z" 'undo)
+}}}
+-- AlexeyRomanov
+
 ----
 CategoryEmulation
 CategoryKeys
