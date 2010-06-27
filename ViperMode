@@ -252,6 +252,23 @@ in .viper in order to use C-z as undo. However, it only seems to work in Insert 
 }}}
 -- AlexeyRomanov
 
+[new]
+I have never looked at setting C-z separately but some years ago we got cua-mode and viper to work together.
+So I turn on both cua-mode and viper and move viper-toggle-key (to f6) and then C-z will be undo.
+(Which I hardly use since it is easier to use vipers undo most of the time.)
+-- LennartBorgman
+
+[new:AlexeyRomanov:2010-06-26 18:11 UTC]
+I am in fact using cua-mode. I wonder why I am not getting the same result...
+I've just tried moving cua-mode loading after viper is loaded, but it didn't help.
+-- AlexeyRomanov
+
+[new]
+What version of Emacs are you using?
+
+[new:AlexeyRomanov:2010-06-27 04:34 UTC]
+The last patched EmacsW32 (see TabCompletion for a link to my setup).
+
 ----
 CategoryEmulation
 CategoryKeys

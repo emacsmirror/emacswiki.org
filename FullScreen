@@ -86,6 +86,7 @@ If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid 
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
 
 == Fullscreen on OS X ==
+[http://citizen428.net/archives/432-Fullscreen-Emacs-on-MacOS-X.html A step by step guide] on patching Cocoa Emacs (based on the 2 links directly below), including a download link to a version of Emacs 24.0.50 with fullscreen support.
 
 The procedure described at http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html is working as of late June 2010. 
 

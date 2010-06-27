@@ -35,6 +35,7 @@
 ;; `mon-insert-newlines', `mon-insert-defclass-template',
 ;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template',
 ;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
+;; `mon-insert-lisp-CL-mode-line-template',
 ;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
 ;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' ,
 ;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45',
@@ -60,6 +61,7 @@
 ;; `comment-divider'                     -> `mon-comment-divider'
 ;; `mon-comment-divider->col'            -> `mon-comment-divider-to-col'
 ;; `bug-insert-copyright'                -> `mon-insert-copyright'
+;; `mon-insert-doc-xref-eg'              -> `mon-insert-lisp-doc-eg-xref'
 ;;
 ;; RENAMED:
 ;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
@@ -1186,6 +1188,75 @@ Yank it back from the kill-ring if that is what you want.\n
 ;;; :TEST-ME (mon-insert-regexp-template-yyyy nil nil t)
 ;;; :TEST-ME (call-interactively 'mon-insert-regexp-template-yyyy)
 
+(declare-function slime-current-connection "ext:slime.el" t t)
+(declare-function slime-current-package    "ext:slime.el" t t)
+(declare-function slime-buffer-package     "ext:slime.el" t t)
+;;; ==============================
+;;; :CHANGESET 1917
+;;; :CREATED <Timestamp: #{2010-06-26T16:28:00-04:00Z}#{10256} - by MON KEY>
+(defun mon-insert-lisp-CL-mode-line-template (&optional cl-package insrtp intrp)
+  "Return a common-lisp mode-line for insertion.\n
+When optional arge CL-PACKAGE in non-nil it is a symbol or string naming a CL
+package.  When called-interactively with prefix arg prompt for a package name to
+insert. Attempts to build completions from value of `slime-buffer-package',
+`slime-current-connection', and return value of `swank:list-all-package-names'
+if `slime-current-connection' is non-nil.\n
+When optional INSRTP is non-nil insert modeline at point moving point.
+When optional arg INTRP is non-nil or called-interactively insert modeline at
+BOB but do not move-point.\n
+:EXAMPLE\n\n(mon-insert-lisp-CL-mode-line-template 'cl-bubba\)\n
+\(mon-insert-lisp-CL-mode-line-template \"cl-bubba\"\)\n
+:SEE-ALSO `mon-insert-cl-file-template', `mon-insert-cl-package-template'.\n►►►"
+  (interactive "P\ni\np")
+  (let* ((mdln-pkg (when (or cl-package current-prefix-arg)
+                     (cond (current-prefix-arg
+                            (let ((pkg-cmplt
+                                   (if (or (slime-current-connection)
+                                           (buffer-local-value 'slime-mode (current-buffer)))
+                                       `(,(or slime-buffer-package (slime-current-package))
+                                         ,@(if (slime-current-connection)
+                                               (slime-eval `(swank:list-all-package-names t))
+                                             ("CL-USER")))
+                                     '("CL-USER"))))
+                              (let ((completion-ignore-case t)
+                                    got-pkg)
+                                (setq got-pkg (completing-read "Which CL package name: " pkg-cmplt))
+                                (when got-pkg
+                                  (setq got-pkg (format " Package: %s; " got-pkg))))))
+                           ((and cl-package 
+                                 ;;(not current-prefix-arg)
+                                 (not (null cl-package)) 
+                                 (not (eq cl-package t)))
+                            (format " Package: %s; " 
+                                    (upcase (format "%s" (intern-soft cl-package))))))))
+         (mdln (format
+                ";;-*- Mode: LISP; Syntax: COMMON-LISP;%sEncoding: utf-8; Base: 10 -*-"
+                (if (and cl-package mdln-pkg) mdln-pkg " "))))
+    (if (or insrtp intrp)
+        (if intrp
+            (save-excursion (goto-char (buffer-end 0))
+                            (insert mdln)
+                            (unless (eq (char-after) 10)
+                              (newline)))
+          (insert mdln))
+      mdln)))
+;;
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba")
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba nil)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba" t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t nil)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template nil t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba nil t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba" t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba nil t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba" nil t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t nil t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template nil nil t)
+
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-01T16:42:46-05:00Z}#{10051} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T16:11:16-0400Z - by MON KEY>
@@ -1194,14 +1265,17 @@ Yank it back from the kill-ring if that is what you want.\n
   "Return a file header template for use with Common Lisp.\n
 When optional arg INSRTP is non-nil or called-interactively insert template at
 top of file.\n
-:EXAMPLE\(mon-insert-lisp-CL-file-template\)\n
-:SEE-ALSO `mon-insert-lisp-stamp', `mon-insert-lisp-testme',
-`mon-insert-lisp-evald',`mon-insert-copyright', `mon-comment-divider',
-`mon-comment-divider-to-col-four', `mon-stamp', `mon-file-stamp'
-`mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme', `mon-insert-copyright',
-`mon-insert-file-template'.\n►►►"
+:EXAMPLE\n\n\(mon-insert-lisp-CL-file-template\)\n
+:SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
+``mon-insert-CL-package-template' `mon-insert-lisp-stamp',
+`mon-insert-lisp-testme', `mon-insert-lisp-evald',`mon-insert-copyright',
+`mon-comment-divider', `mon-comment-divider-to-col-four', `mon-stamp',
+`mon-file-stamp' `mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
+`mon-insert-copyright', `mon-insert-file-template'.\n►►►"
   (interactive "i\np")
-  (let* ((milcft-modln ";;-*- Mode: LISP; Syntax: COMMON-LISP; Base: 10 -*-")
+  (let* ((milcft-modln 
+          ;; ";;; -*- Mode: Lisp; Syntax: Common-Lisp; Encoding: utf-8; -*-"
+          ";;-*- Mode: LISP; Syntax: COMMON-LISP; Encoding: utf-8; Base: 10 -*-")
          (milcft-fname (if (not (buffer-file-name)) 
                         (buffer-name)
                       (file-name-nondirectory (buffer-file-name))))
@@ -1243,7 +1317,8 @@ Builds template with `DEFPACKAGE' and `IN-PACKAGE' forms for the current buffer.
 When called-interactively or INSRTP non-nil assumes current buffer is empty and
 insert a file template with `mon-insert-lisp-CL-file-template'.\n
 :EXAMPLE\n(mon-insert-CL-package-template)\n
-:SEE-ALSO `mon-insert-file-template', `mon-insert-lisp-CL-file-template',
+:SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
+`mon-insert-lisp-CL-file-template', `mon-insert-file-template',
 `mon-insert-copyright', `mon-insert-lisp-stamp', `mon-insert-lisp-doc-eg-xref',
 `mon-insert-lisp-testme', `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\nP\np")
@@ -1294,6 +1369,7 @@ value on the kill-ring.\n
  |   :SEE-ALSO .\\\\n◄◄◄\\\" 
                   ;^^^ Here the cookie is reversed! 
                   ;    Actual value is returned per the cookie below.\n
+:ALIASED-BY `mon-insert-doc-xref-eg'\n
 :SEE-ALSO `mon-insert-file-template', `mon-insert-lisp-CL-file-template',
 `mon-insert-copyright', `mon-insert-lisp-stamp', `mon-insert-lisp-testme',
 `mon-insert-lisp-evald'.\n►►►"
@@ -1307,6 +1383,8 @@ value on the kill-ring.\n
                   (when as-kill (kill-new mildeg-xref)))
           (t (when as-kill (kill-new mildeg-xref))
              mildeg-xref))))
+;;
+(defalias 'mon-insert-doc-xref-eg 'mon-insert-lisp-doc-eg-xref)
 ;;
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil nil t)

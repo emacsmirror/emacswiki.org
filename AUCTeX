@@ -78,7 +78,7 @@ I also wish I could access a more emacs-lisp-like documentation system.
 Well, I guess this won't be as naturally done as in elisp. But there is latex-doc package that tries to do that. See: http://www.ee.usyd.edu.au/~thlai/emacs/index.html
 
 
-[new: 2010-06-26:2010-06-26 08:21 UTC]
+[new:RedBlue:2010-06-26 08:21 UTC]
 Latex2e-help-texinfo  comes with latex documentation in .info format http://www.ctan.org/tex-archive/info/latex2e-help-texinfo/. It also contains ltx-help.el which defines latex-help function. I've just put latex2e.info in my info directory following the instructions on info installation from emacs FAQ. Put ltx-help.el in my .emacs.d. Then corrected slightly the reg expressions in latex-help-get-cmd-alist function to recognize all the entries in the doc index and oala, help of all latex commands is under my fingertips (C-c i to be more specific). 
 Here is the version of latex-help-get-cmd-alist function which worked for me:
 
@@ -114,6 +114,50 @@ By default, !AUCTeX shares its abbreviations with the major mode text-mode. This
       (setq local-abbrev-table TeX-mode-abbrev-table)))
 
 Abbrevs defined from a file in one of the auctex modes will then be stored in the default .abbrev_defs file using the table <code>TeX-mode-abbrev-table</code> instead of <code>text-mode-table</code>.
+
+== Anything and LaCarte for mathematical symbols ==
+[new:RedBlue:2010-06-26 09:37 UTC]
+LaCarte offers a great facility for navigating menus; [[Anything]] - fast display and reg-exp filtering. Combined and specialized for `Math' sub-menu give a  nifty symbol lookup and insertion mechanism.  
+
+[[image:AnythingLacarteMath]]
+
+To make it work, install [[Anything]] and LaCarte and put this in your .emacs:
+ 
+  (require 'anything-config)
+  (require 'lacarte)
+
+  (setq LaTeX-math-menu-unicode t)
+  (define-key LaTeX-mode-map [?\M-`] 'anything-math-symbols)
+
+  (defvar anything-c-source-lacarte-math
+    '((name . "Math Symbols")
+      (init . (lambda()
+                (setq anything-c-lacarte-major-mode major-mode)))
+      (candidates
+       . (lambda () (if (eq anything-c-lacarte-major-mode 'latex-mode)
+                        (delete '(nil) (lacarte-get-a-menu-item-alist LaTeX-math-mode-map)))))
+      (action . (("Open" . (lambda (candidate)
+   (call-interactively candidate)))))))
+
+  (defun anything-math-symbols ()
+    "Anything for searching math menus"
+    (interactive)
+    (anything '(anything-c-source-lacarte-math)
+              (thing-at-point 'symbol) "Symbol: "
+              nil nil "*anything math symbols*"))
+
+If you are willing to have all other menus in your anything buffer and M-` global, install the Anything source http://www.emacswiki.org/emacs/AnythingSources#toc37
+and put this in your .emacs:
+
+  (global-set-key [?\M-`]     'anything-menus)
+  (defun anything-menus ()
+    "My anything for searching menus"
+    (interactive)
+    (anything '(anything-c-source-lacarte-math
+                anything-c-source-lacarte)
+               (thing-at-point 'symbol) "Menu item: "
+               nil nil "*anything menu*"))
+
 
 == Smart quotes ==
 

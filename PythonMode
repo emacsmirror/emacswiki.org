@@ -648,6 +648,18 @@ The definition in ipython.el is wrong (or deprecated may be).
 
 Note that Lisp:anything-ipython.el already fix this.
 
+To have ido completion, simply comment and insert the following lines in ipython.el as shown below
+<pre>
+;; (with-output-to-temp-buffer "*IPython Completions*"
+;;   (display-completion-list (all-completions pattern completion-table)))
+(let* ((dotposition (- (length pattern ) (length (first (last (split-string pattern "[\.]")) ) ) ))
+       (ido-ipython-selection  (ido-completing-read (concat  "Choose a completion: " pattern)
+						    (mapcar (lambda (x) (substring x dotposition))
+							    (all-completions pattern completion-table)))))
+  (delete-char (- dotposition (length pattern)))
+  (insert ido-ipython-selection))
+</pre>
+
 To have an even better completion, you should install also rlcompleter2.
 
 http://codespeak.net/rlcompleter2/

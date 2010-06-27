@@ -1799,7 +1799,7 @@ HTH -- DrewAdams
 What I sorely miss is a way (an option perhaps similar to `bookmark-use-annotations'
 for annotations) to be prompted for tags immediately when saving a bookmark.
 I can't believe there is no such functionality already --- I find manually
-invoking the bookmark list and adding tags later way suboptimal. -- [[stepnem]]
+invoking the bookmark list and adding tags later way suboptimal. -- stepnem
 
 
 [new:DrewAdams:2010-06-26 04:58 UTC]
@@ -1807,9 +1807,23 @@ I agree.  I considered adding that on day one of tags, actually, but I just neve
 
 P.S. In any case, you don't need to access the `##*Bookmark List*##' (`C-x r l'), if that's what you meant by "invoking the bookmark list".  You can just use `M-x bmkp-add-tags'. Not as convenient as being prompted automatically, if you add tags most of the time, but a lot less suboptimal than going through the list display. ;-)
 
-[new]
+[new:stepnem:2010-06-26 11:33 UTC]
+That's nice to hear.
+An option is more flexible than prefix argument in any case --- I for instance
+never use the prefix argument possibilities you provide in bookmark-set, so I
+could make a wrapper or advice and use the prefix to let-bind the option
+instead.
+
+Thanks for pointing out `bmkp-add-tags'; I guess one could achieve something
+e.g. using it together with `bmkp-after-set-hook'. -- stepnem
 
 
+[new:DrewAdams:2010-06-26 13:58 UTC]
+You can write a wrapper command that binds an option and then calls the original command -- sure. But you can as easily write a wrapper command that calls the original function with the right arg. That's the point of having the arg -- it's not just for use by `C-u'. 
+
+The point in providing a prefix arg is to let you bind a single key instead of 3 or 4 corresponding to 3 or 4 different commands. Anyone who wants to sacrifice multiple keys instead of using `C-u' can easily do so by defining separate commands that invoke the original with different arg values. 
+
+Yes, you can use `bmkp-add-tags' with `bmkp-after-set-hook'.  That's all the new code does: invoke `bmkp-add-tags' in `bookmark-set'.  Which is why I said that adding support for an option is trivial. -- DrewAdams
 
 ----
 CategoryHypermedia CategoryPersistence 

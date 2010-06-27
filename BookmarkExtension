@@ -79,6 +79,8 @@ experimental (use with care) though that work fine for me here to setup my proto
 
 * Org support: You will also find command `bmkext-firefox2org' to send your firefox bookmarks to an org file.
 
+* Bookmark-extensions have now his own addressbook, that can be a replacement of bbdb.
+
 == Screenshots ==
 
 Here some screenshots:
@@ -105,3 +107,9 @@ These screenshots are pretty much useless, because you only see a very vague col
 
 It would be great if you provided more information about the differences between bookmark-extensions vs. Bookmark+.el.
 As of now, it is hard to tell what kind of advantages bookmark-extensions provides over Bookmark+.el.
+
+[new]
+I don't want to make comparison between bookmark+ and bookmark-extensions, just look at the features provided above and make your own idea,
+or better try one and the other.
+
+-- ThierryVolpiatto
