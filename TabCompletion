@@ -101,6 +101,11 @@ Actually, there is a slight difference in the functions list:
 
 You can get my .emacs.d from http://github.com/alexeyr/emacs-starter-kit
 
+[new]
+It seems like something has changed in yasnippets.
+I have mailed the maintainer and asked for some assistance.
+-- LennartBorgman
+
 This also has the problem described at http://www.emacswiki.org/emacs/ViperMode
 
 [:SmartTab]

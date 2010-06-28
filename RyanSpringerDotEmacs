@@ -45,7 +45,16 @@
 ;; No bell at all
 
 (setq ring-bell-function 'ignore)
- 
+
+;; Turn off auto-saves 
+
+(setq auto-save-default nil)
+
+;; Turn off backups
+
+(setq backup-inhibited t)
+
+
 ;; shift + arrow key = switch to window
 
 (windmove-default-keybindings)
@@ -124,6 +133,7 @@
 
 (global-set-key (kbd "C-1")  'previous-buffer)
 (global-set-key (kbd "C-2")  'next-buffer)
+(global-set-key (kbd "C-3")  'other-window)
 
 (global-set-key (kbd "C-8")  'edit-dot-emacs)
 (global-set-key (kbd "C-9")  'reload-dot-emacs)

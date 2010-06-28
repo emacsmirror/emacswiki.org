@@ -23,8 +23,8 @@ eating a sandwich), then just drop it.
 # Once you know the buttons, go for the listing of bindings in the describe-mode
 message (just press h while in sunrise mode).
 
-#  You'll be best set off with Sunrise if you use some kind of Linux or MacOS X.
-On Windows there's unfortunately a heck lot of stuff you have to set up first to
+#  You'll be best served with Sunrise if you use some kind of Linux or MacOS X.
+On Windows there's unfortunately a lot of things you have to set up first to
 make  all  the  emacs capabilities integrated in Sunrise work. In particular try
 [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#AvfsSetup  to  have  AVFS
 running  in  your  box]  -- it will allow you to transparently navigate into all

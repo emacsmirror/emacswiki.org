@@ -1699,7 +1699,8 @@ It is useful to select a particular object instead of the first one. ")
      anything-source-filter
      anything-source-in-each-line-flag
      anything-map
-     anything-sources)
+     anything-sources
+     deferred-action-list)
   "Variables which are restored after `anything' invocation.")
 ;; `anything-saved-sources' is removed
 
@@ -1819,6 +1820,7 @@ It is useful for debug.")
 (defvar anything-shortcut-keys nil)
 (defvar anything-once-called-functions nil)
 (defvar anything-follow-mode nil)
+(defvar anything-let-variables nil)
 
 ;; (@* "Programming Tools")
 (defmacro anything-aif (test-form then-form &rest else-forms)
@@ -1834,6 +1836,22 @@ It is useful for debug.")
     (list obj)))
 
 ;; (@* "Anything API")
+(defmacro anything-let (varlist &rest body)
+  "Like `let'. Bind anything buffer local variables according to VARLIST then eval BODY."
+  `(progn (setq anything-let-variables (anything-let-eval-varlist ',varlist))
+          (unwind-protect
+              (progn ,@body)
+            (setq anything-let-variables nil))))
+(put 'anything-let 'lisp-indent-function 1)
+
+(defmacro anything-let* (varlist &rest body)
+  "Like `let*'. Bind anything buffer local variables according to VARLIST then eval BODY."
+  `(progn (setq anything-let-variables (anything-let*-eval-varlist ',varlist))
+          (unwind-protect
+              (progn ,@body)
+            (setq anything-let-variables nil))))
+(put 'anything-let* 'lisp-indent-function 1)
+
 (defun anything-buffer-get ()
   "If *anything action* buffer is shown, return `anything-action-buffer', otherwise `anything-buffer'."
   (if (anything-action-window)
@@ -1857,27 +1875,17 @@ It is useful for debug.")
          (funcall --tmpfunc--)))))
 (put 'with-anything-window 'lisp-indent-function 0)
 
+(defun anything-deferred-action-function ()
+  (dolist (f deferred-action-list) (funcall f)))
 (defmacro with-anything-restore-variables(&rest body)
-  "Restore variables specified by `anything-restored-variables' after executing BODY .
-`post-command-hook' is handled specially."
+  "Restore variables specified by `anything-restored-variables' after executing BODY . "
   `(let ((--orig-vars (mapcar (lambda (v) (cons v (symbol-value v))) anything-restored-variables))
-         (--post-command-hook-pair (cons post-command-hook
-                                         (default-value 'post-command-hook)))
+         (deferred-action-function 'anything-deferred-action-function)
          (--pre-command-hook-pair (cons pre-command-hook
-                                         (default-value 'pre-command-hook))))
-     (setq post-command-hook '(t))
-     (setq-default post-command-hook nil)
-     ;; FIXME I'm not sure whether it is necessary.
-     ;; (setq pre-command-hook '(t))
-     ;; (setq-default pre-command-hook nil)
+                                        (default-value 'pre-command-hook))))
      (unwind-protect (progn ,@body)
        (loop for (var . value) in --orig-vars
-             do (set var value))
-       (setq post-command-hook (car --post-command-hook-pair))
-       (setq-default post-command-hook (cdr --post-command-hook-pair))
-       ;; (setq pre-command-hook (car --pre-command-hook-pair))
-       ;; (setq-default pre-command-hook (cdr --pre-command-hook-pair))
-       )))
+             do (set var value)))))
 (put 'with-anything-restore-variables 'lisp-indent-function 0)
 
 (defun* anything-attr (attribute-name &optional (src (anything-get-current-source)))
@@ -2132,6 +2140,23 @@ Otherwise, return VALUE itself."
     (unless (member spec anything-once-called-functions)
       (apply function args)
       (push spec anything-once-called-functions))))
+
+;; (@* "Core: API helper")
+(defun anything-let-eval-varlist (varlist)
+  (mapcar (lambda (pair)
+            (if (listp pair)
+                (cons (car pair) (eval (cadr pair)))
+              (cons pair nil)))
+          varlist))
+(defun anything-let*-eval-varlist (varlist)
+  (let ((vars (mapcar (lambda (pair) (or (car-safe pair) pair)) varlist)))
+    (eval `(let ,vars
+             ,@(mapcar (lambda (pair)
+                         (if (listp pair)
+                             `(setq ,(car pair) ,(cadr pair))
+                           `(setq ,pair nil)))
+                       varlist)
+             (mapcar (lambda (v) (cons v (symbol-value v))) ',vars)))))
 
 ;; (@* "Core: tools")
 (defun anything-funcall-with-source (source func &rest args)
@@ -2432,6 +2457,8 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
     (set (make-local-variable 'anything-last-sources-local) anything-sources)
     (set (make-local-variable 'anything-follow-mode) nil)
     (set (make-local-variable 'anything-display-function) anything-display-function)
+    (loop for (var . val) in anything-let-variables
+          do (set (make-local-variable var) val))
     
     (setq cursor-type nil)
     (setq mode-name "Anything"))
@@ -2467,7 +2494,7 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
       (setq anything-digit-overlays nil))))
 
 (defun anything-hooks (setup-or-cleanup)
-  (let ((hooks '((post-command-hook anything-check-minibuffer-input)
+  (let ((hooks '((deferred-action-list anything-check-minibuffer-input)
                  (minibuffer-setup-hook anything-print-error-messages))))
     (if (eq setup-or-cleanup 'setup)
         (dolist (args hooks) (apply 'add-hook args))
@@ -3995,8 +4022,8 @@ It is automatically generated by `anything-migrate-sources'.\"
 (defvar anything-isearch-original-cursor-in-non-selected-windows nil
   "Original value of cursor-in-non-selected-windows before isearch is started.")
 
-(defvar anything-isearch-original-post-command-hook nil
-  "Original value of post-command-hook before isearch is started.")
+(defvar anything-isearch-original-deferred-action-list nil
+  "Original value of deferred-action-list before isearch is started.")
 
 (defvar anything-isearch-match-positions nil
   "Stack of positions of matches or non-matches.
@@ -4032,10 +4059,10 @@ occurrence of the current pattern.")
           (select-window (anything-window))
           (setq cursor-type t)
 
-          (setq anything-isearch-original-post-command-hook
-                (default-value 'post-command-hook))
-          (setq-default post-command-hook nil)
-          (add-hook 'post-command-hook 'anything-isearch-post-command)
+          (setq anything-isearch-original-deferred-action-list
+                (default-value 'deferred-action-list))
+          (setq-default deferred-action-list nil)
+          (add-hook 'deferred-action-list 'anything-isearch-post-command)
 
           (use-global-map anything-isearch-map)
           (setq overriding-terminal-local-map anything-isearch-map)
@@ -4192,7 +4219,7 @@ occurrence of the current pattern.")
     (select-window anything-isearch-original-window))
 
   (use-global-map anything-isearch-original-global-map)
-  (setq-default post-command-hook anything-isearch-original-post-command-hook)
+  (setq-default deferred-action-list anything-isearch-original-deferred-action-list)
   (when (overlayp anything-isearch-overlay) 
     (delete-overlay anything-isearch-overlay)))
 
@@ -4301,12 +4328,12 @@ Unbind C-r to prevent problems during anything-isearch."
 
     (anything-initialize)
     
-    (add-hook 'post-command-hook 'anything-iswitchb-check-input)))
+    (add-hook 'deferred-action-list 'anything-iswitchb-check-input)))
 
 
 (defun anything-iswitchb-minibuffer-exit ()
   (remove-hook 'minibuffer-exit-hook  'anything-iswitchb-minibuffer-exit)
-  (remove-hook 'post-command-hook 'anything-iswitchb-check-input)
+  (remove-hook 'deferred-action-list 'anything-iswitchb-check-input)
   (remove-hook 'anything-update-hook 'anything-iswitchb-handle-update)
 
   (anything-cleanup)
@@ -4927,7 +4954,7 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
                                      (candidates . var)))))
       (expect (error error *)
         (anything-get-candidates '((name . "foo")
-                                     (candidates . unDeFined-syMbol))))
+                                   (candidates . unDeFined-syMbol))))
       (desc "anything-compute-matches")
       (expect '("foo" "bar")
         (let ((anything-pattern ""))
@@ -6044,13 +6071,13 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
                                       "hoge" "boke")
                                      (real-to-display . (lambda (x) (concat "xxx" x)))
                                      (action . identity)))
-                                   "xxx"))
+                                  "xxx"))
       (expect "test\nDDD\n"
         (anything-test-update '(((name . "test")
                                  (candidates "ddd")
                                  (real-to-display . upcase)
                                  (action . identity)))
-                               "")
+                              "")
         (with-current-buffer (anything-buffer-get) (buffer-string)))
       (desc "real-to-display and candidate-transformer attribute")
       (expect '(("test" (("DDD" . "ddd"))))
@@ -6067,7 +6094,7 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
             (candidate-transformer (lambda (cands) (mapcar (lambda (c) (cons "X" c)) cands)))
             (real-to-display . upcase)
             (action . identity)))
-                              "")
+         "")
         (with-current-buffer (anything-buffer-get) (buffer-string)))
       (desc "real-to-display and candidates-in-buffer")
       (expect '(("test" (("A" . "a") ("B" . "b"))))
@@ -6365,6 +6392,56 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
           (stub anything-get-current-source => source)
           (stub anything-get-selection => "current")
           (anything-marked-candidates)))
+      (desc "anything-let")
+      (expect '(1 10000 nil)
+        (let ((a 9999)
+              (b 8)
+              (c)
+              (anything-buffer (exps-tmpbuf)))
+          (anything-let ((a 1)
+                         (b (1+ a))
+                         c)
+            (anything-create-anything-buffer))
+          (with-current-buffer anything-buffer
+            (list a b c))))
+      (expect (non-nil)
+        (let ((a 9999)
+              (b 8)
+              (c)
+              (anything-buffer (exps-tmpbuf)))
+          (anything-let ((a 1)
+                         (b (1+ a))
+                         c)
+            (anything-create-anything-buffer))
+          (with-current-buffer anything-buffer
+            (and (assq 'a (buffer-local-variables))
+                 (assq 'b (buffer-local-variables))
+                 (assq 'c (buffer-local-variables))))))
+      (desc "anything-let*")
+      (expect '(1 2 nil)
+        (let ((a 9999)
+              (b 8)
+              (c)
+              (anything-buffer (exps-tmpbuf)))
+          (anything-let* ((a 1)
+                          (b (1+ a))
+                          c)
+            (anything-create-anything-buffer))
+          (with-current-buffer anything-buffer
+            (list a b c))))
+      (expect (non-nil)
+        (let ((a 9999)
+              (b 8)
+              (c)
+              (anything-buffer (exps-tmpbuf)))
+          (anything-let* ((a 1)
+                          (b (1+ a))
+                          c)
+            (anything-create-anything-buffer))
+          (with-current-buffer anything-buffer
+            (and (assq 'a (buffer-local-variables))
+                 (assq 'b (buffer-local-variables))
+                 (assq 'c (buffer-local-variables))))))
       )))
 
 

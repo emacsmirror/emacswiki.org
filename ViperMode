@@ -269,6 +269,10 @@ What version of Emacs are you using?
 [new:AlexeyRomanov:2010-06-27 04:34 UTC]
 The last patched EmacsW32 (see TabCompletion for a link to my setup).
 
+[new]
+Then maybe something has changed that I am not aware of.
+I am going to release a new version of Emacs+Emacsw32 as soon as I have fixed some problems with nXhtml.
+However that may take some time.
 ----
 CategoryEmulation
 CategoryKeys
