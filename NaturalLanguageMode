@@ -2,17 +2,13 @@ upcase-word, downcase-word, and capitalize-word come in handy, but they don't go
 
 * pluralize-word: Converts the word after point to its plural.  Does The Right Thing for both nouns and verbs.  See PluralizeEnglish.
 * singularize-word: the opposite.
+* dualize-word: An inflected form used in some languages
 * {past,present,future}-tense-verb: The obvious.  No effect on non-verbs.
 * [[Synonyms]] provides a list of synonyms for a word.
+* change-gender command
 
 [new]
 My goodness, that's quite ambitious.  Wouldn't this require grammar guides in some parsable form, for supported languages? Perhaps Ispell can do some of this now, though - it does recognize some plurals, etc.  Not that I think that Emacs can't extend to that point someday.  But there are a lot of problems to be overcome before this could become a reality, I should think.  I would be interested in hearing how this could be implemented. -- CharlesSebold
-
-[new]
-It's very (indo)eurocentric as well - lots of languages don't have that sort of tense system (not even _English_, actually, though Latin does), and similarly, singular/plural is but one possibility - c.f. classifier systems, singular/dual/plural and more.  And what about a gender-changing function? -- JohnKozak
-
-I'm not sure how the suggestion of a feature for use when editing some set of natural languages, is somehow anything "-centric".  It is merely a suggestion for a particular use, when doing a particular (very parochial) task, editing in a single language.  A person can set to work on Java-mode and never give a thought to the work that is being done by the Perl-mode people. There's no reason why any user of any other language can't suggest similar features (which would in many cases be much easier to implement than in English!) --  SameDirection
-
 
 ----
 CategoryEditing

@@ -107,6 +107,18 @@ Since even the author of ECMAScriptMode recommends javascript-mode, it seems ECM
 So please report any bugs to the Emacs bug tracker.
 (Someone said there are annoying bugs in it.)
 
+[new]
+JS2-mode does not work with MuMaMo
+-- Mclaud_jr
+
+[new]
+Yes, unfortunately it can not do that yet.
+It parses the whole buffer.
+It is not yet clear how we will solve this problem.
+I have suggested some low level changes to Emacs for this,
+but no one has had time to look into this enough.
+-- LennartBorgman
+
 
 == Imenu integration ==
 

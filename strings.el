@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Feb 22 15:50:34 2010 (-0800)
+;; Last-Updated: Mon Jun 28 08:56:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 500
+;;     Update #: 509
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -64,6 +64,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/06/28 dadams
+;;     read-buffer: Don't provide a default if none given, unless interactive.
 ;; 2010/02/22 dadams
 ;;     read-buffer: Update for Emacs 23 (pretest):
 ;;       Handle read-buffer-function and read-buffer-completion-ignore-case.
@@ -468,12 +470,12 @@ NOTE: For versions of Emacs that do not have faces, a list of
 
 ;; REPLACES ORIGINAL (built-in):
 ;; 1. Uses `completing-read'.
-;; 2. Uses `another-buffer' or `other-buffer' if no default.
+;; 2. Interactively, uses `another-buffer' or `other-buffer' if no default.
 ;; 3. Emacs 23 compatible: handles `read-buffer-function'
 ;;    and `read-buffer-completion-ignore-case'.
 ;;
 ;;;###autoload
-(defun read-buffer (prompt &optional default existing)
+(defun read-buffer (prompt &optional default require-match)
   "Read the name of a buffer and return it as a string.
 Prompts with first arg, PROMPT (a string).
 
@@ -481,22 +483,21 @@ Non-nil DEFAULT names the default buffer.
 Otherwise, `another-buffer' is used as the default.
 If `another-buffer' is undefined, then `other-buffer' is the default.
 
-Non-nil EXISTING means to allow only names of existing buffers."
+Non-nil REQUIRE-MATCH means to allow only names of existing buffers."
   (if (and (boundp 'read-buffer-function) read-buffer-function)
       (funcall read-buffer-function prompt)
-    (setq default (or default (if (fboundp 'another-buffer) ; Defined in `misc-fns.el'.
-                                  (another-buffer nil t)
-                                (other-buffer (current-buffer)))))
+    (when (interactive-p)
+      (setq default (or default (if (fboundp 'another-buffer) ; In `misc-fns.el'.
+                                    (another-buffer nil t)
+                                  (other-buffer (current-buffer))))))
     ;; Need a string as default.
     (when (bufferp default) (setq default (buffer-name default)))
-    (unless (stringp default)
-      (error "Function `read-buffer': DEFAULT arg is not a live buffer or a string"))
     (let ((completion-ignore-case  (if (boundp 'read-buffer-completion-ignore-case)
                                        read-buffer-completion-ignore-case
                                      completion-ignore-case)))
       (completing-read
        prompt (mapcar (lambda (b) (list (buffer-name b))) (buffer-list))
-       nil existing nil 'minibuffer-history default t))))
+       nil require-match nil 'minibuffer-history default t))))
 
 ;;;###autoload
 (defun buffer-alist (&optional nospacep)

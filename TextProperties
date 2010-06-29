@@ -9,7 +9,7 @@ In a buffer without font-lock, evaluate the following:
       (put-text-property 0 (length s) 'face 'bold s)
       (insert s))
 
-This should insert a bold "Alex" into the buffer.
+This should insert a bold "Alex" into the buffer. If it doesn't seem to work, try it in fundamental-mode, as some major modes will override the face.
 
 Text-properties exist in GNU Emacs.  XEmacs provides a compatibility layer
 that translates TextProperties to XEmacsExtents.

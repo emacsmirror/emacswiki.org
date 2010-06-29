@@ -163,6 +163,10 @@ I don't know if such flexibility is difficult to implement, but it would be very
 [new]
 Use AUCTeX.
 [new]
+AUCTex doesn't do text folding it only hides the macros. Maybe hs-special-modes-alist can be expanded so that when instead of a pair like '{', '}' the you only insert one pattern like '\chapter{.*}' it would look for the next similar match and fold the text between the two matches.
+
+[new]
+
 
 === Bugs ===
 I found a problem with the (correct) behavior of HideShow. In the 1st situation (see below, 1st column), if one hides the 1st block, what is shown is not entirely satisfactory (2nd column). Much better would be the last example, i.e., as though the "else" was in the next line from the '}' which closes the 1st block.

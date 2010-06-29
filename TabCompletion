@@ -100,13 +100,15 @@ Actually, there is a slight difference in the functions list:
   There is no fallback
 
 You can get my .emacs.d from http://github.com/alexeyr/emacs-starter-kit
+This also has the problem described at http://www.emacswiki.org/emacs/ViperMode
+
 
 [new]
 It seems like something has changed in yasnippets.
-I have mailed the maintainer and asked for some assistance.
+I have got a suggestion from the maintainer.
+This is now in the version of tabkey2.el in the repository.
+Could you please test the new version?
 -- LennartBorgman
-
-This also has the problem described at http://www.emacswiki.org/emacs/ViperMode
 
 [:SmartTab]
 == Smart Tab ==

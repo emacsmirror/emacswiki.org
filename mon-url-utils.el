@@ -34,7 +34,7 @@
 ;; `mon-get-w3m-url-at-point' `mon-w3m-read-gnu-lists-nxt-prv',
 ;; `mon-url-encode', `mon-url-decode' `mon-get-host-address',
 ;; `mon-url-retrieve-to-new-buffer', `mon-its-all-text-purge-on-quit',
-;; `mon-html-fontify-generate-file-name'
+;; `mon-html-fontify-generate-file-name', `mon-w3m-goto-url-at-point',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -95,12 +95,25 @@
 ;; `mon-url-encode'                     -> lisp/url/url-util.el
 ;; `mon-url-decode'                     -> lisp/url/url-util.el
 ;; `mon-tld-*-'                         -> cl
-;; 
 ;;
 ;; TODO:
 ;; Adjust `mon-search-ulan', `mon-search-ulan-for-name' to retrieve url (a)synchronously. 
 ;;
 ;; NOTES:
+;;
+;; To use all features of this package you may need to bind `IS-MON-SYSTEM-P' to
+;; a non-nil value if it isn't already. This lets Emacs know that you have
+;; configured the neccesary system types, user names, conditionals, paths,
+;; etc. required to use all features defined below.
+;;
+;; :SEE mon-default-start-loads.el, mon-default-loads.el, mon-site-local-defaults.el
+;;
+;; This file should byte-compile with `IS-MON-SYSTEM-P' null but not all
+;; features will be evaluated. 
+;;
+;; To bind `IS-MON-SYSTEM-P' non-nil uncomment the line below:
+;;  (unless (bound-and-true-p IS-MON-SYSTEM-P) (setq IS-MON-SYSTEM-P t))
+;;
 ;;
 ;; URL: `http://www.emacswiki.org/emacs/mon-url-utils.el'
 ;; FIRST-PUBLISHED: <Timestamp: #{2009-09-20}#{} - by MON>
@@ -146,20 +159,6 @@
 
 ;;; CODE:
 
-;;; ==============================
-;; To use all features of this package you may need to bind `IS-MON-SYSTEM-P' to
-;; a non-nil value if it isn't already. This lets Emacs know that you have
-;; configured the neccesary system types, user names, conditionals, paths,
-;; etc. required to use all features defined below.
-;; :SEE 
-;;  This file should
-;; byte-compile with `IS-MON-SYSTEM-P' null but not all features will be
-;; evaluated. To bind `IS-MON-SYSTEM-P' non-nil uncomment the line below:
-;;
-;;  (unless (bound-and-true-p IS-MON-SYSTEM-P) (setq IS-MON-SYSTEM-P t))
-;;
-;;; ==============================
-
 ;; :REQUIRED-BY in `mon-tld-xxx' functions.
 (eval-when-compile (require 'cl))
 
@@ -180,10 +179,10 @@
 ;; :REQUIRED-BY `mon-url-decode' 
 (require 'url-util)
 
-(declare-function 'w3m-view-this-url "ext:w3m.el" t t)
-(declare-function 'w3m-find-file   "ext:w3m.el" t t )
-(declare-function 'mon-get-w3m-url-at-point-maybe "mon-url-utils")
-
+(declare-function w3m-print-this-url "ext:w3m" t t)
+(declare-function w3m-view-this-url "ext:w3m" t t)
+(declare-function w3m-find-file   "ext:w3m" t t )
+;;; (declare-function mon-get-w3m-url-at-point-maybe "mon-url-utils.el" t t)
 
 ;;; ==============================
 ;;; :CHANGESET 1881
@@ -235,8 +234,10 @@ When `IS-MON-SYSTEM-P', this function is evaluated with:
 :SEE-ALSO `mon-htmlfontify-dir-purge-on-quit', `mon-purge-doc-view-cache-directory',
 `mon-purge-thumbs-directory', `mon-purge-temporary-file-directory',
 `*mon-purge-emacs-temp-file-dir-fncns*'.\n►►►"
-  (when (or (and (intern-soft "IS-MON-SYSTEM-P") IS-MON-SYSTEM-P)
-            (and (intern-soft "IS-W32-P")  IS-W32-P))
+  (when (or (and (intern-soft "IS-MON-SYSTEM-P") 
+                 (bound-and-true-p IS-MON-SYSTEM-P))
+            (and (intern-soft "IS-W32-P")  
+                 (bound-and-true-p IS-W32-P)))
     (let ((chk-i-a-t (cadr (assoc 'the-itsalltext-temp-dir *mon-misc-path-alist*))))
       (when (and chk-i-a-t (file-exists-p chk-i-a-t))
         (dolist (i-a-t (file-expand-wildcards (concat chk-i-a-t "/*.txt*") t))
@@ -542,7 +543,7 @@ When optional arg WIKI-WORD is non-nil use it instead.
 :EXAMPLE\n\n(mon-search-wikipedia \"monkey meat\")\n
 :SEE-ALSO `mon-search-ulan', `mon-search-ulan-for-name',
 `mon-search-loc', `mon-search-bnf'.\n\nUsed in `naf-mode'.►►►"
-  (interactive "sSearch wiki for :")
+  (interactive "sSearch wiki for: ")
   (let ((msw-word wiki-word))
     (when (null msw-word)
       (setq msw-word
@@ -594,14 +595,14 @@ Link will be colored according to to DBC .css for link_gree_bold.\n
 
 ;;; =======================
 (defun mon-insert-dbc-doc-link (&optional doc-num doc-type link-text)
-  "Insert a vanilla \(relative path\) href template at point. 
+  "Insert a vanilla \(relative path\) href template at point.\n
 Called interactively prompts for:
 DOC-NUM (a 3-4 digit number), default is \"####\";
 DOC-TYPE (artist, author, brand, book, people), default is \"naf-type\";
 LINK-TEXT (text with .css class \"link_green_bold\") default is \" insert link text \".
 Inserts:\n
 <a class=\"link_green_bold\" href=\"../doc-details-DOC-NUM-DOC-TYPE.htm\" \">LINK-TEXT</a>\n
-:NOTE CSS .link_green_bold is:
+:NOTE CSS .link_green_bold is:\n
  ,---- 
  | .link_green_bold {
  | 	font-family: Verdana, Arial, Helvetica, sans-serif;
@@ -826,28 +827,28 @@ corresponding to the host name arg.\n
 ;;; ==============================
 ;; :W3M-URL-GRABBER  
 
-;;; check-declare-verify
-
-;;(declare-function 'w3m-view-this-url "ext:w3m.el")
-;;(declare-function 'w3m-find-file   "ext:w3m.el")
-;;(declare-function 'mon-get-w3m-url-at-point-maybe "mon-url-utils")
+;;(declare-function w3m-view-this-url "ext:w3m")
+;;(declare-function w3m-find-file   "ext:w3m")
+;;(declare-function mon-get-w3m-url-at-point-maybe "mon-url-utils")
 ;; w3m-current-url <VARIABLE>
-
+;;
 ;; (eval-when-compile (defvar w3m-current-url))
 
-(with-no-warnings
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-16T23:00:32-05:00Z}#{09513} - by MON KEY>
-(when (and (or (featurep 'w3m-load) (featurep 'w3m))
-         ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))    
-         ;;(fboundp 'w3m-dired-file)
-         (executable-find "w3m"))
+;; (eval-when-compile
+;;   (with-no-warnings
+;;     (when (and (or (featurep 'w3m-load) (featurep 'w3m))
+;;                ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))
+;;                ;;(fboundp 'w3m-dired-file)
+;;                (executable-find "w3m"))
 (defun mon-w3m-dired-file (&optional file-to-w3m)
   "Browse dired file at point with w3m.\n
 :SEE-ALSO `mon-w3m-kill-url-at-point', `mon-get-w3m-url-at-point-maybe',
 `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
 `mon-copy-file-dired-as-list', `mon-copy-file-dired-as-string',
-`dired-get-marked-files', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
+`dired-get-marked-files', `mon-keybind-w3m', `mon-set-w3m-init'.\n►►►"
   (interactive)
   (w3m-find-file 
    (or file-to-w3m (car (dired-get-marked-files)))))
@@ -863,7 +864,7 @@ the property value on the kill ring and message user.\n
 :SEE-ALSO `mon-get-w3m-dired-file', `mon-get-w3m-url-at-point-maybe',
 `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
 `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
+`mon-get-w3m-url-at-point', `mon-keybind-w3m', `mon-set-w3m-init'.\n►►►"
   (interactive)
   (let ((w3mgtp (get-text-property (point) 'w3m-href-anchor)))
       (when (and w3mgtp (stringp w3mgtp))
@@ -877,7 +878,7 @@ the property value on the kill ring and message user.\n
 w3m-href-anchor value and is a 'file 'http 'https.\n
 :SEE-ALSO `mon-get-w3m-url-at-point', `mon-w3m-read-gnu-lists-nxt-prv',
 `mon-w3m-dired-file', `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
+`mon-get-w3m-url-at-point', `mon-keybind-w3m', `mon-set-w3m-init'.\n►►►"
   (let* ((is-url (get-text-property (point) 'w3m-href-anchor))
          (match-with "\\(file\\|http\\|https\\)")
          (is-match (if (stringp is-url)
@@ -895,13 +896,15 @@ w3m-href-anchor value and is a 'file 'http 'https.\n
 ;;; ============================== 
 ;;; :CREATED <Timestamp: #{2009-11-22T16:59:12-05:00Z}#{09477} - by MON>
 (defun mon-get-w3m-url-at-point (&optional insrtp buffer intrp)
-  "Return w3m-href-anchor value and is a 'file 'http 'https.
+  "Return w3m-href-anchor value and its type/method as file, http, or https.\n
+Return value has the form:\n
+ \(<TYPE/METHOD> <\"URL-STRING\">\)\n
 When INSRTP in non-nil and BUFFER names an existing buffer insert the w3m URL in
 BUFFER. If BUFFER is nil or does no exist return URL.\n
 :SEE-ALSO `mon-get-w3m-url-at-point-maybe', `mon-w3m-read-gnu-lists-nxt-prv',
 `mon-w3m-kill-url-at-point', `mon-w3m-dired-file', `w3m-print-this-url',
 `mon-get-w3m-url-at-point-maybe', `mon-get-w3m-url-at-point', 
-`mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
+`mon-keybind-w3m', `mon-set-w3m-init'.\n►►►"
   (interactive "i\ni\np")
   (let ((url-maybe (mon-get-w3m-url-at-point-maybe))
         (do-buff (if buffer (get-buffer buffer))))
@@ -913,6 +916,30 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
             (t url-maybe)))))
 ;;
 (defalias 'mon-w3m-get-url-at-point 'mon-get-w3m-url-at-point)
+
+;;; ==============================
+;;; :CHANGESET 1925
+;;; :CREATED <Timestamp: #{2010-06-28T14:12:18-04:00Z}#{10261} - by MON KEY>
+(defun mon-w3m-goto-url-at-point (&optional w-new-session w-intrp-msg intrp)
+  "Find the w3m URL at point in a new or existing w3m session.\n
+When a URL is at point return URL as a list if by `mon-get-w3m-url-at-point-maybe'.\n
+When optional arg W-NEW-SESSION is non-nil find url as if by `w3m-goto-url-new-session'.
+Default is to find the url as if by `w3m-goto-url'.
+When optional arg W-INTRP-MSG is non-nil or called-interactively and there is
+not a URL at point message the user as such.\n
+:SEE-ALSO `mon-get-w3m-url-at-point', `w3m-find-file'.\n►►►"
+  (interactive "P\ni\np")
+  (let* ((u-at-pnt (mon-get-w3m-url-at-point-maybe))
+         (u-at-pnt-p (cadr u-at-pnt)))
+    (cond ((and u-at-pnt-p w-new-session)
+           (w3m-goto-url-new-session u-at-pnt-p))
+          (u-at-pnt-p (w3m-goto-url u-at-pnt-p))          
+          ((or w-intrp-msg intrp)
+           (message (concat ":FUNCTION `mon-w3m-goto-url-at-point' "
+                            "-- can't find URL at point"))))
+    (when u-at-pnt u-at-pnt)))
+
+
 ;;; ==============================
 ;;; ;WORKING-BUT-BUGGY-AS-OF
 ;;; :CREATED <Timestamp: #{2009-11-22T19:00:33-05:00Z}#{09477} - by MON>
@@ -922,7 +949,7 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 :SEE \(URL `http://lists.gnu.org'\)\n
 :SEE-ALSO `mon-get-w3m-url-at-point', `mon-get-w3m-url-at-point-maybe',
 `mon-w3m-dired-file', `w3m-print-this-url', `mon-get-w3m-url-at-point-maybe',
-`mon-get-w3m-url-at-point', `mon-w3m-keybind', `mon-set-w3m-init'.\n►►►"
+`mon-get-w3m-url-at-point', `mon-keybind-w3m', `mon-set-w3m-init'.\n►►►"
   (let ((nxt-prev-p
          (if (save-excursion
                (goto-char (buffer-end 0))
@@ -991,18 +1018,20 @@ BUFFER. If BUFFER is nil or does no exist return URL.\n
 ;;; `----
 ;;
 (unless (fboundp 'w3m-copy-this-url-as-kill)
-  (defalias 'w3m-print-this-url 'w3m-copy-this-url-as-kill))
+  (defalias 'w3m-copy-this-url-as-kill 'w3m-print-this-url ))
 ;;
 (unless (fboundp 'w3m-copy-current-url-as-kill)
-  (defalias 'w3m-print-current-url 'w3m-copy-current-url-as-kill))
+  (defalias 'w3m-copy-current-url-as-kill 'w3m-print-current-url))
 ;;
-) ;; :CLOSE when
-(unless  (and (or (featurep 'w3m-load) (featurep 'w3m))
-              ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))    
-              ;;(fboundp 'w3m-dired-file)
-              (executable-find "w3m"))
-  (message "Can not find the w3m executable or a required feature"))
-) ;; :CLOSE with-no-warnings
+
+;;) ;; :CLOSE when
+;; (unless  (and (or (featurep 'w3m-load) (featurep 'w3m))
+;;               ;;(and (intern-soft "w3m-dired-file") (fboundp 'w3m-dired-file)))    
+;;               ;;(fboundp 'w3m-dired-file)
+;;               (executable-find "w3m"))
+;;   (message "Can not find the w3m executable or a required feature"))
+;; ) ;; :CLOSE `with-no-warnings'
+;; ) ;; :CLOSE `eval-when-compile'
 ;;; ==============================
 
 

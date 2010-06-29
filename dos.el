@@ -3,7 +3,7 @@
 ;; Copyright (C) 2003, 2008, 2009, 2010 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.12
+;; Version:  2.13
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
@@ -46,6 +46,7 @@
 
 ;;; History:
 ;;
+;; 29 Jun 2010  2.13 Added keyword "erase".
 ;; 16 Apr 2010  2.12 Added ;;;###autoload cookie.
 ;; 29 Sep 2009  2.11 Improved highlighting of strings.
 ;; 18 Sep 2009  2.10 Improved highlighting of comments.
@@ -102,9 +103,9 @@ that:
   (eval-when-compile
     (let ((COMMANDS
            '("at"       "attrib"   "cd"       "cls"      "color"    "copy"     "date"     "defined"  "del"      "dir"
-             "doskey"   "echo"     "endlocal" "exist"    "fc"       "find"     "md"       "more"     "move"     "path"
-             "pause"    "popd"     "prompt"   "pushd"    "ren"      "rd"       "set"      "setlocal" "shift"    "sort"
-             "time"     "title"    "type"     "xcopy"))
+             "doskey"   "echo"     "endlocal" "erase"    "exist"    "fc"       "find"     "md"       "more"     "move"
+             "path"     "pause"    "popd"     "prompt"   "pushd"    "ren"      "rd"       "set"      "setlocal" "shift"
+             "sort"     "time"     "title"    "type"     "xcopy"))
           (CONTROLFLOW
            '("call"     "cmd"      "do"       "else"     "equ"      "exit"     "for"      "geq"      "goto"     "gtr"
              "if"       "in"       "leq"      "lss"      "neq"      "not"      "start"))
