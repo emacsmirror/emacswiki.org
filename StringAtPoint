@@ -1,8 +1,89 @@
 Adventures in trying to determine a programming language string under
 point using the ThingAtPoint library that comes with Emacs.
 
+Here's a `forward-thing' function for strings.
+
+  (defun ash-forward-string (&optional arg)
+    "Move forward to ARGth string."
+    (setq arg (or arg 1))
+    (if (not (bobp))
+        (save-match-data
+          (when (or (and (looking-at-p "\\s-*\"")
+                         (not (looking-back "\\\\")))
+                    (re-search-backward "[^\\\\]\"" nil nil))
+            (looking-at "\\s-*\"")
+            (goto-char (match-end 0))
+            (forward-char -1))))
+    (while (and (> arg 0)
+                (not (eobp))
+                (looking-at-p "\\s-*\""))
+      (forward-sexp 1)
+      (setq arg (1- arg)))
+    (while (and (< arg 0)
+                (not (bobp))
+                (looking-at-p "\""))
+      (forward-sexp -1)
+      (setq arg (1+ arg)))
+    (ignore))
+
+Then, tell the ##thingatpt.el## library about it.
+
+  (put 'string 'forward-op 'ash-forward-string)
+
+A kill command becomes possible with.
+
+  (defun ash-kill-string (&optional arg) 
+    "Kill ARG strings under point."
+    (interactive "*p")
+    (setq arg (or (and (not (zerop arg)) arg) 1))
+    (if (> arg 0)
+        (kill-region
+         (progn (forward-thing 'string 0) (point))
+         (progn (forward-thing 'string arg) (point)))
+      (kill-region
+       (progn (forward-thing 'string 1) (point))
+       (progn (forward-thing 'string arg) (point)))))
+
+Here are some tests.
+
+  (defun ash-test-string-motion ()
+    "Test `ash-forward-string'."
+    (with-temp-buffer
+      (insert "\"String0\"")
+      (insert " \t ")
+      (insert "\"\\\"String1\"")
+      (newline)
+      (insert " \"String2\"")
+      (newline)
+      (goto-char (point-min))
+      (ash-forward-string 3) ;; Forward 3 strings.
+      (unless (eq (1+ (point)) (point-max))
+        (error "Test 1 failed"))
+      (goto-char (point-min))
+      (forward-line 1) ;; Start from escaped quotation mark.
+      (forward-char 1)
+      (ash-forward-string 2)
+      (unless (eq (1+ (point)) (point-max))
+        (error "Test 2 failed"))
+      (goto-char (point-min))
+      (re-search-forward "\t" nil t) ;; Start from whitespace.
+      (ash-forward-string 2)
+      (unless (eq (1+ (point)) (point-max))
+        (error "Test 3 failed"))
+      (goto-char (point-max))
+      (forward-char -2) ;; Start on ending quotation mark.
+      (ash-forward-string -3)
+      (unless (looking-at-p "String2")
+        (error "Test 4 failed"))
+      (goto-char (point-max))
+      (forward-char -3) ;; Start inside of ending quotation mark.
+      (ash-forward-string -4)
+      (unless (eq (point) (point-min))
+        (error "Test 5 failed"))
+      (message "Test succeeded")))
+
 [new:DavidYoung:2010-06-13 16:38 UTC]
-Execuse me but I tried these code to define a thing as 'string', and they just don't work. When I type M-x string-at-point, it could move backward to the beginning of a string, but the message displays is just 'nil'.  Does there anything wrong?
+Execuse me but I tried the code below to define a thing as 'string', and they just don't work. When I type M-x string-at-point, it could move backward to the beginning of a string, but the message displays is just 'nil'.  Does there anything wrong?
 
 {{{
 (defun forward-string(&optional arg)

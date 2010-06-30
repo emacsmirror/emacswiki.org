@@ -11,7 +11,7 @@
 ;; CREATED: 2009-07-16T10:56:13
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: lisp
+;; KEYWORDS: lisp, docs, help, hypermedia, programming, languages, external
 
 ;;; ================================================================
 
@@ -22,17 +22,17 @@
 ;; within Emacs
 ;; 
 ;; FUNCTIONS:►►►
-;; `mon-help-CL:LOCAL-TIME', `mon-help-CL:LOOP', `mon-help-CL:TIME'
-;; `mon-help-cl-symbols', 
-;; `mon-help-slime-keys', `mon-help-swank-functions'
+;; `mon-help-CL:LOCAL-TIME', `mon-help-CL:LOOP', `mon-help-CL:TIME',
+;; `mon-help-CL-file-dir-functions', `mon-help-cl-symbols', 
+;; `mon-help-slime-keys', `mon-help-swank-functions',
 ;; `mon-help-wget-cl-pkgs', `mon-help-wget-cl-pkgs-TEST',
-;; `mon-help-wget-cl-pkgs-for-shell-command'
-;; `mon-hspec-plain-p', `mon-hspec-bld-p'
-;; `mon-hspec-it-p', `mon-hspec-header-line-p'
-;; `mon-hspec-href-p', `mon-w3m-spec-p'
-;; `mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-out'
-;; `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m'
-;; `mon-hspec-unparse-w3m-to-buffer'
+;; `mon-help-wget-cl-pkgs-for-shell-command',
+;; `mon-hspec-plain-p', `mon-hspec-bld-p',
+;; `mon-hspec-it-p', `mon-hspec-header-line-p',
+;; `mon-hspec-href-p', `mon-w3m-spec-p',
+;; `mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-out',
+;; `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
+;; `mon-hspec-unparse-w3m-to-buffer',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -40,9 +40,9 @@
 ;; CONSTANTS:
 ;;
 ;; VARIABLES:
-;; `*cl-cmu-ai-repo*',`*cl-ext-pkg-map*'
-;; `*mon-hs-root-dir*', `*mon-hs-parse-buffer*', `*mon-hs-unprs-buffer*'
-;; `*clhs-symbol-v3-or-v7*', `*mon-cl-symbols*'
+;; `*cl-cmu-ai-repo*',`*cl-ext-pkg-map*',
+;; `*mon-hs-root-dir*', `*mon-hs-parse-buffer*', `*mon-hs-unprs-buffer*',
+;; `*clhs-symbol-v3-or-v7*', `*mon-cl-symbols*',
 ; 
 ;; ALIASED/ADVISED/SUBST'D:
 ;; 
@@ -715,8 +715,13 @@ o Kills temp-buffer and file on exit\n
 ;;; (concat "http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/"
 ;;; "48865a78e6dfabc0/b5d0b025348d5b63?lnk=gst&q=Hyperspec+copyright#b5d0b025348d5b63")
 ;;;
+;;; :SEE (URL `http://web.archive.org/web/20071031055357/http://wiki.alu.org/Project_FreeSpec')
+;;;
 ;;; And,
 ;;; :SEE (URL `http://lists.nongnu.org/archive/html/axiom-developer/2007-06/msg00456.html')
+;;;
+;;; (concat "http://groups.google.com/group/comp.lang.lisp/browse_thread/thread/5f105c469acd00fe"
+;;; "/696699b7e471b169?lnk=gst&q=5828f58fa34e2ce8#696699b7e471b169")
 ;;;
 ;; :X3J13-ARCHIVES
 ;;; :SEE (URL `ftp://ftp.parc.xerox.com/pub/cl/')
@@ -1229,7 +1234,7 @@ to the list at cdr of return value.\n
 When the local URL path has been shortened adjust text-propery offsets accordingly.
 :SEE Comments in source for additional discussion and details.\n
 :SEE-ALSO `mon-hspec-unparse-w3m-to-buffer', `mon-hspec-stk-n-mv',
- `mon-hspec-out', `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p', 
+`mon-hspec-out', `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p', 
 `mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p',
 `mon-hspec-prop-type', `*mon-hs-parse-buffer*', `*mon-hs-root-dir*'.\n►►►"
   (let ((unprs-mrk (make-marker))
@@ -1741,6 +1746,101 @@ insertion.
 ;;; , see <some-xref>
 ;;; ============================================================
 
+
+;;; ==============================
+;;; :CHANGESET 1926
+;;; :CREATED <Timestamp: #{2010-06-29T12:49:56-04:00Z}#{10262} - by MON KEY>
+(defun mon-help-CL-file-dir-functions (&optional insertp intrp)
+  "List of functions for working with CL's pathnames.\n
+;; :CL-PATHNAME-FILE-HANDLERS
+`load'
+`open'
+`compile-file'
+`delete-file'
+`rename-file'
+`with-open-file'\n
+;; :CL-PATHNAME-FILE-ACCESSORS
+`probe-file'
+`file-length'
+`file-position'
+`file-string-length'
+`file-write-date'
+`file-author'
+`file-error-pathname'\n
+;; :CL-PATHNAME-NAMESTRINGS
+`namestring'
+`directory-namestring'
+`enough-namestring'
+`file-namestring'
+`host-namestring'
+`parse-namestring'\n
+;; :CL-PATHNAME-ACCESSORS
+`pathnamep'
+`pathname-name'
+`pathname-type'         
+`pathname-version'      
+`pathname-device'
+`pathname-directory'
+`pathname-host'
+`user-homedir-pathname'
+`*default-pathname-defaults*' <SPECIAL-VARIABLE>\n
+;; :CL-PATHNAME-HANDLERS
+`pathname'
+`make-pathname'
+`merge-pathnames'
+`directory'
+`ensure-directories-exist'
+`#P'                       <READER-MACRO>\n
+;; :CL-PATHNAME-WILD
+`truename'
+`pathname-match-p'
+`wild-pathname-p'
+`translate-pathname'\n
+;; :CL-PATHNAME-LOGICAL
+`logical-pathname'
+`translate-logical-pathname'
+`logical-pathname-translations'\n
+;; :ASDF-PATHNAMES        ;; :SEE :FILEsbcl/contrib/asdf/asdf.lisp
+`asdf:determine-system-pathname'
+`asdf:component-pathname'\n
+;; :SB-POSIX-PATHNAMES    ;; :SEE :FILE sbcl/contrib/sb-posix/interface.lisp
+`sb-posix:chdir'
+`sb-posix:getcwd'
+`sb-posix:mkdir'
+`sb-posix:rmdir'
+`sb-posix:stat'
+`sb-posix:filename'
+`sb-posix:file-descriptor'
+`sb-posix:rename'
+`sb-posix:symlink'
+`sb-posix:link'
+`sb-posix:readlink'\n
+;; :CL-FAD-PATHNAMES
+`cl-fad:copy-file'
+`cl-fad:copy-stream'
+`cl-fad:delete-directory-and-files'
+`cl-fad:directory-exists-p'
+`cl-fad:directory-pathname-p'
+`cl-fad:file-exists-p'
+`cl-fad:list-directory'
+`cl-fad:pathname-as-directory'
+`cl-fad:pathname-as-file'
+`cl-fad:walk-directory'
+`cl-fad::directory-wildcard'\n
+:SEE-ALSO `mon-help-CL:LOCAL-TIME', `mon-help-CL:LOOP', `mon-help-CL:TIME'
+`mon-help-cl-symbols', `mon-help-slime-keys', `mon-help-swank-functions'.\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-CL-file-dir-function :insertp t)
+    (message "Pass non-nil for optional arg INTRP")))
+;;
+;;; :TEST-ME (mon-help-CL-file-dir-function)
+;;; :TEST-ME (mon-help-CL-file-dir-function t)
+;;; :TEST-ME (describe-function 'mon-help-CL-file-dir-function)
+;;; :TEST-ME (apply 'mon-help-CL-file-dir-function nil '(t))
+
+
+
 ;;; ==============================
 ;;; :COURTESY Pascal Bourguignon HIS: `pjb-cl.el' WAS: `loop-doc'
 ;;; :MODIFICATIONS REPLACED: empty lines with '\n' escaped lisp forms in docstring
@@ -1878,7 +1978,10 @@ second, minute, hour, date, month, year, day of week \(0 = Monday\), T
 \(get-decoded-time\) =>
 14     ;second\n44     ;minute\n12     ;hour\n15     ;date\n7      ;month
 2009   ;year\n2      ;day\nT      ;dayligt-p\n5      ;zone
-:SEE-ALSO `mon-help-CL:LOOP', `mon-help-CL:DO'.\n►►►"
+:SEE `SB-POSIX:TIME'\n
+:SEE-ALSO `mon-help-CL:LOOP', `mon-help-CL:DO',
+`mon-help-CL-file-dir-functions', `mon-help-cl-symbols',
+`mon-help-slime-keys'.\n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
     (mon-help-function-spit-doc 'mon-help-CL:TIME :insertp t)
@@ -2012,7 +2115,8 @@ C-c C-x t	`slime-list-threads'
 C-x 5 .		`slime-edit-definition-other-frame'
 C-x 4 .		`slime-edit-definition-other-window'\n
 :SEE :FILE `mon-keybindings.el'\n
-:SEE-ALSO `slime-cheat-sheet'.\n►►►"
+:SEE-ALSO `slime-cheat-sheet', `mon-help-CL-file-dir-functions',
+`mon-help-cl-symbols', `mon-help-swank-functions'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-slime-keys :insertp t)
@@ -2045,9 +2149,12 @@ C-x 4 .		`slime-edit-definition-other-window'\n
 `swank:slime-default-connection'
 `swank:slime-current-connection'
 `swank:describe-symbol-for-emacs'
-\(slime-compute-connection-state 'slime-current-connection\)
-\(swank:connection-info\)
-\(swank:list-all-package-names\)\n►►►"
+:EXAMPLE\n
+\(slime-compute-connection-state 'slime-current-connection\)\n
+\(swank:connection-info\)\n
+\(swank:list-all-package-names\)\n
+:SEE-ALSO `mon-help-CL-file-dir-functions', `mon-help-cl-symbols',
+`mon-help-slime-keys'\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
     	(mon-help-function-spit-doc 'mon-help-swank-functions :insertp t)
@@ -2057,182 +2164,146 @@ C-x 4 .		`slime-edit-definition-other-window'\n
 ;;; :TEST-ME (mon-help-swank-functions t)
 
 ;;; ==============================
+;;; :CHANGESET 1928 <Timestamp: #{2010-06-29T13:20:07-04:00Z}#{10262} - by MON KEY>
 (defun mon-help-CL:LOCAL-TIME (&optional insertp intrp)
-"Help function for working with the Common Lisp `LOCAL-TIME' package.\n
-LOCAL-TIME:*DEFAULT-TIMEZONE*
- Variable: \(not documented\)
-LOCAL-TIME:+ASCTIME-FORMAT+
- Variable: \(not documented\)
-LOCAL-TIME:+DAY-NAMES+
- Variable: \(not documented\)
-LOCAL-TIME:+DAYS-PER-WEEK+
- Variable: \(not documented\)
-LOCAL-TIME:+GMT-ZONE+
- Variable: \(not documented\)
-LOCAL-TIME:+HOURS-PER-DAY+
- Variable: \(not documented\)
-LOCAL-TIME:+ISO-8601-FORMAT+
- Variable: \(not documented\)
-LOCAL-TIME:+MINUTES-PER-DAY+
- Variable: \(not documented\)
-LOCAL-TIME:+MINUTES-PER-HOUR+
- Variable: \(not documented\)
-LOCAL-TIME:+MONTH-NAMES+
- Variable: \(not documented\)
-LOCAL-TIME:+RFC-1123-FORMAT+
- Variable: Please note that you should use the +GMT-ZONE+ timezone to format a
- proper RFC 1123 timestring. See the RFC for the details about the possible
- values of the timezone field.
-LOCAL-TIME:+RFC3339-FORMAT+
- Variable: \(not documented\)
-LOCAL-TIME:+RFC3339-FORMAT/DATE-ONLY+
- Variable: \(not documented\)
-LOCAL-TIME:+SECONDS-PER-DAY+
- Variable: \(not documented\)
-LOCAL-TIME:+SECONDS-PER-HOUR+
- Variable: \(not documented\)
-LOCAL-TIME:+SECONDS-PER-MINUTE+
- Variable: \(not documented\)
-LOCAL-TIME:+SHORT-DAY-NAMES+
- Variable: \(not documented\)
-LOCAL-TIME:+SHORT-MONTH-NAMES+
- Variable: \(not documented\)
-LOCAL-TIME:+UTC-ZONE+
- Variable: \(not documented\)
-LOCAL-TIME:ADJUST-TIMESTAMP
- Macro: \(not documented\)
-LOCAL-TIME:ADJUST-TIMESTAMP!
- Macro: \(not documented\)
-LOCAL-TIME:ASTRONOMICAL-JULIAN-DATE
- Function: Returns the astronomical julian date referred to by the timestamp.
-LOCAL-TIME:DAY-OF
- Generic Function: \(not documented\)
-LOCAL-TIME:DAYS-IN-MONTH
- Function: Returns the number of days in the given month of the specified year.
-LOCAL-TIME:DECODE-TIMESTAMP
- Function: Returns the decoded time as multiple values: nsec, ss, mm, hh, day,
- month, year, day-of-week
-LOCAL-TIME:DEFINE-TIMEZONE
- Macro: Define zone-name \(a symbol or a string\) as a new timezone, lazy-loaded
- from zone-file \(a pathname designator relative to the zoneinfo directory on
- this system.  If load is true, load immediately.
-LOCAL-TIME:ENABLE-READ-MACROS
- Function: Enables the local-time reader macros for literal timestamps and
- universal time.
-LOCAL-TIME:ENCODE-TIMESTAMP
- Function: Return a new TIMESTAMP instance corresponding to the specified time
- elements.
-LOCAL-TIME:FIND-TIMEZONE-BY-LOCATION-NAME
- Function: \(not documented\)
-LOCAL-TIME:FORMAT-HTTP-TIMESTRING
- Function: \(not documented\)
-LOCAL-TIME:FORMAT-RFC3339-TIMESTRING
- Function: Formats a timestring in the RFC 3339 format, a restricted form of
- the ISO-8601 timestring specification for Internet timestamps.
-LOCAL-TIME:FORMAT-TIMESTRING
- Function: Constructs a string representation of TIMESTAMP according to FORMAT
- and returns it.  If destination is T, the string is written to
- *standard-output*.  If destination is a stream, the string is written to the
- stream.
-LOCAL-TIME:MAKE-TIMESTAMP
- Macro: \(not documented\)
-LOCAL-TIME:MODIFIED-JULIAN-DATE
- Function: Returns the modified julian date referred to by the timestamp.
-LOCAL-TIME:NOW
- Function: Returns a timestamp representing the present moment.
-LOCAL-TIME:NSEC-OF
- Generic Function: \(not documented\)
-LOCAL-TIME:PARSE-RFC3339-TIMESTRING
- Function: \(not documented\)
-LOCAL-TIME:PARSE-TIMESTRING
- Function: Parse a timestring and return the corresponding TIMESTAMP.
-See split-timestring for details. Unspecified fields in the timestring
-are initialized to their lowest possible value, and timezone offset is
-0 \(UTC\) unless explicitly specified in the input string.
-LOCAL-TIME:SEC-OF
- Generic Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP
- Type: \(not documented\)
-LOCAL-TIME:TIMESTAMP+
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-CENTURY
- Function: Returns the ordinal century upon which the timestamp falls.
-LOCAL-TIME:TIMESTAMP-DAY
- Function: Returns the day of the month upon which the timestamp falls.
-LOCAL-TIME:TIMESTAMP-DAY-OF-WEEK
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-DECADE
- Function: Returns the cardinal decade upon which the timestamp falls.
-LOCAL-TIME:TIMESTAMP-DIFFERENCE
- Function: Returns the difference between TIME-A and TIME-B in seconds
-LOCAL-TIME:TIMESTAMP-HOUR
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-MAXIMIZE-PART
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-MAXIMUM
- Function: Returns the latest timestamp
-LOCAL-TIME:TIMESTAMP-MICROSECOND
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-MILLENNIUM
- Function: Returns the ordinal millennium upon which the timestamp falls.
-LOCAL-TIME:TIMESTAMP-MILLISECOND
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-MINIMIZE-PART
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-MINIMUM
- Function: Returns the earliest timestamp
-LOCAL-TIME:TIMESTAMP-MINUTE
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-MONTH
- Function: Returns the month upon which the timestamp falls.
-LOCAL-TIME:TIMESTAMP-SECOND
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP-SUBTIMEZONE
- Function: Return as multiple values the time zone as the number of seconds
-east of UTC, a boolean daylight-saving-p, and the customary abbreviation of the
-timezone.
-LOCAL-TIME:TIMESTAMP-TO-UNIVERSAL
- Function: Return the UNIVERSAL-TIME corresponding to the TIMESTAMP
-LOCAL-TIME:TIMESTAMP-TO-UNIX
- Function: Return the Unix time corresponding to the TIMESTAMP
-LOCAL-TIME:TIMESTAMP-WHOLE-YEAR-DIFFERENCE
- Function: Returns the number of whole years elapsed between time-a and time-b
- \(hint: anniversaries\).
-LOCAL-TIME:TIMESTAMP-YEAR
- Function: Returns the cardinal year upon which the timestamp falls.
-LOCAL-TIME:TIMESTAMP/=
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP<
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP<=
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP=
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP>
- Function: \(not documented\)
-LOCAL-TIME:TIMESTAMP>=
- Function: \(not documented\)
-LOCAL-TIME:TO-HTTP-TIMESTRING
- Function: \(not documented\)
-LOCAL-TIME:TODAY
- Function: Returns a timestamp representing the present day.
-LOCAL-TIME:UNIVERSAL-TO-TIMESTAMP
- Function: Returns a timestamp corresponding to the given universal time.
-LOCAL-TIME:UNIX-TO-TIMESTAMP
- Function: Return a TIMESTAMP corresponding to UNIX,
-which is the number of seconds since the unix epoch, 1970-01-01T00:00:00Z.
-LOCAL-TIME:WITH-DECODED-TIMESTAMP
- Macro: This macro binds variables to the decoded elements of TIMESTAMP.
-The TIMEZONE argument is used for decoding the timestamp, and is not bound by
-the macro.  The value of DAY-OF-WEEK starts from 0 which means Sunday."
-(interactive "i\nP")
-(if (or insertp intrp)
-   (mon-help-function-spit-doc 'mon-help-CL-loop :insertp t)
- (message "pass non-nil for optional arg INTRP")))
-
-
+  "Common Lisp  package `LOCAL-TIME' functions, macros, generics, variables.\n
+;; :LOCAL-TIME-MACROS 
+`local-time:define-timezone'
+Define zone-name \(a symbol or a string\) as a new timezone, lazy-loaded from
+zone-file \(a pathname designator relative to the zoneinfo directory on this
+system.  If load is true, load immediately.\n
+`local-time:with-decoded-timestamp'
+This macro binds variables to the decoded elements of TIMESTAMP.  The TIMEZONE
+argument is used for decoding the timestamp, and is not bound by the macro.  The
+value of DAY-OF-WEEK starts from 0 which means Sunday.\n
+`local-time:make-timestamp'
+`local-time:adjust-timestamp'
+`local-time:adjust-timestamp!'\n
+;; :LOCAL-TIME-FUNCTIONS-GENERIC-FUNCTION
+`local-time:nsec-of'
+`local-time:sec-of'
+`local-time:day-of'\n
+;; :LOCAL-TIME-FUNCTIONS
+`local-time:astronomical-julian-date'
+Return astronomical julian date referred to by the timestamp.\n
+`local-time:days-in-month'
+Return number of days in the given month of the specified year.\n
+`local-time:decode-timestamp'
+Return decoded time as multiple values: nsec, ss, mm, hh, day, month, year,
+day-of-week.\n
+`local-time:enable-read-macros'
+Enable the local-time reader macros for literal timestamps and universal time.\n
+`local-time:encode-timestamp'
+Return a new TIMESTAMP instance corresponding to the specified time elements.\n
+`local-time:format-rfc3339-timestring'
+Format a timestring in the RFC 3339 format, a restricted form of the ISO-8601
+timestring specification for Internet timestamps.\n
+`local-time:format-timestring'
+Return a string representation of TIMESTAMP according to FORMAT.
+If destination is T, string is written to  *standard-output*.
+If destination is a stream, string is written to the stream.\n
+`local-time:modified-julian-date'
+Return modified Julian date referred to by the timestamp.\n
+`local-time:now'
+Return a timestamp representing the present moment.\n
+`local-time:parse-timestring'
+Parse a timestring and return the corresponding TIMESTAMP.
+Unspecified fields in the timestring are initialized to their lowest possible
+value, and timezone offset is 0 \(UTC\) unless explicitly specified in the input
+string.\n
+`local-time:timestamp-century'
+Return ordinal century upon which the timestamp falls.\n
+`local-time:timestamp-day'
+Return day of the month upon which the timestamp falls.\n
+`local-time:timestamp-decade'
+Return cardinal decade upon which the timestamp falls.\n
+`local-time:timestamp-difference'
+Return difference between TIME-A and TIME-B in seconds\n
+`local-time:timestamp-maximum'
+Return latest timestamp.\n
+`local-time:timestamp-millennium'
+Return ordinal millennium upon which the timestamp falls.\n
+`local-time:timestamp-minimum'
+Return earliest timestamp.\n
+`local-time:timestamp-month'
+Return month upon which the timestamp falls.\n
+`local-time:timestamp-subtimezone'
+Return as multiple values the time zone as the number of seconds east of UTC, a
+boolean daylight-saving-p, and the customary abbreviation of the timezone.\n
+`local-time:timestamp-to-universal'
+Return UNIVERSAL-TIME corresponding to the TIMESTAMP.\n
+`local-time:timestamp-to-unix'
+Return Unix time corresponding to the TIMESTAMP.\n
+`local-time:timestamp-whole-year-difference'
+Return number of whole years elapsed between time-a and time-b.
+:NOTE Useful for use with anniversaries, birthdays, etc.\n
+`local-time:timestamp-year'
+Return cardinal year upon which the timestamp falls.\n
+`local-time:today'
+Return a timestamp representing the present day.\n
+`local-time:universal-to-timestamp'
+Return a timestamp corresponding to the given universal time.\n
+`local-time:unix-to-timestamp'
+Return a TIMESTAMP corresponding to UNIX, which is the number of seconds since
+the Unix epoch, 1970-01-01T00:00:00Z.\n
+;; :LOCAL-TIME-FUNCTIONS-UNDOCUMENTED
+`local-time:find-timezone-by-location-name'
+`local-time:format-http-timestring'
+`local-time:parse-rfc3339-timestring'
+`local-time:timestamp+'
+`local-time:timestamp-'
+`local-time:timestamp-day-of-week'
+`local-time:timestamp-hour'
+`local-time:timestamp-maximize-part'
+`local-time:timestamp-microsecond'
+`local-time:timestamp-millisecond'
+`local-time:timestamp-minimize-part'
+`local-time:timestamp-minute'
+`local-time:timestamp-second'
+`local-time:timestamp/='
+`local-time:timestamp<'
+`local-time:timestamp<='
+`local-time:timestamp='
+`local-time:timestamp>'
+`local-time:timestamp>='
+`local-time:to-http-timestring'\n
+;; :LOCCAL-TIME-VARIABLES
+`local-time:timestamp'                   <TYPE>
+`local-time:*default-timezone*'
+`local-time:+asctime-format+'
+`local-time:+day-names+'
+`local-time:+days-per-week+'
+`local-time:+gmt-zone+'
+`local-time:+hours-per-day+'
+`local-time:+iso-8601-format+'
+`local-time:+minutes-per-day+'
+`local-time:+minutes-per-hour+'
+`local-time:+month-names+'
+`local-time:+rfc3339-format+'
+`local-time:+rfc3339-format/date-only+'
+`local-time:+seconds-per-day+'
+`local-time:+seconds-per-hour+'
+`local-time:+seconds-per-minute+'
+`local-time:+short-day-names+'
+`local-time:+short-month-names+'
+`local-time:+utc-zone+'\n
+`local-time:+rfc-1123-format+'
+RFC 1123 timestring format.
+:NOTE Use the +GMT-ZONE+ timezone to format a proper RFC 1123 timestring.
+:SEE RFC-1123 for the details about the possible values of the timezone field.\n
+:SEE (URL `http://tools.ietf.org/rfc/rfc1123.txt')\n
+\(with-current-buffer \(get-buffer-create \"*RFC-1123*\"\)
+   \(url-insert-file-contents  \"http://tools.ietf.org/rfc/rfc1123.txt\"\)
+   \(display-buffer \(current-buffer\) t\)\)\n
+:SEE info node `(coreutils)Date input formats'\n\n
+:SEE `SB-POSIX:TIME'\n
+:SEE-ALSO `mon-help-iso-8601', `mon-help-CL:DO', `mon-help-CL:LOOP',
+`mon-help-CL-file-dir-functions', `mon-help-cl-symbols',
+`mon-help-slime-keys'.\n►►►"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-CL:LOCAL-TIME :insertp t)
+    (message "pass non-nil for optional arg INTRP")))
 
 ;;; ==============================
 ;;; (string-match-p "file:" (bound-and-true-p common-lisp-hyperspec-root))
@@ -4264,7 +4335,7 @@ the macro.  The value of DAY-OF-WEEK starts from 0 which means Sunday."
 (defun mon-help-utils-CL-loadtime ()
   "Loadtime function to unbind symbols from mon-doc-help-CL.el.\n
 Unbind `*clhs-symbol-v3-or-v7*' as variable `*mon-cl-symbols*' holds a hashtable
-of all CL symbol/Hspec mappings at loadtime.
+of all CL symbol/Hspec mappings at loadtime.\n
 SEE-ALSO `mon-after-mon-utils-loadtime', `mon-check-feature-for-loadtime',
 `mon-bind-nefs-photos-at-loadtime', `mon-bind-cifs-vars-at-loadtime',
 `mon-bind-doc-help-proprietery-vars-at-loadtime',
@@ -4278,8 +4349,8 @@ SEE-ALSO `mon-after-mon-utils-loadtime', `mon-check-feature-for-loadtime',
 ;;; :CREATED <Timestamp: #{2010-01-29T00:47:51-05:00Z}#{10045} - by MON>
 (defvar *mon-cl-symbols* nil
   "List of Common-Lisp symbol names mapped to their respective Hspec .html files.\n
-Bound at compile/loadtiem with var `*clhs-symbol-v3-or-v7*' according to the
-value of `common-lisp-hyperspec-root'.
+Bound at compile/loadtime with var `*clhs-symbol-v3-or-v7*' according to the
+value of `common-lisp-hyperspec-root'.\n
 :NOTE `*clhs-symbol-v3-or-v7*' unloaded with `mon-help-utils-CL-loadtime'.\n
 :SEE-ALSO `mon-help-cl-symbols', `common-lisp-hyperspec-format-characters'
 `common-lisp-hyperspec-reader-macros', `common-lisp-hyperspec-root'.\n►►►")
@@ -4292,13 +4363,13 @@ value of `common-lisp-hyperspec-root'.
 ;;; :CREATED <Timestamp: #{2010-01-29T00:45:31-05:00Z}#{10045} - by MON>
 (defun mon-help-cl-symbols (&optional cl-symbol-string ffox intrp)
   "Completion function for the Common Lisp symbols in the hspec.\n
-CL-SYMBOL-STRING is a string to associate with a value in `*mon-cl-symbols*'.
+CL-SYMBOL-STRING is a string to associate with a value in `*mon-cl-symbols*'.\n
 When `IS-MON-P-GNU' or a w3m executable is in path and `w3m-browse-url' is fboundp
-browse th hspec in Emacsw3m.
+browse th hspec in Emacsw3m.\n
 When FFOX is non-nil or called-interactively with prefix arg ensure browsing with firefox.
 :EXAMPLE\n\n\(mon-help-cl-symbols \"defclass\"\)\n\(mon-help-cl-symbols \"#<\"\)
 \(mon-help-cl-symbols nil nil\)\n\(mon-help-cl-symbols \"defclass\" t\)
-\(mon-help-cl-symbols nil nil t\)\n\(apply 'mon-help-cl-symbols nil nil '\(t\)\)\n
+ \(mon-help-cl-symbols nil nil t\)\n\(apply 'mon-help-cl-symbols nil nil '\(t\)\)\n
 :NOTE When using Hspec v3 and Emacs-w3m you may want to comment out the
 java-applet e.g.\n
  <APPLET HEIGHT=80 WIDTH=450 CODE=\"CLIndex.class\" CODEBASE=\"../Data/\"></APPLET>\n
@@ -4345,8 +4416,8 @@ java-applet e.g.\n
 ;;; mon-doc-help-CL.el ends here
 ;;; EOF
 
-;;; Following is a list of Common Lisp symbols which coref with Enlish
-;;; Natural language. Approx. 1 in 7 of the ~1000 CL symbols.
+;;; Following is a list of Common Lisp symbols which coref Egnlish Natural language.
+;;; Approx. 1 in 7 of the ~1000 CL symbols.
 ;;; (abort adjoin and append apply array assert atom bit boolean break byte car
 ;;;  class close coerce compile complement complex concatenate condition conjugate
 ;;;  constantly continue count debug declare defvar delete denominator describe do

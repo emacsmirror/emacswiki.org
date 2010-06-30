@@ -71,6 +71,9 @@ You'll need the "Server Endpoint".  Here are the values for various popular webl
   Drupal: Enable the Blogger API and use http://DRUPAL-URL/xmlrpc.php (like Wordpress).
 
 [new]
+For some interesting setups, see http://coverification.com/2009/07/23/use-visual-line-mode-instead-of-longlines-mode/
+
+[new]
 I've played around with this and find it to be functional for WordPress. Posts made are in raw HTML, allowing for links and &lt;!--more--&gt; parsing without a hitch during posting (but not during editing; see below). Categories (via "Keywords") also worked fairly well.
 
 It's worth noting, however, that the full API isn't implemented (no comments), and there are still gremlins and undocumented dependencies in this package. For example, I use SSL encryption (via self-signed and/or CACert), which caused all sorts of annoying terminal beeps and Lisp errors during parsing. After a little experimentation and log reading, I discovered that only GnuTLS (gnutls-cli) was implemented functionally for my purposes, as an external dependency.

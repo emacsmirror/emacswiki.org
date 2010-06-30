@@ -105,6 +105,7 @@ manually, you might find some settings you didn't know about by looking around.
 
 * ErcAutoQuery -- how to automatically start queries when you receive a private message
 * ErcIgnoring -- how to ignore some notices and some nicks
+* ErcPart -- Configuring the message on leaving or quitting
 
 == Modules ==
 
@@ -132,6 +133,7 @@ To enable or disable modules use M-x customize-variable RET erc-modules.
 * ErcMorseCode -- useful if you have weird friends sending you morse code on IRC
 * ErcNickserv -- identify to Nickserv automatically
 * ErcNotify -- have ERC notify you when selected users enter or leave IRC
+* ErcReplace -- Filter messages with text search and replace
 * ErcScrollToBottom -- scroll to the bottom of the buffer
 * ErcSmileys -- how to translate <nowiki>:)</nowiki> to :)
 * ErcSound -- adding sound to ERC

@@ -101,7 +101,7 @@ Actually, there is a slight difference in the functions list:
 
 You can get my .emacs.d from http://github.com/alexeyr/emacs-starter-kit
 This also has the problem described at http://www.emacswiki.org/emacs/ViperMode
-
+-- AlexeyRomanov
 
 [new]
 It seems like something has changed in yasnippets.
@@ -109,6 +109,45 @@ I have got a suggestion from the maintainer.
 This is now in the version of tabkey2.el in the repository.
 Could you please test the new version?
 -- LennartBorgman
+
+[new:AlexeyRomanov:2010-06-29 19:07 UTC]
+With this version Yasnippet isn't active where it shouldn't be. The problem is that other functions are not active when they should be.
+
+I wrote
+{{{
+defun
+req
+}}}
+in the scratch buffer. At the end of the second line `M-x tabkey2-show-completion-functions' shows
+
+  No completion function is set as default.
+
+  Emacs default completion (`completion-at-point'): not defined
+  Company Mode completion (`company-complete'): not defined
+  Spell check word (`flyspell-correct-word-before-point'): not active
+  Yasnippet (`yas/expand'): not active
+  Semantic Smart Completion (`senator-complete-symbol'): not defined
+  Programmable completion (`pcomplete'): not active
+  nXML completion (`nxml-complete'): not active
+  Complete Emacs symbol (`lisp-complete-symbol'): not active
+  Widget complete (`widget-complete'): not active
+  Comint Dynamic Complete (`comint-dynamic-complete'): not active
+  PHP completion (`php-complete-function'): not defined
+  Tags completion (`complete-tag'): not active
+  Predictive word (`complete-word-at-point'): not defined
+  Predictive abbreviations (`pabbrev-expand-maybe'): not defined
+  Dynamic word expansion (`dabbrev-expand', M-/): not active
+  Ispell complete word (`ispell-complete-word', Menu): not active
+  Anything (`anything'): not defined
+
+  There is no fallback
+
+At the end of the first line everything is the same, except <code>Yasnippet (`yas/expand'): active <= default</code>.
+
+`dabbrev-expand' and `lisp-complete-symbol' should both be active.
+
+Note that when no functions are active, pressing `tab' or `f8' doesn't enter tab-completion state at all (the popup doesn't appear even after waiting, the mode line lighter doesn't appear either). Maybe the popup should come up and say there are no active completion functions, so the user can tell tabkey2-mode is working?
+-- AlexeyRomanov
 
 [:SmartTab]
 == Smart Tab ==

@@ -1,0 +1,48 @@
+Configure what happens when leaving a channel or IRC server.
+
+Part a channel with `C-c C-p'.  Or optionally type ##/part## into a
+channel (the alias ##/leave## also works.
+
+Quit a server with `C-c C-q'.  Or optionally type ##/quit## into a
+channel or server buffer.
+
+By default, the interactive version prompts for a reason.  The IRC
+commands can be provided a reason as arguments or left blank.
+
+If left blank, the default is to say the version of ERC.
+
+To set the default reason to an `M-x yow' quote, use:
+
+    (setq erc-part-reason 'erc-part-reason-zippy)
+    (setq erc-quit-reason 'erc-quit-reason-zippy)
+
+To set up various reasons with aliases, set:
+
+    (setq erc-part-reason 'erc-part-reason-various)
+    (setq erc-quit-reason 'erc-quit-reason-various)
+
+Then configure them with
+
+    (setq erc-part-reason-various-alist
+        '(("yow" erc-part-reason-zippy)
+          ("xmms" dme:now-playing)
+          ("version" erc-part-reason-normal)
+          ("home" "Gone home !")
+          ("^$" "Default Reason")))
+
+By default, a channel's buffer remains after you've left it.
+
+To kill when leaving a channel:
+
+    ;; Kill buffers for channels after /part
+    (setq erc-kill-buffer-on-part t)
+
+
+
+ (setq erc-part-reason (quote erc-part-reason-various))
+ (setq erc-part-reason-various-alist (quote (("^np$" emms-show) ("zippy" erc-part-reason-zippy))))
+
+
+
+----
+[[ERC]]

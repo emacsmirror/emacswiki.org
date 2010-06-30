@@ -1,0 +1,37 @@
+Filter IRC messages as they appear in the buffer with search and replace.
+
+Enable this [[ERC]] module with:
+
+    M-x customize-option RET erc-modules
+
+Or with this Emacs Lisp:
+
+    (eval-after-load "erc"
+     '(add-to-list 'erc-modules 'replace))
+    
+    (eval-after-load "erc-replace"
+      '(add-hook 'erc-insert-modify-hook 'erc-replace-insert))
+
+Then configure the replacement with pairs like.
+
+    (setq erc-replace-alist
+          '(("damn" . "darn")))
+
+Or provide an [[Sexp]] that ErcReplace can evaluate.
+
+    (setq erc-replace-alist
+          '(((concat "\\(?:ass\\c\\(?:ock\\|unt\\)\\|d\\(?:amn\\|ick\\)"
+                     "\\|[fs]uck\\(?:er\\)?\\|god\\|s\\(?:hit\\|uck\\(?:er\\)?\\)")
+             . (replace-match
+                (replace-regexp-in-string "[aeiou]" "*" (match-string 0))))))
+
+The mode also takes symbols for the names of functions that return
+either a search string or a replacement string.
+
+Note that if the text you replace has text properties, they might be
+removed by the replacement.  Use ##(match-string 1)## instead of "\\1",
+for example.  Alternatively, you could try using ##(apply 'propertize
+"Replacement" (text-properties-at (match-beginning 0)))##.
+
+----
+[[ERC]]
