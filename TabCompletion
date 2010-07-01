@@ -3,7 +3,7 @@ This page is about some ways to [[completion|complete]] text in a [[buffer]] (ot
 
 == TabKey2 ==
 
-*tabkey2.el* (available from [NxhtmlMode nXhtml] repository at Launchpad) is a little library that tries to generalize the ideas from Smart Tab.
+*tabkey2.el* ([http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head:/util/tabkey2.el available] from [NxhtmlMode nXhtml] repository at Launchpad) is a little library that tries to generalize the ideas from Smart Tab.
 However, it works a bit differently.
 In most major modes, the first Tab press will indent and following Tab presses will complete.
 Since there are many ways to complete you can also choose which function you want to use
@@ -147,6 +147,22 @@ At the end of the first line everything is the same, except <code>Yasnippet (`ya
 `dabbrev-expand' and `lisp-complete-symbol' should both be active.
 
 Note that when no functions are active, pressing `tab' or `f8' doesn't enter tab-completion state at all (the popup doesn't appear even after waiting, the mode line lighter doesn't appear either). Maybe the popup should come up and say there are no active completion functions, so the user can tell tabkey2-mode is working?
+-- AlexeyRomanov
+
+[new]
+Alexey, could you please report this as a bug in nXhtml.
+It is getting a bit too long for this page.
+Report the bug here: 
+
+[new:AlexeyRomanov:2010-06-30 17:04 UTC]
+I just downloaded revision 713 and it works correctly! Thank you for fixing this.
+
+[new]
+Oh, fine! I think there might be some more things to do but I am glad we have been able to take a step forward.
+I would suggest that you remove everything that is not needed to help others understand why they should try the new version of tabkey2.el.
+(This will be in the next release of nXhtml, but it will take sokm time before I release that.)
+-- LennartBorgman
+Should this bug report be removed or moved to the bottom of the page?
 -- AlexeyRomanov
 
 [:SmartTab]

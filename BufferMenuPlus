@@ -62,4 +62,26 @@ Both ##buff-menu+.el## and recent versions (Sept. 8/2004) of ##buff-menu.el## ca
 : It's in GNU Emacs 22 and later. -- DrewAdams
 
 ----
+
+[new]
+I'm experiencing issues when some buffers are in some nxml-derivative mode (html, xml ...). After calling list-buffers, the "buffer list" window gets updated until first nxml-typed buffer. Gets interrupted (backtrace buffer pops up), (wrong-type-argument characterp sgml-xml-mode) at the top of the backtrace, full spit is available at http://gist.github.com/458598 . Switching back the nxml buffers to text-mode works around the issue. 
+Experiencing this issue since E23.0, now at 23.2.1, I believe this may have something to do with buffer-menu+. -- elie
+
+[new:DrewAdams:2010-06-30 13:26 UTC]
+Your backtrace suggests that the problem is in `bs', not in <tt>[[buff-menu+.el]]</tt>.  The code in the backtrace is all from `bs.el', it seems.
+ 
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument characterp sgml-xml-mode)
+  concat("         " (sgml-xml-mode "XHTML" "HTML"))
+  (if (eq (quote right) align) (concat (make-string ... 32) string) 
+  (concat string (make-string ... 32)))  (if (>= length len) string (if (eq ... align)
+  (concat ... string) (concat string ...)))
+  (let ((length ...)) (if (>= length len) string (if ... ... ...)))
+  bs--format-aux((sgml-xml-mode "XHTML" "HTML") right 12)
+</pre>
+
+Something is passing ##'(sgml-xml-mode "XHTML" "HTML")## to `concat'.  It tries to process that list as a list of chars, which it is not (it is a list of a symbol and two strings). -- DrewAdams
+
+
+----
 CategoryBufferSwitching

@@ -1,8 +1,23 @@
-= Automatic =
+= Emacs 23 =
+
+Use the menu:
+
+* Options > Set Default Font ...
+* Options > Save Options
+
+This saves the font to .emacs.
+
+Or add it to .emacs directly:
+
+##(set-face-attribute 'default nil :font "Andale Mono-12")##
+
+= For older Emacs-versions = 
+
+== Automatic ==
 Lisp:frame-restore.el will save/restore the font you've selected through the mouse-set-font menu.  this means you never have to know the "X format" name.  very handy if you change the font often.
 
 
-= Manual =
+== Manual ==
 The problem is that you need to use the X format of specifying a font.
 Here's how to do it (works with recent versions of Gnu-Emacs (Oct.2007)):
 
@@ -17,7 +32,7 @@ Here's how to do it (works with recent versions of Gnu-Emacs (Oct.2007)):
   where /fontname/ is the copied string
 
 
-==For older Emacs-versions==
+==For even older Emacs-versions==
 
 (these are earlier guidelines on this page)
 

@@ -9,6 +9,9 @@
 ;; Maintainer: IRIE Shinsuke
 ;; Keywords: Localization, Japanese, menu-bar
 
+(defconst menu-tree-version "0.95"
+  "Version number of the menu-tree package.")
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or
@@ -53,6 +56,12 @@
 ;;
 
 ;;; History:
+;;  2010-06-30  S. Irie
+;;          * Version 0.95
+;;          * Updated for Emacs 23.2
+;;          * Added functions `menu-tree-convert', `menu-tree-get', `menu-tree-pp'
+;;          * Modified Japanese translations
+;;
 ;;  2010-04-20  S. Irie
 ;;          * Version 0.94
 ;;          * Changed license to GPL3
@@ -83,17 +92,16 @@
 
 ;;; Code:
 
-(defconst menu-tree-version "0.94"
-  "Version number of the menu-tree package.")
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Setting
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar menu-tree-coding-system nil
   "Coding system used for menu-bar items.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Translation data
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defvar menu-tree-alist-ja-langs
   '((Default "標準")
@@ -218,11 +226,14 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 	    (exit-emacs "終了")
 	    )
      (tools "ツール"
-	    (grep "ファイル中を検索(Grep)...")
+	    (grep "ファイル内を検索(Grep)...")
 	    (compile "コンパイル...")
 	    (shell "シェルコマンド...")
-	    (shell-on-region "範囲をシェルコマンドで処理...")
+	    (shell-on-region "選択領域をシェルコマンドで処理...")
 	    (gdb "デバッガ(GDB)")
+	    ,@(if (= emacs-major-version 23) ; >= 23.2
+		  '((ede "プロジェクト支援 (EDE)")
+		    (semantic "ソースコード構文解析 (Semantic)")))
 ;	    (separator-prog "--")
  	    (spell "スペルチェック"
 		   (ispell-buffer "バッファをチェック")
@@ -263,6 +274,14 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 		     (ediff-windows-wordwise "ウィンドウ間(単語ごと)...")
 		     (ediff-windows-linewise "ウィンドウ間(行ごと)...")
 		     (window "このウィンドウと隣のウィンドウ")
+;		     (separator-ediff-misc "--")
+		     ,@(if (= emacs-major-version 23) ; >= 23.2
+			   '((ediff-misc "Ediff その他いろいろ"
+					 (ediff-doc "Ediffマニュアル")
+					 (ediff-cust "Ediffをカスタマイズ")
+					 (eregistry "Ediffのセッション一覧")
+					 (emultiframe "コントロールバッファフレームの使用/不使用")
+					 )))
 		     )
 	    (ediff-merge "マージ"
 			 (ediff-merge-files "ファイル...")
@@ -302,8 +321,12 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 		(undo "最後のチェックインを取り消す")
 		(vc-insert-header "ヘッダを挿入")
 ;		(separator2 "----")
+		,@(if (= emacs-major-version 23) ; >= 23.2
+		      '((vc-print-root-log "ツリーの履歴を表示")))
 		(vc-print-log "履歴を表示")
 		(vc-update-change-log "履歴を更新")
+		,@(if (= emacs-major-version 23) ; >= 23.2
+		      '((vc-root-diff "ツリーを元のバージョンと比較")))
 		(vc-diff "元のバージョンと比較")
 		,@(if (= emacs-major-version 23)
 		      '((vc-revision-other-window "他のバージョンを見る")))
@@ -681,7 +704,9 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 			  )
 		(emacs-manual "Emacsマニュアルを読む")
 		(more-manuals "他のマニュアル"
-			      (emac-lisp-intro "Emacs Lisp入門")
+			      ,@(if (= emacs-major-version 23) ; >= 23.2
+				    '((emacs-lisp-intro "Emacs Lisp入門")))
+			      (emac-lisp-intro "Emacs Lisp入門") ; < 23.2
 			      (emacs-lisp-reference "Emacs Lispリファレンス")
 			      (other-manuals "他の全てのマニュアル(Info)")
 			      (lookup-subject-in-all-manuals "全てのマニュアルから検索...")
@@ -814,7 +839,8 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
     ,@(if (= emacs-major-version 23)
 	  '((lisp-interaction-mode-map
 	     (lisp-interaction "Lisp-Interaction"
-			       (lisp-complete-symbol "Lispシンボルを補完")
+			       (complete-symbol "Lispシンボルを補完") ; >= 23.2
+			       (lisp-complete-symbol "Lispシンボルを補完") ; < 23.2
 			       (indent-pp-sexp "インデントまたは整形")
 			       (edebug-defun-lisp-interaction "関数をインスツルメントしてデバッグ")
 			       (eval-print-last-sexp "評価して表示")
@@ -840,7 +866,12 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 ;		 (separator-byte "--")
 		 (edebug-defun "関数をデバッガに登録")
 		 ,@(if (= emacs-major-version 23)
-		       '((profiling "プロファイリング"
+		       '((lint "コードを検査(elint)" ; >= 23.2
+			       (lint-d "Defunを検査")
+			       (lint-b "バッファを検査")
+			       (lint-f "ファイルを検査...")
+			       (lint-di "ディレクトリを検査..."))
+			 (profiling "プロファイリング"
 				    (prof-func "関数をインスツルメント...")
 				    (prof-pack "パッケージをインスツルメント...")
 				    (prof-res "プロファイリングの結果を表示")
@@ -1016,12 +1047,23 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
     (calendar-mode-map
      ,@(if (= emacs-major-version 23)
 	   '((Scroll "スクロール"
+		     (Scroll\ Commands "スクロールコマンド")
 		     (Forward\ 1\ Month "1ヶ月後")
 		     (Forward\ 3\ Months "3ヶ月後")
 		     (Forward\ 1\ Year "1年後")
 		     (Backward\ 1\ Month "1ヶ月前")
 		     (Backward\ 3\ Months "3ヶ月前")
 		     (Backward\ 1\ Year "1年前")
+;		     (nil "--")
+		     (Motion\ Commands "移動コマンド")
+		     (Forward\ 1\ Day "1日進む")
+		     (Forward\ 1\ Week "1週間進む")
+		     (Forward\ 1\ Month-11 "1ヶ月進む")
+		     (Forward\ 1\ Year-12 "1年進む")
+		     (Backward\ 1\ Day "1日戻る")
+		     (Backward\ 1\ Week "1週間戻る")
+		     (Backward\ 1\ Month-15 "1ヶ月戻る")
+		     (Backward\ 1\ Year-16 "1年戻る")
 		     )
 	     (Goto "ジャンプ"
 		   (Today "今日")
@@ -1403,6 +1445,51 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 	      (bubbles "新規ゲーム")
 	      (bubbles-quit "終了")
 	      ))
+    (global-ede-mode-map
+     (cedet-menu "開発"
+		 (ede-build-forms-menu "プロジェクトをビルド")
+		 (ede-project-options "プロジェクトのオプション")
+		 (ede-target-options "ターゲットのオプション")
+		 (ede-new "プロジェクトを作成")
+		 (ede "プロジェクトを読み込む")
+		 (ede-speedbar "プロジェクトのツリーを見る")
+		 (ede-find-file "プロジェクト内のファイルを検索...")
+;		 (cedet-menu-separator "--")
+		 ))
+    (semantic-mode-map
+     (cedet-menu "開発"
+		 (global-semanticdb-minor-mode "Semanticデータベース")
+		 (global-semantic-idle-scheduler-mode "アイドル時に再解析")
+		 (global-semantic-idle-summary-mode "タグのサマリを表示")
+		 (global-semantic-idle-completions-mode "タグの補完を表示")
+		 (global-semantic-decoration-mode "タグを装飾")
+		 (global-semantic-highlight-func-mode "現在位置の関数を強調表示")
+;		 (semantic-options-separator "--")
+		 (navigate-menu "タグ間を移動"
+				(senator-previous-tag "前のタグ")
+				(senator-next-tag "次のタグ")
+				(senator-go-to-up-reference "親タグ")
+;				(semantic-navigation-separator "--")
+				(semantic-complete-jump-local "このバッファ内でタグを検索...")
+				(semantic-complete-jump "グローバルにタグを検索...")
+				(semantic-symref-symbol "タグの参照を検索...")
+;				(semantic-narrow-to-defun-separator "--")
+				(senator-narrow-to-defun "タグでナローイング")
+				)
+		 (semantic-edit-menu "タグを編集"
+				     (senator-kill-tag "タグを切り取り")
+				     (senator-copy-tag "タグをコピー")
+				     (senator-copy-tag-to-register "タグをレジスタにコピー")
+				     (senator-yank-tag "タグを貼り付け")
+;				     (semantic-edit-separator "--")
+				     (senator-transpose-tags-up "上のタグと入れ替え")
+				     (senator-transpose-tags-down "下のタグと入れ替え")
+;				     (semantic-completion-separator "--")
+				     (semantic-complete-analyze-inline "インラインでタグを補完")
+				     (semantic-analyze-possible-completions "補完の一覧")
+				     )
+		 (semantic-force-refresh "バッファを再解析")
+		 ))
     )
   "Alist of Japanese translation data for items in menu-bar.
 Give the default value of `menu-tree-alist' used by `menu-tree-update'.")
@@ -1448,6 +1535,77 @@ a pseudo-pattern is a list of expressions that can involve the keywords
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Functions
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defun menu-tree-convert (menu-map)
+  "Return a menu-tree corresponding to a keymap MENU-MAP.
+
+The menu-tree is a list showing a menu hierarchy given by MENU-MAP. The each
+element is a list as (MENU-EVENT TEXT) or (MENU-EVENT TEXT . SUB-TREE).
+Here, MENU-EVENT is a symbol indicating a menu event and TEXT is a string
+shown in the menu. SUB-TREE is the same as a menu-tree except for
+corresponding to sub menu."
+  (when (keymapp menu-map)
+    (if (symbolp menu-map)
+	(setq menu-map (symbol-function menu-map)))
+    (let ((entries (cdr menu-map))
+	  tree)
+      (while entries
+	(let ((item (pop entries)))
+	  (when (consp (cdr-safe item))
+	    (let* ((sym (pop item))
+		   (str (pop item))
+		   child subtree)
+	      ;; Branch for 2 types of menu item
+	      (cond
+	       ((stringp str)
+		;; 1) (EVENT "TEXT" . KEYMAP)
+		(setq child item))
+	       ((eq str 'menu-item)
+		;; 2) (EVENT menu-item "TEXT" KEYMAP)
+		(setq str (pop item)
+		      child (car item))))
+	      (if menu-tree-coding-system
+		  (setq str (decode-coding-string str menu-tree-coding-system)))
+	      (push (cons sym (cons str (menu-tree-convert child)))
+		    tree)))))
+      (nreverse tree))))
+
+(defun menu-tree-get (&optional keymap)
+  "Return a menu-tree corresponding to a menu-bar keymap included in KEYMAP.
+Omitting KEYMAP means use current global-map.
+
+The menu-tree is a list showing a menu hierarchy given by the keymap
+which menu-bar event is bound to in KEYMAP. The each element is a list as
+\(MENU-EVENT TEXT) or (MENU-EVENT TEXT . SUB-TREE). Here, MENU-EVENT is
+a symbol indicating a menu event and TEXT is a string shown in the menu.
+SUB-TREE is the same as a menu-tree except for corresponding to sub menu."
+  (menu-tree-convert (lookup-key (or keymap (current-global-map)) [menu-bar])))
+
+(defun menu-tree-pp (&optional keymap)
+  "Pretty-print a menu-tree corresponding to a menu-bar keymap included in
+KEYMAP. Omitting KEYMAP means use current global-map.
+
+The menu-tree is a list showing a menu hierarchy given by the keymap
+which menu-bar event is bound to in KEYMAP. The each element is a list as
+\(MENU-EVENT TEXT) or (MENU-EVENT TEXT . SUB-TREE). Here, MENU-EVENT is
+a symbol indicating a menu event and TEXT is a string shown in the menu.
+SUB-TREE is the same as a menu-tree except for corresponding to sub menu."
+  (interactive
+   (let ((map (make-sparse-keymap))
+	 (arg t))
+     (set-keymap-parent map read-expression-map)
+     (define-key map (kbd "TAB") 'lisp-complete-symbol)
+     (while (and arg (not (keymapp arg)))
+       (setq arg (eval (read-from-minibuffer "Keymap (global-map): " nil map t
+					     'read-expression-history "nil"))))
+     (list arg)))
+  (with-output-to-temp-buffer "*Menu-Tree*"
+    (with-current-buffer standard-output
+      (pp (menu-tree-get keymap))
+      (emacs-lisp-mode)
+      (display-buffer (current-buffer))
+      (buffer-enable-undo))))
 
 (defun menu-tree-override (keymap menu-tree)
   "Replace all texts recursively in a menu defined by KEYMAP according
@@ -1512,6 +1670,7 @@ specifying the sub menu or the menu item."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Static overriding menu
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (menu-tree-update 'global-map)
 (menu-tree-update 'minibuffer-local-map)
@@ -1552,9 +1711,14 @@ specifying the sub menu or the menu item."
   '(menu-tree-update 'bubbles-mode-map))
 (eval-after-load "redo+"
   '(menu-tree-update 'global-map '(edit redo)))
+(eval-after-load "ede"
+  '(menu-tree-update 'global-ede-mode-map))
+(eval-after-load "semantic"
+  '(menu-tree-update 'semantic-mode-map))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dynamic overriding menu
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (add-hook 'menu-bar-update-hook
 	  (lambda ()

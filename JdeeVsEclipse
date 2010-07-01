@@ -15,6 +15,10 @@ Emacs plugins or libs have custom readme-type instructions that might take an ho
 
 [new]
 The initial question explicitely asked for reasons that would make you move to Eclipse (excluding the Eclipse gotchas). I find myself in eclipse most of the time now, because the java integration is so great - and i feel horrible :( - the thing is, is jde capable of doing the same things? Does JDEE have all the java refactoring automatisms Eclipse has? (Rename of variables with all references updated, moving methods between classes, etc.) 
+[new]
+For refactorings in emacs have a look at Xrefactory: http://www.xref-tech.com/xrefactory-java/main.html
+
+
 
 == Eclipse's features and JDEE equivalents ==
 TODO: write a list or some table which sums up, for all typical and daily tasks with Eclipse, how to do them in JDEE. (Similar to what was done in the page [[GnusGmail]]).

@@ -12,7 +12,7 @@ These are some packages used for XML processing in Emacs or XEmacs:
 * DtmlMode -- editing Zope's DTML
 * DocbookXmlMode -- Major mode for Emacs with specific knowledge of the DocBook catalog.
 * TextEncodingInitiativeEmacs -- Emacs distribution for authoring TEI XML documents.
-* [http://xae.sunsite.dk/ XAE] -- XML Authoring Environment for Emacs
+* [http://xae.sunsite.dk/ XAE] -- XML Authoring Environment for Emacs (link is broken).
 * XmlCoding -- coding system from ?xml tag (Emacs 21)
 * XmlGen -- sexp -> xml generation.
 
