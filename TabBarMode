@@ -71,13 +71,41 @@ Here's a example of tab group function that define all tabs to be one of 3 possi
 
  (setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
 
+== Discussions ==
+
+The code above doesn't work in emacs 23.2 & tabbar v. 1.3. Here is correct version: 
+
+ (defun tabbar-buffer-groups (buffer)
+   "Return the list of group names BUFFER belongs to.
+ Return only one group for each buffer."
+   (with-current-buffer (get-buffer buffer)
+     (cond
+      ((string-equal "*" (substring (buffer-name) 0 1))
+       '("Emacs Buffer"))
+      ((eq major-mode 'dired-mode)
+       '("Dired"))
+      (t
+       '("User Buffer"))
+      )))
+
+I use it in conjunction with:
+
+ ;; C-S-<tab> ;; C-S-<win>-<tab>
+ (global-set-key (kbd "<C-S-iso-lefttab>") 'tabbar-forward-tab)
+ (global-set-key (kbd "<C-S-s-iso-lefttab>") 'tabbar-backward-tab)
+ ;; C-x C-<left> ;; C-x C-<right>
+ (global-set-key (kbd "C-x C-<right>") 'tabbar-forward-group)
+ (global-set-key (kbd "C-x C-<left>") 'tabbar-backward-group)
+
+--A.Sidorov alx[dot]sidorov[at]gmail[dot]com
+
+
 Here is a example where all tabs is just one group
 
  (setq tabbar-buffer-groups-function
           (lambda ()
             (list "All"))) ;; code by Peter Barabas
 
-== Discussions ==
 
 The first function only works if I change '("User Buffer") to just "User Buffer",
 and the same for the other strings?! --CH
@@ -129,21 +157,19 @@ By adding the following code snippet to the .emacs file only the non-scratch buf
 For me this only if (tabbar-mode) is set on tob of this block
 and I removed the when stuff:
 
-;; Tabbar
-(require 'tabbar)
+ ;; Tabbar
+ (require 'tabbar)
+ (tabbar-mode)
+ (setq tabbar-buffer-groups-function
+           (lambda ()
+             (list "All Buffers")))
 
-(tabbar-mode)
-
-(setq tabbar-buffer-groups-function
-          (lambda ()
-            (list "All Buffers")))
-
-(setq tabbar-buffer-list-function
-    	(lambda ()
-    	  (remove-if
-    	   (lambda(buffer)
-    	     (find (aref (buffer-name buffer) 0) " *"))
-    	   (buffer-list))))
+ (setq tabbar-buffer-list-function
+     	(lambda ()
+     	  (remove-if
+     	   (lambda(buffer)
+     	     (find (aref (buffer-name buffer) 0) " *"))
+     	   (buffer-list))))
 
 -Marco (marco[aet]rockiger.com)
 

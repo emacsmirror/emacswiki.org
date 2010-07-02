@@ -119,6 +119,9 @@ I have suggested some low level changes to Emacs for this,
 but no one has had time to look into this enough.
 -- LennartBorgman
 
+[new]
+Why isn't js2-mode in end of 23.2, instead of Espresso-mode?
+
 
 == Imenu integration ==
 

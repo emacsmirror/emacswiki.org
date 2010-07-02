@@ -111,13 +111,16 @@ find a quick way to turn them off. So here is an advice that does the trick:
   
   (ad-activate 'ibuffer-update-title-and-summary)
 
+----
 
 == Sort by pathname ==
 
 I'm not quite sure where to add this, but to be able to sort by pathname (thereby grouping file buffers with dired buffers). PeterMielke
 
+[new]
 Ibuffer should now use `dired-directory' when appropriate. If you are able/willing to sign an assignment (see LegalMatters) then please send a patch defining an Ibuffer `filename' sorter that falls back to `dired-directory' for dired buffers -- JohnPaulWallington.
 
+[new]
 Was it eventually added to Emacs? -- DianeMurray
 
      (defun my-ibuffer-hook ()
@@ -148,7 +151,7 @@ Was it eventually added to Emacs? -- DianeMurray
     
     (add-hook 'ibuffer-mode-hooks 'my-ibuffer-hook)
 
-----
+[new]
 I modified the above, works with GNU Emacs 22.0.92.1, should this work? --DavidBoon
 
     (define-ibuffer-sorter filename-or-dired
@@ -169,8 +172,24 @@ I modified the above, works with GNU Emacs 22.0.92.1, should this work? --DavidB
              "~"))))
     (define-key ibuffer-mode-map (kbd "s p")     'ibuffer-do-sort-by-filename-or-dired)
 
+== Filter by pathname ==
+
+I didn't really want a new filter; I just wanted the existing filename filter to also include dired buffers. Re-defining that filter in my init file as follows did the trick:
+
+    ;; Enable ibuffer-filter-by-filename to filter on directory names too.
+    (eval-after-load "ibuf-ext"
+      '(define-ibuffer-filter filename
+         "Toggle current view to buffers with file or directory name matching QUALIFIER."
+         (:description "filename"
+          :reader (read-from-minibuffer "Filter by file/directory name (regexp): "))
+         (ibuffer-awhen (or (buffer-local-value 'buffer-file-name buf)
+                            (buffer-local-value 'dired-directory buf))
+           (string-match qualifier it))))
+
+----
+
 == Questions ==
-[new]
+
 Is there any way to configure ibuffer so that switching to ibuffer puts the cursor on the most recent buffer? I'm finding that the cursor stays on the same line it was on the previous time ibuffer was invoked, which is a bit confusing when the buffers are sorted in visited order.
 
 Thanks - dab

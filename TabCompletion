@@ -10,6 +10,17 @@ Since there are many ways to complete you can also choose which function you wan
 (major mode specific completion, dynamic abbreviation completion etc).
 By default you do that by pressing F8 (this key binding will probably be changed).
 
+[new:AlexeyRomanov:2010-06-26 22:25 UTC]
+If you are using tabkey2 with yasnippets, and see this behavior:
+
+: I write `(req' in a Lisp buffer, press `Tab', and enter the tab completion state. The popup (after 2 seconds) shows that YASnippet is the active function even though `(yas/expandable-at-point)' returns `false' (checked by eval-expression). Pressing `Tab' second time gives the message
+
+:: No more active completion functions in this buffer
+
+: Pressing `Tab' more times has no effect.
+
+you should download the latest version from the link above.
+
 [new]
 I've been having a heck of a time trying to get Tabkey2 to work well with pabbrev and yasnippet.  Has anyone gotten these three packages to work well together?  In particular I have found that trying to enable pabbrev mode, and yasnippet mode, and finally tabkey mode will set things up so that Yasnippet fires first, and then falls back to tabkey2, but in the fallback to tabkey2, it calls tabkey2-first inappropriately, causing an error.
 
@@ -22,148 +33,6 @@ I am not sure it is possible to do what you want there, but maybe there is somet
 
 Note: If you do it this way you do not have to do any key binding on your own.
 Tabkey2 steals the TAB key and tries to call the function you tell it to call.
-
-[new:AlexeyRomanov:2010-06-26 22:25 UTC]
-Should Tabkey2 work this way? I write `(req' in a Lisp buffer, press `Tab', and enter the tab completion state. The popup (after 2 seconds) shows that YASnippet is the active function even though `(yas/expandable-at-point)' returns `false' (checked by eval-expression). Pressing `Tab' second time gives the message
-{{{
-No more active completion functions in this buffer
-}}}
-Pressing `Tab' more times has no effect.
-
-However, pressing `f8' shows there actually _are_ other active functions: `Complete Emacs symbol' and `Dynamic word expansion'. `Complete Emacs symbol' completes the word to `require'. So the expected behaviour for me would be that pressing `Tab' two or three times should do this completion.
-
-This is the list of completion functions:
-
-  Default is set to
-    Yasnippet (yas/expand): active <= default
-
-  Company Mode completion (`company-complete'): not defined
-  Spell check word (`flyspell-correct-word-before-point'): not active
-  Yasnippet (`yas/expand'): active
-  Semantic Smart Completion (`senator-complete-symbol'): not defined
-  Programmable completion (`pcomplete'): not active
-  nXML completion (`nxml-complete'): not active
-  Complete Emacs symbol (`lisp-complete-symbol'): active
-  Widget complete (`widget-complete'): not active
-  Comint Dynamic Complete (`comint-dynamic-complete'): not active
-  PHP completion (`php-complete-function'): not defined
-  Tags completion (`complete-tag'): not active
-  Predictive word (`complete-word-at-point'): not defined
-  Predictive abbreviations (`pabbrev-expand-maybe'): not defined
-  Dynamic word expansion (`dabbrev-expand', M-/): active
-  Ispell complete word (`ispell-complete-word', Menu): not active
-  Anything (`anything'): not defined
-
-  There is no fallback
-
-I am using the last patched EmacsW32, didn't make any changes in the tabkey2 group. Just downloaded the latest Nxhtml mode, but it didn't fix the problem.
-
-UPD: I just tried an actual snippet -- `defun' -- and `M-: (yas/expandable-at-point)' gives me `nil' as well. Perhaps it's called with the point in the minibuffer? If so, how can I check what `(yas/expandable-at-point)' would actually return when called in the buffer itself?
-
-In case it's important, `yas/fallback-behavior' is `call-other-command'.
-
--- AlexeyRomanov
-
-[new]
-No, I think you have found a big bug there in tabkey2.
-Yasnippets should not be invoked in the situation you describe.
-I tried to reproduce it with my current version, but I can't.
-I might have fixed this, but I do not remember at the moment.
-Could you please check with the latest version of tabkey2.el from the repository?
-(Unfortunately I can't make a new release of nXhtml now, since there are some problems I do not have time to fix right now.)
-
-[new:AlexeyRomanov:2010-06-27 03:57 UTC]
-Just checked the latest version, and I am getting same results there. -- AlexeyRomanov
-
-Actually, there is a slight difference in the functions list:
-
-  No completion function is set as default.
-
-  Emacs default completion (`completion-at-point'): not defined
-  Company Mode completion (`company-complete'): not defined
-  Spell check word (`flyspell-correct-word-before-point'): not active
-  Yasnippet (`yas/expand'): active <= default
-  Semantic Smart Completion (`senator-complete-symbol'): not defined
-  Programmable completion (`pcomplete'): not active
-  nXML completion (`nxml-complete'): not active
-  Complete Emacs symbol (`lisp-complete-symbol'): active
-  Widget complete (`widget-complete'): not active
-  Comint Dynamic Complete (`comint-dynamic-complete'): not active
-  PHP completion (`php-complete-function'): not defined
-  Tags completion (`complete-tag'): not active
-  Predictive word (`complete-word-at-point'): not defined
-  Predictive abbreviations (`pabbrev-expand-maybe'): not defined
-  Dynamic word expansion (`dabbrev-expand', M-/): active
-  Ispell complete word (`ispell-complete-word', Menu): not active
-  Anything (`anything'): not defined
-
-  There is no fallback
-
-You can get my .emacs.d from http://github.com/alexeyr/emacs-starter-kit
-This also has the problem described at http://www.emacswiki.org/emacs/ViperMode
--- AlexeyRomanov
-
-[new]
-It seems like something has changed in yasnippets.
-I have got a suggestion from the maintainer.
-This is now in the version of tabkey2.el in the repository.
-Could you please test the new version?
--- LennartBorgman
-
-[new:AlexeyRomanov:2010-06-29 19:07 UTC]
-With this version Yasnippet isn't active where it shouldn't be. The problem is that other functions are not active when they should be.
-
-I wrote
-{{{
-defun
-req
-}}}
-in the scratch buffer. At the end of the second line `M-x tabkey2-show-completion-functions' shows
-
-  No completion function is set as default.
-
-  Emacs default completion (`completion-at-point'): not defined
-  Company Mode completion (`company-complete'): not defined
-  Spell check word (`flyspell-correct-word-before-point'): not active
-  Yasnippet (`yas/expand'): not active
-  Semantic Smart Completion (`senator-complete-symbol'): not defined
-  Programmable completion (`pcomplete'): not active
-  nXML completion (`nxml-complete'): not active
-  Complete Emacs symbol (`lisp-complete-symbol'): not active
-  Widget complete (`widget-complete'): not active
-  Comint Dynamic Complete (`comint-dynamic-complete'): not active
-  PHP completion (`php-complete-function'): not defined
-  Tags completion (`complete-tag'): not active
-  Predictive word (`complete-word-at-point'): not defined
-  Predictive abbreviations (`pabbrev-expand-maybe'): not defined
-  Dynamic word expansion (`dabbrev-expand', M-/): not active
-  Ispell complete word (`ispell-complete-word', Menu): not active
-  Anything (`anything'): not defined
-
-  There is no fallback
-
-At the end of the first line everything is the same, except <code>Yasnippet (`yas/expand'): active <= default</code>.
-
-`dabbrev-expand' and `lisp-complete-symbol' should both be active.
-
-Note that when no functions are active, pressing `tab' or `f8' doesn't enter tab-completion state at all (the popup doesn't appear even after waiting, the mode line lighter doesn't appear either). Maybe the popup should come up and say there are no active completion functions, so the user can tell tabkey2-mode is working?
--- AlexeyRomanov
-
-[new]
-Alexey, could you please report this as a bug in nXhtml.
-It is getting a bit too long for this page.
-Report the bug here: 
-
-[new:AlexeyRomanov:2010-06-30 17:04 UTC]
-I just downloaded revision 713 and it works correctly! Thank you for fixing this.
-
-[new]
-Oh, fine! I think there might be some more things to do but I am glad we have been able to take a step forward.
-I would suggest that you remove everything that is not needed to help others understand why they should try the new version of tabkey2.el.
-(This will be in the next release of nXhtml, but it will take sokm time before I release that.)
--- LennartBorgman
-Should this bug report be removed or moved to the bottom of the page?
--- AlexeyRomanov
 
 [:SmartTab]
 == Smart Tab ==

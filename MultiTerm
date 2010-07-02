@@ -150,14 +150,17 @@ Please make this option with t if you want focus terminal window.
 ==Comment==
 Please write at below if you have any suggestion or bug, or mail to me. Thanks! -- AndyStewart
 
-{{{
 Hi Andy.
 Thank you for a great mode. I love it and now use it all the time.
 However I found one deficiency:
+
 - I bound (multi-term-dedicated-toggle) to a function key and use it all the time when I quickly need to do something in a term
+
 - I set (setq multi-term-dedicated-select t) to have the dedicated buffer selected and ready to be used once it opens
+
 - When I am done I run (multi-term-dedicated-toggle) again to get rid of the terminal. At this point I'd like the cursor return to the position it was before I opened the dedicated terminal window. However If I had more than one buffer, the cursor doesn't always return back to the old position. I worked around it with this (this is my first lisp function; sorry if it is not pretty):
 
+{{{
 (defun it-multi-term-dedicated-toggle ()
   "jump back to previous location after toggling ded term off"
   (interactive)
@@ -170,9 +173,9 @@ However I found one deficiency:
       (multi-term-dedicated-toggle))
     )
   )
+}}}
 
 It may be a good idea to add this functionality to multi-term.el
-}}}
 
 [new]
 Sorry Ilya, i have [http://www.emacswiki.org/emacs/AndyStewart#toc14 LeaveEmacs] , 

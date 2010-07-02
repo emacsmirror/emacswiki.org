@@ -1,0 +1,47 @@
+"Hi, I'm Mike, and I am an alco... emacs user."
+
+I can be found at http://mpwilson.com/ and madwilliamflint@gmail.com
+
+I've been running various flavors of emacs for something distressingly close to 20 years, according to comments in my .emacs file, and I'm still a n00b.  Currently I'm running on windows (x and nt varietals), on SunOS and RHEL... all at once.  So it gets messy.  
+
+I'm looking for a trailhead into more advanced usage (org-mode, embracing bbdb, writing my own elisp, etc.) but I'm having trouble.
+
+Mostly what I use it for (besides all my coding work, which mostly consists of C++, perl and various flavors of shell scripts) is keeping my daily work log/journal.
+
+On execution, a file "~/TheOneFile.out" is copied to ~/journal/YYYYMMDD.tof.out" for backup, then opened (in outline-mode.)  Then a top-level entry is placed at the top of the file with a date:time string... like so.
+
+"* Thu Jul  1 09:58:22 2010"
+
+That way I can muck around with the file however I want while having a reasonable poor-man's backup system.
+
+As a 'to do' list, I use an outline hierarchy with a slightly different format:
+
+"** - Top level item."
+
+"*** - Second level item."
+
+Then I use the '-' character to indicate status.
+
+'-' not started
+'@' in progress
+'/' deferred
+'!' complete
+'x' skipped.
+
+Works for me as I can keep full procedural "run books" in the TheOneFile outline and just copy them forward and reset the status when I need them again.
+
+
+
+[new:DrewAdams:2010-07-01 14:25 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+[new]
+Welcome to the wiki!
+
+What you are doing now with the currenty ad hoc journal format is also possible with org-mode.  Its feature list is quite impressive and it includes stuff like: archiving of completed to-do entries; an agenda view mode to look at what's a good candidate for the next thing to work on; a nice default set of task "states" and the ability to use custom ones; time-tracking to see how much time you have spent to work on a specific task, including a break-down of large to-do tasks to smaller chunks of time, and so on.
+
+I'm sure you will enjoy working with org-mode too.  It is a magnificent package for Emacs.  I instantly fell in love with it and I use it for pretty much all my to-do and daily journal tasks now. -- GiorgosKeramidas
+
+----
+CategoryHomepage

@@ -9,5 +9,5 @@ Put Lisp:fullscreen.el in your load-path, add the following to your ~/.emacs:
 
 ==Usage==
 * "fullscreen" -- Fullscreen.
-* "fullscreen" -- Toggle fullscreen status.
+* "fullscreen-toggle" -- Toggle fullscreen status.
 
