@@ -1,13 +1,40 @@
-This page is about library '''<tt>[[bookmark+.el]]</tt>''', which enhances vanilla Emacs [[bookmark]]s in many ways. 
+This page is about package '''[::Bookmark+]''' , which enhances vanilla Emacs [[bookmark]]s in many ways. 
 
-The internal bookmark format (data structure) used by '''[::Bookmark+]''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
+The internal bookmark format (data structure) used by '''Bookmark+''' is compatible with that of vanilla GnuEmacs. It extends that structure in new ways, to accommodate new bookmark types.
 
 With '''Bookmark+''' you can use bookmarks that were created with any Emacs version in any other Emacs version. In particular, '''Bookmark+''' lets you use Emacs prior to release 23 with bookmarks created using Emacs 23 (or created using any older version). (See also [[#Compatibility]], below.)
 
 
+[:Libraries]
+== Bookmark+ Libraries ==
 
+'''Bookmark''' is composed of two libraries and two additional, comment-only files.
 
+* <tt>[[bookmark+.el]]</tt> -- Main library
+* <tt>[[bookmark+-lit.el]]</tt> -- Optional library for highlighting bookmark locations
+* <tt>[[bookmark+-doc.el]]</tt> -- Documentation (essentially the same as this wiki page)
+* <tt>[[bookmark+-chg.el]]</tt> -- Change log entries
 
+To use both of the libraries, just put their directory in your `load-path' and add this to your [[init file]]:
+
+ (require 'bookmark+)
+
+That will load both of the libraries.  If you want to load only
+##bookmark+.el## then simply do not put ##bookmark+-lit.el## in your
+`load-path'.
+
+I recommend that you byte-compile the libraries.  ##bookmark+.el##
+must be in your `load-path' in order to byte-compile it (it must
+be loaded before byte-compiling it).
+
+By default (see option `bmkp-crosshairs-flag'), when you visit a
+bookmark that has no [[region]] it is highlighted temporarily using
+crosshairs, for easy recognition.  (This temporary highlighting is
+independent of the highlighting provided by ##bookmark+-lit.el##.)
+
+For this optional crosshairs feature you
+also need library <tt>[[crosshairs.el]]</tt>, which in turn requires
+libraries <tt>[[col-highlight.el]]</tt>, ##hl-line##, <tt>[[hl-line+.el]]</tt>, and <tt>[[vline.el]]</tt>.  Library ##hl-line## comes with vanilla Emacs.  You also need Emacs 22 or later for this feature.
 
 
 
@@ -46,7 +73,7 @@ objects as their values.
 
 * You can bookmark a ''[[region]]'' of text, not just a position.  When
      you jump to a bookmark that records a region, the region is
-     activated (see [[option]] '''`bmkp-use-region-flag'''').  (Region
+     activated (see [[option]] '''`bmkp-use-region'''').  (Region
      activation is not supported for Gnus bookmarks.)
 
 * Bookmarks are relocated better than for vanilla Emacs when the contextual text changes.  By default, when you visit a bookmark that requires relocation, the bookmark is then saved with the new, relocated position information. If you want to turn off this automatic saving, then customize user option '''`bookmark-save-new-location-flag'''' to `nil'.
@@ -248,6 +275,21 @@ access the complete documentation.  (Use button `Customize' to customize all '''
 
 
 
+[:Highlighting]
+=== Visual bookmarks (highlighting). ===
+
+You can highlight the locations of bookmarks, either
+automatically or on demand.  You control what kind of
+highlighting, if any, is used for which bookmarks.  This
+feature requires that you have library <tt>[[bookmark+-lit.el]]</tt> in
+your `load-path' (it will then be loaded by ##bookmark+.el##.
+
+
+
+
+
+
+
 
 [:Icicles]
 === Synergy with Icicles. ===
@@ -382,6 +424,11 @@ For example, if you use '''[[Dired+]]''' (library <tt>[[dired+.el]]</tt>), then 
 marked files in the Dired buffer.  Even if you never use those
 bookmarks for navigating to the files, you can use them with tags
 to organize the files.  See also [[#WindowsFileAssociations|Open Bookmarks Using Windows File Associations]], below.
+
+By default, you create bookmarks without tags and add tags to them
+later.  If you prefer, you can customize option
+'''`bmkp-prompt-for-tags-flag'''' to non-`nil' so that you are prompted to
+add tags immediately whenever you set (create) a bookmark.
 
 To make tags more useful, '''Bookmark+''' provides lots of commands: for
 adding or removing tags, and for marking or unmarking bookmarks
@@ -696,7 +743,9 @@ using `d' plus `x' or marking then `D'.
 
 Bookmarks are highlighted to
 indicate their type. You can mark and unmark bookmarks, show or
-hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).
+hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).  Bookmarks that have bookmark-highlight
+override settings (see [[##DefiningHowtoHighlight]]) are
+marked with a one-character pink background.
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
 information about the bookmark list, including the following:
@@ -1220,6 +1269,16 @@ If you use MS Windows, you can take advantage of your existing file
 associations to open your bookmarks using the appropriate program -- no need to define a new bookmark type and handler.
 See [[#WindowsFileAssociations|Open Bookmarks Using Windows File Associations]].
 
+Note: The default value of option `bmkp-use-region' is `t', not
+`cycling-too', which means that when you cycle to a bookmark its
+recorded region (if any) is not activated.  This is probably what
+you want most of the time.  Cycling is a repetitive action, and if
+you cycle to a bookmark with no recorded region then an already
+active region is just extended.  Customize the value to
+`cycling-too' if you prefer that behavior.
+
+
+
 
 
 
@@ -1242,7 +1301,7 @@ Here are two ways to define the navigation list:
 
 * '''`C-x p B'''' ('''`bmkp-choose-navlist-from-bookmark-list'''') -- As the set of all bookmarks corresponding to a ''bookmark-list bookmark'', that is the bookmarks corresponding to a given recorded state of buffer `##*Bookmark List*##'.
 
-Each of these lets you choose a bookmark set using completion.
+Each of these lets you choose a set of bookmarks using completion.
 For `##C-x p :##' you are prompted for the type of bookmark
 (e.g. `dired').
 
@@ -1373,7 +1432,8 @@ List*##' with only the current buffer's bookmarks, sort them there,
 and then use '''`C-x p B'''' to set the navigation list to '''`##CURRENT *Bookmark List*##''''.  In that case, you use the navlist cycling keys
 (e.g. `C-x p f', not `C-x p n').
 
-
+Finally, you can also cycle among only the highlighted bookmarks
+in the current buffer -- see [[#UsingHighlightedBookmarks|Cycling Among Highlighted Bookmarks]].
 
 
 
@@ -1383,7 +1443,7 @@ and then use '''`C-x p B'''' to set the navigation list to '''`##CURRENT *Bookma
 
 
 [:AutonamedBookmarks]
-=== Easy-Come-Easy-Go Bookmarks ===
+=== Autonamed Bookmarks - Easy Come Easy Go ===
 
 Sometimes it is convenient to quickly create and delete bookmarks
 whose names you don't really care about.  That is the purpose of
@@ -1393,7 +1453,7 @@ information -- it records only a position.  It is nevertheless an
 ordinary, persistent bookmark.
 
 '''`C-x p RET'''' creates a bookmark at [[point]] without prompting you for
-the name.  The bookmark is named using the current buffer name
+the name.  It is named using the current buffer name
 preceded by the position in the buffer.  For example, the
 autonamed bookmark in buffer ##bookmark+.el## at position 58356 is
 `##000058356 bookmark+.el##'.
@@ -1402,27 +1462,33 @@ autonamed bookmark in buffer ##bookmark+.el## at position 58356 is
 '''`bmkp-autoname-bookmark-function'''' and
 '''`bmkp-autoname-format''''.)
 
+When you jump to any bookmark, the actual destination can differ
+from the recorded position, because the buffer text might have
+changed.  In that case, the position you jump to has been
+automatically relocated using the recorded bookmark context (some
+buffer text surrounding the original position).
+
+If option '''`bmkp-save-new-location-flag'''' is non-`nil' then, after
+jumping, the recorded position of the bookmark is automatically
+updated to reflect the new location jumped to.  This is true for
+any bookmark.
+
+In the case of an autonamed bookmark, the bookmark name reflects
+the recorded position when you create it.  And when you jump to
+it, both the ''name and the recorded position are updated'' to reflect
+the jump destination.  So jumping to an autonamed bookmark keeps
+its persistent record in sync with the buffer location.
+
+You will thus notice that the names of autonamed bookmarks can
+change as you visit them (e.g. cycling).  The bookmarks are
+automatically repositioned following their recorded contexts, and
+their names reflect that repositioning.
+
 `C-x p RET' is '''`bmkp-toggle-autonamed-bookmark-set/delete'''',
-which means that it does double duty.  If an autonamed bookmark is
+and it does double duty.  If an autonamed bookmark is
 under the cursor, then `C-x p RET' ''deletes'' it.  Easy creation,
 easy deletion.  Because of this toggle behavior, there is at most
 one autonamed bookmark at any given buffer position.
-
-An autonamed bookmark has its position as part of its name.  When
-you modify the content of a buffer, some of the bookmark positions
-recorded for that buffer can lose their accuracy.  When you jump
-to a bookmark, the position is automatically relocated, if
-possible.
-
-Similarly, since the name of an autonamed bookmark records its
-position when it was created, that name can lose its accuracy due
-to buffer changes.  And just as for a bookmark's recorded
-position, when you cycle to an autonamed bookmark its name is
-updated to the correct position.
-
-This means that autonaming occurs both when you create an
-autonamed bookmark and when you cycle to it.  More generally, it
-occurs whenever you jump to it in any way.
 
 `C-x p RET' has a third use: With a [[prefix argument]], it prompts
 you to confirm the deletion of '''''all''''' autonamed bookmarks for the
@@ -1433,7 +1499,211 @@ to '''`bmkp-delete-bookmarks'''', to delete individual bookmarks
 under the cursor or all bookmarks in the buffer.  This is not
 limited to autonamed bookmarks.)
 
+Finally, in addition to `C-x p RET', you can create autonamed
+bookmarks using these commands:
 
+* `bmkp-set-autonamed-bookmark-at-line' -- At a line beginning
+* `bmkp-set-autonamed-regexp-buffer'    -- At buffer matches
+* `bmkp-set-autonamed-regexp-region'    -- At region matches
+
+
+
+
+
+
+
+
+
+
+[:HighlightingBookmarkLocations]
+== Highlighting Bookmark Locations ==
+
+You can highlight the location (destination) of a bookmark.  For
+this feature you need library <tt>[[bookmark+-lit.el]]</tt> in addition to
+library ##bookmark+.el##.
+
+You might never want to highlight a bookmark, or you might want to
+highlight most or even all bookmarks, or your use of highlighting
+might fall somewhere between.  It depends on what kind of
+bookmarks you have and how you use them.  '''Bookmark+''' lets you
+choose.  By default, no bookmarks are highlighted.
+
+
+
+
+
+
+[:DefiningHowtoHighlight]
+=== Defining How to Highlight ===
+
+By default, autonamed bookmarks are highlighted differently from
+non-autonamed bookmarks.  Bookmark highlighting uses a '''style''' and a
+'''face'''.  The available styles are these:
+
+* `Line'                -- Highlight line of the bookmark position
+* `Position'            -- Highlight character at bookmark position
+* `##Line Beginning##'      -- Highlight first character on line
+* `##Left Fringe##'         -- Highlight only the left fringe
+* `##Left Fringe + Line##'  -- Highlight the left fringe and the line
+* `##Right Fringe##'        -- Highlight only the right fringe
+* `##Right Fringe + Line##' -- Highlight the right fringe and the line
+
+You can customize the default styles and faces to use for
+autonamed and non-autonamed bookmarks.  You can also customize the
+fringe bitmaps to use.
+
+* `bmkp-light-autonamed'           (face)
+* `bmkp-light-non-autonamed'       (face)
+* `bmkp-light-style-autonamed'     (option)
+* `bmkp-light-style-non-autonamed' (option)
+* `bmkp-light-left-fringe-bitmap'  (option)
+* `bmkp-light-right-fringe-bitmap' (option)
+
+In addition to the default highlighting, which you can customize,
+you can ''set the highlighting for individual bookmarks'' and
+particular sets of bookmarks (overriding their default
+highlighting).  These individual settings are saved as part of the
+bookmarks themselves.
+
+In the bookmark list (buffer `##*Bookmark List*##'):
+
+* '''`##H +##''''    -- Set the highlighting for this line's bookmark
+* '''`##H > +##''''  -- Set the highlighting for the marked bookmarks
+
+Globally, you can use `M-x bmkp-set-lighting-for-bookmark' to set
+the highlighting for a given bookmark.
+
+Each of these commands prompts you (with completion) for the style
+and face to set, as well as for a condition that controls whether
+to highlight.  Each of these is optional -- just hit `RET' (empty
+input) at its prompt to skip setting it.
+
+The condition is an EmacsLisp [[sexp]] that is evaluated whenever an attempt
+is made to highlight the bookmark.  Any resulting value except
+`##:no-light##' highlights the bookmark.  The sexp can refer to the
+variables `this-bookmark' and `this-bookmark-name', whose values
+are the bookmark to be highlighted and its name, respectively.
+
+So, for example, if you wanted to be prompted each time before
+highlighting a certain bookmark you might set its highlighting
+condition to a sexp such as this:
+
+  (or (y-or-n-p (format "Highlight `%s' " this-bookmark-name))
+      :no-light)
+
+If you hit `n' at the prompt then `##:no-light##' is returned and the
+bookmark is not highlighted.
+
+In the bookmark-list display, a pink-background, one-character
+highlight is used next to each bookmark that has a highlight
+override wrt the default.  You can see what that override setting
+is by using `C-u C-h RET' -- look for the `lighting' entry in the
+bookmark definition.
+
+
+[:HighlightingOnDemand]
+=== Highlighting On Demand ===
+
+You can highlight or unhighlight a bookmark or a set of bookmarks
+on demand.
+
+In the bookmark list (buffer `##*Bookmark List*##'):
+
+* '''`##H H##'''',   '''`##H U##''''   -- Highlight, unhighlight this line's bookmark
+
+* '''`##H > H##'''', '''`##H > U##'''' -- Highlight, unhighlight the marked bookmarks
+
+Globally:
+
+* '''`C-x p C-u''''          -- Unhighlight a highlighted bookmark at
+                         [[point]] or on the same line (in that order)
+
+* '''`C-x p h'''', '''`C-x p u'''' -- Highlight, unhighlight a bookmark in the
+                         ''current buffer'' (with completion).
+
+* '''`C-x p H'''', '''`C-x p U'''' -- Highlight, unhighlight bookmarks:
+** With plain `C-u': ''all'' bookmarks
+** With `C-u C-u': ''navigation-list'' bookmarks
+** Otherwise, bookmarks in ''current buffer'':
+*** No prefix arg:  all bookmarks
+*** Prefix arg > 0: autonamed bookmarks
+*** Prefix arg < 0: non-autonamed bookmarks
+
+The default bookmark for `C-x p u' is the same bookmark that is
+unhighlighted by `C-x p C-u': a (highlighted) bookmark at point
+(preferably) or on the same line.  The latter key binding just
+saves you having to hit `RET' to pick the default.
+
+When you use `C-x p h', you can use a prefix argument to override
+both the default highlighting and any highlighting that is
+recorded for the bookmark itself.  You are prompted for the style
+or face to use:
+
+* Negative arg:     prompted for ''style''
+* Non-negative arg: prompted for ''face''
+* Plain `C-u':      prompted for style and face
+
+
+[:HighlightingAutomatically]
+=== Highlighting Automatically ===
+
+You can also highlight automatically, whenever you ''set'' (create) a bookmark
+or ''jump'' to one.  This is controlled by these options:
+
+* '''`bmkp-auto-light-when-set''''
+* '''`bmkp-auto-light-when-jump''''
+
+You can choose any of these values for either option:
+
+* `##Autonamed bookmark##'
+* `##Non-autonamed bookmark##'
+* `##Any bookmark##'
+* `##Autonamed bookmarks in buffer##'
+* `##Non-autonamed bookmarks in buffer##'
+* `##All bookmarks in buffer##'
+* `##None (no automatic highlighting)##' -- the default
+
+The first three values highlight only the bookmark being set or
+jumped to.
+
+
+
+
+
+
+
+
+
+
+
+
+
+[:UsingHighlightedBookmarks]
+== Using Highlighted Bookmarks ==
+
+Once you have highlighted bookmarks, what can you do with them?
+Obviously, the highlighting can help you distinguish and find
+bookmarks visually.  But highlighting also serves as yet another
+way to define sets: the highlighted vs unhighlighted bookmarks.
+
+Any command that operates on a set of bookmarks can be applied to
+one or the other of these two sets.  '''Bookmark+''' defines only a few
+such operations, but you can easily define others.
+
+In addition to such specific commands, you can also apply general
+operations to the highlighted or unhighlighted bookmarks, using
+the bookmark-list display (`##*Bookmark List*##').  '''`##H S##'''' shows only
+the bookmarks that are currently highlighted, and '''`##H M##'''' marks
+them.  You can then perform any of the available bookmark-list
+operations on them.
+
+Globally, you can use these keys:
+
+* '''`##C-x p =##'''' -- List the bookmarks that are ''highlighted at point''.  With a prefix arg, show the full data.
+
+* '''`##C-x j h##'''', '''`##C-x 4 j h##'''' -- ''Jump'' to a highlighted bookmark. Only highlighted bookmarks are completion candidates.
+
+* '''`##C-x p C-down##'''', '''`##C-x p C-up##'''' -- ''Cycle'' to the next and previous highlighted bookmark.
 
 
 
@@ -1701,11 +1971,12 @@ The same menu is available on '''`C-mouse-3''''.
 
 :: [[image:BookmarkPlusMenuBarMenu]]
 
-It has submenus '''Mark''', '''Omit''', '''Tags''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command''':
+It has submenus '''Mark''', '''Omit''', '''Tags''', '''Highlight''', '''Show''', '''Sort''', '''Jump To''', and '''Define Command''':
 
 ;; '''Mark''': [[image:BookmarkPlusMenuBarMenuMark]]
 ;; '''Omit''': [[image:BookmarkPlusMenuBarMenuOmit]]
 ;; '''Tags''': [[image:BookmarkPlusMenuBarMenuTags]]
+;; '''Highlight''': [[image:BookmarkPlusMenuBarMenuHighlight]]
 ;; '''Show''': [[image:BookmarkPlusMenuBarMenuShow]]
 ;; '''Sort''': [[image:BookmarkPlusMenuBarMenuSort]] 
 ;; '''Jump To''': [[image:BookmarkPlusMenuBarMenuJump]]

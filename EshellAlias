@@ -66,5 +66,25 @@ This way you can define pretty complicated functions
 using all emacs lisp power. From the other side, it may be just overkill 
 for such simple definitions. See [[EshellFunctions]] for more information about this. --AntonKulchitsky
 
+== Sharing aliases with bash ==
+Many people have lines like this in their .bashrc file:
+    alias ll='ls -l'
+Eshell needs a different syntax:
+    alias ll 'ls -l'
+To integrate both, either:
+* a) eshell accepts bash's syntax
+* b) bash reads eshell's alias file
+* c) both shells use a new neutral command which defines alias using the right syntax depending on the caller
+* d) the user is forced to maintain two files, ideally with a script which can create one from the other
+
+I have used solution d: I use a line in .bashrc which, after all aliases have been defined, creates the alias file for eshell (eshell-aliases-file):
+
+    alias | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2/g; s/'\\\''/'/g;" >~/.emacs.d/eshell/alias 
+
+It only takes 0m0.007s so I don't mind running it each time I open bash.
+
+-- 2.m7.2010 [[DanielClemente]]
+
+
 ----
 CategoryEshell

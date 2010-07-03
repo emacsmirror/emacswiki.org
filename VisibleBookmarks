@@ -16,16 +16,8 @@ http://www.nongnu.org/bm/
 Very nice package!!
 I use bm.el much more frequently than standard bookmark.el. -- [[rubikitch]]
 
-[new:DrewAdams:2008-08-06 17:06 UTC]
-Yes, very nice. I use it differently from ##bookmark.el##, not more or less. In <tt>[[setup-keys.el]]</tt>, I bind:
-* `bm-toggle' to `S-f3'
-* `bm-next' to `C-f3'
-* `bm-previous' to `M-f3'
-
--- DrewAdams
-
 [new]
-I have written an extension for this that adds a listing of all bookmarks in all buffers. See here: [[bm-ext.el]]  -- [[DanMcKinley]
+I have written an extension for this that adds a listing of all bookmarks in all buffers. See here: [[bm-ext.el]]  -- DanMcKinley
 
 ATM, bm.el contains `bm-show-all' and claims to since version 1.34 -- there is even acknowledgement of DanMcKinley's work from [[bm-ext.el]].  AFAICT, [[bm-ext.el]] is no longer necessary from a functional perspective. -- Anonymous
 
@@ -39,16 +31,11 @@ If you want to be able to toggle bookmarks by clicking in the fringe, this works
                                                       (bm-toggle))))
 </pre>
 
-== Use with Anything ==
-'''[[Anything]]''' is a candidate selection framework.
-
-Start with M-x anything-bm-list, narrow the list by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-With C-z contents of selected bookmark is displayed without quitting anything session.
 
 
 == See Also ==
 
-* Icicles commands for navigating among bookmarks and [[marker]]s. They too highlight the destinations as you visit them. See [[Icicles - Tripping]] and [[MarkCommands#IciclesGoToMarker|Icicles Commands to Go To a Marker]]. 
+* [[Anything]] -- `M-x anything-bm-list'
+* [[BookmarkPlus#HighlightingBookmarkLocations|Bookmark+]] -- Similar VisualStudio-like behavior.  Visible bookmarks that also function as normal (standard) bookmarks. Cycle, highlight in various ways. A bookmark can be, but need not be, highlighted.
 
 

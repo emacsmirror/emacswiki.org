@@ -7,16 +7,16 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 13:09:19 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 12:43:08 2010 (-0800)
+;; Last-Updated: Fri Jul  2 15:33:51 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 374
+;;     Update #: 394
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `col-highlight', `hl-line', `hl-line+', `vline'.
+;;   Cannot open load file: hl-line.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -58,7 +58,8 @@
 ;;
 ;;  User options defined here:
 ;;
-;;    `crosshairs-mode', `crosshairs-vline-same-face-flag'.
+;;    `crosshairs-mode', `crosshairs-overlay-priority',
+;;    `crosshairs-vline-same-face-flag'.
 ;;
 ;;  Commands defined here:
 ;;
@@ -82,6 +83,9 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2010/06/29 dadams
+;;     Added: crosshairs-overlay-priority.
+;;     crosshairs-(un)highlight: Set/remove priority if crosshairs-overlay-priority.
 ;; 2008/09/03 dadams
 ;;     crosshairs-mode: Don't set previous state if explicit ARG.
 ;;                      Added message indicating position.
@@ -150,6 +154,13 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
   :link '(url-link :tag "Download"
           "http://www.emacswiki.org/cgi-bin/wiki/crosshairs.el"))
+
+(defcustom crosshairs-overlay-priority nil
+  "*Priority to use for overlay `global-hl-line-overlay'."
+  :type '(choice
+          (const   :tag "No priority (default priority)"  nil)
+          (integer :tag "Priority"  100))
+  :group 'crosshairs)
 
 (defcustom crosshairs-vline-same-face-flag t
   "*Non-nil means use face `hl-line' for column highlighting also.
@@ -297,6 +308,12 @@ Return current position as a marker."
         (setq global-hl-line-overlay (make-overlay 1 1)) ; to be moved
         (overlay-put global-hl-line-overlay 'face hl-line-face))
       (overlay-put global-hl-line-overlay 'window (selected-window))
+      (when crosshairs-overlay-priority
+        (overlay-put global-hl-line-overlay 'priority crosshairs-overlay-priority)
+        (when (boundp 'vline-overlay-table)
+          (mapcar (lambda (ov) (when (overlayp ov)
+                            (overlay-put ov 'priority crosshairs-overlay-priority)))
+                  vline-overlay-table)))
       (hl-line-move global-hl-line-overlay))
     (when (and (fboundp 'col-highlight-highlight) (not (eq mode 'line-only)))
       (redisplay t) ; Force a redisplay, or else it doesn't always show up.
@@ -314,9 +331,10 @@ Optional arg nil means do nothing if this event is a frame switch."
   (interactive)
   (when (or arg (not (and (consp last-input-event)
                           (eq (car last-input-event) 'switch-frame))))
-    (when (fboundp 'col-highlight-unhighlight)
-      (col-highlight-unhighlight t))
+    (when (fboundp 'col-highlight-unhighlight) (col-highlight-unhighlight t))
     (when (and (boundp 'global-hl-line-overlay) global-hl-line-overlay)
+      (when crosshairs-overlay-priority
+        (overlay-put global-hl-line-overlay 'priority nil))
       (delete-overlay global-hl-line-overlay))
     (remove-hook 'pre-command-hook 'crosshairs-unhighlight)))
 

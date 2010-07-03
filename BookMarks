@@ -1,45 +1,41 @@
-This page is about Emacs '''[::bookmark]s'''.
-
-Bookmarks are just that -- they let you remember locations and return to them later.  Here are some commands to get you started:
+This page is about Emacs '''[::bookmark]s'''. Bookmarks record locations so you can return to them later.  Here are some commands to get you started:
 
 * `C-x r m' -- set a bookmark at the current location (e.g. in a file)
 * `C-x r b' -- jump to a bookmark
 * `C-x r l' -- list all of your bookmarks
 * `M-x bookmark-delete' -- delete a bookmark by name
 
-Your own personal bookmark file, `~/.emacs.bmk', is maintained
+Your own personal bookmark file, `##~/.emacs.bmk##', is maintained
 automatically by Emacs.
 
-== Bookmark List ==
 
-The bookmark list is a kind of [[DiredMode|Dired]] or BufferMenu for bookmarks. You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list".)
+== `*Bookmark List*' ==
 
-Some keys in the bookmark list (buffer `*Bookmark List*'):
+The bookmark list (buffer `##*Bookmark List*##') is like [[DiredMode|Dired]] or BufferMenu for bookmarks.  You access it using `C-x r l'. (Emacs sometimes calls it the "bookmark ''menu'' list", a misnomer.)
 
-* `r' -- rename the current bookmark
+Some keys in `##*Bookmark List*##':
+
+* `a' -- show annotation for the current bookmark
+* `A' -- show all annotations for your bookmarks
 * `d' -- mark various entries for deletion (`x' -- to delete them)
-* `m' -- mark various entries for display, (`v' -- to visit them)
+* `e' -- edit the annotation for the current bookmark
+* `m' -- mark various entries for display and other operations, (`v' -- to visit)
 * `o' -- visit the current bookmark in another window, keeping the bookmark list open 
 * `C-o' -- switch to the current bookmark in another window
-* `A' -- show all annotations for your bookmarks
-* `a' -- show annotation for the current bookmark
-* `e' -- edit the annotation for the current bookmark
+* `r' -- rename the current bookmark
 
 
-== Info Node Bookmarks - Vanilla ==
+== Info Bookmarks and Virtual Books ==
 
 You can bookmark [[InfoMode|Info]] nodes also -- just use `C-x r m', as usual. Command `bookmark-bmenu-list', bound to `C-x r l', provides a convenient menu to access bookmarks.
 
 
-== Bookmarks as Abbreviations ==
+== Access File Bookmarks from `C-x C-f' ==
 
-Here is for people who often hit `C-x C-f' and then realize that
-they are searching for a file pointed to by a bookmark.
+If you hit `C-x C-f' and then realize that you want a file that is bookmarked, you can get to the bookmark this way:
 
- From: MatthiasMeulien
- Subject: Re: bookmarks and abbrevs
- Newsgroups: gnu.emacs.help
- Date: 17 Jun 2002 20:20:59 +0200
+ From: MatthiasMeulien Subject: Re: bookmarks and abbrevs
+ Newsgroups: gnu.emacs.help Date: 17 Jun 2002 20:20:59 +0200
 
  (defun bookmark-to-abbrevs ()
    "Create abbrevs based on `bookmark-alist'."
@@ -49,31 +45,30 @@ they are searching for a file pointed to by a bookmark.
      (define-abbrev global-abbrev-table name file))))
 
 [new:MathiasDahl:2005-09-04 00:06 UTC]
-I did not realize how to use this until I googled and found the original post where the poster mentioned using C-x a e (expand-abbrev) and RET on the find-file prompt. Now, if we could make find-file grok this more or less automatically too... :)
+I did not realize how to use this until I googled and found the original post where the poster mentioned using C-x a e (expand-abbrev) and RET on the find-file prompt. Now, if we could make find-file grok this more or less automatically too... :) -- MathiasDahl
+
+[new:DrewAdams:2010-07-02 16:24 UTC]
+You can do the same thing (access a file bookmark from `C-x C-f' etc.) with Icicles -- just hit `C-x m'.  See [[Icicles - File-Name Input]]. -- DrewAdams
 
 
-== Eshell and bookmarks ==
 
-See EshellBmk. Integrates `eshell/cd' with your bookmarks.
+== bookmark-add.el ==
 
+Lisp:bookmark-add.el creates a buffer for working with bookmarks. Written by EugeneMarkov
 
-== Other Window of Bookmarks ==
+* `M-x bookmark-open-in-simply-buffer' -- switch to <nowiki>*Bookmark list*</nowiki>.
 
-Lisp:bookmark-add.el - creates the buffer for work with bookmarks. It's written by EugeneMarkov
+* `M-x bookmark-set-add' -- Add this bookmark to bookmarks list. To use history, hit Up and Down. The first Up inserts expression which is near to a point.
 
-`M-x bookmark-open-in-simply-buffer' -- switch to buffer named <nowiki>*Bookmark list*</nowiki>. If to hit key Enter on bookmark region will pass on a corresponding file. If to hit key Delete (or Ctrl-d) on bookmark region remove this bookmark from bookmarks list. If to hit key 'q' the buffer will be closed.
+* `M-x bookmark-jump-next-cyclic', `M-x bookmark-jump-prev-cyclic'  -- Cycle bookmarks.
 
-`M-x bookmark-set-add' -- add this bookmark to bookmarks list. To use history, it is necessary to press buttons Up and Down. The first pressing Up inserts expression which is near to a point.
-
-`M-x bookmark-jump-next-cyclic' -- cyclic moving on bookmarks forward.
-
-`M-x bookmark-jump-prev-cyclic' -- cyclic moving on bookmarks backward.
-
-`M-x bookmark-jump-backwards' -- move to last [[cursor]] position right after uses of commands `bookmark-jump-next-cyclic' and
+* `M-x bookmark-jump-backwards' -- Move to last [[cursor]] position right after uses of commands `bookmark-jump-next-cyclic' and
 `bookmark-jump-prev-cyclic'.
 
 
-== Put the last selected bookmark on the top ==
+== Put Last-Selected Bookmark on Top ==
+
+Using this method you'll find frequently used bookmarks easily (cho-seiri-hou in Japanese). -- [[rubikitch]]
 
 <pre>
 (defadvice bookmark-jump (after bookmark-jump activate)
@@ -82,19 +77,20 @@ Lisp:bookmark-add.el - creates the buffer for work with bookmarks. It's written 
     (add-to-list 'bookmark-alist latest)))
 </pre>
 
-The super method of ordering (cho-seiri-hou in Japanese).
-Using this method you'll find frequently used bookmarks easily. -- [[rubikitch]]
 
-== Using Org Mode as a Bookmark Manager ==
+
+== Org Mode as a Bookmark Manager ==
 
 I like to use OrgMode and RememberMode to keep my bookmarks for me. Just
-visit a file/web page/email and then do an `M-x remember' and add the
-item to a bookmarks.org file. With it's clever hierarchy handling you
+visit a file/web page/email and then do `M-x remember' and add the
+item to a ##bookmarks.org## file. With it's clever hierarchy handling you
 can keep bookmarks well organised for different projects.
 
-== Syncing bookmarks with zsh ==
 
-zsh has a feature called `cd-able-vars' which is similar to bookmarks but limited to directories on the local machine. Here's some code to convert emacs' bookmarks into code for zsh. First add this to your .zshrc:
+
+== Syncing Bookmarks with zsh ==
+
+##zsh## has a feature called `cd-able-vars' which is similar to bookmarks but limited to directories on the local machine. Here's some code to convert emacs' bookmarks into code for zsh. First add this to your .zshrc:
 
     setopt cd_able_vars
     [[ -r ~/.zsh.bmk ]] && source ~/.zsh.bmk
@@ -126,45 +122,38 @@ Add this to your .emacs:
         (let ((backup-inhibited t)) (save-buffer))
         (kill-buffer (current-buffer))))
 
-Bookmarks are saved whenever you exit emacs or call `M-x bookmark-save' manually. -- AnselmHelbig
 
-[:BookmarkPlus]
-== Bookmark+ ==
+== Info Bookmarks ==
 
-Library <tt>[[bookmark+.el]]</tt> enhances vanilla Emacs bookmarks in several ways. Bookmark positions and regions anywhere. Sort the bookmark list in various ways. Mark and unmark bookmarks as in Dired. More. See BookmarkPlus.
+You can bookmark [[Info]] nodes.  As an alternative, you can use [[Info+]] to create a virtual Info book and use Info to navigate its nodes. If you also use [[Icicles]] you can have any number of ''persistent'' virtual Info books.
 
-=== Info Node Bookmarks - Extended ===
-
-Sometimes it is convenient to see only the Info nodes that are in such a list, which then functions as a kind of virtual Info manual.  You can do that using BookmarkPlus.
-
-Or if you use InfoPlus, then `C-u v' in Info will show you such an Info nodes virtual book. In addition, you can use `##.##' in Info, to add nodes to such a virtual book without also adding them to your bookmark list.  If, in addition, you use [[Icicles]], then you can have any number of ''persistent'' virtual Info books. 
+ 
 
 [:CyclingBookmarks]
 == Cycling Among Bookmarks ==
 
-* Command `doremi-bookmarks' lets you cycle among bookmarks by using the up and down arrow keys or a mouse wheel. It is in library <tt>[[doremi-cmd.el]]</tt> -- see '''DoReMi'''.
+* [[Bookmark+]] lets you cycle among any set of bookmarks, including visible (highlighted) bookmarks.
 
-* Command `icicle-bookmark' similarly lets you [[completion|complete]] or [[Icicles - Cycling Completions|cycle]] bookmarks to navigate among them. [[Icicles - Apropos Completions|Apropos]] ([[regexp]], substring) completion is available. See '''[[Icicles]]'''.
+* DoReMi command `doremi-bookmarks' lets you cycle among bookmarks using the up and down arrow keys or a mouse wheel.
 
-== Use with Anything ==
-[[Anything]] is a candidate selection framework.
+* Icicles command `icicle-bookmark' lets you [[Icicles - Cycling Completions|cycle]] cycle among bookmarks.  Narrow the candidates using [[completion]].
 
-Start with `M-x anythinf-for-files', narrow the list (including Bookmarks) by typing some patterns(multiple patterns are space-delimited string),
-select with up/down/pgup/pgdown/C-p/C-n/C-v/M-v, choose with enter,
-With TAB actions can be selected if the selected candidate has more than one possible action.
-With C-z content of candidate is displayed without quitting anything session.
+* Lisp:bookmark-add.el lets you cycle among bookmarks.
 
-`M-x anything-bookmark-ext' unifies bookmark-extensions commands.
+* VisibleBookmarks lets you cycle among visible bookmarks.
 
 
 == See Also ==
 
+* [[Anything]] -- `M-x anything-for-files', `M-x anything-bookmark-ext'.
+* [:BookmarkPlus] [[Bookmark+]] enhances vanilla Emacs bookmarks in many ways. Sort, mark, cycle, highlight,...
+* [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions] is a fork of an old (2009) version of Bookmark+.
 * BookMarkIteratorPackage -- iterate through your bookmarks
+* [[BreadcrumbForEmacs]] Breadcrumb for Emacs.  Leaves breadcrumb bookmarks in file buffers.
+* EshellBmk -- integrates `eshell/cd' with your bookmarks.
+* GraphicalBookmarkJump
 * VisibleBookmarks Visible, buffer-local bookmarks (library ##bm.el##)
 * <tt>[[wuxch-bookmark.el]]</tt> -- Extends [[#BookmarkPlus]] and VisibleBookmarks
-* [[BreadcrumbForEmacs]] Breadcrumb for Emacs.  Leaves breadcrumb bookmarks in file buffers.
-* GraphicalBookmarkJump
-* [http://mercurial.intuxication.org/hg/emacs-bookmark-extension bookmark-extensions] is a fork of bookmark+.el.
 
 ----
 CategoryHypermedia CategoryPersistence

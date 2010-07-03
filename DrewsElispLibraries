@@ -43,6 +43,7 @@ You can try to juggle the branches of such tests yourself -- that is, try differ
 The newest of my libraries are these (in alphabetical order):
 
 * <tt>[[bindings+.el]]</tt> -- [[minor mode|Minor mode]] menus from the [[mode line]] -- see ModeLineMinorModeMenu
+* <tt>[[bookmark+.el]]</tt> and associated libraries-- extensions to standard library `bookmark' -- see '''[[Bookmark+]]'''
 * <tt>[[col-highlight.el]]</tt> -- highlight the current column; see HighlightCurrentColumn
 * <tt>[[crosshairs.el]]</tt> -- highlight the current line and the current column, like a pair of cross hairs, letting you easily locate the [[cursor]] -- see CrosshairHighlighting
 * <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
@@ -64,7 +65,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[highlight.el]]</tt> -- highlight text in various ways; hide/show sets of [[face]]s -- see HighLight
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
-* <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer|Minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
+* <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
 * <tt>[[lacarte.el]]</tt> -- use the keyboard, with [[completion]] and cycling, to access [[menu bar]] menus -- see '''LaCarte'''
 * <tt>[[lib-requires.el]]</tt> -- list Emacs Lisp library dependencies (extends standard library `loadhist') -- see '''LibraryDependencies'''
 * <tt>[[ls-lisp+.el]]</tt> -- extensions to standard library `ls-lisp'
@@ -80,7 +81,7 @@ The newest of my libraries are these (in alphabetical order):
 * <tt>[[wide-n.el]]</tt> -- cycle among MultipleNarrowings
 * <tt>[[zoom-frm.el]]</tt> -- commands to zoom a frame or buffer (change its font size) -- see also <tt>[[doremi-frm.el]]</tt> for alternatives
 
-I make minor changes to libraries often, so check for the latest versions.
+I make minor changes to some libraries often, so check for the latest versions.
 
 '''Tip:''' The best way to know what files have recently been uploaded to the ElispArea is to consult the recent uploads list: [http://www.emacswiki.org/elisp/changelog.html Recent uploads].
 
@@ -91,7 +92,11 @@ I make minor changes to libraries often, so check for the latest versions.
 * <tt>[[apropos+.el]]</tt> -- extensions to standard library `apropos'
 * <tt>[[autofit-frame.el]]</tt> -- automatically fit each one-window frame to its buffer; see also '''[[Shrink-Wrapping Frames]]'''
 * <tt>[[autoload+.el]]</tt> -- extensions to standard library `autoload'
-* <tt>[[bookmark+.el]]</tt> -- extensions to standard library `bookmark'
+* <tt>[[bookmark+.el]]</tt> and associated libraries-- extensions to standard library `bookmark' -- see '''[[Bookmark+]]'''
+** <tt>[[bookmark+.el]]</tt> -- driver library
+** <tt>[[bookmark+-chg.el]]</tt> -- change logs
+** <tt>[[bookmark+-lit.el]]</tt> -- (optional) bookmark highlighting
+** <tt>[[bookmark+-doc.el]]</tt> -- doc
 * <tt>[[browse-kill-ring+.el]]</tt> -- extensions to library `browse-kill-ring'
 * <tt>[[buff-menu+.el]]</tt> -- extensions to standard BufferMenu -- see '''BufferMenuPlus'''
 * <tt>[[cursor-chg.el]]</tt> -- automatically change the [[cursor]], depending on the context -- see ChangingCursorDynamically
@@ -119,10 +124,11 @@ I make minor changes to libraries often, so check for the latest versions.
 * <tt>[[header2.el]]</tt> -- support for creation and update of file headers
 * <tt>[[hexrgb.el]]</tt> -- manipulate RGB (red, blue, green) and HSV (hue, saturation, value) color components
 * <tt>[[highlight.el]]</tt> -- highlighting commands; see also '''HighlightTemporarily'''
-* <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': MiniBuffer input [[Completion]] and cycling -- see '''[[Icicles]]'''
-** <tt>[[icicles.el]]</tt> -- driver library; contains the doc (##Commentary##)
+* <tt>[[icicles.el]]</tt> and associated libraries -- extensions to `completing-read': [[minibuffer]] input [[completion]] and cycling -- see '''[[Icicles]]'''
+** <tt>[[icicles.el]]</tt> -- driver library
 ** <tt>[[icicles-chg.el]]</tt> -- change logs
-** <tt>[[icicles-cmd.el]]</tt> -- top-level commands (interactive functions)
+** <tt>[[icicles-cmd1.el]]</tt> -- top-level commands (interactive functions)
+** <tt>[[icicles-cmd2.el]]</tt> -- top-level commands (interactive functions)
 ** <tt>[[icicles-doc1.el]]</tt> -- doc, part 1
 ** <tt>[[icicles-doc2.el]]</tt> -- doc, part 2
 ** <tt>[[icicles-face.el]]</tt> -- [[face]]s (customizable)

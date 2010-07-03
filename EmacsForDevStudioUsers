@@ -51,7 +51,11 @@ How do I:
 
 Also see: [http://www.kuro5hin.org/story/2003/4/1/21741/10470 Making Emacs Stand Up To Visual Studio 7], WThirtyTwoDev,MSVisualStudio
 
-See also VisibleBookmarks. -- [[rubikitch]]
+See also, for VisualStudio-style bookmarking:
+
+* [[BookmarkPlus#HighlightingBookmarkLocations|Bookmark+]]
+* VisibleBookmarks
+
 
 ----
 CategoryEmulation

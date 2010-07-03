@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 25 11:35:29 2010 (-0700)
+;; Last-Updated: Fri Jul  2 15:40:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5549
+;;     Update #: 5556
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/07/02 dadams
+;;     icicle-bookmark-set: Added INTERACTIVEP arg.  Prompt for tags when bmkp-prompt-for-tags-flag.
+;;                          Highlight bookmark if bmkp-auto-light-when-set.
+;;     icicle-bookmark-cmd: Call icicle-bookmark-set with new INTERACTIVEP arg.
 ;; 2010/06/25 dadams
 ;;     icicle-find-file(-other-window):
 ;;       Use default-directory, not nil, as third arg to read-file-name.  Thx to Thomas Lim.

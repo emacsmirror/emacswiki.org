@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 25 11:34:16 2010 (-0700)
+;; Last-Updated: Sat Jun 26 07:14:05 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21198
+;;     Update #: 21206
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -389,6 +389,7 @@
 (defvar bbdb-completion-display-record) ; In `bbdb.el'
 (defvar bbdb-completion-type)           ; In `bbdb.el'
 (defvar bbdb-hashtable)                 ; In `bbdb.el'
+(defvar bmkp-prompt-for-tags-flag)      ; In `bookmark+.el'
 (defvar color-theme)                    ; In `color-theme.el'
 (defvar color-theme-initialized)        ; In `color-theme.el'
 (defvar ess-current-process-name)       ; In `ess-inf.el'
@@ -3018,7 +3019,7 @@ In particular, you might prefer to remap `bookmark-set' to
   (if (and parg (< (prefix-numeric-value parg) 0))
       (icicle-bookmark-other-window)
     (if (or (not parg) (consp parg))
-        (icicle-bookmark-set nil parg)
+        (icicle-bookmark-set nil parg 'PSEUDO-INTERACTIVEP)
       (let* ((regionp    (and (featurep 'bookmark+)  transient-mark-mode  mark-active
                               (not (eq (region-beginning) (region-end)))))
              (name-beg   (if regionp (region-beginning) (point)))
@@ -3032,12 +3033,12 @@ In particular, you might prefer to remap `bookmark-set' to
                                               (zerop (prefix-numeric-value parg)))))))))
 
 ;;;###autoload
-(defun icicle-bookmark-set (&optional name parg) ; `C-x r m'
+(defun icicle-bookmark-set (&optional name parg interactivep) ; `C-x r m'
   "With Bookmark+, this is `bookmark-set' with Icicles multi-completions.
 In particular, you can use (lax) completion for the bookmark name.
 Without library `bookmark+.el', this is the same as vanilla Emacs
 `bookmark-set'."
-  (interactive (list nil current-prefix-arg))
+  (interactive (list nil current-prefix-arg t))
   (if (not (featurep 'bookmark+))
       (bookmark-set name parg)
     (unwind-protect
@@ -3193,6 +3194,23 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                                                                 nil bookmark-history)))))
              (when (string-equal bname "") (setq bname  defname))
              (bookmark-store bname (cdr record) (consp parg))
+             (when (and bmkp-prompt-for-tags-flag interactivep)
+               (bmkp-add-tags bname (bmkp-read-tags-completing)))
+             (case (and (boundp 'bmkp-auto-light-when-set) bmkp-auto-light-when-set)
+               (autonamed-bookmark       (when (bmkp-autonamed-bookmark-p bname)
+                                           (bmkp-light-bookmark bname)))
+               (non-autonamed-bookmark   (unless (bmkp-autonamed-bookmark-p bname)
+                                           (bmkp-light-bookmark bname)))
+               (any-bookmark             (bmkp-light-bookmark bname))
+               (autonamed-in-buffer      (bmkp-light-bookmarks
+                                          (bmkp-remove-if-not
+                                           #'bmkp-autonamed-bookmark-p
+                                           (bmkp-this-buffer-alist-only)) nil 'MSG))
+               (non-autonamed-in-buffer  (bmkp-light-bookmarks
+                                          (bmkp-remove-if
+                                           #'bmkp-autonamed-bookmark-p
+                                           (bmkp-this-buffer-alist-only)) nil 'MSG))
+               (all-in-buffer            (bmkp-light-bookmarks-this-buffer nil 'MSG)))
              (run-hooks 'bmkp-after-set-hook)
              (if bookmark-use-annotations
                  (bookmark-edit-annotation bname)

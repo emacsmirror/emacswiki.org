@@ -26,7 +26,7 @@ If you have a VOIP account you can use [http://yrk.nfshost.com/repos/diamondsms/
 
 SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/slime-cl-pitfalls/.
 
-rt-liberation.el is an interface to the [http://bestpractical.com/rt/ RT] system. It isn't complete but already useful. Get it with: git clone http://yrk.nfshost.com/repos/rt-liberation.git/
+rt-liberation.el is an interface to the [http://bestpractical.com/rt/ RT] system. Get it with: git clone http://yrk.nfshost.com/repos/rt-liberation.git/
 
 Bug reports and patches are welcome. Happy hacking.
 

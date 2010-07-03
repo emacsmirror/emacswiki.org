@@ -11,13 +11,13 @@ To install CVS GNU Emacs on
 
 * Windows, see CategoryWThirtyTwo.
 * OS X, download the CarbonEmacs package.
-* Debian (Sid), run the command “apt-get install emacs-snapshot-gtk”
-* Ubuntu (Dapper, Edgy and Feisty), ensure the “universe” group is enabled in the package manager, then as for Debian/Sid.
-* Ubuntu (Breezy), ensure that the “breezy-backports universe” group is enabled in the package manager, then as for Debian/Sid.
+* Debian (Sid), run the command "apt-get install emacs-snapshot-gtk"
+* Ubuntu (Dapper, Edgy and Feisty), ensure the "universe" group is enabled in the package manager, then as for Debian/Sid.
+* Ubuntu (Breezy), ensure that the "breezy-backports universe" group is enabled in the package manager, then as for Debian/Sid.
 
 To install XEmacs 21 on
 
-* Debian or Ubuntu, run the command “apt-get install xemacs21-gnome-mule”
+* Debian or Ubuntu, run the command "apt-get install xemacs21-gnome-mule"
 * anything else, see http://www.xemacs.org/Download/index.html
 
 If you work on embedded systems (e.g. routers) that don't have a few dozen megabytes needed for GNU Emacs or XEmacs, check out QEmacs, Zile and [http://www.xs4all.nl/~hanb/software/mg/ mg].
@@ -60,7 +60,7 @@ Emacs with the -fn option:
 
         emacs -fn fixed
 
-Where “fixed” is your favourite font.  X11 users can use the xlsfonts, xfontsel
+Where "fixed" is your favourite font.  X11 users can use the xlsfonts, xfontsel
 and xfd programs to examine different fonts.
 
 A small selection of fonts can be chosen from a menu by holding shift and
@@ -72,7 +72,7 @@ X11 users can also use X resources by adding a line of the form
 
         Emacs.Font: fixed
 
-to their .Xdefaults file, and running 
+to their .Xdefaults file, and running
 
         xrdb -merge ~/.Xdefaults
 
@@ -80,11 +80,34 @@ each time they start X.
 
 Recommended fonts are Terminus, Schumacher Clean and GNU Unifont.
 
+For interactively setting the font with Emacs,
+
+    M-x menu-set-font
+
+Or
+
+    M-x customize-face RET default
+
+Or for a the most difficult method
+
+    M-x set-frame-font
+
+And for Lisp to put in your .emacs
+
+    ;; Set font size to 11pt
+    (let ((11pt (round (* 11.1 10))))
+      (set-face-attribute 'default (not 'this-frame-only)
+                          :height 11pt))
+
+    ;; Set font to Dejavu sans mono
+    (set-face-attribute 'default (not 'this-frame-only)
+                        :face "DejaVu Sans Mono")
+
 Windows users check ChangeFontsPermanentlyOnWindows.
 
 === I get empty boxes instead of characters in Emacs.  Why? ===
 
-By default, Emacs uses a font called “default”.  This *should* be a
+By default, Emacs uses a font called "default".  This *should* be a
 system-wide alias for some sensible default font.  Ubuntu,
 particularly, has no such alias.  Consequently, Emacs displays boxes
 instead of characters.
@@ -116,7 +139,7 @@ thusly:
 
         emacs -fg white -bg black
 
-Where ‘white’ and ‘black’ are your favourite colours.  You can also set the
+Where `white' and `black' are your favourite colours.  You can also set the
 default colours using M-x customize face RET default RET.
 
 X11 users can use X resources to set the default colours by adding lines of
@@ -125,7 +148,7 @@ the form
         Emacs*background: black
         Emacs*foreground: white
 
-to their .Xdefaults file, and running 
+to their .Xdefaults file, and running
 
         xrdb -merge ~/.Xdefaults
 
@@ -134,9 +157,9 @@ each time they start X.
 == Editing ==
 
 === How can I change the encoding of a text file? ===
-								        [16:44]
+
 Open the file and run the following command:
-								        [16:47]
+
     C-x RET f
 
 Select the coding you want and save the file.
@@ -144,19 +167,19 @@ Select the coding you want and save the file.
 === How do I input accented character with an english keyboard? ===
 
 Hit <code>C-\</code> It will switch the input method to latin-1-prefix.
-Typing ' folowed by e will give é. To see al the possible combinations
+Typing ' followed by e will give é. To see all the possible combinations
 right click on the 1> at the bottom left on the mode line.
 
-There are many other input modes, to list them all run 
+There are many other input modes, to list them all run
 <code>M-x list-input-methods</code>. To use a different input method
-you need to customize the variable <code>default-input-method</code>. 
-For example if you wanted to use japanese
+you need to customize the variable <code>default-input-method</code>.
+For example if you wanted to use Japanese
 you would add the following in your <code>.emacs</code>
 
     (setq default-input-method "japanese")
 
 === How do I change the variable tab-width for the current buffer? ===
-	     
+
 Write the following in your <code>.emacs</code>
 
     (setq-default tab-width 4)
@@ -193,7 +216,7 @@ Do M-: window-system RET.  If emacs prints `x', this fix should work.  Do M-x cu
 
 === How do I align text? ===
 
-M-x align in most mode will do something useful. If it doesn’t work try M-x align-regexp
+M-x align in most mode will do something useful. If it doesn't work try M-x align-regexp
 
 === How do I show cursor's position in the modeline? ===
 
@@ -256,7 +279,7 @@ To get an interactive shell, use one of the following:
 || M-x term, M-x ansi term || Start an interactive terminal. ||
 
 To get an interactive REPL (a.k.a. listener), use M-x run foo RET or M-x comint run
-RET foo RET, where ‘foo’ is your favourite programming language.
+RET foo RET, where `foo' is your favourite programming language.
 
 === How do I fix ANSI colour escapes in M-x shell? ===
 
@@ -297,14 +320,14 @@ Try M-^ and M-SPC.
 
 ==== Emacs ====
 
-Just do C-x C-f ~/.emacs RET in Emacs.  Emacs will find it, or create
+Just do `C-x C-f ~/.emacs RET' in Emacs.  Emacs will find it, or create
 it if it doesn't already exist.  You can prove this by adding
 
         (insert "It worked!")
 
 to the bottom of the file, saving (C-x C-s), and restarting Emacs.  If
-the file is being loaded, “It worked!” will be printed in the
-*scratch* buffer.
+the file is being loaded, "It worked!" will be printed in the
+##*scratch*## buffer.
 
 ==== XEmacs ====
 

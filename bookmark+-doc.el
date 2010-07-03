@@ -1,16 +1,17 @@
-;;; bookmark+-doc.el - Documentation and change history for library `bookmark+.el'.
+;;; bookmark+-doc.el - Documentation for package Bookmark+.
 ;;
 ;; Filename: bookmark+-doc.el
-;; Description: Documentation and change history for library `bookmark+.el'.
+;; Description: Documentation for package Bookmark+
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Jun 21 09:11:38 2010 (-0700)
+;; Last-Updated: Fri Jul  2 08:23:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12738
+;;     Update #: 13006
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
-;; Keywords: bookmarks, placeholders, annotations, search, info, w3m, gnus
+;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
+;;           info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
@@ -21,9 +22,18 @@
 ;;
 ;;; Commentary:
 ;;
-;;    Documentation and change history for Bookmark+ (library
-;;    `bookmark+.el'), which provides extensions to standard library
-;;    `bookmark.el'.
+;;    Documentation for the Bookmark+ package, which provides
+;;    extensions to standard library `bookmark.el'.
+;;
+;;    The Bookmark+ libraries are:
+;;
+;;    `bookmark+.el'     - main code library
+;;    `bookmark+-lit.el' - code for highlighting bookmarks (optional)
+;;    `bookmark+-doc.el' - documentation (this file)
+;;    `bookmark+-chg.el' - change log (comment-only file)
+;;
+;;    The documentation includes how to byte-compile and install
+;;    Bookmark+.  It is also available in these ways:
 ;;
 ;;    This documentation is also available in these ways:
 ;;
@@ -39,7 +49,7 @@
 ;;       `M-x customize-group bookmark-plus', then click link
 ;;       `Commentary'.
 ;;
-;;    (The commentary links in #1 and #3 work only if you this
+;;    (The commentary links in #1 and #3 work only if put you this
 ;;    library, `bookmark+-doc.el', in your `load-path'.)
 ;;
 ;;    More description below.
@@ -106,6 +116,16 @@
 ;;      (@> "Omitting Bookmarks from Display")
 ;;      (@> "Sorting Bookmarks")
 ;;    (@> "Bookmarks for Specific Files or Buffers")
+;;    (@> "Cycling, Navigation List, Autonaming")
+;;      (@> "The Bookmark Navigation List")
+;;      (@> "Cycling the Navigation List")
+;;      (@> "Cycling in the Current Buffer")
+;;      (@> "Autonamed Bookmarks - Easy Come Easy Go")
+;;    (@> "Highlighting Bookmark Locations")
+;;      (@> "Defining How to Highlight")
+;;      (@> "Highlighting On Demand")
+;;      (@> "Highlighting Automatically")
+;;      (@> "Using Highlighted Bookmarks")
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Open Bookmarks Using Windows File Associations")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
@@ -120,22 +140,33 @@
 ;;(@* "Installing Bookmark+")
 ;;  ** Installing Bookmark+ **
 ;;
-;;  Put library `bookmark+.el' in your `load-path'.
-;;  Add this to your init file (~/.emacs) :
+;;  The main Bookmark+ library is `bookmark+.el'.  If you want to be
+;;  able to highlight bookmarks then you will also want to use library
+;;  `bookmark+-lit.el'.  To use both of these libraries, just put
+;;  their directory in your `load-path' and add this to your init file
+;;  (~/.emacs):
 ;;
 ;;  (require 'bookmark+)
 ;;
-;;  I recommend that you byte-compile the library.  To do that, you
-;;  must have the `bookmark+.el' in your `load-path'.
+;;  That will load both libraries.  If you want to load only
+;;  `bookmark+.el' then simply do not put `bookmark+-lit.el' in your
+;;  `load-path'.
+;;
+;;  I recommend that you byte-compile the libraries.  `bookmark+.el'
+;;  must be in your `load-path' in order to byte-compile it (it must
+;;  be loaded before byte-compiling it).
 ;;
 ;;  By default (see option `bmkp-crosshairs-flag'), when you visit a
 ;;  bookmark that has no region it is highlighted temporarily using
-;;  crosshairs, for easy recognition.  For this optional feature you
-;;  also need my library `crosshairs.el', which in turn requires
-;;  libraries `col-highlight', `hl-line', `hl-line+', and `vline'.
-;;  Library `hl-line' comes with vanilla Emacs.  The others are
-;;  available from the Emacs Wiki web site: http://www.emacswiki.org/.
-;;  You also need Emacs 22 or later for this feature.
+;;  crosshairs, for easy recognition.  (This temporary highlighting is
+;;  independent of the highlighting provided by `bookmark+-lit.el'.)
+;;
+;;  For this optional crosshairs feature you also need library
+;;  `crosshairs.el', which in turn requires libraries `col-highlight',
+;;  `hl-line', `hl-line+', and `vline'.  Library `hl-line' comes with
+;;  vanilla Emacs.  The others are available from the Emacs Wiki web
+;;  site: http://www.emacswiki.org/.  You also need Emacs 22 or later
+;;  for this feature.
 ;;
 ;;
 ;;(@* "Bookmark+ Features")
@@ -167,8 +198,8 @@
 ;;
 ;;     - You can bookmark a region of text, not just a position.  When
 ;;       you jump to a bookmark that records a region, the region is
-;;       activated (see option `bmkp-use-region-flag').  (Region
-;;       activation is not supported for Gnus bookmarks.)
+;;       activated (see option `bmkp-use-region').  (Region activation
+;;       is not supported for Gnus bookmarks.)
 ;;
 ;;     - Bookmarks are relocated better than for vanilla Emacs when
 ;;       the contextual text changes.
@@ -330,6 +361,14 @@
 ;;
 ;;       . From the Emacs-Wiki Web site,
 ;;         http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;
+;;  * Visual bookmarks (highlighting).
+;;
+;;     - You can highlight the locations of bookmarks, either
+;;       automatically or on demand.  You control what kind of
+;;       highlighting, if any, is used for which bookmarks.  This
+;;       feature requires that you have library `bookmark+-lit.el' in
+;;       your `load-path' (it will then be loaded by `bookmark+.el).
 ;;    
 ;;  * Synergy with Icicles.
 ;;
@@ -459,6 +498,11 @@
 ;;  use those bookmarks for navigating to the files, you can use them
 ;;  with tags to organize the files.  See also
 ;;  (@> "Open Bookmarks Using Windows File Associations").
+;;
+;;  By default, you create bookmarks without tags and add tags to them
+;;  later.  If you prefer, you can customize option
+;;  `bmkp-prompt-for-tags-flag' to non-nil so that you are prompted to
+;;  add tags immediately whenever you set (create) a bookmark.
 ;;
 ;;  To make tags more useful, Bookmark+ provides lots of commands:
 ;;  commands for adding or removing tags, and for marking or unmarking
@@ -753,7 +797,9 @@
 ;;  unmark bookmarks, show or hide bookmarks of particular types, and
 ;;  more.  Bookmarks that have tags are marked with a `t'.  Bookmarks
 ;;  that have an annotation are marked with an `a' (not with a `*' as
-;;  in vanilla `bookmark.el').
+;;  in vanilla `bookmark.el').  Bookmarks that have bookmark-highlight
+;;  override settings (see (@> "Defining How to Highlight")) are
+;;  marked with a one-character pink background.
 ;;
 ;;  Use `?' or `C-h m' in buffer `*Bookmark List*' for more
 ;;  information about the bookmark list, including the following:
@@ -1232,6 +1278,14 @@
 ;;  program - no need to define a new bookmark type and handler.  See
 ;;  (@> "Open Bookmarks Using Windows File Associations").
 ;;
+;;  Note: The default value of option `bmkp-use-region' is `t', not
+;;  `cycling-too', which means that when you cycle to a bookmark its
+;;  recorded region (if any) is not activated.  This is probably what
+;;  you want most of the time.  Cycling is a repetitive action, and if
+;;  you cycle to a bookmark with no recorded region then an already
+;;  active region is just extended.  Customize the value to
+;;  `cycling-too' if you prefer that behavior.
+;;
 ;;
 ;;(@* "The Bookmark Navigation List")
 ;; *** "The Bookmark Navigation List ***
@@ -1255,7 +1309,7 @@
 ;;    that is the bookmarks corresponding to a given recorded state of
 ;;    buffer `*Bookmark List*'.
 ;;
-;;  Each of these lets you choose a bookmark set using completion.
+;;  Each of these lets you choose a set of bookmarks using completion.
 ;;  For `C-x p :' you are prompted for the type of bookmark
 ;;  (e.g. `dired').
 ;;
@@ -1371,9 +1425,12 @@
 ;;  *Bookmark List*'.  In that case, you use the navlist cycling keys
 ;;  (e.g. `C-x p f', not `C-x p n').
 ;;
+;;  Finally, you can also cycle among only the highlighted bookmarks
+;;  in the current buffer -- see (@> "Using Highlighted Bookmarks").
 ;;
-;;(@* "Easy-Come-Easy-Go Bookmarks")
-;; *** "Easy-Come-Easy-Go Bookmarks" ***
+;;
+;;(@* "Autonamed Bookmarks - Easy Come Easy Go")
+;; *** "Autonamed Bookmarks - Easy Come Easy Go" ***
 ;;
 ;;  Sometimes it is convenient to quickly create and delete bookmarks
 ;;  whose names you don't really care about.  That is the purpose of
@@ -1383,35 +1440,41 @@
 ;;  ordinary, persistent bookmark.
 ;;
 ;;  `C-x p RET' creates a bookmark at point without prompting you for
-;;  the name.  The bookmark is named using the current buffer name
-;;  preceded by the position in the buffer.  For example, the
-;;  autonamed bookmark in buffer `bookmark+.el' at position 58356 is
-;;  `000058356 bookmark+.el'.
+;;  the name.  It is named using the current buffer name preceded by
+;;  the position in the buffer.  For example, the autonamed bookmark
+;;  in buffer `bookmark+.el' at position 58356 is `000058356
+;;  bookmark+.el'.
 ;;
 ;;  (You can customize the format of autonamed bookmarks using options
 ;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.)
 ;;
-;;  `C-x p RET' is `bmkp-toggle-autonamed-bookmark-set/delete', which
-;;  means that it does double duty.  If an autonamed bookmark is under
-;;  the cursor, then `C-x p RET' deletes it.  Easy creation, easy
-;;  deletion.  Because of this toggle behavior, there is at most one
-;;  autonamed bookmark at any given buffer position.
+;;  When you jump to any bookmark, the actual destination can differ
+;;  from the recorded position, because the buffer text might have
+;;  changed.  In that case, the position you jump to has been
+;;  automatically relocated using the recorded bookmark context (some
+;;  buffer text surrounding the original position).
 ;;
-;;  An autonamed bookmark has its position as part of its name.  When
-;;  you modify the content of a buffer, some of the bookmark positions
-;;  recorded for that buffer can lose their accuracy.  When you jump
-;;  to a bookmark, the position is automatically relocated, if
-;;  possible.
+;;  If option `bmkp-save-new-location-flag' is non-nil then, after
+;;  jumping, the recorded position of the bookmark is automatically
+;;  updated to reflect the new location jumped to.  This is true for
+;;  any bookmark.
 ;;
-;;  Similarly, since the name of an autonamed bookmark records its
-;;  position when it was created, that name can lose its accuracy due
-;;  to buffer changes.  And just as for a bookmark's recorded
-;;  position, when you cycle to an autonamed bookmark its name is
-;;  updated to the correct position.
+;;  In the case of an autonamed bookmark, the bookmark name reflects
+;;  the recorded position when you create it.  And when you jump to
+;;  it, both the name and the recorded position are updated to reflect
+;;  the jump destination.  So jumping to an autonamed bookmark keeps
+;;  its persistent record in sync with the buffer location.
 ;;
-;;  This means that autonaming occurs both when you create an
-;;  autonamed bookmark and when you cycle to it.  More generally, it
-;;  occurs whenever you jump to it in any way.
+;;  You will thus notice that the names of autonamed bookmarks can
+;;  change as you visit them (e.g. cycling).  The bookmarks are
+;;  automatically repositioned following their recorded contexts, and
+;;  their names reflect that repositioning.
+;;
+;;  `C-x p RET' is `bmkp-toggle-autonamed-bookmark-set/delete', and it
+;;  does double duty.  If an autonamed bookmark is under the cursor,
+;;  then `C-x p RET' deletes it.  Easy creation, easy deletion.
+;;  Because of this toggle behavior, there is at most one autonamed
+;;  bookmark at any given buffer position.
 ;;
 ;;  `C-x p RET' has a third use: With a prefix argument, it prompts
 ;;  you to confirm the deletion of *all* autonamed bookmarks for the
@@ -1421,6 +1484,198 @@
 ;;  to `bmkp-delete-bookmarks', to delete individual bookmarks under
 ;;  the cursor or all bookmarks in the buffer.  This is not limited to
 ;;  autonamed bookmarks.)
+;;
+;;  Finally, in addition to `C-x p RET', you can create autonamed
+;;  bookmarks using these commands:
+;;
+;;  * `bmkp-set-autonamed-bookmark-at-line' - At a line beginning
+;;  * `bmkp-set-autonamed-regexp-buffer'    - At buffer matches
+;;  * `bmkp-set-autonamed-regexp-region'    - At region matches
+;;
+;;
+;;(@* "Highlighting Bookmark Locations")
+;;  ** Highlighting Bookmark Locations **
+;;
+;;  You can highlight the location (destination) of a bookmark.  For
+;;  this feature you need library `bookmark+-lit.el' in addition to
+;;  library `bookmark+.el'.
+;;
+;;  You might never want to highlight a bookmark, or you might want to
+;;  highlight most or even all bookmarks, or your use of highlighting
+;;  might fall somewhere between.  It depends on what kind of
+;;  bookmarks you have and how you use them.  Bookmark+ lets you
+;;  choose.  By default, no bookmarks are highlighted.
+;;
+;;
+;;(@* "Defining How to Highlight")
+;;  ** Defining How to Highlight **
+;;
+;;  By default, autonamed bookmarks are highlighted differently from
+;;  non-autonamed bookmarks.  Bookmark highlighting uses a style and a
+;;  face.  The available styles are these:
+;;
+;;  * Line                - Highlight line of the bookmark position
+;;  * Position            - Highlight character at bookmark position
+;;  * Line Beginning      - Highlight first character on line
+;;  * Left Fringe         - Highlight only the left fringe
+;;  * Left Fringe + Line  - Highlight the left fringe and the line
+;;  * Right Fringe        - Highlight only the right fringe
+;;  * Right Fringe + Line - Highlight the right fringe and the line
+;;
+;;  You can customize the default styles and faces to use for
+;;  autonamed and non-autonamed bookmarks.  You can also customize the
+;;  fringe bitmaps to use.
+;;
+;;  * `bmkp-light-autonamed'           (face)
+;;  * `bmkp-light-non-autonamed'       (face)
+;;  * `bmkp-light-style-autonamed'     (option)
+;;  * `bmkp-light-style-non-autonamed' (option)
+;;  * `bmkp-light-left-fringe-bitmap'  (option)
+;;  * `bmkp-light-right-fringe-bitmap' (option)
+;;
+;;  In addition to the default highlighting, which you can customize,
+;;  you can set the highlighting for individual bookmarks and
+;;  particular sets of bookmarks (overriding their default
+;;  highlighting).  These individual settings are saved as part of the
+;;  bookmarks themselves.
+;;
+;;  In the bookmark list (buffer `*Bookmark List*'):
+;;
+;;  * `H +'    - Set the highlighting for this line's bookmark
+;;  * `H > +'  - Set the highlighting for the marked bookmarks
+;;
+;;  Globally, you can use `M-x bmkp-set-lighting-for-bookmark' to set
+;;  the highlighting for a given bookmark.
+;;
+;;  Each of these commands prompts you (with completion) for the style
+;;  and face to set, as well as for a condition that controls whether
+;;  to highlight.  Each of these is optional - just hit `RET' (empty
+;;  input) at its prompt to skip setting it.
+;;
+;;  The condition is an Emacs-Lisp sexp that is evaluated whenever an
+;;  attempt is made to highlight the bookmark.  Any resulting value
+;;  except `:no-light' highlights the bookmark.  The sexp can refer to
+;;  the variables `this-bookmark' and `this-bookmark-name', whose
+;;  values are the bookmark to be highlighted and its name,
+;;  respectively.
+;;
+;;  So, for example, if you wanted to be prompted each time before
+;;  highlighting a certain bookmark you might set its highlighting
+;;  condition to a sexp such as this:
+;;
+;;  (or (y-or-n-p (format "Highlight `%s' " this-bookmark-name))
+;;      :no-light)
+;;
+;;  If you hit `n' at the prompt then `:no-light' is returned and the
+;;  bookmark is not highlighted.
+;;
+;;  In the bookmark-list display, a pink-background, one-character
+;;  highlight is used next to each bookmark that has a highlight
+;;  override wrt the default.  You can see what that override setting
+;;  is by using `C-u C-h RET' - look for the `lighting' entry in the
+;;  bookmark definition.
+;;
+;;
+;;(@* "Highlighting On Demand")
+;;  *** Highlighting On Demand ***
+;;
+;;  You can highlight or unhighlight a bookmark or a set of bookmarks
+;;  on demand.
+;;
+;;  In the bookmark list (buffer `*Bookmark List*'):
+;;
+;;  * `H H',   `H U'   - Highlight, unhighlight this line's bookmark
+;;
+;;  * `H > H', `H > U' - Highlight, unhighlight the marked bookmarks
+;;
+;;  Globally:
+;;
+;;  * `C-x p C-u'          - Unhighlight a highlighted bookmark at
+;;                           point or on the same line (in that order)
+;;
+;;  * `C-x p h', `C-x p u' - Highlight, unhighlight a bookmark in the
+;;                           current buffer (with completion).
+;;
+;;  * `C-x p H', `C-x p U' - Highlight, unhighlight bookmarks:
+;;
+;;                           With plain `C-u': all bookmarks
+;;
+;;                           With `C-u C-u': navigation-list bookmarks
+;;
+;;                           Otherwise, bookmarks in current buffer:
+;;                            No prefix arg:  all bookmarks
+;;                            Prefix arg > 0: autonamed bookmarks
+;;                                       < 0: non-autonamed bookmarks
+;;
+;;  The default bookmark for `C-x p u' is the same bookmark that is
+;;  unhighlighted by `C-x p C-u': a (highlighted) bookmark at point
+;;  (preferably) or on the same line.  The latter key binding just
+;;  saves you having to hit `RET' to pick the default.
+;;
+;;  When you use `C-x p h', you can use a prefix argument to override
+;;  both the default highlighting and any highlighting that is
+;;  recorded for the bookmark itself.  You are prompted for the style
+;;  or face to use:
+;;
+;;  * Negative arg:     prompted for style
+;;  * Non-negative arg: prompted for face
+;;  * Plain `C-u':      prompted for style and face
+;;
+;;
+;;(@* "Highlighting Automatically")
+;;  *** Highlighting Automatically ***
+;;
+;;  You can also highlight automatically, whenever you set (create) a
+;;  bookmark or jump to one.  This is controlled by these options:
+;;
+;;  * `bmkp-auto-light-when-set'
+;;  * `bmkp-auto-light-when-jump'
+;;
+;;  You can choose any of these values for either option:
+;;
+;;  * Autonamed bookmark
+;;  * Non-autonamed bookmark
+;;  * Any bookmark
+;;  * Autonamed bookmarks in buffer
+;;  * Non-autonamed bookmarks in buffer
+;;  * All bookmarks in buffer
+;;  * None (no automatic highlighting) - the default
+;;
+;;  The first three values highlight only the bookmark being set or
+;;  jumped to.
+;;
+;;
+;;(@* "Using Highlighted Bookmarks")
+;;  ** Using Highlighted Bookmarks **
+;;
+;;  Once you have highlighted bookmarks, what can you do with them?
+;;  Obviously, the highlighting can help you distinguish and find
+;;  bookmarks visually.  But highlighting also serves as yet another
+;;  way to define sets: the highlighted vs unhighlighted bookmarks.
+;;
+;;  Any command that operates on a set of bookmarks can be applied to
+;;  one or the other of these two sets.  Bookmark+ defines only a few
+;;  such operations, but you can easily define others.
+;;
+;;  In addition to such specific commands, you can also apply general
+;;  operations to the highlighted or unhighlighted bookmarks, using
+;;  the bookmark-list display (`*Bookmark List*').  `H S' shows only
+;;  the bookmarks that are currently highlighted, and `H M' marks
+;;  them.  You can then perform any of the available bookmark-list
+;;  operations on them.
+;;
+;;  Globally, you can use these keys:
+;;
+;;  * `C-x p ='                    - List the bookmarks that are
+;;                                   highlighted at point.  With a
+;;                                   prefix arg, show the full data.
+;;
+;;  * `C-x j h', `C-x 4 j h'       - Jump to a highlighted bookmark.
+;;                                   Only highlighted bookmarks are
+;;                                   completion candidates.
+;;
+;;  * `C-x p C-down', `C-x p C-up' - Cycle to the next and previous
+;;                                   highlighted bookmark.
 ;;
 ;;
 ;;(@* "Use Bookmark+ with Icicles")
@@ -1609,939 +1864,6 @@
 ;;  The bookmark data structure, variable `bookmark-alist', has been
 ;;  enhanced to support new bookmark types.  For a description of this
 ;;  enhanced structure, use `C-h v bookmark-alist'.
- 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;
-;;; Change log:
-;;
-;;(@* "Change log")
-;;
-;; 2010/06/21 dadams
-;;     Renamed: bmkp-toggle-autoname-bookmark-set/delete to bmkp-toggle-autonamed-bookmark-set/delete,
-;;              bmkp-autonamed-bookmarks-alist-only to bmkp-autonamed-this-buffer-alist-only,
-;;              bmkp-bookmark-autoname-p to bmkp-autonamed-bookmark-for-buffer-p,
-;;     Added: bmkp-autonamed-alist-only, bmkp-non-autonamed-alist-only, bmkp-autonamed-bookmark-p, 
-;;     bmkp-completing-read-1: Use DEFAULT as default.  Use just (not lax) - no non-t.
-;;                             Use DEFAULT if empty input only if DEFAULT is non-nil.
-;;     bmkp-choose-navlist-of-type: Added pseudo-type "any".
-;;     bmkp-specific-buffers-alist-only: Exclude desktop etc. bookmarks.
-;;     bmkp-update-autonamed-bookmark: Arg can be a bookmark (not just name).
-;; 2010/06/19 dadams
-;;     RENAMED bookmarkp* TO bmkp*.  ***** THIS IS AN INCOMPATIBLE CHANGE ******
-;;
-;;       If you have existing customizations, or if you have bookmarks that have the (internal) tag
-;;       "bmkp-jump", then YOU MUST REPLACE occurrences of "bookmarkp" by "bmkp" EVERYWHERE.  This
-;;       includes replacing occurrences in (1) your bookmarks file (bookmark-default-file), (2) your
-;;       state file (bmkp-bmenu-state-file), and (3) your command file (bmkp-bmenu-commands-file).
-;;
-;;     Changed *-bmenu-w32-open-select binding to M-o from M-v.
-;; 2010/06/11 dadams
-;;     Wrap all (require '* nil t) in condition-case.
-;; 2010/06/07 dadams
-;;     Fix deskstop bookmarks for Emacs < 22.  Protect:
-;;       *-release-lock with fboundp, *-buffer-args-list with boundp, *-dir with Emacs version #, 
-;; 2010/05/30 dadams
-;;     Added: bookmarkp-(next|previous)-bookmark-w32(-repeat).  Bound to C-x p (next|prior).
-;; 2010/05/29 dadams
-;;     *-bmenu-list, *-choose-navlist-from-bookmark-list, *-bmenu-define(-full-snapshot)-command,
-;;       *-save-menu-list-state, -make-bookmark-list-record:
-;;         Add/restore bookmarkp-bmenu-filter-pattern to/from state.
-;;     *-jump-bookmark-list: Set bookmarkp-latest-bookmark-alist to  bookmark-alist.
-;;     Reordered Bookmark menu and added items:
-;;       Set Bookmark, Delete Autonamed Bookmark, Delete All Autonamed Bookmarks Here,
-;;       Delete Bookmarks Here, Delete Bookmark, Rename Bookmark, Bookmark List for This Buffer,
-;;       Bookmark List for Navlist, Set Navlist to Bookmarks of Type,
-;;       Set Navlist from Bookmark-List Bookmark, Insert Bookmark Contents, Insert Bookmark Location.
-;;     Added to Bookmark+ menu: Set Navlist *.
-;;     Added to bookmarkp-bmenu-jump-menu: In Navigation List. 
-;;     Added :enable entries for menu items.
-;;     Updated bookmark-bmenu-mode doc string for cycling, navlist, and options.
-;;     Corrected bindings of bookmarkp-jump-in-navlist(-other-window).
-;; 2010/05/26 dadams
-;;     Added:
-;;       bookmarkp-choose-navlist-(from-bookmark-list|of-type), bookmarkp-crosshairs-highlight,
-;;       bookmarkp-cycle(-this-buffer)(-other-window), bookmarkp-delete-bookmarks, 
-;;       bookmarkp-jump-in-navlist(-other-window), bookmarkp-navlist-bmenu-list,
-;;       bookmarkp-(next|previous)-bookmark(-this-buffer)(-repeat),
-;;       bookmarkp-toggle-autoname-bookmark-set/delete, bookmarkp-autoname-bookmark(-function),
-;;       bookmarkp-autonamed-bookmarks-alist-only, bookmarkp-autoname-format,
-;;       bookmarkp-bookmark-autoname-p, bookmarkp-crosshairs-flag,
-;;       bookmarkp-this-buffer-cycle-sort-comparer, bookmarkp-current-bookmark-list-state,
-;;       bookmarkp-cycle-1, bookmarkp-list-position, bookmarkp-position-cp,
-;;       bookmarkp-current-nav-bookmark, bookmarkp-cycle-this-buffer-buff, bookmarkp-nav-alist,
-;;       bookmarkp-update-autonamed-bookmark, bookmarkp-delete-all-autonamed-for-this-buffer.
-;;    Bound:
-;;       bookmarkp-choose-navlist-from-bookmark-list, bookmark-insert-location,
-;;       bookmarkp-navlist-bmenu-list, bookmarkp-choose-navlist-of-type, bookmarkp-delete-bookmarks,
-;;       bookmarkp-toggle-autoname-bookmark-set/delete, bookmarkp-jump-in-navlist(-other-window),
-;;       bookmarkp-(next|previous)-bookmark(-this-buffer)-repeat.
-;;    bookmark--jump-via: Update the name and position of an autonamed bookmark.
-;; 2010/05/22 dadams
-;;     *-this-buffer-p: Return nil for bookmarks not really associated with a buffer.
-;;     *-default-handler, *-goto-position: Forgot comma to eval file-name when no-such-file error.
-;;     *-show-annotation: Bind buffer-read-only to nil for updating.
-;; 2010/05/19 dadams
-;;     Added: bookmarkp-this-buffer-bmenu-list.  Bound to `C-x p .'.
-;;     menu-bar-bookmark-map:
-;;       Added bookmarkp-this-buffer-bmenu-list.  Added separators.
-;;       Added vanilla items edit, write, load, to impose order.  Renamed item edit.
-;; 2010/05/16 dadams
-;;     bookmark-set: Quoted history arg.  Thx to S. Nemec.
-;;     bookmarkp-bmenu-define-full-snapshot-command: Use quote comma, not quote, for *-specific-*.
-;; 2010/05/15 dadams
-;;     Replace *same-(buffer|file)-jump* by *specific-(buffers|files)-jump*: read multiple buff/files.
-;;     Renamed: *same-(buffer|file)* to *-last-specific-(buffer|file)* for pred, alist, and var.
-;;     Renamed: *same-(buffer|file)* to *specific-(buffer|file)* for hist, *types*, mark/show cmds.
-;;     Renamed: *-selected-buffers-alist* to *-specific-buffers-alist*.
-;;     Added: *-specific-files-alist*, *-(all|some)-tags(-regexp)-alist-only.
-;;     *-completing-read-(buffer|file)-name: Use (buffer|file)-name-history, not *-same-*-history.
-;;     *-read-tags-completing: Rewrote to correctly handle cons and string tags, error handling, etc.
-;;     *-bmenu-(add|remove)-tags-*-marked: Error handling.
-;;     *(all|some)-tags(-regexp)-jump*: Use *-(all|some)-tags(-regexp)-alist-only.
-;; 2010/05/11 dadams
-;;     Added: bookmarkp-bmenu-mark-same-(buffer|file)-bookmarks, bookmarkp-this-(buffer|file)-p,
-;;            bookmarkp-this-(buffer|file)-alist-only, bookmarkp-bmenu-show-only-same-(buffer|file),
-;;            bookmarkp-completing-read-(buffer|file)-name, bookmarkp-same-(buffer|file)-history,
-;;            bookmarkp-(same|this)-(buffer|file)-alist-only, bookmarkp-last-same-(buffer|file),
-;;            bookmarkp-(same|this)-(buffer|file)-jump(-other-window), bookmarkp-(buffer|file)-names,
-;;            bookmarkp-same-(buffer|file)-as-last-p, bookmarkp-other-window-pop-to-flag,
-;;            bookmarkp-select-buffer-other-window.
-;;     Use bookmarkp-select-buffer-other-window instead of switch-to-buffer-other-window everywhere.
-;;     Bound = (b|f) (M|S), C-x j (=|.) (b|f) to (same|current)-(buffer|file) commands.
-;;     *-types-alist: Handle same-(buffer|file) too.
-;;     *-bmenu-list, *-bmenu-define-full-snapshot-command, *-save-menu-list-state:
-;;       Handle bookmarkp-last-same-(buffer|file) as part of state.
-;; 2010/05/05 dadams
-;;     bookmarkp-create-varlist-bookmark, bookmarkp-make-varlist-record:
-;;       Added optional arg BUFFER-NAME.
-;;     bookmark-alist: Corrected doc string wrt BUFFER-NAME and region context strings.
-;; 2010/05/04 dadams
-;;     Added: bookmarkp-create-varlist-bookmark.
-;;     bookmarkp-jump-varlist: If bookmark's buffer doesn't exist, use current buffer and show msg.
-;; 2010/04/24 adams
-;;     Added: bookmarkp-bmenu-show-only-varlists, bookmarkp-set-restrictions-bookmark,
-;;            bookmarkp-set-varlist-bookmark, bookmarkp-varlist-jump, bookmarkp-varlist,
-;;            bookmarkp-jump-varlist, bookmarkp-make-varlist-record, bookmarkp-printable-p,
-;;            bookmarkp-printable-vars+vals, bookmarkp-read-variables-completing,
-;;            bookmarkp-read-variable, bookmarkp-varlist-alist-only, bookmarkp-varlist-bookmark-p,
-;;            bookmarkp-varlist-history.
-;;     Bound bookmarkp-bmenu-show-only-varlists to V S, bookmarkp-varlist-jump to C-x j v (and menu).
-;;     *-types-alist: Added bookmarkp-varlist-history.
-;;     *-bmenu-mode-status-help, *-bmenu-propertize-item, *-describe-bookmark: Handle varlist bmks.
-;;     *-bmenu-w32-open-select: Changed binding to M-v from V.
-;;     *-bmenu-mode: Updated doc string.
-;; 2010/04/17 dadams
-;;     bookmark-set: Numeric prefix arg means use all bookmarks as completion candidates.
-;;                   Simplified the prompt.
-;;     bookmarkp-completing-read-1:
-;;       Use icicle-transform-multi-completion in icicle-delete-candidate-object
-;;     Ensure loaded before byte-compile (put a require after provide).
-;;     Move bookmarkp-replace-regexp-in-string before macro bookmarkp-define-sort-command (uses it).
-;;     bookmarkp-bmenu-w32-open-with-mouse, bookmarkp-bmenu-mouse-3-menu:
-;;       Use with-current-buffer, not save-excursion of set-buffer.
-;;     bookmarkp-make-dired-record, bookmarkp-jump-dired: Use dolist, not mapcar (just side effect).
-;;     bookmarkp-(some|all)-tags-jump(-other-window): Removed extraneous arg in error call.
-;; 2010/04/16 dadams
-;;     Added: bookmarkp-completing-read-1, bookmarkp-completing-read-lax,
-;;            bookmarkp-selected-buffers-alist-only.
-;;     bookmark-set: Use bookmark-completing-read-lax w/ buffer's bookmarks, not read-from-minibuffer.
-;;     bookmark-completing-read: Define using bookmarkp-completing-read-1.
-;; 2010/04/09 dadams
-;;     bookmarkp-edit-bookmark: Update dired-directory property along with filename property. 
-;; 2010/03/28 dadams
-;;     bookmarkp-goto-position: Don't funcall bookmarkp-jump-display-function if it is nil.
-;; 2010/03/28 dadams
-;;     bookmark-default-handler: Don't funcall bookmarkp-jump-display-function if it is nil.
-;; 2010/03/27 dadams
-;;     Changed the customization group from bookmarkp to bookmark-plus.
-;;     Moved doc and change history from bookmark+.el to this new file, bookmark+-doc.el.
-;;     bookmarkp-commentary-button: Use bookmark+-doc.el, not bookmark+.el.
-;; 2010/03/17 dadams
-;;     Added: bookmarkp-toggle-bookmark-set-refreshes, bookmarkp-refresh-latest-bookmark-list,
-;;            bookmarkp-after-set-hook.
-;; 2010/03/16 dadams
-;;     Fixed parens placement (typo) for last change to define *-jump-woman for Emacs 20.
-;; 2010/03/11 dadams
-;;     Define bookmarkp-jump-woman also for Emacs 20 (just raise an error).
-;;     *-show-annotation: Typo: bookmark -> bmk-name.
-;; 2010/03/10 dadams
-;;     Added: bookmarkp-bookmark-creation-cp, bookmarkp-bmenu-sort-by-creation-time (bind: s0, menu).
-;;     *-make-record-default: Add entry: created.
-;;     *-describe-bookmark: Add creation time to description.
-;; 2010/03/03 dadams
-;;     *-sort-and-remove-dups: Do not set bookmarkp-sorted-alist to the result.
-;;     *-bmenu-list-1: Set bookmarkp-sorted-alist to the result of calling *-sort-and-remove-dups.
-;; 2010/03/02 dadams
-;;     Added: bookmarkp-sorted-alist.
-;;     *-bmenu-list-1: Use bookmarkp-sorted-alist.
-;;     *-sort-and-remove-dups: Set bookmarkp-sorted-alist to the result.
-;;     All *-cp (and hence *-define-file-sort-predicate):
-;;       Accept bookmark names as args, in addition to bookmarks.
-;;     bookmark-alpha-p: Don't use bookmarkp-make-plain-predicate, to avoid infinite recursion.
-;; 2010/02/28 dadams
-;;     Added: bookmarkp-send-bug-report.
-;;     bookmarkp-bmenu-mode-status-help: Rewrote to provide only Bookmark+ help.  Added help buttons.
-;;     Fixed Commentary typos.
-;; 2010/02/26 dadams
-;;     Added: bookmarkp-desktop-change-dir, bookmarkp-desktop-kill, bookmarkp-desktop-delete.
-;;     *-jump-desktop: Call *-desktop-change-dir.
-;;     *-read-bookmark-for-type: Added optional arg ACTION.
-;; 2010/02/24 dadams
-;;     *-bmenu-list: Handle case null last-bookmark-file (due to old file format).  Thx to Seb Luque.
-;;     *-make-record-default: protect dired-buffers with boundp.  Thx to Janek Schwarz.
-;; 2010/02/16 dadams
-;;     bookmarkp-define-sort-command: Add msg suffix about repeating.
-;;     bookmarkp-msg-about-sort-order: Added optional arg SUFFIX-MSG.
-;; 2010/02/15 dadams
-;;     Added: bookmark-bmenu-switch-other-window (redefinition for Emacs 20-22).
-;;     *-bmenu-mode: Added redefinition, instead of advising.
-;;     *-send-edited-annotation, *-relocate, *-rename, *-bmenu-refresh-menu-list,
-;;       *-remove(-all)-tags, *-add-tags:
-;;         Refresh the menu list, to pick up changes.
-;;     *-refresh-menu-list: Added optional arg BOOKMARK: go to it.
-;;     Do not bind bookmark-bmenu-relocate unless it's defined.
-;;     *-handler-cp: Respect case-fold-search.
-;; 2010/02/14 dadams
-;;     Renamed bookmark-bmenu-list-1 to bookmarkp-bmenu-list-1.
-;;     Added faces: bookmarkp-(a|t|>|D)-mark, bookmarkp-heading (don't use bookmark-menu-heading).
-;;     Added redefinitions: bookmark-send-edited-annotation, bookmark(-bmenu)-show-annotation,
-;;                          bookmark-show-all-annotations.
-;;     *-bmenu-mark, *-bmenu-delete, *-bmenu-list-1: Add faces to marks.
-;;     *-bmenu-list-1 and everywhere: Get rid of "% " before menu-list title.
-;;     *-bmenu-list-1: Use "a", not "*", as annotation mark.
-;;                     Add "t" mark for tags.  Add an extra space before bookmark name.
-;;     *-bmenu-marks-width: change value from 2 to 4, for the tags column and the extra space.
-;; 2010/02/13 dadams
-;;     Added: bookmarkp-desktop-history,
-;;            bookmarkp-desktop-jump (bound to C-x j K; added to menu),
-;;            bookmarkp-bookmark-list-jump (bound to C-x j B; added to menu),
-;;            bookmarkp-bookmark-list-alist-only, bookmarkp-bookmark-list-history.
-;;     *-types-alist: Added entries for desktops and bookmark-lists.
-;;     *-describe-bookmark: Added optional arg, to show full (internal) info.
-;;                          Bind it to ? in bookmark-map.
-;;     *-jump-bookmark-list: Pop to the bookmark-list (to show it).
-;;     *-bmenu-mark-w3m-bookmarks: Typo: wrong predicate.
-;;     *(-bmenu)-remove-all-tags: Raise error if no tags to remove.
-;;     *-bmenu-remove-all-tags: Require confirmation if interactive.
-;;     *-bmenu-remove-tags: Added optional arg MSGP.
-;;     Menus: Added "..." as needed.
-;;     *-bmenu-mouse-3-menu: Guard bookmark-bmenu-relocate with fboundp.
-;; 2010/02/12 dadams
-;;     Added: bookmarkp-bmenu-define-jump-marked-command.  Bound to M-c and added to menu.
-;;     Changed bookmarkp-toggle-saving-bookmark-file binding to M-~ (M-s conflicts w isearch-multi).
-;;     Updated bookmark-bmenu-mode doc string.
-;; 2010/02/11 dadams
-;;     Added: bookmarkp-types-alist,
-;;            bookmarkp-(dired|gnus|info|man|region|w3m|(non-|local-|remote-)file)-history.
-;;     bookmark-completing-read: Added optional HIST arg.
-;;     *-(relocate|rename|insert(-location)): Added bookmark default for interactive use.
-;;     *-jump-dired: Handle bookmarkp-jump-display-function.
-;;     *-read-bookmark-for-type: Added optional HIST arg.
-;;     *-jump-to-type(-other-window),
-;;       *-(dired|file|gnus|info|man|region|w3m|(local-|non-|remote-)file)-jump*(-other-window):
-;;         Use type-specific history var.
-;; 2010/02/09 dadams
-;;     Added: bookmarkp-get-tag-value.
-;;     bookmark--jump-via: Handle special bookmark tag bookmarkp-jump.
-;; 2010/02/08 dadams
-;;     Renamed: bookmarkp-bmenu-dired-marked-local to bookmarkp-bmenu-dired-marked.
-;;     bookmarkp-bmenu-dired-marked: Handle remote bookmarks if Emacs > 23.1.
-;;     Support tags with values.
-;;       Added: bookmarkp-tag-name, bookmarkp-full-tag, bookmarkp(-bmenu)-set-tag-value.
-;;       Renamed variable (not fn) bookmarkp-tags-list to bookmarkp-tags-alist.
-;;       Use bookmarkp-full-tag everywhere for tag completion.
-;;       *-has-tag-p: Use assoc-default, not member.
-;;       *-read-tag(s)-completing: CANDIDATE-TAGS is now an alist.
-;;       *-list-all-tags: Added optional arg FULLP (prefix arg).
-;;       *-tags-list: Added optional arg NAMES-ONLY-P.
-;;       *-(add|remove|rename)-tags: Use copy-alist, not copy-sequence.  Alist, not list, membership.
-;;       *-rename-tag: Raise error if no tag with old name.
-;;       *-bmenu-mark-bookmarks-tagged-regexp, *-regexp-filtered-tags-alist-only, *-describe-bookmark,
-;;         *-(all|some)-tags-regexp-jump(-other-window):
-;;           Use bookmarkp-tag-name.
-;;       *-bmenu-mark/unmark-bookmarks-tagged-(all|some)/(none|not-all), *-define-tags-sort-command:
-;;         Use assoc-default, not member.
-;;     Added: bookmarkp-bmenu-add-tags, bookmarkp-bmenu-remove(-all)-tags.
-;;     *-bmenu-mouse-3-menu: Use bookmarkp-bmenu-add-tags, bookmarkp-bmenu-remove(-all)-tags.
-;;                           Added bookmarkp-bmenu-set-tag-value.
-;;     *-bmenu-mark-bookmarks-satisfying: Made it a command (interactive).
-;; 2010/02/07 dadams
-;;     *-write-file: Corrected handling of ALT-MSG.
-;;     Cleanup.
-;;       *-remove-tags: Don't call *-get-tags twice.
-;;       *-bmenu-(un)mark-bookmarks-tagged(-not)-(all|none|some):
-;;         Don't duplicate what bookmarkp-read-tags-completing does.
-;;       *-add-tags, *-remove-tags(-from-all): TAGS arg must be a list from the beginning.
-;;       *-remove-tags-from-all, *-rename-tag: Use bookmark-all-names - don't mapcar car over alist.
-;;       *-all-tags-regexp-jump: Corrected to use same pred as *-all-tags-regexp-jump-other-window.
-;;       *-(some|all)-tags-jump(-other-window): Use bookmarkp-has-tag-p - don't repeat the definition.
-;;       *-read-tag(s)-completing: Removed unnecessary or.
-;; 2010/02/06 dadams
-;;     *-write-file, *-empty-file: Corrected handling of ALT-MSG.
-;; 2010/02/05 dadams
-;;     Added: bookmarkp-same-file-p, bookmarkp-empty-file.
-;;     Bound bookmarkp-empty-file to C-x p 0, and added it to menus.
-;;     *-bmenu-list, *-switch-bookmark-file: Use bookmarkp-same-file-p.
-;;     bookmark-write-file: Added optional ALT-MSG arg.
-;; 2010/02/04 dadams
-;;     Added: bookmarkp-bmenu-omit, bookmarkp-list-all-tags.  Added to mouse-3 menu, Tags menus.
-;; 2010/02/01 dadams
-;;     Added: bookmarkp-current-bookmark-file, bookmarkp-switch-bookmark-file,
-;;            (redefinition of) bookmark-load, (redefinition of) bookmark-save,
-;;            bookmarkp-toggle-saving-bookmark-file, bookmarkp-last-save-flag-value.
-;;     *-bmenu-list: Restore bookmarkp-current-bookmark-file if appropriate.
-;;     *-bmenu-mode-status-help: Show bookmarkp-current-bookmark-file.
-;;     *-bmenu-define-full-snapshot-command, *-save-menu-list-state:
-;;       Save bookmarkp-current-bookmark-file.
-;;     Bound bookmarkp-switch-bookmark-file to L and C-x r L.  Added both load commands to both menus.
-;;     *-toggle-saving-menu-list-state: Changed binding to M-l.  Error if init value is nil.
-;;     Bound *-toggle-saving-bookmark-file to M-s and added to menu.
-;;     Added bookmark-write to bookmarkp-bmenu-menubar-menu (Save As).
-;;     bookmarkp-bmenu-menubar-menu: Added :help strings everywhere.
-;;     bookmarkp-bmenu-mode-status-help: Added face legend.
-;; 2010/01/31 dadams
-;;     Added: bookmarkp-tags-list, bookmarkp-read-tag-completing, bookmarkp-use-w32-browser-p,
-;;            bookmarkp-bmenu-w32-open(-select|-with-mouse).  Bind *-w32* to M-RET, V, M-mouse-2.
-;;     *-default-handler: Call w32-browser if bookmarkp-use-w32-browser-p.
-;;     *-bmenu-unomit-marked: Don't try to return to original position (duh).
-;;     *-bmenu-goto-bookmark-named: Use eobp as loop condition.  Call bookmark-bmenu-ensure-position.
-;;     *-read-tags-completing:
-;;       Added arg UPDATE-TAGS-LIST-P.  Call bookmark-maybe-load-default-file.
-;;       Use bookmarkp-tags-list if CANDIDATE-TAGS is nil.  Update that var if UPDATE-TAGS-LIST-P.
-;;     *-(add|remove)-tags: Added arg NO-CACHE-UPDATE-P.  If nil, call bookmarkp-tags-list.
-;;     *-remove-tags-from-all, *-rename-tag, *-bmenu-(add|remove)-tags-(to|from)-marked:
-;;       Call bookmarkp-tags-list.
-;;     *-remove-tags-from-all: Pass nil as tags arg to bookmarkp-read-tags-completing.
-;;     *-rename-tag: Use bookmarkp-read-tag-completing, not read-string.
-;; 2010/01/29 dadams
-;;     bookmarkp-describe-bookmark: Handle desktop bookmarks specifically.
-;;     Added: bookmarkp-menu-popup-max-length.
-;;     bookmark-completing-read: Use bookmarkp-menu-popup-max-length.
-;;     bookmarkp-bmenu-state-file: Added missing default value for const.
-;;     Don't add jump-other entry to menu-bar-bookmark-map (just use Jump To submenu).
-;; 2010/01/28 dadams
-;;     bookmarkp-(all|some)-tags(-regexp)-jump(-other-window): Error if no bookmarks with the tags.
-;;     bookmarkp-(all|some)-tags-jump(-other-window): Handle case where user enters no tags.
-;;     Use :advertised-binding property for bookmark-jump(-other-window).
-;;     Added: bookmarkp-bmenu-jump-menu.
-;;     Added bookmarkp-bmenu-jump-menu to menu-bar-bookmark-map and bookmarkp-bmenu-menubar-menu.
-;; 2010/01/27 dadams
-;;     Added: bookmarkp-every, bookmarkp-(all|some)-tags(-regexp)-jump(-other-window).
-;; 2010/01/26 dadams
-;;     Added: bookmarkp-bmenu-dired-marked-local.  Bound to M-d >.
-;; 2010/01/23 dadams
-;;     Added: bookmarkp-handler-cp, bookmarkp-desktop-no-save-vars, bookmarkp-set-desktop-bookmark,
-;;            bookmarkp-make-desktop-record, bookmarkp-jump-desktop, bookmarkp-desktop-read,
-;;            bookmarkp-desktop-alist-only, bookmarkp-desktop-bookmark-p,
-;;            bookmarkp-bmenu-mark-desktop-bookmarks, bookmarkp-bmenu-show-only-desktops,
-;;            face bookmarkp-desktop.
-;;     bookmarkp-bmenu-sort-by-bookmark-type: Add bookmarkp-handler-cp to the list (last).
-;;     bookmarkp-bmenu-propertize-item: Add face bookmarkp-desktop for desktop bookmarks.
-;;     Bound: bookmarkp-set-desktop-bookmark to C-x p K, C-x r K,
-;;            bookmarkp-bmenu-mark-desktop-bookmarks to K M (and Mark menu),
-;;            bookmarkp-bmenu-show-only-desktops to K S (and Show menu).
-;;     bookmark-bmenu-mode doc string: Updated for new commands.
-;;     Added autoload cookies for all defcustoms.
-;; 2010/01/20 dadams
-;;     Added: bookmarkp-bmenu-mode-status-help.  Bound to C-h m, ?.
-;; 2010/01/19 dadams
-;;     bookmarkp-remote-file-bookmark-p: Include remote Dired bookmarks.  Thx to Simon Harrison.
-;;     Added: bookmarkp-describe-bookmark-internals, bookmarkp-bmenu-describe-this+move-(down|up),
-;;            defalias for list-bookmarks.
-;;     bookmarkp-describe-bookmark: Reformatted help output.  Added more info about Dired bookmarks.
-;;     bookmarkp-bmenu-describe-this-bookmark:
-;;       C-u calls bookmarkp-describe-bookmark-internals.  Bound also to C-h C-RET.
-;; 2010/01/18 dadams
-;;     Added: bookmarkp-dired-subdirs.
-;;     bookmarkp-make-dired-record, bookmarkp-jump-dired: Handle inserted and hidden dirs.
-;;     bookmarkp-jump-dired: Use expand-file-name, not concat.
-;; 2010/01/17 dadams
-;;     Added:
-;;       bookmarkp-jump(-other-window)-map, bookmarkp-jump-1, bookmark-all-names (redefined),
-;;       bookmarkp-read-bookmark-for-type, bookmarkp-dired-jump-current(-other-window),
-;;       bookmarkp-(dired|(local-|remote-|non-)file|gnus|info|man|region|w3m)-jump(-other-window),
-;;       bookmarkp-jump-to-type(-other-window).
-;;     bookmark-jump(-other-window): Use bookmarkp-jump-1.
-;;     bookmark-completing-read: Added optional args ALIST and PRED.
-;;     bookmarkp-default-bookmark-name: Added optional arg ALIST.
-;; 2010/01/14 dadams
-;;     bookmark-bmenu-surreptitiously-rebuild-list: Put back save-excursion & save-window-excursion.
-;; 2010/01/02 dadams
-;;     Renamed *-bmenu-check-position to *-bmenu-ensure-position, per Emacs 23.2.  Added defalias.
-;; 2010/01/01 dadams
-;;     *-bmenu-(un)mark, *-bmenu-other-window, *-bmenu-rename: Call bookmark-bmenu-check-position.
-;;     *-bmenu-delete: Don't call bookmark-bmenu-check-position again at end.
-;;     *-bmenu-edit-bookmark: Call bookmark-bmenu-check-position at beginning, not end.
-;; 2009/12/30 dadams
-;;     Added: bookmarkp-bmenu-header-lines, bookmarkp-bmenu-marks-width.  Use everywhere.
-;; 2009/12/29 dadams
-;;     Added: bookmarkp-make-bookmark-list-record, bookmarkp-jump-bookmark-list, face
-;;            bookmarkp-bookmark-list.
-;;     *-bmenu-propertize-item: Highlight bookmark-list bookmarks.
-;;     *-bmenu-refresh-menu-list: Set bookmarkp-latest-bookmark-alist to refreshed list.
-;;     Face *-local-directory: Made dark background version the inverse of light.
-;;     *-bmenu-list-1: Use eq, not equal, test for bookmarkp-omitted-alist-only as filter fn.
-;;     *-bmenu-define(-full-snapshot)-command: Include bookmarkp-bmenu-omitted-list in saved state.
-;; 2009/12/26 dadams
-;;     Added: bookmarkp-bmenu-omitted-list, bookmarkp-bmenu-show-only-omitted, bookmarkp-unomit-all,
-;;            bookmarkp-bmenu-omit/unomit-marked, bookmarkp-bmenu-(un-)omit-marked,
-;;            bookmarkp-omitted-alist-only.
-;;            Bind *-bmenu-omit/unomit-marked, *-bmenu-show-only-omitted, *-unomit-all to O>,OS,OU.
-;;     Added omit/un-omit stuff to Bookmark+ menu.
-;;     bookmarkp-remove-assoc-dups, bookmarkp-sort-and-remove-dups: Added optional arg OMIT.
-;;     bookmark-delete: Update bookmarkp-bmenu-omitted-list.
-;;     bookmarkp-save-menu-list-state, bookmark-bmenu-list:
-;;       Save/restore bookmarkp-bmenu-omitted-list as part of state.
-;;     bookmark-bmenu-list-1: Treat omitted list when bookmarkp-omitted-alist-only.
-;;     bookmarkp-marked-bookmark-p: Arg can now be a bookmark (or a bookmark name).
-;;     bookmarkp-bmenu-unmark-all: Start by going forward 2 lines, not 1, if user hit RET.
-;;     bookmarkp-bmenu-make-sequence-from-marked:
-;;       Added optional arg DONT-OMIT-P.  If nil, omit marked bookmarks.
-;;       If the seq bookmark already exists, prompt to add to it or replace it.
-;;       Go to the new bookmark in the menu list.
-;; 2009/12/15 dadams
-;;     Added: bookmarkp-sequence-jump-display-function, bookmarkp-sequence, bookmarkp-function,
-;;            bookmarkp-bmenu-make-sequence-from-marked, bookmarkp-jump-sequence,
-;;            bookmarkp-sequence-bookmark-p, bookmarkp-make-function-bookmark,
-;;            bookmarkp-jump-function, bookmarkp-function-bookmark-p.
-;;     bookmarkp-describe-bookmark: Update for sequence and function bookmarks.
-;;     bookmark-bmenu-list: Use condition-case when read from bookmarkp-bmenu-state-file.
-;;                          Bind emacs-lisp-mode-hook to nil.
-;;     bookmark-bmenu-surreptitiously-rebuild-list: Use save-current-buffer.
-;;     bookmarkp-bmenu-propertize-item: Add faces to function and sequence bookmarks.
-;;     bookmarkp-bmenu-menubar-menu: Add *-make-sequence-*-from-marked, *-make-function-bookmark.
-;;     bookmark--jump-via: Call *-record-visit with BATCH arg, to preserver point in menu list.
-;;     bookmark-bmenu-list-1: fit-frame only if buffer is *Bookmark List*.
-;; 2009/12/13 dadams
-;;     *-alist-only: Call bookmark-maybe-load-default-file.
-;; 2009/12/11 dadams
-;;     Added: bookmarkp-list-defuns-in-commands-file, bookmarkp-remove-dups.
-;; 2009/12/06 dadams
-;;     Added: bookmarkp-bmenu-mouse-3-menu (bound to mouse-3),
-;;            bookmarkp-bmenu-(menubar|define-command|sort|show|tags|mark)-menu. 
-;;     bookmark-bmenu-delete: Remove newly flagged bookmark from bookmarkp-bookmark-marked-list.
-;;     bookmarkp-define-tags-sort-command: Save macroexpanded definition in
-;;                                         bookmarkp-bmenu-commands-file.
-;; 2009/12/04 dadams
-;;     Added: bookmarkp-bmenu-define-full-snapshot-command (bound to C),
-;;            bookmarkp-define-tags-sort-command.
-;;     bookmarkp-bmenu-mark-bookmarks-tagged-regexp: Removed extra forward-line if we mark line.
-;; 2009/12/03 dadams
-;;     Added: bookmarkp-bmenu-define-command (bound to c), bookmarkp-bmenu-commands-file.
-;;     bookmark-bmenu-list: Read bookmarkp-bmenu-commands-file.
-;;     bookmarkp-sort-and-remove-dups: Bug fix - return the list even when null sort function.
-;; 2009/11/01 dadams
-;;     Added: *-bmenu-check-position (redefinition), bmkext-jump-* defaliases.
-;;     *-(w3m|man|gnus)-bookmark-p: Recognize the aliases.
-;;     *-jump-man: Bind Man-notify-method.
-;;     *-bmenu-goto-bookmark-named: Check the text property, instead of searching.
-;;     *-bmenu-bookmark: Wrap in condition-case.
-;; 2009/10/31 dadams
-;;     Added: bookmark-bmenu-list-1. bookmarkp-toggle-saving-menu-list-state (C-t),
-;;            bookmarkp-bmenu-state-file, bookmarkp-bmenu-first-time-p,
-;;            bookmarkp-last-bmenu-(bookmark|state-file), bookmark-exit-hook-internal
-;;            (redefinition), bookmarkp-save-menu-list-state.
-;;     bookmark-bmenu-list: Restore menu-list state if appropriate.  Call bookmark-bmenu-list-1.
-;;     bookmarkp-bmenu-quit: If *-bmenu-state-file is non-nil, save the state.
-;;     bookmark-write-file: Use case, not cond.
-;;     bookmark-set: Use command name as default for man-page bookmark name.
-;;     bookmark-delete: Update bookmarkp-latest-bookmark-alist.
-;; 2009/10/28 dadams
-;;     Renamed: bookmarkp-bookmark-marked-p to bookmarkp-marked-bookmark-p
-;;              bookmarkp-bmenu-sort-by-gnus-thread to bookmarkp-bmenu-sort-by-Gnus-thread.
-;;     Added: bookmarkp-man, bookmarkp-make-(wo)man-record, bookmarkp-jump-(wo)man,
-;;            bookmarkp-man-bookmark-p, bookmarkp-bmenu-mark-man-bookmarks,
-;;            bookmarkp-bmenu-show-only-man-pages, bookmarkp-man-alist-only.
-;;     *-bmenu-propertize-item: Handle (wo)man bookmarks.  Use bookmarkp-info-bookmark-p.
-;;     *-regexp-filtered-*: Use bookmarkp-remove-if-not.
-;;     *-write-file: Remove text properties from file name also.
-;;     *-regexp-filtered-(tags|(bookmark|file)-name)-alist-only: Use *-remove-if-not.
-;; 2009/10/26 dadams
-;;     Added: bookmarkp-bmenu-mark-*-bookmarks, bmenu-mark-bookmarks-satisfying.
-;;     Bound those and *-show-only-* accordingly.
-;;     bookmarkp-file-alist-only: Redefined to just use *-file-bookmark-p.
-;; 2009/10/25 dadams
-;;     bookmarkp-bmenu-propertize-item: Put bookmark name on line as text property.
-;;     bookmark-bmenu-bookmark: Get bookmark name from text property bookmarkp-bookmark-name.
-;;     Removed: bookmarkp-latest-sorted-alist.
-;;     bookmark-bmenu-list: Use bookmarkp-bmenu-title only if defined.
-;; 2009/10/21 dadams
-;;     Added: bookmarkp-barf-if-not-in-menu-list.  Use in place of its body.
-;;     Added: bookmarkp-bmenu-mark-bookmarks-tagged-regexp.  Bound to T m %.
-;;     Added: bookmarkp-record-visit.  Use in *--jump-via.  Replaces next two removals.
-;;     Removed: bookmarkp-add-or-update-time, bookmarkp-increment-visits.
-;;     Renamed: *-record-(end|front|rear)-context(-region)-string'.
-;;              New names: bookmarkp-(end-)position-(pre|post)-context(-region).
-;;     *-bmenu-describe-this-bookmark: Added *-barf-if-not-in-menu-list.
-;;     *-bmenu-(un)mark-all, *-bmenu-regexp-mark, *-bmenu-toggle-marks:
-;;       Removed with-current-buffer.
-;; 2009/10/20 dadams
-;;     Added: bookmarkp-bmenu-filter-function, bookmarkp-bmenu-title.
-;;     Removed: bookmarkp-bmenu-called-from-inside-p.
-;;     *-bmenu-list:
-;;       Removed TITLE arg.  Get title from bookmarkp-bmenu-title or default.
-;;       Use interactive-p and absence of menu list, not *-bmenu-called-from-inside-p, as the
-;;         criterion for removing marks.  Fixes bugs such as bookmark creation removing marks.
-;;     *-define-sort-command, *-bmenu-execute-deletions, *-increment-visits,
-;;       *-add-or-update-time, *-bmenu-show-only-*, *-bmenu-show-all,
-;;       *-bmenu-refresh-menu-list, *-bmenu-toggle-show-only-(un)marked,
-;;       *-bmenu-filter-alist-by-regexp, *-bmenu-reverse(-multi-sort)-order,
-;;       *-bmenu-change-sort-order:
-;;         Do not bind or set *-called-from-inside-p.
-;;     *-bmenu-show-only-*, *-bmenu-show-all, *-bmenu-filter-alist-by-regexp:
-;;       Set *-bmenu-filter-function, *-bmenu-title.
-;;     *-bmenu-show-all:
-;;       Set *-latest-bookmark-alist to bookmark-alist.
-;;     *-bmenu-refresh-menu-list: Fix so that it in fact refreshes.
-;;       Do not use *-bmenu-surreptitiously-rebuild-list and *-bmenu-check-position.
-;;       Bind bookmark-alist to last alist (filtered or not), and call *-bmenu-list.
-;;     *-bmenu-surreptitiously-rebuild-list:
-;;       Do not use save*-excursion.  Do not get current title and pass it to *-bmenu-list.
-;;     *-file-alist-only:
-;;       Removed optional arg.  We have *-local-file-alist-only for that.
-;;     *-regexp-filtered-alist-only, *-bmenu-filter-alist-by-regexp:
-;;       Remove REGEXP arg - use bookmarkp-bmenu-filter-pattern.
-;;     *-bmenu-filter-incrementally:
-;;       Raise error if not in *Bookmark List*.
-;;       Use just bookmarkp-bmenu-filter-alist-by-regexp in timer - pass no regexp arg.
-;;     Added: bookmarkp-some, *-bmenu-filter-(file-name|tags)-incrementally,
-;;            *-bmenu-filter-alist-by-(file-name|tags)-regexp,
-;;            *-regexp-filtered-(file-name|tags)-alist-only.
-;;     Renamed: *-bmenu-filter-incrementally to *-bmenu-filter-bookmark-name-incrementally,
-;;              *-bmenu-filter-alist-by-regexp to *-bmenu-filter-alist-by-bookmark-name-regexp,
-;;              *-regexp-filtered-alist-only to *-regexp-filtered-bookmark-name-alist-only.
-;;     Bound these commands to P B, P F, and P T.  Updated bookmark-bmenu-mode doc string.
-;; 2009/10/18 dadams
-;;     Added: *-bmenu-filter-(incrementally|delay|prompt|pattern|timer|alist-by-regexp),
-;;            *-bmenu-read-filter-input, *-regexp-filtered-alist-only,
-;;            *-bmenu-cancel-incremental-filtering.
-;;     *-bmenu-execute-deletions: Don't update menu list if this is a no-op.
-;;     Updated Commentary.
-;;     Thx to Thierry Volpiatto.
-;;     Added: *-marked-cp, *-bmenu-sort-marked-before-unmarked.  Bound to s >.
-;;     *-define-sort-command: Use copy-sequence for default value.
-;; 2009/10/17 dadams
-;;     Added: *-read-tags-completing, *-set-union, *-tag-history, *-describe-bookmark,
-;;            *-bmenu-describe-this-bookmark.  Bound *-bmenu-describe-this-bookmark to C-h RET.
-;;     Use *-read-tags-completing instead of *-read-tags.
-;;     *-sort-orders-for-cycling-alist: Use copy-sequence.
-;;     *-bmenu-change-sort-order: Use member, not memq.
-;;     *-get-bookmark: Handle case of non-string, non-cons. Document NOERROR in doc string.
-;;     *-bmenu-execute-deletions: Fix so marks aren't removed if when delete.  Thx to Thierry.
-;;     Convert recorded time to an Emacs time spec:
-;;       *-make-record-default, -add-or-update-time: Use current-time, not bookmark-float-time.
-;;       *-get-visit-time: Convert a deprecated time entry to an Emacs time spec.
-;;       *-bookmark-last-access-cp: Convert recorded time to a number for comparison.
-;;     Added: *-bmenu-show-filenames (redef of vanilla: put props on whole line, fit frame).
-;;     Removed: old-bookmark-insert-location.
-;;     *-insert-location: Do not call original.  Redefined: do not add text properties.
-;;     *-bmenu-list, *-bmenu-hide-filenames: Put properties on line up to max width.
-;;     *-bmenu-goto-bookmark-named: Allow trailing whitespace, since we use the whole line now.
-;;     *-bmenu-list: Use pop-to-buffer, not switch-to-buffer.  Use do-list, not mapcar.
-;;     *-bmenu-hide-filenames: fit-frame-if-one-window.
-;;     *-bmenu-propertize-item: Better help-echo text.
-;;     Updated bookmark-alist doc string to mention visits, time, and tags entries.
-;; 2009/10/16 dadams
-;;     Added tags feature.
-;;       Added: *-(get|read)-tags, *-has-tag-p, *-remove(-all)-tags(-from-all),
-;;              *-bmenu-remove-tags-from-marked, *-add-tags(-to-marked), *-rename-tag,
-;;              *-bmenu-(un)mark-bookmarks-tagged-(all|none|some|not-all),
-;;              *-bmenu-mark/unmark-bookmarks-tagged-(all/none|some/not-all).
-;;       Bound to prefix key T.
-;;       *-bmenu-mode: Updated doc string.
-;;     Added: bookmarkp-default-bookmark-name.  Use as default instead of *-current-bookmark.
-;;     Renamed: *-maybe-save-bookmark to *-maybe-save-bookmarks.
-;;     Menu-list commands: Raise an error if command is used outside the menu list.
-;; 2009/10/15 dadams
-;;     Added: *-bmenu-(search|query-replace)-marked-bookmarks-regexp.  Bound to M-a, M-q.
-;;     Renamed: *-non-marked-bookmarks-only to *-unmarked-bookmarks-only,
-;;              *-bookmark-marked-alist to *-bmenu-marked-bookmarks.
-;;     *-increment-visits, *-add-or-update-time:
-;;       Set *-bmenu-called-from-inside-p to t, so we don't remove marks.
-;;     Redefined *-bmenu-bookmark to get name from *-latest-sorted-alist.  Thx to Thierry V.
-;;       *-bmenu-surreptitiously-rebuild-list, *-bmenu-list:
-;;         Removed optional arg DONT-TOGGLE-FILENAMES-P.
-;;       *-bmenu-execute-deletions, *-bmenu-toggle-show-only-(un)marked, *-bmenu-(un)mark-all,
-;;         *-bmenu-regexp-mark, *-bmenu-toggle-marks:
-;;           Do not bother with *-bmenu-toggle-filenames and rebuilding the menu list.
-;; 2009/10/14 dadams
-;;     Added: *-bmenu-delete (redefinition), *-isearch-bookmarks,
-;;            *-bmenu-isearch(-marked)-bookmarks(-regexp), *-isearch-next-bookmark-buffer.
-;;            Bound multi-isearch commands to M-s a C(-M)-s.
-;; 2009/10/13 dadams
-;;     Added: *-make-dired-record, *-jump-dired, *-dired-bookmark-p, *-dired-alist-only,
-;;            *-bmenu-show-only-dired.  Bound *-bmenu-show-only-dired to M-d.
-;;     bookmarkp-file-bookmark-p: Include bookmarks that have the Dired handler.
-;;     Moved *-sort-orders-for-cycling-alist defcustoms after *-define-sort-command calls.
-;;     Call bookmarkp-msg-about-sort-order only when interactive.
-;;     *-add-or-update-time, *-increment-visits: Do not save each time we access a bookmark.
-;;     Updated doc string of bookmark-alist and Commentary.
-;; 2009/10/09 dadams
-;;     Added: bookmarkp-bmenu-delete-marked.  Bound it to D.
-;;            bookmarkp-sort-orders-for-cycling-alist.
-;;     Renamed: bookmarkp-sort-functions-alist to bookmarkp-sort-orders-alist,
-;;              bookmarkp-sort-function to bookmarkp-sort-comparer.
-;;     bookmark-bmenu-execute-deletions: Added optional arg, for *-bmenu-delete-marked.
-;;     *-sort-function: Changed default value to sorting by bookmark type (`s k').
-;;     *-bmenu-change-sort-order: Use *-sort-orders-for-cycling-alist, not all sort orders.
-;;     Updated Commentary and doc string (bookmark-bmenu-mode).
-;; 2009/10/08 dadams
-;;     Added: *-bmenu-sort-by-(w3m-url|gnus-thread), *-(gnus|w3m)-cp, *-cp-not,
-;;            *-local-file-(accessed|updated)-more-recently-cp, *-bmenu-sort-by-bookmark-type.
-;;     Renamed: *-bmenu-sort-by(-last)-file-(size|type|access|update) to
-;;              *-bmenu-sort-by(-last)-local-file-(size|typeaccess|update),
-;;              *-file-visited-more-recently-cp to *-local-file-accessed-more-recently-cp,
-;;              *-file-(size|type)-cp to *-local-file-(size|type)-cp.
-;;     Removed: *-file-(device|gid(-chg)|inode|last-(access|update|status-change)|links|modes
-;;                            |uid)-cp.
-;;     Bound *-bmenu-sort-by-bookmark-type to `s k'.
-;;     *-define-file-sort-predicate: Use *-file-bookmark-p, not *-local-file-bookmark-p.
-;;     *-msg-about-sort-order: Added optional arg PREFIX-ARG.  Use in: *-show-(all|only-*).
-;; 2009/10/07 dadams
-;;     Renamed: *-bmenu-sort-by-last-visit-time to *-bmenu-sort-by-last-bookmark-access,
-;;              *-bmenu-sort-by-visit-frequency to *-bmenu-sort-by-bookmark-visit-frequency,
-;;              *-visited-more-recently-cp to *-bookmark-last-access-cp.
-;; 2009/10/06 dadams
-;;     Added: bookmarkp-msg-about-sort-order.
-;;     bookmark-completing-read: Simple sort when use menu-bar menu.
-;; 2009/10/05 dadams
-;;     Added: *-make-plain-predicate, *-reverse-multi-sort-order, *-multi-sort,
-;;            *-define-file-sort-predicate, *-bmenu-sort-by-file-*, *-file-attribute-*-cp,
-;;            and aliases *-file-*-cp, *-current-sort-order.
-;;     Redefined sorting to allow multi-predicates:
-;;       Redefined: *-sort-function, *-sort-and-remove-dups, *-define-sort-command,
-;;                  *-sort-functions-alist.
-;;     Bound keys with `s f' prefix to file-sorting commands
-;;     *-current-sort-order: Use rassoc instead of rassq now.
-;;     Swap keys s and S.  S is now bookmark-bmenu-save.  s is not the sorting prefix key.
-;;     bookmark-bmenu-mode: Mention S key explicitly here (even though it is also
-;;                          mentioned in the vanilla part of the doc string).
-;; 2009/10/04 dadams
-;;     *-bmenu-change-sort-order-repeat: Require repeat.el.
-;;     Renamed: bookmarkp-current-sec-time to bookmarkp-float-time.
-;;     *-float-time: Added arg, so it's the same as float-time (for Emacs 20).
-;;     Bind *-reverse-sort-order to `S R'.
-;;     *-remote-file-bookmark-p: Removed extra rem-file in last and.
-;;     *-non-file-bookmark-p: Ensure it's not a remote file, before calling file-exists-p.
-;; 2009/10/03 dadams
-;;     Added: bookmarkp-file-remote-p, bookmarkp-buffer (face).
-;;     bookmarkp-non-file (face): Changed to gray.
-;;     *-default-handler, *-bmenu-propertize-item, *-(info|file)-bookmark-p:
-;;       Support Emacs 20-21 Info-node bookmarks.
-;;     bookmarkp-bmenu-propertize-item: Use different face for existing buffers.
-;;                                      Use bookmarkp-non-file-filename.
-;;     bookmarkp-non-file-bookmark-p: Include buffer bookmarks for nonexistent buffers.
-;;     bookmarkp-remote-file-bookmark-p: Use bookmarkp-file-remote-p.
-;;     bookmark-handle-bookmark:
-;;       Redefine for all Emacs versions.  Handle buffer (non-file) bookmarks.
-;;     Reordered some function definitions.
-;; 2009/10/02 dadams
-;;     Added: bookmarkp-bmenu-goto-bookmark-named, bookmarkp-latest-sorted-alist.
-;;     *-sort-and-remove-dups: Set *-latest-sorted-alist (not used yet).
-;;     *-define-sort-command, *-bmenu-change-sort-order, *-reverse-sort-order:
-;;       Bind *-bmenu-called-from-inside-p to t, to prevent losing marks.
-;;       Restore cursor position to same bookmark after sorting - use *-goto-bookmark-named.
-;;     *-bmenu-surreptitiously-rebuild-list, *-bmenu-list: Added arg DONT-TOGGLE-FILENAMES-P.
-;;     *-bmenu-execute-deletions, *-bmenu-toggle-show-only-(un)marked:
-;;       Call *-surreptitiously-* with arg DONT-TOGGLE-FILENAMES-P.
-;;     *-bmenu-hide-filenames: Simplify - don't get to position by searching backward.
-;;     *-handle-region-default: Use forward-line, not goto-line.
-;;     Thx to Thierry V.
-;; 2009/10/01 dadams
-;;     Added: bookmarkp-some-unmarked-p.
-;;     Renamed: *-bmenu-toggle-show-only-<TYPE> to *-bmenu-show-only-<TYPE>,
-;;              *-bmenu-called-from-inside-flag to *-bmenu-called-from-inside-p.
-;;     bookmarkp-some-marked-p: Do not test bookmarkp-bookmark-marked-alist.
-;;                              Arg must be required (explicit).  Changed calls accordingly.
-;;     bookmark-bmenu-mode: Cleaned up doc string.
-;;     bookmark-bmenu-((un)mark|rename|edit-*|toggle-marks|surreptitiously-rebuild-list),
-;;       bookmarkp-root-or-sudo-logged-p, bookmarkp-jump-w3m-(new-session|only-one-tab),
-;;       bookmarkp-some-marked-p:
-;;         Inline let vars used only once.
-;;     bookmarkp-bmenu-toggle-show-only-marked:
-;;       Test bookmarkp-some-unmarked-p, not bookmarkp-some-marked-p,
-;;            and include *-before-hide-unmarked in the test.
-;;     bookmarkp-bmenu(-toggle)-show-only-*: Display status message.
-;;     bookmarkp-bmenu-toggle-show-only-(un)marked: Fit frame.
-;;     bookmark-prop-set: Fixed, so it handles old bookmark format also.
-;; 2009/10/01 Thierry Volpiatto
-;;     Removed: bookmarkp-bmenu-restore-marks.
-;;     bookmark-bmenu-list:
-;;       Do the mark restoration in line, at the same time as the annotation * restoration.
-;;       Simplify use of START and END.
-;; 2009/09/30 dadams
-;;     bookmarkp-bmenu-regexp-mark: Remove binding of bookmark-alist.
-;;     bookmark-bmenu-(un)mark, bookmarkp-bmenu-edit-bookmark (remove first call only),
-;;       bookmark-bmenu-other-window, bookmark-bmenu-rename, bookmarkp-bmenu-restore-marks:
-;;         Remove bookmark-bmenu-check-position (done by bookmark-bmenu-bookmark anyway).
-;;     bookmark-insert-location: Fix interactive spec for Emacs < 22.
-;;     bookmark-location: Return "" instead of raising error, if no location found.
-;;     bookmarkp-current-sec-time: Move the let: do not call current-time unless we need to.
-;;     bookmarkp-bmenu-unmark-all: forward-line only 1, not 2.  Thx to Thierry.
-;;     bookmark-bmenu-mode: Updated doc string - bindings and mention options.
-;;     bookmarkp-bmenu-propertize-item: For buffer, check also against "   - no file -".
-;; 2009/09/29 dadams
-;;     bookmark-bmenu-unmark: Use delete, not remove.
-;;     Removed: bookmark-bmenu-check-position, bookmarkp-maybe-sort.
-;;     Added: bookmarkp-sort-and-remove-dups, bookmarkp-remove-assoc-dups,
-;;            bookmarkp-face-prop, bookmarkp-bad-bookmark, bookmark-menu-heading (Emacs 20,21),
-;;            bookmark-bmenu-bookmark (redefinition).
-;;     *-bmenu-toggle-show-only-*: Do not call-interactively.
-;;     bookmarkp-bmenu-(un)mark-all:
-;;       Handle bookmark-bmenu-toggle-filenames (wrapper).
-;;       Remove bookmark-bmenu-check-position - just ensure within menu list.
-;;     bookmarkp-bmenu-mark-all: Move save-excursion so it applies to all movements.
-;;                               Message stating number marked.
-;;     bookmarkp-bmenu-unmark-all: Use with-current-buffer ensure in menu list.
-;;                                 Use bookmark-bmenu-unmark.
-;;     Fixed U bindings for bookmarkp-bmenu-unmark-all.
-;;     bookmarkp-bmenu-regexp-mark:
-;;       Remove bookmark-bmenu-check-position - just ensure in menu list.
-;;     bookmarkp-bmenu-toggle-marks: Use forward-line 2, to ensure in menu list.
-;;                                   Message stating number marked.
-;;     bookmark-bmenu-list, bookmarkp-bmenu-propertize-item: Use bookmarkp-face-prop.
-;;     bookmark-bmenu-list: Don't start applying the faces until column 2.
-;;     Removed key bindings in bookmark-map for *-toggle-show-only-*.
-;;     Redefined faces, esp. for a light background.
-;;     Use font-lock-face or face property, depending on Emacs version.
-;;
-;; 2009-06-09 to 2009-09-27 Thierry Volpiatto and dadams
-;;     New features, as follows.
-;;       See also the change log at
-;;         http://mercurial.intuxication.org/hg/bookmark-icicle-region/.
-;;       2090-09-27 Rewrote sorting and unmarking code.  (+ Updates to doc, names.)
-;;                    Unmarking is now like Dired & query-replace.
-;;                    Sorting is via one sort function; sort predicates do all the sorting.
-;;                    Can now cycle sort orders with S S S...
-;;                    Sort cmds now cycle among normal, reverse, off.
-;;                    Add: *-define-sort-command (macro), *-assoc-delete-all, *-upcase,
-;;                         *-get-visits-count, *-get-visit-time, *-sort-functions-alist.
-;;                  Remove docstring from defalias (for Emacs 20).
-;;       2009-09-26 Fix *-bmenu-mode doc (defadvice).
-;;       2009-09-25 *-bmenu-edit, *-bmenu-sort-1: Fix bmk retrieval code.
-;;                  Redefine *-bmenu-unmark.  Add: *-bmenu-toggle-marks.
-;;                  Bind *-bmenu-unmark-all-bookmarks to M-DEL.  Reorder code.
-;;                  Rename: *-bmenu-unmark-all-(bookmarks|(delete|mark)-flag)',
-;;                          *-bmenu-unmark-all-bookmarks-1.
-;;                  Change sort predicates in defalias.  Rename bmk entry visit to visits.
-;;                  Remove: *-bmenu-show-number-of-visit.
-;;       2009-09-22 Rewrote sorting code.  Renamed unmarking fns.
-;;       2009-09-21 Rename mark/unmark cmds to have -bmenu.
-;;                  Add: *-bmenu-called-from-inside-flag - set it in (un)hide marks fns.
-;;       2009-09-20 *-write-file: Remove text properties before saving.
-;;                  Remove all marks only in current display.
-;;       2009-09-19 *-current-sec-time: Protect with fboundp for Emacs 20.
-;;                  *-bmenu-sort-1: Add msg showing sort method.
-;;                  Change key S-A to S-S (A is annotations).
-;;       2009-09-18 Improve sorting by visit frequency.  Always increment when jump.
-;;                  Fix increment visit fn.  Allow sorting by last visited.
-;;                  When visit values are equal, sort with string-lessp.
-;;                  Add TIME bookmark-alist entry.  *-make-record-default: Add time entry.
-;;                  Fix: bad parens, errors in sorting predicate.  Rename fns.  
-;;                  Use single fn to sort using diff methods.
-;;                  Add: *-bmenu-refresh-alist (bind to g).
-;;       2009-09-16 Add: *-toggle-sorting-by-most-visited, *-reset-visit-flag,
-;;                       *-bmenu-show-number-of-visit.
-;;                  Redefine *-prop-set.  Improve *-toggle-sorting-by-most-visited.
-;;                  Add auto-doc to header.  *-bmenu-mode: Add missing key.
-;;                  Update menu-list after jumping.
-;;                  Increment save counter when jump with visit flag.
-;;       2009-09-15 Record number of visits.  Added sorting by most visits.
-;;       2009-09-14 Add doc string.  Update defadvice doc string wrt keys.
-;;       2009-09-12 Add: fns to mark all, unmark D or > or all, *-bmenu-reset-alist.
-;;                  Fix keymap (Emacs 20).  *-unmark-all-bookmarks1: Move the save-excursion.
-;;       2009-09-11 Add: *-bmenu-check-position (redef to improve performance),
-;;                       *-unmark-all-bookmarks, *-current-list-have-marked-p,
-;;                       *-bookmark-marked-p, *-(non-)marked-bookmarks-only.
-;;                  *-bmenu-hide-unmarked: Add toggling.  Restore lost fn.
-;;                  Reorder code.  Bind cmds in *-bmenu-mode-map.
-;;                  *-bmenu-hide-marked: Do not hide if no marked in current filter.
-;;                  Improve: *-bmenu-hide(-not)-marked-bookmark, (un)hide marked fns.
-;;       2009-09-10 Fix *--restore-all-mark, *-bmenu-regexp-mark.
-;;                  *-bmenu-list: Add *-restore-all-mark.
-;;                  *-bmenu-mark: Push marked bmk to marked list.
-;;                  Add: bookmarkp-bookmark-marked-list, *-bmenu-quit.
-;;       2009-09-09 *-maybe-sort-alist: Use copy-sequence.
-;;                  So remove fixes for *-rename, *-edit-bookmark.
-;;                  *-yank, *-rename', *-set: Fix yanking.
-;;                  Remove non-file bmks from file-only list.
-;;                  Add: *-bmenu-list-only-non-file-bookmarks, *-maybe-message (Emacs 20),
-;;                       *-bmenu-mark-bookmark-matching-regexp, *-bmenu-hide-marked-bookmark,
-;;                       *-bmenu-hide-not-marked-bookmark, *-bmenu-mark (redefinition).
-;;                  *-write-file: Improve performance.
-;;                  *-non-file-alist-only: Remove unused def.
-;;                  Fix: hide marked/unmarked with toggle-filenames, keymap for Emacs 20.
-;;                  Improve comments, doc strings.
-;;                  *-bmenu-mark-bookmark-matching-regexp: Fix while loop.
-;;       2009-09-08 bookmark-store: Remove duplicate setq of *-current-bookmark.
-;;       2009-09-07 Reorganize (reorder), add comments, improve doc strings.
-;;                  Change binding of *-bmenu-relocate from R to M-r.
-;;       2009-09-06 bookmark-rename: Redefine with new arg BATCH.
-;;                  *-bmenu-rename: Go to new pos, not old.
-;;                  *-edit-bookmark, bookmark-rename: Fix display update for Emacs 20.
-;;       2009-09-05 Add: *-edit-bookmark, *-bmenu-edit-bookmark, *-maybe-save-bookmark.
-;;       2009-09-04 Require cl.  Allow RET in Emacs 20.  Add doc string.
-;;                  *-fix-bookmark-alist-and-save:
-;;       2009-09-03 Fix *-fix-bookmark-alist-and-save:
-;;                    Use error, not message.  Change value for setcdr.
-;;                    Do not use push with non-var (cl).
-;;                  bookmark-delete:
-;;                    Redefine, to fix vanilla bug: increment count even when batch.
-;;                  *-non-file-name: Change to - no file -.  *-bmenu-list: Add arg FILTER-ON.
-;;                  *-bmenu-execute-deletions: Use delete, not remove.
-;;                  Add: *-replace-regexp-in-string.
-;;                  bookmark-set: Fix *-yank-point for region case.  Fix bad parens.
-;;       2009-09-02 Add: *-non-file-filename.  *-fix-bookmark-alist-and-save: Fix msg.
-;;                  Require cl (gensym).  *-at-bol/eol' -> line-*-position (for Emacs 20).
-;;                  bookmark-delete: increment *-count if batch arg (fixes vanilla bug).
-;;                  Redefine *-bmenu-execute-deletions,
-;;                           *-bmenu-surreptitiously-rebuild-list. 
-;;                  Update current filtered display - do not reload & display all bmks.
-;;                  Add redefinitions of *-bmenu-rename', *-yank-word to fix vanilla bugs:
-;;                    *-bmenu-rename: Do not call *-bmenu-list twice.
-;;                  *-yank-word: Do not insert whitespace.
-;;                  Rename *-last-bookmark-alist-in-use to *-latest-bookmark-alist.
-;;       2009-09-01 Fix: Loading of new doc for bookmark-alist (add vacuous defvar).
-;;                       *-bmenu-(list|hide-filenames): start -> end, end -> start.
-;;                  Removed extraneous quote mark that caused problems.
-;;                  Save only if condition-case exits OK.
-;;       2009-08-31 Fixes: Test for non-file bmk.  Filename for Gnus bmks.
-;;                         Compatibility of bookmark-alist with vanilla Emacs.
-;;                         Require info.el and ffap.el when needed.
-;;                  Add: *-line-number-at-pos (for Emacs 20),
-;;                       *-bmenu-other-window (redefinition).
-;;                  Rename *-propertize-bookmark-list to *-propertize-bmenu-item.
-;;       2009-08-30 Fix: Increment *-alist-modification-count when relocate region,
-;;                       and maybe save.
-;;                  Move code adding properties to bookmarks out of *-bmenu-list.
-;;                  mapc -> mapcar.  *-bmenu-hide-filenames: Redefine.
-;;       2009-08-29 Remove refresh code.
-;;       2009-08-27 Added: *-local-directory-bookmark-p, *-local-file-alist-only,
-;;                         *-non-file-alist-only.
-;;                  *-file-bookmark-p: Redefined to exclude bmks with handlers.
-;;                  Renamed fns and faces.
-;;       2009-08-25 Fit frame after display menu list.
-;;                  Refresh list when toggle filename visibility.
-;;       2009-08-24 Fix: *-bmenu-list for remote files, bookmark-set, *-remote-file-bookmark-p.
-;;                  Ensure arg to file-remote-p is not nil.
-;;                  Recenter region only if it is visible.
-;;       2009-08-23 Remove old *-location.  *-bmenu-list: Add isw3m.
-;;                  bookmark-set:
-;;                    Redefine for older Emacs. Use a default prompt for gnus, w3m.
-;;                    Use *-name-length-max for title when region is active.
-;;                    Ensure bookmark is on one line.
-;;       2009-08-22 Try to handle tramp ftp files.
-;;                  Do not fail if bookmark has empty filename entry.
-;;                  Show region end pos using exchange-point-and-mark.
-;;       2009-08-21 Remove all cl stuff (list*, loop, etc.).  Add *-remove-if(-not).
-;;                  Remove compile-time require of cl.
-;;                  Add predicates *-(region|gnus|w3m|info|(remote-|local-)file)-bookmark-p.
-;;                  Redefine alist-only functions to optimize and use new preds.
-;;       2009-08-20 *--jump-via: Fix to show relocated region before ask whether to save.
-;;                  *-relocate-region: Fix ar-str.  Rename a var.  Add: *-region-activated-p.
-;;                  Revert chgs.
-;;       2009-08-19 Update/fix commentary: bookmark-alist, linkd.
-;;                  *-default-handler, *-handle-region-default:
-;;                    Get bmk record from name only once.
-;;                  *-save-new-region-location: Move t inside progn.
-;;       2009-08-16 Use prefix bookmarkp where appropriate.
-;;       2009-08-15 Improve comments, doc strings.  Rename fns, vars.
-;;                  Add :group with prefix bookmarkp.
-;;       2009-08-09 Fix doc strings.
-;;       2009-08-08 bookmark-set: Update doc string.  Show keys in C-h m.
-;;       2009-08-07 *-jump: Fix to jump in same window (thx to Henry Atting).
-;;                  *-at-bol/eol' -> line-*-position.
-;;       2009-08-01 bookmark-store: Fix for Emacs 20.
-;;       2009-07-27 Ensure we start on an empty w3m buffer.  Add: *-w3m-allow-multi-tabs.
-;;       2009-07-24 *-bmenu-mode-map: Define some new keys.
-;;       2009-07-23 *-bmenu-list: Add path to file in help-echo.
-;;       2009-07-19 Fix title underline.  Highlight bookmark if root logged with tramp.
-;;                  Add face for sudo.
-;;       2009-07-18 Add: filter functions, option for bookmark-bmenu-list.
-;;                  Remove toggle region.
-;;                  *-bmenu-list-only-files-entries: Add prefix arg to show remote.
-;;       2009-07-14 Add a forgotten test.
-;;       2009-07-13 Fix errors.  Give pos in msg even if no search.
-;;                  *-from-bob/eob: Fixed like old strict.
-;;                  Remove *-relocate-region-(method|from-limits).
-;;                  Remove unused code in record fns.  Add: *-relocate-region-function.
-;;       2009-07-12 Do not pass args to relocation routines.  Remove use of flet.
-;;                  Use skip-chars-*ward.  Use forward-line, not beginning-of-line.
-;;                  Remove save-excursion around message.  Correct typo f(ree var BMK).
-;;       2009-07-11 Fix *-relocate-region-strict.  Rename fns, adjust defcustom.
-;;                  Save relocated region after pushing mark.  Add comments.
-;;       2009-07-10 New retrieve fn.  Add looking-* fns.
-;;       2009-07-08 Simplify record fns.  Add doc strings.  Add: *-save-relocated-position.
-;;                  Fix: updating when relocate (wrt new record fns), string closing,
-;;                       free vars, parens, names.
-;;       2009-07-06 Fix: *-bmenu-list wrt windows, Info colors.
-;;       2009-07-04 Rename fns to record, vars, args of retrieve fns.  Big changes, fixes.
-;;       2009-07-01 Fix comments.  *-retrieve-region-strict: improve when out of context.
-;;       2009-06-30 Fix: free vars, *-retrieve-region, provide (name).
-;;       2009-06-29 Fix: w3m handler, file name for non-file, *-simple-retrieve-position.
-;;                  Add: *-retrieve-region-strict.
-;;       2009-06-28 Add: *-retrieve-region-method-is, *-retrieve-region-lax,
-;;                       fns to retrieve regions.
-;;                  Use buffer again, not buffer-name.
-;;       2009-06-27 Fix wrong-type error no such file.  Renamed faces.  Add: *-prop-set.
-;;                  Load gnus at compile time.  Protect tramp-file-name-regexp with boundp.
-;;       2009-06-25 Fixes for older Emacs compatibility.
-;;       2009-06-24 Improve *-default-handler.
-;;                  Add: *-always-save-relocated-position, *-prop-get.
-;;       2009-06-23 Use search-regexp, not re-search-regexp.  Add Gnus bmks.  Add doc.
-;;                  Fix *-bmenu-list.
-;;       2009-06-21 Fix: *-default-handler for Info.  Improve doc strings, commentary.
-;;                  Fixes to be compatible with Emacs 20-22.
-;;                  Use defcustom for *-list-only-regions-flag.
-;;                  *jump: Put prefix arg in interactive spec.  Use buffer-name, not buffer.
-;;                  Remove require of Tramp and inline Tramp fns.
-;;                  Remove tests for display-(color|mouse)-p.
-;;                  w3m-bookmark-(jump|make-record): require w3m.
-;;       2009-06-20 Update context strings when relocate.
-;;                  Fix: bookmark-get-*: search from point-min.
-;;       2009-06-19 Fix: *-make-record-default, *-toggle-use-only-regions, *-default-handler,
-;;                       bookmarking Dired.
-;;                  Handle 4 positions in *-default-handler.
-;;       2009-06-17 Fix: case where some bookmarked text was removed, *-use-region.
-;;       2009-06-15 Fix *-region-alist-only, *-get-buffername, *-location,
-;;                      non-file (buffer) bookmarks.
-;;                  Support w3m similar to Info.
-;;       2009-06-14 Fix bookmark+version, region relocation.  Info support.  Error handling.
-;;       2009-06-13 Fix: *-list-only-regions, *-region-handler, *-make-record, keymap, faces.
-;;                  Put region & info handling in *-default-handler, not separate handlers.
-;;                  Merge *-make-record-region to *-make-record-default.
-;;                  *-jump now negates *-use-region if prefix arg.  Raise error if bad bmk.
-;;       2009-06-12 Add: *-get-endposition, *-region-alist-only-names.
-;;                  Add filter to show only region bookmarks.
-;;                  Faces for menu list.  Change region color.
-;;       2009-06-11 Add: *-region-search-size, *-get-buffername, *-use-region.
-;;                  Redefine *-handle-bookmark, *-jump, to fit bookmark-use-region.
-;;                  Add condtions to bookmark-make-record.  Support w3m.  Support t command.
-;;       2009-06-10 Fix search regexp.  Fix region in Info. Save bookmark if region moves.
-;;       2009-06-09 Added: bookmark-make-record(-region), bookmark-region-handler.
-;;                  Relocation.
-;; 2009/05/25 dadams
-;;     Added redefinition of bookmark-get-bookmark-record.
-;; 2008/10/16 dadams
-;;     bookmark-jump-other-window: Don't define it for Emacs 23+ (not needed).
-;; 2008/04/04 dadams
-;;     bookmark-jump-other-window: Updated wrt Emacs 22.2.
-;; 2007/10/07 dadams
-;;     Added: bookmark-completing-read, bookmark-delete, bookmark-insert(-location),
-;;            bookmark-jump, bookmark-relocate, bookmark-rename.
-;;     bookmark-jump-other-window: Use new bookmark-completing-read.
-;; 2007/07/13 dadams
-;;     Replaced Emacs version tests to reflect Emacs 22 release.
-;; 2006/03/08 dadams
-;;     bookmark-jump-other-window: Handle nil arg.
-;; 2005/05/17 dadams
-;;     Updated to work with Emacs 22.x.
-;; 2004/11/20 dadams
-;;     Refined to deal with Emacs 21 < 21.3.50 (soon to be 22.x)
-;; 2004/10/26 dadams
-;;     Different menu-bar command, depending on Emacs version.
-;; 2004/09/21 dadams
-;;     Only define bookmark-menu-jump-other-window if < Emacs 22.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
