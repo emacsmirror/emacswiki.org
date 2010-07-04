@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Jul  2 08:39:41 2010 (-0700)
+;; Last-Updated: Sat Jul  3 08:37:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 563
+;;     Update #: 574
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -385,7 +385,8 @@ You are prompted for the highlight style, face, and condition (when)."
   (interactive (append (bmkp-read-set-lighting-args) '(MSG)))
   (bmkp-barf-if-not-in-menu-list)
   (when msgp (message "Setting highlighting..."))
-  (let ((marked  (bmkp-marked-bookmarks-only)))
+  (let ((marked    (bmkp-marked-bookmarks-only))
+        (curr-bmk  (bookmark-bmenu-bookmark)))
     (unless marked (error "No marked bookmarks"))
     (dolist (bmk  marked)
       (if (or face style when)
@@ -393,8 +394,8 @@ You are prompted for the highlight style, face, and condition (when)."
                              `(,@(and face  (not (eq face 'auto))  `(:face ,face))
                                ,@(and style (not (eq style 'none)) `(:style ,style))
                                ,@(and when  (not (eq when 'auto))  `(:when ,when))))
-        (bookmark-prop-set bmk 'lighting nil))))
-  (bookmark-bmenu-surreptitiously-rebuild-list)
+        (bookmark-prop-set bmk 'lighting nil)))
+    (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list curr-bmk)))
   (when msgp (message "Setting highlighting...done")))
 
 
@@ -548,8 +549,8 @@ Prefix arg, unhighlight them everywhere."
   (bmkp-unlight-bookmarks))
 
 ;;;###autoload
-(defun bmkp-set-lighting-for-bookmark (bookmark style face when &optional msgp)
-  "Set the `lighting' property for BOOKMARK.
+(defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp)
+  "Set the `lighting' property for bookmark BOOKMARK-NAME.
 You are prompted for the bookmark, highlight style, face, and condition."
   (interactive
    (let* ((bmk        (bookmark-completing-read "Highlight bookmark"
@@ -565,11 +566,12 @@ You are prompted for the bookmark, highlight style, face, and condition."
                        '(MSG)))))
   (when msgp (message "Setting highlighting..."))
   (if (or face style when)
-      (bookmark-prop-set bookmark 'lighting `(,@(and face  (not (eq face 'auto))  `(:face ,face))
-                                              ,@(and style (not (eq style 'none)) `(:style ,style))
-                                              ,@(and when  (not (eq when 'auto))  `(:when ,when))))
-    (bookmark-prop-set bookmark 'lighting nil))
-  (bookmark-bmenu-surreptitiously-rebuild-list)
+      (bookmark-prop-set bookmark-name
+                         'lighting `(,@(and face  (not (eq face 'auto))  `(:face ,face))
+                                     ,@(and style (not (eq style 'none)) `(:style ,style))
+                                     ,@(and when  (not (eq when 'auto))  `(:when ,when))))
+    (bookmark-prop-set bookmark-name 'lighting nil))
+  (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list bookmark-name))
   (when msgp (message "Setting highlighting...done")))
 
 ;;;###autoload

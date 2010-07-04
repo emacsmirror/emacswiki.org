@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul  1 20:55:27 2010 (-0700)
+;; Last-Updated: Sat Jul  3 14:29:41 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14600
+;;     Update #: 14663
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -134,7 +134,7 @@
 ;;    `bmkp-bmenu-define-command',
 ;;    `bmkp-bmenu-define-full-snapshot-command',
 ;;    `bmkp-bmenu-define-jump-marked-command',
-;;    `bmkp-bmenu-delete-marked',
+;;    `bmkp-bmenu-delete-marked', `bmkp-bmenu-describe-marked',
 ;;    `bmkp-bmenu-describe-this+move-down',
 ;;    `bmkp-bmenu-describe-this+move-up',
 ;;    `bmkp-bmenu-describe-this-bookmark',`bmkp-bmenu-dired-marked',
@@ -319,8 +319,8 @@
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-all/none',
 ;;    `bmkp-bmenu-mark/unmark-bookmarks-tagged-some/not-all',
 ;;    `bmkp-bmenu-propertize-item', `bmkp-bmenu-read-filter-input',
-;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-last-access-cp',
-;;    `bmkp-bookmark-list-alist-only',
+;;    `bmkp-bookmark-creation-cp', `bmkp-bookmark-description',
+;;    `bmkp-bookmark-last-access-cp', `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-buffer-last-access-cp',
 ;;    `bmkp-buffer-names', `bmkp-completing-read-1',
 ;;    `bmkp-completing-read-buffer-name',
@@ -562,6 +562,8 @@
 (defvar Info-mode-menu)                 ; Defined in `info.el'.
 (defvar Man-arguments)                  ; Defined in `man.el'.
 (defvar Man-mode-map)                   ; Defined in `man.el'.
+;;; (defvar mouse-wheel-down-event)         ; Defined in `mwheel.el'.
+;;; (defvar mouse-wheel-up-event)           ; Defined in `mwheel.el'.
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+.
 (defvar last-repeatable-command)        ; Defined in `repeat.el'.
 (defvar repeat-last-self-insert)        ; Defined in `repeat.el'.
@@ -571,15 +573,15 @@
 (defvar repeat-previous-repeated-command) ; Defined in `repeat.el'.
 (defvar repeat-too-dangerous)           ; Defined in `repeat.el'.
 (defvar repeat-undo-count)              ; Defined in `repeat.el'.
-(defvar woman-last-file-name)           ; Defined in `woman.el'.
-(defvar woman-menu)                     ; Defined in `woman.el'.
-(defvar woman-mode-map)                 ; Defined in `woman.el'.
 (defvar tramp-file-name-regexp)         ; Defined in `tramp.el'.
 (defvar w3m-current-title)              ; Defined in `w3m.el'.
 (defvar w3m-current-url)                ; Defined in `w3m.el'.
 (defvar w3m-minor-mode-map)             ; Defined in `w3m.el'.
 (defvar w3m-mode-map)                   ; Defined in `w3m.el'.
 (defvar wide-n-restrictions)            ; Defined in `wide-n.el'.
+(defvar woman-last-file-name)           ; Defined in `woman.el'.
+(defvar woman-menu)                     ; Defined in `woman.el'.
+(defvar woman-mode-map)                 ; Defined in `woman.el'.
  
 ;;(@* "Macros")
 ;;; Macros -----------------------------------------------------------
@@ -1409,17 +1411,31 @@ except for the following differences.
 2. The buffer name is recorded, using entry `buffer-name'.  It need
 not be associated with a file.
 
-3. Bookmarks can be tagged by users.  The tag information is recorded
+3. If no file is associated with the bookmark, then FILENAME is
+   `   - no file -'.
+
+4. Bookmarks can be tagged by users.  The tag information is recorded
 using entry `tags':
 
  (tags . TAGS-ALIST)
 
- TAGS-ALIST is an alist with string keys. 
+ TAGS-ALIST is an alist with string keys.
 
-4. If no file is associated with the bookmark, then FILENAME is
-   `   - no file -'.
+5. Bookmarks can have individual highlighting, provided by users.
+This overrides any default highlighting.
 
-5. The following additional entries are used to record region
+ (lighting . HIGHLIGHTING)
+
+ HIGHLIGHTING is a property list that contain any of these keyword
+ pairs:
+
+   `:style' - Highlighting style.  Cdrs of `bmkp-light-styles-alist'
+              entries are the possible values.
+   `:face'  - Highlighting face, a symbol.
+   `:when'  - A sexp to be evaluated.  Return value of `:no-light'
+              means do not highlight.
+
+6. The following additional entries are used to record region
 information.  When a region is bookmarked, POS represents the region
 start position.
 
@@ -1440,7 +1456,7 @@ bookmarked.
  `front-context-string' is the text that *follows* `position', but
  `front-context-region-string' *precedes* `end-position'.
 
-6. The following additional entries are used for a Dired bookmark.
+7. The following additional entries are used for a Dired bookmark.
 
  (dired-marked . MARKED-FILES)
  (dired-switches . SWITCHES)
@@ -1448,7 +1464,7 @@ bookmarked.
  MARKED-FILES is the list of files that were marked.
  SWITCHES is the string of `dired-listing-switches'.
 
-7. The following additional entries are used for a Gnus bookmark.
+8. The following additional entries are used for a Gnus bookmark.
 
  (group . GNUS-GROUP-NAME)
  (article . GNUS-ARTICLE-NUMBER)
@@ -1458,20 +1474,20 @@ bookmarked.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-8. For a W3M bookmark, FILENAME is a W3M URL.
+9. For a W3M bookmark, FILENAME is a W3M URL.
 
-9. A sequence bookmark has this additional entry:
+10. A sequence bookmark has this additional entry:
 
  (sequence . COMPONENT-BOOKMARKS)
 
  COMPONENT-BOOKMARKS is the list of component bookmark names.
 
-10. A function bookmark has this additional entry, which records the
+11. A function bookmark has this additional entry, which records the
 FUNCTION:
 
  (function . FUNCTION)
 
-11. A bookmark-list bookmark has this additional entry, which records
+12. A bookmark-list bookmark has this additional entry, which records
 the state of buffer `*Bookmark List*' at the time it is created:
 
  (bookmark-list . STATE)
@@ -3506,8 +3522,7 @@ If you want setting a bookmark to refresh the list automatically, you
 can use command `bmkp-toggle-bookmark-set-refreshes'."
   (interactive)
   (bmkp-barf-if-not-in-menu-list)
-  (let ((bmk-name  (bookmark-bmenu-bookmark)))
-    (bmkp-refresh-menu-list bmk-name)))
+  (bmkp-refresh-menu-list (bookmark-bmenu-bookmark)))
 
 (defun bmkp-refresh-menu-list (&optional bookmark)
   "Refresh (revert) the bookmark list (\"menu list\").
@@ -6655,94 +6670,116 @@ With a prefix argument, show the internal definition of the bookmark."
     (bmkp-describe-bookmark (bookmark-bmenu-bookmark))))
 
 ;;;###autoload
+(defun bmkp-bmenu-describe-marked (&optional defn) ; `C-h >' in bookmark list
+  "Describe the marked bookmarks.
+With a prefix argument, show the internal definitions."
+  (interactive "P")
+  (bmkp-barf-if-not-in-menu-list)
+  (help-setup-xref (list #'bmkp-describe-bookmark-marked) (interactive-p))
+  (with-output-to-temp-buffer "*Help*"
+    (dolist (bmk  (bmkp-marked-bookmarks-only))
+      (if defn
+          (let* ((bname      (bookmark-name-from-full-record bmk))
+                 (help-text  (format "%s\n%s\n\n%s" bname (make-string (length bname) ?-)
+                                     (pp-to-string bmk))))
+            (princ help-text) (terpri))
+        (princ (bmkp-bookmark-description bmk)) (terpri)))))
+
+;;;###autoload
 (defun bmkp-describe-bookmark (bookmark &optional defn)
   "Describe BOOKMARK.
 With a prefix argument, show the internal definition of the bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
-  (interactive
-   (list (bookmark-completing-read "Describe bookmark" (bmkp-default-bookmark-name))
-         current-prefix-arg))
+  (interactive (list (bookmark-completing-read "Describe bookmark" (bmkp-default-bookmark-name))
+                     current-prefix-arg))
   (if defn
       (bmkp-describe-bookmark-internals bookmark)
     (setq bookmark     (bookmark-get-bookmark bookmark))
-    (let ((bname       (bookmark-name-from-full-record bookmark))
-          (buf         (bmkp-get-buffer-name bookmark))
-          (file        (bookmark-get-filename bookmark))
-          (start       (bookmark-get-position bookmark))
-          (end         (bmkp-get-end-position bookmark))
-          (created     (bookmark-prop-get bookmark 'created))
-          (time        (bmkp-get-visit-time bookmark))
-          (visits      (bmkp-get-visits-count bookmark))
-          (tags        (mapcar #'bmkp-tag-name (bmkp-get-tags bookmark)))
-          (sequence-p  (bmkp-sequence-bookmark-p bookmark))
-          (function-p  (bmkp-function-bookmark-p bookmark))
-          (varlist-p   (bmkp-varlist-bookmark-p bookmark))
-          (desktop-p   (bmkp-desktop-bookmark-p bookmark))
-          (dired-p     (bmkp-dired-bookmark-p bookmark))
-          (gnus-p      (bmkp-gnus-bookmark-p bookmark))
-          (info-p      (bmkp-info-bookmark-p bookmark))
-          (man-p       (bmkp-man-bookmark-p bookmark))
-          (w3m-p       (bmkp-w3m-bookmark-p bookmark))
-          (annot       (bookmark-get-annotation bookmark))
-          no-position-p)
-      (when (or sequence-p function-p varlist-p) (setq no-position-p  t))
-      (help-setup-xref (list #'bmkp-describe-bookmark bookmark) (interactive-p))
-      (let* ((help-text
-              (concat
-               (format "%s\n%s\n\n" bname (make-string (length bname) ?-))
-               (cond (sequence-p  (format "Sequence:\n%s\n"
-                                          (pp-to-string
-                                           (bookmark-prop-get bookmark 'sequence))))
-                     (function-p  (let ((fn  (bookmark-prop-get bookmark 'function)))
-                                    (if (symbolp fn)
-                                        (format "Function:\t\t%s\n" fn)
-                                      (format "Function:\n%s\n"
-                                              (pp-to-string
-                                               (bookmark-prop-get bookmark 'function))))))
-                     (varlist-p   (format "Variable list:\n%s\n"
-                                          (pp-to-string (bookmark-prop-get bookmark 'variables))))
-                     (gnus-p      (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
-                                          (bookmark-prop-get bookmark 'group)
-                                          (bookmark-prop-get bookmark 'article)
-                                          (bookmark-prop-get bookmark 'message-id)))
-                     (man-p       (format "UNIX `man' page for:\t`%s'\n"
-                                          (or (bookmark-prop-get bookmark 'man-args)
-                                              ;; WoMan has no variable for the cmd name.
-                                              (bookmark-prop-get bookmark 'buffer-name))))
-                     (info-p      (format "Info node:\t\t(%s) %s\n"
-                                          (file-name-nondirectory file)
-                                          (bookmark-prop-get bookmark 'info-node)))
-                     (w3m-p       (format "W3M URL:\t\t%s\n" file))
-                     (desktop-p   (format "Desktop file:\t\t%s\n"
-                                          (bookmark-prop-get bookmark 'desktop-file)))
-                     (dired-p     (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
-                                        (marked    (length (bookmark-prop-get bookmark
-                                                                              'dired-marked)))
-                                        (inserted  (length (bookmark-prop-get bookmark
-                                                                              'dired-subdirs)))
-                                        (hidden    (length (bookmark-prop-get bookmark
-                                                                              'dired-hidden-dirs))))
-                                    (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
+    (help-setup-xref (list #'bmkp-describe-bookmark bookmark) (interactive-p))
+    (let ((help-text  (bmkp-bookmark-description bookmark)))
+      (with-output-to-temp-buffer "*Help*" (princ help-text))
+      help-text)))
+
+(defun bmkp-bookmark-description (bookmark)
+  "Help-text description of BOOKMARK.
+BOOKMARK is a bookmark name or a bookmark record."
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (let ((bname       (bookmark-name-from-full-record bookmark))
+        (buf         (bmkp-get-buffer-name bookmark))
+        (file        (bookmark-get-filename bookmark))
+        (start       (bookmark-get-position bookmark))
+        (end         (bmkp-get-end-position bookmark))
+        (created     (bookmark-prop-get bookmark 'created))
+        (time        (bmkp-get-visit-time bookmark))
+        (visits      (bmkp-get-visits-count bookmark))
+        (tags        (mapcar #'bmkp-tag-name (bmkp-get-tags bookmark)))
+        (sequence-p  (bmkp-sequence-bookmark-p bookmark))
+        (function-p  (bmkp-function-bookmark-p bookmark))
+        (varlist-p   (bmkp-varlist-bookmark-p bookmark))
+        (desktop-p   (bmkp-desktop-bookmark-p bookmark))
+        (dired-p     (bmkp-dired-bookmark-p bookmark))
+        (gnus-p      (bmkp-gnus-bookmark-p bookmark))
+        (info-p      (bmkp-info-bookmark-p bookmark))
+        (man-p       (bmkp-man-bookmark-p bookmark))
+        (w3m-p       (bmkp-w3m-bookmark-p bookmark))
+        (annot       (bookmark-get-annotation bookmark))
+        no-position-p)
+    (when (or sequence-p function-p varlist-p) (setq no-position-p  t))
+    (let* ((help-text
+            (concat
+             (format "%s\n%s\n\n" bname (make-string (length bname) ?-))
+             (cond (sequence-p  (format "Sequence:\n%s\n"
+                                        (pp-to-string
+                                         (bookmark-prop-get bookmark 'sequence))))
+                   (function-p  (let ((fn  (bookmark-prop-get bookmark 'function)))
+                                  (if (symbolp fn)
+                                      (format "Function:\t\t%s\n" fn)
+                                    (format "Function:\n%s\n"
+                                            (pp-to-string
+                                             (bookmark-prop-get bookmark 'function))))))
+                   (varlist-p   (format "Variable list:\n%s\n"
+                                        (pp-to-string (bookmark-prop-get bookmark 'variables))))
+                   (gnus-p      (format "Gnus, group:\t\t%s, article: %s, message-id: %s\n"
+                                        (bookmark-prop-get bookmark 'group)
+                                        (bookmark-prop-get bookmark 'article)
+                                        (bookmark-prop-get bookmark 'message-id)))
+                   (man-p       (format "UNIX `man' page for:\t`%s'\n"
+                                        (or (bookmark-prop-get bookmark 'man-args)
+                                            ;; WoMan has no variable for the cmd name.
+                                            (bookmark-prop-get bookmark 'buffer-name))))
+                   (info-p      (format "Info node:\t\t(%s) %s\n"
+                                        (file-name-nondirectory file)
+                                        (bookmark-prop-get bookmark 'info-node)))
+                   (w3m-p       (format "W3M URL:\t\t%s\n" file))
+                   (desktop-p   (format "Desktop file:\t\t%s\n"
+                                        (bookmark-prop-get bookmark 'desktop-file)))
+                   (dired-p     (let ((switches  (bookmark-prop-get bookmark 'dired-switches))
+                                      (marked    (length (bookmark-prop-get bookmark
+                                                                            'dired-marked)))
+                                      (inserted  (length (bookmark-prop-get bookmark
+                                                                            'dired-subdirs)))
+                                      (hidden    (length (bookmark-prop-get bookmark
+                                                                            'dired-hidden-dirs))))
+                                  (format "Dired%s:%s\t\t%s\nMarked:\t\t\t%s\n\
 Inserted subdirs:\t%s\nHidden subdirs:\t\t%s\n"
-                                            (if switches (format " `%s'" switches) "")
-                                            (if switches "" (format "\t"))
-                                            (expand-file-name file)
-                                            marked inserted hidden)))
-                     ((equal file bmkp-non-file-filename)
-                      (format "Buffer:\t\t\t%s\n" (bmkp-get-buffer-name bookmark)))
-                     (file        (format "File:\t\t\t%s\n" (expand-file-name file)))
-                     (t           "Unknown\n"))
-               (unless no-position-p
-                 (if (bmkp-region-bookmark-p bookmark)
-                     (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
-                   (format "Position:\t\t%d\n" start)))
-               (if visits  (format "Visits:\t\t\t%d\n" visits) "")
-               (if time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)) "")
-               (if created (format "Creation:\t\t%s\n" (format-time-string "%c" created)) "")
-               (if tags    (format "Tags:\t\t\t%S\n" tags) "")
-               (if annot   (format "\nAnnotation:\n%s" annot)))))
-        (with-output-to-temp-buffer "*Help*" (princ help-text))
-        help-text))))
+                                          (if switches (format " `%s'" switches) "")
+                                          (if switches "" (format "\t"))
+                                          (expand-file-name file)
+                                          marked inserted hidden)))
+                   ((equal file bmkp-non-file-filename)
+                    (format "Buffer:\t\t\t%s\n" (bmkp-get-buffer-name bookmark)))
+                   (file        (format "File:\t\t\t%s\n" (expand-file-name file)))
+                   (t           "Unknown\n"))
+             (unless no-position-p
+               (if (bmkp-region-bookmark-p bookmark)
+                   (format "Region:\t\t\t%d to %d (%d chars)\n" start end (- end start))
+                 (format "Position:\t\t%d\n" start)))
+             (if visits  (format "Visits:\t\t\t%d\n" visits) "")
+             (if time    (format "Last visit:\t\t%s\n" (format-time-string "%c" time)) "")
+             (if created (format "Creation:\t\t%s\n" (format-time-string "%c" created)) "")
+             (if tags    (format "Tags:\t\t\t%S\n" tags) "")
+             (if annot   (format "\nAnnotation:\n%s" annot)))))
+      help-text)))
 
 ;;;###autoload
 (defun bmkp-describe-bookmark-internals (bookmark)
@@ -8510,9 +8547,21 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   (define-key bookmark-map [down]       'bmkp-next-bookmark-this-buffer-repeat)
   (define-key bookmark-map "n"          'bmkp-next-bookmark-this-buffer-repeat)
   (define-key bookmark-map "\C-n"       'bmkp-next-bookmark-this-buffer-repeat)
+
+  ;; This will have to wait for the fix I provided for Emacs bug #6542.
+  ;; Until then, you can at least bind the wheel event to `bmkp-next-bookmark-this-buffer'
+  ;; in the global map.  IOW, for now a mouse event won't work with `repeat'.
+  ;;   (define-key bookmark-map (vector (list mouse-wheel-up-event))
+  ;;     'bmkp-next-bookmark-this-buffer-repeat)
   (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-buffer-repeat)
   (define-key bookmark-map "p"          'bmkp-previous-bookmark-this-buffer-repeat)
   (define-key bookmark-map "\C-p"       'bmkp-previous-bookmark-this-buffer-repeat)
+
+  ;; This will have to wait for the fix I provided for Emacs bug #6542.
+  ;; Until then, you can at least bind the wheel event to `bmkp-previous-bookmark-this-buffer'
+  ;; in the global map.  IOW, for now a mouse event won't work with `repeat'.
+  ;;   (define-key bookmark-map (vector (list mouse-wheel-down-event))
+  ;;     'bmkp-previous-bookmark-this-buffer-repeat)
   (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat)
   (define-key bookmark-map "f"          'bmkp-next-bookmark-repeat)
   (define-key bookmark-map "\C-f"       'bmkp-next-bookmark-repeat)
@@ -8603,6 +8652,8 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   ;; In Emacs < 22, the `substitute-...' affects only `?', not `C-h m', so we add it separately.
   (substitute-key-definition 'describe-mode 'bmkp-bmenu-mode-status-help bookmark-bmenu-mode-map)
   (define-key bookmark-bmenu-mode-map "\C-hm"              'bmkp-bmenu-mode-status-help))
+;;;###autoload
+(define-key bookmark-bmenu-mode-map (kbd "C-h >")          'bmkp-bmenu-describe-marked)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h RET")        'bmkp-bmenu-describe-this-bookmark)
 ;;;###autoload
@@ -8998,6 +9049,7 @@ Help (Describe)
 internal form)
 \\[bmkp-bmenu-describe-this+move-down]\t- Show the info, then move to next bookmark
 \\[bmkp-bmenu-describe-this+move-up]\t- Show the info, then move to previous bookmark
+\\[bmkp-bmenu-describe-marked]\t- Show info about the marked bookmarks (`C-u': internal form)
 \\[bookmark-bmenu-locate]\t- Show the location of this bookmark in the minibuffer
 \\[bookmark-bmenu-show-annotation]\t- Show this bookmark's annotation
 \\[bookmark-bmenu-show-all-annotations]\t- Show the annotations of all annotated bookmarks
@@ -9595,6 +9647,12 @@ bmkp-use-region             - Activate saved region when visit?"
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-quit]
   '(menu-item "Quit" bmkp-bmenu-quit
     :help "Quit the bookmark list, saving its state and the current set of bookmarks"))
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-describe-marked]
+  '(menu-item "Describe Marked Bookmarks" bmkp-bmenu-describe-marked
+    :help "Describe the marked bookmarks.  With `C-u' show internal format."))
+(define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-describe-this-bookmark]
+  '(menu-item "Describe This Bookmark" bmkp-bmenu-describe-this-bookmark
+    :help "Describe this line's bookmark.  With `C-u' show internal format."))
 (define-key bmkp-bmenu-menubar-menu [bmkp-bmenu-mode-status-help]
   '(menu-item "Current Status, Mode Help" bmkp-bmenu-mode-status-help :keys "?"
     :help "Describe `*Bookmark List*' and show its current status"))

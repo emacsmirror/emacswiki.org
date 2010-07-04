@@ -53,8 +53,42 @@ Fri Jul 2 17:43:42 2010
 Apache/2.2.9 (Debian) DAV/2 SVN/1.5.1 mod_jk/1.2.26 mod_ssl/2.2.9 OpenSSL/0.9.8g mod_wsgi/2.5 Python/2.5.2 
 </pre>
 
+[new]
+Hm, whatever it is, it must be rather rare. The two last logfiles spanning the time from ##02/Jul/2010:06:35:16 +0200## to ##03/Jul/2010:12:38:42 +0200## have 448/80193 code 500 responses. They seem to happen on a regular basis:
 
+{{{
+aschroeder@thinkmo:~$ grep " 500 "< logs/access.log < logs/access.log.1|bin/time-grouping
+      03/Jul/2010:06         26     5%
+      03/Jul/2010:05         14     3%
+      03/Jul/2010:04         25     5%
+      03/Jul/2010:03         30     6%
+      03/Jul/2010:02         10     2%
+      03/Jul/2010:01         12     2%
+      03/Jul/2010:00         21     4%
+      02/Jul/2010:23         25     5%
+      02/Jul/2010:22         14     3%
+      02/Jul/2010:21         26     5%
+      02/Jul/2010:20         23     5%
+      02/Jul/2010:19         12     2%
+      02/Jul/2010:18          9     2%
+      02/Jul/2010:17         23     5%
+      02/Jul/2010:16         27     6%
+      02/Jul/2010:15         12     2%
+      02/Jul/2010:14         21     4%
+      02/Jul/2010:13          7     1%
+      02/Jul/2010:12         17     3%
+      02/Jul/2010:11          4     0%
+      02/Jul/2010:10         23     5%
+      02/Jul/2010:09         18     4%
+      02/Jul/2010:08         15     3%
+      02/Jul/2010:07         31     6%
+      02/Jul/2010:06          3     0%
+}}}
 
+I can't see any pattern in that... I'll keep an eye open. -- Alex
+
+[new:DrewAdams:2010-07-04 04:37 UTC]
+FYI -- It just happened to me again.  (I won't bother to signal it again, though.) -- DrewAdams
 
 
 == Conflict from my own edit 25 minutes ago? ==

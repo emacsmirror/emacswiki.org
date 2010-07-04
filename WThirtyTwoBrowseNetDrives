@@ -70,7 +70,29 @@ the rest of the cells might be different.
       (shell-command "net use"))
 </pre>
 
+----
 
+Call netdir at the root of a drive when going up; for example, with Emacs 23.2's dired.el:
 
+<pre>
+(defun dired-up-directory (&optional other-window)
+    "Run Dired on parent directory of current directory.
+Find the parent directory either in this buffer or another buffer.
+Creates a buffer if necessary."
+    (interactive "P")
+    (let* ((dir (dired-current-directory))
+	   (up (file-name-directory (directory-file-name dir))))
+      (or (dired-goto-file (directory-file-name dir))
+	  ;; Only try dired-goto-subdir if buffer has more than one dir.
+	  (and (cdr dired-subdir-alist)
+	       (dired-goto-subdir up))
+	  (progn
+	    (if other-window
+		(dired-other-window up)
+	      (dired up))
+	    (dired-goto-file dir))
+	  (netdir)))) ;; Get list of drives
+</pre>
 ----
 CategoryWThirtyTwo
+

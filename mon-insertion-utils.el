@@ -34,8 +34,8 @@
 ;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-whitespace',
 ;; `mon-insert-newlines', `mon-insert-defclass-template',
 ;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template',
-;; `mon-insert-CL-file-template', `mon-insert-CL-package-template',
-;; `mon-insert-lisp-CL-mode-line-template',
+;; `mon-insert-CL-file-template', `mon-insert-lisp-CL-package-template',
+;; `mon-insert-lisp-CL-mode-line-template', `mon-lisp-CL-package-complete'
 ;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
 ;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' ,
 ;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45',
@@ -62,6 +62,11 @@
 ;; `mon-comment-divider->col'            -> `mon-comment-divider-to-col'
 ;; `bug-insert-copyright'                -> `mon-insert-copyright'
 ;; `mon-insert-doc-xref-eg'              -> `mon-insert-lisp-doc-eg-xref'
+;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
+;; `mon-CL-package-complete'             -> `mon-lisp-CL-package-complete'
+;; `mon-insert-CL-mode-line-template'    -> `mon-insert-lisp-CL-mode-line-template'
+;; `mon-insert-CL-file-template'         -> `mon-insert-lisp-CL-file-template'
+;; `mon-insert-CL-package-template'      -> `mon-insert-lisp-CL-package-template'
 ;;
 ;; RENAMED:
 ;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
@@ -73,6 +78,8 @@
 ;; `mon-insert-numbers-padded'           -> `mon-string-incr-padded'
 ;; `mon-insert-wht-spc'                  -> `mon-insert-whitespace'
 ;; `mon-comment-divider'                 -> `comment-divider'
+;; `mon-insert-lisp-package-template'    -> `mon-insert-lisp-CL-package-template'
+;; `mon-insert-CL-mode-line-template'    -> `mon-insert-lisp-CL-mode-line-template'
 ;;
 ;; RENAMED-AND-MOVED:
 ;; Following moved to `mon-doc-help-utils.el' and renamed *insert* -> *Help*
@@ -515,7 +522,7 @@ When PADP is non-nil or called-interactively with prefix arg, pad all numbers
 with sufficient leading zeros so they are the same width.\n
 When INSRTP is non-nil or called-interactively insert current-buffer.
 Does not move point.\n
-:EXAMPLE\n\(mon-string-incr-padded 88 120 1\)\n
+:EXAMPLE\n\n\(mon-string-incr-padded 88 120 1\)\n
 :SEE-ALSO `mon-string-incr',`mon-line-number-region', `mon-line-number-region-incr', 
 `mon-rectangle-sum-column', `mon-string-justify-left', `mon-line-indent-from-to-col'.\n►►►"
   (interactive "nSTART-NUM: \nnEND-NUM: \nP\ni\np")
@@ -887,7 +894,7 @@ Does not move point.\n\n:EXAMPLE\n\n(split-designator\)\n\n
 (defun mon-comment-divider (&optional no-insrtp intrp)
   "Insert default comment divider at point.\n
 When called-interactively insert the following at point:\n
- ;;; ==============================\n
+;;; ==============================\n
 When NO-INSRTP is non-nil return comment divider as string.\n
 :EXAMPLE\n\(mon-comment-divider t\)\n
 :ALIASED-BY `comment-divider'.\n
@@ -908,9 +915,9 @@ When NO-INSRTP is non-nil return comment divider as string.\n
 ;;; :TEST-ME (call-interactively 'mon-comment-divider)
 
 ;;; ==============================
-;; :TODO In lieu of the refactoring of `mon-comment-divider' functions 
+;;; :TODO In lieu of the refactoring of `mon-comment-divider' functions 
 ;;; E.g. `*mon-default-comment-start*', `mon-comment-divider-w-len' 
-;;; `*mon-default-comment-divider*', etc. some of this funcs subrs can be
+;;; `*mon-default-comment-divider*', etc. some of this fncns routines may be
 ;;; formulated differently and/or ommitted. For example, the local var `dvdr'
 ;;; can now rebind temporarily `*mon-default-comment-start*' i.e.:
 ;;; (let ((*mon-default-comment-start* "%% "))
@@ -1025,6 +1032,7 @@ implementation.\n
 COL-N is a prefix arg. When region is active indent and comment content of region 
 to COL-N else indent and comment next line. Comment prefix is `;; '.
 To provide an alternative comment prefix use `mon-comment-divider-to-col'.\n
+:ALIASED-BY `mon-lisp-comment-to-col'\n
 :SEE-ALSO `mon-comment-divider', `*mon-default-comment-divider*'.
 `mon-line-strings-indent-to-col', `mon-line-indent-from-to-col', 
 `mon-line-strings-pipe-to-col', `mon-string-fill-to-col',
@@ -1035,6 +1043,9 @@ To provide an alternative comment prefix use `mon-comment-divider-to-col'.\n
         (line-move -1)
         (mon-comment-divider-to-col col-n nil nil nil nil t))
       (mon-comment-divider-to-col col-n nil nil nil nil t)))
+;;
+(defalias 'mon-lisp-comment-to-col 'mon-comment-lisp-to-col)
+
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-25T19:17:39-04:00Z}#{09352} - by MON KEY>
@@ -1191,55 +1202,99 @@ Yank it back from the kill-ring if that is what you want.\n
 (declare-function slime-current-connection "ext:slime.el" t t)
 (declare-function slime-current-package    "ext:slime.el" t t)
 (declare-function slime-buffer-package     "ext:slime.el" t t)
+
+;;; ==============================
+;;; :CHANGESET 1935 <Timestamp: #{2010-07-03T11:53:54-04:00Z}#{10266} - by MON KEY>
+;;; :CHANGESET 1921
+;;; :CREATED <Timestamp: #{2010-06-26T18:06:22-04:00Z}#{10256} - by MON KEY>
+(defun mon-lisp-CL-package-complete ()
+  "Helper function to complete a CL package name to insert.\n
+Attempts to build completions from value of `slime-buffer-package',
+`slime-current-connection', and return value of `swank:list-all-package-names'
+when `slime-current-connection' is non-nil.\n
+:EXAMPLE\n\n\(mon-lisp-CL-package-complete\)\n
+:ALIASED-BY `mon-CL-package-complete'\n
+:SEE-ALSO `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-package-template'.\n►►►"
+  (let ((pkg-cmplt (if (or (slime-current-connection)
+                           (buffer-local-value 'slime-mode (current-buffer)))
+                       `(,(or slime-buffer-package (slime-current-package))
+                         ,@(if (slime-current-connection)
+                               (slime-eval `(swank:list-all-package-names t))
+                             '("CL-USER")))
+                     '("CL-USER")))
+        (completion-ignore-case t)
+        pkg-cmpltd)
+    (setq pkg-cmpltd (completing-read "Which CL package name: " pkg-cmplt))
+    (if (or (null pkg-cmpltd)
+            (eq pkg-cmpltd t)
+            (<= (length (format "%s" pkg-cmpltd)) 1))
+        nil
+      (upcase pkg-cmpltd))))
+;;
+(defalias 'mon-CL-package-complete 'mon-lisp-CL-package-complete)
+;; 
+;;; :TEST-ME (mon-lisp-CL-package-complete)
+
 ;;; ==============================
 ;;; :CHANGESET 1917
 ;;; :CREATED <Timestamp: #{2010-06-26T16:28:00-04:00Z}#{10256} - by MON KEY>
 (defun mon-insert-lisp-CL-mode-line-template (&optional cl-package insrtp intrp)
   "Return a common-lisp mode-line for insertion.\n
-When optional arge CL-PACKAGE in non-nil it is a symbol or string naming a CL
-package.  When called-interactively with prefix arg prompt for a package name to
-insert. Attempts to build completions from value of `slime-buffer-package',
-`slime-current-connection', and return value of `swank:list-all-package-names'
-if `slime-current-connection' is non-nil.\n
-When optional INSRTP is non-nil insert modeline at point moving point.
+When optional arg CL-PACKAGE in non-nil, it is a symbol or string having a
+length >= 1 and naming a CL package.\n
+When optional INSRTP is non-nil insert modeline at point moving point.\n
 When optional arg INTRP is non-nil or called-interactively insert modeline at
 BOB but do not move-point.\n
+Strip datestrings from  CL-PACKAGE when it matches the regexp:\n
+ \(format-time-string \"[-]?%Y-%m-%d$\"\)\n
 :EXAMPLE\n\n(mon-insert-lisp-CL-mode-line-template 'cl-bubba\)\n
 \(mon-insert-lisp-CL-mode-line-template \"cl-bubba\"\)\n
-:SEE-ALSO `mon-insert-cl-file-template', `mon-insert-cl-package-template'.\n►►►"
+:ALIASED-BY `mon-insert-CL-mode-line-template'\n
+:SEE-ALSO `mon-insert-cl-file-template', `mon-insert-cl-package-template',
+`mon-lisp-CL-package-complete'.\n►►►"
   (interactive "P\ni\np")
   (let* ((mdln-pkg (when (or cl-package current-prefix-arg)
-                     (cond (current-prefix-arg
-                            (let ((pkg-cmplt
-                                   (if (or (slime-current-connection)
-                                           (buffer-local-value 'slime-mode (current-buffer)))
-                                       `(,(or slime-buffer-package (slime-current-package))
-                                         ,@(if (slime-current-connection)
-                                               (slime-eval `(swank:list-all-package-names t))
-                                             ("CL-USER")))
-                                     '("CL-USER"))))
-                              (let ((completion-ignore-case t)
-                                    got-pkg)
-                                (setq got-pkg (completing-read "Which CL package name: " pkg-cmplt))
-                                (when got-pkg
-                                  (setq got-pkg (format " Package: %s; " got-pkg))))))
+                     (cond ((or (and current-prefix-arg 
+                                     (or intrp (called-interactively-p 'interactive)))
+                                ;; kludge for interactive calls from `mon-insert-cl-package-template'
+                                ;; (mon-insert-lisp-CL-mode-line-template t t t) 
+                                ;; completes and returns but doesn't insert
+                                (and cl-package insrtp intrp))
+                            (let ((cmplt-pkg (mon-lisp-CL-package-complete)))
+                              (unless (or (null cmplt-pkg) 
+                                          (<= (length cmplt-pkg) 1))
+                                (format " Package: %s" cmplt-pkg))))
                            ((and cl-package 
-                                 ;;(not current-prefix-arg)
-                                 (not (null cl-package)) 
-                                 (not (eq cl-package t)))
-                            (format " Package: %s; " 
-                                    (upcase (format "%s" (intern-soft cl-package))))))))
+                                 (not (null cl-package))
+                                 (not (eq cl-package t))
+                                 (not (<= (length (format "%s" cl-package)) 1)))
+                            (format " Package: %s" 
+                                    (upcase (format "%s" cl-package)))))))
+         (mdln-pkg-no-dt (concat
+                          (if mdln-pkg
+                              (substring mdln-pkg 0 (string-match-p (format-time-string "[-]?%Y-%m-%d$") mdln-pkg))
+                            mdln-pkg)
+                          "; "))
          (mdln (format
                 ";;-*- Mode: LISP; Syntax: COMMON-LISP;%sEncoding: utf-8; Base: 10 -*-"
-                (if (and cl-package mdln-pkg) mdln-pkg " "))))
-    (if (or insrtp intrp)
-        (if intrp
-            (save-excursion (goto-char (buffer-end 0))
-                            (insert mdln)
-                            (unless (eq (char-after) 10)
-                              (newline)))
-          (insert mdln))
-      mdln)))
+                (if (and cl-package mdln-pkg-no-dt) mdln-pkg-no-dt " "))))
+    (cond ((and intrp (not insrtp))
+           (progn
+             (save-excursion (goto-char (buffer-end 0))
+                             (insert mdln)
+                             (unless (eq (char-after) 10)
+                               (newline)))
+             (message (concat ":FUNCTION `mon-insert-lisp-CL-mode-line-template' "
+                              "-- CL mode-line inserted at BOB"))))
+          ((and intrp (not (and cl-package insrtp intrp)))
+           (insert mdln))
+          ((and cl-package insrtp (not intrp))
+           (insert mdln))
+          ((or (and cl-package insrtp intrp) t)
+           mdln))))
+;;
+(defalias 'mon-insert-CL-mode-line-template 'mon-insert-lisp-CL-mode-line-template)
 ;;
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba")
@@ -1248,6 +1303,8 @@ BOB but do not move-point.\n
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba" t)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t nil)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template nil t)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'p)
+;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'pi)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t t)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba nil t)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba t)
@@ -1255,30 +1312,33 @@ BOB but do not move-point.\n
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template 'cl-bubba nil t)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template "cl-bubba" nil t)
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t nil t)
-;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template nil nil t)
 
 ;;; ==============================
+;;; :CHANGESET 1935 <Timestamp: #{2010-07-03T11:58:11-04:00Z}#{10266} - by MON KEY>
+;;; :CHANGESET 1922 <Timestamp: #{2010-06-26T19:34:08-04:00Z}#{10256} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-01T16:42:46-05:00Z}#{10051} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T16:11:16-0400Z - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday July 11, 2009 @ 12:15.02 PM - by MON KEY>
-(defun mon-insert-lisp-CL-file-template (&optional insrtp intrp)
+(defun mon-insert-lisp-CL-file-template (&optional insrtp intrp w-pkg-name)
   "Return a file header template for use with Common Lisp.\n
 When optional arg INSRTP is non-nil or called-interactively insert template at
 top of file.\n
+When optional arg W-PKG-NAME is non-nil it is a string or symbol naming a
+package as per `mon-insert-lisp-CL-mode-line-template'.\n
 :EXAMPLE\n\n\(mon-insert-lisp-CL-file-template\)\n
-:SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
-``mon-insert-CL-package-template' `mon-insert-lisp-stamp',
+:ALIASED-BY `mon-insert-CL-file-template'
+:SEE-ALSO `mon-lisp-CL-package-complete', `mon-insert-lisp-stamp',
 `mon-insert-lisp-testme', `mon-insert-lisp-evald',`mon-insert-copyright',
 `mon-comment-divider', `mon-comment-divider-to-col-four', `mon-stamp',
 `mon-file-stamp' `mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
 `mon-insert-copyright', `mon-insert-file-template'.\n►►►"
-  (interactive "i\np")
-  (let* ((milcft-modln 
-          ;; ";;; -*- Mode: Lisp; Syntax: Common-Lisp; Encoding: utf-8; -*-"
-          ";;-*- Mode: LISP; Syntax: COMMON-LISP; Encoding: utf-8; Base: 10 -*-")
+  (interactive "i\np\nP")
+  (let* ((milcft-modln (if (and w-pkg-name current-prefix-arg)
+                           (mon-insert-lisp-CL-mode-line-template t t t)
+                         (mon-insert-lisp-CL-mode-line-template w-pkg-name)))
          (milcft-fname (if (not (buffer-file-name)) 
-                        (buffer-name)
-                      (file-name-nondirectory (buffer-file-name))))
+                           (buffer-name)
+                         (file-name-nondirectory (buffer-file-name))))
          (milcft-t-str (concat ";;; <Timestamp: " (mon-timestamp :naf t)))
          (milcft-cpyrt  (mon-build-copyright-string nil nil t))
          (milcft-tmplt (concat
@@ -1302,6 +1362,8 @@ top of file.\n
              (insert milcft-tmplt)))
            milcft-tmplt))
 ;;
+(defalias 'mon-insert-CL-file-template 'mon-insert-lisp-CL-file-template)
+;;
 ;;; :TEST-ME (mon-insert-lisp-CL-file-template)
 ;;; :TEST-ME (mon-insert-lisp-CL-file-template t)
 ;;; :TEST-ME (call-interactively 'mon-insert-lisp-CL-file-template)
@@ -1309,51 +1371,97 @@ top of file.\n
 ;;; ==============================
 ;;; :COURTESY Zach Beane :HIS scratch-lisp-file.el
 ;;; :SEE (URL `http://www.xach.com/lisp/scratch-lisp-file.el')
+;;; :CHANGESET 1922 <Timestamp: #{2010-06-26T19:33:58-04:00Z}#{10256} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: Tuesday July 14, 2009 @ 02:12.25 AM - by MON KEY>
-;;; :CHANGED The `buffer-file-name' to check if we have a name.
-(defun mon-insert-CL-package-template (&optional insrtp without-header intrp)
+(defun mon-insert-lisp-CL-package-template (&optional insrtp without-header intrp
+                                                 package-nm)
   "Return or insert a CL package-template a template.\n
 Builds template with `DEFPACKAGE' and `IN-PACKAGE' forms for the current buffer.
 When called-interactively or INSRTP non-nil assumes current buffer is empty and
 insert a file template with `mon-insert-lisp-CL-file-template'.\n
-:EXAMPLE\n(mon-insert-CL-package-template)\n
+When optional arg PACKAGE-NM is non-nil it is a symbol or string naming a
+package.\n
+If ommited package name for template defaults to `buffer-file-name' if buffer is
+visiting a file else defaults to `buffer-name'.\n
+When either PACKAGE-NM or buffer-name contain a datestring matching the regexp:\n
+ \(format-time-string \"[-]?%Y-%m-%d$\"\)\n
+the date string will be stripped.
+:EXAMPLE\n\n(mon-insert-lisp-CL-package-template)\n
+\(mon-insert-lisp-CL-package-template nil nil nil \"cl-bubba-as-string\"\)\n
+:ALIASED-BY `mon-insert-CL-package-template'\n
 :SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
-`mon-insert-lisp-CL-file-template', `mon-insert-file-template',
-`mon-insert-copyright', `mon-insert-lisp-stamp', `mon-insert-lisp-doc-eg-xref',
-`mon-insert-lisp-testme', `mon-insert-lisp-evald'.\n►►►"
+`mon-lisp-CL-package-complete', `mon-insert-lisp-CL-file-template',
+`mon-insert-file-template', `mon-insert-copyright', `mon-insert-lisp-stamp',
+`mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
+`mon-insert-lisp-evald'.\n►►►"
   (interactive "i\nP\np")
-  (let* ((micpt-fname (if (not (buffer-file-name))
-                          (buffer-name)
-                        (file-name-nondirectory (buffer-file-name))))
-         (micpt-pkg (file-name-sans-extension micpt-fname))
+  (let* ((micpt-fname (cond ((and package-nm intrp (not insrtp))
+                             (if (or (stringp package-nm)
+                                     (not (eq package-nm t))) ;; test for t
+                                 (format "%s" package-nm)
+                               (mon-lisp-CL-package-complete)))
+                            ((and package-nm                     
+                                  (not (eq package-nm t))
+                                  (>= (length (format "%s" package-nm)) 2))
+                             (format "%s" package-nm))
+                            ((not (buffer-file-name)) (buffer-name))
+                            (t (file-name-nondirectory (buffer-file-name)))))
+         (micpt-pkg (let* ((mict-pkg-nm-or-fnm
+                            (if package-nm 
+                                micpt-fname
+                              (file-name-sans-extension micpt-fname)))
+                           (mict-pkg-srp-dt
+                            (substring mict-pkg-nm-or-fnm 0 
+                                       (string-match-p (format-time-string "[-]?%Y-%m-%d$") mict-pkg-nm-or-fnm))))
+                           mict-pkg-srp-dt))
          (micpt-tmplt (concat ";;;; " micpt-fname "\n"
-                              "\n(defpackage #:" micpt-pkg "\n  (:use #:cl))\n\n"
-                              "(in-package #:" micpt-pkg ")\n\n")))
-    (when (or insrtp intrp)
-      (cond ((not without-header)
-             (mon-insert-lisp-CL-file-template t)
-             (if (search-backward-regexp "^;;; CODE:$" nil t)
-                 (progn (beginning-of-line 2)
-                        (newline)
-                        (insert micpt-tmplt))
-               (if (search-backward-regexp "^;;; {...}$" nil t)
-                   (progn (beginning-of-line)
-                          (newline)
-                          (insert micpt-tmplt))
-                 (if (search-forward-regexp "^;;; EOF$" nil t)
-                     (progn
-                       (line-move -3)
-                       (end-of-line)
-                       (newline)
-                       (insert micpt-tmplt))))))
-            (without-header
-             (goto-char (point-min))
-             (insert micpt-tmplt))))
-    micpt-tmplt))
+                              "\n(in-package :cl-user)\n"
+                              "\n(defpackage #:" micpt-pkg "\n  (:use #:common-lisp))\n\n"
+                              "(in-package #:" micpt-pkg ")\n\n"
+                              ;; (:nicknames #:<SOME-NICKNAME>*)
+                              ;; (:intern #:<STRING-NAMING-SYMBOL>*)
+                              ;; (:export #:<EXPORTED-SYMBOL-NAME>*)
+                              ;; (:import-from package-name :<PKG-NM> #:<SYMBOL-NAME>*)
+                              ;; (:documentation <"DOC-STRING">)
+                              ;; (:shadow {symbol-name}*)* |  
+                              ;; (:shadowing-import-from package-name {symbol-name}*)* |  
+                              ;; (:export {symbol-name}*)* |  
+                              ;; (:intern {symbol-name}*)* |  
+                              ;; (:size integer) 
+                              )))
+    (if (or insrtp intrp)
+        (save-excursion
+          (cond ((not without-header)
+                 (mon-insert-lisp-CL-file-template t nil micpt-pkg)
+                 (if (search-backward-regexp "^;;; CODE:$" nil t)
+                     (progn (beginning-of-line 2)
+                            (newline)
+                            (insert micpt-tmplt))
+                   (if (search-backward-regexp "^;;; {...}$" nil t)
+                       (progn (beginning-of-line)
+                              (newline)
+                              (insert micpt-tmplt))
+                     (if (search-forward-regexp "^;;; EOF$" nil t)
+                         (progn
+                           (line-move -3)
+                           (end-of-line)
+                           (newline)
+                           (insert micpt-tmplt))))))
+                (without-header (goto-char (point-min))
+                                ;; Insert a mode-line, don't insert a package name,
+                                ;; and don't look/prompt for it.
+                                ;; (mon-insert-lisp-CL-mode-line-template t t)
+                                (mon-insert-lisp-CL-mode-line-template micpt-pkg t)
+                                (newline)
+                                (insert micpt-tmplt))))
+      micpt-tmplt)))
 ;;
-;;; :TEST-ME (mon-insert-CL-package-template)
-;;; :TEST-ME (mon-insert-CL-package-template t)
-;;; :TEST-ME (call-interactively 'mon-insert-CL-package-template)
+(defalias 'mon-insert-CL-package-template 'mon-insert-lisp-CL-package-template)
+;;
+;;; :TEST-ME (mon-insert-lisp-CL-package-template)
+;;; :TEST-ME (mon-insert-lisp-CL-package-template t)
+;;; :TEST-ME (mon-insert-lisp-CL-package-template nil nil t "cl-bubba")
+;;; :TEST-ME (call-interactively 'mon-insert-lisp-CL-package-template)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-24T18:33:41-04:00Z}#{09436} - by MON>
@@ -1421,7 +1529,6 @@ code change may be breaking or otherwise alters the semantics of the procedure.\
 ;;; :TEST-ME (mon-insert-lisp-stamp nil nil t)
 ;;; :TEST-ME (mon-lisp-stamp t nil t)
 ;;; :TEST-ME (call-interactively 'mon-insert-lisp-stamp)
-
 
 ;;; ==============================
 ;;; :CHANGESET 1841 <Timestamp: #{2010-06-10T14:45:00-04:00Z}#{10234} - by MON KEY>
@@ -2056,6 +2163,7 @@ does not move point.\n
 ;;; :TEST-ME (call-interactively 'mon-insert-gnu-licence-gfdl)
 
 ;;; ==============================
+;;; :TODO Should insert condidtionally according to the Lisp dialect CL vs Elisp.
 ;;; :CREATED <Timestamp: #{2009-10-04T09:33:51-04:00Z}#{09407} - by MON>
 (defun mon-insert-defclass-template (&optional class-pfx slot-count insrtp intrp)
   "Return an `EIEIO' `defclass' template.\n
@@ -2143,7 +2251,7 @@ Try to DTRT when buffer is not visiting file and prompts for filename to write
 buffer to before proceeding with insertion.\n
 :SEE-ALSO `mon-file-stamp', `mon-insert-file-template',
 `mon-insert-gnu-licence', `mon-insert-ebay-dbc-template',
-`mon-insert-CL-package-template', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-package-template', `mon-insert-lisp-doc-eg-xref',
 `mon-insert-file-template', `mon-insert-lisp-CL-file-template',
 `mon-insert-lisp-stamp', `mon-insert-lisp-evald' `mon-insert-regexp-template',
 `mon-comment-divider'.\n►►►"

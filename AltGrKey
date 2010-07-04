@@ -93,6 +93,10 @@ Anyone who understands this?
 
 
 ----
+
+== Problem with foot pedal which memorized Control_L+Mode_switch instead of AltGr ==
+I use a Kinesis device with 2 programmable pedals, and I want /AltGr/ for one of them. Since they don't support GNU, I had to use a Windows computer to record the key (it's just pressing /AltGr/ after turning a switch below the device). The problem is, after that the pedal sends /Ctrl/+/Alt/ instead of /AltGr/. With xev I detect Control_L and then Mode_switch (two key presses) when I press the pedal one time. Do you know how can I teach X to see this as one key?, or how can I help the Windows driver (X-keys) to store /AltGr/ really as /AltGr/? -- 4.m7.2010 [[DanielClemente]]
+
 == Questions and suggestions ==
 
 Esc-Ctrl-@, for example, will work for this on every platform. (Aidan Kehoe, Mon Nov 30 16:20:24 GMT 2009)

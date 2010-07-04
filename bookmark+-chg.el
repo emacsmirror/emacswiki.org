@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Jul  1 21:03:43 2010 (-0700)
+;; Last-Updated: Sat Jul  3 09:32:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12882
+;;     Update #: 12895
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -95,6 +95,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2010/07/03 dadams
+;;     Added: bmkp-bmenu-describe-marked, bmkp-bookmark-description.
+;;     bmkp-describe-bookmark: Rewrote to use bmkp-bookmark-description.
+;;     Bound bmkp-bmenu-describe-marked to C-h >.
+;;     bmkp-bmenu-menubar-menu: Added bmkp-bmenu-describe-(marked|bookmark).
+;;     Updated doc string of bookmark-alist.
 ;; 2010/07/01 dadams
 ;;     Added: bmkp-bmenu-mark-lighted-bookmarks, bmkp-bmenu-set-tag-value-for-marked,
 ;;            bmkp-bmenu-show-only-tagged, bmkp-occur-create-autonamed-bookmarks,
@@ -1075,6 +1081,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2010/07/03 dadams
+;;     bmkp-set-lighting-for-bookmark, bmkp-bmenu-set-lighting-for-marked:
+;;       Use *-refresh-menu-list, not *-surreptitiously-*.
 ;; 2010/07/01 dadams
 ;;     Created.
 ;;
