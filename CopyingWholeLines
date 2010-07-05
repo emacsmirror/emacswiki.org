@@ -99,42 +99,10 @@ This one behaves the same way as `kill-line', except that it doesn't move [[poin
                   (end-of-visible-line))
                 (point)))))
 
-
-
 [:ModifyVanillaCommands]
 === Modifying the default commands ===
 
-One way that SlickEdit does is to change the copy and cut behavior so that if there's no region highlighted, by default it'll copy/cut the line where the [TextCursor cursor] is.
-
-I think this is a very neat hack, and VisualStudio.NET copied the idea.
-
-In Emacs, ##C-w## or ##M-w## will complain "The mark is not active now" if no region is selected.
-
-Can anyone suggest ways to implement this hack? Maybe some before/around/after advice for ##kill-ring-save## / ##kill-region##?
-
-[:SlickCopy]
-In the editors Visual !SlickEdit and !TextMate, "cut" and "copy" act on the current line when no text is selected -- one key press only. To implement this behavior in Emacs, use SlickCopy.
-
-[new]
-I spent friday night cooking up the solution. Although it's very simple but the learning experience is priceless -- MacChan
-
-[new]
-##M-w## with no selection copies the current line, ##C-w## kills it entirely, and ##C-a M-w C-y## duplicates it (cf. ‘##dd##’ and ‘##yyp##’ in [ViKeys vi]).
-
-    (defadvice kill-ring-save (before slick-copy activate compile)
-      "When called interactively with no active region, copy a single line instead."
-      (interactive
-       (if mark-active (list (region-beginning) (region-end))
-         (message "Copied line")
-         (list (line-beginning-position)
-               (line-beginning-position 2)))))
-
-    (defadvice kill-region (before slick-cut activate compile)
-      "When called interactively with no active region, kill a single line instead."
-      (interactive
-       (if mark-active (list (region-beginning) (region-end))
-         (list (line-beginning-position)
-               (line-beginning-position 2)))))
+!SlickEdit, !TextMate and !VisualStudio have clever line-wise behavior: if no text is selected, the copy and cut commands act on the current line instead. '''To do this in Emacs (with ##M-w## and ##C-w##), use SlickCopy.'''
 
 [new]
 A more versatile solution is provided by [[Leo]]: if the region is active, ##M-w## behaves like normal, otherwise it copies an URL, e-mail address or the current line, in that order. ##M-w## followed by the key ##f##, ##l##, ##s## or ##w## copies file name, list, S-expression and word, respectively. See [[Leo|his page]] for more details.

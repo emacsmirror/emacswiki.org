@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  3 14:29:41 2010 (-0700)
+;; Last-Updated: Sun Jul  4 08:56:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14663
+;;     Update #: 14664
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1040,7 +1040,7 @@ If nil show only beginning of region."
 ;;;###autoload
 (defcustom bmkp-incremental-filter-delay 0.6
   "*Seconds to wait before updating display when filtering bookmarks."
-  :type 'integer :group 'bookmark-plus)
+  :type 'number :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-menu-popup-max-length 20

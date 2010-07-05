@@ -183,5 +183,26 @@ haven't time write any elisp code even i really want help you.
 So sorry.
 
    -- AndyStewart
+
+[new]
+Hi! it seems pretty cool. I used to run M-x shell in my emacs and play a lot of my daily job in it. But I found that in the terminal mode I just not able to send a Ctrl-r charactor to my shell. You know it used to invoke a (reverse-i-search) in bash command history. Anytime when I type C-r in the terminal it just invoke (isearch-backward) in Emacs, even when I type C-q C-r. I can unset the default key binding on C-r in Emacs, but it seems not work for terminal mode. Then I made a term-mode-hook and it really runs, but the key binding of C-r is still there. It's quite strange.
+
+{{{
+(add-hook 'term-mode-hook 
+	  (lambda()
+	    (global-unset-key (kbd "C-r"))
+;	    (local-unset-key (kbd "C-r"))
+	    (message "%s" "This is in term mode and hook enabled.")
+))
+}}}
+
+Of course I can copy a ^R charactor from somewhere else and paste it into terminal window, it really works but it's too annoying. Does anybody has good idea?
+
+   -- DoveYoung
+   
+: Try type M-r i think that's your need. :)
+: Because C-r is default keystroke for isearch-backward, for avoid conflict with C-r, i binding M-r to send "C-r" character to shell.
+: You can use option term-bind-key-alist/term-unbind-key-list to binding/unbinding special keystroke in multi-term.el, and don't use term-mode-hook. :)  -- AndyStewart
+
 ----
 CategoryShell

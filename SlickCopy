@@ -9,7 +9,7 @@ The most elegant solution is to [AdvisingFunctions advise] ##kill-ring-save## an
     (defadvice kill-ring-save (before slick-copy activate compile)
       "When called interactively with no active region, copy a single line instead."
       (interactive
-       (if mark-active (list (region-beginning) (region-end))
+       (if (region-active-p) (list (region-beginning) (region-end))
          (message "Copied line")
          (list (line-beginning-position)
                (line-beginning-position 2)))))
@@ -17,11 +17,45 @@ The most elegant solution is to [AdvisingFunctions advise] ##kill-ring-save## an
     (defadvice kill-region (before slick-cut activate compile)
       "When called interactively with no active region, kill a single line instead."
       (interactive
-       (if mark-active (list (region-beginning) (region-end))
+       (if (region-active-p) (list (region-beginning) (region-end))
          (list (line-beginning-position)
                (line-beginning-position 2)))))
 
-Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it (compare with `dd' and `yyp' in [ViKeys vi]). Below is a comparison of default behavior for deleting lines among editors.
+Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it (compare with `dd' and `yyp' in [ViKeys vi]).
+
+=== With yank-handler ==
+
+A further keypress can be saved by using the ##yank-handler## text property. The following will paste a copied line above the current line regardless of the position of point:
+
+    (defadvice kill-ring-save (around slick-copy activate)
+      "When called interactively with no active region, copy a single line instead."
+      (if (or (region-active-p) (not (called-interactively-p)))
+          ad-do-it
+        (kill-new (buffer-substring (line-beginning-position)
+                                    (line-beginning-position 2))
+                  nil '(yank-line))
+        (message "Copied line")))
+
+    (defadvice kill-region (around slick-copy activate)
+      "When called interactively with no active region, kill a single line instead."
+      (if (or (region-active-p) (not (called-interactively-p)))
+          ad-do-it
+        (kill-new (filter-buffer-substring (line-beginning-position)
+                                           (line-beginning-position 2) t)
+                  nil '(yank-line))))
+
+    (defun yank-line (string)
+      "Insert STRING above the current line."
+      (beginning-of-line)
+      (unless (= (elt string (1- (length string))) ?\n)
+        (save-excursion (insert "\n")))
+      (insert string))
+
+Thus, a line can be duplicated with `M-w C-y'.
+
+== Keys ==
+
+Below is a comparison of default behavior for deleting lines among editors.
 
 * Emacs: `C-S-backspace' (or `C-a C-k C-k')
 * Vim: `dd'
