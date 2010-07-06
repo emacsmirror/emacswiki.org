@@ -11,61 +11,28 @@ to your init file:
 
     (require 'vimpulse)
 
-If you want linear undo/redo, download and install [http://wonderworks.com/download/redo.el redo.el] (included with XEmacs).
+If you want linear undo/redo, download and install '''[http://wonderworks.com/download/redo.el redo.el]''' (included with XEmacs).
 
 Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Viper (and Vimpulse) with `C-z'.
 
 == News ==
 
 * By popular request, we have moved to [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git] as our version control system.
-* Emacs-compatible Visual selection (normal, line and block).
+* Emacs-compatible Visual selection (characterwise, linewise and blockwise).
 * New keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `gq', `gu', `gU', `g~', `g?', `+', `_'.
 * Modal keybinding functions: `vimpulse-map', `vimpulse-imap', `vimpulse-vmap' and `vimpulse-omap'.
 * Operator-Pending mode: framework for defining new operator commands and text objects.
 
 == Feedback ==
 
-Bug reports, patches or other feedback is welcome on the mailing list (see
-below). You can also try to use the
-[http://trac-git.assembla.com/vimpulse/report/1 bug tracker] on Assembla
-(account needed) or just edit this page.
-
-[new:AlexeyRomanov:2010-06-26 09:40 UTC]
-I am logged in (as alexey_r), but can't create a ticket there:
-
-> 403 Forbidden (TICKET_CREATE privileges are required to perform this operation)
-
-Anyway, the ticket I wanted to create is an enhancement request to add hlsearch. One possible solution can be found at http://r4yner.wordpress.com/2008/09/19/hlsearch-for-emacs/
-
-[new:stepnem:2010-06-26 11:45 UTC]
-Well, the interface seems to suck somehow (I didn't investigate): when I tried
-to create a ticket, a login dialog popped up, and when I entered the same
-login information as with my Assembla account, I could create a ticket (i.e.,
-you have to kinda log in twice). Does that not work for you either (I'm a
-project member, so maybe I have some extra privileges, no idea)?
-
-Anyway, I personally prefer the mailing list, which does not even require
-subscription, so you're most welcome to post to that (see the links on this
-page).
-
-Regarding hlsearch, I'm not sure I would support such addition, as there seems
-to be a lot of equivalent functionality in Emacs; but Vimpulse is apparently
-still supposed to emulate Vim ;-), so it's possible Vegard's opinion might
-differ. Again, the mailing list might be a better place for such a discussion.
--- stepnem
-
-[new:AlexeyRomanov:2010-06-26 18:27 UTC]
-No, it doesn't work. It seems you do have to be a member to create a ticket.
--- AlexeyRomanov
+Bug reports, patches or other feedback is welcome on the mailing list (see below). You can also just edit this page.
 
 == External links ==
 
 * [http://www.assembla.com/spaces/vimpulse/stream Vimpulse's Assembla space]
-** [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]
-** [http://trac-git.assembla.com/vimpulse/report/1 Bug tracker]
+** '''[http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]'''
 ** [http://trac-git.assembla.com/vimpulse/wiki/Documentation Documentation wiki]
-* [http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list] ([http://lists.ourproject.org/pipermail/implementations-list archives])
-* [http://dir.gmane.org/gmane.emacs.vim-emulation Gmane]
+* '''[http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]''' ([http://dir.gmane.org/gmane.emacs.vim-emulation Gmane archives])
 
 ----
 CategoryKeys CategoryEmulation

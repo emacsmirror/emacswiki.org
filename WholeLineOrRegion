@@ -1,18 +1,18 @@
-In many programs, like !SlickEdit and !TextMate, "cut" and "copy" act on the /current line/ if no text is visually selected. This page lists some ways to implement this behavior in Emacs, so that
+In many programs, like !SlickEdit, !TextMate and !VisualStudio, '''"cut" and "copy" act on the ''current line'' if no text is visually selected'''. This page lists ways to get the same behavior in Emacs, so that
 
-* '##M-w##' copies the current line when the region is not active, and
-* '##C-w##' deletes it, [CopyingWholeLines saving keystrokes].
+* '##M-w##' copies the current line when the [[region]] is not active, and
+* '##C-w##' deletes it.
 
-[TransientMarkMode Transient Mark Mode] must be enabled to distinguish selected text visually: ##(transient-mark-mode t)##. (Otherwise, the [http://www.emacswiki.org/emacs/Region region] is always active.)
+'''Note:''' [TransientMarkMode Transient Mark Mode] must be enabled to distinguish selected text visually -- that is, ##(transient-mark-mode t)## -- which is the default in Emacs 23 and onwards.
 
-== SlickCopy ==
+== Advice ==
 
-The SlickCopy page, inspired by !SlickEdit, provides some code to modify Emacs' default cutting and copying commands (##kill-ring-save## and ##kill-region##). It is short and can be placed in <tt>[InitFile .emacs]</tt>:
+A concise solution is to [AdvisingFunctions advise] ##kill-ring-save## and ##kill-region## (Emacs' default copy and cut commands):
 
     (defadvice kill-ring-save (before slick-copy activate compile)
       "When called interactively with no active region, copy a single line instead."
       (interactive
-       (if mark-active (list (region-beginning) (region-end))
+       (if (region-active-p) (list (region-beginning) (region-end))
          (message "Copied line")
          (list (line-beginning-position)
                (line-beginning-position 2)))))
@@ -20,62 +20,61 @@ The SlickCopy page, inspired by !SlickEdit, provides some code to modify Emacs' 
     (defadvice kill-region (before slick-cut activate compile)
       "When called interactively with no active region, kill a single line instead."
       (interactive
-       (if mark-active (list (region-beginning) (region-end))
+       (if (region-active-p) (list (region-beginning) (region-end))
          (list (line-beginning-position)
                (line-beginning-position 2)))))
 
-== whole-line-or-region ==
+Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. Since the advice only affects the commands' ''interactive'' behavior, it's safe for other functions to call them.
 
-This minor mode allows functions to operate on the current line if they would normally operate on a region and region is currently undefined.
+=== With yank-handler ==
 
-The primary use for this is to kill (cut) the current line if no region is defined, and kill-region is invoked. It basically saves you the effort of going to the begining of the line, selecting the text up to the end of the line, and killing. Similarly, when yanking, it's smart enough to know that the string to be yanked was killed as a whole line, and it should be yanked as one, too. So you don't need to position yourself at the start of the line before yanking. If region *is* defined, though, all functions act as normal.
+A further keypress can be saved by using the ##yank-handler## text property. The following will paste a copied line above the current line regardless of the position of point:
 
-The inspiration for this came from an old editor I used to use (brief maybe?), that did this exact thing for you. It was a handy feature to have, and I definitely wanted it when I moved to Emacs. I've extended the concept slightly, to let you copy N whole lines, using the standard prefix method.
+    (defadvice kill-ring-save (around slick-copy activate)
+      "When called interactively with no active region, copy a single line instead."
+      (if (or (region-active-p) (not (called-interactively-p)))
+          ad-do-it
+        (kill-new (buffer-substring (line-beginning-position)
+                                    (line-beginning-position 2))
+                  nil '(yank-line))
+        (message "Copied line")))
 
-*NOTE:* This package will behave unexpectedly (and indeed is nearly useless) if `transient-mark-mode' is off, as there is then always a region defined.
+    (defadvice kill-region (around slick-copy activate)
+      "When called interactively with no active region, kill a single line instead."
+      (if (or (region-active-p) (not (called-interactively-p)))
+          ad-do-it
+        (kill-new (filter-buffer-substring (line-beginning-position)
+                                           (line-beginning-position 2) t)
+                  nil '(yank-line))))
 
-*NOTE:* I haven't gotten this to work under XEmacs (though I honestly haven't tried real hard).
+    (defun yank-line (string)
+      "Insert STRING above the current line."
+      (beginning-of-line)
+      (unless (= (elt string (1- (length string))) ?\n)
+        (save-excursion (insert "\n")))
+      (insert string))
 
-The latest version can be found here: http://www.northbound-train.com/emacs/whole-line-or-region.el
+Thus, a line can be duplicated with `M-w C-y'.
 
-=== Example of how this package makes a difference ===
+== whole-line-or-region.el ==
 
-Someone posted with the following:
+[http://www.northbound-train.com/emacs/whole-line-or-region.el whole-line-or-region.el] is a minor mode which allows functions to operate on the current line when they would normally operate on the region. When yanking, it's smart enough to know that the string to be yanked was killed as a whole line and should be yanked as such, so one doesn't need to position oneself at the start of the line. It also accepts prefix arguments.
 
- This is what I have had in my .emacs for years. It is one of those things that I miss most when using an Emacs that I have not yet customised:
-
- (defun kill-entire-line (n)
-   "Kill ARG entire lines starting from the one where point is."
-   (interactive "*p")
-   (beginning-of-line)
-   (kill-line n))
-
- (global-set-key "\M-k" 'kill-entire-line)
-
-
-If I kill the first line of the following text using that method:
+Furthermore, it preserves the position of point. If killing the first line of the following text:
 
     The GNU Project was launched in 1984 to develop a complete
     Unix-like operating system which is free software: the GNU system.
 
-and if point is positioned as such when I yank the killed text:
+And if point is positioned as such when yanking the killed text:
 
     Unix-like operating system wh>|<ich is free software: the GNU system.
 
-I wind up with the following:
-
-    Unix-like operating system wh   The GNU Project was launched in 1984 to develop a complete>|<ich is free software: the GNU system.
-
-With whole-line-or-region I wind up with:
+One winds up with:
 
     The GNU Project was launched in 1984 to develop a complete
     Unix-like operating system wh>|<ich is free software: the GNU system.
 
-And as a bonus, point hasn't moved.
-
-For me, both of those things are important.
-
-In addition, this package provides a framework for enabling any region-based command (e.g. comment-dwim) to work on the current line if region is undefined.
+In addition, the package provides a framework for enabling any region-based command (e.g., ##comment-dwim##) to work on the current line if region is undefined.
 
 ----
 

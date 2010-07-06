@@ -6,7 +6,7 @@ For the vi user:
 
 * If you miss "'''##*##'''" or "'''<tt>#</tt>'''", see SearchAtPoint or [[vimpulse.el]].
 
-* If you need swift line-wise editing like "'''##yyp##'''", see SlickCopy.
+* If you need swift line-wise editing like "'''##yyp##'''", see WholeLineOrRegion.
 
 * If you depend on "'''##cfz##'''" and "'''##dfz##'''", use the <tt>[[zap-to-char]]</tt> command (`M-z').
 

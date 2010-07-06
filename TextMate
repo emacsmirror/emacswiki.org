@@ -6,7 +6,7 @@ See <tt>[http://code.google.com/p/emacs-textmate/ textmate-mode]</tt> for an att
 
 Pair insertion goes hand in hand with (vi-like) OpenNextLine commands.
 
-See SlickCopy for line-wise copying and cutting when no text is selected.
+See WholeLineOrRegion for line-wise copying and cutting when no text is selected.
 
 [http://www.emacswiki.org/emacs/Yasnippet YASnippet] is a template system for Emacs.
 

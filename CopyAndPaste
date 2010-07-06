@@ -6,7 +6,7 @@ If you don't care for the DefaultKillingAndYanking [[key binding]]s (##C-w##, ##
 * CuaMode -- use ##C-x##, ##C-c## and ##C-v## to copy and paste
 * CuaLightMode -- something between PcSelectionMode and CuaMode
 * DeleteSelectionMode -- ##DEL## deletes the region; just typing replaces it.
-* SlickCopy -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
+* WholeLineOrRegion -- ##C-w## and ##M-w## act on the current line when TransientMarkMode is not active
 
 === X11 Copy & Paste to/from Emacs: ===
 

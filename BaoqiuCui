@@ -36,7 +36,7 @@ Almost everything I regularly do on a computer is done in Emacs:
 * editing this and other EmacsWiki pages using Yaoddmuse 
 * ...
 
-To me, Emacs is a the editor for programmers; whatever you want to do on
+To me, Emacs is the editor for programmers; whatever you want to do on
 a computer (i.e. in Emacs), you can always write or modify some existing
 Emacs Lisp code to make it happen.  For most of the times, what you want
 to do is already done by someone somewhere on the internet.  Thanks to

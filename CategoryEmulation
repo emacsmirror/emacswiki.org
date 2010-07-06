@@ -11,7 +11,7 @@ Click on the heading to search for all pages related to emulating other software
 ** NortonCommanderMode
 ** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
 * PcSelectionMode -- Manage your regions like Motif, MAC or MS-Windows.
-* SlickCopy -- Operate on a line if nothing is selected.
+* WholeLineOrRegion -- Operate on a line if nothing is selected.
 * Imititating Vi and Vim.
 ** ViperMode -- A comprehensive mode that comes with Emacs.
 ** [[Emaci]] -- A powerful reader in Emacs like vi.

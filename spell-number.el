@@ -1,10 +1,11 @@
 ;;; spell-number.el --- Spell out an integer or currency in words.  -*- coding: utf-8 -*-
 
-;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2006, 2007 Vinicius Jose Latorre
+;; Copyright (C) 1999, 2000, 2001, 2002, 2003, 2006, 2007, 2008, 2009, 2010
+;; Vinicius Jose Latorre
 
 ;; Author: Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer: Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp: <2007/08/31 11:30:03 vinicius>
+;; Time-stamp: <2010/07/05 21:27:03 vinicius>
 ;; Version: 3.1.1
 ;; Keywords: spell, local
 ;; X-URL: http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
@@ -239,6 +240,7 @@
 ;;
 ;;    http://www.sf.airnet.ne.jp/~ts/japanese/counter.html
 ;;    http://www.sf.airnet.ne.jp/~ts/japanese/javanumber.html
+;;    http://en.wikipedia.org/wiki/Japanese_numerals
 ;;
 ;;
 ;; How to Use the Functions From a Shell

@@ -56,7 +56,7 @@ Key binding
       (global-set-key (kbd "C-c l")         (quote copy-line))
 
 [new]
-*Tip:* SlickCopy copies the current line when the region is not active. Thus, ##C-a M-w C-y C-y## ... duplicates the current line (similar to vi's '##yyp##'), while ##C-w## deletes it (‘##dd##’). When the region /is/ active, ##M-w## and ##C-w## act as usual. :)
+*Tip:* WholeLineOrRegion copies the current line when the region is not active. Thus, ##C-a M-w C-y C-y## ... duplicates the current line (similar to vi's '##yyp##'), while ##C-w## deletes it (‘##dd##’). When the region /is/ active, ##M-w## and ##C-w## act as usual. :)
 
 =Copy Paragraph=
 

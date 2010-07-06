@@ -22,24 +22,21 @@ If you are using tabkey2 with yasnippets, and see this behavior:
 you should download the latest version from the link above.
 
 [new]
-I've been having a heck of a time trying to get Tabkey2 to work well with pabbrev and yasnippet.  Has anyone gotten these three packages to work well together?  In particular I have found that trying to enable pabbrev mode, and yasnippet mode, and finally tabkey mode will set things up so that Yasnippet fires first, and then falls back to tabkey2, but in the fallback to tabkey2, it calls tabkey2-first inappropriately, causing an error.
+There was a bug report here (saying there were problems using [[Yasnippet]] or pabbrev with tabkey2-mode), but I get no answer when trying to get more details and I can't reproduce the problem.
+If someone has problem with tabkey2-mode please download the latest version and file a bug report here:
+https://bugs.launchpad.net/nxhtml
 
-If I write my own pabbrev functions, one to expand or return nil, and the other to return the current expansion, and set the first to be the completion function, and use the second as the activation expressoin on tabkey2, then everything mostly works together.  The final piece of the puzzle is to edit the pabbrev file to not bind tab at all.  At this point it takes 2 tabpresses to get any kind of completion, but I do get completion.  However, I cannot jump between yasnippet fields.  I can't help but wonder if there is a better way, besides hacking and slashing pabbrev.
+However there indeed are problems with MuMaMo (part of [NxhtmlMode nXhtml]) and YASnippet so I have just filed a bug report for YASnippets about this:
+http://code.google.com/p/yasnippet/issues/detail?id=143
+-- LennartBorgman
 
-[new]
-Could you explain to me why you do not just set up things in Tabkey2?
-You can customize tabkey2-completion-functions.
-I am not sure it is possible to do what you want there, but maybe there is something I can change to make it possible.
-
-Note: If you do it this way you do not have to do any key binding on your own.
-Tabkey2 steals the TAB key and tries to call the function you tell it to call.
 
 [:SmartTab]
 == Smart Tab ==
 
 Here's what I use every day:
 
-* [http://github.com/sroccaserra/emacs/blob/master/smart-tab.el smart-tab.el]
+* [http://github.com/sroccaserra/emacs/blob/master/smart-tab.el smart-tab.el] (Please consider using DanielHackney or JohnAnderson's enhanced versions, see below)
 
 It feels very natural (to me at least), ##<tab>## always do what I mean.
 
@@ -58,10 +55,22 @@ Note: to enable tab completion in the `eval-expression` minibuffer, I just bind 
 
 
 I hope you like it, cheers!
--- SebastienRoccaSerra
+
+: -- SebastienRoccaSerra
 
 [new]
-I love this function and have created a [http://github.com/dhax/smart-tab/tree/master git repository] [link down as of 2010-02-14] for it. This doesn't seem to be a function that is in too much danger of growing large and unwieldy, but there were enough other suggestions by people that a repository might be nice.
+Update: DanielHackney has created a nice minor mode out of it and submited it to ELPA (see his [http://github.com/haxney/smart-tab git repository]).
+
+Then, JohnAnderson [http://github.com/genehack/smart-tab forked his code] and added SebastianB's great mode-specific behavior.
+
+Please use their version of smart-tab, I'm using John's fork of Daniel's code myself.
+
+Cheers!
+
+: -- SebastienRoccaSerra
+
+[new]
+I love this function and have created a [http://github.com/haxney/smart-tab git repository] for it. This doesn't seem to be a function that is in too much danger of growing large and unwieldy, but there were enough other suggestions by people that a repository might be nice.
 
 -- DanielHackney
 

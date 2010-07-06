@@ -62,5 +62,31 @@ Version 1.0.1:
 * Made the completion window more useable in multi-window configurations.  Thanks to Jan Rehders.
 * Fixed two bugs in computing optimal completion content layout.
 
+= Discussion = 
+
+[new]
+
+Release 2.3 introduced:
+
+* Buffer explorer: put current buffer at end of matches list for more intuitive switching.
+
+Like iswitchb it should put all buffers on the current frame at the end of the matches.
+
+* Buffer explorer: sort first by fuzzy matching score, then by most recently used.
+
+The fuzzy matching score is a float, resulting from many calculations. Getting duplicate scores is nigh impossible.
+
+[new:sjbach:2010-07-05 16:31 UTC]
+
+Actually, duplicate scores are common in practice.  I tested the float comparisons with various epsilons and decided none were needed.
+
+[new]
+
+Another approach would be to turn the most-recently-used index into a number between 0 and 1, and multiply the fuzzy matching score with it to get the sorting index. Finding a good formula for calculating that number probably requires some experimentation.
+
+[new:sjbach:2010-07-05 16:31 UTC]
+
+But on the other hand, this sounds like a neat idea!
+
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion
