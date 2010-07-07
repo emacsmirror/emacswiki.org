@@ -1,0 +1,73 @@
+Jochen Hayek is a Berlin (Germany) based self-employed software developer.
+
+----
+Why does he write in 3rd person, singular here?
+Because this text got derived from http://wiki.docbook.org/topic/JochenHayek.
+And they talk that way over there.
+
+----
+* http://www.google.com/profiles/Jochen.Hayek
+* http://www.linkedin.com/in/JochenHayek
+* http://Hayek.name/Jochen/CV-Jochen_Hayek.html
+* http://blog-en.jochen.hayek.name/
+* http://blog-de.jochen.hayek.name/
+
+----
+Uses Emacs.
+
+He has been using emacsen since like 1983,
+first GoslingEmacs ([[http://en.wikipedia.org/wiki/Gosling_Emacs|GoslingEmacs on en.wikipedea.org]]),
+later (starting like 1993 or so) it was GnuEmacs.
+
+Actually having been a native Unixer from like 1981 on or so,
+# my 1st Unix text editor being ''ed'' on a PDP11,
+# my 2nd Unix text editor then Berkley ''vi''.
+
+I must admit I have always been using it on and off.
+My brain is actually able to switch from vi-mode to emacs-mode without too much pain.
+
+----
+He loves hacking all sorts of text in emacs and its various ''modes''.
+
+----
+His favourite programming languages are perl, ruby, xlisp, Common Lisp, Ada, …, and C.
+
+Pascal was actually his first programming language back in 1979.
+
+(Can we mention bash, zsh, ksh, and msh here as well?)
+
+He is an "all Unix" guy, be it Linux or OS X nowadays.
+
+----
+He loves gadgets like his multi-functional router, the [[http://www.avm.de/de/Produkte/FRITZBox/FRITZ_Box_Fon_WLAN_7390|AVM 7390]], or his stone-age iPhone 3G.
+
+----
+He loves address books (e.g. Google Mail Contacts) and diaries,
+and he loves keeping them in sync.
+
+----
+Right now he is trying to get into the web business with perl (i.e. Catalyst or Mojolicious) and ruby (i.e. Rails or Sinatra).
+
+----
+He has been using DocBook since October 1998, when he worked with Derwent in London, UK.
+He uses DocBook for all sorts of documents.
+
+He fancied troff -mm for quite a while back in the 80-s, when he worked with Jürgen Gulbins.
+
+He loves creating Relax-NG schemas and using them.
+He even edits ApplePropertyLists in emacs (nxml-mode) with a Relax-NG schema, trang-ed from some DTD.
+But that's another topic.
+
+This week he started diving into ''DocBook website'',
+maybe he will also have a look into ''SilkPage''.
+
+----
+Maybe he has to get used to Oddmuse a little,
+i.e. having a few glances at TextFormattingRules will help.
+
+e-mail:
+
+http://Hayek.name/Jochen/images/jochen_at_hayek_dot_name.png
+
+----
+CategoryHomepage

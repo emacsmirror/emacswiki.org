@@ -25,14 +25,18 @@ Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Vi
 
 == Feedback ==
 
-Bug reports, patches or other feedback is welcome on the mailing list (see below). You can also just edit this page.
+Bug reports, patches or other feedback is welcome on the mailing list (see below). You don't have to subscribe; we usually reply within a few days and CC our replies back to you.
+
+You can also just edit this page.
 
 == External links ==
 
 * [http://www.assembla.com/spaces/vimpulse/stream Vimpulse's Assembla space]
 ** '''[http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]'''
 ** [http://trac-git.assembla.com/vimpulse/wiki/Documentation Documentation wiki]
-* '''[http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]''' ([http://dir.gmane.org/gmane.emacs.vim-emulation Gmane archives])
+* '''[http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]'''
+** [nntp://news.gmane.org/gmane.emacs.vim-emulation gmane.emacs.vim-emulation newsgroup]
+** [http://dir.gmane.org/gmane.emacs.vim-emulation gmane.emacs.vim-emulation web archives]
 
 ----
 CategoryKeys CategoryEmulation

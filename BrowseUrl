@@ -251,6 +251,13 @@ This doesn't seem to be available yet on Debian etch.  However, the instructions
            browse-url-generic-program "epiphany"
            browse-url-generic-args '("--new-tab"))
 
+== Chromium ==
+
+On arch linux, the following command will allow emacs to use the chromium-browser PKGBUILD:
+
+    (setq browse-url-browser-function 'browse-url-generic
+          browse-url-generic-program "chromium-browser")
+
 == Konqueror ==
 
 This works fine with KDE 3.4 and emacs 21.4:

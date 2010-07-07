@@ -7,9 +7,9 @@
 ;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Jan 07 10:24:35 2005
 ;; Version: 20
-;; Last-Updated: Fri Jan 15 13:55:23 2010 (-0800)
+;; Last-Updated: Tue Jul  6 12:55:32 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 235
+;;     Update #: 239
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/zoom-frm.el
 ;; Keywords: frames, extensions, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -136,6 +136,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/07/06 dadams
+;;     zoom-(in|out): Put doc strings before interactive spec.  Thx to Yidong Chong.
 ;; 2009/06/11 dadams
 ;;     Added buffer zooming, for Emacs 23.
 ;;       Added zoom-(in|out), group zoom, zoom-frame/buffer.
@@ -262,11 +264,11 @@ This is equal but opposite to `zoom-frm-in'."
 
 (when (> emacs-major-version 22)
   (defun zoom-in (arg)
-    (interactive "P")
     "Zoom current frame or buffer in.
 With a prefix arg, toggle between zooming frame and zooming buffer.
 Frame zooming uses command `zoom-frm-in'. 
 Buffer zooming uses command `text-scale-increase'."
+    (interactive "P")
     (when arg
       (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame)))
     (if (eq zoom-frame/buffer 'frame)
@@ -279,11 +281,11 @@ Buffer zooming uses command `text-scale-increase'."
         (text-scale-increase 1))))
 
   (defun zoom-out (arg)
-    (interactive "P")
     "Zoom current frame or buffer out.
 With a prefix arg, toggle between zooming frame and zooming buffer.
 Frame zooming uses command `zoom-frm-out'. 
 Buffer zooming uses command `text-scale-decrease'."
+    (interactive "P")
     (when arg
       (setq zoom-frame/buffer  (if (eq zoom-frame/buffer 'frame) 'buffer 'frame)))
     (if (eq zoom-frame/buffer 'frame)

@@ -24,7 +24,7 @@ A concise solution is to [AdvisingFunctions advise] ##kill-ring-save## and ##kil
          (list (line-beginning-position)
                (line-beginning-position 2)))))
 
-Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. Since the advice only affects the commands' ''interactive'' behavior, it's safe for other functions to call them.
+Thus, `M-w' with no selection copies the current line, `C-w' kills it entirely, and `C-a M-w C-y' duplicates it. As the advice only affects the commands' ''interactive'' behavior, they are safe for other functions to call.
 
 === With yank-handler ==
 

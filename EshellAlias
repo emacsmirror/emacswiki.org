@@ -79,9 +79,10 @@ To integrate both, either:
 
 I have used solution d: I use a line in .bashrc which, after all aliases have been defined, creates the alias file for eshell (eshell-aliases-file):
 
-    alias | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2/g; s/'\\\''/'/g;" >~/.emacs.d/eshell/alias 
+    alias | sed -E "s/^alias ([^=]+)='(.*)'$/alias \1 \2 \$*/g; s/'\\\''/'/g;" >~/.emacs.d/eshell/alias 
 
-It only takes 0m0.007s so I don't mind running it each time I open bash.
+This takes care of allowing eventual parameters ($*) and allows single quotes as part of the expanded alias.
+That line takes only 0m0.007s so I don't mind running it each time I open bash.
 
 -- 2.m7.2010 [[DanielClemente]]
 
