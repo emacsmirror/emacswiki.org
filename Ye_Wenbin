@@ -145,4 +145,14 @@ the elisp manual claims that `require' is automatically `eval-and-compile'd, but
 DanielSchüssler
 
 ----
+[new]
+Hello Ye,
+In Emacs 23.1.1, i think there's a bug with Bibus. When a try to load it, i get the following error:
+
+    mysql-cell: Wrong type argument: integerp, nil
+
+Maybe you can help me or fix the bug, thanks.
+
+-- HeitorSalazar
+----
 CategoryHomepage

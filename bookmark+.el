@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Jul  4 08:56:16 2010 (-0700)
+;; Last-Updated: Wed Jul  7 09:11:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14664
+;;     Update #: 14674
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2020,7 +2020,9 @@ BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
      (when (stringp bookmark)
        ;; BOOKMARK can be either a bookmark name (found in `bookmark-alist') or a bookmark
        ;; object.  If an object, assume it's a bookmark used internally by some other package.
-       (let ((file  (bookmark-get-filename bookmark)))
+       (let ((file             (bookmark-get-filename bookmark))
+             (use-dialog-box   nil)
+             (use-file-dialog  nil))
          (when file                     ; Don't know how to relocate if file doesn't exist.
            (unless (string= file bmkp-non-file-filename) (setq file  (expand-file-name file)))
            (ding)
@@ -2037,7 +2039,7 @@ BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
                   (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
                            (bookmark-get-bookmark bookmark))) ; Try again
                  (t
-                  (message "Bookmark not relocated \(%s\)" bookmark)
+                  (message "Bookmark not relocated: `%s'" bookmark)
                   (signal (car err) (cdr err)))))))))
   (when (stringp bookmark) (setq bookmark-current-bookmark  bookmark))
   nil)                                  ; Return nil if no error.
@@ -2159,10 +2161,13 @@ candidate."
 BOOKMARK is a bookmark name or a bookmark record.
 Return \"\" if no such name can be found." ; $$$$$$
   (bookmark-maybe-load-default-file)
-  (or (bookmark-get-filename bookmark) (bmkp-get-buffer-name bookmark)
+  (or (bookmark-prop-get bookmark 'location)
+      (bookmark-get-filename bookmark)
+      (bmkp-get-buffer-name bookmark)
       (bookmark-prop-get bookmark 'buffer)
-      ""))
-      ;; $$$$$$ (error "Bookmark has no file or buffer name: %S" bookmark)))
+      "-- Unknown location --"))
+      ;; $$$$$$$$$ ""))
+      ;; $$$$ (error "Bookmark has no file or buffer name: %S" bookmark)))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -2413,7 +2418,7 @@ bookmark files that were created using the bookmark functions."
         (setq bookmarks-already-loaded  t))
       (bookmark-bmenu-surreptitiously-rebuild-list))
     (kill-buffer (current-buffer)))
-  (unless no-msg (bookmark-maybe-message "Loading bookmarks from `%s'...done" file))
+  (unless no-msg (bookmark-maybe-message "Current bookmark file is now `%s'" file))
   (let ((bmklistbuf  (get-buffer "*Bookmark List*")))
     (when bmklistbuf (with-current-buffer bmklistbuf (bmkp-bmenu-refresh-menu-list)))))
 
@@ -3127,12 +3132,13 @@ so bookmarks will subsequently be saved to FILE.
 `bookmark-default-file' is unaffected, so your next Emacs session will
 still use `bookmark-default-file' for the initial set of bookmarks."
   (interactive
-   (list (read-file-name
-          "Switch to bookmark file: " "~/"
-          ;; Default file as default choice, unless it's already current.
-          (and (not (bmkp-same-file-p bookmark-default-file bmkp-current-bookmark-file))
-               bookmark-default-file)
-          'confirm)))
+   (list    (let ((insert-default-directory  t))
+              (read-file-name
+               "Switch to bookmark file: " "~/"
+               ;; Default file as default choice, unless it's already current.
+               (and (not (bmkp-same-file-p bookmark-default-file bmkp-current-bookmark-file))
+                    bookmark-default-file)
+               'confirm))))
   (bookmark-load file t no-msg))
 
 ;;;###autoload
@@ -4733,7 +4739,7 @@ unmark those that have no tags at all."
 ;;;###autoload
 (defun bmkp-empty-file (file)
   "Empty the bookmark file FILE, or create FILE (empty) if it does not exist.
-In either case, FILE will become an empty bookmark file.
+In either case, FILE will become an empty bookmark file.  Return FILE.
 
 NOTE: If FILE already exists and you confirm emptying it, no check is
       made that it is in fact a bookmark file before emptying it.
@@ -4742,6 +4748,7 @@ NOTE: If FILE already exists and you confirm emptying it, no check is
 This does NOT also make FILE the current bookmark file.  To do that,
 use `\\[bmkp-switch-bookmark-file]' (`bmkp-switch-bookmark-file')."
   (interactive (list (read-file-name "Create empty bookmark file: " "~/")))
+  (setq file  (expand-file-name file))
   (bookmark-maybe-load-default-file)
   (when (and (file-exists-p file)
              (not (y-or-n-p (format "CONFIRM: Empty the existing file `%s'? " file))))
@@ -4749,7 +4756,8 @@ use `\\[bmkp-switch-bookmark-file]' (`bmkp-switch-bookmark-file')."
   (let ((bookmark-alist  ()))
     (bookmark-write-file file (if (file-exists-p file)
                                   "Emptying bookmark file `%s'..."
-                                "Creating new, empty bookmark file `%s'..."))))
+                                "Creating new, empty bookmark file `%s'...")))
+  file)
 
 ;;;###autoload
 (defun bmkp-bmenu-w32-open ()           ; `M-RET' in bookmark list.
@@ -9442,7 +9450,7 @@ bmkp-use-region             - Activate saved region when visit?"
   '(menu-item "Insert Bookmark Contents..." bookmark-insert :help "Insert bookmarked text")
   'bmkp-make-function-bookmark)
 (define-key-after menu-bar-bookmark-map [locate]
-  '(menu-item "Insert Bookmark Location..." bookmark-locate
+  '(menu-item "Insert Bookmark Location..." bookmark-locate ; Alias for `bookmark-insert-location'.
     :help "Insert a bookmark's file or buffer name")
   'insert)
 

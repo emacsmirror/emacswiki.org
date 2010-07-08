@@ -1,7 +1,7 @@
 Jochen Hayek is a Berlin (Germany) based self-employed software developer.
 
 ----
-Why does he write in 3rd person, singular here?
+Why does /he/ write in 3rd person, singular here?
 Because this text got derived from http://wiki.docbook.org/topic/JochenHayek.
 And they talk that way over there.
 
@@ -20,14 +20,17 @@ first GoslingEmacs ([[http://en.wikipedia.org/wiki/Gosling_Emacs|GoslingEmacs on
 later (starting like 1993 or so) it was GnuEmacs.
 
 Actually having been a native Unixer from like 1981 on or so,
-# my 1st Unix text editor being ''ed'' on a PDP11,
-# my 2nd Unix text editor then Berkley ''vi''.
+* his 1st Unix text editor was ''ed'' on a PDP11,
+* his 2nd Unix text editor was Berkley ''VI''.
 
-I must admit I have always been using it on and off.
-My brain is actually able to switch from vi-mode to emacs-mode without too much pain.
+He must admit he has always been using VI on and off since then.
+My brain is actually able to switch from vi-mode to emacs-mode without too much pain and also w/o remedies.
+But of course, he never uses VI (or VIM or whatever) for the real things, just for the tiny things.
+Yes, VIM is multi-buffer / multi-window nowadays, and that's nice, alright, but then ... - we don't care.
 
 ----
 He loves hacking all sorts of text in emacs and its various ''modes''.
+Editing text with using massive mountains of parentheses or nested s-expressions is just big, big fun in emacsen.
 
 ----
 His favourite programming languages are perl, ruby, xlisp, Common Lisp, Ada, …, and C.
@@ -36,10 +39,14 @@ Pascal was actually his first programming language back in 1979.
 
 (Can we mention bash, zsh, ksh, and msh here as well?)
 
-He is an "all Unix" guy, be it Linux or OS X nowadays.
+He is an "all Unix" guy, be it Linux or OS X or Cygwin nowadays.
 
 ----
-He loves gadgets like his multi-functional router, the [[http://www.avm.de/de/Produkte/FRITZBox/FRITZ_Box_Fon_WLAN_7390|AVM 7390]], or his stone-age iPhone 3G.
+He loves gadgets
+
+* like his multi-functional router, the [[http://www.avm.de/de/Produkte/FRITZBox/FRITZ_Box_Fon_WLAN_7390|AVM 7390]],
+* or his stone-age iPhone 3G,
+* but also software gadgets like /DocBook/ or /DocBook/ /Website/
 
 ----
 He loves address books (e.g. Google Mail Contacts) and diaries,
@@ -69,5 +76,12 @@ e-mail:
 
 http://Hayek.name/Jochen/images/jochen_at_hayek_dot_name.png
 
+
+
+
+----
+
+[new:DrewAdams:2010-07-07 13:12 UTC]
+Welcome to the wiki. -- DrewAdams
 ----
 CategoryHomepage

@@ -53,13 +53,14 @@
 ;; `mon-set-C-source-directory-init'
 ;; `mon-set-customizations-before-custom-file-init'
 ;; `mon-set-unicodedata-init'
-;; `mon-w32-key-init'
+;; `mon-keybind-w32-init'
 ;; `mon-set-w3m-init'
-;; `mon-set-css-path-init'
+;; `mon-set-css-ptah-init'
 ;; `mon-set-buffer-local-comment-start'
 ;; `mon-set-buffer-local-comment-start-init'
 ;; `mon-set-apache-mode-init'
 ;; `mon-set-traverselisp-init'
+;; `mon-keybind-put-hooks-init'
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -181,7 +182,7 @@
 (eval-when-compile (require 'cl))
 
 ;;; First things first. Make sure we aren't tortured by blinking cursors etc.
-(when IS-MON-P
+(when (and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
   (unless show-paren-mode (show-paren-mode 1))
   (unless (null scroll-bar-mode) (scroll-bar-mode -1))
   (unless (null tool-bar-mode) (tool-bar-mode -1))
@@ -197,42 +198,44 @@
 \(symbol-value \(nth 3 *mon-default-start-loads-xrefs*\)\)\n
 :SEE-ALSO `*naf-mode-xref-of-xrefs*'.\n►►►")
 ;;
-(unless (bound-and-true-p *mon-default-start-loads-xrefs*)
-  (setq *mon-default-start-loads-xrefs*
-        '(*mon-default-start-loads-xrefs*
-          *mon-default-start-load-sanity*
-          *mon-default-start-load-sanity-WARN-ONLY*
-          mon-default-start-error/sane
-          mon-set-ibuffer-init
-          mon-set-load-path-init
-          mon-set-color-themes-init
-          mon-set-infopath-init
-          mon-set-woman-manpath-init
-          mon-set-bookmark-file-init
-          mon-set-custom-file-init
-          mon-set-thumbs-conversion-program-init
-          mon-set-common-lisp-hspec-init
-          mon-set-longlines-init
-          mon-set-dvc-init
-          mon-set-help-mode-init
-          mon-set-auctex-init
-          ;; Not Macrolified:
-          mon-build-path-for-load-path
-          mon-set-buffer-local-comment-start
-          mon-set-rst-mode-faces-init
-          mon-toggle-show-point-mode
-          mon-set-doc-view-programs-init
-          mon-set-emacs-temp-file/dir-init
-          mon-set-ispell-init
-          mon-set-C-source-directory-init
-          mon-set-customizations-before-custom-file-init
-          mon-set-unicodedata-init
-          mon-w32-key-init
-          mon-set-w3m-init
-          mon-set-css-path-init
-          mon-set-apache-mode-init
-          mon-set-traverselisp-init
-          )))
+(when (and (intern-soft "IS-MON-SYSTEM-P") 
+           (bound-and-true-p IS-MON-SYSTEM-P))
+  (unless (bound-and-true-p *mon-default-start-loads-xrefs*)
+    (setq *mon-default-start-loads-xrefs*
+          '(*mon-default-start-loads-xrefs*
+            *mon-default-start-load-sanity*
+            *mon-default-start-load-sanity-WARN-ONLY*
+            mon-default-start-error/sane
+            mon-set-ibuffer-init
+            mon-set-load-path-init
+            mon-set-color-themes-init
+            mon-set-infopath-init
+            mon-set-woman-manpath-init
+            mon-set-bookmark-file-init
+            mon-set-custom-file-init
+            mon-set-thumbs-conversion-program-init
+            mon-set-common-lisp-hspec-init
+            mon-set-longlines-init
+            mon-set-dvc-init
+            mon-set-help-mode-init
+            mon-set-auctex-init
+            mon-build-path-for-load-path
+            mon-set-buffer-local-comment-start
+            mon-set-rst-mode-faces-init
+            mon-toggle-show-point-mode
+            mon-set-doc-view-programs-init
+            mon-set-emacs-temp-file/dir-init
+            mon-set-ispell-init
+            mon-set-C-source-directory-init
+            mon-set-customizations-before-custom-file-init
+            mon-set-unicodedata-init
+            mon-keybind-w32-init
+            mon-set-w3m-init
+            mon-set-css-path-init
+            mon-set-apache-mode-init
+            mon-set-traverselisp-init
+            mon-keybind-put-hooks-init
+            ))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T18:29:52-04:00Z}#{10135} - by MON KEY>
@@ -251,8 +254,8 @@ should not be evaluated again in the current Emacs session.\n
 (defvar *mon-default-start-load-sanity-WARN-ONLY* nil
   "When non-nil override all error singaling of `mon-default-start-error/sane'.\n
 Setting this variable non-nil may be useful when: 
- o debugging inits;
- o examining/valuating a function member of `*mon-default-start-load-sanity*';
+ o Debugging inits;
+ o Examining/valuating a function member of `*mon-default-start-load-sanity*';
  o When `IS-NOT-A-MON-SYSTEM' to avoid the `IS-MON-SYSTEM-P' runtime checks.\n
 :SEE-ALSO `*mon-default-start-load-sanity*'.\n►►►")
 
@@ -267,7 +270,9 @@ Setting this variable non-nil may be useful when:
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T18:13:07-04:00Z}#{10135} - by MON KEY>
 (defmacro mon-default-start-error/sane (fncn &optional just-warn &rest do-sane)
-  "Signal an error if FNNCN was evaluated at init or when `IS-NOT-A-MON-SYSTEM'.
+  "Evaluate body DO-SANE when `IS-MON-SYSTEM-P' returns non-nil.\n
+Signal an error if `IS-NOT-A-MON-SYSTEM' or FNCN was evaluated at init and
+optional arg just-warn was ommitted or null.\n
 If FNCN has not yet been evaluated and `IS-MON-SYSTEM-P' push function onto
 variable `*mon-default-start-load-sanity*'.\n
 The intent is to prevent those procedures evalauated at init time from: :FILE
@@ -281,7 +286,7 @@ sanely on their systems. Binding `*mon-default-start-load-sanity-WARN-ONLY*'
 non-nil to will also override all error signaling.\n
 :SEE-ALSO .\n►►►"
   `(progn
-     (cond ((or (and (intern-soft "IS-NOT-A-MON-SYSTEM") 
+     (cond ((or (and (intern-soft "IS-NOT-A-MON-SYSTEM")  
                      (bound-and-true-p IS-NOT-A-MON-SYSTEM))
                 (not (intern-soft "IS-MON-SYSTEM-P"))
                 (not (bound-and-true-p IS-MON-SYSTEM-P)))
@@ -654,6 +659,7 @@ Sets the following variables:
   (mon-default-start-error/sane 
    'mon-set-unicodedata-init warn-only ;; nil
    (when (and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
+     (require 'descr-text)
      (let ((chk-UCF (expand-file-name "UNICODE-DATA/UnicodeData.txt" *mon-site-lisp-root*)))
        (when (file-exists-p chk-UCF)
          (setq describe-char-unicodedata-file chk-UCF)))
@@ -1042,10 +1048,13 @@ aren't clobbered for the variables:\n
                   (bound-and-true-p common-lisp-hyperspec-symbol-table))
        (setq common-lisp-hyperspec-root (nth 8 (mon-get-mon-emacsd-paths)))
        (setq common-lisp-hyperspec-issuex-table 
-             (concat common-lisp-hyperspec-root "Data/Map_IssX.txt")) ;; "Issue-Cross-Refs.text"))
+             (cond ((string-match-p "v3" common-lisp-hyperspec-root)
+                    (concat common-lisp-hyperspec-root "Data/Issue-Cross-Refs.text"))
+                   (t (concat common-lisp-hyperspec-root "Data/Map_IssX.txt"))))
        (setq common-lisp-hyperspec-symbol-table 
-             (concat common-lisp-hyperspec-root "Data/Map_Sym.txt")))) ;; "Symbol-Table.text"))))
-   ))
+             (cond ((string-match-p "v3" common-lisp-hyperspec-root)
+                    (concat common-lisp-hyperspec-root "Data/Symbol-Table.text"))
+                   (t (concat common-lisp-hyperspec-root "Data/Map_Sym.txt"))))))))
 ;;
 ;; (mon-set-common-lisp-hspec-init t)
 
@@ -1062,7 +1071,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    'mon-set-slime-init warn-only
    (when (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
      (load-file "slime-loads.el"))
-   ;; (when IS-MON-P-GNU (load-file "slime-loads-GNU.el"))
+   ;; (when IS-MON-P-GNU (require 'slime-loads-GNU-clbuild)
+   ;;        (mon-slime-setup-init))
    (when (and (intern-soft "IS-MON-P") 
               (bound-and-true-p IS-MON-P))
      (add-hook 'emacs-lisp-mode-hook
@@ -1084,8 +1094,11 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      ;; (remove-hook 'emacs-lisp-mode-hook #'(lambda () (setq truncate-lines t)))
      ;; ==============================
      ;; (setq lisp-indent-function 'lisp-indent-function)
-     ;;
      ;; (setq-default lisp-indent-function 'common-lisp-indent-function)
+     ;; ==============================
+     ;; :SLIME-RELATED-HOOKS
+     ;; (add-hook 'lisp-mode-hook (function (lambda () (slime-mode t))))
+     ;; (add-hook 'inferior-lisp-mode-hook (lambda () (inferior-slime-mode t)))
      )))
 ;;
 ;; (mon-set-lisp-init t)
@@ -1178,12 +1191,14 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ))
 ;; (mon-set-dvc-init t)
 
+(declare-function mon-keybind-w3m "mon-keybindings" t t)
 
 ;;; ==============================
 ;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T12:03:37-04:00Z}#{10216} - by MON KEY>
 (defun mon-set-w3m-init (&optional warn-only)
   "Set and load w3m and related preferences on MON systems at init time.\n
+Add `mon-keybind-w3m' to the w3m-mode-hook to adjust `w3m-mode-map' keybindings.
 Only relevant when `IS-MON-P-GNU'.\n
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
@@ -1196,36 +1211,13 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      (add-to-list 'load-path 
                   (mon-build-path-for-load-path *mon-site-lisp-root* "emacs-w3m"))
      (require 'w3m-load)
+     (require 'w3m)
      (custom-set-variables
       '(w3m-use-cookies t t)
       '(browse-url-browser-function 'w3m-browse-url t)
       '(w3m-home-page "http://www.google.com" t)
       '(w3m-fill-column 80 t)
-      '(w3m-add-user-agent nil t))
-     (add-hook 'w3m-mode-hook
-               (function (lambda ()
-                           (progn 
-                             (local-unset-key  (kbd "<up>")) ;; w3m-next-anchor    (kbd "<C-up>")
-                             (local-unset-key  (kbd "<down>")) ;; w3m-previous-anchor
-                             (local-unset-key  (kbd "M-C"))
-                             (local-set-key    (kbd "<up>")   'mon-scroll-down-in-place)
-                             (local-set-key    (kbd "<down>") 'mon-scroll-up-in-place)
-                             (local-set-key    (kbd "M-C")    'mon-w3m-kill-url-at-point))))))
-   ;; ==============================
-   ;; :NOTE Following is some unfinished work-notes regarding pending customization of w3m keymaps/hooks
-     ;; `w3m-mode-map'
-     ;; `w3m-mode-menu'
-     ;; No, This is M-n 
-     ;; w3m-copy-buffer2 
-     ;; (14 . w3m-next-buffer)
-     ;; (16 . w3m-previous-buffer)
-     ;; (20 . w3m-copy-buffer)
-     ;; (22 . w3m-history-restore-position)
-     ;; (67108896 . w3m-history-store-position)
-     ;; (0 . w3m-history-store-position))
-     ;; (browse-url-generic-program  'w3m-browse-url)
-     ;; (browse-url-browser-function 'common-lisp-hyperspec)
-   ;; ==============================
+      '(w3m-add-user-agent nil t)))
    ))
 ;; (mon-set-w3m-init t)
 
@@ -1308,8 +1300,10 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
              'mon-set-buffer-local-comment-start t)
    ;; :CSS-MODE-COMMENT
    (add-hook 'css-mode-hook 
-             (function (lambda () 
-                         (set (make-local-variable 'comment-start) "/*"))))
+             (function (lambda () ;; :NOTE CSS-MODE should do this already but
+                         ;; sometimes gets unbound by other hooks.
+                         (set (make-local-variable 'comment-start) "/*")
+                         (set (make-local-variable 'comment-end) "*/"))))
    ;; :SHELL-MODE-COMMENT
    ;; :NOTE Maybe should be less aggressive with this one.
    ;; :SEE `sh-make-vars-local' which can set the hook in a more context
@@ -1348,18 +1342,18 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    (require 'mon-css-complete) 
    (require 'mon-css-check nil t)
    (when (featurep 'mon-css-check)
-     (unless (bound-and-true-p css-check-csstidy-path)
+     (unless (bound-and-true-p *css-check-csstidy-path*)
        (let ((csstidy-path
               (or (executable-find "csstidy")
                   (when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
                     (or (executable-find "csstidy.exe")
                         (car (file-expand-wildcards
                               (concat (getenv "SP_BIN") "/csstidy/*.exe"))))))))
-         (when csstidy-path (setq css-check-csstidy-path csstidy-path)))))
-     ;; :CSS-COLOR
-   (autoload 'css-color-mode "mon-css-color" "" t)
-   (add-hook 'css-mode-hook 
-             (function (lambda () (css-color-turn-on-in-buffer))))
+         (when csstidy-path (setq *css-check-csstidy-path* csstidy-path)))))
+   ;; ;; :CSS-COLOR
+    (autoload 'css-color-mode "mon-css-color" "" t)
+    (add-hook 'css-mode-hook 
+              (function (lambda () (css-color-turn-on-in-buffer))))
    ))
 ;;
 ;; (mon-set-css-path-init t)
@@ -1478,7 +1472,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; ==============================
 ;;; :NOTE :BEFORE :FILE mon-keybindings.el
 ;;; :CREATED <Timestamp: #{2010-04-03T17:40:37-04:00Z}#{10136} - by MON KEY>
-(defun mon-w32-key-init ()
+(defun mon-keybind-w32-init ()
   "Initialize w32 related keys on MON systems.\n
 Binds the following variables:
  `w32-pass-rwindow-to-system', `w32-pass-lwindow-to-system'
@@ -1490,9 +1484,11 @@ Binds the following variables:
 `w32-mouse-move-interval', `w32-pass-extra-mouse-buttons-to-system',
 `w32-pass-multimedia-buttons-to-system', `w32-register-hot-key',
 `w32-unregister-hot-key', `w32-registered-hot-keys', `w32-reconstruct-hot-key',
-`w32-toggle-lock-key'.\n►►►"
+`w32-toggle-lock-key', `mon-keybind-w3m', `mon-keybind-dired-mode',
+`mon-keybind-w32-init', `mon-keybind-lisp-interaction-mode',
+`mon-keybind-emacs-lisp-mode', `mon-help-key-functions', `mon-help-keys'.\n►►►"
   (mon-default-start-error/sane
-   'mon-w32-key-init nil ;; just-warn
+   'mon-keybind-w32-init nil ;; just-warn
    (when (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
      (custom-set-variables
       '(w32-pass-lwindow-to-system nil)
@@ -1501,8 +1497,44 @@ Binds the following variables:
       '(w32-lwindow-modifier 'super)
       '(w32-rwindow-modifier 'hyper)))
    ))
-;; (mon-w32-key-init)
+;; (mon-keybind-w32-init)
 
+;;; ==============================
+;; Tell BC whats who for `mon-keybind-put-hooks-init' & `mon-set-system-specific-and-load-init'
+(dolist (kybnd-fncn '(mon-keybind-w3m
+                      mon-keybind-dired-mode
+                      mon-keybind-completions
+                      mon-keybind-emacs-lisp-mode
+                      mon-keybind-lisp-interaction-mode
+                      mon-keybind-slime))
+  (declare-function kybnd-fncn "mon-keybindings" t t))
+;;
+;;; ==============================
+;;; :CHANGESET 1896
+;;; :CREATED <Timestamp: #{2010-06-17T14:41:40-04:00Z}#{10244} - by MON KEY>
+(defun mon-keybind-put-hooks-init (&optional warn-only)
+  "Add keybindings to various mode-hooks at init.\n
+Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
+:SEE-ALSO `mon-keybind-w3m', `mon-keybind-dired-mode', `mon-keybind-w32-init',
+`mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
+`mon-help-key-functions', `mon-help-keys'.\n►►►"
+  (mon-default-start-error/sane
+   'mon-set-system-specific-and-load-init warn-only
+   ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
+   (add-hook 'dired-mode-hook 'mon-keybind-dired-mode)
+   ;; (remove-hook 'completion-list-mode-hook 'mon-keybind-completions)
+   (add-hook 'completion-list-mode-hook 'mon-keybind-completions)
+   ;; (remove-hook 'emacs-lisp-mode-hook 'mon-keybind-emacs-lisp-mode)
+   (add-hook 'emacs-lisp-mode-hook  'mon-keybind-emacs-lisp-mode)
+   ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
+   (add-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
+   ;; (remove-hook 'slime-mode-hook 'mon-keybind-slime)
+   (add-hook 'slime-mode-hook 'mon-keybind-slime)
+   (when (featurep 'w3m)
+     ;; (remove-hook 'w3m-mode-hook 'mon-keybind-w3m)
+     (add-hook 'w3m-mode-hook 'mon-keybind-w3m))
+   ))
+;;
 ;;; ==============================
 ;;; :CHANGESET 1786
 ;;; :CREATED <Timestamp: #{2010-05-29T11:33:29-04:00Z}#{10216} - by MON KEY>
@@ -1518,6 +1550,10 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
           (require 'mon-w32-load))
          ((and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
           (require 'mon-GNU-load)
+          ;; (require 'mon-GNU-load-no-HG)          
+          ;; (load "slime-loads-GNU-clbuild.el")
+          (require 'slime-loads-GNU-clbuild)
+          (mon-slime-setup-init)
           ;; :BEFORE mon-utils.el
           (mon-set-common-lisp-hspec-init)
           ))
@@ -1534,7 +1570,7 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    (mon-set-longlines-init)
    (mon-set-buffer-local-comment-start-init)   
    (mon-set-unicodedata-init)   
-   (mon-w32-key-init)
+   (mon-keybind-w32-init)
    (mon-set-w3m-init)
    (mon-set-browser-init)
    (mon-set-lisp-init)
@@ -1577,6 +1613,9 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    ;; :NOTE This is a patched version of Matsushita Akihisa's color-cccur.el
    ;; :SEE (URL `http://www.bookshelf.jp/elc/color-occur.el')
    (require 'mon-color-occur)
+   ;;; ==============================
+   ;; Now put some keybindings on the mode-hooks:
+   (mon-keybind-put-hooks-init)
    ))
 ;;
 ;; (mon-set-system-specific-and-load-init t)
@@ -1596,3 +1635,4 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
 ;;; ================================================================
 ;;; mon-default-start-loads.el ends here
 ;;; EOF
+

@@ -1,0 +1,19 @@
+longlines-jp.el provide function like longlines-mode for Japanese text.
+
+You can find it here: Lisp:longlines-jp.el
+
+== Installation ==
+
+Load it with <tt>autoload</tt> or <tt>require</tt>.
+
+The enter
+
+ M-x longlines-jp
+
+or load it permanently with
+
+ (longlines-jp t)
+
+in your emacs configuration file.
+
+----

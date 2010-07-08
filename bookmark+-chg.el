@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul  3 09:32:59 2010 (-0700)
+;; Last-Updated: Wed Jul  7 09:21:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12895
+;;     Update #: 12905
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -95,6 +95,11 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2010/07/07 dadams
+;;     bookmark-handle-bookmark: Bind use-dialog-box, use-file-dialog to nil.
+;;     bookmark-location: From Emacs 23: Use location property and -- Unknown location --.
+;;     bmkp-switch-bookmark-file: Bind insert-default-directory to nil.
+;;     bmkp-empty-file: Expand FILE.  Return FILE.
 ;; 2010/07/03 dadams
 ;;     Added: bmkp-bmenu-describe-marked, bmkp-bookmark-description.
 ;;     bmkp-describe-bookmark: Rewrote to use bmkp-bookmark-description.
@@ -1113,5 +1118,5 @@
 (provide 'bookmark+-chg)                ; Not used.
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; bookmark+-doc.el ends here
+;;; bookmark+-chg.el ends here
 

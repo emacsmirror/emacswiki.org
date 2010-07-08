@@ -73,6 +73,7 @@ Other pages (could this please be split in major and minor modes?):
 * LicenseCopyright -- Insert a license header into the active buffer
 * LineNumbers
 * LojbanMode -- support for lojban language.
+* LongLinesJpMode -- longlines mode for Japanese.
 * MailboxMode -- berkeley style aka standard mailbox browsing minor mode
 * MailCrypt -- PGP and GPG support
 * MailMode -- a mode for writing mail/news messages

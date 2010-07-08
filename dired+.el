@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat May 29 22:53:42 2010 (-0700)
+;; Last-Updated: Wed Jul  7 15:43:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2398
+;;     Update #: 2472
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -179,6 +179,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/07/07 dadams
+;;     dired-do-*: Updated doc strings for prefix arg treatment from dired-map-over-marks-check.
+;;     Added missing autoload cookies.
 ;; 2010/05/29 dadams
 ;;     diredp-bookmark: Use relative file name in bookmark name.
 ;;     Removed defvar of directory-listing-before-filename-regexp.
@@ -417,29 +420,35 @@
 ;;; Macros
 
 
-;;; REPLACE ORIGINAL in `dired.el'.
-;;; Treat multiple `C-u' specially.
-;;;
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Treat multiple `C-u' specially.
+;;
 (defmacro dired-map-over-marks (body arg &optional show-progress
                                 distinguish-one-marked)
   "Eval BODY with point on each marked line.  Return a list of BODY's results.
 If no marked file could be found, execute BODY on the current line.
-  If ARG is an integer, use the next ARG (or previous -ARG, if ARG<0)
-  files instead of the marked files.
-  In that case point is dragged along.  This is so that commands on
-  the next ARG (instead of the marked) files can be chained easily.
-  If ARG is otherwise non-nil, use current file instead.
+ARG, if non-nil, specifies the files to use instead of the marked files.
+ If ARG is an integer, use the next ARG files (previous -ARG, if < 0).
+   In that case point is dragged along.  This is so that commands on
+   the next ARG (instead of the marked) files can be easily chained.
+ If ARG is a cons with element 16, 64, or 256, corresponding to
+   `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files
+   in the Dired buffer, where:
+     16 includes NO directories (including `.' and `..')
+     64 includes directories EXCEPT `.' and `..'
+    256 includes ALL directories (including `.' and `..')
+ If ARG is otherwise non-nil, use the current file.
 If optional third arg SHOW-PROGRESS evaluates to non-nil,
-  redisplay the dired buffer after each file is processed.
-No guarantee is made about the position on the marked line.
-  BODY must ensure this itself if it depends on this.
+ redisplay the dired buffer after each file is processed.
+ No guarantee is made about the position on the marked line.
+ BODY must ensure this itself, if it depends on this.
 Search starts at the beginning of the buffer, thus the car of the list
-  corresponds to the line nearest to the buffer's bottom.  This
-  is also true for (positive and negative) integer values of ARG.
-BODY should not be too long as it is expanded four times.
-
-If DISTINGUISH-ONE-MARKED is non-nil, then if we find just one marked file,
-return (t FILENAME) instead of (FILENAME)."
+ corresponds to the line nearest to the buffer's bottom.  This
+ is also true for (positive and negative) integer values of ARG.
+BODY should not be too long, since it is expanded four times.
+If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
+ of (FILENAME), if only one file is marked."
   ;;
   ;;Warning: BODY must not add new lines before point - this may cause an
   ;;endless loop.
@@ -546,20 +555,20 @@ Values returned are normally absolute file names.
 Optional arg LOCALP as in `dired-get-filename'.
 Optional second argument ARG specifies files to use instead of marked.
  Usually ARG comes from the command's prefix arg.
- If ARG is an integer, use the next ARG files (or previous if < 0).
+ If ARG is an integer, use the next ARG files (previous -ARG, if < 0).
  If ARG is a cons with element 16, 64, or 256, corresponding to
   `C-u C-u', `C-u C-u C-u', or `C-u C-u C-u C-u', then use all files
   in the Dired buffer, where:
-    16 excludes directories, `.' and `..'
-    64 includes directories but not `.' and `..'
-    256 includes directories, `.' and `..'
+    16 includes NO directories (including `.' and `..')
+    64 includes directories EXCEPT `.' and `..'
+   256 includes ALL directories (including `.' and `..')
  If ARG is otherwise non-nil, use the current file.
 Optional third argument FILTER, if non-nil, is a function to select
-  some of the files--those for which (funcall FILTER FILENAME) is non-nil.
-
-If DISTINGUISH-ONE-MARKED is non-nil, then if we find just one marked file,
-return (t FILENAME) instead of (FILENAME).
-Don't use that together with FILTER."
+ some of the files: those for which (funcall FILTER FILENAME) is
+ non-nil.
+If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
+ of (FILENAME), if only one file is marked.  Do not use non-nil
+ DISTINGUISH-ONE-MARKED together with FILTER."
   (let* ((all-of-them
 	  (save-excursion
 	    (dired-map-over-marks (dired-get-filename localp) arg nil distinguish-one-marked)))
@@ -608,6 +617,7 @@ SHOW-PROGRESS if non-nil means redisplay dired after each file."
                     (downcase string) count total (dired-plural-s total))
             failures)))))
 
+;;;###autoload
 (when (boundp 'dired-subdir-switches)   ; Emacs 22+
   (defun dired-do-redisplay (&optional arg test-for-subdir)
     "Redisplay all marked (or next ARG) files.
@@ -642,6 +652,7 @@ See Info node `(emacs)Subdir switches' for more details."
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
 
+;;;###autoload
 (unless (boundp 'dired-subdir-switches) ; Emacs 20, 21
   (defun dired-do-redisplay (&optional arg test-for-subdir)
     "Redisplay all marked (or next ARG) files.
@@ -668,6 +679,7 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 
 ;;; Stuff from `image-dired.el'.
 
+;;;###autoload
 (when (fboundp 'image-dired-get-thumbnail-image) ; Emacs 22+
   (defun image-dired-dired-insert-marked-thumbs ()
     "Insert thumbnails before file names of marked files in the dired buffer."
@@ -695,10 +707,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 ;;; Key Bindings.
 
 
-;;; Menu Bar.
-;;; New order is (left -> right):
-;;;
-;;;     Dir  Regexp  Mark  Multiple  Single
+;; Menu Bar.
+;; New order is (left -> right):
+;;
+;;     Dir  Regexp  Mark  Multiple  Single
 
 ;; Get rid of menu bar predefined in `dired.el'.
 (define-key dired-mode-map [menu-bar] nil)
@@ -706,10 +718,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 (define-key dired-mode-map [menu-bar edit] 'undefined)
 
 
-;;; "Single" menu.
-;;;
-;;; REPLACE ORIGINAL "Immediate" menu in `dired.el'.
-;;;
+;; "Single" menu.
+;;
+;; REPLACE ORIGINAL "Immediate" menu in `dired.el'.
+;;
 ;;;###autoload
 (defvar diredp-menu-bar-immediate-menu (make-sparse-keymap "Single"))
 (define-key dired-mode-map [menu-bar immediate]
@@ -819,10 +831,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
   '(menu-item "Open" dired-find-file :help "Edit file at cursor"))
 
 
-;;; "Multiple" menu.
-;;;
-;;; REPLACE ORIGINAL "Operate" menu in `dired.el'.
-;;;
+;; "Multiple" menu.
+;;
+;; REPLACE ORIGINAL "Operate" menu in `dired.el'.
+;;
 ;;;###autoload
 (defvar diredp-menu-bar-operate-menu (make-sparse-keymap "Multiple"))
 (define-key dired-mode-map [menu-bar operate]
@@ -964,10 +976,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
       :help "Open each marked file for editing")))
 
 
-;;; "Regexp" menu.
-;;;
-;;; REPLACE ORIGINAL "Regexp" menu in `dired.el'.
-;;;
+;; "Regexp" menu.
+;;
+;; REPLACE ORIGINAL "Regexp" menu in `dired.el'.
+;;
 ;;;###autoload
 (defvar diredp-menu-bar-regexp-menu (make-sparse-keymap "Regexp"))
 (define-key dired-mode-map [menu-bar regexp]
@@ -1004,10 +1016,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
     :help "Mark files whose contents matches regexp"))
 
 
-;;; "Mark" menu.
-;;;
-;;; REPLACE ORIGINAL "Mark" menu in `dired.el'.
-;;;
+;; "Mark" menu.
+;;
+;; REPLACE ORIGINAL "Mark" menu in `dired.el'.
+;;
 ;;;###autoload
 (defvar diredp-menu-bar-mark-menu (make-sparse-keymap "Mark"))
 (define-key dired-mode-map [menu-bar mark] (cons "Mark" diredp-menu-bar-mark-menu))
@@ -1093,10 +1105,10 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
   '(menu-item "Unmark" dired-unmark :help "Unmark or unflag current line's file"))
 
 
-;;; "Dir" menu.
-;;;
-;;; REPLACE ORIGINAL "Subdir" menu in `dired.el'.
-;;;
+;; "Dir" menu.
+;;
+;; REPLACE ORIGINAL "Subdir" menu in `dired.el'.
+;;
 ;;;###autoload
 (defvar diredp-menu-bar-subdir-menu (make-sparse-keymap "Dir"))
 (define-key dired-mode-map [menu-bar subdir]
@@ -1459,6 +1471,7 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;; Function Definitions
 
+;;;###autoload
 (defun diredp-fileset (flset-name)
   "Open Dired on the files in fileset FLSET-NAME."
   (interactive
@@ -1489,6 +1502,7 @@ Don't forget to mention your Emacs and library versions."))
 ;;; ever be fixed.  If it is declared a non-bug and it doesn't work on any platforms, then I'll
 ;;; remove SWITCHES here, alas.
 
+;;;###autoload
 (defun diredp-marked (dirname &optional n switches)
   "Open Dired on only the marked files or the next N files.
 With a non-zero numeric prefix arg N, use the next abs(N) files.
@@ -1516,6 +1530,7 @@ from multiple directories in the same tree."
     (error "No marked files"))
   (dired dirname switches))
 
+;;;###autoload
 (defun diredp-marked-other-window (dirname &optional n switches)
   "Same as `diredp-marked', but uses a different window."
   (interactive
@@ -1539,6 +1554,7 @@ from multiple directories in the same tree."
 
 ;; Similar to `dired-mark-extension' in `dired-x.el'.
 ;; The difference is that this uses prefix arg to unmark, not to determine the mark character.
+;;;###autoload
 (defun diredp-mark/unmark-extension (extension &optional unmark-p)
   "Mark all files with a certain EXTENSION for use in later commands.
 A `.' is not automatically prepended to the string entered.
@@ -1556,11 +1572,19 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
                                    "\\)$")
    (and current-prefix-arg ?\040)))
 
+;;;###autoload
 (defun diredp-do-bookmark (prefix &optional arg) ; Bound to `M-b'
-  "Bookmark the marked (or the next prefix ARG) files.
+  "Bookmark the marked (or the next prefix argument) files.
 Each bookmark name is PREFIX followed by the relative file name.
 Interactively, you are prompted for the PREFIX.
-The bookmarked position is the beginning of the file."
+The bookmarked position is the beginning of the file.
+
+A prefix argument ARG specifies files to use instead of marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories."
   (interactive
    (progn (unless (eq major-mode 'dired-mode)
             (error "You must be in a Dired buffer to use this command"))
@@ -1595,8 +1619,9 @@ Return nil for success, file name of unsuccessful operation otherwise."
       (dired-make-relative file))))     ; Return file name for failure.
 
 
-;;; REPLACE ORIGINAL in `dired.el'.
-;;; Allows for consp `dired-directory' too.
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Allows for consp `dired-directory' too.
 ;;
 (defun dired-buffers-for-dir (dir &optional file)
   "Return a list of buffers that dired DIR (top level or in-situ subdir).
@@ -1635,8 +1660,7 @@ As a side effect, killed dired buffers for DIR are removed from
 ;; However, if you use library `files+.el', you need not use these commands explicitly,
 ;; because that library redefines `find-file-read-args' to do the same thing, in Dired mode.
 ;; These are provided here in case you want to bind them directly - for example, in case your
-;; code does not use `find-file-read-args'.  That is the case, for instance, for Icicles
-;; (`icicles.cmd').
+;; code does not use `find-file-read-args'.
 ;;
 ;;;###autoload
 (when (fboundp 'dired-get-file-for-visit) ; Defined in Emacs 22.
@@ -1663,6 +1687,7 @@ As a side effect, killed dired buffers for DIR are removed from
           t)))
 
 ;; Define these for Emacs 20 and 21.
+;;;###autoload
 (unless (fboundp 'dired-get-file-for-visit) ; Defined in Emacs 22.
   (defun dired-get-file-for-visit ()
     "Get the current line's file name, with an error if file does not exist."
@@ -1811,33 +1836,57 @@ files are marked, or ARG is -1, 0 or 1."
            (re-search-forward (dired-marker-regexp) nil t 2)))))
 
 
-;;; REPLACE ORIGINAL in `dired-aux.el':
-;;; Redisplay only if at most one file is being treated.
-;;;
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; 1. Redisplay only if at most one file is being treated.
+;; 2. Doc string reflects Dired+'s version of `dired-map-over-marks-check'.
+;;
 ;;;###autoload
 (defun dired-do-compress (&optional arg)
-  "Compress or uncompress marked (or next prefix ARG) files."
+  "Compress or uncompress marked (or next prefix argument) files.
+A prefix argument ARG specifies files to use instead of marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories."
   (interactive "P")
   (dired-map-over-marks-check #'dired-compress arg 'compress (diredp-fewer-than-2-files-p arg)))
 
 
-;;; REPLACE ORIGINAL in `dired-aux.el':
-;;; Redisplay only if at most one file is being treated.
-;;;
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; 1. Redisplay only if at most one file is being treated.
+;; 2. Doc string reflects Dired+'s version of `dired-map-over-marks-check'.
+;;
 ;;;###autoload
 (defun dired-do-byte-compile (&optional arg)
-  "Byte compile marked (or next prefix ARG) Emacs Lisp files."
+  "Byte compile marked (or next prefix argument) Emacs Lisp files.
+A prefix argument ARG specifies files to use instead of marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories."
   (interactive "P")
   (dired-map-over-marks-check #'dired-byte-compile arg 'byte-compile
                               (diredp-fewer-than-2-files-p arg)))
 
 
-;;; REPLACE ORIGINAL in `dired-aux.el':
-;;; Redisplay only if at most one file is being treated.
-;;;
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; 1. Redisplay only if at most one file is being treated.
+;; 2. Doc string reflects Dired+'s version of `dired-map-over-marks-check'.
+;;
 ;;;###autoload
 (defun dired-do-load (&optional arg)
-  "Load the marked (or next prefix ARG) Emacs Lisp files."
+  "Load the marked (or next prefix argument) Emacs Lisp files.
+A prefix argument ARG specifies files to use instead of marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories."
   (interactive "P")
   (dired-map-over-marks-check #'dired-load arg 'load (diredp-fewer-than-2-files-p arg)))
 
@@ -1910,12 +1959,13 @@ Directories are not included."
                           'string-lessp))))))
 
 
-;;; REPLACE ORIGINAL in `dired-aux.el.'
-;;; Use `diredp-this-subdir' instead of `dired-get-filename'.
-;;; If on a subdir listing header line or a non-dir file in a subdir listing, go to
-;;; the line for the subdirectory in the parent directory listing.
-;;; Fit one-window frame after inserting subdir.
-;;;
+;; REPLACE ORIGINAL in `dired-aux.el'.
+;;
+;; 1. Use `diredp-this-subdir' instead of `dired-get-filename'.
+;; 2. If on a subdir listing header line or a non-dir file in a subdir listing, go to
+;;    the line for the subdirectory in the parent directory listing.
+;; 3. Fit one-window frame after inserting subdir.
+;;
 ;;;###autoload
 (defun dired-maybe-insert-subdir (dirname &optional switches no-error-if-not-dir-p)
   "Move to Dired subdirectory line or subdirectory listing.
@@ -2012,9 +2062,10 @@ Else return a singleton list of a directory name, which is as follows:
 ;;; * If `size' is too small abort, otherwise run `find-file' on each element
 ;;;   of FILE-LIST giving each a window of height `size'.
 
-;;; REPLACE ORIGINAL in `dired-x.el':
-;;; Doc string updated to reflect change to `dired-simultaneous-find-file'.
-;;;
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; Doc string updated to reflect change to `dired-simultaneous-find-file'.
+;;
 ;;;###autoload
 (defun dired-do-find-marked-files (&optional arg)
   "Find marked files, displaying all of them simultaneously.
@@ -2036,9 +2087,10 @@ To display just the marked files, type \\[delete-other-windows] first."
   (dired-simultaneous-find-file (dired-get-marked-files) arg))
 
 
-;;; REPLACE ORIGINAL in `dired-x.el':
-;;; Use separate frames instead of windows if `pop-up-frames' is non-nil,
-;;; or if prefix arg is negative.
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; Use separate frames instead of windows if `pop-up-frames' is non-nil,
+;; or if prefix arg is negative.
 ;;
 (defun dired-simultaneous-find-file (file-list option)
   "Visit all files in list FILE-LIST and display them simultaneously.
@@ -2149,9 +2201,10 @@ the variable `window-min-height'."
 ;;;;        found))))
 
 
-;;; REPLACE ORIGINAL in `dired.el':
-;;; Resets `mode-line-process' to nil.
-;;;
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Reset `mode-line-process' to nil.
+;;
 ;;;###autoload
 (when (< emacs-major-version 21)
   (or (fboundp 'old-dired-revert) (fset 'old-dired-revert (symbol-function 'dired-revert)))
@@ -2160,10 +2213,11 @@ the variable `window-min-height'."
     (old-dired-revert arg noconfirm)))
 
 
-;;; REPLACE ORIGINAL in `dired.el':
-;;; `mouse-face' on whole line, not just file name.
-;;; Add text property `dired-filename' to the file name (only).
-;;;
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; 1. Put `mouse-face' on whole line, not just file name.
+;; 2. Add text property `dired-filename' to the file name (only).
+;;
 ;;;###autoload
 (defun dired-insert-set-properties (beg end)
   "Highlight entire dired line upon mouseover.
@@ -2186,9 +2240,11 @@ Add text property `dired-filename' to the file name."
         (forward-line 1)))))
 
 
-;;; REPLACE ORIGINAL in `dired.el'.
-;;; Remove `/' from directory name before comparing with BASE.
-;;;
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Remove `/' from directory name before comparing with BASE.
+;;
+;;;###autoload
 (defun dired-goto-file (file)
   "Go to line describing file FILE in this dired buffer."
   ;; Return value of point on success, else nil.
@@ -2243,9 +2299,10 @@ Add text property `dired-filename' to the file name."
          (goto-char found))))
 
 
-;;; REPLACE ORIGINAL in `dired.el':
-;;; Test also ./ and ../, in addition to . and .., for error "Cannot operate on `.' or `..'".
-;;;
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Test also ./ and ../, in addition to . and .., for error "Cannot operate on `.' or `..'".
+;;
 (defun dired-get-filename (&optional localp no-error-if-not-filep)
   "In Dired, return name of file mentioned on this line.
 Value returned normally includes the directory name.
@@ -2314,9 +2371,10 @@ Otherwise, an error occurs in these cases."
            (concat (dired-current-directory localp) file)))))
 
 
-;;; REPLACE ORIGINAL in `dired.el':
-;;; Display a message to warn that flagged, not marked, files will be deleted.
-;;;
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Display a message to warn that flagged, not marked, files will be deleted.
+;;
 ;;;###autoload
 (defun dired-do-flagged-delete (&optional no-msg)
   "In Dired, delete the files flagged for deletion.
@@ -2342,9 +2400,10 @@ non-empty directories is allowed."
       (unless no-msg (message "(No deletions requested.)")))))
 
 
-;;; REPLACE ORIGINAL in `dired.el':
-;;; Display a message to warn that marked, not flagged, files will be deleted.
-;;;
+;; REPLACE ORIGINAL in `dired.el':
+;;
+;; Display a message to warn that marked, not flagged, files will be deleted.
+;;
 ;;;###autoload
 (defun dired-do-delete (&optional arg)
   "Delete all marked (or next ARG) files.
@@ -2440,11 +2499,12 @@ lower case."
   (interactive) (dired-do-chown 1))
 
 
-;;; REPLACE ORIGINAL in `dired-x.el':
-;;; 1. Variable (symbol) `s' -> `blks'.
-;;; 2. Fixes to remove leading space from `uid' and allow `.' in `gid'.
-;;; 3. Cleaned up doc string and code a bit.
-;;;
+;; REPLACE ORIGINAL in `dired-x.el'.
+;;
+;; 1. Variable (symbol) `s' -> `blks'.
+;; 2. Fixes to remove leading space from `uid' and allow `.' in `gid'.
+;; 3. Cleaned up doc string and code a bit.
+;;
 ;;;###autoload
 (defun dired-mark-sexp (predicate &optional unmark-p)
   "Mark files for which PREDICATE returns non-nil.
@@ -2678,9 +2738,11 @@ With non-nil prefix arg UNMARK-P, mark them instead."
     (and selection (call-interactively selection))))
 
 
-;;; REPLACE ORIGINAL in `dired.el' for Emacs 20:
-;;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
-;;;
+;; REPLACE ORIGINAL in `dired.el' for Emacs 20.
+;;
+;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
+;;
+;;;###autoload
 (when (< emacs-major-version 21)
   (defun dired-find-file ()
     "In dired, visit the file or directory named on this line."
@@ -2707,9 +2769,11 @@ With non-nil prefix arg UNMARK-P, mark them instead."
     (dired-mouse-find-file-other-window event)))
 
 
-;;; REPLACE ORIGINAL in `dired.el':
-;;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
-;;;
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
+;;
+;;;###autoload
 (defun dired-mouse-find-file-other-window (event)
   "In dired, visit the file or directory name you click on."
   (interactive "e")

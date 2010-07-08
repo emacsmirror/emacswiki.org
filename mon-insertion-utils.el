@@ -177,6 +177,10 @@
 ;;; :CALLED-BY Anything that uses a time-stamp.
 (require 'mon-time-utils) 
 
+(declare-function slime-current-connection "ext:slime.el" t t)
+(declare-function slime-current-package    "ext:slime.el" t t)
+(declare-function slime-buffer-package     "ext:slime.el" t t)
+
 ;;; ==============================
 ;;; :CHANGESET 1843 <Timestamp: #{2010-06-10T16:05:22-04:00Z}#{10234} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-20T19:38:47-05:00Z}#{09476} - by MON KEY>
@@ -1199,10 +1203,6 @@ Yank it back from the kill-ring if that is what you want.\n
 ;;; :TEST-ME (mon-insert-regexp-template-yyyy nil nil t)
 ;;; :TEST-ME (call-interactively 'mon-insert-regexp-template-yyyy)
 
-(declare-function slime-current-connection "ext:slime.el" t t)
-(declare-function slime-current-package    "ext:slime.el" t t)
-(declare-function slime-buffer-package     "ext:slime.el" t t)
-
 ;;; ==============================
 ;;; :CHANGESET 1935 <Timestamp: #{2010-07-03T11:53:54-04:00Z}#{10266} - by MON KEY>
 ;;; :CHANGESET 1921
@@ -1215,7 +1215,8 @@ when `slime-current-connection' is non-nil.\n
 :EXAMPLE\n\n\(mon-lisp-CL-package-complete\)\n
 :ALIASED-BY `mon-CL-package-complete'\n
 :SEE-ALSO `mon-insert-lisp-CL-file-template',
-`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-package-template'.\n►►►"
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-package-template',
+`quicklisp-system-complete', `mon-help-CL-pkgs'.\n►►►"
   (let ((pkg-cmplt (if (or (slime-current-connection)
                            (buffer-local-value 'slime-mode (current-buffer)))
                        `(,(or slime-buffer-package (slime-current-package))
@@ -1240,7 +1241,7 @@ when `slime-current-connection' is non-nil.\n
 ;;; :CHANGESET 1917
 ;;; :CREATED <Timestamp: #{2010-06-26T16:28:00-04:00Z}#{10256} - by MON KEY>
 (defun mon-insert-lisp-CL-mode-line-template (&optional cl-package insrtp intrp)
-  "Return a common-lisp mode-line for insertion.\n
+  "Return a Common-Lisp sylte mode-line for insertion at BOF/BOB.\n
 When optional arg CL-PACKAGE in non-nil, it is a symbol or string having a
 length >= 1 and naming a CL package.\n
 When optional INSRTP is non-nil insert modeline at point moving point.\n
@@ -1416,16 +1417,15 @@ the date string will be stripped.
                            mict-pkg-srp-dt))
          (micpt-tmplt (concat ";;;; " micpt-fname "\n"
                               "\n(in-package :cl-user)\n"
-                              "\n(defpackage #:" micpt-pkg "\n  (:use #:common-lisp))\n\n"
-                              "(in-package #:" micpt-pkg ")\n\n"
-                              ;; (:nicknames #:<SOME-NICKNAME>*)
+                              "\n(defpackage #:" micpt-pkg "\n  (:use :common-lisp))\n\n"
+                              "(in-package #:" micpt-pkg ")\n"
+                              ";; (:nicknames #:<SOME-NICKNAME>*)\n"
+                              ";; (:export #:<EXPORTED-SYMBOL-NAME>*)\n"
+                              ";; (:import-from package-name :<PKG-NM> #:<SYMBOL-NAME>*)\n"
+                              ";; (:shadow #:<SHADOWED-SYMBOL>*)\n"
+                              ";; (:shadowing-import-from :<PKG-NM> #:<SYMBOL-NAME>*)\n"
                               ;; (:intern #:<STRING-NAMING-SYMBOL>*)
-                              ;; (:export #:<EXPORTED-SYMBOL-NAME>*)
-                              ;; (:import-from package-name :<PKG-NM> #:<SYMBOL-NAME>*)
                               ;; (:documentation <"DOC-STRING">)
-                              ;; (:shadow {symbol-name}*)* |  
-                              ;; (:shadowing-import-from package-name {symbol-name}*)* |  
-                              ;; (:export {symbol-name}*)* |  
                               ;; (:intern {symbol-name}*)* |  
                               ;; (:size integer) 
                               )))
@@ -1448,8 +1448,8 @@ the date string will be stripped.
                            (newline)
                            (insert micpt-tmplt))))))
                 (without-header (goto-char (point-min))
-                                ;; Insert a mode-line, don't insert a package name,
-                                ;; and don't look/prompt for it.
+                                ;; To insert a mode-line, don't insert a package name,
+                                ;; and don't look/prompt for it use:
                                 ;; (mon-insert-lisp-CL-mode-line-template t t)
                                 (mon-insert-lisp-CL-mode-line-template micpt-pkg t)
                                 (newline)
@@ -1464,6 +1464,7 @@ the date string will be stripped.
 ;;; :TEST-ME (call-interactively 'mon-insert-lisp-CL-package-template)
 
 ;;; ==============================
+;;; :KEYBINDING "\C-c\C-dc"
 ;;; :CREATED <Timestamp: #{2009-10-24T18:33:41-04:00Z}#{09436} - by MON>
 (defun mon-insert-lisp-doc-eg-xref (&optional insrtp intrp as-kill)
   "Return documentation keywords for insertion to dostrings.\n
@@ -1472,6 +1473,9 @@ When INTRP is non-nil or called-interactively return as with princ.\n
 When INSRTP is non-nil return for as with prin1.\n
 When AS-KILL is non-nil or called-interactively with prefix arg put return
 value on the kill-ring.\n
+When current-buffer is in `slime-mode' and `slime-current-connection' is non-nil
+return value is as per Common-Lisp docstrings and prefixed by \"#.(format\" and
+with `~%' for newlines.\n
 :EXAMPLE\n\(mon-insert-lisp-doc-eg-xref\)\n
  |=> :EXAMPLE\\\\n
  |   :SEE-ALSO .\\\\n◄◄◄\\\" 
@@ -1482,7 +1486,17 @@ value on the kill-ring.\n
 `mon-insert-copyright', `mon-insert-lisp-stamp', `mon-insert-lisp-testme',
 `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\np\nP")
-  (let ((mildeg-xref (concat "\"\n:EXAMPLE\\n\\n"  "\n" ":SEE-ALSO .\\n►►►\"")))
+  (let* ((not-elisp (case (buffer-local-value 'major-mode (current-buffer))
+                      (lisp-interaction-mode t)
+                      (lisp-mode t)
+                      (t (and (buffer-local-value 'slime-mode (current-buffer))
+                              (slime-current-connection)))))
+         (mildeg-xref (if not-elisp
+                          (concat "#.(format nil \n"
+                                  "  \"{ ... DOCSTRING ... }~%\n"
+                                  ":EXAMPLE~%~%{ ... EXAMPLE ... }~%\n"
+                                  ":SEE-ALSO `<XREF>'.~%►►►\")")
+                        (concat "\"\n:EXAMPLE\\n\\n"  "\n" ":SEE-ALSO .\\n►►►\""))))
     (cond (intrp (save-excursion 
                    (newline)
                    (princ mildeg-xref (current-buffer)))

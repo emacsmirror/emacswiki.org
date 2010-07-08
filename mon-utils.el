@@ -344,6 +344,7 @@ Evaluates the following functions per feature:
  `mon-set-register-tags-loadtime'      <- mon-empty-registers
  `mon-help-utils-loadtime'             <- mon-doc-help-utils
  `mon-help-utils-CL-loadtime'          <- mon-doc-help-CL
+ `mon-bind-mon-help-CL-pkgs-loadtime'  <- mon-doc-help-CL
  `mon-CL-cln-colon-swap'               <- mon-cl-compat-regexps
  `mon-bind-iptables-vars-at-loadtime'  <- mon-iptables-regexps
  `mon-bind-doc-help-proprietery-vars-at-loadtime' <- mon-doc-help-proprietary\n
@@ -362,7 +363,8 @@ Adds feature requirements:\n
   (progn 
     (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime))
-    (eval-after-load "mon-doc-help-CL"    '(mon-help-utils-CL-loadtime))
+    (eval-after-load "mon-doc-help-CL"    '(progn (mon-help-utils-CL-loadtime)
+                                                  (mon-bind-mon-help-CL-pkgs-loadtime)))
     ;; :NOTE See docs `mon-bind-cifs-vars-at-loadtime' and notes at BOF
     ;; mon-cifs-utils.el for alternative application with args 
     ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.:

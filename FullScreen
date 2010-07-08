@@ -1,6 +1,8 @@
 [[zh:全屏模式]]
 == Emacs Frame Properties ==
 
+The following should work in recent releases of Emacs:
+
     (defun fullscreen (&optional f)
       (interactive)
       (set-frame-parameter f 'fullscreen
@@ -8,12 +10,17 @@
 
     (global-set-key [f11] 'fullscreen)
 
+    ; Make new frames fullscreen by default. Note: this hook doesn't do
+    ; anything to the initial frame if it's in your .emacs, since that file is
+    ; read _after_ the initial frame is created.
     (add-hook 'after-make-frame-functions 'fullscreen)
 
-Note: this hook doesn't do anything to the inital frame if it's in your .emacs, since that file is read _after_ the inital frame is created.
+== Platform-specific methods ==
 
-== X Windows ==
-=== Send X Messages to the Window Manager ===
+These methods may be useful with older versions of Emacs, or ports where the 'fullscreen' frame parameter is not supported.
+
+=== X Windows ===
+==== Send X Messages to the Window Manager ====
 
      (defun fullscreen ()
        (interactive)
@@ -30,7 +37,7 @@ Or to only maximize window:
 	    		 '(2 "_NET_WM_STATE_MAXIMIZED_HORZ" 0)))
 
 
-=== External program: wmctrl ===
+==== External program: wmctrl ====
 
 If you want to bind F11 to toggle full-screen, here is what you need:
 
@@ -60,7 +67,7 @@ and now you are GNOME HIG compliant :)
       (shell-command (concat "wmctrl -i -r " (frame-parameter nil 'outer-window-id) " -btoggle,maximize_vert,maximize_horz"))
 
 
-=== External program: devilspie ===
+==== External program: devilspie ====
 
 http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
 
@@ -70,7 +77,7 @@ http://patrick.wagstrom.net/weblog/linux/full-screen-emacs.xml
     (if (or (contains (window_class) "emacs") (contains (window_class) "Emacs"))
         (undecorate fullscreen))
 
-=== Gnome Keyboard Shortcuts===
+==== Gnome Keyboard Shortcuts====
 
 If you use GNOME you can assign a Keyboard Shortcut to toggle Full Screen or not. Just go to 
 
@@ -80,12 +87,12 @@ And bind the option "Toggle fullscreen mode" to a key which can be used when usi
 
 The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, many applications remove their menu and button bars when in fullscreen mode.
 
-== Fullscreen on MS Windows ==
+=== Fullscreen on MS Windows ===
 
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
 
-== Fullscreen on OS X ==
+=== Fullscreen on OS X ===
 [http://citizen428.net/archives/432-Fullscreen-Emacs-on-MacOS-X.html A step by step guide] on patching Cocoa Emacs (based on the 2 links directly below), including a download link to a version of Emacs 24.0.50 with fullscreen support.
 
 The procedure described at http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html is working as of late June 2010. 
@@ -123,7 +130,7 @@ Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxf
 (global-set-key (kbd "M-RET") 'my-toggle-fullscreen)
 }}}
 
-== Toggle fullscreen - linux and windows ==
+=== Toggle fullscreen - linux and windows ===
 
 {{{
 (defvar my-fullscreen-p t "Check if fullscreen is on or off")

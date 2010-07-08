@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul  2 08:23:59 2010 (-0700)
+;; Last-Updated: Wed Jul  7 07:38:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13006
+;;     Update #: 13008
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, w3m, gnus
@@ -106,9 +106,10 @@
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
+;;    (@> "Using Multiple Bookmark Files")
 ;;    (@> "Bookmark List (Display)")
 ;;      (@> "Tag Commands and Keys")
-;;      (@> "Sets of Bookmarks")
+;;      (@> "Tags: Sets of Bookmarks")
 ;;      (@> "Open Dired for the Marked Files")
 ;;      (@> "Marking and Unmarking Bookmarks")
 ;;      (@> "Filtering Bookmarks (Hiding and Showing)")
@@ -880,8 +881,8 @@
 ;;  in complex ways.  See (@> "Sorting Bookmarks").
 ;;
 ;;
-;;(@* "Sets of Bookmarks")
-;;  *** Sets of Bookmarks ***
+;;(@* "Tags: Sets of Bookmarks")
+;;  *** Tags: Sets of Bookmarks ***
 ;;
 ;;  The best way to think about tags is as names of sets.  All
 ;;  bookmarks tagged `blue' constitute the bookmark set named `blue'.

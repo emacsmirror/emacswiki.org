@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.10d (2010-06-23)
-;; Serial Version: %Id: 28%
+;; Serial Version: %Id: 29%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -77,7 +77,7 @@
 ;; 1.0 18-Apr-96  Initial version
 ;; 1.1 Accomodate Emacs 19.29+ font-lock-defaults
 ;;     Simon Marshall <Simon.Marshall@esrin.esa.it>
-;  1.2 Rename to visual-basic-mode
+;; 1.2 Rename to visual-basic-mode
 ;; 1.3 Fix some indentation bugs.
 ;; 1.3+ Changes by Dave Love: [No attempt at compatibility with
 ;;      anything other than Emacs 20, sorry, but little attempt to
@@ -188,9 +188,10 @@
 
 
 ;;; History:
-;; 
+;;
 
 ;;; Code:
+
 (eval-when-compile (require 'cl))
 
 (defvar visual-basic-xemacs-p (string-match "XEmacs\\|Lucid" (emacs-version)))
@@ -207,18 +208,22 @@
   "*Default indentation per nesting level."
   :type 'integer
   :group 'visual-basic)
+
 (defcustom visual-basic-fontify-p t
   "*Whether to fontify Basic buffers."
   :type 'boolean
   :group 'visual-basic)
+
 (defcustom visual-basic-capitalize-keywords-p t
   "*Whether to capitalize BASIC keywords."
   :type 'boolean
   :group 'visual-basic)
+
 (defcustom visual-basic-wild-files "*.frm *.bas *.cls"
   "*Wildcard pattern for BASIC source files."
   :type 'string
   :group 'visual-basic)
+
 (defcustom visual-basic-ide-pathname nil
   "*The full pathname of your Visual Basic exe file, if any."
   :type '(choice
@@ -250,7 +255,7 @@ types of errors are automatically corrected.
   "*List of function templates though which `visual-basic-new-sub' cycles.")
 
 (defvar visual-basic-imenu-generic-expression
-   '((nil "^\\s-*\\(public\\|private\\)*\\s-+\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\)"
+  '((nil "^\\s-*\\(public\\|private\\)*\\s-+\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\)"
          4)
     ("Constants"
      "^\\s-*\\(private\\|public\\|global\\)*\\s-*\\(const\\s-+\\)\\(\\(?:\\sw\\|\\s_\\)+\\>\\s-*=\\s-*.+\\)$\\|'"
@@ -297,7 +302,7 @@ types of errors are automatically corrected.
   (define-key visual-basic-mode-map "\M-q" 'visual-basic-fill-or-indent)
   (define-key visual-basic-mode-map "\M-\C-j" 'visual-basic-split-line)
   (define-key visual-basic-mode-map "\C-c]" 'visual-basic-close-block)
-   (cond (visual-basic-winemacs-p
+  (cond (visual-basic-winemacs-p
          (define-key visual-basic-mode-map '(control C) 'visual-basic-start-ide))
         (visual-basic-win32-p
          (define-key visual-basic-mode-map (read "[?\\S-\\C-c]") 'visual-basic-start-ide)))
@@ -343,7 +348,7 @@ types of errors are automatically corrected.
 ;;(defconst visual-basic-if-regexp
 ;;   "^[ \t]*#?[Ii]f[ \t]+.*[ \t]+[Tt]hen[ \t]*.*\\('\\|$\\)")
 (defconst visual-basic-if-regexp
-   "^[ \t]*#?[Ii]f[ \t]+.*[ \t_]+")
+  "^[ \t]*#?[Ii]f[ \t]+.*[ \t_]+")
 
 (defconst visual-basic-ifthen-regexp "^[ \t]*#?[Ii]f.+\\<[Tt]hen\\>\\s-\\S-+")
 
@@ -390,52 +395,52 @@ types of errors are automatically corrected.
 ;; This is some approximation of the set of reserved words in Visual Basic.
 (eval-and-compile
   (defvar visual-basic-all-keywords
-  '("Add" "Aggregate" "And" "App" "AppActivate" "Application" "Array" "As"
-    "Asc" "AscB" "Atn" "Attribute"
-    "Beep" "Begin" "BeginTrans" "Boolean" "ByVal" "ByRef"
-    "CBool" "CByte" "CCur"
-    "CDate" "CDbl" "CInt" "CLng" "CSng" "CStr" "CVErr" "CVar" "Call"
-    "Case" "ChDir" "ChDrive" "Character" "Choose" "Chr" "ChrB" "Class"
-    "ClassModule" "Clipboard" "Close" "Collection" "Column" "Columns"
-    "Command" "CommitTrans" "CompactDatabase" "Component" "Components"
-    "Const" "Container" "Containers" "Cos" "CreateDatabase" "CreateObject"
-    "CurDir" "Currency"
-    "DBEngine" "DDB" "Data" "Database" "Databases"
-    "Date" "DateAdd" "DateDiff" "DatePart" "DateSerial" "DateValue" "Day"
-    "Debug" "Declare" "Deftype" "DeleteSetting" "Dim" "Dir" "Do"
-    "DoEvents" "Domain"
-    "Double" "Dynaset" "EOF" "Each" "Else" "Empty" "End" "EndProperty"
-    "Enum" "Environ" "Erase" "Err" "Error" "Exit" "Exp" "Explicit" "FV" "False" "Field"
-    "Fields" "FileAttr" "FileCopy" "FileDateTime" "FileLen" "Fix" "Font" "For"
-    "Form" "FormTemplate" "Format" "FormatCurrency" "FormatDateTime" "FormatNumber"
-    "FormatPercent" "Forms" "FreeFile" "FreeLocks" "Friend" "Function"
-    "Get" "GetAllSettings" "GetAttr" "GetObject" "GetSetting" "Global" "GoSub"
-    "GoTo" "Group" "Groups" "Hex" "Hour" "IIf" "IMEStatus" "IPmt" "IRR"
-    "If" "Implements" "InStr" "Input" "Int" "Integer" "Is" "IsArray" "IsDate"
-    "IsEmpty" "IsError" "IsMissing" "IsNull" "IsNumeric" "IsObject" "Kill"
-    "LBound" "LCase" "LOF" "LSet" "LTrim" "Left" "Len" "Let" "Like" "Line"
-    "Load" "LoadPicture" "LoadResData" "LoadResPicture" "LoadResString" "Loc"
-    "Lock" "Log" "Long" "Loop" "MDIForm" "MIRR" "Me" "MenuItems"
-    "MenuLine" "Mid" "Minute" "MkDir" "Month" "MsgBox" "NPV" "NPer" "Name"
-    "New" "Next" "Not" "Now" "Nothing" "Null" "Object" "Oct" "On" "Open"
-    "OpenDatabase"
-    "Operator" "Option" "Optional"
-    "Or" "PPmt" "PV" "Parameter" "Parameters" "Partition"
-    "Picture" "Pmt" "Preserve" "Print" "Printer" "Printers" "Private"
-	"ProjectTemplate" "Property"
-    "Properties" "Public" "Put" "QBColor" "QueryDef" "QueryDefs"
-    "RSet" "RTrim" "Randomize" "Rate" "ReDim" "Recordset" "Recordsets"
-    "RegisterDatabase" "Relation" "Relations" "Rem" "RepairDatabase"
-    "Reset" "Resume" "Return" "Right" "RmDir" "Rnd" "Rollback" "RowBuffer"
-    "SLN" "SYD" "SavePicture" "SaveSetting" "Screen" "Second" "Seek"
-    "SelBookmarks" "Select" "SelectedComponents" "SendKeys" "Set"
-    "SetAttr" "SetDataAccessOption" "SetDefaultWorkspace" "Sgn" "Shell"
-    "Sin" "Single" "Snapshot" "Space" "Spc" "Sqr" "Static" "Step" "Stop" "Str"
-    "StrComp" "StrConv" "String" "Sub" "SubMenu" "Switch" "Tab" "Table"
-    "TableDef" "TableDefs" "Tan" "Then" "Time" "TimeSerial" "TimeValue"
-    "Timer" "To" "Trim" "True" "Type" "TypeName" "UBound" "UCase" "Unload"
-    "Unlock" "Val" "Variant" "VarType" "Verb" "Weekday" "Wend"
-    "While" "Width" "With" "Workspace" "Workspaces" "Write" "Year")))
+    '("Add" "Aggregate" "And" "App" "AppActivate" "Application" "Array" "As"
+      "Asc" "AscB" "Atn" "Attribute"
+      "Beep" "Begin" "BeginTrans" "Boolean" "ByVal" "ByRef"
+      "CBool" "CByte" "CCur"
+      "CDate" "CDbl" "CInt" "CLng" "CSng" "CStr" "CVErr" "CVar" "Call"
+      "Case" "ChDir" "ChDrive" "Character" "Choose" "Chr" "ChrB" "Class"
+      "ClassModule" "Clipboard" "Close" "Collection" "Column" "Columns"
+      "Command" "CommitTrans" "CompactDatabase" "Component" "Components"
+      "Const" "Container" "Containers" "Cos" "CreateDatabase" "CreateObject"
+      "CurDir" "Currency"
+      "DBEngine" "DDB" "Data" "Database" "Databases"
+      "Date" "DateAdd" "DateDiff" "DatePart" "DateSerial" "DateValue" "Day"
+      "Debug" "Declare" "Deftype" "DeleteSetting" "Dim" "Dir" "Do"
+      "DoEvents" "Domain"
+      "Double" "Dynaset" "EOF" "Each" "Else" "Empty" "End" "EndProperty"
+      "Enum" "Environ" "Erase" "Err" "Error" "Exit" "Exp" "Explicit" "FV" "False" "Field"
+      "Fields" "FileAttr" "FileCopy" "FileDateTime" "FileLen" "Fix" "Font" "For"
+      "Form" "FormTemplate" "Format" "FormatCurrency" "FormatDateTime" "FormatNumber"
+      "FormatPercent" "Forms" "FreeFile" "FreeLocks" "Friend" "Function"
+      "Get" "GetAllSettings" "GetAttr" "GetObject" "GetSetting" "Global" "GoSub"
+      "GoTo" "Group" "Groups" "Hex" "Hour" "IIf" "IMEStatus" "IPmt" "IRR"
+      "If" "Implements" "InStr" "Input" "Int" "Integer" "Is" "IsArray" "IsDate"
+      "IsEmpty" "IsError" "IsMissing" "IsNull" "IsNumeric" "IsObject" "Kill"
+      "LBound" "LCase" "LOF" "LSet" "LTrim" "Left" "Len" "Let" "Like" "Line"
+      "Load" "LoadPicture" "LoadResData" "LoadResPicture" "LoadResString" "Loc"
+      "Lock" "Log" "Long" "Loop" "MDIForm" "MIRR" "Me" "MenuItems"
+      "MenuLine" "Mid" "Minute" "MkDir" "Month" "MsgBox" "NPV" "NPer" "Name"
+      "New" "Next" "Not" "Now" "Nothing" "Null" "Object" "Oct" "On" "Open"
+      "OpenDatabase"
+      "Operator" "Option" "Optional"
+      "Or" "PPmt" "PV" "Parameter" "Parameters" "Partition"
+      "Picture" "Pmt" "Preserve" "Print" "Printer" "Printers" "Private"
+      "ProjectTemplate" "Property"
+      "Properties" "Public" "Put" "QBColor" "QueryDef" "QueryDefs"
+      "RSet" "RTrim" "Randomize" "Rate" "ReDim" "Recordset" "Recordsets"
+      "RegisterDatabase" "Relation" "Relations" "Rem" "RepairDatabase"
+      "Reset" "Resume" "Return" "Right" "RmDir" "Rnd" "Rollback" "RowBuffer"
+      "SLN" "SYD" "SavePicture" "SaveSetting" "Screen" "Second" "Seek"
+      "SelBookmarks" "Select" "SelectedComponents" "SendKeys" "Set"
+      "SetAttr" "SetDataAccessOption" "SetDefaultWorkspace" "Sgn" "Shell"
+      "Sin" "Single" "Snapshot" "Space" "Spc" "Sqr" "Static" "Step" "Stop" "Str"
+      "StrComp" "StrConv" "String" "Sub" "SubMenu" "Switch" "Tab" "Table"
+      "TableDef" "TableDefs" "Tan" "Then" "Time" "TimeSerial" "TimeValue"
+      "Timer" "To" "Trim" "True" "Type" "TypeName" "UBound" "UCase" "Unload"
+      "Unlock" "Val" "Variant" "VarType" "Verb" "Weekday" "Wend"
+      "While" "Width" "With" "Workspace" "Workspaces" "Write" "Year")))
 
 (defvar visual-basic-font-lock-keywords-1
   (eval-when-compile
@@ -455,14 +460,14 @@ types of errors are automatically corrected.
 
      ;; Any keywords you like.
      (list (regexp-opt
-                          '("Dim" "If" "Then" "Else" "ElseIf" "End If") 'words)
+            '("Dim" "If" "Then" "Else" "ElseIf" "End If") 'words)
            1 'font-lock-keyword-face))))
 
 (defvar visual-basic-font-lock-keywords-2
   (append visual-basic-font-lock-keywords-1
           (eval-when-compile
             `((, (regexp-opt visual-basic-all-keywords 'words)
-                   1 font-lock-keyword-face)))))
+                 1 font-lock-keyword-face)))))
 
 (defvar visual-basic-font-lock-keywords visual-basic-font-lock-keywords-1)
 
@@ -577,28 +582,28 @@ Commands:
   (interactive)
 
   (let ((words visual-basic-all-keywords)
-		(word nil)
-		(list nil))
-	(while words
-	  (setq word (car words)
-			words (cdr words))
-	  (setq list (cons (list (downcase word) word) list)))
-	(define-abbrev-table 'visual-basic-mode-abbrev-table list)))
+        (word nil)
+        (list nil))
+    (while words
+      (setq word (car words)
+            words (cdr words))
+      (setq list (cons (list (downcase word) word) list)))
+    (define-abbrev-table 'visual-basic-mode-abbrev-table list)))
 
 
 (defun visual-basic-in-code-context-p ()
   "Predicate true when pointer is in code context."
   (save-match-data
-    (if (fboundp 'buffer-syntactic-context) ; XEmacs function.
-	(null (buffer-syntactic-context))
-      ;; Attempt to simulate buffer-syntactic-context
-      ;; I don't know how reliable this is.
-      (let* ((beg (save-excursion
-		    (beginning-of-line)
-		    (point)))
-	     (list
-	      (parse-partial-sexp beg (point))))
-	(and (null (nth 3 list))          ; inside string.
+  (if (fboundp 'buffer-syntactic-context) ; XEmacs function.
+      (null (buffer-syntactic-context))
+    ;; Attempt to simulate buffer-syntactic-context
+    ;; I don't know how reliable this is.
+    (let* ((beg (save-excursion
+                  (beginning-of-line)
+                  (point)))
+           (list
+            (parse-partial-sexp beg (point))))
+      (and (null (nth 3 list))          ; inside string.
 	     (null (nth 4 list)))))))      ; inside comment
 
 (defun visual-basic-abbrev-expand-function (expand-fun)
@@ -804,7 +809,7 @@ changed files."
   (if (null (eobp))
       (forward-line 1))        ; next-line depends on goal column
   (while (and (null (eobp))
-	       (looking-at visual-basic-comment-regexp))
+              (looking-at visual-basic-comment-regexp))
     (forward-line 1)))
 
 
@@ -908,7 +913,7 @@ be folded over several code lines."
 (defun visual-basic-find-matching-if ()
   "Set pointer on the line with If stating the If ... Then ... [Else/Elseif ...] ... End If block containing pointer."
   (visual-basic-find-predicate-matching-stmt 'visual-basic-if-not-on-single-line
-							 (lambda () (looking-at visual-basic-endif-regexp))))
+                                             (lambda () (looking-at visual-basic-endif-regexp))))
 
 (defun visual-basic-find-matching-select ()
   "Set pointer on the line with Select Case stating the Select Case ... End Select block containing pointer."
@@ -944,8 +949,8 @@ be folded over several code lines."
     (visual-basic-find-matching-stmt visual-basic-begin-regexp
                                      visual-basic-end-begin-regexp)
     (if (bobp) ;failed to find a matching begin so assume that it is
-               ;an end statement instead and use the indent of the
-               ;preceding line.
+                                        ;an end statement instead and use the indent of the
+                                        ;preceding line.
         (progn (goto-char original-point)
                (visual-basic-previous-line-of-code)))))
 
@@ -1042,9 +1047,9 @@ be folded over several code lines."
                         (+ indent visual-basic-mode-indent))
 
                        ((or (visual-basic-if-not-on-single-line)
-							(and (looking-at visual-basic-else-regexp)
-								 (not (and visual-basic-allow-single-line-if
-										   (looking-at visual-basic-ifthen-regexp)))))
+                            (and (looking-at visual-basic-else-regexp)
+                                 (not (and visual-basic-allow-single-line-if
+                                           (looking-at visual-basic-ifthen-regexp)))))
                         (+ indent visual-basic-mode-indent))
 
                        ((or (looking-at visual-basic-select-regexp)
@@ -1091,7 +1096,7 @@ be folded over several code lines."
 (defun visual-basic-indent-line ()
   "Indent current line for BASIC."
   (interactive)
-   (visual-basic-indent-to-column (visual-basic-calculate-indent)))
+  (visual-basic-indent-to-column (visual-basic-calculate-indent)))
 
 
 (defun visual-basic-split-line ()
@@ -1115,17 +1120,18 @@ In Abbrev mode, any abbrev before point will be expanded."
 (defun visual-basic-detect-idom ()
   "Detects whether this is a VBA or VBS script. Returns symbol
 `vba' if it is VBA, `nil' otherwise."
-  (let (ret)
+  (let (ret
+        (case-fold-search t))
     (save-excursion
       (save-restriction
 	(widen)
 	(goto-char (point-min))
 	(cond
-	 ((looking-at "^\\s-*[Aa][Tt][Tt][Rr][Ii][Bb][Uu][Tt][Ee]\\s-+VB_Name\\s-+= ")
+	 ((looking-at "^\\s-*Attribute\\s-+VB_Name\\s-+= ")
 	  (setq ret 'vba))
-	 ((looking-at "^\\s-*[Vv][Ee][Rr][Ss][Ii][Oo][Nn]\\s-+[^ \t\n\r]+[Cc][Ll][Aa][Ss][Ss]\\s-*$")
+	 ((looking-at "^\\s-*Version\\s-+[^ \t\n\r]+Class\\s-*$")
 	  (setq ret 'vba)))
-	 ))
+        ))
     ret))
 
 (defun visual-basic-close-block ()
@@ -1228,22 +1234,22 @@ Dim and Case items are handled.
 Interting an item means:
 
 * Add a `Case' or `Case Else' into a `Select ... End Select'
-  block.  **under construction** Pressing again toggles between
-  `Case' and `Case Else'.  `Case Else' is possible only if there
+  block. **under construction** Pressing again toggles between
+  `Case' and `Case Else'. `Case Else' is possible only if there
   is not already a `Case Else'.
 
-* Split a Dim declaration over several lines.  Split policy is
+* Split a Dim declaration over several lines. Split policy is
   that:
 
   - the split always occur just before or just after the
     declaration of the variable V such that the pointer is
-    located over this declaration.  For instance if the
+    located over this declaration. For instance if the
     declaration is `V(2) as T' then pointer position maybe any
     `^' as follows:
 
        Dim X, V(2) As T, Y
               ^^^^^^^^^^^
-    
+
   - the split being after or before `V(2) as T' decalration and
     the position of pointer after split depends on where the
     pointer was before the split:
@@ -1260,7 +1266,7 @@ Interting an item means:
        Dim X
        Dim V(2) As T, Y
            ^
-      
+
     - if the pointer is not over variable name like this:
 
 
@@ -1318,13 +1324,13 @@ Interting an item means:
 		;; Dim item is to be inserted. To that purpose the line is gone through
 		;; from beginning until cur-point is past
 		(while
-		    (if
+                    (if
 			(looking-at "\\(\\s-*\\)\\(?:\\sw\\|\\s_\\)+\\s-*"); some symbol
 			(if (>  (setq tentative-split-point (match-end 0)) cur-point)
-			    (progn
+                            (progn
 			      (setq item-case (if (>= cur-point (match-end 1))
 						  ':dim-split-after
-						  ':dim-split-before))
+                                                ':dim-split-before))
 			      nil;; stop loop
 			      )
 			  (goto-char tentative-split-point)
@@ -1334,14 +1340,14 @@ Interting an item means:
 				(or
 				 ;; array variable
 				 (when (looking-at "\\(([^)\n]+)\\)\\s-*")
-				    (if (< cur-point (match-end 1))
-					(setq item-case ':dim-split-after
-					      loop-again nil)
-					t))
+                                   (if (< cur-point (match-end 1))
+                                       (setq item-case ':dim-split-after
+                                             loop-again nil)
+                                     t))
 				 ;; continuation
 				 (and loop-again
 				      (looking-at visual-basic-looked-at-continuation-regexp) ))
-			      (goto-char (setq tentative-split-point (match-end 0))))
+                              (goto-char (setq tentative-split-point (match-end 0))))
 			    (when loop-again
 			      (when (looking-at "As\\s-+\\(?:\\sw\\|\\s_\\)+\\s-*")
 				(setq item-case ':dim-split-after)
@@ -1410,7 +1416,7 @@ Interting an item means:
 	 (while
 	     (progn
 	       (visual-basic-next-line-of-code)
-	       (cond
+               (cond
 		;; case was found, insert case and exit loop
 		((and (= 0 select-case-depth)
 		      (looking-at visual-basic-case-regexp))
@@ -1443,9 +1449,9 @@ Interting an item means:
 		       (visual-basic-indent-to-column
 		        (+ indent visual-basic-mode-indent))
 		       nil;; break loop
-		       )
+                       )
 		   t; loop again
-		   ))
+                   ))
 		((eobp)
 		 (goto-char cur-point)
 		 (error "Case without ending"))

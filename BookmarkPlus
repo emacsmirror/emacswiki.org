@@ -835,7 +835,7 @@ in complex ways.  See [[#SortingBookmarks]].
 
 
 [:BookmarkSets]
-=== Sets of Bookmarks ===
+=== Tags: Sets of Bookmarks ===
 
 The best way to think about tags is as ''names'' of persistent ''sets''.  All
 bookmarks tagged `blue' constitute the bookmark set named `blue'. The bookmarks visible in the bookmark list at any time also constitute an unnamed set. Likewise, the marked bookmarks and the unmarked bookmarks are unnamed sets. '''Bookmark+''' is all about helping you act on sets of Emacs objects. Bookmarks are named, persistent pointers to objects such as files and file sets. Bookmark tags are named, persistent sets of bookmarks (and hence of their target objects).

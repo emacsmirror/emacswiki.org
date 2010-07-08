@@ -80,6 +80,12 @@ The fuzzy matching score is a float, resulting from many calculations. Getting d
 
 Actually, duplicate scores are common in practice.  I tested the float comparisons with various epsilons and decided none were needed.
 
+[new] 
+
+In my usage the last couple days about 3% of the comparisons had equal fuzzy matching score, so it's indeed not that uncommon. Though it still means that most-recently-used has little influence on the sorting.
+
+Bouncing between 2/3 buffers I often type the file extension, for example C-x b .py RET.  This worked well with iswitchb, less with lusty explorer for obvious reasons.
+
 [new]
 
 Another approach would be to turn the most-recently-used index into a number between 0 and 1, and multiply the fuzzy matching score with it to get the sorting index. Finding a good formula for calculating that number probably requires some experimentation.
@@ -87,6 +93,12 @@ Another approach would be to turn the most-recently-used index into a number bet
 [new:sjbach:2010-07-05 16:31 UTC]
 
 But on the other hand, this sounds like a neat idea!
+
+[new]
+
+* Buffer explorer: put current buffer at end of matches list for more intuitive switching
+
+This is not done when fuzzy matching is used, so the buffer explorer will suggest switching to the current buffer if it has a higher score than the buffer you'd like to switch to.
 
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion
