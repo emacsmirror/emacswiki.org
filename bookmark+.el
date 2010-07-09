@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul  7 09:11:12 2010 (-0700)
+;; Last-Updated: Thu Jul  8 14:37:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14674
+;;     Update #: 14678
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -3107,7 +3107,7 @@ command has no effect."
 
 ;;;###autoload
 (defun bmkp-make-function-bookmark (bookmark-name function)
-  "Create a bookmark that will invoke FUNCTION when \"jumped\" to.
+  "Create a bookmark that invokes FUNCTION when \"jumped\" to.
 You are prompted for the bookmark name and the name of the function.
 Returns the new bookmark (internal record)."
   (interactive (list (read-string "Bookmark: ") (completing-read "Function: " obarray 'functionp)))
@@ -3131,14 +3131,13 @@ so bookmarks will subsequently be saved to FILE.
 
 `bookmark-default-file' is unaffected, so your next Emacs session will
 still use `bookmark-default-file' for the initial set of bookmarks."
-  (interactive
-   (list    (let ((insert-default-directory  t))
-              (read-file-name
-               "Switch to bookmark file: " "~/"
-               ;; Default file as default choice, unless it's already current.
-               (and (not (bmkp-same-file-p bookmark-default-file bmkp-current-bookmark-file))
-                    bookmark-default-file)
-               'confirm))))
+  (interactive (list (let ((insert-default-directory  t))
+                       (read-file-name
+                        "Switch to bookmark file: " "~/"
+                        ;; Default file as default choice, unless it's already current.
+                        (and (not (bmkp-same-file-p bookmark-default-file bmkp-current-bookmark-file))
+                             bookmark-default-file)
+                        'confirm))))
   (bookmark-load file t no-msg))
 
 ;;;###autoload
@@ -9967,7 +9966,7 @@ bmkp-use-region             - Activate saved region when visit?"
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-dired-bookmarks]
   '(menu-item "Mark Dired Buffers" bmkp-bmenu-mark-dired-bookmarks :help "Mark Dired bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-desktop-bookmarks]
-  '(menu-item "Mark Desktop Buffers" bmkp-bmenu-mark-desktop-bookmarks
+  '(menu-item "Mark Desktops" bmkp-bmenu-mark-desktop-bookmarks
     :help "Mark desktop bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-region-bookmarks]
   '(menu-item "Mark Regions" bmkp-bmenu-mark-region-bookmarks

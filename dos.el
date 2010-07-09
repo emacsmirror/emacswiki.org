@@ -3,9 +3,11 @@
 ;; Copyright (C) 2003, 2008, 2009, 2010 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.13
+;; Version:  2.14
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
+
+(defconst dos-mode-version "2.14" "Dos Mode version number.")
 
 ;;; Commentary:
 ;;
@@ -46,6 +48,7 @@
 
 ;;; History:
 ;;
+;;  8 Jul 2010  2.14 Added user function `dos-mode-version'.
 ;; 29 Jun 2010  2.13 Added keyword "erase".
 ;; 16 Apr 2010  2.12 Added ;;;###autoload cookie.
 ;; 29 Sep 2009  2.11 Improved highlighting of strings.
@@ -132,7 +135,8 @@ that:
     ["Mini Template" dos-template-mini] ; :help "Insert minimal template"
     "--"
     ["Help (cmd)"    dos-help-cmd     ]   ; :help "Show help page for Dos command"
-    ["Help (mode)"   dos-help-mode    ])) ; :help "Show help page for Emacs dos-mode"
+    ["Help (mode)"   dos-help-mode    ]   ; :help "Show help page for Emacs dos-mode"
+    ["Version"       dos-mode-version ])) ; :help "Show Dos Mode version"
 (defvar dos-mode-abbrev-table nil)(define-abbrev-table 'dos-mode-abbrev-table ())
 (defvar dos-mode-map
   (let ((map (make-sparse-keymap)))
@@ -140,11 +144,13 @@ that:
     (define-key map [f11]         'dos-outline      )
     (define-key map [S-f12]       'dos-template-mini)
     (define-key map [f12]         'dos-template     )
+    (define-key map [?\C-c ?\C-.] 'dos-mode-version )
     (define-key map [?\C-c ?\C-/] 'dos-help-cmd     )
     (define-key map [?\C-c ?\C- ] 'dos-sep          )
     (define-key map [?\C-c ?\C-a] 'dos-run-args     )
     (define-key map [?\C-c ?\C-c] 'dos-run          )
     (define-key map [?\C-c ?\C-m] 'dos-help-mode    )
+    (define-key map [?\C-c ?\C-v] 'dos-run          )
     map))
 (defvar dos-mode-syntax-table
   (let ((table (make-syntax-table)))
@@ -162,6 +168,8 @@ that:
 (defun dos-help-cmd (cmd) "Show help for Dos command." (interactive "sHelp: ")(shell-command (concat "help " cmd)))
 (defun dos-help-mode () "Show help page for `dos-mode'." (interactive)
   (describe-function 'dos-mode)(switch-to-buffer "*Help*")(delete-other-windows)(message nil))
+(defun dos-mode-version () "Show Dos Mode version number." (interactive)
+  (message (concat "Dos Mode version " dos-mode-version)))
 (defun dos-outline () "Navigate within Dos script using outline-mode.
 
 If you haven't already configured an `outline-mode-hook', here is an example

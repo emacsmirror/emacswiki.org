@@ -110,6 +110,8 @@ I added local and global highlighting modes that can help focus attention on a "
 [new:jpkotta:2010-01-26 02:08 UTC]
 I used the <code>(setq scroll-conservatively 10000)</code> solution, and it works well enough for me.  However, moving the point down (and thus scrolling 1 line at a time) still looked very poor - it was jerky and inconsistent.  Every 3rd press would not move the point, but scroll the window a couple of pixels (this is in X, BTW).  This happened whether I was just holding the down arrow or pressing it repeatedly.  I accidentally stumbled upon the <code>auto-window-vscroll</code> variable, I set it to <code>nil</code> and scrolling down looks much better.
 
+[new:2010-07-08:2010-07-08 19:25 UTC]
+I am using Adam Spiers' smooth-scrolling.el, but with the defadvices changed to <code>before</code> rather than <code>after</code>, and adding 1 to <code>smooth-scroll-margin</code> everywhere in <code>smooth-scroll-up/down</code>. This provides the advantage that if you scroll up from the very top of a window (or down from the very bottom, and you can be in these situations if changing windows), the script will gracefully scroll the window just enough to put point outside the margin again. Also, as stated just above, <code>(setq auto-window-vscroll nil)</code> is needed in some situations. -- KGB
 ----
 CategoryDisplay
 CategoryMouse
