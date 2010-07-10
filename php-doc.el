@@ -167,7 +167,7 @@ See `windata-display-buffer' for setup the arguments."
   (let ((browse-url-browser-function php-doc-browser-function)
         (file (php-doc-function-file sym)))
     (if (file-exists-p file)
-        (browse-url file))))
+        (browse-url (concat "file://" file)))))
 
 (defun php-doc-tree ()
   (interactive)

@@ -538,6 +538,12 @@ Thanks for your excellent stuffs. By the way, There is a tiny bug in switch-file
 [new]
 Thanks for your correction. -- ViniciusJoseLatorre
 
+-----
+[new]
+A question about whitespace.el (12.1): When I add a new paragraph to a text file, the blank line inbetween always gets highlighted as 'trailing blank line'. Which is true for the short period of time when I haven't started the next line yet, but then it does not disappear when typing more text. - Joerg
+
+My settings:  '(whitespace-style (quote (tabs spaces trailing lines-tail space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
+
 ------
 
 CategoryHomepage

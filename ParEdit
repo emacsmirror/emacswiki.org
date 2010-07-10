@@ -101,5 +101,9 @@ then the caption should be replaced with "Here's a demonstration of %%ParEdit%% 
 
 : -- Dale 
 
+[new]
+
+It is implicit by the context, the two features you are seeing are "eldoc" and "electric RET" which has a snippet of code just under the video link for you to try it :) -- GlauberPrado
+
 ----
 CategoryCode CategoryEditing CategoryParentheses.

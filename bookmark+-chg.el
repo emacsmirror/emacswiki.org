@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul  7 09:21:39 2010 (-0700)
+;; Last-Updated: Fri Jul  9 14:48:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12905
+;;     Update #: 12935
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -95,6 +95,19 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2010/07/09 dadams
+;;     Added: bmkp-bmenu-mark-bookmark-file-bookmarks, bmkp-bmenu-show-only-bookmark-files,
+;;            bmkp-bookmark-file-jump, bmkp-set-bookmark-file-bookmark, bmkp-bookmark-file-history,
+;;            bmkp-use-bookmark-file-create, bmkp-bookmark-file, bmkp-bookmark-file-alist-only,
+;;            bmkp-bookmark-file-bookmark-p, bmkp-jump-bookmark-file, bmkp-make-bookmark-file-record.
+;;     bmkp-types-alist, bmkp-buffer-names, bmkp-bmenu-mode-status-help, bmkp-bmenu-propertize-item,
+;;       bmkp-this-buffer-p, bmkp-last-specific-buffer-p, bmkp-specific-buffers-alist-only,
+;;       bmkp-bookmark-description, bookmark-bmenu-mode:   Updated for bookmark-file bookmarks.
+;;     bookmark--jump-via: Added a catch, so a handler can skip all other processing when it's done.
+;;     bookmark-load: Final msg says whether overwritten.
+;;     Bound and added to menus: bmkp-set-bookmark-file-bookmark,
+;;                               bmkp-bmenu-mark-bookmark-file-bookmarks,
+;;                               bmkp-bmenu-show-only-bookmark-files, bmkp-bookmark-file-jump.
 ;; 2010/07/07 dadams
 ;;     bookmark-handle-bookmark: Bind use-dialog-box, use-file-dialog to nil.
 ;;     bookmark-location: From Emacs 23: Use location property and -- Unknown location --.

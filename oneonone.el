@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Sat Jul  3 21:33:22 2010 (-0700)
+;; Last-Updated: Fri Jul  9 13:31:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2518
+;;     Update #: 2521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -260,6 +260,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/07/09 dadams
+;;     1on1-emacs: Soft-require fit-frame.el.
 ;; 2010/07/04 dadams
 ;;     1on1-default-frame-alist:
 ;;       Do not set tool-bar-lines for Emacs 24.  Chong changed the behavior (again).
@@ -1050,7 +1052,7 @@ take effect.")
    (or (assq 'icon-type default-frame-alist)
        (cons 'icon-type (< emacs-major-version 21))) ; `t' for Emacs 21 too?
    (or (assq 'tool-bar-lines default-frame-alist)
-       (and (< emacs-major-version 24) (cons 'tool-bar-lines 1))) ; Emacs 21-23.
+       (and (< emacs-major-version 24) (cons 'tool-bar-lines 1))) ; Emacs 21-23, not 24+.
    (if (cdr (assq 'left-fringe default-frame-alist))
        (assq 'left-fringe default-frame-alist)
      (cons 'left-fringe 0))             ; Emacs 21+
@@ -1273,7 +1275,7 @@ show/hide: hold CTRL + click in window"))
     (1on1-setup-minibuffer-frame-coloring))
 
   ;; Hooks.
-  (if 1on1-fit-minibuffer-frame-flag
+  (if (and 1on1-fit-minibuffer-frame-flag (require 'fit-frame nil t))
       (add-hook 'post-command-hook '1on1-fit-minibuffer-frame)
     (remove-hook 'post-command-hook '1on1-fit-minibuffer-frame))
   (if 1on1-change-cursor-on-overwrite/read-only-flag

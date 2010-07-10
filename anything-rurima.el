@@ -140,7 +140,7 @@
 (defun anything-rurima (&optional pattern)
   "るりまを検索する。"
   (interactive)
-  (anything 'anything-c-source-rurima pattern nil nil "*rurima*"))
+  (anything 'anything-c-source-rurima pattern nil nil nil "*rurima*"))
 
 (defun anything-rurima-at-point ()
   "カーソル位置の単語をるりまで調べる。"

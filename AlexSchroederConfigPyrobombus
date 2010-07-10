@@ -22,7 +22,6 @@
 
 ;; minor modes
 (global-font-lock-mode 1)
-(iswitchb-mode 1)
 (show-paren-mode 1)
 (tool-bar-mode -1)
 (winner-mode 1)
@@ -108,6 +107,17 @@
   "Sort buffers A and B using `rcirc-sort-name'."
   (string< (rcirc-sort-name a)
 	   (rcirc-sort-name b)))
+
+;; Lusty Explorer
+
+;; (autoload 'lusty-file-explorer "lusty-explorer" nil t)
+;; (autoload 'lusty-buffer-explorer "lusty-explorer" nil t)
+;; (global-set-key (kbd "C-x C-f") 'lusty-file-explorer)
+;; (global-set-key (kbd "C-x b") 'lusty-buffer-explorer)
+(iswitchb-mode 1)
+(global-set-key (kbd "C-S-<left>") 'ns-prev-frame)
+(global-set-key (kbd "C-S-<right>") 'ns-next-frame)
+
 
 ;; color theme and related stuff
 ;; (set-face-font 'default "fontset-osaka14")
@@ -219,12 +229,13 @@ in parsed XML OPML."
 ;;; ispell
 
 (setq ispell-program-name "aspell"
-      ispell-dictionary "english"
+      ispell-list-command "list"
       ispell-local-dictionary-alist
-      '(("pt_PT"
-	 "[a-zA-Z\301\302\311\323\340\341\342\351\352\355\363\343\372]"
-	 "[^a-zA-Z\301\302\311\323\340\341\342\351\352\355\363\343\372]"
-	 "[']" t ("-C") "~latin1" iso-8859-1)))
+      '(("swiss" "[a-zA-Z\304\326\334\344\366\337\374]"
+	 "[^a-zA-Z\304\326\334\344\366\337\374]" "[']" t
+	 ("-C" "-d" "swiss" "--dict-dir"
+	  "/usr/local/lib/aspell-0.60")
+	 "~latin1" iso-8859-1)))
 
 ;;; dired mode
 
@@ -270,6 +281,7 @@ in parsed XML OPML."
 ; (setq selection-coding-system 'latin-1)
 ; (set-terminal-coding-system 'utf-8)
 ; (set-keyboard-coding-system 'iso-latin-1)
+(setq x-select-enable-clipboard t)
 
 (prefer-coding-system 'utf-8)
 
@@ -381,22 +393,27 @@ in parsed XML OPML."
       rcirc-fill-prefix "    "
       rcirc-fill-column 79; side-by-side on my laptop
       rcirc-default-nick "kensanata"
-      rcirc-keywords '("ken" "kens" "kensa")
+      rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels
-	 ("#emacs" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	  "#hcoop" "#clojure" "#biology"
-	  "#eclipse" "#eclipse-de" "#osgi"
-	  "#googlewavebots" "#googlewave"
-	  "#ubuntu"))
-	("localhost" :channels ("&bitlbee"))
+	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse"
+	  "#epfarms" "#biology" "#clojure" "#clojure.de"))
+	;; "#eclipse" "#eclipse-de" "#osgi"
+	;; "#googlewavebots" "#googlewave"
+	;; "#ubuntu" "#hcoop"
 	("ircnet.eversible.com" :channels ("#drsrm"))
 	;; ("irc.lugs.ch"   :channels ("#hackerfunk"))
-	("irc.perl.org" :channels ("#perlde")))
+	("irc.perl.org" :channels ("#perlde"))
+	("irc.sorcery.net" :channels ("#rpmn"))
+	("irc.otherworlders.org" :channels ("#pathfinder"))
+	;; "#enworld"
+	("localhost" :channels ("&bitlbee" "&roleplaying" "&emacs"
+				"&bsi"))
+	("irc.oftc.net" :channels ("#bitlbee")))
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
-      rcirc-ignore-list '("gaby")
+      rcirc-ignore-list '("consolers" "ams" "jordanb")
       rcirc-log-flag t
       rcirc-authinfo (with-temp-buffer
 		       (insert-file-contents-literally "~/.rcirc-authinfo")
@@ -545,6 +562,8 @@ in parsed XML OPML."
  utf-8 "question")
 	("HagfishTavern" "http://www.campaignwiki.org/wiki/HagfishTavern"
 	 utf-8 "question")
+	("DungeonMaps" "http://www.campaignwiki.org/wiki/DungeonMaps"
+	 utf-8 "question")
 	("Kaylash" "http://www.campaignwiki.org/wiki/Kaylash"
 	 utf-8 "question")
 	("Montag in Zürich"
@@ -670,8 +689,9 @@ add an empty line before it and make it italic."
     ("^==[^=\n]+=+$" . 'info-title-2)
     ("^===[^=\n]+=+$" . 'info-title-3)
     ("^====[^=\n]+=+$" . 'info-title-4)
-    ("^[ \t].*$" . 'fixed-pitch)
-    ("\\[\\[.*?\\]\\]" . 'link)
+    ;; ("^[ \t].*$" . 'fixed-pitch)
+    ("^;.*?:" . 'font-lock-constant-face)
+    ("\\[\\[[^]]*?\\]\\]" . 'link)
     ("\\[.*\\]" . 'link)
     (,goto-address-url-regexp . 'link)
     ("\\*\\*.*?\\*\\*" . 'bold)
@@ -693,7 +713,8 @@ The particular markup mix is specific to my preferences.")
     ("^===[^=\n]+" . 'info-title-3)
     ("^====+[^=\n]+" . 'info-title-4)
     ("\\[\\[.*?\\]\\]" . 'link)
-    ("\\[.*\\]" . 'link)
+    ("\\[http:.*?\\]" . 'link)
+    ("\\[url.*?\\[/url\\]" . 'link)
     ("\\[b\\].*?\\[/b\\]" . 'bold)
     ("\\[i\\].*?\\[/i\\]" . 'italic)
     ("\\*\\*.*?\\*\\*" . 'bold)
@@ -745,6 +766,24 @@ cells by rows first."
 		  " " cell-separator "\n"))
 	(setq row (1+ row)))))
   (delete-region start end))
+
+(defun bbcode-to-textile ()
+  (interactive)
+  (save-excursion
+    (dolist (item '(("\\[url=\\(.*?\\)\\]\\(.*?\\)\\[/url\\]"
+		     . "\"\\2\":\\1")
+		    ("\\[b\\]\\(.*?\\)\\[/b\\]"
+		     . "**\\1**")
+		    ("\\[s\\(trike\\)?\\]\\(.*?\\)\\[/s\\(trike\\)?\\]"
+		     . "-\\2-")
+		    ("\\[/?list\\]"
+		     . "")
+		    ("\n?\\[\\*\\]"
+		     . "\n* ")
+		    ))
+      (goto-char (point-min))
+      (while (re-search-forward (car item) nil t)
+	(replace-match (cdr item))))))
 
 ;;; isearch & occur
 
@@ -829,6 +868,9 @@ cells by rows first."
     ;; maximize window if fullscreen above had no effect
     (when (fboundp 'w32-send-sys-command)
       (w32-send-sys-command 61488 frame))))
+
+;;; Table Mode
+(add-hook 'text-mode-hook 'table-recognize)
 
 ;;; mail
 (autoload 'fetchmail-mode "fetchmail-mode"
@@ -949,6 +991,31 @@ This moves them into the Spam folder."
 	 ,smtpmail-smtp-service
 	 nil nil))
       smtpmail-auth-credentials "~/.netrc")
+
+;;; D&D Alder King XP
+
+(defun alder-king-level (xp)
+  (interactive "nAverage XP: ")
+  (goto-char (point-min))
+  (while (re-search-forward "^|\\[\\[\\(.*?\\)\\]\\] *| *\\([0-9]+\\)!? *| *\\([0-9]+\\) *| *\\([0-9]+\\)" nil t)
+    (let ((name (match-string 1))
+	  (lvl (string-to-number (match-string 2)))
+	  (current (string-to-number (match-string 3)))
+	  (next (string-to-number (match-string 4))))
+      (case (read-char (format "XP for %s? (%s) " name
+			       (mapconcat (lambda (s)
+					    (put-text-property 0 1 'face 'bold s)
+					    s)
+					  '("full" "half" "bonus" "none" "quit") "/")))
+	(?f (setq current (+ current xp)) (message "full"))
+	(?h (setq current (+ current (/ xp 2))) (message "half!"))
+	(?b (setq current (+ current xp (/ xp 2))) (message "bonus!"))
+	(?n (message "none!"))
+	(?q (error "Quit")))
+      (replace-match (format "|%-20s | %2d%s | %8d | %8d"
+			     (concat "[[" name "]]")
+			     lvl (if (>= current next) "!" " ")
+			     current next)))))
 
 ;;; automatic additions
 

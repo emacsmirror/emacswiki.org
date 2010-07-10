@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Jul  7 15:43:59 2010 (-0700)
+;; Last-Updated: Fri Jul  9 16:45:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2472
+;;     Update #: 2497
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -149,7 +149,7 @@
 ;;
 ;;  The following functions are included here with NO CHANGES to their
 ;;  definitions.  They are here only to take advantage of the new
-;;  definition of macro `dired-map-over-marks-check':
+;;  definition of macro `dired-map-over-marks':
 ;;  
 ;;  `dired-do-redisplay', `dired-get-marked-files',
 ;;  `dired-map-over-marks-check',
@@ -456,17 +456,24 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   `(prog1
     (let ((inhibit-read-only  t) case-fold-search found results)
       (when (and (consp ,arg) (> (prefix-numeric-value ,arg) 4))
-        (let ((newarg  (case (prefix-numeric-value ,arg)
-                         (16   'all-files-no-dirs) ; `C-u C-u'
-                         (64   'all-files-no-dots) ; `C-u C-u C-u'
-                         (256  'all-files) ; `C-u C-u C-u C-u'
-                         (t    'all-files-no-dirs))))
-          (if dired-no-confirm
-              (setq arg newarg)
-            (if (not (y-or-n-p (format "Act on all files in buffer? ")))
-                (message "Acting on current file only")
-              (setq arg newarg)
-              (message "OK, acting on all files")))))
+        (setq arg  (case (prefix-numeric-value ,arg)
+                     (16   'all-files-no-dirs) ; `C-u C-u'
+                     (64   'all-files-no-dots) ; `C-u C-u C-u'
+                     (256  'all-files)  ; `C-u C-u C-u C-u'
+                     (t    'all-files-no-dirs))))
+      ;; Don't interact here.  Let `dired-map-over-marks-check' take care of that, even if it
+      ;; doesn't explicitly say whether all files are acted on.
+      ;;$$$$$$   (let ((newarg  (case (prefix-numeric-value ,arg)
+      ;;                          (16   'all-files-no-dirs) ; `C-u C-u'
+      ;;                          (64   'all-files-no-dots) ; `C-u C-u C-u'
+      ;;                          (256  'all-files) ; `C-u C-u C-u C-u'
+      ;;                          (t    'all-files-no-dirs))))
+      ;;           (if (eq dired-no-confirm t)
+      ;;               (setq arg newarg)
+      ;;             (if (not (y-or-n-p (format "Act on all files in buffer? ")))
+      ;;                 (message "Acting on current file only")
+      ;;               (setq arg newarg)
+      ;;               (message "OK, acting on all files")))))
       (if (and ,arg (not (memq ,arg '(all-files-no-dirs all-files-no-dots all-files))))
           (if (integerp ,arg)
               (progn;; no save-excursion, want to move point.
@@ -539,7 +546,7 @@ Argument ARG:
 
  
 ;;; UNALTERED vanilla Emacs code to be reloaded, to use the new definition
-;;; of `dired-map-over-marks'.  Unless otherwise noted, these are from the Emacs 23 libraries.
+;;; of `dired-map-over-marks'.  Unless otherwise noted, these are from the Emacs 23+ libraries.
 ;;; These definitions should be IDENTICAL to what's in vanilla Emacs.
 
 
