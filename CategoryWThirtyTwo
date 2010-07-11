@@ -12,10 +12,10 @@ Where to get it:
 
 * Unofficial/CVS Emacs (which means the Emacs currently in development, it is however normally very stable):
 ** **2010-07-02** -- http://ntemacs.sourceforge.net/ -- **CVS Emacs 24.0.50.1 Win32**
-*** Clean Win32 build of latest Emacs development trunk.
+*** Clean Win32 build of latest Emacs development trunk (Bazaar).
 *** Support for images enabled.
 *** Latest build (20100702) optimized for Prescott and above.
-*** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: and run addpm.exe in \ntemacs24\bin.
+*** Uses 7z for distribution. Decompress the bin package anywhere (preferably C: or D: root) and run addpm.exe in \ntemacs24\bin.
 ** **Precompiled Emacs for Windows binaries** -- http://code.google.com/p/emacs-for-windows/
 *** Socuce code checked out from latest Bazaar repository
 *** Both stable and bleeding edge nightly build binaries

@@ -25,11 +25,8 @@ Keybindings in a mediawiki mode
 
 Please send any bug reports to me [mailto:mah@everybody.org via email].
 
-(I plan on committing those changes that allow for an easier http post back to emacs, but I'd like to shake out any bugs here, first.)
-
 TODO:
 
 * Optionally use org-mode formatting for editing and translate that to mw
-* Perform MW searches using the API
 
 CategoryModes CategoryHypermedia

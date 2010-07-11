@@ -4,7 +4,12 @@
 
 ;; Author: Daniel Brockman <daniel@brockman.se>
 ;; URL: http://www.brockman.se/software/zenburn/zenburn.el
-;; Updated: 2010-06-20 13:58
+;; Updated: 2010-07-10 16:10
+
+;; Changes (2010-07), Dirk-Jan C. Binnema
+;; - fix doc-string-face color
+;; - clarify elscreen colors
+;; - fix paren colors
 
 ;; Changes (2010-06), Stefan Kangas
 ;; - add diff-refine-change face to make diff-mode readable
@@ -294,6 +299,8 @@ static char *gnus-pointer[] = {
 	   ((t (:inherit zenburn-primary-4))))
 	'(font-lock-doc
 	   ((t (:inherit zenburn-green+1))))
+	`(font-lock-doc-string
+	   ((t (:foreground ,zenburn-blue+1))))
 	`(font-lock-function-name
 	   ((t (:foreground ,zenburn-blue))))
 	'(font-lock-keyword
@@ -413,7 +420,7 @@ static char *gnus-pointer[] = {
 	'(highlight ((t (:underline t))))
 	'(paren ((t (:inherit zenburn-lowlight-1))))
 	'(show-paren-mismatch ((t (:inherit font-lock-warning))))
-	'(show-paren-match ((t (:inherit zenburn-highlight-damp))))
+	`(show-paren-match ((t (:foreground ,zenburn-blue-1 :underline t))))
 	'(match ((t (:weight bold))))
 
 	`(button ((t (:foreground ,zenburn-yellow :background "#506070"
@@ -528,7 +535,7 @@ static char *gnus-pointer[] = {
 	'(diff-removed ((t (:inherit zenburn-blue))))
 	'(diff-context ((t (:inherit font-lock-comment))))
 	'(diff-refine-change ((t (:inherit zenburn-background-2))))
-
+	
 	`(emms-pbi-song ((t (:foreground ,zenburn-yellow))))
 	'(emms-pbi-current ((t (:inherit zenburn-primary-1))))
 	'(emms-pbi-mark-marked ((t (:inherit zenburn-primary-2))))
@@ -924,9 +931,10 @@ static char *gnus-pointer[] = {
 	'(flyspell-duplicate ((t (:inherit zenburn-primary-1))))
 	'(flyspell-incorrect ((t (:inherit font-lock-warning))))
 	
-	`(elscreen-tab-current-screen ((t (:inherit zenburn-primary-1))))
-	`(elscreen-tab-other-screen ((t (:foreground ,zenburn-yellow
-					  :background ,zenburn-green))))
+	`(elscreen-tab-other-screen ((t ((:foreground ,zenburn-fg
+					   :background ,zenburn-green-1)))))
+	`(elscreen-tab-current-screen ((t (:foreground ,zenburn-blue+1
+					    :background "#1e2320"))))
 
 	'(wl-highlight-message-headers ((t (:inherit zenburn-red+1))))
 	'(wl-highlight-message-header-contents ((t (:inherit zenburn-green))))
@@ -1101,6 +1109,7 @@ static char *gnus-pointer[] = {
 	   font-lock-comment-face
 	   font-lock-constant-face
 	   font-lock-doc-face
+	   font-lock-doc-string-face
 	   font-lock-function-name-face
 	   font-lock-keyword-face
 	   font-lock-negation-char-face
