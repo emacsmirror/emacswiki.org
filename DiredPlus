@@ -6,6 +6,11 @@ Library <tt>[[dired+.el]]</tt> ('''[::Dired+]''') extends functionalities provid
 * Adds many new commands. Enhances some existing commands.
 * Lets you use commands that normally operate on the marked files to operate instead on '''''all''''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as files.
 * Lets you open Dired on (only) the files in an Emacs [[fileset]].
+* Lets you create bookmarks to all of the marked files and directories, ''without visiting'' them.  This means you can bookmark files that you cannot even visit in Emacs, such as a sound file or a video file.  If you also use '''[[BookmarkPlus|Bookmark+]]''', then you can: 
+
+** Open bookmarks using their Windows file associations (on Windows).
+** Bookmark a ''project'': Bookmark the marked files and dirs and create a bookmark-file bookmark for them. "Jumping" to the bookmark-file bookmark opens the `##*Bookmark List*##' for those marked-file bookmarks (only).
+
 * Provides new mouse utility (extensions) -- you can select a region, then operate on its files. Alternative ways to select (mark) multiple files:
 ** drag a region, then choose '''Mark''' in the popup menu
 ** click, then Shift-click, as in Windows Explorer
@@ -50,7 +55,7 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 [[image:DrewsEmacsDiredThisFile]]
 
-(This screenshot is not quite up-to-date -- the menu now includes item '''Grep'''.)
+(This screenshot is not quite up-to-date -- the menu now includes items '''Bookmark''' and '''Grep'''.)
 
 [:w32-browser]
 == If You Use Emacs on MS Windows ==
@@ -61,9 +66,10 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 * (`M-RET') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
 
-* (`M-b') You can bookmark all of the marked files and directories, without first visiting. And with '''[[BookmarkPlus|Bookmark+]]''', you can open bookmarks using their Windows file associations.
+* You can bookmark the marked files and directories without visiting them. If you also use '''[[BookmarkPlus|Bookmark+]]''' then you can open bookmarks using their Windows file associations.
 
-In addition to being bound to keys `C-RET' and `M-RET', these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.
+
+In addition to being bound to keys, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.
 
 ----
 

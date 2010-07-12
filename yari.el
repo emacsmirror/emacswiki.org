@@ -5,7 +5,7 @@
 ;; Author: Aleksei Gusev <aleksei.gusev@gmail.com>
 ;; Maintainer: Aleksei Gusev <aleksei.gusev@gmail.com>
 ;; Created: 24 Apr 2010
-;; Version: 0.2
+;; Version: 0.3
 ;; Keywords: tools
 
 ;; This program is free software; you can redistribute it and/or modify
@@ -39,6 +39,12 @@
 ;;
 ;; (defun ri-bind-key ()
 ;;   (local-set-key [f1] 'yari))
+;;
+;;  or
+;;
+;; (defun ri-bind-key ()
+;;   (local-set-key [f1] 'yari-anything))
+;;
 ;; (add-hook 'ruby-mode-hook 'ri-bind-key)
 ;;
 ;; You can use C-u M-x yari to reload all completion targets.
@@ -56,6 +62,20 @@
   "Hooks to run when invoking yari-mode."
   :group 'yari
   :type 'hook)
+
+(defvar yari-anything-source-ri-pages
+  '((name . "RI documentation")
+    (candidates . (lambda () (yari-ruby-obarray)))
+    (action  ("Show with Yari" . yari))
+    (candidate-number-limit . 300)
+    (requires-pattern . 2)
+    "Source for completing RI documentation."))
+
+;;;###autoload
+(defun yari-anything (&optional rehash)
+  (interactive (list current-prefix-arg))
+  (when current-prefix-arg (yari-ruby-obarray rehash))
+  (anything 'yari-anything-source-ri-pages (yari-symbol-at-point)))
 
 ;;;###autoload
 (defun yari (&optional ri-topic rehash)

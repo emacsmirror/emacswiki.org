@@ -17,3 +17,19 @@ Put the elim-client file in ~/elisp.
 
 Put the icons directory in ~/elisp; all the images such as away.png etc. are therefore in ~/elisp/icons.
 
+Consider setting some lui settings for spell checking and chat buffer truncation.
+
+{{{
+;; truncate long chat buffers,
+;; enable spell checking in all lui buffers
+;; and use the american dictionary in them
+(setq lui-max-buffer-size 30000
+      lui-flyspell-p t
+      lui-flyspell-alist '(("." "american")))
+}}}
+
+If you're not seeing images in the Garak account tree you need to add this code:
+
+{{{
+(setq tree-widget-image-enable t)
+}}}
