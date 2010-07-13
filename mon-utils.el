@@ -141,6 +141,11 @@
 ;; `mon-string-set-char-at-idx'      -> `store-substring'     
 ;; `mon-string-insert-string-at-idx' -> `store-substring'
 ;; `mon-kill-ring-save-w-props'      -> `mon-get-text-properties-region-to-kill-ring'                  
+;; `mon-sequence-to-string'          -> `mon-string-from-sequence'
+;; `mon-seq->string'                 -> `mon-string-from-sequence'
+;; `mon-buffer-get-w-mode'           -> `mon-get-buffer-w-mode'
+;; `mon-buffer-get-word-count'       -> `mon-word-count-occurrences'
+;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
 ;; DEPRECATED:
@@ -549,6 +554,7 @@ Arg BODY occurs inside an `unwind-protect' which finishes with
 \(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n\n
 :NOTE Useful for forms which programatically `erase-buffer' contents and the undo list
 is not needed.\n
+:ALIASED-BY`mon-buffer-do-with-undo-disabled'\n
 :SEE-ALSO `mon-with-buffer-undo-disabled-TEST', `buffer-undo-list', 
 `mon-buffer-exists-p', `mon-buffer-written-p', `mon-buffer-exists-so-kill',
 `mon-print-in-buffer-if-p', `mon-get-buffer-parent-dir',
@@ -561,6 +567,8 @@ is not needed.\n
          (buffer-disable-undo)
          ,@body)
      (buffer-enable-undo)))
+;;
+(defalias 'mon-buffer-do-with-undo-disabled 'mon-with-buffer-undo-disabled)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-14T15:41:21-04:00Z}#{10241} - by MON KEY>
@@ -606,6 +614,30 @@ Return `#<killed buffer>' if buffered killed, else nil.\n
   (let ((mbep (mon-buffer-exists-p buffer-to-kill)))
     (if (when mbep (kill-buffer mbep))        
         (get-buffer mbep))))
+
+;;; ==============================
+;;; :COURTESY :FILE slime.el :WAS `slime-recently-visited-buffer'
+;;; :CHANGESET 1967
+;;; :CREATED <Timestamp: #{2010-07-12T12:42:51-04:00Z}#{10281} - by MON KEY>
+(defun mon-get-buffer-w-mode (w-mode &optional not-visible-only)
+  "Return the most recently visited buffer whose major-mode is W-MODE.\n
+When optional arg NOT-VISIBLE-ONLY is non-nil only considers buffers that are
+not already visible. Default is to consider all buffers on all frames.\n
+:EXAMPLE\n\n\(mon-get-buffer-w-mode 'help-mode 'not-visible-only\)\n
+\(mon-get-buffer-w-mode 'fundamental-mode\)\n
+:ALIASED-BY `mon-buffer-get-w-mode'\n
+:SEE-ALSO .\n►►►"
+  (loop for buffer in (buffer-list)
+        when (and (with-current-buffer buffer (eq major-mode w-mode))
+                  (not (string-match "^ " (buffer-name buffer)))
+                  (null (if not-visible-only
+                            (get-buffer-window buffer 'visible)
+                          (get-buffer-window buffer t))))
+        return buffer
+        finally (error (concat ":FUNCTION `mon-get-buffer-w-mode' "
+                               "-- can not locate buffer W-MODE: %S") w-mode)))
+;;
+(defalias 'mon-buffer-get-w-mode 'mon-get-buffer-w-mode)
 
 ;;; ==============================
 ;;; Following does image extension type checking. Can be used elsewhere as well.
@@ -2296,6 +2328,7 @@ When called-interactively return message in mini-buffer:
 ;;; ==============================
 
 ;;; ==============================
+;;; :TODO Add accessors/defaliases for some of these. To
 ;;; :CREATED <Timestamp: #{2010-01-12T17:06:34-05:00Z}#{10022} - by MON>
 (defun mon-alphabet-as-type (type); up down)
 "Reutrn an alpabetized sequence of TYPE.\n
@@ -2852,6 +2885,7 @@ any combination these will be concatenated to return value also.\n
  \"string0\"\n [32 98 117 98 98 97 115 32]
  '\(115 116 114 105 110 103 49 32\)\n [98 117 98 98 97 32]
  '\(103 111 116 32 110 105 108\)\)\n
+:ALIASED-BY `mon-sequence-to-string', `mon-seq->string'\n
 :SEE-ALSO `mon-string-index',`mon-string-position', `mon-string-alpha-list',
 `mon-is-alphanum',`mon-is-digit',`mon-is-letter', `mon-alphabet-as-type',
 `mon-string-replace-char'.\n►►►"
@@ -2874,6 +2908,11 @@ any combination these will be concatenated to return value also.\n
                               (mon-string-to-sequence stringify-seq)))
                      stringify-seq)) seq-seqs)
     (apply 'concat (car seq-seqs) (cdr seq-seqs))))
+;;
+(unless (fboundp (intern-soft "mon-sequence-to-string"))
+  (defalias 'mon-sequence-to-string 'mon-string-from-sequence))
+(unless (fboundp (intern-soft "mon-seq->string"))
+  (defalias 'mon-seq->string 'mon-string-from-sequence))
 ;;
 ;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97))
 ;;; :TEST-ME (mon-string-from-sequence (string-to-list "bubba"))
@@ -4254,9 +4293,10 @@ in a new buffer *Word List*, where a word is defined by `forward-word'
 according to the syntax-table settings.  You can apply `sort-lines' and
 unique-lines to this to obtain a list of all the unique words in a
 document.\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-string-ify-current-line',
-`mon-stringify-list', `mon-dropin-line-word', `mon-insert-string-ify',
-`mon-word-count-analysis' `mon-word-count-occurrences', `mon-word-count-region',
+:ALIASED-BY `mon-buffer-get-word-list'\n
+:SEE-ALSO `mon-word-count-occurrences', `mon-line-strings-to-list',
+`mon-string-ify-current-line', `mon-stringify-list', `mon-dropin-line-word',
+`mon-insert-string-ify', `mon-word-count-analysis', `mon-word-count-region',
 `mon-word-count-chars-region'.\n►►►"
   (interactive)
   (let (word)
@@ -4265,6 +4305,8 @@ document.\n
 	(goto-char (point-min))
 	(while (setq word (mon-word-get-next))
 	  (princ (format "%s\n" word)))))))
+;;
+(defalias 'mon-buffer-get-word-list 'mon-word-get-list-in-buffer)
 
 ;;; ==============================
 ;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
@@ -4313,7 +4355,7 @@ Extract one word at a time by calling (funcall next-word).\n
 The first time next-word is called, return \"This\".
 The next time, retrun \" is\". Then, \" text.\". 
 Finally, return nil forever.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-word-get-list-in-buffer'.\n►►►"
   (lexical-let ((buf buffer)(pos 1))
     (lambda ()
       (save-excursion
@@ -4328,72 +4370,149 @@ Finally, return nil forever.\n
                   (setq pos pt))))
           (switch-to-buffer cur) result)))))
 
-;;; =======================
-;;; :NOTE Not urrenlty `syntax-table' aware. 
-(defun mon-word-count-analysis (start end)
-  "Count number of times each word is used in the region. Ignores punctuation.\n
+;;; ==============================
+;;; :CHANGESET 1973 <Timestamp: #{2010-07-12T20:20:45-04:00Z}#{10281} - by MON KEY>
+(defun mon-word-count-analysis (start end &optional intrp)
+  "Count number of times each word is used in the region.
+Count anything with word syntax when `with-syntax-table' uses`standard-syntax-table'.\n
+:EXAMPLE\n\n\(mon-word-count-analysis \(buffer-end 0\) \(buffer-end 1\)\)\n
+\(mon-word-count-analysis \(buffer-end 0\) \(buffer-end 1\) t\)\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
 `mon-word-count-occurrences', `mon-word-count-region', 
 `mon-word-get-list-in-buffer'.\n►►►"
-  (interactive "r")
-  (let (words)
-	(save-excursion
-	  (goto-char start)
-	  (while (re-search-forward "\\w+" end t)
-	    (let* ((word (intern (match-string 0)))
-		   (cell (assq word words)))
-	      (if cell
-		  (setcdr cell (1+ (cdr cell)))
-		(setq words (cons (cons word 1) words))))))
-	(when (interactive-p)
-	  (message "%S" words))
-	words))
+  (interactive "r\np")
+  (let (words hshd-wrds oba)
+    (setq oba (make-vector (/ (- end start) 2) 0))
+    (setq words (make-hash-table :test #'eq :weakness 'key))
+    (unwind-protect 
+        (narrow-to-region start end)
+      (save-excursion
+        (goto-char (buffer-end 0))
+        (with-syntax-table (syntax-table)
+          (while (search-forward-regexp "\\w+" end t)
+            (let* ((word (intern (match-string-no-properties 0) oba))
+                   (cell (gethash word words)))
+              (if (and (not (numberp word)) cell)
+                  (puthash word (1+ cell) words)
+                (puthash word 1 words))))))
+      (widen))
+    (maphash #'(lambda (k v) (push `(,k . ,v) hshd-wrds)) words)
+    (setq hshd-wrds (nreverse hshd-wrds))
+    (if intrp
+        (message (concat ":FUNCTION `mon-word-count-analysis' "
+                         "-- :WORDS-FOUND %S")
+                 hshd-wrds)
+      `(:WORDS-FOUND ,@hshd-wrds))))
 
 ;;; ==============================
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :HIS fleuret.emacs.el :WAS `ff/word-occurrences'
 ;;; :SEE (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
-(defun mon-word-count-occurrences ()
+;;; :SEE git clone http://fleuret.org/git/elisp/ 
+;;; :CHANGESET 1969 <Timestamp: #{2010-07-12T13:40:08-04:00Z}#{10281} - by MON KEY>
+;;; Added `with-current-buffer', `message', `with-silent-modifications', `window-min-height'
+(defun mon-word-count-occurrences (&optional intrp)
   "Display in a new buffer the list of words sorted by number of occurrences.\n
+Count contains multiple occurences of words with > word-length 3 in buffer.\n
+Return results and display in buffer named \"*WORD-COUNT*\".\n
+:EXAMPLE\n\n\(mon-word-count-occurrences\)\n
+\(mon-word-count-occurrences t\)\n
+:ALIASED-BY `mon-buffer-get-word-count'\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-region', `mon-word-count-analysis',
 `mon-word-count-chars-region', `mon-word-get-list-in-buffer'.\n►►►"
-  (interactive)
-  (let ((buf (get-buffer-create "*Word-Counting*"))
-        (map (make-sparse-keymap))
+  (interactive "p")
+  (let ((cnt-buf (when intrp (get-buffer-create "*WORD-COUNT*")))
+        (dpt-buffer (when intrp (current-buffer)))
+        (dpt-window (when intrp (get-buffer-window (current-buffer))))
+        (map (when intrp (make-sparse-keymap)))
         (nb (make-hash-table))
         (st (make-hash-table))
-        (result nil))
-    ;; Collects all words into a hash-table.
+        (words-chars (mon-word-count-chars-region (buffer-end 0) (buffer-end 1)))
+        result)
+    ;; Collect all words into a pair of hash-tables.
     (save-excursion
-      (goto-char (point-min))
-      (while (re-search-forward "\\([\\-a-zA-Z\\\\]+\\)" nil t)
-        (let* ((s (downcase (match-string-no-properties 1)))
-               (k (sxhash s)))
-          (puthash k s st)
-          (puthash k (1+ (gethash k nb 0)) nb))))
-    ;; Create the result buffer.
-    (define-key map "q" 'kill-this-buffer)
-    (display-buffer buf)
-    (set-buffer buf)
-    (setq show-trailing-whitespace nil)
-    (erase-buffer)
-    ;; Build a list from the hash-table.
-    (maphash #'(lambda (key value)
-                 (setq result (cons (cons value (gethash key st)) result)))
-             nb)
-    ;; Sort and display it.
-    (mapc #'(lambda (x)
-              (if (and (> (car x) 3)
-                       ;; No leading backslash and at least four characters.
-                       (string-match "^[^\\]\\{4,\\}" (cdr x)))
-                  (insert (number-to-string (car x)) " " (cdr x) "\n")))
-          (sort result (lambda (a b) (> (car a) (car b)))))
-    ;; Adjust the window size etc.
-    (fit-window-to-buffer (get-buffer-window buf))
-    (use-local-map map)
-    (set-buffer-modified-p nil)))
+      (goto-char (buffer-end 0))
+      (with-syntax-table (standard-syntax-table)
+        (while (re-search-forward "\\([\\-a-zA-Z\\\\]+\\)" nil t)
+          (let* ((s (downcase (match-string-no-properties 1)))
+                 (k (sxhash s)))
+            (puthash k s st)
+            (puthash k (1+ (gethash k nb 0)) nb)))))
+    (if (<= (hash-table-count nb) 0)
+        (if intrp 
+            (message 
+             (concat ":FUNCTION `mon-word-count-occurrences' "
+                     "-- did not find re-occurences for words with > word-length 3 in buffer: %s") dpt-buffer)
+          `(,@words-chars :WORDS-W-LEN-GT-3 0))
+      (progn
+        (maphash #'(lambda (key value)
+                     (setq result (cons (cons value (gethash key st)) result)))
+                 nb)
+        ;; Find the longest string
+        (if (not intrp)
+            (progn (setq nb) (setq st))
+          (progn
+            (setq nb)
+            (setq st '(0 . " "))
+            (dolist (strl result (setq st (length (cdr st))))
+              (let ((len-strl (length (cdr strl))))
+                (when (> len-strl (car st)) 
+                  (setq st `(,len-strl . ,(cdr strl))))))))
+        (setq result (sort result #'(lambda (a b) (> (car a) (car b)))))
+        (dolist (wc result (setq nb (nreverse nb)))
+          (if (and (> (car wc) 1)
+                   ;; No leading backslash and at least four characters.
+                   (string-match "^[^\\]\\{4,\\}" (cdr wc)))
+              (if intrp 
+                  (push (concat (cdr wc) 
+                                (if (< (length (cdr wc)) st)
+                                    (make-string (- st (length (cdr wc))) 32)
+                                  " ")
+                                (number-to-string (car wc))) nb)
+                (push `(,(cdr wc) . ,(car wc)) nb))))
+        (if (not intrp)
+            `(,@words-chars :WORDS-W-LEN-GT-3 ,(length nb) (:WORDS-W-COUNTS ,@nb))
+          ;; Create the result buffer if called-interactively
+          (with-current-buffer cnt-buf
+            (erase-buffer)
+            (set (make-local-variable 'show-trailing-whitespace) nil)
+            (save-excursion
+              (insert ";; :W-FUNCTION     `mon-word-count-occurrences' \n"
+                      ";; :IN-BUFFER       " (buffer-name dpt-buffer) "\n"
+                      ";; :W-SYNTAX-TABLE `standard-syntax-table'\n"
+                      ";; " (mapconcat #'(lambda (wrdch) (format "%s" wrdch)) words-chars " ") "\n"
+                      ";; :NOTE To return to buffer counted type: \"C-c q\"\n;;\n"
+                      (cond ((> st 8) (concat ";; :WORD"  (make-string (- st 9) 32) ":COUNT\n"))
+                            ((< st 8) (concat ";; :WORD  :COUNT\n")))
+                      (mapconcat 'identity nb "\n")))
+            (define-key map "\C-cq" `(lambda () 
+                                       (interactive)
+                                       (if (buffer-live-p ,(buffer-name dpt-buffer))
+                                           (progn (switch-to-buffer ,(buffer-name dpt-buffer))
+                                                  (when (get-buffer "*WORD-COUNT*")
+                                                    (kill-buffer (get-buffer "*WORD-COUNT*"))))
+                                         (kill-this-buffer))))
+            (use-local-map map)
+            (display-buffer (current-buffer) t)
+            (with-silent-modifications
+              (let ((window-min-height 10)
+                    (win-max-height-maybe 
+                     (let* ((wh (window-height 
+                                 (if (equal dpt-buffer (window-buffer dpt-window))
+                                     dpt-window
+                                   (other-window 1))))
+                            (wh/2 (cond ((>= (length nb) 20)
+                                         (+ wh (/ (length nb) 2)))
+                                        ((>= (+ wh (length nb)) 20)
+                                         (+ wh (length nb)))
+                                        (t 12))))
+                       wh/2)))
+                (fit-window-to-buffer 
+                 (get-buffer-window (current-buffer)) win-max-height-maybe 10)))))))))
+;; 
+(defalias 'mon-buffer-get-word-count 'mon-word-count-occurrences)
 
 ;;; =======================
-(defun mon-word-count-region (start end)
+(defun mon-word-count-region (start end &optional intrp)
   "Return the number of words in the region.\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-chars-region',
 `mon-word-count-analysis', `mon-word-count-occurrences',
@@ -4402,28 +4521,33 @@ Finally, return nil forever.\n
   (save-excursion
     (save-restriction
       (narrow-to-region start end)
-      (goto-char (point-min))
+      (goto-char (buffer-end 0))
       (let ((matches (count-matches "\\sw+")))
-        (message "There are %s words in the Region." matches)))))
+        (if intrp 
+            (message (concat ":FUNCTION `mon-word-count-region' "
+                             "-- :WORDS %d in the region") matches)
+          `(:WORDS ,matches))))))
 
 ;;; ==============================
-;;; :COURTESY Xah Lee (URL `http://xahlee.org/emacs/xah_emacs_generic.el')
-(defun mon-word-count-chars-region (beginning end)
+(defun mon-word-count-chars-region (beginning end &optional intrp)
   "Return message indicating the number of words and chars that are in a region.\n
+:EXAMPLE\n\n\(mon-word-count-chars-region \(buffer-end 0\) \(buffer-end 1\)\)\n
+\(mon-word-count-chars-region \(buffer-end 0\) \(buffer-end 1\) t\)\n
 :SEE-ALSO `mon-line-count-region', `mon-word-count-region',
 `mon-word-count-analysis', `mon-word-count-occurrences', 
 `mon-word-get-list-in-buffer', `mon-string-from-sequence'.\n►►►"
-  (interactive "r")
-  (message "Counting ...")
-  (save-excursion
-    (let (wcount charCount)
-      (setq wcount 0)
-      (setq charCount (- end beginning))
+  (interactive "r\np")
+  (let ((w-count 0) 
+        (char-count (- end beginning)))
+    (save-excursion
       (goto-char beginning)
-      (while (and (< (point) end)
-                  (re-search-forward "\\w+\\W*" end t))
-        (setq wcount (1+ wcount)))
-      (message "Words: %d. Chars: %d." wcount charCount))))
+      (while (and (< (point) end) (search-forward-regexp "\\w+\\W*" end t))
+        (incf w-count))
+      (if intrp 
+          (message  (concat ":FUNCTION `mon-word-count-chars-region' "
+                            "-- counted :WORDS %d :CHARS %d")
+                    w-count char-count)
+        `(:WORDS ,w-count :CHARS ,char-count)))))
 
 ;;; ==============================
 ;;; :COURTESY Henrik Enberg but prob. pulled out of:
@@ -5917,9 +6041,11 @@ When UNESCAPE is non-nil unescape A-STRING and/or MORE-STRINGS.
   "Escape special characters in the region as if a lisp string.
 Insert backslashes in front of special characters (namely  `\' backslash,
 `\"' double quote, `(' `)' parens in the region, according to the docstring escape 
-requirements.\n\n:NOTE\n Don't run this on docstrings with regexps.\n
+requirements.\n
 Region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
+:NOTE\n Don't evaluate on docstrings containing regexps and expect sensible
+return values.\n
 :SEE-ALSO `mon-unescape-lisp-string-region', `mon-escape-string-for-cmd',
 `mon-exchange-slash-and-backslash'.\n►►►"
   (interactive "*r")

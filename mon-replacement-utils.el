@@ -223,7 +223,8 @@ additional longlines-mode checks.\n
        (cond ((and check-naf-buffer (get-buffer check-naf-buffer))
               (get-buffer check-naf-buffer))
              ((and check-naf-buffer (not (get-buffer check-naf-buffer)))
-              (error ":FUNCTION `mon-is-naf-mode-p' - Arg CHECK-NAF-BUFFER not a buffer"))
+              (error (concat ":FUNCTION `mon-is-naf-mode-p' "
+                             "-- arg CHECK-NAF-BUFFER not a buffer")))
              (t (current-buffer))))
       'naf-mode))
 ;;
@@ -333,11 +334,12 @@ to test for active naf-mode before evaluating body.\n
 :SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
 `mon-is-naf-mode-p'.\n►►►"
   (let ((do-nbn 
-           (if naf-buffer-name
-               (if (and naf-buffer-name (get-buffer naf-buffer-name))
-                   (get-buffer naf-buffer-name)
-                   (error ":FUNCTION `mon-is-naf-mode-and-llm-p' - Arg NAF-BUFFER-NAME is not a buffer"))
-                   (current-buffer))))
+         (if naf-buffer-name
+             (if (and naf-buffer-name (get-buffer naf-buffer-name))
+                 (get-buffer naf-buffer-name)
+               (error (concat ":FUNCTION `mon-is-naf-mode-and-llm-p' "
+                              "-- arg NAF-BUFFER-NAME not a buffer: %s")
+                      (current-buffer))))))
     (and (mon-is-naf-mode-p do-nbn) (mon-longlines-mode-p do-nbn))))
 ;;
 ;;; :TEST-ME (mon-is-naf-mode-and-llm-p)
@@ -965,16 +967,20 @@ insert return value in current-buffer at END or region. Does not move point.\n
 unk84240548\n\[500006383]\nFRBNF12656015\nFRBNF32759170\n◄\n
 :ALIASED-BY `mon-map-regexp-matches-in-region'\n
 :SEE-ALSO `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list'.\n►►►"
-  (interactive (list (if (use-region-p) (region-beginning)
-                         (error ":FUNCTION `mon-regexp-map-match-in-region' - region not active"))
-                     (if (use-region-p) (region-end)
-                         (error ":FUNCTION `mon-regexp-map-match-in-region' - region not active"))
+  (interactive (list (if (use-region-p) 
+                         (region-beginning)
+                       (error (concat ":FUNCTION `mon-regexp-map-match-in-region' "
+                                      "-- region not active")))
+                     (if (use-region-p) 
+                         (region-end)
+                       (error (concat ":FUNCTION `mon-regexp-map-match-in-region' " 
+                                      "-- region not active")))
                      (let ((shr-mbr '("symbol-holding-regexp" "mini-buffer-read")))
                        (if (equal (completing-read 
                                    "Use symbol-holding-regexp or mini-buffer-read: " shr-mbr nil t)
                                   "symbol-holding-regexp")
                            (symbol-value (car (read-from-string (read-string "Which symbol: "))))
-                           (read-regexp "Provide a regexp: ")))
+                         (read-regexp "Provide a regexp: ")))
                      nil))
   (eval-when-compile (require 'boxquote))
   (let* ((rsd w-regexp)
@@ -1262,14 +1268,18 @@ Zipcode: 99999\n
 	   (pnt-strt (make-marker))
 	   (f (first csv-maker))
 	   (l (car (last csv-maker)))
-	   (dsw (cond (;; Using `##' to recover newlines in final cleanup loop.
+	   (dsw (cond ( ;; Using `##' to recover newlines in final cleanup loop.
                        (string-equal delim-slot-w "##") 
-		       (error "## is special in this fuction don't use as a row delimiter"))
+		       (error 
+                        (concat ":FUNCTION `mon-cln-csv-fields' "
+                                "-- ## is special in this fuction don't use as a row delimiter")))
 		      (delim-slot-w delim-slot-w)
 		      (t ",")))
-	   (drw (cond (;; Using `##' to recover newlines in final cleanup loop.
+	   (drw (cond ( ;; Using `##' to recover newlines in final cleanup loop.
                        (string-equal delim-row-w "##") 
-		       (error "## is special in this fuction don't use as a row delimiter"))
+		       (error 
+                        (concat ":FUNCTION `mon-cln-csv-fields' "
+                                "-- ## is special in this fuction don't use as a row delimiter")))
 		      (delim-row-w delim-row-w)
 		      (t ";")))
 	   (reg-dsw  (format "\\(: %s\\)" dsw))
@@ -1882,7 +1892,7 @@ toggle-regexp-down      -> `mon-toggle-case-regexp'\n
                                       ("^\\(#[a-z0-9]\\{6,6\\}$\\)" up nil t)))
             (toggle-regexp-down '(down mon-toggle-case-regexp
                                        ("^\\(#[A-Z0-9]\\{6,6\\}$\\)" down nil t t)))
-            (t (up mon-upcase-regexp  '("^\\(#[a-z0-9]\\{6,6\\}$\\)" nil t)))))
+            (t '(up mon-upcase-regexp  '("^\\(#[a-z0-9]\\{6,6\\}$\\)" nil t)))))
          ;; {upcase|downcase|toggle} {region|nil}
          (bfr-name (upcase (format "*%s-eg*" (cadr w-fncn)))))
     (with-current-buffer 
@@ -2622,9 +2632,8 @@ Insert the `non-posting-imdb-source' at end of cleaned region.
   (mon-toggle-restore-llm nil  
     (mon-replace-region-regexp-lists-nonint start end *regexp-clean-bib*)
     ) ;;(when llm-off(longlines-mode 1) (setq llm-off 'nil))
-    (when intrp (message 
-                 (concat (":FUNCTION `mon-cln-bib' "
-                          "-- bib cruft cleaned")))))
+    (when intrp (message (concat ":FUNCTION `mon-cln-bib' "
+                                 "-- bib cruft cleaned"))))
 
 ;;; ==============================
 (defun mon-num-to-month (start end &optional intrp)

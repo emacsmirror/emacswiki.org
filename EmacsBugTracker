@@ -16,5 +16,11 @@ Here are some useful preset queries of the bug database.
 
 * [http://debbugs.gnu.org/cgi/pkgreport.cgi?package=emacs;include=tags:patch;exclude=tags:wontfix Submitted patches]
 
+Discussions about bug counts on the [[emacs-devel]] mailing list:
+
+* 2010-06-23: [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00932.html Bug statistics] by Glenn Morris
+** [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00942.html continued] [http://lists.gnu.org/archive/html/emacs-devel/2010-06/msg00951.html continued]
+
+
 ----
 CategoryWishList

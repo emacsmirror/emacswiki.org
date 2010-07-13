@@ -46,7 +46,32 @@ Anyway, if an '''Icicles'''-related idea occurs to you, please jot it down here.
 
 Any ''set'' is a potential target of application for '''Icicles'''. You've already seen (in '''<tt>[[icicles.el]]</tt>''' and '''<tt>[[lacarte.el]]</tt>''') examples of using sets of files, [[buffer]]s, [[command]]s, [[variable]]s, [[bookmark]]s, colors, color themes, menu items, and fonts. And, as some of these examples show, a command (the same command) can be made to operate on one object or all objects in a set. What other sets of Emacs or other objects might be useful to traverse, act on, or manipulate? Markers? Overlays?  
 
-Below, I've included a few ungelled ideas from my own "maybe-to-do" list, in hopes of priming the pump. -- DrewAdams
+Here a few ungelled ideas from my own "maybe-to-do" list, to prime the pump.  Dunno if '''Icicles''' can be used for these out of the box, or if some code (e.g. Lisp commands) would need to be written to adapt the applications for use with '''Icicles'''. -- DrewAdams
+
+* Access images in a directory (Lisp:tumme.el). A sequence of successive images (e.g. video frames, animated GIF frames) could be viewed as a film by holding down an arrow key. Get slower motion by repeatedly hitting the arrow key. Reverse to narrow down to a specific frame. (Now, if Emacs also had an image ''editor''...)
+
+* Access music selections in an MP3 player. Completion, regexp-matching...
+
+* Access email messages in an email client. Completion, regexp-matching...
+
+* Extend the idea behind `icicle-candidate-set-define', to let users ''edit'' buffer `*Completions*' to redefine the completions list.
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -119,26 +144,9 @@ Please describe what happens and what you would like to happen. I don't use `spl
 Is there an aversion to packaging tools, like tar, zip, gzip, or whatever?  Why not have one simple bundle and be done with it?  Why force everyone to download every single file? -- Annoyed, in-corp.allnegotiations.com
 
 [new:DrewAdams:2008-05-08 15:15 UTC]
-Dear Annoyed: I've said it before and I'll say it again. There are several ways to download all '''Icicles''' libraries at once, posted at [[Icicles - Libraries#BulkIciclesDownload|Bulk Icicles Download]]. If you or someone else wants to also periodically bundle the files into a zip or whatever, feel free to do so. There is already a page for that, in fact: [[Icicles.zip]]; it just needs someone to update it -- feel free. I won't be doing that. -- DrewAdams
+Dear Annoyed: I've said it before and I'll say it again. There are several ways to download all '''Icicles''' libraries at once, posted at [[Icicles - Libraries#BulkIciclesDownload|Bulk Icicles Download]]. If you or someone else wants to also periodically bundle the files into a zip or whatever, feel free to do so. There are already two pages for that, in fact: [[Icicles-1-of-2.zip]] and [[Icicles-2-of-2.zip]].  They just need someone to update it -- feel free. I won't be doing that. -- DrewAdams
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-More possible uses. Don't know if '''Icicles''' can be used for these out of the box, or if some code (e.g. Lisp commands) would need to be written to adapt the applications for use with '''Icicles'''.
-
-* Access images in a directory (Lisp:tumme.el). A sequence of successive images (e.g. video frames, animated GIF frames) could be viewed as a film by holding down an arrow key. Get slower motion by repeatedly hitting the arrow key. Reverse to narrow down to a specific frame. (Now, if Emacs also had an image ''editor''...)
-
-* Access music selections in an MP3 player. Completion, regexp-matching...
-
-* Access email messages in an email client. Completion, regexp-matching...
-
--- DrewAdams
 
 <pre>
 
@@ -148,7 +156,19 @@ More possible uses. Don't know if '''Icicles''' can be used for these out of the
 
 </pre>
 
-Extend the idea behind `icicle-candidate-set-define', to let users ''edit'' buffer `*Completions*' to redefine the completions list. -- DrewAdams
+
+[new:Fernando:2010-07-12 00:00 UTC]
+Why don't you use a git repository ? (or hg, bzr, ...) -- FernandoDobladez
+
+
+[new:DrewAdams:2010-07-13 06:25 UTC]
+Because I do not want to.  See also previous, above.  You are free to create a git or hg or bzr repository and populate it with the files I post on the wiki.  I'm sure others will appreciate it.  -- DrewAdams
+
+
+
+
+
+
 
 
 

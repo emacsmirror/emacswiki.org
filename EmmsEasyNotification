@@ -69,7 +69,8 @@ Elisp code is:
   "invoke easy-notify with a title and shows a message"
   (interactive "")
   (start-process-shell-command "*Output*" nil 
-			       (concat "easy-notify -t \"" title "\" -m \"" message "\"")))
+			       (replace-regexp-in-string "&" "&amp;" (concat "easy-notify -t \"" title "\" -m \"" message "\""))))
+
 ;; use system-notify with emms
 (add-hook 
  'emms-player-started-hook 

@@ -266,3 +266,41 @@ for input files there by default.
 pj
 
 -- Paul E. Johnson email: pauljohn@ku.edu 
+
+== ESS Remote with Screen ==
+This is taken from https://stat.ethz.ch/pipermail/ess-help/2010-July/006202.html
+
+Sometimes, you may want to work with a remote R session with Emacs and ESS using ess-remote.  However, the remote R process may be initialized in a screen session for attaching/detaching capabilities.  To get this working with emacs' shell-mode (note: there are issues with ansi-term and multi-term based on how ESS starts an R process; see above link from mailing list for more references).
+
+1.  Place the following in .emacs:
+;; used to send screen keybindings to shell in emacs
+(define-key shell-mode-map (kbd "C-l") (lambda (seq) (interactive "k")
+(process-send-string nil seq)))
+(define-key inferior-ess-mode-map (kbd "C-l") (lambda (seq)
+(interactive "k") (process-send-string nil seq)))
+
+2.  In xterm (or the likes), ssh to the remote server and start
+screen.  Detach it.  (Need to do this first as starting the initial
+screen in emacs shell-mode becomes very ugly with the printing;
+resuming the same screen session also becomes messy in xterm)
+
+3.  In emacs, M-x shell.  Set:
+$ TERM=xterm ## give clearing capabilities to shell-mode
+
+4.  ssh to remote server.  screen -r to resume the screen session.
+start R.  M-x ess-remote.
+
+5.  Send R code from R source files like before!
+
+6.  To detach or do anything screen related, precede EACH keybinding
+with C-l.  For example, C-a C-d to detach will now be C-l C-a C-l C-d.
+ Yes this is cumbersome, but I don't imagine screen keybinding to be
+used much at this stage since we are developing and debugging R code
+for say a simulation study =].
+
+I would also like to note (for archival reasons) that ess-remote does
+not work with ansi-term and multi-term because of the
+inferior-ess-mode command, which stems from comint-mode and
+inferior-ess-send-input.  If you remove this command in ess-remote,
+you don't get an error but u can only send one line of code at a time
+from the R file.

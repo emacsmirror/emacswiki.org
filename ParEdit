@@ -35,6 +35,20 @@ To use %%ParEdit%% with ElDoc, you should make !ElDoc aware of %%ParEdit%%'s mos
 
 Whenever the listed commands are used, !ElDoc will automatically refresh the minibuffer.
 
+== ParEdit and SLIME REPL == 
+
+   (add-hook 'slime-repl-mode-hook (lambda () (paredit-mode +1)))
+
+SLIME's REPL has the very annoying habit of grabbing DEL which interferes with
+paredit's normal operation. To alleviate this problem use the following code:
+
+          ;; Stop SLIME's REPL from grabbing DEL,
+          ;; which is annoying when backspacing over a '('
+          (defun override-slime-repl-bindings-with-paredit ()
+            (define-key slime-repl-mode-map
+                (read-kbd-macro paredit-backward-delete-key) nil))
+                (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
+
 == ParEdit and "Electric RET" ==
 
 As a complement to ##paredit-close-round##'s behavior of "collecting closing parentheses", we may bind the ##RET## key to a command which temporarily pushes them onto the next line. This makes linewise editing easier.

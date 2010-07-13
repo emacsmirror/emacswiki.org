@@ -447,7 +447,7 @@ I've attempted to clone the Blackboard theme from textmate [http://jdhuntington.
 I have created a color theme based on Tango Palette. Lisp:color-theme-tango.el [http://danran.72pines.com/files/2008/04/emacs_tango.png (screenshot)] -- danran
 
 [new]
-I created a color theme based on your color-theme-tango.el. I modified it a bit and added some faces for Gnus, org-mode, customize buffers, etc. You can find the code here : http://blog.nozav.org/post/2010/02/10/Tangotango-emacs-color-theme -- JulienBarnier
+I created a color theme based on your color-theme-tango.el. I modified it a bit and added some faces for Gnus, org-mode, customize buffers, etc. You can find screenshots and installation instructions here : http://blog.nozav.org/post/2010/07/12/Updated-tangotango-emacs-color-theme -- JulienBarnier
 
 I've created color-theme-dirac, a nice (for me) pastel color theme on black background. It's available via git at http://github.com/nicodds/color-theme-dirac [http://github.com/nicodds/color-theme-dirac/raw/master/screenshot/color-theme-dirac.png (screenshot)] -- Domenico Delle Side
 
