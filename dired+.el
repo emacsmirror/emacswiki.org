@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Jul 11 18:10:49 2010 (-0700)
+;; Last-Updated: Tue Jul 13 14:23:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2537
+;;     Update #: 2538
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1599,6 +1599,21 @@ Non-nil prefix argument UNMARK-P means unmark instead of mark."
                                                      &optional arg)
   "Bookmark the marked files and create a bookmark-file bookmark for them.
 Jumping to the bookmark-file bookmark loads the set of file bookmarks.
+
+Each bookmark name is PREFIX followed by the relative file name.
+Interactively, you are prompted for PREFIX.
+The bookmarked position is the beginning of the file.
+
+A prefix argument ARG specifies files to use instead of those marked.
+ An integer means use the next ARG files (previous -ARG, if < 0).
+ `C-u': Use the current file (whether or not any are marked).
+ `C-u C-u': Use all files in Dired, except directories.
+ `C-u C-u C-u': Use all files and directories, except `.' and `..'.
+ `C-u C-u C-u C-u': Use all files and all directories.
+
+You are also prompted for the bookmark file, BOOKMARK-FILE.  The
+default is `.emacs.bmk' in the current directory, but you can enter
+any file name, anywhere.
 
 The marked-file bookmarks are added to file BOOKMARK-FILE, but this
 command does not make BOOKMARK-FILE the current bookmark file.  To

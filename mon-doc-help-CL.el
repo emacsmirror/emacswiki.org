@@ -33,7 +33,7 @@
 ;; `mon-hspec-href-p', `mon-w3m-spec-p',
 ;; `mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-out',
 ;; `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
-;; `mon-hspec-unparse-w3m-to-buffer',
+;; `mon-hspec-unparse-w3m-to-buffer', `mon-hspec-find-w3m',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -675,7 +675,9 @@ o Kills temp-buffer and file on exit\n
                    ((not (executable-find "wget")) 'no-exec)))
         (read-wget-string))
     (unless (directory-files default-directory nil (concat fnm-tst-wgt "$"))
-      (error "File does not exist or function invoked outside file's directory"))
+      (error 
+       (concat ":FUNCTION `mon-help-wget-cl-pkgs-for-shell-command' "
+               "-- file does not exist or function invoked outside file's directory")))
     (with-temp-buffer
       (save-excursion (insert-file-contents wget-fname))
       (when (eq sys 'wnz) (delete-char (- (skip-chars-forward "# "))))
@@ -920,7 +922,7 @@ resides under. For example, the following unwieldy and long local path:
 `mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p',
 `mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-out',
 `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
-`mon-hspec-unparse-w3m-to-buffer'.\n►►►")
+`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-find-w3m'.\n►►►")
 ;
 (unless (bound-and-true-p *mon-hs-root-dir*)
   (setq *mon-hs-root-dir* common-lisp-hyperspec-root))
@@ -935,9 +937,10 @@ resides under. For example, the following unwieldy and long local path:
   w3m text under examination.\n
 :SEE-ALSO `*mon-hs-unprs-buffer*', `*mon-hs-root-dir*',`mon-hspec-plain-p',
 `mon-hspec-bld-p', `mon-hspec-it-p', `mon-hspec-header-line-p',
-`mon-hspec-href-p', `mon-w3m-spec-p',`mon-hspec-prop-type', 
+`mon-hspec-href-p', `mon-w3m-spec-p',`mon-hspec-prop-type',
 `mon-hspec-stk-n-mv', `mon-hspec-out', `mon-hspec-parse-w3m',
-`mon-hspec-unparse-w3m',`mon-hspec-unparse-w3m-to-buffer'.\n►►►")
+`mon-hspec-unparse-w3m',`mon-hspec-unparse-w3m-to-buffer',
+`mon-hspec-find-w3m'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-hs-parse-buffer*)
   (setq *mon-hs-parse-buffer* "*CL-HSPEC-CONV*"))
@@ -972,10 +975,10 @@ When t return a two element list of the form:\n
   :xref-range \(<START> . <END>\)\n
 :SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p',
 `mon-hspec-header-line-p', `mon-w3m-spec-p', `mon-hspec-prop-type',
-`mon-hspec-stk-n-mv', `mon-hspec-parse-w3m',`mon-hspec-unparse-w3m'
+`mon-hspec-stk-n-mv', `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
 `mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `*mon-hs-parse-buffer*',
-`*mon-hs-root-dir*', `mon-line-test-content', `mon-test-props',
-`mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-hspec-find-w3m', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
 `mon-nuke-text-properties-buffer'.\n►►►"
   (let (this-xref-prop)
     (when (get-text-property (point) 'w3m-href-anchor)
@@ -999,11 +1002,12 @@ When t return a two element list of the form:\n
  \(\(:location     \"Location: \"  :location-range     \(<START> . <END>\)\)
   \(:location-url \"<URL>\"       :location-url-range \(<END> . <END>\)\)\)\n
 :SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p',
-`mon-hspec-href-p', `mon-w3m-spec-p',`mon-hspec-prop-type',`mon-hspec-stk-n-mv',
-`mon-hspec-parse-w3m',`mon-hspec-unparse-w3m',`mon-hspec-unparse-w3m-to-buffer',
-`mon-hspec-out', `*mon-hs-parse-buffer*',`*mon-hs-root-dir*',
-`mon-line-test-content',`mon-test-props', `mon-plist-keys',
-`mon-list-all-properties-in-buffer',`mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-href-p', `mon-w3m-spec-p', `mon-hspec-prop-type',
+`mon-hspec-stk-n-mv', `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
+`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `mon-hspec-find-w3m',
+`*mon-hs-parse-buffer*', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer'.\n►►►"
   (when (eq (car (get-text-property (point) 'face)) 'w3m-header-line-location-title)
     (let ((loc-info `(:location (,(point) . ,(next-single-property-change (point) 'face)))))
       (setq loc-info `(,(car loc-info) 
@@ -1013,36 +1017,51 @@ When t return a two element list of the form:\n
                 'w3m-header-line-location-content)
         (let ((loc-path `(:location-url
                           (,(cdr (plist-get loc-info :location-range))
-                            . ,(next-single-property-change (cdr (plist-get loc-info :location-range)) 'face))))
-              (rplc-pth-str)
-              (rplc-pth))
+                           . ,(next-single-property-change (cdr (plist-get loc-info :location-range)) 'face))))
+              (rplc-loc-vig (line-end-position))
+              rplc-pth-str
+              rplc-pth)
+          ;; This is whatever whitespace remains after the URL in the location bar. 
+          ;; No clue what length someone else might as there hspec path. 
+          ;; I've tried a coupla different approaches now.
+          ;; Best is just to punt by putting back the whitespace after the URL. 
+          ;; This way the buffer size stays constant.
+          (setq rplc-loc-vig `(:location-url-vig ,(concat (make-string (- rplc-loc-vig (cdadr loc-path)) 32)) ;"\n")
+                               :location-vig-range (,(cdadr loc-path) . ,rplc-loc-vig)))
           (setq rplc-pth-str (buffer-substring-no-properties (caadr loc-path) (cdadr loc-path)))
           (setq rplc-pth (replace-regexp-in-string 
                           (concat "\\(file:///?" *mon-hs-root-dir* "\\)\\(.*\\.htm?\\)")
                           "\\2" rplc-pth-str))
           (setq loc-path `(,(car loc-path)
-                            ,(concat (or rplc-pth rplc-pth-str) "\n")
-                            :location-url-range 
-                            ,(if rplc-pth
-                                 ;; :NOTE (cons (caadr '(:loc (11 . 153))) ;=> 11
-                                 ;;       (cdadr '(:loc (11 . 153))) ;=> 153 
-                                  ;;       ) ;=> (11 . 153)
-                                 ;; :NOTE Should we 1+ these lengths b/c of concat'd newline?
-                                 (cons (caadr loc-path)
-                                        (- (cdadr loc-path)
-                                           (- (length rplc-pth-str)
-                                              (length rplc-pth))))
-                                  (cdr loc-path))))
+                           ;; :WAS  ,(concat (or rplc-pth rplc-pth-str) "\n")
+                           ,(or rplc-pth rplc-pth-str)
+                           :location-url-range 
+                           ,(if rplc-pth
+                                ;; :NOTE (cons (caadr '(:loc (11 . 153))) ;=> 11
+                                ;;       (cdadr '(:loc (11 . 153))) ;=> 153 
+                                ;;       ) ;=> (11 . 153)
+                                ;; :NOTE Should we 1+ these lengths b/c of concat'd newline?
+                                ;;       Yes. Turns out it is needed. _IF_ we uncomment the \n in the vig
+                                ;; (cons (caadr loc-path)
+                                ;;       (1+ (- (cdadr loc-path)
+                                ;;              (- (length rplc-pth-str)
+                                ;;                 (length rplc-pth)))))
+                                (cons (caadr loc-path)
+                                      (- (cdadr loc-path)
+                                         (- (length rplc-pth-str)
+                                            (length rplc-pth))))
+                              (cdr loc-path))))
           (when rplc-pth 
             (let* ((ofst-frm (plist-get loc-path :location-url-range))
-                  (ofst-lst (cons (car ofst-frm)
-                                  (+ (car ofst-frm)
-                                     (length rplc-pth-str)))))
+                   (ofst-lst (cons (car ofst-frm)
+                                   (+ (car ofst-frm)
+                                      (length rplc-pth-str)))))
               (setq loc-path (reverse loc-path))
               (push :location-url-offset loc-path)
               (push ofst-lst loc-path)
               (setq loc-path (reverse loc-path))))
-          (setq loc-info `(,loc-info ,loc-path)))))))
+          (setq loc-info `(,loc-info ,loc-path ,rplc-loc-vig)))))))
+          
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-27T22:14:40-05:00Z}#{09527} - by MON>
@@ -1052,11 +1071,11 @@ When t return a two element list of the form:\n
  \(:italics-on \"<ITALICIZED-STRING>\"  :italics-range \(<START> . <END>\)\n
 :SEE-ALSO `w3m-fontify-italic',`mon-hspec-plain-p', `mon-hspec-bld-p',
 `mon-hspec-header-line-p',`mon-hspec-href-p', `mon-w3m-spec-p',
-`mon-hspec-prop-type', `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m',
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-parse-w3m',
 `mon-hspec-unparse-w3m',`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out',
-`*mon-hs-parse-buffer*', `*mon-hs-root-dir*', `mon-line-test-content',
-`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
-`mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-find-w3m', `*mon-hs-parse-buffer*', `*mon-hs-root-dir*',
+`mon-line-test-content', `mon-test-props', `mon-plist-keys',
+`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
   (let ((face-it-p (get-text-property (point) 'face)))
     (when (and (member 'w3m-italic face-it-p)
                (and (not (member 'w3m-bold face-it-p))
@@ -1078,8 +1097,8 @@ When t return a two element list of the form:\n
 :SEE-ALSO `w3m-fontify-bold', `mon-hspec-plain-p',`mon-hspec-it-p',
 `mon-hspec-header-line-p',`mon-hspec-href-p', `mon-w3m-spec-p'
 `mon-hspec-prop-type', `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m',
-`mon-hspec-out', `mon-hspec-unparse-w3m',`*mon-hs-parse-buffer*',
-`mon-hspec-unparse-w3m-to-buffer', `*mon-hs-root-dir*',
+`mon-hspec-out', `mon-hspec-unparse-w3m', `mon-hspec-unparse-w3m-to-buffer',
+`mon-hspec-find-w3m', `*mon-hs-parse-buffer*', `*mon-hs-root-dir*',
 `mon-line-test-content', `mon-test-props', `mon-plist-keys',
 `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
    (let ((face-bold-p (get-text-property (point) 'face)))
@@ -1103,9 +1122,10 @@ When t return a two element list of the form:\n
 :SEE-ALSO `mon-hspec-bld-p',`mon-hspec-it-p', `mon-hspec-header-line-p',
 `mon-hspec-href-p', `mon-w3m-spec-p' `mon-hspec-prop-type', 
 `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
-`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `*mon-hs-parse-buffer*',
-`*mon-hs-root-dir*', `mon-line-test-content', `mon-test-props', `mon-plist-keys',
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `mon-hspec-find-w3m',
+`*mon-hs-parse-buffer*', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer'.\n►►►"
   (when (and (not (get-text-property (point) 'face))
              (not (get-text-property (point) 'w3m-href-anchor))
              (next-property-change (point))
@@ -1124,11 +1144,12 @@ When t return a two element list of the form:\n
   "Helper function for `mon-hspec-prop-type'.\n
 When SPEC-LIST contains SPEC return the sublist of SPEC-LIST as per `memq'.\n
 :SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p',`mon-hspec-it-p', 
-`mon-hspec-header-line-p', `mon-hspec-href-p',, `mon-hspec-prop-type',
+`mon-hspec-header-line-p', `mon-hspec-href-p', `mon-hspec-prop-type',
 `mon-hspec-stk-n-mv', `mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
-`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `*mon-hs-parse-buffer*',
-`*mon-hs-root-dir*', `mon-line-test-content', `mon-test-props', `mon-plist-keys',
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `mon-hspec-find-w3m',
+`*mon-hs-parse-buffer*', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer'.\n►►►"
   (memq spec spec-list))
 
 ;;; ==============================
@@ -1144,9 +1165,10 @@ Return one five values conditional on value of text-properties-at-point:\n
 :SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p',
 `mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p'
 `mon-hspec-stk-n-mv',`mon-hspec-parse-w3m', `mon-hspec-unparse-w3m',
-`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `*mon-hs-parse-buffer*',
-`*mon-hs-root-dir*' `mon-line-test-content', `mon-test-props', `mon-plist-keys',
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-unparse-w3m-to-buffer', `mon-hspec-out', `mon-hspec-find-w3m',
+`*mon-hs-parse-buffer*', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer'.\n►►►"
   (let ((the-spec (text-properties-at (point)))
         (w3m-face-spec))
     (setq w3m-face-spec
@@ -1168,12 +1190,14 @@ Temporary buffer takes the value specified in:\n:VARIABLE `*mon-hs-parse-buffer*
 :SEE-ALSO `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p',
 `mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p'
 `mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-parse-w3m',
-`mon-hspec-unparse-w3m', `mon-hspec-unparse-w3m-to-buffer', `*mon-hs-root-dir*',
-`mon-line-test-content', `mon-test-props', `mon-plist-keys',
+`mon-hspec-unparse-w3m', `mon-hspec-unparse-w3m-to-buffer', `mon-hspec-find-w3m',
+`*mon-hs-root-dir*', `mon-line-test-content', `mon-test-props', `mon-plist-keys',
 `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
   (get-buffer-create *mon-hs-parse-buffer*)
   (terpri (get-buffer *mon-hs-parse-buffer*))
-  (prin1 prop (get-buffer *mon-hs-parse-buffer*)))
+  (if (null prop)
+      (prin1 `(:plain-on " ") (get-buffer *mon-hs-parse-buffer*))
+    (prin1 prop (get-buffer *mon-hs-parse-buffer*))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-27T22:15:02-05:00Z}#{09527} - by MON>
@@ -1189,8 +1213,9 @@ specifed by `*mon-hs-parse-buffer*' via the function `mon-hspec-out'.\n
 :CALLED-BY `mon-hspec-parse-w3m' ;<- wrapper interface.\n
 :SEE-ALSO `mon-hspec-unparse-w3m-to-buffer' `mon-hspec-header-line-p', 
 `mon-w3m-spec-p', `mon-hspec-prop-type', `mon-hspec-unparse-w3m', 
-`*mon-hs-root-dir*', `mon-line-test-content', `mon-test-props',`mon-plist-keys',
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-find-w3m', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer'.\n►►►"
   (let ((keep-looking t)
         (curr-prop)) 
     (cond ((eq (point) (buffer-end 1))
@@ -1221,16 +1246,57 @@ Contents returned in buffer specified by `*mon-hs-parse-buffer*'.\n
 :SEE-ALSO `mon-hspec-unparse-w3m', `mon-hspec-unparse-w3m-to-buffer',
 `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p', 
 `mon-hspec-header-line-p' `mon-hspec-href-p', `mon-w3m-spec-p'
-`mon-hspec-prop-type', `mon-hspec-stk-n-mv' `mon-hspec-out',`*mon-hs-root-dir*',
-`mon-line-test-content', `mon-test-props', `mon-plist-keys',
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer'.\n►►►"
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-out',
+`mon-hspec-find-w3m', `*mon-hs-root-dir*', `mon-line-test-content',
+`mon-test-props', `mon-plist-keys', `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer'.\n►►►"
   (progn
     (goto-char (buffer-end 0))
     (let ((hdr (mon-hspec-header-line-p)))
       (when hdr 
         (mon-hspec-out (car hdr))
-        (mon-hspec-out  (cadr hdr))))
-    (while (not (eobp)) (mon-hspec-stk-n-mv))))
+        (mon-hspec-out (cadr hdr))
+        ;; Manually subst in the vig by hand. We may want to frob it differently later-on.
+        (let ((vig (caddr hdr)))
+          (mon-hspec-out 
+           `(:plain-on ,(plist-get vig :location-url-vig)
+             :plain-range ,(plist-get vig :location-vig-range)))))
+    (while (not (eobp)) (mon-hspec-stk-n-mv)))))
+
+;;; ==============================
+;;; :CHANGESET 1975
+;;; :CREATED <Timestamp: #{2010-07-13T16:23:12-04:00Z}#{10282} - by MON KEY>
+(defun mon-hspec-find-w3m ()
+  "Return the first w3m buffer with a matching a CLHS page-title regexp.\n
+Invokes `w3m-buffer-title' on the list returned by `w3m-list-buffers', signals
+an error if that list is void or there are no matches.\n
+Preference is weighted to `current-buffer' if it is a w3m buffer.\n
+:CALLED-BY `mon-hspec-parse-w3m'
+:SEE-ALSO `mon-hspec-unparse-w3m', `mon-hspec-unparse-w3m-to-buffer',
+`mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p', 
+`mon-hspec-header-line-p' `mon-hspec-href-p', `mon-w3m-spec-p',
+`mon-hspec-prop-type', `mon-hspec-stk-n-mv', `mon-hspec-out',
+`mon-hspec-find-w3m', `*mon-hs-root-dir*', `*mon-hs-parse-buffer*'.\n►►►"
+  (let* ((wlb (w3m-list-buffers))
+         (hs-ttl-chk #'(lambda (ttl)
+                         (unless (null ttl)
+                           (or (and (string-match-p "CLHS:.*" (w3m-buffer-title ttl)) ttl)
+                               (and (string-match-p "Common Lisp HyperSpec \x28\x54\x4d\x29"
+                                                    (w3m-buffer-title ttl)) ttl)))))
+         hspec-buf-myb)
+    (if (null wlb)
+        (error (concat ":FUNCTION `mon-hspec-find-w3m' "
+                       "-- can not find a *w3m* buffer"))
+      (if (funcall hs-ttl-chk (car (memq (current-buffer) (w3m-list-buffers))))
+          (setq hspec-buf-myb (current-buffer))
+        (dolist (hs-myb wlb
+                        (if hspec-buf-myb 
+                            hspec-buf-myb
+                          (error (concat ":FUNCTION `mon-hspec-find-w3m' "
+                                         "-- can not find a *w3m* buffer"))))
+          (unless hspec-buf-myb
+            (when (funcall hs-ttl-chk hs-myb)
+              (setq hspec-buf-myb hs-myb))))))))
 
 ;;; ==============================
 ;;; :NOTE Our original pre-parse Hspec path may be BIG. So we shorten it.
@@ -1271,7 +1337,7 @@ Contents returned in buffer specified by `*mon-hs-parse-buffer*'.\n
 ;;; is so verify by comparing the output of `mon-hspec-unparse-w3m' against
 ;;; `mon-hspec-parse-w3m'.
 ;;;
-;;; HEY. We just cicum-invented ten's complement!
+;;; HEY. We just circum-invented ten's complement!
 ;;; :SEE (URL `http://en.wikipedia.org/wiki/Method_of_complements')
 ;;;
 ;;; :NOTE We currently shorten paths using a regexp lookup against a local path
@@ -1279,6 +1345,7 @@ Contents returned in buffer specified by `*mon-hs-parse-buffer*'.\n
 ;;; paths wth "http://" in lieu of local paths with "file://"
 ;;; :SEE `mon-hspec-header-line-p's regexp for local variable `rplc-pth'
 ;;;
+;;; :CHANGESET 1975 <Timestamp: #{2010-07-13T13:44:47-04:00Z}#{10282} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-12-29T02:38:01-05:00Z}#{09532} - by MON>
 (defun mon-hspec-unparse-w3m (parse-w3m-buffer-or-file) ; return-parse-in-buffer
   "Round trip snarfed HTML lisp data output of `mon-hspec-parse-w3m' to plain text.\n
@@ -1290,43 +1357,45 @@ containing the text-properties needed for facificaton, buttonizing, and xrefing
 to the list at cdr of return value.\n
 When the local URL path has been shortened adjust text-propery offsets accordingly.
 :SEE Comments in source for additional discussion and details.\n
-:SEE-ALSO `mon-hspec-unparse-w3m-to-buffer', `mon-hspec-stk-n-mv',
-`mon-hspec-out', `mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p', 
-`mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p',
-`mon-hspec-prop-type', `*mon-hs-parse-buffer*', `*mon-hs-root-dir*'.\n►►►"
+:SEE-ALSO `mon-hspec-find-w3m', `mon-hspec-unparse-w3m-to-buffer',
+`mon-hspec-stk-n-mv', `mon-hspec-out', `mon-hspec-plain-p', `mon-hspec-bld-p',
+`mon-hspec-it-p', `mon-hspec-header-line-p', `mon-hspec-href-p',
+`mon-w3m-spec-p', `mon-hspec-prop-type', `*mon-hs-parse-buffer*',
+`*mon-hs-root-dir*'.\n►►►"
   (let ((unprs-mrk (make-marker))
         (onward t)
-        (big-parse)
         (gthr-unprs 
          ;; :WAS (get-buffer-create *mon-hs-unprs-buffer*))) ;;"*CL-HSPEC-UNPARSE*"
          (if (buffer-live-p *mon-hs-unprs-buffer*)
              (with-current-buffer (get-buffer *mon-hs-unprs-buffer*) (erase-buffer))
-             (get-buffer-create *mon-hs-unprs-buffer*))))
-    (with-current-buffer (get-buffer parse-w3m-buffer-or-file)  ;; "fun_float")
+           (get-buffer-create *mon-hs-unprs-buffer*)))
+        big-parse)
+    ;; :NOTE PARSE-W3M-BUFFER-OR-FILE is probably always `*mon-hs-parse-buffer*'
+    (with-current-buffer (get-buffer parse-w3m-buffer-or-file)
       (goto-char (buffer-end 0))
       (set-marker unprs-mrk (point))
       (goto-char (buffer-end 1))
-      (insert "\n(\"►►►\")"))
-    (newline)
-    (while (and unprs-mrk onward)
-      (let (prs-sexp)
-        (setq prs-sexp (read unprs-mrk))
-        (if (equal "►►►" (car prs-sexp))
-            (setq onward nil)
+      (insert "\n(\"►►►\")")
+      (newline)
+      (while (and unprs-mrk onward)
+        (let (prs-sexp)
+          (setq prs-sexp (read unprs-mrk))
+          (if (equal "►►►" (car prs-sexp))
+              (setq onward nil)
             (progn      
               (push prs-sexp big-parse)
-              (princ (plist-get prs-sexp (car prs-sexp)) gthr-unprs))))) ;; (current-buffer))))))
-    (with-current-buffer (get-buffer parse-w3m-buffer-or-file) ;; "fun_float")
+              (princ (plist-get prs-sexp (car prs-sexp)) gthr-unprs)))))
       (goto-char (buffer-end 1))
       (search-backward-regexp "(\"►►►\")")
       (replace-match "")
       (goto-char (buffer-end 0)))
-    (setq big-parse (reverse big-parse))
+    (setq big-parse (nreverse big-parse))
     (with-current-buffer (get-buffer gthr-unprs)
       (let (fin-prs)
-        (setq fin-prs(buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))
-        (push fin-prs big-parse)))
-    (kill-buffer (get-buffer gthr-unprs))
+        (setq fin-prs 
+              (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))
+        (push fin-prs big-parse))
+      (kill-buffer (get-buffer gthr-unprs)))
     ;;    big-parse))
     ;; rebuild the offsets against the local url in file line.
     (when (and (assoc :location (cdr big-parse))
@@ -1343,7 +1412,7 @@ When the local URL path has been shortened adjust text-propery offsets according
                     (unless (or (null rng-type)
                                 (null (car rng-type))
                                 (null (cdr rng-type)))
-                      (setf (car rng-type) (abs(- calc-ofst (car rng-type)))
+                      (setf (car rng-type) (abs (- calc-ofst (car rng-type)))
                             (cdr rng-type) (abs (- calc-ofst (cdr rng-type)))))))
               (cdr big-parse))))
     big-parse))
@@ -1354,35 +1423,42 @@ When the local URL path has been shortened adjust text-propery offsets according
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-29T13:09:57-05:00Z}#{09532} - by MON KEY>
 (defun mon-hspec-unparse-w3m-to-buffer (&optional return-parse-in-buffer)
-  "Insert car and cdr of return value from `mon-hspec-unparse-w3m' in buffer.\n
-Default is to insert to the buffer named by the variabl `*mon-hs-unprs-buffer*'.\n
-When RETURN-PARSE-IN-BUFFER is non-nil create the buffer if it does not exist
-and insert in that buffer.
-:NOTE Unless RETURN-PARSE-IN-BUFFER is current-buffer this procedure erases the
-contents of buffer `*mon-hs-unprs-buffer*' or RETURN-PARSE-IN-BUFFER prior to
-insertion.\n
-:SEE-ALSO `mon-hspec-parse-w3m', `mon-hspec-stk-n-mv', `mon-hspec-out',
-`mon-hspec-plain-p', `mon-hspec-bld-p', `mon-hspec-it-p',
-`mon-hspec-header-line-p', `mon-hspec-href-p', `mon-w3m-spec-p',
-`mon-hspec-prop-type', `*mon-hs-parse-buffer*', `*mon-hs-root-dir*'.\n►►►"
+  "Entry point for parsing w3m CLHS buffers.
+Signals an error when `mon-hspec-find-w3m' can not find a valid CLHS *w3m* buffer
+to parse.\n
+Returns roundtripped parse as the car and cdr of return value from
+`mon-hspec-unparse-w3m' in a buffer and display the results.
+When RETURN-PARSE-IN-BUFFER is non-nil it is a buffer-name in which to return
+results. If RETURN-PARSE-IN-BUFFER does note exist it is created.\n
+Default is to insert return value to the buffer named by the variable
+`*mon-hs-unprs-buffer*'.\n
+:NOTE Unless RETURN-PARSE-IN-BUFFER is non-nil and current-buffer this procedure
+will erase the existing contents of buffer `*mon-hs-unprs-buffer*' or
+RETURN-PARSE-IN-BUFFER prior to insertion.\n
+:SEE-ALSO `mon-hspec-stk-n-mv', `mon-hspec-out', `mon-hspec-plain-p',
+`mon-hspec-bld-p', `mon-hspec-it-p', `mon-hspec-header-line-p',
+`mon-hspec-href-p', `mon-w3m-spec-p', `mon-hspec-prop-type',
+`mon-hspec-find-w3m', `*mon-hs-parse-buffer*', `*mon-hs-root-dir*'.\n►►►"
   (unwind-protect
-       (let ((dump-bfr (if return-parse-in-buffer
-                           return-parse-in-buffer
-                           *mon-hs-unprs-buffer*))
-             (unp))
-         (with-current-buffer "*w3m*" (mon-hspec-parse-w3m))
-         (setq unp (mon-hspec-unparse-w3m *mon-hs-parse-buffer*))
-         (if (buffer-live-p dump-bfr)
-             (unless (eq (current-buffer) (get-buffer dump-bfr))
-               (with-current-buffer (get-buffer dump-bfr) (erase-buffer)))
-             (get-buffer-create dump-bfr))
-         (princ (car unp) (get-buffer dump-bfr))
-         (princ (concat "\n\n\n;;; ==============================\n"
-                        ";;; :BEGIN-PARSED\n\n\n")
-                (get-buffer dump-bfr))
-         (pp (cdr unp) (get-buffer dump-bfr))
-         (unless (eq (current-buffer) (get-buffer dump-bfr))
-           (pop-to-buffer dump-bfr t t)))
+      (let ((mhfw         (mon-hspec-find-w3m))
+            (dump-bfr (if return-parse-in-buffer
+                          return-parse-in-buffer
+                        *mon-hs-unprs-buffer*))
+            unp)
+        (with-current-buffer mhfw (save-excursion (mon-hspec-parse-w3m)))
+        (setq unp (mon-hspec-unparse-w3m *mon-hs-parse-buffer*))
+        (if (buffer-live-p dump-bfr)
+            (unless (eq (current-buffer) (get-buffer dump-bfr))
+              (with-current-buffer (get-buffer dump-bfr) (erase-buffer)))
+          (get-buffer-create dump-bfr))
+        (princ (car unp) (get-buffer dump-bfr))
+        (princ (concat "\n\n\n;;; ==============================\n"
+                       ";;; :BEGIN-PARSED\n\n\n")
+               (get-buffer dump-bfr))
+        (pp (cdr unp) (get-buffer dump-bfr))
+        (unless (eq (current-buffer) (get-buffer dump-bfr))
+          (pop-to-buffer dump-bfr)
+          (goto-char (buffer-end 0)))); t t)))
     (kill-buffer *mon-hs-parse-buffer*)))
 ;;
 ;;; :TEST-ME (mon-hspec-unparse-w3m-to-buffer)

@@ -160,11 +160,19 @@ Dear Annoyed: I've said it before and I'll say it again. There are several ways 
 [new:Fernando:2010-07-12 00:00 UTC]
 Why don't you use a git repository ? (or hg, bzr, ...) -- FernandoDobladez
 
-
 [new:DrewAdams:2010-07-13 06:25 UTC]
 Because I do not want to.  See also previous, above.  You are free to create a git or hg or bzr repository and populate it with the files I post on the wiki.  I'm sure others will appreciate it.  -- DrewAdams
 
-
+[new:stepnem:2010-07-13 12:28 UTC]
+Yup, Drew's (and some other prominent Elisp library authors') unwillingness to
+use a (D)VCS is very unfortunate. While I understand people have their own
+preferred and long-established ways of doing things, using (D)VCS would make
+it *so* much more convenient for us to use their code *and* contribute at
+the same time... (and I'm sure it would make things more convenient for the
+authors, too, although they would obviously disagree at first) "Feel free to
+do so, but I'm not going to" won't really cut it, for as long as the author
+themselves do not use the repository, it will only solve a part of the
+problem. -- stepnem
 
 
 

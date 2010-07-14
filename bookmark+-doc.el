@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul  7 07:38:06 2010 (-0700)
+;; Last-Updated: Tue Jul 13 16:43:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13008
+;;     Update #: 13075
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, w3m, gnus
@@ -106,7 +106,11 @@
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
+;;    (@> "Using Bookmarks You Might Never Visit")
+;;      (@> "Open Bookmarks Using Windows File Associations")
+;;      (@> "Use Dired to Bookmark Files without Visiting Them")
 ;;    (@> "Using Multiple Bookmark Files")
+;;      (@> "Bookmark-File Bookmarks")
 ;;    (@> "Bookmark List (Display)")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Tags: Sets of Bookmarks")
@@ -128,7 +132,6 @@
 ;;      (@> "Highlighting Automatically")
 ;;      (@> "Using Highlighted Bookmarks")
 ;;    (@> "Use Bookmark+ with Icicles")
-;;    (@> "Open Bookmarks Using Windows File Associations")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
 ;;  (@> "Change log")
@@ -240,6 +243,11 @@
 ;;       title, and omit list
 ;;       (see (@> "Omitting Bookmarks from Display")).
 ;;
+;;     - You can bookmark a bookmark file.  Jumping to such a bookmark
+;;       loads the bookmarks in the file.  Use this to quickly switch
+;;       among different sets of bookmarks (e.g. projects).  See
+;;       (@> "Bookmark-File Bookmarks").
+;;
 ;;  * Type-specific jump commands.
 ;;
 ;;     - When you want to jump to a bookmark of a specific type
@@ -315,7 +323,8 @@
 ;;       files, this feature is not well supported, if not
 ;;       contradictory.  With Bookmark+ you can easily switch among
 ;;       alternative bookmark files or load multiple files into the
-;;       same session, accumulating their bookmark definitions.
+;;       same session, accumulating their bookmark definitions.  The
+;;       last file you used is the default for switching.
 ;;
 ;;  * Dedicated prefix keys.
 ;;
@@ -725,6 +734,102 @@
 ;;  the sequence.)
 ;;
 ;;
+;;(@* "Using Bookmarks You Might Never Visit")
+;;  ** Using Bookmarks You Might Never Visit ***
+;;
+;;  Now that's an unusual idea: bookmarking files you never visit.
+;;  Well, by "visit" I mean in the Emacs sense of editing the file,
+;;  visiting it in a buffer.
+;;
+;;  There are in fact lots of files that you use that you never visit,
+;;  but that you might like to keep track of or access in other ways
+;;  besides opening them in Emacs: music files, image files, whatever.
+;;
+;;  You can define a new kind of bookmark for any file type,
+;;  implementing a handler for it that performs the appropriate action
+;;  on it.  That action needs to be expressible using an Emacs
+;;  function, but it need not have anything to do with visiting the
+;;  file in Emacs.
+;;
+;;  But how do you bookmark a file if you never visit it?  That topic
+;;  is covered below -
+;;  see (@> "Use Dired to Bookmark Files without Visiting Them").
+;;
+;;  Regardless of how you do it, after you create individual bookmarks
+;;  for, say, individual music or image files, you can use `P B' in
+;;  the bookmark-list display to show only those bookmarks, and then
+;;  use `C-x r m' to bookmark that state of the bookmark-list.
+;;
+;;  That bookmark-list bookmark in effect becomes a music playlist or
+;;  an image library or slideshow.  Jump to it anytime you want to
+;;  listen to that set of music pieces or view those images.  And you
+;;  can use `C-x p B' and then `C-x p next'  to cycle among the music
+;;  pieces or images (slideshow).
+;;  (see (@> "Cycling the Navigation List")).
+;;
+;;  Together with the use of bookmark tags, this gives you a handy way
+;;  to organize and access objects of any kind.
+;;  See (@> "Bookmark Tags").
+;;
+;;
+;;(@* "Open Bookmarks Using Windows File Associations")
+;;  *** Open Bookmarks Using Windows File Associations ***
+;;
+;;  If you use Microsoft Windows there is no need to even define new
+;;  bookmark types and handlers, if the action you want is the one
+;;  that Windows associates with the file.  You already have a set of
+;;  file/program associations, and Bookmark+ recognizes these as
+;;  alternative handlers.
+;;
+;;  You can thus take advantage of Windows file associations to open
+;;  bookmarks for files of all kinds.  To do this, you also need
+;;  library `w32-browser.el'.  In the bookmark list, the following
+;;  keys are bound to commands that open bookmarks using the
+;;  associated Windows `Open' applications:
+;;
+;;    `M-RET'     - `bmkp-bmenu-w32-open'
+;;    `M-mouse-2' - `bmkp-bmenu-w32-open-with-mouse'
+;;    `M-o'       - `bmkp-bmenu-w32-open-select'
+;;
+;;
+;;(@* "Use Dired to Bookmark Files without Visiting Them")
+;;  *** Use Dired to Bookmark Files without Visiting Them ***
+;;
+;;  If you use Dired+ (library `dired+.el'), then you can bookmark all
+;;  of the marked files in a Dired buffer, even if you normally do not
+;;  or cannot visit those files in Emacs.  These keys are available in
+;;  Dired:
+;;
+;;    `M-b'                   - Bookmark each marked file
+;;    `C-M-S-b' (aka `C-M-B') - Bookmark each marked file in a
+;;                              bookmark-file you specify
+;;    `C-M-b'                 - Bookmark each marked file in a
+;;                              bookmark-file you specify, and create
+;;                              a bookmark for that bookmark-file
+;;
+;;  Each of these commands bookmarks each of the marked files.  By
+;;  default, the bookmark file used for the latter two is in the
+;;  current directory.
+;;
+;;  If you use multiple `C-u' as a prefix arg, then you can bookmark
+;;  all of the files in Dired, regardless of markings, as follows:
+;;
+;;    `C-u C-u'         - Use all files in Dired, except directories
+;;    `C-u C-u C-u'     - Use all files and dirs, except `.' and `..'
+;;    `C-u C-u C-u C-u' - Use all files and all directories
+;;
+;;  `C-M-b' not only bookmarks each of the marked files, it also
+;;  creates a bookmark-file bookmark for that set of bookmarks.  See
+;;  (@> "Bookmark-File Bookmarks"), below.
+;;
+;;  You can later "jump" to that bookmark to load its set of
+;;  bookmarks.  If you use `C-u' when you jump to it, then you switch
+;;  bookmark files, so that `C-x r l' displays only the bookmarks
+;;  created from the marked files.  Without `C-u', jumping to the
+;;  bookmark-file bookmark simply loads its bookmarks into the current
+;;  set of bookmarks.
+;;
+;;
 ;;(@* "Using Multiple Bookmark Files")
 ;;  ** Using Multiple Bookmark Files **
 ;;
@@ -744,13 +849,17 @@
 ;;  But you can also have extra, alternative bookmark files if you
 ;;  want, and at any time you can change the bookmark file that is
 ;;  current.  To do that, use `C-x p L' (uppercase `L'), which is
-;;  bound to command `bmkp-switch-bookmark-file'.  You can see which
-;;  file is current by using `?' or `C-h m' in the buffer `*Bookmark
-;;  List*' (or anywhere else using `M-x bmkp-bmenu-mode-status-help').
+;;  bound to command `bmkp-switch-bookmark-file'.
 ;;
 ;;  Having multiple bookmark files gives you an added degree of
-;;  flexibility, but you must keep track of these extra bookmark files
-;;  yourself - they are not managed for you automatically.
+;;  flexibility.  You can see which file is current at any time by
+;;  using `?' or `C-h m' in the buffer `*Bookmark List*' (or anywhere
+;;  else using `M-x bmkp-bmenu-mode-status-help').
+;;
+;;  When you switch to another bookmark file, the default is the name
+;;  of the last bookmark file you used (in the same session).  So it
+;;  is trivial to toggle back and forth between two bookmark files:
+;;  just hit `RET' to accept the default.
 ;;
 ;;  When bookmarks are saved automatically, or when you save them
 ;;  using `bookmark-save' (`S' in the bookmark list or `C-x p s'
@@ -762,18 +871,19 @@
 ;;  can toggle this option at any time, using `M-~' in the bookmark
 ;;  list (command `bmkp-toggle-saving-bookmark-file').
 ;;
-;;  Besides using multiple bookmark files as alternatives, you can
+;;  Besides using multiple bookmark files as *alternatives*, you can
 ;;  combine them, using them as component bookmark subsets (like
 ;;  modules).  To do that, use command `C-x p l' (lowercase `l'),
 ;;  which is bound to `bookmark-load', and do not use a prefix
 ;;  argument.  (Using a prefix argument with `C-x p l' is the same as
-;;  using `C-x p L': it switches bookmark files.)
+;;  using `C-x p L': it switches bookmark files.)  Here too the
+;;  default is the name of the last bookmark file that you used.
 ;;
-;;  To create additional bookmark files, to use as either alternatives
-;;  or component files, you can either copy an existing bookmark file
-;;  or use `bmkp-empty-file' (`C-x p 0') to create a new, empty
-;;  bookmark file.  If you use `C-x p 0' with an existing bookmark
-;;  file, then its bookmarks are all deleted - it is emptied.
+;;  To create additional bookmark files, to use either as alternatives
+;;  or as components, you can either copy an existing bookmark file or
+;;  use `bmkp-empty-file' (`C-x p 0') to create a new, empty bookmark
+;;  file.  If you use `C-x p 0' with an existing bookmark file, then
+;;  its bookmarks are all deleted - it is emptied.
 ;;
 ;;  Instead of simply copying a bookmark file, you can use
 ;;  `bookmark-save' with a prefix argument, or use `bookmark-write'
@@ -785,6 +895,47 @@
 ;;  Remember that you can delete bookmarks from the current set using
 ;;  command `bookmark-delete' (`C-x p d') or, in the bookmark list,
 ;;  using `d' plus `x' or marking then `D'.
+;;
+;;
+;;(@* "Bookmark-File Bookmarks")
+;;  *** Bookmark-File Bookmarks ***
+;;
+;;  A bookmark file is an excellent, persistent way to represent a set
+;;  of bookmarks.  In particular, it can represent a project or a
+;;  project component.  Switch among bookmark files to access
+;;  different projects.  Load project components as you need them.
+;;
+;;  You can load a bookmark file using `C-x p L' (switch) or `C-x p l'
+;;  (accumulate).  As a convenience, you can also load a bookmark file
+;;  by jumping to a bookmark-file bookmark.
+;;
+;;  You use command `bmkp-set-bookmark-file-bookmark', bound to `C-x p
+;;  x', to create a bookmark-file bookmark.  Jumping to such the
+;;  bookmark just loads the bookmark file that it records.  With `C-u'
+;;  (e.g. `C-u C-x p j project-foo'), jumping switches bookmark files.
+;;  Without `C-u' it accumulates the loaded bookmarks.
+;;
+;;  A bookmark-file bookmark is not only an added convenience.  You
+;;  can also use it in combination with other Bookmark+ features, such
+;;  as tagging.
+;;
+;;  As a shortcut, in Dired (if you use library Dired+), `C-M-b'
+;;  creates a bookmark-file bookmark.  The bookmark file that it
+;;  records contains bookmarks to each of the files that was marked in
+;;  Dired at the time it was created.  Jumping to that bookmark-file
+;;  bookmark makes those (marked) files available as bookmarks.  See
+;;  also (@> "Use Dired to Bookmark Files without Visiting Them").
+;;
+;;  Note that the bookmark file in which a bookmark-file bookmark is
+;;  recorded is not the same as the bookmark file recorded in that
+;;  bookmark.
+;;
+;;  For example, when you use `C-M-b' in Dired, the bookmark-file for
+;;  the marked files is, by default, file `.emacs.bmk' in the Dired
+;;  directory.  So if you are in directory `/foo/bar' the default
+;;  bookmark file for the marked files is `/foo/bar/.emacs.bmk'.  But
+;;  the new bookmark-file bookmark created is recorded in the current
+;;  bookmark file, whatever that might be (e.g. `~/.emacs.bmk').
 ;;
 ;;
 ;;(@* "Bookmark List (Display)")
@@ -1770,50 +1921,6 @@
 ;;
 ;;  * You can define Icicles sets of bookmarks, persistent or not, and
 ;;    act on their members in various ways.
-;;
-;;
-;;(@* "Open Bookmarks Using Windows File Associations")
-;;  ** Open Bookmarks Using Windows File Associations **
-;;
-;;  You can define a new kind of bookmark for any file type,
-;;  implementing a handler for it that performs the appropriate action
-;;  on it.
-;;
-;;  But if you use Microsoft Windows, then you already have a set of
-;;  file/program associations.  You can take advantage of Windows file
-;;  associations to open bookmarks for files of all kinds.  To do
-;;  this, you also need library `w32-browser.el'.  No need to define
-;;  new bookmark types and handlers if the action you want is the one
-;;  that Windows associates with the file.
-;;
-;;  In the bookmark list, the following keys are bound to commands
-;;  that open bookmarks using the associated Windows `Open'
-;;  applications:
-;;
-;;    `M-RET'     - `bmkp-bmenu-w32-open'
-;;    `M-mouse-2' - `bmkp-bmenu-w32-open-with-mouse'
-;;    `M-o'       - `bmkp-bmenu-w32-open-select'
-;;
-;;  If you use Dired+ (library `dired+.el'), then you can use `M-b' to
-;;  bookmark all of the marked files in a Dired buffer, even if you
-;;  normally do not or cannot visit those files in Emacs.  For
-;;  instance, you can bookmark music files or image files, without
-;;  ever visiting them as files in Emacs.
-;;
-;;  After you create individual bookmarks for each music or image file
-;;  this way, you can use `P B' in the bookmark-list display to show
-;;  only those bookmarks, and then use `C-x r m' to bookmark that
-;;  state of the bookmark-list.  That bookmark-list bookmark is in
-;;  effect a music playlist or an image slideshow.  Jump to it anytime
-;;  you want to listen to that set of music pieces or view those
-;;  images.  And you can use `C-x p B' and then `C-x p next.'  to
-;;  cycle among the music pieces or images (slideshow).
-;;  (see (@> "Cycling the Navigation List")).
-;;
-;;  Together with the use of bookmark tags, this gives you a handy way
-;;  to organize and access objects of any kind whose files are
-;;  recognized by Windows as being associated with a given
-;;  application.  See (@> "Bookmark Tags").
 ;;
 ;;
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")

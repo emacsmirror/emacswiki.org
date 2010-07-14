@@ -20,7 +20,7 @@ Recent changes to python.el are listed in [http://www.loveshack.ukfsn.org/emacs/
 
 == unofficial status ===
 
-Patches were submitted to the Emacs maintainers, but where not used.
+Patches were submitted to the Emacs maintainers, but were not used.
 
 I don’t know of any reason to use it (as opposed to python.el) with Emacs.
 : certain things work with this, that don't with that. I'll try to be more specific... --CH
