@@ -85,6 +85,7 @@ Some completions are available in modes that provide command interaction.
 * [[GCCSense]] -- Development tool for C/C++ using GCC's code analyzers.
 * SubprocessCompletion -- Handling completion by a subprocess such as a shell or a debugger, rather than by Emacs.
 * [[Anything]] -- Lisp:anything-complete.el replaces Emacs Completion.
+* [[CSense]] -- Completion extension.
 
 
 

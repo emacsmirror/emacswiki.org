@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Jun 21 15:39:50 2010 (-0700)
+;; Last-Updated: Wed Jul 14 13:23:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2185
+;;     Update #: 2189
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -471,8 +471,13 @@ Note: In Emacs versions prior to version 22, this runs `Info-index'."
     (error "The Info directory node has no index; use `m' to select a manual"))
   (let ((info-buf                    (current-buffer))
         (info-window                 (selected-window))
-        (icicle-candidate-action-fn  'icicle-Info-index-action))
-    (call-interactively (if (> emacs-major-version 21) 'Info-index 'icicle-Info-index-20))))
+        (icicle-candidate-action-fn  'icicle-Info-index-action)
+        (C-x-m                       (lookup-key minibuffer-local-completion-map "\C-xm")))
+    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
+      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
+    (unwind-protect
+         (call-interactively (if (> emacs-major-version 21) 'Info-index 'icicle-Info-index-20))
+      (define-key minibuffer-local-completion-map "\C-xm" C-x-m))))
 
 ;; Thx to Tamas Patrovics for this Emacs 20 version.
 ;;;###autoload
@@ -617,15 +622,16 @@ This is an Icicles command - see command `icicle-mode'."
 Non-nil INCLUDE-FILE-P means include current Info file in the name.
 You can use `C-x m' during completion to access Info bookmarks, if you
  use library `bookmark+.el'."
-  (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
-    (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
-  (unwind-protect
-       (let* ((completion-ignore-case           t)
-              (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
-              (nodename                         (completing-read prompt 'Info-read-node-name-1
-                                                                 nil nil)))
-         (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename))
-    (define-key minibuffer-local-completion-map "\C-xm" nil)))
+  (let ((C-x-m  (lookup-key minibuffer-local-completion-map "\C-xm")))
+    (when (and (require 'bookmark+ nil t) (fboundp 'icicle-bookmark-info-other-window))
+      (define-key minibuffer-local-completion-map "\C-xm" 'icicle-bookmark-info-other-window))
+    (unwind-protect
+         (let* ((completion-ignore-case           t)
+                (Info-read-node-completion-table  (icicle-Info-build-node-completions include-file-p))
+                (nodename                         (completing-read prompt 'Info-read-node-name-1
+                                                                   nil nil)))
+           (if (equal nodename "") (icicle-Info-read-node-name prompt) nodename))
+      (define-key minibuffer-local-completion-map "\C-xm" C-x-m))))
 
 (defun icicle-Info-build-node-completions (&optional include-file-p)
   "Build completions list for Info nodes.

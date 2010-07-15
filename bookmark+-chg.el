@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Jul  9 14:48:34 2010 (-0700)
+;; Last-Updated: Wed Jul 14 09:30:44 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12935
+;;     Update #: 12987
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -91,10 +91,35 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "CHANGE LOG FOR `bookmark+.el'")
+;;  (@> "CHANGE LOG FOR `bookmark+-1.el'")
+;;  (@> "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-lit.el'")
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2010/07/14 dadams
+;;     Version 3.1.1.
+;;     Moved main content of bookmark+.el to new files bookmark+-1.el and bookmark+-bmu.el.
+;; 2010/07/13 dadams
+;;     Version 3.1.0.
+;;     Added redefinitions: bookmark-bmenu-(1|2)-window, bookmark-bmenu-other-window-with-mouse,
+;;                          bookmark-bmenu-this-window, bookmark-bmenu-switch-other-window.
+;;     Added: bmkp-last-bookmark-file, bmkp-switch-to-last-bookmark-file.
+;;     Removed pre-23 version of bookmark-bmenu-switch-other-window.
+;;     bookmark-load: Use bmkp-last-bookmark-file when read file name.  Added missing prefix arg.
+;;                    Save old current as bmkp-last-bookmark-file.
+;;     bookmark-bmenu-list: If bookmark file has changed do not restore state saved from other file.
+;;                          Save old current as bmkp-last-bookmark-file.
+;;     bmkp-bmenu-list-1: Do not use bmkp-bmenu-title if it is empty ("").
+;;     bookmark-bmenu-mode: Added to doc string: bmkp-switch-bookmark-file.
+;;     bookmark-bmenu-other-window: Do not bind bookmark-automatically-show-annotations (per vanilla).
+;;     bookmark-bmenu-show-annotation: Ensure in bmenu list and on a bookmark line.
+;;     bmkp-switch-bookmark-file: Use bmkp-last-bookmark-file when read file name.
+;;     bmkp-bmenu-define-full-snapshot-command: Set bmkp-last-bookmark-file.
+;;     bmkp-bookmark-description: Fixed typo: bmkp-bookmark-file-bookmark-p (not desktop).
+;;     bmkp-make-bookmark-file-record: Use arg file (not bmkp-non-file-filename) as filename entry.
+;;     
+;;     Added more autoload cookies.
 ;; 2010/07/09 dadams
 ;;     Added: bmkp-bmenu-mark-bookmark-file-bookmarks, bmkp-bmenu-show-only-bookmark-files,
 ;;            bmkp-bookmark-file-jump, bmkp-set-bookmark-file-bookmark, bmkp-bookmark-file-history,
@@ -1096,6 +1121,16 @@
 ;;     Different menu-bar command, depending on Emacs version.
 ;; 2004/09/21 dadams
 ;;     Only define bookmark-menu-jump-other-window if < Emacs 22.
+ 
+;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
+;;
+;; 2010/07/14 dadams
+;;     Created from bookmark+.el code.
+ 
+;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
+;;
+;; 2010/07/14 dadams
+;;     Created from bookmark+.el code.
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;

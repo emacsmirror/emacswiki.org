@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jul  2 15:40:09 2010 (-0700)
+;; Last-Updated: Wed Jul 14 13:23:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5556
+;;     Update #: 5559
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -306,6 +306,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/07/14 dadams
+;;     icicle-Info-index: Bind C-x m to icicle-bookmark-info-other-window.
+;;     icicle-Info-read-node-name: Restore original binding of C-x m, if any.
 ;; 2010/06/21 dadams
 ;;     icicle-comint-search: Wrap search with unwind-protect to remove hook.  Thx to M. Heerdegen.
 ;; 2010/06/18 dadams

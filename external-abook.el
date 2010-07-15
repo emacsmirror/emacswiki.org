@@ -77,8 +77,8 @@ See http://www.mutt.org/doc/manual/manual-4.html#query for more information."
   (mapcar (lambda (s) (replace-regexp-in-string "[ \t]+$" "" s)) elements))
 (defun external-abook-make-string (address)
   "Create a valid email address string from the given address."
-  (if (null address) nil
-    (apply 'format "%s <%s>" address)))
+  (if (null address) nil    
+    (apply 'format (if (> (length address) 1) "%s <%s>" "%s") address)))
 
 (defun external-abook-completing-read (&rest args)
   "Call the completing-read function defined through the variable external-abook-completing-read-functiond" 

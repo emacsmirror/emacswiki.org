@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Jul 13 16:43:38 2010 (-0700)
+;; Last-Updated: Wed Jul 14 15:22:22 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13075
+;;     Update #: 13137
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, w3m, gnus
@@ -25,17 +25,17 @@
 ;;    Documentation for the Bookmark+ package, which provides
 ;;    extensions to standard library `bookmark.el'.
 ;;
-;;    The Bookmark+ libraries are:
+;;    The Bookmark+ libraries are these:
 ;;
-;;    `bookmark+.el'     - main code library
-;;    `bookmark+-lit.el' - code for highlighting bookmarks (optional)
-;;    `bookmark+-doc.el' - documentation (this file)
+;;    `bookmark+.el'     - main (driver) library
+;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
+;;    `bookmark+-1.el'   - other required code (non-bmenu) 
+;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
+;;    `bookmark+-doc.el' - documentation (comment-only - this file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
 ;;    The documentation includes how to byte-compile and install
 ;;    Bookmark+.  It is also available in these ways:
-;;
-;;    This documentation is also available in these ways:
 ;;
 ;;    1. From the bookmark list (`C-x r l'):
 ;;       Use `?' to show the current bookmark-list status and general
@@ -106,15 +106,15 @@
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
-;;    (@> "Using Bookmarks You Might Never Visit")
+;;    (@> "Using Bookmarks You Might Never Visit!")
 ;;      (@> "Open Bookmarks Using Windows File Associations")
 ;;      (@> "Use Dired to Bookmark Files without Visiting Them")
 ;;    (@> "Using Multiple Bookmark Files")
 ;;      (@> "Bookmark-File Bookmarks")
-;;    (@> "Bookmark List (Display)")
+;;    (@> "The Bookmark List (Display)")
 ;;      (@> "Tag Commands and Keys")
 ;;      (@> "Tags: Sets of Bookmarks")
-;;      (@> "Open Dired for the Marked Files")
+;;      (@> "Open Dired for the Marked File Bookmarks")
 ;;      (@> "Marking and Unmarking Bookmarks")
 ;;      (@> "Filtering Bookmarks (Hiding and Showing)")
 ;;      (@> "Only Visible Bookmarks Are Affected")
@@ -134,7 +134,6 @@
 ;;    (@> "Use Bookmark+ with Icicles")
 ;;    (@> "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;    (@> "New Bookmark Structure")
-;;  (@> "Change log")
  
 ;;(@* "Documentation")
 ;;
@@ -144,21 +143,20 @@
 ;;(@* "Installing Bookmark+")
 ;;  ** Installing Bookmark+ **
 ;;
-;;  The main Bookmark+ library is `bookmark+.el'.  If you want to be
-;;  able to highlight bookmarks then you will also want to use library
-;;  `bookmark+-lit.el'.  To use both of these libraries, just put
-;;  their directory in your `load-path' and add this to your init file
-;;  (~/.emacs):
+;;  The main Bookmark+ library is `bookmark+.el'.  The other required
+;;  libraries are `bookmark+-bmu.el' and `bookmark+-1.el'.  If you
+;;  want to be able to highlight bookmarks then you will also want to
+;;  use library `bookmark+-lit.el'.  I recommend that you byte-compile
+;;  the libraries.
+;;
+;;  Put the directory of these libraries in your `load-path' and add
+;;  this to your init file (~/.emacs):
 ;;
 ;;  (require 'bookmark+)
 ;;
-;;  That will load both libraries.  If you want to load only
-;;  `bookmark+.el' then simply do not put `bookmark+-lit.el' in your
-;;  `load-path'.
-;;
-;;  I recommend that you byte-compile the libraries.  `bookmark+.el'
-;;  must be in your `load-path' in order to byte-compile it (it must
-;;  be loaded before byte-compiling it).
+;;  That will load all of the Bookmark+ libraries.  If you do not care
+;;  about bookmark highlighting then simply do not put
+;;  `bookmark+-lit.el' in your `load-path'.
 ;;
 ;;  By default (see option `bmkp-crosshairs-flag'), when you visit a
 ;;  bookmark that has no region it is highlighted temporarily using
@@ -181,19 +179,18 @@
 ;;
 ;;  * Richer bookmarks.  They record more.  They are more accurate.
 ;;
-;;     - You can tag bookmarks, a la del.icio.us.  This is perhaps the
-;;       most important Bookmark+ feature.  In effect, tags define
-;;       bookmark sets.  A bookmark can have any number of tags, and
-;;       multiple bookmarks can have the same tag.  You can mark or
-;;       show just the bookmarks with a given tag or a set of tags.
+;;     - You can tag bookmarks, a la del.icio.us.  In effect, tags
+;;       define bookmark sets.  A bookmark can have any number of
+;;       tags, and multiple bookmarks can have the same tag.  You can
+;;       sort, show/hide, or mark bookmarks based on their tags.
 ;;
-;;     - Bookmark tags can in fact be more than just names.  They can
-;;       be full-fledged user-defined attributes, with Emacs-Lisp
-;;       objects as their values.
+;;     - Bookmark tags can be more than just names.  They can be
+;;       full-fledged user-defined attributes, with Emacs-Lisp objects
+;;       as their values.
 ;;
-;;     - Bookmarks record the number of visits and the time of the
-;;       last visit.  You can sort, show/hide, or mark bookmarks based
-;;       on this info.
+;;     - Bookmarks record the number of you have visited them and the
+;;       time of the last visit.  You can sort, show/hide, or mark
+;;       bookmarks based on this info.
 ;;
 ;;     - You can combine bookmarks, to make composite, or sequence,
 ;;       bookmarks.  Invoking a sequence bookmark invokes each of its
@@ -214,7 +211,13 @@
 ;;       `ls' switches, which files are marked, which subdirectories
 ;;       are inserted, and which (sub)directories are hidden.
 ;;
-;;     - You can bookmark a buffer that is not associated with a file.
+;;     - You can bookmark the current state of buffer `*Bookmark
+;;       List*' - a list of bookmarks.  Jumping to such a bookmark
+;;       restores the recorded sort order, filter, title, and omit
+;;       list.  See (@> "Omitting Bookmarks from Display").
+;;
+;;     - You can bookmark a bookmark file.  Jumping to such a bookmark
+;;       loads the bookmarks in the file.  See (@> "Bookmark-File Bookmarks").
 ;;
 ;;     - You can bookmark the current desktop, as defined by library
 ;;       `desktop.el' - use command `bmkp-set-desktop-bookmark' (`C-x
@@ -227,40 +230,22 @@
 ;;           For each: its mode, point, mark, & some local variables.
 ;;
 ;;     - You can bookmark a Gnus article, a URL (if you use W3M), a
-;;       PDF file (DocView), an image, or a UNIX manual page (from the
-;;       output of Emacs command `man' or `woman').
+;;       PDF file (DocView), a UNIX manual page (from the output of
+;;       Emacs command `man' or `woman'), an image, or a piece of
+;;       music.
 ;;
-;;     - A bookmark can represent a function, which is invoked when
-;;       you "jump" to the bookmark.
+;;     - You can bookmark a buffer that is not associated with a file.
 ;;
-;;     - As mentioned above, a bookmark can represent a sequence of
-;;       other bookmarks.
+;;     - A bookmark can represent a Lisp function, which is invoked
+;;       when you "jump" to the bookmark.
+;;
+;;     - A bookmark can represent a sequence of other bookmarks.
 ;;
 ;;     - A bookmark can represent a set of variables and their values.
 ;;
-;;     - You can bookmark buffer `*Bookmark List*' itself.  Jumping to
-;;       such a bookmark restores the recorded sort order, filter,
-;;       title, and omit list
-;;       (see (@> "Omitting Bookmarks from Display")).
-;;
-;;     - You can bookmark a bookmark file.  Jumping to such a bookmark
-;;       loads the bookmarks in the file.  Use this to quickly switch
-;;       among different sets of bookmarks (e.g. projects).  See
-;;       (@> "Bookmark-File Bookmarks").
-;;
-;;  * Type-specific jump commands.
-;;
-;;     - When you want to jump to a bookmark of a specific type
-;;       (e.g. Dired), you can use a command that offers only such
-;;       bookmarks as completion candidates.
-;;
-;;  * Jump-destination highlighting.
-;;
-;;     - When you jump to a bookmark that has no region, the
-;;       destination (position) is highlighted temporarily using
-;;       crosshairs, to make it stand out.  Option
-;;       `bmkp-crosshairs-flag' controls this, and this feature is
-;;       available only if you also use library `crosshairs.el'.
+;;     In particular, note that you can use these kinds of bookmarks
+;;     to quickly switch among different projects (sets of bookmarks):
+;;     Dired, bookmark-list, bookmark-file, and desktop bookmarks.
 ;;
 ;;  * Improvements for the bookmark list (buffer `*Bookmark List*',
 ;;    aka "menu list") that is displayed using `C-x r l'.
@@ -268,6 +253,11 @@
 ;;     - The last display state is saved (by default), and is restored
 ;;       the next time you show the list.  (Tip: Use the bookmark list
 ;;       as your "Home" page at Emacs startup.)
+;;
+;;     - You can save the current bookmark-list state at any time and
+;;       return to it later.  There are a few ways to do this,
+;;       including bookmarking the list itself.
+;;       See (@> "Bookmark-List Views - Saving and Restoring State").
 ;;
 ;;     - Marking/unmarking is enhanced.  It is similar to Dired's.
 ;;
@@ -284,13 +274,8 @@
 ;;       Emacs 23 and later, you can even search incrementally (`M-s a
 ;;       C-s', or `M-s a C-M-s' for regexp).
 ;;
-;;     - You can save the current bookmark-list state and return to it
-;;       later.  There are a few ways to do this, including
-;;       bookmarking the list itself.
-;;       See (@> "Bookmark-List Views - Saving and Restoring State").
-;;
-;;     - You can use `M-d >' to open Dired for just the local file and
-;;       directory bookmarks that are marked (`>').
+;;     - You can use `M-d >' to open Dired for just the local file
+;;       bookmarks that are marked (`>').
 ;;
 ;;     - If you use Emacs on Microsoft Windows, you can open bookmarks
 ;;       according to Windows file associations.  (You will also need
@@ -302,8 +287,6 @@
 ;;       bookmark (e.g. relocate it).  With a numeric prefix argument
 ;;       (or if there are no bookmarks for the buffer), you can choose
 ;;       from all bookmarks.
-;;
-;;     - You can edit a bookmark (its name and file name/location).
 ;;
 ;;     - A popup menu is available on `mouse-3', with actions for the
 ;;       individual bookmark you point to when you click the mouse.
@@ -317,14 +300,23 @@
 ;;       from the `Bookmark+' menu, including the `Jump To' submenu
 ;;       (called `Jump To Bookmark' there).
 ;;
+;;     - You can edit a bookmark (its name and file name/location).
+;;
 ;;  * Multiple bookmark files.
 ;;
 ;;     - Although vanilla Emacs lets you load different bookmark
 ;;       files, this feature is not well supported, if not
-;;       contradictory.  With Bookmark+ you can easily switch among
-;;       alternative bookmark files or load multiple files into the
-;;       same session, accumulating their bookmark definitions.  The
-;;       last file you used is the default for switching.
+;;       contradictory.  With Bookmark+ you can easily (a) switch
+;;       among alternative bookmark files or (b) load multiple files
+;;       into the same session, accumulating their bookmark
+;;       definitions.  The last file you used is the default, so it is
+;;       easy to go back and forth between two bookmark files.
+;;
+;;  * Type-specific jump commands.
+;;
+;;     - When you want to jump to a bookmark of a specific type
+;;       (e.g. Dired), you can use a command that offers only such
+;;       bookmarks as completion candidates.
 ;;
 ;;  * Dedicated prefix keys.
 ;;
@@ -371,6 +363,14 @@
 ;;
 ;;       . From the Emacs-Wiki Web site,
 ;;         http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;
+;;  * Jump-destination highlighting.
+;;
+;;     - When you jump to a bookmark, the destination (position) is
+;;       highlighted temporarily using crosshairs, to make it stand
+;;       out.  Option `bmkp-crosshairs-flag' controls this, and this
+;;       feature is available only if you also use library
+;;       `crosshairs.el'.
 ;;
 ;;  * Visual bookmarks (highlighting).
 ;;
@@ -464,7 +464,7 @@
 ;;  without markings.  So does each bookmark of type bookmark list,
 ;;  that is, a bookmark corresponding to a particular `*Bookmark
 ;;  List*' display state - see
-;;  (@* "State-Restoring Commands and Bookmarks").
+;;  (@> "State-Restoring Commands and Bookmarks").
 ;;
 ;;  You can capture the set of bookmarks corresponding to a `*Bookmark
 ;;  List*' display for use in navigation, that is, as the current
@@ -633,8 +633,8 @@
 ;;
 ;;  The bookmark list (buffer `*Bookmark List*') provides a view into
 ;;  the set of bookmarks.  You can mark, sort, and hide (filter, omit)
-;;  bookmarks - see (@> "Bookmark List (Display)").  The state of the
-;;  displayed bookmark list can thus change.
+;;  bookmarks - see (@> "The Bookmark List (Display)").  The state of
+;;  the displayed bookmark list can thus change.
 ;;
 ;;  At different times, and in different contexts, different views can
 ;;  be useful.  Bookmark+ lets you save the current state of the
@@ -734,8 +734,8 @@
 ;;  the sequence.)
 ;;
 ;;
-;;(@* "Using Bookmarks You Might Never Visit")
-;;  ** Using Bookmarks You Might Never Visit ***
+;;(@* "Using Bookmarks You Might Never Visit!")
+;;  ** Using Bookmarks You Might Never Visit! ***
 ;;
 ;;  Now that's an unusual idea: bookmarking files you never visit.
 ;;  Well, by "visit" I mean in the Emacs sense of editing the file,
@@ -938,8 +938,8 @@
 ;;  bookmark file, whatever that might be (e.g. `~/.emacs.bmk').
 ;;
 ;;
-;;(@* "Bookmark List (Display)")
-;;  ** Bookmark List (Display) **
+;;(@* "The Bookmark List (Display)")
+;;  ** The Bookmark List (Display) **
 ;;
 ;;  Bookmark+ enhances the bookmark list (aka the bookmark "menu
 ;;  list", a misnomer) that is displayed in buffer `*Bookmark List*'
@@ -1093,8 +1093,8 @@
 ;;  (using bookmark handlers) and associated manipulations.
 ;;
 ;;
-;;(@* "Open Dired for the Marked Files")
-;;  *** Open Dired for the Marked Files ***
+;;(@* "Open Dired for the Marked File Bookmarks")
+;;  *** Open Dired for the Marked File Bookmarks ***
 ;;
 ;;  You've seen that the bookmark list has many features that are
 ;;  similar to Dired features.  But Dired is specialized for files and
@@ -1594,8 +1594,7 @@
 ;;  `C-x p RET' creates a bookmark at point without prompting you for
 ;;  the name.  It is named using the current buffer name preceded by
 ;;  the position in the buffer.  For example, the autonamed bookmark
-;;  in buffer `bookmark+.el' at position 58356 is `000058356
-;;  bookmark+.el'.
+;;  in buffer `foo.el' at position 58356 is `000058356 foo.el'.
 ;;
 ;;  (You can customize the format of autonamed bookmarks using options
 ;;  `bmkp-autoname-bookmark-function' and `bmkp-autoname-format'.)
@@ -1650,7 +1649,7 @@
 ;;
 ;;  You can highlight the location (destination) of a bookmark.  For
 ;;  this feature you need library `bookmark+-lit.el' in addition to
-;;  library `bookmark+.el'.
+;;  the other Bookmark+ libraries.
 ;;
 ;;  You might never want to highlight a bookmark, or you might want to
 ;;  highlight most or even all bookmarks, or your use of highlighting
@@ -1870,7 +1869,7 @@
 ;;  * Plain `C-u' (as usual): Prompt for name; no bookmark overwrite.
 ;;
 ;;  During completion of a bookmark name, many features of the
-;;  bookmark-list display (see (@> "Bookmark List (Display)")) are
+;;  bookmark-list display (see (@> "The Bookmark List (Display)")) are
 ;;  available on the fly.  Buffer `*Completions*' acts like a dynamic
 ;;  version of `*Bookmark List*':
 ;;
@@ -1926,18 +1925,17 @@
 ;;(@* "Bookmark Compatibility with Vanilla Emacs (`bookmark.el')")
 ;;  ** Bookmark Compatibility with Vanilla Emacs (`bookmark.el') **
 ;;
-;;  Library `bookmark+.el' is generally compatible with GNU Emacs
-;;  versions 20 through 23.
+;;  Bookmark+ is generally compatible with GNU Emacs versions 20
+;;  through 23.
 ;;
 ;;  1. All bookmarks created using any version of vanilla Emacs
-;;     (library `bookmark.el') continue to work with `bookmark+.el'.
+;;     (library `bookmark.el') continue to work with Bookmark+.
 ;;
-;;  2. All bookmarks created using library `bookmark+.el' will work
-;;     with all Emacs versions (20-23), provided you use library
-;;     `bookmark+.el' to access them.
+;;  2. All bookmarks created using Bookmark+ will work with all Emacs
+;;     versions (20-23), provided you use Bookmark+ to access them.
 ;;
-;;  3. Most bookmarks created using `bookmark+.el' will not interfere
-;;     with the behavior of vanilla Emacs, versions 21-23.  The new
+;;  3. Most bookmarks created using Bookmark+ will not interfere with
+;;     the behavior of vanilla Emacs, versions 21-23.  The new
 ;;     bookmark types are simply ignored by vanilla Emacs.  For
 ;;     example:
 ;;
@@ -1946,21 +1944,20 @@
 ;;
 ;;     - A Gnus bookmark does not work; it is simply ignored.
 ;;
-;;     However, there are two cases in which `bookmark+.el' bookmarks
-;;     will raise an error in vanilla Emacs:
+;;     However, there are two cases in which Bookmark+ bookmarks will
+;;     raise an error in vanilla Emacs:
 ;;
 ;;     * You cannot use non-file (e.g. buffer-only) bookmarks with any
 ;;       version of vanilla Emacs.
 ;;
-;;     * You cannot use any bookmarks created using `bookmark+.el'
-;;       with vanilla Emacs 20.
+;;     * You cannot use any bookmarks created using Bookmark+ with
+;;       vanilla Emacs 20.
 ;;
 ;;     The Emacs bookmark data structure has changed from version to
-;;     version.  Library `bookmark+.el' always creates bookmarks that
-;;     have the most recent structure (Emacs 23).  As is the case for
-;;     any bookmarks that have the Emacs 23 structure, these bookmarks
-;;     will not work in vanilla Emacs 20 (that is, without
-;;     `bookmark+.el').
+;;     version.  Bookmark+ always creates bookmarks that have the most
+;;     recent structure (Emacs 23).  As is the case for any bookmarks
+;;     that have the Emacs 23 structure, these bookmarks will not work
+;;     in vanilla Emacs 20 (that is, without Bookmark+).
 ;;
 ;;  Bottom line: Use `bookmark+.el' to access bookmarks created using
 ;;  `bookmark+.el'.
