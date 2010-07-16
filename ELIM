@@ -46,5 +46,6 @@ Others are available as 3rd party plugins: http://developer.pidgin.im/wiki/Third
 * Make an ELPA package for it. (An ELPA package doesn't really make sense since ELIM is a C program. Distributing the elisp portion by itself is not that helpful. --technomancy)
 * Notify the user when a new message is received.
 ** '''DONE'''
+* Tab-completion for nicks (in IRC and MUCs).  An IRC client can't be without that! :)
 ----
 CategoryChatClient

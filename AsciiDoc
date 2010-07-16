@@ -1,6 +1,6 @@
 == Description ==
 
-[[http://www.methods.co.nz/asciidoc Asciidoc]] is set of document formatting rules for text documents. The documents can be converted into variety of formats , like HTML, manual pages etc with the <code>asciidoc</code> command line program (Python). 
+[[http://www.methods.co.nz/asciidoc AsciiDoc]] is set of document formatting rules for text documents. The documents can be converted into variety of formats , like HTML, manual pages etc with the <code>asciidoc</code> command line program (Python). 
 
 To edit Asciidoc formatted text files in Emacs, there is [[http://xpt.sourceforge.net/tools/doc-mode/ doc-mode]] or [[http://code.google.com/p/sensorflo-emacs/source/browse/trunk/adoc-mode.el adoc-mode]]
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:36:04 2010 (-0800)
+;; Last-Updated: Thu Jul 15 14:14:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2507
+;;     Update #: 2510
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -142,6 +142,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/07/15 dadams
+;;     Buffer-menu-fontify-and-adjust-frame:
+;;       Added call to font-lock-refresh-defaults.  Thx to Bastian Beischer.
 ;; 2009/07/27 dadams
 ;;     Buffer-menu-revert-function: Updated wrt Emacs 23: use window-buffer.
 ;;     Buffer-menu-mode (Emacs 23): Use revert-buffer in doc string, not Buffer-menu-revert.
@@ -779,6 +782,7 @@ Click a column heading to sort by that field and update this option."
       (setq font-lock-defaults '(buffer-menu-font-lock-keywords t))
       (turn-on-font-lock)
       (when (and (fboundp 'fit-frame) (one-window-p t)) (fit-frame))
+      (when (fboundp 'font-lock-refresh-defaults) (font-lock-refresh-defaults))
       (raise-frame))))
 
 ;; Fontify buffer, then fit and raise its frame.

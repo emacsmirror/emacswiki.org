@@ -72,7 +72,7 @@ However, even after making these changes to the ECB cedet wrapper, I am still ge
 
 <strong>Symbol's value as variable is void: ecb-compilation-buffer-list-changed-p</strong>
 
-
+I have succeeded in getting ECB 2.40 to at least load cleanly on Emacs 23.2.1 by making the above changes to ecb-cedet-wrapper.el as well as commenting-out the (require 'semantic-load) line in ecb-method-browser.el file (line #44), and in ecb-analyse.el changing the  (require 'semantic-analyze)  line to  (require 'semantic/analyze) . 
 
 ----
 CategoryModes

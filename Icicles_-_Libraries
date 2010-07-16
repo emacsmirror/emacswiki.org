@@ -97,12 +97,12 @@ Here's one way to check which '''Icicles''' libraries have changed recently: '''
 [:BulkIciclesDownload]
 == Downloading Icicles Libraries ==
 
-You can download the '''Icicles''' files individually, by right-clicking the Download link and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
+You can download the '''Icicles''' files individually, by right-clicking the Download link for each and choosing `Save As' in your browser.  You will need to do that on ''each'' file page.
 
-Alternatively, there are a few ways you can download all of the files at once. These means are provided by '''Icicles''' users. If they work for you, good; if not, you will need to download the files individually. 
+Alternatively, there are a few ways you can download all of the files at once. Some of these means were provided by '''Icicles''' users.
 
 [new:DrewAdams:2009-04-17 07:54 UTC]
-'''Note:''' The last two ways listed here (zip file and bzr repository) will ''not'' give you the latest version of '''Icicles'''. (You are welcome to update the zip or the bzr repository yourself, as a help to others.) Please download from EmacsWiki, using either of the first two methods.
+'''Note:''' The last three ways listed here (zip file and bzr repository) will not necessarily give you the latest version of '''Icicles'''. (You are welcome to update the zip or the bzr repository yourself, as a help to others.) If you want to be sure to obtain the latest code, then download directly from EmacsWiki, using either of the first two methods.
 [new]
 
 * '''Within Emacs''' -- Two alternative ways:
@@ -112,6 +112,8 @@ Alternatively, there are a few ways you can download all of the files at once. T
 ** Use library <tt>[[auto-install.el]]</tt>. Setup like this: ##(setq auto-install-save-confirm nil)##. Do `M-x auto-install-batch', then enter `icicles'.  -- Thanks to AndyStewart for this.
 
 * '''With a shell script:''' (UNIX, GNU/Linux) Use `wget': <tt>[[get-icicles.sh]]</tt>. Thanks to LeWang for that. Thanks to MishaGorodnitzky for tweaking it to get around an EmacsWiki limit on how many files you can download per second.
+
+* '''[[http://github.com/emacsmirror/icicles Icicles on GitHubMirror]]'''.  Download the ##icicles*.el## files only, as a zip or tar archive.  You will need to download the other '''Icicles''' libraries (e.g <tt>[[hexrgb.el]]</tt>) separately. (''All'' EmacsWiki files are available on GitHubMirror for download, however: http://github.com/emacsmirror/emacswiki.org).
 
 * '''Zip archive:''' Download a two-part zip archive of the libraries at  [[Icicles-1-of-2.zip]] and [[Icicles-2-of-2.zip]] . Be aware this is ''not updated'' automatically, so it is likely '''''out of date''''' -- but it can get you started. Thanks to [[leooo]] for starting this. Thanks also to anyone who updates this (anyone can do so).
 

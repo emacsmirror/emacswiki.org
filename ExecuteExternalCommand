@@ -23,7 +23,7 @@ Starting with Emacs 23, `TAB' [[completion]] will be available for `##M-!##' and
 === Icicles Completion for `M-!' and `M-|' ===
 
 [[Icicles]] enhances the vanilla `TAB' completion for `##M-!##' and `##M-|##'. Whenever
-there are two or more candidate completions, you can use any '''Icicles'''
+here are two or more candidate completions, you can use any '''Icicles'''
 completion features ([[Icicles - Cycling Completions|cycling]], [[progressive completion]], [[apropos completion]], and so on).  See [[Icicles - Completion in Other Buffers#ShellCommandCompletion|Icicles - Completion in Comint Modes]].
 
 
@@ -32,32 +32,45 @@ completion features ([[Icicles - Cycling Completions|cycling]], [[progressive co
 
 You can run a shell command asynchronously by adding an ampersand (##&##) after it, if you have a UNIX or UXIX-like enviornment.
 
-Here is a simple Emacs command that you can use to run several commands asynchronously:
+Here is a some elisp to modify shell-command to allow many commands to execute asynchronously (and show the command at the top of the buffer
+
+
 <pre>
-    (defun my-shell-command (command &optional output-buffer) 
-      "Same as shell-command but rename uniquely the buffers for asynch commands.
-Each command that is run spawns a bash shell" 
-      (interactive
-       (list (read-from-minibuffer "Shell command: "
-					   nil nil nil 'shell-command-history)
-		     current-prefix-arg)
-      ;use this list if your using shell-command.el
-      ;(list
-      ;(shell-command-read-minibuffer shell-command-prompt
-      ;				     default-directory
-      ;		     nil nil nil 'shell-command-history)
-      ;	     current-prefix-arg)
-        )
-      (if current-prefix-arg
-          (shell-command command current-prefix-arg)
-        (if (string-match "[ \t]*&[ \t]*\\'" command)
-	 (let* ((command-buffer-name (format "*Async Shell Command: %s*" (substring command 0 (match-beginning 0))))
-	        (command-buffer (get-buffer command-buffer-name)))
-	     (when command-buffer
-	       (set-buffer command-buffer)
-	       (rename-uniquely))
-	     (setq output-buffer command-buffer-name)))
-      (shell-command command output-buffer)))
+(defadvice erase-buffer (around erase-buffer-noop)
+  "make erase-buffer do nothing")
+
+(defadvice shell-command (around shell-command-unique-buffer activate compile)
+  (if (or current-prefix-arg 
+          (not (string-match "[ \t]*&[ \t]*\\'" command)) ;; background
+          (bufferp output-buffer) 
+          (stringp output-buffer))
+      ad-do-it ;; no behavior change
+
+    ;; else we need to set up buffer
+    (let* ((command-buffer-name 
+            (format "*background: %s*" 
+                    (substring command 0 (match-beginning 0))))
+           (command-buffer (get-buffer command-buffer-name)))
+
+      (when command-buffer
+        ;; if the buffer exists, reuse it, or rename it if it's still in use
+        (cond ((get-buffer-process command-buffer)
+               (set-buffer command-buffer)
+               (rename-uniquely))
+              ('t 
+               (kill-buffer command-buffer))))
+      (setq output-buffer command-buffer-name)
+
+      ;; insert command at top of buffer
+      (switch-to-buffer-other-window output-buffer)
+      (insert "Running command: " command 
+              "\n~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~\n\n")
+      
+      ;; temporarily blow away erase-buffer while doing it, to avoid
+      ;; erasing the above
+      (ad-activate-regexp "erase-buffer-noop")
+      ad-do-it
+      (ad-deactivate-regexp "erase-buffer-noop"))))
 </pre>
 
 == Discussion ==

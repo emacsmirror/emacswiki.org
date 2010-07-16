@@ -131,50 +131,6 @@ Please describe what happens and what you would like to happen. I don't use `spl
 
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-
-[new:Annoyed:2008-05-05 15:27 UTC]
-Is there an aversion to packaging tools, like tar, zip, gzip, or whatever?  Why not have one simple bundle and be done with it?  Why force everyone to download every single file? -- Annoyed, in-corp.allnegotiations.com
-
-[new:DrewAdams:2008-05-08 15:15 UTC]
-Dear Annoyed: I've said it before and I'll say it again. There are several ways to download all '''Icicles''' libraries at once, posted at [[Icicles - Libraries#BulkIciclesDownload|Bulk Icicles Download]]. If you or someone else wants to also periodically bundle the files into a zip or whatever, feel free to do so. There are already two pages for that, in fact: [[Icicles-1-of-2.zip]] and [[Icicles-2-of-2.zip]].  They just need someone to update it -- feel free. I won't be doing that. -- DrewAdams
-
-
-
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-
-[new:Fernando:2010-07-12 00:00 UTC]
-Why don't you use a git repository ? (or hg, bzr, ...) -- FernandoDobladez
-
-[new:DrewAdams:2010-07-13 06:25 UTC]
-Because I do not want to.  See also previous, above.  You are free to create a git or hg or bzr repository and populate it with the files I post on the wiki.  I'm sure others will appreciate it.  -- DrewAdams
-
-[new:stepnem:2010-07-13 12:28 UTC]
-Yup, Drew's (and some other prominent Elisp library authors') unwillingness to
-use a (D)VCS is very unfortunate. While I understand people have their own
-preferred and long-established ways of doing things, using (D)VCS would make
-it *so* much more convenient for us to use their code *and* contribute at
-the same time... (and I'm sure it would make things more convenient for the
-authors, too, although they would obviously disagree at first) "Feel free to
-do so, but I'm not going to" won't really cut it, for as long as the author
-themselves do not use the repository, it will only solve a part of the
-problem. -- stepnem
-
-
 
 
 
@@ -600,40 +556,37 @@ HTH -- DrewAdams
 
 Hi, Icicles is very interesting to me, but I have some criticisms.
 
-1. I'm not going to say, as a user above did, that you really *must* have a convenient downloadable form of Icicles, but it sure is strange that the primary source is "a collection of pages in the Emacs Wiki" without even an explanation. My current theory is "using SVN/Git was too cumbersome so I'm using the wiki as a poor man's version control system".
 
-2. Icicles breaks the grid-alignment in Completion-list buffers. Is this intentional? I find it hurts scannability.
+1. Icicles breaks the grid-alignment in Completion-list buffers. Is this intentional? I find it hurts scannability.
 
-3. Why the inconsistency between previous/up in some variable names like icicle-previous-prefix-candidate and icicle-modal-cycle-up-keys? Not that you can really change it at this point..
+2. Why the inconsistency between previous/up in some variable names like icicle-previous-prefix-candidate and icicle-modal-cycle-up-keys? Not that you can really change it at this point..
 
-4. I'm aware that being too much like iswitchb/ido isn't something that appeals to you, but I do think that icicles could be more iswitch-y without compromising its generality. For example, if there's only one completion that matches what you've typed so far, RET could select it. (It might be that S-RET does this on machines besides my own.) Similarly, C-s and C-r could do next/prior.
+3. I'm aware that being too much like iswitchb/ido isn't something that appeals to you, but I do think that icicles could be more iswitch-y without compromising its generality. For example, if there's only one completion that matches what you've typed so far, RET could select it. (It might be that S-RET does this on machines besides my own.) Similarly, C-s and C-r could do next/prior.
 
-5. I sort of hate that ZSH-ish completion behavior of not differentiating characters I've typed from characters from the current completion candidate. iswitchb does this really right in my opinion -- completion candidates are distinct from things you've typed, and typing always adds characters to the end of what you've already typed. C-s/C-r changes the completion candidate, but "point" is still at the end of what you've typed. You probably use icomplete+ so don't need/want this, but I often prefer to whittle down candidate lists by adding more characters, which is impossible once I've pressed next/prior once. (Instead I have to press C-l first, which isn't impossible, but neither optimal.)
+4. I sort of hate that ZSH-ish completion behavior of not differentiating characters I've typed from characters from the current completion candidate. iswitchb does this really right in my opinion -- completion candidates are distinct from things you've typed, and typing always adds characters to the end of what you've already typed. C-s/C-r changes the completion candidate, but "point" is still at the end of what you've typed. You probably use icomplete+ so don't need/want this, but I often prefer to whittle down candidate lists by adding more characters, which is impossible once I've pressed next/prior once. (Instead I have to press C-l first, which isn't impossible, but neither optimal.)
 
 Rereading the above paragraph, I don't think this is especially clear. To see what I mean, try creating buffers called "foobar" and "format". In iswitchb, completion stops at "fo", and you use C-s/C-r to cycle candidates. Typing "r" will give you "for", which will complete to "format". By contrast, in icicles, "fo" is replaced with "foobar" or "format", and typing "r" will give you "foobarr" or "formatr", neither of which is helpful.
 
-6. Some kind of sorting could be made available for completion candidates, sensitive to history. This could be overridden for certain commands -- particularly switch-to-buffer, which would sort according to buffer stack.
+5. Some kind of sorting could be made available for completion candidates, sensitive to history. This could be overridden for certain commands -- particularly switch-to-buffer, which would sort according to buffer stack.
 
-7. Similar to the above -- I feel like apropos completion ought to match prefixes first. But then it might just be that for certain things (buffers) I want apropos completion, and for other things (files) I want prefix completion.
+6. Similar to the above -- I feel like apropos completion ought to match prefixes first. But then it might just be that for certain things (buffers) I want apropos completion, and for other things (files) I want prefix completion.
 
 OK, that's all. Sorry I can't offer patches, but since you write about Icicles all over EmacsWiki I assume you might want to know how you could make your project more useful to me :) -- EthanGlasserCamp
 
 [new:DrewAdams:2009-05-27 01:04 UTC]
 Thanks for your feedback, Ethan.
 
-1. Pick any reason you like. ;-) There are plenty of simple, push-button ways to download the '''Icicles''' files. If you find it too hard to use <tt>[[icicles-install.el]]</tt> or <tt>[[auto-install.el]]</tt> or <tt>[[get-icicles.sh]]</tt>, I'm sorry. Each of those should be quick and painless. They require no thought about which files you need -- they do it all.
-
-2. Unlike vanilla Emacs, the display in `*Completions*' is customizable. You can even adjust it on the fly. You can easily get a strictly tabular display, if that's what you want (at the cost of showing fewer candidates). See [[Icicles - Completions Display#icicle-candidate-width-factor|Customizing and Adjusting Completions Display]].
+1. Unlike vanilla Emacs, the display in `*Completions*' is customizable. You can even adjust it on the fly. You can easily get a strictly tabular display, if that's what you want (at the cost of showing fewer candidates). See [[Icicles - Completions Display#icicle-candidate-width-factor|Customizing and Adjusting Completions Display]].
 
 '''Icicles''' lets you use all kinds of things as completion candidates, including multi-line candidates and [[multi-completion]] candidates. A one-size-fits-all policy would be unnecessarily rigid. What is optimal for file names is not necessarily optimal for symbol names or doc strings. If you use '''DoReMi''', then you can easily adjust the display dynamically, regardless of the customized values of the options ('''`<tt>[[Icicles - Customization and General Tips#icicle-candidate-width-factor|icicle-candidate-width-factor]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-inter-candidates-min-spaces|icicle-inter-candidates-min-spaces]]</tt>'''') that control the display.
 
-3. Up/down refer to the (default) ''keys'' `up' and `down' (often written `##<up>##' and `##<down>##'). Previous/next refer to the candidates, not the keys. But your point is taken. And no, it's not too late to change names; I have no problem doing that. I will think about this one, but a priori I'm not convinced.
+2. Up/down refer to the (default) ''keys'' `up' and `down' (often written `##<up>##' and `##<down>##'). Previous/next refer to the candidates, not the keys. But your point is taken. And no, it's not too late to change names; I have no problem doing that. I will think about this one, but a priori I'm not convinced.
 
-4. Yes, that is what `S-RET' is for. If it doesn't work on your machine, bind the command to a different key. Bind it to `RET', if you like. ;-)
+3. Yes, that is what `S-RET' is for. If it doesn't work on your machine, bind the command to a different key. Bind it to `RET', if you like. ;-)
 
 `C-s' and `C-r' invoke [[Isearch]] in the minibuffer, as they should. '''Icicles''' is like vanilla Emacs wrt the minibuffer: you can use it for general editing. '''Icicles''' deals with all kinds of completion candidates, including multi-line candidates, and general editing in the minibuffer is therefore more important and therefore more usable in '''Icicles'''. There is no shortage of keys you can choose to cycle next or previous. Choose `C-s' and `C-r' if you are so inclined or that is your habit.
 
-5. I have no idea what you're talking about here. Typing in the minibuffer inserts the characters you type at the cursor. Always. Nothing special about that. if the cursor is at the end, then that's where characters are added. You can choose the initial cursor position (option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-value|icicle-default-value]]</tt>'''') and the cursor position during cycling (option '''`<tt>[[Icicles - Customization and General Tips#icicle-point-position-in-candidate|icicle-point-position-in-candidate]]</tt>'''').
+4. I have no idea what you're talking about here. Typing in the minibuffer inserts the characters you type at the cursor. Always. Nothing special about that. if the cursor is at the end, then that's where characters are added. You can choose the initial cursor position (option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-value|icicle-default-value]]</tt>'''') and the cursor position during cycling (option '''`<tt>[[Icicles - Customization and General Tips#icicle-point-position-in-candidate|icicle-point-position-in-candidate]]</tt>'''').
 
 From your later mention of next/prior, I guess you're talking about cycling. Yes, when you cycle, the current candidate is in the minibuffer for editing. You can do anything you want with that text. Yes, to get back your actual input, use `C-l'. But it sounds like you perhaps just don't use the right values of `icicle-point-position-in-candidate' and `icicle-mark-position-in-candidate'. Sounds like you want to put the cursor after the current candidate, not before it. People have different preferences here, in particular depending on whether they use DeleteSelectionMode.
 
@@ -646,7 +599,7 @@ Cycling replaces your input with a complete candidate, yes. If you do that, don'
 
 I think you are simply trying to use your existing habits in a new environment. You will either need to retrain your fingers and brain or give up and return to your familiar tools, to which they are adapted. ;-)
 
-6. Not sure what you mean. You can easily sort the candidates, in many different ways, some of which involve their previous use (history).
+5. Not sure what you mean. You can easily sort the candidates, in many different ways, some of which involve their previous use (history).
 
 For `icicle-buffer', since you mention choosing buffers, you even have an option to customize, for the default sort function: '''`<tt>[[Icicles - Customization and General Tips#icicle-buffer-sort|icicle-buffer-sort]]</tt>''''. (But that doesn't prevent you from changing the sort order on the fly.)
 
@@ -666,7 +619,7 @@ The fact that you are focused on buffer switching suggests that you have perhaps
 
 See [[Icicles - Sorting Candidates]].
 
-7. Apropos completion is [[regexp]] completion. Or it is substring completion, if you use the toggle `##C-`##'. I don't understand your question or request, here. Prefix completion is not apropos completion.
+6. Apropos completion is [[regexp]] completion. Or it is substring completion, if you use the toggle `##C-`##'. I don't understand your question or request, here. Prefix completion is not apropos completion.
 
 HTH -- DrewAdams
 
@@ -674,31 +627,27 @@ HTH -- DrewAdams
 
 Hi, thanks for your response!
 
-1. Let's step aside from the issue of how easy it is to download icicles for a moment. I am trying to suggest that the unusual *development* practices of icicles might be alienating potential users (who are largely programmers themselves). I'm also trying to suggest that explaining your unorthodox practices, say on the page where four approaches to downloading icicles is listed, might go a long way in mitigating that alienation, because after all, emacs users are all about doing things differently if it suits them :).
-
-As for the downloading-files issue. Is downloading a shell script and then running it *that* arduous in an absolute sense? No, of course not (well, I had to install wget when I was running OS X, but never mind). But I think this is pretty clearly a pain point for your users -- just look at the difference between five paragraphs of text explaining how to get icicles, versus one line of "git clone URL" for any project on github. When you factor in that icicles is already a fairly complicated and overwhelming project, I think the difference between a tarball and an unorthodox download procedure looms a lot larger. I'm not emotionally invested in this issue, but I am curious, thus my questions.
-
-2. Ah, I had seen icicles-completion-width-factor and been completely confused by the explanation.  It's not easy for me to visualize window width divided by candidate columns, and reading "you can install another library to see what this means" didn't help. I set it to 100 and got my tabular layout again. I will think about a way to word an explanation for this variable that might be clearer. How about adding a couple lines like this:
+1. Ah, I had seen icicles-completion-width-factor and been completely confused by the explanation.  It's not easy for me to visualize window width divided by candidate columns, and reading "you can install another library to see what this means" didn't help. I set it to 100 and got my tabular layout again. I will think about a way to word an explanation for this variable that might be clearer. How about adding a couple lines like this:
 
 icicles-completion-width-factor controls how much to compromise a columnar layout of completions in order to save vertical space. 100 means "columns should never overlap". 0 means "fit as many items on a line as you can". How it works is as follows: for each column of completion candidates, find the widest candidate in that column. The width of the column is a percentage of the width of that candidate. 100% means no overlap; progressively smaller percentages mean that columns will overlap that widest candidate (although candidates never overlap; see screenshot). icicles-completion-width-factor is this percentage.
 
 A few screenshots might also be useful for those of us who don't want to install DoReMi.
 
-3. Actually, I wouldn't worry per se until you get a bug report saying "I spent 2 hours wondering why my setting for icicles-modal-cycle-previous-keys wasn't working, until I found out that the variable didn't actually exist!" But it was a little bit of a challenge to keep straight which was which when I was customizing. (Similar remarks apply for the package name "icicles" versus the namespace being "icicle-".)
+2. Actually, I wouldn't worry per se until you get a bug report saying "I spent 2 hours wondering why my setting for icicles-modal-cycle-previous-keys wasn't working, until I found out that the variable didn't actually exist!" But it was a little bit of a challenge to keep straight which was which when I was customizing. (Similar remarks apply for the package name "icicles" versus the namespace being "icicle-".)
 
-4. S-RET actually isn't exactly what I want, but it's pretty close, so thanks.
+3. S-RET actually isn't exactly what I want, but it's pretty close, so thanks.
 
 It's true that I can configure C-s and C-r to do what I want, but now I'm curious if you've ever actually used C-s/C-r in the minibuffer, and what for. My feeling is that if you want Icicles to be wonderful out-of-the-box, adding default bindings for C-s/C-r would be a net win for people used to Iswitch, while being a net loss for people who do iterative search in the minibuffer -- and since I expect the latter to be a very small group indeed, I would consider it progress.
 
-5. Sorry about the unclear explanation. I think you understand what I mean, and the suggestion of icicle-point-position-in-candidate and icicle-mark-position-in-candidate are pretty close to the mark -- but I bet they don't work for apropos cycling. (Plus, by and large I don't like DeleteSelectionMode.) As a user, when my input gets replaced, I get a little antsy, even if I can bring it back with C-l.
+4. Sorry about the unclear explanation. I think you understand what I mean, and the suggestion of icicle-point-position-in-candidate and icicle-mark-position-in-candidate are pretty close to the mark -- but I bet they don't work for apropos cycling. (Plus, by and large I don't like DeleteSelectionMode.) As a user, when my input gets replaced, I get a little antsy, even if I can bring it back with C-l.
 
 My position is, "Cycling stomps on what you have in the minibuffer, making iterative typing/cycling impossible". Your position seems to be "So don't do iterative typing/cycling" :). I feel that there is potential for icicles to support this feature without compromising its vision.
 
-6. Ah, I think I recall having stumbled over the sorting documentation at some point and then forgotten it. Thanks. If I understand the documentation correctly, icicle-buffer-sort is only used by icicle-buffer and icicle-buffer-other-window, which makes changing it exactly what I want, but I was hesitant to do this in case it should use icicle-sort-buffer in other contexts. (Which is silly, because I can always change it again, but there you are.)
+5. Ah, I think I recall having stumbled over the sorting documentation at some point and then forgotten it. Thanks. If I understand the documentation correctly, icicle-buffer-sort is only used by icicle-buffer and icicle-buffer-other-window, which makes changing it exactly what I want, but I was hesitant to do this in case it should use icicle-sort-buffer in other contexts. (Which is silly, because I can always change it again, but there you are.)
 
 You say "The fact that you are focused on buffer switching suggests that you have perhaps not played much yet with Icicles. In vanilla Emacs (and Ido etc.) buffer-switching can constitute a large part of one’s use of completion, but in Icicles it constitutes a very small part." Do you mean in terms of the things you can complete? Or in terms of percentage of daily usage? Because I constantly have a zillion buffers open and switch back and forth all the time. I'm curious what workflow you use where that isn't true, or where you find yourself completing other things even *more* often. dabbrev?
 
-7. Well, here's what happened. I bound TAB to be apropos completion (to be more iswitch-y). Then, when finding a file, I typed in "Play" and hit TAB (actually I probably hammered on the TAB key three or four times, a habit I've picked up over the years). Since I'm used to prefix completion in the shell, I expected it to complete "Play/". Instead it cycled to ".aplayrc" or something like that. So this item is sort of "Gosh, wouldn't it be nice if that didn't happen?". Item #8 was going to be that I wanted a pony, but I couldn't figure out how to word it ;).
+6. Well, here's what happened. I bound TAB to be apropos completion (to be more iswitch-y). Then, when finding a file, I typed in "Play" and hit TAB (actually I probably hammered on the TAB key three or four times, a habit I've picked up over the years). Since I'm used to prefix completion in the shell, I expected it to complete "Play/". Instead it cycled to ".aplayrc" or something like that. So this item is sort of "Gosh, wouldn't it be nice if that didn't happen?". Item #8 was going to be that I wanted a pony, but I couldn't figure out how to word it ;).
 
 Icicles really appeals to me because I've never seen a more sophisticated interactive querying system. M-*, C-~ and deleting individual results blew me away when I first saw them. I have often wanted features like that in, say, Google or aptitude. So I'll probably play around a little more and see if I can't make icicles more like what I want, even if I've never wanted features like those in emacs. Thanks for all your time and work. -- EthanGlasserCamp
 
@@ -834,16 +783,12 @@ and restore old color theme
 and if use "RET", I M-x icicle-color-theme color-theme-, if I want to cancel to execute icicle-color-theme, I first must delete "color-theme-" which I typed.
 I'm not very understand your meaning, but it sounds good, :)
 
-3. Do there have multi-command like icicle-frame-bg to set face background, e.g. icicle-face-bg?
-
-4. I think you may should manage your icicles, doremi, etc. which are all large packages and have many files with some version control tools such as svn, git, etc., then users don't need know which file you updated, they just need use version control tools to update latest version. -- [[ahei]]
+3. Do there have multi-command like icicle-frame-bg to set face background, e.g. icicle-face-bg? -- [[ahei]]
 
 [new:DrewAdams:2009-11-24 16:56 UTC]
 2. Report a bug: `M-x icicle-send-bug-report' -- it works for me. Provide a precise recipe etc. Your first line shows that `RET' does work. I don't follow your explanation at all, sorry. Please try to rephrase it. Stick to short sentences or just a recipe of steps. And this page is not the place for reporting bugs.
 
-3. No. You can see this by doing `C-h f icicle S-SPC face'. And no, I won't be creating such a command. You can define such a command if you need it. It's as easy to define an '''Icicles''' multi-command as it is to define an ordinary command -- see [[Icicles - Defining Icicles Commands|Defining Icicles Commands]].
-
-4. Sorry, not interested. Download all of the files each time you want to update '''Icicles'''. All of the download methods described do that -- see[[Icicles - Libraries#BulkIciclesDownload|Downloading Icicles]]. The '''DoReMi''' files are independent: you do not need any of them to use any of the others, except that you need <tt>[[doremi.el]]</tt> for two of the three others. -- DrewAdams
+3. No. You can see this by doing `C-h f icicle S-SPC face'. And no, I won't be creating such a command. You can define such a command if you need it. It's as easy to define an '''Icicles''' multi-command as it is to define an ordinary command -- see [[Icicles - Defining Icicles Commands|Defining Icicles Commands]]. -- DrewAdams
 
 
 [:LatestEntry]

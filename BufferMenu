@@ -9,7 +9,7 @@ them, for consistency with Dired), or display them.''
 
 : ''To use the buffer menu, type `C-x C-b' and switch to the window displaying the `##*Buffer List*##' buffer.  You can also type `M-x buffer-menu' to open the buffer menu in the selected window.  Alternatively, the command `M-x buffer-menu-other-window' opens the buffer menu in another window, and selects that window.''
 
-Use ‘##?##’ (or `C-h m', as always) in the `##*Buffer List*##' window for more information about possible operations on the buffers listed.
+Use `##?##' (or `C-h m', as always) in the `##*Buffer List*##' window for more information about possible operations on the buffers listed.
 
 To bind `C-x C-b' to command `buffer-menu':
 
@@ -33,6 +33,19 @@ Enhancements to vanilla buffer menu:
     
         (define-key Buffer-menu-mode-map "5"
            'Buffer-menu-other-frame)
+
+* Rename buffer at point:
+
+        (defun Buffer-menu-rename-buffer (newname)
+          "Rename buffer at line in window."
+          (interactive
+           (list (read-buffer "Rename buffer (to new name): "
+                              (buffer-name (Buffer-menu-buffer t)))))
+          (with-current-buffer (Buffer-menu-buffer t)
+            (rename-buffer newname))
+          (revert-buffer))
+        
+        (define-key Buffer-menu-mode-map "R" 'Buffer-menu-rename-buffer)
 
 ----
 CategoryBufferSwitching

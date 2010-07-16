@@ -70,6 +70,7 @@ EevMode is my partner for years.
 * Lisp:archive-region.el -- Move region to archive file instead of killing by C-u C-w
 * Lisp:time-ext.el -- more function for time/date
 * Lisp:save-load-path.el -- Save load-path of running Emacs to get ready for testing
+* GitDwim -- Context-aware command for [[Git]]
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 

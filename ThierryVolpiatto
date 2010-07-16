@@ -32,11 +32,6 @@ Screenshot: http://farm4.static.flickr.com/3458/3403904091_3d27229f6b.jpg
 
 Screenshot: http://farm3.static.flickr.com/2480/3806776285_223ab2281c.jpg
 
-* Lisp:iterator.el iterators for emacs.
-
-* Lisp:warn-mail.el Warn you when you have a new mail in your mail directory
-
-* Lisp:thumb-page.el To create a muse page with thumbs from a picture directory
  
 My config files:
 
@@ -49,13 +44,6 @@ Welcome to the wiki! You must have created the first homepage in 2008. :) -- Ale
 
 [new:rubikitch:2009-02-27 23:38 UTC]
 You are added to anything-config.el maintainer. You can push to git repository. http://repo.or.cz/w/anything-config.git -- [[rubikitch]]
-
-
-----
-
-CategoryHomepage
-
- 
 
 
 

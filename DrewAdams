@@ -291,7 +291,11 @@ Typically, I'm interested in other things the user can describe about the proble
 [new]
 Hi there. There are many free SCM web services out there like GitHub and BitBucket... why not use a repository for easy access to your great libraries? -- RyanKaskel
 
-Sorry, not interested. But you are welcome to set up a mirror with RSS feed or whatever. ;-) -- DrewAdams
+[new]
+You can find all of Drews libraries at http://github.com/emacsmirror as well as all others hosted here on the wiki (almost).  -- JonasBernoulli
+
+[new:DrewAdams:2010-07-16 04:15 UTC]
+Excellent. Thanks -- DrewAdams
 
 ----
 

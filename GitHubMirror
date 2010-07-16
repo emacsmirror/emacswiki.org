@@ -1,0 +1,11 @@
+http://github.com/emacsmirror is a GIT repository mirror of Emacs code.
+
+This page of the mirror contains nearly all of the code posted on EmacsWiki, though not necessarily up-to-date: '''http://github.com/emacsmirror/emacswiki.org'''.
+
+That page can take a while to load.  There are also individual mirror pages for many of the packages and individual libraries hosted on EmacsWiki (ElispArea).  Look for them on the main mirror page (http://github.com/emacsmirror).
+
+
+----
+CategoryEmacsWikiSite
+ElispArea
+CategoryCode

@@ -1,0 +1,23 @@
+==What is GitDwim ?==
+GitDwim defines context-aware git commands such as branch handling.
+
+==Install==
+Put Lisp:git-dwim.el in your load-path, add
+{{{
+(require 'git-dwim)
+(global-set-key "\C-xvB" 'git-branch-next-action)
+}}}    
+in ~/.emacs
+
+==Usage==
+C-x v B (git-branch-next-action) is context-aware command for git branch.
+
+* If current branch is master: switch to other or new branch.
+* If current branch is not master: switch to other branch or merge this branch to master.
+* If merge is failed: continue merging (You have to resolve conflict merker)
+
+==Customize==
+All below option can customize by: M-x customize-group RET git-dwim RET
+
+Currently no options.
+
