@@ -154,3 +154,6 @@ http://furius.ca/pubcode/pub/conf/common/elisp/blais/qtdoc.el
 
 A quick major mode for editing QMake project files, nothing fancy just font-locking of the keywords and comments:
 http://www.tolchz.net/wp-content/uploads/2008/01/qt-pro.el
+
+----
+Another major mode for editing Qmake project files can be found http://code.google.com/p/qmake-mode/

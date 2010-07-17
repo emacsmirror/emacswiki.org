@@ -12,7 +12,7 @@
 
 * 维基[[WikiMaintenance|维护]]任务的帮助.
 
-EmacsWiki is a collaborative Web site.  See WikiIntro. 
+EmacsWiki是一个协作型Web站点.  参考 WikiIntro. 
 
 其他帮助参考 WikiQuestions, 或者在 EmacsWikiProblems 提交问题.
 
@@ -22,6 +22,11 @@ Please let me know if 教导 is a good translation of "howto" -- I just took [ht
 [new]
 : No, 怎样做 is good translation of "Howto", 教导 is translation of "indoctrinate", not "Howto". -- AndyStewart
 
-: Andy's right. 教导 means "teaching". "怎样..." or "如何..." is like "how to ...", but quite oral words, more written word would be "使用指南", which means "Usage Guide" and is a more natural term to Chinese readers.
+[new]
+Andy's right. 教导 means "teaching". "怎样..." or "如何..." is like "how to ...", but quite oral words, more written word would be "使用指南", which means "Usage Guide" and is a more natural term to Chinese readers.
+
+[new]
+The term "How to" is not natural to English readers either!  It is a standard that we're following, even if it's not the best one.  The translated word should be one that will work well with other pages named "How to": "How to navigate", "How to edit", "How to search", ... Looks like the [http://www.linux.org.tw/CLDP/HOWTO/ Chinese Linux Documentation Project] avoided the issue -- [http://www.linux.org.tw/CLDP/HOWTO/ CLDP: HOWTO]. -- AaronHawley
+
 ----
 CategoryEmacsWikiSite

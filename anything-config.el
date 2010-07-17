@@ -113,6 +113,8 @@
 ;; Preconfigured `anything' for Locate.
 ;; `anything-w3m-bookmarks'
 ;; Preconfigured `anything' for w3m bookmark.
+;; `anything-firefox-bookmarks'
+;; Preconfigured `anything' for firefox bookmark.
 ;; `anything-colors'
 ;; Preconfigured `anything' for color.
 ;; `anything-bookmarks'
@@ -364,6 +366,7 @@
 ;; `anything-c-source-bookmarks-local'				(Bookmarks-Local)
 ;; `anything-c-source-bmkext-addressbook'			(Bookmark Addressbook)
 ;; `anything-c-source-bookmark-w3m'				(Bookmark W3m)
+;; `anything-c-source-bookmark-images'				(Bookmark Images)
 ;; `anything-c-source-bookmark-man'				(Bookmark Woman&Man)
 ;; `anything-c-source-bookmark-gnus'				(Bookmark Gnus)
 ;; `anything-c-source-bookmark-info'				(Bookmark Info)
@@ -431,6 +434,9 @@
 ;;; Change log:
 ;;
 ;;  Change log of this file is found at
+;;  http://repo.or.cz/w/anything-config.git/history/master:/anything-config.el
+;;
+;;  Change log of this project is found at
 ;;  http://repo.or.cz/w/anything-config.git?a=shortlog
 
 ;;; Contributors:
@@ -652,11 +658,9 @@ Though wmctrl work also with stumpwm."
 (defvar anything-command-map)
 (define-prefix-command 'anything-command-map)
 (define-key global-map (kbd "<f5> a") 'anything-command-map)
-(define-key anything-command-map (kbd "d") 'anything-delicious)
 (define-key anything-command-map (kbd "e") 'anything-etags-maybe-at-point)
 (define-key anything-command-map (kbd "g") 'anything-gentoo)
 (define-key anything-command-map (kbd "a g") 'anything-apt)
-(define-key anything-command-map (kbd "q") 'anything-qpatchs-only)
 (define-key anything-command-map (kbd "l") 'anything-locate)
 (define-key anything-command-map (kbd "s") 'anything-surfraw)
 (define-key anything-command-map (kbd "r") 'anything-regexp)
@@ -666,8 +670,9 @@ Though wmctrl work also with stumpwm."
 (define-key anything-command-map (kbd "m") 'anything-man-woman)
 (define-key anything-command-map (kbd "t") 'anything-top)
 (define-key anything-command-map (kbd "i") 'anything-imenu)
-(define-key anything-command-map (kbd "C-x r l") 'anything-c-pp-bookmarks)
+(define-key anything-command-map (kbd "C-x r b") 'anything-c-pp-bookmarks)
 (define-key anything-command-map (kbd "M-y") 'anything-show-kill-ring)
+(define-key anything-command-map (kbd "C-c <SPC>") 'anything-all-mark-rings)
 (define-key anything-command-map (kbd "C-x C-f") 'anything-find-files)
 (define-key anything-command-map (kbd "C-:") 'anything-eval-expression-with-eldoc)
 (define-key anything-command-map (kbd "C-,") 'anything-calcul-expression)
@@ -1604,8 +1609,8 @@ buffer that is not the current buffer."
            ("Find file as root" . anything-find-file-as-root)
            ("Open file externally (C-u to choose)"
             . anything-c-open-file-externally)
-           ("Create dired buffer on marked"
-            . anything-c-create-dired-on-marked)
+           ;; ("Create dired buffer on marked"
+           ;;  . anything-c-create-dired-on-marked)
            ("Find file other window" . find-file-other-window)
            ("Find file other frame" . find-file-other-frame))))))
 
@@ -3044,6 +3049,23 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
   "Specialized filter function for bookmarks w3m."
   (anything-c-bmkext-filter-setup-alist 'bmkext-w3m-alist-only))
 
+;; Images
+(defvar anything-c-source-bookmark-images
+  '((name . "Bookmark Images")
+    (init . (lambda ()
+              (require 'bookmark-extensions)
+              (bookmark-maybe-load-default-file)))
+    (candidates . anything-c-bookmark-images-setup-alist)
+    (filtered-candidate-transformer
+     anything-c-adaptive-sort
+     anything-c-highlight-bookmark)
+    (type . bookmark)))
+;; (anything 'anything-c-source-bookmark-images)
+
+(defun anything-c-bookmark-images-setup-alist ()
+  "Specialized filter function for images bookmarks."
+  (anything-c-bmkext-filter-setup-alist 'bmkext-image-file-alist-only))
+
 ;; Woman Man
 (defvar anything-c-source-bookmark-man
   '((name . "Bookmark Woman&Man")
@@ -3178,6 +3200,7 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
               anything-c-source-bookmark-gnus
               anything-c-source-bookmark-info
               anything-c-source-bookmark-man
+              anything-c-source-bookmark-images
               anything-c-source-bookmark-su-files&dirs
               anything-c-source-bookmark-ssh-files&dirs)
             nil "SearchBookmark: " nil nil "*anything bmkext*"))
@@ -3455,15 +3478,14 @@ STRING is string to match."
         (setq imenu--index-alist nil)
         (setq anything-c-cached-imenu-tick tick
               anything-c-cached-imenu-candidates
-              (condition-case nil
-                  (mapcan
-                   'anything-imenu-create-candidates
-                   (setq anything-c-cached-imenu-alist
-                         (let ((index (imenu--make-index-alist)))
-                           (if anything-c-imenu-index-filter
-                               (funcall anything-c-imenu-index-filter index)
-                             index))))
-                (error nil)))
+              (ignore-errors
+                (mapcan
+                 'anything-imenu-create-candidates
+                 (setq anything-c-cached-imenu-alist
+                       (let ((index (imenu--make-index-alist)))
+                         (if anything-c-imenu-index-filter
+                             (funcall anything-c-imenu-index-filter index)
+                           index))))))
         (setq anything-c-cached-imenu-candidates
               (mapcar #'(lambda (x)
                           (if (stringp x)
@@ -3524,8 +3546,12 @@ http://ctags.sourceforge.net/")
 ;; (anything 'anything-c-source-ctags)
 
 ;; Semantic
-(defvar anything-semantic-candidates nil)
 (eval-when-compile (require 'semantic nil t))
+(declare-function semantic-format-tag-summarize "ext:format.el" (tag &optional parent color) t)
+(declare-function semantic-tag-components "ext:tag.el" (tag) t)
+(declare-function semantic-go-to-tag "ext:tag-file.el" (tag) t)
+(defvar anything-semantic-candidates nil)
+
 (defun anything-semantic-construct-candidates (tags depth)
   (when (require 'semantic nil t)
     (apply 'append
@@ -3552,9 +3578,7 @@ http://ctags.sourceforge.net/")
   '((name . "Semantic Tags")
     (init . (lambda ()
               (setq anything-semantic-candidates
-                    (condition-case nil
-                        (anything-semantic-construct-candidates (semantic-fetch-tags) 0)
-                      (error nil)))))
+                    (ignore-errors (anything-semantic-construct-candidates (semantic-fetch-tags) 0)))))
     (candidates . (lambda ()
                     (if anything-semantic-candidates
                         (mapcar 'car anything-semantic-candidates))))
@@ -3869,9 +3893,7 @@ If this action is executed just after `yank', replace with STR as yanked string.
   '((name . "mark-ring")
     (init . (lambda ()
               (setq anything-mark-ring-cache
-                    (condition-case nil
-                        (anything-c-source-mark-ring-candidates)
-                    (error nil)))))
+                    (ignore-errors (anything-c-source-mark-ring-candidates)))))
     (candidates . (lambda ()
                     (anything-aif anything-mark-ring-cache
                         it)))
@@ -4139,16 +4161,14 @@ See http://orgmode.org for the latest version.")
   '((name . "Yaoddmuse Edit or View (EmacsWiki)")
     (candidates . (lambda ()
                     (if anything-yaoddmuse-use-cache-file
-                        (condition-case nil
-                            (progn
-                              (unless anything-c-yaoddmuse-ew-cache
-                                (load anything-c-yaoddmuse-cache-file)
-                                (setq anything-c-yaoddmuse-ew-cache
-                                      (gethash "EmacsWiki" yaoddmuse-pages-hash)))
-                              anything-c-yaoddmuse-ew-cache)
-                          (error nil))
-                        (yaoddmuse-update-pagename t)
-                        (gethash "EmacsWiki" yaoddmuse-pages-hash))))
+                        (ignore-errors
+                          (unless anything-c-yaoddmuse-ew-cache
+                            (load anything-c-yaoddmuse-cache-file)
+                            (setq anything-c-yaoddmuse-ew-cache
+                                  (gethash "EmacsWiki" yaoddmuse-pages-hash)))
+                          anything-c-yaoddmuse-ew-cache)
+                      (yaoddmuse-update-pagename t)
+                      (gethash "EmacsWiki" yaoddmuse-pages-hash))))
     (action . (("Edit page" . (lambda (candidate)
                                 (yaoddmuse-edit "EmacsWiki" candidate)))
                ("Browse page" . (lambda (candidate)
@@ -4170,7 +4190,7 @@ See http://orgmode.org for the latest version.")
                                          (anything-yaoddmuse-cache-pages t)
                                          (setq anything-c-yaoddmuse-ew-cache
                                                (gethash "EmacsWiki" yaoddmuse-pages-hash)))
-                                       (yaoddmuse-update-pagename))))))
+                                     (yaoddmuse-update-pagename))))))
     (action-transformer anything-c-yaoddmuse-action-transformer)))
 
 ;; (anything 'anything-c-source-yaoddmuse-emacswiki-edit-or-view)
@@ -4347,6 +4367,17 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
 ;; (anything 'anything-c-source-picklist)
 
 ;;; BBDB
+(defvar bbdb-records)
+(defvar bbdb-buffer-name)
+(declare-function bbdb "ext:bbdb-com")
+(declare-function bbdb-current-record "ext:bbdb-com")
+(declare-function bbdb-redisplay-one-record "ext:bbdb-com")
+(declare-function bbdb-record-net "ext:bbdb-com" (string) t)
+(declare-function bbdb-current-record "ext:bbdb-com")
+(declare-function bbdb-dwim-net-address "ext:bbdb-com")
+(declare-function bbdb-records "ext:bbdb-com"
+                  (&optional dont-check-disk already-in-db-buffer))
+
 (defun anything-c-bbdb-candidates ()
   "Return a list of all names in the bbdb database.  The format
 is \"Firstname Lastname\"."
@@ -6406,11 +6437,14 @@ It also accepts a function or a variable name.")
         (dolist (i marked) (find-file-noselect i))
         (find-file-at-point candidate))))
 
-(defun anything-c-create-dired-on-marked (candidate)
-  "Create a new dired buffer with only marked candidates."
-  (let ((marked      (anything-marked-candidates))
-        (buffer-name (read-string "New Dired Buffer: ")))
-    (dired (cons buffer-name marked))))
+;; FIXME there is a bug in dired that confuse all dired commands
+;; when using this feature, so i suspend it until bug is fixed in emacs.
+;;
+;; (defun anything-c-create-dired-on-marked (candidate)
+;;   "Create a new dired buffer with only marked candidates."
+;;   (let ((marked      (anything-marked-candidates))
+;;         (buffer-name (read-string "New Dired Buffer: ")))
+;;     (dired (cons buffer-name marked))))
 
 (defun anything-delete-marked-files (ignore)
   (let* ((files (anything-marked-candidates))

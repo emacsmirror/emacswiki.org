@@ -1,3 +1,5 @@
+[[zh:版本控制]]
+[[zh:版本控制]]
 These are version control systems that interact with Emacs in a generic way.
 
 * VersionControl, or VC, is the generic version control interface that comes with Emacs. It provides a consistent interface to interact with many different version control systems, including CVS, Subversion, Git, Mercurial, Bazaar, SCCS, CSSC and RCS.  This is a good choice if you use more than one system for revision control because of the *consistency* of its user interface.
@@ -10,7 +12,7 @@ This is information on specific centralized version control systems.
 
 * ConcurrentVersionsSystem -- CVS is supported by default in VC
 ** PclCvs (##cvs-mode##) -- Provides aggregate operations of files under CVS.
-** CvsAdminMode -- Support for ##CVSROOT/## configuration files
+** CvsAdminMode -- 支持 ##CVSROOT/## 目录下的配置文件
 * RevisionControlSystem -- RCS is supported by default in VC.
 * SubVersion -- psvn.el is similar to pcl-cvs for CVS, but there is support for Subversion in VC.
 ** SvnMisc -- some functions to invoke subversion easily from emacs.

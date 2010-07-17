@@ -1,5 +1,5 @@
 ;;;; git-dwim.el --- Context-aware git commands such as branch handling
-;; Time-stamp: <2010-07-16 05:38:30 rubikitch>
+;; Time-stamp: <2010-07-17 15:14:12 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -96,7 +96,22 @@
     (buffer-disable-undo)
     (insert output "\n===========================================================\n")
     (display-buffer (current-buffer))))
+(defun gd-menu-select (menu-alist)
+  "Menu selection. MENU-ALIST is a list of (KEY DISPLAY FUNCTION).
+KEY is a character such as ?a.
+DISPLAY is display string.
+FUNCTION has no argument and is called when the KEY is pressed.
 
+Example:
+ (gd-menu-select '((?a \"A\" (lambda () (message \"[a]\")))
+                   (?b \"B\" (lambda () (error \"err\")))))
+"
+  (condition-case err
+      (funcall (caddr (assq (read-event (mapconcat 'identity (mapcar 'cadr menu-alist) " "))
+                            menu-alist)))
+    (void-function (error "invalid key"))))
+
+;; (gd-menu-select '((?a "A" (lambda () (message "[a]")))(?b "B" (lambda () (error "err")))))
 (defun git-branch-next-action ()
   "Do appropriate action for branch.
 
@@ -106,17 +121,13 @@
 "
   (interactive)
   (cond ((equal (git-current-branch) "master")
-         (case (read-event "[s]witch-to-other-branch [c]reate-new-branch")
-           ((?s ?\C-s) (git-switch-to-other-branch))
-           ((?c ?\C-c) (git-create-new-branch))
-           (t          (error "invalid key"))))
+         (gd-menu-select '((?s "[s]witch-to-other-branch" git-switch-to-other-branch)
+                           (?c "[c]reate-new-branch"      git-create-new-branch))))
         ((git-unmerged-p)
          (git-merge-to "master" t))
         (t
-         (case (read-event "[s]witch-to-other-branch [m]erge-to-master")
-           ((?s ?\C-s) (git-switch-to-other-branch))
-           ((?m ?\C-m) (git-merge-to "master" nil))
-           (t          (error "invalid key"))))))
+         (gd-menu-select '((?s "[s]witch-to-other-branch" git-switch-to-other-branch)
+                           (?m "[m]erge-to-master"        git-merge-to))))))
 
 (defun git-create-new-branch (&optional branch)
   "Create new BRANCH and switch to it."

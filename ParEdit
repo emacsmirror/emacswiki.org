@@ -119,5 +119,10 @@ then the caption should be replaced with "Here's a demonstration of %%ParEdit%% 
 
 It is implicit by the context, the two features you are seeing are "eldoc" and "electric RET" which has a snippet of code just under the video link for you to try it :) -- GlauberPrado
 
+[new]
+
+Older version of Paredit managed newlines differently to the current beta version. I would like to suggest newline insertion context-based. It should
+add a newline after, for example, of close the right parenthesis of a last of arguments in defun. Many examples can be thought. I am aware it could be instrusive and some paredit users reject this feature. Although it could be an optional feature. What do you think?
+
 ----
 CategoryCode CategoryEditing CategoryParentheses.

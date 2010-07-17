@@ -23,6 +23,12 @@ Two generic extensions are also available:
 * mouse support to expand/collapse a folder or open a file
 
 
+== Developer version ==
+
+The latest version is available at:
+
+    git clone git://repo.or.cz/project-buffer-mode.git
+
 
 == Introduction ==
 
