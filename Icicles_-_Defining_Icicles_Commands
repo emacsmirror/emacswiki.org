@@ -250,7 +250,7 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-bookmark-non-file-*'''' -- Jump to a bookmarked [[buffer]]
 * '''`icicle-bookmark-region-*'''' -- Jump to a bookmarked [[region]]
 * '''`icicle-bookmark-remote-file-*'''' -- Jump to a bookmarked remote file
-* '''`icicle-bookmark-w3m-*'''' -- Jump to a bookmarked URL
+* '''`icicle-bookmark-url-*'''' -- Jump to a bookmarked URL
 
 
 
@@ -311,7 +311,7 @@ Several top-level '''Icicles''' commands have been defined using
 * '''`icicle-search-non-file-bookmark'''' -- Search a bookmarked buffer
 * '''`icicle-search-region-bookmark'''' -- Search a bookmarked region
 * '''`icicle-search-remote-file-bookmark'''' -- Search a remote bookmark
-* '''`icicle-search-w3m-bookmark'''' -- Search a bookmarked URL
+* '''`icicle-search-url-bookmark'''' -- Search a bookmarked URL
 * '''`icicle-select-frame'''' -- Select frame by name and raise it
 * '''`icicle-select-window'''' -- Select window by its buffer name
 * '''`icicle-set-option-to-t'''' -- Set the value of a binary option to `t'

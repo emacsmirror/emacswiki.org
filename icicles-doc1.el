@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 13:41:28 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:36:47 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25338
+;;     Update #: 25343
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4115,6 +4115,7 @@
 ;;    `icicle-bookmark-some-tags'        (`C-x j t +')
 ;;    `icicle-bookmark-all-tags-regexp'  (`C-x j t % *')
 ;;    `icicle-bookmark-some-tags-regexp' (`C-x j t % +')
+;;    `icicle-bookmark-url'              (`C-x j u')
 ;;    `icicle-bookmark-w3m'              (`C-x j w')
 ;;    `icicle-bookmark-this-buffer'      (`C-x j .')
 ;;    `icicle-bookmark-specific-buffers' (`C-x j = b')
@@ -4156,7 +4157,7 @@
 ;;    `icicle-search-non-file-bookmark' - Search non-file bookmarks
 ;;    `icicle-search-region-bookmark'  - Search bookmarked regions
 ;;    `icicle-search-remote-file-bookmark' - Search remote bookmarks
-;;    `icicle-search-w3m-bookmark'     - Search W3M (URL) bookmarks
+;;    `icicle-search-url-bookmark'     - Search URL bookmarks
 ;;  * `icicle-search-char-property'    - Trip among buffer strings with
 ;;                                       with a text/overlay property
 ;;  * `icicle-search-dired-marked'     - Search marked files in Dired

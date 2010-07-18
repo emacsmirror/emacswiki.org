@@ -1,15 +1,15 @@
 [[ja:ディレクトリ]]
 Click the heading to search for all pages related to manipulating files and directories.
 
-* '''DiredMode''' is the standard Emacs mode for manipulating files and directories -- the Emacs ''file manager''. 
+* '''DiredMode''' 是标准的Emacs模式,用于处理文件和目录 -- Emacs的 ''文件管理器''. 
 
 ----
 * [[Bookmark+]] -- Dired "views" (states) as bookmarks. Open sets of file bookmarks in Dired.
-* DiMode -- Simple directory editor for Emacs.
-* [[Dired+]] -- Many Dired extensions.
+* DiMode -- Emacs 简单目录编辑器.
+* [[Dired+]] -- Dired 扩展.
 * `dired-virtual' command from DiredX.
 * [[Eshell]]
-** Read directories. See [[option]] `eshell-ls-use-in-dired'.
+** 读取目录. 参考 [[option]] `eshell-ls-use-in-dired'.
 ** `eshell-ls-use-in-dired' -- change em-ls.el to narrow the listing
 
               ;; starting at line 459:

@@ -126,7 +126,7 @@ Using `C-c C-c' was suggested by [[JesseW]] on the EmacsChannel. -- AaronHawley
 --
 ovr
 
-=== Variation of Explorer-like bindings
+== Variation of Explorer-like bindings ==
 
 {{{
 ;; outline-mode-easy-bindings.el

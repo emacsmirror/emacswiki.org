@@ -105,11 +105,11 @@ I downloaded %%ParEdit%% a long time ago, but I did not succeed in using it dail
 : Works like a charm! -- XavierMaillard
 
 [new]
-I'm working on a mode for a syntax where m#foo is a legal symbol but otherwise, # comments out the line (like in shell scripts). For some reason, putting (paredit-mode 1) in a run-hook for this mode, or in sh-mode-hook, makes it complain on a line like (foo m#bar) with ''condition-case: Unmatched bracket or quote''. But, if I turn on paredit-mode _after_ doing ##M-x sh-mode##, it works fine, and I can edit around parens just as if they said (foo bar). Anyone know why this happens?
+3. I'm working on a mode for a syntax where m#foo is a legal symbol but otherwise, # comments out the line (like in shell scripts). For some reason, putting (paredit-mode 1) in a run-hook for this mode, or in sh-mode-hook, makes it complain on a line like (foo m#bar) with ''condition-case: Unmatched bracket or quote''. But, if I turn on paredit-mode _after_ doing ##M-x sh-mode##, it works fine, and I can edit around parens just as if they said (foo bar). Anyone know why this happens?
 
 [new]
 
-I'll bite.  Can anyone tell me what's going on in the "Short video demonstration" video above?  I turn on %%ParEdit%% and I don't get
+4. I'll bite.  Can anyone tell me what's going on in the "Short video demonstration" video above?  I turn on %%ParEdit%% and I don't get
 newlines after my parens and I don't get it showing me what comes next after typing "defun".  If these are other major/minor modes
 then the caption should be replaced with "Here's a demonstration of %%ParEdit%% playing nice with secret-mode.el and fun-minor-mode-that-were-keeping-secret-from-dale.el.
 
@@ -121,8 +121,15 @@ It is implicit by the context, the two features you are seeing are "eldoc" and "
 
 [new]
 
-Older version of Paredit managed newlines differently to the current beta version. I would like to suggest newline insertion context-based. It should
+5. Older version of Paredit managed newlines differently to the current beta version. I would like to suggest newline insertion context-based. It should
 add a newline after, for example, of close the right parenthesis of a last of arguments in defun. Many examples can be thought. I am aware it could be instrusive and some paredit users reject this feature. Although it could be an optional feature. What do you think?
 
+[new:stepnem:2010-07-17 12:57 UTC]
+: I really see no need for this kind of complexity -- I imagine it would be
+hard to implement and impossible to satisfy the varying users' needs.
+Currently you have both `paredit-close-round' and
+`paredit-close-round-and-newline'. You can bind these to any keys you like
+(##)## and ##M-)## by default). I find manually choosing the right behaviour
+much more useful than some kind of "AI" in this regard. -- stepnem
 ----
 CategoryCode CategoryEditing CategoryParentheses.

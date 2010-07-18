@@ -278,6 +278,8 @@
 ;; Default Value: 0
 ;; `anything-raise-command'
 ;; Default Value: nil
+;; `anything-command-map-prefix-key'
+;; Default Value: "<f5> a"
 
 ;;  * Anything sources defined here:
 ;; [EVAL] (autodoc-document-lisp-buffer :type 'anything-source :prefix "anything-" :any-sname t)
@@ -649,7 +651,25 @@ Though wmctrl work also with stumpwm."
   :type 'string
   :group 'anything-config)
 
+(defun anything-set-anything-command-map-prefix-key (var key)
+  (when (boundp 'anything-command-map-prefix-key)
+    (global-unset-key (read-kbd-macro anything-command-map-prefix-key)))
+  (setq anything-command-map-prefix-key key)
+  (global-set-key (read-kbd-macro anything-command-map-prefix-key)
+                  'anything-command-map))
+
+(defcustom anything-command-map-prefix-key "<f5> a"
+  "*The prefix key for all `anything-command-map' commands.
+
+!!WARNING!!
+This default value is very likely to be changed, because it is under discussion."
+  :type 'string
+  :set 'anything-set-anything-command-map-prefix-key
+  :group 'anything-config)
+
+;;;###autoload
 (defun anything-configuration ()
+  "Customize `anything'."
   (interactive)
   (customize-group "anything-config"))
 
@@ -657,10 +677,10 @@ Though wmctrl work also with stumpwm."
 ;;;###autoload
 (defvar anything-command-map)
 (define-prefix-command 'anything-command-map)
-(define-key global-map (kbd "<f5> a") 'anything-command-map)
+
+;; rubikitch: Please change it freely because it is in discussion. I'll track from git.
+(define-key anything-command-map (kbd "<SPC>") 'anything-execute-anything-command)
 (define-key anything-command-map (kbd "e") 'anything-etags-maybe-at-point)
-(define-key anything-command-map (kbd "g") 'anything-gentoo)
-(define-key anything-command-map (kbd "a g") 'anything-apt)
 (define-key anything-command-map (kbd "l") 'anything-locate)
 (define-key anything-command-map (kbd "s") 'anything-surfraw)
 (define-key anything-command-map (kbd "r") 'anything-regexp)
@@ -674,6 +694,7 @@ Though wmctrl work also with stumpwm."
 (define-key anything-command-map (kbd "M-y") 'anything-show-kill-ring)
 (define-key anything-command-map (kbd "C-c <SPC>") 'anything-all-mark-rings)
 (define-key anything-command-map (kbd "C-x C-f") 'anything-find-files)
+(define-key anything-command-map (kbd "f") 'anything-for-files)
 (define-key anything-command-map (kbd "C-:") 'anything-eval-expression-with-eldoc)
 (define-key anything-command-map (kbd "C-,") 'anything-calcul-expression)
 (define-key anything-command-map (kbd "M-x") 'anything-M-x)
@@ -681,7 +702,7 @@ Though wmctrl work also with stumpwm."
 (define-key anything-command-map (kbd "C-x i") 'anything-insert-file)
 (define-key anything-command-map (kbd "M-s o") 'anything-occur)
 (define-key anything-command-map (kbd "c") 'anything-colors)
-(define-key anything-command-map (kbd "f") 'anything-select-xfont)
+(define-key anything-command-map (kbd "F") 'anything-select-xfont)
 (define-key anything-command-map (kbd "C-c f") 'anything-recentf)
 (define-key anything-command-map (kbd "C-c g") 'anything-google-suggest)
 (define-key anything-command-map (kbd "h i") 'anything-info-at-point)
@@ -693,37 +714,34 @@ Though wmctrl work also with stumpwm."
 (easy-menu-define nil global-map
   "`anything' menu"
   '("Anything"
-    "Anything Menu"
+    ["All anything commands" anything-execute-anything-command t]
+    ["Find any Files/Buffers" anything-for-files t]
     "----"
-    "----"
-    "Files:"
-    ["Find files" anything-find-files t]
-    ["Recent Files" anything-recentf t]
-    ["Locate" anything-locate t]
-    ["Bookmarks" anything-c-pp-bookmarks t]
-    "----"
-    "Buffers:"
-    ["Find buffers" anything-buffers+ t]
-    "----"
-    "Commands:"
-    ["Emacs Commands" anything-M-x t]
-    ["Externals Commands" anything-c-run-external-command t]
-    "----"
-    "Info:"
-    ["Info at point" anything-info-at-point t]
-    "----"
-    "Tools:"
-    ["Occur" anything-occur t]
-    ["Browse Kill ring" anything-show-kill-ring t]
-    ["Browse register" anything-register t]
-    ["Mark Ring" anything-all-mark-rings t]
-    ["Colors & Faces" anything-colors t]
-    ["Show xfonts" anything-select-xfont t]
-    ["Imenu" anything-imenu t]
-    ["Google Suggest" anything-google-suggest t]
-    ["Eval expression" anything-eval-expression-with-eldoc t]
-    ["Calcul expression" anything-calcul-expression t]
-    ["Top externals process" anything-top t]
+    ("Files:"
+     ["Find files" anything-find-files t]
+     ["Recent Files" anything-recentf t]
+     ["Locate" anything-locate t]
+     ["Bookmarks" anything-c-pp-bookmarks t])
+    ("Buffers:"
+     ["Find buffers" anything-buffers+ t])
+    ("Commands:"
+     ["Emacs Commands" anything-M-x t]
+     ["Externals Commands" anything-c-run-external-command t])
+    ("Info:"
+     ["Info at point" anything-info-at-point t])
+    ("Tools:"
+     ["Occur" anything-occur t]
+     ["Browse Kill ring" anything-show-kill-ring t]
+     ["Browse register" anything-register t]
+     ["Mark Ring" anything-all-mark-rings t]
+     ["Colors & Faces" anything-colors t]
+     ["Show xfonts" anything-select-xfont t]
+     ["Imenu" anything-imenu t]
+     ["Google Suggest" anything-google-suggest t]
+     ["Eval expression" anything-eval-expression-with-eldoc t]
+     ["Calcul expression" anything-calcul-expression t]
+     ["Man pages" anything-man-woman t]
+     ["Top externals process" anything-top t])
     "----"
     ["Prefered Options" anything-configuration t]))
 
@@ -930,7 +948,11 @@ You may bind this command to M-y."
 
 ;;;###autoload
 (defun anything-bbdb ()
-  "Preconfigured `anything' for BBDB."
+  "Preconfigured `anything' for BBDB.
+
+Needs BBDB.
+
+http://bbdb.sourceforge.net/"
   (interactive)
   (anything-other-buffer 'anything-c-source-bbdb "*anything bbdb*"))
 
@@ -944,7 +966,12 @@ See man locate for more infos."
 
 ;;;###autoload
 (defun anything-w3m-bookmarks ()
-  "Preconfigured `anything' for w3m bookmark."
+  "Preconfigured `anything' for w3m bookmark.
+
+Needs w3m and emacs-w3m.
+
+http://w3m.sourceforge.net/
+http://emacs-w3m.namazu.org/"
   (interactive)
   (anything-other-buffer 'anything-c-source-w3m-bookmarks
                          "*anything w3m bookmarks*"))
@@ -977,11 +1004,13 @@ After closing firefox, you will be able to browse you bookmarks.
 
 ;;;###autoload
 (defun anything-bookmarks ()
+  "Preconfigured `anything' for bookmarks."
   (interactive)
   (anything-other-buffer 'anything-c-source-bookmarks "*anything bookmarks*"))
 
 ;;;###autoload
 (defun anything-c-pp-bookmarks ()
+  "Preconfigured `anything' for bookmarks (pretty-printed)."
   (interactive)
   (anything-other-buffer '(anything-c-source-bookmarks-local
                            anything-c-source-bookmarks-su
@@ -990,12 +1019,17 @@ After closing firefox, you will be able to browse you bookmarks.
 
 ;;;###autoload
 (defun anything-register ()
+  "Preconfigured `anything' for Emacs registers."
   (interactive)
   (anything-other-buffer 'anything-c-source-register "*anything register*"))
 
 ;;;###autoload
 (defun anything-bm-list ()
-  "Preconfigured `anything' for visible bookmarks."
+  "Preconfigured `anything' for visible bookmarks.
+
+Needs bm.el
+
+http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el"
   (interactive)
   (let ((anything-outline-using t))
     (anything-other-buffer 'anything-c-source-bm "*anything bm list*")))
@@ -2609,8 +2643,10 @@ To get non-interactive functions listed, use
 ;; Another replacement of `M-x' that act exactly like the
 ;; vanilla Emacs one, no problem of windows configuration, prefix args
 ;; are passed before calling `M-x' (e.g C-u M-x..).
+;;;###autoload
 (defun anything-M-x ()
-  "Anything replacement of regular `M-x' `execute-extended-command'."
+  "Preconfigured `anything' for Emacs commands.
+It is `anything' replacement of regular `M-x' `execute-extended-command'."
   (interactive)
   (let ((command (anything-comp-read "M-x " obarray
                                      :test 'commandp
@@ -3192,7 +3228,9 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
 ;;;###autoload
 (defun anything-bookmark-ext ()
   "Preconfigured `anything' for bookmark-extensions sources.
-See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
+Needs bookmark-ext.el
+
+http://mercurial.intuxication.org/hg/emacs-bookmark-extension"
   (interactive)
   (anything '(anything-c-source-bookmark-files&dirs
               anything-c-source-bookmark-w3m
@@ -3329,7 +3367,11 @@ See: <http://mercurial.intuxication.org/hg/emacs-bookmark-extension>."
                                (anything-c-w3m-browse-bookmark candidate t)
                                (anything-c-w3m-browse-bookmark candidate nil t))))
     (persistent-help . "Open URL with emacs-w3m in new tab / \
-C-u \\[anything-execute-persistent-action]: Open URL with Firefox")))
+C-u \\[anything-execute-persistent-action]: Open URL with Firefox"))
+  "Needs w3m and emacs-w3m.
+
+http://w3m.sourceforge.net/
+http://emacs-w3m.namazu.org/")
 
 ;; (anything 'anything-c-source-w3m-bookmarks)
 
@@ -3597,7 +3639,10 @@ http://cedet.sourceforge.net/"))
 ;;; Function is called by
 ;;;###autoload
 (defun anything-simple-call-tree ()
-  "Preconfigured `anything' for simple-call-tree. List function relationships."
+  "Preconfigured `anything' for simple-call-tree. List function relationships.
+
+Needs simple-call-tree.el.
+http://www.emacswiki.org/cgi-bin/wiki/download/simple-call-tree.el"
   (interactive)
   (anything-other-buffer
    '(anything-c-source-simple-call-tree-functions-callers
@@ -3776,7 +3821,7 @@ http://www.emacswiki.org/cgi-bin/wiki/download/auto-document.el")
      (insert (capitalize candidate))
      (goto-char (point-min))
      (search-forward-regexp "\\s-\\{2,\\}")
-     (kill-line)
+     (delete-region (point) (point-max))
      (buffer-string))))
 
 (defun anything-c-colors-get-rgb (candidate)
@@ -3787,7 +3832,7 @@ http://www.emacswiki.org/cgi-bin/wiki/download/auto-document.el")
      (insert (capitalize candidate))
      (goto-char (point-max))
      (search-backward-regexp "\\s-\\{2,\\}")
-     (kill-region (point) (point-min))
+     (delete-region (point) (point-min))
      (buffer-string))))
 
 ;;;; <Search Engine>
@@ -4191,7 +4236,10 @@ See http://orgmode.org for the latest version.")
                                          (setq anything-c-yaoddmuse-ew-cache
                                                (gethash "EmacsWiki" yaoddmuse-pages-hash)))
                                      (yaoddmuse-update-pagename))))))
-    (action-transformer anything-c-yaoddmuse-action-transformer)))
+    (action-transformer anything-c-yaoddmuse-action-transformer))
+  "Needs yaoddmuse.el.
+
+http://www.emacswiki.org/emacs/download/yaoddmuse.el")
 
 ;; (anything 'anything-c-source-yaoddmuse-emacswiki-edit-or-view)
 
@@ -4207,7 +4255,10 @@ See http://orgmode.org for the latest version.")
                ("Post library" . (lambda (candidate)
                                    (yaoddmuse-post-file (find-library-name candidate)
                                                         "EmacsWiki"
-                                                        (file-name-nondirectory (find-library-name candidate)))))))))
+                                                        (file-name-nondirectory (find-library-name candidate))))))))
+  "Needs yaoddmuse.el.
+
+http://www.emacswiki.org/emacs/download/yaoddmuse.el")
 
 ;; (anything 'anything-c-source-yaoddmuse-emacswiki-post-library)
 
@@ -4240,13 +4291,21 @@ If load is non--nil load the file and feed `yaoddmuse-pages-hash'."
 
 ;;;###autoload
 (defun anything-yaoddmuse-emacswiki-edit-or-view ()
-  "Preconfigured `anything' to edit or view EmacsWiki page."
+  "Preconfigured `anything' to edit or view EmacsWiki page.
+
+Needs yaoddmuse.el.
+
+http://www.emacswiki.org/emacs/download/yaoddmuse.el"
   (interactive)
   (anything 'anything-c-source-yaoddmuse-emacswiki-edit-or-view))
 
 ;;;###autoload
 (defun anything-yaoddmuse-emacswiki-post-library ()
-  "Preconfigured `anything' to post library to EmacsWiki."
+  "Preconfigured `anything' to post library to EmacsWiki.
+
+Needs yaoddmuse.el.
+
+http://www.emacswiki.org/emacs/download/yaoddmuse.el"
   (interactive)
   (anything 'anything-c-source-yaoddmuse-emacswiki-post-library))
 
@@ -4422,7 +4481,10 @@ removed."
                                             (list "*Add to contacts*")
                                           candidates)))
     (action-transformer . (lambda (actions candidate)
-                            (anything-c-bbdb-create-contact actions candidate)))))
+                            (anything-c-bbdb-create-contact actions candidate))))
+  "Needs BBDB.
+
+http://bbdb.sourceforge.net/")
 ;; (anything 'anything-c-source-bbdb)
 
 (defun anything-c-bbdb-view-person-action (candidate)
@@ -4477,7 +4539,7 @@ removed."
 
 ;;;###autoload
 (defun anything-eval-expression-with-eldoc ()
-  "Same as `anything-eval-expression' but with `eldoc' support."
+  "Preconfigured anything for `anything-c-source-evaluation-result' with `eldoc' support. "
   (interactive)
   (if (window-system)
       (let ((timer (run-with-idle-timer eldoc-idle-delay
@@ -4666,7 +4728,7 @@ Return an alist with elements like (data . number_results)."
 
 ;;;###autoload
 (defun anything-surfraw (pattern engine)
-  "Search PATTERN with search ENGINE."
+  "Preconfigured `anything' to search PATTERN with search ENGINE."
   (interactive (list (read-string "SearchFor: ")
                      (anything-comp-read
                       "Engine: "
@@ -4868,7 +4930,9 @@ Return an alist with elements like (data . number_results)."
 
 (defun anything-c-anything-commands-candidates ()
   (loop for (cmd . desc) in (anything-c-list-preconfigured-anything)
-        collect (cons (substitute-command-keys (format "\\[%s] : %s" cmd desc))
+        collect (cons (if (where-is-internal cmd nil t)
+                          (substitute-command-keys (format "M-x %s (\\[%s]) : %s" cmd cmd desc))
+                        (substitute-command-keys (format "\\[%s] : %s" cmd desc)))
                       cmd)))
 
 ;;;###autoload
@@ -5564,7 +5628,7 @@ In this case EXE must be provided as \"EXE %s\"."
 
 ;;;###autoload
 (defun anything-c-run-external-command (program)
-  "Run External PROGRAM asyncronously from Emacs.
+  "Preconfigured `anything' to run External PROGRAM asyncronously from Emacs.
 If program is already running exit with error.
 You can set your own list of commands with
 `anything-c-external-commands-list'."

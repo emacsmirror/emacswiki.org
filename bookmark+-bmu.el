@@ -7,11 +7,11 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Jul 14 11:58:15 2010 (-0700)
+;; Last-Updated: Sat Jul 17 12:23:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 144
+;;     Update #: 187
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
-;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
+;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
@@ -108,6 +108,7 @@
 ;;    `bmkp-bmenu-mark-region-bookmarks',
 ;;    `bmkp-bmenu-mark-specific-buffer-bookmarks',
 ;;    `bmkp-bmenu-mark-specific-file-bookmarks',
+;;    `bmkp-bmenu-mark-url-bookmarks',
 ;;    `bmkp-bmenu-mark-w3m-bookmarks', `bmkp-bmenu-mouse-3-menu',
 ;;    `bmkp-bmenu-mode-status-help', `bmkp-bmenu-omit',
 ;;    `bmkp-bmenu-omit-marked', `bmkp-bmenu-omit/unomit-marked',
@@ -127,7 +128,8 @@
 ;;    `bmkp-bmenu-show-only-omitted', `bmkp-bmenu-show-only-regions',
 ;;    `bmkp-bmenu-show-only-specific-buffer',
 ;;    `bmkp-bmenu-show-only-specific-file',
-;;    `bmkp-bmenu-show-only-tagged'.  `bmkp-bmenu-show-only-varlists',
+;;    `bmkp-bmenu-show-only-tagged', `bmkp-bmenu-show-only-urls',
+;;    `bmkp-bmenu-show-only-varlists',
 ;;    `bmkp-bmenu-show-only-w3m-urls',
 ;;    `bmkp-bmenu-sort-by-bookmark-name',
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
@@ -140,8 +142,7 @@
 ;;    `bmkp-bmenu-sort-by-last-local-file-access',
 ;;    `bmkp-bmenu-sort-by-last-local-file-update',
 ;;    `bmkp-bmenu-sort-by-local-file-size',
-;;    `bmkp-bmenu-sort-by-local-file-type',
-;;    `bmkp-bmenu-sort-by-w3m-url',
+;;    `bmkp-bmenu-sort-by-local-file-type', `bmkp-bmenu-sort-by-url',
 ;;    `bmkp-bmenu-sort-marked-before-unmarked',
 ;;    `bmkp-bmenu-toggle-marks', `bmkp-bmenu-toggle-show-only-marked',
 ;;    `bmkp-bmenu-toggle-show-only-unmarked', `bmkp-bmenu-unmark-all',
@@ -165,8 +166,8 @@
 ;;    `bmkp-heading', `bmkp-info', `bmkp-local-directory',
 ;;    `bmkp-local-file-with-region', `bmkp-local-file-without-region',
 ;;    `bmkp-man', `bmkp-non-file', `bmkp-remote-file',
-;;    `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-t-mark',
-;;    `bmkp-varlist', `bmkp-w3m'.
+;;    `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-t-mark', `bmkp-url',
+;;    `bmkp-varlist'.
 ;;
 ;;  User options defined here:
 ;;
@@ -471,17 +472,24 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used for a tags mark (`t') in the bookmark list."
   :group 'bookmark-plus :group 'faces)
 
+(defface bmkp-url
+    '((((background dark)) (:foreground "yellow"))
+      (t (:foreground "DarkMagenta")))
+  "*Face used for a bookmarked URL."
+  :group 'bookmark-plus :group 'faces)
+
 (defface bmkp-varlist
     '((((background dark)) (:foreground "Salmon"))
       (t (:foreground "DarkCyan")))
   "*Face used for a bookmarked list of variables."
   :group 'bookmark-plus :group 'faces)
 
-(defface bmkp-w3m
-    '((((background dark)) (:foreground "yellow"))
-      (t (:foreground "DarkMagenta")))
-  "*Face used for a bookmarked w3m url."
-  :group 'bookmark-plus :group 'faces)
+;; $$$$$$ Not used now - using `bmkp-url' instead.
+;; (defface bmkp-w3m
+;;     '((((background dark)) (:foreground "yellow"))
+;;       (t (:foreground "DarkMagenta")))
+;;   "*Face used for a bookmarked w3m url."
+;;   :group 'bookmark-plus :group 'faces)
 
 ;; Instead of vanilla `bookmark-menu-heading' (defined in Emacs 22+), to use a better default.
 (defface bmkp-heading '((t (:foreground "Blue")))
@@ -768,8 +776,8 @@ Use `customize-face' if you want to change the appearance.
  `bmkp-desktop', `bmkp-function', `bmkp-gnus', `bmkp-info',
  `bmkp-local-directory', `bmkp-local-file-without-region',
  `bmkp-local-file-with-region', `bmkp-man', `bmkp-non-file',
- `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo',
- `bmkp-varlist', `bmkp-w3m'.
+ `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-url',
+ `bmkp-varlist'.
 
 If option `bmkp-bmenu-state-file' is non-nil then the state of the
 displayed bookmark-list is saved when you quit it, and it is restored
@@ -1007,8 +1015,8 @@ Jump to (Visit)
 \\[bmkp-man-jump]\t- Jump to a `man'-page bookmark
 \\[bmkp-non-file-jump]\t- Jump to a non-file (buffer) bookmark
 \\[bmkp-gnus-jump]\t- Jump to a Gnus bookmark
+\\[bmkp-url-jump]\t- Jump to a URL bookmark
 \\[bmkp-varlist-jump]\t- Jump to a variable-list bookmark
-\\[bmkp-w3m-jump]\t- Jump to a W3M (URL) bookmark
 \\[bmkp-some-tags-jump]\t- Jump to a bookmark with some tags you specify
 \\[bmkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
 \\[bmkp-all-tags-jump]\t- Jump to a bookmark with all tags you specify
@@ -1069,6 +1077,7 @@ Mark/Unmark
 \\[bmkp-bmenu-mark-bookmark-file-bookmarks]\t- Mark bookmark-file bookmarks
 \\[bmkp-bmenu-mark-man-bookmarks]\t- Mark `man' page bookmarks (that's `M' twice, not Meta-M)
 \\[bmkp-bmenu-mark-region-bookmarks]\t- Mark region bookmarks
+\\[bmkp-bmenu-mark-url-bookmarks]\t- Mark URL bookmarks
 \\[bmkp-bmenu-mark-w3m-bookmarks]\t- Mark W3M (URL) bookmarks
 
 
@@ -1155,7 +1164,7 @@ access
 \\[bmkp-bmenu-sort-by-creation-time]\t- Sort by bookmark creation time
 \\[bmkp-bmenu-sort-by-last-bookmark-access]\t- Sort by last bookmark access time
 \\[bmkp-bmenu-sort-by-bookmark-visit-frequency]\t- Sort by bookmark visit frequency
-\\[bmkp-bmenu-sort-by-w3m-url]\t- Sort by W3M URL
+\\[bmkp-bmenu-sort-by-url]\t- Sort by URL
 
 \\[bmkp-bmenu-sort-by-local-file-type]\t- Sort by local file type: file, symlink, dir
 \\[bmkp-bmenu-sort-by-file-name]\t- Sort by file name
@@ -1186,6 +1195,7 @@ Hide/Show
 \\[bmkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
 \\[bmkp-bmenu-show-only-regions]\t- Show only region bookmarks
 \\[bmkp-bmenu-show-only-varlists]\t- Show only variable-list bookmarks
+\\[bmkp-bmenu-show-only-urls]\t- Show only URL bookmarks
 \\[bmkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
 \\[bmkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
 whose names match a regexp
@@ -1685,8 +1695,21 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
                                        bmkp-last-specific-file))))
 
 ;;;###autoload
+(defun bmkp-bmenu-show-only-urls ()     ; Bound to `M-u S' in bookmark list
+  "Display (only) the URL bookmarks."
+  (interactive)
+  (bmkp-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  'bmkp-url-alist-only
+        bmkp-bmenu-title            "URL Bookmarks")
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only URL bookmarks are shown")))
+
+;;;###autoload
 (defun bmkp-bmenu-show-only-w3m-urls () ; Bound to `W S' in bookmark list
-  "Display (only) the w3m bookmarks."
+  "Display (only) the W3M URL bookmarks."
   (interactive)
   (bmkp-barf-if-not-in-menu-list)
   (setq bmkp-bmenu-filter-function  'bmkp-w3m-alist-only
@@ -2015,6 +2038,12 @@ If FILE is non-nil, set `bmkp-last-specific-file' to it."
   (interactive (list (bmkp-completing-read-file-name)))
   (when file (setq bmkp-last-specific-file  file))
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-last-specific-file-p))
+
+;;;###autoload
+(defun bmkp-bmenu-mark-url-bookmarks () ; Bound to `M-u M' in bookmark list
+  "Mark URL bookmarks."
+  (interactive)
+  (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-url-bookmark-p))
 
 ;;;###autoload
 (defun bmkp-bmenu-mark-w3m-bookmarks () ; Bound to `W M' in bookmark list
@@ -2702,7 +2731,7 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
           (let ((gnus             "Gnus\n")
                 (info             "Info node\n")
                 (man              "Man page\n")
-                (w3m              "W3M (URL)\n")
+                (url              "URL\n")
                 (local-no-region  "Local file with no region\n")
                 (local-w-region   "Local file with a region\n")
                 (buffer           "Buffer\n")
@@ -2720,7 +2749,7 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
             (put-text-property 0 (1- (length gnus))     'face 'bmkp-gnus         gnus)
             (put-text-property 0 (1- (length info))     'face 'bmkp-info         info)
             (put-text-property 0 (1- (length man))      'face 'bmkp-man          man)
-            (put-text-property 0 (1- (length w3m))      'face 'bmkp-w3m          w3m)
+            (put-text-property 0 (1- (length url))      'face 'bmkp-url          url)
             (put-text-property 0 (1- (length local-no-region))
                                'face 'bmkp-local-file-without-region             local-no-region)
             (put-text-property 0 (1- (length local-w-region))
@@ -2741,7 +2770,7 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
             (put-text-property 0 (1- (length varlist))  'face 'bmkp-varlist      varlist)
             (put-text-property 0 (1- (length function)) 'face 'bmkp-function     function)
             (insert "Face Legend for Bookmark Types\n------------------------------\n\n")
-            (insert gnus) (insert info) (insert man) (insert w3m) (insert local-no-region)
+            (insert gnus) (insert info) (insert man) (insert url) (insert local-no-region)
             (insert local-w-region) (insert buffer) (insert no-buf) (insert bad) (insert remote)
             (insert sudo) (insert local-dir) (insert bookmark-list) (insert bookmark-file)
             (insert desktop) (insert sequence) (insert varlist) (insert function)
@@ -2972,7 +3001,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
          (sequencep        (bmkp-sequence-bookmark-p bookmark-name))
          (functionp        (bmkp-function-bookmark-p bookmark-name))
          (varlistp         (bmkp-varlist-bookmark-p bookmark-name))
-         (w3m-p            (bmkp-w3m-bookmark-p bookmark-name))
+         (url-p            (bmkp-url-bookmark-p bookmark-name))
          (gnus-p           (bmkp-gnus-bookmark-p bookmark-name))
          (desktop-p        (bmkp-desktop-bookmark-p bookmark-name))
          (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark-name))
@@ -3018,7 +3047,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
            (gnus-p           (append (bmkp-face-prop 'bmkp-gnus)
                                      '(mouse-face highlight follow-link t
                                        help-echo "mouse-2: Jump to this Gnus bookmark")))
-           (w3m-p            (append (bmkp-face-prop 'bmkp-w3m)
+           (url-p            (append (bmkp-face-prop 'bmkp-url)
                                      `(mouse-face highlight follow-link t
                                        help-echo (format "mouse-2: Jump to URL `%s'" ,filep))))
            ((and su-p (not (bmkp-root-or-sudo-logged-p))) ; Root/sudo not logged
@@ -3181,16 +3210,24 @@ use it."
 
 (bmkp-define-sort-command               ; Bound to `s k' in bookmark list (`k' for "kind")
  "by bookmark type"                     ; `bmkp-bmenu-sort-by-bookmark-type'
- ((bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp bmkp-local-file-type-cp bmkp-handler-cp)
+ ((bmkp-info-cp bmkp-url-cp bmkp-gnus-cp bmkp-local-file-type-cp bmkp-handler-cp)
   bmkp-alpha-p)
- "Sort bookmarks by type: Info, Gnus, W3M, files, other.")
+ "Sort bookmarks by type: Info, URL, Gnus, files, other.")
 
-(bmkp-define-sort-command               ; Bound to `s w' in bookmark list
- "by w3m url"                           ; `bmkp-bmenu-sort-by-w3m-url'
- ((bmkp-w3m-cp) bmkp-alpha-p)
- "Sort W3M bookmarks alphabetically by their URL/filename.
+(bmkp-define-sort-command               ; Bound to `s u' in bookmark list
+ "by url"                           ; `bmkp-bmenu-sort-by-url'
+ ((bmkp-url-cp) bmkp-alpha-p)
+ "Sort URL bookmarks alphabetically by their URL/filename.
 When two bookmarks are not comparable this way, compare them by
 bookmark name.")
+
+;; $$$$$$ Not used now.
+;; (bmkp-define-sort-command               ; Bound to `s w' in bookmark list
+;;  "by w3m url"                           ; `bmkp-bmenu-sort-by-w3m-url'
+;;  ((bmkp-w3m-cp) bmkp-alpha-p)
+;;  "Sort W3M bookmarks alphabetically by their URL/filename.
+;; When two bookmarks are not comparable this way, compare them by
+;; bookmark name.")
 
 (bmkp-define-sort-command               ; Bound to `s g' in bookmark list
  "by Gnus thread"                       ; `bmkp-bmenu-sort-by-Gnus-thread'
@@ -3570,9 +3607,11 @@ With a prefix argument, show the internal definitions."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-by-last-bookmark-access)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sv"                 'bmkp-bmenu-sort-by-bookmark-visit-frequency)
+(define-key bookmark-bmenu-mode-map "su"                   'bmkp-bmenu-sort-by-url)
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "sw"                   'bmkp-bmenu-sort-by-w3m-url)
+(define-key bookmark-bmenu-mode-map "sv"                 'bmkp-bmenu-sort-by-bookmark-visit-frequency)
+;; ;;;###autoload
+;; (define-key bookmark-bmenu-mode-map "sw"                   'bmkp-bmenu-sort-by-w3m-url)
 ;;;###autoload
 (when (> emacs-major-version 22)        ; Emacs 23+
  (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s")     'bmkp-bmenu-isearch-marked-bookmarks)
@@ -3629,6 +3668,12 @@ With a prefix argument, show the internal definitions."
 (define-key bookmark-bmenu-mode-map "t"                    'bmkp-bmenu-toggle-marks)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "U"                    'bmkp-bmenu-unmark-all)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-u"                 nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-uM"                'bmkp-bmenu-mark-url-bookmarks)
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "\M-uS"                'bmkp-bmenu-show-only-urls)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "V"                    nil) ; For Emacs20
 ;;;###autoload
@@ -3774,9 +3819,9 @@ With a prefix argument, show the internal definitions."
     "`Sort' submenu for menu-bar `Bookmark+' menu.")
 (define-key bmkp-bmenu-menubar-menu [sort] (cons "Sort" bmkp-bmenu-sort-menu))
 
-(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-w3m-url]
-  '(menu-item "By URL (W3M)" bmkp-bmenu-sort-by-w3m-url
-    :help "Sort W3M bookmarks alphabetically by their URL/filename"))
+(define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-url]
+  '(menu-item "By URL" bmkp-bmenu-sort-by-url
+    :help "Sort URL bookmarks alphabetically by their URL/filename"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-Gnus-thread]
   '(menu-item "By Gnus Thread" bmkp-bmenu-sort-by-Gnus-thread
     :help "Sort Gnus bookmarks by group, then by article, then by message"))
@@ -3797,7 +3842,7 @@ With a prefix argument, show the internal definitions."
     :help "Sort bookmarks by local file type: file, symlink, directory"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-type]
   '(menu-item "By Type" bmkp-bmenu-sort-by-bookmark-type
-    :help "Sort bookmarks by type: Info, Gnus, W3M, files, other"))
+    :help "Sort bookmarks by type: Info, URL, Gnus, files, other"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-file-name]
   '(menu-item "By File Name" bmkp-bmenu-sort-by-file-name :help "Sort bookmarks by file name"))
 (define-key bmkp-bmenu-sort-menu [bmkp-bmenu-sort-by-bookmark-name]
@@ -3847,9 +3892,9 @@ With a prefix argument, show the internal definitions."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-specific-buffer]
   '(menu-item "Show Only for Specific Buffer" bmkp-bmenu-show-only-specific-buffer
     :help "Display (only) the bookmarks for a specific buffer"))
-(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-w3m-urls]
-  '(menu-item "Show Only URLs (W3M)" bmkp-bmenu-show-only-w3m-urls
-    :help "Display (only) the w3m bookmarks"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-urls]
+  '(menu-item "Show Only URLs" bmkp-bmenu-show-only-urls
+    :help "Display (only) the URL bookmarks"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-gnus]
   '(menu-item "Show Only Gnus Messages" bmkp-bmenu-show-only-gnus
     :help "Display (only) the Gnus bookmarks"))
@@ -3959,8 +4004,8 @@ With a prefix argument, show the internal definitions."
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-specific-buffer-bookmarks]
   '(menu-item "Mark for Specific Buffer" bmkp-bmenu-mark-specific-buffer-bookmarks
     :help "Mark bookmarks for a specific buffer"))
-(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-w3m-bookmarks]
-  '(menu-item "Mark URLs (W3M)" bmkp-bmenu-mark-w3m-bookmarks :help "Mark W3M (URL) bookmarks"))
+(define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-url-bookmarks]
+  '(menu-item "Mark URLs" bmkp-bmenu-mark-url-bookmarks :help "Mark URL bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-gnus-bookmarks]
   '(menu-item "Mark Gnus Messages" bmkp-bmenu-mark-gnus-bookmarks :help "Mark Gnus bookmarks"))
 (define-key bmkp-bmenu-mark-menu [bmkp-bmenu-mark-man-bookmarks]

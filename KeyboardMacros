@@ -8,27 +8,27 @@ Did you note that a "''keyboard''" macro can record nearly any user actions -- '
 
 : '''Note:''' Do not confuse mention of a keyboard macro with mention of a Lisp macro. A Lisp macro is similar to a Lisp function (oops -- not that similar), and is defined using ##defmacro##. 
 
-Here is how to ''define'' a keyboard macro:
-* `<code>C-x (</code>' -- start defining a keyboard macro
-* `<code>C-x )</code>' -- stop defining the keyboard macro
+如何 ''定义'' 一个键盘宏:
+* `<code>C-x (</code>' -- 开始键盘宏定义
+* `<code>C-x )</code>' -- 停止键盘宏定义
 
-And here is how to ''execute'' a keyboard macro you've defined:
-* `C-x e' -- execute the keyboard macro
+如何 ''执行'' 你定义的键盘宏:
+* `C-x e' -- 执行键盘宏
 
-Here's how to execute the macro 37 times (you use `C-u' to provide the 37):
+如何执行宏操作 37 次 (you use `C-u' to provide the 37):
 * `C-u 37 C-x e'
 
-'''Example:'''
+'''举例:'''
 
-You want to add the text "-- foobar was here" at the end of ''each'' of the lines in a file.
-# Place the TextCursor at the beginning of the first line.
-# `<code>C-x (</code>' to start recording a keyboard macro.
-# `C-e' (or `M-x end-of-line') to move the cursor to the end of the line.
-# Type "<code>-- foobar was here</code>"
-# `C-a' (or `M-x beginning-of-line') to move the cursor to the beginning of the line.
-# `C-n' (or `M-x next-line') to move the cursor to the beginning of the next line.
-# `<code>C-x )</code>' to stop recording the keyboard macro.
-# `C-u 0 C-x e' to execute the macro an infinite number of times until the end of the file is reached (See InfiniteArgument).
+你要添加文本 "-- foobar was here" 到一个文件的每一行末尾.
+# 放置光标的第一行的起始位置.
+# `<code>C-x (</code>' 开始键盘宏定义.
+# `C-e' (or `M-x end-of-line') 移动光标到行末.
+# 输入 "<code>-- foobar was here</code>"
+# `C-a' (or `M-x beginning-of-line') 移动光标到行始位置.
+# `C-n' (or `M-x next-line') 移动光标到下一行的起始位置.
+# `<code>C-x )</code>' 停止键盘宏定义.
+# `C-u 0 C-x e' 执行宏无限次,直到文件末尾 (See InfiniteArgument).
 
 What's important here is to stop defining the macro at a ''similar position to where you started it'' -- so that you are in a position to execute it again, after it executes. This is a general rule that you will often follow when defining keyboard macros: try to make them executable ''N'' times in a row.
 

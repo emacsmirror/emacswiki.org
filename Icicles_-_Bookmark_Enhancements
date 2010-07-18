@@ -184,7 +184,7 @@ bookmark-specific ways:
 * By last (local) file update (date + time)
 * By Info location (manual and node)
 * By Gnus thread
-* By W3M URL
+* By URL
 * By bookmark type
 
 The most general ''Icicles'' jump commands are '''`icicle-bookmark'''' and
@@ -206,6 +206,7 @@ candidates to bookmarks of a specific ''type'' using these keys:
 * '''`C-M-K'''' -- des'''<u>K</u>'''top bookmarks
 * '''`C-M-m'''' -- '''<u>m</u>'''an' pages
 * '''`C-M-r'''' -- bookmarks with '''<u>r</u>'''egions
+* '''`C-M-u'''' -- '''<u>u</u>'''rl bookmarks
 * '''`C-M-w'''' -- '''<u>w</u>'''3m bookmarks
 * '''`##C-M-@##'''' -- remote-file bookmarks
 
@@ -286,7 +287,7 @@ are specific to bookmarks:
 * '''`icicle-search-non-file-bookmark''''
 * '''`icicle-search-region-bookmark''''
 * '''`icicle-search-remote-file-bookmark''''
-* '''`icicle-search-w3m-bookmark''''
+* '''`icicle-search-url-bookmark''''
 
 All of these except `icicle-search-bookmark' act only on bookmarks
 of a specific type.  But all of them act the same way.  They are

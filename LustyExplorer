@@ -100,5 +100,14 @@ But on the other hand, this sounds like a neat idea!
 
 This is not done when fuzzy matching is used, so the buffer explorer will suggest switching to the current buffer if it has a higher score than the buffer you'd like to switch to.
 
+[new:sjbach:2010-07-17 18:14 UTC]
+
+I have these implemented in devhead:
+
+* Put all visible buffers at the end of the buffer list (like iswitchb).
+* Turn MRU order into a factor in the scoring algorithm.
+
+Feel free to take a look.  I'll put out a release once I've played with them for a while.
+
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 14 13:23:26 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:15:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2189
+;;     Update #: 2197
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -109,10 +109,10 @@
 ;;    (+)`icicle-search-specific-files-bookmark',
 ;;    (+)`icicle-search-text-property',
 ;;    (+)`icicle-search-this-buffer-bookmark',
-;;    (+)`icicle-search-w3m-bookmark', (+)`icicle-search-word',
-;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
-;;    (+)`icicle-tags-search', (+)`icicle-vardoc',
-;;    (+)`icicle-where-is', (+)`what-which-how'.
+;;    (+)`icicle-search-url-bookmark', (+)`icicle-search-w3m-bookmark',
+;;    (+)`icicle-search-word', (+)`icicle-select-frame',
+;;    `icicle-select-frame-by-name', (+)`icicle-tags-search',
+;;    (+)`icicle-vardoc', (+)`icicle-where-is', (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -2988,8 +2988,8 @@ together instead of one at a time.
                     icicle-alpha-p)
                    ("by Info location" (bmkp-info-cp) icicle-alpha-p)
                    ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
-                   ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
-                   ("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                   ("by URL" (bmkp-url-cp) icicle-alpha-p)
+                   ("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                         bmkp-local-file-type-cp bmkp-handler-cp)
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
@@ -3056,6 +3056,7 @@ together instead of one at a time.
         (define-key (symbol-value map) "\C-\M-i" 'icicle-bookmark-info-narrow)
         (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow)
         (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow)
+        (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow)
         (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow)
         (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow)
         (define-key (symbol-value map) [(control meta ?B)]
@@ -3138,10 +3139,10 @@ command")))
         '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
        (and (member ,type '("gnus" "region"))
         '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
-       (and (member ,type '("w3m" "region"))
-        '(("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)))
-       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
-        '(("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+       (and (member ,type '("url" "region"))
+        '(("by URL" (bmkp-url-cp) icicle-alpha-p)))
+       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "url")))
+        '(("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                bmkp-local-file-type-cp bmkp-handler-cp)
            icicle-alpha-p)))
        (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
@@ -3224,6 +3225,7 @@ command")))
 ;;  `icicle-search-specific-buffers-bookmark'
 ;;  `icicle-search-specific-files-bookmark'
 ;;  `icicle-search-this-buffer-bookmark'
+;;  `icicle-search-url-bookmark'
 ;;  `icicle-search-w3m-bookmark'
 
 (icicle-define-search-bookmark-command "all-tags" nil (bmkp-read-tags-completing))
@@ -3244,6 +3246,7 @@ command")))
 (icicle-define-search-bookmark-command "specific-buffers" nil (icicle-bookmarked-buffer-list))
 (icicle-define-search-bookmark-command "specific-files" nil (icicle-bookmarked-file-list))
 (icicle-define-search-bookmark-command "this-buffer")
+(icicle-define-search-bookmark-command "url")
 (icicle-define-search-bookmark-command "w3m")
 
 ;;;###autoload

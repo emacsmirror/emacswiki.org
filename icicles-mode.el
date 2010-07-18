@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 11 07:56:24 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:27:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6591
+;;     Update #: 6610
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -302,6 +302,7 @@ In many cases there are also `other-window' versions.
 `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
 `icicle-bookmark-specific-files'       - Jump to a bookmarked file
 `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
+`icicle-bookmark-url'                  - Jump to a URL bookmark
 `icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
 `icicle-buffer'                        - Switch to buffer
 `icicle-buffer-config'                 - Pick `icicle-buffer' options
@@ -402,7 +403,7 @@ In many cases there are also `other-window' versions.
 `icicle-search-remote-file-bookmark'   - Search remote bookmarks
 `icicle-search-sentences'              - Search sentences as contexts
 `icicle-search-text-property'          - Search for faces etc.
-`icicle-search-w3m-bookmark'           - Search bookmarked URLs
+`icicle-search-url-bookmark'           - Search bookmarked URLs
 `icicle-search-word'                   - Whole-word search
 `icicle-select-bookmarked-region'      - Select bookmarked regions
 `icicle-select-frame'                  - Select a frame by name
@@ -569,6 +570,7 @@ In many cases there are also `other-window' versions.
 `icicle-bookmark-specific-buffers'     - Jump to a bookmarked buffer
 `icicle-bookmark-specific-files'       - Jump to a bookmarked file
 `icicle-bookmark-this-buffer'          - Jump to bookmark for this buf
+`icicle-bookmark-url'                  - Jump to a URL bookmark
 `icicle-bookmark-w3m'                  - Jump to a W3M (URL) bookmark
 `icicle-buffer'                        - Switch to buffer
 `icicle-buffer-config'                 - Pick `icicle-buffer' options
@@ -666,7 +668,7 @@ In many cases there are also `other-window' versions.
 `icicle-search-remote-file-bookmark'   - Search remote bookmarks
 `icicle-search-sentences'              - Search sentences as contexts
 `icicle-search-text-property'          - Search for faces etc.
-`icicle-search-w3m-bookmark'           - Search bookmarked URLs
+`icicle-search-url-bookmark'           - Search bookmarked URLs
 `icicle-search-word'                   - Whole-word search
 `icicle-select-bookmarked-region'      - Select bookmarked regions
 `icicle-select-frame'                  - Select a frame by name
@@ -1493,8 +1495,8 @@ Used on `pre-command-hook'."
                '(menu-item "+ Jump to Region Bookmark..." icicle-bookmark-region-other-window
                  :visible icicle-mode
                  :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-             (define-key icicle-bookmark-menu-map [icicle-bookmark-w3m-other-window]
-               '(menu-item "+ Jump to W3M (URL) Bookmark..." icicle-bookmark-w3m-other-window
+             (define-key icicle-bookmark-menu-map [icicle-bookmark-url-other-window]
+               '(menu-item "+ Jump to URL Bookmark..." icicle-bookmark-url-other-window
                  :visible icicle-mode
                  :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
              (define-key icicle-bookmark-menu-map [icicle-bookmark-gnus-other-window]
@@ -1553,8 +1555,8 @@ Used on `pre-command-hook'."
              (define-key icicle-menu-map [icicle-bookmark-region-other-window]
                '(menu-item "+ Jump to Region Bookmark..." icicle-bookmark-region-other-window
                  :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-             (define-key icicle-menu-map [icicle-bookmark-w3m-other-window]
-               '(menu-item "+ Jump to W3M (URL) Bookmark..." icicle-bookmark-w3m-other-window
+             (define-key icicle-menu-map [icicle-bookmark-url-other-window]
+               '(menu-item "+ Jump to URL Bookmark..." icicle-bookmark-url-other-window
                  :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
              (define-key icicle-menu-map [icicle-bookmark-gnus-other-window]
                '(menu-item "+ Jump to Gnus Bookmark..." icicle-bookmark-gnus-other-window

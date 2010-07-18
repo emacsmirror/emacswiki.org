@@ -7,20 +7,16 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Jul 14 11:55:20 2010 (-0700)
+;; Last-Updated: Sat Jul 17 12:19:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 148
+;;     Update #: 203
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
-;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
+;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+', `bookmark+-lit', `cl', `custom',
-;;   `easymenu', `ffap', `gnus', `gnus-ems', `gnus-mule',
-;;   `gnus-util', `lisp-mode', `mail-utils', `mailabbrev',
-;;   `mailheader', `message', `nnheader', `nnoo', `nntp', `pp',
-;;   `sendmail', `timezone', `widget'.
+;;   `ffap'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -142,6 +138,7 @@
 ;;    `bmkp-toggle-saving-bookmark-file',
 ;;    `bmkp-toggle-saving-menu-list-state',
 ;;    `bmkp-toggle-bookmark-set-refreshes', `bmkp-unomit-all',
+;;    `bmkp-url-jump', `bmkp-url-jump-other-window',
 ;;    `bmkp-use-bookmark-file-create', `bmkp-varlist-jump',
 ;;    `bmkp-version', `bmkp-w3m-jump', `bmkp-w3m-jump-other-window',
 ;;    `old-bookmark-insert', `old-bookmark-relocate'.
@@ -211,7 +208,7 @@
 ;;    `bmkp-jump-bookmark-file', `bmkp-jump-bookmark-list',
 ;;    `bmkp-jump-desktop', `bmkp-jump-dired', `bmkp-jump-function',
 ;;    `bmkp-jump-gnus', `bmkp-jump-man', `bmkp-jump-sequence',
-;;    `bmkp-jump-varlist', `bmkp-jump-w3m',
+;;    `bmkp-jump-url-browse', `bmkp-jump-varlist', `bmkp-jump-w3m',
 ;;    `bmkp-jump-w3m-new-session', `bmkp-jump-w3m-only-one-tab',
 ;;    `bmkp-jump-woman', `bmkp-last-specific-buffer-alist-only',
 ;;    `bmkp-last-specific-buffer-p',
@@ -226,14 +223,15 @@
 ;;    `bmkp-make-bookmark-list-record', `bmkp-make-desktop-record',
 ;;    `bmkp-make-dired-record', `bmkp-make-gnus-record',
 ;;    `bmkp-make-man-record', `bmkp-make-plain-predicate',
-;;    `bmkp-make-varlist-record', `bmkp-make-w3m-record',
-;;    `bmkp-make-woman-record' (Emacs 21+), `bmkp-man-alist-only',
-;;    `bmkp-man-bookmark-p', `bmkp-marked-bookmark-p',
-;;    `bmkp-marked-bookmarks-only', `bmkp-marked-cp',
-;;    `bmkp-maybe-save-bookmarks', `bmkp-msg-about-sort-order',
-;;    `bmkp-multi-sort', `bmkp-non-autonamed-alist-only',
-;;    `bmkp-non-file-alist-only', `bmkp-non-file-bookmark-p',
-;;    `bmkp-omitted-alist-only', `bmkp-position-after-whitespace',
+;;    `bmkp-make-url-browse-record', `bmkp-make-varlist-record',
+;;    `bmkp-make-w3m-record', `bmkp-make-woman-record' (Emacs 21+),
+;;    `bmkp-man-alist-only', `bmkp-man-bookmark-p',
+;;    `bmkp-marked-bookmark-p', `bmkp-marked-bookmarks-only',
+;;    `bmkp-marked-cp', `bmkp-maybe-save-bookmarks',
+;;    `bmkp-msg-about-sort-order', `bmkp-multi-sort',
+;;    `bmkp-non-autonamed-alist-only', `bmkp-non-file-alist-only',
+;;    `bmkp-non-file-bookmark-p', `bmkp-omitted-alist-only',
+;;    `bmkp-position-after-whitespace',
 ;;    `bmkp-position-before-whitespace', `bmkp-position-cp',
 ;;    `bmkp-position-post-context',
 ;;    `bmkp-position-post-context-region',
@@ -263,9 +261,11 @@
 ;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
 ;;    `bmkp-this-file-p', `bmkp-unmarked-bookmarks-only',
 ;;    `bmkp-upcase', `bmkp-update-autonamed-bookmark',
-;;    `bmkp-varlist-alist-only', `bmkp-varlist-bookmark-p',
-;;    `bmkp-visited-more-cp', `bmkp-w3m-alist-only',
-;;    `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
+;;    `bmkp-url-alist-only', `bmkp-url-bookmark-p',
+;;    `bmkp-url-browse-alist-only', `bmkp-url-browse-bookmark-p',
+;;    `bmkp-url-cp', `bmkp-varlist-alist-only',
+;;    `bmkp-varlist-bookmark-p', `bmkp-visited-more-cp',
+;;    `bmkp-w3m-alist-only', `bmkp-w3m-bookmark-p', `bmkp-w3m-cp',
 ;;    `bmkp-w3m-set-new-buffer-name'.
 ;;
 ;;  Internal variables defined here:
@@ -287,9 +287,9 @@
 ;;    `bmkp-reverse-multi-sort-p', `bmkp-reverse-sort-p',
 ;;    `bmkp-sorted-alist', `bmkp-specific-buffers-history',
 ;;    `bmkp-specific-files-history', `bmkp-tag-history',
-;;    `bmkp-tags-alist', `bmkp-types-alist', `bmkp-use-w32-browser-p',
-;;    `bmkp-varlist-history', `bmkp-version-number',
-;;    `bmkp-w3m-history'.
+;;    `bmkp-tags-alist', `bmkp-types-alist', `bmkp-url-history',
+;;    `bmkp-use-w32-browser-p', `bmkp-varlist-history',
+;;    `bmkp-version-number', `bmkp-w3m-history'.
 ;;
 ;;
 ;;  ***** NOTE: The following commands defined in `bookmark.el'
@@ -637,7 +637,7 @@ If an integer, then use a menu only if there are fewer bookmark
   :group 'bookmark-plus)
 
 ;;;###autoload
-(defcustom bmkp-sort-comparer '((bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp bmkp-local-file-type-cp)
+(defcustom bmkp-sort-comparer '((bmkp-info-cp bmkp-gnus-cp bmkp-url-cp bmkp-local-file-type-cp)
                                 bmkp-alpha-p) ; This corresponds to `s k'.
   ;; $$$$$$ An alternative default value: `bmkp-alpha-p', which corresponds to `s n'.
   "*Predicate or predicates for sorting (comparing) bookmarks.
@@ -708,8 +708,8 @@ or nil) into an ordinary predicate, by using function
 `bmkp-make-plain-predicate'.  That lets you reuse elsewhere, as
 ordinary predicates, any PRED-type predicates you define.
 
-For example, this defines a plain predicate to compare by W3M URL:
- (defalias 'bmkp-w3m-p (bmkp-make-plain-predicate 'bmkp-w3m-cp))
+For example, this defines a plain predicate to compare by URL:
+ (defalias 'bmkp-url-p (bmkp-make-plain-predicate 'bmkp-url-cp))
 
 Note: As a convention, predefined Bookmark+ PRED-type predicate names
 have the suffix `-cp' (for \"component predicate\") instead of `-p'.
@@ -755,7 +755,7 @@ is tried and
                              ("specific-buffers" . bmkp-specific-buffers-history)
                              ("specific-files"   . bmkp-specific-files-history)
                              ("variable-list"    . bmkp-varlist-history)
-                             ("w3m"              . bmkp-w3m-history))
+                             ("url"              . bmkp-url-history))
   "Alist of bookmark types used by `bmkp-jump-to-type'.
 Keys are bookmark type names.  Values are corresponding history variables.")
 
@@ -775,6 +775,7 @@ Keys are bookmark type names.  Values are corresponding history variables.")
 (defvar bmkp-specific-buffers-history () "History for specific-buffers bookmarks.")
 (defvar bmkp-specific-files-history ()   "History for specific-files bookmarks.")
 (defvar bmkp-varlist-history ()          "History for variable-list bookmarks.")
+(defvar bmkp-url-history ()              "History for URL bookmarks.")
 (defvar bmkp-w3m-history ()              "History for W3M bookmarks.")
 
 (defvar bmkp-after-set-hook nil "Hook run after `bookmark-set' sets a bookmark.")
@@ -859,6 +860,7 @@ or the deprecated form (BOOKMARK-NAME PARAM-ALIST).
 Bookmarks created using vanilla Emacs (`bookmark.el'):
 
  (filename . FILENAME)
+ (location . LOCATION)
  (position . POS)
  (front-context-string . STR-AFTER-POS)
  (rear-context-string  . STR-BEFORE-POS)
@@ -866,6 +868,9 @@ Bookmarks created using vanilla Emacs (`bookmark.el'):
  (annotation . ANNOTATION)
 
  FILENAME names the bookmarked file.
+ LOCATION names the bookmarked file, URL, or other place (Emacs 23+).
+  FILENAME or LOCATION is what is shown in the bookmark list
+  (`C-x r l') when you use `M-t'.
  POS is the bookmarked buffer position (position in the file).
  STR-AFTER-POS is buffer text that immediately follows POS.
  STR-BEFORE-POS is buffer text that immediately precedes POS.
@@ -955,7 +960,7 @@ bookmarked.
  GNUS-ARTICLE-NUMBER is the number of a Gnus article.
  GNUS-MESSAGE-ID is the identifier of a Gnus message.
 
-9. For a W3M bookmark, FILENAME is a W3M URL.
+9. For a URL bookmark, FILENAME or LOCATION is a URL.
 
 10. A sequence bookmark has this additional entry:
 
@@ -1318,7 +1323,6 @@ bookmarks)."
                                                                          (skip-syntax-forward "^ ")
                                                                          (point))))
                           (t (car record)))))
-         (doc-cmd  "`\\<minibuffer-local-map>\\[next-history-element]' for default")
          (bname    (or name  (bmkp-completing-read-lax
                               "Set bookmark " defname
                               (and (or (not parg) (consp parg)) ; No numeric PARG: all bookmarks.
@@ -2105,7 +2109,8 @@ This excludes the pseudo file name `bmkp-non-file-filename'."
   (browse-url (format (concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 Bookmark+ bug: \
 &body=Describe bug below, using a precise recipe that starts with `emacs -Q' or `emacs -q'.  \
-Be sure to mention the `Update #' from header of the particular Bookmark+ file header.%%0A%%0AEmacs version: %s")
+Be sure to mention the `Update #' from header of the particular Bookmark+ file header.\
+%%0A%%0AEmacs version: %s")
                       (emacs-version))))
 
 ;;;###autoload
@@ -2857,7 +2862,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3M)."
+This excludes bookmarks of a more specific kind (e.g. Info, Gnus)."
   (let* ((filename   (bookmark-get-filename bookmark))
          (nonfile-p  (equal filename bmkp-non-file-filename))
          (handler    (bookmark-get-handler bookmark)))
@@ -2891,7 +2896,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-local-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a local file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3M)."
+This excludes bookmarks of a more specific kind (e.g. Info, Gnus)."
   (and (bmkp-file-bookmark-p bookmark) (not (bmkp-remote-file-bookmark-p bookmark))))
 
 (defun bmkp-man-bookmark-p (bookmark)
@@ -2908,7 +2913,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-non-file-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a non-file bookmark (e.g *scratch*).
-This excludes bookmarks of a more specific kind (Info, Gnus, and W3M).
+This excludes bookmarks of a more specific kind (e.g. Info, Gnus).
 It includes bookmarks to existing buffers, as well as bookmarks
 defined for buffers that do not currently exist."
   (let* ((filename   (bookmark-get-filename bookmark))
@@ -2929,7 +2934,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Return non-nil if BOOKMARK bookmarks a remote file or directory.
 BOOKMARK is a bookmark name or a bookmark record.
 This includes remote Dired bookmarks, but otherwise excludes bookmarks
-with handlers (Info, Gnus, and W3M)."
+with handlers (e.g. Info, Gnus)."
   (let* ((handler   (bookmark-get-handler bookmark))
          (file      (bookmark-get-filename bookmark))
          (rem-file  (and file  (bmkp-file-remote-p file))))
@@ -2981,6 +2986,18 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Return non-nil if BOOKMARK is a sequence bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
   (eq (bookmark-get-handler bookmark) 'bmkp-jump-sequence))
+
+(defun bmkp-url-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a URL bookmark.
+That means that it satifies either `bmkp-url-browse-bookmark-p' or
+`bmkp-w3m-bookmark-p'.
+BOOKMARK is a bookmark name or a bookmark record."
+  (or (bmkp-url-browse-bookmark-p bookmark) (bmkp-w3m-bookmark-p bookmark)))
+
+(defun bmkp-url-browse-bookmark-p (bookmark)
+  "Return non-nil if BOOKMARK is a `browse-url' bookmark.
+BOOKMARK is a bookmark name or a bookmark record."
+  (eq (bookmark-get-handler bookmark) 'bmkp-jump-url-browse))
 
 (defun bmkp-varlist-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a variable-list bookmark.
@@ -3198,6 +3215,18 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-this-file-p bookmark-alist))
+
+(defun bmkp-url-alist-only ()
+  "`bookmark-alist', filtered to retain only URL bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-url-bookmark-p bookmark-alist))
+
+(defun bmkp-url-browse-alist-only ()
+  "`bookmark-alist', filtered to retain only non-W3M URL bookmarks.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not #'bmkp-url-browse-bookmark-p bookmark-alist))
 
 (defun bmkp-varlist-alist-only ()
   "`bookmark-alist', filtered to retain only variable-list bookmarks.
@@ -3745,6 +3774,29 @@ Return nil if neither sorts before the other."
           (g2                                         '(nil))
           (t                                          nil))))
 
+(defun bmkp-url-cp (b1 b2)
+  "True if bookmark B1 sorts as a URL bookmark before B2.
+B1 and B2 are bookmarks or bookmark names.
+Two URL bookmarks are compared alphabetically, by their URLs.
+True also if B1 is a URL bookmark but B2 is not.
+Reverse the roles of B1 and B2 for a false value.
+A true value is returned as `(t)', a false value as `(nil)'.
+Return nil if neither sorts before the other."
+  (setq b1  (bookmark-get-bookmark b1)
+        b2  (bookmark-get-bookmark b2))
+  (let ((u1  (bmkp-url-bookmark-p b1))
+        (u2  (bmkp-url-bookmark-p b2)))
+    (cond ((and u1 u2)
+           (setq u1  (or (bookmark-prop-get b1 'location) (bookmark-get-filename b1))
+                 u2  (or (bookmark-prop-get b2 'location) (bookmark-get-filename b2)))
+           (cond ((string-lessp u1 u2)  '(t))
+                 ((string-lessp u2 u1)  '(nil))
+                 (t                     nil)))
+          (u1                           '(t))
+          (u2                           '(nil))
+          (t                            nil))))
+
+;; Not used now.
 (defun bmkp-w3m-cp (b1 b2)
   "True if bookmark B1 sorts as a W3M URL bookmark before B2.
 B1 and B2 are bookmarks or bookmark names.
@@ -3993,6 +4045,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   (let ((bname            (bookmark-name-from-full-record bookmark))
         (buf              (bmkp-get-buffer-name bookmark))
         (file             (bookmark-get-filename bookmark))
+        (location         (bookmark-prop-get bookmark 'location))
         (start            (bookmark-get-position bookmark))
         (end              (bmkp-get-end-position bookmark))
         (created          (bookmark-prop-get bookmark 'created))
@@ -4008,9 +4061,11 @@ BOOKMARK is a bookmark name or a bookmark record."
         (gnus-p           (bmkp-gnus-bookmark-p bookmark))
         (info-p           (bmkp-info-bookmark-p bookmark))
         (man-p            (bmkp-man-bookmark-p bookmark))
+        (url-p            (bmkp-url-bookmark-p bookmark))
         (w3m-p            (bmkp-w3m-bookmark-p bookmark))
         (annot            (bookmark-get-annotation bookmark))
         no-position-p)
+    (setq no-position-p  (not start))
     (when (or sequence-p function-p varlist-p) (setq no-position-p  t))
     (let* ((help-text
             (concat
@@ -4037,7 +4092,8 @@ BOOKMARK is a bookmark name or a bookmark record."
                    (info-p           (format "Info node:\t\t(%s) %s\n"
                                              (file-name-nondirectory file)
                                              (bookmark-prop-get bookmark 'info-node)))
-                   (w3m-p            (format "W3M URL:\t\t%s\n" file))
+                   (w3m-p            (format "W3m URL:\t\t%s\n" file))
+                   (url-p            (format "URL:\t\t%s\n" location))
                    (desktop-p        (format "Desktop file:\t\t%s\n"
                                              (bookmark-prop-get bookmark 'desktop-file)))
                    (bookmark-file-p  (format "Bookmark file:\t\t%s\n"
@@ -4702,6 +4758,22 @@ Handler function for record returned by `bmkp-make-varlist-record'."
     (message "Variables restored in buffer `%s': %S" buf (mapcar #'car vars+vals))
     (sit-for 3)))
 
+;; URL browse support
+(defun bmkp-make-url-browse-record (url) 
+  "Create and return a url bookmark for `browse-url' to visit URL.
+The handler is `bmkp-jump-url-browse'."
+  (require 'browse-url)
+  `((filename . ,bmkp-non-file-filename)
+    (location . ,url)
+    (handler  . bmkp-jump-url-browse)))
+
+(defun bmkp-jump-url-browse (bookmark)
+  "Handler function for record returned by `bmkp-make-url-browse-record'.
+BOOKMARK is a bookmark name or a bookmark record."
+  (require 'browse-url)
+  (let ((url  (bookmark-prop-get bookmark 'location)))
+    (browse-url url)))
+
 ;; W3M support
 (defun bmkp-make-w3m-record ()
   "Make a special entry for w3m buffers."
@@ -5286,7 +5358,32 @@ This is a specialization of `bookmark-jump'."
   (bmkp-jump-1 bookmark-name 'switch-to-buffer nil))
 
 ;;;###autoload
-(defun bmkp-w3m-jump (bookmark-name &optional use-region-p) ; `C-x j n'
+(defun bmkp-url-jump (bookmark-name &optional use-region-p) ; `C-x j u'
+  "Jump to a URL bookmark.
+This is a specialization of `bookmark-jump' - see that, in particular
+for info about using a prefix argument."
+  (interactive
+   (let ((alist  (if (fboundp 'w3m-list-buffers)
+                     (bmkp-url-alist-only)
+                   (bmkp-url-browse-alist-only))))
+     (list (bmkp-read-bookmark-for-type "URL " alist nil nil 'bmkp-url-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
+
+;;;###autoload
+(defun bmkp-url-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j u'
+  "Jump to an URL bookmark in another window.
+See `bmkp-url-jump'."
+  (interactive
+   (let ((alist  (if (fboundp 'w3m-list-buffers)
+                     (bmkp-url-alist-only)
+                   (bmkp-url-browse-alist-only))))
+     (list (bmkp-read-bookmark-for-type "URL " alist t nil 'bmkp-url-history)
+           current-prefix-arg)))
+  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
+
+;;;###autoload
+(defun bmkp-w3m-jump (bookmark-name &optional use-region-p) ; `C-x j w'
   "Jump to a W3M bookmark.
 This is a specialization of `bookmark-jump' - see that, in particular
 for info about using a prefix argument."
@@ -6045,6 +6142,10 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 ;;;###autoload
 (define-key bmkp-jump-other-window-map "t%+"  'bmkp-some-tags-regexp-jump-other-window)
 ;;;###autoload
+(define-key bmkp-jump-map              "u"    'bmkp-url-jump)
+;;;###autoload
+(define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window)
+;;;###autoload
 (define-key bmkp-jump-map              "v"    'bmkp-varlist-jump)
 ;;;###autoload
 (define-key bmkp-jump-map              "w"    'bmkp-w3m-jump)
@@ -6348,9 +6449,9 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (define-key bmkp-jump-menu [bmkp-jump-in-navlist-other-window]
   '(menu-item "In Navigation List..." bmkp-jump-in-navlist-other-window
     :help "Jump to a bookmark that is in the navigation list" :enable bmkp-nav-alist))
-(define-key bmkp-jump-menu [bmkp-w3m-jump-other-window]
-  '(menu-item "URL (W3M)..." bmkp-w3m-jump-other-window :help "Jump to an W3M bookmark"
-    :enable (bmkp-w3m-alist-only)))
+(define-key bmkp-jump-menu [bmkp-url-jump-other-window]
+  '(menu-item "URL..." bmkp-url-jump-other-window :help "Jump to a URL bookmark"
+    :enable (bmkp-url-alist-only)))
 (define-key bmkp-jump-menu [bmkp-gnus-jump-other-window]
   '(menu-item "Gnus..." bmkp-gnus-jump-other-window :help "Jump to a Gnus bookmark"
     :enable (bmkp-gnus-alist-only)))

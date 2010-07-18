@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 12:58:12 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:31:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3740
+;;     Update #: 3745
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2780,8 +2780,12 @@ toggle Icicle mode off and then back on."
      icicle-bookmark-some-tags-regexp (featurep 'bookmark+))              ; `C-x j t % +'
     (bmkp-some-tags-regexp-jump-other-window
      icicle-bookmark-some-tags-regexp-other-window (featurep 'bookmark+)) ; `C-x 4 j t % +'
+    (bmkp-url-jump
+     icicle-bookmark-url (featurep 'bookmark+))                           ; `C-x j u'
+    (bmkp-url-jump-other-window
+     icicle-bookmark-url-other-window (featurep 'bookmark+))              ; `C-x 4 j u'
     (bmkp-w3m-jump
-     icicle-bookmark-w3m-other-window (featurep 'bookmark+))              ; `C-x j w'
+     icicle-bookmark-w3m (featurep 'bookmark+))                           ; `C-x j w'
     (bmkp-w3m-jump-other-window
      icicle-bookmark-w3m-other-window (featurep 'bookmark+))              ; `C-x 4 j w'
 

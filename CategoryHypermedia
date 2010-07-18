@@ -47,7 +47,7 @@ Examples:
 * FreexMode -- A personal wiki on steroids - interfaces with a sqlite database to store your metadata, automatically creates hyperlinks to existing pages and provides a sophisticated tagging mechanism
 * FreeMind -- transforming between org-mode and /FreeMind/ mindmapping files.
 * SpartanWiki --- a really spartan personal wiki
-* OrgMode --- can be used as a personal wiki, either in one big file or in many interlinked files. Pages can exported individually to html or published collectively as a website.
+* OrgMode --- 可以当作一个个人 wiki , 可以是单个大型的文件或者是众多的互相关联的文件. 页面可以个别的导出为 html 文件, 或者作为整体发布为一个web站点.
 * [[N3Mode]] --- Emacs major mode for Notation 3 RDF
 
 ----

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun 26 07:14:05 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:19:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21206
+;;     Update #: 21232
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -104,6 +104,8 @@
 ;;    (+)`icicle-bookmark-this-buffer',
 ;;    `icicle-bookmark-this-buffer-narrow',
 ;;    (+)`icicle-bookmark-this-buffer-other-window',
+;;    (+)`icicle-bookmark-url', `icicle-bookmark-url-narrow',
+;;    (+)`icicle-bookmark-url-other-window', (+)`icicle-bookmark-w3m',
 ;;    (+)`icicle-bookmark-w3m-other-window',
 ;;    `icicle-bookmark-w3m-narrow', (+)`icicle-buffer',
 ;;    (+)`icicle-buffer-config', (+)`icicle-buffer-list',
@@ -2879,11 +2881,11 @@ The list of bookmark names (strings) is returned." ; Doc string
                        '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
                   (and (icicle-set-intersection types '("gnus" "region"))
                        '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
-                  (and (icicle-set-intersection types '("w3m" "region"))
-                       '(("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)))
+                  (and (icicle-set-intersection types '("url" "region"))
+                       '(("by URL" (bmkp-url-cp) icicle-alpha-p)))
                   (and (icicle-set-difference types
-                                              '("bookmark-list" "desktop" "gnus" "info" "man" "w3m"))
-                       '(("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                                              '("bookmark-list" "desktop" "gnus" "info" "man" "url"))
+                       '(("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                               bmkp-local-file-type-cp bmkp-handler-cp)
                           icicle-alpha-p)))
                   (and (icicle-set-difference
@@ -3081,9 +3083,9 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                                 icicle-alpha-p)
                                ("by Info location" (bmkp-info-cp) icicle-alpha-p)
                                ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
-                               ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
+                               ("by URL" (bmkp-url-cp) icicle-alpha-p)
                                ("by bookmark type"
-                                (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                                (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                  bmkp-local-file-type-cp bmkp-handler-cp)
                                 icicle-alpha-p)))
                         '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
@@ -3144,6 +3146,7 @@ Without library `bookmark+.el', this is the same as vanilla Emacs
                (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
                (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
                (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
+               (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow) ; `C-M-u'
                (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
                (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; C-M-@
                (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
@@ -3252,7 +3255,7 @@ If you also use library `bookmark+.el', then:
   `bmkp-non-file'                  - non-file (no current buffer)
   `bmkp-remote-file'               - remote-file
   `bmkp-sequence'                  - sequence bookmark
-  `bmkp-w3m'                       - W3m URL
+  `bmkp-url'                       - URL
 
  * In *Completions*, if option `icicle-show-multi-completion-flag' is
    non-nil, then each completion candidate is a multi-completion:
@@ -3282,7 +3285,8 @@ If you also use library `bookmark+.el', then:
    `C-M-K'   - desktop bookmarks
    `C-M-m'   - `man' pages
    `C-M-r'   - bookmarks with regions
-   `C-M-w'   - W3m bookmarks
+   `C-M-u'   - URL bookmarks
+   `C-M-w'   - W3M (URL) bookmarks
    `C-M-@'   - remote-file bookmarks
    `C-M-.'   - bookmarks for the current buffer
    `C-M-= b' - bookmarks for specific buffers
@@ -3331,8 +3335,8 @@ position is highlighted."               ; Doc string
                     icicle-alpha-p)
                    ("by Info location" (bmkp-info-cp) icicle-alpha-p)
                    ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
-                   ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
-                   ("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                   ("by URL" (bmkp-url-cp) icicle-alpha-p)
+                   ("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                         bmkp-local-file-type-cp bmkp-handler-cp)
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
@@ -3398,6 +3402,7 @@ position is highlighted."               ; Doc string
         (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
         (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
         (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
+        (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow) ; `C-M-u'
         (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
         (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
         (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
@@ -3459,8 +3464,8 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
                     icicle-alpha-p)
                    ("by Info location" (bmkp-info-cp) icicle-alpha-p)
                    ("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)
-                   ("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)
-                   ("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+                   ("by URL" (bmkp-url-cp) icicle-alpha-p)
+                   ("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                         bmkp-local-file-type-cp bmkp-handler-cp)
                     icicle-alpha-p)))
             '(("by previous use alphabetically" . icicle-historical-alphabetic-p)
@@ -3526,6 +3531,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
         (define-key (symbol-value map) "\C-\M-g" 'icicle-bookmark-gnus-narrow) ; `C-M-g'
         (define-key (symbol-value map) "\C-\M-m" 'icicle-bookmark-man-narrow) ; `C-M-m'
         (define-key (symbol-value map) "\C-\M-r" 'icicle-bookmark-region-narrow) ; `C-M-r'
+        (define-key (symbol-value map) "\C-\M-u" 'icicle-bookmark-url-narrow) ; `C-M-u'
         (define-key (symbol-value map) "\C-\M-w" 'icicle-bookmark-w3m-narrow) ; `C-M-w'
         (define-key (symbol-value map) "\C-\M-@" 'icicle-bookmark-remote-file-narrow) ; `C-M-@'
         (define-key (symbol-value map) [(control meta ?=) ?b] ; `C-M-= b'
@@ -3565,7 +3571,7 @@ Same as `icicle-bookmark', but uses another window." ; Doc string
            ((bmkp-info-bookmark-p cand)            'bmkp-info)
            ((bmkp-man-bookmark-p cand)             'bmkp-man)
            ((bmkp-gnus-bookmark-p cand)            'bmkp-gnus)
-           ((bmkp-w3m-bookmark-p cand)             'bmkp-w3m)
+           ((bmkp-url-bookmark-p cand)             'bmkp-url)
            ((bmkp-remote-file-bookmark-p cand)     'bmkp-remote-file)
            ((and (bmkp-file-bookmark-p cand)
                  (file-directory-p
@@ -3642,7 +3648,7 @@ You probably don't want to use this.  Use
          (gnus-p      (and (fboundp 'bmkp-gnus-bookmark-p) (bmkp-gnus-bookmark-p bmk)))
          (info-p      (and (fboundp 'bmkp-info-bookmark-p) (bmkp-info-bookmark-p bmk)))
          (man-p       (and (fboundp 'bmkp-man-bookmark-p) (bmkp-man-bookmark-p bmk)))
-         (w3m-p       (and (fboundp 'bmkp-w3m-bookmark-p) (bmkp-w3m-bookmark-p bmk)))
+         (url-p       (and (fboundp 'bmkp-url-bookmark-p) (bmkp-url-bookmark-p bmk)))
          type-info-p no-position-p)
     (when (or sequence-p function-p) (setq no-position-p  t))
     (concat (setq type-info-p
@@ -3658,7 +3664,7 @@ You probably don't want to use this.  Use
                                           (format "`man %s', " man-args)
                                         ;; WoMan has no variable for the cmd name.
                                         (format "%s, " (bookmark-prop-get bmk 'buffer-name)))))
-                        (w3m-p      "W3M URL, ")
+                        (url-p      "URL, ")
                         (t nil)))
             (and (not dired-p)
                  (or (and file (or (not (boundp 'bmkp-non-file-filename))
@@ -3807,8 +3813,14 @@ You are prompted for the FILES."
        (with-current-buffer orig-buff
          (bmkp-this-buffer-p (funcall icicle-get-alist-candidate-function (car x)))))))
 
+(defun icicle-bookmark-url-narrow ()    ; Bound to `C-M-u' in minibuffer for bookmark completion.
+  "Narrow the bookmark candidates to URL bookmarks."
+  (interactive)
+  (icicle-narrow-candidates-with-predicate
+   #'(lambda (x) (bmkp-url-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
+
 (defun icicle-bookmark-w3m-narrow ()    ; Bound to `C-M-w' in minibuffer for bookmark completion.
-  "Narrow the bookmark candidates to W3m bookmarks."
+  "Narrow the bookmark candidates to W3M (URL) bookmarks."
   (interactive)
   (icicle-narrow-candidates-with-predicate
    #'(lambda (x) (bmkp-w3m-bookmark-p (funcall icicle-get-alist-candidate-function (car x))))))
@@ -3861,10 +3873,10 @@ command")))
         '(("by Info location" (bmkp-info-cp) icicle-alpha-p)))
        (and (member ,type '("gnus" "region"))
         '(("by Gnus thread" (bmkp-gnus-cp) icicle-alpha-p)))
-       (and (member ,type '("w3m" "region"))
-        '(("by w3m url" (bmkp-w3m-cp) icicle-alpha-p)))
-       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "w3m")))
-        '(("by bookmark type" (bmkp-info-cp bmkp-gnus-cp bmkp-w3m-cp
+       (and (member ,type '("url" "region"))
+        '(("by URL" (bmkp-url-cp) icicle-alpha-p)))
+       (and (not (member ,type '("bookmark-list" "desktop" "gnus" "info" "man" "url")))
+        '(("by bookmark type" (bmkp-info-cp bmkp-url-cp bmkp-gnus-cp
                                bmkp-local-file-type-cp bmkp-handler-cp)
            icicle-alpha-p)))
        (and (not (member ,type '("bookmark-list" "desktop" "dired" "non-file")))
@@ -3960,6 +3972,7 @@ appropriate `bmkp-TYPE-alist-only' function."
 ;;  `icicle-bookmark-some-tags',            `icicle-bookmark-some-tags-other-window'
 ;;  `icicle-bookmark-some-tags-regexp',     `icicle-bookmark-some-tags-regexp-other-window'
 ;;  `icicle-bookmark-this-buffer',          `icicle-bookmark-this-buffer-other-window'
+;;  `icicle-bookmark-url',                  `icicle-bookmark-url-other-window'
 ;;  `icicle-bookmark-w3m',                  `icicle-bookmark-w3m-other-window'
 
 ;; Other-window means nothing for a bookmark list or a desktop.
@@ -3999,6 +4012,8 @@ appropriate `bmkp-TYPE-alist-only' function."
                                              (read-string "Regexp for tags: "))
 (icicle-define-bookmark-other-window-command "some-tags-regexp" nil           ; `C-x 4 j t % +'
                                              (read-string "Regexp for tags: "))
+(icicle-define-bookmark-command              "url")                           ; `C-x j u'
+(icicle-define-bookmark-other-window-command "url")                           ; `C-x 4 j u'
 (icicle-define-bookmark-command              "w3m")                           ; `C-x j w'
 (icicle-define-bookmark-other-window-command "w3m")                           ; `C-x 4 j w'
 (icicle-define-bookmark-command              "this-buffer")                   ; `C-x j .'

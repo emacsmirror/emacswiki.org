@@ -6,12 +6,12 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul 14 15:22:22 2010 (-0700)
+;; Last-Updated: Sat Jul 17 11:23:35 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13137
+;;     Update #: 13139
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
-;;           info, w3m, gnus
+;;           info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
@@ -229,10 +229,9 @@
 ;; 	   - The current set of buffers and their associated files.
 ;;           For each: its mode, point, mark, & some local variables.
 ;;
-;;     - You can bookmark a Gnus article, a URL (if you use W3M), a
-;;       PDF file (DocView), a UNIX manual page (from the output of
-;;       Emacs command `man' or `woman'), an image, or a piece of
-;;       music.
+;;     - You can bookmark a Gnus article, a URL, a PDF file (DocView),
+;;       a UNIX manual page (from the output of Emacs command `man' or
+;;       `woman'), an image, or a piece of music.
 ;;
 ;;     - You can bookmark a buffer that is not associated with a file.
 ;;

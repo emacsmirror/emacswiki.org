@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 13:44:59 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:52:54 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27040
+;;     Update #: 27049
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1613,7 +1613,7 @@
 ;;  * By last (local) file update (date + time)
 ;;  * By Info location (manual and node)
 ;;  * By Gnus thread
-;;  * By W3M URL
+;;  * By URL
 ;;  * By bookmark type
 ;;
 ;;  The most general Icicles jump commands are `icicle-bookmark' and
@@ -1635,7 +1635,8 @@
 ;;  `C-M-K' - desktop bookmarks
 ;;  `C-M-m' - `man' pages
 ;;  `C-M-r' - bookmarks with regions
-;;  `C-M-w' - W3m bookmarks
+;;  `C-M-u' - URL bookmarks
+;;  `C-M-w' - W3M (URL) bookmarks
 ;;  `C-M-@' - remote-file bookmarks
 ;;
 ;;  In addition, there are individual jump commands for bookmarks of
@@ -1710,7 +1711,7 @@
 ;;  * icicle-search-non-file-bookmark
 ;;  * icicle-search-region-bookmark
 ;;  * icicle-search-remote-file-bookmark
-;;  * icicle-search-w3m-bookmark
+;;  * icicle-search-url-bookmark
 ;;
 ;;  All of these except `icicle-search-bookmark' act only on bookmarks
 ;;  of a specific type.  But all of them act the same way.  They are
@@ -5701,7 +5702,7 @@
 ;;
 ;;  Option `icicle-top-level-key-bindings' remaps not only these
 ;;  standard Emacs commands but also some commands provided by other
-;;  libraries.  For example, if you use library `bookmark+.el', then
+;;  libraries.  For example, if you use package Bookmark+, then
 ;;  type-specific bookmark jump commands such as
 ;;  `bmkp-dired-jump-other-window' are remapped to Icicles
 ;;  multi-command versions.
@@ -5786,7 +5787,7 @@
 ;;  `icicle-search-region-bookmark' - Search bookmarked regions
 ;;  `icicle-search-remote-file-bookmark' - Search remote files
 ;;  `icicle-search-sentences' - Search using sentences as contexts
-;;  `icicle-search-w3m-bookmark' - Search W3M bookmarks
+;;  `icicle-search-url-bookmark' - Search URL bookmarks
 ;;  `icicle-select-window' - Select a window by its buffer name
 ;;  `icicle-set-option-to-t' - Set value of binary option to t
 ;;  `icicle-toggle-option' - Toggle the value of a binary option
@@ -6242,8 +6243,8 @@
 ;;  * During completion of names of some kinds of objects (files,
 ;;    buffers, directories, Info nodes), `C-x m' lets you complete
 ;;    against bookmarks that have the same type as those objects (file
-;;    bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks)
-;;    This feature requires use of library `bookmark+.el'.
+;;    bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks).
+;;    This feature requires use of package Bookmark+.
 ;;
 ;;  * During completion of file names, `C-backspace' is bound to
 ;;    `icicle-up-directory', which navigates to the parent directory
@@ -7299,7 +7300,7 @@
 ;;  `icicle-bookmark-non-file-*' - Jump: bookmarked buffer
 ;;  `icicle-bookmark-region-*' - Jump: bookmarked region
 ;;  `icicle-bookmark-remote-file-*' - Jump: bookmarked remote file
-;;  `icicle-bookmark-w3m-*' - Jump: bookmarked URL
+;;  `icicle-bookmark-url-*' - Jump: bookmarked URL
 ;;  `icicle-buffer'       - Switch to another buffer
 ;;  `icicle-buffer-config' - Choose a config for buffer commands
 ;;  `icicle-buffer-list'  - Choose a list of buffer names
@@ -7362,7 +7363,7 @@
 ;;  `icicle-search-non-file-bookmark' - Search a bookmarked buffer
 ;;  `icicle-search-region-bookmark' - Search a bookmarked region
 ;;  `icicle-search-remote-file-bookmark' - Search a remote bookmark
-;;  `icicle-search-w3m-bookmark' - Search a bookmarked URL
+;;  `icicle-search-url-bookmark' - Search a bookmarked URL
 ;;  `icicle-select-frame' - Select frame by name and raise it
 ;;  `icicle-select-window' - Select window by its buffer name
 ;;  `icicle-set-option-to-t' - Set the value of a binary option to t

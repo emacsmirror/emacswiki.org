@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 11:21:02 2010 (-0700)
+;; Last-Updated: Sat Jul 17 13:17:37 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1316
+;;     Update #: 1318
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -693,7 +693,7 @@ input prompt is prefixed by `+'.
 + `icicle-bookmark-non-file-other-window' - Jump to buffer bookmark
 + `icicle-bookmark-region-other-window' - Jump to a region bookmark
 + `icicle-bookmark-remote-file-other-window' - Jump to a remote file
-+ `icicle-bookmark-w3m-other-window'   - Jump to a W3M (URL) bookmark
++ `icicle-bookmark-url-other-window'   - Jump to a URL bookmark
 + `icicle-buffer'(`-other-window')     - Switch to buffer (`C-x b')
 + `icicle-buffer-config'               - Pick `icicle-buffer' options
 + `icicle-buffer-list'                 - Choose a list of buffer names
@@ -789,7 +789,7 @@ input prompt is prefixed by `+'.
 + `icicle-search-remote-file-bookmark' - Search remote bookmarks
 + `icicle-search-sentences'            - Search sentences as contexts
 + `icicle-search-text-property'        - Search for face... (`C-c \"')
-+ `icicle-search-w3m-bookmark'         - Search bookmarked URLs
++ `icicle-search-url-bookmark'         - Search bookmarked URLs
 + `icicle-search-word'                 - Whole-word search
 + `icicle-select-bookmarked-region'    - Select bookmarked regions
 + `icicle-select-frame'                - Select a frame by name

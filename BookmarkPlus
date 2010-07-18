@@ -102,7 +102,7 @@ saved desktop.  A desktop includes:
 
 ** The current set of buffers and their associated files. ''For each:'' its mode, [[point]], [[mark]], and some local variables.
 
-* You can bookmark a ''[[Gnus]]'' article, a ''URL'' (if you use [[w3m|W3M]]), a ''PDF file'' (%%DocView%%),  a UNIX ''manual page'' (from the output of Emacs command `[[ManMode|man]]' or `[[WoMan|woman]]'), an ''image'', or a piece of ''music''.
+* You can bookmark a ''[[Gnus]]'' article, a ''URL'', a ''PDF file'' (%%DocView%%),  a UNIX ''manual page'' (from the output of Emacs command `[[ManMode|man]]' or `[[WoMan|woman]]'), an ''image'', or a piece of ''music''.
 
 * You can bookmark a ''[[buffer]]'' that is not associated with a file.
 

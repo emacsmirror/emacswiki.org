@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jul 14 13:23:59 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:28:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5559
+;;     Update #: 5585
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/07/17 dadams
+;;     Added: icicle-bookmark-url-narrow, icicle-bookmark-url(-other-window).
+;;     icicle-bookmark(-list|-set|-other-window|-propertize-candidate|-help-string),
+;;       icicle-define-bookmark-command-1: w3m -> url.
+;;     Bound URL commands to C-M-u, C-x j u.
 ;; 2010/07/02 dadams
 ;;     icicle-bookmark-set: Added INTERACTIVEP arg.  Prompt for tags when bmkp-prompt-for-tags-flag.
 ;;                          Highlight bookmark if bmkp-auto-light-when-set.
@@ -306,6 +311,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/07/17 dadams
+;;     Added: icicle-search-url-bookmark.
+;;     icicle-search-bookmark, icicle-define-search-bookmark-command: w3m -> url.  Added C-M-u binding.
 ;; 2010/07/14 dadams
 ;;     icicle-Info-index: Bind C-x m to icicle-bookmark-info-other-window.
 ;;     icicle-Info-read-node-name: Restore original binding of C-x m, if any.
@@ -3095,6 +3103,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/07/17 dadams
+;;     w3m - > url.  Add URL jump bindings.  Replace w3m by url otherwise.
 ;; 2010/06/11 dadams
 ;;     icicle-define-minibuffer-maps: Bind/restore C-c + to icicle-make-directory in file-name maps.
 ;; 2010/06/04 dadams
@@ -4002,6 +4012,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/07/17 dadams
+;;     icicle-top-level-key-bindings: Added *url-jump(-other-window).
 ;; 2010/06/18 dadams
 ;;     Renamed: bookmarkp-* to bmkp-*.
 ;; 2010/06/09 dadams

@@ -134,6 +134,7 @@ by '''Icicles''' commands:
 [:icicle-bookmark-non-file-other-window]
 [:icicle-bookmark-region-other-window]
 [:icicle-bookmark-remote-file-other-window]
+[:icicle-bookmark-url-other-window]
 [:icicle-bookmark-w3m-other-window]
 [:icicle-buffer]
 [:icicle-buffer-other-window]
@@ -206,7 +207,7 @@ default, this value is `yank'.
 
 Option `icicle-top-level-key-bindings' remaps not only these standard
 Emacs commands but also some commands provided by other libraries.
-For example, if you use library <tt>[[bookmark+.el]]</tt>, then type-specific
+For example, if you use package '''[[Bookmark+]]''', then type-specific
 [[bookmark]] jump commands such as `bookmarkp-dired-jump-other-window'
 are remapped to '''Icicles''' multi-command versions.
 
@@ -232,6 +233,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-bookmark-non-file-other-window]
 [:icicle-bookmark-region-other-window]
 [:icicle-bookmark-remote-file-other-window]
+[:icicle-bookmark-url-other-window]
 [:icicle-bookmark-w3m-other-window]
 [:icicle-buffer-config]
 [:icicle-buffer-list]
@@ -274,7 +276,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:icicle-search-non-file-bookmark]
 [:icicle-search-region-bookmark]
 [:icicle-search-remote-file-bookmark]
-[:icicle-search-w3m-bookmark]
+[:icicle-search-url-bookmark]
 [:icicle-select-window]
 [:icicle-set-option-to-t]
 [:icicle-toggle-option]
@@ -345,7 +347,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-region-bookmark' -- Search bookmarked regions
 * `icicle-search-remote-file-bookmark' -- Search remote files
 * `icicle-search-sentences' -- Search using sentences as contexts
-* `icicle-search-w3m-bookmark' -- Search W3M bookmarks
+* `icicle-search-url-bookmark' -- Search URL bookmarks
 * `icicle-select-window' -- Select a window by its buffer name
 * `icicle-set-option-to-t' -- Set value of binary option to `t'
 * `icicle-toggle-option' -- Toggle the value of a binary option
@@ -926,8 +928,8 @@ Some additional bindings are made available in the minibuffer for
 * During completion of names of some kinds of objects (files,
    buffers, directories, Info nodes), '''`C-x m'''' lets you complete
    against bookmarks that have the same type as those objects (file
-   bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks)
-   This feature requires use of library `bookmark+.el'.
+   bookmarks, buffer bookmarks, Dired bookmarks, Info bookmarks).
+   This feature requires use of package '''[[Bookmark+]]'''.
 
 * During completion of file names, '''`C-backspace'''' is bound to
   `icicle-up-directory', which navigates to the parent directory

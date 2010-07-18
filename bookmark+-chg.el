@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul 14 09:30:44 2010 (-0700)
+;; Last-Updated: Sat Jul 17 12:39:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 12987
+;;     Update #: 13025
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -90,10 +90,45 @@
 ;;  headings throughout this file.  You can get `linkd.el' here:
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
-;;  (@> "CHANGE LOG FOR `bookmark+.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-1.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-lit.el'")
+;;  (@> "CHANGE LOG FOR `bookmark+.el'")
+ 
+;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
+;;
+;; 2010/07/17 dadams
+;;     Added: bmkp-url-jump-(other-window), bmkp-url(-browse)-(alist-only|bookmark-p), bmkp-url-cp,
+;;            bmkp-url-history, bmkp-make-url-browse-record, bmkp-jump-url-browse.
+;;     bmkp-sort-comparer: Use bmkp-url-cp, not bmkp-w3m-cp.
+;;     bmkp-types-alist: w3m -> url.
+;;     bookmark-alist: Updated doc string to mention LOCATION.  W3M -> URL.
+;;     bmkp-bookmark-description: Treat URL.  Set no-position-p depending on start.
+;;     Bind bmkp-url-jump*.  Replace W3M by URL in menu items.
+;; 2010/07/14 dadams
+;;     Created from bookmark+.el code.
+ 
+;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
+;;
+;; 2010/07/17 dadams
+;;     Added: bmkp-bmenu-mark-url-bookmarks, bmkp-bmenu-show-only-urls, bmkp-bmenu-sort-by-url.
+;;     Removed: bmkp-bmenu-sort-by-w3m-url.
+;;     Replaced face bmkp-w3m by bmkp-url.
+;;     bookmark-bmenu-mode: Added mark and show URL commands.
+;;     bookmark-bmenu-mode, *-status-help, *-sort-by-bookmark-type, *-define-sort-command: w3m -> url.
+;;     Bind bmkp-bmenu-sort-by-url, not bmkp-bmenu-sort-by-w3m-url.
+;;     Bind bmkp-bmenu-mark-url-bookmarks, bmkp-bmenu-show-only-urls.
+;;     Replace W3M by URL in menu items.
+;; 2010/07/14 dadams
+;;     Created from bookmark+.el code.
+ 
+;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
+;;
+;; 2010/07/03 dadams
+;;     bmkp-set-lighting-for-bookmark, bmkp-bmenu-set-lighting-for-marked:
+;;       Use *-refresh-menu-list, not *-surreptitiously-*.
+;; 2010/07/01 dadams
+;;     Created.
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
@@ -1121,24 +1156,6 @@
 ;;     Different menu-bar command, depending on Emacs version.
 ;; 2004/09/21 dadams
 ;;     Only define bookmark-menu-jump-other-window if < Emacs 22.
- 
-;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
-;;
-;; 2010/07/14 dadams
-;;     Created from bookmark+.el code.
- 
-;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
-;;
-;; 2010/07/14 dadams
-;;     Created from bookmark+.el code.
- 
-;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
-;;
-;; 2010/07/03 dadams
-;;     bmkp-set-lighting-for-bookmark, bmkp-bmenu-set-lighting-for-marked:
-;;       Use *-refresh-menu-list, not *-surreptitiously-*.
-;; 2010/07/01 dadams
-;;     Created.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 

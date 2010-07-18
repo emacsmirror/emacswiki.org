@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 18 09:56:40 2010 (-0700)
+;; Last-Updated: Sat Jul 17 14:18:32 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22764
+;;     Update #: 22767
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -146,6 +146,7 @@
 ;;    `icicle-bookmark-specific-files-other-window',
 ;;    `icicle-bookmark-this-buffer',
 ;;    `icicle-bookmark-this-buffer-other-window',
+;;    `icicle-bookmark-url', `icicle-bookmark-url-other-window'
 ;;    `icicle-bookmark-w3m-other-window', `icicle-buffer',
 ;;    `icicle-buffer-config', `icicle-buffer-list',
 ;;    `icicle-buffer-other-window',
@@ -256,11 +257,12 @@
 ;;    `icicle-search-specific-files-bookmark',
 ;;    `icicle-search-text-property',
 ;;    `icicle-search-this-buffer-bookmark',
-;;    `icicle-search-w3m-bookmark', `icicle-search-word',
-;;    `icicle-select-bookmarked-region', `icicle-select-frame',
-;;    `icicle-select-frame-by-name', `icicle-select-window',
-;;    `icicle-select-window-by-name', `icicle-send-bug-report',
-;;    `icicle-set-option-to-t', `icicle-shell-command-on-file',
+;;    `icicle-search-url-bookmark', `icicle-search-w3m-bookmark',
+;;    `icicle-search-word', `icicle-select-bookmarked-region',
+;;    `icicle-select-frame', `icicle-select-frame-by-name',
+;;    `icicle-select-window', `icicle-select-window-by-name',
+;;    `icicle-send-bug-report', `icicle-set-option-to-t',
+;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename', `icicle-sit-for',
@@ -347,8 +349,8 @@
 ;;    `icicle-bookmark-specific-buffers-narrow',
 ;;    `icicle-bookmark-specific-files-narrow',
 ;;    `icicle-bookmark-this-buffer-narrow',
-;;    `icicle-bookmark-w3m-narrow', `icicle-candidate-action',
-;;    `icicle-candidate-alt-action',
+;;    `icicle-bookmark-url-narrow', `icicle-bookmark-w3m-narrow',
+;;    `icicle-candidate-action', `icicle-candidate-alt-action',
 ;;    `icicle-candidate-read-fn-invoke',
 ;;    `icicle-candidate-set-complement',
 ;;    `icicle-candidate-set-define',

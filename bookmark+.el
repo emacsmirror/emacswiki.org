@@ -7,16 +7,17 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Jul 14 09:56:19 2010 (-0700)
+;; Last-Updated: Sat Jul 17 10:21:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14937
+;;     Update #: 14939
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
-;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, w3m, gnus
+;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+', `bookmark+-lit', `ffap', `pp'.
+;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
+;;   `bookmark+-lit', `ffap', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -28,7 +29,7 @@
 ;;
 ;;    `bookmark+.el'     - main (driver) library (this file)
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
-;;    `bookmark+-1.el'   - other (non-bmenu) required code
+;;    `bookmark+-1.el'   - other required code (non-bmenu)
 ;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)

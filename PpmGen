@@ -1,0 +1,10 @@
+This package provide a set of PPM file generation function, you can
+now use emacs as a canvas to draw thing, and output to a buffer,
+view it with image-mode. emacs are slow on this kind of massive
+math operations, by I managed to write a ray tracer with ppm-gen.
+
+
+Lisp:ppm-gen.el
+
+-----
+CategoryProgrammerUtils
