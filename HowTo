@@ -2,19 +2,19 @@
 [[zh:教导]]
 [[de:KurzAnleitung]]
 
-* [[HowToNavigate|浏览]] 和 [[HowToSearch|搜索]] wiki.
+* [[HowToNavigate|Navigate]] and [[HowToSearch|search]] the wiki.
 
-* [[HowToEdit|编辑]] wiki (包含如何上传 EmacsLisp 库文件).
+* [[HowToEdit|Edit]] the wiki (including how to upload EmacsLisp libraries).
 
-* 在 wiki 中使用不同的自然 [[HowLanguagesWork|语言]] (母语).
+* Use different natural [[HowLanguagesWork|languages]] on the wiki.
 
-* [[WikiDownload|下载]] 所有或者部分 wiki 页面数据.
+* [[WikiDownload|Download]] all or some of the wiki page database.
 
-* 帮助 wiki 的 [[WikiMaintenance|维护]] 任务.
+* Help with wiki [[WikiMaintenance|maintenance]] tasks.
 
-EmacsWiki 是一个协作型 Web 站点.  参考 WikiIntro. 
+EmacsWiki is a collaborative Web site.  See WikiIntro. 
 
-还需要帮助?  访问 WikiQuestions, 或者在 EmacsWikiProblems 中提交问题.
+Still need help?  Visit WikiQuestions, or report a problem at EmacsWikiProblems.
 
 ----
 CategoryEmacsWikiSite

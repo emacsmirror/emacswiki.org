@@ -9,7 +9,7 @@
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/anything.el
 ;; Site: http://www.emacswiki.org/cgi-bin/emacs/Anything
 (defvar anything-version nil)
-(setq anything-version "1.284")
+(setq anything-version "1.285")
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -241,6 +241,10 @@
 ;;   defined.
 
 ;;; (@* "Tips")
+
+;;
+;; `anything' accepts keyword arguments. See docstring.
+;; [EVAL IT] (describe-function 'anything)
 
 ;; 
 ;; `anything-enable-shortcuts' enables us to select candidate easily.
@@ -922,6 +926,7 @@ Arguments are same as `format'."
   (when (or debug-on-error anything-debug)
     (with-current-buffer (get-buffer-create "*Anything Log*")
       (buffer-disable-undo)
+      (set (make-local-variable 'inhibit-read-only) t)
       (goto-char (point-max))
       (insert (let ((tm (current-time)))
                 (format "%s.%06d (%s) %s\n"
@@ -969,19 +974,15 @@ The original idea is from `tramp-debug-message'."
 
 ;; (@* "Anything API")
 (defmacro anything-let (varlist &rest body)
-  "Like `let'. Bind anything buffer local variables according to VARLIST then eval BODY."
-  `(progn (setq anything-let-variables (anything-let-eval-varlist ',varlist))
-          (unwind-protect
-              (progn ,@body)
-            (setq anything-let-variables nil))))
+  "[OBSOLETE] Like `let'. Bind anything buffer local variables according to VARLIST then eval BODY."
+  `(anything-let-internal (anything-let-eval-varlist ',varlist)
+                          (lambda () ,@body)))
 (put 'anything-let 'lisp-indent-function 1)
 
 (defmacro anything-let* (varlist &rest body)
-  "Like `let*'. Bind anything buffer local variables according to VARLIST then eval BODY."
-  `(progn (setq anything-let-variables (anything-let*-eval-varlist ',varlist))
-          (unwind-protect
-              (progn ,@body)
-            (setq anything-let-variables nil))))
+  "[OBSOLETE] Like `let*'. Bind anything buffer local variables according to VARLIST then eval BODY."
+  `(anything-let-internal (anything-let*-eval-varlist ',varlist)
+                          (lambda () ,@body)))
 (put 'anything-let* 'lisp-indent-function 1)
 
 (defun anything-buffer-get ()
@@ -1307,6 +1308,12 @@ Otherwise, return VALUE itself."
                            `(setq ,pair nil)))
                        varlist)
              (mapcar (lambda (v) (cons v (symbol-value v))) ',vars)))))
+(defun anything-let-internal (binding bodyfunc)
+  (setq anything-let-variables binding)
+  (unwind-protect
+      (funcall bodyfunc)
+    (setq anything-let-variables nil)))
+
 
 ;; (@* "Core: tools")
 (defun anything-funcall-with-source (source func &rest args)
@@ -1377,50 +1384,8 @@ This function allows easy sequencing of transformer functions."
 (defvar anything-buffers nil
   "All of `anything-buffer' in most recently used order.")
 
-;;;###autoload
-(defun anything (&optional any-sources any-input any-prompt any-resume any-preselect any-buffer any-keymap)
-  "Select anything. In Lisp program, some optional arguments can be used.
-
-Note that all the optional arguments are prefixed because of
-dynamic scope problem, IOW argument variables may eat
-already-bound variables. Yuck!
-
-- ANY-SOURCES
-
-  Temporary value of `anything-sources'.  It also accepts a
-  symbol, interpreted as a variable of an anything source.  It
-  also accepts an alist representing an anything source, which is
-  detected by (assq 'name ANY-SOURCES)
-
-
-- ANY-INPUT
-
-  Temporary value of `anything-pattern', ie. initial input of minibuffer.
-
-- ANY-PROMPT
-
-  Prompt other than \"pattern: \".
-
-- ANY-RESUME
-
-  If t, Resurrect previously instance of `anything'. Skip the initialization.
-  If 'noresume, this instance of `anything' cannot be resumed.
-
-- ANY-PRESELECT
-
-  Initially selected candidate. Specified by exact candidate or a regexp.
-  Note that it is not working with delayed sources.
-
-- ANY-BUFFER
-
-  `anything-buffer' instead of *anything*.
-
-- ANY-KEYMAP
-
-  `anything-map' for current `anything' session.
-"
-  ;; TODO more document
-  (interactive)
+(defun anything-internal (&optional any-sources any-input any-prompt any-resume any-preselect any-buffer any-keymap)
+  "Older interface of `anything'. It is called by `anything'."
   (anything-log "++++++++++++++++++++++++++++++++++++++++++++++++++++++++")
   (anything-log-eval any-prompt any-preselect any-buffer any-keymap)
   (condition-case v
@@ -1445,6 +1410,85 @@ already-bound variables. Yuck!
      (anything-on-quit)
      (anything-log "end session (quit) -------------------------------------")
      nil)))
+
+(defconst anything-argument-keys '(:sources :input :prompt :resume :preselect :buffer :keymap))
+;;;###autoload
+(defun anything (&rest plist)
+  "Select anything. In Lisp program, some optional arguments can be used.
+
+PLIST is a list like (:key1 val1 :key2 val2 ...) or
+ (&optional sources input prompt resume preselect buffer keymap).
+
+Basic keywords are the following:
+
+- :sources
+
+  Temporary value of `anything-sources'.  It also accepts a
+  symbol, interpreted as a variable of an anything source.  It
+  also accepts an alist representing an anything source, which is
+  detected by (assq 'name ANY-SOURCES)
+
+- :input
+
+  Temporary value of `anything-pattern', ie. initial input of minibuffer.
+
+- :prompt
+
+  Prompt other than \"pattern: \".
+
+- :resume
+
+  If t, Resurrect previously instance of `anything'. Skip the initialization.
+  If 'noresume, this instance of `anything' cannot be resumed.
+
+- :preselect
+
+  Initially selected candidate. Specified by exact candidate or a regexp.
+  Note that it is not working with delayed sources.
+
+- :buffer
+
+  `anything-buffer' instead of *anything*.
+
+- :keymap
+
+  `anything-map' for current `anything' session.
+
+
+Of course, conventional arguments are supported, the two are same.
+
+ (anything :sources sources :input input :prompt prompt :resume resume
+           :preselect preselect :buffer buffer :keymap keymap)
+ (anything sources input prompt resume preselect buffer keymap)
+           
+
+Other keywords are interpreted as local variables of this anything session.
+The `anything-' prefix can be omitted. For example,
+
+ (anything :sources 'anything-c-source-buffers
+           :buffer \"*buffers*\" :candidate-number-limit 10)
+
+means starting anything session with `anything-c-source-buffers'
+source in *buffers* buffer and set
+`anything-candidate-number-limit' to 10 as session local variable. "
+  (interactive)
+  (if (keywordp (car plist))
+      (anything-let-internal
+       (anything-parse-keys plist)
+       (lambda ()
+         (apply 'anything
+                (mapcar (lambda (key) (plist-get plist key))
+                        anything-argument-keys))))
+    (apply 'anything-internal plist)))
+
+(defun anything-parse-keys (keys)
+  (loop for (key value &rest _) on keys by #'cddr
+        for symname = (substring (symbol-name key) 1)
+        for sym = (intern (if (string-match "^anything-" symname)
+                              symname
+                            (concat "anything-" symname)))
+        unless (memq key anything-argument-keys)
+        collect (cons sym value)))
 
 (defun anything-resume-p (any-resume)
   "Whethre current anything session is resumed or not."
@@ -5608,6 +5652,15 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
             (and (assq 'a (buffer-local-variables))
                  (assq 'b (buffer-local-variables))
                  (assq 'c (buffer-local-variables))))))
+      (expect 'retval
+        (let ((a 9999)
+              (b 8)
+              (c)
+              (anything-buffer (exps-tmpbuf)))
+          (anything-let ((a 1)
+                         (b (1+ a))
+                         c)
+            'retval)))
       (desc "anything-let*")
       (expect '(1 2 nil)
         (let ((a 9999)
@@ -5633,6 +5686,30 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
             (and (assq 'a (buffer-local-variables))
                  (assq 'b (buffer-local-variables))
                  (assq 'c (buffer-local-variables))))))
+      (expect 'retval*
+        (let ((a 9999)
+              (b 8)
+              (c)
+              (anything-buffer (exps-tmpbuf)))
+          (anything-let* ((a 1)
+                         (b (1+ a))
+                         c)
+            'retval*)))
+      (desc "anything with keyw")
+      (expect (mock (anything-internal 'test-source "input" "prompt: " nil "preselect" "*test*" nil))
+        (anything :sources   'test-source
+                   :input     "input"
+                   :prompt    "prompt: "
+                   :resume    nil
+                   :preselect "preselect"
+                   :buffer    "*test*"
+                   :keymap    nil))
+      (expect (mock (anything-internal 'test-source nil nil nil nil "*test*" nil))
+        (anything :sources                'test-source
+                   :buffer                 "*test*"
+                   :candidate-number-limit 20))
+      (expect (mock (anything-internal 'test-source nil nil nil nil "*test*" nil))
+        (anything 'test-source nil nil nil nil "*test*" nil))
       )))
 
 

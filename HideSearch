@@ -7,3 +7,5 @@ See the comments at the top of this file for how to get it working and other tip
 It depends on hide-lines.el, to handle the work of doing the actual hiding.
 
 * Lisp:hide-lines.el
+
+[Wont't loccur suffice? See "Occur-like minor mode: http://www.emacswiki.org/emacs/OccurMode "]

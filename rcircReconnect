@@ -39,4 +39,116 @@ On Emacs21 (21.4.1), ##process-contact## accepts only one parameter; I had to ch
 </pre>
 
 ----
+
+OK, after a lot of tweaking and using other people's code, I finally managed to make rcirc to auto-reconnect when connection breaks. The above reconnect function doesn't work when rcirc process is disconnected, so it needs to be changed. I make it join default channels for the server it reconnects to (from rcirc-server-alist). I'm not sure how to make it track down channels that the user was in at the time of disconnect.
+
+<pre>
+
+
+(defun-rcirc-command reconnect (arg)
+  "Reconnect the server process."
+  (interactive "i")
+  (if (buffer-live-p rcirc-server-buffer)
+      (with-current-buffer rcirc-server-buffer
+	(let ((reconnect-buffer (current-buffer))
+	      (server (or rcirc-server rcirc-default-server))
+	      (port (if (boundp 'rcirc-port) rcirc-port rcirc-default-port))
+	      (nick (or rcirc-nick rcirc-default-nick))
+	      channels)
+	  (dolist (buf (buffer-list))
+	    (with-current-buffer buf
+	      (when (equal reconnect-buffer rcirc-server-buffer)
+		(remove-hook 'change-major-mode-hook
+			     'rcirc-change-major-mode-hook)
+                (let ((server-plist (cdr (assoc-string server rcirc-server-alist)))) 
+                  (when server-plist 
+                    (setq channels (plist-get server-plist :channels))))
+		  )))
+	  (if process (delete-process process))
+	  (rcirc-connect server port nick
+			 nil
+			 nil
+			 channels)))))
+
+;;; Attempt reconnection at increasing intervals when a connection is
+;;; lost.
+
+(defvar rcirc-reconnect-attempts 0)
+
+;;;###autoload
+(define-minor-mode rcirc-reconnect-mode
+  nil
+  nil
+  " Auto-Reconnect"
+  nil
+  (if rcirc-reconnect-mode
+      (progn
+	(make-local-variable 'rcirc-reconnect-attempts)
+	(add-hook 'rcirc-sentinel-hooks
+		  'rcirc-reconnect-schedule nil t))
+    (remove-hook 'rcirc-sentinel-hooks
+		 'rcirc-reconnect-schedule t)))
+
+(defun rcirc-reconnect-schedule (process &optional sentinel seconds)
+  (condition-case err
+      (when (and (eq 'closed (process-status process))
+		 (buffer-live-p (process-buffer process)))
+	(with-rcirc-process-buffer process
+	  (unless seconds
+	    (setq seconds (exp (1+ rcirc-reconnect-attempts))))
+	  (rcirc-print
+	   process "my-rcirc.el" "ERROR" rcirc-target
+	   (format "scheduling reconnection attempt in %s second(s)." seconds) t)
+	  (run-with-timer
+	   seconds
+	   nil
+	   'rcirc-reconnect-perform-reconnect
+	   process)))
+    (error
+     (rcirc-print process "RCIRC" "ERROR" nil
+		  (format "%S" err) t)))
+)
+
+(defun rcirc-reconnect-perform-reconnect (process)
+  (when (and (eq 'closed (process-status process))
+	     (buffer-live-p (process-buffer process))
+	     )
+    (with-rcirc-process-buffer process
+      (when rcirc-reconnect-mode
+	(if (get-buffer-process (process-buffer process))
+	    ;; user reconnected manually
+	    (setq rcirc-reconnect-attempts 0)
+	  (let ((msg (format "attempting reconnect to %s..."
+			     (process-name process)
+			     )))
+	    (rcirc-print process "my-rcirc.el" "ERROR" rcirc-target
+			 msg t))
+	  ;; remove the prompt from buffers
+	  (condition-case err
+	      (progn
+		(save-window-excursion
+		  (save-excursion
+		    (rcirc-cmd-reconnect nil)))
+		(setq rcirc-reconnect-attempts 0))
+	    ((quit error)
+	     (incf rcirc-reconnect-attempts)
+	     (rcirc-print process "my-rcirc.el" "ERROR" rcirc-target
+			  (format "reconnection attempt failed: %s" err)  t)
+	     (rcirc-reconnect-schedule process))))))))
+</pre>
+
+Now, the above code is probably supposed to go to a separate elisp file so as not to clutter up your .emacs. Also setting up rcirc-reconnect-mode manually is annoying, so here's how to enable it for a specific server:
+
+<pre>
+(add-hook 'rcirc-mode-hook
+          (lambda ()
+            ;;Change this to your favorite IRC server(s)
+            (if (string-match "\\*irc\\.foonetic\\.net" (buffer-name)) 
+                (rcirc-reconnect-mode 1))))
+</pre>
+
+Add this to .emacs and you will never stay disconnected from this IRC server again.
+
+----
 CategoryChatClient [[rcirc]]
+

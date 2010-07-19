@@ -5,8 +5,7 @@
 To edit Asciidoc formatted text files in Emacs, there is [[http://xpt.sourceforge.net/tools/doc-mode/ doc-mode]] or [[http://code.google.com/p/sensorflo-emacs/source/browse/trunk/adoc-mode.el adoc-mode]]
 
 Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available at:
-* http://www.metaperl.com/asciidoc-el (2009-09-01 dead)
-* http://static.livingcosmos.org/domains/com/metaperl/www/asciidoc-el/
+* http://github.com/metaperl/asciidoc-el 
 * http://bitbucket.org/metaperl/asciidoc-el/
 
 ----

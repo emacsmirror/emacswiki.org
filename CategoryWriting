@@ -7,6 +7,7 @@ Clicking the title heading to search for pages about writing in natural language
 * LookUp -- "Lookup provides the simple and unified search interfacefor the commercial electric dictionary as well as the network dictionary server ."  Available as the debian package lookup-el, woody onwards. 
 * Hachette (hachette.el) -- looks up online French dictionaries.
 * NaturalLanguageMode -- Conceptual ideas for how Emacs could support writers.
+* PersonalDiary -- Using Emacs to maintain a simple daily journal / personal diary.
 * PrintingFromEmacs -- Publishing your written work.
 * !RDictCc -- is an english-german (and vice versa) dictionary written in Ruby. It includes an emacs module which integrates it into emacs. Get it from apps section at the author's [http://www.tsdh.de homepage].
 * ScreenPlay -- Write a dramatic screenplay.

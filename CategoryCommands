@@ -16,7 +16,7 @@ See also CategoryCode
 * InteractiveFunction - How to make a function an interactive command.
 * MinibufferHistory -- Retrieve and re-execute previously executed commands.
 * RepeatingCommands -- Repeating an individual command or a sequence of commands (e.g. keyboard macros).
-* KeyboardMacros -- 记录你的操作命令并回放.
+* KeyboardMacros -- Record your commands then play them back.
 
 = Packages for command manipulation= 
 * CommandLogMode -- Demonstrate your Emacs editing skills to other people

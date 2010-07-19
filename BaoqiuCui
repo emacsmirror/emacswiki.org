@@ -104,5 +104,12 @@ elements supported by DocBook Exporter of Org-mode are not changed much
 from 4.x to 5.0, the old solutions still need to be modified to convert
 DocBook 5.0 documents to OpenOffice.  -- BaoqiuCui
 
+[new]
+Just want say thanks for grammar-mode -- Although sometimes I don't
+know what it is complaining about it is extremely helpful for a
+non-native English speaker.  At least it makes me think whether or not a
+sentence is proper or not.
+-- DavidMaus
+
 ----
 CategoryHomepage
