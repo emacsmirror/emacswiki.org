@@ -18,6 +18,12 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
      (ssl      "me@bar.com" "smtp.bar.com" 587 "user-bar" "pass-bar" "key" "cert")
      (ssl      "me@baz.com" "smtp.baz.com" 587 "user-baz" "pass-baz" "key" "cert")))
 
+Each component of smtp-accounts has the form 
+
+ (protocol  "adres_matched_in_From_field@foo.com"  "protocol.foo.com"  "port"  "user@foo.com" "password" "key" "cert")
+
+where key and cert are optional.
+
  ;; Default smtpmail.el configurations.
  (require 'smtpmail)
  (setq send-mail-function 'smtpmail-send-it
@@ -37,7 +43,7 @@ Unfortunately, there doesn't exist a built-in feature set to decide which SMTP s
    (message "Setting SMTP server to `%s:%s' for user `%s'."
             server port user))
 
- (defun set-smtp-ssl (server port user password key cert)
+ (defun set-smtp-ssl (server port user password  &optional key cert)
    "Set related SMTP and SSL variables for supplied parameters."
    (setq starttls-use-gnutls t
          starttls-gnutls-program "gnutls-cli"
@@ -107,7 +113,7 @@ Are there plans to integrate this (the first solution) in the official distribut
 
 [new]This doesn't seem to work.
 apply: Wrong number of arguments: #[(server port key cert) "Æ^PÇ^QÈ^R^K^T^M^V^K^K^M^N^L^N^MFC^V^N^K^M^N^O^N^PFC^V^QÉÊ^K^M^N^R$?" [starttls-use-gnutls starttls-gnutls-program starttls-extra-arguments server smtpmail-smtp-server port t "gnutls-cli" nil message ...] 5 ("/home/goo/.gnus.el" . 1634)], 6
-----
+
 
 ----
 CategoryGnus

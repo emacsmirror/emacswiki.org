@@ -4,7 +4,14 @@
 
 ;; Author: Daniel Brockman <daniel@brockman.se>
 ;; URL: http://www.brockman.se/software/zenburn/zenburn.el
-;; Updated: 2010-07-10 16:10
+;; Updated: 2010-07-19 20:10
+
+;; Changes (2010-07), Keffin Barnaby
+;; - Added fixme-face using vim zenburn todo colours (highlight-fixmes-mode)
+;; - Added all icompletep-* faces (icomplete-mode)
+;; - Added semantic-tag-boundary-face as zenburn-bg+2 (CEDET)
+;; - Added semantic-decoration-on-unparsed-includes face
+;;   as zenburn-highlight-damp (CEDET)
 
 ;; Changes (2010-07), Dirk-Jan C. Binnema
 ;; - fix doc-string-face color
@@ -252,7 +259,7 @@ static char *gnus-pointer[] = {
 	'(underline ((t (:underline t))))
 	;; '(variable-pitch ((t (:font "-*-utopia-regular-r-*-*-12-*-*-*-*-*-*-*"))))
 
-	
+
 	`(zenburn-background-1 ((t (:background ,zenburn-bg+1))))
 	`(zenburn-background-2 ((t (:background ,zenburn-bg+2))))
 
@@ -317,6 +324,13 @@ static char *gnus-pointer[] = {
 	   ((t (:foreground ,zenburn-yellow))))
 	'(font-lock-warning
 	   ((t (:inherit zenburn-highlight-alerting))))
+
+	'(fixme-face ((t (:foreground "#dcdccc" :background "#3f3f3f"
+									 :weight bold :box nil)))) ; Colours taken from vim ":hl Todo"
+
+	'(semantic-tag-boundary-face ((t (:overline "#5f5f5f")))) ; zenburn-bg+2
+	'(semantic-decoration-on-unparsed-includes
+	  ((t (:foreground "#88b090" :background "#2e3330")))) ; zenburn-highlight-damp
 
 	'(font-lock-pseudo-keyword
 	   ((t (:inherit zenburn-primary-2))))
@@ -413,7 +427,7 @@ static char *gnus-pointer[] = {
 	`(minibuffer-prompt ((t (:foreground ,zenburn-yellow))))
 	`(Buffer-menu-buffer ((t (:inherit zenburn-primary-1))))
 
-	`(region ((t (:foreground nil :background ,zenburn-bg+2))))      
+	`(region ((t (:foreground nil :background ,zenburn-bg+2))))
 	`(secondary-selection ((t (:foreground nil :background "#506070"))))
 
 	'(trailing-whitespace ((t (:inherit font-lock-warning))))
@@ -425,7 +439,7 @@ static char *gnus-pointer[] = {
 
 	`(button ((t (:foreground ,zenburn-yellow :background "#506070"
 		       :weight bold :underline t))))
-   
+
 	`(cursor ((t (:background "#aaaaaa" :foreground nil))))
 	'(hover-highlight ((t (:underline t :foreground "#f8f893"))))
 	'(menu ((t nil)))
@@ -436,6 +450,11 @@ static char *gnus-pointer[] = {
 	'(ido-first-match ((t (:inherit zenburn-primary-1))))
 	'(ido-only-match ((t (:inherit zenburn-primary-2))))
 	`(ido-subdir ((t (:foreground ,zenburn-yellow))))
+
+	'(icompletep-choices ((t (:foreground "#dcdccc")))) ; zenburn-fg
+	'(icompletep-determined ((t (:foreground "#8FB28F")))) ; zenburn-green+1
+	'(icompletep-nb-candidates ((t (:foreground "#AFD8AF")))) ; zenburn-green+3
+	'(icompletep-keys ((t (:foreground "#CC9393")))) ; zenburn-red
 
 	`(isearch ((t (:foreground ,zenburn-fg :background "#506070"))))
 	`(isearch-lazy-highlight
@@ -535,7 +554,7 @@ static char *gnus-pointer[] = {
 	'(diff-removed ((t (:inherit zenburn-blue))))
 	'(diff-context ((t (:inherit font-lock-comment))))
 	'(diff-refine-change ((t (:inherit zenburn-background-2))))
-	
+
 	`(emms-pbi-song ((t (:foreground ,zenburn-yellow))))
 	'(emms-pbi-current ((t (:inherit zenburn-primary-1))))
 	'(emms-pbi-mark-marked ((t (:inherit zenburn-primary-2))))
@@ -636,7 +655,7 @@ static char *gnus-pointer[] = {
 	`(gnus-group-news-1-empty ((t (:foreground ,zenburn-yellow))))
 	`(gnus-group-news-2-empty ((t (:foreground ,zenburn-green+3))))
 	`(gnus-group-news-3-empty ((t (:foreground ,zenburn-green+1))))
-	`(gnus-group-news-4-empty ((t (:foreground ,zenburn-blue-2)))) 
+	`(gnus-group-news-4-empty ((t (:foreground ,zenburn-blue-2))))
 	`(gnus-group-news-5-empty ((t (:foreground ,zenburn-blue-3))))
 	`(gnus-group-news-6-empty ((t (:inherit zenburn-lowlight-1))))
 	`(gnus-group-news-low-empty ((t (:inherit zenburn-lowlight-1))))
@@ -828,7 +847,7 @@ static char *gnus-pointer[] = {
 	'(nxml-namespace-attribute-colon
 	   ((t (:inherit nxml-attribute-colon))))
 
-	'(org-agenda-date-today ((t (:foreground "white" 
+	'(org-agenda-date-today ((t (:foreground "white"
 				      :slant italic :weight bold))) t)       ;; white
 	'(org-agenda-structure ((t (:inherit font-lock-comment-face))))  ;; zenburn-green
 	'(org-archived ((t (:foreground "#8f8f8f"))))                    ;; zenburn-bg slight lighter
@@ -930,7 +949,7 @@ static char *gnus-pointer[] = {
 
 	'(flyspell-duplicate ((t (:inherit zenburn-primary-1))))
 	'(flyspell-incorrect ((t (:inherit font-lock-warning))))
-	
+
 	`(elscreen-tab-other-screen ((t ((:foreground ,zenburn-fg
 					   :background ,zenburn-green-1)))))
 	`(elscreen-tab-current-screen ((t (:foreground ,zenburn-blue+1
@@ -948,17 +967,17 @@ static char *gnus-pointer[] = {
 
 	'(wl-highlight-message-cited-text-1 ((t (:inherit zenburn-green))))
 	'(wl-highlight-message-cited-text-2 ((t (:inherit zenburn-blue))))
-	'(wl-highlight-message-cited-text-3 ((t (:foreground "#8f8f8f")))) 
+	'(wl-highlight-message-cited-text-3 ((t (:foreground "#8f8f8f"))))
 	'(wl-highlight-message-cited-text-4 ((t (:inherit zenburn-green))))
 
 	'(wl-highlight-message-signature ((t (:inherit zenburn-yellow))))
 
 	'(wl-highlight-summary-answered ((t (:inherit zenburn-fg))))
 	'(wl-highlight-summary-new ((t (:foreground "#e89393"))))
-	
+
 	`(wl-highlight-summary-displaying ((t (:underline t
 						:foreground ,zenburn-yellow-2))))
-	
+
 	'(wl-highlight-thread-indent ((t (:foreground "#ecbcec"))))
 	'(wl-highlight-summary-thread-top ((t (:foreground "#efdcbc"))))
 
@@ -970,11 +989,11 @@ static char *gnus-pointer[] = {
 	'(wl-highlight-folder-unread ((t (:foreground "#e89393"))))
 
 	'(wl-highlight-folder-path ((t (:inherit zenburn-orange))))
-	
+
 	`(twitter-time-stamp ((t (:foreground ,zenburn-orange :background "#1e2320"))))
 	`(twitter-user-name ((t (:foreground "#acbc90" :background "#1e2320"))))
 	`(twitter-header ((t (:foreground ,zenburn-orange :background "#1e2320"))))
-	
+
 	'(rpm-spec-dir ((t (:inherit zenburn-green))))
 	'(rpm-spec-doc ((t (:inherit zenburn-green))))
 	'(rpm-spec-ghost ((t (:inherit zenburn-red))))
@@ -1011,7 +1030,6 @@ static char *gnus-pointer[] = {
 	'(mew-face-mark-unread ((t (:inherit zenburn-red-2))))
 	'(mew-face-eof-message ((t (:inherit zenburn-green))))
 	'(mew-face-eof-part ((t (:inherit zenburn-yellow))))
-
 	)
 
       (zenburn-make-face-alias-clauses

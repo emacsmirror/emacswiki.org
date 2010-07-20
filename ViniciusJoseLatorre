@@ -544,6 +544,15 @@ A question about whitespace.el (12.1): When I add a new paragraph to a text file
 
 My settings:  '(whitespace-style (quote (tabs spaces trailing lines-tail space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
 
+[new]
+Hi Joerg,
+
+I've just tested whitespace v12.1 using Emacs v24.0.50.1 and I couldn't reproduce this problem.
+
+Please, send me an email with the Emacs version you're using and the steps needed to reproduce this problem, starting with ##emacs -Q##.
+
+-- ViniciusJoseLatorre
+
 ------
 
 CategoryHomepage

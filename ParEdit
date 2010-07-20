@@ -49,30 +49,53 @@ paredit's normal operation. To alleviate this problem use the following code:
                 (read-kbd-macro paredit-backward-delete-key) nil))
                 (add-hook 'slime-repl-mode-hook 'override-slime-repl-bindings-with-paredit)
 
-== ParEdit and "Electric RET" ==
+== ParEdit and "Electric RETURN" ==
 
-As a complement to ##paredit-close-round##'s behavior of "collecting closing parentheses", we may bind the ##RET## key to a command which temporarily pushes them onto the next line. This makes linewise editing easier.
+ParEdit works particularly well with an "electric" ##RETURN## function. 
 
-: '''[http://img8.imageshack.us/img8/9479/openparen.gif Short video demonstration]'''
+If ##RETURN## is pressed when the cursor is before a closing paren, the following code will add an extra newline.  The extra newlines are re-gathered by ##paredit-close-round##, which ParEdit binds to "##)##" by default.
 
-The following code (from the AutoPairs page) accomplishes this:
+The code is loosely based on code on the AutoPairs page:
 
-    (setq skeleton-pair t)
-    (setq skeleton-pair-alist
-          '((?\( _ ?\))
-            (?[  _ ?])
-            (?{  _ ?})
-            (?\" _ ?\")))
-    (defun autopairs-ret (arg)
-      (interactive "P")
-      (let (pair)
-        (dolist (pair skeleton-pair-alist)
-          (when (eq (char-after) (car (last pair)))
-            (save-excursion (newline-and-indent))))
-        (newline arg)
-        (indent-according-to-mode)))
-    (eldoc-add-command 'autopairs-ret) ; if using ElDoc
-    (global-set-key (kbd "RET") 'autopairs-ret)
+  (defvar electrify-return-match
+    "[\]}\)\"]"
+    "If this regexp matches the text after the cursor, do an \"electric\"
+  return.")
+
+  (defun electrify-return-if-match (arg)
+    "If the text after the cursor matches `electrify-return-match' then
+  open and indent an empty line between the cursor and the text.  Move the
+  cursor to the new line."
+    (interactive "P")
+    (let ((case-fold-search nil))
+      (if (looking-at electrify-return-match)
+	  (save-excursion (newline-and-indent)))
+      (newline arg)
+      (indent-according-to-mode)))
+
+  ;; Using local-set-key in a mode-hook is a better idea.
+  (global-set-key (kbd "RET") 'electrify-return-if-match)
+
+== ParEdit, ElDoc, Show-Paren and "Electric RETURN" ==
+
+Here's a '''[http://img8.imageshack.us/img8/9479/openparen.gif short video demonstration]'''
+of %%ParEdit%% working with the %%ElDoc%% and %%Show-Paren%% minor modes and the electric ##RETURN## function defined above.
+
+Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the video: 
+
+  (add-hook 'emacs-lisp-mode-hook
+	    (lambda ()
+	      (paredit-mode t)
+
+	      (turn-on-eldoc-mode)
+	      (eldoc-add-command
+	       'paredit-backward-delete
+	       'paredit-close-round)
+
+	      (local-set-key (kbd "RET") 'electrify-return-if-match)
+	      (eldoc-add-command 'electrify-return-if-match)
+
+	      (show-paren-mode t)))
 
 == Discussion ==
 

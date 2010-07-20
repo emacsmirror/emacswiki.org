@@ -3,3 +3,6 @@ The zenburn color theme is a low-contrast color theme. The color scheme was orig
 The official version of zenburn-for-emacs is maintained by DanielBrockman; the version is a slightly updated version.
 
 Lisp:zenburn.el
+
+[new:KGB:2010-07-19 21:22 UTC]
+I made some additions to the theme and noticed something odd that I didn't want to "fix" in case there was something I was missing. The face zenburn-foreground is referenced a few times but isn't defined anywhere, I think these instances should be referencing zenburn-fg. Is this correct? - KGB.

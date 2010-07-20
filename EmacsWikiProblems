@@ -10,13 +10,6 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
-== OrgMode page - oldest revision was still polluted ==
-
-I rolled back page OrgMode to the oldest revision available, to remove the Chinese that [[lvcn]] had introduced there.  But even that oldest revision was already changed by [[lvcn]] to contain some Chinese (nobody caught the problem soon enough, I guess).
-
-If someone has an older page for OrgMode somewhere, please try to fix this.
-
-And if someone can please explain to [[lvcn]] how to properly add a translation page, please do so.  Thx -- DrewAdams
 
 == Server error! ==
 
