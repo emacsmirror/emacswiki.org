@@ -85,12 +85,10 @@ is sufficient to use either `foo' or `/some/path/to/my/foo'.
 
 
 [:completing-read]
+[::absolute file-name completion]
 === Function `completing-read' ===
 
-When used for file names, function '''`completing-read'''' uses '''[::absolute file-name completion]'''.
-
-
-It is a general function for reading input
+Function '''`completing-read'''' is a general function for reading input
 with completion.  It is ''not'' specially designed for reading file
 names.  It knows nothing about files and file names. It knows
 nothing about remote file-name syntax.  When `completing-read' reads input, it makes no use of
@@ -126,7 +124,7 @@ There are also `-other-window' versions of all of the '''Icicles'''
 commands that read file names.
 
 [:LocateByDate]
-The '''Icicles''' commands that read ''absolute'' file names have an
+The '''Icicles''' commands that use `completing-read' to read file names have an
 additional feature: you can use a [[prefix argument]] to tell them to
 combine the last modification date with the file name, as a
 [[multi-completion]]. This means that you can easily look up files whose modification

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 17 14:28:29 2010 (-0700)
+;; Last-Updated: Tue Jul 20 13:45:00 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5585
+;;     Update #: 5589
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/07/20 dadams
+;;     icicle-find-file-in-tags-table(-other-window):
+;;       Pick up default-directory of TAGS table.  Thx to Chris Hecker.
+;;     icicle-bookmark-jump-1: Applied renaming of bmkp-use-region-flag to bmkp-use-region.
 ;; 2010/07/17 dadams
 ;;     Added: icicle-bookmark-url-narrow, icicle-bookmark-url(-other-window).
 ;;     icicle-bookmark(-list|-set|-other-window|-propertize-candidate|-help-string),

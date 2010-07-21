@@ -1,12 +1,6 @@
 * 2010/07/16 18:34:30
   刚用emacs, 还不熟~
 
-
-
-
-
-
-
 [new:DrewAdams:2010-07-16 13:56 UTC]
 Welcome to the wiki. -- DrewAdams
 
@@ -21,6 +15,15 @@ I rolled back your edits of general, English pages such as CategoryDirectories, 
 [new:lvcn:2010-07-19 01:45 UTC]
 ok, Thanks a lot!
 
+[new]
+If only I knew the page names in Chinese then I could fix it... :)
+
+* I moved the Chinese copy of Org-Mode to [[Org-Mode (中文)]]. Perhaps there is a better page name for it, however.
+* I added a Chinese translation link to CategoryVersionControl pointing to [[版本控制]]. I hope that is correct.
+
+If you can tell Chinese translations of pages you're interested in translating, I can set things up for you. I'd be very happy to!
+
+-- AlexSchroeder
 
 ----
 CategoryHomepage

@@ -168,9 +168,11 @@ purposes. You can thus use apropos completion to match a
 ==== Matching Absolute File Names ====
 
 Some '''Icicles''' commands that target file names match your input
-against ''absolute'' file-name completion candidates. This is
+against file names as ordinary strings, that is, with no notion
+that they are actually file names.  This is
 the case for commands `icicle-locate-file', `icicle-recent-file', `icicle-find-file-in-tags-table', and `icicle-find-file-absolute', as well as `icicle-file' with a [[prefix argument]].
-These commands let you regexp-match against ''any part'' of the
+
+Such candidates are often ''absolute'' file names.  In that case, you can regexp-match against ''any part'' of the
 absolute file name, including ''directory'' components.  See [[Icicles - File-Name Input]].
 
 

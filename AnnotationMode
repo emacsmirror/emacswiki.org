@@ -1,0 +1,25 @@
+Note: This doesn't exist (as far as I know.)
+
+I really wish I had something that for lack of a better term, I'll call %%AnnotationMode%%.
+
+The idea is that I want to be able to hang notes on to any file I'm visiting, without touching the file.
+
+What I'm envisioning is a system that, when activated, will split the pane vertically and pull an annotation file from a repository someplace, if it exists, and create one if it doesn't.
+
+Once up, it would allow the creation and maintenance of notes, which it would synchronize vertically, as best it could.
+
+Thoughts? -- MichaelWilson
+
+This idea was implemented several different times in the late 90s, culminating in a whole rebranding of Emacs that focused on making a hyperlinked "knowledge database" complete with shadowed annotations and everything (can't remember the name off-hand).  I tried them all, and they were all failures.  In fact, to this day I've never had a good annotation system on any platform. -- JohnWiegley
+
+[new:DrewAdams:2010-07-20 19:41 UTC]
+Emacs bookmarks and their annotations come very close to what you describe (though that might not correspond closely to what you really have in mind ;-)).
+
+You can bookmark any file (not just text -- image, music, anything), without necessarily visiting it.  And a bookmark can include an annotation (free-form plain text).  A bookmark does not alter its target file.
+
+So far, bookmark annotations are pretty rudimentary.  Editing an annotation uses `##Edit Bookmark Annotation##' mode, which is not very fancy.  That could be improved.  And you could of course change the mode to any you like (e.g. OrgMode).
+
+In addition to annotations, you can tag bookmarks, in the sense of [[http://delicious.com|del.icio.us]] tags.  Tags give you a good way to organize bookmarks and hence their target files or annotations.
+
+See Manual:Bookmarks.  See also [[Bookmark+]] and [[Dired+]] for info on bookmark tags and bookmarking files without visiting them. -- DrewAdams
+

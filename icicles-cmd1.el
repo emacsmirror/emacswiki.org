@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 17 14:19:18 2010 (-0700)
+;; Last-Updated: Tue Jul 20 13:44:22 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21232
+;;     Update #: 21254
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3619,8 +3619,8 @@ You probably don't want to use this.  Use
         (progn (run-hooks 'bookmark-after-jump-hook) t)
         ;; If there is an annotation for this bookmark, show it in a buffer.
         (when bookmark-automatically-show-annotations (bookmark-show-annotation bookmark)))))
-  ;; Unless `bmkp-use-region-flag' and bookmark has a region, show position using crosshairs.
-  (unless (and (boundp 'bmkp-use-region-flag) bmkp-use-region-flag
+  ;; Unless `bmkp-use-region' and bookmark has a region, show position using crosshairs.
+  (unless (and (boundp 'bmkp-use-region) bmkp-use-region
                (fboundp 'bmkp-get-end-position) (bmkp-get-end-position bookmark)
                (/= (bookmark-get-position bookmark) (bmkp-get-end-position bookmark)))
     (when (fboundp 'crosshairs-highlight) (crosshairs-highlight))))
@@ -5925,17 +5925,21 @@ Optional arg NO-SYMLINKS-P non-nil means do not follow symbolic links."
 (put 'icicle-find-file-in-tags-table 'icicle-Completions-window-max-height 200)
 ;;;###autoload
 (icicle-define-command icicle-find-file-in-tags-table ; Command name
-  "Visit a file listed in a tags table, given the absolute file name.
-The completion candidates are absolute, not relative, file names.
-You can complete against any and all parts of the absolute name.
-
+  "Visit a file listed in a tags table.
 By default, the completion candidates are the file names listed in the
 current tags table, but you can substitute other candidates by
-retrieving a saved candidate set.
+retrieving a saved candidate set.  The default candidates appear as
+they did in the `etags' command that created the tags table, which
+typically means without directory names.
 
-Completion here matches candidates as ordinary strings.  It
-knows nothing of file names per se.  In particular, you cannot use
-remote file-name syntax.
+Completion here matches candidates as ordinary strings.  It knows
+nothing of file names per se.  In particular, you cannot use remote
+file-name syntax.  If a candidate is an absolute file name then you
+can complete against any and all parts of the name (including
+directory components).
+
+`find-file' is called for the candidate(s) you choose, with the
+directory of the tags file as `default-directory'.
 
 Remember that you can use `\\<minibuffer-local-completion-map>\
 \\[icicle-toggle-hiding-common-match]' to hide the common match portion of
@@ -5970,7 +5974,9 @@ option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
 Ido-like behavior."                     ; Doc string
-  (lambda (f) (find-file (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action function
+  (lambda (ff)
+    (visit-tags-table-buffer 'same)     ; To pick up `default-directory' of TAGS table.
+    (find-file (icicle-transform-multi-completion ff) 'WILDCARDS)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))
@@ -5994,9 +6000,11 @@ Ido-like behavior."                     ; Doc string
 (put 'icicle-find-file-in-tags-table-other-window 'icicle-Completions-window-max-height 200)
 ;;;###autoload
 (icicle-define-command icicle-find-file-in-tags-table-other-window ; Command name
-  "Visit a tags-table file in another window, given its absolute name.
+  "Visit a tags-table file in another window.
 Same as `icicle-find-file-in-tags-table', but uses a different window." ; Doc string
-  (lambda (f) (find-file-other-window (icicle-transform-multi-completion f) 'WILDCARDS)) ; Action
+  (lambda (ff)
+    (visit-tags-table-buffer 'same)     ; To pick up `default-directory' of TAGS table.
+    (find-file (icicle-transform-multi-completion ff) 'WILDCARDS)) ; Action function
   prompt                                ; `completing-read' args
   (mapcar (if current-prefix-arg #'icicle-make-file+date-candidate #'list)
           (save-excursion (let ((enable-recursive-minibuffers  t)) (visit-tags-table-buffer))

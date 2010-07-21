@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 17 14:36:47 2010 (-0700)
+;; Last-Updated: Tue Jul 20 13:52:44 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25343
+;;     Update #: 25344
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5555,10 +5555,10 @@
 ;;  There are also `-other-window' versions of all of the Icicles
 ;;  commands that read file names.
 ;;
-;;  The Icicles commands that read absolute file names have an
-;;  additional feature: you can use a prefix argument to tell them to
-;;  combine the last modification date with the file name, as a
-;;  multi-completion - see
+;;  The Icicles commands that use `completing-read' to read file names
+;;  have an additional feature: you can use a prefix argument to tell
+;;  them to combine the last modification date with the file name, as
+;;  a multi-completion - see
 ;;  (@file :file-name "icicles-doc2.el" :to "Multi-Completions").
 ;;  This means that you can easily look up files whose modification
 ;;  time or date matches some (regexp) criterion, such as being

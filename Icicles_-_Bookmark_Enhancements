@@ -24,7 +24,7 @@ Regardless of the bookmark type, another '''Bookmark+''' feature that
 bookmark) can save not only a single position but a ''[[region]]'', that
 is, two positions.  You can think of this as bookmarking, or
 saving, regions.  When you jump to a region bookmark, the region
-is activated (if [[option]] '''`bmkp-use-region-flag'''' is non-`nil').
+is activated (if [[option]] '''`bmkp-use-region'''' is non-`nil').
 
 These are the main '''Icicles''' bookmarking features:
 
@@ -54,7 +54,7 @@ See [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Loc
 Saving the region just means bookmarking it.  As for any bookmark,
 it must have a name.  When you later jump to a region bookmark,
 the region is activated (provided option
-'''`bmkp-use-region-flag'''' is non-`nil').
+'''`bmkp-use-region'''' is non-`nil').
 
 '''Icicles''' gives you quick ways to save a region and select
 (activate) a saved region.  You can do both using '''`C-x C-x''''.

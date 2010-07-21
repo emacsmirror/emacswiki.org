@@ -4,7 +4,7 @@
 ;; Copyright (C) 2010 Joyer Huang
 
 ;; Author: Joyer Huang <collger@eyou.com>
-;; Version: 0.0.3
+;; Version: 0.0.4
 ;; Keywords: draw, ppm, ray tracing, bitmap, generator
 ;; URL: http://slimeweb.com
 
@@ -46,37 +46,35 @@
 
 (defclass ppm () ((width :initarg :w)
                   (height :initarg :h)
-                  (pixels :initarg :pixels)
-                  (binaryp :initarg :bin)))
+                  (pixels :initarg :pixels)))
 
-(defun ppm-make (width height &optional binaryp)
+(defun ppm-make (width height)
   "make a ppm object
 WIDTH is ppm width(number)
 HEIGHT is ppm height(number)
-BINARYP is t then use P6 otherwise use P3
 "
-  (ppm nil :w width :h height :bin binaryp
+  (ppm nil :w width :h height
     :pixels (make-vector (* width height 3) 0)))
 
 (defconst ppm-cv [
           "0" "1" "2" "3" "4" "5" "6" "7" "8" "9" "10" "11" "12" "13" "14" "15" "16" "17" "18" "19" "20" "21" "22" "23" "24" "25" "26" "27" "28" "29" "30" "31" "32" "33" "34" "35" "36" "37" "38" "39" "40" "41" "42" "43" "44" "45" "46" "47" "48" "49" "50" "51" "52" "53" "54" "55" "56" "57" "58" "59" "60" "61" "62" "63" "64" "65" "66" "67" "68" "69" "70" "71" "72" "73" "74" "75" "76" "77" "78" "79" "80" "81" "82" "83" "84" "85" "86" "87" "88" "89" "90" "91" "92" "93" "94" "95" "96" "97" "98" "99" "100" "101" "102" "103" "104" "105" "106" "107" "108" "109" "110" "111" "112" "113" "114" "115" "116" "117" "118" "119" "120" "121" "122" "123" "124" "125" "126" "127" "128" "129" "130" "131" "132" "133" "134" "135" "136" "137" "138" "139" "140" "141" "142" "143" "144" "145" "146" "147" "148" "149" "150" "151" "152" "153" "154" "155" "156" "157" "158" "159" "160" "161" "162" "163" "164" "165" "166" "167" "168" "169" "170" "171" "172" "173" "174" "175" "176" "177" "178" "179" "180" "181" "182" "183" "184" "185" "186" "187" "188" "189" "190" "191" "192" "193" "194" "195" "196" "197" "198" "199" "200" "201" "202" "203" "204" "205" "206" "207" "208" "209" "210" "211" "212" "213" "214" "215" "216" "217" "218" "219" "220" "221" "222" "223" "224" "225" "226" "227" "228" "229" "230" "231" "232" "233" "234" "235" "236" "237" "238" "239" "240" "241" "242" "243" "244" "245" "246" "247" "248" "249" "250" "251" "252" "253" "254" "255" 
           ])
 
-(defun ppm-show (ppm &optional kill)
+(defun ppm-show (ppm &optional kill p3)
   "show a ppm-object in other buffer window
 PPM is the ppm object to show"
   (with-slots ((w width)
                (h height)
-               (bin binaryp)
                pixels) ppm
     (when kill (kill-buffer (get-buffer-create "*ppm gen*")))
     (switch-to-buffer-other-window (get-buffer-create (generate-new-buffer-name "*ppm gen*")))
-    (insert (format (if bin "P6\n%d %d\n255\n" "P3\n%d %d\n255\n") w h))
-    (if bin (insert (concat pixels))
+    (set-buffer-multibyte nil)
+    (insert (format (if (not p3) "P6\r%d %d\r255\r" "P3\r%d %d\r255\r") w h))
+    (if (not p3) (insert (concat pixels))
       (dotimes (idx (* w h 3))
         (insert (aref ppm-cv (aref pixels idx)) " ")
         (if (eq (% (1+ idx) w) 0)
-            (insert "\n"))))
+            (insert "\r"))))
     (image-mode)))
 
 (defun ppm-plot (ppm x y color)
@@ -85,7 +83,6 @@ X,Y position to plot
 COLOR is the RGB value to plot, no alpha support"
   (with-slots ((w width)
                (h height)
-               (bin binaryp)
                pixels) ppm
     (let* ((idx (* (+ (* y w) x) 3)))
       (aset pixels idx (logand (lsh color -16) 255))
@@ -104,7 +101,6 @@ COLOR is the RGB value to plot, no alpha support"
 (defun ppm-draw-line (ppm x1 y1 x2 y2 color)
   (with-slots ((w width)
                (h height)
-               (bin binaryp)
                (pxs pixels)) ppm
     (let ((yd (- y2 y1))
           (xd (- x2 x1))
@@ -250,7 +246,7 @@ COLOR is the RGB value to plot, no alpha support"
 (defun render-depth () ;& render normal
   (interactive)
   (let* ((w 50) (h 50)
-         (ppm (ppm-make w h t))
+         (ppm (ppm-make w h))
          (pixels (oref ppm pixels))
          (cm (makei-camera3 (makei-v3  0 10 10) (makei-v3 0 0 -1) (makei-v3 0 1 0) 90))
          (scene (makei-sphere3 (makei-v3 0. 10. -10.) 10.0))
@@ -455,14 +451,14 @@ COLOR is the RGB value to plot, no alpha support"
   (logior (get-byte 0 s) (lsh (get-byte 1 s) 8) (lsh (get-byte 2 s) 16)))
 (defun ppm--int1 (s)
   (get-byte 0 s))
-(defun ppm-from-bmp (filename &optional binary)
+(defun ppm-from-bmp (filename)
   "make a ppm object from a .bmp file. only 24bit .bmp is supportted."
   (let* ((offset (ppm--int4 (ppm--read filename 10 4)))
          (headsize (ppm--int4 (ppm--read filename 14 4)))
          (width (ppm--int4 (ppm--read filename 18 4)))
          (height (ppm--int4 (ppm--read filename 22 4)))
          (rowbytes (lsh (lsh (+ (* width 3) 3) -2) 2))
-         (ppm (ppm-make width height binary))
+         (ppm (ppm-make width height))
          (bytes (ppm--read filename offset (* rowbytes height)))
          (idx)
          (pixels (oref ppm pixels))
@@ -477,6 +473,35 @@ COLOR is the RGB value to plot, no alpha support"
                 ))
     ppm
     ))
+
+(defun ppm-from-ppm (filename)
+  (let (binary w h appm) 
+    (save-excursion 
+      (switch-to-buffer (generate-new-buffer  "*ppm reader*"))
+      (insert-file-contents-literally filename t)
+      (goto-char (point-min))
+      (when (looking-at "P6") (setq binary t))
+      (when (search-forward-regexp "\\b[0-9]+\\b" (buffer-end 1))
+        (setq w (number-at-point)))
+      (when (search-forward-regexp "\\b[0-9]+\\b" (buffer-end 1))
+        (setq h (number-at-point)))
+      (search-forward-regexp "\\b[0-9]+\\b" (buffer-end 1))
+      (unless (= (number-at-point) 255)
+        (error "not a 24bit PPM file"))
+      (setq appm (ppm-make w h))
+      (if binary (progn
+                   (oset appm pixels (vconcat (buffer-substring-no-properties (1+ (point))  (buffer-end 1))))
+                   (kill-buffer "*ppm reader*")
+                   appm)
+        (let ((lst '()))
+          (while (not (eobp))
+            (when (search-forward-regexp "\\b[0-9]+\\b" (buffer-end 1))
+              (setq lst (cons (number-at-point) lst)))
+            (forward-char))
+          (oset appm pixels (vconcat (reverse lst)))
+          (kill-buffer "*ppm reader*")
+          appm)))))
+
 (defun ppm-pixels-get (pxs x y width)
   (let ((idx (* (+ (* y width) x) 3)))
     (ppm-rgb (aref pxs idx) (aref pxs (+ 1 idx)) (aref pxs (+ 2 idx)))))
@@ -496,11 +521,11 @@ COLOR is the RGB value to plot, no alpha support"
              (+ (* u g2) (* (- 1 u) g1))
              (+ (* u b2) (* (- 1 u) b1)))))
 
-(defun ppm-scale (src-ppm dst-width dst-height &optional binary aspect)
+(defun ppm-scale (src-ppm dst-width dst-height &optional aspect)
   (when aspect
     (setq dst-height (/ (* dst-width (oref src-ppm height)) (oref src-ppm width)))
     )
-  (let* ((ppm (ppm-make dst-width dst-height binary))
+  (let* ((ppm (ppm-make dst-width dst-height))
          (src-pxs (oref src-ppm pixels))
          (src-width (oref src-ppm width))
          (src-height (oref src-ppm height))
@@ -513,11 +538,11 @@ COLOR is the RGB value to plot, no alpha support"
                                  dst-width)))
     ppm))
 
-(defun ppm-scale-bilinear (src-ppm dst-width dst-height &optional binary aspect)
+(defun ppm-scale-bilinear (src-ppm dst-width dst-height &optional aspect)
   (when aspect
     (setq dst-height (/ (* dst-width (oref src-ppm height)) (oref src-ppm width)))
     )
-  (let* ((ppm (ppm-make dst-width dst-height binary))
+  (let* ((ppm (ppm-make dst-width dst-height))
          (src-pxs (oref src-ppm pixels))
          (src-width (oref src-ppm width))
          (src-height (oref src-ppm height))
@@ -569,11 +594,11 @@ COLOR is the RGB value to plot, no alpha support"
              (max 0 (ppm-cubic-interp g1 g2 g3 g4 u))
              (max 0 (ppm-cubic-interp b1 b2 b3 b4 u)))))
 
-(defun ppm-scale-bicubic (src-ppm dst-width dst-height &optional binary aspect)
+(defun ppm-scale-bicubic (src-ppm dst-width dst-height &optional aspect)
   (when aspect
     (setq dst-height (/ (* dst-width (oref src-ppm height)) (oref src-ppm width)))
     )
-  (let* ((ppm (ppm-make dst-width dst-height binary))
+  (let* ((ppm (ppm-make dst-width dst-height))
          (src-pxs (oref src-ppm pixels))
          (src-width (oref src-ppm width))
          (src-height (oref src-ppm height))
@@ -619,7 +644,6 @@ COLOR is the RGB value to plot, no alpha support"
                   (ppm-pixels-plot pxs x y c4 dst-width))))
     ppm))
 
-
 (defun gamma-adjust (appm gamma)
   (with-slots (width height pixels) appm
     (let* ((max-value (expt 255 gamma)))
@@ -629,13 +653,3 @@ COLOR is the RGB value to plot, no alpha support"
                                 (* (/ (expt oldv gamma) max-value) 255)))
               ))))
   appm)
-
-
-;; (let ((filename "e:/foo.bmp"))
-;;   (ppm-show (ppm-from-bmp filename))
-;;   )
-;; (ppm-show (ppm-scale-bicubic (ppm-from-bmp "e:/m.bmp" t) 500 300 t t) )
-;; (ppm-show (ppm-scale-bilinear (ppm-from-bmp "e:/m.bmp" t) 500 300 t t) )
-;; (ppm-show (ppm-scale (ppm-from-bmp "e:/full.bmp" t) 800 500 t t) )
-;; (ppm-show  (ppm-from-bmp "e:/full.bmp" t))
-;; (ppm-cubic-interp 0 0 0 255  0.9)

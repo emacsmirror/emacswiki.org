@@ -72,8 +72,7 @@ in a given Emacs [[tags file]].  This is obviously more complex and flexible tha
 '''Icicles''' provides [[multi-command]]s for visiting one or more files
 that are listed in the current tags table:
 '''`icicle-find-file-in-tags-table'''' and
-'''`icicle-find-file-in-tags-table-other-window''''.  You can match any
-part(s) of the absolute file name.
+'''`icicle-find-file-in-tags-table-other-window''''.
 
 '''See also'''
 [[Icicles - File Name Input#ReadingFileNames|Commands that Read File Names]].
@@ -179,8 +178,12 @@ names.  You can use [[progressive completion]], [[Icicles - Nutshell View#Chippi
 non-elephant]], and so on, to get just the file names you want.
 
 For this completion, you can use a command that calls `read-file-name', and so matches ''relative'' file names using the
-the current [[default directory]].  Or you can use a command that calls `completing-read', and so matches ''absolute'' file names -- that is, lets
-you match not only file names but also directory components.  Examples of the former type are `icicle-find-file' and
+the current [[default directory]].  Or you can use a command that calls `completing-read', and so matches file names only as ordinary
+strings, that is, with no notion that they are file names.  In the
+latter case, the file names are often ''absolute'', which means that
+you can match not only file names but also directory components.
+
+Examples of the former type are `icicle-find-file' and
 `icicle-find-file-read-only' (`C-x C-r' by default). Examples of
 the latter type are `icicle-find-file-absolute', `icicle-find-file-in-tags-table', 
 `icicle-recent-file', and `icicle-locate-file'.  Command

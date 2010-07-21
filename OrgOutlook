@@ -1,7 +1,7 @@
 Org mode lets you organize your tasks.  However, sometimes you may wish to integrate org-mode with outlook since your company *forces* you to use Microsoft Outlook.  Lisp:org-outlook.el allows:
 
 * Creating Tasks from outlook items:
-** org-outlook-task.  All selected items in outlook will be added to a task-list at curernt point.  Requires [http://www.emacswiki.org/cgi-bin/wiki?task.vbs task.vbs]
+** org-outlook-task.  All selected items in outlook will be added to a task-list at current point.  Requires [http://www.emacswiki.org/cgi-bin/wiki?task.vbs task.vbs]
 * Create Link from outlook items:
 ** org-outlook-copy.  Single selected item in outlook will be added to org-file at current point.  Requires [http://www.emacswiki.org/cgi-bin/wiki?guid.vbs guid.vbs]
 * Open Outlook Links in org-mode

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jul 17 14:52:54 2010 (-0700)
+;; Last-Updated: Tue Jul 20 14:02:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27049
+;;     Update #: 27055
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1474,7 +1474,7 @@
 ;;  bookmark) can save not only a single position but a region, that
 ;;  is, two positions.  You can think of this as bookmarking, or
 ;;  saving, regions.  When you jump to a region bookmark, the region
-;;  is activated (if option `bmkp-use-region-flag' is non-nil).
+;;  is activated (if option `bmkp-use-region' is non-nil).
 ;;
 ;;  These are the main Icicles bookmarking features:
 ;;
@@ -1495,7 +1495,7 @@
 ;;
 ;;  Saving the region just means bookmarking it.  As for any bookmark,
 ;;  it must have a name.  When you later jump to a region bookmark,
-;;  the region is activated (provided option `bmkp-use-region-flag' is
+;;  the region is activated (provided option `bmkp-use-region' is
 ;;  non-nil).
 ;;
 ;;  Icicles gives you quick ways to save a region and select
@@ -2419,8 +2419,7 @@
 ;;  Icicles provides multi-commands for visiting one or more files
 ;;  that are listed in the current tags table:
 ;;  `icicle-find-file-in-tags-table' and
-;;  `icicle-find-file-in-tags-table-other-window'.  You can match any
-;;  part(s) of the absolute file name.  See also
+;;  `icicle-find-file-in-tags-table-other-window'.  See also
 ;;  (@file :file-name "icicles-doc1.el" :to "Icicles Commands that Read File Names").
 ;;
 ;;(@* "Navigating Among Code Definitions")
@@ -2503,8 +2502,11 @@
 ;;  For this completion, you can use a command that calls
 ;;  `read-file-name', and so matches relative file names using the
 ;;  current `default-directory'.  Or you can use a command that calls
-;;  `completing-read', and so matches absolute file names - that is,
-;;  lets you match not only file names but also directory components.
+;;  `completing-read', and so matches file names only as ordinary
+;;  strings, that is, with no notion that they are file names.  In the
+;;  latter case, the file names are often absolute, which means that
+;;  you can match not only file names but also directory components.
+;;
 ;;  Examples of the former type are `icicle-find-file' and
 ;;  `icicle-find-file-read-only' (`C-x C-r' by default).  Examples of
 ;;  the latter type are `icicle-find-file-absolute',
@@ -5534,14 +5536,15 @@
 ;;    `/some/path/to/my/foo'.
 ;;
 ;;  * Some Icicles commands that target file names match your input
-;;    against absolute file-name completion candidates.  This is the
-;;    case for `icicle-locate-file', `icicle-recent-file',
+;;    against file names as ordinary strings, that is, with no notion
+;;    that they are actually file names.  This is the case for
+;;    `icicle-locate-file', `icicle-recent-file',
 ;;    `icicle-find-file-in-tags-table', and
 ;;    `icicle-find-file-absolute', as well as `icicle-file' with a
-;;    prefix argument.  These commands let you regexp-match against
-;;    any part of the absolute file name, including directory
-;;    components.
-;;    See (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
+;;    prefix argument.  Such candidates are often absolute file names.
+;;    In that case, you can regexp-match against any part of the
+;;    absolute file name, including directory components.  See
+;;    (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere").
 ;;
 ;;  * If you have symbolic links that might get in the way of
 ;;    exploring directories while locating files, you can use command

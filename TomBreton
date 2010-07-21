@@ -43,6 +43,90 @@ http://panix.com/~tehom/my-code
   lynx -source 'http://www.panix.com/~tehom/my-code/' | sed -ne '/<PRE>/,/<\/PRE>/ p' | cut -d'"' -f6  | sed -e 's/^/* /' -ne '/\./ p
 
 ]
+----
+==Two elisp conventions==
+
+Here are two directory conventions I have found useful in organizing
+my elisp projects:
+
+===Library symbols===
+
+I use a convention of setting each subordinate library's symbol as a
+path-name relative to the main directory (ie, the root lisp directory
+of the package).  For this to work right, load-path only points at the
+main directory.
+
+For example, a directory structure might look like:
+
+  * (main directory) :: (Name isn't important.  load-path only knows
+       about this directory)
+
+    * my-project-name/ ::
+    
+      * plugins/ ::
+    
+        * foo.el :: (provides `my-project-name/plugins/foo')
+    
+        * bar.el :: (provides `my-project-name/plugins/bar')
+    
+        * baz.el :: (provides `my-project-name/plugins/baz')
+
+I do this because I feel that emacs' namespace is getting crowded
+and I keep encountering extension library names that try to squeeze
+project name and library name into one component, like
+"org-this-thing.el" or "pcmpl-that-thing.el".
+
+This style has the official approval of emacs-devel (I asked) and I
+know of one other project besides mine that does this (CEDET).
+
+===Placement of support libraries===
+
+I put testing and other support libraries in a subdirectory with the
+same name as the library they support.  As author of the testing
+package Emtest, I've found that that works nicely.  Just customize
+uniquify-buffer-name-style so that the various "test.el" buffers get
+named something clearer than %%"test.el<2>"%%, %%"test.el<3>"%% etc.
+
+Under this convention, part of the directory structure might look
+like:
+
+  * my-project-name/ ::
+  
+    * plugins/ ::
+  
+      * foo.el :: (the library itself)
+  
+      * foo/ ::
+  
+  	 * tests.el :: (tests pertaining to "foo.el")
+  
+  	 * testhelp.el :: (code that is useful in testing "foo.el" and
+          also useful testing other files that build on "foo.el")
+  
+  	 * examples ::
+  
+  	   * file1 :: (a file used in tests)
+  
+  	   * file2 :: (another file used in tests)
+  
+      * bar.el ::
+  
+      * bar/ ::
+  
+  	 * tests.el :: (tests pertaining to "bar.el")
+  
+  	 * (etc) ::
+  
+      * baz.el ::
+  
+      * baz/ ::
+  
+  	 * tests.el :: (tests pertaining to "baz.el")
+  
+  	 * (etc) ::
+  
+
+TomBreton
 
 ----
 CategoryHomepage

@@ -1,15 +1,15 @@
 [[zh:Org-Mode]]
 == 概览 ==
 
-An Emacs Mode for Notes, Project Planning, and Authoring. Org-mode is included with Emacs 22.1.
+Org-Mode 是一个 Emacs 模式,用于笔记,工程计划以及著作. Org-Mode 在 Emacs 22.1 版本之后就内置到程序中了.
 
-* Homepage: http://orgmode.org
+* 主页: http://orgmode.org
 * Worg (user edited org) tutorials etc: http://orgmode.org/worg
 * The compact Org-mode Guide: http://orgmode.org/guide/
-* The Org Manual: http://orgmode.org/manual/index.html
+* Org 手册: http://orgmode.org/manual/index.html
 * El Manual de Org, traducción al español para 21.3:  http://gnu.manticore.es/manual-org-emacs
 
-Features:
+特性:
 
 * integrates with diary
 * set deadlines, todos, scheduled events
@@ -21,7 +21,7 @@ Features:
 * links to http, file, gnus, rmail, vm, news, wanderlust, bbdb
 * integrates with RememberMode
 
-== Download and Install ==
+== 下载安装 ==
 
 The development version is at:
 
@@ -32,7 +32,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
     deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
     deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
 
-== Add-ons and other files ==
+== 插件及其他 ==
 
 * [http://dto.mamalala.org/e/org-publish.el org-publish.el] (this comes in the latest version of org-mode) by DavidOtoole
   is a publishing management system for creating
@@ -84,15 +84,15 @@ One of the major influences in 2006/2007 on task organization has been the book 
 
 * Tutorials on specific features of org-mode are available on [http://orgmode.org/worg/|Worg] (a wiki generated from collaboratively edited org files)
 
-== Specific Tasks ==
+== 特殊任务 ==
 
-Org Mode can be easily configured to help edit *Wikipedia* articles by changing outline-regexp in the mode hook:
+Org Mode 可以很简单的配置用来编辑 *Wikipedia* 文章通过在 mode hook 改变 outline-regexp :
 
 <pre>
 (add-hook 'org-mode-hook '(lambda () (setq outline-regexp "=+")))
 </pre>
 
-If you use WThreeM, add the following instead:
+如果你用的是 WThreeM, 则添加下列语句代替:
 <pre>
 (setq w3m-form-textarea-edit-mode 'org-mode)
 (add-hook 'w3m-form-input-textarea-mode-hook
@@ -101,7 +101,7 @@ If you use WThreeM, add the following instead:
 </pre>
 
 
-== Publishing ==
+== 发布 ==
 
 You can *publish to HTML* using `C-c C-e h', or you can use BhlMode for LaTeX or HTML output. Just switch modes before exporting (`M-x bhl-mode'). BhlMode should automatically recognize the asterisks as marking sections and subsections.  You can also use  [http://www.cognition.ens.fr/~guerry/u/org-export-latex.el org-export-latex.el]. See EmacsOutlineToHtml for other alternatives.
 
@@ -346,4 +346,3 @@ This is better than the previous one, because the agenda buffer shows the proper
 
 ----
 CategoryOutline CategoryPersonalInformationManager CategoryCalendar
-
