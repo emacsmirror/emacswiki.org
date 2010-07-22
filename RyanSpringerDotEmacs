@@ -28,6 +28,8 @@
 ;;
 ;;
 
+(set-default-font "DejaVu Sans Mono 9")
+
 (set-background-color "black")
 (set-foreground-color "white")
 (set-cursor-color "green")
@@ -116,9 +118,41 @@
 
 ;; Slime stuff
 
-(setq inferior-lisp-program "/usr/bin/sbcl")
-(require 'slime)
-(slime-setup)
+;;(setq inferior-lisp-program "/usr/bin/sbcl")
+;;(require 'slime)
+;;(slime-setup)
+
+;; w3m
+;; install in ubuntu 64-bit lucid:
+;; sudo apt-get install w3m-el-snapshot
+(add-to-list 'load-path "/usr/share/emacs23/site-lisp/w3m")
+(require 'w3m)
+(setq w3m-use-cookies t)
+
+;; elscreen
+;; install in ubuntu 64-bit lucid:
+;; sudo apt-get install elscreen
+(add-to-list 'load-path "/usr/share/emacs23/site-lisp/apel")
+(add-to-list 'load-path "/usr/share/emacs23/site-lisp/elscreen")
+(require 'elscreen)
+
+(elscreen-set-prefix-key (kbd "H-j"))
+
+;; color-theme
+;; install in ubuntu 64-bit lucid:
+;; sudo apt-get install emacs-goodies-el
+(add-to-list 'load-path "/usr/share/emacs23/site-lisp/emacs-goodies-el")
+(require 'color-theme)
+
+;; misc functions
+
+(defun my-next-window ()
+  (interactive)
+  (other-window 1))
+
+(defun my-previous-window ()
+  (interactive)
+  (other-window -1))
 
 ;;
 ;;
@@ -133,7 +167,12 @@
 
 (global-set-key (kbd "C-1")  'previous-buffer)
 (global-set-key (kbd "C-2")  'next-buffer)
-(global-set-key (kbd "C-3")  'other-window)
+(global-set-key (kbd "C-3")  'my-previous-window)
+(global-set-key (kbd "C-4")  'my-next-window)
+(global-set-key (kbd "C-5")  'other-frame)
 
 (global-set-key (kbd "C-8")  'edit-dot-emacs)
 (global-set-key (kbd "C-9")  'reload-dot-emacs)
+
+(global-set-key (kbd "H-[")  'elscreen-previous)
+(global-set-key (kbd "H-]")  'elscreen-next)

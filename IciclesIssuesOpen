@@ -83,48 +83,6 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
-<pre>
-
-</pre>
-----
-<pre>
-
-</pre>
-
-[new]
-With the latest icicles files updated via icicles-install there is a problem with the GNU emacs 23.1.97 final release candidate for 23.2 that doesn't occur for 23.1.
-
-<pre>
-(add-to-list 'load-path "...")
-(require 'icicles-install)
-(require 'icicles)
-</pre>
-
-fails with:
-
-##debugger entered--Lisp error: (wrong-type-argument listp 2C-command)##
-
-Adding the following lines fixes the problem
-
-<pre>
-(add-to-list 'load-path "...")
-(require 'icicles-install)
-(require 'two-column)
-(require 'icicles)
-</pre>
-
-Sorry -- wiki formatting is perplexing. -- [[Gen.Sec.]]
-
-[new:DrewAdams:2010-05-06 14:00 UTC]
-I cannot reproduce the problem - please provide more info (e.g. ##*Messages*## output that might be pertinent, ##*Backtrace*## buffer, precise recipe to follow,...). If you use the debugger, be sure to load the source files (##*.el##, not ##*.elc##).
-
-I tried with ##emacs -Q## using only the source files (##*.el##), and I tried again using the ##*.elc## files byte-compiled using the same Emacs 23-1-97 prerelease.  It's best to test using ##emacs -Q## and loading only the source files (##*.el##, not ##*.elc##). If you do test using byte-compiled files, be sure they are freshly compiled.)
-
-Also, be sure you have all the latest '''Icicles''' files. I'm not responsible for <tt>[[icicles-install.el]]</tt>, so I cannot tell you whether it always does the right thing. I assume it does, but to be sure you might want to compare the dates or the ##Update## numbers in the file headers of each file downloaded with those currently posted on the wiki at the ElispArea. Sorry for your trouble. -- DrewAdams
-
-
-
-
 
 
 
@@ -137,7 +95,6 @@ Also, be sure you have all the latest '''Icicles''' files. I'm not responsible f
 
 </pre>
 ----
-
 
 || *Previous:*  IciclesIssues || '''[[Icicles]]''' || IciclesIssuesStale || IciclesIssuesClosed || 
 

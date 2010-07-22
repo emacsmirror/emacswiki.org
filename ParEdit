@@ -79,7 +79,7 @@ The code is loosely based on code on the AutoPairs page:
 == ParEdit, ElDoc, Show-Paren and "Electric RETURN" ==
 
 Here's a '''[http://img8.imageshack.us/img8/9479/openparen.gif short video demonstration]'''
-of %%ParEdit%% working with the %%ElDoc%% and %%Show-Paren%% minor modes and the electric ##RETURN## function defined above.
+of %%ParEdit%% working with %%ElDoc%% and %%Show-Paren%% minor modes along with the electric ##RETURN## function defined above.
 
 Adding this code to your <tt>[InitFile .emacs]</tt> will set the modes as in the video: 
 
@@ -136,7 +136,7 @@ I downloaded %%ParEdit%% a long time ago, but I did not succeed in using it dail
 newlines after my parens and I don't get it showing me what comes next after typing "defun".  If these are other major/minor modes
 then the caption should be replaced with "Here's a demonstration of %%ParEdit%% playing nice with secret-mode.el and fun-minor-mode-that-were-keeping-secret-from-dale.el.
 
-: -- Dale 
+: -- DaleWiles
 
 [new]
 

@@ -533,7 +533,7 @@ input completion is not available.  This in turn means that
 completion]].
 
 
-Here is a screenshot of the mode-line `Icy' highlighting during strict multi-command completion. The box indicates strict completion. The green highlighting and the `##+##' indicate multi-command completion. 
+Here is a screenshot of the mode-line `Icy' highlighting during strict multi-command completion. The box indicates strict completion. The green highlighting and the `##+##' indicate multi-command completion. `Icy' indicates case-sensitivity (`ICY' would indicate case-insensitivity).
 
 : [[image:DrewsEmacsIcyModeLine]]
 

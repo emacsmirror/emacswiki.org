@@ -63,6 +63,72 @@ Better yet, use this to separate threads (puts space before and after the horizo
 
 
 
+
+
+
+
+<pre>
+
+</pre>
+----
+
+<pre>
+
+</pre>
+
+
+[new:aidalgol:2010-07-21 10:46 UTC]
+The function tmm-menubar fails with the following backtrace.
+
+<pre>
+Debugger entered--Lisp error: (wrong-type-argument stringp nil)
+  string-width(nil)
+  tmm-get-keymap((S-iso-lefttab . icicle-complete-keys) nil)
+  #[(elt) ...
+  mapc(#[(elt) ...
+  tmm-prompt((keymap (S-iso-lefttab . icicle-complete-keys) ...
+  tmm-menubar()
+  eval((tmm-menubar))
+  eval-last-sexp-1(nil)
+  eval-last-sexp(nil)
+  call-interactively(eval-last-sexp nil nil)
+</pre>
+
+I am running Emacs 24.0.50.1, and Icicles 22.0 (Update #: 22764).  I used to use this command often (it's bound to M-`), and I like Icicles very much (and use it even more), so it is quite annoying that Icicles breaks it. -- Aidalgol 2010-07-21 22:46 UTC
+
+[new:DrewAdams:2010-07-21 15:17 UTC]
+1. I do not support development snapshots of Emacs. Too volatile and unstable.  '''Icicles''' supports Emacs releases 20, 21, 22, and 23 -- and it will support 24 when that is released.
+
+2. I nevertheless took a look at this.  '''Icicles''' broke nothing.  It is Emacs that broke something.  I have filed an Emacs bug: #6690.
+http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6690
+
+3. Consider using LaCarte instead of `tmm'.  It lets you take advantage of '''Icicles''' matching etc., among other things.
+
+Just because you stumble upon a problem that you see only when using '''Icicles''' does not mean that '''Icicles''' broke something.
+
+-- DrewAdams
+
+[new:aidalgol:2010-07-21 23:11 UTC]
+Thanks.  Looking at the backtrace, I thought that it was Icicles that broke something.  I'll take a look at LaCarte. -- Aidalgol
+
+
+[new:DrewAdams:2010-07-21 23:31 UTC]
+Thanks; no problem.  Moving this to IciclesIssuesClosed. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 <pre>
 
 </pre>

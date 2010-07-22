@@ -23,3 +23,17 @@ In addition to annotations, you can tag bookmarks, in the sense of [[http://deli
 
 See Manual:Bookmarks.  See also [[Bookmark+]] and [[Dired+]] for info on bookmark tags and bookmarking files without visiting them. -- DrewAdams
 
+[new]
+
+have a look at http://code.google.com/p/annot/ -- AlexHarsanyi
+
+[new]
+In addition to the BookMarks that come with Emacs, see also VisibleBookmarks. 
+
+Someone had started writing a primitive mode called [[Annotate]]. -- AaronHawley
+
+
+[new:DrewAdams:2010-07-21 16:07 UTC]
+##VisibleBookmarks## (##bm.el##) has a pretty poor annotation capability.  It just reads an annotation from the [[minibuffer]] as a string -- no editing buffer or mode. And it just shows you annotations in the [[echo area]], using `message'.  It can also show you annotations along with the bookmarks themselves in a summary buffer, but there is no display or editing mode for annotations.
+
+[[Bookmark+]] also has visible bookmarks -- similar highlighting etc. (but more flexible).  But Bookmark+ annotations are those of ordinary Emacs bookmarks: multi-line, displayed and edited in separate annotation buffers, etc. -- DrewAdams

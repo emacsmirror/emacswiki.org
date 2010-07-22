@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 17:51:43 2010 (-0800)
+;; Last-Updated: Wed Jul 21 10:34:41 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1765
+;;     Update #: 1775
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,16 +17,15 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `autofit-frame', `avoid', `chistory',
-;;   `cl', `color-theme', `cus-face', `doremi', `doremi-cmd',
-;;   `doremi-frm', `easymenu', `eyedropper', `faces', `faces+',
-;;   `fit-frame', `frame-cmds', `frame-fns', `header2', `help+20',
-;;   `hexrgb', `highlight', `info', `info+', `isearch+',
+;;   `doremi', `doremi-cmd', `doremi-frm', `eyedropper', `faces',
+;;   `faces+', `fit-frame', `frame-cmds', `frame-fns', `header2',
+;;   `help+20', `hexrgb', `highlight', `info', `info+', `isearch+',
 ;;   `iso-transl', `lib-requires', `loadhist', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mouse', `mouse+',
-;;   `mwheel', `pp', `pp+', `replace+', `reporter', `ring', `ring+',
-;;   `second-sel', `sendmail', `setup-keys', `simple+', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `wimpy-del'.
+;;   `mwheel', `pp', `pp+', `replace+', `ring', `ring+',
+;;   `second-sel', `setup-keys', `simple+', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget', `wimpy-del'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -57,6 +56,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/07/21 dadams
+;;     Set font-lock-builtin-face, to get back the default as it was prior to 23.2.
 ;; 2007/09/23 dadams
 ;;     Removed second arg to undefine-killer-commands.
 ;; 2006/12/11 dadams
@@ -194,6 +195,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Quiet the byte-compiler.
+
+(defvar isearch-resume-in-command-history) ; Defined in `isearch.el'
+(defvar display-buffer-reuse-frames)
+(defvar display-buffer-reuse-frame)
+
+;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 ;;; Some standard faces redefined, and two simple faces defined.
 (condition-case nil
@@ -221,6 +230,7 @@
 (set-face-foreground 'font-lock-function-name-face "Red")
 (unless (facep 'font-lock-keyword-face) (make-face 'font-lock-keyword-face))
 (set-face-foreground 'font-lock-keyword-face "Blue3")
+(set-face-foreground 'font-lock-builtin-face "Orchid") ; Restore default per before Emacs 23.2.
 
 
 ;;;;; ;;; EDIFF stuff.
