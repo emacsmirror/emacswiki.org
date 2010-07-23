@@ -4,7 +4,7 @@
 ;;
 ;; Author: Dimitri Fontaine <dim@tapoueh.org>
 ;; URL: http://pgsql.tapoueh.org/elisp
-;; Version: 0.5
+;; Version: 0.7
 ;; Created: 2008-09-26
 ;; Keywords: ClusterSSH ssh cssh
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
@@ -13,9 +13,6 @@
 ;;
 ;; Emacs Integration:
 ;; (require 'cssh)
-;;
-;; When using emacs 22, you need to install pcmpl-ssh by yourself:
-;;  http://www.emacswiki.org/emacs/pcmpl-ssh.el
 ;;
 ;; cssh bindings to open ClusterSSH controler in cssh-mode on some buffers:
 ;;
@@ -31,6 +28,10 @@
 ;;  C-=   redraw buffer selection in windows
 ;;  C-!   reconnect the ssh, for when your ssh buffers outlive the ssh inside
 ;;
+;; Dired integration:
+;;
+;;  C-=   in dired uses a `dsh' style configuration file to get the remote
+;;        hosts list
 ;;
 ;; TODO
 ;;
@@ -42,15 +43,18 @@
 ;;   seems much better for the *cssh* controller buffer to behave as much as
 ;;   possible like a plain emacs buffer.
 ;;
+;; CHANGES
+;;
+;; 0.7
+;;  Add `dsh' configuration file support from dired
+;;
+;; 0.6
+;;  Use tramp to complete the host names
+;;
 
-
-;; we need pcmpl-ssh which is integrated into emacs CVS as of emacs 23, but
-;; under a new name
-(if (> emacs-major-version 22)
-    (require 'pcmpl-unix) 
-  (require 'pcmpl-ssh))
 (require 'ibuffer)
 (require 'term)
+(require 'tramp)
 
 (defgroup cssh nil "ClusterSSH mode customization group"
   :group 'convenience)
@@ -69,6 +73,10 @@
   :type 'integer
   :group 'cssh)
 
+(defcustom cssh-shell "/bin/bash"
+  "cssh shell to use"
+  :group 'cssh)
+
 (defcustom cssh-term-type "screen"
   "cssh TERM environment variable to export at connection time"
   :group 'cssh)
@@ -77,84 +85,67 @@
   "cssh default buffer name, the one in cssh major mode"
   :group 'cssh)
 
-(defcustom cssh-hostname-resolve 'cssh-default-resolver
-  "cssh remote hostname resolving, defauts to using input (hence
-system resolv.conf) You can also use 'cssh-override-resolve"
+(defcustom cssh-after-command "exit"
+  "command to run when exiting from the remote (ssh) shell"
   :group 'cssh)
 
-(defcustom cssh-override-nameserver nil
-  "nameserver to use when using the 'cssh-override-resolver
-function for 'cssh-resolver"
-  :group 'cssh)
-
-(defcustom cssh-override-domain nil
-  "domain to append to given name when using 'cssh-override-resolver"
-  :group 'cssh)
-
-(defcustom cssh-remote-user nil
-  "remote username to use to log in, as in ssh user@remote"
-  :group 'cssh)
-
+;;;###autoload
 (defun cssh-turn-on-ibuffer-binding ()
   (local-set-key (kbd "C-=") 'cssh-ibuffer-start))
 
+;;;###autoload
 (add-hook 'ibuffer-mode-hook 'cssh-turn-on-ibuffer-binding)
+
+;;;###autoload
+(global-set-key (kbd "C-=") 'cssh-term-remote-open)
 
 ;;;###autoload
 (global-set-key (kbd "C-M-=") 'cssh-regexp-host-start)
 
-;;
-;; cssh remote hostname resolving
-;;
-(defun cssh-default-resolver (name)
-  "default to identity: let ssh use systemwide resolv.conf"
-  name)
+;;;###autoload
+(define-key dired-mode-map (kbd "C-=") 'cssh-dired-find-file)
 
-(defun cssh-override-resolver (name)
-  "cssh override resolver will use `host $name cssh-override-nameserver`"
-  (let ((host-output (shell-command-to-string 
-		      (format "host %s %s" 
-			      (concat name cssh-override-domain)
-			      cssh-override-nameserver))))
-    (string-match " has address " host-output)
-    (substring host-output (match-end 0) -1)))
+;; hostname completion, on C-=
+(defun cssh-tramp-hosts ()
+  "ask tramp for a list of hosts that we can reach through ssh"
+  (reduce 'append (mapcar (lambda (x) 
+			    (remove* nil (mapcar 'cadr (apply (car x) (cdr x)))))
+			  (tramp-get-completion-function "ssh"))))
 
 ;;
 ;; This could be seen as recursion init step, opening a single remote host
 ;; shell
 ;;
 ;;;###autoload
-(defun cssh-term-remote-open ()
+(defun cssh-term-remote-open 
+  (&optional remote-host dont-set-buffer dont-send-input)
   "Opens a M-x term and type in ssh remotehost with given hostname"
   (interactive) 
   (let*
-      ((ssh-term-remote-host-input
-	(completing-read "Remote host: " (pcmpl-ssh-hosts)))
-       (ssh-term-remote-host (apply cssh-hostname-resolve 
-				    (list ssh-term-remote-host-input)))
-       (ssh-remote-user-part (if cssh-remote-user 
-				 (concat cssh-remote-user "@") 
-			       nil))
-       (ssh-command (concat "ssh " ssh-remote-user-part ssh-term-remote-host))
-       (ssh-buffer-name (concat "*" ssh-command "*")))
+      ((ssh-term-remote-host
+	(or remote-host
+	    (completing-read "Remote host: " (cssh-tramp-hosts))))
+       (ssh-command (concat "ssh " ssh-term-remote-host))
+       (ssh-buffer-name (concat "*" ssh-command "*"))
+       (cssh-remote-open-command
+	(if cssh-after-command
+	    (format "TERM=%s %s ;%s" cssh-term-type ssh-command cssh-after-command)
+	  (format "TERM=%s %s" cssh-term-type ssh-command))))
 
     (if (get-buffer ssh-buffer-name)
-        (switch-to-buffer ssh-buffer-name)
+        (unless dont-set-buffer (switch-to-buffer ssh-buffer-name))
       
-      (ansi-term "/bin/bash" ssh-command)
-      (set-buffer (get-buffer ssh-buffer-name))
-      (when (not (eq ssh-term-remote-host-input ssh-term-remote-host))
-	(rename-buffer 
-	 (concat "*ssh " ssh-remote-user-part ssh-term-remote-host-input "*")))
-      (insert (concat "TERM=" cssh-term-type " " ssh-command))
-      (term-send-input))))
-
-;;;###autoload
-(global-set-key (kbd "C-=") 'cssh-term-remote-open)
+      (ansi-term cssh-shell ssh-command)
+      (unless dont-set-buffer (set-buffer (get-buffer ssh-buffer-name)))
+      (with-current-buffer ssh-buffer-name
+	(insert cssh-remote-open-command))
+      (unless dont-send-input (term-send-input)))
+    ;; return the newly created buffer name
+    ssh-buffer-name))
 
 ;;;
 ;;; open cssh windows and create buffers from a regexp
-;;; the regexp matches host names as in pcmpl-ssh-hosts
+;;; the regexp matches host names as in cssh-tramp-hosts
 ;;;
 ;;;###autoload
 (defun cssh-regexp-host-start (&optional cssh-buffer-name)
@@ -168,19 +159,12 @@ function for 'cssh-resolver"
 	(or cssh-buffer-name cssh-default-buffer-name))
   
   (let* ((re (read-from-minibuffer "Host regexp: "))
-	 (buffer-list '()))
+	 (buffer-list))
 
-    (dolist (elt (pcmpl-ssh-hosts) buffer-list)
+    (dolist (elt (cssh-tramp-hosts) buffer-list)
       (when (string-match re elt)
-	(let* ((buffer-ssh-command (concat "ssh " elt))
-	       (buffer-name (concat "*" buffer-ssh-command "*")))
-
-	  (unless (get-buffer buffer-name)
-	    (ansi-term "/bin/bash" buffer-ssh-command)
-	    (with-current-buffer buffer-name
-	      (insert (concat "TERM=" cssh-term-type " " buffer-ssh-command))))
-	  
-	  (add-to-list 'buffer-list (get-buffer buffer-name)))))
+	(add-to-list 'buffer-list 
+		     (get-buffer (cssh-term-remote-open elt t t)))))
 
     (message "%S" buffer-list)
 
@@ -224,6 +208,48 @@ marked ibuffers buffers"
 
     (when buffers-all-in-term-mode
       (cssh-open cssh-buffer-name marked-buffers))))
+
+;;;
+;;; Dired integration for opening cssh from a `dsh' config file
+;;;
+(defun cssh-parse-dsh-config-file (filename)
+  "Given a filename, parse it as a dsh filename, return the
+remote hosts list"
+  (with-temp-buffer 
+    (insert-file-contents-literally filename)
+    (let ((l     (split-string (buffer-string)))
+	  (hosts))
+      (dolist (elt l)
+	(if (string-match "^@.+$" elt)
+	    (mapc (lambda (x) (add-to-list 'hosts x)) 
+		  (cssh-parse-dsh-config-file (substring elt 1)))
+	  (add-to-list 'hosts elt)))
+      ;; we return hosts
+      hosts)))
+
+(defun cssh-open-dsh-config-file (filename)
+  "Given a filename, will parse it as a dsh filename and open
+cssh on the hosts"
+  (let ((hosts (cssh-parse-dsh-config-file filename))
+	(buffer-list))
+    (mapc (lambda (x) 
+	    (add-to-list 'buffer-list 
+			 (get-buffer (cssh-term-remote-open x t t))))
+	  hosts)
+
+    (if (endp buffer-list)
+	(message "Empty file %S" filename)
+      
+      (cssh-open cssh-default-buffer-name buffer-list)
+      (with-current-buffer cssh-default-buffer-name
+	(cssh-send-string "")))))
+
+;;;###autoload
+(defun cssh-dired-find-file ()
+  "In dired, have cssh connect to hosts in the `dsh' configuration file."
+  (interactive)
+  ;; dired-get-filename is defined in dired.el
+  (cssh-open-dsh-config-file (dired-get-filename)))
 
 ;;;
 ;;; Entry point

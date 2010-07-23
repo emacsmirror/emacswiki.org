@@ -201,6 +201,7 @@ Emacs-W3M's tabbing into %%ElScreen%%.
 [new]
 Compared to escreen (EmacsScreen) its frame support is better: it spawns a new set (0-9) of screens for each frame, which is more in line with what I expect. -- DanDebertin
 [new]
+EmacsScreen maintains separate screens per frame now, but EmacsLispScreen does still seem more featureful.  --NoahFriedman
 
 [new]
 I had bad time using %%ElScreen%% in the past so I can't say I prefer it

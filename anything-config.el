@@ -601,14 +601,15 @@ they will be displayed with face `file-name-shadow' if
   :type 'string
   :group 'anything-config)
 
-(defcustom anything-for-files-prefered-list '(anything-c-source-ffap-line
-                                              anything-c-source-ffap-guesser
-                                              anything-c-source-buffers+
-                                              anything-c-source-recentf
-                                              anything-c-source-bookmarks
-                                              anything-c-source-file-cache
-                                              anything-c-source-files-in-current-dir+
-                                              anything-c-source-locate)
+(defcustom anything-for-files-prefered-list
+  '(anything-c-source-ffap-line
+    anything-c-source-ffap-guesser
+    anything-c-source-buffers+
+    anything-c-source-recentf
+    anything-c-source-bookmarks
+    anything-c-source-file-cache
+    anything-c-source-files-in-current-dir+
+    anything-c-source-locate)
   "Your prefered sources to find files."
   :type 'list
   :group 'anything-config)
@@ -662,7 +663,8 @@ Though wmctrl work also with stumpwm."
   "*The prefix key for all `anything-command-map' commands.
 
 !!WARNING!!
-This default value is very likely to be changed, because it is under discussion."
+This default value is very likely to be changed,
+because it is under discussion."
   :type 'string
   :set 'anything-set-anything-command-map-prefix-key
   :group 'anything-config)
@@ -999,8 +1001,9 @@ After closing firefox, you will be able to browse you bookmarks.
 (defun anything-colors ()
   "Preconfigured `anything' for color."
   (interactive)
-  (anything-other-buffer '(anything-c-source-colors anything-c-source-customize-face)
-                         "*anything colors*"))
+  (anything-other-buffer
+   '(anything-c-source-colors anything-c-source-customize-face)
+   "*anything colors*"))
 
 ;;;###autoload
 (defun anything-bookmarks ()
@@ -1064,10 +1067,11 @@ http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el"
   "Preconfigured `anything' : Drop-in replacement of `query-replace-regexp' with building regexp visually."
   (interactive
    (let ((common
-          (anything-c-regexp-base "Query Replace Regexp: "
-                                  '((name . "Lines matching Regexp")
-                                    (mode-line . "Set replace start line and type RET.")
-                                    (action . anything-c-query-replace-args)))))
+          (anything-c-regexp-base
+           "Query Replace Regexp: "
+           '((name . "Lines matching Regexp")
+             (mode-line . "Set replace start line and type RET.")
+             (action . anything-c-query-replace-args)))))
      (if (not common)
          (keyboard-quit))
      (list (car common) (cadr common) (caddr common)
@@ -1092,11 +1096,14 @@ http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el"
      (mode-line . "Press TAB to select action.")
      (action
       ("Kill Regexp as sexp" .
-       (lambda (x) (anything-c-regexp-kill-new (prin1-to-string (funcall (anything-attr 'regexp))))))
+       (lambda (x) (anything-c-regexp-kill-new
+                    (prin1-to-string (funcall (anything-attr 'regexp))))))
       ("Query Replace Regexp" .
-       (lambda (x) (apply 'query-replace-regexp (anything-c-query-replace-args (point)))))
+       (lambda (x) (apply 'query-replace-regexp
+                          (anything-c-query-replace-args (point)))))
       ("Kill Regexp" .
-       (lambda (x) (anything-c-regexp-kill-new (funcall (anything-attr 'regexp)))))))))
+       (lambda (x) (anything-c-regexp-kill-new
+                    (funcall (anything-attr 'regexp)))))))))
 
 (defun anything-c-query-replace-args (start-point)
   ;; create arguments of `query-replace-regexp'.
@@ -1440,21 +1447,23 @@ It is cleared after executing action.")
 ;; (progn (ad-disable-advice 'eval-defun 'after 'anything-source-hack) (ad-update 'eval-defun))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Document Generator ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(defconst anything-c-create-summary-index-regexp
+  "^;;;; <\\(.+?\\)>$\\|^;; (anything '\\(.+?\\))$\\|^ *;; (anything '\\(.+?\\))$")
 (defun anything-c-create-summary ()
   "Create `anything' summary."
   (save-excursion
     (goto-char (point-min))
-    (loop while (re-search-forward "^;;;; <\\(.+?\\)>$\\|^;; (anything '\\(.+?\\))$\\|^ *;; (anything '\\(.+?\\))$"  nil t)
-          collect (cond ((match-beginning 1)
-                         (cons 'section (match-string-no-properties 1)))
-                        ((match-beginning 2)
-                         (cons 'source
-                               (cons (match-string-no-properties 2)
-                                     (assoc-default 'name (symbol-value (intern (match-string-no-properties 2)))))))
-                        ((match-beginning 3)
-                         (cons 'source
-                               (cons (match-string-no-properties 3)
-                                     (assoc-default 'name (symbol-value (intern (match-string-no-properties 3)))))))))))
+    (loop with it
+          while (re-search-forward anything-c-create-summary-index-regexp nil t)
+          collect
+          (cond ((setq it (match-string-no-properties 1))
+                 (cons 'section it))
+                ((setq it (match-string-no-properties 2))
+                 `(source ,it .
+                          ,(assoc-default 'name (symbol-value (intern it)))))
+                ((setq it (match-string-no-properties 3))
+                 `(source ,it .
+                          ,(assoc-default 'name (symbol-value (intern it)))))))))
 
 ;; (find-epp (anything-c-create-summary))
 
@@ -1692,7 +1701,8 @@ If EXPAND is non--nil expand-file-name."
 If prefix numeric arg is given go ARG level down."
   (interactive "p")
   (when (anything-file-completion-source-p)
-    (let ((new-pattern (anything-reduce-file-name anything-pattern arg :unix-close t :expand t)))
+    (let ((new-pattern (anything-reduce-file-name anything-pattern arg
+                                                  :unix-close t :expand t)))
       (with-selected-window (minibuffer-window)
         (delete-minibuffer-contents)
         (insert new-pattern)))))
@@ -1939,11 +1949,13 @@ Useful in dired buffers when there is inserted subdirs."
     (persistent-action . anything-find-files-persistent-action)
     (persistent-help . "Expand Candidate")
     (volatile)
-    (action .
-     (("Symlink File" . (lambda (candidate)
-                          (anything-dired-action candidate :action 'symlink)))
-      ("RelSymlink File" . (lambda (candidate)
-                             (anything-dired-action candidate :action 'relsymlink)))))))
+    (action
+     . (("Symlink File"
+         . (lambda (candidate)
+             (anything-dired-action candidate :action 'symlink)))
+        ("RelSymlink File"
+         . (lambda (candidate)
+             (anything-dired-action candidate :action 'relsymlink)))))))
 
 
 (defvar anything-c-source-hardlink-files
@@ -1955,9 +1967,10 @@ Useful in dired buffers when there is inserted subdirs."
     (persistent-action . anything-find-files-persistent-action)
     (persistent-help . "Expand Candidate")
     (volatile)
-    (action .
-     (("Hardlink File" . (lambda (candidate)
-                           (anything-dired-action candidate :action 'hardlink)))))))
+    (action
+     . (("Hardlink File"
+         . (lambda (candidate)
+             (anything-dired-action candidate :action 'hardlink)))))))
 
 (defun* anything-dired-action (candidate &key action follow)
   "Copy, rename or symlink file at point or marked files in dired to CANDIDATE.
@@ -2103,17 +2116,18 @@ INITIAL-INPUT is a valid path, TEST is a predicate that take one arg."
 
 (defvar anything-c-source-file-cache
   '((name . "File Cache")
-    (init . (lambda ()
-              (require 'filecache nil t)
-              (unless anything-c-source-file-cache-initialized
-                (setq anything-c-file-cache-files
-                      (loop for item in file-cache-alist append
-                            (destructuring-bind (base &rest dirs) item
-                              (loop for dir in dirs collect
-                                    (concat dir base)))))
-                (defadvice file-cache-add-file (after file-cache-list activate)
-                  (add-to-list 'anything-c-file-cache-files (expand-file-name file)))
-                (setq anything-c-source-file-cache-initialized t))))
+    (init
+     . (lambda ()
+         (require 'filecache nil t)
+         (unless anything-c-source-file-cache-initialized
+           (setq anything-c-file-cache-files
+                 (loop for item in file-cache-alist append
+                       (destructuring-bind (base &rest dirs) item
+                         (loop for dir in dirs collect
+                               (concat dir base)))))
+           (defadvice file-cache-add-file (after file-cache-list activate)
+             (add-to-list 'anything-c-file-cache-files (expand-file-name file)))
+           (setq anything-c-source-file-cache-initialized t))))
     (candidates . anything-c-file-cache-files)
     (match anything-c-match-on-file-name
            anything-c-match-on-directory-name)
@@ -2207,8 +2221,9 @@ It is cleared after jumping line.")
   (when (car anything-c-ffap-line-location)
     (unwind-protect
         (ignore-errors
-          (with-selected-window (get-buffer-window
-                                 (get-file-buffer (car anything-c-ffap-line-location)))
+          (with-selected-window
+              (get-buffer-window
+               (get-file-buffer (car anything-c-ffap-line-location)))
             (anything-goto-line (cdr anything-c-ffap-line-location)))))))
 (add-hook 'anything-after-action-hook 'anything-c-ffap-line-goto-line)
 (add-hook 'anything-after-persistent-action-hook 'anything-c-ffap-line-goto-line)
@@ -2256,26 +2271,26 @@ source.")
 
 (defvar anything-c-source-info-pages
   `((name . "Info Pages")
-    (candidates . (lambda ()
-                    (if anything-c-info-pages
-                        anything-c-info-pages
-                      (setq anything-c-info-pages
-                            (save-window-excursion
-                              (save-excursion
-                                (require 'info)
-                                (Info-find-node "dir" "top")
-                                (goto-char (point-min))
-                                (let ((info-topic-regexp "\\* +\\([^:]+: ([^)]+)[^.]*\\)\\.")
-                                      topics)
-                                  (while (re-search-forward info-topic-regexp nil t)
-                                    (add-to-list 'topics (match-string-no-properties 1)))
-                                  (goto-char (point-min))
-                                  (Info-exit)
-                                  topics)))))))
+    (candidates
+     . (lambda ()
+         (if anything-c-info-pages
+             anything-c-info-pages
+           (setq anything-c-info-pages
+                 (save-window-excursion
+                   (save-excursion
+                     (require 'info)
+                     (Info-find-node "dir" "top")
+                     (goto-char (point-min))
+                     (let ((info-topic-regexp "\\* +\\([^:]+: ([^)]+)[^.]*\\)\\.")
+                           topics)
+                       (while (re-search-forward info-topic-regexp nil t)
+                         (add-to-list 'topics (match-string-no-properties 1)))
+                       (goto-char (point-min))
+                       (Info-exit)
+                       topics)))))))
     (action . (("Show with Info" .(lambda (node-str)
-                                    (info (replace-regexp-in-string "^[^:]+: "
-                                                                    ""
-                                                                    node-str))))))
+                                    (info (replace-regexp-in-string
+                                           "^[^:]+: " "" node-str))))))
     (requires-pattern . 2)))
 ;; (anything 'anything-c-source-info-pages)
 
@@ -2590,12 +2605,13 @@ source.")
                               (woman-file-name "")
                               (sort (mapcar 'car woman-topic-all-completions)
                                     'string-lessp))))))
-    (action  ("Show with Woman" . (lambda (candidate)
-                                    (let ((wfiles (woman-file-name-all-completions candidate)))
-                                      (if (> (length wfiles) 1)
-                                          (woman-find-file (anything-comp-read "ManFile: " wfiles
-                                                                               :must-match t))
-                                          (woman candidate))))))
+    (action  ("Show with Woman"
+              . (lambda (candidate)
+                  (let ((wfiles (woman-file-name-all-completions candidate)))
+                    (if (> (length wfiles) 1)
+                        (woman-find-file (anything-comp-read "ManFile: " wfiles
+                                                             :must-match t))
+                      (woman candidate))))))
     ;; Woman does not work OS X
     ;; http://xahlee.org/emacs/modernization_man_page.html
     (action-transformer . (lambda (actions candidate)
@@ -2672,8 +2688,9 @@ http://www.emacswiki.org/cgi-bin/wiki/download/lacarte.el")
   '((name . "Emacs Functions")
     (candidates . (lambda ()
                     (let (commands)
-                      (mapatoms (lambda (a) (if (functionp a)
-                                                (push (symbol-name a) commands))))
+                      (mapatoms (lambda (a)
+                                  (if (functionp a)
+                                      (push (symbol-name a) commands))))
                       (sort commands 'string-lessp))))
     (type . function)
     (requires-pattern . 2))
@@ -2701,15 +2718,16 @@ word in the function's name, e.g. \"bb\" is an abbrev for
   (append anything-c-source-emacs-functions
           '((match anything-c-match-function-by-abbrev
                    anything-c-string-match))
-          '((init . (lambda ()
-                      (defadvice anything-update
-                        (before anything-c-update-function-abbrev-regexp activate)
-                        (let ((char-list (append anything-pattern nil))
-                              (str "^"))
-                          (dolist (c char-list)
-                            (setq str (concat str (list c) "[^-]*-")))
-                          (setq str (concat (substring str 0 (1- (length str))) "$"))
-                          (setq anything-c-function-abbrev-regexp str))))))))
+          '((init
+             . (lambda ()
+                 (defadvice anything-update
+                   (before anything-c-update-function-abbrev-regexp activate)
+                   (let ((char-list (append anything-pattern nil))
+                         (str "^"))
+                     (dolist (c char-list)
+                       (setq str (concat str (list c) "[^-]*-")))
+                     (setq str (concat (substring str 0 (1- (length str))) "$"))
+                     (setq anything-c-function-abbrev-regexp str))))))))
 ;; (anything 'anything-c-source-emacs-functions-with-abbrevs)
 
 (defvar anything-c-source-advice
@@ -2734,10 +2752,11 @@ word in the function's name, e.g. \"bb\" is an abbrev for
               (loop for advice in (ad-get-advice-info-field function class)
                     for enabled = (ad-advice-enabled advice)
                     collect
-                    (cons (format "%s %s %s"
-                                  (if enabled "Enabled " "Disabled")
-                                  (propertize fname 'face 'font-lock-function-name-face)
-                                  (ad-make-single-advice-docstring advice class nil))
+                    (cons (format
+                           "%s %s %s"
+                           (if enabled "Enabled " "Disabled")
+                           (propertize fname 'face 'font-lock-function-name-face)
+                           (ad-make-single-advice-docstring advice class nil))
                           (list function class advice))))))
 
 (defun anything-c-advice-persistent-action (func-class-advice)
@@ -3031,7 +3050,7 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
                                 candidate)))
                       (if anything-current-prefix-arg
                           (addressbook-set-mail-buffer1 bmk 'append)
-                          (addressbook-set-mail-buffer1 bmk)))))
+                        (addressbook-set-mail-buffer1 bmk)))))
                ("Edit Bookmark"
                 . (lambda (candidate)
                     (let ((bmk (anything-bookmark-get-bookmark-from-name
@@ -3050,18 +3069,23 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
                        (if (> (length mlist) 1)
                            (anything-comp-read
                             "Insert Mail Address: " mlist :must-match t)
-                           (car mlist))))))
+                         (car mlist))))))
                ("Show annotation"
                 . (lambda (candidate)
                     (let ((bmk (anything-bookmark-get-bookmark-from-name
                                 candidate)))
                       (bookmark-show-annotation bmk))))
-               ("Edit annotation" . bookmark-edit-annotation)
-               ("Show Google map" . (lambda (candidate)
-                                      (let* ((bmk (anything-bookmark-get-bookmark-from-name
-                                                  candidate))
-                                             (full-bmk (assoc bmk bookmark-alist)))
-                                        (addressbook-google-map full-bmk))))))))
+               ("Edit annotation"
+                . (lambda (candidate)
+                    (let ((bmk (anything-bookmark-get-bookmark-from-name
+                                candidate)))
+                      (bookmark-edit-annotation bmk))))
+               ("Show Google map"
+                . (lambda (candidate)
+                    (let* ((bmk (anything-bookmark-get-bookmark-from-name
+                                 candidate))
+                           (full-bmk (assoc bmk bookmark-alist)))
+                      (addressbook-google-map full-bmk))))))))
 
 
 (defun anything-c-bmkext-addressbook-setup-alist ()
@@ -3259,10 +3283,11 @@ http://mercurial.intuxication.org/hg/emacs-bookmark-extension"
 (defun anything-get-firefox-user-init-dir ()
   "Guess the default Firefox user directory name."
   (let* ((moz-dir (concat (getenv "HOME") "/.mozilla/firefox/"))
-         (moz-user-dir (with-current-buffer (find-file-noselect (concat moz-dir "profiles.ini"))
-                         (goto-char (point-min))
-                         (when (search-forward "Path=" nil t)
-                           (buffer-substring-no-properties (point) (point-at-eol))))))
+         (moz-user-dir
+          (with-current-buffer (find-file-noselect (concat moz-dir "profiles.ini"))
+            (goto-char (point-min))
+            (when (search-forward "Path=" nil t)
+              (buffer-substring-no-properties (point) (point-at-eol))))))
     (file-name-as-directory (concat moz-dir moz-user-dir))))
 
 (defun anything-guess-firefox-bookmark-file ()
@@ -3303,14 +3328,17 @@ http://mercurial.intuxication.org/hg/emacs-bookmark-extension"
     (filtered-candidate-transformer
      anything-c-adaptive-sort
      anything-c-highlight-firefox-bookmarks)
-    (action . (("Browse Url Firefox" . (lambda (candidate)
-                                         (browse-url-firefox
-                                          (anything-c-firefox-bookmarks-get-value candidate))))
-               ("Browse Url w3m" . (lambda (candidate)
-                                 (w3m-browse-url
-                                  (anything-c-firefox-bookmarks-get-value candidate))))
-               ("Copy Url" . (lambda (elm)
-                               (kill-new (anything-c-w3m-bookmarks-get-value elm))))))))
+    (action . (("Browse Url Firefox"
+                . (lambda (candidate)
+                    (browse-url-firefox
+                     (anything-c-firefox-bookmarks-get-value candidate))))
+               ("Browse Url w3m"
+                . (lambda (candidate)
+                    (w3m-browse-url
+                     (anything-c-firefox-bookmarks-get-value candidate))))
+               ("Copy Url"
+                . (lambda (elm)
+                    (kill-new (anything-c-w3m-bookmarks-get-value elm))))))))
 
 ;; (anything 'anything-c-source-firefox-bookmarks)
 
@@ -3322,9 +3350,10 @@ http://mercurial.intuxication.org/hg/emacs-bookmark-extension"
 
 (defun anything-c-highlight-firefox-bookmarks (bookmarks source)
   (loop for i in bookmarks
-        collect (propertize i
-                            'face '((:foreground "YellowGreen"))
-                            'help-echo (anything-c-firefox-bookmarks-get-value i))))
+        collect (propertize
+                 i
+                 'face '((:foreground "YellowGreen"))
+                 'help-echo (anything-c-firefox-bookmarks-get-value i))))
 
 ;; W3m bookmark
 (eval-when-compile (require 'w3m-bookmark nil t))
@@ -3352,20 +3381,25 @@ http://mercurial.intuxication.org/hg/emacs-bookmark-extension"
     (filtered-candidate-transformer
      anything-c-adaptive-sort
      anything-c-highlight-w3m-bookmarks)
-    (action . (("Browse Url" . (lambda (candidate)
-                                 (anything-c-w3m-browse-bookmark candidate)))
-               ("Copy Url" . (lambda (elm)
-                               (kill-new (anything-c-w3m-bookmarks-get-value elm))))
-               ("Browse Url Firefox" . (lambda (candidate)
-                                         (anything-c-w3m-browse-bookmark candidate t)))
-               ("Delete Bookmark" . (lambda (candidate)
-                                      (anything-c-w3m-delete-bookmark candidate)))
-               ("Rename Bookmark" . (lambda (candidate)
-                                      (anything-c-w3m-rename-bookmark candidate)))))
+    (action . (("Browse Url"
+                . (lambda (candidate)
+                    (anything-c-w3m-browse-bookmark candidate)))
+               ("Copy Url"
+                . (lambda (elm)
+                    (kill-new (anything-c-w3m-bookmarks-get-value elm))))
+               ("Browse Url Firefox"
+                . (lambda (candidate)
+                    (anything-c-w3m-browse-bookmark candidate t)))
+               ("Delete Bookmark"
+                . (lambda (candidate)
+                    (anything-c-w3m-delete-bookmark candidate)))
+               ("Rename Bookmark"
+                . (lambda (candidate)
+                    (anything-c-w3m-rename-bookmark candidate)))))
     (persistent-action . (lambda (candidate)
                            (if current-prefix-arg
                                (anything-c-w3m-browse-bookmark candidate t)
-                               (anything-c-w3m-browse-bookmark candidate nil t))))
+                             (anything-c-w3m-browse-bookmark candidate nil t))))
     (persistent-help . "Open URL with emacs-w3m in new tab / \
 C-u \\[anything-execute-persistent-action]: Open URL with Firefox"))
   "Needs w3m and emacs-w3m.
@@ -3422,12 +3456,13 @@ http://emacs-w3m.namazu.org/")
   '((name . "Elisp libraries (Scan)")
     (init . (anything-c-elisp-library-scan-init))
     (candidates-in-buffer)
-    (action ("Find library" . (lambda (candidate)
-                                (find-file (find-library-name candidate))))
-            ("Find library other window" . (lambda (candidate)
-                                             (find-file-other-window (find-library-name candidate))))
-            ("Load library" . (lambda (candidate)
-                                (load-library candidate))))))
+    (action ("Find library"
+             . (lambda (candidate) (find-file (find-library-name candidate))))
+            ("Find library other window"
+             . (lambda (candidate)
+                 (find-file-other-window (find-library-name candidate))))
+            ("Load library"
+             . (lambda (candidate) (load-library candidate))))))
 ;; (anything 'anything-c-source-elisp-library-scan)
 
 (defun anything-c-elisp-library-scan-init ()
@@ -3488,14 +3523,15 @@ STRING is string to match."
 (defun anything-imenu-create-candidates (entry)
   "Create candidates with ENTRY."
   (if (listp (cdr entry))
-      (mapcan (lambda (sub)
-                (if (consp (cdr sub))
-                    (mapcar
-                     (lambda (subentry)
-                       (concat (car entry) anything-c-imenu-delimiter subentry))
-                     (anything-imenu-create-candidates sub))
-                  (list (concat (car entry) anything-c-imenu-delimiter (car sub)))))
-              (cdr entry))
+      (mapcan
+       (lambda (sub)
+         (if (consp (cdr sub))
+             (mapcar
+              (lambda (subentry)
+                (concat (car entry) anything-c-imenu-delimiter subentry))
+              (anything-imenu-create-candidates sub))
+           (list (concat (car entry) anything-c-imenu-delimiter (car sub)))))
+       (cdr entry))
     (list entry)))
 
 (defvar anything-c-source-imenu
@@ -3560,7 +3596,8 @@ STRING is string to match."
     (with-current-buffer (anything-candidate-buffer 'local)
       (call-process-shell-command
        (if (string-match "\\.el\\.gz$" anything-buffer-file-name)
-           (format "ctags -e -u -f- --language-force=lisp --fields=n =(zcat %s) " anything-buffer-file-name)
+           (format "ctags -e -u -f- --language-force=lisp --fields=n =(zcat %s) "
+                   anything-buffer-file-name)
          (format "ctags -e -u -f- --fields=n %s " anything-buffer-file-name))
        nil (current-buffer))
       (goto-char (point-min))
@@ -3568,7 +3605,9 @@ STRING is string to match."
       (delete-region (point-min) (point))
       (loop while (and (not (eobp)) (search-forward "\001" (point-at-eol) t))
             for lineno-start = (point)
-            for lineno = (buffer-substring lineno-start (1- (search-forward "," (point-at-eol) t)))
+            for lineno = (buffer-substring
+                          lineno-start
+                          (1- (search-forward "," (point-at-eol) t)))
             do
             (beginning-of-line)
             (insert (format "%5s:" lineno))
@@ -3596,21 +3635,24 @@ http://ctags.sourceforge.net/")
 
 (defun anything-semantic-construct-candidates (tags depth)
   (when (require 'semantic nil t)
-    (apply 'append
-           (mapcar (lambda (tag)
-                     (if (listp tag)
-                         (let ((type (semantic-tag-type tag))
-                               (class (semantic-tag-class tag)))
-                           (if (or (and (stringp type)
-                                        (or (string= type "class")
-                                            (string= type "namespace")))
-                                   (eq class 'function)
-                                   (eq class 'variable))
-                               (cons (cons (concat (make-string (* depth 2) ?\s)
-                                                   (semantic-format-tag-summarize tag nil t)) tag)
-                                     (anything-semantic-construct-candidates (semantic-tag-components tag)
-                                                                             (1+ depth)))))))
-                   tags))))
+    (apply
+     'append
+     (mapcar
+      (lambda (tag)
+        (if (listp tag)
+            (let ((type (semantic-tag-type tag))
+                  (class (semantic-tag-class tag)))
+              (if (or (and (stringp type)
+                           (or (string= type "class")
+                               (string= type "namespace")))
+                      (eq class 'function)
+                      (eq class 'variable))
+                  (cons (cons (concat (make-string (* depth 2) ?\s)
+                                      (semantic-format-tag-summarize tag nil t))
+                              tag)
+                        (anything-semantic-construct-candidates
+                         (semantic-tag-components tag) (1+ depth)))))))
+      tags))))
 
 (defun anything-semantic-default-action (candidate)
   (let ((tag (cdr (assoc candidate anything-semantic-candidates))))
@@ -3620,7 +3662,8 @@ http://ctags.sourceforge.net/")
   '((name . "Semantic Tags")
     (init . (lambda ()
               (setq anything-semantic-candidates
-                    (ignore-errors (anything-semantic-construct-candidates (semantic-fetch-tags) 0)))))
+                    (ignore-errors (anything-semantic-construct-candidates
+                                    (semantic-fetch-tags) 0)))))
     (candidates . (lambda ()
                     (if anything-semantic-candidates
                         (mapcar 'car anything-semantic-candidates))))
@@ -3684,7 +3727,8 @@ http://www.emacswiki.org/cgi-bin/wiki/download/simple-call-tree.el")
                       "\n\n"))))))))
 
 (defun anything-c-simple-call-tree-functions-callers-init ()
-  (anything-c-simple-call-tree-init-base 'simple-call-tree-invert " is called by\n"))
+  (anything-c-simple-call-tree-init-base 'simple-call-tree-invert
+                                         " is called by\n"))
 
 (defun anything-c-simple-call-tree-candidates ()
   (with-current-buffer (anything-candidate-buffer)
@@ -3697,17 +3741,19 @@ http://www.emacswiki.org/cgi-bin/wiki/download/simple-call-tree.el")
     (setq anything-c-simple-call-tree-related-functions
           (delete "no functions."
                   (split-string
-                   (replace-regexp-in-string "  \\| is called by\\| calls " "" candidate)
+                   (replace-regexp-in-string "  \\| is called by\\| calls "
+                                             "" candidate)
                    "\n")))
     (setq anything-c-simple-call-tree-function-index -1))
   (incf anything-c-simple-call-tree-function-index)
   (anything-c-simple-call-tree-find-definition candidate))
 
 (defun anything-c-simple-call-tree-find-definition (candidate)
-  (find-function (intern
-                  (nth (mod anything-c-simple-call-tree-function-index
-                            (length anything-c-simple-call-tree-related-functions))
-                       anything-c-simple-call-tree-related-functions))))
+  (find-function
+   (intern
+    (nth (mod anything-c-simple-call-tree-function-index
+              (length anything-c-simple-call-tree-related-functions))
+         anything-c-simple-call-tree-related-functions))))
 
 ;; (anything 'anything-c-source-simple-call-tree-functions-callers)
 
@@ -3736,7 +3782,8 @@ http://www.emacswiki.org/cgi-bin/wiki/download/simple-call-tree.el")
   '((name . "Commands/Options in file")
     (header-name
      . (lambda (x) (format "Commands/Options in %s"
-                           (buffer-local-value 'buffer-file-name anything-current-buffer))))
+                           (buffer-local-value 'buffer-file-name
+                                               anything-current-buffer))))
     (candidates . anything-command-and-options-candidates)
     (multiline)
     (action . imenu))
@@ -3759,20 +3806,22 @@ http://www.emacswiki.org/cgi-bin/wiki/download/auto-document.el")
                (loop for (command . doc) in commands
                      for cmdname = (symbol-name command)
                      collect
-                     (cons (format "Command: %s\n %s"
-                                   (propertize cmdname 'face font-lock-function-name-face)
-                                   (adoc-first-line doc))
-                           (assoc cmdname imenu--index-alist)))
+                     (cons
+                      (format "Command: %s\n %s"
+                              (propertize cmdname 'face font-lock-function-name-face)
+                              (adoc-first-line doc))
+                      (assoc cmdname imenu--index-alist)))
                (loop with var-alist = (cdr (assoc "Variables" imenu--index-alist))
                      for (option doc default) in options
                      for optname = (symbol-name option)
                      collect
-                     (cons (format "Option: %s\n %s\n default = %s"
-                                   (propertize optname 'face font-lock-variable-name-face)
-                                   (adoc-first-line doc)
-                                   (adoc-prin1-to-string default))
-                           (assoc optname
-                                  var-alist)))))))
+                     (cons
+                      (format "Option: %s\n %s\n default = %s"
+                              (propertize optname 'face font-lock-variable-name-face)
+                              (adoc-first-line doc)
+                              (adoc-prin1-to-string default))
+                      (assoc optname
+                             var-alist)))))))
     anything-c-auto-document-data))
 
 ;; (anything 'anything-c-source-commands-and-options-in-file)
@@ -3801,16 +3850,17 @@ http://www.emacswiki.org/cgi-bin/wiki/download/auto-document.el")
                          (anything-candidate-buffer (get-buffer "*Colors*")))))
     (candidates-in-buffer)
     (get-line . buffer-substring)
-    (action ("Copy Name" . (lambda (candidate)
-                             (kill-new (anything-c-colors-get-name candidate))))
-            ("Copy RGB" . (lambda (candidate)
-                            (kill-new (anything-c-colors-get-rgb candidate))))
-            ("Insert Name" . (lambda (candidate)
-                               (with-current-buffer anything-current-buffer
-                                 (insert (anything-c-colors-get-name candidate)))))
-            ("Insert RGB" . (lambda (candidate)
-                              (with-current-buffer anything-current-buffer
-                                (insert (anything-c-colors-get-rgb candidate))))))))
+    (action
+     ("Copy Name" . (lambda (candidate)
+                      (kill-new (anything-c-colors-get-name candidate))))
+     ("Copy RGB" . (lambda (candidate)
+                     (kill-new (anything-c-colors-get-rgb candidate))))
+     ("Insert Name" . (lambda (candidate)
+                        (with-current-buffer anything-current-buffer
+                          (insert (anything-c-colors-get-name candidate)))))
+     ("Insert RGB" . (lambda (candidate)
+                       (with-current-buffer anything-current-buffer
+                         (insert (anything-c-colors-get-rgb candidate))))))))
 ;; (anything 'anything-c-source-colors)
 
 (defun anything-c-colors-get-name (candidate)
@@ -3853,8 +3903,8 @@ with the tracker desktop search.")
 ;;; Spotlight (MacOS X desktop search)
 (defvar anything-c-source-mac-spotlight
   '((name . "mdfind")
-    (candidates . (lambda ()
-                    (start-process "mdfind-process" nil "mdfind" anything-pattern)))
+    (candidates
+     . (lambda () (start-process "mdfind-process" nil "mdfind" anything-pattern)))
     (type . file)
     (requires-pattern . 3)
     (delayed))
@@ -3883,7 +3933,8 @@ utility mdfind.")
 
 (defun anything-c-kill-ring-action (str)
   "Insert STR in `kill-ring' and set STR to the head.
-If this action is executed just after `yank', replace with STR as yanked string."
+If this action is executed just after `yank',
+replace with STR as yanked string."
   (setq kill-ring (delete str kill-ring))
   (if (not (eq (anything-attr 'last-command) 'yank))
       (insert-for-yank str)
@@ -3942,8 +3993,9 @@ If this action is executed just after `yank', replace with STR as yanked string.
     (candidates . (lambda ()
                     (anything-aif anything-mark-ring-cache
                         it)))
-    (action . (("Goto line" . (lambda (candidate)
-                                (anything-goto-line (string-to-number candidate))))))
+    (action . (("Goto line"
+                . (lambda (candidate)
+                    (anything-goto-line (string-to-number candidate))))))
     (persistent-action . (lambda (candidate)
                            (anything-goto-line (string-to-number candidate))
                            (anything-match-line-color-current-line)))
@@ -3961,10 +4013,11 @@ If this action is executed just after `yank', replace with STR as yanked string.
 (defvar anything-c-source-global-mark-ring
   '((name . "global-mark-ring")
     (candidates . anything-c-source-global-mark-ring-candidates)
-    (action . (("Goto line" . (lambda (candidate)
-                                (let ((items (split-string candidate ":")))
-                                  (switch-to-buffer (second items))
-                                  (anything-goto-line (string-to-number (car items))))))))
+    (action . (("Goto line"
+                . (lambda (candidate)
+                    (let ((items (split-string candidate ":")))
+                      (switch-to-buffer (second items))
+                      (anything-goto-line (string-to-number (car items))))))))
     (persistent-action . (lambda (candidate)
                            (let ((items (split-string candidate ":")))
                              (switch-to-buffer (second items))
@@ -3980,8 +4033,10 @@ If this action is executed just after `yank', replace with STR as yanked string.
              (let (line)
                (if (string= "" line)
                    (setq line  "<EMPTY LINE>")
-                   (setq line (car (split-string (thing-at-point 'line) "[\n\r]"))))
-               (format "%7d:%s:    %s" (line-number-at-pos) (marker-buffer m) line)))))
+                   (setq line (car (split-string (thing-at-point 'line)
+                                                 "[\n\r]"))))
+               (format "%7d:%s:    %s"
+                       (line-number-at-pos) (marker-buffer m) line)))))
     (loop
        with marks = global-mark-ring
        with recip = nil
@@ -4024,56 +4079,57 @@ If this action is executed just after `yank', replace with STR as yanked string.
   "Collecting register contents and appropriate commands."
   (loop for (char . val) in register-alist
         for key    = (single-key-description char)
-        for string-actions = (cond
-                              ((numberp val)
-                               (list (int-to-string val)
-                                     'insert-register
-                                     'increment-register))
-                              ((markerp val)
-                               (let ((buf (marker-buffer val)))
-                                 (if (null buf)
-                                     (list "a marker in no buffer")
-                                   (list (concat
-                                          "a buffer position:"
-                                          (buffer-name buf)
-                                          ", position "
-                                          (int-to-string (marker-position val)))
-                                         'jump-to-register
-                                         'insert-register))))
-                              ((and (consp val) (window-configuration-p (car val)))
-                               (list "window configuration."
-                                     'jump-to-register))
-                              ((and (consp val) (frame-configuration-p (car val)))
-                               (list "frame configuration."
-                                     'jump-to-register))
-                              ((and (consp val) (eq (car val) 'file))
-                               (list (concat "file:"
-                                             (prin1-to-string (cdr val))
-                                             ".")
-                                     'jump-to-register))
-                              ((and (consp val) (eq (car val) 'file-query))
-                               (list (concat "file:a file-query reference: file "
-                                             (car (cdr val))
-                                             ", position "
-                                             (int-to-string (car (cdr (cdr val))))
-                                             ".")
-                                     'jump-to-register))
-                              ((consp val)
-                               (let ((lines (format "%4d" (length val))))
-                                 (list (format "%s: %s\n" lines
-                                               (truncate-string-to-width
-                                                (mapconcat 'identity (list (car val))
-                                                           ;; (mapconcat (lambda (y) y) val
-                                                           "^J") (- (window-width) 15)))
-                                       'insert-register)))
-                              ((stringp val)
-                               (list ;; without properties
-                                (substring-no-properties val)
-                                'insert-register
-                                'append-to-register
-                                'prepend-to-register))
-                              (t
-                               "GARBAGE!"))
+        for string-actions =
+        (cond
+         ((numberp val)
+          (list (int-to-string val)
+                'insert-register
+                'increment-register))
+         ((markerp val)
+          (let ((buf (marker-buffer val)))
+            (if (null buf)
+                (list "a marker in no buffer")
+              (list (concat
+                     "a buffer position:"
+                     (buffer-name buf)
+                     ", position "
+                     (int-to-string (marker-position val)))
+                    'jump-to-register
+                    'insert-register))))
+         ((and (consp val) (window-configuration-p (car val)))
+          (list "window configuration."
+                'jump-to-register))
+         ((and (consp val) (frame-configuration-p (car val)))
+          (list "frame configuration."
+                'jump-to-register))
+         ((and (consp val) (eq (car val) 'file))
+          (list (concat "file:"
+                        (prin1-to-string (cdr val))
+                        ".")
+                'jump-to-register))
+         ((and (consp val) (eq (car val) 'file-query))
+          (list (concat "file:a file-query reference: file "
+                        (car (cdr val))
+                        ", position "
+                        (int-to-string (car (cdr (cdr val))))
+                        ".")
+                'jump-to-register))
+         ((consp val)
+          (let ((lines (format "%4d" (length val))))
+            (list (format "%s: %s\n" lines
+                          (truncate-string-to-width
+                           (mapconcat 'identity (list (car val))
+                                      ;; (mapconcat (lambda (y) y) val
+                                      "^J") (- (window-width) 15)))
+                  'insert-register)))
+         ((stringp val)
+          (list ;; without properties
+           (substring-no-properties val)
+           'insert-register
+           'append-to-register
+           'prepend-to-register))
+         (t
+          "GARBAGE!"))
         collect (cons (format "register %3s: %s" key (car string-actions))
                       (cons char (cdr string-actions)))))
 
@@ -4088,13 +4144,16 @@ If this action is executed just after `yank', replace with STR as yanked string.
            (lambda (c) (jump-to-register (car c))))
           (append-to-register
            "Append Region to Register" .
-           (lambda (c) (append-to-register (car c) (region-beginning) (region-end))))
+           (lambda (c) (append-to-register
+                        (car c) (region-beginning) (region-end))))
           (prepend-to-register
            "Prepend Region to Register" .
-           (lambda (c) (prepend-to-register (car c) (region-beginning) (region-end))))
+           (lambda (c) (prepend-to-register
+                        (car c) (region-beginning) (region-end))))
           (increment-register
            "Increment Prefix Arg to Register" .
-           (lambda (c) (increment-register anything-current-prefix-arg (car c)))))
+           (lambda (c) (increment-register
+                        anything-current-prefix-arg (car c)))))
         for func in (cdr register-and-functions)
         for cell = (assq func func-actions)
         when cell
@@ -4136,7 +4195,8 @@ http://en.wikipedia.org/wiki/Ruby_Document_format")
 (defvar anything-c-source-emacs-source-defun
   '((name . "Emacs Source DEFUN")
     (headline . "DEFUN\\|DEFVAR")
-    (condition . (string-match "/emacs2[0-9].+/src/.+c$" (or buffer-file-name ""))))
+    (condition . (string-match "/emacs2[0-9].+/src/.+c$"
+                               (or buffer-file-name ""))))
   "Show DEFUN/DEFVAR in Emacs C source file.")
 ;; (anything 'anything-c-source-emacs-source-defun)
 
@@ -5550,18 +5610,16 @@ If collection is an `obarray', a test is maybe needed, otherwise
 the list would be incomplete.
 See `obarray'."
   (cond ((and (listp collection) test)
-         (loop for i in collection
-              when (funcall test i) collect i))
+         (loop for i in collection when (funcall test i) collect i))
+        ((and (eq collection obarray) test)
+         (loop for s being the symbols of collection
+            when (funcall test s) collect s))
         ((and (vectorp collection) test)
-         (let (ob)
-           (mapatoms
-            #'(lambda (s)
-                (when (funcall test s) (push s ob))))
-           ob))
-        ((and (hash-table-p collection) test)
-         (anything-comp-hash-get-items collection :test test))
+         (loop for i across collection when (funcall test i) collect i))
         ((vectorp collection)
          (loop for i across collection collect i))
+        ((and (hash-table-p collection) test)
+         (anything-comp-hash-get-items collection :test test))
         ((hash-table-p collection)
          (anything-comp-hash-get-items collection))
         (t collection)))

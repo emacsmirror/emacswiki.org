@@ -167,7 +167,9 @@ or  M-x install-elisp-from-emacswiki anything.el")))
 
 (defcustom anything-grep-candidates-fast-directory-regexp nil
   "*Directory regexp where a RAM disk (or tmpfs) is mounted.
-If non-nil, grep-candidates plugin gets faster because it uses grep as synchronous process.
+
+If non-nil, grep-candidates plugin gets faster because it uses
+grep as synchronous process.
 
 ex. (setq anything-grep-candidates-fast-directory-regexp \"^/tmp/\")"
   :type 'string
@@ -185,7 +187,9 @@ For example, to list candidats of \"foo\" source, input pattern as \"foo .\".")
 
 (defun amp-mp-make-regexps (pattern)
   (if (string= pattern "") '("")
-    (loop for s in (split-string (replace-regexp-in-string anything-mp-space-regexp "\000\000" pattern) " " t)
+    (loop for s in (split-string
+                    (replace-regexp-in-string anything-mp-space-regexp
+                                              "\000\000" pattern) " " t)
         collect (replace-regexp-in-string "\000\000" " " s))))
 
 (defun amp-mp-1-make-regexp (pattern)
@@ -378,21 +382,21 @@ The smaller  this value is, the slower highlight is.")
           (anything-mp-highlight-region (point-min) end re 'anything-match))))
                          
 ;;;; source compier
-(defvar anything-default-match-functions
+(defvar anything-mp-default-match-functions
   '(anything-exact-match anything-mp-3p-match anything-mp-3-match))
-(defvar anything-default-search-functions
+(defvar anything-mp-default-search-functions
   '(anything-exact-search anything-mp-3p-search anything-mp-3-search))
-(defvar anything-default-search-backward-functions
+(defvar anything-mp-default-search-backward-functions
   '(anything-exact-search-backward anything-mp-3p-search-backward
                                    anything-mp-3-search-backward))
 (defun anything-compile-source--match-plugin (source)
   (let ((searchers (if (assoc 'search-from-end source)
-                       anything-default-search-backward-functions
-                     anything-default-search-functions)))
+                       anything-mp-default-search-backward-functions
+                     anything-mp-default-search-functions)))
     `(,(if (or (assoc 'candidates-in-buffer source)
                (equal '(identity) (assoc-default 'match source)))
            '(match identity)
-         `(match ,@anything-default-match-functions
+         `(match ,@anything-mp-default-match-functions
                  ,@(assoc-default 'match source)))
       (search ,@searchers
               ,@(assoc-default 'search source))
@@ -425,7 +429,9 @@ If (direct-insert-match) is in the source, this function is used."
   (with-temp-buffer
     (if (string= query "")
         (insert "cat "
-                (mapconcat (lambda (f) (shell-quote-argument (expand-file-name f))) files " "))
+                (mapconcat
+                 (lambda (f) (shell-quote-argument (expand-file-name f)))
+                 files " "))
       (loop for (flag . re) in (anything-mp-3-get-patterns-internal query)
             for i from 0
             do
@@ -434,8 +440,11 @@ If (direct-insert-match) is in the source, this function is used."
             (insert "grep -ih "
                     (if (eq flag 'identity) "" "-v ")
                     (shell-quote-argument re))
-            (when (zerop i) (insert " "
-                                    (mapconcat (lambda (f) (shell-quote-argument (expand-file-name f))) files " ")))))
+            (when (zerop i)
+              (insert " "
+                      (mapconcat (lambda (f) (shell-quote-argument
+                                              (expand-file-name f)))
+                                 files " ")))))
     (when limit (insert (format " | head -n %d" limit)))
     (when filter (insert " | " filter))
     (buffer-string)))
@@ -448,27 +457,28 @@ If (direct-insert-match) is in the source, this function is used."
    filter))
 (defun anything-compile-source--grep-candidates (source)
   (anything-aif (assoc-default 'grep-candidates source)
-      (append source
-              (let ((use-fast-directory
-                     (string-match
-                      anything-grep-candidates-fast-directory-regexp
-                      (car (anything-mklist (anything-interpret-value it))))))
-                (cond ((and use-fast-directory (assq 'direct-insert-match source))
-                       (anything-log "fastest version (use-fast-directory and direct-insert-match)")
-                       `((candidates . agp-candidates-synchronous-grep--direct-insert-match)
-                         (match identity)
-                         (volatile)
-                         (requires-pattern)))
-                      (use-fast-directory
-                       (anything-log "faster version (use-fast-directory)")
-                       `((candidates . agp-candidates-synchronous-grep)
-                         (match identity)
-                         (volatile)
-                         (requires-pattern)))
-                      (t
-                       (anything-log "normal version")
-                       '((candidates . agp-candidates)
-                         (delayed))))))
+      (append
+       source
+       (let ((use-fast-directory
+              (string-match
+               anything-grep-candidates-fast-directory-regexp
+               (car (anything-mklist (anything-interpret-value it))))))
+         (cond ((and use-fast-directory (assq 'direct-insert-match source))
+                (anything-log "fastest version (use-fast-directory and direct-insert-match)")
+                `((candidates . agp-candidates-synchronous-grep--direct-insert-match)
+                  (match identity)
+                  (volatile)
+                  (requires-pattern)))
+               (use-fast-directory
+                (anything-log "faster version (use-fast-directory)")
+                `((candidates . agp-candidates-synchronous-grep)
+                  (match identity)
+                  (volatile)
+                  (requires-pattern)))
+               (t
+                (anything-log "normal version")
+                '((candidates . agp-candidates)
+                  (delayed))))))
     source))
 (add-to-list 'anything-compile-source-functions 'anything-compile-source--grep-candidates)
 

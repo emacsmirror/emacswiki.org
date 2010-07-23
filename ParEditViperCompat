@@ -52,4 +52,46 @@ Here is a complete example using user customized keybindings:
 I hope to see this get into paredit.el proper and am working on a patch. In the mean time I am making it available this way.
 
 == Questions ==
-No questions yet.
+Where is author's mail, to send him feedback? Thanks.
+
+I've stumbled upon an issue on GNU Emacs 23.1 on Windows XP. After calling (paredit-viper-compat), I can't enter "<" anymore, since "<" is now a prefix command (the complete sequence is "< D E L >" (as showed by typing "< C-h").  My understanding is that PareditViperCompat failed to remap the <DEL> key. Here is my code:
+
+{{{
+(require 'viper)
+(require 'paredit-viper-compat)
+}}}
+
+then:
+{{{
+(paredit-viper-compat)
+}}}
+
+Now, I can't enter "<" anymore.
+
+[new:stepnem:2010-07-22 14:03 UTC]
+: Yup, the code is broken. I tried it before some time and even fixed some of
+the errors, but then I found out that it's not needed at all -- I use Viper
+(really Vimpulse, but that's the same) with Paredit just fine. The only
+customization I have AFAICT is (in the relevant mode hooks):
+
+{{{
+  (viper-add-local-keys 'insert-state
+                        '(("\C-d" . paredit-forward-delete)
+                          ([backspace] . paredit-backward-delete)
+                          ("" . paredit-backward-delete)))
+}}}
+
+: IOW, most of the keybindings this library purports to fix works without any
+problems. -- stepnem
+
+Thank you, stepnem. It seems the wiki has eaten your line here:
+{{{
+("" . paredit-backward-delete)))
+}}}
+
+[new:stepnem:2010-07-22 19:50 UTC]
+: Well, I don't think so. It displays fine in both emacs-w3m and Firefox now I
+tried. It's just that Firefox displays 0x7F in a box instead of ^? for the
+ASCII DEL character. Perhaps that confused you? -- stepnem
+
+Ops! I forgot to mention what was wrong, sorry. Well, I was writing from a Firefox on Windows, and the quotes appeared empty. Now I'm writing from Firefox on Linux, and I can see an empty box inside the quotes. So, you typed the DEL character inside the quotes. I didn't even know that would be recognized by Emacs... Did you type it with `quoted-insert'? Thanks.

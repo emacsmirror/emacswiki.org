@@ -12,6 +12,11 @@ Thoughts? -- MichaelWilson
 
 This idea was implemented several different times in the late 90s, culminating in a whole rebranding of Emacs that focused on making a hyperlinked "knowledge database" complete with shadowed annotations and everything (can't remember the name off-hand).  I tried them all, and they were all failures.  In fact, to this day I've never had a good annotation system on any platform. -- JohnWiegley
 
+[new:MichaelWilson:2010-07-22 14:44 UTC]
+There were a bunch of web based annotation engines in the late 90s that had me pretty excited.  uTok and a few others.  None of them survived the dotcom bust unfortunately and some of them were a bit overly... "social" in that everybodies annotations were shared.  But there was some clever code involved.  The idea just dug itself in to my head and I haven't been able to get it out.   
+
+Currently I'm doing a rather distressing amount of code spelunking (keeping a VAST derivitives risk analytics system limping along until the pie in the sky replacement is done, so... forever) and the ability to annotate the source, even in my own skunkworks repository would be spectacular.  -- MichaelWilson
+
 [new:DrewAdams:2010-07-20 19:41 UTC]
 Emacs bookmarks and their annotations come very close to what you describe (though that might not correspond closely to what you really have in mind ;-)).
 
@@ -22,6 +27,10 @@ So far, bookmark annotations are pretty rudimentary.  Editing an annotation uses
 In addition to annotations, you can tag bookmarks, in the sense of [[http://delicious.com|del.icio.us]] tags.  Tags give you a good way to organize bookmarks and hence their target files or annotations.
 
 See Manual:Bookmarks.  See also [[Bookmark+]] and [[Dired+]] for info on bookmark tags and bookmarking files without visiting them. -- DrewAdams
+
+[new]
+
+Nice.  Will do.  Seems like a lot of these try to be far more clever than they need to be. -- MichaelWilson
 
 [new]
 
@@ -37,3 +46,12 @@ Someone had started writing a primitive mode called [[Annotate]]. -- AaronHawley
 ##VisibleBookmarks## (##bm.el##) has a pretty poor annotation capability.  It just reads an annotation from the [[minibuffer]] as a string -- no editing buffer or mode. And it just shows you annotations in the [[echo area]], using `message'.  It can also show you annotations along with the bookmarks themselves in a summary buffer, but there is no display or editing mode for annotations.
 
 [[Bookmark+]] also has visible bookmarks -- similar highlighting etc. (but more flexible).  But Bookmark+ annotations are those of ordinary Emacs bookmarks: multi-line, displayed and edited in separate annotation buffers, etc. -- DrewAdams
+
+[new:MichaelWilson:2010-07-22 14:50 UTC]
+
+Thanks for all the info everyone.  It looks like this is going to be a bit of a research project.  This itch has gone on too long to remain unscratched. -- MichaelWilson
+
+[new]
+Have a look at BookmarkExtension it is now able to use org-mode and save annotation for each bookmark in individual org files.
+
+-- ThierryVolpiatto

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Fri Jan 15 12:45:20 2010 (-0800)
+;; Last-Updated: Thu Jul 22 15:37:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1242
+;;     Update #: 1262
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -343,6 +343,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/07/22 dadams
+;;     custom-variable-menu: Sync with Emacs 24 dev code.
 ;; 2008/04/24 dadams
 ;;     custom-add-parent-links: Added new optional arg (Emacs 22.2).
 ;; 2007/12/28 dadams
@@ -739,53 +741,71 @@ widget.  If FILTER is nil, ACTION is always valid.")
 ;; Added `Consider Unchanged', `Ignore Unsaved Changes', `Set from External Changes'.
 ;;
 (defconst custom-variable-menu
-  '(("Set for Current Session" custom-variable-set
+  `(("Set for Current Session"
+     custom-variable-set
      (lambda (widget)
        (eq (widget-get widget :custom-state) 'modified)))
-    ("Save for Future Sessions" custom-variable-save
-     (lambda (widget)
-       (memq (widget-get widget :custom-state) '(modified set changed rogue))))
-    ("Consider Unchanged" custom-consider-variable-unchanged
+    ;; Note that in all the backquoted code in this file, we test
+    ;; init-file-user rather than user-init-file.  This is in case
+    ;; cus-edit is loaded by something in site-start.el, because
+    ;; user-init-file is not set at that stage.
+    ;; http://lists.gnu.org/archive/html/emacs-devel/2007-10/msg00310.html
+    ,@(when
+       (or custom-file init-file-user)
+       '(("Save for Future Sessions" custom-variable-save
+          (lambda (widget)
+            (memq (widget-get widget :custom-state)
+                  '(modified set changed rogue))))))
+    ("Consider Unchanged"
+     custom-consider-variable-unchanged
      (lambda (widget) (not (get (widget-get-tag-or-value widget) 'saved-value))))
-    ("Ignore Unsaved Changes" custom-ignore-unsaved-preference
+    ("Ignore Unsaved Changes"
+     custom-ignore-unsaved-preference
      (lambda (widget) (eq (widget-get widget :custom-state) 'set)))
-    ("Set from External Changes" custom-update-variable
-     (lambda (widget) (let* ((symbol (widget-get-tag-or-value widget))
-                             (cval (or (get symbol 'customized-value)
-                                       (get symbol 'saved-value)
-                                       (get symbol 'standard-value))))
-                        (and cval
-                             (default-boundp symbol)
-                             (not (equal (eval (car cval))
-                                         (default-value symbol)))))))
-    ("Reset to Current" custom-redraw
+    ("Set from External Changes"
+     custom-update-variable
+     (lambda (widget)
+       (let* ((symbol (widget-get-tag-or-value widget))
+              (cval (or (get symbol 'customized-value)
+                        (get symbol 'saved-value)
+                        (get symbol 'standard-value))))
+         (and cval                    ; Declared with defcustom.
+              (default-boundp symbol)
+              (not (equal (eval (car cval)) ; But does not match customize.
+                          (default-value symbol)))))))
+    ("Reset to Current"
+     custom-redraw
      (lambda (widget)
        (and (default-boundp (widget-value widget))
             (memq (widget-get widget :custom-state) '(modified changed)))))
-    ("Reset to Saved" custom-variable-reset-saved
+    ("Reset to Saved"
+     custom-variable-reset-saved
      (lambda (widget)
        (and (or (get (widget-value widget) 'saved-value)
                 (get (widget-value widget) 'saved-variable-comment))
             (memq (widget-get widget :custom-state)
                   '(modified set changed rogue)))))
-    ("Reset to Standard Setting" custom-variable-reset-standard
-     (lambda (widget)
-       (and (get (widget-value widget) 'standard-value)
-            (memq (widget-get widget :custom-state)
-                  '(modified set changed saved rogue)))))
-    ("Use Backup Value" custom-variable-reset-backup
-     (lambda (widget)
-       (and (>= emacs-major-version 21)
-            (get (widget-value widget) 'backup-value))))
+    ,@(when (or custom-file init-file-user)
+            '(("Reset to Standard Setting" custom-variable-reset-standard
+               (lambda (widget)
+                 (and (get (widget-value widget) 'standard-value)
+                      (memq (widget-get widget :custom-state)
+                            '(modified set changed saved rogue)))))))
+    ,@(when (>= emacs-major-version 21)
+            '(("Use Backup Value" custom-variable-reset-backup
+               (lambda (widget)
+                 (get (widget-value widget) 'backup-value)))))
+    ,@(when (boundp 'custom-comment-invisible-p)
+            '(("---" ignore ignore)
+              ("Add Comment" custom-comment-show
+               (lambda (widget) custom-comment-invisible-p))))
     ("---" ignore ignore)
-    ("Add Comment" custom-comment-show
-     (lambda (widget) (and (boundp 'custom-comment-invisible-p)
-                           custom-comment-invisible-p)))
-    ("---" ignore ignore)
-    ("Don't show as Lisp expression" custom-variable-edit
+    ("Don't show as Lisp expression"
+     custom-variable-edit
      (lambda (widget)
        (eq (widget-get widget :custom-form) 'lisp)))
-    ("Show initial Lisp expression" custom-variable-edit-lisp
+    ("Show initial Lisp expression"
+     custom-variable-edit-lisp
      (lambda (widget)
        (eq (widget-get widget :custom-form) 'edit))))
   "Alist of actions for the `custom-variable' widget.

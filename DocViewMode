@@ -17,7 +17,7 @@ This can be customized via:
 
 == Required Software ==
 
-* Ghostscript?
+* Ghostscript.
 * Other Things?
 
 === Cygwin ===
@@ -27,6 +27,7 @@ Emacs 23 Instructions.
 1. Install several packages:
 
 * xpdf
+* ghostscript
 
 2. Restart Emacs.
 
