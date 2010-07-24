@@ -6,7 +6,6 @@ To edit Asciidoc formatted text files in Emacs, there is [[http://xpt.sourceforg
 
 Lisp:asciidoc.el is a set of templates which eases the creation of AsciiDoc documents. It is also available at:
 * http://github.com/metaperl/asciidoc-el 
-* http://bitbucket.org/metaperl/asciidoc-el/
 
 ----
 CategoryDoc

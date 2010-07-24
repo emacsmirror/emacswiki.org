@@ -95,3 +95,7 @@ tried. It's just that Firefox displays 0x7F in a box instead of ^? for the
 ASCII DEL character. Perhaps that confused you? -- stepnem
 
 Ops! I forgot to mention what was wrong, sorry. Well, I was writing from a Firefox on Windows, and the quotes appeared empty. Now I'm writing from Firefox on Linux, and I can see an empty box inside the quotes. So, you typed the DEL character inside the quotes. I didn't even know that would be recognized by Emacs... Did you type it with `quoted-insert'? Thanks.
+
+[new:stepnem:2010-07-23 15:50 UTC]
+: Yes. Chances are you don't need it at all, or you can use "\d" or (kbd
+"DEL") to the same effect. -- stepnem
