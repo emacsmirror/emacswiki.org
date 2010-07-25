@@ -44,6 +44,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 * CategorizingInformationManager -- Ee-windows for switching between window configurations
 * RecursiveEditPreservingWindowConfig -- Temporarily change the window configuration using RecursiveEdit
 * BFocus ([[bfocus.el]]) -- Temporarly fill a frame with a window and then change back to previous configuration
+* WorkgroupsForWindows -- A simple window-configuration persistence package
 
 '''See also:'''
 

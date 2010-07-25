@@ -6,6 +6,14 @@ OK, OK, I do more than just use it; I live in it twelve hours a day; they'll tak
 
  <johnw> i've laid out in my will that my heirs should continue working on my .emacs
 
+From the point of view of an emacs user, Gnome is a system designed to prevent your keystrokes from getting to Emacs, and instead doing baffling things like starting a new terminal (that's what happens when I type M-C-t, for example).  As of Ubuntu 10.04 ("Lucid Lynx"), I've found the following bunch of shell commands to occasionally be useful (I've seen them fail to work):
+
+ gconftool-2 -t bool --set /apps/gnome-terminal/global/use_menu_accelerators false
+ gconftool-2 -t bool --set /apps/gnome-terminal/global/use_mnemonics         false
+ gconftool-2 -t string --set /apps/metacity/window_keybindings/activate_window_menu disabled
+ gconftool-2 -t string --set /apps/metacity/global_keybindings/switch_windows '<Mod4>Tab'
+
+
 Here, for those of you who were dying to know, are some goodies that I've been using for a while, and which quickly became can't-do-without-em favorites:
 
 * rx.  Which would you rather type --

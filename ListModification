@@ -313,6 +313,29 @@ calling setcar on it changes the corresponding element of the list.
 
 }}}
 
+== last ==
+
+`last' returns the //n//th-to-last link of a list. It
+is used to discard the *front* part of a list.
+
+ ELISP> (setq list '(alpha beta gamma delta))
+ (alpha beta gamma delta)
+
+ ELISP> (last list 2)
+ (gamma delta)
+
+== butlast ==
+
+`butlast' removes the last /n/ elements. It is
+used to discard the *tail* of a list. There is also a
+destructive variant, `nbutlast'.
+
+ ELISP> (setq list '(alpha beta gamma delta))
+ (alpha beta gamma delta)
+
+ ELISP> (butlast list 2)
+ (alpha beta)
+
 '''See Also:''' DestructiveOperations
 
 ----
