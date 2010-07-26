@@ -1,4 +1,14 @@
-== MSearch ==
+== Application area of MSearch ==
 Highlight all matches of text dragged with the mouse in the current buffer.
 
 Download: [[msearch.el]].
+
+A video capture of msearch in action: [[http://www.tn-home.de/Tobias/Soft/Elisp/msearch.avi|msearch.avi]].
+
+I use msearch for debugging of automatically generated source code.
+Usually, there are hundreds of variables and equations in such code.
+Msearch allows to swiftly change the search string only using the mouse.
+This makes it easier to trace back how a variable gets its current value through a sequence of equations and assignments.
+
+If you find msearch useful for your own work I would be pleased to read about it. Just leave some note below.
+

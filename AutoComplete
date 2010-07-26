@@ -110,6 +110,12 @@ Thanks for the explanation! CompletionUI includes many other user-interfaces bes
 [new]
 AutoComplete stops working as soon as I enable Flymake. I'm using the development version.
 --[[TiagoCamargo]]
+[new:jpkotta:2010-07-26 02:23 UTC]
+After loading auto-complete, 
+<pre>
+ (ac-flyspell-workaround)
+</pre>
+--[[jpkotta]]
 ----
 [new] 
 If I'm editing [[OrgMode]] files, I can start AutoComplete (using \M-/ and not auto start), but if I don't want to make any of the completions, ESC-ESC-ESC doesn't kill the menu. I don't see this problem in other emacs files. Any debugging hints?

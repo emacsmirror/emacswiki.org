@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.4.2")
+(defconst pos-tip-version "0.4.3")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -69,6 +69,10 @@
 
 
 ;;; History:
+;; 2010-07-25  S. Irie
+;;         * Bug fix
+;;         * Version 0.4.3
+;;
 ;; 2010-06-09  S. Irie
 ;;         * Bug fix
 ;;         * Version 0.4.2
@@ -427,8 +431,9 @@ hidden by the tooltip."
 		     (and (null header-line-format)
 			  (cdr (posn-object-width-height
 				(posn-at-x-y (max (car x-y) 0) (cadr x-y) window))))
-		     (and (boundp 'text-scale-mode-amount)
-			  (not (zerop text-scale-mode-amount))
+		     (and (bound-and-true-p text-scale-mode)
+			  (not (zerop (with-no-warnings
+					text-scale-mode-amount)))
 			  (round (* (frame-char-height frame)
 				    (with-no-warnings
 				      (expt text-scale-mode-step

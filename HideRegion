@@ -21,6 +21,14 @@ Get the code here: Lisp:hide-region.el
 
 * HideLines -- Hide lines.
 
+[new]
+
+I added [[http://github.com/chrisdone/hide-region/commit/d96532344572076f9fcf9297abb0f95a7861224d a patch for unhiding the region at the point]].  Mathias Dahl's email (mathias.rem0veth1s.dahl@gmail.com) doesn't exist anymore, so maybe this is a reasonable place to notify him. -- ChrisDone
+
+[new]
+
+Woops. I just realised there's some nonsense ("rem0veth1s") in the email. Mathias, you use GMail! You don't need to do this! Anyway, I'll forward my email onto the correct address. -- ChrisDone
+
 ----
 CategoryHideStuff
 CategoryRegion

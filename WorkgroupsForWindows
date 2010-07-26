@@ -2,9 +2,11 @@ Workgroups for Windows is a simple window-configuration persistence package.
 
 == Features ==
 
-* Saving window-configurations
-* Restoring window-configurations
-* Persisting window-configurations between emacs sessions
+* Saving window configurations
+* Restoring window configurations
+* Persisting window configurations between emacs sessions
+* ido-mode integration
+* Simplicity
 
 == Download ==
 
@@ -25,4 +27,10 @@ It's located at http://github.com/tlh/workgroups.el
 
 == Commands and Suggested Bindings ==
 
-located in workgroups.el
+See the comments in workgroups.el
+
+
+
+
+----
+CategoryWindows

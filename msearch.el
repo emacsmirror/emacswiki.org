@@ -57,6 +57,10 @@
 ;; local-set-key is not buffer-local but major-mode local. Thus msearch-event-handler has been activated in all buffers with the same major-mode but local variables were missing.
 ;;
 ;; Fix: Introduced new mouse event handler for <drag-mouse-1>.
+;;
+;; 2010-07-25, 22:00, TN:
+;;
+;; Added msearch-enslave-buffer.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -100,6 +104,13 @@ register-drag-mouse-1-handler instead.")
 
 (global-set-key (kbd "<drag-mouse-1>") 'drag-mouse-1-handler)
 
+(defun msearch-set-word (word)
+    (setq msearch-word word)
+    (unless (string-equal msearch-old-word msearch-word)
+      (setq msearch-old-word msearch-word)
+      (msearch-cleanup)
+      (jit-lock-register 'msearch-lock-function)))
+
 (defun msearch-event-handler (e)
   "Must be bound to a mouse event."
   (interactive "e")
@@ -108,11 +119,36 @@ register-drag-mouse-1-handler instead.")
 	(end (posn-point (event-end e))))
     (if (> start end)
 	(let ((tmp start)) (setq start end) (setq end tmp)))
-    (setq msearch-word (buffer-substring-no-properties start end))
-    (unless (string-equal msearch-old-word msearch-word)
-      (setq msearch-old-word msearch-word)
-      (msearch-cleanup)
-      (jit-lock-register 'msearch-lock-function))))
+    (let ((new-word (buffer-substring-no-properties start end))
+	  (slaves msearch-slaves)
+	  slaves-released
+	  (curbuf (current-buffer)))
+      (msearch-set-word new-word)
+      (save-excursion
+	(while slaves
+	  (if (get-buffer (car slaves))
+	      (progn
+		(set-buffer (car slaves))
+		(if msearch-mode
+		    (msearch-set-word new-word))))
+	  (setq slaves (cdr slaves))
+	  )))))
+
+(defun msearch-enslave-buffer (buf)
+  "Let the current buffer be the master of buf.
+Msearch-strings of the current buffer are also high-lighted in buf.
+The slave buf is released when msearch of the master is switched off."
+  (interactive "bSlave buffer:")
+  (if (equal (buffer-name) buf)
+      (error "Cannot enslave myself."))
+  ; Make sure that the current buffer is in msearch mode:
+  (if (null msearch-mode)
+      (msearch-mode))
+  ; Make sure that the slave is in msearch mode:
+  (with-current-buffer buf
+    (if (null msearch-mode)
+	(msearch-mode)))
+  (add-to-list 'msearch-slaves buf))
 
 (define-minor-mode msearch-mode
   "Mouse-drag high-lightes all corresponding matches within the current buffer."
@@ -121,10 +157,12 @@ register-drag-mouse-1-handler instead.")
       (progn
 	(set (make-local-variable 'msearch-word) "")
 	(set (make-local-variable 'msearch-old-word) "")
+	(set (make-local-variable 'msearch-slaves) nil)
 	(add-to-list 'drag-mouse-1-handler-list 'msearch-event-handler))
     (msearch-cleanup)
     (kill-local-variable 'msearch-word)
     (kill-local-variable 'msearch-old-word)
+    (kill-local-variable 'msearch-slaves)
     (setq drag-mouse-1-handler-list
 	  (delete 'msearch-event-handler drag-mouse-1-handler-list))
     ))

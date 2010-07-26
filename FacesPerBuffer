@@ -15,7 +15,6 @@ is face `font-lock-comment-face'.
                  'php-comment-face)
             ;; ...
 
-
 == XEmacs ==
 
 XEmacs supports per-frame, per-window, and per-buffer face settings, using the confusing "specifier" functions:
@@ -32,6 +31,36 @@ XEmacs supports per-frame, per-window, and per-buffer face settings, using the c
 
  Obviously, replace *scratch* and "blue" with whatever you want. (In a
  hook, you could just use (current-buffer)
+
+== Automatically setting default faces per buffer ==
+If you want to use different fonts per buffer (say monospaced font by default and variable size font in Info, ERC, etc.) you can use something like this:
+
+ ;; Use variable width font faces in current buffer
+ (defun my-buffer-face-mode-variable ()
+   "Set font to a variable width (proportional) fonts in current buffer"
+   (interactive)
+   (setq buffer-face-mode-face '(:family "DejaVu Sans" :height 100 :width semi-condensed))
+   (buffer-face-mode))
+
+ ;; Use monospaced font faces in current buffer
+ (defun my-buffer-face-mode-fixed ()
+   "Sets a fixed width (monospace) font in current buffer"
+   (interactive)
+   (setq buffer-face-mode-face '(:family "Consolas" :height 100))
+   (buffer-face-mode))
+
+ ;; Set default font faces for Info and ERC modes
+ (add-hook 'erc-mode-hook 'my-buffer-face-mode-variable)
+ (add-hook 'Info-mode-hook 'my-buffer-face-mode-variable)
+ 
+ ;; Control + scroll to change font type
+ (global-set-key [C-mouse-4] 'my-buffer-face-mode-fixed)
+ (global-set-key [C-mouse-5] 'my-buffer-face-mode-variable)
+ 
+ ;; Shift + scroll to change font size
+ (global-set-key [S-mouse-4] 'text-scale-increase)
+ (global-set-key [S-mouse-5] 'text-scale-decrease)
+ 
 
 ----
 CategoryFaces

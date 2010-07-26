@@ -1,6 +1,8 @@
 == Overview ==
 A MinorMode version of OutlineMode.
 
+See also [http://www.gnu.org/software/emacs/manual/html_node/emacs/Outline-Mode.html outline in the Emacs manual].
+
 == Keys And Functions Summary ==
 
 ||M-x outline-minor-mode||enable Outline minor mode||
