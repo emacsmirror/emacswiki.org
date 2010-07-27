@@ -61,6 +61,10 @@
 ;; 2010-07-25, 22:00, TN:
 ;;
 ;; Added msearch-enslave-buffer.
+;;
+;; 2010-07-26, 22:00, TN:
+;;
+;; Added minor-mode-menu.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -138,21 +142,49 @@ register-drag-mouse-1-handler instead.")
   "Let the current buffer be the master of buf.
 Msearch-strings of the current buffer are also high-lighted in buf.
 The slave buf is released when msearch of the master is switched off."
-  (interactive "bSlave buffer:")
-  (if (equal (buffer-name) buf)
-      (error "Cannot enslave myself."))
-  ; Make sure that the current buffer is in msearch mode:
+  (interactive (list (completing-read "Enslave buffer:" (mapcar 'buffer-name (cdr (buffer-list))))))
+  ;; Make sure that the current buffer is in msearch mode:
   (if (null msearch-mode)
       (msearch-mode))
-  ; Make sure that the slave is in msearch mode:
-  (with-current-buffer buf
-    (if (null msearch-mode)
-	(msearch-mode)))
-  (add-to-list 'msearch-slaves buf))
+  ;; Make sure that the slave is in msearch mode:
+  (unless (string-equal (buffer-name) buf)
+    (with-current-buffer buf
+      (if (null msearch-mode)
+	  (msearch-mode)))
+    (add-to-list 'msearch-slaves buf)))
+
+(defun msearch-release-buffer (buf)
+  "Release slave buf."
+  (interactive (list (completing-read "Slave to be released:" msearch-slaves nil 'require-match)))
+  (setq msearch-slaves (remove buf msearch-slaves)))
+
+(defun msearch-release-all ()
+  "Release all slaves."
+  (interactive)
+  (setq msearch-slaves nil))
+
+(defun msearch-help ()
+  "Give help on msearch mode."
+  (interactive)
+  (describe-function 'msearch-mode))
+
+(defvar msearch-mode-map (make-sparse-keymap)
+  "Menu for msearch mode.")
+
+(easy-menu-define msearch-mode-menu msearch-mode-map
+  "Menu for msearch mode."
+  '("MSearch"
+    ["Switch Off msearch" msearch-mode 't]
+    ["Help On msearch" msearch-help 't]
+    ["Enslave Buffer" msearch-enslave-buffer 't]
+    ["Release Buffer" msearch-release-buffer 't]
+    ["Release All Buffers" msearch-release-all 't]
+    ))
 
 (define-minor-mode msearch-mode
   "Mouse-drag high-lightes all corresponding matches within the current buffer."
   :lighter " msearch"
+  :keymap (list (cons [menu-bar] msearch-mode-menu-bar-map))
   (if msearch-mode
       (progn
 	(set (make-local-variable 'msearch-word) "")
@@ -173,4 +205,4 @@ The slave buf is released when msearch of the master is switched off."
 	      :button (:toggle . msearch-mode)))
 
 (provide 'msearch)
-;;; 10msearch.el ends here
+;;; msearch.el ends here

@@ -4,7 +4,7 @@ Since at least 2002, there's been an item in the EmacsTodo to:
 of commands which could be replaced with a simpler common command.
 It should not make more than one suggestion per 10 minutes.//
 
-So the first task is developing a database of suggestions Emacs should make.  Only then will programmatic solutions become apparent.  This page is a forum for Emcs users to share and catalogue the recipes of suggested commands.
+So the first task is developing a database of suggestions Emacs should make.  Only then will programmatic solutions become apparent.  This page is a forum for Emacs users to share and catalogue the recipes of suggested commands.
 
 As opposed to programming language compilers that produce optimized low-level code from a higher-level syntax, Emacs should suggest a fewer set of commands by recognizing patterns in a larger set of fundamental commands issued by the user.  Like a compiler, accomplishing this task requires installing intelligence in Emacs about what to suggest.  The feature is as much of a human project as compiler writing.
 
@@ -18,7 +18,8 @@ This is a list of simple command suggestions:
 * `C-x o C-v' -> `C-M-v'
 * `C-x o C-x C-f' -> `C-x 4 C-f'
 * `C-x 2 C-x C-f' -> `C-x 4 C-f'
-* `C-x 2 C-x b RET' -> `C-x 4 C-o'
+* `C-x 2 C-x b RET' -> `C-x 4 b'
+* `C-x 2 C-x b RET C-x o' -> `C-x 4 C-o RET'
 * `C-x o C-x C-f' -> `C-x 4 C-f'
 * `C-x 5 2 C-x C-f' -> `C-x 5 C-f'
 * `C-x o C-x d' -> `C-x 4 d'
@@ -30,15 +31,19 @@ This is a list of simple command suggestions:
 * ##`C-h C-x M-| grep ... RET'## -> `M-x occur'
 * `C-a C-k C-k C-n C-y' -> `C-a C-n C-x C-t'
 * `C-a C-k' -> `C-S-DEL'
+* `C-a C-i' -> `M-m'
 * `C-k C-k' -> `C-1 C-k'
-* `C-m C-i' -> `C-j'
+* ##`RET C-i'## -> `C-j'
+* ##`RET C-p C-e'## -> `C-o'
 * `M-w C-x b C-y' -> `M-x copy-to-buffer'
+* ##`M-w C-x b M-> C-y'## -> `M-x append-to-buffer'
 
 These are more complex suggestions:
 
 * Repeated `C-f' commands to the end of the line then issuing another command:  Suggest `C-e'.
 * Repeated `C-b' commands to the beginning of the line then issuing another command:  Suggest `C-a'.
-* Repeating the same command by typing it repeatly:  Suggest `C-u' or `C-x z'.
+* Motion to the beginning of the line and the first non-whitespace character: Suggest `M-m'.
+* Repeating the same command by typing it repeatedly:  Suggest `C-u' or `C-x z'.
 * Repeating a previously run complex command:  Suggest `C-x ESC ESC'.
 * Searching forward for ".":  Suggest `M-e'.
 * Searching backward for ".":  Suggest `M-a'.
