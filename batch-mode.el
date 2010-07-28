@@ -96,7 +96,15 @@
      ; variables set should also be hilighted with variable-name-face
      '( "\\<set\\>[ \t]*\\([a-zA-Z0-9_]+\\)" (1 font-lock-variable-name-face))
     )))
-     
+
+(defvar batch-mode-syntax-table
+  (let ((st (make-syntax-table)))
+    (modify-syntax-entry ?:  ". 12" st)
+    (modify-syntax-entry ?\n ">" st)
+    (modify-syntax-entry ?%  "." st)
+    st)
+  "Syntax table used while in Batch mode.")
+
 
 ;;;###autoload
 (defun batch-mode ()
@@ -106,10 +114,12 @@
   (setq major-mode 'batch-mode)
   (setq mode-name "Avenue")
   (set (make-local-variable 'indent-line-function) 'batch-indent-line)
-  (set (make-local-variable 'comment-start) "rem")
-  (set (make-local-variable 'comment-start-skip) "rem[ \t]*")
+  (set (make-local-variable 'comment-start) "::")
+  (set (make-local-variable 'comment-end)   "")
+  ;;(set (make-local-variable 'comment-start-skip) "rem[ \t]*")
   (set (make-local-variable 'font-lock-defaults)
        '(batch-font-lock-keywords nil t nil))
+  (set-syntax-table batch-mode-syntax-table)
   (run-hooks 'batch-mode-hook))
   
 (defun batch-indent-line ()

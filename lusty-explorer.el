@@ -2,8 +2,8 @@
 ;;
 ;; Copyright (C) 2008-2010 Stephen Bach <this-file@sjbach.com>
 ;;
-;; Version: 2.3
-;; Created: June 22, 2010
+;; Version: 2.4
+;; Created: July 27, 2010
 ;; Keywords: convenience, files, matching
 ;; Compatibility: GNU Emacs 22 and 23
 ;;
@@ -87,6 +87,20 @@
   "Hook run after the lusty keymap has been setup.
 Additional keys can be defined in `lusty-mode-map'."
   :type 'hook
+  :group 'lusty-explorer)
+
+(defcustom lusty-idle-seconds-per-refresh 0.05
+  "Seconds to wait for additional input before updating matches window.
+Can be floating point; 0.05 = 50 milliseconds.  Set to 0 to disable.
+Note: only affects `lusty-file-explorer'; `lusty-buffer-explorer' is
+always immediate."
+  :type 'number
+  :group 'lusty-explorer)
+
+(defcustom lusty-buffer-MRU-contribution 0.1
+  "How much influence buffer recency-of-use should have on ordering of
+buffer names in the matches window; 0.10 = %10."
+  :type 'float
   :group 'lusty-explorer)
 
 (defvar lusty-match-face font-lock-function-name-face)
@@ -244,7 +258,6 @@ Additional keys can be defined in `lusty-mode-map'."
             (setq x (1- n-cols))
             (decf y)
             (unless (lusty--matrix-coord-valid-p x y)
-              ;            (setq y (1- n-rows))
               (while (not (lusty--matrix-coord-valid-p x y))
                 (decf x))))))
 
@@ -308,12 +321,12 @@ Additional keys can be defined in `lusty-mode-map'."
 ;; - FIX: deal with permission-denied
 ;; - C-e/C-a -> last/first column?
 ;; - config var: C-x d opens highlighted dir instead of current dir
-;; - (run-with-idle-timer 0.1 ...)
 
 (defvar lusty--active-mode nil)
 (defvar lusty--wrapping-ido-p nil)
 (defvar lusty--initial-window-config nil)
 (defvar lusty--previous-minibuffer-contents nil)
+(defvar lusty--current-idle-timer nil)
 (defvar lusty--ignored-extensions-regex
   ;; Recalculated at execution time.
   (concat "\\(?:" (regexp-opt completion-ignored-extensions) "\\)$"))
@@ -448,13 +461,28 @@ does not begin with '.'."
                  (not (string= lusty--previous-minibuffer-contents
                                (minibuffer-contents-no-properties)))))
 
-    (when (null lusty--initial-window-config)
-      ;; (Only run when the explorer function is initially executed.)
-      (lusty--setup-matches-window))
+    (let ((startup-p (null lusty--initial-window-config)))
 
-    (setq lusty--previous-minibuffer-contents (minibuffer-contents-no-properties)
-          lusty--highlighted-coords (cons 0 0))
-    (lusty-refresh-matches-buffer)))
+      (when startup-p
+        (lusty--setup-matches-window))
+
+      (setq lusty--previous-minibuffer-contents
+            (minibuffer-contents-no-properties))
+      (setq lusty--highlighted-coords
+            (cons 0 0))
+
+      ;; Refresh matches.
+      (if (or startup-p
+              (null lusty-idle-seconds-per-refresh)
+              (zerop lusty-idle-seconds-per-refresh)
+              (eq lusty--active-mode :buffer-explorer))
+          ;; No idle timer on first refresh, and never for buffer explorer.
+          (lusty-refresh-matches-buffer)
+        (when lusty--current-idle-timer
+          (cancel-timer lusty--current-idle-timer))
+        (setq lusty--current-idle-timer
+              (run-with-idle-timer lusty-idle-seconds-per-refresh nil
+                                   'lusty-refresh-matches-buffer))))))
 
 ;; Cribbed with modification from tail-select-lowest-window.
 (defun lusty-lowest-window ()
@@ -561,29 +589,37 @@ does not begin with '.'."
       (fit-window-to-buffer (display-buffer lusty-buffer))
       (set-buffer-modified-p nil))))
 
+(defun lusty-buffer-list ()
+  "Return a list of buffers ordered with those currently visible at the end."
+  (let ((visible-buffers '()))
+    (flet ((add-buffer-maybe (window)
+             (let ((b (window-buffer window)))
+               (unless (memq b visible-buffers)
+                 (push b visible-buffers)))))
+      (walk-windows 'add-buffer-maybe nil 'visible))
+    (let ((non-visible-buffers
+           (loop for b in (buffer-list)
+                 unless (memq b visible-buffers)
+                 collect b)))
+      (nconc non-visible-buffers visible-buffers))))
+
 (defun lusty-buffer-explorer-matches (match-text)
-  (let* ((buffers (lusty-filter-buffers (buffer-list))))
-    (unless (endp (cdr buffers))
-      ;; Put the current buffer at the end of the list, like
-      ;; iswitchb.
-      (setq buffers
-            (append (cdr buffers)
-                    (list (car buffers)))))
+  (let ((buffers (lusty-filter-buffers (lusty-buffer-list))))
     (if (string= match-text "")
+        ;; Sort by MRU.
         buffers
-      ;; Sort first by fuzzy score, then by MRU.
-      (let* ((score-mru-table
-              (loop for b in buffers
-                    for i from 0
+      ;; Sort by fuzzy score and MRU order.
+      (let* ((score-table
+              (loop with MRU-factor-step = (/ lusty-buffer-MRU-contribution
+                                              (length buffers))
+                    for b in buffers
+                    for step from 0.0 by MRU-factor-step
                     for score = (LM-score b match-text)
+                    for MRU-factor = (- 1.0 step)
                     unless (zerop score)
-                    collect (list b score i)))
+                    collect (cons b (* score MRU-factor))))
              (sorted
-              (sort score-mru-table
-                    (lambda (a b)
-                      (if (= (second a) (second b))
-                          (< (third a) (third b))
-                        (> (second a) (second b)))))))
+              (sort* score-table '> :key 'cdr)))
         (mapcar 'car sorted)))))
 
 ;; FIXME: return an array instead of a list?
@@ -843,9 +879,6 @@ Uses `lusty-directory-face', `lusty-slash-face', `lusty-file-face'"
   ;; Re-generated every run so that it can inherit new functions.
   (let ((map (make-sparse-keymap)))
     (set-keymap-parent map minibuffer-local-map)
-    ;; TODO: perhaps RET should be:
-    ;; - if buffer explorer, same as \t
-    ;; - if file explorer, opens current name (or recurses if existing dir)
     (define-key map (kbd "RET") 'lusty-open-this)
     (define-key map "\t" 'lusty-select-match)
     (define-key map "\C-n" 'lusty-highlight-next)
@@ -871,7 +904,8 @@ Uses `lusty-directory-face', `lusty-slash-face', `lusty-file-face'"
           (apply read-fn lusty-prompt args))
       (remove-hook 'post-command-hook 'lusty--post-command-function)
       (setq lusty--previous-minibuffer-contents nil
-            lusty--initial-window-config nil))))
+            lusty--initial-window-config nil
+            lusty--current-idle-timer nil))))
 
 
 ;;

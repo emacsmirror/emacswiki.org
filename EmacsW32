@@ -608,6 +608,13 @@ Update: I found on this wiki the following comment for a customization. Maybe it
 But I don't know how to do this...
 
 
+
+=== Using EmacsW32 without emacsclient ===
+I'm using EmacsW32 on several machines and virtually the only problem I have with it is that it uses emacsclient instead of launching multiple instances of Emacs. Despite efficiency considerations, I prefer the latter, and would like to do that with EmacsW32 as well.
+
+# What is the best way to change this when EmacsW32 is already installed?
+# Would it be possible to include an option in the installer to not use emacsclient at all?
+
 ----
 == Current Problems ==
 

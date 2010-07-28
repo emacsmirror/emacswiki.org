@@ -24,8 +24,13 @@ Lisp:lusty-explorer.el
 
 = Changelist =
 
+Version 2.4:
+* Add <code>defcustom lusty-idle-seconds-per-refresh</code> - wait for key presses in <code>lusty-file-explorer</code> for (by default) 50 milliseconds before initiating match window updates.  Makes things more manageable for fast typers navigating directories having many thousands of files.  Thanks to René Kyllingstad.
+* Consider buffer use order when determining the order of buffer matches in the window.  By default, has a 10% effect on weighting. Fiddle with <code>lusty-buffer-MRU-contribution</code>.
+* Like <code>iswitchb</code>, give match priority to buffers not currently visible.
+
 Version 2.3:
-* For iswitchb congruity, <code>C-s</code>/<code>C-r</code>: select next/previous match.
+* For <code>iswitchb</code> congruity, <code>C-s</code>/<code>C-r</code>: select next/previous match.
 * Buffer explorer: put current buffer at end of matches list for more intuitive switching.  Thanks to Alex Schroeder.
 * Buffer explorer: sort first by fuzzy matching score, then by most recently used.
 * More intuitive action on <code>RET</code> key press, to differentiate from <code>TAB</code>.  Thanks to René Kyllingstad.
@@ -62,52 +67,7 @@ Version 1.0.1:
 * Made the completion window more useable in multi-window configurations.  Thanks to Jan Rehders.
 * Fixed two bugs in computing optimal completion content layout.
 
-= Discussion = 
-
-[new]
-
-Release 2.3 introduced:
-
-* Buffer explorer: put current buffer at end of matches list for more intuitive switching.
-
-Like iswitchb it should put all buffers on the current frame at the end of the matches.
-
-* Buffer explorer: sort first by fuzzy matching score, then by most recently used.
-
-The fuzzy matching score is a float, resulting from many calculations. Getting duplicate scores is nigh impossible.
-
-[new:sjbach:2010-07-05 16:31 UTC]
-
-Actually, duplicate scores are common in practice.  I tested the float comparisons with various epsilons and decided none were needed.
-
-[new] 
-
-In my usage the last couple days about 3% of the comparisons had equal fuzzy matching score, so it's indeed not that uncommon. Though it still means that most-recently-used has little influence on the sorting.
-
-Bouncing between 2/3 buffers I often type the file extension, for example C-x b .py RET.  This worked well with iswitchb, less with lusty explorer for obvious reasons.
-
-[new]
-
-Another approach would be to turn the most-recently-used index into a number between 0 and 1, and multiply the fuzzy matching score with it to get the sorting index. Finding a good formula for calculating that number probably requires some experimentation.
-
-[new:sjbach:2010-07-05 16:31 UTC]
-
-But on the other hand, this sounds like a neat idea!
-
-[new]
-
-* Buffer explorer: put current buffer at end of matches list for more intuitive switching
-
-This is not done when fuzzy matching is used, so the buffer explorer will suggest switching to the current buffer if it has a higher score than the buffer you'd like to switch to.
-
-[new:sjbach:2010-07-17 18:14 UTC]
-
-I have these implemented in devhead:
-
-* Put all visible buffers at the end of the buffer list (like iswitchb).
-* Turn MRU order into a factor in the scoring algorithm.
-
-Feel free to take a look.  I'll put out a release once I've played with them for a while.
+= Discussion =
 
 ----
 CategoryBufferSwitching CategoryFiles CategoryCompletion

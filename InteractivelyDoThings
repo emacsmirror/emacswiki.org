@@ -314,6 +314,13 @@ Maybe this is useless with recent versions of emacs/ido, but here I'm forced to 
 
 -- [[Gyom]]
 
+=== Invoke any command using ido in other window / split window, deciding after the fact instead of before ===
+
+This makes ido-find-file-other-window, ido-switch-buffer-other-window, et. al obsolete.  It's a much better abstraction, and I believe it should become apart of ido mode, because _any_ command that uses ido-completing-read can benefit from it without any additional effort, including textmate.el's textmate-goto-symbol.
+
+http://gist.github.com/493269
+
+
 == Icicles and Ido ==
 
 [[Icicles]] is similar to Ido in some ways, and the two are sometimes confused. In Icicles, you use the same [[minibuffer]] interface for files, [[buffer]]s, [[command]]s -- everything (even [[key]]s).  

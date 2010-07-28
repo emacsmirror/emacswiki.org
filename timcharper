@@ -2,7 +2,7 @@
 
 I am a fan of both Vim and Emacs.  Emacs is great because it lets me use the best of every editor in one environment - I don't have to choose between Emacs or Vim.
 
-I work here: http://leadmediapartners.com/
+I work here: http://leadtune.com/
 
 Blog here: http://tim.theenchanter.com/
 
@@ -13,14 +13,14 @@ I program in Ruby.  I also have started to learn the functional programming para
 I started out with Jim Weirech's configuration.  His is great, but had a lot of stuff that I didn't want.  I switched over to use Technomany's fabulous starter kit: http://github.com/technomancy/emacs-starter-kit
 
 * RSpec mode: http://github.com/pezra/rspec-mode
-* vi-balance: A version of viper-mode that harmonizes better with the great features you love about emacs editing.
 * TextMate minor mode: http://github.com/defunkt/textmate.el
 * ERC
 * AucTex
-* CEDET
-* Rudel
+* Vimpulse
 
+= My Emacs Projects =
 
+* Vimpulse-surround - an extension to vimpulse mode that implements surround.vim functionality - http://github.com/timcharper/vimpulse-surround.el
 
 = My EmacsWiki Wall, I suppose =
 

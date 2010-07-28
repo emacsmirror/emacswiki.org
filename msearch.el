@@ -65,6 +65,11 @@
 ;; 2010-07-26, 22:00, TN:
 ;;
 ;; Added minor-mode-menu.
+;;
+;; 2010-07-27, 18:40, TN:
+;;
+;; Better menu and defaults for msearch-enslave-buffer and
+;; msearch-release-buffer.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -138,11 +143,30 @@ register-drag-mouse-1-handler instead.")
 	  (setq slaves (cdr slaves))
 	  )))))
 
+(defun internal-buffer-p (buf-or-name)
+  (let (buf bufname)
+    (or
+     (null (setq buf (get-buffer buf-or-name)))
+     (null (setq bufname (buffer-name buf)))
+     (and (string= (substring bufname 0 1) " ") (null (buffer-file-name buf)))
+     )))
+
+(defun user-buffer-list ()
+  (let* ((p (buffer-list (selected-frame)))
+	 buflist)
+    (while p
+      (unless (internal-buffer-p (car p))
+	(add-to-list 'buflist (car p) 'append))
+	(setq p (cdr p)))
+    buflist))
+
 (defun msearch-enslave-buffer (buf)
   "Let the current buffer be the master of buf.
 Msearch-strings of the current buffer are also high-lighted in buf.
 The slave buf is released when msearch of the master is switched off."
-  (interactive (list (completing-read "Enslave buffer:" (mapcar 'buffer-name (cdr (buffer-list))))))
+  (interactive
+   (list (let ((buflist (mapcar 'buffer-name (cdr (user-buffer-list)))))
+	   (completing-read (concat "Enslave buffer (default:" (car buflist) "):" ) buflist nil 'require-match nil nil (car buflist)))))
   ;; Make sure that the current buffer is in msearch mode:
   (if (null msearch-mode)
       (msearch-mode))
@@ -155,7 +179,7 @@ The slave buf is released when msearch of the master is switched off."
 
 (defun msearch-release-buffer (buf)
   "Release slave buf."
-  (interactive (list (completing-read "Slave to be released:" msearch-slaves nil 'require-match)))
+  (interactive (list (completing-read (concat "Slave to be released (default:" (car msearch-slaves) "):") msearch-slaves nil 'require-match nil nil (car msearch-slaves))))
   (setq msearch-slaves (remove buf msearch-slaves)))
 
 (defun msearch-release-all ()

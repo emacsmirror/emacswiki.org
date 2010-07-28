@@ -52,6 +52,22 @@ As brought to our attention in [[2010-04-16]] by AlexSchroeder:
 : * [http://lists.gnu.org/archive/html/emacs-devel/2010-04/msg00507.html Guile in Emacs] started by Tom Lord, a very long thread
 : * [http://lists.gnu.org/archive/html/emacs-devel/2010-04/msg00665.html guile and emacs and elisp, oh my] by Andy Wingo
 
+[new]
+
+I have written a library providing a common API for several scripting languages (over time, I aim to collect up all Free / Open Source interpretive language implementations!) and have made a start at interfacing it to Emacs.  I was meaning to leave releasing it until there was quite a bit there, but I've not done anything to it for a few months, so I'll put it up for comment and contributions, and remind myself to get on with it... The interface library is [http://www.nongnu.org/muesli/ Muesli] (Multiple Utility, Evaluation and Scripting Language Interface) and you can see the Emacs-Lisp interface for it at http://cvs.savannah.gnu.org/viewvc/muesli/apps/GNUEmacs/muesli-elisp.c?root=muesli&view=markup 
+
+With this approach, the effort of "breaking out" from elisp is shared between interfacing it to all languages.
+
+It also adds mixed-language working: you can write 
+
+  (eval-in-language language-name code-fragment)
+
+in the appropriate syntax in any language supported by Muesli, and I'm working on an embedding syntax that lets you write things like
+
+  (+ 1 {{Guile: (length thing)}})
+
+-- JohnSturdy
+
 ----
 CategoryExtensionLanguage
 EmacsImplementations

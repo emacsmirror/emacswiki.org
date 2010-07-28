@@ -1,0 +1,3 @@
+Hungry-Delete is a minor-mode that causes deletion to delete all whitespace in the direction you are deleting.  Works exactly like c-hungry-delete-mode, which is where the code was from.  This just packages it up to be easier to use in other modes.
+
+Hungry-Delete can be installed from [[ELPA]] or http://www.github.com/nflath/hungry-delete

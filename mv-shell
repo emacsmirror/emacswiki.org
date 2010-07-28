@@ -1,0 +1,3 @@
+Mv-shell is an extension that monitors shell-mode for 'mv' commands.  If any buffers are viewing files that would be moved, relocates the buffers to the location of the files after the 'mv' command.
+
+Mv-shell can be installed from [[ELPA]], or the source code is available at http://www.github.com/nflath/mv-shell.

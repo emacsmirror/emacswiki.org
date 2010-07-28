@@ -741,6 +741,11 @@ In GNU Emacs 23.2.1, cursor movement in c++-mode with whitespace-mode is sloppy.
 -- PraveenKumar
 
 [new]
+I also experience the problem that cursor movement becomes very unresponsive in cc-mode or LaTeX-mode (auctex) in combination with whitespace-mode.  This is so serious that it prevents me from turning whitespace-mode on permanently.  After changing to fundamental-mode the cursor becomes responsive again in the same buffer, even though whitespace-mode is still active.  I experience this problem with whitespace.el 12.1 in both emacs 23.1 and 23.2.  Any ideas?
+
+-- Christoph
+
+[new]
 I'm using global-whitespace-mode on emacs 23.2.1 but it seems to only work when I open files. If I create a new buffer, or manually change my highlighting mode, whitespace mode no longer has any effect. I need to disable it and re-enable it for it to work.
 I'm also using LineNumbers, and whitespace mode affects the spaces next to the numbers. Is there a way I could disable that?
 

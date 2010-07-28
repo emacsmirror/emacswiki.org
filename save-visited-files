@@ -1,0 +1,3 @@
+Save-visited-files is a mode that reloads the buffers you had open the last time Emacs was running.  Inspired by [[Desktop]], but only works for open files (since half the time I quit Emacs is because I manage to get it to an unusable state). 
+
+save-visited-files can be installed from [[ELPA]] or http://www.github.com/nflath/save-visited-files
