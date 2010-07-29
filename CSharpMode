@@ -414,6 +414,23 @@ The bug that '/' wouldn't insert is fixed, however; thanks.
 
 Emacs version is 23.1.1, cc-mode is 5.31.7, which the comments imply is supported.
 
+[new]
+Put this in your .emacs
+<pre>
+(autoload 'csharp-mode "csharp-mode" "Major mode for editing C# code." t)
+(setq auto-mode-alist
+      (append '(("\\.cs$" . csharp-mode)) auto-mode-alist))
+</pre>
+
+And then (on unix):
+<pre>
+$: mv /usr/share/emacs/23.1/lisp/progmode/cc-mode.elc /usr/share/emacs/23.1/progmode/cc-mode.elc-bak
+$: ungzip /usr/share/emacs/23.1/progmode/cc-mode.el.gz
+</pre>
+
+-- Isak Karlsson
+[new]
+
 === VJ Complete and XEmacs===
 
 vj-complete does not seem to work with XEmacs.

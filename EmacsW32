@@ -610,10 +610,25 @@ But I don't know how to do this...
 
 
 === Using EmacsW32 without emacsclient ===
-I'm using EmacsW32 on several machines and virtually the only problem I have with it is that it uses emacsclient instead of launching multiple instances of Emacs. Despite efficiency considerations, I prefer the latter, and would like to do that with EmacsW32 as well.
+I'm using %%EmacsW32%% on several machines and virtually the only problem I have with it is that it uses emacsclient instead of launching multiple instances of Emacs. Despite efficiency considerations, I prefer the latter, and would like to do that with EmacsW32 as well.
 
-# What is the best way to change this when EmacsW32 is already installed?
+# What is the best way to change this when %%EmacsW32%% is already installed?
 # Would it be possible to include an option in the installer to not use emacsclient at all?
+
+[new]
+That was a surprising request.
+How do you want to launch Emacs? (From what shortcuts etc?)
+
+[new]
+I just realised that it's all a bit easier than I thought. I thought there were a few batch scripts involved, but the Shortcut (the only one installed for %%EmacsW32%%) simply launches $EMACSW32DIR/emacs/bin/emacsclientw.exe.
+
+So everything I want is basically a shortcut to $EMACSW32DIR/emacs/bin/runemacs.exe and the respective "Send To" entries etc. I can probably set up the shortcut myself, but I'd like the other stuff too - would it be possible to add that to the installer?
+
+[new]
+Yes, you can change them yourself after installing %%EmacsW32%%.
+What is the reason for using Emacs this way?
+Is it perhaps a misunderstanding?
+Do you know it is quite easy to start a new Emacs instance from within %%EmacsW32%% by doing "M-x emacs"?
 
 ----
 == Current Problems ==
