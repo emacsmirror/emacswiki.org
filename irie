@@ -8,6 +8,7 @@ I use Emacs.
 * [PosTip pos-tip.el] -- a library for easily showing tooltip at arbitrary buffer position
 * [TransEJ trans-ej.el] -- English-Japanese translator using multiple Web translation services
 * [MenuTree menu-tree.el] -- Localize menu-bar items (Originally written by YAGI Tatsuya)
+* [GrabAndDrag grab-and-drag.el] -- Scroll a window by mouse dragging
 * etc.
 
 == Web sites I maintain ==

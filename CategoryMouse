@@ -31,6 +31,7 @@ These pages are in category Mouse:
 * ArtistMode -- Draw freehand with the mouse.
 * MouseEvent -- Write mouse-event code compatible with different EmacsLisp dialects.
 * Lisp:follow-mouse.el -- Make the [[frame]] focus follow the pointer.
+* GrabAndDrag -- scroll a window by mouse dragging
 
 ----
 CategoryKeys CategoryDisplay

@@ -630,6 +630,21 @@ What is the reason for using Emacs this way?
 Is it perhaps a misunderstanding?
 Do you know it is quite easy to start a new Emacs instance from within %%EmacsW32%% by doing "M-x emacs"?
 
+[new]
+"M-x emacs" is neat, thank you. The reason I don't want to use EmacsClient is because it doesn't fit my workflow. I've tried it, and I just couldn't get used to it. Emacs is not my operating system or anything, it's just my editor and I fire it up when needed and close it afterwards, as I do with all other programs. Therefore the added overhead of starting the server each time (especially with the "server starting" window in EmacsW32) is undesired.
+
+Would it be a problem to include an additional Emacs (without Client) shortcut etc. in the distribution, or have a choice during the installation? (if you point me to the wizard's configuration file, I could try and create a patch for that) Setting up the shortcut is not really a problem, but the "Send To" link etc. might be.
+
+[new]
+The overhead when starting EmacsClient is very small.
+It is the same startup process as usual for Emacs with just the addition of starting the server too.
+I doubt that you can measure the overhead of the server starting window.
+
+So the only thing I can see that can be problematic is that you have some kind of trouble starting emacs server.
+That could be a bug in Emacs.
+Could you please test if this takes long time for you?
+(Just start Emacs and then do "M-x server-mode" and see if that takes long time.)
+
 ----
 == Current Problems ==
 

@@ -1,3 +1,5 @@
+== The TODO Item ==
+
 Since at least 2002, there's been an item in the EmacsTodo to:
 
 : //Have a command suggestion help system that recognizes patterns
@@ -68,6 +70,10 @@ Larger concepts:
 * Suggest Emacs packages that could help user in a specific task.
 * Suggestion system should handle mode-dependent suggestions, where mode authors can extend and maintain the suggestions for their mode.
 * Ideally it should look at what commands I use in succession and suggest that I write functions to do that.  Also, arguments to commands should be analyzed to see e.g. if I am constantly using the same regex to `flush-lines' it could be made into a function.  Something like RepetitionDetectionPackage, only over a longer period of time.
+
+== One Possible Solution: re-suggest.el ==
+
+[[ReSuggest]] is a simple regexp-based command suggest minor mode. It allows you to define patterns of commands as regular expressions, and suggestions for more efficient replacements.
 
 ----
 CategoryHelp

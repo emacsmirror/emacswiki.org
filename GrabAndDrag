@@ -1,0 +1,31 @@
+grab-and-drag.el provides a command and a minor mode which allow users to scroll the window in the arbitrary direction by mouse dragging, like "Grab and Drag" firefox extension. It's probably useful for a touch panel based computer.
+
+The code is rather X-dependent and is tested on GNU Emacs 22 and 23.
+
+== Downloading ==
+
+: Lisp:grab-and-drag.el
+: [[https://code.launchpad.net/~irie/+junk/grab-and-drag.el Bazaar branch in Launchpad]]
+
+== Installation ==
+
+First, save this file as grab-and-drag.el and byte-compile in a directory that is listed in load-path.
+
+Put the following in your .emacs file:
+
+  (require 'grab-and-drag)
+  (grab-and-drag-mode 1)
+
+Then, start Emacs and grab-and-drag-mode is activated.
+
+== Usage ==
+
+By default settings, you can do "Grab and Drag" using a command `grab-and-drag' by mouse dragging with the left button. That means grab-and-drag-mode overrides the binding of `down-mouse-1' event, which is usually bound to `mouse-drag-region' command. Even Though grab-and-drag-mode overrides the original binding, you can still use it by holding down the button for 1 second without moving the pointer.
+
+If you release the mouse button while moving the pointer, the additional action is performed according to the dragging time and direction. The mouse dragging longer than 500 milliseconds causes an inertial scrolling vertically. Otherwise the quick dragging is recognized as a flick gesture, which causes a scrolling by screenful in that direction.
+
+Have fun!
+
+----
+CategoryMouse CategoryDisplay
+
