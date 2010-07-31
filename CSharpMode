@@ -449,6 +449,22 @@ I get a "Symbol's function definition is void: line number-at-pos" when typing t
 
 http://i42.tinypic.com/29pdmjd.jpg
 
+=== Incorrect indentation ===
+[new]
+When not setting c-set-style "bsd" the indentation is incorrect for 
+<pre>
+get {} set {} if {} else {} else if {}
+</pre>
+
+And when set - comments are indented incorrectly.
+
+http://i30.tinypic.com/29da3hj.png
+
+http://i26.tinypic.com/2exuis3.jpg
+
+
+[new]
+
 === Hooks are run too early ===
 
 At the moment the mode hooks are run before local keys bindings are set, which means you can't modify them in a hook if you don't like them.  I modified my copy as follows:-

@@ -1,0 +1,22 @@
+== TN ==
+Gnu-emacs user.
+== Code-snippets ==
+    (defun get-permutation (l1 l2)
+    "Given two lists l1 and l2 return a list of integers li such that (`nth' i li)
+    is the index of element (nth i l1) in l2. Thereby, the elements of l1 and l2 are identified with `equal' and numbering of indices starts with zero (as for `nth')."
+      (let* ((i 0)
+          (dict (mapcar '(lambda (x) (prog1 (cons x i) (setq i (1+ i)))) l1)))
+              (mapcar
+                   '(lambda (x) (cdr (assoc x dict))) l2)))
+
+
+
+[new:DrewAdams:2010-07-30 14:23 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+
+
+
+----
+CategoryHomepage

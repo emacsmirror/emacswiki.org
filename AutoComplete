@@ -25,6 +25,8 @@ Lisp:auto-complete-etags.el     is some enhancement by Yen-Chin,Lee.
 
 Lisp:auto-complete-verilog.el   is some enhancement by Yen-Chin,Lee.
 
+[http://github.com/brianjcj/auto-complete-clang Clang source for Auto Complete]
+
 Other extensions are found in [[AutoCompleteSources]].
 
 == Development Version Notes ==

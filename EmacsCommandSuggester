@@ -73,7 +73,9 @@ Larger concepts:
 
 == One Possible Solution: re-suggest.el ==
 
-[[ReSuggest]] is a simple regexp-based command suggest minor mode. It allows you to define patterns of commands as regular expressions, and suggestions for more efficient replacements.
+[[ReSuggest]] is a simple regexp-based command suggestion minor
+mode. It allows you to define patterns of commands as regular
+expressions, along with suggestions for more efficient replacements.
 
 ----
 CategoryHelp

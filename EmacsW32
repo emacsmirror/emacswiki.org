@@ -645,6 +645,21 @@ That could be a bug in Emacs.
 Could you please test if this takes long time for you?
 (Just start Emacs and then do "M-x server-mode" and see if that takes long time.)
 
+[new]
+Invoking "server-mode" happens in the fraction of a second. Maybe I just had the illusion that it takes longer because of the extra window (can I get rid of that? It not shown in vanilla Emacs). I'll give up and use EmacsClient :)
+
+[new]
+No, you can't get rid of this window.
+It is shown while Emacs is starting so you know what is happening.
+(Vanilla Emacs can't be started through emacsclient.)
+
+OK, hope this works fine for you.
+Using emacsclient is actually much faster than starting a new Emacs.
+The only thing to consider is that you close a buffer instead of the whole of Emacs.
+You can have emacsclient opening a new window (Emacs frame) if you want that.
+And I think there are solutions here on Emacs Wiki that lets you close the buffer with the frame.
+
+
 ----
 == Current Problems ==
 
