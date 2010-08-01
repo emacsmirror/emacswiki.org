@@ -15,16 +15,16 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     use strict;
     use Win32::OLE;
 
-    sub noquotes { return 0; };
-    sub quotes { return 1; };
-    sub retnil { return 0; };
-    sub retempty { return 1; };
+    sub noquotes { 0 }
+    sub quotes { 1 }
+    sub retnil { 0 }
+    sub retempty { 1 }
 
     #
     # have - return undef if value is undefined or empty string
     #
     sub have {
-    	return (defined $_[0] && '' ne $_[0] ? 1 : undef);
+    	defined $_[0] && '' ne $_[0] ? 1 : undef;
     }
 
     #
@@ -35,11 +35,11 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     	my $ret;
 
     	if (defined $rOle && '' ne $rOle) {
-    		$ret = "\"$rOle\"" if ($fQuote == quotes);
-    		$ret = "$rOle" if ($fQuote == noquotes);
+    		$ret = "\"$rOle\"" if $fQuote == quotes;
+    		$ret = "$rOle" if $fQuote == noquotes;
     	} else {
-    		$ret = "nil" if ($fRetNil == retnil);
-    		$ret = "" if ($fRetNil == retempty);
+    		$ret = "nil" if $fRetNil == retnil;
+    		$ret = "" if $fRetNil == retempty;
     	}
 
     	return $ret;
@@ -67,7 +67,7 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     	my $reExch = '\d+';
     	my $reSufx = '\d*';
     	my $reExt = '\d*';
-    	$phone =~ m/$reLoc *$reArea *($reExch)[- ]($reSufx)[ xX]*($reExt)/;
+    	$phone =~ /$reLoc *$reArea *($reExch)[- ]($reSufx)[ xX]*($reExt)/;
 
     	return sprintf "%s %s %s %s",
     	  ($2 ? $2 : "1"), # location code
@@ -81,17 +81,16 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     # bbdb format from http://bbdb.sourceforge.net/bbdb_1.html#SEC67
     #
     sub ol2bbdb {
-        my ($ol, $mf, $c);
-    	$ol = Win32::OLE->new('Outlook.Application', sub {$_[0]->Quit;});
-    	$mf = $ol->Application->GetNamespace("MAPI")->GetDefaultFolder(10); # olFolderContacts
+    	my $ol = Win32::OLE->new('Outlook.Application', sub {$_[0]->Quit});
+    	my $mf = $ol->Application->GetNamespace("MAPI")->GetDefaultFolder(10); # olFolderContacts
     	print <<EOF;
     ;;; file-version: 6
     ;;; user-fields: (birthday www anniversary)
     EOF
 
     	# for some reason, collection item 0 is empty, so start at 1
-    	for (my $i = 1; $i < $mf->Items->Count; $i++) { # $mf->Items->Count
-    		$c = $mf->Items->{$i};
+    	foreach my $i (1 .. $mf->Items->Count-1) { # $mf->Items->Count
+    		my $c = $mf->Items->{$i};
     		my $rec = "[";
 
     		# name
@@ -104,9 +103,9 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     		# phone
     		if ($c->{HomeTelephoneNumber} || $c->{BusinessTelephoneNumber} || $c->{MobileTelephoneNumber}) {
     			$rec .= " (";
-    			$rec .= sprintf(qq(["Home" %s] ), formattedPhone($c->{HomeTelephoneNumber})) if (have ($c->{HomeTelephoneNumber}));
-    			$rec .= sprintf(qq(["Work" %s] ), formattedPhone($c->{BusinessTelephoneNumber})) if (have $c->{BusinessTelephoneNumber});
-    			$rec .= sprintf(qq(["Mobile" %s] ), formattedPhone($c->{MobileTelephoneNumber})) if (have $c->{MobileTelephoneNumber});
+    			$rec .= sprintf(qq(["Home" %s] ), formattedPhone($c->{HomeTelephoneNumber})) if have $c->{HomeTelephoneNumber};
+    			$rec .= sprintf(qq(["Work" %s] ), formattedPhone($c->{BusinessTelephoneNumber})) if have $c->{BusinessTelephoneNumber};
+    			$rec .= sprintf(qq(["Mobile" %s] ), formattedPhone($c->{MobileTelephoneNumber})) if have $c->{MobileTelephoneNumber};
     			$rec .= ") ";
     		} else {
     			$rec .= " nil ";
@@ -120,13 +119,13 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     							valOrNil(quotes, retnil, $c->{HomeAddressCity}),
     							valOrNil(quotes, retnil, $c->{HomeAddressState}),
     							valOrNil(quotes, retnil, $c->{HomeAddressPostalCode}),
-    							valOrNil(quotes, retnil, $c->{HomeAddressCountry})) if (have ($c->{HomeAddressStreet}));
+    							valOrNil(quotes, retnil, $c->{HomeAddressCountry})) if have ($c->{HomeAddressStreet});
     			$rec .= sprintf(qq(["Business" (%s) %s %s %s %s]), 
     							valOrNil(quotes, retnil, $c->{BusinessAddressStreet}),
     							valOrNil(quotes, retnil, $c->{BusinessAddressCity}),
     							valOrNil(quotes, retnil, $c->{BusinessAddressState}),
     							valOrNil(quotes, retnil, $c->{BusinessAddressPostalCode}),
-    							valOrNil(quotes, retnil, $c->{BusinessAddressCountry})) if (have ($c->{BusinessAddressStreet}));
+    							valOrNil(quotes, retnil, $c->{BusinessAddressCountry})) if have ($c->{BusinessAddressStreet});
     			$rec .= ") ";
     		} else {
     			$rec .= " nil ";
@@ -135,9 +134,9 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
     		# email
     		if ($c->{Email1Address} || $c->{Email2Address} || $c->{Email3Address}) {
     			$rec .= " (";
-    			$rec .= sprintf("%s ", valOrNil(quotes, retempty, $c->{Email1Address})) if (have ($c->{Email1Address}));
-    			$rec .= sprintf("%s ", valOrNil(quotes, retempty, $c->{Email2Address})) if (have ($c->{Email2Address}));
-    			$rec .= sprintf("%s ", valOrNil(quotes, retempty, $c->{Email3Address})) if (have ($c->{Email3Address}));
+    			$rec .= sprintf("%s ", valOrNil(quotes, retempty, $c->{Email1Address})) if have ($c->{Email1Address});
+    			$rec .= sprintf("%s ", valOrNil(quotes, retempty, $c->{Email2Address})) if have ($c->{Email2Address});
+    			$rec .= sprintf("%s ", valOrNil(quotes, retempty, $c->{Email3Address})) if have ($c->{Email3Address});
     			$rec .= ") ";
     		} else {
     			$rec .= " nil ";
@@ -145,13 +144,13 @@ So I wanted to migrate everything to bbdb - this perl script will do that.  Goog
 
     		# notes, etc
     		$rec .= "(";
-    		$rec .= sprintf("(notes .\"%s\")", bbdbstr($c->{Body})) if (have $c->{Body});
+    		$rec .= sprintf("(notes .\"%s\")", bbdbstr($c->{Body})) if have $c->{Body};
 
     		# todo: fix timestamps
     		$rec .= qq((creation-date . "2003-08-03") (timestamp . "2003-08-03") );
-    		$rec .= sprintf("(birthday . \"%s\")", $c->{Birthday}->Date("ddd MMM dd yyyy")) if ($c->{Birthday} && '010101' ne $c->{Birthday}->Date("yyddMM"));
-    		$rec .= sprintf("(anniversary . \"%s\")", $c->{Anniversary}->Date("ddd MMM dd yyyy")) if ($c->{Anniversary} && '010101' ne $c->{Anniversary}->Date("yyddMM"));
-    		$rec .= sprintf("(www . \"%s\")", $c->{WebPage}) if (have $c->{WebPage});
+    		$rec .= sprintf("(birthday . \"%s\")", $c->{Birthday}->Date("ddd MMM dd yyyy")) if $c->{Birthday} && '010101' ne $c->{Birthday}->Date("yyddMM");
+    		$rec .= sprintf("(anniversary . \"%s\")", $c->{Anniversary}->Date("ddd MMM dd yyyy")) if $c->{Anniversary} && '010101' ne $c->{Anniversary}->Date("yyddMM");
+    		$rec .= sprintf("(www . \"%s\")", $c->{WebPage}) if have $c->{WebPage};
     		$rec .= ")";
 
     		# footer

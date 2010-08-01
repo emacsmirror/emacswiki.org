@@ -9,11 +9,23 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+==Changing *scratch* buffername permanently==
+
+[new]
+Because I'm using MultiScratch, but the naming-convention (the suffix is a needed number starting with 1, surrounded with angle parenthesis, eg. *scratch<1>*) from the MultiScratch, created scratch-buffers, are not compatible with the initial one. (multi-scratch-buffer-name is set to "scratch")
+
+So I need to change the initial *scratch* to *scratch<1>*, otherwise after creating further scratch it deny it service.
+But I don't see a variable for changing scratch-buffername?
+
+An other solution is, to rename the buffer before creating a second *scratch<2>* with MultiScratch. But how?
+
+I find MultiScratch realy usefull, but it seems also buggy. :-\ -- Michael
+
 ==de-/activate scrollbar==
 
 [new]
 
-Is it possible to (de)activate the scrollbar only in one buffer? -- [[Michael]]
+Is it possible to (de)activate the scrollbar only in one buffer? -- Michael
 
 [new:DrewAdams:2010-07-03 21:40 UTC]
 Nope.  You can request that this feature be added, however, via `M-x send-emacs-bug-report'. 

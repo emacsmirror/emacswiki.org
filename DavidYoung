@@ -1,0 +1,22 @@
+I use Emacs.
+
+This is some Emacs extensive functions I wrote in my daily work. 
+
+Lisp:dove-ext.el
+
+
+
+[new:DrewAdams:2010-07-31 15:41 UTC]
+Welcome to the wiki. -- DrewAdams
+
+[new:DavidYoung:2010-07-31 15:48 UTC]
+Thanks for your kind greeting. You're so fast. BTW, can you advise me how to make the Lisp:dove-ext.el page becomes a download-able lisp file? I tried many times but always fail. -- DavidYoung
+
+[new:DrewAdams:2010-07-31 16:34 UTC]
+Looks to me like you succeeded. -- DrewAdams
+
+[new]
+I succeed when I pasted lisp code on the page directly, instead of replace that page with code file.  -- DavidYoung
+
+----
+CategoryHomepage

@@ -71,9 +71,9 @@ Larger concepts:
 * Suggestion system should handle mode-dependent suggestions, where mode authors can extend and maintain the suggestions for their mode.
 * Ideally it should look at what commands I use in succession and suggest that I write functions to do that.  Also, arguments to commands should be analyzed to see e.g. if I am constantly using the same regex to `flush-lines' it could be made into a function.  Something like RepetitionDetectionPackage, only over a longer period of time.
 
-== One Possible Solution: re-suggest.el ==
+== One Possible Solution: [R]egular [E]xpression based [C]ommand [S]uggester ==
 
-[[ReSuggest]] is a simple regexp-based command suggestion minor
+[[Recs]] is a simple regexp-based command suggestion minor
 mode. It allows you to define patterns of commands as regular
 expressions, along with suggestions for more efficient replacements.
 

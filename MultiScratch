@@ -2,8 +2,8 @@
 MultiScrath is mode that manages multiple scratch buffer.
 
 ==Why need MultiScratch==
-Default, Emacs have a scratch buffer named "*scratch*". You will find it's not enough when have various code snippets need split in different scrath buffer.
-So MultiScrath do those work for you, make you can create and switch multiple scratch buffers quickly.
+Default, Emacs have a scratch buffer named "*scratch*". You will find it's not enough when have various code snippets need split in different scratch buffer.
+So MultiScratch do those work for you, make you can create and switch multiple scratch buffers quickly.
 
 ==Install==
 Put Lisp:multi-scratch.el in your load-path, and add (require 'multi-scratch) in ~/.emacs

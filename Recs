@@ -1,0 +1,31 @@
+[R]egular [E]pression [C]ommand [S]uggester
+
+recs is a simple regexp-based command suggestion minor mode.
+
+== Features ==
+
+* Define command patterns as standard emacs regexps
+* Receive suggestions for more efficient command sequences.
+** When you discover a more efficient way of doing something, add it to your suggestion patterns and receive suggestions about it until it's a habit.
+* A timer to set the minimum number of seconds between suggestions
+
+== Download ==
+
+It's located at http://github.com/tlh/re-suggest.el
+
+== Install ==
+
+1. Put recs.el somewhere on your emacs load path
+
+2. Add these lines to your .emacs file:
+
+   (require 'recs)
+   (recs-mode t)
+
+== Configuration ==
+
+Consult the comments in recs.el for configuration instructions.
+
+
+----
+CategoryWindows

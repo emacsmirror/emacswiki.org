@@ -25,5 +25,5 @@ See also CategoryCode
 * [[Icicles]] -- Define commands that read and match input (simple or [[regexp]]), providing input-[[completion]] and [[Icicles - Cycling Completions|cycling]] of matching candidates. Define multiple-choice commands and menus easily.
 
 = Packages for command suggestion=
-* ReSuggest -- Suggests a more efficient command when a command
+* [[Recs]] -- Suggests a more efficient command when a command
 sequence matches a pattern of commands defined as a regular expression.
