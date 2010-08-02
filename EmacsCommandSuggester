@@ -1,83 +1,16 @@
-== The TODO Item ==
-
 Since at least 2002, there's been an item in the EmacsTodo to:
 
 : //Have a command suggestion help system that recognizes patterns
 of commands which could be replaced with a simpler common command.
 It should not make more than one suggestion per 10 minutes.//
 
-So the first task is developing a database of suggestions Emacs should make.  Only then will programmatic solutions become apparent.  This page is a forum for Emacs users to share and catalogue the recipes of suggested commands.
+* EmacsCommandSuggestions -- Further discussion of the problem and a list of possible suggestions.
 
-As opposed to programming language compilers that produce optimized low-level code from a higher-level syntax, Emacs should suggest a fewer set of commands by recognizing patterns in a larger set of fundamental commands issued by the user.  Like a compiler, accomplishing this task requires installing intelligence in Emacs about what to suggest.  The feature is as much of a human project as compiler writing.
-
-In addition to writing a "command decompiler", that Emacs commands have different connotations in different settings presents another difficulty.  For example, the consequence of a [[Window]] or [[Frame]] operation changes depending on what and how many are open.  Some indentation and line commands also vary because their meanings change when the MajorMode changes, or if the user redefines them!
-
-Are there regular-flavored Emacs commands that you found an improved regular-flavored Emacs command to use?  Add them to the lists.  Feel free to add larger ideas of what a "suggester" should be, too.
-
-This is a list of simple command suggestions:
-
-* `C-x o C-x 1' -> `C-x 0'
-* `C-x o C-v' -> `C-M-v'
-* `C-x o C-x C-f' -> `C-x 4 C-f'
-* `C-x 2 C-x C-f' -> `C-x 4 C-f'
-* `C-x 2 C-x b RET' -> `C-x 4 b'
-* `C-x 2 C-x b RET C-x o' -> `C-x 4 C-o RET'
-* `C-x o C-x C-f' -> `C-x 4 C-f'
-* `C-x 5 2 C-x C-f' -> `C-x 5 C-f'
-* `C-x o C-x d' -> `C-x 4 d'
-* `C-x k RET C-x 0' -> `C-x 4 0'
-* ##`M-! make ... RET'## -> `M-x recompile'
-* ##`M-! sort ... RET'## -> `M-x sort-lines'
-* ##`C-h C-x M-| sort ... RET'## -> `M-x sort-lines'
-* ##`M-! grep ... RET'## -> `M-x grep'
-* ##`C-h C-x M-| grep ... RET'## -> `M-x occur'
-* `C-a C-k C-k C-n C-y' -> `C-a C-n C-x C-t'
-* `C-a C-k' -> `C-S-DEL'
-* `C-a C-i' -> `M-m'
-* `C-k C-k' -> `C-1 C-k'
-* ##`RET C-i'## -> `C-j'
-* ##`RET C-p C-e'## -> `C-o'
-* `M-w C-x b C-y' -> `M-x copy-to-buffer'
-* ##`M-w C-x b M-> C-y'## -> `M-x append-to-buffer'
-
-These are more complex suggestions:
-
-* Repeated `C-f' commands to the end of the line then issuing another command:  Suggest `C-e'.
-* Repeated `C-b' commands to the beginning of the line then issuing another command:  Suggest `C-a'.
-* Motion to the beginning of the line and the first non-whitespace character: Suggest `M-m'.
-* Repeating the same command by typing it repeatedly:  Suggest `C-u' or `C-x z'.
-* Repeating a previously run complex command:  Suggest `C-x ESC ESC'.
-* Searching forward for ".":  Suggest `M-e'.
-* Searching backward for ".":  Suggest `M-a'.
-* Search forward for "(defun":  Suggest `C-M-a'.
-* Search backward for "(defun":  Suggest `C-M-e'.
-
-These are suggestions that require investigating the context of the user's actions.
-
-* Sending the contents of the buffer to a shell command with ##`M-|'## and killing and yanking the results into the buffer:  Suggest ##`C-u M-|'##.
-* Deleting word(s) with repeated `DEL', ##<backspace>## or `C-d':  Suggest `M-d'.
-* Searching multiple times for the same string, and replacing each time:  Suggest ##`M-% <search> RET <replace> RET'##.
-* User just did a lot of line adjustments that sorted the buffer:  Suggest `M-x sort-lines'.
-* User just selected the entire contents of the buffer with the mouse:  Suggest `C-x C-h'.
-* Repeatedly hitting return at the end of the line:  Suggest `M-x auto-fill-mode'.
-* Visiting modified buffers with `C-x b' and saving them with `C-x C-s':  Suggest `C-x s'.
-* Editing a buffer and then moments later editing it back to its previous contents:  Suggest `M-x undo'.
-* Repeatedly hitting `C-s' in [[Isearch]]:  Suggest `M-x occur'.
-* Repeatedly exiting out of `query-replace' with `C-g' and making edits, then restarting the same `query-replace': Suggest `C-r'.
-
-Larger concepts:
-
-* Suggest Emacs packages that could help user in a specific task.
-* Suggestion system should handle mode-dependent suggestions, where mode authors can extend and maintain the suggestions for their mode.
-* Ideally it should look at what commands I use in succession and suggest that I write functions to do that.  Also, arguments to commands should be analyzed to see e.g. if I am constantly using the same regex to `flush-lines' it could be made into a function.  Something like RepetitionDetectionPackage, only over a longer period of time.
-
-== One Possible Solution: [R]egular [E]xpression based [C]ommand [S]uggester ==
-
-[[Recs]] is a simple regexp-based command suggestion minor
+* [[Recs]] or "[R]egular [E]xpression based [C]ommand [S]uggester" is one possible solution based on a simple regexp-based command suggestion minor
 mode. It allows you to define patterns of commands as regular
 expressions, along with suggestions for more efficient replacements.
 
 ----
+CategoryCommands
 CategoryHelp
-CategoryKeys
 CategoryWishList

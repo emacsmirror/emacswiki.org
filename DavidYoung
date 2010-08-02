@@ -1,10 +1,64 @@
+= About me =
+
 I use Emacs.
 
-This is some Emacs extensive functions I wrote in my daily work. 
+This is some Emacs extensive functions I wrote in my daily work.
 
 Lisp:dove-ext.el
 
+= Describe the code now =
 
+== split-window-4 ==
+
+This function splits frame into 4 windows, like following.
+{{{
+  +-----------------------+----------------------+
+  |                       |                      |
+  |                       |                      |
+  |                       |                      |
+  +-----------------------+----------------------+
+  |                       |                      |
+  |                       |                      |
+  |                       |                      |
+  +-----------------------+----------------------+
+}}}
+
+I used to run shell mode in these windows.
+
+== split-v ==
+
+This function change window from vertical style into horizontal style
+
+{{{
+
+  +----------------------+                 +----------- +-----------+ 
+  |                      |           \     |            |           | 
+  |                      |   +-------+\    |            |           | 
+  +----------------------+   +-------+/    |            |           |
+  |                      |           /     |            |           | 
+  |                      |                 |            |           | 
+  +----------------------+                 +----------- +-----------+ 
+
+}}}
+
+== split-h ==
+
+This function splits window from horizontal style into vertical style
+
+
+{{{
+
+  +----------- +-----------+                  +----------------------+ 
+  |            |           |            \     |                      | 
+  |            |           |    +-------+\    |                      | 
+  |            |           |    +-------+/    +----------------------+ 
+  |            |           |            /     |                      | 
+  |            |           |                  |                      | 
+  +----------- +-----------+                  +----------------------+ 
+
+}}}
+
+= Discussion =
 
 [new:DrewAdams:2010-07-31 15:41 UTC]
 Welcome to the wiki. -- DrewAdams
@@ -17,6 +71,10 @@ Looks to me like you succeeded. -- DrewAdams
 
 [new]
 I succeed when I pasted lisp code on the page directly, instead of replace that page with code file.  -- DavidYoung
+
+[new:DrewAdams:2010-08-01 14:01 UTC]
+Right. -- DrewAdams
+
 
 ----
 CategoryHomepage

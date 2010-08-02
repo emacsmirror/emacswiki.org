@@ -236,5 +236,10 @@ The good thing about this mode is what you can navigate through the buffer easil
 "Ctrl+Shift+o" will repeat last search.
 [new:fourier:2009-10-06 12:43 UTC]
 
+[new] 
+See also IncrementalOccur
+
+-- ThierryVolpiatto
+
 ----
 CategoryModes CategoryRegexp GrepMode CategorySearchAndReplace

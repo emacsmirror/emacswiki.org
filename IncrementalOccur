@@ -1,0 +1,9 @@
+Ioccur is incremental occur, more convenient and faster than occur.
+
+You can get it here with hg:
+
+hg clone http://mercurial.intuxication.org/hg/ioccur
+
+for development version:
+
+hg update -C development

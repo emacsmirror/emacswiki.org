@@ -1,0 +1,172 @@
+As opposed to programming language compilers that produce optimized low-level code from a higher-level syntax, an EmacsCommandSuggester should do the reverse: Suggest a fewer set of commands to the user by recognizing patterns in a larger set of fundamental commands issued by the user.  Like a compiler, accomplishing this task requires installing intelligence in Emacs about what to suggest.  The feature is as much of a human project as compiler writing.
+
+In addition to the difficult task of writing a "command decompiler", Emacs commands have different side effects in different contexts.  For example, the consequence of a window-based or frame-based command changes depending on what and how many are open.  Some indentation and line commands also vary because their meanings change when the MajorMode changes.  Also, what if the user customizes or redefines a command?
+
+This is a list of simple command suggestions:
+
+* `C-x o C-x 1' -> `C-x 0'
+* `C-x o C-v' -> `C-M-v'
+* `C-x o C-x C-f' -> `C-x 4 C-f'
+* `C-x 2 C-x C-f' -> `C-x 4 C-f'
+* `C-x 2 C-x b RET' -> `C-x 4 b'
+* `C-x 2 C-x b RET C-x o' -> `C-x 4 C-o RET'
+* `C-x o C-x C-f' -> `C-x 4 C-f'
+* `C-x 5 2 C-x C-f' -> `C-x 5 C-f'
+* `C-x o C-x d' -> `C-x 4 d'
+* `C-x k RET C-x 0' -> `C-x 4 0'
+* ##`M-! make ... RET'## -> `M-x recompile'
+* ##`M-! sort ... RET'## -> `M-x sort-lines'
+* ##`C-h C-x M-| sort ... RET'## -> `M-x sort-lines'
+* ##`M-! grep ... RET'## -> `M-x grep'
+* ##`C-h C-x M-| grep ... RET'## -> `M-x occur'
+* `C-a C-k C-k C-n C-y' -> `C-a C-n C-x C-t'
+* `C-a C-k' -> `C-S-DEL'
+* `C-a C-i' -> `M-m'
+* `C-k C-k' -> `C-1 C-k'
+* ##`RET C-i'## -> `C-j'
+* ##`RET C-p C-e'## -> `C-o'
+* `M-w C-x b C-y' -> `M-x copy-to-buffer'
+* ##`M-w C-x b M-> C-y'## -> `M-x append-to-buffer'
+
+These are more complex suggestions:
+
+* Repeated `C-f' commands to the end of the line then issuing another command:  Suggest `C-e'.
+* Repeated `C-b' commands to the beginning of the line then issuing another command:  Suggest `C-a'.
+* Motion to the beginning of the line and the first non-whitespace character: Suggest `M-m'.
+* Repeating the same command by typing it repeatedly:  Suggest `C-u' or `C-x z'.
+* Repeating a previously run complex command:  Suggest `C-x ESC ESC'.
+* Searching forward for ".":  Suggest `M-e'.
+* Searching backward for ".":  Suggest `M-a'.
+* Search forward for "(defun":  Suggest `C-M-a'.
+* Search backward for "(defun":  Suggest `C-M-e'.
+
+These are suggestions that require investigating the context of the user's actions.
+
+* Sending the contents of the buffer to a shell command with ##`M-|'## and killing and yanking the results into the buffer:  Suggest ##`C-u M-|'##.
+* Deleting word(s) with repeated `DEL', ##<backspace>## or `C-d':  Suggest `M-d'.
+* Searching multiple times for the same string, and replacing each time:  Suggest ##`M-% <search> RET <replace> RET'##.
+* User just did a lot of line adjustments that sorted the buffer:  Suggest `M-x sort-lines'.
+* User just selected the entire contents of the buffer with the mouse:  Suggest `C-x C-h'.
+* Repeatedly hitting return at the end of the line:  Suggest `M-x auto-fill-mode'.
+* Visiting modified buffers with `C-x b' and saving them with `C-x C-s':  Suggest `C-x s'.
+* Editing a buffer and then moments later editing it back to its previous contents:  Suggest `M-x undo'.
+* Repeatedly hitting `C-s' in [[Isearch]]:  Suggest `M-x occur'.
+* Repeatedly exiting out of `query-replace' with `C-g' and making edits, then restarting the same `query-replace': Suggest `C-r'.
+
+Larger concepts:
+
+* Suggest Emacs packages that could help user in a specific task.
+* Suggestion system should handle mode-dependent suggestions, where mode authors can extend and maintain the suggestions for their mode.
+* Ideally it should look at what commands I use in succession and suggest that I write functions to do that.  Also, arguments to commands should be analyzed to see e.g. if I am constantly using the same regex to `flush-lines' it could be made into a function.  Something like RepetitionDetectionPackage, only over a longer period of time.
+
+Discussion:
+
+[new]
+
+IMHO approaching the EmacsCommandSuggester problem from the perspective of
+_command suggestion_ complicates things. It would be better to ask,
+
+How can we have Emacs inform us when we are doing a tasks:
+
+-- In a non-idiomatic way; 
+
+-- Which could be done easier with a different function/command;
+
+-- Using an existing non-core command/function that (re)implements an existing
+   core command/function;
+
+-- Using a core command/function but may be unaware of other associated/related
+   core commands/functions.
+
+A command is really just a procedure with an interactive spec. So, what is
+proposed is a means to achieve an interrogation of interactive
+procedures... which is easy.
+
+However, what is far less simple is knowing when a procedure may be invoked by
+the user to satisfy some need and/or that the user may wish to know this (if she
+doesn't already).  Still even this isn't too terribly difficult when we trigger
+on some overly coarse global context like the current `major-mode',
+`default-directory', or the `file-name-extension' of `current-buffer's
+`buffer-file-name'.
+
+What is really needed is both a means to intelligently interpolate what an
+interactive procedure does and a system to differentiate how the interaction is
+unlike some other related procedure according to both a user context and the
+underlying implicit Emacs Lisp context by which interactive procedure(s) are
+implemented. It is hard to imagine arriving at such an interpolation w/out a
+more extensive investigation of the underlying procedures used to implement a
+set of given commands.
+
+As such, I would propose that the way to approach the problem is by
+making a careful and extensive enumeration of the core Emacs procedures by
+ordering them according to their use. Once this is complete it should be
+possible to create an suitably abstract API for an EmacsSuggester.
+
+IMO such an API would be best implemented according to the following guidelines:
+
+-- Should not rely on regexps for core pattern matching procedures;
+
+-- Should leverage the facilities provided by the core Emacs-lisp packages
+   elint.el trace.el testcover.el as collectively these three libraries already
+   abstract much of the low-level procedures needed for Emacs to introspection;
+
+-- Should specify a core "controlled-vocabulary" of properties with which to tag
+   commands;
+
+-- The contolled-vocabulary should be implemented with eieio.el as a user
+   extensible set of base super-classes;
+
+-- Should allow users easy class extensibility/inheritance;
+
+-- Should provide a core pattern-matching methods per core class;
+
+-- Should restrict its views to mini-buffer, `*Help*', and `*Info*' buffers;
+
+-- Should not make any attempt to invent new buffer based presentations and
+   instead make every effort to integrate seamlessly with both `*Help*' and
+   `*Info*', with the caveat that help-fns.el is increasingly in need of some
+   TLC esp. WRT its current inability to integrate with EIEIO and fixing this
+   should be made a priority when implementing an EmacsCommandSuggester.
+
+-- Should provide the user with adequate facilities to implement her own
+   user-extensible buffer based presentations where additional views are wanted;
+
+-- Should not attempt to provide/present the core interface and user-extensible
+   features via `customize'. IOW users wishing to extend the core interface
+   should be encouraged to do so by editing/creating lisp source and/or lisp
+   based data structures instead of relying on miraculous `*Custom*' magic.
+
+FWIW Lisp:mon-doc-help-utils.el (and associated "mon-doc-help-*.el"packages)
+represent my attempts at making the initial enumeration discussed above.
+Interested parties may note that most of the `mon-help-*' procedures comprise a
+docstring formatted as a giant plists with lisp symbol-name partitioned into an
+ad hoc ontology:
+
+ <ELISP-CONCEPT>
+ - <ELISP-CONTEXT>
+ -- <SYMBOL-NAME-IN-CONTEXT>
+
+Where an <ELISP-CONCEPT> is represented by a function name of the form
+`mon-help-*', an <ELISP-CONTEXT> is represented by one or more properties of the
+form ";; :SOME-CONTEXT", and a <SYMBOL-NAME-IN-CONTEXT> is represented as an elt
+of an implicit list of the form: 
+
+ ( <SYMBOL-NAME-IN-CONTEXT-1> 
+   <SYMBOL-NAME-IN-CONTEXT-2> 
+   <SYMBOL-NAME-IN-CONTEXT-3> { ... } )
+
+In many ways Lisp:mon-doc-help-utils.el is a proof-of-concept I implemented to
+convince myself that the existing core Emacs features are suitable for achieving
+views into a "suggestion interface" using only introspective procedures,
+`*HELP*', and `*INFO*'. I began this work per the discussion here:
+ReferenceSheetHelpUtils which was prompted after encountering
+[[Reference Sheet by Aaron Hawley]] whose seemingly simple mapping of:
+
+ keys <- commands <- command descriptions 
+
+convinced me of the immediate utility such tools can offer both new and old
+Emacs users alike. -[[mon_key]]
+
+----
+CategoryCommands
+CategoryHelp

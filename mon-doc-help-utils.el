@@ -93,7 +93,7 @@
 ;; `mon-help-char-raw-bytes', `mon-help-charset-coding-functions',
 ;; `mon-help-char-composition', `mon-help-time-functions',
 ;; `mon-help-mon-time-functions', `mon-help-bitwise-functions',
-;; `mon-help-char-unidata-table', `mon-help-errors',
+;; `mon-help-char-unidata-table', `mon-help-errors', `mon-help-buffer-spc-*DOC*'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -125,7 +125,7 @@
 ;; `*regexp-mon-doc-help-builtin-static-tags*', `*mon-help-reference-keywords*',
 ;; `*mon-tags-table-list*', `*mon-help-side-effect-free*',
 ;; `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
-;; `*mon-help-emacs-errors*'
+;; `*mon-help-emacs-errors*', `*mon-help-subrs*', `*mon-help-autoload-vars*'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `mon-insert-documentation'                -> `mon-help-insert-documentation'
@@ -375,11 +375,17 @@
 ;;; ==============================
 ;;; `defun*' `intersection' in `mon-help-function-spit-doc'
 (eval-when-compile (require 'cl))
-
+;;
 ;;; :NOTE `mon-help-parse-interactive-spec' has failover in mon-doc-help-utils-supplemental.el
 ;;; :NOTE `mon-help-function-spit-doc' has failover inlined but defaults to `intersection'
 ;;; :REQUIRED-BY `mon-help-function-spit-doc', `mon-help-parse-interactive-spec'
 (eval-when-compile (require 'mon-cl-compat nil t))
+
+(require 'elint)
+(when (and (intern-soft "IS-MON-SYSTEM-P")
+	   (bound-and-true-p IS-MON-SYSTEM-P)
+	   (custom-set-variables
+	    '(elint-scan-preloaded t t))))
 
 ;;; ==============================
 ;; :EMACS-WIKI - So we don't require more than you want/need.
@@ -419,7 +425,7 @@ EXAMPLE:\n
    \(dotimes \(i 3 (concat \" The `*doc-cookie*' -> \" cooky \)\)
      \(setq cooky \(concat \(char-to-string ?\\u25BA\) cooky\)\)\)\)
  \(point\)\)\n
-:SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail'
+:SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail',
 `mon-insert-ebay-field-trigger-l', `mon-insert-ebay-field-trigger-r',
 `mon-insert-ebay-field-trigger-l-and-r'.\n►►►")
 ;;
@@ -861,10 +867,12 @@ two ``keyword'' regexps. Calling functions (or their expanders) should let-bind
                         '\(side-effect-free t\)\)\)\)\n
 :NOTE This list does not include the byte-code ops of the byte-code-optimizer,
 e.g. those enumerated in: `byte-compile-side-effect-free-ops'.\n
-:SEE :FILE `byte-opt.el'\n
+:SEE :FILE emacs-lisp/byte-opt.el emacs-lisp/unsafep.el\n
 :SEE-ALSO `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
-`byte-compile-delete-errors', `cl-safe-expr-p',
-`cl-byte-compile-compiler-macro'.\n►►►")
+`*mon-help-subrs*', `*mon-help-autoload-vars*', `byte-compile-delete-errors',
+`cl-safe-expr-p', `cl-byte-compile-compiler-macro', `unsafep',
+`unsafep-function', `unsafep-variable',`unsafep-progn', `unsafep-let',
+`unsafep-vars', `safe-functions'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-help-side-effect-free*)
   (setq *mon-help-side-effect-free*
@@ -931,10 +939,13 @@ e.g. those enumerated in: `byte-compile-side-effect-free-ops'.\n
                         '\(error-free t\)\)\)\)\n
 :NOTE This list does not include the byte-code ops of the byte-code-optimizer,
 e.g. those enumerated in: `byte-compile-side-effect-and-error-free-ops'.\n
-:SEE :FILE `byte-opt.el'\n
+:SEE :FILE emacs-lisp/byte-opt.el emacs-lisp/unsafep.el\n
 :SEE :ALSO `*mon-help-side-effect-free*', `*mon-help-pure-functions*',
+`*mon-help-subrs*', `*mon-help-autoload-vars*',
 `byte-optimize-form-code-walker', `byte-compile-delete-errors',
-`cl-safe-expr-p', `cl-byte-compile-compiler-macro'.\n►►►")
+`cl-safe-expr-p', `cl-byte-compile-compiler-macro',
+`unsafep', `unsafep-function', `unsafep-variable', `unsafep-progn',
+`unsafep-let', `unsafep-vars', `safe-functions'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-help-side-effect-and-error-free*)
   (setq *mon-help-side-effect-and-error-free*
@@ -1002,7 +1013,8 @@ byte-compiler to be side-effect-free.\n
             purity-check\)\)\)\)\n
 :SEE :FILE `byte-opt.el'\n
 :SEE :ALSO `*mon-help-side-effect-free*',
-`*mon-help-side-effect-and-error-free*'.\n►►►")
+`*mon-help-side-effect-and-error-free*',
+`*mon-help-subrs*', `*mon-help-autoload-vars*'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-help-pure-functions*)
   (setq *mon-help-pure-functions*
@@ -1017,6 +1029,49 @@ byte-compiler to be side-effect-free.\n
 ;;|                    :side-effect-free ,(plist-get pf-pl 'side-effect-free)))
 ;;|             purity-check))))
 ;;`----
+
+
+;;; ==============================
+;;; :CHANGESET 2019
+;;; :CREATED <Timestamp: #{2010-07-31T19:13:24-04:00Z}#{10306} - by MON KEY>
+(defvar *mon-help-subrs* nil
+  "List of all built-in functions (i.e. all subrs).\n
+:EXAMPLE\n\n\(car \(memq 'indirect-function *mon-help-subrs*\)\)\n
+:NOTE Elts of this list have the property `elint-args` whenever
+`elint-put-function-args' has been evalauted by `elint-scan-doc-file' which
+normally happens whenever `elint-initialize' is invoked.\n
+However, when the predicate `IS-MON-SYSTEM-P' returns non-nil the function
+`mon-help-utils-loadtime' arranges to evaluate `elint-scan-doc-file' at loadtime
+such that the following should return non-nil regardless of whether
+`elint-initialize' has been evaluated:\n
+\(get \(car \(memq 'indirect-function *mon-help-subrs*\)\) 'elint-args\)\n
+:SEE-ALSO `elint-find-builtins', `elint-find-builtin-args',
+`elint-standard-variables', `elint-builtin-variables',
+`*mon-help-autoload-vars*', `*mon-help-side-effect-free*',
+`*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*'.\n►►►")
+;;
+(unless (bound-and-true-p *mon-help-subrs*)
+  (if (bound-and-true-p elint-builtin-variables)
+      (setq *mon-help-subrs* elint-builtin-variables)
+    (setq *mon-help-subrs* (elint-find-builtins)))
+  (if (bound-and-true-p elint-standard-variables)
+      (setq *mon-help-subrs* (append *mon-help-subrs* elint-standard-variables))))
+
+;;; ==============================
+;;; :CHANGESET 2019
+;;; :CREATED <Timestamp: #{2010-07-31T19:16:15-04:00Z}#{10306} - by MON KEY>
+(defvar *mon-help-autoload-vars* nil
+  "A list of all autoloaded variables in environment at init.\n
+:EXAMPLE\n\n\(car \(memq 'tags-table-list *mon-help-autoload-vars*\)\)\n
+:SEE :FILE loaddefs.el
+:SEE-ALSO `elint-find-autoloaded-variables', `elint-autoloaded-variables',
+`*mon-help-subrs*', `*mon-help-side-effect-free*',
+`*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*'.\n►►►")
+;;
+(unless (bound-and-true-p *mon-help-autoload-vars*)
+  (if (bound-and-true-p elint-autoloaded-variables)
+      (setq *mon-help-autoload-vars* elint-autoloaded-variables)
+    (setq *mon-help-autoload-vars* (elint-find-autoloaded-variables))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-06T11:43:27-05:00Z}#{10056} - by MON KEY>
@@ -2359,6 +2414,48 @@ SOME-OTHER-BUFFER with name before displaying contents there.\n
 ;;;            (buffer-name (get-buffer-create "*BUBBA-TEST*")))
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-07-31T18:42:57-04:00Z}#{10306} - by MON KEY>
+(defun mon-help-buffer-spc-*DOC* (&optional show-the-real)
+  "Examine contents of buffer \" *DOC*\".\n
+If buffer exists display its contents in the buffer named
+\"*MON-SHOW- *DOC*-BUFFER*\" along with a commented list of its
+buffer-local-variables.\n
+If buffer is non-existent message user.\n
+When optional arg SHOW-THE-REAL is non-nil display the actual \" *DOC*\" buffer
+instead but do not insert any addtional annotations.\n
+:EXAMPLE\n\n\(mon-help-buffer-spc-*DOC*\)\n
+\(mon-help-buffer-spc-*DOC* t\)\n
+:SEE-ALSO `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func',
+`mon-help-parse-interactive-spec', `mon-help-function-spit-doc',
+`mon-help-function-arity', `doc-directory', `internal-doc-file-name',
+`elint-scan-doc-file', `documentation-property', `byte-compile-output-docform',
+`lambda-list-keywords', `subr-arity', `help-function-arglist',
+`help-add-fundoc-usage'.\n►►►"
+  (let ((get*doc (get-buffer " *DOC*")))
+    (if (not (get-buffer get*doc))
+        (message (concat ":FUNCTION `mon-help-buffer-spc-*DOC*' '"
+                         "-- non-existent buffer with name: \" *DOC*\" "))
+      (if show-the-real
+          (with-current-buffer (get-buffer get*doc)
+            (display-buffer (current-buffer) t))
+        (with-current-buffer (get-buffer-create "*MON-SHOW- *DOC*-BUFFER*")
+          (erase-buffer)
+          (save-excursion
+            (insert 
+             ":BUFFER-NAME \" *DOC*\"\n"
+             ":W-LOCAL-VARIABLES\n"
+             (pp-to-string (buffer-local-variables get*doc))
+             (make-string 68 59) "\n"
+             ":W-CONTENTS\n\n\n")
+            (let ((comment-start ";;"))
+              (comment-region (buffer-end 0) (buffer-end 1)))
+            (insert-buffer-substring get*doc)))
+        (display-buffer (current-buffer) t)))))
+;;
+;;; :TEST-ME (mon-help-buffer-spc-*DOC*)
+;;; :TEST-ME (mon-help-buffer-spc-*DOC* t)
+
+;;; ==============================
 ;;; :NOTE This is here mostly so I don't forget it.
 ;;; :COURTESY Thinkig Machines Corp. :HIS help-hacks.el :WAS `help-tmc-hacks'
 ;;; :SEE (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/misc/gmacs/gmacs/')
@@ -2479,7 +2576,7 @@ Look for TAGS files in directories specified by return values of:
 
 ;;; ==============================
 (defun mon-insert-doc-help-cookie ()
-  "Insert default 'documentation cookie' at point.
+  "Insert default 'documentation cookie' at point.\n
 Everything up to `*doc-cookie*' is commented out when inserted into a buffer.
 Default value for cookie is: \"\u25BA\u25BA\u25BA\".\n
 :EXAMPLE\n\n\(momentary-string-display 
@@ -2531,7 +2628,8 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
 \"\\nPRE-V-STR\\n\" nil \"PST-V-STR\"\)\n
 :SEE-ALSO `mon-help-swap-var-doc-const-val', `documentation-property',
 `byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
+`help-function-arglist', `help-add-fundoc-usage', `elint-put-function-args',
+`mon-help-buffer-spc-*DOC*'.\n►►►"
   (declare (indent 2) (debug t))
   (let ((putf-doc (make-symbol "putf-doc"))
         (getv-doc (make-symbol "getv-doc"))
@@ -2612,7 +2710,8 @@ similiar functionality to any derived mode which generates font-lock keywords
 from lists bound variables.\n
 :SEE-ALSO `mon-help-put-var-doc-val->func', `documentation-property',
 `byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
+`help-function-arglist', `help-add-fundoc-usage', `elint-put-function-args',
+`mon-help-buffer-spc-*DOC*'.\n►►►"
   ;;  (declare (indent 2) (debug t))
   (let ((v-doc  (make-symbol "v-doc"))
         (v-val  (make-symbol "v-val"))
@@ -2730,6 +2829,16 @@ from lists bound variables.\n
 ;;; (aref (symbol-function 'mon-help-xref-symbol-value) 2)
 ;;; (vconcat (symbol-function 'mon-help-xref-symbol-value))
 ;;; (vconcat (indirect-function 'mon-help-xref-symbol-value))
+;;;
+;;; Following is an example of the byte-compiler's gernation of "#@LENGTH"
+;;; as per `byte-compile-output-as-comment':
+;;
+;;; (byte-compile-lambda (lambda (x y) "some lambda form" (+ x y)))
+;;;
+;;; (let ((bytecomp-outbuffer (current-buffer)))
+;;;   (byte-compile-output-as-comment
+;;;    (byte-compile-lambda (lambda (x y) "some lambda form" (+ x y))) t))
+;;;
 ;;; :CREATED <Timestamp: #{2009-09-30T16:44:24-04:00Z}#{09403} - by MON KEY>
 (defun mon-help-xref-symbol-value (sym)
   "Return the value of symbol SYM.\n
@@ -2794,9 +2903,9 @@ inside a defgroup form.\n
 \(mon-help-function-spit-doc 'apropos :do-group t\) ;defgroup\n
 :SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail',
 `mon-help-xref-symbol-value', `mon-help-insert-documentation',
-`mon-help-function-args', `documentation-property',
+`mon-help-function-args', `mon-help-buffer-spc-*DOC*', `documentation-property',
 `byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
+`help-function-arglist', `help-add-fundoc-usage', `elint-put-function-args'.\n►►►"
   ;; (eval-when-compile (require 'mon-cl-compat nil t))
   (let (mk-docstr)
     (save-excursion
@@ -2887,46 +2996,67 @@ inside a defgroup form.\n
 ;;; :NOTE Use (beginning-of-defun 2) w/ *regexp-symbol-defs*.
 ;;; :CREATED <Timestamp: Thursday July 16, 2009 @ 11:38.10 AM - by MON KEY>
 (defun mon-insert-doc-help-tail (&optional fname test-me-cnt insertp intrp)
-  "Return function body code template when body uses a docstring instrospection.
-For functions which call `mon-help-function-spit-doc' in the body. Additionally,
-insert ';;; :TEST-ME ' templates after the closing of defun. When FNAME \(a string\)
-is non-nil don't search for function's name in head of defun substitute FNAME instead.
-When TEST-ME-CNT is non-nil include N 'test-me' strings with returned template.
-Default test-me-cnt is 3 'test-me's.
-When called programmatically INSERTP is non-nil or if called interactively insert
-code template in buffer at point. Does not move point.
-Regexp held by global var `*regexp-symbol-defs*'.\n
+  "Return function body code template when body uses a docstring instrospection.\n
+Additionally, for functions which call `mon-help-function-spit-doc' in the body 
+insert ';;; :TEST-ME ' templates after the closing of defun.\n
+When FNAME \(a string\) is non-nil don't search for function's name in head of
+defun substitute FNAME instead.\n
+When TEST-ME-CNT is non-nil include N ';;; :TEST-ME' strings with returned template.
+Default TEST-ME-CNT is 3 ';;; :TEST-ME's.\n
+When optional arg INSERTP is non-nil or when called-interactively insert code
+template in buffer at point. Do not move point.\n
+:NOTE Regexp used to identify symbol-types in variable `*regexp-symbol-defs*'.\n
 :SEE-ALSO `mon-insert-lisp-testme', `mon-help-regexp-symbol-defs-TEST'.\n►►►"
   (interactive "i\ni\ni\np")
   (let* ((the-sym (if fname
                    fname
                  (save-excursion
-                   (search-backward-regexp *regexp-symbol-defs*)
+                   ;; <Timestamp: #{2010-07-27T13:06:18-04:00Z}#{10302} - by MON KEY>
+                   ;; :WAS (search-backward-regexp *regexp-symbol-defs*)
+                   (search-backward-regexp *regexp-symbol-defs-big*)
                    (buffer-substring-no-properties (match-beginning 3) (match-end 3)))))
          (tm-cnt (if test-me-cnt test-me-cnt 3))
          (found (match-string-no-properties 2))
          (fun-typs '("defun" "defun*" "defmacro" "defmacro*" "defsubst" "defsubst*"))
          (var-typs '("defvar" "defconst" "defcustom"))
-         ;; (sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme
+         msg-key
+         ;; Signature (sym-name &key :alt-cookie :do-var :insertp :do-face :do-group :do-theme
          (sym-str-cond (cond ((car (member found fun-typs))
-                                   "      (mon-help-function-spit-doc '%s :insertp t)\n")
-                              ((car (member found var-typs))
+                              (let ((fun-typ (car (member found fun-typs))))
+                                (setq msg-key 
+                                      (if (or (string= fun-typ "defmacro")
+                                              (string= fun-typ "defmacro*"))
+                                          ":MACRO"
+                                        ":FUNCTION")))
+                              "      (mon-help-function-spit-doc '%s :insertp t)\n")
+                             ((car (member found var-typs))
+                              (setq msg-key 
+                                    (if (string= (car (member found var-typs)) "defconst")
+                                        ":CONSTANT"
+                                      ":VARIABLE"))
                               "      (mon-help-function-spit-doc '%s :do-var t :insertp t)\n")
                               ((string= found "defface")
+                               (setq msg-key ":FACE")
                               "      (mon-help-function-spit-doc '%s :do-face t :insertp t)\n")
                               ((string= found "defgroup")
+                               (setq msg-key ":GROUP")
                                "      (mon-help-function-spit-doc '%s :do-group t :insertp t)\n")
                               ((string= found "deftheme")
+                               (setq msg-key ":THEME")
                                "      (mon-help-function-spit-doc '%s :do-theme t :insertp t)\n")
-                              (t "      (mon-help-function-spit-doc '%s :insertp t)\n")))
+                              (t (setq msg-key ":SYMBOL")
+                                 "      (mon-help-function-spit-doc '%s :insertp t)\n")))
          (fstring
           (format
            (concat
             "(interactive \"i%s%sP\")\n"
             "  (if (or insertp intrp)\n"
             sym-str-cond
-            "    (message \"Pass non-nil for optional arg INTRP\")))\n;;\n%s")
-           (char-to-string 92)(char-to-string 110) ;;gets us a '\n'
+            ;;"    (message \"Pass non-nil for optional arg INTRP\")))\n;;\n%s")
+            "    (message (concat \"" msg-key " `" the-sym "' \" \n"
+            "                     \"-- pass non-nil for optional arg INTRP\"))))\n;;\n%s")
+           (char-to-string 92)  ;; gets us a `\'
+           (char-to-string 110) ;; gets us a '\n'
            the-sym
            (if fname
                (replace-regexp-in-string "$" (concat "(" fname " )")
@@ -2952,10 +3082,10 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 (defun mon-help-regexp-symbol-defs-TEST (&optional dis-p do-big-regexp)
   "Return overlays for matches of regexp in region.\n
 When optional arg DIS-P is non-nil or when called-interactively return formatted
-results to the buffer named *REGEXP-SYMBOL-DEFS-REPORT*.
-When optional arg DO-BIG-REGEXP is non-nil use regxp in variable
-`*regexp-symbol-defs-big*' default is `*regexp-symbol-defs*'.\n
-:EXAMPLE\n\n(mon-help-regexp-symbol-defs-TEST t)\n
+results to the buffer named *REGEXP-SYMBOL-DEFS-REPORT*.\n
+When optional arg DO-BIG-REGEXP is non-nil use regexps in the 
+variable `*regexp-symbol-defs-big*'. Default is `*regexp-symbol-defs*'.\n
+:EXAMPLE\n\n\(mon-help-regexp-symbol-defs-TEST t\)\n
 \(mon-help-regexp-symbol-defs-TEST t t\)\n
 ►
 \(defun some-function \(&optional optional\)
@@ -3109,7 +3239,7 @@ When optional arg DO-BIG-REGEXP is non-nil use regxp in variable
 ;;; :CREATED <Timestamp: #{2010-02-11T20:48:23-05:00Z}#{10065} - by MON KEY>
 (defun mon-help-propertize-regexp-symbol-defs-TEST ()
   "Helper function for `mon-help-regexp-symbol-defs-TEST'.\n
-Propertize symbols matched by regexp `*regexp-symbol-defs*'.
+Propertize symbols matched by regexp `*regexp-symbol-defs*'.\n
 :SEE-ALSO `mon-help-overlay-result'.\n►►►"
   (let ((fnf ;; `font-lock-function-name-face'
          '(defun defun* defmacro defmacro* defsubst defsubst* defclass defadvice
@@ -3160,7 +3290,7 @@ functions defined with the CL packages `defun*' macro.
 :SEE `lambda-list-keywords'.\n
 :SEE-ALSO `mon-help-function-args', `documentation-property',
 `byte-compile-output-docform', `help-function-arglist', `help-add-fundoc-usage',
-`subr-arity', `mon-help-function-args'.\n►►►"
+`subr-arity', `elint-put-function-args', `mon-help-buffer-spc-*DOC*'.\n►►►"
   (setq function (indirect-function function))
   (cond ((eq 'autoload (car-safe function))
 	 'unknown)
@@ -3202,6 +3332,7 @@ functions defined with the CL packages `defun*' macro.
 List also includes error-symbols defined in packages distributed with Emacs.\n
 Used to generate docstring of `mon-help-errors'.\n
 :EXAMPLE\n\n\(plist-get \(car *mon-emacs-help-errors*\) :ERROR-EMACS-SYMBOL\)\n
+:SEE info node `(elisp)Standard Errors'\n
 :SEE-ALSO .\n►►►")
 ;;
 (unless (bound-and-true-p *mon-help-emacs-errors*)
@@ -3264,7 +3395,8 @@ Used to generate docstring of `mon-help-errors'.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-errors :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-errors' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;; Now build the docstring up from values in `*mon-help-emacs-errors*'
 (eval-when (compile load eval)
@@ -3317,22 +3449,37 @@ Used to generate docstring of `mon-help-errors'.\n
                     gthr-props) "")
            ;; Remove the first "\n"
            (substring gthr-cond-msg 1)
-           (mapconcat 
-            #'identity
-            '("\n"
+           (mapconcat #'identity 
+            '("\n" 
               ";; :ERROR-FUNCTIONS"
               "`condition-case'"
               "`signal'"
               "`ignore-errors'"
-              "`debug-on-error'"
-              "`init-file-had-error'\n"
+              "`init-file-had-error'"
+              "\n"
               ";; :ERROR-VARIABLES"
-              "`debug-on-signal'"
-              "`signal-hook-function'"
-              "`debug-ignored-errors'"
-              "`debugger-may-continue'"
+              "`command-error-function'"
               "`elint-extra-errors'"
-              "`command-error-function'\n"
+              "`eval-expression-debug-on-error'"
+              "`signal-hook-function'"
+              "\n"
+              ";; :ERROR-FUNCTIONS-DEBUG"
+              "`cancel-debug-on-entry'"
+              "`debug-on-error'"
+              "`debug-on-entry'"
+              "`toggle-debug-on-error'"
+              "\n"
+              ";; :ERROR-VARIABLES-DEBUG"
+              "`debug-function-list'"
+              "`debug-ignored-errors'"
+              "`debug-on-signal'"
+              "`debug-on-error'"
+              "`debugger-may-continue'"
+              "\n"
+              ";; :ERROR-FUNCTIONS-OUTPUT"
+              "`external-debugging-output'"
+              "`redirect-debugging-output'"
+              "\n"
               ":NOTE The \"non-standard\" error-symbols enumerated above do not include"
               "error-conditions and error-message properties as their defining package may not"
               "yet be in the environment and does not indicate that these properties are void"
@@ -3347,6 +3494,18 @@ Used to generate docstring of `mon-help-errors'.\n
 ;;; :TEST-ME (mon-help-errors)
 ;;; :TEST-ME (mon-help-errors t)
 ;;; :TEST-ME (describe-function 'mon-help-errors)
+
+
+;;; ==============================
+;;; <Timestamp: #{2010-07-29T15:03:13-04:00Z}#{10304} - by MON KEY>
+;;; :TODO Add edebug related function.
+;;;
+;;; `def-edebug-spec'
+;;; `edebug-eval-macro-args'
+;;; (info "(elisp)Specification List")
+;;; (info "(elisp)Definition of declare")
+;;;
+;;; ==============================
 
 
 ;;; ==============================
@@ -3382,8 +3541,9 @@ Used to generate docstring of `mon-help-errors'.\n
 :CALLED-BY `mon-help-insert-documentation'.\n
 :SEE-ALSO `mon-help-function-arity', `mon-help-xref-symbol-value',
 `mon-help-parse-interactive-spec', `mon-help-function-spit-doc',
-`documentation-property', `byte-compile-output-docform', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage'.\n►►►"
+`mon-help-buffer-spc-*DOC*', `documentation-property',
+`byte-compile-output-docform', `subr-arity', `help-function-arglist',
+`help-add-fundoc-usage', `elint-put-function-args'.\n►►►"
   (let ((def (help-function-arglist func))
         (test-def))
     (when (and def (member '&rest def))
@@ -3612,6 +3772,7 @@ Default is `*doc-cookie*'.\n
 `mon-help-syntax-class'
 `mon-help-syntax-functions'\n
 ;; :MON-DOC-HELP
+`mon-help-buffer-spc-*DOC*'
 `mon-tags-apropos'
 `mon-tags-naf-apropos'
 `mon-help-package-keywords'\n
@@ -3742,7 +3903,7 @@ Default is `*doc-cookie*'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-22T16:11:37-05:00Z}#{10035} - by MON KEY>
 (defun mon-help-mon-functions (&optional insertp intrp)
-  "Incomplete list of MON functions.\n 
+  "Incomplete list of MON functions and their related variables.\n
 ;; :MON-BUFFER
 `mon-g2be'
 `mon-buffer-exists-so-kill'
@@ -3778,8 +3939,6 @@ Default is `*doc-cookie*'.\n
 `mon-rectangle-operate-on'
 `mon-rectangle-sum-column'
 `mon-rectangle-upcase'\n
-;; :MON-COMMNET\n
-;; :MON-INSERT\n
 ;; :MON-LINE\n
 `mon-line-bol-is-eol'
 `mon-line-count-matchp'
@@ -3943,6 +4102,20 @@ Default is `*doc-cookie*'.\n
 `mon-string-wonkify'
 `mon-string<-symbol'
 `mon-canonical-string'\n
+;; :MON-HEX-FUNCTIONS
+`mon-cln-img-magic-hex'
+`mon-downcase-hex-values'
+`mon-string-from-hex-list'
+`mon-string-to-hex-list'
+`mon-string-to-hex-string'
+`mon-string-to-hex-list-cln-chars'
+`mon-hexcolor-add-to-font-lock'\n
+;; :MON-HEX-VARIABLES
+`*css-color:hex-chars*'
+`*regexp-rgb-hex*'
+`*regexp-css-color-hex*'
+`*regexp-hexcolor-keywords*'
+`*regexp-hexcolor-keywords*'\n
 ;; :MON-LIST-MANIPULATION
 `mon-intersection'
 `mon-combine'
@@ -3959,9 +4132,13 @@ Default is `*doc-cookie*'.\n
 `mon-elt->'
 `mon-elt-<'
 `mon-elt->elt'
-`mon-elt-<elt'\n
+`mon-elt-<elt'
+`mon-delq-cons'
+`mon-list-make-unique'
+`mon-list-match-tails'
+`mon-list-reorder'
+`mon-list-proper-p'\n
 ;; :MON-HASHTABLE
-`mon-face-bold>normal'
 `mon-insert-naf-mode-faces-as-displayed'
 `mon-hash-add-uniquify'
 `mon-hash-all-keys'
@@ -4034,6 +4211,8 @@ Default is `*doc-cookie*'.\n
 `mon-insert-naf-mode-xref-template'
 `mon-insert-smith-poster-template'\n
 ;; :MON-FACE
+`mon-face-bold->normal'
+`mon-hexcolor-add-to-font-lock'
 `mon-help-naf-mode-faces'\n
 ;; :MON-OVERLAY
 `mon-help-find-result-for-overlay'
@@ -4083,7 +4262,9 @@ Default is `*doc-cookie*'.\n
 `mon-user-system-conditionals-TEST'
 `mon-wget-list-to-script-TEST'
 `mon-with-inhibit-buffer-read-only-TEST'\n
-;; :MON-WORD\n\n
+;; :MON-COMMNET\n
+;; :MON-INSERT\n
+;; :MON-WORD\n
 :SEE-ALSO `mon-help-mon-help', `mon-help-emacs-introspect'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
@@ -4173,6 +4354,7 @@ Default is `*doc-cookie*'.\n
 Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 ;; :EMACS-ENVIRONMENT
 `emacs-priority'
+`emacs-pid'
 `initial-environment'
 `inhibit-x-resources'
 `getenv'
@@ -4182,18 +4364,18 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `system-type'
 `system-name'\n
 ;; :EMACS-ENVIRONMENT-PATH-DIR-FILE
+`data-directory'
 `exec-path'
-`Info-default-directory-list'
-`find-function-C-source-directory'
 `path-separator'
 `temporary-file-directory'
 `woman-path'
 `load-path'
 `get-load-suffixes'          ;<FUNCTION>
-`load-force-doc-strings'
 `load-suffixes'
 `load-file-rep-suffixes'\n
 ;; :EMACS-ENVIRONMENT-INIT
+`daemon-initialized'
+`daemonp'
 `invocation-directory'
 `invocation-name'
 `emacs-init-time'
@@ -4208,16 +4390,27 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `locate-user-emacs-file' ;<FUNCTION>
 `user-emacs-directory'
 `woman-man.conf-path'\n
+;; :EMACS-ENVIRONMENT-DOC
+`Info-default-directory-list'
+`configure-info-directory'
+`doc-directory'
+`find-function-C-source'
+`find-function-C-source-directory'
+`internal-doc-file-name'
+`load-force-doc-strings'\n
 ;; :EMACS-ENVIRONMENT-FEATURES
 `advertised-signature-table'
 `current-load-list'
 `features'
 `load-history'\n
 ;; :EMACS-ENVIRONMENT-STATE
+`current-idle-time'
 `emacs-uptime'                ;<FUNCTION>
 `cons-cells-consed'
 `floats-consed'
 `intervals-consed'
+`memory-limit'
+`memory-use-counts'
 `misc-objects-consed'
 `strings-consed'
 `string-chars-consed'
@@ -4233,6 +4426,9 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `num-input-keys'
 `num-nonmacro-input-events'\n
 ;; :EMACS-ENVIRONMENT-STATE-COMMANDS
+`read-expression-history'
+`yes-or-no-p-history'
+`extended-command-history'
 `command-history'
 `history-length'
 `last-command'
@@ -4245,11 +4441,13 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `this-single-command-raw-keys' ;<FUNCTION>\n
 ;; :EMACS-ENVIRONMENT-IN-OUT
 `cannot-suspend'
-`initial-window-system'
-`glyph-table'
 `charset-list'
-`keyboard-type'
 `global-map'
+`glyph-table'
+`initial-window-system'
+`interprogram-cut-function'
+`interprogram-paste-function'
+`keyboard-type'
 `null-device'\n
 ;; :EMACS-BUILD
 `preloaded-file-list'
@@ -4261,14 +4459,11 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `system-configuration'\n
 ;; :EMACS-BUILD-PATH-DIR-FILE
 `build-files'
-`configure-info-directory'
-`data-directory'
-`doc-directory'
 `exec-directory'
 `source-directory'
-`installation-directory'
-`internal-doc-file-name'\n
+`installation-directory'\n
 ;; :EMACS-ENVIRONMENT-MON-LOCAL
+`mon-help-buffer-spc-*DOC*'
 `mon-get-env-vars-strings'
 `mon-get-env-vars-symbols'
 `mon-get-env-vars-emacs'
@@ -4549,7 +4744,10 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `modify-category-entry'
 `set-category-table'
 `standard-category-table'\n
-;; :SYNTAX-PARSING
+;; :SYNTAX-PARSING-FUNCTIONS
+`beginning-of-defun'
+`beginning-of-defun-raw'
+`end-of-defun'
 `parse-partial-sexp'
 `parse-sexp-lookup-properties'
 `syntax-ppss'
@@ -4560,22 +4758,28 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `syntax-ppss-flush-cache'
 `syntax-ppss-stats'
 `syntax-ppss-toplevel-pos'\n
+;; :SYNTAX-PARSING-VARIABLES
+`defun-prompt-regexp'
+`end-of-defun-function'
+`beginning-of-defun-function'
+`open-paren-in-column-0-is-defun-start'
+`parse-sexp-ignore-comments'
+`syntax-begin-function'
+`syntax-ppss-last'
+`syntax-ppss-max-span'
+`syntax-ppss-stats'
+`font-lock-beginning-of-syntax-function'
+`font-lock-syntactic-keywords'\n
 ;; :SYNTAX-TABLES
 `c-mode-syntax-table'
 `emacs-lisp-mode-syntax-table'  ;<VARIABLE> 
 `standard-syntax-table'         ;<FUNCTION> 
 `text-mode-syntax-table'\n
-;; :SYNTAX-VARIABLES 
+;; :SYNTAX-VARIABLES
 `before-change-functions'
-`font-lock-beginning-of-syntax-function'
-`font-lock-syntactic-keywords'
 `multibyte-syntax-as-symbol'
-`parse-sexp-ignore-comments'
-`syntax-begin-function'
-`syntax-ppss-last'
-`syntax-ppss-max-span'
-`syntax-ppss-stats'\n
 ;; :SYNTAX-PROPERTY
+`doc-string-elt`              ;<PROPERTY>
 `syntax-table`                ;<PROPERTY>
 `text-clone-syntax`           ;<PROPERTY>\n
 ;; :SYNTAX-MON-LOCAL
@@ -4636,6 +4840,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `map-query-replace-regexp'
 `filter-buffer-substring'\n
 ;; :SEARCH-STRINGS
+`string-prefix-p'
 `compare-strings'
 `string-match'           ; :SEE-ALSO `posix-string-match'
 `string-match-p'
@@ -4643,7 +4848,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `string='\n
 ;; :SEARCH-CHARS
 `search-unencodable-char'
-`find-multibyte-characters'
+`find-multibyte-characters'\n
 ;; :SEARCH-MODIFY
 `regexp-opt'
 `regexp-opt-depth'
@@ -4671,7 +4876,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `tags-search'
 `tags-query-replace'\n
 ;; :SEARCH-COUNT
-`how-many'
+`how-many'\n
 ;; :SEARCH-VARIABLES
 `buffer-substring-filters'
 `search-spaces-regexp'
@@ -4857,7 +5062,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `help-mode-hook'
 `lisp-mode-hook'
 `text-mode-hook'
-`view-mode-hook'
+`view-mode-hook'\n
 :SEE-ALSO .\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
@@ -4875,31 +5080,40 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
   "List of functions related to files and directories.\n
 :SEE info node `(elisp)Files'\n
 ;; :FILE-DIRECTORY-ACTION
+`access-file'
+`byte-compile-file'
 `cd'
 `cd-absolute'
-`browse-url-of-file'
-`byte-compile-file'
 `confirm-nonexistent-file-or-buffer'
 `copy-file'
 `file-local-copy'
 `insert-file'
 `load-file'
 `make-temp-file'
+`make-symbolic-link'
 `process-file'
 `start-file-process'
-`url-insert-file-contents'
 `view-file'\n
 ;; FILE-DIRECTORY-ACTION-DESTRUCTIVE
 `append-to-file'
-`clear-visited-file-modtime'
 `delete-file'
 `make-directory'
 `rename-file'
-`set-file-modes'
-`set-visited-file-modtime'
-`set-visited-file-name'
 `with-temp-file'
 `write-file'\n
+;; :FILE-DIR-SETTERS
+`set-buffer-file-coding-system'
+`set-file-name-coding-system'
+`set-default-file-modes'
+`set-file-modes'
+`set-file-times'
+`set-visited-file-modtime'
+`set-visited-file-name'\n
+;; :FILE-DIR-MODTIME
+`set-visited-file-modtime'
+`visited-file-modtime'
+`verify-visited-file-modtime'
+`clear-visited-file-modtime'\n
 ;; :FILE-DIRECTORY-INSPECT
 `directory-files'
 `directory-files-and-attributes'
@@ -4922,6 +5136,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `file-modes-symbolic-to-number'
 `recode-file-name'
 `substitute-in-file-name'
+`unix-sync'
 `unhandled-file-name-directory'\n
 ;; :FILE-DIRECTORY-NAME-INSPECT
 `buffer-file-name'                  ; :NOTE Also a <VARIABLE>
@@ -5003,6 +5218,14 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `after-find-file'
 `recover-file'
 `recover-this-file'\n
+;; :FILE-DIRECTORY-URL
+`browse-url-of-file'
+`url-file-directory'
+`url-file-extension'
+`url-file-nondirectory'
+`url-generate-unique-filename'
+`url-make-private-file'
+`url-insert-file-contents'\n
 ;; :FILE-DIRECTORY-VARIABLES
 `add-log-buffer-file-name-function'
 `buffer-file-number'
@@ -5038,8 +5261,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `mon-insert-file-in-dirs'
 `mon-insert-naf-file-in-dirs'
 `mon-toggle-dired-dwim-target'\n
-:SEE-ALSO `mon-help-file-dir-functions-usage'
-`mon-help-process-functions'.\n►►►"
+:SEE-ALSO `mon-help-file-dir-functions-usage', `mon-help-process-functions'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-file-dir-functions :insertp t)
@@ -5252,6 +5474,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `start-process-shell-command'
 `stop-process'\n
 ;; :PROCESS-INSPECTION
+`getenv-internal'
 `process-exit-status'
 `process-id'
 `process-filter'
@@ -5288,7 +5511,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `mon-get-sys-proc-list'
 `mon-insert-sys-proc-list'\n
 :SEE :FILE process.c
-:SEE info node `(elisp)Processes'
+:SEE info node `(elisp)Processes'\n
 :SEE-ALSO `mon-help-make-network-process', `mon-help-server-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
@@ -5363,7 +5586,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
  \(featurep 'make-network-process :oobinline\)
  \(featurep 'make-network-process :priority\)
  \(featurep 'make-network-process :reuseaddr\)\n
-:SEE :FILE process.c
+:SEE :FILE process.c\n
 :SEE-ALSO `mon-help-make-network-process', `mon-help-server-functions'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
@@ -5418,7 +5641,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `server-unquote-arg'
 `server-unselect-display'
 `server-visit-files'
-`server-with-environment'
+`server-with-environment'\n
 ;; :SERVER-VARIABLES
 `server-auth-dir'
 `server-buffer'
@@ -5478,8 +5701,15 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `rename-buffer'
 `revert-buffer'
 `save-buffer'
+`save-current-buffer'
 `unlock-buffer'
 `view-buffer'\n
+;; :BUFFER-ACTIONS-SETTERS
+`set-buffer'
+`set-buffer-auto-saved'
+`set-buffer-major-mode'
+`set-buffer-multibyte'
+`set-buffer-modified-p'\n
 ;; :BUFFER-ACTIONS-MOVEMENT
 `barf-if-buffer-read-only'
 `bury-buffer'
@@ -5500,7 +5730,6 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `replace-buffer-in-windows'
 `set-buffer'
 `switch-to-buffer'
-`switch-to-buffer'
 `switch-to-buffer-other-frame'
 `switch-to-buffer-other-window'
 `unbury-buffer'
@@ -5514,6 +5743,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `list-buffers'
 `save-some-buffers'\n
 ;; :BUFFER-CONTENTS
+`compare-buffer-substrings'
 `insert-buffer'
 `prepend-to-buffer'
 `buffer-string'
@@ -5527,10 +5757,11 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `copy-to-buffer'
 `with-temp-buffer'
 `with-output-to-temp-buffer'
-\(read \(get-buffer \"SOME-BUFFER-NAME\"\)\)\n
+`get-buffer'              ; :NOTE \(read \(get-buffer \"SOME-BUFFER-NAME\"\)\)\n
 ;; :BUFFER-EXAMINATION
 `buffer-base-buffer'
 `buffer-chars-modified-tick'
+`buffer-modified-tick'
 `buffer-disable-undo'
 `buffer-enable-undo'
 `buffer-face-mode'
@@ -5540,8 +5771,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `buffer-has-markers-at'
 `buffer-local-value'
 `buffer-local-variables'
-`buffer-modified-tick'
 `buffer-name'
+`overlay-buffer'
 `buffer-size'
 `current-buffer'
 `gap-position'
@@ -5552,12 +5783,13 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `internal-complete-buffer-except'
 `internal-complete-buffer'
 `list-buffers-directory'
+`verify-visited-file-modtime'
 `window-buffer'\n
 ;; :BUFFER-FORMAT-AND-CODING
 `format-encode-buffer'
 `format-decode-buffer'
 `buffer-file-format'              ;<VARIABLE>
-`revert-buffer-with-coding-system'
+`revert-buffer-with-coding-system'\n
 ;; :BUFFER-HOOKS
 `buffer-save-hook'
 `kill-buffer-hook'
@@ -5581,7 +5813,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `point-min'
 `point-max'
 `point-max-marker'
-`point-min-marker'
+`point-min-marker'\n
 ;; :BUFFER-TEMPORARY
 `with-temp-buffer'
 `with-output-to-temp-buffer'
@@ -5596,6 +5828,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `frame-or-buffer-changed-p'
 `local-variable-p'         :SEE info node `(elisp)Creating Buffer-Local'
 `local-variable-if-set-p'
+`restore-buffer-modified-p'
 `set-buffer-modified-p'\n
 ;; :BUFFER-WINDOWS
 `display-buffer'
@@ -5868,7 +6101,7 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 ;; :WINDOW-VARIABLES-HOOKS
 `window-configuration-change-hook' ;<VARIABLE>
 `window-setup-hook'                ;<VARIABLE>\n
-:SEE :FILE lisp/window.el src/window.c
+:SEE :FILE lisp/window.el src/window.c\n
 :SEE-ALSO `mon-help-frame-functions', `mon-help-buffer-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
@@ -6358,51 +6591,6 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;;; :CREATED <Timestamp: #{2010-03-08T13:28:30-05:00Z}#{10101} - by MON KEY>
 (defun mon-help-sequence-functions (&optional insertp intrp)
   "List of functions related to sequences list, alist, array, vector, ring, etc.\n
-:SEE info node `(elisp)Sequences Arrays Vectors'.
-:SEE info node (elisp)Lists'.\n
-;; :SEQUENCE-GENERAL
-`atom'
-`elt'
-`nth'
-`copy-sequence'
-`length'
-`safe-length'
-`sequencep'
-`append'
-`concat'\n
-;; :SEQUENCE-CONS
-`string-to-list'
-`car-safe'
-`cdr-safe'
-`nlistp'
-`listp'
-`null'
-`nthcdr'
-`last'
-`butlast'
-`nbutlast'
-`list'
-`make-list'
-`reverse'
-`nreverse'
-`copy-tree'
-`number-sequence'
-`setcar'
-`setcdr'
-`pop'
-`push'
-`nconc'
-`add-to-list'
-`add-to-ordered-list'
-`delq'
-`remq'
-`delete'
-`delete-dups'
-`sort'
-`memq'
-`memql'
-`member'
-`member-ignore-case'\n
 ;; :SEQUENCE-ALIST
 `assoc'
 `rassoc'
@@ -6426,20 +6614,77 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `lookup-nested-alist'
 `set-nested-alist'
 `nested-alist-p'\n
-;; :SEQUENCE-VECTOR
-`describe-vector'
-`vconcat'
-`vectorp'
-`string-to-vector'
-`make-vector'\n
-;; :SEQUENCE-BOOL-VECTOR
-`make-bool-vector'
-`bool-vector-p'\n
-;; :SEQUENCE-ARRAY
+;; :SEQUENCE-ARRAY  :NOTE char-tables are arrays :SEE `mon-help-char-functions'
 `arrayp'
 `aset'
 `aref'
-`fillarray'\n
+`fillarray'
+;; :SEQUENCE-STRING :NOTE A string is an array so most will work w/ arrays too.
+`compare-strings'
+`string-equal'
+`concat'
+`subst-char-in-string'
+`string-prefix-p'
+`substring'
+`string-to-vector'
+`string-to-list'\n
+;; :SEQUENCE-BUILD
+`cons'
+`copy-sequence'
+`copy-tree'
+`append'
+`list'
+`make-list'\n
+;; :SEQUCENCE-DESTROY
+`butlast'
+`nbutlast'
+`pop'
+`delq'
+`remq'
+`remove'
+`delete'
+`delete-dups'
+;; :SEQUENCE-MAP
+`do'
+`dolist'
+`dotimes'
+`mapatoms'
+`mapcar'
+`mapconcat'
+`mapc'\n
+;; :SEQUENCE-MEMBER
+`memq'
+`memql'
+`member'
+`member-ignore-case'\n
+;; :SEQUENCE-MODIFY
+`setcar'
+`setcdr'
+`push'
+`nconc'
+`add-to-list'\n
+;; :SEQUENCE-ORDER
+`length'
+`safe-length'
+`nthcdr'
+`nreverse'
+`reverse'
+`add-to-ordered-list'
+`sort'
+`number-sequence'\n
+;; :SEQUENCE-PLACE
+`elt'
+`nth'
+`car-safe'
+`cdr-safe'
+`last'\n
+;; :SEQUENCE-PREDICATE
+`consp'
+`atom'
+`sequencep'
+`null'
+`nlistp'
+`listp'\n
 ;; :SEQUENCE-RING
 `make-ring'
 `ring-p'
@@ -6452,6 +6697,22 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `ring-insert'
 `ring-remove'
 `ring-insert-at-beginning'\n
+;; :SEQUENCE-STRING
+`string-bytes'
+`string-to-list'
+`concat'\n
+;; :SEQUENCE-VECTOR
+`vector'
+`describe-vector'
+`vconcat'
+`vectorp'
+`string-to-vector'
+`make-vector'\n
+;; :SEQUENCE-BOOL-VECTOR
+`make-bool-vector'
+`bool-vector-p'\n
+:SEE info node `(elisp)Sequences Arrays Vectors'
+:SEE info node (elisp)Lists'.\n
 :SEE-ALSO `mon-help-hash-functions', `mon-help-plist-functions',
 `mon-help-plist-properties', `mon-help-type-predicates'.\n►►►"
 ;;; caar, cadr, cdar, cddr 
@@ -6494,12 +6755,14 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `read-key-sequence'
 `read-key-sequence-vector'
 `read-kbd-macro'
+`redirect-frame-focus'
 `substitute-command-keys'
 `substitute-key-definition'     ;; :NOTE Undocumented optional arg PREFIX
 `substitute-key-definition-key'
 `this-command-keys'
-`this-command-keys-vector'\n
+`this-command-keys-vector'
 ;; :KEY-FUNCTIONS-EVENT-MODIFIER
+`internal-event-symbol-parse-modifiers'
 `event-apply-modifier'
 `event-apply-control-modifier'
 `event-apply-super-modifier'
@@ -6507,12 +6770,22 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `event-apply-alt-modifier'  
 `event-apply-meta-modifier'
 `event-apply-hyper-modifier'\n
+;; :KEY-FUNCTIONS-UNIVERSAL-ARGS
+`negative-argument'
+`digit-argument'
+`universal-argument'
+`universal-argument-other-key'
+`universal-argument-minus'
+`universal-argument-more'\n
 ;; :KEY-FUNCTIONS-STATE
-`this-command-keys-vector'
-`this-command-keys'
 `discard-input'
 `input-pending-p'
 `keyboard-quit'
+`open-dribble-file'
+`recent-keys'
+`reset-this-command-lengths'
+`this-command-keys-vector'
+`this-command-keys'
 `while-no-input'
 `with-local-quit'\n
 ;; :KEY-VARIABLES-STATE
@@ -6888,6 +7161,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
                                        | :ENVIRONMENT |      
                               _________|______________|_____ 
                              |                              |
+                             | `read-expression-history'    |
                              | `read-coding-system'         |
                              | `read-non-nil-coding-system' |
                              | `read-input-method-name'     |
@@ -6918,6 +7192,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 ;; :PRINT-FUNCTIONS      :SEE info node `(elisp)Output Functions'
 `eval-print-last-sexp'
 `format'
+`format-time-string'
 `message'
 `prin1'
 `prin1-char'
@@ -6930,7 +7205,14 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `pp-to-string'
 `terpri'
 `with-output-to-string'
-`write-char'\n
+`write-char'
+`write-region'\n
+;; :PRINT-FUNCTIONS-IO
+`message-box'
+`message-or-box'
+`external-debugging-output'
+`redirect-debugging-output'
+`send-string-to-terminal'\n
 ;; :PRINT-PRETTY-FUNCTIONS.lisp.emacs-lisp.pp
 `pp'
 `pp-buffer'
@@ -6947,6 +7229,7 @@ A generic form can be interrogated with `eieio-generic-form':\n
 `eval-expression-print-length'
 `eval-expression-print-level'
 `float-output-format'
+`use-dialog-box'
 `printable-chars'
 `print-charset-text-property'
 `print-circle'
@@ -7126,36 +7409,147 @@ Unless indicated otherwise, following list enumerates properties.
 When a property-name is not also symbol-name it is distinguished as:\n
   `<PROPERTY-NAMM>` vs `<SYMBOL-NAME>'\n
 ;; :PLIST-PROPERTIES
-`buffer-access-fontified-property' ; :NOTE Also a <FUNCTION>
-`lisp-indent-function'\n
+`buffer-access-fontified-property' ; :NOTE Also a <FUNCTION>\n
+`lisp-indent-function'
+;; :PLIST-PROPERTIES-VARIABLE
+`permanent-local`
+`saved-value`
+`saved-variable-comment`
+`safe-local-variable`
+`risky-local-variable`
+`variable-interactive`
+`variable-comment`\n
+;; :PLIST-PROPERTIES-CUSTOM
+`custom-get`
+`custom-set`
+`custom-autoload`
+`custom-dependencies`
+`custom-group`
+`custom-links`
+`custom-loads`
+`custom-mode-group`
+`custom-options`
+`custom-prefix`
+`custom-requests`
+`custom-tag`
+`custom-type`
+`custom-version`
+`customized-value`
+`custom-package-version`
+`force-value`
+`standard-value`\n
+;; :PLIST-PROPERTIES-THEME
+`theme-documentation`
+`theme-face`
+`theme-feature`
+`theme-settings`
+`theme-value`\n
 ;; :PLIST-PROPERTIES-DOC
+`documentation`
 `doc-string-elt`
 `lisp-doc-string-elt-property'
 `char-code-property-documentation`
 `face-documentation'               ; :NOTE Also a <FUNCTION>
+`group-documentation`
 `function-documentation`
 `theme-documentation`
-`variable-documentation`\n
+`theme-settings`
+`variable-documentation`
+`lisp-doc-string-elt-property'     ;<VARIABLE>\n
 ;; :PLIST-PROPERTIES-FACE
 `customized-face`
+`face-comment`
 `face-alias`
 `face-defface-spec`
+`face-override-spec`
+`face-modified`
 `face-documentation'               ; :NOTE Also a <FUNCTION>
-`saved-face`\n
+`obsolete-face`
+`saved-face`
+`saved-face-comment`
+`theme-face`\n
+;; :PLIST-PROPERTIES-KEYS
+`:advertised-binding`
+`suppress-keymap`\n
+;; :PLIST-PROPERTIES-EIEIO
+`protection`
+`eieio-class-definition`
+`eieio-method-obarray`
+`eieio-method-tree`\n
+;; :PLIST-PROPERTIES-MENU
+`menu-enable`
+`menu-prop`\n
+;; :PLIST-PROPERTIES-MODE
+`:minor-mode-function`
+`definition-name`
+`mode-class`
+`derived-mode-unmerged`\n
+;; :PLIST-PROPERTIES-BYTE-COMPILE
+`byte-code-vector`
+`byte-compile`
+`byte-compile-format-like`
+`byte-compile-negated-op`
+`byte-hunk-handler`
+`byte-obsolete-info`
+`byte-obsolete-variable`
+`byte-opcode-invert`
+`byte-optimizer`
+`byte-stack+-info`\n
+;; :PLIST-PROPERTIES-ADVICE
+`ad-advice-info`
+`ad-subr-arglist`\n
+;; :PLIST-THING-AT-POINT
+`beginning-op`
+`bounds-of-thing-at-point`
+`end-op`
+`thing-at-point`\n
+;; :PLIST-PROPERTIES-LISP
+`cl-deftype-handler`
+`disabled`
+`find-tag-default-function`
+`lisp-indent-function`
+`lisp-indent-hook`
+`list-order`
+`no-self-insert`
+`pure`
+`safe-function` 
+`setf-method`
+`side-effect-free`\n
+;; :PLIST-PROPERTIES-EDEBUG
+`edebug`
+`edebug-coverage`
+`edebug-dependents`
+`edebug-form-spec`
+`edebug-freq-count`
+`edebug-initial-mode`
+`edebug-on-entry`\n
 ;; :PLIST-PROPERTIES-OVERLAY
 `after-string`
 `before-string`
 `evaporate`
 `isearch-open-invisible`
 `isearch-open-invisible-temporary`
+`overlay-arrow-string`
 `priority`
 `window`\n
+;; :PLIST-PROPERTIES-BUFFER
+`no-clone-indirect`\n
 ;; :PLIST-PROPERTIES-SYNTAX
 `syntax-table'                     ; :NOTE Also a <FUNCTION>
 `text-clone-syntax`\n
+;; :PLIST-PROPERTIES-EVENT
+`event-kind`\n
+;; :PLIST-PROPERTIES-WIDGET
+`pr-widget-list`
+`pr-widget`
+`widget-keyword-printer`
+`widget-type`
+`widget-documentation`\n
 ;; :PLIST-PROPERTIES-CHAR
+`ascii-character`
 `bidi-class`
 `canonical-combining-class`
+`char-table-extra-slots`
 `char-code-property-documentation`
 `composition`
 `decimal-digit-value`
@@ -7169,13 +7563,7 @@ When a property-name is not also symbol-name it is distinguished as:\n
 `numeric-value`  
 `old-name`
 `titlecase`
-`uppercase`
-`char-code-property-description'
-`compose-chars'
-`compose-string'
-`compose-string-internal'
-`decompose-string'
-`char-code-property-alist'         ;<VARIABLE>\n
+`uppercase`\n
 ;; :PLIST-PROPERTIES-ERROR
 `error'                               :SEE info node `(elisp)Standard Errors'
        <PLIST> (symbol-plist 'error)
@@ -7408,7 +7796,7 @@ It has the following format:\n
 | `saved-face'                | |________________________________________|
 |                             | |                                        |
 |_____________________________| | :inverse-video - <BOOLEAN>             |
-                                |  { t - yes                             |
+                                |  { t   - yes                           |
                                 |    nil - no }                          |
  _____________________________  |________________________________________|
 |                             | |                                        |
@@ -7422,9 +7810,21 @@ It has the following format:\n
 | `read-face-and-attribute'   | |  nil - no stipple }                    |
 |_____________________________| |________________________________________|
                                 |                                        |
-                                | :inherit - [<STRING>|<LIST>]           |
-                                |  { face name, or list of face names }  |
-                                |______________________________________73^\n
+                                | :inherit - [ <STRING> | <LIST> ]       |
+ _____________________________  |  { face name, or list of face names }  |
+|                             | |________________________________________|
+|       :FACE-INTERNAL        |                                           
+|_____________________________|_________                                  
+|                                       |                                 
+| `internal-face-x-get-resource'        |                                 
+| `internal-lisp-face-empty-p'          |                                 
+| `internal-lisp-face-equal-p'          |                                 
+| `internal-lisp-face-p'                |                                 
+| `internal-make-lisp-face'             |                                 
+| `internal-merge-in-global-face'       |                                 
+| `internal-get-lisp-face-attribute'    |                                 
+| `internal-lisp-face-attribute-values' |                                 
+|_______________________________________|                              73^\n
 :SEE-ALSO `mon-help-faces-basic', `mon-help-font-lock', `mon-help-faces-themes',
 `mon-help-color-chart', `mon-help-custom-keywords', `mon-help-widgets',
 `mon-help-easy-menu', `mon-help-plist-functions', `mon-help-plist-properties'
@@ -7801,39 +8201,40 @@ cases of text, and how to highlight those cases:\n
     ________________________          | `text-properties-at'                   |
    |                        |         | `text-property-any'                    |
    | :TEXT-PROPERTY-SETTERS |         | `text-property-not-all'                |
- __|________________________|_        |________________________________________|  
-|                             |              __________________________           
-| `propertize'                |             |                          |          
-| `add-text-properties'       |             | :TEXT-PROPERTY-VARIABLES |          
-| `put-text-property'         |           __|__________________________|_______   
-| `set-text-properties'       |          |                                     |  
-| `with-silent-modifications' |          |  `buffer-access-fontified-property' |  
-|_____________________________|          |  `buffer-access-fontify-functions'  |  
-     _______________________             |  `buffer-substring-filters'         |  
-    |                       |            |  `char-property-alias-alist'        |  
-    | :TEXT-PROPERTY-FIELDS |            |  `default-text-properties'          |  
- ___|_______________________|__          |  `inhibit-read-only'                |  
-|                              |         |  `minibuffer-allow-text-properties' |  
-| `constrain-to-field'         |         |  `text-property-default-nonsticky'  |  
-| `delete-field'               |         |  `show-help-function'               |  
-| `field-beginning'            |         |  `use-hard-newlines'                |  
-| `field-end'                  |         |_____________________________________|  
-| `field-string'               |             _________________________________    
-| `field-string-no-properties' |            |                                 |   
-| `inhibit-field-text-motion'  |            | :TEXT-PROPERTY-STICKY-VARIABLES |   
-|______________________________|          __|_________________________________|   
-        __________________________       |                                     |  
-       |                          |      | `text-property-default-nonsticky'   |  
-       | :TEXT-PROPERTY-FONT-LOCK |      | `buffer-access-fontified-property'  |  
- ______|__________________________|_     |_____________________________________|  
-|                                   |          _______________________            
-| `font-lock-append-text-property'  |         |                       |           
-| `font-lock-extra-managed-props'   |         | :TEXT-PROPERTY-STICKY |           
-| `font-lock-fillin-text-property'  |     ____|_______________________|________   
-| `font-lock-prepend-text-property' |    |                                     |  
-|___________________________________|    | `insert-and-inherit`                |  
-   _________________________             | `insert-before-markers-and-inherit` |  
-  |                         |            |___________________________________79^
+ __|________________________|_        |________________________________________|
+|                             |              __________________________         
+| `propertize'                |             |                          |        
+| `add-text-properties'       |             | :TEXT-PROPERTY-VARIABLES |        
+| `put-text-property'         |           __|__________________________|_______ 
+| `set-text-properties'       |          |                                     |
+| `with-silent-modifications' |          |  `buffer-access-fontified-property' |
+|_____________________________|          |  `buffer-access-fontify-functions'  |
+     _______________________             |  `buffer-substring-filters'         |
+    |                       |            |  `char-property-alias-alist'        |
+    | :TEXT-PROPERTY-FIELDS |            |  `default-text-properties'          |
+ ___|_______________________|__          |  `inhibit-read-only'                |
+|                              |         |  `minibuffer-allow-text-properties' |
+| `constrain-to-field'         |         |  `text-property-default-nonsticky'  |
+| `delete-field'               |         |  `show-help-function'               |
+| `field-beginning'            |         |  `use-hard-newlines'                |
+| `field-end'                  |         |_____________________________________|
+| `field-string'               |             _________________________________  
+| `field-string-no-properties' |            |                                 | 
+| `inhibit-field-text-motion'  |            | :TEXT-PROPERTY-STICKY-VARIABLES | 
+|______________________________|          __|_________________________________| 
+        __________________________       |                                     |
+       |                          |      | `text-property-default-nonsticky'   |
+       | :TEXT-PROPERTY-FONT-LOCK |      | `buffer-access-fontified-property'  |
+ ______|__________________________|_     |_____________________________________|
+|                                   |          _______________________          
+| `font-lock-append-text-property'  |         |                       |         
+| `font-lock-extra-managed-props'   |         | :TEXT-PROPERTY-STICKY |         
+| `font-lock-fillin-text-property'  |     ____|_______________________|________ 
+| `font-lock-prepend-text-property' |    |                                     |
+|  `last-sexp-setup-props'          |    | `insert-and-inherit`                |
+|___________________________________|    | `insert-before-markers-and-inherit` |
+   _________________________             |___________________________________79^
+  |                         |            
   | :TEXT-PROPERTY-DESCRIBE |   
  _|_________________________|__ 
 |                              |
@@ -8703,12 +9104,35 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 (defun mon-help-char-functions (&optional insertp intrp)
   "A list of functions and vars related to chars and their properties.\n
 ;; :CHAR-CONVERSION
+`subst-char-in-region'
+`subst-char-in-string'
+`clear-string'
 `char-to-string'
 `get-byte'         
 `multibyte-char-to-unibyte'
 `unibyte-char-to-multibyte'
 `string-to-char'             
 `string-to-multibyte'\n
+;; :CHAR-PREDICATES
+`char-equal'
+`char-displayable-p'
+`char-valid-p'
+`charsetp'
+`char-table-p'
+`characterp'
+`char-or-string-p'
+`buffer-chars-modified-tick'\n
+;; :CHAR-POSITION-MOTION
+`skip-chars-forward'
+`skip-chars-backward'
+`insert-char'
+`get-file-char'
+`backward-char'
+`forward-char'
+`following-char'
+`preceding-char'
+`char-before'
+`char-after'\n
 ;; :CHAR-READERS                    
 `read-char'
 `read-char-exclusive'
@@ -8717,8 +9141,8 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 `read-quoted-char-radix' ;<VARIABLE>
 `quoted-insert'
 `ucs-insert'\n
-;; :CHAR-DESCRIPTORS                
-`characterp'
+;; :CHAR-DESCRIPTORS
+`split-char'
 `max-char'                          
 `text-char-description'     
 `single-key-description'
@@ -8736,6 +9160,7 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 `insert-file-contents-literally'
 `insert-file-literally'\n
 ;; :CHAR-SEARCHING
+`internal-char-font'
 `search-unencodable-char'
 `unencodable-char-position'
 `find-multibyte-characters'
@@ -8754,7 +9179,8 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 `set-char-table-parent'
 `set-char-table-range'
 `set-char-table-extra-slot'
-`build-unicode-category-table'\n
+`build-unicode-category-table'
+`unify-charset'\n
 ;; :CHAR-TABLE-FUNCTIONS-CASE
 `describe-buffer-case-table'
 `get-upcase-table'
@@ -8765,12 +9191,15 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 `set-case-syntax-pair'
 `set-downcase-syntax'
 `set-upcase-syntax'
-`set-standard-case-table'\n
+`set-standard-case-table'
+`with-case-table'\n
 ;; :CHAR-TABLES
+`keyboard-translate-table'
 `composition-function-table'
 `standard-case-table'
 `standard-syntax-table'
 `standard-category-table'
+`translate-region-internal'
 `unicode-category-table'
 `word-combining-categories'
 `word-separating-categories'
@@ -9258,6 +9687,7 @@ And may more generally be represented in Emacs as:\n
 \(eq \(max-char\) \(1- \(expt 2 22\)\)\)\n
 \(eq \(max-char\) \(1- \(lsh \(expt 2 21\) 1\)\)\)\n
 \(multibyte-char-to-unibyte #x3fffff\)\n
+`make-byte-code'\n
 :SEE info node `(elisp)Character Sets'
 :SEE-ALSO `mon-help-char-functions', `mon-help-key-functions',
 `mon-help-binary-representation', `mon-help-char-raw-bytes',
@@ -9338,7 +9768,8 @@ And may more generally be represented in Emacs as:\n
 \(lsh 536870911 29\)                 ;=> -536870912 \(#o4000000000, #x20000000\)\n
 \(eq \(lsh #b11111111111111111111111111111 29\) most-negative-fixnum\)\n
 \(lognot \(lsh #b11111111111111111111111111111 29\)\)\n
-:SEE-ALSO `mon-help-bitwise-functions', `mon-help-char-raw-bytes',
+:SEE-ALSO `make-byte-code', `make-bool-vector',
+`mon-help-bitwise-functions', `mon-help-char-raw-bytes',
 `mon-help-char-functions', `mon-help-char-representation',
 `mon-help-charset-coding-functions', `mon-help-char-composition',
 `mon-help-diacritics', `mon-help-char-ascii', `mon-help-char-iso-8859-1',
@@ -9358,7 +9789,7 @@ And may more generally be represented in Emacs as:\n
 (defun mon-help-bitwise-functions (&optional insertp intrp)
   "list of bitwise operations and truth tables.\n
 :SEE info node `(elisp) Bitwise Operations'\n
-:BITWISE-AND-TABLE -> `logand'
+;; :BITWISE-AND-TABLE -> `logand'
  ___________________________ 
 |        |        |         |
 | :VAL-1 | :VAL-2 | :RESULT |
@@ -9370,8 +9801,7 @@ And may more generally be represented in Emacs as:\n
 |   1    |   1    |    1    | (logand 1 1)
 |________|________|_________|
 
-
-:BITWISE-AND-TABLE -> `logior'
+;; :BITWISE-AND-TABLE -> `logior'
  ___________________________
 |        |        |         |
 | :VAL-1 | :VAL-2 | :RESULT |
@@ -9383,7 +9813,7 @@ And may more generally be represented in Emacs as:\n
 |   1    |    1   |     1   | (logior 1 1)
 |________|________|_________|
 
-:BITWISE-XOR -> `logxor'
+;; :BITWISE-XOR -> `logxor'
  ___________________________
 |        |        |         |
 | :VAL-1 | :VAL-2 | :RESULT |
@@ -9395,7 +9825,7 @@ And may more generally be represented in Emacs as:\n
 |   1    |    1   |     0   | (logxor 1 1)
 |________|________|_________|
 
-:BIT-SHIFT-LEFT -> `lsh'\n
+;; :BIT-SHIFT-LEFT -> `lsh'\n
  (lsh 6 2) => 24  (lsh #b110 #b10)
  (lsh 24 -2) => 6 (lsh #b11000 (lognot #b01))
 
@@ -10079,7 +10509,7 @@ start form. Omissions in the start form follow the normal rules.\n
 The standard also has specifications for weeks of the year and days of the week,
 but these are used so rarely and are aesthetically displeasing so are gracefully
 elided from the presentation.\n
-:SOURCE Erik Naggum's \"The Long, Painful History of Time\"
+:SOURCE Erik Naggum's \"The Long, Painful History of Time\
 :ALIASED-BY `mon-help-time-iso-8601'
 :SEE \(URL `http://naggum.no/lugm-time.html'\).
 :SEE info node `(coreutils)Date input formats'
@@ -10103,10 +10533,37 @@ elided from the presentation.\n
 (defun mon-help-time-functions (&optional insertp intrp)
   "List of functions and variables related to time calculation conversion.\n
 ;; :TIME-FUNCTIONS
-`format-time-string'
+`current-time'
 `current-time-zone'
 `decode-time'
 `encode-time'
+`format-time-string'
+`format-seconds'
+`float-time'
+`seconds-to-time'
+`date-to-day'
+`date-leap-year-p'
+`date-to-time'
+`safe-date-to-time'
+`days-to-time'
+`days-between'
+`time-less-p'
+`time-since'
+`time-subtract'
+`time-add'
+`time-to-day-in-year'
+`time-to-days'
+`url-get-normalized-date'
+`encode-time-value'
+`with-decoded-time-value'\n
+;; :TIME-FUNCTIONS-ISO
+`diary-iso-date-forms'
+`calendar-iso-to-absolute'
+`calendar-iso-from-absolute'
+`calendar-iso-date-string'
+`calendar-iso-print-date'
+`calendar-iso-read-date'
+`diary-iso-date'\n
 ;; :TIMEZONE-FUNCTIONS
 `timezone-time-from-absolute'
 `timezone-time-zone-from-absolute'
@@ -10122,11 +10579,18 @@ elided from the presentation.\n
 `timezone-make-date-sortable'
 `timezone-make-arpa-date'
 `timezone-make-sortable-date'
-`timezone-make-time-string'
+`timezone-make-time-string'\n
 ;; :TIMEZONE-VARIABLES
 `timezone-world-timezones'
-`timezone-months-assoc'
+`timezone-months-assoc'\n
+;; :DATE-VARIABLES
+`diary-european-date-forms'
+`url-monthabbrev-alist'
+`url-weekday-alist'
+`parse-time-months'
+`parse-time-weekdays'\n
 :SEE info node `(coreutils)Date input formats'
+:SEE :FILE calendar/parse-time.el calendar/time-date.el
 :SEE-ALSO `mon-help-CL:LOCAL-TIME', `mon-help-time-functions',
 `mon-help-mon-time-functions'.\n►►►"
 (interactive "i\nP")
@@ -10140,18 +10604,21 @@ elided from the presentation.\n
 ;;; :TEST-ME (apply 'mon-help-time-functions '(t))
 
 ;;; ==============================
+
+
+;;; ==============================
 ;;; :CHANGESET 1850
 ;;; :CREATED <Timestamp: #{2010-06-12T12:10:09-04:00Z}#{10236} - by MON KEY>
 (defun mon-help-mon-time-functions (&optional insertp intrp)
   "List `mon-*' fncns and variables to convert, match, and insert time values.\n
 ;; :MON-TIME-FUNCTIONS
 `mon-get-current-year'
-`mon-format-iso-8601-time',
+`mon-format-iso-8601-time'
 `mon-conv-time-flt-pnt'
-`mon-comp-times-flt-pnt',
+`mon-comp-times-flt-pnt'\n
 ;; MON-TIME-FUNCTION-FILE
 `mon-file-older-than-file-p'
-`mon-get-file-mod-times',
+`mon-get-file-mod-times'\n
 ;; MON-TIME-FUNCTION-STAMP
 `mon-accessed-stamp',
 `mon-accessed-time-stamp'
@@ -10886,7 +11353,7 @@ whatis
 ;; :W32-DISPLAY-FUNCTIONS
 `w32-define-rgb-color'
 `w32-default-color-map'
-`w32-window-exists-p'
+`w32-window-exists-p'\n
 ;; :W32-DISPLAY-VARIABLES
 `w32-strict-painting'
 `w32-enable-palette'
@@ -12735,6 +13202,7 @@ without the surrounding quotes.\n
 
 ;;; ==============================
 ;;; :REQUIRES `mon-check-feature-for-loadtime' <- mon-utils.el
+;;; :CHANGESET 2020 <Timestamp: #{2010-07-31T19:46:37-04:00Z}#{10306} - by MON KEY>y
 ;;; :CREATED <Timestamp: #{2010-02-24T14:22:02-05:00Z}#{10083} - by MON KEY>
 (defun mon-help-utils-loadtime (&optional w-msg-user)
   "Loadtime function to pull in additional libraries after mon-doc-help-utils.\n
@@ -12742,6 +13210,7 @@ Following libraries pulled in by a require statement if present in load-path:\n
  mon-doc-help-pacman mon-doc-help-proprietary\n
 When optional arg W-MSG-USER is non-nil message user that the libraries were
 checked and required when available.\n
+When predicate `IS-MON-SYSTEM-P' returns non-nil evaluate `elint-scan-doc-file'.\n
 SEE-ALSO `mon-bind-nefs-photos-at-loadtime', `mon-bind-cifs-vars-at-loadtime',
 `mon-bind-doc-help-proprietery-vars-at-loadtime',
 `mon-bind-iptables-vars-at-loadtime', `mon-set-register-tags-loadtime',
@@ -12754,8 +13223,10 @@ SEE-ALSO `mon-bind-nefs-photos-at-loadtime', `mon-bind-cifs-vars-at-loadtime',
            ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
            (when (mon-check-feature-for-loadtime 'mon-doc-help-proprietary) (setq w-msg-user t)))
          w-msg-user)
-    (message (concat ":FUNCTION `mon-help-utils-loadtime'" 
-                     "-- evaluated aditional feature checks at loadtime"))))
+    (when (and (intern-soft "IS-MON-SYSTEM-P") (bound-and-true-p IS-MON-SYSTEM-P))
+      (elint-scan-doc-file))
+    (message (concat ":FUNCTION `mon-help-utils-loadtime' " 
+                     "-- evaluated additional feature checks at loadtime"))))
 
 ;;; ==============================
 (provide 'mon-doc-help-utils)
