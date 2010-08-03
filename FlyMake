@@ -421,5 +421,8 @@ RichardRiley: The solution below was from Dave Love on gnu.emacs.help:-
 Something rather similar is used in [NxhtmlMode nXhtml] where (colored) flymake errors are shown in the echo area by default when point enters the flymake error marking.
 nXhtml also adds support for some of the above that are not part of Emacs 23 (like CSS, Javascript and an enhanced version for Java).
 
+[new]
+Has anyone got this to work with tramp (i.e. for remote files)? I've seen something on a mailing list (for example at http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/dda14275ce2b8b02/d58b601f2b3be223) that says "In `flymake-start-syntax-check-process' of flymake.el, `start-process' is called. This does not work on remote hosts. Instead of, `start-file-process' shall be used." but there's no indication a bug report was ever made (AFAICT), what version the problem occured in, or anything useful like that. 
+
 ----
 CategoryProgrammerUtils CategoryModes

@@ -115,6 +115,10 @@ The following is from [[RyanBarrett]]'s blog.[http://snarfed.org/space/emacs_pag
 
 [new]
 Another way is to just enable cua-mode, which gives you this more modern behaviour by default.
+
+[new]
+But be advised that `cua-mode' will change more behaviors than just that.
+
 == Other Scrolling Pages ==
 
 * BufferScrolling -- horizontal scrolling

@@ -139,4 +139,5 @@ If you open a file, turn auto-revert-mode on, and modify it (without saving), th
 
 ----
 CategoryEditing
-
+CategoryFiles
+CategoryUndo

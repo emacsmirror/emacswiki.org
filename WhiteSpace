@@ -746,6 +746,15 @@ I also experience the problem that cursor movement becomes very unresponsive in 
 -- Christoph
 
 [new]
+The slowdown in 12.1 seems to come from the new whitespace-post-command-hook function, which looks like it triggers refontification when moving around in a buffer. I've temporarily overriden the hook by throwing 
+
+    (defun whitespace-post-command-hook() nil) 
+
+into my .emacs.
+
+-- Jeremy
+
+[new]
 I'm using global-whitespace-mode on emacs 23.2.1 but it seems to only work when I open files. If I create a new buffer, or manually change my highlighting mode, whitespace mode no longer has any effect. I need to disable it and re-enable it for it to work.
 I'm also using LineNumbers, and whitespace mode affects the spaces next to the numbers. Is there a way I could disable that?
 

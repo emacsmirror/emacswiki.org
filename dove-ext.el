@@ -158,26 +158,13 @@
 
 (add-hook 'comint-input-filter-functions 'rename-buffer-in-ssh-login)
 
-(setq exitSH nil)
-
-(defun find-exit-cmd(cmd)
-  " "
-  (setq exitSH nil)
-  (if (string-match "exit" cmd)
-      (progn (setq exitSH t)
-	     (message "%s" exitSH)
-	     )
-    )
-)
-
 (defun kill-shell-buffer(process event)
-  " "
+  "kill the shell buffer "
   (kill-buffer (process-buffer process))
 )
 
-(defun kill-shell-buffer-after-exit(text)
-  "kill shell buffer when exit.
-Find message 'Process shell finished' in the output from exit"
+(defun kill-shell-buffer-after-exit()
+  "kill shell buffer when exit."
   (set-process-sentinel (get-buffer-process (current-buffer))
 		      #'kill-shell-buffer)
 )

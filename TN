@@ -1,5 +1,30 @@
 == TN ==
 Gnu-emacs user.
+
+I use Emacs from within Debian, Ubuntu, and Cygwin.
+
+=== Using Emacs from within cygwin ===
+
+<b>Problem:</b> aspell crashes with messages like:
+
+    "^M.cset" could not be opened for reading or does not exist.lib/aspell/
+    Aborted
+
+Characteristic in this kind of error messages is the carry return character &quot;^M&quot;. Maybe, it is not even printed. Then the error messages often look like there is a file name missing. 
+
+<b>Error description:</b> One cause of this error may be that the personal word list file or other configuration files of aspell in the user's home directory have DOS-line ends (CR-LF &quot;carry return&quot;+&quot;line feed&quot;).
+
+The &quot;carry return&quot; is wrongly interpreted by aspell as configuration information. Often it is mistaken as a file name and the corresponding file can naturally not be found.
+
+For example, this error occurs when you switch off the low-level CR-LF conversion of Cygwin. This may cause some trouble in finding the error since at a first glance it has nothing to do with emacs or aspell.
+
+<b>Fix:</b> For each of the configuration files of aspell in your home directory (matching the file pattern .aspell*)
+
+# load it into emacs
+# change End-of-line style to unix by clicking onto &quot;(DOS)&quot; until it changes into &quot;:&quot;; This should mark the file as modified.
+# save the file.
+
+
 == Code-snippets ==
     (defun get-permutation (l1 l2)
     "Given two lists l1 and l2 return a list of integers li such that (`nth' i li)

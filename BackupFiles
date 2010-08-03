@@ -1,0 +1,23 @@
+According to the Emacs manual,
+
+: ''On most operating systems, rewriting a file automatically destroys all
+record of what the file used to contain.  Thus, saving a file from Emacs
+throws away the old contents of the file--or it would, except that
+Emacs carefully copies the old contents to another file, called the
+"backup" file, before actually saving.''
+
+How backups are operated in Emacs is configurable to some degree.
+
+{{{
+(setq
+   backup-by-copying t      ; don't clobber symlinks
+   version-control t        ; use versioned backups
+   delete-old-versions t
+   kept-new-versions 6
+   kept-old-versions 2)
+}}}
+
+See also BackupDirectory and BackupEachSave.
+
+----
+CategoryFiles

@@ -8,6 +8,35 @@ Lisp:dove-ext.el
 
 = Describe the code now =
 
+== matrixSum == 
+
+Calculate matrix statistics by row & column. Then insert result into current buffer.
+Calculation is doing from a predefined shell script named as 'matrixSum'
+
+== come-here ==
+
+Bring content from specific buffer to current buffer. 
+
+== jump ==
+
+Take the command at point, jump to another window and paste it to the point over there.
+
+== some ==
+
+Delete all output from interpreter since the one before the last input. Because comint-delete-output just could not do it for you.
+
+== exitshell ==
+
+Exit from recursive shell logins automatically.
+
+== rename-buffer-in-ssh-login ==
+
+Rename buffer to the destination hostname in ssh login
+
+== kill-shell-buffer-after-exit ==
+
+Kill shell buffer after exit from shell process.
+
 == split-window-4 ==
 
 This function splits frame into 4 windows, like following.

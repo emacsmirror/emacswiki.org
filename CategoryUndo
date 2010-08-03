@@ -11,6 +11,7 @@ In Emacs, '''[::undo]''' means undoing changes to buffers. However, this page in
 * UndoBrowse -- powerful undo system (back/forth/movie/redo/hilight)
 * TrackChanges -- view changes to a file
 * RevertBuffer -- how to refresh the [[buffer]] content without closing and reopening the file
+* BackupFiles -- Let Emacs keep old copies of the file around.
 * UndoTree -- replace Emacs' undo system with one that treats undo history as what it is: a branching tree of changes
 
 == Repeated undos ==
