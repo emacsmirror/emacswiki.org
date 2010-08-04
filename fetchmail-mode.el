@@ -1,6 +1,4 @@
-;;; fetchmail-mode.el        -*- Emacs-Lisp -*-
-;;
-;; Mode for editing .fetchmailrc files
+;;; fetchmail-mode.el --- Mode for editing .fetchmailrc files  -*- Emacs-Lisp -*-
 ;;
 ;; Created:    <Mon Oct 30 20:13:15 EST 2000>
 ;; Time-stamp: <17.02.2001 17:59:43>

@@ -1,32 +1,29 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;; -*- Mode: Emacs-Lisp -*- ;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; irc.el --- A user interface for the Internet Relay Chat
-;; Author          : David C Lawrence           <tale@pawl.rpi.edu>
-;; Created On      : Wed Jun 14 22:22:57 1989
-;; Last Modified By: David C Lawrence
-;; Last Modified On: Tue Feb  6 15:23:31 1990
-;; Update Count    : 6
-;; Status          : Seemingly stable.
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;  Copyright (C) 1989, 1990  David C Lawrence
 
-;;  This program is free software; you can redistribute it and/or modify
-;;  it under the terms of the GNU General Public License version 1
-;;  as published by the Free Software Foundation.
+;; Copyright (C) 1989, 1990  David C Lawrence
 
-;;  This program is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;  GNU General Public License for more details.
+;; Author: David C Lawrence <tale@pawl.rpi.edu>
+;; Created: Wed Jun 14 22:22:57 1989
+;; Modified: Tue Feb  6 15:23:31 1990
 
-;;  You should have received a copy of the GNU General Public License
-;;  along with this program; if not, write to the Free Software
-;;  Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License version 1
+;; as published by the Free Software Foundation.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; if not, write to the Free Software
+;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 
 ;; Comments and/or bug reports about this interface should be directed to:
 ;;     Dave Lawrence          <tale@ai.mit.edu>
 ;;     76 1/2 13th Street     +1 518 273 5385
 ;;     Troy NY 12180          Generally available on IRC as "tale"
-
+ 
 ;; Defined variables
 (provide 'irc)
 
@@ -208,7 +205,7 @@ an irc-do-* symbol.  See also irc-alias-alist and irc-operator-alist.")
 
 (defconst irc-version "IRC-mode Version 2.1Beta"
   "The currently loaded version of irc-mode.")
-
+ 
 ;; keymap
 (or irc-mode-map
     (progn
@@ -256,7 +253,7 @@ an irc-do-* symbol.  See also irc-alias-alist and irc-operator-alist.")
                (lambda (key)
                  (define-key irc-mode-map key 'irc-self-insert)))
               (where-is-internal 'self-insert-command nil nil))))
-
+ 
 ;; filters (mostly irc-parse-*)
 ;; Filtering of server messages from reception to insertion in the buffer
 ;; are all done on this page.  In particular, if a new server message has
@@ -852,7 +849,7 @@ an irc-do-* symbol.  See also irc-alias-alist and irc-operator-alist.")
 (defun irc-pong ()
   ;; it's interactive so it can be bound during testing.
   (interactive) (irc-send (concat "PONG " (system-name))) nil)
-
+ 
 ;;; insertion routines
 ;;; this is what handles the general insertion of text to the IRC buffer
 (defun irc-notice (format &rest args)
@@ -915,7 +912,7 @@ an irc-do-* symbol.  See also irc-alias-alist and irc-operator-alist.")
          (setq line2 (concat (substring line1 (1+ (match-beginning 1))) line2)
                line1 (substring line1 0 (match-beginning 0)))))
   (cons line1 line2))
-
+ 
 ;; simple key functions -- self-insert, tab, destructive backspace
 (defun irc-self-insert (arg)
   "Normally just inserts the typed character in the input region.
@@ -975,7 +972,7 @@ otherwise."
   (if (>= (point) irc-mark) (tab-to-tab-stop)
     (if irc-spacebar-pages (scroll-down 1)
       (ding))))
-
+ 
 ;; top-level -- entry, sentinel and mode
 (defun irc (new-buffer)
   "Enter the Internet Relay Chat conferencing system.
@@ -1122,7 +1119,7 @@ Local keys:
                        irc-last-private    ilp irc-last-invite     ili)))))
          (if (eq (current-buffer) (process-buffer proc))
              (goto-char (point-max))))))
-
+ 
 ;; processing input
 (defun irc-process-input ()
   "If in the input region, parse it for messages and commands.
@@ -1259,7 +1256,7 @@ split(s) will be indicated by \" >>\" to mean that the message is continued."
   (if irc-raw-mode (irc-notice str))
   (send-string (get-buffer-process (current-buffer)) (concat str "\r\n"))
   str)
-
+ 
 ;; sending messages to people
 (defun irc-do-privmsg (str)
   "Usage: /MSG recipient(s) message
@@ -1396,7 +1393,7 @@ but it is provided to make it even easier."
                 send (concat (car send) " >>"))
           (irc-do-msg send))
         (irc-do-msg msg)))))
-
+ 
 ;; /commands for the server
 (defun irc-do-quote (msg)
   "Usage: /QUOTE string
@@ -1816,7 +1813,7 @@ it will have meaning."
                  '("")))
   (if (string= "" server) (irc-notice irc-version))
   (irc-send (concat "VERSION " server)))
-
+ 
 ;; Operator Commands
 (defun irc-do-connect (server)
   "Usage: /CONNECT server [ port ]
@@ -1879,7 +1876,7 @@ Send 'message' to everyone on IRC.  This can only be done by IRC Operators."
       (call-interactively irc-do-wall)
     (if (string< "" msg)
         (irc-send (concat "WALL " msg)))))
-
+ 
 ;; /command just for the client
 (defun irc-do-send (slist)
   "Usage: /SEND [ sendlist | - ]
@@ -2286,7 +2283,7 @@ not appear in the help topics when not an IRC Operator."
                                        (if (assoc match irc-command-alist)
                                            irc-command-alist
                                          irc-operator-alist))))))))))))
-
+ 
 ;; miscellaneous irc-* commands
 (defun irc-truncate-buffer (size)
   ;; Remove as many lines from the beginning of the buffer as is necessary
@@ -2600,7 +2597,7 @@ irc-mode-hook."
           (setq list (cons sub list)))
       (setq beg (match-end 0)))
     (if (/= (length str) beg) (cons (substring str beg) list) list)))
-
+ 
 ;; miscellaneous other commands (usually from other sources)
 
 ;; this makes up for not being able to provide a :test to memq.
@@ -2679,7 +2676,7 @@ After 2 seconds or when a key is typed, erase it."
           (while (< (+ irc-last-stamp irc-time-stamp) irc-total-time)
             (setq irc-last-stamp (+ irc-last-stamp irc-time-stamp)))
           irc-last-stamp)))
-
+ 
 ;; functions for the irc-*-history lists.  in v19 most of this is superceded
 ;; by history.el
 (defun irc-add-to-hist (list str)

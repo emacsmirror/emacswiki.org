@@ -1,6 +1,6 @@
-;;; tagging.el - A global Status bar for emacs
+;;; tagging.el --- A global Status bar for emacs
 ;;*jonathan
-(defconst tagging-version "0.2")
+(defconst tagging-version "0.2a")
 ;; Public Domain
 ;; Author: Conrad Barski, M.D.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>

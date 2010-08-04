@@ -1,6 +1,6 @@
-;; summarye.el -*-emacs-lisp-*- -*- coding:iso-2022-7bit; -*-
-;; list up matched strings from a buffer, and display them in summary buffer
-(defconst se/version "summary-edit Version 2.5.2")
+;;; summarye.el --- list up matched strings from a buffer, and display them in summary buffer
+;;; -*-emacs-lisp-*- -*- coding:iso-2022-7bit; -*-
+(defconst se/version "summary-edit Version 2.5.2a")
 ;; Time-stamp: <narazaki@xingu.cs.cis.nagasaki-u.ac.jp 2005-07-25T09:28:12>
 ;; Author: narazaki@cs.cis.nagasaki-u.ac.jp
 ;; Home Page: http://www.cs.cis.nagasaki-u.ac.jp/~narazaki/index.cgi/resources/summarye.html

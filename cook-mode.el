@@ -1,5 +1,6 @@
-;;; cook-mode.el
-;;; Copyright (C) 2005, Scott Frazer <frazer.scott@gmail.com>
+;;; cook-mode.el --- Major mode for writing cook (a make replacement) files
+
+;; Copyright (C) 2005, Scott Frazer <frazer.scott@gmail.com>
 
 ;; cook-mode.el is free software; you can redistribute it and/or modify it
 ;; under the terms of the GNU General Public License as published by the Free
@@ -23,6 +24,8 @@
 ;; http://www.canb.auug.org.au/~millerp/cook/cook.html
 ;; This mode is just the essentials right now, syntax highlighting and
 ;; indentation.  I'll add more as needed.
+
+;;; Code:
 
 (require 'custom)
 

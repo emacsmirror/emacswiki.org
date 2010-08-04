@@ -1,4 +1,4 @@
-;;; befunge-mode.el
+;;; befunge-mode.el --- An interpreter/debugger for the 2D Befunge programming language
 
 ;; Author: DavidEddyshaw - see http://www.emacswiki.org
 ;; Version: 0.99

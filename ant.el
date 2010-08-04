@@ -1,6 +1,7 @@
-;;; ant.el - A major mode for editing ant files.
+;;; ant.el --- A major mode for editing ant files.
+
 ;; This is free software and in the public domain.
-;; Written by Jorgen Sch‰fer
+;; Written by Jorgen Sch√§fer
 ;; Version: 20040906
 
 ;; This file implements an editing mode for ant files.

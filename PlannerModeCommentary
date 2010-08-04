@@ -89,6 +89,8 @@ I mention this to point that reactivity is something not exclusively associated 
 
 [new] You are correct that this article was written when PlannerMode used EmacsWikiMode. planner-directory is no longer used, but the same idea still applies. The important setting now is the directory associated with the planner project in muse-project-alist.  -- JohnSullivan
 
+[new] $0.02 re deleting:  It may be in the manual, but I would never have come across it there. It's a delightful read and serves to very effectively evangelize PlannerMode, which can't really be done from within it. ;) -- MichaelWilson
+
 
 ----
 

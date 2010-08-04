@@ -1,4 +1,4 @@
-;;; globrep.el
+;;; globrep.el --- Search for and replace strings in multiple files
 ;;
 ;; From gamin@carette.Foo.COM  Fri Jun 27 05:34:38 1997
 ;; Return-Path: <gamin@carette.Foo.COM>
@@ -297,7 +297,7 @@
          (next-command-event)
        (read-event))))
 
-
+ 
 (defun global-replace-lines (&optional rescan)
   "Splice back to their original files the (possibly edited) output of grep.
 This is a type of query-replace in which the original lines (in the
@@ -523,7 +523,7 @@ this way are automatically checked in."
   )
 
 
-
+ 
 (defun g-r-format-vc-comment (&optional text)
   "Prepare a comment that will be used in VC log entries.  Return it as a string.
 Optional argument is the description of the change."
@@ -564,7 +564,7 @@ Second optional argument is the description of the change."
     (change-log-fill-paragraph nil)))
 
 
-
+ 
 (defun global-replace (string replacement &optional rescan)
   "From a grep output buffer, query replace STRING by REPLACEMENT.
 Prefix argument or optional RESCAN forces rescanning of the *compilation*

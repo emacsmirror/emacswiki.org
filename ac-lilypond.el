@@ -1,4 +1,4 @@
-;;; ac-lilypond.el --- 
+;;; ac-lilypond.el --- Set up the use of LilyPond with auto-complete
 
 ;; Copyright (C) 2009  Shelagh Manton <shelagh.manton@gmail.com>
 

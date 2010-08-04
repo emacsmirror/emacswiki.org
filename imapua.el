@@ -1,48 +1,48 @@
-;;; a purely IMAP based email client for EMACS
-;;; Copyright (C) 2001, 2002 Tapsell-Ferrier Limited
+;;; imapua.el --- a purely IMAP based email client for EMACS
 
-;;; Author: Nic Ferrier <nferrier@tapsellferrier.co.uk>
-;;; Keywords: mail
-;;; Version 0.5
+;; Copyright (C) 2001, 2002 Tapsell-Ferrier Limited
 
-;;; This file is NOT part of GNU Emacs.
+;; Author: Nic Ferrier <nferrier@tapsellferrier.co.uk>
+;; Keywords: mail
+;; Version 0.5a
 
-;;; COPYRIGHT NOTICE
+;; This file is NOT part of GNU Emacs.
 
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 2, or (at your option)
-;;; any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to the
-;;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
-;;; Boston, MA 02111-1307, USA.
+;; This program is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+;;
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+;;
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to the
+;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
+;; Boston, MA 02111-1307, USA.
 
+;;; Commentary:
 
-;;; Commentary
-;;; IMAPUA is an alternative to the GNUS news reader for imap based mail stores.
-;;; It offers a UI which might be more intuitive to regular IMAP users than
-;;; the GNUs UI.
-;;;
-;;; Most things that you want to do with a mailer are pretty much there but most
-;;; need more polishing. Here's a brief feature list:
-;;;
-;;; - folder creation
-;;; - folder deletion
-;;; - open a message
-;;; - delete a message
-;;; - purge a folder
-;;; - move a message
-;;;
-;;; If you have any comments or requests please send them to Nic Ferrier by
-;;; emailing: nferrier@tapsellferrier.co.uk
+;; IMAPUA is an alternative to the GNUS news reader for imap based mail stores.
+;; It offers a UI which might be more intuitive to regular IMAP users than
+;; the GNUs UI.
+;;
+;; Most things that you want to do with a mailer are pretty much there but most
+;; need more polishing. Here's a brief feature list:
+;;
+;; - folder creation
+;; - folder deletion
+;; - open a message
+;; - delete a message
+;; - purge a folder
+;; - move a message
+;;
+;; If you have any comments or requests please send them to Nic Ferrier by
+;; emailing: nferrier@tapsellferrier.co.uk
 
+;;; Code:
 
 ;;all these requires are from GNUS packages
 (require 'imap)

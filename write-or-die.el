@@ -1,7 +1,8 @@
-;;;
-;;
-;; write-or-die.el
-;; version 0.1, 2008-11-20
+;;; write-or-die.el --- deletes word from buffer if you stop typing for to long
+
+;; Version: 0.1a
+
+;;; Commentary:
 ;;
 ;; An emacs version of Dr. Wicked's "Write-or-die" webapp, by Duncan Mortimer <dmorti@gmail.com>
 ;;
@@ -23,10 +24,12 @@
 ;;   default, need to change to the initial background colour. (17/12/2008)
 ;;
 ;; Please let me know if this is useful to you, or if you have any suggestions!
+
+;;; History:
 ;;
-;; CHANGES:
 ;; - 2009-12-09 incorporated Tom Breton's suggested change to word-count (see wiki page)
 
+;;; Code:
 
 (require 'timer)
 

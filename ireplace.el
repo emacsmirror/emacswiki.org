@@ -1,12 +1,3 @@
-;;; Viewing message <bptjbj$1p11jo$1@ID-39741.news.uni-berlin.de>
-
-;; From:Michael Schierl (schierlm-usenet@gmx.de)
-;; Subject:ireplace.el 0.1 -
-;; スレッド柒にはこのメッセ〖ジしかありません。
-;; View: Original Format
-;; Newsgroups:gnu.emacs.sources
-;; Date:2003-11-24 10:40:55 PST
-
 ;;; ireplace.el --- replace functions invoked from isearch-mode
 
 ;; Copyright (C) 2003 Michael Schierl
@@ -14,9 +5,9 @@
 ;; Author: Michael Schierl <schierlm-public@gmx.de>
 ;; Created: 23 November 2003
 ;; Keywords: replace search matching
-;; Version: 0.1
+;; Version: 0.1a
 
-(defconst ireplace-version "0.1"
+(defconst ireplace-version "0.1a"
   "Version of ireplace.")
 
 ;; This file is not part of GNU Emacs.

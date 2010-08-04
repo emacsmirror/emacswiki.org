@@ -1,4 +1,4 @@
-;;; cruisecontrol.el - Talking to a cruisecontrol server with emacs
+;;; cruisecontrol.el --- Talking to a cruisecontrol server with emacs
 (defconst cruisecontrol-version "0.2")
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>

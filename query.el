@@ -1,4 +1,5 @@
-;;; query.el
+;;; query.el --- Functions to query the user
+
 ;----Le laboratoire de robotique de l'Institut de recherche d'Hydro-Quebec-----
 ; 
 ; Nom     : (confirm PROMPT) (query-{string,character} PROMPT CHOICES)
@@ -37,7 +38,7 @@
 
 ;; Send bug reports to the author, <mboyer@ireq-robot.hydro.qc.ca>.
 
-;;; DESCRIPTION
+;;; Commentary:
 ;;;
 ;; This library implements a small number of functions that can be used
 ;; by other programs to prompt the user for answers, with easily
@@ -81,7 +82,9 @@
 ;; - Comment changes to enable upload to http://www.emacswiki.org.
 ;; - Typo fix.
 
-
+;;; Code:
+
+ 
 (require 'cl)
 (provide 'query)
 

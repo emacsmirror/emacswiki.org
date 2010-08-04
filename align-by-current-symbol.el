@@ -1,5 +1,4 @@
-;;; align-by-current-symbol.el
-;;; Align lines containing a symbol according to that symbol.
+;;; align-by-current-symbol.el --- Align lines containing a symbol according to that symbol.
 
 ;; Copyright (c) 2010 Chris Done. All rights reserved.
 

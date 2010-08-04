@@ -1,4 +1,4 @@
-;;; title-time.el ---
+;;; title-time.el --- like display-time but in the title-bar
 
 ;; Copyright (C) 2001, 2002  Free Software Foundation, Inc.
 

@@ -1,11 +1,11 @@
-;;; phonetic.el: Phonetize (Alpha, Bravo, Charlie...) the region
+;;; phonetic.el --- Phonetize (Alpha, Bravo, Charlie...) the region
 
 ;; Copyright (C) 2001 Free Software Foundation, Inc.
 
 ;; Author & Maintainer: Joseph Eydelnant <jey222-AT-mail-DOT-com@NO_SPAM.COM>
 ;; Location: www.emacswiki.org
 ;; Keywords: alphabet phonetic spell 
-;; Version: 0.11
+;; Version: 0.11a
 
 ;; phonetic.el is free software.
 

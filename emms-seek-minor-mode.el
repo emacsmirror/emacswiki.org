@@ -1,4 +1,4 @@
-;;; emacs-seek-minor-mode.el - like emacs-volume-minor-mode except +/- seek
+;;; emacs-seek-minor-mode.el --- like emacs-volume-minor-mode except +/- seek
 
 ;; Copyright (C) 2006, 2007 Free Software Foundation, Inc.
 

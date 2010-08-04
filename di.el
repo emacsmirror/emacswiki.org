@@ -1,5 +1,7 @@
-;;; Simple directory editor for GNU Emacs
+;;; di.el --- Simple directory editor for GNU Emacs
+
 ;; Copyright (C) 1998 Joe Keane <jgk@jgk.org>
+
 ;; This file is public domain.
 
 ;; Suggested usage:

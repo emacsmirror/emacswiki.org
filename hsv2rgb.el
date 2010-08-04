@@ -1,4 +1,4 @@
-;;; hsv2rgb.el
+;;; hsv2rgb.el --- Transformation from HSV to RGB
 ;;;
 ;;; Adrian Aichner <adrian@xemacs.org>, The XEmacs Project, 2005-08-28.
 ;;;

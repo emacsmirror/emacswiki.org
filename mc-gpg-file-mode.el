@@ -1,5 +1,4 @@
-;;; mc-gpg-file-mode.el - automatically gpg decrypt / encrypt file
-;;; when opening / saving files ending with '.gpg'
+;;; mc-gpg-file-mode.el --- automatically gpg decrypt/encrypt files ending with '.gpg'
 
 ;; Copyright (c) 2004 Josef Bauer
 ;;
@@ -29,8 +28,7 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-;; mc-gpg-file-mode.el is free software
-
+;;; Commentary:
 
 ;; Abstract:
 ;; 
@@ -84,6 +82,8 @@
 ;; started to write a generic mode that decrypted the buffer after
 ;; loading. When I found mc-auto-encrypt.el I extended my mode to
 ;; automatically encrypt the file before writing.
+
+;;; Code:
 
 (require 'mailcrypt)
 

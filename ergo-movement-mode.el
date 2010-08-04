@@ -1,19 +1,10 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; ergo-movement-mode.el (2010-01-16)
+;;; ergo-movement-mode.el ---
 ;;
-;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
+;; Copyright (C) 2009-2010 Teemu Likonen
 
-;; DESCRIPTION
-;;
-;; Ergo Movement mode is a global minor mode which defines ergonomic
-;; keybindings for cursor movement. See the function documentation
-;; string below for more information.
-;;
-;; The movement keys are inspired by Xah Lee's Ergoemacs keybindings:
-;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
+;; Author: Teemu Likonen <tlikonen@iki.fi>
+;; Updated: 20100116
 
-;; LICENSE
-;;
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or (at
@@ -27,7 +18,16 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs. If not, see <http://www.gnu.org/licenses/>.
 
-;; INSTALLATION
+;;; Commentary:
+;;
+;; Ergo Movement mode is a global minor mode which defines ergonomic
+;; keybindings for cursor movement. See the function documentation
+;; string below for more information.
+;;
+;; The movement keys are inspired by Xah Lee's Ergoemacs keybindings:
+;; http://xahlee.org/emacs/ergonomic_emacs_keybinding.html
+
+;; Installation:
 ;;
 ;; Put this file somewhere in your load-path. You can add an autoload
 ;; function to your ~/.emacs file
@@ -41,6 +41,7 @@
 ;;     (require 'ergo-movement-mode)
 ;;     (ergo-movement-mode 1)
 
+;;; Code:
 
 (defvar ergo-movement-mode-map
   (let ((map (make-sparse-keymap))

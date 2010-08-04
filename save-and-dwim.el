@@ -1,6 +1,6 @@
-;;; saveAndDwim.el - save, then do something after saving.
-(defconst sdwim-version "0.1")
-;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
+;;; save-and-dwim.el - save, then do something after saving.
+(defconst sdwim-version "0.1a")
+;; Copyright (c) 2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
 
 ;; This file is not part of GNU Emacs.

@@ -1,13 +1,12 @@
-;;;
+;;; plt-completions.el --- Completion for PLT Scheme
 
-;;;
-;;; PLT Completions
+;;; Commentary:
 
-;;; The overall idea behind this is to provide completion
-;;; functionality when using plt scheme.
+;; The overall idea behind this is to provide completion
+;; functionality when using plt scheme.
 ;; The initial plan is similar to what help desk does at the
 ;; moment and load the doc keywords into memory, and then use them to
-;;; help with completion. 
+;; help with completion. 
 
 ;; In the future in an ideal world I would like to either hook
 ;; mzscheme into slime or use a similar technique to hook into a

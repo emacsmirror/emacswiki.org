@@ -1,4 +1,5 @@
-;;; msearch.el
+;;; msearch.el --- Highlight all occurences of mouse highlighted text
+
 ;; Copyright (C) 2010  Tobias.Naehring
 
 ;; Author: Tobias.Naehring <i@tn-home.de>

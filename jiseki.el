@@ -1,4 +1,4 @@
-;;; jiseki.el - Desktop for emacs.
+;;; jiseki.el --- Desktop for emacs.
 (defconst jiseki-version "0.3")
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>

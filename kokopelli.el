@@ -1,6 +1,5 @@
-;;; kokopelli.el -*-mode: Emacs-Lisp; tab-width: 4;-*- .
+;;; kokopelli.el --- List function declaration and jump to it  -*-mode: Emacs-Lisp; tab-width: 4;-*- .
 
-;; List function declaration and jump to it.
 ;; Copyright (C) 2009, Kobayashi Takaaki <kobapan at gmail dot com>
 ;;
 ;; This program is free software; you can redistribute it and/or modify
@@ -19,6 +18,8 @@
 ;;
 ;; Date       : 2009-12-04 00:10:00
 ;; Author     : Kobayashi Takaaki <kobapan at gmail dot com>
+
+;;; Commentary:
 
 ;; Installation
 ;;
@@ -53,8 +54,8 @@
 ;;
 ;;
 
+;;; Code:
 
-;; Code
 (defcustom kokopelli-auto-quit nil
 "t : kokopelli window close when you select a function.
 nil : kokopelli window remains untill you run `q' command.")

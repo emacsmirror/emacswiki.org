@@ -1,53 +1,58 @@
-;;; constraint.el -- a constraint propagation library in elisp
+;;; constraint.el --- a constraint propagation library in elisp
 
-;;; Licence: 
-;;
-;;  Copyright (C) 2002 Akimichi Tatsukawa <akimichi@mbox.co.jp>
-;;
-;;  This file is NOT a part of GNU Emacs.
+;; Copyright (C) 2002 Akimichi Tatsukawa <akimichi@mbox.co.jp>
+
+;; Author: Akimichi Tatsukawa <akimichi@mbox.co.jp>
+;; Keywords: constraint
+;; $Id: constraint.el,v 1.3 2002/04/18 03:04:38 emile Exp emile $
+;; $Date: 2002/04/18 03:04:38 $
+;; $Log: constraint.el,v $
+
+;; This file is NOT a part of GNU Emacs.
 ;;
 ;; This is free software; you can redistribute it and/or
-;;  modify it under the terms of the GNU General Public License as
-;;  published by the Free Software Foundation; either version 2 of
-;;  the License, or (at your option) any later version.
-;;     
-;;  This program is distributed in the hope that it will be useful,
-;;  but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;  MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
-;;  GNU General Public License for more details.
-;;     
-;;  You should have received a copy of the GNU General Public
-;;  License along with this program; if not, write to the Free
-;;  Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
-;;  MA 02111-1307, USA.
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 2 of
+;; the License, or (at your option) any later version.
+;;    
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the
+;; GNU General Public License for more details.
+;;    
+;; You should have received a copy of the GNU General Public
+;; License along with this program; if not, write to the Free
+;; Software Foundation, Inc., 59 Temple Place - Suite 330, Boston,
+;; MA 02111-1307, USA.
 ;;
-;;  Please send suggestions and bug reports to <akimichi@mbox.co.jp>. 
-;;  The latest version of this package should be available at
+;; Please send suggestions and bug reports to <akimichi@mbox.co.jp>. 
+;; The latest version of this package should be available at
 ;;
-;;     <URL:http://akimichi.homeunix.net/~emile/program/elisp/>
-
-;;  Author: Akimichi Tatsukawa <akimichi@mbox.co.jp>
-;;  Keywords: constraint
-;;  $Id: constraint.el,v 1.3 2002/04/18 03:04:38 emile Exp emile $
-;;  $Date: 2002/04/18 03:04:38 $
-;;  $Log: constraint.el,v $
-;;  Revision 1.3  2002/04/18 03:04:38  emile
-;;  assertion using obj-of-class-p is changed to same-class-p.
-;;  function c/ is modified.
-;;
-;;  Revision 1.2  2002/04/04 02:29:05  emile
-;;  celsius-fahrenheit-converter succeeded.
-;;
-;;  Revision 1.1  2002/04/04 02:04:29  emile
-;;  Initial revision
-;;
+;;    <URL:http://akimichi.homeunix.net/~emile/program/elisp/>
 
 ;;; Commentary:
-;;    This package provides a constraint propagation library.
-;;    Please refer to the chapter 3 of the book "Structure and Interpretation of Computer Program"(SICP).
+;;
+;; This package provides a constraint propagation library.
+;; Please refer to the chapter 3 of the book "Structure and Interpretation
+;; of Computer Program"(SICP).
+
 ;;; Usage:
-;;    This package requires cl and eieio packages.
-;;    Following examples descrived at SICP book will help.
+;;
+;; This package requires cl and eieio packages.
+;; Following examples descrived at SICP book will help.
+
+;;; History:
+;;
+;; Revision 1.3  2002/04/18 03:04:38  emile
+;; assertion using obj-of-class-p is changed to same-class-p.
+;; function c/ is modified.
+;;
+;; Revision 1.2  2002/04/04 02:29:05  emile
+;; celsius-fahrenheit-converter succeeded.
+;;
+;; Revision 1.1  2002/04/04 02:04:29  emile
+;; Initial revision
+;;
 
 ; (load-file "/home/emile/develop/elisp/constraint.el")
 ; (setq c (make-connector))
@@ -66,9 +71,6 @@
 ; (make-probe "F" f)
 ; (set-value c 25.0 'user)
 ; (forget-value c 'user)
-
-
-;; TODO:
 
 ;;; Code:
 

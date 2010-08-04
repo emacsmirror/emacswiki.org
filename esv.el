@@ -1,4 +1,4 @@
-;;; esv.el
+;;; esv.el --- Access the ESV Bible text api
 
 ;;; Copyright: (C) 2008, 2009 Charles Sebold
 ;; 
@@ -19,6 +19,8 @@
 ;;
 ;; Latest version should be available at:
 ;;    <URL:http://www.emacswiki.org/cgi-bin/wiki/EsvMode>
+
+;;; Commentary
 ;;
 ;; To use this, you must customize or otherwise set the variable
 ;; ESV-KEY!  Otherwise by default the ESV API handlers will not call out

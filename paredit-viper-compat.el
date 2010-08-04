@@ -1,4 +1,4 @@
-;;; paredit-viper-compat.el: viper-mode modifications to support paredit
+;;; paredit-viper-compat.el --- viper-mode modifications to support paredit
 ;;
 ;; Copyright (c) 2009, Jeremy L. Rayman.
 ;; Author: Jeremy Rayman
@@ -6,6 +6,8 @@
 ;; Site: http://www.emacswiki.org/emacs/ParEditViperCompat
 ;; Status: Beta - not fully tested.
 
+;;; Commentary:
+;;
 ;; This mode allows paredit to work when viper is enabled.
 ;;
 ;; Usage:
@@ -53,10 +55,8 @@
 ;;   not figure out how to use that value correctly in the code below,
 ;;   so ended up hardcoding the values for GNU Emacs ("<delete>" and
 ;;   "<deletechar>").
-;;
-;;
-;;
-;; Copyright (c) 2009, Jeremy L. Rayman
+
+;;; Copyright (c) 2009, Jeremy L. Rayman
 ;;
 ;; Redistribution and use in source and binary forms, with or without
 ;; modification, are permitted provided that the following conditions
@@ -86,6 +86,7 @@
 ;; NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS
 ;; SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
+;;; Code:
 
 (require 'paredit)
 

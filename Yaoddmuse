@@ -491,6 +491,30 @@ It contains some other fixes, too; but I don't use Yaoddmuse that often, and
 when I do, then it's only a small part of its functionality, so it might need some
 testing. Comments welcome (best via e-mail or IRC).
 
+[new]
+
+Please require `thingatpt' for `word-at-point' (and possibly others).  At least
+on 23.2 it is not autoloaded.  Also please fix these errors:
+
+{{{
+In yaoddmuse-url:
+yaoddmuse.el:1702:49:Warning: error called with 0 arguments, but requires 1+
+
+In yaoddmuse-url-diff:
+yaoddmuse.el:1710:49:Warning: error called with 0 arguments, but requires 1+
+
+In yaoddmuse-encode-file:
+yaoddmuse.el:1943:13:Warning: `default-enable-multibyte-characters' is an
+    obsolete variable (as of Emacs 23.2); use enable-multibyte-characters or
+    set-buffer-multibyte instead
+
+In end of data:
+yaoddmuse.el:2061:1:Warning: the function `dired-get-marked-files' is not
+    known to be defined.
+}}}
+
+JonasBernoulli
+
 ----
 CategoryHypermedia
 

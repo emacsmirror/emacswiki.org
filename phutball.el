@@ -1,4 +1,4 @@
-;;; phutball.el
+;;; phutball.el --- play phutball in Emacs
 
 ;; See http://leechuck.de/phutball for further information and documentation
 

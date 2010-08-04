@@ -1,4 +1,3 @@
-;;;
 ;;; snipplr.el --- Emacs interface to snipplr.com
 
 ;; Copyright (C) 2007 by Dale K. Hawkins
@@ -6,7 +5,7 @@
 ;; Emacs Lisp Archive Entry
 ;; Filename: snipplr.el
 ;; Author: Dale K. Hawkins <dkhawk@gmail.com>
-;; Version: 1.0
+;; Version: 1.0a
 ;; Keywords: extensions, tools
 
 ;;{{{ GPL

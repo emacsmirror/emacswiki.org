@@ -1,4 +1,4 @@
-;;; free-tagging.el - A global Status bar for emacs
+;;; free-tagging.el --- A global Status bar for emacs
 ;;*jonathan
 (defconst tagging-version "0.5")
 ;; Public Domain

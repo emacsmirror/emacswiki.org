@@ -1,4 +1,4 @@
-;;; bookmark+.el - Bookmark+: extensions to standard library `bookmark.el'.
+;;; bookmark+.el --- Bookmark+: extensions to standard library `bookmark.el'.
 ;;
 ;; Filename: bookmark+.el
 ;; Description: Bookmark+: extensions to standard library `bookmark.el'.

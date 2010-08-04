@@ -1,6 +1,5 @@
-;;; -*- Mode: Emacs-Lisp ; Coding: utf-8 -*-
-
 ;;; trans-ej.el --- English-Japanese translator using web translation service
+;;; -*- Mode: Emacs-Lisp ; Coding: utf-8 -*-
 
 ;; Copyright (c) 2009, 2010  S. Irie
 
@@ -8,7 +7,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.1.2")
+(defconst trans-ej-version "0.1.2a")
 
 ;; This program is free software.
 

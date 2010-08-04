@@ -1,7 +1,10 @@
-;;; eform.el
+;;; eform.el ---
+;;
 ;; This file is free software.
 ;; Copyright Greg Novak (novak@ucolick.org) December 2004
 ;; Released under the GPL, available at http://www.gnu.org
+
+;;; Commentary:
 ;;
 ;; I wrote this because I was keeping my cycling log as a text file in
 ;; emacs.  I want to do a few simple things like total up the number
@@ -127,6 +130,8 @@
 ;; 3) Figure out how to exclude open/close characters from .* regexp in result field
 ;; 4) Clear all results function
 ;; 5) Bug when total-d-dec starts with a d..
+
+;;; Code:
 
 ;;(require 'gsn)
 

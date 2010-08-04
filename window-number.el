@@ -1,4 +1,4 @@
-;;; window-number.el
+;;; window-number.el --- Select windows by numbers
 
 ;; Copyright (C) 2004 Johann "Myrkraverk" Oskarsson
 ;; <myrkraverk@users.sourceforge.net>
@@ -17,6 +17,8 @@
 ;; License along with this program; if not, write to the Free
 ;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
 ;; MA 02111-1307 USA
+
+;;; Commentary:
 
 ;; Introduction
 ;; ============

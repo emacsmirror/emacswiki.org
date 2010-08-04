@@ -1,4 +1,5 @@
-;;; bencode.el handles serialization of integers, strings, lists, and hash-tables
+;;; bencode.el --- Serialize integers, strings, lists, and hash-tables
+
 ;; Copyright 2007  Alex Schroeder <alex@gnu.org>
 
 ;; This file is not part of GNU Emacs.

@@ -1,9 +1,16 @@
-;;; dos-indent.el
-;; (c) 2009 Matthew Fidler
+;;; dos-indent.el --- Adds indentation to Dos-mode
+
+;; Copyright (C) 2009  Matthew Fidler
+
+;;; Commentary:
+
 ;; Adds indentation to Dos-mode
 ;; Copied and modified from Batch-mode
 ;; Install by adding to load-path, and then:
 ;;   (require 'dos-indent)
+
+;;; Code:
+
 (defcustom dos-indent-level 4
   "Amount by which batch subexpressions are indented."
   :type 'integer

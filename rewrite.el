@@ -1,35 +1,34 @@
-;;; rewrite.el
-;; This file is free software
-;-*-Lisp-*-
-; Copyright (c) 1997-2004 Mutsumi Komuro
-;
-; rewrite.el  --- Utility to rewrite text files with easier
-;                 regular expression handling.
-; Version 0.93
-; Author: Mutsumi Komuro <komuro@cs.stanford.edu>
-;
-; Revision History
-;
-; 0.93 Fixed a bug concerning 'rewrite-pre-search' command.
-; 0.92 Fixed a bug concerning 'bind' command.
-; 0.91 Added 'insert' command.
-;
-;;This program is free software; you can redistribute it and/or
-;;modify it under the terms of the GNU General Public License
-;;as published by the Free Software Foundation; either version 2
-;;of the License, or (at your option) any later version.
-;;This program is distributed in the hope that it will be useful,
-;;but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;GNU General Public License for more details.
-;;You should have received a copy of the GNU General Public License
-;;along with this program; if not, write to the Free Software
-;;Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307,USA.
-;
-;Bug descriptions, use reports, comments or suggestions are welcome.
-;Send them to komuro@cs.stanford.edu.
-;
-;;Commentary:
+;;; rewrite.el ---  Utility to rewrite text files with easier regular expression handling
+
+;; Copyright (c) 1997-2004 Mutsumi Komuro
+
+;; Author: Mutsumi Komuro <komuro@cs.stanford.edu>
+;; Version 0.93a
+
+;; This file is free software; you can redistribute it and/or modify
+;; it under the terms of the GNU General Public License as published by
+;; the Free Software Foundation; either version 2, or (at your option)
+;; any later version.
+
+;; This file is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;; GNU General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program.  If not, see <http://www.gnu.org/licenses/>.
+
+;; Revision History
+;;
+;; 0.93 Fixed a bug concerning 'rewrite-pre-search' command.
+;; 0.92 Fixed a bug concerning 'bind' command.
+;; 0.91 Added 'insert' command.
+
+;; Bug descriptions, use reports, comments or suggestions are welcome.
+;; Send them to komuro@cs.stanford.edu.
+
+;;; Commentary:
+;;
 ;; Emacs supports regular expression and matching function.
 ;; One interesting feature is that you can refer to the m-th matched
 ;; subexpression specified by \(..\) as \m.

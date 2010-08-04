@@ -1,6 +1,23 @@
-;;; dot-mode.el - minor mode to repeat typing or commands
+;;; dot-mode.el --- Minor mode to repeat typing or commands
+
 ;;; Copyright (C) 1995 James Gillespie
 ;;; Copyright (C) 2000 Robert Wyrick (rob@wyrick.org)
+
+;;; This program is free software; you can redistribute it and/or modify
+;;; it under the terms of the GNU General Public License as published by
+;;; the Free Software Foundation; either version 1, or (at your option)
+;;; any later version.
+
+;;; This program is distributed in the hope that it will be useful,
+;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+;;; GNU General Public License for more details.
+
+;;; A copy of the GNU General Public License can be obtained from 
+;;; the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
+;;; 02139, USA.
+
+;;; Commentary:
 ;;
 ;; Purpose of this package: minor mode to repeat typing or commands
 ;;
@@ -76,40 +93,26 @@
 ;; none
 ;;
 
-;;; This program is free software; you can redistribute it and/or modify
-;;; it under the terms of the GNU General Public License as published by
-;;; the Free Software Foundation; either version 1, or (at your option)
-;;; any later version.
+;; EMACS vs. VI
+;;
+;; This mode is written to address one argument in the emacs vs. vi
+;; jihad :-)  It emulates the vi `redo' command, repeating the
+;; immediately preceding sequence of commands.  This is done by
+;; recording input commands which change the buffer, i.e. not motion
+;; commands.
 
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
-;;; GNU General Public License for more details.
-
-;;; A copy of the GNU General Public License can be obtained from 
-;;; the Free Software Foundation, Inc., 675 Mass Ave, Cambridge, MA
-;;; 02139, USA.
-
-;;; COMMENTARY
-;;;
-;;; This mode is written to address one argument in the emacs vs. vi
-;;; jihad :-)  It emulates the vi `redo' command, repeating the
-;;; immediately preceding sequence of commands.  This is done by
-;;; recording input commands which change the buffer, i.e. not motion
-;;; commands.
-
-;;; DESIGN
-;;;
-;;; The heart of this minor mode is a state machine.  The function
-;;; dot-mode-after-change is called from after-change-functions and
-;;; sets a variable (is there one already?  I couldn't find it) which
-;;; is examined by dot-mode-loop, called from from post-command-hook.
-;;; This variable, dot-mode-changed, is used in conjunction with
-;;; dot-mode-state to move to the next state in the state machine.
-;;; The state machine is hard coded into dot-mode-loop in the
-;;; interests of speed; it uses two normal states (idle and store)
-;;; and two corresponding override states which allow the user to
-;;; forcibly store commands which do not change the buffer.
+;; DESIGN
+;;
+;; The heart of this minor mode is a state machine.  The function
+;; dot-mode-after-change is called from after-change-functions and
+;; sets a variable (is there one already?  I couldn't find it) which
+;; is examined by dot-mode-loop, called from from post-command-hook.
+;; This variable, dot-mode-changed, is used in conjunction with
+;; dot-mode-state to move to the next state in the state machine.
+;; The state machine is hard coded into dot-mode-loop in the
+;; interests of speed; it uses two normal states (idle and store)
+;; and two corresponding override states which allow the user to
+;; forcibly store commands which do not change the buffer.
 
 (defconst dot-mode-version "1.10"
   "Report bugs to: Robert Wyrick <rob@wyrick.org>")

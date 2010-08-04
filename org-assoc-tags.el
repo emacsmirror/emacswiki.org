@@ -1,8 +1,8 @@
-;;; org-assoc-tags.el --- 
+;;; org-assoc-tags.el --- Automatically associate tags when key-tagging an item
 ;; 
 ;; Author: Konstantin Antipin
 ;; Created: Tue Mar 31 18:02:07 2009 (+0200)
-;; Version: 0.1.1
+;; Version: 0.1.1a
 ;; Last-Updated: Tue Mar 31 23:05:14 2009 (+0200)
 ;;           By: Konstantin Antipin
 ;;     Update #: 1

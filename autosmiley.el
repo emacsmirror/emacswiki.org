@@ -1,7 +1,7 @@
-;;; autosmiley.el
+;;; autosmiley.el --- Convert smileys into their graphical representation
 
-;; Defines the minor mode autosmiley-mode that converts smileys like
-;; :-) into their graphical representations on the fly.
+;; Author: Damyan Pepper (gmail account, username damyanp)
+;; Created: 20060315
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -18,8 +18,11 @@
 ;; program's maintainer or write to: The Free Software Foundation,
 ;; Inc.; 59 Temple Place, Suite 330; Boston, MA 02111-1307, USA.
 
-;; Author: Damyan Pepper (gmail account, username damyanp)
-;;
+;;; Commentary:
+
+;; Defines the minor mode autosmiley-mode that converts smileys like
+;; :-) into their graphical representations on the fly.
+
 ;; Tested on:
 ;;
 ;; GNU Emacs 22.0.50.1 (i386-mingw-nt5.1.2600) of 2006-03-14 on W2ONE

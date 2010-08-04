@@ -1,11 +1,14 @@
-;;;----------------------------------------------------------------------
-;; record-processor.el
-;; Primary Author: Mike Mattie
-;; Copyright (C) 2009 Mike Mattie
-;; License: LGPL-v3
-;;;----------------------------------------------------------------------
+;;; record-processor.el
 
-(defconst record-processor-version "0.0.1")
+;; Copyright (C) 2009  Mike Mattie
+
+;; Author: Mike Mattie
+;; License: LGPL-v3
+;; Version: 0.0.1a
+
+;;; Code:
+
+(defconst record-processor-version "0.0.1a")
 
 ;;
 ;; extractor

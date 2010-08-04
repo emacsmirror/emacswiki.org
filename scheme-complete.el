@@ -1,66 +1,69 @@
-;;; scheme-complete.el              -*- Emacs-Lisp -*-
-
-;;; Smart tab completion for Emacs
+;;; scheme-complete.el --- Smart tab completion for Emacs
 
 ;;; This code is written by Alex Shinn and placed in the Public
 ;;; Domain.  All warranties are disclaimed.
 
-;;; This file provides a single function, `scheme-smart-complete',
-;;; which you can use for intelligent, context-sensitive completion
-;;; for any Scheme implementation.  To use it just load this file and
-;;; bind that function to a key in your preferred mode:
-;;;
-;;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
-;;; (eval-after-load 'scheme
-;;;   '(progn (define-key scheme-mode-map "\e\t" 'scheme-smart-complete)))
-;;;
-;;; Alternately, you may want to just bind TAB to the
-;;; `scheme-complete-or-indent' function, which indents at the start
-;;; of a line and otherwise performs the smart completion:
-;;;
-;;; (eval-after-load 'scheme
-;;;   '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
-;;;
-;;; If you use eldoc-mode (included in Emacs), you can also get live
-;;; scheme documentation with:
-;;;
-;;; (autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
-;;; (add-hook 'scheme-mode-hook
-;;;   (lambda ()
-;;;     (make-local-variable 'eldoc-documentation-function)
-;;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
-;;;     (eldoc-mode)))
-;;;
-;;; There's a single custom variable, `scheme-default-implementation',
-;;; which you can use to specify your preferred implementation when we
-;;; can't infer it from the source code.
-;;;
-;;; That's all there is to it.
+;;; Commentary:
+
+;; This file provides a single function, `scheme-smart-complete',
+;; which you can use for intelligent, context-sensitive completion
+;; for any Scheme implementation.  To use it just load this file and
+;; bind that function to a key in your preferred mode:
+;;
+;; (autoload 'scheme-smart-complete "scheme-complete" nil t)
+;; (eval-after-load 'scheme
+;;   '(progn (define-key scheme-mode-map "\e\t" 'scheme-smart-complete)))
+;;
+;; Alternately, you may want to just bind TAB to the
+;; `scheme-complete-or-indent' function, which indents at the start
+;; of a line and otherwise performs the smart completion:
+;;
+;; (eval-after-load 'scheme
+;;   '(progn (define-key scheme-mode-map "\t" 'scheme-complete-or-indent)))
+;;
+;; If you use eldoc-mode (included in Emacs), you can also get live
+;; scheme documentation with:
+;;
+;; (autoload 'scheme-get-current-symbol-info "scheme-complete" nil t)
+;; (add-hook 'scheme-mode-hook
+;;   (lambda ()
+;;     (make-local-variable 'eldoc-documentation-function)
+;;     (setq eldoc-documentation-function 'scheme-get-current-symbol-info)
+;;     (eldoc-mode)))
+;;
+;; There's a single custom variable, `scheme-default-implementation',
+;; which you can use to specify your preferred implementation when we
+;; can't infer it from the source code.
+;;
+;; That's all there is to it.
 
 ;;; History:
-;;; 0.8.2: 2008/07/04 - both TAB and M-TAB scroll results (thanks Peter Bex),
-;;;                     better MATCH handling, fixed SRFI-55, other bugfixes
-;;; 0.8.1: 2008/04/17 - great renaming, everthing starts with `scheme-'
+
+;; 0.8.2: 2008/07/04 - both TAB and M-TAB scroll results (thanks Peter Bex),
+;;                     better MATCH handling, fixed SRFI-55, other bugfixes
+;; 0.8.1: 2008/04/17 - great renaming, everthing starts with `scheme-'
 ;;                      also, don't scan imported modules multiple times
-;;;   0.8: 2008/02/08 - several parsing bugfixes on unclosed parenthesis
-;;;                       (thanks to Kazushi NODA)
-;;;                     filename completion works properly on absolute paths
-;;;                     eldoc works properly on dotted lambdas
-;;;   0.7: 2008/01/18 - handles higher-order types (for apply, map, etc.)
-;;;                     smarter string completion (hostname, username, etc.)
-;;;                     smarter type inference, various bugfixes
-;;;   0.6: 2008/01/06 - more bugfixes (merry christmas)
-;;;   0.5: 2008/01/03 - handling internal defines, records, smarter
-;;;                     parsing
-;;;   0.4: 2007/11/14 - silly bugfix plus better repo env support
-;;;                     for searching chicken and gauche modules
-;;;   0.3: 2007/11/13 - bugfixes, better inference, smart strings
-;;;   0.2: 2007/10/15 - basic type inference
-;;;   0.1: 2007/09/11 - initial release
-;;;
-;;;   What is this talk of 'release'? Klingons do not make software
-;;;   'releases'. Our software 'escapes' leaving a bloody trail of
-;;;   designers and quality assurance people in its wake.
+;;   0.8: 2008/02/08 - several parsing bugfixes on unclosed parenthesis
+;;                       (thanks to Kazushi NODA)
+;;                     filename completion works properly on absolute paths
+;;                     eldoc works properly on dotted lambdas
+;;   0.7: 2008/01/18 - handles higher-order types (for apply, map, etc.)
+;;                     smarter string completion (hostname, username, etc.)
+;;                     smarter type inference, various bugfixes
+;;   0.6: 2008/01/06 - more bugfixes (merry christmas)
+;;   0.5: 2008/01/03 - handling internal defines, records, smarter
+;;                     parsing
+;;   0.4: 2007/11/14 - silly bugfix plus better repo env support
+;;                     for searching chicken and gauche modules
+;;   0.3: 2007/11/13 - bugfixes, better inference, smart strings
+;;   0.2: 2007/10/15 - basic type inference
+;;   0.1: 2007/09/11 - initial release
+;;
+;;   What is this talk of 'release'? Klingons do not make software
+;;   'releases'. Our software 'escapes' leaving a bloody trail of
+;;   designers and quality assurance people in its wake.
+
+;;; Code:
 
 (require 'cl)
 

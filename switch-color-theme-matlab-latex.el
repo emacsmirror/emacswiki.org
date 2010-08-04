@@ -1,6 +1,6 @@
-;;; switch-color-theme-matlab-latex.el
+;;; switch-color-theme-matlab-latex.el --- color themes for matlab
+
 ;; Filename: switch-color-theme-matlab-latex.el 
-;; Description: 
 ;; Author: Da Zhang
 ;; Created: Wed Jan 16 13:06:57 2008 Update #: 8
 

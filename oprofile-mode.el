@@ -1,17 +1,10 @@
-;;;
-;;
-;; oprofile-mode.el
-;;
-;; An oprofile callgraph viewer
+;;; oprofile-mode.el --- An oprofile callgraph viewer
 ;;
 ;; Author: Vikram Visweswaraiah (vviswesw at cisco.com)
-;; Version: 0.1
+;; Version: 0.1a
 ;; Copyright (c) 2008, Cisco Systems, Inc.
 ;; All rights reserved.
-;;
-;;
 
-;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 2 of the
@@ -26,10 +19,8 @@
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307
 ;; USA
-;;
 
-;;
-;; SETUP INSTRUCTIONS
+;;; Commentary:
 ;; 
 ;; If you don't know what oprofile is, read about it at 
 ;; <http://oprofile.sourceforge.net/>. If you start using it, particularly,
@@ -73,7 +64,8 @@
 ;; Ctrl-c /  -- search for symbol under cursor
 ;; Ctrl-c Ctrl-c -- generate callstack for symbol under cursor
 ;; Ctrl-c Ctrl-f -- generate flat profile from current callgraph data
-;;
+
+;;; Code:
 
 
 ; local keybindings

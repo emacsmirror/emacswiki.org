@@ -1,9 +1,9 @@
-;;; move-and.el
+;;; move-and.el --- Move point and perform some other action
 
 ;; Copyright (C) Aidan Schofield 2007
 
 ;; Maintainer: Aidan Schofield
-;; Version 0.1
+;; Version 0.1a
 ;; Keywords: delete, kill, copy, keys
 ;; Time-stamp: <2007-04-05 14:54:14 aidanschofield>
 
@@ -23,9 +23,10 @@
 ;; along with GNU Emacs; see the file COPYING.  If not, write to the
 ;; Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
 ;; Boston, MA 02110-1301, USA.
-;;; move-and.el
 
-;; Commentary. I just saw a blog where there was a complaint about the
+;;; Commentary:
+
+;; I just saw a blog where there was a complaint about the
 ;; complexity of key-bindings for killing some piece of text which was
 ;; contrasted with the simplicity of vi where one prepends a motion
 ;; keysequence with `d' in order to delete the text passed over by the
@@ -49,7 +50,7 @@
 ;; rather than `M-k2b'. To set it up the other way would be more
 ;; complex though possible. What do others think should be done?
 
-;; Code begins here
+;;; Code:
 
 (eval-when-compile
   (require 'cl))

@@ -1,15 +1,19 @@
-;;;----------------------------------------------------------------------
-;; bzr-ui.el
-;; Primary Author: Mike Mattie
-;; Copyright (C) 2009 Mike Mattie
-;; License: LGPL-v3
-;;;----------------------------------------------------------------------
+;;; bzr-ui.el --- Utility functions to navigate a working copy of a bazaar repository
 
-;; utility functions to navigate a working copy. It assumes that all of
+;; Copyright (C) 2009 Mike Mattie
+
+;; Author: Mike Mattie
+;; License: LGPL-v3
+
+;;; Commentary:
+
+;; Utility functions to navigate a working copy. It assumes that all of
 ;; the branches are relative to the repository root (DVCS)
 
-;; currently the functions are bzr specific but hopefully that can change
+;; Currently the functions are bzr specific but hopefully that can change
 ;; as vc evolves.
+
+;;; Code:
 
 (require 'cm-path)
 (require 'vc-bzr)

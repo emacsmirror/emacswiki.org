@@ -1,4 +1,4 @@
-;;; mgrep.el
+;;; mgrep.el --- Search in the directory previously specified
 ;; -*- Mode: Emacs-Lisp -*-
 
 ;;  $Id: mgrep.el,v 1.8.2.1 2003/10/24 10:28:46 akihisa Exp $

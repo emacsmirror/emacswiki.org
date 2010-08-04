@@ -1,10 +1,10 @@
-;;; mc-auto-encrypt.el - automatically encrypt and decrypt at file open and save
+;;; mc-auto-encrypt.el --- automatically encrypt and decrypt at file open and save
 
 ;; Copyright (c) 2003 Charles Sebold, Doug Alcorn
 ;; Author: Charles Sebold
 ;; Contributors: Doug Alcorn <doug@lathi.net>
 ;;               Xavier Maillard <xma@gnu.org>
-;; Version: 1.4
+;; Version: 1.4a
 
 ;; This file is not yet part of GNU Emacs.
 

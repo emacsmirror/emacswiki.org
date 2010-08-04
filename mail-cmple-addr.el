@@ -1,10 +1,10 @@
-;;; mail-cmple-addr.el v.1.00
-;; complete mail address or expand mail alias interactively
-;; on the header field at mail mode
-;;
+;;; mail-cmple-addr.el --- complete mail address or expand mail alias interactively on the header field at mail mode
+
 ;; Copyright (C) Takashi Mitsuishi, 1995
+
 ;; Author: Takashi MITSUISHI <takashi@riec.tohoku.ac.jp>
 ;; Keyword: mail, alias, address, completion
+;; Version: 1.01
  
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -40,7 +40,8 @@
 ;;
 ;; If `mail-noh-self-insert' is non-nil,
 ;; you can self insert key sequence for this command not on the header."
-;;
+
+;;; Code:
  
 (defvar mail-expand-alias t
   "*If non-nil, expand alias to original address.")

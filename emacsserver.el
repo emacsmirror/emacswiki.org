@@ -1,22 +1,29 @@
-;;; emacsserver.el is free software
+;;; emacsserver.el ---
+
+;; emacsserver.el is free software
 ;; -*-mode:Emacs-Lisp;tab-width:4;indent-tabs-mode:nil-*-
 ;; Time-stamp: <2005-03-04 19:20:44 dhu2kor>
 ;;-----------------------------------------------------------------------------
-;; File   : emacsserver.el
-;; Auth   : Dhruva Krishnamurthy (dhruva.krishnamurthy@gmail.com)
-;; Status : Development (flaky)
-;; Usage  :
-;; o As server:
+;; File:   emacsserver.el
+;; Author: Dhruva Krishnamurthy (dhruva.krishnamurthy@gmail.com)
+;; Status: Development (flaky)
+;;
+;;; Commentary:
+;;
+;; o Usage ss server:
 ;;   (require 'emacsserver)
 ;;   (emacsserver-start "magic")
-;; o As client:
+;; o Usage as client:
 ;;   emacs --batch --load emacsserver.el
 ;;         --eval "(emacsclient-command '(find-file \"~/_emacs\") \"magic\")"
 ;;
-;; TODO   :
+;; TODO:
 ;; o Does not work on XEmacs ('make-network-process not available)
 ;; o Code cleanup, optimize, document and misc stuff
 ;;-----------------------------------------------------------------------------
+
+;;; Code:
+
 ;; This is not available on XEmacs and Emacs prior to 21.4
 (if (not (featurep 'make-network-process))
     (error "Incompatible version of [X]Emacs"))

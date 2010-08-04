@@ -1,5 +1,11 @@
-;;; markerpen.el
-;; - allows you to colour and highlight arbitrary sections of buffers.
+;;; markerpen.el --- Colour and highlight arbitrary sections of buffers
+
+;; Author: Ben Moseley <ben@moseley.name>
+;; Created: 2005
+
+;;; Commentary:
+;;
+;; Allows you to colour and highlight arbitrary sections of buffers.
 ;;
 ;; This can be useful when looking through complex code etc. Also the invisible pen
 ;; is useful for clearing away bits of information which are uninteresting.
@@ -11,8 +17,8 @@
 ;;
 ;; Let me know of any comments, suggestions, problems - but there are no
 ;; guarantees and use of this code is at your own risk.
-;;
-;; Ben Moseley 2005 - ben@moseley.name
+
+;;; Code:
 
 (defvar markerpen-current-pen 1)
 

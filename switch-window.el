@@ -1,6 +1,4 @@
-;;; dim-switch-window.el
-;;
-;; Offer a *visual* way to choose a window to switch to
+;;; dim-switch-window.el --- visula way to choose a window to switch to
 ;;
 ;; Copyright (C) 2010 Dimitri Fontaine
 ;;
@@ -12,11 +10,17 @@
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 ;;
 ;; This file is NOT part of GNU Emacs.
+
+;;; Commentary:
+;;
+;; Offer a *visual* way to choose a window to switch to
 ;;
 ;; Install:
 ;;  (require 'dim-switch-window)
 ;;
 ;; It'll take over your C-x o binding.
+
+;;; Code:
 
 (defgroup dim:switch-window nil "dim:switch-window customization group"
   :group 'convenience)

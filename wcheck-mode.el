@@ -1,13 +1,10 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; wcheck-mode.el (2010-02-28)
-;;
-;; Interface for external spell-checkers and text-filtering programs.
-
+;; wcheck-mode.el --- Interface for external spell-checkers and text-filtering programs.
 
 ;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
-;;
-;; LICENSE
-;;
+
+;; Created: 2009
+;; Updated: 20100228
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or (at
@@ -22,7 +19,9 @@
 ;; along with GNU Emacs. If not, see <http://www.gnu.org/licenses/>.
 
 
-;; INSTALLATION
+;;; Commentary:
+;;
+;; Interface for external spell-checkers and text-filtering programs.
 ;;
 ;; Put this file to some directory in your "load-path" and add the
 ;; following lines to your Emacs initialization file (~/.emacs):

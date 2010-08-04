@@ -1,4 +1,4 @@
-;;; LRU-yank.el ---
+;;; LRU-yank.el --- Least Recently Used stacking for kill-ring
 
 ;; Copyright 2006 Le Wang
 ;;
@@ -120,7 +120,7 @@ return the new list."
       (setq ad-return-value (car kill-ring)))))
 
 
-
+ 
 ;;;;##########################################################################
 ;;;;  User Options, Variables
 ;;;;##########################################################################

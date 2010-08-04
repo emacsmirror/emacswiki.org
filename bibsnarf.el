@@ -1,69 +1,70 @@
-;;; bibsnarf - get BibTeX format bibliography entries from the net
-;;; Author: Hans Halvorson (hhalvors -at- princeton -dot- edu) 
-;;; Version: 0.2 
-;;; Time-stamp: <2007-04-25 04:50:23 hhalvors>
+;;; bibsnarf --- get BibTeX format bibliography entries from the net
 
-;;; requires an external web client: e.g., links, w3m, lynx
+;; Author: Hans Halvorson (hhalvors -at- princeton -dot- edu) 
+;; Version: 0.2 
+;; Time-stamp: <2007-04-25 04:50:23 hhalvors>
 
-;;; TO DO: use async from url.el
+;;; Commentary: 
+;;
+;; This program searches simultaneously through several bibliography
+;; databases, and produces a summary of the results.  You can then
+;; view records (using "v"), append records to other buffers (usingz
+;; "c"), or append records into local BibTeX files (using "f").
+;;
+;; As of January 26, 2007, the supported search backends are:
+;;
+;;   MathSciNet:   www.ams.org/mathscinet (requires a subscription)
+;;   citebase:     www.citebase.org
+;;   math arxive:  front.math.ucdavis.edu
+;;   spires-hep:   www.slac.stanford.edu/spires/
+;;
+;; In theory, it is easy to add any backend for which a single URL 
+;; returns an html page with BibTeX formatted entries.
+;; If you know of any such additional backends, please email the maintainer.
+;;
+;; To start a search: M-x bibsnarf RET 
+;; You will then be queried for Author and Title (you need only enter one of the two fields).
+;; If everything goes well, in a few short seconds you will 
+;; find yourself in a buffer that summarizes your results, one line
+;; per result.  The following keybindings apply in the summary buffer:
+;;
+;;   v   - view the full BibTeX entry for the record at the point
+;;   SPC - ditto
+;;   RET - ditto
+;;   f   - append the full BibTeX of the record at the point to some local file
+;;         (*CAUTION*: if you have made modifications to the file and have not saved, then you will 
+;;         lose your changes!  For that case, you should instead use "a"
+;;   c   - append the full BibTeX of the record at the point to some buffer
+;;
+;;  At present, all search results are dumped into a single buffer.  But it would not be diffcult
+;;  to arrange things differently.
+;;
+;; 
+;; Technical discussion: Here is what actually happens after you ask bibsnarf to search:
+;; 1. bibsnarf figures out which urls to get
+;; 2. bibsnarf calls an external browser (e.g. links) to download the urls.  
+;;    (Why not a native emacs browser, e.g. w3?  For one, w3 is no longer maintained.  
+;;    Second, using an external browser allows us to do asynchronous downloads.  Maybe that is also 
+;;    possible with w3; I don't know.)
+;; 3. bibsnarf processes each downloaded html page in two stages: (a) It cleans out the html cruft, 
+;;    hopefully (!) resulting in a valid BibTeX file. (b) It parses the BibTeX file by turning each 
+;;    valid entry into a hash table whose keys are field names and whose values are field contents, and 
+;;    then it makes a big hash table called *bib* whose keys are random, and whose values are the entry 
+;;    hash tables. into a hash table called '*bib*'.  Question: would it be better just to store the entries 
+;;    in a list?  Does hashing provide any advantage ;; in this case?  
+;; 4. bibsnarf writes out a summary string for each entry in *bib* in the buffer *bibsnarf results*.
+;;
+
+;; requires an external web client: e.g., links, w3m, lynx
+
+;; TO DO: use async from url.el
 
 ;; TO DO: add SciTation support, eprintweb.org support
 
-;;; Acknowledgments: Much of the code is inspired by Eric Marsden's
-;;; watson.el, and some is borrowed from Nevin Kapur's bibfind.el.
+;; Acknowledgments: Much of the code is inspired by Eric Marsden's
+;; watson.el, and some is borrowed from Nevin Kapur's bibfind.el.
 
-;;; Usage: 
-;;;
-;;; This program searches simultaneously through several bibliography
-;;; databases, and produces a summary of the results.  You can then
-;;; view records (using "v"), append records to other buffers (usingz
-;;; "c"), or append records into local BibTeX files (using "f").
-;;;
-;;; As of January 26, 2007, the supported search backends are:
-;;;
-;;;   MathSciNet:   www.ams.org/mathscinet (requires a subscription)
-;;;   citebase:     www.citebase.org
-;;;   math arxive:  front.math.ucdavis.edu
-;;;   spires-hep:   www.slac.stanford.edu/spires/
-;;;
-;;; In theory, it is easy to add any backend for which a single URL 
-;;; returns an html page with BibTeX formatted entries.
-;;; If you know of any such additional backends, please email the maintainer.
-;;;
-;;; To start a search: M-x bibsnarf RET 
-;;; You will then be queried for Author and Title (you need only enter one of the two fields).
-;;; If everything goes well, in a few short seconds you will 
-;;; find yourself in a buffer that summarizes your results, one line
-;;; per result.  The following keybindings apply in the summary buffer:
-;;;
-;;;   v   - view the full BibTeX entry for the record at the point
-;;;   SPC - ditto
-;;;   RET - ditto
-;;;   f   - append the full BibTeX of the record at the point to some local file
-;;;         (*CAUTION*: if you have made modifications to the file and have not saved, then you will 
-;;;         lose your changes!  For that case, you should instead use "a"
-;;;   c   - append the full BibTeX of the record at the point to some buffer
-;;;
-;;;  At present, all search results are dumped into a single buffer.  But it would not be diffcult
-;;;  to arrange things differently.
-;;;
-;;; 
-;;; Technical discussion: Here is what actually happens after you ask bibsnarf to search:
-;;; 1. bibsnarf figures out which urls to get
-;;; 2. bibsnarf calls an external browser (e.g. links) to download the urls.  
-;;;    (Why not a native emacs browser, e.g. w3?  For one, w3 is no longer maintained.  
-;;;    Second, using an external browser allows us to do asynchronous downloads.  Maybe that is also 
-;;;    possible with w3; I don't know.)
-;;; 3. bibsnarf processes each downloaded html page in two stages: (a) It cleans out the html cruft, 
-;;;    hopefully (!) resulting in a valid BibTeX file. (b) It parses the BibTeX file by turning each 
-;;;    valid entry into a hash table whose keys are field names and whose values are field contents, and 
-;;;    then it makes a big hash table called *bib* whose keys are random, and whose values are the entry 
-;;;    hash tables. into a hash table called '*bib*'.  Question: would it be better just to store the entries 
-;;;    in a list?  Does hashing provide any advantage ;;; in this case?  
-;;; 4. bibsnarf writes out a summary string for each entry in *bib* in the buffer *bibsnarf results*.
-;;;
-
-;;; Code
+;;; Code:
 
 (require 'mm-url)
 (require 'bibtex)

@@ -1,7 +1,10 @@
-;;;;
-;;;;  This code is deprecated; please look at http://www.bitbucket.org/espenhw/jde-mvn/ instead.
-;;;;
 ;;; pom.el --- Tools for using attributes from a Maven POM in JDE project files
+
+;;;;
+;;;;  This code is deprecated;
+;;;;  please look at http://www.bitbucket.org/espenhw/jde-mvn/ instead.
+;;;;
+
 ;;
 ;; Copyright (c) 2007 Espen Wiborg <espenhw@grumblesmurf.org>
 ;;

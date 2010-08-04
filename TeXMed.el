@@ -1,7 +1,7 @@
-;;; TeXMed.el - Query and retrieve BibTeX from NCBI pubmed via TeXMed in Emacs
+;;; TeXMed.el --- Query and retrieve BibTeX from NCBI pubmed via TeXMed in Emacs
 ;;
-;;; AUTHOR:  Emanuel Heitlinger <emanuelheitlinger@gmail.com>
-;; LICENCE: GPL2
+;; Author:  Emanuel Heitlinger <emanuelheitlinger@gmail.com>
+;; License: GPL2
 ;;
 ;;; Commentary:
 ;;

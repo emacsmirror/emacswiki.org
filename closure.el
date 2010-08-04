@@ -1,13 +1,17 @@
-;;; Rev 961
-;;----------------------------------------------------------------------
-;; closure.el
-;; Primary Author: Mike Mattie
-;; copyright: Mike Mattie 2008
+;;; closure.el --- Experimental closure prototypes
+
+;; Copyright (C) 2008 Mike Mattie
+
+;; Author: Mike Mattie
+;; Version: 961
 ;; License: LGPL-V3
-;;----------------------------------------------------------------------
+
+;;; Commentary:
 
 ;; these are experimental prototypes. The final versions need to be
 ;; implemented at the C level.
+
+;;; Code:
 
 ;;----------------------------------------------------------------------
 ;; definition and creation

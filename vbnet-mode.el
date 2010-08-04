@@ -1,7 +1,4 @@
-;;; vbnet-mode.el 
-;; This is free software.
-
-;; A mode for editing Visual Basic programs.
+;;; vbnet-mode.el --- A mode for editing Visual Basic programs
 
 ;; Latest modifications by T.K.Anderson
 ;; Purpose: to support the far more palatable VB.NET dialect
@@ -17,7 +14,8 @@
 ;; Author: Fred White <fwhite@alum.mit.edu>
 ;; Adapted-by: Dave Love <d.love@dl.ac.uk>
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
-;; Version: 1.3 (May 1, 1996)
+;; Version: 1.3a
+;; Updated: May 1, 1996
 ;; Keywords: languages, basic, Evil
 
 

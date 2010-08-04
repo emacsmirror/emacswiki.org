@@ -1,5 +1,5 @@
-;;; yahoo-weather.el - Get the weather from yahoo.
-(defconst yahoo-weather-version "0.2")
+;;; yahoo-weather.el --- Get the weather from yahoo.
+(defconst yahoo-weather-version "0.2a")
 ;; Copyright (c)2008 Jonathan Arkell. (by)(nc)(sa)  Some rights reserved.
 ;; Author: Jonathan Arkell <jonnay@jonnay.net>
 

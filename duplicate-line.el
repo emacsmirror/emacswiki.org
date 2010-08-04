@@ -1,26 +1,9 @@
-;;;
-; From: nickson@cs.uq.oz.au (Ray Nickson)
-; Subject: duplicating lines
-; Date: 29 Jun 1994 00:58:56 GMT
-; Organization: Computer Science Dept, University of Queensland
-; 
-; Here's a couple of commands I find indispensible; they might as well
-; see the light of day now, while I'm thinking of them.  I bind them
-; thus:
-; 
-; (global-set-key "\M-p" 'duplicate-previous-line)
-; (global-set-key "\M-n" 'duplicate-following-line)
-; 
-; and they behave in ordinary text buffers something like the same keys
-; do in buffers with history, duplicating lines from nearby in the
-; buffer.
-; 
-; I included my `point-at' macro rather than expanding it out by hand.
-; 
-; Copyright notice included even though I doubt it's needed on something
-; so small.
+;;; dublicate-line.el --- Easily dublicate a line
 
-;; Copyright (C) 1994 by Ray Nickson (nickson@cs.uq.oz.au)
+;; Copyright (C) 1994  Ray Nickson
+
+;; Author: Ray Nickson <nickson@cs.uq.oz.au>
+;; Created: 19940629
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -35,6 +18,26 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; if not, write to the Free Software
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
+
+;;; Commentary:
+
+;; Here's a couple of commands I find indispensible;; they might as well
+;; see the light of day now, while I'm thinking of them.  I bind them
+;; thus:
+;; 
+;; (global-set-key "\M-p" 'duplicate-previous-line)
+;; (global-set-key "\M-n" 'duplicate-following-line)
+;; 
+;; and they behave in ordinary text buffers something like the same keys
+;; do in buffers with history, duplicating lines from nearby in the
+;; buffer.
+;; 
+;; I included my `point-at' macro rather than expanding it out by hand.
+;; 
+;; Copyright notice included even though I doubt it's needed on something
+;; so small.
+
+;;; Code:
 
 (defmacro point-at (&rest forms)
   "Evaluate list of forms, and return the value of point after evaluation."
@@ -73,3 +76,6 @@ If repeated, replace by the line following the one that was copied last time.
 This command can be interleaved with \\[duplicate-previous-line]."
   (interactive "p")
   (duplicate-line n 1))
+
+(provide 'dublicate-line)
+;;; dublicate-line.el ends here.

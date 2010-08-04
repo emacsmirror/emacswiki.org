@@ -1,4 +1,4 @@
-;;; grep-ed.el
+;;; grep-ed.el --- Edit the results of a grep
 
 ;; Copyright (C) 2009  Scott Frazer
 

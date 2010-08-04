@@ -1,4 +1,4 @@
-;;; docmap.el - display document map window
+;;; docmap.el --- display document map window
 ;;; $Id: docmap.el,v 1.1.1.1 2004/12/21 11:29:52 noir Exp $
 ;;; Copyright (C) 2004 Hiroyuki KUROSAKI <noir@st.rim.or.jp>
 ;;;

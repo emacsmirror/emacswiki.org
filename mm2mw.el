@@ -1,5 +1,4 @@
-;;; mm2mw.el
-;;; A MoinMoin 1.2.x -> MediaWiki 1.7.x converter
+;;; mm2mw.el --- A MoinMoin 1.2.x -> MediaWiki 1.7.x converter
 
 ;;; Copyright: (C) 2008, 2009 Charles Sebold
 ;; 
@@ -21,6 +20,8 @@
 ;; Latest version should be available at:
 ;;    <URL:http://www.emacswiki.org/emacs/MoinMoinToMediaWiki>
 
+;;; Commentary:
+
 ;; To use this, just find the base name of your MoinMoin Wiki and the
 ;; base name of your new MediaWiki installations, and feed them to
 ;; mm2mw-wiki.  Tested only on Emacs 22, requires at least a url library
@@ -38,6 +39,8 @@
 ;; I ripped the wikiname regexp from oddmuse.el and the url HTTP POST
 ;; code from an example on EmacsWiki; beyond that I wrote this on my
 ;; own.
+
+;;; Code:
 
 (require 'url)
 

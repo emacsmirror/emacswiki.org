@@ -1,3 +1,4 @@
+;;; google-define.el --- Pulls definitions from google and displays them in a buffer
 ;;; -*- indent-tabs-mode:nil -*-
 ;;;; Copyright (c) 2007,2008,2009,2010 Jeremy English <jhe@jeremyenglish.org>
 ;;;;

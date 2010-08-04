@@ -1,9 +1,11 @@
-;;;----------------------------------------------------------------------
-;; grail.el
-;; Primary Author: Mike Mattie
+;;; grail.el --- load an .emacs configuration in a robust, modular, and mode aware manner
+
 ;; Copyright (C) 2008,2009 Mike Mattie
+
+;; Author: Mike Mattie
 ;; License: LGPL-v3
-;;----------------------------------------------------------------------
+
+;;; Commentary:
 
 ;; Grail loads an .emacs configuration in a robust, modular, and mode
 ;; aware manner.

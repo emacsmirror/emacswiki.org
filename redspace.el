@@ -1,5 +1,9 @@
-;;;; redspace mode - a minor mode for highlighting empty space at end of lines
-;; Copyright (C) 2008,  Kristian Rumberg (kristianrumberg is my full gmail)
+;;;; redspace mode --- a minor mode for highlighting empty space at end of lines
+
+;; Copyright (C) 2008  Kristian Rumberg
+
+;; Author: Kristian Rumberg <kristianrumberg is my full gmail>
+;; Created: 2008
 
 ;; This file is not part of GNU Emacs
 
@@ -17,8 +21,9 @@
 ;; this program; if not, write to the Free Software Foundation, Inc., 59 Temple
 ;; Place, Suite 330, Boston, MA  02111-1307  USA
 
-
 ;; The overlay code in this program is stolen from the "flymake-mode" in GNU Emacs
+
+;;; Code:
 
 (defvar redspace-timer nil)
 

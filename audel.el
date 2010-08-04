@@ -1,7 +1,8 @@
-;;; audel.el
-;;; LastChange: Jun 4, 2007
-;;; Version:    0.1
-;;; Author:     Amir Mohammad Saied <amirsaied AT gmail DOT com>
+;;; audel.el --- An audtool frontend for Emacs
+
+;; LastChange: Jun 4, 2007
+;; Version:    0.1
+;; Author:     Amir Mohammad Saied <amirsaied AT gmail DOT com>
 
 ;; This file is not part of GNU Emacs.
 
@@ -23,7 +24,7 @@
 ;; USA
 
 
-;; Description :
+;;; Commentary:
 ;; 
 ;; audel.el is a audtool frontend for Emacs. audtool is a command line tool to
 ;; interface audacious. With audel.el you can control audacious through audtool.

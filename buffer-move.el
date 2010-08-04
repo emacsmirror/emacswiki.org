@@ -1,4 +1,4 @@
-;;; buffer-move.el --- 
+;;; buffer-move.el --- Swap buffers without typing C-x b on each window
 
 ;; Copyright (C) 2004  Lucas Bonnet <lukhas@free.fr>
 

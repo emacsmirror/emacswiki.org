@@ -1,10 +1,10 @@
-;;; email.el
-;; File      : email.el  - extensions to mail-mode.
+;;; email.el --- Extensions to mail-mode
+
 ;; Copyright (c) 1994 G Dinesh Dutt
-;; Version   : 1.1
-;; Author    : G. Dinesh Dutt (brat@htilbom.ernet.in)
-;; Maintainer: G. Dinesh Dutt (brat@htilbom.ernet.in)
-;; Keywords  : mail-mode extensions
+;; Version:    1.1
+;; Author:     G. Dinesh Dutt <brat@htilbom.ernet.in>
+;; Maintainer: G. Dinesh Dutt <brat@htilbom.ernet.in>
+;; Keywords:   mail-mode extensions
 ;;
 ;; This file runs under GNU Emacs, and has the same copyright terms as
 ;; GNU Emacs.
@@ -24,14 +24,15 @@
 ;; Foundation, Inc., 675 Mass Ave, Cambridge, MA 02139, USA.
 ;;
  
-;; Commentary :
+;;; Commentary:
+;;
 ;;  This package permits easy archiving of outgoing mails, sending cc's to
 ;; a specified set of poeple automatically and add a reference id to the
 ;; subject of the mail, all based on the mail headers only.  A set of three
 ;; associative-lists is used to determine the behaviour.  Its a complement of
 ;; vm-auto-folder-alist (used to archive incoming messages).
  
-;; Installation :
+;; Installation:
 ;; Setup the following in your .emacs :
 ;;  (require 'email)
 ;;  (setq send-mail-function 'email-send)

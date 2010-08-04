@@ -1,4 +1,4 @@
-;;; abbrev-complete.el
+;;; abbrev-complete.el --- Abbrev mode completion function
 ;;;$Id: abbrev-complete.el,v 1.35.2.1 2003/10/25 10:15:54 akihisa Exp $
 
 ;; Author: Matsushita Akihisa <akihisa@mail.ne.jp>
@@ -75,7 +75,7 @@
 ;; TODO
 ;; Rewrite :)
 ;; Document
-
+ 
 ;;; Code:
 
 (require 'dabbrev)
@@ -111,7 +111,7 @@ t:Show *Completions* buffer
 (defvar abbrev-complete-add-region-to-abbrev t
   "*non-nil means to add the region text to abbrev")
 
-
+ 
 ;; Internal variables
 (defvar abbrev-complete-word "")
 (defvar abbrev-complete-start-position nil)
@@ -144,7 +144,7 @@ t:Show *Completions* buffer
       (setq abbrev-complete-mode-map map)
       ))
 
-
+ 
 (defadvice expand-abbrev
   (around check-abbrev-list activate)
   (if (not (eq last-command this-command))
@@ -417,7 +417,7 @@ t:Show *Completions* buffer
   (setq abbrev-complete-table-prev abbrev-complete-table)
   )
 
-
+ 
 (defun abbrev-complete ()
   (interactive)
   (let* (pos word)
@@ -621,7 +621,7 @@ t:Show *Completions* buffer
 
     ))
 
-
+ 
 ;; Delete *Completions* window
 (add-hook 'pre-command-hook
           (lambda ()
@@ -631,6 +631,6 @@ t:Show *Completions* buffer
                           (buffer-name (window-buffer (next-window)))))
                 (abbrev-comple-delete-window))))
 
-
+ 
 (provide 'abbrev-complete)
 ;;; abbrev-complete.el ends here

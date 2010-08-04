@@ -1,4 +1,4 @@
-;;; dgpg.el - David's GPG Extensions for Emacs
+;;; dgpg.el --- David's GPG Extensions for Emacs
 ;;;
 
 ;; --------------------------------------------------
@@ -13,7 +13,8 @@
 ;;                  enable kill-ring for password input 
 ;;                    "..." will be replaced by (current-kill 0)
 ;;
-;; Version: 0.1 of 2006-02-03
+;; Version: 0.1
+;; Updated: 20060203
 ;; --------------------------------------------------
 
 

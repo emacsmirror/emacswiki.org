@@ -1,5 +1,6 @@
-;;; Java completion.
-;; (C) Tapsell-Ferrier Limited 2004
+;;; java-complete.el --- Java completion
+
+;; Copyright (C) 2004 Tapsell-Ferrier Limited
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -16,7 +17,7 @@
 ;; Free Software Foundation, Inc., 59 Temple Place - Suite 330,
 ;; Boston, MA 02111-1307, USA.
 
-
+;;; Commentary:
 
 ;; I have always wanted 3 sorts of completion in Java:
 ;;
@@ -32,6 +33,7 @@
 ;;
 ;; When I'm completing I'd like to see nice status about what has been completed.
 
+;;; Code:
 
 (defvar java-complete-class-p 't
   "A switch that controls the completer.

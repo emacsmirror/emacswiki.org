@@ -1,4 +1,4 @@
-;;; tab-in-tabular.el - Treat ampersands like table field separators
+;;; tab-in-tabular.el --- Treat ampersands like table field separators
 
 ;; Copyright - (CC-BY-SA) Some Rights Reserved Brandon Maister
 ;; Author: quodlibetor <quodlibetor@gmail.com>
@@ -6,11 +6,26 @@
 ;; Keywords: LaTeX, keyconfig
 
 ;; Created: Sun Sep 14, 2008
-;; Version: 0.1
+;; Version: 0.1a
 ;; URL: http://svn.quodlibetor.com/pubsh/elisp/tab-in-tabular.el
+
 ;; This file is not part of GNU Emacs.
 
-;;; What is here:
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation version 2, or, at your
+;; option, any later version.
+
+;; This program is distributed in the hope that it will be useful, but
+;; WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; For a copy of the GNU General Public License, search the Internet,
+;; or write to the Free Software Foundation, Inc., 59 Temple Place,
+;; Suite 330, Boston, MA 02111-1307 USA
+
+;;; Commentary:
 
 ;; This file contains a couple of functions to make emacs treat `&'s
 ;; more like cell separators in e.g. excell. This makes sense if you
@@ -78,22 +93,7 @@
 ;; replace the angle brackets with square brackets and put it in the
 ;; second define-key line.
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-
-;; This program is free software; you can redistribute it and/or
-;; modify it under the terms of the GNU General Public License as
-;; published by the Free Software Foundation version 2, or, at your
-;; option, any later version.
-
-;; This program is distributed in the hope that it will be useful, but
-;; WITHOUT ANY WARRANTY; without even the implied warranty of
-;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;; General Public License for more details.
-
-;; For a copy of the GNU General Public License, search the Internet,
-;; or write to the Free Software Foundation, Inc., 59 Temple Place,
-;; Suite 330, Boston, MA 02111-1307 USA
-
+;;; Code:
 
 (defun amp-on-previous-line ()
   "Find an ampersand in the immediately previous row,
