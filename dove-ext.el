@@ -26,6 +26,7 @@
 
 ;; miscellaneous
 
+;; 2010-08-04 improved rename-buffer-in-ssh-login function
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
@@ -145,12 +146,17 @@
     )
 )
 
+; The function will ignore command like this
+; ssh msg@tivx24.cn.ibm.com ls bin
+; It could response only to command like this
+; ssh msg@tivx24.cn.ibm.com 
+
 (defun rename-buffer-in-ssh-login (cmd)
   "Rename buffer to the destination hostname in ssh login"
-  (if (string-match "ssh [a-z0-9A-Z]+@[a-z0-9A-Z]+" cmd)
-      (let (( host (car (last (split-string cmd "[ @\n]" t) )))
+  (if (string-match "ssh [-_a-z0-9A-Z]+@[-_a-z0-9A-Z.]+[ ]*[^-_a-z0-9-A-Z]*$" cmd)
+      (let (( host (nth 2 (split-string cmd "[ @\n]" t) ))
 	    )
-      (message "%s" host)
+      (message "%s" (split-string cmd "[ @\n]" t) )
       (rename-buffer (concat "*" host))
       )
     )

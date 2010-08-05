@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Jul 17 12:19:34 2010 (-0700)
+;; Last-Updated: Wed Aug  4 11:03:27 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 203
+;;     Update #: 210
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1976,7 +1976,8 @@ that option is non-nil."
 ;;; Bookmark+ Functions (`bmkp-*') -----------------------------------
 
 (defun bmkp-completing-read-lax (prompt &optional default alist pred hist)
-  "Same as `bookmark-completing-read', but completion is lax."
+  "Read a bookmark name, prompting with PROMPT.
+Same as `bookmark-completing-read', but completion is lax."
   (unwind-protect
        (progn (define-key minibuffer-local-completion-map "\C-w" 'bookmark-yank-word)
               (define-key minibuffer-local-completion-map "\C-u" 'bookmark-insert-current-bookmark)
@@ -2045,9 +2046,9 @@ BOOKMARK-NAME is the current (old) name of the bookmark."
       (bookmark-rename bookmark-name new-bmk-name 'batch)
       (bookmark-set-filename new-bmk-name new-filename)
       ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
-      (let ((dired-dir  (bookmark-prop-get bookmark-name 'dired-directory)))
+      (let ((dired-dir  (bookmark-prop-get new-bmk-name 'dired-directory)))
         (when (and dired-dir (equal dired-dir bookmark-filename))
-          (bookmark-prop-set bookmark-name 'dired-directory new-filename)))
+          (bookmark-prop-set new-bmk-name 'dired-directory new-filename)))
       (bmkp-maybe-save-bookmarks)
       (list new-bmk-name new-filename))))
 
@@ -4763,9 +4764,11 @@ Handler function for record returned by `bmkp-make-varlist-record'."
   "Create and return a url bookmark for `browse-url' to visit URL.
 The handler is `bmkp-jump-url-browse'."
   (require 'browse-url)
-  `((filename . ,bmkp-non-file-filename)
-    (location . ,url)
-    (handler  . bmkp-jump-url-browse)))
+  (let ((url-0  (copy-sequence url)))
+    (set-text-properties 0 (length url) () url-0) 
+    `((filename . ,bmkp-non-file-filename)
+      (location . ,url-0)
+      (handler  . bmkp-jump-url-browse))))
 
 (defun bmkp-jump-url-browse (bookmark)
   "Handler function for record returned by `bmkp-make-url-browse-record'.

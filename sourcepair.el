@@ -1,17 +1,17 @@
 ;;; sourcepair.el --- Load the corresponding C/C++ header or source file for the current buffer.
 ;;
-;; Copyright (C) 2002 Mohamed Hendawi
+;; Copyright (C) 2007 Mohamed Hendawi
 ;;
 ;; Emacs Lisp Archive Entry
 ;; Filename: sourcepair.el
-;; Version: 1.0
+;; Version: 1.01
 ;; Keywords:   c languages oop
 ;; Author: Mohamed Hendawi <moedev *AT* hendawi *DOT* com>
 ;; Description: Load the corresponding C/C++ header or source file for the current buffer.
 ;; URL: http://www.hendawi.com/emacs/sourcepair.el
 ;; Compatibility: Emacs20, Emacs21
 ;;
-;; $Id: sourcepair.el,v 1.14 2002/07/09 16:41:44 moe Exp $
+;; $Id: sourcepair.el,v 1.15 2007/10/22 11:41:24 moe Exp $
 ;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -25,10 +25,12 @@
 ;; 
 ;; You should have received a copy of the GNU General Public
 ;; License along with this program; if not, write to the Free
-;; Software Foundation, Inc., 59 Temple Place, Suite 330, Boston,
-;; MA 02111-1307 USA
+;; Software Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+;; MA 02110-1301 USA
 ;;
 ;; This code is inspired by a similar function written by Abiyu Diro.
+;; Thanks to Jesper Pedersen for idea and initial implementation of
+;; support for private header files.
 ;;
 ;;; Commentary:
 ;;
@@ -52,7 +54,7 @@
 ;;
 ;; GLOBAL VARIABLES:
 ;;
-;; There are five global variables that can be used to adjust how the function
+;; There are six global variables that can be used to adjust how the function
 ;; works:
 ;;
 ;; sourcepair-source-extensions :
@@ -91,6 +93,13 @@
 ;;    subdirectories for header or source files.  By default this is set
 ;;    to ( "CVS" )
 ;;
+;; sourcepair-private-header-suffixes :
+;;
+;;    A list containing suffixes that will be ignored when searching 
+;;    for the corresponding source file for a given header file.  This
+;;    allows supporting "private header files".   For example, Foo.cpp 
+;;    has a public interface in "Foo.h" and a private interface in 
+;;    "Foo_p.h".  By default this is set to ( "_p" "_impl" ).
 ;;
 ;; For example, in my .emacs file I have the following:
 ;;
@@ -100,7 +109,7 @@
 
 ;;; Code:
 
-(defcustom sourcepair-source-extensions '( ".cpp" ".cxx" ".cc" ".C" ".c" )
+(defcustom sourcepair-source-extensions '( ".cpp" ".CPP" ".Cpp" ".cxx" ".CXX" ".cc" ".CC" ".c" ".C" ".c++" ".C++")
   "*List of recognized extensions for source files.
 
 This variable is used by `sourcepair-load'.  The value should be a list
@@ -111,7 +120,7 @@ value is ( \".cpp\" \".cxx\" \".cc\" \".C\" \".c\" ), and you are looking at
 `sourcepair-source-path'."
 :type '(repeat string))
 
-(defcustom sourcepair-header-extensions '( ".h" ".hpp" ".hh" )
+(defcustom sourcepair-header-extensions '( ".h" ".H" ".hpp" ".HPP" ".Hpp" ".hh" ".HH" ".hxx" ".HXX")
   "*List of recognized extensions for header files.
 
 This variable is used by `sourcepair-load'.  The value should be a list
@@ -120,6 +129,19 @@ value is (\".h\" \".hpp\" \".hh\" ), and you are looking at \"foo.cpp\",
 `sourcepair-load' will look for \"foo.h\", \"foo.hpp\" or \"foo.hh\" in that
 order in the directories specified by `sourcepair-header-path'."
 :type '(repeat string))
+
+(defcustom sourcepair-private-header-suffixes '( "_p" "_impl" )
+  "*List of recognized suffixes for 'private' header files.
+
+This variable is used by `sourcepair-load' to help support 'private header 
+files'.  The value should be a list containing recognized suffixes that will
+be ignored when searching for the corresponding source file for a given 
+header file.  For example, Foo.cpp is an implementation of what is in
+Foo_p.h.  If you set this variable to include (\"_p\") and you are looking 
+at \"Foo_p.h\" or \"Foo.h\", `sourcepair-load' will load the file \"Foo.cpp\".
+
+"
+:type '(repeat-string))
 
 (defcustom sourcepair-source-path       '( "." )
   "*List of directories to search for corresponding source file.
@@ -178,50 +200,40 @@ variable `sourcepair-source-extensions'."
 	  nil)))
 
 
-(defun sourcepair-load ()
-  "Load the corresponding C/C++ header or source file for the current buffer.
+(defun sourcepair-remove-private-suffixes (basename)
+  (car (delete 'nil (append (mapcar '(lambda (suffix) 
+									   (if (string= (substring basename (- (length basename) (length suffix))) suffix)
+										   (substring basename 0 (- (length basename) (length suffix)))))
+									sourcepair-private-header-suffixes)
+							(list basename)))))
 
-This function can be invoked by \\[sourcepair-load].  It will load the the
-corresponding header or source file for the current buffer.  For example, if
-you are looking at the file FooParser.cpp and press \\[sourcepair-load], the
-file FooParser.h will be loaded.  It also works the other way as well.
+(defun sourcepair-analyze-filename (filename)
+  (let* ((extension (concat (member ?. (append filename nil))))
+		 (basename (substring filename 0 (- 0 (length extension)))))
+	
+	(if (member extension sourcepair-header-extensions)
+		(progn (setq basename (sourcepair-remove-private-suffixes basename))
+			   (cons sourcepair-source-path (mapcar '(lambda (arg) (concat basename arg)) sourcepair-source-extensions)))
+	  (if (member extension sourcepair-source-extensions)
+		  (cons sourcepair-header-path 
+				(apply 'append 
+					   (mapcar '(lambda (suffix) (mapcar '(lambda (ext) (concat basename suffix ext)) sourcepair-header-extensions))
+							   (append '("") sourcepair-private-header-suffixes))))))))
 
-There are five global variables that can be used to adjust how the function
-works:
-
- `sourcepair-source-extensions'
- `sourcepair-header-extensions'
- `sourcepair-source-path'
- `sourcepair-header-path'
- `sourcepair-recurse-ignore'
-
-See the documentation for these variables for more info.
-"
-
-  (interactive)
-
-  (defun sourcepair-analyze-filename (filename)
-	(let* ((extension (concat (member ?. (append filename nil))))
-		   (basename (substring filename 0 (- 0 (length extension)))))
-	  (if (member extension sourcepair-header-extensions)
-		  (cons sourcepair-source-path (mapcar '(lambda (arg) (concat basename arg)) sourcepair-source-extensions))
-		(if (member extension sourcepair-source-extensions)
-			(cons sourcepair-header-path (mapcar '(lambda (arg) (concat basename arg)) sourcepair-header-extensions))))))
-
-  (defun sourcepair-find-one-of (path choices recurse)
-	(catch 'matching-filename
-	  (if (file-directory-p path)
-		  (let ((possible-filenames choices)
-				(matching-filename nil)
-				(files-in-directory nil))
-			
+(defun sourcepair-find-one-of (path choices recurse)
+  (catch 'matching-filename
+	(if (file-directory-p path)
+		(let ((possible-filenames choices)
+			  (matching-filename nil)
+			  (files-in-directory nil))
+		  
 		  ;; Check if there's a match in this directory
 		  (while possible-filenames
 			(let ((possible-filename (expand-file-name (car possible-filenames) path)))
 			  (if (file-exists-p possible-filename)
 				  (throw 'matching-filename possible-filename)
 				(setq possible-filenames (cdr possible-filenames)))))
-
+		  
 		  ;; Recursively search subdirectories
 		  (if (not (eq recurse nil))
 			  (progn
@@ -239,34 +251,75 @@ See the documentation for these variables for more info.
 								(if (not (eq matching-filename nil))
 									(throw 'matching-filename matching-filename))))))
 					(setq files-in-directory (cdr files-in-directory))))))))
-	  ;; Return nil if nothing found
-	  nil))
+	;; Return nil if nothing found
+	nil))
 
+(defun sourcepair-matching-file-for-file (filename)
   (catch 'found-matching-file
-	(let* ((temp (sourcepair-analyze-filename (buffer-name)))
-		   (search-path (car temp))
-		   (possible-filenames (cdr temp)))
-	  (if (= (length possible-filenames) 0)
-		  (message "%s is not a recognized source or header file (consider updating sourcepair-source-extensions or sourcepair-header-extensions)" (buffer-name))
-		(progn
-		  (while search-path
-			(let ((path-to-check (car search-path))
-				  (matching-filename nil))
-			  (if (and (> (length path-to-check) 3)
-					   (equal (substring path-to-check -2) "/*"))
-				  (setq matching-filename (sourcepair-find-one-of (substring path-to-check 0 -2)
-																  possible-filenames
-																  t))
-				(setq matching-filename 
-					  (sourcepair-find-one-of path-to-check possible-filenames nil)))
-			  
-			  (if (eq matching-filename nil)
-				  (setq search-path (cdr search-path))
-				(throw 'found-matching-file (find-file matching-filename)))))
+    (let* ((temp (sourcepair-analyze-filename (file-name-nondirectory filename)))
+           (search-path (car temp))
+           (possible-filenames (cdr temp)))
+      (if (= (length possible-filenames) 0)
+          (message "%s is not a recognized source or header file (consider updating sourcepair-source-extensions or sourcepair-header-extensions)" (buffer-name))
+        (progn
+          (while search-path
+            (let ((path-to-check (car search-path))
+                  (matching-filename nil))
+              (if (and (> (length path-to-check) 3)
+                       (equal (substring path-to-check -2) "/*"))
+                  (setq matching-filename (sourcepair-find-one-of (substring path-to-check 0 -2)
+                                                                  possible-filenames
+                                                                  t))
+                (setq matching-filename 
+                      (sourcepair-find-one-of path-to-check possible-filenames nil)))
+                
+              (if (eq matching-filename nil)
+                  (setq search-path (cdr search-path))
+                (throw 'found-matching-file matching-filename))))
 
-		  (message (concat "No matching file for " (buffer-name)
-						   " (consider updating sourcepair-source-path, sourcepair-header-path)")))))))
+          nil)))))
 
+(defun sourcepair-load ()
+  "Load the corresponding C/C++ header or source file for the current buffer.
+
+This function can be invoked by \\[sourcepair-load].  It will load the the
+corresponding header or source file for the current buffer.  For example, if
+you are looking at the file FooParser.cpp and press \\[sourcepair-load], the
+file FooParser.h will be loaded.  It also works the other way as well.
+
+There are six global variables that can be used to adjust how the function
+works:
+
+ `sourcepair-source-extensions'
+ `sourcepair-header-extensions'
+ `sourcepair-source-path'
+ `sourcepair-header-path'
+ `sourcepair-recurse-ignore'
+ `sourcepair-private-header-suffixes'
+
+See the documentation for these variables for more info.
+"
+
+  (interactive)
+
+  (let ((file (sourcepair-matching-file-for-file (buffer-file-name))))
+    (if file
+        (find-file file)
+      (message (concat "No matching file for " (buffer-name)
+                       " (consider updating sourcepair-source-path, sourcepair-header-path)")))))
+
+(defun sourcepair-jump-to-headerfile (prefix)
+  "Jump to header file for class at point"
+  (interactive "P")
+  (save-excursion
+    (let* ((word-at-point (if prefix
+                              (read-from-minibuffer "Class: ")
+                            (current-word)))
+           (file1 (sourcepair-matching-file-for-file (concat word-at-point ".cpp" )))
+           (file (if file1 file1 (sourcepair-matching-file-for-file (concat (downcase word-at-point) ".cpp" )))))
+      (if file
+          (find-file file)
+        (message "Sorry couldn't find include file for class")))))
 
 (defun sourcepair-yank-advice ()
   "Advice function called after a yank.
@@ -301,6 +354,8 @@ function will just reindent the region.
 				(indent-region begin-point end-point nil))))
 		(indent-region (region-beginning) (region-end) nil))))
 
+; This allows (require 'sourcepair)
 (provide 'sourcepair)
+
 ;;; sourcepair.el ends here
 

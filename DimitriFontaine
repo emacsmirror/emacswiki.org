@@ -2,6 +2,8 @@ Hi, I'm [::dim], an Emacs user, and I seldom contribute to it:
 
 * See ClusterSSH
 * Lisp:dim-google.el
+* Lisp:switch-window.el
+* Lisp:el-get.el
 
 I also maintain a !PostgreSQL oriented blog at http://blog.tapoueh.org/, which is entirely edited with EmacsMuse.
 

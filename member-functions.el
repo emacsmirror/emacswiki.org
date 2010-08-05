@@ -1,4 +1,4 @@
-;; member-functions.el --- Expand C++ member functions into implementation file
+;;; member-functions.el --- Expand C++ member functions into implementation file
 
 ;; Copyright (c) 1998 1999 2000  Ron Lawrence
 

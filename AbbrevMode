@@ -70,13 +70,7 @@ This will read the definitions from the default file,
 `M-x abbrev-mode' toggles Abbrev mode.  You can also put the following
 in your ~/.emacs file if you want it always on:
 
-    (abbrev-mode 1)
-
-Actually, you may have to do:
-
     (setq default-abbrev-mode t)
-
-I'm not really sure why.
 
 If you only want it on in text and derived modes, you could do something like this:
 

@@ -16,6 +16,30 @@ too large, we'll split it up later.
 
 == Strings ==
 
+The empty string (zero-length string, null string, ...):
+
+    (zerop (length "")) ;; O(n)
+    ==> t
+
+    (string= "" "") ;; O(n)?
+    ==> t
+
+    (equal "" "") ;; O(n)?
+    ==> t
+
+    (eq "" "") ;; O(1)
+    ==> t
+
+As a space and performance optimization, Emacs keeps an intern-ed copy
+of the empty string as a single object
+
+
+    (eq "" (purecopy ""))
+    ==> t
+
+    (eq "" (propertize "" 'face 'italic))
+    ==> t
+
 === Strings vs buffer content ===
 
 While it is quite common in other programming languages to work on

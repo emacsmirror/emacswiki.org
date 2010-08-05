@@ -18,6 +18,10 @@ Put the following in your .emacs file:
 
 Then, start Emacs and grab-and-drag-mode is activated.
 
+On low spec machine like ARM-based tablet, changing the pointer shape might be extremely slow so the slow response to clicking is annoying. In that case, we can reduce the response time by disabling the change of the pointer shape as:
+
+  (setq grab-and-drag-pointer-shape nil)
+
 == Usage ==
 
 By default settings, you can do "Grab and Drag" using a command `grab-and-drag' by mouse dragging with the left button. That means grab-and-drag-mode overrides the binding of `down-mouse-1' event, which is usually bound to `mouse-drag-region' command. Even Though grab-and-drag-mode overrides the original binding, you can still use it by holding down the button for 1 second without moving the pointer.

@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: mouse, scroll
 
-(defconst grab-and-drag-version "0.2.0")
+(defconst grab-and-drag-version "0.3.0")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -56,8 +56,20 @@
 ;;   (grab-and-drag-mode 1)
 ;;
 ;; Then, start Emacs and grab-and-drag-mode is activated.
+;;
+;; On low spec machine like ARM-based tablet, changing the pointer shape
+;; might be extremely slow so the slow response to clicking is annoying.
+;; In that case, we can reduce the response time by disabling the change
+;; of the pointer shape as:
+;;
+;;   (setq grab-and-drag-pointer-shape nil)
+;;
 
 ;; History:
+;; 2010-08-05  S. Irie
+;;         * Version 0.3.0
+;;         * Improved stability by considering heights of images
+;;         * Bug fixes
 ;; 2010-07-29  S. Irie
 ;;         * Version 0.2.0
 ;;         * Add Horizontal scrolling
@@ -574,8 +586,9 @@ The animation effect of scrolling can be conditioned by options
 		    (and (= (point) (point-max)) (line-beginning-position))
 		    nil t))
 	      (xmax (- (window-width) hscroll-margin 1)))
-	  (if (or (> (/ (car x-y) (frame-char-width)) xmax)
-		  (= (point) (point-max)))
+	  (if (and x-y
+		   (or (> (/ (car x-y) (frame-char-width)) xmax)
+		       (= (point) (point-max))))
 	      (goto-char (posn-point (posn-at-x-y (* xmax (frame-char-width))
 						  (cadr x-y)))))))))
 
@@ -663,21 +676,15 @@ updating the window."
 	     (orig-mouse-color (frame-parameter nil 'mouse-color))
 	     (edges (window-pixel-edges))
 	     (inside-edges (window-inside-pixel-edges))
-	     (maxpos (and (eq (window-end) (point-max))
-			  (pos-visible-in-window-p (point-max) nil t)))
-	     ;; Calculate offset from cursor position to mouse pointer.
-	     ;; It's necessary when mouse dragging starts from the place
-	     ;; where cursor can't be put such as the end of buffer.
-	     (offset (and (eq (point) (point-max))
-			  (+ (- (cdr (posn-x-y posn))
-				(cadr maxpos))
-			     (- (cadr inside-edges)
-				(cadr edges)))))
+	     (offset (- (cdr (posn-x-y posn))
+			(cadr (pos-visible-in-window-p nil nil t))))
 	     (row-height (grab-and-drag-row-height))
 	     (truncated (grab-and-drag-truncated-p))
+	     (point0 (point-marker))
 	     (winstart0 (window-start))
 	     (winend0 (window-end))
 	     (hscroll0 (window-hscroll))
+	     (maxpos0 (pos-visible-in-window-p (point-max) nil t))
 	     (mpos0 (cdr (mouse-pixel-position)))
 	     (mpos mpos0)
 	     (time (float-time))
@@ -723,10 +730,12 @@ updating the window."
 			 ((> (- (posn-timestamp (event-end event))
 				(posn-timestamp (event-start event0)))
 			     grab-and-drag-gesture-time)
-			  (grab-and-drag-start-scrolling (/ (- (cdr mpos)
-							       (cdr prev-mpos))
-							    (- time prev-time))
-							 window))
+			  (if (< (abs (- (car mpos) (car mpos0)))
+				 (abs (- (cdr mpos) (cdr mpos0))))
+			      (grab-and-drag-start-scrolling (/ (- (cdr mpos)
+								   (cdr prev-mpos))
+								(- time prev-time))
+							     window)))
 			 ;; Vertically scroll a screenful.
 			 ((< (abs (- (car mpos) (car mpos0)))
 			     (abs (- (cdr mpos) (cdr mpos0))))
@@ -748,8 +757,8 @@ updating the window."
 				  (when visible
 				    (setq next-screen-context-lines
 					  (+ next-screen-context-lines
-					     (/ (- (if maxpos
-						       (cadr maxpos)
+					     (/ (- (if maxpos0
+						       (cadr maxpos0)
 						     (- (nth 3 inside-edges)
 							(cadr edges)))
 						   (cadr visible))
@@ -800,37 +809,64 @@ updating the window."
 		      (unless (zerop vx)
 			(scroll-right vx vx)
 			;; Give a chance of automatic scrolling.
-			(sit-for 0))
+			(redisplay t))
 		      (setq slip (+ slip dx (- (window-hscroll) hscroll)))))
 		;; Vertical scrolling.
-		(let* ((y (- (min (max (cadr inside-edges)
-				       (- (cdr mpos) (or offset 0)))
-				  (- (nth 3 inside-edges)
-				     (or (nth 4 (pos-visible-in-window-p
-						 (1- (window-end)) nil t))
-					 0)
-				     1))
-			     (cadr edges)))
-		       (vy (round (- y
-				     (cadr (pos-visible-in-window-p nil nil t))
-				     (ash row-height -1))
-				  row-height))
-		       (dy (- (cdr mpos) (cdr prev-mpos))))
+		(let ((dy (- (cdr mpos) (cdr prev-mpos))))
 		  ;; `dy' and `prev-dy' were introduced so that the window
 		  ;; doesn't shake vertically when it includes images.
 		  (if (zerop dy)
 		      (setq dy prev-dy)
+		    (unless (or (> dy 0)
+				(< prev-dy 0)
+				(pos-visible-in-window-p point0))
+		      (goto-char point0)
+		      (recenter -1)
+		      (redisplay t))
 		    (setq prev-dy dy))
-		  (unless (or (zerop vy)
-			      (< (* dy vy) 0))
-		    (save-excursion
-		      (condition-case nil
-			  (scroll-down vy)
-			(beginning-of-buffer
-			 (set-window-start window (point-min)))
-			(end-of-buffer
-			 (set-window-start window (point-max)))
-			(error nil)))))
+		  (let* ((y (- (min (max (cadr inside-edges)
+					 (- (cdr mpos) offset))
+				    (- (nth 3 inside-edges)
+				       (or (nth 4 (pos-visible-in-window-p
+						   (1- (window-end)) nil t))
+					   0)
+				       1))
+			       (cadr edges)))
+			 (posn (and (not truncated)
+				    (posn-at-point)))
+			 (vy (- y
+				(if posn
+				    (cdr (posn-x-y posn))
+				  (cadr (pos-visible-in-window-p nil nil t))))))
+		    (cond
+		     ((< vy 0)
+		      (let ((row 0)
+			    (d (ash row-height -1)))
+			(while (> (setq d (- d
+					     (car
+					      (or (window-line-height row)
+						  (and (redisplay t)
+						       (window-line-height row))))))
+				  vy)
+			  (setq row (1+ row)))
+			(setq vy (- (min row
+					 (if posn
+					     (cdr (posn-actual-col-row posn))
+					   (count-lines
+					    (window-start)
+					    (line-beginning-position))))))))
+		     ((> vy 0)
+		      (setq vy (round vy row-height))))
+		    (unless (or (zerop vy)
+				(< (* dy vy) 0))
+		      (save-excursion
+			(condition-case nil
+			    (scroll-down vy)
+			  (beginning-of-buffer
+			   (set-window-start window (point-min)))
+			  (end-of-buffer
+			   (set-window-start window (point-max)))
+			  (error nil))))))
 		;; Synchronize window scrolling when follow-mode.
 		(if (bound-and-true-p follow-mode)
 		    (funcall (with-no-warnings 'follow-post-command-hook)))))

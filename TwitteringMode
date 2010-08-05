@@ -232,5 +232,8 @@ Thanks in advance.
 [new]
 The version 0.9.0 seems to have some problems on dealing of newlines. But your problem, which is also reported by other people, may be triggered by recent modification on twitter.com because this problem seems to appear recently. The latest version on github will solve the problem. --Tadashi MATSUO
 
+[new]
+How do I avoid having to authorize the app once and again when using OAuth? -- AlbertoGarcia.
+
 ----
 See also: [[Twitter]] [[Identica-mode]]

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul 17 12:39:49 2010 (-0700)
+;; Last-Updated: Wed Aug  4 11:38:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13025
+;;     Update #: 13030
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,6 +97,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/04 dadams
+;;     bmkp-edit-bookmark: Use new bookmark name for update of dired-directory.  Thx to Kai Tetzlaff.
+;; 2010/08/03 dadams
+;;     bmkp-make-url-browse-record: Remove text properties from URL arg.
 ;; 2010/07/17 dadams
 ;;     Added: bmkp-url-jump-(other-window), bmkp-url(-browse)-(alist-only|bookmark-p), bmkp-url-cp,
 ;;            bmkp-url-history, bmkp-make-url-browse-record, bmkp-jump-url-browse.
