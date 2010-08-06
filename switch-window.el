@@ -111,4 +111,4 @@ ask user for the window where move to"
 	(dim:switch-to-window-number key)))))
 
 (global-set-key (kbd "C-x o") 'dim:switch-window)
-(provide 'dim-switch-window)
+(provide 'switch-window)

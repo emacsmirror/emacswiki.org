@@ -106,9 +106,8 @@ Nice idea, I prefer this version of revert-all-buffers:
           (buffer (car list)))
      (while buffer
        (when (buffer-file-name buffer)
-         (progn
-           (set-buffer buffer)
-           (revert-buffer t t t)))
+         (set-buffer buffer)
+         (revert-buffer t t t))
        (setq list (cdr list))
        (setq buffer (car list))))
   (message "Refreshing open files"))

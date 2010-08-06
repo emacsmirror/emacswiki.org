@@ -24,12 +24,33 @@ On low spec machine like ARM-based tablet, changing the pointer shape might be e
 
 == Usage ==
 
-By default settings, you can do "Grab and Drag" using a command `grab-and-drag' by mouse dragging with the left button. That means grab-and-drag-mode overrides the binding of `down-mouse-1' event, which is usually bound to `mouse-drag-region' command. Even Though grab-and-drag-mode overrides the original binding, you can still use it by holding down the button for 1 second without moving the pointer.
+nBy default settings, you can do "Grab and Drag" using a command `grab-and-drag' by mouse dragging with the left button. That means grab-and-drag-mode overrides the binding of `down-mouse-1' event, which is usually bound to `mouse-drag-region' command. Even Though grab-and-drag-mode overrides the original binding, you can still use it by holding down the button for 1 second without moving the pointer.
 
 If you release the mouse button while moving the pointer, the additional action is performed according to the dragging time and direction. The mouse dragging longer than 500 milliseconds causes an inertial scrolling vertically. Otherwise the quick dragging is recognized as a flick gesture, which causes a scrolling by screenful in that direction.
 
 Have fun!
 
+== Tips ==
+
+=== emacs-w3m ===
+
+To move to the next/previous Web page by horizontal flick gesture, add the following to .emacs file:
+
+  (add-hook 'w3m-mode-hook
+            (lambda ()
+              (make-local-variable 'grab-and-drag-gesture-left-command)
+              (make-local-variable 'grab-and-drag-gesture-right-command)
+              (setq grab-and-drag-gesture-left-command 'w3m-view-next-page)
+              (setq grab-and-drag-gesture-right-command 'w3m-view-previous-page)))
+
+=== twittering-mode ===
+
+To get the previous time line automatically when vertical scrolling reaches the end of buffer, add the following to .emacs file:
+
+  (add-hook 'twittering-mode-hook
+            (lambda ()
+              (add-hook 'grab-and-drag-end-of-buffer-hook
+                        'twittering-goto-next-status nil t)))
+
 ----
 CategoryMouse CategoryDisplay
-

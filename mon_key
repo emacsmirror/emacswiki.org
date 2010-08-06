@@ -27,7 +27,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-replacement-utils.el -- Provides a collection of routines and commands and abstracts some commonly encountered procedures for processing regexps with their replacements.
 * Lisp:mon-regexp-symbols.el -- Provides a collection of Symbols bound to lisp lists of regexp/replacement pairs. Allows simple easy interactive command invocation using symbols as arguments to containing lists of regexps.
 * Lisp:mon-time-utils.el (EbayTime) --
-* Lisp:mon-testme-utils.el 
+* Lisp:mon-testme-utils.el --
 
 [:MON-STANDARDS]
 === :MON-STANDARDS ===
@@ -53,19 +53,19 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-get-mon-packages.el -- Pull em all with wget
 * Lisp:mon-get-freenode-lisp-logs -- Pull freenode logs for #lisp with wget
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
-* Lisp:google-define-redux.el -- Provides extensions for Lisp:google-define.el
+* Lisp:google-define-redux.el -- Extends Lisp:google-define.el
 * Lisp:google-define-redux-supplemental.el -- google-define-redux supplemental functions (avoid MON dependencies).
 * Lisp:mon-color-occur.el -- A patched version of Matsushita Akihisa color-cccur.el :SEE http://www.bookshelf.jp/elc/color-occur.el
 * Lisp:mon-rename-image-utils-supplemental.el --
 * Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without NxhtmlMode dependencies.
-* Lisp:mon-css-complete.el (BAD LINK) -- This is a highly modified version of Niels Giesen's css-complete.el :SEE http://github.com/pft/elisp-assorted/blob/master/css-complete.el
+* Lisp:mon-css-complete.el -- This is a highly modified version of Niels Giesen's css-complete.el :SEE http://github.com/pft/elisp-assorted/blob/master/css-complete.el
 * Lisp:mon-drive-transfer-utils.el -- Template builder for transferring backing up large harddrives.
 [:MON-DOC-UTILS]
 === :MON-DOC-UTILS ===
 
 * Lisp:mon-doc-help-utils.el -- (ReferenceSheetHelpUtils) (MonDocHelpUtilsDictionary)
 * Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars required to bootstrap mon-doc-help-utils
-* Lisp:mon-doc-help-css.el -- Extends *Lisp:mon-doc-help-utils.el with CSS related docs
+* Lisp:mon-doc-help-css.el -- Extends Lisp:mon-doc-help-utils.el with CSS related docs
 * Lisp:mon-doc-help-pacman.el -- Some help functions for using the package manager with the GNU/Linux Arch distribution.
 * Lisp:mon-doc-help-tidy.el -- Extends Lisp:mon-doc-help-utils.el package with HTML Tidy docs.
 * Lisp:mon-doc-help-CL.el -- Some Emacs Lisp help functions for using Common-Lisp functions (loop, do, etc.)

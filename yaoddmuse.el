@@ -566,6 +566,9 @@
 (require 'sgml-mode)
 (require 'skeleton)
 (require 'url)
+(require 'thingatpt)
+(require 'find-func)
+(require 'dired)
 
 ;;; Code:
 
@@ -1697,17 +1700,17 @@ unless option PROMPT is non-nil."
   "Get the URL of oddmuse wiki.
 WIKINAME is wiki name for view.
 PAGENAME is page name for view."
-  (condition-case v
-      (concat (or (yaoddmuse-get-url wikiname) (error)) "/" pagename)
-    (error (format "Invalid wiki name: '%s'" wikiname))))
+  (or (ignore-errors
+        (concat (yaoddmuse-get-url wikiname) "/" pagename))
+      (error (format "Invalid wiki name: '%s'" wikiname))))
 
 (defun yaoddmuse-url-diff (wikiname pagename)
   "Get the URL of oddmuse wiki.
 WIKINAME is wiki name for view.
 PAGENAME is page name for view."
-  (condition-case v
-      (concat (or (yaoddmuse-get-url wikiname) (error)) "/?action=browse;diff=2;id=" pagename)
-    (error (format "Invalid wiki name: '%s'" wikiname))))
+  (or (ignore-errors
+        (concat (yaoddmuse-get-url wikiname) "/?action=browse;diff=2;id=" pagename))
+      (error (format "Invalid wiki name: '%s'" wikiname))))
 
 (defun yaoddmuse-get-pagename-table (wikiname)
   "Get table from `yaoddmuse-pages-hash'.

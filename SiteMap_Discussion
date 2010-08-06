@@ -10,6 +10,21 @@ Here's what SiteMap does:
 
 == Open Issues ==
 
+=== CategoryBatchMode ===
+
+Let's just rename this to BatchMode, and make it a sub-page of CategoryCode. -- AaronHawley
+
+[new:DrewAdams:2010-08-05 18:10 UTC]
+I have no strong feelings about it, but why?  Why not keep all categories with the prefix ##Category##, for consistency?  For one thing, searching for `category' finds them all as the first hits.  What's the reason for treating this category exceptionally?
+
+If your point was that we do not need such a category, then the response should be to just get rid of it, changing all refs to it to refs to ##CategoryCode##.  And then perhaps have an anchor on the CategoryCode page for BatchMode.  Maybe that's in fact what you meant? -- DrewAdams
+
+[new]
+I meant the latter.  Shall we demote it from a category to a regular page? -- AaronHawley
+
+[new:DrewAdams:2010-08-05 20:02 UTC]
+OK by me. -- DrewAdams
+
 
 === Mention Wiki Organization by Categories ===
 

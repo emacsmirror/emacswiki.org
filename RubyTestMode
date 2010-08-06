@@ -45,6 +45,8 @@ by RyanDavis.
 
 Another alternative is Lisp:ruby-compilation.el by EricSchulte.
 
+An rspec specific test runner: [http://www.emacswiki.org/emacs/RspecMode RspecMode]
+
 == Discussion ==
 
 Hi, isnt autotest, autotest-notifier better than this if your plan is to test
