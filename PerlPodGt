@@ -10,4 +10,4 @@ The features are
 * And finally a "doubling" command to turn <code>C<...></code> to <code>C<<...>></code> when you want to step up
 
 ----
-PerlLanguage
+PerlLanguage FillParagraph

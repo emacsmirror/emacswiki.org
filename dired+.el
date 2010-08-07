@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jul 13 14:23:28 2010 (-0700)
+;; Last-Updated: Fri Aug  6 16:31:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2538
+;;     Update #: 2551
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -182,6 +182,11 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/08/05 dadams
+;;     diredp-bookmark:
+;;       Handle image files (and sound files, if Bookmark+ is used).
+;;       Use bmkp-file-indirect-set if available.
+;;       Use error-message-string to get failure msg.
 ;; 2010/07/11 dadams
 ;;     Added: diredp-set-bookmark-file-bookmark-for-marked (C-M-b), diredp-mouse-do-bookmark,
 ;;            diredp-do-bookmark-in-bookmark-file (C-M-S-b), direp-read-bookmark-file-args.
@@ -1219,8 +1224,8 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file) ; Was `C-o'.
 (define-key dired-mode-map [(control meta ?*)] 'diredp-marked-other-window)
 (define-key dired-mode-map "\C-o" 'diredp-find-file-other-frame)
-(define-key dired-mode-map "\M-b" 'diredp-do-bookmark)
-(define-key dired-mode-map "\C-\M-b" 'diredp-set-bookmark-file-bookmark-for-marked)
+(define-key dired-mode-map "\M-b"     'diredp-do-bookmark)
+(define-key dired-mode-map "\C-\M-b"     'diredp-set-bookmark-file-bookmark-for-marked)
 (define-key dired-mode-map [(control meta shift ?b)] 'diredp-do-bookmark-in-bookmark-file)
 (define-key dired-mode-map "\M-g" 'diredp-do-grep)
 (define-key dired-mode-map "U" 'dired-unmark-all-marks)
@@ -1747,18 +1752,24 @@ Return nil for success, file name of unsuccessful operation otherwise."
   (let ((file  (dired-get-file-for-visit))
         failure)
     (condition-case err
-        (let ((bookmark-make-record-function
-               (lambda ()
-                 `((filename . ,file)
-                   (position . 0)
-                   (front-context-string)
-                   (rear-context-string)))))                   
-          (bookmark-store (concat prefix (file-name-nondirectory file))
-                          (cdr (bookmark-make-record)) nil))
-      (error (setq failure  err)))
+        (if (fboundp 'bmkp-file-indirect-set)
+            (bmkp-file-indirect-set file)
+          (let ((bookmark-make-record-function
+                 (cond ((and (require 'image nil t) (require 'image-mode nil t)
+                             (condition-case nil (image-type file) (error nil)))
+                        'image-bookmark-make-record)
+                       (t
+                        (lambda ()
+                          `((filename . ,file)
+                            (position . 0)))))))
+            (bookmark-store (concat prefix (file-name-nondirectory file))
+                            (cdr (bookmark-make-record)) nil)))
+      (error (setq failure  (error-message-string err))))
     (if (not failure)
 	nil                             ; Return nil for success.
-      (dired-log "Failed to create bookmark for `%s':\n%s\n" file failure)
+      (if (fboundp 'bmkp-file-indirect-set)
+          (dired-log failure)
+        (dired-log "Failed to create bookmark for `%s':\n%s\n" file failure))
       (dired-make-relative file))))     ; Return file name for failure.
 
 

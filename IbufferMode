@@ -29,6 +29,12 @@ available all of the [[Icicles - Search Commands, Overview|Icicles Search]] feat
 Here's how to hide all buffers starting with an asterisk.
 
     (add-to-list 'ibuffer-never-show-regexps "^\\*")
+[new]
+It does not contain in emacs 23.2's ibuffer.el, use following instead -- coldnew
+
+    (require 'ibuf-ext)
+    (add-to-list 'ibuffer-never-show-predicates "^\\*")
+----coldnew
 
 == View subsets of buffers ==
 

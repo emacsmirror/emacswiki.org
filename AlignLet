@@ -1,4 +1,8 @@
-<code>align-let.el</code> is a spot of code for aligning values in a Lisp <code>let</code> form (or similar), eg.
+<code>align-let.el</code> aligns values in a Lisp <code>let</code> form, and related <code>let*</code> etc.  Get it from
+
+: http://user42.tuxfamily.org/align-let/index.html
+
+For example
 
     (let ((x 1)
           (foo   2)
@@ -12,9 +16,11 @@ becomes
           (zz  (blah)))
       ...)
 
-Get the code from
+Multi-var <code>setq</code> is aligned similarly too,
 
-: http://user42.tuxfamily.org/align-let/index.html
+    (setq x   1
+          foo 2
+          zz  (blah))
 
 ----
 CategoryIndentation  CategoryAlignment

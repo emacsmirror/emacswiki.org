@@ -190,7 +190,8 @@ In windows I use the following. Make sure that hunspell is in the path.
 A third way to use emacs is with SpeckMode which is an alternative to iSpell.
 
 === Wcheck Mode ===
-WcheckMode is a general interface for external checker programs. It can be used with any command-line spelling checkers or other text-filtering tools, even with user's own shell scripts. It is designed to be configurable and not depend on any specific tool implementation. Each language can use its own program, command-line arguments and other settings. Wcheck mode is useful for Enchant spelling checker, for example.
+
+WcheckMode is a fast on-the-fly (spell-)checker. It can be used with the usual command-line spelling checkers but also with other text-filtering tools, even with user's own shell scripts. It is designed to be configurable and not depend on any specific tool implementation. Each language can use its own program, command-line arguments and other settings. Wcheck mode is useful for Enchant spelling checker, for example.
 
 === Enchant ===
 [http://www.abisource.com/projects/enchant/ Enchant] is a wrapper for ispell, aspell, hunspell, myspell, voikko, zemberek, etc. 

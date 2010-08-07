@@ -2,28 +2,30 @@ Lisp:wcheck-mode.el
 
 == Introduction ==
 
-Wcheck mode is a minor mode for on-the-fly (spell-)checking and marking words or other text elements in Emacs buffer. Wcheck sends parts of buffer's content to an external text-filtering program and, based on its output, decides if some parts of text should be marked. Wcheck mode can be used with spell-checker programs such as Enchant, Ispell and Hunspell but actually any tool that can receive text stream from standard input and send text to standard output can be used.
+Wcheck mode is a minor mode for on-the-fly (spell-)checking and marking words or other text elements in Emacs buffer. Wcheck sends parts of buffer's content to an external text-filtering program and, based on its output, decides if some parts of text should be marked. Wcheck mode can be used with spell-checker programs such as Enchant, Ispell and Hunspell but actually any tool that can receive text from standard input stream and send text to standard output can be used.
 
 == Features ==
 
-In Wcheck configuration different semantical units are called "languages". Each language can use its own external program, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. User can choose which "face" is used to mark text elements in buffer. All these settings are language specific and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean.
+In terms of spelling checker and user interface Wcheck mode is an on-the-fly checker which can also offer spelling suggestions (corrections) when asked. In Wcheck configuration different semantical units are called languages. Each language can use its own external programs, command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. On-the-fly checker can use different external program than spelling correction feature. User can choose which "face" is used to mark text elements in buffer. All the settings are language specific and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean.
 
 User can also create major mode specific settings defining which "faces" to read or skip in the buffer. A typical use for this feature is to spell-check only those areas in the buffer which are written in human language. For example, in email messages usually the message body and Subject header are important enough to spell-check. In programming modes user could spell-check only documentation strings and comments (or the opposite if you want to use Wcheck mode to check keywords and syntax of the programming language itself).
 
 == How does it compare to other spell-checkers? ==
 
-The open design makes Wcheck mode quite different from spell-checkers like [[FlySpell]] and [[SpeckMode]]. They are specific tools for spell-checking and are very much tied to Ispell's features and command-line interface. This is good if you want to use Ispell or compatible program for spell-checking natural languages. However, not all human languages can be supported through Ispell and there can also be other kind of text-checking needs. The motivation behind Wcheck mode is to offer more general-purpose and configurable interface for external programs. It does not implement all spell-checker features but it works even with user's custom shell/awk/perl scripts or other checkers and text filters. Wcheck mode is also very fast, a true real-time checker.
+The open design makes Wcheck mode (internally) quite different from spell-checkers like [[FlySpell]] and [[SpeckMode]]. They are specific tools for spell-checking through Ispell or compatible program and are therefore very much tied to Ispell's features and command-line interface. This is probably good if you want to use Ispell or fully compatible program for spell-checking natural languages. However, not all human languages can be supported through Ispell and there can also be other kind of text-checking needs. The motivation behind Wcheck mode is to offer more general-purpose and configurable interface for external programs. It works even with user's custom shell/awk/perl scripts or other checkers and text filters. Also, one of the goals was to make Wcheck mode fast: it's a true real-time checker.
 
 == Install and configure ==
 
 Put Lisp:wcheck-mode.el file to some directory in your `load-path' and add the following lines to your Emacs initialization file (##~/.emacs##):
 
     (autoload 'wcheck-mode "wcheck-mode"
-      "Toggle Wcheck mode." t)
+      "Toggle wcheck-mode." t)
     (autoload 'wcheck-change-language "wcheck-mode"
-      "Switch Wcheck-mode languages." t)
+      "Switch wcheck-mode languages." t)
+    (autoload 'wcheck-spelling-suggestions "wcheck-mode"
+      "Spelling suggestions." t)
 
-See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the spell-checker for the current buffer; command `wcheck-change-language' is used to switch languages.
+See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the spell-checker for the current buffer. Command `wcheck-change-language' is used to switch languages and command `wcheck-spelling-suggestions' (or right mouse button) gives spelling suggestion for misspelled words (if the suggestion program is properly configured).
 
 Here's an example configuration for spell-checking languages British English (using Ispell) and Finnish (using Enchant). The default language will be "Finnish". The example also configures the spell-checker to read only certain buffer areas in `message-mode' and `org-mode'.
 
@@ -31,10 +33,18 @@ Here's an example configuration for spell-checking languages British English (us
      wcheck-language "Finnish"
      wcheck-language-data '(("British English"
                              (program . "/usr/bin/ispell")
-                             (args "-l" "-d" "british"))
+                             (args . ("-l" "-d" "british"))
+                             (suggestion-program . "/usr/bin/ispell")
+                             (suggestion-args . ("-a" "-d" "british"))
+                             (suggestion-parser
+                              . wcheck-parse-suggestions-ispell))
                             ("Finnish"
                              (program . "/usr/bin/enchant")
-                             (args "-l" "-d" "fi")))
+                             (args . ("-l" "-d" "fi"))
+                             (suggestion-program . "/usr/bin/enchant")
+                             (suggestion-args . ("-a" "-d" "fi"))
+                             (suggestion-parser
+                              . wcheck-parse-suggestions-ispell)))
      wcheck-read-or-skip-faces '((message-mode 
                                   read nil message-header-subject
                                   message-cited-text)
@@ -43,6 +53,7 @@ Here's an example configuration for spell-checking languages British English (us
                                   org-level-3 org-level-4
                                   org-level-5 org-level-6 org-level-7
                                   org-level-8)))
+
 
 == Questions and Other Things ==
 

@@ -32,13 +32,21 @@ Using <code>C-u M-q</code> to fill the same text, I get this:
     bound to newline.  This will insert |
     a line break.                       |
 
-If you're *French*, you might be used to typing a space in front of colons, question marks, exclamation marks, etc.  [http://blog.empyree.org/?2004/01/31/181-internationalisation-punctuation-support]  This might lead to the following problem:
+== Not Breaking ==
+
+The `fill-nobreak-predicate' hook lets you avoid line breaks at certain places.  For example if you're *French*, you might be used to typing a space in front of colons, question marks, exclamation marks, etc.  [http://blog.empyree.org/?2004/01/31/181-internationalisation-punctuation-support]  This might lead to the following problem:
 
    Where do we write the question marks |
    ? We use a space in front of them.   |
 
 To avoid this, add `fill-french-nobreak-p' to
 `fill-nobreak-predicate'.
+
+Emacs comes with a `fill-single-word-nobreak-p' to not dangle the first or last word of a sentence, and HtmlMode/SgmlMode sets up `sgml-fill-nobreak' to keep a tag and first attribute together.  For more nobreaks see
+
+* NobreakFade -- a few miscellaneous nobreaks
+* PerlPodGt -- POD <code>C<<</code>, <code>S<></code> and <code>C<!></code>
+* [http://user42.tuxfamily.org/texinfo-nobreak/index.html texinfo-nobreak.el] -- workarounds for <code>makeinfo</code>
 
 == Paragraph Boundaries ==
 

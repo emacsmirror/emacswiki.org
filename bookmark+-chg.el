@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug  4 11:38:18 2010 (-0700)
+;; Last-Updated: Fri Aug  6 16:25:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13030
+;;     Update #: 13050
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,6 +97,13 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/06 dadams
+;;     Added (and bound the commands):
+;;       bmkp-(compilation|occur)-target-set(-all), bmkp-(file|url)-target-set,
+;;       bmkp-default-handler-associations, bmkp-compilation-file+line-at,
+;;       bmkp-default-handler-(for-file|user), bmkp-sound-jump.
+;;     bmkp-occur-create-autonamed-bookmarks: Do not define it  for Emacs < 22.  Protect wrt POS, BUF.
+;;     Added to Bookmark menu: bmkp-(file|url)-target-set, bmkp-set-(bookmark-file|desktop)-bookmark.
 ;; 2010/08/04 dadams
 ;;     bmkp-edit-bookmark: Use new bookmark name for update of dired-directory.  Thx to Kai Tetzlaff.
 ;; 2010/08/03 dadams

@@ -7,16 +7,16 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug  4 11:03:27 2010 (-0700)
+;; Last-Updated: Fri Aug  6 09:49:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 210
+;;     Update #: 394
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `ffap'.
+;;   `dired', `dired-aux', `dired-x', `ffap'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -65,6 +65,7 @@
 ;;    (@> "Sorting - Commands")
 ;;    (@> "Sorting - General Predicates")
 ;;    (@> "Sorting - File-Name Predicates")
+;;    (@> "Indirect Bookmarking Functions")
 ;;    (@> "Other Bookmark+ Functions (`bmkp-*')")
 ;;  (@> "Keymaps")
  
@@ -80,7 +81,8 @@
 ;;    `bmkp-all-tags-regexp-jump-other-window',
 ;;    `bmkp-bookmark-file-jump', `bmkp-bookmark-list-jump',
 ;;    `bmkp-choose-navlist-from-bookmark-list',
-;;    `bmkp-choose-navlist-of-type', `bmkp-crosshairs-highlight',
+;;    `bmkp-choose-navlist-of-type', `bmkp-compilation-target-set',
+;;    `bmkp-compilation-target-set-all', `bmkp-crosshairs-highlight',
 ;;    `bmkp-cycle', `bmkp-cycle-other-window',
 ;;    `bmkp-cycle-this-buffer', `bmkp-cycle-this-buffer-other-window',
 ;;    `bmkp-delete-all-autonamed-for-this-buffer',
@@ -90,13 +92,14 @@
 ;;    `bmkp-dired-jump', `bmkp-dired-jump-current',
 ;;    `bmkp-dired-jump-current-other-window',
 ;;    `bmkp-dired-jump-other-window', `bmkp-empty-file',
-;;    `bmkp-file-jump', `bmkp-file-jump-other-window',
-;;    `bmkp-gnus-jump', `bmkp-gnus-jump-other-window',
-;;    `bmkp-info-jump', `bmkp-info-jump-other-window',
-;;    `bmkp-jump-in-navlist', `bmkp-jump-in-navlist-other-window',
-;;    `bmkp-jump-to-type', `bmkp-jump-to-type-other-window',
-;;    `bmkp-list-all-tags', `bmkp-list-defuns-in-commands-file',
-;;    `bmkp-local-file-jump', `bmkp-local-file-jump-other-window',
+;;    `bmkp-file-target-set', `bmkp-file-jump',
+;;    `bmkp-file-jump-other-window', `bmkp-gnus-jump',
+;;    `bmkp-gnus-jump-other-window', `bmkp-info-jump',
+;;    `bmkp-info-jump-other-window', `bmkp-jump-in-navlist',
+;;    `bmkp-jump-in-navlist-other-window', `bmkp-jump-to-type',
+;;    `bmkp-jump-to-type-other-window', `bmkp-list-all-tags',
+;;    `bmkp-list-defuns-in-commands-file', `bmkp-local-file-jump',
+;;    `bmkp-local-file-jump-other-window',
 ;;    `bmkp-make-function-bookmark', `bmkp-man-jump',
 ;;    `bmkp-man-jump-other-window', `bmkp-menu-jump-other-window'
 ;;    (Emacs 20, 21), `bmkp-navlist-bmenu-list', `bmkp-next-bookmark',
@@ -105,6 +108,7 @@
 ;;    `bmkp-next-bookmark-w32', `bmkp-next-bookmark-w32-repeat',
 ;;    `bmkp-non-file-jump', `bmkp-non-file-jump-other-window',
 ;;    `bmkp-occur-create-autonamed-bookmarks',
+;;    `bmkp-occur-target-set', `bmkp-occur-target-set-all',
 ;;    `bmkp-previous-bookmark', `bmkp-previous-bookmark-repeat',
 ;;    `bmkp-previous-bookmark-this-buffer',
 ;;    `bmkp-previous-bookmark-this-buffer-repeat',
@@ -138,10 +142,11 @@
 ;;    `bmkp-toggle-saving-bookmark-file',
 ;;    `bmkp-toggle-saving-menu-list-state',
 ;;    `bmkp-toggle-bookmark-set-refreshes', `bmkp-unomit-all',
-;;    `bmkp-url-jump', `bmkp-url-jump-other-window',
-;;    `bmkp-use-bookmark-file-create', `bmkp-varlist-jump',
-;;    `bmkp-version', `bmkp-w3m-jump', `bmkp-w3m-jump-other-window',
-;;    `old-bookmark-insert', `old-bookmark-relocate'.
+;;    `bmkp-url-target-set', `bmkp-url-jump',
+;;    `bmkp-url-jump-other-window', `bmkp-use-bookmark-file-create',
+;;    `bmkp-varlist-jump', `bmkp-version', `bmkp-w3m-jump',
+;;    `bmkp-w3m-jump-other-window', `old-bookmark-insert',
+;;    `old-bookmark-relocate'.
 ;;
 ;;  Macros defined here:
 ;;
@@ -151,6 +156,7 @@
 ;;
 ;;    `bmkp-autoname-bookmark-function', `bmkp-autoname-format',
 ;;    `bmkp-bookmark-name-length-max', `bmkp-crosshairs-flag',
+;;    `bmkp-default-handler-associations',
 ;;    `bmkp-desktop-no-save-vars', `bmkp-handle-region-function',
 ;;    `bmkp-incremental-filter-delay', `bmkp-menu-popup-max-length',
 ;;    `bmkp-other-window-pop-to-flag', `bmkp-prompt-for-tags-flag',
@@ -176,12 +182,13 @@
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
 ;;    `bmkp-bookmark-list-bookmark-p', `bmkp-buffer-last-access-cp',
-;;    `bmkp-buffer-names', `bmkp-completing-read-1',
-;;    `bmkp-completing-read-buffer-name',
+;;    `bmkp-buffer-names', `bmkp-compilation-file+line-at',
+;;    `bmkp-completing-read-1', `bmkp-completing-read-buffer-name',
 ;;    `bmkp-completing-read-file-name', `bmkp-completing-read-lax',
 ;;    `bmkp-cp-not', `bmkp-create-varlist-bookmark',
 ;;    `bmkp-current-bookmark-list-state', `bmkp-current-sort-order',
 ;;    `bmkp-cycle-1', `bmkp-default-bookmark-name',
+;;    `bmkp-default-handler-for-file', `bmkp-default-handler-user',
 ;;    `bmkp-desktop-alist-only', `bmkp-desktop-bookmark-p',
 ;;    `bmkp-desktop-kill', `bmkp-dired-alist-only',
 ;;    `bmkp-dired-bookmark-p', `bmkp-dired-subdirs',
@@ -255,7 +262,8 @@
 ;;    `bmkp-set-tag-value-for-bookmarks', `bmkp-set-union',
 ;;    `bmkp-some', `bmkp-some-marked-p', `bmkp-some-tags-alist-only',
 ;;    `bmkp-some-tags-regexp-alist-only', `bmkp-some-unmarked-p'
-;;    `bmkp-sort-and-remove-dups', `bmkp-specific-buffers-alist-only',
+;;    `bmkp-sort-and-remove-dups', `bmkp-sound-jump',
+;;    `bmkp-specific-buffers-alist-only',
 ;;    `bmkp-specific-files-alist-only', `bmkp-tag-name',
 ;;    `bmkp-tags-list', `bmkp-this-buffer-alist-only',
 ;;    `bmkp-this-buffer-p', `bmkp-this-file-alist-only',
@@ -376,6 +384,7 @@
 (defvar dired-actual-switches)          ; Defined in `dired.el'.
 (defvar dired-buffers)                  ; Defined in `dired.el'.
 (defvar dired-directory)                ; Defined in `dired.el'.
+(defvar dired-guess-shell-case-fold-search) ; Defined in `dired-x.el'.
 (defvar dired-mode-map)                 ; Defined in `dired.el'.
 (defvar dired-subdir-alist)             ; Defined in `dired.el'.
 (defvar diredp-menu-bar-subdir-menu)    ; Defined in `dired+.el'.
@@ -526,6 +535,44 @@ If you use this option in Lisp code, you will want to add/remove
              (add-hook 'bookmark-after-jump-hook 'bmkp-crosshairs-highlight)
            (remove-hook 'bookmark-after-jump-hook 'bmkp-crosshairs-highlight)))         
   :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-default-handler-associations
+  (and (require 'dired-x)               ; It in turn requires `dired-aux.el'
+       (let ((assns  ()))
+         (dolist (shell-assn  dired-guess-shell-alist-user)
+           (push (cons (car shell-assn)
+                       `(lambda (bmk) 
+                         (dired-run-shell-command
+                          (dired-shell-stuff-it ,(cadr shell-assn) (list (bookmark-get-filename bmk))
+                           nil nil))))
+                 assns))
+         assns))
+  "File associations for bookmark handlers used for indirect bookmarks.
+Each element of the alist is (REGEXP . COMMAND).
+REGEXP matches a file name.
+COMMAND is a sexp that evaluates to either a shell command (a string)
+ or an Emacs function (a symbol or a lambda form).
+
+Example value:
+
+ ((\"\\.pdf$\" . \"AcroRd32.exe\") ; Adobe Acrobat Reader
+  (\"\\.ps$\" . \"gsview32.exe\")) ; Ghostview (PostScript viewer)
+
+When you change this option using Customize, if you want to use a
+literal string as COMMAND then you must double-quote the text:
+\"...\".  (But do not use double-quotes for the REGEXP.)  If you want
+to use a symbol as COMMAND, then single-quote it - e.g. 'foo.
+
+This option is used by `bmkp-default-handler-user'.  If an association
+for a given file name is not found using this option, then
+`bmkp-default-handler-for-file' looks for an association in
+`dired-guess-shell-alist-user', `dired-guess-shell-alist-default', and
+in mailcap entries (Emacs 23+), in that order."
+  :type '(alist :key-type
+          regexp :value-type
+          (sexp :tag "Shell command (string) or Emacs function (symbol or lambda form)"))
+  :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-desktop-no-save-vars '(search-ring regexp-search-ring kill-ring)
@@ -2321,7 +2368,7 @@ navigation list are those that would be currently shown in the
   (interactive
    (let ((bookmark-alist  (cons (bmkp-current-bookmark-list-state) (bmkp-bookmark-list-alist-only))))
      (list (bmkp-read-bookmark-for-type "bookmark-list " bookmark-alist nil nil
-                                        'bmkp-bookmark-list-history)
+                                        'bmkp-bookmark-list-history "Choose ")
            bookmark-alist)))
   (let ((state  (let ((bookmark-alist  (or alist (cons (bmkp-current-bookmark-list-state)
                                                        (bmkp-bookmark-list-alist-only)))))
@@ -4021,6 +4068,263 @@ If TRUTH is nil, return nil."
   (and truth (if (car truth) '(nil) '(t))))
 
 
+;;(@* "Indirect Bookmarking Functions")
+;;  *** Indirect Bookmarking Functions ***
+
+;;;###autoload
+(defun bmkp-url-target-set (url &optional prefix-only-p name) ; `C-x p c u'
+  "Set a bookmark for a URL.
+Interactively you are prompted for the URL.  Completion is available.
+Use `M-n' to pick up the url at point as the default.
+
+You are also prompted for the bookmark name.  But with a prefix arg,
+you are prompted only for a bookmark-name prefix.  In that case, the
+bookmark name is the prefix followed by the URL."
+  (interactive
+   (list (if (require 'ffap nil t)
+             (ffap-read-file-or-url "URL: " (or (thing-at-point 'url) (url-get-url-at-point)))
+           (read-file-name "URL: " nil (or (thing-at-point 'url) (url-get-url-at-point))))
+         current-prefix-arg
+         (if current-prefix-arg
+             (read-string "Prefix for bookmark name: " nil nil)
+           (bmkp-completing-read-lax "Bookmark name"))))
+  (unless name (setq name  ""))
+  (let (failure)
+    (condition-case err
+        (let ((bookmark-make-record-function
+               (if (eq major-mode 'w3m-mode)
+                   'bmkp-make-w3m-record
+                 (lambda () (bmkp-make-url-browse-record url)))))
+          (bookmark-store (if prefix-only-p (concat name url) name)
+                          (cdr (bookmark-make-record)) nil))
+      (error (setq failure  err)))
+    (if (not failure)
+        nil                             ; Return nil for success.
+      (error "Failed to create bookmark for `%s':\n%s\n" url failure)
+      url)))                            ; Return URL name for failure.
+
+;;;###autoload
+(defun bmkp-file-target-set (file &optional prefix-only-p name) ; Bound to `C-x p c f'
+  "Set a bookmark for FILE.
+Interactively you are prompted for FILE.  Completion is available.
+Use `M-n' to pick up the file name at point as the default.
+
+You are also prompted for the bookmark name.  But with a prefix arg,
+you are prompted only for a bookmark-name prefix.  In that case, the
+bookmark name is the prefix followed by the non-directory part of
+FILE."
+  (interactive
+   (list (read-file-name "File: " nil
+                         (or (if (boundp 'file-name-at-point-functions) ; In `files.el', Emacs 23.2+.
+                                 (run-hook-with-args-until-success 'file-name-at-point-functions)
+                               (ffap-guesser))
+                             (thing-at-point 'filename)
+                             (thing-at-point 'url)
+                             (url-get-url-at-point)))
+         current-prefix-arg
+         (if current-prefix-arg
+             (read-string "Prefix for bookmark name: " nil nil)
+           (bmkp-completing-read-lax "Bookmark name"))))
+  (unless name (setq name  ""))
+  (let* ((default-handler  (bmkp-default-handler-for-file file))
+         (bookmark-make-record-function
+          (cond (default-handler        ; User default handler
+                    (lambda () `((filename . ,file) (position . 0) (handler . ,default-handler))))
+                ;; Non-user defaults.
+                ((and (require 'image nil t) (require 'image-mode nil t) ; Image
+                      (condition-case nil (image-type file) (error nil)))
+                 'image-bookmark-make-record)
+                ((let ((case-fold-search  t)) (string-match "\\([.]au$\\|[.]wav$\\)" file)) ; Sound
+                 (lambda () `((filename . ,file) (handler . bmkp-sound-jump))))
+                (t
+                 (lambda () `((filename . ,file) (position . 0))))))
+         failure)
+    (condition-case err
+        (bookmark-store (if prefix-only-p (concat name (file-name-nondirectory file)) name)
+                        (cdr (bookmark-make-record)) nil)
+      (error (setq failure  (error-message-string err))))
+    (if (not failure)
+        nil                             ; Return nil for success.
+      (error "Failed to create bookmark for `%s':\n%s\n" file failure))))
+
+(defun bmkp-default-handler-for-file (filename)
+  "Return a default bookmark handler for FILENAME.
+It is a Lisp function.  Typically it runs a shell command.
+
+The shell command is the first one found by checking, in order:
+`bmkp-default-handler-user', `dired-guess-default',
+`mailcap-file-default-commands' (Emacs 23+).
+
+Alternatively `bmkp-default-handler-user' can provide a Lisp function
+\(a symbol or a lambda form) directly for FILENAME.  In that case, that
+function is applied directly to FILENAME."
+  (let* ((bmkp-user  (bmkp-default-handler-user filename))
+         (shell-cmd  (or (and (stringp bmkp-user) bmkp-user)
+                         (and (require 'dired-x nil t)
+                              (let* ((case-fold-search
+                                      (or (and (boundp 'dired-guess-shell-case-fold-search)
+                                               dired-guess-shell-case-fold-search)
+                                          case-fold-search))
+                                     (default  (dired-guess-default (list filename))))
+                                (if (consp default) (car default) default)))
+                         (and (require 'mailcap nil t) ; Emacs 23+
+                              (car (mailcap-file-default-commands (list filename)))))))
+    (cond ((stringp shell-cmd) `(lambda (bmk)
+                                  (dired-do-shell-command ,shell-cmd nil ',(list filename))))
+          ((or (functionp bmkp-user) (and bmkp-user (symbolp bmkp-user)))
+           `(lambda (bmk) (funcall #',bmkp-user ,filename)))
+          (t nil))))    
+
+(defun bmkp-default-handler-user (filename)
+  "Return default handler for FILENAME.
+The value is based on `bmkp-default-handler-associations'."
+  (catch 'bmkp-default-handler-user
+    (dolist (assn  bmkp-default-handler-associations)
+      (when (string-match (car assn) filename)
+        (throw 'bmkp-default-handler-user (cdr assn))))
+    nil))
+
+(defun bmkp-sound-jump (bookmark)
+  "Handler for sound files: play the sound file that is BOOKMARK's file."
+  (play-sound-file (bookmark-get-filename bookmark)))
+
+;;;###autoload
+(when (> emacs-major-version 21)
+  (defun bmkp-compilation-target-set (&optional prefix) ; `C-c C-b'
+    "Set a bookmark at the start of the line for this compilation hit.
+You are prompted for the bookmark name.  But with a prefix arg, you
+are prompted only for a PREFIX string.  In that case, and in Lisp
+code, the bookmark name is PREFIX followed by the (relative) file name
+of the hit, followed by the line number of the hit."
+    (interactive "P")
+    (let* ((file+line  (bmkp-compilation-file+line-at (line-beginning-position)))
+           (file       (car file+line))
+           (line       (cdr file+line)))
+      (unless (and file line) (error "Cursor is not on a compilation hit"))
+      (save-excursion
+        (with-current-buffer (find-file-noselect file)
+          (goto-char (point-min)) (forward-line (1- line))
+          (if (not prefix)
+              (call-interactively #'bookmark-set)
+            (when (interactive-p)
+              (setq prefix  (read-string "Prefix for bookmark name: " nil nil)))
+            (unless (stringp prefix) (setq prefix  ""))
+            (bookmark-set (format "%s%s, line %s" prefix (file-name-nondirectory file) line)
+                          99 'INTERACTIVEP)))))))
+    
+(when (> emacs-major-version 21)
+  (defun bmkp-compilation-file+line-at (&optional pos)
+    "Return the file and position indicated by this compilation message.
+These are returned as a cons: (FILE . POSITION).
+POSITION is the beginning of the line indicated by the message."
+    (unless pos (setq pos (point)))
+    (let* ((loc        (car (get-text-property pos 'message)))
+           (line       (cadr loc))
+           (filename   (caar (nth 2 loc)))
+           (directory  (cadr (car (nth 2 loc))))
+           (spec-dir   (if directory (expand-file-name directory) default-directory)))
+      (cons (expand-file-name filename spec-dir) line))))
+    
+;;;###autoload
+(when (> emacs-major-version 21)
+  (defun bmkp-compilation-target-set-all (prefix &optional msgp) ; `C-c C-M-b'
+    "Set a bookmark for each hit of a compilation buffer.
+NOTE: You can use `C-x C-q' to make the buffer writable and then
+      remove any hits that you do not want to bookmark.  Only the hits
+      remaining in the buffer are bookmarked.
+
+You are prompted for a PREFIX string to prepend to each bookmark name,
+the rest of which is the file name of the hit followed by its line
+number."
+    (interactive (list (read-string "Prefix for bookmark name: " nil nil) 'MSGP))
+    (if (y-or-n-p "This will bookmark *EACH* hit in the buffer.  Continue? ")
+        (let ((count  0))
+          (save-excursion
+            (goto-char (point-min))
+            (when (get-text-property (point) 'message) ; Visible part of buffer starts with a hit
+              (condition-case nil       ; because buffer is narrowed or header text otherwise removed.
+                  (bmkp-compilation-target-set prefix) ; Ignore error here (e.g. killed buffer).
+                (error nil))
+              (setq count  (1+ count)))
+            (while (and (condition-case nil (progn (compilation-next-error 1) t) (error nil))
+                        (not (eobp)))
+              (condition-case nil
+                  (bmkp-compilation-target-set prefix) ; Ignore error here (e.g. killed buffer).
+                (error nil))
+              (setq count  (1+ count)))
+            (when msgp (message "Set %d bookmarks" count))))
+      (message "OK - canceled"))))
+
+
+;; We could make the `occur' code work for Emacs 20 & 21 also, but you would not be able to
+;; delete some occurrences and bookmark only the remaining ones.
+
+;;;###autoload
+(when (> emacs-major-version 21)
+  (defun bmkp-occur-target-set (&optional prefix) ; `C-c C-b'
+    "Set a bookmark at the start of the line for this `(multi-)occur' hit.
+You are prompted for the bookmark name.  But with a prefix arg, you
+are prompted only for a PREFIX string.  In that case, and in Lisp
+code, the bookmark name is PREFIX followed by the buffer name of the
+hit, followed by the line number of the hit.
+
+You can use this only in `Occur' mode (commands such as `occur' and
+`multi-occur')."
+    (interactive "P")
+    (unless (eq major-mode 'occur-mode) (error "You must be in `occur-mode'"))
+    (let* ((line  (and prefix
+                       (save-excursion
+                         (forward-line 0)
+                         ;; We could use [: ] here, to handle `moccur', but that loses anyway for
+                         ;; `occur-mode-find-occurrence', so we would need other hoops too.
+                         (re-search-forward "^\\s-+\\([0-9]+\\):" (line-end-position) 'NOERROR)
+                         (or (format "%5d" (string-to-number (match-string 1))) ""))))
+           (mkr   (occur-mode-find-occurrence))
+           (buf   (marker-buffer mkr))
+           (file  (or (buffer-file-name buf) bmkp-non-file-filename)))
+      (save-excursion (with-current-buffer buf
+                        (goto-char mkr)
+                        (if (not prefix)
+                            (call-interactively #'bookmark-set)
+                          (when (interactive-p)
+                            (setq prefix  (read-string "Prefix for bookmark name: " nil nil)))
+                          (unless (stringp prefix) (setq prefix  ""))
+                          (bookmark-set (format "%s%s, line %s" prefix buf line)
+                                        99 'INTERACTIVEP)))))))
+
+;;;###autoload
+(when (> emacs-major-version 21)
+  (defun bmkp-occur-target-set-all (prefix &optional msgp) ; `C-c C-M-b'
+    "Set a bookmark for each hit of a `(multi-)occur' buffer.
+NOTE: You can use `C-x C-q' to make the buffer writable and then
+      remove any hits that you do not want to bookmark.  Only the hits
+      remaining in the buffer are bookmarked.
+
+You are prompted for a PREFIX string to prepend to each bookmark name,
+the rest of which is the buffer name of the hit followed by its line
+number.
+
+You can use this only in `Occur' mode (commands such as `occur' and
+`multi-occur').
+
+See also command `bmkp-occur-create-autonamed-bookmarks', which
+creates autonamed bookmarks to all `occur' and `multi-occur' hits."
+    (interactive (list (read-string "Prefix for bookmark name: " nil nil) 'MSGP))
+    (if (y-or-n-p "This will bookmark *EACH* hit in the buffer.  Continue? ")
+        (let ((count  0))
+          (save-excursion
+            (goto-char (point-min))
+            (while (condition-case nil
+                       (progn (occur-next) t) ; "No more matches" ends loop.
+                     (error nil))
+              (condition-case nil
+                  (bmkp-occur-target-set prefix) ; Ignore error here (e.g. killed buffer).
+                (error nil))
+              (setq count  (1+ count)))
+            (when msgp (message "Set %d bookmarks" count))))
+      (message "OK - canceled"))))
+
+
 ;;(@* "Other Bookmark+ Functions (`bmkp-*')")
 ;;  *** Other Bookmark+ Functions (`bmkp-*') ***
 
@@ -4484,7 +4788,7 @@ Otherwise, load it to supplement the current bookmark list."
 
 ;; Desktop bookmarks
 ;;;###autoload
-(defun bmkp-set-desktop-bookmark (desktop-file) ; Bound globally to `C-x p K', `C-x r K'
+(defun bmkp-set-desktop-bookmark (desktop-file) ; Bound globally to `C-x p K', `C-x r K', `C-x p c K'
   "Save the desktop as a bookmark.
 You are prompted for the desktop-file location and the bookmark name."
   (interactive (list (read-file-name "Save desktop in file: ")))
@@ -5840,23 +6144,25 @@ Non-interactively, act at POSITION, not point."
     (bmkp-set-autonamed-bookmark (point))))
 
 ;;;###autoload
-(defun bmkp-occur-create-autonamed-bookmarks ( &optional msgp)
-  "Create an autonamed bookmark for each `occur' hit.
+(when (> emacs-major-version 21)
+  (defun bmkp-occur-create-autonamed-bookmarks ( &optional msgp)
+    "Create an autonamed bookmark for each `occur' hit.
 You can use this only in `Occur' mode (commands such as `occur' and
 `multi-occur')."
-  (interactive (list 'MSG))
-  (unless (eq major-mode 'occur-mode) (error "You must be in `occur-mode'"))
-  (let ((count  0))
-    (save-excursion
-      (goto-char (point-min))
-      (while (condition-case nil (progn (occur-next) t) (error nil))
-        (let* ((pos   (get-text-property (point) 'occur-target))
-               (buf   (marker-buffer pos)))
-          (with-current-buffer buf
-            (goto-char pos)
-            (bmkp-set-autonamed-bookmark (point)))
-          (setq count  (1+ count)))))
-    (when msgp (message "Created %d autonamed bookmarks" count))))
+    (interactive (list 'MSG))
+    (unless (eq major-mode 'occur-mode) (error "You must be in `occur-mode'"))
+    (let ((count  0))
+      (save-excursion
+        (goto-char (point-min))
+        (while (condition-case nil (progn (occur-next) t) (error nil))
+          (let* ((pos   (get-text-property (point) 'occur-target))
+                 (buf   (and pos (marker-buffer pos))))
+            (when buf
+              (with-current-buffer buf
+                (goto-char pos)
+                (bmkp-set-autonamed-bookmark (point)))
+              (setq count  (1+ count))))))
+      (when msgp (message "Created %d autonamed bookmarks" count)))))
 
 ;;;###autoload
 (defun bmkp-set-autonamed-regexp-buffer (regexp &optional msgp)
@@ -6027,6 +6333,57 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   (when (featurep 'bookmark+-lit)
     (define-key bookmark-map [C-down]   'bmkp-next-lighted-this-buffer-repeat)
     (define-key bookmark-map [C-up]     'bmkp-previous-lighted-this-buffer-repeat)))
+
+
+;; `bookmark-set-map'
+
+(defvar bmkp-set-map nil "Keymap containing bindings for bookmark set commands.")
+
+;;;###autoload
+(define-prefix-command 'bmkp-set-map)
+;;;###autoload
+(define-key bookmark-map "c"  bmkp-set-map) ; `C-x p c' for create
+
+;;;###autoload
+(define-key bmkp-set-map "K"  'bmkp-set-desktop-bookmark) ; `C-x p c K'
+;;;###autoload
+(define-key bmkp-set-map "f"  'bmkp-file-target-set) ; `C-x p c f'
+;;;###autoload
+(define-key bmkp-set-map "m"  'bookmark-set) ; `C-x p c m'
+;;;###autoload
+(define-key bmkp-set-map "x"  'bmkp-set-bookmark-file-bookmark) ; `C-x p c x'
+;;;###autoload
+(define-key bmkp-set-map "u"  'bmkp-url-target-set) ; `C-x p c u'
+;;;###autoload
+(define-key bmkp-set-map "\r" 'bmkp-toggle-autonamed-bookmark-set/delete) ; `C-x p c RET'
+
+
+;; Add set commands to other keymaps: occur, compilation: `C-c C-b', `C-c C-M-b', `C-c C-M-B'.
+;; See `dired+.el' for Dired bookmarking keys, which are different.
+
+(add-hook 'occur-mode-hook
+          #'(lambda ()
+              (unless (lookup-key occur-mode-map "\C-c\C-b")
+                (define-key occur-mode-map "\C-c\C-b" 'bmkp-occur-target-set))
+              (unless (lookup-key occur-mode-map "\C-c\C-\M-b")
+                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-occur-target-set-all))
+              (unless (lookup-key occur-mode-map [(control ?c) (control meta shift ?b)])
+                (define-key occur-mode-map [(control ?c) (control meta shift ?b)]
+                  'bmkp-occur-create-autonamed-bookmarks))))
+
+(add-hook 'compilation-mode-hook
+          #'(lambda ()
+              (unless (lookup-key occur-mode-map "\C-c\C-b")
+                (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set))
+              (unless (lookup-key occur-mode-map "\C-c\C-\M-b")
+                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
+
+(add-hook 'compilation-minor-mode-hook
+          #'(lambda ()
+              (unless (lookup-key occur-mode-map "\C-c\C-b")
+                (define-key occur-mode-map "\C-c\C-b" 'bmkp-compilation-target-set))
+              (unless (lookup-key occur-mode-map "\C-c\C-\M-b")
+                (define-key occur-mode-map "\C-c\C-\M-b" 'bmkp-compilation-target-set-all))))
 
 
 ;; `bookmark-jump-map' and `bmkp-jump-other-window-map'
@@ -6221,30 +6578,41 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
                          (define-key w3m-mode-map "j" 'bmkp-w3m-jump))))
 
 
-;; Add `bmkp-occur-create-autonamed-bookmarks' to `occur-mode-map' as `C-c b'.
-(add-hook 'occur-mode-hook
-          #'(lambda () (unless (lookup-key occur-mode-map "\C-cb")
-                         (define-key occur-mode-map "\C-cb" 'bmkp-occur-create-autonamed-bookmarks))))
-
-
 ;;; Vanilla Emacs `Bookmarks' menu (see also [jump] from `Bookmark+' menu, below).
 
+(define-key-after menu-bar-bookmark-map [separator-set] '("--") 'jump)
 (define-key-after menu-bar-bookmark-map [set]
   '(menu-item "Set Bookmark..." (lambda () (interactive) (call-interactively #'bookmark-set))
     :help "Set a bookmark at point")
-  'jump)
+  'separator-set)
+(define-key-after menu-bar-bookmark-map [bmkp-file-target-set]
+  '(menu-item "Set Bookmark to Target File" bmkp-file-target-set
+    :help "Set a bookmark that targets a given file")
+  'set)
+(define-key-after menu-bar-bookmark-map [bmkp-url-target-set]
+  '(menu-item "Set Bookmark to Target URL" bmkp-url-target-set
+    :help "Set a bookmark that targets a given URL")
+  'bmkp-file-target-set)
+(define-key-after menu-bar-bookmark-map [bmkp-set-desktop-bookmark]
+  '(menu-item "Set Bookmark to Desktop" bmkp-set-desktop-bookmark
+    :help "Save the current desktop as a bookmark")
+  'bmkp-url-target-set)
+(define-key-after menu-bar-bookmark-map [bmkp-set-bookmark-file-bookmark]
+  '(menu-item "Set Bookmark to Bookmark File" bmkp-set-bookmark-file-bookmark
+    :help "Set a bookmark that loads a bookmark file when jumped to")
+  'bmkp-set-desktop-bookmark)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-set]
   '(menu-item "Set Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Set an autonamed bookmark at point"
     :visible (not (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
                    'noerror)))
-  'set)
+  'bmkp-set-bookmark-file-bookmark)
 (define-key-after menu-bar-bookmark-map [bmkp-toggle-autoname-bookmark-delete]
   '(menu-item "Delete Autonamed Bookmark" bmkp-toggle-autonamed-bookmark-set/delete
     :help "Delete the autonamed bookmark at point"
     :visible (bookmark-get-bookmark (funcall bmkp-autoname-bookmark-function (point))
               'noerror))
-  'set)
+  'bmkp-set-bookmark-file-bookmark)
 (define-key-after menu-bar-bookmark-map [bmkp-delete-all-autonamed-for-this-buffer]
   '(menu-item "Delete All Autonamed Bookmarks Here..."
     bmkp-delete-all-autonamed-for-this-buffer

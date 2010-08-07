@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul 17 11:23:35 2010 (-0700)
+;; Last-Updated: Fri Aug  6 16:41:04 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13139
+;;     Update #: 13306
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -106,9 +106,12 @@
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
-;;    (@> "Using Bookmarks You Might Never Visit!")
-;;      (@> "Open Bookmarks Using Windows File Associations")
-;;      (@> "Use Dired to Bookmark Files without Visiting Them")
+;;    (@> "Bookmarking without Visiting the Target")
+;;      (@> "Bookmarking a File or a URL")
+;;      (@> "Bookmarking the Marked Files in Dired")
+;;      (@> "Bookmarking Compilation, Grep, and Occur Hits")
+;;      (@> "Bookmarking Files That You Cannot Visit")
+;;      (@> "Opening Bookmarks Using Windows File Associations")
 ;;    (@> "Using Multiple Bookmark Files")
 ;;      (@> "Bookmark-File Bookmarks")
 ;;    (@> "The Bookmark List (Display)")
@@ -246,6 +249,16 @@
 ;;     to quickly switch among different projects (sets of bookmarks):
 ;;     Dired, bookmark-list, bookmark-file, and desktop bookmarks.
 ;;
+;;  * Additional ways to bookmark.
+;;
+;;     - You can bookmark the file or URL named at point (or any other
+;;       file or URL), without first visiting it.
+;;
+;;     - You can bookmark the targets of the hits in a compilation
+;;       buffer or an `occur' buffer, without first visiting them.
+;;
+;;     - You can bookmark all of the marked files in Dired at once.
+;;
 ;;  * Improvements for the bookmark list (buffer `*Bookmark List*',
 ;;    aka "menu list") that is displayed using `C-x r l'.
 ;;
@@ -317,7 +330,7 @@
 ;;       (e.g. Dired), you can use a command that offers only such
 ;;       bookmarks as completion candidates.
 ;;
-;;  * Dedicated prefix keys.
+;;  * Dedicated keymaps as prefix keys.
 ;;
 ;;     - Prefix `C-x p' is used for bookmark keys, in general.  The
 ;;       vanilla keys on prefix `C-x r' are still available also, but
@@ -325,9 +338,28 @@
 ;;       convenient for bookmarks.  Using `C-x p' lets you focus on
 ;;       bookmarks.
 ;;
+;;     - Prefix `C-x p c' is for setting various kinds of bookmarks.
+;;
 ;;     - Prefixes `C-x j' and `C-x 4 j' (for other-window) are used
 ;;       for bookmark jump commands.  Again, a dedicated prefix key
 ;;       helps you focus on one kind of action (jumping).
+;;
+;;     All of these prefix keys correspond to prefix-map variables, so
+;;     you need not use these particular prefixes.  You can bind these
+;;     maps to any prefix keys you want.  These are the maps, together
+;;     with their predefined bindings.  (Note that the keymap for
+;;     setting bookmarks is bound to a prefix in `bookmark-map'.)
+;;
+;;       `bookmark-map'               - `C-x p' 
+;;       `bmkp-set-map'               - `C-x p c'
+;;       `bmkp-jump-map'              - `C-x j'
+;;       `bmkp-jump-other-window-map' - `C-x 4 j'
+;;
+;;     In addition, mode-specific bookmarking commands are bound in
+;;     some other modes: Occur, Compilation (including Grep),
+;;     Buffer-menu, Gnus, Info, Man, Woman, W3M, and Dired (if you use
+;;     Dired+).  These keys let you set or jump to bookmarks specific
+;;     to the modes.
 ;;
 ;;  * Helpful help.
 ;;
@@ -414,8 +446,13 @@
 ;;  the prefix is `C-x 4 j', not `C-x j'.  For instance,
 ;;  `bmkp-dired-jump-other-window' is bound to `C-x 4 j d'.
 ;;
-;;  If you don't want to remember the different type-specfic bindings,
-;;  you can use commands `bmkp-jump-to-type' and
+;;  More precisely, the bookmark jump commands are on the prefix maps
+;;  `bmkp-jump-map' and `bmkp-jump-other-window-map', which have the
+;;  default bindings `C-x j' and `C-x 4 j'.  You can bind these maps
+;;  to any keys you like.
+;;
+;;  If you do not want to remember the different type-specfic
+;;  bindings, you can use commands `bmkp-jump-to-type' and
 ;;  `bmkp-jump-to-type-other-window' (`C-x j :' and `C-x 4 j :').
 ;;  They work for any type, prompting you first for the type, then for
 ;;  a bookmark of that type (only).
@@ -505,8 +542,7 @@
 ;;  use `M-b' (`diredp-do-bookmark') in Dired to create a bookmark for
 ;;  each of the marked files in the Dired buffer.  Even if you never
 ;;  use those bookmarks for navigating to the files, you can use them
-;;  with tags to organize the files.  See also
-;;  (@> "Open Bookmarks Using Windows File Associations").
+;;  with tags to organize the files.
 ;;
 ;;  By default, you create bookmarks without tags and add tags to them
 ;;  later.  If you prefer, you can customize option
@@ -519,7 +555,12 @@
 ;;  other Bookmark+ commands (e.g. search, query-replace) that apply
 ;;  to the marked bookmarks in the `*Bookmark List*' window, you can
 ;;  really do quite a lot using bookmark tags.  Use your imagination!
-;;  See (@> "Tag Commands and Keys") for more about this.
+;;
+;;  See Also:
+;;
+;;  * (@> "Bookmarking the Marked Files in Dired")
+;;  * (@> "Opening Bookmarks Using Windows File Associations")
+;;  * (@> "Tag Commands and Keys")
 ;;
 ;;
 ;;(@* "Bookmark Tags Can Have Values")
@@ -733,85 +774,62 @@
 ;;  the sequence.)
 ;;
 ;;
-;;(@* "Using Bookmarks You Might Never Visit!")
-;;  ** Using Bookmarks You Might Never Visit! ***
+;;(@* "Bookmarking without Visiting the Target")
+;;  ** Bookmarking without Visiting the Target **
 ;;
-;;  Now that's an unusual idea: bookmarking files you never visit.
-;;  Well, by "visit" I mean in the Emacs sense of editing the file,
-;;  visiting it in a buffer.
+;;  There are several use cases for bookmarking a target without first
+;;  visiting it:
 ;;
-;;  There are in fact lots of files that you use that you never visit,
-;;  but that you might like to keep track of or access in other ways
-;;  besides opening them in Emacs: music files, image files, whatever.
+;;  1. In an Emacs buffer you come across a reference or a link to a
+;;     file or a URL.  You bookmark the target without bothering to
+;;     visit it first.  You do not really care which position in the
+;;     file is bookmarked.
 ;;
-;;  You can define a new kind of bookmark for any file type,
-;;  implementing a handler for it that performs the appropriate action
-;;  on it.  That action needs to be expressible using an Emacs
-;;  function, but it need not have anything to do with visiting the
-;;  file in Emacs.
+;;  2. In Dired, you mark certain files and then bookmark all (each)
+;;     of them, in one operation.
 ;;
-;;  But how do you bookmark a file if you never visit it?  That topic
-;;  is covered below -
-;;  see (@> "Use Dired to Bookmark Files without Visiting Them").
+;;  3. As a special case of #1 and #2, you bookmark a file that you
+;;     cannot visit in Emacs (in the sense of editing it in a buffer).
+;;     "Jumping" to the bookmark performs an operation appropriate to
+;;     the file.
 ;;
-;;  Regardless of how you do it, after you create individual bookmarks
-;;  for, say, individual music or image files, you can use `P B' in
-;;  the bookmark-list display to show only those bookmarks, and then
-;;  use `C-x r m' to bookmark that state of the bookmark-list.
+;;  4. In a compilation buffer (e.g. `*grep*', `*compile*') or an
+;;     occur or multi-occur buffer (`*Occur*'), you bookmark one or
+;;     more of the hits.  Such a bookmark takes you to the appropriate
+;;     position in the target file or buffer.
 ;;
-;;  That bookmark-list bookmark in effect becomes a music playlist or
-;;  an image library or slideshow.  Jump to it anytime you want to
-;;  listen to that set of music pieces or view those images.  And you
-;;  can use `C-x p B' and then `C-x p next'  to cycle among the music
-;;  pieces or images (slideshow).
-;;  (see (@> "Cycling the Navigation List")).
+;; 
+;;(@* "Bookmarking a File or a URL")
+;;  *** Bookmarking a File or a URL ***
 ;;
-;;  Together with the use of bookmark tags, this gives you a handy way
-;;  to organize and access objects of any kind.
-;;  See (@> "Bookmark Tags").
+;;  You can use commands `bmkp-file-target-set' and
+;;  `bmkp-url-target-set', bound by default to `C-x p c f' and `C-x p
+;;  c u', to bookmark any file or URL.  Completion is available, the
+;;  default file name or URL being determined by the text at point.
 ;;
-;;
-;;(@* "Open Bookmarks Using Windows File Associations")
-;;  *** Open Bookmarks Using Windows File Associations ***
-;;
-;;  If you use Microsoft Windows there is no need to even define new
-;;  bookmark types and handlers, if the action you want is the one
-;;  that Windows associates with the file.  You already have a set of
-;;  file/program associations, and Bookmark+ recognizes these as
-;;  alternative handlers.
-;;
-;;  You can thus take advantage of Windows file associations to open
-;;  bookmarks for files of all kinds.  To do this, you also need
-;;  library `w32-browser.el'.  In the bookmark list, the following
-;;  keys are bound to commands that open bookmarks using the
-;;  associated Windows `Open' applications:
-;;
-;;    `M-RET'     - `bmkp-bmenu-w32-open'
-;;    `M-mouse-2' - `bmkp-bmenu-w32-open-with-mouse'
-;;    `M-o'       - `bmkp-bmenu-w32-open-select'
-;;
-;;
-;;(@* "Use Dired to Bookmark Files without Visiting Them")
-;;  *** Use Dired to Bookmark Files without Visiting Them ***
+;;  
+;;(@* "Bookmarking the Marked Files in Dired")
+;;  *** Bookmarking the Marked Files in Dired ***
 ;;
 ;;  If you use Dired+ (library `dired+.el'), then you can bookmark all
-;;  of the marked files in a Dired buffer, even if you normally do not
-;;  or cannot visit those files in Emacs.  These keys are available in
-;;  Dired:
+;;  of the marked files in a Dired buffer at once, even if you
+;;  normally do not or cannot visit those files in Emacs.  These keys
+;;  are available in Dired:
 ;;
 ;;    `M-b'                   - Bookmark each marked file
 ;;    `C-M-S-b' (aka `C-M-B') - Bookmark each marked file in a
-;;                              bookmark-file you specify
+;;                              bookmark-file that you specify
 ;;    `C-M-b'                 - Bookmark each marked file in a
 ;;                              bookmark-file you specify, and create
 ;;                              a bookmark for that bookmark-file
 ;;
 ;;  Each of these commands bookmarks each of the marked files.  By
-;;  default, the bookmark file used for the latter two is in the
-;;  current directory.
+;;  default, the bookmark file used for the latter two commands is in
+;;  the current directory.
 ;;
-;;  If you use multiple `C-u' as a prefix arg, then you can bookmark
-;;  all of the files in Dired, regardless of markings, as follows:
+;;  If you use multiple `C-u' as a prefix arg for these commands, then
+;;  you can bookmark all of the files in Dired, regardless of
+;;  markings, as follows:
 ;;
 ;;    `C-u C-u'         - Use all files in Dired, except directories
 ;;    `C-u C-u C-u'     - Use all files and dirs, except `.' and `..'
@@ -827,6 +845,122 @@
 ;;  created from the marked files.  Without `C-u', jumping to the
 ;;  bookmark-file bookmark simply loads its bookmarks into the current
 ;;  set of bookmarks.
+;;
+;;  
+;;(@* "Bookmarking Compilation, Grep, and Occur Hits")
+;;  *** Bookmarking Compilation, Grep, and Occur Hits ***
+;;
+;;  In a similar way, you can bookmark the file or buffer positions of
+;;  selected hits in a compilation buffer (including `*grep*') or an
+;;  `occur' or `multi-occur' buffer.
+;;
+;;  `C-c C-b' in such a buffer bookmarks the target of the hit at
+;;  point.  `C-c C-M-b' bookmarks the target of each hit in the
+;;  buffer.
+;;
+;;  `C-c C-M-b' in these buffers is thus similar to `M-b' in a Dired
+;;  buffer.  Unlike Dired, however, there is no way to mark such hits.
+;;  Every hit is bookmarked.
+;;
+;;  Nevertheless, you can get the same effect.  Just use `C-x C-q' to
+;;  make the buffer writable (e.g. temporarily), and then remove any
+;;  hits that you do not want to bookmark.  You can remove hits anyway
+;;  you like, including by `C-k' and by regexp (`M-x flush-lines' or
+;;  `M-x keep-lines').
+;;
+;;  See also: (@> "Autonamed Bookmarks - Easy Come Easy Go"),
+;;  bookmarking occur hits using autonamed bookmarks.
+;;
+;;
+;;(@* "Bookmarking Files That You Cannot Visit")
+;;  *** Bookmarking Files That You Cannot Visit ***
+;;
+;;  There are lots of files that you use that you never visit, but
+;;  that you might like to keep track of or access in other ways
+;;  besides opening them in Emacs: music files, image files, whatever.
+;;
+;;  You can define a new kind of bookmark for any file type you are
+;;  interested in, implementing a bookmark handler for it that
+;;  performs the appropriate action on it when you "jump" to it.  That
+;;  action needs to be expressible using an Emacs function, but it
+;;  need not have anything to do with visiting the file in Emacs.
+;;
+;;  When you bookmark a target file that Emacs recognizes as an image
+;;  or sound file, an appropriate handler is used automatically.
+;;
+;;  After you create individual bookmarks for, say, music or image
+;;  files, you can use `P B' in the bookmark-list display to show only
+;;  those bookmarks, and then use `C-x r m' to bookmark that state of
+;;  the bookmark-list.
+;;
+;;  That bookmark-list bookmark in effect becomes a music playlist or
+;;  an image library or slideshow.  Jump to it anytime you want to
+;;  listen to that set of music pieces or view those images.  And you
+;;  can use `C-x p B' and then `C-x p next' to cycle among the music
+;;  pieces or images (slideshow).  (See (@> "Cycling the Navigation List").)
+;;
+;;  Together with the use of bookmark tags, this gives you a handy way
+;;  to organize and access objects of any kind.  See (@> "Bookmark Tags").
+;;
+;;  You use option `bmkp-default-handler-associations' to control
+;;  which operation (bookmark handler) to use for which file type.
+;;  This is a set of associations (an alist) with key a regexp
+;;  matching a file name and with value a Lisp sexp that evaluates to
+;;  a shell command (a string) or an Emacs function (a symbol or
+;;  lambda form).
+;;
+;;  The handler for the bookmark created invokes the shell command or
+;;  the Emacs function with the file name as argument.
+;;
+;;  Here is an example option value:
+;;
+;;   (("\\.ps$" . "gsview32.exe")
+;;    ("\\.html?$" . browse-url))
+;;
+;;  This value creates a bookmark that, when you jump to it, invokes
+;;  shell command `gsview32.exe' on the bookmark's target file if it
+;;  is PostScript (extension `.ps'), and invokes Emacs Lisp function
+;;  `browse-url' on the file if it is HTML (extension `.htm' or
+;;  `.html').
+;;
+;;  The default value of `bmkp-default-handler-associations' is taken
+;;  from the value of option `dired-guess-shell-alist-user' (from
+;;  Dired-X).  If no matching file association is found in
+;;  `bmkp-default-handler-associations', then the associations in
+;;  `bmkp-default-handler-associations' are used to find a shell
+;;  command appropriate to the target file type.
+;;
+;;
+;;(@* "Opening Bookmarks Using Windows File Associations")
+;;  *** Opening Bookmarks Using Windows File Associations ***
+;;
+;;  If you use Microsoft Windows there is no need to define new
+;;  bookmark types and handlers, if the action you want is the one
+;;  that Windows associates with the file.  You already have a set of
+;;  file/program associations, and Bookmark+ recognizes these as
+;;  alternative handlers.
+;;
+;;  You can thus take advantage of Windows file associations to open
+;;  bookmarks for files of all kinds.  To do this, you also need
+;;  library `w32-browser.el'.  In the bookmark list, the following
+;;  keys are bound to commands that open bookmarks using the
+;;  associated Windows `Open' applications:
+;;
+;;    `M-RET'     - `bmkp-bmenu-w32-open'
+;;    `M-mouse-2' - `bmkp-bmenu-w32-open-with-mouse'
+;;    `M-o'       - `bmkp-bmenu-w32-open-select'
+;;
+;;  Windows file associations are always available to you, in addition
+;;  to any other file associations that you define using
+;;  `bmkp-default-handler-associations' (see
+;;  (@> "Bookmarking Files That You Cannot Visit")).
+;;
+;;  You can thus have two different programs associated with the same
+;;  kind of file.  Your MS Windows file association for PostScript
+;;  might, for example, use Adobe Distiller to create a PDF file from
+;;  PostScript, while your `bmkp-default-handler-associations'
+;;  association for Postcript might use GhostView to display it
+;;  directly.
 ;;
 ;;
 ;;(@* "Using Multiple Bookmark Files")
@@ -1417,17 +1551,15 @@
 ;;  further facilitate cycling, and you arrive at the idea behind the
 ;;  Bookmark+ navigation list.
 ;;
-;;  Another analogy is a music playlist.  If you define a bookmark
-;;  type whose handler plays a music file, then you can use Bookmark+
-;;  as a simple music player.  Similarly, you can use Bookmark+ to
-;;  create slideshows, by defining a bookmark type with a handler that
-;;  displays an image file.  Cycle the navigation list to move through
-;;  the slide show.
+;;  Another analogy is a music playlist.  You can use Bookmark+ as a
+;;  simple music player by bookmarking music files.  Similarly, you
+;;  can use Bookmark+ to create slideshows by bookmarking image files.
+;;  Cycle the navigation list to move through the slide show.
 ;;
 ;;  If you use MS Windows, you can take advantage of your existing
 ;;  file associations to open your bookmarks using the appropriate
 ;;  program - no need to define a new bookmark type and handler.  See
-;;  (@> "Open Bookmarks Using Windows File Associations").
+;;  (@> "Bookmarking Files That You Cannot Visit").
 ;;
 ;;  Note: The default value of option `bmkp-use-region' is `t', not
 ;;  `cycling-too', which means that when you cycle to a bookmark its
@@ -1641,6 +1773,8 @@
 ;;  * `bmkp-set-autonamed-bookmark-at-line' - At a line beginning
 ;;  * `bmkp-set-autonamed-regexp-buffer'    - At buffer matches
 ;;  * `bmkp-set-autonamed-regexp-region'    - At region matches
+;;  * `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in *Occur*) -
+;;    At `occur' and `multi-occur' hits
 ;;
 ;;
 ;;(@* "Highlighting Bookmark Locations")

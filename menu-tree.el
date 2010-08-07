@@ -9,7 +9,7 @@
 ;; Maintainer: IRIE Shinsuke
 ;; Keywords: Localization, Japanese, menu-bar
 
-(defconst menu-tree-version "0.95"
+(defconst menu-tree-version "0.96"
   "Version number of the menu-tree package.")
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -56,6 +56,10 @@
 ;;
 
 ;;; History:
+;;  2010-08-06  S. Irie
+;;          * Version 0.96
+;;          * Fixed bug: `rmail' and `compose-mail' are not updated dynamically
+;;
 ;;  2010-06-30  S. Irie
 ;;          * Version 0.95
 ;;          * Updated for Emacs 23.2
@@ -350,8 +354,8 @@ Used as the sub-tree of the default value of `menu-tree-alist-ja'.")
 		)
 ;	    (separator-vc "--")
 	    (gnus "ネットニュースを読む(Gnus)")
-	    (rmail (format "メールを読む(%s使用)" (read-mail-item-name)))
-	    (compose-mail (format "メールを送信(%s使用)" (send-mail-item-name)))
+	    (rmail "メールを読む(%sを使用)")
+	    (compose-mail "メールを送信(%sを使用)")
 	    (directory-search "ディレクトリ検索"
 		(load "サーバのホットリストを取得")
 		(new "新規サーバ")
@@ -1564,7 +1568,10 @@ corresponding to sub menu."
 	       ((eq str 'menu-item)
 		;; 2) (EVENT menu-item "TEXT" KEYMAP)
 		(setq str (pop item)
-		      child (car item))))
+		      child (car item))
+		(if (eq (car-safe str) 'format)
+		    ;; 2') (EVENT menu-item (format "TEXT" ...) KEYMAP)
+		    (setq str (cadr str)))))
 	      (if menu-tree-coding-system
 		  (setq str (decode-coding-string str menu-tree-coding-system)))
 	      (push (cons sym (cons str (menu-tree-convert child)))
@@ -1638,7 +1645,11 @@ the same as MENU-TREE except for corresponding to sub menu."
 	    (menu-tree-override (cdr item) subst))
 	   ((eq (pop item) 'menu-item)
 	    ;; 2) (EVENT menu-item "TEXT" KEYMAP)
-	    (setcar item str)
+	    (setcar (if (eq (car-safe (car item)) 'format)
+			;; 2') (EVENT menu-item (format "TEXT" ...) KEYMAP)
+			(cdar item)
+		      item)
+		    str)
 	    (menu-tree-override (cadr item) subst))))))))
 
 (define-obsolete-function-alias
