@@ -12,7 +12,7 @@ User can also create major mode specific settings defining which "faces" to read
 
 == How does it compare to other spell-checkers? ==
 
-The open design makes Wcheck mode (internally) quite different from spell-checkers like [[FlySpell]] and [[SpeckMode]]. They are specific tools for spell-checking through Ispell or compatible program and are therefore very much tied to Ispell's features and command-line interface. This is probably good if you want to use Ispell or fully compatible program for spell-checking natural languages. However, not all human languages can be supported through Ispell and there can also be other kind of text-checking needs. The motivation behind Wcheck mode is to offer more general-purpose and configurable interface for external programs. It works even with user's custom shell/awk/perl scripts or other checkers and text filters. Also, one of the goals was to make Wcheck mode fast: it's a true real-time checker.
+The open design makes Wcheck mode (internally) quite different from spell-checkers like [[FlySpell]] and [[SpeckMode]]. They are specific tools for spell-checking through Ispell or compatible program and are therefore very much tied to Ispell's features and command-line interface. This is probably good if you want to use Ispell or fully compatible program for spell-checking natural languages. However, not all human languages can be supported through Ispell and there can also be other kind of text-checking needs. The motivation behind Wcheck mode is to offer more general-purpose and configurable interface for external programs. It works even with user's custom shell/awk/perl scripts or other checkers and text filters. Also, one of the goals was to make Wcheck mode perform well: it must run quickly to be comfortable to use as a real-time checker.
 
 == Install and configure ==
 
@@ -60,6 +60,10 @@ Here's an example configuration for spell-checking languages British English (us
 Are there any grammar checkers available that you can use with this?
 
 Suggestion: Write your example using `( ... ) so that you can for example write ,ispell-program-name instead of "/usr/bin/ispell".
+
+[new]
+
+: Using variable `ispell-program-name' with `() construct may be a good idea for some individuals but not as a general example. The variable is not defined by default, only after Emacs ispell package is loaded.
 
 ----
 CategorySpelling

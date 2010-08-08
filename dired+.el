@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Aug  6 16:31:12 2010 (-0700)
+;; Last-Updated: Sat Aug  7 10:31:33 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2551
+;;     Update #: 2602
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -182,6 +182,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/08/07 dadams
+;;     dired-map-over-marks: Removed loop that used dired-between-files.
+;;     diredp-get-file-or-dir-name: test against subdir/..? also.
+;;     dired-do-find-marked-files: Pass original ARG to dired-get-marked-files.
 ;; 2010/08/05 dadams
 ;;     diredp-bookmark:
 ;;       Handle image files (and sound files, if Bookmark+ is used).
@@ -466,27 +470,16 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
   ;;endless loop.
   ;;This warning should not apply any longer, sk  2-Sep-1991 14:10.
   `(prog1
-    (let ((inhibit-read-only  t) case-fold-search found results)
+    (let ((inhibit-read-only  t)
+          multi-C-u case-fold-search found results)
       (when (and (consp ,arg) (> (prefix-numeric-value ,arg) 4))
-        (setq arg  (case (prefix-numeric-value ,arg)
-                     (16   'all-files-no-dirs) ; `C-u C-u'
-                     (64   'all-files-no-dots) ; `C-u C-u C-u'
-                     (256  'all-files)  ; `C-u C-u C-u C-u'
-                     (t    'all-files-no-dirs))))
-      ;; Don't interact here.  Let `dired-map-over-marks-check' take care of that, even if it
-      ;; doesn't explicitly say whether all files are acted on.
-      ;;$$$$$$   (let ((newarg  (case (prefix-numeric-value ,arg)
-      ;;                          (16   'all-files-no-dirs) ; `C-u C-u'
-      ;;                          (64   'all-files-no-dots) ; `C-u C-u C-u'
-      ;;                          (256  'all-files) ; `C-u C-u C-u C-u'
-      ;;                          (t    'all-files-no-dirs))))
-      ;;           (if (eq dired-no-confirm t)
-      ;;               (setq arg newarg)
-      ;;             (if (not (y-or-n-p (format "Act on all files in buffer? ")))
-      ;;                 (message "Acting on current file only")
-      ;;               (setq arg newarg)
-      ;;               (message "OK, acting on all files")))))
-      (if (and ,arg (not (memq ,arg '(all-files-no-dirs all-files-no-dots all-files))))
+        (setq arg        (case (prefix-numeric-value ,arg)
+                           (16   'all-files-no-dirs) ; `C-u C-u'
+                           (64   'all-files-no-dots) ; `C-u C-u C-u'
+                           (256  'all-files) ; `C-u C-u C-u C-u'
+                           (t    'all-files-no-dirs))
+              multi-C-u  t))
+      (if (and ,arg (not multi-C-u))
           (if (integerp ,arg)
               (progn;; no save-excursion, want to move point.
                 (dired-repeat-over-lines
@@ -507,50 +500,43 @@ If DISTINGUISH-ONE-MARKED is non-nil, then return (t FILENAME) instead
             ;; can insert lines before the just found file,
             ;; confusing us by finding the same marked file again
             ;; and again and...
-            (setq next-position
-                  (and (if (memq ,arg '(all-files-no-dirs all-files-no-dots all-files))
-                           (diredp-get-file-or-dir-name arg)
-                         (re-search-forward regexp nil t))
-                       (point-marker))
-                  found  (not (null next-position)))
+            (setq next-position  (and (if multi-C-u
+                                          (diredp-get-file-or-dir-name arg)
+                                        (re-search-forward regexp nil t))
+                                      (point-marker))
+                  found          (not (null next-position)))
             (while next-position
               (goto-char next-position)
               (if ,show-progress (sit-for 0))
-              (setq results (cons ,body results))
+              (setq results  (cons ,body results))
               ;; move after last match
               (goto-char next-position)
               (forward-line 1)
               (set-marker next-position nil)
-              (setq next-position
-                    (and (if (memq ,arg '(all-files-no-dirs all-files-no-dots all-files))
-                             (diredp-get-file-or-dir-name arg)
-                           (re-search-forward regexp nil t))
-                         (point-marker)))
-              (while (and (not (eobp)) (dired-between-files))
-                (forward-line 1)
-                (setq next-position (point-marker)))))
-          (if (and ,distinguish-one-marked (= (length results) 1))
-              (setq results (cons t results)))
-          (if found
-              results
-            (list ,body)))))
+              (setq next-position  (and (if multi-C-u
+                                            (diredp-get-file-or-dir-name arg)
+                                          (re-search-forward regexp nil t))
+                                        (point-marker)))))
+          (when (and ,distinguish-one-marked (= (length results) 1))
+            (setq results  (cons t results)))
+          (if found results (list ,body)))))
     ;; save-excursion loses, again
     (dired-move-to-filename)))
 
 ;; Just a helper function for `dired-map-over-marks'.
 (defun diredp-get-file-or-dir-name (arg)
-  "Return name of file or directory on this line or nil if none.
+  "Return name of next file or directory or nil if none.
 Argument ARG:
- `all-files-no-dirs' or nil means return nil if a directory.
- `all-files-no-dots' means return nil if `.' or `..'.
- Anything else means return nil only if not on a file or directory."
+ `all-files-no-dirs' or nil means skip directories.
+ `all-files-no-dots' means skip `.' and `..'."
   (let ((fname  nil))
     (while (and (not fname) (not (eobp)))
       (setq fname  (dired-get-filename t t))
       (when (and fname (or (not arg) (eq arg 'all-files-no-dirs))
                  (file-directory-p fname))
         (setq fname  nil))
-      (when (and fname (eq arg 'all-files-no-dots) (member fname '("." ".." "./" "../")))
+      (when (and fname (eq arg 'all-files-no-dots)
+                 (or (member fname '("." "..")) (string-match "/\.\.?$" fname)))
         (setq fname  nil))
       (forward-line 1))
     (forward-line -1)
@@ -567,7 +553,7 @@ Argument ARG:
 ;;; The only thing modified here is the doc string, which is updated
 ;;; to reflect the new ARG behavior.
 (defun dired-get-marked-files (&optional localp arg filter distinguish-one-marked)
-  "Return the marked files' names as list of strings.
+  "Return names of the marked files as a list of strings.
 The list is in the same order as the buffer, that is, the car is the
   first marked file.
 Values returned are normally absolute file names.
@@ -1677,9 +1663,10 @@ bookmark-file bookmark for BOOKMARK-FILE."
     (unless bmkp-current-bookmark-file (setq bmkp-current-bookmark-file  bookmark-default-file))
     (let ((old-bmkp-current-bookmark-file  bmkp-current-bookmark-file))
       (unwind-protect
-           (progn (bmkp-switch-bookmark-file bookmark-file) ; Changes `bmkp-current-bookmark-file'
-                  (dired-map-over-marks-check #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
-                                              (diredp-fewer-than-2-files-p arg))
+           (progn (bmkp-switch-bookmark-file bookmark-file) ; Changes `*-current-bookmark-file'.
+                  (dired-map-over-marks-check
+                   #'(lambda () (diredp-bookmark prefix)) arg 'bookmark
+                   (diredp-fewer-than-2-files-p arg))
                   (bookmark-save)
                   (unless bfile-exists-p (revert-buffer)))
         (unless (bmkp-same-file-p old-bmkp-current-bookmark-file  bmkp-current-bookmark-file)
@@ -2079,8 +2066,8 @@ choice described for `diredp-do-grep'."
      "grep <pattern> <files> :  "
      (let ((up-to-files  (concat grep-command "   ")))
        (cons (concat up-to-files
-                     (mapconcat #'identity (or files
-                                               (dired-get-marked-files nil current-prefix-arg))
+                     (mapconcat #'identity
+                                (or files (dired-get-marked-files nil current-prefix-arg))
                                 " "))
              (- (length up-to-files) 2)))
      nil nil 'grep-history default)))
@@ -2216,9 +2203,11 @@ Else return a singleton list of a directory name, which is as follows:
 ;;; * If `size' is too small abort, otherwise run `find-file' on each element
 ;;;   of FILE-LIST giving each a window of height `size'.
 
+
 ;; REPLACE ORIGINAL in `dired-x.el'.
 ;;
-;; Doc string updated to reflect change to `dired-simultaneous-find-file'.
+;; 1. Call `dired-get-marked-files' with original ARG, to get its multi-C-u behavior.
+;; 2. Doc string updated to reflect change to `dired-simultaneous-find-file'.
 ;;
 ;;;###autoload
 (defun dired-do-find-marked-files (&optional arg)
@@ -2234,11 +2223,15 @@ lines go to the bottom-most window.  The number of files that can be
 displayed this way is restricted by the height of the current window
 and `window-min-height'.
 
+A prefix argument also behaves according to the ARG argument of
+`dired-get-marked-files'.  In particular, `C-u C-u' operates on all
+files in the Dired buffer.
+
 To keep the Dired buffer displayed, type \\[split-window-vertically] first.
 To display just the marked files, type \\[delete-other-windows] first."
   (interactive "P")
-  (setq arg (and arg (prefix-numeric-value arg)))
-  (dired-simultaneous-find-file (dired-get-marked-files) arg))
+  (dired-simultaneous-find-file (dired-get-marked-files nil arg)
+                                (and arg (prefix-numeric-value arg))))
 
 
 ;; REPLACE ORIGINAL in `dired-x.el'.
@@ -2259,10 +2252,8 @@ FILE-LIST, as evenly as possible.  Remaining lines go to the
 bottom-most window.  The number of files that can be displayed
 this way is restricted by the height of the current window and
 the variable `window-min-height'."
-
   ;; This is not interactive because it is usually too clumsy to
   ;; specify FILE-LIST interactively unless via dired.
-
   (let (size)
     (cond ((and option (natnump option))
            (while file-list (find-file-noselect (car file-list)) (pop file-list)))

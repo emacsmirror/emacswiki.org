@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jul 21 10:34:41 2010 (-0700)
+;; Last-Updated: Sat Aug  7 12:53:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1775
+;;     Update #: 1879
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -56,6 +56,15 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/08/07 dadams
+;;     Removed - use Customize instead:
+;;       bookmark-save-flag, global-font-lock-mode, font-lock-verbose, font-lock-maximum-size,
+;;       apropos-do-all, Info-fontify-maximum-menu-size, isearch-resume-in-command-history,
+;;       undo-limit, undo-strong-limit, gc-cons-threshold, list-directory-verbose-switches,
+;;       default-major-mode, display-buffer-reuse-frames, view-remove-frame-by-deleting,
+;;       display-time-24hr-format, list-command-history-max.
+;;     Removed: (query-replace|search)-highlight, (regexp-)search-ring-max,
+;;              dired-listing-switches, VC stuff.
 ;; 2010/07/21 dadams
 ;;     Set font-lock-builtin-face, to get back the default as it was prior to 23.2.
 ;; 2007/09/23 dadams
@@ -181,7 +190,6 @@
 
 (and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 (require 'chistory) ;; command-history-map
-
 (require 'header2 nil t) ;; (no error if not found): auto-make-header
 (require 'misc-cmds nil t) ;; (no error if not found): kill-buffer-and-its-windows
 (require 'wimpy-del nil t) ;; (no error if not found): kill-region-wimpy
@@ -195,13 +203,28 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
-;; Quiet the byte-compiler.
+;;; Some settings I use.  I removed them from this file so you can use Customize to set them.
+;;;
+;;; (eval-after-load "bookmark" (setq bookmark-save-flag 1))
+;;; (global-font-lock-mode t)            ; Turn on font-lock-mode, generally.
+;;; (setq font-lock-verbose 50000)       ; "Fontifying...done" only if big buffer.
+;;; (setq font-lock-maximum-size 512000) ; Double the default size.
+;;; (eval-after-load "apropos" (setq apropos-do-all t)) ; Set to nil for 2-3 times faster.
+;;; (setq Info-fontify-maximum-menu-size 500000)
+;;; (when (boundp 'isearch-resume-in-command-history)
+;;;   (setq isearch-resume-in-command-history t)) ; Be able to repeat searches as commands.
+;;; (setq undo-limit 80000)                 ; 4 X the std default.
+;;; (setq undo-strong-limit 120000)         ; 4 X the std default.
+;;; (setq gc-cons-threshold 1600000)        ; 4 X the std default (400000).
+;;; (setq list-directory-verbose-switches "-Ails") ; Defined in `files.el'.
+;;; (setq default-major-mode 'indented-text-mode)
+;;; (when (>= emacs-major-version 21)
+;;;   (setq display-buffer-reuse-frames t)
+;;;   (setq view-remove-frame-by-deleting t))
+;;; (eval-after-load "time" (progn (setq display-time-24hr-format t) ; 24-hour clock.
+;;;                                (display-time)))  ; Put time in mode-line.
+;;; (setq list-command-history-max 1000) ; 32 is the default.  In `chistory.el'.
 
-(defvar isearch-resume-in-command-history) ; Defined in `isearch.el'
-(defvar display-buffer-reuse-frames)
-(defvar display-buffer-reuse-frame)
-
-;;;;;;;;;;;;;;;;;;;;;;;;
 
 
 ;;; Some standard faces redefined, and two simple faces defined.
@@ -216,10 +239,6 @@
       (set-face-background 'show-paren-match-face "Aquamarine")) ; in `paren.el'
   (error nil))
 
-(global-font-lock-mode t)               ; Turn on font-lock-mode, generally.
-(setq font-lock-verbose 50000)          ; "Fontifying...done" only if big buffer.
-(setq font-lock-maximum-size 512000)    ; Double the default size.
-
 (unless (facep 'font-lock-string-face) (make-face 'font-lock-string-face))
 (set-face-foreground 'font-lock-string-face "Magenta4")
 (unless (facep 'font-lock-constant-face) (make-face 'font-lock-constant-face))
@@ -233,24 +252,18 @@
 (set-face-foreground 'font-lock-builtin-face "Orchid") ; Restore default per before Emacs 23.2.
 
 
-;;;;; ;;; EDIFF stuff.
-;;;;; (setq ediff-control-frame-position-function 'my-ediff-control-frame-position)
-
-;;;;; ;;; Replacement for `ediff-make-position'.
-;;;;; (defun my-ediff-control-frame-position (ctl-buffer ctl-frame-width ctl-frame-height))
-
-;;;;; (defun set-ediff-control-position ()
-;;;;;   "@@@@@@@@@@"
-;;;;;   (modify-frame-parameters ediff-control-frame '((name . "TEST Ediff") (top . 0)))
-;;;;; )
-
 ;;; EDIFF stuff.  These variables and functions are defined in `ediff.el'.
+;;; (setq ediff-control-frame-position-function 'my-ediff-control-frame-position)
+;;; ;;; Replacement for `ediff-make-position'.
+;;; (defun my-ediff-control-frame-position (ctl-buffer ctl-frame-width ctl-frame-height))
+;;; (defun set-ediff-control-position () "@@@@@@@@@@"
+;;;   (modify-frame-parameters ediff-control-frame '((name . "TEST Ediff") (top . 0))))
 (eval-after-load "ediff"
   (progn
     (setq-default ediff-ignore-similar-regions t)
     (setq-default ediff-auto-refine-limit 10000)
     (setq ediff-grab-mouse 'maybe)      ; Nil -> no grab, t -> grab.
-;;;;;;    (setq ediff-after-setup-control-frame-hook 'set-ediff-control-position)
+;;; (setq ediff-after-setup-control-frame-hook 'set-ediff-control-position)
     '(when (fboundp 'ediff-set-face)
        (ediff-set-face 'foreground ediff-even-diff-face-A "White")
        (ediff-set-face 'foreground ediff-even-diff-face-B "White")
@@ -288,50 +301,38 @@
        (ediff-set-face 'background ediff-fine-diff-face-C "Cyan")
        (ediff-set-face 'background ediff-fine-diff-face-Ancestor "Cyan")
        )))
-;; `ediff+.el' requires `ediff.el', which defines ediff-control-buffer.
-;(eval-when-compile (require 'ediff+))
-;(progn ;; Must be in this order.
-;  (add-hook 'ediff-quit-hook 'ediff-default-quit-hook)
-;  (add-hook 'ediff-quit-hook
-;            (function (lambda ()        ; EDIFF-CONTROL-BUFFER is free here.
-;                        (delete-1-window-frames-on ediff-control-buffer)))))
-;(setq ediff-split-window-function 'ediff-use-separate-frames)
+
+;;; `ediff+.el' requires `ediff.el', which defines ediff-control-buffer'.
+;;; (eval-when-compile (require 'ediff+))
+;;; (progn ;; Must be in this order.
+;;;  (add-hook 'ediff-quit-hook 'ediff-default-quit-hook)
+;;;  (add-hook 'ediff-quit-hook
+;;;            (function (lambda ()        ; EDIFF-CONTROL-BUFFER is free here.
+;;;                        (delete-1-window-frames-on ediff-control-buffer)))))
+;;; (setq ediff-split-window-function 'ediff-use-separate-frames)
 
 (when (featurep 'icomplete+) (icomplete-mode 99))
 
+;;; VC stuff.  I no longer use VC.
+;;; (eval-after-load "vc"
+;;;   (progn (setq vc-initial-comment t)    ; VC asks for file purpose comment.
+;;;          (setq vc-command-messages t))) ; VC mentions shell commands it runs.
 
-;;; VC stuff.  Defined in `vc.el'.
-(eval-after-load "vc"
-  (progn
-    (setq vc-initial-comment t)         ; VC asks for file purpose comment.
-    (setq vc-command-messages t)))      ; VC mentions shell commands it runs.
+;;; GNUS stuff.  I don't use this either.
+;;; (setq gnus-window-configuration '((summary (0 1 0)) (newsgroups (1 0 0))
+;;;                                   (article (0 0 1))))
 
-;;; GNUS stuff.  Defined in `gnus.el'.
-;(setq gnus-window-configuration '((summary (0 1 0)) (newsgroups (1 0 0))
-;                                  (article (0 0 1))))
-
-;;; Help stuff:
-(eval-after-load "apropos"              ; Defined in `apropos.el'.
-  (setq apropos-do-all t))              ; Set it to nil for 2-3 times faster.
-
-;;; Info stuff:
-
-(setq Info-fontify-maximum-menu-size 500000)
 
 ;;; Search and replace stuff:
 (copy-face 'secondary-selection 'query-replace) ; For replacement highlighting.
-(setq query-replace-highlight t)        ; Defined in `replace.el'.
 (if (facep 'isearch)
     (set-face-attribute 'isearch nil
                         :foreground "Black" :background "Green" :inverse-video nil)
   (defface isearch '((t (:foreground "Black" :background "Green")))
     "Face for highlighting Isearch matches." :group 'isearch))
-(setq search-highlight t)               ; Defined in `isearch.el'.
 (setq-default case-fold-search nil)     ; Case sensitive by default.
-(setq search-ring-max 1000)               ; Defined in `isearch.el'.
-(setq regexp-search-ring-max 1000)        ; Defined in `isearch.el'.
-(when (boundp 'isearch-resume-in-command-history) ; Defined in `isearch.el'. 
-  (setq isearch-resume-in-command-history t)) ; Be able to repeat searches as commands.
+;;; (setq search-ring-max 1000)
+;;; (setq regexp-search-ring-max 1000)
 
 ;; Use `tool-bar-pop-up-mode'.
 (when (and (>= emacs-major-version 22) (fboundp 'tool-bar-pop-up-mode))
@@ -353,60 +354,44 @@
 ;; It should point to the directory containing this file, `start-opt.el'.)
 (and (boundp 'drews-lisp-dir) drews-lisp-dir (setq tags-file-name drews-lisp-dir))
 
-;;; Save bookmarks whenever modified.
-(eval-after-load "bookmark" (setq bookmark-save-flag 1))
+;;; Hilit stuff.  Defined in `hilit19.el'.  I no longer use this.
+;;; (setq hilit-auto-highlight nil)         ; Don't hilit when `find-file'.
+;;; (setq hilit-face-check nil)             ; To hilit faster.
+;;; (setq hilit-inhibit-rebinding nil)      ; Don't rebind recenter, yank, yank-pop
 
-;;; Hilit stuff.  Defined in `hilit19.el'.
-;(setq hilit-auto-highlight nil)         ; Don't hilit when `find-file'.
-;(setq hilit-face-check nil)             ; To hilit faster.
-;(setq hilit-inhibit-rebinding nil)      ; Don't rebind recenter, yank, yank-pop
+;;; Indicate hiding minor mode in mode line.  In `hide-ifdef.el'.  I don't use it.
+;;; (push '(hiding " Hiding") minor-mode-alist)
 
-;; Indicate hiding minor mode in mode line.  Defined in `hide-ifdef.el'.
-;(push '(hiding " Hiding") minor-mode-alist)
-
-;; Indicate `iso-accents-minor-mode' in mode line.  Defined in `iso-acc.el'.
-;(or (assq 'iso-accents-minor-mode minor-mode-map-alist)
-;    (setq minor-mode-alist
-;          (append minor-mode-alist '((iso-accents-minor-mode " ISO-Acc")))))
+;;; Indicate `iso-accents-minor-mode' in mode line.  In `iso-acc.el'.  I don't use it.
+;;; (or (assq 'iso-accents-minor-mode minor-mode-map-alist)
+;;;    (setq minor-mode-alist
+;;;          (append minor-mode-alist '((iso-accents-minor-mode " ISO-Acc")))))
 
 ;; HTML -- `html-helper-mode'.
 (eval-after-load "html-helper-mode"
   (add-hook 'html-mode-hook 'imenu-add-menubar-index))
-;(add-hook 'html-helper-mode-hook 'turn-on-font-lock)
-;(add-hook 'html-helper-load-hook '(lambda () (require 'html-font)))
-;(setq html-helper-do-write-file-hooks t) ; `local-write-file-hooks' timestamp.
-;(setq html-helper-build-new-buffer t)   ; Add `html-helper-new-buffer-strings'.
-;(setq html-helper-address-string (user-full-name)) ; Default author string.
+;;; (add-hook 'html-helper-mode-hook 'turn-on-font-lock)
+;;; (add-hook 'html-helper-load-hook '(lambda () (require 'html-font)))
+;;; (setq html-helper-do-write-file-hooks t) ; `local-write-file-hooks' timestamp.
+;;; (setq html-helper-build-new-buffer t)   ; Add `html-helper-new-buffer-strings'.
+;;; (setq html-helper-address-string (user-full-name)) ; Default author string.
 
-(setq undo-limit 80000)                 ; 4 X the std default.
-(setq undo-strong-limit 120000)         ; 4 X the std default.
-(setq gc-cons-threshold 1600000)        ; 4 X the std default (400000).
+;;; (setq abbrev-file-name (substitute-in-file-name "~/.abbrev-defs")) ; In `paths.el'.
+;;; (put 'abbrev-file-name 'variable-interactive "FFile to read abbrevs from: ")
 
-;(setq abbrev-file-name (substitute-in-file-name "~/.abbrev-defs")) ; `paths.el'
-;(put 'abbrev-file-name 'variable-interactive "FFile to read abbrevs from: ")
+;;; Save word abbrevs when files saved.
+;;; (setq save-abbrevs t)                   ; Defined in `files.el'.
+;;; (setq display-time-day-and-date nil)    ; No date in modeline.  In `time.el'.
 
-; Save word abbrevs when files saved.
-;(setq save-abbrevs t)                   ; Defined in `files.el'.
-;(setq display-time-day-and-date nil)    ; No date in modeline.  In `time.el'.
 (setq-default indent-tabs-mode nil)     ; SPCs only (no TABs), when indenting.
-(setq list-directory-verbose-switches "-Ails") ; Defined in `files.el'.
 
-;;; OPTION "F" DOESN'T WORK ON Windows NT
-;;; IT CAUSES DIR NAMES TO BE TRUNCATED WHEN TRYING TO OPEN THEM
-(setq dired-listing-switches            ; Defined in `dired.el'.
-      (if (eq system-type 'windows-nt)
-          "-al"
-        "-alF"))
-
-;; The defcustom's in Francis Wright's `ls-lisp.el' can't take effect,
-;; because `ls-lisp.el' is a standard library, preloaded. So, make the
-;; assignments by hand.
+;;; The defcustom's in Francis Wright's `ls-lisp.el' cannot take effect, because `ls-lisp.el'
+;;; is a standard library, preloaded. So, make the assignments by hand.
 (when (featurep 'ls-lisp)
   (setq ls-lisp-emulation
         (cond ((memq system-type '(windows-nt ms-dos emx)) 'Microsoft)
               ;; FJW: not sure about how to handle emx!
-              ((memq system-type
-                     '(hpux dgux usg-unix-v unisoft-unix rtu irix berkeley-unix))
+              ((memq system-type '(hpux dgux usg-unix-v unisoft-unix rtu irix berkeley-unix))
                'UNIX)))
   (setq ls-lisp-ignore-case
         ;; Name change for consistency with other option names.
@@ -417,139 +402,119 @@
         (cond ((eq ls-lisp-emulation 'Microsoft)
                (if (getenv "SystemRoot") '(links))) ; distinguish NT/2K from 9x
               ((eq ls-lisp-emulation 'UNIX) '(links uid)) ; UNIX ls
-              (t '(links uid gid)))))           ; GNU ls
-  
+              (t '(links uid gid)))))   ; GNU ls
 
-(setq default-major-mode 'indented-text-mode)
-(setq auto-mode-alist                   ; Defined in `files.el'.
-      (append (list
-               '("\\.te?xt\\'" . indented-text-mode)
-               '("\\.elc\\'" . emacs-lisp-mode)
-               '("\\.tex\\'" . LaTeX-mode)
-               '("\\.aux\\'" . LaTeX-mode)
-               '("\\.glo\\'" . LaTeX-mode)
-               '("\\.lof\\'" . LaTeX-mode)
-               '("\\.log\\'" . LaTeX-mode)
-               '("\\.lot\\'" . LaTeX-mode)
-               '("\\.toc\\'" . LaTeX-mode)
-               ;; '("\\.ftex\\'" . LaTeX-mode)
-               '("\\.lxx\\'" . c++-mode)
-               '("\\.ixx\\'" . c++-mode)
-               '("\\.gxx\\'" . c++-mode)
-               '("\\.pxx\\'" . c++-mode)
-               '("\\.sql\\'" . sql-mode)
-               )
-              auto-mode-alist
-              ))
+(setq auto-mode-alist  (append (list    ; Defined in `files.el'.
+                                '("\\.te?xt\\'" . indented-text-mode)
+                                '("\\.elc\\'" . emacs-lisp-mode)
+                                '("\\.tex\\'" . LaTeX-mode)
+                                '("\\.aux\\'" . LaTeX-mode)
+                                '("\\.glo\\'" . LaTeX-mode)
+                                '("\\.lof\\'" . LaTeX-mode)
+                                '("\\.log\\'" . LaTeX-mode)
+                                '("\\.lot\\'" . LaTeX-mode)
+                                '("\\.toc\\'" . LaTeX-mode)
+                                ;; '("\\.ftex\\'" . LaTeX-mode)
+                                '("\\.lxx\\'" . c++-mode)
+                                '("\\.ixx\\'" . c++-mode)
+                                '("\\.gxx\\'" . c++-mode)
+                                '("\\.pxx\\'" . c++-mode)
+                                '("\\.sql\\'" . sql-mode))
+                               auto-mode-alist))
 
 (add-hook 'tex-mode-hook 'imenu-add-menubar-index)
-;; Auto-fill by default for text modes.
+;;; Auto-fill by default for text modes.
 (add-hook 'text-mode-hook 'turn-on-auto-fill t)
 (add-hook 'latex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
 (add-hook 'plain-tex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
 (add-hook 'tex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
 (add-hook 'slitex-mode-hook 'turn-on-auto-fill t) ; In `tex-mode.el'.
 
-(when (>= emacs-major-version 21)
-  (setq display-buffer-reuse-frames t)
-  (setq display-buffer-reuse-frame t)   ; Is this obsolete?
-  (setq view-remove-frame-by-deleting t))
-
-;; Frame title: buffer name.
+;;; Frame title: buffer name.
 (setq frame-title-format '(multiple-frames "%b" "%b"))
 
-;; Mode line.
-;; Make `display-time' use a 24 hour clock.
-(eval-after-load "time"
-  (progn
-    (setq display-time-24hr-format t)   ; Defined in `time.el'.
-    ;; Put time in mode-line.
-    (display-time)))                    ; Defined in `time.el'.
-;; Put line # in mode-line.
-;(line-number-mode 9999)                        ; Defined in `simple.el'.
+;;; Mode line.
+(eval-after-load "time" (display-time)) ; Put time in mode line.
+;;; (line-number-mode 9999)                 ; Put line # in mode-line.
 
 
-;(setq dired-latex-unclean-extensions    ; Defined in `dired-x.el'.
-;      '(".idx" ".lof" ".lot" ".glo"     ; Std default.
-;        ".errefs" ".ind" ".ilg"))       ; Extras added here.
+;;; (setq dired-latex-unclean-extensions    ; Defined in `dired-x.el'.
+;;;      '(".idx" ".lof" ".lot" ".glo"     ; Std default.
+;;;        ".errefs" ".ind" ".ilg"))       ; Extras added here.
 
-;; The following variables are all defined in `tex-mode.el'.
-;(setq tex-default-mode 'latex-mode)
-;(setq tex-dvi-print-command "dvips -f -t a4 * | declp -D p -M p -K 2")
-;(put 'tex-dvi-print-command 'variable-interactive
-;     "sCommand used by `tex-print' to print a *.dvi file: ")
-;(setq tex-alt-dvi-print-command "dvips -f -t a4 * | declp -D p -M p")
-;(put 'tex-alt-dvi-print-command 'variable-interactive
-;     "sCommand used by `tex-print' with a prefix arg to print a *.dvi file: ")
-;(setq tex-dvi-view-command
-;      (if (eq window-system 'x) "xdvi" "dvi2tty * | cat -s"))
-;(put 'tex-dvi-view-command 'variable-interactive
-;     "sCommand used by `tex-view' to display a *.dvi file: ")
-;(setq tex-show-queue-command "declpstat|more")
-;(put 'tex-show-queue-command 'variable-interactive
-;     "sCommand used by `tex-show-print-queue' to show the print queue: ")
+;;; The following variables are all defined in `tex-mode.el'.
+;;; (setq tex-default-mode 'latex-mode)
+;;; (setq tex-dvi-print-command "dvips -f -t a4 * | declp -D p -M p -K 2")
+;;; (put 'tex-dvi-print-command 'variable-interactive
+;;;     "sCommand used by `tex-print' to print a *.dvi file: ")
+;;; (setq tex-alt-dvi-print-command "dvips -f -t a4 * | declp -D p -M p")
+;;; (put 'tex-alt-dvi-print-command 'variable-interactive
+;;;     "sCommand used by `tex-print' with a prefix arg to print a *.dvi file: ")
+;;; (setq tex-dvi-view-command
+;;;      (if (eq window-system 'x) "xdvi" "dvi2tty * | cat -s"))
+;;; (put 'tex-dvi-view-command 'variable-interactive
+;;;     "sCommand used by `tex-view' to display a *.dvi file: ")
+;;; (setq tex-show-queue-command "declpstat|more")
+;;; (put 'tex-show-queue-command 'variable-interactive
+;;;     "sCommand used by `tex-show-print-queue' to show the print queue: ")
 
-;; Use virtual Dired mode by default.  Defined in `dired-x.el'.
-;(setq auto-mode-alist (cons '("[^/]\\.dired\\'" . dired-virtual-mode)
-;                            auto-mode-alist))
+;;; Use virtual Dired mode by default.  Defined in `dired-x.el'.
+;;; (setq auto-mode-alist (cons '("[^/]\\.dired\\'" . dired-virtual-mode)
+;;;                            auto-mode-alist))
 
-;; Hexl to display ISO chars too.
-;(setq hexl-iso "-iso")                  ; Defined in `hexl.el'.
+;;; Hexl to display ISO chars too.
+;;; (setq hexl-iso "-iso")                  ; Defined in `hexl.el'.
 
-;(setq-default comint-prompt-regexp shell-prompt-pattern) ; In `comint.el'.
-;(put 'comint-prompt-regexp 'variable-interactive
-;     "sRegexp to recognise prompts in the inferior process: ")
-;(setq shell-popd-regexp "\\(popd\\|o\\)") ; Defined in `cmushell.el'.
-;(put 'shell-popd-regexp 'variable-interactive
-;     "sRegexp to match subshell commands equivalent to `popd': ")
-;(setq shell-pushd-regexp "\\(pushd\\|u\\)") ; Defined in `cmushell.el'.
-;(put 'shell-pushd-regexp 'variable-interactive
-;     "sRegexp to match subshell commands equivalent to `pushd': ")
+;;; (setq-default comint-prompt-regexp shell-prompt-pattern) ; In `comint.el'.
+;;; (put 'comint-prompt-regexp 'variable-interactive
+;;;     "sRegexp to recognise prompts in the inferior process: ")
+;;; (setq shell-popd-regexp "\\(popd\\|o\\)") ; Defined in `cmushell.el'.
+;;; (put 'shell-popd-regexp 'variable-interactive
+;;;     "sRegexp to match subshell commands equivalent to `popd': ")
+;;; (setq shell-pushd-regexp "\\(pushd\\|u\\)") ; Defined in `cmushell.el'.
+;;; (put 'shell-pushd-regexp 'variable-interactive
+;;;     "sRegexp to match subshell commands equivalent to `pushd': ")
 
-;; Word completion.  These variables are defined in `completion.el'.
-;(setq completion-on-separator-character t) ; Makes separators save words.
-;(setq cmpl-case-fold-search t)          ; Case-sensitive completion.
+;;; Word completion.  These variables are defined in `completion.el'.
+;;; (setq completion-on-separator-character t) ; Makes separators save words.
+;;; (setq cmpl-case-fold-search t)          ; Case-sensitive completion.
 ;;; Use cdabbrev completion if no other (slower)
 ;;; (setq completion-cdabbrev-prompt-flag t)
 
-;; COMMENT-LINE-START and COMMENT-LINE-START-SKIP are free variables here.
-;(eval-when-compile (require 'fortran)) ; comment-line-start(-skip)
-;(defun setup-for-fortran-comments ()    ; Make useful for file headers etc.
-;  (setq comment-line-start "C")         ; Upper case C.  Defined in `fortran.el'
-;  (put 'comment-line-start 'variable-interactive
-;       "sString inserted to start new full-line comment: ")
-;  (setq comment-start comment-line-start) ; Defined in `simple.el'. (local var)
-;  (setq comment-start-skip comment-line-start-skip)) ; Defined in `fortran.el'.
-;(add-hook 'fortran-mode-hook 'setup-for-fortran-comments)
+;;; COMMENT-LINE-START and COMMENT-LINE-START-SKIP are free variables here.
+;;; (eval-when-compile (require 'fortran)) ; comment-line-start(-skip)
+;;; (defun setup-for-fortran-comments ()    ; Make useful for file headers etc.
+;;;  (setq comment-line-start "C")         ; Upper case C.  Defined in `fortran.el'
+;;;  (put 'comment-line-start 'variable-interactive
+;;;       "sString inserted to start new full-line comment: ")
+;;;  (setq comment-start comment-line-start) ; Defined in `simple.el'. (local var)
+;;;  (setq comment-start-skip comment-line-start-skip)) ; Defined in `fortran.el'.
+;;; (add-hook 'fortran-mode-hook 'setup-for-fortran-comments)
 
-;; SHELL-MODE-MAP is a free variable here.  Defined in `shell.el'.
-;(eval-when-compile (require 'shell)) ;; shell-mode-map
-;(defun define-shell-completion-keys ()
-;(define-key shell-mode-map "\C-c\C-i" 'my-shell-complete)
-;(define-key shell-mode-map "\C-c\?" 'my-shell-completion-help))
+;;; SHELL-MODE-MAP is a free variable here.  Defined in `shell.el'.
+;;; (eval-when-compile (require 'shell)) ;; shell-mode-map
+;;; (defun define-shell-completion-keys ()
+;;; (define-key shell-mode-map "\C-c\C-i" 'my-shell-complete)
+;;; (define-key shell-mode-map "\C-c\?" 'my-shell-completion-help))
 ;;; (add-hook 'shell-mode-hook 'define-shell-completion-keys)
 
+(add-hook 'command-history-hook (function (lambda ()
+                                  (when (fboundp 'electric-command-history)
+                                    (define-key command-history-map "e"
+                                      'electric-command-history)) ; In `echistory.el'.
+                                  (define-key command-history-map "m"
+                                    'repeat-matching-complex-command)))) ; `chistory.el'.
 
+;;; Use speedbar, but without images
+;;; (setq speedbar-use-images nil)
+;;; (require 'speedbar)
+;;; (speedbar-frame-mode 99)
 
-(setq list-command-history-max 1000)    ; 32 is the default.  In `chistory.el'.
-(add-hook 'command-history-hook         ; Defined in `chistory.el'.
-          (function (lambda ()
-                      (when (fboundp 'electric-command-history)
-                        (define-key command-history-map "e"
-                          'electric-command-history)) ; In `echistory.el'.
-                      (define-key command-history-map "m"
-                        'repeat-matching-complex-command)))) ; `chistory.el'.
-
-;; ;; Use speedbar, but without images
-;; (setq speedbar-use-images nil)
-;; (require 'speedbar)
-;; (speedbar-frame-mode 99)
-
-;; This is a hack because in Emacs 22 speedbar creates the speedbar frame before it fills
-;; the buffer, and speedbar provides no appropriate hook for doing this at the right time.
-;; Bug filed.
+;;; This is a hack because in Emacs 22 speedbar creates the speedbar frame before it fills
+;;; the buffer, and speedbar provides no appropriate hook for doing this at the right time.
+;;; Bug filed.
 (when (fboundp 'fit-frame)              ; Defined in `fit-frame.el'.
-  (let ((win (get-buffer-window " SPEEDBAR" t)))
+  (let ((win  (get-buffer-window " SPEEDBAR" t)))
     (when win (save-window-excursion (select-window win) (fit-frame)))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -562,45 +527,37 @@
 ;;;-----------REPLACEMENT BINDINGS------------------------------------
 
 (when (fboundp 'kill-region-wimpy)      ; In `wimpy-del.el'.
-  (substitute-key-definition 'kill-region
-                             'kill-region-wimpy global-map)
-  (substitute-key-definition 'clipboard-kill-region
-                             'clipboard-kill-region-wimpy global-map))
+  (substitute-key-definition 'kill-region 'kill-region-wimpy global-map)
+  (substitute-key-definition 'clipboard-kill-region 'clipboard-kill-region-wimpy global-map))
 
-;; These have already been done once in `setup-keys.el'.
-;; Repeat here in case someone has made some more of these bindings.
-;; Do this *after* load `menu-bar+.el', since that sets original bindings.
+;;; These have already been done once in `setup-keys.el'.
+;;; Repeat here in case someone has made some more of these bindings.
+;;; Do this *after* load `menu-bar+.el', since that sets original bindings.
 (when (and (boundp 'sub-delete-windows-for)
            sub-delete-windows-for
            (fboundp 'delete-windows-for))
-  (substitute-key-definition 'delete-window ; Defined in `frame-cmds.el'.
-                             'delete-windows-for global-map))
+  (substitute-key-definition 'delete-window 'delete-windows-for global-map)) ; `frame-cmds.el'.
 (when (and (boundp 'sub-query-replace-w-options)
            sub-query-replace-w-options
            (fboundp 'query-replace-w-options))
-  (substitute-key-definition 'query-replace ; Defined in `replace+.el'.
-                             'query-replace-w-options global-map))
+  (substitute-key-definition 'query-replace 'query-replace-w-options global-map)) ;`replace+.el'
 (when (and (boundp 'sub-kill-buffer-and-its-windows)
            sub-kill-buffer-and-its-windows
            (fboundp 'kill-buffer-and-its-windows))
-  (substitute-key-definition 'kill-buffer ; Defined in `misc-cmds.el'.
-                             'kill-buffer-and-its-windows global-map))
+  (substitute-key-definition 'kill-buffer 'kill-buffer-and-its-windows global-map)) ;`misc-cmds'
 (when (and (boundp 'sub-pp-evals)
            sub-pp-evals)
   (when (fboundp 'pp-eval-last-sexp)
-    (substitute-key-definition 'eval-last-sexp
-                               'pp-eval-last-sexp global-map)) ; In `pp.el'.
+    (substitute-key-definition 'eval-last-sexp 'pp-eval-last-sexp global-map)) ; In `pp.el'.
   (when (fboundp 'pp-eval-expression)
-    (substitute-key-definition 'eval-expression
-                               'pp-eval-expression global-map))) ; In `pp+.el'.
+    (substitute-key-definition 'eval-expression 'pp-eval-expression global-map))) ; In `pp+.el'.
 (when (fboundp 'buffer-menu)
-  (substitute-key-definition 'list-buffers ; Redefined in `buff-menu+.el'.
-                             'buffer-menu global-map))
+  (substitute-key-definition 'list-buffers 'buffer-menu global-map)) ; Redef in `buff-menu+.el'.
 
-;; Undefine some bindings that would try to modify buffers like Dired.
-;; Their key sequences will then appear to the user as available for
-;; local definition.  This may have been done before, in `dired+.el' etc.,
-;; but it may help to do it again, since we have defined more bindings here.
+;;; Undefine some bindings that would try to modify buffers like Dired.
+;;; Their key sequences will then appear to the user as available for
+;;; local definition.  This may have been done before, in `dired+.el' etc.,
+;;; but it may help to do it again, since we have defined more bindings here.
 (when (fboundp 'undefine-killer-commands) ; Defined in `misc-fns.el'.
   (when (boundp 'dired-mode-map) (undefine-killer-commands dired-mode-map))
   (when (boundp 'Buffer-menu-mode-map) (undefine-killer-commands Buffer-menu-mode-map)))
@@ -639,22 +596,18 @@
 (add-hook 'outline-mode-hook          'turn-on-font-lock)
 (add-hook 'sql-mode-hook              'turn-on-font-lock)
 
-;;;@@@Emacs19 (add-hook 'compilation-mode-hook      'font-lock-fontify-buffer)
-;;;@@@Emacs19 (add-hook 'occur-mode-hook            'turn-on-font-lock)
-;(add-hook 'gnus-group-prepare-hook    'turn-on-font-lock)
-;(add-hook 'gnus-group-prepare-hook    'mouse-face-each-line) ; `highlight.el'.
-;(add-hook 'gnus-summary-prepare-hook  'turn-on-font-lock)
-;(add-hook 'gnus-summary-prepare-hook  'mouse-face-each-line) ; `highlight.el'.
-;(add-hook 'gnus-article-prepare-hook  'font-lock-fontify-buffer);`font-lock.el'
-;(add-hook 'rmail-show-message-hook    'font-lock-fontify-buffer)
-;(add-hook 'rmail-summary-mode-hook    'font-lock-fontify-buffer)
-                                        ; Defined in `outline+.el':
-;(add-hook 'outline-minor-mode-hook    'toggle-outline-minor-mode-font-lock)
-;(add-hook 'outline-minor-mode-exit-hook 'toggle-outline-minor-mode-font-lock)
+;;; (add-hook 'gnus-group-prepare-hook    'turn-on-font-lock)
+;;; (add-hook 'gnus-group-prepare-hook    'mouse-face-each-line) ; `highlight.el'.
+;;; (add-hook 'gnus-summary-prepare-hook  'turn-on-font-lock)
+;;; (add-hook 'gnus-summary-prepare-hook  'mouse-face-each-line) ; `highlight.el'.
+;;; (add-hook 'gnus-article-prepare-hook  'font-lock-fontify-buffer);`font-lock.el'
+;;; (add-hook 'rmail-show-message-hook    'font-lock-fontify-buffer)
+;;; (add-hook 'rmail-summary-mode-hook    'font-lock-fontify-buffer)
+;;;                                         ; Defined in `outline+.el':
+;;; (add-hook 'outline-minor-mode-hook    'toggle-outline-minor-mode-font-lock)
+;;; (add-hook 'outline-minor-mode-exit-hook 'toggle-outline-minor-mode-font-lock)
 
 ;;; ****** End stuff to do at the end ***********
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

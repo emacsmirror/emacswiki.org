@@ -632,7 +632,6 @@ My own python files are here : http://richardriley.net/projects/emacs/dotprogram
 Having got iPython working in emacs, I found the following "howto tutorial" videos to be superb for the beginner (me!) :
 
 http://showmedo.com/videos/video?name=1000010&fromSeriesID=100
-(This does not seem to work with Firefox. Can't we try to use something that works with Firefox instead of something that only works with IE?)
 
 == Ipython completion ==
 

@@ -6,5 +6,7 @@ http://tromey.com/elpa/
 
 As of 18-Jun-2010, ##package.el## (from ELPA) has been merged with Emacs and an ELPA repository set up at http://elpa.gnu.org/
 
+The Emacs version of package.el will support multiple repositories.
+
 --
 CategoryCode

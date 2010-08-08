@@ -27,6 +27,9 @@
 ;; miscellaneous
 
 ;; 2010-08-04 improved rename-buffer-in-ssh-login function
+;; 2010-08-08 rewrote function rename-buffer-in-ssh-login
+;; 2010-08-08 added function rename-buffer-in-ssh-exit
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
@@ -37,7 +40,7 @@
 
 (defun come-here (&optional arg)
   "Bring content from specific buffer to current buffer"
-  (interactive (list (let (( arg  (read-buffer "Input buffer Name: " "*Shell Command Output*") ))
+  (interactive (list (let (( arg (read-buffer "Input buffer Name: " "*Shell Command Output*") ))
             (insert-buffer-substring (get-buffer arg))  ))
   )
 )
@@ -151,36 +154,75 @@
 ; It could response only to command like this
 ; ssh msg@tivx24.cn.ibm.com 
 
-(defun rename-buffer-in-ssh-login (cmd)
-  "Rename buffer to the destination hostname in ssh login"
-  (if (string-match "ssh [-_a-z0-9A-Z]+@[-_a-z0-9A-Z.]+[ ]*[^-_a-z0-9-A-Z]*$" cmd)
-      (let (( host (nth 2 (split-string cmd "[ @\n]" t) ))
+(add-hook 'shell-mode-hook 
+	  (lambda()
+	    (setq shell-buffer-name-list (list "*shell*") )
+	    (message "%s" shell-buffer-name-list)
 	    )
-      (message "%s" (split-string cmd "[ @\n]" t) )
-      (rename-buffer (concat "*" host))
+	  t
+)
+
+(eval-after-load 'shell
+  '(progn
+
+      ; rewrote this function to co-work with rename-buffer-in-ssh-exit
+
+      (defun rename-buffer-in-ssh-login (cmd)
+        "Rename buffer to the destination hostname in ssh login"
+        (if (string-match "ssh [-_a-z0-9A-Z]+@[-_a-z0-9A-Z.]+[ ]*[^-_a-z0-9-A-Z]*$" cmd)
+            (let (( host (nth 2 (split-string cmd "[ @\n]" t) ))
+      	    )
+;            (message "%s" (split-string cmd "[ @\n]" t) )
+            (rename-buffer (concat "*" host))
+            (add-to-list 'shell-buffer-name-list (concat "*" host))
+            (message "%s" shell-buffer-name-list)
+            )
+          )
+      ;  (if (string-match "^bash$") 
+      ;      (add-to-list 'shell-buffer-name-list nil)
+      ;    )
       )
-    )
-)
+      
+      (add-hook 'comint-input-filter-functions 'rename-buffer-in-ssh-login)
+      
+      ;; This function works only in a single shell session. 
+      ;; Not sure how to make it work and safe in multi-session.
+      ;; how to handle commands like 'bash' and then 'exit' is also a problem
 
-(add-hook 'comint-input-filter-functions 'rename-buffer-in-ssh-login)
+      (defun rename-buffer-in-ssh-exit (cmd)
+        "Rename buffer to its previous name when user exit from a ssh login"
+      ;  (message "%s" cmd)
+        (message "%s" shell-buffer-name-list)
+        (if (string-match "^exit$" cmd)
+            (if (> (length shell-buffer-name-list) 1)
+      	  (progn (pop shell-buffer-name-list)
+      		 (rename-buffer  (car shell-buffer-name-list)))
+          )
+        )
+        (message "%s" shell-buffer-name-list)
+      )
+      	     
+      (add-hook 'comint-input-filter-functions 'rename-buffer-in-ssh-exit t)
+     
+      
+      (defun kill-shell-buffer(process event)
+        "The one actually kill shell buffer when exit. "
+        (kill-buffer (process-buffer process))
+      )
+      
+      (defun kill-shell-buffer-after-exit()
+        "kill shell buffer when exit."
+        (set-process-sentinel (get-buffer-process (current-buffer))
+      		      #'kill-shell-buffer)
+      )
+      
+      (add-hook 'shell-mode-hook 'kill-shell-buffer-after-exit t)
 
-(defun kill-shell-buffer(process event)
-  "kill the shell buffer "
-  (kill-buffer (process-buffer process))
-)
-
-(defun kill-shell-buffer-after-exit()
-  "kill shell buffer when exit."
-  (set-process-sentinel (get-buffer-process (current-buffer))
-		      #'kill-shell-buffer)
-)
-
-(add-hook 'shell-mode-hook 'kill-shell-buffer-after-exit t)
-
-
+))
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
 ;;             copy & paste related                ;;
+
 ;;                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -403,6 +445,15 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 ;;                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;  +-----------------------+----------------------+
+;  |                       |                      |
+;  |                       |                      |
+;  |                       |                      |
+;  +-----------------------+----------------------+
+;  |                       |                      |
+;  |                       |                      |
+;  |                       |                      |
+;  +-----------------------+----------------------+
 
 (defun split-window-4()
  "Splite window into 4 sub-window"
@@ -414,6 +465,14 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
  )
 )
 
+;  +----------------------+                 +----------- +-----------+ 
+;  |                      |           \     |            |           | 
+;  |                      |   +-------+\    |            |           | 
+;  +----------------------+   +-------+/    |            |           |
+;  |                      |           /     |            |           | 
+;  |                      |                 |            |           | 
+;  +----------------------+                 +----------- +-----------+ 
+
 (defun split-v ()
   (interactive)
     (let (( thisBuf (window-buffer))
@@ -424,6 +483,15 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 		   (set-window-buffer (next-window) nextBuf)
 		   ))
 )
+
+
+;  +----------- +-----------+                  +----------------------+ 
+;  |            |           |            \     |                      | 
+;  |            |           |    +-------+\    |                      | 
+;  |            |           |    +-------+/    +----------------------+ 
+;  |            |           |            /     |                      | 
+;  |            |           |                  |                      | 
+;  +----------- +-----------+                  +----------------------+ 
 
 (defun split-h ()
   (interactive)
@@ -473,18 +541,5 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 	      (cdr  hippie-expand-try-functions-list)
 	      )
 )
-
-
-    (defun find-next-occurance-of-region (start end)
-      "Jump to the next occurance of region, and sets it as the current region"
-      (interactive "r")
-      (let ((region-size (- end start)) (region-text (buffer-substring start end)))
-        (unless
-	    (when (search-forward region-text nil t 1)
-	      (setq mark-active nil)
-	      (set-mark (- (point) region-size))
-	      (setq mark-active t))
-          (message "No more occurances of \"%s\" in buffer!" region-text))))
-
 
 (provide 'dove-ext)

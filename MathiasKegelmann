@@ -1,10 +1,10 @@
 I use Emacs, which I prefer, on Linux and Windows but I can use vi when I have to (and I don't mind ;) )
 
-GNU/Linux is my operating system of choice: I use Gentoo and Debian.
+GNU/Linux is my operating system of choice: Currently, I run Debian "testing".
 
 I use MuseMode, PlannerMode and RememberMode trying to get organized, and ViewMail as my mail reader on Linux.
 
-For VC I use git and svn.
+For VC I use git (and svn when I have to).
 
 Wiki Pages: Lisp:mogo.el: a GoMode for !MoGo which I maintain
 

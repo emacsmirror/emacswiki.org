@@ -24,7 +24,7 @@
 ;;
 ;; FUNCTIONS:►►►
 ;; `mon-help-css-mode', `mon-help-css-complete', `mon-help-css-check',
-;; `mon-help-css-properties', `mon-help-css-color'
+;; `mon-help-css-properties', `mon-help-css-color',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -51,6 +51,12 @@
 ;; TODO:
 ;;
 ;; NOTES:
+;; `mon-help-css-check' documents features of Niels Giesen's css-check.el
+;;  I use a MON-ified version called mon-css-check.el 
+;;  You can find the original here:
+;; (URL `http://github.com/pft/elisp-assorted/blob/master/css-check.el')
+;; Or, the MON version with Xrefd docstrings here:
+;; http://www.emacswiki.org/emacs/mon-doc-help-css.el
 ;;
 ;; SNIPPETS:
 ;;
@@ -113,6 +119,7 @@
 ;;             ;; :NOTE we've renamed most of the variable symbol provied by css-check.el
 ;;             ;; (featurep 'css-check) 
 ;;             (featurep 'mon-css-check))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-01T21:28:02-04:00Z}#{10222} - by MON>
@@ -228,9 +235,10 @@ o _property:value -- Underscore Hack\n
 appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 `in_char_arr' are commented out Scons will compile the the csstidy executable.
 :SEE (URL `http://csstidy.sourceforge.net/usage.php')\n
-:SEE-ALSO `mon-help-css-properties', `mon-help-css-color',
-`mon-help-ebay-template-mode', `mon-help-css-mode', `mon-help-css-complete',
-`mon-help-css-check'.\n►►►"
+:ALIASED-BY `mon-help-csstidy'\n
+:SEE-ALSO `mon-help-css-properties', `mon-help-css-color', `mon-help-css-mode',
+`mon-help-css-complete', `mon-help-css-check', `mon-help-ebay-template-mode',
+`mon-help-tidy'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-csstidy :insertp t)
@@ -251,84 +259,96 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 (defun mon-help-css-complete (&optional insertp intrp)
   "A list of functions variables from the css-complete package.\n
 ;; :CSS-COMPLETE-VARIABLES
-`css-popup-pos-x-offset' ;<VARIABLE>
-`css-tag-ids'            ;<CONSTANT>
-`css-media-ids'          ;<CONSTANT>
-`css-props-and-vals`    ;<CONSTANT>\n
+`*css-complete-props-and-vals*'
+`*css-complete-at-ids*'
+`*css-complete-media-ids*'
+`*css-complete-property-ids*'
+`*css-complete-pseudo-ids*'
+`*css-complete-tag-ids*'
+`*css-complete-look-back-regexp*'
+`*css-complete-popup-pos-x-offset*'\n
+;; :CSS-COMPLETE-MACROS
+`css-delete-partial'
+`css-complete-menu-generate'
+`css-delims-maybe-generate'
+`css-at-p-generate'
+`css-popup-generate'
+`css-complete-collect'\n
 ;; :CSS-COMPLETE-FUNCTIONS
-`css-complete-collect' ;<MACRO>
-`css-vals-for-prop'
-`css-prop-for-point'
-`css-vals-for-point'
-`css-delims-maybe-part-val-at-point'
-`css-maybe-part-val-at-point'
-`css-possible-value-completions'
-`css-possible-value-completions-at-point'
-`css-delete-partial-value'
-`css-value-popup-completions'
-`css-value-completion-menu'
-`css-pos-for-x-popup-menu'
-`css-complete-value'
-`css-at-value-p'
-`css-at-prop-p'
-`css-delims-maybe-part-prop-at-point'
-`css-maybe-part-prop-at-point'
-`css-possible-prop-completions'
-`css-possible-prop-completions-at-point'
-`css-props-for-point'
-`css-delete-partial-prop'
-`css-prop-popup-completions'
-`css-prop-completion-menu'
-`css-complete-prop'
-`css-at-pseudo-id-p'
-`css-delims-maybe-part-pseudo-at-point'
-`css-maybe-part-pseudo-at-point'
-`css-possible-pseudo-completions'
-`css-possible-pseudo-completions-at-point'
-`css-pseudos-for-point'
-`css-delete-partial-pseudo'
-`css-pseudo-popup-completions'
-`css-pseudo-completion-menu'
-`css-complete-pseudo'
-`css-at-tag-id-p'
-`css-delims-maybe-part-tag-at-point'
-`css-maybe-part-tag-at-point'
-`css-tags-for-point'
-`css-possible-tag-completions'
-`css-possible-tag-completions-at-point'
-`css-delete-partial-tag'
-`css-tag-popup-completions'
-`css-tag-completion-menu'
-`css-complete-tag'
-`css-at-at-id-p'
-`css-delims-maybe-part-at-at-point'
-`css-maybe-part-at-at-point'
-`css-ats-for-point'
-`css-possible-at-completions'
-`css-possible-at-completions-at-point'
-`css-delete-partial-at'
-`css-at-popup-completions'
-`css-at-completion-menu'
-`css-complete-at'
-`css-at-string-p'
-`css-at-filename-p'
-`css-complete-filename'
-`css-at-comment-p'
 `css-after-at-p'
-`css-complete-after-at'
-`css-media-completion-menu'
-`css-complete-media'
-`css-media-popup-completions'
+`css-at-at-id-p'
+`css-at-comment-p'
+`css-at-completion-menu'
+`css-at-filename-p'
+`css-at-popup-completions'
+`css-at-prop-p'
+`css-at-pseudo-id-p'
+`css-at-string-p'
+`css-at-tag-id-p'
+`css-at-value-p'
+`css-ats-for-point'
 `css-complete'
+`css-complete-after-at'
+`css-complete-at'
+`css-complete-filename'
+`css-complete-media'
+`css-complete-prop'
+`css-complete-pseudo'
+`css-complete-tag'
+`css-complete-value'
+`css-delete-partial-at'
+`css-delete-partial-prop'
+`css-delete-partial-pseudo'
+`css-delete-partial-tag'
+`css-delete-partial-value'
+`css-delims-maybe-part-at-at-point'
+`css-delims-maybe-part-generic'
+`css-delims-maybe-part-prop-at-point'
+`css-delims-maybe-part-pseudo-at-point'
+`css-delims-maybe-part-tag-at-point'
+`css-delims-maybe-part-val-at-point'
 `css-electric-left-brace'
 `css-electric-left-bracket'
 `css-electric-left-paren'
 `css-electric-quotes'
 `css-electric-semicolon'
+`css-maybe-part-at-at-point'
+`css-maybe-part-prop-at-point'
+`css-maybe-part-pseudo-at-point'
+`css-maybe-part-tag-at-point'
+`css-maybe-part-val-at-point'
+`css-media-completion-menu'
+`css-media-popup-completions'
+`css-pos-for-x-popup-menu'
+`css-possible-at-completions'
+`css-possible-at-completions-at-point'
+`css-possible-prop-completions'
+`css-possible-prop-completions-at-point'
+`css-possible-pseudo-completions'
+`css-possible-pseudo-completions-at-point'
+`css-possible-tag-completions'
+`css-possible-tag-completions-at-point'
+`css-possible-value-completions'
+`css-possible-value-completions-at-point'
+`css-prop-completion-menu'
+`css-prop-for-point'
+`css-prop-popup-completions'
+`css-props-for-point'
+`css-pseudo-completion-menu'
+`css-pseudo-popup-completions'
+`css-pseudos-for-point'
+`css-tag-completion-menu'
+`css-tag-popup-completions'
+`css-tags-for-point'
+`css-vals-for-point'
+`css-vals-for-prop'
+`css-value-completion-menu'
+`css-value-popup-completions'
+`mon-css-complete-loadtime'\n
 :SEE :FILE site-lisp/mon-css-complete.el
-:SEE-ALSO `mon-help-css-properties', `mon-help-css-color',
-`mon-help-ebay-template-mode', `mon-help-css-mode', `mon-help-css-complete',
-`mon-help-css-check'.\n►►►"
+:SEE-ALSO `mon-help-css-properties', `mon-help-css-color', `mon-help-css-mode',
+`mon-help-css-complete', `mon-help-css-check', `mon-help-tidy',
+`mon-help-ebay-template-mode'.\n►►►"
 (interactive "i\nP")
 (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-css-complete :insertp t)
@@ -379,9 +399,9 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 `css-media-ids'      	        ;<CONSTANT>
 `css-property-ids'              ;<CONSTANT>\n
 :SEE :FILE lisp/textmodes/css-mode.el\n
-:SEE-ALSO `mon-help-css-properties', `mon-help-css-color',
-`mon-help-ebay-template-mode', `mon-help-css-mode', `mon-help-css-complete',
-`mon-help-css-check'.\n►►►"
+:SEE-ALSO `mon-help-css-properties', `mon-help-css-color', `mon-help-css-mode',
+`mon-help-css-complete', `mon-help-css-check', `mon-help-ebay-template-mode',
+`mon-help-tidy'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-css-mode :insertp t)
@@ -478,8 +498,8 @@ appears in the two files: misc.cpp and misc.hpp   When the code blocks for
 `*regexp-css-color-rgb*'     ;<CONSTANT>\n
 :SEE :FILE mon-css-color.el
 :SEE-ALSO `mon-help-css-properties', `mon-help-css-mode',
-`mon-help-ebay-template-mode', `mon-help-css-complete',
-`mon-help-css-check'.\n►►►"
+`mon-help-css-complete', `mon-help-css-check', `mon-help-ebay-template-mode',
+`mon-help-tidy'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-css-color :insertp t)
@@ -729,7 +749,7 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 
 ---
 :NAME        border-bottom-width
-:VALUE             <BORDER-WIDTH> | inherit
+:VALUE       <BORDER-WIDTH> | inherit
 :INIT-VALUE  medium
 :APPLIES-TO  all
 :INHERITED-P no
@@ -738,7 +758,7 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 
 ---
 :NAME        border-bottom-style
-:VALUE             <BORDER-STYLE> | inherit
+:VALUE       <BORDER-STYLE> | inherit
 :INIT-VALUE  none
 :APPLIES-TO  all
 :INHERITED-P no
@@ -931,7 +951,7 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 :NAME        empty-cells
 :VALUE       show | hide | inherit
 :INIT-VALUE  show
-:APPLIES-TO   element-display<-table-cell
+:APPLIES-TO  element-display<-table-cell
 :INHERITED-P yes
 :MEDIA-GROUP visual
 
@@ -1089,8 +1109,8 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 
 ---
 :NAME        list-style
-:VALUE      [ `list-style-type` || `list-style-position` || `list-style-image` ]
-            | inherit
+:VALUE       [ `list-style-type` || `list-style-position` || `list-style-image` ]
+             | inherit
 :INIT-VALUE  element-list-style<-this-property-value
 :APPLIES-TO  element-display<-list-item
 :INHERITED-P yes
@@ -1240,7 +1260,7 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 
 ---
 :NAME        outline-width
-:value `border-width` | inherit
+:VALUE       `border-width` | inherit
 :INIT-VALUE  medium
 :APPLIES-TO  all
 :INHERITED-P no
@@ -1428,7 +1448,7 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 
 ---
 :NAME        quotes
-:VALUE       [<STRING> <STRING>]+ | none | inherit
+:VALUE       [ <STRING> <STRING> ]+ | none | inherit
 :INIT-VALUE  user-agent-dependent
 :APPLIES-TO  all
 :INHERITED-P yes
@@ -1653,7 +1673,7 @@ VALUE        <ANGLE> | [[ left-side | far-left | left | center-left | center |
 :MEDIA-GROUP visual
 
 ;; :CSS-BASIC-TYPES\n
-Following are subtypes of the basic-type <NUMBER>:
+;; :NOTE Following are subtypes of the basic-type <NUMBER>:
 
 <FREQUENCY> -> { Hz | Khz }
              | Hz -> Hertz
@@ -1681,7 +1701,7 @@ Following are subtypes of the basic-type <NUMBER>:
 
 <PERCENTAGE> N%
 
-Other CSS basic types:
+;; Other CSS basic types:
 
 <COLOR> -> { named-color #rgb #rrggbb }
          | named-color -> maroon
@@ -1778,6 +1798,7 @@ Other CSS basic types:
 |----------------¦--------------------------------------------¦------------|
 | x-height       | <NUMBER>                                   | undefined  |
 |________________|____________________________________________|__________75^
+
 
 ;; :CSS-PROPERTY-TABLE
  ________________________________________________________________________________________________________________116.
@@ -2316,10 +2337,9 @@ REC-CSS2-20080411 -- \"Appendix G. Descriptor index\".
 The :CSS-PROPERTY-TABLE above was sourced from W3C-TR
 CR-CSS2-2009-09-09 \"Appendix F. Property index\".
 :SEE (URL `http://www.w3.org/TR/2009/CR-CSS2-20090908/css2.txt')
-:SEE (URL `http://www.w3.org/TR/2009/CR-CSS2-20090908/propidx.html')
-
-:SEE-ALSO `mon-help-ebay-template-mode', `mon-help-css-mode',
-`mon-help-css-color', `mon-help-css-complete', `mon-help-css-check'.\n►►►"
+:SEE (URL `http://www.w3.org/TR/2009/CR-CSS2-20090908/propidx.html')\n
+:SEE-ALSO `mon-help-css-mode', `mon-help-css-color', `mon-help-css-complete',
+`mon-help-css-check', `mon-help-ebay-template-mode', `mon-help-tidy'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-css-properties :insertp t)

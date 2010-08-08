@@ -330,5 +330,26 @@ It would be great if sunrise commander was in [[ELPA]].
 [new]
 Thanks for the tip! Added already to my TODO list :)
 ----
+[new] 
+I don't know how much time you spent on this, but SR is just amazing. Thanks a million. 
+
+With your permission, here are a couple of things which trouble my sleep:
+
+1) How to make dired command to call SR instead, such that it would be available to other programs (ido for instance)? (The problem is that dired's second optional argument SWITCHES does not appear in sunrise's arguments list and also on my system is remapped by ido-dired which makes things even more complicated.  I am a lay elisper, sorry.)
+
+2) Is there a way to hide specific columns in SR buffer? Especially owner,user columns. They bring no useful information, and take a lot of space, keeping the names of the files outside of the visible area. 
+
+Next are two things from my wish list (not vital in any way). 
+
+3) I love fuzzy matching. It's strikingly similar to "anything" way of doing things. In "anything" buffer one can type the regexp and at the same time navigate with C-n C-p. To change regexp one needs to just start typing again. To dismiss the minibufer one presses C-g.  In SR it's slightly different, after C-c / I cannot change the string completely because by deleting the last character with Backspace will revert the buffer and once again C-c / is necessary to reenter the fuzzy mode. C-p C-n will introduce ^P ^C characters. C-g will accept the changes, which is slightly unusual:). Would be nice to have a mini keymap for fuzzy filtering.
+
+4a) Would it be possible to use find-grep C-c C-g and find-name C-c C-n on  files and directories *narrowed* by previously called C-c /, C-c C-g, C-c C-n, C-c C-l ? Actually it would be even better (more consistent) to be able to perform those operations on marked files & directories.
+4b) How about igrep-find instead of just grep in C-c C-f? igrep-find offers the option to limit FILES searched by specifying the pattern. Grep would search for occurences even in binary files which slows down considerably the whole process and gives long lists.
+
+Thanks again for your work. Great job.
+
+RedBlue
+
+----
 CategoryDirectories
 CategoryEmulation

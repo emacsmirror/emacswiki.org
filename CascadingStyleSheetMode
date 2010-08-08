@@ -68,18 +68,21 @@ proper soon!
 
 == CSS Extensions == 
 
-Niels Giesen offers some CSS related utils:
-* css-check.el
-* css-complete.el
-
+Niels Giesen offers some CSS related utils from his [http://pft.github.com/ git repo] at:
 <pre>
 git://github.com/pft/elisp-assorted.git
 </pre>
-http://pft.github.com/
 
-Niels Giesen also appears to have been the original author of css-color.el CssColor which has been obsorbed by NxhtmlMode. It is available in an older form as:
+* css-check.el -- Integrates the [http://sourceforge.net/projects/csstidy/ csstidy program] with Emacs [http://github.com/pft/elisp-assorted/blob/master/css-check.el css-check.el]
+* css-complete.el -- CSS completion using `x-popup-menu' for selection [http://github.com/pft/elisp-assorted/blob/master/css-complete.el css-complete.el]
+
+Niels Giesen also appears to have been the original author of css-color.el CssColor which has been absorbed by NxhtmlMode. 
+[[mon_key]] maintains a modified version of the the older pre NxhtmlMode css-color.el along with other adaptations of Niels' CSS packages these are:
 
 * Lisp:mon-css-color.el --- This is css-color.el version "0.03" of 2008 without the NxhtmlMode dependencies.
+* Lisp:mon-css-complete.el --- This is is a highly modified version of Niels Giesen's css-complete.el
+* Lisp:mon-css-check.el --- This is Niels Giesen's css-check.el interface to csstidy with MON minor changes, additions, and docstring xrefs
+* Lisp:mon-doc-help-css.el --- This extends mon-css-check.el, mon-css-complete.el, mon-css-color, and css-mode.el, with Lisp:mon-doc-help-utils.el style xrefs.
 
 ----
 MarkupModes,

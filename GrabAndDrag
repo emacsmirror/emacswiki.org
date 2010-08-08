@@ -45,10 +45,12 @@ To move to the next/previous Web page by horizontal flick gesture, add the follo
 
 === twittering-mode ===
 
-To get the previous time line automatically when vertical scrolling reaches the end of buffer, add the following to .emacs file:
+To get the time line automatically when vertical scrolling reaches the ends of buffer, add the following to .emacs file:
 
   (add-hook 'twittering-mode-hook
             (lambda ()
+              (add-hook 'grab-and-drag-beginning-of-buffer-hook
+                        'beginning-of-buffer nil t)
               (add-hook 'grab-and-drag-end-of-buffer-hook
                         'twittering-goto-next-status nil t)))
 

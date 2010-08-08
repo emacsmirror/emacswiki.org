@@ -87,6 +87,35 @@ This function splits window from horizontal style into vertical style
 
 }}}
 
+== rename-buffer-in-ssh-login ==
+
+Rename buffer to the destination hostname in ssh login
+
+Since I used to login to a lot of different machines in my daily work, I'd like to have the shell buffer name to represent the hostname of which I am working on.
+
+== rename-buffer-in-ssh-exit == 
+
+Rename buffer to its previous name when user exit from a ssh login.
+
+I do not just login to the destination machine from my GNU Emacs. Instead I used to login to a central host first, and then to login to any destinations from there. 
+
+So I need to have the shell buffer changes accordingly when I exit from a destination host and back to the central one. 
+
+**This function is still in its babyhood. It could only work well in a single shell session. I am not sure how to handle multiple shell sessions simultaneously. And exit from a subshell is also a problem.**
+
+**If anyone has good ideas, its warm welcome here!.**
+
+
+== kill-shell-buffer-after-exit ==
+
+Kill shell buffer after user exited from shell.
+
+It is very ugly that the shell buffer will keep exist even user has already been exited from it. So I wrote this function to kill it for me.
+
+I chose to use 'set-process-sentinel' function instead of monitor user commands. 'set-process-sentinel' is provided by shell mode itself. So it makes things simpler.
+
+
+
 = Discussion =
 
 [new:DrewAdams:2010-07-31 15:41 UTC]

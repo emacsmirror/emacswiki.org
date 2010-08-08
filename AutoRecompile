@@ -453,4 +453,28 @@ The following version doesn't require the byte compiled version of the file to e
  (add-hook 'after-save-hook 'byte-compile-init-file)
 
 ----
+I use following function, when visit file, remove <filename>.elc, after save file,create <filename>.elc  -- coldnew
+
+<pre>
+(defun remove-elc-when-visit ()
+  "When visit, remove <filename>.elc"
+  (make-local-variable 'find-file-hook)
+  (add-hook 'find-file-hook
+            (lambda ()
+              (if (file-exists-p (concat buffer-file-name "c"))
+                  (delete-file (concat buffer-file-name "c"))))))
+(add-hook 'emacs-lisp-mode-hook 'remove-elc-when-visit)
+
+(defun byte-compile-when-save()
+  "When save, recompile it"
+  (make-local-variable 'after-save-hook)
+  (add-hook 'after-save-hook
+	    (lambda ()
+	      (when buffer-file-name
+	      (byte-compile-file buffer-file-name)))))
+(add-hook 'emacs-lisp-mode-hook 'byte-compile-when-save)
+
+</pre>
+
+----
 CategoryCode, CategoryDotEmacs
