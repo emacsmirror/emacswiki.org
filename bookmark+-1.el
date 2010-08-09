@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug  6 09:49:39 2010 (-0700)
+;; Last-Updated: Sun Aug  8 15:59:44 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 394
+;;     Update #: 528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1042,8 +1042,9 @@ the state of buffer `*Bookmark List*' at the time it is created:
   (defun bookmark-get-bookmark (bookmark &optional noerror)
     "Return the bookmark record corresponding to BOOKMARK.
 BOOKMARK is a bookmark name or a bookmark record.
-If BOOKMARK is already a bookmark record, just return it.
+If BOOKMARK is a bookmark record, just return it.
 Otherwise look for the corresponding bookmark in `bookmark-alist'.
+Return the bookmark found or raise an error if none found.
 
 Non-nil optional arg NOERROR means return nil if BOOKMARK
 is not a valid bookmark - do not raise an error."
@@ -1060,8 +1061,7 @@ is not a valid bookmark - do not raise an error."
 That is, all information but the name.
 BOOKMARK is a bookmark name or a bookmark record."
     (let ((alist  (cdr (bookmark-get-bookmark bookmark))))
-      ;; The bookmark objects can either look like (NAME ALIST) or
-      ;; (NAME . ALIST), so we have to distinguish the two here.
+      ;; A bookmark record is either (NAME ALIST) or (NAME . ALIST).
       (if (and (null (cdr alist)) (consp (caar alist)))
           (car alist)
         alist)))
@@ -1069,7 +1069,7 @@ BOOKMARK is a bookmark name or a bookmark record."
   (defun Info-bookmark-make-record ()
     "Create an Info bookmark record."
     `(,Info-current-node
-      ,@(bookmark-make-record-default 'point-only)
+      ,@(bookmark-make-record-default 'no-file)
       (filename . ,Info-current-file)
       (info-node . ,Info-current-node)
       (handler . Info-bookmark-jump)))
@@ -1245,20 +1245,29 @@ candidate."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Handles also regions and non-file buffers.
+;; 1. Handles also regions and non-file buffers.
+;; 2. Do not use NO-CONTEXT or POSN if < Emacs 24.
 ;;
-(defun bookmark-make-record-default (&optional point-only)
+(defun bookmark-make-record-default (&optional no-file no-context position visits)
   "Return the record describing the location of a new bookmark.
 Point must be where the bookmark is to be set.
-If POINT-ONLY is non-nil, return only the subset of the record that
-pertains to the location within the buffer."
+
+Non-nil NO-FILE means return only the subset of the record that
+ pertains to the location within the buffer (not also the file name).
+
+Non-nil NO-CONTEXT means do not include the front and rear context
+strings in the record enough.
+
+Non-nil POSITION means record it, not point, as the `position' entry.
+
+Non-nil VISITS means record it as the `visits' entry."
   (let* ((dired-p  (and (boundp 'dired-buffers) (car (rassq (current-buffer) dired-buffers))))
          (buf      (buffer-name))
          (ctime    (current-time))
 
          ;; Begin `let*' dependencies.
          (regionp  (and transient-mark-mode mark-active (not (eq (mark) (point)))))
-         (beg      (if regionp (region-beginning) (point)))
+         (beg      (if regionp (region-beginning) (or position (point))))
          (end      (if regionp (region-end) (point)))
          (fcs      (if regionp
                        (bmkp-position-post-context-region beg end)
@@ -1268,20 +1277,25 @@ pertains to the location within the buffer."
                      (bmkp-position-pre-context beg)))
          (fcrs     (when regionp (bmkp-end-position-pre-context beg end)))
          (ecrs     (when regionp (bmkp-end-position-post-context end))))
-    `(,@(unless point-only `((filename . ,(cond ((buffer-file-name (current-buffer))
-                                                 (bookmark-buffer-file-name))
-                                                (dired-p  nil)
-                                                (t        bmkp-non-file-filename)))))
-      (buffer-name                 . ,buf)
-      (front-context-string        . ,fcs)
-      (rear-context-string         . ,rcs)
-      (front-context-region-string . ,fcrs)
-      (rear-context-region-string  . ,ecrs)
-      (visits                      . 0)
-      (time                        . ,ctime)
-      (created                     . ,ctime)
-      (position                    . ,beg)
-      (end-position                . ,end))))
+    `(,@(unless no-file
+                `((filename . ,(cond ((buffer-file-name (current-buffer))
+                                      (bookmark-buffer-file-name))
+                                     (dired-p  nil)
+                                     (t        bmkp-non-file-filename)))))
+      (buffer-name . ,buf)
+      ,@(unless (and no-context (> emacs-major-version 23))
+                `((front-context-string . ,fcs)))
+      ,@(unless (and no-context (> emacs-major-version 23))
+                `((rear-context-string . ,rcs)))
+      ,@(unless (and no-context (> emacs-major-version 23))
+                `((front-context-region-string . ,fcrs)))
+      ,@(unless (and no-context (> emacs-major-version 23))
+                `((rear-context-region-string  . ,ecrs)))
+      (visits       . ,(or visits 0))
+      (time         . ,ctime)
+      (created      . ,ctime)
+      (position     . ,beg)
+      (end-position . ,end))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1307,7 +1321,7 @@ for prompting is as follows (in order of priority):
 
  * If in W3M mode, then the current W3M title.
 
- * If in Gnus Summary mode, then the Gnus summary article header.
+ * If in a Gnus mode, then the Gnus summary article header.
 
  * If on a `man' page, then the page name (command and section).
 
@@ -1483,15 +1497,16 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;; 4. Added note about Icicles `S-delete' to doc string.
 ;;
 ;;;###autoload
-(defun bookmark-jump (bookmark-name &optional use-region-p) ; Bound to `C-x j j', `C-x r b', `C-x p g'
-  "Jump to the bookmark named BOOKMARK-NAME.
+(defun bookmark-jump (bookmark          ; Bound to `C-x j j', `C-x r b', `C-x p g'
+                      &optional display-function use-region-p)
+  "Jump to bookmark BOOKMARK.
 You may have a problem using this function if the value of variable
 `bookmark-alist' is nil.  If that happens, you need to load in some
 bookmarks.  See function `bookmark-load' for more about this.
 
-If the file pointed to by BOOKMARK-NAME no longer exists, you are
-asked if you wish to give the bookmark a new location.  If so,
-`bookmark-jump' jumps to the new location and saves it.
+If the file pointed to by BOOKMARK no longer exists, you are asked if
+you wish to give the bookmark a new location.  If so, `bookmark-jump'
+jumps to the new location and saves it.
 
 If the bookmark defines a region, then the region is activated if
 `bmkp-use-region' is not-nil or it is nil and you use a prefix
@@ -1500,10 +1515,17 @@ argument.  A prefix arg temporarily flips the value of
 
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
-candidate."
+candidate.
+
+In Lisp code:
+BOOKMARK is a bookmark name or a bookmark record.
+Non-nil DISPLAY-FUNCTION is a function to display the bookmark.  By
+ default, `switch-to-buffer' is used.
+Non-nil USE-REGION-P flips the value of `bmkp-use-region'."
   (interactive (list (bookmark-completing-read "Jump to bookmark" (bmkp-default-bookmark-name))
+                     nil
                      current-prefix-arg))
-  (bmkp-jump-1 bookmark-name 'switch-to-buffer use-region-p))
+  (bmkp-jump-1 bookmark (or display-function 'switch-to-buffer) use-region-p))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1513,13 +1535,13 @@ candidate."
 ;; 3. Use `bmkp-jump-1'.
 ;;
 ;;;###autoload
-(defun bookmark-jump-other-window (bookmark-name &optional use-region-p) ; `C-x 4 j j', `C-x p o'
-  "Jump to the bookmark named BOOKMARK-NAME, in another window.
+(defun bookmark-jump-other-window (bookmark &optional use-region-p) ; `C-x 4 j j', `C-x p o'
+  "Jump to bookmark BOOKMARK in another window.
 See `bookmark-jump', in particular for info about using a prefix arg."
   (interactive (list (bookmark-completing-read "Jump to bookmark (in another window)"
                                                (bmkp-default-bookmark-name))
                      current-prefix-arg))
-  (bmkp-jump-1 bookmark-name 'bmkp-select-buffer-other-window use-region-p))
+  (bmkp-jump-1 bookmark 'bmkp-select-buffer-other-window use-region-p))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1528,42 +1550,51 @@ See `bookmark-jump', in particular for info about using a prefix arg."
 ;;
 (defun bookmark-handle-bookmark (bookmark)
   "Call BOOKMARK's handler, or `bookmark-default-handler' if it has none.
-Changes the current buffer and point.
-Returns nil or signals a `file-error'.
-BOOKMARK can be a bookmark record used internally by some Emacs-Lisp
- package, or the name of a bookmark in `bookmark-alist'."
-  (condition-case err
-      (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
-               (bookmark-get-bookmark bookmark))
-    (file-error
-     ;; We were unable to find the marked file, so ask if user wants to
-     ;; relocate the bookmark, else remind them to consider deletion.
-     (when (stringp bookmark)
-       ;; BOOKMARK can be either a bookmark name (found in `bookmark-alist') or a bookmark
-       ;; object.  If an object, assume it's a bookmark used internally by some other package.
-       (let ((file             (bookmark-get-filename bookmark))
-             (use-dialog-box   nil)
-             (use-file-dialog  nil))
-         (when file                     ; Don't know how to relocate if file doesn't exist.
-           (unless (string= file bmkp-non-file-filename) (setq file  (expand-file-name file)))
-           (ding)
-           (cond ((y-or-n-p (if (and (string= file bmkp-non-file-filename)
-                                     (bmkp-get-buffer-name bookmark))
-                                "Bookmark's buffer doesn't exist.  Re-create it? "
-                              (concat (file-name-nondirectory file) " nonexistent.  Relocate \""
-                                      bookmark "\"? ")))
-                  (if (string= file bmkp-non-file-filename)
-                      ;; This is not likely the right way to get the correct buffer, but it's
-                      ;; better than nothing, and it gives the user a chance to DTRT.
-                      (pop-to-buffer (bmkp-get-buffer-name bookmark)) ; Create buffer.
-                    (bookmark-relocate bookmark)) ; Relocate to file.
-                  (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
-                           (bookmark-get-bookmark bookmark))) ; Try again
-                 (t
-                  (message "Bookmark not relocated: `%s'" bookmark)
-                  (signal (car err) (cdr err)))))))))
+The default handler changes the current buffer and point.
+BOOKMARK is a bookmark name or a bookmark record.
+Returns nil or raises an error.
+
+If the default handler is used and a file error is raised, the error
+is handled as follows:
+ If BOOKMARK has no `filename' entry, do nothing.
+ Else prompt to relocate the file.
+   If relocated, then try again to handle.  Else raise a file error."
+  (if (bookmark-get-handler bookmark)
+      (funcall (bookmark-get-handler bookmark) (bookmark-get-bookmark bookmark))
+    (condition-case err
+        (funcall 'bookmark-default-handler (bookmark-get-bookmark bookmark))
+      (bookmark-error-no-filename         ; `file-error'
+       ;; BOOKMARK can be either a bookmark name or a bookmark record.
+       ;; If a record, do nothing - assume it is a bookmark used internally by some other package.
+       (when (stringp bookmark)
+         (let ((file             (bookmark-get-filename bookmark))
+               (use-dialog-box   nil)
+               (use-file-dialog  nil))
+           (when file
+             ;; Ask user whether to relocate the file.  If no, signal the file error.
+             (unless (string= file bmkp-non-file-filename) (setq file  (expand-file-name file)))
+             (ding)
+             (cond ((y-or-n-p (if (and (string= file bmkp-non-file-filename)
+                                       (bmkp-get-buffer-name bookmark))
+                                  "Bookmark's buffer does not exist.  Re-create it? "
+                                (concat (file-name-nondirectory file) " nonexistent.  Relocate \""
+                                        bookmark "\"? ")))
+                    (if (string= file bmkp-non-file-filename)
+                        ;; This is not likely the right way to get the correct buffer, but it's
+                        ;; better than nothing, and it gives the user a chance to DTRT.
+                        (pop-to-buffer (bmkp-get-buffer-name bookmark)) ; Create buffer.
+                      (bookmark-relocate bookmark)) ; Relocate to file.
+                    (funcall (or (bookmark-get-handler bookmark) 'bookmark-default-handler)
+                             (bookmark-get-bookmark bookmark))) ; Try again
+                   (t
+                    (message "Bookmark not relocated: `%s'" bookmark)
+                    (signal (car err) (cdr err))))))))))
   (when (stringp bookmark) (setq bookmark-current-bookmark  bookmark))
   nil)                                  ; Return nil if no error.
+
+(put 'bookmark-error-no-filename 'error-conditions
+     '(error bookmark-errors bookmark-error-no-filename))
+(put 'bookmark-error-no-filename 'error-message "Bookmark has no associated file (or directory)")
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1605,8 +1636,7 @@ Return nil or signal `file-error'."
             ;; No file found.  If no buffer either, then signal that file doesn't exist.
             (unless (or (and buf (get-buffer buf))
                         (and bufname (get-buffer bufname) (not (string= buf bufname))))
-              (signal 'file-error `("Jumping to bookmark" "No such file or directory"
-                                    ,(bookmark-get-filename bmk)))))
+              (signal 'bookmark-error-no-filename (list 'stringp file))))
           (set-buffer (or buf bufname))
           (when bmkp-jump-display-function
             (save-current-buffer (funcall bmkp-jump-display-function (current-buffer)))
@@ -1664,11 +1694,9 @@ minibuffer history list `bookmark-history'.
 If you use Icicles, then you can use `S-delete' during completion of a
 bookmark name to delete the bookmark named by the current completion
 candidate."
-  (interactive (if (> emacs-major-version 21)
-                   (list (bookmark-completing-read "Insert bookmark location"
-                                                   (bmkp-default-bookmark-name)))
-                 (bookmark-completing-read "Insert bookmark location"
-                                           (bmkp-default-bookmark-name))))
+  (interactive
+   (let ((bmk  (bookmark-completing-read "Insert bookmark location" (bmkp-default-bookmark-name))))
+     (if (> emacs-major-version 21) (list bmk) bmk)))
   (or no-history (bookmark-maybe-historicize-string bookmark-name))
   (insert (bookmark-location bookmark-name))) ; Return the line inserted.
 
@@ -1795,7 +1823,7 @@ candidate.  In this way, you can delete multiple bookmarks."
   ;; Added by DB.  `bookmark-current-bookmark' should be nil if last occurrence was deleted.
   (unless (bookmark-get-bookmark bookmark-current-bookmark 'noerror)
     (setq bookmark-current-bookmark  nil))
-  ;; Don't rebuild the list when using `batch' arg
+  ;; Do not rebuild the list when using `batch' arg
   (unless batch (bookmark-bmenu-surreptitiously-rebuild-list))
   (bmkp-maybe-save-bookmarks))
 
@@ -1929,7 +1957,7 @@ bookmark files that were created using the bookmark functions."
       (read-file-name (if current-prefix-arg "Switch to bookmark file: " "Add bookmarks from file: ")
                       dir bfile 'confirm))
     current-prefix-arg))
-  (setq file  (expand-file-name file))
+  (setq file  (abbreviate-file-name (expand-file-name file)))
   (unless (file-readable-p file) (error "Cannot read bookmark file `%s'" file))
   (unless no-msg (bookmark-maybe-message "Loading bookmarks from `%s'..." file))
   (with-current-buffer (let ((enable-local-variables nil)) (find-file-noselect file))
@@ -1944,7 +1972,7 @@ bookmark files that were created using the bookmark functions."
                 bookmark-alist-modification-count  0)
         (bookmark-import-new-list blist)
         (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count)))
-      (when (string-equal (expand-file-name bookmark-default-file) file)
+      (when (string-equal (abbreviate-file-name (expand-file-name bookmark-default-file)) file)
         (setq bookmarks-already-loaded  t))
       (bookmark-bmenu-surreptitiously-rebuild-list))
     (kill-buffer (current-buffer)))
@@ -2060,12 +2088,13 @@ LAXP non-nil means use lax completion."
                                              (or hist 'bookmark-history) default)))
       (if (and (string-equal "" str) default) default str))))
 
-(defun bmkp-jump-1 (bookmark-name display-function use-region-p)
+(defun bmkp-jump-1 (bookmark display-function use-region-p)
   "Helper function for `bookmark-jump' commands."
-  (unless bookmark-name (error "No bookmark specified"))
-  (bookmark-maybe-historicize-string bookmark-name)
+  (setq bookmark  (bookmark-get-bookmark bookmark 'NOERROR))
+  (unless bookmark (error "No bookmark specified"))
+  (bookmark-maybe-historicize-string (bookmark-name-from-full-record bookmark))
   (let ((bmkp-use-region  (if use-region-p (not bmkp-use-region) bmkp-use-region)))
-    (bookmark--jump-via bookmark-name display-function)))
+    (bookmark--jump-via bookmark display-function)))
 
 (defun bmkp-select-buffer-other-window (buffer)
   "Select BUFFER in another window.
@@ -2925,7 +2954,8 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-gnus-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is a Gnus bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
-  (memq (bookmark-get-handler bookmark) '(bmkp-jump-gnus bmkext-jump-gnus)))
+  (memq (bookmark-get-handler bookmark)
+        '(gnus-summary-bookmark-jump bmkp-jump-gnus bmkext-jump-gnus)))
 
 (defun bmkp-info-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK is an Info bookmark.
@@ -4695,7 +4725,7 @@ order, filter function, regexp pattern, title, and omit list."
                   (last-omitted-list           . ,bmkp-bmenu-omitted-list)
                   (last-bmenu-title            . ,bmkp-bmenu-title)
                   (last-bmenu-toggle-filenames . ,bookmark-bmenu-toggle-filenames))))
-    `(,@(bookmark-make-record-default 'point-only)
+    `(,@(bookmark-make-record-default 'no-file 'no-context)
       (filename      . ,bmkp-non-file-filename)
       (bookmark-list . ,state)
       (handler       . bmkp-jump-bookmark-list))))
@@ -4755,7 +4785,7 @@ Records the BOOKMARK-FILE name.
 Adds a handler that tests the prefix arg and loads the bookmark file
 either as a replacement for the current bookmark file or as a
 supplement to it."
-  `(,@(bookmark-make-record-default 'point-only)
+  `(,@(bookmark-make-record-default 'no-file 'no-context)
     (filename      . ,bookmark-file)
     (bookmark-file . ,bookmark-file)
     (handler       . bmkp-jump-bookmark-file)))
@@ -4813,7 +4843,7 @@ You are prompted for the desktop-file location and the bookmark name."
 (defun bmkp-make-desktop-record (desktop-file)
   "Create and return a desktop bookmark record.
 DESKTOP-FILE is the absolute file name of the desktop file to use."
-  `(,@(bookmark-make-record-default 'point-only)
+  `(,@(bookmark-make-record-default 'no-file 'no-context)
     (filename     . ,bmkp-non-file-filename)
     (desktop-file . ,desktop-file)
     (handler      . bmkp-jump-desktop)))
@@ -5011,7 +5041,7 @@ Each entry in VARIABLES is either a variable (a symbol) or a cons
 Optional arg BUFFER-NAME is the buffer to use for the bookmark.  This
 is useful if some of the variables are buffer-local.  If BUFFER-NAME
 is nil, the current buffer is used."
-  (let ((record  `(,@(bookmark-make-record-default 'point-only)
+  (let ((record  `(,@(bookmark-make-record-default 'no-file 'no-context)
                    (filename     . ,bmkp-non-file-filename)
                    (variables    . ,(or (bmkp-printable-vars+vals variables)
                                         (error "No variables to bookmark")))
@@ -5085,7 +5115,8 @@ BOOKMARK is a bookmark name or a bookmark record."
 (defun bmkp-make-w3m-record ()
   "Make a special entry for w3m buffers."
   (require 'w3m)                        ; For `w3m-current-url'.
-  `(,@(bookmark-make-record-default 'point-only)
+  `(,w3m-current-title
+    ,@(bookmark-make-record-default 'no-file)
     (filename . ,w3m-current-url)
     (handler . bmkp-jump-w3m)))
 
@@ -5094,11 +5125,13 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-w3m-set-new-buffer-name ()
   "Set the w3m buffer name according to the number of w3m buffers already open."
+  (require 'w3m)                        ; For `w3m-list-buffers'.
   (let ((len  (length (w3m-list-buffers 'nosort))))
     (if (eq len 0)  "*w3m*"  (format "*w3m*<%d>" (1+ len)))))
 
 (defun bmkp-jump-w3m-new-session (bookmark)
   "Jump to W3M bookmark BOOKMARK, setting a new tab."
+  (require 'w3m)
   (let ((buf   (bmkp-w3m-set-new-buffer-name)))
     (w3m-browse-url (bookmark-prop-get bookmark 'filename) 'newsession)
     (while (not (get-buffer buf)) (sit-for 1)) ; Be sure we have the W3M buffer.
@@ -5111,6 +5144,7 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 (defun bmkp-jump-w3m-only-one-tab (bookmark)
   "Close all W3M sessions and jump to BOOKMARK in a new W3M buffer."
+  (require 'w3m)
   (w3m-quit 'force)                     ; Be sure we start with an empty W3M buffer.
   (w3m-browse-url (bookmark-prop-get bookmark 'filename))
   (with-current-buffer "*w3m*" (while (eq (point-min) (point-max)) (sit-for 1)))
@@ -5122,34 +5156,44 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Handler function for record returned by `bmkp-make-w3m-record'.
 BOOKMARK is a bookmark name or a bookmark record.
 Use multi-tabs in W3M if `bmkp-w3m-allow-multi-tabs' is non-nil."
+  (require 'w3m)
   (if bmkp-w3m-allow-multi-tabs
       (bmkp-jump-w3m-new-session bookmark)
     (bmkp-jump-w3m-only-one-tab bookmark)))
 
-;; GNUS support.  Does not handle regions.
+
+;; GNUS support for Emacs < 24.
+
 (defun bmkp-make-gnus-record ()
-  "Make a bookmark entry for a Gnus buffer."
+  "Make a bookmark entry for a Gnus summary buffer."
   (require 'gnus)
   (unless (and (eq major-mode 'gnus-summary-mode) gnus-article-current)
-    (error "Please retry from the Gnus summary buffer")) ;[1]
+    (error "Try again, from the Gnus summary buffer"))
   (let* ((grp   (car gnus-article-current))
          (art   (cdr gnus-article-current))
          (head  (gnus-summary-article-header art))
          (id    (mail-header-id head)))
-    `(,@(bookmark-make-record-default 'point-only)
+    `((elt (gnus-summary-article-header) 1)
+      ,@(bookmark-make-record-default 'no-file)
       (filename . ,bmkp-non-file-filename) (group . ,grp) (article . ,art) (message-id . ,id)
       (handler . bmkp-jump-gnus))))
 
-(add-hook 'gnus-summary-mode-hook #'(lambda ()
-                                      (set (make-local-variable 'bookmark-make-record-function)
-                                           'bmkp-make-gnus-record)))
+(unless (> emacs-major-version 23)      ; Emacs 24 has `gnus-summary-bookmark-make-record'.
+  (add-hook 'gnus-summary-mode-hook #'(lambda ()
+                                        (set (make-local-variable 'bookmark-make-record-function)
+                                             'bmkp-make-gnus-record))))
 
-;; Raise an error if we try to bookmark from here [1]
-(add-hook 'gnus-article-mode-hook #'(lambda ()
-                                      (set (make-local-variable 'bookmark-make-record-function)
-                                           'bmkp-make-gnus-record)))
+(unless (> emacs-major-version 23)      ; Emacs 24 has `gnus-summary-bookmark-make-record'.
+  (add-hook 'gnus-article-mode-hook #'(lambda ()
+                                        (set (make-local-variable 'bookmark-make-record-function)
+                                             'bmkp-make-gnus-record))))
 
-(defalias 'bmkext-jump-gnus 'bmkp-jump-gnus)
+(defun bmkext-jump-gnus (bookmark)      ; Compatibility code.
+  "`gnus-summary-bookmark-jump' if defined, else `bmkp-jump-gnus'."
+  (if (fboundp 'gnus-summary-bookmark-jump)
+      (gnus-summary-bookmark-jump bookmark) ; Emacs 24
+    (bmkp-jump-gnus bookmark)))
+
 (defun bmkp-jump-gnus (bookmark)
   "Handler function for record returned by `bmkp-make-gnus-record'.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -5157,31 +5201,41 @@ BOOKMARK is a bookmark name or a bookmark record."
         (article  (bookmark-prop-get bookmark 'article))
         (id       (bookmark-prop-get bookmark 'message-id))
         (buf      (bookmark-prop-get bookmark 'buffer)))
-    (gnus-fetch-group group (list article))
+    (if (< emacs-major-version 22) (gnus-fetch-group group) (gnus-fetch-group group (list article)))
     (gnus-summary-insert-cached-articles)
     (gnus-summary-goto-article id nil 'force)
     (bookmark-default-handler `("" (buffer . ,buf) . ,(bookmark-get-bookmark-record bookmark)))))
 
+
+;; `man' and `woman' support for Emacs < 24.
+
 (when (> emacs-major-version 20)
   (defun bmkp-make-woman-record ()
     "Create bookmark record for `man' page bookmark created by `woman'."
-    `(,@(bookmark-make-record-default 'point-only)
+    `(,@(bookmark-make-record-default 'no-file)
       (filename . ,woman-last-file-name) (handler . bmkp-jump-woman)))
 
-  (add-hook 'woman-mode-hook #'(lambda ()
-                                 (set (make-local-variable 'bookmark-make-record-function)
-                                      'bmkp-make-woman-record))))
+  (unless (> emacs-major-version 23)
+    (add-hook 'woman-mode-hook #'(lambda ()
+                                   (set (make-local-variable 'bookmark-make-record-function)
+                                        'bmkp-make-woman-record)))))
 
 (defun bmkp-make-man-record ()
   "Create bookmark record for `man' page bookmark created by `man'."
-  `(,@(bookmark-make-record-default 'point-only)
+  `(,@(bookmark-make-record-default 'no-file)
     (filename . ,bmkp-non-file-filename)
     (man-args . ,Man-arguments) (handler . bmkp-jump-man)))
 
+(unless (> emacs-major-version 23)
   (add-hook 'Man-mode-hook #'(lambda () (set (make-local-variable 'bookmark-make-record-function)
-                                             'bmkp-make-man-record)))
+                                             'bmkp-make-man-record))))
 
-(defalias 'bmkext-jump-woman 'bmkp-jump-woman)
+(defun bmkext-jump-woman (bookmark)     ; Compatibility code.
+  "`woman-bookmark-jump' if defined, else `bmkp-jump-woman'."
+  (if (fboundp 'woman-bookmark-jump)
+      (woman-bookmark-jump bookmark)    ; Emacs 24
+    (bmkp-jump-woman bookmark)))
+  
 (defun bmkp-jump-woman (bookmark)
   "Handler function for `man' page bookmark created by `woman'."
   (unless (> emacs-major-version 20)
@@ -5191,7 +5245,12 @@ BOOKMARK is a bookmark name or a bookmark record."
                                           (current-buffer)))
      . ,(bookmark-get-bookmark-record bookmark))))
 
-(defalias 'bmkext-jump-man 'bmkp-jump-man)
+(defun bmkext-jump-man (bookmark)       ; Compatibility code.
+  "`Man-bookmark-jump' if defined, else `bmkp-jump-man'."
+  (if (fboundp 'Man-bookmark-jump)
+      (Man-bookmark-jump bookmark)      ; Emacs 24
+    (bmkp-jump-man bookmark)))
+  
 (defun bmkp-jump-man (bookmark)
   "Handler function for `man' page bookmark created by `man'."
   (require 'man)
@@ -5202,6 +5261,8 @@ BOOKMARK is a bookmark name or a bookmark record."
     (Man-getpage-in-background (bookmark-prop-get bookmark 'man-args))
     (while (get-process "man") (sit-for 0.2))
     (bookmark-default-handler (bookmark-get-bookmark bookmark))))
+
+
 
 (defun bmkp-make-dired-record ()
   "Create and return a Dired bookmark record."
@@ -5214,7 +5275,7 @@ BOOKMARK is a bookmark name or a bookmark record."
                (mfiles   (mapcar #'(lambda (mm) (car mm))
                                  (dired-remember-marks (point-min) (point-max)))))
            `(,dir
-             ,@(bookmark-make-record-default 'point-only)
+             ,@(bookmark-make-record-default 'no-file)
              (filename . ,dir) (dired-directory . ,dired-directory)
              (dired-marked . ,mfiles) (dired-switches . ,dired-actual-switches)
              (dired-subdirs . ,subdirs) (dired-hidden-dirs . ,hidden-dirs)
@@ -5253,6 +5314,7 @@ Handler function for record returned by `bmkp-make-dired-record'."
       (save-excursion
         (dolist (dir  hidden-dirs) (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))
     (goto-char (bookmark-get-position bookmark))))
+
 
 (defun bmkp-read-bookmark-for-type (type alist &optional other-win pred hist action)
   "Read name of a bookmark of type TYPE.

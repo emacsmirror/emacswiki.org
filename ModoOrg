@@ -1,0 +1,116 @@
+[[en:OrgMode]]
+[[zh:Org-Mode (中文)]]
+== Presentación ==
+
+Un modo de Emacs para notas, planificación de proyectos, creación de
+documentos.  Se incluye oficialmente en la distribución de Emacs desde
+su versión 22.1.
+
+* Página web en inglés: http://orgmode.org
+* Documentación Worg (org editado por los usuarios): http://orgmode.org/worg
+* El Manual de Org, traducción al español para 23.1:  http://gnu.manticore.es/manual-org-emacs
+* (Por favor, existen varios blogs en español especialmente dedicados
+   a este modo.  ¿Alguien podría referenciarlos?
+
+
+Características:
+
+* Se integra con el Diario
+* Establece fechas de vencimiento, cosas por hacer, programa eventos
+* Posee un editor de tablas propio (disponible como modo menor)
+* Produce salida en HTML
+* Vista de un árbol disperso con las cosas por hacer y los vencimientos
+* El modo Agenda consolida las cosas por hacer, las programadas, los
+  vencimientos y los eventos del Diario desde muchos ficheros en una
+  sola vista
+* Reconoce las fechas
+* Enlaces a http, ficheros, gnus, rmail, vm, noticias, wanderlust, bbdb
+* Se integra con el RememberMode
+
+== Descarga e instalación ==
+
+La versión de desarrollo está en:
+
+    git clone git://repo.or.cz/org-mode.git
+
+Existe un repositorio Ubuntu con los últimos cambios que no están aún
+en el cvs de Emacs.  Se añade lo siguiente en la <code>/etc/apt/sources.list</code>:
+
+    deb http://ppa.launchpad.net/hexmode/ubuntu gutsy main
+    deb-src http://ppa.launchpad.net/hexmode/ubuntu gutsy main
+
+== Complementos y otros ficheros ==
+
+* [http://dto.mamalala.org/e/org-publish.el org-publish.el] (incluido
+  en la última versión de org-mode) por DavidOtoole
+  es un sistema de publicaciones para crear sitios web compuestos con
+  todos los ficheros de un proyecto (incluyendo los ficheros OrgMode,
+  las imágenes y código fuente, si se desea).
+
+* [http://www.cognition.ens.fr/~guerry/u/org-export-latex.el org-export-latex.el] de BastienGuerry
+  convierte un búfer Org en salida LaTeX.
+
+* [http://www.cognition.ens.fr/~guerry/u/org-toc.el org-toc.el] de
+  BastienGuerry, permite navegar interactivamente el índice de contenidos de un búfer Org.
+
+* [http://www.cognition.ens.fr/~guerry/u/org-registry.el
+  org-registry.el], de BastienGuerry, mantiene un registro de todos
+  los enlaces que se tengan en los ficheros agenda de Org.
+
+* [http://www.cognition.ens.fr/~guerry/u/blorg.el blorg.el] de BastienGuerry
+  permite hacer blog a partir de un fichero Org.
+
+* Lisp:org-mairix.el integrate el modo Org con
+  [http://www.rpcurnow.force9.co.uk/mairix/ mairix], el buscador de
+  correo electrónico.
+
+Y muchos más.  Vale la pena visitar el sitio web y comprobar la
+cantidad de extensiones que se están creando para este modo.
+
+
+== Textos acerca del uso de org-mode ==
+
+En algunos ambientes anglosajones tiene cierta influencia la
+expresión  _Getting Things Done_
+(GTD[http://en.wikipedia.org/wiki/Getting_Things_Done]), cuya sigla
+sería GTD, que más abajo se cita en varias entradas.
+
+* An [http://dto.github.com/notebook/orgtutorial.html org-mode
+  tutorial] con capturas de pantalla, de DavidOtoole.  Se ha traducido
+  al [http://www.cognition.ens.fr/~guerry/orgtutorialfr.html francés], [http://hpcgi1.nifty.com/spen/index.cgi?OrgMode%2fOrgTutorial japonés], [http://hokmen.chan.googlepages.com/OrgTutorial.en-cn.html chino] (LINK RESTORED), and [http://jmjeong.com/index.php?display=Emacs/OrgMode coreano].
+
+* [http://www.newartisans.com/blog_files/org.mode.day.planner.php
+  "Using org-mode as a Day Planner"] (como opuesto a GTD) de JohnWiegley.
+
+* [http://members.optusnet.com.au/~charles57/GTD/orgmode.html "Using Emacs org-mode for GTD"] de CharlesCave
+
+Y mucha más documentación en inglés, parcialmente referenciada en
+OrgMode.
+
+(Sería muy interesante que aquí, en vez de referenciar la
+documentación inglesa, se haga con artículos que haya en español)
+
+
+== Conflictos ==
+
+La primera fuente de confictos es la existencia de asociaciones de
+teclas distintas para Emacs gráfico y para Emacs en consola de texto.
+
+El uso extensivo de muchas de las teclas hace que este mode entre en
+conflicto con varios otros modos, cosa que se detalla en el Manual.
+
+
+== Trucos y sugerencias ==
+
+Hay varios trucos, sugerencias y código en la página de esta wiki en
+inglés OrgMode
+
+
+== Debates ==
+
+Es preferible que se hagan en la lista de correo.
+
+
+----
+CategoryOutline CategoryPersonalInformationManager CategoryCalendar
+

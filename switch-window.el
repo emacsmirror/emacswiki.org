@@ -1,32 +1,35 @@
-;;; dim-switch-window.el --- visula way to choose a window to switch to
+;;; dim-switch-window.el
+;;
+;; Offer a *visual* way to choose a window to switch to
 ;;
 ;; Copyright (C) 2010 Dimitri Fontaine
 ;;
 ;; Author: Dimitri Fontaine <dim@tapoueh.org>
 ;; URL: http://www.emacswiki.org/emacs/switch-window.el
-;; Version: 0.4
+;; Version: 0.5
 ;; Created: 2010-04-30
 ;; Keywords: window navigation
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
 ;;
 ;; This file is NOT part of GNU Emacs.
-
-;;; Commentary:
-;;
-;; Offer a *visual* way to choose a window to switch to
 ;;
 ;; Install:
 ;;  (require 'dim-switch-window)
 ;;
 ;; It'll take over your C-x o binding.
-
-;;; Code:
+;;
+;; Changelog
+;;
+;; 0.5 - 2010-08-08 - Polishing
+;;
+;;  - dim:switch-window-increase is now a maximum value
+;;
 
 (defgroup dim:switch-window nil "dim:switch-window customization group"
   :group 'convenience)
 
 (defcustom dim:switch-window-increase 12
-  "How much to increase text size in the window numbering"
+  "How much to increase text size in the window numbering, maximum"
   :type 'integer
   :group 'dim:switch-window)
 
@@ -57,8 +60,13 @@ from-current-window is not nil"
 		      (buffer-name (window-buffer win))
 		      "*"))))
     (with-current-buffer buf
-      (insert "\n\n    " (number-to-string num))
-      (text-scale-increase dim:switch-window-increase))
+      (text-scale-increase 
+       (if (> (/ (float (window-body-height win)) 
+		 dim:switch-window-increase)
+	      1)
+	   dim:switch-window-increase
+	 (window-body-height win)))
+      (insert "\n\n    " (number-to-string num)))
 
     (set-window-buffer win buf)
     buf))
@@ -99,7 +107,7 @@ ask user for the window where move to"
 		
 		(if (null input) (setq key 1) ; timeout
 		  (unless (symbolp input)
-		    (if (and (<= 49 input) (>= 57 input)) ; 1 to 9
+		    (if (and (<= ?1 input) (>= ?9 input)) ; 1 to 9
 			(setq key (- input 48))
 		      (setq key 1)))))))
 

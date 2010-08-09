@@ -19,6 +19,9 @@ For some programming languages, e.g., Fortran, using ##reindent-then-newline-and
 
     (add-hook 'f90-mode-hook
       (lambda () (local-set-key (kbd "RET") 'reindent-then-newline-and-indent)))
+[new]
+
+If you want to autoindent file when save or visit, try [[indent-file.el]] -- coldnew
 
 ----
 
@@ -170,6 +173,9 @@ If you don't have a non-`nil' `fill-prefix', then just `C-k M-SPC'. -- DrewAdams
 
 [new]
 That leaves one space between the lines, which may or may not be what you want.
+
+----
+
 
 ----
 

@@ -2,7 +2,9 @@
 
 : '''Latest release: [[vimpulse.el|Vimpulse 0.4]]''' (always on !EmacsWiki)
 
-If you want bleeding edge, you can [http://www.assembla.com/spaces/vimpulse/trac_git_tool clone the Git repository].
+If you want bleeding edge, you can clone the [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]:
+
+    git clone git://git.assembla.com/vimpulse.git
 
 == Installation ==
 

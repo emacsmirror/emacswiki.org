@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug  6 16:25:19 2010 (-0700)
+;; Last-Updated: Sun Aug  8 16:00:54 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13050
+;;     Update #: 13092
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -97,6 +97,23 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/08 dadams
+;;     bookmark-jump: Added optional arg DISPLAY-FUNCTION (Emacs 24).
+;;     bookmark-handle-bookmark:
+;;       Move non-default handler call outside condition-case.
+;;       Updated for Emacs 24: Use error condition bookmark-error-no-filename.  Added props for it.
+;;     bookmark-default-handler: Updated for Emacs 24: 
+;;       Signal condition bookmark-error-no-filename, not file-error, and pass (stringp FILE).
+;;     bookmark-make-record-default: Added optional args NO-CONTEXT, POSITION (Emacs 24), and VISITS.
+;;     bookmark-load: Updated for Emacs 24: Wrap with abbreviate-file-name.
+;;     bmkp-jump-1: Allow arg to be a bookmark or its name.
+;;     bmkp-gnus-bookmark-p: Updated for Emacs 24: Added gnus-summary-bookmark-jump.
+;;     bmkp-jump-gnus: Different gnus-fetch-group call for Emacs 20, 21.
+;;     bmkp-make-(desktop|varlist|bookmark-(file|list))-record: Call *-record-default with NO-CONTEXT.
+;;     w3m-current-title: Use w3m-current-title as bookmark name.
+;;     bmkp-w3m-set-new-buffer-name, bmkp-jump-w3m*: Require w3m.
+;;     bmkp-make-gnus-record: Get bookmark name from gnus-summary-article-header.
+;;     Update for Emacs 24: Bypass bmkp specific Gnus, man, and woman code.
 ;; 2010/08/06 dadams
 ;;     Added (and bound the commands):
 ;;       bmkp-(compilation|occur)-target-set(-all), bmkp-(file|url)-target-set,
