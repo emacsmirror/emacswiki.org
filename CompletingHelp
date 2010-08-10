@@ -1,0 +1,17 @@
+<code>completing-help.el</code> by YujiMinejima extends minibuffer input <code>display-completion-list</code> to show a description or help string with each completion choice.  Get it from the author at
+
+: http://homepage1.nifty.com/bmonkey/emacs/index.html (Japanese)
+: http://homepage1.nifty.com/bmonkey/emacs/index-en.html (English)
+
+For example after enabling with <code>M-x turn-on-completing-help-mode</code> if you type "<code>M-x z ?</code>" the docstring of each "z" command is shown, as well the names.
+
+There's a few help displays builtin.  On alist tables (STRING . STRING) the value part is shown, which is good for various general-purpose tables.  In an elisp package you can extend <code>completing-help-groups</code> to build help strings for particular tables.  If you use a table function then this is necessary to show help text.
+
+As of <code>completing-help.el</code> version 3.13, Emacs 22 style symbols as the alist keys are not recognised by the general mechanism.  You may prefer (STRING . STRING) rather than (SYMBOL . STRING) anyway since the former will work in Emacs 21 as well as Emacs 22.
+
+See also:
+
+* [[Icicles]] -- includes similar completions help, but much bigger
+
+----
+CategoryCompletion

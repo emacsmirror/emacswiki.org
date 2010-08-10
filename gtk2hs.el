@@ -149,23 +149,7 @@
     ;; Get transform documentation.
     (setq transform-doc (buffer-substring-no-properties transform-start
                                                         transform-end))
-    (kill-new (with-temp-buffer
-                ;; Insert docs first.
-                (insert transform-doc)
-                ;; Convert function name.
-                (goto-char (point-min))
-                ;; Don't ignore case
-                (setq case-fold-search nil)
-                (while (not (eobp))
-                  (if (search-forward-regexp "[a-zA-Z]+_[a-zA-Z_]*[ ]?(.*)" nil t)
-                      (let (temp-str)
-                        (setq temp-str (match-string 0))
-                        (delete-region (point) (- (point) (length temp-str)))
-                        (insert (gtk2hs-format-function-name temp-str)))
-                    (goto-char (point-max))))
-                ;; Result.
-                (replace-regexp-in-string "\\s-" "" (buffer-string)) ; remove blank
-                ))
+    (kill-new (gtk2hs-format-fun-internal transform-doc))
     (message "Pick up function done, use C-y to insert Haskell function name.")))
 
 (defun gtk2hs-format-args ()
@@ -288,6 +272,15 @@ And C function name match regexp : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
           (delete-region (point) (- (point) (length temp-str)))
           (insert (concat "'" (gtk2hs-format-function-name temp-str) "'")))
       (goto-char (point-max))))
+  ;; Transform `gtk_bla_foo` to `blaFoo`.
+  (goto-char (point-min))
+  (while (not (eobp))
+    (if (search-forward-regexp "\\(gtk\\|gdk\\)_[a-zA-Z_]*" nil t)
+        (let (temp-str type-name)
+          (setq temp-str (match-string 0))
+          (delete-region (point) (- (point) (length temp-str)))
+          (insert (concat "'" (gtk2hs-format-fun-internal (concat temp-str "()")) "'")))
+      (goto-char (point-max))))
   ;; Transform signal name.
   ;; GtkWidget::realize to 'realize'
   (goto-char (point-min))
@@ -370,6 +363,26 @@ And C function name match regexp : [a-zA-Z]*_[a-zA-Z_]*[ ]?() "
             (delete-region (point) (- (point) (length temp-str)))
             (insert (cdr type)))
         (goto-char (point-max))))))
+
+(defun gtk2hs-format-fun-internal (str)
+  "The internal function of `gtk2hs-format-fun'."
+  (with-temp-buffer
+    ;; Insert docs first.
+    (insert str)
+    ;; Convert function name.
+    (goto-char (point-min))
+    ;; Don't ignore case
+    (setq case-fold-search nil)
+    (while (not (eobp))
+      (if (search-forward-regexp "[a-zA-Z]+_[a-zA-Z_]*[ ]?(.*)" nil t)
+          (let (temp-str)
+            (setq temp-str (match-string 0))
+            (delete-region (point) (- (point) (length temp-str)))
+            (insert (gtk2hs-format-function-name temp-str)))
+        (goto-char (point-max))))
+    ;; Result.
+    (replace-regexp-in-string "\\s-" "" (buffer-string)) ; remove blank
+    ))
 
 (provide 'gtk2hs)
 

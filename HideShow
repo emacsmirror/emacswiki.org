@@ -244,7 +244,21 @@ here is a patch to avoid hideshowvis to override the current-local-map:
 [new]
 Is anyone working on ruby support?
 [new]
-: There is something: http://www.hyperionreactor.net/node/43
+
+
+
+: There is something: http://www.hyperionreactor.net/node/43 ..  Dead link?
+
+
+
+
+:this will do usable ruby hide show support...
+<pre> 
+(add-to-list 'hs-special-modes-alist
+	     '(ruby-mode
+	       "\\(def\\|do\\|{\\)" "\\(end\\|end\\|}\\)" "#"
+	       (lambda (arg) (ruby-end-of-block)) nil))
+</pre>
 
 ----
 CategoryHideStuff

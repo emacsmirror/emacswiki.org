@@ -100,6 +100,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * FindFunc -- Find functions or variables.
 * AutomaticFileHeaders -- File headers that are automatically inserted and updated.
 * AutoRecompile - re-byte-compile Emacs lisp files.
+* BatchMode -- EmacsLisp as a scripting language
 * CommonLispForEmacs -- How to use CommonLisp to program Emacs.
 * ElispFormat -- Format elisp code automatically.
 * ElispDepend -- Generate depend information of elisp code.

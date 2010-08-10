@@ -2093,9 +2093,7 @@ the current pattern."
             (anything-new-timer
              'anything-process-delayed-sources-timer
              (run-with-idle-timer
-              (if anything-input-idle-delay
-                  (max 0 (- anything-idle-delay anything-input-idle-delay))
-                anything-idle-delay)
+              (anything-get-delay-time-for-delayed-sources)
               nil
               'anything-process-delayed-sources
               delayed-sources)))
@@ -2103,6 +2101,11 @@ the current pattern."
           ;; AFTER processing delayed sources
           (anything-log-run-hook 'anything-after-update-hook))
         (anything-log "end update")))))
+
+(defun anything-get-delay-time-for-delayed-sources ()
+  (if anything-input-idle-delay
+      (max 0 (- anything-idle-delay anything-input-idle-delay))
+    anything-idle-delay))
 
 (defun anything-update-source-p (source)
   (and (or (not anything-source-filter)
@@ -2254,11 +2257,10 @@ the real value in a text property."
 (defun anything-output-filter--post-process ()
   (anything-maybe-fit-frame)
   (anything-log-run-hook 'anything-update-hook)
-  (if (bobp)
-      (anything-next-line)
-    (save-selected-window
-      (select-window (get-buffer-window anything-buffer 'visible))
-      (anything-mark-current-line))))
+  (save-selected-window
+    (select-window (get-buffer-window anything-buffer 'visible))
+    (anything-skip-noncandidate-line 'next)
+    (anything-mark-current-line)))
 
 
 (defun anything-kill-async-processes ()
@@ -2718,6 +2720,7 @@ if optional NOUPDATE is non-nil, anything buffer is not changed."
     (delete-minibuffer-contents)
     (insert pattern))
   (when noupdate
+    (setq anything-pattern pattern)
     (anything-hooks 'cleanup)
     (run-with-idle-timer 0 nil 'anything-hooks 'setup)))
 
@@ -3203,19 +3206,34 @@ It is analogous to `dired-get-marked-files'."
         (move-overlay o (point-at-bol 0) (1+ (point-at-eol 0)))))))
 (add-hook 'anything-update-hook 'anything-revive-visible-mark)
 
+(defun anything-next-point-in-list (curpos points &optional prev)
+  (cond
+   ;; rule out special cases
+   ((null points)                        curpos)
+   ((and prev (< curpos (car points)))   curpos)
+   ((< (car (last points)) curpos)
+    (if prev (car (last points)) curpos))
+   (t
+    (nth (if prev
+             (loop for pt in points
+                   for i from 0
+                   if (<= curpos pt)
+                   do (return (1- i)))
+           (loop for pt in points
+                 for i from 0
+                 if (< curpos pt)
+                 do (return i)))
+         points))))
+
 (defun anything-next-visible-mark (&optional prev)
   "Move next anything visible mark."
   (interactive)
   (with-anything-window
-    (let ((points (sort (mapcar 'overlay-start anything-visible-mark-overlays) '<)))
-      (ignore-errors
-        (goto-char (nth (+ (loop for pt in points
-                                 for i from 0
-                                 if (or (< (point) pt) (and prev (= (point) pt)))
-                                 do (return i))
-                           (if prev -1 0))
-                        points)))
-      (anything-mark-current-line))))
+    (goto-char (anything-next-point-in-list
+                (point)
+                (sort (mapcar 'overlay-start anything-visible-mark-overlays) '<)
+                prev))
+    (anything-mark-current-line)))
 
 (defun anything-prev-visible-mark ()
   "Move previous anything visible mark."
@@ -5073,21 +5091,18 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
         (anything-test-update '(((name . "1") (requires-pattern . 3))) "xx"))
 
       (desc "delay")
-      (expect (mock (sit-for 0.25))
-        (stub with-current-buffer)
+      (expect 0.25
         (let ((anything-idle-delay 1.0)
               (anything-input-idle-delay 0.75))
-          (anything-process-delayed-sources t)))
-      (expect (mock (sit-for 0.0))
-        (stub with-current-buffer)
+          (anything-get-delay-time-for-delayed-sources)))
+      (expect 0.0
         (let ((anything-idle-delay 0.2)
               (anything-input-idle-delay 0.5))
-          (anything-process-delayed-sources t)))    
-      (expect (mock (sit-for 0.5))
-        (stub with-current-buffer)
+          (anything-get-delay-time-for-delayed-sources)))    
+      (expect 0.5
         (let ((anything-idle-delay 0.5)
               (anything-input-idle-delay nil))
-          (anything-process-delayed-sources t)))
+          (anything-get-delay-time-for-delayed-sources)))
       (desc "anything-normalize-sources")
       (expect '(anything-c-source-test)
         (anything-normalize-sources 'anything-c-source-test))
@@ -5878,6 +5893,33 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
            '("a" "b") incomplete-line-info)
           (anything-output-filter--collect-candidates
            '("" "c" "") incomplete-line-info)))
+      (desc "anything-next-point-in-list")
+      (expect 10
+        (anything-next-point-in-list 5 '(10 20) nil))
+      (expect 20
+        (anything-next-point-in-list 15 '(10 20) nil))
+      (expect 25
+        (anything-next-point-in-list 25 '(10 20) nil))
+      (expect 5
+        (anything-next-point-in-list 5 '(10 20) t))
+      (expect 10
+        (anything-next-point-in-list 15 '(10 20) t))
+      (expect 20
+        (anything-next-point-in-list 25 '(10 20) t))
+      (expect 5
+        (anything-next-point-in-list 5 '() nil))
+      (expect 5
+        (anything-next-point-in-list 5 '() t))
+      (expect 10
+        (anything-next-point-in-list 5 '(10) nil))
+      (expect 10
+        (anything-next-point-in-list 15 '(10) t))
+      (expect 20
+        (anything-next-point-in-list 10 '(10 20) nil))
+      (expect 10
+        (anything-next-point-in-list 20 '(10 20) t))
+      (expect 20
+        (anything-next-point-in-list 30 '(10 20 30) t))
       )))
 
 

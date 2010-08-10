@@ -346,6 +346,11 @@ After a good nights sleep using the info you gave me I came up with an other sol
 
 This is better than the previous one, because the agenda buffer shows the proper list even after a refresh. The previous solution showed the global todo list in that case.
 
+[new]
+
+I recently had to calculate the differences between log file timestamps.  Eventually I figured out how to do this with emacs calc mode, and put the results together in org-mode spreadsheet tables. Here's my [http://www.hollenback.net/index.php/EmacsOrgTimestamps writeup on emacs, calc, org-mode, and timestamps].
+
+-- [http://www.hollenback.net Phil Hollenback]
 ----
 CategoryOutline CategoryPersonalInformationManager CategoryCalendar
 
