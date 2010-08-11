@@ -1,7 +1,43 @@
 I am a norwegian GNU Emacs user, 23.2, and an avid user of M-x butterfly.
 
+Here is a small ELisp snippet that Turns M-1 to 3 and C-1 to 3 into small and large letters for the special norwegian letters.
 
-
+{{{
+;; This is made for those poor norwegians who sit on computers without special norwegian letters on their keyboards.
+;; A *poor* code but it works.
+(defun na ()
+  "Liten å"
+  (interactive)
+  (setq varlol "å")
+  (insert varlol))
+(global-set-key (kbd "M-1") 'na)
+(defun naa ()
+  "Stor Å"
+  (interactive)
+  (setq varlol "Å")
+  (insert varlol))
+(global-set-key (kbd "C-1") 'naa)
+(defun ne ()
+  (interactive)
+  (setq varlol "æ")
+  (insert varlol))
+(global-set-key (kbd "M-2") 'ne)
+(defun nee ()
+  (interactive)
+  (setq varlol "Æ")
+  (insert varlol))
+(global-set-key (kbd "C-2") 'nee)
+(defun noes ()
+  (interactive)
+  (setq varlol "ø")
+  (insert varlol))
+(global-set-key (kbd "M-3") 'noes)
+(defun nooes ()
+  (interactive)
+ (setq varlol "Ø")
+  (insert varlol))
+(global-set-key (kbd "C-3") 'nooes)
+}}}
 
 
 [new:DrewAdams:2010-08-07 16:38 UTC]

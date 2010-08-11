@@ -11,7 +11,8 @@ As of <code>completing-help.el</code> version 3.13, Emacs 22 style symbols as th
 
 See also:
 
-* [[Icicles]] -- includes similar completions help, but much bigger
+* [[Icicles - Help on Candidates]] -- Similar candidate help during completion. First line of doc string in mode line, complete help for any candidate by pressing a key. However, [[Icicles]] is a bigger library than ##completing-help.el## (because it does more).
+
 
 ----
 CategoryCompletion

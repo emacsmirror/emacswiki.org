@@ -108,6 +108,8 @@ I originally wrote this library because the libraries and snippets on this page 
 
 If you find a bug please post it in the [http://github.com/tarsius/auto-compile/issues issue tracker] at github.
 
+AutoAsyncByteCompile compiles elisp files when you save them. It works asynchronously, so you do not have to wait for compilation finish. -- [[rubikitch]]
+
 == Byte Compile on Buffer Save ==
 
 Automatically byte compile elisp files when they are saved, by MichaelAbrahamShulman.
