@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: mouse, scroll
 
-(defconst grab-and-drag-version "0.3.0")
+(defconst grab-and-drag-version "0.3.1")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -66,9 +66,13 @@
 ;;
 
 ;; History:
+;; 2010-08-11  S. Irie
+;;         * Version 0.3.1
+;;         * Change to run hooks when dragging is finished at the ends of buffer
+;;         * Bug fixes
 ;; 2010-08-05  S. Irie
 ;;         * Version 0.3.0
-;;         * Improved stability by considering heights of images
+;;         * Improve stability by considering heights of images
 ;;         * Bug fixes
 ;; 2010-07-29  S. Irie
 ;;         * Version 0.2.0
@@ -680,7 +684,16 @@ updating the window."
 			(cadr (pos-visible-in-window-p nil nil t))))
 	     (row-height (grab-and-drag-row-height))
 	     (truncated (grab-and-drag-truncated-p))
-	     (point0 (point-marker))
+	     (point0 (progn
+		       (when (and truncated
+				  (eq (point) (point-max)))
+			 (beginning-of-line)
+			 (unless (eq (window-start) (point-max))
+			   (goto-char (posn-point
+				       (posn-at-x-y (car (posn-x-y posn))
+						    (cadr (pos-visible-in-window-p
+							   nil nil t)))))))
+		       (point-marker)))
 	     (winstart0 (window-start))
 	     (winend0 (window-end))
 	     (hscroll0 (window-hscroll))
@@ -721,79 +734,89 @@ updating the window."
 		;; Exit loop if button up event is received.
 		(when (eq (event-basic-type event) button)
 		  (if (memq 'drag (event-modifiers event))
-		      (when (and grab-and-drag-enable-inertia
-				 (cdr mpos))
+		      (cond
+		       ((or (null (cdr mpos))
+			    ;; Do nothing if pointer stops before up-event.
+			    (equal mpos prev-mpos))
 			(cond
-			 ;; Do nothing if pointer stops before up-event.
-			 ((equal mpos prev-mpos))
-			 ;; Setup inertial scrolling.
-			 ((> (- (posn-timestamp (event-end event))
-				(posn-timestamp (event-start event0)))
-			     grab-and-drag-gesture-time)
+			 ((eq (window-start) (point-min))
+			  (run-hooks 'grab-and-drag-beginning-of-buffer-hook))
+			 ((eq (window-start) (point-max))
+			  (run-hooks 'grab-and-drag-end-of-buffer-hook))))
+		       ;; Setup inertial scrolling.
+		       ((> (- (posn-timestamp (event-end event))
+			      (posn-timestamp (event-start event0)))
+			   grab-and-drag-gesture-time)
+			(cond
+			 (grab-and-drag-enable-inertia
 			  (if (< (abs (- (car mpos) (car mpos0)))
 				 (abs (- (cdr mpos) (cdr mpos0))))
 			      (grab-and-drag-start-scrolling (/ (- (cdr mpos)
 								   (cdr prev-mpos))
 								(- time prev-time))
 							     window)))
-			 ;; Vertically scroll a screenful.
-			 ((< (abs (- (car mpos) (car mpos0)))
-			     (abs (- (cdr mpos) (cdr mpos0))))
-			  (set-window-hscroll (selected-window) hscroll0)
-			  (let ((next-screen-context-lines
-				 next-screen-context-lines))
-			    (if (> (cdr mpos) (cdr mpos0))
-				(progn
-				  (save-excursion
-				    (goto-char (window-start))
-				    (while (< (point) winstart0)
-				      (line-move 1 t)
-				      (setq next-screen-context-lines
-					    (1+ next-screen-context-lines))))
-				  (grab-and-drag-scroll-down))
-			      (save-excursion
-				(goto-char (window-end))
-				(let ((visible (pos-visible-in-window-p nil nil t)))
-				  (when visible
+			 ((eq (window-start) (point-min))
+			  (run-hooks 'grab-and-drag-beginning-of-buffer-hook))
+			 ((eq (window-start) (point-max))
+			  (run-hooks 'grab-and-drag-end-of-buffer-hook))))
+		       ;; Vertically scroll a screenful.
+		       ((< (abs (- (car mpos) (car mpos0)))
+			   (abs (- (cdr mpos) (cdr mpos0))))
+			(set-window-hscroll (selected-window) hscroll0)
+			(let ((next-screen-context-lines
+			       next-screen-context-lines))
+			  (if (> (cdr mpos) (cdr mpos0))
+			      (progn
+				(save-excursion
+				  (goto-char (window-start))
+				  (while (< (point) winstart0)
+				    (line-move 1 t)
 				    (setq next-screen-context-lines
-					  (+ next-screen-context-lines
-					     (/ (- (if maxpos0
-						       (cadr maxpos0)
-						     (- (nth 3 inside-edges)
-							(cadr edges)))
-						   (cadr visible))
-						row-height)))))
-				(while (> (point) winend0)
-				  (line-move -1 t)
+					  (1+ next-screen-context-lines))))
+				(grab-and-drag-scroll-down))
+			    (save-excursion
+			      (goto-char (window-end))
+			      (let ((visible (pos-visible-in-window-p nil nil t)))
+				(when visible
 				  (setq next-screen-context-lines
-					(1+ next-screen-context-lines))))
-			      (grab-and-drag-scroll-up))))
-			 ;; Horizontally scroll a screenful.
-			 ((> (car mpos) (car mpos0))
-			  (set-window-start (selected-window) winstart0)
-			  (if grab-and-drag-gesture-right-command
-			      (progn
-				(set-window-hscroll (selected-window) hscroll0)
-				(call-interactively
-				 grab-and-drag-gesture-right-command))
-			    (if truncated
-				(let ((grab-and-drag-context-columns
-				       (+ grab-and-drag-context-columns
-					  (- hscroll0 (window-hscroll)))))
-				  (grab-and-drag-scroll-right)))))
-			 (t
-			  (set-window-start (selected-window) winstart0)
-			  (if grab-and-drag-gesture-left-command
-			      (progn
-				(set-window-hscroll (selected-window) hscroll0)
-				(call-interactively
-				 grab-and-drag-gesture-left-command))
-			    (if truncated
-				(let ((grab-and-drag-context-columns
-				       (+ grab-and-drag-context-columns
-					  (- (window-hscroll) hscroll0))))
-				  (grab-and-drag-scroll-left)))))))
-		    ;; If pointer wasn't moved, put the up-event back and run
+					(+ next-screen-context-lines
+					   (/ (- (if maxpos0
+						     (cadr maxpos0)
+						   (- (nth 3 inside-edges)
+						      (cadr edges)))
+						 (cadr visible))
+					      row-height)))))
+			      (while (> (point) winend0)
+				(line-move -1 t)
+				(setq next-screen-context-lines
+				      (1+ next-screen-context-lines))))
+			    (grab-and-drag-scroll-up))))
+		       ;; Horizontally scroll a screenful.
+		       ((> (car mpos) (car mpos0))
+			(set-window-start (selected-window) winstart0)
+			(if grab-and-drag-gesture-right-command
+			    (progn
+			      (set-window-hscroll (selected-window) hscroll0)
+			      (call-interactively
+			       grab-and-drag-gesture-right-command))
+			  (if truncated
+			      (let ((grab-and-drag-context-columns
+				     (+ grab-and-drag-context-columns
+					(- hscroll0 (window-hscroll)))))
+				(grab-and-drag-scroll-right)))))
+		       (t
+			(set-window-start (selected-window) winstart0)
+			(if grab-and-drag-gesture-left-command
+			    (progn
+			      (set-window-hscroll (selected-window) hscroll0)
+			      (call-interactively
+			       grab-and-drag-gesture-left-command))
+			  (if truncated
+			      (let ((grab-and-drag-context-columns
+				     (+ grab-and-drag-context-columns
+					(- (window-hscroll) hscroll0))))
+				(grab-and-drag-scroll-left))))))
+		  ;; If pointer wasn't moved, put the up-event back and run
 		    ;; a command bound to the click event with lower priority.
 		    (push event unread-command-events)
 		    (grab-and-drag-call-default-binding click))

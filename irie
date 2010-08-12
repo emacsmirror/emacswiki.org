@@ -27,9 +27,9 @@ Hi, Irie, remember me? :) -- AndyStewart
 :: Not bad, long time no see. :) scim-bridge.el is awesome, do you want write an Emacs interface for [http://code.google.com/p/ibus/ ibus] ? -- AndyStewart
 ::: I'm interested in iBus interface, but it seems quite hard to implement. -- [[irie]]
 
-----
-I found grab-drag.el very nice to use on a lenovo x201t tablet pc! Can we also look forward to more gestures and multi-touch support in the future?
+[new]
+I found grab-drag.el very nice to use on a lenovo x201t tablet pc! Can we also look forward to more gestures and multi-touch support in the future? -- JoakimVerona
+: Thanks! Umm... multi-touch support seems difficult unless Emacs can detect multi-touch event. -- [[irie]]
 
-[[JoakimVerona]]
 ----
 CategoryHomepage

@@ -12,9 +12,7 @@ Edit with Emacs is an extension for editing text areas in [[Google Chrome]].
 The extension has a number of variables that allow various behaviours to be customised. Currently they are:
 
 * edit-server-new-frame - If not nil, edit each buffer in a new frame (and raise it)
-* edit-server-new-frame-minibuffer - Show the emacs frame's minibuffer if set to t; hide if nil
-* edit-server-new-frame-menu-bar - Show the emacs frame's menu-bar if set to t; hide if nil
-* edit-server-new-frame-mode-line - Show the emacs frame's mode-line if set to t; hide if nil
+* edit-server-new-frame-alist - Frame parameters for new frames.  See `default-frame-alist' for examples. If nil, the new frame will use the existing `default-frame-alist' values.
 
 There is currently one hook
 

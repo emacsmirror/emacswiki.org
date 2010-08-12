@@ -89,5 +89,5 @@ If the file is excluded from the trash, it is simply deleted."
 There's also no need to ask, because it's undoable."
   (if delete-by-moving-to-trash
       (move-file-to-trash file)
-    ad-do-it)
+    ad-do-it))
  

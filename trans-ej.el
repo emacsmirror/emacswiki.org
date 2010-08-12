@@ -1,5 +1,6 @@
-;;; trans-ej.el --- English-Japanese translator using web translation service
 ;;; -*- Mode: Emacs-Lisp ; Coding: utf-8 -*-
+
+;;; trans-ej.el --- English-Japanese translator using web translation service
 
 ;; Copyright (c) 2009, 2010  S. Irie
 
@@ -7,7 +8,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.1.2a")
+(defconst trans-ej-version "0.2.0")
 
 ;; This program is free software.
 
@@ -62,6 +63,11 @@
 
 ;;; ChangeLog:
 
+;; 2010-08-11  S. Irie
+;;        * Version 0.2.0
+;;        * Added option `trans-ej-multibyte-chars-ratio-threshold'
+;;        * Changed character encoding of Excite translation to utf-8
+;;        * Fixed typo in docstrig
 ;; 2010-03-29  S. Irie
 ;;        * Version 0.1.2
 ;;        * Modified docstring
@@ -126,7 +132,7 @@
   '(((en ja) excite yahoojp ocn livedoor fresheye google)
     ((ja en) excite yahoojp ocn livedoor fresheye google))
   "Alist which specifies the displaying order of translation results.
-Each elemant is a list like ((SOURCE TARGET) SITE-SYMBOLS...).
+Each element is a list like ((SOURCE TARGET) SITE-SYMBOLS...).
 
 SOURCE and TARGET are symbols, which represent the source language and
 the target language, respectively.
@@ -150,6 +156,13 @@ must be included in `trans-ej-dictionaries-selections-alist'.")
 two `%s' in order to specify the positions in which language keys will
 be inserted as few letters, where the first one and second one represent
 source language and target language, respectively.")
+
+(defvar trans-ej-multibyte-chars-ratio-threshold 0.3
+  "Minimum ratio of multibyte characters to all characters belonging to
+word syntax class in Japanese text. The value must be a floating point
+number between 0 and 1. If `trans-ej-string' is called with a text that
+the ratio is greater than this value, the text is recognized as a Japanese
+text, otherwise English text.")
 
 (defvar trans-ej-decode-response-debug nil
   "If non-nil, dump the whole of returned HTML when the translated text
@@ -179,13 +192,13 @@ See `trans-ej-site-prof-alist' for details.")
      "Excite Japan translation (powered by BizLingo)"
      "http://www.excite.co.jp/world/english/"
      "wb_lp=ENJA&before=%s"
-     japanese-shift-jis-dos
+     utf-8-dos
      (("<textarea [^>]*name=\"after\"[^>]*>\\([^<]*\\)</textarea>" . 1)))
     ((excite ja en)
      "Excite Japan translation (powered by BizLingo)"
      "http://www.excite.co.jp/world/english/"
      "wb_lp=JAEN&before=%s"
-     japanese-shift-jis-dos
+     utf-8-dos
      (("<textarea [^>]*name=\"after\"[^>]*>\\([^<]*\\)</textarea>" . 1)))
     ;; Yahoo! JAPAN
     ((yahoojp en ja)
@@ -248,6 +261,8 @@ See `trans-ej-site-prof-alist' for details.")
      sjis-unix
      (("<span [^>]*id=result_box[^>]*>\\(\\(<span [^>]*>\\([^<]\\|<br>\\)*</span>\\)+\\)</span>" . 1))
      (join-lines
+      ("‘" . "`")
+      ("’" . "'")
       ("\\(^\\|\\s-\\)[`']\\(\\([^ \t\n']+ \\)*[^ \t\n']+\\)'\\(\\s.\\|[,.]\\|\\s-\\|$\\)" . "\\1\"\\2\"\\4")))
     ((google ja en)
      "Google translate"
@@ -264,7 +279,9 @@ See `trans-ej-site-prof-alist' for details.")
      utf-8-dos
      (("<h2>Computer translation</h2>\\(\\(.*\n\\)*.*\\)<h2>" . 1)
       ("</td>[ \t\n]*<td [^>]*>\\(\\(.*\n\\)*.*\\)</td>[ \t\n]*<td " . 1))
-     (join-lines))
+     (join-lines
+      ("‘" . "`")
+      ("’" . "'")))
     ((mymemory ja en)
      "MyMemory Translated.net"
      "http://mymemory.translated.net/s.php"
@@ -281,6 +298,8 @@ See `trans-ej-site-prof-alist' for details.")
      utf-8-dos
      (("<div id=\"result\">\\(<div style=[^>]*>\\([^<]*\\)</div>+\\)</div>" . 2))
      (join-lines
+      ("‘" . "`")
+      ("’" . "'")
       ;; Remove quote characters or replace them with brackets because BABEL FISH
       ;; cannot correctly treat them at all.
       ("\\(^\\|\\s-\\)\"\\([A-Za-z0-9._-]+\\)\"\\(\\s.\\|[,.]\\|\\s-\\|$\\)" . "\\1\\2\\3")
@@ -439,6 +458,21 @@ the URI-encoded characters."
       (goto-char (point-min))
       (skip-chars-forward "\n")
       (buffer-substring (point) (+ (point-max) tail)))))
+
+(defun trans-ej-multibyte-chars-ratio (string)
+  "Return ratio of multibyte characters to all characters belonging to
+word syntax class in STRING. The return value is a floating point number
+between 0 to 1."
+  (let ((multi 0)
+	(chars 0))
+    (with-temp-buffer
+      (insert string)
+      (dotimes (i (length string))
+	(when (eq (syntax-class (syntax-after (1+ i))) 2)
+	  (if (> (char-after (1+ i)) 255)
+	      (setq multi (1+ multi)))
+	  (setq chars (1+ chars)))))
+    (/ (float multi) chars)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Main part
@@ -652,7 +686,8 @@ can be specified by `trans-ej-site-orders-alist'."
   "Translate STRING between English and Japanese."
   (interactive "sString to translate: ")
   (funcall
-   (if (memq t (mapcar (lambda (c) (> c 255)) string))
+   (if (> (trans-ej-multibyte-chars-ratio string)
+	  trans-ej-multibyte-chars-ratio-threshold)
        'trans-ej-ja2en-string
      'trans-ej-en2ja-string)
    string))

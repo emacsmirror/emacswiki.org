@@ -558,6 +558,7 @@ xpdb is a fork of the standard library pdb, available here: https://code.launchp
 * Python autocompletion using pycomplete: http://groups.google.com/group/comp.lang.python/msg/048168c675ff0c68
 * More on completion: http://www.rwdev.eu/articles/emacspyeng
 * Yasnippet: http://code.google.com/p/yasnippet/ for Python, Django, django-templates snippets
+* Virtualenv: Using virtual environments within emacs: http://github.com/gabrielelanaro/emacs-starter-kit
 
 Note: In regard to Yasnippet, see [http://groups.google.com/group/smart-snippet/browse_thread/thread/d1eae085ceebf839 this post] if using Dave Love's python.el
 

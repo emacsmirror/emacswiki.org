@@ -2880,7 +2880,13 @@ get-line and search-from-end attributes. See also `anything-sources' docstring.
            pattern get-line-fn search-fns limit search-from-end
            start-point endp))))))
 
-(defun anything-search-from-candidate-buffer (pattern get-line-fn search-fns limit search-from-end start-point endp)
+(defun anything-point-is-moved (proc)
+  "If point is moved after executing PROC, return t, otherwise nil."
+  (/= (point) (progn (funcall proc) (point))))
+
+(defun anything-search-from-candidate-buffer (pattern get-line-fn search-fns
+                                                      limit search-from-end
+                                                      start-point endp)
   (let (buffer-read-only
         matches exit newmatches)
     (anything-search-from-candidate-buffer-internal
@@ -2890,16 +2896,16 @@ get-line and search-from-end attributes. See also `anything-sources' docstring.
          (goto-char start-point)
          (setq newmatches nil)
          (loop with item-count = 0
-               with next-line-fn =
-               (if search-from-end
-                   (lambda (x) (goto-char (max (point-at-bol) 1)))
-                 #'forward-line)
                while (funcall searcher pattern nil t)
                for cand = (funcall get-line-fn (point-at-bol) (point-at-eol))
-               do
-               (anything-accumulate-candidates-internal
-                cand newmatches anything-cib-hash item-count limit)
-               (funcall next-line-fn 1))
+               do (anything-accumulate-candidates-internal
+                   cand newmatches anything-cib-hash item-count limit)
+               unless (anything-point-is-moved
+                       (lambda ()
+                         (if search-from-end
+                             (goto-char (1- (point-at-bol)))
+                           (forward-line 1))))
+               return nil)
          (setq matches (append matches (nreverse newmatches)))
          (if exit (return)))
        (delq nil matches)))))
@@ -4480,6 +4486,15 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
             (match identity)
             (volatile)))
          "oo\\+"))
+      ;; BUG remain empty string, but the pattern is rare case.
+      (expect '(("a" ("" "a" "b")))
+        (anything-test-candidates
+         '(((name . "a")
+            (init . (lambda ()
+                      (with-current-buffer (anything-candidate-buffer 'global)
+                        (insert "a\nb\n"))))
+            (candidates-in-buffer)))
+         "a*"))
       (desc "search attribute")
       (expect '(("TEST" ("foo+")))
         (anything-test-candidates
@@ -5377,7 +5392,24 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
             (search-from-end)
             (candidate-number-limit . 2)))
          "\\+"))
-
+      (expect '(("a" ("c2" "c1")))
+        (anything-test-candidates
+         '(((name . "a")
+            (init . (lambda ()
+                      (with-current-buffer (anything-candidate-buffer 'global)
+                        (insert "c1\nc2\n"))))
+            (search-from-end)
+            (candidates-in-buffer)))))
+      ;; BUG remain empty string, but the pattern is rare case.
+      (expect '(("a" ("c" "b" "a" "")))
+        (anything-test-candidates
+         '(((name . "a")
+            (init . (lambda ()
+                      (with-current-buffer (anything-candidate-buffer 'global)
+                        (insert "a\nb\nc\n"))))
+            (search-from-end)
+            (candidates-in-buffer)))
+         "a*"))
       (desc "header-name attribute")
       (expect "original is transformed"
         (anything-test-update '(((name . "original")

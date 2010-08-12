@@ -1,6 +1,11 @@
 [::Filling]
-is the term used by Emacs to describe word wrapping: breaking
-lines before they get too long and run off the screen.
+is the term used by Emacs to describe breaking
+lines before they get too long and run off the screen. It
+describes inserting carriage return characters, i.e. changing
+the text. It is related to LineWrap, which describes the more
+general process of displaying lines that are too long for the
+screen. Filling is sometimes used to avoid having to wrap
+lines.
 
 The usual way to fill paragraphs are:
 
