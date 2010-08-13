@@ -1,0 +1,25 @@
+[new]
+The InterMap lists the *Manual* prefix which runs the [http://www.emacswiki.org/cgi-bin/info-ref info-ref] script. Note the source link at the bottom of that page. You'll note that I have to manually add URLs for manuals to slurp. Any suggestions? I noted the comment in the CategoryEshell history. :) -- AlexSchroeder
+
+[new]
+Great script, Alex!
+
+Some suggestions:
+
+* Auctex
+* Autotype
+* Calc
+* Dired-x
+* Info
+* Ediff
+* Texinfo -- Has an Emacs section
+* URL
+
+Maybe some general GNU manuals?:
+
+* Coreutils
+* Diffutils
+* Findutils
+
+Maybe Make, Bash and Coding standards.  Now I'm just being silly.
+-- AaronHawley

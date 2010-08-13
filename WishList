@@ -267,7 +267,8 @@ On the other hand, the click event seems to be stored as a <code>TOOL_BAR_EVENT<
 * Follow mode can only synchronize scrolling windows which content a same file. Does it possible to scrolling windows with diffrent files synchronously?
   -- 9307420654
 ** There is a minor mode to apply all scrolling commands to all visible windows in the current frame. Check <code>scroll-all-mode</code> for that. Or else, if you want to scroll together only 2 windows and only when you use a specific keystroke, you can do something like a function that scrolls the current window (<code>scroll-up</code> or <code>scroll-down</code>) and then the "other window" (i.e., the next one in the list of windows), with <code>scroll-other-window</code> (with argument <code>'-</code>, i.e., the symbol "minus", for scrolling down). Then you can assign this to a keystroke, e.g., C-M-up / down.
-
+[new]
+* It would be very nice if TRAMP could work asynchronously. While saving a remote file, Emacs is frozen, which is pretty annoying. Generally speaking, Emacs would improve significantly when all the small freezes will be removed. More asynchronous operations would be very welcome!
 
 === Extensibility Wishes ===
 

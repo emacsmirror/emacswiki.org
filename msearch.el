@@ -1,5 +1,4 @@
-;;; msearch.el --- Highlight all occurences of mouse highlighted text
-
+;;; msearch.el
 ;; Copyright (C) 2010  Tobias.Naehring
 
 ;; Author: Tobias.Naehring <i@tn-home.de>
@@ -71,6 +70,9 @@
 ;;
 ;; Better menu and defaults for msearch-enslave-buffer and
 ;; msearch-release-buffer.
+;;
+;; 2010-08-19, 0:0, TN:
+;; Added menu button for explicitely setting msearch-word.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Code:
@@ -115,6 +117,8 @@ register-drag-mouse-1-handler instead.")
 (global-set-key (kbd "<drag-mouse-1>") 'drag-mouse-1-handler)
 
 (defun msearch-set-word (word)
+  "Set word to be highlighted."
+  (interactive "sSet msearch-word:")
     (setq msearch-word word)
     (unless (string-equal msearch-old-word msearch-word)
       (setq msearch-old-word msearch-word)
@@ -204,6 +208,7 @@ The slave buf is released when msearch of the master is switched off."
     ["Enslave Buffer" msearch-enslave-buffer 't]
     ["Release Buffer" msearch-release-buffer 't]
     ["Release All Buffers" msearch-release-all 't]
+    ["Set msearch word" msearch-set-word 't]
     ))
 
 (define-minor-mode msearch-mode

@@ -4,7 +4,11 @@ CategoryShell
 
 Get it from here, if your Emacs does not come with it.  It is part of Emacs 21.
 
-* http://emacswiki.org/johnw/eshell.html
+* http://emacswiki.org/johnw/eshell.html (Bad link?)
+
+Unfinished manual:
+
+* [http://www.gnu.org/software/emacs/manual/html_mono/eshell.html Eshell: The Emacs Shell]
 
 More information about eshell :
 

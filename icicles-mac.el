@@ -4,12 +4,12 @@
 ;; Description: Macros for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2009, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Jun  5 06:40:17 2010 (-0700)
+;; Last-Updated: Thu Aug 12 13:55:37 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 535
+;;     Update #: 537
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -252,7 +252,7 @@ before the others."
      (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "file")))
     (icicle-all-candidates-list-alt-action-fn
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
-    (icicle-delete-candidate-object   'icicle-delete-file-or-directory)))
+    (icicle-delete-candidate-object              'icicle-delete-file-or-directory)))
 
 (defmacro icicle-define-command
     (command doc-string function prompt collection &optional

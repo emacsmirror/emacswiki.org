@@ -6,7 +6,7 @@
 ;;
 ;; Author: Dimitri Fontaine <dim@tapoueh.org>
 ;; URL: http://www.emacswiki.org/emacs/el-get.el
-;; Version: 0.5
+;; Version: 0.6
 ;; Created: 2010-06-17
 ;; Keywords: emacs package elisp install elpa git apt-get fink debian macosx
 ;; Licence: WTFPL, grab your copy here: http://sam.zoy.org/wtfpl/
@@ -29,7 +29,7 @@
 ;; Sources example:
 ;; 
 ;; (setq el-get-sources
-;;       '((:name bbdb
+;;    '((:name bbdb
 ;; 	       :type git
 ;; 	       :url "git://github.com/barak/BBDB.git"
 ;; 	       :load-path ("./lisp" "./bits")
@@ -50,6 +50,10 @@
 ;; 	(:name yasnippet
 ;; 	       :type git-svn
 ;; 	       :url "http://yasnippet.googlecode.com/svn/trunk/")
+;;
+;;      (:name xml-rpc-el
+;;             :type bzr
+;;             :url "lp:xml-rpc-el")
 ;;	
 ;; 	(:name asciidoc         :type elpa)
 ;; 	(:name dictionary-el    :type apt-get)
@@ -57,6 +61,12 @@
 ;; 
 ;;
 ;; Changelog
+;;
+;;  0.6 - 2010-08-12 - towards a stable version
+;;
+;;   - fix when asynchronous http support call post-install-fun
+;;   - fix el-get-remove calling convention
+;;   - add support for bzr, thanks to Kevin Fletcher
 ;;
 ;;  0.5 - 2010-08-06 - release early, fix often
 ;;
@@ -82,6 +92,7 @@
 
 (defvar el-get-git-clone-hook       nil "Hook run after git clone.")
 (defvar el-get-git-svn-clone-hook   nil "Hook run after git svn clone.")
+(defvar el-get-bzr-branch-hook      nil "Hook run after bzr branch.")
 (defvar el-get-apt-get-install-hook nil "Hook run after apt-get install.")
 (defvar el-get-apt-get-remove-hook  nil "Hook run after apt-get remove.")
 (defvar el-get-fink-install-hook    nil "Hook run after fink install.")
@@ -97,6 +108,10 @@
     :git-svn (:install el-get-git-svn-clone
 		       :install-hook el-get-git-svn-clone-hook
 		       :update el-get-git-svn-update
+		       :remove el-get-rmdir)
+    :bzr     (:install el-get-bzr-branch
+		       :install-hook el-get-bzr-branch-hook
+		       :update el-get-bzr-pull
 		       :remove el-get-rmdir)
     :apt-get (:install el-get-apt-get-install 
 		       :install-hook el-get-apt-get-install-hook
@@ -423,6 +438,47 @@ Any other property will get put into the process object.
 
  
 ;;
+;; bzr support
+;;
+(defun el-get-bzr-branch (package url post-install-fun)
+  "Branch a given bzr PACKAGE following the URL using bzr."
+  (let* ((bzr-executable "bzr")
+	 (name (format "*bzr branch %s*" package))
+	 (ok   (format "Package %s installed" package))
+	 (ko   (format "Could not install package %s." package)))
+    (el-get-start-process-list
+     package
+     `((:command-name ,name
+		      :buffer-name ,name
+		      :default-directory ,el-get-dir
+		      :program ,bzr-executable
+		      :args ("branch" ,url ,package)
+		      :message ,ok
+		      :error ,ko))
+     post-install-fun)))
+
+(defun el-get-bzr-pull (package url post-update-fun)
+  "bzr pull the package"
+  (let* ((bzr-executable "bzr")
+	 (pdir (el-get-package-directory package))
+	 (name (format "*bzr pull %s*" package))
+	 (ok   (format "Pulled package %s." package))
+	 (ko   (format "Could not update package %s." package)))
+
+    (el-get-start-process-list
+     package
+     `((:command-name ,name
+		      :buffer-name ,name
+		      :default-directory ,pdir
+		      :program ,bzr-executable
+		      :args ( "pull" )
+		      :message ,ok
+		      :error ,ko))
+     post-update-fun)))
+
+
+ 
+;;
 ;; utilities for both apt-get and fink support (dpkg based)
 ;;
 (defun el-get-dpkg-package-status (package)
@@ -606,7 +662,7 @@ package isn't currently installed by ELPA."
 
 (defun el-get-elpa-update (package url post-update-fun)
   "ask elpa to update given package"
-  (el-get-rmdir (concat (file-name-as-directory package-user-dir) package))
+  (el-get-rmdir (concat (file-name-as-directory package-user-dir) package nil))
   (package-install (intern-soft package))
   (funcall post-install-fun package))
 
@@ -614,7 +670,7 @@ package isn't currently installed by ELPA."
 ;;
 ;; http support
 ;;
-(defun el-get-http-retrieve-callback (url-arg package)
+(defun el-get-http-retrieve-callback (url-arg package post-install-fun)
   "callback function for `url-retrieve', store the emacs lisp file for the package.
 
 url-arg is nil in my tests but url-retrieve seems to insist on
@@ -626,22 +682,24 @@ passing it the the callback function nonetheless."
     (re-search-forward "^$" nil 'move)
     (forward-char)
     (delete-region (point-min) (point))
-    (write-file dest)))
+    (write-file dest))
+  (funcall post-install-fun package))
 
 (defun el-get-http-install (package url post-install-fun)
   "Dowload a single-file package over HTTP "
   (let ((pdir   (el-get-package-directory package)))
     (unless (file-directory-p pdir)
       (make-directory pdir))
-    (url-retrieve url 'el-get-http-retrieve-callback `(,package)))
-  (funcall post-install-fun package))
+    (url-retrieve 
+     url 'el-get-http-retrieve-callback `(,package ,post-install-fun))))
 
 ;;
 ;; Common support bits
 ;;
-(defun el-get-rmdir (package url)
+(defun el-get-rmdir (package url post-remove-fun)
   "Just rm -rf the package directory. Follow symlinks."
-  (dired-delete-file (el-get-package-directory package) 'always))
+  (dired-delete-file (el-get-package-directory package) 'always)
+  (funcall post-remove-fun package))
 
 (defun el-get-build (package commands &optional subdir)
   "run each command from the package directory"
