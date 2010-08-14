@@ -1,6 +1,7 @@
 TexinfoMode is an editing mode that comes with Emacs for editing [[Texinfo]] files.  It was originally written by Robert J. Chassell.
 
 * GIT:textmodes/texinfo.el, GIT:textmodes/texnfo-upd.el
+* Manual:Texinfo+mode -- the Texinfo mode section of the TexinfoManual
 
 A useful feature of Texinfo mode is combining the UniversalArgument command with various markup-insertion commands to automatically surround words with markup.  According to the TexinfoManual:
 

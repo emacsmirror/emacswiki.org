@@ -4,8 +4,8 @@ by JamieZawinski. See EmacsHistory for details.
 Here's a short summary for [[Emacs]]:
 
 ||*Major Version*||*First Release*||
-|| 18            || 1986 ||
-|| 19            || 1993 ||
+|| 18            || 1987 ||
+|| 19            || 1994 ||
 || 20            || 1997 ||
 || 21            || 2001 ||
 || 22            || 2007 ||
@@ -223,4 +223,5 @@ something is wrong with calendar, please make a bug report.  E.g., "Emacs's
 Calendar is unable to compute the date of its own final release".
 
 ----
+CategoryHistory
 CategoryHumor

@@ -23,3 +23,40 @@ Maybe some general GNU manuals?:
 
 Maybe Make, Bash and Coding standards.  Now I'm just being silly.
 -- AaronHawley
+
+[new]
+Thanks. :)
+
+Hm, couldn't find URLs for Calc, URL -- and the eshell manual has an index so small I won't bother adding it.
+
+I added the following:
+
+{{{
+               => 'AUCTeX Manual, Function Index',
+               'http://www.gnu.org/software/auctex/manual/auctex/Variable-Index.html'
+               => 'AUCTeX Manual, Variable Index',
+               'http://www.gnu.org/software/auctex/manual/auctex/Concept-Index.html'
+               => 'AUCTeX Manual, Concept Index',
+               'http://www.gnu.org/software/texinfo/manual/texinfo/html_node/index.html'
+               => 'Texinfo, Command and Variable Index',
+               'http://www.gnu.org/software/texinfo/manual/texinfo/html_node/General-Index.html'
+               => 'Texinfo, General Index',
+               'http://www.gnu.org/software/texinfo/manual/info/html_node/Index.html'
+               => 'Info, Index',
+               'http://www.gnu.org/software/emacs/manual/html_node/dired-x/Command-Index.html'
+               => 'Dired Extra, Function Index',
+               'http://www.gnu.org/software/emacs/manual/html_node/dired-x/Variable-Index.html'
+               => 'Dired Extra, Variable Index',
+               'http://www.gnu.org/software/coreutils/manual/html_node/Concept-index.html'
+               => 'Coreutils, Index',
+               'http://www.gnu.org/software/diffutils/manual/html_node/Index.html'
+               => 'Diffutils, Index',
+               'http://www.gnu.org/software/findutils/manual/html_node/find_html/Primary-Index.html'
+               => 'Findutils, Primary Index',
+               'http://www.gnu.org/software/emacs/manual/html_node/ediff/Index.html'
+               => 'Edfiff, Index',
+}}}
+
+More?
+
+* http://www.gnu.org/software/emacs/manual/index.html
