@@ -239,6 +239,29 @@ see [http://stackoverflow.com/questions/2601120/do-overlays-tooltips-work-correc
 
 ----
 
+=== JavaScript with Google Closure ===
+
+1. Download the Google Closure compiler and unzip (http://closure-compiler.googlecode.com/files/compiler-latest.zip).
+2. Create a shell script to run closure on a file.  I called mine "closure.sh":
+<pre>
+java -jar ~/bin/compiler.jar --warning_level VERBOSE --js $1 --js_output_file /dev/null
+</pre>
+3. Add the following to your .emacs file (change closure.sh path to match your system):
+<pre>
+(when (load "flymake" t)
+  (defun flymake-closure-init ()
+    (let* ((temp-file (flymake-init-create-temp-buffer-copy
+		       'flymake-create-temp-inplace))
+           (local-file (file-relative-name
+                        temp-file
+                        (file-name-directory buffer-file-name))))
+      (list "~/bin/closure.sh" (list local-file))))
+    
+  (add-to-list 'flymake-allowed-file-name-masks
+               '("\\.js\\'" flymake-closure-init)))
+</pre>
+1. Don't forget to start flymake mode by adding (flymake-mode t) to your javascript mode hook.
+
 == More Tips and Questions ==
 
 === Flymake on GNU/Linux ==

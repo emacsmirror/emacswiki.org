@@ -162,4 +162,8 @@ It's a "snarf and barf" of the org-complete code, but it does the trick.  Hopefu
 }}}
 --JonathanArkell
 
+== Slime ==
+An auto-complete source for Slime, providing lisp symbol completion and pop-up documentation, can be found here: http://github.com/purcell/ac-slime
+
+--StevePurcell
 

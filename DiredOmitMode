@@ -14,7 +14,7 @@ With most recent Emacs versions (e.g. 23.1.92.1) no hooks are needed and the fol
 
     (require 'dired-x)
 
-    (setq dired-omit-files-p t)
+    (setq-default dired-omit-files-p t) ; this is buffer-local variable
 
     (setq dired-omit-files
           (concat dired-omit-files "\\|^\\..+$"))
