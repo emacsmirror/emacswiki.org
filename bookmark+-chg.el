@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug  8 16:00:54 2010 (-0700)
+;; Last-Updated: Sun Aug 15 19:44:01 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13092
+;;     Update #: 13121
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -25,12 +25,15 @@
 ;;    library `bookmark.el'.  This file contains no code, so you need
 ;;    not load it.
 ;;
-;;    The Bookmark+ libraries are:
+;;    The Bookmark+ libraries are these:
 ;;
-;;    `bookmark+.el'  - main code library
-;;    `bookmark+-lit' - code for highlighting bookmarks (optional)
-;;    `bookmark+-doc' - documentation (comment-only file)
-;;    `bookmark+-chg' - change log (this file)
+;;    `bookmark+.el'     - main (driver) code library
+;;    `bookmark+-mac.el' - Lisp macros
+;;    `bookmark+-lit'    - (optional) code for highlighting bookmarks
+;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
+;;    `bookmark+-1.el'   - other (non-bmenu) required code
+;;    `bookmark+-doc'    - documentation (comment-only file)
+;;    `bookmark+-chg'    - change log (this file)
 ;;
 ;;    The documentation (in `bookmark+-doc.el') includes how to
 ;;    byte-compile and install Bookmark+.  The documentation is also
@@ -93,10 +96,17 @@
 ;;  (@> "CHANGE LOG FOR `bookmark+-1.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+-lit.el'")
+;;  (@> "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;  (@> "CHANGE LOG FOR `bookmark+.el'")
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/15 dadams
+;;     Moved bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle to bookmark+-mac.el.
+;;     Require: bookmark.el, bookmark+-mac.el.
+;;     Require for compile: bookmark+-bmu.el, bookmark+-lit.el (soft).
+;;     Ensure this file is loaded before compiling.
+;;     bmkp-set-bookmark-file-bookmark: Added missing arg for error format string.
 ;; 2010/08/08 dadams
 ;;     bookmark-jump: Added optional arg DISPLAY-FUNCTION (Emacs 24).
 ;;     bookmark-handle-bookmark:
@@ -138,6 +148,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2010/08/15 dadams
+;;     Moved to bookmark+-mac.el:
+;;       bmkp-define-sort-command, bmkp-replace-regexp-in-string, bmkp-assoc-delete-all.
+;;     Renamed: bmkp-barf-if-not-in-menu-list to bmkp-bmenu-barf-if-not-in-menu-list.
+;;     Require bookmark.el, bookmark+-mac.el.
+;;     Require when compile: bookmark+-1.el, bookmark+-lit.el (soft).
 ;; 2010/07/17 dadams
 ;;     Added: bmkp-bmenu-mark-url-bookmarks, bmkp-bmenu-show-only-urls, bmkp-bmenu-sort-by-url.
 ;;     Removed: bmkp-bmenu-sort-by-w3m-url.
@@ -152,14 +168,31 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2010/08/15 dadams
+;;     Require: bookmark.el.
+;;     Require when compile: bookmark+-bmu.el, bookmark+-1.el, pp+.el (soft).
+;;     Applied renaming of bmkp-barf-if-not-in-menu-list to bmkp-bmenu-barf-if-not-in-menu-list.
+;;     bmkp-light-bookmark(s): Added missing arg to throw call.
+;;     bmkp-light-bookmarks: Use bmkp-remove-if, not remove-if.
+;;     bmkp-light-bookmarks-in-region, bmkp-light-non-autonamed-this-buffer:
+;;       Use bmkp-remove-if-not, not remove-if-not.
+;;     bmkp-read-set-lighting-args: Use pp-read-expression-map only if bound (pp+.el).
 ;; 2010/07/03 dadams
 ;;     bmkp-set-lighting-for-bookmark, bmkp-bmenu-set-lighting-for-marked:
 ;;       Use *-refresh-menu-list, not *-surreptitiously-*.
 ;; 2010/07/01 dadams
 ;;     Created.
  
+;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
+;;
+;; 2010/08/15 dadams
+;;     Created, from code in other Bookmark+ files.
+ 
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2010/08/15 dadams
+;;     Require bookmark+-mac.el.
+;;     Do not ensure loaded before compile (not needed here now).
 ;; 2010/07/14 dadams
 ;;     Version 3.1.1.
 ;;     Moved main content of bookmark+.el to new files bookmark+-1.el and bookmark+-bmu.el.

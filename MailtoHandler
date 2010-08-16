@@ -26,7 +26,7 @@ emacsclient -a "" -c -n --eval "$elisp_expr" \
 Make the following Emacs Lisp function available for your Emacs. You can just put it in your Emacs init file (##~/.emacs##) or you can put it in some directory in your ##load-path## and add "##(autoload ...)##" command in your Emacs init file.
 
 <pre>
-;;;; mailto-compose-mail.el (2009-08-08)
+;;;; mailto-compose-mail.el (2010-08-15)
 
 ;;;###autoload
 (defun mailto-compose-mail (mailto-url)
@@ -39,30 +39,44 @@ Make the following Emacs Lisp function available for your Emacs. You can just pu
         (require 'mailheader)
 
         (let ((hdr-alist (rfc2368-parse-mailto-url mailto-url))
-              (allowed-xtra-hdrs '(cc bcc in-reply-to))
-              to subject body)
+              (body "")
+              to subject
+              ;; In addition to To, Subject and Body these headers are
+              ;; allowed:
+              (allowed-xtra-hdrs '(cc bcc in-reply-to)))
 
           (with-temp-buffer
+            ;; Extract body if it's defined
+            (when (assoc "Body" hdr-alist)
+              (dolist (hdr hdr-alist)
+                (when (equal "Body" (car hdr))
+                  (insert (format "%s\n" (cdr hdr)))))
+              (rfc2047-decode-region (point-min) (point-max))
+              (setq body (buffer-substring-no-properties
+                          (point-min) (point-max)))
+              (erase-buffer))
+
+            ;; Extract headers
             (dolist (hdr hdr-alist)
-              (insert (concat (car hdr) ": " (cdr hdr) "\n")))
+              (unless (equal "Body" (car hdr))
+                (insert (format "%s: %s\n" (car hdr) (cdr hdr)))))
             (rfc2047-decode-region (point-min) (point-max))
             (goto-char (point-min))
             (setq hdr-alist (mail-header-extract-no-properties)))
 
           (setq to (or (cdr (assq 'to hdr-alist)) "")
                 subject (or (cdr (assq 'subject hdr-alist)) "")
-                body (or (cdr (assq 'body hdr-alist)) "")
                 hdr-alist
                 (remove nil (mapcar
-                             (lambda (item)
-                               (when (memq (car item) allowed-xtra-hdrs)
-                                 (cons (capitalize (symbol-name (car item)))
-                                       (cdr item))))
+                             #'(lambda (item)
+                                 (when (memq (car item) allowed-xtra-hdrs)
+                                   (cons (capitalize (symbol-name (car item)))
+                                         (cdr item))))
                              hdr-alist)))
 
           (compose-mail to subject hdr-alist nil nil
-                        (list (lambda (&rest args)
-                                (insert (format "%s\n" (car args))))
+                        (list (lambda (string)
+                                (insert string))
                               body))))
     (compose-mail)))
 </pre>

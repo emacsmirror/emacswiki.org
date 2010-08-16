@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug  6 16:41:04 2010 (-0700)
+;; Last-Updated: Sun Aug 15 18:53:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13306
+;;     Update #: 13310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -28,9 +28,10 @@
 ;;    The Bookmark+ libraries are these:
 ;;
 ;;    `bookmark+.el'     - main (driver) library
+;;    `bookmark+-mac.el' - Lisp macros
+;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
 ;;    `bookmark+-1.el'   - other required code (non-bmenu) 
-;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-doc.el' - documentation (comment-only - this file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -147,10 +148,10 @@
 ;;  ** Installing Bookmark+ **
 ;;
 ;;  The main Bookmark+ library is `bookmark+.el'.  The other required
-;;  libraries are `bookmark+-bmu.el' and `bookmark+-1.el'.  If you
-;;  want to be able to highlight bookmarks then you will also want to
-;;  use library `bookmark+-lit.el'.  I recommend that you byte-compile
-;;  the libraries.
+;;  libraries are `bookmark+-mac.el', `bookmark+-bmu.el' and
+;;  `bookmark+-1.el'.  If you want to be able to highlight bookmarks
+;;  then you will also want to use library `bookmark+-lit.el'.  I
+;;  recommend that you byte-compile the libraries.
 ;;
 ;;  Put the directory of these libraries in your `load-path' and add
 ;;  this to your init file (~/.emacs):

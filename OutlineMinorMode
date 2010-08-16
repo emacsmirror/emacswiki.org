@@ -128,23 +128,26 @@ Using `C-c C-c' was suggested by [[JesseW]] on the EmacsChannel. -- AaronHawley
 --
 ovr
 
-== Variation of Explorer-like bindings ==
+== Using Meta + <arrow key> ==
+
+This is a variation of the above Explorer-like keybindings.
 
 {{{
-;; outline-mode-easy-bindings.el
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; outline-mode-easy-bindings.el (2010-08-15)
 ;;
-;; You can control outline entirely with Meta+<cursor> keys
+;; Outlines can be managed entirely with Meta + <arrow key>.
 ;;
-;; Store this file as outline-mode-easy-bindings.el somewhere in your
-;; load-path and add the following lines to your init file:
+;; Installation: Store this file as outline-mode-easy-bindings.el
+;; somewhere in your load-path and create hooks for outline modes to
+;; load this automatically, for example:
+
+;;     (add-hook 'outline-mode-hook 'my-outline-easy-bindings)
+;;     (add-hook 'outline-minor-mode-hook 'my-outline-easy-bindings)
 ;;
-;;      (add-hook 'outline-mode-hook
-;;                '(lambda ()
-;;                   (require 'outline-mode-easy-bindings)))
-;;
-;;      (add-hook 'outline-minor-mode-hook
-;;                '(lambda ()
-;;                   (require 'outline-mode-easy-bindings)))
+;;     (defun my-outline-easy-bindings ()
+;;       (require 'outline-mode-easy-bindings nil t))
+
 
 (defun outline-body-p ()
   (save-excursion
@@ -174,40 +177,50 @@ ovr
     (outline-next-heading)
     (not (outline-invisible-p))))
 
-(defun outline-do-close ()
+(defun outline-hide-more ()
   (interactive)
-  (if (outline-on-heading-p)
-      (cond ((and (outline-body-p)
-                  (outline-body-visible-p))
-             (hide-entry)
-             (hide-leaves))
-            (t
-             (hide-subtree)))))
+  (when (outline-on-heading-p)
+    (cond ((and (outline-body-p)
+                (outline-body-visible-p))
+           (hide-entry)
+           (hide-leaves))
+          (t
+           (hide-subtree)))))
 
-(defun outline-do-open ()
+(defun outline-show-more ()
   (interactive)
-  (if (outline-on-heading-p)
-      (cond ((and (outline-subheadings-p)
-                  (not (outline-subheadings-visible-p)))
-             (show-children))
-            ((and (not (outline-subheadings-p))
-                  (not (outline-body-visible-p)))
-             (show-subtree))
-            ((and (outline-body-p)
-                  (not (outline-body-visible-p)))
-             (show-entry))
-            (t
-             (show-subtree)))))
+  (when (outline-on-heading-p)
+    (cond ((and (outline-subheadings-p)
+                (not (outline-subheadings-visible-p)))
+           (show-children))
+          ((and (not (outline-subheadings-p))
+                (not (outline-body-visible-p)))
+           (show-subtree))
+          ((and (outline-body-p)
+                (not (outline-body-visible-p)))
+           (show-entry))
+          (t
+           (show-subtree)))))
 
-(define-key outline-mode-map (kbd "M-<left>") 'outline-do-close)
-(define-key outline-mode-map (kbd "M-<right>") 'outline-do-open)
-(define-key outline-mode-map (kbd "M-<up>") 'outline-previous-visible-heading)
-(define-key outline-mode-map (kbd "M-<down>") 'outline-next-visible-heading)
+(let ((map outline-mode-map))
+  (define-key map (kbd "M-<left>") 'outline-hide-more)
+  (define-key map (kbd "M-<right>") 'outline-show-more)
+  (define-key map (kbd "M-<up>") 'outline-previous-visible-heading)
+  (define-key map (kbd "M-<down>") 'outline-next-visible-heading)
+  (define-key map (kbd "C-c J") 'outline-hide-more)
+  (define-key map (kbd "C-c L") 'outline-show-more)
+  (define-key map (kbd "C-c I") 'outline-previous-visible-heading)
+  (define-key map (kbd "C-c K") 'outline-next-visible-heading))
 
-(define-key outline-minor-mode-map (kbd "M-<left>") 'outline-do-close)
-(define-key outline-minor-mode-map (kbd "M-<right>") 'outline-do-open)
-(define-key outline-minor-mode-map (kbd "M-<up>") 'outline-previous-visible-heading)
-(define-key outline-minor-mode-map (kbd "M-<down>") 'outline-next-visible-heading)
+(let ((map outline-minor-mode-map)) 
+  (define-key map (kbd "M-<left>") 'outline-hide-more)
+  (define-key map (kbd "M-<right>") 'outline-show-more)
+  (define-key map (kbd "M-<up>") 'outline-previous-visible-heading)
+  (define-key map (kbd "M-<down>") 'outline-next-visible-heading)
+  (define-key map (kbd "C-c J") 'outline-hide-more)
+  (define-key map (kbd "C-c L") 'outline-show-more)
+  (define-key map (kbd "C-c I") 'outline-previous-visible-heading)
+  (define-key map (kbd "C-c K") 'outline-next-visible-heading))
 
 (provide 'outline-mode-easy-bindings)
 }}}

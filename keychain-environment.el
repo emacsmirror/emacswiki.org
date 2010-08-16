@@ -1,12 +1,12 @@
 ;;; keychain-environment.el --- Loads keychain environment variables into emacs
  
-;; Copyright (C) 2008,2009 Paul Tipper
+;; Copyright (C) 2008-2010 Paul Tipper
  
 ;; Author:  Paul Tipper <bluefoo at googlemail dot com>
 ;; Keywords: keychain, ssh
 ;; Created: 18 Dec 2008
 
-;; Version: 1.0.1
+;; Version: 1.0.2
 
 ;; This file is not part of GNU Emacs.
  
@@ -30,9 +30,9 @@
 ;; SSH Agent and keeping it running and accessible on a machine for
 ;; longer than a single login seession.
 ;; 
-;; This library loads the file "$HOME/.keychain/$HOSTNAME-sh" and parses
-;; it for the SSH_AUTH_SOCK and SSH_AUTH_PID variables, placing these into the
-;; environment of Emacs.
+;; This library loads the file "$HOME/.keychain/$HOSTNAME-sh" and parses it for
+;; the SSH_AUTH_SOCK, SSH_AUTH_PID and GPG_AGENT_INFO variables, placing these
+;; into the environment of Emacs.
 ;;
 ;; This is useful for situations where you are running Emacs under X, not
 ;; directly from a terminal, and its inheriting its environment from the
@@ -55,19 +55,31 @@
 ;;; History:
 ;; 2008-12-18 Initial development.
 ;; 2009-02-25 Fixed bug with system-name being evaluated to the full hostname
+;; 2010-07-27 Added GPG_AGENT support
+;;            (by Michael Markert: markert dot michael at googlemail dot com)
 
 ;;; Code: 
 
-(if (not (boundp 'keychain-environment-file))
-    (defvar keychain-environment-file  (concat (getenv "HOME")
+(if (not (boundp 'keychain-ssh-file))
+    (defvar keychain-ssh-file  (concat (getenv "HOME")
                                                "/.keychain/" 
                                                (car (split-string system-name 
                                                                   "\\." 
                                                                   t))
                                                "-sh")
-      "Stores the location of the keychain file to load.  Normally
+      "Stores the location of the keychain ssh file to load.  Normally
 found in the '$HOME/.keychain' directory and called
 '$HOSTNAME-sh'."))
+(if (not (boundp 'keychain-gpg-file))
+    (defvar keychain-gpg-file  (concat (getenv "HOME")
+                                               "/.keychain/" 
+                                               (car (split-string system-name 
+                                                                  "\\." 
+                                                                  t))
+                                               "-sh-gpg")
+      "Stores the location of the keychain gpg file to load.  Normally
+found in the '$HOME/.keychain' directory and called
+'$HOSTNAME-sh-gpg'."))
 
 
 ;; Really there should be an easier method of doing this surely?
@@ -94,20 +106,25 @@ found in the '$HOME/.keychain' directory and called
         data)))
 
 (defun refresh-keychain-environment ()
-  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK
-and SSH_AGENT_PID variables into the environment and returns them
-as a list."
+  "Reads the keychain file for /bin/sh and sets the SSH_AUTH_SOCK, SSH_AGENT_PID
+and GPG_AGENT variables into the environment and returns them as a list."
   (interactive)
-  (let* ((data (read-file keychain-environment-file))
+  (let* ((ssh-data (read-file keychain-ssh-file))
+         (gpg-data (read-file keychain-gpg-file))
          (auth-sock (progn 
-                      (string-match "SSH_AUTH_SOCK=\\(.*?\\);" data)
-                      (match-string 1 data)))
+                      (string-match "SSH_AUTH_SOCK=\\(.*?\\);" ssh-data)
+                      (match-string 1 ssh-data)))
          (auth-pid (progn
-                     (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" data)
-                     (match-string 1 data))))
+                     (string-match "SSH_AGENT_PID=\\([0-9]*\\)?;" ssh-data)
+                     (match-string 1 ssh-data)))
+         (gpg-agent (progn
+                      (string-match "GPG_AGENT_INFO=\\(.*?\\);" gpg-data)
+                      (match-string 1 gpg-data)
+                      ))
+         )
     (setenv "SSH_AUTH_SOCK" auth-sock)
     (setenv "SSH_AUTH_PID" auth-pid)
-    (list auth-sock auth-pid)))
-
+    (setenv "GPG_AGENT_INFO" gpg-agent)
+    (list auth-sock auth-pid gpg-agent)))
 
 (provide 'keychain-environment)

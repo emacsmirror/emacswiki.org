@@ -140,5 +140,21 @@ record that somebody made a contribution without writing any code, or
 when the usage of a variable changed in backwards-incompatible ways.
 But those are special circumstances, anyway.
 
+= Setting Long Strings =
+
+The following example shows how *long strings* can be
+defined over several physical lines, thereby preserving
+the maximum column requirement dictated by good style
+(typically 80 chars).
+
+<pre>
+  (setq msg "A long one line message \
+with continuation breaks and not much \
+content.")
+  (message msg)
+</pre>
+
+The trailing '\' must be followed immediately by a newline.
+
 ----
 CategoryCode

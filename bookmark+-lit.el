@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Jul  3 08:37:11 2010 (-0700)
+;; Last-Updated: Sun Aug 15 18:48:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 574
+;;     Update #: 633
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,7 +26,10 @@
 ;;    The Bookmark+ libraries are:
 ;;
 ;;    `bookmark+.el'     - main code library
+;;    `bookmark+-mac.el' - Lisp macros
 ;;    `bookmark+-lit.el' - code for highlighting bookmarks (this file)
+;;    `bookmark+-bmu.el' - code for the `*Bookmark List*'
+;;    `bookmark+-1.el'   - other required code (non-bmenu) 
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -52,7 +55,6 @@
 ;;
 ;;    (The commentary links in #1 and #3 work only if you have library
 ;;    `bookmark+-doc.el' in your `load-path'.)
-;;
  
 ;;(@> "Index")
 ;;
@@ -165,15 +167,39 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(eval-when-compile (require 'cl))       ; case
+(eval-when-compile (require 'cl)) ;; case
+
+(require 'bookmark)
+;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read,
+;; bookmark-get-bookmark, bookmark-get-position,
+;; bookmark-handle-bookmark, bookmark-maybe-load-default-file,
+;; bookmark-name-from-full-record, bookmark-prop-get,
+;; bookmark-prop-set
+
+(eval-when-compile (require 'bookmark+-bmu))
+;; bmkp-bmenu-barf-if-not-in-menu-list, bmkp-bmenu-filter-function,
+;; bmkp-bmenu-title
+
+(eval-when-compile (require 'bookmark+-1))
+;; bmkp-autonamed-bookmark-p, bmkp-autonamed-this-buffer-alist-only,
+;; bmkp-autoname-format, bmkp-current-nav-bookmark,
+;; bmkp-current-sort-order, bmkp-cycle-1, bmkp-default-bookmark-name,
+;; bmkp-function-bookmark-p, bmkp-get-buffer-name, bmkp-jump-1,
+;; bmkp-latest-bookmark-alist, bmkp-marked-bookmarks-only,
+;; bmkp-msg-about-sort-order, bmkp-nav-alist, bmkp-refresh-menu-list,
+;; bmkp-remove-if, bmkp-remove-if-not, bmkp-repeat-command,
+;; bmkp-sequence-bookmark-p, bmkp-sort-and-remove-dups,
+;; bmkp-specific-buffers-alist-only, bmkp-this-buffer-alist-only,
+;; bmkp-this-buffer-cycle-sort-comparer, bmkp-this-buffer-p
+
+(require 'pp+ nil t) ;; pp-read-expression-map
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Quiet the byte-compiler
-(unless (fboundp 'fringe-columns)       ; Emacs 20-21.
-  (defvar bmkp-light-left-fringe-bitmap) ; Defined in this file for Emacs 22+.
-  (defvar bmkp-light-right-fringe-bitmap) ; Defined in this file for Emacs 22+.
-  (defvar fringe-bitmaps))              ; Built-in for Emacs 22+.
+(defvar bmkp-light-left-fringe-bitmap) ; Defined in this file for Emacs 22+.
+(defvar bmkp-light-right-fringe-bitmap) ; Defined in this file for Emacs 22+.
+(defvar fringe-bitmaps)              ; Built-in for Emacs 22+.
 
  
 ;;(@* "Faces (Customizable)")
@@ -316,7 +342,7 @@ This option is not used for Emacs versions before Emacs 22."
 (defun bmkp-bmenu-show-only-lighted () ; `H S' in bookmark list
   "Display a list of highlighted bookmarks (only)."
   (interactive)
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (setq bmkp-bmenu-filter-function  'bmkp-lighted-alist-only
         bmkp-bmenu-title            "Highlighted Bookmarks")
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
@@ -329,14 +355,14 @@ This option is not used for Emacs versions before Emacs 22."
 (defun bmkp-bmenu-light ()              ; `H H' in bookmark list
   "Highlight the location of this line's bookmark."
   (interactive)
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-light-bookmark (bookmark-bmenu-bookmark) nil nil 'MSG))
 
 ;;;###autoload
 (defun bmkp-bmenu-light-marked (&optional parg msgp) ; `H > H' in bookmark list
   "Highlight the marked bookmarks."
   (interactive (list 'MSG))
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msgp (message "Highlighting marked bookmarks..."))
   (let ((marked  (bmkp-marked-bookmarks-only)))
     (unless marked (error "No marked bookmarks"))
@@ -347,14 +373,14 @@ This option is not used for Emacs versions before Emacs 22."
 (defun bmkp-bmenu-unlight ()            ; `H U' in bookmark list
   "Highlight the location of this line's bookmark."
   (interactive)
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-unlight-bookmark (bookmark-bmenu-bookmark) 'NOERROR))
 
 ;;;###autoload
 (defun bmkp-bmenu-unlight-marked (&optional parg msgp) ; `H > U' in bookmark list
   "Unhighlight the marked bookmarks."
   (interactive (list 'MSG))
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msgp (message "Unhighlighting marked bookmarks..."))
   (let ((marked  (bmkp-marked-bookmarks-only)))
     (unless marked (error "No marked bookmarks"))
@@ -375,7 +401,7 @@ You are prompted for the highlight style, face, and condition (when)."
               (and bmk-face  (format "%S" bmk-face))
               (and bmk-when  (format "%S" bmk-when)))
              '(MSG))))
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (bmkp-set-lighting-for-bookmark (bookmark-bmenu-bookmark) style face when 'MSG))
 
 ;;;###autoload
@@ -383,7 +409,7 @@ You are prompted for the highlight style, face, and condition (when)."
   "Set the `lighting' property for the marked bookmarks.
 You are prompted for the highlight style, face, and condition (when)."
   (interactive (append (bmkp-read-set-lighting-args) '(MSG)))
-  (bmkp-barf-if-not-in-menu-list)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
   (when msgp (message "Setting highlighting..."))
   (let ((marked    (bmkp-marked-bookmarks-only))
         (curr-bmk  (bookmark-bmenu-bookmark)))
@@ -643,7 +669,7 @@ Non-interactively:
                        (when (and (not (bmkp-lighted-p bmk))
                                   (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
                          (setq nb-lit  (1- nb-lit))
-                         (throw 'bmkp-light-bookmark))
+                         (throw 'bmkp-light-bookmark bmk))
                        (overlay-put ov 'priority
                                     (or (cdr (assoc (if autonamedp
                                                         'bmkp-autonamed-overlays
@@ -709,8 +735,8 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
                                                (bmkp-specific-buffers-alist-only
                                                 (mapcar #'buffer-name (buffer-list)))))
                ((> current-prefix-arg 0)     (bmkp-autonamed-this-buffer-alist-only))
-               ((< current-prefix-arg 0)     (remove-if #'bmkp-autonamed-bookmark-p
-                                                        (bmkp-this-buffer-alist-only)))
+               ((< current-prefix-arg 0)     (bmkp-remove-if #'bmkp-autonamed-bookmark-p
+                                                             (bmkp-this-buffer-alist-only)))
                ((= current-prefix-arg 0)     (bmkp-this-buffer-lighted-alist-only)))
          (cond ((or (not current-prefix-arg) (consp current-prefix-arg))
                 '(bmkp-autonamed-overlays bmkp-non-autonamed-overlays))
@@ -757,7 +783,7 @@ Non-interactively, ALIST is the alist of bookmarks to highlight."
                         (setq nb-non-auto  (1+ nb-non-auto)))
                       (when (and (not bmk-ov) (> (setq nb-lit  (1+ nb-lit)) bmkp-light-threshold))
                         (setq nb-lit  (1- nb-lit))
-                        (throw 'bmkp-light-bookmarks))
+                        (throw 'bmkp-light-bookmarks bmk))
                       (setq total  (1+ total))
                       (overlay-put ov 'priority ; > ediff's 100+, < isearch-overlay's 1001.
                                    (or (cdr (assoc ov-symb bmkp-light-priorities))
@@ -813,9 +839,9 @@ Prefix arg < 0:  non-autonamed bookmarks only."
                ((natnump (prefix-numeric-value current-prefix-arg)) '(bmkp-autonamed-overlays))
                (current-prefix-arg '(bmkp-non-autonamed-overlays)))
          'MSG))
-  (bmkp-light-bookmarks (remove-if-not (lambda (bmk) (let ((pos  (bookmark-get-position bmk)))
-                                                       (and (>= pos start) (<= pos end))))
-                                       (bmkp-this-buffer-alist-only))
+  (bmkp-light-bookmarks (bmkp-remove-if-not (lambda (bmk) (let ((pos  (bookmark-get-position bmk)))
+                                                            (and (>= pos start) (<= pos end))))
+                                            (bmkp-this-buffer-alist-only))
                         overlays-symbols msgp))
 
 ;;;###autoload
@@ -828,7 +854,7 @@ Prefix arg < 0:  non-autonamed bookmarks only."
 (defun bmkp-light-non-autonamed-this-buffer (&optional msgp)
   "Highlight all non-autonamed bookmarks."
   (interactive (list 'MSG))
-  (bmkp-light-bookmarks (remove-if #'bmkp-autonamed-bookmark-p (bmkp-this-buffer-alist-only))
+  (bmkp-light-bookmarks (bmkp-remove-if #'bmkp-autonamed-bookmark-p (bmkp-this-buffer-alist-only))
                         '(bmkp-non-autonamed-overlays) msgp))
 
 ;;;###autoload
@@ -1067,7 +1093,10 @@ Optional args are the default values (strings) for reading new values."
          (when         (completing-read "When: " when-cands nil t nil nil
                                         (if default-when "conditionally (read sexp)" "auto")))
          (evald       (if (string-match "^con" when)
-                          (read-from-minibuffer "Highlight when (sexp): " nil pp-read-expression-map
+                          (read-from-minibuffer "Highlight when (sexp): " nil
+                                                (if (boundp 'pp-read-expression-map)
+                                                    pp-read-expression-map
+                                                  read-expression-map)
                                                 t 'read-expression-history default-when)
                         (cdr (assoc when when-cands)))))
     (list style face evald)))

@@ -63,7 +63,7 @@ Suggestion: Write your example using `( ... ) so that you can for example write 
 
 [new]
 
-: Using variable `ispell-program-name' with ##`()## construct may be a good idea for some individual's configuration but not as a general example. The reason is that the variable is not defined by default: it exists only after Emacs ispell package is loaded.
+: Using variable `ispell-program-name' with ##`()## construct may be a good idea for some individuals' configuration but, in my opinion, not as a general example. The reason is that the variable is not defined by default: it exists only after Emacs ispell package is loaded.
 
 ----
 CategorySpelling

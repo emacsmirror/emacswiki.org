@@ -56,8 +56,6 @@ Here's my Emacs wish-list.  Parts of it are more like my personal to-do list.
 * Anything in Emacs that is doing "backgroundable" work and that causes a noticeable pause should be rewritten to use a process filter instead.  The code could temporarily install a new watch cursor and a new keymap that doesn't allow normal operation of the buffer.  Candidates:
 
 ** Gnus.  In particular "g" should work in the background.
-** When the update is done, pcvs can pause for an extended period while preparing the buffer.  Worse, there's no indication of what is happening
-** psvn (which should probably be included in Emacs) also has problems with large updates
 ** Lately I've been looking into multi-threading.  This is quite complicated:
 *** Most globals inside the Emacs C code must be moved into a per-thread struct (I did this using some ad hoc refactoring scripts)
 *** The GC must be updated a bit
@@ -104,25 +102,6 @@ Something like that has been tried. http://www.mundell.ukfsn.org/native/
 
 : I asked for a user option to configure this (although it would be better for view-mode not to try to be so sophisticated, in the first place), but that was rejected. I at least set `view-remove-frame-by-deleting' to `t', but that doesn't help with the new problems introduced in Emacs22. I also complained about the plethora of similar names for commands to leave view-mode: `View-exit', `View-quit', `View-quit-all', `View-leave', `View-kill-and-leave'. That alone should be a signal that there is a design problem. Look at `RETURN-TO' in the doc string of `view-mode-exit' if you want to see how crazy this stuff is. -- DrewAdams
 [new]
-
-* PCVS
-** Maybe it could use cvs-utils for a performance boost
-** It could use a way to revert a file
-** If vc-dired wasn't so slow perhaps I could just use it instead.  ESR is working on this.
-
-* svn support
-** psvn should be in Emacs.  Or magically replaced by vc-dired
-** psvn sorting is too slow for me to use it with GCC.  Reported it, haven't tried the ideas from the maintainer's response
-** vc-svn should automatically run "svn resolved" when needed.  Perhaps when I save after editing a conflicted file.  Reported this as a bug.
-
-* VC
-** Most needed stuff is already in 23
-** Support for mercurial queues would be nice.  This can probably be grafted onto vc-hg without too much trouble.
-** vc-quilt would be nice.  The existing quilt code (not bundled) is really bad.
-
-----
-
-CategoryHomePage
 
 ----
 CategoryHomepage

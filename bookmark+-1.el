@@ -7,34 +7,50 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Aug  8 15:59:44 2010 (-0700)
+;; Last-Updated: Sun Aug 15 19:13:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 528
+;;     Update #: 628
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `dired', `dired-aux', `dired-x', `ffap'.
+;;   `bookmark', `bookmark+-mac', `dired', `dired-aux', `dired-x',
+;;   `ffap', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Commentary: 
 ;;
-;;    This is the first library of package Bookmark+ to be loaded.
-;;
 ;;    The Bookmark+ libraries are these:
 ;;
 ;;    `bookmark+.el'     - main (driver) library
+;;    `bookmark+-mac.el' - Lisp macros
+;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
 ;;    `bookmark+-1.el'   - other (non-bmenu) required code (this file)
-;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
 ;;    The documentation (in `bookmark+-doc.el') includes how to
-;;    byte-compile and install Bookmark+.
+;;    byte-compile and install Bookmark+.  The documentation is also
+;;    available in these ways:
+;;
+;;    1. From the bookmark list (`C-x r l'):
+;;       Use `?' to show the current bookmark-list status and general
+;;       help, then click link `Doc in Commentary' or link `Doc on the
+;;       Web'.
+;;
+;;    2. From the Emacs-Wiki Web site:
+;;       http://www.emacswiki.org/cgi-bin/wiki/BookmarkPlus.
+;;    
+;;    3. From the Bookmark+ group customization buffer:
+;;       `M-x customize-group bookmark-plus', then click link
+;;       `Commentary'.
+;;
+;;    (The commentary links in #1 and #3 work only if you have library
+;;    `bookmark+-doc.el' in your `load-path'.)
  
 ;;(@> "Index")
 ;;
@@ -49,7 +65,6 @@
 ;;  http://dto.freeshell.org/notebook/Linkd.html.
 ;;
 ;;  (@> "Things Defined Here")
-;;  (@> "Macros")
 ;;  (@> "User Options (Customizable)")
 ;;  (@> "Internal Variables")
 ;;  (@> "Compatibility Code for Older Emacs Versions")
@@ -147,10 +162,6 @@
 ;;    `bmkp-varlist-jump', `bmkp-version', `bmkp-w3m-jump',
 ;;    `bmkp-w3m-jump-other-window', `old-bookmark-insert',
 ;;    `old-bookmark-relocate'.
-;;
-;;  Macros defined here:
-;;
-;;    `bmkp-define-file-sort-predicate', `bmkp-menu-bar-make-toggle'.
 ;;
 ;;  User options defined here:
 ;;
@@ -369,6 +380,54 @@
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
 (eval-when-compile (require 'cl)) ;; case, multiple-value-bind
 
+(require 'bookmark)
+;; bookmark-alist, bookmark-alist-from-buffer,
+;; bookmark-alist-modification-count, bookmark-annotation-name,
+;; bookmark-automatically-show-annotations, bookmark-bmenu-bookmark,
+;; bookmark-bmenu-surreptitiously-rebuild-list,
+;; bookmark-bmenu-toggle-filenames, bookmark-buffer-file-name,
+;; bookmark-buffer-name, bookmark-completion-ignore-case,
+;; bookmark-current-bookmark, bookmark-default-file,
+;; bookmark-edit-annotation, bookmark-get-annotation,
+;; bookmark-get-bookmark, bookmark-get-bookmark-record,
+;; bookmark-get-filename, bookmark-get-front-context-string,
+;; bookmark-get-handler, bookmark-get-position,
+;; bookmark-get-rear-context-string, bookmark-import-new-list,
+;; bookmark-insert-file-format-version-stamp, bookmark-kill-line,
+;; bookmark-make-record, bookmark-maybe-historicize-string,
+;; bookmark-maybe-load-default-file, bookmark-maybe-message,
+;; bookmark-maybe-upgrade-file-format, bookmark-menu-popup-paned-menu,
+;; bookmark-name-from-full-record,
+;; bookmark-popup-menu-and-apply-function, bookmark-prop-get,
+;; bookmarks-already-loaded, bookmark-save-flag, bookmark-search-size,
+;; bookmark-set-annotation, bookmark-set-filename, bookmark-set-name,
+;; bookmark-set-position, bookmark-store, bookmark-time-to-save-p,
+;; bookmark-use-annotations, bookmark-version-control,
+;; bookmark-yank-point
+
+(require 'bookmark+-mac)
+;; bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle,
+;; bmkp-replace-regexp-in-string
+
+(eval-when-compile (require 'bookmark+-bmu))
+;; bmkp-bmenu-before-hide-marked-alist,
+;; bmkp-bmenu-before-hide-unmarked-alist, bmkp-bmenu-commands-file,
+;; bmkp-bmenu-filter-function, bmkp-bmenu-filter-pattern,
+;; bmkp-bmenu-first-time-p, bmkp-bmenu-goto-bookmark-named,
+;; bmkp-bmenu-marked-bookmarks, bmkp-bmenu-menubar-menu,
+;; bmkp-bmenu-omitted-list, bmkp-bmenu-refresh-menu-list,
+;; bmkp-bmenu-show-all, bmkp-bmenu-state-file, bmkp-bmenu-title,
+;; bmkp-sort-orders-alist
+
+(eval-when-compile (require 'bookmark+-lit nil t))
+;; bmkp-light-bookmark, bmkp-light-bookmarks, bmkp-light-this-buffer
+
+
+;; For the redefinition of `bookmark-get-bookmark' in Emacs < 23.
+(provide 'bookmark+-1)                  ; Ensure this library is loaded before we compile it.
+(require 'bookmark+-1)                  ; So be sure to put this library in your `load-path' before
+                                        ; trying to byte-compile it.
+
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Quiet the byte-compiler
@@ -408,102 +467,6 @@
 (defvar woman-last-file-name)           ; Defined in `woman.el'.
 (defvar woman-menu)                     ; Defined in `woman.el'.
 (defvar woman-mode-map)                 ; Defined in `woman.el'.
- 
-;;(@* "Macros")
-;;; Macros -----------------------------------------------------------
-
-(defmacro bmkp-menu-bar-make-toggle (name variable doc message help &rest body)
-  "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
-NAME is the name of the toggle command to define.
-VARIABLE is the variable to set.
-DOC is the menu-item name.
-MESSAGE is the toggle message, minus status.
-HELP is `:help' string.
-BODY is the function body to use.  If present, it is responsible for
-setting the variable and displaying a status message (not MESSAGE)."
-  (if (< emacs-major-version 21)
-      `(menu-bar-make-toggle ,name ,variable ,doc ,message ,@body)
-    `(menu-bar-make-toggle ,name ,variable ,doc ,message ,help ,@body)))
-
-(defmacro bmkp-define-file-sort-predicate (att-nb)
-  "Define a predicate for sorting bookmarks by file attribute ATT-NB.
-See function `file-attributes' for the meanings of the various file
-attribute numbers.
-
-String attribute values sort alphabetically; numerical values sort
-numerically; nil sorts before t.
-
-For ATT-NB 0 (file type), a file sorts before a symlink, which sorts
-before a directory.
-
-For ATT-NB 2 or 3 (uid, gid), a numerical value sorts before a string
-value.
-
-A bookmark that has file attributes sorts before a bookmark that does
-not.  A file bookmark sorts before a non-file bookmark.  Only local
-files are tested for attributes - remote-file bookmarks are treated
-here like non-file bookmarks."
-  `(defun ,(intern (format "bmkp-file-attribute-%d-cp" att-nb)) (b1 b2)
-    ,(format "Sort file bookmarks by attribute %d.
-B1 and B2 are bookmarks or bookmark names.
-Sort bookmarks with file attributes before those without attributes
-Sort file bookmarks before non-file bookmarks.
-Treat remote file bookmarks like non-file bookmarks."
-             att-nb)
-    (setq b1  (bookmark-get-bookmark b1))
-    (setq b2  (bookmark-get-bookmark b2))
-    (let (a1 a2)
-      (cond (;; Both are file bookmarks.
-             (and (bmkp-file-bookmark-p b1) (bmkp-file-bookmark-p b2))
-             (setq a1  (file-attributes (bookmark-get-filename b1))
-                   a2  (file-attributes (bookmark-get-filename b2)))
-             (cond (;; Both have attributes.
-                    (and a1 a2)
-                    (setq a1  (nth ,att-nb a1)
-                          a2  (nth ,att-nb a2))
-                    ;; Convert times and maybe inode number to floats.
-                    ;; The inode conversion is kludgy, but is probably OK in practice.
-                    (when (consp a1) (setq a1  (bmkp-float-time a1)))
-                    (when (consp a2) (setq a2  (bmkp-float-time a2)))
-                    (cond (;; (1) links, (2) maybe uid, (3) maybe gid, (4, 5, 6) times
-                           ;; (7) size, (10) inode, (11) device.
-                           (numberp a1)
-                           (cond ((< a1 a2)  '(t))
-                                 ((> a1 a2)  '(nil))
-                                 (t          nil)))
-                          ((= 0 ,att-nb) ; (0) file (nil) < symlink (string) < dir (t)
-                           (cond ((and a2 (not a1))               '(t)) ; file vs (symlink or dir)
-                                 ((and a1 (not a2))               '(nil))
-                                 ((and (eq t a2) (not (eq t a1))) '(t)) ; symlink vs dir
-                                 ((and (eq t a1) (not (eq t a2))) '(t))
-                                 ((and (stringp a1) (stringp a2))
-                                  (if (string< a1 a2) '(t) '(nil)))
-                                 (t                               nil)))
-                          ((stringp a1) ; (2, 3) string uid/gid, (8) modes
-                           (cond ((string< a1 a2)  '(t))
-                                 ((string< a2 a1)  '(nil))
-                                 (t                nil)))
-                          ((eq ,att-nb 9) ; (9) gid would change if re-created. nil < t
-                           (cond ((and a2 (not a1))  '(t))
-                                 ((and a1 (not a2))  '(nil))
-                                 (t                  nil)))))
-                   (;; First has attributes, but not second.
-                    a1
-                    '(t))
-                   (;; Second has attributes, but not first.
-                    a2
-                    '(nil))
-                   (;; Neither has attributes.
-                    t
-                    nil)))
-            (;; First is a file, second is not.
-             (bmkp-local-file-bookmark-p b1)
-             '(t))
-            (;; Second is a file, first is not.
-             (bmkp-local-file-bookmark-p b2)
-             '(nil))
-            (t;; Neither is a file.
-             nil)))))
  
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
@@ -2608,7 +2571,6 @@ BOOKMARK is a bookmark name or a bookmark record."
 
 ;;;###autoload
 (when (> emacs-major-version 22)
-
   (defvar bmkp-isearch-bookmarks nil
     "List of bookmarks whose locations are to be incrementally searched.")
 
@@ -4240,9 +4202,8 @@ of the hit, followed by the line number of the hit."
               (setq prefix  (read-string "Prefix for bookmark name: " nil nil)))
             (unless (stringp prefix) (setq prefix  ""))
             (bookmark-set (format "%s%s, line %s" prefix (file-name-nondirectory file) line)
-                          99 'INTERACTIVEP)))))))
-    
-(when (> emacs-major-version 21)
+                          99 'INTERACTIVEP))))))
+
   (defun bmkp-compilation-file+line-at (&optional pos)
     "Return the file and position indicated by this compilation message.
 These are returned as a cons: (FILE . POSITION).
@@ -4774,7 +4735,7 @@ You are prompted for the names of the bookmark file and the bookmark."
     (condition-case nil                 ; Check whether it's a valid bookmark file.
         (progn (bookmark-maybe-upgrade-file-format)
                (unless (listp (bookmark-alist-from-buffer)) (error "")))
-      (error (error "Not a valid bookmark file: `%s'"))))
+      (error (error "Not a valid bookmark file: `%s'" file))))
   (let ((bookmark-make-record-function  #'(lambda () (bmkp-make-bookmark-file-record file))))
     (call-interactively #'bookmark-set))
   (when msgp (message "Set bookmark-file bookmark")))
@@ -6934,7 +6895,7 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (define-key bmkp-jump-menu [bookmark-jump]
   '(menu-item "Any..." bookmark-jump :help "Jump to a bookmark of any type, in this window"))
 
-;;;;;;;;;;;;;;;;;;;;;;;;;
+;;;;;;;;;;;;;;;;;;;;;;;
 
 (provide 'bookmark+-1)
 

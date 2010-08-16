@@ -119,6 +119,17 @@ Since most editors number the last line of a file even if it is empty (ie. no ch
 
 If this is seen as useful, I'd like for it to be incorporated into the original code. -- AdamKerz
 
+== Linum: Disable linum for certain major-modes ==
+[new:FlorianAdamsky:2010-08-15 11:41 UTC]
+I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mode or compilation-mode. Therefore I tried to hook on these modes, but this doesn't work for me (maybe a bug?) [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/addd8d997ff49c2e/d6b74c3ab8af2a8a]. So I tried to overwrite the function (linum-on), which works fine. Here is my solution:
+
+    (setq linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode))
+    (defun linum-on ()
+      (unless (or (minibufferp) (member major-mode linum-disabled-modes-list))
+        (linum-mode 1)))
+
+-- FlorianAdamsky
+
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,

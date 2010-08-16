@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Jul 17 10:21:11 2010 (-0700)
+;; Last-Updated: Sun Aug 15 18:52:04 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14939
+;;     Update #: 14945
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,7 +17,7 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-lit', `ffap', `pp'.
+;;   `bookmark+-lit', `dired', `dired-aux', `dired-x', `ffap', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -28,9 +28,10 @@
 ;;    The Bookmark+ libraries are these:
 ;;
 ;;    `bookmark+.el'     - main (driver) library (this file)
+;;    `bookmark+-mac.el' - Lisp macros
+;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-bmu.el' - code for the `*Bookmark List*' (bmenu)
 ;;    `bookmark+-1.el'   - other required code (non-bmenu)
-;;    `bookmark+-lit.el' - (optional) code for highlighting bookmarks
 ;;    `bookmark+-doc.el' - documentation (comment-only file)
 ;;    `bookmark+-chg.el' - change log (comment-only file)
 ;;
@@ -116,15 +117,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 (require 'bookmark)                     ; Vanilla Emacs.
+(require 'bookmark+-mac)                ; Lisp macros.
 (require 'bookmark+-lit nil t)          ; Optional (soft require) - no error if not found.  If you do
                                         ; not want to use `bookmark+-lit.el' then simply do not put
                                         ; it in your `load-path'.
 (require 'bookmark+-bmu)                ; `*Bookmark List*' stuff.
 (require 'bookmark+-1)                  ; Rest of Bookmark+ required stuff.
-
-(provide 'bookmark+)                    ; Ensure this library is loaded before we compile it.
-(require 'bookmark+)                    ; So be sure to put this library in your `load-path' before
-                                        ; trying to byte-compile it.
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -134,6 +132,10 @@
   "Show version number of library `bookmark+.el'."
   (interactive)
   (message "Bookmark+, version %s" bmkp-version-number))
+
+;;;;;;;;;;;;;;;;;;;;;;;
+
+(provide 'bookmark+)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; bookmark+.el ends here

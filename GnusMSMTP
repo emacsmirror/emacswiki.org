@@ -1,5 +1,6 @@
 Don't confuse the program <code>msmtp</code> with the ability to use [[MultipleSMTPAccounts]] in Gnus.
 
+== Basic Setup ==
 Here’s a quick and short description of setting Gnus and <tt>msmtp</tt> to work with Gmail. This should work with the following software on Windows and *nix platform. The examples here are shown for the Microsoft Windows versions of the software but should work with just the path changes on *nix platforms.
 
 <pre>
@@ -12,7 +13,7 @@ The details above can be got by
 <pre>
 1.	M-x gnus-version in Emacs 
 2.	M-x emacs-version in emacs 
-3.	msmmtp –-version at the command prompt 
+3.	msmtp –-version at the command prompt 
 </pre>
 
 Your typical <tt>msmtprc.txt</tt> file would look like this.  Note <tt>msmtp –-version </tt> will also tell you where <tt>msmtp</tt> looks for the configuration file. 
@@ -163,5 +164,25 @@ Anyone who can read Chinese, and if you are interested, you can visit original a
 [new]
 Is there any way to protect the password? I don't like the idea of leaving it in plain text in the file, and for some reason I do not get prompted in gnus if I leave it out (although it works fine from the command line).
 
+[new]
+== Using msmtpQ to queue your mail ==
+
+msmtp comes with a simple script which adds the ability to queue mail.
+I use it in gnus with these settings:
+<pre>
+(setq message-send-mail-function 'message-send-mail-with-sendmail)
+(setq sendmail-program "/usr/local/bin/msmtpQ"
+      mail-specify-envelope-from t
+;; needed for debians message.el cf. README.Debian.gz 
+      message-sendmail-f-is-evil nil                
+      mail-envelope-from 'header
+      message-sendmail-envelope-from 'header)
+</pre>
+msmtpQ sends the mail if there is a
+connection or queues it when there is none. It is part of the debian package:
+(/usr/share/doc/msmtp/examples/msmtpq/), but afaics is also in included in upstream.
+I put it into "/usr/local/bin/". Don't forget to set 3 vars in the script and
+make it +x.
+To send your mails, you flush your queue with "msmtpq -r" (Yes, small q).
 ----
 CategoryGnus
