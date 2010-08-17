@@ -316,7 +316,7 @@ You can highlight the locations of bookmarks, either
 automatically or on demand.  You control what kind of
 highlighting, if any, is used for which bookmarks.  This
 feature requires that you have library <tt>[[bookmark+-lit.el]]</tt> in
-your `load-path' (it will then be loaded by ##bookmark+.el##.
+your `load-path' (it will then be loaded by ##bookmark+.el##).
 
 
 
@@ -529,7 +529,7 @@ function value is allowed: a symbol or a lambda expression.
 For example, to display ##Hello!## when a bookmark is visited
 you can use this:
 
-    T v bookmark-jump RET (lambda () (message "Hello!"))
+    T v bmkp-jump RET (lambda () (message "Hello!"))
 
 The function that is the value of a ##"bmkp-jump"## tag is called
 just after the the standard hook `bookmark-after-jump-hook' is invoked.

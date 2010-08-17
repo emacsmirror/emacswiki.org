@@ -26,9 +26,9 @@ Actually, it also adds some other `C-s' bindings:
 * <code>isearch-edit-string</code> -- Edit the search string in the MiniBuffer. This also provides other isearch options, including word searches (C-w).
 
 
-== Mode-Line Indicator ==
+== Modeline Indicator ==
 
-If you need an indicator for <code>case-fold-search</code> (so that you can see wether it on the modeline), add the following to your ~/.emacs:
+To indicate the current state of <code>case-fold-search</code> in your ModeLine, add the following to your ~/.emacs:
 
  From: KalleOlaviNiemitalo
  Subject: Re: case-fold-search indicator
@@ -37,6 +37,7 @@ If you need an indicator for <code>case-fold-search</code> (so that you can see 
 
  (add-to-list 'minor-mode-alist '(case-fold-search " CFS"))
 
+This then displays <tt>CFS</tt> when the searching is case-insensitive, otherwise it shows nothing.
 
 == Using Regular Expressions  ==
 

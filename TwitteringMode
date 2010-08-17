@@ -244,6 +244,8 @@ Instead, you need to input a pass phrase for decryption. You can enable this fun
 }}}
 It requires GnuPG and either EasyPG or 'alpaca.el'. Please refer to [http://github.com/hayamiz/twittering-mode/blob/master/NEWS NEWS file on the HEAD] -- Tadashi MATSUO
 
+[new]
+I have just installed 1.0 after removing 0.8.  When I use M-x twit to enter tw-mode, I just get "Authorization via OAuth failed. Type M-x twit to retry." in the minibuffer, and an empty :home buffer.  This is unhelpful.  What can I do to actually authorize? I can't have emacs launch a browser: my emacs session lives on a distant machine and I access it strictly in text, as a dumb tty. -- Krinn
 
 ----
 See also: [[Twitter]] [[Identica-mode]]

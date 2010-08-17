@@ -102,6 +102,11 @@ Have fun!
 
 //Joel Rosdahl <joel@rosdahl.net>//
 
+=== Expanding minibuffer ===
+When I use e.g. iflipb-next-buffer, the minibuffer window expands to double width and shows other completions -- any way to suppress this behavior, esp. the expansion part?
+
+--ll
+
 ----
 
 CategoryBufferSwitching

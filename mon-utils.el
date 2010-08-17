@@ -108,6 +108,9 @@
 ;; `mon-delq-cons', `mon-list-proper-p', `mon-list-make-unique', 
 ;; `mon-list-match-tails', `mon-list-reorder', `mon-maybe-cons',
 ;; `mon-gensym-counter-randomizer', `mon-gensym-counter-randomizer-TEST',
+;; `mon-list-nshuffle' `mon-list-nshuffle-TEST', `mon-looking-back-p',
+;; `mon-delq-dups', `mon-make-random-state', `mon-next-almost-prime',
+;; `mon-list-shuffle-safe', `mon-bool-vector-pp', `mon-get-bit-table',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -124,7 +127,7 @@
 ;; CONSTANTS:
 ;;
 ;; VARIABLES:
-;; `*mon-ascii-cursor-state*'
+;; `*mon-ascii-cursor-state*', `*mon-bit-table*',
 ;;
 ;; ALIASED:
 ;; `mon-scratch'                     -> `scratch'
@@ -152,7 +155,11 @@
 ;; `mon-buffer-get-word-count'       -> `mon-word-count-occurrences'
 ;; `proper-list-p'                   -> `mon-list-proper-p'
 ;; `with-gensyms'                    -> `mon-with-gensyms'
+;; `mon-get-next-almost-prime'       -> `mon-next-almost-prime'
+;; `next-almost-prime'               -> `mon-next-almost-prime'
 ;; `nshuffle-vector'                 -> `mon-nshuffle-vector'
+;; `delq-dups'                       -> `mon-delq-dups' 
+;; `mon-bool-vector-to-list'         -> `mon-bool-vector-pp'
 ;; `buffer-exists-p'                 -> `mon-buffer-exists-p'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
@@ -313,8 +320,9 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 `mon-compile-when-needed' `mon-load-or-alert', `mon-byte-compile-and-load',
 `mon-dump-object-to-file', `mon-nuke-and-eval'.\n►►►"
   (declare (indent 2) (debug t))
-  (let ((mcffl (make-symbol "mcffl")))
-    `(let (,mcffl)
+  (let ((mcffl (make-symbol "mcffl"))
+        (mcffl-chk (make-symbol "chk")))
+    `(let (,mcffl ,mcffl-chk)
        (setq ,mcffl (locate-library (format "%s" ,feature-as-symbol)))
        (if ,mcffl
            (unless (featurep ,feature-as-symbol)
@@ -362,7 +370,8 @@ Evaluates the following functions per feature:
  `mon-bind-mon-help-CL-pkgs-loadtime'  <- mon-doc-help-CL
  `mon-CL-cln-colon-swap'               <- mon-cl-compat-regexps
  `mon-bind-iptables-vars-at-loadtime'  <- mon-iptables-regexps
- `mon-bind-doc-help-proprietery-vars-at-loadtime' <- mon-doc-help-proprietary\n
+ `mon-bind-doc-help-proprietery-vars-at-loadtime' <- mon-doc-help-proprietary
+ `mon-css-complete-loadtime'           <- mon-css-complete\n
 Adds feature requirements:\n
  mon-get-mon-packages <- :AFTER mon-wget-utils
  mon-boxcutter
@@ -398,12 +407,13 @@ Adds feature requirements:\n
         (mon-bind-doc-help-proprietery-vars-at-loadtime *mon-help-w32-CMD-commands-TEMP*)))
     (eval-after-load "mon-wget-utils" 
       '(mon-check-feature-for-loadtime 'mon-get-mon-packages))
+    (eval-after-load "mon-css-complete" '(mon-css-complete-loadtime t))
     (mon-check-feature-for-loadtime    'google-define-redux)
     (mon-check-feature-for-loadtime    'mon-bzr-utils)
     (mon-check-feature-for-loadtime    'mon-eight-bit-raw-utils)
     (mon-check-feature-for-loadtime    'mon-drive-transfer-utils)
     (mon-check-feature-for-loadtime    'mon-jg-directory-creator)
-    (if IS-W32-P 
+    (if (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
         (mon-check-feature-for-loadtime 'mon-boxcutter)
       (mon-check-feature-for-loadtime 'thumbs))))
 
@@ -493,7 +503,7 @@ All permutations are equally likely.\n
 :EXAMPLE\n\n\\(pp-macroexpand-expression 
  '\(mon-nshuffle-vector [37 41 43 47 53 59]\)\)\n
 :ALIASED-BY `nshuffle-vector'\n
-:SEE-ALSO `shuffle-vector'.\n►►►"
+:SEE-ALSO `mon-list-nshuffle', `mon-list-shuffle-safe',`shuffle-vector', `slime-shuffle-list'.\n►►►"
   ;; :NOTE This is called repeatedly by `mon-*-gensym' procedures so we
   ;; need to gensym the local vars by hand.
   (declare (indent 0) (debug t))
@@ -556,6 +566,9 @@ Like the `gensym' function in CL package but defined as a macro instead.\n
 Helper function for `mon-with-gensyms'.\n
 :EXAMPLE\n\n(mon-gensym-counter-randomizer-TEST \"bubba\" 10000\)\n
 \(mon-gensym-counter-randomizer-TEST 'bu  10000\)\n
+:NOTE On average this function will return ~45-60 duplicates per 10,000
+invocations per seed symbol. IOW we can could create an average of ~9948 unique
+`bubba's if we batched inside a procedure capable of accounting for collisions.\n
 :SEE-ALSO `mon-gensym', `mon-gensym-counter-randomizer-TEST'.\n►►►"
   (let ((mgcr-pr1
          [37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131
@@ -619,7 +632,8 @@ Helper function for `mon-with-gensyms'.\n
     ;; Shift it around but keep it signed.
     (setq mgcr-rtn (abs (ash mgcr-rtn (- (aref mgcr-merp 2) (aref mgcr-merp 3)))))
     ;; Make sure we have a value over 10000 else recurse
-    (if (or (< mgcr-rtn 10000)
+    (if (or (null mgcr-rtn)
+            (< mgcr-rtn 10000)
             (= mgcr-rtn 0))
         (mon-gensym-counter-randomizer randomize-sym/str)
       mgcr-rtn)))
@@ -669,6 +683,7 @@ ARG GENERATE-N-RESULTS is the number of results to generate.\n
 ;;; :TEST-ME (mon-gensym-counter-randomizer-TEST "bubba" 10000)
 ;;; :TEST-ME (mon-gensym-counter-randomizer-TEST 'bubba  10000)
 ;;; :TEST-ME (mon-gensym-counter-randomizer-TEST "bu"  10000)
+
 
 ;;; ==============================
 ;;; :NOTE This appears to work similiarly to Lars Brinkhoff's version but
@@ -732,7 +747,6 @@ freshly allocated uninterned symbol as returned by `mon-gensym'.\n
 ;;|   (progn (fmakunbound 'tt--mgs) (unintern 'tt--mgs)))
 ;;|
 ;;`----
-
 
 ;;; ==============================
 ;;; :COURTESY Raphael Van Dyck :HIS km-frames.el :WAS `with-file-buffer'
@@ -865,7 +879,7 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
 :EXAMPLE\n\n\(mon-with-buffer-undo-disabled-TEST\)\n
 \(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n
 :SEE-ALSO `buffer-undo-list'.\n►►►"
-  (let ((rnd-char (shuffle-vector (vconcat (append (number-sequence 97 122)
+  (let ((rnd-char (mon-nshuffle-vector (vconcat (append (number-sequence 97 122)
                                                    (number-sequence 65 90)))))
         bul)
     (with-temp-buffer 
@@ -1897,7 +1911,7 @@ of `buffer-read-only'.\n
 \(mon-with-inhibit-buffer-read-only-TEST t\)\n
 :SEE-ALSO `mon-build-copyright-string-TEST', `mon-help-keys-wikify-TEST',
 `mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-propertize-tags-TEST',
-`mon-help-regexp-symbol-defs-TEST', `mon-help-wget-cl-pkgs-TEST',
+`mon-help-regexp-symbol-defs-TEST', `mon-help-CL-wget-pkgs-TEST',
 `mon-inhibit-read-only-TEST', `mon-line-strings-to-list-TEST',
 `mon-user-system-conditionals-TEST', `mon-wget-list-to-script-TEST'.\n►►►"
   (let ((mwirot "*MON-WITH-INHIBIT-BUFFER-READ-ONLY-TEST*")
@@ -3006,25 +3020,43 @@ If LENGTH is too short, the STRINGS are concatenated and the result truncated.\n
 ;;; :RENAMED LEFT-MARGIN arg -> lft-margin. `left-margin' is a global var.
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-20T14:55:40-05:00Z}#{10076} - by MON KEY>
 ;;; Added optional arg NO-RMV-TRAIL-WSPC. Relocated save-match-data and
-;;; conditional type error checks.
-(defun mon-string-justify-left (justify-string &optional justify-width lft-margin no-rmv-trail-wspc)
+;;; conditional type error checks. Rewrote docstring
+(defun mon-string-justify-left (justify-string &optional justify-width 
+                                               lft-margin no-rmv-trail-wspc)
   "Return a left-justified string built from JUSTIFY-STRING.\n
-:NOTE The default JUSTIFY-WIDTH is `current-column'.
-      The default LFT-MARGIN is `left-margin'.
-      The JUSTIFY-WIDTH is counted from column 0.
-      The word separators are those of `split-string':
+When optional arg JUSTIFY-WIDTH is non-nil it is a width JUSTIFY-STRING to
+counting from column 0.  Default JUSTIFY-WIDTH is `current-column' or 72.\n
+When optional arg LFT-MARGIN it is a column to JUSTIFY-STRING beginning from.
+Default is `left-margin' or 0.\n
+The word separators are those of `split-string':
       [ \\f\\t\\n\\r\\v]+
-      Which means that JUSTIFY-STRING is justified as one paragraph.\n
-Default is to remove any trailing whiespace at end of lines.
-When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.\n
-:EXAMPLE\n\n\(let \(\(jnk-arg '\(\(68 4 t\) \(64 4\)\)\) ;;<- With and without NO-RMV-TRAIL-WSPC arg.
-       jnk jnk1\)
-   \(dotimes \(j 2 jnk1\)
-     \(dotimes \(i 8 \(progn
-                     \(push \(apply 'mon-string-justify-left jnk \(pop jnk-arg\)\) jnk1\)
-                     \(setq jnk nil\)\)\)
-       \(dolist \(i '\(64 94\)\)
-         \(setq jnk \(concat \" \" \(make-string \(elt \(shuffle-vector [7 5 3 9]\) 3\) i\) jnk\)\)\)\)\)\)\n
+This means that JUSTIFY-STRING is justified as one paragraph.\n
+When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.
+Default is to remove any trailing whiespace at end of lines.\n
+:EXAMPLE\n
+\(let \(\(jnk-arg '\(\(68 4\) \(18 8 t\)\)\) ;;<- With and without arg NO-RMV-TRAIL-WSPC
+      jnk jnk1\)
+  \(dotimes \(j 2 
+              \(with-current-buffer 
+                  \(get-buffer-create \"*MON-STRING-JUSTIFY-LEFT-EG*\"\)
+                \(erase-buffer\)
+                \(insert \";; :FUNCTION `mon-string-justify-left'\\n;;\\n\"
+                        \(mapconcat 'identity \(nreverse jnk1\) \"\\n\"\)\)
+                \(display-buffer \(current-buffer\) t\)\)\)
+    \(dotimes \(i 8 
+                \(progn
+                  \(push \(format \(if \(= j 0\) 
+                                    \";; :FIRST-TIME-W-ARGS %S\\n\" 
+                                  \"\\n;; :SECOND-TIME-W-ARGS %S\\n\"\)
+                                \(car jnk-arg\)\) 
+                        jnk1\)
+                  \(push \(apply 'mon-string-justify-left jnk \(pop jnk-arg\)\) jnk1\)
+                  \(setq jnk nil\)\)\)
+                \(dolist \(i '\(64 94\)\)
+                  \(setq jnk 
+                        \(concat \" \" 
+                                \(make-string \(elt \(mon-nshuffle-vector [7 5 3 9]\) 3\) i\) 
+                      jnk\)\)\)\)\)\)\n
 :CALLED-BY `google-define-parse-buffer'\n
 :SEE-ALSO `mon-string-fill-to-col', `truncate-string-to-width', `mon-string-spread'.\n►►►"
   (let* ((lft-margin (if (null lft-margin) (or left-margin 0) lft-margin)) 
@@ -3063,14 +3095,29 @@ When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.\n
       (setq msjl-jstfy (replace-regexp-in-string "[[:space:]]+$" "" msjl-jstfy)))))
 ;;
 ;;,---- :UNCOMMENT-BELOW-TO-TEST
-;;| (let ((jnk-arg '((68 4 t) (64 4)))
+;;| (let ((jnk-arg '((68 4) (18 8 t))) ;;<- With and without no-rmv-trail-wspc arg.
 ;;|       jnk jnk1)
-;;|   (dotimes (j 2 jnk1)
-;;|     (dotimes (i 8 (progn
-;;|                     (push (apply 'mon-string-justify-left jnk (pop jnk-arg)) jnk1)
-;;|                     (setq jnk nil)))
-;;|       (dolist (i '(64 94))
-;;|         (setq jnk (concat " " (make-string (elt (shuffle-vector [7 5 3 9]) 3) i) jnk))))))
+;;|   (dotimes (j 2 
+;;|               (with-current-buffer 
+;;|                   (get-buffer-create "*MON-STRING-JUSTIFY-LEFT-EG*")
+;;|                 (erase-buffer)
+;;|                 (insert ";; :FUNCTION `mon-string-justify-left'\n;;\n"
+;;|                         (mapconcat 'identity (nreverse jnk1) "\n"))
+;;|                 (display-buffer (current-buffer) t)))
+;;|     (dotimes (i 8 
+;;|                 (progn
+;;|                   (push (format (if (= j 0) 
+;;|                                     ";; :FIRST-TIME-W-ARGS %S\n" 
+;;|                                   "\n;; :SECOND-TIME-W-ARGS %S\n")
+;;|                                 (car jnk-arg)) 
+;;|                         jnk1)
+;;|                   (push (apply 'mon-string-justify-left jnk (pop jnk-arg)) jnk1)
+;;|                   (setq jnk nil)))
+;;|                 (dolist (i '(64 94))
+;;|                   (setq jnk 
+;;|                         (concat " " 
+;;|                                 (make-string (elt (mon-nshuffle-vector [7 5 3 9]) 3) i) 
+;;|                       jnk))))))
 ;;`----
 
 ;;; ==============================
@@ -3124,6 +3171,41 @@ When NO-RMV-TRAIL-WSPC is non-nil do not remove trailing whitespace.\n
 :SEE-ALSO `aset', `aref', `vconcat', `string-to-list', `string-to-vector'.\n►►►")
 
 ;;; ==============================
+;;; :CHANGESET 2035
+;;; :CREATED <Timestamp: #{2010-08-04T20:00:08-04:00Z}#{10313} - by MON KEY>
+(defun mon-looking-back-p (regexp &optional limit greedy)
+  "Like `looking-back' but doesn't modify the match data.\n
+:EXAMPLE\n\n\(let \(\(mb4-aftr \(list :old-match-data \(match-data t\)\)\)\)
+  \(save-excursion 
+    \(end-of-line 3\)
+    \(when \(mon-looking-back-p \"^OMG theres a bubba back there!\"\)
+      \(unless \(equal \(match-data t\) mb4-aftr\)
+        \(setq mb4-aftr 
+              \(nconc '\(:buba-change-match-data nil\) mb4-aftr\)\)\)
+      \(setq mb4-aftr \(nconc '\(:found-bubba t\) mb4-aftr\)\)\)\)
+  mb4-aftr\)\n\nOMG theres a bubba back there!\n
+:SEE-ALSO `looking-at-p', `inhibit-changing-match-data'.\n►►►"
+  (let ((start (point))
+	(pos
+	 (let ((inhibit-changing-match-data t))
+           (save-excursion
+             (and (re-search-backward (concat "\\(?:" regexp "\\)\\=") limit t)
+                  (point))))))
+    (if (and greedy pos)
+	(save-restriction
+	  (narrow-to-region (point-min) start)
+	  (while (and (> pos (point-min))
+		      (save-excursion
+			(goto-char pos)
+			(backward-char 1)
+			(looking-at-p (concat "\\(?:"  regexp "\\)\\'"))))
+	    (setq pos (1- pos)))
+	  (save-excursion
+	    (goto-char pos)
+	    (looking-at-p (concat "\\(?:"  regexp "\\)\\'")))))
+    (not (null pos))))
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-12T14:07:56-04:00Z}#{09376} - by MON KEY>
 (defun mon-string-read-match-string (&optional match-subexp)
   "Make `match-string' return more than just the last string matched.\n
@@ -3146,7 +3228,7 @@ unreadable object with the '#' prefix so we strip it.\n
 \"[500006383]\"
 > (mon-string-read-match-string)
 ; => \(\"[500006383]\" 0 11 \(fontified t face font-lock-string-face\)\)\n
-:SEE-ALSO `mon-string-replace-char'.\n►►►"
+:SEE-ALSO `mon-string-replace-char', `mon-looking-back-p'.\n►►►"
   (let ((msrms-mtch (if (and (= (match-beginning 0) 1)(> (point) (point-min))) 
                         nil ;; Last search didn't move point was a dud don't proceed.
                       (car (read-from-string 
@@ -4375,7 +4457,7 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
   "Test function for `mon-line-strings-to-list'.\n
 :SEE-ALSO `mon-build-copyright-string-TEST', `mon-help-regexp-symbol-defs-TEST', 
 `mon-help-propertize-regexp-symbol-defs-TEST', 
-`mon-help-regexp-symbol-defs-TEST', `mon-help-wget-cl-pkgs-TEST', 
+`mon-help-regexp-symbol-defs-TEST', `mon-help-CL-wget-pkgs-TEST', 
 `mon-help-propertize-tags-TEST', `mon-insert-test-cases'.\n►►►"
   (let ((st01 (make-marker))
         (en01 (make-marker))
@@ -4969,6 +5051,88 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
 ;;; ==============================
 
 ;;; ==============================
+;;; :CREATED <Timestamp: #{2010-08-05T16:09:48-04:00Z}#{10314} - by MON>
+;; :COURTESY :FILE fns.c `next_almost_prime'
+(defun mon-next-almost-prime (w-integer)
+  "From W-INTEGER return either a prime or a number nearer the next prime number.
+Return a value I where (>= I w-integer) and (>= W-INTEGER 0).\n
+Useful for generating a reasonable arg for `make-hash-table's :size keyword.\n
+:EXAMPLE\n\n\(let* \(\(prms-lt-100 '\(2 3 5 7 11 13 17 19 23 29 31 37 41 
+                     43 47 53 59 61 67 71 73 79 83 89 97\)\)
+       \(n->100 \(number-sequence 1 99 1\)\)
+       next-almost\)
+  \(mapc #'\(lambda \(nx-ap\)
+            \(let \(\(non-prime \(unless \(memq nx-ap prms-lt-100\)
+                               nx-ap\)\)\)
+              \(when non-prime 
+                \(push `\(,nx-ap . ,\(mon-next-almost-prime non-prime\)\) 
+                      next-almost\)\)\)\)
+        n->100\)
+  \(setq next-almost \(nreverse next-almost\)\)\)\n
+\(let \(\(n->100 \(number-sequence 100 300 1\)\)
+      next-almost\)
+  \(mapc #'\(lambda \(nx-ap\)
+            \(push `\(,nx-ap . ,\(mon-next-almost-prime nx-ap\)\) 
+                      next-almost\)\) 
+        n->100\)
+  \(setq next-almost \(nreverse next-almost\)\)\)\n
+:NOTE The original C definition:\n
+  ,----
+  |  int
+  |  next_almost_prime (int n)
+  |  {
+  |    if (n % 2 == 0)
+  |      n += 1;
+  |    if (n % 3 == 0)
+  |      n += 2;
+  |    if (n % 7 == 0)
+  |      n += 4;
+  |    return n;
+  |  }
+  `----\n
+:ALIASED-BY `mon-get-next-almost-prime'
+:ALIASED-BY `next-almost-prime'\n
+:SEE-ALSO `mon-gensym-counter-randomizer', `mon-make-random-state',
+`mon-generate-prand-seed', `mon-generate-WPA-key', `mon-generate-prand-id',
+`mon-string-wonkify', `random'.\n►►►"
+  (let ((napN w-integer))
+    (when (= (% napN 2) 0) (setq napN (1+ napN)))
+    (when (= (% napN 3) 0) (setq napN (+ napN 2)))
+    (when (= (% napN 7) 0) (setq napN (+ napN 4)))
+    ;; (when (= (% napN 5) 0) (setq napN (+ (- napN 2) 3)))
+    ;; (when (= (% napN 2) 0) (setq napN 
+    ;;                              (mon-next-almost-prime napN)))
+  napN))
+;;
+(defalias 'mon-get-next-almost-prime 'mon-next-almost-prime)
+;;
+(unless (and (intern-soft "next-almost-prime")
+             (fboundp 'next-almost-prime))
+  (defalias 'next-almost-prime 'mon-next-almost-prime))
+
+;;; ==============================
+;;; :CHANGESET 2043
+;;; :CREATED <Timestamp: #{2010-08-04T22:08:00-04:00Z}#{10313} - by MON KEY>
+(defun mon-make-random-state ()
+  "Return an integer with some randomness.\n
+:EXAMPLE\n\n\(mon-make-random-state\)\n
+:SEE-ALSO `mon-next-almost-prime', `mon-gensym-counter-randomizer', `mon-make-random-state',
+`mon-generate-prand-seed', `mon-generate-WPA-key', `mon-generate-prand-id',
+`mon-string-wonkify', `random'.\n►►►"
+  (let ((mmrst8 
+         (lsh (+ cons-cells-consed floats-consed vector-cells-consed symbols-consed
+                 string-chars-consed misc-objects-consed intervals-consed
+                 strings-consed
+                 pure-bytes-used
+                 num-nonmacro-input-events
+                 (floor (* gcs-done (sqrt gcs-done)) 1)
+                 (floor gc-elapsed 1))
+              (aref (mon-nshuffle-vector [17 13 5 19 11 7 3 23]) 0))))
+    (logxor
+     (if (not (zerop mmrst8)) mmrst8 (mon-make-random-state))
+     (random))))
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-13T17:40:20-04:00Z}#{09422} - by MON>
 (defun mon-generate-prand-id (&optional cnt)
   "Return a pseudo-rand UID.
@@ -5015,14 +5179,16 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
     \(setq k \(cons `\(,\(mon-generate-prand-id\)\) k\)\)
     \(setq i \(1- i\)\)\)
 \(prin1 k\)\)\n
-:SEE-ALSO `mon-generate-WPA-key', `mon-string-wonkify',
-`url-cache-create-filename-using-md5'.\n►►►"
-  (eval-when-compile (require 'cookie1))
+:SEE-ALSO `mon-generate-WPA-key', `mon-string-wonkify', `mon-list-nshuffle'
+`mon-nshuffle-vector', `url-cache-create-filename-using-md5', .\n►►►"
+  ;(eval-when-compile (require 'cookie1))
   (let* ((pseudo-r #'(lambda () 
                        (mon-string-to-sequence 
                         (number-to-string (abs (random t))))))
          (seq->v #'(lambda (x) (apply 'vector x)))
-         (shufv #'(lambda (x) (shuffle-vector x))))
+         (shufv #'(lambda (x) 
+                    ;; :WAS (shuffle-vector x))))                    
+                    (mon-nshuffle-vector x))))
     (md5    
      (mon-string-from-sequence
       (funcall shufv
@@ -5062,8 +5228,8 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
 :EXAMPLE\n\n\(mon-string-wonkify \"These are some wonky words\" 10\)\n
 \(mon-string-wonkify \"These are some wonky words\" 3\)\n
 :SEE-ALSO `mon-zippify-region', `mon-generate-prand-seed', `mon-generate-prand-id',
- `mon-generate-WPA-key'.\n►►►" 
-  (eval-when-compile (require 'cookie1))
+`mon-generate-WPA-key', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►" 
+  ;; (eval-when-compile (require 'cookie1)) for `shuffle-vector'
   (let* ((wonkify wonk-words)
         (wonk-usr #'(lambda (l eo) 
                       (let (new-round)
@@ -5086,7 +5252,7 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
          ((< w 0)  wonkify)
       (setq w (1- w))
       (setq wonkify (apply 'vector wonkify))
-      (setq wonkify (shuffle-vector wonkify))
+      (setq wonkify (mon-nshuffle-vector wonkify)) ;;(shuffle-vector wonkify))
       (setq wonkify (append wonkify nil))
       (when (stringp (car wonkify))
         (setq wonkify (funcall seqify wonkify)))
@@ -5263,6 +5429,175 @@ Does not move point.\n
     (if (or insrtp intrp)
         (save-excursion (newline)(princ sha1-r (current-buffer)))
         sha1-r)))
+
+
+;;; ==============================
+;;; :CHANGESET 2064
+;;; :CREATED <Timestamp: #{2010-08-13T19:53:24-04:00Z}#{10325} - by MON KEY>
+(defun mon-bool-vector-pp (bool-vec)
+  "Return print representation of bool-vector BOOL-VECT in various formats.\n
+When BOOL-VECT length is greater than 29 return value has the format:\n
+ \(:gray-table [101 ... 010] :truth-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
+When BOOL-VECT length is less than 29 in addition to the values avoe return
+value contains the following key value pairs:\n
+ ( :binary \"#b10 ... 01\" :decimal 123 ... 9 :octal \"#o7 ... 77\" :hex \"#xFF...00\" 
+   :gray-table [101 ... 010] :truth-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
+:EXAMPLE\n\n\(setq tt--bv \(make-bool-vector 29 t\)\)\n
+ ;=> #&29\"\\377\\377\\377\x1f\"\n
+\(vconcat tt--bv\)\n
+ ;=> [t t t t t t t t t t t t t t t t t t t t t t t t t t t t t]\n
+\(dolist \(tgl \(number-sequence 1 29 3\) tt--bv\)
+    \(aset tt--bv tgl nil\)\)\n
+ ;=> #&29\"m\\333\\266\xd\"\n
+\(vconcat tt--bv\)\n
+ ;=> [t nil t t nil t t nil t t nil t t nil t t nil t t nil t t nil t t nil t t nil]
+ ;       1       4       7        10     13     16       19       22     25      28\n
+ \(mon-bool-vector-pp tt--bv\)\n
+ ;=> \(:binary \"#b10110110110110110110110110110\"
+      :decimal 383479222
+      :octal  \"#o2666666666\"
+      :hex    \"#x16db6db6\"
+      :gray-table [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0]
+      :truth-table [t nil t t nil t t nil t t nil t t nil
+                    t t nil t t nil t t nil t t nil t t nil]
+      :bool-vector #&29\"m\\333\\266\xd\"\)\n
+;; Beyond the 29th bit\n
+\(setq tt--bv \(make-bool-vector 31 t\)\)\n
+ ;=> #&31\"\\377\\377\\377\x7f\"\n
+\(dolist \(tgl \(number-sequence 1 30 3\) tt--bv\)
+   \(aset tt--bv tgl nil\)\)\n
+ ;=> #&31\"m\\333\\266m\"\n
+\(mon-bool-vector-pp tt--bv\)\n
+ ;=> \(:gray-table  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
+      :truth-table [t nil t t nil t t nil t t nil t t nil t
+                   t nil t t nil t t nil t t nil t t nil t t]
+      :bool-vector #&31\"m\\333\\266m\"\)\n
+ \(unintern 'tt--bv\)\n
+:ALIASED-BY `mon-bool-vector-to-list'\n
+:NOTE Assumes return value of `byteorder' is 108 \(big end first\).\n
+:SEE-ALSO `mon-get-bit-table', `*mon-bit-table*',
+`mon-help-binary-representation', `mon-help-char-raw-bytes', `byteorder'.\n►►►"
+  (if (= (length bool-vec) 0)
+      ;; As of (at least) Emacs version 23.2, it is not possible to get the
+      ;; value at index 0 for boolean-vectors of length 0, e.g. those of type
+      ;; (make-bool-vector 0 t) 
+      ;; => (make-bool-vector 0 t) => #&0""
+      (error (concat 
+              ":FUNCTION `mon-bool-vector-pp' "
+              "-- arg BOOL-VEC has length 0 Emacs won't fetch that index, this is an Emacs bug"))
+    (let* ((t-tbl (vconcat bool-vec))
+           (w-props (<= (length t-tbl) 30)) 
+           (to-bin (if w-props '(() ())))) 
+      (mapc #'(lambda (tb) 
+                (if w-props              
+                    (if tb 
+                        (progn 
+                          (push "1" (car to-bin))
+                          (push 1 (cadr to-bin)))
+                      (progn
+                        (push "0" (car to-bin))
+                        (push 0 (cadr to-bin))))
+                  (if tb 
+                      (push 1 to-bin)
+                    (push 0 to-bin))))
+            (append bool-vec nil))
+      (if (not w-props)
+          (progn 
+            (setq to-bin (vconcat (nreverse to-bin)))
+            `(:gray-table  ,to-bin
+                           :truth-table ,t-tbl
+                           :bool-vector ,bool-vec))
+        (progn
+          (let ((bin-str-num (concat "#b" (mapconcat #'identity (reverse (car to-bin)) "")))
+                (gry-tbl (vconcat (reverse (cadr to-bin)))))
+            (setq to-bin (read bin-str-num))
+            (setq to-bin `(:binary  ,bin-str-num
+                                    :decimal ,to-bin 
+                                    :octal ,(format "#o%o" to-bin)
+                                    :hex   ,(format "#x%x" to-bin)
+                                    :gray-table  ,gry-tbl
+                                    :truth-table ,(vconcat bool-vec)
+                                    :bool-vector ,bool-vec))))))))
+;;
+(defalias 'mon-bool-vector-to-list   'mon-bool-vector-pp)
+;;
+;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 29 t)) (mon-bool-vector-pp tt--bv))
+;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 256 t)) (mon-bool-vector-pp tt--bv))
+;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 0 t)) (mon-bool-vector-pp tt--bv))
+
+;;; ==============================
+;;; :CHANGESET 2064
+;;; :CREATED <Timestamp: #{2010-08-16T20:10:59-04:00Z}#{10331} - by MON KEY>
+(defvar *mon-bit-table* nil
+  "Variable caching the results of `mon-get-bit-table'.\n
+:EXAMPLE\n\n\(mapcar #'\(lambda \(urng\) 
+            \(memq :max-unsigned urng\)\) *mon-bit-table*\)\n
+:SEE-ALSO `mon-bool-vector-pp', `mon-help-binary-representation',
+`mon-help-char-raw-bytes'.\n►►►")
+
+;;; ==============================
+;;; :CHANGESET 2064
+;;; :CREATED <Timestamp: #{2010-08-16T20:11:02-04:00Z}#{10331} - by MON KEY>
+(defun mon-get-bit-table (&optional dsplyp intrp)
+  "Return a list of bit values for bits 1-29.\n
+When optional arg DSPLYP is non nil or called-interactively display results in
+buffer named \"*MON-BIT-TABLE*\".\n
+Return a list with the format:\n
+ \(:bit-<N> :bit-weight N :2^ N :max-signed N :max-unsigned \(N . N\)\)\n
+The values of these keys map as follows:\n
+:bit-<N>       The bit identity \(0 indexed\)
+:bit-weight    The value of bit at index.
+:2^            The bits value as a power of 2.
+:max-signed    The maximimun signed number representable by bit.
+:max-unsigned  A cons bounding the maximum unsigned range representable by bit.\n
+:EXAMPLE\n\n\(assq :bit-28 \(mon-get-bit-table\)\)\n
+\(memq :max-unsigned \(assq :bit-29 \(mon-get-bit-table\)\)\)\n
+\(mon-get-bit-table t\)\n
+:NOTE The first time this function is called it caches the results of its
+evaluation to the variable `*mon-bit-table*'.\n
+:SEE-ALSO `mon-bool-vector-pp' `mon-help-binary-representation', `mon-help-char-raw-bytes'.\n►►►"
+  (interactive "i\np")
+  (let ((gthr (when (bound-and-true-p *mon-bit-table*)
+                *mon-bit-table*)))
+    (when (null *mon-bit-table*)
+      (dotimes (i 29 (progn (setq gthr (nreverse gthr))
+                            (setq *mon-bit-table* gthr)))
+        (let* ((nxt-i (1+ i))
+               (bky (car (read-from-string (format ":bit-%d" nxt-i))))
+               (bit-wgt   (expt 2 i))
+               ;; What no CL `reduce' at compile time w/out a
+               ;; byte-compile-warning?  Thanks Emacs for protecting my
+               ;; namespace... After all its not like `reduce' isn't stupid
+               ;; fukcking usefull!!! Goddamn how I loathe thee CL runtime ban.
+               ;; :WAS (mx-sgn (+ bit-wgt (reduce '+ gthr :key 'caddr)))               
+               (mx-sgn  (apply #'+ bit-wgt (mapcar #'(lambda (fk-rdc) (caddr fk-rdc)) gthr)))
+               (unsgn-bot (/ (lognot mx-sgn) 2))
+               (unsgn-top (lognot unsgn-bot)))
+          (push `(,bky :bit-weight ,bit-wgt :2^ ,i  :max-signed ,mx-sgn
+                       :max-unsigned (,unsgn-bot . ,unsgn-top)) gthr))))
+    (when (or intrp dsplyp)
+      (with-current-buffe 
+          (get-buffer-create (upcase (symbol-name '*mon-bit-table*)))
+       (erase-buffer)
+       (save-excursion 
+         (princ gthr (current-buffer))
+         (newline))
+       (down-list)
+       (ignore-errors (while (forward-list) (newline)))
+       (save-excursion
+         (goto-char (buffer-end 0))
+         (forward-list)
+         (backward-char 2)
+         (delete-char 1))
+       (emacs-lisp-mode)
+       (display-buffer (current-buffer) t)))
+     gthr))
+;;
+;;; :TEST-ME (assq :bit-29 (mon-get-bit-table))
+;;; :TEST-ME (memq :max-unsigned (assq :bit-29 (mon-get-bit-table)))
+;;; :TEST-ME (mon-get-bit-table t)
+;;
+(eval-when (compile load) (mon-get-bit-table))
 
 ;;; ==============================
 ;;; :RECTANGLE-RELATED-FUNCTIONS
@@ -6082,9 +6417,11 @@ Optional argument OBJECT is the string or buffer containing the text.
   "Remove the given CONS from LIST by side effect and return the new LIST.\n
 :NOTE CONS may be the first elt of LIST, to ensure changing value of `foo' do:\n
  \(setq foo \(mon-delq-cons element foo\)\)\n
-:SEE-ALSO `mon-maybe-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-intersection', `mon-remove-if',
-`mon-combine', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
+:SEE-ALSO `mon-delq-dups', `mon-remove-dups', `mon-remove-if',
+`mon-list-make-unique', `mon-maybe-cons', `mon-list-match-tails',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`mon-list-shuffle-safe', `mon-list-proper-p', `mon-intersection', `mon-combine',
+`mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
 `mon-recursive-apply', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
 `mon-assoc-replace', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
 `mon-elt-<elt'.\n►►►"
@@ -6101,6 +6438,165 @@ Optional argument OBJECT is the string or buffer containing the text.
       w-list)))
 
 ;;; ==============================
+;;; :WAS `randomize'
+;;; :COURTESY gene.ressler@gmail.com comp.lang.lisp 2010-08-01
+(defun mon-list-nshuffle (mk-list-random)
+  "Destructively permute a list in place by changing cdr's.\n
+It provably generates all permutations with equal probability, is
+probabilistically faster than quicksort on randomly ordered input, and
+uses O(log n) space.\n
+:EXAMPLE\n\n\(mon-list-nshuffle-TEST 1000\)\n
+\(let \(\(froggy '\(\"went\" \"a\" \"courtin'\" \"and\" \"he\" \"did\" \"ride\"\)\)
+      bubba\)
+  \(setq bubba froggy\)
+  \(setq froggy `\(,:froggy-shuffled ,\(mon-list-nshuffle froggy\) 
+                 ,:froggy-clobbered ,bubba\)\)\)
+:NOTE To to be sure of changing the value of froggy, setters should write:\n
+ (setq froggy (mon-list-nshuffle froggy))\n 
+:SEE (URL `http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/230204ed6c092b6d#')
+:SEE-ALSO `mon-list-shuffle-safe', `mon-nshuffle-vector', `mon-delq-dups',
+`mon-remove-dups', `mon-remove-if', `mon-list-make-unique', `mon-maybe-cons',
+`mon-list-match-tails', `mon-list-reorder', `mon-nshuffle-vector',
+`mon-list-nshuffle', `mon-list-shuffle-safe',`mon-list-proper-p',
+`mon-intersection', `mon-combine', `mon-map-append', `mon-maptree',
+`mon-transpose', `mon-flatten', `mon-recursive-apply', `mon-sublist',
+`mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `slime-shuffle-list',
+`shuffle-vector'.\n►►►"
+  (labels ((mrndz-f (mrndz-p mrndz-len mrndz-tl)
+              (cond ((null mrndz-p) mrndz-tl)
+                   (t (loop
+                         with mrndz-ne = (random mrndz-len)
+                         with mrndz-e = nil
+                         with mrndz-n1 = 0
+                         with mrndz-n2 = 0
+                         with mrndz-l1 = nil
+                         with mrndz-l2 = nil
+                         with mrndz-nxt = nil
+                         repeat mrndz-len
+                         do
+                           (setf mrndz-nxt (cdr mrndz-p))
+                           (cond ((zerop mrndz-ne) (setf mrndz-e mrndz-p))
+                                 (t
+                                  (cond ((zerop (random 2))
+                                         (setf (cdr mrndz-p) mrndz-l1)
+                                          (setf mrndz-l1 mrndz-p)
+                                         (incf mrndz-n1))
+                                        (t
+                                         (setf (cdr mrndz-p) mrndz-l2)
+                                         (setf mrndz-l2 mrndz-p)
+                                         (incf mrndz-n2)))))
+                           (decf mrndz-ne)
+                           (setf mrndz-p mrndz-nxt)
+                         finally
+                           (setf (cdr mrndz-e) mrndz-tl)
+                           (return (if (> mrndz-n1 mrndz-n2)
+                                       (mrndz-f mrndz-l1 mrndz-n1 (mrndz-f mrndz-l2 mrndz-n2 mrndz-e))
+                                       (mrndz-f mrndz-l2 mrndz-n2 (mrndz-f mrndz-l1 mrndz-n1 mrndz-e)))))))))
+    (mrndz-f mk-list-random (length mk-list-random) nil)))
+
+;;; ==============================
+;;; :COURTESY gene.ressler@gmail.com comp.lang.lisp 2010-08-01
+;;; :CREATED <Timestamp: #{2010-08-03T18:29:33-04:00Z}#{10312} - by MON>
+(defun mon-list-nshuffle-TEST (w-test-times)
+  "Test function for `mon-list-nshuffle'\n
+Return results of applying `mon-list-nshuffle'W-TEST-TIMES in buffer
+named \"*MON-LIST-NSHUFFLE-TEST*\"\n
+:EXAMPLE\n\n\(mon-list-nshuffle-TEST '\(a b c d\) 100\)\n
+\(mon-list-nshuffle '\(\"a\" \"b\" \"c\" \"d\"\) 100\)\n
+:SEE-ALSO `mon-nshuffle-vector', `mon-list-shuffle-safe'.\n►►►"
+  (with-current-buffer 
+      (get-buffer-create "*MON-LIST-NSHUFFLE-TEST*")
+    (erase-buffer)
+    (insert ";; :FUNCTION `mon-list-nshuffle-TEST'\n" 
+            ";; :W-TEST-TIMES " (number-to-string w-test-times) "\n"
+            (make-string 68 59) "\n"
+            ";; Number of times each list occurred\n"
+            ";; |RANDOMIZED-LIST|    |COUNT|\n\n")
+    (loop with count-table = (make-hash-table :test #'equal); :size w-test-times)
+          repeat w-test-times ;; repeat 1000000
+          for perm = (mon-list-nshuffle (list 'a 'b 'c 'd))
+          do (incf (gethash perm count-table 0))
+          finally (loop
+                   for perm being each hash-key in count-table
+                   using (hash-value count)
+                   ;; :WAS CL format string: 
+                   ;; do (format t "~a: ~a~%" perm count))))
+                   do (princ (format "      %s         ; %s\n" perm count) 
+                             (current-buffer))))
+    (goto-char (buffer-end 0))
+    (display-buffer (current-buffer) t)))
+;;
+;;; :TEST-ME (mon-list-nshuffle-TEST 10000)
+;;; :TEST-ME (mon-list-nshuffle-TEST 100)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-08-09T16:40:02-04:00Z}#{10321} - by MON>
+(defun mon-list-shuffle-safe (list-to-shuffle)
+  "Shuffle contents of LIST-TO-SHUFFLE non-destructively.\n
+When LIST-TO-SHUFFLE is non-nil, not a `type-of' cons, or does not satisfy the
+predicate `mon-list-proper-p' signal an error.\n
+:EXAMPLE\n\n\(let \(\(tst-mlss '\(a \(b . c\) q\)\)\)
+  `\(:w-shuffle ,\(mon-list-shuffle-safe tst-mlss\) :w/o-shuffle ,tst-mlss\)\)\n
+;; :NOTE Following will fail:
+\(mon-list-proper-p '\(a \(b . c\) . q\)\)\n
+\(mon-list-shuffle-safe nil\)\n
+\(mon-list-shuffle-safe '\(\)\)\n
+\(mon-list-shuffle-safe \"won't shuffle\"\)\n
+:SEE-ALSO `mon-list-nshuffle', `mon-nshuffle-vector', `mon-delq-dups',
+`mon-remove-dups', `mon-remove-if', `mon-list-make-unique', `mon-maybe-cons',
+`mon-list-match-tails', `mon-list-reorder', `mon-nshuffle-vector',
+`mon-list-nshuffle', `mon-list-shuffle-safe',`mon-list-proper-p',
+`mon-intersection', `mon-combine', `mon-map-append', `mon-maptree',
+`mon-transpose', `mon-flatten', `mon-recursive-apply', `mon-sublist',
+`mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
+`mon-list-nshuffle-TEST', `shuffle-vector', `slime-shuffle-list'.\n►►►"
+  (let ((mlss-lst (copy-tree list-to-shuffle)))
+    (if (not (and (eq (type-of mlss-lst) 'cons)
+                  (mon-list-proper-p mlss-lst)))
+        (error (concat ":FUNCTION `mon-list-shuffle-safe' "
+                       "-- arg LIST-TO-SHUFFLE null or not `mon-list-proper-p'"))
+      (setq mlss-lst (append (mon-nshuffle-vector (vconcat mlss-lst)) nil)))))
+;;
+;;; :TEST-ME (let ((tst-mlss '(a (b . c) q)))
+;;;          `(:w-shffl ,(mon-list-shuffle-safe tst-mlss) :w/o-shffl ,tst-mlss))
+
+;;; ==============================
+;;; :CHANGESET 2035
+;;; :CREATED <Timestamp: #{2010-08-04T21:51:44-04:00Z}#{10313} - by MON KEY>
+(defun mon-delq-dups (dup-list)
+  "Like `delete-dups' but destructively removes `eq' duplicates from DUP-LIST.\n
+Store the result in DUP-LIST and return it.  DUP-LIST must be a proper list.\n
+Of several `eq' occurrences of an element in DUP-LIST, the first one is kept.\n
+:EXAMPLE\n\n\(concat 
+ \(mon-delq-dups \(append \(vconcat \"sasabscbdsb\"\) nil\)\) 
+ \"\"\)\n
+:ALIASED-BY `delq-dups'\n
+:SEE-ALSO `mon-delq-cons', `mon-remove-dups', `mon-remove-if',
+`mon-list-make-unique', `mon-assoc-replace', `mon-list-match-tails',
+`mon-list-reorder', `mon-maybe-cons', `mon-list-proper-p', `mon-intersection',
+`mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
+`mon-combine', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
+`mon-recursive-apply', `mon-sublist', `mon-sublist-gutted', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
+  (let ((dq-tail dup-list))
+    (while dq-tail
+      (setcdr dq-tail (delq (car dq-tail) (cdr dq-tail)))
+      (setq dq-tail (cdr dq-tail))))
+  dup-list)
+;;
+(unless (and (intern-soft "delq-dups")
+             (fboundp 'delq-dups))
+  (defalias 'delq-dups 'mon-delq-dups))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (equal 
+;; |  (concat (mon-delq-dups (append (vconcat "sasabscbdsb") nil))  "")
+;; |  "sabcd")
+;; `----
+
+;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-make-relatively-unique'
 ;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:53-04:00Z}#{10302} - by MON KEY>
@@ -6112,12 +6608,13 @@ When optional arg AS-TWO-LIST is non-nil return as two elt list.\n
 :EXAMPLE\n\n\(mon-list-make-unique '\(a b c d e f\) '\(a c e q r z\)\)\n
 \(mon-list-make-unique '\(\"a\" b c d e f\) '\(a c e q r z\)\)\n
 \(mon-list-make-unique '\(\"a\" b c d e g \(g g\)\) '\(\"a\" b c d e f \(f f\)\) t\)\n
-:SEE-ALSO `mon-delq-cons', `mon-list-match-tails', `mon-list-reorder',
-`mon-list-proper-p', `mon-intersection', `mon-remove-if', `mon-combine',
-`mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
-`mon-recursive-apply', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
-`mon-assoc-replace', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
-`mon-elt-<elt'.\n►►►"
+:SEE-ALSO `mon-delq-dups', `mon-delq-cons', `mon-remove-if', `mon-remove-dups',
+`mon-list-match-tails', `mon-list-reorder', `mon-nshuffle-vector',
+`mon-list-nshuffle', `mon-list-shuffle-safe', `mon-list-proper-p',
+`mon-intersection', `mon-combine', `mon-map-append', `mon-maptree',
+`mon-transpose', `mon-flatten', `mon-recursive-apply', `mon-sublist',
+`mon-sublist-gutted', `mon-assoc-replace', `mon-moveq', `mon-elt->',
+`mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
   (let* ((mlma-acopy (copy-sequence list-a))
 	 (mlma-bcopy (copy-sequence list-b))
 	 (mlma-tail mlma-acopy))
@@ -6140,6 +6637,26 @@ When optional arg AS-TWO-LIST is non-nil return as two elt list.\n
 ;;; :TEST-ME (equal (mon-list-make-unique '("a" b c d e f) '(a c e q r z)) '(("a" b d f) a q r z))
 
 ;;; ==============================
+;;; :COURTESY Jared D. :WAS `remove-dupes'
+;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
+;;; :CREATED <Timestamp: #{2009-08-19T20:10:43-04:00Z}#{09344} - by MON KEY>
+(defun mon-remove-dups (list)
+  "Remove duplicate adjoining elts in LIST.\n
+:SEE-ALSO `mon-list-make-unique', `mon-delq-dups', `mon-delq-cons',
+`mon-remove-if', `mon-intersection', `mon-combine', `mon-map-append',
+`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
+`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
+`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
+`mon-list-match-tails', `mon-list-reorder', `mon-list-proper-p',
+`mon-maybe-cons'.\n►►►"
+  (let (tmp-list head)
+    (while list
+      (setq head (pop list))
+      (unless (equal head (car list))
+        (push head tmp-list)))
+    (reverse tmp-list)))
+
+;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el  :WAS `format-common-tail'
 ;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:50-04:00Z}#{10302} - by MON KEY>
@@ -6151,12 +6668,13 @@ When the last items of the two do not satsify equivialence return nil.\n
 :EXAMPLE\n\n\(mon-list-match-tails '\(\"a\" b c d e g \) '\(q z w b e g\)\)\n
 \(mon-list-match-tails '\(\"a\" b c \"d\" e g q\) '\(a \"b\" \"c\" \"d\" \"e\" g q\)\)\n
 \(mon-list-match-tails '\(b c \(\"d\" e g q\)\) '\(\"b\" \"c\" \(\"d\" e g q\)\)\)\n
-:SEE-ALSO `mon-list-make-unique', `mon-list-proper-p', `mon-list-reorder',
-`mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
-`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-maybe-cons', `mon-delq-cons', `mon-sublist', `mon-sublist-gutted',
-`mon-remove-dups', `mon-assoc-replace', `mon-moveq', `mon-elt->', `mon-elt-<',
-`mon-elt->elt', `mon-elt-<elt'.\n►►►"
+:SEE-ALSO `mon-list-make-unique', `mon-delq-dups', `mon-list-proper-p',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`mon-list-shuffle-safe', `mon-intersection', `mon-remove-if', `mon-combine',
+`mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
+`mon-recursive-apply', `mon-maybe-cons', `mon-delq-cons', `mon-remove-dups',
+`mon-sublist', `mon-sublist-gutted', `mon-assoc-replace', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
   (let ((mlct-a (length comp-a))
 	(mlct-b (length comp-b)))
     ;; Make sure they are the same length
@@ -6178,16 +6696,22 @@ When the last items of the two do not satsify equivialence return nil.\n
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:36-04:00Z}#{10302} - by MON KEY>
 (defun mon-list-proper-p (putatively-proper)
   "Return t if list PUTATIVELY-PROPER is a proper list.\n
-A proper list is a list ending with a nil cdr, not an atom.\n
+A proper list is a list ending with a nil or cdr, not an atom.\n
 :EXAMPLE\n\n\(mon-list-proper-p '\(a . b\)\)\n
 \(mon-list-proper-p '\(a  b\)\)\n
+\(mon-list-proper-p nil\)\n
+\(mon-list-proper-p '\(\)\)\n
+\(mon-list-proper-p '\(nil\)\)\n
+\(mon-list-proper-p '\(\(\) nil\)\)\n
+\(mon-list-proper-p '\(\(\) nil . a\)\)\n
 :ALIASED-BY `proper-list-p'\n
-:SEE-ALSO `mon-maybe-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-intersection', `mon-remove-if', `mon-combine',
+:SEE-ALSO `mon-maybe-cons', `mon-list-match-tails', `mon-list-make-unique',
+`mon-delq-cons', `mon-delq-cons', `mon-remove-dups', `mon-remove-if',
+`mon-list-reorder', `mon-assoc-replace', `mon-intersection', `mon-combine',
 `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
-`mon-recursive-apply', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
-`mon-assoc-replace', `mon-delq-cons', `mon-moveq', `mon-elt->', `mon-elt-<',
-`mon-elt->elt', `mon-elt-<elt'.\n►►►"
+`mon-recursive-apply', `mon-sublist', `mon-sublist-gutted',
+`mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
+`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
   (when (listp putatively-proper)
     (while (consp putatively-proper)
       (setq putatively-proper (cdr putatively-proper)))
@@ -6213,7 +6737,8 @@ When optional arg REMV-DUPS is non-nil remove duplicate elements.\n
 :EXAMPLE\n\n\(mon-list-reorder '\(2 6 3 2 1\) '\(1 2 3 4 5 6\)\)\n
 \(mon-list-reorder '\(q w b c s a w\) '\(a b c q z w\)\)\n
 \(mon-list-reorder '(q w b c s a w) '(a b c q z w) t)\n
-:SEE-ALSO `mon-maybe-cons', `mon-delq-cons', `mon-list-make-unique',
+:SEE-ALSO `mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
+`mon-maybe-cons', `mon-delq-cons', `mon-list-make-unique', `mon-delq-dups',
 `mon-list-match-tails', `mon-list-proper-p', `mon-intersection',
 `mon-remove-if', `mon-combine', `mon-map-append', `mon-maptree',
 `mon-transpose', `mon-flatten', `mon-recursive-apply', `mon-sublist',
@@ -6255,7 +6780,9 @@ RMV-IF-PREDICATE is unary function.\n
 `mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
 `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons', `mon-delq-cons'.\n►►►"
+`mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
+`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons',
+`mon-delq-cons'.\n►►►"
   (let (mri-new-list)
     (dolist (mri-item rmv-list (setq mri-new-list (nreverse mri-new-list)))
       (when (not (funcall rmv-if-predicate mri-item))
@@ -6294,29 +6821,30 @@ When optional arg DO-EQ uses `memq'.\n
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-remove-if',
 `mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p'.\n►►►"
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`mon-list-shuffle-safe', `mon-list-proper-p', `smtpmail-intersetion'.\n►►►"
   (unless (and (or (consp list1) (null list1))
                (or (consp list2) (null list2)))
     (error (concat ":FUNCTION `mon-intersection' "
-                  "-- args LIST1 and LIST2 must be either a list or nil")))
+                   "-- args LIST1 and LIST2 must be either a list or nil")))
   (and list1 list2
-       (if (equal list1 list2)
+     (if (equal list1 list2)
            list1
-	   (let ((res nil)
-                 (the-l1 list1)
-                 (the-l2 list2)
+	   (let ((mintr-res nil)
+                 (mintr-l1 list1)
+                 (mintr-l2 list2)
                  (comp-with #'(lambda (l1 l2) 
                                 (if (or do-eql do-eq)
                                     (cond (do-eql (memql l1 l2))
                                           (do-eq  (memq l1 l2)))
                                     (member l1 l2)))))
-	     (or (>= (length the-l1) (length the-l2))
-		 (setq the-l1 (prog1 the-l2 (setq the-l2 the-l1))))
-	     (while the-l2
-	       (when (funcall comp-with (car the-l2) the-l1) (push (car the-l2) res))
-	       (pop the-l2))
-	     (unless (null res)
-               (setq res (nreverse res)))))))
+	     (or (>= (length mintr-l1) (length mintr-l2))
+		 (setq mintr-l1 (prog1 mintr-l2 (setq mintr-l2 mintr-l1))))
+	     (while mintr-l2
+	       (when (funcall comp-with (car mintr-l2) mintr-l1) (push (car mintr-l2) mintr-res))
+	       (pop mintr-l2))
+	     (unless (null mintr-res)
+               (setq mintr-res (nreverse mintr-res)))))))
 ;;
 ;;; (defun hfy-interq (set-a set-b)
 ;;;   "Return the intersection \(using `eq'\) of 2 lists."
@@ -6325,6 +6853,16 @@ When optional arg DO-EQ uses `memq'.\n
 ;;;       (setq elt (car sa)
 ;;;             sa  (cdr sa))
 ;;;       (if (memq elt set-b) (setq interq (cons elt interq)))) interq))
+
+;;; ==============================
+;; :COURTESY :FILE lisp/mail/smtpmail.el :WAS `smtpmail-intersection'
+;; (defun smtpmail-intersection (list1 list2)
+;;   (let ((result nil))
+;;     (dolist (el2 list2)
+;;       (when (memq el2 list1)
+;; 	(push el2 result)))
+;;     (nreverse result)))
+;;; ==============================
 
 ;;; ==============================
 ;;; :COURTESY Jean-Marie Chauvet :HIS ncloseemacs-ml-dataset.el :WAS `sublist'
@@ -6337,12 +6875,13 @@ When optional arg DO-EQ uses `memq'.\n
   \(mon-sublist 4 2 piece-work\)\)\n
 ; => \((F G) (Q (H I)))
      ; 4     5\n
-:SEE-ALSO `mon-sublist-gutted' `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-flatten', `mon-transpose', `mon-maptree', `mon-remove-if',
+:SEE-ALSO `mon-sublist-gutted' `mon-list-proper-p', `mon-maybe-cons',
+`mon-remove-dups', `mon-remove-if', `mon-delq-cons', `mon-delq-dups'
+`mon-list-make-unique', `mon-list-match-tails', `mon-assoc-replace',
+`mon-moveq', `mon-flatten', `mon-transpose', `mon-maptree',
 `mon-recursive-apply', `mon-map-append', `mon-combine', `mon-intersection',
-`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-delq-cons',
-`mon-list-make-unique', `mon-list-match-tails', `mon-list-reorder',
-`mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-nshuffle-vector',
+`mon-list-nshuffle', `mon-list-shuffle-safe', `mon-list-reorder'.\n►►►"
   (let* ((sub (nthcdr skip-n in-list)) 
 	 (q (length sub)))
     (reverse (nthcdr (- q return-n) (reverse sub)))))
@@ -6363,11 +6902,12 @@ When optional arg DO-EQ uses `memq'.\n
         ;0 1   2   3  4     5        6
   \(mon-sublist-gutted 4 2 eviscerate-me\)\)\n;=> \(A B \(C D\) E K\)\n
      ;0 1   2   3 6\n
-:SEE-ALSO `mon-remove-if', `mon-intersection', `mon-combine', `mon-map-append',
+:SEE-ALSO `mon-sublist', `mon-intersection', `mon-combine', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-maybe-cons', `mon-list-make-unique',
+`mon-remove-if', `mon-remove-dups', `mon-delq-dups', `mon-delq-cons',
+`mon-list-make-unique', `mon-assoc-replace', `mon-nshuffle-vector',
+`mon-list-nshuffle', `mon-list-shuffle-safe',`mon-maybe-cons', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `mon-list-match-tails', `mon-list-reorder', `mon-list-proper-p'.\n►►►"
   (let* ((pre-guts 
           (nthcdr (length (nthcdr gut-from-n gut-list)) (reverse gut-list))) ;; pre-guts reversed
@@ -6384,13 +6924,13 @@ When optional arg DO-EQ uses `memq'.\n
 ;;; :COURTESY Jean-Marie Chauvet nclose-eieio.el :WAS `map-append'
 ;;; :CREATED <Timestamp: #{2009-09-21T15:26:14-04:00Z}#{09391} - by MON KEY>
 (defun mon-map-append (mapping-l)
-  "Append all sublists in list.\n
-:SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
-`mon-maptree', `mon-transpose', `mon-flatten', , `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+  "Append all sublists in list.\n :SEE-ALSO `mon-intersection', `mon-combine',
+`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
+`mon-list-proper-p', `mon-maybe-cons', `mon-sublist', `mon-sublist-gutted',
+`mon-list-match-tails', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
+`mon-elt-<elt', `mon-delq-cons', `mon-delq-dups', `mon-list-make-unique',
+`mon-remove-if', `mon-remove-dups', `mon-assoc-replace', `mon-list-reorder',
+`mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe'.\n►►►"
   (cond ((null mapping-l) nil)
 	(t (append (car mapping-l) (mon-map-append (cdr mapping-l))))))
 
@@ -6405,12 +6945,13 @@ When optional arg DO-EQ uses `memq'.\n
 SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 :EXAMPLE\n\n\(mon-assoc-replace '\(\(a \(a c d\)\) \(b \(c d e\)\) \(c \(f g h\)\)\)
                    '\(\(a \(c d g\)\) \(b \(c d f\)\) \(g \(h g f\)\)\)\)\n
-:SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
-`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p'.\n►►►"
+:SEE-ALSO `mon-delq-dups', `mon-delq-cons', `mon-remove-dups',`mon-remove-if',
+`mon-list-make-unique', `mon-list-reorder', `mon-nshuffle-vector',
+`mon-list-nshuffle', `mon-list-shuffle-safe', `mon-intersection', `mon-combine',
+`mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
+`mon-recursive-apply', `mon-list-match-tails', `mon-sublist',
+`mon-sublist-gutted', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
+`mon-elt-<elt', `mon-maybe-cons', `mon-list-proper-p'.\n►►►"
   (let (mar-rtn)
     (setq mar-rtn
           (mapcar #'(lambda (elem)
@@ -6422,48 +6963,33 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 ;;; :TEST-ME (mon-assoc-replace '((a (a c d)) (b (c d e)) (c (f g h)))
 ;;;                             '((a (c d g)) (b (c d f)) (g (h g f))))
     
-;;; ==============================
-;;; :COURTESY Jared D. :WAS `remove-dupes'
-;;; (URL `http://curiousprogrammer.wordpress.com/2009/07/26/emacs-utility-functions/')
-;;; :CREATED <Timestamp: #{2009-08-19T20:10:43-04:00Z}#{09344} - by MON KEY>
-(defun mon-remove-dups (list)
-  "Remove duplicate adjoining elts in LIST.\n
-:SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
-`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
-  (let (tmp-list head)
-    (while list
-      (setq head (pop list))
-      (unless (equal head (car list))
-        (push head tmp-list)))
-    (reverse tmp-list)))
-
 ;; ==============================
 ;;; :COURTESY Henry Kautz :HIS refer-to-bibtex.el :WAS `moveq'
 ;;; :CREATED <Timestamp: 2009-08-04-W32-2T18:57:30-0400Z - by MON KEY>
 (defmacro mon-moveq (new old)
   "Set NEW to OLD and set OLD to nil.\n
-:SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
+:SEE-ALSO `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
+`mon-list-proper-p', `mon-maybe-cons' `mon-sublist', `mon-sublist-gutted',
+`mon-remove-if', `mon-intersection', `mon-combine', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+`mon-delq-cons', `mon-delq-dups', `mon-remove-if', `mon-remove-dups',
+`mon-list-make-unique', `mon-assoc-replace', `mon-list-match-tails',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`mon-list-shuffle-safe'.\n►►►"
   (list 'progn (list 'setq new old) (list 'setq old 'nil)))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-list.el :WAS `flatten'
 (defun mon-flatten (tree)
   "Return a tree containing all the elements of the `tree'.\n
-:SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
-`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+:SEE-ALSO `mon-list-proper-p', `mon-maybe-cons', `mon-intersection',
+`mon-combine', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
+`mon-recursive-apply', `mon-list-match-tails', `mon-sublist',
+`mon-sublist-gutted', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
+`mon-elt-<elt', `mon-remove-if', `mon-remove-dups', `mon-delq-dups'
+`mon-delq-cons', `mon-list-make-unique', `mon-remove-dups', `mon-assoc-replace',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`mon-list-shuffle-safe'.\n►►►"
   (do ((result nil)
        (stack  nil))
       ((not (or tree stack)) (nreverse result))
@@ -6483,12 +7009,13 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 ;;; :CREATED <Timestamp: #{2009-09-28T17:40:47-04:00Z}#{09401} - by MON>
 (defun mon-transpose (tree)
   "Return a tree where all the CAR and CDR are exchanged.\n
-:SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
-`mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+:SEE-ALSO `mon-mismatch', `mon-intersection', `mon-combine', `mon-map-append',
+`mon-maptree', `mon-flatten', `mon-recursive-apply', `mon-sublist',
+`mon-sublist-gutted', `mon-list-match-tails', `mon-list-proper-p',
+`mon-maybe-cons', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
+`mon-elt-<elt', `mon-delq-cons', `mon-delq-dups' `mon-remove-if',
+`mon-remove-dups', `mon-assoc-replace', `mon-list-make-unique',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►"
   (if (atom tree)
       tree
       (cons (mon-transpose (cdr tree)) (mon-transpose (car tree)))))
@@ -6529,10 +7056,11 @@ in ARGS.\n:EXAMPLE\n\n\(mon-combine '\(www ftp\) '\(exa\) '\(com org\)\)\n
 ;=> \(\(www exa com\) \(www exa org\) \(ftp exa com\) \(ftp exa org\)\)\n
 :SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+`mon-list-match-tails', `mon-list-proper-p', `mon-maybe-cons', `mon-sublist',
+`mon-sublist-gutted', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
+`mon-elt-<elt', `mon-delq-cons', `mon-delq-dups', `mon-remove-dups',
+`mon-remove-if', `mon-assoc-replace', `mon-list-make-unique',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►"
   ;; :NOTE cl--mapcan -> `mapcan' from cl*.el 
   (flet ((cl--mapcan (func seq &rest rest)
            (apply 'nconc (apply 'mapcar* func seq rest))))
@@ -6557,10 +7085,11 @@ in ARGS.\n:EXAMPLE\n\n\(mon-combine '\(www ftp\) '\(exa\) '\(com org\)\)\n
    '\(a \(\"b\" b cc \"bb\"\) dd\)\)\n
 :SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+`mon-list-match-tails', `mon-list-proper-p', `mon-maybe-cons', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-sublist',
+`mon-sublist-gutted', `mon-remove-if', `mon-remove-dups', `mon-delq-dups',
+`mon-delq-cons', `mon-list-make-unique', `mon-assoc-replace',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►"
   ;; :WAS
   ;; (cond ((null trees) nil)
   ;;       ((every (function null)  trees) nil)
@@ -6603,10 +7132,11 @@ to atom-func.\n
    '\(apple orange peach\) '\(\(red yellow green\) \(orange\) \(yellow white\)\)\)\n
 :SEE-ALSO `mon-intersection', `mon-remove-if', `mon-combine', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-recursive-apply',
-`mon-sublist', `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace',
-`mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-`mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+`mon-list-proper-p', `mon-maybe-cons', `mon-list-match-tails', `mon-sublist',
+`mon-sublist-gutted', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
+`mon-elt-<elt', `mon-delq-cons', `mon-delq-dups', `mon-remove-dups',
+`mon-remove-if', `mon-list-make-unique', `mon-assoc-replace',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle'.\n►►►"
   (cond ((null list-a) nil)
         ((atom list-a) (apply atom-func (list list-a list-b)))
         (t (cons (mon-recursive-apply atom-func (car list-a) (car list-b)) 
@@ -7203,6 +7733,10 @@ failure.\n
 ;;; ==============================
 (provide 'mon-utils)
 ;;; ==============================
+
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; End:
 
 ;;; ==============================
 ;;; mon-utils.el ends here

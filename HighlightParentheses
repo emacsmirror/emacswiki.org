@@ -5,5 +5,18 @@ highlight-parentheses is a minor mode to highlight parentheses surrounding point
 
 http://nschum.de/src/emacs/highlight-parentheses/highlight-parentheses.png
 
+[new]
+Try using the following to integrate highlight-parentheses with autopair mode:
+<pre>
+(add-hook 'emacs-lisp-mode-hook
+          '(lambda ()
+             (highlight-parentheses-mode)
+             (setq autopair-handle-action-fns
+                   (list 'autopair-default-handle-action
+                         '(lambda (action pair pos-before)
+                            (hl-paren-color-update))))))
+</pre>
+This ensures that newly created parentheses are highlighted properly.  Adapt as needed for modes other than Elisp.
+
 ----
 CategoryFaces CategoryModes ParenthesesAppearance

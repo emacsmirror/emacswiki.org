@@ -38,9 +38,9 @@ define. `wpdl-mode-hook' allows the user to run their own code
 when your mode is run.
 {{{
 (defvar wpdl-mode-map
-  (let ((wpdl-mode-map (make-keymap)))
-    (define-key wpdl-mode-map "\C-j" 'newline-and-indent)
-    wpdl-mode-map)
+  (let ((map (make-keymap)))
+    (define-key map "\C-j" 'newline-and-indent)
+    map)
   "Keymap for WPDL major mode")
 }}}
 Now we create a keymap. This map, here called `wpdl-mode-map',
@@ -54,6 +54,7 @@ If your keymap will have very few entries, then you may want to consider
 rather than
 `make-keymap'.
 {{{
+;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.wpd\\'" . wpdl-mode))
 }}}
 
@@ -310,7 +311,7 @@ is for this reason that we want to modify the syntax table for ##wpdl-mode##.
 
 {{{
 (defvar wpdl-mode-syntax-table
-  (let ((wpdl-mode-syntax-table (make-syntax-table)))
+  (let ((st (make-syntax-table)))
 }}}
 
 We will use the `make-syntax-table'
@@ -319,7 +320,7 @@ a syntax table that is a good start for most modes, as it either inherits or
 copies entries from the standard syntax table.
 {{{
 
-    (modify-syntax-entry ?_ "w" wpdl-mode-syntax-table)
+    (modify-syntax-entry ?_ "w" st)
 }}}
 
 The first modification we make to the syntax table is to declare the
@@ -343,9 +344,9 @@ syntax classes include "punctuation character," "open parenthesis
 indicator", and "word constituent." ##'w'## is the symbol for "word constituent."
 
 {{{
-    (modify-syntax-entry ?/ ". 124b" wpdl-mode-syntax-table)
-    (modify-syntax-entry ?* ". 23" wpdl-mode-syntax-table)
-    (modify-syntax-entry ?\n "> b" wpdl-mode-syntax-table)
+    (modify-syntax-entry ?/ ". 124b" st)
+    (modify-syntax-entry ?* ". 23" st)
+    (modify-syntax-entry ?\n "> b" st)
 }}}
 
 WPDL comments are just like C++ comments. So, our goal is to program
@@ -381,7 +382,7 @@ syntax highlighting mechanism (##font-lock##) will now read the
 syntax table and highlight WPDL comments accordingly.
 {{{
 
-    wpdl-mode-syntax-table)
+    st)
   "Syntax table for wpdl-mode")
 }}}
 

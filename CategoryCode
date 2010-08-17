@@ -79,6 +79,7 @@ Tips and tricks to writing a MajorMode.
 * AdviceVsHooks -- Sometimes a package cannot be customized using variables and hooks; in these situations defadvice must be used.
 * AvoidConsing -- Advice which may no longer be appropriate.
 * CheckDoc -- A tool to check your documentation strings.
+* CodingStyle -- Write well formatted code.
 * ElispPackageChecklist -- A document with suggestions for package authors.
 * MeaningfulNames -- choosing identifiers (symbols) for code
 * NonLocalExit -- Examples of error handling and `throw'...`catch'.
