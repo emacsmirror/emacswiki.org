@@ -7,16 +7,16 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Aug 15 18:51:12 2010 (-0700)
+;; Last-Updated: Tue Aug 17 18:24:35 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 304
+;;     Update #: 307
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `bookmark', `bookmark+-mac', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -2956,19 +2956,24 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
                         (concat "bmkp-bmenu-sort-" sort-order)))))
 
 ;;;###autoload
-(defun bmkp-bmenu-edit-bookmark ()      ; Bound to `E' in bookmark list
-  "Edit the bookmark under the cursor: its name and file name."
-  (interactive)
+(defun bmkp-bmenu-edit-bookmark (&optional internalp) ; Bound to `E' in bookmark list
+  "Edit the bookmark under the cursor: its name and file name.
+With a prefix argument, edit the complete bookmark record (the
+internal, Lisp form)."
+  (interactive "P")
   (bmkp-bmenu-barf-if-not-in-menu-list)
   (bookmark-bmenu-ensure-position)
-  (let* ((new-data  (bmkp-edit-bookmark (bookmark-bmenu-bookmark)))
-         (new-name  (car new-data)))
-    (if (not new-data)
-        (message "No changes made")
-      (bookmark-bmenu-surreptitiously-rebuild-list)
-      (goto-char (point-min))
-      (while (not (equal new-name (bookmark-bmenu-bookmark))) (forward-line 1))
-      (forward-line 0))))
+  (let ((bmk-name  (bookmark-bmenu-bookmark)))
+    (if internalp
+        (bmkp-edit-bookmark-record bmk-name)
+      (let* ((new-data  (bmkp-edit-bookmark bmk-name))
+             (new-name  (car new-data)))
+        (if (not new-data)
+            (message "No changes made")
+          (bookmark-bmenu-surreptitiously-rebuild-list)
+          (goto-char (point-min))
+          (while (not (equal new-name (bookmark-bmenu-bookmark))) (forward-line 1))
+          (forward-line 0))))))
 
 (defun bmkp-bmenu-propertize-item (bookmark-name start end)
   "Add text properties to BOOKMARK-NAME, from START to END."
@@ -2991,7 +2996,7 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
          (remotep          (and filep  (bmkp-file-remote-p filep)))
          (tramp-p          (and filep  (boundp 'tramp-file-name-regexp)
                                 (save-match-data (string-match tramp-file-name-regexp filep))))
-         (su-p             (and tramp-p (string-match bmkp-su-or-sudo-regexp filep))))
+         (sudo-p           (and tramp-p (string-match bmkp-su-or-sudo-regexp filep))))
     (put-text-property start end 'bmkp-bookmark-name bookmark-name)
     (add-text-properties
      start  end
@@ -3025,13 +3030,13 @@ specified tags, in order, separated by hyphens (`-').  E.g., for TAGS
            (url-p            (append (bmkp-face-prop 'bmkp-url)
                                      `(mouse-face highlight follow-link t
                                        help-echo (format "mouse-2: Jump to URL `%s'" ,filep))))
-           ((and su-p (not (bmkp-root-or-sudo-logged-p))) ; Root/sudo not logged
+           ((and sudo-p (not (bmkp-root-or-sudo-logged-p))) ; Root/sudo not logged in
             (append (bmkp-face-prop 'bmkp-su-or-sudo)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) file `%s'" ,filep))))
            ;; Make sure we test for remoteness before any other tests of the file itself
            ;; (e.g. `file-exists-p'). We don't want to prompt for a password etc.
-           ((and remotep (not su-p))    ; Remote file (ssh, ftp)
+           ((and remotep (not sudo-p))    ; Remote file (ssh, ftp)
             (append (bmkp-face-prop 'bmkp-remote-file)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) remote file `%s'" ,filep))))

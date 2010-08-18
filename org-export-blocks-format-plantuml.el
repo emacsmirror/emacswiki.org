@@ -1,4 +1,12 @@
 ;;; org-export-blocks-format-plantuml.el Export UML using plantuml
+;;
+;; Copy from org-export-blocks-format-ditaa
+;;
+;; E.g.
+;; #+BEGIN_UML
+;;   Alice -> Bob: Authentication Request
+;;   Bob --> Alice: Authentication Response
+;; #+END_UML
 
 (eval-after-load "org-exp-blocks"
   '(progn
@@ -11,7 +19,7 @@
   "Pass block BODY to the plantuml utility creating an image.
   Specify the path at which the image should be saved as the first
   element of headers, any additional elements of headers will be
-  passed to the ditaa utility as command line arguments."
+  passed to the plantuml utility as command line arguments."
   (message "plantuml-formatting...")
   (let* ((args (if (cdr headers) (mapconcat 'identity (cdr headers) " ")))
          (data-file (make-temp-file "org-plantuml"))
@@ -25,7 +33,7 @@
                            (cons raw-out-file "png")))
          (out-file (concat (car out-file-parts) "_" hash "." (cdr out-file-parts))))
     (unless (file-exists-p iy/org-plantuml-jar-path)
-      (error (format "Could not find ditaa.jar at %s" iy/org-plantuml-jar-path)))
+      (error (format "Could not find plantuml.jar at %s" iy/org-plantuml-jar-path)))
     (setq body (if (string-match "^\\([^:\\|:[^ ]\\)" body)
                    body
                  (mapconcat (lambda (x) (substring x (if (> (length x) 1) 2 1)))

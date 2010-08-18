@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 15 19:44:01 2010 (-0700)
+;; Last-Updated: Tue Aug 17 18:46:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13121
+;;     Update #: 13135
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/17 dadams
+;;     bmkp-edit-bookmark: Made interactive.  Bound to C-x p E.  Added optional INTERNALP arg.
+;;     bmkp-info-bookmark-p: Return nil if a different handler.
 ;; 2010/08/15 dadams
 ;;     Moved bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle to bookmark+-mac.el.
 ;;     Require: bookmark.el, bookmark+-mac.el.
@@ -148,6 +151,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2010/08/17 dadams
+;;     bmkp-bmenu-edit-bookmark: Added optional arg INTERNALP (prefix arg), for editing record.
 ;; 2010/08/15 dadams
 ;;     Moved to bookmark+-mac.el:
 ;;       bmkp-define-sort-command, bmkp-replace-regexp-in-string, bmkp-assoc-delete-all.

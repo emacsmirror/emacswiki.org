@@ -43,6 +43,20 @@ To do this add in your .emacs:
       ;; Since we killed it, don't let caller do that.
       nil)
 </pre>
+
+[new:EmilioLopes:2010-08-17 14:57 UTC] 
+Note that
+<pre>
+(save-excursion
+  (set-buffer ...))
+</pre>
+used above is equivalent to
+<pre>
+(with-current-buffer
+    ...)
+</pre>
+[new]
+
 If you want exactly the same initial *scratch* buffer you can add
 
     (insert initial-scratch-message)
@@ -75,5 +89,35 @@ I also wrote a command to create or switch to scratch buffer. This is also helpf
 
 -- [[Ye Wenbin]]
 
+[new]
+I like to toggle between scratch and current buffer, so I write this lisp code.
+If scratch buffer does not exist, emacs  will create it then switch to scratch buffer.
+
+<pre>
+(defun switch-to-scratch-and-back ()
+    "Toggle between *scratch* buffer and the current buffer.
+     If the *scratch* buffer does not exist, create it."
+    (interactive)
+    (let ((scratch-buffer-name (get-buffer-create "*scratch*")))
+        (if (equal (current-buffer) scratch-buffer-name)
+            (switch-to-buffer (other-buffer))
+            (switch-to-buffer scratch-buffer-name (lisp-interaction-mode)))))
+
+</pre>
+-- [[coldnew]]
+
+[new]
+Just disallow killing of *scratch* and delete its content instead:
+<pre>
+(defun unkillable-scratch-buffer ()
+	(if (equal (buffer-name (current-buffer)) "*scratch*")
+	    (progn
+	      (delete-region (point-min) (point-max))
+	      nil)
+	  t))
+
+(add-hook 'kill-buffer-query-functions 'unkillable-scratch-buffer)
+</pre>
+--[[TN]]
 ----
 CategoryBufferSwitching

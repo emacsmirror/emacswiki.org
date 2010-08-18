@@ -7,17 +7,17 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Aug 15 19:13:36 2010 (-0700)
+;; Last-Updated: Tue Aug 17 18:42:44 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 628
+;;     Update #: 656
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+-mac', `dired', `dired-aux', `dired-x',
-;;   `ffap', `pp'.
+;;   `bookmark', `bookmark+-1', `bookmark+-mac', `dired',
+;;   `dired-aux', `dired-x', `ffap', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -106,7 +106,9 @@
 ;;    `bmkp-desktop-delete', `bmkp-desktop-jump', `bmkp-desktop-read',
 ;;    `bmkp-dired-jump', `bmkp-dired-jump-current',
 ;;    `bmkp-dired-jump-current-other-window',
-;;    `bmkp-dired-jump-other-window', `bmkp-empty-file',
+;;    `bmkp-dired-jump-other-window', `bmkp-edit-bookmark',
+;;    `bmkp-edit-bookmark-record', `bmkp-edit-bookmark-record-mode',
+;;    `bmkp-edit-bookmark-record-send', `bmkp-empty-file',
 ;;    `bmkp-file-target-set', `bmkp-file-jump',
 ;;    `bmkp-file-jump-other-window', `bmkp-gnus-jump',
 ;;    `bmkp-gnus-jump-other-window', `bmkp-info-jump',
@@ -192,9 +194,10 @@
 ;;    `bmkp-bookmark-last-access-cp', `bmkp-bookmark-file-alist-only',
 ;;    `bmkp-bookmark-list-alist-only',
 ;;    `bmkp-bookmark-file-bookmark-p',
-;;    `bmkp-bookmark-list-bookmark-p', `bmkp-buffer-last-access-cp',
-;;    `bmkp-buffer-names', `bmkp-compilation-file+line-at',
-;;    `bmkp-completing-read-1', `bmkp-completing-read-buffer-name',
+;;    `bmkp-bookmark-list-bookmark-p', `bmkp-bookmark-type',
+;;    `bmkp-buffer-last-access-cp', `bmkp-buffer-names',
+;;    `bmkp-compilation-file+line-at', `bmkp-completing-read-1',
+;;    `bmkp-completing-read-buffer-name',
 ;;    `bmkp-completing-read-file-name', `bmkp-completing-read-lax',
 ;;    `bmkp-cp-not', `bmkp-create-varlist-bookmark',
 ;;    `bmkp-current-bookmark-list-state', `bmkp-current-sort-order',
@@ -203,7 +206,7 @@
 ;;    `bmkp-desktop-alist-only', `bmkp-desktop-bookmark-p',
 ;;    `bmkp-desktop-kill', `bmkp-dired-alist-only',
 ;;    `bmkp-dired-bookmark-p', `bmkp-dired-subdirs',
-;;    `bmkp-edit-bookmark', `bmkp-end-position-post-context',
+;;    `bmkp-end-position-post-context',
 ;;    `bmkp-end-position-pre-context', `bmkp-every', `bmkp-face-prop',
 ;;    `bmkp-file-alist-only', `bmkp-file-alpha-cp',
 ;;    `bmkp-file-attribute-0-cp', `bmkp-file-attribute-1-cp',
@@ -292,9 +295,9 @@
 ;;    `bmkp-after-set-hook', `bmkp-bookmark-file-history',
 ;;    `bmkp-bookmark-list-history', `bmkp-current-bookmark-file',
 ;;    `bmkp-current-nav-bookmark', `bmkp-desktop-history',
-;;    `bmkp-dired-history', `bmkp-file-history', `bmkp-gnus-history',
-;;    `bmkp-highlight-menu', `bmkp-info-history',
-;;    `bmkp-isearch-bookmarks' (Emacs 23+),
+;;    `bmkp-dired-history', `bmkp-edit-bookmark-record-mode-map',
+;;    `bmkp-file-history', `bmkp-gnus-history', `bmkp-highlight-menu',
+;;    `bmkp-info-history', `bmkp-isearch-bookmarks' (Emacs 23+),
 ;;    `bmkp-jump-display-function', `bmkp-jump-map', `bmkp-jump-menu',
 ;;    `bmkp-jump-other-window-map', `bmkp-last-bmenu-state-file',
 ;;    `bmkp-last-bookmark-file', `bmkp-last-save-flag-value',
@@ -2072,24 +2075,125 @@ If `bmkp-other-window-pop-to-flag' is non-nil, then use
   (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
   (when (bookmark-time-to-save-p) (bookmark-save)))
 
-(defun bmkp-edit-bookmark (bookmark-name)
-  "Edit bookmark's name and file name, and maybe save them.
-BOOKMARK-NAME is the current (old) name of the bookmark."
-  (let* ((bookmark-filename  (bookmark-get-filename bookmark-name))
-         (new-bmk-name       (read-from-minibuffer "New bookmark name: " nil nil nil nil
-                                                   bookmark-name))
-         (new-filename       (read-from-minibuffer "New file name (location): " nil nil nil nil
-                                                   bookmark-filename)))
-    (when (and (not (equal new-bmk-name "")) (not (equal new-filename ""))
-               (y-or-n-p "Save changes? "))
-      (bookmark-rename bookmark-name new-bmk-name 'batch)
-      (bookmark-set-filename new-bmk-name new-filename)
-      ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
-      (let ((dired-dir  (bookmark-prop-get new-bmk-name 'dired-directory)))
-        (when (and dired-dir (equal dired-dir bookmark-filename))
-          (bookmark-prop-set new-bmk-name 'dired-directory new-filename)))
-      (bmkp-maybe-save-bookmarks)
-      (list new-bmk-name new-filename))))
+;;;###autoload
+(defun bmkp-edit-bookmark (bookmark &optional internalp) ; Bound to `C-x p E'
+  "Edit BOOKMARK's name and file name, and maybe save them.
+With a prefix argument, edit the complete bookmark record (the
+internal, Lisp form).
+
+BOOKMARK is a bookmark name (a string) or a bookmark record."
+  (interactive
+   (list (bookmark-completing-read
+          (concat "Edit " (and current-prefix-arg "internal record for ") "bookmark" )
+          (bmkp-default-bookmark-name))
+         current-prefix-arg))
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (if internalp
+      (bmkp-edit-bookmark-record bookmark)
+    (let* ((bookmark-name      (bookmark-name-from-full-record bookmark))
+           (bookmark-filename  (bookmark-get-filename bookmark-name))
+           (new-bmk-name       (read-from-minibuffer "New bookmark name: " nil nil nil nil
+                                                     bookmark-name))
+           (new-filename       (read-from-minibuffer "New file name (location): " nil nil nil nil
+                                                     bookmark-filename)))
+      (when (and (not (equal new-bmk-name "")) (not (equal new-filename ""))
+                 (y-or-n-p "Save changes? "))
+        (bookmark-rename bookmark-name new-bmk-name 'batch)
+        (bookmark-set-filename new-bmk-name new-filename)
+        ;; Change location for Dired too, but not if different from original file name (e.g. a cons).
+        (let ((dired-dir  (bookmark-prop-get new-bmk-name 'dired-directory)))
+          (when (and dired-dir (equal dired-dir bookmark-filename))
+            (bookmark-prop-set new-bmk-name 'dired-directory new-filename)))
+        (bmkp-maybe-save-bookmarks)
+        (list new-bmk-name new-filename)))))
+
+(define-derived-mode bmkp-edit-bookmark-record-mode emacs-lisp-mode
+    "Edit Bookmark Record"
+  "Mode for editing an internal bookmark record.
+When you have finished composing, type \\[bmkp-edit-bookmark-record-send]."
+  :group 'bookmark-plus)
+
+;;;###autoload
+(defun bmkp-edit-bookmark-record (bookmark)
+  "Edit the internal record for bookmark BOOKMARK.
+When you have finished, Use `\\[bmkp-edit-bookmark-record-send]'.
+BOOKMARK is a bookmark name (a string) or a bookmark record."
+  (interactive (list (bookmark-completing-read "Edit internal record for bookmark"
+                                               (bmkp-default-bookmark-name))))
+  (setq bookmark  (bookmark-get-bookmark bookmark))
+  (let* ((bmk-name  (bookmark-name-from-full-record bookmark))
+         (bufname   (format "*Edit Bookmark `%s'*" bmk-name)))
+    (with-output-to-temp-buffer bufname
+      (princ
+       (substitute-command-keys
+        (concat ";; Edit the internal record for bookmark\n;;\n"
+                ";; " bmk-name "\n;;\n"
+                ";; Type \\<bmkp-edit-bookmark-record-mode-map>\
+`\\[bmkp-edit-bookmark-record-send]' when done.\n;;\n"
+                ";; NOTE: If you edit the bookmark *name* within the record, then\n"
+                ";;       a new bookmark is created for the new name, and the\n"
+                ";;       original (unedited) bookmark continues to exist as well.\n\n")))
+      (pp bookmark)
+      (goto-char (point-min)))
+    (pop-to-buffer bufname)
+    (buffer-enable-undo)
+    (with-current-buffer (get-buffer bufname) (bmkp-edit-bookmark-record-mode))))
+
+;;;###autoload
+(defun bmkp-edit-bookmark-record-send (arg &optional force)
+  "Use buffer contents as a bookmark record.
+Lines beginning with `#;' are ignored.
+With a prefix argument, do not update `time' or `visits' entries."
+  (interactive "P")
+  (unless (eq major-mode 'bmkp-edit-bookmark-record-mode)
+    (error "Not in bmkp-edit-bookmark-record-mode"))
+  (goto-char (point-min))
+  (let ((bmk       (read (current-buffer))))
+    (when (or force (bmkp-bookmark-type bmk) ; Must pass BMK, not BMK-NAME, since might be renamed.
+              (and (interactive-p)
+                   (or (y-or-n-p "Bookmard record not recognized as valid.  Save anyway? ")
+                       (error "Canceled"))))
+      (unless arg (bmkp-record-visit bmk t))
+      (bookmark-store (bookmark-name-from-full-record bmk) (bookmark-get-bookmark-record bmk) nil)
+      (when (interactive-p) (message "Updated bookmark file"))))
+  (kill-buffer (current-buffer)))
+
+(defun bmkp-bookmark-type (bookmark)
+  "Return the type of BOOKMARK or nil if no type is recognized.
+Return nil if the bookmark record is not recognized (invalid).
+See the code for the possible non-nil return values.
+BOOKMARK is a bookmark name or a bookmark record."
+  (condition-case nil
+      (progn
+        ;; If BOOKMARK is already a bookmark record, not a bookmark name, then we must use it.
+        ;; If we used the name instead, then tests such as `bookmark-get-filename' would fail,
+        ;; because they call `bookmark-get-bookmark', which, for a string, checks whether the
+        ;; bookmark exists in `bookmark-alist'.  But we want to be able to use `bmkp-bookmark-type'
+        ;; to get the type of any bookmark record, not necessarily one that is in `bookmark-alist'.
+        (when (stringp bookmark) (setq bookmark  (bookmark-get-bookmark bookmark)))
+        (let ((filep  (bookmark-get-filename bookmark)))
+          (cond ((bmkp-sequence-bookmark-p bookmark)             'bmkp-sequence-bookmark-p)
+                ((bmkp-function-bookmark-p bookmark)             'bmkp-function-bookmark-p)
+                ((bmkp-varlist-bookmark-p bookmark)              'bmkp-varlist-bookmark-p)
+                ((bmkp-url-bookmark-p bookmark)                  'bmkp-url-bookmark-p)
+                ((bmkp-gnus-bookmark-p bookmark)                 'bmkp-gnus-bookmark-p)
+                ((bmkp-desktop-bookmark-p bookmark)              'bmkp-desktop-bookmark-p)
+                ((bmkp-bookmark-file-bookmark-p bookmark)        'bmkp-bookmark-file-bookmark-p)
+                ((bmkp-bookmark-list-bookmark-p bookmark)        'bmkp-bookmark-list-bookmark-p)
+                ((bmkp-man-bookmark-p bookmark)                  'bmkp-man-bookmark-p)
+                ((bmkp-info-bookmark-p bookmark)                 'bmkp-info-bookmark-p)
+                ((bookmark-get-handler bookmark)                 'bookmark-get-handler)
+                ((bmkp-region-bookmark-p bookmark)               'bmkp-region-bookmark-p)
+                ;; Make sure we test for remoteness before any other tests of the file itself
+                ;; (e.g. `file-exists-p'). We do not want to prompt for a password etc.
+                ((and filep (bmkp-file-remote-p filep))          'remote-file)
+                ((and filep (file-directory-p filep))            'local-directory)
+                (filep                                           'local-file)
+                ((and (bmkp-get-buffer-name bookmark)
+                      (or (not filep)
+                          (equal filep bmkp-non-file-filename))) 'buffer)
+                (t                                               nil))))
+    (error nil)))
 
 (defun bmkp-record-visit (bookmark &optional batch)
   "Update the data recording a visit to BOOKMARK.
@@ -2923,9 +3027,9 @@ BOOKMARK is a bookmark name or a bookmark record."
   "Return non-nil if BOOKMARK is an Info bookmark.
 BOOKMARK is a bookmark name or a bookmark record."
   (or (eq (bookmark-get-handler bookmark) 'Info-bookmark-jump)
-      (string= "*info*" (bmkp-get-buffer-name bookmark))
-      ;; Emacs 20-21 form - no handler (and no `buffer-name' entry).
-      (bookmark-prop-get bookmark 'info-node)))
+      (and (not (bookmark-get-handler bookmark))
+           (or (string= "*info*" (bmkp-get-buffer-name bookmark))
+               (bookmark-prop-get bookmark 'info-node))))) ; Emacs 20-21 - no `buffer-name' entry.
 
 (defun bmkp-local-directory-bookmark-p (bookmark)
   "Return non-nil if BOOKMARK bookmarks a local directory.
@@ -6288,6 +6392,8 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 ;;;###autoload
 (define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list)
 ;;;###autoload
+(define-key bookmark-map "E"      'bmkp-edit-bookmark)
+;;;###autoload
 (define-key bookmark-map "I"      'bookmark-insert-location) ; The original in `bookmark.el' was `f'.
 ;;;###autoload
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark)
@@ -6599,6 +6705,15 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (add-hook 'w3m-mode-hook
           #'(lambda () (unless (lookup-key w3m-mode-map "j")
                          (define-key w3m-mode-map "j" 'bmkp-w3m-jump))))
+
+
+;; `bmkp-edit-bookmark-record-mode-map'
+
+(defvar bmkp-edit-bookmark-record-mode-map  (let ((map  (make-sparse-keymap)))
+                                              (define-key map "\C-c\C-c"
+                                                'bmkp-edit-bookmark-record-send)
+                                              map)
+  "Keymap for editing a bookmark record (internal form of a bookmark).")
 
 
 ;;; Vanilla Emacs `Bookmarks' menu (see also [jump] from `Bookmark+' menu, below).

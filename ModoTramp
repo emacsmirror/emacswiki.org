@@ -1,0 +1,124 @@
+[[en:TrampMode]]
+
+(Traducción reducida de la página en este sitio llamada TrampMode.
+Como siempre, no traduzco los debates  -SuSo )
+
+TRAMP [:TRAMP] (Transparent Remote Access, Multiple Protocols) es un
+paquete para la edición remota de ficheros, similar a AngeFtp o efs.
+Allá donde los otros usan FTP para conectarse al anfitrión remoto y
+transferir los ficheros, TRAMP emplea una conexión a shell remota
+(rlogin, telnet, ssh).  Puede transferir los ficheros usando rcp o
+algún programa similar, o puede codificar el contenido del fichero
+(con uuencode o base64) y transferirlo directamente a través de la
+conexión de la shell.
+
+Tramp se llamó originalmente RCP o rcp.el.
+
+Permite al usuario acceso remoto a los ficheros como si parecieran
+locales, con lo que habitualmente no tendrá que preocuparse de nada.
+Lo único que cambia es la convención de nombres de ficheros para
+indicar que el fichero reside en un sistema remoto.
+
+== Obtención de TRAMP ==
+
+Se puede obtener en:
+
+* http://savannah.gnu.org/projects/tramp
+
+Tramp es parte de Emacs a partir de su versión 22.1.
+
+Documentación de Tramp:
+
+* http://gnu.manticore.es/manual-tramp-emacs (en español)
+
+* http://www.gnu.org/software/tramp/ (en inglés)
+
+== Configuración de inicio rápido de tramp ==
+
+    (setq tramp-default-method "ssh")
+
+Para GNU Emacs
+
+    C-x C-f /máquina-remota:nombre-fichero RET (o /método:usuario@máquina-remota:nombre-fichero)
+
+En [S]XEmacs se usa la sintaxis
+
+    C-x C-f /[método/usuario@máquina-remota]/nombre-fichero
+
+También,
+
+{{{
+<fsbot> [5] sintaxis emacs: /<usuario>@<máquina>:/ruta/al/fichero o
+	/<protocolo>:<usuario>@<máquina>:/ruta/al/fichero,
+<fsbot> [6] xemacs syntax: /[<protocol>/<user>@<host>]/path/to/file or
+	/<user>@<host>]/path/to/file,
+<fsbot> [7] /su::/etc/hosts para editar /etc/hosts como root,
+<fsbot> [8] recuérdese el doble : cuando se use su para ser root
+}}}
+
+== Problemas ==
+
+''' Problemas con SELinux '''
+
+Si se hace algo como
+
+  C-x C-f /sudo::/etc/sysconfig/iptables
+
+con la instalación predeterminada de Tramp que viene con Emacs23 y se
+tiene activado SELinux, entonces Tramp sobre-escribirá el contexto de
+SELinux con "user_u:object_r:tmp_t" desde donde quiera que estuviera.
+¡En el caso de que las iptables tengan un contexto de sistema, eso
+impedirá que el cortafuegos se reinicie!
+
+Es probable que esto se deba a los ficheros temporales intermedios
+(estoy suponiendo) con la interacción de Tramp/sudo.  No estoy seguro
+cómo se podría configurar un rodeo a esto.
+
+
+''' Cuelgues de Tramp '''
+
+Si uno se sorprende por algún cuelgue de Tramp, habrá que comprobar si
+ssh no haya muerto repentinamente.  Esto puede deberse a pppd, a los
+routers o a lo que sea.  En cualquier caso, ni ssh en el cliente ni
+sshd en el servidor advertirán que la conexión ha desaparecido.
+Cuando se envíe el siguiente comando, sin embargo, ssh advierte que la
+línea ha caído y finaliza.  Y ahora se tiene un problema, aunque
+debería bastar con presionar C-g y después intentar la operación de
+guardar/obtener/lo-que-sea.
+
+Otra cosa que puede causar el cuelgue de Tramp (lo he visto con
+Solaris en el extremo remoto) es el uso de un /bin/sh antiguo como
+shell remota.  El cambio a bash lo corrige.
+
+
+Tuve un cuelgue cuando ví "Sending the Perl `mime-encode'
+implementations."  Al poner el método predeterminado en "scp" se
+corrigió (aunque ahora es más lento).
+
+Si Tramp se cuelga con Solaris como extremo local, pruébese a usar
+"scpx" como método tramp predeterminado.  También hay que comprobar
+que el nombre de anfitrión que se está invocando con Tramp coincide
+con lo que hay en el fichero ##~/.ssh/known_hosts##; v.g. si el
+fichero known_hosts especifica al anfitrión con una IP, se usa la IP
+en la invocación de Tramp.
+
+Y bastante más acerca de los cuelgues en TrampMode.
+
+
+== Trucos y consejos ==
+
+Hay una gran cantidad de trucos y código con consejos en la página
+original TrampMode.
+
+
+Una de las cosas más claras en cuanto al uso de TRAMP mediante una
+shell remota es que Emacs automáticamente invocará otros comandos de
+la shell remota directamente en ese servidor. v.g. cuando se esté
+mirando un fichero remoto, pruébese con <code>M-x shell</code>,
+<code>M-x rgrep</code>, etc...
+
+
+----
+CategoryExternalUtilities
+CategoryFiles
+CategoryRemoteEmacs
