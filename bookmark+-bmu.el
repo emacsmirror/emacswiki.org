@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Tue Aug 17 18:24:35 2010 (-0700)
+;; Last-Updated: Wed Aug 18 19:41:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 307
+;;     Update #: 314
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -280,7 +280,7 @@
 
 (require 'bookmark+-mac) ;; bmkp-define-sort-command
 
-(eval-when-compile (require 'bookmark+-1))
+;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-add-tags, bmkp-alpha-p, bmkp-bookmark-creation-cp,
 ;; bmkp-bookmark-description, bmkp-bookmark-file-bookmark-p,
 ;; bmkp-bookmark-last-access-cp, bmkp-bookmark-list-bookmark-p,
@@ -315,14 +315,17 @@
 ;; bmkp-unmarked-bookmarks-only, bmkp-varlist-bookmark-p,
 ;; bmkp-visited-more-cp
 
-(eval-when-compile (require 'bookmark+-lit nil t))
+;; (eval-when-compile (require 'bookmark+-lit nil t))
 ;; bmkp-get-lighting
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Quiet the byte-compiler
-(defvar dired-re-mark)                  ; Defined in `dired.el'.
-(defvar tramp-file-name-regexp)         ; Defined in `tramp.el'.
+(defvar dired-re-mark)                      ; Defined in `dired.el'.
+(defvar tramp-file-name-regexp)             ; Defined in `tramp.el'.
+
+(defvar bmkp-sort-orders-alist)             ; Defined in `bookmark+-1.el'.
+(defvar bmkp-sort-orders-for-cycling-alist) ; Defined in `bookmark+-1.el'.
  
 ;;(@* "Faces (Customizable)")
 ;;; Faces (Customizable) ---------------------------------------------
@@ -2976,67 +2979,62 @@ internal, Lisp form)."
           (forward-line 0))))))
 
 (defun bmkp-bmenu-propertize-item (bookmark-name start end)
-  "Add text properties to BOOKMARK-NAME, from START to END."
-  (let* ((buffp            (bmkp-get-buffer-name bookmark-name))
-         (sequencep        (bmkp-sequence-bookmark-p bookmark-name))
-         (functionp        (bmkp-function-bookmark-p bookmark-name))
-         (varlistp         (bmkp-varlist-bookmark-p bookmark-name))
-         (url-p            (bmkp-url-bookmark-p bookmark-name))
-         (gnus-p           (bmkp-gnus-bookmark-p bookmark-name))
-         (desktop-p        (bmkp-desktop-bookmark-p bookmark-name))
-         (bookmark-file-p  (bmkp-bookmark-file-bookmark-p bookmark-name))
-         (handlerp         (bookmark-get-handler bookmark-name))
-         (info-p           (bmkp-info-bookmark-p bookmark-name))
-         (man-p            (bmkp-man-bookmark-p bookmark-name))
-         (blist-p          (bmkp-bookmark-list-bookmark-p bookmark-name))
-         (regionp          (bmkp-region-bookmark-p bookmark-name))
-
-         ;; Begin `let*' dependencies.
-         (filep            (bookmark-get-filename bookmark-name))
-         (remotep          (and filep  (bmkp-file-remote-p filep)))
-         (tramp-p          (and filep  (boundp 'tramp-file-name-regexp)
-                                (save-match-data (string-match tramp-file-name-regexp filep))))
-         (sudo-p           (and tramp-p (string-match bmkp-su-or-sudo-regexp filep))))
+  "Propertize BOOKMARK-NAME from START to END, indicating bookmark type."
+  (let* ((buffp   (bmkp-get-buffer-name bookmark-name))
+         (filep   (bookmark-get-filename bookmark-name))
+         (sudop   (and filep  (boundp 'tramp-file-name-regexp)
+                       (string-match tramp-file-name-regexp filep)
+                       (string-match bmkp-su-or-sudo-regexp filep))))
     (put-text-property start end 'bmkp-bookmark-name bookmark-name)
     (add-text-properties
      start  end
-     (cond (sequencep        (append (bmkp-face-prop 'bmkp-sequence)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Invoke the bookmarks in this sequence")))
-           (functionp        (append (bmkp-face-prop 'bmkp-function)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Invoke this function bookmark")))
-           (varlistp         (append (bmkp-face-prop 'bmkp-varlist)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Invoke this variable-list bookmark")))
-           (blist-p          (append (bmkp-face-prop 'bmkp-bookmark-list)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Invoke this bookmark-list bookmark")))
-           (desktop-p        (append (bmkp-face-prop 'bmkp-desktop)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Jump to this desktop bookmark")))
-           (bookmark-file-p  (append (bmkp-face-prop 'bmkp-bookmark-file)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Load this bookmark's bookmark file")))
-           (info-p           (append (bmkp-face-prop 'bmkp-info)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Jump to this Info bookmark")))
-           (man-p            (append (bmkp-face-prop 'bmkp-man)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo (format "mouse-2 Goto `man' page"))))
-           (gnus-p           (append (bmkp-face-prop 'bmkp-gnus)
-                                     '(mouse-face highlight follow-link t
-                                       help-echo "mouse-2: Jump to this Gnus bookmark")))
-           (url-p            (append (bmkp-face-prop 'bmkp-url)
-                                     `(mouse-face highlight follow-link t
-                                       help-echo (format "mouse-2: Jump to URL `%s'" ,filep))))
-           ((and sudo-p (not (bmkp-root-or-sudo-logged-p))) ; Root/sudo not logged in
+     (cond ((bmkp-sequence-bookmark-p bookmark-name) ; Sequence bookmark
+            (append (bmkp-face-prop 'bmkp-sequence)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Invoke the bookmarks in this sequence")))
+           ((bmkp-function-bookmark-p bookmark-name) ; Function bookmark
+            (append (bmkp-face-prop 'bmkp-function)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Invoke this function bookmark")))
+           ((bmkp-varlist-bookmark-p bookmark-name) ; Varlist bookmark
+            (append (bmkp-face-prop 'bmkp-varlist)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Invoke this variable-list bookmark")))
+           ((bmkp-bookmark-list-bookmark-p bookmark-name) ; Bookmark-list bookmark
+            (append (bmkp-face-prop 'bmkp-bookmark-list)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Invoke this bookmark-list bookmark")))
+           ((bmkp-desktop-bookmark-p bookmark-name) ; Desktop bookmark
+            (append (bmkp-face-prop 'bmkp-desktop)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Jump to this desktop bookmark")))
+           ((bmkp-bookmark-file-bookmark-p bookmark-name) ; Bookmark-file bookmark
+            (append (bmkp-face-prop 'bmkp-bookmark-file)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Load this bookmark's bookmark file")))
+           ((bmkp-info-bookmark-p bookmark-name) ; Info bookmark
+            (append (bmkp-face-prop 'bmkp-info)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Jump to this Info bookmark")))
+           ((bmkp-man-bookmark-p bookmark-name) ; Man bookmark
+            (append (bmkp-face-prop 'bmkp-man)
+                    '(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2 Goto `man' page"))))
+           ((bmkp-gnus-bookmark-p bookmark-name) ; Gnus bookmark
+            (append (bmkp-face-prop 'bmkp-gnus)
+                    '(mouse-face highlight follow-link t
+                      help-echo "mouse-2: Jump to this Gnus bookmark")))
+           ((bmkp-url-bookmark-p bookmark-name) ; URL bookmark
+            (append (bmkp-face-prop 'bmkp-url)
+                    `(mouse-face highlight follow-link t
+                      help-echo (format "mouse-2: Jump to URL `%s'" ,filep))))
+           ((and sudop (not (bmkp-root-or-sudo-logged-p))) ; Root/sudo not logged in
             (append (bmkp-face-prop 'bmkp-su-or-sudo)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) file `%s'" ,filep))))
-           ;; Make sure we test for remoteness before any other tests of the file itself
-           ;; (e.g. `file-exists-p'). We don't want to prompt for a password etc.
-           ((and remotep (not sudo-p))    ; Remote file (ssh, ftp)
+           ;; Test for remoteness before any other tests of the file itself
+           ;; (e.g. `file-exists-p'), so we don't prompt for a password etc.
+           ((and filep (bmkp-file-remote-p filep) (not sudop)) ; Remote file (ssh, ftp)
             (append (bmkp-face-prop 'bmkp-remote-file)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Jump to (visit) remote file `%s'" ,filep))))
@@ -3044,7 +3042,8 @@ internal, Lisp form)."
             (append (bmkp-face-prop 'bmkp-local-directory)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Dired directory `%s'" ,filep))))
-           ((and filep (file-exists-p filep) regionp) ; Local file with region
+           ((and filep (file-exists-p filep) ; Local file with region
+                 (bmkp-region-bookmark-p bookmark-name))
             (append (bmkp-face-prop 'bmkp-local-file-with-region)
                     `(mouse-face highlight follow-link t
                       help-echo (format "mouse-2: Activate region in file `%s'" ,filep))))

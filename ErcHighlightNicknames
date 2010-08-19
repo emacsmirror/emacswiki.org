@@ -76,5 +76,45 @@ Please feel free to edit this to make it more elegant and robust.
     (ad-deactivate-regexp "erc-get-server-user-notself")))
 </pre>
 
+
+== Colorize logs ==
+I use this to colorize my log files
+<pre>
+(setq erc-nick-color-alist '(("Bob" . "blue")
+			     ("qdsklwhatever" . "somecolor")
+			     ))
+
+(defun erc-get-color-for-nick (nick)
+  "Gets a color for NICK. If NICK is specified in erc-nick-color-alist, use it, else hash the nick and get a color from that"
+  (or (cdr (assoc nick erc-nick-color-alist))
+      (nth
+       (mod (string-to-number
+	     (substring (md5 nick) 0 6) 16)
+	    (length erc-colors-list))
+       erc-colors-list)))
+
+(defun irc-log-colorize ()
+  "Colorise the match with the appropriate color"
+  (put-text-property
+   (match-beginning 1) (match-end 1)
+   'face `((:foreground ,(erc-get-color-for-nick (match-string 1)))
+	   (:weight bold))))
+
+(setq irc-log-keywords
+      `((,(format "<\\(%s\\)>" erc-valid-nick-regexp) 1 (irc-log-colorize))))
+
+;; undefine some syntax that's messing up with our coloring (for instance, "")
+(defvar irc-log-mode-syntax-table
+  (let ((st (make-syntax-table)))
+    (modify-syntax-entry ?\" ".   " st)
+    (modify-syntax-entry ?\\ ".   " st)
+    st)
+  "Syntax table used while in `irc-log-mode'.")
+
+(define-derived-mode irc-log-mode fundamental-mode
+  (setq font-lock-defaults '(irc-log-keywords))
+  (setq mode-name "IRC Log"))
+</pre>
+
 ----
 [[ERC]], [[ErcExtraModules]]

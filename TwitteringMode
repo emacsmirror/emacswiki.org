@@ -246,6 +246,31 @@ It requires GnuPG and either EasyPG or 'alpaca.el'. Please refer to [http://gith
 
 [new]
 I have just installed 1.0 after removing 0.8.  When I use M-x twit to enter tw-mode, I just get "Authorization via OAuth failed. Type M-x twit to retry." in the minibuffer, and an empty :home buffer.  This is unhelpful.  What can I do to actually authorize? I can't have emacs launch a browser: my emacs session lives on a distant machine and I access it strictly in text, as a dumb tty. -- Krinn
+:[new]
+It is because Twitter has changed the CA certificate required for server authentication of api.twitter.com and search.twitter.com. The CA certificate embedded in 1.0.0 fails. The HEAD and the most recent revision on 1.0.x branch on github have new CA certificate, which can authenticate the servers. -- Tadashi MATSUO
 
+[new]
+Fiddled around with the hook and wrote one I think is more useful than the suggested. I do use new-statuses which I've been told isn't "officially" supported for whatever that is worth. I also used ToDoChiKu so it should work with growl, snarl, and libnotify.
+
+{{{
+(add-hook 'twittering-new-tweets-hook (lambda ()
+  (let ((n twittering-new-tweets-count))
+    (if (> n 20)
+        (todochiku-message
+          (apply 'concat (mapcar (lambda(x) (format "%s " x)) twittering-new-tweets-spec))
+          (format "You have %d new tweet%s"
+             n (if (> n 1) "s" ""))
+          (todochiku-icon 'social))
+      (dolist (el new-statuses)
+	(todochiku-message 
+          (apply 'concat (mapcar (lambda(x) (format "%s " x)) twittering-new-tweets-spec))
+          (concat (cdr (assoc 'user-screen-name el))
+	     " said: " 
+	     (cdr (assoc 'text el)))                                   
+          (todochiku-icon 'social)))))))
+}}}
+
+When more than 20 tweets are retrieved, it makes a message with the spec as the title and the number of tweets in the message.
+If it gets less than 20, a message is made of each. Hope someone else finds it useful. -- DaveKerschner
 ----
 See also: [[Twitter]] [[Identica-mode]]

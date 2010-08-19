@@ -6,16 +6,16 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sun Aug 15 18:50:49 2010 (-0700)
+;; Last-Updated: Wed Aug 18 19:16:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 63
+;;     Update #: 64
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `bookmark', `pp'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -107,11 +107,11 @@
 ;; bookmark-bmenu-surreptitiously-rebuild-list, bookmark-get-bookmark,
 ;; bookmark-get-filename
 
-(eval-when-compile (require 'bookmark+-bmu))
+;; (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-barf-if-not-in-menu-list,
 ;; bmkp-bmenu-goto-bookmark-named, bmkp-sort-orders-alist
 
-(eval-when-compile (require 'bookmark+-1))
+;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-file-bookmark-p, bmkp-float-time, bmkp-local-file-bookmark-p,
 ;; bmkp-msg-about-sort-order, bmkp-reverse-sort-p, bmkp-sort-comparer
  

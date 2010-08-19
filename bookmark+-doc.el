@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 15 18:53:19 2010 (-0700)
+;; Last-Updated: Wed Aug 18 09:32:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13310
+;;     Update #: 13341
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -104,6 +104,7 @@
 ;;    (@> "Bookmark Tags")
 ;;    (@> "Bookmark Tags Can Have Values")
 ;;    (@> "Function, Sequence, and Variable-List Bookmarks")
+;;    (@> "Editing Bookmarks")
 ;;    (@> "Bookmark-List Views - Saving and Restoring State")
 ;;      (@> "Quitting Saves the Bookmark-List State")
 ;;      (@> "State-Restoring Commands and Bookmarks")
@@ -313,7 +314,8 @@
 ;;       from the `Bookmark+' menu, including the `Jump To' submenu
 ;;       (called `Jump To Bookmark' there).
 ;;
-;;     - You can edit a bookmark (its name and file name/location).
+;;     - You can edit a bookmark: its name and file name/location, or
+;;       its defining internal Lisp record.
 ;;
 ;;  * Multiple bookmark files.
 ;;
@@ -667,6 +669,39 @@
 ;;  `bmkp-set-restrictions-bookmark' bookmarks this value for the
 ;;  current buffer.  Jumping to such a bookmark restores the saved
 ;;  ring/stack of restrictions.
+;;
+;;
+;;(@* "Editing Bookmarks")
+;;  *** Editing Bookmarks ***
+;;
+;;  In vanilla Emacs, you can use `e' in the bookmark list display to
+;;  edit the annotation associated with a bookmark, but that is all.
+;;  There is no easy way to edit a bookmark.
+;;
+;;  With Bookmark+, in addition to `e' you can use `E' in the bookmark
+;;  list, or `C-x p E' anywhere, to edit the bookmark name and the
+;;  target file name (bookmarked location).  You are prompted for the
+;;  new names.
+;;
+;;  If you use a prefix argument (`C-u E' in the bookmark list or `C-u
+;;  C-x p E' elsewhere), then you can edit the complete internal
+;;  bookmark record - the Lisp definition.  This is the same internal
+;;  definition that you see when you use `C-u C-h RET' in the bookmark
+;;  list.
+;;
+;;  Use `C-c C-c' when you are done editing the bookmark record, to
+;;  save your changes.  The number of visits and the time last visited
+;;  for the bookmark are updated automatically (unless you use a
+;;  prefix argument: `C-u C-c C-c').
+;;
+;;  When you use `C-c C-c', Bookmark+ does a quick check to see if it
+;;  recognizes the bookmark type as valid.  This is not a complete
+;;  bookmark validity check, but it can help to let you know if you
+;;  make an editing mistake that renders the bookmark record invalid.
+;;
+;;  In that case, you are asked whether you want to save the changes
+;;  anyway.  Remember that you can use `undo' to reverse particular
+;;  changes or simply kill the edit buffer to abandon all changes.
 ;;
 ;;
 ;;(@* "Bookmark-List Views - Saving and Restoring State")
@@ -1096,7 +1131,7 @@
 ;;
 ;;
 ;;(@* "Tag Commands and Keys")
-;;  *** Tag Commands and Keys***
+;;  *** Tag Commands and Keys ***
 ;;
 ;;  There are lots of tag-related bookmark commands, and they are all
 ;;  bound to keys in buffer `*Bookmark List*'.  How can you keep them

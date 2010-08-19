@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Aug 17 18:46:30 2010 (-0700)
+;; Last-Updated: Wed Aug 18 19:46:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13135
+;;     Update #: 13146
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/18 dadams
+;;     Removed eval-when-compile for bookmark+-lit.el.
+;;     Replaced defvar of bmkp-edit-bookmark-record-mode-map with a define-key after derived mode.
 ;; 2010/08/17 dadams
 ;;     bmkp-edit-bookmark: Made interactive.  Bound to C-x p E.  Added optional INTERNALP arg.
 ;;     bmkp-info-bookmark-p: Return nil if a different handler.
@@ -151,6 +154,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2010/08/18 dadams
+;;     Removed eval-when-compile for bookmark+-(lit|1).el.
+;;     bmkp-bmenu-propertize-item: Inconsequential simplification.
 ;; 2010/08/17 dadams
 ;;     bmkp-bmenu-edit-bookmark: Added optional arg INTERNALP (prefix arg), for editing record.
 ;; 2010/08/15 dadams
@@ -190,6 +196,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;
+;; 2010/08/18 dadams
+;;     Removed eval-when-compile for bookmark+-(bmu|1).el.
 ;; 2010/08/15 dadams
 ;;     Created, from code in other Bookmark+ files.
  

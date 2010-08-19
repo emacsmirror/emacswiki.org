@@ -2,7 +2,7 @@ This code will make a tray icon blink whenever someone speaks on ERC.
 It's got a C part and an elisp part. The C part only runs under unixes, and you need gtk to build it.
 Both codes are very simple, feel free to extend it and send me patches.
 = C part : tray_daemon =
-The code is available at http://smeuuh.free.fr/tray_daemon, see installation instructions there
+The code is available at http://github.com/antoine-levitt/perso/tree/master/bin/ , see installation instructions there
 
 = Elisp part =
 Add this to your .emacs :

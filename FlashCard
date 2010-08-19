@@ -103,6 +103,10 @@ I'd be interested to see a method that has a queue of words you haven't yet star
 
 [new]
 
+I switched a while ago from the default Leitner method to SM5, and found it's a big improvement.  It also seems to meet my need for chucking in big chunks of vocabulary from a file and have it drip-feed them to me.
+
+[new]
+
 == How to write a new import function ==
 
 An import function is trivial. It's just an interactive function that

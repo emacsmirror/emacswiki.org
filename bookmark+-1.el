@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Aug 17 18:42:44 2010 (-0700)
+;; Last-Updated: Wed Aug 18 19:41:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 656
+;;     Update #: 665
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -422,7 +422,7 @@
 ;; bmkp-bmenu-show-all, bmkp-bmenu-state-file, bmkp-bmenu-title,
 ;; bmkp-sort-orders-alist
 
-(eval-when-compile (require 'bookmark+-lit nil t))
+;; (eval-when-compile (require 'bookmark+-lit nil t))
 ;; bmkp-light-bookmark, bmkp-light-bookmarks, bmkp-light-this-buffer
 
 
@@ -2112,6 +2112,12 @@ BOOKMARK is a bookmark name (a string) or a bookmark record."
   "Mode for editing an internal bookmark record.
 When you have finished composing, type \\[bmkp-edit-bookmark-record-send]."
   :group 'bookmark-plus)
+
+;; This binding must be defined *after* the mode, so `bmkp-edit-bookmark-record-mode-map' is defined.
+;; (Alternatively, we could use a `defvar' to define `bmkp-edit-bookmark-record-mode-map' before
+;; calling `define-derived-mode'.)
+(define-key bmkp-edit-bookmark-record-mode-map "\C-c\C-c" 'bmkp-edit-bookmark-record-send)
+
 
 ;;;###autoload
 (defun bmkp-edit-bookmark-record (bookmark)
@@ -6705,15 +6711,6 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (add-hook 'w3m-mode-hook
           #'(lambda () (unless (lookup-key w3m-mode-map "j")
                          (define-key w3m-mode-map "j" 'bmkp-w3m-jump))))
-
-
-;; `bmkp-edit-bookmark-record-mode-map'
-
-(defvar bmkp-edit-bookmark-record-mode-map  (let ((map  (make-sparse-keymap)))
-                                              (define-key map "\C-c\C-c"
-                                                'bmkp-edit-bookmark-record-send)
-                                              map)
-  "Keymap for editing a bookmark record (internal form of a bookmark).")
 
 
 ;;; Vanilla Emacs `Bookmarks' menu (see also [jump] from `Bookmark+' menu, below).

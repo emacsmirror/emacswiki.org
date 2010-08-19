@@ -24,7 +24,7 @@ And that was it for several month! But soon, writing my mails and organizing my 
 files, I discovered the advantage of "One Interface to do the Job", i.e. Text editing.
 I used ispell to check my texts, then added FlySpell to my repertoire of tools.
 I started to use DictEm to let emacs show me quickly the meaning of unknown words.
-(I distinctly remember the moment: I read the word 'plethora' [[http://www.gnu.org/software/emacs/manual/html_node/gnus/Select-Methods.html here]] ;).)
+(I distinctly remember the moment: I read the word 'plethora' [http://www.gnu.org/software/emacs/manual/html_node/gnus/Select-Methods.html here] ;).)
 And these are features available **all the time**: In your mails, in IRC/IM, editing any kind of text ... 
 if you use emacs ;). 
 
@@ -38,8 +38,8 @@ So, if you are an avid computer user, but alas without any "coding" skills, I wa
 =.emacs=
 I just added some more lines to my .emacs when I suddenly realized
 it is not that small anymore ;). I learned from alle the init files 
-out there, so [http://memnon.sdf-eu.org/.emacs here] is mine. Definately needs some clean up,
-but a working copy of what I use everyday.
+out there, so [http://memnon.sdf-eu.org/emacs.org here (.org)] and [http://memnon.sdf-eu.org/emacs.html here (.html)] is mine.
+It definately lacks more comments ... I'll add them when I will find the time.
 
 =My favorites=
 
@@ -51,8 +51,8 @@ add links to (imho) the best features/addons/whatever for emacs.
 * [[http://www.emacswiki.org/emacs/Anything Anything]]
 * DiredMode
 * KeyboardMacros
-* [[http://www.shellarchive.co.uk/2009-03-08-lessen-a-url-with-smallurl-el.html SmallUrl]] (Transform url via tinyurl. Trivial, but I use it all the time ;)
-
+* [http://www.shellarchive.co.uk/2009-03-08-lessen-a-url-with-smallurl-el.html SmallUrl] (Transform url via tinyurl. Trivial, but I use it all the time ;)
+* [https://addons.mozilla.org/en-US/firefox/addon/4125/ It's all text]: Edit any textinput in Firefox/Conkeror within an emacslient frame.
 
 [new:DrewAdams:2010-01-11 22:27 UTC]
 Welcome to the wiki. -- DrewAdams
