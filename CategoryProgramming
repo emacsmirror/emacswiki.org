@@ -53,6 +53,7 @@ File management:
 * SimpleProjectManagment -- A simple project managment
 * SpeedBar -- provides alternate views into individual source files
 * SrSpeedbar -- Display speedbar in same frame, very handy!
+* [http://github.com/myfreeweb/startproject StartProject] -- Start framework projects (Django, Rails, SproutCore, etc.)
 * VersionControl -- Manage revisions to your source files.
 
 '''See also:'''

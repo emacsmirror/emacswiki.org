@@ -7,17 +7,18 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 15 18:52:04 2010 (-0700)
+;; Last-Updated: Thu Aug 19 07:54:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 14945
+;;     Update #: 14946
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `bookmark', `bookmark+', `bookmark+-1', `bookmark+-bmu',
-;;   `bookmark+-lit', `dired', `dired-aux', `dired-x', `ffap', `pp'.
+;;   `bookmark', `bookmark+-1', `bookmark+-bmu', `bookmark+-lit',
+;;   `bookmark+-mac', `dired', `dired-aux', `dired-x', `ffap', `pp',
+;;   `pp+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -126,7 +127,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
-(defconst bmkp-version-number "3.1.1")
+(defconst bmkp-version-number "3.2.0")
 
 (defun bmkp-version ()
   "Show version number of library `bookmark+.el'."

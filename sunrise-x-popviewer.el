@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 20 Aug 2008
 ;; Version: 1
-;; RCS Version: $Rev: 312 $
+;; RCS Version: $Rev: 315 $
 ;; Keywords: Sunrise Commander Emacs File Manager Accessibility Viewer
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-popviewer.el
 ;; Compatibility: GNU Emacs 22+
@@ -38,7 +38,7 @@
 ;; together, if you're using the Buttons extension remove  it  first  from  your
 ;; .emacs file.
 
-;; This is version 1 $Rev: 312 $ of the Sunrise Commander PopViewer Extension.
+;; This is version 1 $Rev: 315 $ of the Sunrise Commander PopViewer Extension.
 
 ;; This  piece  of code is still in alpha stage. If you find it useful and think
 ;; you may contribute to it with suggestions of even more code,  please  let  me
@@ -110,5 +110,7 @@
   (select-frame-by-name "Sunrise Viewer Frame"))
 
 (provide 'sunrise-x-popviewer)
+
+;;;###autoload (require 'sunrise-x-popviewer)
 
 ;;; sunrise-x-popviewer.el ends here.

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 314 $  
+;; RCS Version: $Rev: 315 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -146,7 +146,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 314 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 315 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -951,6 +951,7 @@ automatically:
 ;;; ============================================================================
 ;;; Initialization and finalization functions:
 
+;;;###autoload
 (defun sunrise (&optional left-directory right-directory filename)
   "Starts the Sunrise Commander. If the param `left-directory' is given the left
   window  will  display  this  directory  (the  same   for   `right-directory').
@@ -984,6 +985,21 @@ automatically:
         (select-frame my-frame)
         (sunrise left-directory right-directory filename)))))
 
+;;;###autoload
+(defun sunrise-cd ()
+  "Run Sunrise but give it the current directory to use."
+  (interactive)
+  (if (not sr-running)
+      (let ((target-dir default-directory)
+            (target-file (sr-directory-name-proper (buffer-file-name))))
+        (sunrise)
+        (sr-goto-dir target-dir)
+        (if target-file
+            (sr-focus-filename target-file)))
+    (progn
+      (sr-quit t)
+      (message "Hast thou a charm to stay the morning-star in his deep course?"))))
+
 (defun sr-this (&optional context)
   "Without  any  arguments  returns  the  symbol that corresponds to the current
   active side of the manager ('left or 'right). If the  optional  argument  has
@@ -1001,32 +1017,19 @@ automatically:
      (and (null context) side)
      (symbol-value (sr-symbol side context)))))
 
-(defun sunrise-cd ()
-  "Run Sunrise but give it the current directory to use."
-  (interactive)
-  (if (not sr-running)
-      (let ((target-dir default-directory)
-            (target-file (sr-directory-name-proper (buffer-file-name))))
-        (sunrise)
-        (sr-goto-dir target-dir)
-        (if target-file
-            (sr-focus-filename target-file)))
-    (progn
-      (sr-quit t)
-      (message "Hast thou a charm to stay the morning-star in his deep course?"))))
-
-(defun sr-dired (directory)
-  "Visits the given directory (or file) in sr-mode."
+;;;###autoload
+(defun sr-dired (directory &optional switches)
+  "Visits the given directory in sr-mode."
   (interactive
    (list
     (read-file-name "Change directory (file or pattern): " nil nil nil)))
-  (if (and (file-exists-p directory) (file-readable-p directory))
-      (if (file-directory-p directory)
-          (let ((dired-omit-mode (if sr-show-hidden-files -1 1)))
-            (sr-goto-dir directory)
-            (unless sr-show-file-attributes
-              (sr-hide-attributes)))
-        (sr-quit))))
+  (if (and (file-readable-p directory) (file-directory-p directory))
+      (let ((dired-omit-mode (if sr-show-hidden-files -1 1))
+            (sr-listing-switches (or switches sr-listing-switches)))
+        (unless sr-running (sunrise))
+        (sr-goto-dir directory)
+        (unless sr-show-file-attributes (sr-hide-attributes))
+        (sr-this 'buffer))))
 
 ;;; ============================================================================
 ;;; Window management functions:

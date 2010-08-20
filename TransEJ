@@ -5,6 +5,7 @@ This program is tested on GNU Emacs 22, 23.
 == Downloading ==
 
 : Lisp:trans-ej.el
+: [[https://code.launchpad.net/~irie/+junk/trans-ej.el Bazaar branch in Launchpad]]
 
 == Installation ==
 
@@ -25,6 +26,19 @@ Have fun!
 == Screenshot ==
 
 [[image:TransEJScreenshot]]
+
+== Display results by tooltip ==
+
+If you want to display the results of `trans-ej' command in a tooltip instead of a buffer popped up, install [PosTip postip.el] and add the following to .emacs file:
+
+ (require 'pos-tip)
+ (setq trans-ej-string-all-display-function nil
+       trans-ej-string-all-update-function
+       (lambda (buf)
+         (pos-tip-show (with-current-buffer buf (buffer-string))
+                       nil nil nil 0 80)))
+
+[[image:TransEJPosTipScreenshot]]
 
 == Dialog ==
 

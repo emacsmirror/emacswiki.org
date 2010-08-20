@@ -350,6 +350,19 @@ Thanks again for your work. Great job.
 
 RedBlue
 
+[new]
+Hi RedBlue,
+
+How much time have I spent on this? A bit, I guess -- time passes way too fast when you're in the flow ;)
+
+1) I have slightly modified the //sr-dired// function in version 4R315 -- you may want to try that instead.
+
+2) Yes, try customizing variables sr-listing-switches and sr-virtual-listing-switches.
+
+3) That function is actually called "fuzzy narrowing". How do you exactly imagine navigating through a listing while narrowing its contents?
+
+4) I didn't know igrep before - will have to have a good look at it :) Thanks for the tip!
+
 ----
 CategoryDirectories
 CategoryEmulation

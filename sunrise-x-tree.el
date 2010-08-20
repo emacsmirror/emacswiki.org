@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 309 $
+;; RCS Version: $Rev: 315 $
 ;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -37,7 +37,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 309 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 315 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
@@ -1167,5 +1167,7 @@
              '(sr-tree-mode . sr-tree-desktop-restore-buffer))
 
 (provide 'sunrise-x-tree)
+
+;;;###autoload (require 'sunrise-x-tree)
 
 ;;; sunrise-x-tree.el ends here.

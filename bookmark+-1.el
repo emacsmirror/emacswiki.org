@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Wed Aug 18 19:41:49 2010 (-0700)
+;; Last-Updated: Thu Aug 19 16:49:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 665
+;;     Update #: 666
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -381,6 +381,7 @@
 
 (unless (fboundp 'file-remote-p) (require 'ffap)) ;; ffap-file-remote-p
 (eval-when-compile (require 'gnus)) ;; mail-header-id (really in `nnheader.el')
+(eval-when-compile (require 'gnus-sum)) ;; gnus-summary-article-header
 (eval-when-compile (require 'cl)) ;; case, multiple-value-bind
 
 (require 'bookmark)

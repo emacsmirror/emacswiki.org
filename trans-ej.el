@@ -8,7 +8,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.2.0")
+(defconst trans-ej-version "0.3.0")
 
 ;; This program is free software.
 
@@ -63,6 +63,11 @@
 
 ;;; ChangeLog:
 
+;; 2010-08-20  S. Irie
+;;        * Version 0.3.0
+;;        * Added options:
+;;           `trans-ej-string-all-display-function'
+;;           `trans-ej-string-all-update-function'
 ;; 2010-08-11  S. Irie
 ;;        * Version 0.2.0
 ;;        * Added option `trans-ej-multibyte-chars-ratio-threshold'
@@ -167,6 +172,14 @@ text, otherwise English text.")
 (defvar trans-ej-decode-response-debug nil
   "If non-nil, dump the whole of returned HTML when the translated text
 cannot be recognized.")
+
+(defvar trans-ej-string-all-display-function 'display-buffer
+  "Function to call after a buffer to display the results of
+`trans-ej-string-all' is created. The value nil means call no function.")
+
+(defvar trans-ej-string-all-update-function nil
+  "Function to call after each change of a buffer displaying the results
+of `trans-ej-string-all'. The value nil means call no function.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Site profiles
@@ -587,15 +600,16 @@ The window is not selected."
 	      (format trans-ej-result-buffer-name from to))))
     (with-current-buffer buf
       (erase-buffer)
-      (trans-ej-mode)
-      (display-buffer buf))
+      (trans-ej-mode))
+    (if trans-ej-string-all-display-function
+	(funcall trans-ej-string-all-display-function buf))
     buf))
 
 (defvar trans-ej-wait-responses-list nil
   "This variable is internally used for counting the translation
 finished. Don't change directly." )
 
-(defun trans-ej-string-all-callback (str status buf beg end msg)
+(defun trans-ej-string-all-callback (str status buf beg end msg update)
   "This function is internally used for displaying the results of
 multiple asynchronous translations. Don't call directly."
   (with-current-buffer buf
@@ -613,7 +627,8 @@ multiple asynchronous translations. Don't call directly."
     (set-marker end nil))
   (unless (setq trans-ej-wait-responses-list
 		(cdr trans-ej-wait-responses-list))
-    (message (concat msg "done"))))
+    (message (concat msg "done")))
+  (if update (funcall update buf)))
 
 (defun trans-ej-string-all (string from to)
   "Translate STRING between languages specified by FROM and TO.
@@ -653,7 +668,8 @@ can be specified by `trans-ej-site-orders-alist'."
 		;; mechanism works correctly.
 		(trans-ej-string-1 string site from to
 				   'trans-ej-string-all-callback
-				   (list buf beg end msg))
+				   (list buf beg end msg
+					 trans-ej-string-all-update-function))
 	      (error (with-current-buffer buf
 		       (delete-region beg end)
 		       (goto-char beg)
@@ -664,6 +680,8 @@ can be specified by `trans-ej-site-orders-alist'."
 		     (setq trans-ej-wait-responses-list
 			   (cdr trans-ej-wait-responses-list)))))
 	  sites)
+    (if trans-ej-string-all-update-function
+	(funcall trans-ej-string-all-update-function buf))
     (if trans-ej-wait-responses-list
 	(message msg)
       (message "Failed to translate"))))

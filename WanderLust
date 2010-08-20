@@ -142,6 +142,6 @@ The file will be read when you start wl.
 * WlHooks -- A list of Wanderlust hooks
 * WlPgg -- using the PGG package with WanderLust
 * WlEmacsTwentyThree
-
+* [[hgw-init-wl.el]] -- very advanced Wanderlust configuration example
 ----
 CategoryMail

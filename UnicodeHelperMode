@@ -3,7 +3,7 @@ with Unicode character names. Specifically, it allows to find out
 which unicode name the character at point has, and to enter unicode
 characters by name or codepoint number.
 
-* Download:unicode-helper-mode.el
+* Download:unicode-helper.el
 
 It gets the information it needs from the Unidata file -- a text file
 containing code-points and names of characters.  You'll have to tell
@@ -83,7 +83,3 @@ On Debian, perl-modules provides UnicodeData.txt.
 
  (require 'unicode-helper)
 
-== Discussion ==
-
-[new]
-Where did the file go? Apparently somebody deleted the source file in 2008. -- AlexSchroeder

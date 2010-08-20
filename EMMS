@@ -78,6 +78,18 @@ Just fixed: "mikmod" "-q" "-p" "1" "-X", at the end of definition
 
 -- Aitherios
 
+=== sbagen Binaural Beat files ==
+
+    (define-emms-simple-player sbagen '(file) (emms-player-simple-regexp "sbg") "sbagen")
+
+Binaural Beats are sound files that try to induce mental states by playing sine-waves with
+phase differentials in ear phones.
+
+The player definition is trivial, I just didnt occur to me previously that emacs can be a very nice 
+integrated binaural beat experimentation environment!
+
+-- JoakimVerona
+
 === Mix CD Creation ===
 
 While this code won't burn a CD for you (any suggestions there?),
@@ -324,6 +336,8 @@ See AlsaPlayer notes, above.
 
 === How about using the Apple Remote control? ===
 
+=== How about scrobbling to libre.fm? ===
+emms-lastfm used to be able to scrobble to libre.fm simply by setting the emms-lastfm-server variable, but the git version of emms changed the lastfm setup to use some sort of api key authorisation method... has anyone got it working with libre.fm?
 
 === How about MPD? ===
 

@@ -15,7 +15,7 @@ file:
   (setq jabber-server "gmail.com")
 
 Under gentoo, I had to install the gnutls package to get everything
-working just fine, you're mileage may vary.  After that, you might
+working just fine, your mileage may vary.  After that, you might
 find this function handy:
 
   (defun jabber ()

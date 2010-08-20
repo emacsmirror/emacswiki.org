@@ -33,5 +33,13 @@ ShellMode has <code>C-c :</code> (<code>sh-set-shell</code>) as a shortcut, prom
 
 See also MakingScriptsExecutableOnSave.
 
+== Lisp code ==
+
+To make your file <code>filename</code> readable by just you and your group, use:
+
+    (set-file-modes filename #o440)    ; equivalent to Linux permission "0440"
+
+The assigned mode, in this case octal <code>440</code>, must be an integer. The lisp functions <code>file-modes</code> and <code>file-attributes</code> can be used to recover the current mode settings. Be aware that Windows filesystems offer less resolved access control, so the example presented may not work as intended in a Windows environment.
+
 ----
 CategoryFiles
