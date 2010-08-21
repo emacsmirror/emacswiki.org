@@ -1006,8 +1006,7 @@ flexibility.  You can see
 which file is current by using `##?##' or `C-h m' in the buffer
 `##*Bookmark List*##' (or anywhere else using `##M-x bmkp-bmenu-mode-status-help##').
 
-When you switch to another bookmark file, the default is the name
-of the last bookmark file you used (in the same session).  So it
+When you switch to another bookmark file, the default file to switch to is the last bookmark file you used (in the same session).  So it
 is trivial to toggle back and forth between two bookmark files: just hit
 `RET' to accept the default.
 
@@ -1067,8 +1066,7 @@ You can load a bookmark file using `C-x p L' (switch) or `C-x p l'
 (accumulate).  As a convenience, you can also load a bookmark file
 by jumping to a ''bookmark-file bookmark''.
 
-You use command '''`bmkp-set-bookmark-file-bookmark'''', bound to `C-x p
-x', to create a bookmark-file bookmark.  Jumping to such the
+You use command '''`bmkp-set-bookmark-file-bookmark'''', bound to `C-x p x', to create a bookmark-file bookmark.  Jumping to such a
 bookmark just loads the bookmark file that it records.  With `C-u'
 (e.g. `C-u C-x p j project-foo'), jumping ''switches'' bookmark files.
 Without `C-u' it ''accumulates'' the loaded bookmarks.

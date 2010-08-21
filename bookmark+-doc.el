@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Wed Aug 18 09:32:36 2010 (-0700)
+;; Last-Updated: Fri Aug 20 09:36:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13341
+;;     Update #: 13346
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1025,10 +1025,10 @@
 ;;  using `?' or `C-h m' in the buffer `*Bookmark List*' (or anywhere
 ;;  else using `M-x bmkp-bmenu-mode-status-help').
 ;;
-;;  When you switch to another bookmark file, the default is the name
-;;  of the last bookmark file you used (in the same session).  So it
-;;  is trivial to toggle back and forth between two bookmark files:
-;;  just hit `RET' to accept the default.
+;;  When you switch to another bookmark file, the default file to
+;;  switch to is the last bookmark file you used (in the same
+;;  session).  So it is trivial to toggle back and forth between two
+;;  bookmark files: just hit `RET' to accept the default.
 ;;
 ;;  When bookmarks are saved automatically, or when you save them
 ;;  using `bookmark-save' (`S' in the bookmark list or `C-x p s'
@@ -1079,7 +1079,7 @@
 ;;  by jumping to a bookmark-file bookmark.
 ;;
 ;;  You use command `bmkp-set-bookmark-file-bookmark', bound to `C-x p
-;;  x', to create a bookmark-file bookmark.  Jumping to such the
+;;  x', to create a bookmark-file bookmark.  Jumping to such a
 ;;  bookmark just loads the bookmark file that it records.  With `C-u'
 ;;  (e.g. `C-u C-x p j project-foo'), jumping switches bookmark files.
 ;;  Without `C-u' it accumulates the loaded bookmarks.

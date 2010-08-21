@@ -4,7 +4,7 @@
 
 ;; Author: David Young
 ;; Maintainer: David Young <dove.young@gmail.com>
-;; Keywords: shell, copy, help, tools, convenience
+;; Keywords: shell,shell-mode, copy, help, tools, convenience
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/dove-ext.el
 ;; Site: http://www.emacswiki.org/cgi-bin/emacs/DavidYoung
 
@@ -29,6 +29,7 @@
 ;; 2010-08-04 improved rename-buffer-in-ssh-login function
 ;; 2010-08-08 rewrote function rename-buffer-in-ssh-login
 ;; 2010-08-08 added function rename-buffer-in-ssh-exit
+;; 2010-08-21 added my-overwrite, updated jump function
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -58,7 +59,20 @@
   (interactive "P")
   (let ((command (comint-get-old-input-default))
 	 (num (or arg 1)))
-       (progn (other-window num) (insert command))
+       (progn (other-window num)
+	      ;; if in shell-mode, goto shell input prompt, else just insert at point
+	      (if (string= "shell-mode" major-mode)
+		  (progn
+		    (goto-char (point-max))
+		    ;; First delete any old unsent input at the end
+		    (delete-region
+		     (or (marker-position comint-accum-marker)
+			 (process-mark (get-buffer-process (current-buffer))))
+		     (point))
+		    )
+		)
+	      (insert command)
+	      )
        )
 )
 
@@ -542,4 +556,22 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 	      )
 )
 
+(defun my-overwrite (&optional arg)
+  "Encapsulate overwrite-mode function, to enable red alert in mode-line "
+  (interactive "P")
+  (if (not overwrite-mode)
+      (progn (add-to-list 'mode-line-format (propertize overwrite-mode-textual 'face '(:foreground "white" :background "red") ))
+	     (setq my-overwrite-mode-line (car mode-line-format))
+	     (overwrite-mode 1)
+	     )
+    (progn (overwrite-mode 0)
+	   (if (memq my-overwrite-mode-line mode-line-format) (setq mode-line-format (delq my-overwrite-mode-line mode-line-format)))
+	   )
+    )
+)
+
+
+
+
 (provide 'dove-ext)
+

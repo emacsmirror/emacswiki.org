@@ -1,4 +1,4 @@
-This page describes library '''Synonyms''', Lisp:synonyms.el, by DrewAdams, which lets you search and browse an English thesaurus, the Moby Thesaurus II file,
+This page describes library '''Synonyms''', <tt>[[synonyms.el]]</tt>, by DrewAdams, which lets you search and browse an English thesaurus, the Moby Thesaurus II file,
 `<tt>mthesaur.txt</tt>', which is available here: ftp://ibiblio.org/pub/docs/books/gutenberg/etext02/mthes10.zip. 
 
 == So, What's a Thesaurus, Anyway? ==
@@ -42,10 +42,10 @@ found are then displayed -- simple.  For example, `<tt>M-x
 synonyms RET democracy</tt>' displays synonyms for `democracy'.
 
 The default input value for command `synonyms' is the word under
-the TextCursor or the text in the [[Region]] (selection), provided that a
+the [[cursor]] or the text in the [[region]] (selection), provided that a
 region is active and you are in TransientMarkMode (recommended).
 
-Your input is actually treated as a '''''regular expression''''' (regexp),
+Your input is actually treated as a '''''regular expression''''' ([[regexp]]),
 so you can also input patterns like `<tt>for.*ion</tt>', which will match
 thesaurus entries `formation', `formulation', `fornication',
 `fortification', and `<tt>forward motion</tt>'.  Note that the last of
@@ -145,7 +145,7 @@ can provide additional synonyms for `widespread'.
 
 === Using Completion with Synonyms ===
 
-You can complete words and phrases in the MiniBuffer, as input to
+You can complete words and phrases in the [[minibuffer]], as input to
 command `synonyms', and you can use '''Synonyms''' together with '''[[Icicles]]'''
 to complete a partial word in a text buffer into a word or phrase
 in the thesaurus.
@@ -154,7 +154,7 @@ in the thesaurus.
 
 You can enter any text to match against thesaurus synonyms.  When
 you are prompted by command `synonyms' to enter this text, you can
-also use input ''[[Completion]]'' to complete to a thesaurus synonym.  That is,
+also use input ''[[completion]]'' to complete to a thesaurus synonym.  That is,
 even though you can enter any text (including a regexp),
 completion will only complete to synonyms in the thesaurus.
 
@@ -212,7 +212,7 @@ Easy to remember; easy to use.
 Another way of browsing is to revisit previous search-result
 pages.  You can do this using commands `synonyms-history-backward'
 and `synonyms-history-forward'.  In buffer `*Synonyms*', these are
-bound to the following [[KeySequence]]s, for convenience:
+bound to the following [[key sequence]]s, for convenience:
 
 * `l', `p', `mouse-4' -- backward
 * `r', `n', `mouse-5' -- forward
@@ -245,7 +245,7 @@ You can of course use modifier keys (Control, Meta) while you click
 links <tt>[Back]</tt> and <tt>[Forward]</tt>, to impose their usual behavior:
 search for additional synonyms or append search results, or both.
 
-Finally, some people prefer menus, so there is a '''Synonyms''' MenuBar
+Finally, some people prefer menus, so there is a '''Synonyms''' [[menu bar]]
 menu when you are in Synonyms mode, complete with all of the
 functionalities described above.
 

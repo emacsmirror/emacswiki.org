@@ -357,7 +357,8 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 ;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
 ;;; :CREATED <Timestamp: #{2010-02-24T15:15:09-05:00Z}#{10083} - by MON KEY>
 (defun mon-after-mon-utils-loadtime ()
-  "List of packages and functions to load or eval once mon-utils.el is in the current environment.\n
+  "List of packages and functions to load or eval.\n
+These are brought into the current environment after mon-utils.el is loaded.\n
 Called with \(eval-after-load \"mon-utils\" '\(mon-after-mon-utils-loadtime\)\)\n
 Evaluated in :FILE mon-post-load-hooks.el\n
 Evaluates the following functions per feature:
@@ -386,11 +387,12 @@ Adds feature requirements:\n
 `mon-byte-compile-and-load', `mon-dump-object-to-file', `mon-nuke-and-eval',
 `mon-cl-compat-loadtime'.\n►►►"
   (progn 
+    (mon-get-bit-table)
     (eval-after-load "naf-mode-faces"     '(mon-bind-naf-face-vars-loadtime t))
     (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime t))
-    (eval-after-load "mon-doc-help-CL"    '(progn (mon-help-utils-CL-loadtime t)
-                                                  (mon-bind-mon-help-CL-pkgs-loadtime t)))
+    ;; :NOTE Moved (mon-help-utils-CL-loadtime t) -> `mon-run-post-load-hooks'
+    (eval-after-load "mon-doc-help-CL"    '(mon-bind-mon-help-CL-pkgs-loadtime t))
     ;; :NOTE See docs `mon-bind-cifs-vars-at-loadtime' and notes at BOF
     ;; mon-cifs-utils.el for alternative application with args 
     ;; NO-MISC-PATH NO-MAP-MOUNT-POINTS e.g.: 
@@ -576,7 +578,7 @@ invocations per seed symbol. IOW we can could create an average of ~9948 unique
              229 233 239 241 251 257 263 269 271 277 281 283 293 307 311 313 317
              331 337 347 349 353 359 367 373 379 383 389 397 401 409 419 421 431
              433 439 443 449 457 461 463 467 479 487 491 499 503 509 521 523 541])
-        (mgcr-pr2 (make-vector 6 0)) ;; 6th elt of is lengthe randomize-sym/str
+        (mgcr-pr2 (make-vector 6 0)) ;; 6th elt of is length randomize-sym/str
         (mgcr-pr3 (make-vector 6 0)) ;; 6th elt of is string-bytes randomize-sym/str
         (mgcr-merp [3 5 7 13 17 19]) 
         (mgcr-rtn randomize-sym/str))
@@ -1972,6 +1974,8 @@ the tedium of building the entire scaffolding.\n
       (when re-inhibit (setq inhibit-point-motion-hooks nil)))))
 
 ;;; ==============================
+;;; :TODO I'm no longer sure if this is TRT should we be checking for
+;;; `buffer-local-variables'/`buffer-local-value' of these too?
 ;;; :CREATED <Timestamp: Monday June 15, 2009 @ 05:36.12 PM - by MON KEY>
 (defun mon-toggle-read-only-point-motion ()
   "Toggle `inhibit-read-only' and `inhibit-point-motion-hooks'.\n
@@ -1979,13 +1983,13 @@ the tedium of building the entire scaffolding.\n
 `mon-inhibit-modification-hooks', `mon-naf-mode-toggle-restore-llm'.\n►►►"
   (interactive)
   (if (or (bound-and-true-p inhibit-read-only)
-          (bound-and-true-p inhibit-read-only))
+          (bound-and-true-p inhibit-point-motion-hooks)) ;;inhibit-read-only))
       (progn
 	(setq inhibit-read-only nil)
 	(setq inhibit-point-motion-hooks nil))
-      (progn
-        (setq inhibit-read-only t)
-        (setq inhibit-point-motion-hooks t))))
+    (progn
+      (setq inhibit-read-only t)
+      (setq inhibit-point-motion-hooks t))))
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichor <stefan@xsteve.at> :HIS xsteve-functions.el
@@ -4701,7 +4705,7 @@ Charles Julius Guiteau\n◄\n
         (prin1 combined (current-buffer))
         combined)))
 ;;
-;; ,---- :UNCOMMENT-TO-TEST:
+;; ,---- :UNCOMMENT-TO-TEST
 ;; | 
 ;; | (mon-line-string-rotate-namestrings-combine
 ;; |    (1+ (search-forward-regexp "►")) (- (search-forward-regexp "◄") 2))
@@ -4757,51 +4761,83 @@ When called-interactively with prefix-arg prompt for a char to use.\n
 
 ;;; ==============================
 ;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
-(defun mon-word-get-list-in-buffer ()
+;;; :WAS `get-next-word' -> `mon-word-get-next'
+(defun mon-word-get-next ()
+  "Return the next 'word' in the buffer.\n
+Point is left following the word.\n
+When `eopb' return nil with point unchanged.\n
+:NOTE Words motion is per `inhibit-field-text-motion' where a word is defined by
+`forward-word' according to the syntax-table settings.\n
+:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n►►►"
+  (let (mwgn-start mwgn-end)
+    (if (eobp)
+	nil
+      (progn
+	(setq mwgn-start (point))
+	(forward-word 1)
+	(setq mwgn-end (point))
+	(forward-word -1)
+	(if (< (point) mwgn-start)           ;; Then we're already past last word.
+	    (progn
+	      (goto-char (buffer-end 0))
+              nil)
+	  (setq mwgn-start (point))
+	  (goto-char mwgn-end)
+	  (buffer-substring-no-properties mwgn-start mwgn-end))))))
+
+
+;;; ==============================
+;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
+;;; :CREATED <Timestamp: #{2010-08-20T13:24:05-04:00Z}#{10335} - by MON KEY>
+(defun mon-word-get-list-in-buffer (&optional intrp)
   "Convert the entire buffer to a list of `newline' separated ``words''
-in a new buffer *Word List*, where a word is defined by `forward-word'
-according to the syntax-table settings.  You can apply `sort-lines' and
-unique-lines to this to obtain a list of all the unique words in a
-document.\n
+in a new buffer `\"*MON-WORD-LIST*\", where a word is defined by `forward-word'
+according to the syntax-table settings.\n
+:EXAMPLE\n\n(mon-word-get-list-in-buffer\)\n
+\(mon-word-get-list-in-buffer t\)\n
+:NOTE Apply `sort-lines', `unique-lines', etc. to obtain a list of all the
+unique words in a buffer of document.\n
 :ALIASED-BY `mon-buffer-get-word-list'\n
 :SEE-ALSO `mon-word-count-occurrences', `mon-line-strings-to-list',
 `mon-string-ify-current-line', `mon-stringify-list', `mon-dropin-line-word',
 `mon-insert-string-ify', `mon-word-count-analysis', `mon-word-count-region',
 `mon-word-count-chars-region'.\n►►►"
-  (interactive)
-  (let (word)
-    (with-output-to-temp-buffer "*Word List*"
-      (save-excursion
-	(goto-char (point-min))
-	(while (setq word (mon-word-get-next))
-	  (princ (format "%s\n" word)))))))
+  ;; :WAS
+  ;; (interactive)
+  ;; (let (word)
+  ;;   (with-output-to-temp-buffer "*MON-WORD-LIST*"
+  ;;     (save-excursion
+  ;;       (goto-char (point-min))
+  ;;       (while (setq word (mon-word-get-next))
+  ;;         (princ (format "%s\n" word)))))))
+  (interactive "p")
+  (let* ((MWL (get-buffer-create "*MON-WORD-LIST*"))
+         (standard-output (get-buffer MWL))
+         mwglib)
+    (with-current-buffer MWL
+      (erase-buffer))
+    (save-excursion
+      (goto-char (point-min))
+      (while (setq mwglib (mon-word-get-next))
+        (princ (format "%s\n" mwglib))))
+    (setq mwglib (buffer-name (current-buffer)))
+    (with-current-buffer  MWL
+      (setq MWL `(:BUFFER ,mwglib 
+                  :TOTAL-WORDS ,(count-lines (buffer-end 0) (buffer-end 1))))
+      (if intrp 
+          (progn
+            (goto-char (buffer-end 0))
+            (save-excursion            
+              (insert  ";; :FUNCTION `mon-word-get-list-in-buffer'\n;; ")
+              (princ MWL (current-buffer))
+              (insert "\n" (make-string 68 59) "\n"))
+              (display-buffer (current-buffer) t))
+        (progn
+          (setq MWL (append MWL (mon-line-strings-one-list (buffer-end 0) (buffer-end 1))))
+          (kill-buffer (current-buffer)))))
+    MWL))
 ;;
 (defalias 'mon-buffer-get-word-list 'mon-word-get-list-in-buffer)
-
-;;; ==============================
-;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
-;;; :WAS `get-next-word' -> `mon-word-get-next'
-(defun mon-word-get-next ()
-  "Return the next 'word' in the buffer, where a word is defined by
-`forward-word' according to the syntax-table settings.
-Point is left following the word.
-At `end-of-buffer', nil is returned and point is unchanged.\n
-:SEE-ALSO `mon-line-get-next', `mon-word-get-list-in-buffer'.\n►►►"
-  (let (start end)
-    (if (eobp)
-	nil
-      (progn
-	(setq start (point))
-	(forward-word 1)
-	(setq end (point))
-	(forward-word -1)
-	(if (< (point) start)           ;; Then we're already past last word.
-	    (progn
-	      (goto-char (point-max))
-              nil)
-	  (setq start (point))
-	  (goto-char end)
-	  (buffer-substring-no-properties start end))))))
 
 ;;; ==============================
 (defun mon-word-reverse-region (beg end)
@@ -4809,8 +4845,9 @@ At `end-of-buffer', nil is returned and point is unchanged.\n
 :SEE-ALSO `mon-region-reverse'.\n►►►"
   (interactive "r")
   (apply 'insert
-         (reverse (split-string
-                   (delete-and-extract-region beg end) "\\b"))))
+         (reverse (save-match-data 
+                    (split-string
+                     (delete-and-extract-region beg end) "\\b")))))
 
 ;;; ==============================
 ;;; :COURTESY Jonathan Rockway :VERSION 2009-01-18
@@ -5435,14 +5472,14 @@ Does not move point.\n
 ;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-13T19:53:24-04:00Z}#{10325} - by MON KEY>
 (defun mon-bool-vector-pp (bool-vec)
-  "Return print representation of bool-vector BOOL-VECT in various formats.\n
+"Return print representation of bool-vector BOOL-VECT in various formats.\n
 When BOOL-VECT length is greater than 29 return value has the format:\n
- \(:gray-table [101 ... 010] :truth-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
-When BOOL-VECT length is less than 29 in addition to the values avoe return
+ \(:gray-table [101 ... 010] :true-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
+When BOOL-VECT length is less than 29 in addition to the values above return
 value contains the following key value pairs:\n
  ( :binary \"#b10 ... 01\" :decimal 123 ... 9 :octal \"#o7 ... 77\" :hex \"#xFF...00\" 
-   :gray-table [101 ... 010] :truth-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
-:EXAMPLE\n\n\(setq tt--bv \(make-bool-vector 29 t\)\)\n
+   :gray-table [101 ... 010] :true-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
+:EXAMPLE\n\n\(setq tt--bv \(make-bool-vector 28 t\)\)\n
  ;=> #&29\"\\377\\377\\377\x1f\"\n
 \(vconcat tt--bv\)\n
  ;=> [t t t t t t t t t t t t t t t t t t t t t t t t t t t t t]\n
@@ -5458,7 +5495,7 @@ value contains the following key value pairs:\n
       :octal  \"#o2666666666\"
       :hex    \"#x16db6db6\"
       :gray-table [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0]
-      :truth-table [t nil t t nil t t nil t t nil t t nil
+      :true-table [t nil t t nil t t nil t t nil t t nil
                     t t nil t t nil t t nil t t nil t t nil]
       :bool-vector #&29\"m\\333\\266\xd\"\)\n
 ;; Beyond the 29th bit\n
@@ -5469,55 +5506,54 @@ value contains the following key value pairs:\n
  ;=> #&31\"m\\333\\266m\"\n
 \(mon-bool-vector-pp tt--bv\)\n
  ;=> \(:gray-table  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
-      :truth-table [t nil t t nil t t nil t t nil t t nil t
+       :true-table [t nil t t nil t t nil t t nil t t nil t
                    t nil t t nil t t nil t t nil t t nil t t]
       :bool-vector #&31\"m\\333\\266m\"\)\n
  \(unintern 'tt--bv\)\n
 :ALIASED-BY `mon-bool-vector-to-list'\n
 :NOTE Assumes return value of `byteorder' is 108 \(big end first\).\n
-:SEE-ALSO `mon-get-bit-table', `*mon-bit-table*',
-`mon-help-binary-representation', `mon-help-char-raw-bytes', `byteorder'.\n►►►"
+:SEE-ALSO `mon-get-bit-table', `*mon-bit-table*', `mon-help-char-raw-bytes',
+`mon-help-binary-representation'.\n►►►"
   (if (= (length bool-vec) 0)
-      ;; As of (at least) Emacs version 23.2, it is not possible to get the
-      ;; value at index 0 for boolean-vectors of length 0, e.g. those of type
-      ;; (make-bool-vector 0 t) 
-      ;; => (make-bool-vector 0 t) => #&0""
       (error (concat 
               ":FUNCTION `mon-bool-vector-pp' "
-              "-- arg BOOL-VEC has length 0 Emacs won't fetch that index, this is an Emacs bug"))
-    (let* ((t-tbl (vconcat bool-vec))
-           (w-props (<= (length t-tbl) 30)) 
-           (to-bin (if w-props '(() ())))) 
-      (mapc #'(lambda (tb) 
-                (if w-props              
-                    (if tb 
-                        (progn 
-                          (push "1" (car to-bin))
-                          (push 1 (cadr to-bin)))
-                      (progn
-                        (push "0" (car to-bin))
-                        (push 0 (cadr to-bin))))
-                  (if tb 
-                      (push 1 to-bin)
-                    (push 0 to-bin))))
-            (append bool-vec nil))
-      (if (not w-props)
-          (progn 
-            (setq to-bin (vconcat (nreverse to-bin)))
-            `(:gray-table  ,to-bin
-                           :truth-table ,t-tbl
-                           :bool-vector ,bool-vec))
-        (progn
-          (let ((bin-str-num (concat "#b" (mapconcat #'identity (reverse (car to-bin)) "")))
-                (gry-tbl (vconcat (reverse (cadr to-bin)))))
-            (setq to-bin (read bin-str-num))
-            (setq to-bin `(:binary  ,bin-str-num
-                                    :decimal ,to-bin 
-                                    :octal ,(format "#o%o" to-bin)
-                                    :hex   ,(format "#x%x" to-bin)
-                                    :gray-table  ,gry-tbl
-                                    :truth-table ,(vconcat bool-vec)
-                                    :bool-vector ,bool-vec))))))))
+              "-- arg BOOL-VEC has length 0 Emacs won't fetch that index, IHMO an Emacs bug"))
+    (let* ((bv-len (length bool-vec))
+           (w-props (<= bv-len 29))
+           ;; vector of numberic 0's
+           (to-bin (make-vector bv-len 0))
+           ;; Make a string array of Os (char 48) -> "000 {...} 000"                 
+           (to-bin-str (when w-props (make-string bv-len 48))))
+      (dotimes (blv bv-len)
+        ;; If current element bool-vector is `t'
+        (when (aref bool-vec blv)
+          ;; Set string char "0" at idx to "1"
+          (when w-props (aset to-bin-str blv 49))
+          ;; Set numeric 0 at vector idx to numeric 1
+          (aset to-bin blv 1)))
+      (if w-props
+          (let ( ;; read the decimal numeric value of var to-bin-str "#b10{...}01"
+                ;; (string-to-number "11111111111111111111111111111" 2)
+                ;; :WAS (bin-str-dec (read to-bin-str)))
+                (bin-str-dec (string-to-number to-bin-str 2)))
+            ;; Make a binary number string "#b10{...}01" for `read'
+            ;; pad it out to the MSB (bit 29) w/ "0"s
+            (when w-props 
+              (setq to-bin-str 
+                    (concat "#b" (make-string (- 29 bv-len) 48) to-bin-str)))
+            
+
+            `(:binary      ,to-bin-str
+              :decimal     ,bin-str-dec
+              :octal       ,(format "#o%o" bin-str-dec)
+              :hex         ,(format "#x%x" bin-str-dec)
+              :gray-table  ,to-bin
+              :true-table  ,(vconcat bool-vec)
+              :bool-vector ,bool-vec))
+
+        `(:gray-table  ,to-bin 
+          :true-table  ,(vconcat bool-vec)
+          :bool-vector ,bool-vec)))))
 ;;
 (defalias 'mon-bool-vector-to-list   'mon-bool-vector-pp)
 ;;
@@ -5526,6 +5562,7 @@ value contains the following key value pairs:\n
 ;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 0 t)) (mon-bool-vector-pp tt--bv))
 
 ;;; ==============================
+;;; :type '(plist :value-type  (boolean t nil)) ;;(choice :tag "Yes, bind this variable at loadtime"  t "No, do not bind" nil)
 ;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-16T20:10:59-04:00Z}#{10331} - by MON KEY>
 (defvar *mon-bit-table* nil
@@ -5534,6 +5571,10 @@ value contains the following key value pairs:\n
             \(memq :max-unsigned urng\)\) *mon-bit-table*\)\n
 :SEE-ALSO `mon-bool-vector-pp', `mon-help-binary-representation',
 `mon-help-char-raw-bytes'.\n►►►")
+
+;;'mon-bind-variable-at-loadtime 
+;; mon-get-bit-table
+
 
 ;;; ==============================
 ;;; :CHANGESET 2064
@@ -5576,7 +5617,7 @@ evaluation to the variable `*mon-bit-table*'.\n
           (push `(,bky :bit-weight ,bit-wgt :2^ ,i  :max-signed ,mx-sgn
                        :max-unsigned (,unsgn-bot . ,unsgn-top)) gthr))))
     (when (or intrp dsplyp)
-      (with-current-buffe 
+      (with-current-buffer 
           (get-buffer-create (upcase (symbol-name '*mon-bit-table*)))
        (erase-buffer)
        (save-excursion 
@@ -5597,7 +5638,6 @@ evaluation to the variable `*mon-bit-table*'.\n
 ;;; :TEST-ME (memq :max-unsigned (assq :bit-29 (mon-get-bit-table)))
 ;;; :TEST-ME (mon-get-bit-table t)
 ;;
-(eval-when (compile load) (mon-get-bit-table))
 
 ;;; ==============================
 ;;; :RECTANGLE-RELATED-FUNCTIONS
@@ -5797,7 +5837,7 @@ the function is called.\n
 ;;; :CREATED: <Timestamp: #{2009-10-11T08:44:59-04:00Z}#{09417} - by MON KEY>
 (defun mon-get-text-properties-region-to-kill-ring (start end &optional no-strip)
   "Copy region _with_ text-properties to kill-ring.\n
-If a leading `#' is present in string strip it.
+If a leading `#' is present in string strip it.\n
 When NO-STRIP in non-nil or called-interactively with prefix arg do not strip
 leading `#'.\n
 :NOTE Function is yank-handler agnostic w/re to 2nd optional arg of `kill-new'.\n
@@ -6280,9 +6320,9 @@ When BUFFER is non-nil list its text-properties instead.\n
 ;;; `next-single-property-change' (not `next-single-text-property-change'), etc.
 ;;; :WAS `remove-text-property'        -> ../emacs/lisp/font-lock.el
 (defun mon-remove-text-property (start end property &optional object)
-  "Remove a property from text from START to END.
-Argument PROPERTY is the property to remove.
-Optional argument OBJECT is the string or buffer containing the text.
+  "Remove a property from text from START to END.\n
+Argument PROPERTY is the property to remove.\n
+Optional argument OBJECT is the string or buffer containing the text.\n
 Return t if the property was actually removed, nil otherwise.\n
 :SEE-ALSO `mon-remove-single-text-property', `remove-text-properties',
 `mon-nuke-text-properties-region', `add-text-properties', `put-text-property',
@@ -6293,10 +6333,10 @@ Return t if the property was actually removed, nil otherwise.\n
 ;;
 ;;; :WAS `remove-single-text-property' -> ../emacs/lisp/font-lock.el
 (defun mon-remove-single-text-property (start end prop value &optional object)
- "Remove a specific property value from text from START to END.
-Arguments PROP and VALUE specify the property and value to remove.  The
-resulting property values are not equal to VALUE nor lists containing VALUE.
-Optional argument OBJECT is the string or buffer containing the text.
+ "Remove a specific property value from text from START to END.\n
+Arguments PROP and VALUE specify the property and value to remove.\n
+The resulting property values are not equal to VALUE nor lists containing VALUE.\n
+Optional argument OBJECT is the string or buffer containing the text.\n
 :SEE-ALSO `remove-text-property', `mon-nuke-text-properties-region',
 `mon-nuke-overlay-buffer', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
@@ -6394,7 +6434,7 @@ Optional argument OBJECT is the string or buffer containing the text.
 ;;; :CHANGESET 2017
 ;;; :CREATED <Timestamp: #{2010-07-31T16:27:59-04:00Z}#{10306} - by MON KEY>
 (defun mon-maybe-cons (car cdr original-cons)
-  "Return (CAR . CDR), using ORIGINAL-CONS if possible.\n
+  "Return \(CAR . CDR\), using ORIGINAL-CONS if possible.\n
 :EXAMPLE\n\n
 :SEE-ALSO `mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
 `mon-list-reorder', `mon-list-proper-p', `mon-intersection', `mon-remove-if',
@@ -6402,7 +6442,6 @@ Optional argument OBJECT is the string or buffer containing the text.
 `mon-recursive-apply', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
 `mon-assoc-replace', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
 `mon-elt-<elt'.\n►►►"
-
   (if (and (eq car (car original-cons)) 
            (eq cdr (cdr original-cons)))
       original-cons

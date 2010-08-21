@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Aug 19 16:49:26 2010 (-0700)
+;; Last-Updated: Fri Aug 20 16:34:56 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 666
+;;     Update #: 702
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -258,10 +258,11 @@
 ;;    `bmkp-position-post-context-region',
 ;;    `bmkp-position-pre-context', `bmkp-position-pre-context-region',
 ;;    `bmkp-printable-p', `bmkp-printable-vars+vals',
-;;    `bmkp-read-tag-completing', `bmkp-read-tags',
-;;    `bmkp-read-tags-completing', `bmkp-read-variable',
-;;    `bmkp-read-variables-completing', `bmkp-record-visit',
-;;    `bmkp-refresh-latest-bookmark-list', `bmkp-refresh-menu-list',
+;;    `bmkp-read-bookmark-file-name', `bmkp-read-tag-completing',
+;;    `bmkp-read-tags', `bmkp-read-tags-completing',
+;;    `bmkp-read-variable', `bmkp-read-variables-completing',
+;;    `bmkp-record-visit', `bmkp-refresh-latest-bookmark-list',
+;;    `bmkp-refresh-menu-list',
 ;;    `bmkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bmkp-regexp-filtered-file-name-alist-only',
 ;;    `bmkp-regexp-filtered-tags-alist-only',
@@ -1818,7 +1819,7 @@ If called from Lisp:
   (cond ((and (not parg) (not file)) (bookmark-write-file bmkp-current-bookmark-file))
         ((and (not parg) file) (bookmark-write-file file))
         ((and parg (not file))
-         (let ((file  (read-file-name "File to save bookmarks in: ")))  (bookmark-write-file file)))
+         (bookmark-write-file (bmkp-read-bookmark-file-name "File to save bookmarks in: ")))
         (t (bookmark-write-file file)))
   ;; Indicate by the count that we have synced the current bookmark file.
   ;; If an error has already occurred somewhere, the count will not be set, which is what we want.
@@ -1915,14 +1916,15 @@ bookmark file will likely become corrupted.  You should load only
 bookmark files that were created using the bookmark functions."
   (interactive
    (list
-    (let* ((bfile                     (if (bmkp-same-file-p bmkp-current-bookmark-file
-                                                            bmkp-last-bookmark-file)
-                                          bookmark-default-file
-                                        bmkp-last-bookmark-file))
-           (dir                       (or (file-name-directory bfile) "~/"))
-           (insert-default-directory  t))
-      (read-file-name (if current-prefix-arg "Switch to bookmark file: " "Add bookmarks from file: ")
-                      dir bfile 'confirm))
+    (let ((bfile  (if (bmkp-same-file-p bmkp-current-bookmark-file
+                                        bmkp-last-bookmark-file)
+                      bookmark-default-file
+                    bmkp-last-bookmark-file)))
+      (bmkp-read-bookmark-file-name
+       (if current-prefix-arg "Switch to bookmark file: " "Add bookmarks from file: ")
+       (or (file-name-directory bfile) "~/")
+       bfile
+       'CONFIRM))
     current-prefix-arg))
   (setq file  (abbreviate-file-name (expand-file-name file)))
   (unless (file-readable-p file) (error "Cannot read bookmark file `%s'" file))
@@ -2373,13 +2375,14 @@ so bookmarks will subsequently be saved to FILE.
 still use `bookmark-default-file' for the initial set of bookmarks."
   (interactive
    (list
-    (let* ((bfile                     (if (bmkp-same-file-p bmkp-current-bookmark-file
-                                                            bmkp-last-bookmark-file)
-                                          bookmark-default-file
-                                        bmkp-last-bookmark-file))
-           (dir                       (or (file-name-directory bfile) "~/"))
-           (insert-default-directory  t))
-      (read-file-name "Switch to bookmark file: " dir bfile 'confirm))))
+    (let ((bfile  (if (bmkp-same-file-p bmkp-current-bookmark-file
+                                        bmkp-last-bookmark-file)
+                      bookmark-default-file
+                    bmkp-last-bookmark-file)))
+      (bmkp-read-bookmark-file-name "Switch to bookmark file: "
+                                    (or (file-name-directory bfile) "~/")
+                                    bfile
+                                    'CONFIRM))))
   (bookmark-load file t no-msg))
 
 ;;;###autoload
@@ -2404,19 +2407,26 @@ bookmark file with that name is created.
 You are prompted to confirm the bookmark-file switch.
 
 Returns FILE."
-  (interactive
-   (list
-    (let* ((insert-default-directory  t)
-           (bmk-file                  (expand-file-name (read-file-name
-                                                         "Use bookmark file: " nil
-                                                         (if (> emacs-major-version 22)
-                                                             (list ".emacs.bmk" bookmark-default-file)
-                                                           ".emacs.bmk")))))
-      bmk-file)))
+  (interactive (list (bmkp-read-bookmark-file-name)))
   (unless (file-readable-p file) (bmkp-empty-file file))
   (when (y-or-n-p (format "Use `%s' as the current bookmark file? " file))
     (bmkp-switch-bookmark-file file))
   file)
+
+(defun bmkp-read-bookmark-file-name (&optional prompt dir default-filename require-match)
+  "Read and return an (absolute) bookmark file name.
+PROMPT is the prompt to use (default: \"Use bookmark file: \").
+The other args are the same as for `read-file-name'."
+  (let ((insert-default-directory  t))
+    (expand-file-name
+     (read-file-name (or prompt "Use bookmark file: ")
+                     dir
+                     (or default-filename
+                         (if (> emacs-major-version 22)
+                             (list ".emacs.bmk" bookmark-default-file)
+                           ".emacs.bmk"))
+                     default-filename
+                     require-match))))
 
 ;;;###autoload
 (defun bmkp-empty-file (file)           ; Bound to `C-x p 0'

@@ -422,7 +422,7 @@ I've put an updated version of DanielBrockman's theme ('zenburn') on the wiki: C
 
 I've posted the latest revision of [http://edward.oconnor.cx/elisp/color-theme-hober2.el color-theme-hober2]; it's quite a bit more fleshed out from when I submitted it to you. -- EdwardOConnor
 
-Here's my [http://github.com/vic/vee/wikis/darkvee-colortheme DarkVee] color theme -- vic
+Here's my [http://color-theme-select.heroku.com/#color-theme-dark-vee DarkVee] color theme -- vic
 
 Alex rose to the Hello Kitty challenge and wrote PinkBliss.
 
@@ -435,6 +435,9 @@ I created a color theme based on your color-theme-tango.el. I modified it a bit 
 
 I've created color-theme-dirac, a nice (for me) pastel color theme on black background. It's available via git at http://github.com/nicodds/color-theme-dirac [http://github.com/nicodds/color-theme-dirac/raw/master/screenshot/color-theme-dirac.png (screenshot)] -- Domenico Delle Side
 
+
+[new]
+Live color theme screenshots at the [http://color-theme-select.heroku.com/ (color-theme-select)] web site (almost ~130 themes) -- vic
 
 == History ==
 The original color theme code was written by Jonadab the Unsightly
@@ -570,6 +573,9 @@ Send them to me at : zedek (at) gnu.org
 
 MaverickWoo has compiled one such gallery at http://code.google.com/p/gnuemacscolorthemetest/.
 We now have another gallery on http://www.flickr.com/groups/emacs/. Please share your screenshots.
+
+[new]
+Now you can use the [http://color-theme-select.heroku.com/ (color-theme-select)] web site to preview many color themes ~130, and create your own. -- vic
 
 
 ----

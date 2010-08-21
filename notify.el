@@ -4,6 +4,7 @@
 
 ;; Original Author: Mark A. Hershberger <mhersberger@intrahealth.org>
 ;; Modified by Andrey Kotlarski <m00naticus@gmail.com>
+;; Modified by Andrew Gwozdziewycz <git@apgwoz.com>
 ;; Keywords: extensions, convenience, lisp
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -24,7 +25,7 @@
 ;;; Commentary:
 
 ;; This provides a single function, `notify', that will produce a notify
-;; pop-up via D-Bus, libnotify or simple message.
+;; pop-up via D-Bus, libnotify, simple message or growl.
 ;; To use, just put (autoload 'notify "notify" "Notify TITLE, BODY.")
 ;;  in your init file.  You may override default chosen notification
 ;;  method by assigning `notify-method' to one of 'notify-via-dbus
@@ -40,14 +41,16 @@ May be overridden with key-value additional arguments to `notify'.")
   "Minimum time allowed between notifications in time format.")
 (defvar notify-last-notification '(0 0 0) "Time of last notification.")
 (defvar notify-method nil "Notification method among
-'notify-via-dbus, 'notify-via-libnotify or 'notify-via-message.")
+'notify-via-dbus, 'notify-via-libnotify, 'notify-via-message or 
+'notify-via-growl")
 
 ;; determine notification method unless already set
-;; prefer D-Bus > libnotify > message
+;; prefer growl > D-Bus > libnotify > message
 (cond
  ((null notify-method)
   (setq notify-method
 	(cond
+        ((executable-find "growlnotify") 'notify-via-growl)
 	 ((and (require 'dbus nil t)
 	       (dbus-ping :session "org.freedesktop.Notifications"))
 	  (defvar notify-id 0 "Current D-Bus notification id.")
@@ -69,7 +72,10 @@ May be overridden with key-value additional arguments to `notify'.")
 	    (progn
 	      (defvar notify-id 0 "Current D-Bus notification id.")
 	      'notify-via-dbus)
-	  'notify-via-message))))
+	  'notify-via-message)))
+ ((and (eq notify-method 'notify-via-growl)
+       (not (executable-find "growlnotify")))
+  (setq notify-method 'notify-via-message)))
 
 (defun notify-via-dbus (title body)
   "Send notification with TITLE, BODY `D-Bus'."
@@ -102,6 +108,18 @@ May be overridden with key-value additional arguments to `notify'.")
   "Notify TITLE, BODY with a simple message."
   (message "%s: %s" title body))
 
+(defun notify-via-growl (title body)
+  "Notify TITLE, BODY with a growl"
+  (call-process "growlnotify" nil 0 nil
+                "-a" (get 'notify-defaults :app)
+                "-t" (notify-via-growl-stringify title)
+                "-m" (notify-via-growl-stringify body)))
+
+(defun notify-via-growl-stringify (thing)
+  (cond ((null thing) "")
+        ((stringp thing) thing)
+        (t (format "%s" thing))))
+
 (defun keywords-to-properties (symbol args &optional defaults)
   "Add to SYMBOL's property list key-values from ARGS and DEFAULTS."
   (when (consp defaults)
@@ -109,6 +127,7 @@ May be overridden with key-value additional arguments to `notify'.")
   (while args
     (put symbol (car args) (cadr args))
     (setq args (cddr args))))
+
 
 ;;;###autoload
 (defun notify (title body &rest args)

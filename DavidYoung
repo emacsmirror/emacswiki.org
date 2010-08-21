@@ -19,7 +19,10 @@ Bring content from specific buffer to current buffer.
 
 == jump ==
 
-Take the command at point, jump to another window and paste it to the point over there.
+Take the command at point, jump to another window, then paste it at prompt. 
+
+If the destination window is not in shell-mode, just paste it to the point over there. This makes jump useful in other text edit modes.
+
 
 == some ==
 
@@ -114,6 +117,9 @@ It is very ugly that the shell buffer will keep exist even user has already been
 
 I chose to use 'set-process-sentinel' function instead of monitor user commands. 'set-process-sentinel' is provided by shell mode itself. So it makes things simpler.
 
+== my-overwrite ==
+
+When overwrite-mode is on, display a red alert at the beginning of mode line. When overwrite-mode is off, remove the alert.
 
 
 = Discussion =

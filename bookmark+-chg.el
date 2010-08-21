@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 19 16:51:08 2010 (-0700)
+;; Last-Updated: Fri Aug 20 16:33:33 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13149
+;;     Update #: 13156
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/20 dadams
+;;     Added: bmkp-read-bookmark-file-name.
+;;     bookmark-save, bookmark-load, bmkp-switch-bookmark-file, bmkp-use-bookmark-file-create:
+;;       Use bmkp-read-bookmark-file-name.
 ;; 2010/08/19 dadams
 ;;     Require gnus-sum.el when compile (for macro).  Thx to S. Nemec.
 ;; 2010/08/18 dadams
