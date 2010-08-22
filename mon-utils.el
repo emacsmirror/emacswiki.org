@@ -159,6 +159,7 @@
 ;; `next-almost-prime'               -> `mon-next-almost-prime'
 ;; `nshuffle-vector'                 -> `mon-nshuffle-vector'
 ;; `delq-dups'                       -> `mon-delq-dups' 
+;; `mon-byte-table-bits'             -> `mon-get-bit-table'
 ;; `mon-bool-vector-to-list'         -> `mon-bool-vector-pp'
 ;; `buffer-exists-p'                 -> `mon-buffer-exists-p'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
@@ -5494,7 +5495,7 @@ value contains the following key value pairs:\n
       :decimal 383479222
       :octal  \"#o2666666666\"
       :hex    \"#x16db6db6\"
-      :gray-table [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0]
+      :bin-table [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0]
       :true-table [t nil t t nil t t nil t t nil t t nil
                     t t nil t t nil t t nil t t nil t t nil]
       :bool-vector #&29\"m\\333\\266\xd\"\)\n
@@ -5505,7 +5506,7 @@ value contains the following key value pairs:\n
    \(aset tt--bv tgl nil\)\)\n
  ;=> #&31\"m\\333\\266m\"\n
 \(mon-bool-vector-pp tt--bv\)\n
- ;=> \(:gray-table  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
+ ;=> \(:bintable  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
        :true-table [t nil t t nil t t nil t t nil t t nil t
                    t nil t t nil t t nil t t nil t t nil t t]
       :bool-vector #&31\"m\\333\\266m\"\)\n
@@ -5542,16 +5543,15 @@ value contains the following key value pairs:\n
               (setq to-bin-str 
                     (concat "#b" (make-string (- 29 bv-len) 48) to-bin-str)))
             
-
             `(:binary      ,to-bin-str
               :decimal     ,bin-str-dec
               :octal       ,(format "#o%o" bin-str-dec)
               :hex         ,(format "#x%x" bin-str-dec)
-              :gray-table  ,to-bin
+              :bin-table  ,to-bin
               :true-table  ,(vconcat bool-vec)
               :bool-vector ,bool-vec))
 
-        `(:gray-table  ,to-bin 
+        `(:bin-table  ,to-bin 
           :true-table  ,(vconcat bool-vec)
           :bool-vector ,bool-vec)))))
 ;;
@@ -5572,10 +5572,6 @@ value contains the following key value pairs:\n
 :SEE-ALSO `mon-bool-vector-pp', `mon-help-binary-representation',
 `mon-help-char-raw-bytes'.\n►►►")
 
-;;'mon-bind-variable-at-loadtime 
-;; mon-get-bit-table
-
-
 ;;; ==============================
 ;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-16T20:11:02-04:00Z}#{10331} - by MON KEY>
@@ -5587,58 +5583,72 @@ Return a list with the format:\n
  \(:bit-<N> :bit-weight N :2^ N :max-signed N :max-unsigned \(N . N\)\)\n
 The values of these keys map as follows:\n
 :bit-<N>       The bit identity \(0 indexed\)
-:bit-weight    The value of bit at index.
+:byte          The byte of the bit.
 :2^            The bits value as a power of 2.
-:max-signed    The maximimun signed number representable by bit.
-:max-unsigned  A cons bounding the maximum unsigned range representable by bit.\n
+:bit-dec       The decimal value of bit at index.
+:bit-oct       The octal value of bit at index.
+:bit-hex       The hex value of bit at index.
+:max-int       The maximimun signed number representable by bit.
+:max-uint      A cons bounding the maximum unsigned range representable by bit.\n
 :EXAMPLE\n\n\(assq :bit-28 \(mon-get-bit-table\)\)\n
 \(memq :max-unsigned \(assq :bit-29 \(mon-get-bit-table\)\)\)\n
 \(mon-get-bit-table t\)\n
 :NOTE The first time this function is called it caches the results of its
 evaluation to the variable `*mon-bit-table*'.\n
+:ALIASED-BY `mon-byte-table-bits'\n
 :SEE-ALSO `mon-bool-vector-pp' `mon-help-binary-representation', `mon-help-char-raw-bytes'.\n►►►"
   (interactive "i\np")
   (let ((gthr (when (bound-and-true-p *mon-bit-table*)
                 *mon-bit-table*)))
-    (when (null *mon-bit-table*)
+    (when (null gthr)
       (dotimes (i 29 (progn (setq gthr (nreverse gthr))
                             (setq *mon-bit-table* gthr)))
         (let* ((nxt-i (1+ i))
-               (bky (car (read-from-string (format ":bit-%d" nxt-i))))
+               (bky       (car (read-from-string (format ":bit-%d" nxt-i))))
                (bit-wgt   (expt 2 i))
+               (byt-wgt   (if (eq (% nxt-i 8) 0)
+                              (/ nxt-i 8)
+                            (1+ (/ (- nxt-i (% nxt-i 8)) 8))))
+               (oct-wgt (make-symbol (format "#o%o" bit-wgt)))
+               (hex-wgt (make-symbol (format "#x%X" bit-wgt)))
                ;; What no CL `reduce' at compile time w/out a
                ;; byte-compile-warning?  Thanks Emacs for protecting my
                ;; namespace... After all its not like `reduce' isn't stupid
                ;; fukcking usefull!!! Goddamn how I loathe thee CL runtime ban.
-               ;; :WAS (mx-sgn (+ bit-wgt (reduce '+ gthr :key 'caddr)))               
-               (mx-sgn  (apply #'+ bit-wgt (mapcar #'(lambda (fk-rdc) (caddr fk-rdc)) gthr)))
+               ;; :WAS (mx-sgn (+ bit-wgt (reduce '+ gthr :key 'caddr)))
+               ;; 
+               (mx-sgn  (apply #'+ bit-wgt (mapcar #'(lambda (fk-rdc) (nth 6 fk-rdc)) gthr)))
                (unsgn-bot (/ (lognot mx-sgn) 2))
                (unsgn-top (lognot unsgn-bot)))
-          (push `(,bky :bit-weight ,bit-wgt :2^ ,i  :max-signed ,mx-sgn
-                       :max-unsigned (,unsgn-bot . ,unsgn-top)) gthr))))
+          (push `(,bky :byte ,byt-wgt :2^ ,i 
+                       :bit-weight ,bit-wgt :bit-oct ,oct-wgt :bit-hex ,hex-wgt 
+                       :max-int ,mx-sgn :max-uint (,unsgn-bot . ,unsgn-top)) gthr))))
     (when (or intrp dsplyp)
       (with-current-buffer 
           (get-buffer-create (upcase (symbol-name '*mon-bit-table*)))
-       (erase-buffer)
-       (save-excursion 
-         (princ gthr (current-buffer))
-         (newline))
-       (down-list)
-       (ignore-errors (while (forward-list) (newline)))
-       (save-excursion
-         (goto-char (buffer-end 0))
-         (forward-list)
-         (backward-char 2)
-         (delete-char 1))
-       (emacs-lisp-mode)
-       (display-buffer (current-buffer) t)))
-     gthr))
+        (erase-buffer)
+        (save-excursion 
+          (princ gthr (current-buffer))
+          (newline))
+        (down-list)
+        (ignore-errors (while (forward-list) (newline)))
+        (save-excursion
+          (goto-char (buffer-end 0))
+          (forward-list)
+          (backward-char 2)
+          (delete-char 1))
+        (emacs-lisp-mode)
+        (display-buffer (current-buffer) t)))
+    gthr))
 ;;
+;; :NOTE This is a bad name but its hard to fit it in with my other mnemonics :(
+(defalias 'mon-byte-table-bits 'mon-get-bit-table)
+;;
+;;; :TEST-ME (progn (makunbound '*mon-bit-table*) (mon-get-bit-table t))
 ;;; :TEST-ME (assq :bit-29 (mon-get-bit-table))
 ;;; :TEST-ME (memq :max-unsigned (assq :bit-29 (mon-get-bit-table)))
-;;; :TEST-ME (mon-get-bit-table t)
-;;
 
+;; (
 ;;; ==============================
 ;;; :RECTANGLE-RELATED-FUNCTIONS
 ;;; ==============================

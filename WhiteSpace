@@ -1,6 +1,6 @@
 This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 
-: .:: ''v12.1'' :: ''part of GNU Emacs'' ::.
+: .:: ''v13.0'' :: ''part of GNU Emacs'' ::.
 
 : It runs on Emacs 23.
 
@@ -711,6 +711,11 @@ Hi Vinicius,
 I tested these settings no Mac OS X 10.4 and 10.6 and they seem ok.
 
 [new]
+: Thanks for testing -- ViniciusJoseLatorre
+
+----
+
+[new]
 I am using GNU Emacs 23.1.1 and I have the following setting for whitespace-mode.
 
 {{{
@@ -727,6 +732,13 @@ I have issues with the 'empty' marker. When am I writing a new source code, whit
 -- PraveenKumar
 
 [new]
+
+: Hi PraveenKumar,
+: This problem should be fixed by whitespace v13.0. -- ViniciusJoseLatorre
+
+----
+
+[new]
 I am making Whitespace mode honor the setting for fill-column with:
 
   (add-hook 'whitespace-mode-hook
@@ -734,6 +746,13 @@ I am making Whitespace mode honor the setting for fill-column with:
                             fill-column)))
 
 I don't think there is a solution to this on a local, per-buffer basis with `global-whitespace-mode'.
+
+[new]
+: Hi,
+: Indeed, this problem is not addressed by whitespace at moment. I'll try to fix it.
+: Thanks for your reporting. -- ViniciusJoseLatorre
+
+----
 
 [new]
 In GNU Emacs 23.2.1, cursor movement in c++-mode with whitespace-mode is sloppy. When I keep pressing the arrow keys, or C-f/C-b; C-p/C-n, the cursor doesn't move smoothly. It just jumps discretely. However, when I turn off the whitespace-mode, the cursor movement is smooth again. Does anyone else face this issue?
@@ -755,8 +774,26 @@ into my .emacs.
 -- Jeremy
 
 [new]
+
+: Hi PraveenKumar,
+: Hi Christoph,
+: Hi Jeremy,
+: Well, whitespace v13.0 should fix the slow down cursor movement.
+: Thanks for reporting. -- ViniciusJoseLatorre
+
+----
+
+[new]
 I'm using global-whitespace-mode on emacs 23.2.1 but it seems to only work when I open files. If I create a new buffer, or manually change my highlighting mode, whitespace mode no longer has any effect. I need to disable it and re-enable it for it to work.
 I'm also using LineNumbers, and whitespace mode affects the spaces next to the numbers. Is there a way I could disable that?
+
+[new]
+: Hi,
+: It works fine when opening files which has major mode declared in ##whitespace-global-modes## variable. For example, if a C++ buffer is opened (##C-x C-f test.cpp RET##) the global whitespace highlighting works. ''NOTE:'' the buffer ##test.cpp## in the previous example does not have a file associated.
+: Well, I don't know LineNumbers packages but if the LineNumbers packages insert strings at beginning of each line, I see no trivial way to avoid the extra spaces highlighting. Now, if LineNumbers packages insert text properties at beginning of each line or create a parallel buffer then probably there is a good solution.
+: Could you, please, send me an email with the steps necessary to reproduce this problem starting with ##emacs -Q##?
+: Send me also which LineNumbers package and the environment setting for this package you are using.
+: Thanks for your report. -- ViniciusJoseLatorre
 
 ----
 

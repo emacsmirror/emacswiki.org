@@ -92,6 +92,7 @@ How do you avoid grep-find to find matches in backup files and (like *.~* and .#
 * TinyReplace replace over multiple files (run M-x grep to and hit % in compile buffer) RCS support.
 * TraverseDirectory search a word or regexp in all files in dir and subdir (recursive search).
 * (Links are broken or faulty - http://www.peerfear.org/el/replace-recursive.el (successor of http://www.peerfear.org/el/igrep-find-query-replace.el))
+* Lisp:wgrep.el Writable grep results
 
 == See Also ==
 * [[Namazu]] -- Text indexing and search.

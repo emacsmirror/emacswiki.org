@@ -152,3 +152,30 @@ BTW I believe the code above is a little bit broken.
 -- LennartBorgman
 ----
 CategoryHypermedia HtmlMode
+
+== XHTML5 folding with Nxml Mode ==
+
+When the webpage is structured using HTML5 'section' and 'article' elements, the native xnml support for outlines may be used for folding.
+It is however necessary to tell the outline feature to use the 'h[1-6]' headers as header elements
+and the 'section', 'article', 'aside' and 'nav' elements as sectioning elements (and ignore the 'div' element).
+
+<pre>
+(defun nxml-html-outline()
+  (interactive)
+  "Sets up the outline mode for XHTML5 for this buffer"
+  (make-local-variable 'nxml-section-element-name-regexp)
+  (setq nxml-section-element-name-regexp "head\\|body\\|blockquote\\|details\\|fieldset\\|figure\\|td\\|section\\|article\\|nav\\|aside")
+  (make-local-variable 'nxml-heading-element-name-regexp)
+  (setq nxml-heading-element-name-regexp "title\\|h[1-9]")
+  )
+
+(defun my-xnml-hook()
+  (when (string-match ".x?html$")
+    (nxml-html-outline)
+    )
+  )
+(add-hook 'nxml-mode-hook 'my-nxml-hook)
+</pre>
+
+One limitation is that it doesn't recognise multiple 'h[1-6]' in a 'header' element
+and doesn't work with implicit sections.

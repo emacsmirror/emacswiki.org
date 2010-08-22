@@ -363,6 +363,22 @@ How much time have I spent on this? A bit, I guess -- time passes way too fast w
 
 4) I didn't know igrep before - will have to have a good look at it :) Thanks for the tip!
 
+[new]
+Not RedBlue here, but here is my take on (3):
+- after C-c /, keep the currently selected file highlighted in the Sunrise active panel buffer
+- As user enters the pattern, if the currently selected file does not match the current pattern, select the first matching file. Perhaps center the Sunrise buffer on it.
+- On C-p/C-n, select and move highlighting to the next matching file
+- On RET, visit the currently highlighted file
+- On C-g, close the minibuffer, display all files (matching or nonmatching), keep the selection on the currently selected (matching) file.
+
+As another alternative, an option would be to do the same as above, except instead of showing only matching files (as is now the case) highlight them in a different color. C-p/C-n would still move back or forward through the matching files. In this case I guess one could keep the last match highlighted, and display the match string if C-c / is pressed again in the same buffer (reset if changed directory of course).
+
+And BTW, I just started looking at SC today, and it already looks like *the* file manager to use in linux... 
+
+As an altap salamander user on windows, I also found rather convenient to define were C-f3/f4/f5/f6 for name/ext/time/size sorting, luckily it was easy to do. Another thing that would be nice is to have INS toggle select/deselect, rather than just select...
+
+--laxxy
+
 ----
 CategoryDirectories
 CategoryEmulation
