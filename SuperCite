@@ -1,0 +1,28 @@
+[[es:SuperCiteEs]]
+Supercite is an official GNU Emacs package written entirely in Emacs
+Lisp. It interfaces to most of the commonly used Emacs mail user agents
+(MUAs) and news user agents (NUAs), and provides
+sophisticated facilities for the citing and attributing of message
+replies.  Supercite has a very specific and limited role in the process
+of composing replies to both USENET network news and electronic mail.
+
+
+The preferred way to spell Supercite is with a capital S,
+lowercase the rest, but for the sake of this camel-wiki system, here is
+known as SuperCite.
+
+
+Supercite is only useful in conjunction with MUAs and NUAs such as VM,
+GNUS, RMAIL, etc. (hereafter referred to collectively as MUAs).
+Supercite is typically called by the MUA after a reply buffer has been
+setup.  Thereafter, Supercite's many commands and formatting styles are
+available in that reply buffer until the reply is sent.  Supercite is
+re-initialized in each new reply buffer.
+
+
+An online html version of the manual (both Spanish and English) can be viewed at
+
+* http://gnu.manticore.es/manual-supercite-emacs
+
+----
+CategoryMailAddons

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Aug 20 16:34:56 2010 (-0700)
+;; Last-Updated: Sun Aug 22 09:48:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 702
+;;     Update #: 706
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -263,6 +263,7 @@
 ;;    `bmkp-read-variable', `bmkp-read-variables-completing',
 ;;    `bmkp-record-visit', `bmkp-refresh-latest-bookmark-list',
 ;;    `bmkp-refresh-menu-list',
+;;    `bmkp-regexp-filtered-annotation-alist-only',
 ;;    `bmkp-regexp-filtered-bookmark-name-alist-only',
 ;;    `bmkp-regexp-filtered-file-name-alist-only',
 ;;    `bmkp-regexp-filtered-tags-alist-only',
@@ -3285,6 +3286,16 @@ A new list is returned (no side effects)."
 A new list is returned (no side effects)."
   (bookmark-maybe-load-default-file)
   (bmkp-remove-if-not #'bmkp-non-file-bookmark-p bookmark-alist))
+
+(defun bmkp-regexp-filtered-annotation-alist-only ()
+  "`bookmark-alist' for annotations matching `bmkp-bmenu-filter-pattern'."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not
+   #'(lambda (bmk)
+       (let ((annot  (bookmark-get-annotation bmk)))
+         (and (stringp annot) (not (string= "" annot))
+              (string-match bmkp-bmenu-filter-pattern annot))))
+   bookmark-alist))
 
 (defun bmkp-regexp-filtered-bookmark-name-alist-only ()
   "`bookmark-alist' for bookmarks matching `bmkp-bmenu-filter-pattern'."

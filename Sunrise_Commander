@@ -371,13 +371,23 @@ Not RedBlue here, but here is my take on (3):
 - On RET, visit the currently highlighted file
 - On C-g, close the minibuffer, display all files (matching or nonmatching), keep the selection on the currently selected (matching) file.
 
-As another alternative, an option would be to do the same as above, except instead of showing only matching files (as is now the case) highlight them in a different color. C-p/C-n would still move back or forward through the matching files. In this case I guess one could keep the last match highlighted, and display the match string if C-c / is pressed again in the same buffer (reset if changed directory of course).
+As another alternative, an option would be to do the same as above, except instead of showing only matching files (as is now the case) highlight them in a different color. C-p and C-n would still move back or forward through the matching files. In this case I guess one could keep the last match highlighted, and display the match string if C-c / is pressed again in the same buffer (reset if changed directory of course).
 
 And BTW, I just started looking at SC today, and it already looks like *the* file manager to use in linux... 
 
 As an altap salamander user on windows, I also found rather convenient to define were C-f3/f4/f5/f6 for name/ext/time/size sorting, luckily it was easy to do. Another thing that would be nice is to have INS toggle select/deselect, rather than just select...
 
 --laxxy
+
+PS. Having worked a bit more with it, I am feeling it would have been really nice to have two modes of operation: (1) "navigation mode" where hitting a letter button would start filename pattern search (as in the previous alternative), and move the current selection to the first matching file or directory if it is not matching. Highlighting matches would be nice here I guess. Commands that start with alphanumeric keys would have to be either prefixed or just ignored in this mode of course, and (2) "command mode" which could be the current default. A user could then bind some easy key like "/" to switch between the two.
+
+The main reason is that one nice feature of this type of file managers is easy navigation through the directories/files by jumping to the first match. For example, if I have directories ~/xxx/yyy/zzz1, and ~/xxx/yyy/zzz2, and want to switch from ~ to ~/xxx/yyy/zzz2, in a typical two panel file manager (like the classic dos/windows file managers, mc, or krusader) I would do smth like "x RET y RET z C-n RET". This is very much like completion, except the command is effectively executed in the panel as you type, which makes it more user-friendly. 
+Having to press "C-c / x RET C-c / y RET C-c / z C-g C-n RET" is a bit too much, even if one re-binds "C-c /" to "/"... Perhaps there is a better way, but I have not found it yet :(
+
+If this sounds like too much work, having the active window automatically following the path typed in the minibuffer on "j" (the way the displayed file list changes on "C-c /") would be somewhat similar...
+
+One thing about it is that since this is smth pretty common functionality in other file managers, I suspect many people might be doing this reflexively, and then scratching their heads trying to remember what were the commands they executed (I know I do)...
+e.g. in mc this functionality is case-sensitive (bad idea, but that is how it is), so if some former MC user has a directory named say ~/Data, and wants to switch to it in SC in this manner, some rather unexpected things might happen :)
 
 ----
 CategoryDirectories

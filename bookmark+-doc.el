@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 20 09:36:03 2010 (-0700)
+;; Last-Updated: Sun Aug 22 10:16:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13346
+;;     Update #: 13347
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1366,9 +1366,10 @@
 ;;    pattern.
 ;;
 ;;    Similarly, hit `P F' for bookmarks whose file names match a
-;;    regexp, and `P T' for bookmarks with one or more tags that match
-;;    a regexp.  See (@> "Bookmark Tags"), above, for information
-;;    about tags.
+;;    regexp, `P A' for bookmarks whose annotations match a regexp,
+;;    and `P T' for bookmarks with one or more tags that match a
+;;    regexp.  See (@> "Bookmark Tags"), above, for information about
+;;    tags.
 ;;
 ;;  * Just as in Dired, use `% m' to mark the bookmarks that match a
 ;;    regexp.  Then use `>' to show only the marked bookmarks.  See

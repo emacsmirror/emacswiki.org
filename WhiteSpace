@@ -598,6 +598,8 @@ There are the following possibilities to deal with the situation above:
 and 23.
 :: -- ViniciusJoseLatorre
 
+----
+
 [new]
 
     Hi. I really like this new and improved Blankmode.  But there are a couple 
@@ -643,6 +645,8 @@ symbol. Please, see ##whitespace-style## documentation.
 user are honored.
 :: -- ViniciusJoseLatorre
 
+----
+
 [new]
 Hello, whitespace fail to show newlines on ubuntu with :"GNU Emacs 23.0.60.1
 (i486-pc-linux-gnu, GTK+ Version 2.12.0) of 2008-03-07 on iridium, modified by
@@ -656,6 +660,8 @@ Any idea ? Thank you.
 : Hi Thierry, as we could see by email, this was an Emacs problem instead of a
 WhiteSpace problem. Thanks for your report.
 : -- ViniciusJoseLatorre
+
+----
 
 [new]
 I have been successfully using (fromerly blank-mode.el and now) whitespace.el for a while now on Windows-based GNU Emacs, including 22.3.  I appreciate it very much.  Thank you!
@@ -734,7 +740,7 @@ I have issues with the 'empty' marker. When am I writing a new source code, whit
 [new]
 
 : Hi PraveenKumar,
-: This problem should be fixed by whitespace v13.0. -- ViniciusJoseLatorre
+: This problem should be fixed by version 13.0. -- ViniciusJoseLatorre
 
 ----
 
@@ -749,8 +755,8 @@ I don't think there is a solution to this on a local, per-buffer basis with `glo
 
 [new]
 : Hi,
-: Indeed, this problem is not addressed by whitespace at moment. I'll try to fix it.
-: Thanks for your reporting. -- ViniciusJoseLatorre
+: Indeed, this problem is not addressed by WhiteSpace at moment. I'll try to fix it.
+: Thanks for reporting. -- ViniciusJoseLatorre
 
 ----
 
@@ -778,7 +784,7 @@ into my .emacs.
 : Hi PraveenKumar,
 : Hi Christoph,
 : Hi Jeremy,
-: Well, whitespace v13.0 should fix the slow down cursor movement.
+: Well, version 13.0 should fix the slow down cursor movement.
 : Thanks for reporting. -- ViniciusJoseLatorre
 
 ----
@@ -789,7 +795,7 @@ I'm also using LineNumbers, and whitespace mode affects the spaces next to the n
 
 [new]
 : Hi,
-: It works fine when opening files which has major mode declared in ##whitespace-global-modes## variable. For example, if a C++ buffer is opened (##C-x C-f test.cpp RET##) the global whitespace highlighting works. ''NOTE:'' the buffer ##test.cpp## in the previous example does not have a file associated.
+: It works fine when opening files which has major mode declared in ##whitespace-global-modes## variable. For example, if a C++ buffer is opened (##C-x C-f test.cpp RET##) the global WhiteSpace highlighting works. ''NOTE:'' the buffer ##test.cpp## in the previous example does not have a file associated.
 : Well, I don't know LineNumbers packages but if the LineNumbers packages insert strings at beginning of each line, I see no trivial way to avoid the extra spaces highlighting. Now, if LineNumbers packages insert text properties at beginning of each line or create a parallel buffer then probably there is a good solution.
 : Could you, please, send me an email with the steps necessary to reproduce this problem starting with ##emacs -Q##?
 : Send me also which LineNumbers package and the environment setting for this package you are using.

@@ -59,6 +59,11 @@ You can ignore whitespace or case sensitivity in two ways:
 That version is nice, but it opens a new Emacs for every diff. 
 If you do not want that then there were other suggestions on the list that instead uses GnuClient.
 
+[new]
+With GNU Emacs 23.1.1 on Ubuntu 10.04, I was obliged to add a dash like below:
+
+    (add-to-list 'command-switch-alist '("-diff" . command-line-diff))
+
 = Configuration =
 
 By default ediff spawns a new frame to display files to be compared or

@@ -1,0 +1,14 @@
+[[en:SuperCite]]
+Supercite es un paquete oficial de GNU Emacs escrito enteramente en Emacs Lisp. Tiene interfaz a la mayoría de los agente de correo de usuario usados comunmente en Emacs (MUA) y los agentes de noticias de usuario (NUA), y proporciona facilidades sofisticadas para citar y atribuir en las réplicas a mensajes. Supercite tiene un papel muy específico y limitado en el proceso de composición de las réplicas tanto en las noticias de la red USENET como en el correo electrónico.
+
+
+La manera preferida de deletrear Supercite es con la ‘S’ capital, y en minúsculas el resto pero, por el bien de este sistema wiki-camélido, aquí se le llama SuperCite.
+
+
+Supercite sólo es útil en conjunción con MUA y NUA tales como VM, GNUS, RMAIL, etc. (de aquí en adelante referidos colectivamente como MUA). Supercite tipicamente es llamado por el MUA después de que se haya establecido un búfer de réplica. Por consiguiente, muchos de los comandos y estilos de formateado de Supercite están disponibles en ese búfer de réplica hasta que ésta se haya enviado. Supercite se reinicializa en cada nuevo búfer de réplica. 
+
+
+El manual en español en html en línea se encuentra en
+
+* http://gnu.manticore.es/manual-supercite-emacs
+

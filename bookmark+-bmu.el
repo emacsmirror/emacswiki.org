@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Wed Aug 18 19:41:16 2010 (-0700)
+;; Last-Updated: Sun Aug 22 10:06:58 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 314
+;;     Update #: 331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -70,6 +70,7 @@
 ;;  (@> "Faces (Customizable)")
 ;;  (@> "User Options (Customizable)")
 ;;  (@> "Internal Variables")
+;;  (@> "Compatibility Code for Older Emacs Versions")
 ;;  (@> "Menu List Replacements (`bookmark-bmenu-*')")
 ;;  (@> "Bookmark+ Functions (`bmkp-*')")
 ;;    (@> "Menu-List (`*-bmenu-*') Filter Commands")
@@ -100,6 +101,7 @@
 ;;    `bmkp-bmenu-describe-this+move-up',
 ;;    `bmkp-bmenu-describe-this-bookmark',`bmkp-bmenu-dired-marked',
 ;;    `bmkp-bmenu-edit-bookmark',
+;;    `bmkp-bmenu-filter-annotation-incrementally',
 ;;    `bmkp-bmenu-filter-bookmark-name-incrementally',
 ;;    `bmkp-bmenu-filter-file-name-incrementally',
 ;;    `bmkp-bmenu-filter-tags-incrementally',
@@ -130,8 +132,9 @@
 ;;    `bmkp-bmenu-omit-marked', `bmkp-bmenu-omit/unomit-marked',
 ;;    `bmkp-bmenu-query-replace-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-quit', `bmkp-bmenu-refresh-menu-list',
-;;    `bmkp-bmenu-regexp-mark', `bmkp-bmenu-remove-all-tags',
-;;    `bmkp-bmenu-remove-tags', `bmkp-bmenu-remove-tags-from-marked',
+;;    `bmkp-bmenu-regexp-mark', `bookmark-bmenu-relocate' (Emacs 20,
+;;    21), `bmkp-bmenu-remove-all-tags', `bmkp-bmenu-remove-tags',
+;;    `bmkp-bmenu-remove-tags-from-marked',
 ;;    `bmkp-bmenu-search-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-set-tag-value',
 ;;    `bmkp-bmenu-set-tag-value-for-marked', `bmkp-bmenu-show-all',
@@ -191,6 +194,7 @@
 ;;
 ;;    `bmkp-bmenu-barf-if-not-in-menu-list',
 ;;    `bmkp-bmenu-cancel-incremental-filtering',
+;;    `bmkp-bmenu-filter-alist-by-annotation-regexp',
 ;;    `bmkp-bmenu-filter-alist-by-bookmark-name-regexp',
 ;;    `bmkp-bmenu-filter-alist-by-file-name-regexp',
 ;;    `bmkp-bmenu-filter-alist-by-tags-regexp',
@@ -631,6 +635,20 @@ The first time the list is displayed, it is set to nil.")
 
 ;; This is a general variable.  It is in this file because it is used only in the bmenu code.
 (defvar bmkp-last-bmenu-bookmark nil "The name of the last bookmark current in the bookmark list.")
+ 
+;;(@* "Compatibility Code for Older Emacs Versions")
+;;; Compatibility Code for Older Emacs Versions ----------------------
+
+;;;###autoload
+(when (< emacs-major-version 22)
+  (defun bookmark-bmenu-relocate ()
+    "Change the file path of the bookmark on the current line,
+  prompting with completion for the new path."
+    (interactive)
+    (let ((bmk        (bookmark-bmenu-bookmark))
+          (thispoint  (point)))
+      (bookmark-relocate bmk)
+      (goto-char thispoint))))
  
 ;;(@* "Menu List Replacements (`bookmark-bmenu-*')")
 ;;; Menu List Replacements (`bookmark-bmenu-*') ----------------------
@@ -1180,6 +1198,8 @@ Hide/Show
 whose names match a regexp
 \\[bmkp-bmenu-filter-file-name-incrementally]\t- Incrementally show only bookmarks whose \
 files match a regexp
+\\[bmkp-bmenu-filter-annotation-incrementally]\t- Incrementally show only bookmarks whose \
+annotations match a regexp
 \\[bmkp-bmenu-filter-tags-incrementally]\t- Incrementally show only bookmarks whose tags \
 match a regexp
 \\[bmkp-bmenu-show-only-tagged]\t- Show only bookmarks that have tags
@@ -1763,6 +1783,27 @@ can use command `bmkp-toggle-bookmark-set-refreshes'."
   "Filter bookmarks by file name, then refresh the bookmark list."
   (setq bmkp-bmenu-filter-function  'bmkp-regexp-filtered-file-name-alist-only
         bmkp-bmenu-title            (format "Bookmarks with File Names Matching Regexp `%s'"
+                                            bmkp-bmenu-filter-pattern))
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp)))
+
+;;;###autoload
+(defun bmkp-bmenu-filter-annotation-incrementally () ; Bound to `P A' in bookmark list
+  "Incrementally filter bookmarks by their annotations using a regexp."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (unwind-protect
+       (progn (setq bmkp-bmenu-filter-timer
+                    (run-with-timer 0 bmkp-incremental-filter-delay
+                                    #'bmkp-bmenu-filter-alist-by-annotation-regexp))
+              (bmkp-bmenu-read-filter-input))
+    (bmkp-bmenu-cancel-incremental-filtering)))
+
+(defun bmkp-bmenu-filter-alist-by-annotation-regexp ()
+  "Filter bookmarks by annoation, then refresh the bookmark list."
+  (setq bmkp-bmenu-filter-function  'bmkp-regexp-filtered-annotation-alist-only
+        bmkp-bmenu-title            (format "Bookmarks with Annotations Matching Regexp `%s'"
                                             bmkp-bmenu-filter-pattern))
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
     (setq bmkp-latest-bookmark-alist  bookmark-alist)
@@ -3531,6 +3572,8 @@ With a prefix argument, show the internal definitions."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "P"                    nil) ; For Emacs 20
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "PA"                  'bmkp-bmenu-filter-annotation-incrementally)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "PB"               'bmkp-bmenu-filter-bookmark-name-incrementally)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "PF"                   'bmkp-bmenu-filter-file-name-incrementally)
@@ -3547,8 +3590,7 @@ With a prefix argument, show the internal definitions."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "RS"                   'bmkp-bmenu-show-only-regions)
 ;;;###autoload
-(when (fboundp 'bookmark-bmenu-relocate)
-  (define-key bookmark-bmenu-mode-map "\M-r"               'bookmark-bmenu-relocate)) ; `R' in Emacs
+(define-key bookmark-bmenu-mode-map "\M-r"                 'bookmark-bmenu-relocate) ; `R' in Emacs
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "S"                    'bookmark-bmenu-save) ; `s' in Emacs
 ;;;###autoload
@@ -3859,6 +3901,9 @@ With a prefix argument, show the internal definitions."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-filter-tags-incrementally]
   '(menu-item "Show Only Tag Matches..." bmkp-bmenu-filter-tags-incrementally
     :help "Incrementally filter bookmarks by tags using a regexp"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-filter-annotation-incrementally]
+  '(menu-item "Show Only Annotation Matches..." bmkp-bmenu-filter-annotation-incrementally
+    :help "Incrementally filter bookmarks by annotation using a regexp"))
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-filter-file-name-incrementally]
   '(menu-item "Show Only File Name Matches..." bmkp-bmenu-filter-file-name-incrementally
     :help "Incrementally filter bookmarks by file name using a regexp"))
@@ -4109,8 +4154,7 @@ With a prefix argument, show the internal definitions."
                                          '("Edit Annotation..." . bookmark-bmenu-edit-annotation)
                                          '("Edit Name, File Name..." . bmkp-bmenu-edit-bookmark)
                                          '("Rename..." . bookmark-bmenu-rename)
-                                         (and (fboundp 'bookmark-bmenu-relocate)
-                                              '("Relocate..." . bookmark-bmenu-relocate))
+                                         '("Relocate..." . bookmark-bmenu-relocate)
                                          '("--") ; ----------------------------------------
                                          '("Describe" . bmkp-bmenu-describe-this-bookmark))
                                  '("" (""))))))) ; No menu: not on a bookmark line.

@@ -1367,7 +1367,7 @@ You can also filter to show only the bookmarks that match a
   bookmarks are filtered incrementally, as you type.  Only the
   bookmark name is matched (not the file name).  Hit any non-inserting key, such as
   `RET', to finish defining the pattern. Similarly, hit '''`##P F##'''' for bookmarks whose __f__ile names match a
-  regexp, and '''`##P T##'''' for bookmarks with one or more __t__ags that match
+  regexp, '''`##P A##'''' for bookmarks whose __a__nnotations match a regexp, and '''`##P T##'''' for bookmarks with one or more __t__ags that match
   a regexp.  See [[#BookmarkTags]], above, for information about
   tags.
 

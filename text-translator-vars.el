@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(defconst text-translator-version "0.7.1"
+(defconst text-translator-version "0.7.2"
   "version numbers of this version of text-translator")
 
 (defconst text-translator-buffer "*translated*"
@@ -248,34 +248,38 @@
     ;; Excite.co.jp
     ("excite.co.jp"
      "www.excite.co.jp"
-     "/world/english/ HTTP/1.0"
+     "/world/english/ HTTP/1.1"
      "wb_lp=%o%t&before=%s"
-     japanese-shift-jis-unix
-     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;\" onselect=\"insertDictionaryKeyword(this);\">\\([^<]*\\)</textarea>"
+     utf-8
+     "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
+;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;\" onselect=\"insertDictionaryKeyword(this);\">\\([^<]*\\)</textarea>"
      (("EN" . "JA") ("JA" . "EN"))
      (("EN" . "en") ("JA" . "ja")))
     ("excite.co.jp"
      "www.excite.co.jp"
-     "/world/chinese/ HTTP/1.0"
+     "/world/chinese/ HTTP/1.1"
      "wb_lp=%o%t&before=%s"
      utf-8
-     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
+     "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
+;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
      (("JA" . "CH") ("CH" . "JA"))
      (("JA" . "ja") ("CH" . "ch")))
     ("excite.co.jp"
      "www.excite.co.jp"
-     "/world/chinese/ HTTP/1.0"
+     "/world/chinese/ HTTP/1.1"
      "wb_lp=%o%t&big5=yes&before=%s"
      utf-8
-     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
+     "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
+;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
      (("JA" . "CH") ("CH" . "JA"))
      (("JA" . "ja") ("CH" . "tw")))
     ("excite.co.jp"
      "www.excite.co.jp"
-     "/world/korean/ HTTP/1.0"
+     "/world/korean/ HTTP/1.1"
      "wb_lp=%o%t&before=%s"
      utf-8
-     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
+     "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
+;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
      (("JA" . "KO") ("KO" . "JA"))
      (("JA" . "ja") ("KO" . "ko")))
 

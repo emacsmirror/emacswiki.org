@@ -150,8 +150,7 @@ I use emacs on both X and terminal, color-theme is great on X, but on terminal w
 
 Well, you could put something in your .emacs like:
 <pre>
-(when (not (eq (symbol-value 'window-system) nil))
-  (color-theme-whatever))
+(when window-system (color-theme-whatever))
 </pre>
 You could also make it an 'if' and use an alternative color scheme on console; some work pretty wel.
 

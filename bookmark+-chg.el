@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Aug 20 16:33:33 2010 (-0700)
+;; Last-Updated: Sun Aug 22 10:13:56 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13156
+;;     Update #: 13166
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/08/22 dadams
+;;     Added: bmkp-regexp-filtered-annotation-alist-only.
 ;; 2010/08/20 dadams
 ;;     Added: bmkp-read-bookmark-file-name.
 ;;     bookmark-save, bookmark-load, bmkp-switch-bookmark-file, bmkp-use-bookmark-file-create:
@@ -160,6 +162,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2010/08/22 dadams
+;;     Added: bmkp-bmenu-filter-annotation-incrementally, bookmark-bmenu-relocate (Emacs 20, 21),
+;;            bmkp-bmenu-filter-alist-by-annotation-regexp.  Bound, added to menus and help.
 ;; 2010/08/18 dadams
 ;;     Removed eval-when-compile for bookmark+-(lit|1).el.
 ;;     bmkp-bmenu-propertize-item: Inconsequential simplification.
