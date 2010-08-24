@@ -522,5 +522,15 @@ try to put this into your .emacs and adapt it :
 
 [new]
 How is customizing the faces going to solve the problem of false highlighting in comments? PS `perl-mode' doesn't have this problem.
+
+[new]
+'''Question'''
+How does one configure cperl-mode to provide the following indentation rules:
+
+    $foo = {
+        bar => 10,
+    }
+
+i.e., the indentation of bar is calculated against the containing block's indentation, rather than aligning relative to the opening brace.
 ----
 ProgrammingModes CategoryDotEmacs

@@ -81,7 +81,7 @@ Proposed guidelines for Emacs Lisp files on Emacs Wiki are in ElispAreaConventio
 
 Here are some other places to download and distribute elisp code:
 
-* [[ELPA]] -- packages included in ELPA can be installed using the package.el package manager.  The number of packages is limited but the once that are included are of good quality.
+* [[ELPA]] -- packages included in ELPA can be installed using the package.el package manager.  The number of packages is limited but the ones that are included are of good quality.
 
 * [[Emacsmirror]] -- a huge collection of packages which are distributed in form of [[Git]] repositories.  No support for package.el yet.
 * WikifiedEmacsLispList -- pointers to various files on authors' own sites. Unfortunatly many links are dead (those that were not are also included in the Emacsmirror).
@@ -110,7 +110,7 @@ Additional tips can be found on ElispAreaDiscussions
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 256%
+%Id: 257%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

@@ -1,3 +1,4 @@
+[[es:PclCvsEs]]
 [::pcvs]
 or [::PclCvs], is a mode for interacting with multiple files in a [[CVS]] repository.  `pcvs' comes shipped with Emacs 21 and later.  XEmacs has had it for a longer time.
 

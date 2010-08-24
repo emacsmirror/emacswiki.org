@@ -389,6 +389,31 @@ If this sounds like too much work, having the active window automatically follow
 One thing about it is that since this is smth pretty common functionality in other file managers, I suspect many people might be doing this reflexively, and then scratching their heads trying to remember what were the commands they executed (I know I do)...
 e.g. in mc this functionality is case-sensitive (bad idea, but that is how it is), so if some former MC user has a directory named say ~/Data, and wants to switch to it in SC in this manner, some rather unexpected things might happen :)
 
+[new]
+Hello laxxy,
+
+Thanks  for your valuable comments ‐‐ your suggestions will definitely influence
+some version of Sunrise in the near future, so stay tuned.
+
+I  still don’t think that extending the current fuzzy narrow function (C‐c /) is
+what you really want here, since it makes no sense navigating  across  a  buffer
+which  contents  are  being  refined to contain only those entries matching your
+pattern ‐‐ all entries in the buffer do match, so moving to  the  next  matching
+entry means simply moving one entry downwards.
+
+What  I  think  you  really  want (but please correct me if I’m wrong) is rather
+"fuzzy search" ‐‐ something like the standard emacs  search  (C‐s,  or  C‐r  for
+backwards,  etc.) that would work for the same kind of patterns as fuzzy narrow,
+plus some way to keep that search mode active after pressing return  for  moving
+into  the  currently  selected directory (if any). I’m assuming you already know
+about C‐s and friends in emacs and that that kind of search in  Sunrise  is  not
+good enough for you.
+
+Actually  I  have  written  something  a  bit similar in the Tree Extension (see
+[[#TreeExt]]). Why don’t you give it a try (after customizing  the
+//sr‐tree‐isearch‐always‐sticky// variable to make searches always "sticky") and
+let me know how that works for you?
+
 ----
 CategoryDirectories
 CategoryEmulation

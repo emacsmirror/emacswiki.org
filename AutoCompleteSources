@@ -33,6 +33,12 @@ Completion for python using [[http://rope.sourceforge.net/ropemacs.html|rope]].
 	    (add-to-list 'ac-sources 'ac-source-ropemacs)))
 </pre>
 
+== R mode completions ==
+
+Lisp:ac-R.el (0.1)
+
+-- [[MatthewFidler]]
+
 == DynamicAbbreviations ==
 
 Lisp:ac-dabbrev.el (0.0.4)

@@ -1,0 +1,23 @@
+[[en:CvsMode]]
+
+(Traducción de la página-wiki inglesa de este portal, que han decidido nombrar como CvsMode, cosa que no comparto, pues en este caso debería haber sido directamente PclCvs, siguiendo las convenciones camélidas de sistema wiki.  Por tanto, he dedicido bautizar la página en español como PclCvsEs y no con la traducción ModoCVS que hago en otras ocasiones.  -SuSo, 23/08/2010)
+
+PCL-CVS es una utilidad para interactuar con múltiples ficheros en un repositorio [[CVS]].  Va incluido en GNU Emacs desde su versión 21 y en XEmacs desde hace más tiempo.
+
+[[CVS]] es uno de los primeros sistemas de control de revisiones libres y de masivo uso que pudo gestionar grupos de ficheros y árboles de directorios completos, en vez de tan solo un fichero por vez como hacían los sistemas predecesores, [[RCS]] y CSSC. PclCvs fue la primera utilidad para Emacs que le daba soporte a operaciones de agregado sobre ficheros CVS.
+
+
+PCL-CVS puede coexistir perfectamente con el sistema estándar en Emacs llamado VC (VersionControl); no hay necesidad de escoger uno de ellos frente al otro, pues realizan funciones bastante distintas.
+
+
+El manual html en español en línea se puede leer en
+
+* http://gnu.manticore.es/manual-pcl-cvs-emacs
+
+
+
+Véase también PclCvsTips.
+
+
+----
+CategoryVersionControl

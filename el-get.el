@@ -59,14 +59,32 @@
 ;;             :type http-tar
 ;;             :options ("xzf")
 ;;             :url "http://projects.haskell.org/haskellmode-emacs/haskell-mode-2.8.0.tar.gz"
-;;             :load "haskell-site-file.el")
+;;             :load "haskell-site-file.el"
+;;             :after (lambda ()
+;;                      (add-hook 'haskell-mode-hook 'turn-on-haskell-doc-mode)
+;;                      (add-hook 'haskell-mode-hook 'turn-on-haskell-indentation)))
 ;;	
+;;      (:name auctex
+;;             :type cvs
+;;             :module "auctex"
+;;             :url ":pserver:anonymous@cvs.sv.gnu.org:/sources/auctex"
+;;             :build ("./autogen.sh" "./configure" "make")
+;;             :load  ("auctex.el" "preview/preview-latex.el")
+;;             :info "doc")
+;;
 ;; 	(:name asciidoc         :type elpa)
 ;; 	(:name dictionary-el    :type apt-get)
 ;; 	(:name emacs-goodies-el :type apt-get)))
 ;; 
 ;;
 ;; Changelog
+;;
+;;  0.8 - 2010-08-23 - listen to the users
+;;
+;;   - implement :after user defined function to run at the end of init
+;;   - add CSV support (no login support)
+;;   - improve el-get-build to use async building
+;;   - fix el-get-update doing so
 ;;
 ;;  0.7 - 2010-08-23 - archive
 ;;
@@ -103,6 +121,7 @@
 (defvar el-get-git-clone-hook        nil "Hook run after git clone.")
 (defvar el-get-git-svn-clone-hook    nil "Hook run after git svn clone.")
 (defvar el-get-bzr-branch-hook       nil "Hook run after bzr branch.")
+(defvar el-get-cvs-checkout-hook     nil "Hook run after cvs checkout.")
 (defvar el-get-apt-get-install-hook  nil "Hook run after apt-get install.")
 (defvar el-get-apt-get-remove-hook   nil "Hook run after apt-get remove.")
 (defvar el-get-fink-install-hook     nil "Hook run after fink install.")
@@ -123,6 +142,10 @@
     :bzr     (:install el-get-bzr-branch
 		       :install-hook el-get-bzr-branch-hook
 		       :update el-get-bzr-pull
+		       :remove el-get-rmdir)
+    :cvs     (:install el-get-cvs-checkout
+		       :install-hook el-get-cvs-checkout-hook
+		       :update el-get-cvs-update
 		       :remove el-get-rmdir)
     :apt-get (:install el-get-apt-get-install 
 		       :install-hook el-get-apt-get-install-hook
@@ -224,6 +247,23 @@ load
 features
 
     List of features el-get will `require' for you.
+
+options
+
+    Currently only used by the http-tar support for you to give
+    the tar options you want to use. Typically would be \"xzf\",
+    but you might want to choose \"xjf\" for handling .tar.bz
+    files e.g.
+
+module
+
+    Currently only used by the `csv' support, allow you to
+    configure the module you want to checkout in the given URL.
+
+after
+
+    A function to run once `el-get' is done with `el-get-init',
+    can be a lambda.
 ")
 
  
@@ -283,7 +323,8 @@ given package directory."
       (when cbuf (kill-buffer cbuf))
       (if next
 	  (el-get-start-process-list package next final-f)
-	(funcall final-f package)))))
+	(when (functionp final-f)
+	  (funcall final-f package))))))
 
 (defun el-get-start-process-list (package commands final-func)
   "run each command one after the other, in order, stopping at
@@ -326,25 +367,26 @@ properties:
 
 Any other property will get put into the process object.
 "
-  (let* ((c       (car commands))
-	 (cdir    (plist-get c :default-directory))
-	 (cname   (plist-get c :command-name))
-	 (cbuf    (plist-get c :buffer-name))
-	 (killed  (when (get-buffer cbuf) (kill-buffer cbuf)))
-	 (filter  (plist-get c :process-filter))
-	 (program (plist-get c :program))
-	 (args    (plist-get c :args))
-	 (default-directory (if cdir (file-name-as-directory cdir) 
-			      default-directory))
-	 (proc    (apply 'start-process cname cbuf program args)))
+  (when commands
+    (let* ((c       (car commands))
+	   (cdir    (plist-get c :default-directory))
+	   (cname   (plist-get c :command-name))
+	   (cbuf    (plist-get c :buffer-name))
+	   (killed  (when (get-buffer cbuf) (kill-buffer cbuf)))
+	   (filter  (plist-get c :process-filter))
+	   (program (plist-get c :program))
+	   (args    (plist-get c :args))
+	   (default-directory (if cdir (file-name-as-directory cdir) 
+				default-directory))
+	   (proc    (apply 'start-process cname cbuf program args)))
 
-    ;; add the properties to the process, then set the sentinel
-    (mapc (lambda (x) (process-put proc x (plist-get c x))) c)
-    (process-put proc :el-get-package package)
-    (process-put proc :el-get-final-func final-func)
-    (process-put proc :el-get-start-process-list (cdr commands))
-    (set-process-sentinel proc 'el-get-start-process-list-sentinel)
-    (when filter (set-process-filter proc filter))))
+      ;; add the properties to the process, then set the sentinel
+      (mapc (lambda (x) (process-put proc x (plist-get c x))) c)
+      (process-put proc :el-get-package package)
+      (process-put proc :el-get-final-func final-func)
+      (process-put proc :el-get-start-process-list (cdr commands))
+      (set-process-sentinel proc 'el-get-start-process-list-sentinel)
+      (when filter (set-process-filter proc filter)))))
 
  
 ;;
@@ -491,6 +533,47 @@ Any other property will get put into the process object.
 		      :error ,ko))
      post-update-fun)))
 
+ 
+(defun el-get-cvs-checkout (package url post-install-fun)
+  "cvs checkout the package"
+  (let* ((cvs-executable (executable-find "cvs"))
+	 (source  (el-get-package-def package))
+	 (module  (plist-get source :module))
+	 (name    (format "*cvs checkout %s*" package))
+	 (ok      (format "Checked out package %s." package))
+	 (ko      (format "Could not checkout package %s." package)))
+
+    (message "%S" `(:args ("-d" ,url "checkout" "-d" ,package ,module)))
+
+    (el-get-start-process-list
+     package
+     `((:command-name ,name
+		      :buffer-name ,name
+		      :default-directory ,el-get-dir
+		      :program ,cvs-executable
+		      :args ("-d" ,url "checkout" "-d" ,package ,module)
+		      :message ,ok
+		      :error ,ko))
+     post-install-fun)))
+
+(defun el-get-cvs-update (package url post-update-fun)
+  "cvs checkout the package"
+  (let* ((cvs-executable (executable-find "cvs"))
+	 (pdir (el-get-package-directory package))
+	 (name (format "*cvs update %s*" package))
+	 (ok   (format "Updated package %s." package))
+	 (ko   (format "Could not update package %s." package)))
+
+    (el-get-start-process-list
+     package
+     `((:command-name ,name
+		      :buffer-name ,name
+		      :default-directory ,pdir
+		      :program ,cvs-executable
+		      :args ("update" "-dP")
+		      :message ,ok
+		      :error ,ko))
+     post-update-fun)))
 
  
 ;;
@@ -723,8 +806,8 @@ passing it the the callback function nonetheless."
     (when (null (cdr (remove tarfile files)))
       (let ((move  (format "cd %s && mv \"%s\"/* ." pdir (car files)))
 	    (rmdir (format "cd %s && rmdir \"%s\""   pdir (car files))))
-	(message "%s: %s" package move)
-	(message "%s: %s" package rmdir)
+	;; (message "%s: %s" package move)
+	;; (message "%s: %s" package rmdir)
 	(shell-command move)
 	(shell-command rmdir)))))
 
@@ -739,7 +822,6 @@ passing it the the callback function nonetheless."
 	 (ko      (format "Could not install package %s." package))
 	 (post `(lambda (package)
 		  ;; rename pdir/package.el to the expected name
-		  (message "%S" (directory-files ,pdir))
 		  (rename-file 
 		   (concat (file-name-as-directory ,pdir) package ".el")
 		   (concat (file-name-as-directory ,pdir) ,tarfile))
@@ -755,7 +837,6 @@ passing it the the callback function nonetheless."
 				    :message ,ok
 				    :error ,ko))
 		   ,(symbol-function post-install-fun)))))
-    (message "%S" post)
     (el-get-http-install package url post)))
 
 (add-hook 'el-get-http-tar-install-hook 'el-get-http-tar-cleanup-extract-hook)
@@ -769,14 +850,41 @@ passing it the the callback function nonetheless."
   (dired-delete-file (el-get-package-directory package) 'always)
   (funcall post-remove-fun package))
 
-(defun el-get-build (package commands &optional subdir)
+(defun el-get-build (package commands &optional subdir sync post-build-fun)
   "run each command from the package directory"
   (let* ((pdir   (el-get-package-directory package))
-	 (wdir   (if subdir (concat (file-name-as-directory pdir) subdir) pdir)))
-    (dolist (c commands)
-      (message "el-get %s: cd %s && %s" package wdir c)
-      (message "%S" (shell-command-to-string 
-		     (concat "cd " wdir " && " c))))))
+	 (wdir   (if subdir (concat (file-name-as-directory pdir) subdir) pdir))
+	 (buf    (format "*el-get-build: %s*" package)) 
+	 (default-directory wdir))
+    (if sync
+	(progn
+	  (dolist (c commands)
+	    (message "el-get %s: cd %s && %s" package wdir c)
+	    (message "%S" (shell-command-to-string 
+			   (concat "cd " wdir " && " c))))
+	  (when (and post-build-fun (functionp post-build-fun))
+	    (funcall post-build-fun)))
+
+      ;; async
+      (let ((process-list
+	     (mapcar (lambda (c)
+		       (let* ((split    (split-string c))
+			      (name     (car split))
+			      (program  (if (file-executable-p (expand-file-name name))
+					    (expand-file-name name)
+					  (executable-find name)))
+			      (args     (cdr split)))
+			 
+			 `(:command-name ,name
+					 :buffer-name ,buf
+					 :default-directory ,wdir
+					 :program ,program
+					 :args (,@args)
+					 :message ,(format "el-get-build %s: %s ok." package c)
+					 :error ,(format 
+						  "el-get could not build %s [%s]" package c))))
+		     commands)))
+	(el-get-start-process-list package process-list post-build-fun)))))
 
 (defun el-get-package-def (package)
   "Return a single `el-get-sources' entry for given package"
@@ -809,6 +917,7 @@ When given a package name, check for its existence"
 	 (feats    (plist-get source :features))
 	 (el-path  (or (plist-get source :load-path) '(".")))
 	 (infodir  (plist-get source :info))
+	 (after    (plist-get source :after))
 	 (pdir     (el-get-package-directory package)))
 
     ;; apt-get and ELPA will take care of load-path, Info-directory-list
@@ -838,7 +947,7 @@ When given a package name, check for its existence"
 	  ;; build the infodir entry, too
 	  (el-get-build
 	   package
-	   `(,(format "%s %s.info dir" el-get-install-info infofile)) infodir-rel))))
+	   `(,(format "%s %s.info dir" el-get-install-info infofile)) infodir-rel t))))
 
     ;; loads
     (when loads
@@ -846,7 +955,7 @@ When given a package name, check for its existence"
 	      (let ((pfile (concat (file-name-as-directory pdir) file)))
 		(unless (file-exists-p pfile)
 		  (error "el-get could not find file '%s'" pfile))
-		(message "load '%s'" pfile)
+		(message "el-get: load '%s'" pfile)
 		(load pfile)))
 	    (if (stringp loads) (list loads) loads)))
 
@@ -857,8 +966,13 @@ When given a package name, check for its existence"
 	(mapc (lambda (feature) (message "require '%s" (require feature)))
 	      (if (symbolp feats) (list feats) feats))))
 
-      ;; return the package
-      package))
+    ;; call the "after" user function
+    (when (and after (functionp after))
+      (message "el-get: Calling init user function for package %s" package)
+      (funcall after))
+
+    ;; return the package
+    package))
 
 (defun el-get-post-install (package)
   "Post install a package. This will get run by a sentinel."
@@ -867,10 +981,8 @@ When given a package name, check for its existence"
 	 (commands (plist-get source :build)))
     ;; post-install is the right place to run install-hook
     (run-hooks hooks)
-    ;; consider building when sources are thus setup
-    (el-get-build package commands)
-    ;; and init
-    (el-get-init package)))
+    ;; build then init
+    (el-get-build package commands nil nil (lambda (package) (el-get-init package)))))
 
 (defun el-get-install (&optional package)
   "Install given package. Read the package name with completion when not given."
@@ -891,8 +1003,9 @@ When given a package name, check for its existence"
 (defun el-get-post-update (package)
   "Post update a package. This will get run by a sentinel."
   (let* ((source   (el-get-package-def package))
-	 (commands (plist-get (plist-get source :type) :build)))
-    (el-get-build package commands)))
+	 (commands (plist-get source :build)))
+    (el-get-build package commands nil nil 
+		  (lambda (package) (message "el-get-post-update %s: done" package)))))
 
 (defun el-get-update (&optional package)
   "Update given package. Read the package name with completion when not given."

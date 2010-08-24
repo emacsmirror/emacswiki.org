@@ -61,4 +61,16 @@ prompt the user for a coding system."
     found))
 </pre>
 ----
+Here's a simple defun to show non-ascii characters of current buffer in an *Occur* buffer
+
+<pre>
+(defun occur-non-ascii ()
+  "Find any non-ascii characters in the current buffer."
+  (interactive)
+  (occur "[^[:ascii:]]"))
+</pre>
+
+----
+See also markchars-mode in [NxhtmlMode nXhtml].
+----
 CategoryInternationalization
