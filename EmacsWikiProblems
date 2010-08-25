@@ -329,6 +329,9 @@ I noticed by accident that there is a file Lisp:find-dired++.el listed in the El
 
 At TreeMode (http://www.emacswiki.org/cgi-bin/wiki/TreeMode), the page is in English, but the TOC title is in Chinese. -- DrewAdams.
 
+[new]
+This is also happening on [[CSS]]. I tried faking an edit, but it doesn't seem to have done any good. -- SamuelBronson.
+
 == Image Files Not Displayed ==
 
 Some image files are consistently not displayed. I don't know if it is my browser only, but, for example, the first 3 images at this page are not displayed in line: http://www.emacswiki.org/cgi-bin/wiki/Icicles_-_Customization_and_General_Tips. I see only an X and a link with the name of the image page. Refreshing the browser has no effect. If I visit that image page by clicking the link, the image is shown, and it is presumably then in my browser cache. However, refreshing the first-mentioned page still does not show the images. Similarly, some (7) images are not shown on this page: http://www.emacswiki.org/cgi-bin/wiki/Icicles_-_Screenshots. All of the image files are present and can be shown by clicking the missing-image link. This seems to be a recent problem. Could it be related to anti-spam changes? -- DrewAdams
@@ -481,6 +484,18 @@ file (see man file) returns "Lisp/Scheme program text" for most of the hosted li
 
 [new]
 Well, I don't understand what file(1) actually does -- all I know is that it's unrelated to Emacs Wiki itself. I'm assuming that these files either contain non-ASCII bytes that throw file(1) off (page feed ^L? Latin-1 characters? wrong end of line encoding?). There's nothing I can do about that. -- AlexSchroeder
+
+[new]
+Yeah, this is nothing to do with the wiki: assuming you have the elisp sources installed, try something like this command:
+
+ naesten@hydrogen:/usr/share/emacs/22.3% find \( -name '*.el' -or -name '*.el.gz' \) -print0 \
+ >                                        | xargs -0 file -z | grep -v '\(program\|English\) text'
+
+In addition to the 20 or so files identified as "data", I get one mistaken for a PalmOS application (?!?), one for a Fortran program, and one for a "CLIPPER instruction profile" (whatever that is). (I also get a couple detected as "ASCII text", but that's not wrong.)
+
+(The reason for matching '*.el.gz' in addition to '*.el', and for passing -z to file, is that Debian has most of the elisp sources gzipped.)
+
+-- SamuelBronson
 
 == Empty files in subversion mirror ==
 

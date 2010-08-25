@@ -1,12 +1,6 @@
 I started to use Emacs in 2007. Now I use it for almost all my text editting tasks, majorly including codinging and TeX documenting.
 
-== Contact ==
-
-; Blog: http://doitian.com/favicon.png [http://doitian.com DoIT]
-; Emacs Notes: http://doitian.com/notes/emacs/
-; Email: doit dot ian (at) gmail dot com
-; MSN: same with the email
-
+My emacs config can be found at github [http://github.com/doitian/emacs.d doitian/emacs.d].
 
 == Elisp ==
 
@@ -79,6 +73,14 @@ frame.
 any argument is given to the script.
 
 The source code: [[emacs-dwim]]
+
+
+== Contact ==
+
+; Blog: http://doitian.com/favicon.png [http://doitian.com DoIT]
+; Emacs Notes: http://doitian.com/notes/emacs/
+; Email/GTalk: doit dot ian (at) gmail dot com
+; MSN: same with the email
 
 [new:DrewAdams:2009-08-23 00:57 UTC]
 Welcome to the wiki. -- DrewAdams

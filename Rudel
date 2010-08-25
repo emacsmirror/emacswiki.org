@@ -150,6 +150,19 @@ project is more appropriate.
 /Parts of the contents of this section have been moved to /[[RudelDiscussionArchive]].
 
 [new]
+I'd really like to be able to highlight other participants' <code>(point)</code> - is this supported in the Obby protocol? Has anybody else looked into this? As a quick hack, i'm looking to notify the user that changes have been made outside of their current window (view of the buffer) - to make it easier to see if someone is editing line 1 when you're looking at line 1024 for example
+
+[new]
+The obby protocol does not support highlighting point (or anything regarding the peer's status that does not involve text changes).
+
+It is easy to add "unofficial" messages to the obby protocol implementation as long as only Rudel clients and a Rudel server are involved. However, this would obviously break interoperability with Gobby. As a short-term workaround, a protocol backend similar to obby could be made available for this case. This would allow developing the necessary user interface.
+
+The long-term solution should probably be based on the infinote protocol (used by Gobby starting with version 0.5), which does support user status, cursor position and selection signaling. Rudel's infinote support is under development and not yet usable in production.
+
+The alternate approach you suggest would also be nice as a protocol-independent feature. It should not be too hard to implement either. Protocol-independent tracking of user status is already available in a branch. Maybe you can visit the IRC channel to discuss this issue further?
+--JanMoringen
+
+[new]
 I would like to use rudel with auctex (with inline preview) for collaborative LaTeX documents.  Unfortunately, this is too hard for most mathematicians (me for example) to install.  How can this be simplified?  With a script or package of some kind?  reply here or something.
 
 [new]

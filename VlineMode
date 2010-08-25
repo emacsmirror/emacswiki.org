@@ -37,6 +37,12 @@ I filed bug [[http://emacsbugs.donarmstrong.com/cgi-bin/bugreport.cgi?bug=1187|#
 
 I fixed it by your mail. Thanks! -- Sugawara
 
+[new:MichaelWilson:2010-8-24 17:23 UTC]
+
+Love it!  I just came across this and have been using it in conjunction with highline-mode.
+
+It has, however, some very entertaining behavior when combined with linum.el.  I'm trying to codify the exact behavior, as it's a bit tough to describe. -- MichaelWilson
+
 ----
 CategoryDisplay CategoryEditing CategoryAccessibility CategoryFaces HighlightTemporarily
 

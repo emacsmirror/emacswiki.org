@@ -9,6 +9,10 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+==Buffer with different backgroundcolor, possible?==
+
+-- Michael
+
 ==Changing *scratch* buffername permanently==
 
 [new]

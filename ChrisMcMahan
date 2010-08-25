@@ -1,4 +1,11 @@
 ==Emacs notes from Chris McMahan==
+[2010 08 24] Big changes these last months.
+
+* I'm working primarily on a Linux system now (Ubuntu), and a MacbookPro at home, so my Windows/Cygwin configurations have become somewhat neglected.
+* I've place my collection of emacs configuration files onto github [http://github.com/cmcmahan/emacs-pkgs here]. Feel free to use them as much as you'd like.
+* Orgmode has replaced Planner. Thanks to SachaChua for the help and inspiration to get this working. It's now become a very important part of my programming and daily life.
+
+==Older stuff==
 I'm going to start contributing the codebase that I've been building up in the last 10 years of using emacs. A lot of it is for my own use, but may be helpful to others. My lisp skills are minimial at best, so any helpful suggestions are encouraged and most welcome!
 
 I'm currently using the XP version of Emacs 22 on Windows XP with Cygwin installed.

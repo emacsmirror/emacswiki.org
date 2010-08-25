@@ -9,7 +9,7 @@
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/anything.el
 ;; Site: http://www.emacswiki.org/cgi-bin/emacs/Anything
 (defvar anything-version nil)
-(setq anything-version "1.285")
+(setq anything-version "1.286")
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -1769,12 +1769,12 @@ If TEST-MODE is non-nil, clear `anything-candidate-cache'."
 (defun anything-check-minibuffer-input ()
   "Extract input string from the minibuffer and check if it needs
 to be handled."
-  (if (or (not anything-input-idle-delay) (anything-action-window))
-      (anything-check-minibuffer-input-1)
-    (anything-new-timer
-     'anything-check-minibuffer-input-timer
-     (run-with-idle-timer anything-input-idle-delay nil
-                          'anything-check-minibuffer-input-1))))
+  (let ((delay (with-current-buffer anything-buffer anything-input-idle-delay)))
+    (if (or (not delay) (anything-action-window))
+       (anything-check-minibuffer-input-1)
+     (anything-new-timer
+      'anything-check-minibuffer-input-timer
+      (run-with-idle-timer delay nil 'anything-check-minibuffer-input-1)))))
 
 (defun anything-check-minibuffer-input-1 ()
   (with-anything-quittable
@@ -2093,19 +2093,12 @@ the current pattern."
             (anything-new-timer
              'anything-process-delayed-sources-timer
              (run-with-idle-timer
-              (anything-get-delay-time-for-delayed-sources)
-              nil
-              'anything-process-delayed-sources
-              delayed-sources)))
+              anything-idle-delay nil
+              'anything-process-delayed-sources delayed-sources)))
           ;; FIXME I want to execute anything-after-update-hook
           ;; AFTER processing delayed sources
           (anything-log-run-hook 'anything-after-update-hook))
         (anything-log "end update")))))
-
-(defun anything-get-delay-time-for-delayed-sources ()
-  (if anything-input-idle-delay
-      (max 0 (- anything-idle-delay anything-input-idle-delay))
-    anything-idle-delay))
 
 (defun anything-update-source-p (source)
   (and (or (not anything-source-filter)
@@ -5105,19 +5098,6 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
       (expect (not-called anything-process-source)
         (anything-test-update '(((name . "1") (requires-pattern . 3))) "xx"))
 
-      (desc "delay")
-      (expect 0.25
-        (let ((anything-idle-delay 1.0)
-              (anything-input-idle-delay 0.75))
-          (anything-get-delay-time-for-delayed-sources)))
-      (expect 0.0
-        (let ((anything-idle-delay 0.2)
-              (anything-input-idle-delay 0.5))
-          (anything-get-delay-time-for-delayed-sources)))    
-      (expect 0.5
-        (let ((anything-idle-delay 0.5)
-              (anything-input-idle-delay nil))
-          (anything-get-delay-time-for-delayed-sources)))
       (desc "anything-normalize-sources")
       (expect '(anything-c-source-test)
         (anything-normalize-sources 'anything-c-source-test))

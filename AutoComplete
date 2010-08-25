@@ -248,6 +248,9 @@ Yes, of course. auto-complete is a frame work for completion. But you have to gi
 (You could of course use Emacs default completion frame work too. Or Icicles etc.)
 
 ----
+[new]
+BUG: Entering two forward slashes (for example to add a comment in C++) causes a delay of several minutes during which one can do nothing else with emacs.
+----
 CategoryCompletion
 
 

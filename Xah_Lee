@@ -7,16 +7,19 @@ I have some emacs and elisp tutorial here:
 
 Here's some elisp code i wrote:
 
-* ErgoEmacs. A emacs distribution, together with David Capello. Download at [[http://ergoemacs.org/ ergoemacs.org]].
-* ErgoEmacs Keybinding. A emacs keybinding set based on ergonomics. Download at [[http://xahlee.org/emacs/ergonomic_emacs_keybinding.html ErgoEmacs Keybinding home]].
-* Unicode Browser mode (xub-mode). For browsing unicode character palette. Download at [[http://xahlee.org/emacs/unicode-browser.html xub home]].
-* bbcode mode (xbbcode-mode). For editing lighweight markup BBCode. Download at [[http://xahlee.org/emacs/xbbcode-mode.html xbbcode-mode home]]. Emacswiki page here: [[BbCode]]
-* AutoHotKey mode (xahk-mode). A mode for editing AutoHotKey script. Download at [[http://xahlee.org/mswin/emacs_autohotkey_mode.html xahk-mode home]].
-* LSL mode (xlsl-mode). A mode for editing Linden Scripting Language. Download at [[http://code.google.com/p/lsl-mode/ xlsl-mode home]]. Emacswiki page here: [[LSLMode]]
+* [[http://ergoemacs.org/ ErgoEmacs]]. A emacs distribution, together with [[http://www.davidcapello.com.ar/ David Capello]].
+* [[http://xahlee.org/emacs/ergonomic_emacs_keybinding.html ErgoEmacs Keybinding]]. A emacs keybinding set based on ergonomics.
+* [[http://xahlee.org/emacs/unicode-browser.html Unicode Browser mode (xub-mode)]]. For browsing unicode character palette.
+* [[http://xahlee.org/emacs/xbbcode-mode.html BBCode mode (xbbcode-mode)]]. For editing lighweight markup BBCode. Emacswiki page here: [[BbCode]]
+* [[http://xahlee.org/mswin/emacs_autohotkey_mode.html AutoHotkey mode (xahk-mode)]] A mode for editing AutoHotkey script.
+* [[http://code.google.com/p/lsl-mode/ LSL mode (xlsl-mode)]]. A mode for editing Linden Scripting Language. Emacswiki page here: [[LSLMode]]
+* [[http://xahlee.org/emacs/elisp_idiom_templates.html emacs lisp yasnippet templates]]. A collection of 105 yasnippet templates for coding emacs lisp.
   
 I am a mild supporter of FSF/GNU. I urge programers to take a class in college on sociology, economics, history, philosophy.
 
-Most Open Source or FSF proponents are youngsters who's got nothing to loose, and “freedom” is just their execuse to advance their self interests. (freedom fighters are almost always losers to begin with, and invariably they are the primary beneficiary of the “freedom” they clamour. When you are poor, student, no ability or interest in business, then, you are likely to love opinions advanced by orgnization such as FSF, e.g. no patent, open source. But if you do have business abilities, have commercially valuable software, have patents, you are not likely to believe in FSF's ideas. Most FSF fans are just another selfish person doing [[http://xahlee.org/Netiquette_dir/hackernews_xahleeorg_politics.html politics]], really nothing unusual when compared to the history of human animals (all the political upheavals, revolutions, social movements, ideologies, almost always started by youngsters). Also note, Richard Stallman's “Free” software, is just one philosophy on software's distribution and use, among a few. He abuses the word “free” and freely connect it with the concept of Freedom in the context of human rights. FSF's particular philosophy on software use really have little to do with general concept, or importance, of Human Rights or Freedom. The moral concept of “Human Rights” itself is just one among many philosophies.)
+Most Open Source or FSF proponents are youngsters who's got nothing to loose, and “freedom” is just their execuse to advance their self interests. Freedom fighters are almost always losers to begin with, and invariably they are the primary beneficiary of the “freedom” they clamour. When you are poor, student, no ability or interest in business, then, you are likely to love opinions advanced by orgnization such as FSF, e.g. no patent, open source. But if you do have business abilities, have commercially valuable software, have patents, you are not likely to believe in FSF's ideas. Most FSF fans are just another a form egocentric [[http://xahlee.org/Netiquette_dir/hackernews_xahleeorg_politics.html politcal struggle]]. This is nothing unusual when looking at the history of human animals. (e.g. most political upheavals, revolutions, are started by youngsters or the mob who have not much to lose).
+
+Also note, Richard Stallman's “Free” software, is just one philosophy on software's distribution and use, among a few.  There are 2 aspects that he abused the word “free”. (1) hijacking it to mean freedom, instead of the more popular sense of no price tag. (e.g. software that are given out for free is now given the shady term freeware, while software of FSF's ideal gets a better term “Free Software”.)  (2) He uses the word “free” in his talks ostensibly to mean the concept of Freedom in the context of human rights. But FSF's philosophy on software use as freedom is really just a point of view. Most people, or even me or intellectuals, when using Apple, Microsoft, Goole products, or any software that does not come with source code, do not believe we are loosing freedom in general. (PS: also, today's pop concept of “Human Rights” itself is just one school of thought in moral philosophy, not necessary the best with regards for a properous human community.)
 
 Some essays related to Open Source and IT industry:
 
