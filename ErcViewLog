@@ -1,0 +1,31 @@
+==What is ErcViewLog ?==
+ErcViewLog is a mode for viewing ERC logs.
+The goal is to reproduce the same look as a real ERC buffer.
+
+Currently the following type of lines are fully colorized:
+* Standard messages -- <i>##aug 24 16:33:31 <nick1> hi##</i>
+* Own messages -- <i>##aug 24 16:33:33 <own_nick> hi##</i>
+* Notices -- <i>##aug 24 16:32:21 *** You have joined channel #emacs##</i>
+* Current nicks -- <i>##aug 24 16:32:21 *** Users on #emacs nick1 own_nick other_nick##</i>
+* Actions -- <i>##aug 24 16:35:11 * own_nick tries ERC##</i>
+* Command -- <i>##aug 24 16:35:31 > /whois nick1##</i>
+
+==Get==
+ErcViewLog is available here: http://github.com/Niluge-KiWi/dotfiles/blob/master/.emacs.d/erc-view-log.el
+
+==Install==
+Put erc-view-log.el in your load-path and add in ~/.emacs
+{{{
+    (require 'erc-view-log)
+    (add-to-list 'auto-mode-alist '("\\.erclogs/.*\\.log" . erc-view-log-mode))
+}}}    
+(Adapt the regexp for your own logs path)
+
+==Customize==
+* `erc-view-log-nickname-face-function': 
+A function that returns a face, given a nick, to colorize nicks. Useful with ErcNickColors.
+Can be nil to use standard ERC face.
+
+* `erc-view-log-my-nickname-match': 
+Either a regexp or a list of nicks, to match the user's nickname.
+For the list, each nick should be unique and should not contain any regexps.

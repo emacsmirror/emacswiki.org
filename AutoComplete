@@ -250,6 +250,37 @@ Yes, of course. auto-complete is a frame work for completion. But you have to gi
 ----
 [new]
 BUG: Entering two forward slashes (for example to add a comment in C++) causes a delay of several minutes during which one can do nothing else with emacs.
+
+----
+[new]
+<pre>
+infinite loop if type "border-width:" in css-mode
+maybe you need to modify auto-complete-config.el file and byte-compile.
+</pre>
+<pre>
+--- auto-complete-config.el.orig	2010-05-29 23:51:11.000000000 +0900
++++ auto-complete-config.el	2010-08-25 20:49:15.000000000 +0900
+@@ -344,10 +344,11 @@
+ (defconst ac-css-value-classes
+   '((absolute-size "xx-small" "x-small" "small" "medium" "large" "x-large"
+                    "xx-large")
+     (border-style "none" "hidden" "dotted" "dashed" "solid" "double" "groove"
+                   "ridge" "inset" "outset")
++    (border-width "thin" "medium" "thick" "inherit")
+     (color "aqua" "black" "blue" "fuchsia" "gray" "green" "lime" "maroon" "navy"
+            "olive" "orange" "purple" "red" "silver" "teal" "white" "yellow"
+            "rgb")
+     (counter "counter")
+     (family-name "Courier" "Helvetica" "Times")
+@@ -475,6 +476,6 @@
+   (add-hook 'css-mode-hook 'ac-css-mode-setup)
+   (add-hook 'auto-complete-mode-hook 'ac-common-setup)
+   (global-auto-complete-mode t))
+ 
+ (provide 'auto-complete-config)
+-;;; auto-complete-config.el ends here
++;;; auto-complete-config.el ends here
+</pre>
 ----
 CategoryCompletion
 

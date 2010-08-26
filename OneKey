@@ -1,5 +1,7 @@
 OneKey help your remember keybinding, it save your time and free your head!
 
+: Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
+
 ==What's is OneKey ?==
 OneKey is a mode popup help window when you type a *Top Key*.
 And show *Keystroke* and *Command* in help window.

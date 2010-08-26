@@ -1,4 +1,4 @@
-;;; autotest.el --- ZenTest's autotest integration with emacs.
+;;; autotest.el - ZenTest's autotest integration with emacs.
 
 ;; Copyright (C) 2006-2007 by Ryan Davis
 
@@ -8,7 +8,10 @@
 ;; Created: 2006-11-17
 ;; Compatibility: Emacs 22, 21?
 ;; URL(en): http://seattlerb.rubyforge.org/
-;; by Ryan Davis - ryan-ruby@zenspider.com
+;; by Ryan Davis - ryand-ruby@zenspider.com
+
+;;; Posted using:
+;; (emacswiki-post "autotest.el")
 
 ;;; The MIT License:
 
@@ -56,6 +59,7 @@
   :group 'autotest
   :type '(string))
 
+;;;###autoload
 (defun autotest ()
   "Fire up an instance of autotest in its own buffer with shell bindings and compile-mode highlighting and linking."
   (interactive)

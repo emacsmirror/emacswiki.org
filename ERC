@@ -213,8 +213,9 @@ You should be able to find documentation on how to set them up on their pages.
 * UnwrapLine -- unwrapping long lines when quoting from an existing document
 * ErcTray -- Get notified of new messages in your gnome/KDE system-tray
 * [[Paste2]] -- Send and get paste with paste2.org, and integrate with ERC.
-* ErcOSD - Be notified on gnome / Linux systems when someone messages your nick.
-* ErcGrowl - Get notified via Growl (Mac OS X) whenever your name is mentioned.
+* ErcOSD -- Be notified on gnome / Linux systems when someone messages your nick.
+* ErcGrowl -- Get notified via Growl (Mac OS X) whenever your name is mentioned.
+* ErcViewLog -- View ERC logs with the same look as a real ERC buffer
 
 == Proxies ==
 
