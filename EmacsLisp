@@ -1,8 +1,6 @@
 Emacs Lisp (sometimes called elisp) is a variant of MacLisp that much of Emacs is written in, as
 well as being the extension language customizations and extensions are written in.
 
-  <resolve> no time to learn lisp is false economy ;o)
-
 Emacs Lisp is what makes Emacs ExtensibleSoftware. Customizations and
 extensions can be made quickly and portably. Some of the ways that
 Emacs Lisp is used to extend Emacs include hooking custom Emacs Lisp

@@ -1,10 +1,10 @@
 This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 
-: .:: ''v13.0'' :: ''part of GNU Emacs'' ::.
+: .:: ''v13.1'' :: ''part of GNU Emacs'' ::.
 
-: It runs on Emacs 23.
+: It runs on Emacs 24.
 
-: **Note 1:** //The source here in EmacsWiki was modified to run on Emacs 21, 22 and 23.//
+: **Note 1:** //The source here in EmacsWiki was modified to run on Emacs 21, 22, 23 and 24.//
 : **Note 2:** //This package replaces// BlankMode.
 
 
@@ -392,59 +392,77 @@ The `whitespace-style' variable specifies which way blanks are visualized.
 
 It's a list containing some or all of the following values:
 
+; ##face## : enable all visualization via faces (see below).
+
 ; ##trailing## : trailing blanks are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##tabs## : TABs are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##spaces## : SPACEs and HARD SPACEs are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##lines## : lines whose have columns beyond
 `whitespace-line-column' are highlighted via faces.
 : Whole line is highlighted.
 : It has precedence over `lines-tail' (see below).
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##lines-tail## : lines whose have columns beyond
 `whitespace-line-column' are highlighted via faces.
 : But only the part of line which goes
 beyond `whitespace-line-column' column.
 : It has effect only if `lines' (see above)
-is not present in `whitespace-style'.
+is not present in `whitespace-style'
+and if `face' (see above) is present in `whitespace-style'.
 
 ; ##newline## : NEWLINEs are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##empty## : empty lines at beginning and/or end of buffer
 are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##indentation::tab## : 8 or more SPACEs at beginning of line are
 visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##indentation::space## : TABs at beginning of line are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##indentation## : 8 or more SPACEs at beginning of line are
 visualized, if `indent-tabs-mode' (which see)
 is non-nil; otherwise, TABs at beginning of
 line are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-after-tab::tab## : 8 or more SPACEs after a TAB are
 visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-after-tab::space## : TABs are visualized when occurs 8 or
 more SPACEs after a TAB via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-after-tab## : 8 or more SPACEs after a TAB are
 visualized, if `indent-tabs-mode'
 (which see) is non-nil; otherwise,
 the TABs are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-before-tab::tab## : SPACEs before TAB are visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-before-tab::space## : TABs are visualized when occurs SPACEs
 before TAB via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-before-tab## : SPACEs before TAB are visualized, if
 `indent-tabs-mode' (which see) is
 non-nil; otherwise, the TABs are
 visualized via faces.
+: It has effect only if `face' (see above) is present in `whitespace-style'.
 
 ; ##space-mark## : SPACEs and HARD SPACEs are visualized via display table.
 
@@ -480,6 +498,10 @@ for these values is:
 So, for example, if ##indentation## and ##indentation::space## are
 included in `whitespace-style' list, the ##indentation## value
 is evaluated instead of ##indentation::space## value.
+
+One reason for not visualize spaces via faces (if `face' is not
+included in `whitespace-style') is to use exclusively for
+cleanning up a buffer.
 
 
 == Actions ==
@@ -757,6 +779,9 @@ I don't think there is a solution to this on a local, per-buffer basis with `glo
 : Hi,
 : Indeed, this problem is not addressed by WhiteSpace at moment. I'll try to fix it.
 : Thanks for reporting. -- ViniciusJoseLatorre
+
+:: Hi, version 13.1 address this problem now, please, see `whitespace-line-column' documentation.
+:: -- ViniciusJoseLatorre
 
 ----
 
