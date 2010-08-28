@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Fri Jun  4 08:38:12 2010 (-0700)
+;; Last-Updated: Fri Aug 27 20:04:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1158
+;;     Update #: 1240
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -95,10 +95,10 @@
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `fit-frame-max-frame-size', `fit-frame-max-height',
-;;    `fit-frame-max-width', `fit-frame-max-window-size',
-;;    `fit-frame-same-column-windows', `fit-frame-same-row-windows',
-;;    `fit-frame-thumbnail-factor'.
+;;    `fit-frame-fringe-width', `fit-frame-max-frame-size',
+;;    `fit-frame-max-height', `fit-frame-max-width',
+;;    `fit-frame-max-window-size', `fit-frame-same-column-windows',
+;;    `fit-frame-same-row-windows', `fit-frame-thumbnail-factor'.
 ;;
 ;;
 ;;  See also these files for other frame commands:
@@ -128,6 +128,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/08/27 dadams
+;;     Added: fit-frame-fringe-width.
+;;     fit-frame-max-frame-size: Increase width by fit-frame-fringe-width.
 ;; 2009/05/17 dadams
 ;;     Updated to reflect thumb-frm.el name changes.
 ;; 2009/05/15 dadams
@@ -288,7 +291,7 @@ Don't forget to mention your Emacs and library versions."))
 (defcustom fit-frame-inhibit-fitting-flag nil
   "*Non-nil means command `fit-frame' does nothing.
 You can bind this to non-`nil' to temporarily inhibit frame fitting:
-    (let ((fit-frame-inhibit-fitting-flag t))...)"
+    (let ((fit-frame-inhibit-fitting-flag  t))...)"
   :type 'boolean :group 'fit-frame)
 
 ;;;###autoload
@@ -415,6 +418,8 @@ size such that the following are both true:
    The width is at most `fit-frame-max-width(-percent)' and the
    longest line length.
 
+   (However, extra width is allowed for fringe, if shown.)
+
  * The height is at least `fit-frame-min-height' and
    `window-min-height'.  The height is at most
    `fit-frame-max-height(-percent)' and the number of lines.
@@ -437,7 +442,7 @@ Note: `fit-frame' does not take into account wrapping of a menu-bar
 line.  There is no easy way to calculate the number of display lines
 from such wrapping."
   (interactive
-   (let ((option (prefix-numeric-value current-prefix-arg)))
+   (let ((option  (prefix-numeric-value current-prefix-arg)))
      (list nil
            ;; Plain `C-u' means WIDTH, HEIGHT, and ALL-WINDOWS-P are all nil.
            ;; Non-negative prefix arg means prompt user for WIDTH and HEIGHT.
@@ -457,16 +462,16 @@ from such wrapping."
                              (string-to-number (read-string "New height: "))))
                   (frame-height)))
            (atom current-prefix-arg))))
-  (setq frame (or frame (selected-frame)))
+  (setq frame  (or frame (selected-frame)))
   (unless fit-frame-inhibit-fitting-flag
     (let ((extra-lines  0)
           computed-max-frame-size empty-buf-p specbuf-p)
       (save-window-excursion
         (select-frame frame)
-        (setq empty-buf-p (and (= (point-min) (point-max))
-                               (one-window-p (selected-window)))
-              specbuf-p (and empty-buf-p
-                             (special-display-p (buffer-name (window-buffer))))))
+        (setq empty-buf-p  (and (= (point-min) (point-max))
+                                (one-window-p (selected-window)))
+              specbuf-p    (and empty-buf-p
+                                (special-display-p (buffer-name (window-buffer))))))
       ;; `extra-lines' for minimum frame height.  Starting with Emacs 21+,
       ;; `set-frame-size' includes the tool-bar and the minibuffer.  For Emacs
       ;; without a toolkit, the one-line menu-bar is also included - add 1 line
@@ -478,16 +483,16 @@ from such wrapping."
         (when (> emacs-major-version 20)
           (setq extra-lines  (or (cdr (assq 'tool-bar-lines fparams)) 0))
           (when (and (not (eq system-type 'windows-nt)) (not (featurep 'x-toolkit)))
-            (setq extra-lines (1+ extra-lines))))
+            (setq extra-lines  (1+ extra-lines))))
         ;; We can't really know whether menu-bar gets wrapped.  Assume it wraps once.
         (when (> menu-lines 0)
           (setq extra-lines  (+ extra-lines (1+ menu-lines))))
         (when (and (cdr (assq 'minibuffer fparams)) ; Frame has a minibuffer, but
                    (save-window-excursion (select-frame frame) ; it's not standalone.
                                           (not (one-window-p nil 'selected-frame))))
-          (setq extra-lines (1+ extra-lines))))
+          (setq extra-lines  (1+ extra-lines))))
       (unless (or empty-buf-p (and width height))
-        (setq computed-max-frame-size (fit-frame-max-frame-size frame all-windows-p)))
+        (setq computed-max-frame-size  (fit-frame-max-frame-size frame all-windows-p)))
       (set-frame-size
        ;; Frame
        frame
@@ -550,7 +555,7 @@ size, and depends on the value of `fit-frame-max-width-percent':
 
   (/ (* fit-frame-max-width-percent (x-display-pixel-width))
      (* 100 (frame-char-width FRAME)))"
-  (setq frame (or frame (selected-frame)))
+  (setq frame  (or frame (selected-frame)))
   (/ (* fit-frame-max-width-percent
         (if (fboundp 'winmgr-display-available-pixel-bounds) ; For MacIntosh.
  	    (nth 2 (winmgr-display-available-pixel-bounds))
@@ -566,7 +571,7 @@ size, and depends on the value of `fit-frame-max-height-percent':
 
   (/ (* fit-frame-max-height-percent (x-display-pixel-height))
      (* 100 (frame-char-height FRAME)))"
-  (setq frame (or frame (selected-frame)))
+  (setq frame  (or frame (selected-frame)))
   (/ (* fit-frame-max-height-percent
         (if (fboundp 'winmgr-display-available-pixel-bounds) ; For MacIntosh.
  	    (nth 3 (winmgr-display-available-pixel-bounds))
@@ -586,18 +591,20 @@ Otherwise, consider only the selected buffer."
   (save-window-excursion
     (select-frame frame)
     (if (not all-windows-p)
-        (fit-frame-max-window-size (selected-window))
-      (let* ((wins ())
-             (marked-wins ()) ; Windows whose size was already considered.
-             (max-width 0)
-             (max-height 0))
+        (let ((win-cons  (fit-frame-max-window-size (selected-window))))
+          (cons (+ (car win-cons) (fit-frame-fringe-width frame))
+                (cdr win-cons)))
+      (let* ((wins         ())
+             (marked-wins  ())           ; Windows whose size was already considered.
+             (max-width    0)
+             (max-height   0))
         (walk-windows (lambda (w) (push w wins)) 'no-mini 'this-frame)
-        (setq wins (sort wins (lambda (w1 w2) ; Top to bottom, left to right.
-                                (let ((edges1 (window-edges w1))
-                                      (edges2 (window-edges w2)))
-                                  (or (< (cadr edges1) (cadr edges2)) ; top
-                                      (and (= (cadr edges1) (cadr edges2))
-                                           (<= (car edges1) (car edges2)))))))) ; left
+        (setq wins  (sort wins (lambda (w1 w2) ; Top to bottom, left to right.
+                                 (let ((edges1  (window-edges w1))
+                                       (edges2  (window-edges w2)))
+                                   (or (< (cadr edges1) (cadr edges2)) ; top
+                                       (and (= (cadr edges1) (cadr edges2))
+                                            (<= (car edges1) (car edges2)))))))) ; left
         ;; Iterate over all windows in frame.
         ;; For each, check all windows in the same row, and all in the same column.
         ;; When checking those in the same row:
@@ -610,38 +617,50 @@ Otherwise, consider only the selected buffer."
         ;;  by adding it to MARKED-WINS.
         (dolist (win wins)
           (unless (memq win marked-wins)
-            (let* ((win-edges (window-edges win))
-                   (win-top (cadr win-edges))
-                   (win-left (car win-edges)))
+            (let* ((win-edges  (window-edges win))
+                   (win-top    (cadr win-edges))
+                   (win-left   (car win-edges)))
               ;; Add widths of buffers in the same row.  Max the heights of the buffers.
               (dolist (row-win (fit-frame-same-row-windows wins win marked-wins))
                 ;; Add ROW-WIN to exclusion list for subsequent iterations.
-                (setq marked-wins (cons row-win marked-wins))
-                (let* ((win-size (fit-frame-max-window-size row-win))
-                       (max-win-width (car win-size))
-                       (max-win-height (cdr win-size)))
+                (setq marked-wins  (cons row-win marked-wins))
+                (let* ((win-size        (fit-frame-max-window-size row-win))
+                       (max-win-width   (car win-size))
+                       (max-win-height  (cdr win-size)))
                   (unless (> (cadr (window-edges row-win)) win-top) ; Use only first.
-                    (setq max-width (+ max-width max-win-width)))
-                  (setq max-height (max max-height max-win-height))))
+                    (setq max-width  (+ max-width max-win-width)))
+                  (setq max-height  (max max-height max-win-height))))
               ;; Add heights of buffers in the same column.  Max the buffer widths.
               (dolist (col-win (fit-frame-same-column-windows wins win marked-wins))
                 ;; Add COL-WIN to exclusion list for subsequent iterations.
-                (setq marked-wins (cons col-win marked-wins))
-                (let* ((win-size (fit-frame-max-window-size col-win))
-                       (max-win-width (car win-size))
-                       (max-win-height (cdr win-size)))
+                (setq marked-wins  (cons col-win marked-wins))
+                (let* ((win-size        (fit-frame-max-window-size col-win))
+                       (max-win-width   (car win-size))
+                       (max-win-height  (cdr win-size)))
                   (unless (> (car (window-edges col-win)) win-left) ; Use only first.
-                    (setq max-height (+ max-height max-win-height)))
-                  (setq max-width (max max-width max-win-width)))))))
-        (cons max-width max-height)))))
+                    (setq max-height  (+ max-height max-win-height)))
+                  (setq max-width  (max max-width max-win-width)))))))
+        (cons (+ max-width (fit-frame-fringe-width frame)) max-height)))))
+
+(defun fit-frame-fringe-width (&optional frame)
+  "Width to allow for fringes on FRAME."
+  ;; Ignore differences between frame parameter values and round-up actual widths.
+  (let ((fringe        (+ (abs (or (frame-parameter frame 'left-fringe) 0))
+                          (abs (or (frame-parameter frame 'right-fringe) 0))))
+        (char-width    (frame-char-width frame))
+        (fringe-width  0))
+    (when (and (boundp 'fringe-mode) fringe (not (zerop fringe)))
+      ;; Round the integer division using: 1 + (x-1)/y
+      (setq fringe-width  (+ fringe-width 1 (/ (1- fringe) char-width))))
+    fringe-width))
 
 (defun fit-frame-same-row-windows (wins window exclude)
   "Returns the windows in WINS that are in the same row as window WINDOW.
 This the list of windows in WINS whose top edge is above the bottom
  edge of WINDOW.
 Windows that are in list EXCLUDE are excluded from the result."
-  (let ((ref-bottom (cadr (cddr (window-edges window))))
-        (row-wins ()))
+  (let ((ref-bottom  (cadr (cddr (window-edges window))))
+        (row-wins    ()))
     (dolist (win wins)
       (when (and (not (memq win exclude)) (< (cadr (window-edges win)) ref-bottom))
         (push win row-wins)))
@@ -652,8 +671,8 @@ Windows that are in list EXCLUDE are excluded from the result."
 This the list of windows in WINS whose left edge is to the left of the
  right edge of WINDOW.
 Windows that are in list EXCLUDE are excluded from the result."
-  (let ((ref-right (car (cddr (window-edges window))))
-        (col-wins ()))
+  (let ((ref-right  (car (cddr (window-edges window))))
+        (col-wins   ()))
     (dolist (win wins)
       (when (and (not (memq win exclude)) (< (car (window-edges win)) ref-right))
         (push win col-wins)))
@@ -677,43 +696,43 @@ Returned as a cons: (MAX-WIDTH . MAX-HEIGHT), where:
       ;; Don't count header lines for width calculation.
       (while (and hdr-lines (> hdr-lines 0))
         (end-of-line)
-        (setq hdr-widths (cons (current-column) hdr-widths)
-              hdr-lines  (1- hdr-lines))
+        (setq hdr-widths  (cons (current-column) hdr-widths)
+              hdr-lines   (1- hdr-lines))
         (when (zerop (forward-line 1))  ; Don't increase if can't move forward.
-          (setq max-win-height (1+ max-win-height))))
+          (setq max-win-height  (1+ max-win-height))))
       ;; Calculate maximum line width and number of lines.
       (while (not (eobp))
         (end-of-line)
-        (setq max-win-width (max (current-column) max-win-width))
+        (setq max-win-width  (max (current-column) max-win-width))
         (when (zerop (forward-line 1))  ; Don't increase if can't move forward.
-          (setq max-win-height (1+ max-win-height))))
+          (setq max-win-height  (1+ max-win-height))))
       ;; No need to count lines at buffer end.
       (when fit-frame-crop-end-blank-flag
         (save-match-data
           (beginning-of-line)
           (while (and (looking-at "^\\s-*$") (not (bobp)))
-            (setq max-win-height (1- max-win-height))
+            (setq max-win-height  (1- max-win-height))
             (forward-line -1)))
-        (setq max-win-height (max 0 max-win-height))))
+        (setq max-win-height  (max 0 max-win-height))))
     ;; Add mode-line.
     (when (cdr (assq 'modeline (frame-parameters (window-frame window))))
-      (setq max-win-height (1+ max-win-height)))
+      (setq max-win-height  (1+ max-win-height)))
     ;; Add height for any wrap-around header lines.
     (while hdr-widths
       (when (> (car hdr-widths) max-win-width)
         (if (zerop max-win-width)
-            (setq max-win-height (1+ max-win-height))
-          (let ((nb-wraps (1- (/ (car hdr-widths) max-win-width)))
-                (remainder (% (car hdr-widths) max-win-width)))
-            (unless (zerop remainder) (setq nb-wraps (1+ nb-wraps)))
-            (setq max-win-height (+ max-win-height nb-wraps)))))
-      (setq hdr-widths (cdr hdr-widths)))
+            (setq max-win-height  (1+ max-win-height))
+          (let ((nb-wraps   (1- (/ (car hdr-widths) max-win-width)))
+                (remainder  (% (car hdr-widths) max-win-width)))
+            (unless (zerop remainder) (setq nb-wraps  (1+ nb-wraps)))
+            (setq max-win-height  (+ max-win-height nb-wraps)))))
+      (setq hdr-widths  (cdr hdr-widths)))
     (cons max-win-width max-win-height)))
 
 (defun fit-frame-thumbnail-factor (frame)
   "Shrink factor for thumbnail frames.  See `thumb-frm.el'.
 FRAME is the frame to apply factor to."
-  (let ((char-height (frame-char-height frame)))
+  (let ((char-height  (frame-char-height frame)))
     (if (and (fboundp 'thumfr-thumbnail-frame-p) ; Defined in `thumb-frm.el'
              (thumfr-thumbnail-frame-p frame))
         ;; Need integer result for `set-frame-size'.  1+ because of integer round-off.

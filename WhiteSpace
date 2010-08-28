@@ -780,7 +780,8 @@ I don't think there is a solution to this on a local, per-buffer basis with `glo
 : Indeed, this problem is not addressed by WhiteSpace at moment. I'll try to fix it.
 : Thanks for reporting. -- ViniciusJoseLatorre
 
-:: Hi, version 13.1 address this problem now, please, see `whitespace-line-column' documentation.
+:: Hi,
+:: Version 13.1 address this problem now, please, see `whitespace-line-column' documentation.
 :: -- ViniciusJoseLatorre
 
 ----

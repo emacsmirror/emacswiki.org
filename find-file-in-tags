@@ -1,0 +1,47 @@
+Do you find yourself working in multiple work areas (sandboxes) for the same project?
+
+Do you want to jump directly to a file present in your TAGS file without specifying the path?
+
+Then the package Lisp:find-file-in-tags.el is for you!
+
+From the header of the file:
+
+<pre>
+;; Installation:
+;; Add a binding to the main function, then use it:
+;;   (global-set-key (read-kbd-macro "C-,") 'find-file-in-tags)
+;;
+;; When you call 'find-file-in-tags, you'll be prompted for a file name.
+;; If more than one file matches what you've typed, you're offered to
+;; refine your choice - this time using the full paths to the files.
+;;
+;; This routine also takes into account multiple work areas for the same project.
+;; Let's say you have a project which has the files
+;;      myproject/file.c
+;;      myproject/file.h
+;;
+;; And you've checked out two work areas
+;; ~/work/monday_version/TAGS
+;; ~/work/monday_version/file.c
+;; ~/work/monday_version/file.h
+;; ~/work/monday_version/subdir/helper.h
+;;
+;; ~/work/thursday_version/TAGS
+;; ~/work/thursday_version/file.c
+;; ~/work/thursday_version/file.h
+;; ~/work/thursday_version/subdir/helper.h
+;;
+;; When you invoke 'find-file-in-tags in the buffer file.c (in monday_version)
+;; the file you open up will be found in ~/work/monday_version, e.g.
+;;     M-x find-file-in-tags helper.h RET
+;; will open up ~/work/monday_version/subdir/helper.h
+;; 
+;; If you you were visiting file.c in thursday_version, the helper.h opened
+;; would be the one in thursday_version
+;;
+;; And this just uses a single TAGS file.
+</pre>
+
+----
+
+CategoryProgrammerUtils CategoryCompletion

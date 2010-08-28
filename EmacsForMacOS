@@ -147,6 +147,35 @@ As of May 8th, 2010 Fink [http://fink.sourceforge.net/ http://fink.sourceforge.n
 and even AucTeX!
 * XEmacs 21.4.20
 
+=== Homebrew ===
+
+[http://mxcl.github.com/homebrew/ Homebrew] has an Emacs 23.2 (as of 2010-08-27) package. A Cocoa-specific Emacs.app can be build using the --cocoa switch. The following is copied from the Homebrew info
+
+<pre>
+$ brew info emacs
+emacs 23.2
+http://www.gnu.org/software/emacs/
+Not installed
+
+Use --cocoa to build a Cocoa-specific Emacs.app.
+
+To access texinfo documentation, set your INFOPATH to:
+  /usr/local/Cellar/emacs/23.2/share/info
+
+The initial checkout of the bazaar Emacs repository might take a long
+time. You might find that using the repo.or.cz git mirror is faster,
+even after the initial checkout. To use the repo.or.cz git mirror for
+HEAD builds, use the --use-git-head option in addition to --HEAD. Note
+that there is inevitably some lag between checkins made to the
+official Emacs bazaar repository and their appearance on the
+repo.or.cz mirror. See http://repo.or.cz/w/emacs.git for the mirror's
+status. The Emacs devs do not provide support for the git mirror, and
+they might reject bug reports filed with git version information. Use
+it at your own risk.
+
+http://github.com/mxcl/homebrew/commits/master/Library/Formula/emacs.rb
+</pre>
+
 === MacPorts ===
 
 !MacPorts [http://www.macports.org/ http://www.macports.org/] is another means of installing Emacs on OS X 

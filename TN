@@ -26,6 +26,7 @@ For example, this error occurs when you switch off the low-level CR-LF conversio
 
 
 == Code-snippets ==
+=== How does the element order of two lists differ? ===
 <pre>
 (defun get-permutation (l1 l2)
 "Given two lists l1 and l2 return a list of integers li such that (`nth' i li)
@@ -36,7 +37,41 @@ is the index of element (nth i l1) in l2. Thereby, the elements of l1 and l2 are
    '(lambda (x) (cdr (assoc x dict))) l2)))
 </pre>
 
+=== Add a filter function to dired ===
+; Just the opposite of dired-omit:
+<pre>
+(add-hook 'dired-after-readin-hook 'dired-file-name-filter-handler)
 
+(defvar dired-file-name-filter nil
+  "*File name filter. Only files with name matching the regexp dired-file-name-filter are shown in the dired buffer.")
+
+(make-variable-buffer-local 'dired-file-name-filter)
+
+(defvar dired-filter-name-marker 16)
+
+(defun dired-file-name-filter (filter)
+  "Set variable `dired-file-name-filter' to filter."
+  (interactive "sFile name filter regexp (or empty string for no filter):")
+  (setq dired-file-name-filter (if (= (length filter) 0) nil filter))
+  (dired-revert))
+
+(define-key dired-mode-map [menu-bar regexp filter] '(menu-item "Filter" dired-file-name-filter :help "Set file name filter."))
+
+(define-key dired-mode-map (kbd "% f") 'dired-file-name-filter)
+
+(defun dired-file-name-filter-handler ()
+  "To be hooked into `dired-after-readin-hook'."
+  (when dired-file-name-filter
+    (goto-char (point-min))
+    (insert "Dired Filter Name Filter:" dired-file-name-filter)
+    (let ((dired-marker-char dired-filter-name-marker))
+      (dired-map-dired-file-lines
+       '(lambda (name)
+	  (unless (string-match dired-file-name-filter name)
+	    (dired-mark 1)
+	    )))
+      (dired-do-kill-lines nil (concat "Filter" dired-file-name-filter " omitted %d line%s")))))
+</pre>
 
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams

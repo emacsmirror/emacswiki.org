@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:57:54 2010 (-0700)
+;; Last-Updated: Fri Aug 27 14:13:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5590
+;;     Update #: 5592
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/08/27 dadams
+;;     icicle-pp-display-expression: Set the hooks locally instead of let-binding them, to avoid msg
+;;                                   "Making change-major-mode-hook buffer-local while locally
+;;                                   let-bound!" - suggestion from Stefan M.
 ;; 2010/07/20 dadams
 ;;     icicle-find-file-in-tags-table(-other-window):
 ;;       Pick up default-directory of TAGS table.  Thx to Chris Hecker.

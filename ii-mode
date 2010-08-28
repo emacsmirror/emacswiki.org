@@ -1,0 +1,7 @@
+ii-mode is an Emacs mode for handling files created by the small filesystem-based irc client by suckless [http://tools.suckless.org/ii/ ii]. 
+
+The model of using Emacs for interfaces to external programs, rather than running them inside the elisp environment itself also seems more elegant.
+
+This allows for a much more detached use of irc, not having to keep one buffer open for each channel, but still getting notified if someone pings you.
+
+[http://github.com/krl/ii-mode ii-mode at github]

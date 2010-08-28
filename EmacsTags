@@ -37,6 +37,11 @@ In addition, you can use '''Icicles''' multi-command `icicle-imenu' as an altern
 
 Since `icicle-imenu' locates definitions using Imenu regexps, you can only navigate among definitions in buffers that you are visiting. This is both an advantage and a disadvantage: you can narrow the search to certain files, but you must know which files to search. And if you want to search all files, then you must open them all (e.g. by matching a project regexp). See [[Icicles - Other Search Commands#IciclesImenu|Icicles Imenu]].
 
+== Finding files *in* TAGS ==
+
+Directly open the a file referenced in the TAGS file without specifying the path,
+and share a single TAGS file across work areas of the same project.  See [[find-file-in-tags]]
+
 == Finding Tags Files ==
 
 [new]

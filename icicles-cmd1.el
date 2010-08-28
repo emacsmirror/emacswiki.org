@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Jul 20 13:44:22 2010 (-0700)
+;; Last-Updated: Fri Aug 27 14:09:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21254
+;;     Update #: 21257
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -512,9 +512,15 @@ OUT-BUFFER-NAME."
       (pp expression)
       (with-current-buffer standard-output
         (setq buffer-read-only  nil)
-        (let ((emacs-lisp-mode-hook    nil)
-              (change-major-mode-hook  nil))
-          (emacs-lisp-mode))
+        ;; Avoid `let'-binding because `change-major-mode-hook' is local.
+        ;; IOW, avoid this runtime message:
+        ;; "Making change-major-mode-hook buffer-local while locally let-bound!"
+        ;; Suggestion from Stefan M.: Can just set these hooks instead of binding,
+        ;; because they are not permanent-local.  They'll be emptied and
+        ;; repopulated as needed by the call to emacs-lisp-mode.
+        (set (make-local-variable 'emacs-lisp-mode-hook) nil)
+        (set (make-local-variable 'change-major-mode-hook) nil)
+        (emacs-lisp-mode)
         (set (make-local-variable 'font-lock-verbose) nil)
         (font-lock-fontify-buffer)))))
 

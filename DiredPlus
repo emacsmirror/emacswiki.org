@@ -62,9 +62,11 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 
 '''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a couple of ways:
 
-* (`C-RET') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
+* ('''`C-RET'''') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
 
-* (`M-RET') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
+* ('''`M-RET'''') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
+
+* ('''`##^##'''') When at the root of a Windows drive (e.g. `##C:/##') and you use `##^##' (`dired-up-directory'), you get a list of drives to choose from.  (This feature is based on the contribution at WThirtyTwoBrowseNetDrives.)
 
 * If you use '''[[Bookmark+]]''' you can also open ''bookmarks'' using Windows file associations.
 
@@ -89,6 +91,27 @@ In addition to being bound to keys, these operations are added to the '''Dired+'
 * <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -- libraries by WuXiaochun that build on Dired Plus
 
 ----
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 '''Bug reports:'''
 
@@ -349,6 +372,30 @@ Thanks very much for this bug report. Should be fixed now. Let me know if you se
 
 [new]
 Works fine now, thanks for fast fixing. -- [[Anonymous]]
+
+[new]
+Is there any way to disable the dired+ color customizations and just fall back to the colorscheme installed instead? Or do I have to override each individual setting? I use the zenburn colorscheme and the colors specified in dired+ look unreadable with it. Thanks. -- Christoph
+
+[new:DrewAdams:2010-08-27 23:24 UTC]
+Yes, you can customize each '''Dired+''' face separately -- they are separate faces.  They are '''Dired+''' faces, and like most faces throughout Emacs, they have nothing to do with ColorTheme. 
+
+Is ColorTheme what you meant by "the colorscheme installed" and "zenburn colorscheme"? If not, what did you mean? Did you mean the colors you see for Dired in vanilla Emacs, where there are no such faces?
+
+Vanilla Emacs (Dired) does not have such faces, and ColorTheme does not have faces in general. So the answer is yes, in any case: these are separate faces, so if you want to change them all then you need to customize them all (once). -- DrewAdams 
+
+[new]
+Yes, I have colortheme installed with the zenburn colorscheme. I installed dired+ but I don't like the new colors in the dired buffer. They don't work with Zenburn. So I was wondering if I could keep the general functionality of dired+ but simply disable the "fancy highlighting" or if have to customize each face separately. I think you answered my question though. Thanks! -- Christoph
+
+[new:DrewAdams:2010-08-28 03:11 UTC]
+Please download the latest version.  I just updated it to fix a problem that has probably been there since Day 1.  I thought I had provided properly for users to customize `font-lock-maximum-decoration' to skip the second level of Dired fontification, but I had not.  That should now be corrrected.
+
+You can customize [[option]] `font-lock-maximum-decoration' to set the level of fontification you want.  And you can do this for particular modes if you like.  To turn off max highlighting only for Dired mode, do `M-x customize-option font-lock-maximum-decoration' and insert an entry for `dired-mode' that specifies `default' highlighting for it.  (You can set another, catch-all entry for `all' that controls all other modes.) 
+
+Thanks for bringing this to my attention. Most users want more Dired highlighting, not less, so I never realized this didn't work properly.
+Thx -- DrewAdams
+
+[new]
+Perfect! This was exactly what I was looking for. Thanks Drew! -- Christoph
 
 ----
 CategoryDirectories

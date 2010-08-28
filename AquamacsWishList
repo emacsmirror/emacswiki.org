@@ -326,3 +326,13 @@ tell application "Aquamacs"
 end tell
 </pre>
 and I receive:  "Aquamacs got an error: Can’t get bounds of window 1."  Eventually, I want to set bounds as well.  I just built from source and it's still an issue.
+
+
+
+[new]
+Zan: Many thanks to those who have put together aquamacs 2.0.
+One feature that was lost in upgrade is that in the dock, minimized windows no longer show up labeled with their filename.
+Instead they show up labeled "Aquamacs". It was convenient to have the minimized windows show up with their filenames
+in the dock when you are working with many minimized windows.
+
+

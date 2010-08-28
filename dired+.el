@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sat Aug  7 10:31:33 2010 (-0700)
+;; Last-Updated: Fri Aug 27 20:43:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2602
+;;     Update #: 2651
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -34,6 +34,12 @@
 ;;
 ;;  Key bindings changed.  Menus redefined.  `diredp-mouse-3-menu'
 ;;  popup menu added.  New commands.  Some commands enhanced.
+;;
+;;  Note: If you want a maximum or minimum fontification for Dired
+;;  mode, then customize option `font-lock-maximize-decoration'.  If
+;;  you want a different fontification level for Dired than for other
+;;  modes, you can do this too by customizing
+;;  `font-lock-maximize-decoration'.
 ;;
 ;;  Note:
 ;;
@@ -63,6 +69,10 @@
 ;;  All new functions, variables, and faces defined here have the
 ;;  prefix `diredp-' (for Dired Plus) in their names.
 ;;
+;;
+;;  Options defined here:
+;;
+;;    `diff-switches', `diredp-w32-local-drives'.
 ;;
 ;;  Faces defined here:
 ;;
@@ -118,6 +128,7 @@
 ;;    `diredp-shell-command-this-file', `diredp-symlink-this-file',
 ;;    `diredp-toggle-find-file-reuse-dir',
 ;;    `diredp-unmark-region-files', `diredp-upcase-this-file',
+;;    `diredp-w32-drives', `diredp-w32-drives-mode',
 ;;    `toggle-dired-find-file-reuse-dir'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -133,7 +144,7 @@
 ;;    `diredp-file-line-overlay', `diredp-font-lock-keywords-1',
 ;;    `diredp-menu-bar-immediate-menu', `diredp-menu-bar-mark-menu',
 ;;    `diredp-menu-bar-operate-menu', `diredp-menu-bar-regexp-menu',
-;;    `diredp-menu-bar-subdir-menu'.
+;;    `diredp-menu-bar-subdir-menu', `diredp-w32-drives-mode-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dired.el' have
@@ -149,6 +160,7 @@
 ;;  `dired-goto-file'         - Remove `/' from dir before compare.
 ;;  `dired-insert-set-properties' - `mouse-face' on whole line.
 ;;  `dired-revert'            - Reset `mode-line-process' to nil.
+;;  `dired-up-directory'      - On Windows, go up to list of drives.
 ;;
 ;;  The following functions are included here with NO CHANGES to their
 ;;  definitions.  They are here only to take advantage of the new
@@ -182,6 +194,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/08/27 dadams
+;;     Use diredp-font-lock-keywords-1 properly as a second level of fontification.
+;;     Added: diredp-w32-drives(-mode(-map)), dired-up-directory.
 ;; 2010/08/07 dadams
 ;;     dired-map-over-marks: Removed loop that used dired-between-files.
 ;;     diredp-get-file-or-dir-name: test against subdir/..? also.
@@ -423,6 +438,22 @@
   "*A string or list of strings specifying switches to be passed to diff."
   :type '(choice string (repeat string))
   :group 'dired :group 'diff)
+
+(defcustom diredp-w32-local-drives '(("C:" "Local disk"))
+  "Local MS Windows drives that you want to use for `diredp-w32-drives'.
+Each entry is a list (DRIVE DESCRIPTION), where DRIVE is the drive
+name and DESCRIPTION describes DRIVE."
+  :type '(alist
+          :key-type   (string        :tag "Drive name")
+          :value-type (group (string :tag "Drive description")))
+  :group 'Dired-Plus)
+
+(defvar diredp-w32-drives-mode-map (let ((map  (make-sparse-keymap)))
+                                     (define-key map "q"       'bury-buffer)
+                                     (define-key map "\r"      'widget-button-press)
+                                     (define-key map [mouse-2] 'widget-button-click)
+                                     map)
+  "Keymap for `diredp-w32-drives-mode'.")
 
 ;;; $$$$$$ Starting with Emacs 22, *-move-to* is defvaraliased to *-listing-before*.
 ;;; But `files+.el' defines *-listing-before*, so we define it here too.
@@ -1209,9 +1240,9 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 (define-key dired-mode-map [M-mouse-2] 'diredp-mouse-find-file-other-frame)
 (define-key dired-mode-map "\C-\M-o" 'dired-display-file) ; Was `C-o'.
 (define-key dired-mode-map [(control meta ?*)] 'diredp-marked-other-window)
-(define-key dired-mode-map "\C-o" 'diredp-find-file-other-frame)
-(define-key dired-mode-map "\M-b"     'diredp-do-bookmark)
-(define-key dired-mode-map "\C-\M-b"     'diredp-set-bookmark-file-bookmark-for-marked)
+(define-key dired-mode-map "\C-o"    'diredp-find-file-other-frame)
+(define-key dired-mode-map "\M-b"    'diredp-do-bookmark)
+(define-key dired-mode-map "\C-\M-b" 'diredp-set-bookmark-file-bookmark-for-marked)
 (define-key dired-mode-map [(control meta shift ?b)] 'diredp-do-bookmark-in-bookmark-file)
 (define-key dired-mode-map "\M-g" 'diredp-do-grep)
 (define-key dired-mode-map "U" 'dired-unmark-all-marks)
@@ -1471,16 +1502,15 @@ Don't forget to mention your Emacs and library versions."))
          '(".+" (dired-move-to-filename) nil (0 diredp-deletion-file-name t)))
    (list (concat "^\\([^\n " (char-to-string dired-del-marker) "]\\)") ; Flags, marks (except D)
          1 diredp-flag-mark t)
-   ) "Expressions to highlight in Dired mode.")
+   ) "2nd level of Dired highlighting.  See `font-lock-maximum-decoration'.")
 
 
 ;;; Provide for the second level of fontifying.
 (add-hook 'dired-mode-hook
-          '(lambda () (if (and (boundp 'font-lock-maximum-decoration)
-                               font-lock-maximum-decoration)
-                          (set (make-local-variable 'font-lock-defaults)
-                               '(diredp-font-lock-keywords-1 t)))))
-
+          '(lambda ()
+            (set (make-local-variable 'font-lock-defaults)
+             (cons '(dired-font-lock-keywords diredp-font-lock-keywords-1) ; Two levels.
+              (cdr font-lock-defaults)))))
  
 ;;; Function Definitions
 
@@ -2072,6 +2102,66 @@ choice described for `diredp-do-grep'."
              (- (length up-to-files) 2)))
      nil nil 'grep-history default)))
 
+;;;###autoload
+(define-derived-mode diredp-w32-drives-mode fundamental-mode "Drives"
+  "Open Dired for an MS Windows drive (local or remote)."
+  (setq buffer-read-only  t))
+
+;; The next two commands were originally taken from Emacs Wiki, page WThirtyTwoBrowseNetDrives:
+;; http://www.emacswiki.org/emacs/WThirtyTwoBrowseNetDrives.  They are referred to there as
+;; commands `show-net-connections' and `netdir'.  I am hoping that the contributor (anonymous)
+;; does not mind my adapting them and including them in Dired+.
+
+;;;###autoload
+(defun diredp-w32-list-mapped-drives ()
+  "List network connection information for shared MS Windows resources.
+This just invokes the Windows `NET USE' command."
+  (interactive) 
+  (unless (eq system-type 'windows-nt)
+    (error "This command is only for use on MS Windows"))
+  (shell-command "net use"))
+
+;;;###autoload
+(defun diredp-w32-drives (&optional other-window-p)
+  "Visit a list of MS Windows drives for use by Dired.
+With a prefix argument use another window for the list.
+In the list, use `mouse-2' or `RET' to open Dired for a given drive.
+
+The drives listed are the remote drives currently available, as
+determined by the Windows command `NET USE', plus the local drives
+specified by option `diredp-w32-local-drives', which you can
+customize.
+
+Note: When you are in Dired at the root of a drive (e.g. directory
+      `c:/'), command `dired-up-directory' invokes this command.
+      So you can use `\\[dired-up-directory]' to go up to the list of drives."
+  (interactive "P")
+  (unless (eq system-type 'windows-nt)
+    (error "This command is only for use on MS Windows"))
+  (require 'widget)
+  (let ((drive              (copy-sequence diredp-w32-local-drives))
+        (inhibit-read-only  t))
+    (with-temp-buffer
+      (insert (shell-command-to-string "net use"))
+      (goto-char (point-min))
+      (while (re-search-forward "[A-Z]: +\\\\\\\\[^ ]+" nil t nil)
+	(setq drive  (cons (split-string (match-string 0)) drive))))
+    (if other-window-p
+        (pop-to-buffer "*Windows Drives*")
+      (switch-to-buffer "*Windows Drives*"))
+    (erase-buffer)
+    (widget-minor-mode 1)
+    (mapcar (lambda (x)
+              (lexical-let ((x  x))
+                (widget-create 'push-button
+                               :notify (lambda (widget &rest ignore)
+                                         (dired (car x)))
+                               (concat (car x) "  " (cadr x))))
+              (widget-insert "\n"))
+            (sort drive (lambda (a b) (string-lessp (car a) (car b)))))
+    (goto-char (point-min))
+    (diredp-w32-drives-mode)))
+
 ;; No longer used.  It was used in `dired-do-grep(-1)' before the new `dired-get-marked-files'.
 (defun diredp-all-files ()
   "List of all files shown in current Dired buffer.
@@ -2383,6 +2473,31 @@ Add text property `dired-filename' to the file name."
                'dired-filename t))
           (error nil))
         (forward-line 1)))))
+
+
+;; REPLACE ORIGINAL in `dired.el'.
+;;
+;; If at root on a Windows drive, go up to a list of available drives.
+;;
+(defun dired-up-directory (&optional other-window)
+  "Run Dired on parent directory of current directory.
+Find the parent directory either in this buffer or another buffer.
+Creates a buffer if necessary.
+
+On MS Windows, if you already at the root directory, invoke
+`diredp-w32-drives' to visit a navigable list of Windows drives."
+  (interactive "P")
+  (let* ((dir (dired-current-directory))
+         (up (file-name-directory (directory-file-name dir))))
+    (or (dired-goto-file (directory-file-name dir))
+        ;; Only try dired-goto-subdir if buffer has more than one dir.
+        (and (cdr dired-subdir-alist)
+             (dired-goto-subdir up))
+        (progn (if other-window
+                   (dired-other-window up)
+                 (dired up))
+               (dired-goto-file dir))
+        (and (eq system-type 'windows-nt) (diredp-w32-drives)))))
 
 
 ;; REPLACE ORIGINAL in `dired.el'.

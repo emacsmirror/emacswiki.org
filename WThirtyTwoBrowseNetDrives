@@ -1,3 +1,12 @@
+The code on this page lets you access a list of your MS Windows drives, to navigate to any of them in DiredMode.
+
+[new:DrewAdams:2010-08-27 20:06 UTC]
+This feature is particularly useful for `##^##' (`dired-up-directory') in [[Dired]].  Assuming there is no objection, I have added it to [[Dired+]], modifying it slightly.  The code here was apparently contributed anonymously.  If you wrote it, let us know who you are. ;-)  And if you prefer that this not be added to Dired+, let me know.  Thx -- DrewAdams
+[new]
+----
+
+First version:
+
 <pre>
 (defun netdir()
   (interactive)
@@ -25,14 +34,13 @@
 </pre>
 
 -----
+Second version:
 
-I have made up this version to add my local drives.
+Specify your local drives using variable `localdrives'.
 
-The below code uses copy-sequence because if you don't, your variable localdrives will change in weird ways.
-The reason is this: drvL points to the first cell in localdrives.  Then we append more items to the front of
-the list.  Then we use sort*.  When you read the description, sort* is destructive.  See DestructiveOperations.
-This means it changes
-the order of the cells in the list.  So next time you use localdrives, the first cell will be the same, but
+Uses `copy-sequence'. The reason is this: drvL points to the first cell in `localdrives'.  Then we append more items to the front of
+the list.  Then we use `sort*', which is destructive.  See DestructiveOperations.
+It changes the order of the cells in the list.  So next time you use `localdrives', the first cell will be the same, but
 the rest of the cells might be different.
 
 <pre>
@@ -72,7 +80,8 @@ the rest of the cells might be different.
 
 ----
 
-Call netdir at the root of a drive when going up; for example, with Emacs 23.2's dired.el:
+Redefinition of standard [[Dired]] command (`##^##').
+Calls `netdir' when going up from the root of a drive:
 
 <pre>
 (defun dired-up-directory (&optional other-window)
@@ -93,6 +102,8 @@ Creates a buffer if necessary."
 	    (dired-goto-file dir))
 	  (netdir)))) ;; Get list of drives
 </pre>
+
+
 ----
-CategoryWThirtyTwo
+CategoryWThirtyTwo CategoryDirectories
 
