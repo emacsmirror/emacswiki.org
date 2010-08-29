@@ -19,5 +19,25 @@ The [http://www.netcolony.com/technology/janardan/scripts/weather.html weather.e
 
 ** http://web.archive.org/web/20011205115920/http://www.netcolony.com/technology/janardan/scripts/weather.html
 
+==xml-weather.el==
+The first time I try to use xml-weather-today-at or xml-weather-forecast-at, I can enter in the city just fine.  Using the TAB autocomplete on Location will generate a "defvar ignored because url-request-data is let-bound" warning, even though autocompletion will work and will list all the cities of the name I entered.  No weather information is retrieved on either the first or any additional queries due to "url-retrieve-internal: Symbol's value as variable is void: url-request-data".  The ticker will run but not display anything other than the initial "Contacting host: xoap.weather.com:80".  Any ideas what is causing the url problems?  They happen whether nor not emacs-w3m is loaded.
+
+[new]
+Use it like that:
+
+M-x xml-weather-today-at RET
+
+City: name of your city (NO COMPLETION HERE)
+
+Choose a place: Hit TAB here and select the name the more appropriate.
+
+May be try with another city, sometime even if the city is referenced, it is not available yet, you have to try later.
+
+I use xml-weather every day with no failure since months.
+
+If it still not working for you, contact me on the mail address you will find in source file header with a recipe explaining clearly the step you followed and the configuration you used (did you subscribe to xml-weather?).
+
+-- ThierryVolpiatto
+
 ----
 CategoryInterface

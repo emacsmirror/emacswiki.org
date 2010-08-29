@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 21.0
-;; Last-Updated: Sun Feb 28 12:27:20 2010 (-0800)
+;; Last-Updated: Sat Aug 28 13:25:29 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 98
+;;     Update #: 104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/finder+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,6 +28,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/08/28 dadams
+;;     finder-exit, finder-mode: Redefine only for Emacs < 23. 
 ;; 2010/02/28 dadams
 ;;     finder-commentary: Delete any trailing blank lines.
 ;; 2009/05/02 dadams
@@ -87,37 +89,39 @@
 ;; Wraps `delete-window' in `condition-case'.
 ;; Kills also buffer `*Finder-package*'.
 ;;
-(defun finder-exit ()
-  "Exit Finder mode.
+(when (< emacs-major-version 23)
+  (defun finder-exit ()
+    "Exit Finder mode.
 Delete the window and kill the buffer."
-  (interactive)
-  (condition-case nil (delete-window) (error nil))
-  (when (get-buffer "*Finder*") (kill-buffer "*Finder*"))
-  (when (get-buffer "*Finder-package*") (kill-buffer "*Finder-package*"))
-  (when (get-buffer "*Finder Category*") (kill-buffer "*Finder Category*")))
+    (interactive)
+    (condition-case nil (delete-window) (error nil))
+    (when (get-buffer "*Finder*") (kill-buffer "*Finder*"))
+    (when (get-buffer "*Finder-package*") (kill-buffer "*Finder-package*"))
+    (when (get-buffer "*Finder Category*") (kill-buffer "*Finder Category*"))))
 
 
 ;; REPLACES ORIGINAL in `finder.el'.
 ;; Uses `finder-mode-syntax-table', not `emacs-lisp-mode-syntax-table'.
 ;; Adds font-lock keywords for `...' highlighting.
 ;;
-(defun finder-mode ()
-  "Major mode for browsing package documentation.
+(when (< emacs-major-version 23)
+  (defun finder-mode ()
+    "Major mode for browsing package documentation.
 \\<finder-mode-map>
 \\[finder-select]	more help for the item on the current line
 \\[finder-exit]	exit Finder mode and kill the Finder buffer."
-  (interactive)
-  (kill-all-local-variables)
-  (use-local-map finder-mode-map)
-  (set-syntax-table finder-mode-syntax-table)
-  (when (boundp 'finder-font-lock-keywords) ; Emacs 23.
-    (setq font-lock-defaults '(finder-font-lock-keywords nil nil
-                               (("+-*/.<>=!?$%_&~^:@" . "w")) nil)))
-  (setq mode-name "Finder")
-  (setq major-mode 'finder-mode)
-  (set (make-local-variable 'finder-headmark) nil)
-  (when (and (fboundp 'run-mode-hooks) (boundp 'finder-mode-hook))
-    (run-mode-hooks 'finder-mode-hook)))
+    (interactive)
+    (kill-all-local-variables)
+    (use-local-map finder-mode-map)
+    (set-syntax-table finder-mode-syntax-table)
+    (when (boundp 'finder-font-lock-keywords) ; Emacs 23.
+      (setq font-lock-defaults '(finder-font-lock-keywords nil nil
+                                 (("+-*/.<>=!?$%_&~^:@" . "w")) nil)))
+    (setq mode-name "Finder")
+    (setq major-mode 'finder-mode)
+    (set (make-local-variable 'finder-headmark) nil)
+    (when (and (fboundp 'run-mode-hooks) (boundp 'finder-mode-hook))
+      (run-mode-hooks 'finder-mode-hook))))
 
 
 ;; REPLACES ORIGINAL in `finder.el'.

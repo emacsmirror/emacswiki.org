@@ -74,10 +74,10 @@
 ;;  Traverse auto documentation
 ;;  ---------------------------
 ;;
-;;  [UPDATE ALL EVAL] (traverse-auto-update-documentation)
+;;  [UPDATE ALL EVAL] (autodoc-update-all)
 ;;
 ;;  * Commands defined here:
-;; [EVAL] (traverse-auto-document-lisp-buffer :type 'command)
+;; [EVAL] (autodoc-document-lisp-buffer :type 'command)
 ;; `traverselisp-version'
 ;; `traverse-quit'
 ;; `traverse-find-in-file'
@@ -89,25 +89,19 @@
 ;; `traverse-dired-find-in-marked-files'
 ;; `traverse-dired-find-in-all-files'
 ;; `traverse-dired-search-regexp-in-anything-at-point'
+;; `traverse-jump-other-window'
 ;; `traverse-go-forward'
 ;; `traverse-go-backward'
 ;; `traverse-scroll-down-other-window'
 ;; `traverse-scroll-up-other-window'
 ;; `traverse-toggle-split-window-h-v'
 ;; `traverse-count-files-in-dir'
-;; `traverse-auto-update-documentation'
-;; `traverse-auto-documentation-insert-header'
-;; `traverse-incremental-next-line'
-;; `traverse-incremental-precedent-line'
-;; `traverse-incremental-jump-and-quit'
-;; `traverse-incremental-scroll-down'
-;; `traverse-incremental-scroll-up'
-;; `traverse-incremental-occur'
 
 ;;  * Non--interactive functions defined here:
-;; [EVAL] (traverse-auto-document-lisp-buffer :type 'function :prefix "traverse")
+;; [EVAL] (autodoc-document-lisp-buffer :type 'function :prefix "traverse")
 ;; `traverse-list-directory'
 ;; `traverse-walk-directory'
+;; `traverse-goto-line'
 ;; `traverse-comp-str-to-list'
 ;; `traverse-check-only-lists'
 ;; `traverse-find-readlines'
@@ -123,66 +117,37 @@
 ;; `traverse-window-split-h-or-t'
 ;; `traverse-list-directories-in-tree'
 ;; `traverse-list-files-in-tree'
-;; `traverse-auto-document-default-prefix'
-;; `traverse-get-first-line-documentation'
-;; `traverse-goto-line'
-;; `traverse-incremental-forward-line'
-;; `traverse-incremental-jump'
-;; `traverse-incremental-scroll'
-;; `traverse-read-char-or-event'
-;; `traverse-incremental-read-search-input'
-;; `traverse-incremental-filter-alist-by-regexp'
-;; `traverse-incremental-start-timer'
-;; `traverse-incremental-cancel-search'
-;; `traverse-incremental-occur-color-current-line'
+;; `traverse-mv-files-in-tree'
 
 ;;  * Macros defined here:
-;; [EVAL] (traverse-auto-document-lisp-buffer :type 'macro :prefix "traverse")
+;; [EVAL] (autodoc-document-lisp-buffer :type 'macro :prefix "traverse")
 ;; `traverse-collect-files-in-tree-if'
 ;; `traverse-collect-files-in-tree-if-not'
-;; `traverse-auto-document-lisp-buffer'
 
 ;;  * Internal variables defined here:
-;; [EVAL] (traverse-auto-document-lisp-buffer :type 'internal-variable :prefix "traverse")
+;; [EVAL] (autodoc-document-lisp-buffer :type 'internal-variable :prefix "traverse")
 ;; `traverse-mode-map'
 ;; `traverse-match-overlay-face'
 ;; `traverse-show-regexp-delay'
 ;; `traverse-keep-indent'
 ;; `traverse-count-occurences'
 ;; `traverse-occur-overlay'
-;; `traverse-incremental-mode-map'
-;; `traverse-incremental-search-pattern'
-;; `traverse-incremental-search-timer'
-;; `traverse-incremental-quit-flag'
-;; `traverse-incremental-current-buffer'
-;; `traverse-incremental-occur-overlay'
-;; `traverse-incremental-exit-and-quit-p'
-;; `traverse-incremental-history'
-;; `traverse-incremental-face'
 
 ;;  * Faces defined here:
-;; [EVAL] (traverse-auto-document-lisp-buffer :type 'faces :prefix "traverse")
+;; [EVAL] (autodoc-document-lisp-buffer :type 'faces :prefix "traverse")
 ;; `traverse-match-face'
 ;; `traverse-regex-face'
 ;; `traverse-path-face'
 ;; `traverse-overlay-face'
-;; `traverse-incremental-overlay-face'
-;; `traverse-incremental-title-face'
-;; `traverse-incremental-regexp-face'
 
 ;;  * User variables defined here:
-;; [EVAL] (traverse-auto-document-lisp-buffer :type 'user-variable :prefix "^traverse")
+;; [EVAL] (autodoc-document-lisp-buffer :type 'user-variable :prefix "^traverse")
 ;; `traverse-ignore-files'
 ;; `traverse-ignore-dirs'
 ;; `traverse-length-line'
 ;; `traverse-file-function'
 ;; `traverse-use-avfs'
 ;; `traverse-avfs-default-directory'
-;; `traverse-incremental-search-delay'
-;; `traverse-incremental-search-prompt'
-;; `traverse-incremental-docstring'
-;; `traverse-incremental-mode-line-string'
-;; `traverse-incremental-length-line'
 
 ;;  *** END auto-documentation
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -248,7 +213,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;; Version:
-(defconst traverse-version "2.8")
+(defconst traverse-version "2.10")
 
 ;;; Code:
 
@@ -263,6 +228,7 @@
     (define-key map [(shift down)] 'traverse-scroll-down-other-window)
     (define-key map [(shift up)] 'traverse-scroll-up-other-window)
     (define-key map [?|] 'traverse-toggle-split-window-h-v)
+    (define-key map (kbd "C-z") 'traverse-jump-other-window)
     map)
   "Keymap used for traverse commands.")
 
@@ -366,7 +332,7 @@ Are allowed:(examples)
 (defvar traverse-count-occurences 0
   "Simple variable to store the number of occurence found.")
 (defvar traverse-occur-overlay nil)
-
+(make-variable-buffer-local 'traverse-occur-overlay)
 
 (defun traverselisp-version ()
   "Give version number of traverselisp."
@@ -378,11 +344,11 @@ Are allowed:(examples)
 (defun traverse-quit ()
   "Quit and kill traverse buffer."
   (interactive)
-  (when traverse-occur-overlay
-    (delete-overlay traverse-occur-overlay))
   (quit-window t)
   (other-window 1)
-  (delete-other-windows))
+  (delete-other-windows)
+  (when traverse-occur-overlay
+    (delete-overlay traverse-occur-overlay)))
 
 (defun traverse-list-directory (dirname &optional abs)
   "Use directory-files without these \".\" \"..\".
@@ -413,8 +379,8 @@ Example of use:
 See `traverse-ignore-files' and `traverse-ignore-dirs'."
   (labels
       ((walk (name)
-         (cond ((eq t (car (file-attributes name))) ; DIR PROCESSING don't follow symlinks.
-                ;; Faster than: (and (file-directory-p name)(not (file-symlink-p name)))
+         (cond (;; Is a directory and not a symlink.
+                (eq t (car (file-attributes name)))
                 (when dir-fn (funcall dir-fn name))
                 (if exclude-dirs
                     (dolist (x (traverse-list-directory name t))
@@ -425,7 +391,8 @@ See `traverse-ignore-files' and `traverse-ignore-dirs'."
                     (dolist (x (traverse-list-directory name t))
                       (when (stringp x)
                         (walk x))))) ; Return to TOP and take the good cond
-               ((and (file-regular-p name) (not (file-symlink-p name))) ;
+               ;; Is neither a directory nor a symbolic link.
+               ((eq nil (car (file-attributes name)))
                 (when file-fn
                   (if exclude-files
                       (unless (traverse-check-only-lists name exclude-files)
@@ -433,8 +400,11 @@ See `traverse-ignore-files' and `traverse-ignore-dirs'."
                       (funcall file-fn name)))))))
     (if (or file-fn dir-fn)
         (walk (expand-file-name dirname))
-        (error "Error:you must specify at list one function"))))
+        (error "Error:you must specify at least one function"))))
 
+(defun traverse-goto-line (numline)
+  "Non--interactive version of `goto-line.'"
+  (goto-char (point-min)) (forward-line (1- numline)))
 
 (defun traverse-comp-str-to-list (str lis)
   "Compare STR with all elements of list LIS.
@@ -450,22 +420,19 @@ Each element of LIS is compared with the filename STR."
   (or (member (file-name-extension str t) lis)
       (traverse-comp-str-to-list str lis)))
 
-(defsubst* traverse-find-readlines (bfile regexp &key (insert-fn 'file))
-  "Return an alist of all the (num-line line) of a file or buffer BFILE matching REGEXP."
-  (let ((count 0)
-        (fn    (case insert-fn
-                 ('file 'insert-file-contents)
-                 ('buffer 'insert-buffer-substring))))
+(defsubst* traverse-find-readlines (bfile regexp &key (insert-fn 'buffer))
+  "Return an alist of all the (numline line)  matching REGEXP."
+  (let ((fn (case insert-fn
+              ('file 'insert-file-contents)
+              ('buffer 'insert-buffer-substring))))
     (with-temp-buffer
       (funcall fn bfile) ; call insert function
       (goto-char (point-min))
       (loop
          with lines-list = (split-string (buffer-string) "\n")
-         for i in lines-list when (string-match regexp i)
-         collect (list count (replace-regexp-in-string "\n" "" i)) into lis
-         do (incf count)
+         for i in lines-list for count from 0 when (string-match regexp i)
+         collect (list count i) into lis
          finally return lis))))
-
 
 (defun traverse-file-process (regex fname &optional full-path insert-fn)
   "Default function to process files and insert matched lines in *traverse-lisp* buffer."
@@ -847,6 +814,11 @@ in compressed archive at point if traverse-use-avfs is non--nil."
   (push-button)
   (other-window -1))
 
+(defun traverse-jump-other-window ()
+  (interactive)
+  (push-button)
+  (other-window -1))
+
 (defun traverse-go-forward (&optional num)
   "Go to next occurence and open file with point at the right place in other window."
   (interactive "p")
@@ -977,6 +949,45 @@ PRED is a function that take one arg."
       ,tree
       :file-fn #'(lambda (x) (unless (funcall ,pred x) (push x flist))))
      flist))
+
+
+(defun* traverse-mv-files-in-tree (tree dest ext
+                                        &key
+                                        test-only
+                                        (fn 'rename-file)
+                                        (confirm 'noconfirm))
+  "Copy or Move all files in TREE with EXT to DEST.
+FN determine which of `copy-file' or `rename-file' is used.
+CONFIRM can be one of 'noconfirm, nil(signal error), \
+or any number value to ask for confirmation.
+If TEST-ONLY is non--nil only print a buffer signaling what will be done."
+  (let ((f-to-rename (traverse-collect-files-in-tree-if
+                      tree
+                      #'(lambda (x)
+                          (if (listp ext)
+                              (loop for i in ext
+                                 when (string= (file-name-extension x) i) return t)
+                              (string= (file-name-extension x) ext))))))
+    (if test-only
+        (progn
+          (with-current-buffer (get-buffer-create "*test buffer*")
+            (erase-buffer)
+            (loop for f in f-to-rename
+               do (insert (format "%s <will be renamed to>  %s\n" (file-name-nondirectory f) dest))))
+          (switch-to-buffer "*test buffer*")
+          (align-regexp (point-min) (point-max) "\\(\\s-*\\)<will be renamed to>" 1 1 nil)
+          (unless (file-exists-p dest)
+            (insert (format "WARNING:<%s> doesn't exist and will have to be created." dest))))
+        (unless (file-exists-p dest)
+          (if (y-or-n-p (format "%s doesn't exists, create it? " dest))
+              (make-directory dest)
+              (error "Abort: %s doesn't exists." dest)))
+        (loop for f in f-to-rename
+           do (funcall fn f dest confirm))
+        (message "%d files %s to %s"
+                 (length f-to-rename)
+                 (if (eq 'fn 'rename-file) "renamed" "copied")
+                 dest))))
 
 
 ;; Provide

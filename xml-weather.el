@@ -99,6 +99,8 @@
 (eval-when-compile (require 'cl))
 (require 'xml)
 (require 'derived)
+(require 'url)
+
 
 ;;;###autoload
 (defvar xml-weather-format-id-url
@@ -181,8 +183,9 @@ You will have errors if you use another icons set than the xml-weather one.")
   "Keymap used for `xml-weather' commands.")
 
 ;;;###autoload
-(define-derived-mode xml-weather-mode text-mode "xml-weather"
-                     "Major mode to get info from xml-weather.
+(define-derived-mode xml-weather-mode
+    text-mode "xml-weather"
+    "Major mode to get info from xml-weather.
 
 Special commands:
 \\{xml-weather-mode-map}")
@@ -254,7 +257,7 @@ This function is intended to be called inside a `let' binding."
 
 ;; First step: Get ID of places
 (defun xml-weather-get-place-id (place)
-  "Return an alist of all ID corresponding to place.
+  "Return an alist of all ID corresponding to PLACE.
 Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
   (let* ((url              (format xml-weather-format-id-url place))
          (url-request-data (encode-coding-string place 'utf-8))
@@ -281,37 +284,41 @@ Each element is composed of a pair like \(\"Toulon, France\" . \"FRXX0098\"\)."
 ;; &prod=xoap&par=[partner id]&key=[license key]
 
 (defun xml-weather-get-info-on-id (id)
-  "Return an xml buffer with xml-weather infos on `id'."
+  "Return an xml buffer with xml-weather infos on ID."
   (let* (xml-weather-login
          xml-weather-key
          (url  (progn
                  (unless (and xml-weather-login xml-weather-key)
                    (xml-weather-authentify))
-                 (format xml-weather-format-xml-from-id-url
-                         id
-                         xml-weather-unit
-                         xml-weather-day-forecast-num
-                         xml-weather-login
-                         xml-weather-key)))
-         (data (with-current-buffer (url-retrieve-synchronously url)
-                 (buffer-string))))
-    (with-current-buffer (get-buffer-create "*xml-weather*")
-      (erase-buffer)
-      (insert data))))
+                 (when (and xml-weather-login xml-weather-key)
+                   (format xml-weather-format-xml-from-id-url
+                           id
+                           xml-weather-unit
+                           xml-weather-day-forecast-num
+                           xml-weather-login
+                           xml-weather-key))))
+         (data (when url (with-current-buffer (url-retrieve-synchronously url)
+                           (buffer-string)))))
+    (if data
+        (with-current-buffer (get-buffer-create "*xml-weather*")
+          (erase-buffer)
+          (insert data))
+        (error "Fail to retrieve data, please set up your login and password \
+correctly or verify if your network is up."))))
 
 ;;;###autoload
 (defun xml-weather-show-id (place)
-  "Interactively show ID corresponding to `place'."
+  "Interactively show ID corresponding to PLACE."
   (interactive "sName: ")
   (let* ((id-list   (xml-weather-get-place-id place))
          (name-list (loop for i in id-list collect (car i)))
          (id-name   (completing-read "Choose a place: " name-list nil t))
-         (id (cdr (assoc id-name id-list))))
+         (id        (cdr (assoc id-name id-list))))
     (message "ID code for %s is %s" id-name id)))
 
 (defun xml-weather-set-number-file-name (arg)
-  "When `arg' < 10 add a 0 before it.
-`arg' can be a string or a number."
+  "When ARG < 10 add a 0 before it.
+ARG can be a string or a number."
   (let ((n (if (stringp arg) (string-to-number arg) arg)))
     (if (and (< n 10) (> n 0))
         (substring (int-to-string (/ (float n) 100)) 2)
@@ -478,7 +485,7 @@ Insert an icon in the Cond: entry only if `xml-weather-default-icons-directory' 
         (insert ""))))
     
 (defun xml-weather-pprint-forecast (station)
-  "Print the xml-weather info of forecast for `station' in *xml-weather-meteo* buffer."
+  "Print the xml-weather info of forecast for STATION in *xml-weather-meteo* buffer."
   (let ((data (xml-weather-get-alist)))
     (with-current-buffer (get-buffer-create "*xml-weather-meteo*")
       (erase-buffer)

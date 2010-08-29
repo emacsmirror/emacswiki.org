@@ -81,7 +81,7 @@
 
 ;; User variables
 (defvar anything-c-delicious-api-url
-  "https://api.del.icio.us/posts/all"
+  "https://api.del.icio.us/v1/posts/all?"
   "Url used to retrieve all bookmarks")
 (defvar anything-c-delicious-api-url-delete
   "https://api.del.icio.us/v1/posts/delete?&url=%s"
@@ -118,15 +118,15 @@
     (action . (("Browse Url" . (lambda (elm)
                                  (anything-c-delicious-browse-bookmark elm)
                                  (setq anything-delicious-last-pattern anything-pattern)))
-               ("Copy Url" . (lambda (elm)
-                               (kill-new (anything-c-delicious-bookmarks-get-value elm))))
+               ("Browse Url Firefox" . (lambda (candidate)
+                                         (anything-c-delicious-browse-bookmark candidate t)))
                ("Delete bookmark" . (lambda (elm)
                                       (anything-c-delicious-delete-bookmark elm)))
+               ("Copy Url" . (lambda (elm)
+                               (kill-new (anything-c-delicious-bookmarks-get-value elm))))
                ("Update" . (lambda (elm)
                              (message "Wait Loading bookmarks from Delicious...")
-                             (anything-wget-retrieve-delicious)))
-               ("Browse Url Firefox" . (lambda (candidate)
-                                         (anything-c-delicious-browse-bookmark candidate t)))))))
+                             (anything-wget-retrieve-delicious)))))))
 
 
 ;; (anything 'anything-c-source-delicious-tv)
@@ -159,27 +159,29 @@ finding the path of your .authinfo file that is normally ~/.authinfo."
   "Get the delicious bookmarks asynchronously with external program wget."
   (interactive)
   (let ((fmd-command (if (eq system-type 'windows-nt)
-                         "-q --no-check-certificate -O %s --user %s --password %s %s"
-                         "-q -O %s --user %s --password %s %s"))
+                         "wget -q --no-check-certificate -O %s --user %s --password %s %s"
+                         "wget -q -O %s --user %s --password %s %s"))
         anything-delicious-user
         anything-delicious-password)
     (unless (and anything-delicious-user anything-delicious-password)
       (anything-delicious-authentify))
     (message "Syncing with Delicious in Progress...")
-    (start-process-shell-command "wget-retrieve-delicious" nil "wget"
-                                 (format fmd-command
-                                         anything-c-delicious-cache-file
-                                         anything-delicious-user
-                                         anything-delicious-password
-                                         anything-c-delicious-api-url))
-    (set-process-sentinel (get-process "wget-retrieve-delicious")
-                          (if sentinel
-                              sentinel
-                              #'(lambda (process event)
-                                    (if (string= event "finished\n")
-                                        (message "Syncing with Delicious...Done.")
-                                        (message "Failed to synchronize with Delicious."))
-                                  (setq anything-c-delicious-cache nil))))))
+    (start-process-shell-command
+     "wget-retrieve-delicious" nil
+     (format fmd-command
+             anything-c-delicious-cache-file
+             anything-delicious-user
+             anything-delicious-password
+             anything-c-delicious-api-url))
+    (set-process-sentinel
+     (get-process "wget-retrieve-delicious")
+     (if sentinel
+         sentinel
+         #'(lambda (process event)
+             (if (string= event "finished\n")
+                 (message "Syncing with Delicious...Done.")
+                 (message "Failed to synchronize with Delicious."))
+             (setq anything-c-delicious-cache nil))))))
 
 
 (defun anything-c-delicious-delete-bookmark (candidate &optional url-value-fn sentinel)

@@ -1,5 +1,7 @@
-== Commentary ==
-latex-math-preview.el has the following three main commands.
+== Commentary==
+latex-math-preview creates images of particular region in LaTeX file
+and display them in emacs.
+latex-math-preview has the following main commands.
 
 M-x `latex-math-preview-expression' previews mathematical expressions pointed
 by cursor in LaTeX files or strings of selected region with transient-mark on.
@@ -9,12 +11,12 @@ M-x `latex-math-preview-insert-symbol' displays the list of LaTeX symbols.
 Selecting a LaTeX symbol from it, you can insert it.
 Depending on whether cursor is in mathematical expression or not,
 this commands choose the symbol list.
-If you don't want to use the automatic selection,
+If you don't want to use the automatic mode selection,
 alternatively you may use M-x `latex-math-preview-insert-mathematical-symbol'
 and M-x `latex-math-preview-insert-text-symbol' for mathematical symbol
 and normal text symbol, respectively.
 
-M-x `latex-math-preview-save-image-file' make an image for the same object
+M-x `latex-math-preview-save-image-file' makes an image for the same object
 as `latex-math-preview-expression' and save it as a file which is png or eps.
 When making an image, this command may remove number of mathematical formulas.
 
@@ -22,6 +24,10 @@ Buffer local variable `latex-math-preview-usepackage-cache' has
 the values of \usepackage for previewing.
 If you want to reload this variable, you use
 M-x `latex-math-preview-reload-usepackage'.
+
+M-x `latex-math-preview-beamer-frame' makes an image of one frame of beamer,
+which is LaTeX style for presentation.
+This feature is experimental for now and it is possible not to work on your environment.
 
 latex-math-preview.el is a modified version which is based on
 tex-math-preview.el and has been created at July 2009.
@@ -33,17 +39,33 @@ Please see http://user42.tuxfamily.org/tex-math-preview/index.html
 for details of tex-math-preview.el.
 
 == Requirements ==
-You need to install the following softwares.
+Because latex-math-preview displays images in emacs,
+it is not work in emacs on terminal.
 
-* Emacs (version 22 or 23) on Linux or Meadow3 on Windows.
+=== Version of Emacs ===
+The version of emacs is 22 or 23 on Linux.
+latex-math-preview is tested on Ubuntu 10.04.
+But on Meadow 3 on Windows latex-math-preview probably works.
+
+=== Image Conversion ===
+latex-math-preview uses some commands to convert tex to png, tex to eps, and so on.
+Only for previewing mathematical expressions, latex-math-preview requires
+latex and dvipng commands.
+According to your environment and settings of latex-math-preview,
+latex-math-preview creates preview images by combining the following commands.
+
 * dvipng
 * dvips
-* latex (or platex)
+* latex
+* platex
+* pdflatex
+* dvipdf
+* dvipdfm
+* dvipdfmx
+* gs
 
-latex and dvipng is used for making preview image.
-dvips is for making eps image and not for previewing.
-
-== Install ==
+== Install of Emacs Lisp ==
+=== Load latex-math-preview ===
 Put latex-math-preview.el to your load-path of Emacs and
 write the following code in ~/.emacs.el.
 
@@ -51,13 +73,13 @@ write the following code in ~/.emacs.el.
 (autoload 'latex-math-preview-expression "latex-math-preview" nil t)
 (autoload 'latex-math-preview-insert-symbol "latex-math-preview" nil t)
 (autoload 'latex-math-preview-save-image-file "latex-math-preview" nil t)
+(autoload 'latex-math-preview-beamer-frame "latex-math-preview" nil t)
 </pre>
 
+=== Key Bindings ===
 Please set key bindings of TeX mode which you prefer if desired.
 
-== Install for YaTeX ==
-For YaTeX mode, in addition to above settings,
-you may add the follwing to ~/.emacs.el if desired.
+For example, for YaTeX mode we add the following settings to ~/.emacs.el.
 
 <pre>
 (add-hook 'yatex-mode-hook
@@ -66,6 +88,7 @@ you may add the follwing to ~/.emacs.el if desired.
          (YaTeX-define-key "\C-p" 'latex-math-preview-save-image-file)
          (YaTeX-define-key "j" 'latex-math-preview-insert-symbol)
          (YaTeX-define-key "\C-j" 'latex-math-preview-last-symbol-again)))
+         (YaTeX-define-key "\C-b" 'latex-math-preview-beamer-frame)))
 (setq latex-math-preview-in-math-mode-p-func 'YaTeX-in-math-mode-p)
 </pre>
 
@@ -74,12 +97,25 @@ So you may use YaTeX-in-math-mode-p alternatively.
 
 This setting almost binds latex-math-preview-expression to "C-c p",
 latex-math-preview-save-image-file to "C-c C-p",
-latex-math-preview-insert-symbol to "C-c j"
-and latex-math-preview-last-symbol-again to "C-c C-j".
+latex-math-preview-insert-symbol to "C-c j",
+latex-math-preview-last-symbol-again to "C-c C-j",
+and latex-math-preview-beamer-frame to "C-c C-b".
+
+=== Path of Programs ===
+latex-math-preview.el uses 'latex', 'dvipng' and 'dvips'.
+If the programs (dvipng, dvips, latex, and so on) 
+are not in the load path of system or
+you want to use the different programs from the default,
+you need to change the variable `latex-math-preview-command-path-alist'.
+For example,
+<pre>
+(setq latex-math-preview-command-path-alist
+      '((latex "/usr/bin/latex") (dvipng "/usr/bin/dvipng") (dvips "/usr/bin/dvips")))
+</pre>
 
 == Usage ==
 === latex-math-preview-expression ===
-If you type "M-x latex-math-preview-expression" when cursor points to 
+If you type M-x `latex-math-preview-expression' when cursor points to 
 a mathematical expression, new buffer including an image is created.
 In this buffer, you check the result of LaTeX mathematical
 expression and type 'q' to exit the window.
@@ -122,24 +158,13 @@ First, M-x `latex-math-preview-save-image-file' asks you abount path of
 an outputted image. Then, you must input the path of which extention is
 'png' or 'eps'. The program makes an image and you may get a desired one.
 
+=== latex-math-preview-beamer-frame ===
+If we execute M-x `latex-math-preview-beamer-frame'
+in \frame{ ... } or \begin{frame} ... \end{frame},
+we can preview particular one page of beamer presentation
+same as `latex-math-preview-expression'.
+
 == Settings ==
-=== Path of programs ===
-latex-math-preview.el uses 'latex', 'dvipng' and 'dvips'.
-So, if these programs are not in the load path of system or
-you want to use the different programs from the default,
-you need to change the following variables according to your system.
-
-* latex-math-preview-latex-command
-* latex-math-preview-command-dvipng
-* latex-math-preview-command-dvips
-
-For example,
-<pre>
-(setq latex-math-preview-latex-command "/usr/bin/platex")
-(setq latex-math-preview-command-dvipng "/usr/bin/dvipng")
-(setq latex-math-preview-command-dvips "/usr/bin/dvips")
-</pre>
-
 === LaTeX template ===
 latex-math-preview.el makes a temporary file and gets an image
 by commands 'latex' and 'dvipng'.
@@ -173,20 +198,60 @@ The following variables is prepared for making image files.
 * `latex-math-preview-latex-make-png-file-template-header'
 * `latex-math-preview-latex-make-eps-file-template-header'
 
+=== Conversion Process ===
+The default value of `latex-math-preview-tex-to-png-for-preview' is
+
+<pre>
+  (defvar latex-math-preview-tex-to-png-for-preview
+   '(latex dvipng))
+</pre>
+
+This means when creating png images for preview latex-math-preview uses
+`latex-math-preview-execute-latex' (tex to dvi) and
+`latex-math-preview-execute-dvipng' (dvi to png) in series.
+If you use other programs to create png images, please edit this variable.
+For example, to use platex (tex to dvi), dvipdfmx (dvi to pdf), and gs (pdf to png),
+
+<pre>
+  (defvar latex-math-preview-tex-to-png-for-preview
+   '(platex dvipdfmx gs-to-png))
+</pre>
+
+The variables `latex-math-preview-tex-to-png-for-save', `latex-math-preview-tex-to-eps-for-save',
+and `latex-math-preview-beamer-to-png' is the same.
+The default functions we can uses to convert images are
+* `latex-math-preview-execute-latex'
+* `latex-math-preview-execute-platex'
+* `latex-math-preview-execute-pdflatex-to-dvi'
+* `latex-math-preview-execute-pdflatex-to-pdf'
+* `latex-math-preview-execute-dvipdf'
+* `latex-math-preview-execute-dvipdfm'
+* `latex-math-preview-execute-dvipdfmx'
+* `latex-math-preview-execute-dvipng'
+* `latex-math-preview-execute-dvips-to-ps'
+* `latex-math-preview-execute-dvips-to-eps'
+* `latex-math-preview-execute-gs-to-png'
+
+For japanese, we recommend the following settings to use platex:
+<pre>
+   (setq latex-math-preview-tex-to-png-for-preview '(platex dvipng))
+   (setq latex-math-preview-tex-to-png-for-save '(platex dvipng))
+   (setq latex-math-preview-tex-to-eps-for-save '(platex dvips-to-eps))
+   (setq latex-math-preview-beamer-to-png '(platex dvipdfmx gs-to-png))
+</pre>
+
 === Options of commands ===
-The options of 'dvipng'  is set by `latex-math-preview-dvipng-option'
-for previewing.
-In particular, the color options of 'dvipng' is determined by
+The options of commands are specified by `latex-math-preview-command-option-alist' and
+the options for triming margins of images are specified by `latex-math-preview-command-trim-option-alist'.
+If you configure the commands, please modify these variables.
+Because this customize is advanced, we want you to refer to source code for details.
+
+The color options of 'dvipng' is determined by
 `latex-math-preview-image-foreground-color' and
 `latex-math-preview-image-background-color', which define
 the foreground and background colors of png images respectively.
 If these variables are nil, these colors are the same as it of
- the default face.
-
-The following variables of command options is prepared for
-making image files.
-* `latex-math-preview-dvipng-option-make-png-file'
-* `latex-math-preview-dvips-option-make-eps-file'
+the default face.
 
 === Matching mathematical expression ===
 When you make preview images, 
