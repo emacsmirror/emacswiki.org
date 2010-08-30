@@ -2,9 +2,9 @@
 
 : '''Latest release: [[vimpulse.el|Vimpulse 0.4]]''' (always on !EmacsWiki)
 
-If you want bleeding edge, you can clone the [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]:
+If you want bleeding edge, you can clone the [http://gitorious.org/vimpulse/vimpulse Git repository]:
 
-    git clone git://git.assembla.com/vimpulse.git
+    git clone git://gitorious.org/vimpulse/vimpulse.git
 
 == Installation ==
 
@@ -19,7 +19,7 @@ Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Vi
 
 == News ==
 
-* By popular request, we have moved to [http://www.assembla.com/spaces/vimpulse/trac_git_tool Git] as our version control system.
+* By popular request, we have moved to [http://gitorious.org/vimpulse/vimpulse Git] as our version control system.
 * Emacs-compatible Visual selection (characterwise, linewise and blockwise).
 * New keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `gq', `gu', `gU', `g~', `g?', `+', `_'.
 * Modal keybinding functions: `vimpulse-map', `vimpulse-imap', `vimpulse-vmap' and `vimpulse-omap'.
@@ -33,9 +33,9 @@ You can also just edit this page.
 
 == External links ==
 
-* [http://www.assembla.com/spaces/vimpulse/stream Vimpulse's Assembla space]
-** '''[http://www.assembla.com/spaces/vimpulse/trac_git_tool Git repository]'''
-** [http://trac-git.assembla.com/vimpulse/wiki/Documentation Documentation wiki]
+* [http://gitorious.org/vimpulse Gitorious project]
+** '''[http://gitorious.org/vimpulse/vimpulse Git repository]'''
+** [http://gitorious.org/vimpulse/pages/Home Documentation wiki]
 * '''[http://lists.ourproject.org/cgi-bin/mailman/listinfo/implementations-list Mailing list]'''
 ** [nntp://news.gmane.org/gmane.emacs.vim-emulation gmane.emacs.vim-emulation newsgroup]
 ** [http://dir.gmane.org/gmane.emacs.vim-emulation gmane.emacs.vim-emulation web archives]

@@ -87,7 +87,7 @@ For example, for YaTeX mode we add the following settings to ~/.emacs.el.
          (YaTeX-define-key "p" 'latex-math-preview-expression)
          (YaTeX-define-key "\C-p" 'latex-math-preview-save-image-file)
          (YaTeX-define-key "j" 'latex-math-preview-insert-symbol)
-         (YaTeX-define-key "\C-j" 'latex-math-preview-last-symbol-again)))
+         (YaTeX-define-key "\C-j" 'latex-math-preview-last-symbol-again)
          (YaTeX-define-key "\C-b" 'latex-math-preview-beamer-frame)))
 (setq latex-math-preview-in-math-mode-p-func 'YaTeX-in-math-mode-p)
 </pre>

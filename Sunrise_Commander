@@ -414,6 +414,53 @@ Actually  I  have  written  something  a  bit similar in the Tree Extension (see
 //sr‐tree‐isearch‐always‐sticky// variable to make searches always "sticky") and
 let me know how that works for you?
 
+[new]
+Hi,
+
+Good point about C-s, I feel stupid now. I certainly know about it :) I guess my brain goes into a "commander mode" rather than in "emacs mode" when I look at SC... It's definitely more appropriate than C-c /. 
+Now, if it were possible to keep the search mode on through navigation as you noted, that would be just about perfect I guess.
+I'm looking at the tree extension, it looks nice, but really not quite exactly what I had in mind, honestly I am not such a big fan of tree style navigation...
+
+One other thing: would be nice to have a way to open a file in an external application -- e.g. if there is a pdf file, I might want to open it in an external viewer. mc and many other commanders have a file extensions association list which is probably the way to go, but for now the following works for me. Perhaps there is already such a function, but I didnt find it and basically copied C-t x:
+
+    (defun lx-sunrise-display-external ()
+      "Open file at point in an external application."
+      (interactive)
+      (let ((file (dired-get-filename)))
+        (call-process shell-file-name nil nil nil shell-command-switch
+                  (format "%s \"%s\"" lx-sunrise-external-viewer file))))
+
+    (setq lx-sunrise-external-viewer "xdg-open")
+    (define-key sr-mode-map '[\C-return] 'lx-sunrise-display-external)
+
+
+--laxxy
+
+PS. Currently, when Sunrise exits on "q", it restores the window positions to where they were prior to Sunrise popping up; but if I visit a file (RET), it opens full screen. It would be much more convenient if it opened in the window that was current at the time of invoking Sunrise, keeping other window positions as they were. in that case Sunrise could be used as a much improved file open dialog window.
+
+...Looks like it was actually pretty easy to do by redefining sr-find-regular-file (below). Not sure if I have introduced any undesirable side effects...
+
+    (defun sr-find-regular-file (filename &optional wildcards)
+      "Deactivate Sunrise and visit FILENAME as a regular file with WILDCARDS (see
+      find-file for more details on wildcard expansion)."
+      (condition-case description
+          (progn
+            (sr-save-panes-width)
+            (set-window-configuration sr-prior-window-configuration)
+            (find-file filename wildcards)
+            (setq sr-prior-window-configuration (current-window-configuration))
+            (sr-quit))
+        (error (message "%s" (second description)))))
+
+[new]
+Hi again, laxxy,
+
+Actually it was not the "tree-style" navigation (whatever can be so called) in the Tree extension what I wanted to draw your attention to when I suggested to have a look at the extension. It was rather a capability implemented in it called "sticky search". You see, if you install the extension and customize a variable called sr-tree-isearch-always-sticky to be t (instead of nil, which is the default), then whenever you hit C-s you remain in interactive search mode even after you've pressed Return. Then you can do "x RET y RET z RET" to arrive to directory ax1/b2y/3cz -- you have to press Return *twice* to return to command (tree) mode, or even thrice, to get the regular (browse) mode back. I think I'll try doing something like that directly in browse mode (when I have the time, though).
+
+To open files in external applications look [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#toc3 here] for the recommended way of doing it.
+
+Regarding the modification in function sr-find-regular-file you propose, I don't think anything can go wrong by restoring the previous window configuration. Is there anyone against it out there? If there isn't I'll make this the default behavior in the next release.
+
 ----
 CategoryDirectories
 CategoryEmulation

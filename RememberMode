@@ -133,7 +133,11 @@ When you have started your emacs server (<tt>emacs --daemon</tt> in Emacs 23 or 
 
     $ emacsclient -e "(remember-other-frame)"
 
-If you also want that frame like a pop-up for temporal editing add this code to your init file:
+[new]
+Note: <tt>remember</tt> now includes <tt>remember-other-frame</tt> so if you get an "Autoloading failed to define function", remove the following <tt>defadvice</tt> from your <tt>.emacs</tt>
+[new]
+
+For older versions you may also want that frame like a pop-up for temporal editing add this code to your init file:
 
     (defadvice remember-other-frame (around remember-frame-parameters activate)
       "Set some frame parameters for the remember frame."

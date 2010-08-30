@@ -48,5 +48,12 @@ Archives can be downloaded from
 
 [http://bitbucket.org/lyro/vim-mode/downloads http://bitbucket.org/lyro/vim-mode/downloads]
 
+[new]
+
+I add a elisp package to make vim-mode use elscreen as tabpage, please look
+
+[http://www.emacswiki.org/emacs/elscreen-vim-mode.el http://www.emacswiki.org/emacs/elscreen-vim-mode.el]  -- [[coldnew]]
+
+
 ----
 CategoryEmulation CategoryKeys ViperMode

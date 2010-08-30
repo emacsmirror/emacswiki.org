@@ -11,7 +11,7 @@ Currently the following type of lines are fully colorized:
 * Command -- <i>##aug 24 16:35:31 > /whois nick1##</i>
 
 ==Get==
-ErcViewLog is available here: http://github.com/Niluge-KiWi/dotfiles/blob/master/.emacs.d/erc-view-log.el
+ErcViewLog is available here: http://github.com/Niluge-KiWi/erc-view-log
 
 ==Install==
 Put erc-view-log.el in your load-path and add in ~/.emacs
