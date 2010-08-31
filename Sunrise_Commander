@@ -328,7 +328,7 @@ bugs you find to the gnu.emacs.help newsgroup or directly to me: mailto:escherdr
 It would be great if sunrise commander was in [[ELPA]].
 
 [new]
-Thanks for the tip! Added already to my TODO list :)
+Thanks for the tip! Added already to my TODO list :) -- [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----
 [new] 
 I don't know how much time you spent on this, but SR is just amazing. Thanks a million. 
@@ -362,6 +362,7 @@ How much time have I spent on this? A bit, I guess -- time passes way too fast w
 3) That function is actually called "fuzzy narrowing". How do you exactly imagine navigating through a listing while narrowing its contents?
 
 4) I didn't know igrep before - will have to have a good look at it :) Thanks for the tip!
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 [new]
 Not RedBlue here, but here is my take on (3):
@@ -413,6 +414,7 @@ Actually  I  have  written  something  a  bit similar in the Tree Extension (see
 [[#TreeExt]]). Why don’t you give it a try (after customizing  the
 //sr‐tree‐isearch‐always‐sticky// variable to make searches always "sticky") and
 let me know how that works for you?
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 [new]
 Hi,
@@ -460,6 +462,29 @@ Actually it was not the "tree-style" navigation (whatever can be so called) in t
 To open files in external applications look [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#toc3 here] for the recommended way of doing it.
 
 Regarding the modification in function sr-find-regular-file you propose, I don't think anything can go wrong by restoring the previous window configuration. Is there anyone against it out there? If there isn't I'll make this the default behavior in the next release.
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new]
+Hi, thanks a lot for your help and all the good work. I'll take another look at the tree extension.
+
+BTW part of the behavior of C-c / feels a bit unnatural: say I have a number of files with an extension .sas and a bunch of files with extension .sas7bdat. Then on C-c / I can only enter a pattern up to .sa -- after that it complains that there is nothing left to narrow, and it seems impossible to refine the filter further...
+
+[new]
+That's because all the entries that matched .sa do also match .sas -- try with further characters, e.g. .sa7, .sab, .sat -- [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new]
+Ok, this is absolutely delightful.  For more than 15 years I've been pulling up dired windows side by side in order to fake it.  This. Just. Works.  My workmates are jealous.  Really good work, thanks a bunch.  After a few more days of familiarity I'll start adding in extensions :)  Thanks very much. --MichaelWilson
+
+[new]
+/That's because all the entries that matched .sa do also match .sas/ -- I understand :) I just think that if it is not essential for some reason for the matching string to be as short as possible, it might be a good idea to allow the user to enter it, even though it would not actually change the display...
+
+Also I was stuck with this for a while: so this happened and I had the view narrowed, but it was not clear how to cancel this to see all files again (C-c / would just show an empty line) -- apparently C-o C-o worked, but I would not say this was the most intuitive thing...
+
+[new]
+/If it is not essential for the matching string to be as short as possible/ -- it's not strictly essential, but helps a lot to keep the implementation simple and robust. Never mind the message, just keep typing until you see in the pane what you're looking for, then press Return. Besides, the current behavior has the advantage that for frequent narrowing operations you end remembering the shortest combination of keys that leads to the desired result (e.g. to narrow my ~/emacs directory to sunrise-commander.el and all its extensions, I usually type C-/ su- [RET]).
+
+To cancel the fuzzy narrow mode and see all files again simply press *g* (revert-buffer), possibly preceded by Return or C-g to terminate the pattern input. It may not be intuitive for you right now, but after you've used Emacs a bit this will make perfect sense. One of the best things about Emacs the platform is that all -- or at least most of -- its applications have similar keybindings for similar operations (though at times the similarity may be hard to discern).
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 ----
 CategoryDirectories

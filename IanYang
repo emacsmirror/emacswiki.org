@@ -4,7 +4,7 @@ My emacs config can be found at github [http://github.com/doitian/emacs.d doitia
 
 == Elisp ==
 
-* Export [http://plantuml.sourceforge.net/ PlantUML] Lisp:org-export-blocks-format-plantuml.el  (use ob-plantuml contributed by Zhang Weize in latest org-mode)
+* Export [http://plantuml.sourceforge.net/ PlantUML] Lisp:org-export-blocks-format-plantuml.el (Zhang Weize has contributed ob-plantuml in latest org-mode GIT repository. See his [http://zhangweize.wordpress.com/2010/08/27/a-new-version-of-ob-plantuml/ blog] for details. Also see [http://plantuml.sourceforge.net/emacs.html how to run PlantUML in Emacs].)
 * IyGoToChar, go to char like "f" and "t" in vim
 * Wrapper of WinRing, jump to existing configurations or create a new one:
 

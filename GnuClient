@@ -177,7 +177,7 @@ fi
 == On the console ==
 
 You can use gnuclient on the console, too, although usage is a bit weird.
-One one terminal, start Emacs.  Switch to another terminal, call gnuclient
+On one terminal, start Emacs.  Switch to another terminal, call gnuclient
 with a filename.  The screen goes blank.  Now switch back to the first
 terminal and note that Emacs opened the correct file.  Edit, finish, switch
 to the second terminal and continue working.

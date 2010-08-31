@@ -25,8 +25,6 @@ You can also use this function which takes advantage of the char-charset functio
 ----
 Generalising the above - this function will allow you to find 
 characters your current coding system cannot encode:
-A better implementation would use `unencodable-char-position',
-but that requires cvs-emacs:
 
 <pre>
 (defun find-next-unsafe-char (&optional coding-system)

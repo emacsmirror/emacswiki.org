@@ -55,24 +55,10 @@ Developers
 ----
 To get the development version easily and set it up you can use [NxhtmlMode nXhtml] which has a tool for this in the nXhtml menus (see nXhtml / Tools / ECB).
 
-[new:evolve75:2010-01-24 15:28 UTC]
+<strong>The latest ECB version (2.40) does not work with the CEDET in Emacs 23.2</strong>. The CVS version of ECB, however, works with 23.2. You can get it with the following
+command:
 
-Has anyone been successful in using ECB (V2.40) with [[emacs23]]?  This version of Emacs has [[CEDET]], semantic and eieio part of the in-built packages.  Quite a few things seem to have changed here though - primary changes being the `provide' statement for semantic - where the following changes have happened (all these are `require'ed from <tt>ecb-cedet-wrapper.el</tt>):
-
-{{{
-    ;;; in ecb-cedet-wrapper.el
-    (require 'semantic-ctxt)     ;; In emacs 23 this is now 'semantic/ctxt
-    (require 'semantic-analyze)  ;; In emacs 23 this is now 'semantic/analyze
-    (require 'semantic-db)       ;; In emacs 23 this is now 'semantic/db
-    (require 'semantic-db-find)  ;; In emacs 23 this is now 'semantic/db-find
-    (require 'semantic-db-mode)  ;; In emacs 23 this is now 'semantic/db-mode
-}}}
-
-However, even after making these changes to the ECB cedet wrapper, I am still getting the following error:
-
-<strong>Symbol's value as variable is void: ecb-compilation-buffer-list-changed-p</strong>
-
-I have succeeded in getting ECB 2.40 to at least load cleanly on Emacs 23.2.1 by making the above changes to ecb-cedet-wrapper.el as well as commenting-out the (require 'semantic-load) line in ecb-method-browser.el file (line #44), and in ecb-analyse.el changing the  (require 'semantic-analyze)  line to  (require 'semantic/analyze) . 
+<code>cvs -z3 -d:pserver:anonymous@ecb.cvs.sourceforge.net:/cvsroot/ecb co -P ecb</code> 
 
 ----
 CategoryModes
