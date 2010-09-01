@@ -175,8 +175,7 @@
 
 ;; :REQUIRED-BY `mon-url-retrieve-to-new-buffer'
 (require 'url)
-;; :REQUIRED-BY `mon-url-encode'
-;; :REQUIRED-BY `mon-url-decode' 
+;; :REQUIRED-BY `mon-url-encode', `mon-url-decode', `mon-wrap-url'
 (require 'url-util)
 
 (declare-function w3m-print-this-url "ext:w3m" t t)
@@ -192,8 +191,8 @@
 :EXAMPLE\n\n(assoc 'bnf *mon-url-search-paths*)\n
 \(cdr (assoc 'loc *mon-url-search-paths*\)\)\n
 :SEE-ALSO `mon-search-bnf', `mon-search-loc', `mon-search-ulan',
-`mon-search-ulan-for-name', `mon-search-wiki', `mon-search-wikipedia',.
-`mon-wget-rfc', `*mon-unidata-file-list*'.\n►►►")
+`mon-search-ulan-for-name', `mon-search-wiki', `mon-search-wikipedia',
+`mon-wget-rfc', `*mon-unidata-file-list*', `mon-help-cl-pkgs'.\n►►►")
 ;;
 (unless (bound-and-true-p *mon-url-search-paths*)
   (setq *mon-url-search-paths*
@@ -211,7 +210,8 @@
                      "http://tools.ietf.org/rfc/rfc%s.txt")
           (unicode   . 
                      "http://www.unicode.org/Public/UNIDATA/")
-          )))
+          (cmu-ai    . 
+                     "http://www.cs.cmu.edu/Groups/AI/lang/lisp/"))))
 ;; 
 ;;; :TEST-ME (cdr (assoc 'loc *mon-url-search-paths*))
 ;;;(progn (makunbound '*mon-url-search-paths*) (unintern '*mon-url-search-paths*) )
@@ -372,8 +372,13 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 ;;; :SEE (URL `http://xahlee.org/emacs/emacs_html.html')
 (defvar *regexp-hexcolor-keywords* 'nil
   "*Keywords for fontification of hex code color values \(e.g. CSS\).\n
-:SEE-ALSO `mon-hexcolor-add-to-font-lock', `*regexp-rgb-hex*',
-`mon-help-css-color', `mon-help-color-chart', `mon-help-color-functions'.\n►►►")
+:SEE-ALSO `mon-hexcolor-add-to-font-lock',
+`mon-string-from-hex-list', `mon-string-to-hex-list',
+`mon-string-to-hex-string', `mon-string-to-hex-list-cln-chars',
+`url-hexify-string', `url-unhex-string', `url-unhex',
+`hexl-hex-string-to-integer', `*regexp-rgb-hex*', `*css-color:hex-chars*',
+`*regexp-rgb-hex*', `*regexp-css-color-hex*', `mon-help-css-color',
+`mon-help-color-chart', `mon-help-color-functions'.\n►►►")
 (when (not (bound-and-true-p *regexp-hexcolor-keywords*))
   (setq *regexp-hexcolor-keywords*
         '(("#[abcdefABCDEF[:digit:]]\\{6\\}"
@@ -395,7 +400,11 @@ This procedure is meant to be run as a hook on `kill-emacs-hook'.\n
 ;;;       (add-hook 'naf-mode-hook 'mon-hexcolor-add-to-font-lock)
 (defun mon-hexcolor-add-to-font-lock ()
   "Add font-lock keywords for hex code color values for fontification.\n
-:SEE-ALSO `*regexp-hexcolor-keywords*', `*regexp-rgb-hex*'.\n►►►"
+:SEE-ALSO `mon-string-from-hex-list', `mon-string-to-hex-list',
+`mon-string-to-hex-string', `mon-string-to-hex-list-cln-chars',
+`hexl-hex-string-to-integer', `url-hexify-string', `url-unhex-string',
+`url-unhex', `*regexp-hexcolor-keywords*', `*regexp-rgb-hex*',
+`*css-color:hex-chars*', `*regexp-rgb-hex*', `*regexp-css-color-hex*', .\n►►►"
   (font-lock-add-keywords nil *regexp-hexcolor-keywords*))
 
 ;;; ==============================
@@ -410,7 +419,8 @@ at point. Moves point.\n
 :EXAMPLE\n\n\(mon-url-encode 
  \"www.encode-me.com/ cash$<change[@+make:some|steal&&lie]\"\)\n
 :ALIASED-BY `mon-url-escape'\n
-:SEE-ALSO `mon-url-decode'.\n►►►"
+:SEE-ALSO `mon-url-decode', `url-insert-entities-in-string', 
+`url-unhex', `url-unhex-string', `url-hexify-string'.\n►►►"
   (interactive "sURL-encode :\ni\p")
   (let ((mud-encd (url-hexify-string url-enc-str)))
     (if (or intrp insrtp)
@@ -435,7 +445,8 @@ at point. Moves point.\n
 \(mon-url-decode
  \(mon-url-encode \"www.encode-me.com/ cash$<change[@+make:some|steal&&lie]\"\)\)\n
 :ALIASED-BY `mon-url-unescape'\n
-:SEE-ALSO `mon-url-encode'.\n►►►"
+:SEE-ALSO `mon-url-encode', `url-insert-entities-in-string', `url-unhex',
+`url-unhex-string', `url-hexify-string'.\n►►►"
   (interactive "sURL-decode :\ni\p")
   (let ((mud-decd
          (decode-coding-string
@@ -564,9 +575,9 @@ When optional arg WIKI-WORD is non-nil use it instead.
 (defun mon-search-loc  ()
   "Open the LOC Authority Headings Search Page in the default browser.\n
 :SEE \(URL `http://authorities.loc.gov/cgi-bin/Pwebrecon.cgi?DB=local&PAGE=First')\n
+:USED-IN `naf-mode'.
 :SEE-ALSO `*mon-url-search-paths*', `mon-search-ulan',
-`mon-search-ulan-for-name', `mon-search-bnf', `mon-search-wikipedia'.
-:USED-IN `naf-mode'.\n►►►"
+`mon-search-ulan-for-name', `mon-search-bnf', `mon-search-wikipedia'.\n►►►"
   (interactive)
   (browse-url (cdr (assoc 'loc *mon-url-search-paths*))))
 
@@ -576,9 +587,9 @@ When optional arg WIKI-WORD is non-nil use it instead.
 (defun mon-search-bnf  ()
   "Open the BNF Authority Headings Search Page in the default browser.\n
 :SEE \(URL `http://catalogue.bnf.fr/jsp/recherche_autorites_bnf.jsp?host=catalogue')\n
+:USED-IN `naf-mode'.\n
 :SEE-ALSO `*mon-url-search-paths*', `mon-search-ulan',
-`mon-search-ulan-for-name', `mon-search-loc', `mon-search-wikipedia'.
-:USED-IN `naf-mode'.\n►►►"
+`mon-search-ulan-for-name', `mon-search-loc', `mon-search-wikipedia'.\n►►►"
   (interactive)
   (browse-url (cdr (assoc 'bnf *mon-url-search-paths*))))
 
@@ -588,8 +599,10 @@ When optional arg WIKI-WORD is non-nil use it instead.
 Inserts the following:\n
 <a class=\"link_green_bold\" href=\"../insert-path-here\" \"> insert-link-text </a>\n
 Link will be colored according to to DBC .css for link_gree_bold.\n
-:SEE-ALSO `mon-insert-dbc-doc-link' for a pre-formatted href to doc-detail page.\n
-:USED-IN `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n
+For a pre-formatted href to doc-detail page:
+:SEE `mon-insert-dbc-doc-link'
+:SEE-ALSO  .\n►►►"
   (interactive)
   (insert "<a class=\"link_green_bold\" href=\"../insert-path-here\" \"> insert-link-text </a>"))
 
@@ -611,7 +624,8 @@ Inserts:\n
  | 	font-weight:bold;
  | }
  `----\n
-:SEE-ALSO `mon-insert-dbc-link'.\n:USED-IN `naf-mode'.\n►►►"
+:USED-IN `naf-mode'.\n
+:SEE-ALSO `mon-insert-dbc-link'.\n►►►"
 (interactive "n3-4 digit document number:\nsDoc's NAF type:\nsText for link title: ")
   (let* ((dn (if (and doc-num)
                  doc-num
@@ -629,67 +643,104 @@ Inserts:\n
     (insert  dbc-url)))
 
 ;;; ==============================
-;;; :TODO Needs to be re-written using:
-;;; (search-forward-regexp { ... } (replace-match { ... } 
-;;; instead of the existing wacko `replace-string' calls!
-;;;
-;;; :NOTE not 100% correct yet because doesn't detect pre-existing wrapped urls
-;;; in _some_ buffer locations.
-;;;
-;;; :REQUIRES `*regexp-wrap-url-schemes*' <- mon-regexp-symbols.el
-;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON>
-(defun mon-wrap-all-urls ()
-  "Wraps all URLs in buffer _after point_ with (URL `*').
-Conditional prefix matching regexps in `*regexp-wrap-url-schemes*' global.
-Won't replace recursively on pre-existing wrapped URLs.\n
-:SEE-ALSO `thing-at-point-url-at-point', `mon-wrap-url', `mon-wrap-text', 
-`mon-wrap-span', `mon-wrap-selection', `mon-wrap-with'.\n►►►"
-  (interactive)
-  (save-excursion
-    (while
-	(if (search-forward-regexp *regexp-wrap-url-schemes* nil t)
-	    (let* ((bnd-start (car (bounds-of-thing-at-point 'url)))
-		   (bnd-pre (- bnd-start 6))
-		   (url-targ (thing-at-point-url-at-point))
-		   (url-rep (concat "(URL `" url-targ "')")))
-              (with-no-warnings
-                (cond ((< bnd-pre 0)
-                       (replace-string url-targ url-rep)
-                       (skip-syntax-forward "^w"))
-                      ((not (string-match-p "(URL `" (buffer-substring bnd-pre bnd-start)))
-                       (skip-syntax-backward "^-")
-                       (replace-string url-targ url-rep)
-                       (skip-syntax-forward "^w")))))))))
-;;
-;;; :TEST-ME http://www.somethign.xomthing.com/blotto
-;;; :TEST-ME ftp://some.site.com
-;;; :TEST-ME http://www.somethign.xomthing.com/blamop
-
-;;; ==============================
 ;;; :TODO Add ability to evaluate the region programatically and otherwise.
+;;; :REQUIRES `*regexp-wrap-url-schemes*' <- mon-regexp-symbols.el
+;;; :CHANGESET 2092 <Timestamp: #{2010-08-27T16:18:22-04:00Z}#{10345} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: Monday June 29, 2009 @ 06:22.48 PM - by MON>
-(defun mon-wrap-one-url () ;;(&optional start end insertp)
-  "Wrap 1\(one\)the URL  _after point_ with (URL `*').\n
-Conditional prefix matching regexps in `*regexp-wrap-url-schemes*' global.
+(defun mon-wrap-one-url (&optional intrp) ;;(&optional start end insertp)
+  "Wrap 1\(one\)the URL  _after point_ with \(URL `<SOME-URL>'\).\n
+Conditional prefix matching regexps in variable `*regexp-wrap-url-schemes*'.
 Won't replace recursively on pre-existing wrapped URLs.\n
+Utilizes `thing-at-point' to wrap Uniform Resource Identifers per the 'uri arg
+and is therefor dependent on the variables:\n
+ `thing-at-point-uri-schemes'\n `thing-at-point-url-path-regexp'
+ `thing-at-point-short-url-regexp'\n `thing-at-point-url-regexp'\n
+:SEE (URL `http://www.rfc-editor.org/rfc/rfc4395.txt')\n
+:SEE (URL `http://www.iana.org/assignments/uri-schemes.html')\n
 :SEE-ALSO `mon-wrap-all-urls', `thing-at-point-url-at-point',
 `mon-wrap-url', `mon-wrap-text', `mon-wrap-span', `mon-wrap-with',
 `mon-wrap-selection'.\n►►►"
-  (interactive)
+  (interactive "p")
   (save-excursion
-    (let* ((url-bnds (bounds-of-thing-at-point 'url))
+    (let* ((thing-at-point-url-regexp *regexp-wrap-url-schemes*)
+           (url-bnds (bounds-of-thing-at-point 'url))
            (bnd-start (car url-bnds))
            (bnd-end (cdr url-bnds))
            rep-url)
-      (setq rep-url 
-            (concat "(URL `" (buffer-substring-no-properties bnd-start bnd-end) "')"))
-      (goto-char bnd-start)
-      (delete-region bnd-start bnd-end)
-      (insert rep-url))))
+      (if url-bnds
+          (progn
+            (setq rep-url (concat "(URL `" 
+                                  (buffer-substring-no-properties bnd-start bnd-end) 
+                                  "')"))
+            (goto-char bnd-start)
+            (delete-region bnd-start bnd-end)
+            (insert rep-url))
+        (let ((skpabl (concat "^" url-get-url-filename-chars ","))
+              myb)
+          (if (and (or (setq myb (url-get-url-at-point))
+                       (> (skip-chars-forward skpabl (line-end-position)) 0)
+                       (< (skip-chars-backward skpabl (line-beginning-position)) 0))
+                   (or myb (setq myb (url-get-url-at-point))))
+              (cond ((looking-at-p myb)
+                     (delete-region (point) (+ (point) (length myb)))
+                     (insert (concat "(URL `" myb "')")))
+                    (t (goto-char (line-beginning-position))
+                       (search-forward-regexp myb (line-end-position) t)
+                       (replace-match (concat "(URL `" myb "')"))))
+            (when intrp
+              (message (concat ":FUNCTION `mon-wrap-one-url' "
+                           "-- can not find a URL to wrap at point: %d") (point)))))))))
 ;;
 ;;; :TEST-ME http://www.somethign.xomthing.com/blotto
 ;;; :TEST-ME ftp://some.site.com
-;;; :TEST-ME http://www.somethign.xomthing.com/blamop
+;;; :TEST-ME git://repo.or.cz/w/sbcl.git
+
+
+;;; ==============================
+;;; :CHANGESET 2092 <Timestamp: #{2010-08-27T17:34:38-04:00Z}#{10345} - by MON KEY>
+;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 06:51.27 PM - by MON>
+(defun mon-wrap-all-urls ()
+  "Wraps all URLs in buffer _after point_ with \(URL `<SOME-URL>'\).\n
+Matches are per the regexp in variable `*regexp-wrap-url-schemes*'.\n
+Won't replace recursively on pre-existing wrapped URLs.\n
+:EXAMPLE\(with-temp-buffer 
+    \(save-excursion \(insert \"http://www.somethign.xomthing.com/blotto\\n\"
+                            \"ftp://some.site.com\\n\"
+                            \"git://repo.or.cz/w/sbcl.git\\n\"\)\)
+  \(mon-wrap-all-urls\)
+   \(buffer-substring-no-properties \(buffer-end 0\)\(buffer-end 1\)\)\)=n
+:SEE-ALSO `thing-at-point-url-at-point', `mon-wrap-url', `mon-wrap-text', 
+`mon-wrap-span', `mon-wrap-selection', `mon-wrap-with'.\n►►►"
+  (interactive)
+  (let ((thing-at-point-url-regexp *regexp-wrap-url-schemes*))
+    (save-excursion
+      (while
+          (if (search-forward-regexp *regexp-wrap-url-schemes* nil t)
+              (let* ((bnds (bounds-of-thing-at-point 'url))
+                     (bnd-str (car bnds))
+                     (bnd-end (cdr bnds))
+                     (bnd-pre (and bnds (- bnd-str 6)))
+                     (url-targ (when bnds (thing-at-point-url-at-point)))
+                     (url-rep (concat "(URL `" url-targ "')")))
+                (with-no-warnings
+                  (cond ((and bnd-pre (< bnd-pre 0))
+                         (delete-region bnd-str bnd-end)
+                         (insert url-rep)
+                         (skip-syntax-forward "^w"))
+                        ((and bnd-pre
+                              (not (string-match-p 
+                                    "(URL `"  (buffer-substring-no-properties bnd-pre bnd-str))))
+                         ;; (string-to-syntax "-") move back over wspc
+                         (skip-syntax-backward "^-")
+                         ;; (replace-string url-targ url-rep)
+                         (delete-region bnd-str bnd-end)
+                         (insert url-rep)
+                         (skip-syntax-forward "^w"))))))))))
+;;
+;;; :TEST-ME http://www.somethign.xomthing.com/blotto
+;;; :TEST-ME ftp://some.site.com
+;;; :TEST-ME git://repo.or.cz/w/sbcl.git
+
 
 ;;; ==============================
 ;;; :COURTESY Xah Lee
@@ -800,8 +851,8 @@ Fetches URL as with `url-retrieve-synchronously'.\n
  \"http://tools.ietf.org/rfc/rfc2822.txt\")\n
 :SEE-ALSO `url-copy-file', `url-retrieve', `url-retrieve-synchronously', 
 `url-http', `mon-get-w3m-url-at-point-maybe', `google-define',
-`mon-get-host-address', `mon-url-encode', `mon-url-decode'
-`mon-get-w3m-url-at-point', `mon-w3m-dired-file'\n►►►"
+`mon-get-host-address', `mon-url-encode', `mon-url-decode',
+`mon-get-w3m-url-at-point', `mon-w3m-dired-file'.\n►►►"
   (let ((the-buff (url-retrieve-synchronously fetch-this-url)))
     (when (get-buffer the-buff) (display-buffer the-buff t))))
 
@@ -1409,6 +1460,11 @@ Updated by the RIPE Network Coordination Centre.
 ;;; ==============================
 (provide 'mon-url-utils)
 ;;; ==============================
+
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
 
 ;;; ==============================
 ;;; mon-url-utils.el ends here

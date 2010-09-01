@@ -29,42 +29,27 @@
 ;; traverselisp.el, show-point-mode.el, apache-mode.el, mon-keybindings.el,
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-default-start-error/sane'
-;; `mon-build-path-for-load-path'
-;; `mon-toggle-show-point-mode'
-;; `mon-set-infopath-init'
-;; `mon-set-bookmark-file-init'
-;; `mon-set-custom-file-init' 
-;; `mon-set-color-themes-init'
-;; `mon-set-buffer-local-comment-start'
-;; `mon-set-rst-mode-faces', `mon-rst-mode-facification'
-;; `mon-set-ibuffer-init'
-;; `mon-set-woman-manpath-init'
-;; `mon-set-common-lisp-hspec-init'
-;; `mon-set-thumbs-conversion-program-init'
-;; `mon-set-load-path-init'
-;; `mon-set-auctex-init'
-;; `mon-set-longlines-init'
-;; `mon-set-help-mode-init'
-;; `mon-set-dvc-init'
-;; `mon-set-doc-view-programs-init'
-;; `mon-set-emacs-temp-file/dir-init'
-;; `mon-set-ispell-init'
-;; `mon-set-C-source-directory-init'
-;; `mon-set-customizations-before-custom-file-init'
-;; `mon-set-unicodedata-init'
-;; `mon-keybind-w32-init'
-;; `mon-set-w3m-init'
-;; `mon-set-css-ptah-init'
-;; `mon-set-buffer-local-comment-start'
-;; `mon-set-buffer-local-comment-start-init'
-;; `mon-set-apache-mode-init'
-;; `mon-set-traverselisp-init'
-;; `mon-keybind-put-hooks-init'
+;; `mon-build-path-for-load-path', `mon-keybind-put-hooks-init',
+;; `mon-keybind-w32-init', `mon-rst-mode-facification',
+;; `mon-set-C-source-directory-init', `mon-set-apache-mode-init',
+;; `mon-set-auctex-init', `mon-set-bookmark-file-init', `mon-set-browser-init',
+;; `mon-set-buffer-local-comment-start',
+;; `mon-set-buffer-local-comment-start-init', `mon-set-color-themes-init',
+;; `mon-set-common-lisp-hspec-init', `mon-set-css-path-init',
+;; `mon-set-custom-file-init', `mon-set-customizations-before-custom-file-init',
+;; `mon-set-doc-view-programs-init', `mon-set-dvc-init',
+;; `mon-set-emacs-temp-file/dir-init', `mon-set-help-mode-init',
+;; `mon-set-ibuffer-init', `mon-set-ido-init', `mon-set-infopath-init',
+;; `mon-set-ispell-init', `mon-set-lisp-init', `mon-set-load-path-init',
+;; `mon-set-longlines-init', `mon-set-proced-init',
+;; `mon-set-rst-mode-faces-init', `mon-set-system-specific-and-load-init',
+;; `mon-set-thumbs-conversion-program-init', `mon-set-traverselisp-init',
+;; `mon-set-unicodedata-init', `mon-set-w3m-init', `mon-set-woman-manpath-init',
+;; `mon-set-url-pkg-init', `mon-set-google-maps-init'
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
-;;
+;; `mon-default-start-error/sane', 
 ;; CONSTANTS:
 ;;
 ;; VARIABLES:
@@ -181,6 +166,10 @@
 
 (eval-when-compile (require 'cl))
 
+;;; :TODO Figure out why Emacs 23.2 clobbers the minibuffer when Emacs is
+;;; invoked by fluxbox at startup. Has something to do with X frame params and
+;;; menu-bar-mode being disabled.
+;;; start looking around `resize-mini-windows' and `command-line-x-option-alist'
 ;;; First things first. Make sure we aren't tortured by blinking cursors etc.
 (when (and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
   (unless show-paren-mode (show-paren-mode 1))
@@ -206,36 +195,45 @@
             *mon-default-start-load-sanity*
             *mon-default-start-load-sanity-WARN-ONLY*
             mon-default-start-error/sane
-            mon-set-ibuffer-init
-            mon-set-load-path-init
-            mon-set-color-themes-init
-            mon-set-infopath-init
-            mon-set-woman-manpath-init
-            mon-set-bookmark-file-init
-            mon-set-custom-file-init
-            mon-set-thumbs-conversion-program-init
-            mon-set-common-lisp-hspec-init
-            mon-set-longlines-init
-            mon-set-dvc-init
-            mon-set-help-mode-init
-            mon-set-auctex-init
             mon-build-path-for-load-path
-            mon-set-buffer-local-comment-start
-            mon-set-rst-mode-faces-init
-            mon-toggle-show-point-mode
-            mon-set-doc-view-programs-init
-            mon-set-emacs-temp-file/dir-init
-            mon-set-ispell-init
-            mon-set-C-source-directory-init
-            mon-set-customizations-before-custom-file-init
-            mon-set-unicodedata-init
-            mon-keybind-w32-init
-            mon-set-w3m-init
-            mon-set-css-path-init
-            mon-set-apache-mode-init
-            mon-set-traverselisp-init
             mon-keybind-put-hooks-init
-            ))))
+            mon-keybind-w32-init
+            mon-rst-mode-facification
+            mon-set-C-source-directory-init
+            mon-set-apache-mode-init
+            mon-set-auctex-init
+            mon-set-bookmark-file-init
+            mon-set-browser-init
+            mon-set-buffer-local-comment-start
+            mon-set-buffer-local-comment-start-init
+            mon-set-color-themes-init
+            mon-set-common-lisp-hspec-init
+            mon-set-css-path-init
+            mon-set-custom-file-init
+            mon-set-customizations-before-custom-file-init
+            mon-set-doc-view-programs-init
+            mon-set-dvc-init
+            mon-set-emacs-temp-file/dir-init
+            mon-set-help-mode-init
+            mon-set-ibuffer-init
+            mon-set-ido-init
+            mon-set-infopath-init
+            mon-set-ispell-init
+            mon-set-lisp-init
+            mon-set-load-path-init
+            mon-set-longlines-init
+            mon-set-proced-init
+            mon-set-rst-mode-faces-init
+            mon-set-system-specific-and-load-init
+            mon-set-thumbs-conversion-program-init
+            mon-set-traverselisp-init
+            mon-set-unicodedata-init
+            mon-set-w3m-init
+            mon-set-woman-manpath-init
+            mon-toggle-show-point-mode
+            mon-set-url-pkg-init
+            mon-set-google-maps-init
+            mon-set-init-fncn-xrefs-init))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T18:29:52-04:00Z}#{10135} - by MON KEY>
@@ -243,8 +241,8 @@
   "*A list of functions evalauted when initalizing MON init.\n 
 List elements are those functions which loaded without errors and therefor
 should not be evaluated again in the current Emacs session.\n
-:SEE-ALSO `*mon-default-start-load-sanity-WARN-ONLY*', `mon-default-start-error/sane'
-`*mon-default-start-loads-xrefs*'.\n►►►")
+:SEE-ALSO `*mon-default-start-load-sanity-WARN-ONLY*',
+`mon-default-start-error/sane' `*mon-default-start-loads-xrefs*'.\n►►►")
 ;;
 ;;;(progn (makunbound '*mon-default-start-load-sanity*)
 ;;;       (unintern   '*mon-default-start-load-sanity*) )
@@ -253,9 +251,9 @@ should not be evaluated again in the current Emacs session.\n
 ;;; :CREATED <Timestamp: #{2010-04-06T14:02:50-04:00Z}#{10142} - by MON KEY>
 (defvar *mon-default-start-load-sanity-WARN-ONLY* nil
   "When non-nil override all error singaling of `mon-default-start-error/sane'.\n
-Setting this variable non-nil may be useful when: 
- o Debugging inits;
- o Examining/valuating a function member of `*mon-default-start-load-sanity*';
+Setting this variable non-nil may be useful when:\n
+ o Debugging inits;\n
+ o Examining/valuating a function member of `*mon-default-start-load-sanity*';\n
  o When `IS-NOT-A-MON-SYSTEM' to avoid the `IS-MON-SYSTEM-P' runtime checks.\n
 :SEE-ALSO `*mon-default-start-load-sanity*'.\n►►►")
 
@@ -291,16 +289,25 @@ non-nil to will also override all error signaling.\n
                 (not (intern-soft "IS-MON-SYSTEM-P"))
                 (not (bound-and-true-p IS-MON-SYSTEM-P)))
             (if (or *mon-default-start-load-sanity-WARN-ONLY* ,just-warn)
-                (warn (format (concat ":FUNCTION %s -- variable "
-                                      "`IS-MON-SYSTEM-P' unbound or non-existent") ,fncn))
-              (error (format (concat ":FUNCTION %s -- variable "
-                                     "`IS-MON-SYSTEM-P' unbound or non-existent") ,fncn))))
+                (warn                      ;(format 
+                 (concat ":FUNCTION `%s' " ;-- variable "
+                         "-- variable `IS-MON-SYSTEM-P' unbound or non-existent") ,fncn) ;)
+              (error                    ;(format 
+               (concat ":FUNCTION `%s' "
+                       "-- variable `IS-MON-SYSTEM-P' unbound or non-existent") ,fncn) ;)
+              ))
            ((memq ,fncn *mon-default-start-load-sanity*)
             (if (or *mon-default-start-load-sanity-WARN-ONLY* ,just-warn)
-                (warn (format (concat ":FUNCTION %s -- eval'd at init is "
-                                      "member of `*mon-default-start-load-sanity*'") ,fncn))
-                (error (format (concat ":FUNCTION %s -- eval'd at init is "
-                                       "member of `*mon-default-start-load-sanity*'") ,fncn)))))
+                (warn                   ;(format 
+                 (concat
+                  ":FUNCTION `%s' " 
+                  "-- eval'd at init is member of `*mon-default-start-load-sanity*'")
+                 ,fncn)                 ;)
+              (error ;(format 
+               (concat ":FUNCTION `%s'"
+                       "-- eval'd at init is member of `*mon-default-start-load-sanity*'")
+               ,fncn) ;)
+              )))
      ,@do-sane
      (unless (or *mon-default-start-load-sanity-WARN-ONLY* ,just-warn)
        (push ,fncn *mon-default-start-load-sanity*))))
@@ -392,7 +399,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; :SHOW-POINT-MODE
 ;; :NOTE To ensure we've setup a show-point environment do it now.
 ;;; :NOTE :AFTER `mon-set-emacs-temp-file/dir-init'
-(when (and (intern-soft "IS-MON-SYSTEM-P") IS-MON-SYSTEM-P)
+(when (and (intern-soft "IS-MON-SYSTEM-P") 
+           (bound-and-true-p IS-MON-SYSTEM-P))
   (require 'show-point-mode))
 
 ;;; ==============================
@@ -423,8 +431,8 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.\n
 (defun mon-set-emacs-temp-file/dir-init (&optional warn-only)
   "Initialize local Emacs temporary directories on MON systems.\n 
 Set these Emacs \"temporary\" directories relative to `*mon-local-emacs-temp-dir*':\n
- `temporary-file-directory', `thumbs-thumbsdir', `thumbs-temp-dir'
- `doc-view-cache-directory', `slime-temp-directory',\n
+ `temporary-file-directory', `thumbs-thumbsdir', `thumbs-temp-dir',
+ `doc-view-cache-directory', `slime-temp-directory', `url-temporary-directory'\n
 When these directories do not exist created them.\n
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
@@ -530,13 +538,19 @@ A bookmark file typically has a .bmk extension, for additional discussion:
    ;; (setq bookmark-default-file new-bm) (setq bookmark-save-flag 1)
    (let ((new-bm (or new-bk-mrk-file 
                      (concat (file-name-as-directory *mon-user-emacsd*) 
-                             (if (and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
+                             (if (and (intern-soft "IS-MON-P-GNU") 
+                                      (bound-and-true-p IS-MON-P-GNU))
                                  (format ".emacs-%s.bmk" (cdr (mon-gnu-system-conditionals)))
                                ".emacs.bmk")))))
      (bookmark-load new-bm t)
-     (custom-set-variables 
-      '(bookmark-default-file new-bm t)
-      '(bookmark-save-flag 1)))
+     (set-variable 'bookmark-default-file new-bm)
+     ;; (put 'bookmark-default-file 'customized-value 
+     ;;      (list (custom-quote (eval bookmark-default-file))))
+     (custom-note-var-changed 'bookmark-default-file)
+
+   ;; :DEBUGGING (get 'bookmark-default-file 'customized-value)
+   (custom-set-variables 
+    '(bookmark-save-flag 1)))
    ))
 ;;
 ;; (mon-set-bookmark-file-init t)
@@ -588,7 +602,8 @@ to help make it a little less so.\n
                        ,@(when (and (getenv "SP_CYGWN") (file-exists-p (getenv "SP_CYGWN")))
                                (let ((cygman-root (file-name-directory  (getenv"SP_CYGWN")))
                                      (cygmans
-                                      '("usr/share/man" "usr/local/share/man" "usr/X11R6/share/man"
+                                      '("usr/share/man" "usr/local/share/man" 
+                                        "usr/X11R6/share/man"
                                        "usr/ssl/man" "usr/local/man"))
                                      cygman-csf)
                                 (dolist (csf cygmans (setq cygman-csf (nreverse cygman-csf)))
@@ -613,7 +628,8 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `find-function-C-source-directory', `source-directory',
+`find-function-source-path', `internal-doc-file-name', `mon-help-emacs-introspect'.\n►►►"
   (mon-default-start-error/sane 
    'mon-set-C-source-directory-init warn-only
    (cond  ((and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
@@ -621,6 +637,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                   (file-expand-wildcards (concat (getenv "SP_BIN") "/*/emacs-cur-src/*/src") t)))
              (when (car c-srcs)
                (setq-default source-directory (car c-srcs))
+               ;; (require 'find-func)
                (setq find-function-C-source-directory (car c-srcs)))))
           ;; Newly installed/built Emacs may need to have these adjusted accrodingly:
           ;; (setq-default source-directory "/usr/local/*/emacs/src")
@@ -628,7 +645,10 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
           ;; :TODO this still needs some tweaking when:
           ;;  a) locating src paths
           ;;  b) binding `find-function-C-source-directory' and `source-directory'
-          ;; Right now the some of logic is ordered around the ewiki's example shared repo bzr setup.
+          ;; Right now the some of logic is ordered around the ewiki's example
+          ;; shared repo bzr setup, e.g. wildcard expansion of the environment
+          ;; variable "DEVHOME".
+          ;; 
           ((and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
            (let ((c-srcs
                   (or (car (file-expand-wildcards 
@@ -639,7 +659,13 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
              (when (and c-srcs (file-directory-p c-srcs) (file-readable-p c-srcs))
                (setq-default source-directory 
                              (directory-file-name (file-name-directory c-srcs)))
-               (setq find-function-C-source-directory c-srcs)))))
+               ;; :NOTE Most likely this is already in environ as the
+               ;; button-type `help-function-def' has the plist prop
+               ;; `help-function` with a lambda form requiring it.  
+               ;; (require 'find-func)
+               (setq find-function-C-source-directory c-srcs))))
+          ;; (custom-set-variables '(find-function-source-path
+          )
    ))
 ;;
 ;; (mon-set-C-source-directory-init t)
@@ -679,14 +705,15 @@ Sets the following variables:
 (defun mon-set-doc-view-programs-init (&optional warn-only)
   "Initialize doc-view related programs on MON systems when `IS-MON-P-W32'.\n
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
-Set the following variables:
+Set the following variables:\n
  `doc-view-dvipdf-program', `doc-view-dvipdfm-program',
-`doc-view-pdftotext-program', `doc-view-ghostscript-program',
-`doc-view-ps2pdf-program',
+ `doc-view-pdftotext-program', `doc-view-ghostscript-program',
+ `doc-view-ps2pdf-program'\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-get-pdfinfo', `mon-get-pdftotext', `mon-get-ps2ascii',
+`*mon-pdftotext-exec-path*', `*mon-pdfinfo-exec-path*'.\n►►►"
   (mon-default-start-error/sane 
    'mon-set-doc-view-programs-init warn-only ;; nil
    (when (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
@@ -708,6 +735,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;
 ;; (mon-set-doc-view-programs-init t)
 (mon-set-doc-view-programs-init)
+
 
 ;;; ==============================
 ;;; :NOTE image-dired related settings:
@@ -733,8 +761,11 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:NOTE This is a W32 related Kludge related to the ImageMagicks convert.exe
-:SEE :FILE mon-rename-image-utils.el for additional discussion.
+:NOTE When `IS-W32-P' is non-nil may employ w32 related kludges around binding
+of the ImageMagick executables convert.exe and imconvert.exe\n
+:SEE :FILE mon-rename-image-utils.el for additional discussion.\n
+:SEE :FILE lisp/image-file.el lisp/thumbs.el mon-boxcutter.el\n
+:SEE \(woman \"xwud\"\) \(woman \"xwd\"\)\n
 :SEE-ALSO `thumbs-conversion-program', `*boxcutter-path*',
 `boxcutter-capture'.\n►►►"
   (mon-default-start-error/sane 
@@ -742,7 +773,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ;; :IMAGE-FILE lisp/image-file.el
    (custom-set-variables
     '(image-file-name-extensions
-      '("png" "jpeg" "jpg" "gif" "tiff" "tif" "xbm" "xpm" "pbm" "pgm" "ppm"
+      '("png" "jpeg" "jpg" "gif" "tiff" "tif" 
+        "xbm" "xpm" "pbm" "pgm" "ppm"
         "pnm" "nef" "bmp" "png" "svg")))
    ;; :THUMBS lisp/thumbs.el
    (when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
@@ -772,7 +804,7 @@ Set the following variables:
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO \n►►►"
+:SEE-ALSO .\n►►►"
   (mon-default-start-error/sane 
    'mon-set-ispell-init warn-only
    (custom-set-variables
@@ -878,10 +910,17 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; :CHANGESET 1747 <Timestamp: #{2010-05-19T17:55:18-04:00Z}#{10203} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-04-03T17:33:11-04:00Z}#{10136} - by MON KEY>
 (defun mon-set-ido-init (&optional warn-only)
-    "Set ido preferences on MON systems at init time.\n
-Set the following variables:
- `ido-save-directory-list-file', `ido-everywhere',
- `ido-enable-prefix', `ido-enable-flex-matching',
+  "Set `ido-mode' preferences on MON systems at init time.\n
+Set the following variables:\n
+Set variable `ido-enable-prefix' non-nil\n 
+Set variable `ido-enable-flex-matching' non-nil\n
+Set `ido-everywhere' non-nil\n
+Set variable `ido-mode' to 'both\n
+Set variable `ido-save-directory-list-file' back to its default path:\n
+  \"~/.emacs.d/ido/.ido.last\"\n
+:NOTE This is required on MON systems because we normally load user settings
+from a non-default location, however since this is a \"caching\" related
+variable it needs to be fast and shouldn't do any blocking or network seeks.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
@@ -890,17 +929,23 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    'mon-set-ido-init warn-only
    ;; :NOTE .ido.last used to be "ido_last"
    (when (and (intern-soft "IS-MON-SYSTEM-P") (bound-and-true-p IS-MON-SYSTEM-P))
+     (require 'ido)
      (let ((mk-ido-d (concat (file-truename (getenv "HOME")) "/.emacs.d/ido")))
        (unless (file-directory-p mk-ido-d) (mkdir mk-ido-d))
        (unless (file-exists-p (concat mk-ido-d "/.ido.last"))
          (with-temp-file (concat mk-ido-d "/.ido.last") (newline)))
-       (setq mk-ido-d (concat mk-ido-d "/.ido.last")))
-     (custom-set-variables 
-      '(ido-save-directory-list-file mk-ido-d t)
-      '(ido-everywhere nil t)
-      '(ido-enable-prefix 1 t)
-      '(ido-enable-flex-matching 1 t)
-      '(ido-mode 'both t))
+       (setq mk-ido-d (concat mk-ido-d "/.ido.last"))
+       (set-variable 'ido-save-directory-list-file mk-ido-d)
+        ;; (put 'ido-save-directory-list-file 'customized-value 
+        ;;     (list (custom-quote (eval ido-save-directory-list-file))))
+       (custom-note-var-changed 'ido-save-directory-list-file)
+       ;; :DEBUGGING (get 'ido-save-directory-list-file 'customized-value)
+       (custom-set-variables 
+        ;; `(ido-save-directory-list-file ,mk-ido-d t)
+         '(ido-everywhere nil t)
+         '(ido-enable-prefix 1 t)
+         '(ido-enable-flex-matching 1 t)
+         '(ido-mode 'both t)))
      (cond ((and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
             (custom-set-variables 
              '(ido-work-directory-list-ignore-regexps 
@@ -909,7 +954,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
             (custom-set-variables 
              '(ido-work-directory-list-ignore-regexps 
                '(".*lost+found.*") t)))))
-     ))
+   ))
 ;;
 ;; (mon-set-ido-init t)
 (mon-set-ido-init)
@@ -931,7 +976,13 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    (custom-set-variables 
     ;; :PATHS-FILES
     ;; '(delete-by-moving-to-trash t)
-    ;; prefer gpg v 1.4
+    ;; :EPG 
+    ;; :SEE-FILE lisp/epg-config.el
+    ;; :NOTE Prefer gpg v 1.4.3 see `epg-gpg-minimum-version'
+    ;; :SEE-ALSO `epg-gpg-program', `epg-gpgsm-program',
+    ;; `epg-gpg-minimum-version', `epg-debug', `epg-gpg-home-directory',
+    ;; `epg-passphrase-coding-system',
+    ;; (epg-configuration) (epg-check-configuration (epg-configuration)) 
     '(epg-gpg-program (or (executable-find "gpg") (executable-find "gpg2") "gpg"))
     '(desktop-dirname (file-name-as-directory *mon-user-emacsd*))
     '(auto-save-default 1)
@@ -1038,6 +1089,9 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 aren't clobbered for the variables:\n
  `common-lisp-hyperspec-root', `common-lisp-hyperspec-issuex-table',
  `common-lisp-hyperspec-symbol-table'\n
+:NOTE Initizliztion of the above variables affect:
+the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
+:FILE mon-doc-help-CL.el\n
 :SEE-ALSO `mon-purge-cl-symbol-buffers-on-load'.\n►►►"
   (mon-default-start-error/sane
    'mon-set-common-lisp-hspec-init warn-only
@@ -1179,19 +1233,101 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    (if (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P)) ;; (eq system-type 'windows-nt)
        (if (executable-find "bzr")
            (setq bzr-executable (executable-find "bzr"))
-           (setq bzr-executable "bzr"))
+           (setq bzr-executable "bzr")) ;; `vc-bzr-program'
      (if (executable-find "hg")
          (setq xhg-executable (executable-find "hg"))
        (when (file-executable-p (concat (getenv "SP_HG") "hg.exe"))
          (setq xhg-executable   (concat (getenv "SP_HG") "\\hg.exe")))))
    ;; Turn off the ever so pervasive dvc-tips buffer.
    (custom-set-variables
+    '(dvc-select-priority '(bzr xhg xgit xdarcs xmtn tla baz) t)
     '(dvc-tips-enabled nil t)
     '(dvc-log-edit-other-frame t t)) ;; `bzr-add-log-entry', `dvc-add-log-entry'
    ))
 ;; (mon-set-dvc-init t)
 
 (declare-function mon-keybind-w3m "mon-keybindings" t t)
+
+;;; ==============================
+;;; :CHANGESET 1990
+;;; :CREATED <Timestamp: #{2010-07-26T14:54:55-04:00Z}#{10301} - by MON KEY>
+(defun mon-set-url-pkg-init (&optional warn-only)
+  "Load url/url-*.el packages and set related preferences on MON systems at init time.\n
+Evaluate `url-setup', set `url-debug' t, and require :FILE url/url-http.el
+:SEE-ALSO `url-setup-done', `mon-set-browser-init', `mon-set-w3m-init'.\n►►►"
+  (mon-default-start-error/sane
+   'mon-set-url-pkg-init warn-only
+   (require 'url)
+   (require 'url-http)
+   (url-do-setup)
+   (let ((uconfdir (file-truename 
+                    (expand-file-name ".emacs.d/url/" 
+                                      (file-truename (getenv "HOME"))))))
+     (unless  (file-directory-p uconfdir)
+       (make-directory uconfdir))
+     (set-variable 'url-configuration-directory uconfdir)
+     (put 'url-configuration-directory 'customized-value 
+          (list (custom-quote (eval url-configuration-directory)))))
+   (custom-set-variables 
+    '(url-debug t)
+    ;;(url-configuration-directory  t)
+    '(url-cookie-file (expand-file-name "cookies" url-configuration-directory) t)
+    '(url-cookie-save-interval (* 3600 15) t) ;; default ran a timer every 60 seconds
+    ;; url-cache-directory
+    ;; url-cookie-confirmation
+    ;; url-cookie-multiple-line
+    ;; url-cookie-trusted-urls
+    ;; url-cookie-untrusted-urls
+    '(url-history-file (expand-file-name "history" url-configuration-directory) t)
+    '(url-history-save-interval (* 3600 15) t)  ;; default ran a timer every 60 seconds
+    '(url-history-track nil t)
+    ;; url-proxy-services
+    ;; url-gateway-method          { telnet|rlogin|socks|tls|ssl|native }
+    ;; url-honor-refresh-requests
+    ;; url-directory-index-file
+    ;; url-uncompressor-alist
+    ;; url-bad-port-list
+    ;; url-max-password-attempts
+    ;; url-max-redirections
+    '(url-temporary-directory temporary-file-directory t)
+    '(url-privacy-level 'paranoid t) ;'(email os lastloc agent cookie)
+    '(url-automatic-caching nil t))
+   (url-cookie-setup-save-timer)
+   (url-history-setup-save-timer)
+   (url-setup-privacy-info)
+   ))
+;;
+;; (mon-set-url-pkg-init tt)
+
+
+;;; ==============================
+;;; :CHANGESET 2073
+;;; :CREATED <Timestamp: #{2010-08-19T16:31:50-04:00Z}#{10334} - by MON KEY>
+(defun mon-set-google-maps-init (&optional warn-only)
+  "Signal an error when `IS-NOT-MON-SYSTEM'.\n
+When optional arg WARN-ONLY is non-nil message a warning instead of an error if
+function is already a member of variable `*mon-default-start-load-sanity*' as per 
+`mon-default-start-error/sane'.\n
+:SEE-ALSO `google-define'.\n►►►"
+  (mon-default-start-error/sane
+   'mon-set-goolge-maps-init warn-only
+   (add-to-list 'load-path (expand-file-name "google-maps" *mon-site-lisp-root*))
+   (require 'google-maps)
+   ;; ==============================
+   ;; :CREATED <Timestamp: #{2010-08-19T17:28:36-04:00Z}#{10334} - by MON>
+   ;;
+   (defcustom google-maps-static-default-maptype 'hybrid
+     "Default maptype for displaying interactive maps with `google-maps'."
+     :type '(choice (symbol :tag "hybrid"    :value hybrid)
+                    (symbol :tag "roadmap"   :value roadmap)
+                    (symbol :tag "satellite" :value satellite)
+                    (symbol :tag "terrain"   :value terrain))
+     :group 'google-maps-static)
+   ;;
+   (custom-set-variables 
+    '(google-maps-static-default-zoom 15 t)
+    '(google-maps-static-buffer-name "*GOOGLE-MAPS*" t))
+   ))
 
 ;;; ==============================
 ;;; :CHANGESET 1786
@@ -1204,7 +1340,7 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO `mon-set-browser-init'.\n►►►"
+:SEE-ALSO `mon-set-browser-init', `mon-set-url-pkg-init'.\n►►►"
   (mon-default-start-error/sane
    'mon-set-w3m-init warn-only
    (when (and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
@@ -1232,14 +1368,13 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO `mon-set-w3m-init'.\n►►►"
+:SEE-ALSO `mon-set-w3m-init', `mon-set-url-pkg-init'.\n►►►"
   (mon-default-start-error/sane
    'mon-set-browser-init warn-only
    (apply 'custom-theme-set-variables 'user
           `((browse-url-firefox-program  (nth 10 (mon-get-mon-emacsd-paths)) t)
             (browse-url-firefox-new-window-is-tab t t)
             (browse-url-mozilla-new-window-is-tab 1 t)
-            (url-privacy-level 'paranoid t)
             ,(cond ;; :NOTE These below were `custom-set-default'
               ((and (intern-soft "IS-BUG-P") (bound-and-true-p IS-BUG-P))
                '(browse-url-browser-function 'browse-url-generic)
@@ -1381,7 +1516,9 @@ Signal an error when `IS-NOT-MON-SYSTEM'.\n
                (when (not (bound-and-true-p longlines-mode))
                  (longlines-mode))))
        (when llm-test 
-         (message "Initialized `longlines-mode' at startup"))))))
+         (message 
+          (concat ":FUNCTION `mon-set-longlines-init' " 
+                  "-- initialized `longlines-mode' at startup")))))))
 ;;
 ;; (mon-set-longlines-init t)
 
@@ -1405,7 +1542,7 @@ Hook added add loadtime with \`mon-default-start-error/sane'.\n
 ;;; :MODIFICATIONS <Timestamp: #{2010-04-02T17:09:29-04:00Z}#{10135} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-01-29T14:12:23-05:00Z}#{10045} - by MON KEY>
 (defun mon-set-rst-mode-faces-init (&optional warn-only)
-  "Set `rst-mode' faces to MON preferred style.
+  "Set `rst-mode' faces to MON preferred style.\n
 When IS-MON-SYSTEM-P evaluated on the `rst-mode-hook'.
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
 :EXAMPLE\n\n\(pp-display-expression 
@@ -1548,15 +1685,18 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    (cond ((or (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
               (and (intern-soft "IS-BUG-P") (bound-and-true-p IS-BUG-P)))
           (require 'mon-w32-load))
-         ((and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
-          (require 'mon-GNU-load)
-          ;; (require 'mon-GNU-load-no-HG)          
-          ;; (load "slime-loads-GNU-clbuild.el")
-          (require 'slime-loads-GNU-clbuild)
-          (mon-slime-setup-init)
-          ;; :BEFORE mon-utils.el
-          (mon-set-common-lisp-hspec-init)
-          ))
+         ((and (intern-soft "IS-MON-P") 
+               (bound-and-true-p IS-MON-P))
+          (require 'grep)
+          (when (and (intern-soft "IS-MON-P-GNU") 
+                     (bound-and-true-p IS-MON-P-GNU))
+            (require 'mon-GNU-load)
+            ;; (require 'mon-GNU-load-no-HG)          
+            ;; (load "slime-loads-GNU-clbuild.el")
+            (require 'slime-loads-GNU-clbuild)
+            (mon-slime-setup-init)
+            ;; :BEFORE mon-utils.el
+            (mon-set-common-lisp-hspec-init))))
    ;; :MON-UTILS
    ;; :NOTE :FILE mon-utils.el contains require statements for mon-*.el packages.
    (require 'mon-utils)
@@ -1571,6 +1711,8 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    (mon-set-buffer-local-comment-start-init)   
    (mon-set-unicodedata-init)   
    (mon-keybind-w32-init)
+   (mon-set-url-pkg-init)
+   (mon-set-google-maps-init)
    (mon-set-w3m-init)
    (mon-set-browser-init)
    (mon-set-lisp-init)

@@ -140,27 +140,28 @@
 \(symbol-value \(nth 3 *mon-default-start-loads-xrefs*\)\)\n
 :SEE-ALSO `*naf-mode-xref-of-xrefs*'.\n►►►")
 ;;
-(unless (bound-and-true-p *mon-default-start-loads-xrefs*)
-  (setq *mon-default-start-loads-xrefs*
-        '(*mon-default-start-loads-xrefs*
-          mon-get-mon-emacsd-paths
-          set-emacs-root
-          IS-W32-P
-          IS-GNU-P
-          IS-BUG-P
-          IS-BUG-P-REMOTE
-          IS-MON-P-W32
-          IS-MON-P-GNU
-          IS-MON-P
-          IS-NOT-A-MON-SYSTEM
-          IS-MON-SYSTEM-P
-          *mon-emacs-root*
-          *mon-site-lisp-root*
-          *mon-naf-mode-root*
-          *mon-naf-mode-notes*
-          *mon-ebay-tmplt-mode-root*
-          *mon-user-emacsd*
-          *mon-local-emacs-temp-dir*)))
+(eval-after-load "mon-default-start-loads" 
+  '(unless (bound-and-true-p *mon-default-start-loads-xrefs*)
+     (setq *mon-default-start-loads-xrefs*
+           '(*mon-default-start-loads-xrefs*
+             mon-get-mon-emacsd-paths
+             set-emacs-root
+             IS-W32-P
+             IS-GNU-P
+             IS-BUG-P
+             IS-BUG-P-REMOTE
+             IS-MON-P-W32
+             IS-MON-P-GNU
+             IS-MON-P
+             IS-NOT-A-MON-SYSTEM
+             IS-MON-SYSTEM-P
+             *mon-emacs-root*
+             *mon-site-lisp-root*
+             *mon-naf-mode-root*
+             *mon-naf-mode-notes*
+             *mon-ebay-tmplt-mode-root*
+             *mon-user-emacsd*
+             *mon-local-emacs-temp-dir*))))
 
 ;;; ==============================
 ;;; :NOTE This gets compiled as `mon-get-emacsd-paths' in mon-utils.el
@@ -211,9 +212,11 @@ When called-interactively without prefix return value displayed in mini-buffer.\
     ;; Only signal an error if this isn't a MONish, else warn.
     (if (and (featurep 'mon-site-local-defaults)
              (intern-soft "mon-user-name-conditionals")
-             (case (mon-user-name-conditionals t)
-               (IS-MON-P-W32 t) (IS-MON-P-GNU t)
-               (IS-BUG-P t) (IS-BUG-P-REMOTE t)))
+             (let ((munc (mon-user-name-conditionals)))
+               (cond ((string-equal munc "IS-MON-P-W32") t) 
+                     ((string-equal munc "IS-MON-P-GNU") t)
+                     ((string-equal munc "IS-BUG-P") t)
+                     ((string-equal munc "IS-BUG-P-REMOTE") t))))
         (warn (concat ":VARIABLE `*mon-emacsd*' -- perversely bound or non-existent"
                       " :SEE :FILE mon-site-local-defaults.el"))
       (error (concat ":VARIABLE `*mon-emacsd*' -- not bound or non-existent"
@@ -228,7 +231,7 @@ When called-interactively without prefix return value displayed in mini-buffer.\
 ;;; ==============================
 (defconst IS-W32-P
   (if (fboundp 'mon-system-type-conditionals)
-      (eq (mon-system-type-conditionals t) 'IS-W32-P)
+      (string-equal (mon-system-type-conditionals) "IS-W32-P")
       (eq system-type 'windows-nt))
   "*Return non-nil when current machine is running a win32 OS.\n
 Used in conditional system type tests in lieu of:\n
@@ -242,7 +245,8 @@ Used in conditional system type tests in lieu of:\n
 `*mon-user-emacsd*', `*mon-emacs-root*', `*mon-naf-mode-root*',
 `*mon-ebay-tmplt-mode-root*'.\n►►►")
 ;;
-(defvaralias 'win32p 'IS-W32-P)
+(when (intern-soft "IS-W32-P")
+  (defvaralias 'win32p 'IS-W32-P))
 ;;
 ;;; :TEST-ME  IS-W32-P
 ;;
@@ -252,8 +256,8 @@ Used in conditional system type tests in lieu of:\n
 ;;; ==============================
 (defconst IS-GNU-P
   (if (fboundp 'mon-system-type-conditionals)
-      (eq (mon-system-type-conditionals t) 'IS-GNU-P)
-      (or (eq system-type 'gnu/linux) (eq system-type 'linux)))
+      (string-equal (mon-system-type-conditionals) "IS-GNU-P")
+    (or (eq system-type 'gnu/linux) (eq system-type 'linux)))
   "*Return non-nil if current machine is running on a GNU/Linux OS.\n
 Used in conditional system type tests in lieu of:\n
  (equal system-type 'gnu/linux).\n
@@ -266,7 +270,8 @@ Used in conditional system type tests in lieu of:\n
 `*mon-user-emacsd*', `*mon-emacs-root*' `*mon-naf-mode-root*',
 `*mon-ebay-tmplt-mode-root*'.\n►►►")
 ;;
-(defvaralias 'gnu-linuxp 'IS-GNU-P)
+(when (intern-soft "IS-GNU-P")
+  (defvaralias 'gnu-linuxp 'IS-GNU-P))
 ;;
 ;;; :TEST-ME IS-GNU-P
 ;;
@@ -275,7 +280,7 @@ Used in conditional system type tests in lieu of:\n
 
 
 ;;; ==============================
-(defconst IS-BUG-P (eq (mon-user-name-conditionals t) 'IS-BUG-P)
+(defconst IS-BUG-P (string-equal (mon-user-name-conditionals) "IS-BUG-P")
   "Return non-nil if this is a Buggy system and locally Bugged.\n
 :EXAMPLE\n\nIS-BUG-P\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
@@ -288,7 +293,7 @@ Used in conditional system type tests in lieu of:\n
 ;;;(progn (makunbound 'IS-BUG-P) (unintern 'IS-BUG-P) )
 
 ;;; ==============================
-(defconst IS-BUG-P-REMOTE (eq (mon-user-name-conditionals t) 'IS-BUG-P-REMOTE)
+(defconst IS-BUG-P-REMOTE (string-equal (mon-user-name-conditionals) "IS-BUG-P-REMOTE")
   "Return non-nil if this is a Buggy system and remotely Bugged.\n
 :EXAMPLE \nIS-BUG-P-REMOTE\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
@@ -301,7 +306,7 @@ Used in conditional system type tests in lieu of:\n
 ;;;(progn (makunbound 'IS-BUG-P-REMOTE) (unintern 'IS-BUG-P-REMOTE) )
 
 ;;; ==============================
-(defconst IS-MON-P-W32 (eq (mon-user-name-conditionals t) 'IS-MON-P-W32)
+(defconst IS-MON-P-W32 (string-equal (mon-user-name-conditionals) "IS-MON-P-W32")
   "*Return non-nil if this a MON system and a win32 system.\n
 :EXAMPLE\n\nIS-MON-P-W32\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
@@ -315,7 +320,7 @@ Used in conditional system type tests in lieu of:\n
 ;;;(progn (makunbound 'IS-MON-P-W32) (unintern 'IS-MON-P-W32) )
 
 ;;; ==============================
-(defconst IS-MON-P-GNU (eq (mon-user-name-conditionals t) 'IS-MON-P-GNU)
+(defconst IS-MON-P-GNU (string-equal (mon-user-name-conditionals) "IS-MON-P-GNU")
   "*Return non-nil if this a MON system and a GNU system.\n
 :EXAMPLE\n\nIS-MON-P-GNU\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
@@ -328,7 +333,9 @@ Used in conditional system type tests in lieu of:\n
 ;;;(progn (makunbound 'IS-MON-P-GNU) (unintern 'IS-MON-P-GNU) )
 
 ;;; ==============================
-(defconst IS-MON-P (or IS-MON-P-GNU IS-MON-P-W32)
+(defconst IS-MON-P 
+  (or (and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
+      (and (intern-soft " IS-MON-P-W32") (bound-and-true-p  IS-MON-P-W32)))
   "*Return non-nil if this is a MON system?\n
 :EXAMPLE\n\nIS-MON-P\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `mon-system-type-conditionals',
@@ -353,12 +360,25 @@ When `IS-MON-SYSTEM-P' this should not evaluate true.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-13T12:57:44-05:00Z}#{10023} - by MON KEY>
-(defconst IS-MON-SYSTEM-P (and (intern-soft "IS-NOT-A-MON-SYSTEM")
-                               (cdr (assoc 'the-only-if-its-a-mon-system
-                                           *mon-misc-path-alist*))
-                               (or IS-MON-P IS-MON-P-W32 IS-MON-P-GNU 
-                                   IS-BUG-P IS-BUG-P-REMOTE))
-"*Is this machine in MON's \"Circle of Trust\". :\)
+(defconst IS-MON-SYSTEM-P 
+  (and (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+            (not (bound-and-true-p IS-NOT-A-MON-SYSTEM)))
+       (and (intern-soft "*mon-misc-path-alist*")
+            (bound-and-true-p *mon-misc-path-alist*)
+            (cdr (assoc 'the-only-if-its-a-mon-system *mon-misc-path-alist*)))
+       (or (and (intern-soft "IS-MON-P") 
+                (bound-and-true-p IS-MON-P))
+           (and (intern-soft "IS-MON-P-W32") 
+                (bound-and-true-p IS-MON-P-W32))
+           (and (intern-soft "IS-MON-P-GNU") 
+                (bound-and-true-p IS-MON-P-GNU))
+           (and (intern-soft "IS-BUG-P") 
+                (bound-and-true-p IS-BUG-P))
+           (and (intern-soft "IS-BUG-P-REMOTE") 
+                (bound-and-true-p IS-BUG-P-REMOTE))
+           (and (intern-soft "IS-MON-SYSTEM-P") 
+                (bound-and-true-p IS-MON-SYSTEM-P))))
+  "*Is this machine in MON's \"Circle of Trust\". :\)
 Return non-nil this when any of the following evaluate to true:\n
  `IS-MON-P' `IS-MON-P-W32' `IS-MON-P-GNU' `IS-BUG-P' `IS-BUG-P-REMOTE'\n
 :EXAMPLE\n\nIS-MON-SYSTEM-P\n
@@ -440,21 +460,44 @@ equivalent to \(nth 6 \(assoc  *mon-emacsd*\)\) e.g.:\n
 `IS-GNU-P', `IS-W32-P', `IS-BUG-P', `IS-BUG-P-REMOTE', `IS-MON-P-W32',
 `IS-MON-P-GNU', `IS-MON-SYSTEM-P', `IS-NOT-A-MON-SYSTEM'.\n►►►")
 ;;
-(eval-when-compile
-  (cond (IS-MON-P-W32    (cd (nth 6 (assoc 1 *mon-emacsd*))))
-	(IS-MON-P-GNU    (cd (nth 6 (assoc 2 *mon-emacsd*))))
-	(IS-BUG-P-REMOTE (cd (nth 6 (assoc 4 *mon-emacsd*))))
-	(IS-BUG-P        (cd (nth 6 (assoc 3 *mon-emacsd*))))
-	(IS-NOT-A-MON-SYSTEM 
-	 ;; :NOTE This prob. isn't right for other users.
-	 ;;       _REALLY_ needs to be defcustomized.
-	 (cd (directory-file-name (expand-file-name default-directory)))))
-  (setq set-emacs-root 
-        (convert-standard-filename 
-         (directory-file-name (expand-file-name default-directory)))))
+(when (and (and (intern-soft "IS-MON-SYSTEM-P")
+                (bound-and-true-p IS-MON-SYSTEM-P))
+           (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                (not (bound-and-true-p IS-NOT-A-MON-SYSTEM))))
+  (eval-when (compile load eval)
+    (let (this-df)
+      (setq this-df default-directory)
+      (unwind-protect
+          (progn
+            (cond ((and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
+                   (cd (nth 6 (assoc 2 *mon-emacsd*))))
+                  ((and (intern-soft "IS-BUG-P-REMOTE")
+                        (bound-and-true-p IS-BUG-P-REMOTE ))
+                   (cd (nth 6 (assoc 4 *mon-emacsd*))))
+                  ((and (intern-soft "IS-BUG-P") (bound-and-true-p IS-BUG-P))
+                   (cd (nth 6 (assoc 3 *mon-emacsd*))))
+                  ((and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
+                   (cd (nth 6 (assoc 1 *mon-emacsd*))))
+                  ;; :NOTE This prob. isn't right for other users.
+                  ;;       _REALLY_ needs to be defcustomized.
+                  ((or (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                            (bound-and-true-p IS-NOT-A-MON-SYSTEM))
+                       t)
+                   (cd (directory-file-name (expand-file-name default-directory)))))
+            (setq set-emacs-root 
+                  ;;(convert-standard-filename 
+                  (directory-file-name (expand-file-name default-directory))))
+        (unless (or (and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
+                    (string-equal default-directory this-df))
+          (cd this-df))))))
 
 ;;; ==============================
-(defconst *mon-emacs-root* set-emacs-root
+(defconst *mon-emacs-root* 
+  (when (and (and (intern-soft "IS-MON-SYSTEM-P")
+                  (bound-and-true-p IS-MON-SYSTEM-P))
+             (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                  (not (bound-and-true-p IS-NOT-A-MON-SYSTEM))))
+    (and set-emacs-root))
   "*Return a self expanding filename string to the root path.\n
 Path is for all MON relevant site local Emacs files.\n
 :EXAMPLE\n\n*mon-emacs-root*\n
@@ -471,7 +514,12 @@ Path is for all MON relevant site local Emacs files.\n
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-11T18:54:22-04:00Z}#{09332} - by MON>
 (defconst *mon-site-lisp-root* 
-  (convert-standard-filename (expand-file-name "site-lisp" *mon-emacs-root*))
+  (when (and (and (intern-soft "IS-MON-SYSTEM-P")
+                  (bound-and-true-p IS-MON-SYSTEM-P))
+             (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                  (not (bound-and-true-p IS-NOT-A-MON-SYSTEM))))  
+    ;;(convert-standard-filename 
+    (and *mon-emacs-root* (expand-file-name "site-lisp" *mon-emacs-root*)))
   "*Return a string to the load-path for the local site-lisp files.\n
 :EXAMPLE\n\n*mon-site-lisp-root*\n
 :SEE-ALSO `mon-get-mon-emacsd-paths', `*mon-naf-mode-root*', `*mon-user-emacsd*',
@@ -487,7 +535,12 @@ Path is for all MON relevant site local Emacs files.\n
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-11T18:54:22-04:00Z}#{09332} - by MON>
 (defconst *mon-naf-mode-root* 
-  (convert-standard-filename (expand-file-name "naf-mode" *mon-emacs-root*))
+  ;;(convert-standard-filename 
+  (when (and (and (intern-soft "IS-MON-SYSTEM-P")
+                  (bound-and-true-p IS-MON-SYSTEM-P))
+             (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                  (not (bound-and-true-p IS-NOT-A-MON-SYSTEM))))
+    (expand-file-name "naf-mode" *mon-emacs-root*))
   "*Return a string to the path for the `naf-mode' files.\n
 Path used for to load all files for naf-mode.\n
 :EXAMPLE\n\n*mon-naf-mode-root*\n
@@ -504,8 +557,12 @@ Path used for to load all files for naf-mode.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-26T18:18:12-04:00Z}#{09353} - by MON>
 (defconst *mon-naf-mode-notes* 
-  (convert-standard-filename
-   (concat (nth 5 (mon-get-mon-emacsd-paths)) "/mon-notes-HG"))
+  (when (and (and (intern-soft "IS-MON-SYSTEM-P")
+                   (bound-and-true-p IS-MON-SYSTEM-P))
+              (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                   (not (bound-and-true-p IS-NOT-A-MON-SYSTEM))))
+    (convert-standard-filename
+     (concat (nth 5 (mon-get-mon-emacsd-paths)) "/mon-notes-HG")))
   "*Return a string to the path for the `notes' files.\n
 Path used for to load all files for naf-mode notes.\n
 :EXAMPLE\n\n*mon-naf-mode-notes*\n
@@ -521,8 +578,11 @@ Path used for to load all files for naf-mode notes.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-19T14:26:35-04:00Z}#{09343} - by MON>
 (defconst *mon-ebay-tmplt-mode-root* 
-  (convert-standard-filename
-   (expand-file-name "ebay-template-mode" *mon-naf-mode-root*))
+  (when (and (and (intern-soft "IS-MON-SYSTEM-P")
+                  (bound-and-true-p IS-MON-SYSTEM-P))
+             (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                  (not (bound-and-true-p IS-NOT-A-MON-SYSTEM))))
+    (expand-file-name "ebay-template-mode" *mon-naf-mode-root*))
   "*Return a string to the path for the `naf-mode' files.\n
 Path used for to load all files for `ebay-template-mode'.\n
 :EXAMPLE\n\nmon-ebay-template-mode-root\n
@@ -540,17 +600,14 @@ Path used for to load all files for `ebay-template-mode'.\n
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-10T16:08:38-05:00Z}#{10063} - by MON>
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-11T18:54:22-04:00Z}#{09332} - by MON>
 (defconst *mon-user-emacsd*
-  (if IS-NOT-A-MON-SYSTEM 
-      user-emacs-directory ;; Probably ~/.emacs.d/
-      ;; :WAS (expand-file-name
-      ;;  (cadr (assoc (cond (IS-MON-P-W32 1)
-      ;;                     (IS-MON-P-GNU 2)
-      ;;                     (IS-BUG-P 3)
-      ;;                     ;; :NOTE `IS-BUG-P-REMOTE' shares this path w/ `IS-BUG-P'.
-      ;;                     )             ;(IS-BUG-P-REMOTE 4))
-      ;;               *mon-emacsd*)) *mon-emacs-root*))
-    (convert-standard-filename
-     (expand-file-name (cadr (mon-get-mon-emacsd-paths)) *mon-emacs-root*)))
+  (if (and (and (intern-soft "IS-MON-SYSTEM-P")
+                (bound-and-true-p IS-MON-SYSTEM-P))
+           (and (intern-soft "IS-NOT-A-MON-SYSTEM")
+                (not (bound-and-true-p IS-NOT-A-MON-SYSTEM)))
+           (and (intern-soft "*mon-emacs-root*")
+                (bound-and-true-p *mon-emacs-root*)))
+      (expand-file-name (cadr (mon-get-mon-emacsd-paths)) *mon-emacs-root*)
+    user-emacs-directory) ;; Probably ~/.emacs.d/
   "*Return a string to the path for the site-local .emacs.d path.\n
 :EXAMPLE\n\n*mon-user-emacsd*\n
 :NOTE bound in :FILE mon-default-start-loads.el to set `user-emacs-directory'.\n
@@ -567,17 +624,21 @@ Path used for to load all files for `ebay-template-mode'.\n
 ;;; :CHANGESET 1743 <Timestamp: #{2010-05-19T19:41:29-04:00Z}#{10203} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-04-02T22:15:10-04:00Z}#{10136} - by MON KEY>
 (defconst *mon-local-emacs-temp-dir*
-  (cond (IS-MON-P
+  (cond ((and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
          (concat *mon-emacs-root* 
                  (cadr (assoc 'the-local-emacs-temp *mon-misc-path-alist*))))
-        ((or IS-BUG-P IS-BUG-P-REMOTE)
+        ((or (and (intern-soft "IS-BUG-P") (bound-and-true-p IS-BUG-P))
+             (and (intern-soft "IS-BUG-P-REMOTE") (bound-and-true-p IS-BUG-P-REMOTE)))
          (let ((make-local-emacs-temp 
-                (concat (getenv "HOME") "/.emacs.d"
+                (concat (file-truename (getenv "HOME")) "/.emacs.d"
                         (cadr (assoc 'the-local-emacs-temp *mon-misc-path-alist*)))))
            (unless (file-directory-p make-local-emacs-temp)
              (mkdir make-local-emacs-temp))
            make-local-emacs-temp))
-        ((or IS-NOT-A-MON-SYSTEM t) temporary-file-directory))
+        ((or (and (intern-soft "IS-NOT-A-MON-SYSTEM") 
+                  (bound-and-true-p IS-NOT-A-MON-SYSTEM))
+             t)
+         temporary-file-directory))
   "The base directory for temporary files/dir Emacs generates locally.\n This is
 essentially `temporary-file-directory', but where Emacs is extended with third
 party coded it isn't always particularly sane w/re to where and how it stashes

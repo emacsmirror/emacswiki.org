@@ -182,22 +182,35 @@
 
 ;;; CODE:
 
+;; :TODO `narrow-to-region' <- "C-xnr"
+
+;;; ==============================
+;; :INSTALL-TO :FILE mon-keybindings.el
+
+;; :CHANGE 
+
+
+
+
 (eval-when-compile (require 'cl))
-;; (defun mon-keybind-global ()
+
 ;;; ==============================
 ;; :NOT-BOUND-W-C-c
 (global-set-key "\M-n" 'mon-scroll-up-in-place)
 (global-set-key "\M-p" 'mon-scroll-down-in-place)
 (global-set-key (kbd "<C-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<S-backspace>") (kbd "DEL"))
-(global-set-key "\C-c\C-xd" 'mon-dired-other-window)
-
-;; C-x C-n set-goal-column
 ;;
 (when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
-  (global-set-key [(f3)] 'w32-maximize-frame))
+  (global-set-key [(f3)] 'w32-maximize-frame)
+  ;; "M-!" doesn't like it when IS-W32-P :(
+  (global-set-key "\C-c!"       'shell-command))
+;; (global-set-key "\C-c!"       'shell-command)  
 
+
+;;; ==============================
 ;;
+;; C-x C-n set-goal-column
 ;; (define-key ctl-x-map "\C-n" 'set-goal-column) C-x C-n warnings.
 ;; (define-key ctl-x-map "\C-n" 'undefined) C-x C-n warnings.
 ;; (define-key ctl-x-map [remap set-goal-column]  'ignore) 
@@ -205,15 +218,11 @@
 ;; :advertised-binding 
 ;;  
 ;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2009-09-07T14:45:06-04:00Z}#{09371} - by MON
-;;; :REMOVED (global-set-key [(f2)] 'doremi-window-width) 
-;;; To accomodate `dired-efap'.
+
 
 ;;; ==============================
 ;; :BOUND-W-C-c
 ;;; :NOTE Keyindings marked ;!! are bound in naf-mode.el but use a different global-key.
-
-(global-set-key "\C-c!"       'shell-command)  ;; "M-!" doesn't like it when IS-W32-P :(
 (global-set-key "\C-cwou"     'mon-wrap-one-url)
 (global-set-key "\C-cflr"     'fill-region)
 (global-set-key "\C-cvm"      'view-mode)                        
@@ -221,52 +230,46 @@
 ;;
 ;; C-c C-*
 (global-set-key "\C-c\C-di"   'comment-divider)                  ;!! "\C-c\M-di"
-(global-set-key "\C-c\C-dn"   'mon-comment-divider-to-col-four)      ;!! "\C-c\M-dn" 
-;; (global-set-key "\C-c\C-in" 'mon-incr)                        ;!! "\C-c\M-in" 
-(global-set-key "\C-x\C-k1"   'mon-split-designator)             ;!! "\C-C\M-k1"
-(global-set-key "\C-c\C-kc"   'mon-kill-completions)
 (global-set-key "\C-c\C-gg"   'google-define)                    ;!! "\C-c\M-gg" 
-(global-set-key "\C-c\C-na"   'naf-drive-dired-artist-letter)    ;!! "\C-c\M-na"
-(global-set-key "\C-c\C-nb"   'naf-drive-dired-brand-letter)     ;!! "\C-c\M-nb"
-;; (global-set-key "\C-x\C-u" 'describe-char) ;; When it gets rebound.
+
+;; (global-set-key "\C-c\C-kc"   'mon-kill-completions)
+;; (global-set-key "\C-c\C-dn"   'mon-comment-divider-to-col-four)      ;!! "\C-c\M-dn" 
+;; (global-set-key "\C-c\C-na"   'mon-dired-artist-letter)              ;!! "\C-c\M-na"
+;; (global-set-key "\C-c\C-nb"   'mon-dired-brand-letter)               ;!! "\C-c\M-nb"
+;; (global-set-key "\C-x\C-u"    'describe-char) ;; When it gets rebound.
 ;;
 ;; C-c M-*
 (global-set-key "\C-c\M-/"    'hippie-expand)
-(global-set-key "\C-c\M-ab"   'mon-append-to-buffer)
-(global-set-key "\C-c\M-af"   'append-to-file)
 (global-set-key "\C-c\M-ar"   'mon-append-to-register)
 (global-set-key "\C-c\M-f"    'mon-flip-windows) 
-(global-set-key "\C-c\M-r"    'capitalize-region)                ;!! "\C-c\M-cr"
-(global-set-key "\C-c\M-php"  'mon-insert-php-comment-divider)
-(global-set-key "\C-c\M-wd"   'wdired-change-to-wdired-mode)
+
+;; (global-set-key "\C-c\M-ab"   'mon-append-to-buffer)
+;; (global-set-key "\C-c\M-af"   'append-to-file)
+;; (global-set-key "\C-c\C-Cr"    'capitalize-region)
+;; (global-set-key "\C-c\M-php"  'mon-insert-php-comment-divider)
+;; (global-set-key "\C-c\M-wd"   'wdired-change-to-wdired-mode)
 
 ;; :CREATED <Timestamp: #{2009-08-24T16:33:22-04:00Z}#{09351} - by MON>
-(global-set-key "\C-cfst" 'mon-file-stamp) 
-
+(global-set-key "\C-cfst"     'mon-file-stamp) 
+(global-set-key "\C-c\C-xd"   'mon-dired-other-window)
 
 ;;; ==============================
-;(global-set-key "\M-n" 'mon-scroll-up-in-place)
-;(global-set-key "\M-p" 'mon-scroll-down-in-place)
-
-(global-set-key (kbd "<C-backspace>") 'backward-kill-word)
-(global-set-key (kbd "<S-backspace>") (kbd "<DEL>"))
-
-;;(assq :check-keys
-
-`((,(kbd "<C-backspace>")  . backward-kill-word)
-  (,(kbd "<S-backspace>")  . ,(kbd "<DEL>"))
-  (:check-keys
-   (,(kbd "C-c vm")         . view-mode)
-   (,(kbd "C-c C-x d")      . mon-dired-other-window)
-   (,(kbd "C-c !")          . shell-command) ;; "M-!" doesn't like it when IS-W32-P :(
-   (,(kbd "C-c wou")        . mon-wrap-one-url)
-   (,(kbd "C-c flr")        . fill-region)
-   (,(kbd "C-c u:")         . mon-cln-up-colon))
-  (:check-keys-w32
-   ;;(when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
-   (,(kbd "M-<f3>") . w32-maximize-frame)) ;; :WAS [(f3)]
-  )
-
+;; (defun mon-keybind-global ()
+;; ;; (assq :check-keys
+;; `((,(kbd "<C-backspace>")  . backward-kill-word)
+;;   (,(kbd "<S-backspace>")  . ,(kbd "<DEL>"))
+;;   (:check-keys
+;;    (,(kbd "C-c vm")         . view-mode)
+;;    (,(kbd "C-c C-x d")      . mon-dired-other-window)
+;;    (,(kbd "C-c !")          . shell-command) ;; "M-!" doesn't like it when IS-W32-P :(
+;;    (,(kbd "C-c wou")        . mon-wrap-one-url)
+;;    (,(kbd "C-c flr")        . fill-region)
+;;    (,(kbd "C-c u:")         . mon-cln-up-colon))
+;;   (:check-keys-w32
+;;    ;;(when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
+;;    (,(kbd "M-<f3>") . w32-maximize-frame)) ;; :WAS [(f3)]
+;;   )
+;;; ==============================
 ;; "\C-c\C-di"   'comment-divider)                  ;!! "\C-c\M-di"
 ;; "\C-c\C-dn"   'mon-comment-divider-to-col-four)      ;!! "\C-c\M-dn" 
 ;; ;; (global-set-key "\C-c\C-in" 'mon-incr)                        ;!! "\C-c\M-in" 
@@ -302,18 +305,30 @@
 (defun mon-keybind-dired-mode ()
   "Adjust `dired-mode-map' keybindings to MON preferences.\n
 Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
-:NOTE can be removed with:
+:NOTE can be removed with:\n
 \(remove-hook 'dired-mode-hook 'mon-keybind-dired-mode\)\n
 :SEE-ALSO `mon-keybind-w3m', `mon-keybind-dired-mode', `mon-keybind-w32-init',
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `mon-help-key-functions', `mon-help-keys'.\n►►►"
+  (set (make-local-variable 'minor-mode-overriding-map-alist)
+       `(ido-mode keymap (remap ,@(remove '(find-file-other-frame . ido-find-file-other-frame)
+                                   (cdaddr ido-minor-mode-map-entry)))))
+  ;; find-file-other-frame
+  ;; (define-key map [remap find-file-other-frame]
+  ;; 'ido-find-file-other-frame)
+  ;; (local-unset-key "\C-x5\C-f")
+  ;; (local-unset-key "\C-x5f")
+  (define-key dired-mode-map "\C-x5f"     'mon-dired-find-file-other-frame)
+  (define-key dired-mode-map "\C-x5\C-f"  'mon-dired-find-file-other-frame)
   (define-key dired-mode-map "\C-c\M-dwt" 'mon-toggle-dired-dwim-target)
   (define-key dired-mode-map "\M-^"       'mon-dired-up-directory-this-buffer)
-  (define-key dired-mode-map "\C-c\M-wl"  'mon-copy-file-dired-as-list) ;; Args: AS-LIST FULL-PATH
-  (define-key dired-mode-map "\C-c\M-ws"  'mon-copy-file-dired-as-string) ;; Args: UNQOUTED FULL-PATH
+  (define-key dired-mode-map "\C-ccl"     'mon-copy-file-dired-as-list) ;; Args: AS-LIST FULL-PATH
+  (define-key dired-mode-map "\C-ccf"     'mon-copy-file-dired-as-string) ;; Args: UNQOUTED FULL-PATH
   (define-key dired-mode-map "\C-cw3"     'mon-w3m-dired-file)
   (define-key dired-mode-map "\C-cui"     'mon-dired-uninsert-subdir)
   (define-key dired-mode-map "\C-cua"     'mon-dired-uninsert-subdir-all)
+  (define-key dired-mode-map "\C-c\M-wd"  'wdired-change-to-wdired-mode)
+  (define-key dired-mode-map "\C-c\M-u" 'mon-dired-unmark-elc)
   ;; :ADDED `dired-efap' keybinding.
   ;; :MODIFICATIONS <Timestamp: #{2009-09-07T14:48:26-04:00Z}#{09371} - by MON>
   (when (featurep 'dired-efap)
@@ -325,6 +340,7 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
 ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
 ;; (add-hook 'dired-mode-hook 'mon-keybind-dired-mode))
 
+;; substitute-key-definition olddef newdef keymap
 
 ;;; ==============================
 ;; :COMPLETION-KEYBINDINGS
@@ -538,11 +554,11 @@ Run on the `emacs-lisp-mode-hook'\n
   (define-key emacs-lisp-mode-map "\C-cc"       'comment-region)
   (define-key emacs-lisp-mode-map "\C-c\C-uc"   'uncomment-region)
   (define-key emacs-lisp-mode-map "\C-c\C-di"   'comment-divider)
-  (define-key emacs-lisp-mode-map "\C-c\C-dn"   'mon-comment-divider-to-col-four)
+  (define-key emacs-lisp-mode-map "\C-c\C-d4"   'mon-comment-divider-to-col-four)
   (define-key emacs-lisp-mode-map "\C-cst"      'mon-insert-lisp-stamp)
   (define-key emacs-lisp-mode-map "\C-ctm"      'mon-insert-lisp-testme)
   ;; :NOTE  C-c C-b bound to `slime-interrupt' in Slime-mode!!
-  (define-key emacs-lisp-mode-map "\C-c\C-b"    'mon-eval-sexp-at-point)
+  ;; (define-key emacs-lisp-mode-map "\C-c\C-b"    'mon-eval-sexp-at-point)
   (define-key emacs-lisp-mode-map "\C-c\C-j"    'mon-eval-print-last-sexp)
   (define-key emacs-lisp-mode-map "\C-c\C-cb"   'mon-princ-cb)
   (define-key emacs-lisp-mode-map "\C-cal"      'align-let) ;; :WAS [?\C-c ?\C-a] in align-let.el
@@ -551,6 +567,7 @@ Run on the `emacs-lisp-mode-hook'\n
   (define-key emacs-lisp-mode-map "\C-c\C-dc"   'mon-insert-lisp-doc-eg-xref)
   (define-key emacs-lisp-mode-map "\C-cul"      'mon-unescape-lisp-string-region)
   (define-key emacs-lisp-mode-map "\C-clsl"     'mon-line-strings-to-list)
+  (define-key emacs-lisp-mode-map "\C-clb"      'mon-line-strings-bq-qt-sym-bol)
   (define-key emacs-lisp-mode-map "\C-c\t"      'lisp-complete-symbol)
   (define-key emacs-lisp-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol)
   (define-key emacs-lisp-mode-map (kbd "<backtab>")  'lisp-complete-symbol)
@@ -605,7 +622,7 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 `slime-who-map'\n
 :NOTE Can be removed with:
  \(remove-hook 'slime-mode-hook 'mon-keybind-slime\)\n
-:SEE-ALSO `mon-help-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init' 
+:SEE-ALSO `mon-help-CL-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init' 
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `mon-keybind-dired-mode', `mon-keybind-w3m', `mon-keybind-w32-init',
 `mon-help-key-functions', `mon-help-keys'.\n►►►"
@@ -675,12 +692,12 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 ;;; (add-hook 'xhg-log-mode-hook  #'(lambda () (local-unset-key [?R]))) ;; :WAS xhg-rollback
 ;;; (add-hook 'dvc-diff-mode-hook (function (lambda () )
 
-;; (buffer-local-variables (get-buffer "*bzr-status*"))
+;;; (buffer-local-variables (get-buffer "*bzr-status*"))
 ;;; (buffer-local-variables (get-buffer "*bzr-status"))
 ;;;
 ;;; dvc-fileinfo-revert-files
 
-(add-hook 'dvc-status-mode-hook 
+(add-hook 'dvc-status-mode-hook
           (function 
            (lambda () 
              (local-unset-key dvc-status-mode-map "U") ;;; dvc-fileinfo-revert-files)
@@ -688,6 +705,14 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
              ;; dvc-fileinfo-revert-files
              ))
           )
+
+;; (add-hook 'dvc-diff-mode-hook
+;;           (function (lambda ()
+;;                       (local-unset-key 
+;;                        ;; dvc-fileinfo-revert-files [85]
+
+;;; (buffer-local-value 'dvc-show-active-dvc-string (current-buffer))
+;;; dvc-show-active-dvc-string
 
 ;;; :VARIABLE `dvc-keyvec-revert' <- (char-to-string 85) -> U 
 ;;;
@@ -697,6 +722,12 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 ;;; Find a better way to make your code portable across DVC's... and document it!
 ;;;
 ;;; :SEE-ALSO `dvc-fileinfo-revert-files' `dvc-status-mode-map'
+
+;; `vc-revert' C-x v u
+;; dvc-status-mode-map
+;; dvc-keyvec-revert
+;; U dvc-fileinfo-revert-files
+
 
 ;;; ==============================
 (provide 'mon-keybindings)

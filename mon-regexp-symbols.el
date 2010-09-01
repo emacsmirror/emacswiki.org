@@ -32,7 +32,7 @@
 ;; and is required by that library for it to function correctly. 
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-regexp-clean-ulan-dispatch-chars-TEST'
+;; `mon-regexp-clean-ulan-dispatch-chars-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -143,7 +143,6 @@
 
 (eval-when-compile (require 'cl))
 
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-05T20:19:31-04:00Z}#{10142} - by MON>
 (defvar *mon-regexp-symbols-xrefs* nil
@@ -154,6 +153,7 @@
 (unless (bound-and-true-p *mon-regexp-symbols-xrefs*)
   (setq *mon-regexp-symbols-xrefs*
         '(*mon-regexp-symbols-xrefs*
+          mon-regexp-clean-ulan-dispatch-chars-TEST
           *regexp-clean-xml-parse*
           *regexp-clean-mon-file-keywords*
           *regexp-symbol-defs*
@@ -318,12 +318,12 @@ loops without querying the user, it is easy to alter procedures accidentally.\n
 ;;; :NOTE `lambda-list-keywords' could be useful in conjunction with this regexp
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T11:04:11-0400Z - by MON KEY>
 (defvar *regexp-symbol-defs* nil
-  "*Regexp list to match lisp forms that define.
+  "*Regexp to match special-operators, and forms that define symbols.\n
 Match values include following symbols occuring at BOL prefixed by `(' and
 followed by the symbol they define:\n
  `defun' `defun*' `defmacro' `defmacro*' `defsubst' `defsubst*'
  `defconst' `defvar'
- `defcustom' `defface' `deftheme'
+ `defcustom' `defface' `deftheme'\n
 :NOTE Tests can be run on this regexp with `mon-help-regexp-symbol-defs-TEST'.\n
 :CALLED-BY `mon-insert-lisp-testme',`mon-insert-doc-help-tail'.\n
 :NOTE The regexps of this var do not contain the format string:\n
@@ -353,8 +353,9 @@ As such, their usage is unlike those of the regexps in:
          ;;^2^^^^^^^^^....................     ;; :NOTE There is leading whitepspace here.
          ;; :WAS 
          " \\([A-Za-z0-9/><:*-]+\\)" ;; grp 3 -> *some/-symbol:->name<-2*
-         ;;...4........................
-         "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\)" ;;grp 4 -> ` (' or ` ''
+         ;;..4.......................
+         "\\(\\( (\\)\\|\\( '\\)\\|\\( `\\)\\)\\) " ;;grp 4 -> ` (' or ` ''
+         ;; "\\(\\( ([^()&\"]\\)\\| \\('\\|t\\|nil\\|\"\\|((\\|()\\|(&\\|`(\\)\\)\\)" ;grp4 5,6
          )))
 ;;
 ;;;(progn (makunbound '*regexp-symbol-defs*) (unintern '*regexp-symbol-defs*) )
@@ -362,9 +363,9 @@ As such, their usage is unlike those of the regexps in:
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-24T20:04:49-05:00Z}#{10084} - by MON KEY>
 (defvar *regexp-symbol-defs-big* nil
-  "*Regexp list to match lisp operator forms that define.\n
+  "*Regexp to match special-operators, and forms that define symbols.\n
 Match values include following symbols occuring at BOL prefixed by `(' and
-followed by the symbol they define. 
+followed by the symbol they define.\n
 Like `*regexp-symbol-defs*' but covers a broader range of operators.\n
  `defadvice' `defalias' `defclass' `defconst' `defconstant' `defcustom'
  `defface' `defgeneric' `defgroup' `defimage' `defmacro' `defmacro*'
@@ -1453,29 +1454,47 @@ Especially useful matching certain abbreviations with `.' at end of string.\n
 
 ;;; ==============================
 ;;; :COURTESY :FILE thingatpt.el
-;;; :SEE: (URL `http://www.iana.org/assignments/uri-schemes.html')
+;;; :CHANGESET 2092 <Timestamp: #{2010-08-27T16:14:48-04:00Z}#{10345} - by MON KEY>
 ;;; :CREATED <Timestamp: Saturday April 18, 2009 @ 04:32.19 PM - by MON KEY>
-(defvar *regexp-wrap-url-schemes*
-  (let  ((wrap-if
-          '("ftp://" "http://" "gopher://" "mailto:" "news:" "nntp:"
-            "telnet://" "wais://" "file:/" "prospero:" "z39.50s:" "z39.50r:"
-            "cid:" "mid:" "vemmi:" "service:" "imap:" "nfs:" "acap:" "rtsp:"
-            "tip:" "pop:" "data:" "dav:" "opaquelocktoken:" "sip:" "tel:" "fax:"
-            "modem:" "ldap:" "https://" "soap.beep:" "soap.beeps:" "urn:" "go:"
-            "afs:" "tn3270:" "mailserver:" "crid:" "dict:" "dns:" "dtn:" "h323:"
-            "ipp:" "iris.beep:" "mtqp:" "mupdate:" "pres:" "sips:"  "snmp:" "tftp:"
-            "xmlrpc.beep:" "xmlrpc.beeps:" "xmpp:" "snews:" "irc:" "mms://" "mmsh://"
-            "info:" "im:" "tag:")))
-    (regexp-opt wrap-if 'paren))
+(defvar *regexp-wrap-url-schemes* nil   
   "*Regexp to wrap URLs with \(URL `'\).\n 
 Elements of list are wrapped as follows:
  http://www.google.com ->  \(URL `http://www.google.com'\)\n
-:CALLED-BY `mon-wrap-all-urls'\n
-:SEE (URL `http://www.iana.org/assignments/uri-schemes.html').\n
+Like `thing-at-point-url-regexp' but includes \"git://\" URI.\n
+:CALLED-BY `mon-wrap-all-urls', `mon-wrap-one-url'\n
+:SEE (URL `http://www.iana.org/assignments/uri-schemes.html')\n
+:SEE (URL `http://www.rfc-editor.org/rfc/rfc4395.txt')\n
 :SEE-ALSO `mon-wrap-one-url', `mon-wrap-url', `mon-wrap-text',`mon-wrap-span',
 `mon-wrap-selection', `mon-wrap-with', `thing-at-point-url-at-point',
 `*regexp-clean-xml-parse*', `*regexp-percent-encoding-reserved-chars*',
 `*regexp-clean-html-decimal-char-entity*', `*regexp-clean-html-named-char-entity*'.\n►►►")
+;;
+(unless (and (intern-soft "*regexp-wrap-url-schemes*")
+             (bound-and-true-p *regexp-wrap-url-schemes*))
+  ;; :NOTE emacsw32 v22 barfs on byte-compiled code if the
+  ;; `thing-at-point-uri-schemes' var isn't already loaded hence the following
+  ;; monstrosity:
+  (let ((tapus  (if (and (intern-soft "*regexp-wrap-url-schemes*")
+                         (bound-and-true-p  *regexp-wrap-url-schemes*))
+                    (copy-sequence thing-at-point-uri-schemes)
+                  (progn 
+                    (require 'thingatpt)
+                    '("ftp://" "http://" "gopher://" "mailto:" "news:" "nntp:"
+                      "telnet://" "wais://" "file:/" "prospero:" "z39.50s:"
+                      "z39.50r:" "cid:" "mid:" "vemmi:" "service:" "imap:"
+                      "nfs:" "acap:" "rtsp:" "tip:" "pop:" "data:" "dav:"
+                      "opaquelocktoken:" "sip:" "tel:" "fax:" "modem:" "ldap:"
+                      "https://" "soap.beep:" "soap.beeps:" "urn:" "go:" "afs:"
+                      "tn3270:" "mailserver:" "crid:" "dict:" "dns:" "dtn:"
+                      "h323:" "im:" "info:" "ipp:" "iris.beep:" "mtqp:"
+                      "mupdate:" "pres:" "sips:" "snmp:" "tag:" "tftp:"
+                      "xmlrpc.beep:" "xmlrpc.beeps:" "xmpp:" "snews:" "irc:"
+                      "mms://" "mmsh://")))))
+    (setq tapus (nconc '("git://") tapus))
+    (setq tapus (sort tapus #'string<))
+    ;; :NOTE Added `thing-at-point-url-path-regexp' at 2092.
+    (setq tapus (concat "\\<" (regexp-opt tapus 'paren) thing-at-point-url-path-regexp))
+    (setq *regexp-wrap-url-schemes* tapus)))
 ;;
 ;;; :TEST-ME  *regexp-wrap-url-schemes*
 ;;
@@ -1507,7 +1526,11 @@ leading/trailing whitespace.\n
 `*css-color:hex-chars*', `*css-color:html-colors*', `*regexp-css-color-color*',
 `*regexp-css-color-hex*', `*regexp-css-color-hsl*', `*regexp-css-color-rgb*',
 `mon-hexcolor-add-to-font-lock', `color-distance', `color-values',
-`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'
+`mon-string-from-hex-list', `mon-string-to-hex-list',
+`mon-string-to-hex-string', `mon-string-to-hex-list-cln-chars',
+`hexl-hex-string-to-integer', `url-hexify-string', `url-unhex-string',
+`url-unhex'.\n►►►")
 
 ;;; ==============================
 ;;; :NOTE Percent-encoding reserved characters:
@@ -1525,8 +1548,10 @@ leading/trailing whitespace.\n
     ("%23" "#")    ("%5B" "[")    ("%5D" "]"))
 "*Regexp list to match and normalize percent encoded chars.\n.
 :SEE-ALSO `*regexp-wrap-url-schemes*', `*regexp-clean-xml-parse*',
-`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-html-decimal-char-entity*',
-`*regexp-clean-html-named-char-entity*', `*regexp-css-color-html*'.\n►►►")
+`*regexp-percent-encoding-reserved-chars*',
+`*regexp-clean-html-decimal-char-entity*',
+`*regexp-clean-html-named-char-entity*', `*regexp-css-color-html*',
+`url-insert-entities-in-string'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-percent-encoding-reserved-chars*
 ;;
@@ -1547,7 +1572,7 @@ leading/trailing whitespace.\n
 "*Regexp list to convert cp1252 enchoded chars to latin1-iso-8859-*.\n
 :CALLED-BY `mon-trans-cp1252-to-latin1'.\n
 :SEE-ALSO `mon-make-iso-latin-1-approximation', `mon-cln-iso-latin-1',
-`*iso-latin-1-approximation*'.\n►►►")
+`*iso-latin-1-approximation*', `url-insert-entities-in-string'.\n►►►")
 ;;
 ;;; :TEST-ME  *regexp-cp1252-to-latin1*
 ;;
@@ -1623,8 +1648,9 @@ vanilla \" \" (char 32) instead.\n
 :SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent')\n
 :SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent')\n
 :SEE-ALSO `*regexp-wrap-url-schemes*', `*regexp-clean-xml-parse*',
-`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-html-decimal-char-entity*',
-`*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*'.\n►►►")
+`*regexp-percent-encoding-reserved-chars*',
+`*regexp-clean-html-decimal-char-entity*', `*regexp-clean-ulan-diacritics*',
+`*regexp-cp1252-to-latin1*', `url-insert-entities-in-string'.\n►►►")
 ;;
 ;;,---- :UNCOMMENT-BELOW-TO-TEST
 ;;|`(:entity ":&#160;" 
@@ -1656,7 +1682,8 @@ cadr is an unescaped character literal.\n
 :NOTE See discussion in `*google-define-html-entry-table*' w/re NO-BREAK SPACE.
 :SEE-ALSO `*regexp-clean-html-named-char-entity*', `*regexp-wrap-url-schemes*',
 `*regexp-clean-xml-parse*', `*regexp-percent-encoding-reserved-chars*',
-`*regexp-clean-html-decimal-char-entity*', `*regexp-clean-ulan-diacritics*'.\n►►►")
+`*regexp-clean-html-decimal-char-entity*', `*regexp-clean-ulan-diacritics*',
+`url-insert-entities-in-string'.\n►►►")
 ;;
 (unless (bound-and-true-p *regexp-clean-html-decimal-char-entity*)
   (setq *regexp-clean-html-decimal-char-entity*
@@ -1683,7 +1710,8 @@ cadr of each sublist is an unescaped character literal.\n
 :SEE-ALSO `*google-define-html-entry-table*', `*regexp-clean-html-named-char-entity*',
 `*regexp-wrap-url-schemes*', `*regexp-clean-xml-parse*',
 `*regexp-percent-encoding-reserved-chars*', `*regexp-clean-html-decimal-char-entity*',
-`*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*'.\n►►►")
+`*regexp-clean-ulan-diacritics*', `*regexp-cp1252-to-latin1*',
+`url-insert-entities-in-string'.\n►►►")
 ;;
 (unless (bound-and-true-p *regexp-clean-html-named-char-entity*)
   (setq *regexp-clean-html-decimal-char-entity*
@@ -1835,7 +1863,7 @@ current approach guarantees success.\n
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-31T14:50:10-04:00Z}#{09361} - by MON KEY>
 (defvar *regexp-clean-ulan-fields*
  '(("^apprentice of "       ":APPRENTICE-OF ")     ;;; '(("^apprentice of "      "apprentice-of: ")     
-   ("^apprentice was "      ":APPRENTICE-WAS ")    ;;;   ("^apprentice was "     "apprentice-:WAS ")    
+   ("^apprentice was "      ":APPRENTICE-WAS ")    ;;;   ("^apprentice was "     "apprentice-was: ")    
    ("^assisted by "         ":ASSISTED-BY ")       ;;;   ("^assisted by "        "assisted-by: ")       
    ("^associate of "        ":ASSOCIATE-OF ")      ;;;   ("^associate of "       "associate-of: ")      
    ("^child of "            ":CHILD-OF ")          ;;;   ("^child of "           "child-of: ")          
@@ -1843,7 +1871,7 @@ current approach guarantees success.\n
    ("^founder of "          ":FOUNDER-OF ")        ;;;   ("^founder of "         "founder-of: ")        
    ("^grandchild of "       ":GRANDCHILD-OF ")     ;;;   ("^grandchild of "      "grandchild-of: ")     
    ("^grandparent of "      ":GRANDPARENT-OF ")    ;;;   ("^grandparent of "     "grandparent-of: ")    
-   ("^grandparent was "     ":GRANDPARENT-WAS " )  ;;;   ("^grandparent was "    "grandparent-:WAS " )  
+   ("^grandparent was "     ":GRANDPARENT-WAS " )  ;;;   ("^grandparent was "    "grandparent-was: " )  
    ("^influenced "          ":INFLUENCE ")         ;;;   ("^influenced "         "influence: ")         
    ("^member of "           ":MEMBER-OF ")         ;;;   ("^member of "          "member-of: ")         
    ("^parent of "           ":PARENT-OF ")         ;;;   ("^parent of "          "parent-of: ")         
@@ -1851,14 +1879,14 @@ current approach guarantees success.\n
    ("^sibling of "          ":SIBLING-OF ")        ;;;   ("^sibling of "         "sibling-of: ")        
    ("^spouse of  "          ":SPOUSE-OF ")         ;;;   ("^spouse of  "         "spouse-of: ")         
    ("^student of "          ":STUDENT-OF ")        ;;;   ("^student of "         "student-of: ")        
-   ("^student was "         ":STUDENT-WAS " )      ;;;   ("^student was "        "student-:WAS " )      
+   ("^student was "         ":STUDENT-WAS " )      ;;;   ("^student was "        "student-was: " )      
    ("^teacher of "          ":TEACHER-OF ")        ;;;   ("^teacher of "         "teacher-of: ")        
-   ("^teacher was "         ":TEACHER-WAS ")       ;;;   ("^teacher was "        "teacher-:WAS ")       
+   ("^teacher was "         ":TEACHER-WAS ")       ;;;   ("^teacher was "        "teacher-was: ")       
    ("^worked with "         ":WORKED-WITH "))      ;;;   ("^worked with "        "worked-with: "))      
   "*Regexp list to match and normalize ULAN roles.\n
 Invoked after evaluating `*regexp-clean-ulan*' to begin process of
 cannonicalizing ULAN fields.\n
-Elements of list are normalized as follows:
+Elements of list are normalized as follows:\n
  \"^teacher of \" -> \":TEACHER-OF \"\n
 :CALLED-BY `mon-cln-ulan'\n
 :USED-IN `naf-mode'.\n
@@ -2221,9 +2249,355 @@ Lists have the form:\n
 ;;;(progn (makunbound '*regexp-ulan-contribs*)
 ;;;       (unintern '*regexp-ulan-contribs*) )
 
+
+
+;;; ==============================
+;;; :SEE (URL `http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references'
+;;; :SEE  (URL `http://www.w3.org/TR/REC-html40/sgml/entities.html') <- W3C
+;;; Portions © International Organization for Standardization 1986
+;;; Permission to copy in any form is granted for use with
+;;; conforming SGML systems and applications as defined in
+;;; ISO 8879, provided this notice is included in all copies.
+;;;
+;;; :HTML-4-CHARACTER ENTITY-SET
+;;; '<!ENTITY % HTMLlat1 PUBLIC  "-//W3C//ENTITIES Latin 1//EN//HTML"> %HTMLlat1;'
+;;; <!ENTITY nbsp   CDATA "&#160;" -- no-break space = non-breaking space,U+00A0 ISOnum -->
+;;; <!ENTITY iexcl  CDATA "&#161;" -- inverted exclamation mark, U+00A1 ISOnum -->
+;;; <!ENTITY cent   CDATA "&#162;" -- cent sign, U+00A2 ISOnum -->
+;;; <!ENTITY pound  CDATA "&#163;" -- pound sign, U+00A3 ISOnum -->
+;;; <!ENTITY curren CDATA "&#164;" -- currency sign, U+00A4 ISOnum -->
+;;; <!ENTITY yen    CDATA "&#165;" -- yen sign = yuan sign, U+00A5 ISOnum -->
+;;; <!ENTITY brvbar CDATA "&#166;" -- broken bar = broken vertical bar, U+00A6 ISOnum -->
+;;; <!ENTITY sect   CDATA "&#167;" -- section sign, U+00A7 ISOnum -->
+;;; <!ENTITY uml    CDATA "&#168;" -- diaeresis = spacing diaeresis, U+00A8 ISOdia -->
+;;; <!ENTITY copy   CDATA "&#169;" -- copyright sign, U+00A9 ISOnum -->
+;;; <!ENTITY ordf   CDATA "&#170;" -- feminine ordinal indicator, U+00AA ISOnum -->
+;;; <!ENTITY laquo  CDATA "&#171;" -- left-pointing double angle quotation mark = left pointing guillemet, U+00AB ISOnum -->
+;;; <!ENTITY not    CDATA "&#172;" -- not sign, U+00AC ISOnum -->
+;;; <!ENTITY shy    CDATA "&#173;" -- soft hyphen = discretionary hyphen, U+00AD ISOnum -->
+;;; <!ENTITY reg    CDATA "&#174;" -- registered sign = registered trade mark sign,U+00AE ISOnum -->
+;;; <!ENTITY macr   CDATA "&#175;" -- macron = spacing macron = overline = APL overbar, U+00AF ISOdia -->
+;;; <!ENTITY deg    CDATA "&#176;" -- degree sign, U+00B0 ISOnum -->
+;;; <!ENTITY plusmn CDATA "&#177;" -- plus-minus sign = plus-or-minus sign, U+00B1 ISOnum -->
+;;; <!ENTITY sup2   CDATA "&#178;" -- superscript two = superscript digit two = squared, U+00B2 ISOnum -->
+;;; <!ENTITY sup3   CDATA "&#179;" -- superscript three = superscript digit three = cubed, U+00B3 ISOnum -->
+;;; <!ENTITY acute  CDATA "&#180;" -- acute accent = spacing acute, U+00B4 ISOdia -->
+;;; <!ENTITY micro  CDATA "&#181;" -- micro sign, U+00B5 ISOnum -->
+;;; <!ENTITY para   CDATA "&#182;" -- pilcrow sign = paragraph sign, U+00B6 ISOnum -->
+;;; <!ENTITY middot CDATA "&#183;" -- middle dot = Georgian comma = Greek middle dot, U+00B7 ISOnum -->
+;;; <!ENTITY cedil  CDATA "&#184;" -- cedilla = spacing cedilla, U+00B8 ISOdia -->
+;;; <!ENTITY sup1   CDATA "&#185;" -- superscript one = superscript digit one, U+00B9 ISOnum -->
+;;; <!ENTITY ordm   CDATA "&#186;" -- masculine ordinal indicator, U+00BA ISOnum -->
+;;; <!ENTITY raquo  CDATA "&#187;" -- right-pointing double angle quotation mark = right pointing guillemet, U+00BB ISOnum -->
+;;; <!ENTITY frac14 CDATA "&#188;" -- vulgar fraction one quarter = fraction one quarter, U+00BC ISOnum -->
+;;; <!ENTITY frac12 CDATA "&#189;" -- vulgar fraction one half = fraction one half, U+00BD ISOnum -->
+;;; <!ENTITY frac34 CDATA "&#190;" -- vulgar fraction three quarters = fraction three quarters, U+00BE ISOnum -->
+;;; <!ENTITY iquest CDATA "&#191;" -- inverted question mark = turned question mark, U+00BF ISOnum -->
+;;; <!ENTITY Agrave CDATA "&#192;" -- latin capital letter A with grave = latin capital letter A grave, U+00C0 ISOlat1 -->
+;;; <!ENTITY Aacute CDATA "&#193;" -- latin capital letter A with acute, U+00C1 ISOlat1 -->
+;;; <!ENTITY Acirc  CDATA "&#194;" -- latin capital letter A with circumflex, U+00C2 ISOlat1 -->
+;;; <!ENTITY Atilde CDATA "&#195;" -- latin capital letter A with tilde, U+00C3 ISOlat1 -->
+;;; <!ENTITY Auml   CDATA "&#196;" -- latin capital letter A with diaeresis, U+00C4 ISOlat1 -->
+;;; <!ENTITY Aring  CDATA "&#197;" -- latin capital letter A with ring above = latin capital letter A ring, U+00C5 ISOlat1 -->
+;;; <!ENTITY AElig  CDATA "&#198;" -- latin capital letter AE = latin capital ligature AE, U+00C6 ISOlat1 -->
+;;; <!ENTITY Ccedil CDATA "&#199;" -- latin capital letter C with cedilla, U+00C7 ISOlat1 -->
+;;; <!ENTITY Egrave CDATA "&#200;" -- latin capital letter E with grave, U+00C8 ISOlat1 -->
+;;; <!ENTITY Eacute CDATA "&#201;" -- latin capital letter E with acute, U+00C9 ISOlat1 -->
+;;; <!ENTITY Ecirc  CDATA "&#202;" -- latin capital letter E with circumflex, U+00CA ISOlat1 -->
+;;; <!ENTITY Euml   CDATA "&#203;" -- latin capital letter E with diaeresis, U+00CB ISOlat1 -->
+;;; <!ENTITY Igrave CDATA "&#204;" -- latin capital letter I with grave, U+00CC ISOlat1 -->
+;;; <!ENTITY Iacute CDATA "&#205;" -- latin capital letter I with acute, U+00CD ISOlat1 -->
+;;; <!ENTITY Icirc  CDATA "&#206;" -- latin capital letter I with circumflex, U+00CE ISOlat1 -->
+;;; <!ENTITY Iuml   CDATA "&#207;" -- latin capital letter I with diaeresis, U+00CF ISOlat1 -->
+;;; <!ENTITY ETH    CDATA "&#208;" -- latin capital letter ETH, U+00D0 ISOlat1 -->
+;;; <!ENTITY Ntilde CDATA "&#209;" -- latin capital letter N with tilde, U+00D1 ISOlat1 -->
+;;; <!ENTITY Ograve CDATA "&#210;" -- latin capital letter O with grave, U+00D2 ISOlat1 -->
+;;; <!ENTITY Oacute CDATA "&#211;" -- latin capital letter O with acute, U+00D3 ISOlat1 -->
+;;; <!ENTITY Ocirc  CDATA "&#212;" -- latin capital letter O with circumflex, U+00D4 ISOlat1 -->
+;;; <!ENTITY Otilde CDATA "&#213;" -- latin capital letter O with tilde, U+00D5 ISOlat1 -->
+;;; <!ENTITY Ouml   CDATA "&#214;" -- latin capital letter O with diaeresis, U+00D6 ISOlat1 -->
+;;; <!ENTITY times  CDATA "&#215;" -- multiplication sign, U+00D7 ISOnum -->
+;;; <!ENTITY Oslash CDATA "&#216;" -- latin capital letter O with stroke = latin capital letter O slash, U+00D8 ISOlat1 -->
+;;; <!ENTITY Ugrave CDATA "&#217;" -- latin capital letter U with grave, U+00D9 ISOlat1 -->
+;;; <!ENTITY Uacute CDATA "&#218;" -- latin capital letter U with acute, U+00DA ISOlat1 -->
+;;; <!ENTITY Ucirc  CDATA "&#219;" -- latin capital letter U with circumflex, U+00DB ISOlat1 -->
+;;; <!ENTITY Uuml   CDATA "&#220;" -- latin capital letter U with diaeresis, U+00DC ISOlat1 -->
+;;; <!ENTITY Yacute CDATA "&#221;" -- latin capital letter Y with acute, U+00DD ISOlat1 -->
+;;; <!ENTITY THORN  CDATA "&#222;" -- latin capital letter THORN, U+00DE ISOlat1 -->
+;;; <!ENTITY szlig  CDATA "&#223;" -- latin small letter sharp s = ess-zed, U+00DF ISOlat1 -->
+;;; <!ENTITY agrave CDATA "&#224;" -- latin small letter a with grave = latin small letter a grave, U+00E0 ISOlat1 -->
+;;; <!ENTITY aacute CDATA "&#225;" -- latin small letter a with acute, U+00E1 ISOlat1 -->
+;;; <!ENTITY acirc  CDATA "&#226;" -- latin small letter a with circumflex, U+00E2 ISOlat1 -->
+;;; <!ENTITY atilde CDATA "&#227;" -- latin small letter a with tilde, U+00E3 ISOlat1 -->
+;;; <!ENTITY auml   CDATA "&#228;" -- latin small letter a with diaeresis, U+00E4 ISOlat1 -->
+;;; <!ENTITY aring  CDATA "&#229;" -- latin small letter a with ring above = latin small letter a ring, U+00E5 ISOlat1 -->
+;;; <!ENTITY aelig  CDATA "&#230;" -- latin small letter ae = latin small ligature ae, U+00E6 ISOlat1 -->
+;;; <!ENTITY ccedil CDATA "&#231;" -- latin small letter c with cedilla, U+00E7 ISOlat1 -->
+;;; <!ENTITY egrave CDATA "&#232;" -- latin small letter e with grave, U+00E8 ISOlat1 -->
+;;; <!ENTITY eacute CDATA "&#233;" -- latin small letter e with acute, U+00E9 ISOlat1 -->
+;;; <!ENTITY ecirc  CDATA "&#234;" -- latin small letter e with circumflex, U+00EA ISOlat1 -->
+;;; <!ENTITY euml   CDATA "&#235;" -- latin small letter e with diaeresis, U+00EB ISOlat1 -->
+;;; <!ENTITY igrave CDATA "&#236;" -- latin small letter i with grave, U+00EC ISOlat1 -->
+;;; <!ENTITY iacute CDATA "&#237;" -- latin small letter i with acute, U+00ED ISOlat1 -->
+;;; <!ENTITY icirc  CDATA "&#238;" -- latin small letter i with circumflex, U+00EE ISOlat1 -->
+;;; <!ENTITY iuml   CDATA "&#239;" -- latin small letter i with diaeresis, U+00EF ISOlat1 -->
+;;; <!ENTITY eth    CDATA "&#240;" -- latin small letter eth, U+00F0 ISOlat1 -->
+;;; <!ENTITY ntilde CDATA "&#241;" -- latin small letter n with tilde, U+00F1 ISOlat1 -->
+;;; <!ENTITY ograve CDATA "&#242;" -- latin small letter o with grave, U+00F2 ISOlat1 -->
+;;; <!ENTITY oacute CDATA "&#243;" -- latin small letter o with acute, U+00F3 ISOlat1 -->
+;;; <!ENTITY ocirc  CDATA "&#244;" -- latin small letter o with circumflex, U+00F4 ISOlat1 -->
+;;; <!ENTITY otilde CDATA "&#245;" -- latin small letter o with tilde, U+00F5 ISOlat1 -->
+;;; <!ENTITY ouml   CDATA "&#246;" -- latin small letter o with diaeresis, U+00F6 ISOlat1 -->
+;;; <!ENTITY divide CDATA "&#247;" -- division sign, U+00F7 ISOnum -->
+;;; <!ENTITY oslash CDATA "&#248;" -- latin small letter o with stroke, = latin small letter o slash, U+00F8 ISOlat1 -->
+;;; <!ENTITY ugrave CDATA "&#249;" -- latin small letter u with grave, U+00F9 ISOlat1 -->
+;;; <!ENTITY uacute CDATA "&#250;" -- latin small letter u with acute, U+00FA ISOlat1 -->
+;;; <!ENTITY ucirc  CDATA "&#251;" -- latin small letter u with circumflex, U+00FB ISOlat1 -->
+;;; <!ENTITY uuml   CDATA "&#252;" -- latin small letter u with diaeresis,U+00FC ISOlat1 -->
+;;; <!ENTITY yacute CDATA "&#253;" -- latin small letter y with acute, U+00FD ISOlat1 -->
+;;; <!ENTITY thorn  CDATA "&#254;" -- latin small letter thorn, U+00FE ISOlat1 -->
+;;; <!ENTITY yuml   CDATA "&#255;" -- latin small letter y with diaeresis, U+00FF ISOlat1 -->
+;;; ==============================
+;;; :TODO Provide or find a function to normalize on these characters:
+;;; ÀÁÂÃÄÅÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝ
+;;; AAAAAACEEEEIIIIDNOOOOOOUUUUY
+;;; àáâãäåçèéêëìíîïñðòóôõöøùúûýýÿŔŕ
+;;; aaaaaaceeeeiiiidnoooooouuuyyyRr
+;;;  ß    æ    Æ   þ Þ
+;;; |bs| |ae| |AE|
+;;; ==============================
+
+;;; ==============================
+;;; :NOTE 
+;;; :ORIGINAL-WORD->ABBREVIATION
+;; acknowledgment ack
+;; abstract abs
+;; address addr
+;; affiliation aff
+;; alternate/alternative alt
+;; attribution attrib
+;; biography bio
+;; chemical chem
+;; communication communication
+;; conference conf
+;; contributor/contribution contrib
+;; corresponding corresp
+;; definition def
+;; description desc
+;; display disp
+;; external ext
+;; figure fig
+;; first f (no hyphen)
+;; footnote fn
+;; formula formula
+;; government gov
+;; graphic graphic
+;; group/grouping group
+;; heading/header head
+;; identifier/ID id
+;; keyword kwd
+;; location loc
+;; material material
+;; metadata meta
+;; number num
+;; prefix prefix
+;; proceedings proceedings
+;; publication pub
+;; publisher publisher
+;; quote quote
+;; reference ref
+;; related related
+;; section sec
+;; sequence/sequential seq
+;; standard std
+;; statement statement
+;; structure struct
+;; subject subj
+;; subscript sub (note: not inferior)
+;; superscript sup (note: not superior)
+;; supplementary supplementary
+;; translated/translator trans
+;; underline underline
+;; volume vol
+;; wrapper wrap
+
+;;; ==============================
+;;; :NOTE Regexp template for finding nameforms in regions. 
+;;; Template has also been pasted into "mon-name-utils.el" :CALLED-BY `mon-cln-ulan'.
+;;; :WORKING-AS-OF <Timestamp: Friday February 13, 2009 @ 09:18.35 PM - by MON KEY>
+;;; ==============================
+;;;        (region-name (when (and transient-mark-mode mark-active)
+;;; 	      (buffer-substring-no-properties (region-beginning) (region-end))))
+;;;              (test-name (when (and region-name)
+;;; 	       (cond
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :](\\)\\([A-Z][a-z]+\\)\\()\\)\\)" region-name) 
+;;; 		 (concat (match-string 2 region-name) "%2C+"  (match-string 4 region-name)))
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\(,[: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
+;;; 		 (concat (match-string 2 region-name) "%2C+" (match-string 4 region-name)))
+;;; 		((string-match "\\(\\([A-Z][a-z]+\\)\\([: :]\\)\\([A-Z][a-z]+\\)\\)" region-name)
+;;; 		 (concat (match-string 4 region-name) "%2C+" (match-string 2 region-name))))))
+
+;;; ==============================
+;;; lowercaseUPPERCASE -> "lowercase UPPERCASE"
+;;; :EXAMPLE find occurences of "somstreetCityname" -> "somestreet Cityname"
+;;
+;; (let ((case-fold-search nil))
+;;   (while (search-forward-regexp 
+;; 	  "\\(SOME-SAFE-BUT-GREEDY-BOUNDS*\\)\\([\\[:lower:]]\\)\\([\\[:upper:]]\\)" nil t)
+;;            ;;1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^2^^^^^^^^^^^^^^^^^^3^^^^^^^^^^^^^^^^^^^^^^
+;;     (replace-match "\\1\\2 \\3")))
+
+;;; ==============================
+;;; 0-9UPPERCASE -> "N UPPERCASE"
+;;; :EXAMPLE find occurences of "625Paris" -> "625 Paris"
+;;
+;; (let ((case-fold-search nil))
+;;   (while (search-forward-regexp 
+;;     "\\([0-9]\\)\\([\\[:upper:]]\\)" nil t)
+;;      ^^1^^^^^^^^^^2^^^^^^^^^^^^^^^
+;;     (replace-match "\\1 \\2")))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-08-17T16:52:12-04:00Z}#{09341} - by MON KEY>
+;;; :ROTATE-LASTNAME-TO-FRONT
+;;; Quick and dirty to rotate artist names. 
+;;; Both First and Last name _must be_ without hyphens, periods or other punct.
+;;;     ;;...1...2...........3................4.........
+;;;  '(("^\\(\\([A-z]+\\)\\([[:space:]]\\)\\(.*\\)\\)"   "\\4 (\\2)"))
+
+;;; ==============================
+;;; :CAPITALIZING-REGION
+;;; ^\([A-Z-: :]*\)$ \#(capitalize-region)
+
+;;; ==============================
+;;; TIMESTAMPS of form: `YYYY-MM-DD HH:MM:SS'
+;;; "\\([0-9-]+ [0-9:]+\\)" 
+
+;;; ==============================
+;;; :SIMPLE-YEAR
+;;; \_<[0-9]\{4\}\_>
+
+;;; ==============================
+;;; :YEAR-RANGE
+;;; "\\(\\((\\)\\([0-9]\\{4\\}?\\)\\(-?\\)\\([0-9]\\{4\\}?\\)\\()\\)\\)"
+
+;;; ==============================
+;;; :DATE-STRINGS of form: 03-15-1917 03-15-1944 1922/15/03 1493-15-03
+;;; \\([0-9]\\{2,4\\}\\(-\\|/\\)[0-9]?+\\(-\\|/\\)[0-9]\\{2,4\\}\\)"
+
+;;; ==============================
+;;; :YEARS-IN-PARENS regexp finds strings of form: (YYYY)
+;;;  \([0-9]\{4\}\)
+
+;;; ==============================
+;;; :SHORT-YEARS-BOL in bib entries of form `'YY'
+;;; "^'\\([0-9]\\{2,2\\}\\)
+
+;;; ==============================
+;;; :ENGLISH-MONTHS
+;;; (concat
+;;;  "\\(A\\(pr\\(\\.\\|il\\)\\|ug\\(\\.\\|ust\\)\\)\\|Dec\\(\\.\\|ember\\)"
+;;;  "\\|Feb\\(\\.\\|ruary\\)\\|J\\(an\\(\\.\\|uary\\)\\|u\\(l[.y]\\|n[.e]\\)"
+;;;  "\\)\\|Ma\\(r\\(\\.\\|ch\\)\\|y\\)\\|Nov\\(\\.\\|ember\\)\\|Oct"
+;;;  "\\(\\.\\|ober\\)\\|Sep\\(\\.\\|t\\(\\.\\|ember\\)\\)\\)")
+
+;;; ==============================
+;;; :ENGLISH-DATES
+;;; (concat
+;;;  "\\(A\\(pr\\(\\.\\|il\\)\\|ug\\(\\.\\|ust\\)\\)\\|Dec\\(\\.\\|ember\\)"
+;;;  "\\|Feb\\(\\.\\|ruary\\)\\|J\\(an\\(\\.\\|uary\\)\\|u\\(l[.y]\\|n[.e]\\)\\)"
+;;;  "\\|Ma\\(r\\(\\.\\|ch\\)\\|y\\)\\|Nov\\(\\.\\|ember\\)\\|Oct\\(\\.\\|ober\\)"
+;;;  "\\|Sep\\(\\.\\|t\\(\\.\\|ember\\)\\)\\) "
+;;;  "\\([0-3]?+[0-9]\\)\\(:?[rd\|th\|st\|,]+\\) \\<[0-9]\\{4\\}\\>")
+
+;;; ==============================
+;;; :ENGLISH-DAYS
+;;; "\\<[MTWFS]\\(on\\|ues\\|ednes\\|hurs\\|ri\\|atur\\|un\\)\\(day\\)\\>"
+
+;;; ==============================
+;;; :ENGLISH-WEEKDAYS
+;;; "\\<\\(Friday\\|Monday\\|S\\(aturday\\|unday\\)\\|T\\(hursday\\|uesday\\)\\|Wednesday\\)\\>"
+
+;;; ==============================
+;;; :FRENCH-MONTHS
+;;; (concat
+;;;  "[A-Za-z]\\(\\(\\(oût\\|vril\\|ai\\|ars\\)\\)\\|\\(\\(anv\\|évr\\)"
+;;;  "\\(ier\\)\\)\\|\\(\\(cto\\|epte\\|ove\\|éce\\)\\(m?+bre\\)\\)"
+;;;  "\\|\\(\\(ui\\)\\(n\\|l+et\\)\\)\\)")
+
+;;; ==============================
+;;; :FRENCH-WEEKDAYS
+;;;"\\<\\(Dimanche\\|Jeudi\\|Lundi\\|M\\(ardi\\|ercredi\\)\\|Samedi\\|Vendredi\\)\\>")
+
+;;; ==============================
+;;; :FRENCH-DATES
+;;; (concat 
+;;;  "\\<[0-9]\\{1,2\\}\\> \\(A\\(o\\(ut\\|ût\\)\\|vr\\(\\.\\|il\\)\\)\\|Déc\\(\\.\\|embre\\)"
+;;;  "\\|Fév\\(\\.\\|rier\\)\\|J\\(an\\(\\.\\|vier\\)\\|ui\\(l\\(\\.\\|let\\)\\|n\\)\\)"
+;;;  "\\|Ma\\(i\\|rs\\)\\|Novembre\\|Octobre\\|Sep\\(\\.\\|tembre\\)\\|a"
+;;;  "\\(o\\(ut\\(\\)?\\|ût\\(\\)?\\)\\|vr\\(\\.\\|il\\)\\)\\|déc\\(\\.\\|embre\\)"
+;;;  "\\|fév\\(\\.\\|rier\\)\\|j\\(an\\(\\.\\|vier\\)\\|ui\\(l\\(\\.\\|let\\)\\|[n]\\)\\)"
+;;;  "\\|ma\\(rs\\(\\)?\\|[i]\\)\\|nov\\(\\.\\|embre\\)\\|oct"
+;;;  "\\(\\.\\|obre\\)\\|sep\\(\\.\\|tembre\\)\\) \\<[0-9]\\{4\\}\\>")
+
+;;; ==============================
+;;; :LIFESPAN with word boundaries of form: (1899-1946)
+;;;   '"\\(\\<[(]?+[0-9]\\{4\\}-[0-9]\\{4\\}[)]?+\\>\\)" )
+
+;;; ==============================
+;;; :LIFESPAN without word boundaries 
+;;;  '"\\([(]?+[0-9]\\{4\\}-[0-9]\\{4\\}[)]?+\\)" )
+
+;;; ==============================
+;;; :ACTIVE-CIRCA
+;;; \\<\\(active ca\\.\\|b\\.\\|c\\(a\\.\\|irca\\)\\|d\\.\\) [0-9]\\{4\\}\\>
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-08-17T16:52:15-04:00Z}#{09341} - by MON KEY>
+;;; Regexp to snarf Olympic Games :SEE
+;;; (URL `http://www.olympic.org/uk/games/index_uk.asp')
+;;; (progn (save-excursion
+;;; (while (search-forward-regexp  
+;;;         (concat
+;;;          "^\\("                                      ;      ;=> grp 1
+;;;          "\\(?2:[A-z[:punct:][:space:]]+\\)"         ; City ;=>grp 2
+;;;          "\\(?3: - \\)"                              ; First seperator ;=>grp 3
+;;;          "\\(?4:[0-9]\\{4,4\\}\\)"                   ; Year ;=>grp 4
+;;;          "\\(?5: - \\)"                              ; Second seperator  ;=>grp 5
+;;;          ;; Summer Games w/ inner roman numeral ;=>grp 6 ;=>grp 7
+;;;          ;; "\\(?6:Games of the \\(?7:.*\\) Olympiad\\)"
+;;;          ;; Winter Games with leading roman number ;=>grp 6 ;=>grp 7
+;;;          "\\(?6:\\(?7:.* Olympic Winter Games\\)\\)"
+;;;          "\\)" ) nil t)
+;;;   ;;Replacements for Summer Games
+;;;   ;;  (replace-match "\\2\\3\\4\\5\\7 Olympiad") 
+;;;   ;;Replacements for Winter Games
+;;;       (replace-match "\\2\\3\\4\\5\\7")  
+;;;   (beginning-of-line) 
+;;;   (search-forward-regexp  
+;;;    (concat
+;;;     "\\("
+;;;     "\\(?2: - \\)"                                   ; Third seperatro ;=>grp 8
+;;;     "\\(?3:[0-9]\\{2,2\\}\\)"                        ; Frm Day ;=>grp 9
+;;;     "\\(?4: [A-z]+ \\)"                              ; From Month ;=>grp 10
+;;;     "\\(?5:[0-9]\\{4,4\\}\\)"                        ; From Year ;=>grp 11
+;;;     "\\(?6: - \\)"                                   ; Fourth seperator ;=>grp  12
+;;;     "\\(?7:[0-9]\\{2,2\\}\\)"                        ; To Day ;=>grp 13
+;;;     "\\(?8: [A-z]+ \\)"                              ; To Month ;=>grp 14
+;;;     "\\(?9:[0-9]\\{4,4\\}\\)"                        ; To Year ;=>grp 15
+;;;     "\\)$"))                                         ; EOL
+;;;   (replace-match "\\2FROM:\\4\\3, \\5 TO:\\8\\7, \\9"))))
+;;; ==============================
+
 ;;; ==============================
 (provide 'mon-regexp-symbols)
 ;;; ==============================
+
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
 
 ;;; ================================================================
 ;;; mon-regexp-symbols.el ends here

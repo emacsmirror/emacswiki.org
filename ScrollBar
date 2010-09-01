@@ -36,10 +36,21 @@ and for [[XEmacs]]:
     (set-specifier scrollbar-on-top-p nil) ; replace nil with t to place it on top
 
 ----
-To use a colored scroll bar (good to have good constrast) you need to ./configure gnu emacs with "--with-x-toolkit=motif"  See `system-configuration-options' variable to see how is your running emacs configured.
+To use a colored scroll bar (good to have good constrast) you can ./configure gnu emacs with "--with-x-toolkit=motif"  See `system-configuration-options' variable to see how is your running emacs configured.
 
 Apparently with only that toolkit you can 
 (set-face-background'scroll-bar "red")
+
+Alternatively, users of the GTK toolkit can style scrollbars by putting something like this in ~/.gtkrc-2.0:
+
+    style "contrast"
+    {
+            GtkScrollbar::has_forward_stepper  = 0
+            GtkScrollbar::has_backward_stepper = 0
+            bg[NORMAL]   = "red"
+            bg[PRELIGHT] = "dark red"
+    }
+    class "GtkScrollbar" style "contrast"
 
 ----
 

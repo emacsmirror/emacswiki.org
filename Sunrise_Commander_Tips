@@ -186,6 +186,24 @@ for DiredPlus to add it. See the Emacs manual,  node  Drag  and  Drop
 (/Thanks Drew/).
 
 ----
+[:ReplaceDiredWithSunrise]
+==How to use Sunrise where Emacs uses Dired by default?==
+
+If you provide find-file (C-x C-f) with the name of a directory, or when you use
+ffap (find file at point) to visit a directory, Emacs will use standard Dired to
+display its contents. If you want to start Sunrise instead, do the following:
+
+# Upgrade your copy of SC to version 4R315 or newer.
+# Press M-S-: (//or Alt-Shift-: if you prefer//;-)) and type this:
+(setq find-directory-functions (cons 'sr-dired find-directory-functions)) [RET]
+# Do M-x customize-variable [RET] find-directory-functions [RET]
+# Press the "Save for future sessions" button in the customization GUI.
+
+notice that the ' in point 1 is a regular apostrophe (not a backtick), it's just
+that I couldn't find a way to make this wiki format correctly the inline code in
+the numbered list.
+
+----
 [:HighlightingPermissions]
 ==Highlighting files with inappropriate permissions.==
 

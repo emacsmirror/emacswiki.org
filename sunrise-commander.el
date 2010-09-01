@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 315 $  
+;; RCS Version: $Rev: 316 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -67,9 +67,10 @@
 
 ;; * Press C-c C-s to change the layout of the panes (horizontal/vertical/top)
 
-;; *  Press C-c / to interactively refine the contents of the current pane using
+;; * Press C-c / to interactively refine  the contents of the current pane using
 ;; fuzzy matching, then press Return/C-g to accept the current narrowed state or
-;; Backspace/Delete to return to any of the previous ones.
+;; Backspace/Delete  to return  to any  of the  previous ones.   To restore  the
+;; original contents of a pane narrowed this way just press g (revert-buffer).
 
 ;; *  Press  C-x C-q   to put the current pane in Editable Dired mode (allows to
 ;; edit the pane as if it were a regular file -- press C-c C-c  to  commit  your
@@ -146,7 +147,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 315 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 316 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -569,6 +570,11 @@ sunrise-mc-keys function) you'll get the following ones:
         F7 ............ create new directory
         F8 ............ delete marked (or current) files and directories
         F10 ........... quit Sunrise Commander
+        C-F3 .......... sort contents of current pane by name
+        C-F4 .......... sort contents of current pane by extension
+        C-F5 .......... sort contents of current pane by time
+        C-F6 .......... sort contents of current pane by size
+        S-F7 .......... soft-link selected file/directory to passive pane
         Insert ........ mark file
         C-PgUp ........ go to parent directory
 
@@ -945,7 +951,12 @@ automatically:
   (define-key sr-mode-map [(f7)]            'dired-create-directory)
   (define-key sr-mode-map [(f8)]            'sr-do-delete)
   (define-key sr-mode-map [(f10)]           'keyboard-escape-quit)
-  (define-key sr-mode-map [(insert)]        'dired-mark)
+  (define-key sr-mode-map [(control f3)]    'sr-sort-by-name)
+  (define-key sr-mode-map [(control f4)]    'sr-sort-by-extension)
+  (define-key sr-mode-map [(control f5)]    'sr-sort-by-time)
+  (define-key sr-mode-map [(control f6)]    'sr-sort-by-size)
+  (define-key sr-mode-map [(shift f7)]      'sr-do-symlink)
+  (define-key sr-mode-map [(insert)]        'sr-mark-toggle)
   (define-key sr-mode-map [(control prior)] 'sr-dired-prev-subdir))
 
 ;;; ============================================================================
@@ -1422,10 +1433,9 @@ automatically:
   (condition-case description
       (progn
         (sr-save-panes-width)
-        (find-file filename wildcards)
-        (delete-other-windows)
-        (setq sr-prior-window-configuration (current-window-configuration))
-        (sr-quit))
+        (sr-quit)
+        (set-window-configuration sr-prior-window-configuration)
+        (find-file filename wildcards))
     (error (message "%s" (second description)))))
 
 (defun sr-avfs-dir (filename)
@@ -1886,16 +1896,6 @@ automatically:
            (or (and active 3000) 0))
       active))
 
-(defun sr-interactive-sort (order)
-  "Prompts for a new sorting order for the active pane and applies it."
-  (interactive "cSort by (n)ame, (s)ize, (t)ime or e(x)tension? ")
-  (if (>= order 97)
-      (setq order (- order 32)))
-  (cond ((eq order ?T) (sr-sort-order "TIME"      "t"))
-        ((eq order ?S) (sr-sort-order "SIZE"      "S"))
-        ((eq order ?X) (sr-sort-order "EXTENSION" "X"))
-        (t             (sr-sort-order "NAME"      "" ))))
-
 (defun sr-sort-order (label option)
   "Changes the sorting order of the active pane by appending additional options
    to dired-listing-switches and reverting the buffer."
@@ -1909,6 +1909,27 @@ automatically:
         (dired-sort-other (concat dired-listing-switches option) t))
       (revert-buffer)))
   (message "Sunrise: sorting entries by %s" label))
+
+(defmacro sr-defun-sort-by (postfix options)
+  "Help macro for defining sr-sort-by-xxx functions."
+  `(defun ,(intern (format "sr-sort-by-%s" postfix)) ()
+     ,(format "Sorts the contents of the current Sunrise pane by %s." postfix)
+     (interactive)
+     (sr-sort-order ,(upcase postfix) ,options)))
+(sr-defun-sort-by "name" "")
+(sr-defun-sort-by "extension" "X")
+(sr-defun-sort-by "time" "t")
+(sr-defun-sort-by "size" "S")
+
+(defun sr-interactive-sort (order)
+  "Prompts for a new sorting order for the active pane and applies it."
+  (interactive "cSort by (n)ame, (s)ize, (t)ime or e(x)tension? ")
+  (if (>= order 97)
+      (setq order (- order 32)))
+  (cond ((eq order ?T) (sr-sort-by-time))
+        ((eq order ?S) (sr-sort-by-size))
+        ((eq order ?X) (sr-sort-by-extension))
+        (t             (sr-sort-by-name))))
 
 (defun sr-sort-virtual (option)
   "Manages  sorting of buffers in Sunrise VIRTUAL mode. Since we cannot rely any
@@ -2695,9 +2716,10 @@ or (c)ontents? ")
   (sr-backup-buffer))
 
 (defun sr-fuzzy-narrow ()
-  "Interactively  narrows the contents of the current pane using fuzzy matching:
+  "Interactively narrows the contents of  the current pane using fuzzy matching:
   press Delete or Backspace to revert buffer to its previous state and Return or
-  C-g to exit and accept the current narrowed state."
+  C-g to  exit and accept  the current narrowed  state. To restore  the original
+  contents of a narrowed pane press g (revert-buffer)."
   (interactive)
   (when sr-running
     (sr-beginning-of-buffer)
@@ -3277,6 +3299,14 @@ or (c)ontents? ")
       (select-window other-win)
       (goto-char point)
       (select-window this-win))))
+
+(defun sr-mark-toggle ()
+  "Toggles the mark on the current file or directory."
+  (interactive)
+  (when (dired-get-filename t t)
+    (if (eq ?  (char-after (line-beginning-position)))
+        (dired-mark 1)
+      (dired-unmark 1))))
 
 (defun sr-assoc-key (name alist test)
   "Returns the key in ALIST matched by NAME according to TEST."

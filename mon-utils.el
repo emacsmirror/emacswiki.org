@@ -111,6 +111,8 @@
 ;; `mon-list-nshuffle' `mon-list-nshuffle-TEST', `mon-looking-back-p',
 ;; `mon-delq-dups', `mon-make-random-state', `mon-next-almost-prime',
 ;; `mon-list-shuffle-safe', `mon-bool-vector-pp', `mon-get-bit-table',
+;; `mon-abort-autosave-when-fucked', `mon-get-buffer-hidden',
+;; `mon-map-windows->plist',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -159,9 +161,13 @@
 ;; `next-almost-prime'               -> `mon-next-almost-prime'
 ;; `nshuffle-vector'                 -> `mon-nshuffle-vector'
 ;; `delq-dups'                       -> `mon-delq-dups' 
+;; `mon-get-hidden-buffers'          -> `mon-get-buffer-hidden'
 ;; `mon-byte-table-bits'             -> `mon-get-bit-table'
+;; `mon-bit-table-bits'              -> `mon-get-bit-table'
 ;; `mon-bool-vector-to-list'         -> `mon-bool-vector-pp'
 ;; `buffer-exists-p'                 -> `mon-buffer-exists-p'
+;; `debug-on-error-toggle'           -> `toggle-debug-on-error'
+;; `mon-get-window-plist'            -> `mon-map-windows->plist'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
@@ -247,6 +253,14 @@
 ;;; ===================================
 
 ;;; CODE:
+
+
+;;; ==============================
+;;; :CHANGESET 2088
+;;; :CREATED <Timestamp: #{2010-08-25T18:54:20-04:00Z}#{10343} - by MON KEY>
+(unless (and (intern-soft "debug-on-error-toggle")
+             (fboundp 'debug-on-error-toggle))
+  (defalias 'debug-on-error-toggle 'toggle-debug-on-error))
 
 ;;; ==============================
 (eval-when-compile (require 'cl)) ;; `mon-word-iterate-over', `mon-loop'
@@ -1372,7 +1386,8 @@ Default is \"processing .... \"
                    \(symbol-value *mon-ascii-cursor-state*\)\)\)\)\n
 :SEE-ALSO `dotimes-with-progress-reporter', `progress-reporter-done',
 `progress-reporter-update', `make-progress-reporter',
-`progress-reporter-force-update', `progress-reporter-do-update'.\n►►►"
+`progress-reporter-force-update', `progress-reporter-do-update'
+`url-display-percentage', `url-show-status'.\n►►►"
   (when (null *mon-ascii-cursor-state*)
     (error (concat ":FUNCTION `mon-rotate-ascii-cursor' "
                    "-- global variabe `*mon-ascii-cursor-state*' null")))
@@ -1406,19 +1421,22 @@ Default is \"processing .... \"
   "Return a sorted du \(big->small\)for DIR in buffer `*DU-<DIR>'.\n
 Invoke du as an asynchronous shell command.\n
 :EXAMPLE\n\n\(mon-async-du-dir data-directory)\n
-:SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*'.\n►►►"
-  (interactive "DDirectory to du :");(read-directory-name "Directory to du :" nil nil t)))
+:SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*',
+`get-free-disk-space', `directory-free-space-program',
+`directory-free-space-args'.\n►►►"
+  (interactive "DDirectory to du: ") ;(read-directory-name "Directory to du :" nil nil t)))
   (if (fboundp 'async-shell-command)      
       (let ((dir-du
              (file-name-as-directory
               (file-truename
                (if (file-name-absolute-p the-dir)
                    the-dir
-                   (expand-file-name the-dir))))))
+                 (expand-file-name the-dir))))))
         (async-shell-command 
          (format "du %s | sort -nr" dir-du)
          (get-buffer-create (format "*DU-%s" dir-du))))
-      (message "The du command is not available on w32")))
+    (message (concat ":FUNCTION `mon-async-du-dir' "
+                      "-- the du command is not available on w32"))))
 ;;
 ;;; :TEST-ME (mon-async-du-dir data-directory)
 
@@ -1434,7 +1452,7 @@ This function will be :DEPRECATED once EMACS <-> CEDET merge is complete.\n►�
       (if (and IS-MON-P (not (featurep 'cedet)))
           (load-file  (concat *mon-site-lisp-root* "/cedet-cvs/common/cedet.el")))
       (message (concat ":FUNCTION `mon-load-cedet' "
-                       "CEDET already loaded or your of a MONish way"))
+                       "-- CEDET already loaded or your of a MONish way"))
       ;;
       ;; :REMOVE-ME once slot-makeunbound is removed/renamed/aliased in cedet/eieio.el
       (unless (fboundp 'slot-makunbound)
@@ -1622,9 +1640,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
   "Return the font-lock face information at FACE-PSN or point.\n
 When optional arg DESCRIBE-IT is non-nil or called-interactively with prefix-arg
 describe face.\n
-:NOTE When more than one face is present at point return a
-list, e.g. situtations where return value is:
-\(font-lock-constant-face font-lock-doc-face\)\n
+:NOTE When more than one face is present at point return a list,
+e.g. situtations where return value is:\n
+ \(font-lock-constant-face font-lock-doc-face\)\n
 and DESCRIBE-IT is non-nil describe the face at car of list.\n
 :SEE-ALSO `mon-get-face-at-posn', `mon-help-faces', `mon-help-faces-basic',
 `mon-help-faces-themes'.\n►►►"
@@ -1636,8 +1654,14 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
         (if describe-it
             (describe-face 
              (if (consp mgfap-face) (car mgfap-face) mgfap-face))
-          (message "Face: %s" mgfap-face))
-      (message "No face at %d" (or face-psn (point))))))
+          ;;(message "Face: %s" mgfap-face))
+          (message (concat ":FUNCTION `mon-get-face-at-point' " 
+                           "-- Face: %s") mgfap-face)
+          ;;(message "No face at %d" (or face-psn (point)))
+          (message (concat ":FUNCTION `mon-get-face-at-point' " 
+                           "-- no face at buffer position: %d") 
+                   (or face-psn (point)))))))
+      
 
 ;;; ==============================
 ;;; :COURTESY :FILE gnus-util.el :WAS `gnus-faces-at'
@@ -1736,7 +1760,9 @@ Default is to goto-char `point-min'.\n
 A stupid and mostly useless function.\n
 :SEE-ALSO `mon-region-unfill',`mon-region-capitalize',`mon-region-reverse'.\n►►►"
   (interactive)
-  (message "current reg-beg is: %s reg-end is: %s"
+  ;; (message "current reg-beg is: %s reg-end is: %s" (region-beginning) (region-end))
+  (message (concat ":FUNCTION `mon-region-position' "
+                   "-- current reg-beg is: %s reg-end is: %s")
            (region-beginning) (region-end)))
 
 ;;; ==============================
@@ -1755,7 +1781,9 @@ When called-interactively and INSRTP is ommitted message the region length.\n
   (unless (region-active-p)
     (error ":FUNCTION `mon-region-length' -- there is no active region"))
   (let* ((rerb (- (region-end) (region-beginning)))
-         (rerb-frmt (format ":REGION-LENGTH %d" rerb)))
+         ;;(rerb-frmt  (format ":REGION-LENGTH %d" rerb)))
+         (rerb-frmt (format (concat ":FUNCTION `mon-region-length' " 
+                                    "-- :REGION-LENGTH %d") rerb)))
     (cond ((and intrp (not insrtp)) (message rerb-frmt))
            (insrtp (unless (eq (point) (region-end))
                      (goto-char (region-end)))
@@ -1840,13 +1868,60 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
 ;;; :CHANGESET 1898
 ;;; :CREATED <Timestamp: #{2010-06-18T15:18:46-04:00Z}#{10245} - by MON KEY>
 (defun mon-abort-recursive-edit ()
-  "Try to exit gracefully from hung/corrupted recursive mini-buffer.\n
-:SEE-ALSO `exit-recursive-edit', `abort-recursive-edit',
-`command-error-function', `throw-on-input', `mon-help-key-functions'.\n►►►"
+  "Try to exit gracefully from hung/corrupted `recursive-edit' mini-buffer.\n
+Repeatedly invoke `exit-recursive-edit' and `abort-recursive-edit' when
+`recursion-depth' is greater than 0.\n
+:SEE-ALSO `mon-abort-autosave-when-fucked', `exit-recursive-edit',
+`abort-recursive-edit', `command-error-function', `throw-on-input',
+`mon-help-key-functions'.\n►►►"
   (interactive)
-  (while (exit-recursive-edit)
+  (while (> (recursion-depth) 0)
     (progn (abort-recursive-edit)
            (exit-recursive-edit))))
+
+;;; ==============================
+;;; :CHANGESET 2087
+;;; :CREATED <Timestamp: #{2010-08-25T18:12:21-04:00Z}#{10343} - by MON KEY>
+(defun mon-abort-autosave-when-fucked (&optional fucked-minibuffer-count)
+  "HELP! Getme the fuck out of autosave hell.\n
+Optional arg FUCKED-MINIBUFFER-COUNT is a positive integer specifying the
+maximum number of screwed up minibuffers e.g. those named \" *Minibuf-<N>*\"
+which need to be destroyed indiscriminately. Default is 300.\n
+This happens when visiting a file encoded with raw-bytes and `auto-save-default'
+is non-nil; sometimes when we accidently C-g to escape the autosave prompt: the
+entire window/buffer/minibuffer stack gets corrupted such that every subsequent
+C-g generates a new minibuffer which prompts: 
+ \"Select coding system (default raw-text):\"
+and with each one looking for some non-existent temporary buffer to do their
+work in, e.g. the \" *Format Temp %<N>*\" buffer created by
+`format-annotate-function' which can sometimes cause something else to trigger a
+message about a missing \"*Warnings*\" buffer most likely as per the internal
+function `coding-system-require-warning' and her compatriots
+`select-safe-coding-system-function', `select-safe-coding-system',
+`coding-system-for-write', and `universal-coding-system-argument'.\n
+Let binds the following auto-save-* variables to their non-middling states:\n
+ `auto-save-interval' 0
+ `auto-save-timeout'  0 
+ `auto-save-default' nil\n
+Return value is a `yes-or-no-p' prompt which reinstates a clean minibuffer.\n
+:NOTE Emcas-devels when you allow creation of non completion accessible
+whitespace prefixed mini-buffers you should make _DAMN_ sure that calling
+functions don't implode! I loathe this practice of hiding buffers from the user.
+My Emacs, my buffers!
+:SEE-ALSO `mon-abort-recursive-edit', `exit-recursive-edit',
+`abort-recursive-edit', `command-error-function', `throw-on-input'.\n►►►"
+  (interactive)
+  (let ((auto-save-interval 0)
+        (auto-save-timeout  0)
+        (auto-save-default nil))
+    (dolist (i (number-sequence 0 (or fucked-minibuffer-count 300)))
+      (let ((kill-MB (get-buffer (format " *Minibuf-%d*" i))))
+        (when kill-MB
+          (with-current-buffer kill-MB
+            (kill-this-buffer)))))
+    (yes-or-no-p 
+     (concat ":FUNCTION `mon-abort-autosave-when-fucked' "
+             "-- my work is done here, are you glad to have your minibuffer back: "))))
 
 ;;; ==============================
 (defun mon-inhibit-read-only (func-arg)
@@ -1875,6 +1950,50 @@ the tedium of building the entire scaffolding.\n
 ;;;               (line-move -5) 
 ;;;               (insert tt)(sit-for 2)(beginning-of-line)
 ;;;               (mon-inhibit-read-only 'kill-line))
+
+
+;;; ==============================
+;;; :CHANGESET 2088
+;;; :CREATED <Timestamp: #{2010-08-27T20:26:53-04:00Z}#{10345} - by MON KEY>
+(defun mon-get-buffer-hidden (&optional intrp)
+  "Return a list conses of the currently hidden buffers.\n
+Elements of list have the form:\n
+ (<BUFFER-NAME> . <BUFFER>)\n
+Hidden buffers are those that completion can't find because the buffers name
+begins with withespace. Generally these are considered \"internal\" buffers that
+the user doesn't need to see and therefor not useful for completion. However, on
+occasion it can be useful to know what you don't know. Some commonly hidden
+buffers include:
+ \" *autoload*\" \" *autoload-file*\" \" apropos-temp\" \" *Bookmarks*\"
+ \" *completion-save-buffer*\" \" *code-conversion-work*\" \" *code-converting-work*\"
+ \" *Custom-Work*\"  \" *DOC*\" \" *Echo Area <N>*\" \" *Format Temp <N>*\"
+ \" *info tag table*\" \" *IDO Trace*\" 
+ \" *dired-check-process output*\" \" *dot-dired*\" \" *ido session*\"
+ \" *info-browse-tmp*\" \" *jka-compr-error*\" \" *jka-compr-error*\"
+ \" *jka-compr-flc-temp*\" \" *jka-compr-wr-temp*\"
+ \" *Marked Files*\"  \" *Minibuf-<N>*\"
+ \" *recover*\" \" *spool temp*\" \" *string-output*\" \" *temp*\" 
+ \" temp-info-look\" \" *Temp Input History*\" \" widget-choose\"
+ \" *Unicode Data*\" \" *url-work\"
+:EXAMPLE\n\n\(mon-get-buffer-hidden\)\n
+\(mon-get-buffer-hidden\)\n
+:ALIASED-BY `mon-get-hidden-buffers'\n
+:SEE-ALSO `mon-help-buffer-spc-*DOC*', `mon-abort-autosave-when-fucked',
+`mon-abort-recursive-edit'.\n►►►"
+  (interactive "P")
+  (let ((bl (buffer-list))
+        rslt)
+    (dolist (dobl bl (unless (null rslt)
+                       (setq rslt (nreverse rslt))))
+      (when (eq ?\s (aref (buffer-name dobl) 0))
+        (push `(,(buffer-name dobl) . ,dobl) rslt)
+        rslt))))
+;;
+(defalias 'mon-get-hidden-buffers 'mon-get-buffer-hidden) 
+;;
+;;; :TEST-ME (mon-get-buffer-hidden)
+;;; :TEST-ME (mon-get-buffer-hidden t)
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-26T14:56:18-04:00Z}#{10125} - by MON KEY>
@@ -2032,12 +2151,13 @@ the tedium of building the entire scaffolding.\n
 `mon-inhibit-point-motion-hooks', `mon-inhibit-read-only'.\n►►►"
   (interactive "p")
   (toggle-truncate-lines nil)
-  (if intrp
-      (message
-       (if truncate-lines
-           "truncating lines (... $)"
-           "wrapping lines (...\\)")))
+  (if intrp (message
+             (concat ":FUNCTION `mon-toggle-truncate-line' " 
+                     (if truncate-lines
+                         "-- truncating lines (... $)"
+                       "-- wrapping lines (...\\)"))))
   (redraw-display))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-17T20:25:27-05:00Z}#{09515} - by MON KEY>
@@ -2087,7 +2207,7 @@ When `eval-expression-print-length' and NEW-DEPTH are non-nil set length.\n
 When optional arg INSRTP is non-nil or called-interactively insert wrapped word
 at point. Does not move point.\n
 :EXAMPLE\n\n\(mon-wrap-text \"\\\\@:artist[\" \"]\"\)Some-Name\n
-:SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span' 
+:SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span',
 `mon-wrap-with'.\n►►►"
   (interactive "i\np")
   (save-excursion
@@ -2114,17 +2234,15 @@ at point. Does not move point.\n
   "Wrap the current word or region with FRONT-WRAP and BACK-WRAP.\n
 :SEE-ALSO `mon-wrap-selection', `mon-wrap-url', `mon-wrap-span',
 `mon-wrap-text', `mon-wrap-with'.\n►►►"
-  (interactive "sEnter String for front-wrap:\nsEnter String for back-wrap:")
+  (interactive "sEnter string for front-wrap:\nsEnter String for back-wrap: ")
   (mon-wrap-text front-wrap back-wrap))
 
 ;;; ==============================
 ;;; :COURTESY Sandip Chitale <sandipchitale@attbi.com>
 (defun mon-choose-from-menu (menu-title menu-items)
   "Choose from a list of choices from a popup menu.\
-:EXAMPLE\n
-\(mon-choose-from-menu 
- \"Bubbas-Choice\" 
- '\(\"one-bubba\" \"two-bubba\" \"three-bubba\"\)\)\n
+:EXAMPLE\n\(mon-choose-from-menu 
+ \"Bubbas-Choice\" '\(\"one-bubba\" \"two-bubba\" \"three-bubba\"\)\)\n
 :SEE-ALSO `choose-completion', `x-popup-menu'.\n►►►"
   (let (mcfm-item mcfm-item-list)
     (while menu-items
@@ -2145,12 +2263,13 @@ at point. Does not move point.\n
 ;;; :CHANGESET 1768 <Timestamp: #{2010-05-25T19:21:55-04:00Z}#{10212} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 06:18.14 PM - by MON KEY>
 (defun mon-match-at-point (match-regexp)
-  "Return the buffer substring around point matching MATCH-REGEXP.\N
-Look for a match starting at or before point.  Move back a character
-at a time while still looking at a match ending at the same point.  If
-no match is found at or before point, return the first match after
-point, or nil if there is no match in the buffer.\n
-:SEE-ALSO `looking-at'.\n►►►"
+  "Return the buffer substring around point matching MATCH-REGEXP.\n
+Look for a match starting at or before point.\n
+Move back a character at a time while still looking at a match ending at the
+same point.\n
+If no match is found at or before point, return the first match after point, or
+nil if there is no match in the buffer.\n
+:SEE-ALSO `looking-at', `looking-at-p'.\n►►►"
   (let (backup pamm-start pamm-end)
     (save-excursion
       (setq backup
@@ -2186,8 +2305,8 @@ point, or nil if there is no match in the buffer.\n
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `space-p'
 ;;; :MODIFICATIONS <Timestamp: Tuesday February 10, 2009 @ 04:11.49 PM - by MON KEY>
 (defun mon-spacep (&optional pt after)
-  "Return t when char before point is a 'space' character.\n
-If non-nil, PT (a char position) returns t for a'space' before/after PT.
+  "Return non-nil when char before point is a 'space' character.\n
+If non-nil, PT (a char position) returns t for a'space' before/after PT.\n
 If AFTER is non-nil return t when char after point is a 'space'.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
@@ -2210,65 +2329,67 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:11.19 PM - by MON KEY>
 (defun mon-spacep-not-bol (&optional intrp)
-  "Return t if character after point at BOL is not a space.\n
+  "Return non-nil if character after point at BOL is not a space.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep', `mon-line-bol-is-eol',
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
 `mon-spacep-at-eol', `mon-cln-spc-tab-eol'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let* ((char-bol (char-after (point-at-bol)))
 	 (space-char '(9 10 11 12 13 32))
 	 (not-space (not (member char-bol space-char))))
-    (cond (intrp
-	 (if not-space
-	     (message "Char after point at Beginning of Line _NOT_ whitespace.")
-	   (message "Char after point at Beginning of Line IS whitespace."))))
-    not-space))
+    (cond (intrp (message (concat ":FUNCTION `mon-spacep-not-bol' "
+                                  "-- char after point at BOL"
+                                  (if not-space " _NOT_ " " IS ") "whitespace")))
+          (t not-space))))
 ;; 
-;;; :TEST-ME (format "%s" (not-spacep-bol))
+;;; :TEST-ME (mon-spacep-not-bol)
+;;; :TEST-ME (mon-spacep-not-bol t)
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:11.19 PM - by MON KEY>
 (defun mon-spacep-is-bol (&optional intrp)
-  "Return t if character after point at BOL _is_ a space.\n
+  "Return non-nil if character after point at BOL _is_ a space.\n
 :SEE-ALSO `mon-spacep-not-bol', `mon-spacep', `mon-line-bol-is-eol', 
 `mon-line-next-bol-is-eol', `mon-line-previous-bol-is-eol',
 `mon-spacep-is-after-eol', `mon-spacep-is-after-eol-then-graphic',
 `mon-spacep-at-eol', `mon-cln-spc-tab-eol'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let* ((char-bol (char-after (point-at-bol)))
 	 (space-char '(9 10 11 12 13 32))
 	 (is-space (numberp (car (member char-bol space-char)))))
-      (cond (intrp
-	 (if is-space
-	     (message "Char after point at Beginning of Line IS whitespace.")
-	   (message "Char after point at Beginning of Line _NOT_ whitespace."))))
-    is-space))
+    (cond (intrp (message (concat ":FUNCTION `mon-spacep-is-bol' "
+                                  "-- char after point at BOL"
+                                  (if is-space " IS " " _NOT_ ") "whitespace")))
+          (t is-space))))
 ;; 
-;;; :TEST-ME (format "%s" (mon-spacep-is-bol))
+;;; :TEST-ME (mon-spacep-is-bol)
+;;; :TEST-ME (mon-spacep-is-bol t)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 05:39.17 PM - by MON KEY>
 (defun mon-spacep-is-after-eol (&optional intrp)
-  "Return t if character after eol _is_ a space.\n
+  "Return non-nil if character after eol _is_ a space.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol-then-graphic',
 `mon-spacep-at-eol', `mon-cln-spc-tab-eol'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let* ((after-eol (char-after (1+ (line-end-position))))
 	 (space-char '(9 10 11 12 13 32))
 	 (is-space (numberp (car (member after-eol space-char))))
 	 (rtrn is-space))
-      (cond (intrp
-	 (if rtrn
-	     (message "Whitespace IS after End of Line")
-	   (message "NO Whitespace after End of Line"))))
-       rtrn)) 
+    (cond (intrp (message (concat ":FUNCTION `mon-spacep-is-after-bol' "
+                                  "-- whitespace" (if rtrn  " IS " " _NOT_ ") 
+                                  "after EOL")))
+          (t rtrn))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 05:54.27 PM - by MON KEY>
 (defun mon-spacep-is-after-eol-then-graphic (&optional intrp)
-  "Return t if character after eol _is_ a space and next char is not.\n
+  "Return non-nil if character after eol _is_ a space and next char is not.\n
+:EXAMPLE\n\n(mon-spacep-is-after-eol-then-graphic t\)
+\(mon-spacep-is-after-eol-then-graphic t)\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-spacep-at-eol',`mon-cln-spc-tab-eol'.\n►►►"
@@ -2278,35 +2399,42 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 	 (space-char '(9 10 11 12 13 32))
 	 (is-space (numberp (car (member after-eol space-char))))
 	 (not-space (not (member after-eol-then space-char)))
-	(rtrn (and is-space not-space)))
-      (cond (intrp
-	 (if rtrn
-	     (message "Space or Tab IS after End of Line and Next Line is Graphic")
-	   (message "NO Space or Tab at End of Line or Next Line isn't Graphic"))))
-       rtrn)) 
+         (rtrn (and is-space not-space)))
+    (cond (intrp (message
+                  (concat ":FUNCTION `mon-spacep-is-after-eol-then-graphic' "
+                          "-- space or tab" (if rtrn " IS " " _NOT_")
+                          "at beggining of next line " 
+                          (if rtrn "and next char IS " 
+                            "or next char _NOT_ ") 
+                          "graphic")))
+          (t rtrn))))
+;;
+;;; :TEST-ME (mon-spacep-is-after-eol-then-graphic)
+;;; :TEST-ME (mon-spacep-is-after-eol-then-graphic t)
+;;; :TEST-ME (mon-spacep-is-after-eol-then-graphic t)
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday May 08, 2009 @ 05:58.38 PM - by MON KEY>
 (defun mon-spacep-at-eol (&optional intrp)
-  "Return t if character at eol is either TAB (char 9) or SPC (char 32).\n
+  "Return non-nil if character at eol is either TAB (char 9) or SPC (char 32).\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol',`mon-spacep-at-eol', `mon-spacep-is-after-eol',
 `mon-spacep-is-after-eol-then-graphic'.\n►►►"
   (interactive "p")
-  (let ((rtrn 
-	 (or (= (char-before (point-at-eol)) 9)(= (char-before (point-at-eol)) 32))))
-    (cond (intrp
-	   (if rtrn
-	       (message "Space or Tab IS at End of Line")
-	     (message "NO Space or Tab at End of Line"))))
-    rtrn)) 
+  (let ((rtrn  (or (= (char-before (point-at-eol)) 9)
+                   (= (char-before (point-at-eol)) 32))))
+    (cond (intrp (message (concat ":FUNCTION `mon-spacep-at-eol' "
+                                  "-- space or tab" (if rtrn " _IS_ " " _NOT_ ")
+                                  "at EOL")))
+          (t rtrn))))
 
 ;;; ==============================
 ;;; :COURTESY Andy Stewart <lazycat.manatee@gmail.com> :WAS `colp'
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/lazycat-toolkit.el')
 (defun mon-spacep-first ()
-  "Return t if point is first non-whitespace character of line.\n
+  "Return non-nil if point is first non-whitespace character of line.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol',
@@ -2321,19 +2449,17 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday May 07, 2009 @ 03:17.51 PM - by MON KEY>
 (defun mon-line-bol-is-eol (&optional intrp)
-  "Return t if postion at beginning of line is eq end of line.\n
+  "Return non-nil if postion at beginning of line is eq end of line.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-spacep-is-after-eol',
 `mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
 `mon-cln-spc-tab-eol'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let ((bol-eol(= (line-end-position) (line-beginning-position))))
-     (cond (intrp
-	 (if bol-eol
-	     (message "Beginning of Line _IS_  End of Line")
-	   (message "Beginning of Line _NOT_ End of Line"))))
-    bol-eol))
+    (cond (intrp (concat ":FUNCTION `mon-line-bol-is-eol' "
+                         " -- BOL " (if bol-eol " _IS_ " " _NOT_ ") " EOL"))
+          (t bol-eol))))
 ;;
 ;;; :TEST-ME (save-excursion (previous-line) (beginning-of-line) (mon-line-bol-is-eol))
 
@@ -2354,11 +2480,11 @@ When not called-interactively MOVE-TIMES arg examines Nth previous line.\n
                      (forward-line (if move-times (- move-times) (- 1)))
 		     (beginning-of-line) 
 		     (mon-line-bol-is-eol))))
-      (cond (intrp
-	 (if p-bol-eol
-	     (message "Previous line _IS_ Beginning of Line and End of Line")
-	   (message "Previous line _NOT_ Beginning of Line and End of Line"))))
-    p-bol-eol))
+    (cond (intrp
+           (concat ":FUNCTION `mon-line-previous-bol-is-eol' "
+                   "-- previous line " (if p-bol-eol " _IS_ " " _NOT_ ")
+                   "BOL and"  (if p-bol-eol " _IS_ " " _NOT_ ") "EOL"))
+          (t p-bol-eol))))
 ;;
 ;;; :TEST-ME  (mon-line-previous-bol-is-eol)
 ;;; :TEST-ME  (mon-line-previous-bol-is-eol 4)
@@ -2380,11 +2506,11 @@ When not called-interactively MOVE-TIMES arg examines Nth previos line.\n
                      ;; (next-line move-times) 
 		     (beginning-of-line) 
 		     (mon-line-bol-is-eol))))
-      (cond (intrp
-	 (if n-bol-eol
-	     (message "Next line's Beginning of Line _IS_ End of Line")
-	   (message "Next line's Beginning of Line _NOT_ End of Line"))))
-    n-bol-eol))
+    (cond (intrp
+           (concat ":FUNCTION `mon-line-next-bol-is-eol' "
+                   "-- next line BOL "(if n-bol-eol " _IS_ " " _NOT_ ") "EOL"))
+          (t n-bol-eol))))
+
 ;;
 ;;; :TEST-ME (mon-line-next-bol-is-eol)
 
@@ -2399,12 +2525,15 @@ When not called-interactively MOVE-TIMES arg examines Nth previos line.\n
 `mon-spacep-at-eol', `mon-spacep-is-after-eol',
 `mon-spacep-is-after-eol-then-graphic'.\n►►►"
   (interactive "p")
-(let ((rtrn (= (point-at-eol) (point-max))))
-   (cond (intrp
-	  (if rtrn
-	      (message "End of Line is End of Buffer.")  ;%S"); rtrn)
-	    (message "End of Line isn't End of Buffer.")))) ;%S); rtrn)
-       rtrn))
+  (let ((rtrn (= (point-at-eol) (buffer-end 1))))
+    (cond (intrp
+           (concat 
+            ":FUCTION `mon-line-eol-is-eob' "
+            "-- EOL" (if rtrn " _IS_ " " _NOT_ ") "EOB"))
+          (t rtrn))))
+;;
+;;; :TEST-ME (mon-line-eol-is-eob t)
+;;; :TEST-ME (with-temp-buffer (mon-line-eol-is-eob t))
 
 ;;; ==============================
 ;;; "To get the same same type of functionality at the end of the line, try this
@@ -2597,12 +2726,13 @@ that buffer. Default is current-buffer.\n
 ;;; ==============================
 ;; :TODO The default value for BOL-CHAR-TEST needs to be refactored/extended.
 ;;; :CREATED <Timestamp: Thursday April 30, 2009 @ 04:42.13 PM - by MON KEY>
-(defun mon-line-count-matchp (test-from line-count &optional bol-char-test)
-  "Return t when number of lines in region is eq LINE-COUNT.\n
+(defun mon-line-count-matchp (test-from line-count &optional bol-char-test intrp)
+  "Return non-nil when number of lines in region is eq LINE-COUNT.\n
 Arg TEST-FROM is a buffer pos to start counting from.\n
 :SEE-ALSO `mon-word-count-chars-region', `mon-word-count-region',
 `mon-line-count-buffer', `mon-word-count-analysis',
 `mon-word-count-occurrences'.\n►►►"
+  ;;(interactive "r")
   (save-excursion
     (let ((rg-start (line-number-at-pos test-from))
 	  ;; Apparently when this was first written I decided that # was a good
@@ -2618,7 +2748,9 @@ Arg TEST-FROM is a buffer pos to start counting from.\n
 	       (move-to-column 7))
 	      ((eolp) (setq rg-end (line-number-at-pos (point))))))
       (setq rg-diff (- rg-end rg-start))
-      (message "line-count %s" rg-diff)
+      (message (concat ":FUNCTION `mon-line-count-matchp' "
+                       "-- line-count: %d matches: %S")
+               rg-diff (eq rg-diff line-count))
       (eq rg-diff line-count))))
 
 ;;; ==============================
@@ -2635,12 +2767,14 @@ When called-interactively return message in mini-buffer:
         (end-of-line)
         (when (> (current-column) max-len)
           (setq max-len (current-column)))))
-    (if intrp  
-        (message "The longest line in buffer `%s' ends at column %d." 
-                 (current-buffer) max-len)
+    (if intrp  (message 
+                (concat ":FUNCTION `mon-line-length-max' " 
+                        "-- buffer: %s longest line ends at column: %d")
+                (buffer-name (current-buffer)) max-len)
       max-len)))
 ;;
 ;;; :TEST-ME (mon-line-length-max)
+;;; :TEST-ME (mon-line-length-max t)
 
 ;;; ==============================
 ;;; Word, Line, String Related utils
@@ -2921,8 +3055,8 @@ Wants char literals.\n
 \(mon-is-alphanum \(char-to-string 88\)\)\n
 :SEE-ALSO `mon-is-digit-simp' `mon-is-letter-simp',
 `mon-string-index', `mon-string-position', `mon-alphabet-as-type'.\n►►►"
-(or (mon-is-letter-simp simp-alph)
-    (mon-is-digit-simp simp-alph)))
+  (or (mon-is-letter-simp simp-alph)
+      (mon-is-digit-simp simp-alph)))
 ;;
 ;;; :TEST-ME (mon-is-alphanum-simp ?8)
 ;;; :TEST-ME (mon-is-alphanum-simp ?A)
@@ -3607,9 +3741,9 @@ Signal and error if either TARGET-STRING or FROM-CHAR evaluate non-nil for
   (if (and (characterp from-char) (stringp target-string))
       (let ((ts (append target-string nil)))
         (setq ts (apply 'string (remq from-char ts))))
-    (error
+    (error 
      (concat ":FUNCTION `mon-string-replace-char' "
-             " arg FROMCHAR not a valid char or TARGET-STRING not a string"))))      
+             "-- arg FROM-CHAR not a valid char or TARGET-STRING not a string"))))
 ;;
 (defalias 'mon-replace-char-in-string 'mon-string-replace-char)
 ;;
@@ -3652,10 +3786,10 @@ When W/SPC is non-nil return string with whitespace interspersed.\n
 `mon-string-replace-char'.\n►►►"
   (interactive 
    (list 
-    (replace-regexp-in-string "[[:space:]]+$" "" (read-string "String to repeat :"))
-    (read-number "Times to repeat :")
+    (replace-regexp-in-string "[[:space:]]+$" "" (read-string "String to repeat: "))
+    (read-number "Times to repeat: ")
     nil
-    (yes-or-no-p "With whitespace")))
+    (yes-or-no-p "With whitespace: ")))
   (let ((retval ""))
     (dotimes (i n)
       (if w/spc 
@@ -3737,7 +3871,9 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n
 	  ((and intrp buffer-read-only)
 	   (progn
 	     (kill-new (format "%S" ss))
-	     (message "Buffer is read only is in kill ring\n %S"  ss)))
+	     (message (concat ":FUNCTION `mon-string-ify-current-line' " 
+                              "-- buffer is read only, line split is on kill ring\n %S")
+                      ss)))
 	  ((and (not intrp) dlm)
 	   (let (ss2)
 	   (setq ss2 nil)
@@ -3879,11 +4015,13 @@ I-am-not-a-string'\n◄\n
             (goto-char (buffer-end 0))
             (while (not (= (line-end-position) (buffer-end 1)))
               (beginning-of-line)            
-              (when (looking-at "^\\([^;`'()\"\\[:blank:]]\\)\\([\\[:graph:]]+[^\"']\\)$")
+              (when ;; use `looking-at-p' here instead?
+                  (looking-at "^\\([^;`'()\"\\[:blank:]]\\)\\([\\[:graph:]]+[^\"']\\)$")
                 (replace-match (concat "\"" (match-string-no-properties 0) "\"")))
               (forward-line 1)
               (when (and (= (line-end-position) (buffer-end 1))
-                         (looking-at "^\\([^;`'()\\[:blank:]]\\)\\([\\[:graph:]]+\\([^\"']\\)\\)$"))
+                         (looking-at ;; use `looking-at-p' here instead?
+                          "^\\([^;`'()\\[:blank:]]\\)\\([\\[:graph:]]+\\([^\"']\\)\\)$"))
                 (replace-match (concat "\"" (match-string-no-properties 0) "\""))))
             (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
     (if (or insrtp intrp)
@@ -4739,7 +4877,8 @@ When called-interactively with prefix-arg prompt for a char to use.\n
                             "-- no line at point: %d") (point))
            (bounds-of-thing-at-point 'line)))
         (with-char (if (and with-char intrp)
-                       (read-char "char to use: ")
+                       (read-char (concat ":FUNCTION `mon-line-string-insert-chars-under'"
+                                "-- char to use: "))
                      with-char)))
     (save-excursion
       (end-of-line)
@@ -5089,10 +5228,10 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
 ;;; ==============================
 
 ;;; ==============================
+;;; :COURTESY :FILE fns.c `next_almost_prime'
 ;;; :CREATED <Timestamp: #{2010-08-05T16:09:48-04:00Z}#{10314} - by MON>
-;; :COURTESY :FILE fns.c `next_almost_prime'
 (defun mon-next-almost-prime (w-integer)
-  "From W-INTEGER return either a prime or a number nearer the next prime number.
+  "From W-INTEGER return either a prime or a number nearer the next prime.\n
 Return a value I where (>= I w-integer) and (>= W-INTEGER 0).\n
 Useful for generating a reasonable arg for `make-hash-table's :size keyword.\n
 :EXAMPLE\n\n\(let* \(\(prms-lt-100 '\(2 3 5 7 11 13 17 19 23 29 31 37 41 
@@ -5185,7 +5324,7 @@ This means:\n
  b) where UID assignment occurs in parallel with time-stamping we can infer
     when the UID was generated relative the index of previous/subsequent elts.
     This is a Featured-Bug®.\n
-:SEE-ALSO `mon-string-to-hex-string', `mon-generate-WPA-key', `mon-string-wonkify'
+:SEE-ALSO `mon-string-to-hex-string', `mon-generate-WPA-key', `mon-string-wonkify',
 `url-hexify-string', `url-unhex-string', `url-unhex'.\n►►►"
   (eval-when-compile (require 'sha1))
   (let ((gthr)
@@ -5217,8 +5356,8 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
     \(setq k \(cons `\(,\(mon-generate-prand-id\)\) k\)\)
     \(setq i \(1- i\)\)\)
 \(prin1 k\)\)\n
-:SEE-ALSO `mon-generate-WPA-key', `mon-string-wonkify', `mon-list-nshuffle'
-`mon-nshuffle-vector', `url-cache-create-filename-using-md5', .\n►►►"
+:SEE-ALSO `mon-generate-WPA-key', `mon-string-wonkify', `mon-list-nshuffle',
+`mon-nshuffle-vector', `url-cache-create-filename-using-md5'.\n►►►"
   ;(eval-when-compile (require 'cookie1))
   (let* ((pseudo-r #'(lambda () 
                        (mon-string-to-sequence 
@@ -5515,45 +5654,45 @@ value contains the following key value pairs:\n
 :NOTE Assumes return value of `byteorder' is 108 \(big end first\).\n
 :SEE-ALSO `mon-get-bit-table', `*mon-bit-table*', `mon-help-char-raw-bytes',
 `mon-help-binary-representation'.\n►►►"
-  (if (= (length bool-vec) 0)
-      (error (concat 
-              ":FUNCTION `mon-bool-vector-pp' "
-              "-- arg BOOL-VEC has length 0 Emacs won't fetch that index, IHMO an Emacs bug"))
-    (let* ((bv-len (length bool-vec))
-           (w-props (<= bv-len 29))
-           ;; vector of numberic 0's
-           (to-bin (make-vector bv-len 0))
-           ;; Make a string array of Os (char 48) -> "000 {...} 000"                 
-           (to-bin-str (when w-props (make-string bv-len 48))))
-      (dotimes (blv bv-len)
-        ;; If current element bool-vector is `t'
-        (when (aref bool-vec blv)
-          ;; Set string char "0" at idx to "1"
-          (when w-props (aset to-bin-str blv 49))
-          ;; Set numeric 0 at vector idx to numeric 1
-          (aset to-bin blv 1)))
-      (if w-props
-          (let ( ;; read the decimal numeric value of var to-bin-str "#b10{...}01"
-                ;; (string-to-number "11111111111111111111111111111" 2)
-                ;; :WAS (bin-str-dec (read to-bin-str)))
-                (bin-str-dec (string-to-number to-bin-str 2)))
-            ;; Make a binary number string "#b10{...}01" for `read'
-            ;; pad it out to the MSB (bit 29) w/ "0"s
-            (when w-props 
-              (setq to-bin-str 
-                    (concat "#b" (make-string (- 29 bv-len) 48) to-bin-str)))
+ (if (= (length bool-vec) 0)
+     (error (concat 
+             ":FUNCTION `mon-bool-vector-pp' "
+             "-- arg BOOL-VEC has length 0 Emacs won't fetch that index, IHMO an Emacs bug"))
+   (let* ((bv-len (length bool-vec))
+          (w-props (<= bv-len 29))
+          ;; vector of numberic 0's
+          (to-bin (make-vector bv-len 0))
+          ;; Make a string array of Os (char 48) -> "000 {...} 000"                 
+          (to-bin-str (when w-props (make-string bv-len 48))))
+     (dotimes (blv bv-len)
+       ;; If current element bool-vector is `t'
+       (when (aref bool-vec blv)
+         ;; Set string char "0" at idx to "1"
+         (when w-props (aset to-bin-str blv 49))
+         ;; Set numeric 0 at vector idx to numeric 1
+         (aset to-bin blv 1)))
+     (if w-props
+         (let ( ;; read the decimal numeric value of var to-bin-str "#b10{...}01"
+               ;; (string-to-number "11111111111111111111111111111" 2)
+               ;; :WAS (bin-str-dec (read to-bin-str)))
+               (bin-str-dec (string-to-number to-bin-str 2)))
+           ;; Make a binary number string "#b10{...}01" for `read'
+           ;; pad it out to the MSB (bit 29) w/ "0"s
+           (when w-props 
+             (setq to-bin-str 
+                   (concat "#b" (make-string (- 29 bv-len) 48) to-bin-str)))
             
-            `(:binary      ,to-bin-str
-              :decimal     ,bin-str-dec
-              :octal       ,(format "#o%o" bin-str-dec)
-              :hex         ,(format "#x%x" bin-str-dec)
-              :bin-table  ,to-bin
-              :true-table  ,(vconcat bool-vec)
-              :bool-vector ,bool-vec))
+           `(:binary      ,to-bin-str
+             :decimal     ,bin-str-dec
+             :octal       ,(format "#o%o" bin-str-dec)
+             :hex         ,(format "#x%x" bin-str-dec)
+             :bin-table   ,to-bin
+             :true-table  ,(vconcat bool-vec)
+             :bool-vector ,bool-vec))
 
-        `(:bin-table  ,to-bin 
-          :true-table  ,(vconcat bool-vec)
-          :bool-vector ,bool-vec)))))
+       `(:bin-table  ,to-bin 
+         :true-table  ,(vconcat bool-vec)
+         :bool-vector ,bool-vec)))))
 ;;
 (defalias 'mon-bool-vector-to-list   'mon-bool-vector-pp)
 ;;
@@ -5591,11 +5730,12 @@ The values of these keys map as follows:\n
 :max-int       The maximimun signed number representable by bit.
 :max-uint      A cons bounding the maximum unsigned range representable by bit.\n
 :EXAMPLE\n\n\(assq :bit-28 \(mon-get-bit-table\)\)\n
-\(memq :max-unsigned \(assq :bit-29 \(mon-get-bit-table\)\)\)\n
+\(memq :max-uint \(assq :bit-29 \(mon-get-bit-table\)\)\)\n
 \(mon-get-bit-table t\)\n
 :NOTE The first time this function is called it caches the results of its
 evaluation to the variable `*mon-bit-table*'.\n
-:ALIASED-BY `mon-byte-table-bits'\n
+:ALIASED-BY `mon-byte-table-bits'
+:ALIASED-BY `mon-bit-table-bits'\n
 :SEE-ALSO `mon-bool-vector-pp' `mon-help-binary-representation', `mon-help-char-raw-bytes'.\n►►►"
   (interactive "i\np")
   (let ((gthr (when (bound-and-true-p *mon-bit-table*)
@@ -5643,6 +5783,7 @@ evaluation to the variable `*mon-bit-table*'.\n
 ;;
 ;; :NOTE This is a bad name but its hard to fit it in with my other mnemonics :(
 (defalias 'mon-byte-table-bits 'mon-get-bit-table)
+(defalias 'mon-bit-table-bits  'mon-get-bit-table)
 ;;
 ;;; :TEST-ME (progn (makunbound '*mon-bit-table*) (mon-get-bit-table t))
 ;;; :TEST-ME (assq :bit-29 (mon-get-bit-table))
@@ -6252,6 +6393,73 @@ When optional arg DISPLAY-IN-BUFFER is non-nil return values to buffer named
 ;;; :TEST-ME (mon-map-obarray-symbol-plist-props 'permanent-local)
 ;;; :TEST-ME (mon-map-obarray-symbol-plist-props 'permanent-local t)
 
+
+;;; ==============================
+;;; :NOTE Fashioned after `with-help-window's `list-of-window-tuples' :FILE help.el
+;;; :CHANGESET 2101
+;;; :CREATED <Timestamp: #{2010-08-31T19:04:24-04:00Z}#{10352} - by MON KEY>
+(defun mon-map-windows->plist ()
+  "Return a list of plist's mapping window properties of windows on all frames.\n
+Does not return for mini-buffers.\n
+plist elements of returned list have the format:
+\(:window <WINDOW>
+ :window-frame <FRAME>
+ :window-buffer <BUFFER>
+ :window-buffer-name <BUFFER-NAME>
+ :window-buffer-visiting <FILE-NAME> 
+ :window-point <INTEGER>
+ :window-start <INTEGER>
+ :window-end <INTEGER>
+ :window-point-col-row \(:posn-col <INTEGER> 
+                        :posn-row <INTEGER>\)
+ :window-edges \(:left <INTEGER> 
+                :top  <INTEGER>
+                :right <INTEGER>
+                :bottom <INTEGER>\)
+ :window-point-char-width-height \(:char-width <INTEGER>
+                                  :char-height <INTEGER>\)\)
+:EXAMPLE\n
+\(mapcar #'\(lambda \(pl\) \(plist-get pl :window-buffer-name\)\) \(mon-map-windows->plist\)\)\n
+ \(mapcar #'\(lambda \(pl\) \(plist-get pl :window\)\) \(mon-map-windows->plist\)\)\n
+ \(mapcar #'\(lambda \(pl\) \(plist-get pl :window-point\)\) \(mon-map-windows->plist\)\)\n
+:ALIASED-BY `mon-get-window-plist'
+:SEE-ALSO `mon-plist-keys', `mon-map-obarray-symbol-plist-props', 
+`mon-list-all-properties-in-buffer', `mon-help-window-functions'.\n►►►"
+  (let (wdo-l)
+    (walk-windows
+     #'(lambda (window)
+         (let* ((wdo         window)
+                (wdo-pnt     (window-point wdo))
+                (wdo-dbind   
+                 (destructuring-bind (dbwdo psn-area psn-area-cns tsmp obj 
+                                            pos pos-col/row img img-x/y w/h)
+                     (posn-at-point wdo-pnt wdo)
+                   (list :window dbwdo
+                         :window-frame (window-frame dbwdo)
+                         :window-buffer (window-buffer dbwdo)
+                         :window-buffer-name (buffer-name (window-buffer dbwdo))
+                         :window-buffer-visiting (buffer-file-name (window-buffer dbwdo))
+                         :window-point pos
+                         :window-start (window-start dbwdo)    
+                         :window-end   (window-end   dbwdo)
+                         :window-point-col-row 
+                         `(:posn-col ,(car pos-col/row) :posn-row ,(cdr pos-col/row))
+                         :window-edges 
+                         (destructuring-bind (lft top rgt btm) (window-edges dbwdo)
+                           (list :left lft :top top :right rgt :bottom btm))
+                         ;; psn-area psn-area-cns ;; tsmp ;; obj ;; img img-x/y
+                         :window-point-char-width-height 
+                         `(:char-width ,(car w/h) :char-height ,(cdr w/h))
+                         ))))
+           (push wdo-dbind wdo-l)))
+     'no-mini t)
+    wdo-l))
+;;
+(unless (and (intern-soft "mon-get-window-plist")
+             (fboundp 'mon-get-window-plist))
+  (defalias 'mon-get-window-plist 'mon-map-windows->plist))
+
+
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
 ;;; :NOTE Keep with `mon-nuke-text-properties-buffer', `mon-plist-keys'
@@ -6501,7 +6709,7 @@ uses O(log n) space.\n
   \(setq froggy `\(,:froggy-shuffled ,\(mon-list-nshuffle froggy\) 
                  ,:froggy-clobbered ,bubba\)\)\)
 :NOTE To to be sure of changing the value of froggy, setters should write:\n
- (setq froggy (mon-list-nshuffle froggy))\n 
+ \(setq froggy \(mon-list-nshuffle froggy\)\)\n 
 :SEE (URL `http://groups.google.com/group/comp.lang.lisp/browse_frm/thread/230204ed6c092b6d#')
 :SEE-ALSO `mon-list-shuffle-safe', `mon-nshuffle-vector', `mon-delq-dups',
 `mon-remove-dups', `mon-remove-if', `mon-list-make-unique', `mon-maybe-cons',
@@ -6619,7 +6827,7 @@ predicate `mon-list-proper-p' signal an error.\n
 Store the result in DUP-LIST and return it.  DUP-LIST must be a proper list.\n
 Of several `eq' occurrences of an element in DUP-LIST, the first one is kept.\n
 :EXAMPLE\n\n\(concat 
- \(mon-delq-dups \(append \(vconcat \"sasabscbdsb\"\) nil\)\) 
+ \(mon-delq-dups \(append \(vconcat \"ABRAHADABRA\"\) nil\)\) 
  \"\"\)\n
 :ALIASED-BY `delq-dups'\n
 :SEE-ALSO `mon-delq-cons', `mon-remove-dups', `mon-remove-if',
@@ -6640,9 +6848,9 @@ Of several `eq' occurrences of an element in DUP-LIST, the first one is kept.\n
   (defalias 'delq-dups 'mon-delq-dups))
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
-;; | (equal 
-;; |  (concat (mon-delq-dups (append (vconcat "sasabscbdsb") nil))  "")
-;; |  "sabcd")
+;; | (string-equal 
+;; |  (concat (mon-delq-dups (append (vconcat "ABRAHADABRA") nil))  "")
+;; |  "ABRHD")
 ;; `----
 
 ;;; ==============================
@@ -7783,6 +7991,7 @@ failure.\n
 (provide 'mon-utils)
 ;;; ==============================
 
+ 
 ;; Local Variables:
 ;; generated-autoload-file: "./mon-loaddefs.el"
 ;; End:

@@ -382,7 +382,8 @@ I've fixed a small (very small) bug and would like to add two things:
 The compress-url function doesn't work in 0.3.12; I believe (substring returned-request url-idx -1) should instead read (substring returned-request url-idx nil). 
 
 --ss
-
+[new]
+As of today, (2010-08-31), Basic auth is no longer supported. Unless someone adds it twit.el is no longer going to work.  From @twitterapi "The time has come. The Twitter API no longer supports basic auth. Please use OAuth for all authenticated requests. http://t.co/nG5Qndq ^TS" I've moved on to using twittering-mode which has OAuth support, and imho better search result display, so I will not be working on this. -- DaveKerschner
 
 == Archived Discussion ==
 I don't personally do the cell phone thing (it sounds irritating), but anyway, they got slashdotted yesterday.  I had never heard of them.  But it looked cool, so i joined and wrote twit.el.  I think i would like to broaden it--generalize it a bit and let users read friend's posts.  I am working on that....

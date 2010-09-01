@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 12:38:53 2010 (-0800)
+;; Last-Updated: Tue Aug 31 08:17:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 308
+;;     Update #: 313
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -63,6 +63,11 @@
 ;;  `col-highlight-set-interval':
 ;;
 ;;    (col-highlight-set-interval 6) ; Wait 6 idle secs.
+;;
+;;  Note that `column-highlight-mode' is intentionally a global minor
+;;  mode.  If you want a local minor mode, so that highlighting
+;;  affects only a particular buffer, you can use `vline-mode' (in
+;;  `vline.el').
 ;;
 ;;
 ;;  See also:

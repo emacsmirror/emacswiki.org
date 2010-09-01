@@ -95,6 +95,27 @@ From http://mew.iijlab.net/ml/mew-int-3.1/msg00140.html
 
 If you also want bbdb to do the tab-completion of e-mail adresses in draft composition buffers, [CategoryCustomize customize] Mew's variables /mew-field-completion-switch/ (for "<tab>" completion) and/or /mew-field-expansion-switch/ (for "M-<tab>" completion).  You can replace all occurances of mew-complete-address by bbdb-complete-name.
 
+== Stunnel integration on Windows XP/32 ==
+
+By default, Mew 6.3 does not work with [http://www.stunnel.org/download/binaries.html Stunnel 4.33] under Windows XP/32. A quick'n'dirty workaround is modifying <tt>mew-ssl.el</tt>:
+
+* Comment out four lines in the function <tt>mew-ssl-options</tt>:
+
+        (insert "client=yes\n")
+        ; (insert "pid=\n")
+        (insert (format "verify=%d\n" (mew-ssl-verify-level case)))
+        ; (insert "foreground=yes\n")
+        (insert "debug=debug\n")
+        ; (if (>= mew-ssl-minor-ver 22)
+        ; (insert "syslog=no\n"))
+        (insert "CApath=" (expand-file-name (mew-ssl-cert-directory case)) "\n")
+
+* Replace the function <tt>mew-ssl-setup</tt>, hard coding Stunnel's version numbers:
+
+        (defun mew-ssl-setup ()
+          (setq mew-ssl-ver 4)
+          (setq mew-ssl-minor-ver 33))
+
 == Other stuff ==
 
 -----

@@ -1602,10 +1602,12 @@ Exchange in region when region-active-p is non-nil.\n
 ;;; :CREATED <Timestamp: Thursday May 14, 2009 @ 05:47.46 PM - by MON KEY>
 (defun mon-downcase-hex-values ()
   "Downcase all CSS Hex values in buffer.\n
-:SEE-ALSO `*regexp-rgb-hex*', `mon-upcase-commented-lines',
-`mon-downcase-regexp-region', `mon-cln-up-colon',
-`mon-line-strings-bq-qt-sym-bol', `mon-line-strings-indent-to-col',
-`mon-line-strings-pipe-bol', `mon-line-strings-pipe-to-col'.\n►►►"
+:SEE-ALSO `mon-upcase-commented-lines', `mon-downcase-regexp-region',
+`mon-cln-up-colon', `mon-line-strings-bq-qt-sym-bol',
+`mon-line-strings-indent-to-col', `mon-line-strings-pipe-bol',
+`mon-line-strings-pipe-to-col', `url-hexify-string', `url-unhex-string',
+`url-unhex', `hexl-hex-string-to-integer', `*regexp-rgb-hex*',
+`*css-color:hex-chars*', `*regexp-rgb-hex*', `*regexp-css-color-hex*'.\n►►►"
   (interactive)
   (save-excursion
     (while (search-forward-regexp "#\\([A-Z]+\\)")
@@ -1646,7 +1648,7 @@ suitable for use as args to `mon-toggle-case-regexp-region' e.g.:
 `mon-toggle-case-regexp', `mon-downcase-regexp', `mon-downcase-regexp-region',
 `mon-upcase-regexp', `mon-upcase-regexp-region', `mon-downcase-commented-lines',
 `mon-downcase-hex-values', `mon-toggle-case-regexp-region',
-`mon-up/down-case-regexp-TEST', `mon-downcase-hex-values', `mon-rectangle-downcase',
+`mon-up/down-case-regexp-TEST', `mon-rectangle-downcase',
 `mon-rectangle-upcase', `mon-upcase-commented-lines'.\n►►►"
   (if w-region
       `(,(if (use-region-p) 
@@ -1688,8 +1690,8 @@ message results of toggling.\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp',
 `mon-downcase-regexp', `mon-downcase-regexp-region', `mon-upcase-regexp',
 `mon-upcase-regexp-region', `mon-downcase-commented-lines',
-`mon-downcase-hex-values', `mon-up/down-case-regexp-TEST',
-`mon-downcase-hex-values', `mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-up/down-case-regexp-TEST', `mon-downcase-hex-values',
+`mon-rectangle-downcase', `mon-rectangle-upcase',
 `mon-upcase-commented-lines'.\n►►►"
   (interactive (funcall 'mon-toggle-case-query-user t))
   (let (rtn-dcrr)
@@ -1730,9 +1732,8 @@ When W-RESULTS is non-nil or called-interactively message results.\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp-region',
 `mon-toggle-case-regexp', `mon-downcase-regexp', `mon-downcase-regexp-region',
 `mon-upcase-regexp', `mon-upcase-regexp-region', `mon-downcase-commented-lines',
-`mon-downcase-hex-values', `mon-toggle-case-regexp-region',
-`mon-up/down-case-regexp-TEST', `mon-downcase-hex-values',
-`mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-toggle-case-regexp-region', `mon-up/down-case-regexp-TEST',
+`mon-downcase-hex-values', `mon-rectangle-downcase', `mon-rectangle-upcase',
 `mon-upcase-commented-lines'.\n►►►"
   (interactive (funcall 'mon-toggle-case-query-user))
   (let ((m-count 0)
@@ -1782,9 +1783,9 @@ that were upcased.\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp-region',
 `mon-toggle-case-regexp', `mon-downcase-regexp', `mon-downcase-regexp-region',
 `mon-upcase-regexp', `mon-upcase-regexp-region', `mon-downcase-commented-lines',
-`mon-downcase-hex-values', `mon-toggle-case-regexp-region',
-`mon-up/down-case-regexp-TEST', `mon-downcase-hex-values', `mon-rectangle-downcase',
-`mon-rectangle-upcase', `mon-upcase-commented-lines'.\n►►►"
+`mon-toggle-case-regexp-region', `mon-up/down-case-regexp-TEST',
+`mon-downcase-hex-values', `mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-upcase-commented-lines'.\n►►►"
   (interactive "i\ni\ni\ni\ni\np")
   (if intrp (call-interactively 'mon-toggle-case-regexp-region)
     (eval `(mon-toggle-case-regexp-region 
@@ -1802,9 +1803,9 @@ that were upcased.\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp-region',
 `mon-toggle-case-regexp', `mon-downcase-regexp', `mon-downcase-regexp-region',
 `mon-upcase-regexp', `mon-upcase-regexp-region', `mon-downcase-commented-lines',
-`mon-downcase-hex-values', `mon-toggle-case-regexp-region',
-`mon-up/down-case-regexp-TEST', `mon-downcase-hex-values', `mon-rectangle-downcase',
-`mon-rectangle-upcase', `mon-upcase-commented-lines'.\n►►►"
+`mon-toggle-case-regexp-region', `mon-up/down-case-regexp-TEST',
+`mon-downcase-hex-values', `mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-upcase-commented-lines'.\n►►►"
   (interactive "i\ni\ni\ni\ni\np")
   (if intrp (call-interactively 'mon-toggle-case-regexp-region)
     (eval `(mon-toggle-case-regexp-region 
@@ -1820,9 +1821,9 @@ that were upcased.\n
 :EXAMPLE\n\n\(mon-up/down-case-regexp-TEST :test-fncn 'downcase-regexp\)\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp',
 `mon-downcase-regexp-region', `mon-upcase-regexp', `mon-upcase-regexp-region',
-`mon-downcase-commented-lines', `mon-downcase-hex-values',
-`mon-toggle-case-regexp-region', `mon-up/down-case-regexp-TEST',
-`mon-downcase-hex-values', `mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-downcase-commented-lines', `mon-toggle-case-regexp-region',
+`mon-up/down-case-regexp-TEST', `mon-downcase-hex-values',
+`mon-rectangle-downcase', `mon-rectangle-upcase',
 `mon-upcase-commented-lines'.\n►►►"
   (interactive "i\n\i\ni\np")
   (if intrp 
@@ -1843,9 +1844,8 @@ that were upcased.\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp-region',
 `mon-toggle-case-regexp', `mon-downcase-regexp', `mon-downcase-regexp-region',
 `mon-upcase-regexp', `mon-upcase-regexp-region', `mon-up/down-case-regexp-TEST',
-`mon-downcase-commented-lines', `mon-downcase-hex-values',
-`mon-toggle-case-regexp-region', `mon-downcase-hex-values',
-`mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-downcase-commented-lines', `mon-toggle-case-regexp-region',
+`mon-downcase-hex-values', `mon-rectangle-downcase', `mon-rectangle-upcase',
 `mon-upcase-commented-lines'.\n►►►"
   (interactive "i\n\i\ni\np")
   (if intrp 
@@ -1870,9 +1870,8 @@ toggle-regexp-down      -> `mon-toggle-case-regexp'\n
 \(mon-up/down-case-regexp-TEST :test-fncn 'toggle-regexp-down\)\n
 \(mon-up/down-case-regexp-TEST :test-fncn 'toggle-regexp-up\)\n
 :SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp',
-`mon-downcase-regexp', `mon-downcase-regexp-region',
-`mon-upcase-regexp', `mon-upcase-regexp-region',
-`mon-downcase-commented-lines', `mon-downcase-hex-values',
+`mon-downcase-regexp', `mon-downcase-regexp-region', `mon-upcase-regexp',
+`mon-upcase-regexp-region', `mon-downcase-commented-lines',
 `mon-toggle-case-regexp-region', `mon-downcase-hex-values',
 `mon-rectangle-downcase', `mon-rectangle-upcase',
 `mon-upcase-commented-lines'.\n►►►"
@@ -2013,7 +2012,8 @@ For interactive cleaning of trailing tabs and spaces in *<BUFFER>*:
 :SEE `mon-kill-whitespace', `mon-cln-trail-whitespace', `mon-cln-blank-lines'\n
 :USED-IN `naf-mode'.\n
 :SEE-ALSO `mon-cln-imdb', `mon-trans-cp1252-to-latin1',
-`mon-replace-common-abrevs', `mon-abr-to-month', `mon-num-to-month'.\n►►►"
+`mon-replace-common-abrevs', `mon-abr-to-month', `mon-num-to-month',
+`url-eat-trailing-space', `url-strip-leading-spaces'.\n►►►"
   (interactive "r\np")
   ;; :WAS (let ((is-on (mon-is-naf-mode-and-llm-p))
   ;;       (llm-off))
@@ -2067,7 +2067,8 @@ It handles leading and trailing wspc, but can't always be trusted to DTRT.\n
 :SEE-ALSO `mon-kill-whitespace', `mon-cln-trail-whitespace',
 `mon-cln-blank-lines', `mon-cln-mail-headers', `mon-cln-up-colon',
 `mon-cln-imdb', `mon-trans-cp1252-to-latin1', `mon-replace-common-abrevs',
-`mon-abr-to-month', `mon-num-to-month'.\n►►►"
+`mon-abr-to-month', `mon-num-to-month', `url-eat-trailing-space',
+`url-strip-leading-spaces'.\n►►►"
   (interactive "r\np")
   (mon-replace-region-regexp-lists-nonint start end *regexp-clean-whitespace*)
   (when intrp (message "The whitespace has been rudely adjusted.")))
@@ -2081,7 +2082,7 @@ Operate on entire *<BUFFER>* not region. For interactive whitespace
 region adjustment use `mon-cln-BIG-whitespace', `mon-cln-blank-lines',
 or `mon-cln-whitespace'.\n
 :USED-IN `naf-mode'.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `url-eat-trailing-space', `url-strip-leading-spaces'.\n►►►"
     (interactive)
     (save-excursion
       (goto-char (buffer-end 0))
@@ -2098,7 +2099,7 @@ Unlike `mon-cln-trail-whitespace', doesn't convert tabs to spaces.\n
 For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 `mon-cln-whitespace', or `mon-cln-blank-lines'.\n
 :USED-IN `naf-mode'.\n
-:SEE-ALSO `mon-cln-uniq-lines'.\n►►►"
+:SEE-ALSO `mon-cln-uniq-lines', `url-eat-trailing-space', `url-strip-leading-spaces'.\n►►►"
   (interactive)
   (save-excursion
     (goto-char (buffer-end 0))
@@ -2111,7 +2112,7 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
   "Delete blank and empty lines in region from START to END.\n
 :SEE-ALSO `mon-cln-uniq-lines', `delete-blank-lines',
 `mon-line-find-duplicates-cln', `mon-line-find-duplicates'.\n►►►"
-  (interactive "r\np")
+  (interactive "r") ;; \np
   (save-excursion
     (let ((cln-start start)
 	  (cln-end end))		;(message "%s %s" cln-start cln-end))
@@ -2904,7 +2905,11 @@ Useful to get a working list to pass to a useable wget file e.g.:\n
 (provide 'mon-replacement-utils)
 ;;; ==============================
 
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
+
 ;;; =======================
 ;;; mon-replacement-utils.el ends here
-;;; =======================
 ;;; EOF
