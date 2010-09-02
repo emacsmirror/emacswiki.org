@@ -806,6 +806,29 @@ I expect that this will fail if you are running multiple servers.
 
 -- Noah Hoffman
 
+= Additional notes on OS X / Cocoa Emacs =
+
+I'd had a few problems connecting to the emacs server from <code>emacsclient</code>, until I realised I was using the default <code>/usr/bin/emacsclient</code> when I should've been using the <code>/Applications/Emacs.app/Contents/MacOS/bin/emacsclient</code> ... so make a symlink, 
+
+<pre>
+sudo mv /usr/bin/emacsclient /usr/bin/emacsclient.old # backup the original emacsclient.
+sudo ln /Applications/Emacs.app/Contents/MacOS/bin/emacsclient /usr/bin/emacsclient # symlink emacsclient from Emacs.app
+</pre>
+
+Setting emacs to work over tcp will create the <code>~/.emacs.d/server/server</code> socket file, you can then use emacsclient this way...
+
+<pre>
+emacsclient  +4:14 FILE
+
+# opens FILE at line 4, col 14. 
+</pre>
+
+(I've found there's no need to specify the server, unless you are running more than one Emacs server. )
+
+Set -a and/or -c as you like.
+
+-- Jasonm23
+
 == Piping stdout to an Emacs buffer using emacsclient ==
 
 There is a script example about this issue at GnuClient, however that is using gnudoit, thus I though of sharing my solution for emacsclient.

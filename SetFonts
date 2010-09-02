@@ -84,7 +84,7 @@ Alternatively, you can use `set-frame-font', `set-face-font', or `set-face-attri
 
 == Installing Fonts ==
 
-Use xfontsel under X to visually preview all available fonts and get the correct font filter pattern.
+If you are running Linux, you may be able to run `xfontsel` from a shell. This program helps you select a font. Once you've found one that you like, save the specification string. In my version, clicking the "select" button near the top left copies the string to my clipboard so I can yank (paste) it into Emacs.
 
 Either set them in your InitFile:
 

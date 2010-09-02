@@ -14,7 +14,7 @@ This category is about regular expressions.  See also CategorySearchAndReplace.
 == Using Regular Expressions Interactively ==
 
 * '''[[IncrementalSearch#RegexpSearches]]''' -- Using regexps with Isearch -- a good way to ''learn to use'' regexps
-* [[Icicles]] -- Another good way to ''learn to use'' to use regexps -- lots of different uses, including:
+* [[Icicles]] -- Another good way to ''learn to use'' regexps -- lots of different uses, including:
 ** [[Completion]] and cycling of completion candidates through regexp matching
 ** a new kind of incremental search: use multiple simple regexps, instead of struggling with a complex regexp; and regexp subgroups are highlighted individually
 * GrepMode -- `M-x grep' searches files for matches

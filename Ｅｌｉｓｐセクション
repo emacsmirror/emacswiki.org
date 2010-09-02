@@ -53,8 +53,7 @@ Wiki なので、アップロードするのに
 
 * CategoryModes (モードの場合)
 * CategoryDotEmacs (初心者用の便利コマンドなどの場合)
-* CategoryEditing (for small stuff
-designed to delete specific things from buffers and similar small editing jobs)
+* CategoryEditing (バッファ中の特定の文字の削除など、文書の細かな編集のためのコマンドの場合)
 
 == Elisp 以外のパッケージについて ==
 

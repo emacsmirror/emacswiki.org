@@ -162,4 +162,29 @@ If you open a file with the suffix .tex or .latex, you should get the basic mode
 I like to use Makefiles to run pdflatex on my .tex files, which means I can just M-x compile to generate the document.  If you give pdflatex the -file-line-error option, Emacs automatically recognizes the errors and lets you jump to them just like with compiler errors.
 
 ----
+In my thesis, I needed to translate tr_TR.UTF-8 characters into their LaTeX equivalents. Hence, I come up with below solution.
+<pre>
+(defvar tr-utf8-to-latex-string-translation-alist
+  '(("ç" . "\\c{c}")  ("Ç" . "\\c{C}")
+    ("ğ" . "\\u{g}")  ("Ğ" . "\\u{g}")
+    ("ı" . "{\\i}")   ("İ" . "\\.{I}")
+    ("ö" . "\\\"{o}") ("Ö" . "\\\"{O}")
+    ("ş" . "\\c{s}")  ("Ş" . "\\c{S}")
+    ("ü" . "\\\"{u}") ("Ü" . "\\\"{U}")))
+
+(defmacro make-string-translator (fname alist)
+  `(defun ,fname (start end)
+     (interactive (list (point) (mark)))
+     (unless (and start end)
+       (error "The mark is not set now, so there is no region!"))
+     (barf-if-buffer-read-only)
+     (dolist (spec ,alist)
+       (replace-string (car spec) (cdr spec) nil start end))))
+
+(make-string-translator
+ tr-utf8-to-latex tr-utf8-to-latex-string-translation-alist)
+</pre>
+-- Volkan YAZICI
+
+----
 CategoryModes CategoryTex

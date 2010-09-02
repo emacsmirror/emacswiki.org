@@ -140,5 +140,33 @@ Here is how: http://www.dd.chalmers.se/~bojohan/emacs/img/topics_small.png
 
 Replace <code>my-gnus-topic-empty-face</code> and <code>my-gnus-topic-face</code> with some appropriate faces or create your own.
 
+=== Pretty Printing The Group Lines ===
+
+-- RichardRiley
+
+This code uses a prettified group name format based on a server name to "pretty name" mapping.
+
+ (setq rgr/server-name-maps
+        '(("RI" . "Private")
+          ("SH" . "Work")
+          ("FR" . "Friends")
+          ("KL" . "Sports")
+          ("HA" . "Fun")
+          ("GM" . "Gmane")
+          ("GN" . "Gnu")
+          ("" . "Unknown")
+          ))
+
+  (defun gnus-user-format-function-g (headers) ;; gnus-group-line-format use %ug to call this func! e.g  "%M%S%p%P%(%-40,40ug%)%-5uy %ud\n"
+    ;; split full group protocol-server:group into three parts.
+    (string-match "\\(^.*\\)\\+\\(.*\\):\\(.*\\)" gnus-tmp-group)
+    ;; map the first two letters of the server name to a more friendly and cuddly display name
+    (let*  ((match-ok (match-string 2 gnus-tmp-group))
+            (server-key (if (null match-ok) nil (upcase(substring match-ok 0 2)))))
+    (if (zerop (length server-key))
+        gnus-tmp-group
+      ;; construct new group format line with a small envelope taking the place of any INBOX
+      (concat (format "%-8s" (cdr (assoc server-key rgr/server-name-maps))) " -- " (replace-regexp-in-string "INBOX" "\x2709" (match-string 3 gnus-tmp-group))))))
+
 ----
 CategoryGnus
