@@ -7,6 +7,7 @@ See also FlyspellWithoutColors.
 
 See FlyspellXmlLang to switch to the appropriate language indicated in the XML document and see FlyspellBabel to switch language as indicated by LaTeX Babel commands.
 
+== flyspell in other modes ==
 Here is an example to enable it for text-mode, and disable it for log-edit-mode and change-log-mode.  These two are derived from text-mode, and thus enabling flyspell-mode for text-mode also enables it for these two.  An alternative solution would be the writing of a flyspell-mode-predicate such that symbols
 are ignored by flyspell.
 
@@ -19,11 +20,25 @@ The idiom used above makes it very easy to enable and disable flyspell for
 the various major-modes out there: Just add the relevant hook to the list
 where the other hooks already are.
 
+=== Enable flyspell for comments in source code ===
 Programmers can use flyspell-prog-mode to enable spell checking only within comments of source code.
 
 [new]
+Flyspell comes with a mode to check comments and strings in programming modes. Just type M-x flyspell-prog-mode or add it to your mode hooks
+
+  (add-hook 'c++-mode-hook
+          (lambda ()
+            (flyspell-prog-mode)
+            ; ...
+          ))
+
+- [[ruediger]] -
+
+== Performance ==
+[new]
 I highly suggest setting `flyspell-issue-message-flag' to nil, as printing messages for every word (when checking the entire buffer) causes an enormous slowdown.  -- [[nschum]]
 
+== Avoid false positives ==
 [new] 
 I recently started using flyspell and am enjoying its features. Is
 there a way to disable flyspell for certain regexps? For instance, I
@@ -44,6 +59,7 @@ care of this.
 Thanks for pointing me to the flyspell-generic-check-word-predicate
 variable. -- MattLundin
 
+== Change dictionaries ==
 [new]
 As I often need to switch between English and German I use this function:
 
@@ -59,17 +75,6 @@ As I often need to switch between English and German I use this function:
     
 
 -- FlorianDiesch
-
-[new]
-Flyspell comes with a mode to check comments and strings in programming modes. Just type M-x flyspell-prog-mode or add it to your mode hooks
-
-  (add-hook 'c++-mode-hook
-          (lambda ()
-            (flyspell-prog-mode)
-            ; ...
-          ))
-
-- [[ruediger]] -
 
 ----
 CategoryModes | CategorySpelling

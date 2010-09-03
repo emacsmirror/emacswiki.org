@@ -35,11 +35,12 @@ with AVFS and other goodies conveniently placed in one single package.
 # Explore all the configurable settings Sunrise offers by typing:
             //M-x customize-group RET sunrise RET//
 
-# Master Emacs Dired. After all, Sunrise  is nothing more than a fancy front end
-for all  the amazing capabilities Dired  offers. One aspect of  dired I've found
-particularly useful is dired marks (m marks one file, t toggles all marks in the
-current directory,  u unmarks one file,  U removes all marks).  Most Sunrise and
-Dired commands can work on all marked files and directories at once.
+# Master [DiredPower Emacs Dired].  After  all, Sunrise  is nothing more  than a
+fancy front  end for all  the amazing capabilities  Dired offers. One  aspect of
+dired I've found particularly useful is dired marks (m marks one file, t toggles
+all marks in  the current directory, u  unmarks one file, U  removes all marks).
+Most Sunrise and Dired commands can work  on all marked files and directories at
+once.
 
 # Learn Emacs. The WDired mode (C-x C-q) puts you in a regular emacs buffer that
 gives  you  all  the possibilities  you  normally  have  while editing  text  to

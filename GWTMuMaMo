@@ -1,0 +1,11 @@
+[http://code.google.com/webtoolkit/ Google Web Toolkit] code is essentially Java code that will be compiled
+to JavaScript by the GWT compiler. It is also possible to write inline
+JavaScript (JSNI), and this mode uses nXhtml's MuMaMo to provide support
+for both Java and JavaScript in the same file.
+
+In order to use gwt-mumamo, you will need the following:
+* nXhtml (http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html)
+* espresso-mode (http://www.nongnu.org/espresso/
+
+You can get gwt-mumamo here:
+Lisp:gwt-mumamo.el
