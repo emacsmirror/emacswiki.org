@@ -35,6 +35,34 @@ I think it is better to autoload ##dos-mode##? i.e., put a ;;;###autoload before
 [new]
 Fixed, an ;;;###autoload cookie has been added. Thanks for the feedback! -- Arni Magnusson
 
+[new]
+
+Highlight !delayed-expansion-variables!
+
+{{{
+diff --git a/misc/dos.el b/misc/dos.el
+index 1540c84..e3cd49d 100644
+--- a/misc/dos.el
++++ b/misc/dos.el
+@@ -22,6 +22,7 @@
+ ;; font-lock-warning-face        cp
+ ;; font-lock-constant-face       [call] prog
+ ;; font-lock-variable-name-face  %var%
++;; font-lock-variable-name-face  !var!
+ ;; font-lock-type-face           -option
+ ;;
+ ;; Installation:
+@@ -120,6 +121,7 @@ that:
+        '("^:[^:].*" .                        font-lock-doc-face)
+        '("\\<set\\>[ \t]*\\(\\w+\\)"      (1 font-lock-variable-name-face))
+        '("%\\(\\w+\\)%?"                  (1 font-lock-variable-name-face))
++       '("!\\(\\w+\\)!"                   (1 font-lock-variable-name-face))
+        '("[ =][-/]+\\(\\w+\\)"            (1 font-lock-type-face append))
+        (cons (regexp-opt COMMANDS    'words) font-lock-builtin-face)
+        (cons (regexp-opt CONTROLFLOW 'words) font-lock-keyword-face)
+}}}
+
+
 ----
 == General discussion ==
 

@@ -12,6 +12,15 @@ It is an attempt to make use of all Emacs power in window managing. The main pri
 
 * Some XWEM users / developers usually hang around on the #XEmacs IRC channel on the Freenode network, feel free to drop by and ask questions!
 
+* Documentation: http://www.nongnu.org/xwem/doc/index.html (the text is there, although the links in the TOC are broken) or http://www.xemacs.org/Documentation/packages/html/xwem.html#SEC_Top .
+
+* Published screenshots:
+** [http://lgarc.narod.ru/xwem/xwem-screen.png XWEM strokes, and a specially managed frame]
+** [http://www.nongnu.org/xwem/imgs/xwem-tray.png XWEM with tray]
+** [http://lgarc.narod.ru/xwem/xwem-frames.png XWEM with tabs, frames, and tray]
+** [http://sxemacsen.blogspot.com/2010/04/xwem.html A demonstration of gestures (= strokes?) of XWEM]
+** [http://www.sxemacs.org/screenshots.html SXEmacs screenshots]: many of which show XWEM
+
 == Managing ==
 
 I do not know what to do with X clients :), one thing is attach to some XWEM window of some frame and resize it to window size. This is the same behaviour in Ion, matchbox or [[ratpoison]] window managers. One thing I think sould differ for only one X client - Emacs (minibuffer . only) frame, it will be handled in special way to make it always visible and always accessible.

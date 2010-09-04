@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(defconst text-translator-version "0.7.2"
+(defconst text-translator-version "0.7.3"
   "version numbers of this version of text-translator")
 
 (defconst text-translator-buffer "*translated*"
@@ -125,7 +125,7 @@
      utf-8-dos
      (lambda ()
        (text-translator-extract-tag-exclusion-string
-        "<textarea name=utrans wrap=SOFT dir=\"[lr]t[lr]\" id=suggestion style=\"[^\"]*\">\\(.*\\)</textarea"))
+        "<span id=result_box[^>]*>\\(\\(<span [^>]*>\\([^<]\\|<br>\\)*</span>\\)+\\)</span>"))
      (("en" . "ja") ("ja" . "en")
       ("en" . "es") ("es" . "en")
       ("en" . "fr") ("fr" . "en")
@@ -252,7 +252,6 @@
      "wb_lp=%o%t&before=%s"
      utf-8
      "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
-;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;\" onselect=\"insertDictionaryKeyword(this);\">\\([^<]*\\)</textarea>"
      (("EN" . "JA") ("JA" . "EN"))
      (("EN" . "en") ("JA" . "ja")))
     ("excite.co.jp"
@@ -261,7 +260,6 @@
      "wb_lp=%o%t&before=%s"
      utf-8
      "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
-;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
      (("JA" . "CH") ("CH" . "JA"))
      (("JA" . "ja") ("CH" . "ch")))
     ("excite.co.jp"
@@ -270,7 +268,6 @@
      "wb_lp=%o%t&big5=yes&before=%s"
      utf-8
      "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
-;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
      (("JA" . "CH") ("CH" . "JA"))
      (("JA" . "ja") ("CH" . "tw")))
     ("excite.co.jp"
@@ -279,7 +276,6 @@
      "wb_lp=%o%t&before=%s"
      utf-8
      "<textarea name=\"after\" id=\"after\">\\([^<]*\\)</textarea>"
-;;     "<textarea cols=36 rows=15 name=\"after\" id=\"after\" wrap=\"virtual\" style=\"width:320px;height:270px;.*\">\\([^<]*\\)</textarea>"
      (("JA" . "KO") ("KO" . "JA"))
      (("JA" . "ja") ("KO" . "ko")))
 
@@ -440,5 +436,5 @@ against the translation engines that processes per line."
 ;;; text-translator-vars.el ends here
 
 ;; Local Variables:
-;; Coding: iso-2022-7bit
+;; Coding: utf-8
 ;; End:

@@ -1,11 +1,23 @@
-[http://code.google.com/webtoolkit/ Google Web Toolkit] code is essentially Java code that will be compiled
-to JavaScript by the GWT compiler. It is also possible to write inline
-JavaScript (JSNI), and this mode uses nXhtml's MuMaMo to provide support
-for both Java and JavaScript in the same file.
+The [http://code.google.com/webtoolkit/ Google Web Toolkit] (GWT) allows you to write client-side code for web applications in Java, which is translated to JavaScript by the GWT compiler. It is possible to write inline JavaScript via the JavaScript Native Interface (JSNI), and this mode uses MuMaMo from [NxhtmlMode nXhtml] to provide support for both Java and inline JavaScript in the same file.
 
-In order to use gwt-mumamo, you will need the following:
-* nXhtml (http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html)
-* espresso-mode (http://www.nongnu.org/espresso/
+= Installation =
 
-You can get gwt-mumamo here:
-Lisp:gwt-mumamo.el
+In order to use gwt-mumamo, you will need [NxhtmlMode nXhtml].
+
+If your Emacs version is 23.1 or below, you will need [JavaScriptMode espresso-mode].
+You also need to add an alias to it, add the following to your Emacs init file:
+
+  (defalias 'js-mode 'espresso-mode)
+
+Add Lisp:gwt-mumamo.el to your load-path and add the following line to your Emacs init file:
+
+  (autoload 'gwt-mumamo-mode "gwt-mumamo" "" t)
+
+You can now activate gwt-mumamo by invoking /gwt-mumamo-mode/.
+
+[new]
+Nice. But espresso-mode is part of Emacs since version 23.2, see JavaScriptMode.
+Shouldn't you link to that page instead and replace espresso-mode with js-mode?
+
+[new:fhd:2010-09-04 07:45 UTC]
+You're right, thanks. I've changed gwt-mumamo to use js-mode and added instructions on how to make it work with espresso-mode for Emacs <23.2 users.

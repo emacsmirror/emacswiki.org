@@ -3,21 +3,34 @@
 ;; Copyright (C) 2010 Felix H. Dahlke
 
 ;; Author: Felix H. Dahlke <fhd@ubercode.de>
-;; Version: 1.0
+;; Version: 1.1
 ;; Keywords: languages, gwt
 
 ;; This file is not part of GNU Emacs.
 
 ;;; Commentary:
 
-;; Google Web Toolkit code is essentially Java code that will be compiled
-;; to JavaScript by the GWT compiler. It is also possible to write inline
-;; JavaScript (JSNI), and this mode uses nXhtml's MuMaMo to provide support
-;; for both Java and JavaScript in the same file.
+;; The Google Web Toolkit (GWT) allows you to write client-side code for
+;; web applications in Java, which is translated to JavaScript by the GWT
+;; compiler. It is possible to write inline JavaScript via the JavaScript
+;; Native Interface (JSNI), and this mode uses MuMaMo from nXhtml to
+;; provide support for both Java and inline JavaScript in the same file.
 
-;; In order to use gwt-mumamo, you will need the following:
-;; * nXhtml (http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html)
-;; * espresso-mode (http://www.nongnu.org/espresso/)
+;;; Installation:
+
+;; In order to use gwt-mumamo, you will need nXhtml, get it here:
+;;   http://ourcomments.org/Emacs/nXhtml/doc/nxhtml.html
+
+;; If your Emacs version is 23.1 or below, you will need espresso-mode:
+;;   http://www.nongnu.org/espresso/
+;; You also need to add an alias to it, add the following to your Emacs
+;; init file:
+;;   (defalias 'js-mode 'espresso-mode)
+
+;; Add this file to your load-path and add the following line to your
+;; Emacs init file:
+;;   (autoload 'gwt-mumamo-mode "gwt-mumamo" "" t)
+;; You can now activate gwt-mumamo by invoking "gwt-mumamo-mode"
 
 ;;; License:
 
@@ -27,7 +40,7 @@
 ;; (at your option) any later version.
 ;;
 ;; This program is distributed in the hope that it will be useful,
-;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
 ;;
@@ -39,16 +52,14 @@
 ;;; Code:
 
 (require 'mumamo-fun)
-(require 'java-mode)
-(require 'espresso-mode)
 
 (defun mumamo-chunk-gwt-jsni (pos min max)
-  "Find /*- ... -*/, return range and espresso-mode."
-  (mumamo-quick-static-chunk pos min max "/*-{" "}-*/" nil 'espresso-mode nil))
+  "Find /*- ... -*/, return range and js-mode."
+  (mumamo-quick-static-chunk pos min max "/*-{" "}-*/" nil 'js-mode nil))
 
 (define-mumamo-multi-major-mode gwt-mumamo-mode
   "Turn on multiple major modes for Google Web Toolkit code.
-The main mode is `java-mode', `espresso-mode' is used for JSNI blocks."
+The main mode is `java-mode', `js-mode' is used for JSNI blocks."
   ("GWT Family" java-mode (mumamo-chunk-gwt-jsni)))
 
 ;;; gwt-mumamo.el ends here

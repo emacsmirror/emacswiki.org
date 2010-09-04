@@ -506,6 +506,22 @@ this is not Sunrise, but plain Dired saying hello :)
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
+[new:RedBlue:2010-09-03 21:34 UTC]
+Hi J.A.
+
+Thanks for all the tips above. Worked great!
+Also the sticky search is a marvelous idea! Can not wait to have it in browser mode.
+
+Now I see more clearly what I meant by navigation during fuzzy narrowing. I just wanted to avoid hitting RET after the narrowing such that C-n or C-p would accept the changes and start the movement of the cursor in the buffer. I've changed the code slightly in sr-fuzzy-narrow:
+
+      ...
+      (cond ((memq next-char '(?\n  ?\r 14 16))
+      ...
+
+Worked for me :)
+
+I am not so sure about the consistency of C-g after C-c/ which accepts the narrowing. C-g cancels the action almost everywhere else in emacs. Would it be possible to customize C-g to revert the buffer? I could not figure it out. Thanks. -- RedBlue
+
 ----
 CategoryDirectories
 CategoryEmulation

@@ -55,7 +55,7 @@
 ;; `mon-cln-up-colon', `mon-regexp-map-match', `mon-regexp-map-match-in-region',
 ;; `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list',
 ;; `mon-cln-mail-headers', `mon-line-find-duplicates-cln',
-;; `mon-up/down-case-regexp-TEST',
+;; `mon-up/down-case-regexp-TEST', `mon-cln-xml-escapes', `mon-cln-xml-escapes-TEST',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -1374,9 +1374,9 @@ Chars Cleaned include:\n
 ;;;       the newer `mon-replace-region-regexp-lists-nonint'.
 ;;; :CREATED <Timestamp: Tuesday February 17, 2009 @ 03:27.10 PM - by MON KEY>
 (defun mon-cln-html-chars (start end)
-  "Replace  <  by  &lt;  and other similar HTML chars that needs to be encoded.
+  "Replace  <  by  &lt;  and other similar HTML chars that needs to be encoded.\n
 Replace  & ,  > ,  <  with their respective encoded representation.\n
-:SEE-ALSO `mon-cln-html-chars', `mon-nuke-html-tags'.\n►►►"
+:SEE-ALSO `mon-cln-html-chars', `mon-cln-html-tags', `mon-cln-xml-escapes'.\n►►►"
   (interactive "r")
   (replace-string-pairs-region3 start end
 			       '(("&" "&amp;")
@@ -1397,7 +1397,7 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
 `mon-cln-xml<-parsed', `mon-cln-mail-headers', `mon-cln-csv-fields',
 `mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace',
 `mon-cln-uniq-lines', `mon-cln-control-M', `mon-cln-piped-list',
-`mon-delete-back-up-list', `mon-cln-iso-latin-1'.\n►►►"
+`mon-delete-back-up-list', `mon-cln-iso-latin-1', `mon-cln-xml-escapes'.\n►►►"
   (interactive "r")
   (let ((table '(("\n"                               . nil) ;; :NOTE is this correct? - MON
 		 ("\\(\\(.>+\\)\\([A-Za-z0-9: :]*\\)\\(</a>\\)\\)" . "\\2 \\3")
@@ -1434,6 +1434,74 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
       ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil))))))
       )))
 
+
+;;; ==============================
+;;; :CHANGESET 2108
+;;; :CREATED <Timestamp: #{2010-09-03T15:35:19-04:00Z}#{10355} - by MON KEY>
+(defun mon-cln-xml-escapes () 
+  "Replace all occurences of HTML style numeric entity refs in current XML buffer.\n
+The W3C XML \"standards\" support Unicode, but do not support numeric entity
+codes like \"&#x03C1;\" for Greek ρ or HTML entity codes like \"&eacute;\" for
+accented é.\n
+Legacy data dumped/imported to an XML file may contain hardwired HTML numeric
+entity code refs. These may have their \"&\" (char 38) converted to \"&amp\" and
+are therefor doubly difficult to get interpolated back to the correct character
+esp. when the numeric entity is a combining character, e.g.:
+  ́ ->  &;#769;  -> &amp;#769;
+  é ->  3&;#769; -> e&amp;#769;\n
+:EXAMPLE\n\n(mon-cln-xml-escapes-TEST\)\n
+:SEE (URL `http://tlt.its.psu.edu/suggestions/international/bylanguage/ipavowels.html')
+:SEE-ALSO `mon-cln-html-tags', `mon-cln-html-chars', `mon-cln-xml<-parsed',
+`mon-cln-xml<-parsed-strip-nil', `mon-url-encode', `mon-url-decode'.\n►►►"
+  (let ((case-fold-search nil)
+        (rep-&amp '(("e&amp;#769;"  . "é")
+                    ("a&amp;#769;"   . "á")
+                    ("i&amp;#769;"   . "í")
+                    ("o&amp;#769;"   . "ó")
+                    ("u&amp;#769;"   . "ú")
+                    ("y&amp;#769;"   . "ý")
+                    ("w&amp;#769;"   . "ẃ")
+                    ("E&amp;#769;"   . "É")
+                    ("A&amp;#769;"   . "Á")
+                    ("I&amp;#769;"   . "Í")
+                    ("O&amp;#769;"   . "Ó")
+                    ("U&amp;#769;"   . "Ú")
+                    ("Y&amp;#769;"   . "Ý")
+                    ("W&amp;#769;"   . "Ẃ"))))
+    (dolist (ramp rep-&amp)
+      (goto-char (buffer-end 0))
+      (while (search-forward-regexp (car ramp) nil t)
+        (replace-match (cdr ramp))))))
+
+
+;;; ==============================
+;;; :CHANGESET 2108
+;;; :CREATED <Timestamp: #{2010-09-03T15:45:12-04:00Z}#{10355} - by MON KEY>
+(defun mon-cln-xml-escapes-TEST ()
+  "Test function for `mon-cln-xml-escapes'.\n
+Return and display results in buffer named \"*MON-CLN-XML-ESCAPES-TEST*\".\n
+:EXAMPLE\n\n\(mon-cln-xml-escapes-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let ((mcxet (mapconcat #'identity
+                          '("e&amp;#769;" "a&amp;#769;" "i&amp;#769;" "o&amp;#769;"
+                            "u&amp;#769;" "y&amp;#769;" "w&amp;#769;" "E&amp;#769;"
+                            "A&amp;#769;" "I&amp;#769;" "O&amp;#769;" "U&amp;#769;"
+                            "Y&amp;#769;" "W&amp;#769;")
+                          "\n")))
+    (with-current-buffer (get-buffer-create "*MON-CLN-XML-ESCAPES-TEST*")
+      (erase-buffer)
+      (save-excursion (insert mcxet)
+                      (mon-cln-xml-escapes)
+                      (goto-char (buffer-end 0))
+                      (insert ";; :FUNCTION `mon-cln-xml-escapes'\n"
+                              ";; :CLEANED-FOLLOWING\n"
+                              (make-string 68 59) "\n"
+                              mcxet "\n"
+                              (make-string 68 59) "\n" 
+                              ";; :RESULTS-BELOW\n"))
+      (display-buffer (current-buffer) t))))
+
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-11-17T15:36:11-05:00Z}#{09472} - by MON KEY>
 (defun mon-cln-xml<-parsed (fname &optional insrtp intrp)
@@ -1442,7 +1510,7 @@ follow an element(s). FNAME is an XML filename path to parse and clean.
 When INSERTP is non-nil or called-interactively insert pretty printed lisp
 representation of XML file fname at point. Does not move point.
 :NOTE Unlike `mon-cln-xml<-parsed-strip-nil' will not strip `nil' from parsed xml.\n
-:SEE-ALSO `mon-cln-tgm-xml-LF'\n►►►"
+:SEE-ALSO `mon-cln-tgm-xml-LF', `mon-cln-xml-escapes'\n►►►"
   (interactive "fXML file to parse: \ni\np")
   (let (get-xml)
     (setq get-xml
@@ -1467,7 +1535,8 @@ representation of XML file fname at point. Does not move point.
 ;;; :CREATED <Timestamp: Saturday July 04, 2009 @ 11:55.40 AM - by MON KEY>
 (defun mon-cln-tgm-xml-LF ()
   "Clean EOL whitespace in tgm->XML conversions.\n
-:SEE-ALSO `mon-cln-xml<-parsed', `mon-cln-xml<-parsed-strip-nil'.\n►►►"
+:SEE-ALSO `mon-cln-xml<-parsed', `mon-cln-xml<-parsed-strip-nil',
+`mon-cln-xml-escapes'.\n►►►"
   (interactive)
   (save-excursion
     (goto-char (buffer-end 0))
@@ -1481,6 +1550,7 @@ representation of XML file fname at point. Does not move point.
           (delete-char 1)))
       (forward-char))))
 
+
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-11-17T17:00:10-05:00Z}#{09472} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-31T20:57:30-04:00Z}#{09362} - by MON KEY>
@@ -1491,7 +1561,7 @@ When INSRTP is non-nil or called-interactively insert result at point.
 Does not move point.
 :NOTE Strips `nil' from parsed xml which may not be what you expect.\n
 :SEE-ALSO `*regexp-clean-xml-parse*', `mon-cln-xml<-parsed',
-`mon-cln-tgm-xml-LF'.\n►►►"
+`mon-cln-xml-escapes', `mon-cln-tgm-xml-LF'.\n►►►"
   (interactive "fXML file to parse: \ni\np")
   (let (get-xml)
     (setq get-xml

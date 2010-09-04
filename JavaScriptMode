@@ -1,6 +1,6 @@
 == Espresso mode ==
 
-<b>This is now in the development sources of Emacs under the name js-mode (with an alias javascript-mode).</b> See EmacsDevelopmentSources for how to get it.
+<b>This is part of Emacs since version 23.2 under the name js-mode (with an alias javascript-mode).</b> See EmacsDevelopmentSources for how to get it.
 
 
 Espresso-mode is a fork of Karl Landstrom's mode below, but with additional features and robustness improvements. See http://www.nongnu.org/espresso

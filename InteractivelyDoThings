@@ -64,7 +64,7 @@ You can use Ido in your emacs-lisp programs.  This is all you need:
 Here is some code showing how to select an erc buffer using IDO features (including flex when enabled)
 
 -- RichardRiley
-
+{{{
   (defun rgr/ido-erc-buffer()
   (interactive)
   (switch-to-buffer
@@ -80,6 +80,7 @@ Here is some code showing how to select an erc buffer using IDO features (includ
                                    (buffer-list)))))))
 
   (global-set-key (kbd "C-c e") 'rgr/ido-erc-buffer)
+}}}
 
 = Mimicking an invocation of ido followed by some keys =
 
