@@ -23,12 +23,12 @@
 
 ;; If your Emacs version is 23.1 or below, you will need espresso-mode:
 ;;   http://www.nongnu.org/espresso/
-;; You also need to add an alias to it, add the following to your Emacs
-;; init file:
+;; You also need to add an alias to it, add the following to your init
+;; file:
 ;;   (defalias 'js-mode 'espresso-mode)
 
 ;; Add this file to your load-path and add the following line to your
-;; Emacs init file:
+;; init file:
 ;;   (autoload 'gwt-mumamo-mode "gwt-mumamo" "" t)
 ;; You can now activate gwt-mumamo by invoking "gwt-mumamo-mode"
 

@@ -1,155 +1,188 @@
 ;;; mon-hash-utils.el ---  procedures to extend Emacs lisp hashtables
 ;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-hash-utils provides a collection of procedures to extend Emacs lisp hash
-;;; table functionality. 
-;;;
-;;; The majority of the procedures included of this file were gleaned from
-;;; various authors/sources. Specific authorship of these routines is identified
-;;; in the header sections below and inline. Thus, where a function is indicated
-;;; as having been sourced from a third party the MON KEY does not claim
-;;; authorship of the individual components included of this file. In general,
-;;; the only act of authorship on MON's part are minor symbol changes additions
-;;; of gensyms and the assembly of these routines in the aggregaate.
-;;; 
-;;; FUNCTIONS:►►►
-;;; `mon-hash-all-values',`mon-hash-all-keys',`mon-hash-to-list'
-;;; `mon-hash-key-onto-list',`mon-hash-describe',`mon-hash-describe-descend'
-;;; `mon-hash-readlines-file' , `mon-hash-readlines-buffer'
-;;; `mon-hash-make-size', `mon-hash<-vector', `mon-hash-add-uniquify'
-;;; `mon-hash-table-complete'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;; `mon-hash-get-items',`mon-hash-get-values', `mon-hash-get-symbol-keys',
-;;; `mon-hash-get-keys', `mon-hash-has-key', `mon-hash-get-string-keys',
-;;; `cl-put-hash'
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; 
-;;; ALIASED/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED-AND-MOVED: 
-;;; <Timestamp: Friday May 15, 2009 @ 02:24.59 PM - by MON KEY>
-;;; `hash-get-values'       <- macros-func-thierry.el
-;;; `hash-get-symbol-keys'  <- site-lisp/macros-func-thierry.el
-;;; `hash-has-key'          <- site-lisp/macros-func-thierry.el
-;;; `hash-get-string-keys'  <- site-lisp/macros-func-thierry.el
-;;; `cl-put-hash'           <- site-lisp/macros-func-thierry.el
-;;; :FROM                  -> :TO
-;;; `hash-get-values'      -> `mon-hash-get-values' 
-;;; `hash-get-symbol-keys' -> `mon-hash-get-symbol-keys'
-;;; `hash-has-key',        -> `mon-hash-has-key'   
-;;; `cl-put-hash'          -> `mon-hash-put-CL'
-;;; `hash-get-string-keys' -> `mon-hash-get-string-keys'
-;;;
-;;; REQUIRES:
-;;;
-;;; TODO:
-;;; Import relevant portionns Beebe's hash routines.
-;;;
-;;; NOTES:
-;;; :SEE (elisp hash functions)
-;;; :SEE (info "(elisp)Hash Tables") 
-;;; :SEE-ALSO `make-hash-table', `gethash', `puthash', `remhash', `clrhash',
-;;; `maphash', `define-hash-table-test', `sxhash', `hash-table-p',
-;;; `copy-hash-table', `hash-table-count', `hash-table-test',
-;;; `hash-table-weakness', `hash-table-rehash-size',
-;;; `hash-table-rehash-threshold', `hash-table-size'
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; :COURTESY Xah Lee
-;;; :SEE (URL `http://xahlee.org/emacs/elisp_hash_table.html')
-;;; Following renamed: 
-;;; :FROM             -> :TO
-;;; `hash-all-values' -> `mon-hash-all-values' 
-;;; `hash-all-keys'   -> `mon-hash-all-keys'
-;;; `hash-to-list'    -> `mon-hash-to-list'
-;;;
-;;; :COURTESY Thierry Volpiatto's - Copyright (C) 2008 - "macros-func-thierry.el"
-;;; :SEE (URL `http://www.emacswiki.org/emacs/HashMap')
-;;; 
-;;; :COURTESY Thierry Volpiatto HIS: traverselisp.el 
-;;; :SEE (URL `http://freehg.org/u/thiedlecques/traverselisp/')
-;;; :FROM                                 -> :TO 
-;;; `traverse-hash-readlines-from-buffer' -> `mon-hash-readlines-buffer'
-;;; `traverse-hash-readlines'             -> `mon-hash-readlines-file'
-;;;
-;;; :COURTESY :FILE gnus-util.el
-;;; :FROM                   -> :TO
-;;; `gnus-make-hashtable'   -> `mon-hash<-vector'
-;;; `gnus-create-hash-size' -> `mon-hash-make-size'
-;;;
-;;; :COURTESY Stefan Reichör :HIS xsteve-functions.el 
-;;; :FROM                      -> :TO 
-;;; `xsteve-add-hash-uniquify' -> `mon-hash-add-uniquify' 
-;;;  
-;;; :COURTESY Sam Steingold :HIS clhs.el GPL'd with GNU CLISP
-;;; :FROM                 -> :TO
-;;; `hash-table-complete' -> `mon-hash-table-complete'
-;;;
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-hash-utils.el')
-;;; FILE-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
-;;;
-;;; FILE-CREATED:
-;;; <Timestamp: Friday May 15, 2009 @ 02:18.14 PM - by MON KEY>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-hash-utils.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-05-15T14:18:14-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: extensions, lisp, tools, alloc, data, development,
+
 ;;; ================================================================
-;;; Copyright © 2009, 2010
-;;; ======================
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-hash-utils provides a collection of procedures to extend Emacs lisp hash
+;; table functionality.
+;;
+;; The majority of the procedures included of this file were gleaned from
+;; various authors/sources. Specific authorship of these routines is identified
+;; in the header sections below and inline. Thus, where a function is indicated
+;; as having been sourced from a third party the MON KEY does not claim
+;; authorship of the individual components included of this file. In general,
+;; the only act of authorship on MON's part are minor symbol changes additions
+;; of gensyms and the assembly of these routines in the aggregate.
+;;
+;; FUNCTIONS:►►►
+;; `mon-hash-all-values',`mon-hash-all-keys',`mon-hash-to-list',
+;; `mon-hash-key-onto-list',`mon-hash-describe',`mon-hash-describe-descend',
+;; `mon-hash-readlines-file', `mon-hash-readlines-buffer',
+;; `mon-hash-make-size', `mon-hash<-vector', `mon-hash-add-uniquify',
+;; `mon-hash-table-complete', `mon-hash-to-alist', `mon-hash-from-alist',
+;;
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;; `mon-hash-get-items',`mon-hash-get-values', `mon-hash-get-symbol-keys',
+;; `mon-hash-get-keys', `mon-hash-has-key', `mon-hash-get-string-keys',
+;; `cl-put-hash',
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;;
+;; TODO:
+;; Import relevant portionns Beebe's hash routines.
+;;
+;; NOTES:
+;; :SEE (elisp hash functions)
+;; :SEE (info "(elisp)Hash Tables") 
+;; :SEE-ALSO `make-hash-table', `gethash', `puthash', `remhash', `clrhash',
+;; `maphash', `define-hash-table-test', `sxhash', `hash-table-p',
+;; `copy-hash-table', `hash-table-count', `hash-table-test',
+;; `hash-table-weakness', `hash-table-rehash-size',
+;; `hash-table-rehash-threshold', `hash-table-size',
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; :COURTESY Xah Lee
+;; :SEE (URL `http://xahlee.org/emacs/elisp_hash_table.html')
+;; Following renamed: 
+;; :FROM             -> :TO
+;; `hash-all-values' -> `mon-hash-all-values' 
+;; `hash-all-keys'   -> `mon-hash-all-keys'
+;; `hash-to-list'    -> `mon-hash-to-list'
+;;
+;; :COURTESY Thierry Volpiatto's - Copyright (C) 2008 - "macros-func-thierry.el"
+;; :SEE (URL `http://www.emacswiki.org/emacs/HashMap')
+;; 
+;; :COURTESY Thierry Volpiatto HIS: traverselisp.el 
+;; :SEE (URL `http://freehg.org/u/thiedlecques/traverselisp/')
+;; :FROM                                 -> :TO 
+;; `traverse-hash-readlines-from-buffer' -> `mon-hash-readlines-buffer'
+;; `traverse-hash-readlines'             -> `mon-hash-readlines-file'
+;;
+;; :COURTESY :FILE gnus-util.el
+;; :FROM                     -> :TO
+;; `gnus-make-hashtable'     -> `mon-hash<-vector'
+;; `gnus-create-hash-size'   -> `mon-hash-make-size'
+;; `gnus-hashtable-to-alist' -> `mon-hash-to-alist'
+;; `gnus-alist-hashtable'    -> `mon-hash-from-alist'
+;;
+;; :COURTESY Stefan Reichör :HIS xsteve-functions.el 
+;; :FROM                      -> :TO 
+;; `xsteve-add-hash-uniquify' -> `mon-hash-add-uniquify' 
+;;  
+;; :COURTESY Sam Steingold :HIS clhs.el GPL'd with GNU CLISP
+;; :FROM                 -> :TO
+;; `hash-table-complete' -> `mon-hash-table-complete'
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-hash-utils.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-09-22} - by MON KEY>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-hash-utils. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-05-15T14:18:14-04:00Z}#{} - by MON KEY>
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
+;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl)) ;; :NOTE Used in Thierry's macros
+(eval-when-compile (require 'cl))
 
 ;;; ==============================
 ;;; :COURTESY :FILE gnus-util.el
-;;; :FROM                   -> :TO
-;;; `gnus-make-hashtable'   -> `mon-hash<-vector'
-;;; `gnus-create-hash-size' -> `mon-hash-make-size'
+;;; :FROM                     -> :TO
+;;; `gnus-make-hashtable'     -> `mon-hash<-vector'
+;;; `gnus-create-hash-size'   -> `mon-hash-make-size'
+;;; The following two functions are used in gnus-registry.
+;;; They were contributed to GNUS by Andreas Fuchs <asf@void.at>.
+;;; `gnus-hashtable-to-alist' -> `mon-hash-to-alist'
+;;; `gnus-alist-hashtable'    -> `mon-hash-from-alist'
 ;;; ==============================
-;;
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-15T11:55:46-05:00Z}#{10025} - by MON>
 (defun mon-hash<-vector (&optional hashsize)
-"Make a vector based hash table (default and minimum size is 256).\n
-Optional argument HASHSIZE specifies a target table size. This value will be
-optimized with `mon-hash-make-size'.
+  "Make a vector based hash table (default and minimum size is 256).\n
+Optional argument HASHSIZE specifies a target table size.\n
+This value will be optimized with `mon-hash-make-size'.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
+`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values',
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
+`mon-hash-get-values', `mon-hash-has-key', `mon-hash-get-symbol-keys',
 `mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe',
 `mon-hash-describe-descend'.\n►►►"
   (make-vector (if hashsize (max (mon-hash-make-size hashsize) 256) 256) 0))
@@ -158,7 +191,7 @@ optimized with `mon-hash-make-size'.
 ;;; :CREATED <Timestamp: #{2010-01-15T11:55:46-05:00Z}#{10025} - by MON>
 (defun mon-hash-make-size (min-size)
   "Return a number suitable for use when instantiating a new hash-table.\n
-Return value is bigger than MIN and equal to some 2^x.\n
+Return value is bigger than MIN-SIZE and equal to some 2^x.\n
 Like `sxhash' but implemented in Emacs-lisp.\n
 :NOTE Many machines (such as sparcs) do not have a hardware modulo operation, so
 they implement it in software.  On many sparcs over 50% of the time to intern is
@@ -169,16 +202,52 @@ string!  So we use powers of 2 so people can optimize the modulo to a mask.
     \(push \(mon-hash-make-size q\) k\)\)\)\n
 :CALLED-BY `mon-hash<-vector'\n
 :SEE `mon-help-hash-functions'.\n
-:SEE-ALSO `mon-hash<-vector', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
+:SEE-ALSO `mon-hash<-vector', `mon-hash-add-uniquify', `mon-hash-to-alist',
+`mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
+`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
+`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+  (let ((mhmi 1))
+    (while (< mhmi min-size)
+      (setq mhmi (* 2 mhmi)))
+    mhmi))
+
+;;; ==============================
+;;; :CHANGESET 2109
+;;; :CREATED <Timestamp: #{2010-09-04T15:30:26-04:00Z}#{10356} - by MON KEY>
+(defun mon-hash-from-alist (alist)
+  "Build a hashtable from the values in ALIST.\n
+:SEE `mon-help-hash-functions'.\n
+:SEE-ALSO `mon-hash-to-alist', `mon-hash<-vector', `mon-hash-add-uniquify',
+`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values',
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
+`mon-hash-get-values', `mon-hash-has-key', `mon-hash-get-symbol-keys',
 `mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe',
 `mon-hash-describe-descend'.\n►►►"
-  (let ((i 1))
-    (while (< i min-size)
-      (setq i (* 2 i)))
-    i))
+  (let ((math-alst (make-hash-table :size 4096 :test 'equal)))
+    (mapc #'(lambda (kv-pair)
+              (puthash (car kv-pair) (cdr kv-pair) math-alst))
+          alist)
+    math-alst))
+
+;;; ==============================
+;;; :CHANGESET 2109
+;;; :CREATED <Timestamp: #{2010-09-04T15:28:34-04:00Z}#{10356} - by MON KEY>
+(defun mon-hash-to-alist (hash)
+  "Build an alist from the values in HASH.\n
+:SEE `mon-help-hash-functions'.\n
+:SEE-ALSO `mon-hash-from-alist', `mon-hash<-vector', `mon-hash-add-uniquify',
+`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values',
+`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
+`mon-hash-get-values', `mon-hash-has-key', `mon-hash-get-symbol-keys',
+`mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe',
+`mon-hash-describe-descend'.\n►►►"
+  (let ((mhta-l nil))
+    (maphash #'(lambda (key value)
+                 (setq mhta-l (cons (cons key value) mhta-l)))
+             hash)
+    mhta-l))
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichör :HIS xsteve-functions.el 
@@ -186,14 +255,15 @@ string!  So we use powers of 2 so people can optimize the modulo to a mask.
 ;;; :CREATED <Timestamp: #{2010-01-16T14:45:52-05:00Z}#{10026} - by MON KEY>
 (defun mon-hash-add-uniquify (key value table)
   "Add KEY with VALUE to the hash-table TABLE ensure KEY is unique.\n
-When KEY is already present in TABLE generate a new KEY such that:
+When KEY is already present in TABLE generate a new KEY such that:\n
  'KEY-N' is 1+ KEY|KEY-V.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-readlines-buffer',
-`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
-`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
-`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-file',
+`mon-hash-all-values', `mon-hash-all-keys', `mon-hash-to-list',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (when (gethash key table)
     (setq key
           (loop for i = 1 then (1+ i)
@@ -211,13 +281,14 @@ When KEY is already present in TABLE generate a new KEY such that:
 ;;; ==============================
 ;;
 (defun mon-hash-readlines-file (hash-file file-table)
-  "Load all the lines of HASH-FILE in an hash FILE-TABLE with the number of line as key.\n
+  "Load lines in HASH-FILE into hash-table FILE-TABLE line-numbers as keys.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-all-values', `mon-hash-all-keys',
-`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
-`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-all-values', `mon-hash-all-keys', `mon-hash-to-list',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let* ((my-string (with-temp-buffer
                        (insert-file-contents hash-file)
                        (buffer-string)))
@@ -228,13 +299,14 @@ When KEY is already present in TABLE generate a new KEY such that:
        (incf count))))
 ;;
 (defun mon-hash-readlines-buffer (buffer buffer-table)
-  "Load all lines of BUFFER in hash BUFFER-TABLE with the number of line as key.\n
+  "Load BUFFER lines into hash-table BUFFER-TABLE with line-numbers as keys.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
-`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
-`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-file',
+`mon-hash-all-values', `mon-hash-all-keys', `mon-hash-to-list',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let* ((my-string (with-temp-buffer
                        (insert-buffer-substring-no-properties buffer)
                        (buffer-string)))
@@ -254,7 +326,7 @@ When KEY is already present in TABLE generate a new KEY such that:
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-08T20:32:53-05:00Z}#{10062} - by MON KEY>
 ;;; Xah functions `mon-hash-to-list', `mon-hash-all-keys', `mon-hash-all-values'
-;;; Now use: (push `(, . ,) sym) idiom instead of:
+;;; Now use: (push `(, .,) sym) idiom instead of:
 ;;; (setq sym cons (list k v) sym)
 ;;; ==============================
 ;;
@@ -262,10 +334,11 @@ When KEY is already present in TABLE generate a new KEY such that:
   "Return all values in HASHTABLE.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-keys',
-`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
-`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-keys', `mon-hash-to-list',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let (allvals)
     (maphash #'(lambda (kk vv) 
                  (push vv allvals))
@@ -276,8 +349,9 @@ When KEY is already present in TABLE generate a new KEY such that:
   "Return all keys in HASHTABLE.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values',
-`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-to-list',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let (allkeys)
@@ -290,10 +364,11 @@ When KEY is already present in TABLE generate a new KEY such that:
   "Return a list representing key/value pairs in HASHTABLE.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-get-items', `mon-hash-get-values' ,
-`mon-hash-has-key' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►► "
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►► "
   (let (mylist)
     (maphash #'(lambda (kk vv) 
                  (push `(,kk . ,vv) mylist))
@@ -313,8 +388,9 @@ Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
 `mon-hash-get-symbol-keys' doesn't try to distinguish between string or symbols.
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values',
-`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-to-list',
+`mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgk-keys (make-symbol "mhgk-keys")))
@@ -351,10 +427,11 @@ Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
 :NOTE Each key's value returned as a strings.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-values' ,
-`mon-hash-has-key' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values',  `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-values',  `mon-hash-has-key', 
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgi-items (make-symbol "mhgi-items")))
   `(let ((,mhgi-items nil)) 
      (maphash #'(lambda (x y) (push (list x y) ,mhgi-items))
@@ -367,9 +444,9 @@ Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
   "Return a list of all HASHTABLE values as strings.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
+`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values', 
 `mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-has-key' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
+`mon-hash-has-key',  `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgv-val (make-symbol "mhgv-val"))
         (mhgv-all (make-symbol "mhgv-all")))
@@ -387,10 +464,11 @@ When optional arg COERCE-STRINGS is non-nil when a hashtable key is a string
 read that string -> symbol.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values',  `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', 
+`mon-hash-has-key',  `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgsk-keys (make-symbol "mhgsk-keys"))
         (mhgsk-all (make-symbol "mhgsk-all")))
     `(let ((,mhgsk-keys nil)
@@ -411,22 +489,23 @@ read that string -> symbol.\n
 Like `mon-hash-get-symbol-keys' but return keys as strings.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►► "
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values',  `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', 
+`mon-hash-has-key',  `mon-hash-get-symbol-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgSk-keys (make-symbol "mhgSk-keys"))
         (mhgSk-all  (make-symbol "mhgSk-all"))
         (mhgSk-str  (make-symbol "mhgSk-str")))
-  `(let ((,mhgSK-keys nil)
-         (,mhgSK-all (mon-hash-get-items ,hashtable))
-         (,mhgSK-keys-str nil))
-     (setq ,mhgSK-keys (mapcar #'car ,mhgSK-all))
-     (dolist (i ,mhgSK-keys)
+  `(let ((,mhgSk-keys nil)
+         (,mhgSk-all (mon-hash-get-items ,hashtable))
+         (,mhgSk-str nil))
+     (setq ,mhgSk-keys (mapcar #'car ,mhgSk-all))
+     (dolist (i ,mhgSk-keys)
        (if (stringp i)
-           (push i ,mhgSK-keys-str)
-           (push (symbol-name i) ,mhgSK-keys-str)))
-     ,mhgSK-keys-str)))
+           (push i ,mhgSk-str)
+           (push (symbol-name i) ,mhgSk-str)))
+     ,mhgSk-str)))
 ;;
 ;;; (defalias 'hash-get-string-keys 'mon-hash-get-string-keys)
 ;;;(progn (fmakunbound 'hash-get-string-keys) (unintern 'hash-get-string-keys) )
@@ -441,10 +520,11 @@ KEY must be a symbol \(not a string\) as test uses `memq'/`eq'.\n
 :NOTE CL uses `member'/`equal' for same.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
-`mon-hash-put-CL', `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values',  `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', 
+`mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
+`mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhhk-keys-l (make-symbol "mhhk-keys-l")))
     `(let ((,mhhk-keys-l (mon-hash-get-symbol-keys ,hashtable)))
        (if (memq ,key ,mhhk-keys-l)
@@ -454,18 +534,20 @@ KEY must be a symbol \(not a string\) as test uses `memq'/`eq'.\n
 ;;; ==============================
 (defmacro mon-hash-put-CL (key table value)
   "A `puthash' in the style of Common Lisp using elisp cl.el package's `setf'.\n
-Associate KEY with VALUE in hashtable TABLE. If key is already present
-in TABLE, replace its current value with VALUE.\n
-NOTE: The argument order of elisp `puthash' is:\n\n \(puthash key value table\)\n\n
-The order of arguments in mon-hash-put-CL is:\n\n \(cl-puthash key table value\)\n\n
-NOTE: cl-extra.el defines `cl-puthash' by aliasing Emacs-lisp's `puthash'.\n
+Associate KEY with VALUE in hashtable TABLE.\n
+If key is already present in TABLE, replace its current value with VALUE.\n
+:NOTE The argument order of elisp `puthash' is:\n
+ \(puthash key value table\)\n
+The order of arguments in mon-hash-put-CL is:\n
+ \(cl-puthash key table value\)\n
+:NOTE :FILE cl-extra.el defines `cl-puthash' by aliasing Emacs-lisp's `puthash'.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
-`mon-hash-get-string-keys', `mon-hash-describe', `mon-hash-describe-descend'.
-►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
+`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
+`mon-hash-describe', `mon-hash-describe-descend'.\n ►►►"
   `(setf (gethash ,key ,table) ,value))
 
 ;;; ==============================
@@ -489,15 +571,16 @@ NOTE: cl-extra.el defines `cl-puthash' by aliasing Emacs-lisp's `puthash'.\n
 ;;; :CREATED <Timestamp: Wednesday May 13, 2009 @ 07:40.02 PM - by MON KEY>
 (defun mon-hash-describe (variable &optional buffer)
   "Display the full documentation of VARIABLE (a symbol).\n
-Returns the documentation as a string, also.
+Returns the documentation as a string, also.\n
 If VARIABLE has a buffer-local value in BUFFER (default to the current buffer),
 it is displayed along with the global value.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
-`mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe-descend'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values',  `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values', 
+`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
+`mon-hash-put-CL', `mon-hash-describe-descend'.\n►►►"
   (interactive
    (let ((v (variable-at-point))
 	 (enable-recursive-minibuffers t)
@@ -505,9 +588,10 @@ it is displayed along with the global value.\n
      (setq val (completing-read
 		(if (and (symbolp v)
 			 (hash-table-p (symbol-value v)))
-		    (format
-		     "Describe hash-map (default %s): " v)
-		  "Describe hash-map: ")
+		    (format (concat ":FUNCTION `mon-hash-describe' "
+                                    "-- describe hash-map (default %s): ") v)
+                  (concat ":FUNCTION `mon-hash-describe' "
+                          "-- describe hash-map: "))
 		obarray
 		(lambda (atom) (and (boundp atom)
 				    (hash-table-p (symbol-value atom))))
@@ -530,10 +614,11 @@ it is displayed along with the global value.\n
   "Recursive describe hash function for nested hash-tables.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
-`mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
+`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
+`mon-hash-put-CL', `mon-hash-describe'.\n►►►"
   (maphash (lambda (key value)
 	     (pp key)
 	     (princ " => ")
@@ -551,13 +636,14 @@ it is displayed along with the global value.\n
 ;;; :COURTESY Sam Steingold :HIS clhs.el :WAS `hash-table-complete'
 (defun mon-hash-table-complete (string table how)
   "This makes it possible to use hash-tables with `completing-read'.\n
-:NOTE `completing-read' in Emacs 22 accepts hash-tables natively.
+:NOTE `completing-read' in Emacs 22 accepts hash-tables natively.\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
-`mon-hash-readlines-buffer', `mon-hash-readlines-file', `mon-hash-all-values' ,
-`mon-hash-all-keys', `mon-hash-to-list', `mon-hash-get-items',
-`mon-hash-get-values' , `mon-hash-has-key' , `mon-hash-get-symbol-keys',
-`mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe'.\n►►►"
+`mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
+`mon-hash-readlines-file', `mon-hash-all-values', `mon-hash-all-keys',
+`mon-hash-to-list', `mon-hash-get-items', `mon-hash-get-values',
+`mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
+`mon-hash-put-CL', `mon-hash-describe'.\n►►►"
   (let ((res nil) 
         (st (upcase string)) 
         (len (length string)))
@@ -577,6 +663,12 @@ it is displayed along with the global value.\n
 ;;; ==============================
 (provide 'mon-hash-utils)
 ;;; ==============================
+
+ 
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
 
 ;;; ================================================================
 ;;; mon-hash-utils.el ends here

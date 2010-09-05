@@ -9,7 +9,7 @@
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/anything.el
 ;; Site: http://www.emacswiki.org/cgi-bin/emacs/Anything
 (defvar anything-version nil)
-(setq anything-version "1.286")
+(setq anything-version "1.287")
 
 ;; This file is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -2312,7 +2312,15 @@ action."
                         (and (assoc 'accept-empty source) "")))
     (unless preserve-saved-action (setq anything-saved-action nil))
     (if (and selection action)
-        (anything-funcall-with-source source  action selection))))
+        (anything-funcall-with-source
+         source action
+         (anything-coerce-selection selection source)))))
+
+(defun anything-coerce-selection (selection source)
+  "Coerce source with coerce function."
+  (anything-aif (assoc-default 'coerce source)
+             (anything-funcall-with-source source it selection)
+           selection))
 
 (defun anything-get-default-action (action)
   (if (and (listp action) (not (functionp action)))
@@ -3202,7 +3210,7 @@ It is analogous to `dired-get-marked-files'."
                (loop with current-src = (anything-get-current-source)
                      for (source . real) in (reverse anything-marked-candidates)
                      when (equal current-src source)
-                     collect real)
+                     collect (anything-coerce-selection real source))
              (list (anything-get-selection)))))
       (anything-log-eval cands)
       cands)))
@@ -3891,6 +3899,16 @@ buffer as BUFFER."
   with TAB). The DISPLAY string is shown in the completions
   buffer and the FUNCTION is invoked when an action is
   selected. The first action of the list is the default. ")
+(anything-document-attribute 'coerce "optional"
+  "  It's a function called with one argument: the selected candidate.
+  
+  This function is intended for type convertion.
+  In normal case, the selected candidate (string) is passed to action function.
+  If coerce function is specified, it is called just before action function.
+
+  Example: converting string to symbol
+    (coerce . intern)
+")
 (anything-document-attribute 'type "optional if action attribute is provided"
   "  Indicates the type of the items the source returns. 
 
@@ -5816,6 +5834,17 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
           (stub anything-get-current-source => source)
           (stub anything-get-selection => "current")
           (anything-marked-candidates)))
+      (desc "anything-marked-candidates with coerce")
+      (expect '(mark3 mark1)
+        (let* ((source '((name . "mark test")
+                         (coerce . intern)))
+               (anything-marked-candidates
+                `((,source . "mark1")
+                  (((name . "other")) . "mark2")
+                  (,source . "mark3"))))
+          (stub anything-buffer-get => (current-buffer))
+          (stub anything-get-current-source => source)
+          (anything-marked-candidates)))
       (desc "anything-let")
       (expect '(1 10000 nil)
         (let ((a 9999)
@@ -5930,6 +5959,47 @@ Given pseudo `anything-sources' and `anything-pattern', returns list like
            '("a" "b") incomplete-line-info)
           (anything-output-filter--collect-candidates
            '("" "c" "") incomplete-line-info)))
+      (desc "coerce attribute")
+      (expect "string"
+        (anything :sources '(((name . "test")
+                              (candidates "string")
+                              (action . identity)))
+                  :execute-action-at-once-if-one t))
+      (expect 'symbol
+        (anything :sources '(((name . "test")
+                              (candidates "symbol")
+                              (coerce . intern)
+                              (action . identity)))
+                  :execute-action-at-once-if-one t))
+      (expect 'real
+        (anything :sources '(((name . "test")
+                              (candidates ("display" . "real"))
+                              (coerce . intern)
+                              (action . identity)))
+                  :execute-action-at-once-if-one t))
+      (expect 'real
+        (anything :sources '(((name . "test")
+                              (candidates)
+                              (candidate-transformer
+                               (lambda (c) '(("display" . "real"))))
+                              (coerce . intern)
+                              (action . identity)))
+                  :execute-action-at-once-if-one t))
+      (expect 'real
+        (anything :sources '(((name . "test")
+                              (candidates)
+                              (filtered-candidate-transformer
+                               (lambda (c s) '(("display" . "real"))))
+                              (coerce . intern)
+                              (action . identity)))
+                  :execute-action-at-once-if-one t))
+      (expect 'real
+        (anything :sources '(((name . "test")
+                              (candidates "dummy")
+                              (display-to-real (lambda (disp) "real"))
+                              (coerce . intern)
+                              (action . identity)))
+                  :execute-action-at-once-if-one t))
       (desc "anything-next-point-in-list")
       (expect 10
         (anything-next-point-in-list 5 '(10 20) nil))

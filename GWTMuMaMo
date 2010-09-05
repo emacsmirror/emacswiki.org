@@ -5,11 +5,11 @@ The [http://code.google.com/webtoolkit/ Google Web Toolkit] (GWT) allows you to 
 In order to use gwt-mumamo, you will need [NxhtmlMode nXhtml].
 
 If your Emacs version is 23.1 or below, you will need [JavaScriptMode espresso-mode].
-You also need to add an alias to it, add the following to your Emacs init file:
+You also need to add an alias to it, add the following to your [InitFile init file]:
 
   (defalias 'js-mode 'espresso-mode)
 
-Add Lisp:gwt-mumamo.el to your load-path and add the following line to your Emacs init file:
+Add Lisp:gwt-mumamo.el to your load-path and add the following line to your [InitFile init file]:
 
   (autoload 'gwt-mumamo-mode "gwt-mumamo" "" t)
 

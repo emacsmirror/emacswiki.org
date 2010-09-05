@@ -1,0 +1,5 @@
+On some non-English systems, trying to type an accented character, for example with a tilde (##~##), will result in Emacs spitting out "##<dead_tilde>## is undefined". The problem can be fixed by adding this line to ##.emacs##:
+
+   (require 'iso-transl)
+
+Another solution is to change the language locale suffix to large letters, e.g., from ##LANG=nb_NO.utf8## to ##LANG=nb_NO.UTF-8##. See [https://bugs.launchpad.net/ubuntu/+bug/575084 Ubuntu bug #575084].

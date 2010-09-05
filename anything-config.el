@@ -711,7 +711,14 @@ type\\|theme\\|var\\|group\\|custom\\|const\\|method\\|class\\)"
     (python-mode . ,anything-c-browse-code-regexp-python))
   "*Alist to store regexps for browsing code corresponding \
 to a specific `major-mode'."
-  :type 'string
+  :type 'list
+  :group 'anything-config)
+
+(defcustom anything-c-external-programs-associations nil
+  "*Alist to store externals programs associated with file extension.
+This variable overhide setting in .mailcap file.
+e.g : '\(\(\"jpg\" . \"gqview\"\) (\"pdf\" . \"xpdf\"\)\) "
+  :type 'list
   :group 'anything-config)
 
 ;;;###autoload
@@ -1893,7 +1900,9 @@ If prefix numeric arg is given go ARG level down."
          (prefix-url (propertize
                       " " 'display
                       (propertize "[@]" 'face 'anything-ffiles-prefix-face))))
-    (cond ((file-exists-p fname) (if image (concat prefix-img fname) fname))
+    (cond ((or (file-exists-p fname)
+               (file-symlink-p fname))
+           (if image (concat prefix-img fname) fname))
           ((string-match ffap-url-regexp fname) (concat prefix-url " " fname))
           (t (concat prefix-new " " fname)))))
 
@@ -3154,7 +3163,7 @@ http://www.nongnu.org/bm/")
   "Used as `candidate-transformer' to colorize bookmarks.
 Work both with standard Emacs bookmarks and bookmark-extensions.el."
   (loop for i in bookmarks
-     for pred          = (bookmark-get-filename i)
+     for isfile        = (bookmark-get-filename i)
      for bufp          = (and (fboundp 'bmkext-get-buffer-name)
                               (bmkext-get-buffer-name i))
      for handlerp      = (and (fboundp 'bookmark-get-handler)
@@ -3170,31 +3179,31 @@ Work both with standard Emacs bookmarks and bookmark-extensions.el."
      for handlerp      = (bookmark-get-handler i)
      for isannotation  = (bookmark-get-annotation i)
      for isabook       = (string= (bookmark-prop-get i 'type) "addressbook")
+     for isinfo        = (eq handlerp 'Info-bookmark-jump)
      ;; Add a * if bookmark have annotation
      if (and isannotation (not (string-equal isannotation "")))
      do (setq i (concat "*" i))
-     ;; info buffers
-     if (eq handlerp 'Info-bookmark-jump)
-     collect (propertize i 'face 'anything-bmkext-info 'help-echo pred)
-     ;; w3m buffers
-     if isw3m
-     collect (propertize i 'face 'anything-bmkext-w3m 'help-echo pred)
-     ;; gnus buffers
-     if isgnus
-     collect (propertize i 'face 'anything-bmkext-gnus 'help-echo pred)
-     ;; Man Woman
-     if (or iswoman isman)
-     collect (propertize i 'face 'anything-bmkext-man 'help-echo pred)
-     ;; Addressbook
-     if (and (not pred) isabook)
-     collect (propertize i 'face '((:foreground "Tomato")))
-     ;; directories
-     if (and pred (file-directory-p pred))
-     collect (propertize i 'face anything-c-bookmarks-face1 'help-echo pred)
-     ;; regular files
-     if (and pred (not (file-directory-p pred)) (file-exists-p pred)
-             (not (or iswoman isman)))
-     collect (propertize i 'face 'anything-bmkext-file 'help-echo pred)))
+     collect (cond (;; info buffers
+                    isinfo
+                    (propertize i 'face 'anything-bmkext-info 'help-echo isfile))
+                   (;; w3m buffers
+                    isw3m
+                    (propertize i 'face 'anything-bmkext-w3m 'help-echo isfile))
+                   (;; gnus buffers
+                    isgnus
+                    (propertize i 'face 'anything-bmkext-gnus 'help-echo isfile))
+                   (;; Man Woman
+                    (or iswoman isman)
+                    (propertize i 'face 'anything-bmkext-man 'help-echo isfile))
+                   (;; Addressbook
+                    isabook
+                    (propertize i 'face '((:foreground "Tomato"))))
+                   (;; directories
+                    (and isfile (file-directory-p isfile))
+                    (propertize i 'face anything-c-bookmarks-face1 'help-echo isfile))
+                   (;; regular files
+                    t
+                    (propertize i 'face 'anything-bmkext-file 'help-echo isfile)))))
 
 
 ;;; Faces for bookmarks
@@ -5154,8 +5163,7 @@ Return an alist with elements like (data . number_results)."
                ("Add to Playlist and play"
                 . (lambda (candidate)
                     (emms-playlist-new)
-                    (dolist (i (anything-marked-candidates))
-                      (emms-add-playlist-file i))
+                    (mapc 'emms-add-playlist-file (anything-marked-candidates))
                     (unless emms-player-playing-p
                       (anything-c-emms-play-current-playlist))))))))
 
@@ -6023,42 +6031,26 @@ automatically.")
 
 (defun anything-c-external-commands-list-1 (&optional sort)
   "Returns a list of all external commands the user can execute.
-
 If `anything-c-external-commands-list' is non-nil it will
 return its contents.  Else it calculates all external commands
-and sets `anything-c-external-commands-list'.
-
-The code is ripped out of `eshell-complete-commands-list'."
+and sets `anything-c-external-commands-list'."
   (if anything-c-external-commands-list
       anything-c-external-commands-list
       (setq anything-c-external-commands-list
-            (let* ((paths (split-string (getenv "PATH") path-separator))
-                   (cwd (file-name-as-directory
-                         (expand-file-name default-directory)))
-                   (path "") (comps-in-path ())
-                   (file "") (filepath "") (completions ()))
-              ;; Go thru each path in the search path, finding completions.
-              (while paths
-                (setq path (file-name-as-directory
-                            (expand-file-name (or (car paths) ".")))
-                      comps-in-path
-                      (and (file-accessible-directory-p path)
-                           (file-name-all-completions "" path)))
-                ;; Go thru each completion found, to see whether it should be
-                ;; used, e.g. see if it's executable.
-                (while comps-in-path
-                  (setq file (car comps-in-path)
-                        filepath (concat path file))
-                  (if (and (not (member file completions))
-                           (or (string-equal path cwd)
-                               (not (file-directory-p filepath)))
-                           (file-executable-p filepath))
-                      (setq completions (cons file completions)))
-                  (setq comps-in-path (cdr comps-in-path)))
-                (setq paths (cdr paths)))
-              (if sort
-                  (sort completions #'(lambda (x y) (string< x y)))
-                  completions)))))
+            (loop
+               with paths = (split-string (getenv "PATH") path-separator)
+               with completions = ()
+               for dir in paths
+               when (and (file-exists-p dir) (file-accessible-directory-p dir))
+               for lsdir = (loop for i in (directory-files dir t)
+                              for bn = (file-name-nondirectory i)
+                              when (and (not (member bn completions))
+                                        (not (file-directory-p i))
+                                        (file-executable-p i))
+                              collect bn)
+               append lsdir into completions
+               finally return (if sort (sort completions 'string-lessp) completions)))))
+
 
 (defun anything-c-file-buffers (filename)
   "Returns a list of buffer names corresponding to FILENAME."
@@ -6087,12 +6079,23 @@ The command is like <command %s> and is meant to use with `format'."
          (mime (when ext (mailcap-extension-to-mime ext))))
     (when mime (mailcap-mime-info mime))))
 
+(defun anything-get-default-program-for-file (filename)
+  "Try to find a default program to open FILENAME.
+Try first in `anything-c-external-programs-associations' and then in mailcap file
+if nothing found return nil."
+  (let* ((ext      (file-name-extension filename))
+         (def-prog (assoc-default ext anything-c-external-programs-associations)))
+    (if (and def-prog (not (string= def-prog "")))
+        (concat def-prog " %s")
+        (anything-get-mailcap-for-file filename))))
+
 (defun anything-c-open-file-externally (file)
-  "Open FILE with an external tool found in .mailcap file.
+  "Open FILE with an external program.
+Try to guess which program to use with `anything-get-default-program-for-file'.
 If not found or a prefix arg is given query the user which tool to use."
   (let* ((fname      (expand-file-name file))
          (collection (anything-c-external-commands-list-1 'sort))
-         (def-prog   (anything-get-mailcap-for-file fname))
+         (def-prog   (anything-get-default-program-for-file fname))
          (program    (or (unless (or anything-current-prefix-arg
                                      (not def-prog))
                            def-prog)
@@ -6102,11 +6105,25 @@ If not found or a prefix arg is given query the user which tool to use."
                            :must-match t
                            :name "Open file Externally"
                            :history anything-external-command-history)
-                          " %s"))))
+                          " %s")))
+         (real-prog-name (replace-regexp-in-string " %s" "" program)))
+    (unless def-prog
+      (when
+          (y-or-n-p
+           (format
+            "Do you want to make %s the default program for this kind of files? "
+            real-prog-name))
+        (push (cons (file-name-extension fname)
+                    (read-string
+                     "Program(Add args maybe and confirm): " real-prog-name))
+              anything-c-external-programs-associations)
+        (customize-save-variable 'anything-c-external-programs-associations
+                                 anything-c-external-programs-associations)))
     (anything-run-or-raise program file)
-    (setq program (replace-regexp-in-string " %s" "" program))
     (setq anything-external-command-history
-          (cons program (delete program anything-external-command-history)))))
+          (cons real-prog-name
+                (delete real-prog-name anything-external-command-history)))))
+
 
 ;;;###autoload
 (defun w32-shell-execute-open-file (file)
@@ -6797,13 +6814,11 @@ If optional 2nd argument is non-nil, the file opened with `auto-revert-mode'.")
     (when (buffer-modified-p)
       (revert-buffer t t))))
 
-(defun anything-revert-marked-buffers (candidate)
-  (dolist (i (anything-marked-candidates))
-    (anything-revert-buffer i)))
+(defun anything-revert-marked-buffers (ignore)
+  (mapc 'anything-revert-buffer (anything-marked-candidates)))
 
-(defun anything-kill-marked-buffers (candidate)
-  (dolist (i (anything-marked-candidates))
-    (kill-buffer i)))
+(defun anything-kill-marked-buffers (ignore)
+  (mapc 'kill-buffer (anything-marked-candidates)))
 
 ;; Plug-in: persistent-help
 (defun anything-compile-source--persistent-help (source)
@@ -6835,7 +6850,7 @@ It also accepts a function or a variable name.")
   "Open file CANDIDATE or open anything marked files in background."
   (let ((marked (anything-marked-candidates)))
     (if (> (length marked) 1)
-        (dolist (i marked) (find-file-noselect i))
+        (mapc 'find-file-noselect marked)
         (find-file-at-point candidate))))
 
 ;; FIXME there is a bug in dired that confuse all dired commands
@@ -6890,14 +6905,11 @@ Return nil if bmk is not a valid bookmark."
         (when (assoc bmk bookmark-alist)
           bmk))))
 
-(defun anything-delete-marked-bookmarks (elm)
+(defun anything-delete-marked-bookmarks (ignore)
   "Delete this bookmark or all marked bookmarks."
-  (let ((bookmark (anything-bookmark-get-bookmark-from-name elm)))
-    (anything-aif (anything-marked-candidates)
-        (dolist (i it)
-          (let ((bmk (anything-bookmark-get-bookmark-from-name i)))
-            (bookmark-delete bmk 'batch)))
-      (bookmark-delete bookmark 'batch))))
+  (dolist (i (anything-marked-candidates))
+    (bookmark-delete (anything-bookmark-get-bookmark-from-name i)
+                     'batch)))
 
 (defun anything-require-or-error (feature function)
   (or (require feature nil t)
@@ -6970,27 +6982,30 @@ Return nil if bmk is not a valid bookmark."
 
 (define-anything-type-attribute 'command
   `((action ("Call interactively" . anything-c-call-interactively)
-            ("Describe command" . anything-c-describe-function)
+            ("Describe command" . describe-function)
             ("Add command to kill ring" . anything-c-kill-new)
-            ("Go to command's definition" . anything-c-find-function))
+            ("Go to command's definition" . find-function))
     ;; Sort commands according to their usage count.
     (filtered-candidate-transformer . anything-c-adaptive-sort)
-    (persistent-action . anything-c-describe-function))
+    (coerce . anything-c-symbolify)
+    (persistent-action . describe-function))
   "Command. (string or symbol)")
 
 (define-anything-type-attribute 'function
-  '((action ("Describe function" . anything-c-describe-function)
+  '((action ("Describe function" . describe-function)
             ("Add function to kill ring" . anything-c-kill-new)
-            ("Go to function's definition" . anything-c-find-function))
+            ("Go to function's definition" . find-function))
     (action-transformer anything-c-transform-function-call-interactively)
-    (candidate-transformer anything-c-mark-interactive-functions))
+    (candidate-transformer anything-c-mark-interactive-functions)
+    (coerce . anything-c-symbolify))
   "Function. (string or symbol)")
 
 (define-anything-type-attribute 'variable
-  '((action ("Describe variable" . anything-c-describe-variable)
+  '((action ("Describe variable" . describe-variable)
             ("Add variable to kill ring" . anything-c-kill-new)
-            ("Go to variable's definition" . anything-c-find-variable)
-            ("Set variable" . anything-c-set-variable)))
+            ("Go to variable's definition" . find-variable)
+            ("Set variable" . anything-c-set-variable))
+    (coerce . anything-c-symbolify))
   "Variable.")
 
 (define-anything-type-attribute 'sexp
@@ -7000,33 +7015,22 @@ Return nil if bmk is not a valid bookmark."
   "String representing S-Expressions.")
 
 (define-anything-type-attribute 'bookmark
-  `((action
-     ("Jump to bookmark" . (lambda (candidate)
-                             (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate))
-                                   (current-prefix-arg anything-current-prefix-arg))
+  `((coerce . anything-bookmark-get-bookmark-from-name)
+    (action
+     ("Jump to bookmark" . (lambda (bookmark)
+                             (let ((current-prefix-arg anything-current-prefix-arg))
                                (bookmark-jump bookmark))
                              (anything-update)))
-     ("Jump to BM other window" . (lambda (candidate)
-                                    (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-                                      (bookmark-jump-other-window bookmark))
+     ("Jump to BM other window" . (lambda (bookmark)
+                                    (bookmark-jump-other-window bookmark)
                                     (anything-update)))
-     ("Bookmark edit annotation" . (lambda (candidate)
-                                     (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-                                       (bookmark-edit-annotation bookmark))))
-     ("Bookmark show annotation" . (lambda (candidate)
-                                     (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-                                       (bookmark-show-annotation bookmark))))
+     ("Bookmark edit annotation" . bookmark-edit-annotation)
+     ("Bookmark show annotation" . bookmark-show-annotation)
      ("Delete bookmark(s)" . anything-delete-marked-bookmarks)
      ,@(when (fboundp 'bmkext-edit-bookmark)
-             '(("Edit Bookmark" . (lambda (candidate)
-                                    (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-                                            (bmkext-edit-bookmark bookmark))))))
-     ("Rename bookmark" . (lambda (candidate)
-                            (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-                              (bookmark-rename bookmark))))
-     ("Relocate bookmark" . (lambda (candidate)
-                              (let ((bookmark (anything-bookmark-get-bookmark-from-name candidate)))
-                                (bookmark-relocate bookmark))))))
+         '(("Edit Bookmark" . bmkext-edit-bookmark)))
+     ("Rename bookmark" . bookmark-rename)
+     ("Relocate bookmark" . bookmark-relocate)))
      "Bookmark name.")
 
 (define-anything-type-attribute 'line
