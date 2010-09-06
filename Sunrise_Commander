@@ -17,19 +17,22 @@ popular by the Norton and Midnight Commanders.)
 
 "Another one?" you may say.
 
-Well,  yes.  As  a  long time user of the Midnight Commander on Linux (and, long
-before that, of Norton Commander and Norton Navigator on DOS), one of the  first
+Well, yes.  As  a long time user  of the Midnight Commander on  Linux (and, long
+before that, of Norton Commander and Norton  Navigator on DOS), one of the first
 things I tried after moving to Emacs was running MC in term-mode. It was no joy,
-so after that I tried using nc.el and mc.el, but both scripts were far away from
-what I was looking for.
+so after that I tried using [NortonCommanderMode nc.el] and
+[MidnightCommanderMode mc.el], but both scripts were far away from what I was
+looking for.
 
-I  realized early the power of Dired (learned quite fast several nifty tricks on
-it), and I think the decision made by the authors of mc.el of basing their  file
-manager  on Dired was a wise one. But it lacked support for so many of the usage
-patterns MC got me accustomed to through all these years... it was a real  pity.
+I realized early the power of Dired  (learned quite fast several nifty tricks on
+it), and  I think  the decision  made by  the authors  of [MidnightCommanderMode
+mc.el] of  basing their  file manager  on Dired was  a wise  one. But  it lacked
+support for so  many of the usage  patterns MC got me accustomed  to through all
+these years... it was a real pity.
 
-So, faithful to the tradition established by mc.el and ec.el, I decided to write
-the Sunrise Commander.
+So, faithful to  the tradition established by  [MidnightCommanderMode mc.el] and
+[http://levana.de/emacs/ ec.el], I decided to write the
+[Lisp:sunrise-commander.el Sunrise Commander].
 
 After several months of growing it up (good programs seem to grow by themselves)
 I've managed to put together most of the functionality I  wanted  that  was  not
@@ -483,7 +486,7 @@ Also I was stuck with this for a while: so this happened and I had the view narr
 [new]
 /If it is not essential for the matching string to be as short as possible/ -- it's not strictly essential, but helps a lot to keep the implementation simple and robust. Never mind the message, just keep typing until you see in the pane what you're looking for, then press Return. Besides, the current behavior has the advantage that for frequent narrowing operations you end remembering the shortest combination of keys that leads to the desired result (e.g. to narrow my ~/emacs directory to sunrise-commander.el and all its extensions, I usually type C-/ su- [RET]).
 
-To cancel the fuzzy narrow mode and see all files again simply press *g* (revert-buffer), possibly preceded by Return or C-g to terminate the pattern input. It may not be intuitive for you right now, but after you've used Emacs a bit this will make perfect sense. One of the best things about Emacs the platform is that all -- or at least most of -- its applications have similar keybindings for similar operations (though at times the similarity may be hard to discern).
+To cancel the fuzzy narrow mode and see all files again simply press *g* (revert-buffer), possibly preceded by Return (or C-n, or C-p) to terminate the pattern input. It may not be intuitive for you right now, but after you've used Emacs a bit this will make perfect sense. One of the best things about Emacs the platform is that all -- or at least most of -- its applications have similar keybindings for similar operations (though at times the similarity may be hard to discern).
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 [new]
@@ -521,6 +524,11 @@ Now I see more clearly what I meant by navigation during fuzzy narrowing. I just
 Worked for me :)
 
 I am not so sure about the consistency of C-g after C-c/ which accepts the narrowing. C-g cancels the action almost everywhere else in emacs. Would it be possible to customize C-g to revert the buffer? I could not figure it out. Thanks. -- RedBlue
+
+[new:José Alfredo Romero L.:2010-09-05 10:26 UTC]
+Hi again RedBlue,
+
+Thanks a lot for your suggestions. I've implemented both of them in the [Lisp:sunrise-commander.el latest revision]. -- [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 ----
 CategoryDirectories

@@ -1,41 +1,10 @@
-The directory ##~/.emacs.d/## is a standard location for '''additional per-user Emacs-specific files'''. Various packages store information in this directory. Since it is located in the home directory (##~/##), it is unique for each user, just like the ##~/.emacs## [[init file]]. The ##user-emacs-directory## variable holds the location of the directory.
+The directory ##~/.emacs.d/## is a standard location for '''additional per-user Emacs-specific files'''. Various packages store information in this directory. Since it is located in the home directory (##~/##), it is unique for each user, just like the ##~/.emacs## [[init file]]. Note that as ##.emacs.d## begins with a dot, it is normally '''hidden''' on Unix systems and only turns up in directory listings if all files and folders are shown (##ls -a##).
 
-== Add .emacs.d to load-path ==
+The ##user-emacs-directory## variable holds the location of ##.emacs.d##. On '''Windows''', the location depends on the ##HOME## environment variable: if set to ##C:\##, then ##.emacs## is located at ##C:\.emacs## and ##.emacs.d## at ##C:\.emacs.d##.
 
-When Emacs loads Lisp libraries, it searches in a list of directories specified by the variable ##load-path##. To add the ##.emacs.d## directory and all its subdirectories to this variable, put the following in your ##.emacs## file:
+Starting with Emacs 22, if ##~/.emacs## does not exist, Emacs will try ##~/.emacs.d/init.el## and ##~/.emacs.d/init.elc##. You can also put the shell init file ##.emacs_SHELL## under ##~/.emacs.d##.
 
-    (with-temp-buffer
-      (cd user-emacs-directory)
-      (add-to-list 'load-path default-directory)
-      (normal-top-level-add-subdirs-to-load-path))
-
-This will make ##require## recognize libraries in ##.emacs.d##.
-
-Starting with Emacs 22, if ##~/.emacs## does not exist, Emacs will try ##~/.emacs.d/init.el## and ##~/.emacs.d/init.elc##. You can also put the shell init file ##.emacs_SHELL## under ##~/.emacs.d##. On '''Windows''', the location depends on the ##HOME## environment variable: if set to ##C:\##, then ##.emacs## is located at ##C:\.emacs## and ##.emacs.d## at ##C:\.emacs.d##.
-
-
-== Other directories for Emacs libraries ==
-
-The default value of ##load-path## includes two special directories recursively: ##/usr/local/share/emacs/VERSION/site-lisp## and ##/usr/local/share/emacs/site-lisp##. (On Windows, the equivalent location is ##C:\Program Files\emacs-VERSION\site-lisp##.) The first directory contains packages for a particular Emacs version; the second contains packages for all installed versions of Emacs. These directories contain files for the current ''site'', for use by the system administrator when installing software locally.[http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY] On the other hand, ##.emacs.d## contains files for the current ''user'', and is independent of system-wide changes.
-
-The location of ##.emacs.d## in the home directory makes it easy to transfer between different machines. Its contents are not affected by uninstalling and reinstalling Emacs; it might even survive a system format if the ##/home## tree is mounted from a separate volume or partition. Note that since the directory begins with a dot, it is normally '''hidden''' and only turns up in directory listings if all files and folders are shown (##ls -a##).
-
-== Discussion ==
-
-The above doesn't seem to make sense, grammatically. It's not clear what it's trying to say. For example:
-
-What does the "but is not shipped ... distributor" refer to? .emacs.d? or Your own config files and developments? Or external modes? Or what?
-
-Why the reference to Debian? Is it an example of a distro that doesn't ... well, doesn't what? See first question?
-
-Exactly what is in contrast with "what configurations are allowed ..."? Is this referring back again to "your own configuration files..." and saying that .emacs.d is the place to put your local config changes *unless* they should really be put in your .emacs.
-
-Thanks in advance for clearing this up. I just want to know what the .emacs.d directory is for! :-)
-
--------Note from DavidStorrs: Above paragraph rewritten to hopefully clarify it.
-
-[new]
-For Emacs 22: "If the [[init file]] ##~/.emacs## does not exist, Emacs will try ##~/.emacs.d/init.el## or ##~/.emacs.d/init.elc##. You can also put the shell init file ##.emacs_SHELL## under ##~/.emacs.d##."
+The LoadPath can use ##.emacs.d##. 
 
 ----
 CategoryDotEmacs

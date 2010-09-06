@@ -32,6 +32,25 @@ If you only want some of the subdirectories added you can use
      '("emms" "erc" "planner" "w3"))
 
 
+== Add .emacs.d to load-path ==
+
+To add ##.emacs.d/elisp## and its subdirectories to this variable, place the following in your ##.emacs##:
+
+    (let ((default-directory (concat user-emacs-directory "elisp")))
+      (add-to-list 'load-path default-directory)
+      (normal-top-level-add-subdirs-to-load-path))
+
+It is probably unwise to add all of ##.emacs.d/## to one's load-path since there's a risk of loading files in the ##.emacs.d## tree that aren't intended.  However, Emacs will add sub-directories that start with alpha-numerics and ignore directories that start with dot or include a file called ##.nosearch##.  Though, one can't always predict to be so diligent.
+
+== Other directories ==
+
+There are other directories for Emacs packages, which are listed in ##load-path## by default. The benefits of putting installed packages and personal code in the home directory makes it easy to transfer between machines, and that it's not affected by uninstalling and reinstalling Emacs. It might even survive a system format if the ##/home## tree is mounted from a separate volume or partition.
+
+== Other directories ==
+
+The default value of ##load-path## includes two special directories recursively: ##/usr/local/share/emacs/VERSION/site-lisp## and ##/usr/local/share/emacs/site-lisp##. (On Windows, the equivalent location is ##C:\Program Files\emacs-VERSION\site-lisp##.) The first directory contains packages for a particular Emacs version; the second contains packages for all installed versions of Emacs. These directories contain files for the current ''site'', for use by the system administrator when installing software locally.[http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY] On the other hand, ##~/elisp## contains files for the current ''user'', and is independent of system-wide changes.
+
+
 == Debugging ==
 
 First, check the value of your <code>load-path</code> by asking for help on the variable:
