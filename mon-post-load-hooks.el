@@ -184,26 +184,27 @@ When this buffer exists it is killed by `mon-run-post-load-hooks'.\n
 (defun mon-run-post-load-hooks ()
   "Kill the buffer named by the variable `*mon-post-load-hook-trigger-buffer*'.\n
 Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
-:SEE-ALSO `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load'
+:SEE-ALSO `mon-run-post-load-hooks', `mon-purge-cl-symbol-buffers-on-load',
 `mon-check-feature-for-loadtime', `mon-after-mon-utils-loadtime',
 `mon-set-register-tags-loadtime', `mon-bind-iptables-vars-at-loadtime',
 `mon-bind-cifs-vars-at-loadtime', `mon-CL-cln-colon-swap',
 `mon-bind-nefs-photos-at-loadtime', `mon-help-utils-loadtime',
 `mon-help-utils-CL-loadtime', `mon-bind-doc-help-proprietery-vars-at-loadtime'.\n►►►"
-  (when (get-buffer *mon-post-load-hook-trigger-buffer*)
-    (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*))))
-;;
-(with-current-buffer 
-      (get-buffer-create *mon-post-load-hook-trigger-buffer*)
-    (when (and (intern-soft "IS-MON-P-GNU")
-               (bound-and-true-p IS-MON-P-GNU))
-      (mon-help-utils-CL-loadtime t)
-      (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
-      (add-hook 'kill-buffer-hook 'mon-update-tags-tables nil t))
-    (when (and (intern-soft "IS-W32-P") 
-               (bound-and-true-p IS-W32-P)
-               (fboundp  'mon-maximize-frame-w32))
-      (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t)))
+  (unwind-protect
+      (with-current-buffer (get-buffer-create *mon-post-load-hook-trigger-buffer*)
+        (when (and (intern-soft "IS-MON-P-GNU")
+                   (bound-and-true-p IS-MON-P-GNU))
+          (mon-help-utils-CL-loadtime t)
+          (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
+          (add-hook 'kill-buffer-hook 'mon-update-tags-tables nil t))
+        (when (and (intern-soft "IS-W32-P") 
+                   (bound-and-true-p IS-W32-P)
+                   (fboundp  'mon-maximize-frame-w32))
+          (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t))
+        (when (get-buffer *mon-post-load-hook-trigger-buffer*)
+          (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*))))
+    (when (get-buffer *mon-post-load-hook-trigger-buffer*)
+      (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*)))))
 
 ;;; ==============================
 ;; :KILL-EMACS
@@ -355,7 +356,7 @@ Empty/Delete the following when the `kill-emacs-hook' is run:\n
 
 ;;; ==============================
 (eval-after-load "mon-utils"
-  '(progn 
+  '(let ((message-log-max t))
      (mon-after-mon-utils-loadtime)
      (mon-run-post-load-hooks)))
 

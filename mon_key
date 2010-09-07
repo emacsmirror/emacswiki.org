@@ -13,6 +13,7 @@ Following is organized roughly according to the load order whilst trying to conv
 * Lisp:mon-w32-load.el -- w32 specific features which must be present or are better left segregated.
 * Lisp mon-GNU-load.el -- GNU/Linux specific features. Mostly for quick reconfiguration of Slime related stuff prior to slime-loads.el
 * Lisp slime-loads.el -- Slime is a moving target with multiple backends for multiple languages. This is for sanity.
+* Lisp:slime-loads-GNU-clbuild.el -- Called from slime-loads.el
 * Lisp:mon-keybindings.el -- Set global keybindings and mode specific stuff.
 * Lisp:mon-post-load-hooks.el -- functions to evaluate after initializing MON Emacsen
 
@@ -21,6 +22,7 @@ Following is organized roughly according to the load order whilst trying to conv
 The package mon-utils is the entry point which loads the rest of the system and specifically any mon-*.el and naf-mode-*.el packages.
 
 * Lisp:mon-utils.el -- (MonUtils) This package is the entry point that loads everything else below.
+* Lisp:mon-text-property-utils.el -- Provides functions for working manipulating text properties
 * Lisp:mon-dir-locals-alist.el -- MON global vars bound to commonly used local-site paths.
 * Lisp:mon-dir-utils.el -- Provides a collection of handy functions and interactive commands for working with directories and files.
 * Lisp:mon-insertion-utils.el -- Provides insertion related utilities, templates and string building/manipulation procedures that ease routine chores and interactive command invocation.
@@ -146,6 +148,7 @@ defcustom hell :P ...
 ¦►►►►► slime-loads.el
 ¦►►►►► mon-keybindings.el
 ¦►►► mon-utils.el
+¦►►► mon-text-property-utils.el
 ¦►►►► mon-cl-compat.el
 ¦►►►►► mon-cl-compat-regexps.el
 ¦►►►► mon-regexp-symbols.el

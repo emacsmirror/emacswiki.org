@@ -28,6 +28,9 @@ which functions to instrument before you start.  This is why the old debugger-mo
 [new:DrewAdams:2008-09-01 15:45 UTC]
 I, for one, disagree. The part about "real" programmers is either cute sarcasm or nonsense, or both, depending on your point of view. I use the "old" debugger all the time. Personally, I've found no particular advantage to Edebug for most contexts. -- DrewAdams, unreal programmer
 
+[new]
+Edebug is simpler(x10) to use, but "old" debugger make unreal programmer think himself a real programmer.
+
 
 ----
 CategoryDebug

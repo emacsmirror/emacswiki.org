@@ -33,6 +33,13 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
 
         (add-hook 'before-save-hook 'delete-trailing-whitespace)
 
+: or you can add this hook locally for particular mode:
+
+        (add-hook 'c-mode-common-hook
+                  (lambda()
+                    (add-hook 'before-save-hook
+                    'delete-trailing-whitespace nil t)))
+
 * PictureModeTrailingWhitespaceTrick. Simple and quick. Works in all GnuEmacs versions.
 
 * `M-x nuke-trailing-whitespace'
@@ -52,7 +59,7 @@ To ''remove trailing whitespace'' from the entire buffer, use any of the followi
             (if (not (bolp)) (forward-line 1))
             (delete-whitespace-rectangle (point) end nil)))
 
-* [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.wl] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
+* [ftp://ftp.lysator.liu.se/pub/emacs/ws-trim.el ws-trim.el] - an old but still very, very good package.  Very configurable.  My only complaint is that it doesn't use the Custom library to set variables.
 
 * [http://github.com/glasserc/ethan-wspace ethan-wspace] - keeps whitespace clean in clean files while highlighting it in dirty files
 

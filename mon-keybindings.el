@@ -49,7 +49,7 @@
 ;;
 ;; SNIPPETS:
 ;;
-;; :INTERRUPT-FLOW-META-QUIT
+;; substitute-key-definition <OLDDEF> <NEWDEF> <KEYMAP>
 ;; (current-input-mode) => (nil nil t 7)
 ;; (set-input-mode)
 ;; (recent-keys)
@@ -71,9 +71,9 @@
 ;; event-apply-meta-modifier    -> 109 -> "m"
 ;; event-apply-hyper-modifier   -> 115 -> "s"
 ;; (24 keymap (64 keymap 
-;;                (99 . event-apply-control-modifier)
-;;                (83 . event-apply-shift-modifier)
-;;                (97 . event-apply-alt-modifier)
+;;                (99  . event-apply-control-modifier)
+;;                (83  . event-apply-shift-modifier)
+;;                (97  . event-apply-alt-modifier)
 ;;                (109 . event-apply-hyper-modifier)
 ;;                (115 . event-apply-super-modifier)
 ;;                (104 . event-apply-hyper-modifier)))
@@ -110,24 +110,9 @@
 ;; (event-modifiers 33554464) => shift
 ;; (event-convert-list '(shift 32))
 ;; (event-convert-list `(,@(event-modifiers 33554464) ,(event-basic-type 33554464)))
-;;  (event-apply-modifier (read-event) 'shift 25 "S-")
-;;  event-apply-shift-modifier
-;;  event-apply-modifier
-;;
-;; (this-command-keys-vector)
-;; :KEYS/KEYMAPS/KEY-BINDING-FUNCTIONS
-;; :SEE (info "(elisp)Keymaps")
-;; `listify-key-sequence'
-;; `lookup-key' (lookup-key keymap key &optional accept-default)
-;; `substitute-key-definition' (olddef newdef keymap &optional oldmap prefix)
-;; `read-key-sequence' (read-key-sequence "keys: ")
-;;  (`kbd' "<some-key>") (kbd "<SPC>")
-;; `define-key', `make-sparse-keymap' 
-;; `substitute-key-definition', `suppress-keymap', `command-remapping'
-;; `local-unset-key', `local-set-key', 
-;; `global-set-key', `global-unset-key'
-;; `function-key-map' (var) 
-;; `event-basic-type'
+;; (event-apply-modifier (read-event) 'shift 25 "S-")
+;; event-apply-shift-modifier
+;; event-apply-modifier
 ;;
 ;; :KEYBINDING-HOOK-IDIOM
 ;; ([add-hook|remove-hook] 
@@ -182,17 +167,12 @@
 
 ;;; CODE:
 
-;; :TODO `narrow-to-region' <- "C-xnr"
-
 ;;; ==============================
-;; :INSTALL-TO :FILE mon-keybindings.el
-
-;; :CHANGE 
-
-
-
 
 (eval-when-compile (require 'cl))
+
+;;; ==============================
+;; :TODO `narrow-to-region' <- "C-xnr"
 
 ;;; ==============================
 ;; :NOT-BOUND-W-C-c
@@ -205,20 +185,6 @@
   (global-set-key [(f3)] 'w32-maximize-frame)
   ;; "M-!" doesn't like it when IS-W32-P :(
   (global-set-key "\C-c!"       'shell-command))
-;; (global-set-key "\C-c!"       'shell-command)  
-
-
-;;; ==============================
-;;
-;; C-x C-n set-goal-column
-;; (define-key ctl-x-map "\C-n" 'set-goal-column) C-x C-n warnings.
-;; (define-key ctl-x-map "\C-n" 'undefined) C-x C-n warnings.
-;; (define-key ctl-x-map [remap set-goal-column]  'ignore) 
-;; (define-key ctl-x-map [remap set-goal-column]  'undefined)
-;; :advertised-binding 
-;;  
-;;; ==============================
-
 
 ;;; ==============================
 ;; :BOUND-W-C-c
@@ -229,25 +195,15 @@
 (global-set-key "\C-cu:"      'mon-cln-up-colon)
 ;;
 ;; C-c C-*
-(global-set-key "\C-c\C-di"   'comment-divider)                  ;!! "\C-c\M-di"
+(global-set-key "\C-c\C-di"   'mon-comment-divider)                  ;!! "\C-c\M-di"
 (global-set-key "\C-c\C-gg"   'google-define)                    ;!! "\C-c\M-gg" 
 
-;; (global-set-key "\C-c\C-kc"   'mon-kill-completions)
-;; (global-set-key "\C-c\C-dn"   'mon-comment-divider-to-col-four)      ;!! "\C-c\M-dn" 
-;; (global-set-key "\C-c\C-na"   'mon-dired-artist-letter)              ;!! "\C-c\M-na"
-;; (global-set-key "\C-c\C-nb"   'mon-dired-brand-letter)               ;!! "\C-c\M-nb"
-;; (global-set-key "\C-x\C-u"    'describe-char) ;; When it gets rebound.
 ;;
 ;; C-c M-*
 (global-set-key "\C-c\M-/"    'hippie-expand)
 (global-set-key "\C-c\M-ar"   'mon-append-to-register)
 (global-set-key "\C-c\M-f"    'mon-flip-windows) 
 
-;; (global-set-key "\C-c\M-ab"   'mon-append-to-buffer)
-;; (global-set-key "\C-c\M-af"   'append-to-file)
-;; (global-set-key "\C-c\C-Cr"    'capitalize-region)
-;; (global-set-key "\C-c\M-php"  'mon-insert-php-comment-divider)
-;; (global-set-key "\C-c\M-wd"   'wdired-change-to-wdired-mode)
 
 ;; :CREATED <Timestamp: #{2009-08-24T16:33:22-04:00Z}#{09351} - by MON>
 (global-set-key "\C-cfst"     'mon-file-stamp) 
@@ -270,7 +226,7 @@
 ;;    (,(kbd "M-<f3>") . w32-maximize-frame)) ;; :WAS [(f3)]
 ;;   )
 ;;; ==============================
-;; "\C-c\C-di"   'comment-divider)                  ;!! "\C-c\M-di"
+;; "\C-c\C-di"   'mon-comment-divider)                  ;!! "\C-c\M-di"
 ;; "\C-c\C-dn"   'mon-comment-divider-to-col-four)      ;!! "\C-c\M-dn" 
 ;; ;; (global-set-key "\C-c\C-in" 'mon-incr)                        ;!! "\C-c\M-in" 
 ;; "\C-x\C-k1"   'mon-split-designator)             ;!! "\C-C\M-k1"
@@ -340,8 +296,6 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
 ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
 ;; (add-hook 'dired-mode-hook 'mon-keybind-dired-mode))
 
-;; substitute-key-definition olddef newdef keymap
-
 ;;; ==============================
 ;; :COMPLETION-KEYBINDINGS
 ;;; :TODO Add bindings for `f' to select-next `b' select-previous
@@ -352,23 +306,22 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
 ;;; :CHANGESET 1895
 ;;; :CREATED <Timestamp: #{2009-12-18T21:48:03-05:00Z}#{09515} - by MON KEY>
 (defun mon-keybind-completions ()
-  "
-:EXAMPLE\n\n
+  "Add keybindings to `completion-list-mode-map'.\n
+Binds `mon-line-move-next', `mon-line-move-prev', and `scroll-up'.\n
 :SEE-ALSO `mon-keybind-put-hooks-init', `mon-keybind-dired-mode',
 `mon-keybind-completions', `mon-keybind-emacs-lisp-mode',
 `mon-keybind-lisp-interaction-mode', `mon-keybind-slime', `mon-keybind-w3m',
 `mon-keybind-w32-init', `mon-help-key-functions', `mon-help-keys'.\n►►►"
-  (define-key completion-list-mode-map "n" 'mon-line-move-next)
-  (define-key completion-list-mode-map "p" 'mon-line-move-prev)
+  (define-key completion-list-mode-map "n"          'mon-line-move-next)
+  (define-key completion-list-mode-map "p"          'mon-line-move-prev)
   (define-key completion-list-mode-map (kbd "SPC")  'scroll-up)
   ;; (define-key completion-list-mode-map (kbd "<S-SPC>")  'scroll-down)
   )
 
 ;; (remove-hook 'completion-list-mode-hook 'mon-keybind-completions)
 ;; (add-hook 'completion-list-mode-hook 'mon-keybind-completions)
-;;(define-key(kbd "<S-SPC>")
 
-;; 
+;;; ==============================
 ;;(remove-hook'Info-mode-hook  
 (add-hook 'Info-mode-hook  
 	  (function 
@@ -382,6 +335,8 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
              (define-key Info-mode-map "\C-cia" 'info-apropos))))
 
 
+;;; ==============================
+;; (remove-hook 'ido-minibuffer-setup-hook
 (add-hook 'ido-minibuffer-setup-hook
           (function 
            (lambda ()
@@ -396,7 +351,8 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
 ;; :W3M-MODE-MAP
 ;; `w3m-mode-map', `w3m-mode-hook'
 ;; ==============================
-;; :NOTE Following is some unfinished work-notes regarding pending customization of w3m keymaps/hooks
+;; :NOTE Following is some unfinished work-notes regarding pending customization
+;; of w3m keymaps/hooks
 ;; `w3m-mode-map'
 ;; `w3m-mode-menu'
 ;; No, This is M-n 
@@ -517,13 +473,13 @@ Can be manually removed later with:
   ;;
   ;; `w3m-previous-buffer' Turn the page of emacs-w3m buffers behind.
   ;;(local-set-key (kbd "M-p")  'w3m-previous-buffer) 
-  (define-key w3m-mode-map (kbd "M-p")    'w3m-previous-buffer)
-  (define-key w3m-mode-map (kbd "M-n")    'w3m-next-buffer)
-  (define-key w3m-mode-map (kbd "C-c b")  'w3m-view-previous-page)
-  (define-key w3m-mode-map (kbd "C-c f")  'w3m-view-next-page)
-  ;; (local-set-key    (kbd "<up>")   'mon-scroll-down-in-place)
-  (define-key w3m-mode-map (kbd "<up>") 'mon-scroll-down-in-place)
-  ;;  (local-set-key    (kbd "<down>") 'mon-scroll-up-in-place)
+  (define-key w3m-mode-map (kbd "M-p")     'w3m-previous-buffer)
+  (define-key w3m-mode-map (kbd "M-n")     'w3m-next-buffer)
+  (define-key w3m-mode-map (kbd "C-c b")   'w3m-view-previous-page)
+  (define-key w3m-mode-map (kbd "C-c f")   'w3m-view-next-page)
+  ;;(local-set-key          (kbd "<up>")   'mon-scroll-down-in-place)
+  (define-key w3m-mode-map (kbd "<up>")    'mon-scroll-down-in-place)
+  ;; (local-set-key    (kbd "<down>")      'mon-scroll-up-in-place)
   (define-key w3m-mode-map  (kbd "<down>") 'mon-scroll-up-in-place))
 ;;
 ;; (remove-hook 'w3m-mode-hook 'mon-keybind-w3m)
@@ -553,7 +509,7 @@ Run on the `emacs-lisp-mode-hook'\n
   (define-key emacs-lisp-mode-map "\C-c\M-:"    'mon-eval-expression)
   (define-key emacs-lisp-mode-map "\C-cc"       'comment-region)
   (define-key emacs-lisp-mode-map "\C-c\C-uc"   'uncomment-region)
-  (define-key emacs-lisp-mode-map "\C-c\C-di"   'comment-divider)
+  (define-key emacs-lisp-mode-map "\C-c\C-di"   'mon-comment-divider)
   (define-key emacs-lisp-mode-map "\C-c\C-d4"   'mon-comment-divider-to-col-four)
   (define-key emacs-lisp-mode-map "\C-cst"      'mon-insert-lisp-stamp)
   (define-key emacs-lisp-mode-map "\C-ctm"      'mon-insert-lisp-testme)
@@ -662,6 +618,7 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
           
 ;;; ==============================
 ;; :MESSAGE-MODE-KEYBINDINGS
+;; (remove-hook 'message-mode-hook
 (add-hook 'message-mode-hook
           (function 
 	   (lambda ()
@@ -673,7 +630,9 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 ;;; ==============================
 ;; :EMACS-SERVER-KEYBINDINGS
 ;;; :CREATED <Timestamp: #{2010-01-27T22:48:03-05:00Z}#{10043} - by MON KEY>
-(when IS-MON-P-GNU
+(when (and (intern-soft "IS-MON-P-GNU")
+           (bound-and-true-p IS-MON-P-GNU))
+  ;; (remove-hook 'server-switch-hook  
   (add-hook 'server-switch-hook  
             (function 
              (lambda () 
@@ -697,14 +656,14 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 ;;;
 ;;; dvc-fileinfo-revert-files
 
+;; (remove-hook 'dvc-status-mode-hook
 (add-hook 'dvc-status-mode-hook
           (function 
            (lambda () 
              (local-unset-key dvc-status-mode-map "U") ;;; dvc-fileinfo-revert-files)
              (define-key dvc-status-mode-map dvc-keyvec-revert nil)
              ;; dvc-fileinfo-revert-files
-             ))
-          )
+             )))
 
 ;; (add-hook 'dvc-diff-mode-hook
 ;;           (function (lambda ()

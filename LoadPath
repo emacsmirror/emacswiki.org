@@ -1,67 +1,103 @@
-The variable <code>load-path</code> lists all the directories where Emacs should look for elisp files.  They are searched in order.  The first file found is used, therefore the order of the directories might be relevant.  
+The variable ##load-path## lists all the directories where Emacs should look for Elisp files. The first file found is used, therefore the order of the directories is relevant.
 
-Preference is given to compiled files when both a compiled file and a source file are found.  Therefore, make sure to recompile files after making changes to them -- or don't compile the files at all.
+Preference is given to compiled files when both a compiled file and a source file are found. Therefore, make sure to recompile files after making changes to them (or don't compile the files at all).
 
+== Adding a directory ==
 
-== Including subdirectories ==
+To add a single directory to the ##load-path##:
 
-By default Emacs doesn't include subdirectories of a directory which is added to load-path. But you can do it by issuing a command in startup file:
+    (add-to-list 'load-path "~/.emacs.d/site-lisp/")
+
+The final slash is required for all paths that should be treated as directories as opposed to regular files.
+
+[:AddSubDirectories]
+== Adding sub-directories ==
+
+Adding a directory to the ##load-path## does not add it's sub-directories also.  To add the sub-directories of the current directory to the ##load-path## do this:
 
     (normal-top-level-add-subdirs-to-load-path)
 
-which will add all subdirs of current directory and all subdirectories of those directories recursively.  <strong>Note:</strong> current directory is not necessarily the one where your script is executed at the moment. So you first need to change directory to the required one:
+This adds all sub-directories of the current directory recursively; except those not staring with letters or digits, named ##RCS## or ##CVS## or containing a file named ##.nosearch##.
 
-    (progn (cd "~/elisp") (normal-top-level-add-subdirs-to-load-path))
+The current directory is the directory containing the currently visited file, or if the current buffer does not visit a file the directory from which Emacs was started.
 
-In this example it is assumed that you want to add all subdirs of the ~/elisp directory.
+To add any other directory to the ##load-path## (which is what you normally want to do) the current directory has to be temporarily changed by binding ##default-directory##:
 
-However, this will make your emacs run as if you had started it from ~/elisp,
-which is annoying.  The following code snippet, found at
-http://mail.gnu.org/archive/html/help-gnu-emacs/2003-07/msg00504.html
-avoids this problem:
+    (let ((default-directory "~/.emacs.d/site-lisp/))
+      (normal-top-level-add-subdirs-to-load-path)))
 
-    (if (fboundp 'normal-top-level-add-subdirs-to-load-path)
-        (let* ((my-lisp-dir "~/elisp/")
-              (default-directory my-lisp-dir))
-           (setq load-path (cons my-lisp-dir load-path))
-           (normal-top-level-add-subdirs-to-load-path)))
+If you only want some of the sub-directories added, you can use:
 
-If you only want some of the subdirectories added you can use
+    (let ((default-directory "~/.emacs.d/site-lisp/))
+      (normal-top-level-add-to-load-path '("emms" "erc" "planner" "w3")))
 
-    (normal-top-level-add-to-load-path
-     '("emms" "erc" "planner" "w3"))
+Another way of changing the current directory is using the command ##cd##.  However this is intended for interactive use for it's side-effect - which is to *permanently* set the default directory.
 
+== Add all locally installed packages ==
 
-== Add .emacs.d to load-path ==
+Assuming that you install packages in ##~/.emacs.d/site-lisp/## and that some of the installed packages are single libraries while others are placed inside their own sub-directories you need to combine the steps from the previous sections.
 
-To add ##.emacs.d/elisp## and its subdirectories to this variable, place the following in your ##.emacs##:
-
-    (let ((default-directory (concat user-emacs-directory "elisp")))
+    (let ((default-directory "~/.emacs.d/site-lisp/"))
       (add-to-list 'load-path default-directory)
       (normal-top-level-add-subdirs-to-load-path))
 
-It is probably unwise to add all of ##.emacs.d/## to one's load-path since there's a risk of loading files in the ##.emacs.d## tree that aren't intended.  However, Emacs will add sub-directories that start with alpha-numerics and ignore directories that start with dot or include a file called ##.nosearch##.  Though, one can't always predict to be so diligent.
+Since various packages store information in ##~/.emacs.d/##, it is unwise to add all of it's sub-directories to ##load-path##.  Here we only added the sub-directory ##site-lisp## to avoid loading files that aren't libraries.
 
-== Other directories ==
+If you are using Emacs 23 you can use ##user-emacs-directory## to construct a path to one of it's sub-directories.
 
-There are other directories for Emacs packages, which are listed in ##load-path## by default. The benefits of putting installed packages and personal code in the home directory makes it easy to transfer between machines, and that it's not affected by uninstalling and reinstalling Emacs. It might even survive a system format if the ##/home## tree is mounted from a separate volume or partition.
+    (concat user-emacs-directory
+            (convert-standard-file-name "site-lisp/"))
 
-== Other directories ==
+Note how we use ##convert-standard-file-name## to construct a path which is valid on all supported platforms.
 
-The default value of ##load-path## includes two special directories recursively: ##/usr/local/share/emacs/VERSION/site-lisp## and ##/usr/local/share/emacs/site-lisp##. (On Windows, the equivalent location is ##C:\Program Files\emacs-VERSION\site-lisp##.) The first directory contains packages for a particular Emacs version; the second contains packages for all installed versions of Emacs. These directories contain files for the current ''site'', for use by the system administrator when installing software locally.[http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY] On the other hand, ##~/elisp## contains files for the current ''user'', and is independent of system-wide changes.
+If you use an older versions of Emacs you can backport this useful variable.
 
+    (unless (boundp 'user-emacs-directory)
+      (defvar user-emacs-directory "~/.emacs.d/"
+        "Directory beneath which additional per-user Emacs-specific files are placed.
+      Various programs in Emacs store information in this directory.
+      Note that this should end with a directory separator.
+      See also `locate-user-emacs-file'."))
+
+== Default value ==
+
+The default value of ##load-path## includes two special directories recursively: ##/usr/local/share/emacs/VERSION/site-lisp## and ##/usr/local/share/emacs/site-lisp##.  (On Windows, the equivalent location is ##C:\Program Files\emacs-VERSION\site-lisp##.)  The first directory contains packages for a particular Emacs version; the second contains packages for all installed versions of Emacs.  These directories contain files for the current ''site'', for use by the system administrator when installing software locally[http://www.pathname.com/fhs/pub/fhs-2.3.html#USRLOCALLOCALHIERARCHY].
+
+On ##~/.emacs.d/## on the other hand contains files for the current ''user'', and is independent of system-wide changes.  This makes it the best choice for storing your personal changes.  Installing all packages in a sub-directory of ##~/.emacs.d/## also makes it very easy to move them along with your configuration to a different machine.
 
 == Debugging ==
 
-First, check the value of your <code>load-path</code> by asking for help on the variable:
- `C-h v load-path RET' 
-should give you the documentation for the variable and its current value.  If your directory is not listed, you must add it (see above).
+First, check the value of your ##load-path## by asking for help on the variable: `C-h v load-path RET' should give you the documentation for the variable and its current value. If your directory is not listed, you must add it (see above).
 
-If your directory <em>is</em> listed, check for ConflictingLibraries.
+If your directory ''is'' listed, check for ConflictingLibraries.
 
 == Searching for files in your load-path ==
 
-See SearchingLoadPath
+See SearchingLoadPath.
+
+== Discussion ==
+
+[new]
+I see that `with-temp-buffer' was replaced with `let'. Why? The current directory is a buffer-local property, and the use of `with-temp-buffer' ensures that all such properties are kept intact. (What if there are other variables we've forgotten to `let'?) In addition, ##(cd "~/.emacs.d/")## should expand the ##~## syntax properly on Windows. In my opinion,
+
+    (with-temp-buffer
+      (cd "~/elisp/")
+      (add-to-list 'load-path default-directory)
+      (normal-top-level-add-subdirs-to-load-path))
+
+seems more to the point than
+
+    (let* ((my-lisp-dir "~/elisp/")
+           (default-directory my-lisp-dir))
+      (add-to-list 'load-path my-lisp-dir)
+      (normal-top-level-add-subdirs-to-load-path))
+
+I also think the "Including subdirectories" section could use some editing: the present exposition goes from snippet to snippet of code-which-almost-works (why?), until settling on a confusing chunk from a dead URL. It would be better to present a complete, working solution up front, followed by a detailed explanation thereof. -- VegardOye
+
+[new]
+About the change from ##cd## to ##let## see above.
+
+I also think that this page is quite messy (and more misleading than helpful).  I tried to reorganize a bit by moving information to where it is actually useful, and removing illegal examples (e.g. missing trailing slash).  -- JonasBernoulli
 
 ----
 CategoryHelp

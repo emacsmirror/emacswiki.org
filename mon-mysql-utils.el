@@ -130,6 +130,8 @@
 
 (eval-when-compile (require 'cl))
 
+;; (require 'mon-cl-compat)
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-12-10T16:39:52-05:00Z}#{09504} - by MON>
 (defun mon-cln-pipes-get-field-col (start end &optional field-1 intrp)
@@ -627,11 +629,17 @@ Return a list of lists of of key-val -> field-val for each string.\n
   (let (kvrt)
     (dolist (kv (mon-mysql-csv-map-list csv-field-vals) 
                 (setq kvrt (nreverse kvrt)))
-      (push (pairlis col-val-list kv) kvrt))
+      ;; :WAS (push (pairlis col-val-list kv) kvrt))
+      ;;      (push (cl::pairlis col-val-list kv) kvrt))
+
+      (let (tmp)
+        ;; (push (nconc (mapcar* 'cons col-val-list kv) tmp) kvrt)
+        ;; (push (nconc (gnus-mapcar 'cons col-val-list kv) tmp) kvrt)
+        (push (nconc (mon-mapcar 'cons col-val-list kv) tmp) kvrt)))
     (if insrtp
-        (save-excursion 
-          (newline)
-          (princ (pp kvrt) (current-buffer)))
+          (save-excursion 
+            (newline)
+            (princ (pp kvrt) (current-buffer)))
         kvrt)))
 ;;
 (defalias 'mon-mysql-csv-map-col-field 'mon-csv-map-col-field-pairs)

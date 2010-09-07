@@ -1,111 +1,140 @@
-;;; this is mon-empty-registers.el
+;;; mon-empty-registers.el --- fill and empty register locations en masse.
+;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-empty-registers Provides utilities for filling/emptying register locations en masse.
-;;; Also provides interactive tools for register centric coercion, manipulation,
-;;; roundtripping of chars, strings, etc.
-;;; Idea :COURTESY Nelson H. F. Beebe <beebe@math.utah.edu> :HIS bibtex-regs.el
-;;; 
-;;; FUNCTIONS:►►►
-;;; `mon-reset-registers', `mon-set-all-registers-to-char'
-;;; `mon-query-replace-register1<-reg2', `mon-coerce->char'
-;;; `mon-decode-meta-key-event', `mon-catch-meta-key'
-;;; `mon-set-register->tags', `mon-make-set-register->tags-docs'
-;;; `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
-;;; `mon-set-register-tags-loadtime'
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
-;;; `*mon-digit-registers*', `*mon-digit-shifted-registers*',
-;;; `*mon-symbol-registers*', `*mon-upper-case-registers*',
-;;; `*mon-lower-case-registers*', `*register-of-registers*'
-;;; `*mon-register-config-tags*'
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;; `mon-prin1-char->?char' -> `prin1-char'
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;; `*registr-of-registers*' -> `*mon-registr-of-registers*'
-;;;
-;;; MOVED:
-;;; `mon-query-replace-register1<-reg2' <- mon-replacement-utils.el
-;;; `mon-coerce->char'                  <- mon-utils.el
-;;; `mon-decode-meta-key-event'         <- mon-utils.el
-;;; `mon-catch-meta-key'                <- mon-utils.el
-;;;
-;;; REQUIRES:
-;;; 'cl -> `mon-reset-registers' uses `defun*' etc.
-;;; `mon-doc-help-utils.el' -> `mon-help-put-var-doc-val->func'
-;;; `mon-time-utils.el' -> `mon-stamp'
-;;; (optional `mon-utils') -> `mon-is-digit', `mon-is-letter', `mon-string->symbol'
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;; Nothing in this file takes advantage of `prin1-char'. Can it?
-;;;
-;;; SNIPPETS:
-;;;
-;;; THIRD PARTY CODE:
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; PUBLIC-LINK: (URL `http://www.emacswiki.org/emacs/mon-empty-registers.el')
-;;; FIRST-PUBLISHED: <Timestamp: #{2009-09-02T17:12:10-04:00Z} - by MON> 
-;;; 
-;;; FILE CREATED:
-;;; <Timestamp: Tuesday August 04, 2009 @ 07:31.09 PM - by MON KEY>
+;; Copyright © 2009, 2010 MON KEY. All rights reserved.
 ;;; ================================================================
-;;; This file is not part of GNU Emacs.
-;;;
-;;; This program is free software; you can redistribute it and/or
-;;; modify it under the terms of the GNU General Public License as
-;;; published by the Free Software Foundation; either version 3, or
-;;; (at your option) any later version.
-;;;
-;;; This program is distributed in the hope that it will be useful,
-;;; but WITHOUT ANY WARRANTY; without even the implied warranty of
-;;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
-;;; General Public License for more details.
-;;;
-;;; You should have received a copy of the GNU General Public License
-;;; along with this program; see the file COPYING.  If not, write to
-;;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
-;;; Floor, Boston, MA 02110-1301, USA.
+
+;; FILENAME: mon-empty-registers.el
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;; CREATED: 2009-08-04T19:31:09-04:00Z
+;; VERSION: 1.0.0
+;; COMPATIBILITY: Emacs23.*
+;; KEYWORDS: registers, convenience, data
+
 ;;; ================================================================
-;;; Permission is granted to copy, distribute and/or modify this
-;;; document under the terms of the GNU Free Documentation License,
-;;; Version 1.3 or any later version published by the Free Software
-;;; Foundation; with no Invariant Sections, no Front-Cover Texts,
-;;; and no Back-Cover Texts. A copy of the license is included in
-;;; the section entitled "GNU Free Documentation License".
-;;; A copy of the license is also available from the Free Software
-;;; Foundation Web site at:
-;;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
-;;; ================================================================
-;;; Copyright © 2009 MON KEY 
+
+;;; COMMENTARY: 
+
+;; =================================================================
+;; DESCRIPTION:
+;; mon-empty-registers provides utilities for filling/emptying register
+;; locations en masse.  Also provides interactive tools for register centric
+;; coercion, manipulation, roundtripping of chars, strings, etc.
+;; Idea :COURTESY Nelson H. F. Beebe <beebe@math.utah.edu> :HIS bibtex-regs.el
+;;
+;;
+;; FUNCTIONS:►►►
+;; `mon-reset-registers', `mon-set-all-registers-to-char',
+;; `mon-query-replace-register1<-reg2', `mon-coerce->char',
+;; `mon-decode-meta-key-event', `mon-catch-meta-key',
+;; `mon-set-register->tags', `mon-make-set-register->tags-docs',
+;; `mon-set-register->tags-semic', `mon-set-register->tags-sharp',
+;; `mon-set-register-tags-loadtime',
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; FACES:
+;;
+;; VARIABLES:
+;; `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
+;; `*mon-digit-registers*', `*mon-digit-shifted-registers*',
+;; `*mon-symbol-registers*', `*mon-upper-case-registers*',
+;; `*mon-lower-case-registers*', `*register-of-registers*',
+;; `*mon-register-config-tags*',
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;; `mon-prin1-char->?char' -> `prin1-char'
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;; `*registr-of-registers*' -> `*mon-registr-of-registers*'
+;;
+;; MOVED:
+;; `mon-query-replace-register1<-reg2' <- mon-replacement-utils.el
+;; `mon-coerce->char'                  <- mon-utils.el
+;; `mon-decode-meta-key-event'         <- mon-utils.el
+;; `mon-catch-meta-key'                <- mon-utils.el
+;;
+;; TODO:
+;; Nothing in this file takes advantage of `prin1-char'. Can it?
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;; 'cl -> `mon-reset-registers' uses `defun*' etc.
+;; `mon-help-put-var-doc-val->func' <- `mon-doc-help-utils.el'
+;; `mon-stamp'                      <- `mon-time-utils.el' 
+;; `mon-is-digit'                   <- `mon-utils'
+;; `mon-is-letter'                  <- `mon-utils'
+;; `mon-string->symbol'             <- `mon-utils'
+;;
+;; THIRD-PARTY-CODE:
+;;
+;; URL: http://www.emacswiki.org/emacs/mon-empty-registers.el
+;; FIRST-PUBLISHED: <Timestamp: #{2009-09-02T17:12:10-04:00Z} - by MON>
+;;
+;; EMACSWIKI: { URL of an EmacsWiki describing mon-empty-registers. }
+;;
+;; FILE-CREATED:
+;; <Timestamp: #{2009-08-04T19:31:09-04:00Z}#{} - by MON KEY>
+;;
+;; =================================================================
+
+;;; LICENSE:
+
+;; =================================================================
+;; This file is not part of GNU Emacs.
+
+;; This program is free software; you can redistribute it and/or
+;; modify it under the terms of the GNU General Public License as
+;; published by the Free Software Foundation; either version 3, or
+;; (at your option) any later version.
+
+;; This program is distributed in the hope that it will be useful,
+;; but WITHOUT ANY WARRANTY; without even the implied warranty of
+;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+;; General Public License for more details.
+
+;; You should have received a copy of the GNU General Public License
+;; along with this program; see the file COPYING.  If not, write to
+;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
+;; Floor, Boston, MA 02110-1301, USA.
+;; =================================================================
+;; Permission is granted to copy, distribute and/or modify this
+;; document under the terms of the GNU Free Documentation License,
+;; Version 1.3 or any later version published by the Free Software
+;; Foundation; with no Invariant Sections, no Front-Cover Texts,
+;; and no Back-Cover Texts. A copy of the license is included in
+;; the section entitled ``GNU Free Documentation License''.
+;; 
+;; A copy of the license is also available from the Free Software
+;; Foundation Web site at:
+;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
+;; Copyright © 2009, 2010 MON KEY 
+;;; ==============================
+
 ;;; CODE:
+
+(eval-when-compile (require 'cl))
+
 
 ;;; ==============================
 ;; `mon-reset-registers' <- `defun*'
 (eval-when-compile (require 'cl))
-
-;; `cl::position' <- `mon-catch-meta-key' 
-;; `cl::pairlis'  <- `mon-reset-registers'
-(eval-when-compile (require 'mon-cl-compat nil t))
+;; (eval-when-compile (require 'mon-cl-compat nil t))
 
 ;;; ==============================
 ;;; For code posted to emacs-wiki, needed when mon-utils.el is not loaded. 
@@ -309,11 +338,13 @@ docstring of `mon-set-register->tags'.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-13T11:42:27-05:00Z}#{10023} - by MON KEY>
-(defun mon-set-register-tags-loadtime ()
+(defun mon-set-register-tags-loadtime (&optional w-msg-user)
   "Loadtime procedure to bootstrap `mon-set-register-*' functions and variables.
 :CALLED-BY `eval-after-load', peforms the following tasks:\n
  o Bind the alist key/value pairs for `*mon-register-config-tags*'.\n
  o Add `mon-set-register->tags' docstring per `*mon-register-config-tags*' vals.\n
+When optional arg W-MSG-USER is non-nil message user that variable
+`*mon-register-config-tags*' were bound at loadtime.\n
 :SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp',
 `mon-make-set-register->tags-docs', `mon-bind-cifs-vars-at-loadtime',
 `mon-bind-iptables-vars-at-loadtime', `mon-bind-nefs-photos-at-loadtime',
@@ -321,6 +352,7 @@ docstring of `mon-set-register->tags'.\n
 `mon-set-register-tags-loadtime', `mon-CL-cln-colon-swap', 
 `mon-after-mon-utils-loadtime', `mon-check-feature-for-loadtime'.\n►►►"
   (unless (bound-and-true-p *mon-register-config-tags*)
+    (setq w-msg-user t)
     (setq *mon-register-config-tags*
           '((:W-COMMENT-PFX  . ((87  .  ":WAS")     ;; W
                                 (70  .  ":FROM")    ;; F
@@ -366,8 +398,12 @@ Elements of `:W-COMMENT-PFX' `:NO-COMMENT-PFX' have standard register
 insertion keybindings: \"\C-xri<CHAR>\"\n\n:EXAMPLE"
         nil
         "\n:NOTE Bound with `eval-after-load' call to `mon-set-register-tags-loadtime'.\n
-:SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp'
-`mon-make-set-register->tags-docs'.\n►►►"))))
+:SEE-ALSO `mon-set-register->tags-semic', `mon-set-register->tags-sharp',
+`mon-make-set-register->tags-docs'.\n►►►"))
+    (when w-msg-user
+      (message (concat ":FUNCTION `mon-set-register-tags-loadtime' "
+                   "-- bound  `*mon-register-config-tags*' and documented "
+                   "`mon-set-register->tags' at loadtime")))))
 ;;
 ;;; :TEST-ME *mon-register-config-tags*
 ;;; :TEST-ME (describe-function 'mon-set-register->tags)
@@ -433,7 +469,9 @@ insertion keybindings: \"\C-xri<CHAR>\"\n\n:EXAMPLE"
            (nth 19 char-rep)(nth 20 char-rep)(nth 21 char-rep)
            ;; 25-26
            (nth 22 char-rep)(nth 23 char-rep)))
-    (put '*mon-cntl-char-registers* 'variable-documentation  self-puke)))
+    (put '*mon-cntl-char-registers* 'variable-documentation  self-puke))
+  (message (concat ":VARIABLE `*mon-cntl-char-registers*' "
+                   "-- now has property `variable-documentation`")))
 ;;
 ;;; :TEST-ME  *mon-cntl-char-registers* 
 ;;; :TEST-ME (symbol-value '*mon-cntl-char-registers*)
@@ -502,7 +540,7 @@ insertion keybindings: \"\C-xri<CHAR>\"\n\n:EXAMPLE"
 \(mapconcat 'char-to-string *mon-symbol-registers*  \" \" \)\n
 :SEE-ALSO `*mon-cntl-char-registers*', `*mon-cntl-char-registers*',
 `*mon-digit-registers*', `*mon-digit-shifted-registers*',
-`*mon-upper-case-registers*', `*mon-lower-case-registers*'
+`*mon-upper-case-registers*', `*mon-lower-case-registers*',
 `*mon-registr-of-registers*'.\n►►►")
 ;;
 (unless (bound-and-true-p  *mon-symbol-registers*)
@@ -612,55 +650,72 @@ If char is not a character, return nil.\n
 ;;; :TEST-ME (mon-prin1-char->?char 32)
 
 ;;; ==============================
+;;; :CHANGESET 1985 <Timestamp: #{2010-07-16T18:36:28-04:00Z}#{10285} - by MON KEY>
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T18:47:33-0400Z - by MON KEY>
-(defun mon-coerce->char (thing)
-  "Convert THING with length of 1 to a char as per `string-to-char'.\n
-THING can be a number, symbol, or string. IF THING is characterp returns thing.
-If coercion of thing fails throw an error.\n
+(defun mon-coerce->char (thing->char &optional no-abs-no-flt)
+  "Convert THING->CHAR with length of 1 to a char as per `string-to-char'.\n
+THING->CHAR can be a number, symbol, string, float.
+IF THING->CHAR is characterp returns thing->char.
+If coercion of thing->char fails signal an error.\n
+When optional NO-ABS-NO-FLT is non-nil do not invoke `round' on when THING->CHAR
+satisfies the predicate `floatp', do not invoke `abs' on when THING->CHAR is an
+integer that does not satisfy the predicate `wholenump'.\n
 :SEE-ALSO `string-to-char',`prin1-char', `mon-string-to-hex-list',
 `mon-string-from-hex-list', `mon-string-to-hex-list-cln-chars',
 `mon-string-to-hex-string', `mon-string-to-regexp', `mon-string-to-sequence',
 `mon-string-to-symbol', `mon-string-upto-index', `mon-symbol-to-string'.\n►►►"
-  (cond   ((mon-is-digit thing)
-           (cond ((stringp thing)               
-                  (cond ((= (length thing) 1) (string-to-char thing))
-                        ((> (length thing) 1) (mon-coerce->char (string-to-number thing)))))
-                 ((not (stringp thing)) thing))) 
-          ((mon-is-letter thing)
-           (if (stringp thing)
-               (if (= (length thing) 1)
-                   (string-to-char thing)
-                 (error (format "%s has a length of %s, can only coerce strings of length 1" thing (length thing))))
-             thing))
-          ((and (numberp thing)
-                (not (mon-is-digit thing))
-                (not (mon-is-letter thing))
-                (cond ((and (wholenump thing) (not (floatp thing)))
-                       (if (> 10 thing) 
-                           (string-to-char (number-to-string thing))
-                         thing))
-                      ((floatp thing)
-                       (error (format "Can't coerce %S '%S' to char" (type-of thing) thing)))
-                      ((not (wholenump thing))
-                       (error (format "Can't coerce %S '%S' to char" (type-of thing) thing))))))
-          ((stringp thing)
-           (cond ((/= (string-to-number  thing) 0)
-                  (mon-coerce->char (string-to-number thing)))
-                 ;; :MODIFICATIONS <Timestamp: #{2009-08-26T15:31:55-04:00Z}#{09353} - by MON KEY>
-                 ;; The logic on this was busted. we're throwing an error uncondtionally the truth.
-                 ;; Most likely was transcribing an if and didn't close it
-                 ;; ((= (length thing) 1)
-                 ;;  (string-to-char thing)
-                 ;;  (error (format "%s has a length of %s, can only coerce strings of length 1" thing (length thing))))))
-                 ((= (length thing) 1) (string-to-char thing))
-                 ((or (= (length thing) 0) (> (length thing) 1))
-                  (error (format "%s has a length of %s, can only coerce strings of length 1" thing (length thing))))))
-          ((eq (type-of thing) 'symbol)
-           (let ((thing-string (format "%s" (identity thing))))
-             (if (= (length thing-string) 1)
-                 (mon-coerce->char thing-string)
-               (error (format "Can't coerce %S '%s' with > length 1" (type-of thing) thing-string)))))
-          (t (error   (format "Can't coerce %S '%S' to char" (type-of thing) thing )))))
+  ;; :NOTE (get-char-code-property thing->char 'numeric-value)
+  (let* ((t->c thing->char)
+         (typ-tc (type-of t->c)))
+    (cond   ((mon-is-digit t->c)
+             (cond ((stringp t->c)               
+                    (cond ((= (length t->c) 1) (string-to-char t->c))
+                          ((> (length t->c) 1) (mon-coerce->char (string-to-number t->c)))))
+                   ((not (stringp t->c)) t->c))) 
+            ((mon-is-letter t->c)
+             (if (stringp t->c)
+                 (if (= (length t->c) 1)
+                     (string-to-char t->c)
+                   (error (concat ":FUNCTION `mon-coerce->char' "
+                                  "-- arg T->C %s has length %s "
+                                  "can only coerce strings of length 1")
+                          t->c (length t->c)))
+               t->c))
+            ((and (numberp t->c) 
+                  (not (mon-is-digit t->c))
+                  (not (mon-is-letter t->c))
+                  (cond ((and (wholenump t->c) (not (floatp t->c)))
+                         (if (> 10 t->c) 
+                             (string-to-char (number-to-string t->c))
+                           t->c))
+                        ((floatp t->c)
+                         (if (and (wholenump (abs (round t->c)))
+                                  (not no-abs-no-flt))
+                             (mon-coerce->char (abs (round t->c)))
+                           (error (format "Can't coerce %S '%S' to char" typ-tc t->c))))
+                        ((not (wholenump t->c))
+                         (if (and (wholenump (abs t->c))
+                                  (not no-abs-no-flt))
+                             (mon-coerce->char (abs t->c))
+                           (error (format "Can't coerce %S '%S' to char" typ-tc t->c)))))))
+            ((stringp t->c)
+             (cond ((/= (string-to-number  t->c) 0)
+                    (mon-coerce->char (string-to-number t->c)))
+                   ;; :MODIFICATIONS <Timestamp: #{2009-08-26T15:31:55-04:00Z}#{09353} - by MON KEY>
+                   ;; The logic on this was busted. we're throwing an error uncondtionally the truth.
+                   ;; Most likely was transcribing an if and didn't close it
+                   ;; ((= (length t->c) 1)
+                   ;;  (string-to-char t->c)
+                   ;;  (error (format "%s has a length of %s, can only coerce strings of length 1" t->c (length t->c))))))
+                   ((= (length t->c) 1) (string-to-char t->c))
+                   ((or (= (length t->c) 0) (> (length t->c) 1))
+                    (error (format "%s has a length of %s, can only coerce strings of length 1" t->c (length t->c))))))
+            ((eq typ-tc 'symbol)
+             (let ((thing-string (format "%s" (identity t->c))))
+               (if (= (length thing-string) 1)
+                   (mon-coerce->char thing-string)
+                 (error (format "Can't coerce %S '%s' with > length 1" (type-of t->c) thing-string)))))
+            (t (error   (format "Can't coerce %S '%S' to char" (type-of t->c) t->c))))))
 ;; 
 ;;; :TEST-ME (mon-coerce->char 'b)
 ;;; :TEST-ME (mon-coerce->char "b")
@@ -672,10 +727,10 @@ If coercion of thing fails throw an error.\n
 ;;; :TEST-ME (mon-coerce->char "44")
 ;;; :TEST-ME (mon-coerce->char '44)
 ;;; :TEST-ME (mon-coerce->char ?8)
+;;; :TEST-ME (mon-coerce->char -8)
 ;;; :NOTE Following should fail:
 ;;; :TEST-ME (mon-coerce->char 8.8)
 ;;; :TEST-ME (mon-coerce->char "8.8")
-;;; :TEST-ME (mon-coerce->char -8)
 ;;; :TEST-ME (mon-coerce->char (get-buffer (buffer-name)))
 
 ;;; ==============================
@@ -701,7 +756,7 @@ e.g. \(- 134217779  134217728\) ;=> 51\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: 2009-08-04-W32-2T19:26:05-0400Z - by MON KEY>
 (defun mon-catch-meta-key (&optional event->string) ;(event-vect)
-  "Return the first <meta>-? key prefix call to wrapper function.
+  "Return the first <meta>-? key prefix call to wrapper function.\n
 When optional arg EVENT->STRING is non-nil return a meta event as a string.
 When a meta-key event is not present return the first event modifer passed.
 Can be alled programatically within a wrapper functions.\n
@@ -710,12 +765,22 @@ Can be alled programatically within a wrapper functions.\n
 :SEE-ALSO `mon-decode-meta-key-event', `mon-catch-meta-key' `mon-coerce->char',
 `mon-string-to-symbol'.\n►►►"
   (let ((key-seq (listify-key-sequence (this-command-keys-vector)));event-vect))
-        (map-events))
-    (setq map-events
-          (mapcar '(lambda (x) (car (event-modifiers x)))
-                  key-seq))
+        map-events
+        psn-if)
+    (setq map-events (mapcar #'(lambda (x) 
+                                 (car (event-modifiers x)))
+                             key-seq))
+    (let ((psn-idx 0)
+          (evnts map-events)
+          fnd)
+      (while (and (not fnd) (not (null evnts)))
+        (if (not (eq (pop evnts) 'meta))
+            (setq psn-idx (1+ psn-idx))
+          (setq fnd psn-idx)))
+      (when fnd (setq psn-if fnd)))
     ;; :WAS (if (equal (cl::position 'meta map-events) 0)
-    (if (equal (cl::position 'meta map-events) 0)
+    ;; (eq (cl::position 'meta map-events) 0)
+    (if (and psn-if (eq psn-if 0))
         (cond (event->string
                (format "%s-%s" 
                        (car (event-modifiers (car key-seq)))
@@ -728,7 +793,7 @@ Can be alled programatically within a wrapper functions.\n
                         (event-basic-type (car key-seq)))))
       (car (event-modifiers (car key-seq))))))
 ;;
-;;; :TEST-ME (mon-catch-meta-key);<- M-3 C-x C-e ;=> (meta 51)
+;;; :TEST-ME (mon-catch-meta-key) ;<- M-3 C-x C-e ;=> (meta 51)
 ;;; :TEST-ME (mon-catch-meta-key t) ;<- M-3 C-x C-e ;=>"meta-3"
 ;;; :TEST-ME (let ((event (mon-catch-meta-key)))
 ;;;               (when (listp event)(cadr event)))
@@ -742,13 +807,13 @@ Can be alled programatically within a wrapper functions.\n
   "Replace occurences of REGISTER1 in buffer or region with contents of REGISTER2.\n
 When optional args START END are non-nil limit replacement to region.\n
 When optional arg USE-REGEXP is non-nil or called-interactively with prefix-arg 
-replace contents of buffer or region as if by `query-replace-regexp'. 
+replace contents of buffer or region as if by `query-replace-regexp'.\n
 Default is to replace as if by `query-replace'.
 Does not move point.\n
 :SEE-ALSO .\n►►►"
   (interactive (list 
-                (read-string "Replace string-matching contents of register :")
-                (read-string "With string-matching contents of register :")
+                (read-string "Replace string-matching contents of register: ")
+                (read-string "With string-matching contents of register: ")
                 (when (use-region-p) (region-beginning)) 
                 (when (use-region-p) (region-end))
                 current-prefix-arg))
@@ -766,7 +831,7 @@ Does not move point.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-08T17:04:24-04:00Z}#{09326} - by MON KEY>
 (defun* mon-reset-registers (&key intrp cntrl digit digit-S symbol upper lower all)
-  "Reset the contents each all registers associated with keywords.
+  "Reset the contents each all registers associated with keywords.\n
 :CNTRL    -> `*mon-cntl-char-registers*';
 :DIGIT    -> `*mon-digit-registers*';
 :DIGIT-S  -> `*mon-digit-shifted-registers*';
@@ -782,20 +847,21 @@ When called interactively or INTRP is non-nil resets all registers.\n
         (pairs)
         (make-reg-list)
         (pop-registers))
-    ;; :WAS  (setq pairs (pairlis reg-keys reg-lists))
-    (setq pairs (cl::pairlis reg-keys reg-lists))
+    ;; :WAS (setq pairs (pairlis reg-keys reg-lists))
+    ;; :WAS (setq pairs (cl::pairlis reg-keys reg-lists))
+    (setq pairs (mon-mapcar 'cons reg-keys reg-lists))
     (setq make-reg-list '())
     (if (or intrp all)
         ;; (setq make-reg-list(mapcar (lambda (x) (symbol-value (cadr x))) *mon-registr-of-registers*))
         (progn
           (mapc #'(lambda (x) 
-                  (setq make-reg-list (cons (symbol-value (cadr x)) make-reg-list))) 
+                    (setq make-reg-list (cons (symbol-value (cadr x)) make-reg-list))) 
                 *mon-registr-of-registers*)
           (setq make-reg-list (reverse make-reg-list)))
       (progn
         (mapc #'(lambda (x)
-                (when (car x)
-                  (setq make-reg-list (cons (symbol-value (cadr (assoc (cdr x) *mon-registr-of-registers*))) make-reg-list))))
+                  (when (car x)
+                    (setq make-reg-list (cons (symbol-value (cadr (assoc (cdr x) *mon-registr-of-registers*))) make-reg-list))))
               pairs)
         (setq make-reg-list (reverse make-reg-list))))
     (setq pop-registers make-reg-list)
@@ -804,7 +870,11 @@ When called interactively or INTRP is non-nil resets all registers.\n
         (mapc #'(lambda (x)
                   (set-register x nil))
               popd))))
-  (when intrp (message "All registers were emptied")))
+  (when intrp 
+    (message  (concat ":FUNCTION `mon-reset-registers' "
+                      "-- all registers were emptied"))))
+
+;; (mon-reset-registers :cntrl t)
 ;;
 ;;; ==============================
 ;;; Evaluate following form to refill registers with non-nil val:
@@ -944,11 +1014,10 @@ all registers to 'something' in order to test they are _NOT_ empty.
 (provide 'mon-empty-registers)
 ;;; ==============================
 
-;;; ==============================
-;;; :NOTE Now evaluated with `mon-after-mon-utils-loadtime' :SEE :FILE mon-utils.el
-
-;;; :CREATED <Timestamp: #{2010-01-13T11:42:27-05:00Z}#{10023} - by MON KEY>
-;;; (eval-after-load 'mon-empty-registers '(mon-set-register-tags-loadtime))
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
 
 ;;; ==============================
 ;;; mon-empty-registers.el ends here

@@ -41,6 +41,7 @@ ephemeral. Learn to use it.
 = Packages Which Extend Emacs' Standard Region Handling =
 
 * AnchoredTranspose -- Transposes a phrase around an anchor phrase. In other words it swaps 2 regions.
+* AutoMark -- Push a mark after selected commands
 * [[Bookmark+]] -- Name regions and make them persistent. Revisit to activate.
 * ChangingCursorDynamically -- Find the region by making TextCursor more visible when Emacs is idle.
 * CuaMode -- Use key bindings compatible with the Common User Access (CUA) system
@@ -54,3 +55,4 @@ ephemeral. Learn to use it.
 * MultipleNarrowings -- Use `##C-x n x x x...##' to cycle a ring of narrowings (buffer restrictions).
 * [[Subedit]] -- Edit part of a buffer in a new buffer
 * TextMarker -- Highlights text like a text marker, optionally annotates. Uses XRefMode.
+* VisibleMark -- Make the mark position visible

@@ -1701,7 +1701,7 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    ;; :NOTE :FILE mon-utils.el contains require statements for mon-*.el packages.
    (require 'mon-utils)
    ;; :NAF-MODE
-   (require 'naf-mode)
+   ;; (require 'naf-mode)
    ;; :NOTE Automode files with '.naf' file extensions. '.naf' -> NAME AUTHORITY
    ;;       FILE `.naf' is a prefered default extension for anything `naf-mode'
    ;;       related. <Timestamp: #{2008-12-10} - by MON KEY> 

@@ -2148,25 +2148,35 @@ the current pattern."
 If current source has `update' attribute, a function without argument, call it before update."
   (interactive)
   (let ((source (anything-get-current-source)))
-    (anything-aif (anything-funcall-with-source source 'anything-candidate-buffer)
-        (kill-buffer it))
-    (dolist (attr '(update init))
-      (anything-aif (assoc-default attr source)
-          (anything-funcall-with-source source it)))
-    (anything-remove-candidate-cache source)
+    (if source
+        (anything-force-update--reinit source)
+      (anything-erase-message)
+      (mapc 'anything-force-update--reinit (anything-get-sources)))
     (let ((selection (anything-get-selection nil t)))
       (anything-update)
       (anything-keep-selection source selection))))
 
+(defun anything-force-update--reinit (source)
+  (anything-aif (anything-funcall-with-source source 'anything-candidate-buffer)
+      (kill-buffer it))
+  (dolist (attr '(update init))
+    (anything-aif (assoc-default attr source)
+        (anything-funcall-with-source source it)))
+  (anything-remove-candidate-cache source))
+
+(defun anything-erase-message ()
+  (message ""))
+
 (defun anything-keep-selection (source selection)
-  (with-anything-window
-    (anything-goto-source source)
-    (forward-char -1)                ;back to \n
-    (if (search-forward (concat "\n" selection "\n") nil t)
-        (forward-line -1)
-      (goto-char (point-min))
-      (forward-line 1))
-    (anything-mark-current-line)))
+  (when (and source selection)
+    (with-anything-window
+      (anything-goto-source source)
+      (forward-char -1)                  ;back to \n
+      (if (search-forward (concat "\n" selection "\n") nil t)
+          (forward-line -1)
+        (goto-char (point-min))
+        (forward-line 1))
+      (anything-mark-current-line))))
 
 (defun anything-remove-candidate-cache (source)
   (setq anything-candidate-cache
@@ -2509,8 +2519,10 @@ UNIT and DIRECTION."
      (goto-char (point-min))
      (let ((name (if (stringp source-or-name) source-or-name
                    (assoc-default 'name source-or-name))))
-       (while (not (string= name (anything-current-line-contents)))
-         (goto-char (anything-get-next-header-pos)))))
+       (condition-case err
+           (while (not (string= name (anything-current-line-contents)))
+             (goto-char (anything-get-next-header-pos)))
+         (error (message "")))))
    'source 'next))
 
 (defun anything-mark-current-line ()

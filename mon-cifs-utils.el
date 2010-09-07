@@ -8,7 +8,7 @@
 ;; FILENAME: mon-cifs-utils.el
 ;; AUTHOR: MON KEY
 ;; MAINTAINER: MON KEY
-;; CREATED: 2010-03-09T13:49:09-05:00Z
+;; CREATED: 2010-01-06T15:49:01-05:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
 ;; KEYWORDS: GnuPG, SAMBA, CIFS, environment, files, external, execute
@@ -108,14 +108,14 @@
 ;; FIRST-PUBLISHED: <Timestamp: #{2010-01-05T21:41:27-05:00Z}#{10013} - by MON>
 ;;
 ;; EMACSWIKI: (URL `http://www.emacswiki.org/emacs/MonCifsUtils')
-;;; :FIRST-PUBLISHED <Timestamp: #{2010-01-06T15:49:01-05:00Z}#{10013} - by MON>
+;; FIRST-PUBLISHED: <Timestamp: #{2010-01-06T15:49:01-05:00Z}#{10013} - by MON>
 ;;
 ;; FILE-CREATED:
-;; <Timestamp: #{2010-03-09T13:49:09-05:00Z}#{10102} - by MON KEY>
+;; <Timestamp: #{2010-01-06T15:49:01-05:00Z}#{10013} - by MON KEY>
 ;;
 ;; =================================================================
 
-;;; LICENSCE:
+;;; LICENSE:
 
 ;; =================================================================
 ;; This file is not part of GNU Emacs.
@@ -152,7 +152,7 @@
 ;;; CODE:
 
 (eval-when-compile (require 'cl)
-                   (require 'auth-source)                 
+                   (require 'auth-source)
                    (require 'mon-cl-compat)
                    ;; :NOTE See header for details.
                    (unless (bound-and-true-p IS-MON-P)
@@ -412,6 +412,8 @@ IOW, to make a CIFS credentials format congruent with  ~/.authinfo.gpg you would
 ;;; :TEST-ME *mon-CIFS-user*
 ;;; :TEST-ME *mon-CIFS-pass*
 
+;;(declare-function cl::pairlis "mon-cl-compat" t t)
+(declare-function mon-mapcar "mon-utils")
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-01-05T13:55:59-05:00Z}#{10012} - by MON KEY>
 (defun mon-build-cifs-credentials (&optional credentials-file)
@@ -436,8 +438,10 @@ When optional arg CREDENTIALS-FILE is non-nil returns:\n
         (setq creds (mapconcat 
                      #'(lambda (p) (concat (car p) (cdr p)))
                      ;;(pairlis '("domain=" "username=" "password=")
-                     (cl::pairlis '("domain=" "username=" "password=")
-                              `(,*mon-CIFS-domain* ,*mon-CIFS-user* ,*mon-CIFS-pass*))
+                     ;; cl::pairlis '("domain=" "username=" "password=")
+                     (mon-mapcar 'cons
+                                  '("domain=" "username=" "password=")
+                                  `(,*mon-CIFS-domain* ,*mon-CIFS-user* ,*mon-CIFS-pass*))
                      ",")))))
 ;;
 ;;; :TEST-ME (mon-build-cifs-credentials)
@@ -461,7 +465,7 @@ When MOUNT-POINT is nil or called-interactively prompt for MOUNT-POINT key.\n
           (assoc 
            (if (or intrp (null mount-point))
                (car (read-from-string 
-                     (completing-read "Which mount point (TAB completes) :"
+                     (completing-read "Which mount point (TAB completes): "
                                       mnt-pnts
                                       nil t)))
                mount-point)
@@ -702,7 +706,7 @@ o When optional arg NO-MAP-MOUNT-POINTS is non-nil do not evaluate
   ;; Else, spit a message the the buffer named by `*mon-CIFS-vars-unbound*'
   (if (and *mon-CIFS-user* *mon-CIFS-pass*)
       (mon-get-cifs-credentials)
-      (mon-inform-cifs-credentials-unbound))
+      (ignore-errors (mon-inform-cifs-credentials-unbound)))
   ;; Bind value of `*mon-CIFS-mount-root*' to base dir for local CIFS mount point.
   (setq *mon-CIFS-mount-root* 
         (cadr (assoc 'the-mnt-prfx *mon-CIFS-misc-path-alist*)))
@@ -863,12 +867,10 @@ When you are finished debugging, make sure to kill the buffer named
 ;; |                                    "<SOME-HOST>"<SOME-PROTOCOL>)))
 ;; `----
 
-;;; ==============================
-(provide 'mon-cifs-utils)
-;;; ==============================
 
+;;; ==============================
 ;;; :NOTE Now evaluated with `mon-after-mon-utils-loadtime' :SEE :FILE mon-utils.el
-
+;;;
 ;;; :NOTE Unless the domain and mount-point for each element of
 ;;; `*mon-CIFS-mount-points*' match the values of `*mon-CIFS-domain*' and
 ;;; `*mon-CIFS-mount-root*' you should not map the mount points instead comment
@@ -889,6 +891,14 @@ When you are finished debugging, make sure to kill the buffer named
 ;; |   (auth-source-forget-all-cached)
 ;; |   (message "All `*mon-CIFS-*' vars unbound auth-source forgot her cache."))
 ;; `----
+
+;;; ==============================
+(provide 'mon-cifs-utils)
+;;; ==============================
+
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; End:
 
 ;;; ================================================================
 ;;; mon-cifs-utils.el ends here

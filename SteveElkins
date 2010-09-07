@@ -30,12 +30,18 @@ I use Emacs more and more, lately on Windows, casually on Unixish systems a long
 ;; (global-set-key "\C-cs" 'slime-selector)
 
 ;; http://www.pchristensen.com/blog/articles/installing-sbcl-emacs-and-slime-on-windows-xp/
-(setq load-path (cons "C:/Documents and Settings/selkins/My Documents/slime/slime"
+;(setq load-path (cons "C:/Documents and Settings/selkins/My Documents/slime/slime"
                       load-path))
-(setq inferior-lisp-program "sbcl")
+;(setq inferior-lisp-program "sbcl")
 ;; clisp doesn't work for me and I haven't pushed it since sbcl does
 ;; (setq inferior-lisp-program "C:/Program Files/clisp-2.48/full/lisp.exe -B C:/Program Files/clisp-2.48/full -M C:/Program Files/clisp-2.48/full/lispinit.mem -ansi -q")
+
+;; CURRENT
+(setq load-path (cons "C:/Documents and Settings/selkins/My Documents/Downloads/slime-2010-09-03"
+                      load-path))
+(setq inferior-lisp-program "C:/ccl/wx86cl.exe")
 (require 'slime)
+(setq slime-net-coding-system 'utf-8-unix)
 (slime-setup '(slime-fancy))
 (global-set-key "\C-cs" 'slime-selector)
 (setq common-lisp-hyperspec-root "file:///c:/Documents and Settings/selkins/My Documents/Lisp/clhs/Hyperspec/")

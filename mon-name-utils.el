@@ -29,7 +29,7 @@
 ;; `mon-string-csv-rotate', `mon-csv-to-perms', `mon-string-permute-line',
 ;; `mon-string-splice-sep', `mon-string->strings-splice-sep',
 ;; `mon-string-to-regexp', `mon-string-infix',
-;; `mon-rotate-region', `mon-rotate-string', `mon-rotate-next'
+;; `mon-rotate-region', `mon-rotate-string', `mon-rotate-next',
 ;; `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp', 
 ;; `mon-rotate-flatten-list',`mon-indent-or-rotate', `mon-string-permute',
 ;; FUNCTIONS:◄◄◄
@@ -148,11 +148,12 @@ Else uses @artist:\n
 ;;; :MODIFICATIONS <Timestamp: #{2009-08-13T16:37:24-04:00Z}#{09334} - by MON KEY>
 (defun mon-string-rotate-name (&optional start end to-rotate insertp intrp)
   "Return an unrotated nameform withe namestring in region.\n
-:EXAMPLE\n\(mon-string-rotate-name nil nil \"Cappiello \(Leonetto Doctorow\)\")\n
-:SEE-ALSO; `mon-line-string-unrotate-namestrings'
-`mon-line-string-rotate-namestrings' `mon-line-strings-to-list', 
-`mon-make-lastname-firstname', `mon-make-name-lispy', `mon-make-names-list'.\n
-:USED-IN `naf-mode'.\n►►►"
+:EXAMPLE\n\n\(mon-string-rotate-name nil nil \"Cappiello \(Leonetto Doctorow\)\")\n
+:USED-IN `naf-mode'.\n
+:SEE-ALSO `mon-line-string-unrotate-namestrings',
+`mon-line-string-rotate-namestrings', `mon-line-strings-to-list',
+`mon-make-lastname-firstname', `mon-make-name-lispy',
+`mon-make-names-list'.\n►►►"
   (interactive "r\ni\ni\np")
   (let (mystr)
     (setq mystr 
@@ -230,7 +231,7 @@ Region should contain two name instances \"Firstname\" \"Lastname\"  per line.\n
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-24T13:08:18-04:00Z}#{09394} - by MON KEY>
 (defun mon-make-names-list (start end &optional insrtp intrp)
   "Return list of names escaped for double quotes and parens.\n
-:EXAMPLE\n\(mon-make-names-list
+:EXAMPLE\n\n\(mon-make-names-list
  \(1+ \(search-forward-regexp \"►\"\)\) \(- \(search-forward-regexp \"◄\"\) 2\)\)
 ►\nSome \(Dude1 Name1\)\nSome \(Dude2 Name2\)\nSome \(Dude3 Name3\)\n◄\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings',
@@ -276,10 +277,10 @@ CSV-STRING may be a comma-separated string.\n
 ;;; :WAS `mon-csv-string-to-regexp' -> `mon-string-csv-regexp'
 (defun mon-string-csv-regexp (csv-string)
   "Translate CSV-STRING (comma separated values string) into regexp.\n
-:EXAMPLE\n\(mon-string-csv-regexp \"A,B,C\"\)
-=> \\\\(A.*B.*C\\\\|A.*C.*B\\\\|B.*A.*C\\\\|B.*C.*A\\\\|C.*A.*B\\\\|C.*B.*A\\\\)
+:EXAMPLE\n\n\(mon-string-csv-regexp \"A,B,C\"\)
+;=> \\\\(A.*B.*C\\\\|A.*C.*B\\\\|B.*A.*C\\\\|B.*C.*A\\\\|C.*A.*B\\\\|C.*B.*A\\\\)
 \(mon-string-csv-regexp \"Somedudes, name\"\)\)
-=> Somedudes.*name\\\\|name.*Somedudes\n
+;=> Somedudes.*name\\\\|name.*Somedudes\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-string-permute',
 `mon-perms'.\n►►►"
@@ -295,7 +296,7 @@ CSV-STRING may be a comma-separated string.\n
 ;;; :NOTE Not quite right yet.
 (defun mon-csv-to-perms (str)
   "Translate comma separated name into a rotated name seperated by \" | \".
-:EXAMPLE\nSomedudes, name\n transfromed to:\nSomedudes, name | name, Somedudes
+:EXAMPLE\n\nSomedudes, name\n transfromed to:\nSomedudes, name | name, Somedudes
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-string-permute',
 `mon-perms'.\n►►►"
@@ -305,22 +306,24 @@ CSV-STRING may be a comma-separated string.\n
     (mapconcat #'(lambda (n) (mapconcat 'identity n ", ")) l " | ")))
                    
 ;;; =======================
-;;; :COURTESY Christoph Conrad <cc@cli.de>
 ;;; :REQUIRES CL `remove*'
+;;; :COURTESY Christoph Conrad <cc@cli.de>
+;;; :CHANGESET 2112
 (defun mon-perms (perm-list)
-  "Return a perumuted list each elt of LIST. Result is a list of permuted lists.
+  "Return a perumuted list each elt of LIST. Result is a list of permuted lists.\n
 :DEPRECATE This provides identical fuctionality of `mon-permutations' but 
 wit CL requirements. Use `mon-permutations' instead.\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST'.\n►►►"
   (if (null perm-list)
-      (list '())
+    (list '())
     (mapcan #'(lambda (a)
                 ;;CL (mapcan #'(lambda (p)
                 (mapcan #'(lambda (p)
-			    (list (cons a p)))
-			(mon-perms (remove* a perm-list :count 1))))
-	    perm-list)))
+                            (list (cons a p)))
+                        (mon-perms (remove* a perm-list :count 1))))
+          perm-list)))
+
 ;;
 ;;; :TEST-ME (mon-perms '("Some_thing" "Name_thing" "More_thing" "Of_the_same_thing"))
 ;;; :TEST-ME (mon-perms '(Some_thing Name_thing More_thing Of_the_same_thing))
@@ -335,7 +338,7 @@ wit CL requirements. Use `mon-permutations' instead.\n
 (defun mon-variations (item list)
   "Return the variant forms of ITEM in LIST.\n
 ITEM's postion is cycled for each possible position in LIST.\n
-:EXAMPLE\n\(mon-variations 'a '\(b c d\)\)\n
+:EXAMPLE\n\n\(mon-variations 'a '\(b c d\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
  (if (null list)
@@ -361,8 +364,8 @@ ITEM's postion is cycled for each possible position in LIST.\n
 ;;; :CREATED <Timestamp: #{2010-02-09T18:43:44-05:00Z}#{10062} - by MON KEY>
 (defun mon-permutations (elements)
   "Return a perumuted list each elt of ELEMENTS.\n
-Result is a list of permuted lists.
-:EXAMPLE\n\(mon-permutations '\(a b c d\)\)\n
+Result is a list of permuted lists.\n
+:EXAMPLE\n\n\(mon-permutations '\(a b c d\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
  (cond ((null elements) (list elements))
@@ -377,16 +380,21 @@ Result is a list of permuted lists.
 ;;; :NOTE BROKEN!!! `mon-permutations' is truncating the return value...
 ;;; :CREATED <Timestamp: #{2010-02-07T19:03:12-05:00Z}#{10057} - by MON KEY>
 (defun mon-string-permute (permute-string &optional intrp)
-  "Return PERMUTE-STRING permutatations.
+  "Return PERMUTE-STRING permutatations.\n
 When called-interactively or optional arg INTRP is non-nil prompt:
- \"String to permut :\" and insert PERMUTE-STRING in current-buffer.
-:EXAMPLE\n\(mon-string-permute \"bubba\")\n
+ \"String to permut :\" and insert PERMUTE-STRING in current-buffer.\n
+:EXAMPLE\n\n\(mon-string-permute \"bubba\")\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
   (interactive "i\np")
-  (let ((prm-str (if intrp (read-string "String to permute :")
-                     permute-string))
-        (rtn-prm))
+  (let ((prm-str 
+         (append (if intrp 
+                     (read-string 
+                      (concat ":FUNCTION `mon-string-permute' "
+                              "-- string to permute: "))
+                   permute-string)
+                 nil))
+        rtn-prm)
     (setq rtn-prm (delete-dups (mon-permutations prm-str)))
     (setq rtn-prm (mapcar #'(lambda (p) (apply 'string p)) rtn-prm))
     (when intrp 
@@ -404,9 +412,9 @@ When called-interactively or optional arg INTRP is non-nil prompt:
 ;;; :SOURCE Followup-To: comp.lang.lisp - :DATE Wed, 11 Jan 1995 11:33:58
 ;;; :CREATED <Timestamp: Wednesday July 22, 2009 @ 10:23.12 AM - by MON KEY>
 (defun mon-permute-combine (l1 l2)
-  "Efficient version that works for L1 of arbitrary length.
-Uses dolist -> dolist-> memeber &key -> push -> nreverse.\n
-:EXAMPLE\n\(mon-permute-combine '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
+  "Efficient version that works for L1 of arbitrary length.\n
+:NOTE Uses dolist -> dolist-> memeber &key -> push -> nreverse idiom.\n
+:EXAMPLE\n\n\(mon-permute-combine '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
   (if (null l1)
@@ -419,14 +427,14 @@ Uses dolist -> dolist-> memeber &key -> push -> nreverse.\n
             ;; :ELISP use member*: 
             (unless (member* a b :key 'second)
               (push (cons (list (car l1) a) b) result))))
-        (nreverse result))))
+        (setq result (nreverse result)))))
 ;;
 ;;; :TEST-ME See below for `mon-permute-combine-functions-TEST'
 ;;
 (defun mon-permute-combine-1 (l1 l2)
-  "Permutations/combinations permute L1 with L2.
+  "Permutations/combinations permute L1 with L2.\n
 ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\n
-:EXAMPLE\n\(mon-permute-combine-1 '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
+:EXAMPLE\n\n\(mon-permute-combine-1 '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
   (if (null l1)
@@ -440,7 +448,7 @@ ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\
 ;;
 (defun mon-permute-combine-2 (l1 l2)
   "Permutations/combinations permute L1 withe L2.
-:EXAMPLE:\n\(mon-permute-combine-2 '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)
+:EXAMPLE:\n\n\(mon-permute-combine-2 '\(a b \"StringC\" 1\) '\(1 \"string2\" 3 A\)\)\n
 :SEE-ALSO `mon-permute-combine', `mon-permute-combine-2', `mon-variations',
 `mon-permute-combine-functions-TEST', `mon-permutations', `mon-perms'.\n►►►"
  (let ((result nil))
@@ -451,7 +459,7 @@ ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\
          ;;(push (list (list (car l1) a) (list (car l2) b)) result))))
 	 ;;result))
 	 (push (list (list (first l1) a) (list (second l1) b)) result))))
-   (nreverse result)))
+   (setq result (nreverse result))))
 ;;
 ;;; :TEST-ME See below for `mon-permute-combine-functions-TEST'
 
@@ -461,7 +469,7 @@ ELISP <-> CL portable. Uses double lambda recursion mapcan -> mapcar > recurse.\
 (defun mon-permute-combine-functions-TEST ()
   "Assure functional equivalence of permute/combine functionss.\n
 Return test-case results in buffer named \"*MON-PERMUTE-COMBINE-TEST*\".\n
-Test equivalence of functions:
+Test equivalence of return values of following procedures:\n
  `mon-permute-combine', `mon-permute-combine-1', `mon-permute-combine-2'\n
 :EXAMPLE\n\n\(mon-permute-combine-functions-TEST\)\n
 :SEE-ALSO `mon-variations', `mon-permutations', `mon-perms'.\n►►►"
@@ -523,7 +531,7 @@ Test equivalence of functions:
 ;;; :COURTESY: Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `perm-words'
 ;;; :WAS `mon-perm-words' ->`mon-string-permute-line'
 (defun mon-string-permute-line (&optional delimit-with)
-  "Insert after current line all the permutations of the words on the current line.\n
+  "Insert after current line all permutations of words on the current line.\n
 :SEE-ALSO `mon-permutations', `mon-string-ify-current-line'.\n►►►"
   (interactive)
   (let ((words (car (read-from-string
@@ -550,57 +558,68 @@ Test equivalence of functions:
 (defun mon-string-splice-sep (strings &optional seperator insert-str insertp intrp)
   "Return concatenation of STRINGS spliced together with separator SEP.\n
 When SEPERATOR (a string) is non-nil it's value inserted between STRINGS.
-Default is \" | \" which can be useful to build up name lists in `naf-mode'.
-Called interactively inserts converted string at point.
-When INSERT-STR is non-nil insert result in buffer as string else print as with prin1.
-When INSERTP is non-nil and INSERT-STR nil print as with prin1.
+Default is \" | \" which can be useful to build up name lists in `naf-mode'.\n
+Called interactively insert converted string at point. Moves point.\n
+When INSERT-STR is non-nil insert as string as if by princ else as if by prin1.\n
+When INSERTP is non-nil and INSERT-STR is null returan as if by prin1.\n
 :SEE-ALSO .\n►►►"
   (interactive (list
-                (read-string "String to Splice :")
-                (read-string "Separate with :")
-                (yes-or-no-p "Insert as string? :")
-                nil
-                t))
-  (let ((str)
-	(sep (if seperator seperator " | ")))
+                (read-string  (concat ":FUNCTION `mon-string-splice-sep' " 
+                                      "-- string to splice: "))
+                (read-string (concat ":FUNCTION `mon-string-splice-sep' " 
+                                     "-- separate with: "))
+                (yes-or-no-p (concat ":FUNCTION `mon-string-splice-sep' " 
+                                     "-- insert as string?: "))
+                nil t))
+  (let ((msss-str)
+	(msss-sep (if seperator seperator " | ")))
     (while strings
-      (setq str (concat str (car strings)))
+      (setq msss-str (concat msss-str (car strings)))
       (if (cdr strings)
-	  (setq str (concat str sep)))
+	  (setq msss-str (concat msss-str msss-sep)))
       (setq strings (cdr strings)))
     (cond (intrp 
            (if insert-str
-               (princ str (current-buffer))
-             (prin1 str (current-buffer))))
+               (princ msss-str (current-buffer))
+             (prin1 msss-str (current-buffer))))
           ((and (not intrp) (or insert-str insertp))
            (if insert-str
-               (princ str (current-buffer))
-             (prin1 str (current-buffer))))
+               (princ msss-str (current-buffer))
+             (prin1 msss-str (current-buffer))))
           ((and (not intrp) (not insert-str) (not insertp))
-           str))))
+           msss-str))))
 ;;
-;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") " " )
-;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "|" NIL T)
-;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "|" T T)
-;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "| ")
-;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") " |")
-;;; TEST-ME (mon-string-splice-sep '("AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA" "AAOA") "_")
-;;; TEST-ME (mon-string-splice-sep '("aaoa" "aaoa" "aaoa" "aaoa" "aaoa" "aaoa" "aaoa") " - ")
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA") " " )
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA") "|" nil t)
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA") "|" t t)
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA") "| ")
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA") " |")
+;;; TEST-ME (mon-string-splice-sep '("AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA") "_")
+;;; TEST-ME (mon-string-splice-sep '("aaoa" "AAOA" "aaoa" "AAOA" "aaoa" "AAOA" "aaoa") " - ")
 
 ;;; ==============================
 ;;; :RENAMED `mon-string2strings-splice-sep' -> `mon-string->strings-splice-sep'
 ;;; :CREATED <Timestamp: Sunday May 31, 2009 @ 02:51.45 PM - by MON KEY>
 (defun mon-string->strings-splice-sep (string2strings &optional seperator insertp w-princ)
-  "Like `mon-strings-splice-sep' but converts string -> strings before seperation.
-STRING2STRINGS \(a string\) is the string to split.
-SEPERATOR \(a string\) delimits the return value - default is \" | \"
-Called interactively or when INSERTP non-nil inserts converted string at point.
-Called with prefix arg or when W-PRINC non-nil insert as with princ.\n
+  "Like `mon-strings-splice-sep' but converts string -> strings before seperation.\n
+STRING2STRINGS \(a string\) is the string to split.\n
+SEPERATOR \(a string\) delimits the return value - default is \" | \".n
+When called interactively or INSERTP is non-nil insert string conversion at point.
+Moves point.\n
+When called with prefix arg or W-PRINC is non-nil insert as with princ.
+Moves point.\n
 :SEE-ALSO `mon-string-ify-list'.\n►►►"
-  (interactive (list (read-string "String to Splice :")
-                     (read-string "Separate with :")
+  (interactive (list (read-string 
+                      (concat ":FUNCTION `mon-string->strings-splice-sep'"
+                              "-- string to splice: " ))
+
+                     (read-string 
+                      (concat ":FUNCTION `mon-string->strings-splice-sep'"
+                              "-- separate with: " ))
                      t
-                     (yes-or-no-p "(Y) inserts unquated (N) to insert string?: ")))
+                     (yes-or-no-p 
+                      (concat ":FUNCTION `mon-string->strings-splice-sep'"
+                              "(Y) inserts unquoted (N) to insert string?: "))))
   (let* ((strs (mon-string-ify-list string2strings))
          (str-splc (mon-string-splice-sep strs seperator)))
     (when insertp
@@ -608,7 +627,7 @@ Called with prefix arg or when W-PRINC non-nil insert as with princ.\n
           (princ str-splc (current-buffer))
         (prin1 str-splc (current-buffer))))
     str-splc))
-
+;;
 ;;; :TEST-ME (mon-string->strings-splice-sep  "Make this sentence a list of strings" "++")
 ;;; :TEST-ME (mon-string->strings-splice-sep  "Make this sentence a list of strings")
 ;;; :TEST-ME (mon-string->strings-splice-sep  "This is my String" nil t)
@@ -710,17 +729,15 @@ String obtained by splitting read-string from mini-buffer.\n
 ;;; ==============================
 ;;(eval-when-compile
 (defvar *rotate-text-rotations* nil
-  "Should be set to a list of string rotations to rotate upon.\n
-:EXAMPLE\n\(setq  *rotate-text-rotations*
+  "*A list of string rotations to rotate upon.\n
+:EXAMPLE\n\n\(setq  *rotate-text-rotations*
        '\(\(\"width\" \"height\"\) 
          \(\"left\" \"top\" \"right\" \"bottom\"\)
          \(\"red\" \"orange\" \"yellow\" \"green\" \"indigo\" \"violet\" \"blue\"\)
          \(\"xx-small\" \"x-small\" \"small\" \"normal\" \"large\" \"x-large\" \"xx-large\"\)
          \(\"zero\" \"one\" \"two\"\)\)\)\n
-:CALLED-BY `mon-rotate-region'
-:CALLED-BY `mon-rotate-string'
-:CALLED-BY `mon-rotate-next'
-:CALLED-BY `mon-rotate-get-rotations-for'\n
+:CALLED-BY `mon-rotate-region', `mon-rotate-string', `mon-rotate-next',
+`mon-rotate-get-rotations-for'\n
 :SEE-ALSO .\n►►►")
 ;;)
 
@@ -756,7 +773,7 @@ String obtained by splitting read-string from mini-buffer.\n
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:52.27 PM - by MON KEY>
 (defun mon-rotate-string (string &optional rotations)
   "Rotate all matches in STRING using associations in ROTATIONS.\n
-If ROTATIONS are not given it defaults to `*rotate-text-rotations*'.
+If ROTATIONS are not given it defaults to `*rotate-text-rotations*'.\n
 :SEE-ALSO `mon-rotate-string', `mon-rotate-next', `mon-rotate-region',
 `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp',
 `mon-rotate-flatten-list', `mon-indent-or-rotate'.\n►►►"
@@ -803,7 +820,7 @@ If ROTATIONS are not given it defaults to `*rotate-text-rotations*'.
 ;;; :RENAMED `rotate-get-rotations-for' -> `mon-rotate-get-rotations-for' -> mon-name-utils.el
 ;;; :CREATED <Timestamp: Tuesday June 02, 2009 @ 05:52.27 PM - by MON KEY>
 (defun mon-rotate-get-rotations-for (string &optional rotations)
-  "Return the string rotations for STRING in ROTATIONS.
+  "Return the string rotations for STRING in ROTATIONS.\n
 :SEE-ALSO `mon-rotate-string', `mon-rotate-next', `mon-rotate-region',
 `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp',
 `mon-rotate-flatten-list', `mon-indent-or-rotate'.\n►►►"
@@ -837,8 +854,8 @@ EXAMPLE1:
 ;;; ==============================
 ;;; :RENAMED: `rotate-flatten-list' -> `mon-rotate-flatten-list' -> mon-name-utils.el
 (defun mon-rotate-flatten-list (list-of-lists)
-  "Flattens LIST-OF-LISTS - a list of lists.\n
-:EXAMPLE\n\(mon-rotate-flatten-list '\(\(a b c\) \(1 \(\(2 3\)\)\)\)\)\n
+  "Flatten LIST-OF-LISTS - a list of lists.\n
+:EXAMPLE\n\n\(mon-rotate-flatten-list '\(\(a b c\) \(1 \(\(2 3\)\)\)\)\)\n
 :SEE-ALSO `mon-rotate-string', `mon-rotate-next', `mon-rotate-region',
 `mon-rotate-get-rotations-for', `mon-string-rotate-to-regexp',
 `mon-rotate-flatten-list', `mon-indent-or-rotate'.\n►►►"
@@ -869,6 +886,8 @@ EXAMPLE1:
 ;;; :RENAMED `naf-make-name-return' -> `mon-make-name-return'
 ;;; :NOTE The dog looked to me and said, "Why are you here?"
 (defun mon-make-name-return (the-region)
+  "mon-make-name-return\n
+:SEE-ALSO .\n►►►"
    (let* ((region the-region)
           (temp-name (save-match-data (split-string region)))
           (to-put (reverse (cons (butlast temp-name) (last temp-name)))))
@@ -876,12 +895,13 @@ EXAMPLE1:
 
 ;;; ==============================
 (defun mon-make-name-lispy (the-region)
-  "Return a list as a stringified name rotated as:
+  "Return THE-REGION as list as a stringified names.\n
+Names rotated as:
  (\"Lastname\" (\"&restnames\")) to parens with quote ' escaped by two slashes.\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings'
+:SEE-ALSO `mon-line-strings-to-list', `mon-line-string-rotate-namestrings',
 `mon-line-string-unrotate-namestrings', `mon-make-lastname-firstname',
 `mon-make-name-lispy', `mon-make-names-list'.\n►►►"
-  (setq the-region  (if (string-match "'" the-region)
+   (setq the-region  (if (string-match "'" the-region)
                         (replace-match "\\'" nil t the-region)))
   (let* ((region the-region)
          (temp-name (split-string region))
@@ -952,6 +972,11 @@ EXAMPLE1:
 ;;; ==============================
 (provide 'mon-name-utils)
 ;;; ==============================
+
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
 
 ;;; ====================================================================
 ;;; mon-name-utils.el ends here
