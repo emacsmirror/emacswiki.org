@@ -39,6 +39,11 @@ This script formerly known as nftp works very well, except for two problems:
 Does anyone else have these problems, or a solution to them?
 -- AlexMidgley
 
+I don't know about a solution, but AngeFTPOverSSH has its own SourceForge project. I have largely abandoned AngeFTPOverSSH maintenance as I don't tend to need it these days (I use VNC or RDP solutions instead), and the code morphed so much by other contributers, it would take me a long time to understand it again.
+
+So if you're interested, go over to angeftpoverssh on SourceForge, and try to wake up the project!
+-- RussellStandish
+
 = Dumb Hosts =
 
 The FTP servers on some UNIX machines have problems if the 'ls' command is

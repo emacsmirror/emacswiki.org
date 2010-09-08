@@ -8,7 +8,7 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * [[buffer]] -- editing happens in buffers (workspaces)
 * car -- see [[cons]]
 * cdr -- see [[cons]]
-* '''[::character property]''' -- a [[text property]] or an [[overlay property]]
+* '''[::character property]''' -- a [[text property]] or an [[overlay]] property
 * [[chord]] -- a [[key sequence]] with keys pressed simultaneously
 * [[command]] -- an InteractiveFunction
 * [[completion]] -- completing input in the [[minibuffer]] or text in another buffer

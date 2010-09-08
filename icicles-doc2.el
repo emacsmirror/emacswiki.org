@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:57:25 2010 (-0700)
+;; Last-Updated: Tue Sep  7 16:08:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27056
+;;     Update #: 27061
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1013,8 +1013,8 @@
 ;;   * You can act across multiple buffers, files, or bookmarks -
 ;;     see information about the `icicle-search' prefix arg.
 ;;
-;;   * You can also replace matches within character-property search
-;;     contexts - just use `icicle-search-char-property' (`C-c "') ["]
+;;   * You can also replace matches within text-property search
+;;     contexts - just use `icicle-search-text-property' (`C-c "') ["]
 ;;     as the search command.
 ;;
 ;;  Search matches are replaced - but just what is meant by a "search
@@ -1229,23 +1229,26 @@
 ;;  ** Searching Text with Properties **
 ;;
 ;;  Instead of providing a context regexp, for commands
-;;  `icicle-search-char-property' (`C-c "') ["],
-;;  `icicle-search-overlay-property', and
-;;  `icicle-search-text-property' you provide a character property
-;;  (e.g. `face') and its value (e.g. `font-lock-function-name-face').
-;;  All zones of text that have that property with that value become
-;;  the completion candidates (search hits).  As always, you can
-;;  filter this set of candidates by typing input in the minibuffer.
+;;  `icicle-search-char-property', `icicle-search-overlay-property',
+;;  and `icicle-search-text-property' (`C-c "') ["] you provide a
+;;  character property (e.g. `face') and its value
+;;  (e.g. `font-lock-function-name-face').  All zones of text that
+;;  have that property with that value become the completion
+;;  candidates (search hits).  As always, you can filter this set of
+;;  candidates by typing input in the minibuffer.
 ;;
 ;;  By a "character property" is meant either a text property or an
-;;  overlay property.  `C-c "' ["] searches both kinds of character
-;;  property; `icicle-search-overlay-property' searches only overlay
-;;  properties; and `icicle-search-text-property' searches only text
-;;  properties.  For example, if you use `C-c "' ["] with a `face'
-;;  property value `highlight', then the text searched includes text
-;;  with that overlay value and text with that text-property value.
-;;  With a `face' property value of `font-lock-string-face', you can
-;;  browse or search doc strings, and so on.
+;;  overlay property.  `icicle-search-char-property' searches both
+;;  kinds of character property; `icicle-search-overlay-property'
+;;  searches only overlay properties; and
+;;  `icicle-search-text-property' (`C-c "' ["]) searches only text
+;;  properties.
+;;
+;;  For example, if you use `icicle-search-char-property' with a
+;;  `face' property value `highlight', then the text searched includes
+;;  text with that overlay value and text with that text-property
+;;  value.  With a `face' property value of `font-lock-string-face',
+;;  you can browse or search doc strings, and so on.
 ;;
 ;;  If the property chosen is `face', then you can in fact choose
 ;;  multiple faces, in multi-command fashion (e.g. `C-mouse-2'), and

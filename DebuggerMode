@@ -29,7 +29,14 @@ which functions to instrument before you start.  This is why the old debugger-mo
 I, for one, disagree. The part about "real" programmers is either cute sarcasm or nonsense, or both, depending on your point of view. I use the "old" debugger all the time. Personally, I've found no particular advantage to Edebug for most contexts. -- DrewAdams, unreal programmer
 
 [new]
-Edebug is simpler(x10) to use, but "old" debugger make unreal programmer think himself a real programmer.
+Edebug is simpler(x10) to use, but "old" debugger make unreal programmer think himself a real programmer. -- [[Anonymous]]
+
+[new:DrewAdams:2010-09-07 15:20 UTC]
+I disagree again.  The traditional debugger is simple and straightforward, IMO.  Nothing to instrument -- just toggle it on or off: `M-x debug-on-entry' or `M-x set-variable debug-on-error t'.  Or put breakpoints where you want them by inserting explicit calls to `debug'.
+
+And it does not make at least one self-proclaimed unreal programmer think he's a real programmer.  Dunno what Ms. [[Anonymous]] considers herself: real or unreal, or why s?he bothers to pass judgment on such things. 
+
+The point is that there are two debuggers for EmacsLisp. Use whichever you prefer at any given time.  There are differences, but neither is particularly difficult to use, and neither has a monopoly for "real" programmers. -- DrewAdams
 
 
 ----

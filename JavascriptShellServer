@@ -1,5 +1,5 @@
-Allows to edit a javascript file in Emacs and to have the same kind of interactivity as you do with the Shell or when developing in Emacs with Python or SlimeMode -- ie it allows you to send javascript code from an emacs buffer inside
-Firefox. (Mozilla?)
+Allows to edit a JavaScript file in Emacs and to have the same kind of interactivity as you do with the Shell or when developing in Emacs with Python or SlimeMode -- i.e. it allows you to send JavaScript code from an Emacs buffer inside
+Firefox (Mozilla?).
 
 See:
 [http://the.unwashedmeme.com/blog/2005/06/02/javascript-shellserver-for-emacs/ Javascript ShellServer for Emacs]

@@ -12,7 +12,8 @@ Following is organized roughly according to the load order whilst trying to conv
 * Lisp:mon-default-start-loads.el -- Setup any Emacs and Third party packages required.
 * Lisp:mon-w32-load.el -- w32 specific features which must be present or are better left segregated.
 * Lisp mon-GNU-load.el -- GNU/Linux specific features. Mostly for quick reconfiguration of Slime related stuff prior to slime-loads.el
-* Lisp slime-loads.el -- Slime is a moving target with multiple backends for multiple languages. This is for sanity.
+* Lisp:slime-loads.el -- Slime is a moving target with multiple backends for multiple languages. This is for sanity.
+* Lisp:slime-loads-GNU.el -- stub to indirect slime/swank configs on GNU 
 * Lisp:slime-loads-GNU-clbuild.el -- Called from slime-loads.el
 * Lisp:mon-keybindings.el -- Set global keybindings and mode specific stuff.
 * Lisp:mon-post-load-hooks.el -- functions to evaluate after initializing MON Emacsen

@@ -41,22 +41,31 @@ instead of `C-next' to navigate when using any '''Icicles''' search
 command.  See [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]].
 
 
+
+
+
+
+
+
+
 [:SearchingTextProperties]
 === Searching Text with Properties ===
 
 Instead of providing a [[context regexp]], for commands
-'''`icicle-search-char-property'''' ('''`##C-c "##''''),
+'''`icicle-search-char-property'''',
 '''`icicle-search-overlay-property'''', and
-'''`icicle-search-text-property'''' you provide a ''[[character property]]''
+'''`icicle-search-text-property'''' ('''`##C-c "##'''') you provide a ''[[character property]]''
 (e.g. `face') and its value (e.g. `font-lock-function-name-face').
 All zones of text that have that property with that value become
 the [[completion]] candidates (search hits).  As always, you can
 filter this set of candidates by typing input in the minibuffer.
 
 By a "'''character property'''" is meant either a [[text property]] or an
-[[overlay]] property.  `##C-c "##' searches both kinds of [[character property]]; `##icicle-search-##'''##overlay##'''##-property##' searches only overlay
-properties; and `##icicle-search-##'''##text##'''##-property##'searches only text
-properties.  For example, if you use `##C-c "##' with a `face' property
+[[overlay]] property.  `##icicle-search-##'''##char##'''##-property##'  searches both kinds of character property; `##icicle-search-##'''##overlay##'''##-property##' searches only overlay
+properties; and `##icicle-search-##'''##text##'''##-property##' (`##C-c "##') searches only text
+properties.  
+
+For example, if you use `icicle-search-char-property' with a `face' property
 value `highlight', then the text searched includes text with that
 overlay value and text with that text-property value.  With a `face' property value of `font-lock-string-face', you can
 browse or search doc strings, and so on.
