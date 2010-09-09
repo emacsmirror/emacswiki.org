@@ -207,7 +207,7 @@ You should be able to find documentation on how to set them up on their pages.
 * ErcNickNotify -- Popup a notify window when someon is trying to reach you.
 * ErcPageMe -- Pop up a GNOME dialog box when someone is trying to reach you
 * ErcSpies -- find out who is also in the ''other'' channel
-* ErcYank -- Don't worry about pasting too many lines to channels
+* ErcYank -- Don't worry about pasting too many lines and flooding channels
 * InternetTime -- show you the time as defined by http://swatch.com/fs_index.php?haupt=itime.
 * SwitchToErc -- how to switch to ERC with a keybinding
 * UnwrapLine -- unwrapping long lines when quoting from an existing document

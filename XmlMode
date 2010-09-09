@@ -5,6 +5,11 @@ Various modes exist to edit XML.   See also: XmlParser.
 == sgml-mode.el ==
 The simplest mode to edit XML with is sgml-mode.  It comes with Emacs.
 
+It is no longer the default.  To use it add the following to your InitFile.
+
+  (defalias 'xml-mode 'sgml-mode 
+    "Use `sgml-mode' instead of nXML's `xml-mode'.")
+
 == PSGML ==
 The biggest and greatest SGML mode will handle XML as well.  See
 PsgmlMode.
@@ -15,7 +20,7 @@ psgmlx is a preconfigured set of popular elisp packages used for authoring SGML/
 * http://linux.duke.edu/~mark/psgmlx/
 
 == nXMLMode ==
-NxmlMode seems to be the next big thing in XML editing.
+NxmlMode was the next big thing in XML editing with Emacs.  As of 2009-09-18 it became the default XML mode.
 
 Tim Bray says:
 

@@ -122,5 +122,8 @@ What are the historical reasons? Are they still relevant?
 
 And, what is the point of having a change directory function if we're not gonna friggin' ''use'' it? ;-) -- VegardOye
 
+[new]
+Again, as mentioned above, `cd' is meant for interactive use.  Using something `with-temp-buffer' to counter or nullify side effects from `cd' is bad programming style.  Embrace your inner `let'.  -- AaronHawley
+
 ----
 CategoryHelp
