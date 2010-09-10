@@ -7,3 +7,6 @@ See DictMode for a version that uses the dict protocol directly.
 
 ----
 CategoryInterface
+w3-forms is not in latest emacs package. a workaround, just change the line
+;         (url-request-data (dictweb-form-encode pairs))
+         (url-request-data (concat "Form=Dict1&Query=" word "&Strategy=*&Database=*"))

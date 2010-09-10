@@ -829,6 +829,18 @@ I'm also using LineNumbers, and whitespace mode affects the spaces next to the n
 
 ----
 
+[new]
+
+I have a file containing zero width space characters (unicode code point U+200B). Any idea how I can get a visual feedback where they are? I tried to customize whitespace-display-mappings of whitespace.el like this:
+
+(defcustom whitespace-display-mappings '( (space-mark ?\x200B [?\xB7] [?.]) ...
+
+But I still don't see it. Normal spaces are displayed as intented by whitespace.el.
+
+-- Flo
+
+----
+
 CategoryCode,
 CategoryModes,
 CategoryFaces

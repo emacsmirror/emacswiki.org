@@ -10,5 +10,10 @@ and that script contains
 pdflatex ${1%dvi}tex && open ${1%dvi}pdf
 </pre>
 
+AlanLue: This also works:
+<pre>
+(setq tex-dvi-view-command "(f=*; pdflatex \"${f%.dvi}.tex\" && open \"${f%.dvi}.pdf\")")
+</pre>
+
 ----
 CategoryTex

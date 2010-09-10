@@ -2,21 +2,6 @@ I am an academic who uses emacs, OrgMode, and AUCTeX for all of my planning, not
 
 I am most grateful to all those who have worked on the wonderful computing ecosystem that is emacs.
 
-My [[http://faculty.valpo.edu/mlundin/|home page]] --- created with OrgMode.
-
-Some of the other emacs modes to which I am fiercely devoted:
-
-* [[OrgMode]]
-* [[EMMS]]
-* [[InteractivelyDoThings]] 
-* [[Gnus]]
-* [[rcirc]]
-* [[AUCTeX]]
-* [[RefTeX]]
-* [[BibTeX]]
-* [[JabberEl]]
-* [[emacs-w3m]] (especially [[WThreeMShimbun]])
-
 Here's a tutorial I wrote on [[OrgMode]]'s custom agenda commands:
 
 * http://orgmode.org/worg/org-tutorials/org-custom-agenda-commands.php

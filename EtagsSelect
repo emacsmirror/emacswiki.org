@@ -24,6 +24,18 @@ To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-defin
       (tags-table-check-computed-list)
       tags-table-computed-list))
 
+etags-select.el
+provide a bottom window for select
+
+||source||
+||select||                                             
+
+But sometimes, the select info is too short (e.g. struct abc under
+different #define condition). So a *preview* window besides select
+window will be helpful.
+||||source||
+||select||preview||  
+
 == Finding TAGS Files ==
 [new]
 See EmacsTags EtagsTable

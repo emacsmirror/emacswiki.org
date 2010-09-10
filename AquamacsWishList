@@ -313,9 +313,6 @@ EUR
 It would be great if Aquamacs was able to open frames in certain spaces of Apples Spaces.
 
 [new]
-EricBrown: I love the LaTeX environment, but I would like to have a keyboard shortcut that makes Aquamacs Typeset, View, Preview, etc.  Sort of like Apple-T does in TeXShop.
-
-[new]
 pogopop77: I've always wondered why Emacs never implemented automatic highlighting of C/C++ code within a #if 0 ... #endif construct as a comment.  Vim does it.  It shouldn't be terribly difficult.  I can't think of an argument against it.  And no, hiding the block of code is not the same thing!  Aquamacs has addressed so many other gripes I've had with Emacs, I guess I'm just surprised it's not already in there (is it?)
 
 [new]

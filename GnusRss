@@ -62,6 +62,18 @@ Alternatively, you can use nnshimbun from [[emacs-w3m]], which can also be used 
 
 -- DavidEngster
 
+== Gwene ==
+
+If one prefers to read rss and atom feeds via nntp, one can do so at
+news.gwene.org. Simply add the following to your .gnus.el:
+
+                (add-to-list 'gnus-secondary-select-methods '(nntp "news.gwene.org"))
+
+One can then browse the list of available feeds via the server buffer
+(^).
+
+New feeds can be added [[http://gwene.org/|here]].
+
 == Discussion ==
 
 ----
