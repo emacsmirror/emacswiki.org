@@ -125,10 +125,28 @@ vi style of % jumping to matching brace."
         (t (self-insert-command (or arg 1)))))
 </pre>
 
+=== Alternative method with added flexibility ==
+
+This modification of the above code works when the point is either right before or right after (), {}, or []
+Note: when you are in a cluster of nested brackets, the default association is with the bracket that you are immediately *outside* of, to match the behavior of forward-sexp and backward-sexp
+
+<pre>
+(defun goto-match-paren (arg)
+  "Go to the matching  if on (){}[], similar to vi style of % "
+  (interactive "p")
+  ;; first, check for "outside of bracket" positions expected by forward-sexp, etc.
+  (cond ((looking-at "[\[\(\{]") (forward-sexp))
+        ((looking-back "[\]\)\}]" 1) (backward-sexp))
+        ;; now, try to succeed from inside of a bracket
+        ((looking-at "[\]\)\}]") (forward-char) (backward-sexp))
+        ((looking-back "[\[\(\{]" 1) (backward-char) (forward-sexp))
+        (t nil)))
+</pre>
+
 
 === Another method for vi emulation of the % command ==
 
-You could also bind a modified version of the above command to the "%" key:
+You could also bind a modified version of the first command to the "%" key:
 
 <pre>
 (defun goto-match-paren (arg)
@@ -181,6 +199,8 @@ vi style of % jumping to matching brace."
 When your last command is a movement command, and your cursor is at a parenthesis, then it emulates vi's % command.  Otherwise it just types the % in the current buffer.
 
  - MLF
+
+
 == Additional ways to match parentheses ==
 
 See NavigatingParentheses for other ways to navigate between parentheses.

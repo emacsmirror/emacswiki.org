@@ -67,7 +67,7 @@
     (csharp-mode . "csharp")
     (css-mode . "css")
     (delphi-mode . "delphi")
-    (diff-mode . "diff")
+    (diff-mode . "dff")
     (ebuild-mode . "bash")
     (eiffel-mode . "eiffel")
     (emacs-lisp-mode . "lisp")

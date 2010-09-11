@@ -69,8 +69,19 @@ To use it:
 
 For More Detail, see the extensive comments in the elisp source code. 
 
+[new]
+I was able to implement a monkey-patch to the popup menu presented by flymake-display-err-menu -for-current-line , that presents a list of "quick fixes", as with visual studio.  For example if your code has a CS0246 error (unknown type), then the menu presents a list of fixes including "add a using statement" and "use the fully qualified type".  
 
+Example:
 
+http://i40.tinypic.com/mwryw0.jpg
+
+This works on emacs v22.2.1 on Windows, but requires:
+
+ - changes to flymake.el so that flymake-goto-next-error goes to the *column* as well as the line of the error
+ - CSDEShell - the C# development environment shell - to lookup fully-qualified typenames on short names. 
+
+see [http://stackoverflow.com/questions/2601120/do-overlays-tooltips-work-correctly-in-emacs-for-windows/2604843#2604843 this post] for more.
 
 == Complementary stuff ==
 

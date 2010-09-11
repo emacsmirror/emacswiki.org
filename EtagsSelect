@@ -23,9 +23,8 @@ To find tags in a included tags file, such as TAGS-LISP for Emacs Lisp, re-defin
       (mapcar 'tags-expand-table-name tags-table-list)
       (tags-table-check-computed-list)
       tags-table-computed-list))
-
-etags-select.el
-provide a bottom window for select
+[new]
+etags-select.el provide a bottom window for select
 
 ||source||
 ||select||                                             

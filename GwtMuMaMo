@@ -9,7 +9,7 @@ You also need to add an alias to it, add the following to your [InitFile init fi
 
   (defalias 'js-mode 'espresso-mode)
 
-Add Lisp:gwt-mumamo.el to your load-path and add the following line to your [InitFile init file]:
+Get [http://github.com/fhd/gwt-mumamo/raw/1.1/gwt-mumamo.el gwt-mumamo.el], add it to your load path and add the following line to your [InitFile init file]:
 
   (autoload 'gwt-mumamo-mode "gwt-mumamo" "" t)
 

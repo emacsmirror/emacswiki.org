@@ -18,11 +18,11 @@ IvanKorotkov
 
 ----
 
-There are interfaces for other sites like codepad.org available http://github.com/ruediger/emacs-codepad
+There is either a bug in pastebin.el or a bug in pastebin.com's api. Customize and change pastebin-type-assoc for diff-mode to "dff". I've written pastebin.com to see if it can be aliased to "diff" (Almost nothing in the API is shortened, so I suspect this is a problem on their side).
+
+I'm going to update pastebin.el as well.
+
+RyanDavis
 
 ----
-
-There's also an interface to App::Nopaste at [[nopaste]] which can access pastebin.com and more using plugins: http://github.com/avar/nopaste
-
-----
-CategoryModes
+CategoryInterface

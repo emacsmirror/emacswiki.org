@@ -307,3 +307,22 @@ esac
 
 
 for now it's doing the trick!
+
+== How can I stop [[CategoryBBDB|BBDB]] checking for name mismatches? ==
+
+By default BBDB checks for possible mismatches of a message's author
+name and the corresponding BBDB entry.  To disable this feature you
+have to remove the responsible function form WL's message redisplay
+hook:
+
+{{{
+(remove-hook 'wl-message-redisplay-hook 'bbdb-wl-get-update-record)
+}}}
+
+== If I receive a message with an encoded header field, WL does not decode it ==
+
+Simply tell SEMI to accept encoded sequences in header fields.
+
+{{{
+(setq mime-header-accept-quoted-encoded-words t)
+}}}

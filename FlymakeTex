@@ -1,0 +1,86 @@
+The following are hints for using FlyMake with TeX and LaTeX.
+
+Note: If your latex file has digits immediately before the dot (e.g. <code>design2.tex</code>), flymake will assume it is a portion of a larger work and try to find another file that <code>\include</code>s it!
+
+Is it possible to use latex with flymake on linux machines? I try it today and it seems that the mode works only under miktex.
+
+This mode works on linux machines with customization. The default program (texify) is incorrect, so I used [http://baruch.ev-en.org/proj/chktex/ chktex]:
+
+  (defun flymake-get-tex-args (file-name)
+    (list "chktex" (list "-q" "-v0" file-name)))
+
+If you use a recent version of LaTeX having the option "-file-line-error-style",
+you can use:
+
+  (defun flymake-get-tex-args (file-name)
+    (list "latex" (list "-file-line-error-style" file-name)))
+
+== ChkTeX ==
+
+Another setting to use [http://baruch.ev-en.org/proj/chktex/ ChkTeX]:
+After installing the checking tool, you can put the following .chktexrc on your home direcotry:
+
+  # ~/.chktexrc
+  OutFormat
+  {
+  
+  # -v0; silent mode : change the default setting of -v0 as follows:
+  "%f%b%l%b%c%b%k: %m!n"
+
+Then, write .emacs for flymake as follows:
+
+  ;; Flymake for LaTeX
+  (defun flymake-get-tex-args (file-name)
+    (list "chktex" (list "-g0" "-r" "-l" (expand-file-name "~/.chktexrc") "-I" "-q" "-v0" file-name)))
+  (push
+    '("^\\(\.+\.tex\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+     1 2 3 4) flymake-err-line-patterns)
+
+-- ike
+
+[new]
+For Japanese, unfortunately, chktex doesn't understand 2byte code e.g. Japanese character.
+Trick: we can pass the tex file to the kakasi filter, then check it.
+
+Here is another solution for Japanese TeX users:
+
+  ;; Flymake for LaTeX
+  (defun flymake-get-tex-args (file-name)
+    (list (expand-file-name "~/bin/flycheck_latex.sh") (list file-name)))
+  (push
+    '("^\\(\.+\.tex\\):\\([0-9]+\\):\\([0-9]+\\):\\(.+\\)"
+     nil 2 3 4) flymake-err-line-patterns)
+
+  #!/bin/sh
+  
+  real_file_name=$@
+  file_name=`basename "$real_file_name"`
+  tmp_file=`mktemp`
+  tmp_dir=`mktemp -d`
+  fake_name="$tmp_dir/$file_name"
+  
+  # assumed that the source code has EUC-JP encoding                                                                                             
+  cat "$real_file_name" | kakasi -ieuc -Ha -Ka -Ja -Ea -ka -s > "$tmp_file"
+  
+  mkdir -p $tmp_dir
+  cp $tmp_file $fake_name
+  chktex -g0 -r -l ~/.chktexrc -I -q -v0 $fake_name
+  
+  # clean up                                                                                                                                     
+  rm -fr "$tmp_file"
+  rm -fr "$tmp_dir"
+
+--ike 
+
+== Tex Live! ==
+
+To use flymake with latex or pdflatex from the texlive distribution 
+on linux (as e.g., included in OpenSuse):
+
+  (defun flymake-get-tex-args (file-name)
+    (list "pdflatex" (list "-file-line-error" "-draftmode" "-interaction=nonstopmode" file-name)))
+
+--Lars
+
+----
+CategoryProgrammerUtils

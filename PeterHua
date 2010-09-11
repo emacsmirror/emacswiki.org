@@ -2,21 +2,29 @@ http://alepho.wordpress.com/
 
 Emacs evangelist.
 
+General
+
 * [[GnuEmacs]]
-* [[AUCTeX]]
-* [[CollectionOfEmacsDevelopmentEnvironmentTools]]
 * [[EMMS]]
 * [[ERC]]
+* [[Gnus]]
+
+Programming
+
+* [[AUCTeX]]
+* [[AutoComplete]]
 * [[CategoryESS]]
+* [[CollectionOfEmacsDevelopmentEnvironmentTools]]
 * [[JavaDevelopmentEnvironment]]
 * JessMode
 * [[Js2Mode]]
 * [[Magit]]
 * MMIXMode
 * [[OctaveMode]]
+* [[PythonMode]]
 * [[SlimeMode]]
 * [[SqlMode]]
-
+* [[Yasnippet]]
 
 [new:DrewAdams:2010-03-22 08:02 UTC]
 Welcome to the wiki. -- DrewAdams
