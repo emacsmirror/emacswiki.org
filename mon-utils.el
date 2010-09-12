@@ -112,7 +112,9 @@
 ;; `mon-delq-dups', `mon-make-random-state', `mon-next-almost-prime',
 ;; `mon-list-shuffle-safe', `mon-bool-vector-pp', `mon-get-bit-table',
 ;; `mon-abort-autosave-when-fucked', `mon-get-buffer-hidden',
-;; `mon-map-windows->plist', `mon-list-merge',
+;; `mon-map-windows->plist', `mon-list-merge', `mon-alphabet-as-unintern-fun',
+;; `mon-alphabet-as-map-fun-prop', `mon-alphabet-as-doc-loadtime',
+;; `mon-alphabet-as-map-bc', `mon-alphabet-as-bc',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -121,7 +123,9 @@
 ;; `mon-with-buffer-undo-disabled', `mon-get-face-at-posn',
 ;; `mon-buffer-exists-p', `mon-check-feature-for-loadtime',
 ;; `mon-with-inhibit-buffer-read-only', `mon-gensym',
-;; `mon-with-gensyms',  `mon-nshuffle-vector', `mon-mapcar'
+;; `mon-with-gensyms',  `mon-nshuffle-vector', `mon-mapcar',
+;; `mon-alphabet-as-defun',
+;;
 ;; METHODS:
 ;;
 ;; CLASSES:
@@ -130,6 +134,7 @@
 ;;
 ;; VARIABLES:
 ;; `*mon-utils-post-load-requires*', `*mon-ascii-cursor-state*', `*mon-bit-table*',
+;; `*mon-alphabet-as-type-generate*', 
 ;;
 ;; ALIASED:
 ;; `mon-scratch'                     -> `scratch'
@@ -334,7 +339,7 @@
 (defvar *mon-utils-post-load-requires* nil
   "List of features loaded by feature mon-utils.el\n
 :CALLED BY `mon-utils-require-features-at-loadtime'\n
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `mon-after-mon-utils-loadtime'.\n►►►")
 ;;
 (unless (and (intern-soft "*mon-utils-post-load-requires*")
              (bound-and-true-p *mon-utils-post-load-requires*))
@@ -427,7 +432,6 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 ;;;            (sit-for 4))
 ;;;          (progn (unload-feature 'mon-test-feature-fl) (delete-file mtff)))))
 
-
 ;;; ==============================
 ;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T17:05:28-04:00Z}#{10361} - by MON KEY>
@@ -439,34 +443,7 @@ varaible `*mon-utils-post-load-requires*'\n
   ;; (when (and (intern-soft "IS-MON-SYSTEM-P")
   ;; 	       (bound-and-true-p IS-MON-SYSTEM-P))
   (let (did-rqr)
-    (dolist (req '(mon-regexp-symbols
-                   mon-time-utils
-                   ;; :FILE mon-replacement-utils.el :BEFORE :FILE mon-dir-utils.el mon-insertion-utils.el
-                   mon-replacement-utils 
-                   ;; :FILE mon-dir-utils.el :LOADS mon-dir-locals-alist.el 
-                   ;; :REQUIRES  mon-hash-utils.el, mon-replacement-utils.el, 
-                   ;;            mon-css-color.el, mon-rename-image-utils.el
-                   mon-dir-locals-alist  
-                   mon-dir-utils
-                   mon-cifs-utils
-                   mon-insertion-utils
-                   mon-testme-utils
-                   naf-mode-insertion-utils
-                   ;; :FILE mon-get-mon-packages.el :AFTER-LOAD :FILE mon-wget-utils.el
-                   mon-wget-utils 
-                   mon-url-utils
-                   mon-hash-utils
-                   mon-doc-help-utils
-                   mon-doc-help-CL
-                   mon-tramp-utils
-                   naf-skeletons
-                   ;; :NOTE Should be required already in :FILE mon-default-start-loads.el
-                   naf-mode 
-                   ebay-template-mode
-                   mon-empty-registers
-                   mon-iptables-vars
-                   mon-iptables-regexps
-                   mon-mysql-utils))
+    (dolist (req *mon-utils-post-load-requires*)
       (let ((rqrd (mon-check-feature-for-loadtime req)))
         (when rqrd (push (symbol-name rqrd) did-rqr))))
     (when (consp did-rqr)
@@ -478,8 +455,6 @@ varaible `*mon-utils-post-load-requires*'\n
              (bound-and-true-p IS-MON-SYSTEM-P))
     ;; Load here instead of from :FILE naf-mode.el
     (require 'naf-mode-sql-skeletons nil t)))
-      
-;; (mon-utils-require-features-at-loadtime)
 
 ;;; ==============================
 ;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
@@ -517,6 +492,8 @@ Adds feature requirements:\n
 `mon-cl-compat-loadtime'.\n►►►"
   (progn 
     (mon-get-bit-table)
+    ;; :WAS (mon-set-mon-alphabet-as-doc-loadtime)
+    (mon-alphabet-as-doc-loadtime (mon-alphabet-as-map-bc *mon-alphabet-as-type-generate*))
     (eval-after-load "naf-mode-faces"     '(mon-bind-naf-face-vars-loadtime t))
     (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime t))
@@ -1905,6 +1882,24 @@ Default is to goto-char `point-min'.\n
    (if (and min/max (> min/max 0))
        (point-max) (point-min))))
 
+
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-10T13:54:02-04:00Z}#{10365} - by MON KEY>
+(defun mon-decode-coding-region-utf-8-unix (start end &optional insrtp)
+  "Revert region with `decode-coding-region' with CODING-SYSTEM arg utf-8-unix.\n
+:EXAMPLE\n\n
+:ALIASED-BY 
+:SEE-ALSO .\n►►►"
+  (interactive "r\np")
+  ;; :NOTE the backqouting brouhaha is to allow passing nil nil unreservedly
+  ;; without signaling an error
+  (apply #'decode-coding-region
+         `(,@(or (and (use-region-p) `(,start ,end))
+              (and (null start) (null end)
+                   `(,(region-beginning) ,(region-beginning))))
+           ,'utf-8-unix ,(unless insrtp t))))
+
 ;;; ==============================
 (defun mon-region-position (&optional insrtp intrp)
   "Return details of the postion of current region.\n
@@ -2142,8 +2137,8 @@ occasion it can be useful to know what you don't know. Some commonly hidden
 buffers include:
  \" *autoload*\" \" *autoload-file*\" \" apropos-temp\" \" *Bookmarks*\"
  \" *completion-save-buffer*\" \" *code-conversion-work*\" \" *code-converting-work*\"
- \" *Custom-Work*\"  \" *DOC*\" \" *Echo Area <N>*\" \" *Format Temp <N>*\"
- \" *info tag table*\" \" *IDO Trace*\" 
+ \" *Compiler Input*\"  \" *Compiler Output*\" \" *Custom-Work*\"  \" *DOC*\" 
+ \" *Echo Area <N>*\" \" *Format Temp <N>*\" \" *info tag table*\" \" *IDO Trace*\" 
  \" *dired-check-process output*\" \" *dot-dired*\" \" *gnus work*\"
  \" *ido session*\" \" *info-browse-tmp*\" 
  \" *jka-compr-error*\" \" *jka-compr-error*\"
@@ -2960,10 +2955,35 @@ When called-interactively return message in mini-buffer:
 ;;; ==============================
 
 ;;; ==============================
+;;; :CHANGESET 2117 <Timestamp: #{2010-09-11T13:33:02-04:00Z}#{10366} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-09-09T17:01:53-04:00Z}#{10364} - by MON>
+(defvar *mon-alphabet-as-type-generate* nil
+  "*List of strings each an arg to `mon-alphabet-as-type'.\n
+Used to genrate `mon-alphabet-as-*' functions at loadtime.\n
+When elements of list have an associated byte-compiled funtion generated at
+loadtime with `mon-alphabet-as-bc' and `mon-alphabet-as-doc-loadtime' the
+functions symbol-name will appear on the plist property `is-bytcomp`.\n
+:EXAMPLE\n\n\(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\n
+:NOTE Elements of the plist value may be `unintern' and `fmakunbound'd
+by evaluating `mon-alphabet-as-unintern-fun'\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►")
+;;
+(unless (and (intern-soft "*mon-alphabet-as-type-generate*")
+             (bound-and-true-p *mon-alphabet-as-type-generate*))
+  (setq *mon-alphabet-as-type-generate*
+        '("plistU->stringU" "plistD->stringD" "plistU->num" "plistD->num"
+          "cons-keyU->stringU" "cons-keyD->stringD" "cons-keyU->num"
+          "cons-keyD->num" "cons-symU->num" "cons-symD->num" "cons-stringU->num"
+          "cons-stringD->num" "list-stringD" "list-stringU" "list-symbolU"
+          "list-symbolD" "stringU-w-spc" "stringU-w-nl" "stringD-w-spc"
+          "stringD-w-nl")))
+
+;;; ==============================
 ;;; :TODO Add accessors/defaliases for some of these. To
 ;;; :CREATED <Timestamp: #{2010-01-12T17:06:34-05:00Z}#{10022} - by MON>
-(defun mon-alphabet-as-type (type); up down)
-"Reutrn an alpabetized sequence of TYPE.\n
+(defun mon-alphabet-as-type (type)      ; up down)
+  "Reutrn an alpabetized sequence of TYPE.\n
 Possible args for TYPE are:\n
  :UPCASE-VERSION       :DOWNCASE-VERSION
  `cons-keyU->num'      `cons-keyD->num'
@@ -3000,119 +3020,121 @@ of being entirely self contained, and therefor does not rely on external calls.\
 `mon-alphabet-as-list-symbolU', `mon-alphabet-as-list-symbolD',
 `mon-alphabet-as-stringU-w-nl', `mon-alphabet-as-stringD-w-nl',
 `mon-alphabet-as-stringU-w-spc', `mon-alphabet-as-stringD-w-spc',
-`mon-set-mon-alphabet-as-doc-loadtime', `mon-string-to-symbol',
+`mon-alphabet-as-bc', `mon-alphabet-as-defun', `mon-alphabet-as-doc-loadtime',
+`mon-alphabet-as-unintern-fun', `mon-alphabet-as-map-fun-prop',
+`*mon-alphabet-as-type-generate*', `mon-string-to-symbol',
 `mon-symbol-to-string', `mon-string-alpha-list', `mon-is-alphanum',
 `mon-is-letter', `mon-is-digit', `mon-is-alphanum-simp', `mon-is-letter-simp',
 `mon-is-digit-simp', `mon-string-ify-list', `mon-string-chop-spaces',
 `mon-string-replace-char', `mon-string-from-sequence',
 `mon-string-to-sequence'.\n►►►"
-(let ((maat-alph '(?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L 
-              ?M ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
-      (tycon #'(lambda (typ)
-                (mon-alphabet-as-type typ)))
-      (ns26 (number-sequence 1 26))
-      (maat-abet))
-  (case type 
-    (plistU->stringU 
-     (while maat-alph (funcall #'(lambda (p)
-                                   (let ((s (funcall 'string p)))
-                                     (push (read (upcase (concat ":" s))) maat-abet)
-                                     (push (upcase s) maat-abet)))
-                               (pop maat-alph)))
-     (setq maat-abet  (nreverse maat-abet)))
-    (plistD->stringD 
-     (let ((psd (mapcar #'(lambda (sm) (+ sm 32)) maat-alph)))
-       (while psd 
-         (funcall #'(lambda (smD)                                    
-                      (let ((smd (funcall 'string smD)))
-                        (push (read (concat ":" smd)) maat-abet)
-                        (push smd maat-abet)))
-                  (pop psd)))
-       (setq maat-abet (nreverse maat-abet))))
-    (plistU->num 
-     (let ((pln (funcall tycon 'plistU->stringU)))
-       (dotimes (pp (length pln) (setq maat-abet pln))
-         (when (eq (logand pp 1) 0)
-           (plist-put pln (elt pln pp) 
-                      (if (> pp 0) (1+ (/ pp 2)) (1+ pp)))))))
-    (plistD->num
-     (let ((plnD (funcall tycon 'plistD->stringD)))
-       (dotimes (ppD (length plnD) (setq maat-abet plnD))
-         (when (eq (logand ppD 1) 0)
-           (plist-put plnD (elt plnD ppD)
-                      (if (> ppD 0) (1+ (/ ppD 2)) (1+ ppD)))))))
-    (cons-keyU->stringU 
-     (let ((plc (funcall tycon 'plistU->stringU)))
-       (while plc
-         (funcall #'(lambda (c)
-                      (push `(,c . ,(pop plc)) maat-abet)) (pop plc))))
-     (setq maat-abet (nreverse maat-abet)))
-    (cons-keyD->stringD 
-     (let ((kdsd (funcall tycon 'cons-keyU->stringU)))
-       (mapc #'(lambda (D)
-                 (let ((mk-sml (char-to-string (+ (string-to-char (cdr D)) 32))))
-                   (setcar D (read (concat ":" mk-sml)))
-                   (setcdr D mk-sml)))
-             kdsd)
-       (setq maat-abet kdsd)))
-    (cons-keyU->num 
-     (let ((plc (funcall tycon 'plistU->num)))
-       (while plc
-         (funcall #'(lambda (c)
-                      (push `(,c . ,(pop plc)) maat-abet)) (pop plc))))
-     (setq maat-abet (nreverse maat-abet)))
-    (cons-keyD->num 
-     (let ((plcD (funcall tycon 'plistD->num)))
-       (while plcD
-         (funcall #'(lambda (cD)
-                      (push `(,cD . ,(pop plcD)) maat-abet)) (pop plcD))))
-     (setq maat-abet (nreverse maat-abet)))
-    (cons-symU->num 
-     (let (cc)
-       (do ((i (funcall tycon 'list-symbolU) (setq i (cdr i)))
-            (j ns26 (setq j (cdr j))))
-           ((null i) (setq cc (nreverse cc)))
-         (push `(,(car i) . ,(car j)) cc))))
-    (cons-symD->num 
-     (let (cc)      
-       (do ((i (funcall tycon 'list-symbolD) (setq i (cdr i)))
-            (j ns26 (setq j (cdr j))))
-           ((null i) (setq cc (nreverse cc)))
-         (push `(,(car i) . ,(car j)) cc))))
-    (cons-stringU->num
-     (let (cc)
-       (do ((i (funcall tycon 'list-stringU) (setq i (cdr i)))
-            (j ns26 (setq j (cdr j))))
-           ((null i) (setq cc (nreverse cc)))
-         (push `(,(car i) . ,(car j)) cc))))
-    (cons-stringD->num
-     (let (cc)
-       (do ((i (funcall tycon 'list-stringD) (setq i (cdr i)))
-            (j ns26 (setq j (cdr j))))
-           ((null i) (setq cc (nreverse cc)))
-         (push `(,(car i) . ,(car j)) cc))))
-    (list-stringD 
-     (setq maat-abet (mapcar #'cdr (funcall tycon 'cons-keyD->stringD))))
-    (list-stringU 
-     (setq maat-abet (mapcar #'cdr (funcall tycon 'cons-keyU->stringU))))
-    (list-symbolU 
-     (let ((tmp-obu (make-vector 26 nil))
-           (poplsu (funcall tycon 'list-stringU)))
-       (while poplsu (push (intern (pop poplsu) tmp-obu) maat-abet))
-       (setq maat-abet (nreverse maat-abet))))
-    (list-symbolD 
-     (let ((tmp-obd (make-vector 26 nil))
-           (poplsd (funcall tycon 'list-stringD)))
-       (while poplsd (push (intern (pop poplsd) tmp-obd) maat-abet))
-       (setq maat-abet (nreverse maat-abet))))
-    (stringU-w-spc 
-     (mapconcat #'identity (funcall tycon 'list-stringU) " "))
-    (stringU-w-nl 
-     (mapconcat #'identity (funcall tycon 'list-stringU) "\n"))
-    (stringD-w-spc 
-     (mapconcat #'identity (funcall tycon 'list-stringD) " "))
-    (stringD-w-nl 
-     (mapconcat #'identity (funcall tycon 'list-stringD) "\n")))))
+  (let ((maat-alph '(?A ?B ?C ?D ?E ?F ?G ?H ?I ?J ?K ?L 
+                        ?M ?N ?O ?P ?Q ?R ?S ?T ?U ?V ?W ?X ?Y ?Z))
+        (tycon #'(lambda (typ)
+                   (mon-alphabet-as-type typ)))
+        (ns26 (number-sequence 1 26))
+        (maat-abet))
+    (case type 
+      (plistU->stringU 
+       (while maat-alph (funcall #'(lambda (p)
+                                     (let ((s (funcall 'string p)))
+                                       (push (read (upcase (concat ":" s))) maat-abet)
+                                       (push (upcase s) maat-abet)))
+                                 (pop maat-alph)))
+       (setq maat-abet  (nreverse maat-abet)))
+      (plistD->stringD 
+       (let ((psd (mapcar #'(lambda (sm) (+ sm 32)) maat-alph)))
+         (while psd 
+           (funcall #'(lambda (smD)                                    
+                        (let ((smd (funcall 'string smD)))
+                          (push (read (concat ":" smd)) maat-abet)
+                          (push smd maat-abet)))
+                    (pop psd)))
+         (setq maat-abet (nreverse maat-abet))))
+      (plistU->num 
+       (let ((pln (funcall tycon 'plistU->stringU)))
+         (dotimes (pp (length pln) (setq maat-abet pln))
+           (when (eq (logand pp 1) 0)
+             (plist-put pln (elt pln pp) 
+                        (if (> pp 0) (1+ (/ pp 2)) (1+ pp)))))))
+      (plistD->num
+       (let ((plnD (funcall tycon 'plistD->stringD)))
+         (dotimes (ppD (length plnD) (setq maat-abet plnD))
+           (when (eq (logand ppD 1) 0)
+             (plist-put plnD (elt plnD ppD)
+                        (if (> ppD 0) (1+ (/ ppD 2)) (1+ ppD)))))))
+      (cons-keyU->stringU 
+       (let ((plc (funcall tycon 'plistU->stringU)))
+         (while plc
+           (funcall #'(lambda (c)
+                        (push `(,c . ,(pop plc)) maat-abet)) (pop plc))))
+       (setq maat-abet (nreverse maat-abet)))
+      (cons-keyD->stringD 
+       (let ((kdsd (funcall tycon 'cons-keyU->stringU)))
+         (mapc #'(lambda (D)
+                   (let ((mk-sml (char-to-string (+ (string-to-char (cdr D)) 32))))
+                     (setcar D (read (concat ":" mk-sml)))
+                     (setcdr D mk-sml)))
+               kdsd)
+         (setq maat-abet kdsd)))
+      (cons-keyU->num 
+       (let ((plc (funcall tycon 'plistU->num)))
+         (while plc
+           (funcall #'(lambda (c)
+                        (push `(,c . ,(pop plc)) maat-abet)) (pop plc))))
+       (setq maat-abet (nreverse maat-abet)))
+      (cons-keyD->num 
+       (let ((plcD (funcall tycon 'plistD->num)))
+         (while plcD
+           (funcall #'(lambda (cD)
+                        (push `(,cD . ,(pop plcD)) maat-abet)) (pop plcD))))
+       (setq maat-abet (nreverse maat-abet)))
+      (cons-symU->num 
+       (let (cc)
+         (do ((i (funcall tycon 'list-symbolU) (setq i (cdr i)))
+              (j ns26 (setq j (cdr j))))
+             ((null i) (setq cc (nreverse cc)))
+           (push `(,(car i) . ,(car j)) cc))))
+      (cons-symD->num 
+       (let (cc)      
+         (do ((i (funcall tycon 'list-symbolD) (setq i (cdr i)))
+              (j ns26 (setq j (cdr j))))
+             ((null i) (setq cc (nreverse cc)))
+           (push `(,(car i) . ,(car j)) cc))))
+      (cons-stringU->num
+       (let (cc)
+         (do ((i (funcall tycon 'list-stringU) (setq i (cdr i)))
+              (j ns26 (setq j (cdr j))))
+             ((null i) (setq cc (nreverse cc)))
+           (push `(,(car i) . ,(car j)) cc))))
+      (cons-stringD->num
+       (let (cc)
+         (do ((i (funcall tycon 'list-stringD) (setq i (cdr i)))
+              (j ns26 (setq j (cdr j))))
+             ((null i) (setq cc (nreverse cc)))
+           (push `(,(car i) . ,(car j)) cc))))
+      (list-stringD 
+       (setq maat-abet (mapcar #'cdr (funcall tycon 'cons-keyD->stringD))))
+      (list-stringU 
+       (setq maat-abet (mapcar #'cdr (funcall tycon 'cons-keyU->stringU))))
+      (list-symbolU 
+       (let ((tmp-obu (make-vector 26 nil))
+             (poplsu (funcall tycon 'list-stringU)))
+         (while poplsu (push (intern (pop poplsu) tmp-obu) maat-abet))
+         (setq maat-abet (nreverse maat-abet))))
+      (list-symbolD 
+       (let ((tmp-obd (make-vector 26 nil))
+             (poplsd (funcall tycon 'list-stringD)))
+         (while poplsd (push (intern (pop poplsd) tmp-obd) maat-abet))
+         (setq maat-abet (nreverse maat-abet))))
+      (stringU-w-spc 
+       (mapconcat #'identity (funcall tycon 'list-stringU) " "))
+      (stringU-w-nl 
+       (mapconcat #'identity (funcall tycon 'list-stringU) "\n"))
+      (stringD-w-spc 
+       (mapconcat #'identity (funcall tycon 'list-stringD) " "))
+      (stringD-w-nl
+       (mapconcat #'identity (funcall tycon 'list-stringD) "\n")))))
 ;;
 (defalias 'mon-make-list-alphabet 'mon-alphabet-as-type)
 ;;
@@ -3138,113 +3160,260 @@ of being entirely self contained, and therefor does not rely on external calls.\
 ;;; :TEST-ME (mon-alphabet-as-type 'stringD-w-spc)
 
 
-(defun mon-alphabet-as-cons-keyU->num ()
-  (mon-alphabet-as-type 'cons-keyU->num))
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-09T15:13:12-04:00Z}#{10364} - by MON>
+(defmacro mon-alphabet-as-defun (as-fun-type)
+  "Return a defun form with AS-FUN-TYPE as arg to `mon-alphabet-as-type'.\n
+:EXAMPLE\n\n\(pp-macroexpand-expression 
+               '\(mon-alphabet-as-defun \"cons-keyU->num\"\)\)\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►"
+  (let ((as-fun (make-symbol "as-fun")) 
+        (as-typ (make-symbol "as-typ")))
+    `(let ((,as-fun  (intern (symbol-name 
+                              (make-symbol 
+                               (concat "mon-alphabet-as-" ,as-fun-type)))))
+           (,as-typ  (intern ,as-fun-type)))
+       (list ,as-fun
+             `(defalias ',,as-fun #'(lambda () () 
+                                      (mon-alphabet-as-type ',,as-typ)))))))
 
-(defun mon-alphabet-as-cons-keyD->num ()
-  (mon-alphabet-as-type 'cons-keyD->num))
 
-(defun mon-alphabet-as-cons-symU->num ()
-  (mon-alphabet-as-type 'cons-symU->num))
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-09T16:03:01-04:00Z}#{10364} - by MON>
+(defun mon-alphabet-as-bc (fun-name)
+  "Byte compile FUN-NAME defun form returned by `mon-alphabet-as-defun'.\n
+FUN-NAME \(a string\) is an arg to `mon-alphabet-as-type'.\n
+Return a cons of the form:
+ \( <SYMBOL> . FUN-NAME \)\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►"
+  (let ((maac (mon-alphabet-as-defun fun-name)))
+    (eval (cadr maac))
+    (byte-compile (car maac))
+    (when (byte-code-function-p (indirect-function (car maac)))
+      `(,(car maac) .  ,fun-name))))
+;;
+;;: :TEST-ME (mon-alphabet-as-bc "cons-keyU->num")
+;;; :TEST-ME (indirect-function 'mon-alphabet-as-cons-keyU->num)
+;;; :TEST-ME (byte-code-function-p (indirect-function 'mon-alphabet-as-cons-keyU->num))
+;;
+;; (progn (fmakunbound 'mon-alphabet-as-cons-keyU->num)
+;;        (unintern 'mon-alphabet-as-cons-keyU->num) )
 
-(defun mon-alphabet-as-cons-symD->num ()
-  (mon-alphabet-as-type 'cons-symD->num))
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-11T13:33:28-04:00Z}#{10366} - by MON KEY>
+(defun mon-alphabet-as-map-bc (fun-name-lst)
+  "Map mon-alphabet-as-* args to generate byte-code-function's.\n
+FUN-NAME-LST is list of strings, each an arg to `mon-alphabet-as-type'.\n
+Elements of FUN-NAME-LST are passed as args to `mon-alphabet-as-bc' which
+returns a cons on success.\n
+Elements of return value have the form:\n
+ \( <FUN-SYM-NAME> . <ARG-STR> \)\n
+Where car is a symbol satisfisying the predicate `byte-code-function-p' and cdr
+is the string arg element of FUN-NAME-LST evaluated to produce the byte-code
+function.\n
+:EXAMPLE\n\(mon-alphabet-as-map-bc '\(\"cons-keyD->num\" \"cons-keyU->num\"\)\)\n
+;=> \(\(mon-alphabet-as-cons-keyD->num . \"cons-keyD->num\"\) 
+      \(mon-alphabet-as-cons-keyU->num . \"cons-keyU->num\"\)\)\n
+\(mon-alphabet-as-cons-keyD->num\)\n
+\(indirect-function 'mon-alphabet-as-cons-keyD->num\)\n
+\(mon-alphabet-as-cons-keyD->num\)\n
+\(byte-code-function-p 
+ \(indirect-function 'mon-alphabet-as-cons-keyD->num\)\)\n
+\(progn 
+  \(fmakunbound 'mon-alphabet-as-cons-keyD->num\)
+  \(fmakunbound 'mon-alphabet-as-cons-keyU->num\)
+  \(unintern 'mon-alphabet-as-cons-keyD->num\)
+  \(unintern 'mon-alphabet-as-cons-keyU->num\)\)\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►"
+  (let ((rtn-if-bcd (mapcar #'(lambda (fnl)
+                                (mon-alphabet-as-bc fnl))
+                            fun-name-lst)))
+    rtn-if-bcd))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |
+;; | (mon-alphabet-as-map-bc '("cons-keyD->num" "cons-keyU->num"))
+;; | 
+;; | (mon-alphabet-as-cons-keyD->num)
+;; | 
+;; | (indirect-function 'mon-alphabet-as-cons-keyD->num)
+;; | 
+;; | (mon-alphabet-as-cons-keyD->num)
+;; | 
+;; | (byte-code-function-p 
+;; |  (indirect-function 'mon-alphabet-as-cons-keyD->num))
+;; | 
+;; | (progn 
+;; |   (fmakunbound 'mon-alphabet-as-cons-keyD->num)
+;; |   (fmakunbound 'mon-alphabet-as-cons-keyU->num)
+;; |   (unintern 'mon-alphabet-as-cons-keyD->num)
+;; |   (unintern 'mon-alphabet-as-cons-keyU->num))
+;; |
+;; `----
 
-(defun mon-alphabet-as-cons-stringU->num ()
-  (mon-alphabet-as-type 'cons-stringU->num))
 
-(defun mon-alphabet-as-cons-stringD->num ()
-  (mon-alphabet-as-type 'cons-stringD->num))
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-11T13:33:34-04:00Z}#{10366} - by MON KEY>
+(defun mon-alphabet-as-doc-loadtime (sym-arg-cons &optional w-args-cons-rtn)
+  "Put docstrings on mon-alphabet-as-type convenience functions at loadtime.\n
+Message that function symbol is now byte-compiled and contains the property
+`function-documentation`.\n
+Arg SYM-ARG-CONS is a list of cons pairs as per return value of
+`mon-alphabet-as-map-bc'.\n
+When optionsl W-ARGS-CONS-RTN is non-nil return the SYM-ARG-CONS list.\n
+Add function-documentation property to functions plist for following functions:
+ `mon-alphabet-as-cons-keyU->num', `mon-alphabet-as-cons-keyD->num',
+ `mon-alphabet-as-cons-symU->num', `mon-alphabet-as-cons-symD->num',
+ `mon-alphabet-as-cons-stringU->num', `mon-alphabet-as-cons-stringD->num',
+ `mon-alphabet-as-cons-keyU->stringU', `mon-alphabet-as-cons-keyD->stringD',
+ `mon-alphabet-as-plistU->stringU', `mon-alphabet-as-plistD->stringD',
+ `mon-alphabet-as-plistU->num', `mon-alphabet-as-plistD->num',
+ `mon-alphabet-as-list-stringU', `mon-alphabet-as-list-stringD',
+ `mon-alphabet-as-list-symbolU', `mon-alphabet-as-list-symbolD',
+ `mon-alphabet-as-stringU-w-nl', `mon-alphabet-as-stringD-w-nl',
+ `mon-alphabet-as-stringU-w-spc', `mon-alphabet-as-stringD-w-spc',\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►"
+  (let* ((map-xrfs (mon-string-justify-left
+                    (mapconcat #'identity
+                               `(,":SEE-ALSO "
+                                 ,@(mapcar #'(lambda (sac)
+                                               (format "`%s'," (car sac)))
+                                           sym-arg-cons))
+                               " ") 
+                    80))
+         (maat-doc-tmplt 
+          (mapconcat #'identity 
+                     `("Convenience function for `mon-alphabet-as-type' with arg '%s.\n"
+                       ":EXAMPLE\n\n\(%S\)\n"
+                       ,map-xrfs
+                       "`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-bc', `mon-alphabet-as-defun',"
+                       "`mon-alphabet-as-unintern-fun', `mon-alphabet-as-map-fun-prop',"
+                       "`*mon-alphabet-as-type-generate*', `mon-string-to-symbol',"
+                       "`mon-symbol-to-string', `mon-string-alpha-list', `mon-is-alphanum',"
+                       "`mon-is-letter', `mon-is-digit', `mon-is-alphanum-simp', `mon-is-letter-simp',"
+                       "`mon-is-digit-simp', `mon-string-ify-list', `mon-string-chop-spaces',"
+                       "`mon-string-replace-char', `mon-string-from-sequence',"
+                       "`mon-string-to-sequence'.\n►►►") "\n"))
+         (ldtm-msg (concat ":FUNCTION `mon-set-mon-alphabet-as-doc-loadtime' "
+                           "-- byte-compiled and documented `%s' at loadtime")))
+    ;; :DEBUGGING    ;; map-xrfs))  ;; maat-doc-tmplt)) 
+    (dolist (maat sym-arg-cons 
+                  (progn (mon-alphabet-as-map-fun-prop sym-arg-cons)
+                         (if w-args-cons-rtn sym-arg-cons
+                           (message (concat ":FUCTION `mon-alphabet-as-doc-loadtime' "
+                                            "-- evaluated arg SYM-ARG-CONS list at loadtime")))))
+      (unless (documentation-property (car maat) 'function-documentation)
+        (message (format ldtm-msg (car maat)))
+        (put (car maat) 'function-documentation 
+             (format maat-doc-tmplt (upcase (cdr maat)) (car maat)))))))
 
-(defun mon-alphabet-as-cons-keyU->stringU ()
-  (mon-alphabet-as-type 'cons-keyU->stringU))
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-11T13:33:38-04:00Z}#{10366} - by MON KEY>
+(defun mon-alphabet-as-map-fun-prop (prop-fun-lst)
+  "Plist of functions generated with `*mon-alphabet-as-type-generate*'.\n
+Put a list of functions on the property 'is-bytcomp. Property value is a list of
+each function that was byte-compiled at loadtime using the arg strings on the
+variable `*mon-alphabet-as-type-generate*' plist.\n
+Used for symbol-> string lookup via intern-soft  if/when we want to unintern.\n
+:EXAMPLE\n\n\(symbol-plist '*mon-alphabet-as-type-generate*\)\n
+\(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\n
+\(mapcar #'\(lambda \(intrd-p\)
+            \(intern-soft intrd-p\)\)
+        \(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\)\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►"
+  (put '*mon-alphabet-as-type-generate* 'is-bytcomp 
+       (mapcar #'(lambda (pfl) (symbol-name (car pfl)))
+               prop-fun-lst)))
 
-(defun mon-alphabet-as-cons-keyD->stringD ()
-  (mon-alphabet-as-type 'cons-keyD->stringD))
-
-(defun mon-alphabet-as-plistU->stringU ()
-  (mon-alphabet-as-type 'plistU->stringU))
-
-(defun mon-alphabet-as-plistD->stringD ()
-  (mon-alphabet-as-type 'plistD->stringD))
-
-(defun mon-alphabet-as-plistU->num ()
-  (mon-alphabet-as-type 'plistU->num))
-
-(defun mon-alphabet-as-plistD->num ()
-  (mon-alphabet-as-type 'plistD->num))
-
-(defun mon-alphabet-as-list-stringU ()
-  (mon-alphabet-as-type 'list-stringU))
-
-(defun mon-alphabet-as-list-stringD ()
-  (mon-alphabet-as-type 'list-stringD))
-
-(defun mon-alphabet-as-list-symbolU ()
-  (mon-alphabet-as-type 'list-symbolU))
-
-(defun mon-alphabet-as-list-symbolD ()
-  (mon-alphabet-as-type 'list-symbolD))
-
-(defun mon-alphabet-as-stringU-w-nl ()
-  (mon-alphabet-as-type 'stringU-w-nl))
-
-(defun mon-alphabet-as-stringD-w-nl ()
-  (mon-alphabet-as-type 'stringD-w-nl))
-
-(defun mon-alphabet-as-stringU-w-spc ()
-  (mon-alphabet-as-type 'stringU-w-spc))
-
-(defun mon-alphabet-as-stringD-w-spc ()
-  (mon-alphabet-as-type 'stringD-w-spc))
-
-(defun mon-set-mon-alphabet-as-doc-loadtime ()
-  "Put docstrings on the `mon-alphabet-as-type' convenience functions.\n
-:SEE-ALSO .\n►►►"
-  (let ((maat-cons
-         '((mon-alphabet-as-cons-keyU->num       . "cons-keyU->num")
-           (mon-alphabet-as-cons-keyD->num       . "cons-keyD->num")
-           (mon-alphabet-as-cons-symU->num       . "cons-symU->num")
-           (mon-alphabet-as-cons-symD->num       . "cons-symD->num")
-           (mon-alphabet-as-ons-stringU->num     . "ons-stringU->num")
-           (mon-alphabet-as-cons-stringD->num    . "cons-stringD->num")
-           (mon-alphabet-as-cons-keyU->stringU   . "cons-keyU->stringU")
-           (mon-alphabet-as-cons-keyD->stringD   . "cons-keyD->stringD")
-           (mon-alphabet-as-plistU->stringU      . "plistU->stringU")
-           (mon-alphabet-as-plistD->stringD      . "plistD->stringD")
-           (mon-alphabet-as-plistU->num          . "plistU->num")
-           (mon-alphabet-as-plistD->num          . "plistD->num")
-           (mon-alphabet-as-list-stringU         . "list-stringU")
-           (mon-alphabet-as-list-stringD         . "list-stringD")
-           (mon-alphabet-as-list-symbolU         . "list-symbolU")
-           (mon-alphabet-as-list-symbolD         . "list-symbolD")
-           (mon-alphabet-as-stringU-w-nl         . "stringU-w-nl")
-           (mon-alphabet-as-stringD-w-nl         . "stringD-w-nl")
-           (mon-alphabet-as-stringU-w-spc        . "stringU-w-spc")
-           (mon-alphabet-as-stringD-w-spc        . "stringD-w-spc")))
-        (maat-doc-tmplt 
-         (mapconcat #'identity 
-                    '("Convenience function for `mon-alphabet-as-type' with arg '%s.\\n"
-                      ":EXAMPLE\\n\\n\\(%S\\)\\n"
-                      ":SEE-ALSO `mon-alphabet-as-cons-keyU->num', `mon-alphabet-as-cons-keyD->num',"
-                      "`mon-alphabet-as-cons-symU->num', `mon-alphabet-as-cons-symD->num',"
-                      "`mon-alphabet-as-cons-stringU->num', `mon-alphabet-as-cons-stringD->num',"
-                      "`mon-alphabet-as-cons-keyU->stringU', `mon-alphabet-as-cons-keyD->stringD',"
-                      "`mon-alphabet-as-plistU->stringU', `mon-alphabet-as-plistD->stringD',"
-                      "`mon-alphabet-as-plistU->num', `mon-alphabet-as-plistD->num',"
-                      "`mon-alphabet-as-list-stringU', `mon-alphabet-as-list-stringD',"
-                      "`mon-alphabet-as-list-symbolU', `mon-alphabet-as-list-symbolD',"
-                      "`mon-alphabet-as-stringU-w-nl', `mon-alphabet-as-stringD-w-nl',"
-                      "`mon-alphabet-as-stringU-w-spc', `mon-alphabet-as-stringD-w-spc',"
-                      "`mon-set-mon-alphabet-as-doc-loadtime', `mon-string-to-symbol',"
-                      "`mon-symbol-to-string', `mon-string-alpha-list', `mon-is-alphanum',"
-                      "`mon-is-letter', `mon-is-digit', `mon-is-alphanum-simp', `mon-is-letter-simp',"
-                      "`mon-is-digit-simp', `mon-string-ify-list', `mon-string-chop-spaces',"
-                      "`mon-string-replace-char', `mon-string-from-sequence',"
-                      "`mon-string-to-sequence'.\\n►►►") "\n")))
-    (dolist (maat maat-cons)
-      (put (car maat) 'function-documentation (format maat-doc-tmplt (cdr maat))))))
-
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-11T13:33:41-04:00Z}#{10366} - by MON KEY>
+(defun mon-alphabet-as-unintern-fun (&optional funintern-lst)
+  "Unintern `mon-alphabet-as-type' convenience functions.\n
+Functions on the `*mon-alphabet-as-type-generate*'s plist property `is-bytcomp`
+are `fmakunbound'd and `unintern'd.\n
+FUNINTERN-LST is a list of strings and/or symbols naming functions present 
+interned in the current Emacs environment. It has one of the form:\n
+ \( <STR>* \) | \( <STR>+ <SYM>+ \) | \( <SYM>* \)\n
+Where the first most form (a list of strings is the preferred format.\n
+:NOTE Elements of FUNINTERN-LST should name functions which satisfy
+`byte-code-function-p', and should be present in the list returned as value of
+`is-bytcomp` property, e.g.:\n
+ \(get '*mon-alphabet-as-type-generate* 'is-bytcomp\)\n
+:SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
+`mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
+`mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►"
+  (let ((maatg (get '*mon-alphabet-as-type-generate* 'is-bytcomp)))
+    (when (or (null maatg) (not (consp maatg)))
+      (error (concat ":FUNCTION `mon-alphabet-as-unintern-fun' "
+                     "-- `*mon-alphabet-as-type-generate*' plist property "
+                     "`is-bytcomp` null or missing")))
+    (when funintern-lst 
+      (if (not (consp funintern-lst))
+          (error (concat ":FUNCTION `mon-alphabet-as-unintern-fun' "
+                         "-- arg FUNINTERN-LST does not satisfy `consp'"))
+        (setq maatg (mapcar #'(lambda (fu-l) 
+                                ;; `format' is so FUNINTERN-LST can conatin symbols
+                                ;; and/or strings e.g.:
+                                ;; '(mon-alphabet-as-cons-keyD->num 
+                                ;;   "mon-alphabet-as-cons-keyU->num")
+                                (let ((fu-l-str (or (and (stringp fu-l) fu-l)
+                                                    (format "%s" fu-l))))
+                                  (when (member fu-l-str maatg)
+                                    fu-l-str)))
+                            funintern-lst))))
+    (let (w-msg-fu-l)
+      (dolist (un-maatg maatg
+                        (when w-msg-fu-l
+                          (let ((orig-pl (get '*mon-alphabet-as-type-generate* 'is-bytcomp)))
+                            ;; Set a new property list `*mon-alphabet-as-type-generate*':
+                            (dolist (pl-prp w-msg-fu-l
+                                            (plist-put (symbol-plist '*mon-alphabet-as-type-generate*)
+                                                       'is-bytcomp orig-pl))
+                              (setq orig-pl (delete pl-prp orig-pl))))
+                          (message (substring (concat ":FUNCTION `mon-alphabet-as-unintern-fun' "
+                                                      "-- uninterned functions: "
+                                                      (mapconcat #'(lambda (wmfl) (format "`%s'," wmfl))
+                                                                 (nreverse w-msg-fu-l) " ")) 0 -1))))
+        (let ((is-um (intern-soft un-maatg)))
+          (when is-um
+            (push  un-maatg  w-msg-fu-l)
+            (fmakunbound is-um)
+            (unintern is-um)))))))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |
+;; | (mon-alphabet-as-doc-loadtime (mon-alphabet-as-map-bc *mon-alphabet-as-type-generate*))
+;; | 
+;; | (mon-alphabet-as-unintern-fun
+;; |   '("mon-alphabet-as-cons-keyD->num" "mon-alphabet-as-cons-keyU->num")) 
+;; | 
+;; | (mon-alphabet-as-unintern-fun
+;; |  '(mon-alphabet-as-cons-keyD->num "mon-alphabet-as-cons-keyU->num")) 
+;; | 
+;; | (mon-alphabet-as-unintern-fun
+;; |  '(mon-alphabet-as-cons-keyD->num mon-alphabet-as-cons-keyU->num))
+;; | 
+;; | (mon-alphabet-as-unintern-fun)
+;; |
+;; | (mon-alphabet-as-doc-loadtime (mon-alphabet-as-map-bc *mon-alphabet-as-type-generate*))
+;; |
+;; `----
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `is-digit'
@@ -7167,20 +7336,33 @@ Of several `eq' occurrences of an element in DUP-LIST, the first one is kept.\n
 ;;; ==============================
 ;;; :COURTESY bytecomp.el, gnus-util.el  
 ;;; :WAS `byte-compile-delete-first' :WAS `gnus-delete-first'
-(defun mon-delete-first (list-elt in-list)
-  "Delete by side effect the first occurrence of LIST-ELT as member of IN-LIST.\n
+(defun mon-delete-first (list-elt in-list &optional test-pred)
+  "Delete by side effect the first `eq' occurrence of LIST-ELT as member of IN-LIST.\n
+:EXAMPLE\n\n (let ((mdf '((a b c) b))) (mon-delete-first '(a b c) mdf) mdf)
 :SEE-ALSO .\n"
   ;; :NOTE `defsubst'd in bytecomp.el
-  ;; (if (eq (car list) elt)
-  ;;     (cdr list)
-  ;;   (let ((total list))
-  ;;     (while (and (cdr list)
-  ;;       	  (not (eq (cadr list) elt)))
-  ;;       (setq list (cdr list)))
-  ;;     (when (cdr list)
-  ;;       (setcdr list (cddr list)))
-  ;;     total))
-  (byte-compile-delete-first list-elt in-list))
+  ;; (byte-compile-delete-first list-elt in-list))
+  (if ;; :WAS (eq (car in-list) list-elt)
+      (case test-pred
+        (equal (equal (car in-list) list-elt))
+        (eql   (eql (car in-list) list-elt))
+        (t     (eq (car in-list) list-elt)))
+      ;; :WAS 
+      ;; (cdr in-list)
+      (setq in-list (cdr in-list))
+    (let ((mdf-total in-list))
+      (while (and (cdr in-list)
+                  ;; :WAS (not (eq (cadr in-list) list-elt))
+                  (not (case test-pred
+                         (equal (equal (cadr in-list) list-elt))
+                         (eql   (eql   (cadr in-list) list-elt))
+                         (t     (eq    (cadr in-list) list-elt)))))
+        (setq in-list (cdr in-list)))
+      (when (cdr in-list)
+        (setcdr in-list (cddr in-list)))
+      mdf-total))
+in-list)
+
 
 ;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-make-relatively-unique'
@@ -7579,6 +7761,7 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 `mon-delq-cons', `mon-list-make-unique', `mon-remove-dups', `mon-assoc-replace',
 `mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
 `mon-list-shuffle-safe'.\n►►►"
+  ;; (copy-tree tree)
   (do ((result nil)
        (stack  nil))
       ((not (or tree stack)) (nreverse result))

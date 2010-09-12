@@ -6,16 +6,16 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sun Aug 15 18:48:39 2010 (-0700)
+;; Last-Updated: Sat Sep 11 15:39:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 633
+;;     Update #: 635
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `bookmark', `pp', `pp+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -176,11 +176,11 @@
 ;; bookmark-name-from-full-record, bookmark-prop-get,
 ;; bookmark-prop-set
 
-(eval-when-compile (require 'bookmark+-bmu))
+;; (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-barf-if-not-in-menu-list, bmkp-bmenu-filter-function,
 ;; bmkp-bmenu-title
 
-(eval-when-compile (require 'bookmark+-1))
+;; (eval-when-compile (require 'bookmark+-1))
 ;; bmkp-autonamed-bookmark-p, bmkp-autonamed-this-buffer-alist-only,
 ;; bmkp-autoname-format, bmkp-current-nav-bookmark,
 ;; bmkp-current-sort-order, bmkp-cycle-1, bmkp-default-bookmark-name,

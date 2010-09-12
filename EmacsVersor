@@ -1,3 +1,4 @@
+[[es:EmacsVersorEs]]
 EmacsVersor (http://emacs-versor.sourceforge.net/) provides:
 
 * A block (or region) cursor, with motion and text selection by semantically significant units e.g. statements, statement parts, sentences, phrases, table rows and cells
@@ -15,6 +16,10 @@ EmacsVersor (http://emacs-versor.sourceforge.net/) provides:
 * Means to access these (and other) navigation and editing commands through a narrow-channel interface such as FootSwitches or GamePad (suitable for disability access, including RepeatedStrainInjury)
 
 * VoiceRecognition for use with emacs-vr-mode 
+
+
+Versor Spanish pages can be found at
+* http://gnu.manticore.es
 
 ----
 CategoryAccessibility

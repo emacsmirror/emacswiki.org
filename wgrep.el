@@ -1,9 +1,10 @@
 ;;; wgrep --- Writable grep buffer and apply the changes to files
-;; -*- Mode: Emacs-Lisp -*-
 
 ;; Author: Hayashi Masahiro <mhayashi1120@gmail.com>
-;; Keywords: grep edit result writable
-;; URL: http://gist.github.com/520805.txt
+;; Keywords: grep edit extensions
+;; URL: http://github.com/mhayashi1120/Emacs-Lisp/raw/master/wgrep.el
+;; URL: http://www.emacswiki.org/download/wgrep.el
+;; Emacs: GNU Emacs 22 or later
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -23,15 +24,37 @@
 ;;; Commentary:
 
 ;; wgrep provides to edit grep buffer and to apply the changes to
-;; the file.
-;;
+;; the file buffer.
 
 ;;; Install:
 
 ;; Put this file into load-path'ed directory, and byte compile it if
-;; desired.  And put the following expression into your ~/.emacs.
+;; desired. And put the following expression into your ~/.emacs.
 ;;
 ;;     (require 'wgrep)
+
+;;; Usage:
+
+;; You can edit the text on *grep* buffer after type C-c C-p.
+;; After that the changed text is highlighted.
+;; Following keybind is defined.
+
+;; C-c C-e : Apply the highlighting changes to file buffers.
+;; C-c C-u : All changes are unmarked and ignored.
+;; C-c C-r : Remove the highlight in the region (The Changes doesn't
+;;      apply to files. Of course, if you type C-c C-e, the remained
+;;      highlight changes are applied to files.)
+;; C-c C-p Toggle read-only area.
+;; C-c C-k Discard all changes and exit.
+;; C-x C-q Exit wgrep mode.
+
+;; To turn on/off the feature by
+;;   M-x wgrep-toggle-feature
+
+;; To save all buffers that wgrep changed by
+;;   M-x wgrep-save-all-buffers
+
+;;; History:
 
 ;; This program is forked version. Original version can be downloaded from
 ;; http://www.bookshelf.jp/elc/grep-edit.el
@@ -40,37 +63,20 @@
 ;; * Support grep option -A (--after-context) -B (--before-context)
 ;; * Some bugfix. (wrong coloring text etc..)
 ;; * wdired.el like interface.
-;; * Remove all advise.
+;; * Remove all advice.
 ;; * Bind to local variables. (grep-a-lot.el works well)
 ;; * After save buffer, colored face will be removed.
 
-;; Usage:
-;; You can edit the text on *grep* buffer after type C-c C-p.
-;; After that the changed text is highlighted.
-;; Then, type C-c C-e to apply the highlighting changes
-;; to files.
+;;; TODO:
 
-;; Wgrep feature turn-on/turn-off by
-;;   M-x wgrep-toggle-feature
-
-;; Save all buffers that wgrep changed,
-;;   M-x wgrep-save-all-buffers
-
-;; C-c C-e : apply the highlighting changes to file buffers.
-;; C-c C-u : All changes are unmarked and ignored.
-;; C-c C-r : Remove the highlight in the region (The Changes doesn't
-;; apply to files. Of course, if you type C-c C-e, the remained
-;; highlight changes are applied to files.)
-
-;;; History:
-;; 
-
-;;; TODO
 ;; * can undo region.
 ;; * can remove whole line.
 ;; * When applying buffer is modified.
 
 ;;; Code:
+
+(eval-when-compile
+  (require 'cl))
 
 (require 'grep)
 
@@ -83,16 +89,21 @@
   :group 'wgrep
   :type 'boolean)
 
+(defcustom wgrep-enable-key "\C-c\C-p"
+  "*Key to enable `wgrep-mode'."
+  :type 'string  
+  :group 'wgrep)
+
 (defvar wgrep-setup-hook nil
   "Hooks run when setup to wgrep.")
 
 (defface wgrep-face
   '((((class color)
       (background dark))
-     (:background "SlateGray1" :bold t :foreground "Black"))
+     (:background "SlateGray1" :weight bold :foreground "Black"))
     (((class color)
       (background light))
-     (:background "ForestGreen" :bold t))
+     (:background "ForestGreen" :weight bold))
     (t
      ()))
   "*Face used for the changed text on grep buffer."
@@ -101,10 +112,10 @@
 (defface wgrep-file-face
   '((((class color)
       (background dark))
-     (:background "gray30" :bold t))
+     (:background "gray30" :weight bold))
     (((class color)
       (background light))
-     (:background "ForestGreen" :bold t))
+     (:background "ForestGreen" :weight bold))
     (t
      ()))
   "*Face used for the changed text on file buffer."
@@ -113,10 +124,10 @@
 (defface wgrep-reject-face
   '((((class color)
       (background dark))
-     (:foreground "hot pink" :bold t))
+     (:foreground "hot pink" :weight bold))
     (((class color)
       (background light))
-     (:foreground "red" :bold t))
+     (:foreground "red" :weight bold))
     (t
      ()))
   "*Face used for the line on grep buffer that can not apply to file."
@@ -125,10 +136,10 @@
 (defface wgrep-done-face
   '((((class color)
       (background dark))
-     (:foreground "LightSkyBlue" :bold t))
+     (:foreground "LightSkyBlue" :weight bold))
     (((class color)
       (background light))
-     (:foreground "blue" :bold t))
+     (:foreground "blue" :weight bold))
     (t
      ()))
   "*Face used for the line on grep buffer that can apply to file."
@@ -172,7 +183,7 @@
 (defun wgrep-setup ()
   (if wgrep-enabled
       (progn
-	(define-key grep-mode-map "\C-c\C-p" 'wgrep-to-wgrep-mode)
+	(define-key grep-mode-map wgrep-enable-key 'wgrep-to-wgrep-mode)
 	(if (boundp 'compilation-finish-functions)
 	    (add-hook 'compilation-finish-functions 'wgrep-finish-function nil t)
 	  ;; this works Emacs 22.1 or earlier
@@ -201,7 +212,7 @@
                            (match-end 0) 'read-only state)))
     (setq wgrep-readonly-state state)))
 
-(defun wgrep-mode-change-face (beg end leng-before)
+(defun wgrep-after-change-function (beg end leng-before)
   (when (wgrep-process-exited-p)
     (cond
      ((= (point-min) (point-max))
@@ -213,25 +224,7 @@
 	(lambda (o) (overlay-get o 'wgrep))
 	(overlays-in (point-min) (point-max)))))
      (t
-      (let ((ovs (overlays-in beg end))
-	    (inhibit-it nil)
-	    ov)
-	(save-excursion
-	  (forward-line 0)
-	  (when (looking-at wgrep-line-file-regexp)
-	    (setq inhibit-it (> (match-end 0) beg))))
-	(unless inhibit-it
-	  (while ovs
-	    (if (overlay-get (car ovs) 'wgrep)
-		(setq inhibit-it t))
-	    (setq ovs (cdr ovs))))
-	(unless inhibit-it
-	  (setq ov (wgrep-make-overlay
-		    (line-beginning-position)
-		    (+ 1 (line-end-position))))
-	  (overlay-put ov 'face 'wgrep-face)
-	  (overlay-put ov 'priority 0)
-	  (setq wgrep-overlays (cons ov wgrep-overlays))))))))
+      (wgrep-put-change-face beg end)))))
 
 (defun wgrep-get-info ()
   (beginning-of-line)
@@ -273,7 +266,7 @@
 (defun wgrep-apply-to-buffer (line new-text)
   "*The changes on the grep buffer apply to the file"
   (let ((inhibit-read-only wgrep-change-readonly-file))
-    (goto-line line)
+    (wgrep-goto-line line)
     (delete-region (line-beginning-position)
                    (line-end-position))
     (beginning-of-line)
@@ -283,7 +276,7 @@
   "*Highlight the changed line of the file"
   (let ((ov (wgrep-make-overlay
 	     (line-beginning-position)
-	     (+ 1 (line-end-position)))))
+	     (line-end-position))))
     (overlay-put ov 'face 'wgrep-file-face)
     (overlay-put ov 'priority 0)
     (add-hook 'after-save-hook 'wgrep-after-save-hook nil t)
@@ -291,18 +284,39 @@
 
 (defun wgrep-put-done-face ()
   (when (looking-at wgrep-line-file-regexp)
-    (let ((ov (wgrep-make-overlay (match-end 0) (+ 1 (line-end-position)))))
+    (let ((ov (wgrep-make-overlay (match-end 0) (line-end-position))))
       (overlay-put ov 'face 'wgrep-done-face)
       (overlay-put ov 'priority 0))))
 
 (defun wgrep-put-reject-face ()
   (when (looking-at wgrep-line-file-regexp)
-    (let ((ov (wgrep-make-overlay (match-end 0) (+ 1 (line-end-position)))))
+    (let ((ov (wgrep-make-overlay (match-end 0) (line-end-position))))
       (overlay-put ov 'face 'wgrep-reject-face)
       (overlay-put ov 'priority 0))))
 
+(defun wgrep-put-change-face (beg end)
+  (let ((ovs (overlays-in beg end))
+	(inhibit-it nil)
+	ov)
+    (save-excursion
+      (forward-line 0)
+      (when (looking-at wgrep-line-file-regexp)
+	(setq inhibit-it (> (match-end 0) beg))))
+    (unless inhibit-it
+      (while ovs
+	(if (overlay-get (car ovs) 'wgrep)
+	    (setq inhibit-it t))
+	(setq ovs (cdr ovs))))
+    (unless inhibit-it
+      (setq ov (wgrep-make-overlay
+		(line-beginning-position)
+		(line-end-position)))
+      (overlay-put ov 'face 'wgrep-face)
+      (overlay-put ov 'priority 0)
+      (setq wgrep-overlays (cons ov wgrep-overlays)))))
+
 (defun wgrep-to-grep-mode ()
-  (remove-hook 'after-change-functions 'wgrep-mode-change-face t)
+  (remove-hook 'after-change-functions 'wgrep-after-change-function t)
   (use-local-map grep-mode-map)
   (set-buffer-modified-p nil)
   (setq buffer-undo-list nil)
@@ -312,13 +326,13 @@
   "Apply changed text to file buffers."
   (interactive)
   (save-excursion
-    (let (undone-overlays)
+    (let (not-yet-overlays)
       (while wgrep-overlays
 	(let ((ov (car wgrep-overlays))
 	      local-buf done info)
 	  (setq wgrep-overlays (cdr wgrep-overlays))
 	  (if (eq (overlay-start ov) (overlay-end ov))
-	      ;; ignore removed line and removed overlay
+	      ;; ignore removed line or removed overlay
 	      (setq done t)
 	    (goto-char (overlay-start ov))
 	    (when (setq info (wgrep-get-info))
@@ -327,16 +341,16 @@
 		(with-current-buffer local-buf
 		  (when (wgrep-check-buffer)
 		    (wgrep-apply-to-buffer (nth 1 info) (nth 2 info))
-		    (wgrep-put-color-file) ;; hilight the changed lines
+		    (wgrep-put-color-file) ;; hilight the changed line
 		    (setq done t))))
 	      (if done
 		  (wgrep-put-done-face)
 		(wgrep-put-reject-face))))
 	  (if done
 	      (delete-overlay ov)
-	    (setq undone-overlays (cons ov undone-overlays)))))
+	    (setq not-yet-overlays (cons ov not-yet-overlays)))))
       ;; restore overlays
-      (setq wgrep-overlays undone-overlays)))
+      (setq wgrep-overlays not-yet-overlays)))
   (wgrep-to-grep-mode)
   (cond
    ((null wgrep-overlays)
@@ -385,7 +399,7 @@
   (unless (wgrep-process-exited-p)
     (error "Active process working"))
   (set (make-local-variable 'query-replace-skip-read-only) t)
-  (add-hook 'after-change-functions 'wgrep-mode-change-face nil t)
+  (add-hook 'after-change-functions 'wgrep-after-change-function nil t)
   (use-local-map wgrep-mode-map)
   (buffer-disable-undo)
   (wgrep-initialize-buffer)
@@ -474,6 +488,12 @@ Example:
 	      (not (get-text-property (point) 'face)))
     (forward-line 1)))
 
+(defun wgrep-goto-line (line)
+  (save-restriction
+    (widen)
+    (goto-char (point-min))
+    (forward-line (1- line))))
+
 (defun wgrep-prepare-context (filename line forward)
   (let ((diff (if forward 1 -1))
 	next line-head)
@@ -539,5 +559,4 @@ Example:
 
 (provide 'wgrep)
 
-;;; end
 ;;; wgrep.el ends here

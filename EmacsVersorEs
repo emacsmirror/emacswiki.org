@@ -1,0 +1,43 @@
+[[en:EmacsVersor]]
+EmacsVersor proporciona:
+
+* Un cursor de bloque (o región), con movimiento y selección de texto
+  por unidades significativas semanticamente e.g. sentencias, partes
+  de sentencias, oraciones, frases, filas y celdas de tablas
+
+* Edición en términos de dichas unidades (e.g. "Hacer condicional el
+  código seleccionado" o "Eliminar el texto seleccionado")
+
+* Un fácil acceso a dichas unidades mediante una reasociación flexible
+  y dinámica de las teclas de flechita y otras, con vías sencillas
+  para navegar el espacio de los posibles espacios de navegación
+
+* Operaciones de edición de alto nivel como:
+
+** Conversión de una expresión en variable  local inicializada en ese
+   valor
+
+** Conversión de un bloque de código en una función/procedimiento, con
+   estimación automática de los parámetros requeridos 
+
+* Medios para acceder a estos  (y otros) comandos de navegación y
+  edición a través de una interfaz de canal estrecho, como podrían ser
+  los pedales o un mando para juegos (adecuado para las personas con
+  problemas motores, incluyendo el RepeatedStrainInjury)
+
+* VoiceRecognition para su uso con emacs-vr-mode 
+
+La página web oficial en inglés se encuentra en
+* http://emacs-versor.sourceforge.net
+
+Existe una réplica en español en
+
+* http://gnu.manticore.es/paginas-replica/versor/index.es.html
+
+En esta última página también se le presta asistencia a los usuarios
+hispano-hablantes de Versor. 
+
+
+----
+CategoryAccessibility
+CategoryEditing

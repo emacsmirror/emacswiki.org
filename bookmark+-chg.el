@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 22 10:13:56 2010 (-0700)
+;; Last-Updated: Sat Sep 11 15:40:10 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13166
+;;     Update #: 13169
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -190,6 +190,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2010/09/11 dadams
+;;     Removed eval-when-compile for bookmark+-bmu, bookmark+-1.
 ;; 2010/08/15 dadams
 ;;     Require: bookmark.el.
 ;;     Require when compile: bookmark+-bmu.el, bookmark+-1.el, pp+.el (soft).
