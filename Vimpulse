@@ -1,6 +1,6 @@
 '''Vimpulse''' extends [ViperMode Viper] with Vim features like Visual mode and text objects.
 
-: '''Latest release: [[vimpulse.el|Vimpulse 0.4]]''' (always on !EmacsWiki)
+: '''Latest release: [[vimpulse.el|Vimpulse 0.5]]''' (always on !EmacsWiki)
 
 If you want bleeding edge, you can clone the [http://gitorious.org/vimpulse/vimpulse Git repository]:
 
@@ -13,7 +13,7 @@ to your init file:
 
     (require 'vimpulse)
 
-If you want linear undo/redo, download and install '''[http://wonderworks.com/download/redo.el redo.el]''' (included with XEmacs).
+If you want linear undo/redo, download and install UndoTree.
 
 Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Viper (and Vimpulse) with `C-z'.
 
@@ -22,7 +22,8 @@ Vimpulse automatically enables [ViperMode Viper]. You can temporarily disable Vi
 * By popular request, we have moved to [http://gitorious.org/vimpulse/vimpulse Git] as our version control system.
 * Emacs-compatible Visual selection (characterwise, linewise and blockwise).
 * New keys: `C-o', `C-i', `C-w hjkl', `gb', `gd', `gq', `gu', `gU', `g~', `g?', `+', `_'.
-* Modal keybinding functions: `vimpulse-map', `vimpulse-imap', `vimpulse-vmap' and `vimpulse-omap'.
+* Modal keybinding functions: `vimpulse-map', `vimpulse-imap', `vimpulse-vmap', `vimpulse-omap', `vimpulse-global-set-key', `vimpulse-local-set-key', `vimpulse-define-key'.
+* Isearch integration: matches are highlighted while typing.
 * Operator-Pending mode: framework for defining new operator commands and text objects.
 
 == Feedback ==

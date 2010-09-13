@@ -203,20 +203,20 @@
       ;; Not sure how to make it work and safe in multi-session.
       ;; how to handle commands like 'bash' and then 'exit' is also a problem
 
-      (defun rename-buffer-in-ssh-exit (cmd)
-        "Rename buffer to its previous name when user exit from a ssh login"
-      ;  (message "%s" cmd)
-        (message "%s" shell-buffer-name-list)
-        (if (string-match "^exit$" cmd)
-            (if (> (length shell-buffer-name-list) 1)
-      	  (progn (pop shell-buffer-name-list)
-      		 (rename-buffer  (car shell-buffer-name-list)))
-          )
-        )
-        (message "%s" shell-buffer-name-list)
-      )
+;;      (defun rename-buffer-in-ssh-exit (cmd)
+;;        "Rename buffer to its previous name when user exit from a ssh login"
+;;      ;  (message "%s" cmd)
+;;        (message "%s" shell-buffer-name-list)
+;;        (if (string-match "^exit$" cmd)
+;;            (if (> (length shell-buffer-name-list) 1)
+;;      	  (progn (pop shell-buffer-name-list)
+;;      		 (rename-buffer  (car shell-buffer-name-list)))
+;;          )
+;;        )
+;;        (message "%s" shell-buffer-name-list)
+;;      )
       	     
-      (add-hook 'comint-input-filter-functions 'rename-buffer-in-ssh-exit t)
+;;      (add-hook 'comint-input-filter-functions 'rename-buffer-in-ssh-exit t)
      
       
       (defun kill-shell-buffer(process event)
@@ -259,6 +259,15 @@
 	(progn (set-mark beg) (goto-char end))
     (copy-region-as-kill beg end))
     )
+)
+
+(defun kill-line-to-start(&optional arg)
+ "Kill to the beginning of a line. Just opposite as kill-line"
+ (interactive "P")
+ (if (= (or arg 0) 1)    ;; arg=1, erease line only
+   (kill-region (line-beginning-position arg) (point))
+   (delete-region (line-beginning-position arg) (point))
+   )
 )
 
  (defun to-the-line-end (&optional arg)
@@ -367,16 +376,14 @@ When used in shell-mode, it will paste string on shell prompt by default "
 (defun beginning-of-parenthesis()
   "  "
 ;  (interactive "p")
-;  (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-  (re-search-backward "[[<(]" (line-beginning-position) 3 1)
-	     (if (looking-at "[[<(]")  (goto-char (+ (point) 1)) )
+  (re-search-backward "[[<(?\"]" (line-beginning-position) 3 1)
+	     (if (looking-at "[[<(?\"]")  (goto-char (+ (point) 1)) )
 )
 (defun end-of-parenthesis()
   " "
 ;  (interactive "p")
-;  (re-search-forward "[ \t]")
-  (re-search-forward "[]>)]" (line-end-position) 3 1)
-	     (if (looking-back "[]>)]") (goto-char (- (point) 1)) )
+  (re-search-forward "[]>)?\"]" (line-end-position) 3 1)
+	     (if (looking-back "[]>)?\"]") (goto-char (- (point) 1)) )
 )
 
 
@@ -472,11 +479,13 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 (defun split-window-4()
  "Splite window into 4 sub-window"
  (interactive)
- (progn (split-window-vertically)
-        (split-window-horizontally)
-        (other-window 2)
-        (split-window-horizontally)
- )
+ (if (= 1 (length (window-list)))
+     (progn (split-window-vertically)
+	    (split-window-horizontally)
+	    (other-window 2)
+	    (split-window-horizontally)
+	    )
+   )
 )
 
 ;  +----------------------+                 +----------- +-----------+ 
@@ -489,6 +498,7 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 (defun split-v ()
   (interactive)
+  (if (= 2 (length (window-list)))
     (let (( thisBuf (window-buffer))
 	  ( nextBuf (progn (other-window 1) (buffer-name))))
 	  (progn   (delete-other-windows)
@@ -496,6 +506,7 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 		   (set-window-buffer nil thisBuf)
 		   (set-window-buffer (next-window) nextBuf)
 		   ))
+    )
 )
 
 
@@ -509,6 +520,7 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 (defun split-h ()
   (interactive)
+  (if (= 2 (length (window-list)))
     (let (( thisBuf (window-buffer))
 	  ( nextBuf (progn (other-window 1) (buffer-name))))
 	  (progn   (delete-other-windows)
@@ -516,6 +528,7 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 		   (set-window-buffer nil thisBuf)
 		   (set-window-buffer (next-window) nextBuf)
 		   ))
+    )
 )
 
 

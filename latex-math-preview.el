@@ -2,8 +2,8 @@
 
 ;; Author: Takayuki YAMAGUCHI <d@ytak.info>
 ;; Keywords: LaTeX TeX
-;; Version: 0.5.0
-;; Created: Sun Aug 29 15:36:22 2010
+;; Version: 0.5.2
+;; Created: Mon Sep 13 09:13:48 2010
 ;; URL: http://www.emacswiki.org/latex-math-preview.el
 ;; Site: http://www.emacswiki.org/LaTeXMathPreview
 
@@ -108,7 +108,7 @@
 ;;            (YaTeX-define-key "p" 'latex-math-preview-expression)
 ;;            (YaTeX-define-key "\C-p" 'latex-math-preview-save-image-file)
 ;;            (YaTeX-define-key "j" 'latex-math-preview-insert-symbol)
-;;            (YaTeX-define-key "\C-j" 'latex-math-preview-last-symbol-again)))
+;;            (YaTeX-define-key "\C-j" 'latex-math-preview-last-symbol-again)
 ;;            (YaTeX-define-key "\C-b" 'latex-math-preview-beamer-frame)))
 ;;   (setq latex-math-preview-in-math-mode-p-func 'YaTeX-in-math-mode-p)
 ;; 
@@ -209,9 +209,7 @@
 ;; `latex-math-preview-latex-usepackage-for-not-tex-file' is used.
 ;; So you can set a preferd value to
 ;; `latex-math-preview-latex-usepackage-for-not-tex-file'.
-;; The following variables is prepared for making image files.
-;;  - `latex-math-preview-latex-make-png-file-template-header'
-;;  - `latex-math-preview-latex-make-eps-file-template-header'
+;; The variable `latex-math-preview-template-header-for-save-image' is prepared for making image files.
 ;; 
 ;; * Conversion Process *
 ;; The default value of `latex-math-preview-tex-to-png-for-preview' is
@@ -405,11 +403,7 @@
   '("\\usepackage{amsmath, amssymb, amsthm}")
   "List of strings which are \\usepackage commands.")
 
-(defvar latex-math-preview-latex-make-png-file-template-header
-  "\\documentclass{article}\n\\pagestyle{empty}\n"
-  "Insert string to beginning of temporary latex file to make image.")
-
-(defvar latex-math-preview-latex-make-eps-file-template-header
+(defvar latex-math-preview-template-header-for-save-image
   "\\documentclass{article}\n\\pagestyle{empty}\n"
   "Insert string to beginning of temporary latex file to make image.")
 
@@ -818,9 +812,10 @@ This variable must not be set.")
   '((dvipng "-T" "tight") (dvips-to-ps "-E" "-x" "3000") (dvips-to-eps "-E" "-x" "3000") (convert "-trim"))
   "Options of commands to trim margin.")
 
-(defvar latex-math-preview-command-output-extension-alist
-  '((latex . "dvi") (platex . "dvi") (dvipng . "png") (dvipdf . "pdf") (dvipdfm . "pdf") (dvipdfmx . "pdf"))
-  "List of command and extension of output file.")
+(eval-and-compile
+  (defvar latex-math-preview-command-output-extension-alist
+    '((latex . "dvi") (platex . "dvi") (dvipng . "png") (dvipdf . "pdf") (dvipdfm . "pdf") (dvipdfmx . "pdf"))
+    "List of command and extension of output file."))
 
 (defvar latex-math-preview-tex-to-png-for-preview
   '(latex dvipng)
@@ -834,6 +829,10 @@ This variable must not be set.")
   '(latex dvips-to-eps)
   "Sequence of end of function names to create eps image for save.")
 
+(defvar latex-math-preview-tex-to-ps-for-save
+  '(latex dvips-to-ps)
+  "Sequence of end of function names to create ps image for save.")
+
 (defvar latex-math-preview-beamer-to-png
   '(pdflatex-to-pdf gs-to-png)
   "Sequence of end of function names to create png image for previewing beamer page.")
@@ -846,25 +845,26 @@ This variable must not be set.")
     (if latex-math-preview-trim-image
 	(append args (cdr (assoc key latex-math-preview-command-trim-option-alist))) args)))
 
-(defun latex-math-preview-get-command-output-extension (key)
-  (or (cdr (assoc key latex-math-preview-command-output-extension-alist))
-      (let ((name (symbol-name key))) (if (string-match "-to-\\(.*\\)$" name) (match-string 1 name) nil))))
-
-(defun latex-math-preview-execute-command (command args)
+(defun latex-math-preview-call-command-process (command args)
   (= 0 (apply 'call-process command nil latex-math-preview-command-buffer nil args)))
 
 (defun latex-math-preview-execute-latex-command (command input opts extension)
   (let ((dir (or latex-math-preview-working-directory (file-name-directory input) ".")))
-    (if (latex-math-preview-execute-command command `(,@opts ,(concat "-output-directory=" dir) ,input))
+    (if (latex-math-preview-call-command-process command `(,@opts ,(concat "-output-directory=" dir) ,input))
 	(concat dir "/" (file-name-sans-extension (file-name-nondirectory input)) "." extension)
       nil)))
 
-(defmacro latex-math-preview-define-latex-function (command)
-  `(defun ,(intern (concat "latex-math-preview-execute-" (symbol-name command))) (input)
-     (latex-math-preview-execute-latex-command
-      (latex-math-preview-get-command-path (quote ,(intern (car (split-string (symbol-name command) "-"))))) input
-      (latex-math-preview-get-command-option (quote ,command))
-      ,(latex-math-preview-get-command-output-extension command))))
+(eval-and-compile
+  (defun latex-math-preview-get-command-output-extension (key)
+    (or (cdr (assoc key latex-math-preview-command-output-extension-alist))
+	(let ((name (symbol-name key))) (if (string-match "-to-\\(.*\\)$" name) (match-string 1 name) nil))))
+
+  (defmacro latex-math-preview-define-latex-function (command)
+    `(defun ,(intern (concat "latex-math-preview-execute-" (symbol-name command))) (input)
+       (latex-math-preview-execute-latex-command
+	(latex-math-preview-get-command-path (quote ,(intern (car (split-string (symbol-name command) "-"))))) input
+	(latex-math-preview-get-command-option (quote ,command))
+	,(latex-math-preview-get-command-output-extension command)))))
 
 (latex-math-preview-define-latex-function latex)
 (latex-math-preview-define-latex-function platex)
@@ -943,13 +943,13 @@ This variable must not be set.")
   (let ((func (cdr (assoc command latex-math-preview-command-create-argument-alist))))
     (if func (funcall func command input) nil)))
 
-(defun latex-math-preview-execute-convert-command (command-path command input)
+(defun latex-math-preview-call-latex-command (command-path command input)
   (let ((tmp (latex-math-preview-get-command-argument command input)))
-    (if (latex-math-preview-execute-command command-path (cdr tmp)) (car tmp) nil)))
+    (if (latex-math-preview-call-command-process command-path (cdr tmp)) (car tmp) nil)))
 
 (defmacro latex-math-preview-define-convert-function (command)
   `(defun ,(intern (concat "latex-math-preview-execute-" (symbol-name command))) (input)
-     (latex-math-preview-execute-convert-command
+     (latex-math-preview-call-latex-command
       (latex-math-preview-get-command-path (quote ,(intern (car (split-string (symbol-name command) "-")))))
       (quote ,command) input)))
 
@@ -968,6 +968,32 @@ This variable must not be set.")
 	(setq product (funcall (intern (concat "latex-math-preview-execute-" (symbol-name conv))) product))
 	(if (not product) (throw :no-output nil))))
     product))
+
+(defvar latex-math-preview-custom-convert nil)
+
+(defvar latex-math-preview-convert-command-list nil)
+
+(defun latex-math-preview-reset-custom-convert ()
+  (interactive)
+  (setq latex-math-preview-convert-command-list nil)
+  (setq latex-math-preview-custom-convert nil))
+
+(defun latex-math-preview-completing-read-convert-command ()
+  (if (not latex-math-preview-convert-command-list)
+      (setq latex-math-preview-convert-command-list
+	    (mapcar (lambda (func) (list (replace-regexp-in-string 
+					  "^latex-math-preview-execute-" "" (symbol-name func))))
+		    (apropos-internal "^latex-math-preview-execute-"))))
+  (completing-read "Command: " latex-math-preview-convert-command-list nil t))
+
+(defun latex-math-preview-set-custom-convert ()
+  (interactive)
+  (latex-math-preview-reset-custom-convert)
+  (catch :end
+    (while t
+      (let ((s (latex-math-preview-completing-read-convert-command)))
+	(if (= 0 (length s)) (throw :end t))
+	(setq latex-math-preview-custom-convert (append latex-math-preview-custom-convert (list (intern s))))))))
 
 ;; (defun latex-math-preview-convert-imagemagick-trim (input)
 ;;   (let ((old (make-temp-name input)))
@@ -1106,7 +1132,7 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
 	    (format-time-string "%Y/%m/%d %H:%M:%S") " " (make-string 5 ?-) "\n")
     (save-excursion
       (insert "\n% " (make-string 5 ?-) " Error message " (make-string 5 ?-) "\n"))
-    (insert-file dot-tex)
+    (insert-file-contents dot-tex)
     (goto-char (point-min)))
   (pop-to-buffer latex-math-preview-command-buffer)
   (rename-buffer latex-math-preview-tex-processing-error-buffer-name)
@@ -1141,16 +1167,11 @@ If you use YaTeX, then you should use YaTeX-in-math-mode-p alternatively."
 ;;-----------------------------------------------------------------------------
 ;; view png in a buffer
 
+(defvar latex-math-preview-display-whole-image nil)
+
 (defun latex-math-preview-png-image (image)
-  "Display dvi DVIFILE as a png image in a buffer.
-This can be used in `latex-math-preview-function', but it requires:
-
-* the \"dvipng\" program (http://sourceforge.net/projects/dvipng/)
-* a display which can show images (eg. X, not a tty)
-* Emacs built with the PNG image libraries"
-
-  (or (and (image-type-available-p 'png) (display-images-p))
-      (error "Cannot display PNG in this Emacs"))
+  "Display png image IMAGE in a buffer."
+  (or (and (image-type-available-p 'png) (display-images-p)) (error "Cannot display PNG in this Emacs"))
   (with-current-buffer (get-buffer-create latex-math-preview-expression-buffer-name)
     (setq cursor-type nil)
     (let ((inhibit-read-only t))
@@ -1160,7 +1181,9 @@ This can be used in `latex-math-preview-function', but it requires:
       (goto-char (point-min)))
     (latex-math-preview-expression-mode)
     (buffer-disable-undo))
-  (pop-to-buffer latex-math-preview-expression-buffer-name))
+  (pop-to-buffer latex-math-preview-expression-buffer-name)
+  (if (and latex-math-preview-display-whole-image (not (pos-visible-in-window-p (point-max))))
+      (with-current-buffer latex-math-preview-expression-buffer-name (delete-other-windows))))
 
 (defun latex-math-preview-get-dvipng-color-option ()
   "Get string for dvipng options '-bg' and '-fg'."
@@ -1212,7 +1235,6 @@ This can be used in `latex-math-preview-function', but it requires:
 The `latex-math-preview-function' variable controls the viewing method. 
 The LaTeX notations which can be matched are $...$, $$...$$ or
 the notations which are stored in `latex-math-preview-match-expression'."
-
   (interactive)
   (let ((str (latex-math-preview-cut-mathematical-expression)))
     (if str
@@ -1225,44 +1247,48 @@ the notations which are stored in `latex-math-preview-match-expression'."
 		(latex-math-preview-clear-tmp-directory latex-math-preview-working-directory))))
       (message "Not in a TeX mathematical expression."))))
 
-(defun latex-math-preview-make-png-for-save (output math-exp template-header &optional usepackages)
-  "Create png image from MATH-EXP, TEMPLATE-HEADER, and USEPACKAGES and save as OUTPUT."
+(defun latex-math-preview-make-image-for-save (func-sequence output math-exp template-header &optional usepackages)
+  "Create eps image from MATH-EXP, TEMPLATE-HEADER, and USEPACKAGES and save as OUTPUT."
   (let ((dot-tex (latex-math-preview-make-temporary-tex-file math-exp template-header usepackages))
 	(latex-math-preview-convert-dvipng-color-mode 'read)
 	(latex-math-preview-trim-image t))
-    (let ((png (latex-math-preview-convert-to-output-file
-		'latex-math-preview-successive-convert (cons dot-tex latex-math-preview-tex-to-png-for-save)
-		output)))
-      (or png (latex-math-preview-raise-can-not-create-image dot-tex)))))
+    (or (latex-math-preview-convert-to-output-file
+	 'latex-math-preview-successive-convert (cons dot-tex func-sequence) output)
+	(latex-math-preview-raise-can-not-create-image dot-tex))))
 
-(defun latex-math-preview-make-eps-for-save (output math-exp template-header &optional usepackages)
-  "Create eps image from MATH-EXP, TEMPLATE-HEADER, and USEPACKAGES and save as OUTPUT."
-  (let ((dot-tex (latex-math-preview-make-temporary-tex-file math-exp template-header usepackages))
-	(latex-math-preview-trim-image t))
-    (let ((image (latex-math-preview-convert-to-output-file
-		'latex-math-preview-successive-convert (cons dot-tex latex-math-preview-tex-to-eps-for-save)
-		output)))
-      (or image (latex-math-preview-raise-can-not-create-image dot-tex)))))
+(defun latex-math-preview-prompt-for-save-image-file (use-custom-conversion)
+  (if use-custom-conversion
+      (let ((extension (latex-math-preview-get-command-output-extension
+			(nth (1- (length latex-math-preview-custom-convert)) latex-math-preview-custom-convert))))
+	(concat "Save as" (if extension (concat " (*." extension ")") "")": "))
+    "Save as (*.png, *.eps, or *.ps): "))
 
-(defun latex-math-preview-save-image-file (output)
-  (interactive "FSave as \(\"*.png\" or \"*.eps\"\):")
+(defun latex-math-preview-save-image-file (use-custom-conversion &optional output)
+  (interactive "P")
+  (let ((prompt (latex-math-preview-prompt-for-save-image-file use-custom-conversion)))
+    (if (not output) (setq output (read-file-name prompt nil default-directory)))
+    (while (file-directory-p (expand-file-name output))
+      (message "Please specify filename not directory.")
+      (sleep-for 1)
+      (setq output (read-file-name prompt nil default-directory))))
   (if (or (not (file-exists-p output)) (y-or-n-p "File exists. Overwrite? "))
       (let ((str (latex-math-preview-cut-mathematical-expression
 		  latex-math-preview-match-expression-remove-formula-number)))
 	(if str
 	    (let ((latex-math-preview-working-directory (make-temp-file "latex-math-preview-" t))
-		  (dot-dvi) (result nil))
-	      (cond ((string-match "\\.png$" output)
-		     (setq result (latex-math-preview-make-png-for-save
-				   output str latex-math-preview-latex-make-png-file-template-header)))
-		    ((string-match "\\.eps" output)
-		     (setq result (latex-math-preview-make-eps-for-save
-				   output str latex-math-preview-latex-make-eps-file-template-header)))
-		    (t (message "Invalid extention of output file.")))
+		  (func-series
+		   (cond
+		    (use-custom-conversion latex-math-preview-custom-convert)
+		    ((string-match "\\.png$" output) latex-math-preview-tex-to-png-for-save)
+		    ((string-match "\\.eps$" output) latex-math-preview-tex-to-eps-for-save)
+		    ((string-match "\\.ps$" output) latex-math-preview-tex-to-ps-for-save)
+		    (t nil))))
+	      (if (not func-series) (message "Can not specify conversion.")
+		(if (latex-math-preview-make-image-for-save func-series output str
+							    latex-math-preview-template-header-for-save-image)
+		    (message "Save image as %s" output) (message "Can not create an image file.")))
 	      (if (not latex-math-preview-not-delete-tmpfile)
-		  (latex-math-preview-clear-tmp-directory latex-math-preview-working-directory))
-	      (if result (message "Save image as %s" output)
-		(message "Can not create an image file.")))
+		  (latex-math-preview-clear-tmp-directory latex-math-preview-working-directory)))
 	  (message "Not in a TeX mathematical expression.")))
     (message "Stop making image.")))
 
@@ -1795,8 +1821,7 @@ Return maximum size of images and maximum length of strings and images"
 	  (if (not (and beg end))
 	      (progn
 		(goto-char start-point)
-		(when (search-backward-regexp "\\frame[^a-z]" nil t)
-		  (search-backward "\\" nil t)
+		(when (search-backward-regexp "\\\\frame[^a-z]" nil t)
 		  (setq beg (point))
 		  (catch :finish-search
 		    (let ((count 0))

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:56:01 2010 (-0700)
+;; Last-Updated: Sun Sep 12 13:34:46 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1319
+;;     Update #: 1321
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -294,10 +294,10 @@ follows it invisible.")
   "Alist of candidate entries.
 The car (key) of each entry is treated as a completion candidate.
 The cdr is some other data to be used when the candidate is chosen.
+This is reset to nil at the beginning of each top-level command.
 
-This is reset to nil at the beginning of each top-level command.  It
-is used only by commands that use completion without allowing sorting
-of completion candidates.")
+This is used typically by commands that allow different cdrs for the
+same car.  Icicles search is one such example.")
 
 (defvar icicle-char-property-value-history nil "History for character property values.")
 
