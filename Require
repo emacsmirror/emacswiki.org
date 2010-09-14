@@ -1,0 +1,29 @@
+'require' is a built-in emacs function
+
+Here is its documentation:
+
+ require is a built-in function in `C source code'.
+
+ (require FEATURE &optional FILENAME NOERROR)
+
+ If feature FEATURE is not loaded, load it from FILENAME.
+ If FEATURE is not a member of the list `features', then the feature
+ is not loaded; so load the file FILENAME.
+ If FILENAME is omitted, the printname of FEATURE is used as the file name,
+ and `load' will try to load this name appended with the suffix `.elc' or
+ `.el', in that order.  The name without appended suffix will not be used.
+ If the optional third argument NOERROR is non-nil,
+ then return nil if the file is not found instead of signaling an error.
+ Normally the return value is FEATURE.
+ The normal messages at start and end of loading FILENAME are suppressed.
+
+[http://www.dotemacs.de/recovery.html This page] describes a function 'safe-load', and [http://www.mygooglest.com/fni/dot-emacs.html this .emacs] contains a 'try-require', which inspired this 'my-require' function that gives a message if the library is already loaded (to help remove duplicate or redundant 'requires' from your init), and provide a benchmark if the library *is* loaded.
+
+  (require 'benchmark)
+  (defun my-require (feat)
+    (if (featurep feat)
+        (progn (message "erraneous usage: '%s'" feat) nil)
+      (message "'%s' loaded in %.2fs" feat
+          (benchmark-elapse (load-library (symbol-name feat))))))
+
+Also see [http://curiousprogrammer.wordpress.com/2010/08/09/avoiding-the-tyranny-of-other-peoples-decisions/ avoiding-the-tyranny-of-other-peoples-decisions] for another require that doesn't default to loading the .elc (as opposed to .el).

@@ -1,10 +1,13 @@
 This is a list of user-contributed ideas or wishes for AquamacsEmacs. These ideas do not necessarily enjoy wide support in the user base, technically feasible, or are even internally consistent.
-** In case you find a bug, please file a bug report using the Help / Diagnose and Report Bug menu.  Restart Aquamacs without customizations (per menu), reproduce the bug, then report using the reporting function.
+
+In case you find a bug, please file a bug report using the Help / Diagnose and Report Bug menu.  Restart Aquamacs without customizations (per menu), reproduce the bug, then report using the reporting function.  *It is unlikely that your requests submitted in this Wiki are attended to quickly.*
+
 
 [new]
 cjay: The behavior of cmd-` and cmd-shift-` doesn't seem quite right. With apps like Safari and Terminal, they switch between windows in last-used-order. For example, if they switch Safari windows in order 1 2 3 4, and I have related work to do in 2 and 4, I switch to 2 and then click on 4 (with expose if it's covered). Now I can go back and forward with cmd-(shift)-` between 2 and 4 without 3 in between. With Aquamacs the order of the frames seems to be fixed, which can get quite annoying if one is used to the behavior of Safari and Terminal (and probably most other apps).
 Also, for every app I tried cmd-` switches between windows on the current workspace only, but with Aquamacs it switches between frames from all workspaces.
 EDIT: According to the latest git commit, David has already fixed it a few hours before I wrote here. Thanks :)
+DavidReitter: Fixed in post-2.1 git.
 
 [new]
 BryanLHarris: I would like better scrolling support for the Magic Mouse, which is currently kind of crazy.  The scrolling is so quick I just end up at either the top or bottom of the file.
@@ -42,6 +45,7 @@ YannickWurm: actually, selecting a region followed by 'Control-x r t'   to inser
 
 [new]
 When using aquamacs-toggle-full-frame, I can mouse up to see the time and menu bar, but moving the mouse down, I cannot access the Dock (I've set it to auto-hide). Would it be possible to have an option to let the Dock be accessible even in fullscreen mode?
+DavidReitter: IT should be accessible in the latest nightly builds and perhaps even releases (haven't tested).
 
 [new]
 Noah: I would love to be able to use the mouse to do rectangular selection (this is one of the few things I prefer to do in TextMate).
@@ -201,6 +205,7 @@ DavidReitter: interesting suggestion. Reasonably easy to implement,  I guess. We
 [new]
 Randolf Schultz:
 There should be an easy way to configure the starting size of the main window (maybe even by automatically remembering the place and size of the window from one session to the next in a configuration file), or the starting geometry should be selected in a more conservative manner. Why? Well, on my screen (which is unfortunately limited to 1024x768) Aquamacs always starts in a way, that the most important resize handle _and_ last line (minibuffer) are blocked by the Dock. You can not resize and you can not load files (because you can not see through the Dock so well what you are typing). This way I am forced to move the window and resize it manually in two annoying manual steps on each start of Aquamacs. I can configure easily using default-frame-alist/initial-frame-alist you say? No, not the very first window as those settings affect the first buffer of a loaded file, but I cannot load a file... (cat bites in tail). Changing initial geometry I could only achieve by disabling the frame specific setting mechanisms altogether which is a pity because they are quite useful. Note: To get around this problem took me frustrating 2-3 hours reading docs/scratching head/trying different configurations and I do not consider myself a total Emacs newbie...
+DavidReitter: Look up initial-frame-alist
 
 Artem Baguinski:
 If you get huge window - click on zoom button (+) and it'll become reasonable size.
@@ -311,9 +316,11 @@ DavidReitter: Jesse, this would be easy to do (for key commands at least), and I
 [new]
 EUR
 It would be great if Aquamacs was able to open frames in certain spaces of Apples Spaces.
+DavidReitter: much has happened here - please have a look at a post-2.1 nightly build. 
 
 [new]
 pogopop77: I've always wondered why Emacs never implemented automatic highlighting of C/C++ code within a #if 0 ... #endif construct as a comment.  Vim does it.  It shouldn't be terribly difficult.  I can't think of an argument against it.  And no, hiding the block of code is not the same thing!  Aquamacs has addressed so many other gripes I've had with Emacs, I guess I'm just surprised it's not already in there (is it?)
+DavidReitter: it should be easy for you to add some code to the font locking regular expression governing comments in C/C++.
 
 [new]
 BradAnderson: Where would one change Aquamacs around to successfully interact with Applescript requests?  I'm trying:
@@ -331,5 +338,5 @@ Zan: Many thanks to those who have put together aquamacs 2.0.
 One feature that was lost in upgrade is that in the dock, minimized windows no longer show up labeled with their filename.
 Instead they show up labeled "Aquamacs". It was convenient to have the minimized windows show up with their filenames
 in the dock when you are working with many minimized windows.
-
+DavidReitter: should work fine in Aquamacs 2.1
 

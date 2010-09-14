@@ -726,6 +726,16 @@ I use this in my .emacs to disable vc-svn on files accessed with tramp:
 
 --MartinKuehl
 
+This is a similar advice for DVC mode (thanks to folks at ru_emacs):
+{{{
+(defadvice dvc-current-active-dvc (around dvc-current-active-dvc-no-tramp activate)
+  "Don't try to use DVC on files accessed via TRAMP."
+  (if (and (fboundp 'tramp-tramp-file-p)
+       (tramp-tramp-file-p (dvc-uniquify-file-name default-directory)))
+      nil
+   ad-do-it))
+}}}
+
 [new]
 '''Editing files not under DARCS version control via TRAMP doesn't work when using Jorgen Schäfer's vc-darcs.el v1.3 or earlier''', please upgrade to 1.4. See VcDarcs
 

@@ -2,8 +2,8 @@ Hi, I'm [::dim], an Emacs user, and I seldom contribute to it:
 
 * See ClusterSSH
 * Lisp:dim-google.el
-* Lisp:switch-window.el
-* Lisp:el-get.el
+* [http://github.com/dimitri/el-get El-Get] to allow for an easy installation, updating and initializing (.emacs) of external emacs modules.
+* [http://github.com/dimitri/switch-window switch-window] is a *visual* ##C-x o##
 
 I also maintain a !PostgreSQL oriented blog at http://blog.tapoueh.org/, which is entirely edited with EmacsMuse.
 

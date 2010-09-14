@@ -66,8 +66,8 @@ Perhaps it's just a matter of printing up cheet sheets and keeping them right in
 
 *wandersawaymumbling*
 ----
-Quick question:  I'm looking for a simple (to use) file encryption system I can plug in to emacs (more poignantly XEmacs on win32, though I'll switch out to NTemacs if required.)  I don't need some 'symetric public-key' goofiness like pgp.  Just something that, when visiting a file from a registered list, will ask me for my key and use that for saving/loading/refreshing for the life of the file visitation.  Anyone know what my options are?  
 
-I don't much care if it's something implemented as a hook to an external command line app or not.  I just need it to work right and be nigh trivial to set up.
+Just took a first bite out of OrgMode.  I didn't realize it was PERFECTLY compatible with my ad-hoc OneHugeTextFile format.  Plus, using <TAB> to cycle folding states is addictive.
+
 ----
 CategoryHomepage
