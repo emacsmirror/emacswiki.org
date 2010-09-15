@@ -50,8 +50,18 @@ Note that most of the following examples use lists but string values are also va
     (setq frame-title-format '("" "%b @ Emacs " emacs-version))
     (setq frame-title-format '("" "[%b] - Emacs " emacs-version))
     (setq frame-title-format (list "%b - " (getenv "USERNAME") "@" (getenv "USERDOMAIN"))) ;;list is needed here, could someone explain ?
+    ;; list is needed in the last example to flatten the sub-lists, otherwise a quote is sufficient
+: Also see BackquoteSyntax -- LawrenceMitchell)
 
-: See BackquoteSyntax -- LawrenceMitchell)
+Another example to use in a ~/.emacs file, used on e.g. Ubuntu where USERDOMAIN doesn't exist, and the environment variable HOSTNAME isn't exported by default (as can be seen by running "export -p" at a login shell), and we want to get the host name by running the POSIX 'hostname(1)' command only once, at startup. 
+
+    (setq my-hostname 
+      (replace-regexp-in-string "\\(^[[:space:]\n]*\\|[[:space:]\n]*$\\)" "" ;; like perl chomp()
+        (with-output-to-string 
+           (call-process "/bin/hostname" nil standard-output nil))))
+    (setq my-username (getenv "USERNAME"))
+    (setq frame-title-format '("%b - " my-username "@" my-hostname))
+
 
 : the one before didn't work for me (suse linux), here's the one that works:
 

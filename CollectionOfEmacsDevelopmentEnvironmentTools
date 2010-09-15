@@ -9,7 +9,7 @@ tools built to replicate these features.
 
 The CEDET home page is http://cedet.sourceforge.net/.
 
-CEDET current pre-release: Feb 26, 2010: [http://sourceforge.net/projects/cedet/files/ 1.0pre7]
+CEDET current pre-release: Aug 27, 2010: [http://sourceforge.net/projects/cedet/files/ 1.0]
 
 Major Components of CEDET:
 
@@ -27,6 +27,14 @@ Small tools in cedet/common
 * ModeLocal - Mode-local [[variable]]s and functions
 * PulseRegion - Fancy [[overlay]] color blinking
 * DataDebug - Utility for browsing arbitrary complex data structures
+
+External tools supported
+
+* GnuGlobal - supported by EDE file search, and semantic symref, and semanticdb
+* CScopeAndEmacs - supported by EDE file search, semantic symref, and semanticdb
+* IdUtils - supported by EDE file search, and semantic symref.
+* Graphviz (dot) - supported by COGRE for diagram layout and export.
+* ExuberantCtags - Supported as an alternate parser for Semantic for many languages, like born shell scripts.
 
 ----
 Links to some comments, pictures etc

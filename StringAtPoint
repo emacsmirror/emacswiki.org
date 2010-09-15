@@ -1,6 +1,17 @@
 Adventures in trying to determine a programming language string under
 point using the ThingAtPoint library that comes with Emacs.
 
+Searching for a string is not trivial, because of the possibility of
+escaped ##"## and the arbitrary quality of where the point could be in
+a string.  If you expect to return the string when point is somewhere
+in the middle of it then things are much more complicated than if you
+expect it to return the string only when point is at one of the quote
+marks.
+
+The following commands are helpful for repetitive editing of strings
+in a programming language or a scripting language like shell.
+
+
 Here's a `forward-thing' function for strings.
 
   (defun ash-forward-string (&optional arg)
@@ -82,149 +93,7 @@ Here are some tests.
         (error "Test 5 failed"))
       (message "Test succeeded")))
 
-[new:DavidYoung:2010-06-13 16:38 UTC]
-Execuse me but I tried the code below to define a thing as 'string', and they just don't work. When I type M-x string-at-point, it could move backward to the beginning of a string, but the message displays is just 'nil'.  Does there anything wrong?
-
-{{{
-(defun forward-string(&optional arg)
-  "Move forward / backward of a string"
-;  (interactive "P")
-  (if (> (or arg 1) 0)
-  (re-search-forward "[ \t\n]")
-  (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-  )
-)
-
-(defun beginning-of-string()
-  "  "
-  (re-search-backward "[ \t]" (line-beginning-position) 3 1)
-)
-
-(defun end-of-string()
-  " "
-  (re-search-forward "[ \t\n]")
-)
-
-(put 'string 'forward-op 'forward-string)
-(put 'string 'beginning-op 'beginning-of-string)
-(put 'string 'end-op 'end-of-string)
-
-(defun string-at-point () 
-  "   "
-  (interactive) 
-  (message "%s" (thing-at-point 'string))
-  (forward-thing 'string -1)
-)
-
-}}}
-
-
-[new:DrewAdams:2010-06-13 19:22 UTC]
-Your `*-string' functions do not move forward a string or to the beginning/end of a string. That's the first thing you need to get working correctly, before you try to use them with thing-at-point.  See existing functions such as `forward-whitespace' and `forward-symbol' as models.
-
-  (defun forward-whitespace (arg)
-    (interactive "p")
-    (if (natnump arg)
-        (re-search-forward "[ \t]+\\|\n" nil 'move arg)
-      (while (< arg 0)
-        (if (re-search-backward "[ \t]+\\|\n" nil 'move)
-	    (or (eq (char-after (match-beginning 0)) 10)
-	        (skip-chars-backward " \t")))
-        (setq arg (1+ arg)))))
-
-Also, your (commented out) `interactive' spec and use of ##ARG## is not correct. Again, see the existing functions as models.
-
-But searching for a string is not trivial, because of the possibility of escaped ##"## etc.
-
-It's also not clear what you mean by a "string at point". If you expect to return the string when point is somewhere in the middle of it then things are much more complicated than if you expect it to return the string only when point is at one of the quote marks (##"##).
-
-If the latter, you can just do this:
-
-  (defun string-at-point ()
-    "Return the string at point, or nil if none is found."
-    (and (looking-at "\"")
-         (let ((thing  (thing-at-point 'sexp)))
-           (and (stringp thing) thing))))
-
--- DrewAdams
-
-
-[new]
-Bingo, it works. I just need to make sure that point is reside on a string itself, instead of on a white space between strings. So I modified the forward-string function to move one step back. 
-
-Most of my daily work are doing in shell-mode. So I used to need to copy something on the screen and paste them on the shell prompt. These kind of 'thing's are used to be a literal string, for example, some long parameter in a historical commands, or some literal string in the output message of a historical command, or even just a full path or a file name. Since I need these kind of things very frequently, I would like to treat them a 'one thing', it is a sequence of literal charactors between while spaces.
-
-So I have a function named copy-string-to-mark, it was made directly with re-search-forward & re-search-backword before I aware of thing-at-point kind of functions. It woule not only copy a string at point but also paste it to the mark. It is very convenient to me. I hate copy&paste actually. But when I only want a copy itself, I can add a prefix argument to prevent a paste.
-
-Now I just want to rewrite it in the thing-at-point way. the string-at-point() function in my previous post was just used to describe what I did for debugging. It makes nothing.
-
-
-{{{
-
-(defun forward-string(arg)
-  "Move forward / backward of a string"
-  (interactive "p")
-  (if (natnump arg)
-      (progn (re-search-forward "[ )\t\n]" (line-end-position) 3 1) 
-	     (if (looking-back "[)\t ]") (goto-char (- (point) 1)) )
-	     )
-      (progn (re-search-backward "[ (\t]" (line-beginning-position) 3 1) 
-	     (if (looking-at "[(\t ]")  (goto-char (+ (point) 1)) ) 
-	     )
-  )
-)      
-
-(defun beginning-of-string()
-  "  "
-  (re-search-backward "[ (\t]" (line-beginning-position) 3 1)
-	     (if (looking-at "[(\t ]")  (goto-char (+ (point) 1)) ) 
-)
-(defun end-of-string()
-  " "
-  (re-search-forward "[ )\t]" (line-end-position) 3 1)
-	     (if (looking-back "[)\t ]") (goto-char (- (point) 1)) )
-)
-
-(put 'string 'forward-op 'forward-string)
-(put 'string 'beginning-op 'beginning-of-string)
-(put 'string 'end-op 'end-of-string)
-
-(defun thing-copy-string ()
-  "Try to get string"
-  (interactive)
-  (thing-edit 'string)
-)
-
-(defun thing-copy-string-to-mark(&optional arg)
-  " Try to copy a string and paste it to the mark
-When used in shell-mode, it will paste string on shell prompt by default "
-  (interactive "P")
-  (thing-copy-string)
-   (if (not arg)
-       (if (string= "shell-mode" major-mode)  
-	   (progn (comint-next-prompt 25535) (yank))
-	   (progn (goto-char (mark)) (yank) )))
-)
-
-}}}
-
--- DavidYoung
-
-[new]
-You can use `parse-partial-sexp' to parse text to extract a string.  It takes care of embedded (escaped) quotes etc. For how to use it to find a string, see bug report http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6411.
-
-If you want to rewrite your code for others to use, then I think it will be better to use this approach (`parse-partial-sexp').
-The version you have here will only work in certain cases.
-(The code for it is already in the bug report, just copy and paste it.)
--- LennartBorgman
-
-[new]
-Thanks Drew for trying to cleanup, but there is no working code for string-at-point on this page.
-Perhaps would it be better to delete all non-working code (or keep some of it with an explaination of why it does not work)?
--- LennartBorgman
-
-[new:DrewAdams:2010-06-16 23:06 UTC]
-Lennart -- Do whatever you like, as far as I am concerned. But I think it's better to show code and critique that might not be perfect than to simply remove it. No one can learn anything from missing code. (And FWIW, the code I posted works just fine, keeping in mind its limited purpose.) -- DrewAdams
+See also `forward-whitespace', `forward-symbol' and `parse-partial-sexp'.
 
 ----
 CategoryCode

@@ -1,0 +1,8 @@
+== googlecl ==
+More information can be found out about googlecl from its project home page : http://code.google.com/p/googlecl/
+
+== org-googlecl ==
+These functions enable you to blog to either blogger.com or blogspot.com directly from emacs. It supports directly blogging org-mode entries complete with html export for source code blocks. More can be found at my GitHub pages at http://github.com/rileyrg/org-googlecl
+
+== Examples ==
+Examples of its use can be seen at http://splash-of-open-sauce.blogspot.com/ . 

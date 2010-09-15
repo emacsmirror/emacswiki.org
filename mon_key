@@ -29,19 +29,18 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-insertion-utils.el -- Provides insertion related utilities, templates and string building/manipulation procedures that ease routine chores and interactive command invocation.
 * Lisp:mon-replacement-utils.el -- Provides a collection of routines and commands and abstracts some commonly encountered procedures for processing regexps with their replacements.
 * Lisp:mon-regexp-symbols.el -- Provides a collection of Symbols bound to lisp lists of regexp/replacement pairs. Allows simple easy interactive command invocation using symbols as arguments to containing lists of regexps.
-* Lisp:mon-time-utils.el (EbayTime) --
+* Lisp:mon-time-utils.el (EbayTime) -- Provides procedures for frobbing time
 * Lisp:mon-testme-utils.el --
 
 [:MON-STANDARDS]
 === :MON-STANDARDS ===
-
+* Lisp:mon-button-utils.el -- utilities for examining button properties
 * Lisp:mon-cl-compat.el -- This is intendeed to be used as a drop-in replacement for the cl-seq.el When compiling your packages: (eval-when-compile (require 'mon-cl-compat))
 * Lisp:mon-cl-compat-regexps.el -- Provides regular expressions for replacing the symbol-names from the cl-seq.el package with a `cl::' prefix
 * Lisp:mon-empty-registers.el (EmptyRegisters) -- Provides utilities for filling/emptying register locations en masse. Also provides interactive tools for register centric coercion, manipulation, round-tripping of chars, strings, etc.
 * Lisp:mon-hash-utils.el -- Provides a collection of procedures to extend Emacs lisp hash table functionality.
 * Lisp:mon-name-utils.el -- procedures to rotate, combine, and permute string-like name forms
 * Lisp:mon-rename-image-utils.el (RenameImageUtils) -- Provides utility functions for working with images and EmacsImageManipulation.
-* Lisp:mon-tramp-utils.el -- Provides cross platform utilities for working with tramp. This package should be compatible with both GNU/LINUX and w32 systems and helps MON with Emacs portability across environments.
 
 [:MON-EXTRAS]
 === :MON-EXTRAS ===
@@ -56,6 +55,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-get-mon-packages.el -- Pull em all with wget
 * Lisp:mon-get-freenode-lisp-logs -- Pull freenode logs for #lisp with wget
 * Lisp:mon-cifs-utils.el -- (MonCifsUtils) Provides utilities for mapping and mounting a CIFS domain using auth-source. Common Internet File System protocol, e.g. successor to the SMB (Server Message Block) protocol with the Samba Server.
+* Lisp:mon-tramp-utils.el -- Provides cross platform utilities for working with tramp. This package should be compatible with both GNU/LINUX and w32 systems and helps MON with Emacs portability across environments.
 * Lisp:google-define-redux.el -- Extends Lisp:google-define.el
 * Lisp:google-define-redux-supplemental.el -- google-define-redux supplemental functions (avoid MON dependencies).
 * Lisp:mon-color-occur.el -- A patched version of Matsushita Akihisa color-cccur.el :SEE http://www.bookshelf.jp/elc/color-occur.el
@@ -64,6 +64,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without NxhtmlMode dependencies.
 * Lisp:mon-css-complete.el -- This is a highly modified version of Niels Giesen's css-complete.el :SEE http://github.com/pft/elisp-assorted/blob/master/css-complete.el
 * Lisp:mon-drive-transfer-utils.el -- Template builder for transferring backing up large harddrives.
+
 [:MON-DOC-UTILS]
 === :MON-DOC-UTILS ===
 

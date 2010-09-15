@@ -229,6 +229,12 @@ Using BBDB (see [[CategoryBbdb]]) you can manage your contacts, and have their n
 [new]
 But Gmail tracks information automatically about all e-mails ever seen, whereas in BBDB you must add each manually. Which [[BbdbConfiguration]] must be applied to act more Big-Brother-alike, like Gmail?
 
+[new]
+You can put the following in your .gnus or init.el or whatever:
+<pre>
+(setq bbdb/news-auto-create-p t)
+</pre>
+
 ===Chat===
 Gmail provides a chat interface which uses the XMPP (Jabber) protocol; therefore you can use Emacs Jabber (see [[JabberEl]] or [[BitlBee]]) to chat with your contacts and with anyone who has a Jabber account.
 

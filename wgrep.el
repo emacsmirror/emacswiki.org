@@ -3,7 +3,7 @@
 ;; Author: Hayashi Masahiro <mhayashi1120@gmail.com>
 ;; Keywords: grep edit extensions
 ;; URL: http://github.com/mhayashi1120/Emacs-Lisp/raw/master/wgrep.el
-;; URL: http://www.emacswiki.org/download/wgrep.el
+;; URL: http://www.emacswiki.org/cgi-bin/wiki/download/wgrep.el
 ;; Emacs: GNU Emacs 22 or later
 
 ;; This program is free software; you can redistribute it and/or
@@ -299,9 +299,11 @@
 	(inhibit-it nil)
 	ov)
     (save-excursion
-      (forward-line 0)
-      (when (looking-at wgrep-line-file-regexp)
-	(setq inhibit-it (> (match-end 0) beg))))
+      ;; looking-at destroy replace regexp..
+      (save-match-data
+	(forward-line 0)
+	(when (looking-at wgrep-line-file-regexp)
+	  (setq inhibit-it (> (match-end 0) beg)))))
     (unless inhibit-it
       (while ovs
 	(if (overlay-get (car ovs) 'wgrep)
