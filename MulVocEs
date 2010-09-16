@@ -1,0 +1,21 @@
+[[en:MuLVoc]]
+
+MuLVoc es un sistema de vocabulario multi-lingüe, que maneja una tabla
+de traducciones de palabras.  Reside en
+
+* http://mulvoc.sourceforge.net/
+
+y su promotor es JohnSturdy.
+
+En su uso normal, hace emerger bocadillos de ayuda (o usa el minibúfer
+o forros) para mostrar traducciones de palabras que se escriben.  Está
+concebido como un método de aprendizaje de vocabulario para los
+entusiastas de los idiomas, y no pretende ser un traductor.
+
+
+El manual en español en HTML, Info y PDF se encuentra en
+
+* http://gnu.manticore.es/manual-mulvoc-emacs
+
+
+

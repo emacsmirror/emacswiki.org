@@ -3,7 +3,7 @@
 ;; Author: Hayashi Masahiro <mhayashi1120@gmail.com>
 ;; Keywords: lisp refactor lint
 ;; URL: http://github.com/mhayashi1120/Emacs-Lisp/raw/master/el-tools.el
-;; URL: http://www.emacswiki.org/download/el-tools.el
+;; URL: http://www.emacswiki.org/emacs/download/el-tools.el
 ;; Emacs: GNU Emacs 22 or later
 
 ;; This program is free software; you can redistribute it and/or

@@ -21,5 +21,32 @@ I was having a problem with dueling From headers if I did not set a default pers
 Apparently, when a header is set to nil in gnus-posting-styles, gnus-posting-styles just removes it. Fortunately, gnus-posting-styles runs before gnus-pers.
 
 So, this is ugly, and maybe I'm just missing something. Can anyone point to a better fix?
+
+----
+Sometimes the group name matching rules I have in `gnus-personality-electric-headers' would stop working for no apparent reason. I eventually tracked it down to being caused by invalid ",gnus-newsgroup-name"-regexps being cached in `gnus-personality-split-cache' when gnus-pers was invoked with gnus-newsgroup-name as nil. I fixed it with the following patch:
+
+{{{
+--- gnus-pers-orig.el	2010-09-15 22:27:17.597372205 +0200
++++ gnus-pers.el	2010-09-16 03:02:43.087877865 +0200
+@@ -831,11 +831,10 @@
+ 	     (retval (nthcdr 2 split))
+ 	     partial regexp)
+ 	;; Check to see if it's a "gnus-newsgroup-name" split
+-	(if (and gnus-newsgroup-name
+-		 (equal ",gnus-newsgroup-name" (cdr (assq field gnus-personality-split-abbrev-alist))))
+-	    (let ((groupname gnus-newsgroup-name))
+-	      (if (string-match value groupname)
+-		  retval))
++
++	(if (equal ",gnus-newsgroup-name" (cdr (assq field gnus-personality-split-abbrev-alist)))
++        (if (and gnus-newsgroup-name (string-match value gnus-newsgroup-name))
++            retval)
+ 	  (progn
+ 
+ 	    (if (symbolp value)
+}}}
+
+-- Øyvind Stegard
+
 ----
 CategoryGnus

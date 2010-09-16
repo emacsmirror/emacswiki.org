@@ -11,6 +11,7 @@ Where to get it:
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/
 
 * Unofficial/CVS Emacs (which means the Emacs currently in development, it is however normally very stable):
+** **2010-09-15** -- http://alpha.gnu.org/gnu/emacs/windows/ -- **emacs-XXXXXXXX-bin-i386.zip**
 ** **2010-07-02** -- http://ntemacs.sourceforge.net/ -- **CVS Emacs 24.0.50.1 Win32**
 *** Clean Win32 build of latest Emacs development trunk (Bazaar).
 *** Support for images enabled.

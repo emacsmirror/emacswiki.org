@@ -1,25 +1,25 @@
-OneKey help your remember keybinding, it save your time and free your head!
+OneKey is designed to help you remember keybindings.  It saves your time and frees up your head!
 
 : Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
 
-==What's is OneKey ?==
-OneKey is a mode popup help window when you type a *Top Key*.
-And show *Keystroke* and *Command* in help window.
+==What is OneKey ?==
+OneKey is a mode popup help window which appears when you type a *Top Key*.
+It shows *Keystrokes* and *Commands* in a help window.
 
-==Why need OneKey ?==
-* *Too many command need to remember*:
-:: When install so many useful extension in Emacs, i always forgot the keybinding for speical command, because so many command need to remember.
-* *Haven't keystroke for binding handy command*:
-:: Emacs have so many handy commands, but i can not found any keystroke for binding new command.
+==Why I needed OneKey ?==
+* *I had too many commands I needed to remember*:
+:: When I install so many useful extension in Emacs, I always forgot the bindings for their commands, because there are so many to remember.
+* *I don't have a spare, easy keystroke free to bind to a command.*:
+:: Emacs has so many handy commands, but I don't have any keystrokes free to bind new commands to.
 
-: OneKey provide a handle with TOP keystroke, and when you type TOP keystore, you will get a keystroke menu with pop-up window, and will show a group keystroke in pop-up window.
-: Then you just type keystroke in window show, you can execute command corresponding. 
-: So you just need remember the TOP keystroke with group command, others keystroke notify will dispal in pop-up window.
+: OneKey provides a single top-level keystroke, which gives you a kestroke menu in a pop-up window. 
+: You simply type the keystroke shown in the window, which executes the corresponding command.
+: So you just need remember the Top keystroke with the group command, and the other keystrokes will be displayed in a pop-up window.
 
-: [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] have a screenshot to describe OneKey how to work.
-: [[rubikitch]] have wrote Lisp:one-key-default.el for learn Emacs's default keymaps, [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc10 here] have install tutorial.
+: [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
+: [[rubikitch]] wrote Lisp:one-key-default.el for learning Emacs's default keymaps, [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc10 here] you can find the install tutorial.
 
-==Install==
+==To Install==
 : Add Lisp:one-key.el in your load-path, then add 
 {{{
         (require 'one-key)
@@ -28,11 +28,11 @@ And show *Keystroke* and *Command* in help window.
 
 ==Usage==
 * Move to ~/.emacs and run command `one-key-insert-template', 
-: you will got Keymap prompt:
+: you will get the Keymap prompt:
 :: "Keymap to One-Key: ", type the some keystroke, example "C-x r".
 : And then you will got Title prompt:
 :: "Title: ", input any name you like, example "bookmark".
-: Then will insert below template code in ~/.emacs:
+: This will then insert the following template code in ~/.emacs:
 
 {{{
         (defvar one-key-menu-bookmark-alist nil
@@ -69,44 +69,44 @@ And show *Keystroke* and *Command* in help window.
           (one-key-menu "BOOKMARK" one-key-menu-bookmark-alist))
 }}}
 
-* Add below to ~/.emacs:
+* Add the following to your ~/.emacs:
 {{{
     (global-set-key (kbd "C-x r") 'one-key-menu-bookmark)
 }}}
 
 * Execute command: M-x eval-buffer RET.
 
-: That's all, then you type "Ctrl+x" and "r", OneKey will popup a help window for show command and key describe, then you type "w" to execute command "window-configuration-to-register", alike you can type any key that show in help window.
+: That's all. Then, when you type "Ctrl+x" and "r", OneKey will popup a help window to show commands and key descriptions.  Then you type, for example, "w" to execute the command "window-configuration-to-register".  In the same way you can type any key shown in the help window.
 
 ==Generate Template Code==
-* You can use command `one-key-insert-template" to insert template code in current buffer.
-* Or you can use command `one-key-show-template', it similar with `one-key-insert-template', it show template code in buffer "One-Key-Template" instead insert.
+* You can use the command `one-key-insert-template" to insert template code in the current buffer.
+* Or you can use command `one-key-show-template'.  It is like `one-key-insert-template', instead of inserting the template code, it shows it in a buffer called "One-Key-Template".
 
 : Thanks [[rubikitch]] add this feature! Very convenient! ;) -- AndyStewart
 
 ==Example Template Code==
-: Lisp:one-key-config.el have many example template code to use OneKey . 
-:: Note: Lisp:one-key-config.el need many depend packages, it just for show *example* of OneKey, not a standalone package for install, so copy any code you like.
+: Lisp:one-key-config.el has many examples of template code for use with OneKey . 
+:: Note: Lisp:one-key-config.el depends on many packages.  It is intended as an *example* of OneKey usage, not a standalone package.  Copy any code you like.
 
 ==Customize==
-All below option can customize by: M-x customize-group RET one-key RET
+All the options below can be customized by M-x customize-group RET one-key RET
 
 * Don't popup help window automatically:
 
-: You can setup option `one-key-popup-window' with 'nil' if you don't like help window popup automatically when fist time call it.
+: You can setup option `one-key-popup-window' with 'nil' if you don't like help window popup automatically the fist time call it.
 
-* Number item per line.
+* Number of items per line.
 
-: You can setup option `one-key-items-per-line' to customize number of items per line.
-: If the value of this option is `nil', will calculated by `window-width'.
+: You can setup option `one-key-items-per-line' to customize the number of items per line.
+: If the value of this option is `nil', the number will be calculated by `window-width'.
 
-* Maximum height with help window:
+* Maximum height of help window:
 
-: Option `one-key-help-window-max-height' is the maximum height that help window allowed.
+: Option `one-key-help-window-max-height' is the maximum height of the help window. 
 
 * Name of help window.
 
-: You can customize `one-key-buffer-name' to change the name of help buffer.
+: You can customize `one-key-buffer-name' to change the name of the help buffer.
 
 * Buffer name for generate template code.
 
@@ -114,28 +114,29 @@ All below option can customize by: M-x customize-group RET one-key RET
 
 ==Tips==
 
-: Type "?" for toggle help window display.
-: Type "q" for quit OneKey and hide help window.
-: Type "C-n" or "C-p" to scroll help window one line when it show.
-: Type "C-j" or "C-k" to scroll help window one screen when it show.
+: Type "?" to toggle help window display.
+: Type "q" to quit OneKey and hide help window.
+: Type "C-n" or "C-p" to scroll help window one line when.
+: Type "C-j" or "C-k" to scroll help window one screen whe.
 
-:: NOTE: default above keystroke is build-in for control help window, of course you can define same keystroke to override them, and then OneKey is not respond build-in command, instead it execute command you binding.
-:: And whatever you binding, you can use keystroke "C-g" to abort OneKey. 
+:: NOTE: The above default keystrokes are build-in for controlling the help window.  Of course if you bind them to another command, OneKey will instead execute that. 
+
+:: And whatever your binding, you can use the keystroke "C-g" to abort OneKey. 
 
 ==Describe==
-The core function is `one-key-menu', now i describe some argument it used.
+The core function is `one-key-menu'.  Here is some more detail about its arguments.
 
 * title:
 
-: The title information show in echo-area or help window for identified.
+: The title information shown in echo-area or help window for identified.
 
 * info-alist:
 
-: The alist contain help information, with format as (("KEY" . "HELP") . COMMAND)
+: The alist contains help information, with the format (("KEY" . "HELP") . COMMAND)
 
 * miss-match-exit-p
 
-: Whether hide help window when you type a *mismatch* keystroke.
+: Whether to hide the help window when you type a *mismatched* keystroke.
 
 * recursion-p
 
@@ -151,7 +152,7 @@ The core function is `one-key-menu', now i describe some argument it used.
 
 * execute-last-command-when-miss-match
 
-: Whether execute last input command when miss match keystroke alist.
+: Whether to execute last input command when miss matched keystroke alist.
 
 ==Related==
 * Lisp:one-key-default.el -- default One Key configuration for learn Emacs keymaps.

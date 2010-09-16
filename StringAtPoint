@@ -93,6 +93,20 @@ Here are some tests.
         (error "Test 5 failed"))
       (message "Test succeeded")))
 
+
+== Using Emacs built-in functions ==
+
+I think a more reliable way to write functions searching for strings is using Emacs built-in functions for this.
+I have added functions for this to ourcomments-util.el in [NxhtmlMode nXhtml].
+(This is yet just in the repository.)
+
+Using this you can test for a string with (thing-at-point 'string).
+
+PS: I really appreciate when someone cleans up things here.
+But I would also be glad if those who delete things they do not understand asks before doing that.
+-- LennartBorgman
+
+
 See also `forward-whitespace', `forward-symbol' and `parse-partial-sexp'.
 
 ----
