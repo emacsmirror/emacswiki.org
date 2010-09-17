@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 11 15:40:10 2010 (-0700)
+;; Last-Updated: Thu Sep 16 10:00:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13169
+;;     Update #: 13171
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/09/16 dadams
+;;     bmkp-read-bookmark-file-name:
+;;       Removed extra default-filename in call to read-file-name.  Thx to Pedro Insua.
 ;; 2010/08/22 dadams
 ;;     Added: bmkp-regexp-filtered-annotation-alist-only.
 ;; 2010/08/20 dadams

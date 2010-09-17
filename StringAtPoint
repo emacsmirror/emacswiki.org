@@ -93,8 +93,10 @@ Here are some tests.
         (error "Test 5 failed"))
       (message "Test succeeded")))
 
+See also `forward-whitespace', `forward-symbol' and `parse-partial-sexp'.
 
 == Using Emacs built-in functions ==
+[new]
 
 I think a more reliable way to write functions searching for strings is using Emacs built-in functions for this.
 I have added functions for this to ourcomments-util.el in [NxhtmlMode nXhtml].
@@ -106,8 +108,47 @@ PS: I really appreciate when someone cleans up things here.
 But I would also be glad if those who delete things they do not understand asks before doing that.
 -- LennartBorgman
 
+[new]
+I pulled down your code and wrote the following motion command (i.e. `forward-thing) with it.
 
-See also `forward-whitespace', `forward-symbol' and `parse-partial-sexp'.
+  (defun ourcomments-forward-string (&optional arg)
+    "Move point forward ARG (backward if ARG is negative) string(s).
+  Normally returns t if point moved, else nil."
+    (interactive "p")
+    (let ((arg (or arg 1)))
+      (while (< arg 0)
+        (beginning-of-thing 'string)
+        (setq arg (1+ arg)))
+      (while (> arg 0)
+        (end-of-thing 'string)
+        (setq arg (1- arg)))))
+  (put 'string 'forward-op 'ourcomments-forward-string)
+
+Then, when I ran it in my motion test suite, it hard failed on all the tests by failing to recognize a string when point is at the beginning of a string
+
+and generally not being able to move /across/ strings.  It therefore doesn't work with the generic `kill' command defined above. (Writing something to move backwards across strings is maybe a bit complicated.)
+
+When I tried a naive version of the kill command, it worked.
+
+  (defun ourcomment-kill-string ()
+    "Kill string under point."
+    (interactive "*")
+    (let ((string-bounds (bounds-of-thing-at-point 'string)))
+      (unless (null string-bounds)
+        (kill-region (car string-bounds)
+                     (cdr string-bounds)))))
+
+But only when the point is in the string, but not the beginning. -- AaronHawley
+
+[new]
+Maybe it should not fail at the beginning of the string. I am not sure how it supposed to work at the end-points.
+Are there any descriptions or tests for that?
+
+If you look at the code for beginning-of-thing it assumes that point is in "thing" so you can not use the function for 'bounds-of-thing-at-point to move the way you want.
+-- LennartBorgman
+
+[new]
+Well, I took `forward-sexp' and `kill-sexp' as a starting point, since they can operate on strings pretty well, but then I took it to the next level -- noting that strings can't be nested like sexps are -- allowing me to make the commands to work from inside a string. -- AaronHawley
 
 ----
 CategoryCode

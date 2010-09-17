@@ -1,4 +1,4 @@
-;;; mon-text-property-utils.el --- functions for working manipulating text properties
+;;; mon-text-property-utils.el --- extensions for text-properties/overlays
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
@@ -11,7 +11,7 @@
 ;; CREATED: 2010-09-04T12:51:48-04:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: 
+;; KEYWORDS: lisp, extensions, display,
 
 ;;; ================================================================
 
@@ -38,6 +38,8 @@
 ;; `mon-get-face-at-posn', `mon-get-face-at-point',
 ;; `mon-remove-single-text-property', `mon-nuke-text-properties-region',
 ;; `mon-get-text-properties-category', `mon-nuke-overlay-buffer',
+;; `mon-get-overlays-map-props', `mon-get-overlays-region',
+;; `mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
 ;;
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -54,7 +56,7 @@
 ;; VARIABLES:
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
-;; `mon-remove-text-with-property' -> `mon-get-text-property-remove-all'
+;; `mon-remove-text-with-property'      -> `mon-get-text-property-remove-all'
 ;;
 ;; DEPRECATED:
 ;;
@@ -245,9 +247,11 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
 :SEE-ALSO `mon-get-face-at-posn', `mon-help-faces', `mon-help-faces-basic',
 `mon-help-faces-themes'.\n►►►"
   (interactive "d\nP")
-  (let ((mgfap-face (or (get-char-property (or face-psn (point)) 'read-face-name)
-                        (get-char-property (or face-psn (point)) 'face)
-                        (get-char-property (or face-psn (point)) 'font-lock-face))))
+  (let ((mgfap-face 
+         ;; :NOTE `get-char-property-and-overlay'
+         (or (get-char-property (or face-psn (point)) 'read-face-name)
+             (get-char-property (or face-psn (point)) 'face)
+             (get-char-property (or face-psn (point)) 'font-lock-face))))
     (if mgfap-face
         (if describe-it
             (describe-face 
@@ -274,6 +278,15 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
 		       (mapcar #'(lambda (overlay)
                                    (overlay-get overlay 'face))
                                (overlays-at ,mgfap-pos)))))))
+;;
+;; :NOTE this macro and and above function should be merged.
+;; `mon-get-text-property-face-at-posn' -> `mon-get-face-at-posn'
+;; :ALIASED-BY `mon-get-text-properties-face-at-posn'\n
+;;
+;; (unless (and (intern-soft "mon-get-text-property-face-at-posn")
+;;              (fboundp 'mon-get-text-property-face-at-posn))
+;;   (defalias 'mon-get-text-properties-face-at-posn 'mon-get-face-at-posn))
+
 
 ;;; ==============================
 ;;; :RENAMED `mon-kill-ring-save-w-props' -> `mon-get-text-properties-region-to-kill-ring'
@@ -833,7 +846,7 @@ PROP is the name of a text property.
 `mon-get-text-properties-map-ranges',
 `mon-get-text-properties-parse-buffer-or-sym',
 `mon-help-text-property-functions-ext', `mon-help-text-property-functions',
-`mon-help-text-property-properties'.\n►►►"
+`mon-help-text-property-properties', `mon-help-overlay-functions'.\n►►►"
   (assert (get-text-property (point) prop))
   (let ((end (next-single-char-property-change (point) prop)))
     (list (previous-single-char-property-change end prop) end)))
@@ -860,8 +873,152 @@ PROP is the name of a text property.
 
 
 ;;; ==============================
-;;; OVERLAYS
+;;; :OVERLAYS
 ;;; ==============================
+
+;;; ==============================
+;;; :CHANGESET 2136
+;;; :CREATED <Timestamp: #{2010-09-16T13:14:39-04:00Z}#{10374} - by MON KEY>
+(defun mon-get-overlays-region (ov-start ov-end &optional intrp)
+  "Return list of overlays in region from OV-START to OV-END.\n
+When OV-END is ommitted default is the value of OV-START.\n
+Return value has the format:\n
+ \(:REGION-START <OV-START> 
+  :REGION-END   <OV-END> 
+  :OVERLAYS     \(#<OV-OBJECT> { ... } #<OV-OBJECT-N>\)\)\n
+:EXAMPLE\n\n\(let \(\(mo \(make-overlay \(+ \(point\) 4\) \(+ \(point\) 11\)\)\)\)
+  \(dolist \(oput '\(\(face . link\) \(evaporate . t\)\)
+                \(mon-get-overlays-region \(+ \(point\) 4\) \(+ \(point\) 11\)\)\)
+    \(overlay-put mo \(car oput\) \(cdr oput\)\)\)\) ;; overlay\n
+:SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',
+`mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
+`mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
+`mon-help-overlay-on-region', `mon-help-overlay-result',
+`mon-get-overlays-buffer', `mon-help-overlay-functions',
+`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
+  (interactive "r\np")
+  (let ((ov-rgn-p 
+         ;; :NOTE `or'ing ov-end allows: 
+         ;;  (mon-get-overlays-region (point) nil)
+         (overlays-in ov-start (or ov-end ov-start))))
+    (when ov-rgn-p 
+      (setq ov-rgn-p `(:REGION-START ,ov-start 
+                       :REGION-END   ,(or ov-end ov-start)
+                       :OVERLAYS     ,ov-rgn-p))
+      (if intrp
+          (prin1 ov-rgn-p)
+        ov-rgn-p))))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |
+;; | (let ((mo (make-overlay (+ (point) 4) (+ (point) 11))))
+;; |   (dolist (oput '((face . link) (evaporate . t))
+;; |                 (mon-get-overlays-region (+ (point) 4) (+ (point) 11)))
+;; |     (overlay-put mo (car oput) (cdr oput)))) ;; overlay
+;; |
+;; `----
+
+
+;;; ==============================
+;;; :CHANGESET 2136
+;;; :CREATED <Timestamp: #{2010-09-16T14:38:31-04:00Z}#{10374} - by MON KEY>
+(defun mon-get-overlays-region-map-props (ov-start ov-end)
+  "Return a list of overlays in region and its properties.\n
+OV-START OV-END are buffer positions.\n
+Return value has the format:\n
+\(:REGION-START <OV-START> :REGION-END <OV-END>
+ :OVERLAYS \(\(:OVERLAY-ID #<OV-OBJECT>
+             :OVERLAY-START <INTEGER> :OVERLAY-END <INTEGER>
+             :OVERLAY-BUFFER #<BUFFER-OBJECT> 
+             :OVERLAY-PROPS \(<PROP> <PVAL> { ... } <PROP-N> <PVAL-N>\)\)
+             \(:OVERLAY-ID #<OV-OBJECT-N>  {...} \)\)\)
+:EXAMPLE\n\n\(let \(\(inhibit-read-only t\)\)
+  \(save-excursion
+    \(apply #'make-button
+           \(prog1 \(point\)  \(insert \"bubba\"\)\)
+           \(point\) `\(label \"text-prop-button\" face link\)\)\)
+  \(let \(\(mk-o \(make-overlay \(point\) \(+ \(point\) 5\)\)\)\)
+    \(dolist \(oput '\(\(after-string . \" <- thatsa bubba!\"\) \(evaporate . t\)\)\)
+      \(overlay-put mk-o \(car oput\) \(cdr oput\)\)\)\)
+  \(mon-get-overlays-region-map-props \(point\) \(+ \(point\) 5\)\)\)\n
+:SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',
+`mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
+`mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
+`mon-help-overlay-on-region', `mon-help-overlay-result',
+`mon-get-overlays-buffer', `mon-help-overlay-functions',
+`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
+  (let* ((mgormp (mon-get-overlays-region ov-start ov-end))
+         (omapd (cadr (memq :OVERLAYS mgormp))))
+    (when omapd
+      (setf omapd (mon-get-overlays-map-props omapd)
+            (car (last mgormp)) omapd))
+    mgormp))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (let ((inhibit-read-only t))
+;; |   (save-excursion
+;; |     (apply #'make-button
+;; |            (prog1 (point)  (insert "bubba"))
+;; |            (point) `(label "text-prop-button" face link)))
+;; |   (let ((mk-o (make-overlay (point) (+ (point) 5))))
+;; |     (dolist (oput '((after-string . " <- thatsa bubba!") (evaporate . t)))
+;; |       (overlay-put mk-o (car oput) (cdr oput))))
+;; |   (mon-get-overlays-region-map-props (point) (+ (point) 5)))
+;; `----
+
+
+;;; ==============================
+;;; :CHANGESET 2136
+;;; :CREATED <Timestamp: #{2010-09-16T13:20:24-04:00Z}#{10374} - by MON KEY>
+(defun mon-get-overlays-map-props (overlays-lst)
+  "Return list of overlay properties for each overlay in OVERLAYS-LST.\n
+OVERLAYS-LST is a list of overlays.\n
+List elements of retrun value have the format:\n
+  (:OVERLAY-ID #<OV-OBJECT>
+   :OVERLAY-START <INTEGER> :OVERLAY-END <INTEGER>
+   :OVERLAY-BUFFER #<BUFFER-OBJECT> 
+   :OVERLAY-PROPS (<PROP> <PVAL> { ... } <PROP-N> <PVAL-N>))\n
+:EXAMPLE\n\n\(mon-get-overlays-map-props \(mon-get-overlays-buffer\)\)\n
+:SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',
+`mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
+`mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
+`mon-help-overlay-on-region', `mon-help-overlay-result',
+`mon-get-overlays-buffer', `mon-help-overlay-functions',
+`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
+  (unless (null overlays-lst)
+    (let (op-gthr)
+      (dolist (ov-l overlays-lst (setq op-gthr (nreverse op-gthr)))
+        (let (op-this)
+          (push 
+           `(:OVERLAY-ID     ,ov-l
+             :OVERLAY-START  ,(overlay-start ov-l)
+             :OVERLAY-END    ,(overlay-end ov-l)
+             :OVERLAY-BUFFER ,(overlay-buffer ov-l)
+             :OVERLAY-PROPS  ,(overlay-properties ov-l))
+           op-gthr))))))
+;;
+;;; :TEST-ME (mon-get-overlays-map-props (mon-get-overlays-buffer))
+
+;;; ==============================
+;;; :CHANGESET 2136
+;;; :CREATED <Timestamp: #{2010-09-16T14:30:16-04:00Z}#{10374} - by MON KEY>
+(defun mon-get-overlays-buffer (&optional buffer-or-name)
+  "Return list of overlays in current-buffer.\n
+When BUFFER-OR-NAME is non-nil get its overlays.\n
+Like `overlay-lists' but returns a flat list without condideration for the
+overlay center.\n
+:EXAMPLE\n\n\(mon-get-overlays-buffer\)\n
+:SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',
+`mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
+`mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
+`mon-help-overlay-on-region', `mon-help-overlay-result',
+`mon-get-overlays-buffer', `mon-help-overlay-functions',
+`mon-help-text-property-functions', `mon-help-text-property-properties',.\n►►►"
+  (let (ov-lsts)
+    (with-current-buffer (or (and buffer-or-name (get-buffer buffer-or-name))
+                             (current-buffer))
+      (setq ov-lsts (overlay-lists)))
+    (when ov-lsts `(,@(car ov-lsts) ,@(cdr ov-lsts)))))
 
 ;;; ==============================
 ;;; :TODO add a hook using to `kill-buffer-hook' or some such that removes the 
@@ -879,13 +1036,13 @@ PROP is the name of a text property.
        \(sit-for 2\)\)
   \(mon-nuke-overlay-buffer 'face 'minibuffer-prompt\)\)\n
 ►I'm lingering◄\n
-:SEE-ALSO `mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
+:SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',
+`mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
+`mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
 `mon-help-overlay-on-region', `mon-help-overlay-result',
-`mon-nuke-overlay-buffer'.\n►►►"
+`mon-get-overlays-buffer', `mon-help-overlay-functions',
+`mon-help-text-property-functions', `mon-help-text-property-properties',.\n►►►"
  (remove-overlays (buffer-end 0) (buffer-end 1) overlay-prop overlay-val))
-;;
-
-
 
 
 ;;; ==============================

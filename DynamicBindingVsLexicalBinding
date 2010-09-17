@@ -191,6 +191,30 @@ Much code written for normal elisp should work unchanged when using lexical bind
 
 - MilesBader
 
+=== More about Emacs future lexical binding ===
+
+Today StefanMonnier told
+[http://lists.gnu.org/archive/html/emacs-devel/2010-09/msg00716.htmlmore about how the lexical binding in Emacs might behave]:
+
+* As you may have noticed, I have added a new warning to the byte-compiler for defvars of variables that don't have a prefix.  This is in preparation for the introduction of lexical scoping: in order not to
+have to rewrite all the code, the lexbind branch uses `let' both for dynamically-scoped let-bindings and for lexically-scoped let-bindings; where the distinction is based on whether or not a variable has
+been defvar'd.  This is the same system as used in Common-Lisp and it works well in practice, but it requires a bit of care, because every defvar has a global effect: it declares that this variable will use dynamic-scoping wherever it gets let-bound.  So if a file uses `len' as a lexically-scoped variable and another file does a (defvar len), we get
+a conflict that results in the first file being evaluated with a different semantic than expected by the author.
+
+* So, the end result is that (defvar <prefix>-<foo> ) is OK because the "<prefix>-" ensures you only mess with your own variable, but (defvar <foo> ) is not OK because you may interfere with some other package.
+
+* Now, we have a lot of offending (defvar <foo> ) in Emacs currently, so we will want to fix them, and to get things started, we want to fix the two predefined float constants `e' and `pi'.
+
+* In their case, the solution is to rename them to `float-e' and `float-pi', but this introduces a backward incompatibility. I figure we could define-obsolete-variable-alias (which leaves the
+problem of `e' and `pi' being dynamically scoped, but hopefully only for a few versions until we remove the obsolete name), but this means that every code that does (let ((e <foo> )) ...) would now get a stupid warning about using an obsolete variable `e'.
+
+* So I intend to do the following: 
+- in Emacs-23.3, define `e', `float-e', `pi', and `float-pi' and declare `e' and `pi' obsolete, but without a make-obsolete-variable (i.e. only in NEWS and in docstrings).
+- in Emacs-24 keep float-e and float-pi but get rid of `e' and `pi'.
+
+* Can anyone think of a better solution?
+
+
 
 === More radical approaches ===
 

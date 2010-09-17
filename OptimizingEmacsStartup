@@ -4,6 +4,11 @@ http://metashell-v1.blogspot.com/2006/04/howto-lightning-fast-emacs-startup.html
 
 -- kruhft
 
+[new:AnupamSengupta:2010-09-16 14:51 UTC]
+The Blog does not exist any more (as checked on 16th September 2010).  Does anyone have the text of the entry?
+
+-- AnupamSengupta
+
 [new:DrewAdams:2006-04-22 17:59 UTC]
 Part of the instructions posted involve trying to determine library dependencies by hand in an iterative fashion (add a library, try again, check the error messages, add a library, try again...).
 

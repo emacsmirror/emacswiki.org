@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sun Aug 22 09:48:52 2010 (-0700)
+;; Last-Updated: Thu Sep 16 09:58:42 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 706
+;;     Update #: 707
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2426,7 +2426,6 @@ The other args are the same as for `read-file-name'."
                          (if (> emacs-major-version 22)
                              (list ".emacs.bmk" bookmark-default-file)
                            ".emacs.bmk"))
-                     default-filename
                      require-match))))
 
 ;;;###autoload

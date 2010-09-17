@@ -13,6 +13,11 @@ direction of travel.
 See also WindMove, which is part of Emacs.
 
 <pre>
+(unless (fboundp 'window-rightmost-p)
+  (defun window-rightmost-p (window)
+    (>= (nth 2 (window-edges window))
+      (frame-width (window-frame window)))))
+
 (defun other-column (prefix)
   "Switch to the buffer in the vertical split to the right whose top
 of window is closest to the top of the selected window.  With PREFIX

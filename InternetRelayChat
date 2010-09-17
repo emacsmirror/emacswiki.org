@@ -90,7 +90,7 @@ I used [[ERC]] for a while, but I was not very fond of the 20 odd files required
     <delYsid> so one emacs irc client was actually actively
       involved in the early irc design times
 
-The original IRC client in elisp was by David Lawrence at RPI in 1989, named [[irc.el]] (oldest extant copy linked).  This code was actively developed through 1996 by various people before finally sinking into obscurity.  It is doubtful that this client still functions on modern IRC networks.
+The original IRC client in elisp was by David Lawrence at RPI in 1989, named [[irc.el]] (oldest extant copy linked).  This code was actively developed through 1996 by various people before finally sinking into obscurity.  It is doubtful that this client still functions on modern IRC networks. (It actually *does* work... I use it every day -- I'm a bit sentimental towards it since some of my code made it into the final release. -- RandalSchwartz)
 
 ----
 CategoryChatClient CategoryHelp
