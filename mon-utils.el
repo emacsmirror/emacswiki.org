@@ -188,6 +188,7 @@
 ;; `mon-merge-list'                  -> `mon-list-merge'
 ;; `mon-string-from-keybard-input'   -> `mon-read-keys-as-string'
 ;; `macrop'                          -> `apropos-macrop'
+;; `mon-list-intersect'              -> `mon-intersection'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;; DEPRECATED:
@@ -471,8 +472,9 @@ varaible `*mon-utils-post-load-requires*'\n
         (when rqrd (push (symbol-name rqrd) did-rqr))))
     (when (consp did-rqr)
       (mapc #'(lambda (msg) 
-                (message (concat ":FUNCTION `mon-utils-require-features-at-loadtime' "
-                                 "-- :FEATURE mon-utils :REQUIRED :FEATURE" msg " on load")))
+                (message 
+                 (concat ":FUNCTION `mon-utils-require-features-at-loadtime' "
+                         "-- :FEATURE mon-utils :REQUIRED :FEATURE " msg " on load")))
             did-rqr)))
   (when (and (intern-soft "IS-MON-SYSTEM-P")
              (bound-and-true-p IS-MON-SYSTEM-P))
@@ -2127,8 +2129,8 @@ My Emacs, my buffers!
              "-- my work is done here, are you glad to have your minibuffer back: "))))
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-09-13T15:16:54-04:00Z}#{10371} - by MON>
 ;;; :COURTESY :FILE bookmark.el :WAS `bookmark-read-search-input'
+;;; :CREATED <Timestamp: #{2010-09-13T15:16:54-04:00Z}#{10371} - by MON>
 (defun mon-read-keys-as-string (&optional w-kbd-quit)
   "Read keyboard input, return a list of what was read.
 When a w-kbd-quit is non-nil a when C-g is caught tail of list is non-nil.
@@ -3428,7 +3430,7 @@ are `fmakunbound'd and `unintern'd.\n
 FUNINTERN-LST is a list of strings and/or symbols naming functions present 
 interned in the current Emacs environment. It has one of the form:\n
  \( <STR>* \) | \( <STR>+ <SYM>+ \) | \( <SYM>* \)\n
-Where the first most form (a list of strings is the preferred format.\n
+Where the first most form \(a list of strings\) is the preferred format.\n
 :NOTE Elements of FUNINTERN-LST should name functions which satisfy
 `byte-code-function-p', and should be present in the list returned as value of
 `is-bytcomp` property, e.g.:\n
@@ -3935,26 +3937,44 @@ unreadable object with the '#' prefix so we strip it.\n
 ;;; :TEST-ME (mon-string-read-match-string 4)
 
 ;;; ==============================
-;;; :NOTE I hope this isn't reinventing the wheel here... 
-;;;       If not, WTF? why isn't this in Emacs already?
+;;; :CHANGESET 2119 <Timestamp: #{2010-09-14T17:02:55-04:00Z}#{10372} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-14T11:06:04-04:00Z}#{09423} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-26T17:08:02-04:00Z}#{09353} - by MON KEY>
 (defun mon-string-to-symbol (str &optional start end)
   "Return string STR as a symbol.\n
-When optional args START and END are non-nil delimit the 
-substring of str they default to 0 and (length string) respectively.
-:EXAMPLE\n\(mon-string-to-symbol \"Bubba\")\n
+When optional args START and END are non-nil delimit the `substring' of STR.\n
+START and END default to 0 and \(length string\) respectively.
+If STR (or a substring therin if START is non-ni) satisfies `intern-soft' for
+default `obarray' return value is as if by `read', else symbol is allocated as
+if by `make-symbol' with its value and function cells void, and its property
+list `nil'.\n
+:EXAMPLE\n\n\(intern-soft \(mon-string-to-symbol \"mon-string-to-symbol\"\)\)\n
+\(progn \(unintern \"bubba\"\) \(intern-soft \(mon-string-to-symbol \"bubba\"\)\)\)\n
+\(intern-soft \(intern \(symbol-name \(mon-string-to-symbol \"bubba\"\)\)\)\)\n
+\(progn \(unintern \"bubb\"\) \(intern-soft \(mon-string-to-symbol \"bubba\" 0 4\)\)\)\n
+\(intern-soft \(intern \(symbol-name \(mon-string-to-symbol \"bubba\" 0 4\)\)\)\)\n
 \(mon-string-to-symbol \(mon-symbol->string 'bubba\)\)\n
-\(mon-string-to-symbol \"mon-string-to-symbol\" 4 10\)\n
-\(mon-string-to-symbol \"mon-string-to-symbol\" 4)\n
 :SEE-ALSO `mon-symbol-to-string', `mon-string-to-sequence',
 `mon-string-from-sequence', `mon-string-alpha-list',
 `mon-string-index', `mon-string-has-suffix', `mon-alphabet-as-type',
 `mon-string-replace-char'.\n►►►"
-  (car (read-from-string str start end)))
+  ;; :WAS (car (read-from-string str start end)))
+  (when (or (null str) (not (stringp str)))
+    (error (concat ":FUNCTION `mon-string-to-symbol'"
+                   "-- arg STR does not satisfy `stringp'")))
+  (let ((sbstr (or (and start (substring str start end))
+                   str)))
+    (if (intern-soft sbstr)
+        (read sbstr) 
+      (make-symbol sbstr))))
 ;;
 (defalias 'mon-string->symbol 'mon-string-to-symbol)
 ;;
+;;; :TEST-ME (intern-soft (mon-string-to-symbol "mon-string-to-symbol"))
+;;; :TEST-ME (progn (unintern "bubba") (intern-soft (mon-string-to-symbol "bubba")))
+;;; :TEST-ME (intern-soft (intern (symbol-name (mon-string-to-symbol "bubba"))))
+;;; :TEST-ME (progn (unintern "bubb") (intern-soft (mon-string-to-symbol "bubba" 0 4)))
+;;; :TEST-ME (intern-soft (intern (symbol-name (mon-string-to-symbol "bubba" 0 4))))
 ;;; :TEST-ME (mon-string-to-symbol "bubba")
 ;;; :TEST-ME (mon-string-to-symbol "mon-string-to-symbol" 4 10)
 ;;; :TEST-ME (mon-string-to-symbol "mon-string-to-symbol" 4)
@@ -7367,7 +7387,13 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.
   `\(:ADD-ELTS-TO ,atl 
     :ADD-ELTS-FRM ,afl
     :RETURN ,\(mon-list-add-non-nil atl afl\)\)\)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-list-make-unique', `mon-delq-dups', `mon-list-proper-p',
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`mon-list-shuffle-safe', `mon-intersection', `mon-remove-if', `mon-combine',
+`mon-mapcar', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
+`mon-recursive-apply', `mon-maybe-cons', `mon-delq-cons', `mon-remove-dups',
+`mon-sublist', `mon-sublist-gutted', `mon-assoc-replace', `mon-moveq',
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
   (let ((mlann-atl 
          (and (not (unless (consp add-elts-to)
                      (error 
@@ -7503,20 +7529,21 @@ By default comparsion made as with `member'.\n
 When optional arg DO-EQl uses `memql'.\n
 When optional arg DO-EQ uses `memq'.\n
 :EXAMPLE\n
-\(mon-intersection \(number-sequence 8 20 2\) \(number-sequence 0 20 4\)\)
-\(mon-intersection \(number-sequence 8 20 2\) \(number-sequence 8 20 2\)\)
-\(mon-intersection \(number-sequence 8 20 2\) nil\)
-\(mon-intersection nil \(number-sequence 8 20 2\)\)
-\(mon-intersection nil nil\)
-\(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\)\)       ;`member'
-\(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\) t\)     ;`memql'
-\(mon-intersection '\(\"str1\" \"str2\"\) '\(\"str2\"\) t\)               ;`memql'
-\(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\) nil t\) ;`memq'
-\(mon-intersection '\(\"str1\" \"str2\"\) '\(\"str2\"\) nil t\)           ;`memq'
-\(mon-intersection '\(sym1 sym2\) '\(sym1\)\)                       ;`memq'
-\(mon-intersection \(number-sequence 8 20 2\) 8)                 ;Signal Error.\n
+\(mon-intersection \(number-sequence 8 20 2\) \(number-sequence 0 20 4\)\)\n
+\(mon-intersection \(number-sequence 8 20 2\) \(number-sequence 8 20 2\)\)\n
+\(mon-intersection \(number-sequence 8 20 2\) nil\)\n
+\(mon-intersection nil \(number-sequence 8 20 2\)\)\n
+\(mon-intersection nil nil\)\n
+\(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\)\)       ;`member'\n
+\(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\) t\)     ;`memql'\n
+\(mon-intersection '\(\"str1\" \"str2\"\) '\(\"str2\"\) t\)               ;`memql'\n
+\(mon-intersection '\(\"str1\" sym1 \"str2\"\) '\(sym1 \"str2\"\) nil t\) ;`memq'\n
+\(mon-intersection '\(\"str1\" \"str2\"\) '\(\"str2\"\) nil t\)           ;`memq'\n
+\(mon-intersection '\(sym1 sym2\) '\(sym1\)\)                       ;`memq'\n
+\(mon-intersection \(number-sequence 8 20 2\) 8)                 ;Signal Error\n
 :NOTE Like `intersection' from :FILE cl-seq.el adapted for use without keywords
-      Does not provide intelligent type checking.\n
+and does not provide intelligent type checking.\n
+:ALIASED-BY `mon-list-intersect'\n
 :SEE-ALSO `mon-sublist', `mon-sublist-gutted', `mon-mapcar', `mon-map-append',
 `mon-maptree', `mon-transpose', `mon-flatten', `mon-combine',
 `mon-recursive-apply', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
@@ -7546,6 +7573,9 @@ When optional arg DO-EQ uses `memq'.\n
 	       (pop mintr-l2))
 	     (unless (null mintr-res)
                (setq mintr-res (nreverse mintr-res)))))))
+;;
+(unless (and (intern-soft "mon-list-intersect") (fboundp 'mon-list-intersect))
+  (defalias 'mon-list-intersect 'mon-intersection))
 ;;
 ;;; (defun hfy-interq (set-a set-b)
 ;;;   "Return the intersection \(using `eq'\) of 2 lists."

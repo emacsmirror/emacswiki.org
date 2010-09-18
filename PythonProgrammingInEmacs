@@ -2,19 +2,21 @@ Information for creating a usable Python programming environment in emacs...
 
 There are two implementations of a Python mode for Emacs:
 
-ProgrammingWithPythonDotEl
+# ProgrammingWithPythonDotEl
 
-ProgrammingWithPythonModeDotEl
+# ProgrammingWithPythonModeDotEl
 
 I also found these useful:
 
-[http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
+* [http://www.enigmacurry.com/2008/05/09/emacs-as-a-powerful-python-ide/ Emacs as a powerful Python IDE]
 
-[http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el : Python Code Completion in Emacs]
+* [http://www.enigmacurry.com/2009/01/21/autocompleteel-python-code-completion-in-emacs/ AutoComplete.el : Python Code Completion in Emacs]
 
-see [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
+* see [http://www.enigmacurry.com/2009/01/19/my-emacs-config-on-github/ My Emacs config on Github] for dotfiles
 
-[[RichardRiley]]s [http://richardriley.net/projects/emacs/dotprogramming#sec-1.5 python dotfiles]
+* [[RichardRiley]]s [http://richardriley.net/projects/emacs/dotprogramming#sec-1.5 python dotfiles]
+
+* [http://gabrielelanaro.github.com/emacs-for-python/ another setup] based around python dev.
 
 == Comment/Uncomment Region ==
 

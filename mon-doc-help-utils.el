@@ -99,7 +99,8 @@
 ;; `mon-help-bookmark-functions', `mon-help-help-functions',
 ;; `mon-help-inhibit-functions', `mon-help-char-logic',
 ;; `mon-help-char-charset-functions', `mon-help-char-table-functions',
-;; `mon-help-display-table-functions',
+;; `mon-help-display-table-functions', `mon-help-bind-help-keys-loadtime',
+;; `mon-help-byte-compile-functions', `mon-update-tags-tables-loadtime'
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -186,6 +187,22 @@
 ;; `mon-insert-info-incantation'             -> `mon-help-info-incantation'
 ;; `mon-insert-diacritics'                   -> `mon-help-diacritics'
 ;;
+;; Following moved to mon-text-property-utils.el
+;; `mon-get-next-face-property-change'
+;; `mon-get-next-face-property-change-if'
+;; `mon-get-text-properties-region'
+;; `mon-get-text-properties-print'
+;; `mon-get-text-properties-read-temp'
+;; `mon-get-text-properties-elisp-string-pp'
+;; `mon-get-text-properties-elisp-string'
+;; `mon-get-text-properties-parse-prop-val-type-chk'
+;; `mon-get-text-properties-parse-buffer'
+;; `mon-get-text-properties-parse-sym'
+;; `mon-get-text-properties-parse-buffer-or-sym'
+;; `mon-get-text-properties-map-ranges'
+;; `mon-get-text-properties-map-ranges-string'
+;; `mon-get-text-property-bounds'
+;;
 ;; REQUIRES:
 ;; cl.el `intersection' in `mon-help-function-spit-doc'
 ;;
@@ -234,20 +251,17 @@
 ;;       | -> `mon-check-feature-for-loadtime'
 ;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;
-;; :NOTE While mon-doc-help-utils-supplemental.el will provide the necessary
-;; features in order to get mon-doc-help-utils bootstrapped wherever possible
-;; MON encourages you to also use the above required packages in addition to the
-;; supplemental. As such, where those packages are present the supplemental
-;; will not shadow any additional functionality extensions which they provide.
-;; 
-;; TODO:
-;; Hopefully sometime in the near future the Emacs-devels will begin using the
-;; bzr and Launchpad features of distributed version control to build a better
-;; Emacs Lisp 'packaging' tool that can aid in some of this minor dependency
-;; issues and this type of stuff won't be quite as big a problem (and instead
-;; we'll all move to grokking DAGs with recursive dependency cycles). In the
-;; interim MON is still using Mercurial. Contact MON for access to a stripped
-;; hg archive of all MON's current Elisp source.
+;; :FILE mon-text-property-utils.el
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;;       | -> 
+;; :SEE (URL `http://www.emacswiki.org/emacs/mon-text-property-utils.el')
 ;;
 ;; Incorporate features from :FILE info-look.el 
 ;; This might include text-propertization to be run on the `help-mode-hook' to
@@ -396,30 +410,79 @@
 
 (require 'elint)
 (require 'bytecomp)
+(require 'mon-text-property-utils)
+(require 'mon-utils)
+(require 'mon-regexp-symbols)
+(require 'mon-insertion-utils)
+
+(declare-function mon-check-feature-for-loadtime "mon-utils")
+(declare-function mon-string-index               "mon-utils"   )
+(declare-function mon-string-upto-index          "mon-utils"   )
+(declare-function mon-string-after-index         "mon-utils"   )
+(declare-function mon-string-justify-left        "mon-utils"   )
+(declare-function mon-comment-divider            "mon-insertion-utils" )
+(declare-function mon-insert-lisp-testme         "mon-testme-utils"    )
 
 ;;; ==============================
-;; :EMACS-WIKI - So we don't require more than you want/need.
-;;
-(unless (featurep 'mon-regexp-symbols)
-  (if (locate-library "mon-regexp-symbols")
-      (require 'mon-regexp-symbols)))
-;;
-(unless (featurep 'mon-regexp-symbols)
-  (if (locate-library "mon-insertion-utils")
-      (require 'mon-insertion-utils)))
-;;
 ;; When not load the full packages above load :FILE mon-doc-help-utils-supplemental.el
-(unless (and (featurep 'mon-insertion-utils)
-             (featurep 'mon-regexp-symbols)
-             ;; :NOTE Following from :FILE mon-utils.el Can't do a
-             ;; featurep/require test on it though because that requires this
-             ;; and fails with recursive load.
-             (and (fboundp 'mon-string-index) 
-                  (fboundp 'mon-string-upto-index)
-                  (fboundp 'mon-string-after-index)
-                  (fboundp 'mon-string-justify-left)))
-  (require 'mon-doc-help-utils-supplemental))
-;;
+;; (if (or (and (intern-soft "IS-MON-SYSTEM-P")
+;; 	     (bound-and-true-p IS-MON-SYSTEM-P))
+;; 	(or (and (locate-library "mon-utils")
+;; 		 (locate-library "mon-insertion-utils")
+;; 		 (locate-library "mon-regexp-symbols")
+;; 		 (locate-library "mon-testme-utils"))
+;; 	    (and (featurep 'mon-insertion-utils)
+;; 		 (featurep 'mon-regexp-symbols)
+;; 		 (featurep 'mon-testme-utils)
+;; 		 ;; :NOTE Following from :FILE mon-utils.el Can't do a
+;; 		 ;;       featurep/require test on it though because that requires this
+;; 		 ;;       and fails with recursive load.
+;; 		 (and (fboundp 'mon-string-index) 
+;; 		      (fboundp 'mon-string-upto-index)
+;; 		      (fboundp 'mon-string-after-index)
+;; 		      (fboundp 'mon-string-justify-left)
+;; 		      (fboundp 'mon-comment-divider)
+;; 		      (fboundp 'mon-insert-lisp-testme)))))
+;;     (progn 
+;;       (declare-function mon-string-index        "mon-utils"   )
+;;       (declare-function mon-string-upto-index   "mon-utils"   )
+;;       (declare-function mon-string-after-index  "mon-utils"   )
+;;       (declare-function mon-string-justify-left "mon-utils"   )
+;;       (declare-function mon-comment-divider     "mon-insertion-utils" )
+;;       (declare-function mon-insert-lisp-testme  "mon-testme-utils"    )
+;;       ;; :NOTE Using `edmacro-subseq' now instead:
+;;       ;; (declare-function cl::subseq "mon-cl-compat"          ))
+;;       )
+;;   (unless (and (featurep 'mon-insertion-utils)
+;; 	       (featurep 'mon-regexp-symbols)
+;; 	       (featurep 'mon-testme-utils)
+;; 	       ;; :NOTE Following from :FILE mon-utils.el Can't do a
+;; 	       ;; featurep/require test on it though because that requires this
+;; 	       ;; and fails with recursive load.
+;; 	       (and (fboundp 'mon-string-index) 
+;; 		    (fboundp 'mon-string-upto-index)
+;; 		    (fboundp 'mon-string-after-index)
+;; 		    (fboundp 'mon-string-justify-left)
+;; 		    (fboundp 'mon-comment-divider)
+;; 		    (fboundp 'mon-insert-lisp-testme)
+;; 		    ))
+;;     (require 'mon-doc-help-utils-supplemental))
+;;   )
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-06T11:43:27-05:00Z}#{10056} - by MON KEY>
+(defgroup mon-doc-help-utils nil
+  "Extensions for help and documentation related procedures.\n
+:SEE (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')\n
+:SEE-ALSO `mon-doc-help-utils-faces', `mon-doc-help-CL'.\n►►►"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-doc-help-utils.el")
+  :link '(url-link 
+          :tag ":EMACSWIKI-DICTIONARY" "http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary")
+  :link '(custom-group-link mon-doc-help-utils-faces)
+  ;; :link '(custom-group-link 'mon-doc-help-CL)
+  :prefix "mon-help-"
+  :group 'docs)
 
 ;;; ==============================
 ;;; :TODO :RENAME `*doc-cookie*' -> `*mon-doc-cookie*'
@@ -889,9 +952,10 @@ e.g. those enumerated in: `byte-compile-side-effect-free-ops'.\n
 `*mon-help-subrs*', `*mon-help-autoload-vars*', `*mon-help-permanent-locals*',
 `*mon-help-byte-optimizer-vals*', `mon-help-byte-code-vector-symbols',
 `mon-help-symbol-functions', `mon-help-byte-optimizer-find',
-`mon-map-obarray-symbol-plist-props', `byte-boolean-vars',
-`byte-compile-delete-errors', `cl-safe-expr-p',
-`cl-byte-compile-compiler-macro', `unsafep', `unsafep-function',
+`mon-map-obarray-symbol-plist-props', `cl-safe-expr-p',
+`cl-byte-compile-compiler-macro', `byte-compile-side-effect-and-error-free-ops',
+`byte-compile-side-effect-free-ops', `byte-boolean-vars',
+`byte-compile-delete-errors' `unsafep', `unsafep-function',
 `unsafep-variable',`unsafep-progn', `unsafep-let', `unsafep-vars',
 `safe-functions'.\n►►►")
 ;;
@@ -966,7 +1030,8 @@ e.g. those enumerated in: `byte-compile-side-effect-and-error-free-ops'.\n
 `*mon-help-byte-optimizer-vals*', `mon-help-byte-optimizer-find',`
 `mon-help-byte-code-vector-symbols', `byte-boolean-vars',
 `mon-help-permanent-locals-find', `byte-optimize-form-code-walker',
-`byte-compile-delete-errors', `cl-safe-expr-p',
+`byte-compile-delete-errors', `byte-compile-side-effect-and-error-free-ops',
+`byte-compile-side-effect-free-ops', `cl-safe-expr-p',
 `cl-byte-compile-compiler-macro', `unsafep', `unsafep-function',
 `unsafep-variable', `unsafep-progn', `unsafep-let', `unsafep-vars',
 `safe-functions'.\n►►►")
@@ -1062,46 +1127,63 @@ byte-compiler to be side-effect-free.\n
 ;; \(car \(memq 'indirect-function *mon-help-subrs*\)\)
 ;;; :CHANGESET 2019
 ;;; :CREATED <Timestamp: #{2010-07-31T19:13:24-04:00Z}#{10306} - by MON KEY>
-(defvar *mon-help-subrs* nil
-  "Hash table of of all built-in Emacs functions (i.e. all subrs).\n
-:EXAMPLE\n\n\n
-:NOTE This var holds a hashtable to make it possible for `subrp' like checks
-without the need to intern the putative symbol to standard `obarray'.\n
-:NOTE Elts of this list have the property `elint-args` whenever
-`elint-put-function-args' has been evalauted by `elint-scan-doc-file' which
-normally happens whenever `elint-initialize' is invoked.\n
-However, when the predicate `IS-MON-SYSTEM-P' returns non-nil the function
-`mon-help-utils-loadtime' arranges to evaluate `elint-scan-doc-file' at loadtime
-such that the following should return non-nil regardless of whether
-`elint-initialize' has been evaluated:\n
-:SEE-ALSO `elint-find-builtins', `elint-find-builtin-args',
-`elint-standard-variables', `elint-builtin-variables',
-`*mon-help-autoload-vars*', `*mon-help-side-effect-free*',
-`*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
-`*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
-`mon-help-byte-code-vector-symbols', `mon-help-byte-optimizer-find',
-`byte-boolean-vars'.\n►►►")
+;; (defvar *mon-help-subrs* nil
+;;   "Hash table of all built-in Emacs functions (i.e. all subrs).\n
+;; :EXAMPLE\n\n\n
+;; :NOTE This var holds a hashtable to make it possible for `subrp' like checks
+;; without the need to intern the putative symbol to standard `obarray'.\n
+;; :NOTE Elts of this list have the property `elint-args` whenever
+;; `elint-put-function-args' has been evalauted by `elint-scan-doc-file' which
+;; normally happens whenever `elint-initialize' is invoked.\n
+;; However, when the predicate `IS-MON-SYSTEM-P' returns non-nil the function
+;; `mon-help-utils-loadtime' arranges to evaluate `elint-scan-doc-file' at loadtime
+;; such that the following should return non-nil regardless of whether
+;; `elint-initialize' has been evaluated:\n
+;; :SEE-ALSO `elint-find-builtins', `elint-find-builtin-args',
+;; `elint-standard-variables', `elint-builtin-variables',
+;; `*mon-help-autoload-vars*', `*mon-help-side-effect-free*',
+;; `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
+;; `*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
+;; `mon-help-byte-code-vector-symbols', `mon-help-byte-optimizer-find',
+;; `byte-boolean-vars'.\n►►►")
 
 ;;; ==============================
 ;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-13T16:21:05-04:00Z}#{10325} - by MON KEY>
-(defvar *mon-help-subrs-false* nil
-  "Hash table of of all symbols a defalias an Emacs built-in.\n
-:EXAMPLE\n\n
-:SEE-ALSO `elint-find-builtins', `elint-find-builtin-args',
-`elint-standard-variables', `elint-builtin-variables',
-`*mon-help-autoload-vars*', `*mon-help-side-effect-free*',
-`*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
-`*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
-`mon-help-byte-code-vector-symbols', `mon-help-byte-optimizer-find',
-`byte-boolean-vars'.\n►►►")
+;; (defvar *mon-help-subrs-false* nil
+;;   "Hash table of of all symbols a defalias an Emacs built-in.\n
+;; :EXAMPLE\n\n
+;; :SEE-ALSO `elint-find-builtins', `elint-find-builtin-args',
+;; `elint-standard-variables', `elint-builtin-variables',
+;; `*mon-help-autoload-vars*', `*mon-help-side-effect-free*',
+;; `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
+;; `*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
+;; `mon-help-byte-code-vector-symbols', `mon-help-byte-optimizer-find',
+;; `byte-boolean-vars'.\n►►►")
 
+
+;;; ==============================
+;;; :CHANGESET 2019
+;;; :CREATED <Timestamp: #{2010-07-31T19:16:15-04:00Z}#{10306} - by MON KEY>
+;; (defvar *mon-help-autoload-vars* nil
+;;   "A list of all autoloaded variables in environment at init.\n
+;; :EXAMPLE\n\n\(car \(memq 'tags-table-list *mon-help-autoload-vars*\)\)\n
+;; :SEE :FILE loaddefs.el
+;; :SEE-ALSO `elint-find-autoloaded-variables', `elint-autoloaded-variables',
+;; `*mon-help-subrs*', `*mon-help-side-effect-free*',
+;; `*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
+;; `*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
+;; `byte-boolean-vars'.\n►►►")
 ;;
-
 
 ;;; ==============================
 ;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-13T13:41:11-04:00Z}#{10325} - by MON KEY>
+;; *mon-help-subrs-false*
+;; *mon-help-autoload-vars*
+;; *mon-help-subrs*
+;; (setq elint-builtin-variables (elint-scan-doc-file)
+;;	  elint-autoloaded-variables (elint-find-autoloaded-variables))
 
 ;; (when (and (intern-soft "IS-MON-SYSTEM-P")
 ;; 	   (intern-soft "IS-MON-P")
@@ -1131,20 +1213,6 @@ such that the following should return non-nil regardless of whether
 ;;       ;;elint-find-autoloaded-variables
 ;;       (setq *mon-help-autoload-vars* elint-autoloaded-variables)
 ;;     (setq *mon-help-autoload-vars* (elint-find-autoloaded-variables))))
-
-;;; ==============================
-;;; :CHANGESET 2019
-;;; :CREATED <Timestamp: #{2010-07-31T19:16:15-04:00Z}#{10306} - by MON KEY>
-(defvar *mon-help-autoload-vars* nil
-  "A list of all autoloaded variables in environment at init.\n
-:EXAMPLE\n\n\(car \(memq 'tags-table-list *mon-help-autoload-vars*\)\)\n
-:SEE :FILE loaddefs.el
-:SEE-ALSO `elint-find-autoloaded-variables', `elint-autoloaded-variables',
-`*mon-help-subrs*', `*mon-help-side-effect-free*',
-`*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
-`*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
-`byte-boolean-vars'.\n►►►")
-;;
 
 
 ;;; ==============================
@@ -1248,6 +1316,7 @@ regenerated.\n
 ;; | (mon-help-permanent-locals-find)
 ;; `----
 
+
 ;;; ==============================
 ;;; :CHANGESET 2063
 ;;; :CREATED <Timestamp: #{2010-08-10T20:22:22-04:00Z}#{10322} - by MON KEY>
@@ -1285,22 +1354,6 @@ the current symbols in `obarray' having byte-optimizer props is rehashed.\n
   *mon-help-byte-optimizer-vals*)
 ;;
 ;; :TEST-ME\(mon-help-byte-optimizer-find\)
-
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-02-06T11:43:27-05:00Z}#{10056} - by MON KEY>
-(defgroup mon-doc-help-utils nil
-  "Extensions for help and documentation related procedures.\n
-:SEE (URL `http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary')\n
-:SEE-ALSO `mon-doc-help-utils-faces', `mon-doc-help-CL'.\n►►►"
-  :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-doc-help-utils.el")
-  :link '(url-link 
-          :tag ":EMACSWIKI-DICTIONARY" "http://www.emacswiki.org/emacs/MonDocHelpUtilsDictionary")
-  :link '(custom-group-link mon-doc-help-utils-faces)
-  ;; :link '(custom-group-link 'mon-doc-help-CL)
-  :prefix "mon-help-"
-  :group 'docs)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-06T11:26:37-05:00Z}#{10056} - by MON KEY>
@@ -1696,536 +1749,48 @@ Test font-locking of the following faces:
 ;;; :TEST-ME (mon-help-propertize-tags-TEST)
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-02-26T19:31:23-05:00Z}#{10086} - by MON KEY>
-(defun mon-get-next-face-property-change (face-prop-val &optional from-posn)
-  "Search for `next-single-property-change' with property 'face.\n
-If face property has FACE-PROP-VAL push t onto list of return value.
-Return a two element list formatted as:\n
- \(position \(t|nil face-prop-vals\)\)\n
-When FROM-POSN is non-nil search for next face property change FROM-POSN.
-Default is to search from point.\n
-:EXAMPLE\n\n\(mon-get-next-face-property-change 'button \(buffer-end 0\)\)\n
-\(mon-get-next-face-property-change 
- 'help-argument-name \(line-beginning-position -11\)\)\n
-\(mon-get-next-face-property-change 'button \(point\)\)\n
-:ALIASED-BY `mon-help-face-next-property-change'\n
-:SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-test-props',
-`mon-line-test-content', `mon-get-next-face-property-change',
-`mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
-`mon-nuke-text-properties-region', `mon-remove-text-property',
-`mon-remove-single-text-property'.\n►►►"
-   (let (got-tp)
-     (setq got-tp (next-single-property-change (or from-posn (point)) 'face))
-     (when got-tp
-       (if (consp (get-text-property got-tp 'face))
-           (setq got-tp `(,got-tp  ,(get-text-property got-tp 'face)))
-           (setq got-tp `(,got-tp  (,(get-text-property got-tp 'face))))))
-     (when (and got-tp (cadr got-tp))
-       (if (memq face-prop-val (cadr got-tp))
-           (push t (cadr got-tp))
-           (push nil (cadr got-tp))))
-     got-tp))
-;;
-(defalias 'mon-help-face-next-property-change 'mon-get-next-face-property-change)
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-02-27T19:58:23-05:00Z}#{10087} - by MON KEY>
-(defun mon-get-next-face-property-change-if (test-face-symbol test-at-posn)
-  "Text if the face we're looking for is at position.
-TEST-FACE-SYMBOL symbol naming a face to test.\n
-TEST-AT-POSN position to test at.\n
-:SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-test-props',
-`mon-line-test-content', `mon-get-next-face-property-change',
-`mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
-`mon-nuke-text-properties-region', `mon-remove-text-property',
-`mon-remove-single-text-property'.\n►►►"
-(let ((pg (plist-get (text-properties-at test-at-posn) 'face)))
-  (when pg 
-    (cond ((consp pg) (memq test-face-symbol pg))
-          (t (eq test-face-symbol pg))))))
-;;
-;;; (eq (plist-get (text-properties-at (point)) 'face) 'font-lock-comment-face)
-;;; :TEST-ME (mon-get-next-face-property-change-if 'font-lock-comment-face (point));;
-
-;;; ==============================
-;;; :TODO If possible figure out what is causing the peculiar return values w/re
-;;; the 2nd :NOTE in docstring below and if there is a reasonable workaround.
-;;;
-;;; `mon-get-all-face-property-change' fails because of some weird. 
-;;; return values when invoked in large (e)lisp-mode buffers and won't reliably find faces
-;;; `font-lock-string-face' and `font-lock-comment-face' if these have been
-;;; font-locked with font-lock syntactic voodo
-;;; e.g. `lisp-font-lock-syntactic-face-function's conditional on (nth 3 state)
-;;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
-;;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.
-;;;
-;;; Is it possible that the `looking-at' in `font-lock-syntactic-face-function'
-;;; isn't `save-match-data'ing???  See at EOB for a redefinition of
-;;; `lisp-font-lock-syntactic-face-function' to `save-match-data' as
-;;; `mon-lisp-font-lock-syntactic-face-function'.
-;;;
-;;; NO. That isn't it... this problem is some bogus BULLSHIT! It is clear the
-;;; face properties are set as one can immediately yank the text and _SEE_ that
-;;; they are present throughout the buffer's string immediatley so I don't think
-;;; this is a display problem.
-;;;
-;;;
-;;; :CREATED <Timestamp: #{2010-02-27T19:38:29-05:00Z}#{10087} - by MON KEY>
-;; (defun mon-get-all-face-property-change (search-face-symbol get-from-posn)
-;;   "Find all start end locations of SEARCH-FACE-SYMBOL at or after get-from-posn.\n
-;; SEARCH-FACE-SYMBOL symbol naming a face to find.\n
-;; GET-FROM-POSN position to begin finding from.\n
-;; :EXAMPLE\n\n\(mon-get-all-face-property-change 'help-argument-name \(buffer-end 0\)\)\n
-;; :NOTE Won't find 'button faces in *Help*.\n
-;; :NOTE Won't find 'button faces in *Help*.\n
-;; :NOTE Invoked in large (e)lisp-mode buffers won't reliably find faces
-;; `font-lock-string-face' and `font-lock-comment-face' if these have been
-;; font-locked with font-lock syntactic voodo
-;; e.g. `lisp-font-lock-syntactic-face-function's conditional on \(nth 3 state\)
-;; vis a vis `font-lock-syntactic-face-function', `font-lock-syntactic-keywords'
-;; which the `jit-lock-*' fncns appear to be frobbing in complicated ways.\n
-;; :SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-test-props',
-;; `mon-line-test-content', `mon-get-next-face-property-change',
-;; `mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
-;; `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
-;; `mon-nuke-text-properties-region', `mon-remove-text-property',
-;; `mon-remove-single-text-property'.\n►►►"
-;;   (save-excursion
-;;     (let ((sfc search-face-symbol)
-;;           top-st bot-st fc-bnds)
-;;       (when (mon-get-next-face-property-change-if sfc get-from-posn)
-;;         (setq top-st 
-;;               (1- (previous-single-property-change 
-;;                    (point) 'face nil (line-beginning-position)))))
-;;       (if (integerp top-st)
-;;           (setq top-st (mon-get-next-face-property-change sfc top-st))
-;;           (setq top-st (mon-get-next-face-property-change sfc get-from-posn)))
-;;       (while top-st
-;;         (setq bot-st 
-;;               (mon-get-next-face-property-change sfc (car top-st)))
-;;         (when (caadr top-st)
-;;           (push `(,(car top-st) . ,(car bot-st)) fc-bnds))
-;;         (when bot-st 
-;;           (setq top-st (mon-get-next-face-property-change sfc (car bot-st)))
-;;           (goto-char (car bot-st)))
-;;         (when (and (null (caadr top-st)) (null (caadr bot-st)))
-;;           (while (and top-st 
-;;                       (not (eq (cadadr 
-;;                                 (mon-get-next-face-property-change 'font-lock-constant-face (point)))
-;;                                font-lock-constant-face)))
-;;             (if (car (mon-get-next-face-property-change 'font-lock-constant-face (point)))
-;;                 (goto-char (car (mon-get-next-face-property-change 'font-lock-constant-face (point))))
-;;                 (setq top-st nil)))))
-;;           (setq fc-bnds (nreverse fc-bnds))
-;;           ;; Uncomment when debug.
-;;           ;; (goto-char (buffer-end 1)) (prin1 fc-bnds (current-buffer))
-;;           )))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-05T17:35:32-05:00Z}#{10095} - by MON KEY>
-(defun mon-get-text-properties-region (start end)
-  "Return region as a two elt list string and strings text properties.\n
-:EXAMPLE\n\n\(let \(\(sbr \(save-excursion (goto-char (buffer-end 0))
-             \(search-forward-regexp \"\(mon.*\)$\" nil t\)\)\)\)
-  \(setq sbr `\(,\(match-beginning 0\) . ,\(match-end 0\)\)\)
-  \(mon-get-text-properties-region \(car sbr\) \(cdr sbr\)\)\)\n
-:NOTE Indexes are into string not buffer as with return value of:
- `mon-get-text-properties-print' & `mon-get-text-properties-read-temp'.\n
-:SEE-ALSO `mon-get-text-properties-region-to-kill-ring'.\n►►►"
-  (interactive "r\np")
-  (let (get-str nw-tl) 
-    (setq get-str (substring (format "%S" (buffer-substring start end)) 1))
-    (setq get-str (car (read-from-string get-str)))
-    (setq get-str `(,(car get-str) ,(cdr get-str)))
-    (setq nw-tl (substring (format "%S" (cdr get-str)) 1 -1))
-    (setq nw-tl (replace-regexp-in-string " ?\\([0-9]+ [0-9]+\\( (\\)\\)" ")(\\1" nw-tl t))
-    (setq nw-tl (substring nw-tl 1))
-    (setq nw-tl (concat "(" (substring nw-tl 1) ")"))
-    (setq nw-tl (list (car (read-from-string nw-tl))))
-    (setcdr get-str nw-tl)
-    get-str))
-;;
-;;; :TEST-ME (let ((sfr (save-excursion (search-forward-regexp "(defun.*$"))))
-;;;               (setq sfr `(,(match-beginning 0). ,(match-end 0)))
-;;;               (mon-get-text-properties-region (car sfr) (cdr sfr)))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-02T20:08:34-05:00Z}#{10093} - by MON KEY>
-(defun mon-get-text-properties-print (start end tp-buff &optional intrp)
-  "Return buffer-string START END with text-properties.\n
-TP-BUFF is a buffer name to print to as with prin1.\n
-When called-interactively insert at point. Moves point.
-:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp',
-`mon-get-text-properties-region-to-kill-ring'.\n►►►"
-  (interactive "r\ni\np")
-  (let* (mgtpfs-get
-         (standard-output mgtpfs-get)
-         mgtpfs)
-    (setq mgtpfs (buffer-substring start end))
-    (setq mgtpfs-get (prin1 mgtpfs mgtpfs-get))
-    (if intrp 
-        (prin1 mgtpfs-get (current-buffer))
-        (prin1 mgtpfs-get tp-buff))))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-02T20:08:44-05:00Z}#{10093} - by MON KEY>
-(defun mon-get-text-properties-read-temp (&optional tp-buff)
-  "Read list from `mon-get-text-properties-print' and strip leading #.\n
-The car of return value is a new list formulated as with `read-from-string'.
-The cdr is a list of index pairs and text-propery prop/val pairs e.g.:\n
- \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)
-  ;; { ... lots more here ... } 
-  idx3 idx4 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
-When non-nil optional arg TP-BUFF names a buffer as required by
-`mon-get-text-properties-elisp-string'.\n
-:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.\n►►►"
-  (let ((mgtprt-new 
-         (if tp-buff tp-buff 
-           (get-buffer-create "*MGTPRT-NEW*")))
-        re-str 
-        str-props)
-    (with-current-buffer mgtprt-new
-      (goto-char (buffer-end 0))
-      (delete-char 1)
-      (setq re-str (read-from-string (car (sexp-at-point))))
-      (setq str-props (cdr (sexp-at-point)))
-      (setq re-str `(,re-str ,str-props)))
-    (unless tp-buff (kill-buffer mgtprt-new))
-    re-str))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-02T20:07:17-05:00Z}#{10093} - by MON KEY>
-(defun mon-get-text-properties-elisp-string-pp (syn-list split-buff)
-  "Pretty print the string and text property list extracted with
-`mon-get-text-properties-elisp-string'.\n
-:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string'.\n►►►"
-  (let* ((mgppespp-split (buffer-name split-buff))
-         (mgppespp-buf2
-          (concat 
-           (substring mgppespp-split 0 (1- (length mgppespp-split))) "-STRING*")) 
-         (mgppespp-syn-list
-          (concat "(" 
-                  (replace-regexp-in-string ") " ")) (" 
-                                            (format "%S" (cadr syn-list)))
-               ")"))
-         chck-syn-list)
-    (with-temp-buffer 
-      (princ mgppespp-syn-list (current-buffer))
-      (pp-buffer)
-      (setq mgppespp-syn-list 
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
-    (with-current-buffer split-buff
-      (erase-buffer)
-      (save-excursion (princ mgppespp-syn-list (current-buffer)))
-      (princ (format ";; :IN-BUFFER %s\n;;\n" mgppespp-buf2) (current-buffer))
-      (emacs-lisp-mode))
-    ;; (mon-get-all-face-property-change 'font-lock-constant-face (buffer-end 0))
-    (get-buffer-create mgppespp-buf2)
-    (with-current-buffer mgppespp-buf2
-      (prin1 (caar syn-list) (current-buffer))
-       (emacs-lisp-mode))
-    (display-buffer split-buff t)
-    (display-buffer mgppespp-buf2 t)))
-    
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-02T20:07:24-05:00Z}#{10093} - by MON KEY>
-(defun mon-get-text-properties-elisp-string (&optional some-el-string)
-  "Extract the text properties from the elisp SOME-EL-STRING.\n
-:EXAMPLE\n\n\(mon-get-text-properties-elisp-string
- \(documentation 'mon-help-mon-help\)\)\n
-\(mon-get-text-properties-elisp-string *mon-help-reference-keys*\)\n
-:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
-`mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
-`mon-get-text-properties-elisp-string-pp'.\n►►►"
-  (let ((mgtpfes-buf (get-buffer-create "*MGTPFES*"))
-        mgtpes-buf2
-        mgtpfes-rd)
-    (unless (stringp some-el-string)
-      (error (concat ":FUNCTION `mon-get-text-properties-elisp-string' "
-                     "-- arg SOME-EL-STRING is not")))
-    (with-current-buffer mgtpfes-buf (erase-buffer))
-    (with-temp-buffer 
-      (save-excursion (print some-el-string (current-buffer)))
-    (emacs-lisp-mode)
-    (font-lock-fontify-syntactically-region  (buffer-end 0) (buffer-end 1))
-    (font-lock-fontify-buffer)
-    ;; (current-buffer)
-    (mon-get-text-properties-print (buffer-end 0) (buffer-end 1) mgtpfes-buf))
-    ;; (substring mgtpfes-buf 0 (1- (length mgtpfes-buf))) "-STRING*"))
-    (setq mgtpfes-rd (mon-get-text-properties-read-temp mgtpfes-buf))
-    (mon-get-text-properties-elisp-string-pp mgtpfes-rd mgtpfes-buf)))
-;;
-;;; :TEST-ME (mon-get-text-properties-elisp-string *mon-help-reference-keys*)
-;;; :TEST-ME (mon-get-text-properties-elisp-string (documentation 'mon-help-mon-help))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-05T19:07:34-05:00Z}#{10096} - by MON KEY>
-(defun mon-get-text-properties-parse-prop-val-type-chk (prop-val)
-  "Check that PROP-VAL's type is suitable.\n
-Return eq, eql, equal depending on type of PROP-VAL.\n
-Signal an error if PROP-VAL is not of the type:\n
- string, integer, symbol, float, vector, or buffer\n
-For use with:\n
- `mon-get-text-properties-parse-buffer'
- `mon-get-text-properties-parse-sym'
- `mon-get-text-properties-parse-buffer-or-sym'\n
-:EXAMPLE\n
-\(let \(\(bubba-type 
-       `\(\"bubba\" bubba  8 8.8 [b u b b a] ,\(get-buffer \(current-buffer\)\)\)\)
-      bubba-types\)
-  \(dolist \(the-bubba bubba-type \(setq bubba-types \(nreverse bubba-types\)\)\)
-    \(push `\(,the-bubba 
-            . ,\(mon-get-text-properties-parse-prop-val-type-chk the-bubba\)\)
-          bubba-types\)\)\)\n
-:SEE-ALSO `mon-help-text-property-functions-ext',
-`mon-help-text-property-functions', `mon-help-text-property-properties',
-`typecase', `etypecase', `deftype', `typep', `type-of'.\n►►►"
-  (typecase prop-val
-    (string  'equal)           
-    (integer 'eq)
-    (symbol  'eq) 
-    (float   'eql)
-    (vector  'equal)
-    (buffer  'eq)
-    ;; cons can't happen '(a b c) 
-    (t (error (concat ":FUNCTION `mon-get-text-properties-parse-sym' "
-                      "-- arg PROPS-IN-SYM not string, integer, float, "
-                      "vector, buffer, or symbol")))))
-;;
-;;; :TEST-ME 
-;; (let ((bubba-type 
-;;        `("bubba" bubba  8 8.8 [b u b b a] ,(get-buffer (current-buffer))))
-;;       bubba-types)
-;;   (dolist (the-bubba bubba-type (setq bubba-types (nreverse bubba-types)))
-;;     (push `(,the-bubba 
-;;             . ,(mon-get-text-properties-parse-prop-val-type-chk the-bubba))
-;;           bubba-types)))
-
-;;; ==============================
-;;; (insert-buffer-substring "*MGTPFES*")
-;;; :CREATED <Timestamp: #{2010-03-05T12:21:29-05:00Z}#{10095} - by MON KEY>
-(defun mon-get-text-properties-parse-buffer (prop prop-val prop-buffer)
-  "Filter the text-property list for sublists containing the text-property PROP
-  and PROP-VAL.\n
-PROP is a property to filter.
-PROP-VAL is a property value of PROP to filter.
-PROP-BUFFER names a buffer name from which to read from a list of sublists.
-Sublists contain two index values and text-property plist of prop val pairs e.g.\n
- \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
-:NOTE Reading begins from `point-min'. Reading does not move point.\n
-:SEE `mon-get-text-properties-parse-buffer-or-sym' for usage example.
-:SEE `mon-get-text-properties-parse-prop-val-type-chk' for PROP-VAL types.\n
-:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-parse-sym',
-`mon-get-text-properties-parse-buffer-or-sym', `mon-help-text-property-functions-ext',
-`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (unless (buffer-live-p (get-buffer prop-buffer))
-    (error (concat ":FUNCTION `mon-get-text-properties-parse-buffer' "
-                   "-- arg PROP-BUFFER does not exist")))
-  (let ((rd-prop-marker (make-marker))
-        (prop-st-marker (make-marker))
-        (comp-type 
-         (mon-get-text-properties-parse-prop-val-type-chk prop-val))
-        rd-prop-times i-red im-reding)
-    (with-current-buffer  prop-buffer
-      (set-marker prop-st-marker (point))
-      (set-marker rd-prop-marker (buffer-end 0))
-      (unwind-protect
-           (progn
-             (goto-char (marker-position rd-prop-marker))
-             (cond ((> (skip-syntax-forward "^(") 0)
-                    (set-marker rd-prop-marker (point)))
-                   ((bobp)
-                    (set-marker rd-prop-marker (point)))
-                    ;; Anything else if prob. funky
-                   (t (error (concat ":FUNCTION `mon-get-text-properties-parse-buffer' "
-                                     "-- bounds of sexp unknown"))))
-             (if (eq (car (syntax-after (1+ (marker-position rd-prop-marker)))) 4)
-                 (progn 
-                   (setq rd-prop-times (length (sexp-at-point)))
-                   (forward-char)
-                   (set-marker rd-prop-marker (point)))
-               (error (concat ":FUNCTION `mon-get-text-properties-parse-buffer' "
-                              "-- bounds of sexp unknown")))
-             ;;(marker-position rd-prop-marker)
-             (dotimes (rd rd-prop-times (setq i-red (nreverse i-red)))
-               (setq im-reding (read rd-prop-marker))
-               (let* ((red-prop (plist-member (caddr im-reding) prop))
-                      (red-prop-val (cadr red-prop)))
-                 (when red-prop 
-                   (cond ((consp red-prop-val)
-                          (when (member prop-val red-prop-val)
-                            (push im-reding i-red)))
-                         ((and (not (null red-prop-val)) (atom red-prop-val))
-                          (when (funcall comp-type prop-val red-prop-val)
-                            (push im-reding i-red))))))))
-        (goto-char prop-st-marker)))))
-;;
-;;; :TEST-ME (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-05T14:10:07-05:00Z}#{10095} - by MON KEY>
-(defun mon-get-text-properties-parse-sym (prop prop-val props-in-sym)
-  "Filter text-property list for sublists containing PROP and PROP-VAL.\n
-PROP is a property to filter.
-PROP-VAL is a property value of PROP to filter. 
-It is one of the types:
- string, integer, symbol, float, vector, buffer
-PROPS-IN-SYM is a symbol to parse.\n
-Format of PROPS-IN-SYM are as per `mon-get-text-properties-parse-buffer-or-sym'.\n
-:SEE `mon-get-text-properties-parse-buffer-or-sym' for usage example.\n
-:SEE `mon-get-text-properties-parse-prop-val-type-chk' for PROP-VAL types.\n
-:SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-parse-buffer',
-`mon-help-text-property-functions-ext', `mon-help-text-property-functions', 
-`mon-help-text-property-properties'.\n►►►"
-  (let ((comp-type 
-         (mon-get-text-properties-parse-prop-val-type-chk prop-val))
-        i-red)
-    (mapc #'(lambda (im-reding)
-              (let* ((red-prop (plist-member (caddr im-reding) prop))
-                     (red-prop-val (cadr red-prop)))
-                (when red-prop 
-                  (cond ((consp red-prop-val)
-                         (when (member prop-val red-prop-val)
-                           (push im-reding i-red)))
-                        ((and (not (null red-prop-val)) (atom red-prop-val))
-                         (when (funcall comp-type prop-val red-prop-val)
-                           (push im-reding i-red)))))))
-          props-in-sym)
-    (setq i-red (nreverse i-red))))
-;;
-;;; :TEST-ME 
-;;; (let ((mgtppb (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")))
-;;;   (mon-get-text-properties-parse-sym 'face 'font-lock-string-face mgtppb))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-05T13:41:29-05:00Z}#{10095} - by MON KEY>
-(defun* mon-get-text-properties-parse-buffer-or-sym (prop prop-val &key 
-                                                          read-prop-sym 
-                                                          read-prop-buffer)
-  "Filter text-property list for sublists containing the PROP and PROP-VAL.\n
-Return a two valued list. 
-The car is a list of conses of only the indexes for each matching sublist.
-The cadr is a list of each each matching sublist.
-PROP is a property to filter.
-PROP-VAL is a property value of PROP to filter.
-Keyword READ-PROP-SYM names a symbol to parse.
-Keyword READ-PROP-BUFFER names a buffer to read from.
-When keyword READ-PROP-BUFFER is non-nil reading begins from `point-min' does
-not move point.\n
-Contents of READ-PROP-SYM or READ-PROP-BUFFER should hold a list with sublists.
-Sublists contain two index values and text-property plist of prop val pairs e.g.\n
- \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
-:EXAMPLE\n\n\(let \(\(mgtppbos-example
-       '\(\(34 35   \(fontified t hard t rear-nonsticky t face some-face\)\)
-         \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)
-         \(388 391 \(some-boolean-prop t face \(some-first-face second-face\)\)\)
-         ;; { ... lots more here ... }
-         \(3862 3884 \(face \(font-lock-constant-face second-face\)\)\)\)\)\)
-  \(mon-get-text-properties-parse-buffer-or-sym 
-   'face 'second-face :read-prop-sym mgtppbos-example\)\)\n
-\(let \(\(mgtppbos-example
-       '\(\(34 35     \(fontified t p2 p2-val rear-nonsticky t face some-face\)\)
-         \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)
-         \(388 391   \(some-boolean-prop t face \(some-first-face second-face\)\)\)
-         ;; { ... lots more here ... }
-         \(3862 3884 \(face \(font-lock-constant-face second-face\)\)\)\)\)\)
-  \(prin1 mgtppbos-example \(get-buffer-create \"*MGTPPBOS-EXAMPLE*\"\)\)
-  \(setq mgtppbos-example
-        \(mon-get-text-properties-parse-buffer-or-sym 
-         'p2 'p2-val :read-prop-buffer \"*MGTPPBOS-EXAMPLE*\"\)\)
-  \(kill-buffer \"*MGTPPBOS-EXAMPLE*\"\)
-  mgtppbos-example\)\n
-:SEE-ALSO `mon-get-text-properties-parse-sym', `mon-get-text-properties-parse-buffer',
-`mon-get-text-properties-region', `mon-help-text-property-functions-ext',
-`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (let (mgtpbos)
-    (cond (read-prop-sym
-           (setq mgtpbos (mon-get-text-properties-parse-sym 
-                          prop prop-val read-prop-sym)))
-          (read-prop-buffer
-           (setq mgtpbos (mon-get-text-properties-parse-buffer 
-                          prop prop-val read-prop-buffer))))
-    (setq mgtpbos `(,(mon-get-text-properties-map-ranges mgtpbos) ,mgtpbos))))
-;;
-;;; :TEST-ME (mon-get-text-properties-parse-buffer-or-sym 
-;;;               'face 'font-lock-constant-face :read-prop-buffer "*MGTPFES*")
-;;; :TEST-ME (let ((mgtppb 
-;;;                    (mon-get-text-properties-parse-buffer 
-;;;                     'face 'font-lock-constant-face "*MGTPFES*")))
-;;;               (mon-get-text-properties-parse-buffer-or-sym 
-;;;                'face 'font-lock-string-face :read-prop-sym mgtppb))
-
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-05T19:04:53-05:00Z}#{10096} - by MON KEY>
-(defun mon-get-text-properties-map-ranges (text-prop-list)
-  "Map the indexes at head of each sublist of TEXT-PROP-LIST to a consed list.
-Return value is a list of sublists of the form:
- ( (idx1a idx1b) (idx2a idx2b) (idx3a idx3b) { ... } )\n
-:EXAMPLE
-:CALLED-BY `mon-get-text-properties-parse-buffer-or-sym'.\n
-:SEE-ALSO `mon-help-text-property-functions-ext',
-`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (let (mgtpmmr)
-    (setq mgtpmmr
-          (mapcar #'(lambda (top) 
-                      (let ((bt (butlast top 1)))
-                        (setq bt `(,(car bt) . ,(cadr bt)))))
-                  text-prop-list))))
-;;
-;; (let ((mgtppb
-;;        (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")))
-;;   (setq mgtppb
-;;         (mon-get-text-properties-parse-sym 'face 'font-lock-string-face mgtppb))
-;;   (setq mgtppb `(,(mon-get-text-properties-map-ranges mgtppb) ,mgtppb)))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-05T20:16:13-05:00Z}#{10096} - by MON KEY>
-(defun mon-get-text-properties-map-ranges-string (string-range-buffer range-buffer)
-  "Map a range text-properties in buffer STRING-RANGE-BUFFER.\n 
-Return value inserted in RANGE-BUFFER.\n
-:EXAMPLE\n\n
-:SEE-ALSO `mon-help-text-property-functions-ext',
-`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-(let (rr the-str str-range)
-  (setq rr (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
-             (mon-get-text-properties-region (buffer-end 0) (buffer-end 1))))
-  (setq the-str (car rr))
-  (setq rr (cadr rr))
-  (setq rr (mon-get-text-properties-parse-buffer-or-sym 
-            'face 'font-lock-constant-face :read-prop-sym rr))
-  (setq rr (mapcar #'(lambda (idx-pair)
-                       `(,idx-pair ,(substring the-str (car idx-pair) (cdr idx-pair))))
-                   (car rr)))
-  (princ rr (get-buffer range-buffer))))
-;;(current-buffer)))
-
-;;; ==============================
+;;; \(mon-help-mon-tags :meta-keys t\)\n 
 ;;; :CREATED <Timestamp: #{2009-11-20T17:55:35-05:00Z}#{09475} - by MON>
-(defun* mon-help-mon-tags (&key comment docs meta)
+(defun* mon-help-mon-tags (&rest other-keys &key comment docs meta all &allow-other-keys) ;; meta-keys)
   "A list of MON's commonly used tags.\n
+Valid keyword arguments are:
+ :COMMENT :DOCS :META\n
+These are equivalent to any of the following arguments for OTHER-KEYS:
+ comment-tags docstr-tags meta-tags\n
+When multiple keyword arguments are supplied choose first supplied value.\n
+If other-keys are supplied with one or more keyword arguments choose firs matching keyword.\n
+When keyword arguments and OTHER-KEYS is omitted prompt for a category tag as if
+by `completing-read'.\n
 :EXAMPLE\n\n\(mon-help-mon-tags :docs t\)\n
 \(mon-help-mon-tags :comment t\)\n
 \(mon-help-mon-tags :meta t\)\n
+\(mon-help-mon-tags :all t\)\n
+\(mon-help-mon-tags 'comment-tags\)\n
+\(mon-help-mon-tags 'docstr-tags\)\n
+\(mon-help-mon-tags 'meta-tags\)\n
+\(mon-help-mon-tags 'all\)
+\(mon-help-mon-tags 'all-tags\)
+\(mon-help-mon-tags 'comment-tags 'meta-tags :meta t\)\n
+\(mon-help-mon-tags t\)\n
 \(mon-help-mon-tags\)\n
 :SEE-ALSO `mon-help-insert-tags', `mon-help-propertize-tags',
 `mon-help-propertize-tags-TEST', `*mon-help-mon-tags-alist*',
 `*mon-help-reference-keywords*'.\n►►►"
   (let ((tag-type
-         (cond (comment (assoc 'comment-tags *mon-help-mon-tags-alist*))
-               (docs    (assoc 'docstr-tags *mon-help-mon-tags-alist*))
-               (meta    (assoc 'meta-tags *mon-help-mon-tags-alist*))
+         (cond (comment   (assq 'comment-tags *mon-help-mon-tags-alist*))
+               (docs      (assq 'docstr-tags *mon-help-mon-tags-alist*))
+               (meta      (assq 'meta-tags *mon-help-mon-tags-alist*))
+               (all       (list 'all (mon-flatten (mapcar 'cadr *mon-help-mon-tags-alist*))))
+               ((and other-keys
+                     (not (eq (car other-keys) t))
+                     (or (and (memq (car other-keys) '(all all-tags))
+                              (list all (mon-flatten (mapcar 'cadr *mon-help-mon-tags-alist*))))
+                         (assq (car (memq (car other-keys) (mapcar #'car *mon-help-mon-tags-alist*)))
+                               *mon-help-mon-tags-alist*))))
                (t       (assoc 
                          (read (completing-read 
-                                "Choose a key (tab completes): "
+                                (concat ":FUNCTION `mon-help-mon-tags' "
+                                        "-- choose a tag category \(Tab completes\): ")
                                 (mapcar #'(lambda (x) 
                                             (format "%s" (car x))) *mon-help-mon-tags-alist*)
                                 nil t nil nil "docstr-tags"))
@@ -2235,14 +1800,30 @@ Return value inserted in RANGE-BUFFER.\n
 ;;; :TEST-ME (mon-help-mon-tags :docs t)
 ;;; :TEST-ME (mon-help-mon-tags :comment t)
 ;;; :TEST-ME (mon-help-mon-tags :meta t)
-;;; :TEST-ME (mon-help-mon-tags)
+;;; :TEST-ME (mon-help-mon-tags :all t)
+;;; :TEST-ME (mon-help-mon-tags 'comment-tags)
+;;; :TEST-ME (mon-help-mon-tags 'docstr-tags)
+;;; :TEST-ME (mon-help-mon-tags 'meta-tags)
+;;; :TEST-ME (mon-help-mon-tags 'all)
+;;; :TEST-ME (mon-help-mon-tags 'all-tags)
+;;; :TEST-ME (mon-help-mon-tags t)
 
+;; (comment-tags docstr-tags meta-tags-keybindings meta-tags)         
 ;;; ==============================
 ;;; :TODO Factor out the read-only-ness checks below to a dedicated macro/defsubst.
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-23T15:29:06-04:00Z}#{10122} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-11-20T18:20:17-05:00Z}#{09475} - by MON>
-(defun mon-help-insert-tags (&optional no-insrt intrp)
+(defun mon-help-insert-tags (&optional no-insrt intrp &rest tag-categ)
   "Insert a \"MON-TAG\" at point. Does not move point.\n
+When &rest arg TAG-CATEG is non-nil it is a quoted symbol or keyword value pair.
+Valid arguments can take either of the following forms:\n
+ <SYMBOL>       <KEYWORD/VALUE>
+ comment-tags   :comment t
+ docstr-tags    :docs t
+ meta-tags      :meta t
+ all            :all  t
+ all-tags       :all  t\n
+If multiple arguments are supplied only the first is used.
 Prompt twice:\n
  i) Complete from a choice of tag-type:
     - comment-tags\n    - docstr-tags\n    - meta-tags\n
@@ -2258,7 +1839,13 @@ but not in not `view-mode' or `help-mode' insert tag with `inhibit-read-only' bo
 :SEE-ALSO `mon-help-propertize-tags', `mon-help-propertize-tags-TEST',
 `*mon-help-mon-tags-alist*'.\n►►►"
   (interactive "P\np")
-  (let ((mhit (completing-read "Which tag :" (cadr (mon-help-mon-tags))))
+  (let ((mhit (let ((completion-ignore-case t))
+                (upcase 
+                 (completing-read (concat ":FUNCTION `mon-help-insert-tags' "
+                                          "-- which tag type \(Tab completes\): ")
+                                  (cadr (apply #'mon-help-mon-tags tag-categ))
+                                  nil nil nil nil ":"
+                                  ))))
         ;; :NOTE Verbose lambda forms below are here future adaptation to macro/defsubst:
         (mhit-prnc-here #'(lambda (mhit-prn &optional inhbt-rd-only) ;; (prn-val &optional inhbt-rd-only)
                             (if inhbt-rd-only
@@ -2279,8 +1866,26 @@ but not in not `view-mode' or `help-mode' insert tag with `inhibit-read-only' bo
               (funcall mhit-prnc-here mhit t)
               (funcall mhit-prnc-here mhit))))))
 ;;
-;;; :TEST-ME (mon-help-insert-tags)
+;;; :TEST-ME (mon-help-insert-tags nil nil 'comment-tags)
+;;; :TEST-ME (mon-help-insert-tags nil nil :comment t)
+;;; :TEST-ME (mon-help-insert-tags nil nil :all t)
 ;;; :TEST-ME (apply 'mon-help-insert-tags nil '(t))
+
+;;; ==============================
+;;; :CHANGESET 2115
+;;; :CREATED <Timestamp: #{2010-09-07T13:22:20-04:00Z}#{10362} - by MON KEY>
+(defun mon-help-insert-tags-comment (&optional no-insrt intrp)
+  "Convenience function for `mon-help-insert-tags'\n
+Equivialent to passing the keyword arg \":comment t\".\n
+:EXAMPLE\n\n\(mon-help-insert-tags-comment nil t\)\)\n
+:SEE-ALSO .\n►►►"
+  (interactive "P\np")
+  (mon-help-insert-tags no-insrt intrp :comment t))
+
+
+
+;; 
+
 
 ;;; ==============================
 ;;; :NOTE It is not entirely clear if the 'list arg is needed.
@@ -2636,7 +2241,7 @@ SOME-OTHER-BUFFER with name before displaying contents there.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-07-31T18:42:57-04:00Z}#{10306} - by MON KEY>
-(defun mon-help-buffer-spc-*DOC* (&optional show-the-real)
+(defun mon-help-buffer-spc-*DOC* (&optional show-the-real no-display)
   "Examine contents of buffer \" *DOC*\".\n
 If buffer exists display its contents in the buffer named
 \"*MON-SHOW- *DOC*-BUFFER*\" along with a commented list of its
@@ -2644,21 +2249,26 @@ buffer-local-variables.\n
 If buffer is non-existent message user.\n
 When optional arg SHOW-THE-REAL is non-nil display the actual \" *DOC*\" buffer
 instead but do not insert any addtional annotations.\n
-:EXAMPLE\n\n\(mon-help-buffer-spc-*DOC*\)\n
+When optional arg NO-DISPLAY is non-nil and SHOW-THE-REAL is ommitted do not
+display the \"*MON-SHOW- *DOC*-BUFFER*\".\n
+:EXAMPLE\n\n\(mon-help-buffer-spc-*DOC* nil t\)\n
+\(mon-help-buffer-spc-*DOC*\)\n
 \(mon-help-buffer-spc-*DOC* t\)\n
-:SEE-ALSO `mon-get-buffer-hidden', `mon-help-parse-interactive-spec',
+:SEE-ALSO `mon-help-hidden-buffers', `mon-help-parse-interactive-spec',
 `mon-help-function-spit-doc', `mon-help-function-arity',
 `mon-help-swap-var-doc-const-val', `mon-help-put-var-doc-val->func',
 `doc-directory', `internal-doc-file-name', `elint-scan-doc-file',
 `documentation-property', `byte-compile-output-docform', `lambda-list-keywords',
-`subr-arity', `help-function-arglist', `help-add-fundoc-usage'.\n►►►"
+`subr-arity', `help-function-arglist', `byte-compile-arglist-signature',
+`help-add-fundoc-usage', `apropos-documentation-property'.\n►►►"
   (let ((get*doc (get-buffer " *DOC*")))
     (if (not (get-buffer get*doc))
         (message (concat ":FUNCTION `mon-help-buffer-spc-*DOC*' '"
                          "-- non-existent buffer with name: \" *DOC*\" "))
       (if show-the-real
           (with-current-buffer (get-buffer get*doc)
-            (display-buffer (current-buffer) t))
+            (display-buffer (current-buffer) t)
+            `(,(current-buffer) . ,(get-buffer (current-buffer))))
         (with-current-buffer (get-buffer-create "*MON-SHOW- *DOC*-BUFFER*")
           (erase-buffer)
           (save-excursion
@@ -2670,10 +2280,13 @@ instead but do not insert any addtional annotations.\n
              ":W-CONTENTS\n\n\n")
             (let ((comment-start ";;"))
               (comment-region (buffer-end 0) (buffer-end 1)))
-            (insert-buffer-substring get*doc)))
-        (display-buffer (current-buffer) t)))))
+            (insert-buffer-substring get*doc))
+          (unless no-display
+            (display-buffer (current-buffer) t))
+          `(,(current-buffer) . ,(get-buffer (current-buffer))))))))
 ;;
 ;;; :TEST-ME (mon-help-buffer-spc-*DOC*)
+;;; :TEST-ME (mon-help-buffer-spc-*DOC* nil t)
 ;;; :TEST-ME (mon-help-buffer-spc-*DOC* t)
 
 ;;; ==============================
@@ -2682,7 +2295,7 @@ instead but do not insert any addtional annotations.\n
 ;;; :SEE (URL `ftp://ftp.sra.co.jp/pub/lang/lisp/misc/gmacs/gmacs/')
 ;;; :CREATED <Timestamp: #{2009-12-31T13:12:41-05:00Z}#{09534} - by MON KEY>
 (defun mon-help-get-mon-help-buffer (d-string) ;; :WAS ()
-  "Display D-STRING in view-mode with buffer named by:
+  "Display D-STRING in `view-mode' with buffer named by:
 :VARIABLE `*mon-help-docstring-help-bffr*'\n
 :SEE-ALSO `mon-help-temp-docstring-display', `mon-help-view-file'.\n►►►"
   (interactive)
@@ -2728,53 +2341,106 @@ Signal an error when FILE-TO-VIEW does not exist or is unreadable.\n
 ;; :TAGS-TABLES
 
 ;;; ==============================
+;;; :CHANGESET 2117 <Timestamp: #{2010-09-17T17:37:33-04:00Z}#{10375} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-21T19:02:12-04:00Z}#{09345} - by MON>
 (defvar *mon-tags-table-list* nil
-  "*List of path for setting `tags-table-list'.
-Look for TAGS files in directories specified by return values of:
- `*mon-emacs-root*', `*mon-site-lisp-root*'
- `*mon-naf-mode-root*', `*mon-ebay-tmplt-mode-root*'\n
-:SEE-ALSO `mon-tags-apropos', `mon-tags-naf-apropos', `mon-update-tags-tables'.\n►►►")
+  "*Consed list of paths and paths for `tags-table-list'.
+The car and cdr are as per the TAGS-TBL-LIST and TAGS-SPECS args to
+`mon-update-tags-tables' where the car is a list of pathnames and 
+the cdr is a list pathname transforms for format to use when generatign etags
+shell commands.\n
+:SEE-ALSO `mon-tags-apropos', `mon-tags-naf-apropos', `mon-update-tags-tables',
+`mon-update-tags-tables-loadtime', `tags-file-name', `*mon-emacs-root*',
+`*mon-site-lisp-root*', `*mon-naf-mode-root*',
+`*mon-ebay-tmplt-mode-root*'.\n►►►")
 ;;
-(if (and (intern-soft "IS-MON-SYSTEM-P")
-         (bound-and-true-p IS-MON-SYSTEM-P))
-    (unless (bound-and-true-p *mon-tags-table-list*)
-      (setq *mon-tags-table-list* `(,*mon-emacs-root* 
-                                    ,*mon-naf-mode-root* 
-                                    ,*mon-ebay-tmplt-mode-root*
-                                    ,*mon-site-lisp-root*))))
+(when (and (intern-soft "IS-MON-SYSTEM-P")
+           (bound-and-true-p IS-MON-SYSTEM-P))
+  (unless (bound-and-true-p *mon-tags-table-list*)
+    (setq *mon-tags-table-list* 
+          `((,*mon-emacs-root* 
+             ,*mon-naf-mode-root* 
+             ,*mon-ebay-tmplt-mode-root*
+             ,*mon-site-lisp-root*)
+            . (((3 E) (3 T O)) 
+               ((2 E) (2 T O)) 
+               ((1 E) (2 T I) (1 T O)) 
+               ((0 E) (3 T I) (1 T I) (0 T O)))))))
 ;;
 ;;; :TEST-ME *mon-tags-table-list* 
 ;;
 ;;;(progn (makunbound '*mon-tags-table-list*) (unintern '*mon-tags-table-list*) )
 
+
 ;;; ==============================
+;;; :CHANGESET 2117 <Timestamp: #{2010-09-17T17:30:21-04:00Z}#{10375} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-08-21T19:27:44-04:00Z}#{09345} - by MON>
-(defun mon-update-tags-tables ()
-  "Update the 'TAGS' files in paths held by `*mon-tags-table-list*'\n
-:NOTE When IS-MON-SYSTEM-P evaluated at startup per `mon-run-post-load-hooks'.\n
+(defun mon-update-tags-tables (tags-tbl-list tags-specs &optional call-proc)
+  "Return a list of etags shell commands.
+Returned list is suitable for updating a nested tree tags files.\n
+TAGS-TBL-LIST is a list of pathnames used when mapping TAGS-SPECS.\n
+TAGS-SPECS is a list of specificatins mapping etags args to format strings.\n
+Elts TAGS-SPECS have the form:\n
+ \( <NTH> { E | T } { I | O | nil } \)\n
+   <NTH> <-  elt of TAGS-TBL-LIST\n
+   E     <- \"*.el\"\n   T     <- \"/TAGS\"
+   I     <- \"--include=\"\n   O     <- \"--output=\"
+Thus, an elemnt of the form:\n
+ \(\(0 E\) \(3 T I\) \(1 T I\) \(0 T O\)\)\n
+Would generate the following command for passing to `call-process':\n
+ \"etags /TAGS-TBL-LIST/PATH/NTH-0/*.el \\
+  --include=/TAGS-TBL-LIST/PATH/NTH-3/TAGS \\
+  --include=/TAGS-TBL-LIST/PATH/NTH-1/TAGS \\
+  --output=/TAGS-TBL-LIST/PATH/NTH-0/TAGS\"\n
+When optional arg CALL-PROC is non-nil pass each generated shell-commands to
+`call-process' with the following args:\n
+ PROGRAM `shell-file-name' INFILE nil DISPLAY nil BUFFER discard 
+ &REST `shell-command-switch' \"etags {...} \"\n
 :SEE-ALSO `mon-tags-apropos',`mon-tags-naf-apropos', `*mon-tags-table-list*'.\n►►►"
-  (interactive)
+  (let ((mttl          tags-tbl-list)
+        (mttl-e        "etags %s/*.el")
+        (mttl-i        "--include=%s/TAGS")
+        (mttl-o        "--output=%s/TAGS")
+        gthr)
+    (dolist (spec-ls tags-specs (setq gthr (nreverse gthr)))
+      (let (spec-cur)
+        (dolist (spec-l spec-ls 
+                        (if (memq 'bad-spec spec-cur) 
+                            (setq spec-cur "")
+                          ;; :NOTE Uncomment to background-it, not needed though:
+                          ;; (push (concat (mapconcat #'identity (nreverse spec-cur) " ") " &") gthr)))
+                          (push (mapconcat #'identity (nreverse spec-cur) " ") gthr)))
+          (case (cadr spec-l)
+            (E (push (format mttl-e (nth (car spec-l) mttl)) spec-cur))
+            (T (case (caddr spec-l)
+                 (O (push (format mttl-o (nth (car spec-l) mttl)) spec-cur))
+                 (I (push (format mttl-i (nth (car spec-l) mttl)) spec-cur))
+                 (t (push 'bad-spec spec-cur))))
+            (t (push 'bad-spec spec-cur))))))
+    (when call-proc
+      (dolist (cp gthr)
+        ;; :PROGRAM `shell-file-name' :INFILE  nil :DISPLAY nil :BUFFER discard 
+        ;; :&REST-ARGS  `shell-command-switch' "etags {...} "
+        (call-process shell-file-name nil 0 nil shell-command-switch cp))
+      (message (concat ":FUNCTION  `mon-update-tags-tables'" 
+                       "-- executed etags shell-commands with args:\n %S")
+               gthr))
+    gthr))
+
+;;; ==============================
+;;; :CHANGESET 2117
+;;; :CREATED <Timestamp: #{2010-09-17T17:30:44-04:00Z}#{10375} - by MON KEY>
+(defun mon-update-tags-tables-loadtime ()
+  "Update the MON 'TAGS' files in paths held by.\n
+:NOTE When IS-MON-SYSTEM-P evaluated at startup per `mon-run-post-load-hooks'
+with paths held by `*mon-tags-table-list*'.\n
+:SEE-ALSO `mon-update-tags-tables', `tags-table-list', `tags-file-name'.\n►►►"
   (progn
-    (shell-command (concat "etags " 
-                           (nth 3 *mon-tags-table-list*)"/*.el " 
-                           "--output=" (nth 3 *mon-tags-table-list*)"/TAGS"))
-    (shell-command (concat  "etags " 
-                            (nth 2 *mon-tags-table-list*)"/*.el "
-                            "--output="(nth 2 *mon-tags-table-list*)"/TAGS "))
-    (shell-command (concat "etags " 
-                           (nth 1 *mon-tags-table-list*)"/*.el " 
-                           "--include="(nth 2 *mon-tags-table-list*)"/TAGS " 
-                           "--output=" (nth 1 *mon-tags-table-list*)"/TAGS"))
-    (shell-command (concat  "etags " 
-                            (nth 0 *mon-tags-table-list*)"/*.el " 
-                            "--include="(nth 3 *mon-tags-table-list*)"/TAGS "
-                            "--include="(nth 1 *mon-tags-table-list*)"/TAGS "
-                            "--output=" (nth 0 *mon-tags-table-list*)"/TAGS"))
-    t))
-;;
-;;; :TEST-ME (mon-update-tags-tables)
-;;; :TEST-ME (call-interactively 'mon-update-tags-tables)
+    (mon-update-tags-tables 
+     (car *mon-tags-table-list*) (cdr *mon-tags-table-list*) t)
+    (message 
+     (concat ":FUNCTION  `mon-update-tags-tables-loadtime'" 
+             "-- updated TAGS files with `*mon-tags-table-list*' pathnames"))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-21T19:00:14-04:00Z}#{09345} - by MON KEY>
@@ -2819,7 +2485,8 @@ otherwise.\n
 
 ;;; ==============================
 ;;; :TODO Consider where `documentation-property' can be used instead of `plist-get'.
-;;; :NOTE Also take a look at `lisp-doc-string-elt-property'.
+;;; :NOTE Also take a look at:
+;;; `lisp-doc-string-elt-property' `apropos-documentation-property'
 ;;; :NOTE This idiom works for byte compiling in docstrings.
 ;;; (eval-and-compile
 ;;;  (<THE-DEFVAR>))
@@ -2848,9 +2515,10 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
 \(mon-help-put-var-doc-val->func '<VAR-NAME> '<FUNC-NAME>
 \"\\nPRE-V-STR\\n\" nil \"PST-V-STR\"\)\n
 :SEE-ALSO `mon-help-swap-var-doc-const-val', `documentation-property',
-`byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage', `elint-put-function-args',
-`mon-help-buffer-spc-*DOC*'.\n►►►"
+`apropos-documentation-property', `lambda-list-keywords', `subr-arity',
+`help-function-arglist', `byte-compile-arglist-signature',
+`byte-compile-output-docform', `help-add-fundoc-usage',
+`elint-put-function-args', `mon-help-buffer-spc-*DOC*'.\n►►►"
   (declare (indent 2) (debug t))
   (let ((putf-doc (make-symbol "putf-doc"))
         (getv-doc (make-symbol "getv-doc"))
@@ -2930,8 +2598,9 @@ gateway towards OO manipulation of text.  As such, this macro might be used to
 similiar functionality to any derived mode which generates font-lock keywords
 from lists bound variables.\n
 :SEE-ALSO `mon-help-put-var-doc-val->func', `documentation-property',
-`byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage', `elint-put-function-args',
+`apropos-documentation-property', `byte-compile-output-docform',
+`lambda-list-keywords', `subr-arity', `help-function-arglist',
+`help-add-fundoc-usage', `elint-put-function-args',
 `mon-help-buffer-spc-*DOC*'.\n►►►"
   ;;  (declare (indent 2) (debug t))
   (let ((v-doc  (make-symbol "v-doc"))
@@ -3044,13 +2713,14 @@ from lists bound variables.\n
 ;;;        (byte-compile 'mon-help-xref-symbol-value)
 ;;;        (mon-help-xref-symbol-value 'mon-help-xref-symbol-value)
 ;;;        (symbol-function 'mon-help-xref-symbol-value)
-;;;
+;;;  
 ;;; :TODO Need to check if symbol is compiled e.g. `byte-code-function-p' and if
 ;;;       so, pull apart the vector. :SEE (info "(elisp) Byte-Code Objects")
 ;;; (aref (symbol-function 'mon-help-xref-symbol-value) 2)
 ;;; (vconcat (symbol-function 'mon-help-xref-symbol-value))
 ;;; (vconcat (indirect-function 'mon-help-xref-symbol-value))
-;;; 
+;;; :NOTE `apropos-safe-documentation' returns the .elc file doc offset:
+;;;  (apropos-safe-documentation 'mon-help-xref-symbol-value)
 ;;; :CREATED <Timestamp: #{2009-09-30T16:44:24-04:00Z}#{09403} - by MON KEY>
 (defun mon-help-xref-symbol-value (sym)
   "Return the value of symbol SYM.\n
@@ -3063,7 +2733,7 @@ value returned is of the form:
 :SEE-ALSO `mon-help-function-spit-doc', `mon-help-swap-var-doc-const-val',
 `mon-help-parse-interactive-spec', `mon-help-function-args',
 `mon-help-function-arity', `symbol-function', `indirect-function',
-`symbol-value', `indirect-variable'.\n►►►"
+`symbol-value', `indirect-variable', `apropos-safe-documentation'.\n►►►"
   (let* ((is-sym (intern-soft sym))
          (sym-type-val (cond (;; (byte-code-function-p (indirect-function 'is-sym))
                               (and (fboundp is-sym) (functionp is-sym)) 
@@ -3116,8 +2786,9 @@ inside a defgroup form.\n
 :SEE-ALSO `mon-insert-doc-help-cookie', `mon-insert-doc-help-tail',
 `mon-help-xref-symbol-value', `mon-help-insert-documentation',
 `mon-help-function-args', `mon-help-buffer-spc-*DOC*', `documentation-property',
-`byte-compile-output-docform', `lambda-list-keywords', `subr-arity',
-`help-function-arglist', `help-add-fundoc-usage', `elint-put-function-args'.\n►►►"
+`apropos-documentation-property', `byte-compile-output-docform',
+`lambda-list-keywords', `subr-arity', `help-function-arglist',
+`help-add-fundoc-usage', `elint-put-function-args'.\n►►►"
   ;; (eval-when-compile (require 'mon-cl-compat nil t))
   (let (mk-docstr)
     (save-excursion
@@ -3166,6 +2837,8 @@ inside a defgroup form.\n
                           (do-theme (or (plist-get (symbol-plist sym-name) 'theme-documentation)
                                         ;; :NOTE consider `theme-settings' here.
                                         (documentation-property sym-name 'theme-documentation))) 
+                          ;; Doubtful this makes any sense:
+                          ;;(do-widget { ... } `widget-documentation` `widget-type`
                           (t (documentation sym-name))))
                 (set-marker st-mrk (point))
                 (setq help-bnds (+ (marker-position st-mrk) (length put-help)))
@@ -3501,8 +3174,9 @@ as the cl-keys occurs in the &rest parameter position. This also occurs with
 functions defined with the CL packages `defun*' macro.
 :SEE `lambda-list-keywords'.\n
 :SEE-ALSO `mon-help-function-args', `documentation-property',
-`byte-compile-output-docform', `help-function-arglist', `help-add-fundoc-usage',
-`subr-arity', `elint-put-function-args', `mon-help-buffer-spc-*DOC*'.\n►►►"
+`apropos-documentation-property' `byte-compile-output-docform',
+`help-function-arglist', `help-add-fundoc-usage', `subr-arity',
+`elint-put-function-args', `mon-help-buffer-spc-*DOC*'.\n►►►"
   (setq function (indirect-function function))
   (cond ((eq 'autoload (car-safe function))
 	 'unknown)
@@ -3756,8 +3430,9 @@ Used to generate docstring of `mon-help-errors'.\n
 :SEE-ALSO `mon-help-function-arity', `mon-help-xref-symbol-value',
 `mon-help-parse-interactive-spec', `mon-help-function-spit-doc',
 `mon-help-buffer-spc-*DOC*', `documentation-property',
-`byte-compile-output-docform', `subr-arity', `help-function-arglist',
-`help-add-fundoc-usage', `elint-put-function-args'.\n►►►"
+`apropos-documentation-property' `subr-arity', `help-function-arglist',
+`help-add-fundoc-usage', `byte-compile-arglist-signature',
+`byte-compile-output-docform', `elint-put-function-args'.\n►►►"
   (let ((def (help-function-arglist func))
         (test-def))
     (when (and def (member '&rest def))
@@ -3894,7 +3569,9 @@ spec-type is a string delimited by `<' and `>'.
   "Return documentation of symbols held by lists FUNC-LIST VAR-LIST FACE-LIST.
 When non-nil ALT-COOKIE is a doc-cookie per `mon-help-function-spit-doc' spec.
 Default is `*doc-cookie*'.\n
-:SEE-ALSO `mon-help-function-args', `mon-help-xref-symbol-value'.\n►►►"
+:SEE-ALSO `mon-help-function-args', `mon-help-xref-symbol-value'
+`apropos-library', `apropos-documentation-property',
+`documentation-property'.\n►►►"
   (let ((fl func-list)
         (vl var-list)
         (fc-l face-list)
@@ -3956,11 +3633,8 @@ Default is `*doc-cookie*'.\n
 ;;
 ;;;(progn (makunbound 'mon-tmp-func-l) (unintern 'mon-tmp-func-l) )
 
-
-
-
 ;;; ==============================
-;; :TODO Finish! `help-window-point-marker'
+;; :TODO Finish!
 ;;; :CHANGESET 2067
 ;;; :CREATED <Timestamp: #{2010-08-16T17:26:40-04:00Z}#{10331} - by MON KEY>
 (defun mon-help-help-functions (&optional insertp intrp)
@@ -3988,7 +3662,16 @@ Default is `*doc-cookie*'.\n
 `describe-variable'
 `describe-syntax'
 `help-describe-category-set'\n
+;; :HELP-FUNCIONTS-APROPOS
+`apropos-symbol-button-display-help'
+`apropos-safe-documentation'
+`apropos-documentation-check-elc-file'
+`apropos-documentation-check-doc-file'
+`apropos-documentation-internal'
+`apropos-documentation'
+`apropos-value'\n
 ;; :HELP-VARIABLES-FNS
+`internal-doc-file-name'
 `help-downcase-arguments'\n
 ;; :HELP-VARIABLES
 `help-window'
@@ -3996,7 +3679,7 @@ Default is `*doc-cookie*'.\n
 `help-window-point-marker'\n
 :FILE help.el help-mode.el help-fns.el help-macro.el 
 :SEE-ALSO `mon-help-mon-help'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-help-functions :insertp t)
     (message (concat ":FUNCTION `mon-help-help-functions' " 
@@ -4572,7 +4255,7 @@ Default is `*doc-cookie*'.\n
 `mon-nuke-text-properties-region'
 `mon-remove-single-text-property'
 `mon-remove-text-property'
-`mon-test-props'\n
+`mon-get-text-properties-category'\n
 ;; :MON-TEST
 `google-define-get-command-TEST'
 `mon-build-copyright-string-TEST'
@@ -4606,7 +4289,8 @@ Default is `*doc-cookie*'.\n
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-mon-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-mon-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-mon-functions )
 ;;; :TEST-ME (mon-help-mon-functions t)
@@ -4677,7 +4361,8 @@ Default is `*doc-cookie*'.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-ebay-template-mode :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-ebay-template-mode' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-ebay-template-mode)
 ;;; :TEST-ME (mon-help-ebay-template-mode t)
@@ -4779,6 +4464,7 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `normal-top-level-add-to-load-path'
 `normal-top-level-add-subdirs-inode-list'\n
 ;; :EMACS-ENVIRONMENT-PATH-DIR-FILE
+`term-file-prefix'
 `site-run-file'
 `abbreviated-home-dir'
 `data-directory'
@@ -4814,6 +4500,7 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
 `x-session-previous-id'
 `emacs-session-restore'\n
 ;; :EMACS-ENVIRONMENT-STATE
+`purify-flag'
 `current-idle-time'
 `emacs-uptime'                ;<FUNCTION>
 `cons-cells-consed'
@@ -4871,7 +4558,8 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-emacs-introspect :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-emacs-introspect' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-emacs-introspect t)
 
@@ -4967,11 +4655,12 @@ x 	      The X Window system.\n
 `finder-known-keywords'
 `generated-finder-keywords-file'\n
 :SEE :FILE finder.el finder-inf.el
-:SEE-ALSO.\n►►►"
-  (interactive "i\nP")
+:SEE-ALSO `mon-help-emacs-introspect', `mon-help-help-functions'.\n►►►"
+(interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-package-keywords :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-package-keywords' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 (defalias 'mon-help-finder-keywords 'mon-help-package-keywords)
 ;;
@@ -5031,7 +4720,8 @@ $              -> match EOL
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-regexp-syntax :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-regexp-syntax' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (describe-function 'mon-help-regexp-syntax)
 ;;; :TEST-ME (mon-help-regexp-syntax)
@@ -5086,10 +4776,11 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
  \(logand \(car \(syntax-after \(point\)\)\) 65535\)\n
 :SEE-ALSO `mon-help-syntax-functions', `mon-help-search-functions',
 `mon-help-regexp-syntax'.\n►►►"
-  (interactive "i\nP")
+(interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-syntax-class :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-syntax-class' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-syntax-class)
 ;;; :TEST-ME (mon-help-syntax-class t)
@@ -5107,8 +4798,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `skip-syntax-forward'
 `skip-syntax-backward'\n
 ;; :SYNTAX-INSPECT
-`get-char-property'
-`char-syntax'
+`get-char-char'
+`property-syntax'
 `describe-syntax'
 `syntax-after'
 `syntax-class'
@@ -5129,6 +4820,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `standard-case-table'\n
 ;; :SYNTAX-CATEGORY
 `define-category'
+`modify-category-entry'
 `describe-categories'
 `category-docstring'
 `category-set-mnemonics'
@@ -5184,10 +4876,11 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `mon-line-test-content'\n
 :SEE-ALSO `mon-help-syntax-class', `mon-help-regexp-syntax',
 `mon-help-search-functions'.\n►►►"
-  (interactive "i\nP")
+(interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-syntax-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-syntax-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-syntax-functions)
 ;;; :TEST-ME (mon-help-syntax-functions t)
@@ -5207,7 +4900,9 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `word-search-forward'
 `word-search-backward'
 `word-search-backward-lax'
-`word-search-forward-lax'\n
+`word-search-forward-lax'
+`apropos-words-to-regexp'
+`apropos-parse-pattern'\n
 ;; :SEARCH-INSPECT
 `looking-at-p'
 `looking-at'             ; :SEE-ALSO `posix-looking-at'
@@ -5316,7 +5011,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-search-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-search-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-search-functions)
 ;;; :TEST-ME (mon-help-search-functions t)
@@ -5470,7 +5166,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-hooks :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-hooks' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-hooks)
 ;;; :TEST-ME (mon-help-hooks t)
@@ -5481,7 +5178,6 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 ;;; :CREATED <Timestamp: #{2010-02-27T15:14:24-05:00Z}#{10086} - by MON KEY>
 (defun mon-help-file-dir-functions (&optional insertp intrp)
   "List of functions related to files and directories.\n
-:SEE info node `(elisp)Files'\n
 ;; :FILE-DIRECTORY-ACTION
 `access-file'
 `byte-compile-file'
@@ -5526,6 +5222,7 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `insert-default-directory'     ;<VARIABLE>
 `insert-directory-program'     ;<VARIABLE>\n
 ;; :FILE-DIRECTORY-INSPECT
+`prune-directory-list'
 `directory-files'
 `directory-files-and-attributes'
 `file-attributes'
@@ -5701,12 +5398,14 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
 `mon-insert-file-in-dirs'
 `mon-insert-naf-file-in-dirs'
 `mon-toggle-dired-dwim-target'\n
+:SEE info node `(elisp)Files'\n
 :SEE-ALSO `mon-help-file-dir-functions-usage', `mon-help-process-functions',
 `mon-help-buffer-functions', `mon-help-hooks'.\n►►►"
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-file-dir-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-file-dir-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-file-dir-functions)
 ;;; :TEST-ME (mon-help-file-dir-functions t)
@@ -5873,10 +5572,11 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
    \(make-dir-list\)\)\n
 :SEE-ALSO `mon-help-file-dir-functions', `mon-help-buffer-functions',
 `mon-help-hooks', `mon-help-process-functions'.\n►►►"
-  (interactive "i\nP")
+(interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-file-dir-functions-usage :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-file-dir-functions-usage' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 (defalias 'mon-help-directory-file-functions-usage 'mon-help-file-dir-functions-usage)
 ;;
@@ -5985,7 +5685,8 @@ SYNTAX-CLASS  CODE CHARACTER ARGUMENTS to SYNTAX include:\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-process-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-process-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-process-functions)
 ;;; :TEST-ME (mon-help-process-functions t)
@@ -6066,10 +5767,11 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 :SEE-ALSO `mon-help-process-functions', `mon-help-server-functions',
 `mon-help-process-functions', `mon-help-hooks', `mon-help-file-dir-functions',
 `mon-help-buffer-functions'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-make-network-process :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-make-network-process' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-make-network-process)
 ;;; :TEST-ME (mon-help-make-network-process t)
@@ -6154,10 +5856,11 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 :SEE-ALSO `mon-help-ipv4-header', `mon-help-process-functions',
 `mon-help-make-network-process', `mon-help-file-dir-functions',
 `mon-help-buffer-functions', `mon-help-hooks'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-server-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-server-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-server-functions)
 ;;; :TEST-ME (mon-help-server-functions nil t)
@@ -6203,6 +5906,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `inhibit-startup-message'
 `inhibit-startup-screen'
 `inhibit-x-resources'\n
+;; :INHIBIT-PROPERTIES
+`apropos-inhibit` ;:NOTE \(mon-map-obarray-symbol-plist-props 'apropos-inhibit\)\n
 ;; :INHIBIT-FUNCTIONS-MON-LOCAL
 `mon-with-inhibit-buffer-read-only'
 `mon-inhibit-read-only'
@@ -6384,6 +6089,10 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `window-buffer-height'
 `window--display-buffer-1'
 `window--display-buffer-2'\n
+;; :BUFFER-FUNCTIONS-EXTERNAL
+`bookmark-buffer-file-name'
+`bookmark-buffer-name'
+`with-buffer-modified-unmodified'    ;<MACRO>\n
 ;; :BUFFER-VARIABLES
 `buffer-access-fontified-property'
 `buffer-access-fontify-functions'
@@ -6470,8 +6179,13 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 `make-frame-names-alist'
 `minibuffer-frame-list'
 `selected-frame'
+`tool-bar-lines-needed'
 `visible-frame-list'\n
 ;; :FRAME-HANDLER-GET-SELECT
+`trace-redisplay'
+`trace-to-stderr'
+`dump-tool-bar-row'
+`dump-frame-glyph-matrix'
 `with-selected-frame'
 `get-other-frame'
 `next-frame'
@@ -6654,8 +6368,6 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 ;; :FRAME-FUNCTIONS-MON-LOCAL
 `mon-dired-find-file-other-frame'
 `mon-frame-live-visible-graphic-p'\n
-
-
 :SEE info node `(elisp)Frames'.\n
 :SEE :FILE lisp/frame.el src/frame.c src/dispnew.c\n
 :SEE-ALSO `mon-help-window-functions', `mon-help-buffer-functions',
@@ -6823,13 +6535,16 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 ;; :WINDOW-VARIABLES-HOOKS
 `window-configuration-change-hook' ;<VARIABLE>
 `window-setup-hook'                ;<VARIABLE>\n
+;; :WINDOW-FUNCTIONS-MON-LOCAL
+`mon-map-windows->plist'`n
 :SEE info node `(elisp)Windows'.\n
 :SEE :FILE lisp/window.el src/window.c\n
 :SEE-ALSO `mon-help-frame-functions', `mon-help-buffer-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-window-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-window-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-window-functions)
 ;;; :TEST-ME (mon-help-window-functions t)
@@ -6955,10 +6670,13 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
 :SEE-FILE json.el\n
 :SEE-ALSO `mon-help-css-mode', `mon-help-css-color', `mon-help-css-complete',
 `mon-help-css-check', `mon-help-ebay-template-mode', `mon-help-tidy'.\n►►►"
-  (interactive "i\np")
-    (mon-help-function-spit-doc 'mon-help-xml-functions :insertp t)
-  (message "Pass non-nil for optional arg INTRP"))
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-xml-functions :insertp t)
+    (message (concat ":FUNCTION `mon-help-xml-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
+;;; :TEST-ME (mon-help-xml-functions)
 ;;; :TEST-ME (mon-help-xml-functions t)
 
 ;;; ==============================
@@ -7008,7 +6726,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-defclass :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-eieio-defclass' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-eieio-defclass)
 ;;; :TEST-ME (mon-help-eieio-defclass t)
@@ -7145,7 +6864,8 @@ Return non-nil if `make-network-process' accepts network option arg <KEYWORD>.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-eieio-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-eieio-functions)
 ;;; :TEST-ME (mon-help-eieio-functions t)
@@ -7304,7 +7024,8 @@ A generic form can be interrogated with `eieio-generic-form':\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-eieio-methods :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-eieio-methods' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-eieio-methods)
 ;;; :TEST-ME (mon-help-eieio-methods t)
@@ -7423,347 +7144,13 @@ Using type
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-type-predicates :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-type-predicates' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-type-predicates)
 ;;: :TEST-ME (mon-help-type-predicates t)
 ;;; :TEST-ME (describe-function 'mon-help-type-predicates)
 ;;; :TEST-ME (apply 'mon-help-type-predicates '(t))
-
-;;; ==============================
-;;; :CHANGESET 2063
-;;; :CREATED <Timestamp: #{2010-08-10T18:22:49-04:00Z}#{10322} - by MON KEY>
-(defun mon-help-symbol-functions (&optional insertp intrp)
-   "List of functions and variables related to Emacs symbol identity.\n
-Enumerates functions, variables, and special forms, and C primitives related
-symbol construction, \(un\)intermment, binding, unbinding, byte compiling,
-evaling, interrogation, deconstructing, etc.\n
-;; :SYMBOL-CONSTRUCTORS-LISP
-`defconst'                                   ;<SPECIAL-OPERATOR>
-`defun'                                      ;<SPECIAL-OPERATOR>
-`defmacro'                                   ;<SPECIAL-OPERATOR>
-`defsubst'
-`defvar'                                     ;<SPECIAL-OPERATOR>\n
-;; :SYMBOL-CONSTRUCTORS-LISP-CL
-`defmacro*'
-`defsubst*'
-`defun*'
-`define-compiler-macro' 
-`defstruct'
-`deftype'\n
-;; :SYMBOL-CONSTRUCTORS-LISP-EIEIO         ; :NOTE API, additional magic occurs.
-`defclass'                                   :SEE `mon-help-eieio-defclass'
-`defmethod'                                  :SEE `mon-help-eieio-methods'
-`defgeneric'\n
-;; :SYMBOL-CONSTRUCTORS-LISP-EMACS
-`autoload'
-`deftheme'
-`defcustom'
-`custom-declare-variable'
-`defgroup'
-`defface'
-`define-prefix-command'\n
-;; :SYMBOL-CONSTRUCTORS-SET-EMACS
-`setq'                                       ;<SPECIAL-OPERATOR>
-`psetq'
-`set'
-`fset'\n
-;; :SYMBOL-CONSTRUCTORS-SET-CL-GENERALIZED
-`defsetf'
-`define-modify-macro'
-`define-setf-expander'
-`define-setf-method'
-`setf'
-`psetf'\n
-;; :SYMBOL-CONSTRUCTORS-TEMPORARY
-`gensym'
-`gentemp'                                    ; :NOTE Misnomer, interns a symbol
-`*gensym-counter*'                           ;<VARIABLE>
-`make-symbol'\n
-;; :SYMBOL-CONSTRUCTORS-LOCAL
-`lambda'
-`let'                                        ;<SPECIAL-OPERATOR>
-`let*'                                       ;<SPECIAL-OPERATOR>
-`flet'
-`labels'
-`macroloet'
-`symbol-macrolet'
-`condition-case'
-`max-specpdl-size'                            ;<VARIABLE>\n
-;; :SYMBOL-CONSTRUCTORS-EMACS-OBJECT-LOCAL
-`set-default'
-`setq-default'                                ;<SPECIAL-OPERATOR>
-`make-local-variable'
-`make-variable-buffer-local'
-`make-variable-frame-local'                   ;<DEPRECATED>\n
-;; :SYMBOL-PREDICATES
-`bound-and-true-p'
-`boundp'
-`byte-code-function-p'
-`commandp'
-`fboundp'
-`featurep'
-`functionp'
-`keywordp'
-`null'
-`subrp'
-`symbolp'
-`user-variable-p'\n
-;; :SYMBOL-PREDICATES-EMACS-OBJECT-LOCAL
-`default-boundp'
-`local-variable-if-set-p'
-`local-variable-p'
-`risky-local-variable-p'
-`safe-local-variable-p'\n
-;; :SYMBOL-GETTERS
-`type-of'
-`identity'
-`indirect-variable'
-`indirect-function'
-`symbol-function'
-`symbol-name'
-`symbol-value'
-`symbol-file'
-`symbol-plist'
-`subr-arity'\n
-;; :SYMBOL-GETTERS-EMACS-OBJECT-LOCAL
-`kill-local-variable'
-`kill-all-local-variables'
-`hack-local-variables'
-`buffer-local-variables'
-`default-value'
-`buffer-local-value'\n
-;; :SYMBOL-TABLE
-`intern'
-`unintern'
-`obarray'
-`intern-soft'
-`mapatoms' 
-`makunbound'
-`fmakunbound'\n
-;; :SYMBOL-INDIRECTION
-`fset' 
-`defalias'
-`defvaralias'
-`indirect-variable'
-`indirect-function'\n
-;; :SYMBOL-OBSOLETE
-`define-obsolete-function-alias'
-`define-obsolete-variable-alias'
-`define-obsolete-face-alias'
-`make-obsolete-variable'
-`make-obsolete'\n
-;; :SYMBOL-SPECIAL-FORMS   ; :SEE info node `(elisp)Special Forms'
-`and'                      ; :NOTE Excluding those tagged \"<SPECIAL-OPERATOR>\"
-`catch'
-`cond'
-`condition-case'
-`if'
-`interactive'
-`or'
-`prog1'
-`prog2'
-`progn'
-`save-current-buffer'
-`save-excursion'
-`save-restriction'
-`save-window-excursion'
-`track-mouse'
-`unwind-protect'
-`while'
-`with-output-to-temp-buffer'\n
-;; :SYMBOL-SYNTAX-MODIFIERS
-`function'                                   ;<SPECIAL-OPERATOR>
-`quote'                                      ;<SPECIAL-OPERATOR>
-`backquote'
-`backquote-backquote-symbol'                 ;<CONSTANT>
-`backquote-unquote-symbol'                   ;<CONSTANT>
-`backquote-splice-symbol'                    ;<CONSTANT> 
-\"`\" \",\" \",@\"
-\"'\" 
-\"#'\"
-\":\"
-\"#s\"
-\"#N=\" \"#N#\"
-\"#:\"
-\"#&\"
-\"#@<COUNT>\"
-\"#$\"
-\"#\" \"#b\" \"#x\" \"#o\" \"#r<N>\" \"\\\\?\"\n
-;; :SYMBOL-EVAL
-`eval-and-compile'
-`eval-when-compile'
-`eval-when'
-`eval-after-load'
-`eval'
-`funcall'
-`apply'
-`load-time-value'
-`read'\n
-;; :SYMBOL-EMACS-OBJECT-LOCAL-VARIABLES
-`before-hack-local-variables-hook'
-`hack-local-variables-hook'
-`file-local-variables-alist'
-`safe-local-variable-values'
-`risky-local-variable-p'
-`safe-local-variable-p'
-`ignored-local-variables'
-`enable-local-eval'
-`enable-local-variables'
-`safe-local-eval-forms'\n
-;; :SYMBOL-PROPERTIES-EMACS-OBJECT-LOCAL
-`safe-local-variable-values`
-`risky-local-variable`
-`safe-local-eval-function`                   ;<PROPERTY>
-`permanent-local`                            ;<PROPERTY>\n
-;; SYMBOL-PROPERTIES-EMACS-OBJECT-LOCAL-RISKY
--command
--frame-alist
--function
--functions
--hook
--hooks
--form
--forms
--map
--map-alist
--mode-alist
--program
--predicate\n
-;; :SYMBOL-PRINTING-VARIABLES
-`read-circle'
-`printable-chars'
-`print-circle'
-`print-gensym'
-`print-continuous-numbering'
-`print-number-table'\n
-;; :SYMBOL-BYTE
-`byte-code-function-p'
-`fetch-bytecode'                             :SEE :FILE eval.c
-`byte-code'                                  :SEE :FILE bytecode.c
-`make-byte-code'                             :SEE :FILE alloc.c
-`make-bool-vector'
-`string-bytes'\n
-;; :SYMBOL-COMPILE-OPCODES                   :SEE :FILE bytecomp.el bytecomp.c 
-`byte-defop'                                 ;<MACRO>
-`byte-code-vector' 
-`byte-stack+-info'
-`byte-constant-limit'
-`byte-goto-ops'\n
-;; :SYMBOL-COMPILE
-`byte-compile'
-`byte-compile-constp'
-`byte-compile-file'
-`byte-compile-lambda'
-`byte-compile-lambda-form' 
-`byte-compile-output-as-comment'
-`byte-compile-output-docform'
-`byte-compile-dynamic'                       ;<VARIABLE>
-`byte-compile-warnings'                      ;<VARIABLE>
-`byte-optimize-log'                          ;<VARIABLE>
-`declare-function'
-`disassemble'
-`compile-defun'\n
-;; :SYMBOL-C-PRIMITIVE-VARS
-DEFVAR_BOOL
-DEFVAR_INT
-DEFVAR_LISP
-`byte-boolean-vars'
-`byte-optimize-log'\n 
-;; :SYMBOL-VALUES-MON-LOCAL
-`mon-help-byte-code-vector-symbols'
-`mon-help-permanent-locals-find'
-`mon-help-byte-optimizer-find'
-`mon-map-obarray-symbol-plist-props'
-`*mon-help-permanent-locals*'
-`*mon-help-byte-optimizer-vals*'
-`*mon-help-autoload-vars*'
-`*mon-help-pure-functions*'
-`*mon-help-side-effect-free*'
-`*mon-help-side-effect-and-error-free*'
-`*mon-help-subrs*'
-`*mon-help-subrs-false*'\n
-;; :SYMBOL-COMPONENTS
-Print name            :SEE info node `(elisp)Creating Symbols'
-Value                 :SEE info node `(elisp)Accessing Variables'
-Function              :SEE info node `(elisp)Function Cells'
-Property list         :SEE infor node `(elisp)Property Lists'\n
-:NOTE Following is an example of the byte-compiler's gernation of \"#@LENGTH\"
-as per `byte-compile-output-as-comment':\n
-\(byte-compile-lambda \(lambda \(x y\) \"some lambda form\" \(+ x y\)\)\)\n
-\(let \(\(bytecomp-outbuffer \(current-buffer\)\)\)
-  \(byte-compile-output-as-comment
-   \(byte-compile-lambda \(lambda \(x y\) \"some lambda form\" \(+ x y\)\)\) t\)\)\n
-\(let \(\(cf \(byte-compile-lambda \(lambda \(x y\) \"some lambda form\" \(+ x y\)\)\)\)\)
- \(type-of  cf\)\)\n
-;; `position-bytes' is the index into the file as a byte ind
-:SEE info node `(elisp)Byte-Code Objects'
-:SEE info node `(elisp)Byte Compilation'
-:SEE info node `(elisp)Declaring Functions'
-:SEE info node `(elisp)Circular Objects'
-:SEE :FILE eval.c bytecode.c alloc.c lread.c
-:SEE :FILE `byte-run.el', `bytecomp.el', `byte-opt.el'\n
-:SEE-ALSO .\n►►►"
-(interactive "i\nP")
-  (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-symbol-functions :insertp t)
-    (message (concat ":FUNCTION `mon-help-symbol-functions' " 
-                     "-- pass non-nil for optional arg INTRP"))))
-;;
-;;; :TEST-ME (mon-help-symbol-functions)
-;;; :TEST-ME (mon-help-symbol-functions t)
-;;; :TEST-ME (apply 'mon-help-symbol-functions '(t))
-
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-08-11T15:07:34-04:00Z}#{10323} - by MON KEY>
-(defun mon-help-byte-code-vector-symbols (&optional insertp intrp)
-  ""
-  (interactive "i\nP")
-  (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-byte-code-vector-symbols :insertp t)
-    (message (concat ":FUNCTION `mon-help-byte-code-vector-symbols' " 
-                     "-- pass non-nil for optional arg INTRP"))))
-;;
-;;; :TEST-ME (mon-help-byte-code-vector-symbols)
-;;; :TEST-ME (mon-help-byte-code-vector-symbols t)
-;;; :TEST-ME (documentation 'mon-help-byte-code-vector-symbols)
-;;; :TEST-ME (apply 'mon-help-byte-code-vector-symbols '(t))
-;;
-(eval-when (compile load)
-  (put 'mon-help-byte-code-vector-symbols 'function-documentation 
-       (let (bcvs)
-         (with-temp-buffer
-           (save-excursion
-             (let ((ma-cnt 0))
-               (insert "\n;; :BYTE-CODE-VECTOR-SYMBOLS\n")
-               (mapc #'(lambda (x) 
-                         (unless (or (null x) 
-                                     (null (get x 'variable-documentation)))
-                           (insert
-                 
-                            (format "`%s'\n:index %d\n:documentation\n%S\n\n"
-                                    x ma-cnt 
-                                    (mon-string-justify-left
-                                     (documentation-property x 'variable-documentation)
-                                     78 16))))
-                         (incf ma-cnt))
-                     byte-code-vector)
-               ))
-           ;; (while (search-forward-regexp "^:documentation\n                " nil t)
-           (while (search-forward-regexp
-                   "^:documentation\n\"                " nil t)
-             (replace-match ":documentation  \""))
-           (setq bcvs (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
-         (concat 
-          "List of non-nil elts in `byte-code-vector' with their index and docstrings.\n"
-          bcvs
-          ":SEE :FILE byte-opt.el\n\n"
-          ":SEE-ALSO `mon-help-symbol-functions', `mon-help-byte-optimizer-find',\n"
-          "`mon-map-obarray-symbol-plist-props', `mon-help-permanent-locals-find',\n"
-          "`*mon-help-side-effect-free*', `*mon-help-side-effect-and-error-free*',\n"
-          "`*mon-help-pure-functions*', `*mon-help-permanent-locals*', `*mon-help-subrs*',\n"
-          "`*mon-help-byte-optimizer-vals*', `byte-boolean-vars', `byte-optimize-log'\n►►►"))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-08T13:28:30-05:00Z}#{10101} - by MON KEY>
@@ -7916,7 +7303,8 @@ as per `byte-compile-output-as-comment':\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-sequence-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-sequence-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-sequence-functions)
 ;;; :TEST-ME (mon-help-sequence-functions t)
@@ -8217,6 +7605,7 @@ as per `byte-compile-output-as-comment':\n
 `x-hyper-keysym'
 `x-super-keysym'\n
 ;; :KEY-FUNCTIONS-MON-LOCAL
+`mon-read-keys-as-string'
 `mon-test-keypresses'\n
 :KEYBINDING-HOOK-IDIOM
  
@@ -8318,21 +7707,15 @@ as per `byte-compile-output-as-comment':\n
 `load-source-file-function'
 `load-suffixes'
 `read-symbol-positions-list'
-`read-with-symbol-positions'\n
+`read-with-symbol-positions'
 `byte-compile-insert-header'\n
-;; :EMACS-LOAD-MAGIC  
-:NOTE The magic number of .elc files is \";ELC\", or 0x3B454C43\n
- ; => #x3b \(char-to-string #x3B\)
- E => #x45 \(char-to-string #x45\)
- L => #x4c \(char-to-string #x4C\)
- C => #x43 \(char-to-string #x43\)
- ;ELC => #x3B454C43\n
 :SEE :FILE lread.c loaddefs.el 
 :SEE-ALSO `mon-help-emacs-introspect', `mon-help-read-functions', `mon-help-print-functions'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-load-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-load-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-load-functions)
 ;;; :TEST-ME (describe-function 'mon-help-load-functions)
@@ -8340,7 +7723,7 @@ as per `byte-compile-output-as-comment':\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:26:27-04:00Z}#{09387} - by MON>
-(defun mon-help-read-functions (&optional insrtp intrp)
+(defun mon-help-read-functions (&optional insertp intrp)
   "List of functions for reading.\n
 :SEE info node `(elisp)Read and Print'.\n
       _______                       ____________________  60.
@@ -8423,9 +7806,10 @@ as per `byte-compile-output-as-comment':\n
 :SEE-ALSO `mon-help-print-functions', `mon-help-load-functions',
 `mon-help-key-functions', `mon-help-char-representation'.\n►►►"
   (interactive "i\nP")
-  (if (or insrtp intrp)
+  (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-read-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-read-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-read-functions)
 ;;; :TEST-ME (mon-help-read-functions t)
@@ -8546,7 +7930,8 @@ as per `byte-compile-output-as-comment':\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-print-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-print-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-print-functions )
 ;;; :TEST-ME (mon-help-print-functions t)
@@ -8662,7 +8047,8 @@ bubbas-hash
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-hash-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-hash-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-hash-functions)
 ;;; :TEST-ME (mon-help-hash-functions t)
@@ -8682,11 +8068,24 @@ bubbas-hash
 `put'
 `plist-put'
 `lax-plist-put'\n
+;; :PLIST-FUNCTIONS-CL
+`remf'
+`setf'                 ; :USAGE (setf (get tt--plist :foo) '(new-foo))
+`getf'
+`get*'
+`cl-set-getf'
+`cl-do-remf'
+`cl-remprop'
+`remprop'\n
 ;; :PLIST-FUNCTION-INSPECT
 `equal-including-properties'
 `documentation-property'
 `symbol-plist'
 `plist-member'\n
+;; :PLIST-FUNCTION-INSPECT-APROPOS
+`apropos-property-face'
+`apropos-format-plist'
+`apropos-describe-plist'\n
 ;; :PLIST-FUNCTION-PROCESS
 `process-plist'
 `process-put'
@@ -8707,6 +8106,15 @@ bubbas-hash
 `mon-plist-remove!'
 `mon-plist-remove-consing'
 `mon-plist-remove-if'\n
+:NOTE the docstring of `plist-put' has the odd phraseology:
+ \"use `\(setq x \(plist-put x prop val\)\)' to be sure to use the new value.\"
+plist-put 
+the plist could be empty in the first place.
+
+ \(setq tt--plist nil\)
+ \(plist-put tt--plist :foo :bar\) ; => \(:foo :bar\)
+ tt--plist ; => nil
+:SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg01001.html')\n
 :SEE info node `(elisp)Property Lists'
 :SEE info node `(elisp)Symbol Plists'
 :SEE info node `(elisp)Other Plists'\n
@@ -8716,7 +8124,8 @@ bubbas-hash
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-plist-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-plist-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-plist-functions)
 ;;; :TEST-ME (mon-help-plist-functions t)
@@ -8767,6 +8176,7 @@ When a property-name is not also symbol-name it is distinguished as:\n
 `theme-settings`
 `theme-value`\n
 ;; :PLIST-PROPERTIES-DOC
+`apropos-inhibit`
 `documentation`
 `doc-string-elt`
 `lisp-doc-string-elt-property'
@@ -8791,8 +8201,11 @@ When a property-name is not also symbol-name it is distinguished as:\n
 `saved-face-comment`
 `theme-face`\n
 ;; :PLIST-PROPERTIES-KEYS
-`:advertised-binding`
-`suppress-keymap`\n
+`event-symbol-element-mask`
+`event-symbol-elements`
+`modifier-cache`
+`suppress-keymap
+`:advertised-binding`  ;`dired-find-file' `widget-backward' `undo' `proced-mark'`\n
 ;; :PLIST-PROPERTIES-EIEIO
 `protection`
 `eieio-class-definition`
@@ -8840,6 +8253,7 @@ When a property-name is not also symbol-name it is distinguished as:\n
 `setf-method`
 `side-effect-free`\n
 ;; :PLIST-PROPERTIES-EDEBUG
+`debug`
 `edebug`
 `edebug-coverage`
 `edebug-dependents`
@@ -8898,10 +8312,11 @@ When a property-name is not also symbol-name it is distinguished as:\n
 :SEE `mon-help-text-property-properties'\n
 :SEE-ALSO `mon-help-plist-functions', `mon-help-text-property-functions',
 `mon-help-text-property-properties'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-plist-properties :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-plist-properties' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-plist-properties)
 ;;; :TEST-ME (mon-help-plist-properties t)
@@ -9023,10 +8438,11 @@ It has the following format:\n
 `mon-help-custom-keywords', `mon-help-widgets', `mon-help-easy-menu',
 `mon-help-plist-functions',`mon-help-eieio-defclass',
 `mon-help-eieio-functions', `mon-help-eieio-methods'.\n►►►"
-  (interactive "i\np")
+  (interactive "i\nP")
   (if (or insertp intrp)
-      (mon-help-function-spit-doc 'mon-help-faces :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+      (mon-help-function-spit-doc 'mon-help-faces-themes :insertp t)
+    (message (concat ":FUNCTION `mon-help-faces-themes' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-faces-themes t)
 
@@ -9113,12 +8529,12 @@ It has the following format:\n
 |                             | | :box - [<BOOLEAN>|<STRING>|<LIST>]     |
 |-----------------------------| |  { nil - no box                        |
 |                             | |   t - linewidth in :foreground <COLOR> |
-| `face-alias'                | |   color - box w/ line width in <COLOR> |
-| `face-defface-spec'         | |   ( :line-width <WIDTH>                |
-| `customized-face'           | |     :color <COLOR>                     |
+| `face-alias`                | |   color - box w/ line width in <COLOR> |
+| `face-defface-spec`         | |   ( :line-width <WIDTH>                |
+| `customized-face`           | |     :color <COLOR>                     |
 | `face-documentation'        | |     :style <STYLE> ) }                 |
-| `saved-face'                | |________________________________________|
-|                             | |                                        |
+| `saved-face`                | |________________________________________|
+| `obsolete-face`             | |                                        |
 |_____________________________| | :inverse-video - <BOOLEAN>             |
                                 |  { t   - yes                           |
                                 |    nil - no }                          |
@@ -9138,18 +8554,19 @@ It has the following format:\n
  _____________________________  |  { face name, or list of face names }  |
 |                             | |________________________________________|
 |       :FACE-INTERNAL        |                                           
-|_____________________________|_________                                  
-|                                       |                                 
-| `internal-face-x-get-resource'        |                                 
-| `internal-lisp-face-empty-p'          |                                 
-| `internal-lisp-face-equal-p'          |                                 
-| `internal-lisp-face-p'                |                                 
-| `internal-make-lisp-face'             |                                 
+|_____________________________|_________     _________________            
+|                                       |   |                 |           
+| `internal-face-x-get-resource'        |   | :FACE-VARIABLES |            
+| `internal-lisp-face-empty-p'          |  _|_________________|__________ 
+| `internal-lisp-face-equal-p'          | |                              | 
+| `internal-lisp-face-p'                | | `inhibit-free-realized-faces'| 
+| `internal-make-lisp-face'             | |______________________________|  
 | `internal-merge-in-global-face'       |                                 
-| `internal-get-lisp-face-attribute'    |                                 
+| `internal-get-lisp-face-attribute'    | 
 | `internal-lisp-face-attribute-values' |                                 
 | `inhibit-free-realized-faces'         |
 | `clear-face-cache'                    |
+| `define-obsolete-face-alias'          |
 |_______________________________________|                              73^\n
 :ALIASED-BY `mon-help-face-functions'\n
 :SEE-ALSO `mon-help-faces-basic', `mon-help-font-lock', `mon-help-faces-themes',
@@ -9160,7 +8577,8 @@ It has the following format:\n
 (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-faces :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-faces' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 (defalias 'mon-help-face-functions 'mon-help-faces)
 ;;
@@ -9213,10 +8631,11 @@ inherit from one of the basic-faces this practice is encouraged.\n
 \(describe-face 'menu\)\n
 :SEE-ALSO `mon-help-faces-basic', `mon-help-font-lock', `mon-help-faces-themes', 
 `mon-help-font-lock-functions', `mon-help-naf-mode-faces'.\n►►►"
-  (interactive "i\np")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-faces-basic :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-faces-basic' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-faces-basic t)
 ;;; :TEST-ME (describe-function 'mon-help-faces-basic)
@@ -9256,14 +8675,14 @@ inherit from one of the basic-faces this practice is encouraged.\n
 `font-lock-warning-face'\n
 :SEE-ALSO `mon-help-font-lock', `mon-help-font-lock-functions',
 `mon-help-faces', `mon-help-faces-themes', `mon-help-faces-basic'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-faces-font-lock :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-faces-font-lock' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-faces-font-lock )
-;;; :TEST-ME (mon-help-faces-font-lock )
-;;; :TEST-ME (mon-help-faces-font-lock )
+;;; :TEST-ME (mon-help-faces-font-lock t)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-20T16:01:38-05:00Z}#{10076} - by MON KEY>
@@ -9326,6 +8745,7 @@ inherit from one of the basic-faces this practice is encouraged.\n
 `jit-lock-stealth-fontify'
 `jit-lock-unregister'\n
 ;; :FONT-LOCK-VARIABLES
+`fontification-functions'
 `font-lock-keywords'
 `font-lock-keywords-alist'
 `font-lock-keywords-case-fold-search'
@@ -9380,10 +8800,11 @@ inherit from one of the basic-faces this practice is encouraged.\n
 `mon-help-widgets', `mon-help-easy-menu', `mon-help-plist-functions',
 `mon-help-color-chart', `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-font-lock-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-font-lock-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-font-lock-functions)
 ;;; :TEST-ME (mon-help-font-lock-functions t)
@@ -9455,29 +8876,39 @@ cases of text, and how to highlight those cases:\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-01T19:07:24-05:00Z}#{10052} - by MON KEY>
-(defun mon-help-overlay-functions (&optional insrtp intrp)
-  "Functions related to overlays.\n
-:SEE info node `(elisp) Overlays'.\n
+(defun mon-help-overlay-functions (&optional insertp intrp)
+  "List of functions, variables, and properties related to overlays.\n
 ;; :OVERLAY-FUNCTIONS
 `cl-map-overlays' 
-`get-char-property-and-overlay'  :SEE `get-char-property'
+`copy-overlay'
 `delete-overlay'
 `make-overlay'
 `move-overlay'
-`next-overlay-change'
-`overlay-buffer'
-`overlay-end'
+`remove-overlays'
+`overlay-put'
+`overlay-recenter'\n
+;; OVERLAY-FUNCTIONS-GETTERS
+`get-char-property'
+`get-char-property-and-overlay'
 `overlay-get'
 `overlay-properties'
-`overlay-put'
-`overlay-recenter'
+;; OVERLAY-FUNCTIONS-POSITION
+`overlay-buffer'
+`next-overlay-change'
+`overlay-end'
+`overlay-lists'
 `overlay-start'
 `overlayp'
 `overlays-at'
 `overlays-in'
-`overwrite-mode'
 `previous-overlay-change'
-`remove-overlays'\n
+;; :OVERLAY-FUNCTIONS-MODIFY-NOTIFY
+`restore-buffer-modified-p'
+`set-buffer-modified-p'
+`inhibit-modification-hooks'\n
+;; :OVERLAY-FUNCTIONS-TEXT-CLONE
+`text-clone-maintain'
+`text-clone-create'\n
 ;; :OVERLAY-VARIABLES
 `overlay-arrow-position'
 `overlay-arrow-string'
@@ -9489,22 +8920,33 @@ cases of text, and how to highlight those cases:\n
 `isearch-open-invisible`
 `isearch-open-invisible-temporary`
 `priority`
-`window`\n
+`window`
+`text-clone-spreadp`
+`text-clone-syntax`
+`text-clones`\n
 ;; :OVERLAY-FUNCTIONS-MON-LOCAL
 `mon-help-find-result-for-overlay'
 `mon-help-overlay-for-example'
 `mon-help-overlay-on-region'
 `mon-help-overlay-result'
-`mon-nuke-overlay-buffer'\n
-:SEE :FILE buffer.c :FILE textprop.c
+`mon-nuke-overlay-buffer'
+`mon-get-overlays-map-props'
+`mon-get-overlays-region'
+`mon-get-overlays-region-map-props'
+`mon-get-overlays-buffer'\n
+:SEE info node `(elisp) Overlays'.
+:SEE info node `(elisp)Special Properties'
+:SEE info node `(elisp)Overlay Properties'\n
+:SEE :FILE buffer.c :FILE textprop.c\n
 :SEE-ALSO `mon-help-faces', `mon-help-font-lock',
 `mon-help-font-lock-functions', `mon-help-text-property-functions',
 `mon-help-text-property-properties', `mon-help-text-property-functions-ext',
 `mon-help-text-property-stickyness', `mon-help-plist-functions'.\n►►►"
-(interactive "i\nP")
-  (if (or insrtp intrp)
+  (interactive "i\nP")
+  (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-overlay-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-overlay-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-overlay-functions )
 ;;; :TEST-ME (mon-help-overlay-functions t)
@@ -9512,7 +8954,7 @@ cases of text, and how to highlight those cases:\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-20T13:46:12-04:00Z}#{09387} - by MON>
-(defun mon-help-text-property-functions (&optional insrtp intrp)
+(defun mon-help-text-property-functions (&optional insertp intrp)
   "List of text-property related functions and variables.\n
    ________________________                           ______________________79.  
   |                        |                         |                        |
@@ -9584,15 +9026,19 @@ cases of text, and how to highlight those cases:\n
 |  `use-hard-newlines'                | :SEE info node `(elisp)Text Properties'
 |  `yank-excluded-properties'         | :SEE :FILE buffer.c :FILE textprop.c   
 |_____________________________________|                                        \n
-  
+
+:TEXT-PROPERTY-PRIDCATES
+`invisible-p'\n
+
 :SEE-ALSO `mon-help-text-property-properties',
 `mon-help-text-property-stickyness', `mon-help-text-property-functions-ext',
 `mon-help-overlay-functions', `mon-help-plist-functions',
 `mon-help-plist-properties', `mon-help-widgets'.\n►►►"
   (interactive "i\nP")
-  (if (or insrtp intrp)
+  (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-text-property-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-text-property-functions)
 ;;; :TEST-ME (mon-help-text-property-functions t)
@@ -9663,14 +9109,14 @@ cases of text, and how to highlight those cases:\n
 :SEE-ALSO `mon-help-text-property-stickyness',
 `mon-help-text-property-functions', `mon-help-text-property-functions-ext',
 `mon-help-overlay-functions', `mon-help-plist-functions'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-properties :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-text-property-properties' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-text-property-properties )
-;;; :TEST-ME (mon-help-text-property-properties )
-;;; :TEST-ME (mon-help-text-property-properties )
+;;; :TEST-ME (mon-help-text-property-properties t)
 
 ;;; ==============================
 ;;; :COURTESY :FILE /emacs/*/src/intervals.c
@@ -9717,9 +9163,9 @@ text-properties of adjoining text with sticky properties.\n
 `mon-help-overlay-functions', `mon-help-plist-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-      (save-excursion
-        (mon-help-function-spit-doc 'mon-help-text-property-stickyness :insertp t))
-    (message "Pass non-nil for optional arg INTRP")))
+      (mon-help-function-spit-doc 'mon-help-text-property-stickyness :insertp t)
+    (message (concat ":FUNCTION `mon-help-text-property-stickyness' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-text-property-stickyness)
 ;;; :TEST-ME (mon-help-text-property-stickyness t)
@@ -9780,14 +9226,15 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 `mon-nuke-text-properties-region'
 `mon-remove-single-text-property'
 `mon-remove-text-property'
-`mon-test-props'\n
+`mon-get-text-properties-category'\n
 :SEE-ALSO `mon-help-text-property-functions',
 `mon-help-text-property-stickyness', `mon-help-overlay-functions',
 `mon-help-plist-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-text-property-functions-ext :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-text-property-functions-ext' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-text-property-functions-ext )
 ;;; :TEST-ME (mon-help-text-property-functions-ext t)
@@ -9872,10 +9319,11 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 :SEE :FILE xfaces.c xfns.c etc/rgb.txt lisp/term/common-win.el
 :SEE :FILE w23fns.c struct colormap_t w32_color_map.\n
 :SEE-ALSO `mon-help-color-chart', `mon-help-css-color'.\n►►►"
-  (interactive "i\np")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-color-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-color-functions t)
 ;;;: TEST-ME (describe-function 'mon-help-color-functions)
@@ -10035,7 +9483,8 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-color-chart :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-color-chart' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-color-chart)
 ;;; :TEST-ME (mon-help-color-chart t)
@@ -10084,9 +9533,10 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
 (interactive "i\nP")
-(if (or insertp intrp)
-    (mon-help-function-spit-doc 'mon-help-easy-menu :insertp t)
-  (message "Pass non-nil for optional arg INTRP")))
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-easy-menu :insertp t)
+    (message (concat ":FUNCTION `mon-help-easy-menu' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-easy-menu)
 ;;; :TEST-ME (mon-help-easy-menu t)
@@ -10096,7 +9546,7 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 19, 2009 @ 02:20.35 PM - by MON KEY>
 (defun mon-help-widgets (&optional insertp intrp)
-"Help table for the widget interface.\n
+  "Help table for the widget interface.\n
  __________________________                                                  
 |                          | :SEE info node `(widget)Introduction'           
 | :WIDGET-TYPE-SYNTAX-OF   | :SEE info node `(elisp)Abstract Display'        
@@ -10113,21 +9563,20 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 |    |                                                                      |
 |    |   `%[  %]' | `%{  %}' |  `%v',   `%d', `%h', `%t', `%%'              |
 |    |      ^          ^                  ^     ^     ^                     |
-|    |......|..........|..................|.....|.....|                     |
+|    |......¦..........¦..................¦.....¦.....¦                     |
 |           |          |                  |     |     |                     |
-|           |          |--+ :sample-face  ._____.     |--+ :tag|:tag-glyph  |
+|           |          |--+ :sample-face  ._____.     |-+ :tag | :tag-glyph |
 |           |                                |                              |
 |           |--+ :button-face                |--+ :doc                      |
 |                                            |                              |
 |                                            |--+ :documentation-property   |
 |--+ :value          ;init-arg                                              |
 |                                                                           |
-|--+ :button-prefix  ;nil|<STRING>|<SYMBOL>                                 |
+|--+ :button-prefix  ;nil | <STRING> | <SYMBOL>                             |
 |                                                                           |
-|--+ :button-suffix  ;nil|<STRING>|<SYMBOL>                                 |
+|--+ :button-suffix  ;nil | <STRING> | <SYMBOL>                             |
 |                                                                           |
-|--+ :help-echo      ;{widget-forward|widget-backward}                      |
-|                    ;String|[Function Arg]|[widget String]                 |
+|--+ :help-echo      ; <STRING> | [ <FUNCTION> Arg ] | [ widget <STRING> ]  |
 |                                                                           |
 |--+ :follow-link    ;<mouse-1>                                             |
 |                                                                           |
@@ -10137,39 +9586,39 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 |                                                                           |
 |--+ :extra-offset   ;<INTEGER>                                             |
 |                                                                           |
-|--+ :notify         ;[Function arg1 &optional arg2]                        |
+|--+ :notify         ; [ <FUNCTION> arg1 &optional arg2 ]                   |
 |                                                                           |
-|--+ :menu-tag       ;:tag                                                  |
+|--+ :menu-tag       ; :tag                                                 |
 |                                                                           |
-|--+ :menu-tag-get   ;[Function (:menu-tag|:tag|:value)]                    |
+|--+ :menu-tag-get   ;[ <FUNCTION> ( :menu-tag | :tag | :value ) ]          |
 |                                                                           |
-|--+ :match          ;[widget value]                                        |
+|--+ :match          ;[ widget value ]                                      |
 |                                                                           |
-|--+ :validate       ;widget_._`widget-children-validate'_.                 |
-|                            |                            |                 |
-|                            |                            |--+ :children    |
-|                            |--+ :error ;<STRING>                          |
+|--+ :validate       ;widget _._ `widget-children-validate'_                |
+|                             |                             |               |
+|                             |                             |--+ :children  |
+|                             |--+ :error ;<STRING>                         |
 |                                                                           |
-|--+ :tab-order      ;{widget-forward|widget-backward}                      |
+|--+ :tab-order      ;{ `widget-forward' | `widget-backward' }              |
 |                                                                           |
-|--+ :parent         ;{`menu-choice item' | `editable-list element'}        |
+|--+ :parent         ;{ menu-choice item | editable-list element }          |
 |                                                                           |
-|--+ :sibling-args   ;{radio-button-choice' `checklist'}                    |
+|--+ :sibling-args   ;{ radio-button-choice checklist }                     |
 |___________________________________________________________________________|
 |  __________________   ___________________       ____________________      |
 | |                  | |                   |     |                    |     |
 | | :WIDGET-BUTTONS  | | :WIDGET-FUNCTIONS |     | :WIDGET-NAVIGATION |     |
 | |__________________| |___________________|  ___|____________________|___  |
 | |                  | |                   | |                            | |
-| |  Option|Field    | | `widget-value'    | | <TAB> | M-<TAB> | S-<TAB>  | |
+| | Option | Field   | | `widget-value'    | | <TAB> | M-<TAB> | S-<TAB>  | |
 | |                  | | `widget-create'   | |    -------------------     | |
-| |   [INS]|[DEL]    | | `widget-delete'   | |     `widget-forward'       | |
+| |  [INS] | [DEL]   | | `widget-delete'   | |     `widget-forward'       | |
 | |                  | | `widget-insert'   | |     `widget-backward'      | |
-| |     [ ]|[X]      | | `widget-setup'    | |    -------------------     | |
+| |    [ ] | [X]     | | `widget-setup'    | |    -------------------     | |
 | |                  | | `widget-get'      | |____________________________| |
 | |    Embedded      | | `widget-put'      |        ____________________    |
 | |                  | |___________________|       |                    |   |
-| |     ( )|(*)      |     _______________         | :WIDGET-BUTTON-ACT |   |
+| |    ( ) | (*)     |     _______________         | :WIDGET-BUTTON-ACT |   |
 | |                  |    |               |      __|____________________|_  |
 | |  [Apply Form]    |    | :WIDGET-FACES |     |                         | |
 | |                  |   _|_______________|__   |     <RET> | Mouse-2     | |
@@ -10183,20 +9632,50 @@ provided in Emacs packages outside of lisp/emacs-lisp, and 3rd party packages.\n
 | |  `widget-keymap'                         |    | :WIDGET-LIKE  |         |
 | |  `widget-global-map'                     |   _|_______________|__       |
 | |  `widget-glyph-directory'  ;<DIRECTORY>  |  |                    |      |
-| |  `widget-glyph-enable'     ;nil|t        |  |   `x-popup-menu'   |      |
+| |  `widget-glyph-enable'     ;<BOOLEAN>    |  |   `x-popup-menu'   |      |
 | |  `widget-button-prefix'    ;<STRING>     |  |      `imenu'       |      |
 | |  `widget-button-suffix'    ;<STRING>     |  |     `speedbar'     |      |
 | |__________________________________________|  |____________________|      |
+|  _______________________________                                          |
+| |                               |                                         |
+| | :WIDGET-PLIST-PROP-ARGS-OTHER |                                         |
+| |_______________________________|__________                               |
+| |                                          |                              |
+| | :action              :activate           |                              |
+| | :active              :inline             |                              |
+| | :always-active       :match              |                              |
+| | :args                :match-inline       |                              |
+| | :button-face-get     :menu-tag           |                              |
+| | :buttons             :mouse-down-action  |                              |
+| | :complete            :mouse-face         |                              |
+| | :complete-function   :mouse-face-get     |                              |
+| | :convert-widget      :mouse-face-get     |                              |
+| | :copy                :notify             |                              |
+| | :create              :prompt-value       |                              |
+| | :deactivate          :sample-face-get    |                              |
+| | :default-get         :sample-overlay     |                              |
+| | :delete              :to                 |                              |
+| | :doc                 :type               |                              |
+| | :doc-overlay         :validate           |                              |
+| | :field-overlay       :value-create       |                              |
+| | :format              :value-delete       |                              |
+| | :format-handler      :value-inline       |                              |
+| | :from                :value-set          |                              |
+| | :inactive            :value-to-external  |                              |
+| | :indent              :value-to-internal  |                              |
+| |__________________________________________|                              |
 |_________________________________________________________________________77^\n
+:SEE :FILE wid-edit.el button.el
 :SEE-ALSO `mon-help-easy-menu', `mon-help-key-functions',
 `mon-help-custom-keywords', `mon-help-plist-functions', `mon-help-color-chart',
 `mon-help-faces', `mon-help-faces-basic', `mon-help-faces-themes',
 `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
 (interactive "i\nP")
-(if (or insertp intrp)
-    (mon-help-function-spit-doc 'mon-help-widgets :insertp t)
-  (message "Pass non-nil for optional arg INTRP")))
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-widgets :insertp t)
+    (message (concat ":FUNCTION `mon-help-widgets' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-widgets)
 ;;; :TEST-ME (mon-help-widgets t)
@@ -10276,10 +9755,11 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 `mon-help-faces', `mon-help-faces-basic', `mon-help-faces-themes',
 `mon-help-eieio-defclass', `mon-help-eieio-functions',
 `mon-help-eieio-methods'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-custom-keywords :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-custom-keywords' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-custom-keywords)
 ;;; :TEST-ME (mon-help-custom-keywords t)
@@ -10477,6 +9957,7 @@ cons             \(<CAR-TYPE> <CDR-TYPE>\)\n
 `:superset`
 `:unify-map`\n
 ;; :CHAR-CHARSET-VARIABLES
+`unibyte-display-via-language-environment'
 `charset-map-path'
 `charset-list'
 `charset-revision-table'
@@ -10609,7 +10090,6 @@ unicode-bmp
 ;;; :TEST-ME (describe-function 'mon-help-char-coding-functions)
 ;;; :TEST-ME (apply 'mon-help-char-coding-functions '(t))
 
-
 ;;; ==============================
 ;;; :CHANGESET 2090
 ;;; :CREATED <Timestamp: #{2010-08-30T11:21:38-04:00Z}#{10351} - by MON KEY>
@@ -10617,6 +10097,7 @@ unicode-bmp
   "A list of functions for working with Emacs character char-tables.\n
 ;; :CHAR-TABLE-FUNCTIONS
 `modify-category-entry'
+`define-category-entry'
 `map-charset-chars'
 `make-char-table'
 `char-table-subtype'
@@ -10686,6 +10167,7 @@ unicode-bmp
 (defun mon-help-display-table-functions (&optional insertp intrp)
   "A list of functions for working with Emacs character display-tables.\n
 ;; :DISPLAY-TABLE-HANDLERS
+`lookup-image-map'
 `make-display-table'
 `display-table-slot'       ; :NOTE Also a <PROPERTY>
 `set-display-table-slot'
@@ -10698,13 +10180,15 @@ unicode-bmp
 `standard-display-8bit'
 `standard-display-ascii'
 `standard-display-default'
-`standard-display-default'
 `standard-display-european'
 `standard-display-european-internal'
 `standard-display-g1'
 `standard-display-graphic'
 `standard-display-underline'\n
 ;; :DISPLAY-TABLE-FUNCTIONS-GLYPH
+`dump-glyph-matrix'
+`dump-frame-glyph-matrix'
+`dump-glyph-row'
 `create-glyph'
 `make-glyph-code'
 `glyph-char'
@@ -10714,7 +10198,16 @@ unicode-bmp
 ;; :DISPLAY-TABLE-VARIABLES
 `glyph-table'
 `standard-display-table'
-`buffer-display-table'\n
+`buffer-display-table'
+;; :DISPLAY-VARIABLES
+`redisplay-end-trigger-functions'
+`display-pixels-per-inch'
+`scroll-step'
+`scroll-margins'
+`scroll-conservatively'
+`show-trailing-whitespace'
+`nobreak-char-display'
+`void-text-area-pointer'\n
 :SEE :FILE lisp/disp-table.el src/dispnew.c\n
 :SEE-ALSO `mon-help-char-functions', `mon-help-char-charset-functions',
 `mon-help-char-coding-functions', `mon-help-char-composition',
@@ -11242,8 +10735,9 @@ is based on the information from Table 1 of ECMA-48 /ISO/IEC 6429
 `mon-help-print-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-        (mon-help-function-spit-doc 'mon-help-char-ecma-48 :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+      (mon-help-function-spit-doc 'mon-help-char-ecma-48 :insertp t)
+    (message (concat ":FUNCTION `mon-help-char-ecma-48' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 (defalias 'mon-help-ecma-48-chars-cntl->hex 'mon-help-char-ecma-48)
 ;;
@@ -11301,8 +10795,9 @@ as a reference for finding which characters match which codes.\n
 `mon-help-print-functions'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-    	(mon-help-function-spit-doc 'mon-help-char-ecma-35 :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+      (mon-help-function-spit-doc 'mon-help-char-ecma-35 :insertp t)
+    (message (concat ":FUNCTION `mon-help-char-ecma-35' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 (defalias 'mon-help-cntl->hex->ecma-35 'mon-help-char-ecma-35) 
 ;;
@@ -11433,6 +10928,15 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 :SEE \(URL `http://en.wikipedia.org/wiki/ISO_8859-1'\)\n
 :SEE \(URL `http://en.wikipedia.org/wiki/ISO/IEC_8859'\)\n
 :SEE (URL `http://unicode.coeurlumiere.com/').\n
+Unicode Entity Codes for Phonetic/vowel Diacritics:
+:SEE \(URL `http://tlt.its.psu.edu/suggestions/international/bylanguage/ipavowels.html'\)\n
+:SEE (URL `http://www.alanwood.net/demos/ent4_frame.html')\n
+HTML - Special Entity Codes:
+:SEE \(URL `http://tlt.its.psu.edu/suggestions/international/web/codehtml.html'\)
+XML Entity Definitions for Characters - W3C
+:SEE (URL `http://www.w3.org/TR/xml-entity-names/')\n
+:NOTE In particular the sources section, \"Section D\":
+:SEE (URL `http://www.w3.org/TR/xml-entity-names/#source')
 :SEE-ALSO `mon-help-char-functions', `mon-help-char-charset-functions',
 `mon-help-char-coding-functions', `mon-help-char-composition',
 `mon-help-char-table-functions', `mon-help-display-table-functions',
@@ -11442,26 +10946,28 @@ Character table for reverting ISO_8859-1 bytes -> UTF-8
 `mon-help-char-ecma-35', `mon-help-char-ecma-48', `mon-help-char-logic',
 `mon-help-key-functions', `mon-help-read-functions',
 `mon-help-print-functions'.\n►►►"
-(interactive "i\nP")
-(if (or insertp intrp)
-  (save-excursion
-    (let* ((test-llm (and (buffer-local-value longlines-mode (current-buffer))))
-	   (is-on (and test-llm))
-	   (llm-off))
-    (progn
-      (if (buffer-local-value 'longlines-mode (current-buffer))
-	  (prog1
-	      (longlines-mode nil)
-	    (setq test-llm 'loc-buff-is-ll))
-	(setq test-llm 'loc-buff-not-ll))
-      (mon-help-function-spit-doc 'mon-help-diacritics :insertp t)
-      (cond ((eq test-llm 'loc-buff-not-ll)
-	     (setq test-llm nil))
-	    ((eq test-llm 'loc-buff-is-ll)
-	     (prog1
-		 (longlines-mode t)	;
-	       (setq test-llm nil)))))))
-      (message "Pass non-nil for optional arg INTRP")))
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (save-excursion
+        (let* ((test-llm (and (buffer-local-value longlines-mode (current-buffer))))
+               (is-on (and test-llm))
+               (llm-off))
+          (progn
+            (if (buffer-local-value 'longlines-mode (current-buffer))
+                (prog1
+                    (longlines-mode nil)
+                  (setq test-llm 'loc-buff-is-ll))
+              (setq test-llm 'loc-buff-not-ll))
+            (mon-help-function-spit-doc 'mon-help-diacritics :insertp t)
+            (cond ((eq test-llm 'loc-buff-not-ll)
+                   (setq test-llm nil))
+                  ((eq test-llm 'loc-buff-is-ll)
+                   (prog1
+                       (longlines-mode t) ;
+                     (setq test-llm nil)))))))
+    (message  (concat ":FUNCTION `mon-help-diacritics' " 
+                      "-- pass non-nil for optional arg INTRP"))))
+
 ;;
 ;;; :TEST-ME (mon-help-diacritics)
 ;;; :TEST-ME (mon-help-diacritics t)
@@ -11662,10 +11168,11 @@ And may more generally be represented in Emacs as:\n
 `mon-help-char-ecma-35', `mon-help-char-ecma-48', `mon-help-char-logic',
 `mon-help-key-functions', `mon-help-read-functions',
 `mon-help-print-functions'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-char-representation :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-char-representation' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-char-representation)
 ;;; :TEST-ME (mon-help-char-representation t)
@@ -11694,7 +11201,8 @@ The char 4194303 of return value is `max-char'.\n
 `multibyte-char-to-unibyte'
 `string-to-multibyte'
 `string-as-multibyte'
-`unibyte-string'\n
+`unibyte-string'
+`load-convert-to-unibyte'\n
 ;; :CHAR-RAW-BYTE-FUNCTIONS
 `insert-byte'
 `get-byte'
@@ -11913,7 +11421,8 @@ most-positive-fixnum\n ;=> 536870911 (#o3777777777, #x1fffffff)\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-binary-representation :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-binary-representation' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (describe-function 'mon-help-binary-representation)
 ;;; :TEST-ME (mon-help-binary-representation t)
@@ -11930,16 +11439,12 @@ most-positive-fixnum\n ;=> 536870911 (#o3777777777, #x1fffffff)\n
 ;; `insert-byte'
 ;; `string-bytes'
 ;; `unibyte-string'
+;; `load-convert-to-unibyte'
 ;;
 ;; :BYTE-BOOL-VECTOR
 ;; `make-bool-vector'
 ;; `bool-vector-p'
 ;;
-;; :BYTE-CODE-COMPILE
-;; `make-byte-code'
-;; `fetch-bytecode'
-;; `byte-code-vector'
-;; 
 ;; ;; :BYTE-FUNCTIONS-POSITION
 ;; `position-bytes'
 ;; `byte-to-position'
@@ -11959,6 +11464,9 @@ most-positive-fixnum\n ;=> 536870911 (#o3777777777, #x1fffffff)\n
 ;; `decode-char'
 ;; `encode-char'
 ;;
+;; `binary-overwrite-mode'
+;; `buffer-file-typer'
+;;
 ;; :BYTE-CONVERT
 ;; `multibyte-string-p'
 ;; `multibyte-char-to-unibyte'
@@ -11976,6 +11484,709 @@ most-positive-fixnum\n ;=> 536870911 (#o3777777777, #x1fffffff)\n
 ;; `mon-get-bit-table'
 ;;
 ;; XREFS `mon-help-binary-representation', `mon-help-char-raw-bytes',
+
+;;; ==============================
+;;; :CHANGESET 2063
+;;; :CREATED <Timestamp: #{2010-08-10T18:22:49-04:00Z}#{10322} - by MON KEY>
+(defun mon-help-symbol-functions (&optional insertp intrp)
+   "List of functions and variables related to Emacs symbol identity.\n
+Enumerates functions, variables, and special forms, and C primitives related
+symbol construction, \(un\)intermment, binding, unbinding, byte compiling,
+evaling, interrogation, deconstructing, etc.\n
+;; :SYMBOL-CONSTRUCTORS-LISP
+`defconst'                                   ;<SPECIAL-OPERATOR>
+`defun'                                      ;<SPECIAL-OPERATOR>
+`defmacro'                                   ;<SPECIAL-OPERATOR>
+`defsubst'
+`defvar'                                     ;<SPECIAL-OPERATOR>\n
+;; :SYMBOL-CONSTRUCTORS-LISP-CL
+`defmacro*'
+`defsubst*'
+`defun*'
+`define-compiler-macro' 
+`defstruct'
+`deftype'\n
+;; :SYMBOL-CONSTRUCTORS-LISP-EIEIO         ; :NOTE API, additional magic occurs.
+`defclass'                                   :SEE `mon-help-eieio-defclass'
+`defmethod'                                  :SEE `mon-help-eieio-methods'
+`defgeneric'\n
+;; :SYMBOL-CONSTRUCTORS-LISP-EMACS
+`autoload'
+`deftheme'
+`defcustom'
+`custom-declare-variable'
+`defgroup'
+`defface'
+`define-prefix-command'\n
+;; :SYMBOL-CONSTRUCTORS-INLINE 
+`inline'
+`defsubst'
+`defsubst*'
+`byte-compile-inline-expand'
+`proclaim-inline'                            ; :NOTE Commented in byte-run.el
+`proclaim-notinline'                         ; :NOTE Commented in byte-run.el
+`byte-inline-lapcode'
+`byte-compile-progn'
+`byte-compile-splice-in-already-compiled-code'
+`byte-compile-function-environment'          ;<VARIABLE>
+`byte-optimizer`                             ;<PROPERTY>
+`compile-inline-expand`                      ;<PVAL>
+:NOTE Following forms are evaluated by bytecomp.el and/or associated libraries.
+ \(fset 'inline 'progn\)
+ \(byte-defop-compiler-1 inline byte-compile-progn\)
+Also, note the following properties:
+ \(get 'inline 'byte-optimizer\)
+ \(get 'defsubst 'byte-hunk-handler\)\n
+
+;; :SYMBOL-CONSTRUCTORS-MACRO-COMPILER
+`compiler-macroexpand'
+`byte-compile-initial-macro-environment'     ;<CONSTANT>
+`byte-compile-macro-environment'             :<VARIABLE>
+`cl-compiler-macro`                          ;<PROPERTY>
+;; :SYMBOL-CONSTRUCTORS-SET-EMACS
+`setq'                                       ;<SPECIAL-OPERATOR>
+`psetq'
+`set'
+`fset'\n
+;; :SYMBOL-CONSTRUCTORS-SET-CL-GENERALIZED
+`defsetf'
+`define-modify-macro'
+`define-setf-expander'
+`define-setf-method'
+`setf'
+`psetf'\n
+;; :SYMBOL-CONSTRUCTORS-TEMPORARY
+`gensym'
+`gentemp'                                    ; :NOTE Misnomer, interns a symbol
+`*gensym-counter*'                           ;<VARIABLE>
+`make-symbol'\n
+;; :SYMBOL-CONSTRUCTORS-LOCAL
+`lambda'
+`let'                                        ;<SPECIAL-OPERATOR>
+`let*'                                       ;<SPECIAL-OPERATOR>
+`flet'
+`labels'
+`macroloet'
+`symbol-macrolet'
+`condition-case'
+`max-specpdl-size'                            ;<VARIABLE>\n
+;; :SYMBOL-CONSTRUCTORS-EMACS-OBJECT-LOCAL
+`set-default'
+`setq-default'                                ;<SPECIAL-OPERATOR>
+`make-local-variable'
+`make-variable-buffer-local'
+`make-variable-frame-local'                   ;<DEPRECATED>\n
+;; :SYMBOL-PREDICATES
+`bound-and-true-p'
+`boundp'
+`byte-code-function-p'
+`commandp'
+`fboundp'
+`featurep'
+`functionp'
+`keywordp'
+`null'
+`subrp'
+`symbolp'
+`user-variable-p'\n
+;; :SYMBOL-PREDICATES-EMACS-OBJECT-LOCAL
+`default-boundp'
+`local-variable-if-set-p'
+`local-variable-p'
+`risky-local-variable-p'
+`safe-local-variable-p'\n
+;; :SYMBOL-GETTERS
+`type-of'
+`identity'
+`indirect-variable'
+`indirect-function'
+`symbol-function'
+`symbol-name'
+`symbol-value'
+`symbol-file'
+`symbol-plist'
+`subr-arity'   ; :NOTE Return \( <MIN-ARG> . { <MAX-ARG> | many | unevalled } \)\n
+;; :SYMBOL-GETTERS-EMACS-OBJECT-LOCAL
+`kill-local-variable'
+`kill-all-local-variables'
+`hack-local-variables'
+`buffer-local-variables'
+`default-value'
+`buffer-local-value'\n
+;; :SYMBOL-TABLE
+`intern'
+`unintern'
+`obarray'
+`intern-soft'
+`mapatoms' 
+`makunbound'
+`fmakunbound'
+`set-advertised-calling-convention'
+`advertised-signature-table'\n
+;; :SYMBOL-INDIRECTION
+`fset' 
+`defalias'
+`defvaralias'
+`indirect-variable'
+`indirect-function'\n
+;; :SYMBOL-OBSOLETE
+`define-obsolete-function-alias'
+`define-obsolete-variable-alias'
+`define-obsolete-face-alias'
+`make-obsolete-variable'
+`make-obsolete'\n
+;; :SYMBOL-SPECIAL-FORMS   ; :SEE info node `(elisp)Special Forms'
+`and'                      ; :NOTE Excluding those tagged \"<SPECIAL-OPERATOR>\"
+`catch'
+`cond'
+`condition-case'
+`if'
+`interactive'
+`or'
+`prog1'
+`prog2'
+`progn'
+`save-current-buffer'
+`save-excursion'
+`save-restriction'
+`save-window-excursion'
+`track-mouse'
+`unwind-protect'
+`while'
+`with-output-to-temp-buffer'\n
+;; :SYMBOL-SYNTAX-MODIFIERS
+`function'                                   ;<SPECIAL-OPERATOR>
+`quote'                                      ;<SPECIAL-OPERATOR>
+`backquote'
+`backquote-backquote-symbol'                 ;<CONSTANT>
+`backquote-unquote-symbol'                   ;<CONSTANT>
+`backquote-splice-symbol'                    ;<CONSTANT> 
+\"`\" \",\" \",@\"                           ; :NOTE lread.c's \",.\" Qcomma_dot
+\"'\" 
+\"#'\"
+\":\"
+\"#s\"
+\"#N=\" \"#N#\"
+\"#:\"
+\"#&\"
+\"#@<COUNT>\"
+\"#$\"
+\"#\" \"#b\" \"#x\" \"#o\" \"#r<N>\" \"\\\\?\"\n
+;; :SYMBOL-EVAL
+`dont-compile'
+`eval-and-compile'
+`eval-when-compile'
+`eval-when'
+`eval-after-load'
+`eval'
+`funcall'
+`apply'
+`load-time-value'
+`read'\n
+;; :SYMBOL-EMACS-OBJECT-LOCAL-VARIABLES
+`before-hack-local-variables-hook'
+`hack-local-variables-hook'
+`file-local-variables-alist'
+`safe-local-variable-values'
+`risky-local-variable-p'
+`safe-local-variable-p'
+`ignored-local-variables'
+`enable-local-eval'
+`enable-local-variables'
+`safe-local-eval-forms'\n
+;; :SYMBOL-PROPERTIES-EMACS-OBJECT-LOCAL
+`safe-local-variable-values`
+`risky-local-variable`
+`safe-local-eval-function`                   ;<PROPERTY>
+`permanent-local`                            ;<PROPERTY>\n
+;; SYMBOL-PROPERTIES-EMACS-OBJECT-LOCAL-RISKY
+-command
+-frame-alist
+-function
+-functions
+-hook
+-hooks
+-form
+-forms
+-map
+-map-alist
+-mode-alist
+-program
+-predicate\n
+;; :SYMBOL-PRINTING-VARIABLES
+`read-circle'
+`printable-chars'
+`print-circle'
+`print-gensym'
+`print-continuous-numbering'
+`print-number-table'\n
+;; :SYMBOL-BYTE
+`byte-code-function-p'
+`fetch-bytecode'                             :SEE :FILE eval.c
+`byte-code'                                  :SEE :FILE bytecode.c
+`make-byte-code'                             :SEE :FILE alloc.c
+`make-bool-vector'
+`string-bytes'\n
+;; :SYMBOL-COMPILE-OPCODES                   :SEE :FILE bytecomp.el bytecomp.c 
+`byte-defop'                                 ;<MACRO>
+`byte-code-vector' 
+`byte-stack+-info'
+`byte-constant-limit'
+`byte-goto-ops'\n
+;; :SYMBOL-COMPILE
+`byte-code'
+`byte-compile'
+`byte-compile-constp'
+`byte-compile-file'
+`byte-compile-lambda'
+`byte-compile-lambda-form' 
+`byte-compile-output-as-comment'
+`byte-compile-output-docform'
+`byte-compile-dynamic'                       ;<VARIABLE>
+`byte-compile-warnings'                      ;<VARIABLE>
+`byte-optimize-log'                          ;<VARIABLE>
+`compile-defun'
+`declare-function'
+`disassemble'
+`make-byte-code'
+`macro-declaration-function'\n
+;; :SYMBOL-C-PRIMITIVE-VARS
+DEFVAR_BOOL
+DEFVAR_INT
+DEFVAR_LISP
+`byte-boolean-vars'
+`byte-optimize-log'\n 
+;; :SYMBOL-VALUES-MON-LOCAL
+`mon-help-byte-code-vector-symbols'
+`mon-help-permanent-locals-find'
+`mon-help-byte-optimizer-find'
+`mon-map-obarray-symbol-plist-props'
+`*mon-help-permanent-locals*'
+`*mon-help-byte-optimizer-vals*'
+`*mon-help-autoload-vars*'
+`*mon-help-pure-functions*'
+`*mon-help-side-effect-free*'
+`*mon-help-side-effect-and-error-free*'
+`*mon-help-subrs*'
+`*mon-help-subrs-false*'\n
+;; :SYMBOL-COMPONENTS
+Print name            :SEE info node `(elisp)Creating Symbols'
+Value                 :SEE info node `(elisp)Accessing Variables'
+Function              :SEE info node `(elisp)Function Cells'
+Property list         :SEE infor node `(elisp)Property Lists'\n
+:NOTE Following is an example of the byte-compiler's gernation of \"#@LENGTH\"
+as per `byte-compile-output-as-comment':\n
+\(byte-compile-lambda \(lambda \(x y\) \"some lambda form\" \(+ x y\)\)\)\n
+\(let \(\(bytecomp-outbuffer \(current-buffer\)\)\)
+  \(byte-compile-output-as-comment
+   \(byte-compile-lambda \(lambda \(x y\) \"some lambda form\" \(+ x y\)\)\) t\)\)\n
+\(let \(\(cf \(byte-compile-lambda \(lambda \(x y\) \"some lambda form\" \(+ x y\)\)\)\)\)
+ \(type-of  cf\)\)\n
+;; `position-bytes' is the index into the file as a byte ind
+:SEE info node `(elisp)Byte-Code Objects'
+:SEE info node `(elisp)Byte Compilation'
+:SEE info node `(elisp)Declaring Functions'
+:SEE info node `(elisp)Circular Objects'
+:SEE :FILE eval.c bytecode.c alloc.c lread.c
+:SEE :FILE `byte-run.el', `bytecomp.el', `byte-opt.el'\n
+:SEE-ALSO `mon-help-byte-compile-functions' .\n►►►"
+(interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-symbol-functions :insertp t)
+    (message (concat ":FUNCTION `mon-help-symbol-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
+;;
+;;; :TEST-ME (mon-help-symbol-functions)
+;;; :TEST-ME (mon-help-symbol-functions t)
+;;; :TEST-ME (apply 'mon-help-symbol-functions '(t))
+
+;;; ==============================
+;;; :CHANGESET 2115
+;;; :CREATED <Timestamp: #{2010-09-08T16:07:55-04:00Z}#{10363} - by MON KEY>
+(defun mon-help-byte-compile-functions (&optional insertp intrp)
+  "List of funcitons and variables related to byte-compiling Emacs lisp.\n
+;; :BYTE-COMPILE-BYTE-CODE
+`byte-code'
+`make-byte-code'
+`fetch-bytecode'
+`gnus-byte-code'
+`binary-overwrite-mode'
+
+;; :BYTE-COMPILE
+`byte-compile'
+`byte-compile-eval'
+`byte-compile-eval-before-compile'
+`byte-compile-file'
+`byte-compile-cl-file-p'
+`byte-compile-const-symbol-p'            ;<DEFSUBST>
+`byte-compile-constp'                    ;<MACRO>
+`byte-compile-set-symbol-position'
+`byte-compile-obsolete'
+`byte-compile-fdefinition'
+`byte-compile-arglist-signature'
+`byte-compile-arglist-signatures-congruent-p'
+`byte-compile-print-syms'
+`byte-compile-close-variables'           ;<MACRO>
+`byte-force-recompile'
+`compile-defun'
+
+`byte-compile-from-buffer'
+`byte-compile-fix-header'
+`byte-compile-insert-header'
+`byte-compile-output-file-form'
+`byte-compile-output-docform'
+`byte-compile-keep-pending'
+`byte-compile-flush-pending'
+`byte-compile-const-symbol-p'
+
+`macro-declaration-function'
+`byte-compile-defmacro-declaration'
+`byte-compile-sexp'
+`byte-compile-byte-code-maker'
+`byte-compile-byte-code-unmake'
+
+;; :BYTE-COMPILE-BYTE-HUNK-HANDLERS
+`byte-compile-file-form'
+`byte-compile-file-form-defmumble'
+`byte-compile-file-form-defsubst'
+`byte-compile-file-form-autoload'
+`byte-compile-file-form-defvar'
+`byte-compile-file-form-define-abbrev-table'
+`byte-compile-file-form-custom-declare-variable'
+`byte-compile-file-form-require'
+`byte-compile-file-form-progn'
+`byte-compile-file-form-with-no-warnings'
+`byte-compile-file-form-eval'
+`byte-compile-file-form-defun'
+`byte-compile-file-form-defmacro'
+
+;; :BYTE-COMPILE-CL
+`byte-compile-find-cl-functions'
+`byte-compile-cl-functions'
+`byte-compile-cl-warn'            ; <- Fucker that investigates forms for cl symbols.
+`byte-compile-file-form-require'  ; <- Fucker that voices CL runtime warnings:
+                                        \(byte-compile-warn \"cl package required at runtime\"\)
+                                       As per return value of:     
+                                        \(byte-compile-warning-enabled-p 'cl-functions\)\n
+:NOTE These don't have warnings because have \"suitable\" compiler macros:
+ \(remq nil \(delete-dups
+  \(mapcar #'\(lambda \(cl-s\)
+             \(when \(eq \(get cl-s 'byte-compile\) 'cl-byte-compile-compiler-macro\) cl-s\)\)
+        byte-compile-cl-functions\)\)\)
+;; :BYTE-COMPILE-WARNING
+`byte-compile-print-syms'
+`byte-compile-warning-enabled-p'
+`byte-compile-arglist-warn'
+`byte-compile-callargs-warn'
+`byte-compile-cl-warn'
+`byte-compile-format-warn'
+`byte-compile-nogroup-warn'
+`byte-compile-report-error'
+`byte-compile-warn'
+`byte-compile-warn-about-unresolved-functions'
+`byte-compile-warn-obsolete'
+`byte-compile-warning-series'                  ;<NOOP>
+`displaying-byte-compile-warnings'             ;<MACRO>
+`warning-series'
+`byte-compile-warning-types'                   ;<CONSTANT>
+;; :BYTE-COMPILE-WARNING-TYPES
+`callargs`
+`cl-functions`
+`constants`
+`free-vars`
+`interactive-only`
+`lexical`
+`make-local`
+`mapcar`
+`noruntime`
+`obsolete`
+`redefine`
+`suspicious`
+`unresolved`\n
+;; :BYTE-COMPILE-OPCODE
+`byte-defop'
+`byte-defop-compiler-1'
+`byte-extrude-byte-code-vectors'
+
+;; :BYTE-CODE-LAPCODE
+`byte-compile-lapcode'
+
+;; :BYTE-COMPILE-FUNCTIONS-PEEPHOLE
+`byte-optimize-lapcode'
+`byte-compile-log-lap'
+`byte-optimize-form'
+
+;; :BYTE-COMPILE-INSPECT-LOG
+`byte-compile-log'               ;<MACRO>
+`byte-compile-log-file'
+`byte-compile-log-1'
+`byte-compile-log-warning' 
+
+;; :BYTE-COMPILE-INSPECT-DISASSEMBLE
+`disassemble'
+`disassemble-internal'
+`disassemble-1'
+`disassemble-offset'             ; :NOTE This does dynamic-scope magic.\n
+
+;; :BYTE-COMPILE-INSPECT
+`byte-decompile-bytecode'
+`byte-decompile-bytecode-1'
+`byte-code-meter'                ; :NOTE non-functional since circa 1991/2
+`display-call-tree'
+
+;; :BYTE-CODE-COMPILE-CONSTANTS-PEEPHOLE
+`byte-tagref-ops'
+`byte-conditional-ops'
+
+`byte-after-unbind-ops'
+`byte-compile-side-effect-and-error-free-ops'
+`byte-compile-side-effect-free-ops'
+
+;; :BYTE-CODE-COMPILE-VARIABLES-OPCODE
+`byte-code-vector'
+`byte-boolean-vars'              ; :NOTE Updated automatically by DEFVAR_BOOL
+`byte-stack+-info'
+`byte-goto-ops'
+`byte-constant-limit'
+
+;; :BYTE-COMPILE-VARIABLES-INSPECT-LOG
+`byte-compile-generate-call-tree'
+`byte-compile-current-form'        ;:NOTE Takes a keyword arg :end
+`byte-compile-dest-file'
+`byte-compile-current-file'
+`byte-compile-current-group'
+`byte-compile-current-buffer'
+`byte-optimize-log'
+
+;; :BYTE-CODE-COMPILE-VARIABLES
+`bytecomp-version-regexp'
+`no-byte-compile'
+`byte-compile-delete-errors'
+`byte-compile-noruntime-functions'
+`old-style-backquotes'
+`byte-compile-dynamic-docstrings'
+
+;; :BYTE-CODE-COMPILE-VARIABLES-ENVIRONMENT
+`byte-compile-initial-macro-environment'
+`byte-compile-macro-environment'
+`byte-compile-function-environment'
+
+;; :BYTE-CODE-COMPILE-VARIABLES-STATEFUL
+`print-gensym-alist'
+`bytecomp-outbuffer'                     ;:NOTE :FILE cl.el and bind this too.
+`byte-compile-last-warned-form'
+`byte-compile-last-logged-file'
+`byte-compile-last-position'
+`byte-compile-read-position'
+`byte-compile-output'
+`byte-compile-tag-number'  
+`byte-compile-depth'
+`byte-compile-maxdepth'
+
+`byte-compile-unresolved-functions'
+`byte-compiler-error-flag'
+`byte-compile-free-references'
+`byte-compile-free-assignments'
+`byte-compile-constants'
+`byte-compile-variables'
+
+;; BYTE-COMPILE-LOCAL-VARIABLES
+,----
+| The `bytecomp-' prefix is applied to all local variables with
+| otherwise common names in this and similar functions for the sake
+| of the boundp test in byte-compile-variable-ref.
+| :SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2008-01/msg00237.html')
+| :SEE (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2008-02/msg00134.html')
+| :NOTE Similar considerations apply to command-line-1 in startup.el.
+| 
+| `byte-compile-from-buffer', `byte-compile-file', `byte-recompile-directory',
+| `byte-compile-keep-pending', `byte-compile-file-form-defmumble'
+|
+`----
+`bytecomp-handler`
+`bytecomp-arg` 
+`bytecomp-dest`
+`bytecomp-directories`
+`bytecomp-directory`
+`bytecomp-file`
+`bytecomp-file-dir`
+`bytecomp-filename`
+`bytecomp-force`
+`bytecomp-outbuffer`
+`bytecomp-inbuffer`
+`bytecomp-res`
+`bytecomp-source`
+`bytecomp-this-one`
+`bytecomp-that-one`
+`bytecomp-this-kind`
+`bytecomp-that-kind`
+`bytecomp-name`
+
+
+:BYTE-COMPILE-INSPECT-VARIABLES
+`disassemble-column-1-indent'
+`disassemble-column-2-indent'
+`disassemble-recursive-indent'
+`byte-compile-generate-call-tree'
+`byte-compile-call-tree-sort'
+`byte-compile-call-tree'
+
+;; :BYTE-COMPILE-PROPERTIES
+`byte-compile`                                 ; :NOTE Also a <FUNCTION>
+`byte-code-vector`
+`byte-compile-format-like`
+`byte-compile-negated-op`
+`byte-hunk-handler`
+`byte-obsolete-info`
+`byte-obsolete-variable`
+`byte-opcode-invert`
+`byte-optimizer`
+`byte-stack+-info`
+`byte-hunk-handler`
+
+;; :BYTE-COMPILE-PROPERTY-VALUES
+`byte-compile-splice-in-already-compiled-code`
+`byte-compile-file-form-defsubst`
+`byte-compile-file-form-autoload`             
+`byte-compile-file-form-defvar`
+`byte-compile-file-form-define-abbrev-table`
+`byte-compile-file-form-custom-declare-variable`
+`byte-compile-file-form-require`
+`byte-compile-file-form-progn`
+`byte-compile-file-form-eval`
+`byte-compile-file-form-with-no-warnings`
+`byte-compile-file-form-defun`
+`byte-compile-file-form-defmacro`
+:NOTE (get 'byte-code 'byte-compile) 
+      (get 'no-byte-compile 'safe-local-variable)
+
+      (mapcar #'(lambda (bhh)
+                  `(,bhh . ,(get bhh 'byte-hunk-handler)))
+              '(defsubst autoload defvar defconst define-abbrev-table
+                 custom-declare-variable require progn prog1 prog2
+                 with-no-warnings defun eval defmacro))
+
+;; BYTE-COMPILE-BUFFER-ENVIRONMENT
+;; (setq buffer-file-coding-system nil)
+;; (set-buffer-multibyte t)
+;; (float-output-format nil)
+;; (print-length nil)
+;; (case-fold-search nil)
+;; (print-level nil)
+;; (setq overwrite-mode 'overwrite-mode-binary)
+;; (enable-local-variables :safe)
+;; (enable-local-eval nil)
+;; (default-value 'major-mode) 'emacs-lisp-mode 
+;; (normal-mode t)
+;;
+;; :BYTE-COMPILE-LOAD-MAGIC  
+,---- :SEE `byte-compile-insert-header'
+| The magic number of .elc files is \";ELC\", or 0x3B454C43.  After
+| that is the file-format version number \(18, 19, 20, or 23\) as a
+| byte, followed by some nulls.  The primary motivation for doing
+| this is to get some binary characters up in the first line of
+| the file so that `diff' will simply say \"Binary files differ\"
+| instead of actually doing a diff of two .elc files.  An extra
+| benefit is that you can add this to /etc/magic:
+|
+|  0	string		;ELC		GNU Emacs Lisp compiled file,
+|  >4	byte		x		version %d
+`----
+ ; => #x3b \(char-to-string #x3B\)
+ E => #x45 \(char-to-string #x45\)
+ L => #x4c \(char-to-string #x4C\)
+ C => #x43 \(char-to-string #x43\)
+ ;ELC => #x3B454C43\n
+
+;; :BYTE-COMPILE-BYTE-CODE-OBJECTS
+Following are the types of objects that `indirect-function' may return.\n
+;; :COMPILED-FUNCTION
+#[ \( <ARG-LIST> \) 
+     <BYTE-STR> 
+   [ <CONSTANTS>* ]  
+     <CONST-CNT-INT>  ;; :NOTE 0 indexed
+     \( <PATHNAME-FILE> . <OFFSET>\) ]\n
+;; :COMPILED-MACRO
+\(macro . 
+       #[ \( <ARG-LIST> \) 
+            <BYTE-STR> 
+          [ <CONSTANTS>* ]  
+            <CONST-CNT-INT>  ;; :NOTE 0 indexed
+          \( <PATHNAME-FILE> . <OFFSET>\) ] \)\n
+;; :SUBR-PRIMIITVE 
+#<subr `SYMBOL-NAME`>\n
+;; :INTERPRETED-FUNCTION
+\(lambda \( <ARG-LIST> \) <DOCSTR> \( <FUNCTION-BODY> \)\)\n
+;; :INTERPRETED-MACRO
+\(macro lambda \( <ARG-LIST> \) <DOCSTR> \( <MACRO-BODY> \)\)\n
+;; :AUTOLOAD-SYMBOL  ;:NOTE <TYPE> <- macro | keymap
+\(autoload  <FILENAME> <DOCSTRING-OFFSET> <INTERACTIVE> <TYPE> \)\n
+
+:NOTE Interestingly bytecomp.el makes use of `letf' :)
+:SEE :FILE disass.el bytecomp.el byte-opt.el byte-run.el bytecode.c 
+:SEE-ALSO `mon-help-byte-optimizer-find', `mon-help-symbol-functions', 
+.\n►►►"
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-byte-compile-functions :insertp t)
+    (message (concat ":FUNCTION `mon-help-byte-compile-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
+;;
+;;; :TEST-ME (mon-help-byte-compile-functions )
+;;; :TEST-ME (mon-help-byte-compile-functions t)
+;;; :TEST-ME (describe-function 'mon-help-byte-compile-functions)
+;;; :TEST-ME (apply 'mon-help-byte-compile-functions nil (t)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-08-11T15:07:34-04:00Z}#{10323} - by MON KEY>
+(defun mon-help-byte-code-vector-symbols (&optional insertp intrp)
+  ""
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-byte-code-vector-symbols :insertp t)
+    (message (concat ":FUNCTION `mon-help-byte-code-vector-symbols' " 
+                     "-- pass non-nil for optional arg INTRP"))))
+;;
+;;; :TEST-ME (mon-help-byte-code-vector-symbols)
+;;; :TEST-ME (mon-help-byte-code-vector-symbols t)
+;;; :TEST-ME (documentation 'mon-help-byte-code-vector-symbols)
+;;; :TEST-ME (apply 'mon-help-byte-code-vector-symbols '(t))
+;;
+(eval-when (compile load)
+  (put 'mon-help-byte-code-vector-symbols 'function-documentation 
+       (let (bcvs)
+         (with-temp-buffer
+           (save-excursion
+             (let ((ma-cnt 0))
+               (insert "\n;; :BYTE-CODE-VECTOR-SYMBOLS\n")
+               (mapc #'(lambda (x) 
+                         (unless (or (null x) 
+                                     (null (get x 'variable-documentation)))
+                           (insert
+                 
+                            (format "`%s'\n:index %d\n:documentation\n%S\n\n"
+                                    x ma-cnt 
+                                    (mon-string-justify-left
+                                     (documentation-property x 'variable-documentation)
+                                     78 16))))
+                         (incf ma-cnt))
+                     byte-code-vector)
+               ))
+           ;; (while (search-forward-regexp "^:documentation\n                " nil t)
+           (while (search-forward-regexp
+                   "^:documentation\n\"                " nil t)
+             (replace-match ":documentation  \""))
+           (setq bcvs (buffer-substring-no-properties (buffer-end 0)(buffer-end 1))))
+         (concat 
+          "List of non-nil elts in `byte-code-vector' with their index and docstrings.\n"
+          bcvs
+          ":SEE :FILE byte-opt.el\n\n"
+          ":SEE-ALSO `byte-boolean-vars', `byte-stack+-info', `byte-optimize-log',\n"          
+          "`mon-help-symbol-functions', `mon-help-byte-optimizer-find',\n"
+          "`mon-map-obarray-symbol-plist-props', `mon-help-permanent-locals-find',\n"
+          "`*mon-help-side-effect-free*', `*mon-help-side-effect-and-error-free*',\n"
+          "`*mon-help-pure-functions*', `*mon-help-permanent-locals*', `*mon-help-subrs*',\n"
+          "`*mon-help-byte-optimizer-vals*',  `gnus-byte-code'.\n►►►"))))
 
 ;;; ==============================
 ;;; :NOTE `¦' -> BROKEN BAR (ucs-insert #xa6)
@@ -12057,10 +12268,11 @@ most-positive-fixnum\n ;=> 536870911 (#o3777777777, #x1fffffff)\n
 :SEE (URL `http://tools.ietf.org/rfc/rfc3168.txt')
 :SEE (URL `http://en.wikipedia.org/wiki/IPv4')\n
 :SEE-ALSO `*mon-iptables-alst*'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-ipv4-header :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-ipv4-header' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-ipv4-header )
 ;;; :TEST-ME (mon-help-ipv4-header t)
@@ -12125,7 +12337,8 @@ most-positive-fixnum\n ;=> 536870911 (#o3777777777, #x1fffffff)\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-nclose-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-nclose-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-nclose-functions)
 ;;; :TEST-ME (mon-help-nclose-functions t)
@@ -12228,7 +12441,8 @@ elided from the presentation.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-iso-8601 :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-iso-8601' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 (defalias 'mon-help-time-iso-8601 'mon-help-iso-8601)
 ;; 
@@ -12302,18 +12516,16 @@ elided from the presentation.\n
 :SEE :FILE calendar/parse-time.el calendar/time-date.el
 :SEE-ALSO `mon-help-CL-local-time', `mon-help-time-functions',
 `mon-help-mon-time-functions'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-time-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-time-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-time-functions)
 ;;; :TEST-ME (mon-help-time-functions t)
 ;;; :TEST-ME (describe-function 'mon-help-time-functions)
 ;;; :TEST-ME (apply 'mon-help-time-functions '(t))
-
-;;; ==============================
-
 
 ;;; ==============================
 ;;; :CHANGESET 1850
@@ -12404,7 +12616,8 @@ elided from the presentation.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-mon-time-functions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-mon-time-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-mon-time-functions)
 ;;; :TEST-ME (mon-help-mon-time-functions t)
@@ -12423,7 +12636,8 @@ To jump to an info node with an elisp expression:
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-info-incantation :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-info-incantation' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-info-incantation t)
 ;;; :TEST-ME (mon-help-info-incantation)
@@ -12597,9 +12811,10 @@ Or, if you prefer, following is equivalent to above:
 `mon-help-du-incantation', `mon-help-unix-commands', `mon-help-permissions',
 `mon-help-crontab'.\n►►►"
 (interactive "i\nP")
-(if (or insertp intrp)
-    (mon-help-function-spit-doc 'mon-help-tar-incantation :insertp t)
-  (message "Pass non-nil for optional arg INTRP")))
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-tar-incantation :insertp t)
+    (message (concat ":FUNCTION `mon-help-tar-incantation' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-tar-incantation t)
 ;;; :TEST-ME (mon-help-tar-incantation)
@@ -12623,11 +12838,11 @@ done
 
 :SEE-ALSO `mon-help-info-incantation',`mon-help-du-incantation',
 `mon-help-unix-commands', `mon-help-permissions', `mon-help-crontab'.\n►►►"
-
 (interactive "i\nP")
-(if (or insertp intrp)
-    (mon-help-function-spit-doc 'mon-help-rename-incantation :insertp t)
-  (message "Pass non-nil for optional arg INTRP")))
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-rename-incantation :insertp t)
+    (message (concat ":FUNCTION `mon-help-rename-incantation' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-rename-incantation t)
 ;;; :TEST-ME (mon-help-rename-incantation)
@@ -12735,19 +12950,20 @@ M-x shell\install-info  info-file  \"/usr/info/dir\"\n
 `mon-help-crontab'.\n►►►"
   (interactive "i\nP")
   (if (or insertp intrp)
-    (let ((info-incantation
-           (cond
-            (IS-MON-P-W32
-             "M-x cygwin-shell install-info info-file /\"Program Files\"/Emacs/emacs/info/dir")
-            (IS-MON-P-GNU
-             "M-x shell\install-info  info-file  \"/usr/info/dir\"")
-          ((eq system-type 'windows-nt)
-             "\nM-x cygwin-shell install-info info-file /\"Program Files\"/Emacs/emacs/info/dir")
-          ((or (eq system-type 'gnu/linux)  (eq system-type 'linux))
-           "\nM-x shell\install-info  info-file  \"/usr/info/dir\"")
-          (t "\nM-x shell\install-info  info-file  \"/path/to/info/dir\""))))
-      (princ info-incantation (current-buffer)))
-    (message "Pass non-nil for optional arg INTRP")))
+      (let ((info-incantation
+             (cond
+              (IS-MON-P-W32
+               "M-x cygwin-shell install-info info-file /\"Program Files\"/Emacs/emacs/info/dir")
+              (IS-MON-P-GNU
+               "M-x shell\install-info  info-file  \"/usr/info/dir\"")
+              ((eq system-type 'windows-nt)
+               "\nM-x cygwin-shell install-info info-file /\"Program Files\"/Emacs/emacs/info/dir")
+              ((or (eq system-type 'gnu/linux)  (eq system-type 'linux))
+               "\nM-x shell\install-info  info-file  \"/usr/info/dir\"")
+              (t "\nM-x shell\install-info  info-file  \"/path/to/info/dir\""))))
+        (princ info-incantation (current-buffer)))
+    (message (concat ":FUNCTION `mon-help-install-info-incantation' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-install-info-incantation t)
 ;;; :TEST-ME (mon-help-install-info-incantation t)
@@ -12792,7 +13008,8 @@ The default is the basename of the archive, with suffixes removed.\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-hg-archive :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-hg-archive' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-hg-archive)
 ;;; :TEST-ME (mon-help-hg-archive t)
@@ -12875,7 +13092,8 @@ user-error, and may even make your CPU to stop working! (Hint just use `:q')\n
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-crontab :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-crontab' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-crontab)
 ;;; :TEST-ME (mon-help-crontab t)
@@ -12964,10 +13182,11 @@ user-error, and may even make your CPU to stop working! (Hint just use `:q')\n
 :SEE info node `(coreutils)File permissions'\n
 :SEE-ALSO `mon-help-unix-commands', `mon-help-permissions',
 `mon-help-tar-incantation', `mon-help-info-incantation'.\n►►►"
-(interactive "i\nP")
+  (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-permissions :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-permissions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-permissions)
 ;;; :TEST-ME (mon-help-permissions t)
@@ -13146,7 +13365,8 @@ whatis
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-unix-commands :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-unix-commands' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-unix-commands)
 ;;; :TEST-ME (mon-help-unix-commands t)
@@ -13168,10 +13388,11 @@ whatis
 `mon-help-char-representation', `format', `mon-string-justify-left',
 `mon-string-fill-to-col', `mon-line-indent-from-to-col',
 `mon-line-strings-pipe-to-col'.\n►►►"
-(interactive "i\nP")
-(if (or insertp intrp)
-    (mon-help-function-spit-doc 'mon-help-format-width :insertp t)
-  (message "Pass non-nil for optional arg INTRP")))
+  (interactive "i\nP")
+  (if (or insertp intrp)
+      (mon-help-function-spit-doc 'mon-help-format-width :insertp t)
+    (message (concat ":FUNCTION `mon-help-format-width' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-format-width t)
 ;;; :TEST-ME (mon-help-format-width)
@@ -13187,10 +13408,13 @@ whatis
 (defun mon-index-elisp-symbol ()
   "Find TOPIC in the indices of the Emacs Lisp Reference Manual.\n
 :EXAMPLE\n\(elisp-index-search \"setq\")\n
-:SEE-ALSO `finder-by-keyword',`mon-help-unix-commands'.\n►►►"
+:SEE-ALSO `finder-by-keyword', `mon-help-unix-commands'.\n►►►"
   (interactive)
   (let ((topic (symbol-name (symbol-at-point))))
-    (setq topic (read-string (format "Subject to look up <%s>: " topic) nil nil topic))
+    (setq topic (read-string 
+                 (format (concat ":FUNCTION `mon-index-elisp-symbol' "
+                                 "-- subject to look up <%s>: ")
+                         topic) nil nil topic))
     (info "elisp")
     (Info-index topic)))
 ;;
@@ -13243,7 +13467,8 @@ whatis
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-w32-functions :insertp t)
-      (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-w32-functions' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-w32-functions)
 ;;; :TEST-ME (mon-help-w32-functions t)
@@ -13253,80 +13478,84 @@ whatis
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
-(eval-and-compile
-(defvar *w32-env-variables-alist*
-  '((ALLUSERSPROFILE %ALLUSERSPROFILE%
-     "Local returns the location of the All Users Profile.")
-    (APPDATA %APPDATA%
-     "Local returns the location where applications store data by default.")
-    (CD %CD%
-     "Local returns the current directory string.")
-    ;;(CLIENTNAME %CLIENTNAME% "")
-    (CMDCMDLINE %CMDCMDLINE%
-     "Local returns the exact command line used to start the current cmd.exe")
-    (CMDEXTVERSION %CMDEXTVERSION%
-     "System returns the version number of the current Command Processor Extensions.")
-    ;; (COMMONPROGRAMFILES %COMMONPROGRAMFILES% ""
-    (COMPUTERNAME %COMPUTERNAME%
-     "System returns the name of the computer.")
-    (COMSPEC %COMSPEC%
-     "System returns the exact path to the command shell executable.")
-    (DATE %DATE%
-     "System returns the current date. This variable uses the same format as the date /t command. Cmd.exe generates this variable. For more information about the date command, see the Date command.")
-    (ERRORLEVEL %ERRORLEVEL%
-     "System returns the error code of the most recently used command. A non-0 value usually indicates an error.")
-    ;; (FP_NO_HOST_CHECK  %FP_NO_HOST_CHECK% "" ;Consensus seems to be this is a frontpage related thing.
-    (HOMEDRIVE %HOMEDRIVE%
-     "System returns which local workstation drive letter is connected to the user's home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
-    (HOMEPATH %HOMEPATH%
-     "System returns the full path of the user's home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
-    (HOMESHARE %HOMESHARE%
-     "System returns the network path to the user's shared home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
-    (LOGONSERVER %LOGONSERVER% ;; :SEE (URL `http://support.microsoft.com/kb/183495')
-     "Local returns the name of the domain controller that validated the current logon session.")
-    (NUMBER_OF_PROCESSORS %NUMBER_OF_PROCESSORS%
-     "System specifies the number of processors installed on the computer.")
-    (OS %OS%
-     "System returns the OS name. Windows XP and Windows 2000 display the OS as Windows_NT.")
-    (PATH %PATH%
-     "System specifies the search path for executable files")
-    (PATHEXT %PATHEXT%
-     "System returns a list of the file extensions that the OS considers to be executable.")
-    (PROCESSOR_ARCHITECTURE %PROCESSOR_ARCHITECTURE%
-     "System returns the processor's chip architecture. Values: x86, IA64.")
-    (PROCESSOR_IDENTIFIER %PROCESSOR_IDENTIFIER%
-     "System returns a description of the processor.")
-    (PROCESSOR_LEVEL %PROCESSOR_LEVEL%
-     "System returns the model number of the computer's processor.")
-    (PROCESSOR_REVISION %PROCESSOR_REVISION%
-     "System returns the revision number of the processor.")
-    (PROMPT %PROMPT%
-     "Local returns the command-prompt settings for the current interpreter. Cmd.exe generates this variable.")
-    (RANDOM %RANDOM%
-     "System returns a random decimal number between 0 and 32767. Cmd.exe generates this variable.")
-    ;;(SESSIONNAME %SESSIONNAME%  "")
-    (SYSTEMDRIVE %SYSTEMDRIVE%
-     "System returns the drive containing the Windows root directory (i.e., the system root.")
-    (SYSTEMROOT %SYSTEMROOT%
-     "System returns the location of the Windows root directory.")
-    (TEMP %TEMP%
-     "System and User return the default temporary directories for applications that are available to users who are currently logged on. Some applications require TEMP and others require TMP.")
-    (TMP %TMP%
-     "System and User return the default temporary directories for applications that are available to users who are currently logged on. Some applications require TEMP and others require TMP.")
-    (TIME %TIME%
-     "System returns the current time. This variable uses the same format as the time /t command. Cmd.exe generates this variable. For more information about the time command. :SEE-ALSO the Time command.")
-    (USERDOMAIN %USERDOMAIN%
-     "Local returns the name of the domain that contains the user's account.")
-    (USERNAME %USERNAME%
-     "Local returns the name of the user currently logged on.")
-    (USERPROFILE %USERPROFILE%
-     "Local returns the location of the profile for the current user.")
-    (WINDIR %WINDIR%
-     "System returns the location of the OS directory.")
-    (PROGRAMFILES %PROGRAMFILES%
-     "Returns the location of the default install directory for applications."))
+(defvar *w32-env-variables-alist* nil
   "*List of environment variables available in w32.
-:CALLED-BY `mon-help-w32-env'."))
+:CALLED-BY `mon-help-w32-env'.
+:SEE-ALSO .\n►►►")
+;;
+(unless (and (intern-soft "*w32-env-variables-alist*")
+             (bound-and-true-p '*w32-env-variables-alist*))
+  (setq *w32-env-variables-alist*
+        '((ALLUSERSPROFILE %ALLUSERSPROFILE%
+                           "Local returns the location of the All Users Profile.")
+          (APPDATA %APPDATA%
+                   "Local returns the location where applications store data by default.")
+          (CD %CD%
+              "Local returns the current directory string.")
+          ;;(CLIENTNAME %CLIENTNAME% "")
+          (CMDCMDLINE %CMDCMDLINE%
+                      "Local returns the exact command line used to start the current cmd.exe")
+          (CMDEXTVERSION %CMDEXTVERSION%
+                         "System returns the version number of the current Command Processor Extensions.")
+          ;; (COMMONPROGRAMFILES %COMMONPROGRAMFILES% ""
+          (COMPUTERNAME %COMPUTERNAME%
+                        "System returns the name of the computer.")
+          (COMSPEC %COMSPEC%
+                   "System returns the exact path to the command shell executable.")
+          (DATE %DATE%
+                "System returns the current date. This variable uses the same format as the date /t command. Cmd.exe generates this variable. For more information about the date command, see the Date command.")
+          (ERRORLEVEL %ERRORLEVEL%
+                      "System returns the error code of the most recently used command. A non-0 value usually indicates an error.")
+          ;; (FP_NO_HOST_CHECK  %FP_NO_HOST_CHECK% "" ;Consensus seems to be this is a frontpage related thing.
+          (HOMEDRIVE %HOMEDRIVE%
+                     "System returns which local workstation drive letter is connected to the user's home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
+          (HOMEPATH %HOMEPATH%
+                    "System returns the full path of the user's home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
+          (HOMESHARE %HOMESHARE%
+                     "System returns the network path to the user's shared home directory. This variable is set based on the value of the home directory. The user's home directory is specified in Local Users and Groups.")
+          (LOGONSERVER %LOGONSERVER% ;; :SEE (URL `http://support.microsoft.com/kb/183495')
+                       "Local returns the name of the domain controller that validated the current logon session.")
+          (NUMBER_OF_PROCESSORS %NUMBER_OF_PROCESSORS%
+                                "System specifies the number of processors installed on the computer.")
+          (OS %OS%
+              "System returns the OS name. Windows XP and Windows 2000 display the OS as Windows_NT.")
+          (PATH %PATH%
+                "System specifies the search path for executable files")
+          (PATHEXT %PATHEXT%
+                   "System returns a list of the file extensions that the OS considers to be executable.")
+          (PROCESSOR_ARCHITECTURE %PROCESSOR_ARCHITECTURE%
+                                  "System returns the processor's chip architecture. Values: x86, IA64.")
+          (PROCESSOR_IDENTIFIER %PROCESSOR_IDENTIFIER%
+                                "System returns a description of the processor.")
+          (PROCESSOR_LEVEL %PROCESSOR_LEVEL%
+                           "System returns the model number of the computer's processor.")
+          (PROCESSOR_REVISION %PROCESSOR_REVISION%
+                              "System returns the revision number of the processor.")
+          (PROMPT %PROMPT%
+                  "Local returns the command-prompt settings for the current interpreter. Cmd.exe generates this variable.")
+          (RANDOM %RANDOM%
+                  "System returns a random decimal number between 0 and 32767. Cmd.exe generates this variable.")
+          ;;(SESSIONNAME %SESSIONNAME%  "")
+          (SYSTEMDRIVE %SYSTEMDRIVE%
+                       "System returns the drive containing the Windows root directory (i.e., the system root.")
+          (SYSTEMROOT %SYSTEMROOT%
+                      "System returns the location of the Windows root directory.")
+          (TEMP %TEMP%
+                "System and User return the default temporary directories for applications that are available to users who are currently logged on. Some applications require TEMP and others require TMP.")
+          (TMP %TMP%
+               "System and User return the default temporary directories for applications that are available to users who are currently logged on. Some applications require TEMP and others require TMP.")
+          (TIME %TIME%
+                "System returns the current time. This variable uses the same format as the time /t command. Cmd.exe generates this variable. For more information about the time command. :SEE-ALSO the Time command.")
+          (USERDOMAIN %USERDOMAIN%
+                      "Local returns the name of the domain that contains the user's account.")
+          (USERNAME %USERNAME%
+                    "Local returns the name of the user currently logged on.")
+          (USERPROFILE %USERPROFILE%
+                       "Local returns the location of the profile for the current user.")
+          (WINDIR %WINDIR%
+                  "System returns the location of the OS directory.")
+          (PROGRAMFILES %PROGRAMFILES%
+                        "Returns the location of the default install directory for applications."))))
 ;;
 ;;; :TEST-ME (assoc 'TMP *w32-env-variables-alist*)
 ;;; :TEST-ME (car (assoc 'TMP *w32-env-variables-alist*))
@@ -13342,41 +13571,44 @@ whatis
 ;;; :MODIFICATIONS <Timestamp: #{2010-01-08T18:51:29-05:00Z}#{10015} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-01T22:22:37-04:00Z}#{09405} - by MON KEY>
 ;;; :CREATED <Timestamp: Thursday July 02, 2009 @ 11:50.50 AM - by MON KEY>
-(eval-and-compile
 (defun mon-help-w32-env (&optional insertp intrp)
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-w32-env :insertp t)
-    (message "Pass non-nil for optional arg INTRP"))))
+    (message (concat ":FUNCTION `mon-help-w32-env' " 
+                     "-- pass non-nil for optional arg INTRP"))))
+;;
+;;; :TEST-ME (mon-help-w32-env )
+;;; :TEST-ME (mon-help-w32-env )
+;;; :TEST-ME (mon-help-w32-env )
+
 ;; Now we tack on a docstring using.
-(eval-when (compile load)
+(eval-when (compile); load)
   (let ((tt-doc *w32-env-variables-alist*))
-    (put 'tt-doc 'variable-documentation
-         (concat 
-          "Environment variables available in w32.\n"
-          "Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---\n"
-          "Alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
-          (mapconcat #'(lambda (x)
-                         (let* ((k (car x))
-                                (v (cdr (assoc k tt-doc)))
-                                (v-var (car v))
-                                (v-doc (mon-string-justify-left (cadr v) 68 3)))
-                           (format "-\n%s %s \n%s" k v-var v-doc)))
-                     tt-doc "\n")
-          "\n\n:EXAMPLE\n\n(assoc 'WINDIR *w32-env-variables-alist*)\n\n"
-          ":EXAMPLE\n\n"
-          "Open a cmd prompt and type echo %appdata% which should return\n"
-          "the full path to your profile's Application Data directory.\n"
-          "If calling from a batch file remember to quote the thusly %variable%\n"
-          "or: set VARIABLE=value.\n\n"
-          ":SOURCE\n:SEE \(URL `http://windowsitpro.com/article/articleid/23873/')\n"
-          ":SEE \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n"
-          ":SEE-ALSO `mon-help-w32-env', `mon-help-w32-functions'. \n►►►\n"))
-    ;;(put 'mon-help-w32-env 'function-documentation
+    (setq tt-doc
+          (concat 
+           "Environment variables available in w32.\n"
+           "Called interactively with Prefix arg non-nil prints to current-buffer.\n\n---\n"
+           "Alist of W32 Environmental variables in var `*w32-env-variables-alist*':\n\n"
+           (mapconcat #'(lambda (x)
+                          (let* ((k (car x))
+                                 (v (cdr (assoc k tt-doc)))
+                                 (v-var (car v))
+                                 (v-doc (mon-string-justify-left (cadr v) 68 3)))
+                            (format "-\n%s %s \n%s" k v-var v-doc)))
+                      tt-doc "\n")
+           "\n\n:EXAMPLE\n\n(assoc 'WINDIR *w32-env-variables-alist*)\n\n"
+           ":EXAMPLE\n\n"
+           "Open a cmd prompt and type echo %appdata% which should return\n"
+           "the full path to your profile's Application Data directory.\n"
+           "If calling from a batch file remember to quote the thusly %variable%\n"
+           "or: set VARIABLE=value.\n\n"
+           ":SOURCE\n:SEE \(URL `http://windowsitpro.com/article/articleid/23873/')\n"
+           ":SEE \(URL `http://technet.microsoft.com/en-us/library/bb490954.aspx'\)\n"
+           ":SEE-ALSO `mon-help-w32-env', `mon-help-w32-functions'. \n►►►\n"))
     (unless (get 'mon-help-w32-env 'function-documentation)
-      (plist-put (symbol-plist 'mon-help-w32-env) 'function-documentation
-               (documentation-property 'tt-doc 'variable-documentation)))
-)) ;; :CLOSE eval-when
+      (put 'mon-help-w32-env 'function-documentation tt-doc)))
+) ;; :CLOSE eval-when
 
 ;;; :WAS
 ;;; (eval-when (compile eval)
@@ -14679,40 +14911,71 @@ M-x `zone' -- display text tricks
 
 
 ;;; ==============================
-;;; Make variable `*mon-help-reference-keys*' self documenting.
-;;; Concat the 'documentation header' onto 'doc string' snarfed from itself.
-;;; Put that value as the variable-documentation property value.
-;;; "I'm hungry. Maybe I'll vomit into my own mouth and eat that..."
-;;; (food-p self-vomit) => t
+
 ;;; ==============================
-(let ((self-puke *mon-help-reference-keys*))
-  (dolist (i '(("^#:START:REFERENCE-SHEET#$" . "")
-               ("^#:END:REFERENCE-SHEET#$" . "")))
-    (setq self-puke (replace-regexp-in-string (car i) (cdr i) self-puke)))
-  (setq self-puke
-        (concat
-         "*Other Emacs reference sheets fit on conveniently sized cards. This one won't.\n"
-         "Instead it tries to tell you everything about doing things in Emacs.\n"
-         ;; :WAS (symbol-value '*mon-help-reference-keys*)
-         self-puke
-         ;; :WAS *mon-help-reference-keys*
-         "\n;; :TAGS-MON-LOCAL-FOR-KEY-BINDINGS\n\n"
-         (mon-string-justify-left 
-          (mapconcat #'identity 
-                     (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*)) " ")
-          68 2) 
-         "\n\n:NOTE Use with `mon-help-keys-wikify' for rapid EmacsWiki-fication.\n" 
-         "The list above can be kept properly escaped by evaluating:\n"
-         "`mon-help-escape-for-ewiki' and `mon-help-unescape-for-ewiki' respectively.\n\n"
-         ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n"
-         ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source'\).\n\n"
-         ":SEE-ALSO `mon-help-keys', `mon-help-key-functions', `*mon-help-reference-keys*',\n"
-         "`*mon-help-reference-keywords*'.\n►►►"))
-    (put '*mon-help-reference-keys* 'variable-documentation self-puke))
+;;; :CHANGESET 2112
+;;; :CREATED <Timestamp: #{2010-09-06T13:24:05-04:00Z}#{10361} - by MON KEY>
+(defun mon-help-bind-help-keys-loadtime (&optional w-msg-user)
+  "Loadtime function to build docs for `mon-help-keys' and `*mon-help-reference-keys*'.\n
+Create  function-documentation with `*mon-help-reference-keys*''s variable-documentation.
+:SEE-ALSO .\n►►►"
+  (let ((self-puke *mon-help-reference-keys*))
+    (dolist (i '(("^#:START:REFERENCE-SHEET#$" . "")
+                 ("^#:END:REFERENCE-SHEET#$" . "")))
+      (setq self-puke (replace-regexp-in-string (car i) (cdr i) self-puke)))
+    (setq self-puke
+	  (concat
+	   "*Other Emacs reference sheets fit on conveniently sized cards. This one won't.\n"
+	   "Instead it tries to tell you everything about doing things in Emacs.\n"
+	   ;; :WAS (symbol-value '*mon-help-reference-keys*)
+	   self-puke
+	   ;; :WAS *mon-help-reference-keys*
+	   "\n;; :TAGS-MON-LOCAL-FOR-KEY-BINDINGS\n\n"
+	   (mon-string-justify-left 
+	    (mapconcat #'identity 
+		       (cadr (assoc 'meta-tags-keybindings *mon-help-mon-tags-alist*)) " ")
+	    68 2) 
+	   "\n\n:NOTE Use with `mon-help-keys-wikify' for rapid EmacsWiki-fication.\n" 
+	   "The list above can be kept properly escaped by evaluating:\n"
+	   "`mon-help-escape-for-ewiki' and `mon-help-unescape-for-ewiki' respectively.\n\n"
+	   ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley')\n"
+	   ":SEE \(URL `http://www.emacswiki.org/emacs/Reference_Sheet_by_Aaron_Hawley_source'\).\n\n"
+	   ":SEE-ALSO `mon-help-keys', `mon-help-key-functions', `*mon-help-reference-keys*',\n"
+	   "`*mon-help-reference-keywords*'.\n►►►"))
+    (when (null (get '*mon-help-reference-keys* 'variable-documentation))
+      (if (atom w-msg-user)
+          (setq w-msg-user (list '*mon-help-reference-keys*))
+        (push '*mon-help-reference-keys* w-msg-user))
+      (put '*mon-help-reference-keys* 'variable-documentation self-puke)))
+  (let ((mhk-put (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation)))
+    ;; Knock of the leading var `*'.
+    (setq mhk-put (substring mhk-put 1))
+    (setq mhk-put (replace-regexp-in-string " `mon-help-keys',?" "" mhk-put))
+    (when (null (get 'mon-help-keys 'function-documentation))
+      (if (atom w-msg-user)
+          (setq w-msg-user (list 'mon-help-keys))
+        (push 'mon-help-keys w-msg-user)))
+    (put 'mon-help-keys 'function-documentation mhk-put)
+    (if w-msg-user
+        (message (concat ":FUNCTION `mon-help-bind-help-keys-loadtime' "
+                         "-- docstrings for symbols "
+                         (if (consp w-msg-user)
+                             (mapconcat #'(lambda (ldtm) 
+                                            (format "`%s'" (symbol-name ldtm)))
+                                        (setq w-msg-user (delq t w-msg-user)) " ")
+                           "`*mon-help-reference-keys*' and `mon-help-keys'")
+                         " bound")))))
+;;
+;;; (progn (put '*mon-help-reference-keys* 'variable-documentation nil)
+;;;         (put 'mon-help-keys 'function-documentation nil))
+;;
+;;; :TEST-ME (mon-help-bind-help-keys-loadtime t)
+;;; :TEST-ME (mon-help-bind-help-keys-loadtime)
 ;;
 ;;; :TEST-ME (describe-variable '*mon-help-reference-keys*)
+;;; :TEST-ME (describe-function 'mon-help-keys)
 
-;;; *mon-help-reference-keys*
+
 ;;; ==============================
 ;;; Function documents itself by snarfing from the variable-documentation
 ;;; property value of `*mon-help-reference-keys*' and putting that
@@ -14722,17 +14985,14 @@ M-x `zone' -- display text tricks
   (interactive "i\nP")
   (if (or insertp intrp)
       (mon-help-function-spit-doc 'mon-help-keys :insertp t)
-    (message "Pass non-nil for optional arg INTRP")))
+    (message (concat ":FUNCTION `mon-help-keys' " 
+                     "-- pass non-nil for optional arg INTRP"))))
 ;;
-(let ((mhk-put 
-       (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation)))
-  ;; Knock of the leading var `*'.
-  (setq mhk-put (substring mhk-put 1))
-  (setq mhk-put (replace-regexp-in-string " `mon-help-keys',?" "" mhk-put))
-  (put 'mon-help-keys 'function-documentation
-       ;; :WAS (concat "" (plist-get (symbol-plist '*mon-help-reference-keys*) 'variable-documentation)))
-       mhk-put))
-;;
+;;; :TEST-ME (mon-help-keys t)
+;;; :TEST-ME (mon-help-keys nil t)
+;;; :TEST-ME (describe-function 'mon-help-keys)
+;;; :TEST-ME (apply 'mon-help-keys nil '(t))
+
 ;;; :TEST-ME (mon-help-keys t)
 ;;; (fmakunbound 'mon-help-keys)
 
@@ -14877,7 +15137,7 @@ Return value is a three elt list with the form:\n
           ((and (or insrtp intrp) (not start-at) (not end-at))
            (setq shw-msg
                  (concat
-                  ":FUNCTION `mon-help-keys-wikify' - " (if intrp " INTRP " " INSRTP ")
+                  ":FUNCTION `mon-help-keys-wikify' -- " (if intrp " INTRP " " INSRTP ")
                   "didn't match delimited region used USE-VAR value `*mon-help-reference-keys*'"))))
     (setq in-bfr 
           ;;(with-temp-buffer
@@ -15061,7 +15321,9 @@ checked and required when available.\n
 Following libraries pulled in by a require statement if present in load-path:\n
  mon-doc-help-pacman.el mon-doc-help-proprietary.el
  mon-doc-help-css.el mon-doc-help-tidy.el mon-doc-help-mail.el\n
-When predicate `IS-MON-SYSTEM-P' returns non-nil evaluate:
+Evaluates `mon-help-bind-help-keys-loadtime' to bind:
+ `mon-help-keys' and `*mon-help-reference-keys*'\n
+When predicate `IS-MON-SYSTEM-P' returns non-nil evaluate:\n
  `elint-scan-doc-file'
  `mon-help-permanent-locals-find' and bind `*mon-help-permanent-locals*'
  `mon-help-byte-optimizer-find' and bind  `*mon-help-byte-optimizer-vals*'\n
@@ -15079,10 +15341,12 @@ When predicate `IS-MON-SYSTEM-P' returns non-nil evaluate:
                  (push ":EVAULATED `mon-help-byte-optimizer-find'" myb-msg-usr)
                  (setq w-msg-user t))
                ;; (when (fboundp 'mon-check-feature-for-loadtime)
-                 (when (mon-help-permanent-locals-find nil t)
-                   (push ":EVALUATED `mon-help-permanent-locals-find'" myb-msg-usr)
-                   (setq w-msg-user t)) ;)
-                 )
+	       (when (mon-help-permanent-locals-find nil t)
+		 (push ":EVALUATED `mon-help-permanent-locals-find'" myb-msg-usr)
+		 (setq w-msg-user t)))
+             (when (mon-help-bind-help-keys-loadtime t)
+               (push ":EVALUATED `mon-help-bind-help-keys-loadtime'" myb-msg-usr)
+               (setq w-msg-user t))
              (when (mon-check-feature-for-loadtime 'mon-doc-help-pacman) 
                (push ":REQUIRED `mon-doc-help-pacman'" myb-msg-usr)
                (setq w-msg-user t))
@@ -15095,13 +15359,13 @@ When predicate `IS-MON-SYSTEM-P' returns non-nil evaluate:
              (when (mon-check-feature-for-loadtime 'mon-doc-help-mail) 
                (push ":REQUIRED `mon-doc-help-mail'" myb-msg-usr)               
                (setq w-msg-user t))
-               ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
+             ;; Load doc functions which can't possibly be GPL/GFDL e.g MS-C0RP API etc.
              (when (mon-check-feature-for-loadtime 'mon-doc-help-proprietary)
                (push ":REQUIRED `mon-doc-help-proprietary'" myb-msg-usr)
-               (setq w-msg-user t))))
+               (setq w-msg-user t)))
            w-msg-user)
-    (message (concat ":FUNCTION `mon-help-utils-loadtime' "
-                     (mapconcat #'identity (setq myb-msg-usr (nreverse myb-msg-usr)) ";\n")))))
+      (message (concat ":FUNCTION `mon-help-utils-loadtime' "
+                       (mapconcat #'identity (setq myb-msg-usr (nreverse myb-msg-usr)) "\n"))))))
 
 ;;; ==============================
 (provide 'mon-doc-help-utils)

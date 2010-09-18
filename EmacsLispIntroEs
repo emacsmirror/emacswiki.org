@@ -1,0 +1,41 @@
+[[en:EmacsLispIntro]]
+: ''¡Un editor programable es una oportunidad sobresaliente para
+aprender a programar!'' -- TheEmacsPaper
+
+Aprenda [[Lisp]] por la vía fácil: lea la ''Introducción a la
+programación en Emacs Lisp'', escrita por Robert J Chassel.  Altamente
+recomendada para aquellos sin experiencia previa en la programación
+Lisp.
+
+Hasta Emacs 21, esta introducción se distribuía por separado.  Viene
+en formato Texinfo, lo que significa que se puede convertir a un
+amplio surtido de formatos: info, html, pdf y otros.  Así, por
+ejemplo, en Debian, apt-get install emacs-lisp-intro instalaría el
+manual.
+
+A partir de la versión 22 de Emacs, ya viene incluido oficialmente,
+pero una desafortunada decisión de los debianitas obliga a sus
+usuarios (y de sistemas basados en Debian) a tener que seguir haciendo
+una instalación por separado.
+
+La manera para leer esta Introducción es teclear `C-h i' para arrancar
+el sistema Info y después <code>`m Emacs Lisp Intro RET'</code>.
+Véase InfoMode para obtener más ayuda acerca del uso de Info.
+
+Este manual se encuentra en estado muy avanzado de traducción al
+español en:
+
+* http://gnu.manticore.es/manual-introduccion-emacs-lisp
+
+
+* Se publica como libro de papel en inglés en GnuPress.
+
+
+
+También se querrá conocer la EmacsLispReferencia para empezar a
+aprender el funcionamiento de Emacs Lisp.  Nota: EmacsLispIntroEs es
+para principiantes; EmacsLispReferencia es el verdadero manual de
+referencia, no una guía de aprendizaje.
+
+----
+CategoryDocumentation

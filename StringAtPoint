@@ -141,14 +141,18 @@ When I tried a naive version of the kill command, it worked.
 But only when the point is in the string, but not the beginning. -- AaronHawley
 
 [new]
-Maybe it should not fail at the beginning of the string. I am not sure how it supposed to work at the end-points.
-Are there any descriptions or tests for that?
+I have taken care of the end points in the new version in the nXhtml repository.
 
 If you look at the code for beginning-of-thing it assumes that point is in "thing" so you can not use the function for 'bounds-of-thing-at-point to move the way you want.
 -- LennartBorgman
 
 [new]
-Well, I took `forward-sexp' and `kill-sexp' as a starting point, since they can operate on strings pretty well, but then I took it to the next level -- noting that strings can't be nested like sexps are -- allowing me to make the commands to work from inside a string. -- AaronHawley
+Well, I took `forward-sexp' and `kill-sexp' as a starting point, since they can operate on strings pretty well, but then I took it to the next level -- noting that strings can't be nested like sexps are -- allowing me to make the commands to work from inside a string.
+
+How does your corrected code fair in the test suite? -- AaronHawley
+
+[new]
+Which test suite? -- LennartBorgman
 
 ----
 CategoryCode

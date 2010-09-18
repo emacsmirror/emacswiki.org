@@ -191,18 +191,32 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-bind-nefs-photos-at-loadtime', `mon-help-utils-loadtime',
 `mon-help-utils-CL-loadtime', `mon-bind-doc-help-proprietery-vars-at-loadtime'.\n►►►"
   (unwind-protect
+      ;;
       (with-current-buffer (get-buffer-create *mon-post-load-hook-trigger-buffer*)
-        (when (and (intern-soft "IS-MON-P-GNU")
+        ;; IS-MON-SYSTEM-P        
+        (when (and (intern-soft "IS-MON-SYSTEM-P")
                    (bound-and-true-p IS-MON-P-GNU))
-          (mon-help-utils-CL-loadtime t)
-          (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
-          (add-hook 'kill-buffer-hook 'mon-update-tags-tables nil t))
-        (when (and (intern-soft "IS-W32-P") 
-                   (bound-and-true-p IS-W32-P)
-                   (fboundp  'mon-maximize-frame-w32))
-          (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t))
+          ;; IS-MON-P-GNU
+          (when (and (intern-soft "IS-MON-P-GNU")
+                     (bound-and-true-p IS-MON-P-GNU))
+            (mon-help-utils-CL-loadtime t)
+            (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
+            (add-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime nil t))
+          ;; IS-W32-P
+          (when (and (intern-soft "IS-W32-P") 
+                     (bound-and-true-p IS-W32-P)
+                     (fboundp  'mon-maximize-frame-w32))
+            (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t))
+          ;; Instantiate the tags-table 
+          (when (and (visit-tags-table-buffer)
+                     tags-file-name)
+            (message (concat ":FUNCTION `mon-run-post-load-hooks' "
+                             "-- evaluated `visit-tags-table-buffer' at loadtime"))
+            (message (concat ":FUNCTION `mon-run-post-load-hooks' "
+                             "-- value of current `tags-file-name': #P%S") tags-file-name)))
         (when (get-buffer *mon-post-load-hook-trigger-buffer*)
           (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*))))
+    ;; PROTECTED-FORM
     (when (get-buffer *mon-post-load-hook-trigger-buffer*)
       (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*)))))
 

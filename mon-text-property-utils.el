@@ -419,15 +419,15 @@ Default is to search from point.\n
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-27T19:58:23-05:00Z}#{10087} - by MON KEY>
 (defun mon-get-next-face-property-change-if (test-face-symbol test-at-posn)
-  "Text if the face we're looking for is at position.
+  "Test if the face we're looking for is at test-at-posn.\n
 TEST-FACE-SYMBOL symbol naming a face to test.\n
-TEST-AT-POSN position to test at.\n
-:SEE-ALSO `mon-get-text-properties-region-to-kill-ring', `mon-get-text-properties-category',
-`mon-line-test-content', `mon-get-next-face-property-change',
-`mon-get-next-face-property-change-if', `mon-get-all-face-property-change'
-`mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
-`mon-nuke-text-properties-region', `mon-remove-text-property',
-`mon-remove-single-text-property'.\n►►►"
+TEST-AT-POSN is a buffer position to examine.\n
+:SEE-ALSO `mon-get-text-properties-region-to-kill-ring',
+`mon-get-text-properties-category', `mon-line-test-content',
+`mon-get-next-face-property-change', `mon-get-next-face-property-change-if',
+`mon-get-all-face-property-change' `mon-list-all-properties-in-buffer',
+`mon-nuke-text-properties-buffer', `mon-nuke-text-properties-region',
+`mon-remove-text-property', `mon-remove-single-text-property'.\n►►►"
 (let ((pg (plist-get (text-properties-at test-at-posn) 'face)))
   (when pg 
     (cond ((consp pg) (memq test-face-symbol pg))
@@ -445,8 +445,8 @@ TEST-AT-POSN position to test at.\n
              \(search-forward-regexp \"\(mon.*\)$\" nil t\)\)\)\)
   \(setq sbr `\(,\(match-beginning 0\) . ,\(match-end 0\)\)\)
   \(mon-get-text-properties-region \(car sbr\) \(cdr sbr\)\)\)\n
-:NOTE Indexes are into string not buffer as with return value of:
- `mon-get-text-properties-print' & `mon-get-text-properties-read-temp'.\n
+:NOTE Indexes are into string not buffer as with return value of:\n
+ `mon-get-text-properties-print', `mon-get-text-properties-read-temp'\n
 :SEE-ALSO `mon-get-text-properties-region-to-kill-ring'.\n►►►"
   (interactive "r\np")
   (let (get-str nw-tl) 
@@ -470,7 +470,7 @@ TEST-AT-POSN position to test at.\n
 (defun mon-get-text-properties-print (start end tp-buff &optional intrp)
   "Return buffer-string START END with text-properties.\n
 TP-BUFF is a buffer name to print to as with prin1.\n
-When called-interactively insert at point. Moves point.
+When called-interactively insert at point. Moves point.\n
 :SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-print',
 `mon-get-text-properties-read-temp', `mon-get-text-properties-elisp-string',
 `mon-get-text-properties-elisp-string-pp',
@@ -657,7 +657,7 @@ Sublists contain two index values and text-property plist of prop val pairs e.g.
                     (set-marker rd-prop-marker (point)))
                    ((bobp)
                     (set-marker rd-prop-marker (point)))
-                    ;; Anything else if prob. funky
+                    ;; Anything else is prob. funky
                    (t (error (concat ":FUNCTION `mon-get-text-properties-parse-buffer' "
                                      "-- bounds of sexp unknown"))))
              (if (eq (car (syntax-after (1+ (marker-position rd-prop-marker)))) 4)
@@ -688,10 +688,10 @@ Sublists contain two index values and text-property plist of prop val pairs e.g.
 ;;; :CREATED <Timestamp: #{2010-03-05T14:10:07-05:00Z}#{10095} - by MON KEY>
 (defun mon-get-text-properties-parse-sym (prop prop-val props-in-sym)
   "Filter text-property list for sublists containing PROP and PROP-VAL.\n
-PROP is a property to filter.
-PROP-VAL is a property value of PROP to filter. 
-It is one of the types:
- string, integer, symbol, float, vector, buffer
+PROP is a property to filter.\n
+PROP-VAL is a property value of PROP to filter.\n
+It is one of the types:\n
+ <STRING>, <INTEGER>, <SYMBOL>, <FLOAT>, <VECTOR>, <BUFFER>\n
 PROPS-IN-SYM is a symbol to parse.\n
 Format of PROPS-IN-SYM are as per `mon-get-text-properties-parse-buffer-or-sym'.\n
 :SEE `mon-get-text-properties-parse-buffer-or-sym' for usage example.\n
@@ -726,16 +726,16 @@ Format of PROPS-IN-SYM are as per `mon-get-text-properties-parse-buffer-or-sym'.
                                                           read-prop-sym 
                                                           read-prop-buffer)
   "Filter text-property list for sublists containing the PROP and PROP-VAL.\n
-Return a two valued list. 
-The car is a list of conses of only the indexes for each matching sublist.
-The cadr is a list of each each matching sublist.
-PROP is a property to filter.
-PROP-VAL is a property value of PROP to filter.
-Keyword READ-PROP-SYM names a symbol to parse.
-Keyword READ-PROP-BUFFER names a buffer to read from.
+Return a two valued list.\n
+The car is a list of conses of only the indexes for each matching sublist.\n
+The cadr is a list of each each matching sublist.\n
+PROP is a property to filter.\n
+PROP-VAL is a property value of PROP to filter.\n
+Keyword READ-PROP-SYM names a symbol to parse.\n
+Keyword READ-PROP-BUFFER names a buffer to read from.\n
 When keyword READ-PROP-BUFFER is non-nil reading begins from `point-min' does
 not move point.\n
-Contents of READ-PROP-SYM or READ-PROP-BUFFER should hold a list with sublists.
+Contents of READ-PROP-SYM or READ-PROP-BUFFER should hold a list with sublists.\n
 Sublists contain two index values and text-property plist of prop val pairs e.g.\n
  \(idx1 idx2 \(p1 p1-val p2 p2-val p3-val \(p3-lv1 p3-lv2 p3-lv3\)\)\)\n
 :EXAMPLE\n\n\(let \(\(mgtppbos-example
@@ -810,19 +810,22 @@ Return value inserted in RANGE-BUFFER.\n
 :EXAMPLE\n\n
 :SEE-ALSO `mon-help-text-property-functions-ext',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-(let (rr the-str str-range)
-  (setq rr (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
-             (mon-get-text-properties-region (buffer-end 0) (buffer-end 1))))
-  (setq the-str (car rr))
-  (setq rr (cadr rr))
-  (setq rr (mon-get-text-properties-parse-buffer-or-sym 
-            'face 'font-lock-constant-face :read-prop-sym rr))
-  (setq rr (mapcar #'(lambda (idx-pair)
-                       `(,idx-pair ,(substring the-str (car idx-pair) (cdr idx-pair))))
-                   (car rr)))
-  (princ rr (get-buffer range-buffer))))
-;;(current-buffer)))
+  (let (rr the-str str-range)
+    (setq rr (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
+               (mon-get-text-properties-region (buffer-end 0) (buffer-end 1))))
+    (setq the-str (car rr))
+    (setq rr (cadr rr))
+    (setq rr (mon-get-text-properties-parse-buffer-or-sym 
+              'face 'font-lock-constant-face :read-prop-sym rr))
+    (setq rr (mapcar #'(lambda (idx-pair)
+                         `(,idx-pair ,(substring the-str (car idx-pair) (cdr idx-pair))))
+                     (car rr)))
+    (princ rr (get-buffer range-buffer))))
 
+
+;; (mon-get-text-properties-map-ranges-string (current-buffer) (get-buffer-create "*MGTPFES-STRING*"))
+;; (mon-get-text-properties-parse-buffer-or-sym 'face 'font-lock-keyword-face :read-prop-buffer "mon-text-property-utils.el")
+;; (insert-buffer-substring "mon-text-property-utils.el" 52839 52870)
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-property-bounds'
 ;;; :CHANGESET 2109
@@ -1005,7 +1008,7 @@ List elements of retrun value have the format:\n
 (defun mon-get-overlays-buffer (&optional buffer-or-name)
   "Return list of overlays in current-buffer.\n
 When BUFFER-OR-NAME is non-nil get its overlays.\n
-Like `overlay-lists' but returns a flat list without condideration for the
+Like `overlay-lists' but returns a flat list without consideration for the
 overlay center.\n
 :EXAMPLE\n\n\(mon-get-overlays-buffer\)\n
 :SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',

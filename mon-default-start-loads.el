@@ -45,7 +45,8 @@
 ;; `mon-set-rst-mode-faces-init', `mon-set-system-specific-and-load-init',
 ;; `mon-set-thumbs-conversion-program-init', `mon-set-traverselisp-init',
 ;; `mon-set-unicodedata-init', `mon-set-w3m-init', `mon-set-woman-manpath-init',
-;; `mon-set-url-pkg-init', `mon-set-google-maps-init'
+;; `mon-set-url-pkg-init', `mon-set-google-maps-init',
+;; `mon-set-erc-configs-init', `mon-set-custom-file-init-w32-configs',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -171,13 +172,21 @@
 ;;; menu-bar-mode being disabled.
 ;;; start looking around `resize-mini-windows' and `command-line-x-option-alist'
 ;;; First things first. Make sure we aren't tortured by blinking cursors etc.
-(when (and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
+(when (and (intern-soft "IS-MON-SYSTEM-P") (bound-and-true-p IS-MON-SYSTEM-P))
   (unless show-paren-mode (show-paren-mode 1))
   (unless (null scroll-bar-mode) (scroll-bar-mode -1))
   (unless (null tool-bar-mode) (tool-bar-mode -1))
-  (unless (null menu-bar-mode) (menu-bar-mode -1))
   (unless (null blink-cursor-mode) (blink-cursor-mode -1))
-  (setq-default cursor-type '(bar . 3)))
+  (setq-default cursor-type '(bar . 3))
+  (when (and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
+    (unless (null menu-bar-mode) (menu-bar-mode -1)))
+  (when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
+    (setq-default x-select-enable-clipboard 1))
+  (put 'narrow-to-region  'disabled nil)
+  (put 'downcase-region   'disabled nil)
+  (put 'upcase-region     'disabled nil)
+  (put 'capitalize-region 'disabled nil)
+  (put 'eval-expression   'disabled nil))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T18:02:25-04:00Z}#{10135} - by MON KEY>
@@ -233,7 +242,10 @@
             mon-toggle-show-point-mode
             mon-set-url-pkg-init
             mon-set-google-maps-init
-            mon-set-init-fncn-xrefs-init))))
+            mon-set-init-fncn-xrefs-init
+            mon-set-erc-configs-init
+            mon-set-custom-file-init-w32-configs
+            ))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T18:29:52-04:00Z}#{10135} - by MON KEY>
@@ -543,14 +555,22 @@ A bookmark file typically has a .bmk extension, for additional discussion:
                                  (format ".emacs-%s.bmk" (cdr (mon-gnu-system-conditionals)))
                                ".emacs.bmk")))))
      (bookmark-load new-bm t)
-     (set-variable 'bookmark-default-file new-bm)
+     ;; :NOTE Also settting vanilla variable `bookmark-file' should force
+     ;; `defcustom'd `bookmark-default-file' to take its value.
+     (setq bookmark-file new-bm)
+     ;; (setq bookmark-default-file new-bm)
+     ;; (set-variable 'bookmark-default-file 'bookmark-default-file)
+     ;; (set-variable 'bookmark-default-file new-bm)
      ;; (put 'bookmark-default-file 'customized-value 
      ;;      (list (custom-quote (eval bookmark-default-file))))
-     (custom-note-var-changed 'bookmark-default-file)
-
+     ;; (custom-note-var-changed 'bookmark-default-file)
    ;; :DEBUGGING (get 'bookmark-default-file 'customized-value)
-   (custom-set-variables 
-    '(bookmark-save-flag 1)))
+     (custom-set-variables 
+      '(bookmark-save-flag 1)
+      ;; :NOTE When bookmark names are getting truncated set the variable nil.
+      ;; `bookmark-bmenu-toggle-filenames' is also a <FUNCTION>.
+      ;; '(bookmark-bmenu-toggle-filenames nil) 
+      ))
    ))
 ;;
 ;; (mon-set-bookmark-file-init t)
@@ -771,23 +791,34 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
   (mon-default-start-error/sane 
    'mon-set-thumbs-conversion-program-init warn-only ;; nil ;; just-warn
    ;; :IMAGE-FILE lisp/image-file.el
-   (custom-set-variables
-    '(image-file-name-extensions
-      '("png" "jpeg" "jpg" "gif" "tiff" "tif" 
-        "xbm" "xpm" "pbm" "pgm" "ppm"
-        "pnm" "nef" "bmp" "png" "svg")))
-   ;; :THUMBS lisp/thumbs.el
-   (when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
-     (custom-set-variables 
-      '(thumbs-conversion-program
-        (if (getenv "SP_IMGCK")
-            (let ((xp-convert (car (directory-files (getenv "SP_IMGCK") t "imconvert"))))
-              (if xp-convert xp-convert (executable-find "imconvert")))
-          (executable-find "imconvert"))))
-     ;; :TODO If env "SP_IMGCK" isn't set but we _did_ find imconvert 
-     ;; (setenv "SP_IMGCK") -> `thumbs-conversion-program'
-     )
-   ))
+   ;; :NOTE Imagemagick is supplied with Emacs prop. Emacs 24 we can re-enable
+   ;; svg for w32 (assuming libsvg or equiv) is no longer a required dependency
+   ;;
+   (when (and (intern-soft "IS-MON-SYSTEM-P")            
+            (bound-and-true-p IS-MON-SYSTEM-P))
+     (if (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
+         (custom-set-variables       
+          '(image-file-name-extensions 
+            '("jpeg" "jpg" "gif" "tiff" "tif" 
+              "xbm" "xpm" "pbm" "pgm" "ppm" "pnm"
+              "nef" "bmp" "png")))
+       (progn
+         (custom-set-variables
+          '(image-file-name-extensions
+            '("png" "jpeg" "jpg" "gif" "tiff" "tif" 
+              "xbm" "xpm" "pbm" "pgm" "ppm"
+              "pnm" "nef" "bmp" "png" "svg")))
+         ;; :THUMBS lisp/thumbs.el
+         ;; :TODO If env "SP_IMGCK" isn't set but we _did_ find imconvert 
+         ;; (setenv "SP_IMGCK") -> `thumbs-conversion-program'       
+         (let ((tcp (if (getenv "SP_IMGCK")         
+                        (let ((xp-convert (car (directory-files (getenv "SP_IMGCK") t "imconvert"))))
+                          (if xp-convert xp-convert (executable-find "imconvert")))
+                      (executable-find "imconvert"))))
+           (when tcp 
+             (set-variable 'thumbs-conversion-program tcp)
+             (custom-note-var-changed 'thumbs-conversion-program))))))
+     ))
 ;;
 ;; (mon-set-thumbs-conversion-program-init t)
 (mon-set-thumbs-conversion-program-init)
@@ -848,7 +879,10 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    ;; :NOTE I don't like the new 23.0 style UPCASE args in help.  Where clarity
    ;;        is the concern would be nicer to map them to a face.
    ;; (setq help-downcase-arguments t)
-   (custom-set-variables '(help-downcase-arguments t t))
+   (custom-set-variables 
+    '(help-downcase-arguments t t)
+    ;; :NOTE May slow apropos down by ~10-20%
+    '(apropos-do-all t))
    ;;
    ;; :NOTE Ensure evaluating examples in help mode returns a nice long list.
    (add-hook 'help-mode-hook 
@@ -983,15 +1017,13 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     ;; `epg-gpg-minimum-version', `epg-debug', `epg-gpg-home-directory',
     ;; `epg-passphrase-coding-system',
     ;; (epg-configuration) (epg-check-configuration (epg-configuration)) 
-    '(epg-gpg-program (or (executable-find "gpg") (executable-find "gpg2") "gpg"))
-    '(desktop-dirname (file-name-as-directory *mon-user-emacsd*))
     '(auto-save-default 1)
-    '(dired-recursive-copies 'top)
     '(dired-recursive-deletes t)
+    '(dired-recursive-copies 'top)
     '(confirm-kill-emacs 'y-or-n-p)
     '(enable-recursive-minibuffers 1)
     '(require-final-newline t)
-    '(shell-input-autoexpand t)
+    '(shell-input-autoexpand t)     ;; comint-input-autoexpand
     '(auto-image-file-mode 1)
     ;; :YANK/CLIP    
     '(yank-excluded-properties t)
@@ -1012,20 +1044,22 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
     '(eol-mnemonic-unix "(unx-lf)")
     ;; :DISPLAY-ANNOYANCES
     '(size-indication-mode 1)
-    '(initial-buffer-choice t) ;; *scratch*
+    '(initial-buffer-choice t) ;; :NOTE `t' finds *scratch*
     '(inhibit-startup-message 1) 
     '(ring-bell-function 'ignore)
     '(cursor-type '(bar . 3))
     '(cursor-in-non-selected-windows nil)
     '(visual-line-fringe-indicators '(nil right-curly-arrow))
+    '(nxml-slash-auto-complete-flag t)
     ) ;; :CLOSE `custom-set-variables' for `IS-MON-SYSTEM-P'
    (when (and (intern-soft "IS-MON-P") IS-MON-P)
      (custom-set-variables 
       '(ffap-rfc-directories
-        (concat (nth 5 (mon-get-mon-emacsd-paths)) "/RFCs-HG") t)
-      '(initial-major-mode 'emacs-lisp-mode t)
-      '(mouse-avoidance-mode 'exile t)
-      '(backward-delete-char-untabify-method 'hungry t)) ;; 'all
+        (concat (nth 5 (mon-get-mon-emacsd-paths)) "/RFCs-HG"))
+      '(nxhtml-load nil)
+      '(initial-major-mode 'emacs-lisp-mode)
+      '(mouse-avoidance-mode 'exile)
+      '(backward-delete-char-untabify-method 'hungry)) ;; 'all
      ;; Make sure shell-mode understands `ls dircolors e.g. ~/.bashrc's alias:
      ;; ls="ls --color=auto"
      ;; :NOTE autoloaded in :FILE lisp/ansi-color.el
@@ -1034,6 +1068,42 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;
 ;; (mon-set-customizations-before-custom-file-init t)
 (mon-set-customizations-before-custom-file-init)
+
+;;; ==============================
+;;; :CHANGESET 2120
+;;; :CREATED <Timestamp: #{2010-09-13T13:36:44-04:00Z}#{10371} - by MON KEY>
+(defun mon-set-custom-file-init-w32-configs (&optional warn-only)
+  "Set w32 specific configs at init time.\n
+:SEE-ALSO `mon-keybind-w32-init', `mon-keybind-put-hooks-init'.\n►►►"
+  (when (and (intern-soft "IS-W32-P") 
+             (intern-soft "IS-MON-SYSTEM-P")
+             (bound-and-true-p IS-MON-SYSTEM-P)
+             ;;(featurep 'emacsw32)
+             )
+    (when (not (and (intern-soft "IS-MON-P")
+                    (bound-and-true-p IS-MON-P)))
+      (custom-set-variables
+       '(initial-major-mode 'fundamental-mode)
+       '(delete-by-moving-to-trash t)
+       ;; Supposedly this is deprecated post 23.2
+       ;; '(default-buffer-file-coding-system 'utf-8-unix t) 
+       ) 
+      (setq-default buffer-file-coding-system 'utf-8-unix)
+      (setq-default default-buffer-file-coding-system 'utf-8-unix))
+    (custom-set-variables
+     '(dired-guess-shell-gnutar nil)
+     '(w32shell-cygwin-bin "C:\\bin")
+     '(w32shell-shell 'cmd)
+     ;; :NOTE Should prop. do a feauture check on these first:
+     '(emacsw32-eol-check-before-save t)
+     '(emacsw32-eol-check-new-files t)
+     '(emacsw32-eol-file-name-lf-list 
+       '(".x?html?$" ".css$" ".js$" ".pl$" ".pm$" ".el" ".text$" ".txt$" ".naf$" ".dbc$"))
+     '(emacsw32-max-frames t)
+     '(emacsw32-style-frame-title t)
+     )))
+;;
+(mon-set-custom-file-init-w32-configs)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T17:36:42-04:00Z}#{10135} - by MON KEY>
@@ -1048,7 +1118,8 @@ helpful to keep a version controlled copy in a location of _my_ choosing.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
 function is already a member of variable `*mon-default-start-load-sanity*' as per 
 `mon-default-start-error/sane'.\n
-:SEE-ALSO .\n►►►"
+:EXAMPLE\n\n\(custom-file\)\n
+:SEE-ALSO `customize-rogue'.\n►►►"
   (mon-default-start-error/sane
    'mon-set-custom-file-init warn-only
    (let* ((*mon-user-emacsd* (file-name-as-directory *mon-user-emacsd*))
@@ -1096,7 +1167,8 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
   (mon-default-start-error/sane
    'mon-set-common-lisp-hspec-init warn-only
    (when (or (and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
-             (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-32)))
+             (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-32)
+                  (not (and (intern-soft "IS-BUG-P") (bound-and-true-p IS-BUG-P)))))     
      (unless (and (bound-and-true-p common-lisp-hyperspec-root)
                   (bound-and-true-p common-lisp-hyperspec-issuex-table)
                   (bound-and-true-p common-lisp-hyperspec-symbol-table))
@@ -1247,6 +1319,29 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;; (mon-set-dvc-init t)
 
 (declare-function mon-keybind-w3m "mon-keybindings" t t)
+
+
+;;; ==============================
+;;; :CHANGESET 2120
+;;; :CREATED <Timestamp: #{2010-09-13T13:14:38-04:00Z}#{10371} - by MON KEY>
+(defun mon-set-erc-configs-init (&optional warn-only)
+  "Set erc related preferences on MON systems at init time.\n
+Set customizable variables:\n
+`erc-nick' `erc-pals' `erc-prompt' `erc-system-name' `erc-add-query'\n
+The values of these variables are on the alist key 'the-erc-configs 
+in variable `*mon-misc-path-alist*'.\n
+:SEE :FILE lisp/erc/*
+:SEE-ALSO .\n►►►"
+  (mon-default-start-error/sane
+   'mon-set-erc-configs-init warn-only
+   ;; (require 'erc)
+   (when (and (intern-soft "IS-MON-SYSTEM-P") 
+              (bound-and-true-p IS-MON-SYSTEM-P)
+              (intern-soft "*mon-misc-path-alist*")
+              (bound-and-true-p *mon-misc-path-alist*)
+              t)
+     (apply 'custom-set-variables 
+            (cadr (assq 'the-erc-configs *mon-misc-path-alist*))))))
 
 ;;; ==============================
 ;;; :CHANGESET 1990
@@ -1411,7 +1506,7 @@ When `IS-MON-SYSTEM-P' evaluated on the `after-change-major-mode-hook'.\n
     ;;      (add-to-list 'comment-styles '(mon-multi . (t nil nil multi-char))))
     ;; (set (make-local-variable 'comment-style) 'mon-multi)
     (set (make-local-variable 'comment-style)  'indent)
-     (set (make-local-variable 'comment-start) ";;")))
+    (set (make-local-variable 'comment-start) ";;")))
 ;;
 ;; (mon-set-buffer-local-comment-start)
 
@@ -1611,14 +1706,17 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 ;;; :CREATED <Timestamp: #{2010-04-03T17:40:37-04:00Z}#{10136} - by MON KEY>
 (defun mon-keybind-w32-init ()
   "Initialize w32 related keys on MON systems.\n
-Binds the following variables:
+Binds the following variables:\n
  `w32-pass-rwindow-to-system', `w32-pass-lwindow-to-system'
  `w32-rwindow-modifier',  `w32-pass-multimedia-buttons-to-system'
+:NOTE Loaded via `mon-keybind-put-hooks-init' at init time by
+`mon-set-system-specific-and-load-init'.\n
 :SEE :FILE src/w32fns.c
-:SEE-ALSO `w32-alt-is-meta', `w32-pass-alt-to-system', `w32-quit-key',
-`w32-phantom-key-code', `w32-enable-num-loc', `w32-enable-caps-lock',
-`w32-scroll-lock-modifier', `w32-apps-modifier', `w32-mouse-button-tolerance',
-`w32-mouse-move-interval', `w32-pass-extra-mouse-buttons-to-system',
+:SEE-ALSO `mon-set-custom-file-init-w32-configs', `w32-alt-is-meta',
+`w32-pass-alt-to-system', `w32-quit-key', `w32-phantom-key-code',
+`w32-enable-num-loc', `w32-enable-caps-lock', `w32-scroll-lock-modifier',
+`w32-apps-modifier', `w32-mouse-button-tolerance', `w32-mouse-move-interval',
+`w32-pass-extra-mouse-buttons-to-system',
 `w32-pass-multimedia-buttons-to-system', `w32-register-hot-key',
 `w32-unregister-hot-key', `w32-registered-hot-keys', `w32-reconstruct-hot-key',
 `w32-toggle-lock-key', `mon-keybind-w3m', `mon-keybind-dired-mode',
@@ -1626,7 +1724,9 @@ Binds the following variables:
 `mon-keybind-emacs-lisp-mode', `mon-help-key-functions', `mon-help-keys'.\n►►►"
   (mon-default-start-error/sane
    'mon-keybind-w32-init nil ;; just-warn
-   (when (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-W32))
+   (when (and (intern-soft "IS-MON-SYSTEM-P") 
+              (bound-and-true-p IS-MON-SYSTEM-P)
+              (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P)))
      (custom-set-variables
       '(w32-pass-lwindow-to-system nil)
       '(w32-pass-rwindow-to-system nil)
@@ -1647,7 +1747,7 @@ Binds the following variables:
   (declare-function kybnd-fncn "mon-keybindings" t t))
 ;;
 ;;; ==============================
-;;; :CHANGESET 1896
+;;; :CHANGESET 1896 
 ;;; :CREATED <Timestamp: #{2010-06-17T14:41:40-04:00Z}#{10244} - by MON KEY>
 (defun mon-keybind-put-hooks-init (&optional warn-only)
   "Add keybindings to various mode-hooks at init.\n
@@ -1657,6 +1757,7 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
 `mon-help-key-functions', `mon-help-keys'.\n►►►"
   (mon-default-start-error/sane
    'mon-set-system-specific-and-load-init warn-only
+   (mon-keybind-w32-init)
    ;; (remove-hook 'dired-mode-hook 'mon-keybind-dired-mode)
    (add-hook 'dired-mode-hook 'mon-keybind-dired-mode)
    ;; (remove-hook 'completion-list-mode-hook 'mon-keybind-completions)
@@ -1669,7 +1770,7 @@ Evaluated at init time by `mon-set-system-specific-and-load-init'.\n
    (add-hook 'slime-mode-hook 'mon-keybind-slime)
    (when (featurep 'w3m)
      ;; (remove-hook 'w3m-mode-hook 'mon-keybind-w3m)
-     (add-hook 'w3m-mode-hook 'mon-keybind-w3m))
+     (add-hook 'w3m-mode-hook 'mon-keybind-w3m))   
    ))
 ;;
 ;;; ==============================
@@ -1710,7 +1811,6 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    (mon-set-longlines-init)
    (mon-set-buffer-local-comment-start-init)   
    (mon-set-unicodedata-init)   
-   (mon-keybind-w32-init)
    (mon-set-url-pkg-init)
    (mon-set-google-maps-init)
    (mon-set-w3m-init)
@@ -1723,6 +1823,7 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    (mon-set-rst-mode-faces-init)
    (mon-set-traverselisp-init)
    (mon-set-apache-mode-init)
+   (mon-set-erc-configs-init)
    ;; ==============================
    ;;
    ;; :REQUIRE-PACKAGES
@@ -1756,6 +1857,8 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    ;; :SEE (URL `http://www.bookshelf.jp/elc/color-occur.el')
    (require 'mon-color-occur)
    ;;; ==============================
+   (require 'etags)
+   (custom-set-variables '(tags-table-list (car *mon-tags-table-list*)))
    ;; Now put some keybindings on the mode-hooks:
    (mon-keybind-put-hooks-init)
    ))
