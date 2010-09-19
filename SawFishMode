@@ -1,13 +1,16 @@
-Sawfish is a window manager that can be extended using a Lisp dialect.  See ExtensibleSoftware and http://sawmill.sourceforge.net/.
+Sawfish is a window manager that can be extended using a Lisp dialect.  See ExtensibleSoftware and http://sawfish.wikia.com
 
-[http://www.davep.org/emacs/#sawfish.el sawfish.el] is some elisp code that will put your ~/.sawfishrc file (and other sawfish source files) into sawfish mode.  There, you can use `C-x C-e' to run `sawfish-eval-last-sexp'.
+[http://git.gnome.org/browse/sawfish/tree/sawfish.el sawfish.el] provides a major mode "sawfish-mode" to edit Sawfish
+source lisp files. There, you can use `C-x C-e' to run `sawfish-eval-last-sexp', just like `eval-last-sexp' of elisp modes.
 
-My ~/.sawfishrc contains the following lines, for example:
+From Sawfish-1.7.0, it is included in the Sawfish window manager, and
+the above link points to the latest version. It was originally written
+by Dave Pearson, but currently maintained by Sawfish community.
+
+Example ~/.sawfish/rc can be like:
 
 <pre>
-(require 'sawmill-defaults)
-
-(setq apps-menu
+(setq user-apps-menu
       '(("Terminal" (system "terminal &"))
 	("Root" (system "root &"))
 	("Emacs 20.7" (system "emacs-20.7 &"))

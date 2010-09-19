@@ -2,7 +2,7 @@
 
 Here's a partial list of some software that's inspired by Emacs' model of extensibility.
 
-* [http://sawmill.sourceforge.net/ Sawfish] is an extensible window manager that uses the EmacsLisp-inspired language [http://librep.sourceforge.net Rep] for customizations and extensions.
+* [http://sawfish.wikia.com/ Sawfish] is an extensible window manager that uses the EmacsLisp-inspired language [http://librep.sourceforge.net Rep] for customizations and extensions. See also SawFishMode.
 * [http://scwm.sourceforge.net/ SCWM] is a window manager that embeds the [[Guile]] Scheme interpreter. However, it doesn't appear to be actively maintained anymore.
 * XWindowEmacsManager is a window manager entirely written and configurable in EmacsLisp.
 * StumpWM is a tiling, keyboard-driven window manager written and configurable in CommonLisp

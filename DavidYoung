@@ -90,6 +90,35 @@ This function splits window from horizontal style into vertical style
 
 }}}
 
+
+== split-v-3 ==
+
+Similar as split-v, but works with 3 windows
+
+{{{
+  +----------------------+                 +----------- +-----------+ 
+  |                      |           \     |            |           | 
+  |                      |   +-------+\    |            |           | 
+  +----------------------+   +-------+/    |            |-----------|
+  |         |            |           /     |            |           | 
+  |         |            |                 |            |           | 
+  +----------------------+                 +----------- +-----------+ 
+}}}
+
+== split-h-3 ==
+
+Similar as split-h, but works with 3 windows
+
+{{{
+  +----------- +-----------+                  +----------------------+ 
+  |            |           |            \     |                      | 
+  |            |           |    +-------+\    |                      | 
+  |            |-----------|    +-------+/    +----------------------+ 
+  |            |           |            /     |          |           | 
+  |            |           |                  |          |           | 
+  +----------- +-----------+                  +----------------------+ 
+}}}
+
 == rename-buffer-in-ssh-login ==
 
 Rename buffer to the destination hostname in ssh login

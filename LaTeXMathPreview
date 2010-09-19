@@ -110,7 +110,7 @@ you need to change the variable `latex-math-preview-command-path-alist'.
 For example,
 <pre>
 (setq latex-math-preview-command-path-alist
-      '((latex "/usr/bin/latex") (dvipng "/usr/bin/dvipng") (dvips "/usr/bin/dvips")))
+      '((latex . "/usr/bin/latex") (dvipng . "/usr/bin/dvipng") (dvips . "/usr/bin/dvips")))
 </pre>
 
 == Usage ==

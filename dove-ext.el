@@ -30,6 +30,7 @@
 ;; 2010-08-08 rewrote function rename-buffer-in-ssh-login
 ;; 2010-08-08 added function rename-buffer-in-ssh-exit
 ;; 2010-08-21 added my-overwrite, updated jump function
+;; 2010-09-18 added very fancy function split-v-3 and split-h-3
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -531,6 +532,69 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
     )
 )
 
+;  +----------------------+                 +----------- +-----------+ 
+;  |                      |           \     |            |           | 
+;  |                      |   +-------+\    |            |           | 
+;  +----------------------+   +-------+/    |            |-----------|
+;  |         |            |           /     |            |           | 
+;  |         |            |                 |            |           | 
+;  +----------------------+                 +----------- +-----------+ 
+
+
+(defun split-v-3 ()
+  (interactive)
+  (if (= 3 (length (window-list)))
+    (let ((1stBuf (window-buffer (get-largest-window)))
+	  (2ndBuf (progn (other-window 1) (buffer-name)))
+	  (3rdBuf (progn (other-window 1) (buffer-name)))
+	  )
+	  (progn   
+	    (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+	    (select-window (get-largest-window))
+	    (delete-other-windows)
+	    (split-window-horizontally)
+	    (set-window-buffer nil 1stBuf)
+	    (other-window 1)
+	    (set-window-buffer nil 2ndBuf)
+	    (split-window-vertically)
+	    (set-window-buffer (next-window) 3rdBuf)
+	    (select-window (get-largest-window))
+	    )
+	  )
+    )
+)
+
+;  +----------- +-----------+                  +----------------------+ 
+;  |            |           |            \     |                      | 
+;  |            |           |    +-------+\    |                      | 
+;  |            |-----------|    +-------+/    +----------------------+ 
+;  |            |           |            /     |          |           | 
+;  |            |           |                  |          |           | 
+;  +----------- +-----------+                  +----------------------+ 
+
+
+(defun split-h-3 ()
+  (interactive)
+  (if (= 3 (length (window-list)))
+    (let ((1stBuf (window-buffer (get-largest-window)))
+	  (2ndBuf (progn (other-window 1) (buffer-name)))
+	  (3rdBuf (progn (other-window 1) (buffer-name)))
+	  )
+	  (progn   
+	    (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+	    (select-window (get-largest-window))
+	    (delete-other-windows)
+	    (split-window-vertically)
+	    (set-window-buffer nil 1stBuf)
+	    (other-window 1)
+	    (set-window-buffer nil 2ndBuf)
+	    (split-window-horizontally)
+	    (set-window-buffer (next-window) 3rdBuf)
+	    (select-window (get-largest-window))
+	    )
+	  )
+    )
+)
 
 ;
 ;(defun dove-hide-shell-output()
