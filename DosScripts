@@ -16,7 +16,7 @@ CmdMode does not recognize ::comments, :.labels, /options, -options, or --option
 
 == dos-mode ==
 
-By Arni Magnusson (2003-2009). The recommended mode for editing Dos scripts.
+By Arni Magnusson (2003-2010). The recommended mode for editing Dos scripts.
 
 DosMode supports all of the features listed above, borrowing and improving ideas from ##batch-mode## and ##cmd-mode##. It also provides imenu+outline navigation and code templates.
 
@@ -62,6 +62,8 @@ index 1540c84..e3cd49d 100644
         (cons (regexp-opt CONTROLFLOW 'words) font-lock-keyword-face)
 }}}
 
+[new]
+Fixed, ##!var!## variables are now recognized. Thanks for the feedback! -- Arni Magnusson
 
 == ntcmd-mode ==
 

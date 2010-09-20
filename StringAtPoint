@@ -154,5 +154,13 @@ How does your corrected code fair in the test suite? -- AaronHawley
 [new]
 Which test suite? -- LennartBorgman
 
+[new]
+The function defined above named `ash-test-string-motion'.  It was useful to me for developing my version, but I've been meaning to write a new one that is more granular and can show the specific problems with an implementation. -- AaronHawley
+
+[new]
+I do not see how that test is related to the functions I wrote. Those functions are for (thing-at-point 'string).
+
+I did not write any functions for moving across strings (though that may be possible too, using parse-partial-sexp).
+
 ----
 CategoryCode

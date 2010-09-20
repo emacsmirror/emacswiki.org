@@ -34,11 +34,14 @@ EchoArea if it is outside the visible screen.
 The nesting of sexps can also be made more apparent by highlighting
 the parens around point.
 
+===RainbowDelimiters===
+RainbowDelimiters is a "rainbow parentheses" minor mode to colorize parentheses, brackets, and braces. It correctly colorizes statements at the same depth - if two statements are at the same level, they will be the same color.
+
 ===HighlightParentheses===
 
 [[image:highlight-parentheses-el-screenshot]]
 
-HighlightParentheses highlights the surrounding parens, showing nesting structure.
+HighlightParentheses highlights the parens surrounding the cursor, showing nesting structure.
 
 ==General Appearance==
 

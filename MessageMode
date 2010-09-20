@@ -74,5 +74,39 @@ Finally, recall that you can activate mail adresses in any buffer at any time by
 
 There is an additional mode that allows the emacs buffer to create a outlook message.  This is described in MessageOutlook
 
+= attach the content of a folder to a message =
+In order to attach a full folder content to a message, one may prefers to create a custom lisp function to do it. Then all you have to do is to call it, and even better to bind it to a dedicated keyboard shortcut.
+An example of such lisp function (usable only on *nix computers) may looks like:
+
+    (defun message-attach-all-files-from-folder(&optional disposition dir-to-attach)
+      "create the mml code to attach all files found in a given directory"
+      (interactive)
+    
+      (if (eq disposition nil)
+          (setq disposition (completing-read "Enter default disposition to use: " '(("attachment" 1) ("inline" 2)) nil t)))
+    
+      (if (eq dir-to-attach nil)
+          (setq dir-to-attach (read-directory-name "Select a folder to attach: ")))
+    
+      (if (not (string-match "/$" dir-to-attach))
+          (setq dir-to-attach (concat dir-to-attach "/")))
+    
+      (dolist (file (directory-files dir-to-attach))
+        (when (and (not (string= "." file)) (not (string= ".." file)))
+          (let (full-file-path mime-type)
+            (setq full-file-path (concat dir-to-attach file))
+            (if (file-readable-p full-file-path)
+                (if (file-directory-p full-file-path)
+                    (message-attach-all-files-from-folder disposition full-file-path)
+    
+                  (setq mime-type (substring (shell-command-to-string (concat "file --mime-type --brief " (shell-quote-argument (expand-file-name full-file-path)))) 0 -1))
+                  (insert-string (concat "<#part type=\"" mime-type "\" filename=\"" full-file-path "\" disposition=" disposition ">\n"))
+                  )
+              )
+            )
+          )
+        )
+    )
+
 ----
 CategoryGnus CategoryMail

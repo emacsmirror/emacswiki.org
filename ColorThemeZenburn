@@ -1,6 +1,9 @@
 The zenburn color theme is a low-contrast color theme. The color scheme was originally designed for 'vim` and since then ported to various other programs.
 
-The official version of zenburn-for-emacs is maintained by DanielBrockman; the version is a slightly updated version.
+The official version of zenburn-for-emacs is maintained by DanielBrockman; the version is a slightly updated version. An updated fork of the original project featuring all of EmacsWiki's contributions and more is maintained by BozhidarBatsov [http://github.com/bbatsov/zenburn-emacs here].
+
+In an effort to have a unified and most complete version of the zenburn theme for Emacs I've started a GitHub project based initially on the version of zenburn.el from EmacsWiki. I'd be great
+if you fork my repo or send me patches so that we can maintain an updated version of the theme there. The repo is located [http://github.com/bbatsov/zenburn-emacs here].
 
 Lisp:zenburn.el
 

@@ -3,11 +3,11 @@
 ;; Copyright (C) 2003, 2008, 2009, 2010 Arni Magnusson
 
 ;; Author:   Arni Magnusson
-;; Version:  2.14
+;; Version:  2.15
 ;; Keywords: languages
 ;; URL:      http://emacswiki.org/emacs/dos.el
 
-(defconst dos-mode-version "2.14" "Dos Mode version number.")
+(defconst dos-mode-version "2.15" "Dos Mode version number.")
 
 ;;; Commentary:
 ;;
@@ -15,8 +15,8 @@
 ;; highlighting are:
 ;;
 ;; Face                          Example
+;; dos-label-face                :LABEL
 ;; font-lock-comment-face        rem
-;; font-lock-doc-face            :LABEL
 ;; font-lock-builtin-face        copy
 ;; font-lock-keyword-face        goto
 ;; font-lock-warning-face        cp
@@ -48,6 +48,7 @@
 
 ;;; History:
 ;;
+;; 19 Sep 2010  2.15 Changed :LABEL highlighting to new `dos-label-face'. Improved highlighting of variable names.
 ;;  8 Jul 2010  2.14 Added user function `dos-mode-version'.
 ;; 29 Jun 2010  2.13 Added keyword "erase".
 ;; 16 Apr 2010  2.12 Added ;;;###autoload cookie.
@@ -86,11 +87,9 @@
 ;; 2  User variables
 
 (defcustom dos-mode-hook nil
-  "Hook for `dos-mode'.
-
+  "Hook for `dos-mode'.\n
 If you want to set syntax colors or keybindings, here is an example that does
-that:
-
+that:\n
 \(defun my-dos-hook ()
   (set-face-attribute 'font-lock-doc-face nil
                       :foreground \"black\" :weight 'bold)
@@ -99,6 +98,7 @@ that:
   :tag   "Hook"
   :type  'hook
   :group 'dos)
+(defface dos-label-face '((t :weight bold)) "Font Lock mode face used to highlight Dos labels." :group 'dos)
 
 ;; 3  Internal variables
 
@@ -120,10 +120,12 @@ that:
        '("^:[^:].*" .                        font-lock-doc-face)
        '("\\<set\\>[ \t]*\\(\\w+\\)"      (1 font-lock-variable-name-face))
        '("%\\(\\w+\\)%?"                  (1 font-lock-variable-name-face))
+       '("!\\(\\w+\\)!?"                  (1 font-lock-variable-name-face)) ; delayed-expansion !variable!
        '("[ =][-/]+\\(\\w+\\)"            (1 font-lock-type-face append))
        (cons (regexp-opt COMMANDS    'words) font-lock-builtin-face)
        (cons (regexp-opt CONTROLFLOW 'words) font-lock-keyword-face)
        (cons (regexp-opt LINUX       'words) font-lock-warning-face)))))
+(defvar dos-label-face 'dos-label-face "Face name to use for Dos labels.")
 (defvar dos-menu
   '("Dos"
     ["Run"           dos-run          ] ; :help "Run script"

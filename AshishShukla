@@ -23,4 +23,8 @@ I'd like to be able to publish blog entries written within Emacs in reST markup 
 (I used Muse before, but moved to reST due to it being more 'standard' markup for texts I have to share with others.) -- Gour
 
 ----
+
+blog.el is now updated to add support for tags, and is now available from: http://github.com/abbe/dot-emacs-dot-d/blob/master/elisp/blog/blog.el http://github.com/abbe/dot-emacs-dot-d/blob/master/elisp/blog/metaweblog.el -- AshishShukla
+
+----
 CategoryHomepage

@@ -24,6 +24,8 @@ I wrote [http://yrk.nfshost.com/repos/vernacular-time/vernacular-time.el vernacu
 
 If you have a VOIP account you can use [http://yrk.nfshost.com/repos/diamondsms/diamondsms.el diamondsms.el] to send SMS' from Emacs. Please note that it currently only works with one provider, namely Diamondcard VOIP. I hope to be able to add more providers, so if you know about any VOIP providers with an SMS API, please contact me. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/diamondsms/.
 
+[http://www.linphone.org/ linphone] is GPL'd VOIP software for speech and video. emacs-linphone.el is an Emacs interface to linphone. Get in on the action at: git clone http://yrk.nfshost.com/repos/emacs-linphone.git
+
 SLIME, the Superior Lisp Interaction Mode for Emacs, displays a MOTD type encouragement when loaded. With [http://yrk.nfshost.com/repos/slime-cl-pitfalls/slime-cl-pitfalls.el slime-cl-pitfalls.el] you will instead be treated with a randomly selected Common Lisp pitfall for your edification. You can pull from the Darcs repository at http://yrk.nfshost.com/repos/slime-cl-pitfalls/.
 
 rt-liberation.el is an interface to the [http://bestpractical.com/rt/ RT] system. Get it with: git clone http://yrk.nfshost.com/repos/rt-liberation.git/
