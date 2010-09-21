@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Thu Sep 16 09:58:42 2010 (-0700)
+;; Last-Updated: Mon Sep 20 08:42:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 707
+;;     Update #: 708
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -2523,7 +2523,7 @@ This sets variable `bmkp-nav-alist'."
                      (type                    (completing-read "Type: "
                                                                (cons '("any" . bookmark-history)
                                                                      bmkp-types-alist)
-                                                               nil t)))
+                                                               nil t nil nil "any")))
                  (list type)))
   (setq bmkp-nav-alist  (if (equal "any" type)
                             bookmark-alist

@@ -18,6 +18,15 @@ I also found these useful:
 
 * [http://gabrielelanaro.github.com/emacs-for-python/ another setup] based around python dev.
 
+== Emacs as a Python IDE ==
+
+# Install rope ([http://rope.sourceforge.net/ homepage], [http://rope.sourceforge.net/ download here])
+# Install ropemode ([http://pypi.python.org/pypi/ropemode homepage on PyPI])
+# Install Pymacs ([http://pymacs.progiciels-bpi.ca/ homepage])
+# Install ropemacs ([http://rope.sourceforge.net/ropemacs.html homepage], [http://bitbucket.org/agr/ropemacs/get/tip.gz direct link to snapshot])
+
+Rope is a refactoring library, and ropemode is a wrapper. Pymacs allows Emacs to spawn a Python process and interact with it. Finally, ropemacs gives a convenient in-emacs interface to all this, including Python documentation access, inlining, finding function definitions and so on.
+
 == Comment/Uncomment Region ==
 
 If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.

@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sun Aug 22 10:16:42 2010 (-0700)
+;; Last-Updated: Mon Sep 20 08:44:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13347
+;;     Update #: 13348
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1622,7 +1622,8 @@
 ;;  Here are two ways to define the navigation list:
 ;;
 ;;  * `C-x p :' (`bmkp-choose-navlist-of-type') - As the set of all
-;;    bookmarks of a certain type (`any' means use all bookmarks).
+;;    bookmarks of a certain type (`any' or empty input means use all
+;;    bookmarks).
 ;;
 ;;  * `C-x p B' (`bmkp-choose-navlist-from-bookmark-list') - As the
 ;;    set of all bookmarks corresponding to a bookmark-list bookmark,

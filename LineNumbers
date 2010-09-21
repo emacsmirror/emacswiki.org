@@ -130,6 +130,12 @@ I don't want to use linum on certain major-modes like eshell-mode, wl-summary-mo
 
 -- FlorianAdamsky
 
+[new] 
+
+I have generalized this to a lisp add-on file Lisp:linum-off.el 
+
+-- MatthewFidler
+
 == Setnu ==
 
 If you want to display line numbers for every line you are editing,

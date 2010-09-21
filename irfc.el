@@ -154,12 +154,22 @@
 ;; `irfc-assoc-mode' whether assoc RFC document with `irfc-mode'.
 ;; `irfc-directory' the storage directory for RFC document.
 ;; `irfc-download-base-url' the base url for download RFC document.
+;; `irfc-buffer-name-includes-title' whether buffer name should
+;;  include the RFC document's title
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET irfc RET
 ;;
 
 ;;; Change log:
+;;
+;; 2010/09/20
+;;   * Niels Widger:
+;;      * New variable `irfc-buffer-name-includes-title'.
+;;      * Add new function `irfc-rename-buffer' to include RFC document
+;;        title in buffer name if `irfc-buffer-name-includes-title' is t.
+;;      * Modify `irfc-render-buffer' to call `irfc-rename-buffer'
+;;        function.
 ;;
 ;; 2009/02/13
 ;;   * Andy Stewart:
@@ -268,6 +278,12 @@ Default is nil."
   :type 'string
   :group 'irfc)
 
+(defcustom irfc-buffer-name-includes-title t
+  "If t, buffer names for RFC documents will include the RFC title.
+If t, format for buffer name will be 'RFCTITLE (RFCNUM.TXT)' Default is t."
+  :type 'boolean
+  :group 'irfc)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defface irfc-title-face
   '((t (:foreground "Gold" :bold t)))
@@ -344,8 +360,8 @@ Default is nil."
     (define-key map (kbd "g") 'irfc-page-goto)
     (define-key map (kbd "N") 'irfc-page-next)
     (define-key map (kbd "P") 'irfc-page-prev)
-    (define-key map (kbd "<") 'irfc-page-last)
-    (define-key map (kbd ">") 'irfc-page-first)
+    (define-key map (kbd ">") 'irfc-page-last)
+    (define-key map (kbd "<") 'irfc-page-first)
     (define-key map (kbd "b") 'irfc-page-table)
     (define-key map (kbd "H") 'irfc-head-next)
     (define-key map (kbd "L") 'irfc-head-prev)
@@ -426,7 +442,7 @@ This variable is always buffer-local.")
     (let ((case-fold-search nil)
           (top-point (point-min))
           (title-line-point nil)
-          temp-point)
+          temp-point))
       ;; Clean up overlays.
       (irfc-overlay-remove-all)
       ;; Hide whitespace at start of file.
@@ -447,7 +463,9 @@ This variable is always buffer-local.")
       ;; Add overlay for the title.
       (irfc-render-buffer-overlay-title title-line-point)
       ;; Add overlay for the heading.
-      (irfc-render-buffer-overlay-head title-line-point))))
+      (irfc-render-buffer-overlay-head title-line-point)
+      ;; Rename buffer
+      (irfc-rename-buffer title-line-point)))
 
 (defun irfc-render-toggle ()
   "Toggle RFC buffer render status."
@@ -846,7 +864,28 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
       ;; Overlay title.
       (irfc-overlay-add (match-beginning 0)
                         (match-end       0)
-                        'irfc-title-overlay)))
+                        'irfc-title-overlay)
+    ))
+
+(defun irfc-rename-buffer (title-line-point)
+  "Rename buffer to include RFC title.
+Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
+  (goto-char title-line-point)
+  (let ((rfc-txt "")
+	(rfc-title ""))
+    ;; Set RFC title
+    (when (re-search-forward (concat
+			      "\\([^ \t\f\r\n].*[^ \t\f\r\n]\\)"
+			      "\\(\r?\n[ \t]*[^ \t\f\r\n].*[^ \t\f\r\n]\\)*"))
+      (setq rfc-title (match-string 0)))
+    ;; Set RFC txt
+    (when (string-match "\\(rfc[0-9]+\.txt\\)" (buffer-name))
+      (setq rfc-txt (match-string 1 (buffer-name))))
+    ;; Set buffer name
+    (if irfc-buffer-name-includes-title
+	(rename-buffer (concat rfc-title " (" rfc-txt ")"))
+      (rename-buffer rfc-txt))
+    ))
 
 (defun irfc-render-buffer-overlay-head (title-line-point)
   "Overlay heading.

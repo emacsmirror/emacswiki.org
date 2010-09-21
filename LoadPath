@@ -36,14 +36,14 @@ To add any other directory to the ##load-path## (which is what you
 normally want to do) the current directory has to be temporarily
 changed by binding ##default-directory##:
 
-    (let ((default-directory "~/.emacs.d/site-lisp/))
-      (normal-top-level-add-subdirs-to-load-path)))
+    (let ((default-directory "~/.emacs.d/site-lisp/"))
+      (normal-top-level-add-subdirs-to-load-path))
 
 If you only want some of the sub-directories added, you can use:
 
-    (let ((default-directory "~/.emacs.d/site-lisp/))
+    (let ((default-directory "~/.emacs.d/site-lisp/"))
       (normal-top-level-add-to-load-path '("emms" "erc" "planner"
-"w3")))
+"w3"))
 
 Another way of changing the current directory is using the command
 ##cd##.  However this is intended for interactive use for its

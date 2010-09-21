@@ -35,22 +35,27 @@ NOTE: Remember when you make a change to environment.plist, you need to restart 
 
 For those that like their PATHs from .bashrc and would like the environment.plist to update itself at every start up, put the following in your /etc/profile file:
 
-#/etc/profile begin
-
-if [ -x /usr/libexec/path_helper ]; then
-
-eval `/usr/libexec/path_helper -s`
-
-defaults write $HOME/.MacOSX/environment PATH "$PATH"
-
-fi
-
-#/etc/profile end
-
+    #/etc/profile begin
+    if [ -x /usr/libexec/path_helper ]; then
+        eval `/usr/libexec/path_helper -s`
+        defaults write $HOME/.MacOSX/environment PATH "$PATH"
+    fi
+    #/etc/profile end
 
 CREDIT GOES TO: http://www.nabble.com/unicode-character-in-aquamacs-td24259615.html
 
-NOTE: It appears launching emacs through spotlight will not pick up the env variables.  Launching in Finder or the terminal will work.  Don't know why this is the case.  -- Vinh Nguyen
+== Launching from Spotlight ==
+
+Because Spotlight's parent process is launchd, Emacs won't pick up any environment variables you have set in your ##.bashrc## or similar. To set environment variables for launchd, put them in in ##/etc/launchd.conf## or ##$HOME/.launchd.conf##. The syntax is tcsh.
+For example:
+
+    % cat /etc/launchd.conf 
+    # include macports in global path - basically so Emacs.app can see git
+    setenv PATH /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
+
+You will have to reboot for launchd to reload ##launchd.conf##. If you don't want to do that, you can use ##launchctl setenv## to set environment variables for launchd like so:
+
+    % launchctl setenv PATH /opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin
 
 == Keyboard Handling and European Characters ==
 
