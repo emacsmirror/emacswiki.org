@@ -4,9 +4,10 @@
 ;; Description: Interface for IETF RFC document.
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;;         Juanma Barranquero <lekktu@gmail.com>
-;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
+;; Maintainer: Niels Widger <niels.widger@gmail.com>
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, Juanma Barranquero, all rights reserved.
+;; Copyright (C) 2010, Niels Widger, all rights reserved.
 ;; Created: 2009-01-14 08:13:15
 ;; Version: 0.5.4
 ;; Last-Updated: 2009-02-13 10:33:22

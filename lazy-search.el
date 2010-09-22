@@ -3,7 +3,7 @@
 ;; Filename: lazy-search.el
 ;; Description: Lazy Search
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
+;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Created: 2008-12-23 23:05:10
 ;; Version: 0.2.1

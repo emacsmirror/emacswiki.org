@@ -1,5 +1,49 @@
 == Proposals for anything.el ==
 
+===  Sticky help ? ===
+[new]
+Hello rubikitch!
+
+It might be easy implementable (or already implemented?) but I could not figure it out. I use anything for many
+things but the most used is the documentation look-up.  Would it be possible, while in *anything* buffer to show a
+help string in the pop-up buffer? I would prefer to have it sticky, i.e. the help is always that of the highlighted candidate.
+An invocation by the key is also fine, but it should not dismiss the *anything* buffer.
+
+Thanks, RedBlue.
+
+: Got it; persistent-action feature is great! 
+I added persistent actions to anything-c-source-emacs-functions and anything-c-source-emacs-variables. Now C-z displays help on candidate:
+<pre>
+  (defvar anything-c-source-emacs-functions
+  '((name . "Emacs Functions")
+    (candidates . (lambda ()
+                    (let (commands)
+                      (mapatoms (lambda (a) (if (functionp a)
+                                                (push (symbol-name a) commands))))
+                      (sort commands 'string-lessp))))
+    (type . function)
+    (persistent-action . describe-function )
+    (persistent-help . "Show function's help.")
+    (requires-pattern . 2))
+  "Source for completing Emacs functions.")
+
+  (defvar anything-c-source-emacs-variables
+  '((name . "Emacs Variables")
+    (candidates . (lambda ()
+                    (sort (all-completions "" obarray 'boundp) 'string-lessp)))
+    (type . variable)
+    (persistent-action . describe-variable)
+    (persistent-help . "Show variable's help.")
+    (requires-pattern . 2))
+  "Source for completing Emacs variables.")
+
+</pre>
+
+And the sticky action could be implemented by rebinding the default keys with :keymap argument. But now, I am not so sure that I want it:)
+
+Thanks for the package,
+RedBlue.
+
 ===  subject-predicate-attributes paradigm ===
 
 Just a random thought for a possible future improvement in anything.el: the current implementation could be extended, so that it supports the Quicksilver-like [http://en.wikipedia.org/wiki/Quicksilver_(software)#Three-panel_interface subject-predicate-attributes paradigm]:

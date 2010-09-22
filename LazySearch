@@ -2,6 +2,8 @@
 LazySearch is new search mode that base on OneKey.
 It can taken various string around point, and search fast.
 
+: Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
+
 ==Why need LazySearch ?==
 * Mark various string around point:
 : Mark various string around point, just type *one* keystroke. 

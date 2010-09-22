@@ -25,7 +25,7 @@ possible permutations of this list of strings.
 
     (defun my-csv-string-to-regexp (str)
       "Translate comma separated values into regexp.
-    A,B,C turns into \\(A.*B.*C\\|A.*C.*B\\|B.*A.*C\\|B.*C.*A\\|C.*A.*B\\|C.*B.*A\\)
+    A,B,C turns into \\(A.*B.*C\\|A.*C.*B\\|B.*A.*C\\|B.*C.*A\\|C.*A.*B\\|C.*B.*A\\)"
       (let* ((l (perms (split-string str ",\\s-*"))))
 	(mapconcat (function (lambda (n)
 	  (mapconcat 'identity n ".*"))) l "\\|")))
@@ -47,9 +47,20 @@ possible permutations of this list of strings.
 
 Here is my take on "string permutations".
 
-First we need a helper function:
+First we need some helper functions:
 
 <pre>
+
+(defun rotate-string (s n)
+  (cond ((= (length s) 1)
+         s)
+        ((> (length s) 1)
+         (let ((s2 s) (cnt 0))
+           (while (< cnt n)
+             (setq s2 (concat (substring s2 1) (substring s2 0 1)))
+             (setq cnt (1+ cnt)))
+           s2))))
+
 (defun list-all-rotated-strings (s)
   (let ((cnt 0))
     (mapcar

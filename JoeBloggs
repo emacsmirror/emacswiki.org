@@ -2,18 +2,28 @@ I use Emacs.. alot.
 
 Here are some libraries I wrote:
 
-==My elisp libraries==
+==Elisp libraries==
 
 * '''Lisp:sms.el''' -- compose text (SMS) messages 
 * '''Lisp:bbdb-sms.el''' -- integration of [[BBDB]] with [[sms.el]]
 * '''Lisp:erc-babel.el''' -- automatic translation of IRC messages between different (spoken) languages
 
+==One-Key==
+I am the current maintainer for [[OneKey]] and [[LazySearch]] written by [[AndyStewart]] and [[rubikitch]].
+I have also written the following extension for [[OneKey]]:
 
-[new:DrewAdams:2009-10-06 06:45 UTC]
-Welcome to the wiki. -- DrewAdams
+* '''Lisp:one-key-dir.el''' -- navigate directories using [[OneKey]]
+
+: Hi Joe, there have Lisp:lazy-search-extension.el, do you want take over it too? -- AndyStewart
 
 [new:SewerynKokot:2010-08-26 08:04 UTC]
 Using [[OneKey]] library, I have a problem in assigning, for example, ‘mark-paragraph’ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using ‘M-x mark-paragraph’ it works properly! Any idea what is wrong? -- SewerynKokot
+[new]
+Actually I think the paragraph IS being marked (I tried it), but the coloured overlay is not being applied.
+Try C-w just after applying mark-paragraph and I think you will see the paragraph disappear.
+Not sure why the coloured overlay is not applied though :( 
+[new]
+
 
 ----
 CategoryHomepage

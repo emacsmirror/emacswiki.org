@@ -530,6 +530,15 @@ Hi again RedBlue,
 
 Thanks a lot for your suggestions. I've implemented both of them in the [Lisp:sunrise-commander.el latest revision]. -- [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
+[new]
+Thanks for the update -- very nice!!
+One small thing: the behavior after the new C-c / is a bit unusual in the sense that the highlighted ("green") file is separated from the regular cursor, and hence C-n/C-p don't move the "green" cursor (not sure what the right term is) in the manner one might expect.
+Also, would be nice to have a variable controlling whether to automatically turn off fuzzy-narrow on directory change. 
+
+It might also be a good idea to put some kind of a visible indicator to show that the directory view is narrowed, maybe change the color of the "total used..." line or directory path, or something, perhaps show the filter pattern too?  for example, one might cd to a directory in which nothing matches, then it looks normal, and when you switch back you might forget that there was a fuzzy-narrow filter set...
+
+--laxxy
+
 ----
 CategoryDirectories
 CategoryEmulation

@@ -1,6 +1,8 @@
 ==What's Irfc ?==
 Irfc is interface for IETF [[RFC]] document.
 
+: Please send suggestions and bug reports to NielsWidger, he's the new maintainer. Thanks! -- AndyStewart
+
 This package use some code from Lisp:rfcview.el, thanks "Neil W. Van Dyke"!
 
 The features this package provide:
@@ -123,3 +125,7 @@ Hi Neils, i notice you add new feature in irfc.el, very cool.
 Are you interested take over irfc.el? I have leave Emacs long time, no time maintain irfc.el.
 
 Please let me know if you want take over it, thanks!  -- AndyStewart
+
+Hi Andy, Sure I'll keep adding features and fix any bugs I find.  :)  -- Niels
+
+: Great! I have update your information in irfc.el, thank you very much! -- AndyStewart

@@ -4,13 +4,13 @@
 ;; Description: One key
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;;         rubikitch <rubikitch@ruby-lang.org>
-;; Maintainer: Andy Stewart <lazycat.manatee@gmail.com>
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
+;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
+;; Copyright (C) 2008, 2009, 2010 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-22 21:54:30
-;; Version: 0.7.0
-;; Last-Updated: 2009-05-23 00:52:06
-;;           By: Andy Stewart
+;; Version: 0.7.1
+;; Last-Updated: 21/09/2010 20:08:42
+;;           By: Joe Bloggs
 ;; URL: http://www.emacswiki.org/emacs/download/one-key.el
 ;; Keywords: one-key
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -187,22 +187,21 @@
 
 ;;; Installation:
 ;;
-;; Put one-key.el to your load-path.
-;; The load-path is usually ~/elisp/.
-;; It's set in your ~/.emacs like this:
+;; Put one-key.el in a directory in your load-path, e.g. ~/.emacs.d/
+;; You can add a directory to your load-path with the following line in ~/.emacs
 ;; (add-to-list 'load-path (expand-file-name "~/elisp"))
+;; where ~/elisp is the directory you want to add 
+;; (you don't need to do this for ~/.emacs.d - it's added by default).
 ;;
-;; And the following to your ~/.emacs startup file.
+;; Add the following to your ~/.emacs startup file.
 ;;
 ;; (require 'one-key)
 ;;
-;; Because this library use special implement method,
-;; can occur `max-lisp-eval-depth' or `max-specpdl-size' error.
+;; Because this library uses a special implementation,
+;; sometimes a `max-lisp-eval-depth' or `max-specpdl-size' error can occur.
 ;;
-;; So i think setup above two variables larger
-;; will minish probability that error occur.
-;;
-;; Example I set below:
+;; So making the above two variables larger will reduce the probability that an error occurs.
+;; E.g:
 ;;
 ;; (setq max-lisp-eval-depth 10000)
 ;; (setq max-specpdl-size 10000)
@@ -223,10 +222,13 @@
 ;;
 
 ;;; Change log:
-;;
-;; 2009/05/23
-;;   * Andy Stewart:
-;;      * Fix bug of option `one-key-popup-window'.
+;; 2010/09/21
+;;    * Joe Bloggs
+;;       * Fixed a problems with one-key-make-template so it should work with more keymaps
+;;       * Added ability to get help on one-key-menu items by pressing C-? followed by item key
+;;       * Altered header text of menu
+;;       * Fixed bug in one-key-menu so that window pops up if one-key-popup-window is t
+;;         (this was also fixed independently by Andy, but I'm keeping my fix since it works fine)
 ;;
 ;; 2009/03/09
 ;;   * Andy Stewart:
@@ -320,17 +322,17 @@
   :group 'editing)
 
 (defcustom one-key-popup-window t
-  "Whether popup window when first time run `one-key-menu'."
+  "Whether to popup window when `one-key-menu' is run for the first time."
   :type 'boolean
   :group 'one-key)
 
 (defcustom one-key-buffer-name "*One-Key*"
-  "The buffer name of popup help window."
+  "The buffer name of the popup help window."
   :type 'string
   :group 'one-key)
 
 (defcustom one-key-template-buffer-name "*One-Key-Template*"
-  "The name of template buffer."
+  "The name of the template buffer."
   :type 'string
   :group 'one-key)
 
@@ -368,10 +370,13 @@ If nil, it is calculated by `window-width'."
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar one-key-help-window-configuration nil
-  "The window configuration that record current window configuration before popup help window.")
+  "The window configuration that records the current window configuration before the popup help window.")
 
 (defvar one-key-menu-call-first-time t
-  "The first time call function `one-key-menu'.")
+  "t if `one-key-menu' has been called non-recursively.")
+
+(defvar one-key-menu-show-help nil
+  "If true show help for function when associated key is pressed in one-key-menu.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun one-key-show-template (keystroke title)
@@ -389,6 +394,7 @@ TITLE is title name that any string you like."
       (lisp-mode-variables)
       (setq font-lock-mode t)
       (font-lock-fontify-buffer)
+      (emacs-lisp-mode)
       ;; Pop to buffer.
       (switch-to-buffer (current-buffer))
       ;; Move to last argument position of function define.
@@ -427,7 +433,7 @@ Will highlight this `MSG' with face `MSG-FACE'."
 
 (defun one-key-highlight-help (title keystroke)
   "Highlight TITLE help information with KEYSTROKE."
-  (setq title (one-key-highlight (format "Here is a list of <%s> keystrokes. Type '?' for hide. Type 'q' for exit.\n\n" title)
+  (setq title (one-key-highlight (format "Here is a list of <%s> keystrokes. Type '?' to hide, 'q' to exit, 'up/down' and 'page up/page down' to scroll.\n                                         Type 'C-?' for help about next keystroke\n" title)
                                  "\\(<[^<>]*>\\|'[^']*'\\)"
                                  '(face one-key-title)))
   (setq keystroke (one-key-highlight keystroke
@@ -445,18 +451,18 @@ Will highlight this `MSG' with face `MSG-FACE'."
                      execute-last-command-when-miss-match)
   "One key menu.
 
-`TITLE' is the title of men, any string can use.
+`TITLE' is the title of menu, can use any string.
 `INFO-ALIST' is a special alist
-that contain KEY, DESCRIBE and COMMAND.
-`MISS-MATCH-EXIT-P' whether hide popup help window
+that contains KEY, DESCRIBE and COMMAND.
+`MISS-MATCH-EXIT-P' whether to hide popup help window
 when keystroke can't match in menu.
 `RECURSION-P' whether recursion execute self
 when keystroke can't match in menu.
 `PROTECT-FUNCTION' the protect function
 that call in `unwind-protect'.
 `ALTERNATE-FUNCTION' the alternate function execute at last.
-`EXECUTE-LAST-COMMAND-WHEN-MISS-MATCH' whether execute
-last command when it miss match in key alist."
+`EXECUTE-LAST-COMMAND-WHEN-MISS-MATCH' whether to execute the
+last command when it miss matches in key alist."
   (let ((self (function
                (lambda ()
                  (one-key-menu
@@ -466,20 +472,16 @@ last command when it miss match in key alist."
                   alternate-function
                   execute-last-command-when-miss-match))))
         last-key)
-    ;; Popup help window when first time call
-    ;; and option `one-key-popup-window' is `non-nil'.
-    (when (and one-key-menu-call-first-time
-               one-key-popup-window)
-      (one-key-help-window-toggle title info-alist))
     ;; Execute.
     (unwind-protect
         (let* ((event (read-event
                        ;; Just show help message when first call,
                        ;; don't overwritten message from command.
                        (if one-key-menu-call-first-time
-                           (progn
-                             (one-key-highlight-prompt title)
-                             (setq one-key-menu-call-first-time nil))
+			   ;;  ensure popup window opens first time
+			   (progn (setq one-key-menu-call-first-time nil)
+				  (if one-key-popup-window
+				      (one-key-help-window-toggle title info-alist)))
                          "")))
                (key (if (if (<= emacs-major-version 22)
                             (with-no-warnings
@@ -498,15 +500,24 @@ last command when it miss match in key alist."
                     (setq match-key k)
                     ;; Call function when match keystroke.
                     (when (one-key-match-keystroke key match-key)
-                      ;; Close help window first.
-                      (one-key-help-window-close)
-                      ;; Set `one-key-menu-call-first-time' with "t" for recursion execute.
-                      (setq one-key-menu-call-first-time t)
-                      ;; Execute.
-                      (call-interactively command)
-                      ;; Set `one-key-menu-call-first-time' with "nil".
-                      (setq one-key-menu-call-first-time nil)
-                      (throw 'match t)))
+		      (if one-key-menu-show-help
+			  (progn 
+			    ;; Show help about command
+			    (describe-function command)
+			    ;; Set `one-key-menu-call-first-time' with "nil".
+			    (setq one-key-menu-call-first-time nil)
+			    (setq one-key-menu-show-help nil)
+			    (setq recursion-p t)
+			    (throw 'match t))
+			;; Close help window first.
+			(one-key-help-window-close)
+			;; Set `one-key-menu-call-first-time' with "t" for recursion execute.
+			(setq one-key-menu-call-first-time t)
+			;; Execute.
+			(call-interactively command)
+			;; Set `one-key-menu-call-first-time' with "nil".
+			(setq one-key-menu-call-first-time nil)
+			(throw 'match t))))
               nil)
             ;; Handle last.
             (one-key-handle-last alternate-function self recursion-p))
@@ -518,11 +529,15 @@ last command when it miss match in key alist."
             ;; toggle help window
             (one-key-help-window-toggle title info-alist)
             (funcall self))
-           ((one-key-match-keystroke key "C-n")
+           ((one-key-match-keystroke key "C-?")
+            ;; show help
+	    (setq one-key-menu-show-help t)
+            (funcall self))
+           ((one-key-match-keystroke key "<down>")
             ;; scroll up one line
             (one-key-help-window-scroll-up-line)
             (funcall self))
-           ((one-key-match-keystroke key "C-p")
+           ((one-key-match-keystroke key "<up>")
             ;; scroll down one line
             (one-key-help-window-scroll-down-line)
             (funcall self))
@@ -551,6 +566,8 @@ last command when it miss match in key alist."
             (one-key-handle-last alternate-function self recursion-p))))
       ;; Restore value of `one-key-call-first-time'.
       (setq one-key-menu-call-first-time t)
+      ;; Restore value of `one-key-menu-show-help'.
+      (setq one-key-menu-show-help nil)
       ;; Close help window.
       (one-key-help-window-close)
       ;; Run protect function
@@ -622,7 +639,8 @@ Argument INFO-ALIST is help information as format ((key . describe) . command)."
       ;; Close help window.
       (one-key-help-window-close)
     ;; Open help window.
-    (one-key-help-window-open title info-alist)))
+    (one-key-help-window-open title info-alist))
+  nil)
 
 (defun one-key-help-window-open (title info-alist)
   "Open the help window.
@@ -741,7 +759,8 @@ TITLE is title name that any string you like."
               (format "(setq one-key-menu-%s-alist\n'(\n" funcname))
       ;; Insert (("key" . "desc") . command).
       (while (not (eobp))
-        (unless (eq (point-at-bol) (point-at-eol))
+        (unless (or (eq (point-at-bol) (point-at-eol)) 
+		    (equal " " (char-to-string (char-after (point-at-bol)))))
           (destructuring-bind (key cmd)
               (split-string (buffer-substring (point-at-bol) (point-at-eol)) "\t+")
             (delete-region (point-at-bol) (point-at-eol))
