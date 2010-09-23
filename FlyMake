@@ -48,7 +48,7 @@ The following works with Gnat:
         'flymake-get-ada-cmdline))
 
   (defun flymake-get-ada-cmdline (source base-dir)
-    `("gnatmake" ("-gnatc" "-gnatwa",(concat "-I" base-dir) ,source)))
+    `("gnatmake" ("-gnatc" "-gnatwa" ,(concat "-I" (expand-file-name base-dir)) ,source)))
 
   (push '(".+\\.adb$" flymake-ada-init) flymake-allowed-file-name-masks)
   (push '(".+\\.ads$" flymake-ada-init) flymake-allowed-file-name-masks)

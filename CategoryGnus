@@ -133,6 +133,7 @@ Suggestions:
 * MyGnus -- a Gnus community which no longer exists
 * GnusComposeMailFromOutsideOfEmacs -- compose mails in Gnus from outside of emacs
 * GnusNetworkManager -- Integration between Gnus agent and !NetworkManager
+* GnusAutoCheck -- Autocheck for new incoming news and mails for given days and/or time frames
 
 == Getting Gnus ==
 

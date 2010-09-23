@@ -50,7 +50,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 *** LazySearch -- A lazy search mode based on [[OneKey]]. (Maintainer: [http://www.emacswiki.org/emacs/JoeBloggs JoeGloggs])
 
-*** [[Irfc]] -- [[RFC]] reader and downloader. (Maintainer: [NielsWidger])
+*** [[Irfc]] -- [[RFC]] reader and downloader. (Maintainer: [[NielsWidger]])
 
 *** ChmView -- CHM reader.
 
@@ -112,7 +112,7 @@ Free feel to copy any code you like and don't need my permission, just enjoy! :)
 
 *** Lisp:tabbar-extension.el -- Some enhanced functions for [[TabBarMode]].
 
-*** Lisp:lazy-search-extension.el -- Some enhanced functions for [[LazySearch]].
+*** Lisp:lazy-search-extension.el -- Some enhanced functions for [[LazySearch]] (Maintainer: [http://www.emacswiki.org/emacs/JoeBloggs JoeGloggs]).
 
 *** Lisp:rect-extension.el -- Some enhanced functions for [[RectangleMark]].
 

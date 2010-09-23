@@ -94,9 +94,12 @@ For the second part of the question here is what i currently use to bypass ac-mo
                        ))
 (real-global-auto-complete-mode t)
 </pre>
-
+----
 [new:PhilJackson:2009-01-22 12:26 UTC] Should I expect this to work in a TTY emacsen?
 
+[new]
+: Yes. And it's purrty :D
+----
 [new] How does this compare with CompletionUI and CompanyMode? --TobyCubitt
 
 [new:AndyStewart:2009-02-11 23:03 UTC]

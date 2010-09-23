@@ -4,6 +4,7 @@ I use Emacs
 
 I have a blog: http://blog.thebuble.org
 
+Here is a small gnus utility to autocheck for new incoming news and mails for given days and/or time frames: Lisp:gnus-autocheck.el (GnusAutoCheck)
 
 [new:DrewAdams:2010-09-19 16:40 UTC]
 Welcome to the wiki. -- DrewAdams

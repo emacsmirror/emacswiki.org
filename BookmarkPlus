@@ -1826,6 +1826,12 @@ cycling.
 
 
 
+
+
+
+
+
+
 [:AutonamedBookmarks]
 === Autonamed Bookmarks - Easy Come Easy Go ===
 
@@ -2366,6 +2372,44 @@ I think I understand (but not sure). I think you're describing a context where t
 The command bound to `##T +##' is general, not specific to, say, buffer `##*Bookmark List*##", where, in effect, the current line corresponds to a specific bookmark. But in that case, the current-line's bookmark is the default value, so you need only hit `RET' to pick it up. I don't see that as a big thing, I guess, so I don't think it's worth trying to take advantage of that specific context. I suspect you disagree. ;-)
 
 Let me know at least if I've understood the suggestion: Since in a context like the buffer list it's predictable that you want to tag the bookmark on the current line, don't bother to prompt for which bookmark to tag. -- DrewAdams
+
+[new:JoeBloggs:2010-09-23 01:07 UTC]
+Yes you've understood. I set the customization option to prompt for tags when I create a new bookmark which speeds things
+up a bit. 
+
+I like the new highlighting that you've added, and I'm wondering if it's possible to mimic the functionality of
+[[VisibleBookmarks]], i.e. persistent bookmark highlighting, quick jumping to next/previous bookmark in current buffer,
+quick editing of bookmark at point. Then I don't need to use the ##*Bookmark List*## buffer so often.
+
+Also, is there any way to jump straight to the bookmark position instead of the annotations buffer (leaving the annotations buffer visible)?
+
+-- JoeBloggs
+
+
+[new:DrewAdams:2010-09-23 04:07 UTC]
+I think '''Bookmark+''' offers everything that ##bm.el## (VisibleBookmarks) offers, and quite a bit more. See these sections for details: 
+
+* ''Cycling'' -- see [[#CyclingNavlistAutonaming|Cycling, Navigation List, Autonaming]].  For cycling in the current buffer see [[#CyclingCurrentBuffer|Cycling in the Current Buffer]] -- use `C-x p down' (or ##up##).  (To cycle among only highlighted bookmarks, you can use `C-x p C-down'. To jump to only a highlighted bookmark, you can use `C-x j h'.)
+
+* ''Quick setting and editing'' -- See [[#AutonamedBookmarks|Autonamed Bookmarks]] -- just use `C-x p RET' to set/delete.
+
+* ''Highlighting'' -- See [[#HighlightingBookmarkLocations|Highlighting Bookmark Locations]]. I'm not sure what your question is.  It sounds like you might be looking for [[#HighlightingAutomatically|Highlighting Automatically]], which is essentially equivalent to persistent highlighting.  You can, for instance, auto-highlight only the autonamed (i.e. quick) bookmarks in the current buffer, then cycle among only those.  There are lots of possibilities.
+
+You can obviously bind short keys to the various commands.  All of the commands mentioned are on the keymap `bookmark-map', so you can alternatively just bind that map to some prefix key that is shorter than `C-x p' -- that way you bind all of the commands at once.
+
+I don't understand your question about jumping and annotations. Please give me a recipe/scenario.  Jumping is always to a bookmark, not its annotation.  Maybe you are looking for option `bookmark-automatically-show-annotations'?  That's a standard option, respected also by '''Bookmark+'''.  If non-`nil', then any associated annotation is displayed, but not if `nil'.  '''Bookmark+''' behaves the same as vanilla Emacs wrt annotations and jumping.
+
+Let me know if something in the doc is unclear or does not seem to correspond to what you are looking for.  I don't want to repeat explanations here without knowing what is unclear etc. -- DrewAdams
+
+
+
+
+
+
+
+
+
+
 
 
 ----

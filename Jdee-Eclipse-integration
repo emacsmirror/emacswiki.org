@@ -42,9 +42,12 @@ There is also an Emacs Plug-in for Eclipse at http://pag.csail.mit.edu/~adonovan
 TODO
 
 [:ProjectFiles]
-=== Import Eclipse projects into JDEE, and viceversa ===
-How to transform a .project into a prj.el?
-TODO
+=== Import Eclipse projects into JDEE ===
+
+[http://github.com/phua/jde-int/blob/master/jde-int.el jde-int] is a basic Emacs Lisp script that imports Eclipse projects to JDEE.
+It generates prj.el files with the jde-sourcepath and jde-global-classpath for every Eclipse project under your workspace, overwriting existing prj.el files.
+
+Run (jde-int-find-and-import-projects "/path/to/workspace"). -- PeterHua
 
 == Possible ways to full integration ==
 

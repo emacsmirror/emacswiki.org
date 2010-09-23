@@ -247,6 +247,24 @@
 ;; SNIPPETS:
 ;;
 ;; THIRD PARTY CODE:
+;; Following functions were sourced from Steel Bank Common Lisp
+;; :FILE sblc/src/code/list.lisp circa SBCL 1.0.42.*
+;; :RENAMED-TO      :FROM
+;; `mon-map1'    <- MAP1 
+;; `mon-mapl'    <- MAPL
+;; `mon-maplist' <- MAPLIST
+;; `mon-mapcar'  <- MAPCAR 
+;; `mon-mapcan'  <- MAPCAN
+;; `mon-mapcon'  <- MAPCON
+;; While some minor modifications were made w/re namespacing w/ additional Emacs
+;; lispification to `mon-map1' the SBCL license is still applicable.  
+;; :SEE (URL `http://www.sbcl.org/history.html')
+;; :SEE (URL `http://sbcl.cvs.sourceforge.net/*checkout*/sbcl/sbcl/COPYING?revision=HEAD')
+;;
+;; The SBCL CREDITS file notes that much of the list.lisp functions can be
+;; traced to Skef Wholey and the CMU SPICE lisp with additional code descending
+;; from Joe Ginder and Carl Ebeling). It is unclear how much has changed since
+;; that time.
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-utils.el
 ;; FIRST-PUBLISHED: AUGUST 2009
@@ -2058,16 +2076,70 @@ This is an alternative definition of `append-to-buffer' with a \"\n\".\n
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:59:35-04:00Z}#{10116} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-03-10T20:04:58-05:00Z}#{10104} - by MON KEY>
-(defun mon-g2be (&optional min/max)
+;;; :WAS (defun mon-g2be (&optional min/max)
+(defun mon-g2be (&optional min/max-go no-go)
   "Move point as with `goto-char' to `point-max' or `point-min'.\n
-If optional arg MIN/MAX is non-nil and greater than 0 goto-char `point-max'.
-Default is to goto-char `point-min'.\n
-:EXAMPLE\n\n(mon-g2be)\n\n(mon-g2be 0)\n\n(mon-g2be 1)\n
+If optional arg MIN/MAX-GO is non-nil it may be any of the following:
+ `:min`, `:max`, `t', `nil', <INTEGER>, <MARKER>,
+Default is to `goto-char' `point-min'.\n
+When optional arg NO-GO is non-nil return a buffer position
+`point-min'/`min-max' but do not move point.\n
+:EXAMPLE\n\n\(mon-g2be :min t\)\n
+\(mon-g2be -1 t\)\n
+\(mon-g2be 0 t\)\n
+\(mon-g2be nil t\)\n
+\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 0\)\) t\)
+\(mon-g2be 1 t\)\n
+\(mon-g2be :max t\)\n
+\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 1\)\) t\)
+\(mon-g2be nil t\)\n
+\(mon-g2be t t\)\n
+;; Following move point:
+\(mon-g2be\)
+\(mon-g2be :min
+\(mon-g2be -1
+\(mon-g2be 0 t\)
+\(mon-g2be t\)
+\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 0\)\)\)
+\(mon-g2be 1\)
+\(mon-g2be \(aref [10 13 15] \(random 3\)\) t\)
+\(mon-g2be :max\)
+\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 1\)\)\)
+:NOTE As a special case when MIN/MAX-GO is a marker that points to a buffer
+postion in current-buffer location of return value is needn't be either only
+`point-min'/`point-max' this allows reading in match-data variables bound to
+markers etc. Wnen the constraints on passing a marker value to this function are
+satisfied the return value is a marker not an integer including when the no-go
+arg is ommitted (i.e. point moves). This return value is unlike `goto-char' in
+that \(goto-char \(1+ \(point\)\)\) returns the value of the point it moved into as an
+integer value.\n
 :SEE-ALSO `point-min', `point-max', `buffer-end'.\n►►►"
-  (goto-char
-   ;; :WAS (if (> min/max 0) (point-max) (point-min))))
-   (if (and min/max (> min/max 0))
-       (point-max) (point-min))))
+  ;;(let ((cnsdr-go 
+  (setq min/max-go
+        (or (and min/max-go
+                 (or (and (integer-or-marker-p min/max-go)
+                          (or (and (integerp min/max-go)
+                                   (or (and (> min/max-go 0) (point-max))
+                                       (and (<= min/max-go 0) (point-min))))
+                              (and (markerp min/max-go)
+                                   (and (or (eq (marker-buffer min/max-go) (current-buffer))
+                                            (error (concat ":FUNCTION `mon-g2be' "
+                                                           "-- ARG min/max-go satisfies `markerp' "
+                                                           "but `marker-buffer' not `current-buffer'")))
+                                        (or (and (marker-position min/max-go) min/max-go)
+                                            (error (concat ":FUNCTION `mon-g2be' "
+                                                           "-- ARG min/max-go satisfies `markerp' "
+                                                           "but `marker-position' points nowhere")))))))
+                     (and (or (eq min/max-go 'max) (eq min/max-go :max)) (point-max))
+                     (and (or (eq min/max-go 'min) (eq min/max-go :min)) (point-min))
+                     (and (booleanp min/max-go)
+                          (or (and min/max-go (point-max))
+                              (point-min)))))
+            (point-min)))
+  (or (and no-go min/max-go)
+      (progn 
+        (goto-char min/max-go)
+        min/max-go)))
 
 
 ;;; ==============================
@@ -7601,7 +7673,8 @@ are the same Lisp object.\n
 :EXAMPLE\n\n\(mon-deleql-dups '\(a 2.2  b q 3.3 f d e 1 a f 1 g\)\)\n
 \(length `\(\(a a\) #2=\(#1=a #1#\) #2#\)\)\n
 \(length \(mon-deleql-dups `\(\(a a\) #2=\(#1=a #1#\) #2#\)\)\)\n
-:SEE-ALSO `mon-delete-first',.\n►►►"
+:SEE-ALSO `mon-delete-first', `mon-list-last', `mon-delete-if',
+`mon-remove-if-not', `mon-remove-dups'.\n►►►"
   (let (gthreql fneql)
     (while dup-eql-list
       (let* ((mmql-pop (car (push (pop dup-eql-list) gthreql)))
@@ -7622,8 +7695,8 @@ are the same Lisp object.\n
   "Delete by side effect the first `eq' occurrence of LIST-ELT as member of IN-LIST.\n
 :EXAMPLE\n\n \(let \(\(mdf '\(\(a b c\) b\)\)\) \(mon-delete-first '\(a b c\) mdf\) mdf\)\n
 :ALIASED-BY `mon-list-delete-first'\n
-:SEE-ALSO `mon-list-last', `mon-delete-if', `mon-remove-if-not',
-`mon-delq-dups', `mon-remove-dups', `mon-list-make-unique'.\n"
+:SEE-ALSO `mon-delq-dups', `mon-deleql-dups', `mon-list-last', `mon-delete-if',
+`mon-remove-if-not', `mon-remove-dups', `mon-list-make-unique'.\n"
   ;; :NOTE `defsubst'd in bytecomp.el
   ;; (byte-compile-delete-first list-elt in-list))
   (if ;; :WAS (eq (car in-list) list-elt)
@@ -7656,8 +7729,7 @@ are the same Lisp object.\n
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T17:18:18-04:00Z}#{10381} - by MON KEY>
-;;(defsubst mon-list-last (in-list)
-(defun mon-list-last (in-list)
+(defun mon-list-last (in-list) ;; :NOTE Can't `defsubst' inline b/c it recurses.
   "Return the last element IN-LIST.\n
 When IN-LIST satisfies `listp' and `mon-list-proper-p' return the car of last
 elt in list else return the cdr of IN-LIST.\n
@@ -7684,7 +7756,8 @@ the dotted list at tail not the atom in cdr of dotted list, e.g.\n
             (t (if (atom in-list)
                    in-list
                  (progn (while (consp in-list)
-                          (unless (or (null (cdr in-list))(atom in-list))
+                          (unless (or (null (cdr in-list))
+                                      (atom in-list))
                             (setq in-list (cdr in-list)))
                           (setq in-list (mon-list-last in-list)))
                         in-list))))
@@ -7931,21 +8004,21 @@ When optional arg REMV-DUPS is non-nil remove duplicate elements.\n
 `mon-transpose', `mon-flatten', `mon-recursive-apply', `mon-sublist',
 `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace', `mon-moveq',
 `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
-  (let ((lo list-order)
-        (li list-items)
-        rtn)
-    (setq rtn
-          (if lo
-              (let ((item (member (car lo) li)))
-                (if item
-                    (cons (car item)
-                          (mon-list-reorder (mon-delq-cons item li)
-                                            (cdr lo)))
-                  (mon-list-reorder li (cdr lo))))
-            li))
+  (let ((mlr-lst-ordr list-order)
+        (mlr-lst-itm list-items)
+        mlr-rnt)
+    (setq mlr-rnt
+          (if mlr-lst-ordr
+              (let ((mlr-itm (member (car mlr-lst-ordr) mlr-lst-itm)))
+                (if mlr-itm
+                    (cons (car mlr-itm)
+                          (mon-list-reorder (mon-delq-cons mlr-itm mlr-lst-itm)
+                                            (cdr mlr-lst-ordr)))
+                  (mon-list-reorder mlr-lst-itm (cdr mlr-lst-ordr))))
+            mlr-lst-itm))
     (if remv-dups
-        (delete-dups rtn)
-      rtn)))
+        (delete-dups mlr-rnt)
+      mlr-rnt)))
 ;;
 ;;; :TEST-ME (mon-list-reorder '(2 6 3 2 1) '(1 2 3 4 5 6))
 ;;; :TEST-ME (mon-list-reorder '(q w b c s a w) '(a b c q z w))
@@ -7958,7 +8031,7 @@ When optional arg REMV-DUPS is non-nil remove duplicate elements.\n
 (defun mon-member-if (predicate in-list)
   "Find the first item satisfying PREDICATE in IN-LIST.\n
 Return the sublist of IN-LIST whose car matches.\n
-:EXAMPLE\n\n\(mon-member-if #'\(lambda \(p\) \(>= p 6\)\) '\(3 2 6 7\)\)
+:EXAMPLE\n\n\(mon-member-if #'\(lambda \(p\) \(>= p 6\)\) '\(3 2 6 7\)\)\n
 :NOTE This is a keywordless replacement for CL's `member-if'.
 :SEE-ALSO `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon',
 `mon-remove-if', `mon-remove-if-not', `mon-delete-if', `mon-char-code'.\n►►►"
@@ -8212,15 +8285,12 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
                (prog1 (nreverse ,mclm-res) (setcdr ,mclm-res ,mclm-cpy))))
          (car ,mclm-cpy)))))
 
-;; (symbol-plist 'copy-tree)
-;; `side-effect-and-error-free-fns'
-;; `side-effect-free-fns'
-
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
 ;;; :MODIFICATIONS Now uses catch/throw instead of `return' and `setcdr' instead
-;;; of `rplacd'. Elided the outer let binding of fun around
-;;; `%coerce-callable-to-fun' on `fun-designator'.
+;;; of `rplacd'. local var arglists now uses `mon-copy-list-mac' instead of
+;;; `copy-list' to silence byte-compiler.  Elided the outer let binding of fun
+;;; around `%coerce-callable-to-fun' on `fun-designator'.
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T21:07:39-04:00Z}#{10381} - by MON KEY>
 (defun mon-map1 (fun-designator original-arglists accumulate take-car)
@@ -8239,7 +8309,8 @@ TAKE-CAR
 :SEE-ALSO `mon-remove-if-not', `mon-delete-if', `mon-member-if',
 `mon-char-code'.\n►►►"
   ;; :WAS (let ((fun (%coerce-callable-to-fun fun-designator)))
-  (let* ((arglists (mon-copy-list-mac original-arglists)) ;; (copy-list original-arglists))
+  (let* (;; :WAS (arglists  (copy-list original-arglists))
+         (arglists (mon-copy-list-mac original-arglists))
          (ret-list (list nil))
          (temp ret-list))
     (do ((res nil)

@@ -1,0 +1,27 @@
+This page describe how to configure Lisp:gnus-autocheck.el in order to have Gnus cheks for new incoming news and mails automatically
+
+==Configuration==
+It's very easy, all you have to do is to load the library and to call M-x customize-group gnus-autocheck
+
+You can also configure it directly in your .gnus.el file using the following:
+<pre>
+(require 'gnus-autocheck)
+
+;; automatic check every 2 minutes for new incoming mails by night
+(setq gnus-autocheck-interval (* 60 2))
+
+;; autocheck should run all saturday and sunday
+(setq gnus-autocheck-active-days '("Sat" "Sun"))
+
+;; autocheck should run all saturday and sunday
+(setq gnus-autocheck-active-days '("Sat" "Sun"))
+
+;; autocheck should not run between 8:30AM and 6PM during work days
+(setq gnus-autocheck-active-periods '(("00:00" "08:30") ("18:00" "23:59")))
+</pre>
+
+You can also declare a function to be called before actually checking for news. This can be useful if you need a third party program to feed your news/emails server.
+This can be achieved this way:
+<pre>
+(add-hook 'gnus-autocheck-hook 'func-to-call-before-checking-for-news)
+</pre>

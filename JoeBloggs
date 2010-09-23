@@ -9,12 +9,10 @@ Here are some libraries I wrote:
 * '''Lisp:erc-babel.el''' -- automatic translation of IRC messages between different (spoken) languages
 
 ==One-Key==
-I am the current maintainer for [[OneKey]] and [[LazySearch]] written by [[AndyStewart]] and [[rubikitch]].
+I am the current maintainer for [[OneKey]], [[LazySearch]] and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
 I have also written the following extension for [[OneKey]]:
 
 * '''Lisp:one-key-dir.el''' -- navigate directories using [[OneKey]]
-
-: Hi Joe, there have Lisp:lazy-search-extension.el, do you want take over it too? -- AndyStewart
 
 [new:SewerynKokot:2010-08-26 08:04 UTC]
 Using [[OneKey]] library, I have a problem in assigning, for example, ‘mark-paragraph’ function to a key, namely typing the OneKey keybinding results in the paragraph not marked. While using ‘M-x mark-paragraph’ it works properly! Any idea what is wrong? -- SewerynKokot
