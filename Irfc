@@ -61,6 +61,14 @@ All below option can customize by: M-x customize-group RET irfc RET
 * "irfc-download-base-url" The base url for download RFC document.
 * "irfc-buffer-name-includes-title" Whether buffer name should
   include the RFC document's title
+* "irfc-highlight-requirement-keywords" whether RFC requirement
+  keywords specified in `irfc-requirement-keywords' list
+  should be highlighted using the face specified by
+  `irfc-requirement-keyword-face'.
+* "irfc-requirement-keywords" list of RFC requirement keywords to
+  highlight if `irfc-highlight-requirement-keywords' is t.
+* "irfc-highlight-references" whether RFC references should be
+  highlighted using the face specified by `irfc-reference-face'.
 
 ==Tips==
 * You can use command `irfc-render-toggle' to toggle render status.

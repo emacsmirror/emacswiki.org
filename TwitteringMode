@@ -275,3 +275,6 @@ When more than 10 tweets are retrieved, it makes a message with the spec as the 
 If it gets less than 10, a message is made of each. Hope someone else finds it useful. -- DaveKerschner
 ----
 See also: [[Twitter]] [[Identica-mode]]
+
+[new]
+2010-09-23 I also installed v1.0 and it works fine on my Linux system but not on my Windows system (get same "Authorization via OAuth failed. Type M-x twit to retry." message). It is the same exact setup that I sync w/unison. Is there something special needed for Windows?

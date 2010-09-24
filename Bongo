@@ -1,4 +1,4 @@
-Bongo is a buffer-oriented media player for Emacs, contemporary with and comparable to [[EMMS]] 2.0.  It runs on GNU Emacs 21 and above.
+Bongo is a beautiful, flexible and usable buffer-oriented media player for Emacs, developed in parallel to [[EMMS]] 2.0.  It runs on GNU Emacs 21 and above.
 
 ; '''Code''': http://github.com/dbrock/bongo
 ; '''Mailing list''': <code><bongo-devel@nongnu.org></code> (see http://lists.nongnu.org/mailman/listinfo/bongo-devel) --- in Gmane as <code>gmane.emacs.bongo.devel</code> (see http://dir.gmane.org/gmane.emacs.bongo.devel)
@@ -8,7 +8,7 @@ Notable features of Bongo include
 * hierarchical buffers with collapsable sections for each artist and album,
 * familiar Emacs bindings for editing Bongo buffers (edit playlists much like you would regular text),
 * a nice visual seeking interface doubling as a progress meter (hit `s'),
-* a visual audio volume control ([[volume.el]], which is actually a stand-alone package),
+* a visual audio volume control ([[Volume]], which is actually a stand-alone package),
 * built-in support for playing and retreiving information about audio CDs,
 * built-in support for submitting information to Last.fm using `lastfmsubmitd',
 * the ability to perform arbitrary actions (stopping playback is a simple example) once playback reaches certain points in the playlist, using so-called “action tracks”,

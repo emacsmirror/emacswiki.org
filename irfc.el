@@ -157,6 +157,14 @@
 ;; `irfc-download-base-url' the base url for download RFC document.
 ;; `irfc-buffer-name-includes-title' whether buffer name should
 ;;  include the RFC document's title
+;; `irfc-highlight-requirement-keywords' whether RFC requirement
+;;  keywords specified in `irfc-requirement-keywords' list
+;;  should be highlighted using the face specified by
+;;  `irfc-requirement-keyword-face'.
+;; `irfc-requirement-keywords' list of RFC requirement keywords to
+;;  highlight it `irfc-highlight-requirement-keywords' is t.
+;; `irfc-highlight-references' whether RFC references should be
+;;  highlighted using the face specified by `irfc-reference-face'.
 ;;
 ;; All of the above can customize by:
 ;;      M-x customize-group RET irfc RET
@@ -164,6 +172,20 @@
 
 ;;; Change log:
 ;;
+;; 2010/09/23
+;;   * Niels Widger:
+;;      * Added new RFC requirement keyword overlay and RFC reference
+;;        overlay.
+;;      * Several new variables: `irfc-highlight-requirement-keywords',
+;;        `irfc-highlight-references' and `irfc-requirement-keywords'.
+;;      * New faces: `irfc-requirement-keyword-face' and
+;;        `irfc-reference-face'.
+;;      * New overlays: `irfc-requirement-keyword-overlay' and
+;;        `irfc-reference-overlay'.
+;;      * Modified `irfc-render-buffer' to call
+;;        `irfc-render-buffer-overlay-requirement-keyword' and
+;;        `irfc-render-buffer-overlay-reference'.
+;;        
 ;; 2010/09/20
 ;;   * Niels Widger:
 ;;      * New variable `irfc-buffer-name-includes-title'.
@@ -281,8 +303,35 @@ Default is nil."
 
 (defcustom irfc-buffer-name-includes-title t
   "If t, buffer names for RFC documents will include the RFC title.
-If t, format for buffer name will be 'RFCTITLE (RFCNUM.TXT)' Default is t."
+If t, format for buffer name will be 'RFCTITLE (RFCNUM.TXT)'.  Default is t."
   :type 'boolean
+  :group 'irfc)
+
+(defcustom irfc-highlight-requirement-keywords t
+  "If t, requirement keywords specified by
+`irfc-requirement-keywords' list will be highlighted using the
+face specified by `irfc-requirement-keyword-face'.
+Default is t."
+  :type 'boolean
+  :group 'irfc)
+
+(defcustom irfc-highlight-references t
+  "If t, RFC document references specified by the
+`irfc-reference-regex' regular expression will be highlighted
+using the face specified by `irfc-reference-face'.  Default is
+t."
+  :type 'boolean
+  :group 'irfc)
+
+(defcustom irfc-requirement-keywords '("MUST" "MUST NOT"
+				       "REQUIRED"
+				       "SHALL" "SHALL NOT"
+				       "SHOULD" "SHOULD NOT"
+				       "RECOMMENDED" "NOT RECOMMENDED"
+				       "MAY" "OPTIONAL")
+  "List of requirement keyword strings to be highlighted if
+`irfc-highlight-requirement-keywords' is t."
+  :type '(repeat (string))
   :group 'irfc)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -334,6 +383,20 @@ If t, format for buffer name will be 'RFCTITLE (RFCNUM.TXT)' Default is t."
   :group 'irfc)
 (defvar irfc-table-item-overlay nil
   "Overlay for `irfc-table-item-face'.")
+
+(defface irfc-requirement-keyword-face
+  '((t (:foreground "red1" :bold t)))
+  "Face used for requirement keywords."
+  :group 'irfc)
+(defvar irfc-requirement-keyword-overlay nil
+  "Overlay for `irfc-requirement-keyword-face'.")
+
+(defface irfc-reference-face
+  '((t (:foreground "blue1" :bold t)))
+  "Face used for RFC document references."
+  :group 'irfc)
+(defvar irfc-reference-overlay nil
+  "Overlay for `irfc-reference-face'.")
 
 (defvar irfc-hide-overlay nil
   "Overlay for hiding whitespace or blank lines.")
@@ -425,6 +488,10 @@ This variable is always buffer-local.")
 (defvar irfc-table-regex "^[ ]+[A-Z]?[0-9\\.]*[ ]+\\([^\\.\n]+\\)[\\. ]+\\([0-9]+\\)$"
   "The regular-expression that match table item.")
 
+(defvar irfc-reference-regex "\\[[0-9]+]"
+  "The regular-expression that matches normative/informative
+references.")
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-derived-mode irfc-mode text-mode "Irfc"
   "Major mode for IETF RFC documents."
@@ -465,6 +532,12 @@ This variable is always buffer-local.")
       (irfc-render-buffer-overlay-title title-line-point)
       ;; Add overlay for the heading.
       (irfc-render-buffer-overlay-head title-line-point)
+      ;; Add overlay for requirement keywords.
+      (when irfc-highlight-requirement-keywords
+	  (irfc-render-buffer-overlay-requirement-keyword top-point))
+      ;; Add overlay for references.
+      (when irfc-highlight-references
+	  (irfc-render-buffer-overlay-reference top-point))
       ;; Rename buffer
       (irfc-rename-buffer title-line-point)))
 
@@ -868,6 +941,47 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
                         'irfc-title-overlay)
     ))
 
+(defun irfc-render-buffer-overlay-head (title-line-point)
+  "Overlay heading.
+Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
+  (goto-char title-line-point)
+  (let (match-list)
+    (while (setq match-list (irfc-head-move))
+      (if (and (nth 0 match-list) (nth 1 match-list))
+          ;; Overlay heading number.
+          (irfc-overlay-add (nth 0 match-list)
+                            (nth 1 match-list)
+                            'irfc-head-number-overlay))
+      ;; Overlay heading name.
+      (irfc-overlay-add (nth 2 match-list)
+                        (nth 3 match-list)
+                        'irfc-head-name-overlay))))
+
+(defun irfc-render-buffer-overlay-requirement-keyword (top-point)
+  "Overlay RFC specification requirements.
+Argument TOP-POINT is the top point of RFC buffer after render."
+  (goto-char top-point)
+  (while (let ((case-fold-search nil))
+           (re-search-forward (regexp-opt irfc-requirement-keywords)
+                              nil t))
+    ;; Overlay RFC requirement keyword.
+    (irfc-overlay-add (match-beginning 0)
+                      (match-end 0)
+                      'irfc-requirement-keyword-overlay)))
+
+
+(defun irfc-render-buffer-overlay-reference (top-point)
+  "Overlay RFC references.
+Argument TOP-POINT is the top point of RFC buffer after render."
+  (goto-char top-point)
+  (while (let ((case-fold-search nil))
+           (re-search-forward irfc-reference-regex
+                              nil t))
+    ;; Overlay RFC reference.
+    (irfc-overlay-add (match-beginning 0)
+                      (match-end 0)
+                      'irfc-reference-overlay)))
+
 (defun irfc-rename-buffer (title-line-point)
   "Rename buffer to include RFC title.
 Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
@@ -887,22 +1001,6 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
 	(rename-buffer (concat rfc-title " (" rfc-txt ")"))
       (rename-buffer rfc-txt))
     ))
-
-(defun irfc-render-buffer-overlay-head (title-line-point)
-  "Overlay heading.
-Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
-  (goto-char title-line-point)
-  (let (match-list)
-    (while (setq match-list (irfc-head-move))
-      (if (and (nth 0 match-list) (nth 1 match-list))
-          ;; Overlay heading number.
-          (irfc-overlay-add (nth 0 match-list)
-                            (nth 1 match-list)
-                            'irfc-head-number-overlay))
-      ;; Overlay heading name.
-      (irfc-overlay-add (nth 2 match-list)
-                        (nth 3 match-list)
-                        'irfc-head-name-overlay))))
 
 (defun irfc-head-move (&optional reverse)
   "Move to special heading.
@@ -1177,6 +1275,8 @@ Otherwise return nil."
 (irfc-overlay-put-alist 'irfc-std-number-overlay '((face . irfc-std-number-face)))
 (irfc-overlay-put-alist 'irfc-rfc-link-overlay '((face . irfc-rfc-link-face)))
 (irfc-overlay-put-alist 'irfc-table-item-overlay '((face . irfc-table-item-face)))
+(irfc-overlay-put-alist 'irfc-requirement-keyword-overlay '((face . irfc-requirement-keyword-face)))
+(irfc-overlay-put-alist 'irfc-reference-overlay '((face . irfc-reference-face)))
 (irfc-overlay-put-alist 'irfc-hide-overlay
                         '((face . default)
                           (intangible . t)

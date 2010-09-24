@@ -1109,7 +1109,7 @@ bookmark file, whatever that might be (e.g. `##~/.emacs.bmk##').
 Bookmarks are highlighted to
 indicate their type. You can mark and unmark bookmarks, show or
 hide bookmarks of particular types, and more.  Bookmarks that have tags are marked with a '''`t''''.  Bookmarks that have an annotation are marked with an '''`a'''' (not with a `##*##' as in vanilla ##bookmark.el##).  Bookmarks that have bookmark-highlight
-override settings (see [[##DefiningHowtoHighlight]]) are
+override settings (see [[#DefiningHowtoHighlight]]) are
 marked with a one-character pink background.
 
 Use `##?##' or `##C-h m##' in buffer `##*Bookmark List*##' for more
@@ -2401,6 +2401,26 @@ I don't understand your question about jumping and annotations. Please give me a
 
 Let me know if something in the doc is unclear or does not seem to correspond to what you are looking for.  I don't want to repeat explanations here without knowing what is unclear etc. -- DrewAdams
 
+[new:JoeBloggs:2010-09-23 20:51 UTC]
+OK, I found the cycling and autoname commands, but I can't find any way of altering the annotation and tags without visiting the bookmarks list. 
+
+Also, the default bookmark in prompts seems to only be set for bookmarks that were created in this session: 
+if I restart emacs and put point at a pre-made bookmark in a buffer, and then issue a command such as bmk-describe-bookmark, there is no default bookmark name in the prompt, so I have to remember the name of the bookmark at point.
+
+With regard to jumping and annotations, I want to be able to keep the annotation shown, but have point go to the actual 
+bookmark position. At the moment when I jump to a bookmark (with bookmark-automatically-show-annotations set to t), 
+point is placed in the annotations buffer instead of the bookmark position. This also happens when I view annotations
+from the bookmark list by pressing `a' or `A': point moves to the annotations buffer, which is useless since it is read-only anyway.
+
+Finally bmkp-specific-buffers-jump and bmkp-specific-files-jump don't work for me: after entering a buffer/file I get prompted for another one and stuck in an infinite loop.
+
+I just found another problem; highlighted bookmarks are not always properly marked in the bookmark list. 
+Sometimes I see a purple mark next to them, sometimes not. 
+
+I have made some [[OneKey]] menus for use with '''Bookmark+''', but since it seems to be a work in progress I wont post 
+them till I know the functions and keybindings are not going to change.
+
+-- JoeBloggs
 
 
 
