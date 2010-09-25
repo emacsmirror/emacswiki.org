@@ -12,6 +12,7 @@ The features this package provide:
 * Render status switch.
 * *Smart* table and content navigation.
 * Visit RFC link around point.
+* Jump to RFC reference around point.
 * Download RFC document *asynchronous*.
 
 ==Install==
@@ -37,6 +38,7 @@ setup like below:
 * "irfc-render-toggle"         Toggle render status with RFC buffer.
 * "irfc-quit"                  Quit RFC buffer.
 * "irfc-visit"                 Ask for RFC number and visit document.
+* "irfc-reference-goto"        Ask for RFC reference and jump to it.
 * "irfc-follow"                Visit RFC link around point.
 * "irfc-table-jump"            Navigation between table and content.
 : This feature is very useful when you want navigation in RFC document like HTML document, even it is *text* version.
@@ -97,6 +99,10 @@ and open it when download complete.
 :: "Request for Comments:" 
 :: "Updates:"
 :: "Obsoletes:"
+
+* Command `irfc-reference-goto' will ask the user for a reference
+number and will jump to that citation in the Normative
+References/Informative References heading.
 
 * Command `irfc-rfc-link-next' and `irfc-rfc-link-prev' can jump next or previous RFC link in document.
 

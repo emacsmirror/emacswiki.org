@@ -29,6 +29,7 @@ It can taken various string around point, and search fast.
 ** Edit search object.
 ** Search from yank.
 ** Search previous search object.
+** Query-replace search object.
 ** Integrate with Lisp:color-moccur.el.
 ** And any feature you like add......
 
@@ -63,7 +64,8 @@ Default, LazySearch will popup help window when you execute command `lazy-search
 :: f -- Mark file name.
 :: m -- Mark email.
 :: x -- Mark sexp.
-:: z -- Mark current line.
+:: l -- Mark current line.
+:: [ -- Mark parentheses.
 
 ** Copy: 
 :: S -- Copy search Object.
@@ -73,46 +75,40 @@ Default, LazySearch will popup help window when you execute command `lazy-search
 :: F -- Copy file name.
 :: M -- Copy email.
 :: X -- Copy sexp.
-:: Z -- Copy line.
+:: L -- Copy line.
+:: { -- Copy parentheses.
 
 ** Move:
 :: s -- Move forward.
 :: r -- Move backward.
-:: . -- Move first.
-:: , -- Move last.
+:: HOME -- Move first.
+:: END -- Move last.
 :: H -- Move start.
 :: L -- Move end.
 
 ** View:
-:: j -- View next line.
-:: k -- View previous line.
-:: h -- View backward char.
-:: l -- View forward char.
-:: K -- View scroll down one line.
-:: j -- View scroll up one line.
-:: e -- View scroll down one page.
-:: SPC -- View scroll up one page.
+:: down arrow -- View next line.
+:: up arrow -- View previous line.
+:: left arrow -- View backward char.
+:: right arrow -- View forward char.
+:: Ctrl-down arrow -- View scroll down one line.
+:: Ctrl-up arrow -- View scroll up one line.
+:: Page Up -- View scroll down one page.
+:: Page Down -- View scroll up one page.
 
 ** Search:
 :: c -- Search object cache.
 :: Y -- Search yank.
 
 ** Isearch:
-:: t -- Switch to isearch.
+:: Ctrl-s -- Switch to isearch.
 
 ** Others:
 :: E -- Edit search object.
-:: R -- Return mark initiation position.
+:: . -- Return mark initiation position.
 
 * Features including in Lisp:lazy-search-extension.el:
 
-** Mark:
-:: ' -- Mark parentheses.
-
-** Copy:
-:: \ -- Copy parentheses.
-
-** Other:
 :: v -- Moccur.
 :: V -- Moccur all.
 

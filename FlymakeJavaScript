@@ -2,7 +2,7 @@ There are two javascript engines that can be used, %%SpiderMonkey%% and Rhino.  
 
 == With JSLint ==
 
-First, you will need to install Rhino, and download jslint.js for Rhino [http://www.jslint.com/rhino/index.html].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
+First, you will need to install Rhino (**not necessary on Windows, see below), and download jslint.js for Rhino [http://www.jslint.com/rhino/index.html].  I've got it located in <tt>~/soft/jslint</tt>, and you will want to update the code below to match where you've put it.
 
 Next you will want to create a file called flymake-jslint.el on your LoadPath like the following
 

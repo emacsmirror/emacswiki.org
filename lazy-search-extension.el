@@ -3,12 +3,12 @@
 ;; Filename: lazy-search-extension.el
 ;; Description: Lazy Search Extension
 ;; Author: Andy Stewart lazycat.manatee@gmail.com
-;; Maintainer: Andy Stewart lazycat.manatee@gmail.com
-;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
+;; Maintainer: Joe Bloggs vapniks@yahoo.com
+;; Copyright (C) 2008, 2009, 2010, Andy Stewart, all rights reserved.
 ;; Created: 2008-12-23 23:13:39
 ;; Version: 0.1
-;; Last-Updated: 2008-12-23 23:13:39
-;;           By: Andy Stewart
+;; Last-Updated: 2010-09-24 17:12:32
+;;           By: Joe Bloggs
 ;; URL:
 ;; Keywords: lazy-search
 ;; Compatibility: GNU Emacs 23.0.60.1
@@ -57,6 +57,11 @@
 
 ;;; Change log:
 ;;
+;; 2010/09/24
+;;    * Joe Bloggs
+;;       * Removed mark/copy parentheses functions and put them in lazy-search.el instead.
+;;       
+;;
 ;; 2008/12/24
 ;;      * First released.
 ;;
@@ -76,48 +81,6 @@
 (require 'color-moccur)
 
 ;;; Code:
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Mark Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lazy-search-mark-parentheses ()
-  "Mark parentheses."
-  (interactive)
-  (save-excursion
-    (if (paredit-in-string-p)
-        (lazy-search-mark
-         (point)
-         (1+ (car (paredit-string-start+end-points)))
-         (cdr (paredit-string-start+end-points)))
-      (lazy-search-mark
-       (point)
-       (progn
-         (backward-up-list)
-         (forward-char +1)
-         (point))
-       (progn
-         (up-list)
-         (forward-char -1)
-         (point))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Copy Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(defun lazy-search-copy-parentheses ()
-  "Copy parentheses at point."
-  (interactive)
-  (save-excursion
-    (if (paredit-in-string-p)
-        (lazy-search-mark
-         (point)
-         (1+ (car (paredit-string-start+end-points)))
-         (cdr (paredit-string-start+end-points)))
-      (lazy-search-copy
-       (progn
-         (backward-up-list)
-         (forward-char +1)
-         (point))
-       (progn
-         (up-list)
-         (forward-char -1)
-         (point))))))
-
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Others ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun lazy-search-moccur ()
   "Use moccur for search object."
   (interactive)
@@ -133,10 +96,6 @@
   (lazy-search-quit))
 
 (dolist (elt-cons '(
-                    ;; Mark
-                    (("'" . "Mark Parentheses") . lazy-search-mark-parentheses)
-                    ;; Copy
-                    (("\"" . "Copy Parentheses") . lazy-search-copy-parentheses)
                     ;; Other
                     (("v" . "Moccur") . lazy-search-moccur)
                     (("V" . "Moccur All") . lazy-search-moccur-all)

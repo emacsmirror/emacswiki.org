@@ -9,6 +9,14 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+
+==Ediff opens a file selector window which hangs==
+
+[new]  I've used fink to get Emacs 23.1-104 installed on Mac OSX 10.6.4, and I use X11.  Most of the time I try to access a file, it works as normal where I enter text in the minibuffer, but I am having problems using ediff.  For some reason ediff launches a GUI file selector window which hangs intermittently, sometimes completely. Prior implementations of ediff just allowed me to enter the text of the two files in the mini-buffer.   Does anyone how to either a) get back to the old method, or b) fix whatever is hanging in the communication between the OS, emacs, and the file server?  Thank - Mark
+
+
+
+
 ==Buffer with different backgroundcolor, possible?==
 
 -- Michael
@@ -497,6 +505,7 @@ I had a look at it, for me it works if I advice two functions. Try the following
 
 [new]
 Great Thanks!  Works for me. I hesitate to reveal the path I went down to attempt accomplishing the same :P I've been wondering about a solution for that puzzle for quite awhile now. I'd be curious to learn if there is a way to accomplish the same without advice... --mon_key
+
 
 [:FAQ]
 = Answers to Frequent Questions =

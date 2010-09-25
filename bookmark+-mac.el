@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Wed Aug 18 19:16:34 2010 (-0700)
+;; Last-Updated: Fri Sep 24 09:40:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 64
+;;     Update #: 67
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,8 +72,8 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `bmkp-define-sort-command', `bmkp-define-file-sort-predicate',
-;;    `bmkp-menu-bar-make-toggle'.
+;;    `bmkp-define-cycle-command', `bmkp-define-sort-command',
+;;    `bmkp-define-file-sort-predicate', `bmkp-menu-bar-make-toggle'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -147,6 +147,31 @@ Elements of ALIST that are not conses are ignored."
 ;;(@* "Macros")
 
 ;;; Macros -----------------------------------------------------------
+
+(defmacro bmkp-define-cycle-command (type &optional otherp)
+  "Define a cycling command for bookmarks of type TYPE.
+Non-nil OTHERP means define a command that cycles in another window."
+  `(defun ,(intern (format "bmkp-cycle-%s%s" type (if otherp "-other-window" "")))
+    (increment &optional startoverp)
+    ,(if otherp
+         (format "Same as `bmkp-cycle-%s', but use other window." type)
+         (format "Cycle through %s bookmarks by INCREMENT (default: 1).
+Positive INCREMENT cycles forward.  Negative INCREMENT cycles backward.
+Interactively, the prefix arg determines INCREMENT:
+ Plain `C-u': 1
+ otherwise: the numeric prefix arg value 
+
+Plain `C-u' also means start over at first bookmark.
+
+In Lisp code:
+ Non-nil STARTOVERP means reset `bmkp-current-nav-bookmark' to the
+ first bookmark in the navlist." type))
+    (interactive (let ((startovr  (consp current-prefix-arg)))
+                   (list (if startovr 1 (prefix-numeric-value current-prefix-arg))
+                         startovr)))
+    (let ((bmkp-nav-alist  (bmkp-sort-and-remove-dups
+                            (,(intern (format "bmkp-%s-alist-only" type))))))
+      (bmkp-cycle increment ,otherp startoverp))))
 
 (defmacro bmkp-define-sort-command (sort-order comparer doc-string)
   "Define a command to sort bookmarks in the bookmark list by SORT-ORDER.

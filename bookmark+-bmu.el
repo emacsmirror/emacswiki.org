@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Sun Aug 22 10:06:58 2010 (-0700)
+;; Last-Updated: Fri Sep 24 11:34:41 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 331
+;;     Update #: 351
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -138,6 +138,7 @@
 ;;    `bmkp-bmenu-search-marked-bookmarks-regexp',
 ;;    `bmkp-bmenu-set-tag-value',
 ;;    `bmkp-bmenu-set-tag-value-for-marked', `bmkp-bmenu-show-all',
+;;    `bmkp-bmenu-show-only-autonamed.',
 ;;    `bmkp-bmenu-show-only-bookmark-files',
 ;;    `bmkp-bmenu-show-only-desktops', `bmkp-bmenu-show-only-dired',
 ;;    `bmkp-bmenu-show-only-files', `bmkp-bmenu-show-only-gnus',
@@ -148,7 +149,7 @@
 ;;    `bmkp-bmenu-show-only-specific-buffer',
 ;;    `bmkp-bmenu-show-only-specific-file',
 ;;    `bmkp-bmenu-show-only-tagged', `bmkp-bmenu-show-only-urls',
-;;    `bmkp-bmenu-show-only-varlists',
+;;    `bmkp-bmenu-show-only-variable-lists',
 ;;    `bmkp-bmenu-show-only-w3m-urls',
 ;;    `bmkp-bmenu-sort-by-bookmark-name',
 ;;    `bmkp-bmenu-sort-by-bookmark-visit-frequency',
@@ -182,7 +183,7 @@
 ;;    `bmkp-local-file-with-region', `bmkp-local-file-without-region',
 ;;    `bmkp-man', `bmkp-non-file', `bmkp-remote-file',
 ;;    `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-t-mark', `bmkp-url',
-;;    `bmkp-varlist'.
+;;    `bmkp-variable-list'.
 ;;
 ;;  User options defined here:
 ;;
@@ -316,7 +317,7 @@
 ;; bmkp-sort-comparer, bmkp-sorted-alist,
 ;; bmkp-sort-orders-for-cycling-alist, bmkp-su-or-sudo-regexp,
 ;; bmkp-tag-name, bmkp-tags-list, bmkp-url-bookmark-p, bmkp-url-cp,
-;; bmkp-unmarked-bookmarks-only, bmkp-varlist-bookmark-p,
+;; bmkp-unmarked-bookmarks-only, bmkp-variable-list-bookmark-p,
 ;; bmkp-visited-more-cp
 
 ;; (eval-when-compile (require 'bookmark+-lit nil t))
@@ -461,7 +462,7 @@ Don't forget to mention your Emacs and library versions."))
   "*Face used for a bookmarked URL."
   :group 'bookmark-plus :group 'faces)
 
-(defface bmkp-varlist
+(defface bmkp-variable-list
     '((((background dark)) (:foreground "Salmon"))
       (t (:foreground "DarkCyan")))
   "*Face used for a bookmarked list of variables."
@@ -774,7 +775,7 @@ Use `customize-face' if you want to change the appearance.
  `bmkp-local-directory', `bmkp-local-file-without-region',
  `bmkp-local-file-with-region', `bmkp-man', `bmkp-non-file',
  `bmkp-remote-file', `bmkp-sequence', `bmkp-su-or-sudo', `bmkp-url',
- `bmkp-varlist'.
+ `bmkp-variable-list'.
 
 If option `bmkp-bmenu-state-file' is non-nil then the state of the
 displayed bookmark-list is saved when you quit it, and it is restored
@@ -1013,7 +1014,9 @@ Jump to (Visit)
 \\[bmkp-non-file-jump]\t- Jump to a non-file (buffer) bookmark
 \\[bmkp-gnus-jump]\t- Jump to a Gnus bookmark
 \\[bmkp-url-jump]\t- Jump to a URL bookmark
-\\[bmkp-varlist-jump]\t- Jump to a variable-list bookmark
+\\[bmkp-variable-list-jump]\t- Jump to a variable-list bookmark
+\\[bmkp-autonamed-jump]\t- Jump to an autonamed bookmark
+\\[bmkp-autonamed-this-buffer-jump]\t- Jump to an autonamed bookmark in buffer
 \\[bmkp-some-tags-jump]\t- Jump to a bookmark with some tags you specify
 \\[bmkp-some-tags-regexp-jump]\t- Jump to a bookmark with some tags matching a regexp
 \\[bmkp-all-tags-jump]\t- Jump to a bookmark with all tags you specify
@@ -1024,9 +1027,11 @@ Cycle Bookmarks and Autonamed Bookmarks
 ---------------------------------------
 
 \\[bmkp-toggle-autonamed-bookmark-set/delete]\t- Create/delete autonamed bookmark at point
+\\[bmkp-autonamed-jump]\t- Jump to an autonamed bookmark
+\\[bmkp-autonamed-this-buffer-jump]\t- Jump to an autonamed bookmark in buffer
 C-x p n n ...\t- Next     bookmark in buffer  (C-x p C-n, C-x p down)
 C-x p p p ...\t- Previous bookmark in buffer  (C-x p C-p, C-x p up)
-C-x p f f ...\t- Next    bookmark in navlist (C-x p C-f, C-x p right)
+C-x p f f ...\t- Next     bookmark in navlist (C-x p C-f, C-x p right)
 C-x p b b ...\t- Previous bookmark in navlist (C-x p C-b, C-x p left)
 C-x p next  ...\t- MS Windows `Open' next     bookmark in navlist
 C-x p prior ...\t- MS Windows `Open' previous bookmark in navlist
@@ -1182,6 +1187,7 @@ Hide/Show
 \\[bmkp-bmenu-show-all]\t- Show all bookmarks
 \\[bmkp-bmenu-toggle-show-only-marked]\t- Toggle showing only marked bookmarks
 \\[bmkp-bmenu-toggle-show-only-unmarked]\t- Toggle showing only unmarked bookmarks
+\\[bmkp-bmenu-show-only-autonamed]\t- Show only autonamed bookmarks
 \\[bmkp-bmenu-show-only-non-files]\t- Show only non-file (i.e. buffer) bookmarks
 \\[bmkp-bmenu-show-only-dired]\t- Show only Dired bookmarks
 \\[bmkp-bmenu-show-only-files]\t- Show only file & directory bookmarks (`C-u': local only)
@@ -1191,7 +1197,7 @@ Hide/Show
 \\[bmkp-bmenu-show-only-bookmark-files]\t- Show only bookmark-file bookmarks
 \\[bmkp-bmenu-show-only-man-pages]\t- Show only `man' page bookmarks
 \\[bmkp-bmenu-show-only-regions]\t- Show only region bookmarks
-\\[bmkp-bmenu-show-only-varlists]\t- Show only variable-list bookmarks
+\\[bmkp-bmenu-show-only-variable-lists]\t- Show only variable-list bookmarks
 \\[bmkp-bmenu-show-only-urls]\t- Show only URL bookmarks
 \\[bmkp-bmenu-show-only-w3m-urls]\t- Show only W3M (URL) bookmarks
 \\[bmkp-bmenu-filter-bookmark-name-incrementally]\t- Incrementally show only bookmarks \
@@ -1525,6 +1531,19 @@ confirmation."
 ;;  *** Menu-List (`*-bmenu-*') Filter Commands ***
 
 ;;;###autoload
+(defun bmkp-bmenu-show-only-autonamed () ; Bound to `# S' in bookmark list
+  "Display (only) the autonamed bookmarks."
+  (interactive)
+  (bmkp-bmenu-barf-if-not-in-menu-list)
+  (setq bmkp-bmenu-filter-function  'bmkp-autonamed-alist-only
+        bmkp-bmenu-title            "Autonamed Bookmarks")
+  (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
+    (setq bmkp-latest-bookmark-alist  bookmark-alist)
+    (bookmark-bmenu-list 'filteredp))
+  (when (interactive-p)
+    (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only autonamed bookmarks are shown")))
+
+;;;###autoload
 (defun bmkp-bmenu-show-only-bookmark-files () ; Bound to `X S' in bookmark list
   "Display (only) the bookmark-file bookmarks."
   (interactive)
@@ -1645,11 +1664,11 @@ With a prefix argument, do not include remote files or directories."
     (bmkp-msg-about-sort-order (bmkp-current-sort-order) "Only bookmarks with regions are shown")))
 
 ;;;###autoload
-(defun bmkp-bmenu-show-only-varlists () ; Bound to `V S' in bookmark list
+(defun bmkp-bmenu-show-only-variable-lists () ; Bound to `V S' in bookmark list
   "Display (only) the variable-list bookmarks."
   (interactive)
   (bmkp-bmenu-barf-if-not-in-menu-list)
-  (setq bmkp-bmenu-filter-function  'bmkp-varlist-alist-only
+  (setq bmkp-bmenu-filter-function  'bmkp-variable-list-alist-only
         bmkp-bmenu-title            "Variable-list Bookmarks")
   (let ((bookmark-alist  (funcall bmkp-bmenu-filter-function)))
     (setq bmkp-latest-bookmark-alist  bookmark-alist)
@@ -2763,7 +2782,7 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
                 (bookmark-file    "Bookmark file\n")
                 (desktop          "Desktop\n")
                 (sequence         "Sequence\n")
-                (varlist          "Variable list\n")
+                (variable-list    "Variable list\n")
                 (function         "Function\n"))
             (put-text-property 0 (1- (length gnus))     'face 'bmkp-gnus         gnus)
             (put-text-property 0 (1- (length info))     'face 'bmkp-info         info)
@@ -2784,15 +2803,15 @@ Sorted:\t\t%s\nFiltering:\t%s\nMarked:\t\t%d\nOmitted:\t%d\nBookmark file:\t%s\n
                                'face 'bmkp-bookmark-list                         bookmark-list)
             (put-text-property 0 (1- (length bookmark-file))
                                'face 'bmkp-bookmark-file                         bookmark-file)
-            (put-text-property 0 (1- (length desktop))  'face 'bmkp-desktop      desktop)
-            (put-text-property 0 (1- (length sequence)) 'face 'bmkp-sequence     sequence)
-            (put-text-property 0 (1- (length varlist))  'face 'bmkp-varlist      varlist)
-            (put-text-property 0 (1- (length function)) 'face 'bmkp-function     function)
+            (put-text-property 0 (1- (length desktop))       'face 'bmkp-desktop       desktop)
+            (put-text-property 0 (1- (length sequence))      'face 'bmkp-sequence      sequence)
+            (put-text-property 0 (1- (length variable-list)) 'face 'bmkp-variable-list variable-list)
+            (put-text-property 0 (1- (length function))      'face 'bmkp-function      function)
             (insert "Face Legend for Bookmark Types\n------------------------------\n\n")
             (insert gnus) (insert info) (insert man) (insert url) (insert local-no-region)
             (insert local-w-region) (insert buffer) (insert no-buf) (insert bad) (insert remote)
             (insert sudo) (insert local-dir) (insert bookmark-list) (insert bookmark-file)
-            (insert desktop) (insert sequence) (insert varlist) (insert function)
+            (insert desktop) (insert sequence) (insert variable-list) (insert function)
             (insert "\n\n")))))))
 
 (when (and (> emacs-major-version 21)
@@ -3037,8 +3056,8 @@ internal, Lisp form)."
             (append (bmkp-face-prop 'bmkp-function)
                     '(mouse-face highlight follow-link t
                       help-echo "mouse-2: Invoke this function bookmark")))
-           ((bmkp-varlist-bookmark-p bookmark-name) ; Varlist bookmark
-            (append (bmkp-face-prop 'bmkp-varlist)
+           ((bmkp-variable-list-bookmark-p bookmark-name) ; Variable-list bookmark
+            (append (bmkp-face-prop 'bmkp-variable-list)
                     '(mouse-face highlight follow-link t
                       help-echo "mouse-2: Invoke this variable-list bookmark")))
            ((bmkp-bookmark-list-bookmark-p bookmark-name) ; Bookmark-list bookmark
@@ -3469,6 +3488,10 @@ With a prefix argument, show the internal definitions."
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map "*m"                 'bookmark-bmenu-mark))
 ;;;###autoload
+(define-key bookmark-bmenu-mode-map "#"                    nil) ; For Emacs 20
+;;;###autoload
+(define-key bookmark-bmenu-mode-map "#S"                   'bmkp-bmenu-show-only-autonamed)
+;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-a"                 'bmkp-bmenu-search-marked-bookmarks-regexp)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "B"                    nil) ; For Emacs 20
@@ -3698,7 +3721,7 @@ With a prefix argument, show the internal definitions."
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "V"                    nil) ; For Emacs20
 ;;;###autoload
-(define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-varlists)
+(define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-lists)
 ;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-open-select)
 ;;;###autoload
@@ -3946,6 +3969,9 @@ With a prefix argument, show the internal definitions."
 (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-files]
   '(menu-item "Show Only Files" bmkp-bmenu-show-only-files
     :help "Display (only) the file and directory bookmarks"))
+(define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-autonamed]
+  '(menu-item "Show Only Autonamed" bmkp-bmenu-show-only-autonamed
+    :help "Display (only) the autonamed bookmarks"))
 (when (featurep 'bookmark+-lit)
   (define-key bmkp-bmenu-show-menu [bmkp-bmenu-show-only-lighted]
     '(menu-item "Show Only Highlighted" bmkp-bmenu-show-only-lighted

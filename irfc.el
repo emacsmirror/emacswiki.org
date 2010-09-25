@@ -18,7 +18,7 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;; `cl' `url-vars'
+;; `cl' `url-vars' `thingatpt'
 ;;
 
 ;;; This file is NOT part of GNU Emacs
@@ -70,6 +70,7 @@
 ;; * Render status switch.
 ;; * Smart table and content switch.
 ;; * Visit RFC link around point.
+;; * Jump to RFC reference around point.
 ;; * Download RFC document *asynchronous*.
 ;;
 ;; Below are commands you can use:
@@ -77,6 +78,7 @@
 ;; `irfc-render-toggle'         Toggle render status with RFC buffer.
 ;; `irfc-quit'                  Quit RFC buffer.
 ;; `irfc-visit'                 Ask for RFC number and visit document.
+;; `irfc-reference-goto'        Ask for RFC reference and jump to it.
 ;; `irfc-follow'                Visit RFC document around point.
 ;; `irfc-table-jump'            Switch between table and content.
 ;; `irfc-page-goto'             Goto page.
@@ -127,6 +129,10 @@
 ;; And if you visit same document with your previous type, so just
 ;; hit RET, and don't need type RFC document number.
 ;;
+;; Command `irfc-reference-goto' will ask the user for a reference
+;; number and will jump to that citation in the Normative
+;; References/Informative References heading.
+;;
 
 
 ;;; Installation:
@@ -162,7 +168,7 @@
 ;;  should be highlighted using the face specified by
 ;;  `irfc-requirement-keyword-face'.
 ;; `irfc-requirement-keywords' list of RFC requirement keywords to
-;;  highlight it `irfc-highlight-requirement-keywords' is t.
+;;  highlight if `irfc-highlight-requirement-keywords' is t.
 ;; `irfc-highlight-references' whether RFC references should be
 ;;  highlighted using the face specified by `irfc-reference-face'.
 ;;
@@ -171,6 +177,16 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2010/09/24
+;;   * Niels Widger:
+;;      * Added new function `irfc-reference-goto' that prompts a user
+;;        for a reference number and jumps to that citation.
+;;      * Added mapping from "r" to `irfc-reference-goto' in keymap.
+;;      * Added several help functions used by `irfc-reference-goto':
+;;        `irfc-read-reference', `irfc-reference-at-point' and
+;;        `irfc-current-head'.
+;;      * Added requirement for `thingatpt'.
 ;;
 ;; 2010/09/23
 ;;   * Niels Widger:
@@ -185,7 +201,7 @@
 ;;      * Modified `irfc-render-buffer' to call
 ;;        `irfc-render-buffer-overlay-requirement-keyword' and
 ;;        `irfc-render-buffer-overlay-reference'.
-;;        
+;;
 ;; 2010/09/20
 ;;   * Niels Widger:
 ;;      * New variable `irfc-buffer-name-includes-title'.
@@ -270,6 +286,7 @@
 ;;; Require
 (eval-when-compile (require 'cl))
 (require 'url-vars)
+(require 'thingatpt)
 
 ;;; Code:
 
@@ -421,6 +438,7 @@ t."
     (define-key map (kbd "q") 'irfc-quit)
     (define-key map (kbd "o") 'irfc-follow)
     (define-key map (kbd "v") 'irfc-visit)
+    (define-key map (kbd "r") 'irfc-reference-goto)
     (define-key map (kbd "g") 'irfc-page-goto)
     (define-key map (kbd "N") 'irfc-page-next)
     (define-key map (kbd "P") 'irfc-page-prev)
@@ -491,6 +509,11 @@ This variable is always buffer-local.")
 (defvar irfc-reference-regex "\\[[0-9]+]"
   "The regular-expression that matches normative/informative
 references.")
+
+(defvar irfc-reference-format-regex "\\[%d]"
+  "The format string for use with `format' function for creating
+regular-expressions that match a normative/informative
+reference.")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Interactive functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (define-derived-mode irfc-mode text-mode "Irfc"
@@ -613,6 +636,47 @@ You can jump to the corresponding content when you are at table."
     ;; Do nothing when haven't table in this RFC document.
     (message "This RFC document contains no Table of Contents.")))
 
+(defun irfc-reference-goto (&optional number)
+  "Goto reference NUMBER."
+  (interactive (list (irfc-read-reference)))
+  (let ((original-position (point)) (done nil) (found nil) (beg) (end))
+    (goto-char (point-min))
+    (while (not done)
+      (if (not (re-search-forward
+		(concat "^[ \t]+"
+			(format irfc-reference-format-regex number))
+		(point-max) t))
+	  (setq done t)
+	(setq beg (match-beginning 0))
+	(setq end (match-end 0))
+	(let ((name (irfc-current-head)))
+	  (if (not (or (string= name "Normative References")
+		       (string= name "Informative References")))
+	      (goto-char end)
+	    (goto-char beg)
+	    (setq found t)
+	    (setq done t)))))
+    (when (not found)
+      (goto-char original-position)
+      (message "Cannot find reference %d" number))))
+
+(defun irfc-read-reference ()
+  "Read reference as a number using a reference found at point as
+default."
+  (let ((default (irfc-reference-at-point)))
+    (if (eq default nil)
+	(read-number "Reference number: ")
+      (read-number "Reference number: " default))))
+
+(defun irfc-reference-at-point ()
+  "Returns reference at point as a number or nil if one is not
+found."
+  (if (not (thing-at-point-looking-at irfc-reference-regex))
+      nil
+    (let* ((match (buffer-substring (match-beginning 0) (match-end 0)))
+	   (len (length match)))
+      (string-to-int (substring match 1 (1- len))))))
+
 (defun irfc-page-goto (number)
   "Goto page NUMBER."
   (interactive "nPage number: ")
@@ -733,6 +797,18 @@ does not exist in `irfc-directory'."
       ;; when search failed.
       (goto-char original-position)
       (message "No previous heading."))))
+
+(defun irfc-current-head (&optional PRINT)
+  "Returns name of the current heading.
+If optional argument PRINT is non-nil, print the name before returning it."
+  (interactive)
+  (save-excursion
+    (irfc-head-prev)
+    (re-search-forward "^\\([0-9]+\\.\?\\)+[ \t]+" (line-end-position) t)
+    (let ((name (buffer-substring (point) (line-end-position))))
+      (if PRINT
+	  (message "%s" name))
+      name)))
 
 (defun irfc-scroll-up-one-line ()
   "Scroll up one line."

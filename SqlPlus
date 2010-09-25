@@ -151,5 +151,10 @@ Our database uses UTF-8:
 
 -- AlexSchroeder
 
+[new]
+sqlplus mode is really good. I no longer need sql developer to browse schemas - good old emacs can do it all !
+
+-- HarishSharma
+
 ----
 CategorySql

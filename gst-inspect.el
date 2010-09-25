@@ -32,7 +32,7 @@
   "chomp `perl-like' function. Take a string or symbol
 and return a string without final or initial whitespace class chars."
     (while (string-match "^\\s-+\\|\\s-+$" s)
-      (setq s (replace-match "" t nil s))) s)))
+      (setq s (replace-match "" t nil s))) s))
 
 ;; Variables
 (defgroup gst-inspect nil

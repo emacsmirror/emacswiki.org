@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Sep 21 08:12:12 2010 (-0700)
+;; Last-Updated: Fri Sep 24 12:26:22 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13368
+;;     Update #: 13420
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -129,6 +129,7 @@
 ;;    (@> "Cycling, Navigation List, Autonaming")
 ;;      (@> "The Bookmark Navigation List")
 ;;      (@> "Cycling the Navigation List")
+;;      (@> "Cycling Dynamic Sets of Bookmarks")
 ;;      (@> "Cycling in the Current Buffer")
 ;;      (@> "Autonamed Bookmarks - Easy Come Easy Go")
 ;;    (@> "Highlighting Bookmark Locations")
@@ -656,12 +657,12 @@
 ;;  marked bookmarks in the bookmark list, in their current order.
 ;;
 ;;  A variable-list bookmark saves and restores the values of a set of
-;;  variables.  Command `bmkp-set-varlist-bookmark' prompts you for
-;;  the variables to include in the list and then sets the bookmark.
-;;  Command `bmkp-jump-varlist' (`C-x j v') restores the recorded
-;;  variable values for the bookmark's buffer.  You can also create
-;;  varlist bookmarks non-interactively, using function
-;;  `bmkp-create-varlist-bookmark'.
+;;  variables.  Command `bmkp-set-variable-list-bookmark' prompts you
+;;  for the variables to include in the list and then sets the
+;;  bookmark.  Command `bmkp-jump-variable-list' (`C-x j v') restores
+;;  the recorded variable values for the bookmark's buffer.  You can
+;;  also create variable-list bookmarks non-interactively, using
+;;  function `bmkp-create-variable-list-bookmark'.
 ;;
 ;;  If you use library `wide-n.el', then you can move among multiple
 ;;  restrictions (narrowings) in a buffer.  The restrictions are
@@ -1653,12 +1654,12 @@
 ;;    `bookmark-alist') as the navlist.
 ;;
 ;;  However the navlist is defined, it is important to remember this:
-;;  except for current-buffer cycling, the navlist is a static
-;;  snapshot of some set of bookmarks taken at a given time.
-;;  Subsequent changes to the bookmark list that was copied are not
-;;  reflected in the navlist.  If you add a bookmark it will not be
-;;  among those cycled.  Again, current-buffer cycling is an
-;;  exception: it always uses all bookmarks present.
+;;  it is a static snapshot of some set of bookmarks taken at a given
+;;  time.  Subsequent changes to the bookmark list that was copied are
+;;  not reflected in the navlist.  If you add a bookmark it will not
+;;  be among those cycled.  But see also
+;;  (@> "Cycling Dynamic Sets of Bookmarks") for how to cycle dynamic
+;;  sets.
 ;;
 ;;  You can update the navlist at any time by taking another snapshot
 ;;  of the same bookmark list you used for the last snapshot.  For the
@@ -1677,7 +1678,7 @@
 ;;  bookmarks.  The two are separate.  You can, however, open the
 ;;  `*Bookmark List*' so that it reflects the bookmarks currently in
 ;;  the navigation list, using `C-x p N' (`bmkp-navlist-bmenu-list').
-;;
+;;  
 ;;
 ;;(@* "Cycling the Navigation List")
 ;; *** "Cycling the Navigation List" ***
@@ -1734,16 +1735,42 @@
 ;;  bookmarks, which record a specific set of bookmarks and their sort
 ;;  order: to later choose given sets in different contexts for
 ;;  cycling.
+;;  
+;;
+;;(@* "Cycling Dynamic Sets of Bookmarks")
+;; *** "Cycling Dynamic Sets of Bookmarks" ***
+;;
+;;  The fact that the navlist is a static snapshot is a useful
+;;  feature, but sometimes you might want to cycle among a particular
+;;  dynamic set of bookmarks, that is, to have cycling take changes to
+;;  the bookmark set into account automatically.  For that, Bookmark+
+;;  provides separate cycling commands for various types of bookmark.
+;;
+;;  By default, these different kinds of cycling commands are not
+;;  bound to any keys, with the exception of the commands for cycling
+;;  the current buffer.  This exception includes cycling all bookmarks
+;;  for the current buffer (see (@> "Cycling in the Current Buffer")
+;;  and cycling only the highlighted bookmarks for the current buffer
+;;  (see (@> "Using Highlighted Bookmarks")).  Keys `C-x p down' and
+;;  `C-x p C-down' are defined for these two kinds of current-buffer
+;;  cycling.
+;;
+;;  If you want to cycle among the bookmarks of some other particular
+;;  kind (e.g. only the autonamed bookmarks), then you can bind the
+;;  relevant command (e.g. `bmkp-cycle-autonamed') or define
+;;  repeatable `next' and `previous' commands that use that cycling
+;;  command, and then bind those commands to keys.  You can use
+;;  `bmkp-cycle-this-buffer' and
+;;  `bmkp-(next|previous)-bookmark-this-buffer(-repeat)' as a model.
 ;;
 ;;
 ;;(@* "Cycling in the Current Buffer")
 ;; *** "Cycling in the Current Buffer" ***
 ;;
-;;  The bookmarks in the current buffer form another set that you can
-;;  navigate by cycling as well as jumping.  It is convenient to have
-;;  dedicated keys for this, separate from the keys to cycle the
-;;  navigation list in general.  Bookmark+ uses the same approach here
-;;  - the following keys are defined, corresponding to commands
+;;  You can navigate the bookmarks in the current buffer by cycling as
+;;  well as jumping.  It is convenient to have dedicated keys for
+;;  this, separate from the keys to cycle the navigation list.  The
+;;  following keys are defined, corresponding to commands
 ;;  `bmkp-next-bookmark-this-buffer-repeat' and
 ;;  `bmkp-previous-bookmark-this-buffer-repeat':
 ;;
@@ -1755,7 +1782,17 @@
 ;;  bind commands `bmkp-next-bookmark-this-buffer' and
 ;;  `bmkp-previous-bookmark-this-buffer' (no -repeat).
 ;;
-;;  By default, the current-buffer bookmarks are cycled in order of
+;;  You can also cycle among just the highlighted bookmarks in the
+;;  current buffer - see (@> "Using Highlighted Bookmarks").
+;;
+;;  Current-buffer cycling (all bookmarks or only the highlighted
+;;  ones) is dynamic: the current set of bookmarks is cycled, not a
+;;  static snapshot.  The navlist is automatically updated to the
+;;  current dynamic set each time you cycle.  This is different from
+;;  the usual cycling of the navlist, where it is taken as a static
+;;  snapshot - see (@> "The Bookmark Navigation List").
+;;
+;;  By default, you cycle the current-buffer bookmarks in order of
 ;;  their positions in the buffer, top to bottom.  If you want a
 ;;  different order, you can customize option
 ;;  `bmkp-this-buffer-cycle-sort-comparer'.
@@ -1764,14 +1801,8 @@
 ;;  List*' with only the current buffer's bookmarks, sort them there,
 ;;  and then use `C-x p B' to set the navigation list to `CURRENT
 ;;  *Bookmark List*'.  In that case, you use the navlist cycling keys
-;;  (e.g. `C-x p f', not `C-x p n').
-;;
-;;  Finally, you can also cycle among only the highlighted bookmarks
-;;  in the current buffer -- see (@> "Using Highlighted Bookmarks").
-;;
-;;  See also (@> "The Bookmark Navigation List") about the difference
-;;  between cycling bookmarks in the current buffer and other bookmark
-;;  cycling.
+;;  (e.g. `C-x p f', not `C-x p n'), and the cycled set is a static
+;;  snapshot.
 ;;
 ;;
 ;;(@* "Autonamed Bookmarks - Easy Come Easy Go")

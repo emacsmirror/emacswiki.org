@@ -581,18 +581,21 @@ sequence from the marked bookmarks in the bookmark list, in their
 current order.
 
 A '''variable-list''' bookmark saves and restores the values of a set of
-variables.  Command '''`bmkp-set-varlist-bookmark'''' prompts you
+variables.  Command '''`bmkp-set-variable-list-bookmark'''' prompts you
 for the variables to include in the list and then sets the
-bookmark.  Command `bmkp-jump-varlist' ('''`C-x j v'''') restores
+bookmark.  Command `bmkp-jump-variable-list' ('''`C-x j v'''') restores
 the recorded variable values for the bookmark's buffer.  You can
-also create varlist bookmarks non-interactively, using function
-`bmkp-create-varlist-bookmark'.
+also create variable-list bookmarks non-interactively, using function
+`bmkp-create-variable-list-bookmark'.
 
 If you use library <tt>[[wide-n.el]]</tt> (see MultipleNarrowings), then you can move among multiple
 restrictions (narrowings) in a buffer.  The restrictions are
 stored in buffer-local variable `wide-n-restrictions'.  Command '''`bmkp-set-restrictions-bookmark'''' bookmarks this value
 for the current buffer.  Jumping to such a bookmark restores the
 saved ring/stack of restrictions.
+
+
+
 
 
 
@@ -1685,12 +1688,12 @@ the global bookmark list (the value of variable
 `bookmark-alist') as the navlist.
 
 However the navlist is defined, it is important to remember this:
-except for current-buffer cycling, the navlist is a ''static
+it is a ''static
 snapshot'' of some set of bookmarks taken at a given time.
 Subsequent changes to the bookmark list that was copied are not
 reflected in the navlist.  If you add a bookmark it will not be
-among those cycled.  Again, current-buffer cycling is an
-exception: it always uses all bookmarks present.
+among those cycled.  But see also
+[[#CyclingDynamicSetsOfBookmarks|Cycling Dynamic Sets of Bookmarks]] for how to cycle dynamic sets.
 
 You can update the navlist at any time by taking another snapshot
 of the same bookmark list you used for the last snapshot.  For the
@@ -1783,15 +1786,45 @@ cycling.
 
 
 
+[:CyclingDynamicSetsOfBookmarks]
+=== Cycling Dynamic Sets of Bookmarks ===
+
+The fact that the navlist is a static snapshot is a useful
+feature, but sometimes you might want to cycle among a particular
+dynamic set of bookmarks, that is, to have cycling take changes to
+the bookmark set into account automatically.  For that, '''Bookmark+'''
+provides separate cycling commands for various types of bookmark.
+
+By default, these different kinds of cycling commands are not
+bound to any keys, with the exception of the commands for cycling
+the current buffer.  This exception includes cycling all bookmarks
+for the current buffer (see [[#CyclingCurrentBuffer|Cycling in the Current Buffer]]
+and cycling only the highlighted bookmarks for the current buffer
+(see [[#UsingHighlightedBookmarks|Using Highlighted Bookmarks]]).  Keys `C-x p down' and
+`C-x p C-down' are defined for these two kinds of current-buffer
+cycling.
+
+If you want to cycle among the bookmarks of some other particular
+kind (e.g. only the autonamed bookmarks), then you can bind the
+relevant command (e.g. `bmkp-cycle-autonamed') or define
+repeatable `next' and `previous' commands that use that cycling
+command, and then bind those commands to keys.  You can use
+'''`bmkp-cycle-this-buffer'''' and
+'''`##bmkp-(next|previous)-bookmark-this-buffer(-repeat)##'''' as a model.
+
+
+
+
+
+
+
 
 [:CyclingCurrentBuffer]
 === Cycling in the Current Buffer ===
 
-The bookmarks in the current buffer form another set that you can
-navigate by cycling as well as jumping.  It is convenient to have
+You can navigate the bookmarks in the current buffer by cycling as well as jumping.  It is convenient to have
 dedicated keys for this, separate from the keys to cycle the
-navigation list in general.  '''Bookmark+''' uses the same approach here -- the
-following keys are defined, corresponding to commands
+navigation list.  The following keys are defined, corresponding to commands
 '''`bmkp-next-bookmark-this-buffer-repeat'''' and
 '''`bmkp-previous-bookmark-this-buffer-repeat'''':
 
@@ -1804,7 +1837,17 @@ do not need to use a prefix key, then bind commands
 `bmkp-next-bookmark-this-buffer' and
 `bmkp-previous-bookmark-this-buffer' (no ##-repeat##).
 
-By default, the current-buffer bookmarks are cycled in ''order of
+You can also cycle among just the highlighted bookmarks in the
+current buffer -- see [[#UsingHighlightedBookmarks|Using Highlighted Bookmarks]].
+
+Current-buffer cycling (all bookmarks or only the highlighted
+ones) is dynamic: the current set of bookmarks is cycled, not a
+static snapshot.  The navlist is automatically updated to the
+current dynamic set each time you cycle.  This is different from
+the usual cycling of the navlist, where it is taken as a static
+snapshot -- see [[#BookmarkNavigationList|The Bookmark Navigation List]].
+
+By default, you cycle the current-buffer bookmarks in ''order of
 their positions'' in the buffer, top to bottom.  If you want a
 different order, you can customize [[option]]
 '''`bmkp-this-buffer-cycle-sort-comparer''''.
@@ -1812,14 +1855,9 @@ different order, you can customize [[option]]
 Alternatively, you can use '''`##C-x p .##'''' to display the `##*Bookmark
 List*##' with only the current buffer's bookmarks, sort them there,
 and then use '''`C-x p B'''' to set the navigation list to '''`##CURRENT *Bookmark List*##''''.  In that case, you use the navlist cycling keys
-(e.g. `C-x p f', not `C-x p n').
+(e.g. `C-x p f', not `C-x p n'), and the cycled set is a static
+snapshot.
 
-Finally, you can also cycle among only the highlighted bookmarks
-in the current buffer -- see [[#UsingHighlightedBookmarks|Cycling Among Highlighted Bookmarks]].
-
-See also [[#BookmarkNavigationList|The Bookmark Navigation List]] about the difference
-between cycling bookmarks in the current buffer and other bookmark
-cycling.
 
 
 
@@ -2356,6 +2394,61 @@ The vanilla '''Bookmarks''' menu provided by Emacs is typically a submenu of the
 
 
 == Discussion ==
+
+
+----
+
+[new]
+I would like to use bookmarks with version control (ClearCase) where i have multiple views (base directories) with the same files/directory structure. What i would like to do is to define file type bookmarks with <i>relative</i> paths where i can easily change the base directory (e.g. select it from a list or keep it stored in a global variable). Is something like this already possible (and i've just not found it)?
+
+I have thought about it a bit and came up with the following ideas:
+
+# Define a new bookmark type. But this use case is maybe not enough to justify another bookmark type.
+# Provide a way to call function type bookmarks with an argument. The argument would then contain the fixed relative path and the function could add the variable base path. Or more general, 
+# if a bookmark function could access its own meta data i.e. its tags, the relative path could be stored in a tag.
+
+Actually 3. sounds like it would provide a very flexible way to extend the built-in functionality of bookmark+.
+
+What do you think? -- KaiTetzlaff
+
+[new:DrewAdams:2010-04-07 16:43 UTC]
+Hi Kai. Each bookmark associated with a file has a ##(filename . "/the/file/name")## entry, where the file name is absolute. Take a look at `C-h v bookmark-alist' to get an idea. Since this info is already part of the bookmark, you don't need to also save such info using tags. And inside every absolute file name (e.g. `##/a/b/c##') hides a relative file name (e.g. `c')! ;-) All you need to do is abstract from the absolute file names to relative names, and for that you have function `file-name-non-directory'.
+
+1. I think what you want is a command that (a) collects all bookmarks whose `filename' entries have files whose relative names match some input pattern, then (b) presents these bookmarks as [[completion]] candidates and (c) jumps to the chosen bookmark. For example:
+
+<pre>
+(defun bookmark-jump-relative-file (relfile &optional localp)
+  "Jump to a bookmark whose file has relative name RELFILE.
+With a prefix arg, only local files are candidates."
+  (interactive "sFile: \nP")
+  (setq relfile  (file-name-nondirectory relfile))
+  (bookmark-jump-other-window
+   (bookmark-completing-read "Jump to bookmark" nil
+                             (if localp
+                                 (bmkp-local-file-alist-only)
+                               (bmkp-file-alist-only))
+</pre>
+
+2. You can also do something along the lines of what you're looking for without any coding. You can see all of the bookmarks that have a particular relative file name, and choose among them. In the `##*Bookmark List*##':
+
+* You can use `##P F##' to show only the bookmarks whose file names match some [[regexp]], which could be the target relative file name -- e.g. `##foo.el##' (or `##/foo.el$##' if you're worried about excluding extra matches in the same line). You can mark all of these bookmarks using `M-m'.
+
+* Or you can mark all bookmarks with matching file names using `##% m##'. The regexp for `##% m##' matches the entire line, bookmark name plus file name (if you are not yet showing file names, use `M-t'), so use a regexp that also matches the bookmark name (e.g. `##.*/foo.el$##').
+
+After you've marked the bookmarks that have the same relative file name, you can act on that set of bookmarks in various ways. You can save the set or bookmark it (e.g. creating a `bookmark-list' bookmark). Returning to the saved set is like using a multiple-choice command for the files in the set. You can search+replace the marked bookmarks (`M-a', `M-q'). You can open [[Dired]] for just those bookmarked files, which can be in different directories (`##M-d >##'). After `##M-d >##', you can bookmark that Dired buffer -- that's another way to come back to this set of files.
+
+HTH -- DrewAdams
+
+
+
+
+
+
+
+
+
+----
+
 [new]
 I am finding this very useful, but it would be nice if there was a quicker way to add tags, e.g. similar to org-mode's C-c C-c C-c method. -- JoeBloggs
 
@@ -2402,78 +2495,124 @@ I don't understand your question about jumping and annotations. Please give me a
 Let me know if something in the doc is unclear or does not seem to correspond to what you are looking for.  I don't want to repeat explanations here without knowing what is unclear etc. -- DrewAdams
 
 [new:JoeBloggs:2010-09-23 20:51 UTC]
-OK, I found the cycling and autoname commands, but I can't find any way of altering the annotation and tags without visiting the bookmarks list. 
+1. OK, I found the cycling and autoname commands, but I can't find any way of altering the annotation and tags without visiting the bookmarks list. 
 
-Also, the default bookmark in prompts seems to only be set for bookmarks that were created in this session: 
-if I restart emacs and put point at a pre-made bookmark in a buffer, and then issue a command such as bmk-describe-bookmark, there is no default bookmark name in the prompt, so I have to remember the name of the bookmark at point.
+2. Also, the default bookmark in prompts seems to only be set for bookmarks that were created in this session: 
+if I restart emacs and put point at a pre-made bookmark in a buffer, and then issue a command such as `bmkp-describe-bookmark', there is no default bookmark name in the prompt, so I have to remember the name of the bookmark at point.
 
-With regard to jumping and annotations, I want to be able to keep the annotation shown, but have point go to the actual 
-bookmark position. At the moment when I jump to a bookmark (with bookmark-automatically-show-annotations set to t), 
+3. With regard to jumping and annotations, I want to be able to keep the annotation shown, but have point go to the actual 
+bookmark position. At the moment when I jump to a bookmark (with `bookmark-automatically-show-annotations' set to `t'), 
 point is placed in the annotations buffer instead of the bookmark position. This also happens when I view annotations
 from the bookmark list by pressing `a' or `A': point moves to the annotations buffer, which is useless since it is read-only anyway.
 
-Finally bmkp-specific-buffers-jump and bmkp-specific-files-jump don't work for me: after entering a buffer/file I get prompted for another one and stuck in an infinite loop.
+4. Finally `bmkp-specific-buffers-jump' and `bmkp-specific-files-jump' don't work for me: after entering a buffer/file I get prompted for another one and stuck in an infinite loop.
 
-I just found another problem; highlighted bookmarks are not always properly marked in the bookmark list. 
+5. I just found another problem; highlighted bookmarks are not always properly marked in the bookmark list. 
 Sometimes I see a purple mark next to them, sometimes not. 
 
 I have made some [[OneKey]] menus for use with '''Bookmark+''', but since it seems to be a work in progress I wont post 
-them till I know the functions and keybindings are not going to change.
+them till I know the functions and keybindings are not going to change. -- JoeBloggs
+
+
+
+[new:DrewAdams:2010-09-24 07:15 UTC]
+
+1a. Changing an annotation without visiting `##*Bookmark List*##' --- I made `bookmark-edit-annotation' interactive (it is now a command).
+
+1b. Changing a tag without visiting `##*Bookmark List*##' --- I don't understand the question.  You have commands `bmkp-add-tags' (`##T +##'), `bmkp-remove-tags' (`##T -##'), `bmkp-remove-all-tags' (`##T 0##'), `bmkp-remove-tags-from-all' (`##T d##'), `bmkp-rename-tag' (`##T r##'), `bmkp-set-tag-value', and `bmkp-set-tag-value-for-navlist', all of which are available outside `##*Bookmark List*##'.
+
+2. Default bookmark --- Vanilla Emacs uses `bookmark-current-bookmark', the most recently used bookmark in the same file, as the default. I generally use this also, except in the `##*Bookmark List*##', where I use the bookmark of the current line as default. And when reading the name of a bookmark that must belong to a particular type, no default is available if the default chosen as just defined is not in the alist.
+
+However, commands that involve highlighted bookmarks generally use a highlighted bookmark on the same line as point as the default (closest one to point), if any, and otherwise the default described above. I just changed `bmkp-describe-bookmark' (and `bookmark-edit-annotation-mode') to do use this as well.  BTW, starting with Emacs 23 there can be multiple such defaults if there are multiple highlighted bookmarks on the line -- use `M-n'.
+
+3. Selection of annotation(s) buffer --- I agree about this and had been meaning to fix it for a while. I don't really use annotations so I hadn't bothered. (Also, I use `pop-up-frames' on Windows, which means that a new frame gets the focus no matter what.)  Should be better now.
+
+4. `##bmkp-specific-(buffers|file)-jump##' --- Should be fixed now. Thx.
+
+5. Indication of highlighted bookmarks in `##*Bookmark List*##' --- You will need to be more specific (e.g. a recipe). If you mean the one-char pink background indicator, that does not indicate highlighted bookmarks.  It indicates bookmarks that have bookmark-highlight
+''override'' settings (use `C-u C-h RET' to see what the override is).  To indicate all highlighted bookmarks you use `##H S##' or `##H M##', to show only the highlighted bookmarks and to mark the highlighted bookmarks, respectively. 
+
+Thanks for the feedback.  Please try the latest.  I also updated cycling features and made a few other changes.  -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 00:37 UTC]
+
+Thanks for the changes. I made a few more changes shown below (but haven't uploaded them to [[bookmark+.el]]).
+
+1a. Great, thanks
+
+1b. OK, I assumed these were only available in the ##*Bookmark List*## since the keybindings are only defined there.
+
+2. I altered bmkp-default-bookmark-name to return highlighted bookmark at point if available. This is better for me:
+
+<pre>
+(defun bmkp-default-bookmark-name (&optional alist)
+  "Default bookmark name.
+If in buffer `*Bookmark List*' then the current line's bookmark.
+Otherwise, the last-used bookmark in the current buffer.
+
+Non-nil ALIST means return nil unless the default names a bookmark in
+ALIST."
+  (let ((name  (if (equal (buffer-name (current-buffer)) "*Bookmark List*")
+                   (bookmark-bmenu-bookmark)
+		 (or (and (fboundp 'bmkp-default-lighted) (bmkp-default-lighted))
+		     bookmark-current-bookmark))))
+    (when alist (setq name  (car (assoc name alist))))
+    name))
+</pre>
+
+3. I altered bookmark-send-edited-annotation so that after sending annotation, point returns to previous location
+   (previously you had it set to always send you back to the ##*Bookmark List*##):
+
+<pre>
+(defun bookmark-send-edited-annotation ()
+  "Use buffer contents as annotation for a bookmark.
+Lines beginning with `#' are ignored."
+  (interactive)
+  (unless (eq major-mode 'bookmark-edit-annotation-mode)
+    (error "Not in bookmark-edit-annotation-mode"))
+  (goto-char (point-min))
+  (while (< (point) (point-max))
+    (if (looking-at "^#")
+        (bookmark-kill-line t)
+      (forward-line 1)))
+  (let ((annotation  (buffer-substring-no-properties (point-min) (point-max)))
+	(bookmark    bookmark-annotation-name))
+    (bookmark-set-annotation bookmark annotation)
+    (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
+    (bookmark-bmenu-surreptitiously-rebuild-list)
+    (kill-buffer-and-window)
+    (bmkp-refresh-menu-list bookmark))) ; So the `a' marker is displayed (updated).
+</pre>
+
+4. Good.
+
+5. OK, I misunderstood the meaning of the indicator. On a related note, is there any way to quickly change the highlighting
+   style of all bookmarks in a buffer at once without going through customize or ##*Bookmark List*##?
+
+6. I've written the following functions for the ##*Bookmark List*## which I find useful. I bind them to `##C-up##' and `##C-down##'
+
+<pre>
+(defun bmkp-bmenu-move-up+describe-this ()
+  "Move up to previous bookmark and then describe it."
+  (interactive)
+  (forward-line -1)
+  (bmkp-bmenu-describe-this-bookmark))
+
+(defun bmkp-bmenu-move-down+describe-this ()
+  "Move down to next bookmark and then describe it."
+  (interactive)
+  (forward-line 1)
+  (bmkp-bmenu-describe-this-bookmark))
+
+(define-key bookmark-bmenu-mode-map (kbd "<C-up>") 'bmkp-bmenu-move-up+describe-this)
+(define-key bookmark-bmenu-mode-map (kbd "<C-down>") 'bmkp-bmenu-move-down+describe-this)
+</pre>
 
 -- JoeBloggs
 
 
 
 
-
-
-
-
-
-
-
-----
-
-[new]
-I would like to use bookmarks with version control (ClearCase) where i have multiple views (base directories) with the same files/directory structure. What i would like to do is to define file type bookmarks with <i>relative</i> paths where i can easily change the base directory (e.g. select it from a list or keep it stored in a global variable). Is something like this already possible (and i've just not found it)?
-
-I have thought about it a bit and came up with the following ideas:
-
-# Define a new bookmark type. But this use case is maybe not enough to justify another bookmark type.
-# Provide a way to call function type bookmarks with an argument. The argument would then contain the fixed relative path and the function could add the variable base path. Or more general, 
-# if a bookmark function could access its own meta data i.e. its tags, the relative path could be stored in a tag.
-
-Actually 3. sounds like it would provide a very flexible way to extend the built-in functionality of bookmark+.
-
-What do you think? -- KaiTetzlaff
-
-[new:DrewAdams:2010-04-07 16:43 UTC]
-Hi Kai. Each bookmark associated with a file has a ##(filename . "/the/file/name")## entry, where the file name is absolute. Take a look at `C-h v bookmark-alist' to get an idea. Since this info is already part of the bookmark, you don't need to also save such info using tags. And inside every absolute file name (e.g. `##/a/b/c##') hides a relative file name (e.g. `c')! ;-) All you need to do is abstract from the absolute file names to relative names, and for that you have function `file-name-non-directory'.
-
-1. I think what you want is a command that (a) collects all bookmarks whose `filename' entries have files whose relative names match some input pattern, then (b) presents these bookmarks as [[completion]] candidates and (c) jumps to the chosen bookmark. For example:
-
-<pre>
-(defun bookmark-jump-relative-file (relfile &optional localp)
-  "Jump to a bookmark whose file has relative name RELFILE.
-With a prefix arg, only local files are candidates."
-  (interactive "sFile: \nP")
-  (setq relfile  (file-name-nondirectory relfile))
-  (bookmark-jump-other-window
-   (bookmark-completing-read "Jump to bookmark" nil
-                             (if localp
-                                 (bmkp-local-file-alist-only)
-                               (bmkp-file-alist-only))
-</pre>
-
-2. You can also do something along the lines of what you're looking for without any coding. You can see all of the bookmarks that have a particular relative file name, and choose among them. In the `##*Bookmark List*##':
-
-* You can use `##P F##' to show only the bookmarks whose file names match some [[regexp]], which could be the target relative file name -- e.g. `##foo.el##' (or `##/foo.el$##' if you're worried about excluding extra matches in the same line). You can mark all of these bookmarks using `M-m'.
-
-* Or you can mark all bookmarks with matching file names using `##% m##'. The regexp for `##% m##' matches the entire line, bookmark name plus file name (if you are not yet showing file names, use `M-t'), so use a regexp that also matches the bookmark name (e.g. `##.*/foo.el$##').
-
-After you've marked the bookmarks that have the same relative file name, you can act on that set of bookmarks in various ways. You can save the set or bookmark it (e.g. creating a `bookmark-list' bookmark). Returning to the saved set is like using a multiple-choice command for the files in the set. You can search+replace the marked bookmarks (`M-a', `M-q'). You can open [[Dired]] for just those bookmarked files, which can be in different directories (`##M-d >##'). After `##M-d >##', you can bookmark that Dired buffer -- that's another way to come back to this set of files.
-
-HTH -- DrewAdams
 ----
 CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo

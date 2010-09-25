@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Mon Sep 20 08:43:11 2010 (-0700)
+;; Last-Updated: Fri Sep 24 12:08:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13172
+;;     Update #: 13238
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,25 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/09/24 dadams
+;;     Added: bmkp-autonamed(-this-buffer)-jump(-other-window).  Bound to C-x j # (#|.) and menus.
+;;     Added, using bmkp-define-cycle-command:
+;;       bmkp-cycle-(autonamed|bookmark-list|desktop|dired|gnus|info|lighted|(local-|remote-)file|
+;;                   man|non-file|remote-file|specific-(buffers|files)|variable-list|url)
+;;                   (-other-window).
+;;     Added redefinitions: bookmark-edit-annotation(-mode).
+;;     Renamed: *varlist* to *variable-list*.
+;;     bmkp-autoname-format: Added ^ to anchor numeral at beginning.
+;;     bookmark--jump-via: Don't update autonamed if using w32 association.
+;;     bmkp-update-autonamed-bookmark: bmkp-refresh-menu-list only if buffer list is displayed.
+;;     *-(relocate|rename), *-update-autonamed-bookmark, *-remove-all-tags, *-(add|remove)-tags:
+;;       Don't create bookmark-list buffer if doesn't exist.
+;;     bookmark-show-(annotation|all-annotations): Restore selected window and frame focus.
+;;     bmkp-completing-read-(buffer|file)-name: Added optional NO-DEFAULT-P arg.
+;;     bmkp-describe-bookmark: Default to highlighted bookmarks on line, if there are any.
+;;     bmkp-specific-(buffers|files)-jump(-other-window): Allow empty input, to end loop.
+;;     bmkp-cycle: Ensure bmkp-current-nav-bookmark is a bookmark, else redefine.  Use %9d, not %d.
+;;     bmkp-cycle-other-window: Added optional STARTOVERP arg here too.
 ;; 2010/09/20 dadams
 ;;     bmkp-choose-navlist-of-type: Empty input means "any".
 ;; 2010/09/16 dadams
@@ -167,6 +186,10 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2010/09/24 dadams
+;;     Added: bmkp-bmenu-show-only-autonamed.  Bound to # S.  Added to bmkp-bmenu-show-menu.
+;;     bookmark-bmenu-mode: Updated doc string for autonamed jumps, show.
+;;     Renamed varlist to variable-list everywhere.
 ;; 2010/08/22 dadams
 ;;     Added: bmkp-bmenu-filter-annotation-incrementally, bookmark-bmenu-relocate (Emacs 20, 21),
 ;;            bmkp-bmenu-filter-alist-by-annotation-regexp.  Bound, added to menus and help.
@@ -214,6 +237,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;
+;; 2010/09/24 dadams
+;;     Added: bmkp-define-cycle-command.
 ;; 2010/08/18 dadams
 ;;     Removed eval-when-compile for bookmark+-(bmu|1).el.
 ;; 2010/08/15 dadams

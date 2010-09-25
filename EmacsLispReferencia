@@ -1,7 +1,7 @@
 [[es:EmacsLispReferencia]]
 '''El Manual de Referencia de Emacs Lisp''' (también conocido como el manual 'elisp' o 'lispref', es documentación acerca del lenguaje empleado para extender Emacs, EmacsLisp.
 
-GnuEmacs tiene un ManualEmacsEs, una EmacsLispIntro y el manual de referencia de Emacs Lisp objeto de este artículo.  A partir de la versión 22 de Emacs, los tres manuales están incluidos en la distribución.
+GnuEmacs tiene un ManualEmacsEs, una EmacsLispIntroEs y el manual de referencia de Emacs Lisp objeto de este artículo.  A partir de la versión 22 de Emacs, los tres manuales están incluidos en la distribución.
 
 XEmacs tiene un XEmacs User's Manual, un XEmacs Lisp Reference Manual, una introduction to XEmacs ("Getting Started With XEmacs"), una EmacsLisp introduction ("Programming in Emacs Lisp, an Introduction") y un XEmacs Internals Manual, distribuidos todos con XEmacs.
 
