@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Sep 11 15:39:13 2010 (-0700)
+;; Last-Updated: Sat Sep 25 18:11:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 635
+;;     Update #: 680
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -103,6 +103,8 @@
 ;;    `bmkp-previous-lighted-this-buffer',
 ;;    `bmkp-previous-lighted-this-buffer-repeat',
 ;;    `bmkp-set-lighting-for-bookmark',
+;;    `bmkp-set-lighting-for-buffer',
+;;    `bmkp-set-lighting-for-this-buffer',
 ;;    `bmkp-unlight-autonamed-this-buffer', `bmkp-unlight-bookmark',
 ;;    `bmkp-unlight-bookmark-here',
 ;;    `bmkp-unlight-bookmark-this-buffer', `bmkp-unlight-bookmarks',
@@ -137,6 +139,7 @@
 ;;    `bmkp-lighting-when', `bmkp-make/move-fringe' (Emacs 22+),
 ;;    `bmkp-make/move-overlay-of-style', `bmkp-number-lighted',
 ;;    `bmkp-overlay-of-bookmark', `bmkp-read-set-lighting-args',
+;;    `bmkp-set-lighting-for-bookmarks',
 ;;    `bmkp-this-buffer-lighted-alist-only'.
 ;;
 ;;  Internal variables defined here:
@@ -575,9 +578,16 @@ Prefix arg, unhighlight them everywhere."
   (bmkp-unlight-bookmarks))
 
 ;;;###autoload
-(defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp)
+(defun bmkp-set-lighting-for-bookmark (bookmark-name style face when &optional msgp light-now-p)
   "Set the `lighting' property for bookmark BOOKMARK-NAME.
-You are prompted for the bookmark, highlight style, face, and condition."
+You are prompted for the bookmark, highlight style, face, and condition.
+With a prefix argument, do not highlight now.
+
+Non-interactively:
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
+ entries, or nil if no such entry.
+Non-nil MSGP means display a highlighting progress message.
+Non-nil LIGHT-NOW-P means apply the highlighting now."
   (interactive
    (let* ((bmk        (bookmark-completing-read "Highlight bookmark"
                                                 (or (bmkp-default-lighted)
@@ -585,11 +595,12 @@ You are prompted for the bookmark, highlight style, face, and condition."
           (bmk-style  (bmkp-lighting-style bmk))
           (bmk-face   (bmkp-lighting-face bmk))
           (bmk-when   (bmkp-lighting-when bmk)))
-     (cons bmk (append (bmkp-read-set-lighting-args
-                        (and bmk-style (format "%s" (car (rassq bmk-style bmkp-light-styles-alist))))
-                        (and bmk-face  (format "%S" bmk-face))
-                        (and bmk-when  (format "%S" bmk-when)))
-                       '(MSG)))))
+     (append (list bmk)
+             (bmkp-read-set-lighting-args
+              (and bmk-style (format "%s" (car (rassq bmk-style bmkp-light-styles-alist))))
+              (and bmk-face  (format "%S" bmk-face))
+              (and bmk-when  (format "%S" bmk-when)))
+             (list 'MSGP (not current-prefix-arg)))))
   (when msgp (message "Setting highlighting..."))
   (if (or face style when)
       (bookmark-prop-set bookmark-name
@@ -598,7 +609,51 @@ You are prompted for the bookmark, highlight style, face, and condition."
                                      ,@(and when  (not (eq when 'auto))  `(:when ,when))))
     (bookmark-prop-set bookmark-name 'lighting nil))
   (when (get-buffer-create "*Bookmark List*") (bmkp-refresh-menu-list bookmark-name))
-  (when msgp (message "Setting highlighting...done")))
+  (when msgp (message "Setting highlighting...done"))
+  (when light-now-p (bmkp-light-bookmark bookmark-name nil nil msgp))) ; This msg is more informative.
+
+;;;###autoload
+(defun bmkp-set-lighting-for-buffer (buffer style face when &optional msgp light-now-p)
+  "Set the `lighting' property for each of the bookmarks for BUFFER.
+You are prompted for the highlight style, face, and condition (when).
+With a prefix argument, do not highlight now.
+
+Non-interactively:
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
+ entries, or nil if no such entry.
+Non-nil MSGP means display a highlighting progress message.
+Non-nil LIGHT-NOW-P means apply the highlighting now."
+  (interactive (append (list (bmkp-completing-read-buffer-name))
+                       (bmkp-read-set-lighting-args)
+                       (list 'MSGP (not current-prefix-arg))))
+  (bmkp-set-lighting-for-bookmarks
+   (let ((bmkp-last-specific-buffer  buffer)) (bmkp-last-specific-buffer-alist-only))
+   style face when msgp light-now-p))
+
+;;;###autoload
+(defun bmkp-set-lighting-for-this-buffer (style face when &optional msgp light-now-p)
+  "Set the `lighting' property for each of the bookmarks for this buffer.
+You are prompted for the highlight style, face, and condition (when).
+With a prefix argument, do not highlight now.
+
+Non-interactively:
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
+ entries, or nil if no such entry.
+Non-nil MSGP means display a highlighting progress message.
+Non-nil LIGHT-NOW-P means apply the highlighting now."
+  (interactive (append (bmkp-read-set-lighting-args) (list 'MSGP (not current-prefix-arg))))
+  (bmkp-set-lighting-for-bookmarks (bmkp-this-buffer-alist-only) style face when msgp light-now-p))
+
+(defun bmkp-set-lighting-for-bookmarks (alist style face when &optional msgp light-now-p)
+  "Set the `lighting' property for each of the bookmarks in ALIST.
+STYLE, FACE, and WHEN are as for a bookmark's `lighting' property
+ entries, or nil if no such entry.
+Non-nil MSGP means display a highlighting progress message.
+Non-nil LIGHT-NOW-P means apply the highlighting now."
+  (when msgp (message "Setting highlighting..."))
+  (dolist (bmk  alist) (bmkp-set-lighting-for-bookmark bmk style face when)) ; No MSGP arg here.
+  (when msgp (message "Setting highlighting...done"))
+  (when light-now-p (bmkp-light-bookmarks alist nil msgp))) ; Do separately so we get its message.
 
 ;;;###autoload
 (defun bmkp-light-bookmark (bookmark &optional style face msgp pointp)

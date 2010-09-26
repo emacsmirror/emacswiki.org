@@ -1793,7 +1793,7 @@ The fact that the navlist is a static snapshot is a useful
 feature, but sometimes you might want to cycle among a particular
 dynamic set of bookmarks, that is, to have cycling take changes to
 the bookmark set into account automatically.  For that, '''Bookmark+'''
-provides separate cycling commands for various types of bookmark.
+provides separate cycling commands for most types of bookmark.
 
 By default, these different kinds of cycling commands are not
 bound to any keys, with the exception of the commands for cycling
@@ -1804,13 +1804,9 @@ and cycling only the highlighted bookmarks for the current buffer
 `C-x p C-down' are defined for these two kinds of current-buffer
 cycling.
 
-If you want to cycle among the bookmarks of some other particular
+If you often want to cycle among the bookmarks of some other particular
 kind (e.g. only the autonamed bookmarks), then you can bind the
-relevant command (e.g. `bmkp-cycle-autonamed') or define
-repeatable `next' and `previous' commands that use that cycling
-command, and then bind those commands to keys.  You can use
-'''`bmkp-cycle-this-buffer'''' and
-'''`##bmkp-(next|previous)-bookmark-this-buffer(-repeat)##'''' as a model.
+relevant commands (e.g. `bmkp-next-autonamed-bookmark-repeat', `bmkp-previous-autonamed-bookmark-repeat') to handy keys.  Otherwise, you can just use the cycling commands without binding them.
 
 
 
@@ -2609,6 +2605,79 @@ Lines beginning with `#' are ignored."
 </pre>
 
 -- JoeBloggs
+
+
+[new:DrewAdams:2010-09-25 16:02 UTC]
+Yes, please do not modify the libraries.  Instead, post your suggestions (as you did) or mail them to me.
+
+1b. Commands whose names start with `bmkp-bmenu' are for `##*Bookmark List*##'.  Commands whose names lack `bmenu' in the prefix are general.  This is a vanilla Emacs convention that I have kept.
+
+2. Different users will prefer different behaviors. I've added an option for this: `bmkp-default-bookmark-name'.  It's default value gives the behavior you prefer.
+
+3. Good catch.  I made a similar change.  I don't think it's a good idea to require confirmation for deleting the buffer and its window, though.  I also changed the commands for accessing bookmarks with annotations, so that only annotated bookmarks are completion candidates.
+
+5. No.  But how hard is it to visit the bookmark list?  I'm open to suggestions, but I don't see this as very important.
+
+6. Hm.  Such commands, with the same bindings, already exist. What am I missing?  See `##bmkp-bmenu-describe-this+move-down##' (`C-down').  Or are you just saying that you prefer to have the description correspond to the current bookmark after the move instead of the current bookmark before the move? -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 19:39 UTC]
+
+5. Here's a couple of functions to do what I want (the second one might be useful for other things):
+
+<pre>
+(defun bmkp-set-lighting-for-bookmarks-in-buffer (buffer style face)
+  "Set the lighting style and face for all bookmarks in BUFFER"
+  (interactive (list (buffer-name)
+		     (cdr (assoc (let ((completion-ignore-case  t))
+				   (completing-read "Style: " bmkp-light-styles-alist
+						    nil t))
+				 bmkp-light-styles-alist))
+		     nil))
+  (let ((face (and (not (member style '(lfringe rfringe none))) ; No face possible for these.
+		   (y-or-n-p "Change face? ") ; Allow nil, for `auto'.
+		   (condition-case nil ; Emacs 22+ accepts a default.
+		       (read-face-name "Face: " default-face)
+		     (wrong-number-of-arguments (read-face-name "Face: ")))))
+	bmks-alist)
+    (dolist (bmk bookmark-alist)
+      (if (bmkp-specific-buffer-p bmk buffer)
+	  (progn (add-to-list 'bmks-alist bmk)
+		 (bmkp-set-lighting-for-bookmark bmk style face (bmkp-lighting-when bmk)))))
+    (bmkp-light-bookmarks bmks-alist)))
+
+(defun bmkp-specific-buffer-p (bookmark buffer)
+  "Return t if BOOKMARK's `buffer-name' is BUFFER.
+But return nil for bookmarks, such as desktops, that are not really
+associated with a buffer, even if they have a `buffer-name' entry.
+It does not matter whether the buffer exists.
+BOOKMARK is a bookmark name or a bookmark record."
+  (let ((buf (bmkp-get-buffer-name bookmark)))
+    (and buf (string= buf buffer)
+         (not (bmkp-desktop-bookmark-p        bookmark))
+         (not (bmkp-bookmark-file-bookmark-p  bookmark))
+         (not (bmkp-sequence-bookmark-p       bookmark))
+         (not (bmkp-function-bookmark-p       bookmark))
+         (not (bmkp-variable-list-bookmark-p  bookmark)))))
+</pre>
+
+6. Yes, I wrote those some time ago and forgot that they were slight alterations of functions you've already written. -- JoeBloggs
+
+
+[new:DrewAdams:2010-09-25 19:48 UTC]
+5. I added something similar and a little more general. -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 21:06 UTC]
+
+5. Great, but it doesn't light them immediately. Needs a call to bmkp-light-bookmarks at the end of the function. -- JoeBloggs
+
+[new:DrewAdams:2010-09-25 21:10 UTC]
+Not an oversight; I want it to be separate. But I've added control via a prefix arg. -- DrewAdams
+
+[new:JoeBloggs:2010-09-25 23:23 UTC]
+This definitely is an oversight: in `##bmkp-set-lighting-for-buffer##' you have used `##bmkp-last-specific-file-alist-only##' when it should be `##bmkp-last-specific-buffer-alist-only##'. -- JoeBloggs
+
+[new:DrewAdams:2010-09-26 01:13 UTC]
+Right. Thanks, should be OK now. -- DrewAdams
 
 
 

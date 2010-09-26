@@ -539,6 +539,9 @@ Also if you do get around to implementing the "sticky search" at some point, it 
 
 It might also be a good idea to put some kind of a visible indicator to show that the directory view is narrowed, maybe change the color of the "total used..." line or directory path, or something, perhaps show the filter pattern too?  for example, one might cd to a directory in which nothing matches, then it looks normal, and when you switch back you might forget that there was a fuzzy-narrow filter set...
 
+PS. I think I just made my life easier by (define-key sr-mode-map "\C-s" 'dired-isearch-filenames) ! 
+Now, I think what would be necessary for complete happiness is to have it turn on when Sunrise starts, when current directory changes, and when active panel changes (is there any good place for me to try putting a "(dired-isearch-filenames)" at?). We'd be pretty close to having the "dual mode" setup this way, perhaps in some ways even more intuitive than a typical standalone two-panel manager, the navigation mode being entered on C-s and exited on C-g, with C-s/C-r for forward/backward navigation among matches which is I think actually better than what I was originally describing a few posts back.
+
 --laxxy
 
 ----

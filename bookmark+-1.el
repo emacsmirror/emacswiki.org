@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Sep 24 10:26:01 2010 (-0700)
+;; Last-Updated: Sat Sep 25 14:58:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 851
+;;     Update #: 900
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -140,10 +140,35 @@
 ;;    `bmkp-local-file-jump-other-window',
 ;;    `bmkp-make-function-bookmark', `bmkp-man-jump',
 ;;    `bmkp-man-jump-other-window', `bmkp-menu-jump-other-window'
-;;    (Emacs 20, 21), `bmkp-navlist-bmenu-list', `bmkp-next-bookmark',
+;;    (Emacs 20, 21), `bmkp-navlist-bmenu-list',
+;;    `bmkp-next-autonamed-bookmark',
+;;    `bmkp-next-autonamed-bookmark-repeat', `bmkp-next-bookmark',
+;;    `bmkp-next-bookmark-list-bookmark',
+;;    `bmkp-next-bookmark-list-bookmark-repeat',
 ;;    `bmkp-next-bookmark-repeat', `bmkp-next-bookmark-this-buffer',
 ;;    `bmkp-next-bookmark-this-buffer-repeat',
 ;;    `bmkp-next-bookmark-w32', `bmkp-next-bookmark-w32-repeat',
+;;    `bmkp-next-desktop-bookmark',
+;;    `bmkp-next-desktop-bookmark-repeat', `bmkp-next-dired-bookmark',
+;;    `bmkp-next-dired-bookmark-repeat', `bmkp-next-file-bookmark',
+;;    `bmkp-next-file-bookmark-repeat', `bmkp-next-gnus-bookmark',
+;;    `bmkp-next-gnus-bookmark-repeat', `bmkp-next-info-bookmark',
+;;    `bmkp-next-info-bookmark-repeat', `bmkp-next-lighted-bookmark',
+;;    `bmkp-next-lighted-bookmark-repeat',
+;;    `bmkp-next-local-file-bookmark',
+;;    `bmkp-next-local-file-bookmark-repeat',
+;;    `bmkp-next-man-bookmark', `bmkp-next-man-bookmark-repeat',
+;;    `bmkp-next-non-file-bookmark',
+;;    `bmkp-next-non-file-bookmark-repeat',
+;;    `bmkp-next-remote-file-bookmark',
+;;    `bmkp-next-remote-file-bookmark-repeat',
+;;    `bmkp-next-specific-buffers-bookmark',
+;;    `bmkp-next-specific-buffers-bookmark-repeat',
+;;    `bmkp-next-specific-files-bookmark',
+;;    `bmkp-next-specific-files-bookmark-repeat',
+;;    `bmkp-next-variable-list-bookmark',
+;;    `bmkp-next-variable-list-bookmark-repeat',
+;;    `bmkp-next-url-bookmark', `bmkp-next-url-bookmark-repeat',
 ;;    `bmkp-non-file-jump', `bmkp-non-file-jump-other-window',
 ;;    `bmkp-occur-create-autonamed-bookmarks',
 ;;    `bmkp-occur-target-set', `bmkp-occur-target-set-all',
@@ -191,6 +216,7 @@
 ;;
 ;;    `bmkp-autoname-bookmark-function', `bmkp-autoname-format',
 ;;    `bmkp-bookmark-name-length-max', `bmkp-crosshairs-flag',
+;;    `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handler-associations',
 ;;    `bmkp-desktop-no-save-vars', `bmkp-handle-region-function',
 ;;    `bmkp-incremental-filter-delay', `bmkp-menu-popup-max-length',
@@ -207,8 +233,8 @@
 ;;    `bmkext-jump-gnus', `bmkext-jump-man', `bmkext-jump-w3m',
 ;;    `bmkext-jump-woman', `bmkp-all-tags-alist-only',
 ;;    `bmkp-all-tags-regexp-alist-only', `bmkp-alpha-cp',
-;;    `bmkp-alpha-p', `bmkp-autoname-bookmark',
-;;    `bmkp-autonamed-alist-only',
+;;    `bmkp-alpha-p', `bmkp-annotated-alist-only',
+;;    `bmkp-autoname-bookmark', `bmkp-autonamed-alist-only',
 ;;    `bmkp-autonamed-bookmark-for-buffer-p',
 ;;    `bmkp-autonamed-bookmark-p',
 ;;    `bmkp-autonamed-this-buffer-alist-only',
@@ -530,6 +556,23 @@ If you use this option in Lisp code, you will want to add/remove
              (add-hook 'bookmark-after-jump-hook 'bmkp-crosshairs-highlight)
            (remove-hook 'bookmark-after-jump-hook 'bmkp-crosshairs-highlight)))         
   :type 'boolean :group 'bookmark-plus)
+
+;;;###autoload
+(defcustom bmkp-default-bookmark-name 'highlighted
+  "*Default bookmark name preference.
+In `*Bookmark List*' use the name of the current line's bookmark.
+Otherwise, if `bookmark+-lit.el' is not loaded then use the name of
+ the last-used bookmark in the current file.
+
+Otherwise, use this option to determine the default, by preferring one
+of the following, if available:
+
+* a highlighted bookmark at point
+* the last-used bookmark in the current file"
+  :type '(choice
+          (const :tag "Highlighted bookmark at point"    highlighted)
+          (const :tag "Last used bookmark in same file"  last-used))
+  :group 'bookmark-plus)
 
 ;;;###autoload
 (defcustom bmkp-default-handler-associations
@@ -1181,10 +1224,9 @@ When you have finished composing, type \\[bookmark-send-annotation].
 BOOKMARK is a bookmark name or a bookmark record.
 
 \\{bookmark-edit-annotation-mode-map}"
-  (interactive (list (bookmark-completing-read
-                      "Edit annotation of bookmark"
-                      (or (and (fboundp 'bmkp-default-lighted) (bmkp-default-lighted))
-                          (bmkp-default-bookmark-name)))))
+  (interactive (list (bookmark-completing-read "Edit annotation of bookmark"
+                                               (bmkp-default-bookmark-name)
+                                               (bmkp-annotated-alist-only))))
   (kill-all-local-variables)
   (make-local-variable 'bookmark-annotation-name)
   (setq bookmark-annotation-name  bookmark)
@@ -1207,6 +1249,7 @@ BOOKMARK is a bookmark name or a bookmark record.
 ;;
 ;; 1. BUG fix: Put point back where it was (on the bookmark just annotated).
 ;; 2. Refresh menu list, to pick up the `a' marker.
+;; 3. Delete window also, if `misc-cmds.el' loaded.
 ;;
 (defun bookmark-send-edited-annotation ()
   "Use buffer contents as annotation for a bookmark.
@@ -1224,9 +1267,11 @@ Lines beginning with `#' are ignored."
     (bookmark-set-annotation bookmark annotation)
     (setq bookmark-alist-modification-count  (1+ bookmark-alist-modification-count))
     (bookmark-bmenu-surreptitiously-rebuild-list)
-    (kill-buffer (current-buffer))
-    (pop-to-buffer "*Bookmark List*")
-    (bmkp-refresh-menu-list bookmark))) ; So the `a' marker is displayed (updated).
+    (when (and (get-buffer "*Bookmark List*") (get-buffer-window (get-buffer "*Bookmark List*") 0))
+      (bmkp-refresh-menu-list bookmark)) ; So the `a' marker is displayed (updated).
+    (if (fboundp 'kill-buffer-and-its-windows)
+        (kill-buffer-and-its-windows (current-buffer)) ; Defined in `misc-cmds.el'.
+      (kill-buffer (current-buffer)))))
 
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
@@ -1236,10 +1281,9 @@ Lines beginning with `#' are ignored."
 (defun bookmark-edit-annotation (bookmark)
   "Pop up a buffer for editing bookmark BOOKMARK's annotation.
 BOOKMARK is a bookmark name or a bookmark record."
-  (interactive (list (bookmark-completing-read
-                      "Edit annotation of bookmark"
-                      (or (and (fboundp 'bmkp-default-lighted) (bmkp-default-lighted))
-                          (bmkp-default-bookmark-name)))))
+  (interactive (list (bookmark-completing-read "Edit annotation of bookmark"
+                                               (bmkp-default-bookmark-name)
+                                               (bmkp-annotated-alist-only))))
   (pop-to-buffer (generate-new-buffer-name "*Bookmark Annotation Compose*"))
   (bookmark-edit-annotation-mode bookmark))
 
@@ -2028,12 +2072,12 @@ bookmark files that were created using the bookmark functions."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Added optional arg MSGP.  Show message if no annotation.
-;; Name buffer after the bookmark.
-;; MSGP means message if no annotation.
-;; Use `view-mode'.  `q' uses `quit-window'.
-;; Fit frame to buffer if `one-windowp'.
-;; Restore frame selection.
+;; 1. Added optional arg MSGP.  Show message if no annotation.
+;; 2. Name buffer after the bookmark.
+;; 3. MSGP means message if no annotation.
+;; 4. Use `view-mode'.  `q' uses `quit-window'.
+;; 5. Fit frame to buffer if `one-windowp'.
+;; 6. Restore frame selection.
 ;;
 (defun bookmark-show-annotation (bookmark &optional msgp)
   "Display the annotation for BOOKMARK.
@@ -2060,12 +2104,12 @@ If no annotation and MSGP is non-nil, show a no-annotation message."
 
 ;; REPLACES ORIGINAL in `bookmark.el'.
 ;;
-;; Use name `*Bookmark Annotations*', not `*Bookmark Annotation*'.
-;; Don't list bookmarks that have no annotation.
-;; Highlight bookmark names.  Don't indent annotations.  Add a blank line after each annotation.
-;; Use `view-mode'.  `q' uses `quit-window'.
-;; Fit frame to buffer if `one-windowp'.
-;; Restore frame selection.
+;; 1. Use name `*Bookmark Annotations*', not `*Bookmark Annotation*'.
+;; 2. Don't list bookmarks that have no annotation.
+;; 3. Highlight bookmark names.  Don't indent annotations.  Add a blank line after each annotation.
+;; 4. Use `view-mode'.  `q' uses `quit-window'.
+;; 5. Fit frame to buffer if `one-windowp'.
+;; 6. Restore frame selection.
 ;;
 (defun bookmark-show-all-annotations ()
   "Display the annotations for all bookmarks."
@@ -2074,7 +2118,7 @@ If no annotation and MSGP is non-nil, show a no-annotation message."
       (pop-to-buffer (get-buffer-create "*Bookmark Annotations*"))
       (let ((buffer-read-only  nil))    ; Because buffer might already exist, in view mode.
         (delete-region (point-min) (point-max))
-        (dolist (full-record  bookmark-alist)
+        (dolist (full-record  bookmark-alist) ; (Could use `bmkp-annotated-alist-only' here instead.)
           (let ((ann  (bookmark-get-annotation full-record)))
             (when (and ann (not (string-equal ann "")))
               (insert (concat (bookmark-name-from-full-record full-record) ":\n"))
@@ -2301,15 +2345,16 @@ value for `visits')."
     (let ((bookmark-save-flag  nil))  (bmkp-maybe-save-bookmarks))))
 
 (defun bmkp-default-bookmark-name (&optional alist)
-  "Default bookmark name.
-If in buffer `*Bookmark List*' then the current line's bookmark.
-Otherwise, the last-used bookmark in the current buffer.
-
+  "Default bookmark name.  See option `bmkp-default-bookmark-name'.
 Non-nil ALIST means return nil unless the default names a bookmark in
 ALIST."
   (let ((name  (if (equal (buffer-name (current-buffer)) "*Bookmark List*")
                    (bookmark-bmenu-bookmark)
-                 bookmark-current-bookmark)))
+                 (if (fboundp 'bmkp-default-lighted)
+                     (if (eq 'highlighted bmkp-default-bookmark-name)
+                         (or (bmkp-default-lighted) bookmark-current-bookmark)
+                       (or bookmark-current-bookmark (bmkp-default-lighted)))
+                   bookmark-current-bookmark))))
     (when alist (setq name  (car (assoc name alist))))
     name))
 
@@ -3283,6 +3328,15 @@ A new list is returned (no side effects)."
                                    bmk-tags))))
    bookmark-alist))
 
+(defun bmkp-annotated-alist-only ()
+  "`bookmark-alist', but only for bookmarks with non-empty annotations.
+A new list is returned (no side effects)."
+  (bookmark-maybe-load-default-file)
+  (bmkp-remove-if-not (lambda (bmk)
+                        (let ((annotation  (bookmark-get-annotation bmk)))
+                          (and annotation (not (string-equal annotation "")))))
+                      bookmark-alist))
+
 (defun bmkp-autonamed-alist-only ()
   "`bookmark-alist', with only autonamed bookmarks (from any buffers).
 A new list is returned (no side effects)."
@@ -3384,7 +3438,7 @@ A new list is returned (no side effects)."
        (let ((annot  (bookmark-get-annotation bmk)))
          (and (stringp annot) (not (string= "" annot))
               (string-match bmkp-bmenu-filter-pattern annot))))
-   bookmark-alist))
+   bookmark-alist))                     ; (Could use `bmkp-annotated-alist-only' here instead.)
 
 (defun bmkp-regexp-filtered-bookmark-name-alist-only ()
   "`bookmark-alist' for bookmarks matching `bmkp-bmenu-filter-pattern'."
@@ -6227,57 +6281,6 @@ In Lisp code:
                  (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
   (bmkp-cycle-this-buffer increment 'OTHER-WINDOW startoverp))
 
-;; In spite of their names, `bmkp-cycle-specific-(buffers|files)*' just cycle bookmarks in the
-;; current buffer or file.  There is no way to choose multiple buffers or files.
-;;
-;; `bmkp-cycle-autonamed', `bmkp-cycle-autonamed-other-window',
-;; `bmkp-cycle-bookmark-list', `bmkp-cycle-bookmark-list-other-window',
-;; `bmkp-cycle-desktop',
-;; `bmkp-cycle-dired', `bmkp-cycle-dired-other-window',
-;; `bmkp-cycle-file', `bmkp-cycle-file-other-window',
-;; `bmkp-cycle-gnus', `bmkp-cycle-gnus-other-window',
-;; `bmkp-cycle-info', `bmkp-cycle-info-other-window',
-;; `bmkp-cycle-lighted', `bmkp-cycle-lighted-other-window',
-;; `bmkp-cycle-local-file', `bmkp-cycle-local-file-other-window',
-;; `bmkp-cycle-man', `bmkp-cycle-man-other-window',
-;; `bmkp-cycle-non-file', `bmkp-cycle-non-file-other-window',
-;; `bmkp-cycle-remote-file', `bmkp-cycle-remote-file-other-window',
-;; `bmkp-cycle-specific-buffers', `bmkp-cycle-specific-buffers-other-window',
-;; `bmkp-cycle-specific-files', `bmkp-cycle-specific-files-other-window',
-;; `bmkp-cycle-variable-list',
-;; `bmkp-cycle-url', `bmkp-cycle-url-other-window'.
-;;
-(bmkp-define-cycle-command "autonamed")
-(bmkp-define-cycle-command "autonamed" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "bookmark-list") ; No other-window version needed
-(bmkp-define-cycle-command "desktop")   ; No other-window version needed
-(bmkp-define-cycle-command "dired")
-(bmkp-define-cycle-command "dired" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "file")
-(bmkp-define-cycle-command "file" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "gnus")
-(bmkp-define-cycle-command "gnus" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "info")
-(bmkp-define-cycle-command "info" 'OTHER-WINDOW)
-(when (featurep 'bookmark+-lit)
-  (bmkp-define-cycle-command "lighted")
-  (bmkp-define-cycle-command "lighted" 'OTHER-WINDOW))
-(bmkp-define-cycle-command "local-file")
-(bmkp-define-cycle-command "local-file" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "man")
-(bmkp-define-cycle-command "man" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "non-file")
-(bmkp-define-cycle-command "non-file" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "remote-file")
-(bmkp-define-cycle-command "remote-file" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "specific-buffers")
-(bmkp-define-cycle-command "specific-buffers" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "specific-files")
-(bmkp-define-cycle-command "specific-files" 'OTHER-WINDOW)
-(bmkp-define-cycle-command "variable-list") ; No other-window version needed
-(bmkp-define-cycle-command "url")
-(bmkp-define-cycle-command "url" 'OTHER-WINDOW)
-
 (defun bmkp-cycle-1 (increment &optional other-window startoverp)
   "Helper for `bmkp-cycle' and `bmkp-cycle-this-buffer'.
 Do nothing if `bmkp-current-nav-bookmark' is an invalid bookmark.
@@ -6432,6 +6435,90 @@ See `bmkp-next-bookmark-w32-repeat'."
   (interactive "P")
   (require 'repeat)
   (let ((bmkp-use-w32-browser-p  t))  (bmkp-repeat-command 'bmkp-previous-bookmark)))
+
+;; In spite of their names, `bmkp-cycle-specific-(buffers|files)*' just cycle bookmarks in the
+;; current buffer or file.  There is no way to choose multiple buffers or files.
+;;
+;; `bmkp-cycle-autonamed', `bmkp-cycle-autonamed-other-window',
+;; `bmkp-cycle-bookmark-list', `bmkp-cycle-bookmark-list-other-window',
+;; `bmkp-cycle-desktop',
+;; `bmkp-cycle-dired', `bmkp-cycle-dired-other-window',
+;; `bmkp-cycle-file', `bmkp-cycle-file-other-window',
+;; `bmkp-cycle-gnus', `bmkp-cycle-gnus-other-window',
+;; `bmkp-cycle-info', `bmkp-cycle-info-other-window',
+;; `bmkp-cycle-lighted', `bmkp-cycle-lighted-other-window',
+;; `bmkp-cycle-local-file', `bmkp-cycle-local-file-other-window',
+;; `bmkp-cycle-man', `bmkp-cycle-man-other-window',
+;; `bmkp-cycle-non-file', `bmkp-cycle-non-file-other-window',
+;; `bmkp-cycle-remote-file', `bmkp-cycle-remote-file-other-window',
+;; `bmkp-cycle-specific-buffers', `bmkp-cycle-specific-buffers-other-window',
+;; `bmkp-cycle-specific-files', `bmkp-cycle-specific-files-other-window',
+;; `bmkp-cycle-variable-list',
+;; `bmkp-cycle-url', `bmkp-cycle-url-other-window',
+;; `bmkp-next-autonamed-bookmark', `bmkp-next-autonamed-bookmark-repeat',
+;; `bmkp-next-bookmark-list-bookmark', `bmkp-next-bookmark-list-bookmark-repeat',
+;; `bmkp-next-desktop-bookmark', `bmkp-next-desktop-bookmark-repeat',
+;; `bmkp-next-dired-bookmark', `bmkp-next-dired-bookmark-repeat',
+;; `bmkp-next-file-bookmark', `bmkp-next-file-bookmark-repeat',
+;; `bmkp-next-gnus-bookmark', `bmkp-next-gnus-bookmark-repeat',
+;; `bmkp-next-info-bookmark', `bmkp-next-info-bookmark-repeat',
+;; `bmkp-next-lighted-bookmark', `bmkp-next-lighted-bookmark-repeat',
+;; `bmkp-next-local-file-bookmark', `bmkp-next-local-file-bookmark-repeat',
+;; `bmkp-next-man-bookmark', `bmkp-next-man-bookmark-repeat',
+;; `bmkp-next-non-file-bookmark', `bmkp-next-non-file-bookmark-repeat',
+;; `bmkp-next-remote-file-bookmark', `bmkp-next-remote-file-bookmark-repeat',
+;; `bmkp-next-specific-buffers-bookmark', `bmkp-next-specific-buffers-bookmark-repeat',
+;; `bmkp-next-specific-files-bookmark', `bmkp-next-specific-files-bookmark-repeat',
+;; `bmkp-next-variable-list-bookmark', `bmkp-next-variable-list-bookmark-repeat',
+;; `bmkp-next-url-bookmark', `bmkp-next-url-bookmark-repeat'.
+;;
+(bmkp-define-cycle-command "autonamed")
+(bmkp-define-cycle-command "autonamed" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "bookmark-list") ; No other-window version needed
+(bmkp-define-cycle-command "desktop")   ; No other-window version needed
+(bmkp-define-cycle-command "dired")
+(bmkp-define-cycle-command "dired" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "file")
+(bmkp-define-cycle-command "file" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "gnus")
+(bmkp-define-cycle-command "gnus" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "info")
+(bmkp-define-cycle-command "info" 'OTHER-WINDOW)
+(when (featurep 'bookmark+-lit)
+  (bmkp-define-cycle-command "lighted")
+  (bmkp-define-cycle-command "lighted" 'OTHER-WINDOW))
+(bmkp-define-cycle-command "local-file")
+(bmkp-define-cycle-command "local-file" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "man")
+(bmkp-define-cycle-command "man" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "non-file")
+(bmkp-define-cycle-command "non-file" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "remote-file")
+(bmkp-define-cycle-command "remote-file" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "specific-buffers")
+(bmkp-define-cycle-command "specific-buffers" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "specific-files")
+(bmkp-define-cycle-command "specific-files" 'OTHER-WINDOW)
+(bmkp-define-cycle-command "variable-list") ; No other-window version needed
+(bmkp-define-cycle-command "url")
+(bmkp-define-cycle-command "url" 'OTHER-WINDOW)
+
+(bmkp-define-next+prev-cycle-commands "autonamed")
+(bmkp-define-next+prev-cycle-commands "bookmark-list")
+(bmkp-define-next+prev-cycle-commands "desktop")
+(bmkp-define-next+prev-cycle-commands "dired")
+(bmkp-define-next+prev-cycle-commands "file")
+(bmkp-define-next+prev-cycle-commands "gnus")
+(bmkp-define-next+prev-cycle-commands "info")
+(bmkp-define-next+prev-cycle-commands "lighted")
+(bmkp-define-next+prev-cycle-commands "local-file")
+(bmkp-define-next+prev-cycle-commands "man")
+(bmkp-define-next+prev-cycle-commands "non-file")
+(bmkp-define-next+prev-cycle-commands "remote-file")
+(bmkp-define-next+prev-cycle-commands "specific-buffers")
+(bmkp-define-next+prev-cycle-commands "specific-files")
+(bmkp-define-next+prev-cycle-commands "variable-list")
+(bmkp-define-next+prev-cycle-commands "url")
 
 ;;;###autoload
 (defun bmkp-toggle-autonamed-bookmark-set/delete (position &optional allp) ; Bound to `C-x p RET'

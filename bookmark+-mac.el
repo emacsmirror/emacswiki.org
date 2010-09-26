@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Fri Sep 24 09:40:02 2010 (-0700)
+;; Last-Updated: Sat Sep 25 14:56:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 67
+;;     Update #: 70
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -72,8 +72,10 @@
 ;;
 ;;  Macros defined here:
 ;;
-;;    `bmkp-define-cycle-command', `bmkp-define-sort-command',
-;;    `bmkp-define-file-sort-predicate', `bmkp-menu-bar-make-toggle'.
+;;    `bmkp-define-cycle-command',
+;;    `bmkp-define-next+prev-cycle-commands',
+;;    `bmkp-define-sort-command', `bmkp-define-file-sort-predicate',
+;;    `bmkp-menu-bar-make-toggle'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -172,6 +174,45 @@ In Lisp code:
     (let ((bmkp-nav-alist  (bmkp-sort-and-remove-dups
                             (,(intern (format "bmkp-%s-alist-only" type))))))
       (bmkp-cycle increment ,otherp startoverp))))
+
+(defmacro bmkp-define-next+prev-cycle-commands (type)
+  "Define `next' and `previous' commands for bookmarks of type TYPE."
+  `(progn
+    ;; `next' command.
+    (defun ,(intern (format "bmkp-next-%s-bookmark" type)) (n &optional startoverp)
+      ,(format "Jump to the Nth-next %s bookmark.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one.
+See also `bmkp-cycle-%s'." type type)
+      (interactive (let ((startovr  (consp current-prefix-arg)))
+                     (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+      (,(intern (format "bmkp-cycle-%s" type)) n startoverp))
+
+    ;; `previous' command.
+    (defun ,(intern (format "bmkp-previous-%s-bookmark" type)) (n &optional startoverp)
+      ,(format "Jump to the Nth-previous %s bookmark.
+See `bmkp-next-%s-bookmark'." type type)
+      (interactive (let ((startovr  (consp current-prefix-arg)))
+                     (list (if startovr 1 (prefix-numeric-value current-prefix-arg)) startovr)))
+      (,(intern (format "bmkp-cycle-%s" type)) (- n) startoverp))
+
+    ;; `next' repeating command.
+    (defun ,(intern (format "bmkp-next-%s-bookmark-repeat" type)) (arg)
+      ,(format "Jump to the Nth-next %s bookmark.
+This is a repeatable version of `bmkp-next-%s-bookmark'.
+N defaults to 1, meaning the next one.
+Plain `C-u' means start over at the first one (and no repeat)." type type)
+      (interactive "P")
+      (require 'repeat)
+      (bmkp-repeat-command ',(intern (format "bmkp-next-%s-bookmark" type))))
+
+    ;; `previous repeating command.
+    (defun ,(intern (format "bmkp-previous-%s-bookmark-repeat" type)) (arg)
+      ,(format "Jump to the Nth-previous %s bookmark.
+See `bmkp-next-%s-bookmark-repeat'." type type)
+      (interactive "P")
+      (require 'repeat)
+      (bmkp-repeat-command ',(intern (format "bmkp-previous-%s-bookmark" type))))))
 
 (defmacro bmkp-define-sort-command (sort-order comparer doc-string)
   "Define a command to sort bookmarks in the bookmark list by SORT-ORDER.

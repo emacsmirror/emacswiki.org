@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Sep 24 12:26:22 2010 (-0700)
+;; Last-Updated: Sat Sep 25 15:17:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13420
+;;     Update #: 13429
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1744,7 +1744,7 @@
 ;;  feature, but sometimes you might want to cycle among a particular
 ;;  dynamic set of bookmarks, that is, to have cycling take changes to
 ;;  the bookmark set into account automatically.  For that, Bookmark+
-;;  provides separate cycling commands for various types of bookmark.
+;;  provides separate cycling commands for most types of bookmark.
 ;;
 ;;  By default, these different kinds of cycling commands are not
 ;;  bound to any keys, with the exception of the commands for cycling
@@ -1755,13 +1755,13 @@
 ;;  `C-x p C-down' are defined for these two kinds of current-buffer
 ;;  cycling.
 ;;
-;;  If you want to cycle among the bookmarks of some other particular
-;;  kind (e.g. only the autonamed bookmarks), then you can bind the
-;;  relevant command (e.g. `bmkp-cycle-autonamed') or define
-;;  repeatable `next' and `previous' commands that use that cycling
-;;  command, and then bind those commands to keys.  You can use
-;;  `bmkp-cycle-this-buffer' and
-;;  `bmkp-(next|previous)-bookmark-this-buffer(-repeat)' as a model.
+;;  If you often want to cycle among the bookmarks of some other
+;;  particular kind (e.g. only the autonamed bookmarks), then you can
+;;  bind the relevant commands
+;;  (e.g. `bmkp-next-autonamed-bookmark-repeat',
+;;  `bmkp-previous-autonamed-bookmark-repeat') to handy keys.
+;;  Otherwise, you can just use the cycling commands without binding
+;;  them.
 ;;
 ;;
 ;;(@* "Cycling in the Current Buffer")

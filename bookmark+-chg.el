@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Sep 24 12:08:55 2010 (-0700)
+;; Last-Updated: Sat Sep 25 14:51:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13238
+;;     Update #: 13259
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,14 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/09/25 dadams
+;;     Added: option bmkp-default-bookmark-name, bmkp-annotated-alist-only.
+;;     Added: bmkp-(next|previous)-*(-repeat), using macro bmkp-define-next+prev-cycle-commands.
+;;     bmkp-default-bookmark-name: Respect option.
+;;     bookmark-edit-annotation-mode, bookmark-edit-annotation:
+;;       Use bmkp-annotated-alist-only (and new bmkp-default-bookmark-name).
+;;     bookmark-send-edited-annotation:
+;;       End in orig buffer, not bmenu buffer.  Delete edit window.  Thx to Joe Bloggs.
 ;; 2010/09/24 dadams
 ;;     Added: bmkp-autonamed(-this-buffer)-jump(-other-window).  Bound to C-x j # (#|.) and menus.
 ;;     Added, using bmkp-define-cycle-command:
@@ -218,6 +226,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2010/09/25 dadams
+;;     Added: bmkp-set-lighting-for(bookmarks|(-this)-buffer).  Requested by Joe Bloggs.
+;;     bmkp-set-lighting-for-bookmark: Added LIGHT-NOW-P arg (from prefix arg).
 ;; 2010/09/11 dadams
 ;;     Removed eval-when-compile for bookmark+-bmu, bookmark+-1.
 ;; 2010/08/15 dadams
@@ -237,6 +248,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;
+;; 2010/09/25 dadams
+;;     Added: bmkp-define-next+prev-cycle-commands.
 ;; 2010/09/24 dadams
 ;;     Added: bmkp-define-cycle-command.
 ;; 2010/08/18 dadams
