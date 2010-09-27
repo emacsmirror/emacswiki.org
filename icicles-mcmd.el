@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:56:31 2010 (-0700)
+;; Last-Updated: Sun Sep 26 18:47:44 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16044
+;;     Update #: 16049
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -696,7 +696,8 @@ POSITION is a buffer position."
   "Column-wise number of horizontal candidate number HORIZ-NB."
   (let ((row-lim  (- rows (- (* rows cols) nb-cands)))
         (row      (/ horiz-nb cols))
-        (col      (mod horiz-nb cols)))
+        (col      (mod horiz-nb cols))
+        nb)
     (setq nb  (+ row (* col rows)))
     (when (>= row row-lim)
       (setq cols      (1- cols)
@@ -6560,7 +6561,7 @@ Bound to `C-`' in the minibuffer."
                                       "Escaping of regexp special characters is now ON"
                                     "Escaping of regexp special characters is now OFF")))
 
-(defun icicle-regexp-quote-input (beg end)     ; Bound to `C-M-;' in the minibuffer.
+(defun icicle-regexp-quote-input (beg end) ; Bound to `C-M-;' in the minibuffer.
   "Regexp quote current input or its active region, then apropos-complete.
 Use this if you want to literally match all what is currently in the
 minibuffer or selected text there, but you also want to use that
@@ -6570,15 +6571,17 @@ This turns off `icicle-expand-input-to-common-match-flag'.
 You can toggle that option using `C-;'.
 
 Bound to `C-M-;' in the minibuffer."
-  (interactive "r")
+  (interactive (if (and mark-active (mark))
+                   (list (region-beginning) (region-end))
+                 (list (point-max) (point-max))))
   (icicle-barf-if-outside-Completions-and-minibuffer)
   (let ((regionp  (and mark-active (mark) (/= (point) (mark))))
         quoted-part)
     (save-excursion
       (save-restriction
-        (narrow-to-region (if regionp beg (point-min)) (if regionp end (point-max)))
+        (narrow-to-region (if regionp beg (icicle-minibuffer-prompt-end)) (if regionp end (point-max)))
         (setq quoted-part  (regexp-quote (icicle-input-from-minibuffer)))
-        (delete-region (point-min) (point-max))
+        (delete-region (icicle-minibuffer-prompt-end) (point-max))
         (insert quoted-part))))
   (setq icicle-current-input                      (icicle-input-from-minibuffer)
         icicle-expand-input-to-common-match-flag  nil)

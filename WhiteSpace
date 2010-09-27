@@ -839,6 +839,13 @@ But I still don't see it. Normal spaces are displayed as intented by whitespace.
 
 -- Flo
 
+[new]
+
+: Hi Flo,
+: Ok, it seems you modified the ##whitespace.el## source file. So, you should terminate the current Emacs session (##C-x C-c##), start a new Emacs session, open the modified ##whitespace.el## source file, evaluate the buffer (##M-x eval-buffer RET##), open the file which contains ##?\x200B## characters or insert these characters in a file, and, finally, turn on WhiteSpace (##M-x whitespace-mode RET##). The ##?\x200B## characters should be marked.
+: Now, if you are only testing, instead of ##defcustom## use ##setq##, reevaluate the region containing ##setq## (##M-x eval-region RET##), go to the file containing ##?\x200B## characters, turn off WhiteSpace (because it is using the old ##whitespace-display-mappings## value), and turn on WhiteSpace (now use the new ##whitespace-display-mappings## value).
+: -- ViniciusJoseLatorre
+
 ----
 
 CategoryCode,

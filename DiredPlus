@@ -4,6 +4,7 @@ Library <tt>[[dired+.el]]</tt> ('''[::Dired+]''') extends functionalities provid
 
 * Changes some key bindings and enhances some menus.
 * Adds many new commands. Enhances some existing commands.
+* Provides alternative main Dired commands you can bind to `C-x d' and `C-x 4 d' (`diredp-dired-files' and `*-other-window').  They do the same thing as usual except when given a non-positive prefix arg.  In that case, you can enter any number of files or dirs, and a Dired buffer is created for just those files and dirs. (And on MS Windows, you can use wildcards in those names -- see [[#w32-browser|If You Use Emacs on MS Windows]].)
 * Lets you use commands that normally operate on the marked files to operate instead on '''''all''''' files in a Dired buffer, by using `C-u C-u'.  Especially useful in Dired buffers with files from multiple directories.  Use `C-u C-u M-g' to `grep' all files, `C-u C-u C' to copy all files, and so on. Use `C-u C-u C-u' to operate on all directories as well as all files.
 * Lets you open Dired on (only) the files in an Emacs [[fileset]].
 
@@ -60,18 +61,20 @@ And here is a screenshot showing the `mouse-3' popup menu available when no regi
 [:w32-browser]
 == If You Use Emacs on MS Windows ==
 
-'''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a couple of ways:
+* If you also use libraries <tt>[[files+.el]]</tt> and <tt>[[ls-lisp+.el]]</tt>, then you can use wildcards in the file names of a [[cons]] argument to `dired'.  This lets you open Dired on an explicit list of arbitrary files using wildcard patterns for any of the file names.  (Emacs 23+ only)
 
-* ('''`C-RET'''') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
+* '''Dired+''' loads library <tt>[[w32-browser.el]]</tt> if Emacs is running on Microsoft Windows, using it to extend Dired in a few ways.  (In addition to being bound to the keys indicate here, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.)
 
-* ('''`M-RET'''') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
+** ('''`C-RET'''') You can use Windows ''file associations'' to act on a file or folder. For example, if you have the application Adobe Acrobat associated with *.pdf files, then clicking `mouse-2' on a ##*.pdf## file in Dired will open the file in Adobe Acrobat.
 
-* ('''`##^##'''') When at the root of a Windows drive (e.g. `##C:/##') and you use `##^##' (`dired-up-directory'), you get a list of drives to choose from.  (This feature is based on the contribution at WThirtyTwoBrowseNetDrives.)
+** ('''`M-RET'''') You can open '''Windows Explorer''' on a file or folder. If a file, its containing folder is opened and the file is selected (in Windows Explorer).
 
-* If you use '''[[Bookmark+]]''' you can also open ''bookmarks'' using Windows file associations.
+** ('''`##^##'''') When at the root of a Windows drive (e.g. `##C:/##') and you use `##^##' (`dired-up-directory'), you get a list of drives to choose from.  (This feature is based on the contribution at WThirtyTwoBrowseNetDrives.)
+
+** If you use '''[[Bookmark+]]''' you can also open ''bookmarks'' using Windows file associations.
 
 
-In addition to being bound to keys, these operations are added to the '''Dired+''' menus, including the `mouse-3' context menu.
+
 
 ----
 

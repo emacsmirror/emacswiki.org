@@ -54,7 +54,7 @@ If you don't want to create external command, use it.
                          temp-file
                          (file-name-directory buffer-file-name))))
       (list
-       (car command-line-args)
+       (expand-file-name invocation-name invocation-directory)
        (list
         "-Q" "--batch" "--eval" 
         (prin1-to-string

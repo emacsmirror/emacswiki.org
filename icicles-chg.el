@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 27 14:13:45 2010 (-0700)
+;; Last-Updated: Sun Sep 26 18:54:59 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5592
+;;     Update #: 5594
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2052,6 +2052,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/09/26 dadams
+;;     icicle-regexp-quote-input:
+;;       Handle no mark in minibuffer.  Use end of prompt, not point-min.  Thx to Michael Heerdegen.
+;;     icicle-column-wise-cand-nb: Bound NB (missing let binding).
 ;; 2010/06/18 dadams
 ;;     icicle-nb-of-candidate-in-Completions(-horiz), icicle-move-to-next-completion:
 ;;       Replace icicle-completions-format by icicle-completions-format-internal.

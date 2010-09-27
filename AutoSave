@@ -1,13 +1,8 @@
-By default, Emacs automatically saves your changes to a file intermittently.  If anything should happen you can recover a file with `M-x recover-file'.  Auto-saving can be turned on globally or on a per-buffer basis.
-
-[new]
-How do I turn on auto-saving globally or on a per-buffer basis?
-[new]
-See [[Manual:Auto Save Control]], it should be on by default, but you can turn it off in a buffer with `M-x auto-save-mode'. -- AaronHawley
+By default, Emacs automatically saves your changes to a file intermittently. If anything should happen, you can recover a file with `M-x recover-file'. Auto-saving can be turned on globally or on a per-buffer basis with `M-x auto-save-mode'.
 
 == Placing all files in one directory ==
 
-If you don't want to clutter up your file tree with Emacs' backup files, you can save them to the system's "##temp##" directory:
+By default, auto-save files are stored in the current directory with a file name on the form <tt>#<i>file</i>#</tt>. If you don't want to clutter up your file tree with Emacs' backup files, you can save them to the system's "##temp##" directory:
 
     (setq backup-directory-alist
           `((".*" . ,temporary-file-directory)))
@@ -16,15 +11,31 @@ If you don't want to clutter up your file tree with Emacs' backup files, you can
 
 This will all place all auto-saves and [BackupDirectory backups] in the directory pointed to by ##temporary-file-directory## (e.g., ##C:/Temp/## on Windows).
 
-== Problems with Tramp ==
+== Delete auto-save files ==
+
+* To delete all auto-save files in the current directory, use `<tt>#</tt>' in [[Dired]] to mark the files, then `x' to delete them.
+
+* To ''recursively'' delete all auto-save files under the current directory, run:
+
+          find -name "#*#" | xargs rm
+
+:: If the file names contain whitespace, it is necessary to use one of:
+
+          find -name "#*#" -print0 | xargs -0 rm
+          find -name "#*#" -exec rm {} \;
+
+== Discussion ==
+
+How do I turn on auto-saving globally or on a per-buffer basis?
+
 [new]
+See [[Manual:Auto Save Control]], it should be on by default, but you can turn it off in a buffer with `M-x auto-save-mode'. -- AaronHawley
+
+=== Problems with Tramp ===
+
 Hello, I'm trying to use emacs to edit a file across a locally-mounted network file system. There is a long latency across the connection, so I need to minimize file accesses over the network. However, if I open file "abcd", emacs creates files like .#abcd, .#abcd.2, etc, in the directory housing the file. This makes things take forever, because each file creation/access in that directory goes across the network. How do I tell emacs to either not create those files, or at the least to create them in /tmp rather than in the same directory as the file? -- BayleShanks
-[new]
-See auto-save-file-name-transforms. The default value matches all
-TRAMP URLs. With a little bit of tweaking, you can add another sexp
-for your locally-mounted network shares. I use the following
-incantation to save all my temporary files to another partition, as I
-occasionally have problems with my data partition.
+
+[new] See auto-save-file-name-transforms. The default value matches all TRAMP URLs. With a little bit of tweaking, you can add another sexp for your locally-mounted network shares. I use the following incantation to save all my temporary files to another partition, as I occasionally have problems with my data partition.
 
    (setq auto-save-file-name-transforms
          '(("\\`/[^/]*:\\([^/]*/\\)*\\([^/]*\\)\\'" "/tmp/\\2" t)
@@ -32,20 +43,19 @@ occasionally have problems with my data partition.
 
 -- SachaChua
 
-== Disabling Auto Save ==
+=== Disabling Auto Save ===
 
-[new]
 Every time I edit a file and then discard the changes emacs saves a ~/#filename# file. The next time I run emacs it warns me about it and advises me to recover the file. How can I disable this "feature" ?
 
 [new]
-: That is really two features, "auto save"(1) and "find-file warning messages"(2). Auto-save is easy to disable, just add (setq auto-save-default nil) to your .emacs file.  The warning messages are a bit trickier to suppress. There's an optional parameter in find-file-noselect ..
+: That is really two features, "auto save"(1) and "find-file warning messages"(2). Auto-save is easy to disable, just add (setq auto-save-default nil) to your .emacs file. The warning messages are a bit trickier to suppress. There's an optional parameter in find-file-noselect ...
 
-== Running save-buffer automatically ==
-[new]
-All these new-fangled IDEs tout that they automatically save your files for you.  I think this would be cool to try out (my c-x c-s muscles get tired sometimes).  You can set auto-save-visited-file-name to a non-nil value and emacs auto-save will save your work in the file you are working on instead of a separate file, but then the buffer is considered out of date and you can't continue editing without an annoying warning message.  Is there a way around this?  -- BryanMurdock
+=== Running save-buffer automatically ===
+
+All these new-fangled IDEs tout that they automatically save your files for you. I think this would be cool to try out (my c-x c-s muscles get tired sometimes). You can set auto-save-visited-file-name to a non-nil value and emacs auto-save will save your work in the file you are working on instead of a separate file, but then the buffer is considered out of date and you can't continue editing without an annoying warning message. Is there a way around this? -- BryanMurdock
 
 [new]
-: What about `M-x run-with-idle-timer RET SECONDS RET save-buffer RET'?  If that's what you want, then find a way to roll some EmacsLisp to make it work for all your buffers associated with files.  Then you can put that in your DotEmacs and smoke it. -- AaronHawley
+: What about `M-x run-with-idle-timer RET SECONDS RET save-buffer RET'? If that's what you want, then find a way to roll some EmacsLisp to make it work for all your buffers associated with files. Then you can put that in your DotEmacs and smoke it. -- AaronHawley
 
 [new]
 My emacs lisp skills are feeble, but how does this look?
@@ -71,5 +81,5 @@ What about to save file when emacs frame loose focus? -- VitalieLazu
 [new]
 To fix the problem of the buffer being considered out of date after an autosave to the file itself, you could put revert-buffer-no-confirm in auto-save-hook, assuming that this runs **after** the save itself. I accept no responsibility for list work. If this is wrong, someone please delete it. -RyanThompson
 
----- 
+----
 CategoryFiles

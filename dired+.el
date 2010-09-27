@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Aug 27 20:43:43 2010 (-0700)
+;; Last-Updated: Sun Sep 26 18:14:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2651
+;;     Update #: 2684
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -34,6 +34,11 @@
 ;;
 ;;  Key bindings changed.  Menus redefined.  `diredp-mouse-3-menu'
 ;;  popup menu added.  New commands.  Some commands enhanced.
+;;
+;;  Additional suggested key bindings:
+;;
+;;    (define-key ctl-x-map   "d" 'diredp-dired-files)
+;;    (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
 ;;
 ;;  Note: If you want a maximum or minimum fontification for Dired
 ;;  mode, then customize option `font-lock-maximize-decoration'.  If
@@ -94,6 +99,7 @@
 ;;    `diredp-chgrp-this-file', `diredp-chmod-this-file',
 ;;    `diredp-chown-this-file', `diredp-compress-this-file',
 ;;    `diredp-copy-this-file', `diredp-delete-this-file',
+;;    `diredp-dired-files', `diredp-dired-files-other-window',
 ;;    `diredp-do-bookmark', `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-grep', `diredp-downcase-this-file', `diredp-ediff',
 ;;    `diredp-fileset', `diredp-find-a-file',
@@ -135,6 +141,7 @@
 ;;
 ;;    `diredp-all-files', `diredp-do-grep-1',
 ;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
+;;    `diredp-dired-interactive-spec',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
 ;;    `direp-read-bookmark-file-args', `diredp-this-subdir'.
@@ -156,9 +163,16 @@
 ;;                              not marked, files will be deleted.
 ;;  `dired-find-file'         - Allow `.' and `..' (Emacs 20 only). 
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
-;;  `dired-map-over-marks'    - Treat multiple `C-u' specially.
 ;;  `dired-goto-file'         - Remove `/' from dir before compare.
+;;  `dired-insert-directory'  - Compute WILDCARD arg for
+;;                              `insert-directory' for individual file
+;;                              (don't just use nil). (Emacs 23+, and
+;;                              only for MS Windows)
 ;;  `dired-insert-set-properties' - `mouse-face' on whole line.
+;;  `dired-map-over-marks'    - Treat multiple `C-u' specially.
+;;  `dired-readin-insert'     - Use t as WILDCARD arg to
+;;                              `dired-insert-directory'.  (Emacs 23+,
+;;                              and only for MS Windows)
 ;;  `dired-revert'            - Reset `mode-line-process' to nil.
 ;;  `dired-up-directory'      - On Windows, go up to list of drives.
 ;;
@@ -194,6 +208,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/09/26 dadams
+;;     Added: dired-insert-directory: Compute WILDCARD arg for individual files.
+;;     Added: dired-readin-insert: Use t as WILDCARD arg to dired-insert-directory.
+;;     Added: diredp-dired-files(-other-window), diredp-dired-interactive-spec.
 ;; 2010/08/27 dadams
 ;;     Use diredp-font-lock-keywords-1 properly as a second level of fontification.
 ;;     Added: diredp-w32-drives(-mode(-map)), dired-up-directory.
@@ -423,6 +441,7 @@
 ;; Quiet byte-compiler.
 (defvar dired-switches-alist)
 (defvar dired-subdir-switches)
+(defvar dired-use-ls-dired) ; Emacs 22+
 (defvar grep-use-null-device)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
@@ -710,7 +729,97 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
                             arg)
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
-  
+
+;; From `dired.el'
+
+(when (and (> emacs-major-version 22) (featurep 'ls-lisp+))
+
+  ;; Use t as WILDCARD arg to `dired-insert-directory'.
+  ;;
+  (defun dired-readin-insert ()
+    ;; Insert listing for the specified dir (and maybe file list)
+    ;; already in dired-directory, assuming a clean buffer.
+    (let (dir file-list)
+      (if (consp dired-directory)
+          (setq dir (car dired-directory)
+                file-list (cdr dired-directory))
+        (setq dir dired-directory
+              file-list nil))
+      (setq dir (expand-file-name dir))
+      (if (and (equal "" (file-name-nondirectory dir))
+               (not file-list))
+          ;; If we are reading a whole single directory...
+          (dired-insert-directory dir dired-actual-switches nil nil t)
+        (if (not (file-readable-p
+                  (directory-file-name (file-name-directory dir))))
+            (error "Directory %s inaccessible or nonexistent" dir)
+          ;; Else treat it as a wildcard spec.
+          (dired-insert-directory dir dired-actual-switches file-list t t)))))
+
+  ;; Compute WILDCARD arg for `insert-directory' for individual file (don't just use nil).
+  ;;
+  (defun dired-insert-directory (dir switches &optional file-list wildcard hdr)
+    "Insert a directory listing of DIR, Dired style.
+Use SWITCHES to make the listings.
+If FILE-LIST is non-nil, list only those files.
+Otherwise, if WILDCARD is non-nil, expand wildcards;
+ in that case, DIR should be a file name that uses wildcards.
+In other cases, DIR should be a directory name or a directory filename.
+If HDR is non-nil, insert a header line with the directory name."
+    (let ((opoint (point))
+          (process-environment (copy-sequence process-environment))
+          end)
+      (if (or dired-use-ls-dired (file-remote-p dir))
+          (setq switches (concat "--dired " switches)))
+      ;; We used to specify the C locale here, to force English month names;
+      ;; but this should not be necessary any more,
+      ;; with the new value of `directory-listing-before-filename-regexp'.
+      (if file-list
+          (dolist (f file-list)
+            (let ((beg (point)))
+              ;; Compute wildcard arg this file.
+              (insert-directory f switches (string-match "[[?*]" f) nil)
+              ;; Re-align fields, if necessary.
+              (dired-align-file beg (point))))
+        (insert-directory dir switches wildcard (not wildcard)))
+      ;; Quote certain characters, unless ls quoted them for us.
+      (if (not (string-match "b" dired-actual-switches))
+          (save-excursion
+            (setq end (point-marker))
+            (goto-char opoint)
+            (while (search-forward "\\" end t)
+              (replace-match (apply #'propertize
+                                    "\\\\"
+                                    (text-properties-at (match-beginning 0)))
+                             nil t))
+            (goto-char opoint)
+            (while (search-forward "\^m" end t)
+              (replace-match (apply #'propertize
+                                    "\\015"
+                                    (text-properties-at (match-beginning 0)))
+                             nil t))
+            (set-marker end nil)))
+      (dired-insert-set-properties opoint (point))
+      ;; If we used --dired and it worked, the lines are already indented.
+      ;; Otherwise, indent them.
+      (unless (save-excursion
+                (goto-char opoint)
+                (looking-at "  "))
+        (let ((indent-tabs-mode nil))
+          (indent-rigidly opoint (point) 2)))
+      ;; Insert text at the beginning to standardize things.
+      (save-excursion
+        (goto-char opoint)
+        (if (and (or hdr wildcard)
+                 (not (and (looking-at "^  \\(.*\\):$")
+                           (file-name-absolute-p (match-string 1)))))
+            ;; Note that dired-build-subdir-alist will replace the name
+            ;; by its expansion, so it does not matter whether what we insert
+            ;; here is fully expanded, but it should be absolute.
+            (insert "  " (directory-file-name (file-name-directory dir)) ":\n"))
+        (when wildcard
+          ;; Insert "wildcard" line where "total" line would be for a full dir.
+          (insert "  wildcard " (file-name-nondirectory dir) "\n"))))))
 
 
 ;;; Stuff from `image-dired.el'.
@@ -1228,6 +1337,11 @@ a prefix arg lets you edit the `ls' switches used for the new listing."
 ;;;;;;;;(define-key dired-mode-map [mouse-3] 'ignore)
 
 
+;;; Suggested bindings.
+;;; (define-key ctl-x-map   "d" 'diredp-dired-files)
+;;; (define-key ctl-x-4-map "d" 'diredp-dired-files-other-window)
+
+
 ;;; Non-menu Dired bindings.
 
 ;; `diredp-mouse-mark-region-files' provides Windows-Explorer behavior
@@ -1513,6 +1627,51 @@ Don't forget to mention your Emacs and library versions."))
               (cdr font-lock-defaults)))))
  
 ;;; Function Definitions
+
+;;;###autoload
+(defun diredp-dired-files (arg &optional switches)
+  "Like `dired', but non-positive prefix arg prompts for files to list.
+This is the same as `dired' unless you use a non-positive prefix arg.
+In that case, you are prompted for names of files and directories to
+list, and then you are prompted for the name of the Dired buffer that
+lists them.  Use `C-g' when you are done entering file names to list.
+
+In all cases, when inputting a file or directory name you can use
+shell wildcards."
+  (interactive (diredp-dired-interactive-spec ""))
+  (switch-to-buffer (dired-noselect arg switches)))
+
+;;;###autoload
+(defun diredp-dired-files-other-window (arg &optional switches)
+  "Same as `diredp-dired-files' except uses another window."
+  (interactive (diredp-dired-interactive-spec "in other window "))
+  (dired-other-window arg switches))
+
+(defun diredp-dired-interactive-spec (str)
+  "`interactive' spec for `diredp-dired' commands.
+STR is a string added to the prompt.
+With non-negative prefix arg, read switches.
+With non-positive prefix arg, read files and directories to list and then
+ the Dired buffer name.  Use `C-g' when done reading files and dirs."
+  (when (and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg)))
+    (read-string "Dired listing switches: " dired-listing-switches))
+  (reverse
+   (list
+    (if (> (prefix-numeric-value current-prefix-arg) 0)
+        ;; If a dialog box is about to be used, call `read-directory-name' so the dialog code
+        ;; knows we want directories.  Some dialog boxes can only select directories or files
+        ;; when popped up, not both.
+        (if (and (fboundp 'read-directory-name) (next-read-file-uses-dialog-p))
+            (read-directory-name (format "Dired %s(directory): " str) nil default-directory nil)
+          (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
+      (let ((insert-default-directory  nil)
+            (files                     ())
+            file)
+        (while (condition-case nil
+                   (setq file  (read-file-name "File: ")) ; Lax, to allow wildcards.
+                 (quit nil))
+          (push file files))
+        (cons (read-string "Dired buffer name: " nil nil default-directory) files))))))
 
 ;;;###autoload
 (defun diredp-fileset (flset-name)

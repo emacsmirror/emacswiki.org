@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Mon Jan 25 20:37:27 2010 (-0800)
+;; Last-Updated: Sun Sep 26 17:20:07 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 139
+;;     Update #: 157
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -46,11 +46,18 @@
 ;;  This library also provides a bug fix for Emacs 21 and 22, for the
 ;;  case where switches `F' and `R' are both provided.  This is Emacs
 ;;  bug #2801, which is fixed in Emacs 23.
+;;
+;;  This library also provides a bug fix for Emacs bug #7027, for
+;;  Emacs 23+.  It lets you use wildcards in file names of an explicit
+;;  cons arg to `dired'.
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
+;; 2010/09/26 dadams
+;;     Added: ls-lisp-insert-directory (Emacs 23+), to let you use wildcards in
+;;            file names of a cons arg to dired.  Corrected bug in it for ""FILE.
 ;; 2009/10/23 dadams
 ;;     insert-directory: DTRT if count-dired-files returns 0.
 ;; 2009/04/26 dadams
@@ -90,6 +97,15 @@
 (require 'ls-lisp)
 (require 'files+) ;; count-dired-files, dired-describe-listed-directory,
                   ;; dired-mouse-describe-listed-directory
+
+;; Quiet the byte-compiler
+(defvar original-insert-directory)      ; Defined in `ls-lisp.el'.
+(defvar ls-lisp-uid-d-fmt)      ; Defined in `ls-lisp.el' (Emacs 23+).
+(defvar ls-lisp-uid-s-fmt)      ; Defined in `ls-lisp.el' (Emacs 23+).
+(defvar ls-lisp-gid-d-fmt)      ; Defined in `ls-lisp.el' (Emacs 23+).
+(defvar ls-lisp-gid-s-fmt)      ; Defined in `ls-lisp.el' (Emacs 23+).
+(defvar ls-lisp-filesize-d-fmt) ; Defined in `ls-lisp.el' (Emacs 23+).
+(defvar ls-lisp-filesize-d-fmt) ; Defined in `ls-lisp.el' (Emacs 23+).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
@@ -387,6 +403,142 @@ not contain `d', so that a full listing is expected."
                                          switches time-index (current-time)))
                (message "%s: doesn't exist or is inaccessible" file)
                (ding) (sit-for 2)))))))
+
+;; If FILE is nil, then just use `default-directory'.
+;;
+(when (> emacs-major-version 22)
+  (defun ls-lisp-insert-directory
+      (file switches time-index wildcard-regexp full-directory-p)
+    "Insert directory listing for FILE, formatted according to SWITCHES.
+Leaves point after the inserted text.  This is an internal function
+optionally called by the `ls-lisp.el' version of `insert-directory'.
+It is called recursively if the -R switch is used.
+SWITCHES is a *list* of characters.  TIME-INDEX is the time index into
+file-attributes according to SWITCHES.  WILDCARD-REGEXP is nil or an *Emacs
+regexp*.  FULL-DIRECTORY-P means file is a directory and SWITCHES does
+not contain `d', so that a full listing is expected."
+    (when (> (length file) 0)           ; Do nothing for empty FILE, "".
+      (if (or wildcard-regexp full-directory-p)
+          (let* ((dir (if file (file-name-as-directory file) default-directory))
+                 (default-directory dir) ; so that file-attributes works
+                 (file-alist
+                  (directory-files-and-attributes dir nil wildcard-regexp t
+                                                  (if (memq ?n switches)
+                                                      'integer
+                                                    'string)))
+                 (now (current-time))
+                 (sum 0)
+                 (max-uid-len 0)
+                 (max-gid-len 0)
+                 (max-file-size 0)
+                 ;; do all bindings here for speed
+                 total-line files elt short file-size fil attr
+                 fuid fgid uid-len gid-len)
+            (cond ((memq ?A switches)
+                   (setq file-alist
+                         (ls-lisp-delete-matching "^\\.\\.?$" file-alist)))
+                  ((not (memq ?a switches))
+                   ;; if neither -A  nor -a, flush . files
+                   (setq file-alist
+                         (ls-lisp-delete-matching "^\\." file-alist))))
+            (setq file-alist
+                  (ls-lisp-handle-switches file-alist switches))
+            (if (memq ?C switches)      ; column (-C) format
+                (ls-lisp-column-format file-alist)
+              (setq total-line (cons (point) (car-safe file-alist)))
+              ;; Find the appropriate format for displaying uid, gid, and
+              ;; file size, by finding the longest strings among all the
+              ;; files we are about to display.
+              (dolist (elt file-alist)
+                (setq attr (cdr elt)
+                      fuid (nth 2 attr)
+                      uid-len (if (stringp fuid) (string-width fuid)
+                                (length (format "%d" fuid)))
+                      fgid (nth 3 attr)
+                      gid-len (if (stringp fgid) (string-width fgid)
+                                (length (format "%d" fgid)))
+                      file-size (nth 7 attr))
+                (if (> uid-len max-uid-len)
+                    (setq max-uid-len uid-len))
+                (if (> gid-len max-gid-len)
+                    (setq max-gid-len gid-len))
+                (if (> file-size max-file-size)
+                    (setq max-file-size file-size)))
+              (setq ls-lisp-uid-d-fmt (format " %%-%dd" max-uid-len))
+              (setq ls-lisp-uid-s-fmt (format " %%-%ds" max-uid-len))
+              (setq ls-lisp-gid-d-fmt (format " %%-%dd" max-gid-len))
+              (setq ls-lisp-gid-s-fmt (format " %%-%ds" max-gid-len))
+              (setq ls-lisp-filesize-d-fmt
+                    (format " %%%dd"
+                            (if (memq ?s switches)
+                                (length (format "%.0f"
+                                                (fceiling (/ max-file-size 1024.0))))
+                              (length (format "%.0f" max-file-size)))))
+              (setq ls-lisp-filesize-f-fmt
+                    (format " %%%d.0f"
+                            (if (memq ?s switches)
+                                (length (format "%.0f"
+                                                (fceiling (/ max-file-size 1024.0))))
+                              (length (format "%.0f" max-file-size)))))
+              (setq files file-alist)
+              (while files              ; long (-l) format
+                (setq elt (car files)
+                      files (cdr files)
+                      short (car elt)
+                      attr (cdr elt)
+                      file-size (nth 7 attr))
+                (and attr
+                     (setq sum (+ file-size
+                                  ;; Even if neither SUM nor file's size
+                                  ;; overflow, their sum could.
+                                  (if (or (< sum (- 134217727 file-size))
+                                          (floatp sum)
+                                          (floatp file-size))
+                                      sum
+                                    (float sum))))
+                     (insert (ls-lisp-format short attr file-size
+                                             switches time-index now))))
+              ;; Insert total size of all files:
+              (save-excursion
+                (goto-char (car total-line))
+                (or (cdr total-line)
+                    ;; Shell says ``No match'' if no files match
+                    ;; the wildcard; let's say something similar.
+                    (insert "(No match)\n"))
+                (insert (format "total %.0f\n" (fceiling (/ sum 1024.0))))))
+            (if (memq ?R switches)
+                ;; List the contents of all directories recursively.
+                ;; cadr of each element of `file-alist' is t for
+                ;; directory, string (name linked to) for symbolic
+                ;; link, or nil.
+                (while file-alist
+                  (setq elt (car file-alist)
+                        file-alist (cdr file-alist))
+                  (when (and (eq (cadr elt) t) ; directory
+                             ;; Under -F, we have already decorated all
+                             ;; directories, including "." and "..", with
+                             ;; a /, so allow for that as well.
+                             (not (string-match "\\`\\.\\.?/?\\'" (car elt))))
+                    (setq elt (expand-file-name (car elt) dir))
+                    (insert "\n" elt ":\n")
+                    (ls-lisp-insert-directory
+                     elt switches time-index wildcard-regexp full-directory-p)))))
+        ;; If not full-directory-p, FILE *must not* end in /, as
+        ;; file-attributes will not recognize a symlink to a directory,
+        ;; so must make it a relative filename as ls does:
+        (if (file-name-absolute-p file) (setq file (expand-file-name file)))
+        (if (eq (aref file (1- (length file))) ?/)
+            (setq file (substring file 0 -1)))
+        (let ((fattr (file-attributes file 'string)))
+          (if fattr
+              (insert (ls-lisp-format
+                       (if (and (> emacs-major-version 23) (memq ?F switches))
+                           (ls-lisp-classify-file file fattr)
+                         file)
+                       fattr (nth 7 fattr)
+                       switches time-index (current-time)))
+            (message "%s: doesn't exist or is inaccessible" file)
+            (ding) (sit-for 2)))))))    ; to show user the message!
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
