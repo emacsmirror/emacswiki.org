@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: Tooltip
 
-(defconst pos-tip-version "0.4.4")
+(defconst pos-tip-version "0.4.5")
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -69,6 +69,10 @@
 
 
 ;;; History:
+;; 2010-09-27  S. Irie
+;;         * Simplified implementation of `pos-tip-window-system'
+;;         * Version 0.4.5
+;;
 ;; 2010-08-20  S. Irie
 ;;         * Changed to use `window-line-height' to calculate tooltip position
 ;;         * Changed `pos-tip-string-width-height' to ignore last empty line
@@ -243,22 +247,11 @@ The value is a symbol---for instance, 'x' for X windows.
 The value is nil if Emacs is using a text-only terminal.
 
 FRAME defaults to the currently selected frame."
-  (cond
-   ((fboundp 'window-system)
-    ;; Emacs 23
-    (window-system frame))
-   (frame
-    ;; Emacs 22
-    (if (fboundp 'with-selected-frame)
-	(with-selected-frame frame
-	  window-system)
-      (let ((orig-frame (selected-frame)))
-	(select-frame frame)
-	(prog1
-	    window-system
-	  (select-frame orig-frame)))))
-   (t
-    window-system)))
+  (let ((type (framep (or frame (selected-frame)))))
+    (if type
+	(and (not (eq type t))
+	     type)
+      (signal 'wrong-type-argument (list 'framep frame)))))
 
 (defun pos-tip-normalize-natnum (object &optional n)
   "Return a Nth power of 2 if OBJECT is a positive integer.

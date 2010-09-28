@@ -31,6 +31,7 @@
 ;; 2010-08-08 added function rename-buffer-in-ssh-exit
 ;; 2010-08-21 added my-overwrite, updated jump function
 ;; 2010-09-18 added very fancy function split-v-3 and split-h-3
+;; 2010-09-27 added roll-v-3 
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -542,23 +543,23 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 
 (defun split-v-3 ()
+  "Change 3 window style from horizontal to vertical"
   (interactive)
+  (select-window (get-largest-window))
   (if (= 3 (length (window-list)))
-    (let ((1stBuf (window-buffer (get-largest-window)))
-	  (2ndBuf (progn (other-window 1) (buffer-name)))
-	  (3rdBuf (progn (other-window 1) (buffer-name)))
-	  )
-	  (progn   
-	    (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-	    (select-window (get-largest-window))
-	    (delete-other-windows)
-	    (split-window-horizontally)
-	    (set-window-buffer nil 1stBuf)
-	    (other-window 1)
-	    (set-window-buffer nil 2ndBuf)
-	    (split-window-vertically)
-	    (set-window-buffer (next-window) 3rdBuf)
-	    (select-window (get-largest-window))
+      (let ((winList (window-list)))
+	    (let ((1stBuf (window-buffer (car winList)))
+		  (2ndBuf (window-buffer (car (cdr winList))))
+		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
+	      (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+	      (delete-other-windows)
+	      (split-window-horizontally)
+	      (set-window-buffer nil 1stBuf)
+	      (other-window 1)
+	      (set-window-buffer nil 2ndBuf)
+	      (split-window-vertically)
+	      (set-window-buffer (next-window) 3rdBuf)
+	      (select-window (get-largest-window))
 	    )
 	  )
     )
@@ -574,27 +575,53 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 
 (defun split-h-3 ()
+  "Change 3 window style from vertical to horizontal"
   (interactive)
+  (select-window (get-largest-window))
   (if (= 3 (length (window-list)))
-    (let ((1stBuf (window-buffer (get-largest-window)))
-	  (2ndBuf (progn (other-window 1) (buffer-name)))
-	  (3rdBuf (progn (other-window 1) (buffer-name)))
-	  )
-	  (progn   
-	    (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-	    (select-window (get-largest-window))
-	    (delete-other-windows)
-	    (split-window-vertically)
-	    (set-window-buffer nil 1stBuf)
-	    (other-window 1)
-	    (set-window-buffer nil 2ndBuf)
-	    (split-window-horizontally)
-	    (set-window-buffer (next-window) 3rdBuf)
-	    (select-window (get-largest-window))
+      (let ((winList (window-list)))
+	    (let ((1stBuf (window-buffer (car winList)))
+		  (2ndBuf (window-buffer (car (cdr winList))))
+		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
+		(message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+		(delete-other-windows)
+		(split-window-vertically)
+		(set-window-buffer nil 1stBuf)
+		(other-window 1)
+		(set-window-buffer nil 2ndBuf)
+		(split-window-horizontally)
+		(set-window-buffer (next-window) 3rdBuf)
+		(select-window (get-largest-window))
+	      )
 	    )
-	  )
     )
 )
+
+
+(defun roll-v-3 ()
+  "Rolling 3 window buffers clockwise"
+  (interactive)
+  (select-window (get-largest-window))
+  (if (= 3 (length (window-list)))
+      (let ((winList (window-list)))
+	    (let ((1stWin (car winList))
+		  (2ndWin (car (cdr winList)))
+		  (3rdWin (car (cdr (cdr winList)))))
+	      (let ((1stBuf (window-buffer 1stWin))
+		    (2ndBuf (window-buffer 2ndWin))
+		    (3rdBuf (window-buffer 3rdWin))
+		    )
+		    (set-window-buffer 1stWin 3rdBuf)
+		    (set-window-buffer 2ndWin 1stBuf)
+		    (set-window-buffer 3rdWin 2ndBuf)
+		    )
+	      )
+	    )
+    )
+)
+
+
+
 
 ;
 ;(defun dove-hide-shell-output()

@@ -136,6 +136,10 @@
 ;; 1.4.10b,c VB1 -improve visual-basic-check-style
 ;; 1.4.10d   VB1 -correct font lock keywords for case
 ;;               -improve visual-basic-check-style + add highlight overlay 
+;; 1.4.11 Wang Yao - correct the regular expression for imenu
+;;                 - remove the string-to-char for imenu-syntax-alist, for xemacs error
+;;                 - change the condition of visual-basic-enable-font-lock which prevents emacs from running in command-line mode when the emacs-version is 19.29
+;;                 - correct the implement of droping tailing comment in visual-basic-if-not-on-single-line
 
 ;;
 ;; Notes:
@@ -255,10 +259,10 @@ types of errors are automatically corrected.
   "*List of function templates though which `visual-basic-new-sub' cycles.")
 
 (defvar visual-basic-imenu-generic-expression
-  '((nil "^\\s-*\\(public\\|private\\)*\\s-+\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\)"
+  '((nil "^\\s-*\\(public\\|private\\)*\\s-*\\(declare\\s-+\\)*\\(sub\\|function\\)\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\)"
          4)
     ("Constants"
-     "^\\s-*\\(private\\|public\\|global\\)*\\s-*\\(const\\s-+\\)\\(\\(?:\\sw\\|\\s_\\)+\\>\\s-*=\\s-*.+\\)$\\|'"
+     "^\\s-*\\(private\\|public\\|global\\)*\\s-*\\(const\\s-+\\)\\(\\(?:\\sw\\|\\s_\\)+\\>\\s-*=\\s-*.+\\)\\($\\|'\\)"
      3)
     ("Variables"
      "^\\(private\\|public\\|global\\|dim\\)+\\s-+\\(\\(?:\\sw\\|\\s_\\)+\\>\\s-+as\\s-+\\(?:\\sw\\|\\s_\\)+\\>\\)"
@@ -517,7 +521,7 @@ Commands:
   (make-local-variable 'imenu-generic-expression)
   (setq imenu-generic-expression visual-basic-imenu-generic-expression)
 
-  (set (make-local-variable 'imenu-syntax-alist) `((,(string-to-char "_") . "w")))
+  (set (make-local-variable 'imenu-syntax-alist) `(("_" . "w")))
   (set (make-local-variable 'imenu-case-fold-search) t)
 
   ;;(make-local-variable 'visual-basic-associated-files)
@@ -530,7 +534,7 @@ Commands:
 (defun visual-basic-enable-font-lock ()
   "Enable font locking."
   ;; Emacs 19.29 requires a window-system else font-lock-mode errs out.
-  (cond ((or visual-basic-xemacs-p window-system)
+  (cond ((or visual-basic-xemacs-p window-system (not (string-equal (emacs-version) "19.29")))
 
          ;; In win-emacs this sets font-lock-keywords back to nil!
          (if visual-basic-winemacs-p
@@ -901,8 +905,8 @@ be folded over several code lines."
 					(substring complete-line (1+ p2)))))
 	  ;; now drop tailing comment if any
 	  (when (setq p1 (string-match "'" complete-line))
-	    (setq complete-line (substring complete-line p1)))
-	  ;; now drop 1st concatenated instruction is any
+	    (setq complete-line (substring complete-line 0 (1- p1))))
+	  ;; now drop 1st concatenated instruction if any
 	  (when (setq p1 (string-match ":" complete-line))
 	    (setq complete-line (substring complete-line p1)))
 	  ;;

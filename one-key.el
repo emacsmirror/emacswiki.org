@@ -222,6 +222,11 @@
 ;;
 
 ;;; Change log:
+;;
+;; 2010/09/27
+;;    * Joe Bloggs
+;;       * Altered one-key-make-template so that it adds the original keys to the descriptions of each item.
+;;       
 ;; 2010/09/21
 ;;    * Joe Bloggs
 ;;       * Fixed a problems with one-key-make-template so it should work with more keymaps
@@ -764,12 +769,14 @@ TITLE is title name that any string you like."
           (destructuring-bind (key cmd)
               (split-string (buffer-substring (point-at-bol) (point-at-eol)) "\t+")
             (delete-region (point-at-bol) (point-at-eol))
-            (insert (format "((\"%s\" . \"%s\") . %s)"
-                            (replace-regexp-in-string
+	    (let ((keystr (replace-regexp-in-string
                              "\\\"" "\\\\\""
-                             (replace-regexp-in-string "\\\\" "\\\\\\\\" key))
-                            (capitalize (replace-regexp-in-string "-" " " cmd))
-                            cmd))
+                             (replace-regexp-in-string "\\\\" "\\\\\\\\" key))))
+	      (insert (format "((\"%s\" . \"%s (%s)\") . %s)" 
+			      keystr
+			      (capitalize (replace-regexp-in-string "-" " " cmd))
+			      keystr
+			      cmd)))
             (when (and cmd
                        (string-match " " (concat key cmd)))
               (forward-sexp -1)

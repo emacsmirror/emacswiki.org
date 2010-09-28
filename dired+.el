@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Sep 26 18:14:55 2010 (-0700)
+;; Last-Updated: Mon Sep 27 11:20:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2684
+;;     Update #: 2707
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -141,7 +141,7 @@
 ;;
 ;;    `diredp-all-files', `diredp-do-grep-1',
 ;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
-;;    `diredp-dired-interactive-spec',
+;;    `diredp-dired-files-interactive-spec',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
 ;;    `direp-read-bookmark-file-args', `diredp-this-subdir'.
@@ -208,6 +208,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/09/27 dadams
+;;     Renamed diredp-dired-interactive-spec to diredp-dired-files-interactive-spec.
+;;     diredp-dired-files-interactive-spec: Respect file-list arg: kill existing Dired buffer.
+;;                                          Fix use of prefix arg for switches.
 ;; 2010/09/26 dadams
 ;;     Added: dired-insert-directory: Compute WILDCARD arg for individual files.
 ;;     Added: dired-readin-insert: Use t as WILDCARD arg to dired-insert-directory.
@@ -1638,40 +1642,45 @@ lists them.  Use `C-g' when you are done entering file names to list.
 
 In all cases, when inputting a file or directory name you can use
 shell wildcards."
-  (interactive (diredp-dired-interactive-spec ""))
+  (interactive (diredp-dired-files-interactive-spec ""))
+  (when (consp arg)
+    (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
+      (when buf (kill-buffer buf))))
   (switch-to-buffer (dired-noselect arg switches)))
 
 ;;;###autoload
 (defun diredp-dired-files-other-window (arg &optional switches)
   "Same as `diredp-dired-files' except uses another window."
-  (interactive (diredp-dired-interactive-spec "in other window "))
+  (interactive (diredp-dired-files-interactive-spec "in other window "))
+  (when (consp arg)
+    (let ((buf  (dired-find-buffer-nocreate (car arg)))) ; Respect file list.
+      (when buf (kill-buffer buf))))
   (dired-other-window arg switches))
 
-(defun diredp-dired-interactive-spec (str)
-  "`interactive' spec for `diredp-dired' commands.
-STR is a string added to the prompt.
+(defun diredp-dired-files-interactive-spec (str)
+  "`interactive' spec for `diredp-dired-files' commands.
+STR is a string appended to the prompt.
 With non-negative prefix arg, read switches.
-With non-positive prefix arg, read files and directories to list and then
- the Dired buffer name.  Use `C-g' when done reading files and dirs."
-  (when (and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg)))
-    (read-string "Dired listing switches: " dired-listing-switches))
-  (reverse
-   (list
-    (if (> (prefix-numeric-value current-prefix-arg) 0)
-        ;; If a dialog box is about to be used, call `read-directory-name' so the dialog code
-        ;; knows we want directories.  Some dialog boxes can only select directories or files
-        ;; when popped up, not both.
-        (if (and (fboundp 'read-directory-name) (next-read-file-uses-dialog-p))
-            (read-directory-name (format "Dired %s(directory): " str) nil default-directory nil)
-          (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
-      (let ((insert-default-directory  nil)
-            (files                     ())
-            file)
-        (while (condition-case nil
-                   (setq file  (read-file-name "File: ")) ; Lax, to allow wildcards.
-                 (quit nil))
-          (push file files))
-        (cons (read-string "Dired buffer name: " nil nil default-directory) files))))))
+With non-positive prefix arg, read files and dirs to list and then the
+ Dired buffer name.  User uses `C-g' when done reading files and dirs."
+  (list
+   (if (> (prefix-numeric-value current-prefix-arg) 0)
+       ;; If a dialog box is about to be used, call `read-directory-name' so the dialog code
+       ;; knows we want directories.  Some dialog boxes can only select directories or files
+       ;; when popped up, not both.
+       (if (and (fboundp 'read-directory-name) (next-read-file-uses-dialog-p))
+           (read-directory-name (format "Dired %s(directory): " str) nil default-directory nil)
+         (read-file-name (format "Dired %s(directory): " str) nil default-directory nil))
+     (let ((insert-default-directory  nil)
+           (files                     ())
+           file)
+       (while (condition-case nil ; Use lax completion, to allow wildcards.
+                  (setq file  (read-file-name "File or dir (C-g when done): "))
+                (quit nil))
+         (push file files))
+       (cons (read-string "Dired buffer name: " nil nil default-directory) files)))
+   (and current-prefix-arg (natnump (prefix-numeric-value current-prefix-arg))
+        (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
 (defun diredp-fileset (flset-name)
