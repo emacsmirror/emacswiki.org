@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Sat Sep 25 14:58:48 2010 (-0700)
+;; Last-Updated: Tue Sep 28 08:38:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 900
+;;     Update #: 906
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -251,6 +251,8 @@
 ;;    `bmkp-current-bookmark-list-state', `bmkp-current-sort-order',
 ;;    `bmkp-cycle-1', `bmkp-default-bookmark-name',
 ;;    `bmkp-default-handler-for-file', `bmkp-default-handler-user',
+;;    `bmkp-delete-autonamed-no-confirm',
+;;    `bmkp-delete-autonamed-this-buffer-no-confirm',
 ;;    `bmkp-desktop-alist-only', `bmkp-desktop-bookmark-p',
 ;;    `bmkp-desktop-kill', `bmkp-dired-alist-only',
 ;;    `bmkp-dired-bookmark-p', `bmkp-dired-subdirs',
@@ -6627,6 +6629,19 @@ buffer part names the current buffer."
       (when (y-or-n-p (format "Delete ALL autonamed bookmarks for buffer `%s'? " (buffer-name)))
         (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk))
         (message "Deleted all bookmarks for buffer `%s'" (buffer-name))))))
+
+;; You can use this in `kill-buffer-hook'.
+(defun bmkp-delete-autonamed-this-buffer-no-confirm ()
+  "Delete all autonamed bookmarks for this buffer, without confirmation."
+  (let ((bmks-to-delete  (mapcar #'bookmark-name-from-full-record
+                                 (bmkp-autonamed-this-buffer-alist-only))))
+    (dolist (bmk  bmks-to-delete)  (bookmark-delete bmk))))
+
+;; You can use this in `kill-emacs-hook'.
+(defun bmkp-delete-autonamed-no-confirm ()
+  "Delete all autonamed bookmarks for all buffers, without confirmation."
+  (dolist (buf  (buffer-list))
+    (with-current-buffer buf (bmkp-delete-autonamed-this-buffer-no-confirm))))
 
 ;;;###autoload
 (defun bmkp-delete-bookmarks (position allp &optional alist) ; Bound to `C-x p delete'

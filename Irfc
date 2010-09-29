@@ -13,6 +13,8 @@ The features this package provide:
 * *Smart* table and content navigation.
 * Visit RFC link around point.
 * Jump to RFC reference around point.
+* Jump to heading name with completion.
+* Jump to heading number with completion.
 * Download RFC document *asynchronous*.
 
 ==Install==
@@ -39,6 +41,8 @@ setup like below:
 * "irfc-quit"                  Quit RFC buffer.
 * "irfc-visit"                 Ask for RFC number and visit document.
 * "irfc-reference-goto"        Ask for RFC reference and jump to it.
+* "irfc-head-goto"             Ask for heading name and jump to it.
+* "irfc-head-number-goto"      Ask for heading number and jump to it.
 * "irfc-follow"                Visit RFC link around point.
 * "irfc-table-jump"            Navigation between table and content.
 : This feature is very useful when you want navigation in RFC document like HTML document, even it is *text* version.
@@ -105,6 +109,14 @@ number and will jump to that citation in the Normative
 References/Informative References heading.
 
 * Command `irfc-rfc-link-next' and `irfc-rfc-link-prev' can jump next or previous RFC link in document.
+
+* Command `irfc-head-goto' will ask the user for a heading name and
+will jump to that heading.  Completion list in minibuffer is
+available.
+
+* Command `irfc-head-number-goto' will ask the user for a heading
+number and will jump to that heading.  Completion list in minibuffer
+is available.
 
 ==Related==
 * Integrate with [[Anything]]:

@@ -1923,7 +1923,7 @@ to '''`bmkp-delete-bookmarks'''', to delete individual bookmarks
 under the cursor or all bookmarks in the buffer.  This is not
 limited to autonamed bookmarks.)
 
-Finally, in addition to `C-x p RET', you can create autonamed
+In addition to `C-x p RET', you can create autonamed
 bookmarks using these commands:
 
 * `bmkp-set-autonamed-bookmark-at-line' -- At a line beginning
@@ -1932,9 +1932,15 @@ bookmarks using these commands:
 * `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in *Occur*) --
 - At `occur' and `multi-occur' hits
 
+Autonamed bookmarks are normal bookmarks.  In particular, they are
+persisted.  If you do not care to persist them, you can ensure
+that they are automatically deleted by adding
+'''`bmkp-delete-autonamed-this-buffer-no-confirm'''' to
+`kill-buffer-hook' and '''`bmkp-delete-autonamed-no-confirm'''' to
+`kill-emacs-hook':
 
-
-
+  (add-hook 'kill-buffer-hook 'bmkp-delete-autonamed-this-buffer-no-confirm)
+  (add-hook 'kill-emacs-hook  'bmkp-delete-autonamed-no-confirm)
 
 
 

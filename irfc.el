@@ -79,6 +79,8 @@
 ;; `irfc-quit'                  Quit RFC buffer.
 ;; `irfc-visit'                 Ask for RFC number and visit document.
 ;; `irfc-reference-goto'        Ask for RFC reference and jump to it.
+;; `irfc-head-goto'             Ask for heading name and jump to it.
+;; `irfc-head-number-goto'      Ask for heading number and jump to it.
 ;; `irfc-follow'                Visit RFC document around point.
 ;; `irfc-table-jump'            Switch between table and content.
 ;; `irfc-page-goto'             Goto page.
@@ -133,6 +135,14 @@
 ;; number and will jump to that citation in the Normative
 ;; References/Informative References heading.
 ;;
+;; Command `irfc-head-goto' will ask the user for a heading name and
+;; will jump to that heading.  Completion list in minibuffer is
+;; available.
+;;
+;; Command `irfc-head-number-goto' will ask the user for a heading
+;; number and will jump to that heading.  Completion list in minibuffer
+;; is available.
+;;
 
 
 ;;; Installation:
@@ -178,12 +188,25 @@
 
 ;;; Change log:
 ;;
+;; 2010/09/28
+;;   * Niels Widger:
+;;      * Added new mappings: "f" to `irfc-head-goto' and "F"
+;;        to `irfc-head-number-goto'.
+;;      * Added new variables: `irfc-heading-names-table',
+;;        `irfc-heading-names-list', `irfc-heading-numbers-table'
+;;        and `irfc-heading-numbers-list'.
+;;      * Added new functions: `irfc-read-heading-name',
+;;        `irfc-read-heading-number', `irfc-heading-number-at-point',
+;;        `irfc-head-goto', `irfc-head-number-goto' and
+;;        `irfc-fill-tables'.
+;;      * `irfc-render-buffer' makes new call to `irfc-fill-tables'.
+;;
 ;; 2010/09/24
 ;;   * Niels Widger:
 ;;      * Added new function `irfc-reference-goto' that prompts a user
 ;;        for a reference number and jumps to that citation.
 ;;      * Added mapping from "r" to `irfc-reference-goto' in keymap.
-;;      * Added several help functions used by `irfc-reference-goto':
+;;      * Added several helper functions used by `irfc-reference-goto':
 ;;        `irfc-read-reference', `irfc-reference-at-point' and
 ;;        `irfc-current-head'.
 ;;      * Added requirement for `thingatpt'.
@@ -439,6 +462,8 @@ t."
     (define-key map (kbd "o") 'irfc-follow)
     (define-key map (kbd "v") 'irfc-visit)
     (define-key map (kbd "r") 'irfc-reference-goto)
+    (define-key map (kbd "f") 'irfc-head-goto)
+    (define-key map (kbd "F") 'irfc-head-number-goto)
     (define-key map (kbd "g") 'irfc-page-goto)
     (define-key map (kbd "N") 'irfc-page-next)
     (define-key map (kbd "P") 'irfc-page-prev)
@@ -500,10 +525,30 @@ This variable is always buffer-local.")
 This variable is always buffer-local.")
 (make-variable-buffer-local 'irfc-total-pages)
 
+(defvar irfc-heading-names-list nil
+  "List of heading names in RFC buffer.
+This variable is buffer-local in buffers where `irfc-mode' has
+been called.")
+
+(defvar irfc-heading-numbers-list nil
+  "List of heading numbers in RFC buffer.
+This variable is buffer-local in buffers where `irfc-mode' has
+been called.")
+
+(defvar irfc-heading-names-table nil
+  "Table mapping heading names to position in RFC buffer.
+This variable is buffer-local in buffers where `irfc-mode' has
+been called.")
+
+(defvar irfc-heading-numbers-table nil
+  "Table mapping heading numbers to position in RFC buffer.
+This variable is buffer-local in buffers where `irfc-mode' has
+been called.")
+
 (defvar irfc-last-visit-number nil
   "Number of the last RFC document visited.")
 
-(defvar irfc-table-regex "^[ ]+[A-Z]?[0-9\\.]*[ ]+\\([^\\.\n]+\\)[\\. ]+\\([0-9]+\\)$"
+(defvar irfc-table-regex "^[ ]+\\([A-Z]?[0-9\\.]*\\)[ ]+\\([^\\.\n]+\\)[\\. ]+\\([0-9]+\\)$"
   "The regular-expression that match table item.")
 
 (defvar irfc-reference-regex "\\[[0-9]+]"
@@ -523,6 +568,14 @@ reference.")
   (setq buffer-read-only t)
   (setq font-lock-defaults nil)
   (auto-save-mode 0)
+  (make-local-variable 'irfc-heading-names-list)
+  (make-local-variable 'irfc-heading-numbers-list)
+  (make-local-variable 'irfc-heading-names-table)
+  (make-local-variable 'irfc-heading-numbers-table)  
+  (setq irfc-heading-names-table (make-hash-table :test 'equal))
+  (setq irfc-heading-numbers-table (make-hash-table :test 'equal))
+  (setq irfc-heading-names-list nil)
+  (setq irfc-heading-numbers-list nil)
   ;; Render.
   (irfc-render-buffer))
 
@@ -562,7 +615,9 @@ reference.")
       (when irfc-highlight-references
 	  (irfc-render-buffer-overlay-reference top-point))
       ;; Rename buffer
-      (irfc-rename-buffer title-line-point)))
+      (irfc-rename-buffer title-line-point)
+      ;; Fill heading names/numbers tables
+      (irfc-fill-tables title-line-point)))
 
 (defun irfc-render-toggle ()
   "Toggle RFC buffer render status."
@@ -606,7 +661,7 @@ You can jump to the corresponding content when you are at table."
                      (setq head-name (match-string 0))
                      (setq head-name (replace-regexp-in-string "[\\. ]+\\([0-9]+\\)$" "" head-name))
                      (setq head-name (replace-regexp-in-string "^[ ]+" "" head-name))
-                     (setq page-number (string-to-number (match-string 2)))
+                     (setq page-number (string-to-number (match-string 3)))
                      ;; Jump page.
                      (irfc-page-goto page-number)
                      ;; Search head.
@@ -643,14 +698,15 @@ You can jump to the corresponding content when you are at table."
     (goto-char (point-min))
     (while (not done)
       (if (not (re-search-forward
-		(concat "^[ \t]+"
+		(concat "^[ \t]*"
 			(format irfc-reference-format-regex number))
 		(point-max) t))
 	  (setq done t)
 	(setq beg (match-beginning 0))
 	(setq end (match-end 0))
 	(let ((name (irfc-current-head)))
-	  (if (not (or (string= name "Normative References")
+	  (if (not (or (string= name "References")
+		       (string= name "Normative References")
 		       (string= name "Informative References")))
 	      (goto-char end)
 	    (goto-char beg)
@@ -676,6 +732,28 @@ found."
     (let* ((match (buffer-substring (match-beginning 0) (match-end 0)))
 	   (len (length match)))
       (string-to-int (substring match 1 (1- len))))))
+
+
+(defun irfc-read-heading-name ()
+  "Read heading name as a string."
+  (completing-read "Heading name: " irfc-heading-names-list nil t))
+
+(defun irfc-read-heading-number ()
+  "Read heading number as a string using a heading number found
+at point as default."
+  (let ((default (irfc-heading-number-at-point)))
+    (completing-read
+     (concat "Heading number" (if (eq default nil) "" (format " (default %s)" default)) ": ")
+     irfc-heading-numbers-list nil t nil nil default nil)))
+
+(defun irfc-heading-number-at-point ()
+  "Returns heading number at point as a string or nil if one is
+not found."
+  (if (not (thing-at-point-looking-at "\\([0-9]+\\.\\)*[0-9]+"))
+      nil
+    (let ((match (match-string 0)))
+      (cond ((member match irfc-heading-numbers-list) match)
+	    ((member (concat match ".") irfc-heading-numbers-list) (concat match "."))))))
 
 (defun irfc-page-goto (number)
   "Goto page NUMBER."
@@ -773,6 +851,15 @@ does not exist in `irfc-directory'."
   (setq irfc-last-visit-number rfc-number)
   (irfc-open (format "rfc%s.txt" rfc-number)))
 
+(defun irfc-head-goto (NAME)
+  "Goto heading NAME."
+  (interactive (list (irfc-read-heading-name)))
+  (let ((new-point (gethash NAME irfc-heading-names-table)))
+    (if (eq new-point nil)
+	(message "Cannot find heading \"%s\"" NAME)
+      (goto-char new-point)
+      (back-to-indentation))))
+
 (defun irfc-head-next ()
   "Move to next heading."
   (interactive)
@@ -809,6 +896,15 @@ If optional argument PRINT is non-nil, print the name before returning it."
       (if PRINT
 	  (message "%s" name))
       name)))
+
+(defun irfc-head-number-goto (NAME)
+  "Goto heading number NAME."
+  (interactive (list (irfc-read-heading-number)))
+  (let ((new-point (gethash NAME irfc-heading-numbers-table)))
+    (if (eq new-point nil)
+	(irfc-head-number-goto (concat NAME "."))
+      (goto-char new-point)
+      (back-to-indentation))))
 
 (defun irfc-scroll-up-one-line ()
   "Scroll up one line."
@@ -984,8 +1080,8 @@ Argument TOP-POINT is the top point of RFC buffer after render."
       (goto-char start-position)
       (while (re-search-forward irfc-table-regex end-position t)
         ;; Overlay valid table item.
-        (irfc-overlay-add (match-beginning 1)
-                          (match-end 1)
+        (irfc-overlay-add (match-beginning 2)
+                          (match-end 2)
                           'irfc-table-item-overlay)))))
 
 (defun irfc-render-buffer-overlay-rfc-link (top-point)
@@ -1077,6 +1173,31 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
 	(rename-buffer (concat rfc-title " (" rfc-txt ")"))
       (rename-buffer rfc-txt))
     ))
+
+(defun irfc-fill-tables (title-line-point)
+  "Fill heading names/numbers tables and lists.
+Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
+  (clrhash irfc-heading-numbers-table)
+  (clrhash irfc-heading-names-table)
+  (setq irfc-heading-numbers-list nil)
+  (setq irfc-heading-names-list nil)
+  (goto-char title-line-point)
+  (let (match-list)
+    ;; Populate irfc-heading-numbers-table and irfc-heading-names-table
+    (while (setq match-list (irfc-head-move))
+      (if (and (nth 0 match-list) (nth 1 match-list))
+	  (puthash (buffer-substring (nth 0 match-list) (nth 1 match-list))
+		   (nth 0 match-list) irfc-heading-numbers-table))
+      (puthash (buffer-substring (nth 2 match-list) (nth 3 match-list))
+	       (nth 2 match-list) irfc-heading-names-table))
+    ;; Generate irfc-heading-numbers-list
+    (maphash (lambda (number point)
+	       (setq irfc-heading-numbers-list (cons number irfc-heading-numbers-list)))
+	     irfc-heading-numbers-table)
+    ;; Generate irfc-heading-names-list
+    (maphash (lambda (name point)
+	       (setq irfc-heading-names-list (cons name irfc-heading-names-list)))
+	     irfc-heading-names-table)))
 
 (defun irfc-head-move (&optional reverse)
   "Move to special heading.

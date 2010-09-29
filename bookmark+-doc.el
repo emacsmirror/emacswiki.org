@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Sat Sep 25 15:17:20 2010 (-0700)
+;; Last-Updated: Tue Sep 28 08:43:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 13429
+;;     Update #: 13437
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1860,14 +1860,26 @@
 ;;  the cursor or all bookmarks in the buffer.  This is not limited to
 ;;  autonamed bookmarks.)
 ;;
-;;  Finally, in addition to `C-x p RET', you can create autonamed
-;;  bookmarks using these commands:
+;;  In addition to `C-x p RET', you can create autonamed bookmarks
+;;  using these commands:
 ;;
 ;;  * `bmkp-set-autonamed-bookmark-at-line' - At a line beginning
 ;;  * `bmkp-set-autonamed-regexp-buffer'    - At buffer matches
 ;;  * `bmkp-set-autonamed-regexp-region'    - At region matches
 ;;  * `bmkp-occur-create-autonamed-bookmarks' (`C-c b' in *Occur*) -
 ;;    At `occur' and `multi-occur' hits
+;;
+;;  Autonamed bookmarks are normal bookmarks.  In particular, they are
+;;  persisted.  If you do not care to persist them, you can ensure
+;;  that they are automatically deleted by adding
+;;  `bmkp-delete-autonamed-this-buffer-no-confirm' to
+;;  `kill-buffer-hook' and `bmkp-delete-autonamed-no-confirm' to
+;;  `kill-emacs-hook':
+;;
+;;    (add-hook 'kill-buffer-hook
+;;              'bmkp-delete-autonamed-this-buffer-no-confirm)
+;;    (add-hook 'kill-emacs-hook
+;;              'bmkp-delete-autonamed-no-confirm)
 ;;
 ;;
 ;;(@* "Highlighting Bookmark Locations")
