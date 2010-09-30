@@ -90,15 +90,17 @@
   ;; These were picked on a wide-gamut display (HP LP3065), so they
   ;; will look terrible on a standard-gamut display. Change if needed.
   `[,(rainbow-delimiters-face-from-colour "grey55")
-    ,(rainbow-delimiters-face-from-colour "#7f967f")
-    ,(rainbow-delimiters-face-from-colour "#7199a1")
-    ,(rainbow-delimiters-face-from-colour "#917f7f")
-    ,(rainbow-delimiters-face-from-colour "#91937f")
-    ,(rainbow-delimiters-face-from-colour "#7f9691")
-    ,(rainbow-delimiters-face-from-colour "#949191")
-    ,(rainbow-delimiters-face-from-colour "#919991")
-    ,(rainbow-delimiters-face-from-colour "#949194")
-    ,(rainbow-delimiters-face-from-colour "#949494")]
+    ,(rainbow-delimiters-face-from-colour "#7F9F7F")
+    ,(rainbow-delimiters-face-from-colour "#8CD0D3")
+    ,(rainbow-delimiters-face-from-colour "#DCA3A3")
+    ,(rainbow-delimiters-face-from-colour "#385F38")
+    ,(rainbow-delimiters-face-from-colour "#F0DFAF")
+    ,(rainbow-delimiters-face-from-colour "#BCA3A3")
+    ,(rainbow-delimiters-face-from-colour "#C0BED1")
+    ,(rainbow-delimiters-face-from-colour "#FFCFAF")
+    ,(rainbow-delimiters-face-from-colour "#F0EFD0")
+    ,(rainbow-delimiters-face-from-colour "#F0DFAF")
+    ,(rainbow-delimiters-face-from-colour "#DFCFAF")]
   "Faces to use in coloring parentheses, brackets, and braces. Begins with the outermost color.
 
 The number of colors listed is variable and more colors may be added to support arbitrary nesting depth.")
@@ -238,5 +240,17 @@ The number of colors listed is variable and more colors may be added to support 
 ;; ,(rainbow-delimiters-face-from-colour "gray70")
 ;; ,(rainbow-delimiters-face-from-colour "#6093be")
 ;; ,(rainbow-delimiters-face-from-colour "#588dba")
+
+;;; Excellent set of colors for wide gamut screens:
+   ;; [,(rainbow-delimiters-face-from-colour "grey55")
+   ;;  ,(rainbow-delimiters-face-from-colour "#7f967f")
+   ;;  ,(rainbow-delimiters-face-from-colour "#7199a1")
+   ;;  ,(rainbow-delimiters-face-from-colour "#917f7f")
+   ;;  ,(rainbow-delimiters-face-from-colour "#91937f")
+   ;;  ,(rainbow-delimiters-face-from-colour "#7f9691")
+   ;;  ,(rainbow-delimiters-face-from-colour "#949191")
+   ;;  ,(rainbow-delimiters-face-from-colour "#919991")
+   ;;  ,(rainbow-delimiters-face-from-colour "#949194")
+   ;;  ,(rainbow-delimiters-face-from-colour "#949494")]
 
 ;;; rainbow-delimiters.el ends here

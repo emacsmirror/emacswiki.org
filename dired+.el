@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Sep 27 11:20:03 2010 (-0700)
+;; Last-Updated: Wed Sep 29 10:01:06 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2707
+;;     Update #: 2724
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -100,6 +100,7 @@
 ;;    `diredp-chown-this-file', `diredp-compress-this-file',
 ;;    `diredp-copy-this-file', `diredp-delete-this-file',
 ;;    `diredp-dired-files', `diredp-dired-files-other-window',
+;;    `diredp-dired-union', `diredp-dired-union-other-window',
 ;;    `diredp-do-bookmark', `diredp-do-bookmark-in-bookmark-file',
 ;;    `diredp-do-grep', `diredp-downcase-this-file', `diredp-ediff',
 ;;    `diredp-fileset', `diredp-find-a-file',
@@ -141,7 +142,8 @@
 ;;
 ;;    `diredp-all-files', `diredp-do-grep-1',
 ;;    `diredp-fewer-than-2-files-p', `diredp-find-a-file-read-args',
-;;    `diredp-dired-files-interactive-spec',
+;;    `diredp-dired-files-interactive-spec', `diredp-dired-union-1',
+;;    `diredp-dired-union-interactive-spec',
 ;;    `diredp-make-find-file-keys-reuse-dirs',
 ;;    `diredp-make-find-file-keys-not-reuse-dirs',
 ;;    `direp-read-bookmark-file-args', `diredp-this-subdir'.
@@ -163,7 +165,8 @@
 ;;                              not marked, files will be deleted.
 ;;  `dired-find-file'         - Allow `.' and `..' (Emacs 20 only). 
 ;;  `dired-get-filename'      - Test `./' and `../' (like `.', `..').
-;;  `dired-goto-file'         - Remove `/' from dir before compare.
+;;  `dired-goto-file'         - Fix Emacs bug #7126.
+;;                              Remove `/' from dir before compare.
 ;;  `dired-insert-directory'  - Compute WILDCARD arg for
 ;;                              `insert-directory' for individual file
 ;;                              (don't just use nil). (Emacs 23+, and
@@ -208,6 +211,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/09/29 dadams
+;;     Added: diredp-dired-union(-1|-other-window|-interactive-spec).
+;;     dired-goto-file: fix for Emacs bug #7126.
 ;; 2010/09/27 dadams
 ;;     Renamed diredp-dired-interactive-spec to diredp-dired-files-interactive-spec.
 ;;     diredp-dired-files-interactive-spec: Respect file-list arg: kill existing Dired buffer.
@@ -1683,6 +1689,108 @@ With non-positive prefix arg, read files and dirs to list and then the
         (read-string "Dired listing switches: " dired-listing-switches))))
 
 ;;;###autoload
+(defun diredp-dired-union (dirbufs &optional switches)
+  "Create a Dired buffer that is the union of existing Dired buffers.
+With a prefix arg, read `ls' switches.
+You are prompted for the Dired buffers.  Use `C-g' when done choosing
+them.  Then you are prompted for the name of the new Dired buffer.
+Its `default-directory' is the same as the `default-directory' before
+invoking the command.
+
+The selected Dired listings are included in the order that you choose
+them, and each entry is listed only once in the new Dired buffer.  The
+new Dired listing respects the markings, subdirectory insertions, and
+hidden subdirectories of the selected Dired listings.
+
+However, in case of conflict between marked or unmarked status for the
+same entry, the entry is marked.  Similarly, in case of conflict over
+an included subdirectory between it being hidden or shown, it is
+hidden, but its contained files are also listed."
+  (interactive (diredp-dired-union-interactive-spec ""))
+  (diredp-dired-union-1 dirbufs switches))
+
+;;;###autoload
+(defun diredp-dired-union-other-window (dirbufs &optional switches)
+  "Same as `diredp-dired-union' but uses another window."
+  (interactive (diredp-dired-union-interactive-spec ""))
+  (diredp-dired-union-1 dirbufs switches 'OTHER-WINDOW))
+
+;; $$$$$ Maybe I should set `dired-sort-inhibit' to t for now (?),
+;; since there is an Emacs bug (at least on Windows) that prevents
+;; sorting from working for a Dired buffer with an explicit file list.
+(defun diredp-dired-union-1 (dirbufs switches &optional other-window-p)
+  "Helper for `diredp-dired-union(-other-window)'."
+  (let ((files        ())
+        (marked       ())
+        (subdirs      ())
+        (hidden-dirs  ())
+        hid-here files-here)
+    (dolist (buf  (reverse (cdr dirbufs))) ; The car is the new Dired buffer name.
+      (with-current-buffer buf
+        (unwind-protect
+             (progn
+               (setq hid-here    (save-excursion (dired-remember-hidden))
+                     files-here  (if (consp dired-directory)
+                                     (reverse (cdr dired-directory)) ; Reverse bc will push.
+                                   ()))
+               (unless files-here
+                 (save-excursion        ; This bit is more or less from `dired-toggle-marks'.
+                   (goto-char (point-min))
+                   (while (not (eobp))
+                     (or (looking-at dired-re-dot)
+                         (push (dired-get-filename nil 'NO-ERROR-P) files-here))
+                     (forward-line 1)))
+                 (setq files-here  (delq nil files-here)))
+               (dolist (hid-here  hid-here) (push hid-here hidden-dirs))
+               (dolist (sub   (cdr (reverse dired-subdir-alist)))
+                 (push (list (car sub)) subdirs))
+               (dolist (mkd   (dired-remember-marks (point-min) (point-max))) ; This unhides.
+                 (push (car mkd) marked))
+               (dolist (file  files-here)
+                 (when (or (not (file-name-absolute-p file)) (not (member file files)))
+                   (push file files))))
+          (save-excursion               ; Hide subdirs that were hidden.
+            (dolist (dir  hid-here)  (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))))
+    ;; (pp-eval-expression '(list (cons 'FILES files) (cons 'MARKED marked)
+    ;;                            (cons 'SUBDIRS subdirs) (cons 'HIDDEN-SUBDIRS hidden-dirs)))
+    (if other-window-p
+        (dired-other-window (cons (car dirbufs) files) switches)
+      (dired (cons (car dirbufs) files) switches))
+    (with-current-buffer (car dirbufs)
+      (let ((inhibit-read-only  t))
+        (dired-insert-old-subdirs subdirs)
+        (dired-mark-remembered          ; Don't really need `expand-file-name' - already abs.
+         (mapcar (lambda (mf) (cons (expand-file-name mf dired-directory) 42)) marked))
+        (save-excursion
+          (dolist (dir  hidden-dirs)
+            (when (dired-goto-subdir dir) (dired-hide-subdir 1))))))))
+
+(defun diredp-dired-union-interactive-spec (str)
+  "`interactive' spec for `diredp-dired-dired' commands.
+STR is a string appended to the prompt.
+With a prefix arg, read switches.
+Read names of Dired buffers to include, and then the new, Dired-union
+ buffer name.  User uses `C-g' when done reading Dired buffer names."
+  (list
+   (let ((bufs     ())
+         dirbufs buf)
+     (dolist (dbuf  dired-buffers)
+       (when (buffer-live-p (cdr dbuf))
+         (push (cons (buffer-name (cdr dbuf)) (car dbuf)) dirbufs)))
+     (while (and dirbufs
+                 (condition-case nil
+                     (setq buf (completing-read
+                                "Dired buffer to include (C-g when done): "
+                                dirbufs nil t nil buffer-name-history
+                                (and dirbufs (car (assoc (buffer-name) dirbufs)))))
+                   (quit nil)))
+       (push buf bufs)
+       (setq dirbufs  (delete (cons buf (with-current-buffer buf default-directory)) dirbufs)))
+     (setq bufs  (nreverse bufs))
+     (cons (read-string "Dired-union buffer name: ") bufs))
+   (and current-prefix-arg (read-string "Dired listing switches: " dired-listing-switches))))
+
+;;;###autoload
 (defun diredp-fileset (flset-name)
   "Open Dired on the files in fileset FLSET-NAME."
   (interactive
@@ -2670,7 +2778,8 @@ On MS Windows, if you already at the root directory, invoke
 
 ;; REPLACE ORIGINAL in `dired.el'.
 ;;
-;; Remove `/' from directory name before comparing with BASE.
+;; 1. Fixes Emacs bug #7126: Didn't work with arbitrary file list (cons arg to `dired').
+;; 2. Remove `/' from directory name before comparing with BASE.
 ;;
 ;;;###autoload
 (defun dired-goto-file (file)
@@ -2683,45 +2792,56 @@ On MS Windows, if you already at the root directory, invoke
   (interactive
    (prog1                          ; let push-mark display its message
        (list (expand-file-name
-              (read-file-name "Goto file: "
-                              (dired-current-directory))))
+              (read-file-name "Goto file: " (dired-current-directory))))
      (push-mark)))
   (setq file (directory-file-name file)) ; does no harm if no directory
-  (let (found case-fold-search dir)
-    (setq dir (or (file-name-directory file)
-                  (error "File name `%s' is not absolute" file)))
+  (let ((found  nil)
+        case-fold-search dir)
+    (setq dir  (or (file-name-directory file)
+                   (error "File name `%s' is not absolute" file)))
     (save-excursion
-      ;; The hair here is to get the result of dired-goto-subdir
-      ;; without really calling it if we don't have any subdirs.
-      (if (if (string= dir (expand-file-name default-directory))
-              (goto-char (point-min))
-            (and (cdr dired-subdir-alist)
-                 (dired-goto-subdir dir)))
-          (let ((base      (file-name-nondirectory file))
-                search-string
-                (boundary  (dired-subdir-max)))
-            (setq search-string
-                  (replace-regexp-in-string "\^m" "\\^m" base nil t))
-            (setq search-string
-                  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
-            (while (and (not found)
-                        ;; filenames are preceded by SPC, this makes
-                        ;; the search faster (e.g. for the filename "-"!).
-                        (search-forward (concat " " search-string)
-                                        boundary 'move))
-              ;; Remove / from filename, then compare with BASE.
-              ;; Match could have BASE just as initial substring or
-              ;; or in permission bits or date or not be a proper filename at all.
-              (if (and (dired-get-filename 'no-dir t)
-                       (equal base (directory-file-name (dired-get-filename 'no-dir t))))
-                  ;; Must move to filename since an (actually
-                  ;; correct) match could have been elsewhere on the
-                  ;; ;; line (e.g. "-" would match somewhere in the
-                  ;; permission bits).
-                  (setq found (dired-move-to-filename))
-                ;; If this isn't the right line, move forward to avoid
-                ;; trying this line again.
-                (forward-line 1))))))
+      (goto-char (point-min))
+      (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t)))
+        (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+        (while (and (not (eobp)) (not found))
+          (if (search-forward (concat " " search-string) nil 'NO-ERROR)
+              ;; Must move to filename since an (actually correct) match could have been
+              ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).
+              (setq found  (dired-move-to-filename))
+            ;; If this isn't the right line, move forward to avoid trying this line again.
+            (forward-line 1)))))
+    (unless found
+      (save-excursion
+        ;; The hair here is to get the result of dired-goto-subdir
+        ;; without really calling it if we don't have any subdirs.
+        (if (if (string= dir (expand-file-name default-directory))
+                (goto-char (point-min))
+              (and (cdr dired-subdir-alist) (dired-goto-subdir dir)))
+            (let ((base      (file-name-nondirectory file))
+                  search-string
+                  (boundary  (dired-subdir-max)))
+              (setq search-string
+                    (replace-regexp-in-string "\^m" "\\^m" base nil t))
+              (setq search-string
+                    (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
+              (while (and (not found)
+                          ;; filenames are preceded by SPC, this makes
+                          ;; the search faster (e.g. for the filename "-"!).
+                          (search-forward (concat " " search-string)
+                                          boundary 'move))
+                ;; Remove / from filename, then compare with BASE.
+                ;; Match could have BASE just as initial substring or
+                ;; or in permission bits or date or not be a proper filename at all.
+                (if (and (dired-get-filename 'no-dir t)
+                         (equal base (directory-file-name (dired-get-filename 'no-dir t))))
+                    ;; Must move to filename since an (actually
+                    ;; correct) match could have been elsewhere on the
+                    ;; line (e.g. "-" would match somewhere in the
+                    ;; permission bits).
+                    (setq found (dired-move-to-filename))
+                  ;; If this isn't the right line, move forward to avoid
+                  ;; trying this line again.
+                  (forward-line 1)))))))
     (and found
          ;; return value of point (i.e., FOUND):
          (goto-char found))))

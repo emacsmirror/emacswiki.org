@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:02:58 2010 (-0800)
+;; Last-Updated: Wed Sep 29 09:26:32 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 551
+;;     Update #: 556
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,6 +54,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/09/29 dadams
+;;     insert-directory: Updated per Emacs 24: Add -d switch if not full-directory-p.
 ;; 2009/10/23 dadams
 ;;     count-dired-files: Return 0 if search finds no file.
 ;;     update-dired-files-count: DTRT if count-dired-files returns 0.
@@ -309,6 +311,7 @@ See documentation of `display-buffer' for more information."
 
 
 ;; REPLACES ORIGINAL in `files.el':
+;;
 ;; Add number of files in directory to `total' header entry.
 ;;
 (defun insert-directory (file switches &optional wildcard full-directory-p)
@@ -401,6 +404,14 @@ normally equivalent short `-D' option is just passed on to
 				 (shell-quote-wildcard-pattern pattern))))
 		    ;; SunOS 4.1.3, SVr4 and others need the "." to list the
 		    ;; directory if FILE is a symbolic link.
+ 		    (unless full-directory-p
+ 		      (setq switches
+ 			    (if (stringp switches)
+ 				(concat switches " -d")
+                              ;; Vanilla Emacs uses this here, but no good for older
+                              ;; Emacs since uses 3rd arg:
+ 			      ;; (add-to-list 'switches "-d" 'append))))
+                              (setq switches  (append switches (list "-d"))))))
 		    (apply 'call-process
 			   insert-directory-program nil t nil
 			   (append

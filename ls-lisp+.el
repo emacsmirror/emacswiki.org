@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Sun Sep 26 17:20:07 2010 (-0700)
+;; Last-Updated: Wed Sep 29 09:15:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 157
+;;     Update #: 164
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -55,6 +55,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/09/29 dadams
+;;     insert-directory: Updated per Emacs 24 code: delete SPC (also) from switches.
 ;; 2010/09/26 dadams
 ;;     Added: ls-lisp-insert-directory (Emacs 23+), to let you use wildcards in
 ;;            file names of a cons arg to dired.  Corrected bug in it for ""FILE.
@@ -105,10 +107,16 @@
 (defvar ls-lisp-gid-d-fmt)      ; Defined in `ls-lisp.el' (Emacs 23+).
 (defvar ls-lisp-gid-s-fmt)      ; Defined in `ls-lisp.el' (Emacs 23+).
 (defvar ls-lisp-filesize-d-fmt) ; Defined in `ls-lisp.el' (Emacs 23+).
-(defvar ls-lisp-filesize-d-fmt) ; Defined in `ls-lisp.el' (Emacs 23+).
+(defvar ls-lisp-filesize-f-fmt) ; Defined in `ls-lisp.el' (Emacs 23+).
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+
+
+;; REPLACES ORIGINAL in `ls-lisp.el'
+;;
+;; In the second header line: include the number of files and subdirs in the directory.
+;;
 (defun insert-directory (file switches &optional wildcard full-directory-p)
   "Insert directory listing for FILE, formatted according to SWITCHES.
 Leaves point after the inserted text.
@@ -146,7 +154,7 @@ that work are: A a c i r S s t u U X g G B C R n and F partly."
 	(if (string-match "--dired " switches)
 	    (setq switches (replace-match "" nil nil switches)))
 	;; Convert SWITCHES to a list of characters.
-	(setq switches (delete ?- (append switches nil)))
+	(setq switches (delete ?\  (delete ?- (append switches nil))))
 	;; Sometimes we get ".../foo*/" as FILE.  While the shell and
 	;; `ls' don't mind, we certainly do, because it makes us think
 	;; there is no wildcard, only a directory name.

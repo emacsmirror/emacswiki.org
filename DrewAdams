@@ -57,7 +57,7 @@ The same question, applied to functional programming:
 
 IOW, it's about '''modularity''', and modularity is all about '''glue''': the ''ability to combine'' pieces.
 
-For a fabulous essay on the modularity and "glue" of functional programming, see John Hughes's classic, ''Why Functional Programming Matters'': <tt>http://www.md.chalmers.se/~rjmh/Papers/whyfp.html. </tt> From the Introduction (emphasis added):
+For a fabulous essay on the modularity and "glue" of functional programming, see John Hughes's classic, ''Why Functional Programming Matters'': <tt> http://www.cs.kent.ac.uk/people/staff/dat/miranda/whyfp90.pdf </tt> or <tt>http://www.md.chalmers.se/~rjmh/Papers/whyfp.html. </tt> From the Introduction (emphasis added):
 
 [new]
 : The special characteristics and advantages of functional programming are
@@ -305,6 +305,13 @@ IciclesDiscussion and Drew deleted it now, so... whatever. -- stepnem
 
 ----
 
+
+[new:jlr:2010-09-27 15:31 UTC]
+Thanks for leaving a welcome message on my wiki page. I use your brilliant Icicles mode every day. Incredible work - that must have taken a HUGE amount of effort. I've put real time into reading your documentation and still haven't explored every last corner yet.
+
+Every advanced completion system ever made will look to Icicles for inspiration/guidance. Congratulations on making something really exceptional.
+
+And thanks so much for putting all the hard work into releasing it!! Writing documentation and packaging a large piece of software like that takes a whole lot of effort. I really, really appreciate it and so do a lot of other people I'm sure. Thank you :)
 
 
 

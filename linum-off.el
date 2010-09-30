@@ -6,9 +6,9 @@
 ;; Maintainer: 
 ;; Created: Mon Sep 20 08:50:07 2010 (-0500)
 ;; Version: 
-;; Last-Updated: Mon Sep 20 09:32:12 2010 (-0500)
+;; Last-Updated: Wed Sep 29 09:38:00 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 38
+;;     Update #: 40
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -23,6 +23,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 29-Sep-2010    Matthew L. Fidler  
+;;    Last-Updated: Wed Sep 29 09:35:10 2010 (-0500) #39 (Matthew L. Fidler)
+;;    Added Dired mode
 ;; 20-Sep-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Sep 20 09:29:06 2010 (-0500) #37 (Matthew L. Fidler)
 ;;    Took out starred buffers.
@@ -56,7 +59,7 @@
 ;;; Code:
 (require 'linum)
 
-(defcustom linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode)
+(defcustom linum-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode)
   "* List of modes disabled when global linum mode is on"
   :type '(repeat (sexp :tag "Major mode"))
   :tag " Major modes where linum is disabled: "

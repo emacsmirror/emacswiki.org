@@ -1,14 +1,14 @@
 I recently discovered my passion for emacs and lisp programming. I began using emacs in 2008 and I'm using it daily ever since.
 
-== Emacs configuration ==
-http://github.com/senny/emacs-eclim
-
 == Projects ==
 * [RvmEl rvm.el] -- http://github.com/senny/rvm.el
-* [[CucumberI18nEl]] -- http://github.com/senny/cucumber-i18n.el
+* [ThemeRollerEl theme-roller.el] -- http://github.com/senny/theme-roller.el
 * EmacsEclim -- http://github.com/senny/emacs-eclim
+* [[CucumberI18nEl]] -- http://github.com/senny/cucumber-i18n.el
 * EmacsXcode -- http://github.com/senny/emacs-xcode
 
+== Emacs configuration ==
+http://github.com/senny/emacs-eclim
 
 [new:DrewAdams:2009-10-13 19:33 UTC]
 Welcome to the wiki. -- DrewAdams

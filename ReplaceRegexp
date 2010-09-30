@@ -121,6 +121,14 @@ To start from one instead of of zero:
 
 See TexinfoMode.
 
+== Rename bumpy-case identifiers ==
+
+Converting the first character of a match to uppercase.  Useful if you live in CamelCase hell.
+
+  M-x replace-regexp
+  Replace regexp: \(\w\)\(\w+\)Value(
+  Replace regexp with: get\,(upcase \1)\2(
+
 == Use with Anything ==
 '''[[Anything]]''' is a candidate selection framework.
 

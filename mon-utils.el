@@ -132,7 +132,7 @@
 ;; `mon-map1', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
 ;; `mon-mapcon', `mon-string-split-commas',
 ;; `mon-print-buffer-object-readably', 
-;; `mon-with-inhibit-buffer-read-only-PP-TEST',
+;; `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-get-buffer-window-if'
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -218,9 +218,11 @@
 ;; `mon-read-keys-last-event'        -> `mon-test-keypresses'
 ;; `mon-region-wrap'                 -> `mon-wrap-selection'
 ;; `mon-region-reverse-words'        -> `mon-word-reverse-region'
-;; `mon-map-combine'               -> `mon-combine'
+;; `mon-map-combine'                 -> `mon-combine'
 ;; `mon-list-combine'                -> `mon-combine' 
 ;; `mon-buffer-name-print-readably'  -> `mon-print-buffer-object-readably'
+;; `mon-window-get-if-buffer'        -> `mon-get-buffer-window-if'
+;; `get-buffer-window-if'            -> `mon-get-buffer-window-if'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
@@ -1134,16 +1136,24 @@ buffer-name at point. Does not move point.\n
 ;;; :COURTESY :FILE gnus-util.el :WAS `gnus-buffer-exists-p'
 ;;; :ADDED let wrapper gensym for local var BUFF-P
 ;;; :CREATED <Timestamp: #{2010-02-04T14:17:59-05:00Z}#{10054} - by MON KEY>
-(defmacro mon-buffer-exists-p (buffer-to-check)
+(defmacro mon-buffer-exists-p (buffer-to-check &optional no-invert)
   "Return buffer-name of BUFFER-TO-CHECK if it exists.\n
+When BUFFER-TO-CHECK is a buffer object return a string.\n
+When BUFFER-TO-CHECK is a strin return a buffer object.\n
+When optional arg NO-INVERT is non-nil the `type-of' BUFFER-TO-CHECK returned
+without inversion.\n
 :EXAMPLE\n\n\(mon-buffer-exists-p \(current-buffer\)\)\n
+\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\n
+\(mon-buffer-exists-p \(current-buffer\) 'no-invert\)\n
+\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\) 'no-invert\)\n
 \(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
-\(pp-macroexpand-expression '\(mon-buffer-exists-p \(get-buffer \(current-buffer\)\)\)\)\n
+\(pp-macroexpand-expression '\(mon-buffer-exists-p  \(current-buffer\)\)\)\n
+\(pp-macroexpand-expression '\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\)\n
 :ALIASED-BY `buffer-exists-p'\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
-`mon-with-buffer-undo-disabled' `mon-buffer-written-p',
+`mon-with-buffer-undo-disabled', `mon-buffer-written-p',
 `mon-print-in-buffer-if-p', `mon-buffer-name->kill-ring',
 `mon-get-buffer-w-mode', `mon-get-buffer-parent-dir',
 `mon-get-proc-buffers-directories', `mon-get-buffers-directories',
@@ -1153,9 +1163,11 @@ buffer-name at point. Does not move point.\n
   (declare (indent 2) (debug t))
   (let ((mbep-bffr-p (make-symbol "mbep-bffr-p")))
     `(let ((,mbep-bffr-p ,buffer-to-check))
-       (when ,mbep-bffr-p
-         (funcall (if (stringp ,buffer-to-check) 'get-buffer 'buffer-name)
-                  ,mbep-bffr-p)))))
+       (when (and ,mbep-bffr-p (buffer-live-p (get-buffer ,mbep-bffr-p)))
+         (if ,no-invert ,mbep-bffr-p
+           (case (type-of ,mbep-bffr-p)
+             (string (get-buffer  ,mbep-bffr-p))
+             (buffer (buffer-name ,mbep-bffr-p))))))))
 ;;
 (when (and (intern-soft "IS-MON-SYSTEM-P")
            (bound-and-true-p IS-MON-SYSTEM-P)
@@ -1165,6 +1177,9 @@ buffer-name at point. Does not move point.\n
   (defalias 'buffer-exists-p 'mon-buffer-exists-p))
 ;;
 ;;; :TEST-ME (mon-buffer-exists-p (current-buffer))
+;;; :TEST-ME (mon-buffer-exists-p (buffer-name (current-buffer)))
+;;; :TEST-ME (mon-buffer-exists-p (current-buffer) 'no-invert)
+;;; :TEST-ME (mon-buffer-exists-p (buffer-name (current-buffer)) 'no-invert)
 ;;; :TEST-ME (prog2 (get-buffer-create "*BAD-IF-NOT-KILLED*") 
 ;;;                 (mon-buffer-exists-p "*BAD-IF-NOT-KILLED*")
 ;;;                 (kill-buffer (mon-buffer-exists-p "*BAD-IF-NOT-KILLED*")))
@@ -1248,6 +1263,31 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
 
 ;;; ==============================
 ;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T19:16:42-04:00Z}#{10393} - by MON KEY>
+(defun mon-get-buffer-window-if (buffer-or-name &optional frame)
+  "Return window if BUFFER-OR-NAME exists and there is a window displaying it.\n
+Optional arg FRAME is as per `get-buffer-window', it is one of:\n
+ { visible | 0 | t | nil | <FRAME> }\n
+When ommitted or nil the default is to search only the `selected-frame'.\n
+:EXAMPLE\n\n\(mon-get-buffer-window-if \"*Help*\"\)\n
+:ALIASED-BY `mon-window-get-if-buffer'
+:ALIASED-BY `get-buffer-window-if'\n
+:SEE-ALSO `mon-buffer-exists-p', `mon-print-buffer-object-readably',
+`mon-get-buffer-w-mode', `mon-buffer-written-p', `mon-with-file-buffer',
+`mon-window-map-active-to-plist'.\n►►►"
+ (let ((myb-wdw (mon-buffer-exists-p buffer-or-name)))
+   (when myb-wdw (get-buffer-window myb-wdw))))
+;;
+(unless (and (intern-soft "mon-window-get-if-buffer")
+             (fboundp 'mon-window-get-if-buffer))
+  (defalias 'mon-window-get-if-buffer 'mon-get-buffer-window-if))
+;;
+(unless (and (intern-soft "get-buffer-window-if")
+             (fboundp 'get-buffer-window-if))
+  (defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
+
+;;; ==============================
+;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-24T11:49:29-04:00Z}#{10385} - by MON KEY>
 (defun mon-print-buffer-object-readably (buffer-or-name &optional as-form)
   "Return a form containing a printed representation of BUFFER-OR-NAME.\n
@@ -1262,7 +1302,7 @@ Default is to return a lisp form for `eval'.\n
 \(mon-print-buffer-object-readably 
  \(car \(mon-string-wonkify \"prob-not-a-buffer\" 1\)\)\)
 :ALIASED-BY `mon-buffer-name-print-readably'
-:SEE-ALSO `mon-buffer-exists-p'.\n►►►"
+:SEE-ALSO `mon-buffer-exists-p', `mon-get-buffer-window-if'.\n►►►"
   (let ((gb (mon-buffer-exists-p buffer-or-name)))
     (cond ((stringp gb)
            (or (and as-form
@@ -7604,9 +7644,10 @@ plist elements of returned list have the format:\n
 \(mon-mapcar #'mon-plist-keys \(mon-map-windows->plist\)\)\n
 :ALIASED-BY `mon-get-window-plist'
 :ALIASED-BY `mon-window-map-active-to-plist'\n
-:SEE-ALSO `mon-plist-keys', `mon-map-obarray-symbol-plist-props', 
-`mon-list-all-properties-in-buffer', `mon-help-window-functions',
-`mon-help-plist-functions', `mon-help-plist-properties'.\n►►►"
+:SEE-ALSO `mon-get-buffer-window-if', `mon-plist-keys',
+`mon-map-obarray-symbol-plist-props', `mon-list-all-properties-in-buffer',
+`mon-help-window-functions', `mon-help-plist-functions',
+`mon-help-plist-properties'.\n►►►"
   (let (mmwp-wdo-l)
     (walk-windows
      #'(lambda (window)
@@ -7631,8 +7672,7 @@ plist elements of returned list have the format:\n
                            (list :left lft :top top :right rgt :bottom btm))
                          ;; psn-area psn-area-cns ;; tsmp ;; obj ;; img img-x/y
                          :window-point-char-width-height 
-                         `(:char-width ,(car w/h) :char-height ,(cdr w/h))
-                         ))))
+                         `(:char-width ,(car w/h) :char-height ,(cdr w/h))))))
            (push mmwp-wdo-dbind mmwp-wdo-l)))
      'no-mini t)
     mmwp-wdo-l))
@@ -8349,12 +8389,17 @@ Return the sublist of IN-LIST whose car matches.\n
 :NOTE This is a keywordless replacement for CL's `member-if'.
 :SEE-ALSO `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon',
 `mon-remove-if', `mon-remove-if-not', `mon-delete-if', `mon-char-code'.\n►►►"
+  (unless (functionp predicate)
+    (error (concat ":FUNCTION `mon-member-if' "
+                   "-- arg PREDICATE does not satisfy `functionp'")))
   (let ((mmi-ptr in-list))
     (catch 'mmi-found
       (while mmi-ptr
 	(when (funcall predicate (car mmi-ptr))
 	  (throw 'mmi-found mmi-ptr))
 	(setq mmi-ptr (cdr mmi-ptr))))))
+
+
 
 ;;; ==============================
 ;;; :COURTESY lisp/erc/erc-compat.el :WAS `erc-delete-if'
@@ -8364,11 +8409,14 @@ Return the sublist of IN-LIST whose car matches.\n
   "Remove all items satisfying PREDICATE in IN-SEQ.\n
 This is a destructive function: it reuses the storage of IN-SEQ
 whenever possible.\n
-:EXAMPLE\n\n
+:EXAMPLE\n\n\(mon-delete-if 'stringp '\(\"a\" \"b\" d q \(a \"a\" \"b\"\)\)\)
 :NOTE This is a keywordless replacement for CL's `delete-if'.
 :SEE-ALSO `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon',
 `mon-remove-if', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
 `mon-char-code', `mon-subseq'.\n►►►"
+  (unless (functionp predicate)
+    (error (concat ":FUNCTION `mon-delete-if' "
+                   "-- arg PREDICATE does not satisfy `functionp'")))
   ;; remove from car
   (while (when (funcall predicate (car in-seq))
 	   (setq in-seq (cdr in-seq))))
@@ -8400,6 +8448,9 @@ avoid corrupting IN-SEQ.\n
 :SEE-ALSO `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon',
 `mon-remove-if', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
 `mon-subseq', `mon-intersection', `mon-char-code'.\n►►►"
+  (unless (functionp predicate)
+    (error (concat ":FUNCTION `mon-remove-if-not' "
+                   "-- arg PREDICATE does not satisfy `functionp'")))
   (let (mrin-seq)
     (dolist (mrin-el in-seq)
       (when (funcall predicate mrin-el)
@@ -8426,6 +8477,9 @@ RMV-IF-PREDICATE is unary function.\n
 `mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
 `mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons',
 `mon-delq-cons'.\n►►►"
+  (unless (functionp rmv-if-predicate)
+    (error (concat ":FUNCTION `mon-remove-if' "
+                   "-- arg RMV-IF-PREDICATE does not satisfy `functionp'")))
   (let (mri-new-list)
     (dolist (mri-item rmv-list (setq mri-new-list (nreverse mri-new-list)))
       (when (not (funcall rmv-if-predicate mri-item))
@@ -8604,6 +8658,7 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
                (prog1 (nreverse ,mclm-res) (setcdr ,mclm-res ,mclm-cpy))))
          (car ,mclm-cpy)))))
 
+
 ;;; ==============================
 ;;; :PREFIX "mmp1-"
 ;;; :COURTESY sblc/src/code/list.lisp
@@ -8628,6 +8683,9 @@ TAKE-CAR
 :SEE :FILE sblc/src/code/list.lisp
 :SEE-ALSO `mon-remove-if-not', `mon-delete-if', `mon-member-if',
 `mon-char-code'.\n►►►"
+  (unless (functionp fun-designator)
+    (error (concat ":FUNCTION `mon-map1' "
+                   "-- arg FUN-DESIGNATOR does not satisfy `functionp'")))
   ;; :WAS (let ((fun (%coerce-callable-to-fun fun-designator)))
   (let* (;; :WAS (arglists  (copy-list original-arglists))
          (mmp1-arg-lsts (mon-copy-list-mac original-arglists))
@@ -8937,11 +8995,11 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 `mon-elt-<elt', `mon-maybe-cons', `mon-list-proper-p'.\n►►►"
   (let (mar-rtn)
     (setq mar-rtn
-          (mapcar #'(lambda (elem)
-                      (let* ((key (car elem))
-                             (val (assoc key seq2)))
+          (mapcar #'(lambda (mar-L-1)
+                      (let* ((mar-L-1-key (car mar-L-1))
+                             (mar-L-1-val (assoc mar-L-1-key seq2)))
                         ;; :WAS (if (cadr val) val elem))) seq1)) 
-                        (if val val elem))) seq1))))
+                        (if mar-L-1-val mar-L-1-val mar-L-1))) seq1))))
 ;;                          
 ;;; :TEST-ME (mon-assoc-replace '((a (a c d)) (b (c d e)) (c (f g h)))
 ;;;                             '((a (c d g)) (b (c d f)) (g (h g f))))
@@ -8993,7 +9051,9 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 ;;; :COURTESY Pascal J. Bourguignon :HIS list.lisp :WAS TRANSPOSE
 ;;; :CREATED <Timestamp: #{2009-09-28T17:40:47-04:00Z}#{09401} - by MON>
 (defun mon-transpose (trans-tree)
-  "Return a trans-tree where all the CAR and CDR are exchanged.\n
+  "Return TRANS-TREE transposed such that all car and cdr's are exchanged.\n
+:EXAMPLE\n\n\(mon-transpose '\(a \(bb cc\) dd\)\)\n
+\(mon-flatten \(mon-transpose '\(a \(bb cc\) dd\)\)\)\n
 :SEE-ALSO `mon-mismatch', `mon-intersection', `mon-combine', `mon-mapcar',
 `mon-map-append', `mon-maptrans-tree', `mon-flatten', `mon-recursive-apply',
 `mon-sublist', `mon-sublist-gutted', `mon-list-match-tails',
@@ -9010,10 +9070,8 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-15T14:40:11-04:00Z}#{10242} - by MON KEY>
-(defun* mon-mismatch (sqn1 sqn2 &key (sqn1-str 0)
-                                    (sqn1-end (length sqn1))
-                                    (sqn2-str 0)
-                                    (sqn2-end (length sqn2)))
+(defun* mon-mismatch (sqn1 sqn2 &key (sqn1-str 0) (sqn1-end (length sqn1))
+                           (sqn2-str 0) (sqn2-end (length sqn2)))
   "Implementation of `edmacro-mismatch' function with keywords.\n
 Compare sqn1 with sqn2, return index of first mismatching element.
 Return nil if the sequences match.  If one sequence is a prefix of the
@@ -9023,7 +9081,7 @@ other, the return value indicates the end of the shorted sequence.\n
 \(mon-sequence-mismatch  '\(a b c 2 8\) '\(a b c 2 8\) :sqn1-str 2  :sqn2-str 2\)\n
 \(mon-sequence-mismatch  '\(a b c 2 8\) '\(a b c a b c 2 8 a b c\) :sqn2-str 3\)\n
 :NOTE `edmacro-mismatch' was a kludge needed in order to use CL `mismatch'.\n
-Should byte withouth CL package warnings.\n
+Should byte-compile without CL runtime package warnings.\n
 :SEE-ALSO `mon-sublist', `mon-sublist-gutted', `mon-mapcar', `mon-map-append',
 `mon-string-chop-spaces', `mon-maptree', `mon-transpose', `mon-elt->',
 `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-flatten', `mon-combine',
@@ -9247,10 +9305,10 @@ Insert backslashes in front of special characters (namely  `\' backslash,
 requirements.\n
 Region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
-:NOTE\n Don't evaluate on docstrings containing regexps and expect sensible
+:NOTE Don't evaluate on docstrings containing regexps and expect sensible
 return values.\n
 :SEE-ALSO `mon-unescape-lisp-string-region', `mon-escape-string-for-cmd',
-`mon-exchange-slash-and-backslash'.\n►►►"
+`mon-exchange-slash-and-backslash', `mon-quote-sexp'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -9271,12 +9329,12 @@ return values.\n
 
 ;;; ==============================
 (defun mon-unescape-lisp-string-region (start end)
-  "Unescape special characters from the CL string specified by the region.\n
+  "Unescape special characters inregion from START to END.\n
 This amounts to removing preceeding backslashes from characters they escape.\n
 :NOTE region should only contain the characters actually comprising the string
 without the surrounding quotes.\n
-:SEE-ALSO `mon-escape-lisp-string-region', `mon-escape-string-for-cmd',
-`mon-exchange-slash-and-backslash'.\n►►►"
+:SEE-ALSO `mon-escape-lisp-string-region', `mon-quote-sexp',
+`mon-escape-string-for-cmd', `mon-exchange-slash-and-backslash'.\n►►►"
   (interactive "*r")
   (save-excursion
     (save-restriction
@@ -9292,13 +9350,17 @@ without the surrounding quotes.\n
 ;;; :CHANGESET 1997
 ;;; :CREATED <Timestamp: #{2010-07-27T15:29:09-04:00Z}#{10302} - by MON KEY>
 (defun mon-quote-sexp (sexp)
-  "Quote SEXP if it is not self quoting.\n
-:EXAMPLE\n\n
-:SEE-ALSO .\n►►►"
+  "Quote SEXP as if by `quote' if it is not self quoting.\n
+:EXAMPLE\n\n(mon-quote-sexp '(a list))\n
+\(mon-quote-sexp #'\(lambda \(x\)\(x\)\)\)\n
+\(mon-quote-sexp '\(lambda \(x\)\(x\)\)\)\n
+\(mon-quote-sexp '\(a . b\)\)\n
+\(mon-quote-sexp :test)\n
+\(mon-quote-sexp #:is-not\)\n
+:SEE-ALSO `mon-escape-lisp-string-region', `mon-unescape-lisp-string-region'.\n►►►"
   (if (or (memq sexp '(t nil))
-	  (keywordp sexp)
-	  (and (listp sexp)
-	       (memq (car sexp) '(lambda)))
+	  (keywordp (intern-soft (format "%S" sexp)))
+	  (and (listp sexp) (eq (car sexp) '(lambda)))
 	  (stringp sexp)
 	  (numberp sexp)
 	  (vectorp sexp)

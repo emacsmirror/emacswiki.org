@@ -17,8 +17,11 @@ One way to use Imenu is as a menubar menu. To automatically add Imenu to the men
 `font-lock-mode-hook' is run immediately after entering every major mode. You can make use of this to add an Imenu index to the menu bar in /any/ mode that supports it:
 
  (defun try-to-add-imenu ()
-   (condition-case nil (imenu-add-menubar-index) (error nil)))
+
+  (condition-case nil (imenu-add-to-menubar "yourFancyName") (error nil)))
+
  (add-hook 'font-lock-mode-hook 'try-to-add-imenu)
+
 
 == Imenu from the Keyboard, with Completion ==
 

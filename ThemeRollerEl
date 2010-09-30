@@ -1,0 +1,7 @@
+= theme-roller.el =
+
+A wrapper around color-theme to build your own themes fast and keep them in sync with newly added faces.
+theme-roller.el provides a sane default for as many faces as possible so that you can supply only a subset of colors
+and customize most of the emacs environment.
+
+http://github.com/senny/theme-roller.el
