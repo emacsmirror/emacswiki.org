@@ -7,8 +7,9 @@ portrait:http://www.xshi.org/images/stories/xin/sx-smallpic.jpg
 = My Favorite Emacs Modes =
 
 * InteractivelyDoThings
-* EmacsMuse + PlannerMode + RememberMode
+* TrampMode
 * OrgMode
+* MultiTerm
 * AUCTeX + BibTeX + RefTeX
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Wed Sep 29 09:15:24 2010 (-0700)
+;; Last-Updated: Thu Sep 30 08:21:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 164
+;;     Update #: 169
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -113,7 +113,7 @@
 
 
 
-;; REPLACES ORIGINAL in `ls-lisp.el'
+;; REPLACE ORIGINAL in `ls-lisp.el'
 ;;
 ;; In the second header line: include the number of files and subdirs in the directory.
 ;;
@@ -226,7 +226,10 @@ that work are: A a c i r S s t u U X g G B C R n and F partly."
 available on disk [RET, mouse-2: more info]")))))))))
 
 
-;;; BUG fix for Emacs 21 and 22.  Emacs 23 already has the bug (#2801) fix.
+;; REPLACE ORIGINAL in `ls-lisp.el'.
+;;
+;; BUG fix for Emacs 21 and 22.  Emacs 23 already has the bug (#2801) fix.
+;;
 (cond ((= emacs-major-version 21)
        (defun ls-lisp-insert-directory
            (file switches time-index wildcard full-directory-p)
@@ -412,7 +415,12 @@ not contain `d', so that a full listing is expected."
                (message "%s: doesn't exist or is inaccessible" file)
                (ding) (sit-for 2)))))))
 
-;; If FILE is nil, then just use `default-directory'.
+
+
+;; REPLACE ORIGINAL in `ls-lisp.el'.
+;;
+;; 1. If FILE is nil, then just use `default-directory'.
+;; 2. Do nothing if FILE is "".  This is a fix for Emacs bug #7112.
 ;;
 (when (> emacs-major-version 22)
   (defun ls-lisp-insert-directory

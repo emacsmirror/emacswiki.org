@@ -5,3 +5,5 @@ Allows outlook to act as a "mail-server" for message-mode.  To setup put Lisp:me
   (setq mail-user-agent 'message-user-agent)
   (require 'message-outlook)
 
+[new]
+This seems to kind of work, at least in emacs-nt, although one still needs to press the "Send" button in Outlook. Using cygwin emacs it fails utterly however, because the path to the temporary file is (unsurprisingly) passed in Cygwin format.

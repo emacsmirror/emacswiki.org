@@ -16,7 +16,7 @@
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
 ;; Version: 1.4.10d (2010-06-23)
-;; Serial Version: %Id: 29%
+;; Serial Version: %Id: 31%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
