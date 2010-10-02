@@ -40,10 +40,13 @@
 ;; `mon-get-text-properties-category', `mon-nuke-overlay-buffer',
 ;; `mon-get-overlays-map-props', `mon-get-overlays-region',
 ;; `mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
-;;
+;; `mon-insert-w-text-properties', 
+;; `mon-get-text-properties-region-prop-list', 
+;; `mon-get-text-properties-region-prop', `mon-search-text-properties-prop',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
+;; `mon-set-text-properies-region', `mon-get-text-properties-region-prop'
 ;;
 ;; METHODS:
 ;;
@@ -146,7 +149,35 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(eval-when-compile (require 'cl)
+                   (require 'edebug))
+
+
+;;; ==============================
+;;; :COURTESY slime.el :WAS `slime-propertize-region'
+;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T13:51:01-04:00Z}#{10393} - by MON KEY>
+(defmacro mon-set-text-properies-region (props &rest body)
+  "Execute BODY and add PROPS to all the text it inserts.\n
+More precisely, PROPS are added to the region between the point's positions
+before and after executing BODY.\n
+:SEE-ALSO `mon-insert-w-text-properties'.\n►►►"
+  (let ((start (edebug-gensym)))
+    `(let ((,start (point)))
+       (prog1 (progn ,@body)
+         (add-text-properties ,start (point) ,props)))))
+;;
+(put 'mon-set-text-properies-region 'lisp-indent-function 1)
+
+
+;;; ==============================
+;;; :COURTESY slime.el :WAS `slime-insert-propertized'
+;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T13:53:56-04:00Z}#{10393} - by MON KEY>
+(defsubst mon-insert-w-text-properties (props &rest args)
+  "Insert ARGS adding text-property PROPS to the inserted text.\n
+:SEE-ALSO `mon-set-text-properies-region'.\n►►►"
+  (mon-set-text-properies-region props (apply #'insert args)))
 
 ;;; ==============================
 ;;; :NOTE Keep with `mon-list-all-properties-in-buffer'.
@@ -287,6 +318,77 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
 ;;              (fboundp 'mon-get-text-property-face-at-posn))
 ;;   (defalias 'mon-get-text-properties-face-at-posn 'mon-get-face-at-posn))
 
+
+;;; ==============================
+;;; :COURTESY slime.el :WAS `slime-get-region-properties'
+;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T14:25:49-04:00Z}#{10393} - by MON KEY>
+(defun mon-get-text-properties-region-prop (prop start end)
+  "Get occurences of prop in region from START to END.\n
+Return a list of properties found. Return value has the form:\n
+ ( ( <PROP> ( <PROP-START-PSN> . <PROP-END-PSN> ))* )\n
+:EXAMPLE\n\n
+:SEE-ALSO `mon-get-text-properties-region-prop-list', `mon-get-text-properties-region'.\n►►►"
+  (loop for position = (if (get-text-property start prop)
+                           start
+                           (next-single-property-change start prop))
+        then (next-single-property-change position prop)
+        while (and position  (<= position end))
+        when (get-text-property position prop)
+        collect `(,(get-text-property position prop) 
+                  (,position . ,(next-single-property-change position prop) ))))
+
+;;; ==============================
+;;; :COURTESY slime.el  :WAS `slime-get-properties'
+;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T14:29:47-04:00Z}#{10393} - by MON KEY>
+(defun mon-get-text-properties-region-prop-list (prop &optional no-region-from-psn)
+  "Find region occurences of PROP. Return a list of properties found.\n
+When the region is active (e.g. `use-region-p' is non-nil) and otpional arg
+NO-REGION-FROM-PSN is omitted find occurences of PROP in region start to end as
+if by `mon-get-text-properties-region-prop'.
+When region is not active find PROP as if by `get-text-property' from `point'
+unless optional arg NO-REGION-FROM-PSN is non-nil in which case text-properties
+are located beginning with NO-REGION-FROM-PSN .\n
+Return value has one of the the following two forms:\n
+ ;; `use-region-p' non-nil and NO-REGION-FROM-PSN ommitted
+ ( ( <PROP> ( <PROP-START-PSN> . <PROP-END-PSN> ))* )\n
+ ;; from `point' or NO-REGION-FROM-PSN non-nil\n
+ ( <PROP> ( <PROP-START-PSN> . <PROP-END-PSN> ))\n
+:EXAMPLE\n\n
+:SEE-ALSO `mon-get-text-properties-region-prop', `mon-get-text-properties-region' .\n►►►"
+  (if (and (use-region-p) (not no-region-from-psn))
+      (mon-get-text-properties-region-prop prop (region-beginning) (region-end))
+    (let* ((frm-psn (or no-region-from-psn (point)))
+           (mgtprpl-val (get-text-property frm-psn prop)))
+      (when mgtprpl-val 
+        `(,mgtprpl-val (,frm-psn . ,(next-single-property-change frm-psn prop)))))))
+
+;;; ==============================
+;;; :COURTESY slime.el :WAS `slime-search-property'
+;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T15:00:42-04:00Z}#{10393} - by MON KEY>
+(defun mon-search-text-properties-prop (prop &optional backward prop-value-fn)
+  "Search the next text range where PROP is non-nil.\n
+Return the value of PROP.
+If BACKWARD is non-nil, search backward.
+If PROP-VALUE-FN is non-nil use it to extract PROP's value.
+:SEE-ALSO .\n►►►"
+  (let ((next-candidate (if backward 
+                            #'previous-single-char-property-change
+                          #'next-single-char-property-change))
+        (prop-value-fn  (or prop-value-fn
+                            #'(lambda ()
+                                (get-text-property (point) prop))))
+        (start (point))
+        prop-value)
+    (while (progn 
+             (goto-char (funcall next-candidate (point) prop))
+             (not (or (setq prop-value (funcall prop-value-fn)) 
+                      (eobp) 
+                      (bobp)))))
+    (cond (prop-value)
+          (t (goto-char start) nil))))
 
 ;;; ==============================
 ;;; :RENAMED `mon-kill-ring-save-w-props' -> `mon-get-text-properties-region-to-kill-ring'
@@ -782,10 +884,10 @@ Sublists contain two index values and text-property plist of prop val pairs e.g.
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-05T19:04:53-05:00Z}#{10096} - by MON KEY>
 (defun mon-get-text-properties-map-ranges (text-prop-list)
-  "Map the indexes at head of each sublist of TEXT-PROP-LIST to a consed list.
-Return value is a list of sublists of the form:
+  "Map the indexes at head of each sublist of TEXT-PROP-LIST to a consed list.\n
+Return value is a list of sublists of the form:\n
  ( (idx1a idx1b) (idx2a idx2b) (idx3a idx3b) { ... } )\n
-:EXAMPLE
+:EXAMPLE\n
 :CALLED-BY `mon-get-text-properties-parse-buffer-or-sym'.\n
 :SEE-ALSO `mon-help-text-property-functions-ext',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
@@ -831,10 +933,10 @@ Return value inserted in RANGE-BUFFER.\n
 ;;; :CHANGESET 2109
 ;;; :CREATED <Timestamp: #{2010-09-04T12:34:27-04:00Z}#{10356} - by MON KEY>
 (defun mon-get-text-property-bounds (prop)
-  "Return positions of changes to previous and next char property for PROP.
+  "Return positions of changes to previous and next char property for PROP.\n
 Return value is a two elt list of `previous-single-char-property-change' and
 `next-single-char-property-change'.\n
-PROP is the name of a text property.
+PROP is the name of a text property.\n
 :EXAMPLE\n\n\(with-temp-buffer 
   \(save-excursion \(insert \(propertize \"bubba\" 'bubba-props 'im-a-bubba\)\)\)
   \(mon-get-text-property-bounds 'bubba-props\)\)\n
@@ -854,7 +956,7 @@ PROP is the name of a text property.
   (let ((end (next-single-char-property-change (point) prop)))
     (list (previous-single-char-property-change end prop) end)))
 
-
+;;; ==============================
 ;; :COURTESY gnus-util.el :WAS `gnus-remove-text-with-property'
 (defun mon-get-text-property-remove-all (txt-prop)
   "Delete all text in the current buffer with text property TXT-PROP.\n
@@ -984,6 +1086,8 @@ List elements of retrun value have the format:\n
 :EXAMPLE\n\n\(mon-get-overlays-map-props \(mon-get-overlays-buffer\)\)\n
 :SEE-ALSO `mon-get-overlays-map-props', `mon-get-overlays-region',
 `mon-get-overlays-region-map-props', `mon-get-overlays-buffer',
+`mon-button-get-plist', `mon-button-get-plist-props',
+`mon-button-at-point-p', `mon-button-at-point-describe-button-plist',
 `mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
 `mon-help-overlay-on-region', `mon-help-overlay-result',
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
@@ -1022,6 +1126,26 @@ overlay center.\n
                              (current-buffer))
       (setq ov-lsts (overlay-lists)))
     (when ov-lsts `(,@(car ov-lsts) ,@(cdr ov-lsts)))))
+
+
+;; :COURTESY lisp/progmodes/cpp.el :WAS `cpp-grow-overlay'
+;; :NOTE Removed the AFTER argument and the optional LEN arg. 
+;;       I can't see that these are actually used.
+;;       :WAS  (overlay after start end &optional len)
+;; :ADDED optional arg BUFFER-OR-NAME per `move-overlay's optional arg BUFFER.
+(defun mon-set-overlay-range (mv-olay start-olay end-olay &optional buffer-or-name) 
+  "Grow overlay MV-OLAY with `move-overlay' into range START-OLAY to END-OLAY.\n
+MV-OLAY is an overlay object.
+START-OLAY END-OLAY are overlay positions 
+
+Optional arg BUFFER-OR-NAME is as per `move-overlay's optional arg BUFFER.\n
+:EXAMPLE\n\n
+:SEE-ALSO .\n►►►"
+  ;; :WAS (if after
+  (move-overlay mv-olay
+                (min start-olay (overlay-start mv-olay))
+                (max end-olay   (overlay-end   mv-olay))
+                (or buffer-or-name (current-buffer))))
 
 ;;; ==============================
 ;;; :TODO add a hook using to `kill-buffer-hook' or some such that removes the 

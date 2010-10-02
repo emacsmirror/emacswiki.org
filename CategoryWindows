@@ -29,7 +29,7 @@ Move among windows -- alternatives to `C-x o' (`other-window').
 * ToggleWindowSplit -- Toggle between vertical and horizontal split
 * WidenWindow -- Widen the active window
 * WindowResize -- Resize windows using simple keybindings
-
+* ThreeWindows -- Enjoy your work in three windows per [[Frame]]. One big and two small. 
 
 == Switching Window Configurations ==
 

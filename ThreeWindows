@@ -1,0 +1,189 @@
+People used to work with one, two or four windows per frame. They are all good choices. Especially for four windows, it even looks funny. People donate their screen space to 4 tasks in parallel, any time when a task needs more space, just type C-x 1 to change to the full frame and then type C-<left> to come back([[WinnerMode]]). Its a really funny way so that I had even made a function to split window in to 4 for me. 
+
+But quickly I noticed that I spent too many time in the endless C-x 1 and C-<left> cycles. So I start to work in 3 window mode -- always keep a relatively bigger window so that I don't need to change so frequently.   
+
+And since there are different size of windows, things must be able to be changed from each. So I made these functions to fulfill these requirements. 
+
+{{{
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;;                                                 ;;
+;;             window layout related               ;;
+;;                                                 ;;
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;  +-----------------------+----------------------+
+;  |                       |                      |
+;  |                       |                      |
+;  |                       |                      |
+;  +-----------------------+----------------------+
+;  |                       |                      |
+;  |                       |                      |
+;  |                       |                      |
+;  +-----------------------+----------------------+
+
+(defun split-window-4()
+ "Splite window into 4 sub-window"
+ (interactive)
+ (if (= 1 (length (window-list)))
+     (progn (split-window-vertically)
+	    (split-window-horizontally)
+	    (other-window 2)
+	    (split-window-horizontally)
+	    )
+   )
+)
+
+;  +----------------------+                 +----------- +-----------+ 
+;  |                      |           \     |            |           | 
+;  |                      |   +-------+\    |            |           | 
+;  +----------------------+   +-------+/    |            |           |
+;  |                      |           /     |            |           | 
+;  |                      |                 |            |           | 
+;  +----------------------+                 +----------- +-----------+ 
+
+(defun split-v ()
+  (interactive)
+  (if (= 2 (length (window-list)))
+    (let (( thisBuf (window-buffer))
+	  ( nextBuf (progn (other-window 1) (buffer-name))))
+	  (progn   (delete-other-windows)
+		   (split-window-horizontally)
+		   (set-window-buffer nil thisBuf)
+		   (set-window-buffer (next-window) nextBuf)
+		   ))
+    )
+)
+
+
+;  +----------- +-----------+                  +----------------------+ 
+;  |            |           |            \     |                      | 
+;  |            |           |    +-------+\    |                      | 
+;  |            |           |    +-------+/    +----------------------+ 
+;  |            |           |            /     |                      | 
+;  |            |           |                  |                      | 
+;  +----------- +-----------+                  +----------------------+ 
+
+(defun split-h ()
+  (interactive)
+  (if (= 2 (length (window-list)))
+    (let (( thisBuf (window-buffer))
+	  ( nextBuf (progn (other-window 1) (buffer-name))))
+	  (progn   (delete-other-windows)
+		   (split-window-vertically)
+		   (set-window-buffer nil thisBuf)
+		   (set-window-buffer (next-window) nextBuf)
+		   ))
+    )
+)
+
+;  +----------------------+                 +----------- +-----------+ 
+;  |                      |           \     |            |           | 
+;  |                      |   +-------+\    |            |           | 
+;  +----------------------+   +-------+/    |            |-----------|
+;  |         |            |           /     |            |           | 
+;  |         |            |                 |            |           | 
+;  +----------------------+                 +----------- +-----------+ 
+
+
+(defun split-v-3 ()
+  "Change 3 window style from horizontal to vertical"
+  (interactive)
+  (select-window (get-largest-window))
+  (if (= 3 (length (window-list)))
+      (let ((winList (window-list)))
+	    (let ((1stBuf (window-buffer (car winList)))
+		  (2ndBuf (window-buffer (car (cdr winList))))
+		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
+	      (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+	      (delete-other-windows)
+	      (split-window-horizontally)
+	      (set-window-buffer nil 1stBuf)
+	      (other-window 1)
+	      (set-window-buffer nil 2ndBuf)
+	      (split-window-vertically)
+	      (set-window-buffer (next-window) 3rdBuf)
+	      (select-window (get-largest-window))
+	    )
+	  )
+    )
+)
+
+;  +----------- +-----------+                  +----------------------+ 
+;  |            |           |            \     |                      | 
+;  |            |           |    +-------+\    |                      | 
+;  |            |-----------|    +-------+/    +----------------------+ 
+;  |            |           |            /     |          |           | 
+;  |            |           |                  |          |           | 
+;  +----------- +-----------+                  +----------------------+ 
+
+
+(defun split-h-3 ()
+  "Change 3 window style from vertical to horizontal"
+  (interactive)
+  (select-window (get-largest-window))
+  (if (= 3 (length (window-list)))
+      (let ((winList (window-list)))
+	    (let ((1stBuf (window-buffer (car winList)))
+		  (2ndBuf (window-buffer (car (cdr winList))))
+		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
+		(message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+		(delete-other-windows)
+		(split-window-vertically)
+		(set-window-buffer nil 1stBuf)
+		(other-window 1)
+		(set-window-buffer nil 2ndBuf)
+		(split-window-horizontally)
+		(set-window-buffer (next-window) 3rdBuf)
+		(select-window (get-largest-window))
+	      )
+	    )
+    )
+)
+
+;  +----------- +-----------+                    +----------- +-----------+ 
+;  |            |     C     |            \       |            |     A     | 
+;  |            |           |    +-------+\      |            |           | 
+;  |     A      |-----------|    +-------+/      |     B      |-----------| 
+;  |            |     B     |            /       |            |     C     | 
+;  |            |           |                    |            |           | 
+;  +----------- +-----------+                    +----------- +-----------+ 
+;
+;  +------------------------+                     +------------------------+ 
+;  |           A            |           \         |           B            | 
+;  |                        |   +-------+\        |                        | 
+;  +------------------------+   +-------+/        +------------------------+ 
+;  |     B     |     C      |           /         |     C     |     A      | 
+;  |           |            |                     |           |            | 
+;  +------------------------+                     +------------------------+ 
+
+
+(defun roll-v-3 ()
+  "Rolling 3 window buffers clockwise"
+  (interactive)
+  (select-window (get-largest-window))
+  (if (= 3 (length (window-list)))
+      (let ((winList (window-list)))
+	    (let ((1stWin (car winList))
+		  (2ndWin (car (cdr winList)))
+		  (3rdWin (car (cdr (cdr winList)))))
+	      (let ((1stBuf (window-buffer 1stWin))
+		    (2ndBuf (window-buffer 2ndWin))
+		    (3rdBuf (window-buffer 3rdWin))
+		    )
+		    (set-window-buffer 1stWin 3rdBuf)
+		    (set-window-buffer 2ndWin 1stBuf)
+		    (set-window-buffer 3rdWin 2ndBuf)
+		    )
+	      )
+	    )
+    )
+)
+
+}}}
+
+
+
+
+----
+CategoryWindows

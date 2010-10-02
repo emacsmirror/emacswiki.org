@@ -31,7 +31,20 @@
 ;; 2010-08-08 added function rename-buffer-in-ssh-exit
 ;; 2010-08-21 added my-overwrite, updated jump function
 ;; 2010-09-18 added very fancy function split-v-3 and split-h-3
-;; 2010-09-27 added roll-v-3 
+;; 2010-09-27 added roll-v-3
+;; 2010-10-01 Rewrote some functions in more Lisp like style
+
+(defun get-point (symbol num)
+ "get the point"
+ (funcall symbol num)
+ (point)
+)
+
+(defun test-get-point (&optional arg)
+  "test-get-point"
+  (interactive "P")
+  (message "%s" (get-point 'forward-word 3))
+)
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -47,6 +60,7 @@
             (insert-buffer-substring (get-buffer arg))  ))
   )
 )
+
 
 (defun ccc (&optional some)
   "try interactive"
@@ -94,18 +108,20 @@
 (defun some (&optional arg)
   "Delete Shell command output, to which C-c C-o cannot do for you."
   (interactive "P")
-  (let ((end
-	 (progn (comint-previous-prompt (or arg 1))
+  (let ((end 
+	 (get-point  '(lambda (&optional arg) "" (interactive "P")
+		(comint-previous-prompt (or arg 1))
 ;		(previous-line)   -- this command is for interactive only
 		(forward-line -1)
 ;		(move-beginning-of-line 1)
 		(move-end-of-line 1)
-		(point)))
+		)  arg))
 	(start
-	 (progn (comint-previous-prompt 1)
+	 (get-point '(lambda (&optional arg) "" (interactive "P")
+		 (comint-previous-prompt 1)
 ;		(next-line)
 		(move-beginning-of-line 2)
-		(point)))
+		)  arg))
 	)
     (delete-region start end)
     )
@@ -117,7 +133,6 @@
    (interactive "BInput file name: ")
    (write-region (region-beginning) (region-end) string "append")
  )
-
 
 
 (defun matrixSum (start end)
@@ -145,25 +160,6 @@
     )
 )
 
-(defun dove-backward-kill-word (&optional arg)
-  "Backward kill word, but do not insert it into kill-wring"
-  (interactive "P")
-  (let (( end (point) )
-	( beg (progn (backward-word arg ) (point)))
-	      )
-    (delete-region beg end)
-    )
-)
-
-(defun dove-forward-kill-word (&optional arg)
-  "Backward kill word, but do not insert it into kill-wring"
-  (interactive "P")
-  (let (( beg (point) )
-	( end (progn (forward-word arg ) (point)))
-	      )
-    (delete-region beg end)
-    )
-)
 
 ; The function will ignore command like this
 ; ssh msg@tivx24.cn.ibm.com ls bin
@@ -235,12 +231,13 @@
       (add-hook 'shell-mode-hook 'kill-shell-buffer-after-exit t)
 
 ))
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
 ;;             copy & paste related                ;;
-
 ;;                                                 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 
 
 (defun insert-buffer-name (&optional arg)
@@ -263,53 +260,72 @@
     )
 )
 
-(defun kill-line-to-start(&optional arg)
- "Kill to the beginning of a line. Just opposite as kill-line"
- (interactive "P")
- (if (= (or arg 0) 1)    ;; arg=1, erease line only
-   (kill-region (line-beginning-position arg) (point))
-   (delete-region (line-beginning-position arg) (point))
-   )
-)
-
- (defun to-the-line-end (&optional arg)
-   "Copy/Erase to current line line, like kill-line"
-   (interactive "P")
-   (if (= (or arg 0) 1)    ;; arg=1, erease line only
-     (copy-region-as-kill (point) (line-end-position arg))
-     (delete-region (point) (line-end-position arg))
-     )
-)
-
-; (defun erease-to-line-end (&optional arg)
-;   "Erease contains to the end of line"
-;   (interactive "p")
-;   (delete-region (point) (line-end-position arg))
+;(defun copy-word (&optional arg)
+; "Copy words at point into kill-ring"
+;  (interactive "P")
+;  (if arg
+;      (if (< arg 0)
+;	  (let ((end (end-of-thing 'word))
+;	    (beg (progn (forward-word arg) (point))))
+;	    (copy-region-as-kill beg end))
+;	  (let ((beg (beginning-of-thing 'word))     
+;	    (end (progn (forward-word arg) (point))))
+;	    (copy-region-as-kill beg end))
+;      )
+;  	  (let ((beg (beginning-of-thing 'word)) 
+;	    (end (progn (forward-word arg) (point))))
+;	    (copy-region-as-kill beg end))
+;  )
 ;)
 
 
 (defun copy-word (&optional arg)
  "Copy words at point into kill-ring"
   (interactive "P")
-  (let ((beg (progn (if (looking-back "[a-zA-Z0-9]" 1) (backward-word 1)) (point)))
-	(end (progn (forward-word arg) (point))))
-    (if (= (or arg 0) 1)    ;; arg=1, mark word only
-	(set-mark beg)
-    (copy-region-as-kill beg end))
-    )
+  (if arg
+      (if (< arg 0)
+	  (let ((end (end-of-thing 'word))
+		(beg (get-point 'forward-word arg)))
+	    (copy-region-as-kill beg end))
+	  (let ((beg (beginning-of-thing 'word)) 
+		(end (get-point 'forward-word arg)))
+	    (copy-region-as-kill beg end))
+      )
+  	  (let ((beg (beginning-of-thing 'word))
+		(end (get-point 'forward-word arg)))
+	    (copy-region-as-kill beg end))
+  )
 )
 
 (defun copy-paragraph (&optional arg)
  "Copy paragraphes at point"
   (interactive "P")
-  (let ((beg (progn (backward-paragraph 1) (point)))
-	(end (progn (forward-paragraph arg) (point))))
+  (let ((beg (get-point 'backward-paragraph 1))
+	(end (get-point 'forward-paragraph arg)))
     (if (= (or arg 0) 1)    ;; arg=1, mark paragraph only
       (set-mark beg)
       (copy-region-as-kill beg end))
     )
 )
 
+;(defun dove-backward-kill-word (&optional arg)
+;  "Backward kill word, but do not insert it into kill-wring"
+;  (interactive "P")
+;  (let (( end (point) )
+;	( beg (progn (backward-word arg ) (point)))
+;	      )
+;    (delete-region beg end)
+;    )
+;)
+
+(defun dove-forward-kill-word (&optional arg)
+  "Backward kill word, but do not insert it into kill-wring"
+  (interactive "P")
+  (let (( beg (point) )
+	( end (get-point 'forward-word arg)))
+    (delete-region beg end)
+    )
+)
 
 ;; (defun copy-string-to-mark (&optional arg)
 ;;  "Copy a sequence of string into kill-ring and then paste to the mark point"
@@ -409,8 +425,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 	   (progn (comint-next-prompt 25535) (yank))
 	   (progn (goto-char (mark)) (yank) )))
 )
-
-
 
 (defun backward-symbol (&optional arg)
   (interactive "P")
@@ -597,6 +611,22 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
     )
 )
 
+;  +----------- +-----------+                    +----------- +-----------+ 
+;  |            |     C     |            \       |            |     A     | 
+;  |            |           |    +-------+\      |            |           | 
+;  |     A      |-----------|    +-------+/      |     B      |-----------| 
+;  |            |     B     |            /       |            |     C     | 
+;  |            |           |                    |            |           | 
+;  +----------- +-----------+                    +----------- +-----------+ 
+;
+;  +------------------------+                     +------------------------+ 
+;  |           A            |           \         |           B            | 
+;  |                        |   +-------+\        |                        | 
+;  +------------------------+   +-------+/        +------------------------+ 
+;  |     B     |     C      |           /         |     C     |     A      | 
+;  |           |            |                     |           |            | 
+;  +------------------------+                     +------------------------+ 
+
 
 (defun roll-v-3 ()
   "Rolling 3 window buffers clockwise"
@@ -619,8 +649,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 	    )
     )
 )
-
-
 
 
 ;
@@ -678,4 +706,3 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 
 (provide 'dove-ext)
-

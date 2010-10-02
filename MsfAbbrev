@@ -34,6 +34,8 @@ What are the differences between version 0.99a and 1.0beta3? Why to patch the ol
 
 Answer:  Victor Hugo Borja forked it when msf-abbrev.el was at rev 0.98a.  To avoid confusion, Benjamin Rutt released the 1.0beta series to avoid ambiguity.  In summary, when you fork something, it's best to give it a new name, not just a new revision number.
 
+[new]
+I'm using the original version by Benjamin Rutt. Recently I have noticed that the <choose> template does not work in Emacs 23.2 (I don't know if it worked in 23.1), while in Emacs 22 it worked. Namely, when activating the choose template, there is no choices other than the first item from the list. Any idea how to fix it?
 ----
 CategoryTemplates CategoryCode
 

@@ -532,5 +532,8 @@ How does one configure cperl-mode to provide the following indentation rules:
     }
 
 i.e., the indentation of bar is calculated against the containing block's indentation, rather than aligning relative to the opening brace.
+
+[new]
+See [http://www.emacswiki.org/emacs/IndentingPerl this], in particular the cperl-indent-parens-as-block variable
 ----
 ProgrammingModes CategoryDotEmacs

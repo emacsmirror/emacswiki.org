@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Sep 29 10:01:06 2010 (-0700)
+;; Last-Updated: Fri Oct  1 11:14:43 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2724
+;;     Update #: 2739
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -211,6 +211,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/01 dadams
+;;     dired-goto-file: Avoid infloop from looking for dir line.  Thx to not-use.dilines.net.
 ;; 2010/09/29 dadams
 ;;     Added: diredp-dired-union(-1|-other-window|-interactive-spec).
 ;;     dired-goto-file: fix for Emacs bug #7126.
@@ -1690,7 +1692,7 @@ With non-positive prefix arg, read files and dirs to list and then the
 
 ;;;###autoload
 (defun diredp-dired-union (dirbufs &optional switches)
-  "Create a Dired buffer that is the union of existing Dired buffers.
+  "Create a Dired buffer that is the union of some existing Dired buffers.
 With a prefix arg, read `ls' switches.
 You are prompted for the Dired buffers.  Use `C-g' when done choosing
 them.  Then you are prompted for the name of the new Dired buffer.
@@ -2763,8 +2765,8 @@ Creates a buffer if necessary.
 On MS Windows, if you already at the root directory, invoke
 `diredp-w32-drives' to visit a navigable list of Windows drives."
   (interactive "P")
-  (let* ((dir (dired-current-directory))
-         (up (file-name-directory (directory-file-name dir))))
+  (let* ((dir  (dired-current-directory))
+         (up   (file-name-directory (directory-file-name dir))))
     (or (dired-goto-file (directory-file-name dir))
         ;; Only try dired-goto-subdir if buffer has more than one dir.
         (and (cdr dired-subdir-alist)
@@ -2797,13 +2799,15 @@ On MS Windows, if you already at the root directory, invoke
   (setq file (directory-file-name file)) ; does no harm if no directory
   (let ((found  nil)
         case-fold-search dir)
-    (setq dir  (or (file-name-directory file)
-                   (error "File name `%s' is not absolute" file)))
+    (setq dir  (or (file-name-directory file) (error "File name `%s' is not absolute" file)))
     (save-excursion
       (goto-char (point-min))
-      (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t)))
+      (let ((search-string  (replace-regexp-in-string "\^m" "\\^m" file nil t))
+            (here           nil))
         (setq search-string  (replace-regexp-in-string "\\\\" "\\\\" search-string nil t))
-        (while (and (not (eobp)) (not found))
+        ;; Use `here' to ensure we don't keep searching for a directory entry.
+        (while (and (not (eobp)) (not found) (not (equal here (point))))
+          (setq here  (point))
           (if (search-forward (concat " " search-string) nil 'NO-ERROR)
               ;; Must move to filename since an (actually correct) match could have been
               ;; elsewhere on the line (e.g. "-" would match somewhere in permission bits).

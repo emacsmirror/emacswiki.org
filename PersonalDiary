@@ -107,8 +107,9 @@ CategoryWriting
     (if (equal (point-max) 1) (insert (format-time-string journal-date-format)))
     (unless (eq (current-column) 0) (insert "\n"))
     (remove-text-properties (point-min) (point-max) '(face))
-    (insert (format-time-string journal-time-format))
-    (put-text-property (point-at-bol 0) (point-at-eol 0) 'face '(:weight bold))
+    (let ((beg (point)))
+      (insert (format-time-string journal-time-format))
+      (put-text-property beg (max beg (- (point) 1)) 'face '(:weight bold)))
     (set-buffer-modified-p unsaved))
   (journal-format-title))
 

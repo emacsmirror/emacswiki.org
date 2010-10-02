@@ -812,7 +812,7 @@ Like the `gensym' function in CL package but defined as a macro instead.\n
 :NOTE `edebug-gensym' is identical to the `gensym' but doesn't sigal a
 byte-compiler warning.\n
 :SEE-ALSO `mon-gensym-counter-randomizer', `mon-with-gensyms',
-`mon-gensym-counter-randomizer-TEST'.\n►►►"
+`mon-gensym-counter-randomizer-TEST', `edebug-gensym'.\n►►►"
   (declare (indent 0) (debug t))
   (let ((mgs-pfix (make-symbol "mgs-pfix"))
         (mgs-num  (make-symbol "mgs-num"))) ;; (print-gensym t))
@@ -823,8 +823,8 @@ byte-compiler warning.\n
            (,mgs-num  (if (and ,prefix ,counter (integerp ,counter))
                          ,counter
                        (prog1 
-                           *gensym-counter*
-                         (incf *gensym-counter*)))))
+                           edebug-gensym-index ;; :WAS *gensym-counter* 
+                         (incf edebug-gensym-index))))) ;; :WAS *gensym-counter*)))))
        (make-symbol (format "%s%d" ,mgs-pfix ,mgs-num)))))
 
 ;;; ==============================

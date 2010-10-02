@@ -406,6 +406,14 @@ Thx -- DrewAdams
 [new]
 Perfect! This was exactly what I was looking for. Thanks Drew! -- Christoph
 
+[new]
+Something is broken in 2010/09/29 version of dired+.el. When I call `dired-up-directory' function — instead of visiting parent dir, emacs starts eating all CPU and freezes, until gets killed or interrupted by `C-g'. No errors are displayed in the minibuffer or `*Messages*' buffer. 2010/09/27 works fine. -- [[Anonymous]]
+
+[new:DrewAdams:2010-10-01 18:15 UTC]
+Thanks.  Please try the latest.  Let me know if you encounter a problem.  -- DrewAdams
+
+[new]
+Latest version works good, thanks. -- [[Anonymous]]
 ----
 CategoryDirectories
 CategoryFiles

@@ -41,6 +41,7 @@
 ;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45',
 ;; `mon-split-designator', `mon-build-copyright-string-TEST',
 ;; `mon-build-copyright-string-license', `mon-insert-lisp-doc-eg-xref',
+;; `mon-insert-jump-lisp-doc', 
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS: 
@@ -1219,7 +1220,7 @@ Attempts to build completions from value of `slime-buffer-package',
 when `slime-current-connection' is non-nil.\n
 :EXAMPLE\n\n\(mon-lisp-CL-package-complete\)\n
 :ALIASED-BY `mon-CL-package-complete'\n
-:SEE-ALSO `mon-insert-lisp-CL-file-template',
+:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-lisp-CL-file-template',
 `mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-package-template',
 `quicklisp-system-complete', `mon-help-CL-pkgs'.\n►►►"
   (let ((pkg-cmplt (if (or (slime-current-connection)
@@ -1260,9 +1261,10 @@ Strip datestrings from  CL-PACKAGE when it matches the regexp:\n
 :ALIASED-BY `mon-add-lisp-CL-file-local-prop-template'
 :SEE info-node `(emacs)Specifying File Variables'.\n
 :SEE :FILE files-x.el\n
-:SEE-ALSO `mon-insert-cl-file-template', `mon-insert-cl-package-template',
-`mon-lisp-CL-package-complete', `generated-autoload-file',
-`add-file-local-variable-prop-line', `delete-file-local-variable-prop-line',
+:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-cl-file-template',
+`mon-insert-cl-package-template', `mon-lisp-CL-package-complete',
+`generated-autoload-file', `add-file-local-variable-prop-line',
+`delete-file-local-variable-prop-line',
 `copy-dir-locals-to-file-locals-prop-line'.\n►►►"
   (interactive "P\ni\np")
   (let* ((mdln-pkg (when (or cl-package current-prefix-arg)
@@ -1326,6 +1328,7 @@ Strip datestrings from  CL-PACKAGE when it matches the regexp:\n
 ;;; :TEST-ME (mon-insert-lisp-CL-mode-line-template t nil t)
 
 ;;; ==============================
+;;; :NOTE See the :TODO below regarding Quickproject.
 ;;; :CHANGESET 1935 <Timestamp: #{2010-07-03T11:58:11-04:00Z}#{10266} - by MON KEY>
 ;;; :CHANGESET 1922 <Timestamp: #{2010-06-26T19:34:08-04:00Z}#{10256} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-01T16:42:46-05:00Z}#{10051} - by MON KEY>
@@ -1338,12 +1341,13 @@ top of file.\n
 When optional arg W-PKG-NAME is non-nil it is a string or symbol naming a
 package as per `mon-insert-lisp-CL-mode-line-template'.\n
 :EXAMPLE\n\n\(mon-insert-lisp-CL-file-template\)\n
-:ALIASED-BY `mon-insert-CL-file-template'
-:SEE-ALSO `mon-lisp-CL-package-complete', `mon-insert-lisp-stamp',
-`mon-insert-lisp-testme', `mon-insert-lisp-evald',`mon-insert-copyright',
-`mon-comment-divider', `mon-comment-divider-to-col-four', `mon-stamp',
-`mon-file-stamp', `mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
-`mon-insert-copyright', `mon-insert-file-template'.\n►►►"
+:ALIASED-BY `mon-insert-CL-file-template'\n
+:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-stamp', `mon-insert-lisp-testme',
+`mon-insert-lisp-evald',`mon-insert-copyright', `mon-comment-divider',
+`mon-comment-divider-to-col-four', `mon-stamp', `mon-file-stamp',
+`mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme', `mon-insert-copyright',
+`mon-insert-file-template'.\n►►►"
   (interactive "i\np\nP")
   (let* ((milcft-modln (if (and w-pkg-name current-prefix-arg)
                            (mon-insert-lisp-CL-mode-line-template t t t)
@@ -1391,6 +1395,12 @@ package as per `mon-insert-lisp-CL-mode-line-template'.\n
 ;;; ==============================
 ;;; :COURTESY Zach Beane :HIS scratch-lisp-file.el
 ;;; :SEE (URL `http://www.xach.com/lisp/scratch-lisp-file.el')
+;;; :TODO Incorporate with Zach Beane's Quickproject and remove the Emacs
+;;; Lisp side which it might otherwise better accomodate. Quickproject creates a
+;;; skeleton of a Common Lisp project by automatically creating several files.
+;;; :SEE (URL `http://github.com/xach/quickproject/')
+;;; :SEE (URL `git://github.com/xach/quickproject.git')
+;;; :SEE (URL `http://xach.livejournal.com/269028.html')
 ;;; :CHANGESET 1922 <Timestamp: #{2010-06-26T19:33:58-04:00Z}#{10256} - by MON KEY>
 ;;; :MODIFICATIONS <Timestamp: Tuesday July 14, 2009 @ 02:12.25 AM - by MON KEY>
 (defun mon-insert-lisp-CL-package-template (&optional insrtp without-header intrp
@@ -1409,7 +1419,7 @@ the date string will be stripped.
 :EXAMPLE\n\n(mon-insert-lisp-CL-package-template)\n
 \(mon-insert-lisp-CL-package-template nil nil nil \"cl-bubba-as-string\"\)\n
 :ALIASED-BY `mon-insert-CL-package-template'\n
-:SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
+:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-lisp-CL-mode-line-template',
 `mon-lisp-CL-package-complete', `mon-insert-lisp-CL-file-template',
 `mon-insert-file-template', `mon-insert-copyright', `mon-insert-lisp-stamp',
 `mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
@@ -1492,17 +1502,30 @@ When INTRP is non-nil or called-interactively return as with princ.\n
 When INSRTP is non-nil return for as with prin1.\n
 When AS-KILL is non-nil or called-interactively with prefix arg put return
 value on the kill-ring.\n
-When current-buffer is in `slime-mode' and `slime-current-connection' is non-nil
-return value is as per Common-Lisp docstrings and prefixed by \"#.(format\" and
-with `~%' for newlines.\n
 :EXAMPLE\n\(mon-insert-lisp-doc-eg-xref\)\n
  |=> :EXAMPLE\\\\n
  |   :SEE-ALSO .\\\\n◄◄◄\\\" 
                   ;^^^ Here the cookie is reversed! 
                   ;    Actual value is returned per the cookie below.\n
+:NOTE When current-buffer's major mode `lisp-mode' or `lisp-interaction-mode'
+with `slime-mode' enabled and `slime-current-connection' is non-nil return value
+is as per Common-Lisp docstrings and use CL format spec `~%' for newlines and is
+prefixed by the form:\n
+ (setf (documentation '<SYM> '<TYPE>)
+    \"#.(format\"\\n
+Where <SYM> is a symbol-name and <TYPE> specifies symbol-name's documentation
+type, which is one of:\n
+ { <VARIABLE> | <FUNCTION> | <STRUCTURE> | <TYPE> | <SETF> | <T> }\n
+:EXAMPLE\n
+\(setf \(documentation '<SYM> '<DOC-TYPE>\)
+      #.\(format nil
+\" <DOCSTR> ~%
+:EXAMPLE~%~% { ... <EXAMPLE> ... } ~%
+:SEE-ALSO `<XREF>'.~%►►►\"\)\)\n
 :ALIASED-BY `mon-insert-doc-xref-eg'\n
-:SEE-ALSO `mon-insert-file-template', `mon-insert-lisp-CL-file-template',
-`mon-insert-copyright', `mon-insert-lisp-stamp', `mon-insert-lisp-testme',
+:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-file-template',
+`mon-insert-lisp-CL-file-template', `mon-insert-copyright',
+`mon-insert-lisp-stamp', `mon-insert-lisp-testme',
 `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\np\nP")
   (let* ((not-elisp (case (buffer-local-value 'major-mode (current-buffer))
@@ -1511,10 +1534,11 @@ with `~%' for newlines.\n
                       (t (and (buffer-local-value 'slime-mode (current-buffer))
                               (slime-current-connection)))))
          (mildeg-xref (if not-elisp
-                          (concat "#.(format nil \n"
-                                  "  \"{ ... DOCSTRING ... }~%\n"
-                                  ":EXAMPLE~%~%{ ... EXAMPLE ... }~%\n"
-                                  ":SEE-ALSO `<XREF>'.~%►►►\")")
+                          (concat "(setf (documentation '<SYM> '<TYPE>)\n"
+                                  "      #.(format nil\n"
+                                  "\" <DOCSTR> ~%\n"
+                                  ":EXAMPLE~%~% { ... <EXAMPLE> ... } ~%\n"
+                                  ":SEE-ALSO `<XREF>'.~%►►►\"))")
                         (concat "\"\n:EXAMPLE\\n\\n"  "\n" ":SEE-ALSO .\\n►►►\""))))
     (cond (intrp (save-excursion 
                    (newline)
@@ -1525,12 +1549,136 @@ with `~%' for newlines.\n
           (t (when as-kill (kill-new mildeg-xref))
              mildeg-xref))))
 ;;
-(defalias 'mon-insert-doc-xref-eg 'mon-insert-lisp-doc-eg-xref)
+(unless (and (intern-soft "mon-insert-doc-xref-eg")
+             (fboundp 'mon-insert-doc-xref-eg))
+(defalias 'mon-insert-doc-xref-eg 'mon-insert-lisp-doc-eg-xref))
 ;;
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil nil t)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref t)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil t)
+
+(eval-when-compile (require 'thingatpt))
+;;; ==============================
+;;; `bounds-of-thing-at-point'            <- :FILE thingatpt
+;;; `*regexp-symbol-defs-big*'            <- :FILE mon-regexp-symbols.el
+;;; `mon-g2be'                            <- :FILE mon-utils.el
+;;; `mon-get-text-properties-region-prop' <- :FILE mon-text-property-utils.el
+;;; :CHANGESET 2170
+;;; :CREATED <Timestamp: #{2010-10-01T18:19:44-04:00Z}#{10395} - by MON KEY>
+(defun mon-insert-jump-lisp-doc ()  
+  "Insert or jump to a CL documentation template for symbol at/around point.\n
+Documentation template is as per return value of `mon-insert-lisp-doc-eg-xref'.\n
+If a doc-template is found set register D to position of symbol defining form
+and move point jump to the documentation form.\n
+If a doc-template is not found insert a documentation form at end of symbol's
+defining form moving point.\n
+:SEE-ALSO `mon-insert-lisp-CL-package-template', `*regexp-symbol-defs-big*'.\n►►►"
+  (interactive)
+  (unless (and (not (eq major-mode 'emacs-lisp-mode)) 
+               (or (buffer-local-value 'slime-mode (current-buffer))
+                   (eq major-mode 'lisp-mode)
+                   (eq major-mode 'lisp-interaction-mode)))
+    (error (concat ":FUNCTION `mon-insert-jump-lisp-doc' "
+                   "-- current major-mode not relevant to this functions return value")))
+  (let ((pre-nrrw-mrk (make-marker))
+        (in-nrrw-mrk  (make-marker))
+        (mvd-mrk      (make-marker))
+        (srch-doc     "^\\((setf (documentation '\\)")
+        bodfn
+        doc-mrk
+        is-var
+        caught-sym-nm)
+    ;; To deterimine later if narrowing is in effect.
+    (set-marker pre-nrrw-mrk (mon-g2be -1 t))
+    (unwind-protect
+        (progn 
+          (set-marker mvd-mrk (point))
+          (ignore-errors
+            (end-of-defun)
+            (narrow-to-defun)
+            (setq bodfn (beginning-of-defun)))
+          (cond ((and bodfn (not (eq (marker-position mvd-mrk) (point))))
+                 (setq mvd-mrk t)
+                 (set-marker in-nrrw-mrk (point)))
+                ((and bodfn (eq (marker-position mvd-mrk) (point)))
+                 (set-marker in-nrrw-mrk (marker-position mvd-mrk))
+                 (setq mvd-mrk t)))
+          ;; (cond (mvd-mrk
+          ;;        ;; ((and (not bodfn)
+          ;;        ;;       (or (= (marker-position pre-nrrw-mrk) (point))
+          ;;        ;;           (= (marker-position mvd-mrk) (point))))
+          ;;        ;; (setq mvd-mrk)
+          ;;        (set-marker in-nrrw-mrk (point))))
+          (when mvd-mrk
+            (or (and (save-match-data 
+                       (looking-at *regexp-symbol-defs-big*)
+                       (setq caught-sym-nm (match-string-no-properties 3)))
+                     ;; If caught-sym-nm is prfxd with *, +, ?, ., etc. we need to `regexp-quote' it
+                     (progn 
+                       (when (memq (aref caught-sym-nm 0) '(42 43 46 63)) (setq is-var t))
+                       t))
+                (let* ((myb-fc-prps
+                        (mon-get-text-properties-region-prop 'face 
+                                                             (line-beginning-position) 
+                                                             (line-end-position)))
+                       (asqc-fc-prps (and myb-fc-prps
+                                          (or (assq 'font-lock-function-name-face myb-fc-prps)
+                                              (and (assq 'font-lock-variable-name-face myb-fc-prps)
+                                                   (setq is-var t))
+                                              (assq 'font-lock-type-face myb-fc-prps))))
+                       (loc-w-fc-prps (and asqc-fc-prps (cadr asqc-fc-prps)))
+                       (str-at-fc-prps (and loc-w-fc-prps
+                                            (buffer-substring-no-properties (car loc-w-fc-prps)
+                                                                            (cdr loc-w-fc-prps)))))
+                  (and str-at-fc-prps (setq caught-sym-nm str-at-fc-prps)))))
+          (widen)
+          (cond ((and mvd-mrk caught-sym-nm)
+                 (save-excursion
+                   (when (search-forward-regexp 
+                          (if is-var (concat srch-doc (regexp-quote caught-sym-nm))
+                            (concat srch-doc caught-sym-nm))
+                            nil t)
+                     (setq doc-mrk (point))
+                     (set-register ?D in-nrrw-mrk)))
+                 (if doc-mrk
+                     (prog1 
+                         (message (concat ":FUNCTION `mon-jump-to-cl-doc' "
+                                          "jumped to documentation form for symbol: `%s'\n"
+                                          "Location of symbols defining form stored in register D, "
+                                          "to return there type %s D") 
+                                  caught-sym-nm (substitute-command-keys "\\[jump-to-register]"))
+                       (progn (goto-char doc-mrk)
+                              (skip-syntax-forward "^\"")))
+                   (progn
+                     (goto-char in-nrrw-mrk)
+                     (end-of-defun)
+                     (newline)
+                     (insert (mon-insert-lisp-doc-eg-xref))
+                     (newline)
+                     (if (search-backward-regexp (concat srch-doc "\\(.* '\\)") 
+                                                 (car (save-match-data (bounds-of-thing-at-point 'sexp))) t)
+                         (progn (replace-match (concat (match-string-no-properties 1) caught-sym-nm " '"))
+                                (skip-syntax-forward "^\""))
+                       (progn
+                         (skip-syntax-backward "^\"" (car (save-match-data (bounds-of-thing-at-point 'sexp))))
+                         (backward-sexp)))
+                     (message (concat ":FUNCTION `mon-jump-to-cl-doc' "
+                                      "could not locate symbol `%s's documentation form "
+                                      "Inserted doc form at `end-of-defun'")
+                              caught-sym-nm))))
+                (mvd-mrk
+                 (end-of-defun)
+                 (newline)
+                 (insert (mon-insert-lisp-doc-eg-xref))
+                 (newline)
+                 (skip-syntax-backward "^\"" (car (save-match-data (bounds-of-thing-at-point 'sexp))))
+                 (message (concat ":FUNCTION `mon-jump-to-cl-doc' "
+                                  "could not locate a symbol nor its documentation form. "
+                                  "Inserted doc form at `end-of-defun'")))
+                ((not mvd-mrk)
+                 (goto-char in-nrrw-mrk))))
+      (widen))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Friday June 12, 2009 @ 12:24.26 PM - by MON KEY>
@@ -1538,8 +1686,8 @@ with `~%' for newlines.\n
   "Return or insert at point a `mon-comment-divider' newline and `mon-stamp'.\n
 When INSRTP is non-nil or called interactively insert at point.\n
 When MODIFICATIONS is non-nil or called interactively with prefix arg
-Prepend return value with ';;; :MODIFICATIONS ' prefix.
-The default is to return withe only ';;; :CREATED '\n
+Prepend return value with ';;; :MODIFICATIONS ' prefix.\n
+The default is to return with only ';;; :CREATED '\n
 MON uses to delimit and date newly created/modified procedures.\n
 :EXAMPLE\n\n\(mon-insert-lisp-stamp\)\n\n\(mon-insert-lisp-stamp nil nil t\)\n
 :NOTE MON limits use of the `;;; :MODIFICATIONS' prefix to situations where a
