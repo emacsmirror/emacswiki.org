@@ -132,7 +132,8 @@
 ;; `mon-map1', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
 ;; `mon-mapcon', `mon-string-split-commas',
 ;; `mon-print-buffer-object-readably', 
-;; `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-get-buffer-window-if'
+;; `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-get-buffer-window-if',
+;; `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -153,6 +154,9 @@
 ;; VARIABLES:
 ;; `*mon-utils-post-load-requires*', `*mon-ascii-cursor-state*', `*mon-bit-table*',
 ;; `*mon-alphabet-as-type-generate*', `*mon-recover-nil-t-default-plist*',
+;;
+;; :GROUPS
+;; `mon-base'
 ;;
 ;; ALIASED:
 ;; `mon-buffer-get-scratch'          -> `mon-scratch'
@@ -223,6 +227,7 @@
 ;; `mon-buffer-name-print-readably'  -> `mon-print-buffer-object-readably'
 ;; `mon-window-get-if-buffer'        -> `mon-get-buffer-window-if'
 ;; `get-buffer-window-if'            -> `mon-get-buffer-window-if'
+;; `buffer-narrowed-p'               -> `mon-buffer-narrowed-p'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
@@ -358,14 +363,30 @@
 (eval-when-compile (require 'cl))
 ;;
 ;; (eval-when-compile (require 'mon-cl-compat nil t))
-;;
-(declare-function w32-shell-execute "w32fns.c")
+
+;;; ==============================
+;;; :NOTE before :FILE mon-error-utils.el mon-text-property-utils.el
+;;; :CHANGESET 2171
+;;; :CREATED <Timestamp: #{2010-10-02T11:32:40-04:00Z}#{10396} - by MON KEY>
+(defgroup mon-base nil
+  "Top level group from which other mon related packages and groups inherit.\n
+:SEE-ALSO .\n►►►"
+  :prefix "mon-"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-utils.el")
+  :link '(emacs-library-link "mon-utils.el")
+  :link '(custom-group-link mon-doc-help-utils-faces)
+  :link '(custom-group-link mon-doc-help-utils)
+  :link '(custom-group-link mon-error-warn)
+  :group 'local)
 
 (require 'mon-error-utils)
 (require 'mon-text-property-utils)
 (require 'edebug)
 (require 'bytecomp)
 (require 'macroexp)
+
+(declare-function w32-shell-execute "w32fns.c")
 
 ;;; ==============================
 ;;; :NOTE The :CONSTANT `IS-MON-SYSTEM-P' is bound in:
@@ -407,8 +428,6 @@
 ;;   (require 'mon-mysql-utils)
 ;;   (require 'naf-mode-sql-skeletons nil t) ;; Load here instead of from :FILE naf-mode.el
 ;;   )
-
-
 
 ;;; ==============================
 ;;; :TODO extend this list into an alist with elements containing 
@@ -1153,12 +1172,14 @@ without inversion.\n
 \(pp-macroexpand-expression '\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\)\n
 :ALIASED-BY `buffer-exists-p'\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
-`mon-with-buffer-undo-disabled', `mon-buffer-written-p',
-`mon-print-in-buffer-if-p', `mon-buffer-name->kill-ring',
-`mon-get-buffer-w-mode', `mon-get-buffer-parent-dir',
-`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
-`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir',
-`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
+`mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
+`mon-buffer-sub-no-prop-check', `mon-with-buffer-undo-disabled',
+`mon-buffer-written-p', `mon-print-in-buffer-if-p',
+`mon-buffer-name->kill-ring', `mon-get-buffer-w-mode',
+`mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-string-split-buffer-name',
+`mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
+`with-temp-buffer'.\n►►►"
   ;; :PREFIX "mbep-"
   (declare (indent 2) (debug t))
   (let ((mbep-bffr-p (make-symbol "mbep-bffr-p")))
@@ -1218,6 +1239,7 @@ is not needed.\n
 :ALIASED-BY `mon-buffer-do-with-undo-disabled'\n
 :SEE-ALSO `mon-with-buffer-undo-disabled-TEST', `buffer-undo-list', 
 `mon-buffer-exists-p', `mon-buffer-written-p', `mon-buffer-exists-so-kill',
+`mon-buffer-narrowed-p', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
 `mon-print-in-buffer-if-p', `mon-get-buffer-w-mode',
 `mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
 `mon-get-buffers-directories', `mon-string-split-buffer-name',
@@ -1302,7 +1324,9 @@ Default is to return a lisp form for `eval'.\n
 \(mon-print-buffer-object-readably 
  \(car \(mon-string-wonkify \"prob-not-a-buffer\" 1\)\)\)
 :ALIASED-BY `mon-buffer-name-print-readably'
-:SEE-ALSO `mon-buffer-exists-p', `mon-get-buffer-window-if'.\n►►►"
+:SEE-ALSO `mon-buffer-exists-p', `mon-get-buffer-window-if'
+`mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
+`mon-buffer-sub-no-prop-check'.\n►►►"
   (let ((gb (mon-buffer-exists-p buffer-or-name)))
     (cond ((stringp gb)
            (or (and as-form
@@ -1329,12 +1353,14 @@ Return `#<killed buffer>' if buffered killed, else nil.\n
 :EXAMPLE\n\n\(let \(\(not-much-longer \(get-buffer-create \"not-much-longer\"\)\)\)
   \(mon-buffer-exists-so-kill \(buffer-name not-much-longer\)\)\)\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer', `mon-buffer-written-p',
-`mon-buffer-name->kill-ring', `mon-print-in-buffer-if-p',
-`mon-with-buffer-undo-disabled', `mon-get-buffer-w-mode',
-`mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
-`mon-get-buffers-directories', `mon-string-split-buffer-name',
-`mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
-`with-temp-buffer', `mon-help-buffer-functions'.\n►►►"
+`mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
+`mon-buffer-sub-no-prop-check', `mon-buffer-name->kill-ring',
+`mon-print-in-buffer-if-p', `mon-with-buffer-undo-disabled',
+`mon-get-buffer-w-mode', `mon-get-buffer-parent-dir',
+`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
+`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir',
+`with-current-buffer', `with-temp-file', `with-temp-buffer',
+`mon-help-buffer-functions'.\n►►►"
   (let ((mbep (mon-buffer-exists-p buffer-to-kill)))
     (if (when mbep (kill-buffer mbep))        
         (get-buffer mbep))))
@@ -1351,11 +1377,13 @@ not already visible. Default is to consider all buffers on all frames.\n
 \(mon-get-buffer-w-mode 'fundamental-mode\)\n
 :ALIASED-BY `mon-buffer-get-w-mode'\n
 :SEE-ALSO `mon-buffer-exists-p', `mon-with-file-buffer', `mon-buffer-written-p',
-`mon-buffer-name->kill-ring', `mon-print-in-buffer-if-p',
-`mon-with-buffer-undo-disabled', `mon-get-buffer-parent-dir',
-`mon-get-proc-buffers-directories', `mon-get-buffers-directories',
-`mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir',
-`with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
+`mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
+`mon-buffer-sub-no-prop-check', `mon-buffer-name->kill-ring',
+`mon-print-in-buffer-if-p', `mon-with-buffer-undo-disabled',
+`mon-get-buffer-parent-dir', `mon-get-proc-buffers-directories',
+`mon-get-buffers-directories', `mon-string-split-buffer-name',
+`mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
+`with-temp-buffer', `mon-help-buffer-functions'.\n►►►"
   (loop for buffer in (buffer-list)
         when (and (with-current-buffer buffer (eq major-mode w-mode))
                   (not (string-match "^ " (buffer-name buffer)))
@@ -2250,7 +2278,9 @@ Insert it into BUFFER before point.\n
 BUFFER names an existing buffer.\n
 START and END specify the portion of the current buffer to be copied.\n
 This is an alternative definition of `append-to-buffer' with a \"\n\".\n
-:SEE-ALSO `mon-append-to-register', `mon-kill-appending'.\n►►►"
+:SEE-ALSO `mon-append-to-register', `mon-kill-appending', `mon-buffer-exists-p',
+`mon-g2be', `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
+`mon-buffer-sub-no-prop-check', `mon-help-buffer-functions'.\n►►►"
   (interactive `(,(read-buffer 
                    (concat ":FUNCTION `mon-append-to-buffer'"
                            "-- append to buffer: ")
@@ -2317,7 +2347,9 @@ arg is ommitted (i.e. point moves). This return value is unlike `goto-char' in
 that \(goto-char \(1+ \(point\)\)\) returns the value of the point it moved into as an
 integer value.\n
 :ALIASED-BY `mon-buffer-end'\n
-:SEE-ALSO `point-min', `point-max', `buffer-end'.\n►►►"
+:SEE-ALSO `mon-buffer-narrowed-p', `point-min', `point-max', `buffer-end',
+`mon-buffer-narrowed-p', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
+`mon-help-buffer-functions'.\n►►►"
   ;;(let ((cnsdr-go 
   (setq min/max-go
         (or (and min/max-go
@@ -2348,6 +2380,213 @@ integer value.\n
 (unless (and (intern-soft "mon-buffer-end")
              (fboundp 'mon-buffer-end))
   (defalias 'mon-buffer-end 'mon-g2be))
+
+;;; ==============================
+;;; :CHANGESET 2171
+;;; :CREATED <Timestamp: #{2010-10-02T13:45:41-04:00Z}#{10396} - by MON KEY>
+(defun mon-buffer-narrowed-p (&optional buffer-or-name)
+  "Test if narrowing is in effect in buffer.
+When optional arg BUFFER-OR-NAME is non-nil check for narrowing in that buffer
+instead. Default is `current-buffer'.\n
+:EXAMPLE\n\n\(prog2 
+    \(narrow-to-region \(line-beginning-position\) \(line-end-position\)\)
+    \(mon-buffer-narrowed-p \"*Help*\"\)
+  \(widen\)\)\n
+:ALIASED-BY `buffer-narrowed-p'\n
+:SEE-ALSO `mon-g2be', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
+`mon-buffer-exists-p', `mon-buffer-exists-so-kill', `mon-buffer-get-hidden',
+`mon-buffer-get-w-mode', `mon-buffer-name->kill-ring',
+`mon-buffer-name-print-readably', `mon-buffer-written-p',
+`mon-buffer-append-to', `mon-buffer-do-with-undo-disabled',
+`mon-buffer-end'.\n►►►"
+  (let ((chk-bffr (if buffer-or-name 
+                      (or (get-buffer buffer-or-name)
+                          (error  (concat ":FUNCTION `mon-buffer-narrowed-p' "
+                                          "-- optional arg BUFFER-OR-NAME "
+                                          " does not find buffer: `%S'")
+                                  buffer-or-name))
+                    (current-buffer))))
+    (with-current-buffer chk-bffr
+      (or (> (point-min) 1)
+          (/= (buffer-size) (1- (point-max)))
+          (/= (- (point-max) (point-min)) (buffer-size))))))
+;;
+(when IS-MON-SYSTEM-P
+  (unless (and (intern-soft "buffer-narrowed-p")
+               (fboundp 'buffer-narrowed-p))
+    (defalias 'buffer-narrowed-p 'mon-buffer-narrowed-p)))
+
+
+;;; ==============================
+;;; :CHANGESET 2171
+;;; :CREATED <Timestamp: #{2010-10-02T17:18:20-04:00Z}#{10396} - by MON KEY>y
+(defun mon-buffer-sub-no-prop (&optional buf-beg buf-end)
+  "Convenience function like `buffer-substring-no-properties'.\n
+Return buffer contents from `point-min' to `point-max' without text-properties.\n
+When optional args BUF-BEG and BUF-END non-nil they should satisfy the predicate
+`integer-or-marker-p' and when narrowing is in effect should not extend beyond
+the range the `narrow-to-region' of a buffer satisfying `mon-buffer-narrowed-p'.\n
+:EXAMPLE\n\n\(mon-buffer-sub-no-prop\)\n
+\(mon-buffer-sub-no-prop 8 12\)\n
+\(mon-buffer-sub-no-prop  8 \(set-marker \(make-marker\) 12\)\)\n
+\(mon-buffer-sub-no-prop \(set-marker \(make-marker\) 8\) 12\)\n
+\(mon-buffer-sub-no-prop \(set-marker \(make-marker\) 8\) \(set-marker \(make-marker\) 12\)\)\n
+Following will fail:\n
+\(mon-buffer-sub-no-prop  nil nil\)\n
+\(mon-buffer-sub-no-prop  8 nil\)\n
+\(mon-buffer-sub-no-prop  8\)\n
+\(mon-buffer-sub-no-prop  t \(set-marker \(make-marker\) 12\)\)\n
+\(mon-buffer-sub-no-prop  8 t\)\n
+\(mon-buffer-sub-no-prop  8 \"string\"\)\n
+\(unwind-protect
+    \(prog2 
+        \(narrow-to-region \(line-beginning-position\) \(line-end-position\)\)
+        \(mon-buffer-sub-no-prop \(set-marker \(make-marker\) \(point-min\)\) \(+ \(point-max\) 3\)\)\)
+  \(widen\)\)\n
+\(let \(\(pmin \(set-marker \(make-marker\) \(point-min\)\)\)\)
+   \(unwind-protect
+       \(prog2 
+           \(narrow-to-region \(line-beginning-position\) \(line-end-position\)\)
+           \(mon-buffer-sub-no-prop pmin \(point-max\)\)\)
+     \(widen\)\)\)\n
+:SEE-ALSO `mon-buffer-sub-no-prop-check', `mon-buffer-narrowed-p',
+`mon-get-buffer-window-if', `mon-get-buffer-hidden',
+`mon-buffer-exists-so-kill', `mon-buffer-exists-p', `mon-get-buffer-w-mode',
+`mon-with-file-buffer', `mon-print-buffer-object-readably',
+`mon-print-in-buffer-if-p', `mon-help-buffer-functions'.\n►►►"
+  (if buf-beg
+      (apply #'buffer-substring-no-properties 
+             (mon-buffer-sub-no-prop-check buf-beg buf-end))
+    (buffer-substring-no-properties (point-min) (point-max))))
+
+;;; ==============================
+;;; :CHANGESET 2171
+;;; :CREATED <Timestamp: #{2010-10-02T17:17:28-04:00Z}#{10396} - by MON KEY>
+(defun mon-buffer-sub-no-prop-check (bfr-beg bfr-end)
+  "Helper function for `mon-buffer-sub-no-prop'.\n
+Checks that args BFR-BEG BFR-END are either integers or markers.\n
+When markers converts to integer.\n
+Returns a two element proper-list or signals an error.\n
+Signals errors when args do not satisfy `integer-or-marker-p', are negative
+integers, point to locations outside a narrowed range when narrowing is in
+effect, etc.\n
+:EXAMPLE\n\n\(mon-buffer-sub-no-prop-check 8 12\)\n
+\(mon-buffer-sub-no-prop-check \(set-marker \(make-marker\) 8\) 12\)\n
+\(mon-buffer-sub-no-prop-check  8 \(set-marker \(make-marker\) 12\)\)\n
+\(mon-buffer-sub-no-prop-check \(set-marker \(make-marker\) 8\) \(set-marker \(make-marker\) 12\)\)\n
+Following will fail:\n
+\(mon-buffer-sub-no-prop-check 1 -12\)
+\(mon-buffer-sub-no-prop-check -1 12\)
+\(mon-buffer-sub-no-prop-check 0 12\)
+\(mon-buffer-sub-no-prop-check nil nil\)\n
+\(mon-buffer-sub-no-prop-check  8 nil\)\n
+\(mon-buffer-sub-no-prop-check  8\)\n
+\(mon-buffer-sub-no-prop-check  t \(set-marker \(make-marker\) 12\)\)\n
+\(mon-buffer-sub-no-prop-check  8 t\)\n
+\(mon-buffer-sub-no-prop-check  8 \"string\"\)\n
+\(unwind-protect
+    \(prog2 
+        \(narrow-to-region \(line-beginning-position\) \(line-end-position\)\)
+        \(mon-buffer-sub-no-prop \(set-marker \(make-marker\) \(point-min\)\) \(+ \(point-max\) 3\)\)\)
+  \(widen\)\)\n
+\(let \(\(pmin \(set-marker \(make-marker\) \(point-min\)\)\)\)
+   \(unwind-protect
+       \(prog2 
+           \(narrow-to-region \(line-beginning-position\) \(line-end-position\)\)
+           \(mon-buffer-sub-no-prop pmin \(point-max\)\)\)
+     \(widen\)\)\)\n
+:SEE-ALSO `mon-buffer-sub-no-prop', `mon-buffer-narrowed-p',
+`mon-get-buffer-window-if', `mon-get-buffer-hidden',
+`mon-buffer-exists-so-kill', `mon-buffer-exists-p', `mon-get-buffer-w-mode',
+`mon-with-file-buffer', `mon-print-buffer-object-readably',
+`mon-print-in-buffer-if-p', `mon-help-buffer-functions'.\n►►►"
+  (let ((mbsnpc-err #'(lambda (err-str &rest args) 
+                        (apply 'error
+                               `(,(concat ":FUNCTION `mon-buffer-sub-no-prop-check' -- " err-str)
+                                 ,@args))))
+        (nrrwd-p (mon-buffer-narrowed-p)))
+    (if (and (or (and bfr-beg (integer-or-marker-p bfr-beg))
+                 (funcall mbsnpc-err 
+                          "optional arg BFR-BEG null or not `integer-or-marker-p' arg was: %S" bfr-beg))
+             (or (and bfr-end (integer-or-marker-p bfr-end))
+                 (funcall mbsnpc-err 
+                          "optional arg BFR-END null or not `integer-or-marker-p' arg was: %S" bfr-end)))
+        (let ((mbeg (or 
+                     ;; BFR-BEG is marker
+                     (and (markerp bfr-beg)
+                          (or (eq (marker-buffer bfr-beg) (current-buffer))
+                              (funcall mbsnpc-err 
+                                       "arg BFR-BEG is marker `%S' but not in `current-buffer'" bfr-beg))
+                          (or (marker-position bfr-beg) ;; (marker-position (set-marker (make-marker) nil))
+                              (funcall mbsnpc-err 
+                                       "arg BFR-BEG is a marker `%S' pointing nowhere" bfr-end))
+                          (and (marker-position bfr-beg)
+                               (or (and nrrwd-p (< (marker-position bfr-beg) (point-min))
+                                        (funcall mbsnpc-err 
+                                                 (concat "arg BFR-BEG is a marker outside a `narrow-to-region' "
+                                                         "BFR-BEG was: %S `point-min' with narrowing was: %d")
+                                                 bfr-beg (point-min)))
+                                   (marker-position bfr-beg))))
+                     ;; BFR-BEG is integer
+                     (and (or (integerp bfr-beg)
+                              (funcall mbsnpc-err 
+                                       "arg BFR-BEG does not satisfy `integerp' arg BFR-BEG was: %S" bfr-beg))
+                          (or (and (<= bfr-beg 0)
+                                   (funcall mbsnpc-err 
+                                            "arg BFR-BEG is `<' `point-min' or 0 arg BFR-BEG was: %d `point-min' was: %d" 
+                                            bfr-beg (point-min)))
+                              (and nrrwd-p (<  bfr-beg (point-min))
+                                   (funcall mbsnpc-err 
+                                            (concat "arg BFR-BEG is `<' `point-min' outside a `narrow-to-region' "
+                                                    "arg BFR-BEG was: %d `point-min' with narrowing was: %d")
+                                            bfr-beg (point-min)))
+                              t)
+                          (or (and nrrwd-p (>  bfr-beg (point-max))
+                                   (funcall mbsnpc-err 
+                                            (concat "arg BFR-BEG is `>' `point-max' outside a `narrow-to-region' "
+                                                    "arg BFR-BEG was: %d `point-max' with narrowing was: %d")
+                                            bfr-beg (point-max)))
+                              t)
+                          bfr-beg)))
+              (mend (or 
+                     ;; BFR-END is marker
+                     (and (markerp bfr-end) 
+                          (or (eq (marker-buffer bfr-end) (current-buffer))
+                              (funcall mbsnpc-err 
+                                       "arg BFR-END is marker `%S' but not in `current-buffer'" bfr-end))
+                          (or (marker-position bfr-end) ;; (marker-position (set-marker (make-marker) nil))
+                              (funcall mbsnpc-err 
+                                       "arg BFR-END is a marker `%S' pointing nowhere" bfr-end))
+                          (or (and nrrwd-p (< (marker-position bfr-end) (point-min))
+                                   (funcall mbsnpc-err 
+                                            (concat "arg BFR-END is a marker outside a `narrow-to-region'"
+                                                    "BFR-END was: %S `point-min' was: %d")
+                                            bfr-end (point-min)))
+                              (marker-position bfr-end)))
+                     ;; BFR-END is integer
+                     (and (or (integerp bfr-end)
+                              (funcall mbsnpc-err 
+                                       "arg BFR-END does not satisfy `integerp' arg BFR-END was: %S" bfr-end))
+                          (or (and (< bfr-end 0)
+                                   (funcall mbsnpc-err 
+                                            "arg BFR-END is `<' 0 arg BFR-END was: %d " bfr-beg))
+                              (and nrrwd-p (<  bfr-end (point-min))
+                                   (funcall mbsnpc-err 
+                                            (concat "arg BFR-END is `<' `point-min' outside a `narrow-to-region' "
+                                                    "arg BFR-END was: %d `point-min' was: %d") 
+                                            bfr-end (point-min)))
+                              t)
+                          (or (and nrrwd-p (>  bfr-end (point-max))
+                                   (funcall mbsnpc-err 
+                                            (concat "arg BFR-END is `>' `point-max' outside a `narrow-to-region' "
+                                                    "arg BFR-END was: %d `point-max' was: %d") 
+                                            bfr-end (point-max)))
+                              t)
+                          bfr-end))))
+          (if (and mbeg mend)
+              (list mbeg mend)
+            (funcall mbsnpc-err "Should not see this error")))
+      (funcall mbsnpc-err "an argument is wrong for BFR-BEG got: %S for BFR-END %S" bfr-beg bfr-end))))
 
 ;;; ==============================
 ;;; :CHANGESET 2117
@@ -5195,7 +5434,7 @@ I-am-not-a-string'\n◄\n
           (with-temp-buffer 
             (insert mlsqr-rtn)
             (delete-trailing-whitespace)
-            (mon-g2be 0) ;; (goto-char (buffer-end 0))
+            (mon-g2be -1) ;; (goto-char (buffer-end 0))
             (while (not (= (line-end-position) (buffer-end 1)))
               (beginning-of-line)            
               (when ;; Use `looking-at-p' here instead?

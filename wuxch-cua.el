@@ -54,6 +54,7 @@
                         (wuxch-set-default-theme)
                         ))))
 
+
 ;; meta h :Set mark after end of following balanced expression (mark-sexp),原为C-M-@
 (global-set-key [(meta h)] 'ignore)
 (global-set-key [(meta h)] 'mark-sexp)
@@ -246,8 +247,8 @@ If BACKWARD-ONLY is non-nil, only delete them before point."
   )
 
 ;; (global-set-key [(control c)(p)]   'copy-paragraph)
-(global-set-key [(meta n)]  'forward-paragraph)
-(global-set-key [(meta p)]  'backward-paragraph)
+(global-set-key [(meta n)]  'pager-page-down)
+(global-set-key [(meta p)]  'pager-page-up)
 
 ;; some key define for linux terminal
 (if (is-linux-terminal)

@@ -544,6 +544,22 @@ Now, I think what would be necessary for complete happiness is to have it turn o
 
 --laxxy
 
+[new:José Alfredo Romero L.:2010-10-02 23:54 UTC]
+I have just implemented sticky search in the [Lisp:sunrise-commander.el latest revision] 8-) Check it out, I've bound it to C-c s.
+
+@laxxy: to make it work from the beginning of line, just prefix the search with a space ;-)
+
+The green line is realized by hl-line-mode and is actually more an ornament than anything else, but I'll have a look at that if I have a chance, just to see if anything can be done.
+
+What do you mean by "turning off fuzzy-narrow on directory change"?
+
+Yes, some visible indicator to show that the directory view is narrowed is indeed a good idea, but I think I'll rather implement that in the mode line. Usually I try not to mess directly with the contents of the panes in order to minimize the chance of breaking anything in regular dired.
+
+Personally, I prefer dired-isearch-forward over dired-isearch-filenames, because sometimes I also search for the name of a month, or some other piece of data displayed in the pane, and not only for names of files.
+
+"is there any good place for me to try putting a (dired-isearch-filenames) at?" -- Maybe could experiment with sr-start-hook (and/or sr-refresh-hook, but it may be overkill. YMMV)
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----
 CategoryDirectories
 CategoryEmulation

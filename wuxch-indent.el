@@ -21,11 +21,24 @@
                (c-mark-function))
              (setq need-indent-region t)
              ))
-          ((equal major-mode 'sgml-mode)
+          ((equal major-mode 'nxml-mode)
+           ;; (unless (string= (file-name-extension (buffer-file-name (current-buffer))) "xsl")
+           (progn
+             (while (re-search-forward "><" nil t)
+               (replace-match ">\n<"))
+             (mark-whole-buffer)
+             (setq need-indent-region t)
+             )
+           ;; )
+           )
+          ((or (equal major-mode 'sgml-mode)
+               (equal major-mode 'html-mode))
            (progn
              (mark-whole-buffer)
              (setq need-indent-region t)
-             ))
+             )
+           )
+
           ((equal major-mode 'metapost-mode)
            (progn
              (meta-indent-defun)

@@ -1,9 +1,11 @@
 ;;; customize of elisp-mode
 
+(autoload 'paredit-mode "paredit"
+  "Minor mode for pseudo-structurally editing Lisp code." t)
+
 (defun my-emacs-lisp-mode-hook()
   (modify-syntax-entry ?- "w")
   (modify-syntax-entry ?+ "w")
-  (modify-syntax-entry ?_ "w")
   (local-set-key [(tab)] 'indent-or-complete)
   (local-set-key [(home)] 'back-to-indentation-or-beginning-of-line)
   (local-set-key [(shift home)] 'back-to-indentation-or-beginning-of-line-with-shift)
@@ -16,6 +18,8 @@
 
   (local-set-key [(return)]    'newline-and-indent)
 
+  (local-set-key [(f3)]  'wuxch-imenu-tree-open)
+  (local-set-key [(meta f3)]  'wuxch-imenu-tree-kill)
 
   ;; (local-set-key [double-mouse-1] 'wuxch-elisp-hs-toggle-hiding)
 
@@ -50,6 +54,8 @@
 
   (local-set-key [(f5)] 'run-current-funtion)
   (local-set-key [(control f5)] 'copy-current-funtion-name-to-clipboard)
+
+  ;;  (paredit-mode +1)
   )
 
 (add-hook 'emacs-lisp-mode-hook 'my-emacs-lisp-mode-hook)

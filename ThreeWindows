@@ -183,7 +183,43 @@ And since there are different size of windows, things must be able to be changed
 }}}
 
 
+`split-v' and `split-h' may be merged into one function, that automatically detects split type and changes vertical to horizontal or vice-versa, like this:
+{{{
+;;  +----------------------+                +---------- +----------+
+;;  |                      |          \     |           |          |
+;;  |                      |  +-------+\    |           |          |
+;;  +----------------------+  +-------+/    |           |          |
+;;  |                      |          /     |           |          |
+;;  |                      |                |           |          |
+;;  +----------------------+                +---------- +----------+
+;;
+;;  +--------- +-----------+                +----------------------+
+;;  |          |           |          \     |                      |
+;;  |          |           |  +-------+\    |                      |
+;;  |          |           |  +-------+/    +----------------------+
+;;  |          |           |          /     |                      |
+;;  |          |           |                |                      |
+;;  +--------- +-----------+                +----------------------+
 
-
+(defun change-split-type ()
+  "Changes splitting from vertical to horizontal and vice-versa"
+  (interactive)
+  (if (= 2 (length (window-list)))
+      (let ((thisBuf (window-buffer))
+            (nextBuf (progn (other-window 1) (buffer-name)))
+            (split-type (if (= (window-width)
+                               (frame-width))
+                            'vertical
+                            'horizontal)))
+        (progn
+          (delete-other-windows)
+          (cond
+            ((eq split-type 'horizontal)
+             (split-window-vertically))
+            ((eq split-type 'vertical)
+             (split-window-horizontally)))
+          (set-window-buffer nil thisBuf)
+          (set-window-buffer (next-window) nextBuf)))))
+}}}
 ----
 CategoryWindows

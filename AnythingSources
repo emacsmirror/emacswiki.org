@@ -2362,5 +2362,47 @@ Opening javadocs.
 "Source for retrieving files matching the current input pattern with raise.")
 ;; (anything 'anything-c-source-wmctrl)
 </pre>
+==Backups==
+I maintain backups using settings specified in [[BackupFiles]]. Additionally, I have the backup directory set to 
+<pre>
+(setq backup-directory-alist '(("." . "~/backups")))
+</pre>
+I now use anything to list versions of backup files in the above directory for the current buffer and setup actions to open and compare with current buffer file.
+<pre>
+(defun file-backups (filename)
+  "Return  backup files for FILENAME"
+  (let* ((filename (file-name-sans-versions
+		    (make-backup-file-name (expand-file-name filename))))
+	 (file (concat (file-name-nondirectory filename) ".~") )
+	 (dir  (file-name-directory    filename))
+         )
+; sort files by time modified
+    (sort
+     (mapcar (lambda(x) (concat dir "/"  x))
+	     (file-name-all-completions file dir)
+	     )
+     'file-newer-than-file-p
+     )
+    )
+  ) 
+(defvar anything-c-source-backups
+  '((name . "Backups")
+    (candidates . (lambda() 
+		    (file-backups anything-buffer-file-name) 
+		    )
+		)
+    (candidate-transformer anything-c-highlight-files)
+    (action . (("Open" . (lambda(x) 
+			   (find-file (concat "~/backups/" x) ) ) )
+	       ("Compare with current" . (lambda(x) 
+					  (ediff-files anything-buffer-file-name (concat "~/backups/" x) ) ) )
+	       ))
+    (type . file))
+  )
+
+
+</pre>
+ 
+
 ----
 [[Anything]]

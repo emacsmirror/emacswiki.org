@@ -1,6 +1,6 @@
 == Introduction ==
 
-Rudel is a [CollaborativeEditing collaborative editing] environment
+Rudel (German for "pack" as in "pack of wolves") is a [CollaborativeEditing collaborative editing] environment
 for GNU Emacs. Its purpose is to share buffers with other users in
 order to edit the contents of those buffers collaboratively. It
 supports multiple backends to enable communication with other

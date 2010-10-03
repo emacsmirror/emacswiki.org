@@ -1,0 +1,50 @@
+[new:AlexSchroeder:2010-10-02 19:28 UTC]
+[http://xahlee.blogspot.com/2010/10/emacs-dev-inefficiency-and-emacs-web-20.html Xah Lee mentioned Emacs Wiki] in a recent blog post.
+He [http://xahlee.org/emacs/emacs_wiki_problem.html talked about Emacs Wiki Problems] before, back in 2008.
+Both posts had their origins in newsgroups.
+[http://groups.google.com/group/gnu.emacs.help/browse_frm/thread/a62f24e5707a91e2]
+[http://groups.google.com/group/comp.emacs/browse_thread/thread/96700c14922315fc#] 
+
+What do you think?
+What changes would you make, if you were in charge?
+Would you switch to Mediawiki? Why?
+How would you find editors to improve the wiki all across the board?
+How would you reorganize the wiki?
+
+Back in 2008 I wrote a lot of articles on the newsgroup defending the current state of Emacs Wiki. But perhaps I was wrong, perhaps times have changed.
+Let me know.
+
+Thanks.
+
+[new:MemnonAnon:2010-10-02 21:20 UTC]
+I read Xahs blog post, and there are probably some things, that are
+worth thinking about. However, there is one thing he is certainly
+right about: //"Emacswiki has its own agenda."// And I FWIW think it is
+a *good* one.
+
+Strongly regulated Wikis like the Wikipedia have merits of their own,
+but I really like the less rigid ways of emacswiki; in a way, its
+organisation cures exactly some of the problems Xah mentions: Drew
+Adams Icicles is an excellent addition to emacs, I don't know if he
+ever tried to get it in, but such a complex addition would certainly
+take loooong anyways. But the emacswiki offers it a home, and a very
+prominent one as it is. Diversity is a good thing, as long as there
+are some fixed points people can turn to. Emacswiki is such a fixed
+point in the emacs universe, just like the info manuals are. Probably
+because of this, he proposed emacswiki to change to his idea of a
+ //"coherent and comprehensive"// resource: But this totally misses the
+point and *value* of what emacswiki is today. I would certainly miss
+the old wiki. 
+
+Regarding the 'links tend to prefer sister sites and not wikipedia':
+Well, if that is what the *authors* link to, thats the way it is! I
+never saw anyone correcting a link to wikipedia in favor of another
+site. 
+
+On the wikisoftware used, I really have no oppinion on that. The site
+works fine for me, but I hardly ever used those //"more powerfull"// other
+wikisoftware. The blog post touches some relevant points, but those
+targeting the emacswiki really do not seem compelling to me. Keep up
+the good work, and thanks for *emacswiki*. 
+
+-- Memnon

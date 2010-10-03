@@ -34,7 +34,7 @@ External tools supported
 * CScopeAndEmacs - supported by EDE file search, semantic symref, and semanticdb
 * IdUtils - supported by EDE file search, and semantic symref.
 * Graphviz (dot) - supported by COGRE for diagram layout and export.
-* ExuberantCtags - Supported as an alternate parser for Semantic for many languages, like born shell scripts.
+* ExuberantCtags - Supported as an alternate parser for Semantic for many languages, like Bourne shell scripts.
 
 ----
 Links to some comments, pictures etc

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 318 $  
+;; RCS Version: $Rev: 319 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -144,13 +144,17 @@
 ;; very  large  directory  trees  one  needs  something  on the lines of diff -r
 ;; though).
 
+;; * Sticky search: press C-c s to launch an interactive search that will remain
+;; active from directory to directory, until you hit a regular file or press C-g
+;; to abort the operation.
+
 ;; * etc. ;-)
 
 ;; It  doesn't  even  try to look like MC, so the help window is gone (you're in
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 318 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 319 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -498,6 +502,7 @@ substitution may be about to happen."
         M-H............ hard-link selected file/directory (with dired-do-hardlink)
         A ............. search marked files for regular expression
         Q ............. perform query-replace-regexp on marked files
+        C-c s ......... start a \"sticky\" interactive search in the current pane
 
         M-a ........... move to beginning of current directory
         M-e ........... move to end of current directory
@@ -899,6 +904,7 @@ automatically:
 (define-key sr-mode-map "Q"           'sr-do-query-replace-regexp)
 (define-key sr-mode-map "F"           'sr-do-find-marked-files)
 (define-key sr-mode-map "A"           'sr-do-search)
+(define-key sr-mode-map "\C-cs"       'sr-sticky-isearch)
 (define-key sr-mode-map "\C-x\C-f"    'sr-find-file)
 (define-key sr-mode-map "y"           'sr-show-files-info)
 
@@ -2841,6 +2847,41 @@ or (c)ontents? ")
   (interactive)
   (sr-dired-do-apply 'dired-do-search))
 
+(defun sr-sticky-isearch-prompt ()
+  "Displays the message that appears when a sticky search is launched."
+  (message (propertize "Sunrise sticky I-search (C-g to exit): "
+                       'face 'minibuffer-prompt)))
+
+(defun sr-sticky-isearch ()
+  "Concatenates isearch-forward operations to allow fast navigation through long
+  paths in the file system, until C-g is pressed (to abort) or Return is pressed
+  on a regular file (to end the operation and visit that file)."
+  (interactive)
+  (set (make-local-variable 'search-nonincremental-instead) nil)
+  (add-hook 'isearch-mode-end-hook 'sr-sticky-post-isearch)
+  (isearch-forward nil t)
+  (sr-sticky-isearch-prompt))
+
+(defun sr-sticky-post-isearch ()
+  "Function installed in isearch-mode-end-hook during sticky isearch operations
+  in Sunrise browse mode."
+  (let* ((filename (expand-file-name (dired-get-filename nil t)))
+         (is-dir (or (file-directory-p filename)
+                     (sr-avfs-dir filename)
+                     (sr-virtual-directory-p filename))))
+    (cond ((or isearch-mode-end-hook-quit (not is-dir))
+           (progn
+             (remove-hook 'isearch-mode-end-hook 'sr-sticky-post-isearch)
+             (kill-local-variable 'search-nonincremental-instead)
+             (isearch-done)
+             (or isearch-mode-end-hook-quit (sr-find-file filename))))
+          (t
+           (progn
+             (sr-find-file filename)
+             (set (make-local-variable 'search-nonincremental-instead) nil)
+             (isearch-forward nil t)
+             (sr-sticky-isearch-prompt))))))
+
 (defun sr-show-files-info (&optional deref-symlinks)
   "Enhanced version of dired‐show‐file‐type from dired‐aux.  If at most one item
   is marked, then print the filetype of the current item according to the `file'
@@ -2907,6 +2948,7 @@ or (c)ontents? ")
           (interactive)
           (sr-term-eshell cd newterm)))
     (progn
+      (require 'term)
       (add-hook 'term-mode-hook
                 '(lambda () (sr-define-ti-keys term-mode-map)))
       (defun sr-term (&optional cd newterm)
@@ -2929,21 +2971,30 @@ or (c)ontents? ")
 (defmacro sr-term-excursion (newterm form)
   "Helper  macro.  Takes  care  of  the  common mechanics of launching a new (or
   switching to an existing) terminal from Sunrise."
-  `(let ((buffer))
+  `(let ((buffer (first sr-ti-openterms)) (new-name))
      (sr-select-viewer-window t)
-     ,form
-     (setq buffer (current-buffer))
+     (if (buffer-live-p buffer)
+         (switch-to-buffer buffer)
+       ,form)
+     (when (and ,newterm buffer)
+       (rename-uniquely)
+       (setq new-name (buffer-name))
+       ,form
+       (message "Sunrise: previous terminal renamed to %s" new-name))
      (setq cd (or cd (null sr-ti-openterms)))
-     (if (not (eq buffer (first sr-ti-openterms)))
-         (push (current-buffer) sr-ti-openterms)
-       (if ,newterm
-           (sr-ti-newterm)))))
+     (unless (eq (current-buffer) (first sr-ti-openterms))
+       (push (current-buffer) sr-ti-openterms))))
 
 (defun sr-term-extern (&optional cd newterm)
   "This is the implementation of sr-term for external terminal programs."
-  (let ((dir (expand-file-name
-              (if sr-running sr-this-directory default-directory))))
+  (let* ((dir (expand-file-name
+              (if sr-running sr-this-directory default-directory)))
+        (aterm (first sr-ti-openterms))
+        (line-mode (if (buffer-live-p aterm)
+                       (with-current-buffer aterm (term-in-line-mode)))))
     (sr-term-excursion newterm (term sr-terminal-program))
+    (if (and line-mode (not (term-in-line-mode)))
+        (term-line-mode))
     (when cd
       (term-send-raw-string
        (concat "cd " (shell-quote-wildcard-pattern dir) "
@@ -3015,15 +3066,6 @@ or (c)ontents? ")
   (interactive)
   (sr-ti (sr-change-window)))
 
-(defun sr-ti-newterm ()
-  "Opens a new terminal after renaming the previous one."
-  (interactive)
-  (let (new-name)
-    (rename-uniquely)
-    (setq new-name (buffer-name))
-    (sr-term)
-    (message "Sunrise: previous terminal renamed to %s" new-name)))
-
 (defun sr-ti-restore-previous-term ()
   "Renames back the last open terminal (if any) to the default terminal buffer
    name after the current one is closed."
@@ -3040,6 +3082,29 @@ or (c)ontents? ")
         (set-buffer (first sr-ti-openterms))
         (rename-buffer name))))
 (add-hook 'kill-buffer-hook 'sr-ti-restore-previous-term)
+
+(defun sr-ti-revert-buffer ()
+  "Refreshes the currently active pane."
+  (interactive)
+  (let ((dir default-directory))
+    (if (not (sr-equal-dirs dir sr-this-directory))
+        (sr-ti (sr-goto-dir dir))
+      (sr-ti (sr-revert-buffer)))))
+
+(defun sr-ti-lock-panes ()
+  "Resizes and locks the panes at standard position from the command line."
+  (interactive)
+  (sr-ti (sr-lock-panes)))
+
+(defun sr-ti-min-lock-panes ()
+  "Minimizes the panes from the command line."
+  (interactive)
+  (sr-ti (sr-min-lock-panes)))
+
+(defun sr-ti-max-lock-panes ()
+  "Maximizes the panes from the command line."
+  (interactive)
+  (sr-ti (sr-max-lock-panes)))
 
 (defmacro sr-clex (pane form)
   "Executes the given form in the context of the given pane. Helper macro for
@@ -3134,8 +3199,13 @@ or (c)ontents? ")
                        ([C-tab]       . sr-ti-change-window)
                        ("\C-c\t"      . sr-ti-change-window)
                        ("\M-\t"       . sr-ti-change-pane)
-                       ("\C-ct"       . sr-ti-newterm)
-                       ("%"           . sr-clex-start))
+                       ("\C-ct"       . sr-term-cd-newterm)
+                       ("\M-\S-g"     . sr-ti-revert-buffer)
+                       ("%"           . sr-clex-start)
+                       ("\t"          . term-dynamic-complete)
+                       ("\C-c\\"      . sr-ti-lock-panes)
+                       ("\C-c{"       . sr-ti-min-lock-panes)
+                       ("\C-c}"       . sr-ti-max-lock-panes))
   "Keybindings for terminal integration and command line expansion")
 
 (defun sr-define-ti-keys (mode-map)

@@ -46,6 +46,8 @@
   (interactive)
   (wuxch-reset-cursor-wdired-mode)
   (wdired-finish-edit)
+  (wuxch-dired-up-directory)
+  (diredp-find-file-reuse-dir-buffer)
   )
 
 (defun wuxch-wdired-abort-changes ()
@@ -112,6 +114,8 @@
 (define-key dired-mode-map [(control \2)] 'wuxch-get-file-name-without-path)
 (define-key dired-mode-map [(control \3)] 'ignore)
 (define-key dired-mode-map [(control \3)] 'wuxch-get-file-name-with-path)
+(define-key dired-mode-map [(control c)(control \3)] 'wuxch-get-file-name-with-path-with-double-slash)
+(define-key dired-mode-map [(control x)(control \3)] 'wuxch-get-file-name-with-path-with-unix-style)
 (define-key dired-mode-map [f5] 'wuxch-dired-do-copy)
 (define-key dired-mode-map [f6] 'wuxch-dired-do-rename)
 
@@ -131,6 +135,169 @@
 (define-key dired-mode-map "l"  'wuxch-bookmark-bmenu-list)
 
 (define-key dired-mode-map "a"  'wuxch-dired-tag)
+
+(define-key dired-mode-map "P"  'ignore)
+(define-key dired-mode-map "P"  'wuxch-dired-play)
+
+(define-key dired-mode-map [(\ )]  'ignore)
+(define-key dired-mode-map [(\ )]  'wuxch-dired-play-concole)
+
+(define-key dired-mode-map [(control c)(\ )]  'ignore)
+(define-key dired-mode-map [(control c)(\ )]  'wuxch-dired-play-gui)
+
+(defun wuxch-do-dired-get-subtitle ()
+  "wuxch-do-dired-get-subtitle:"
+  (let ((subtitle-ext "srt")
+        (subtitle-files)
+        (single-subtitle-file)
+        (subtitle-string "")
+        (is-first-subtitle t)
+        (comma-string)
+        )
+    (dired-unmark-all-marks)
+    (when (diredp-mark/unmark-extension subtitle-ext nil)
+      (setq subtitle-files (dired-get-marked-files t))
+      (if (listp subtitle-files)
+          (progn
+            (setq subtitle-string " -sub ")
+            (dolist (element subtitle-files)
+
+              (setq single-subtitle-file
+                    (double-quote-file-name
+                     (convert-standard-filename
+                      (concat (dired-current-directory) element)))
+                    )
+
+              (if is-first-subtitle
+                  (progn
+                    (setq comma-string "")
+                    (setq is-first-subtitle nil))
+                (progn
+                  (setq comma-string ",")
+                  )
+                )
+              (setq subtitle-string (concat subtitle-string comma-string single-subtitle-file))
+              )
+            )
+        )
+      (dired-unmark-all-marks)
+      )
+    subtitle-string
+    )
+  )
+
+(defun wuxch-dired-file-is-video-file (file-name)
+  "wuxch-dired-file-is-video-file:"
+  (if (file-directory-p file-name)
+      nil
+    (let ((ext (downcase (file-name-extension file-name))))
+      (or (string= ext "avi")(string= ext "mkv")(string= ext "m4v")
+          (string= ext "mp4")(string= ext "mpg")(string= ext "mpeg")
+          (string= ext "rmvb")(string= ext "wmv")(string= ext "mp3")
+          (string= ext "flv")(string= ext "wma")(string= ext "wmv")
+          )
+      )
+    )
+  )
+
+(defun wuxch-dired-file-is-audio-file (file-name)
+  "wuxch-dired-file-is-video-file:"
+  (if (file-directory-p file-name)
+      nil
+    (let ((ext (file-name-extension file-name)))
+      (or (string= ext "mp3")
+          )
+      )
+    )
+  )
+
+;; file is f:/AUDIO_TS
+;; file is f:/VIDEO_TS
+
+(defun wuxch-dired-file-is-dvd-file (file-name)
+  "wuxch-dired-file-is-dvd-file:
+result-str = nil : the file-name is not a dvd directroy.
+result-str = not nil : the file-name is a dvd directory. and result-str is the driver str. for example: f:/
+"
+  (let* ((replace-str nil)
+         (result-str nil)
+         )
+    (setq replace-str (replace-regexp-in-string "\\(.*:/\\)\\(AUDIO_TS\\|VIDEO_TS\\)" "\\1" file-name))
+    (if (string= replace-str file-name)
+        (setq result-str nil)
+      (setq result-str replace-str)
+      )
+    result-str
+    )
+  )
+
+(defun wuxch-do-dired-play (concole)
+  "wuxch-do-dired-play:"
+  (let* ((play-command)
+         (player)
+         (movie-file (dired-get-file-for-visit))
+         (ext (file-name-extension movie-file))
+         ;; chinese support config
+         (coding-system-for-read (coding-system-from-name "chinese-gbk-dos"))
+         (coding-system-for-write (coding-system-from-name "chinese-gbk-dos"))
+         (coding-system-require-warning t)
+         )
+
+    (if concole
+        (setq player "mplayer")
+      (setq player "gmplayer")
+      )
+
+    (cond
+     ((wuxch-dired-file-is-video-file movie-file)
+      (progn
+        (setq movie-file (double-quote-file-name (convert-standard-filename movie-file)))
+        (setq play-command (concat player " " movie-file (wuxch-do-dired-get-subtitle) " &"))
+        ))
+
+     ((wuxch-dired-file-is-audio-file movie-file)
+      (progn
+        (setq movie-file (double-quote-file-name (convert-standard-filename movie-file)))
+        (setq play-command (concat "cmd " player " " movie-file ""))
+        ))
+     ((wuxch-dired-file-is-dvd-file movie-file)
+      (progn
+        (setq play-command (concat player " dvd://2 -dvd-device " (wuxch-dired-file-is-dvd-file movie-file) ""))
+        ))
+     (t
+      (setq play-command nil)
+      )
+     )
+
+    (if play-command
+        (progn
+          (message "command is :%s" play-command)
+          (shell-command play-command)
+          )
+      (progn
+        (message "%s can not be played by mplayer." (file-name-nondirectory movie-file))
+        )
+
+      )
+    )
+  )
+
+(defun double-quote-file-name (file-name)
+  "double-quote-file-name:"
+  (concat "\"" file-name "\"")
+  )
+
+(defun wuxch-dired-play-concole ()
+  "wuxch-dired-play:"
+  (interactive)
+  (wuxch-do-dired-play t)
+  )
+
+(defun wuxch-dired-play-gui ()
+  "wuxch-dired-play:"
+  (interactive)
+  (wuxch-do-dired-play nil)
+  )
 
 (defun wuxch-dired-open-info-file ()
   ""
@@ -225,9 +392,10 @@
     (if (file-directory-p file)
         (progn
           (diredp-find-file-reuse-dir-buffer))
-      (w32-browser (dired-replace-in-string "/" "\\" file)))))
+      (w32-browser (convert-standard-filename file)))))
 
-;; 修改dired-w32-browser,进入子目录的时候调用diredp-find-file-reuse-dir-buffer，这样可以不需要新开一个buffer。
+;; 修改dired-w32-browser,进入子目录的时候调用diredp-find-file-reuse-dir-buffer，这样可以不需要新开一
+;; 个buffer。
 (defun wuxch-dired-w32-browser ()
   "Run default Windows application associated with current line's file.
 If file is a directory, then `dired-find-file' instead.
@@ -245,7 +413,7 @@ If no application is associated with file, then `find-file'."
         (let ((ext (file-name-extension file)))
           (if (or (string= ext "el") (string= ext "c") (string= ext "h") (string= ext "outline"))
               (find-file (dired-get-file-for-visit))
-            (w32-browser (dired-replace-in-string "/" "\\" file))
+            (w32-browser (convert-standard-filename file))
             )
           )
         )
@@ -265,7 +433,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
     ;; 10/28/2008 09:20:42,即使是目录，还是打开当前目录比较方便，所以改回去。
     ;; (if (not (file-directory-p directory-path))
     ;;         (setq directory-path (dired-current-directory)))
-    (w32-shell-execute "open" (dired-replace-in-string "/" "\\" directory-path))
+    (w32-shell-execute "open" (convert-standard-filename directory-path))
     )
   ;; (message "directory-path is %s" (dired-get-filename nil t))
   )
@@ -341,7 +509,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
 (defun wuxch-dired-set-doc-face ()
   "wuxch-dired-set-doc-face:"
   (font-lock-add-keywords
-   nil '(("^  .*\\.\\(tex\\|doc\\|xls\\|txt\\|org\\|ppt\\|html\\)$"
+   nil '(("^  .*\\.\\(tex\\|doc\\|docx\\|xls\\|xlsx\\|txt\\|org\\|ppt\\|pptx\\|html\\|xml\\|xsl\\|xsd\\|sty\\|mod\\|dtd\\)$"
           (".+"
            (dired-move-to-filename)
            nil
@@ -361,7 +529,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
 (defun wuxch-dired-set-exe-face ()
   "wuxch-dired-set-exe-face:"
   (font-lock-add-keywords
-   nil '(("^  .*\\.\\(\\(exe\\)\\|\\(EXE\\)\\)$"
+   nil '(("^  .*\\.\\(exe\\|EXE\\|bat\\|BAT\\)$"
           (".+"
            (dired-move-to-filename)
            nil
@@ -371,7 +539,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
 (defun wuxch-dired-set-avi-face ()
   "wuxch-dired-set-avi-face:"
   (font-lock-add-keywords
-   nil '(("^  .*\\.\\(pdf\\|avi\\|mkv\\|rmvb\\|rm\\|mp4\\|mp3\\|MP3\\|wmv\\|wma\\|m4v\\|mov\\)$"
+   nil '(("^  .*\\.\\(pdf\\|chm\\|flv\\|avi\\|AVI\\|mkv\\|rmvb\\|mpeg\\|mpg\\|MPG\\|rm\\|mp4\\|mp3\\|MP3\\|wmv\\|wma\\|m4v\\|mov\\)$"
           (".+"
            (dired-move-to-filename)
            nil
@@ -412,11 +580,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
     (if only-path
         ;; 只要路径，不关心文件名
         (progn
-          ;; (setq path (dired-replace-in-string "/" "\\" (dired-current-directory)))
-          (if(equal 'windows-nt system-type)
-              (setq clipboard (dired-replace-in-string "/" "\\" (dired-current-directory)))
-            (setq clipboard (dired-current-directory))
-            )
+          (setq clipboard (convert-standard-filename (dired-current-directory)))
           )
       ;; 需要文件名
       (progn
@@ -427,10 +591,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
                 (if (file-directory-p file)
                     (setq file (concat file "/")))
                 ;; 需要包括路径的文件名
-                (if(equal 'windows-nt system-type)
-                    (setq clipboard (dired-replace-in-string "/" "\\" file))
-                  (setq clipboard file)
-                  )
+                (setq clipboard (convert-standard-filename file))
                 )
             ;; 不包括路径的文件名（或者是目录名）
             (progn
@@ -452,6 +613,7 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
 
     (kill-new clipboard)
     (message "copy string \"%s\" to clipboard" clipboard)
+    clipboard
     )
   )
 
@@ -463,6 +625,29 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
   (interactive)
   (do-wuxch-get-file-name t nil)
   )
+
+(defun wuxch-get-file-name-with-path-with-unix-style ()
+  ""
+  (interactive)
+  (let ((full-string (do-wuxch-get-file-name t nil))
+        (clipboard))
+    (setq clipboard (replace-regexp-in-string "\\\\" "/" full-string))
+    (kill-new clipboard)
+    (message "copy string \"%s\" to clipboard" clipboard)
+    )
+  )
+
+(defun wuxch-get-file-name-with-path-with-double-slash ()
+  ""
+  (interactive)
+  (let ((full-string (do-wuxch-get-file-name t nil))
+        (clipboard))
+    (setq clipboard (replace-regexp-in-string "\\\\" "\\\\\\\\" full-string))
+    (kill-new clipboard)
+    (message "copy string \"%s\" to clipboard" clipboard)
+    )
+  )
+
 
 (defun wuxch-get-file-name-without-path ()
   ""
@@ -516,8 +701,8 @@ else open the current directory.06/11/2007 10:54:28 wuxch"
 ;;       (progn
 ;;         (message "variable is local, value is %d" wuxch-temp-buffer-local-value))
 ;;     (progn
-;;       (make-local-variable 'wuxch-temp-buffer-local-value)
 ;;       (setq-default wuxch-temp-buffer-local-value (+ wuxch-temp-buffer-local-value 1))
+;;       (make-local-variable 'wuxch-temp-buffer-local-value)
 ;;       (message "make variable locally, and set it to %d" wuxch-temp-buffer-local-value))
 ;;     )
 ;;   )
@@ -979,6 +1164,5 @@ changing into DIR) is
     (dired-move-to-filename)
     )
   )
-
 
 (provide 'wuxch-dired)

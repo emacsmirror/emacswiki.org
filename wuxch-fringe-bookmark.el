@@ -1,8 +1,5 @@
 ;;; Filename:wuxch-fringe-bookmark.el
-;; repository has several lists of buffer
-;; buffer list has several fringe-bookmark items
-;; the fringe-bookmark item should be: line point fringe-obj
-
+;;; display a little flag on fringe for bookmark
 
 (require 'fringe-helper)
 

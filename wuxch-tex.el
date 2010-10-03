@@ -5,8 +5,10 @@
 (add-hook 'latex-mode-hook 'turn-on-reftex)
 (require 'tex-site)
 (require 'tex-mik)
+(require 'tex-style)
 ;; (require 'preview)
 ;; (require 'out-xtra)
+;; (require 'pstricks)
 
 (setq TeX-auto-save t)
 (setq TeX-parse-self t)
@@ -29,10 +31,13 @@
   ;; (local-set-key [(f8)] 'phonetic-add)
   (local-set-key [(control y)]   'phonetic-add)
 
-  (local-set-key [(control c)(i)] 'latex-textit-paragraph)
-  (local-set-key [(control c)(c)] 'check-latex-char)
-  (local-set-key [(control c)(d)] 'wuxch-tex-vocabulary-current-word-insert)
-  (local-set-key [(control e)] 'wuxch-insert-environment)
+  (local-set-key [(control c)(i)]   'latex-textit-paragraph)
+  (local-set-key [(control c)(c)]   'check-latex-char)
+  (local-set-key [(control c)(t)]   'nyt-process)
+  (local-set-key [(control c)(d)]   'wuxch-tex-vocabulary-current-word-insert)
+  (local-set-key [(control e)]      'wuxch-insert-environment)
+  (local-set-key [(control c)(v)]   'tex-jump-to-config-file)
+  (local-set-key [(control c)(n)]   'tex-narrow-here)
   ;; (local-set-key [tab]  'TeX-complete-symbol)
   (local-set-key [tab]  'wuxch-expand-or-insert-tab)
   ;; (local-set-key [(control b)]  'ignore)
@@ -48,6 +53,12 @@
 
   (local-set-key [(control c)(l)]   'ignore)
   (local-set-key [(control c)(l)]   'lettrine)
+
+  (local-set-key [(control c)(\')]  'tex-process-single-quote)
+
+  (local-set-key [(control c)(f)]   'beamer-mark-frame)
+  (local-set-key [(control x)(i)]   'beamer-indent-frame)
+  (local-set-key [(control x)(n)(f)]   'beamer-narrow-to-frame)
   )
 
 (defun wuxch-environment-to-string (input-str)
@@ -313,7 +324,7 @@
        ("tex2pdf" "pdflatex.exe %s" TeX-run-TeX nil (latex-mode doctex-mode) :help "Run pdflatex.exe")
        ("toc" "gbk2uni.exe %s" TeX-run-TeX nil (latex-mode doctex-mode) :help "Run gbk2uni.exe")
        ("wuxch-batch" "wuxchbatch %s" TeX-run-TeX nil (latex-mode doctex-mode) :help "Run wuxch batch")
-       ("BibTex" "bibtexutf8.bat %s" TeX-run-BibTeX nil t :help "Run BibTeX")
+       ("BibTex" "bibtex8 %s" TeX-run-BibTeX nil t :help "Run BibTeX")
        ("Original BibTex" "bibtex %s" TeX-run-BibTeX nil t :help "Run BibTeX")
        ("View" "wuxch-view-pdf" TeX-run-function nil t :help "Run Viewer")
        ;; ("Queue" "%q" TeX-run-background nil t :help "View the printer queue" :visible TeX-queue-command)
@@ -355,6 +366,45 @@
         )
   )
 
+(defun wuxch-latex-keyword-setup ()
+  "wuxch-latex-keyword-setup:"
+  (interactive)
+  (font-lock-add-keywords
+   nil
+   '(("\\<\\(true\\|false\\|hline\\|gradient\\|solid\\)\\>" . font-lock-keyword-face)
+     ("\\<\\(psset\\|psline\\|psframe\\|openshadow\\)\\>"
+      . font-lock-function-name-face)
+     ("\\<\\(path\\|draw\\|circle\\|fill\\|filldraw\\|shade\\|shadedraw\\|pattern\\)\\>"
+      . font-lock-function-name-face)
+     ("\\<\\(fillstyle\\|linestyle\\|linecolor\\|fillcolor\\)\\>"
+      . font-lock-builtin-face)
+     ("\\<\\(shading\\|clip\\)\\>"
+      . font-lock-builtin-face)
+     ("\\<\\(linearc\\|linewidth\\|shadow\\|framearc\\|blur\\)\\>"
+      . font-lock-builtin-face)
+     ("\\<\\(node\\|path\\|coordinate\\)\\>"
+      . font-lock-reference-face)
+     )
+   )
+  )
+
+(defvar wuxch-tex-file-type)
+
+(defun wuxch-latex-set-tex-file-type ()
+  "wuxch-latex-set-tex-file-type:"
+  (interactive)
+  ;; (message "setting tex file type to ...")
+  (let ((pos (point))
+        (file-type ""))
+    (goto-char (point-min))
+    (when (re-search-forward "\\documentclass.*{\\([[:alpha:]]+\\)}" nil t)
+      (setq file-type (substring-no-properties (match-string 1)))
+      )
+    (set (make-local-variable 'wuxch-tex-file-type) file-type)
+    (goto-char pos)
+    )
+  )
+
 (defun wuxch-latex-mode-hook ()
   ;; (TeX-fold-mode 1)
   (TeX-PDF-mode 1)
@@ -371,13 +421,73 @@
   (wuxch-latex-pair-setup)
   (wuxch-latex-command-setup)
   (wuxch-latex-ref-setup)
-  (modify-syntax-entry '\ "w")
-
+  ;; (modify-syntax-entry '\ "w")
+  (wuxch-latex-keyword-setup)
+  (wuxch-latex-set-tex-file-type)
   )
 (add-hook 'LaTeX-mode-hook 'wuxch-latex-mode-hook)
 
 
 (copy-face	'font-lock-string-face	'font-latex-verbatim-face)
+
+(defun beamer-mark-frame ()
+  "beamer-mark-frame"
+  (interactive)
+  (let ((pos (point)))
+    (when (re-search-backward "\\\\begin{frame}")
+      (cua-set-mark)
+      (if (re-search-forward "\\\\end{frame}")
+          (progn
+            (message "frame marked")
+            )
+        (progn
+          ;; (message "not in frame")
+          )
+        )
+      )
+    )
+  )
+
+(defun beamer-indent-frame ()
+  (interactive)
+  (let ((pos (point))
+        (beg-pos)
+        (end-pos))
+    (when (re-search-backward "\\\\begin{frame}")
+      (setq beg-pos (point))
+      (if (re-search-forward "\\\\end{frame}")
+          (progn
+            (indent-region beg-pos (point))
+            (goto-char pos)
+            )
+        (progn
+          ;; (message "not in frame")
+          )
+        )
+      )
+    )
+  )
+
+(defun beamer-narrow-to-frame ()
+  (interactive)
+  (let ((pos (point))
+        (beg-pos)
+        (end-pos))
+    (when (re-search-backward "\\\\begin{frame}")
+      (setq beg-pos (point))
+      (if (re-search-forward "\\\\end{frame}")
+          (progn
+            (narrow-to-region beg-pos (point))
+            (goto-char pos)
+            (message "narrowed. using C-x n w to widen")
+            )
+        (progn
+          ;; (message "not in frame")
+          )
+        )
+      )
+    )
+  )
 
 (defun wuxch-view-pdf ()
   "wuxch-view-pdf:"
@@ -386,21 +496,38 @@
          (pdf-file (concat (TeX-master-file nil nil nil) ".pdf"))
          (pdf-dir (file-name-directory (buffer-file-name)))
          (synctex-file (concat (TeX-master-file nil nil nil) ".synctex.gz"))
-         (line-num (line-number-at-pos))
+         (line-num)
          (start (point-min))
+         (pos)
          (cmd)
          )
+    (if (wuxch-is-master-tex-file)
+        (progn
+          (setq line-num (line-number-at-pos))
 
-    ;; we must consider narrow, in this case, we should and line-number of start then minus 1
-    (unless (= start 1)
-      (save-excursion
-        (save-restriction
-          (widen)
-          (setq line-num (+ line-num (line-number-at-pos start) -1))
+          ;; in beamer, line-num should use end{frame} line
+          (when (string= "beamer" (buffer-local-value 'wuxch-tex-file-type (current-buffer)))
+            (setq pos (point))
+            (when (re-search-forward "\\\\end{frame}" nil t)
+              (setq line-num (line-number-at-pos))
+              )
+            (goto-char pos)
+            )
+
+          ;; we must consider narrow, in this case, we should and line-number of start then minus 1
+          (unless (= start 1)
+            (save-excursion
+              (save-restriction
+                (widen)
+                (setq line-num (+ line-num (line-number-at-pos start) -1))
+                )
+              )
+            )
           )
+      (progn
+        (setq line-num 1)
         )
       )
-
 
     ;; (w32-browser (dired-replace-in-string "/" "\\" (concat pdf-dir pdf-file)))
     (cd pdf-dir)
@@ -623,17 +750,17 @@
 (defvar wuxch-special-char-map
   '(("\"" . "Tex-insert-quote") ;; " should be treated differently
     ;; 需要加一个 \ 的
-    ("%"  . "\\\\%")  ("&"  . "\\\\&")    ("#"  . "\\\\#")
-    ("_"  . "\\\\_")  ("\\$" . "\\\\$") ("€" . "\\\\texteuro")
-    ;; ("{" . "\\\\{") ("}" . "\\\\}")
+    ("%"  . "\\%")  ("&"  . "\\&")    ("#"  . "\\#")
+    ("_"  . "\\_")  ("\\$" . "\\$") ("€" . "\\texteuro")
+    ;; ("{" . "\\{") ("}" . "\\}")
     ;; 需要加$$的
     ("@" . "$@$") ("\\[" . "$[$") ("\\]" . "$]$")
-    ("<" . "$<$") (">" . "$>$")
+    ("<" . "$<$") (">" . "$>$") ("•" . "$\\bullet$")
     ;; 其他
-    ("é" . "\\\\'e") ("Á" . "\\\\'A") ("ó" . "\\\\'o") ("&"  . "\\\\pounds")
-    ("ä" . "\\\\\"a") ("ï" . "\\\\\"i") ("£" . "\\\\textsterling")
-    ("ñ" . "\\\\~{n}") ("â" . "\\\\^{a}") ("á" . "\\\\'a") ("û" . "\\\\^{u}")
-    ("è" . "\\\\`e") ("ë" . "\\\\\"e")
+    ("é" . "\\'e") ("Á" . "\\'A") ("ó" . "\\'o") ("&"  . "\\pounds")
+    ("ä" . "\\\"a") ("ï" . "\\\"i") ("£" . "\\textsterling")
+    ("ñ" . "\\~{n}") ("â" . "\\^{a}") ("á" . "\\'a") ("û" . "\\^{u}")
+    ("è" . "\\`e") ("ë" . "\\\"e")
 
     ;; 需要特殊处理的
     ("\\.[ ]*\\.[ ]*\\." . "\\ldots")
@@ -663,9 +790,10 @@
   (let ((str))
     (setq str "\\(")
     ;; title
-    (setq str (concat str "Mr\\|Mrs\\|Ms\\|Dr\\|Jr\\|J\\|Capt\\|Lt\\|Col"))
+    (setq str (concat str "Mr\\|Mrs\\|Ms\\|Dr\\|Jr\\|J\\|Capt\\|Lt\\|sgt\\|Col\\|Gen\\|St"))
+    (setq str (concat str "\\|Gov\\|Prof"))
     ;; Month
-    (setq str (concat str "\\|Jan\\|Feb\\|Mar\\|Apr\\|Jun\\|Jul\\|Aug\\|Sep\\|Sept\\|Oct\\|Nev\\|Dec"))
+    (setq str (concat str "\\|Jan\\|Feb\\|Mar\\|Apr\\|Jun\\|Jul\\|Aug\\|Sep\\|Sept\\|Oct\\|Nov\\|Dec"))
     ;; Commercial
     (setq str (concat str "\\|Co\\|Corp\\|Inc\\|Ltd"))
     ;; Country
@@ -735,26 +863,47 @@
   )
 
 (defun latex-special-char-replace-string (matched string-for-replace)
-  (cond
-   ((string= matched "\"")
-    (latex-replace-double-quote-with-latex-quote))
-   ((string-fit-regex matched "\\.[ ]*\\.[ ]*\\.")
-    (progn
-      (backward-char (length matched))
-      (delete-char (length matched))
-      (insert "\\ldots")
+  (let* ((matched-length (length matched))
+         )
+    (cond
+     ((string= matched "\"")
+      (latex-replace-double-quote-with-latex-quote))
+     ;; ((string-fit-regex matched "“")
+     ;;  (progn
+     ;;    (backward-char 1)
+     ;;    (delete-char 1)
+     ;;    (insert "``")
+     ;;    )
+     ;;  )
+     ;; ((string-fit-regex matched "”")
+     ;;  (progn
+     ;;    (backward-char 1)
+     ;;    (delete-char 1)
+     ;;    (insert "''")
+     ;;    )
+     ;;  )
+     ((string-fit-regex matched "\\.[ ]*\\.[ ]*\\.")
+      (progn
+        (backward-char (length matched))
+        (delete-char (length matched))
+        (insert "\\ldots")
+        )
       )
-    )
-   ((string-fit-regex matched wuxch-not-sentence-over-char)
-    (progn
-      (backward-char 1)
-      (delete-char 1)
-      (insert "~")
+     ((string-fit-regex matched wuxch-not-sentence-over-char)
+      (progn
+        (backward-delete-char-untabify 1)
+        (insert "~")
+        )
       )
+     (t
+      ;; (replace-match string-for-replace)
+      (progn
+        (backward-delete-char-untabify matched-length)
+        (insert string-for-replace)
+        )
+      )
+     )
     )
-   (t
-    (replace-match string-for-replace))
-   )
   )
 
 (defun latex-special-char ()
@@ -764,6 +913,7 @@
         (loop-flag t)
         ;; 设定大小写敏感，这样可以替换Ms.，而不是systems.了。
         (case-fold-search nil)
+        (overlay)
         )
     (while (and loop-flag (re-search-forward regex-string nil t))
       (setq matched (match-string 0))
@@ -776,8 +926,13 @@
           (setq string-for-replace "special treat")
         )
 
-      (if (not (eq ret 'automatic))
-          (setq ret (y-or-n-ex (concat "replace \"" matched "\" with " string-for-replace "?")))
+      (unless (eq ret 'automatic)
+        (setq overlay (make-overlay (- (point) (length matched)) (point)))
+        (overlay-put overlay 'face 'highlight)
+
+        (setq ret (y-or-n-ex (concat "replace \"" matched "\" with " string-for-replace "?")))
+
+        (delete-overlay overlay)
         )
 
       (cond
@@ -798,9 +953,7 @@
         )
 
        ((eq ret 'automatic)
-        (progn
-          (latex-special-char-replace-string matched string-for-replace)
-          )
+        (latex-special-char-replace-string matched string-for-replace)
         )
        )
       )
@@ -824,18 +977,13 @@
   )
 
 (defun zte-table ()
-  "zte-table:"
+  "zte-table:convert execl table to tex format"
   (interactive)
-  ;; remove last empty line
-  (goto-char (point-max))
-  (if (eq (line-end-position) (line-beginning-position))
-      (delete-backward-char 1)
-    )
 
-  (goto-char (point-min))
-  (while (re-search-forward "\\([[:alnum:]]+\\)" (line-end-position) t)
-    (replace-match "\\\\ztehead{\\1}")
-    )
+  ;; (goto-char (point-min))
+  ;; (while (re-search-forward "\\([[:alnum:]]+\\)" (line-end-position) t)
+  ;;   (replace-match "\\\\ztehead{\\1}")
+  ;;   )
 
   (goto-char (point-min))
   (while (re-search-forward "[\t]+" nil t)
@@ -847,20 +995,26 @@
     (replace-match " \\\\\\\\\n")
     )
 
-  (goto-char (point-min))
-  (insert "\\begin{ztetable}{cap}{tab:}{m{.2\\textwidth}|m{.2\\textwidth}|m{.4\\textwidth}}\n")
-  (insert "\\toprule\n")
-  (beginning-of-line 2)
-  (insert "\\midrule\n")
+  ;; (goto-char (point-min))
+  ;; (insert "\\toprule\n")
+  ;; (beginning-of-line 2)
+  ;; (insert "\\midrule\n")
 
   (while (not (eq (line-number-at-pos (point)) (line-number-at-pos (point-max))))
     (beginning-of-line 2)
-    (insert "\\hline\n")
+    ;; (insert "\\hline\n")
     )
 
+  ;; (goto-char (point-max))
+  ;; (insert " \\\\\n\\bottomrule\n")
+  ;; (insert "\\end{ztetable}")
+
+  ;; remove last empty line
   (goto-char (point-max))
-  (insert " \\\\\n\\bottomrule\n")
-  (insert "\\end{ztetable}")
+  (if (eq (line-end-position) (line-beginning-position))
+      (delete-backward-char 1)
+    )
+
   )
 
 (defun zte-enum ()
@@ -921,6 +1075,191 @@
   (forward-word 1)
   (insert "}")
   (fill-paragraph t)
+  )
+
+(defun tex-process-single-quote ()
+  "tex-process-single-quote"
+  (interactive)
+  (query-replace-regexp "\\([^']\\)[ ]'" "\\1 `")
+  )
+
+(defun excel-table-to-tex-table ()
+  "excel-table-to-tex-table:convert execl table to tex format"
+  (interactive)
+
+  (goto-char (point-min))
+  (while (re-search-forward "[\t]+" nil t)
+    (replace-match " & ")
+    )
+
+  (goto-char (point-min))
+  (while (re-search-forward "\n" nil t)
+    (replace-match " \\\\\\\\\n")
+    )
+
+  (goto-char (point-min))
+  (insert "\\toprule\n")
+
+  (next-line 1)
+
+  (beginning-of-line)
+  (insert "\\midrule\n")
+
+  (goto-char (point-max))
+  (insert "\\bottomrule")
+
+  )
+
+(defconst month-string (list "Jan" "Feb" "Mar" "Apr" "May" "Jun" "Jul" "Aug" "Sept" "Oct" "Nov" "Dec"))
+
+(defun get-today-string-for-mycalendar ()
+  "get-today-string-for-mycalendar:"
+  (concat "\\mycalendar{"
+          (nth (- (string-to-int (format-time-string "%m")) 1) month-string)
+          ".'"
+          (format-time-string "%y")
+          "}{"
+          (format-time-string "%d")
+          "}"
+          )
+  )
+
+(defun nyt-process-replace-matched (matched section first-word-letter first-word-left)
+  "nyt-process-replace-matched:"
+  (let ((len (length matched)))
+    (backward-char len)
+    (delete-char len)
+    (insert (concat "\\pagebreak\n\\section{" section "}\n\n\\lettrine{"
+                    (upcase first-word-letter) "}{" (downcase first-word-left) "}"))
+    (insert (get-today-string-for-mycalendar))
+    )
+  )
+
+(defun nyt-process ()
+  "nyt-process:"
+  (interactive)
+  (let ((original-pos (point))
+        (regexp nil)
+        (loop-flag t)(ret)
+        (matched)(section)(first-word-letter)(first-word-left)
+        (overlay))
+    ;; (setq regexp "\\(.*\\)\n^By .*\n^.* — \\([[:alpha:]]\\)\\([[:alpha:]]*\\)")
+    (setq regexp (concat "\\(.*\\)\\(\n\\)+"
+                         "By[ ].*\n\\(\n\\)*"
+                         "\\(.\\{0,30\\}[ ]—[ ]\\)?\\([[:alpha:]]\\)\\([[:alpha:]]*\\)"))
+    (while (and loop-flag (search-forward-regexp regexp nil t))
+      (setq matched (substring-no-properties (match-string 0)))
+      (setq section (substring-no-properties (match-string 1)))
+      (setq first-word-letter (substring-no-properties (match-string 5)))
+      (setq first-word-left (substring-no-properties (match-string 6)))
+
+      (unless (eq ret 'automatic)
+        (setq overlay (make-overlay (- (point) (length matched)) (point)))
+        (overlay-put overlay 'face 'highlight)
+
+        (setq ret (y-or-n-ex "replace this title?"))
+
+        (delete-overlay overlay)
+        )
+      (cond
+       ((eq ret 'quit)
+        (setq loop-flag nil))
+
+       ((eq ret 'skip)
+        nil)
+
+       ((eq ret 'act)
+        (nyt-process-replace-matched matched section first-word-letter first-word-left))
+
+       ((eq ret 'act-and-exit)
+        (progn
+          (nyt-process-replace-matched matched section first-word-letter first-word-left)
+          (setq loop-flag nil)
+          )
+        )
+
+       ((eq ret 'automatic)
+        (nyt-process-replace-matched matched section first-word-letter first-word-left)
+        )
+       )
+      )
+    (goto-char original-pos)
+    )
+  )
+
+(define-key dired-mode-map [(control c)(p)] 'nyt-photo)
+(defun nyt-photo ()
+  "nyt-photo:"
+  (interactive)
+  (let* ((nyt-photo-file-name (dired-get-file-for-visit))
+         (file-extension-name (downcase (file-name-extension nyt-photo-file-name)))
+         (nyt-photo-directory "d:/wuxch/tex/nyt/fig/")
+         (new-nyt-photo-file-name nil)
+         )
+    (if (not (string= file-extension-name "jpg"))
+        (progn
+          (message "file \"%s\" is not a jpg file." nyt-photo-file-name)
+          )
+      (progn
+        (setq new-nyt-photo-file-name (convert-special-char-to-dot
+                                       (file-name-nondirectory nyt-photo-file-name)))
+        (dired-rename-file nyt-photo-file-name
+                           (concat nyt-photo-directory new-nyt-photo-file-name)
+                           t)
+        (generate-nyt-photo-tex-command new-nyt-photo-file-name)
+        )
+      )
+    )
+  )
+
+(defun convert-special-char-to-dot (input-string)
+  "convert-special-char-to-dot:"
+  (let ((output-string nil)
+        (string-start 0)
+        (regexp "\[ ,‘’\]+")
+        )
+    (setq output-string (replace-regexp-in-string regexp "." input-string))
+    output-string
+    )
+  )
+
+(defun generate-nyt-photo-tex-command (photo-file-name)
+  "generate-nyt-photo-tex-command:"
+  (let ((caption-string nil)
+        (start-point nil))
+    (wuxch-create-new-buffer)
+    (goto-char (point-max))
+    (insert "\n")
+    (setq start-point (point))
+    (insert "\\myphoto{")
+    (insert photo-file-name)
+    (insert "}{")
+    (clipboard-yank)
+    (insert "}")
+
+    (kill-new (buffer-substring start-point (point)))
+    )
+  )
+
+(defun tex-jump-to-config-file ()
+  "tex-jump-to-config-file:"
+  (interactive)
+  (let* ((tex-file (buffer-file-name))
+         (dir (file-name-directory tex-file))
+         (config-file-name "config.sty")
+         (config-file-full-name (concat dir config-file-name))
+         )
+    (find-file config-file-full-name)
+    )
+  )
+
+(defun tex-narrow-here ()
+  "tex-narrow-here"
+  (interactive)
+  (let* ((pos (point)))
+    (narrow-to-region pos pos)
+    (message "narrowed. using C-x n w to widen")
+    )
   )
 
 (provide 'wuxch-tex)

@@ -38,6 +38,10 @@ I'm reachable at mailto:wuxch2000@gmail.com
 
       set bar-cursor.
 
+* **current point** Lisp:wuxch-current-point.el
+
+     display information of current point
+
 * **date** Lisp:wuxch-date.el
 
       insert current time and date. Emacs alwyas crush when I use display-time with my Thinkpad X60 laptop.
@@ -96,6 +100,10 @@ I'm reachable at mailto:wuxch2000@gmail.com
 
       configuration of font-lock setting.
 
+* **fringe-bookmark** Lisp:wuxch-fringe-bookmark.el Lisp:wuxch-fringe.el 
+
+      display a little flag on fringe for bookmark
+
 * **goto-char** Lisp:wuxch-goto-char.el
 
       quickly jump to special character.
@@ -104,14 +112,65 @@ I'm reachable at mailto:wuxch2000@gmail.com
 
       show hide label on fringe.
 
+* **hex** Lisp:wuxch-hex.el
+
+      shortcut to hex mode.
+
 * **indent** Lisp:wuxch-indent.el
 
       do customized process when save file.
 
+* **icicles** Lisp:wuxch-icicles.el
+
+      configure for icicles.
+
+* **imenu** Lisp:wuxch-imenu.el
+
+      imenu config file, also for ecb.
+
+* **mode** Lisp:wuxch-mode.el
+
+      set mode according to suffix.
+
+* **mode-line** Lisp:wuxch-mode-line.el
+
+      customize mode-line.
+
+* **org** Lisp:wuxch-org.el
+
+      configures and codes for org mode.
+
+* **outline** Lisp:wuxch-outline.el
+
+      configures and codes for outline mode.
+
+* **point-stack** Lisp:wuxch-point-stack.el
+
+      codes for point-stack.
+
+* **predictive** Lisp:wuxch-predictive.el
+
+      configures and codes for predictive mode.
+
 * **tex** Lisp:wuxch-tex.el
 
-      configures and codes for tex mode
+      configures and codes for tex mode.
 
+* **register(perspective)** Lisp:wuxch-register.el
+
+      store and get windows layout to and from registers.
+
+* **sgml** Lisp:wuxch-sgml.el
+
+      configures and codes for sgml-mode.
+
+* **shell** Lisp:wuxch-shell.el
+
+      codes for shell mode.
+
+* **tag** Lisp:wuxch-tag.el
+
+      configures and codes for tag.
 
 [new]
 Welcome to the wiki!  You are probably right that the EmacsWiki is the best place to share EmacsLisp codes snippets, tricks and other nice things about Emacs. --&nbsp;GiorgosKeramidas
