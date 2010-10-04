@@ -1,12 +1,10 @@
 '''[http://github.com/ohler/ert ERT]''' is an '''E'''macs Lisp library for '''r'''egression/unit '''t'''esting.
 
-For examples of how to write tests with ERT, see ERT's own tests in ##ert-tests.el## at the above URL.
-
-== Extensions ==
-
-LennartBorgman has written ##ert2.el## ("additions to ##ert.el##"), which contains functions for emulating the command loop and setting up a file/buffer to play with. It is distributed with [[NxhtmlMode|nXhtml]], in the ##tests## subfolder.
+For examples of how to write tests with ERT, take a look at its texinfo documentation, or at ERT's own tests in ##ert-tests.el## at the above URL.
 
 == Discussion ==
+
+LennartBorgman has written ##ert2.el## ("additions to ##ert.el##"), which contains functions for emulating the command loop and setting up a file/buffer to play with. It is distributed with [[NxhtmlMode|nXhtml]], in the ##tests## subfolder.  ##ert2## has been integrated into ERT and is now obsolete.
 
 Whenever I ##(require 'ert)##, it runs a number of tests on itself. Is there a way to disable them to improve startup time? -- VegardOye
 

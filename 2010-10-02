@@ -45,6 +45,15 @@ On the wikisoftware used, I really have no oppinion on that. The site
 works fine for me, but I hardly ever used those //"more powerfull"// other
 wikisoftware. The blog post touches some relevant points, but those
 targeting the emacswiki really do not seem compelling to me. Keep up
-the good work, and thanks for *emacswiki*. 
+the good work, and thanks for *emhe acswiki*. 
 
 -- Memnon
+
+[new]
+I don't read Xah, but want to bring up instead that I pine for the days when Emacs development was more measured.  It was painfully slower, but I think there was a closer following of new features and changes by the community and especially this Wiki.  Emacs blogs for posting tricks generates a lot of excitement, but is not necessarily ideal.  Introducing an Emacs packaging system and repository system will likely prove similarly to be a mistake.  Emacs's value is its monolithic nature.  Contributed packages should be reviewed and made consistent with the Emacs whole.
+
+There's a lot of glory to be had in building some new fangled Emacs Web 2.0 site or moving the wiki to Media Wiki, but the real value is in documenting and making Emacs more useful.  There's also a lot of great material at Emacs Wiki, it just needs constant organizing, updating and tending too.  Perhaps, we could develop a strategy to get more of this done and recruit others.  The Emacs Wiki staying the same will not work forever, but installing a different Wiki is not a solution, either.  
+
+PS. 
+Icicles has been proposed for Emacs before.[http://lists.gnu.org/archive/html/emacs-devel/2007-07/msg00174.html][http://lists.gnu.org/archive/html/emacs-devel/2007-07/msg00186.html]
+-- AaronHawley

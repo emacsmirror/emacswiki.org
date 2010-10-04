@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:19:27 2010 (-0800)
+;; Last-Updated: Sun Oct  3 22:21:32 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 421
+;;     Update #: 424
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -100,6 +100,9 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2010/10/03 dadams
+;;     hl-line-flash:
+;;       Set ARG in interactive spec and use it.  Thx to Philip Weaver.
 ;; 2009/12/18 dadams
 ;;     Added: hl-line-inhibit-highlighting-for-modes.
 ;;     hl-line-highlight-now: Respect hl-line-inhibit-for-modes.  Thx to Sylecn.
@@ -230,11 +233,10 @@ use `\\[toggle-hl-line-when-idle]."
 (defun hl-line-flash (&optional arg)
   "Highlight the current line for `hl-line-flash-show-period' seconds.
 With a prefix argument, highlight for that many seconds."
-  (interactive)
+  (interactive "P")
   (hl-line-highlight-now)
-  (let ((line-period hl-line-flash-show-period))
-    (when current-prefix-arg
-      (setq line-period (prefix-numeric-value current-prefix-arg)))
+  (let ((line-period  hl-line-flash-show-period))
+    (when arg (setq line-period  (prefix-numeric-value arg)))
     (run-at-time line-period nil #'hl-line-unhighlight-now)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

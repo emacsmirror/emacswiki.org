@@ -26,6 +26,10 @@ Now you passwords are safer and you can reduce your paranoia level again... unti
 For a single file with N accounts, Gnus will show you N password prompts instead of just one.
 You can change that if you turn on the passphrase caché:
 <code>(setq epa-file-cache-passphrase-for-symmetric-encryption t)</code>
+
+[added 3 October 2010 [[Gijs Hillenius]]
+When encrypting the .authinfo.gpg file, do *not* select any gpg-key from the list presented by EPA. Instead, go for the default, symmetric encryption, and use a new password, not your GPG password. Unless you like using the same password for everything.
+
 ----
 [new]
 It seems that in addition, you need to stop passing <code>--use-agent</code> to your <code>gpg</code> program. This is the same as what you need to get a text prompt instead of a graphical prompt in [[EasyPG]]; read at that page to know how to disable the agent. --[[DanielClemente]]

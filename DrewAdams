@@ -264,6 +264,9 @@ Here are some screenshots of my Emacs.
 
 == Mailbox ==
 
+
+----
+
 [new]
 Hey Drew, I just wanted to let you know that your emacs libraries are so much awesome.  I totally dig [[Icicles]], and can hardly wait to install DoReMi.  Even the ones I don't use (FisheyeWithThumbs isn't much use for a guy who prefers a single frame) are still awesome in their design.  Thank you!  -- JonathanArkell
 
@@ -307,13 +310,34 @@ IciclesDiscussion and Drew deleted it now, so... whatever. -- stepnem
 
 
 [new:jlr:2010-09-27 15:31 UTC]
-Thanks for leaving a welcome message on my wiki page. I use your brilliant Icicles mode every day. Incredible work - that must have taken a HUGE amount of effort. I've put real time into reading your documentation and still haven't explored every last corner yet.
+Thanks for leaving a welcome message on my wiki page. I use your brilliant [[Icicles]] mode every day. Incredible work - that must have taken a HUGE amount of effort. I've put real time into reading your documentation and still haven't explored every last corner yet.
 
 Every advanced completion system ever made will look to Icicles for inspiration/guidance. Congratulations on making something really exceptional.
 
-And thanks so much for putting all the hard work into releasing it!! Writing documentation and packaging a large piece of software like that takes a whole lot of effort. I really, really appreciate it and so do a lot of other people I'm sure. Thank you :)
+And thanks so much for putting all the hard work into releasing it!! Writing documentation and packaging a large piece of software like that takes a whole lot of effort. I really, really appreciate it and so do a lot of other people I'm sure. Thank you :) -- [[jlr]]
 
 
+[new:DrewAdams:2010-10-04 05:27 UTC]
+Glad you find Icicles and the doc useful. Enjoy. -- DrewAdams
+
+
+----
+[new]
+In ##hl-line+##, the function ##hl-line-flash## ignores the ##arg## argument and just looks at ##current-prefix-arg## directly.  Would it make more sense to define the function like this?
+
+    (defun hl-line-flash (&optional arg)
+      "Highlight the current line for `hl-line-flash-show-period' seconds.
+    Or if ARG is non-nil, then highlight for that many seconds."
+      (interactive "P")
+      (hl-line-highlight-now)
+      (let ((line-period hl-line-flash-show-period))
+        (when arg (setq line-period (prefix-numeric-value arg)))
+        (run-at-time line-period nil #'hl-line-unhighlight-now)))
+
+(I've never communicated via the Wiki like this before.  Sorry if I didn't do it right.) -- [[PhilipWeaver]]
+
+[new:DrewAdams:2010-10-04 05:25 UTC]
+Yes, of course it would.  Dunno why I left it like that. Thx - DrewAdams
 
 
 ----
