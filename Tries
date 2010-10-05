@@ -2,10 +2,16 @@ A trie stores data associated with "strings" (not necessarily the string data ty
 
 But, more importantly, advanced string queries are also very efficient, such as finding all strings with a given prefix, or finding all strings matching a regular expression, with the results returned in alphabetical or any other sort-order, returning only the first few results if so desired.
 
-Requires the [[Heaps]], TaggedNFA, [[Queues]], and [[AVLtrees]] packages. The latest version (0.2.2, released February 2009) can be obtained from:
+Requires the [[Heaps]], TaggedNFA, [[Queues]], and [[AVLtrees]] packages. The latest version (0.2.3 released October 2010) can be obtained from:
 
 * Trie package download: http://www.dr-qubit.org/download.php?file=predictive/trie.el
+* Trie git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
 * Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, *not* a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using something like:
+
+  git clone http://www.dr-qubit.org/git/predictive.git predictive 
+
 
 Please send bug reports and suggestions to [mailto:toby-predictive@dr-qubit.org toby-predictive@dr-qubit.org] (you can post them here as well if you like, of course). I don't check this page regularly, so anything not emailed to me is likely to languish here unnoticed for some time.
 

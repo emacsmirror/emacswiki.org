@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:56:20 2010 (-0700)
+;; Last-Updated: Mon Oct  4 13:38:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11865
+;;     Update #: 11867
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -302,7 +302,6 @@
 (when (< emacs-major-version 22)
   (defvar completion-common-substring)
   (defvar completion-root-regexp)
-  (defvar directory-sep-char)
   (defvar minibuffer-completing-symbol)
   (defvar minibuffer-prompt-properties)
   (defvar partial-completion-mode)
@@ -530,7 +529,7 @@ so it is called after completion-list buffer text is written."
                        ;; For file name completion, use the number of chars before
                        ;; the start of the file name component at point.
                        (with-current-buffer mainbuf
-                         (save-excursion (skip-chars-backward (format "^%c" directory-sep-char))
+                         (save-excursion (skip-chars-backward "^/")
                                          (- (point) (icicle-minibuffer-prompt-end)))))
                       ((save-match-data (string-match "\\` \\*Minibuf-[0-9]+\\*\\'"
                                                       (buffer-name mainbuf)))

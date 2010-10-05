@@ -557,7 +557,7 @@ Yes, some visible indicator to show that the directory view is narrowed is indee
 
 Personally, I prefer dired-isearch-forward over dired-isearch-filenames, because sometimes I also search for the name of a month, or some other piece of data displayed in the pane, and not only for names of files.
 
-"is there any good place for me to try putting a (dired-isearch-filenames) at?" -- Maybe could experiment with sr-start-hook (and/or sr-refresh-hook, but it may be overkill. YMMV)
+"is there any good place for me to try putting a (dired-isearch-filenames) at?" -- Maybe you could experiment with sr-start-hook (and/or sr-refresh-hook, but it may be overkill. YMMV)
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----

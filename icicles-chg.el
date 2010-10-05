@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 26 18:54:59 2010 (-0700)
+;; Last-Updated: Mon Oct  4 13:45:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5594
+;;     Update #: 5596
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -592,6 +592,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/10/04 dadams
+;;     directory-sep-char -> ?/ (It was removed from Emacs 24.)
 ;; 2010/06/18 dadams
 ;;     icicle-completing-read:
 ;;       Initialize icicle-completions-format-internal to icicle-completions-format.
@@ -2052,6 +2054,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/10/04 dadams
+;;     directory-sep-char -> ?/ (It was removed from Emacs 24.)
 ;; 2010/09/26 dadams
 ;;     icicle-regexp-quote-input:
 ;;       Handle no mark in minibuffer.  Use end of prompt, not point-min.  Thx to Michael Heerdegen.

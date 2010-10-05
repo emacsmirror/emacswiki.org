@@ -3,7 +3,13 @@ A tagged, [http://en.wikipedia.org/wiki/Nondeterministic_finite_state_machine no
 The latest version  (0.1, released February 2009) can be obtained from:
 
 * tNFA package download: http://www.dr-qubit.org/download.php?file=predictive/tNFA.el
+* tNFA git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
 * Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, *not* a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using something like:
+
+  git clone http://www.dr-qubit.org/git/predictive.git predictive 
+
 
 Why re-implement regular expression matching when Emacs comes with extensive built-in support for [[RegularExpression]]s? Primarily, because some algorithms require access to the NFA states produced part way through the regular expression matching process (see [[Tries]] for an example). Secondarily, because Emacs regexps only work on strings, whereas regular expressions can equally well be used to specify other sequence types.
 

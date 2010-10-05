@@ -1,0 +1,24 @@
+== Intro ==
+[[image:InfRubyCompanyScreenshot]]
+
+Auto-completion for Inf-Ruby (IRB) buffers.
+
+== Download ==
+[http://gist.github.com/raw/610104/b4db1e8789d8507d00b7d56672485143e9eec72c/inf-ruby-company.el inf-ruby-company.el]
+
+[http://gist.github.com/610104 Gist page]
+
+== Installation ==
+1. Install [[CompanyMode]] and get the latest [http://github.com/nonsequitur/inf-ruby/raw/master//inf-ruby.el inf-ruby] (ELPA release is pending)
+
+2. Add Inf-Ruby-Company to your load path, like
+
+   (add-to-list 'load-path "<directory that includes inf-ruby-company>")
+
+2. Add the following to your Emacs setup:
+
+   (add-hook 'inf-ruby-mode-hook (lambda () (require 'inf-ruby-company)))
+
+== Tweak Company Mode for instant completion ==
+   (setq company-idle-delay 0.1)
+   (setq company-minimum-prefix-length 2)

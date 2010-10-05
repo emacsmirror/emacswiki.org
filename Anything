@@ -25,6 +25,28 @@ TassiloHorn, JasonMcBrayer, [[rubikitch]] and ThierryVolpiatto maintain and exte
 If you have enhancements please drop one of them a mail and they will pull your changes in. You can also submit patches, see the manual page of ##git format-patch##.
 
 If you have any cool feature, write to AnythingSources page, push to mob repository, or mail me, i will apply it. :) -- [[rubikitch]]
+: are there any plans to clean up these files? the anything-config file and your own config file are both pretty monolithic, as such it's hard to modify or extend 'anything'. Maybe separating things into different files, and creating more 'helper' functions would help? for example, isn't the following a simpler way of creating anything functions, than having them build-in/preconfigured?:
+
+ (defvar anything-command-list nil)
+ (defmacro defanything (name sources)
+   (list 'add-to-list '(intern "anything-command-list") (concat "anything-" name))
+   (list 'defun (intern (concat "anything-" name)) (list)
+ 	(list 'interactive)
+ 	(list 'anything
+ 	      (list 'quote
+ 		    (map 'list
+ 			 (lambda (x) (intern (concat "anything-c-source-" x)))
+ 			 sources))
+ 	      'nil 'nil 'nil 'nil (concat "*" (concat "anything-" name) "*"))))
+
+ (defanything "open-files"
+   ("recentf" "file-cache" "files-in-current-dir" "locate"))
+
+ (defanything "emacs-variables"
+   ("emacs-variables"))
+
+ (defanything "emacs-functions"
+   ("emacs-functions"))
 
 ##anything-config.el## can also be downloaded from [[anything-config.el]].
 

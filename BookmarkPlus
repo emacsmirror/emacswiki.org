@@ -2687,6 +2687,18 @@ Right. Thanks, should be OK now. -- DrewAdams
 
 
 
+----
+[new]
+I would like to make bookmarks my homepage.  How would I do this? (I use ECB and calling `bookmark-bmenu-list' doesn't seem to work). -- [[baron]]
+
+[new:DrewAdams:2010-10-04 14:57 UTC]
+Not sure I understand. Does `bookmark-bmenu-list' work for you in vanilla Emacs (i.e., without loading '''Bookmark+''')?
+
+* If so, then please report a '''Bookmark+''' bug -- either here or by mailing me. Give a complete recipe, starting with ##emacs -Q##.
+
+* If not, then try to pare down your [[init file]] to find out what the problem is. And perhaps try without your existing bookmarks file (in case it is corrupted).
+
+The first thing to try is removing (e.g. renaming) your bookmarks file. If it works then, then try commenting-out half of the file, then a quarter, etc. until you find the bad bookmark(s). -- DrewAdams
 
 ----
 CategoryHypermedia CategoryPersistence 

@@ -21,6 +21,9 @@ The empty string (zero-length string, null string, ...):
     (zerop (length "")) ;; O(n)
     ==> t
 
+    (zerop (string-match "" "")) ;; O(n)
+    ==> t
+
     (string= "" "") ;; O(n)?
     ==> t
 
@@ -436,6 +439,16 @@ Alternative without regular expressions: `search-forward'.
 Note that the functions working on buffers move point to the end of the occurrence found and return it.
 That's why the result is 10 instead of 6!
 
+=== Comments ===
+
+Move to the beginning of the current comment:
+
+    (comment-beginning)
+
+Move to the text after a comment:
+
+    (comment-search-forward (line-end-position) t)
+
 === Search and replace ===
 
     (replace-regexp-in-string "foo*" "fu" "Fight foo for food!")
@@ -584,6 +597,23 @@ A more concise version is possible with the the higher-arity version of mapcar a
    '(1 2 3) '(a b c) '(A B C))
   ==> ((1 a A) (2 b B) (3 c C))
 
+Searching:
+
+Simply checking for existence of a value in a list can be done with
+`member' or `memq'.
+
+  (let ((words '("fight" "foo" "for" "food!")))
+    (car (member "for" words)))
+  ==> "for"
+
+  (let ((re "\\wo\\b")
+        (words '("fight" "foo" "for" "food!")))
+    (consp (memq t
+             (mapcar (lambda (s) (numberp (string-match re s))) words))))
+  ==> t
+
+In the latter, a more efficient algorithm would use a loop (a non-local exit).
+
 === Association lists ===
 
 The ElispManual has examples of finding and deleting values in an
@@ -681,6 +711,16 @@ Processing a file is usually done with a temporary buffer:
        ;; do something here with buffer content
          (forward-line)))))
 
+On the chance that a buffer may already be actively visiting the file,
+consider using `find-file-noselect'
+
+  (defun file-string (file)
+    "Read the contents of a file and return as a string."
+    (with-current-buffer (find-file-noselect file)
+      (buffer-string)
+      (newline)
+      (save-buffer)))
+
 === Write ===
 
 To write something to a file you can create a temporary buffer, insert the things to write there and write the buffer contents to a file.  The following example read a string and a filename (with completion, but doesn't need to exist, see InteractiveCodeChar F) and write the string to that file.
@@ -693,6 +733,25 @@ To write something to a file you can create a temporary buffer, insert the thing
        (write-region (point-min)
                      (point-max)
                      file))))
+
+=== Input and output (I/O) ===
+
+This is a nice and simple way to edit a file with Emacs Lisp,
+especially when there's a chance the file might be already be visited
+in Emacs and its ok to edit the existing buffer.
+
+    (with-current-buffer (find-file-noselect "~/logfile")
+        (goto-char (point-max))
+        (insert (format "Hash of last line: %s"
+                 (md5
+                  (save-excursion
+                    (forward-line -1)
+                    (buffer-substring-no-properties (point)
+                                                    (line-end-position))))))
+        (newline)
+        (with-temp-message "Writing file..."
+          (save-buffer))
+        (message "Writing file...done"))
 
 === Filter ===
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 26 18:47:44 2010 (-0700)
+;; Last-Updated: Mon Oct  4 13:40:51 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16049
+;;     Update #: 16052
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -977,13 +977,13 @@ See description of `kill-region-wimpy'."
   "Replace minibuffer input with the parent directory."
   (interactive)
   (goto-char (point-max))
-  (let ((directoryp  (equal directory-sep-char (char-before)))
+  (let ((directoryp  (equal ?/ (char-before)))
         (bob         (icicle-minibuffer-prompt-end)))
-    (while (and (> (point) bob) (not (equal directory-sep-char (char-before))))
+    (while (and (> (point) bob) (not (equal ?/ (char-before))))
       (delete-backward-char 1))
     (when directoryp
       (delete-backward-char 1)
-      (while (and (> (point) bob) (not (equal directory-sep-char (char-before))))
+      (while (and (> (point) bob) (not (equal ?/ (char-before))))
         (delete-backward-char 1)))))
 
 ;;; ;;;###autoload

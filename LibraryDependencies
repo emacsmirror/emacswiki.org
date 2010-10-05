@@ -1,52 +1,10 @@
 This page is about dependencies among Lisp libraries. Click the title above to see all pages that link here.
 
-== Load History and Library Dependencies ==
+== Variable load-history ==
 
-Variable `load-history' records ''lots'' of information about what libraries have been loaded in your session so far, what functions and variables they each define, and what other libraries they require. Try `C-h v load-history' - you'll get a ''very'' long list of very long entries: perhaps 900 very long lines. Here is a typical entry for ''one'' library in Emacs 20:
+Variable `load-history' records ''lots'' of information about what libraries have been loaded in your session so far, what functions and variables they each define, and what other libraries they require. Try `C-h v load-history' - you'll get a ''very'' long list.
 
-  ("term/w32-win"
-    (require . frame)
-    (require . mouse)
-    (require . scroll-bar)
-    (require . faces)
-    (require . select)
-    (require . menu-bar)
-    (require . fontset)
-    w32-handle-scroll-bar-event mouse-wheel-scroll-amount mouse-wheel-scroll-line
-    mouse-wheel-scroll-screen w32-drag-n-drop-debug w32-drag-n-drop 
-    w32-drag-n-drop-other-frame x-invocation-args x-command-line-resources 
-    x-option-alist x-long-option-alist x-switch-definitions x-handle-switch 
-    x-handle-iconic x-handle-numeric-switch x-handle-xrm-switch x-handle-geometry 
-    x-handle-name-rn-switch x-display-name x-handle-display x-invocation-args 
-    x-handle-args x-colors x-defined-colors iconify-or-deiconify-frame 
-    x-last-selected-text x-cut-buffer-max x-select-enable-clipboard x-select-text 
-    x-get-selection-value x-cut-buffer-or-selection-value w32-standard-fontset-spec 
-    x-win-suspend-error internal-face-interactive w32-use-w32-font-dialog 
-    w32-fixed-font-alist mouse-set-font)
-
-And here is the entry for the same library in Emacs 21 (CVS from 7/26/2004):
-
-  ("term/w32-win"
-    (require . x-dnd)
-    (require . code-pages)
-    (require . fontset)
-    w32-drag-n-drop-debug w32-drag-n-drop w32-drag-n-drop-other-frame 
-    x-command-line-resources x-handle-switch x-handle-numeric-switch 
-    x-handle-initial-switch x-handle-iconic x-handle-xrm-switch x-handle-geometry 
-    x-handle-name-switch
-    (defvar . x-display-name)
-    x-handle-display x-handle-args
-    (defvar . x-colors)
-    xw-defined-colors
-    (defvar . w32-standard-fontset-spec)
-    x-win-suspend-error internal-face-interactive mouse-set-font)
-
-Notice that they are different:
-
-* Emacs 20 doesn't list the variables defined in the library (`defvar's); Emacs 21 does.
-* Emacs 21 doesn't list some of the `require's that Emacs 20 lists.
-
-The first of these differences indicates that Emacs 21 provides more information than Emacs 20. The second indicates a '''''bug''''' in Emacs 21: it does not include all of the required libraries. The code for library `<code>win.el</code>' in fact has ''more'' requires than the Emacs 20 version of the library. This is a serious bug, which should be kept in mind if you use `load-history'.
+The information in `load-history' differs between different versions of Emacs.  At least Emacs 20 contains less information than Emacs 21.  Emacs 21 on the other hand has a bug that results in missing entries in `load-history'.  Hopefully you are using Emacs 22 or 23 by now.
 
 == Library loadhist.el ==
 
@@ -55,8 +13,6 @@ Standard library `<code>loadhist.el</code>' uses the information in `load-histor
 It also provides functions that let you know which library loaded a given function (`feature-symbols'), the features required by a given library (`file-requires'), the (loaded) libraries that require a given library (`file-dependents'), and the features provided by a given library (`file-provides').
 
 In other words, it's a gold mine of information about the files, features, functions, and variables that have been loaded -- in particular, about their interrelations.
-
-
 
 [:LibRequires]
 == Library lib-requires.el ==
@@ -114,12 +70,13 @@ Otherwise, for libraries that were successfully loaded, there is '''''no way to 
 
 '''See Also:''' '''AutomaticFileHeaders''' for use of library <tt>[[lib-requires.el]]</tt> in automatically inserting and updating a comment with library dependencies (via ‘insert-lib-requires-as-comment’).
 
-
 == Library elisp-depend.el ==
 
 ElispDepend is similar in some ways to <tt>[[lib-requires.el]]</tt>. A difference is that <tt>[[elisp-depend.el]]</tt> considers also autoloaded definitions (not just loaded libraries) to be dependencies. It parses the code in the current buffer, using `symbol-file' to determine the defining (possibly autoloaded) library for each symbol. Like ##lib-requires.el##, you can use ##elisp-depend.el## to insert a comment about libraries that might be needed, but you can also use it to insert appropriate `require' and `autoload' code.
 
+== Library elx.el ==
 
+Library <tt>[http://github.com/tarsius/elx elx.el]</tt> can extract all kinds of information from an elisp file.  It is similar to standard library <tt>lisp-mnt.el</tt>.  Both of these libraries do not require the library from which information is extracted to be loaded.  <tt>lisp-mnt.el</tt> actually only extracts information from the library header.  <tt>elx.el</tt> on the other hand also provides functions <tt>elx-required</tt> and <tt>elx-provided</tt> which extract dependency information using regular expressions.  Therefor it can be used in situations where some of the required libraries are not actually available or when one does not want to load the libraries for performance or security reasons.
 
 ----
 CategoryCode 

@@ -2,10 +2,16 @@ An [http://en.wikipedia.org/wiki/Avl_tree AVL tree] is a form of self-balancing 
 
   (require 'avl)
 
-TobyCubitt has written a drop-in replacement for the version included in Emacs, which adds a number of new functions, and adds new optional arguments to some existing functions. These enhancements are necessary for efficient implementations of certain algorithms involving AVL trees (which is, after all, the whole point!). The latest version of that package (0.1, released February 2009) can be obtained from:
+TobyCubitt has written a drop-in replacement for the version included in Emacs, which adds a number of new functions, and adds new optional arguments to some existing functions. These enhancements are necessary for efficient implementations of certain algorithms involving AVL trees (which is, after all, the whole point!). The latest version of that package (0.2, released October 2010) can be obtained from:
 
 * AVL tree package download: http://www.dr-qubit.org/download.php?file=predictive/avl-tree.el
+* AVL tree git repository: <code>http://www.dr-qubit.org/git/predictive.git</code>
 * Web-site: http://www.dr-qubit.org/emacs.php#structures
+
+The development version is hosted in the same git repository as PredictiveMode. Note that the git repository URL is a git repository, *not* a web-site. You cannot view it in a web browser. To grab the latest development version, clone the repository using something like:
+
+  git clone http://www.dr-qubit.org/git/predictive.git predictive 
+
 
 If you want to use this replacement version, but don't want to overwrite the version included in Emacs, then make sure that the replacement version is saved to a path that appears earlier in your Emacs <code>load-path</code> than the directory containing the original version (usually something like <code>/usr/share/emacs/lisp/emacs-lisp/</code> on *nix systems).
 

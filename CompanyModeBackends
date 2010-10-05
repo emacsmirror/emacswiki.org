@@ -17,6 +17,10 @@ http://gist.github.com/179847
 The first version of this file, for use with an older Slime, can be found at:
 http://common-lisp.net/pipermail/slime-devel/attachments/20090328/91ce4004/attachment.asc
 
+= Inf-Ruby =
+[http://gist.github.com/raw/610104/b4db1e8789d8507d00b7d56672485143e9eec72c/inf-ruby-company.el inf-ruby-company.el]
+
+Documentation: [[InfRubyCompany]]
 
 = EmacsLispMode =
 
