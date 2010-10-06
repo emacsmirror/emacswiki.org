@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 315 $
+;; RCS Version: $Rev: 320 $
 ;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -37,7 +37,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 315 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 320 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
@@ -507,12 +507,14 @@
          (path))
     (unless is-open
       (setq path (widget-get branch :path))
-      (sr-tree-check-virtual-size path))
+      (sr-tree-check-virtual-size path)
+      t)
     (when (or (and is-open (eq action 'close))
               (and (not is-open) (eq action 'open))
               (null action))
       (sr-tree-focus-widget)
-      (widget-button-press (point)))))
+      (widget-button-press (point))
+      t)))
 
 (defun sr-tree-open-branch ()
   "Unfold (graphically) the directory selected in the current Sunrise Tree pane,
@@ -605,14 +607,15 @@
             (car binding) (sr-tree-isearch-command binding)))
         sr-tree-isearch-mode-commands))
 
-(defun sr-tree-isearch-cleanup ()
+(defun sr-tree-isearch-done ()
   "Clean up the isearch hook and keymap after a sticky search."
   (remove-hook 'isearch-mode-end-hook 'sr-tree-post-isearch)
   (kill-local-variable 'search-nonincremental-instead)
   (mapc (lambda (binding)
           (define-key isearch-mode-map (car binding) nil))
         sr-tree-isearch-mode-commands)
-  (define-key isearch-mode-map "\C-c" 'isearch-other-control-char))
+  (define-key isearch-mode-map "\C-c" 'isearch-other-control-char)
+  (isearch-done))
 
 (defun sr-tree-isearch-forward (&optional prefix)
   "Prefixable version of isearch-forward used in Sunrise Tree mode. With PREFIX
@@ -639,15 +642,18 @@
   in Sunrise Tree View mode."
   (if (or isearch-mode-end-hook-quit (equal "" isearch-string))
       (progn
-        (sr-tree-isearch-cleanup)
-        (isearch-done))
+        (sr-tree-isearch-done)
+        (if command
+            (sr-tree-isearch-command-loop command)
+          (sr-tree-open-branch)))
     (sr-tree-update-cursor)
-    (sr-tree-toggle-branch 'open)
-    (if (widget-get (sr-tree-get-branch) :args)
-      (recenter (truncate (/ (window-body-height) 10.0))))
-    (if command (sr-tree-isearch-command-loop command))
-    (sr-tree-isearch-setup)
-    (isearch-forward nil t)))
+    (if (not (sr-tree-toggle-branch 'open))
+        (sr-tree-isearch-done)
+      (if (widget-get (sr-tree-get-branch) :args)
+          (recenter (truncate (/ (window-body-height) 10.0))))
+      (if command (sr-tree-isearch-command-loop command))
+      (sr-tree-isearch-setup)
+      (isearch-forward nil t))))
 
 (defun sr-tree-isearch-command-loop (command)
   (funcall command)
@@ -765,7 +771,7 @@
         (sr-goto-dir-function nil)
         (in-search (memq 'sr-tree-post-isearch isearch-mode-end-hook)))
     (sr-tree-check-virtual-size target)
-    (if in-search (sr-tree-isearch-cleanup))
+    (if in-search (sr-tree-isearch-done))
     (sr-save-aspect (sr-alternate-buffer (sr-goto-dir target)))))
 
 (defun sr-tree-mouse-advertised-find-file (e)

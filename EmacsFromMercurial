@@ -1,3 +1,8 @@
 A [[Mercurial]] mirror of the [EmacsFromBazaar Emacs Bazaar repository] is available.
 
  hg clone http://hg.intevation.org/emacs
+
+That one seemed to be no longer updated so [NicFerrier I] built another one on bitbucket:
+
+ hg clone https://nic@bitbucket.org/nic/emacs 
+

@@ -32,7 +32,10 @@ Here's the code to put in your ~/.emacs in order to get something like
 
 Use `M-x indirect-buffer' to create an indirect buffer of the current buffer.
 
-----
+
+
+[:IndirectRegion]
+== Indirect Region Extension to Vanilla Emacs ==
 And this is what I use now regularly for reading book material containing
 sourcecode examples. 
 

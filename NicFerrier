@@ -11,10 +11,10 @@ I've done a few things with emacs which I'm trying to push into this wiki:
 * [[imapua]] -- a purely IMAP based email client for Emacs
 * [[trac_editor]] -- a very simple interface to trac.py
 
-== Other interesting points ==
+== Emacs under Mercurial ==
 
-* I use [http://www.selenic.com/mercurial/ mercurial] to get emacs you can get it to by just using mercurial to clone [http://hg.intevation.org/emacs/ this]
-* My emacs bits and pieces are in a mercurial repo [http://making.woome.com/repos/nics-emacs-bits/ here]
+* I host a mercurial copy of the emacs bzr repo at bitbucket: https://bitbucket.org/nic/emacs
+** and [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I use]
 
 == Things I am interested in doing ==
 
@@ -24,6 +24,11 @@ I've done a few things with emacs which I'm trying to push into this wiki:
 * improving emacs as a mail client
 * xml edting
 * python editing
+* exploting emacs async nature
+
+== node js for emacs == [http://github.com/nicferrier/elnode elnode]
+is an asynchronous tcp server handling HTTP. At the moment it's little
+more than the emacs tcp plumbing.
 
 
 == Emacs in a screen terminal: colors ==

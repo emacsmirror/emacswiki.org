@@ -50,3 +50,8 @@ The default bindings are M-up-arrow and M-down-arrow. It works like Eclipse's (s
 (global-set-key [M-up] 'move-text-up)
 (global-set-key [M-down] 'move-text-down)
 </pre>
+Also look at [[DragStuff]]
+
+
+----
+CategoryRegion

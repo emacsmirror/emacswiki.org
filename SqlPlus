@@ -156,5 +156,8 @@ sqlplus mode is really good. I no longer need sql developer to browse schemas - 
 
 -- HarishSharma
 
+[new]
+sqlplus is really good! But is there any way to assign a connection to a buffer? The only way I found till now, when I edit an existing file, is to set the mode to sqlplus (M-x sqlplus-mode) and then restart the connection (M-x sqlplus-restart-connection). Best regards -- George
+
 ----
 CategorySql

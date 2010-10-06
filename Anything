@@ -47,6 +47,7 @@ If you have any cool feature, write to AnythingSources page, push to mob reposit
 
  (defanything "emacs-functions"
    ("emacs-functions"))
+:: Nice idea! But I think of better interface. -- [[rubikitch]]
 
 ##anything-config.el## can also be downloaded from [[anything-config.el]].
 

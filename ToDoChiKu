@@ -15,6 +15,7 @@ Currently it notifies you on the following conditions:
 The following packages also use ToDoChiKu features:
 * TwIt
 * [[cruisecontrol.el]]
+* Emacs Speaks NONMEM (esnm.sourceforge.net)
 
 == Installing ==
 

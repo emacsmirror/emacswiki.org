@@ -12,6 +12,10 @@ Get it here:
 
 -- PeterHeslin
 
+To use org-mode keybindings use Lisp:fold-dwim-org.el
+
+-- MatthewFidler
+
 ----
 CategoryHideStuff 
 CategoryOutline

@@ -130,6 +130,8 @@ msmtp version 1.4.14
 TLS/SSL library: OpenSSL
 </pre>
 
+<b>Note that tls_cert_check = off makes you susceptible to man-in-the-middle attacks</b>. The correct thing to do is to download the appropriate SSL certificates and configure them as describe in the msmtp man page.
+
 == Yet Another Gnus/MSMTP Setting for Easy Multi-SMTP Sending ==
 
 Multi-SMTP email sending in Gnus tortured me for long time. I searched for a sound solution for long time and can not find one. And I think using Posting Styles is too tedious, boring and prone to shooting myself. ILast Saturday night, I spent several hours, and found a sound and safe solution, and its setting is quite simple.
