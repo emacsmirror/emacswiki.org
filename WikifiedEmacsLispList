@@ -1,4 +1,4 @@
-Timestamp: Thu Feb 18 15:53:52 GMT 2010
+Timestamp: Wed Oct  6 20:50:55 BST 2010
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -72,7 +72,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://www.keelhaul.demon.co.uk/linux/#apachemode apache-mode.el] --- major mode for editing Apache configuration files (by Jonathan Marten)
 
-[ftp://ftp.m17n.org/pub/mule/apel/ apel.el] --- [A portable Emacs library] (by Apel group)
+[http://kanji.zinbun.kyoto-u.ac.jp/~tomo/lemi/dist/apel/ apel.el] --- [A portable Emacs library] (by Apel group)
 
 [http://www.esat.kuleuven.ac.be/~vdplas/emacs/ aplac-mode.el] --- major mode for Aplac netlist files (by Brennan Sharp)
 

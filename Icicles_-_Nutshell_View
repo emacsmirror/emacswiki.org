@@ -159,9 +159,16 @@ can ''cycle'' prefix-completion candidates by using the `down' and
 Some people prefer to always cycle using the same keys, for
 example, `down' and `up', regardless of the completion mode
 (prefix or apropos).  You can get that behavior by customizing
-user option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''
+user option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''  to a non-`nil' value.
 
-Instead of using `down' or `next', as an alternative you can cycle candidates downward (forward) by just
+You can use modal and non-modal cycling bindings together: If
+`icicle-cycling-respects-completion-mode' is non-`nil' and you use
+`down' as the key for cycling forward modally (i.e., for both
+prefix and apropos completion), you can still use `next' for
+apropos cycling.  Or if you bind `next' as the key for cycling
+forward modally then you can still use `down' for prefix cycling.
+
+As an alternative, instead of using `down' or `next', you can cycle candidates downward (forward) by 
 repeating the same completion key: `TAB' or `S-TAB'.  For example:
 
 : ##M-x tool  ##'''##TAB##''' -> Display candidates with prefix `tool' in `*Completions*'

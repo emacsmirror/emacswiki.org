@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  4 13:40:51 2010 (-0700)
+;; Last-Updated: Wed Oct  6 17:14:03 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16052
+;;     Update #: 16059
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1406,18 +1406,13 @@ Option `icicle-TAB-completion-methods' determines the TAB completion
 methods that are available."
   (interactive)
   (let ((now  (member icicle-current-TAB-method icicle-TAB-completion-methods)))
-    (setq icicle-current-TAB-method  (if now
-                                         (or (cadr now) (car icicle-TAB-completion-methods))
-                                       'basic))
+    (setq icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))
     ;; Skip any method that is not currently supported.
     (while (or (and (eq icicle-current-TAB-method 'fuzzy) (not (featurep 'fuzzy-match)))
                (and (eq icicle-current-TAB-method 'swank) (not (featurep 'el-swank-fuzzy)))
                (and (eq icicle-current-TAB-method 'vanilla) (not (boundp 'completion-styles))))
-      (setq now                        (member icicle-current-TAB-method
-                                               icicle-TAB-completion-methods)
-            icicle-current-TAB-method  (if now
-                                           (or (cadr now) (car icicle-TAB-completion-methods))
-                                         'basic))))
+      (setq now                        (member icicle-current-TAB-method icicle-TAB-completion-methods)
+            icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))))
   (cond ((and (eq icicle-current-TAB-method 'swank) (fboundp 'doremi))
          (define-key minibuffer-local-completion-map "\C-x1"
            'icicle-doremi-increment-swank-timeout+)

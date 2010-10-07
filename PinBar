@@ -1,0 +1,29 @@
+Pinbar is a minor mode that displays a tab bar at the top, similar to the idea of [TabBarMode tabbar].
+
+[[image:PinBarScreenshot]]
+
+Author: Gaofeng Huang <poppyer@gmail.com>
+
+Created: 18 May 2007
+
+== Installation Guide ==
+
+=== Set up your Emacs ===
+
+* Download [[pinbar.el]], and add a path of a directory containing [[pinbar.el]] to your `load-path`.
+* Put the following code to your `.emacs`:
+{{{
+        (require 'pinbar)
+        (global-set-key "\M-0" 'pinbar-add)
+        (pinbar-mode t)
+}}}
+
+=== Run pinbar-mode ===
+
+# Execute `M-x pinbar-mode`.
+# Press (kbd "M-0") to put a tab associated with current buffer to the header line.
+# Press (kbd "M%%--%% M-0") to remove all the tabs associated with current buffer.
+# Press M - 1~9 to visit the buffer associated with the tab shown on the header line.
+
+----
+CategoryBufferSwitching

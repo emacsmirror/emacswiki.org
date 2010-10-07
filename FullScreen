@@ -32,6 +32,24 @@ w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ d
 
 To get a maximized window you can use: (w32-send-sys-command #xf030)
 
+Attention!
+If you want that emacs starts maximized, you have to put this code into your .emacs file:
+{{{
+(defun jbr-init ()
+  "Called from term-setup-hook after the default
+terminal setup is
+done or directly from startup if term-setup-hook not
+used.  The value
+0xF030 is the command for maximizing a window."
+  (interactive)
+  (w32-send-sys-command #xf030)
+  (ecb-redraw-layout)
+  (calendar)
+)
+(setq term-setup-hook 'jbr-init)
+(setq window-setup-hook 'jbr-init)
+}}}
+
 === X Windows ===
 ==== Send X Messages to the Window Manager ====
 

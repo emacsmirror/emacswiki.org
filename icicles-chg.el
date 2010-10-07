@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  4 13:45:18 2010 (-0700)
+;; Last-Updated: Wed Oct  6 17:29:01 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5596
+;;     Update #: 5608
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2054,6 +2054,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/10/06 dadams
+;;     icicle-next-TAB-completion-method:
+;;       Use car of icicle-TAB-completion-methods, not basic, as default.  Thx to Michael Heerdegen.
 ;; 2010/10/04 dadams
 ;;     directory-sep-char -> ?/ (It was removed from Emacs 24.)
 ;; 2010/09/26 dadams
@@ -3119,6 +3122,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/10/06 dadams
+;;     icicle-define-cycling-keys:  Let all non-conflicting non-modal keys remain: modal just
+;;                                  overwrites the conflicting non-modal.  Thx to Michael Heerdegen.
 ;; 2010/07/17 dadams
 ;;     w3m - > url.  Add URL jump bindings.  Replace w3m by url otherwise.
 ;; 2010/06/11 dadams
@@ -4028,6 +4034,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/10/06 dadams
+;;     icicle-TAB-completion-methods: Added :set and :initialize.  Thx to Michael Heerdegen.
+;;     icicle-modal-cycle-(up|down)((-alt)-action|-help)-keys: Bound mouse wheel also (Emacs 22+).
 ;; 2010/07/17 dadams
 ;;     icicle-top-level-key-bindings: Added *url-jump(-other-window).
 ;; 2010/06/18 dadams

@@ -105,8 +105,11 @@ Here's a screenshot (click to enlarge):
 
 You can get a copy of the Sunrise Commander at:
 
-* http://joseito.republika.pl/sunrise-commander.el.gz
 * Lisp:sunrise-commander.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-commander.el.gz
+
+Enjoy ;-)
 
 ----
 [:ButtonsExt]
@@ -132,10 +135,9 @@ and let this extension manage the creation and layout of the buttons for you.
 To get a copy of the Sunrise Commander Buttons Extension (including installation
 instructions) go here:
 
-* http://joseito.republika.pl/sunrise-x-buttons.el.gz
 * Lisp:sunrise-x-buttons.el
-
-Enjoy ;-)
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-buttons.el.gz
 
 ----
 [:MirrorExt]
@@ -146,8 +148,9 @@ that  provides  seamless  and effective manipulation of compressed archives in a
 virtual file system. It is called the Sunrise Mirror Extension and you can get a
 copy of it here:
 
-* http://joseito.republika.pl/sunrise-x-mirror.el.gz
 * Lisp:sunrise-x-mirror.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-mirror.el.gz
 
 For this extension to work you must have:
 
@@ -195,8 +198,9 @@ background).
 
 You can get a copy of the Sunrise Loop extension here:
 
-* http://joseito.republika.pl/sunrise-x-loop.el.gz
 * Lisp:sunrise-x-loop.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-loop.el.gz
 
 ----
 [:PopviewerExt]
@@ -220,8 +224,9 @@ A Sunrise Commander User had the following problem:
 So  we  worked  together  to redefine a few functions in Sunrise to do precisely
 this. The resulting code is a new extension called "popviewer", now available at
 
-* http://joseito.republika.pl/sunrise-x-popviewer.el.gz
 * Lisp:sunrise-x-popviewer.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-popviewer.el.gz
 
 if  you have the same itch, you can scratch it too :)
 
@@ -237,8 +242,9 @@ check where exactly you are in the file system.
 To  get  a  copy  of the Sunrise Mode Line extension (including installation and
 usage notes) go to:
 
-* http://joseito.republika.pl/sunrise-x-modeline.el.gz
 * Lisp:sunrise-x-modeline.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-modeline.el.gz
 
 ----
 [:TabsExt]
@@ -257,8 +263,9 @@ untouched. Tabs can be persisted across sessions using the [[DeskTop]] feature.
 
 To get a copy of the Sunrise Tabs extension go to:
 
-* http://joseito.republika.pl/sunrise-x-tabs.el.gz
 * Lisp:sunrise-x-tabs.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-tabs.el.gz
 
 ----
 [:TreeExt]
@@ -280,8 +287,9 @@ other in console mode (click to enlarge):
 
 You can get a copy of this extension from:
 
-* http://joseito.republika.pl/sunrise-x-tree.el.gz
 * Lisp:sunrise-x-tree.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-tree.el.gz
 
 ----
 [:Checkpoints]
@@ -299,8 +307,9 @@ release.
 
 You can get a copy of this extension at:
 
-* http://joseito.republika.pl/sunrise-x-checkpoints.el.gz
 * Lisp:sunrise-x-checkpoints.el
+* The [[ELPA]] repository at http://joseito.republika.pl/sunrise-commander/
+* http://joseito.republika.pl/sunrise-x-checkpoints.el.gz
 
 ----
 [:OldCheckpoints]
@@ -331,7 +340,15 @@ bugs you find to the gnu.emacs.help newsgroup or directly to me: mailto:escherdr
 It would be great if sunrise commander was in [[ELPA]].
 
 [new]
-Thanks for the tip! Added already to my TODO list :) -- [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+Yes! *now SC is available through ELPA* (you will need a recent version of Emacs with support for multiple ELPA repositories).
+
+Just add http://joseito.republika.pl/sunrise-commander/ to your list of ELPA repositories: 
+
+    (setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
+                             ("gnu" . "http://elpa.gnu.org/packages/")
+                             ("SC"  . "http://joseito.republika.pl/sunrise-commander/")))
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----
 [new] 
 I don't know how much time you spent on this, but SR is just amazing. Thanks a million. 
@@ -557,7 +574,7 @@ Yes, some visible indicator to show that the directory view is narrowed is indee
 
 Personally, I prefer dired-isearch-forward over dired-isearch-filenames, because sometimes I also search for the name of a month, or some other piece of data displayed in the pane, and not only for names of files.
 
-"is there any good place for me to try putting a (dired-isearch-filenames) at?" -- Maybe you could experiment with sr-start-hook (and/or sr-refresh-hook, but it may be overkill. YMMV)
+//is there any good place for me to try putting a (dired-isearch-filenames) at?// -- Maybe you could experiment with sr-start-hook (and/or sr-refresh-hook, but it may be overkill. YMMV)
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----

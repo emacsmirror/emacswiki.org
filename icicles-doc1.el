@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:57:15 2010 (-0700)
+;; Last-Updated: Wed Oct  6 10:57:36 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25345
+;;     Update #: 25353
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -532,10 +532,18 @@
 ;;  Some people prefer to always cycle using the same keys, for
 ;;  example, `down' and `up', regardless of the completion mode
 ;;  (prefix or apropos).  You can get that behavior by customizing
-;;  user option `icicle-cycling-respects-completion-mode'.
+;;  user option `icicle-cycling-respects-completion-mode' to a non-nil
+;;  value.
 ;;
-;;  Instead of using `down' or `next', as an alternative you can cycle
-;;  candidates downward (forward) by just repeating the same
+;;  You can use modal and non-modal cycling bindings together: If
+;;  `icicle-cycling-respects-completion-mode' is non-nil and you use
+;;  `down' as the key for cycling forward modally (i.e., for both
+;;  prefix and apropos completion), you can still use `next' for
+;;  apropos cycling.  Or if you bind `next' as the key for cycling
+;;  forward modally then you can still use `down' for prefix cycling.
+;;
+;;  As an alternative, instead of using `down' or `next', you can
+;;  cycle candidates downward (forward) by repeating the same
 ;;  completion key: `TAB' or `S-TAB'.  For example:
 ;;
 ;;   M-x tool           TAB ; Display candidates with prefix `tool'

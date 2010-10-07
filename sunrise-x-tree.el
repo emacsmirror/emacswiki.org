@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 320 $
+;; RCS Version: $Rev: 322 $
 ;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -37,7 +37,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 320 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 322 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
@@ -98,6 +98,7 @@
 ;; * Meta + left click on a folder or anywhere beside it to blur it. Meta + left
 ;;   click anywhere else in the pane to blur the currently selected folder.
 ;; * Control + left click on a folder or anywhere beside it to explode it.
+;; * Double click on a folder to dismiss tree view and visit the folder.
 ;; * Left or Middle click anywhere on the path line at the top of the pane to go
 ;;   directly to the directory which path ends at that point in the line.
 
@@ -127,6 +128,7 @@
 ;; * f - browse the selected folder in normal mode.
 ;; * v, o - view the selected folder in the passive pane, in whatever mode it
 ;;   happens to be at that moment.
+;; * C-c C-c - dismiss tree view and return to normal mode.
 
 ;; * C-q - is simply another binding for the usual pane synchonization (C-c C-z)
 ;;   already present in Sunrise Commander  Core, which in tree mode performs the
@@ -615,7 +617,8 @@
           (define-key isearch-mode-map (car binding) nil))
         sr-tree-isearch-mode-commands)
   (define-key isearch-mode-map "\C-c" 'isearch-other-control-char)
-  (isearch-done))
+  (isearch-done)
+  (setq isearch-mode-end-hook-quit t))
 
 (defun sr-tree-isearch-forward (&optional prefix)
   "Prefixable version of isearch-forward used in Sunrise Tree mode. With PREFIX
@@ -625,6 +628,14 @@
   (if (or (and prefix (not sr-tree-isearch-always-sticky))
           (and (not prefix) sr-tree-isearch-always-sticky))
       (sr-tree-isearch-setup))
+  (isearch-forward nil t))
+
+(defun sr-tree-sticky-isearch-forward ()
+  "Concatenates isearch operations to allow  fast  navigation through long paths
+  in the file system, until C-g is pressed (to abort) or Return is pressed twice
+  on a folder (to dismiss tree view and visit that folder)."
+  (interactive)
+  (sr-tree-isearch-setup)
   (isearch-forward nil t))
 
 (defun sr-tree-isearch-backward (&optional prefix)
@@ -637,23 +648,28 @@
       (sr-tree-isearch-setup))
   (isearch-backward nil t))
 
+(defun sr-tree-sticky-isearch-backward ()
+  "Concatenates isearch operations to allow  fast  navigation through long paths
+  in the file system, until C-g is pressed (to abort) or Return is pressed twice
+  on a folder (to dismiss tree view and visit that folder)."
+  (interactive)
+  (sr-tree-isearch-setup)
+  (isearch-backward nil t))
+
 (defun sr-tree-post-isearch (&optional command)
   "Function installed in isearch-mode-end-hook during sticky isearch operations
   in Sunrise Tree View mode."
-  (if (or isearch-mode-end-hook-quit (equal "" isearch-string))
-      (progn
-        (sr-tree-isearch-done)
-        (if command
-            (sr-tree-isearch-command-loop command)
-          (sr-tree-open-branch)))
-    (sr-tree-update-cursor)
-    (if (not (sr-tree-toggle-branch 'open))
-        (sr-tree-isearch-done)
-      (if (widget-get (sr-tree-get-branch) :args)
-          (recenter (truncate (/ (window-body-height) 10.0))))
-      (if command (sr-tree-isearch-command-loop command))
-      (sr-tree-isearch-setup)
-      (isearch-forward nil t))))
+  (sr-tree-update-cursor)
+  (cond (command (sr-tree-isearch-command-loop command))
+        (isearch-mode-end-hook-quit (sr-tree-isearch-done))
+        ((equal "" isearch-string) (sr-tree-open-branch))
+        ((and (sr-tree-toggle-branch 'open)
+              (widget-get (sr-tree-get-branch) :args))
+         (recenter (truncate (/ (window-body-height) 10.0))))
+        (t (ignore)))
+  (unless isearch-mode-end-hook-quit
+    (sr-tree-isearch-setup)
+    (isearch-forward nil t)))
 
 (defun sr-tree-isearch-command-loop (command)
   (funcall command)
@@ -666,7 +682,8 @@
       (funcall next-command)
       (setq key (read-key-sequence msg)
             next-command (lookup-key sr-tree-mode-map key)))
-    (isearch-unread-key-sequence (listify-key-sequence key))))
+    (isearch-unread-key-sequence (listify-key-sequence key))
+    (setq isearch-mode-end-hook-quit nil)))
 
 (defun sr-tree-focus-branch ()
   "Replace the current tree with a new one having the selected directory as its
@@ -772,7 +789,8 @@
         (in-search (memq 'sr-tree-post-isearch isearch-mode-end-hook)))
     (sr-tree-check-virtual-size target)
     (if in-search (sr-tree-isearch-done))
-    (sr-save-aspect (sr-alternate-buffer (sr-goto-dir target)))))
+    (sr-save-aspect (sr-alternate-buffer (sr-goto-dir target)))
+    (if in-search (sr-sticky-isearch))))
 
 (defun sr-tree-mouse-advertised-find-file (e)
   "Visit a file or directory selected using the mouse in the current pane."
@@ -1008,60 +1026,62 @@
 ;;; ============================================================================
 ;;; Sunrise Tree View keybindings:
 
-(define-key sr-mode-map "\C-t " 'sr-tree-view)
-(define-key sr-mode-map "\C-t\C-m" 'sr-tree-view)
+(define-key sr-mode-map "\C-t "             'sr-tree-view)
+(define-key sr-mode-map "\C-t\C-m"          'sr-tree-view)
 (define-key sr-mode-map [(shift meta down)] 'sr-tree-view)
-(define-key sr-mode-map [?\e down] 'sr-tree-view)
+(define-key sr-mode-map [?\e down]          'sr-tree-view)
 
-(define-key sr-tree-mode-map "\C-m" 'sr-tree-open-branch)
-(define-key sr-tree-mode-map " " 'sr-tree-toggle-branch)
-(define-key sr-tree-mode-map "\C-o" 'sr-tree-omit-mode)
-(define-key sr-tree-mode-map "n" 'sr-tree-next-line)
-(define-key sr-tree-mode-map "p" 'sr-tree-previous-line)
-(define-key sr-tree-mode-map "\t" 'sr-change-window)
-(define-key sr-tree-mode-map "g" 'sr-tree-refresh-branch)
-(define-key sr-tree-mode-map "J" 'sr-tree-jump-up)
-(define-key sr-tree-mode-map "j" 'sr-tree-build-new)
-(define-key sr-tree-mode-map "f" 'sr-tree-advertised-find-file)
-(define-key sr-tree-mode-map "v" 'sr-tree-advertised-find-file-other)
-(define-key sr-tree-mode-map "o" 'sr-tree-advertised-find-file-other)
-(define-key sr-tree-mode-map "\M-a" 'sr-tree-beginning-of-buffer)
-(define-key sr-tree-mode-map "\M-e" 'sr-tree-end-of-buffer)
-(define-key sr-tree-mode-map "\C-s" 'sr-tree-isearch-forward)
-(define-key sr-tree-mode-map "\C-r" 'sr-tree-isearch-backward)
+(define-key sr-tree-mode-map "\C-m"     'sr-tree-open-branch)
+(define-key sr-tree-mode-map " "        'sr-tree-toggle-branch)
+(define-key sr-tree-mode-map "\C-o"     'sr-tree-omit-mode)
+(define-key sr-tree-mode-map "n"        'sr-tree-next-line)
+(define-key sr-tree-mode-map "p"        'sr-tree-previous-line)
+(define-key sr-tree-mode-map "\t"       'sr-change-window)
+(define-key sr-tree-mode-map "g"        'sr-tree-refresh-branch)
+(define-key sr-tree-mode-map "J"        'sr-tree-jump-up)
+(define-key sr-tree-mode-map "j"        'sr-tree-build-new)
+(define-key sr-tree-mode-map "f"        'sr-tree-advertised-find-file)
+(define-key sr-tree-mode-map "v"        'sr-tree-advertised-find-file-other)
+(define-key sr-tree-mode-map "o"        'sr-tree-advertised-find-file-other)
+(define-key sr-tree-mode-map "\M-a"     'sr-tree-beginning-of-buffer)
+(define-key sr-tree-mode-map "\M-e"     'sr-tree-end-of-buffer)
+(define-key sr-tree-mode-map "\C-s"     'sr-tree-isearch-forward)
+(define-key sr-tree-mode-map "\C-cs"    'sr-tree-sticky-isearch-forward)
+(define-key sr-tree-mode-map "\C-r"     'sr-tree-isearch-backward)
+(define-key sr-tree-mode-map "\C-cr"    'sr-tree-sticky-isearch-backward)
 (define-key sr-tree-mode-map "\C-c\C-c" 'sr-tree-dismiss)
-(define-key sr-tree-mode-map "\C-cf" 'sr-tree-focus-branch)
-(define-key sr-tree-mode-map "\C-cb" 'sr-tree-blur-branch)
+(define-key sr-tree-mode-map "\C-cf"    'sr-tree-focus-branch)
+(define-key sr-tree-mode-map "\C-cb"    'sr-tree-blur-branch)
 (define-key sr-tree-mode-map "\C-c\C-m" 'sr-tree-explode-branch)
-(define-key sr-tree-mode-map "\C-t " 'sr-tree-dismiss)
+(define-key sr-tree-mode-map "\C-t "    'sr-tree-dismiss)
 (define-key sr-tree-mode-map "\C-t\C-m" 'sr-tree-dismiss)
 
 (define-key sr-tree-mode-map "#" 'sr-tree-avfs-toggle)
 
-(define-key sr-tree-mode-map [up] 'sr-tree-previous-line)
+(define-key sr-tree-mode-map [up]   'sr-tree-previous-line)
 (define-key sr-tree-mode-map [down] 'sr-tree-next-line)
 
-(define-key sr-tree-mode-map [right] 'sr-tree-open-branch)
-(define-key sr-tree-mode-map [S-right] 'sr-tree-focus-branch)
+(define-key sr-tree-mode-map [right]     'sr-tree-open-branch)
+(define-key sr-tree-mode-map [S-right]   'sr-tree-focus-branch)
 (define-key sr-tree-mode-map [?\e right] 'sr-tree-focus-branch)
-(define-key sr-tree-mode-map [C-right] 'sr-tree-explode-branch)
-(define-key sr-tree-mode-map [3 right] 'sr-tree-explode-branch) ;; "\C-c <right>"
+(define-key sr-tree-mode-map [C-right]   'sr-tree-explode-branch)
+(define-key sr-tree-mode-map [3 right]   'sr-tree-explode-branch) ;; "\C-c <right>"
 
-(define-key sr-tree-mode-map [left] 'sr-tree-collapse-branch)
-(define-key sr-tree-mode-map [S-left] 'sr-tree-blur-branch)
+(define-key sr-tree-mode-map [left]     'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [S-left]   'sr-tree-blur-branch)
 (define-key sr-tree-mode-map [?\e left] 'sr-tree-blur-branch)
-(define-key sr-tree-mode-map [C-left] 'sr-tree-collapse-branch)
-(define-key sr-tree-mode-map [3-left] 'sr-tree-collapse-branch) ;; "\C-c <left>"
-(define-key sr-tree-mode-map [delete] 'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [C-left]   'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [3-left]   'sr-tree-collapse-branch) ;; "\C-c <left>"
+(define-key sr-tree-mode-map [delete]   'sr-tree-collapse-branch)
 
-(define-key sr-tree-mode-map [next] 'sr-tree-scroll-up)
-(define-key sr-tree-mode-map [prior] 'sr-tree-scroll-down)
-(define-key sr-tree-mode-map [backspace] 'sr-tree-collapse-branch)
-(define-key sr-tree-mode-map [C-return] 'sr-tree-explode-branch)
-(define-key sr-tree-mode-map [S-return] 'sr-tree-focus-branch)
-(define-key sr-tree-mode-map [M-return] 'sr-tree-blur-branch)
+(define-key sr-tree-mode-map [next]              'sr-tree-scroll-up)
+(define-key sr-tree-mode-map [prior]             'sr-tree-scroll-down)
+(define-key sr-tree-mode-map [backspace]         'sr-tree-collapse-branch)
+(define-key sr-tree-mode-map [C-return]          'sr-tree-explode-branch)
+(define-key sr-tree-mode-map [S-return]          'sr-tree-focus-branch)
+(define-key sr-tree-mode-map [M-return]          'sr-tree-blur-branch)
 (define-key sr-tree-mode-map [(shift meta down)] 'sr-tree-dismiss)
-(define-key sr-tree-mode-map [?\e down] 'sr-tree-dismiss)
+(define-key sr-tree-mode-map [?\e down]          'sr-tree-dismiss)
 
 (define-key sr-tree-mode-map "C" 'sr-tree-do-copy)
 (define-key sr-tree-mode-map "K" 'sr-tree-do-clone)
@@ -1073,7 +1093,7 @@
 (define-key sr-tree-mode-map "+" 'sr-tree-create-directory)
 
 (define-key sr-tree-mode-map "\C-c\C-z" 'sr-tree-sync)
-(define-key sr-tree-mode-map "\C-q" 'sr-tree-sync)
+(define-key sr-tree-mode-map "\C-q"     'sr-tree-sync)
 
 (dotimes (n 10)
   (define-key sr-tree-mode-map (number-to-string n) 'digit-argument))

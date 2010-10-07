@@ -10,6 +10,16 @@ winner-mode available.
 
 Winner Mode is great when you depend a lot on working with Emacs windows.  To read code, you want one window.  To compare it with another file, you want two windows, when on IRC you want six windows, while engaging in an important discussion, you want just one window, etc.  Getting from many windows to one window is easy -- `C-x 1' will do it.  But getting back to the delicate WindowConfiguration is difficult.  This is where Winner Mode comes in: With it, going back to a previous session is easy.
 
+Winner Mode can create some (possibly) more convenient window movement bindings -- `S-right', `S-left', `S-up', `S-down' -- with this:
+
+    (windmove-default-keybindings)
+
+[new]
+The problem with (windmove-default-keybindings) is that they clash with the more common use on modern systems of S-right etc for selecting text. In Emacs this is turned on by CuaMode for example. Therefore it might be better to go with the alternative
+
+  (windmove-default-keybindings 'meta)
+
+[new]
 winner.el comes with GNU Emacs, starting with version 20.
 
 In XEmacs similar functionality can be achieved with pop-window-configuration & unpop-window-configuration commands

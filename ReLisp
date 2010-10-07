@@ -1,0 +1,8 @@
+Rubyfied EmacsLisp
+
+The purpose of Relisp is to:
+* call Ruby from Emacs
+* call Elisp from Ruby
+* manipulate Emacs without using Elisp to some extent (Ruby wrappers around some Elisp functions and objects)
+
+Gem is available at http://rubyforge.org/projects/relisp/.  Introduction and some examples are at [http://ohspite.net/2009/01/30/relisp-rubyfied-emacs-lisp/ ohspite.net]

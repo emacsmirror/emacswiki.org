@@ -15,31 +15,11 @@ put breakpoints at the start of functions, and `M-x cancel-debug-on-entry' to re
 
 ;;; ##stack-trace-on-error##: An alternative to `debug-on-error'. It shows trace buffers instead of entering the debugger. Example: ##(setq stack-trace-on-error '(buffer-read-only))##
 
+In addition to debugger-mode there is also Edebug.  See SourceLevelDebugger for more information.
 
 == Discussion ==
 
-[new]
-Usually people do not use debugger-mode
-that often, it is just the "quick and dirty" debugger for EmacsLisp.
-The debugger used by "real" programmers is called Edebug -- see
-SourceLevelDebugger for more.  The problem with that is that you need to know
-which functions to instrument before you start.  This is why the old debugger-mode is still used today.  Once you know where the problems are, Edebug is more comfortable. -- [[Anonymous]]
 
-[new:DrewAdams:2008-09-01 15:45 UTC]
-I, for one, disagree. The part about "real" programmers is either cute sarcasm or nonsense, or both, depending on your point of view. I use the "old" debugger all the time. Personally, I've found no particular advantage to Edebug for most contexts. -- DrewAdams, unreal programmer
-
-[new]
-Edebug is simpler(x10) to use, but "old" debugger make unreal programmer think himself a real programmer. -- [[Anonymous]]
-
-[new:DrewAdams:2010-09-07 15:20 UTC]
-I disagree again.  The traditional debugger is simple and straightforward, IMO.  Nothing to instrument -- just toggle it on or off: `M-x debug-on-entry' or `M-x set-variable debug-on-error t'.  Or put breakpoints where you want them by inserting explicit calls to `debug'.
-
-And it does not make at least one self-proclaimed unreal programmer think he's a real programmer.  Dunno what Ms. [[Anonymous]] considers herself: real or unreal, or why s?he bothers to pass judgment on such things. 
-
-The point is that there are two debuggers for EmacsLisp. Use whichever you prefer at any given time.  There are differences, but neither is particularly difficult to use, and neither has a monopoly for "real" programmers. -- DrewAdams
-
-[new]
-"old" debugger make a REAL programmer think himself an UNREAL programmer. Dear D.A. I like your writing. -- [[Anonymous]]
 
 ----
 CategoryDebug

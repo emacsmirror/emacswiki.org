@@ -48,7 +48,7 @@ Note: this implementation is for my own use, and not intended for distribution a
 
 == Discussion ==
 
-Please note, that several people at the EmacsWiki disagree that such functions from other lisps belong here. At least unless they come packaged as a nice library, like cl.el.
+Please note, that several people at the EmacsWiki disagree that such functions from other lisps belong here. At least unless they come packaged as a nice library, like cl.el. These Clojure operators are often referred to as the Thrush, but that is a [http://blog.fogus.me/2010/09/28/thrush-in-clojure-redux/ false analogy].
 
 ----
 CategoryCode

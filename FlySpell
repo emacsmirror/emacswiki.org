@@ -78,5 +78,7 @@ As I often need to switch between English and German I use this function:
 
 [new]
 How can I ignore or add a word without using the popup menu?
+
+Use flyspell-auto-correct-word.
 ----
 CategoryModes | CategorySpelling

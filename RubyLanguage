@@ -3,6 +3,7 @@ Stuff for [http://www.ruby-lang.org/ Object Oriented Scripting Language Ruby].
 * RubyMode
 * RubyOnRails
 * EmacsLispForRuby
+* ReLisp (another ruby/emacs bridge)
 * LangHelp
 * GonzuiForEmacs
 * FlymakeRuby

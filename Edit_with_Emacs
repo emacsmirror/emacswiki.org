@@ -14,8 +14,9 @@ The extension has a number of variables that allow various behaviours to be cust
 * edit-server-new-frame - If not nil, edit each buffer in a new frame (and raise it)
 * edit-server-new-frame-alist - Frame parameters for new frames.  See `default-frame-alist' for examples. If nil, the new frame will use the existing `default-frame-alist' values.
 
-There is currently one hook
+There is currently two hooks
 
+* edit-server-start-hook - called with current buffer ready to edit
 * edit-server-done-hook - called when the user has finished editing and exited the edit buffer
 
 === Controlling invocation ===
