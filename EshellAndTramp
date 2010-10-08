@@ -26,3 +26,16 @@ So long as the hostname ("PUTTYCONFIG") has been saved by Putty, it's fine.
 
 I have not tried with other TRAMP methods like ssh (we're using Windows to reach into Unix hosts here, I know crazy...) but if the default is set to something that works, I think eshell should be fine.
 
+
+----
+
+=== How to redirect stdout of a remote command to be returned as a string === 
+
+This allows you to further process the string within a lisp expression.  The key here is to pass standard-output as the 2nd arg to shell-command.  That's the only buffer that with-output-to-string will look at.  By default the output from shell-command goes elsewhere, and with-output-to-string will come up empty handed.
+
+    (with-output-to-string (shell-command "COMMAND" standard-output))
+
+For example, 
+
+     /ssh:myhostname.domain.com:/home/myuser $ (split-string (with-output-to-string (shell-command "hostname" standard-output)) "\\." )
+        ("myhostname" "domain" "com\n")

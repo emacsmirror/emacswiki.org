@@ -115,6 +115,11 @@ Alternatively, there are a few ways you can download all of the files at once. S
 
 * '''[[http://github.com/emacsmirror/icicles Icicles on GitHubMirror]]'''.  Download the ##icicles*.el## files only, as a zip or tar archive.  You will need to download the other '''Icicles''' libraries (e.g <tt>[[hexrgb.el]]</tt>) separately. (''All'' EmacsWiki files are available on GitHubMirror for download, however: http://github.com/emacsmirror/emacswiki.org).
 
+[new:DrewAdams:2010-10-07 16:46 UTC]
+:: Could someone who knows about these things please add <tt>[[hexrgb.el]]</tt> and perhaps the other recommended libraries (see above) to the mirror list for '''Icicles'''? Thx -- DrewAdams
+
+[new]
+
 * '''Zip archive:''' Download a two-part zip archive of the libraries at  [[Icicles-1-of-2.zip]] and [[Icicles-2-of-2.zip]] . Be aware this is ''not updated'' automatically, so it is likely '''''out of date''''' -- but it can get you started. Thanks to [[leooo]] for starting this. Thanks also to anyone who updates this (anyone can do so).
 
 * '''Using a bzr repository:''' that should stay in sync with '''Icicles''' (updated every 24 hours -- no; see below): ##bzr branch http://archives.hodique.info/bzr/icicles/##  Thanks to YannHodique for that.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  6 17:10:31 2010 (-0700)
+;; Last-Updated: Thu Oct  7 09:31:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3800
+;;     Update #: 3813
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1582,8 +1582,11 @@ then on again, for the change to take effect in the same session."
 (defcustom icicle-modal-cycle-down-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
                                             (list
                                              [down]
-                                             (vector nil mouse-wheel-up-event)
-                                             (vector mouse-wheel-up-event))
+                                             (vector mouse-wheel-up-event)
+                                             ;; This one should not be necessary, but
+                                             ;; is because of an Emacs bug wrt frame
+                                             ;; switching.
+                                             (vector nil mouse-wheel-up-event))
                                           '([down]))
   "*Key sequences to use for modal cycling to the next candidate.
 A list of values that each has the same form as a key-sequence
@@ -1601,10 +1604,13 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
 (defcustom icicle-modal-cycle-down-action-keys (if (boundp 'mouse-wheel-up-event) ; Emacs 22+
                                                    (list
                                                     [C-down]
-                                                    (vector nil (list 'control
-                                                                      mouse-wheel-up-event))
                                                     (vector (list 'control
-                                                                  mouse-wheel-up-event)))
+                                                                  mouse-wheel-up-event))
+                                                    ;; This one should not be necessary, but
+                                                    ;; is because of an Emacs bug wrt frame
+                                                    ;; switching.
+                                                    (vector nil (list 'control
+                                                                      mouse-wheel-up-event)))
                                                  '([C-down]))
   "*Keys for modal completion to cycle next and perform action.
 A list of values that each has the same form as a key-sequence
@@ -1622,10 +1628,13 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
 (defcustom icicle-modal-cycle-down-alt-action-keys (if (boundp 'mouse-wheel-up-event) ;Emacs22+
                                                        (list
                                                         [C-S-down]
-                                                        (vector nil (list 'control 'shift
-                                                                          mouse-wheel-up-event))
                                                         (vector (list 'control 'shift
-                                                                      mouse-wheel-up-event)))
+                                                                      mouse-wheel-up-event))
+                                                        ;; This one should not be necessary, but
+                                                        ;; is because of an Emacs bug wrt frame
+                                                        ;; switching.
+                                                        (vector nil (list 'control 'shift
+                                                                          mouse-wheel-up-event)))
                                                      '([C-S-down]))
   "*Keys for modal completion to cycle next and perform alt action.
 A list of values that each has the same form as a key-sequence
@@ -1640,10 +1649,13 @@ non-nil."
 (defcustom icicle-modal-cycle-down-help-keys (if (boundp 'mouse-wheel-up-event) ; Emacs 22+
                                                  (list
                                                   [(control meta down)]
-                                                  (vector nil (list 'control 'meta
-                                                                    mouse-wheel-up-event))
                                                   (vector (list 'control 'meta
-                                                                mouse-wheel-up-event)))
+                                                                mouse-wheel-up-event))
+                                                  ;; This one should not be necessary, but
+                                                  ;; is because of an Emacs bug wrt frame
+                                                  ;; switching.
+                                                  (vector nil (list 'control 'meta
+                                                                    mouse-wheel-up-event)))
                                                '([(control meta down)]))
   "*Keys for modal completion to cycle next and show candidate help.
 A list of values that each has the same form as a key-sequence
@@ -1658,8 +1670,11 @@ non-nil."
 (defcustom icicle-modal-cycle-up-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
                                           (list
                                            [up]
-                                           (vector nil mouse-wheel-down-event)
-                                           (vector mouse-wheel-down-event))
+                                           (vector mouse-wheel-down-event)
+                                           ;; This one should not be necessary, but
+                                           ;; is because of an Emacs bug wrt frame
+                                           ;; switching.
+                                           (vector nil mouse-wheel-down-event))
                                         '([up]))
   "*Key sequences to use for modal cycling to the previous candidate.
 A list of values that each has the same form as a key-sequence
@@ -1677,10 +1692,13 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
 (defcustom icicle-modal-cycle-up-action-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
                                                  (list
                                                   [C-up]
-                                                  (vector nil (list 'control
-                                                                    mouse-wheel-down-event))
                                                   (vector (list 'control
-                                                                mouse-wheel-down-event)))
+                                                                mouse-wheel-down-event))
+                                                  ;; This one should not be necessary, but
+                                                  ;; is because of an Emacs bug wrt frame
+                                                  ;; switching.
+                                                  (vector nil (list 'control
+                                                                    mouse-wheel-down-event)))
                                                '([C-up]))
   "*Keys for modal completion to cycle previous and perform action.
 A list of values that each has the same form as a key-sequence
@@ -1698,10 +1716,13 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
 (defcustom icicle-modal-cycle-up-alt-action-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
                                                      (list
                                                       [C-S-up]
-                                                      (vector nil (list 'control 'shift
-                                                                        mouse-wheel-down-event))
                                                       (vector (list 'control 'shift
-                                                                    mouse-wheel-down-event)))
+                                                                    mouse-wheel-down-event))
+                                                      ;; This one should not be necessary, but
+                                                      ;; is because of an Emacs bug wrt frame
+                                                      ;; switching.
+                                                      (vector nil (list 'control 'shift
+                                                                        mouse-wheel-down-event)))
                                                    '([C-S-up]))
   "*Keys for modal completion to cycle previous and perform alt action.
 A list of values that each has the same form as a key-sequence
@@ -1716,10 +1737,13 @@ non-nil."
 (defcustom icicle-modal-cycle-up-help-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
                                                (list
                                                 [(control meta up)]
-                                                (vector nil (list 'control 'meta
-                                                                  mouse-wheel-down-event))
                                                 (vector (list 'control 'meta
-                                                              mouse-wheel-down-event)))
+                                                              mouse-wheel-down-event))
+                                                ;; This one should not be necessary, but
+                                                ;; is because of an Emacs bug wrt frame
+                                                ;; switching.
+                                                (vector nil (list 'control 'meta
+                                                                  mouse-wheel-down-event)))
                                              '([(control meta up)]))
   "*Keys for modal completion to cycle previous and show candidate help.
 A list of values that each has the same form as a key-sequence
@@ -2552,10 +2576,6 @@ See also option `icicle-S-TAB-completion-methods-alist'."
             (push '(const :tag "Vanilla `completion-styles'" vanilla) methods))
           (push '(const :tag "Basic" basic) methods)
           `(repeat (choice ,@methods)))
-  :set #'(lambda (sym val)
-           (custom-set-default sym val)
-           (setq icicle-current-TAB-method  (car val)))
-  :initialize #'custom-initialize-default
   :group 'Icicles-Matching)
 
 ;;;###autoload

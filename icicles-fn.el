@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct  4 13:38:25 2010 (-0700)
+;; Last-Updated: Thu Oct  7 08:39:01 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11867
+;;     Update #: 11876
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -61,9 +61,9 @@
 ;;    `icicle-completing-read-history',
 ;;    `icicle-completion-all-completions',
 ;;    `icicle-completion-setup-function',
-;;    `icicle-completion-try-completion', `icicle-custom-type',
-;;    `icicle-define-crm-completion-map', `icicle-delete-count',
-;;    `icicle-delete-whitespace-from-string',
+;;    `icicle-completion-try-completion', `icicle-current-TAB-method',
+;;    `icicle-custom-type', `icicle-define-crm-completion-map',
+;;    `icicle-delete-count', `icicle-delete-whitespace-from-string',
 ;;    `icicle-dired-read-shell-command',
 ;;    `icicle-dired-smart-shell-command',
 ;;    `icicle-dir-prefix-wo-wildcards', `icicle-dirs-first-p',
@@ -2403,7 +2403,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                 (let ((typ  (car (rassq icicle-apropos-complete-match-fn
                                         icicle-S-TAB-completion-methods-alist))))
                   (concat "No " typ (and typ " ") "completions"))
-              (case icicle-current-TAB-method
+              (case (icicle-current-TAB-method)
                 (fuzzy   "No fuzzy completions")
                 (swank   "No swank (fuzzy symbol) completions")
                 (vanilla "No vanilla completions")
@@ -2574,7 +2574,7 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
                              (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
-                                                 (not (memq icicle-current-TAB-method '(fuzzy swank))))
+                                                 (not (memq (icicle-current-TAB-method) '(fuzzy swank))))
                                             ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
                                             'search-forward
                                           (case icicle-apropos-complete-match-fn
@@ -2866,8 +2866,8 @@ Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   "List of prefix or fuzzy completions for the current partial INPUT.
 INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
-  (if (or (and (eq 'fuzzy icicle-current-TAB-method) (featurep 'fuzzy-match))
-          (and (eq 'swank icicle-current-TAB-method) (featurep 'el-swank-fuzzy)))
+  (if (or (and (eq 'fuzzy (icicle-current-TAB-method)) (featurep 'fuzzy-match))
+          (and (eq 'swank (icicle-current-TAB-method)) (featurep 'el-swank-fuzzy)))
       (condition-case nil
           (icicle-transform-candidates (append icicle-extra-candidates icicle-proxy-candidates
                                                (icicle-fuzzy-candidates input)))
@@ -2882,7 +2882,7 @@ INPUT is a string.  Each candidate is a string."
   (let ((candidates  ()))
     ;; $$$$ Should treat other `minibuffer-completion-table' types also.
     (cond ((and (vectorp minibuffer-completion-table)
-                (not (eq icicle-current-TAB-method 'swank)))
+                (not (eq (icicle-current-TAB-method) 'swank)))
            (mapatoms (lambda (symb) (when (or (null minibuffer-completion-predicate)
                                               (funcall minibuffer-completion-predicate symb))
                                       (push (symbol-name symb) candidates)))
@@ -5483,9 +5483,16 @@ current before user input is read from the minibuffer."
   (let ((curr  (if (and (boundp 'icicle-mode) icicle-mode) 1 -1)))
     (icy-mode (- curr))  (icy-mode curr)))
 
+(defun icicle-current-TAB-method ()
+  "Current completion method for \
+`\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.
+This resets variable `icicle-current-TAB-method' when needed."
+  (or (car (memq icicle-current-TAB-method icicle-TAB-completion-methods))
+      (car icicle-TAB-completion-methods)))
+
 (defun icicle-not-basic-prefix-completion-p ()
   "`icicle-current-TAB-method' is `vanilla', and Emacs > release 22."
-  (and (eq 'vanilla icicle-current-TAB-method) (boundp 'completion-styles)))
+  (and (eq 'vanilla (icicle-current-TAB-method)) (boundp 'completion-styles)))
  
 ;;(@* "Icicles functions - sort functions")
 

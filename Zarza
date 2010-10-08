@@ -1,0 +1,154 @@
+Thank you all for this great wiki!
+
+So I want to contribute. No magic here. But maybe you can make some use of it...
+
+== Cyberpunk Cursor ==
+This one changes the cursor color on each blink. Just eval code and its running.
+
+<pre>
+; Using in Emacs 23.2. 
+
+(defvar blink-cursor-colors (list  "#92c48f" "#6785c5" "#be369c" "#d9ca65")
+  "On each blink the cursor will cycle to the next color in this list.")
+
+(setq blink-cursor-count 0)
+(defun blink-cursor-timer-function ()
+  "Cyberpunk variant of timer `blink-cursor-timer'. OVERWRITES original version in `frame.el'.
+
+This one changes the cursor color on each blink. Define colors in `blink-cursor-colors'."
+  (when (not (internal-show-cursor-p))
+    (when (>= blink-cursor-count (length blink-cursor-colors))
+      (setq blink-cursor-count 0))
+    (set-cursor-color (nth blink-cursor-count blink-cursor-colors))
+    (setq blink-cursor-count (+ 1 blink-cursor-count))
+    )
+  (internal-show-cursor nil (not (internal-show-cursor-p)))
+  )
+</pre>
+
+
+== Color theme based on daytime ==
+This one loads one of two themes depending on current time. Change `color-theme-night' and `color-theme-day' to the color-theme functions of your choice. 
+
+<pre>
+; Using in Emacs 23.2. 
+
+(defvar night-hour 18
+  "When to start with dark theme.")
+
+(defvar day-hour 11
+  "When to start with light theme.")
+
+(defun color-theme-timer ()
+  "Sets color theme according to current time. Customize `night-hour' and `day-hour'."
+  (interactive)
+  (let ((hour (nth 2 (decode-time)))
+        (minute (nth 1 (decode-time))))
+    (if (or (>= hour night-hour) (< hour day-hour) )
+        (color-theme-night)
+      (color-theme-day))))
+</pre>
+
+My config runs `color-theme-timer' on emacs start. Thats enough for me.
+To get an automatic toggle when day-hour/night-hour has come, you could add `color-theme-timer' to some hook that is called quite frequently, maybe `auto-save-hook'. Then you have to modify `color-theme-timer', so it only sets the theme if it is not already active - or the screen flashes. Flash! Aaa-aaah!
+
+I think a good way to check which theme is active is by using the background-mode of a theme as in my toggle-function:
+
+<pre>
+; Using in Emacs 23.2. 
+
+(defun toggle-color-theme ()
+  "Toggles day/night theme."
+  (interactive)
+  (let ((bgmode (cdr (assoc 'background-mode default-frame-alist))))
+    (if (eq bgmode 'dark)
+        (color-theme-day)
+      (color-theme-night))))
+</pre>
+
+== Lookup word under cursor ==
+King [http://xahlee.org/emacs/emacs.html Xah] suggests [http://xahlee.org/emacs/emacs_lookup_ref.html a function to lookup the definition of the word under cursor]. Here's a copy:
+
+<pre>
+; by Xah - http://xahlee.org/emacs/emacs_lookup_ref.html
+
+(defun lookup-word-definition ()
+  "Look up the current word's definition in a browser.
+If a region is active (a phrase), lookup that phrase."
+ (interactive)
+ (let (myword myurl)
+   (setq myword
+         (if (and transient-mark-mode mark-active)
+             (buffer-substring-no-properties (region-beginning) (region-end))
+           (thing-at-point 'symbol)))
+
+  (setq myword (replace-regexp-in-string " " "%20" myword))
+  (setq myurl (concat "http://www.answers.com/main/ntquery?s=" myword))
+
+  (browse-url myurl)
+  ;; (w3m-browse-url myurl) ;; if you want to browse using w3m
+   ))
+
+(global-set-key (kbd "<f6>") 'lookup-word-definition)
+</pre>
+
+With the above, pressing F6 will launch your browser and lookup definition of the word under cursor.
+
+My version (with humble respect):
+
+<pre>
+; Using in Emacs 23.2. 
+
+(defun lookup-word-definition (url)
+  "Look up the current word's definition in a browser.
+If a region is active (a phrase), lookup that phrase.
+
+Give url of website to look up. Place <SearchWord> into url as in
+http://www.google.de/search?q=<SearchWord>"
+  (interactive)
+  (let (myword myurl currentmode)
+    (setq myword
+          (if (and transient-mark-mode mark-active)
+              (buffer-substring-no-properties (region-beginning) (region-end))
+            (thing-at-point 'symbol)))
+
+    (setq myword (replace-regexp-in-string " " "%20" myword))
+    (setq myurl (replace-regexp-in-string "\<SearchWord\>" myword url))
+    (browse-url myurl)
+    ;; (w3m-browse-url myurl) ;; if you want to browse using w3m
+    ))
+</pre>
+
+I made these changes because I want one key to bind them all:
+
+<pre>
+; In elisp mode: use f1 to search on emacswiki (C-h helps me with lisp-stuff)
+(define-key emacs-lisp-mode-map (kbd "<f1>") '(lambda() (interactive) (lookup-word-definition "http://www.google.com/#&q=<SearchWord>+site:www.emacswiki.org%2Femacs-en")))
+
+; In Autohotkey mode: use f1 to search ahk-helpsite
+(define-key ahk-mode-map (kbd "<f1>") '(lambda() (interactive) (lookup-word-definition "http://www.autohotkey.com/docs/commands/<SearchWord>.htm")))
+
+; Search google by default
+(global-set-key (kbd "<f1>") '(lambda() (interactive) (lookup-word-definition "http://www.google.de/search?q=<SearchWord>")))
+</pre>
+
+You can easily add your own modes, eg <code>"http://us.php.net/<SearchWord>"</code> for `php-mode-map'.
+
+
+----
+== Can you help me? ==
+* [[ERC]] - It seems there is no easy way to change the background color of the erc header line. Changing `erc-header-line' face only applies to the text, not the whole line. So I tried to fill the line with empty text using <code>erc-header-line-format "(some vars) %-"</code> as in `mode-line-format', but unfortulately %- does not compute here.
+* Does anyone know of a way to set the background color of a buffer? Yeh, I can use a single background color per frame, but that's not what I want. Sad smiley. It would be great to have mode-or-filename-specific backgrounds. One could also easier distinguish two files with the same filename.
+* Likewise there is no (easy) way to set the background color of a window (not frame). I would like my active buffer a bit brighter than the inactive ones so I can easily spot it. I think this is a really important thing to implement as with bigger screens the mode-line gets smaller. Yah, I could give it a big border but that's ugly. And ugly not my kind of poetry.
+
+
+Thanks for visiting!
+- Zarza
+
+
+[new:DrewAdams:2010-10-07 14:42 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+----
+CategoryHomepage

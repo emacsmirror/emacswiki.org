@@ -35,6 +35,34 @@ Put these code into your lisp file and a global key binding into your .emacs fil
      )
 
 
+     (defun get-point (symbol num)
+      "get the point"
+      (funcall symbol num)
+      (point)
+     )
+
+
+== new copy word ==
+
+     (defun copy-word (&optional arg)
+      "Copy words at point into kill-ring"
+       (interactive "P")
+       (if arg
+           (if (< arg 0)
+     	  (let ((end (end-of-thing 'word))
+     		(beg (get-point 'forward-word arg)))
+     	    (copy-region-as-kill beg end))
+     	  (let ((beg (beginning-of-thing 'word)) 
+     		(end (get-point 'forward-word arg)))
+     	    (copy-region-as-kill beg end))
+           )
+       	  (let ((beg (beginning-of-thing 'word))
+     		(end (get-point 'forward-word arg)))
+     	    (copy-region-as-kill beg end))
+       )
+     )
+
+
 Key binding
 
      (global-set-key (kbd "C-c w")         (quote copy-word))
@@ -49,6 +77,22 @@ Put these code into your lisp file and a global key binding into your .emacs fil
        (let ((beg (line-beginning-position)) 
      	(end (line-end-position arg)))
          (copy-region-as-kill beg end))
+     )
+
+== new copy line ==
+
+Copy the whole line into killring. Given a prefix 1, mark the line only.
+
+     (defun copy-line (&optional arg)
+      "Save current line into Kill-Ring without mark the line "
+       (interactive "P")
+     ;  (copy-region-as-kill (line-beginning-position) (line-end-position arg))
+       (let ((beg (line-beginning-position))
+     	(end (line-end-position arg)))
+         (if (= (or arg 0) 1)    ;; arg=1, mark line only
+     	(progn (set-mark beg) (goto-char end))
+         (copy-region-as-kill beg end))
+         )
      )
 
 Key binding
@@ -70,8 +114,23 @@ Put these code into your lisp file and a global key binding into your .emacs fil
          (copy-region-as-kill beg end))
      )
 
+== new copy paragraphe == 
 
-Key binding
+Copy the whole paragraphe in which the point is. Given a prefix 1, mark the paragraphe only.
+
+     (defun copy-paragraph (&optional arg)
+      "Copy paragraphes at point"
+       (interactive "P")
+       (let ((beg (get-point 'backward-paragraph 1))
+     	(end (get-point 'forward-paragraph arg)))
+         (if (= (or arg 0) 1)    ;; arg=1, mark paragraph only
+           (set-mark beg)
+           (copy-region-as-kill beg end))
+         )
+     )
+
+
+key binding
 
       (global-set-key (kbd "C-c p")         (quote copy-paragraph))
 
@@ -95,11 +154,84 @@ Put these code into your lisp file and a global key binding into your .emacs fil
       )
       )
 
+== new copy string (to mark) ==
+
+Copy string in which the point is into killring, and paste the string to the mark (or paste it to (point-max) in shell-mode). Given a numeric prefix, copy but does not paste. 
+
+     (defun beginning-of-string()
+       "  "
+       (re-search-backward "[ \t]" (line-beginning-position) 3 1)
+     	     (if (looking-at "[\t ]")  (goto-char (+ (point) 1)) )
+     )
+     (defun end-of-string()
+       " "
+       (re-search-forward "[ \t]" (line-end-position) 3 1)
+     	     (if (looking-back "[\t ]") (goto-char (- (point) 1)) )
+     )
+     
+     (put 'string 'beginning-op 'beginning-of-string)
+     (put 'string 'end-op 'end-of-string)
+     
+     
+     (defun thing-copy-string ()
+       "Try to get string"
+       (interactive)
+       (thing-edit 'string)
+     )
+     
+     (defun thing-copy-string-to-mark(&optional arg)
+       " Try to copy a string and paste it to the mark
+     When used in shell-mode, it will paste string on shell prompt by default "
+       (interactive "P")
+       (thing-copy-string)
+        (if (not arg)
+            (if (string= "shell-mode" major-mode)
+     	   (progn (comint-next-prompt 25535) (yank))
+     	   (progn (goto-char (mark)) (yank) )))
+     )
+
+
 Key binding
 
-      (global-set-key (kbd "C-c s")         (quote copy-string))
+      (global-set-key (kbd "C-c s")         (quote thing-copy-string-to-mark))
 
-That's all. 
+== new copy parenthesis (to mark) ==
+
+Similar with new copy string to mark
+
+     (defun beginning-of-parenthesis()
+       "  "
+       (re-search-backward "[[<(?\"]" (line-beginning-position) 3 1)
+     	     (if (looking-at "[[<(?\"]")  (goto-char (+ (point) 1)) )
+     )
+     (defun end-of-parenthesis()
+       " "
+       (re-search-forward "[]>)?\"]" (line-end-position) 3 1)
+     	     (if (looking-back "[]>)?\"]") (goto-char (- (point) 1)) )
+     )
+     
+     
+     (put 'parenthesis 'beginning-op 'beginning-of-parenthesis)
+     (put 'parenthesis 'end-op 'end-of-parenthesis)
+     
+     (defun thing-copy-parenthesis ()
+       "Try to get parenthesis"
+       (interactive)
+       (thing-edit 'parenthesis)
+     )
+     
+     (defun thing-copy-parenthesis-to-mark(&optional arg)
+       " Try to copy a parenthesis and paste it to the mark
+     When used in shell-mode, it will paste parenthesis on shell prompt by default "
+       (interactive "P")
+       (thing-copy-parenthesis)
+        (if (not arg)
+            (if (string= "shell-mode" major-mode)
+     	   (progn (comint-next-prompt 25535) (yank))
+     	   (progn (goto-char (mark)) (yank) )))
+     )
+
+      (global-set-key (kbd "C-c a")         (quote thing-copy-parenthesis-to-mark))
 
 ----
 ==Comment==

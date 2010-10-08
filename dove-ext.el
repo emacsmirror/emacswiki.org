@@ -476,6 +476,37 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 )
 
 
+(defun insert-line-number(&optional arg)
+  "Insert a numeric sequence at beginning of each line"
+  (interactive "P")
+  (let ((insert-number 
+	 (lambda (start beg end)
+	   "insert a numeric sequence at beginning of each line"
+	   (goto-char beg)
+	   (beginning-of-line)
+	   (insert (number-to-string start))
+	   (setq start (+ start 1))
+	   (while (< (point) end)
+	     (beginning-of-line 2)
+	     (insert (number-to-string start))
+	     (setq start (+ start 1))
+	     ))))
+    (cond 
+     ((or mark-active transient-mark-mode)
+      (if (> (point) (mark))
+	  (exchange-point-and-mark))
+      (if arg
+	  (funcall insert-number arg (point) (mark))
+	  (funcall insert-number 0 (point) (mark)))
+      )
+     (t
+      (if arg
+	  (funcall insert-number arg (point-min) (point-max))
+	(funcall insert-number 0 (point-min) (point-max)))
+      ))))
+
+
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
 ;;             window layout related               ;;

@@ -1,6 +1,6 @@
 ;;; intel-hex-mode.el --- Mode for Intel Hex files.
 
-;; Copyright (C) 2008 Rubens Ramos
+;; Copyright (C) 2008-2010 Rubens Ramos
 
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
@@ -21,20 +21,20 @@
 ;; Maintainer: Rubens Fernandes <rubensr AT users.sourceforge.net>
 ;; Homepage: None
 ;; Created: 08 Oct 2008
-;; Last modified: 08 Oct 2008
-;; Version: 0.1.1
+;; Last modified: 07 Oct 2010
+;; Version: 0.1.2
 ;; Keywords: mode intel hex
 
 ;;; Commentary:
 ;; Use this mode for editing files in the intel hex format 
-;; (http://en.wikipedia.org/wiki/.hex).
+;; (http://en.wikipedia.org/wiki/Intel_HEX).
 ;;
 ;; To use intel-hex-mode, add 
 ;; (load-file "PATH_TO_FILE/intel-hex-mode.el") 
 ;; to your ~/.emacs(.el) or ~/.xemacs/init.el
 ;;
 ;; The intel-hex-mode will do font locking, and calculate checksums. 
-;; This was developed on XEmacs, but should work on Emacs as well.
+;; Works on Emacs and XEmacs.
 ;;
 ;; Font locking is automatic.
 
@@ -45,9 +45,15 @@
 ;; Version 0.1.1 First Version
 ;; 08/10/2008: * First version
 
+;; Version 0.1.2 
+;; 07/10/2010: * Mode line support to show address (and other field types)
+;;             * Font lock now also highlights invalid chars
+;;             * Overwrite mode now on by default
+;;             * Record type 04 not supported
+
 ;;; Code:
 
-(defconst intel-hex-mode-version "0.1.1"
+(defconst intel-hex-mode-version "0.1.2"
   "Version of `intel-hex-mode.el'.")
 
 (defgroup intel-hex nil
@@ -63,10 +69,15 @@
   "Abbrev table in use in Intel Hex mode buffers.")
 (define-abbrev-table 'intel-hex-mode-abbrev-table ())
 
-;;(defcustom intel-hex-program "dot"
-;;  "*Some option."
-;;  :type 'string
-;;  :group 'intel-hex)
+(defcustom intel-hex-mode-line t 
+  "*Show address in mode line"
+  :type 'boolean
+  :group 'intel-hex)
+
+(defcustom intel-hex-enable-overwrite t 
+  "*Use overwrite minor mode by default"
+  :type 'boolean
+  :group 'intel-hex)
 
 ;;; Font lock
 (defvar intel-hex-font-lock-keywords
@@ -75,6 +86,7 @@
     ("^\\:\\([0-9A-Fa-f]\\{2\\}\\)" 1 font-lock-variable-name-face)
     ("^\\:[0-9A-Fa-f]\\{2\\}\\([0-9A-Fa-f]\\{4\\}\\)" 1 font-lock-reference-face)
     ("^\\:[0-9A-Fa-f]\\{6\\}\\([0-9A-Fa-f]\\{2\\}\\)" 1 font-lock-string-face)
+    ("[^0-9A-Fa-f]+" . font-lock-warning-face)
     ("\\([0-9A-Fa-f]\\{2\\}\\)$" 1 font-lock-keyword-face)
     )
   "Highlighting patterns for Intel Hex mode")
@@ -119,6 +131,15 @@ Turning on Intel Hex mode calls the value of the variable
        '(intel-hex-font-lock-keywords))
   (if intel-hex-menu
       (easy-menu-add intel-hex-menu))
+  (if intel-hex-enable-overwrite
+      (overwrite-mode t))
+  (if intel-hex-mode-line
+      (progn
+        (column-number-mode)
+        (setq mode-line-format
+              (append (reverse (cdr (reverse mode-line-format))) 
+                      '((:eval (intel-hex-address)))
+                      (list (car (reverse mode-line-format)))))))
   (run-hooks 'intel-hex-mode-hook)
   )
 
@@ -236,9 +257,44 @@ nil is used"
 	    (setq checksum (buffer-substring (point) (+ 2 (point)))))
       (list has-start-code byte-count address record-type data checksum))))
 
+(defun intel-hex-address ()
+  "Returns a string for the mode line"
+  (interactive)
+  (let ((decoded (intel-hex-decode-line)))
+    (let ((byte-count (string-to-number (nth 1 decoded) 16))
+          (base-addr (string-to-number (nth 2 decoded) 16))
+          (record-type (string-to-number (nth 3 decoded)))
+          (segment-base (intel-hex-get-segment-base)))
+      (cond ((not (intel-hex-is-valid-line decoded)) "[ERR]")
+            ((< (current-column) 1) "[Start]")
+            ((< (current-column) 3) "[Count]")
+            ((< (current-column) 7) "[Addr]")
+            ((< (current-column) 9) (cond ((= record-type 0) "[Data]")
+                                          ((= record-type 1) "[EOF]")
+                                          ((= record-type 2) "[ESAR]")
+                                          ((= record-type 3) "[SSAR]")
+                                          ((= record-type 4) "[ELAR]")
+                                          ((= record-type 5) "[SLAR]")
+                                          (t                 "[UNKN]")))
+            ((< (current-column) (+ 9 (* byte-count 2))) 
+             (if (= 0 record-type)
+                 (format "[%#08X]" (+ (+ (/ (- (current-column) 9) 2) base-addr) segment-base))
+                 "[n/a]"))
+            (t "[Chks]")))))
+
+(defun intel-hex-get-segment-base ()
+  "Looks backwards for the first record type 2 - extended segment address record,
+and returns its value, or zero"
+  (interactive)
+  (save-excursion
+    (if (search-backward ":02000002" nil t)
+        (progn
+          (forward-char 9)
+          (* (string-to-number (buffer-substring (point) (+ (point) 4)) 16) 16))
+      0)))
+
 ;;;###autoload
 (add-to-list 'auto-mode-alist '("\\.hex\\'" . intel-hex-mode))
 (add-to-list 'auto-mode-alist '("\\.a90\\'" . intel-hex-mode))
 
-(provide 'intel-hex-mode)
 ;;; intel-hex-mode.el ends here

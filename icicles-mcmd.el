@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  6 17:14:03 2010 (-0700)
+;; Last-Updated: Thu Oct  7 13:58:28 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16059
+;;     Update #: 16072
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1405,13 +1405,15 @@ in the minibuffer.
 Option `icicle-TAB-completion-methods' determines the TAB completion
 methods that are available."
   (interactive)
-  (let ((now  (member icicle-current-TAB-method icicle-TAB-completion-methods)))
+  (unless icicle-current-TAB-method     ; nil means the same as the default (first).
+    (setq icicle-current-TAB-method  (car icicle-TAB-completion-methods)))
+  (let ((now  (memq icicle-current-TAB-method icicle-TAB-completion-methods)))
     (setq icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))
     ;; Skip any method that is not currently supported.
     (while (or (and (eq icicle-current-TAB-method 'fuzzy) (not (featurep 'fuzzy-match)))
                (and (eq icicle-current-TAB-method 'swank) (not (featurep 'el-swank-fuzzy)))
                (and (eq icicle-current-TAB-method 'vanilla) (not (boundp 'completion-styles))))
-      (setq now                        (member icicle-current-TAB-method icicle-TAB-completion-methods)
+      (setq now                        (memq icicle-current-TAB-method icicle-TAB-completion-methods)
             icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))))
   (cond ((and (eq icicle-current-TAB-method 'swank) (fboundp 'doremi))
          (define-key minibuffer-local-completion-map "\C-x1"
@@ -1879,7 +1881,7 @@ editing."
              icicle-expand-input-to-common-match-flag
              icicle-hide-common-match-in-Completions-flag
              (car (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist))
-             icicle-current-TAB-method
+             (icicle-current-TAB-method)
              icicle-add-proxy-candidates-flag
              (and completion-ignored-extensions t)
              icicle-test-for-remote-files-flag
@@ -3105,7 +3107,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (save-selected-window (icicle-remove-Completions-window))
              (run-hooks 'icicle-no-match-hook)
              (unless (eq no-display-p 'no-msg)
-               (minibuffer-message (case icicle-current-TAB-method
+               (minibuffer-message (case (icicle-current-TAB-method)
                                      (fuzzy   "  [No fuzzy completions]")
                                      (swank   "  [No swank (fuzzy symbol) completions]")
                                      (vanilla "  [No vanilla completions]")
@@ -3195,7 +3197,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                         (error (message (error-message-string icicle-prefix-complete-1)))))
                      ((and icicle-edit-update-p (not (eq no-display-p 'no-msg)))
                       (minibuffer-message
-                       (format (case icicle-current-TAB-method
+                       (format (case (icicle-current-TAB-method)
                                  (fuzzy   "  [One fuzzy completion: %s]")
                                  (swank   "  [One swank (fuzzy symbol) completion: %s]")
                                  (vanilla "  [One vanilla completion: %s]")
@@ -3203,7 +3205,7 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                                icicle-current-input))
                       (setq mode-line-help  icicle-current-input))
                      ((not (eq no-display-p 'no-msg))
-                      (minibuffer-message (case icicle-current-TAB-method
+                      (minibuffer-message (case (icicle-current-TAB-method)
                                             (fuzzy   "  [Sole fuzzy completion]")
                                             (swank   "  [Sole swank (fuzzy symbol) completion]")
                                             (vanilla "  [Sole vanilla completion]")
@@ -5056,6 +5058,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
   (when (eq icicle-current-completion-mode 'prefix)
+    (unless icicle-last-input (icicle-prefix-complete))
     (let ((icicle-incremental-completion-p  nil)
           (regexp-quoted-input              (regexp-quote icicle-last-input)))
       (setq regexp-quoted-input  (if (icicle-file-name-input-p)

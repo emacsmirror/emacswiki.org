@@ -28,7 +28,9 @@ as it is used in "info-look.el.gz". To make info work with gnuplot-mode I've cha
 "\n\\* \\(.*\\):[ :]"
 }}}
 
+== Questions ==
 
+Is there a way to make C-h S pop directly to the info manual, rather than being prompted for the command to be searched for?  Thanks.
 
 ----
 CategoryHelp

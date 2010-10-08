@@ -4,6 +4,8 @@ But quickly I noticed that I spent too many time in the endless C-x 1 and C-<lef
 
 And since there are different size of windows, things must be able to be changed from each. So I made these functions to fulfill these requirements. 
 
+== split-window-4 ==
+
 {{{
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -34,6 +36,11 @@ And since there are different size of windows, things must be able to be changed
    )
 )
 
+}}}
+
+== split-v ==
+{{{
+
 ;  +----------------------+                 +----------- +-----------+ 
 ;  |                      |           \     |            |           | 
 ;  |                      |   +-------+\    |            |           | 
@@ -55,7 +62,10 @@ And since there are different size of windows, things must be able to be changed
     )
 )
 
+}}}
 
+== split-h ==
+{{{
 ;  +----------- +-----------+                  +----------------------+ 
 ;  |            |           |            \     |                      | 
 ;  |            |           |    +-------+\    |                      | 
@@ -76,13 +86,16 @@ And since there are different size of windows, things must be able to be changed
 		   ))
     )
 )
+}}}
 
+== split-v-3 ==
+{{{
 ;  +----------------------+                 +----------- +-----------+ 
 ;  |                      |           \     |            |           | 
 ;  |                      |   +-------+\    |            |           | 
 ;  +----------------------+   +-------+/    |            |-----------|
-;  |         |            |           /     |            |           | 
-;  |         |            |                 |            |           | 
+;  |          |           |           /     |            |           | 
+;  |          |           |                 |            |           | 
 ;  +----------------------+                 +----------- +-----------+ 
 
 
@@ -108,13 +121,16 @@ And since there are different size of windows, things must be able to be changed
 	  )
     )
 )
+}}}
 
+== split-h-3 ==
+{{{
 ;  +----------- +-----------+                  +----------------------+ 
 ;  |            |           |            \     |                      | 
 ;  |            |           |    +-------+\    |                      | 
 ;  |            |-----------|    +-------+/    +----------------------+ 
-;  |            |           |            /     |          |           | 
-;  |            |           |                  |          |           | 
+;  |            |           |            /     |           |          | 
+;  |            |           |                  |           |          | 
 ;  +----------- +-----------+                  +----------------------+ 
 
 
@@ -140,7 +156,10 @@ And since there are different size of windows, things must be able to be changed
 	    )
     )
 )
+}}}
 
+== roll-v-3 ==
+{{{
 ;  +----------- +-----------+                    +----------- +-----------+ 
 ;  |            |     C     |            \       |            |     A     | 
 ;  |            |           |    +-------+\      |            |           | 
@@ -182,7 +201,7 @@ And since there are different size of windows, things must be able to be changed
 
 }}}
 
-
+== change-split-type ==
 `split-v' and `split-h' may be merged into one function, that automatically detects split type and changes vertical to horizontal or vice-versa, like this:
 {{{
 ;;  +----------------------+                +---------- +----------+
@@ -209,17 +228,70 @@ And since there are different size of windows, things must be able to be changed
             (nextBuf (progn (other-window 1) (buffer-name)))
             (split-type (if (= (window-width)
                                (frame-width))
-                            'vertical
-                            'horizontal)))
+                            'split-window-horizontally
+                            'split-window-vertically)))
         (progn
           (delete-other-windows)
-          (cond
-            ((eq split-type 'horizontal)
-             (split-window-vertically))
-            ((eq split-type 'vertical)
-             (split-window-horizontally)))
+	  (funcall split-type)
           (set-window-buffer nil thisBuf)
           (set-window-buffer (next-window) nextBuf)))))
+
 }}}
+
+== change-split-type-3 ==
+`split-v-3' and `split-h-3' may also be merged into one function, that automatically detects split type and changes vertical to horizontal or vice-versa, like this:
+
+{{{
+;  +----------------------+                 +----------- +-----------+ 
+;  |                      |           \     |            |           | 
+;  |                      |   +-------+\    |            |           | 
+;  +----------------------+   +-------+/    |            |-----------|
+;  |          |           |           /     |            |           | 
+;  |          |           |                 |            |           | 
+;  +----------------------+                 +----------- +-----------+ 
+
+;  +----------- +-----------+                  +----------------------+ 
+;  |            |           |            \     |                      | 
+;  |            |           |    +-------+\    |                      | 
+;  |            |-----------|    +-------+/    +----------------------+ 
+;  |            |           |            /     |           |          | 
+;  |            |           |                  |           |          | 
+;  +----------- +-----------+                  +----------------------+ 
+
+(defun change-split-type-3 ()
+  "Change 3 window style from horizontal to vertical and vice-versa"
+  (interactive)
+  (select-window (get-largest-window))
+  (if (= 3 (length (window-list)))
+      (let ((winList (window-list)))
+	    (let ((1stBuf (window-buffer (car winList)))
+		  (2ndBuf (window-buffer (car (cdr winList))))
+		  (3rdBuf (window-buffer (car (cdr (cdr winList)))))
+		  (split-3 
+		   (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
+		     "change 3 window from horizontal to vertical and vice-versa"
+		     (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+		     (delete-other-windows)
+		     (funcall split-1)
+		     (set-window-buffer nil 1stBuf)
+		     (other-window 1)
+		     (set-window-buffer nil 2ndBuf)
+		     (funcall split-2)
+		     (set-window-buffer (next-window) 3rdBuf)
+		     (select-window (get-largest-window))
+		     ))
+		  (split-type-1 nil)
+		  (split-type-2 nil)
+		  )
+	      (if (= (window-width) (frame-width))
+		  (setq split-type-1 'split-window-horizontally split-type-2 'split-window-vertically)
+		(setq split-type-1 'split-window-vertically  split-type-2 'split-window-horizontally))
+	      (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
+
+))))
+
+
+}}}
+
 ----
 CategoryWindows

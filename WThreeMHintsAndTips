@@ -73,6 +73,10 @@ Assign this code to a key to "preview" a buffer full of HTML in w3m.
             (w3m-find-file filename))
         (delete-file filename))))
 
+[new]
+
+Why not `browse-url-of-buffer' , C-c C-v in html-mode ?
+
 == Downloading Files Asynchronously ==
 
 Since w3m-el downloads everything synchronously it can sometimes

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Sep 12 13:34:46 2010 (-0700)
+;; Last-Updated: Thu Oct  7 08:39:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1321
+;;     Update #: 1341
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -371,7 +371,7 @@ Effective starting with Emacs 23.")
 
 (defvar icicle-current-input "" "Current minibuffer input.")
 
-(defvar icicle-current-TAB-method 'basic
+(defvar icicle-current-TAB-method nil
   "*Current completion method for \
 `\\<minibuffer-local-completion-map>\\[icicle-prefix-complete]'.")
 

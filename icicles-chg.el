@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  6 17:29:01 2010 (-0700)
+;; Last-Updated: Thu Oct  7 13:59:04 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5608
+;;     Update #: 5625
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -592,6 +592,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/10/07 dadams
+;;     Added: icicle-current-TAB-method (function).  Use it in place of var everywhere.
 ;; 2010/10/04 dadams
 ;;     directory-sep-char -> ?/ (It was removed from Emacs 24.)
 ;; 2010/06/18 dadams
@@ -2054,6 +2056,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/10/07 dadams
+;;     icicle-next-TAB-completion-method:
+;;       If icicle-current-TAB-method is nil, set to first one.  member -> memq.
+;;     Use icicle-current-TAB-method function, not variable, everywhere else.
+;;     icicle-apropos-complete-and-narrow:
+;;       If completion mode is prefix, then prefix-complete first.  Thx to Michael Heerdegen.
 ;; 2010/10/06 dadams
 ;;     icicle-next-TAB-completion-method:
 ;;       Use car of icicle-TAB-completion-methods, not basic, as default.  Thx to Michael Heerdegen.
@@ -3122,6 +3130,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/10/07 dadams
+;;     Use icicle-current-TAB-method function, not variable, everywhere.
 ;; 2010/10/06 dadams
 ;;     icicle-define-cycling-keys:  Let all non-conflicting non-modal keys remain: modal just
 ;;                                  overwrites the conflicting non-modal.  Thx to Michael Heerdegen.
@@ -4034,6 +4044,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/10/07 dadams
+;;     icicle-TAB-completion-methods: Removed :set, :initialize (handle it differently now).
 ;; 2010/10/06 dadams
 ;;     icicle-TAB-completion-methods: Added :set and :initialize.  Thx to Michael Heerdegen.
 ;;     icicle-modal-cycle-(up|down)((-alt)-action|-help)-keys: Bound mouse wheel also (Emacs 22+).
@@ -4545,6 +4557,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/10/07 dadams
+;;     icicle-current-TAB-method: Use nil, not basic, as default value.
 ;; 2010/06/18 dadams
 ;;     Added: icicle-completions-format-internal.
 ;; 2010/06/08 dadams

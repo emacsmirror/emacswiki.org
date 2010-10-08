@@ -2,7 +2,7 @@ This page describes package Lisp:intel-hex-mode.el, by Rubens Ramos.
 
 == About intel-hex-mode ==
 
-This is a major mode to allow easy updating of checksums in Intel Hex files. It also does some font-locking. Developed and tested on XEmacs, but should work on Emacs as well. The mode will detect and use easymenu if available.
+This is a major mode to allow easy updating of checksums in Intel Hex files. It also does some font-locking and uses the mode line to show addresses and field types. Works on Emacs and XEmacs. The mode will detect and use easymenu if available.
 
 To use intel-hex-mode, add 
 
