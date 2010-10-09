@@ -55,7 +55,7 @@ What this screenshot does ''not'' show, however, is [[mode line]] help on the cu
 
 ([[lacarte-w-icicles|Screenshot]] showing mode-line candidate help.)
 
-Don't become a cycling drone! '''''Input some text to narrow the set of candidates, before cycling''''' among them to choose one. This is a good habit to adopt, generally, in '''Icicles'''.  Most of the power of '''Icicles''' comes in your ability to filter a set of candidates. This is especially true when it comes to [[regexp]] filtering (see [[Icicles - Apropos Completions]]). 
+Do not become a cycling drone! '''''Input some text to narrow the set of candidates, before cycling''''' among them to choose one. This is a good habit to adopt, generally, in '''Icicles'''.  Most of the power of '''Icicles''' comes in your ability to filter a set of candidates. This is especially true when it comes to [[regexp]] filtering (see [[Icicles - Apropos Completions]]). 
 
 ''Cycling'' and ''filtering'' work hand in hand. If 
 the set of candidates is small to begin with, then just cycling might be quick enough -- that is the case if you move among a small set of [[buffer]]s, for instance. But with '''Icicles''' you can profitably use cycling on even a very large set of candidates -- by filtering the set first. The reason this is often not very practical with vanilla Emacs is that filtering by a ''prefix'' only is not that potent -- '''Icicles''' regexp filtering changes this game.
@@ -66,6 +66,17 @@ the set of candidates is small to begin with, then just cycling might be quick e
 You can change the [[key]]s that are bound to completion-candidate cycling.  And if you prefer to use the same key for cycling both
 apropos matches and prefix matches, then you can customize [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''.  See [[Icicles - Customizing Key Bindings]].
+
+Finally, you can use the ''mouse wheel'' (Emacs 22 or later) to cycle
+candidates according to the current completion mode (prefix or
+apropos).  See [[Icicles - Nutshell View#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]].
+
+Mouse-wheel cycling works also with modifier keys: `C-M-' for
+candidate help, `C-' for candidate actions, and `C-S-' for
+alternative candidate actions.  In particular, `C-' with the wheel
+gives you a very quick way to visit search hits during '''Icicles'''
+search (and `C-S-' works for search-and-replace).
+(See [[Icicles - Search Commands, Overview]].)
 
 If you are an EmacsLisp programmer, then you can use `completing-read' to define your own [[command]]s,
 enabling them to take advantage of '''Icicles''' completion and cycling.

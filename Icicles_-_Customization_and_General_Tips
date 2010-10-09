@@ -339,22 +339,24 @@ and `icicle-prefix-cycle-next-keys' are used also to move up or
 down a line in buffer `*Completions*'.
 
 
+
+
 ----
 [:icicle-cycling-respects-completion-mode]
 ==== Option icicle-cycling-respects-completion-mode ====
 
 Non-`nil' option '''`icicle-cycling-respects-completion-mode''''
   causes the modal [[Icicles - Cycling Completions|cycling]] keys to act differently during
-  [[completion]].  Those keys are configurable using the following user options (default bindings in parens -- the mouse wheel bindings are only for Emacs 22 and later):
+  [[completion]].  Those keys are configurable using the following user options (default bindings in parens):
 
-** `<tt>[[#icicle-modal-cycle-up-keys]]</tt>' (`up', `wheel-up')
-** `<tt>[[#icicle-modal-cycle-up-action-keys]]</tt>' (`C-up', `C-wheel-up')
-** `<tt>[[#icicle-modal-cycle-up-alt-action-keys]]</tt>' (`C-S-up', `C-S-wheel-up')
-** `<tt>[[#icicle-modal-cycle-up-help-keys]]</tt>' (`C-M-up', `C-M-wheel-up')
-** `<tt>[[#icicle-modal-cycle-down-keys]]</tt>' (`down', `wheel-down')
-** `<tt>[[#icicle-modal-cycle-down-action-keys]]</tt>' (`C-down', `C-wheel-down')
-** `<tt>[[#icicle-modal-cycle-down-alt-action-keys]]</tt>' (`C-S-down', `C-S-wheel-down')
-** `<tt>[[#icicle-modal-cycle-down-help-keys]]</tt>' (`C-M-down', `C-M-wheel-down')
+** `<tt>[[#icicle-modal-cycle-up-keys]]</tt>' (`up')
+** `<tt>[[#icicle-modal-cycle-up-action-keys]]</tt>' (`C-up')
+** `<tt>[[#icicle-modal-cycle-up-alt-action-keys]]</tt>' (`C-S-up')
+** `<tt>[[#icicle-modal-cycle-up-help-keys]]</tt>' (`C-M-up')
+** `<tt>[[#icicle-modal-cycle-down-keys]]</tt>' (`down')
+** `<tt>[[#icicle-modal-cycle-down-action-keys]]</tt>' (`C-down')
+** `<tt>[[#icicle-modal-cycle-down-alt-action-keys]]</tt>' (`C-S-down')
+** `<tt>[[#icicle-modal-cycle-down-help-keys]]</tt>' (`C-M-down')
 
 The completion mode, and hence the behavior of these keys, is
 changed whenever you hit `TAB' or `S-TAB' during completion: the
@@ -391,6 +393,8 @@ and prefix cycling keys.
 [:icicle-modal-cycle-down-keys]
 [:icicle-modal-cycle-up-action-keys]
 [:icicle-modal-cycle-down-action-keys]
+[:icicle-modal-cycle-up-alt-action-keys]
+[:icicle-modal-cycle-down-alt-action-keys]
 [:icicle-modal-cycle-up-help-keys]
 [:icicle-modal-cycle-down-help-keys]
 
@@ -406,9 +410,7 @@ The values of these user options are the keys used for modal [[Icicles - Cycling
 ** '''`icicle-modal-cycle-down-help-keys''''
 ** '''`icicle-modal-cycle-down-keys''''
 
-By default, these keys are `C-up', `C-S-up', `C-M-up', `up', `C-down', `C-S-down', `C-M-down', and `down', as well as
-the corresponding mouse wheel keys: `C-wheel-up' etc.  (The
-mouse wheel default bindings are only for Emacs 22 and later.)  These options have an effect only if option `<tt>[[#icicle-cycling-respects-completion-mode]]</tt>' is non-`nil'.
+By default, these keys are `C-up', `C-S-up', `C-M-up', `up', `C-down', `C-S-down', `C-M-down', and `down'.  These options have an effect only if option `<tt>[[#icicle-cycling-respects-completion-mode]]</tt>' is non-`nil'.
 
 ----
 ==== Option icicle-cycle-into-subdirs-flag ====

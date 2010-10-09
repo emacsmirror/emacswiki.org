@@ -400,13 +400,13 @@ information on using the minibuffer in ''Icicle'' mode.  During completion, this
 that cycle completion candidates as `down',
 `up', `next', and `prior'.  Actually, these are
 the cycling keys only by default.  You can
-customize the cycling keys, using options
+customize the cycling keys using options
 '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''',
 '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' (modal),
 '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''',
 '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' (modal),
 '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''', and
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>''''.   The mouse wheel default bindings are only for Emacs 22 and later.)
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>''''.   The mouse wheel bindings are only for Emacs 22 and later.)
 
 * Keys bound globally to commands that perform simple text
 insertion, deletion, and transposition operations -- commands
@@ -537,10 +537,7 @@ traversal):
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-help-keys|icicle-modal-cycle-up-help-keys]]</tt>''''
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-help-keys|icicle-modal-cycle-down-help-keys]]</tt>''''
 
-By default, the keys defined for these options are, respectively, `up', `down', `C-up', `C-down', `C-S-up', `C-S-down', `C-M-up', and `C-M-down'.    In addition, for Emacs 22 and later,
-corresponding mouse wheel actions are defined: `wheel-up',
-`wheel-down', `C-wheel-up', `C-wheel-down', `C-S-wheel-up',
-`C-S-wheel-down', `C-M-wheel-up', and `C-M-wheel-down'.
+By default, the keys defined for these options are, respectively, `up', `down', `C-up', `C-down', `C-S-up', `C-S-down', `C-M-up', and `C-M-down'.
 
 Whether one of the keys is used for prefix or apropos completion at a given time
 depends on the current completion mode, which is determined by
@@ -699,7 +696,7 @@ completions.  For explanation, see [[Icicles - Multi-Commands]], [[Icicles - Mor
 
 (Actually, some of these are only default key
  bindings.  You can customize the keys to use for
-`previous' and `next' actions.  The mouse wheel default bindings are only for Emacs 22 and later.)
+`previous' and `next' actions.  The mouse wheel bindings are only for Emacs 22 and later.  The notation used here for the wheel bindings is that for Emacs on Windows; on other platforms different key notations are used for the wheel.  This same note applies to corresponding keys used with modifiers `C-M-' and `C-S-' -- see below.)
 
 Except as noted, the bindings for `icicle-mouse-*' are actually in the `*Completions*' buffer.
 
@@ -729,9 +726,6 @@ completions.  For explanation, see [[Icicles - Help on Candidates]] and [[Icicle
 * '''`C-M-prior'''' -- `icicle-help-on-previous-apropos-candidate'
 * '''`C-M-next'''' -- `icicle-help-on-next-apropos-candidate'
 
-(Actually, some of these are only the default key
-bindings.  You can customize the keys to use for
-`previous' and `next' candidate help.)
 
 
 
@@ -762,8 +756,6 @@ the given command.  Most commands define no alternative action.
 * '''`##C-|##'''' -- `icicle-all-candidates-alt-action': each candidate, in turn
 * '''`##M-|##'''' -- `icicle-all-candidates-list-alt-action': all candidates, as a list
 
-(The mouse wheel default bindings are only for Emacs 22 and
-later.)
 
 
 

@@ -8,6 +8,13 @@ example.  Or you could use the AdvancedDeskCalculator.
 Note that there is another file out there called multi.el, by
 BernardVauquelin.  That one does SearchAndReplace across multiple buffers.
 
+[new] 
+
+Does anybody have cl-array.el (in the past located here http://mit.edu/cadet/www/cl-array.el) file, vers. 0.4? I cannot find it on the internet anymore :(
+
+The last traces are here:
+http://calypso.tux.org/pipermail/xemacs-beta/2004-May/001503.html
+
 ----
 CategoryCalculators
 CategoryCode

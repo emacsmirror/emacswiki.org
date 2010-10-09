@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  6 10:57:36 2010 (-0700)
+;; Last-Updated: Fri Oct  8 10:54:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25353
+;;     Update #: 25387
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -529,7 +529,7 @@
 ;;  can cycle prefix-completion candidates by using the `down' and
 ;;  `up' arrow keys instead of `next' and `prior'.
 ;;
-;;  Some people prefer to always cycle using the same keys, for
+;;  Perhaps you prefer to always cycle using the same keys, for
 ;;  example, `down' and `up', regardless of the completion mode
 ;;  (prefix or apropos).  You can get that behavior by customizing
 ;;  user option `icicle-cycling-respects-completion-mode' to a non-nil
@@ -542,9 +542,28 @@
 ;;  apropos cycling.  Or if you bind `next' as the key for cycling
 ;;  forward modally then you can still use `down' for prefix cycling.
 ;;
-;;  As an alternative, instead of using `down' or `next', you can
-;;  cycle candidates downward (forward) by repeating the same
-;;  completion key: `TAB' or `S-TAB'.  For example:
+;;  Regardless of whether you choose to use the same keys for both
+;;  prefix and apropos completion - that is, regardless of the value
+;;  of `icicle-cycling-respects-completion-mode', you can always
+;;  (Emacs 22 or later) use the mouse wheel to cycle according to the
+;;  current mode (prefix or apropos).
+;;
+;;  With the mouse over a buffer other than `*Completions*', just
+;;  rotate the wheel to cycle among the candidates.  (Rotating the
+;;  wheel with the mouse over buffer `*Completions*' scrolls that
+;;  buffer - see (@> "*Completions* Display").)
+;;
+;;  Using the mouse wheel for cycling is also a quick and easy way to
+;;  see info about each candidate: just hold the Control and Meta keys
+;;  while you rotate the wheel - see (@> "Help on Completion Candidates").
+;;  And even without pressing those modifier keys you get help on the
+;;  candidates: a one-liner description is displayed in the mode line
+;;  of buffer `*Completions*' as you cycle (see
+;;  (@> "*Completions* Display")).  Try it!
+;;
+;;  Coming back to the keyboard, as an alternative to using `down' or
+;;  `next' you can cycle candidates downward (forward) by just
+;;  repeating the same completion key: `TAB' or `S-TAB'.  For example:
 ;;
 ;;   M-x tool           TAB ; Display candidates with prefix `tool'
 ;;   M-x tool-bar-mode  TAB
@@ -567,7 +586,7 @@
 ;;  Note: In vanilla Emacs, repeating `TAB' scrolls the
 ;;  `*Completions*' window.  In Icicles, you can use `C-v' to scroll
 ;;  `*Completions*' down and `M-v' to scroll up.  You can also use the
-;;  mouse wheel to scroll.
+;;  mouse wheel to scroll `*Completions*'.
 ;;
 ;;  See (@> "Apropos Completions") for more about apropos and prefix
 ;;  completion.
@@ -763,10 +782,14 @@
 ;;  During completion, you can also cycle among the doc strings for
 ;;  the candidates that match your input, using `C-M-down' and
 ;;  `C-M-up' (for prefix matching), `C-M-next' and `C-M-prior' (for
-;;  apropos matching).  This gives you a very useful on-the-fly
-;;  apropos feature - use it while you're completing a command, to
-;;  check the difference between several possible commands.  Or just
-;;  use it to browse doc strings, to learn more about Emacs.
+;;  apropos matching), or by holding `C-M-' while rotating the mouse
+;;  wheel (Emacs 22 and later - see
+;;  (@> "Prefix Completion and Apropos Completion")).
+;;
+;;  This gives you a very useful on-the-fly apropos feature - use it
+;;  while you're completing a command, to check the difference between
+;;  several possible commands.  Or just use it to browse doc strings,
+;;  to learn more about Emacs.
 ;;
 ;;  See (@> "Get Help on Candidates") for more about this.
 ;;
@@ -1471,8 +1494,7 @@
 ;;  underlined in the minibuffer completion candidate.
 ;;
 ;;  As an alternative to using `down' to cycle forward, you can hit
-;;  `TAB' repeatedly.
-;;  See (@> "Prefix Completion and Apropos Completion").
+;;  `TAB' repeatedly.  See (@> "Prefix Completion and Apropos Completion").
 ;;
 ;;  Suppose you use `C-x b' (command `switch-to-buffer').  You can
 ;;  then use `down' until the right buffer name appears in the
@@ -1511,7 +1533,7 @@
 ;;  `*Completions*' display.  The `*Completions*' window is
 ;;  automatically scrolled as needed, to show the current candidate.
 ;;
-;;  Don't become a cycling drone!  Input some text to narrow the set
+;;  Do not become a cycling drone!  Input some text to narrow the set
 ;;  of candidates, before cycling among them to choose one.  This is a
 ;;  good habit to adopt, generally, in Icicles.  Most of the power of
 ;;  Icicles comes in your ability to filter a set of candidates.  This
@@ -1544,6 +1566,17 @@
 ;;  apropos matches and prefix matches, then you can customize option
 ;;  `icicle-cycling-respects-completion-mode'.
 ;;  See (@file :file-name "icicles-doc2.el" :to "Customizing Key Bindings").
+;;
+;;  Finally, you can use the mouse wheel (Emacs 22 or later) to cycle
+;;  candidates according to the current completion mode (prefix or
+;;  apropos).  See (@> "Prefix Completion and Apropos Completion").
+;;
+;;  Mouse-wheel cycling works also with modifier keys: `C-M-' for
+;;  candidate help, `C-' for candidate actions, and `C-S-' for
+;;  alternative candidate actions.  In particular, `C-' with the wheel
+;;  gives you a very quick way to visit search hits during Icicles
+;;  search (and `C-S-' works for search-and-replace).
+;;  (See (@* "Icicles Search Commands, Overview").)
 ;;
 ;;  If you are an Emacs-Lisp programmer, then you can use
 ;;  `completing-read' and `read-file-name' to define your own
@@ -1680,7 +1713,7 @@
 ;;  (@> "*Completions* Display") for additional ways to use the
 ;;  minibuffer with `*Completions*'.
 ;;
-;;  Regexp matching is perhaps the most powerful feature of Icicles.
+;;  Regexp matching is one of the most powerful features of Icicles.
 ;;  Enjoy!  Explore!  You can at any time switch back and forth
 ;;  between prefix completion (`down', `up'), apropos completion
 ;;  (`next', `prior'), and input history traversal (`M-n', `M-p').

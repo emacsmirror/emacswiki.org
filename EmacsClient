@@ -358,7 +358,7 @@ This extension by Alex Bennee allows users to edit web-page TEXTAREAs with Emacs
 # Set the editor in the configuration file <tt>external.ini</tt> to: <tt>emacsclient.exe ~f</tt>
 # Follow the instructions in the documentation of External.exe.
 # Enable UTF-8 support, if desired, by changing the file open mode (second parameter of <tt>!FileOpen</tt>) from 2 to 258, and from 0 to 256 in the source file <tt>external.au</tt>. Afterwards, recompile with !AutoIt 3.3.6.1 or compatible.
-# One problem remains: at least with certain key combinations, after invoking the shortcut, sometimes modifiers become stuck. For example, with <Ctrl>-<Shift>-3, sometimes in EMACS, <Ctrl>-<Shift> is stuck. Ugly workaround: Pressing <Ctrl>-<Shift> in EMACS releases the stuck modifier.
+# One problem remains: at least with certain key combinations, after invoking the shortcut, sometimes modifiers become stuck. For example, with <Ctrl>-<Shift>-3, sometimes in EMACS, <Ctrl>-<Shift> is stuck. Ugly workaround: Pressing <Ctrl>-<Shift> in EMACS releases the stuck modifiers.
 
 [:EmacsW32Client]
 === Using the patched version of EmacsW32 to start Emacs automatically ===

@@ -18,7 +18,8 @@ Put into your init-file (~/.emacs, ~/.xemacs/init.el, whatever)
 * GNU Octave: http://www.octave.org/
 * The Math-Works Website: http://www.mathworks.com/
 * Download matlab.el: http://www.mathworks.com/matlabcentral/fileexchange/loadFile.do?objectId=104&objectType=file
-* SourceForge project for matlab.el (and CVS): http://matlab-emacs.sf.net
+* SourceForge project for matlab.el (and CVS): http://matlab-emacs.sf.net. 
+  the tarball link: http://matlab-emacs.cvs.sourceforge.net/viewvc/matlab-emacs/?view=tar
 * A how-to by Cristian S. Dima: http://www.andrew.cmu.edu/course/16-720/extras/matlab_in_emacs/
 
 ----

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  7 08:39:10 2010 (-0700)
+;; Last-Updated: Fri Oct  8 09:36:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6630
+;;     Update #: 6671
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3047,11 +3047,13 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     ;; or `completing-read'.  Reset other stuff too.
     (setq icicle-candidate-nb                    nil
           icicle-completion-candidates           nil
-          icicle-current-completion-mode         (case icicle-cycling-respects-completion-mode
-                                                   ((nil)      nil)
-                                                   (apropos    'apropos)
-                                                   (prefix     'prefix)
-                                                   (otherwise  nil))
+          ;; This is so that cycling works right initially, without first hitting `TAB' or `S-TAB'.
+          icicle-current-completion-mode         (and (< (minibuffer-depth) 2)
+                                                      (case icicle-cycling-respects-completion-mode
+                                                        ((nil)      nil)
+                                                        (apropos    'apropos)
+                                                        (prefix     'prefix)
+                                                        (otherwise  nil)))
           icicle-next-apropos-complete-cycles-p  nil
           icicle-next-prefix-complete-cycles-p   nil
           icicle-default-directory               default-directory
@@ -3141,7 +3143,25 @@ Usually run by inclusion in `minibuffer-setup-hook'."
            (dolist (key icicle-modal-cycle-up-action-keys)
              (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `C-up'
            (dolist (key icicle-modal-cycle-down-action-keys)
-             (define-key map key 'icicle-next-candidate-per-mode-action)))) ; `C-down'
+             (define-key map key 'icicle-next-candidate-per-mode-action))) ; `C-down'
+         ;; Define mouse wheel for modal cycling.
+         (when (boundp 'mouse-wheel-down-event) ; Emacs 22+
+           (define-key map (vector mouse-wheel-down-event) ; `wheel-up'
+             'icicle-previous-candidate-per-mode)
+           (define-key map (vector nil mouse-wheel-down-event) ; `wheel-up'
+             'icicle-previous-candidate-per-mode)
+           (define-key map (vector mouse-wheel-up-event) ; `wheel-down'
+             'icicle-next-candidate-per-mode)
+           (define-key map (vector nil mouse-wheel-up-event) ; `wheel-down'
+             'icicle-next-candidate-per-mode)
+           (define-key map (vector (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
+             'icicle-previous-candidate-per-mode-action)
+           (define-key map (vector nil (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
+             'icicle-previous-candidate-per-mode-action)
+           (define-key map (vector (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
+             'icicle-next-candidate-per-mode-action)
+           (define-key map (vector nil (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
+             'icicle-next-candidate-per-mode-action)))
         (t                              ; Use `C-' for plain cycling, NO `C-' for action.
          ;; Define non-modal cycling keys.
          (dolist (key icicle-prefix-cycle-previous-keys)
@@ -3169,9 +3189,31 @@ Usually run by inclusion in `minibuffer-setup-hook'."
            (dolist (key icicle-modal-cycle-up-action-keys)
              (define-key map key 'icicle-previous-candidate-per-mode)) ; `C-up'
            (dolist (key icicle-modal-cycle-down-action-keys)
-             (define-key map key 'icicle-next-candidate-per-mode))))) ; `C-down'
+             (define-key map key 'icicle-next-candidate-per-mode))) ; `C-down'
+         ;; Define mouse wheel for modal cycling.
+         (when (boundp 'mouse-wheel-down-event) ; Emacs 22+
+           (define-key map (vector mouse-wheel-down-event) ; `wheel-up'
+             'icicle-previous-candidate-per-mode-action)
+           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+           (define-key map (vector nil mouse-wheel-down-event) ; `wheel-up'
+             'icicle-previous-candidate-per-mode-action)
+           (define-key map (vector mouse-wheel-up-event) ; `wheel-down'
+             'icicle-next-candidate-per-mode-action)
+           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+           (define-key map (vector nil mouse-wheel-up-event) ; `wheel-down'
+             'icicle-next-candidate-per-mode-action)
+           (define-key map (vector (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
+             'icicle-previous-candidate-per-mode)
+           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+           (define-key map (vector nil (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
+             'icicle-previous-candidate-per-mode)
+           (define-key map (vector (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
+             'icicle-next-candidate-per-mode)
+           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+           (define-key map (vector nil (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
+             'icicle-next-candidate-per-mode))))
 
-  ;; Help and alternative-action keys are not controlled by `icicle-use-C-for-actions-flag'.
+  ;; Help and alternative-action keys are NOT controlled by `icicle-use-C-for-actions-flag'.
   ;;
   ;; Define non-modal cycling help and alternative action keys.
   (dolist (key icicle-prefix-cycle-previous-help-keys)
@@ -3199,7 +3241,29 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     (dolist (key icicle-modal-cycle-up-alt-action-keys)
       (define-key map key 'icicle-previous-candidate-per-mode-alt-action)) ; `C-S-up'
     (dolist (key icicle-modal-cycle-down-alt-action-keys)
-      (define-key map key 'icicle-next-candidate-per-mode-alt-action)))) ; `C-S-down'
+      (define-key map key 'icicle-next-candidate-per-mode-alt-action))) ; `C-S-down'
+  (when (boundp 'mouse-wheel-down-event) ; Emacs 22+
+    ;; Define mouse wheel for modal cycling - help and alternative action.
+    (define-key map (vector (list 'control 'meta mouse-wheel-down-event)) ; `C-M-wheel-up'
+      'icicle-previous-candidate-per-mode-help)
+    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+    (define-key map (vector nil (list 'control 'meta mouse-wheel-down-event)) ; `C-M-wheel-up'
+      'icicle-previous-candidate-per-mode-help)
+    (define-key map (vector (list 'control 'meta mouse-wheel-up-event)) ; `C-M-wheel-down'
+      'icicle-next-candidate-per-mode-help)
+    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+    (define-key map (vector nil (list 'control 'meta mouse-wheel-up-event)) ; `C-M-wheel-down'
+      'icicle-next-candidate-per-mode-help)
+    (define-key map (vector (list 'control 'shift mouse-wheel-down-event)) ; `C-S-wheel-up'
+      'icicle-previous-candidate-per-mode-alt-action)
+    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+    (define-key map (vector nil (list 'control 'shift mouse-wheel-down-event)) ; `C-S-wheel-up'
+      'icicle-previous-candidate-per-mode-alt-action)
+    (define-key map (vector (list 'control 'shift mouse-wheel-up-event)) ; `C-S-wheel-down'
+      'icicle-next-candidate-per-mode-alt-action)
+    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
+    (define-key map (vector nil (list 'control 'shift mouse-wheel-up-event)) ; `C-S-wheel-down'
+      'icicle-next-candidate-per-mode-alt-action)))
 
 (defun icicle-select-minibuffer-contents ()
   "Select minibuffer contents and leave point at its beginning."

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  7 09:31:02 2010 (-0700)
+;; Last-Updated: Thu Oct  7 14:52:10 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3813
+;;     Update #: 3816
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1579,15 +1579,7 @@ then on again, for the change to take effect in the same session."
   :type 'hook :group 'Icicles-Miscellaneous)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-down-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
-                                            (list
-                                             [down]
-                                             (vector mouse-wheel-up-event)
-                                             ;; This one should not be necessary, but
-                                             ;; is because of an Emacs bug wrt frame
-                                             ;; switching.
-                                             (vector nil mouse-wheel-up-event))
-                                          '([down]))
+(defcustom icicle-modal-cycle-down-keys '([down])
   "*Key sequences to use for modal cycling to the next candidate.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1601,17 +1593,7 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-down-action-keys (if (boundp 'mouse-wheel-up-event) ; Emacs 22+
-                                                   (list
-                                                    [C-down]
-                                                    (vector (list 'control
-                                                                  mouse-wheel-up-event))
-                                                    ;; This one should not be necessary, but
-                                                    ;; is because of an Emacs bug wrt frame
-                                                    ;; switching.
-                                                    (vector nil (list 'control
-                                                                      mouse-wheel-up-event)))
-                                                 '([C-down]))
+(defcustom icicle-modal-cycle-down-action-keys '([C-down])
   "*Keys for modal completion to cycle next and perform action.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1625,17 +1607,7 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-down-alt-action-keys (if (boundp 'mouse-wheel-up-event) ;Emacs22+
-                                                       (list
-                                                        [C-S-down]
-                                                        (vector (list 'control 'shift
-                                                                      mouse-wheel-up-event))
-                                                        ;; This one should not be necessary, but
-                                                        ;; is because of an Emacs bug wrt frame
-                                                        ;; switching.
-                                                        (vector nil (list 'control 'shift
-                                                                          mouse-wheel-up-event)))
-                                                     '([C-S-down]))
+(defcustom icicle-modal-cycle-down-alt-action-keys '([C-S-down])
   "*Keys for modal completion to cycle next and perform alt action.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1646,17 +1618,7 @@ non-nil."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-down-help-keys (if (boundp 'mouse-wheel-up-event) ; Emacs 22+
-                                                 (list
-                                                  [(control meta down)]
-                                                  (vector (list 'control 'meta
-                                                                mouse-wheel-up-event))
-                                                  ;; This one should not be necessary, but
-                                                  ;; is because of an Emacs bug wrt frame
-                                                  ;; switching.
-                                                  (vector nil (list 'control 'meta
-                                                                    mouse-wheel-up-event)))
-                                               '([(control meta down)]))
+(defcustom icicle-modal-cycle-down-help-keys '([(control meta down)])
   "*Keys for modal completion to cycle next and show candidate help.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1667,15 +1629,7 @@ non-nil."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-up-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
-                                          (list
-                                           [up]
-                                           (vector mouse-wheel-down-event)
-                                           ;; This one should not be necessary, but
-                                           ;; is because of an Emacs bug wrt frame
-                                           ;; switching.
-                                           (vector nil mouse-wheel-down-event))
-                                        '([up]))
+(defcustom icicle-modal-cycle-up-keys '([up])
   "*Key sequences to use for modal cycling to the previous candidate.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1689,17 +1643,7 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-up-action-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
-                                                 (list
-                                                  [C-up]
-                                                  (vector (list 'control
-                                                                mouse-wheel-down-event))
-                                                  ;; This one should not be necessary, but
-                                                  ;; is because of an Emacs bug wrt frame
-                                                  ;; switching.
-                                                  (vector nil (list 'control
-                                                                    mouse-wheel-down-event)))
-                                               '([C-up]))
+(defcustom icicle-modal-cycle-up-action-keys '([C-up])
   "*Keys for modal completion to cycle previous and perform action.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1713,17 +1657,7 @@ Option `icicle-use-C-for-actions-flag' swaps these keys with
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-up-alt-action-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
-                                                     (list
-                                                      [C-S-up]
-                                                      (vector (list 'control 'shift
-                                                                    mouse-wheel-down-event))
-                                                      ;; This one should not be necessary, but
-                                                      ;; is because of an Emacs bug wrt frame
-                                                      ;; switching.
-                                                      (vector nil (list 'control 'shift
-                                                                        mouse-wheel-down-event)))
-                                                   '([C-S-up]))
+(defcustom icicle-modal-cycle-up-alt-action-keys '([C-S-up])
   "*Keys for modal completion to cycle previous and perform alt action.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate
@@ -1734,17 +1668,7 @@ non-nil."
   :type '(repeat sexp) :group 'Icicles-Key-Bindings)
 
 ;;;###autoload
-(defcustom icicle-modal-cycle-up-help-keys (if (boundp 'mouse-wheel-down-event) ; Emacs 22+
-                                               (list
-                                                [(control meta up)]
-                                                (vector (list 'control 'meta
-                                                              mouse-wheel-down-event))
-                                                ;; This one should not be necessary, but
-                                                ;; is because of an Emacs bug wrt frame
-                                                ;; switching.
-                                                (vector nil (list 'control 'meta
-                                                                  mouse-wheel-down-event)))
-                                             '([(control meta up)]))
+(defcustom icicle-modal-cycle-up-help-keys '([(control meta up)])
   "*Keys for modal completion to cycle previous and show candidate help.
 A list of values that each has the same form as a key-sequence
 argument to `define-key'.  It is a list mainly in order to accommodate

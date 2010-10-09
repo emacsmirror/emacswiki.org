@@ -74,7 +74,7 @@ different candidates. In the case of apropos completion, the root is not the inp
 [[Icicles - Completions Display]] for additional ways to use the minibuffer with `*Completions*'.
 
 
-Regexp matching is perhaps the ''most powerful feature'' of '''Icicles'''.
+Regexp matching one of the ''most powerful'' features of '''Icicles'''.
 ''Enjoy! Explore!''  You can at any time switch back and forth between prefix
 completion (`down', `up'), apropos completion (`next', `prior'),
 and input history traversal (`M-n', `M-p').

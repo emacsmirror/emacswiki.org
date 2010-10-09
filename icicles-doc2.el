@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Oct  6 11:26:29 2010 (-0700)
+;; Last-Updated: Fri Oct  8 10:51:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27107
+;;     Update #: 27124
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4310,21 +4310,16 @@
 ;;  * Non-nil option `icicle-cycling-respects-completion-mode' causes
 ;;    the modal cycling keys to act differently during completion.
 ;;    Those keys are configurable using the following user options
-;;    (default bindings in parens - the mouse wheel bindings are only
-;;    for Emacs 22 and later):
+;;    (default bindings in parens):
 ;;
-;;    `icicle-modal-cycle-up-keys'                  (`up', `wheel-up')
-;;    `icicle-modal-cycle-up-action-keys'       (`C-up', `C-wheel-up')
-;;    `icicle-modal-cycle-up-alt-action-keys'
-;;                                          (`C-S-up', `C-S-wheel-up')
-;;    `icicle-modal-cycle-up-help-keys'     (`C-M-up', `C-M-wheel-up')
-;;
-;;    `icicle-modal-cycle-down-keys'            (`down', `wheel-down')
-;;    `icicle-modal-cycle-down-action-keys' (`C-down', `C-wheel-down')
-;;    `icicle-modal-cycle-down-alt-action-keys'
-;;                                      (`C-S-down', `C-S-wheel-down')
-;;    `icicle-modal-cycle-down-help-keys'
-;;                                      (`C-M-down', `C-M-wheel-down')
+;;    `icicle-modal-cycle-up-keys'                    (`up')
+;;    `icicle-modal-cycle-up-action-keys'             (`C-up')
+;;    `icicle-modal-cycle-up-alt-action-keys'         (`C-S-up')
+;;    `icicle-modal-cycle-up-help-keys'               (`C-M-up')
+;;    `icicle-modal-cycle-down-keys'                  (`down')
+;;    `icicle-modal-cycle-down-action-keys'           (`C-down')
+;;    `icicle-modal-cycle-down-alt-action-keys'       (`C-S-down')
+;;    `icicle-modal-cycle-down-help-keys'             (`C-M-down')
 ;;
 ;;    The completion mode, and hence the behavior of these keys, is
 ;;    changed whenever you hit `TAB' or `S-TAB' during completion: the
@@ -4364,10 +4359,8 @@
 ;;    `icicle-modal-cycle-down-help-keys', and
 ;;    `icicle-modal-cycle-down-keys', are the keys used for modal
 ;;    cycling.  By default, these keys are `C-up', `C-S-up', `C-M-up',
-;;    `up', `C-down', `C-S-down', `C-M-down', and `down', as well as
-;;    the corresponding mouse wheel keys: `C-wheel-up' etc.  (The
-;;    mouse wheel default bindings are only for Emacs 22 and later.)
-;;    These options have an effect only if option
+;;    `up', `C-down', `C-S-down', `C-M-down', and `down'.  These
+;;    options have an effect only if option
 ;;    `icicle-cycling-respects-completion-mode' is non-nil.
 ;;
 ;;  * User option `icicle-word-completion-keys' is a list of keys to
@@ -5849,13 +5842,13 @@
 ;;    (The documentation always refers to the keys that cycle
 ;;    completion candidates as `down', `up', `next', and `prior'.
 ;;    Actually, these are the cycling keys only by default.  You can
-;;    customize the cycling keys, using options
+;;    customize the cycling keys using options
 ;;    `icicle-prefix-cycle-next-keys', `icicle-modal-cycle-down-keys'
 ;;    (modal), `icicle-prefix-cycle-previous-keys',
 ;;    `icicle-modal-cycle-up-keys' (modal),
 ;;    `icicle-apropos-cycle-next-keys', and
-;;    `icicle-apropos-cycle-previous-keys'.  The mouse wheel default
-;;    bindings are only for Emacs 22 and later.)
+;;    `icicle-apropos-cycle-previous-keys'.  The mouse wheel bindings
+;;    are only for Emacs 22 and later.)
 ;;
 ;;    Keys bound globally to commands that perform simple text
 ;;    insertion, deletion, and transposition operations - commands
@@ -6001,10 +5994,7 @@
 ;;
 ;;  By default, the keys defined for these options are, respectively,
 ;;  `up', `down', `C-up', `C-down', `C-S-up', `C-S-down', `C-M-up',
-;;  and `C-M-down'.  In addition, for Emacs 22 and later,
-;;  corresponding mouse wheel actions are defined: `wheel-up',
-;;  `wheel-down', `C-wheel-up', `C-wheel-down', `C-S-wheel-up',
-;;  `C-S-wheel-down', `C-M-wheel-up', and `C-M-wheel-down'.
+;;  and `C-M-down'.
 ;;
 ;;  Whether one of the keys is used for prefix or apropos completion
 ;;  at a given time depends on the current completion mode, which is
@@ -6131,7 +6121,11 @@
 ;;
 ;;  (Actually, some of these are only default key bindings.  You can
 ;;  customize the keys to use for `previous' and `next' actions.  The
-;;  mouse wheel default bindings are only for Emacs 22 and later.)
+;;  mouse-wheel bindings are only for Emacs 22 and later.  The
+;;  notation used here for the wheel bindings is that for Emacs on
+;;  Windows; on other platforms different key notations are used for
+;;  the wheel.  This same note applies to corresponding keys used with
+;;  modifiers `C-M-' and `C-S-' - see below.)
 ;;
 ;;  Except as noted, the bindings for `icicle-mouse-*' are actually in
 ;;  the `*Completions*' buffer.
@@ -6153,10 +6147,6 @@
 ;;    `C-M-prior' - `icicle-help-on-previous-apropos-candidate'
 ;;    `C-M-next'  - `icicle-help-on-next-apropos-candidate'
 ;;
-;;  (Actually, some of these are only the default key bindings.  You
-;;  can customize the keys to use for `previous' and `next' candidate
-;;  help.)
-;;
 ;;  The following minibuffer bindings provide an alternative action
 ;;  for individual candidates.  The alternative action is specific to
 ;;  the given command.  Most commands define no alternative action.
@@ -6175,9 +6165,6 @@
 ;;    `C-S-next'    - `icicle-next-apropos-candidate-alt-action'
 ;;    `C-|'         - `icicle-all-candidates-alt-action': each
 ;;    `M-|'         - `icicle-all-candidates-list-alt-action': list
-;;
-;;  (The mouse wheel default bindings are only for Emacs 22 and
-;;  later.)
 ;;
 ;;  The following minibuffer bindings let you perform set operations
 ;;  on sets of completion candidates.  For explanation, see

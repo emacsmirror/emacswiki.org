@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  7 13:58:28 2010 (-0700)
+;; Last-Updated: Fri Oct  8 09:38:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16072
+;;     Update #: 16086
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4939,6 +4939,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   ;; next-higher recursive minibuffer.
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
+  (setq icicle-current-completion-mode  'apropos)
   (let (;; Restore match function, in case it was bound to nil, e.g., by `C-h C-o'.
         (icicle-apropos-complete-match-fn  icicle-last-apropos-complete-match-fn)
         (icicle-progressive-completing-p   t) ; Inhibit completion by `icicle-minibuffer-setup'.
@@ -5051,14 +5052,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 ;;;###autoload
 (defun icicle-apropos-complete-and-narrow () ; Bound to `S-SPC' in minibuffer.
   "Apropos complete, then `icicle-narrow-candidates'.
-
 You can use this command only from the minibuffer (`\\<minibuffer-local-completion-map>\
 \\[icicle-apropos-complete-and-narrow]')."
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
-  (when (eq icicle-current-completion-mode 'prefix)
-    (unless icicle-last-input (icicle-prefix-complete))
+  (when (and (eq icicle-current-completion-mode 'prefix) icicle-last-input)
     (let ((icicle-incremental-completion-p  nil)
           (regexp-quoted-input              (regexp-quote icicle-last-input)))
       (setq regexp-quoted-input  (if (icicle-file-name-input-p)

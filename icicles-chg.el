@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  7 13:59:04 2010 (-0700)
+;; Last-Updated: Fri Oct  8 10:01:13 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5625
+;;     Update #: 5636
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2056,6 +2056,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/10/08 dadams
+;;     icicle-narrow-candidates: Set icicle-current-completion-mode to apropos.
+;;     icicle-apropos-complete-and-narrow:
+;;       Protect regexp-quote by ensuring non-nil icicle-last-input.  Removed yesterday's change.
 ;; 2010/10/07 dadams
 ;;     icicle-next-TAB-completion-method:
 ;;       If icicle-current-TAB-method is nil, set to first one.  member -> memq.
@@ -3130,6 +3134,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/10/08 dadams
+;;     icicle-minibuffer-setup: Don't set icicle-current-completion-mode in recursive minibuffer.
+;;     icicle-define-cycling-keys: Unconditionally define mouse wheel for modal cycling.
 ;; 2010/10/07 dadams
 ;;     Use icicle-current-TAB-method function, not variable, everywhere.
 ;; 2010/10/06 dadams
@@ -4044,6 +4051,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/10/08 dadams
+;;     icicle-modal-cycle-*-keys: Removed mouse-wheel keys - they are added systematically now.
 ;; 2010/10/07 dadams
 ;;     icicle-TAB-completion-methods: Removed :set, :initialize (handle it differently now).
 ;; 2010/10/06 dadams

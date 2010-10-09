@@ -10,10 +10,10 @@ This page describes how to configure Gnus to read and send mails from your gmail
 
 Firstly, don't forget to enable IMAP in your Gmail account (settings->forwarding POP/IMAP). Settings to tell gnus to use Gmail's IMAP as a (secondary) select method are as follows:
 <pre>
-(add-to-list 'gnus-secondary-select-methods '(nnimap "gmail"
+(add-to-list 'gnus-secondary-select-methods '((nnimap "gmail"
                                   (nnimap-address "imap.gmail.com")
                                   (nnimap-server-port 993)
-                                  (nnimap-stream ssl)))
+                                  (nnimap-stream ssl))))
 </pre>
 with a line like the following one in your ~/.authinfo
 <pre>

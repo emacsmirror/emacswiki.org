@@ -1,12 +1,10 @@
-= MoveText.el =
-
-This was written in March 2010 by !StackOverflow.com user [http://stackoverflow.com/users/247020/sanityinc SanityInc]
-
 !MoveText will move the current line (or if marked, the current region's, whole lines.)
 
 The default bindings are M-up-arrow and M-down-arrow. It works like Eclipse's (same binding) and !NetBeans M-S-up/down.
 
-[http://gist.github.com/raw/610579/0272397af49d22b4020d0ad742b49ca0613e1ce5/move-text.el move-text.el]
+[http://www.emacswiki.org/emacs/move-text.el Download move-text.el here.]
+
+This is a feature is extracted [http://www.emacswiki.org/emacs/basic-edit-toolkit.el from basic-edit-toolkit.el]  
 
 <pre>
 (defun move-text-internal (arg)
@@ -50,8 +48,9 @@ The default bindings are M-up-arrow and M-down-arrow. It works like Eclipse's (s
 (global-set-key [M-up] 'move-text-up)
 (global-set-key [M-down] 'move-text-down)
 </pre>
-Also look at [[DragStuff]]
 
+
+Also look at [[DragStuff]]
 
 ----
 CategoryRegion

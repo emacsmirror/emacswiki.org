@@ -61,6 +61,9 @@ Yes, this is a long menu! Think of it as a learning device and a way to remind y
 
 
 
+
+
+
 [:ToggleOptions]
 == Toggle Options on the Fly ==
 
@@ -92,6 +95,11 @@ Whenever you use an '''Icicles''' toggle command, a momentary message
 shows you the new option value.  So as an alternative to using
 `##C-?##' to see the current value of an option, you can just toggle
 it twice.
+
+
+
+
+
 
 
 
@@ -127,6 +135,9 @@ See [[Icicles - Cycling Completions]] for more about cycling completion candidat
 
 
 
+
+
+
 [:DisplayCandidates]
 == Display Completion Candidates ==
 
@@ -148,6 +159,9 @@ See [[Icicles - Completions Display]] for more about using the `*Completions*' w
 
 
 
+
+
+
 [:PrefixAndAproposCompletion]
 == Prefix Completion and Apropos Completion ==
 
@@ -156,7 +170,7 @@ this ''[[apropos completion]]'', by using `TAB' instead of `S-TAB'.  You
 can ''cycle'' prefix-completion candidates by using the `down' and
 `up' arrow keys instead of `next' and `prior'.
 
-Some people prefer to always cycle using the same keys, for
+Perhaps you prefer to always cycle using the same keys, for
 example, `down' and `up', regardless of the completion mode
 (prefix or apropos).  You can get that behavior by customizing
 user option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''  to a non-`nil' value.
@@ -168,7 +182,26 @@ prefix and apropos completion), you can still use `next' for
 apropos cycling.  Or if you bind `next' as the key for cycling
 forward modally then you can still use `down' for prefix cycling.
 
-As an alternative, instead of using `down' or `next', you can cycle candidates downward (forward) by 
+Regardless of whether you choose to use the same keys for both
+prefix and apropos completion -- that is, regardless of the value
+of `icicle-cycling-respects-completion-mode', you can always
+(Emacs 22 or later) use the ''mouse wheel'' to cycle according to the
+current mode (prefix or apropos).
+
+With the mouse over a buffer other than `*Completions*', just
+rotate the wheel to cycle among the candidates.  (Rotating the
+wheel with the mouse over buffer `*Completions*' scrolls that
+buffer -- see [[Icicles - Completions Display]].)
+
+Using the mouse wheel for cycling is also a quick and easy way to
+see info about each candidate: just hold the '''Control''' and '''Meta''' keys
+while you rotate the wheel -- see [[#HelpOnCandidates|Get Help on Completion Candidates]].
+And even without pressing those modifier keys you get help on the
+candidates: a one-liner description is displayed in the [[mode line]]
+of buffer `*Completions*' as you cycle (see
+[[Icicles - Completions Display]]).  Try it!
+
+Coming back to the keyboard, as an alternative to using `down' or `next' you can cycle candidates downward (forward) by just
 repeating the same completion key: `TAB' or `S-TAB'.  For example:
 
 : ##M-x tool  ##'''##TAB##''' -> Display candidates with prefix `tool' in `*Completions*'
@@ -192,9 +225,13 @@ then repeat that new completion key to cycle among the candidates.
 '''Note:''' In vanilla Emacs, repeating `TAB' scrolls the
 `*Completions*' window.  In '''Icicles''', you can use `C-v' to scroll `*Completions*'
 down and `M-v' to scroll up.  You can also use the mouse wheel to
-scroll.
+scroll `*Completions*'.
 
 See [[Icicles - Apropos Completions]] for more about apropos and prefix completion.
+
+
+
+
 
 
 
@@ -235,6 +272,12 @@ As a shortcut, you can use just '''`S-SPC'''' instead of `##S-TAB M-*##'.
 See [[Icicles - Progressive Completion]] for more about progressive completion with `M-*'.
 
 See [http://blogs.gnome.org/xan/2007/10/08/gtk-hacking-with-emacs-a-small-trick/ Locane Powder] for someone else's description of the joys of '''Icicles''' progressive completion.
+
+
+
+
+
+
 
 
 
@@ -315,6 +358,9 @@ the fine chiseling of `delete' with the variable-size chiseling of
 
 
 
+
+
+
 [:ChooseBeforeYouAct]
 == Choose Before You Act ==
 
@@ -371,6 +417,10 @@ See [[Icicles - Candidate Sets]] for more about saving and retrieving sets of ca
 
 
 
+
+
+
+
 [:HelpOnCandidates]
 == Get Help on Completion Candidates ==
 
@@ -378,7 +428,10 @@ Sometimes, you'd like to be able to ask for help about individual completion can
 
 The simplest such bindings are `C-M-RET' and `C-M-mouse2'. They each do the same thing: provide help on the current candidate. You can use them during cycling or whenever you've narrowed the choice down to a single candidate. You can check this way, before you execute a command you're unsure of.
 
-During [[completion]], you can also cycle among the doc strings for the candidates that match your input, using `C-M-down' and `C-M-up' (for prefix matching), `C-M-next' and `C-M-prior' (for apropos matching). This gives you a very useful on-the-fly apropos feature -- use it while you're completing a command, to check the difference between several possible commands. Or just use it to browse doc strings, to learn more about Emacs.
+During [[completion]], you can also cycle among the doc strings for the candidates that match your input, using `C-M-down' and `C-M-up' (for prefix matching), `C-M-next' and `C-M-prior' (for apropos matching), or by holding `C-M-' while rotating the ''mouse
+wheel'' (Emacs 22 and later -- see [[#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]].
+
+This gives you a very useful on-the-fly apropos feature -- use it while you're completing a command, to check the difference between several possible commands. Or just use it to browse doc strings, to learn more about Emacs.
 
 The `C-M-' keys give you complete help on a candidate, but you get a one-line help summary without doing anything, when you cycle or complete a candidate (entirely). This help is shown in the [[mode line]] of buffer `*Completions*' (or of the current buffer, when `*Completions*' is not displayed). It is typically the first line of a [[doc string]].  This screenshot shows mode-line help (##Replace nonprinting characters...##) for the current candidate (highlighted):
 
