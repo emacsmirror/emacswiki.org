@@ -6,7 +6,7 @@
 
 == Traversing Minibuffer Histories ==
 
-Perhaps you are already used to accessing past inputs using the `up' and `down' arrow keys (or `M-n', `M-p', and `next').  If not, try it.
+Perhaps you are already used to accessing past inputs with vanilla Emacs using the `down' and `up' arrow keys (or `M-n', `M-p', and `next').  If not, try it (not in ''Icicle'' mode).
 You can go backward and forward in the [[minibuffer]] histories (there
 are different history lists for different kinds of input).  You
 can't really cycle them (with wraparound), but when you get to one end you can
@@ -18,13 +18,14 @@ pairs of keys used for history traversal, rebinding some of
 them to use for '''Icicles''' [[completion]] is no real loss.  
 
 By default, '''Icicles'''
-rebinds the arrow keys `up' and `down' for prefix-completion cycling in the minibuffer.  '''Icicles''' also rebinds `next' and `prior' for [[apropos completion]]
-cycling.  You still have `M-n' and `M-p' available to
+rebinds the arrow keys `down' and `up' for current-mode completion cycling.  '''Icicles''' also rebinds `end' and
+`home' for prefix-completion cycling, and `next' and `prior' for [[apropos completion]]
+cycling.  But you still have `M-n' and `M-p' available to
 access past inputs (history).  And the rebindings are only for
 minibuffer input; ''global bindings are not affected''.
 
 You can at any time switch back and forth between input-history
-traversal (`M-n', `M-p') and completion cycling (`down', `up', `next', `prior').
+traversal (`M-n', `M-p') and completion cycling (`down', `up', `next', `prior', `end', `home').
 
 '''See Also:'''
 

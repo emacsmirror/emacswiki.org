@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:56:41 2010 (-0700)
+;; Last-Updated: Sat Oct  9 09:30:21 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2198
+;;     Update #: 2215
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -586,10 +586,12 @@ Input-candidate completion and cycling are available.  While cycling,
 these keys with prefix `C-' are active:
 
 `C-mouse-2', `C-RET' - Go to current completion candidate (node)
-`C-down'  - Go to next prefix-completion candidate
-`C-up'    - Go to previous prefix-completion candidate
+`C-down'  - Go to next completion candidate
+`C-up'    - Go to previous completion candidate
 `C-next'  - Go to next apropos-completion candidate
 `C-prior' - Go to previous apropos-completion candidate
+`C-end'   - Go to next prefix-completion candidate
+`C-home'  - Go to previous prefix-completion candidate
 
 Use `mouse-2', `RET', or `S-RET' to finally choose a candidate, or
 `C-g' to quit.
@@ -1577,10 +1579,12 @@ value of applying FN to an alist element whose key is a completion
 candidate.
 
 `C-RET'   - Act on current completion candidate only
-`C-down'  - Move to next prefix-completion candidate and act
-`C-up'    - Move to previous prefix-completion candidate and act
+`C-down'  - Move to next completion candidate and act
+`C-up'    - Move to previous completion candidate and act
 `C-next'  - Move to next apropos-completion candidate and act
 `C-prior' - Move to previous apropos-completion candidate and act
+`C-end'   - Move to next prefix-completion candidate and act
+`C-home'  - Move to previous prefix-completion candidate and act
 `C-!'     - Act on *each* candidate (or each that is saved), in turn.
 `M-!'     - Act on the list of *all* candidates (or all saved).
 
@@ -1723,10 +1727,12 @@ sort order.
 During completion you can use these keys:
 
 `C-RET'   - Goto marker named by current completion candidate
-`C-down'  - Goto marker named by next prefix-completion candidate
-`C-up'    - Goto marker named by previous prefix-completion candidate
+`C-down'  - Goto marker named by next completion candidate
+`C-up'    - Goto marker named by previous completion candidate
 `C-next'  - Goto marker named by next apropos-completion candidate
 `C-prior' - Goto marker named by previous apropos-completion candidate
+`C-end'   - Goto marker named by next prefix-completion candidate
+`C-home'  - Goto marker named by previous prefix-completion candidate
 `S-delete' - Delete marker named by current completion candidate
 
 When candidate action and cycling are combined (e.g. `C-next'), option
@@ -1967,18 +1973,20 @@ completion with `RET' will not take you to its occurrence in the
 search buffer, unless it is unique.
 
 Instead, choose search hits to visit using any of the candidate-action
-keys: `C-RET', `C-mouse-2', `C-next', `C-prior', `C-down', and `C-up'.
-The last four of these cycle among the search hits.  The current
-candidate in *Completions* corresponds to the current location
-visited (it is not off by one, as is usually the case in Icicles).
+keys: `C-RET', `C-mouse-2', `C-down', `C-up', `C-next', `C-prior',
+`C-end', and `C-home'.  All but the first two of these cycle among the
+search hits.  The current candidate in *Completions* corresponds to
+the current location visited (it is not off by one, as is usually the
+case in Icicles).
 
 As always, the `C-M-' keys provide help on individual candidates:
-`C-M-RET', `C-M-mouse-2', `C-M-next', `C-M-prior', `C-M-down', and
-`C-M-up'.  For `icicle-search', they indicate the buffer and position
-of the search hit.
+`C-M-RET', `C-M-mouse-2', `C-M-down', `C-M-up', `C-M-next',
+`C-M-prior', `C-M-end', and `C-M-home'.  For `icicle-search', they
+indicate the buffer and position of the search hit.
 
 You can cycle among candidates without moving to their occurrences in
-the search buffer, using `next', `prior', `down', and `up' (no `C-').
+the search buffer, using `down', `up', `next', `prior', `end', or
+`home' (no `C-' modifier).
 
 
 Highlighting
@@ -2016,9 +2024,10 @@ Search and Replace
 
 You can replace the current search match by using any of the
 alternative action keys: `C-S-RET', `C-S-mouse-2' (in *Completions*),
-`C-S-next', `C-S-prior', `C-S-down', and `C-S-up'.  You can use `M-|'
-to replace all matches at once.  (And remember that you can activate
-the region to limit the search-and-replace space.)
+`C-S-down', `C-S-up', `C-S-next', `C-S-prior', `C-S-end', and
+`C-S-home'.  You can use `M-|' to replace all matches at once.  (And
+remember that you can activate the region to limit the
+search-and-replace space.)
 
 
 At the first use of any of these, you are prompted for the replacement
@@ -2056,11 +2065,11 @@ Remember this:
    available match.
 
 If `icicle-search-replace-whole-candidate-flag' is non-nil, then you
-can use the navigational alternative action keys, `C-S-next',
-`C-S-prior', `C-S-down', and `C-S-up', repeatedly to replace
-successive search contexts.  At the buffer limits, these commands
-wraps around to the other buffer limit (last search context to first,
-and vice versa).
+can use the navigational alternative action keys, `C-S-down',
+`C-S-up', `C-S-next', `C-S-prior', `C-S-end', and `C-S-home',
+repeatedly to replace successive search contexts.  At the buffer
+limits, these commands wraps around to the other buffer limit (last
+search context to first, and vice versa).
 
 Search traversal using these go-to-next-context-and-replace keys is
 always by search context, not by individual input match.  This means
@@ -3642,8 +3651,8 @@ BEG, END, and WHERE."
   "`icicle-search' with a regexp of \".*\".  An `occur' with icompletion.
 Type a regexp to match within each line of one or more buffers.  Use
 `S-TAB' to show matching lines.  Use `C-RET' or `C-mouse-2' to go to
-the line of the current candidate.  Use `C-next', `C-prior', `C-down',
-or`C-up' to cycle among the matching lines.
+the line of the current candidate.  Use `C-down', `C-up', `C-next',
+`C-prior', `C-end', or `C-home', to cycle among the matching lines.
 
 By default, search only the current buffer.  Search the active region,
 or, if none, the entire buffer.  With a prefix argument, you are
@@ -3677,8 +3686,9 @@ using `icicle-search'.  For more information, see the doc for command
   "`icicle-search' with sentences as contexts.
 Type a regexp to match within each sentence of one or more buffers.
 Use `S-TAB' to show matching sentences.  Use `C-RET' or `C-mouse-2' to
-go to the line of the current candidate.  Use `C-next', `C-prior',
-`C-down', or`C-up' to cycle among the matching sentences.
+go to the line of the current candidate.  Use `C-down', `C-up',
+`C-next', `C-prior', `C-end', or `C-home' to cycle among the matching
+sentences.
 
 By default, search only the current buffer.  Search the active region,
 or, if none, the entire buffer.  With a prefix argument, you are
@@ -3713,8 +3723,9 @@ using `icicle-search'.  For more information, see the doc for command
   "`icicle-search' with paragraphs as contexts.
 Type a regexp to match within each paragraph of one or more buffers.
 Use `S-TAB' to show matching paragraph.  Use `C-RET' or `C-mouse-2' to
-go to the line of the current candidate.  Use `C-next', `C-prior',
-`C-down', or`C-up' to cycle among the matching paragraphs.
+go to the line of the current candidate.  Use `C-down', `C-up',
+`C-next', `C-prior', `C-end', or `C-home' to cycle among the matching
+paragraphs.
 
 By default, search only the current buffer.  Search the active region,
 or, if none, the entire buffer.  With a prefix argument, you are
@@ -3749,8 +3760,8 @@ using `icicle-search'.  For more information, see the doc for command
   "`icicle-search' with pages as contexts.
 Type a regexp to match within each page of one or more buffers.  Use
 `S-TAB' to show matching page.  Use `C-RET' or `C-mouse-2' to go to
-the line of the current candidate.  Use `C-next', `C-prior', `C-down',
-or`C-up' to cycle among the matching pages.
+the line of the current candidate.  Use `C-down', `C-up', `C-next',
+`C-prior', `C-end', or `C-home', to cycle among the matching pages.
 
 By default, search only the current buffer.  Search the active region,
 or, if none, the entire buffer.  With a prefix argument, you are
@@ -3791,8 +3802,8 @@ for reuse.  If the region is active, then only it is searched;
 otherwise, the entire buffer is searched.
 
 Use `C-RET' or `C-mouse-2' to choose a previous input for reuse.  Use
-`C-next', `C-prior', `C-down', or `C-up' to cycle among your previous
-inputs.
+`C-down', `C-up', `C-next', `C-prior', `C-end', or `C-home' to cycle
+among your previous inputs.
 
 As for other Icicles search commands, your current input narrows the
 set of possible candidates.  See `icicle-search' for more
@@ -3886,8 +3897,8 @@ See also \\<comint-mode-map>\\[icicle-comint-search] for another way to reuse co
 Use this in a compilation buffer, such as `*grep*', searching for a
 regexp as with `icicle-search'.  Use `C-RET' or `C-mouse-2' to show
 the target-buffer hit corresponding to the current completion
-candidate.  Use `C-next', `C-prior', `C-down', or `C-up' to cycle
-among the target-buffer hits.
+candidate.  Use `C-down', `C-up', `C-next', `C-prior', `C-end', or
+`C-home' to cycle among the target-buffer hits.
 
 As for `icicle-search', you can further narrow the match candidates by
 typing a second regexp to search for among the first matches.  See
@@ -4782,10 +4793,12 @@ command name.
 While cycling, these keys describe candidates:
 
 `C-RET'   - Describe command of current completion candidate only
-`C-down'  - Move to next prefix-completion candidate and describe
-`C-up'    - Move to previous prefix-completion candidate and describe
+`C-down'  - Move to next completion candidate and describe
+`C-up'    - Move to previous completion candidate and describe
 `C-next'  - Move to next apropos-completion candidate and describe
 `C-prior' - Move to previous apropos-completion candidate and describe
+`C-end'   - Move to next prefix-completion candidate and describe
+`C-home'  - Move to previous prefix-completion candidate and describe
 `C-!'     - Describe *all* candidates (or all that are saved),
             successively - use the [back] button in buffer *Help* to
             visit the descriptions

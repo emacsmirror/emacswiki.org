@@ -38,7 +38,7 @@ value).  When cycling reaches a candidate directory that
 you want to cycle through, just: '''1)''' move the [[cursor]]
 (e.g. `C-e'), '''2)''' hit `TAB' or `S-TAB' to "complete" the
 candidate, and then '''3)''' use any of the cycle keys, such as
-`up', to cycle within the candidate directory.
+`down', to cycle within the candidate directory.
 Although the candidate directory was already completed by
 cycling, moving the cursor and explicitly "completing" it
 tells '''Icicles''' that you want to treat the candidate in the

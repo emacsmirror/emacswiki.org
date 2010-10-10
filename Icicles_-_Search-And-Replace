@@ -15,7 +15,7 @@ bit of a challenge to understand all the possibilities.  So my
 advice is to experiment, as well as to read the descriptions here.
 
 You can replace the current search match by using any of the [[Icicles - More About Multi-Commands#AlternativeActions|alternative action]] keys: '''`C-S-RET'''', '''`C-S-mouse-2'''' (in
-`*Completions*'), '''`C-S-next'''', '''`C-S-prior'''', '''`C-S-down'''', and '''`C-S-up''''.
+`*Completions*'), '''`C-S-down'''', '''`C-S-up'''', '''`C-S-next'''', '''`C-S-prior'''', '''`C-S-end'''', and '''`C-S-home''''.
 You can use '''`##M-|##'''' (`icicle-all-candidates-list-alt-action') to replace all matches of your current input at once, throughout the search space.
 
 At the first use of any of these, you are prompted for the
@@ -103,8 +103,8 @@ Together with other [[option]]s, it controls whether to replace the
   `##\###'.
 
 If '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>''''  is true, then
-you can use the navigational [[Icicles - More About Multi-Commands#AlternativeActions|alternative action]] keys, `C-S-next',
-`C-S-prior', `C-S-down', and `C-S-up', repeatedly to replace successive
+you can use the navigational [[Icicles - More About Multi-Commands#AlternativeActions|alternative action]] keys, `C-S-down', `C-S-up', `C-S-next',
+`C-S-prior', `C-S-end', and `C-S-home', repeatedly to replace successive
 search contexts.  At the buffer limits, these commands
 wrap around to the other buffer limit (last search context to
 first, and vice versa).

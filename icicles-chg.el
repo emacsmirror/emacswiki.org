@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  8 10:01:13 2010 (-0700)
+;; Last-Updated: Sat Oct  9 16:07:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5636
+;;     Update #: 5693
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/10/09 dadams
+;;     icicle-customize-face, icicle-repeat-complex-command, icicle-delete-window:
+;;       Updated doc string for new prefix and modal cycling keys.
 ;; 2010/08/27 dadams
 ;;     icicle-pp-display-expression: Set the hooks locally instead of let-binding them, to avoid msg
 ;;                                   "Making change-major-mode-hook buffer-local while locally
@@ -319,6 +322,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/10/09 dadams
+;;     icicle-Info-goto-node, icicle-apply, icicle-goto-marker, icicle-occur, icicle-complete-keys,
+;;       icicle-(comint|compilation)-search, icicle-search(-sentences|-paragraphs|-pages):
+;;         Updated doc string for new prefix and modal cycling keys.
 ;; 2010/07/17 dadams
 ;;     Added: icicle-search-url-bookmark.
 ;;     icicle-search-bookmark, icicle-define-search-bookmark-command: w3m -> url.  Added C-M-u binding.
@@ -1967,6 +1974,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2010/10/09 dadams
+;;     icicle-define(-file)-command: Update generated doc: down/up for modal, end/home for prefix.
 ;; 2010/06/05 dadams
 ;;     icicle-file-bindings: Put back non-insertion for non-ido-like case.
 ;; 2010/06/04 dadams
@@ -2056,6 +2065,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/10/09 dadams
+;;     icicle-minibuffer-help, icicle-help-string-completion, icicle-help-on-candidate (doc string):
+;;       Updated for change toward modal cycling.  Fix for swank bindings and M-_ toggle.
+;;     Applied renaming of icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.
+;;     icicle-toggle-search-replace-whole: Corrected toggle binding in doc string.
 ;; 2010/10/08 dadams
 ;;     icicle-narrow-candidates: Set icicle-current-completion-mode to apropos.
 ;;     icicle-apropos-complete-and-narrow:
@@ -3134,6 +3148,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/10/09 dadams
+;;     icicle-define-cycling-keys:
+;;       Define modal keys uncondiationally (no icicle-cycling-respects-completion-mode).
+;;       Define modal keys first, then non-modal.  Remove no bindings (make no bindings to nil).
+;;       Removed hard-coded bindings for mouse wheel - handled by vars now, as before.
+;;     icicle-define-minibuffer-maps:
+;;       Hard-code down/up in completion-list-mode-map - do not reuse prefix completion keys.
+;;     Applied renaming of icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.
 ;; 2010/10/08 dadams
 ;;     icicle-minibuffer-setup: Don't set icicle-current-completion-mode in recursive minibuffer.
 ;;     icicle-define-cycling-keys: Unconditionally define mouse wheel for modal cycling.
@@ -4051,6 +4073,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/10/09 dadams
+;;     Corrections per move to emphasize modal cycling:
+;;      Renamed: icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.
+;;      icicle-default-cycling-mode: Default value is prefix, not nil.  New value descriptions and doc.
+;;      icicle-modal-cycle-*-keys: Put back wheel keys.  Removed mention of *-cycling-respects-*-mode.
+;;      icicle-prefix-cycle-*-keys: Use end/home, not down/up as default values.
+;;                                  No mention of being used also for *Completions*.
+;;      icicle-act-before-cycle-flag: Updated doc string.
 ;; 2010/10/08 dadams
 ;;     icicle-modal-cycle-*-keys: Removed mouse-wheel keys - they are added systematically now.
 ;; 2010/10/07 dadams
@@ -4566,6 +4596,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/10/09 dadams
+;;     icicle-general-help-string:
+;;       Applied renaming of icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.
 ;; 2010/10/07 dadams
 ;;     icicle-current-TAB-method: Use nil, not basic, as default value.
 ;; 2010/06/18 dadams

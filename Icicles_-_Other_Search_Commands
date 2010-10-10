@@ -86,6 +86,12 @@ that already have such properties, for example, buffers that have
 been fontified.
 
 
+
+
+
+
+
+
 [:IciclesImenu]
 === Icicles Imenu: `icicle-imenu' ===
 
@@ -130,13 +136,19 @@ The differences mean that `icicle-imenu' does not provide a substitute for Emacs
 
 
 
+
+
+
+
+
+
 [:IciclesCompileOrGrep]
 === Compile/Grep Search: `icicle-compilation-search' ===
 
 In a compilation-results buffer, such as `*Compilation*' or `*grep*', you can use command
 '''`icicle-compilation-search'''', bound to '''`##C-c `##'''', to search among the
-result set (search hits).  This is similar to `icicle-search', but when you use `C-RET', `C-mouse-2', 
-`C-prior', `C-next', `C-up', or `C-down', it visits the source code that corresponds to the current line in the compilation buffer.  Just as for `icicle-search', you can narrow the
+result set (search hits).  This is similar to `icicle-search', but when you use `C-RET', `C-mouse-2', `C-down', `C-up',  
+`C-next', `C-prior', `C-end', or `C-home', it visits the source code that corresponds to the current line in the compilation buffer.  Just as for `icicle-search', you can narrow the
 set of [[search context]]s by typing a regexp.
 
 Using `icicle-compilation-search' with `grep' gives you two levels
@@ -219,8 +231,8 @@ functions.
 
 * [[Icicles - Search-And-Replace]] for information about replacing search hits or parts of search hits.
 
-* [[Icicles - Multi-Commands]] for information about using `C-RET', `C-mouse-2', 
-`C-prior', `C-next', `C-up', and `C-down'.
+* [[Icicles - Multi-Commands]] for information about using `C-RET', `C-mouse-2', `C-down', `C-up',
+`C-next', `C-prior', `C-end', and `C-home'.
 
 * [[Icicles - Progressive Completion]] for information about using any
 number of search regexps with `##M-*##' and any number of search predicates with `##M-&##'.

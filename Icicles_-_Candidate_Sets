@@ -256,8 +256,7 @@ complements the complement, of course, giving the original set.
 
 Once you have established a set of completion candidates using any
 of the candidate-set commands, you can [[Icicles - Cycling Completions|cycle]] among the candidates
-of that set using either prefix or apropos cycling (that is,
-`next'/`prior' or `down'/`up').  However, switching from prefix to
+of that set using either prefix or apropos cycling (`down', `up', `next', `prior', `end', or `home').  However, switching from prefix to
 apropos cycling (or completion), or vice versa, establishes a
 new completion set of the appropriate type, as usual.  Switching completion type signifies
 that you are finished with the specially defined completion set,

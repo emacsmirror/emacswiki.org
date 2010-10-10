@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Aug 12 13:55:37 2010 (-0700)
+;; Last-Updated: Sat Oct  9 14:37:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 537
+;;     Update #: 548
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -260,10 +260,12 @@ before the others."
      bindings first-sexp undo-sexp last-sexp not-interactive-p)
   ;; Hard-code these in doc string, because \\[...] prefers ASCII
   ;; `C-RET'   instead of `\\[icicle-candidate-action]'
-  ;; `C-down'  instead of `\\[icicle-next-prefix-candidate-action]'
-  ;; `C-up'    instead of `\\[icicle-previous-prefix-candidate-action]'
+  ;; `C-down'  instead of `\\[icicle-next-candidate-per-mode-action]'
+  ;; `C-up', `C-wheel-up' instead of `\\[icicle-previous-candidate-per-mode-action]'
   ;; `C-next'  instead of `\\[icicle-next-apropos-candidate-action]'
   ;; `C-prior' instead of `\\[icicle-previous-apropos-candidate-action]'
+  ;; `C-end'   instead of `\\[icicle-next-prefix-candidate-action]'
+  ;; `C-home'  instead of `\\[icicle-previous-prefix-candidate-action]'
   "Define COMMAND with DOC-STRING based on FUNCTION.
 COMMAND is a symbol.  DOC-STRING is a string.
 FUNCTION is a function that takes one argument, read as input.
@@ -317,10 +319,12 @@ these keys with prefix `C-' are active:
 
 \\<minibuffer-local-completion-map>\
 `C-mouse-2', `C-RET' - Act on current completion candidate only
-`C-down'  - Move to next prefix-completion candidate and act
-`C-up'    - Move to previous prefix-completion candidate and act
+`C-down', `C-wheel-down' - Move to next completion candidate and act
+`C-up', `C-wheel-up' - Move to previous completion candidate and act
 `C-next'  - Move to next apropos-completion candidate and act
 `C-prior' - Move to previous apropos-completion candidate and act
+`C-end'   - Move to next prefix-completion candidate and act
+`C-home'  - Move to previous prefix-completion candidate and act
 `\\[icicle-all-candidates-action]'     - Act on *all* candidates, successively (careful!)
 
 When candidate action and cycling are combined (e.g. `C-next'), user
@@ -397,10 +401,12 @@ This is an Icicles command - see command `icicle-mode'.")
      bindings first-sexp undo-sexp last-sexp not-interactive-p)
   ;; Hard-code these in doc string, because \\[...] prefers ASCII
   ;; `C-RET'   instead of `\\[icicle-candidate-action]'
-  ;; `C-down'  instead of `\\[icicle-next-prefix-candidate-action]'
-  ;; `C-up'    instead of `\\[icicle-previous-prefix-candidate-action]'
+  ;; `C-down'  instead of `\\[icicle-next-candidate-per-mode-action]'
+  ;; `C-up', `C-wheel-up' instead of `\\[icicle-previous-candidate-per-mode-action]'
   ;; `C-next'  instead of `\\[icicle-next-apropos-candidate-action]'
   ;; `C-prior' instead of `\\[icicle-previous-apropos-candidate-action]'
+  ;; `C-end'   instead of `\\[icicle-next-prefix-candidate-action]'
+  ;; `C-home'  instead of `\\[icicle-previous-prefix-candidate-action]'
   "Define COMMAND with DOC-STRING based on FUNCTION.
 COMMAND is a symbol.  DOC-STRING is a string.
 FUNCTION is a function that takes one file-name or directory-name
@@ -453,10 +459,12 @@ these keys with prefix `C-' are active:
 
 \\<minibuffer-local-completion-map>\
 `C-mouse-2', `C-RET' - Act on current completion candidate only
-`C-down'  - Move to next prefix-completion candidate and act
-`C-up'    - Move to previous prefix-completion candidate and act
+`C-down', `C-wheel-down' - Move to next completion candidate and act
+`C-up', `C-wheel-up' - Move to previous completion candidate and act
 `C-next'  - Move to next apropos-completion candidate and act
 `C-prior' - Move to previous apropos-completion candidate and act
+`C-end'   - Move to next prefix-completion candidate and act
+`C-home'  - Move to previous prefix-completion candidate and act
 `\\[icicle-all-candidates-action]'     - Act on *all* candidates, successively (careful!)
 
 When candidate action and cycling are combined (e.g. `C-next'), user

@@ -32,6 +32,8 @@ Better yet, use this to separate threads (puts space before and after the horizo
  </pre>
 
 
+To add a new entry here, search for ##LatestEntry## when editing the page source: put your entry just after that.
+
 ----
 
 Edgar (edgar-rft@web.de) has suggested that '''Icicles''' might be particularly useful to blind people, who use screen readers. He thinks it might be easier to choose files using '''Icicles''' cycling or completion than using Dired. (See IciclesIssues for Edgar's posts on this.)
@@ -791,7 +793,7 @@ I'm not very understand your meaning, but it sounds good, :)
 3. No. You can see this by doing `C-h f icicle S-SPC face'. And no, I won't be creating such a command. You can define such a command if you need it. It's as easy to define an '''Icicles''' multi-command as it is to define an ordinary command -- see [[Icicles - Defining Icicles Commands|Defining Icicles Commands]]. -- DrewAdams
 
 
-[:LatestEntry]
+
 
 
 <pre>
@@ -809,6 +811,33 @@ i discovered icicles long ago, but didn't opt for it since i really liked ido fo
 [new:DrewAdams:2009-11-24 15:47 UTC]
 No, I'm sorry. [[Ido]] uses the minibuffer in incompatible ways; '''Icicles''' uses it essentially the same way vanilla Emacs does. You can get some of the Ido behavior and still use '''Icicles''', if you want, but you cannot use both Ido and '''Icicles''' at the same time (both modes active). See [[#IdoAndIcicles]], above, for more information. -- DrewAdams
 
+
+
+
+
+
+
+[:LatestEntry]
+
+
+<pre>
+
+</pre>
+----
+<pre>
+
+</pre>
+
+Any way to stop Icicles from shirking the completion window to fit the contents? I like the default Emacs behavior which splits the current window in half and shows completions in one of the half windows. -- [[Anonymous]]
+
+
+[new:DrewAdams:2010-10-09 23:19 UTC]
+Yes, see [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-Completions-text-scale-decrease|icicle-Completions-text-scale-decrease]]</tt>''''.  See also the other options that affect the display of `*Completions*'. -- DrewAdams
+
+
+[new]
+
+Thanks, that solves one problem, the text is not rescaled anymore, but the completion window is still resized. I'd like to keep it as a half window like default Emacs completion works. I found the option icicle-Completions-window-max-height, but I don't want to specify a maximum height. I want Icicles to create an equal size split window of the screen like pop-to-buffer works in vanilla Emacs.  -- [[Anonymous]]
 
 
 
@@ -2017,6 +2046,8 @@ I've just added what you requested, as an option. Set option '''`icicle-expand-i
 [new:DrewAdams:2006-03-20 23:11 UTC]
 : Non-`nil' `icicle-expand-input-to-common-match-flag' is now the default behavior. My concern previously was wiping out the regexp input, but you can now use `C-l' to restore (refresh) it. Thanks for the initial motivation for this feature. -- DrewAdams
 
+
+
 ----
 
 See also: [[Icicles - Probably Won't Happen]]
@@ -2027,6 +2058,7 @@ See also: [[Icicles - Probably Won't Happen]]
 
 
 ----
+
 
 || '''[[Icicles]]''' || IciclesIndex || *Next:* IciclesIssues ||
 

@@ -129,6 +129,19 @@ You can use a ''regular expression'' ([[regexp]]) to narrow the field of matchin
 : ##M-x isearch-delete-char         next## -> 
 : ##M-x isearch-other-control-char  next## ...
 
+Note that when you cycle, a one-line description of the current
+candidate is shown in the mode line (of buffer `*Completions*' if
+visible; otherwise of the current buffer).  You can get more
+detailed info about individual candidates by holding the '''Control'''
+and '''Meta''' keys (e.g. `C-M-next') while you cycle -- see
+[[Icicles - Completions Display]] and [[#HelpOnCandidates|Get Help on Completion Candidates]].
+
+Try cycling candidates for `C-h v' for instance, using `next'.
+Look for their descriptions in the mode line.  Now try cycling
+using `C-M-next' - complete candidate help is shown in buffer
+`*Help*'.
+
+
 See [[Icicles - Cycling Completions]] for more about cycling completion candidates.
 
 
@@ -141,11 +154,7 @@ See [[Icicles - Cycling Completions]] for more about cycling completion candidat
 [:DisplayCandidates]
 == Display Completion Candidates ==
 
-You can display all of the matches for the current minibuffer input, in the `*Completions*' [[buffer]], with `S-TAB' (Shift TAB). So, for instance, `S-TAB' with <code>M-x ise.+char</code> in the minibuffer displays all commands whose names contain `ise' followed (somewhere) by `char'.
-
-(The documentation always refers to the key that does this as
-`S-TAB'.  Actually, it is `S-TAB' only by default.  You can
-customize it, using option '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>''''.) 
+You can display all of the matches for the current minibuffer input, in the `*Completions*' [[buffer]], using `S-TAB' (Shift TAB). So, for instance, `S-TAB' with <code>M-x ise.+char</code> in the minibuffer displays all commands whose names contain `ise' followed (somewhere) by `char'.
 
 [[image:IciclesRegexpCompletions]]
 
@@ -166,42 +175,35 @@ See [[Icicles - Completions Display]] for more about using the `*Completions*' w
 == Prefix Completion and Apropos Completion ==
 
 You can get the standard Emacs ''[[prefix completion]]'', instead of
-this ''[[apropos completion]]'', by using `TAB' instead of `S-TAB'.  You
-can ''cycle'' prefix-completion candidates by using the `down' and
-`up' arrow keys instead of `next' and `prior'.
+the ''[[apropos completion]]'' just described, by using `TAB' instead of `S-TAB'.  You
+can ''cycle'' prefix-completion candidates by using the '''`end'''' and
+'''`home'''' keys instead of `next' and `prior'.  (All four of
+these keys are typically together in a central keypad to the right
+of the main keyboard.)
 
-Perhaps you prefer to always cycle using the same keys, for
-example, `down' and `up', regardless of the completion mode
-(prefix or apropos).  You can get that behavior by customizing
-user option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>''''  to a non-`nil' value.
+You can also cycle candidates according to the current completion
+mode, prefix or apropos, using either the ''mouse wheel'' or the arrow
+keys '''`down'''' and '''`up''''.  These are all called the '''modal''' cycling
+keys because they respect the current completion mode.
 
-You can use modal and non-modal cycling bindings together: If
-`icicle-cycling-respects-completion-mode' is non-`nil' and you use
-`down' as the key for cycling forward modally (i.e., for both
-prefix and apropos completion), you can still use `next' for
-apropos cycling.  Or if you bind `next' as the key for cycling
-forward modally then you can still use `down' for prefix cycling.
+The current completion mode is determined by the last completion
+key you used, `TAB' or `S-TAB'.  If you have not used either so
+far during the current minibuffer invocation, then the modal keys cycle
+according to the value of [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]</tt>''''.
+By default the option value is `prefix', which means that you can
+use `down', `up', or the mouse wheel to cycle prefix completions
+without needing to first hit `TAB'.
 
-Regardless of whether you choose to use the same keys for both
-prefix and apropos completion -- that is, regardless of the value
-of `icicle-cycling-respects-completion-mode', you can always
-(Emacs 22 or later) use the ''mouse wheel'' to cycle according to the
-current mode (prefix or apropos).
+The non-modal cycling keys, `next', `prior', `end', and `home'
+automatically set the completion mode and update the candidate
+completions.  The modal cycling keys just cycle according to the
+current completion mode, whether it is apropos or prefix.
 
-With the mouse over a buffer other than `*Completions*', just
-rotate the wheel to cycle among the candidates.  (Rotating the
-wheel with the mouse over buffer `*Completions*' scrolls that
-buffer -- see [[Icicles - Completions Display]].)
+To cycle using the mouse wheel, the mouse must not be over the
+`*Completions*' window; if it is, then the wheel scrolls that
+window instead of cycling candidates -- see [[Icicles - Completions Display]].
 
-Using the mouse wheel for cycling is also a quick and easy way to
-see info about each candidate: just hold the '''Control''' and '''Meta''' keys
-while you rotate the wheel -- see [[#HelpOnCandidates|Get Help on Completion Candidates]].
-And even without pressing those modifier keys you get help on the
-candidates: a one-liner description is displayed in the [[mode line]]
-of buffer `*Completions*' as you cycle (see
-[[Icicles - Completions Display]]).  Try it!
-
-Coming back to the keyboard, as an alternative to using `down' or `next' you can cycle candidates downward (forward) by just
+As an alternative to using `end' or `next', you can cycle candidates downward (forward) by just
 repeating the same completion key: `TAB' or `S-TAB'.  For example:
 
 : ##M-x tool  ##'''##TAB##''' -> Display candidates with prefix `tool' in `*Completions*'
@@ -428,8 +430,13 @@ Sometimes, you'd like to be able to ask for help about individual completion can
 
 The simplest such bindings are `C-M-RET' and `C-M-mouse2'. They each do the same thing: provide help on the current candidate. You can use them during cycling or whenever you've narrowed the choice down to a single candidate. You can check this way, before you execute a command you're unsure of.
 
-During [[completion]], you can also cycle among the doc strings for the candidates that match your input, using `C-M-down' and `C-M-up' (for prefix matching), `C-M-next' and `C-M-prior' (for apropos matching), or by holding `C-M-' while rotating the ''mouse
-wheel'' (Emacs 22 and later -- see [[#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]].
+During [[completion]], you can also cycle among the doc strings for the candidates that match your input, by holding '''`C-M-'''' while using any of the cycling keys:
+
+* `C-M-down', `C-M-up', or `C-M-' + wheel -- current-mode matching
+* `C-M-next', `C-M-prior'                 -- apropos matching
+* `C-M-end',  `C-M-home'                  -- prefix matching
+
+See [[#PrefixAndAproposCompletion|Prefix Completion and Apropos Completion]].
 
 This gives you a very useful on-the-fly apropos feature -- use it while you're completing a command, to check the difference between several possible commands. Or just use it to browse doc strings, to learn more about Emacs.
 
@@ -443,11 +450,17 @@ See [[Icicles - Help on Candidates]].
 
 
 
+
+
+
+
+
+
 [:MultiCommands]
 == Perform Multiple Operations In One Command ==
 
 : ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Find a file whose name starts with ##ici##.
-: ##down## (that is, down arrow) ... until you get to candidate ##icicles-cmd1.el##
+: ##down## (that is, the down arrow) ... until you get to candidate ##icicles-cmd1.el##
 : ##RET## -- Open file ##icicles-cmd1.el##.
 
 Nothing new here. Now try the same thing, but use '''`C-RET'''' instead of `RET'. The command is not ended, and you can continue to choose files to open:
@@ -470,6 +483,21 @@ You just opened three files in a single command. Command `icicle-file' ('''`C-x 
 can tell if a command is a multi-command when you execute it -- if
 so, the input prompt is prefixed by `##+##'.  So, for example, when
 you used `C-x C-f', the prompt was "'''##+##'''## File or directory:##".  '''Icicles''' menu items that are multi-commands are also prefixed by `##+##'.
+
+In addition to using `down' (or `end' or `next') and choosing
+(acting on) candidates with `C-RET', you can combine these
+operations by using `C-down' (or `C-next'): act on candidates in
+succession.  And, as mentioned, you can use `##C-!##'  to act on ''all''
+candidates at once.
+
+There are many possible uses of multi-commands.  They all make use
+of the same key bindings, which begin with `C-'.  These keys are
+analogous to the `C-M-' keys that provide help on completion
+candidates.
+
+
+
+
 
 
 
@@ -629,6 +657,13 @@ See [[Icicles - Multi-Commands]] for more information about '''Icicles''' multi-
 
 
 
+
+
+
+
+
+
+
 [:IciclesSearch]
 == Icicles Search ==
 
@@ -690,7 +725,7 @@ Now try the same thing (without a region), but use a negative [[prefix argument]
 : ##C-next## ...
 :: Cycle among the search hits in all chosen files...
 
-Just as you can choose particular search hits to visit, using `C-RET', so you can use `C-RET' to choose particular files (whose names match the input, e.g. ##ici##) to search. Just as you can visit search hits in order, using `C-next' (or `C-down'), so you can use `C-next' (or `C-down') to choose files to visit, one after the other.
+Just as you can choose particular search hits to visit, using `C-RET', so you can use `C-RET' to choose particular files (whose names match the input, e.g. ##ici##) to search. Just as you can visit search hits in order, using `C-next' (or `C-end' or `C-down'), so you can use `C-next' (or `C-end' or `C-down') to choose files to visit, one after the other.
 
 When you input the initial regexp (`##.*recursive.*##' in the example above) to `icicle-search', you can use completion to
 retrieve a regexp that you entered previously.

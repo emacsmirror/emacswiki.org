@@ -25,75 +25,84 @@ The main user option for customizing key bindings is
 '''`<tt>[[Icicles - Customization and General Tips#icicle-top-level-key-bindings|icicle-top-level-key-bindings]]</tt>''''.  You use it to change or remove
 any of the top-level bindings in ''Icicle'' mode.
 
-There are some other user options that make it easy to customize some
+There are some other user options that make it easy to customize 
 '''Icicles''' key bindings.  Most of these are [[minibuffer]] key
 bindings.
 
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>'''' ('''`prior'''').
- [[Icicles - Cycling Completions|Cycle]] to the previous [[apropos completion]] candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' ('''`down'''', `wheel-down').
+ [[Icicles - Cycling Completions|Cycle]] to the next candidate (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' ('''`up'''', `wheel-up').
+ Cycle to the previous candidate (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''' ('''`next'''').
  Cycle to the next apropos-completion candidate.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''' ('''`up'''').
- Cycle to the previous [[prefix completion]] candidate.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''' ('''`down'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>'''' ('''`prior'''').
+ Cycle to the previous [[apropos completion]] candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''' ('''`end'''')
  Cycle to the next prefix-completion candidate.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' ('''`up'''').
- Cycle to the next candidate (modal).
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' ('''`down'''').
- Cycle to the previous candidate (modal).
-
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-action-keys|icicle-apropos-cycle-previous-action-keys]]</tt>'''' ('''`C-prior'''').
- [[Icicles - Cycling Completions|Cycle]] to the previous apropos completion candidate and act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''' ('''`home'''').
+ Cycle to the previous [[prefix completion]] candidate.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>'''' ('''`C-down'''', '''`C-wheel-down'''').
+ Cycle to the next candidate and act on it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>'''' ('''`C-up'''', `C-wheel-up''').
+ Cycle to the previous candidate and act on it (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-action-keys|icicle-apropos-cycle-next-action-keys]]</tt>'''' ('''`C-next'''').
  Cycle to the next apropos-completion candidate and act on it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-action-keys|icicle-prefix-cycle-previous-action-keys]]</tt>'''' ('''`C-up'''').
- Cycle to the previous prefix completion candidate and act on it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-action-keys|icicle-prefix-cycle-next-action-keys]]</tt>'''' ('''`C-down'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-action-keys|icicle-apropos-cycle-previous-action-keys]]</tt>'''' ('''`C-prior'''').
+ Cycle to the previous apropos completion candidate and act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-action-keys|icicle-prefix-cycle-next-action-keys]]</tt>'''' ('''`C-end'''').
  Cycle to the next prefix-completion candidate and act on it.
-
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>'''' ('''`C-up'''').
- Cycle to the next candidate and act on it (modal).
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>'''' ('''`C-down'''').
- Cycle to the previous candidate and act on it (modal).
-
-
-
-
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-alt-action-keys|icicle-apropos-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-prior'''').
- [[Icicles - Cycling Completions|Cycle]] to the previous apropos completion candidate and alternative-act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-action-keys|icicle-prefix-cycle-previous-action-keys]]</tt>'''' ('''`C-home'''').
+ Cycle to the previous prefix completion candidate and act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-alt-action-keys|icicle-modal-cycle-down-alt-action-keys]]</tt>'''' ('''`C-S-down'''', '''`C-S-wheel-down'''').
+ Cycle to the next candidate and alternative-act on it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>'''' ('''`C-S-up'''', '''`C-S-wheel-down'''').
+ Cycle to the previous candidate and alternative-act on it (modal).
 * '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-alt-action-keys|icicle-apropos-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-next'''').
  Cycle to the next apropos-completion candidate and alternative-act on it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|icicle-prefix-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-up'''').
- Cycle to the previous prefix completion candidate and alternative-act on it.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-alt-action-keys|icicle-prefix-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-down'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-alt-action-keys|icicle-apropos-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-prior'''').
+ Cycle to the previous apropos completion candidate and alternative-act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-alt-action-keys|icicle-prefix-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-end'''').
  Cycle to the next prefix-completion candidate and alternative-act on it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|icicle-prefix-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-home'''').
+ Cycle to the previous prefix completion candidate and alternative-act on it.
 
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>'''' ('''`C-S-up'''').
- Cycle to the next candidate and alternative-act on it (modal).
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-alt-action-keys|icicle-modal-cycle-down-alt-action-keys]]</tt>'''' ('''`C-S-down'''').
- Cycle to the previous candidate and alternative-act on it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-help-keys|icicle-modal-cycle-down-help-keys]]</tt>'''' ('''`C-M-down'''', '''`C-M-wheel-down'''').
+ Cycle to the next candidate and show help for it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>'''' ('''`C-S-up'''', '''`C-S-wheel-down'''').
+ Cycle to the previous candidate and show help for it (modal).
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-alt-action-keys|icicle-apropos-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-next'''').
+ Cycle to the next apropos-completion candidate and show help for it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-alt-action-keys|icicle-apropos-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-prior'''').
+ Cycle to the previous apropos completion candidate and show help for it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-alt-action-keys|icicle-prefix-cycle-next-alt-action-keys]]</tt>'''' ('''`C-S-end'''').
+ Cycle to the next prefix-completion candidate and show help for it.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-alt-action-keys|icicle-prefix-cycle-previous-alt-action-keys]]</tt>'''' ('''`C-S-home'''').
+ Cycle to the previous prefix completion candidate and show help for it.
 
 
 
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>'''' ('''`TAB'''').
+
+
+
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-keys|icicle-prefix-complete-keys]]</tt>'''' ('''`TAB'''')
  Prefix-complete your input.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' ('''`S-TAB'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-keys|icicle-apropos-complete-keys]]</tt>'''' ('''`S-TAB'''')
 Apropos-complete your input.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>'''' ('''`C-M-TAB'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-complete-no-display-keys|icicle-prefix-complete-no-display-keys]]</tt>'''' ('''`C-M-TAB'''')
  Prefix-complete without showing `*Completions*'.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>'''' ('''`C-M-S-TAB'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-complete-no-display-keys|icicle-apropos-complete-no-display-keys]]</tt>'''' ('''`C-M-S-TAB'''')
  Apropos-complete without showing `*Completions*'.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-word-completion-keys|icicle-word-completion-keys]]</tt>'''' ('''`M-SPC'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-word-completion-keys|icicle-word-completion-keys]]</tt>'''' ('''`M-SPC'''')
  Prefix-complete your input a word at a time.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''' ('''`S-TAB''''). [[Icicles - Key Completion|Complete keys sequences]].
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>'''' ('''`S-TAB''''). Move to the previous candidate in `*Completions*'.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-key-complete-keys|icicle-key-complete-keys]]</tt>'''' ('''`S-TAB'''') [[Icicles - Key Completion|Complete key sequences]].
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-previous-candidate-keys|icicle-previous-candidate-keys]]</tt>'''' ('''`S-TAB'''') Move to the previous candidate in `*Completions*'.
 
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read-insert-keys|icicle-completing-read+insert-keys]]</tt>'''' ('''`C-M-S-c'''').  Completion on demand.
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' ('''`C-M-S-f'''').  Completion on demand for file names.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-completing-read-insert-keys|icicle-completing-read+insert-keys]]</tt>'''' ('''`C-M-S-c'''')  Completion on demand.
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|icicle-read+insert-file-name-keys]]</tt>'''' ('''`C-M-S-f'''')  Completion on demand for file names.
 
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>'''' ('''`S-TAB'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-search-from-isearch-keys|icicle-search-from-isearch-keys]]</tt>'''' ('''`S-TAB'''')
  Start `icicle-search' from [[Isearch]].
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`C-M-TAB'''', '''`M-o'''').
+* '''`<tt>[[Icicles - Customization and General Tips#icicle-isearch-complete-keys|icicle-isearch-complete-keys]]</tt>'''' ('''`M-TAB'''', '''`C-M-TAB'''', '''`M-o'''')
  Complete Isearch string using [[search ring]].
 
 

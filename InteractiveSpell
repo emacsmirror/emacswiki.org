@@ -214,6 +214,28 @@ WcheckMode is a fast on-the-fly (spell-)checker. It can be used with the usual c
     (message nil)))
 
 }}}
+
+=== Making Ispell.el English work with "foreign" character ===
+[new] Question: How can one make ispell work with foreign characters, i.e. æøå, when the dictionary is set to English?
+For example, using emacs 24.0.50.1 (bzr) with no .emacs, only evaluating the following
+{{{
+   (setq ispell-really-hunspell t)
+}}}
+and running ispell on a buffer containing
+{{{
+   house jærger
+}}}
+one will get the following error
+{{{
+   Ispell error: UTF-8 encoding error. Missing continuation byte in 0. character position:
+}}}
+The problem is further described [http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/f230b20f1cd1a84f here]
+Note: When running hunspell from the terminal there is no problem with "foreign" characters. Also setting
+{{{
+   (setq ispell-extra-args '("-a" "-i" "utf-8"))
+}}}
+does not change anything.
+
 ----
 
 CategoryModes | CategorySpelling

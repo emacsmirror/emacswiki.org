@@ -250,6 +250,10 @@ see the doc of function '''`icicle-delete-current-candidate-object''''
 (`S-delete') and variable '''`icicle-delete-candidate-object''''.
 
 
+
+
+
+
 [:icicle-use-C-for-actions-flag]
 === Option `icicle-use-C-for-actions-flag' ===
 
@@ -265,8 +269,8 @@ candidates.
 If you set user option '''`<tt>[[Icicles - Customization and General Tips#icicle-use-C-for-actions-flag|icicle-use-C-for-actions-flag]]</tt>'''' to `nil',
 then the keys that cycle are swapped with the keys that both cycle
 and act on a candidate.  You can then use `down', `up', `next',
-and `prior' to both cycle and act (e.g. navigate), and `C-down',
-`C-up', `C-next', and `C-prior' to merely cycle, without acting.
+`prior', `end', and `home' to both cycle and act (e.g. navigate), and `C-down',
+`C-up', `C-next', `C-prior' `C-end', and `C-home' to merely cycle, without acting.
 The option has no effect on other keys.
 
 You can toggle `icicle-use-C-for-actions-flag' at any time using

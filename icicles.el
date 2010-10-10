@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  7 08:39:32 2010 (-0700)
+;; Last-Updated: Sat Oct  9 09:02:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22771
+;;     Update #: 22772
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -576,8 +576,7 @@
 ;;    `icicle-Completions-window-max-height',
 ;;    `icicle-customize-save-flag',
 ;;    `icicle-customize-save-variable-function',
-;;    `icicle-cycle-into-subdirs-flag',
-;;    `icicle-cycling-respects-completion-mode',
+;;    `icicle-cycle-into-subdirs-flag', `icicle-default-cycling-mode',
 ;;    `icicle-default-thing-insertion', `icicle-default-value',
 ;;    `icicle-define-alias-commands-flag',
 ;;    `icicle-deletion-action-flag', `icicle-dot-show-regexp-flag',

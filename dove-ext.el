@@ -33,12 +33,44 @@
 ;; 2010-09-18 added very fancy function split-v-3 and split-h-3
 ;; 2010-09-27 added roll-v-3
 ;; 2010-10-01 Rewrote some functions in more Lisp like style
+;; 2010-10-09 Rewrote those functions related to copy without selection
 
-(defun get-point (symbol num)
+(defun get-point (symbol &optional arg)
  "get the point"
- (funcall symbol num)
+ (funcall symbol arg)
  (point)
 )
+
+(defun copy-thing (begin-of-thing end-of-thing &optional arg)
+  "copy thing between beg & end into kill ring"
+   (let ((beg (get-point begin-of-thing 1))
+	 (end (get-point end-of-thing arg)))
+     (copy-region-as-kill beg end))
+)
+
+(defun paste-to-mark(&optional arg)
+  "Paste things to mark, or to the prompt in shell-mode"
+  (let ((pasteMe 
+	 (lambda()
+	   (if (string= "shell-mode" major-mode)
+	     (progn (comint-next-prompt 25535) (yank))
+	   (progn (goto-char (mark)) (yank) )))))
+	(if arg
+	    (if (= arg 1)
+		nil
+	      (funcall pasteMe))
+	  (funcall pasteMe))
+	))
+	      
+;	 (if (string= "shell-mode" major-mode)
+;	     (progn (comint-next-prompt 25535) (yank))
+;	   (progn (goto-char (mark)) (yank) )))
+;     (if (string= "shell-mode" major-mode)
+;	 (progn (comint-next-prompt 25535) (yank))
+;       (progn (goto-char (mark)) (yank) ))
+;     )
+;)
+
 
 (defun test-get-point (&optional arg)
   "test-get-point"
@@ -251,62 +283,24 @@
 (defun copy-line (&optional arg)
  "Save current line into Kill-Ring without mark the line "
   (interactive "P")
-;  (copy-region-as-kill (line-beginning-position) (line-end-position arg))
-  (let ((beg (line-beginning-position))
-	(end (line-end-position arg)))
-    (if (= (or arg 0) 1)    ;; arg=1, mark line only
-	(progn (set-mark beg) (goto-char end))
-    (copy-region-as-kill beg end))
-    )
+  (copy-thing 'beginning-of-line 'end-of-line arg)
+  (paste-to-mark arg)
 )
-
-;(defun copy-word (&optional arg)
-; "Copy words at point into kill-ring"
-;  (interactive "P")
-;  (if arg
-;      (if (< arg 0)
-;	  (let ((end (end-of-thing 'word))
-;	    (beg (progn (forward-word arg) (point))))
-;	    (copy-region-as-kill beg end))
-;	  (let ((beg (beginning-of-thing 'word))     
-;	    (end (progn (forward-word arg) (point))))
-;	    (copy-region-as-kill beg end))
-;      )
-;  	  (let ((beg (beginning-of-thing 'word)) 
-;	    (end (progn (forward-word arg) (point))))
-;	    (copy-region-as-kill beg end))
-;  )
-;)
-
 
 (defun copy-word (&optional arg)
  "Copy words at point into kill-ring"
   (interactive "P")
-  (if arg
-      (if (< arg 0)
-	  (let ((end (end-of-thing 'word))
-		(beg (get-point 'forward-word arg)))
-	    (copy-region-as-kill beg end))
-	  (let ((beg (beginning-of-thing 'word)) 
-		(end (get-point 'forward-word arg)))
-	    (copy-region-as-kill beg end))
-      )
-  	  (let ((beg (beginning-of-thing 'word))
-		(end (get-point 'forward-word arg)))
-	    (copy-region-as-kill beg end))
-  )
+  (copy-thing 'backward-word 'forward-word arg)
+  (paste-to-mark arg)
 )
 
 (defun copy-paragraph (&optional arg)
  "Copy paragraphes at point"
   (interactive "P")
-  (let ((beg (get-point 'backward-paragraph 1))
-	(end (get-point 'forward-paragraph arg)))
-    (if (= (or arg 0) 1)    ;; arg=1, mark paragraph only
-      (set-mark beg)
-      (copy-region-as-kill beg end))
-    )
+  (copy-thing 'backward-paragraph 'forward-paragraph arg)
+  (paste-to-mark arg)
 )
+
 
 ;(defun dove-backward-kill-word (&optional arg)
 ;  "Backward kill word, but do not insert it into kill-wring"
@@ -354,76 +348,42 @@
 ;; )
 
 
-(defun beginning-of-string()
+(defun beginning-of-string(&optional arg)
   "  "
-;  (interactive "p")
-;  (re-search-backward "[ \t]" (line-beginning-position) 3 1)
   (re-search-backward "[ \t]" (line-beginning-position) 3 1)
 	     (if (looking-at "[\t ]")  (goto-char (+ (point) 1)) )
 )
-(defun end-of-string()
+(defun end-of-string(&optional arg)
   " "
-;  (interactive "p")
-;  (re-search-forward "[ \t]")
-  (re-search-forward "[ \t]" (line-end-position) 3 1)
+  (re-search-forward "[ \t]" (line-end-position) 3 arg)
 	     (if (looking-back "[\t ]") (goto-char (- (point) 1)) )
-)
-
-;(put 'string 'forward-op 'forward-string)
-(put 'string 'beginning-op 'beginning-of-string)
-(put 'string 'end-op 'end-of-string)
-
-
-(defun thing-copy-string ()
-  "Try to get string"
-  (interactive)
-  (thing-edit 'string)
 )
 
 (defun thing-copy-string-to-mark(&optional arg)
   " Try to copy a string and paste it to the mark
 When used in shell-mode, it will paste string on shell prompt by default "
   (interactive "P")
-  (thing-copy-string)
-   (if (not arg)
-       (if (string= "shell-mode" major-mode)
-	   (progn (comint-next-prompt 25535) (yank))
-	   (progn (goto-char (mark)) (yank) )))
+  (copy-thing 'beginning-of-string 'end-of-string arg)
+  (paste-to-mark arg)
 )
 
-(defun beginning-of-parenthesis()
+(defun beginning-of-parenthesis(&optional arg)
   "  "
-;  (interactive "p")
   (re-search-backward "[[<(?\"]" (line-beginning-position) 3 1)
 	     (if (looking-at "[[<(?\"]")  (goto-char (+ (point) 1)) )
 )
-(defun end-of-parenthesis()
+(defun end-of-parenthesis(&optional arg)
   " "
-;  (interactive "p")
-  (re-search-forward "[]>)?\"]" (line-end-position) 3 1)
+  (re-search-forward "[]>)?\"]" (line-end-position) 3 arg)
 	     (if (looking-back "[]>)?\"]") (goto-char (- (point) 1)) )
-)
-
-
-;(put 'parenthesis 'forward-op 'forward-parenthesis)
-(put 'parenthesis 'beginning-op 'beginning-of-parenthesis)
-(put 'parenthesis 'end-op 'end-of-parenthesis)
-
-(defun thing-copy-parenthesis ()
-  "Try to get parenthesis"
-  (interactive)
-  (thing-edit 'parenthesis)
 )
 
 (defun thing-copy-parenthesis-to-mark(&optional arg)
   " Try to copy a parenthesis and paste it to the mark
 When used in shell-mode, it will paste parenthesis on shell prompt by default "
   (interactive "P")
-  (thing-copy-parenthesis)
-   (if (not arg)
-       (if (string= "shell-mode" major-mode)
-	   (progn (comint-next-prompt 25535) (yank))
-	   (progn (goto-char (mark)) (yank) )))
+  (copy-thing 'beginning-of-parenthesis 'end-of-parenthesis arg)
+  (paste-to-mark arg)
 )
 
 (defun backward-symbol (&optional arg)
@@ -506,7 +466,6 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
       ))))
 
 
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;                                                 ;;
 ;;             window layout related               ;;
@@ -535,112 +494,167 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
    )
 )
 
-;  +----------------------+                 +----------- +-----------+ 
-;  |                      |           \     |            |           | 
-;  |                      |   +-------+\    |            |           | 
-;  +----------------------+   +-------+/    |            |           |
-;  |                      |           /     |            |           | 
-;  |                      |                 |            |           | 
-;  +----------------------+                 +----------- +-----------+ 
+;;  +----------------------+                 +----------- +-----------+ 
+;;  |                      |           \     |            |           | 
+;;  |                      |   +-------+\    |            |           | 
+;;  +----------------------+   +-------+/    |            |           |
+;;  |                      |           /     |            |           | 
+;;  |                      |                 |            |           | 
+;;  +----------------------+                 +----------- +-----------+ 
+;
+;(defun split-v ()
+;  (interactive)
+;  (if (= 2 (length (window-list)))
+;    (let (( thisBuf (window-buffer))
+;	  ( nextBuf (progn (other-window 1) (buffer-name))))
+;	  (progn   (delete-other-windows)
+;		   (split-window-horizontally)
+;		   (set-window-buffer nil thisBuf)
+;		   (set-window-buffer (next-window) nextBuf)
+;		   ))
+;    )
+;)
 
-(defun split-v ()
+
+;;  +----------- +-----------+                  +----------------------+ 
+;;  |            |           |            \     |                      | 
+;;  |            |           |    +-------+\    |                      | 
+;;  |            |           |    +-------+/    +----------------------+ 
+;;  |            |           |            /     |                      | 
+;;  |            |           |                  |                      | 
+;;  +----------- +-----------+                  +----------------------+ 
+;
+;(defun split-h ()
+;  (interactive)
+;  (if (= 2 (length (window-list)))
+;    (let (( thisBuf (window-buffer))
+;	  ( nextBuf (progn (other-window 1) (buffer-name))))
+;	  (progn   (delete-other-windows)
+;		   (split-window-vertically)
+;		   (set-window-buffer nil thisBuf)
+;		   (set-window-buffer (next-window) nextBuf)
+;		   ))
+;    )
+;)
+
+
+;  +----------------------+                +---------- +----------+
+;  |                      |          \     |           |          |
+;  |                      |  +-------+\    |           |          |
+;  +----------------------+  +-------+/    |           |          |
+;  |                      |          /     |           |          |
+;  |                      |                |           |          |
+;  +----------------------+                +---------- +----------+
+;
+;  +--------- +-----------+                +----------------------+
+;  |          |           |          \     |                      |
+;  |          |           |  +-------+\    |                      |
+;  |          |           |  +-------+/    +----------------------+
+;  |          |           |          /     |                      |
+;  |          |           |                |                      |
+;  +--------- +-----------+                +----------------------+
+
+
+
+(defun change-split-type ()
+  "Changes splitting from vertical to horizontal and vice-versa"
   (interactive)
   (if (= 2 (length (window-list)))
-    (let (( thisBuf (window-buffer))
-	  ( nextBuf (progn (other-window 1) (buffer-name))))
-	  (progn   (delete-other-windows)
-		   (split-window-horizontally)
-		   (set-window-buffer nil thisBuf)
-		   (set-window-buffer (next-window) nextBuf)
-		   ))
-    )
-)
+      (let ((thisBuf (window-buffer))
+            (nextBuf (progn (other-window 1) (buffer-name)))
+            (split-type (if (= (window-width)
+                               (frame-width))
+                            'split-window-horizontally
+                            'split-window-vertically)))
+        (progn
+          (delete-other-windows)
+	  (funcall split-type)
+          (set-window-buffer nil thisBuf)
+          (set-window-buffer (next-window) nextBuf)))))
 
 
-;  +----------- +-----------+                  +----------------------+ 
-;  |            |           |            \     |                      | 
-;  |            |           |    +-------+\    |                      | 
-;  |            |           |    +-------+/    +----------------------+ 
-;  |            |           |            /     |                      | 
-;  |            |           |                  |                      | 
-;  +----------- +-----------+                  +----------------------+ 
-
-(defun split-h ()
-  (interactive)
-  (if (= 2 (length (window-list)))
-    (let (( thisBuf (window-buffer))
-	  ( nextBuf (progn (other-window 1) (buffer-name))))
-	  (progn   (delete-other-windows)
-		   (split-window-vertically)
-		   (set-window-buffer nil thisBuf)
-		   (set-window-buffer (next-window) nextBuf)
-		   ))
-    )
-)
 
 ;  +----------------------+                 +----------- +-----------+ 
 ;  |                      |           \     |            |           | 
 ;  |                      |   +-------+\    |            |           | 
 ;  +----------------------+   +-------+/    |            |-----------|
-;  |         |            |           /     |            |           | 
-;  |         |            |                 |            |           | 
+;  |          |           |           /     |            |           | 
+;  |          |           |                 |            |           | 
 ;  +----------------------+                 +----------- +-----------+ 
-
-
-(defun split-v-3 ()
-  "Change 3 window style from horizontal to vertical"
-  (interactive)
-  (select-window (get-largest-window))
-  (if (= 3 (length (window-list)))
-      (let ((winList (window-list)))
-	    (let ((1stBuf (window-buffer (car winList)))
-		  (2ndBuf (window-buffer (car (cdr winList))))
-		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
-	      (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-	      (delete-other-windows)
-	      (split-window-horizontally)
-	      (set-window-buffer nil 1stBuf)
-	      (other-window 1)
-	      (set-window-buffer nil 2ndBuf)
-	      (split-window-vertically)
-	      (set-window-buffer (next-window) 3rdBuf)
-	      (select-window (get-largest-window))
-	    )
-	  )
-    )
-)
 
 ;  +----------- +-----------+                  +----------------------+ 
 ;  |            |           |            \     |                      | 
 ;  |            |           |    +-------+\    |                      | 
 ;  |            |-----------|    +-------+/    +----------------------+ 
-;  |            |           |            /     |          |           | 
-;  |            |           |                  |          |           | 
+;  |            |           |            /     |           |          | 
+;  |            |           |                  |           |          | 
 ;  +----------- +-----------+                  +----------------------+ 
 
-
-(defun split-h-3 ()
-  "Change 3 window style from vertical to horizontal"
+(defun change-split-type-3 ()
+  "Change 3 window style from horizontal to vertical and vice-versa"
   (interactive)
   (select-window (get-largest-window))
   (if (= 3 (length (window-list)))
       (let ((winList (window-list)))
 	    (let ((1stBuf (window-buffer (car winList)))
 		  (2ndBuf (window-buffer (car (cdr winList))))
-		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
-		(message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
-		(delete-other-windows)
-		(split-window-vertically)
-		(set-window-buffer nil 1stBuf)
-		(other-window 1)
-		(set-window-buffer nil 2ndBuf)
-		(split-window-horizontally)
-		(set-window-buffer (next-window) 3rdBuf)
-		(select-window (get-largest-window))
-	      )
-	    )
-    )
-)
+		  (3rdBuf (window-buffer (car (cdr (cdr winList)))))
+		  (split-3 
+		   (lambda(1stBuf 2ndBuf 3rdBuf split-1 split-2)
+		     "change 3 window from horizontal to vertical and vice-versa"
+		     (message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+		     (delete-other-windows)
+		     (funcall split-1)
+		     (set-window-buffer nil 1stBuf)
+		     (other-window 1)
+		     (set-window-buffer nil 2ndBuf)
+		     (funcall split-2)
+		     (set-window-buffer (next-window) 3rdBuf)
+		     (select-window (get-largest-window))
+		     ))
+		  (split-type-1 nil)
+		  (split-type-2 nil)
+		  )
+	      (if (= (window-width) (frame-width))
+		  (setq split-type-1 'split-window-horizontally split-type-2 'split-window-vertically)
+		(setq split-type-1 'split-window-vertically  split-type-2 'split-window-horizontally))
+	      (funcall split-3 1stBuf 2ndBuf 3rdBuf split-type-1 split-type-2)
+
+))))
+
+
+;;  +----------- +-----------+                  +----------------------+ 
+;;  |            |           |            \     |                      | 
+;;  |            |           |    +-------+\    |                      | 
+;;  |            |-----------|    +-------+/    +----------------------+ 
+;;  |            |           |            /     |          |           | 
+;;  |            |           |                  |          |           | 
+;;  +----------- +-----------+                  +----------------------+ 
+;
+;
+;(defun split-h-3 ()
+;  "Change 3 window style from vertical to horizontal"
+;  (interactive)
+;  (select-window (get-largest-window))
+;  (if (= 3 (length (window-list)))
+;      (let ((winList (window-list)))
+;	    (let ((1stBuf (window-buffer (car winList)))
+;		  (2ndBuf (window-buffer (car (cdr winList))))
+;		  (3rdBuf (window-buffer (car (cdr (cdr winList))))))
+;
+;		(message "%s %s %s" 1stBuf 2ndBuf 3rdBuf)
+;		(delete-other-windows)
+;		(split-window-vertically)
+;		(set-window-buffer nil 1stBuf)
+;		(other-window 1)
+;		(set-window-buffer nil 2ndBuf)
+;		(split-window-horizontally)
+;		(set-window-buffer (next-window) 3rdBuf)
+;		(select-window (get-largest-window))
+;	      )
+;	    )
+;    )
+;)
 
 ;  +----------- +-----------+                    +----------- +-----------+ 
 ;  |            |     C     |            \       |            |     A     | 
@@ -680,6 +694,8 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 	    )
     )
 )
+
+
 
 
 ;
@@ -737,3 +753,4 @@ When used in shell-mode, it will paste parenthesis on shell prompt by default "
 
 
 (provide 'dove-ext)
+

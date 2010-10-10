@@ -363,50 +363,66 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 [:MinibufferBindings]
 == Minibuffer Bindings ==
 
-There are many key bindings available during completion.  Most of
-these key sequences are bound in the minibuffer completion
-keymaps, but some are bound in the `*Completions*' buffer keymap.
+There are many key bindings available while input is read in the
+[[minibuffer]].  Most of
+these keys are bound in the minibuffer completion
+keymaps, but some are bound in the `*Completions*' buffer keymap and some are bound when reading input without [[completion]].
+
 In addition, clicking '''`C-mouse-3'''' on a completion candidate in buffer
 `*Completions*' pops up a menu of available commands.
-
 Some of these menu commands are applicable to the completion you
 click; others apply to the current state of completion or to the
 complete set of completion candidates.  The associated key
 bindings are indicated in the menu items, so this can be a good
 way to learn minibuffer and `*Completions*' bindings.
 
+
+The following key is helpful during any minibuffer input.  It pops
+up the *Help* buffer with information about using the minibuffer
+in ''Icicle'' mode.  During completion, this includes information
+similar to what you are reading now.  It also lists toggle
+commands and the current toggle values.
+
+[:icicle-minibuffer-help]
+* '''`##C-?##'''' -- `icicle-minibuffer-help'
+
 The following key bindings are made for the minibuffer completion
 keymaps.  They are in effect whenever you are using the minibuffer
 for input with completion (e.g. `completing-read',
 `read-file-name', `M-x').
 
-[:icicle-minibuffer-help]
-* '''`##C-?##'''' -- `icicle-minibuffer-help': Pop up a `*Help*' buffer with
-information on using the minibuffer in ''Icicle'' mode.  During completion, this includes information similar to what you are reading now.
-
-[:icicle-previous-prefix-candidate]
-[:icicle-next-prefix-candidate]
-* '''`down'''', '''`up'''' -- `icicle-next-prefix-candidate', `icicle-previous-prefix-candidate', which [[Icicles - Cycling Completions|cycle]] candidate [[prefix completion]]s.
-
+[:icicle-next-candidate-per-mode]
+[:icicle-previous-candidate-per-mode]
 [:icicle-next-apropos-candidate]
 [:icicle-previous-apropos-candidate]
-* '''`next'''', '''`prior'''' -- `icicle-next-apropos-candidate', 
-`icicle-previous-apropos-candidate', which cycle candidate [[apropos completion]]s.
-
+[:icicle-previous-prefix-candidate]
+[:icicle-next-prefix-candidate]
 * '''`down'''', '''`wheel-down'''' -- `icicle-next-candidate-per-mode' (modal)
 * '''`up'''', '''`wheel-up'''' -- `icicle-previous-candidate-per-mode' (modal)
+* '''`next'''', '''`prior'''' -- `icicle-next-apropos-candidate', 
+`icicle-previous-apropos-candidate', which [[Icicles - Cycling Completions|cycle]] candidate [[apropos completion]]s.
+* '''`down'''', '''`up'''' -- `icicle-next-prefix-candidate', `icicle-previous-prefix-candidate', which cycle candidate [[prefix completion]]s.
 
-:: (The documentation always refers to the keys
+:: Whether a modal cycling key is used for prefix or apropos
+completion at a given time depends on the current completion
+mode, which is determined by which of `TAB' and `S-TAB' was used
+last, or by option '''`<tt>[[Icicles - Customization and General Tips#icicle-default-cycling-mode|icicle-default-cycling-mode]]</tt>'''' 
+if neither was used.
+
+:: (   The mouse wheel bindings are only for Emacs 22 and later. The documentation refers to the keys
 that cycle completion candidates as `down',
-`up', `next', and `prior'.  Actually, these are
+`up', `next', `prior', `end', and `home'.  Actually, these are
 the cycling keys only by default.  You can
 customize the cycling keys using options
+'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''',
+'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''',
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''', 
+'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>'''',
 '''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>'''' (modal),
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>'''',
-'''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>'''' (modal),
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-next-keys|icicle-apropos-cycle-next-keys]]</tt>'''', and
-'''`<tt>[[Icicles - Customization and General Tips#icicle-apropos-cycle-previous-keys|icicle-apropos-cycle-previous-keys]]</tt>''''.   The mouse wheel bindings are only for Emacs 22 and later.)
+'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>''''.)
+
+
+
 
 * Keys bound globally to commands that perform simple text
 insertion, deletion, and transposition operations -- commands
@@ -524,24 +540,6 @@ by turning on this dot magic generally, using '''`##C-M-.##'''':
 * '''`##.##'''' -- `icicle-insert-dot-command'
 * '''`##C-M-.##'''' -- `icicle-toggle-dot'
 
-If option `<tt>[[Icicles - Customization and General Tips#icicle-cycling-respects-completion-mode|icicle-cycling-respects-completion-mode]]</tt>' is non-`nil', then you can use the keys that are defined by the following options for
-both prefix and apropos completion (as well as for input-history
-traversal):
-
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-keys|icicle-modal-cycle-up-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-keys|icicle-modal-cycle-down-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-action-keys|icicle-modal-cycle-up-action-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-action-keys|icicle-modal-cycle-down-action-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-alt-action-keys|icicle-modal-cycle-up-alt-action-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-alt-action-keys|icicle-modal-cycle-down-alt-action-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-up-help-keys|icicle-modal-cycle-up-help-keys]]</tt>''''
-* '''`<tt>[[Icicles - Customization and General Tips#icicle-modal-cycle-down-help-keys|icicle-modal-cycle-down-help-keys]]</tt>''''
-
-By default, the keys defined for these options are, respectively, `up', `down', `C-up', `C-down', `C-S-up', `C-S-down', `C-M-up', and `C-M-down'.
-
-Whether one of the keys is used for prefix or apropos completion at a given time
-depends on the current completion mode, which is determined by
-which of `TAB' and `S-TAB' was used last.
 
 In vanilla Emacs, the following keys have a special purpose during
 input completion, but in '''Icicles''' they simply insert the character
@@ -681,12 +679,12 @@ completions.  For explanation, see [[Icicles - Multi-Commands]], [[Icicles - Mor
 
 * '''`C-RET'''' -- `icicle-candidate-action': current candidate
 * '''`C-mouse-2'''' -- `icicle-mouse-candidate-action': clicked candidate
-* '''`C-up''''    -- `icicle-previous-prefix-candidate-action'
-* '''`C-up'''', '''`C-wheel-up''''  -- `icicle-previous-candidate-per-mode-action' (modal)
-* '''`C-down''''  -- `icicle-next-prefix-candidate-action'
 * '''`C-down'''', '''`C-wheel-down''''  -- `icicle-next-candidate-per-mode-action' (modal)
-* '''`C-prior''''  -- `icicle-previous-apropos-candidate-action'
+* '''`C-up'''', '''`C-wheel-up''''  -- `icicle-previous-candidate-per-mode-action' (modal)
 * '''`C-next''''  -- `icicle-next-apropos-candidate-action'
+* '''`C-prior''''  -- `icicle-previous-apropos-candidate-action'
+* '''`C-end''''  -- `icicle-next-prefix-candidate-action'
+* '''`C-home''''    -- `icicle-previous-prefix-candidate-action'
 * '''`##C-!##'''' -- `icicle-all-candidates-action': each candidate, in turn
 * '''`##M-!##'''' -- `icicle-all-candidates-list-action': all candidates, as a list
 * '''`M-RET'''' -- `icicle-candidate-read-fn-invoke': apply a function to current candidate
@@ -694,9 +692,9 @@ completions.  For explanation, see [[Icicles - Multi-Commands]], [[Icicles - Mor
 * '''`M-mouse-2'''' -- `icicle-mouse-candidate-read-fn-invoke': apply a function to clicked candidate (in `*Completions*')
 * '''`S-delete'''' -- `icicle-delete-candidate-object': delete object named by candidate
 
-(Actually, some of these are only default key
+(Some of these are only default key
  bindings.  You can customize the keys to use for
-`previous' and `next' actions.  The mouse wheel bindings are only for Emacs 22 and later.  The notation used here for the wheel bindings is that for Emacs on Windows; on other platforms different key notations are used for the wheel.  This same note applies to corresponding keys used with modifiers `C-M-' and `C-S-' -- see below.)
+`previous' and `next' actions, for instance.  The mouse wheel bindings are only for Emacs 22 and later.  The notation used here for the wheel bindings is that for Emacs on Windows; on other platforms different key notations are used for the wheel.  This same note applies to corresponding keys used with modifiers `C-M-' and `C-S-' -- see below.)
 
 Except as noted, the bindings for `icicle-mouse-*' are actually in the `*Completions*' buffer.
 
@@ -719,12 +717,12 @@ completions.  For explanation, see [[Icicles - Help on Candidates]] and [[Icicle
 
 * '''`C-M-RET'''' -- `icicle-help-on-candidate': current candidate
 * '''`C-M-mouse-2'''' -- `icicle-mouse-help-on-candidate': clicked candidate
-* '''`C-M-up'''' -- `icicle-help-on-previous-prefix-candidate'
-* '''`C-M-up'''', '''`C-M-wheel-up'''' -- `icicle-previous-candidate-per-mode-help' (modal)
-* '''`C-M-down''''  -- `icicle-help-on-next-prefix-candidate'
 * '''`C-M-down'''', '''`C-M-wheel-down''''  -- `icicle-next-candidate-per-mode-help' (modal)
-* '''`C-M-prior'''' -- `icicle-help-on-previous-apropos-candidate'
+* '''`C-M-up'''', '''`C-M-wheel-up'''' -- `icicle-previous-candidate-per-mode-help' (modal)
 * '''`C-M-next'''' -- `icicle-help-on-next-apropos-candidate'
+* '''`C-M-prior'''' -- `icicle-help-on-previous-apropos-candidate'
+* '''`C-M-end''''  -- `icicle-help-on-next-prefix-candidate'
+* '''`C-M-home'''' -- `icicle-help-on-previous-prefix-candidate'
 
 
 
@@ -747,12 +745,12 @@ the given command.  Most commands define no alternative action.
 
 * '''`C-S-RET'''' -- `icicle-candidate-alt-action': current candidate
 * '''`C-S-mouse-2'''' -- `icicle-mouse-candidate-alt-action': clicked
-* '''`C-S-up'''' -- `icicle-previous-prefix-candidate-alt-action'
-* '''`C-S-up'''', '''`C-S-wheel-up'''' -- `icicle-previous-candidate-per-mode-alt-action' (modal)
-* '''`C-S-down'''' -- `icicle-next-prefix-candidate-alt-action'
 * '''`C-S-down'''', '''`C-S-wheel-down'''' -- `icicle-next-candidate-per-mode-alt-action' (modal)
-* '''`C-S-prior'''' -- `icicle-previous-apropos-candidate-alt-action'
+* '''`C-S-up'''', '''`C-S-wheel-up'''' -- `icicle-previous-candidate-per-mode-alt-action' (modal)
 * '''`C-S-next'''' -- `icicle-next-apropos-candidate-alt-action'
+* '''`C-S-prior'''' -- `icicle-previous-apropos-candidate-alt-action'
+* '''`C-S-end'''' -- `icicle-next-prefix-candidate-alt-action'
+* '''`C-S-home'''' -- `icicle-previous-prefix-candidate-alt-action'
 * '''`##C-|##'''' -- `icicle-all-candidates-alt-action': each candidate, in turn
 * '''`##M-|##'''' -- `icicle-all-candidates-list-alt-action': all candidates, as a list
 
@@ -851,7 +849,6 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##C-x .##'''' -- `icicle-toggle-hiding-common-match'
 * '''`##C-;##'''' -- `icicle-toggle-expand-to-common-match'
 * '''`##C-,##'''' -- `icicle-change-sort-order'
-* '''`##C-,##'''' -- `icicle-toggle-search-replace-whole' (search)
 * '''`##M-,##'''' -- `icicle-change-alternative-sort-order'
 * '''`##C-M-,##'''' -- `icicle-toggle-alternative-sorting'
 * '''`##C-^##'''' -- `icicle-toggle-remote-file-testing'
@@ -867,6 +864,7 @@ The following minibuffer bindings let you ''toggle'' '''Icicles''' options or cy
 * '''`##M-(##'''' -- `icicle-next-S-TAB-completion-method'
 * '''`##M-~##'''' -- `##icicle-toggle-~-for-home-dir##'
 * '''`##M-_##'''' -- `icicle-toggle-ignored-space-prefix'
+* '''`##M-_##'''' -- `icicle-toggle-search-replace-whole' (search)
 * '''`##C-M-_##'''' -- `icicle-toggle-proxy-candidates'
 
 
@@ -911,7 +909,7 @@ during '''Icicles''' [[Icicles - Search Commands, Overview|search]]:
 [:icicle-toggle-literal-replacement]
 
 * '''`##C-.##'''' -- `icicle-toggle-search-cleanup'
-* '''`##C-,##'''' -- `icicle-toggle-search-replace-whole'
+* '''`##C-,##'''' -- `icicle-change-sort-order'
 * '''`##M-,##'''' -- `icicle-search-define-replacement'
 * '''`M-q'''' -- `icicle-toggle-search-whole-word'
 * '''`##C-^##''''    -- `icicle-toggle-highlight-all-current'
@@ -961,25 +959,9 @@ completions:
 
 [:icicle-move-to-previous-completion]
 [:icicle-move-to-next-completion]
-
-* '''`left'''', '''`right'''' (`TAB') -- `icicle-move-to-previous-completion', `icicle-move-to-next-completion': Navigate backward & forward among candidates.
-
 [:icicle-previous-line]
 [:icicle-next-line]
-
-* '''`up'''', '''`down'''' -- `icicle-previous-line', `icicle-next-line': Navigate up & down among candidates.   (The
-documentation refers to these keys as `up' and
-`down'.  Actually, these are the keys only by
-default.  You can customize them using options
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-next-keys|icicle-prefix-cycle-next-keys]]</tt>'''' and
-'''`<tt>[[Icicles - Customization and General Tips#icicle-prefix-cycle-previous-keys|icicle-prefix-cycle-previous-keys]]</tt>''''.)
-
 [:icicle-insert-completion]
-
-* '''`C-insert'''' -- `icicle-insert-completion': Move
-cursor to the minibuffer, with the current `*Completions*' candidate
-as input.
-
 [:icicle-abort-recursive-edit]
 [:icicle-beginning-of-line]
 [:icicle-end-of-line]
@@ -987,7 +969,11 @@ as input.
 [:icicle-mouse-candidate-action]
 [:icicle-mouse-help-on-candidate]
 [:icicle-Completions-mouse-3-menu]
-
+* '''`left'''', '''`right'''' (`TAB') -- `icicle-move-to-previous-completion', `icicle-move-to-next-completion': Navigate backward & forward among candidates.
+* '''`up'''', '''`down'''' -- `icicle-previous-line', `icicle-next-line': Navigate up & down among candidates.
+* '''`C-insert'''' -- `icicle-insert-completion': Move
+cursor to the minibuffer, with the current `*Completions*' candidate
+as input.
 * '''`C-a'''', '''`C-e'''' -- `##icicle-beginning-of-line+##', `##icicle-end-of-line+##' (repeatable)
 * '''`C-g'''', '''`q'''' -- `icicle-abort-recursive-edit'
 * '''`mouse-2'''' -- `icicle-mouse-choose-completion'

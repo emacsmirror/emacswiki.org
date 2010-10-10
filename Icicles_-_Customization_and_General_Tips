@@ -292,125 +292,112 @@ functions while you are in ''Icicle'' mode, then toggle ''Icicle'' mode
 twice, so that this option can have the proper effect.
 
 
+
+
 ----
-[:icicle-apropos-cycle-previous-keys]
 [:icicle-apropos-cycle-next-keys]
-[:icicle-prefix-cycle-previous-keys]
+[:icicle-apropos-cycle-previous-keys]
 [:icicle-prefix-cycle-next-keys]
-[:icicle-apropos-cycle-previous-action-keys]
-[:icicle-apropos-cycle-previous-alt-action-keys]
+[:icicle-prefix-cycle-previous-keys]
 [:icicle-apropos-cycle-next-action-keys]
-[:icicle-apropos-cycle-next-alt-action-keys]
-[:icicle-prefix-cycle-previous-action-keys]
-[:icicle-prefix-cycle-previous-alt-action-keys]
+[:icicle-apropos-cycle-previous-action-keys]
 [:icicle-prefix-cycle-next-action-keys]
-[:icicle-prefix-cycle-next-alt-action-keys]
-[:icicle-apropos-cycle-previous-help-keys]
+[:icicle-prefix-cycle-previous-action-keys]
+[:icicle-apropos-cycle-next-alt-action-keys]
+[:icicle-apropos-cycle-previous-alt-action-keys]
+[:icicle-prefix-cycle-next-alt--action-keys]
+[:icicle-prefix-cycle-previous-alt-action-keys]
 [:icicle-apropos-cycle-next-help-keys]
-[:icicle-prefix-cycle-previous-help-keys]
+[:icicle-apropos-cycle-previous-help-keys]
 [:icicle-prefix-cycle-next-help-keys]
-==== Options icicle-(apropos|prefix)-cycle-(previous|next)(-action|help)-keys ====
+[:icicle-prefix-cycle-previous-help-keys]
+==== Options icicle-(apropos|prefix)-cycle-(previous|next)(help|(-alt)-action)-keys ====
 
-The following user options specify the [[key]]s to use for
-completion-candidate [[Icicles - Cycling Completions|cycling]]:
+The following user options specify the [[key]]s to use for mode-specific 
+completion-candidate [[Icicles - Cycling Completions|cycling]]  The default bindings are in parentheses.
 
-||'''`icicle-apropos-cycle-previous-keys''''||cycle||`prior'||
-||'''`icicle-apropos-cycle-next-keys''''||cycle||`next'||
-||'''`icicle-prefix-cycle-previous-keys''''||cycle||`up'||
-||'''`icicle-prefix-cycle-next-keys''''||cycle||`down'||
-||'''`icicle-apropos-cycle-previous-action-keys''''||cycle, act||`C-prior'||
-||'''`icicle-apropos-cycle-previous-alt-action-keys''''||cycle, alt act||`C-S-prior'||
-||'''`icicle-apropos-cycle-next-action-keys''''||cycle, act||`C-next'||
-||'''`icicle-apropos-cycle-next-alt-action-keys''''||cycle, alt act||`C-S-next'||
-||'''`icicle-prefix-cycle-previous-action-keys''''||cycle, act||`C-up'||
-||'''`icicle-prefix-cycle-previous-alt-action-keys''''||cycle, alt act||`C-S-up'||
-||'''`icicle-prefix-cycle-next-action-keys''''||cycle, act||`C-down'||
-||'''`icicle-prefix-cycle-next-alt-action-keys''''||cycle, alt act||`C-S-down'||
-||'''`icicle-apropos-cycle-previous-help-keys''''||cycle and help||`C-M-prior'||
-||'''`icicle-apropos-cycle-next-help-keys''''||cycle and help||`C-M-next'||
-||'''`icicle-prefix-cycle-previous-help-keys''''||cycle and help||`C-M-up'||
-||'''`icicle-prefix-cycle-next-help-keys''''||cycle and help||`C-M-down'||
-
-
-The keys used by default are listed in the right column.
-
-The keys defined by options `icicle-prefix-cycle-previous-keys'
-and `icicle-prefix-cycle-next-keys' are used also to move up or
-down a line in buffer `*Completions*'.
+* '''`icicle-apropos-cycle-next-keys''''     (`next')
+* '''`icicle-apropos-cycle-previous-keys'''' (`prior')
+* '''`icicle-prefix-cycle-next-keys''''      (`end')
+* '''`icicle-prefix-cycle-previous-keys''''  (`home')
+* '''`icicle-apropos-cycle-next-action-keys''''      (`C-next')
+* '''`icicle-apropos-cycle-previous-action-keys''''  (`C-prior')
+* '''`icicle-prefix-cycle-next-action-keys''''       (`C-end'
+* '''`icicle-prefix-cycle-previous-action-keys''''   (`C-home')
+* '''`icicle-apropos-cycle-next-alt-action-keys''''  (`C-S-next')
+* '''`icicle-apropos-cycle-previous-alt-action-keys'''' (`C-S-prior')
+* '''`icicle-prefix-cycle-next-alt-action-keys'''' (`C-S-end')
+* '''`icicle-prefix-cycle-previous-alt-action-keys'''' (`C-S-home')
+* '''`icicle-apropos-cycle-next-help-keys'''' (`C-M-next')
+* '''`icicle-apropos-cycle-previous-help-keys'''' (`C-M-prior')
+* '''`icicle-prefix-cycle-next-help-keys'''' (`C-M-end')
+* '''`icicle-prefix-cycle-previous-help-keys'''' (`C-M-home')
 
 
 
 
 ----
-[:icicle-cycling-respects-completion-mode]
-==== Option icicle-cycling-respects-completion-mode ====
+[:icicle-modal-cycle-down-keys]
+[:icicle-modal-cycle-up-keys]
+[:icicle-modal-cycle-down-action-keys]
+[:icicle-modal-cycle-up-action-keys]
+[:icicle-modal-cycle-down-alt-action-keys]
+[:icicle-modal-cycle-up-alt-action-keys]
+[:icicle-modal-cycle-down-help-keys]
+[:icicle-modal-cycle-up-help-keys]
+==== Options icicle-modal-cycle-(down|up)(-help|(-alt)-action)-keys ====
 
-Non-`nil' option '''`icicle-cycling-respects-completion-mode''''
-  causes the modal [[Icicles - Cycling Completions|cycling]] keys to act differently during
-  [[completion]].  Those keys are configurable using the following user options (default bindings in parens):
+The following user options specify the keys to use for [[Icicles - Cycling Completions|cycling]]
+candidates according to the current completion mode.  The
+default bindings are in parentheses.
 
-** `<tt>[[#icicle-modal-cycle-up-keys]]</tt>' (`up')
-** `<tt>[[#icicle-modal-cycle-up-action-keys]]</tt>' (`C-up')
-** `<tt>[[#icicle-modal-cycle-up-alt-action-keys]]</tt>' (`C-S-up')
-** `<tt>[[#icicle-modal-cycle-up-help-keys]]</tt>' (`C-M-up')
-** `<tt>[[#icicle-modal-cycle-down-keys]]</tt>' (`down')
-** `<tt>[[#icicle-modal-cycle-down-action-keys]]</tt>' (`C-down')
-** `<tt>[[#icicle-modal-cycle-down-alt-action-keys]]</tt>' (`C-S-down')
-** `<tt>[[#icicle-modal-cycle-down-help-keys]]</tt>' (`C-M-down')
+* '''`icicle-modal-cycle-down-keys'''' (`down')
+* '''`icicle-modal-cycle-up-keys'''' (`up')
+* '''`icicle-modal-cycle-down-action-keys'''' (`C-down')
+* '''`icicle-modal-cycle-up-action-keys'''' (`C-up')
+* '''`icicle-modal-cycle-down-alt-action-keys'''' (`C-S-down')
+* '''`icicle-modal-cycle-up-alt-action-keys'''' (`C-S-up')
+* '''`icicle-modal-cycle-down-help-keys'''' (`C-M-down')
+* '''`icicle-modal-cycle-up-help-keys'''' (`C-M-up')
 
 The completion mode, and hence the behavior of these keys, is
-changed whenever you hit `TAB' or `S-TAB' during completion: the
+changed only when you hit `TAB' or `S-TAB' during completion: the
 mode is [[prefix completion]] after `TAB' and [[apropos completion]]
 after `S-TAB'.
 
-Before you hit `TAB' or `S-TAB', the cycling behavior depends on
-the particular non-`nil' value of the option:
+Note: If your customizations of the modal and non-modal cycling
+keys conflict, the non-modal values win.  For example, if you
+define both `icicle-modal-cycle-up-keys' and
+`icicle-prefix-cycle-previous-keys' as the list ##([up])##, then
+the `up' key will perform prefix cycling, not modal cycling.
 
-* `prefix'  means cycle prefix completions
+
+
+
+
+
+----
+[:icicle-default-cycling-mode]
+==== Option icicle-default-cycling-mode ====
+
+User option '''`icicle-default-cycling-mode'''' determines the
+completion mode to be used before you hit `TAB' or `S-TAB'.
+This affects only modal cycling -- e.g. using keys such as `down'
+and `C-down'.  Values:
+
+* `prefix'  (default) means cycle prefix completions
 * `apropos' means cycle apropos completions
-* Other non-`nil' value means cycle inputs from the input history
+* other non-`nil' value means cycle inputs from the input history
+* `nil' means do not cycle: you must first hit a completion key
 
 For example, if the value is `apropos' then you can immediately
 cycle apropos completions without first hitting `S-TAB'.
 
 Once you have used `TAB' or `S-TAB', the only way to traverse
-the input history is to use `M-p' and `M-n' (`up' and `down'
-will cycle completions).
-
-If the option is non-`nil' you can still use `M-p' and `M-n' to
-traverse the input history, and `prior' and `next' to cycle apropos completions (assuming that those default keys have not been changed).  And if you customize either the modal cycling
-keys or the prefix cycling keys so that they are different
-(e.g. one of those sets is no longer `up'/`down'), then you can
-also still use the latter.  In this case, you need not use `TAB'
-and `S-TAB' to switch between the two completion types, even
-when this option is non-`nil' -- you can use the separate apropos
-and prefix cycling keys.
+the input history is to use `M-p' and `M-n'.
 
 
 
-----
-[:icicle-modal-cycle-up-keys]
-[:icicle-modal-cycle-down-keys]
-[:icicle-modal-cycle-up-action-keys]
-[:icicle-modal-cycle-down-action-keys]
-[:icicle-modal-cycle-up-alt-action-keys]
-[:icicle-modal-cycle-down-alt-action-keys]
-[:icicle-modal-cycle-up-help-keys]
-[:icicle-modal-cycle-down-help-keys]
-
-==== Options icicle-modal-cycle-(up|down)-(help|(-alt)action)-keys ====
-
-The values of these user options are the keys used for modal [[Icicles - Cycling Completions|cycling]]:
-** '''`icicle-modal-cycle-up-action-keys''''
-** '''`icicle-modal-cycle-up-alt-action-keys''''
-** '''`icicle-modal-cycle-up-help-keys''''
-** '''`icicle-modal-cycle-up-keys'''',
-** '''`icicle-modal-cycle-down-action-keys''''
-** '''`icicle-modal-cycle-down-alt-action-keys''''
-** '''`icicle-modal-cycle-down-help-keys''''
-** '''`icicle-modal-cycle-down-keys''''
-
-By default, these keys are `C-up', `C-S-up', `C-M-up', `up', `C-down', `C-S-down', `C-M-down', and `down'.  These options have an effect only if option `<tt>[[#icicle-cycling-respects-completion-mode]]</tt>' is non-`nil'.
 
 ----
 ==== Option icicle-cycle-into-subdirs-flag ====
@@ -535,28 +522,28 @@ by `icicle-act-before-cycle-flag'.
 ==== Option icicle-use-C-for-actions-flag ====
 
 If option '''`icicle-use-C-for-actions-flag'''' is `nil', then the keys
-that [[Icicles - Cycling Completions|cycle]]candidates are swapped with the keys that both cycle and act on
-a candidate.  You can then use `down', `up', `next', and `prior'
-to both cycle and act, and `C-down', `C-up', `C-next', and
-`C-prior' to merely cycle, without acting (e.g. navigating).
+that [[Icicles - Cycling Completions|cycle]] candidates are swapped with the keys that both cycle and act on
+a candidate.  You can then use `down', `up', `next', `prior', `end', and `home'
+to both cycle and act, and `C-down', `C-up', `C-next', 
+`C-prior', `C-end', and `C-home' to merely cycle, without acting (e.g. navigating).
 The option has no effect on other keys.  You can ''toggle'' this
 option at any time using '''`M-g'''' (`icicle-toggle-C-for-actions')
 in the minibuffer. See [[Icicles - More About Multi-Commands#icicle-use-C-for-actions-flag|More about Multi-Commands]].
 
 The keys mentioned here are the default bindings.  The actual
 keys swapped are those defined by these user options:
-** `<tt>[[#icicle-prefix-cycle-next-action-keys]]</tt>'
-** `<tt>[[#icicle-prefix-cycle-previous-action-keys]]</tt>'
-** `<tt>[[#icicle-apropos-cycle-next-action-keys]]</tt>'
-** `<tt>[[#icicle-apropos-cycle-previous-action-keys]]</tt>'
-** `<tt>[[#icicle-modal-cycle-down-action-keys]]</tt>'
-** `<tt>[[#icicle-modal-cycle-up-action-keys]]</tt>'
-** `<tt>[[#icicle-prefix-cycle-next-keys]]</tt>'
-** `<tt>[[#icicle-prefix-cycle-previous-keys]]</tt>'
-** `<tt>[[#icicle-apropos-cycle-next-keys]]</tt>'
-** `<tt>[[#icicle-apropos-cycle-previous-keys]]</tt>'
-** `<tt>[[#icicle-modal-cycle-down-keys]]</tt>'
-** `<tt>[[#icicle-modal-cycle-up-keys]]</tt>'
+* `<tt>[[#icicle-prefix-cycle-next-action-keys]]</tt>'
+* `<tt>[[#icicle-prefix-cycle-previous-action-keys]]</tt>'
+* `<tt>[[#icicle-apropos-cycle-next-action-keys]]</tt>'
+* `<tt>[[#icicle-apropos-cycle-previous-action-keys]]</tt>'
+* `<tt>[[#icicle-modal-cycle-down-action-keys]]</tt>'
+* `<tt>[[#icicle-modal-cycle-up-action-keys]]</tt>'
+* `<tt>[[#icicle-prefix-cycle-next-keys]]</tt>'
+* `<tt>[[#icicle-prefix-cycle-previous-keys]]</tt>'
+* `<tt>[[#icicle-apropos-cycle-next-keys]]</tt>'
+* `<tt>[[#icicle-apropos-cycle-previous-keys]]</tt>'
+* `<tt>[[#icicle-modal-cycle-down-keys]]</tt>'
+* `<tt>[[#icicle-modal-cycle-up-keys]]</tt>'
 
 ----
 [:icicle-top-level-when-sole-completion-delay]
@@ -1124,11 +1111,11 @@ One use of `nil' `icicle-search-cleanup-flag' is to ''highlight'' regexp matches
 search context, other context matches, current-input matches, and even
 regexp subgroups.  The faces for these are, respectively:
 
-** `icicle-search-main-regexp-current'
-** `icicle-search-main-regexp-others'
-** `icicle-search-highlight-input-matches-here' (everywhere, if
+* `icicle-search-main-regexp-current'
+* `icicle-search-main-regexp-others'
+* `icicle-search-highlight-input-matches-here' (everywhere, if
 `icicle-search-highlight-all-current-flag' is non-`nil')
-** `icicle-search-context-level-1' through `icicle-search-context-level-8'
+* `icicle-search-context-level-1' through `icicle-search-context-level-8'
 
 
 ----

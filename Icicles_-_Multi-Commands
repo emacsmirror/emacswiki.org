@@ -80,8 +80,9 @@ want to choose (act on) the current cycle candidate.  Or just
 press and hold '''Control''' while clicking each chosen candidate with
 `mouse-2'.
 
-Similarly, you can use `<code>C-next</code>', `<code>C-prior</code>', `<code>C-down</code>', and
-`<code>C-up</code>' to act on successive candidates, forward or backward.
+Similarly, you can use `C-down', 
+`C-up', `C-next', `C-prior', `C-end', or
+`C-home' to act on successive candidates, forward or backward.
 You can thus just hold down the '''Control''' key while cycling, to act
 on each candidate in turn, if you want.
 
@@ -150,8 +151,8 @@ on the current cycle candidate.  If no such special action is
 defined, then help on the candidate is displayed -- displaying help
 is just the default action for `C-RET', used when no other action is defined.  You can
 always access candidate help using the `C-M-' prefix: `C-M-help',
-`C-M-f1', `C-M-RET', `C-M-mouse-2', `C-M-next', `C-M-prior',
-`C-M-down', and `C-M-up'.
+`C-M-f1', `C-M-RET', `C-M-mouse-2', `C-M-down', `C-M-up', `C-M-next', `C-M-prior',
+`C-M-end', and `C-M-home'.
 
 You can also cycle among elements of a set,
 performing actions, if you use my libraries '''<tt>[[doremi.el]]</tt>''', '''<tt>[[doremi-cmd.el]]</tt>''', and '''<tt>[[doremi-frm.el]]</tt>'''.  Like '''Icicles''', '''DoReMi''' lets you see the effect of a choice immediately, whenever you make changes.  Each library has its own advantages and special uses. Advantages of '''Icicles''' include:

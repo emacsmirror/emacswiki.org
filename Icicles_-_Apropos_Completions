@@ -76,7 +76,7 @@ different candidates. In the case of apropos completion, the root is not the inp
 
 Regexp matching one of the ''most powerful'' features of '''Icicles'''.
 ''Enjoy! Explore!''  You can at any time switch back and forth between prefix
-completion (`down', `up'), apropos completion (`next', `prior'),
+completion (`end', `home'), apropos completion (`next', `prior'),
 and input history traversal (`M-n', `M-p').
 
 Here is a screenshot showing apropos completion and cycling in the minibuffer. It corresponds to input `M-x minib S-TAB' followed by hitting `next' several times. 

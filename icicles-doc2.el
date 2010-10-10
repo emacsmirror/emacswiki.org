@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  8 10:51:15 2010 (-0700)
+;; Last-Updated: Sat Oct  9 20:09:51 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27124
+;;     Update #: 27234
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -539,14 +539,15 @@
 ;;     replacement string that is allowed by `query-replace-regexp'.
 ;;     In Emacs 22 or later, this includes `\,', to substitute the
 ;;     result of a Lisp evaluation.  Use the alternative-action keys
-;;     for replacement: `C-S-RET', `C-S-mouse-2', `C-S-next',
-;;     `C-S-prior', `C-S-down', and `C-S-up'.  At the first use, you
-;;     are prompted for the replacement string; it is used thereafter.
-;;     You can use `M-|' (`icicle-all-candidates-list-alt-action') to
-;;     replace all matches.  See (@> "Search and Replace").
+;;     for replacement: `C-S-RET', `C-S-mouse-2', `C-S-down',
+;;     `C-S-up', `C-S-next', `C-S-prior', `C-S-end', and `C-S-home'.
+;;     At the first use, you are prompted for the replacement string;
+;;     it is used thereafter.  You can use `M-|'
+;;     (`icicle-all-candidates-list-alt-action') to replace all
+;;     matches.  See (@> "Search and Replace").
 ;;
 ;;  12. When you visit a search context (using `C-mouse-2' or
-;;     `C-next', for example), the part of the candidate that matches
+;;     `C-down', for example), the part of the candidate that matches
 ;;     your input is highlighted.  An entire search context is
 ;;     highlighted in face `icicle-search-main-regexp-current', and
 ;;     the part that matches your input is highlighted in face
@@ -977,8 +978,8 @@
 ;;
 ;;  You can replace the current search match by using any of the
 ;;  alternative action keys: `C-S-RET', `C-S-mouse-2' (in
-;;  `*Completions*'), `C-S-next', `C-S-prior', `C-S-down', and
-;;  `C-S-up'.  You can use `M-|'
+;;  `*Completions*'), `C-S-down', `C-S-up', `C-S-next', `C-S-prior',
+;;  `C-S-end', or `C-S-home', .  You can use `M-|'
 ;;  (`icicle-all-candidates-list-alt-action') to replace all matches
 ;;  of your current input at once, throughout the search space.
 ;;
@@ -1070,11 +1071,11 @@
 ;;    also use special replacement constructs, such as `\#'.
 ;;
 ;;  If `icicle-search-replace-whole-candidate-flag' is true, then you
-;;  can use the navigational alternative action keys, `C-S-next',
-;;  `C-S-prior', `C-S-down', and `C-S-up', repeatedly to replace
-;;  successive search contexts.  At the buffer limits, these commands
-;;  wrap around to the other buffer limit (last search context to
-;;  first, and vice versa).
+;;  can use the navigational alternative action keys, `C-S-down',
+;;  `C-S-up', `C-S-next', `C-S-prior', `C-S-end', and `C-S-home',
+;;  repeatedly to replace successive search contexts.  At the buffer
+;;  limits, these commands wrap around to the other buffer limit (last
+;;  search context to first, and vice versa).
 ;;
 ;;  Search traversal using these go-to-next-context-and-replace keys
 ;;  is always by search context, not by individual input match.  This
@@ -1345,10 +1346,10 @@
 ;;  `*grep*', you can use command `icicle-compilation-search', bound
 ;;  to `C-c `', to search among the result set (search hits).  This is
 ;;  similar to `icicle-search', but when you use `C-RET', `C-mouse-2',
-;;  `C-prior', `C-next', `C-up', or `C-down', it visits the source
-;;  code that corresponds to the current line in the compilation
-;;  buffer.  Just as for `icicle-search', you can narrow the set of
-;;  search contexts by typing a regexp.
+;;  `C-down', `C-up', `C-next', `C-prior', `C-end', or `C-home', it
+;;  visits the source code that corresponds to the current line in the
+;;  compilation buffer.  Just as for `icicle-search', you can narrow
+;;  the set of search contexts by typing a regexp.
 ;;
 ;;  Using `icicle-compilation-search' with `grep' gives you two levels
 ;;  of regexp searching: 1) the `grep' regexp and 2) your current
@@ -1445,8 +1446,8 @@
 ;;    hits or parts of search hits.
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Multi-Commands") for
-;;    information about using `C-RET', `C-mouse-2', `C-prior',
-;;    `C-next', `C-up', and `C-down'.
+;;    information about using `C-RET', `C-mouse-2', `C-down', `C-up',
+;;    `C-next', `C-prior', `C-end', and `C-home'.
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Progressive Completion")
 ;;    for information about using any number of search regexps with
@@ -2179,8 +2180,9 @@
 ;;  particular, although the default order is alphabetical, you can
 ;;  choose `in book order', which shows the node candidates in the
 ;;  same order as in the book.  In that case, using `g' and then
-;;  navigating among candidates sequentially using `C-up', `C-down',
-;;  `C-next', or `C-prior' visits the nodes in their natural order.
+;;  navigating among candidates sequentially using `C-down', `C-up',
+;;  `C-next', `C-prior', `C-end', or `C-home', visits the nodes in
+;;  their natural order.
 ;;
 ;;  As a special case of this, if you use a negative prefix argument
 ;;  (that is, `M-- g'), then not only are the candidate nodes
@@ -4279,89 +4281,65 @@
 ;;    twice, so that this option can have the proper effect.
 ;;
 ;;  * The following user options specify the keys to use for
-;;    completion-candidate cycling:
+;;    mode-specific completion-candidate cycling.  The default
+;;    bindings are in parentheses.
 ;;
-;;    `icicle-apropos-cycle-previous-keys'            (cycle)
-;;    `icicle-apropos-cycle-next-keys'                (cycle)
-;;    `icicle-prefix-cycle-previous-keys'             (cycle)
-;;    `icicle-prefix-cycle-next-keys'                 (cycle)
-;;    `icicle-apropos-cycle-previous-action-keys'     (cycle, act)
-;;    `icicle-apropos-cycle-next-action-keys'         (cycle, act)
-;;    `icicle-prefix-cycle-previous-action-keys'      (cycle, act)
-;;    `icicle-prefix-cycle-next-action-keys'          (cycle, act)
-;;    `icicle-apropos-cycle-previous-alt-action-keys' (cycle, alt act)
-;;    `icicle-apropos-cycle-next-alt-action-keys'     (cycle, alt act)
-;;    `icicle-prefix-cycle-previous-alt-action-keys'  (cycle, alt act)
-;;    `icicle-prefix-cycle-next-alt-action-keys'      (cycle, alt act)
-;;    `icicle-apropos-cycle-previous-help-keys'       (cycle, help)
-;;    `icicle-apropos-cycle-next-help-keys'           (cycle, help)
-;;    `icicle-prefix-cycle-previous-help-keys'        (cycle, help)
-;;    `icicle-prefix-cycle-next-help-keys'            (cycle, help)
+;;    `icicle-apropos-cycle-next-keys'                (`next')
+;;    `icicle-apropos-cycle-previous-keys'            (`prior')
+;;    `icicle-prefix-cycle-next-keys'                 (`end')
+;;    `icicle-prefix-cycle-previous-keys'             (`home')
+;;    `icicle-apropos-cycle-next-action-keys'         (`C-next')
+;;    `icicle-apropos-cycle-previous-action-keys'     (`C-prior')
+;;    `icicle-prefix-cycle-next-action-keys'          (`C-end')
+;;    `icicle-prefix-cycle-previous-action-keys'      (`C-home')
+;;    `icicle-apropos-cycle-next-alt-action-keys'     (`C-S-next')
+;;    `icicle-apropos-cycle-previous-alt-action-keys' (`C-S-prior')
+;;    `icicle-prefix-cycle-next-alt-action-keys'      (`C-S-end')
+;;    `icicle-prefix-cycle-previous-alt-action-keys'  (`C-S-home')
+;;    `icicle-apropos-cycle-next-help-keys'           (`C-M-next')
+;;    `icicle-apropos-cycle-previous-help-keys'       (`C-M-prior')
+;;    `icicle-prefix-cycle-next-help-keys'            (`C-M-end')
+;;    `icicle-prefix-cycle-previous-help-keys'        (`C-M-home')
 ;;
-;;    By default, these keys are, respectively, `prior', `next', `up',
-;;    `down', `C-prior', `C-next', `C-up', `C-down', `C-S-prior',
-;;    `C-S-next', `C-S-up', `C-S-down', `C-M-prior', `C-M-next',
-;;    `C-M-up', and `C-M-down'.
+;;  * The following user options specify the keys to use for cycling
+;;    candidates according to the current completion mode.  The
+;;    default bindings are in parentheses.
 ;;
-;;    The keys defined by options `icicle-prefix-cycle-previous-keys'
-;;    and `icicle-prefix-cycle-next-keys' are used also to move up or
-;;    down a line in buffer `*Completions*'.
-;;
-;;  * Non-nil option `icicle-cycling-respects-completion-mode' causes
-;;    the modal cycling keys to act differently during completion.
-;;    Those keys are configurable using the following user options
-;;    (default bindings in parens):
-;;
-;;    `icicle-modal-cycle-up-keys'                    (`up')
-;;    `icicle-modal-cycle-up-action-keys'             (`C-up')
-;;    `icicle-modal-cycle-up-alt-action-keys'         (`C-S-up')
-;;    `icicle-modal-cycle-up-help-keys'               (`C-M-up')
 ;;    `icicle-modal-cycle-down-keys'                  (`down')
+;;    `icicle-modal-cycle-up-keys'                    (`up')
 ;;    `icicle-modal-cycle-down-action-keys'           (`C-down')
+;;    `icicle-modal-cycle-up-action-keys'             (`C-up')
 ;;    `icicle-modal-cycle-down-alt-action-keys'       (`C-S-down')
+;;    `icicle-modal-cycle-up-alt-action-keys'         (`C-S-up')
 ;;    `icicle-modal-cycle-down-help-keys'             (`C-M-down')
+;;    `icicle-modal-cycle-up-help-keys'               (`C-M-up')
 ;;
 ;;    The completion mode, and hence the behavior of these keys, is
-;;    changed whenever you hit `TAB' or `S-TAB' during completion: the
-;;    mode is prefix completion after `TAB' and apropos completion
+;;    changed only when you hit `TAB' or `S-TAB' during completion:
+;;    the mode is prefix completion after `TAB' and apropos completion
 ;;    after `S-TAB'.
 ;;
-;;    Before you hit `TAB' or `S-TAB', the cycling behavior depends on
-;;    the particular non-nil value of the option:
+;;    Note: If your customizations of the modal and non-modal cycling
+;;    keys conflict, the non-modal values win.  For example, if you
+;;    define both `icicle-modal-cycle-up-keys' and
+;;    `icicle-prefix-cycle-previous-keys' as the list `([up])', then
+;;    the `up' key will perform prefix cycling, not modal cycling.
 ;;
-;;    - `prefix'  means cycle prefix completions
+;;  * User option `icicle-default-cycling-mode' determines the
+;;    completion mode to be used before you hit `TAB' or `S-TAB'.
+;;    This affects only modal cycling - e.g. using keys such as `down'
+;;    and `C-down'.  Values:
+;;
+;;    - `prefix' (default) means cycle prefix completions
 ;;    - `apropos' means cycle apropos completions
-;;    - Other non-nil value means cycle inputs from the input history
+;;    - other non-nil value means cycle inputs from the input history
+;;    - nil means do not cycle: you must first hit a completion key
 ;;
 ;;    For example, if the value is `apropos' then you can immediately
 ;;    cycle apropos completions without first hitting `S-TAB'.
 ;;
 ;;    Once you have used `TAB' or `S-TAB', the only way to traverse
-;;    the input history is to use `M-p' and `M-n' (`up' and `down'
-;;    will cycle completions).
-;;
-;;    If the option is non-nil you can still use `M-p' and `M-n' to
-;;    traverse the input history, and `prior' and `next' to cycle
-;;    apropos completions (assuming that those default keys have not
-;;    been changed).  And if you customize either the modal cycling
-;;    keys or the prefix cycling keys so that they are different
-;;    (e.g. one of those sets is no longer `up'/`down'), then you can
-;;    also still use the latter.  In this case, you need not use `TAB'
-;;    and `S-TAB' to switch between the two completion types, even
-;;    when this option is non-nil - you can use the separate apropos
-;;    and prefix cycling keys.
-;;
-;;  * The values of user options `icicle-modal-cycle-up-action-keys',
-;;    `icicle-modal-cycle-up-alt-action-keys',
-;;    `icicle-modal-cycle-up-help-keys', `icicle-modal-cycle-up-keys',
-;;    `icicle-modal-cycle-down-action-keys',
-;;    `icicle-modal-cycle-down-alt-action-keys',
-;;    `icicle-modal-cycle-down-help-keys', and
-;;    `icicle-modal-cycle-down-keys', are the keys used for modal
-;;    cycling.  By default, these keys are `C-up', `C-S-up', `C-M-up',
-;;    `up', `C-down', `C-S-down', `C-M-down', and `down'.  These
-;;    options have an effect only if option
-;;    `icicle-cycling-respects-completion-mode' is non-nil.
+;;    the input history is to use `M-p' and `M-n'.
 ;;
 ;;  * User option `icicle-word-completion-keys' is a list of keys to
 ;;    use for word completion.  By default, the only such key is
@@ -4428,12 +4406,12 @@
 ;;
 ;;  * If option `icicle-use-C-for-actions-flag' is nil, then the keys
 ;;    that cycle candidates are swapped with the keys that both cycle
-;;    and act on a candidate.  You can then use `C-down', `C-up',
-;;    `C-next', and `C-prior' to both cycle and act, and `down', `up',
-;;    `next', and `prior' to merely cycle, without acting
-;;    (e.g. navigating).  The option has no effect on other keys.  You
-;;    can toggle this option at any time using `M-g'
-;;    (`icicle-toggle-C-for-actions') in the minibuffer.
+;;    and act on a candidate.  You can then use `down', `up', `next',
+;;    `prior', `end' and `home' to both cycle and act, and `C-down',
+;;    `C-up', `C-next', `C-prior', `C-end', and `C-home' to merely
+;;    cycle, without acting (e.g. navigating).  The option has no
+;;    effect on other keys.  You can toggle this option at any time
+;;    using `M-g' (`icicle-toggle-C-for-actions') in the minibuffer.
 ;;
 ;;    (The keys mentioned here are the default bindings.  The actual
 ;;    keys swapped are those defined by these user options:
@@ -5442,7 +5420,7 @@
 ;;          you want to cycle through, just: 1) move the cursor
 ;;          (e.g. `C-e'), 2) hit `TAB' or `S-TAB' to "complete" the
 ;;          candidate, and then 3) use any of the cycle keys, such as
-;;          `up', to cycle within the candidate directory.
+;;          `down', to cycle within the candidate directory.
 ;;
 ;;          Although the candidate directory was already completed by
 ;;          cycling, moving the cursor and explicitly "completing" it
@@ -5805,50 +5783,60 @@
 ;;(@* "Minibuffer Bindings")
 ;;  ** Minibuffer Bindings **
 ;;
-;;  There are many key bindings available during completion.  Most of
-;;  these key sequences are bound in the minibuffer completion
-;;  keymaps, but some are bound in the `*Completions*' buffer keymap.
-;;  In addition, clicking `C-mouse-3' on a completion candidate in
-;;  buffer `*Completions*' pops up a menu of available commands.
+;;  There are many key bindings available while input is read in the
+;;  minibuffer.  Most of these keys are bound in the minibuffer
+;;  completion keymaps, but some are bound in the `*Completions*'
+;;  buffer keymap and some are bound when reading input without
+;;  completion.
 ;;
-;;  Some of these menu commands are applicable to the completion you
-;;  click; others apply to the current state of completion or to the
-;;  complete set of completion candidates.  The associated key
-;;  bindings are indicated in the menu items, so this can be a good
-;;  way to learn minibuffer and `*Completions*' bindings.
+;;  In addition, clicking `C-mouse-3' on a completion candidate in
+;;  buffer `*Completions*' pops up a menu of available commands.  Some
+;;  of these menu commands are applicable to the completion you click;
+;;  others apply to the current state of completion or to the complete
+;;  set of completion candidates.  The associated key bindings are
+;;  indicated in the menu items, so this can be a good way to learn
+;;  minibuffer and `*Completions*' bindings.
+;;
+;;  The following key is helpful during any minibuffer input.  It pops
+;;  up the *Help* buffer with information about using the minibuffer
+;;  in Icicle mode.  During completion, this includes information
+;;  similar to what you are reading now.  It also lists toggle
+;;  commands and the current toggle values.
+;;
+;;    `C-?' - `icicle-minibuffer-help'
 ;;
 ;;  The following key bindings are made for the minibuffer completion
 ;;  keymaps.  They are in effect whenever you are using the minibuffer
 ;;  for input with completion (e.g. `completing-read',
 ;;  `read-file-name', `M-x').
 ;;
-;;    `C-?' - `icicle-minibuffer-help': Pop up a *Help* buffer with
-;;            information on using the minibuffer in Icicle mode.
-;;            During completion, this includes information similar to
-;;            what you are reading now.  It also includes toggle
-;;            commands and the current toggle values.
-;;
-;;    `down', `up'    - `icicle-next-prefix-candidate',
-;;                      `icicle-previous-prefix-candidate',
-;;                      which cycle candidate prefix completions.
-;;
-;;    `next', `prior' - `icicle-next-apropos-candidate',
-;;                      `icicle-previous-apropos-candidate', which
-;;                      cycle candidate apropos completions.
-;;
 ;;    `down', `wheel-down' - `icicle-next-candidate-per-mode' (modal)
 ;;    `up', `wheel-up' - `icicle-previous-candidate-per-mode' (modal)
 ;;
-;;    (The documentation always refers to the keys that cycle
-;;    completion candidates as `down', `up', `next', and `prior'.
-;;    Actually, these are the cycling keys only by default.  You can
-;;    customize the cycling keys using options
-;;    `icicle-prefix-cycle-next-keys', `icicle-modal-cycle-down-keys'
-;;    (modal), `icicle-prefix-cycle-previous-keys',
-;;    `icicle-modal-cycle-up-keys' (modal),
-;;    `icicle-apropos-cycle-next-keys', and
-;;    `icicle-apropos-cycle-previous-keys'.  The mouse wheel bindings
-;;    are only for Emacs 22 and later.)
+;;    `next', `prior'  - `icicle-next-apropos-candidate',
+;;                       `icicle-previous-apropos-candidate', which
+;;                       cycle candidate apropos completions.
+;;
+;;    `end', `home'    - `icicle-next-prefix-candidate',
+;;                       `icicle-previous-prefix-candidate',
+;;                       which cycle candidate prefix completions.
+;;
+;;      Whether a modal cycling key is used for prefix or apropos
+;;      completion at a given time depends on the current completion
+;;      mode, which is determined by which of `TAB' and `S-TAB' was used
+;;      last, or by option `icicle-default-cycling-mode' if neither was
+;;      used.
+;;
+;;      (The mouse wheel bindings are only for Emacs 22 and later.
+;;      The documentation refers to the keys that cycle completion
+;;      candidates as `down', `up', `next', `prior', `end', and
+;;      `home'.  Actually, these are the cycling keys only by default.
+;;      You can customize them using options
+;;      `icicle-modal-cycle-down-keys', `icicle-modal-cycle-up-keys',
+;;      `icicle-apropos-cycle-next-keys',
+;;      `icicle-apropos-cycle-previous-keys',
+;;      `icicle-prefix-cycle-next-keys', and
+;;      icicle-prefix-cycle-previous-keys'.)
 ;;
 ;;    Keys bound globally to commands that perform simple text
 ;;    insertion, deletion, and transposition operations - commands
@@ -5978,28 +5966,6 @@
 ;;    `.'     - `icicle-insert-dot-command'
 ;;    `C-M-.' - `icicle-toggle-dot'
 ;;
-;;  If option `icicle-cycling-respects-completion-mode' is non-nil,
-;;  then you can use the keys that are defined by the following
-;;  options for both prefix and apropos completion (as well as for
-;;  input-history traversal):
-;;
-;;  * `icicle-modal-cycle-up-keys'
-;;  * `icicle-modal-cycle-down-keys'
-;;  * `icicle-modal-cycle-up-action-keys'
-;;  * `icicle-modal-cycle-down-action-keys'
-;;  * `icicle-modal-cycle-up-alt-action-keys'
-;;  * `icicle-modal-cycle-down-alt-action-keys'
-;;  * `icicle-modal-cycle-up-help-keys'
-;;  * `icicle-modal-cycle-down-help-keys'
-;;
-;;  By default, the keys defined for these options are, respectively,
-;;  `up', `down', `C-up', `C-down', `C-S-up', `C-S-down', `C-M-up',
-;;  and `C-M-down'.
-;;
-;;  Whether one of the keys is used for prefix or apropos completion
-;;  at a given time depends on the current completion mode, which is
-;;  determined by which of `TAB' and `S-TAB' was used last.
-;;
 ;;  In vanilla Emacs, the following keys have a special purpose during
 ;;  input completion, but in Icicles they simply insert the character
 ;;  typed - they are self-inserting.  This is because (1) there are
@@ -6103,15 +6069,14 @@
 ;;
 ;;    `C-RET'     - `icicle-candidate-action': current candidate
 ;;    `C-mouse-2' - `icicle-mouse-candidate-action': clicked candidate
-;;    `C-up'      - `icicle-previous-prefix-candidate-action'
-;;    `C-up', `C-wheel-up'
-;;                - `icicle-previous-candidate-per-mode-action'
-;;                  (modal)
-;;    `C-down'    - `icicle-next-prefix-candidate-action'
 ;;    `C-down', `C-wheel-down'
 ;;                - `icicle-next-candidate-per-mode-action' (modal)
-;;    `C-prior'   - `icicle-previous-apropos-candidate-action'
+;;    `C-up', `C-wheel-up'
+;;                - `icicle-previous-candidate-per-mode-action'(modal)
 ;;    `C-next'    - `icicle-next-apropos-candidate-action'
+;;    `C-prior'   - `icicle-previous-apropos-candidate-action'
+;;    `C-end'     - `icicle-next-prefix-candidate-action'
+;;    `C-home'    - `icicle-previous-prefix-candidate-action'
 ;;    `C-!'       - `icicle-all-candidates-action': each candidate
 ;;    `M-!'       - `icicle-all-candidates-list-action': all, as list
 ;;    `M-RET'     - `icicle-candidate-read-fn-invoke': apply function
@@ -6119,9 +6084,9 @@
 ;;    `M-mouse-2' - `icicle-mouse-candidate-read-fn-invoke': apply fn
 ;;    `S-delete'  - `icicle-delete-candidate-object': delete object
 ;;
-;;  (Actually, some of these are only default key bindings.  You can
-;;  customize the keys to use for `previous' and `next' actions.  The
-;;  mouse-wheel bindings are only for Emacs 22 and later.  The
+;;  (Some of these are only default key bindings.  You can customize
+;;  the keys to use for `previous' and `next' actions, for instance.
+;;  The mouse-wheel bindings are only for Emacs 22 and later.  The
 ;;  notation used here for the wheel bindings is that for Emacs on
 ;;  Windows; on other platforms different key notations are used for
 ;;  the wheel.  This same note applies to corresponding keys used with
@@ -6137,15 +6102,14 @@
 ;;
 ;;    `C-M-RET'   - `icicle-help-on-candidate': current candidate
 ;;    `C-M-mouse-2' - `icicle-mouse-help-on-candidate': clicked
-;;    `C-M-up'    - `icicle-help-on-previous-prefix-candidate'
-;;    `C-M-up', `C-M-wheel-up'
-;;                - `icicle-previous-candidate-per-mode-help'
-;;                  (modal)
-;;    `C-M-down'  - `icicle-help-on-next-prefix-candidate'
 ;;    `C-M-down', `C-M-wheel-down'
 ;;                - `icicle-next-candidate-per-mode-help' (modal)
-;;    `C-M-prior' - `icicle-help-on-previous-apropos-candidate'
+;;    `C-M-up', `C-M-wheel-up'
+;;                - `icicle-previous-candidate-per-mode-help' (modal)
 ;;    `C-M-next'  - `icicle-help-on-next-apropos-candidate'
+;;    `C-M-prior' - `icicle-help-on-previous-apropos-candidate'
+;;    `C-M-end'   - `icicle-help-on-next-prefix-candidate'
+;;    `C-M-home'  - `icicle-help-on-previous-prefix-candidate'
 ;;
 ;;  The following minibuffer bindings provide an alternative action
 ;;  for individual candidates.  The alternative action is specific to
@@ -6153,16 +6117,16 @@
 ;;
 ;;    `C-S-RET'     - `icicle-candidate-alt-action': current candidate
 ;;    `C-S-mouse-2' - `icicle-mouse-candidate-alt-action': clicked
-;;    `C-S-up'      - `icicle-previous-prefix-candidate-alt-action'
-;;    `C-S-up', `C-S-wheel-up'
-;;                  - `icicle-previous-candidate-per-mode-alt-action'
-;;                    (modal)
-;;    `C-S-down'    - `icicle-next-prefix-candidate-alt-action'
 ;;    `C-S-down', `C-S-wheel-down'
 ;;                  - `icicle-next-candidate-per-mode-alt-action'
 ;;                    (modal)
-;;    `C-S-prior'   - `icicle-previous-apropos-candidate-alt-action'
+;;    `C-S-up', `C-S-wheel-up'
+;;                  - `icicle-previous-candidate-per-mode-alt-action'
+;;                    (modal)
 ;;    `C-S-next'    - `icicle-next-apropos-candidate-alt-action'
+;;    `C-S-prior'   - `icicle-previous-apropos-candidate-alt-action'
+;;    `C-S-end'     - `icicle-next-prefix-candidate-alt-action'
+;;    `C-S-home'    - `icicle-previous-prefix-candidate-alt-action'
 ;;    `C-|'         - `icicle-all-candidates-alt-action': each
 ;;    `M-|'         - `icicle-all-candidates-list-alt-action': list
 ;;
@@ -6204,7 +6168,6 @@
 ;;    `C-x .'   - `icicle-toggle-hiding-common-match'
 ;;    `C-;'     - `icicle-toggle-expand-to-common-match'
 ;;    `C-,'     - `icicle-change-sort-order'
-;;    `C-,'     - `icicle-toggle-search-replace-whole' (search)
 ;;    `M-,'     - `icicle-change-alternative-sort-order'
 ;;    `C-M-,'   - `icicle-toggle-alternative-sorting'
 ;;    `C-^'     - `icicle-toggle-remote-file-testing'
@@ -6220,6 +6183,7 @@
 ;;    `M-('     - `icicle-next-S-TAB-completion-method'
 ;;    `M-~'     - `icicle-toggle-~-for-home-dir'
 ;;    `M-_'     - `icicle-toggle-ignored-space-prefix'
+;;    `M-_'     - `icicle-toggle-search-replace-whole' (search)
 ;;    `C-M-_'   - `icicle-toggle-proxy-candidates'
 ;;
 ;;  The following minibuffer bindings let you incrementally change
@@ -6241,7 +6205,8 @@
 ;;  search:
 ;;
 ;;    `C-.'     - `icicle-toggle-search-cleanup'
-;;    `C-,'     - `icicle-toggle-search-replace-whole'
+;;    `C-,'     - `icicle-change-sort-order'
+;;    `M-_'     - `icicle-toggle-search-replace-whole'
 ;;    `M-,'     - `icicle-search-define-replacement'
 ;;    `M-q'     - `icicle-toggle-search-whole-word'
 ;;    `C-^'     - `icicle-toggle-highlight-all-current'
@@ -6282,12 +6247,7 @@
 ;;                      `icicle-move-to-next-completion': Navigate
 ;;                      backward & forward among candidates
 ;;    `up', `down'    - `icicle-previous-line', `icicle-next-line':
-;;                      Navigate up & down among candidates (The
-;;                      documentation refers to these keys as `up' and
-;;                      `down'.  Actually, these are the keys only by
-;;                      default.  You can customize them using options
-;;                      `icicle-prefix-cycle-next-keys' and
-;;                      `icicle-prefix-cycle-previous-keys'.)
+;;                      Navigate up & down among candidates
 ;;    `C-insert'      - `icicle-insert-completion': Move cursor to the
 ;;                      minibuffer, with the current `*Completions*'
 ;;                      candidate as input
@@ -6329,68 +6289,79 @@
 ;;  any of the top-level bindings in Icicle mode.
 ;;
 ;;  There are some other user options that make it easy to customize
-;;  some Icicles key bindings.  Most of these are minibuffer key
-;;  bindings.
+;;  Icicles key bindings.  Most of these are minibuffer bindings.
 ;;
-;;  * `icicle-apropos-cycle-previous-keys'               (`prior')
-;;    Cycle to the previous apropos-completion candidate.
-;;  * `icicle-apropos-cycle-next-keys'                   (`next')
-;;    Cycle to the next apropos-completion candidate.
-;;  * `icicle-prefix-cycle-previous-keys'                (`up')
-;;    Cycle to the previous prefix-completion candidate.
-;;  * `icicle-prefix-cycle-next-keys'                    (`down')
-;;    Cycle to the next prefix-completion candidate.
-;;  * `icicle-modal-cycle-up-keys'                       (`up')
-;;    Cycle to the previous candidate (modal).
-;;  * `icicle-modal-cycle-down-keys'                     (`down')
+;;  * `icicle-modal-cycle-down-keys'            (`down', `wheel-down')
 ;;    Cycle to the next candidate (modal).
-;;  * `icicle-apropos-cycle-previous-action-keys'        (`C-prior')
-;;    Cycle to previous apropos-completion candidate and act on it.
-;;  * `icicle-apropos-cycle-next-action-keys'            (`C-next')
-;;    Cycle to next apropos-completion candidate and act on it.
-;;  * `icicle-prefix-cycle-previous-action-keys'         (`C-up')
-;;    Cycle to previous prefix-completion candidate and act on it.
-;;  * `icicle-prefix-cycle-next-action-keys'             (`C-down')
-;;    Cycle to next prefix-completion candidate and act on it.
-;;  * `icicle-modal-cycle-up-action-keys'                (`C-up')
-;;    Cycle to previous candidate and act on it (modal).
-;;  * `icicle-modal-cycle-down-action-keys'              (`C-down')
+;;  * `icicle-modal-cycle-up-keys'                  (`up', `wheel-up')
+;;    Cycle to the previous candidate (modal).
+;;  * `icicle-apropos-cycle-next-keys'                        (`next')
+;;    Cycle to the next apropos-completion candidate.
+;;  * `icicle-apropos-cycle-previous-keys'                   (`prior')
+;;    Cycle to the previous apropos-completion candidate.
+;;  * `icicle-prefix-cycle-next-keys'                          (`end')
+;;    Cycle to the next prefix-completion candidate.
+;;  * `icicle-prefix-cycle-previous-keys'                     (`home')
+;;    Cycle to the previous prefix-completion candidate.
+;;  * `icicle-modal-cycle-down-action-keys'  (`C-down', `C-wheel-down)
 ;;    Cycle to next candidate and act on it (modal).
+;;  * `icicle-modal-cycle-up-action-keys'        (`C-up', `C-wheel-up)
+;;    Cycle to previous candidate and act on it (modal).
+;;  * `icicle-apropos-cycle-next-action-keys'               (`C-next')
+;;    Cycle to next apropos-completion candidate and act on it.
+;;  * `icicle-apropos-cycle-previous-action-keys'          (`C-prior')
+;;    Cycle to previous apropos-completion candidate and act on it.
+;;  * `icicle-prefix-cycle-next-action-keys'                 (`C-end')
+;;    Cycle to next prefix-completion candidate and act on it.
+;;  * `icicle-prefix-cycle-previous-action-keys'            (`C-home')
+;;    Cycle to previous prefix-completion candidate and act on it.
+;;  * `icicle-modal-cycle-down-alt-action-keys'           (`C-S-down')
+;;    Cycle to next candidate and alternative-act on it (modal).
+;;  * `icicle-modal-cycle-up-alt-action-keys'               (`C-S-up')
+;;    Cycle to previous candidate and alternative-act on it (modal).
+;;  * `icicle-apropos-cycle-next-alt-action-keys'         (`C-S-next')
+;;    Cycle to next apropos-completion candidate and alternative-act
+;;    on it.
 ;;  * `icicle-apropos-cycle-previous-alt-action-keys'    (`C-S-prior')
 ;;    Cycle to previous apropos-completion candidate and
 ;;    alternative-act on it.
-;;  * `icicle-apropos-cycle-next-alt-action-keys'        (`C-S-next')
-;;    Cycle to next apropos-completion candidate and alternative-act
-;;    on it.
-;;  * `icicle-prefix-cycle-previous-alt-action-keys'     (`C-S-up')
-;;    Cycle to previous prefix-completion candidate and
-;;    alternative-act on it.
-;;  * `icicle-prefix-cycle-next-alt-action-keys'         (`C-S-down')
+;;  * `icicle-prefix-cycle-next-alt-action-keys'           (`C-S-end')
 ;;    Cycle to next prefix-completion candidate and alternative-act
 ;;    on it.
-;;  * `icicle-modal-cycle-up-alt-action-keys'            (`C-S-up')
-;;    Cycle to previous candidate and alternative-act on it (modal).
-;;  * `icicle-modal-cycle-down-alt-action-keys'          (`C-S-down')
-;;    Cycle to next candidate and alternative-act on it (modal).
-;;  * `icicle-prefix-complete-keys'                      (`TAB')
+;;  * `icicle-prefix-cycle-previous-alt-action-keys'      (`C-S-home')
+;;    Cycle to previous prefix-completion candidate and
+;;    alternative-act on it.
+;;  * `icicle-modal-cycle-down-help-keys'                 (`C-M-down')
+;;    Cycle to next candidate and show help for it (modal).
+;;  * `icicle-modal-cycle-up-help-keys'                     (`C-M-up')
+;;    Cycle to previous candidate and show help for it (modal).
+;;  * `icicle-apropos-cycle-next-help-keys'               (`C-M-next')
+;;    Cycle to next apropos-completion candidate and show help for it.
+;;  * `icicle-apropos-cycle-previous-help-keys'          (`C-M-prior')
+;;    Cycle to previous apropos-completion candidate and show help.
+;;  * `icicle-prefix-cycle-next-help-keys'                 (`C-M-end')
+;;    Cycle to next prefix-completion candidate and show help for it.
+;;  * `icicle-prefix-cycle-previous-help-keys'            (`C-M-home')
+;;    Cycle to previous prefix-completion candidate and show help.
+;;  * `icicle-prefix-complete-keys'                            (`TAB')
 ;;    Prefix-complete your input.
-;;  * `icicle-apropos-complete-keys'                     (`S-TAB')
+;;  * `icicle-apropos-complete-keys'                         (`S-TAB')
 ;;    Apropos-complete your input.
-;;  * `icicle-prefix-complete-no-display-keys'           (`C-M-TAB')
+;;  * `icicle-prefix-complete-no-display-keys'             (`C-M-TAB')
 ;;    Prefix-complete without showing `*Completions*'.
 ;;  * `icicle-apropos-complete-no-display-keys'          (`C-M-S-TAB')
 ;;    Apropos-complete without showing `*Completions*'.
-;;  * `icicle-word-completion-keys'                      (`M-SPC')
+;;  * `icicle-word-completion-keys'                          (`M-SPC')
 ;;    Prefix-complete your input a word at a time.
-;;  * `icicle-key-complete-keys'                         (`S-TAB')
+;;  * `icicle-key-complete-keys'                             (`S-TAB')
 ;;    Complete key sequences.
-;;  * `icicle-previous-candidate-keys'                   (`S-TAB')
+;;  * `icicle-previous-candidate-keys'                       (`S-TAB')
 ;;    Move to the previous candidate in `*Completions*'.
-;;  * `icicle-completing-read+insert-keys'               (`C-M-S-c')
+;;  * `icicle-completing-read+insert-keys'                 (`C-M-S-c')
 ;;    Completion on demand.
-;;  * `icicle-read+insert-file-name-keys'                (`C-M-S-f')
+;;  * `icicle-read+insert-file-name-keys'                  (`C-M-S-f')
 ;;    Completion on demand for file names.
-;;  * `icicle-search-from-isearch-keys'                  (`S-TAB')
+;;  * `icicle-search-from-isearch-keys'                      (`S-TAB')
 ;;    Start `icicle-search' from Isearch.
 ;;  * `icicle-isearch-complete-keys'       (`M-TAB', `C-M-TAB', `M-o')
 ;;    Complete incremental search string using search ring.
@@ -7229,10 +7200,12 @@
 ;;  cycling, these keys with prefix `C-' are active:
 ;;
 ;;  `C-mouse-2', `C-RET' - Act on current completion candidate only
-;;  `C-down' - Move to next prefix-completion candidate and act
-;;  `C-up'   - Move to previous prefix-completion candidate and act
-;;  `C-next' - Move to next apropos-completion candidate and act
-;;  `C-prior'- Move to previous apropos-completion candidate and act
+;;  `C-down', `C-wheel-down' - Move to next completion candidate and act
+;;  `C-up', `C-wheel-up' - Move to previous completion candidate and act
+;;  `C-next'  - Move to next apropos-completion candidate and act
+;;  `C-prior' - Move to previous apropos-completion candidate and act
+;;  `C-end'   - Move to next prefix-completion candidate and act
+;;  `C-home'  - Move to previous prefix-completion candidate and act
 ;;  `C-!'    - Act on *all* candidates, successively (careful!)
 ;;
 ;;  When candidate action and cycling are combined (e.g. `C-next'), user

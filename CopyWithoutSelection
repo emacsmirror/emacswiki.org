@@ -1,15 +1,18 @@
-I use GNU Emacs as well as other programs, such as Microsoft Word, Excel and Lotus Notes. So I used to copy and paste some contents between them.
+Some years ago, I ran GNU Emacs in Cygwin on a Windows machie. So there must be some kind of non-Emcacs programs, such as Microsoft Word, Excel, Lotus Notes and so on. So I used to copy and paste stuffs between them.
 
-It's pretty boring to copy and paste a large amount of times.
-Selecting accurately is what is the most time-consuming.
- So I decided to leverage GNU Emacs to do it for me.
+It's pretty boring to copy and paste so many stuffs all the time. Because select what you want accurately is the most time-consuming.So I decided to leverage GNU Emacs to do it for me.
 
-The simplest way to do this is just to copy without selection. Put
-your point at the word, then your word will be copied directly into
-the kill-ring. Same thing happens for lines and paragraphs.
-I have devised a few functions that can be found below.
+The simplest way to do this is just to put your point on the stuff and GNU Emacs will take over all the others. 
 
-But first let's see what we can do with some basic shortcuts.
+As time went on, I have very much daily work in shell-mode. It made me to rise a new idea, that Emacs would even paste for me. Paste to the mark.
+
+= Introduction =
+
+The following functions will copy the *word*, the *line*, the *paragraph* and the *string* and the *Parenthesis* at point, and will paste them to the mark. If it is used in shell-mode, stuff will be pasted at end of shell prompt. 
+
+Give a prefix 1 will prevent paste.
+
+And besides, there are also something to do with some basic shortcuts.
 
 == Selecting words or sexps without moving the cursor ==
 
@@ -22,44 +25,44 @@ If you want to select the next two words after point,
 just type <code>C-M-SPC C-M-SPC M-w</code>.
 Killing next word or sexp can be done with <code>C-M-SPC C-w</code>, or better with <code>C-M-k</code>.
 
-=Copy Word=
 
-Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the word and  press "**Ctrl-c w**", the word at your point will be copied into the kill-ring. 
+= the base functions =
 
-     (defun copy-word (&optional arg)
-      "Copy words at point into kill-ring"
-       (interactive "P")
-       (let ((beg (progn (if (looking-back "[a-zA-Z0-9]" 1) (backward-word 1)) (point))) 
-     	(end (progn (forward-word arg) (point))))
-         (copy-region-as-kill beg end))
-     )
-
-
-     (defun get-point (symbol num)
+     (defun get-point (symbol &optional arg)
       "get the point"
-      (funcall symbol num)
+      (funcall symbol arg)
       (point)
      )
+     
+     (defun copy-thing (begin-of-thing end-of-thing &optional arg)
+       "copy thing between beg & end into kill ring"
+        (let ((beg (get-point begin-of-thing 1))
+     	 (end (get-point end-of-thing arg)))
+          (copy-region-as-kill beg end))
+     )
+     
+     (defun paste-to-mark(&optional arg)
+       "Paste things to mark, or to the prompt in shell-mode"
+       (let ((pasteMe 
+     	 (lambda()
+     	   (if (string= "shell-mode" major-mode)
+     	     (progn (comint-next-prompt 25535) (yank))
+     	   (progn (goto-char (mark)) (yank) )))))
+     	(if arg
+     	    (if (= arg 1)
+     		nil
+     	      (funcall pasteMe))
+     	  (funcall pasteMe))
+     	))
+     
 
-
-== new copy word ==
+=Copy Word=
 
      (defun copy-word (&optional arg)
       "Copy words at point into kill-ring"
        (interactive "P")
-       (if arg
-           (if (< arg 0)
-     	  (let ((end (end-of-thing 'word))
-     		(beg (get-point 'forward-word arg)))
-     	    (copy-region-as-kill beg end))
-     	  (let ((beg (beginning-of-thing 'word)) 
-     		(end (get-point 'forward-word arg)))
-     	    (copy-region-as-kill beg end))
-           )
-       	  (let ((beg (beginning-of-thing 'word))
-     		(end (get-point 'forward-word arg)))
-     	    (copy-region-as-kill beg end))
-       )
+       (copy-thing 'backward-word 'forward-word arg)
+       (paste-to-mark arg)
      )
 
 
@@ -69,30 +72,11 @@ Key binding
 
 =Copy Line=
 
-Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the line and  press "**Ctrl-c l**", the whole line at your point will be copied into the kill-ring. 
-
      (defun copy-line (&optional arg)
       "Save current line into Kill-Ring without mark the line "
        (interactive "P")
-       (let ((beg (line-beginning-position)) 
-     	(end (line-end-position arg)))
-         (copy-region-as-kill beg end))
-     )
-
-== new copy line ==
-
-Copy the whole line into killring. Given a prefix 1, mark the line only.
-
-     (defun copy-line (&optional arg)
-      "Save current line into Kill-Ring without mark the line "
-       (interactive "P")
-     ;  (copy-region-as-kill (line-beginning-position) (line-end-position arg))
-       (let ((beg (line-beginning-position))
-     	(end (line-end-position arg)))
-         (if (= (or arg 0) 1)    ;; arg=1, mark line only
-     	(progn (set-mark beg) (goto-char end))
-         (copy-region-as-kill beg end))
-         )
+       (copy-thing 'beginning-of-line 'end-of-line arg)
+       (paste-to-mark arg)
      )
 
 Key binding
@@ -104,31 +88,12 @@ Key binding
 
 =Copy Paragraph=
 
-Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the paragraph and press "**Ctrl-c p**", the whole paragraph at your point will be copied into the kill-ring. 
-      
      (defun copy-paragraph (&optional arg)
       "Copy paragraphes at point"
        (interactive "P")
-       (let ((beg (progn (backward-paragraph 1) (point))) 
-     	(end (progn (forward-paragraph arg) (point))))
-         (copy-region-as-kill beg end))
+       (copy-thing 'backward-paragraph 'forward-paragraph arg)
+       (paste-to-mark arg)
      )
-
-== new copy paragraphe == 
-
-Copy the whole paragraphe in which the point is. Given a prefix 1, mark the paragraphe only.
-
-     (defun copy-paragraph (&optional arg)
-      "Copy paragraphes at point"
-       (interactive "P")
-       (let ((beg (get-point 'backward-paragraph 1))
-     	(end (get-point 'forward-paragraph arg)))
-         (if (= (or arg 0) 1)    ;; arg=1, mark paragraph only
-           (set-mark beg)
-           (copy-region-as-kill beg end))
-         )
-     )
-
 
 key binding
 
@@ -136,101 +101,52 @@ key binding
 
 =Copy String=
 
-Put these code into your lisp file and a global key binding into your .emacs file. Then just put your point at the word and  press "**Ctrl-c s**", the text string at your point will be copied into the kill-ring. 
-
-
-      (defun copy-string (&optional arg)
-       "Copy a sequence of string into kill-ring"
-        (interactive)
-        (setq onPoint (point))
-        (let ( 
-     	 ( beg 	(progn (re-search-backward "[\t ]" (line-beginning-position) 3 1) 
-     			  (if (looking-at "[\t ]") (+ (point) 1) (point) ) )
-     		)
-               ( end  (progn  (goto-char onPoint) (re-search-forward "[\t ]" (line-end-position) 3 1)
-     			  (if (looking-back "[\t ]") (- (point) 1) (point) ) )
-     		 ))
-        (copy-region-as-kill beg end)
-      )
-      )
-
-== new copy string (to mark) ==
-
-Copy string in which the point is into killring, and paste the string to the mark (or paste it to (point-max) in shell-mode). Given a numeric prefix, copy but does not paste. 
-
-     (defun beginning-of-string()
+     (defun beginning-of-string(&optional arg)
        "  "
        (re-search-backward "[ \t]" (line-beginning-position) 3 1)
      	     (if (looking-at "[\t ]")  (goto-char (+ (point) 1)) )
      )
-     (defun end-of-string()
+     (defun end-of-string(&optional arg)
        " "
-       (re-search-forward "[ \t]" (line-end-position) 3 1)
+       (re-search-forward "[ \t]" (line-end-position) 3 arg)
      	     (if (looking-back "[\t ]") (goto-char (- (point) 1)) )
-     )
-     
-     (put 'string 'beginning-op 'beginning-of-string)
-     (put 'string 'end-op 'end-of-string)
-     
-     
-     (defun thing-copy-string ()
-       "Try to get string"
-       (interactive)
-       (thing-edit 'string)
      )
      
      (defun thing-copy-string-to-mark(&optional arg)
        " Try to copy a string and paste it to the mark
      When used in shell-mode, it will paste string on shell prompt by default "
        (interactive "P")
-       (thing-copy-string)
-        (if (not arg)
-            (if (string= "shell-mode" major-mode)
-     	   (progn (comint-next-prompt 25535) (yank))
-     	   (progn (goto-char (mark)) (yank) )))
+       (copy-thing 'beginning-of-string 'end-of-string arg)
+       (paste-to-mark arg)
      )
-
+     
 
 Key binding
 
       (global-set-key (kbd "C-c s")         (quote thing-copy-string-to-mark))
 
-== new copy parenthesis (to mark) ==
+=Copy Parenthesis=
 
 Similar with new copy string to mark
 
-     (defun beginning-of-parenthesis()
+     (defun beginning-of-parenthesis(&optional arg)
        "  "
        (re-search-backward "[[<(?\"]" (line-beginning-position) 3 1)
      	     (if (looking-at "[[<(?\"]")  (goto-char (+ (point) 1)) )
      )
-     (defun end-of-parenthesis()
+     (defun end-of-parenthesis(&optional arg)
        " "
-       (re-search-forward "[]>)?\"]" (line-end-position) 3 1)
+       (re-search-forward "[]>)?\"]" (line-end-position) 3 arg)
      	     (if (looking-back "[]>)?\"]") (goto-char (- (point) 1)) )
-     )
-     
-     
-     (put 'parenthesis 'beginning-op 'beginning-of-parenthesis)
-     (put 'parenthesis 'end-op 'end-of-parenthesis)
-     
-     (defun thing-copy-parenthesis ()
-       "Try to get parenthesis"
-       (interactive)
-       (thing-edit 'parenthesis)
      )
      
      (defun thing-copy-parenthesis-to-mark(&optional arg)
        " Try to copy a parenthesis and paste it to the mark
      When used in shell-mode, it will paste parenthesis on shell prompt by default "
        (interactive "P")
-       (thing-copy-parenthesis)
-        (if (not arg)
-            (if (string= "shell-mode" major-mode)
-     	   (progn (comint-next-prompt 25535) (yank))
-     	   (progn (goto-char (mark)) (yank) )))
+       (copy-thing 'beginning-of-parenthesis 'end-of-parenthesis arg)
+       (paste-to-mark arg)
      )
-
       (global-set-key (kbd "C-c a")         (quote thing-copy-parenthesis-to-mark))
 
 ----
@@ -268,87 +184,7 @@ Or I would need a command like <b>ALTER  CHANNEL(TO.QMCOD.4.FTECA) CHLTYPE(CLUSR
 
 Both <b>thing-copy-sexp</b> and <b>thing-copy-symbol</b> do not work in this way. Maybe I am not actually understand how thing-copy-sexp works. I don't find enough document for it in thingatpt.el. 
 
-And since copy & paste are used pairs, I extended my copy-xxx stuffs to copy-xxx-to-mark like this:
-
-{{{
-
-(defun copy-symbol-to-mark (&optional arg)
-   "This is a re-write of copy-string-to-mark, using thingatpt.el 
-But it does not actually do the same as what copy-string does"
-   (interactive "P")
-   (kill-ring-save (beginning-of-thing 'symbol) (end-of-thing 'symbol))
-   (if (not arg) 
-       (if (string= "shell-mode" major-mode)  
-	   (progn (comint-next-prompt 25535) (yank))
-	   (progn (goto-char (mark)) (yank) )))
-)
-
-
-;; (defun copy-string-to-mark (&optional arg)
-;;  "Copy a sequence of string into kill-ring and then paste to the mark point"
-;;   (interactive "P")
-;;   (let (
-;;	 (onPoint (point))
-;;	 )
-;;     (let ( 
-;;	 
-;;	 ( beg 	(progn (re-search-backward "[\t ]" (line-beginning-position) 3 1) 
-;;			  (if (looking-at "[\t ]") (+ (point) 1) (point) ) )
-;;		)
-;;          ( end  (progn  (goto-char onPoint) (re-search-forward "[\t ]" (line-end-position) 3 1)
-;;			  (if (looking-back "[\t ]") (- (point) 1) (point) ) )
-;;		 )
-;;	  )
-;;       (copy-region-as-kill beg end)
-;;       (message "%s" major-mode)
-;;       (if (string= "shell-mode" major-mode)  
-;;	   (progn (comint-next-prompt 25535) (yank))
-;;	 ;; unless arg == 0, paste content to mark, else hold in kill ring
-;;	   (unless (> (or arg 0) 0) (progn (goto-char (mark)) (yank) )))
-;;
-;;       )
-;;     )
-;; )
-
-}}}
 ----
 
-----
-==Comment -- thing-copy-string ==
-
--- David Young
-
-By reading the code in thingatpt.el, I extended it to provide a 'thing-copy-string' function. It is a re-write of 'thing-copy-email'. 
-However, this is just a dirty fix. It is not practiced in my real work. I will try to practice and refine the regexp as time goes on.
-
-{{{
-
-
-(defvar thing-at-point-string-regexp
-   "[^ (][-+_.~a-zA-Z0-9@=\*\&(){}][-+_.~a-zA-Z0-9@=\*\&(){}]+"
-  "A regular expression match a string, maybe exclude all kinds of brackets")
-
-(put 'string 'bounds-of-thing-at-point
-     (lambda ()
-       (let ((thing (thing-at-point-looking-at thing-at-point-string-regexp)))
-         (if thing
-             (let ((beginning (match-beginning 0))
-                   (end (match-end 0)))
-               (cons beginning end))))))
-
-(put 'string 'thing-at-point
-     (lambda ()
-       (let ((boundary-pair (bounds-of-thing-at-point 'string)))
-         (if boundary-pair
-             (buffer-substring-no-properties
-              (car boundary-pair) (cdr boundary-pair))))))
-
-(defun thing-copy-string ()
-  "Try to get string"
-  (interactive)
-  (thing-edit 'string)
-)
-
-}}}
 
 CategoryRegion  CategoryEditing

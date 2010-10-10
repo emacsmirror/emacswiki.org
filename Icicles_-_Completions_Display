@@ -15,7 +15,7 @@ display in several ways.  The following features are available whenever [[buffer
 [:CyclingCandidates]
 === Cycling Candidates ===
 
-In buffer `*Completions*', you can use the ''arrow keys'' (`up', `down', `left', `right') to navigate
+In buffer `*Completions*', you can use the ''arrow keys'' (`down', `up', `right', `left') to navigate
 among the candidate completions.  The current candidate (under
 the cursor) is highlighted.
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Oct  8 09:36:12 2010 (-0700)
+;; Last-Updated: Sat Oct  9 15:08:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6671
+;;     Update #: 6700
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -131,7 +131,7 @@
 
 (require 'icicles-opt)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
-  ;; icicle-cycling-respects-completion-mode, icicle-incremental-completion-flag,
+  ;; icicle-default-cycling-mode, icicle-incremental-completion-flag,
   ;; icicle-default-value, icicle-kmacro-ring-max, icicle-minibuffer-setup-hook,
   ;; icicle-modal-cycle-down-keys, icicle-modal-cycle-up-keys,
   ;; icicle-redefine-standard-commands-flag, icicle-regexp-search-ring-max,
@@ -2217,13 +2217,12 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [(control ?g)]     'icicle-abort-recursive-edit) ; `C-g'
        (define-key map "q"                'icicle-abort-recursive-edit) ; `q'
        (define-key map [(control insert)] 'icicle-insert-completion) ; `C-insert'
-       (dolist (key icicle-prefix-cycle-next-keys) (define-key map key 'icicle-next-line)) ; `down'
-       (dolist (key icicle-prefix-cycle-previous-keys)
-         (define-key map key 'icicle-previous-line)) ; `up'
+       (define-key map [down]             'icicle-next-line) ; `down'
+       (define-key map [up]               'icicle-previous-line) ; `up'
+       (define-key map [right]            'icicle-move-to-next-completion) ; `right'
+       (define-key map [left]             'icicle-move-to-previous-completion) ; `left'
        (dolist (key icicle-previous-candidate-keys)
          (define-key map key 'icicle-move-to-previous-completion)) ; `S-TAB'
-       (define-key map [left]             'icicle-move-to-previous-completion) ; `left'
-       (define-key map [right]            'icicle-move-to-next-completion) ; `right'
        (define-key map [(control ?i)]     'icicle-move-to-next-completion) ; `TAB'
        (define-key map [tab]              'icicle-move-to-next-completion) ; `TAB'
        (when (boundp 'mouse-wheel-down-event) ; Emacs 22+ -  `wheel-down', `wheel-up'
@@ -2436,9 +2435,11 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
        (define-key map [(control ?l)]       nil)
        (define-key map [(control ?a)]       nil)
        (define-key map [(control ?e)]       nil)
+       (define-key map [down]               nil)
+       (define-key map [up]                 nil)
        ;; Do these last:
-       (define-key map [left]               'previous-completion)
-       (define-key map [right]              'next-completion))))
+       (define-key map [right]              'next-completion)
+       (define-key map [left]               'previous-completion))))
   (when (and (interactive-p) turn-on-p)
     (message (substitute-command-keys
               "Use `\\<minibuffer-local-completion-map>\
@@ -3049,7 +3050,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
           icicle-completion-candidates           nil
           ;; This is so that cycling works right initially, without first hitting `TAB' or `S-TAB'.
           icicle-current-completion-mode         (and (< (minibuffer-depth) 2)
-                                                      (case icicle-cycling-respects-completion-mode
+                                                      (case icicle-default-cycling-mode
                                                         ((nil)      nil)
                                                         (apropos    'apropos)
                                                         (prefix     'prefix)
@@ -3096,174 +3097,102 @@ Usually run by inclusion in `minibuffer-setup-hook'."
                (not icicle-progressive-completing-p) ; If narrowed, then we have already completed.
                (icicle-completing-p)    ; Function initializes variable `icicle-completing-p'.
                (sit-for icicle-incremental-completion-delay)) ; Let user interrupt.
-      (case icicle-cycling-respects-completion-mode
+      (case icicle-default-cycling-mode
         (apropos    (icicle-apropos-complete))
         (otherwise  (icicle-prefix-complete)))) ; Prefix completion, by default.
     (run-hooks 'icicle-minibuffer-setup-hook)))
 
 (defun icicle-define-cycling-keys (map)
-  "Define keys for cycling candidates."
-  (unless icicle-cycling-respects-completion-mode
-    ;; Cancel modal cycling keys.
-    (dolist (key icicle-modal-cycle-up-keys)               (define-key map key nil))
-    (dolist (key icicle-modal-cycle-down-keys)             (define-key map key nil))
-    (dolist (key icicle-modal-cycle-up-action-keys)        (define-key map key nil))
-    (dolist (key icicle-modal-cycle-up-alt-action-keys)    (define-key map key nil))
-    (dolist (key icicle-modal-cycle-down-action-keys)      (define-key map key nil))
-    (dolist (key icicle-modal-cycle-down-alt-action-keys)  (define-key map key nil))
-    (dolist (key icicle-modal-cycle-up-help-keys)          (define-key map key nil))
-    (dolist (key icicle-modal-cycle-down-help-keys)        (define-key map key nil)))
-
-  ;; Define the alternatives used now.
-  ;; First define all non-modal keys, then overwrite the appropriate ones with the modal keys.
+  "Define keys for cycling candidates.
+The modal keys are defined first, then the non-modal keys.
+That means that in case of conflict mode-specific cyling wins.
+For example, if you define both `icicle-modal-cycle-up-keys' and
+`icicle-prefix-cycle-previous-keys' as ([up]), the latter gets the
+binding."
   (cond (icicle-use-C-for-actions-flag  ; Use `C-' for actions, no `C-' for plain cycling.
-         ;; Define non-modal cycling keys.
+         ;; Modal cycling keys.
+         (dolist (key icicle-modal-cycle-up-keys)
+           (define-key map key 'icicle-previous-candidate-per-mode)) ; `up'
+         (dolist (key icicle-modal-cycle-down-keys)
+           (define-key map key 'icicle-next-candidate-per-mode)) ; `down'
+         (dolist (key icicle-modal-cycle-up-action-keys)
+           (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `C-up'
+         (dolist (key icicle-modal-cycle-down-action-keys)
+           (define-key map key 'icicle-next-candidate-per-mode-action)) ; `C-down'
+         ;; Non-modal cycling keys.  In case of conflict, these will prevail over modal keys.
          (dolist (key icicle-prefix-cycle-previous-keys)
-           (define-key map key 'icicle-previous-prefix-candidate)) ; `up'
+           (define-key map key 'icicle-previous-prefix-candidate)) ; `home'
          (dolist (key icicle-prefix-cycle-next-keys)
-           (define-key map key 'icicle-next-prefix-candidate)) ; `down'
+           (define-key map key 'icicle-next-prefix-candidate)) ; `end'
          (dolist (key icicle-apropos-cycle-previous-keys)
            (define-key map key 'icicle-previous-apropos-candidate)) ; `prior'
          (dolist (key icicle-apropos-cycle-next-keys)
            (define-key map key 'icicle-next-apropos-candidate)) ; `next'
          (dolist (key icicle-prefix-cycle-previous-action-keys)
-           (define-key map key 'icicle-previous-prefix-candidate-action)) ; `C-up'
+           (define-key map key 'icicle-previous-prefix-candidate-action)) ; `C-home'
          (dolist (key icicle-prefix-cycle-next-action-keys)
-           (define-key map key 'icicle-next-prefix-candidate-action)) ; `C-down'
+           (define-key map key 'icicle-next-prefix-candidate-action)) ; `C-end'
          (dolist (key icicle-apropos-cycle-previous-action-keys)
            (define-key map key 'icicle-previous-apropos-candidate-action)) ; `C-prior'
          (dolist (key icicle-apropos-cycle-next-action-keys)
-           (define-key map key 'icicle-next-apropos-candidate-action)) ; `C-next'
-         (when icicle-cycling-respects-completion-mode
-           ;; Define modal cycling keys.  At least some of these will overwrite non-modal keys.
-           (dolist (key icicle-modal-cycle-up-keys)
-             (define-key map key 'icicle-previous-candidate-per-mode)) ; `up'
-           (dolist (key icicle-modal-cycle-down-keys)
-             (define-key map key 'icicle-next-candidate-per-mode)) ; `down'
-           (dolist (key icicle-modal-cycle-up-action-keys)
-             (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `C-up'
-           (dolist (key icicle-modal-cycle-down-action-keys)
-             (define-key map key 'icicle-next-candidate-per-mode-action))) ; `C-down'
-         ;; Define mouse wheel for modal cycling.
-         (when (boundp 'mouse-wheel-down-event) ; Emacs 22+
-           (define-key map (vector mouse-wheel-down-event) ; `wheel-up'
-             'icicle-previous-candidate-per-mode)
-           (define-key map (vector nil mouse-wheel-down-event) ; `wheel-up'
-             'icicle-previous-candidate-per-mode)
-           (define-key map (vector mouse-wheel-up-event) ; `wheel-down'
-             'icicle-next-candidate-per-mode)
-           (define-key map (vector nil mouse-wheel-up-event) ; `wheel-down'
-             'icicle-next-candidate-per-mode)
-           (define-key map (vector (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
-             'icicle-previous-candidate-per-mode-action)
-           (define-key map (vector nil (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
-             'icicle-previous-candidate-per-mode-action)
-           (define-key map (vector (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
-             'icicle-next-candidate-per-mode-action)
-           (define-key map (vector nil (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
-             'icicle-next-candidate-per-mode-action)))
+           (define-key map key 'icicle-next-apropos-candidate-action))) ; `C-next'
+
         (t                              ; Use `C-' for plain cycling, NO `C-' for action.
-         ;; Define non-modal cycling keys.
+         ;; Modal cycling keys.  At least some of these will overwrite non-modal keys.
+         (dolist (key icicle-modal-cycle-up-keys)
+           (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `up'
+         (dolist (key icicle-modal-cycle-down-keys)
+           (define-key map key 'icicle-next-candidate-per-mode-action)) ; `down'
+         (dolist (key icicle-modal-cycle-up-action-keys)
+           (define-key map key 'icicle-previous-candidate-per-mode)) ; `C-up'
+         (dolist (key icicle-modal-cycle-down-action-keys)
+           (define-key map key 'icicle-next-candidate-per-mode)) ; `C-down'
+         ;; Non-modal cycling keys.  In case of conflict, these will prevail over modal keys.
          (dolist (key icicle-prefix-cycle-previous-keys)
-           (define-key map key 'icicle-previous-prefix-candidate-action)) ; `up'
+           (define-key map key 'icicle-previous-prefix-candidate-action)) ; `home'
          (dolist (key icicle-prefix-cycle-next-keys)
-           (define-key map key 'icicle-next-prefix-candidate-action)) ; `down'
+           (define-key map key 'icicle-next-prefix-candidate-action)) ; `end'
          (dolist (key icicle-apropos-cycle-previous-keys)
            (define-key map key 'icicle-previous-apropos-candidate-action)) ; `prior'
          (dolist (key icicle-apropos-cycle-next-keys)
            (define-key map key 'icicle-next-apropos-candidate-action)) ; `next'
          (dolist (key icicle-prefix-cycle-previous-action-keys)
-           (define-key map key 'icicle-previous-prefix-candidate)) ; `C-up'
+           (define-key map key 'icicle-previous-prefix-candidate)) ; `C-home'
          (dolist (key icicle-prefix-cycle-next-action-keys)
-           (define-key map key 'icicle-next-prefix-candidate)) ; `C-down'
+           (define-key map key 'icicle-next-prefix-candidate)) ; `C-end'
          (dolist (key icicle-apropos-cycle-previous-action-keys)
            (define-key map key 'icicle-previous-apropos-candidate)) ; `C-prior'
          (dolist (key icicle-apropos-cycle-next-action-keys)
-           (define-key map key 'icicle-next-apropos-candidate))
-         (when icicle-cycling-respects-completion-mode
-           ;; Define modal cycling keys.  At least some of these will overwrite non-modal keys.
-           (dolist (key icicle-modal-cycle-up-keys)
-             (define-key map key 'icicle-previous-candidate-per-mode-action)) ; `up'
-           (dolist (key icicle-modal-cycle-down-keys)
-             (define-key map key 'icicle-next-candidate-per-mode-action)) ; `down'
-           (dolist (key icicle-modal-cycle-up-action-keys)
-             (define-key map key 'icicle-previous-candidate-per-mode)) ; `C-up'
-           (dolist (key icicle-modal-cycle-down-action-keys)
-             (define-key map key 'icicle-next-candidate-per-mode))) ; `C-down'
-         ;; Define mouse wheel for modal cycling.
-         (when (boundp 'mouse-wheel-down-event) ; Emacs 22+
-           (define-key map (vector mouse-wheel-down-event) ; `wheel-up'
-             'icicle-previous-candidate-per-mode-action)
-           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-           (define-key map (vector nil mouse-wheel-down-event) ; `wheel-up'
-             'icicle-previous-candidate-per-mode-action)
-           (define-key map (vector mouse-wheel-up-event) ; `wheel-down'
-             'icicle-next-candidate-per-mode-action)
-           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-           (define-key map (vector nil mouse-wheel-up-event) ; `wheel-down'
-             'icicle-next-candidate-per-mode-action)
-           (define-key map (vector (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
-             'icicle-previous-candidate-per-mode)
-           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-           (define-key map (vector nil (list 'control mouse-wheel-down-event)) ; `C-wheel-up'
-             'icicle-previous-candidate-per-mode)
-           (define-key map (vector (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
-             'icicle-next-candidate-per-mode)
-           ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-           (define-key map (vector nil (list 'control mouse-wheel-up-event)) ; `C-wheel-down'
-             'icicle-next-candidate-per-mode))))
+           (define-key map key 'icicle-next-apropos-candidate))))
 
   ;; Help and alternative-action keys are NOT controlled by `icicle-use-C-for-actions-flag'.
   ;;
+  ;; Define modal cycling help and alternative action keys.
+  (dolist (key icicle-modal-cycle-up-help-keys)
+    (define-key map key 'icicle-previous-candidate-per-mode-help)) ; `C-M-up'
+  (dolist (key icicle-modal-cycle-down-help-keys)
+    (define-key map key 'icicle-next-candidate-per-mode-help)) ; `C-M-down'
+  (dolist (key icicle-modal-cycle-up-alt-action-keys)
+    (define-key map key 'icicle-previous-candidate-per-mode-alt-action)) ; `C-S-up'
+  (dolist (key icicle-modal-cycle-down-alt-action-keys)
+    (define-key map key 'icicle-next-candidate-per-mode-alt-action)) ; `C-S-down'
   ;; Define non-modal cycling help and alternative action keys.
   (dolist (key icicle-prefix-cycle-previous-help-keys)
-    (define-key map key 'icicle-help-on-previous-prefix-candidate)) ; `C-M-up'
+    (define-key map key 'icicle-help-on-previous-prefix-candidate)) ; `C-M-home'
   (dolist (key icicle-prefix-cycle-next-help-keys)
-    (define-key map key 'icicle-help-on-next-prefix-candidate)) ; `C-M-down'
+    (define-key map key 'icicle-help-on-next-prefix-candidate)) ; `C-M-end'
   (dolist (key icicle-apropos-cycle-previous-help-keys)
     (define-key map key 'icicle-help-on-previous-apropos-candidate)) ; `C-M-prior'
   (dolist (key icicle-apropos-cycle-next-help-keys)
     (define-key map key 'icicle-help-on-next-apropos-candidate)) ; `C-M-next'
   (dolist (key icicle-prefix-cycle-previous-alt-action-keys)
-    (define-key map key 'icicle-previous-prefix-candidate-alt-action)) ; `C-S-up'
+    (define-key map key 'icicle-previous-prefix-candidate-alt-action)) ; `C-S-home'
   (dolist (key icicle-prefix-cycle-next-alt-action-keys)
-    (define-key map key 'icicle-next-prefix-candidate-alt-action)) ; `C-S-down'
+    (define-key map key 'icicle-next-prefix-candidate-alt-action)) ; `C-S-end'
   (dolist (key icicle-apropos-cycle-previous-alt-action-keys)
     (define-key map key 'icicle-previous-apropos-candidate-alt-action)) ; `C-S-prior'
   (dolist (key icicle-apropos-cycle-next-alt-action-keys)
-    (define-key map key 'icicle-next-apropos-candidate-alt-action)) ; `C-S-next'
-  (when icicle-cycling-respects-completion-mode
-    ;; Define modal cycling help and alternative action keys.
-    (dolist (key icicle-modal-cycle-up-help-keys)
-      (define-key map key 'icicle-previous-candidate-per-mode-help)) ; `C-M-up'
-    (dolist (key icicle-modal-cycle-down-help-keys)
-      (define-key map key 'icicle-next-candidate-per-mode-help)) ; `C-M-down'
-    (dolist (key icicle-modal-cycle-up-alt-action-keys)
-      (define-key map key 'icicle-previous-candidate-per-mode-alt-action)) ; `C-S-up'
-    (dolist (key icicle-modal-cycle-down-alt-action-keys)
-      (define-key map key 'icicle-next-candidate-per-mode-alt-action))) ; `C-S-down'
-  (when (boundp 'mouse-wheel-down-event) ; Emacs 22+
-    ;; Define mouse wheel for modal cycling - help and alternative action.
-    (define-key map (vector (list 'control 'meta mouse-wheel-down-event)) ; `C-M-wheel-up'
-      'icicle-previous-candidate-per-mode-help)
-    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-    (define-key map (vector nil (list 'control 'meta mouse-wheel-down-event)) ; `C-M-wheel-up'
-      'icicle-previous-candidate-per-mode-help)
-    (define-key map (vector (list 'control 'meta mouse-wheel-up-event)) ; `C-M-wheel-down'
-      'icicle-next-candidate-per-mode-help)
-    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-    (define-key map (vector nil (list 'control 'meta mouse-wheel-up-event)) ; `C-M-wheel-down'
-      'icicle-next-candidate-per-mode-help)
-    (define-key map (vector (list 'control 'shift mouse-wheel-down-event)) ; `C-S-wheel-up'
-      'icicle-previous-candidate-per-mode-alt-action)
-    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-    (define-key map (vector nil (list 'control 'shift mouse-wheel-down-event)) ; `C-S-wheel-up'
-      'icicle-previous-candidate-per-mode-alt-action)
-    (define-key map (vector (list 'control 'shift mouse-wheel-up-event)) ; `C-S-wheel-down'
-      'icicle-next-candidate-per-mode-alt-action)
-    ;; This one should not be necessary, but is because of an Emacs bug wrt frame switching.
-    (define-key map (vector nil (list 'control 'shift mouse-wheel-up-event)) ; `C-S-wheel-down'
-      'icicle-next-candidate-per-mode-alt-action)))
+    (define-key map key 'icicle-next-apropos-candidate-alt-action))) ; `C-S-next'
 
 (defun icicle-select-minibuffer-contents ()
   "Select minibuffer contents and leave point at its beginning."

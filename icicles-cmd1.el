@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 27 14:09:59 2010 (-0700)
+;; Last-Updated: Sat Oct  9 09:21:32 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21257
+;;     Update #: 21271
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1493,10 +1493,12 @@ Input-candidate completion and cycling are available.  While cycling,
 these keys with prefix `C-' are active:
 
 `C-mouse-2', `C-RET' - Act on current completion candidate only
-`C-down'  - Move to next prefix-completion candidate and act
-`C-up'    - Move to previous prefix-completion candidate and act
+`C-down'  - Move to next completion candidate and act
+`C-up'    - Move to previous completion candidate and act
 `C-next'  - Move to next apropos-completion candidate and act
 `C-prior' - Move to previous apropos-completion candidate and act
+`C-end'   - Move to next prefix-completion candidate and act
+`C-home'  - Move to previous prefix-completion candidate and act
 `M-!'     - Act on *all* candidates (or all that are saved):
             Customize all in the same buffer.
 `C-!'     - Act on *all* candidates (or all that are saved):
@@ -1797,8 +1799,8 @@ Icicles completion is available for choosing a past command.  You can
 still use the vanilla Emacs bindings `\\<minibuffer-local-map>\\[next-history-element]' and \
 `\\[previous-history-element]' to cycle inputs,
 and `\\[repeat-matching-complex-command]' to match regexp input, but Icicles input cycling (`up',
-`down',`next', `prior') and apropos completion (`S-TAB') are superior
-and more convenient."
+`down', `next', `prior', `home', `end') and apropos completion
+\(`S-TAB') are superior and more convenient."
   (interactive "p")
   (let ((elt  (nth (1- arg) command-history))
         newcmd)
@@ -2821,8 +2823,8 @@ This command needs library `doremi.el'." ; Doc string
 ;;;###autoload
 (defun icicle-doremi-increment-variable+ (variable &optional increment optionp)
   "Increment VARIABLE by INCREMENT (default 1).
-Use `up', `down' or mouse wheel to increase or decrease.  You can use
-the `Meta' key (e.g. `M-up') to increment in larger steps.
+Use arrow key `up' or `down' or mouse wheel to increase or decrease.
+You can use the `Meta' key (e.g. `M-up') to increment in larger steps.
 
 Interactively, you can choose VARIABLE using completion.
 With a prefix arg, only user options are available to choose from.
@@ -4523,10 +4525,12 @@ Otherwise:
  available.  While cycling, these keys with prefix `C-' are active:
 
  `C-RET'   - Act on current completion candidate only
- `C-down'  - Move to next prefix-completion candidate and act
- `C-up'    - Move to previous prefix-completion candidate and act
+ `C-down'  - Move to next completion candidate and act
+ `C-up'    - Move to previous completion candidate and act
  `C-next'  - Move to next apropos-completion candidate and act
  `C-prior' - Move to previous apropos-completion candidate and act
+ `C-end'   - Move to next prefix-completion candidate and act
+ `C-home'  - Move to previous prefix-completion candidate and act
  `C-!'     - Act on *all* candidates (or all that are saved),
              successively (careful!)
 
