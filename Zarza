@@ -2,11 +2,73 @@ Thank you all for this great wiki!
 
 So I want to contribute. No magic here. But maybe you can make some use of it...
 
+
+== Init file errors ==
+
+*Problem*: On an error the init file is not evaluated any further. Also to find the source of an error I need to restart emacs with --debug-init. 
+
+The common emacswiki solutions can be found on [[DebugFileLoading]].
+
+*This works for me*: Use the follwing function instead of <code>(load filename)</code> - if loading fails you will get an error message in *Warnings* and evaulation does not stop.
+
+<pre>
+; using in Emacs 24.0.
+
+(defun solidload (filename)
+  (condition-case err
+      (load filename)
+    (error (display-warning 'initialization (concat "Load of " filename " failed " (prin1-to-string err) ) :warning) )
+    )
+)
+</pre>
+
+So my .emacs file simply contains the definition of <code>(solidload)</code> and a list of calls like:
+
+<pre>
+(solidload "conf-common.el")
+(solidload "conf-keys.el")
+(solidload "conf-functions.el")
+(solidload "conf-theme.el")
+
+(solidload "conf-minor-yasnippet.el")
+
+(solidload "conf-mode-isearch.el")
+(solidload "conf-mode-ibuffer.el")
+(solidload "conf-mode-dired.el")
+
+(solidload "conf-mode-elisp.el")
+...
+</pre>
+
+
+== The Jumping Cursor ==
+*Problem*: Sometimes my cursor stops - and jumps a moment later - while I am holding the movement keys. That makes Zarza rrrrrrreally angry. Besides it's quite irritating, especially because I am smooth scrolling (one line at a time).
+
+The common emacswiki solution: do not use `scroll-step' to activate smooth scrolling but <code>(setq scroll-conservatively 10000)</code> (see [[SmoothScrolling]]). 
+
+*This works for me*: Set `auto-save-interval' to a higher value.
+
+The common emacswiki solution did not work for me. My cursor jumped even during non-scrolling-moves. I noticed a short hard-drive activity when the cursor got stuck. My value for `auto-save-interval' was set to 50 chars.
+
+So now I'm using:
+
+<pre>
+; using in Emacs 24.0.
+
+; Autosave every 500 typed characters
+(setq auto-save-interval 500)
+; Autosave after 5 seconds of idle time
+(setq auto-save-timeout 5)
+; Scroll just one line when hitting bottom of window
+(setq scroll-conservatively 10000)
+</pre>
+
+
 == Cyberpunk Cursor ==
 This one changes the cursor color on each blink. Just eval code and its running.
 
 <pre>
-; Using in Emacs 23.2. 
+; Using in Emacs 24.0 
 
 (defvar blink-cursor-colors (list  "#92c48f" "#6785c5" "#be369c" "#d9ca65")
   "On each blink the cursor will cycle to the next color in this list.")
@@ -31,7 +93,7 @@ This one changes the cursor color on each blink. Define colors in `blink-cursor-
 This one loads one of two themes depending on current time. Change `color-theme-night' and `color-theme-day' to the color-theme functions of your choice. 
 
 <pre>
-; Using in Emacs 23.2. 
+; Using in Emacs 24.0
 
 (defvar night-hour 18
   "When to start with dark theme.")

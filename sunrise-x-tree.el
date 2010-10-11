@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 322 $
+;; RCS Version: $Rev: 323 $
 ;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -37,7 +37,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 322 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 323 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
@@ -576,6 +576,11 @@
               (sr-tree-search-cursor cursor t))
           (sr-tree-update-cursor))))))
 
+(defun sr-tree-isearch-prompt ()
+  "Displays the message that appears when a sticky search is launched."
+  (message (propertize "Sunrise Tree sticky I-search (C-g to exit): "
+                       'face 'minibuffer-prompt)))
+
 (defvar sr-tree-isearch-mode-commands
   '(([S-return]  . 'sr-tree-focus-branch)
     ([S-right]   . 'sr-tree-focus-branch)
@@ -627,8 +632,8 @@
   (interactive "P")
   (if (or (and prefix (not sr-tree-isearch-always-sticky))
           (and (not prefix) sr-tree-isearch-always-sticky))
-      (sr-tree-isearch-setup))
-  (isearch-forward nil t))
+      (sr-tree-sticky-isearch-forward)
+    (isearch-forward nil t)))
 
 (defun sr-tree-sticky-isearch-forward ()
   "Concatenates isearch operations to allow  fast  navigation through long paths
@@ -636,7 +641,8 @@
   on a folder (to dismiss tree view and visit that folder)."
   (interactive)
   (sr-tree-isearch-setup)
-  (isearch-forward nil t))
+  (isearch-forward nil t)
+  (run-with-idle-timer 0.01 nil 'sr-tree-isearch-prompt))
 
 (defun sr-tree-isearch-backward (&optional prefix)
   "Prefixable version of isearch-backward used in Sunrise Tree mode. With PREFIX
@@ -646,7 +652,8 @@
   (if (or (and prefix (not sr-tree-isearch-always-sticky))
           (and (not prefix) sr-tree-isearch-always-sticky))
       (sr-tree-isearch-setup))
-  (isearch-backward nil t))
+  (isearch-backward nil t)
+  (run-with-idle-timer 0.01 nil 'sr-tree-isearch-prompt))
 
 (defun sr-tree-sticky-isearch-backward ()
   "Concatenates isearch operations to allow  fast  navigation through long paths
@@ -668,8 +675,7 @@
          (recenter (truncate (/ (window-body-height) 10.0))))
         (t (ignore)))
   (unless isearch-mode-end-hook-quit
-    (sr-tree-isearch-setup)
-    (isearch-forward nil t)))
+    (sr-tree-sticky-isearch-forward)))
 
 (defun sr-tree-isearch-command-loop (command)
   (funcall command)

@@ -12,9 +12,9 @@ Nevertheless, if you just need a quick-and-easy way to follow bleeding edge Emac
 If you just want to run bleeding-edge code (perhaps so you can report bugs against the latest development sources), and do not expect to make code changes to Emacs, then you can save a little bit of time and space by using a /stacked branch/.  This workflow is very similar to CVS:
 
       cd /home/jrandom/projects                    # or wherever
-      bzr branch --stacked http://bzr.savannah.gnu.org/r/emacs/trunk emacs-trunk
+      bzr branch --stacked bzr://bzr.savannah.gnu.org/emacs/trunk emacs-trunk
 
-(Use ##sftp## instead of ##http## if you have ##sftp## access.)
+(Use ##bzr+ssh://## instead of ##bzr://## if you have write access.)
 
 Now you can build, test, install, and run Emacs in this directory in the usual way.  If you want to update the checkout, you just do
 

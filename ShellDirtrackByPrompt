@@ -1,6 +1,6 @@
-The default mechanism for keeping Emacs apprised of the shell’s current directory (shell-dirtrack-mode) relies on monitoring all the commands entered into the shell, to see if any of them are directory-changing commands (e.g., cd, pushd, popd, etc), and then setting the buffer's default-directory based on what the user entered.   The problem is that it can be thrown off by any command which it doesn’t recognize (e.g., a shell alias like "alias up='cd ..'").
+The default mechanism for keeping Emacs apprised of the shell’s current directory (shell-dirtrack-mode) relies on monitoring all of the commands entered into the shell, to see if any of them are directory-changing commands (e.g., cd, pushd, popd, etc), and then setting the buffer's default-directory based on what the user entered.   The problem is that this method can be thrown off by any command that it doesn’t recognize as a directory-changing command (e.g., a shell alias like "alias up='cd ..'").
 
-This page describes an alternative methods that track the cwd, regardless of what command is being used to set it.  They work by having the shell always report the current directory to Emacs.
+This page describes alternative methods that track the current working directory, regardless of what command is being used to set it.  They work by having the shell always report the current directory to Emacs.
 
 == First, program your shell prompt to emit the PWD ==
 

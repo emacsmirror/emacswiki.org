@@ -1,6 +1,7 @@
 [http://www.loveshack.ukfsn.org/emacs/python.el python.el] ( or loveshack python.el ) from [http://www.loveshack.ukfsn.org/emacs/ Emacs bits], is a major mode for editing Python. 
 
 A version of this is included in Emacs 22, but has assorted problems this one doesn't.
+:This pages assumes you're using this version. Maybe another page could be started for the *other* python.el that comes with emacs?
 
 Emacs 21 and earlier had their own python mode, enabled by default, with properly-integrated support for things like completion, symbol help, eldoc, and inferior interpreter features.
  See ProgrammingWithPythonModeDotEl
@@ -43,112 +44,19 @@ ElDoc,
 : Does it work with python.el? python.el is supposed to have superior support for this, but I can't get it to work; it worked alright in python-mode.el though! -- CH
 :: nevermind, it works now. shows up in the mini-buffer when you type a function name. -- CH
 
-== CH ==
+== CEDET ==
 
-This is a dump of my-python.el where I keep my python modifications,
-little code is originally mine, but I forgot where I copied alot of it from.
+[[CEDET]] is now part of emacs (but I still recommend getting the latest version). It includes things, like completion, and folding, such that some things here may not be required.
 
-<pre>
-;;; my-python.el --- Python mode customizations
+== Indentation and folding ===
 
-(autoload 'python-mode "python" "Python editing mode." t)
-
-(defun py-outline-level ()
-  (let (buffer-invisibility-spec)
-    (save-excursion
-      (skip-chars-forward "\t ")
-      (current-column))))
-
-(add-hook 'python-mode-hook
-
-  '(lambda () (progn
-    (require 'pymacs)
-    (ropemacs-load)
-        ;(pair-mode)
-    (auto-complete-mode 1)
-    (eldoc-mode 1)
-    (set (make-local-variable 'ac-sources) (append ac-sources '(ac-source-rope) '(ac-source-yasnippet)))
-    (set (make-local-variable 'ac-find-function) 'ac-python-find)
-    (set (make-local-variable 'ac-candidate-function) 'ac-python-candidate)
-    (set (make-local-variable 'ac-auto-start) nil)
-    (set (make-variable-buffer-local 'beginning-of-defun-function) 'py-beginning-of-def-or-class)
-    (set (make-local-variable 'indent-tabs-mode) nil) ; Turn off Indent Tabs mode.
-    (setq outline-regexp "[^ \t]\\|[ \t]*\\(def\\|class\\) ")
-    (defun py-outline-level ()
-      (let (buffer-invisibility-spec)
-        (save-excursion
-          (skip-chars-forward "\t ")
-          (current-column))))
-    (setq outline-level 'py-outline-level)
-    (global-set-key (kbd "C-x t") 'outline-toggle-children) ; find better bindings!
-    (outline-minor-mode t)
-    (hide-body)
-    (show-paren-mode 1)
-    ;(highlight-beyond-fill-column)
-    (set-variable 'outline-regexp "def\\|class ")
-    (global-set-key (kbd "M-s") 'flymake-mode)
-    (global-set-key (kbd "RET") 'newline-and-indent)
-    (global-set-key (kbd "C-x SPC") 'python-command-line)
-    (global-set-key (kbd "C-x n") 'flymake-goto-next-error)
-    (global-set-key (kbd "<backtab>") 'python-tab-completion)
-    (global-set-key (kbd "M-n") 'python-describe-symbol)) t))
-
-(defun flymake-pylint-init ()
-  (let* ((temp-file (flymake-init-create-temp-buffer-copy 'flymake-create-temp-inplace))
-         (local-file (file-relative-name temp-file (file-name-directory buffer-file-name))))
-    (list "epylint" (list local-file))))
-(add-to-list 'flymake-allowed-file-name-masks '("\\.py\\'" flymake-pylint-init))
-
-;; auto-complete
-(defun ac-python-find ()
-  "Python `ac-find-function'."
-  (require 'thingatpt)
-  (let ((symbol (car-safe (bounds-of-thing-at-point 'symbol))))
-    (if (null symbol)
-        (if (string= "." (buffer-substring (- (point) 1) (point)))
-            (point)
-          nil)
-      symbol)))
-
-(defun ac-python-candidate ()
-  "Python `ac-candidates-function'"
-  (let (candidates)
-    (dolist (source ac-sources)
-      (if (symbolp source)
-          (setq source (symbol-value source)))
-      (let* ((ac-limit (or (cdr-safe (assq 'limit source)) ac-limit))
-             (requires (cdr-safe (assq 'requires source)))
-             cand)
-        (if (or (null requires)
-                (>= (length ac-target) requires))
-            (setq cand
-                  (delq nil
-                        (mapcar (lambda (candidate)
-                                  (propertize candidate 'source source))
-                                (funcall (cdr (assq 'candidates source)))))))
-        (if (and (> ac-limit 1)
-                 (> (length cand) ac-limit))
-            (setcdr (nthcdr (1- ac-limit) cand) nil))
-        (setq candidates (append candidates cand))))
-    (delete-dups candidates)))
-
-(defun python-tab-completion ()
-  (interactive)
-  (if (eql (ac-start) 0)
-      (message "no completions")))
-</pre>
-
-== Indentation ===
+python.el includes a regexp for outliner-mode, and hs-mode too.
 
 Since white space is significant in python, correct indent functions are vital, thought these might overload the tab key.
 : guess indent? or do something! maybe a 'fix syntax' key? py-smart? -- CH
 : tab to guess or max indent, backspace to reduce? This appear to be a function already. -- CH
 
 See SmartTabs (toc5) or TabCompletion (tabkey2 stuff)
-
-== Other ===
-
-: ORG-MODE like functionality would be useful eg. folding of definitions, left/right indentation levels, S-indent for entire tree! -- CH
 
 == Useful Functions ===
 

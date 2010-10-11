@@ -3,6 +3,9 @@ A basic minor mode for highlighting FIXME, TODO, BUG, and other warning comments
 
 Lisp:fixme-mode.el
 
+And another variant Lisp:fic-mode.el where fic stands for "fixme in comments (and strings)", which is a true minor mode that only highlights the tags in strings and comments.
+
+
 : It does work, but not as expected: The changes it makes to the font-locking are global, so even in buffers that are not in fixme-mode FIXMEs & Co. are highlighted and there is *no* way to disable them. I also wonder whether the call to grep could/should be replaced to a call of occur. But besides that: Cool! :-) --Tim Landscheidt
 
 [new]

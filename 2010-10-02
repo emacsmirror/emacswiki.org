@@ -62,3 +62,31 @@ Icicles has been proposed for Emacs before.[http://lists.gnu.org/archive/html/em
 : 'there was a closer following of new features and changes by the community and especially this Wiki'
 
 : A well edited blog which regularly summarizes developments (interesting threads on the devel list, interesting changes in the wiki) would be great for this, because it could be a central point of news of Emacs and it could link to the interesting stuff, so people could go there as a main source of new information and find the intersting stuff. -anon
+
+[new]
+Please not Mediawiki.  To me it is more important what wiki markup is used than what wiki software is used.  Of course these often correlates and probably my focus is for "strategic" reasons :-)  I for one would like to see the markup move into the direction of markdown or even better org-mode.  Using markdown would have the benefit that many wiki systems could be tried out independently - either org-mode or something standard.  If markdown were used everybody who thinks that the Emacswiki should move to myfavoredwiki could just setup a mirror and demonstrate it's superiority, or forever hold their peace.  Of course someone would have to convert existing pages...
+
+If it was one me to decide what engine the Emacswiki should use it would be org-mode.  See http://orgmode.org/worg for such a wiki.  But it should be possible to edit the wiki on the web also (web edits could still be anonymous).  -- JonasBernoulli
+
+
+[new:DrewAdams:2010-10-10 20:15 UTC]
+Dunno what the supposed problems are, but I for one prefer that we keep things the way they are.  A selfish reason no doubt, but non-trivial for me: I might have to spend hours reformatting things if the markup or its rendering were to change.  For me, what we have now works, and works quite well.  ''Why'' change?  "If it aint broke don't fix it."  Count me against changing, at least until I see some great upside to the change.
+
+IIUC, an argument was made for a different and better kind of Emacs wiki/blog site.  Great -- let a hundred flowers bloom.  But why would that require %%EmacsWiki%% to change?  What's wrong with people setting up another site if they would like something different?  Nothing wrong with that.  There is nothing sacred or exclusive about %%EmacsWiki%%.  It's just one place where some people like to contribute and that some people find useful.  Nothing says that it is or it should be the only such place.
+
+[P.S. Is that [http://xahlee.blogspot.com/2010/10/emacs-dev-inefficiency-and-emacs-web-20.html blog page] any indication of the formatting resulting from using different wiki software? I hope not. In IE 7.0, at least, it is rendered pretty poorly: the two title lines overlap (is it intentional, as artistry perhaps?), and that problem remains even at full screen.  But at least at full screen the text lines are not truncated, as they are in my normal browser window (portrait layout).  And when I clicked some seemingly plain text in the window, just to give it focus, the browser hung for several minutes -- I think maybe it thought I was clicking a radio button near the text in order to "vote".  Sheesh.  Not really my idea of Web UI progress.  Anyway, I imagine this is unrelated to the potential wiki-engine changes for %%EmacsWiki%%.  Just thought I'd mention it in case it is related.]
+
+-- DrewAdams
+
+[new]
+I also fear the effort of converting pages over to the markup required by some other content management system.
+
+As for markup, the "standard" for wikis would be [http://www.wikicreole.org/ WikiCreole] – I have a plugin that implements it. These could be added to the current mix of rules. There'd be some uncertainty because I can't be sure that this will not have unintended consequences for a few rare pages, but it'd be a lot less effort compared to switching to an entirely new wiki software. Or I could add a plugin that implements BB Code. It's used on a lot of forums. But I don't think that Xah was actually referring to markup.
+
+I think Xah had something more Web 2.0 in mind. Something with more bling, less arcane, more AJAX and less HTML forms, something cool, something big, something neat, with quality text, and a process, and a workflow. Something hard to put into words. But I don't see how we could do it. I don't think I'd want to contribute to something like it.
+
+Personally, that's why I'm with Drew: Let other people try it. The Emacs Wiki pages have a generous license. Use it to seed the next big Emacs site. But I'm not going to spend time on it.
+
+-- AlexSchroeder
+
+[new]

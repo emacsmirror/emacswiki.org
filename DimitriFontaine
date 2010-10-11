@@ -10,5 +10,11 @@ I also maintain a !PostgreSQL oriented blog at http://blog.tapoueh.org/, which i
 [new]
 Welcome to the wiki! We have to start somewhere... :) -- AlexSchroeder
 
+[new]
+Hi Dimitri, possible FAQs re el-get:
+* Are there hooks for overriding el-get's way of dealing with each recipe's configuration of `load-path' and `require'? I need it to fit in with an existing complex .emacs.d setup.
+* Does the darwin-specific functionality always assume the existence of /Applications/Emacs.app? Some use Aquamacs; I use "standard" (X11) emacs from MacPorts under /opt/local/bin. -- PhilHudson
+
+ 
 ----
 CategoryHomepage

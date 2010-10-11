@@ -250,6 +250,8 @@ I have just installed 1.0 after removing 0.8.  When I use M-x twit to enter tw-m
 It is because Twitter has changed the CA certificate required for server authentication of api.twitter.com and search.twitter.com. The CA certificate embedded in 1.0.0 fails. The HEAD and the most recent revision on 1.0.x branch on github have new CA certificate, which can authenticate the servers. -- Tadashi MATSUO
 ::[new]
 2010-09-05-133600: I get just the "Authorization via..." message even with the github checkout, don't see any page to open etc. Which page should I open in an external browser? -- JJ
+:::[new]
+The URL must be displayed on the buffer opened just after M-x twit. Then it will be opened by `browse-url' if you allow it. I do not know how to reproduce your case. The HEAD on github may help you. -- Tadashi MATSUO
 [new]
 Fiddled around with the hook and wrote one I think is more useful than the suggested. I also used ToDoChiKu so it should work with growl, snarl, and libnotify.
 
@@ -276,6 +278,9 @@ If it gets less than 10, a message is made of each. Hope someone else finds it u
 
 [new]
 2010-09-23 I also installed v1.0 and it works fine on my Linux system but not on my Windows system (get same "Authorization via OAuth failed. Type M-x twit to retry." message). It is the same exact setup that I sync w/unison. Is there something special needed for Windows? - Ed
+:[new]
+For SSL connection, Emacs requires an external program. Do you have `curl', `gnutls_cli' or `openssl' in load-path? By the way, I recommend the HEAD on github. It supports encrypted local storage of authorized key and xAuth. You need not to take a PIN code repeatedly.
+Note that `curl.exe' (for Windows) distributed with twittering-mode cannot correctly perform HTTPS POST with non-empty post-body via a proxy. So, you cannot use it for xAuth via a proxy. (You can use it for OAuth and tweet retrieval.) In addition, `gnutls_cli' and `openssl' cannot be used with a proxy. -- Tadashi MATSUO
 ----
 See also: [[Twitter]] [[Identica-mode]]
 

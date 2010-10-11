@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 15:42:15 2010 (-0700)
+;; Last-Updated: Sun Oct 10 10:16:52 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16194
+;;     Update #: 16196
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2960,7 +2960,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (icicle-successive-action #'icicle-next-apropos-candidate #'icicle-help-on-candidate nth))
 
 (defun icicle-successive-action (nav-fn action-fn nth)
-  "Call NAV-FN and ACTION-FN.  Pass NTH to ACTION-FN.
+  "Call NAV-FN and ACTION-FN.  Pass argument NTH to NAV-FN.
 Set `icicle-current-completion-mode'.
 The order between NAV-FN and ACTION-FN respects the value of
 `icicle-act-before-cycle-flag'."

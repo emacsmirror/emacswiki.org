@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 322 $  
+;; RCS Version: $Rev: 323 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 322 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 323 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2862,7 +2862,7 @@ or (c)ontents? ")
   (if backward
       (isearch-backward nil t)
     (isearch-forward nil t))
-  (sr-sticky-isearch-prompt))
+  (run-with-idle-timer 0.01 nil 'sr-sticky-isearch-prompt))
 
 (defun sr-sticky-isearch-forward ()
   "Starts a sticky forward search in the current pane."
@@ -2877,22 +2877,24 @@ or (c)ontents? ")
 (defun sr-sticky-post-isearch ()
   "Function installed in isearch-mode-end-hook during sticky isearch operations
   in Sunrise browse mode."
-  (let* ((filename (expand-file-name (dired-get-filename nil t)))
-         (is-dir (or (file-directory-p filename)
-                     (sr-avfs-dir filename)
-                     (sr-virtual-directory-p filename))))
-    (cond ((or isearch-mode-end-hook-quit (not is-dir))
-           (progn
-             (remove-hook 'isearch-mode-end-hook 'sr-sticky-post-isearch)
-             (kill-local-variable 'search-nonincremental-instead)
-             (isearch-done)
-             (or isearch-mode-end-hook-quit (sr-find-file filename))))
-          (t
-           (progn
-             (sr-find-file filename)
-             (set (make-local-variable 'search-nonincremental-instead) nil)
-             (isearch-forward nil t)
-             (sr-sticky-isearch-prompt))))))
+  (and
+   (dired-get-filename nil t)
+   (let* ((filename (expand-file-name (dired-get-filename nil t)))
+          (is-dir (or (file-directory-p filename)
+                      (sr-avfs-dir filename)
+                      (sr-virtual-directory-p filename))))
+     (cond ((or isearch-mode-end-hook-quit (not is-dir))
+            (progn
+              (remove-hook 'isearch-mode-end-hook 'sr-sticky-post-isearch)
+              (kill-local-variable 'search-nonincremental-instead)
+              (isearch-done)
+              (or isearch-mode-end-hook-quit (sr-find-file filename))))
+           (t
+            (progn
+              (sr-find-file filename)
+              (set (make-local-variable 'search-nonincremental-instead) nil)
+              (isearch-forward nil t)
+              (run-with-idle-timer 0.01 nil 'sr-sticky-isearch-prompt)))))))
 
 (defun sr-show-files-info (&optional deref-symlinks)
   "Enhanced version of dired‐show‐file‐type from dired‐aux.  If at most one item
