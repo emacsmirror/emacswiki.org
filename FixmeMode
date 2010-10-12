@@ -10,3 +10,14 @@ And another variant Lisp:fic-mode.el where fic stands for "fixme in comments (an
 
 [new]
 : Wow, its been a long time since I looked at this code. Ok, I replaced the grep with occur (being a Linux guy I sometimes forget that the command line tools aren't available for all OSs). The font-lock changes should also be undone when the mode is disabled now. Only thing I can't seem to do is force the highlighting to apply to currently opened files (so you need to close it and open it again to see the changes. If anyone knows how to do this please let me know.). Let me know if you notice any other problems. -- Bryan Waite
+
+[new]
+Just add this to the end of fic-mode:
+
+  (font-lock-mode -1)
+  (font-lock-mode 1)
+
+BTW, fic-mode is as Tim said working globally. So it should be a global mode, i.e. add ":global t".
+
+And I suggest removing the lighter. It is not very important to show it and there is a lack of room in the modeline.
+

@@ -123,6 +123,11 @@ Default value is the Emacs Wiki site."
 ;;;###autoload
 (defcustom icicle-files-to-download-list
   (list
+   "col-highlight.el"           ; Column highlighting
+   "crosshairs.el"              ; Crosshairs highlighting
+   "doremi.el"                  ; Change *Completions* incrementally
+   "hexrgb.el"                  ; Color manipulation
+   "hl-line+.el"                ; Line highlighting
    "icicles.el"                 ; Main library - just loads the others
    "icicles-chg.el"             ; Change logs
    "icicles-doc1.el"            ; Doc, part 1
@@ -136,10 +141,10 @@ Default value is the Emacs Wiki site."
    "icicles-mode.el"            ; Icicle (Icy) mode
    "icicles-opt.el"             ; User options
    "icicles-var.el"             ; Internal variables
-   "lacarte.el"                 ; Menu-bar access from keyboard
    "icomplete+.el"              ; Enhancements to `icomplete.el'
-   "hexrgb.el"                  ; Color manipulation
-   "synonyms.el")               ; Synonym lookup
+   "lacarte.el"                 ; Menu-bar access from keyboard
+   "synonyms.el"                ; Synonym lookup
+   "vline.el"                   ; Column highlighting
   "*Icicles files to download.
 Icicles is made to take advantage of some libraries that are not
 strictly required.  All of these are recommended, but only some are
@@ -149,22 +154,28 @@ The following files are included in the download list by default.  If
 you like, you can remove any of them without impacting core Icicles
 functionality:
 
+  `col-highlight.el' - Column highlighting
+  `crosshairs.el' - Crosshairs highlighting
+  `doremi.el' - Change *Completions* display incrementally
+  `hexrgb.el' - Lets you use and manipulate colors with Icicles
+  `hl-line+.el' - Line highlighting
   `icicles-chg.el' - Change logs for all Icicles libraries
   `icicles-doc1.el' and `icicles-doc2.el' - Icicles documentation
-  `lacarte.el' (aka `icicles-menu.el')- Menu-bar access from keyboard
   `icomplete+.el' - Enhancements to `icomplete.el'
-  `hexrgb.el' - Lets you use and manipulate colors with Icicles
+  `lacarte.el' - Menu-bar access from keyboard
   `synonyms.el' - Look up synonyms in a thesaurus using Icicles
 
 The following files are also recommended but not strictly required.
 You might want to add them to `icicle-files-to-download-list'.
 
   `apropos-fn+var.el' - Enhanced apropos commands
+  `bookmark+.el' - Bookmark enhancements
   `dired+.el' - Use file on current line as default in Dired
-  `doremi.el' - Change *Completions* display incrementally
+  `doremi-frm.el' - Zoom *Completions*
   `ffap-.el' - Extensions to `ffap.el'
   `fit-frame.el' - Fit frames to their (sole) buffers
   `fuzzy-match.el' - Provides Icicles with fuzzy matching
+  `info+.el' - Info enhancements
   `linkd' - Provides hypertext links for Icicles doc
   `menu-bar+.el' - Menu-bar menus (Apropos, Describe, Frames, Tags)
   `misc-cmds.el' - Clear search history.  Kill buffer deletes window.

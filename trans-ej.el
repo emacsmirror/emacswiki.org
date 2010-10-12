@@ -8,7 +8,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: multilingual, translation
 
-(defconst trans-ej-version "0.3.0")
+(defconst trans-ej-version "0.3.1")
 
 ;; This program is free software.
 
@@ -63,6 +63,9 @@
 
 ;;; ChangeLog:
 
+;; 2010-10-11  S. Irie
+;;        * Version 0.3.1
+;;        * Bug fix
 ;; 2010-08-20  S. Irie
 ;;        * Version 0.3.0
 ;;        * Added options:
@@ -416,7 +419,7 @@ to CODING-SYSTEM."
 	     (encode-coding-string string coding-system)
 	     ""))
 
-(defun trans-ej-decode-response (coding-system filters)
+(defun trans-ej-decode-response (coding-system filters &optional kill-buffer)
   "Return a new string that is decoded and extracted from URI-encoded
 string in current buffer by using FILTERS. FILTERS must be given by
 the list of pairs as ((REGEXP1 . SUBEXP1) (REGEXP2 . SUBEXP2) ...),
@@ -427,41 +430,46 @@ First, decode all of the buffer string from the coding system specified by
 the first argument. Then, apply FILTERS in order of its elements by performing
 the matching for REGEXP in the string and leaving only the matching string
 corresponding to SUBEXP. Finally, get rid of the unnecessary tags and decode
-the URI-encoded characters."
-  (let ((str (decode-coding-string (buffer-string) coding-system)))
-    (while (and str filters) ;; apply filters
-      (setq str (and (string-match (caar filters) str)
-		     (match-string (cdar filters) str)))
-      (setq filters (cdr filters)))
-    (cond
-     (str
-      (with-temp-buffer
-	(insert str)
-	(goto-char (point-min))
-	(while (re-search-forward "\n?<br>" nil t)
-	  (replace-match "\n")) ;; replace <br> tag by \n
-	(goto-char (point-min))
-	(while (re-search-forward "<[^>]+>" nil t)
-	  (replace-match ""))	;; get rid of other tags
-	(goto-char (point-min))
-	(while (re-search-forward "&#\\([0-9]+\\);" nil t)
-	  (let ((chr (string-to-number (match-string 1))))
-	    (replace-match (or (cdr (assq chr
-					  '((160 . " ")))) ;; google returns this code. why?
-			       (string chr))
-			   t t)))
-	(goto-char (point-min))
-	(while (re-search-forward "&\\([a-z]+\\);" nil t)
-	  (let ((replace (cdr (assoc (match-string 1)
-				     '(("quot" . "\"")
-				       ("amp" . "&")
-				       ("lt" . "<")
-				       ("gt" . ">"))))))
-	    (when replace
-	      (replace-match replace))))
-	(buffer-string)))
-     (trans-ej-decode-response-debug
-      (decode-coding-string (buffer-string) coding-system)))))
+the URI-encoded characters.
+
+KILL-BUFFER non-nil means kill current buffer."
+  (unwind-protect
+      (let ((str (decode-coding-string (buffer-string) coding-system)))
+	(while (and str filters) ;; apply filters
+	  (setq str (and (string-match (caar filters) str)
+			 (match-string (cdar filters) str)))
+	  (setq filters (cdr filters)))
+	(cond
+	 (str
+	  (with-temp-buffer
+	    (insert str)
+	    (goto-char (point-min))
+	    (while (re-search-forward "\n?<br>" nil t)
+	      (replace-match "\n")) ;; replace <br> tag by \n
+	    (goto-char (point-min))
+	    (while (re-search-forward "<[^>]+>" nil t)
+	      (replace-match ""))	;; get rid of other tags
+	    (goto-char (point-min))
+	    (while (re-search-forward "&#\\([0-9]+\\);" nil t)
+	      (let ((chr (string-to-number (match-string 1))))
+		(replace-match (or (cdr (assq chr
+					      '((160 . " ")))) ;; google returns this code. why?
+				   (string chr))
+			       t t)))
+	    (goto-char (point-min))
+	    (while (re-search-forward "&\\([a-z]+\\);" nil t)
+	      (let ((replace (cdr (assoc (match-string 1)
+					 '(("quot" . "\"")
+					   ("amp" . "&")
+					   ("lt" . "<")
+					   ("gt" . ">"))))))
+		(when replace
+		  (replace-match replace))))
+	    (buffer-string)))
+	 (trans-ej-decode-response-debug
+	  (decode-coding-string (buffer-string) coding-system))))
+    (if kill-buffer
+	(kill-buffer (current-buffer)))))
 
 (defun trans-ej-strip-empty-lines (string)
   "Remove the empty lines at the both ends of STRING."
@@ -565,12 +573,12 @@ is included in, otherwise auto-uncomment mechanism can't correctly work."
 	  (url-retrieve url
 			(lambda (status decode coding-system filters callback cbargs)
 			  (apply callback
-				 (funcall decode coding-system filters)
+				 (funcall decode coding-system filters t)
 				 status cbargs))
 			(list 'trans-ej-decode-response coding-system filters
 			      callback cbargs))
 	(with-current-buffer (url-retrieve-synchronously url)
-	  (trans-ej-decode-response coding-system filters))))))
+	  (trans-ej-decode-response coding-system filters t))))))
 
 ;; Translate using multiple Web sites
 

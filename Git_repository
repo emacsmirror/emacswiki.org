@@ -5,24 +5,20 @@ raw text of all Emacswiki pages.
 
 It can be found at http://github.com/emacsmirror/emacswiki.org
 
-== Packages ==
+== Package Branches ==
 
-The [[Emacsmirror]] contains repositories for most packages distributed
-on the EmacsWiki.
+Individual packages distributed on the EmacsWiki are available from the
+[[Emacsmirror]] - each in it's own _repository_.
 
-The code used to synchronize these repositories with edits on the
-Emacswiki is being rewritten right now, so there won't be any updates in
-the near futur.
+These packages are also
+[http://github.com/emacsmirror/emacswiki.org/branches available]
+as individual _branches_ directly from the EmacsWiki mirror repository.
 
-== Branches ==
+== Categorization ==
 
-The repository used to feature branches that contained only subsets of
-the files from the Emacswiki, like e.g. only web pages or Emacs lisp
-files.
-
-The code used to create these branches was to complicated and will
-eventually be replaced.  But due to the lack of interest in these branches
-I won't do this until I have more time.
+The EmacsWiki repository also contains a
+[http://github.com/emacsmirror/emacswiki.org/tree/categorization branch],
+which categorizes all pages on the EmacsWiki.
 
 ----
 CategoryEmacsWikiSite, WikiDownload

@@ -66,7 +66,9 @@ Icicles has been proposed for Emacs before.[http://lists.gnu.org/archive/html/em
 [new]
 Please not Mediawiki.  To me it is more important what wiki markup is used than what wiki software is used.  Of course these often correlates and probably my focus is for "strategic" reasons :-)  I for one would like to see the markup move into the direction of markdown or even better org-mode.  Using markdown would have the benefit that many wiki systems could be tried out independently - either org-mode or something standard.  If markdown were used everybody who thinks that the Emacswiki should move to myfavoredwiki could just setup a mirror and demonstrate it's superiority, or forever hold their peace.  Of course someone would have to convert existing pages...
 
-If it was one me to decide what engine the Emacswiki should use it would be org-mode.  See http://orgmode.org/worg for such a wiki.  But it should be possible to edit the wiki on the web also (web edits could still be anonymous).  -- JonasBernoulli
+If it was one me to decide what engine the Emacswiki should use it would be org-mode.  See http://orgmode.org/worg for such a wiki.  But it should be possible to edit the wiki on the web also (web edits could still be anonymous).
+
+-- JonasBernoulli
 
 
 [new:DrewAdams:2010-10-10 20:15 UTC]
@@ -90,3 +92,20 @@ Personally, that's why I'm with Drew: Let other people try it. The Emacs Wiki pa
 -- AlexSchroeder
 
 [new]
+I just came back to this page to add a note to by post saying something like:  The Emacswiki is fine as it is.  I do not expect you are anybody else to change anything.  But since you asked moving to something less _odd_ would be the first thing I would like to be done - if you decide to put any work into it.
+
+Besides markdown I also had creole on my mind - but couldn't think of it's name when I wrote my last post.  Supporting _additional_ markups is the wrong way to go I think.  Of course it is nice if one can use the preferred markup when creating a new page - but things get harder when you want to edit a page that is a mix off oddmuse, markdown, creole and bb...
+
+Stick to the markup we have or move to something else completely.  I say you not because I expect you to do it but because the "easiest" way to do it would probably be to use the existing oddmuse code which knows/defines how the existing markup has to be interpreted and make it output some other markup as a onetime conversion.  I don't do perl so I won't even try to experiment with it.
+
+As for the work that I have been doing related to Emacs resources.
+
+(1) The webpage of the [http://www.emacsmirror.org Emacsmirror] is currently statically generated.  I will convert it to something a _bit_ more dynamic but this will progress very slowly and is not intended to replace the Emacswiki.  Also I have not decided whether I will allow users to actually change contribute through the webpage at all.  Currently the Emacsmirror webpage shows the library headers of all mirrored packages plus some more information from the header and about required features.  I have no immediate plans to change that.  So the Emacsmirror will not be web2.0 anytime soon.  Actually even after the changes that I plan it will we _less_ web2.0 than the wiki!
+
+(2) Interest in the [[Git_repository]] I have created is pretty much non-existent so I won't put any more work into it than what is required for the Emacsmirror.  (The work that has been done allows me to mirror packages hosted on the wiki and to determine a package's page on the wiki so that I can link to it from the mirror.)
+
+For more information about how I see the mirror in relation to other Emacs related pages see [http://github.com/emacsmirror/p/wiki/Motivation this].  The text on that page is quite old and there is no updated version. Simply collecting the currently 2728 packages took more time than expected.
+
+So maybe my opinion boils down to this: The Emacswiki is perfectly fine as it is.  As a wiki that is - as a way to distribute packages there are better solutions nowadays, github being my favorite.  So I would _encourage_ (not force) users to not publish new packages on the wiki but use github (or launchpad etc.) instead, but still create a page about them on the wiki.
+
+-- JonasBernoulli

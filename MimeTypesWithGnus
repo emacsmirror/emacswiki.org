@@ -11,6 +11,10 @@ how:
     ;; Inline images?
     (setq mm-attachment-override-types '("image/.*"))
 
+    ;; Or, like this:
+    (add-to-list 'mm-attachment-override-types "image/.*")
+
+
 If there is a text alternative to an HTML message, you might want Gnus
 to show the text instead of starting a browser:
 

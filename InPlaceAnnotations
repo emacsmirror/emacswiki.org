@@ -40,6 +40,34 @@ I like overlay which is above the target line. Because default IPA messes the li
 
 -- [[rubikitch]]
 
+You can define a different face:
+
+ (defface ipa '((t :foreground "green")) "Face for annotations." :group 'basic-faces)
+ (defvar ipa-annotation-face 'ipa "Face for annotations.")
+
+Also consider this changed version of the ipa-set-overlay-text above to indent:
+
+ (defun string-repeat (str n)
+   (let ((retval ""))
+     (dotimes (i n)
+       (setq retval (concat retval str)))
+     retval))
+ 
+ (defun ipa-set-overlay-text (overlay text)
+   (if (string-match ipa-annotation-id-regexp text)
+       (setq text (match-string 2 text)))
+   (save-excursion
+     (let ((ipa-indent-level (current-indentation)))
+     (beginning-of-line)
+     (overlay-put overlay 'before-string
+                  (if (equal text "") ""
+	 	   (propertize
+	 	    (concat
+	 	     (string-repeat " " ipa-indent-level) "* " text "\n")
+	 	    'face ipa-annotation-face))))))
+
+-- CH
+
 [new:XavierMaillard:2009-02-14 22:33 UTC]
 Thank you. I will check your code and see how I can integrate both
 approach.

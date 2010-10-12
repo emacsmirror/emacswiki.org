@@ -1,6 +1,6 @@
 Commonly referred to as TEI-Emacs.  An excellent GNU-Emacs 21.3 installation choice for all Windows users, indeed, for any potential Emacs user, on Windows or Unix, perhaps the best choice to ensure a more or less complete SGML/XML authoring system for processing XHTML, Docbook or Text Encoding Initiative markedup texts, and much more, complete with standard XML validating tools, bundled with extensive Emacs-specific and XML-related tutorials  and documentation.  Professionally produced to exacting academic standards by the Text Encoding Initiative, an academic consortium (Oxford; Virgina; Brown; Bergen, Norway, etc.) devoted to semantic markup of humanities texts (variorium and critical editions, concordances, multilingual dictionairies, etc.), founded in 1987.  About TEI: http://www.tei-c.org/  
 
-About TEI-Emacs: http://www.tei-c.org/Software/tei-emacs/
+About TEI-Emacs: http://wiki.tei-c.org/index.php/TEIEmacs
 
 My experience and evaluation: This is simply the best packaging of Emacs for Windows I've seen, period, bar none, and the only one of three or four I've attempted to use that allows one to get any significantly enhanced learning or work done, completely offline, *immediately*  after clicking the last default of its simple install dialog.  Uninstall option included.     
 

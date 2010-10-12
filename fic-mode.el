@@ -22,7 +22,7 @@
 ;;
 ;; To use, save fic-mode.el to a directory in your load-path.
 ;;
-;; (require 'fic-mode.el)
+;; (require 'fic-mode)
 ;; (add-hook 'c++-mode-hook 'turn-on-fic-mode)
 ;; (add-hook 'emacs-lisp-mode-hook 'turn-on-fic-mode)
 ;;
@@ -30,7 +30,7 @@
 ;;
 ;; M-x fic-mode
 ;;
-;; NOTE: you might need to force re-fontification initially
+;; NOTE: If you manually turn on fic-mode, you you might need to force re-fontification initially
 ;;   M-x font-lock-fontify-buffer
 
 (defcustom fic-highlighted-words '("FIXME" "TODO" "BUG" "KLUDGE")
