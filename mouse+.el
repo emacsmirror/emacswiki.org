@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:30:08 2010 (-0800)
+;; Last-Updated: Tue Oct 12 08:22:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 507
+;;     Update #: 510
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse+.el
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -96,6 +96,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2010/10/12 dadams
+;;     mouse-flash-position: Updated doc string for Emacs 24.
 ;; 2009/04/26 dadams
 ;;     mouse-scan-lines: Bind inhibit-field-text-motion to t, for end-of-line.
 ;; 2008/09/29 dadams
@@ -285,9 +287,12 @@ START is the position of the start of the current drag operation."
 ;;;###autoload
 (defun mouse-flash-position (start-event)
   "Highlight the mouse position as you drag the mouse.
-This must be bound to a button-down mouse event.  If you bind this to
-`down-mouse-2', and `mouse-2' is bound to `mouse-yank-at-click' (the
-default), then the yank occurs just before the highlighted character.
+This must be bound to a button-down mouse event.
+
+If you bind this to `down-mouse-2', and `mouse-2' is bound to
+`mouse-yank-primary' or `mouse-yank-at-click' (defaults for Emacs 24
+and earlier, respectively), then the yank occurs just before the
+highlighted character.
 
 If you want to prevent the `mouse-2' up-button yank from taking place,
 perhaps because you changed your mind, you can press and hold `C-g'

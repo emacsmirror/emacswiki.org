@@ -27,6 +27,9 @@ I also found these useful:
 
 Rope is a refactoring library, and ropemode is a wrapper. Pymacs allows Emacs to spawn a Python process and interact with it. Finally, ropemacs gives a convenient in-emacs interface to all this, including Python documentation access, inlining, finding function definitions and so on.
 
+: I installed emacs-vcs-24.0.9999 on gentoo, and ropemacs stopped working;
+'rope-completions' (or 'foo-completions', depending on how you import it) froze emacs on the first or second invocation. This had worked OK on emacs-23.2-r1, and did again once I reverted. This was possibly a problem with Pymacs, which might not handle problems well, allowing emacs to just hang. It's also bad that some of the functions added to save and exit hooks are also pymacs derived! --CH
+
 == Comment/Uncomment Region ==
 
 If you have `transient-mark-mode' on, you can just use `comment-dwim': select a region and hit `M-;'. The DoWhatIMean means that it will comment or uncomment the region as appropriate. If you do not have `transient-mark-mode' on by default, you can hit C-SPC twice to activate it temporarily.

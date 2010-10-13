@@ -1,15 +1,28 @@
+==Code==
+
+Here are some snippets I find useful but I haven't bothered to work up into modes:
+
+DeustschifyText
+SettingFrameColorsForEmacsClient
+
+
+==About Me==
+
 I use Emacs.
 
 I've been using GNU Emacs for so long now I forget where I first saw it, but I was definitely already using it for programming on Linux around about 1998 and it became the place where I spent the majority of my computing time sometime prior to April 2002.
 
 I've used Emacs mostly for programming, but in recent years my time is spent more and more on matters related to programming, but not directly to do with editing code.  Now I find myself utilising things like OrgMode more and more and still loving it.
 
-I've been hacking Emacs Lisp for personal and work reasons for about 7 years now.  Sadly much of that code was just to help colleagues out at work, but I've submitted the odd patch here and there. Hopefully soon I'll post some useful code here for people to play with to.
+I've been hacking Emacs Lisp for personal and work reasons for about 9 years now.  Sadly much of that code was just to help colleagues out at work, but I've submitted the odd patch here and there. Hopefully soon I'll post some useful code here for people to play with to.
 
 I also skulk around the emacs-devel mailing list, mostly not saying anything but observing what is going on.
 
+
 [new:AndyStewart:2009-08-10 04:02 UTC]
 Welcome to wiki! :) -- AndyStewart
+
+
 
 
 ----

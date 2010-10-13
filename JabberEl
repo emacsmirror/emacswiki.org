@@ -294,7 +294,7 @@ I am also using it for two days now. It is a good substitute to the BitlBee/[[ER
 I am using it now, works pretty well under EmacsForWindows with cygwin (for the SSL part). I have to find a way thought to have under linux to show me an icon in my status bar when i get messages. (i guess some kind of python + dbus client server for it). Good work. -- [[chmouel]]
 
 [new]
-A note on the above - dbus support is in GNU Emacs in CVS now --GeoffTeale 
+A note on the above - dbus support is in GNU Emacs in CVS now --GeoffreyTeale 
 
 [new]
 Jabber.el is my XMPP client for last year. Before I used gaim, tkabber, but I not found happiness in it. Jabber.el makes me happy... -- Zert

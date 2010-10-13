@@ -1,0 +1,55 @@
+;;; 
+
+;; German character conversion to and from XML entities - nothing special, just a quick and dirty answer.
+
+
+(defun deutschify-region (beg end)
+  (interactive "r")
+  (save-excursion 
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (while (and (< (point) (point-max))
+		  (re-search-forward "&\\(\[aou\]\\)uml;" nil t))
+	(unless (> (match-end 0) (point-max))
+	  (let ((uml (match-string-no-properties 1)))
+	    (case (string-to-char uml)
+	      (97 (replace-match "ä"))
+	      (65 (replace-match "Ä"))
+	      (111 (replace-match "ö"))
+	      (79 (replace-match "Ö"))
+	      (117 (replace-match "ü"))
+	      (85 (replace-match "Ü"))))))
+      (goto-char (point-min))
+      (while (and (< (point) (point-max))
+		  (re-search-forward "&szlig;" nil t))
+	(unless (> (match-end 0) (point-max))
+	  (replace-match "ß"))))))
+
+(defun undeutschify-region (beg end)
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (while (and (< (point) (point-max))
+		  (re-search-forward "\\(\[äöüÄÖÜß\]\\)" nil t))
+	(unless (> (match-end 0) (point-max))
+	  (let ((uml (match-string-no-properties 1)))
+	    (case (string-to-char uml)
+	      (228 (replace-match "&auml;"))
+	      (246 (replace-match "&ouml;"))
+	      (252 (replace-match "&uuml;"))
+	      (196 (replace-match "&Auml;"))
+	      (214 (replace-match "&Ouml;"))
+	      (220 (replace-match "&Uuml;"))
+	      (223 (replace-match "&szlig;")))))))))
+	       
+
+(defun deutschify-buffer ()
+  (interactive)
+  (deutschify-region (point-min) (point-max)))
+
+(defun undeutschify-buffer ()
+  (interactive)
+  (undeutschify-region (point-min) (point-max)))

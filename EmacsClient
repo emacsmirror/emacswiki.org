@@ -873,5 +873,11 @@ echo "This will go into my emacs! :)" | emcas-pipe
 [new]
 Nice, but this does not work on w32.
 However I think on must platforms (including w32) you can pipe to putclip instead and just paste into a buffer in Emacs.
+
+== Setting frame colors differently for graphical clients and console clients ==
+
+See: SettingFrameColorsForEmacsClient
+
+-- GeoffreyTeale
 ----
 CategoryExternalUtilities

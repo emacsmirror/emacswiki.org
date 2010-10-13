@@ -33,19 +33,26 @@
 ;; associated with the application process.  If the application ends
 ;; the buffer is killed.
 
+;; 2010-10-12, TN: Application can be specified as a list of programs
+;; user can choose program from mouse menu
 ;;; Code:
 
 
 (add-to-list 'inhibit-file-name-handlers 'application-handler)
 
-(defvar application-caller-list
+(defgroup application nil
+  "Start applications for binary files.")
+
+(defcustom application-caller-list
   '(
     (".*\\.pdf$" . "xpdf")
     (".*\\.xls$" . "openoffice.org")
-    (".*\\doc\\(x\\)?$" . "openoffice.org")
-    (".*\\ppt\\(x\\)?$" . "openoffice.org")
+    (".*\\.doc\\(x\\)?$" . "openoffice.org")
+    (".*\\.ppt\\(x\\)?$" . "openoffice.org")
+    (".*\\.is[xm]$" ("simx3" . "simx3") ("simx3.4officialRelease" . "simx3.4officialRelease") ("simx3.4stable" . "simx3.4stable"))
     )
-"List assigning applications to file names. Each element of the list is a cons with two strings: the regular expression matching the file names as car and the application to be started as cdr.")
+  "List assigning applications to file names. Each element of the list is a cons with two strings: the regular expression matching the file names as car and the application to be started as cdr."
+  :group 'application)
 
 (defun application-caller-regexp ()
   "Constructs a regexp matching all file names for application-hanlder from `application-caller-list'."
@@ -69,25 +76,49 @@
 (defvar application-bash-program "bash"
   "The applications in `application-caller-list' are started through the bash shell. This is the command string to call bash.")
 
+(defun application-popup-menu (file-name app-list)
+  (x-popup-menu t (list (concat "Applications for " file-name)
+			(append '("" ("Emacs" . "emacs"))
+				app-list))))
+
+(defun new-buffer-name (name)
+  "Create new unique buffer name basing on NAME."
+  (while (get-buffer name)
+    (if (string-match "\\(.*\\)<\\([0-9]+\\)>$" name)
+	(setq name (concat (match-string 1 name) "<"
+			   (number-to-string
+			    (1+
+			     (string-to-number (match-string 2 name))))
+			   ">"))
+      (setq name (concat name "<1>"))))
+  name)
+
 (defun application-handler (fct &rest args)
   "For files whos names match one of the regexps in `application-caller-list' insert-file-contents does not really insert the file contents but starts the corresponding application. The file buffer becomes the application process buffer."
-  (if (equal fct 'insert-file-contents)
-      (let* ((filename (car args))
-	     (framed-filename (concat "\"" filename "\""))
-	     (handler-entry (assoc-if '(lambda (filename-regexp) (string-match filename-regexp filename)) application-caller-list))
-	     (application-filename-regexp (car handler-entry))
-	     (application-caller (cdr handler-entry))
-	     application-process)
-	(message "Starting \"%S\" on file \"%s\"" application-caller framed-filename)
-	(if (nth 1 args) (setq buffer-file-name filename))
-	(let ((application-process (start-process (concat "*proc:" buffer-file-name "*") nil application-bash-program "-c" (concat application-caller " " framed-filename))))
-	  (insert (format "Application \n%s\nwith process\n%S\nfor file\n%s" application-caller application-process framed-filename))
-	  (set-buffer-modified-p nil)
-	  (set-process-buffer application-process (current-buffer))
-	  (set-process-sentinel application-process 'application-sentinel))
-	(list filename 0))
-    (let ((inhibit-file-name-operation fct))
-      (apply fct args))))
+  (or
+   (and (equal fct 'insert-file-contents)
+	(let* ((filename (car args))
+	       (framed-filename (concat "\"" filename "\""))
+	       (handler-entry (assoc-if '(lambda (filename-regexp) (string-match filename-regexp filename)) application-caller-list))
+	       (application-filename-regexp (car handler-entry))
+	       (application-caller (cdr handler-entry))
+	       application-process)
+	  (if (listp application-caller)
+	      (setq application-caller (application-popup-menu framed-filename application-caller)))
+	  (if application-caller
+	      (progn
+		(message "Starting \"%S\" on file \"%s\"" application-caller framed-filename)
+		(if (nth 1 args) (setq buffer-file-name filename))
+		(let ((application-process (start-process (concat "*proc:" buffer-file-name "*") nil application-bash-program "-c" (concat application-caller " " framed-filename))))
+		  (insert (format "-*- fundamental -*-\nApplication \n%s\nwith process\n%S\nfor file\n%s" application-caller application-process framed-filename))
+		  (set-buffer-modified-p nil)
+		  (set-process-buffer application-process (current-buffer))
+		  (set-process-sentinel application-process 'application-sentinel))
+		(setq buffer-file-name (new-buffer-name (concat "*app:" filename "*")))
+		(rename-buffer buffer-file-name)
+		(list buffer-file-name 0)))))
+   (let ((inhibit-file-name-operation fct))
+     (apply fct args))))
 
 (defun application-sentinel (proc eventType)
   "This sentinel is registered by `application-handler' for

@@ -616,6 +616,7 @@ There are the following possibilities to deal with the situation above:
 : Indeed, it only runs on Emacs 23. I've just changed the EmacsWiki pages.
 : Thanks. -- ViniciusJoseLatorre
 
+:: ------------
 :: Also I modified the WhiteSpace source here in EmacsWiki to run in Emacs 21, 22
 and 23.
 :: -- ViniciusJoseLatorre
@@ -663,6 +664,7 @@ just eliminate the ##newline## symbol from ##whitespace-style##, or call
 symbol. Please, see ##whitespace-style## documentation.
 : -- ViniciusJoseLatorre
 
+:: ------------
 :: Since version 10.0, the `indent-tabs-mode' and `tab-width' settings from
 user are honored.
 :: -- ViniciusJoseLatorre
@@ -717,8 +719,11 @@ I'm having the same display issue with whitespace-mode under Mac OS X 10.5.6 usi
 : Please, try the same setting above.
 : Thanks -- ViniciusJoseLatorre
 
-:: 
+:: ------------ 
 :: Thanks Vinicius, that fixed it! -- Eddie
+
+::: ------------
+::: Cool! -- ViniciusJoseLatorre
 
 [new]
 Display of centered dot, etc. did not work on my Unicode terminal until I replaced all glyphs in whitespace-display-mappings with their Unicode equivalents: e.g. [?\xB7] becomes [?\u00B7].  Otherwise it tried to send a literal #\xB7 to the terminal, which resulted in a rectangle.  -- JimUrsetto
@@ -780,6 +785,7 @@ I don't think there is a solution to this on a local, per-buffer basis with `glo
 : Indeed, this problem is not addressed by WhiteSpace at moment. I'll try to fix it.
 : Thanks for reporting. -- ViniciusJoseLatorre
 
+:: ------------
 :: Hi,
 :: Version 13.1 address this problem now, please, see `whitespace-line-column' documentation.
 :: -- ViniciusJoseLatorre
@@ -827,6 +833,15 @@ I'm also using LineNumbers, and whitespace mode affects the spaces next to the n
 : Send me also which LineNumbers package and the environment setting for this package you are using.
 : Thanks for your report. -- ViniciusJoseLatorre
 
+:: ------------
+:: Hi,
+:: I've just seen LineNumbers page (##linum.el## file). One possible solution for the blank visualization next to the numbers could be to use one of the following settings:
+:: 1. right justified: ##(setq linum-format (format "%%05d%c" ?\x200B))##
+:: 2. left justified: ##(setq linum-format (format "%%d%c" ?\x200B))##
+:: The character ##?\x200B## is a zero width space which is not highlighted by WhiteSpace.
+:: Another solution could be to change LineNumbers packages to not use spaces to separate the line number from the line, but use the width text property.
+:: -- ViniciusJoseLatorre
+
 ----
 
 [new]
@@ -843,7 +858,7 @@ But I still don't see it. Normal spaces are displayed as intented by whitespace.
 
 : Hi Flo,
 : Ok, it seems you modified the ##whitespace.el## source file. So, you should terminate the current Emacs session (##C-x C-c##), start a new Emacs session, open the modified ##whitespace.el## source file, evaluate the buffer (##M-x eval-buffer RET##), open the file which contains ##?\x200B## characters or insert these characters in a file, and, finally, turn on WhiteSpace (##M-x whitespace-mode RET##). The ##?\x200B## characters should be marked.
-: Now, if you are only testing, instead of ##defcustom## use ##setq##, reevaluate the region containing ##setq## (##M-x eval-region RET##), go to the file containing ##?\x200B## characters, turn off WhiteSpace (because it is using the old ##whitespace-display-mappings## value), and turn on WhiteSpace (now use the new ##whitespace-display-mappings## value).
+: Now, if you are only testing, use ##setq## instead of ##defcustom##, reevaluate the region containing ##setq## (##M-x eval-region RET##), go to the file containing ##?\x200B## characters, turn off WhiteSpace (because it is using the old ##whitespace-display-mappings## value), and turn on WhiteSpace (now use the new ##whitespace-display-mappings## value).
 : -- ViniciusJoseLatorre
 
 ----
