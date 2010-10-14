@@ -9,8 +9,10 @@
 ;; This file is not (yet) a part of GNU Emacs.
 ;;
 ;; Very much like the windmove package, only for frames.
+;; Provide a simple set of keystrokes to move the input/focus
+;; between windows.
 ;;
-;; Version 0.8
+;; Version 0.9
 ;;
 ;; This software is licensed under the GPL version 3.
 ;;
@@ -25,6 +27,8 @@
 ;;    (windmove-default-keybindings)
 ;;    (setq framemove-hook-into-windmove t)
 ;; 
+;; Compatibility: GNU Emacs 22.x, 23.x
+;;
 
 (defvar framemove-hook-into-windmove nil
   "When non-nil, try moving frames if moving windows fails.")
@@ -60,6 +64,8 @@
 
 (defun fm-frame-is-to-dir-of (refframe dir otherframe)
   (cond
+   ((not (eq (frame-parameter refframe 'display) (frame-parameter otherframe 'display)))
+      nil)
    ((eq refframe otherframe)
     nil)
    ((memq dir '(left up))

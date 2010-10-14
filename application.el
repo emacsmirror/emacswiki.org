@@ -33,8 +33,6 @@
 ;; associated with the application process.  If the application ends
 ;; the buffer is killed.
 
-;; 2010-10-12, TN: Application can be specified as a list of programs
-;; user can choose program from mouse menu
 ;;; Code:
 
 
@@ -49,7 +47,7 @@
     (".*\\.xls$" . "openoffice.org")
     (".*\\.doc\\(x\\)?$" . "openoffice.org")
     (".*\\.ppt\\(x\\)?$" . "openoffice.org")
-    (".*\\.is[xm]$" ("simx3" . "simx3") ("simx3.4officialRelease" . "simx3.4officialRelease") ("simx3.4stable" . "simx3.4stable"))
+    (".*\\.is[xm]$" ("emacs") ("simx3" . "simx3") ("simx3.4officialRelease" . "simx3.4officialRelease") ("simx3.4stable" . "simx3.4stable"))
     )
   "List assigning applications to file names. Each element of the list is a cons with two strings: the regular expression matching the file names as car and the application to be started as cdr."
   :group 'application)
@@ -78,8 +76,7 @@
 
 (defun application-popup-menu (file-name app-list)
   (x-popup-menu t (list (concat "Applications for " file-name)
-			(append '("" ("Emacs" . "emacs"))
-				app-list))))
+				(append '("") app-list))))
 
 (defun new-buffer-name (name)
   "Create new unique buffer name basing on NAME."
@@ -110,7 +107,7 @@
 		(message "Starting \"%S\" on file \"%s\"" application-caller framed-filename)
 		(if (nth 1 args) (setq buffer-file-name filename))
 		(let ((application-process (start-process (concat "*proc:" buffer-file-name "*") nil application-bash-program "-c" (concat application-caller " " framed-filename))))
-		  (insert (format "-*- fundamental -*-\nApplication \n%s\nwith process\n%S\nfor file\n%s" application-caller application-process framed-filename))
+		  (insert (format "Application \n%s\nwith process\n%S\nfor file\n%s" application-caller application-process framed-filename))
 		  (set-buffer-modified-p nil)
 		  (set-process-buffer application-process (current-buffer))
 		  (set-process-sentinel application-process 'application-sentinel))
@@ -130,4 +127,3 @@ application processes. It kills the associated file buffer when the application 
 
 (provide 'application)
 ;; End of package application.
-
