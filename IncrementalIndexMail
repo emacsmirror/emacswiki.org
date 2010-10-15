@@ -1,4 +1,4 @@
-All available mail indexing solutions generally operate on static data. (See IndexMail.) Here is yet another hack I used to utilize swish-e (actually Namazu, etc. might be used as well) for incremental mail indexing in gnus.
+All available mail indexing solutions generally operate on static data. (See IndexMail.) Here is yet another hack I used to utilize swish-e (actually Namazu, etc. might be used as well) for incremental mail indexing in gnus. Pay attention that, to make incremental mail indexing work, a mail back end that stores each individual mail in a separate file (e.g. nnml) is required.
 
 == Setting up Swish-e and nnir ==
 
@@ -15,7 +15,7 @@ We will implement utility shell scripts to index, search and merge available ind
 
 Create ##~/.swish-e/bin/index.sh## as below.
 
-    #!/bin/sh
+    #!/bin/bash
     
     set -e
     
@@ -42,7 +42,7 @@ Create ##~/.swish-e/bin/index.sh## as below.
 
 And here is ##~/.swish-e/bin/search.sh## script.
 
-    #!/bin/sh
+    #!/bin/bash
     
     set -e
     
@@ -59,7 +59,7 @@ And here is ##~/.swish-e/bin/search.sh## script.
 
 The last script file ##~/.swish-e/bin/merge.sh## goes as below.
 
-    #!/bin/sh
+    #!/bin/bash
     
     set -e
     set -x
@@ -76,6 +76,8 @@ The last script file ##~/.swish-e/bin/merge.sh## goes as below.
         rm $INDEXES_WITH_PROPS
     fi
 
+In case of large repositories, you can pass ##-e## (economy mode) flag to the ##swish-e## commands in ##index.sh## and ##merge.sh## scripts. The ##-e## switch tells swish-e to use disk space to store data structures while indexing, saving memory. This option is recommended if swish-e uses so much RAM that the computer begins to swap excessively, and you cannot increase available memory. The trade-off is slightly longer indexing times, and a busy disk drive.
+
 == Deploying Utility Scripts for Mail Indexing ==
 
 First we will start with creating symbolic links to ##index.sh##, ##search.sh##, and ##merge.sh##. (These files operate by looking at the directory they are executed in.)
@@ -86,12 +88,11 @@ First we will start with creating symbolic links to ##index.sh##, ##search.sh##,
 After that we will need to set configuration and command line options for swish-e.
 
     ~/.swish-e/mail$ cat >config <<EOF
-    FileRules filename contains /^active$/
-    FileRules filename contains /^Incoming/
-    FileRules filename contains /^\./
+    DefaultContents TXT*
+    FileMatch filename regex /^[0-9]+$/
     EOF
 
-    ~/.swish-e/mail$ echo "-i /home/vy/Mail -v 2" >args
+    ~/.swish-e/mail$ echo "-i /home/vy/Mail" >args
 
 Pay attention that ##args## file requires a full path. (To be honest, this problem can be tackled with some messy ad-hoc shell scripting hacks, but anyway...)
 

@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: mouse, scroll
 
-(defconst grab-and-drag-version "0.3.1")
+(defconst grab-and-drag-version "0.3.2")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -57,15 +57,50 @@
 ;;
 ;; Then, start Emacs and grab-and-drag-mode is activated.
 ;;
+;; Tips:
+;;
 ;; On low spec machine like ARM-based tablet, changing the pointer shape
-;; might be extremely slow so the slow response to clicking is annoying.
+;; might be extremely slow, so the slow response to clicking is annoying.
 ;; In that case, we can reduce the response time by disabling the change
 ;; of the pointer shape as:
 ;;
 ;;   (setq grab-and-drag-pointer-shape nil)
 ;;
+;; If you want to use animated scroll commands included in this program
+;; with keyboard operation, put the following to override the original
+;; scroll commands:
+;;
+;;   (defadvice scroll-up (around smooth-scroll-up activate)
+;;     (if arg
+;;         ad-do-it
+;;       (grab-and-drag-scroll-up)))
+;;
+;;   (defadvice scroll-down (around smooth-scroll-down activate)
+;;     (if arg
+;;         ad-do-it
+;;       (grab-and-drag-scroll-down)))
+;;
+;;   (defadvice scroll-right (around smooth-scroll-right activate)
+;;     (if arg
+;;         ad-do-it
+;;       (grab-and-drag-scroll-right)))
+;;
+;;   (defadvice scroll-left (around smooth-scroll-left activate)
+;;     (if arg
+;;         ad-do-it
+;;       (grab-and-drag-scroll-left)))
+;;
 
 ;; History:
+;; 2010-10-15  S. Irie
+;;         * Version 0.3.2
+;;         * Add functions to save original definitions of scroll commands:
+;;            `grab-and-drag-orig-scroll-down'
+;;            `grab-and-drag-orig-scroll-up'
+;;            `grab-and-drag-orig-scroll-right'
+;;            `grab-and-drag-orig-scroll-left'
+;;         * Delete unnecessary local variables
+;;         * Bug fix
 ;; 2010-08-11  S. Irie
 ;;         * Version 0.3.1
 ;;         * Change to run hooks when dragging is finished at the ends of buffer
@@ -513,6 +548,28 @@ Omitting WINDOW means use selected window."
 ;; Animated scrolling by screenfuls
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;; Save original definitions of `scroll-down', `scroll-up', etc.
+(defun grab-and-drag-orig-scroll-down (&optional arg))
+(fset 'grab-and-drag-orig-scroll-down
+      (or (and (fboundp 'ad-real-orig-definition)
+	       (ad-real-orig-definition 'scroll-down))
+	  (symbol-function 'scroll-down)))
+(defun grab-and-drag-orig-scroll-up (&optional arg))
+(fset 'grab-and-drag-orig-scroll-up
+      (or (and (fboundp 'ad-real-orig-definition)
+	       (ad-real-orig-definition 'scroll-up))
+	  (symbol-function 'scroll-up)))
+(defun grab-and-drag-orig-scroll-right (&optional arg set-minimum))
+(fset 'grab-and-drag-orig-scroll-right
+      (or (and (fboundp 'ad-real-orig-definition)
+	       (ad-real-orig-definition 'scroll-right))
+	  (symbol-function 'scroll-right)))
+(defun grab-and-drag-orig-scroll-left (&optional arg set-minimum))
+(fset 'grab-and-drag-orig-scroll-left
+      (or (and (fboundp 'ad-real-orig-definition)
+	       (ad-real-orig-definition 'scroll-left))
+	  (symbol-function 'scroll-left)))
+
 (defun grab-and-drag-scroll-down ()
   "Scroll backward by nearly a full window with an animation effect.
 The scroll amount is `next-screen-context-lines' less than a window height.
@@ -523,13 +580,13 @@ The animation effect of scrolling can be conditioned by options
     (let ((goal (condition-case nil
 		    (save-excursion
 		      (save-window-excursion
-			(scroll-down)
+			(grab-and-drag-orig-scroll-down)
 			(window-start)))
 		  (beginning-of-buffer (point-min)))))
       (condition-case nil
 	  (while (> (window-start) goal)
 	    (sit-for grab-and-drag-scroll-anim-interval)
-	    (scroll-down grab-and-drag-vscroll-anim-step))
+	    (grab-and-drag-orig-scroll-down grab-and-drag-vscroll-anim-step))
 	(beginning-of-buffer nil))
       (unless (= (window-start) goal)
 	(set-window-start (selected-window) goal))
@@ -538,7 +595,7 @@ The animation effect of scrolling can be conditioned by options
 	      (run-hooks 'grab-and-drag-beginning-of-buffer-hook)
 	    ;; Show message "Beginning of buffer"
 	    (if (eq (window-start) (point-min))
-		(scroll-down 1)))))))
+		(grab-and-drag-orig-scroll-down 1)))))))
 
 (defun grab-and-drag-scroll-up ()
   "Scroll forward by nearly a full window with an animation effect.
@@ -550,13 +607,13 @@ The animation effect of scrolling can be conditioned by options
     (let ((goal (condition-case nil
 		    (save-excursion
 		      (save-window-excursion
-			(scroll-up)
+			(grab-and-drag-orig-scroll-up)
 			(window-start)))
 		  (end-of-buffer (point-max)))))
       (condition-case nil
 	  (while (< (window-start) goal)
 	    (sit-for grab-and-drag-scroll-anim-interval)
-	    (scroll-up grab-and-drag-vscroll-anim-step))
+	    (grab-and-drag-orig-scroll-up grab-and-drag-vscroll-anim-step))
 	(end-of-buffer nil))
       (unless (= (window-start) goal)
 	(set-window-start (selected-window) goal))
@@ -565,7 +622,7 @@ The animation effect of scrolling can be conditioned by options
 	      (run-hooks 'grab-and-drag-end-of-buffer-hook)
 	    ;; Show message "End of buffer"
 	    (if (eq (window-start) (point-max))
-		(scroll-up 1)))))))
+		(grab-and-drag-orig-scroll-up 1)))))))
 
 (defun grab-and-drag-scroll-right ()
   "Scroll right by nearly a full window with an animation effect. The
@@ -579,9 +636,9 @@ The animation effect of scrolling can be conditioned by options
 	automatic-hscrolling)
     (while (> (window-hscroll) goal)
       (sit-for grab-and-drag-scroll-anim-interval)
-      (scroll-right (min grab-and-drag-hscroll-anim-step
-			 (- (window-hscroll) goal))
-		    grab-and-drag-hscroll-anim-step))
+      (grab-and-drag-orig-scroll-right (min grab-and-drag-hscroll-anim-step
+					    (- (window-hscroll) goal))
+				       grab-and-drag-hscroll-anim-step))
     (if (grab-and-drag-truncated-p)
 	(let ((x-y (pos-visible-in-window-p
 		    ;; `pos-visible-in-window-p' returns incorrect coordinates
@@ -606,9 +663,9 @@ The animation effect of scrolling can be conditioned by options
 		 (- (window-width) grab-and-drag-context-columns))))
     (while (< (window-hscroll) goal)
       (sit-for grab-and-drag-scroll-anim-interval)
-      (scroll-left (min grab-and-drag-hscroll-anim-step
-			(- goal (window-hscroll)))
-		   grab-and-drag-hscroll-anim-step))
+      (grab-and-drag-orig-scroll-left (min grab-and-drag-hscroll-anim-step
+					   (- goal (window-hscroll)))
+				      grab-and-drag-hscroll-anim-step))
     (let ((x-y (pos-visible-in-window-p nil nil t)))
       (if (< (car x-y) 0)
 	  (goto-char (posn-point (posn-at-x-y 0 (cadr x-y))))))))
@@ -625,7 +682,7 @@ bindings included in `grab-and-drag-mode-map'."
       (setcdr (assq 'grab-and-drag-mode minor-mode-map-alist) nil)
       (unwind-protect
 	  (let* ((key (vector (event-convert-list
-			       ;; Get rid of `double' modifier  because
+			       ;; Get rid of `double' modifier because
 			       ;; it prevents `moouse-drag-region' from
 			       ;; recognizing a multiple click event.
 			       (delq 'double
@@ -663,9 +720,7 @@ updating the window."
 		     (event-basic-type click)
 		   (error "not a mouse down event: %s" click)))
 	 (posn (event-start click))
-	 (window (posn-window posn))
-	 (orig-window (selected-window))
-	 (orig-buffer (current-buffer)))
+	 (window (posn-window posn)))
     (grab-and-drag-stop-scrolling window)
     (if (window-minibuffer-p window)
 	;; Minibuffer can't be scrolled.
@@ -731,13 +786,14 @@ updating the window."
 		(setq mpos (cdr (mouse-pixel-position))
 		      time (float-time)
 		      event (read-event nil nil grab-and-drag-interval))
+		(unless (cdr mpos)
+		  (setq mpos prev-mpos))
 		;; Exit loop if button up event is received.
 		(when (eq (event-basic-type event) button)
 		  (if (memq 'drag (event-modifiers event))
 		      (cond
-		       ((or (null (cdr mpos))
-			    ;; Do nothing if pointer stops before up-event.
-			    (equal mpos prev-mpos))
+		       ;; Do nothing if pointer stops before up-event.
+		       ((equal mpos prev-mpos)
 			(cond
 			 ((eq (window-start) (point-min))
 			  (run-hooks 'grab-and-drag-beginning-of-buffer-hook))
@@ -816,7 +872,7 @@ updating the window."
 				     (+ grab-and-drag-context-columns
 					(- (window-hscroll) hscroll0))))
 				(grab-and-drag-scroll-left))))))
-		  ;; If pointer wasn't moved, put the up-event back and run
+		    ;; If pointer wasn't moved, put the up-event back and run
 		    ;; a command bound to the click event with lower priority.
 		    (push event unread-command-events)
 		    (grab-and-drag-call-default-binding click))

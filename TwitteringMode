@@ -281,6 +281,9 @@ If it gets less than 10, a message is made of each. Hope someone else finds it u
 :[new]
 For SSL connection, Emacs requires an external program. Do you have `curl', `gnutls_cli' or `openssl' in load-path? By the way, I recommend the HEAD on github. It supports encrypted local storage of authorized key and xAuth. You need not to take a PIN code repeatedly.
 Note that `curl.exe' (for Windows) distributed with twittering-mode cannot correctly perform HTTPS POST with non-empty post-body via a proxy. So, you cannot use it for xAuth via a proxy. (You can use it for OAuth and tweet retrieval.) In addition, `gnutls_cli' and `openssl' cannot be used with a proxy. -- Tadashi MATSUO
+
+[new]
+'@'-replies from people I follow which are directed to people other than myself don't show up in my :home timeline; is there any way to change this? -- Alexis
 ----
 See also: [[Twitter]] [[Identica-mode]]
 

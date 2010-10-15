@@ -1,0 +1,56 @@
+See page in http://github.com/kiwanami/emacs-deferred
+
+'deferred.el' provides facilities to manage asynchronous tasks. The API and implementations were translated from JSDeferred and Mochikit.Async in JavaScript.
+
+* http://github.com/cho45/jsdeferred
+* http://mochikit.com/doc/html/MochiKit/Async.html
+
+== Samples ==
+
+=== HTTP Access ===
+<pre>
+(require 'url)
+(deferred:$
+  (deferred:url-retrieve "http://www.gnu.org")
+  (deferred:nextc it
+    (lambda (buf)
+      (insert  (with-current-buffer buf (buffer-string)))
+      (kill-buffer buf))))
+</pre>
+
+=== Invoking command tasks ===
+<pre>
+(deferred:$
+  (deferred:process "wget" "-O" "a.jpg" "http://www.gnu.org/software/emacs/tour/images/splash.png")
+  (deferred:nextc it
+    (lambda (x) (deferred:process "convert" "a.jpg" "-resize" "100x100" "jpg:b.jpg")))
+  (deferred:nextc it
+    (lambda (x)
+      (insert-image (create-image (expand-file-name "b.jpg") 'jpeg nil)))))
+</pre>
+
+=== Animation (like thread) ===
+<pre>
+(lexical-let ((count 0) (anm "-/|\\-")
+              (end 50) (pos (point))
+              (wait-time 50))
+  (deferred:$
+    (deferred:next
+      (lambda (x) (message "Animation started.")))
+
+    (deferred:nextc it
+      (deferred:lambda (x)
+        (save-excursion
+          (when (< 0 count)
+            (goto-char pos) (delete-char 1))
+          (insert (char-to-string 
+                   (aref anm (% count (length anm))))))
+        (if (> end (incf count))
+            (deferred:nextc (deferred:wait wait-time) self))))
+
+    (deferred:nextc it
+      (lambda (x)
+        (save-excursion
+          (goto-char pos) (delete-char 1))
+        (message "Animation finished.")))))
+</pre>

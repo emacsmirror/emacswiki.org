@@ -1,0 +1,65 @@
+Inertial Scrolling UI for Emacs.
+
+This is a demonstration for deferred.el and co-routine.
+
+!GitHub: http://github.com/kiwanami/emacs-inertial-scroll
+
+== Install ==
+
+This program needs 'deferred.el' (DeferredTask).
+Put following programs in your load-path.
+
+* http://github.com/kiwanami/emacs-deferred/blob/master/deferred.el
+* http://github.com/kiwanami/emacs-inertial-scroll/raw/master/inertial-scroll.el
+
+Put following lines in your init file (init.el or .emacs).
+
+<pre>
+(require 'inertial-scroll)
+(inertias-global-minor-mode 1)
+</pre>
+
+Default key binding:
+* C-c ' u : scroll up
+* C-c ' u : scroll down
+
+If you want to stop, evaluate this code.
+
+<pre>
+(inertias-global-minor-mode -1)
+</pre>
+
+== Customize ==
+
+=== Key bindings ===
+
+This is a sample key binding code: scrolling by page up and down keys and the mouse wheel.
+
+<pre>
+(setq inertias-global-minor-mode-map 
+      (inertias-define-keymap
+       '(
+         ;; Mouse wheel scrolling
+         ("<wheel-up>"   . inertias-down-wheel)
+         ("<wheel-down>" . inertias-up-wheel)
+         ("<mouse-4>"    . inertias-down-wheel)
+         ("<mouse-5>"    . inertias-up-wheel)
+         ;; Scroll keys
+         ("<next>"  . inertias-up)
+         ("<prior>" . inertias-down)
+         ("C-v"     . inertias-up)
+         ("M-v"     . inertias-down)
+         ) inertias-prefix-key))
+</pre>
+
+=== Parameters ===
+
+Scrolling parameters can be able to modify. You may make scrolling smoother, customizing the interval time or velocity.
+Here is a sample customize code. See the source for parameters.
+
+<pre>
+(setq inertias-initial-velocity 50)
+(setq inertias-friction 120)
+(setq inertias-update-time 50)
+(setq inertias-rest-coef 0.1)
+</pre>
