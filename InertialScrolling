@@ -9,8 +9,8 @@ This is a demonstration for deferred.el and co-routine.
 This program needs 'deferred.el' (DeferredTask).
 Put following programs in your load-path.
 
-* http://github.com/kiwanami/emacs-deferred/blob/master/deferred.el
-* http://github.com/kiwanami/emacs-inertial-scroll/raw/master/inertial-scroll.el
+* Lisp:deferred.el
+* Lisp:inertial-scroll.el
 
 Put following lines in your init file (init.el or .emacs).
 

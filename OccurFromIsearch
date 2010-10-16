@@ -1,3 +1,9 @@
+**This page refers to an older version of Emacs!**
+
+These days, you can use `M-s o' while using [[IncrementalSearch|isearch]] to run occur on the current search term!
+
+----
+
 Create an OccurBuffer from IncrementalSearch using the current string (or regexp) being seached, to find ''all'' matches of the pattern in the current buffer.
 
     (defun isearch-occur ()

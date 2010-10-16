@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 323 $  
+;; RCS Version: $Rev: 324 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 323 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 324 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2862,6 +2862,7 @@ or (c)ontents? ")
   (if backward
       (isearch-backward nil t)
     (isearch-forward nil t))
+  (run-hooks 'sr-refresh-hook)
   (run-with-idle-timer 0.01 nil 'sr-sticky-isearch-prompt))
 
 (defun sr-sticky-isearch-forward ()
@@ -2888,7 +2889,9 @@ or (c)ontents? ")
               (remove-hook 'isearch-mode-end-hook 'sr-sticky-post-isearch)
               (kill-local-variable 'search-nonincremental-instead)
               (isearch-done)
-              (or isearch-mode-end-hook-quit (sr-find-file filename))))
+              (if isearch-mode-end-hook-quit
+                  (run-hooks 'sr-refresh-hook)
+                (sr-find-file filename))))
            (t
             (progn
               (sr-find-file filename)
@@ -3353,7 +3356,8 @@ or (c)ontents? ")
     (set (make-local-variable 'sr-backup-buffer)
          (generate-new-buffer "*Sunrise Backup*"))
     (with-current-buffer sr-backup-buffer
-      (insert-buffer-substring buf))))
+      (insert-buffer-substring buf))
+    (run-hooks 'sr-refresh-hook)))
 
 (defun sr-kill-backup-buffer ()
   "Kills the back-up buffer associated to the current one, if there is any."

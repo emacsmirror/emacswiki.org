@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 16:51:06 2010 (-0700)
+;; Last-Updated: Fri Oct 15 09:59:14 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25501
+;;     Update #: 25515
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3090,6 +3090,15 @@
 ;;  `implicit' can impact performance for file-name completion (which
 ;;  is lax, not strict).  I suggest you try `implicit' to see - this
 ;;  feature is especially useful for file names.
+;;
+;;    TIP: An alternative way to be informed about a file name
+;;         mismatch (when you use `TAB' or `S-TAB') is to use
+;;         `icicle-no-match-hook' to signal you using a visual or
+;;         audible cue.  For example:
+;;
+;;         (add-hook 'icicle-no-match-hook
+;;                   (lambda ()
+;;                     (when (icicle-file-name-input-p) (ding))))
 ;;
 ;;  Summary of `icicle-highlight-input-completion-failure' choices:
 ;;

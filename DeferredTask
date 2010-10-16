@@ -5,7 +5,21 @@ See page in http://github.com/kiwanami/emacs-deferred
 * http://github.com/cho45/jsdeferred
 * http://mochikit.com/doc/html/MochiKit/Async.html
 
+== Install ==
+
+Put the following program in your load-path.
+
+* Lisp:deferred.el
+
+InertialScrolling is a demonstration of deferred.el.
+
 == Samples ==
+
+Following samples require deferred.el.
+
+<pre>
+(require 'deferred)
+</pre>
 
 === HTTP Access ===
 <pre>

@@ -279,11 +279,25 @@ If it gets less than 10, a message is made of each. Hope someone else finds it u
 [new]
 2010-09-23 I also installed v1.0 and it works fine on my Linux system but not on my Windows system (get same "Authorization via OAuth failed. Type M-x twit to retry." message). It is the same exact setup that I sync w/unison. Is there something special needed for Windows? - Ed
 :[new]
-For SSL connection, Emacs requires an external program. Do you have `curl', `gnutls_cli' or `openssl' in load-path? By the way, I recommend the HEAD on github. It supports encrypted local storage of authorized key and xAuth. You need not to take a PIN code repeatedly.
+For SSL connection, Emacs requires an external program. Do you have `curl', `gnutls_cli' or `openssl' in exec-path? By the way, I recommend the HEAD on github. It supports encrypted local storage of authorized key and xAuth. You need not to take a PIN code repeatedly.
 Note that `curl.exe' (for Windows) distributed with twittering-mode cannot correctly perform HTTPS POST with non-empty post-body via a proxy. So, you cannot use it for xAuth via a proxy. (You can use it for OAuth and tweet retrieval.) In addition, `gnutls_cli' and `openssl' cannot be used with a proxy. -- Tadashi MATSUO
 
 [new]
 '@'-replies from people I follow which are directed to people other than myself don't show up in my :home timeline; is there any way to change this? -- Alexis
+:[new]
+Alias may help you. If you have the below configuration, the timeline __$me__ includes such tweets.
+{{{
+  (setq twittering-timeline-spec-alias                                          
+        `(("me" . "$r(YOUR-USER-NAME)")                                                  
+          ("r" . ,(lambda (username) (format "$related-to(%s)" username)))      
+          ("related-to" .                                                       
+           ,(lambda (username)                                                  
+              (if username                                                      
+                  (format ":search/to:%s OR from:%s OR @%s/"                    
+                          username username username)                           
+                ":home")))))
+}}}
+To read tweets related to someone, you can use the timeline __$r(HIS-OR-HER-USERNAME)__ . -- Tadashi MATSUO
 ----
 See also: [[Twitter]] [[Identica-mode]]
 

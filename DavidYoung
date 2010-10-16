@@ -144,6 +144,9 @@ Rolling 3 window buffers clockwise
 
 }}}
 
+[new]
+Latest updates about these functions could be found in ThreeWindows 
+
 == rename-buffer-in-ssh-login ==
 
 Rename buffer to the destination hostname in ssh login

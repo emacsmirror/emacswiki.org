@@ -26,10 +26,8 @@
 ;; (require 'rainbow-delimiters)
 ;; M-x rainbow-delimiters-mode
 
-;; NOTE: The colors in this file were picked on a wide-gamut display,
-;; meaning they will look terrible on a standard-gamut display. You
-;; will want to change the colors to subtler ones of your liking.
-;; Change the variable `*rainbow-delimiters-faces*'
+;; To customize the colors, edit `*rainbow-delimiters-faces*'.
+;; A customize interface will be added soon.
 
 ;;; Commentary:
 
@@ -50,11 +48,12 @@
 ;; (lightest) color, and each nested bracket will then move to the
 ;; next color.
 
-;; Thanks to Mark Triggs and Alex Osborne, who did the heavy lifting
-;; in this code. They made proper use of overlays and the mode
-;; colorizes the buffer fast in most scenarios.  This is a fork of
-;; their work to add several new features. The original
-;; rainbow-parens.el written by these authors is available at:
+;; Default colors come from ZenBurn vim/emacs theme, available here:
+;; http://slinky.imukuppi.org/zenburnpage/
+
+;; Mark Triggs (with contributions from Alex Osborne) did the hard
+;; parts in this code. This is a fork of their work to add several new
+;; features. The original rainbow-parens.el is available at:
 ;; http://dishevelled.net/elisp/rainbow-parens.el
 
 ;; Bug reports about this code should be sent to Jeremy Rayman
@@ -87,8 +86,7 @@
     face))
 
 (defvar *rainbow-delimiters-faces*
-  ;; These were picked on a wide-gamut display (HP LP3065), so they
-  ;; will look terrible on a standard-gamut display. Change if needed.
+  ;; First item is outermost parentheses color.
   `[,(rainbow-delimiters-face-from-colour "grey55")
     ,(rainbow-delimiters-face-from-colour "#7F9F7F")
     ,(rainbow-delimiters-face-from-colour "#8CD0D3")

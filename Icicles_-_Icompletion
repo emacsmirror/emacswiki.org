@@ -171,6 +171,15 @@ I use a value of '''`implicit'''' myself, but the default value is
 is lax, not strict).  I suggest you try `implicit' to see -- this
 feature is especially useful for file names.
 
+[new]
+: TIP: An alternative way to be informed about a file name mismatch
+(when you use `TAB' or `S-TAB') is to use `icicle-no-match-hook'
+to signal you using a visual or audible cue.  For example:
+
+       (add-hook 'icicle-no-match-hook
+                 (lambda () (when (icicle-file-name-input-p) (ding))))
+[new]
+
 Summary of `icicle-highlight-input-completion-failure' choices:
 
 * `nil' -- Never 

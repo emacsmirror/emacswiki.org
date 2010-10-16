@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 4 May 2010
 ;; Version: 1
-;; RCS Version: $Rev: 323 $
+;; RCS Version: $Rev: 324 $
 ;; Keywords: Sunrise Commander Emacs File Manager Directories Tree Navigation
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tree.el
 ;; Compatibility: GNU Emacs 22+
@@ -37,7 +37,7 @@
 ;; For more information on the Sunrise Commander, other extensions and cool tips
 ;; & tricks visit http://www.emacswiki.org/emacs/Sunrise_Commander
 
-;; This is version 1 $Rev: 323 $ of the Sunrise Commander Tree Extension.
+;; This is version 1 $Rev: 324 $ of the Sunrise Commander Tree Extension.
 
 ;;  It was developed on GNU Emacs 24 on Linux, and tested on GNU Emacs 22 and 24
 ;; for Linux, and on EmacsW32 (version 23) for Windows.
@@ -612,7 +612,8 @@
           (define-key
             isearch-mode-map
             (car binding) (sr-tree-isearch-command binding)))
-        sr-tree-isearch-mode-commands))
+        sr-tree-isearch-mode-commands)
+  (run-hooks 'sr-refresh-hook))
 
 (defun sr-tree-isearch-done ()
   "Clean up the isearch hook and keymap after a sticky search."

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 10 Oct 2009
 ;; Version: 2
-;; RCS Version: $Rev: 315 $
+;; RCS Version: $Rev: 324 $
 ;; Keywords: Sunrise Commander Emacs File Manager Path Mode Line
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-modeline.el
 ;; Compatibility: GNU Emacs 22+
@@ -30,9 +30,25 @@
 
 ;; This  extension  modifies  the  format  of  the  mode lines under the Sunrise
 ;; Commander panes so they display only the paths to the current directories (or
-;; the tail if the whole path is longer can be displayed on the mode line) and a
-;; small icon  indicating  the  current  mode  (normal,  virtual,  synchronized,
-;; editable) of its respective pane.
+;; the tail if the whole path is too long) and a row of three small icons. These
+;; icons are by default plain ASCII characters, but nicer semigraphical versions
+;; (in Unicode) can also be used by customizing the sr-modeline-use-utf8-marks
+;; variable.
+;;
+;; Here is the complete list of indicator icons (in ASCII and Unicode) and their
+;; respective meanings:
+;;                      (ascii) (unicode)
+;; 1. Pane modes:          *        ☼     Normal mode.
+;;                         !        ⚡     Editable Pane mode.
+;;                         @        ☯     Virtual Directory mode.
+;;                         T        ⚘     Tree View mode (with tree extension).
+;;                          
+;; 2. Navigation modes:    &        ⚓     Synchronized Navigation.
+;;                         $        ♻     Sticky Search.
+;;                          
+;; 3. Transient states:    #        ♥     Contents snapshot available.
+;;
+;; (if you can't see the icons on the right don't use utf8 marks)
 
 ;; The regular mode line format remains available: press C-c m to toggle between
 ;; one format and the other.
@@ -40,7 +56,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 315 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 324 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -67,11 +83,18 @@
   :group 'sunrise
   :type 'boolean)
 
-(defconst sr-modeline-norm-mark '(" * " . " ☼ ")) 
-(defconst sr-modeline-sync-mark '(" & " . " ⚓ "))
-(defconst sr-modeline-edit-mark '(" ! " . " ⚡ "))
-(defconst sr-modeline-virt-mark '(" @ " . " ☯ "))
-(defconst sr-modeline-tree-mark '(" T " . " ⚘ "))
+;; slot 0 -- pane modes:
+(defconst sr-modeline-norm-mark '("*" . "☼")) 
+(defconst sr-modeline-edit-mark '("!" . "⚡"))
+(defconst sr-modeline-virt-mark '("@" . "☯"))
+(defconst sr-modeline-tree-mark '("T" . "⚘"))
+
+;; slot 1 -- navigation modes:
+(defconst sr-modeline-sync-mark '("&" . "⚓"))
+(defconst sr-modeline-srch-mark '("$" . "♻"))
+
+;; slot 2 -- transient states:
+(defconst sr-modeline-bkup-mark '("#" . "♥"))
 
 ;;; ============================================================================
 ;;; Core functions:
@@ -84,31 +107,46 @@
 (define-key sr-modeline-path-map [mode-line mouse-1] 'sr-modeline-navigate-path)
 (define-key sr-modeline-path-map [mode-line mouse-2] 'sr-modeline-navigate-path)
 
-(defun sr-modeline-select-mark (mode)
-  "Selects the right mark for the given mode depending on whether UTF-8 has been
-  enabled in the mode line."
-  (let ((select (if sr-modeline-use-utf8-marks #'cdr #'car)))
-    (funcall select
-             (cond ((eq mode 'sync) sr-modeline-sync-mark)
-                   ((eq mode 'edit) sr-modeline-edit-mark)
-                   ((eq mode 'virt) sr-modeline-virt-mark)
-                   ((eq mode 'tree) sr-modeline-tree-mark)
-                   (t sr-modeline-norm-mark)))))
+(defun sr-modeline-select-mark (mark &optional slot)
+  "Selects the right mark for the given MODE in SLOT depending on whether UTF-8
+  has been enabled in the mode line."
+  (let ((select (if sr-modeline-use-utf8-marks #'cdr #'car))
+        (slot (or slot 0)))
+    (cond ((eq slot 0)
+           (funcall select (cond ((eq mark 'edit) sr-modeline-edit-mark)
+                                 ((eq mark 'virt) sr-modeline-virt-mark)
+                                 ((eq mark 'tree) sr-modeline-tree-mark)
+                                 (t sr-modeline-norm-mark))))
+          ((eq slot 1)
+           (cond ((or (memq 'sr-sticky-post-isearch isearch-mode-end-hook)
+                      (memq 'sr-tree-post-isearch isearch-mode-end-hook))
+                  (funcall select sr-modeline-srch-mark))
+                 (sr-synchronized
+                  (funcall select sr-modeline-sync-mark))
+                 (t " ")))
+          (t
+           (if (buffer-live-p sr-backup-buffer)
+               (funcall select sr-modeline-bkup-mark)
+             " ")))))
+
+(defun sr-modeline-select-mode (mode)
+  "Assembles the indicators section on the left of the modeline."
+  (concat "|" (sr-modeline-select-mark mode 0)
+          "|" (sr-modeline-select-mark mode 1)
+          "|" (sr-modeline-select-mark mode 2)
+          "|"))
 
 (defun sr-modeline-setup ()
   "Determines  the mode indicator (icon) to display in the mode line. On success
   sets the mode line format by calling sr-modeline-set."
-  (let ((mark nil))
+  (let ((mode nil))
     (cond ((eq major-mode 'sr-mode)
-           (setq mark (sr-modeline-select-mark
-                       (cond ((not buffer-read-only) 'edit)
-                             (sr-synchronized 'sync)
-                             (t 'norm)))))
+           (setq mode (sr-modeline-select-mode (if buffer-read-only 'norm 'edit))))
           ((eq major-mode 'sr-tree-mode)
-           (setq mark (sr-modeline-select-mark (if sr-synchronized 'sync 'tree))))
+           (setq mode (sr-modeline-select-mode 'tree)))
           ((eq major-mode 'sr-virtual-mode)
-           (setq mark (sr-modeline-select-mark 'virt))))
-    (if mark (sr-modeline-set mark))))
+           (setq mode (sr-modeline-select-mode 'virt))))
+    (if mode (sr-modeline-set mode))))
 
 (defun sr-modeline-set (mark)
   "Sets  the mode line format using the given mode indicator and the path to the
@@ -121,22 +159,31 @@
         (setq path (concat "..." (substring path (- path-length max-length)))))
     (eval
      `(setq mode-line-format
-            '("%[" ,(sr-modeline-mark mark) "%]" ,(sr-modeline-path path))))))
+            '("%[" ,(sr-modeline-mark mark) "%] " ,(sr-modeline-path path))))))
 
-(defun sr-modeline-mark (mark)
+(defun sr-modeline-mark (marks-string)
   "Prepares  the  propertized string used in the mode line format to display the
-  mode indicator."
-  (let ((mode-name ""))
+  mode indicators."
+  (let ((mode-name "") (marks (split-string marks-string "|")))
     (setq mode-name
-          (cond ((eq mark (sr-modeline-select-mark 'sync)) "Synchronized Navigation")
-                ((eq mark (sr-modeline-select-mark 'edit)) "Editable Pane")
-                ((eq mark (sr-modeline-select-mark 'virt)) "Virtual Directory")
-                ((eq mark (sr-modeline-select-mark 'tree)) "Tree View")
-                (t "Normal")))
-    (propertize mark
+          (concat
+           (cond ((member (sr-modeline-select-mark 'edit) marks)
+                  "Editable Pane Mode")
+                 ((member (sr-modeline-select-mark 'virt) marks)
+                  "Virtual Directory Mode")
+                 ((member (sr-modeline-select-mark 'tree) marks)
+                  "Tree View Mode")
+                 (t "Normal Mode"))
+           (if sr-synchronized " | Synchronized Navigation" "")
+           (if (or (memq 'sr-sticky-post-isearch isearch-mode-end-hook)
+                  (memq 'sr-tree-post-isearch isearch-mode-end-hook))
+              " | Sticky Search"
+            "")
+           (if (buffer-live-p sr-backup-buffer) " | Snapshot Available" "")))
+    (propertize marks-string
                 'font 'bold 
                 'mouse-face 'mode-line-highlight
-                'help-echo (concat "Sunrise Commander: " mode-name " Mode")
+                'help-echo (format "Sunrise Commander: %s" mode-name)
                 'local-map sr-modeline-mark-map)))
 
 (defun sr-modeline-path (path)
@@ -207,7 +254,7 @@
   
   To totally disable this extension do: M-x sr-modeline <RET>"
 
-  nil (sr-modeline-select-mark 'norm) sr-modeline-map
+  nil (sr-modeline-select-mode 'norm) sr-modeline-map
   (unless (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
     (setq sr-modeline nil)
     (error "Sorry, this mode can be used only within the Sunrise Commander."))

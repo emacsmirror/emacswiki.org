@@ -15,8 +15,8 @@ You can define your own keymap to extend Isearch with some other key bindings (s
 * `M-c' -- Toggle search ''case-sensitivity''.
 * `M-r' -- Toggle between ''regular-expression'' searching and literal-string searching.
 * `M-e' -- Pause to ''edit'' the search string. Searching is disabled until you explicitly resume it with `C-j' (or `C-s' or `C-r').
-* ##`M-%'## -- Start ''query replace'' using the current string (available in development GNU Emacs).
-* ##`C-M-%'## -- Start a regular-expression query replace using the current search string (available in development GNU Emacs).
+* ##‘M-%’## -- Start ''query replace'' using the current string.
+* ##‘C-M-%’## -- Start a regular-expression query replace using the current search string.
 
 ''Sidenote'': to enter a literal newline in the search field, you can type
 <code>C-q C-j</code>. You can also bind the literal newline to a simpler shortcut (e.g. <code>C-o</code>) by putting in your init file:
@@ -24,6 +24,18 @@ You can define your own keymap to extend Isearch with some other key bindings (s
     (define-key isearch-mode-map "\C-o" 
           '(lambda ()(interactive)(isearch-process-search-char ?\n)))
 
+== Highlighting Matches ==
+
+There's a key binding withing `isearch-mode' to use your current search term as an argument to `highlight-regexp':
+
+* `M-s h r' -- highlight regular expression
+* `M-s h u' -- unhighlight regular expression
+
+== Collecting Matches ==
+
+There's a key binding withing `isearch-mode' to use your current search term as an argument to [[OccurMode|occur]]:
+
+* `M-s o' -- call `occur' with the current search term
 
 [:MoreIsearchKeys]
 = More Isearch Keys: Adding Key Bindings =
@@ -154,7 +166,6 @@ Here is some more info about Isearch:
 * [[Iedit]] -- Replace multiple occurrences of the Isearch string. [http://lists.gnu.org/archive/html/gnu-emacs-sources/2010-02/msg00000.html]
 * IsearchOtherEnd -- Use Isearch to navigate buffers by controlling the point behavior.
 * KillISearchMatch -- Bind C-k in isearch to kill the match
-* OccurFromIsearch -- Run `occur' with the current Isearch search string.
 * SearchingTheMinibuffer -- How to use Isearch in the mini-buffer.
 * SearchAtPoint -- A feature from VI that is useful to programmers.  Also shows how to extend Isearch.
 

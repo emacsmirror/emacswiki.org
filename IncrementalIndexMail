@@ -2,7 +2,7 @@ All available mail indexing solutions generally operate on static data. (See Ind
 
 == Setting up Swish-e and nnir ==
 
-We will use nnir.el backend by KaiGrossjohann. Copy below lines into your ##.gnus.el## file.
+We will use [http://www.emacswiki.org/pics/static/nnir.el.el nnir.el] backend by KaiGrossjohann. Copy below lines into your ##.gnus.el## file.
 
     (require 'nnir)
     (setq nnir-search-engine 'swish-e)

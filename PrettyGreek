@@ -22,4 +22,10 @@ See also: PrettySymbol.
 
 ----
 
+This did not work with my version of emacs (22.2.1).  However, I edited and extended this to include the majuscule and miniscule forms of the letters, differentiated by a capital first letter of the corresponding english word (i.e. Lambda is majuscule and lambda is miniscule).
+
+Attached: [EmacsWiki:pretty-greek.el]
+
+----
+
 CategoryDisplay

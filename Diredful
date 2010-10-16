@@ -1,0 +1,10 @@
+This package provides an easy way to customize [[DiredMode]] to display files in different faces and colors. It can determine the type of file using an extension list or regexp search of the whole file line.
+
+Lisp:diredful.el
+
+
+
+
+
+----
+CategoryDirectories

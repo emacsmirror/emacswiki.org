@@ -2,7 +2,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-''(see also the new [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips Tips & Tricks] page)''
+''(see also the [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips Tips & Tricks] page)''
 
 [[image:SunriseCommanderLogoPage|The Sunrise Commander|]]
 
@@ -238,6 +238,26 @@ window manager: sunrise‐x‐modeline ‐‐ a minor mode that puts the directo
 of  each  Sunrise  pane on the mode line of its respective window, so it remains
 always visible. This spares the need to scroll up long sunrise buffers  just  to
 check where exactly you are in the file system.
+
+Additionally, three small status icons are shown on the left side of the path.
+These icons are by default plain ASCII characters, but nicer semi-graphical
+versions can be used instead by customizing the //sr-modeline-use-utf8-marks//
+variable.
+
+Here is the  complete list of indicator  icons (in ASCII and  Unicode) and their
+respective meanings:
+<pre>
+                     (ascii) (unicode)
+1. Pane modes:          *        ☼     Normal mode.
+                        !        ⚡     Editable Pane mode.
+                        @        ☯     Virtual Directory mode.
+                        T        ⚘     Tree View mode (with tree extension).
+                         
+2. Navigation modes:    &        ⚓     Synchronized Navigation.
+                        $        ♻     Sticky Search.
+                         
+3. Transient states:    #        ♥     Contents snapshot available.
+</pre>
 
 To  get  a  copy  of the Sunrise Mode Line extension (including installation and
 usage notes) go to:
@@ -570,7 +590,7 @@ The green line is realized by hl-line-mode and is actually more an ornament than
 
 What do you mean by "turning off fuzzy-narrow on directory change"?
 
-Yes, some visible indicator to show that the directory view is narrowed is indeed a good idea, but I think I'll rather implement that in the mode line. Usually I try not to mess directly with the contents of the panes in order to minimize the chance of breaking anything in regular dired.
+Yes, some visible indicator to show that the directory view is narrowed is indeed a good idea, but I think I'll rather implement that in the mode line. Usually I try not to mess directly with the contents of the panes in order to minimize the chance of breaking anything in regular dired. (//Update 2010-10-15:// This is already done, see [[#ModelineExt]] -- when a buffer is narrowed, its "Contents snapshot available" flag is set to active).
 
 Personally, I prefer dired-isearch-forward over dired-isearch-filenames, because sometimes I also search for the name of a month, or some other piece of data displayed in the pane, and not only for names of files.
 

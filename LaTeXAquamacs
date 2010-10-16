@@ -1,3 +1,4 @@
+[[fr:1]]
 =Writing LaTeX with Aquamacs=
 
 Use M-x latex-mode (normally Option-x latex-mode in Aquamacs) to edit LaTeX files. Use C-c C-c latex to compile.
