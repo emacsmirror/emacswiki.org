@@ -135,5 +135,9 @@ I use Emacs more and more, lately on Windows, casually on Unixish systems a long
 
 Combine <tt>sgelkins</tt> with <tt>Gmail</tt> if you want to send me a message.
 
+== Tips ==
+
+link <tt>.emacs_bash</tt> to <tt>.profile</tt> to get <tt>M-x shell</tt> to read it.
+
 ----
 CategoryHomepage

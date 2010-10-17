@@ -57,6 +57,11 @@
 
 ;;; Change log:
 ;;
+;; 2010/10/17
+;;    * Joe Bloggs
+;;       * Added lazy-search-mark-sentence, lazy-search-copy-sentence, 
+;;         lazy-search-mark-paragraph and lazy-search-copy-paragraph
+;;       
 ;; 2010/09/24
 ;;    * Joe Bloggs
 ;;       * Removed mark/copy parentheses functions and put them in lazy-search.el instead.
@@ -95,8 +100,48 @@
   (isearch-moccur-all)
   (lazy-search-quit))
 
+(defun lazy-search-copy-sentence ()
+  "Copy sentence at point.
+Kill object if `KILL-CONDITIONAL' is non-nil,
+otherwise copy object."
+  (interactive)
+  (save-excursion
+    (lazy-search-copy (beginning-of-thing 'sentence)
+                      (end-of-thing 'sentence))))
+
+(defun lazy-search-mark-sentence ()
+  "Mark sentence."
+  (interactive)
+  (save-excursion
+    (lazy-search-mark
+     (point)
+     (beginning-of-thing 'sentence)
+     (end-of-thing 'sentence))))
+
+(defun lazy-search-copy-paragraph ()
+  "Copy paragraph at point.
+Kill object if `KILL-CONDITIONAL' is non-nil,
+otherwise copy object."
+  (interactive)
+  (save-excursion
+    (lazy-search-copy (beginning-of-thing 'paragraph)
+                      (end-of-thing 'paragraph))))
+
+(defun lazy-search-mark-paragraph ()
+  "Mark paragraph."
+  (interactive)
+  (save-excursion
+    (lazy-search-mark
+     (point)
+     (beginning-of-thing 'paragraph)
+     (end-of-thing 'paragraph))))
+
 (dolist (elt-cons '(
                     ;; Other
+		    (("p" . "mark paragraph") . lazy-search-mark-paragraph)
+		    (("P" . "Copy paragraph") . lazy-search-copy-paragraph)
+		    (("n" . "mark sentence") . lazy-search-mark-sentence)
+		    (("N" . "Copy sentence") . lazy-search-copy-sentence)
                     (("v" . "Moccur") . lazy-search-moccur)
                     (("V" . "Moccur All") . lazy-search-moccur-all)
                     ))

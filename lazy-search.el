@@ -90,6 +90,10 @@
 ;;
 
 ;;; Change log:
+;; 2010/10/17
+;;    * Joe Bloggs
+;;       * Added lazy-search-toggle-keep-region function and lazy-search-keep-region customization variable.
+;;       
 ;; 2010/09/24
 ;;    * Joe Bloggs
 ;;       * Moved function for mark/copy parentheses from lazy-search-extension.el to here.
@@ -153,6 +157,11 @@
   "Face for highlighting background object."
   :group 'lazy-search)
 
+(defcustom lazy-search-keep-region t
+  "If t then highlighted region will be kept after quitting lazy-search.
+Otherwise region will be cleared."
+  :type '(boolean)
+  :group 'lazy-search)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Variable ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defvar lazy-search-highlight-current-overlay nil
   "The overlay for `lazy-search-highlight-current'.")
@@ -194,10 +203,24 @@
             (lazy-search-mark-symbol))
         (error "Please move cursor some thing, lazy-search can mark it"))))
 
+(defun lazy-search-toggle-keep-region (val)
+  "If called interactively with a prefix, or non-interactively with val equal to 4,
+set the current value of `lazy-search-keep-region' to t. 
+If called with a double prefix, or with val equal to 16, set `lazy-search-keep-region' to nil.
+Otherwise, toggle the current value of `lazy-search-keep-region'."
+  (interactive "p")
+  (if (equal val 4) (setq lazy-search-keep-region t)
+    (if (equal val 16) (setq lazy-search-keep-region nil)
+      (if lazy-search-keep-region (setq lazy-search-keep-region nil)
+	(setq lazy-search-keep-region t)))))
+
 (defun lazy-search-abort ()
   "Handle abort with `lazy-search'."
   (interactive)
   ;; Clean overlay from buffer.
+  (if lazy-search-keep-region
+      (progn (set-mark (overlay-start lazy-search-highlight-current-overlay))
+	     (goto-char (overlay-end lazy-search-highlight-current-overlay))))
   (lazy-search-highlight-current-clean)
   (lazy-search-highlight-background-clean)
   ;; Save search cache if current search
@@ -284,7 +307,7 @@ And return search string match bound."
 
 (defun lazy-search-mark (cursor-position beg end)
   "Mark special bound that from `BEG' to `END'.
-`CURSOR-POSITOIN' is the point of current cursor."
+`CURSOR-POSITION' is the point of current cursor."
   (let ((search-object (lazy-search-highlight-bound beg end)))
     (when search-object
       (setq lazy-search-object search-object)
@@ -733,6 +756,7 @@ Search backward if option `REVERSE' is `non-nil'."
            (("C-s" . "Switch To Isearch") . lazy-search-to-isearch)
 	   (("%" . "Switch to query-replace") . lazy-search-to-query-replace)
            ;; Others.
+	   (("t" . "Toggle keep region") . lazy-search-toggle-keep-region)
            (("E" . "Edit Search Object") . lazy-search-edit-object)
            (("." . "Return Mark Init Position") . lazy-search-return-mark-init-position)
            ))

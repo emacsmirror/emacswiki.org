@@ -27,7 +27,7 @@ Put this in your [[init file]]:
     "Create tags file."
     (interactive "DDirectory: ")
     (shell-command
-     (format "%s -f %s/TAGS -e -R %s" path-to-ctags dir-name dir-name))
+     (format "%s -f %s/TAGS -e -R %s" path-to-ctags dir-name (directory-file-name dir-name)))
   )
 
 Then, once it has been evaluated, you can invoke it via `m-x create-tags'

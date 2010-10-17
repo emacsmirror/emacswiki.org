@@ -104,6 +104,7 @@ Default, LazySearch will popup help window when you execute command `lazy-search
 :: Ctrl-s -- Switch to isearch.
 
 ** Others:
+:: t -- Toggle keep region after quiting 
 :: E -- Edit search object.
 :: . -- Return mark initiation position.
 

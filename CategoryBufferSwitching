@@ -33,3 +33,4 @@ The following are specific tricks and packages for buffer switching.
 * FindHeaderFile -- open C/C++ header file on current line
 * [[MTorus]] -- provides navigation on a discrete 2-torus of buffers
 * [[iflipb]] -- interactively flip between recently visited buffers
+* [[PinBar]] -- create tabs at the top and switch associated buffers with a single stroke

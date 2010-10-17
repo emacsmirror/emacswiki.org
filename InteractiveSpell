@@ -196,6 +196,8 @@ WcheckMode is a fast on-the-fly (spell-)checker. It can be used with the usual c
 === Enchant ===
 [http://www.abisource.com/projects/enchant/ Enchant] is a wrapper for ispell, aspell, hunspell, myspell, voikko, zemberek, etc. 
 
+==Questions==
+
 === Checking multiple buffers/files ===
 [new] Question: Any easy way to spell-check multiple buffers/files ? Any integration with Dired ?
 
