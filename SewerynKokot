@@ -1,16 +1,51 @@
 I've been using Emacs since 2006. I cannot imagine to live without it :-)
 
+http://www.skokot.po.opole.pl/images/adres.png
+
+
 I use Emacs for:
 * programming languages: python, felt, matlab/octave, castem, elisp, LaTeX with Auctex
+* PredictiveMode, CompletionUI
+
+<pre>
+(require 'predictive)
+;(autoload 'predictive-mode "predictive" "predictive" t)
+(set-default 'predictive-auto-add-to-dict t)
+(setq predictive-which-dict t)
+(setq predictive-main-dict 'rpg-dictionary)
+(setq predictive-add-to-dict-ask nil)
+(setq predictive-auto-learn t)
+(setq predictive-completion-speed 0.1)
+(setq predictive-auto-add-min-chars 4)
+
+(setq predictive-auto-add-filter (lambda (word dict) (lookup-words word)))
+
+(defun my-predictive-add-word-atpoint ()
+  (interactive)
+  (predictive-add-to-dict rpg-dictionary (word-at-point)))
+
+(defun my-predictive-remove-word-atpoint ()
+  "Add a word at point to the default predictive dict without asking."
+  (interactive)
+  (predictive-remove-from-dict rpg-dictionary (word-at-point)))
+
+(defun my-predictive-add-words-batch ()
+  "Add words to the default predictive dict word after word.
+Make a list of words and run this function"
+  (interactive)
+  (while (not (eobp))
+	(my-predictive-add-word-atpoint)
+	(message "Word %s added" (word-at-point))
+	(forward-word)))
+</pre>
+
+* auto-complete, company-mode
 * git-emacs
 * dired mode
 * ediff
 * muse mode (my website)
 * org mode (gtd)
 * gnus
-* etc.
-
-Currently I live in Varese, Italy (however I'm from Opole, Poland).
 
 ----
 CategoryHomepage

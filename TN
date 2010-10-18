@@ -72,6 +72,31 @@ is the index of element (nth i l1) in l2. Thereby, the elements of l1 and l2 are
 	    )))
       (dired-do-kill-lines nil (concat "Filter" dired-file-name-filter " omitted %d line%s")))))
 </pre>
+=== List distinct matches of a regular expression ===
+<pre>
+(defun unique-matches (re &optional n b e)
+  "Return a list of all distinct occurences of the regular expression RE within region from B to E. If B and E are nil then search from point to end of buffer. If called interactively the list goes to the kill-ring. The optional argument N is the parenthesized expression of RE which should be listed. It defaults to 0."
+  (interactive "sRegular expression:\nMNumber of subexpression (default: 0):")
+  (if (stringp n) (setq n (string-to-number n)))
+  (if (and (called-interactively-p) (use-region-p))
+      (progn
+	(setq b (region-beginning))
+	(setq e (region-end))))
+  (let (ret)
+    (save-excursion
+      (unless n (setq n 0))
+      (unless b (setq b (point)))
+      (unless e (setq e (point-max)))
+      (goto-char b)
+      (while (search-forward-regexp re e 'noErr)
+	(add-to-list 'ret (match-string-no-properties n)))
+      (setq ret (nreverse ret))
+      (message "Matches found: %s" ret)
+      (if (called-interactively-p)
+	  (progn
+	    (kill-new (format "%s" ret))))
+      ret)))
+</pre>
 
 [new:DrewAdams:2010-07-30 14:23 UTC]
 Welcome to the wiki. -- DrewAdams

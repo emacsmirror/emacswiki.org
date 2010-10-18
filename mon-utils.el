@@ -1,6 +1,5 @@
 ;;; mon-utils.el --- common utilities and BIG require for other of MON packages
 ;; -*- mode: EMACS-LISP; -*-
-
 ;;; ================================================================
 ;; Copyright © 2008-2010 MON KEY. All rights reserved.
 ;;; ================================================================
@@ -22,93 +21,81 @@
 ;; Provides common utilities and BIG require for other of MON's packages.
 ;;
 ;; FUNCTIONS:►►►
-;; `scratch', `switch-to-messages',
-;; `scroll-down-in-place', `scroll-up-in-place', `mon-kill-appending',
-;; `mon-kill-completions', `mon-flip-windows', `mon-twin-horizontal',
-;; `mon-twin-vertical', `mon-get-face-at-point', `mon-toggle-menu-bar',
-;; `mon-append-to-register', `mon-append-to-buffer', `mon-region-position',
-;; `mon-region-length', `mon-region-unfill', `mon-region-capitalize',
-;; `mon-region-reverse', `mon-toggle-trunc', `mon-inhibit-read-only',
+;; `scratch', `switch-to-messages', `scroll-down-in-place',
+;; `scroll-up-in-place', `mon-kill-appending', `mon-kill-completions',
+;; `mon-flip-windows', `mon-twin-horizontal', `mon-twin-vertical',
+;; `mon-get-face-at-point', `mon-toggle-menu-bar', `mon-append-to-register',
+;; `mon-append-to-buffer', `mon-region-position', `mon-region-length',
+;; `mon-region-unfill', `mon-region-capitalize', `mon-region-reverse',
+;; `mon-toggle-trunc', `mon-inhibit-read-only',
 ;; `mon-inhibit-modification-hooks', `mon-inhibit-point-motion-hooks',
-;; `mon-toggle-read-only-point-motion', `mon-wrap-selection',
-;; `mon-wrap-text', `mon-wrap-with', `mon-choose-from-menu',
-;; `mon-match-at-point', `mon-spacep', `mon-spacep-not-bol',
-;; `mon-spacep-is-bol', `mon-spacep-is-after-eol',
+;; `mon-toggle-read-only-point-motion', `mon-wrap-selection', `mon-wrap-text',
+;; `mon-wrap-with', `mon-choose-from-menu', `mon-match-at-point', `mon-spacep',
+;; `mon-spacep-not-bol', `mon-spacep-is-bol', `mon-spacep-is-after-eol',
 ;; `mon-spacep-is-after-eol-then-graphic', `mon-spacep-at-eol',
-;; `mon-spacep-first', `mon-line-bol-is-eol',
-;; `mon-line-previous-bol-is-eol', `mon-line-next-bol-is-eol',
-;; `mon-line-eol-is-eob', `mon-line-end-or-code-end', `mon-line-get-next',
-;; `mon-line-count-region', `mon-line-count-matchp', `mon-line-length-max',
-;; `mon-is-digit', `mon-is-letter', `mon-is-alphanum',
-;; `mon-is-digit-simp', `mon-is-letter-simp', `mon-is-alphanum-simp',
-;; `mon-string-justify-left', `mon-string-to-sequence',
-;; `mon-string-from-sequence', `mon-string-alpha-list', `mon-string-index',
-;; `mon-string-position', `mon-string-has-suffix', `mon-string-ify-list',
-;; `mon-string-split-on-regexp', `mon-string-sub-old->new',
-;; `mon-string-split-line', `mon-string-ify-current-line',
-;; `mon-word-get-list-in-buffer', `mon-word-get-next',
-;; `mon-word-reverse-region', `mon-word-iterate-over',
+;; `mon-spacep-first', `mon-line-bol-is-eol', `mon-line-previous-bol-is-eol',
+;; `mon-line-next-bol-is-eol', `mon-line-eol-is-eob',
+;; `mon-line-end-or-code-end', `mon-line-get-next', `mon-line-count-region',
+;; `mon-line-count-matchp', `mon-line-length-max', `mon-is-digit',
+;; `mon-is-letter', `mon-is-alphanum', `mon-is-digit-simp',
+;; `mon-is-letter-simp', `mon-is-alphanum-simp', `mon-string-justify-left',
+;; `mon-string-to-sequence', `mon-string-from-sequence',
+;; `mon-string-alpha-list', `mon-string-index', `mon-string-position',
+;; `mon-string-has-suffix', `mon-string-ify-list', `mon-string-split-on-regexp',
+;; `mon-string-sub-old->new', `mon-string-split-line',
+;; `mon-string-ify-current-line', `mon-word-get-list-in-buffer',
+;; `mon-word-get-next', `mon-word-reverse-region', `mon-word-iterate-over',
 ;; `mon-word-count-analysis', `mon-word-count-occurrences',
 ;; `mon-word-count-region', `mon-word-count-chars-region',
 ;; `mon-rectangle-columns', `mon-rectangle-sum-column',
 ;; `mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points',
-;; `mon-rectangle-downcase', `mon-rectangle-upcase',
-;; `mon-rectangle-capitalize', `mon-line-test-content', `mon-get-text-properties-category',
-;; `mon-view-help-source', `mon-index-elisp-symbol',
-;; `mon-plist-keys', `mon-plist-remove!', `mon-plist-remove-consing',
-;; `mon-plist-remove-if', `mon-list-all-properties-in-buffer',
-;; `mon-nuke-text-properties-buffer', `mon-remove-text-property',
-;; `mon-remove-single-text-property', `mon-nuke-text-properties-region',
-;; `mon-get-text-properties-region-to-kill-ring', `mon-nuke-overlay-buffer', 
-;; `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
-;; `mon-flatten', `mon-combine', `mon-recursive-apply', `mon-mismatch',
+;; `mon-rectangle-downcase', `mon-rectangle-upcase', `mon-rectangle-capitalize',
+;; `mon-line-test-content', `mon-get-text-properties-category',
+;; `mon-view-help-source', `mon-index-elisp-symbol', `mon-plist-keys',
+;; `mon-plist-remove!', `mon-plist-remove-consing', `mon-plist-remove-if',
+;; `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
+;; `mon-remove-text-property', `mon-remove-single-text-property',
+;; `mon-nuke-text-properties-region',
+;; `mon-get-text-properties-region-to-kill-ring', `mon-nuke-overlay-buffer',
+;; `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-flatten',
+;; `mon-combine', `mon-recursive-apply', `mon-mismatch',
 ;; `mon-escape-lisp-string-region', `mon-unescape-lisp-string-region',
 ;; `mon-princ-cb', `mon-eval-sexp-at-point', `mon-eval-print-last-sexp',
 ;; `mon-extend-selection', `mon-semnav-up', `mon-eval-expression',
 ;; `mon-nuke-and-eval', `mon-unbind-defun', `mon-unbind-symbol',
 ;; `mon-unbind-function', `mon-unbind-command', `mon-unbind-variable',
-;; `mon-byte-compile-and-load', `mon-compile-when-needed',
-;; `mon-load-or-alert', `mon-cmd', `mon-terminal', `mon-string-to-symbol'
-;; `mon-line-find-duplicates', `mon-test-keypresses', `mon-line-strings-one-list',
-;; `mon-line-strings-to-list', `mon-line-strings-to-list-TEST',
-;; `mon-line-string-rotate-name', `mon-line-string-rotate-namestrings',
-;; `mon-line-string-unrotate-namestrings', `mon-symbol-to-string',
-;; `mon-line-string-rotate-namestrings-combine', `mon-intersection',
-;; `mon-sublist', `mon-sublist-gutted', `mon-map-append',
+;; `mon-byte-compile-and-load', `mon-compile-when-needed', `mon-load-or-alert',
+;; `mon-cmd', `mon-terminal', `mon-string-to-symbol' `mon-line-find-duplicates',
+;; `mon-test-keypresses', `mon-line-strings-one-list',
+;; `mon-line-strings-to-list', `mon-line-string-rotate-name',
+;; `mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings',
+;; `mon-symbol-to-string', `mon-line-string-rotate-namestrings-combine',
+;; `mon-intersection', `mon-sublist', `mon-sublist-gutted', `mon-map-append',
 ;; `mon-string-chop-spaces', `mon-maptree', `mon-transpose',
-;; `mon-dump-object-to-file'`mon-string-upto-index',
-;; `mon-string-after-index', `mon-line-strings-bq-qt-sym-bol',
-;; `mon-get-proc-w-name', `mon-get-sys-proc-list', `mon-insert-sys-proc-list',
-;; `mon-generate-prand-id', `mon-generate-prand-seed',
-;; `mon-sha1-region', 
-;; `mon-escape-string-for-cmd', `mon-line-strings-qt-region',
-;; `mon-buffer-name->kill-ring', `mon-make-a-pp',
-;; `mon-string-to-hex-string', `mon-generate-WPA-key',
-;; `mon-async-du-dir', `mon-make-shell-buffer', `mon-shell',
-;; `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
-;; `mon-line-strings-region', `mon-line-indent-from-to-col', 
-;; `mon-get-system-specs', `mon-string-fill-to-col',
-;; `mon-line-strings-pipe-to-col', `mon-line-strings',
+;; `mon-dump-object-to-file'`mon-string-upto-index', `mon-string-after-index',
+;; `mon-line-strings-bq-qt-sym-bol', `mon-get-proc-w-name',
+;; `mon-get-sys-proc-list', `mon-insert-sys-proc-list', `mon-generate-prand-id',
+;; `mon-generate-prand-seed', `mon-sha1-region', `mon-escape-string-for-cmd',
+;; `mon-line-strings-qt-region', `mon-buffer-name->kill-ring', `mon-make-a-pp',
+;; `mon-string-to-hex-string', `mon-generate-WPA-key', `mon-async-du-dir',
+;; `mon-make-shell-buffer', `mon-shell', `mon-line-strings-pipe-bol',
+;; `mon-line-strings-indent-to-col', `mon-line-strings-region',
+;; `mon-line-indent-from-to-col', `mon-get-system-specs',
+;; `mon-string-fill-to-col', `mon-line-strings-pipe-to-col', `mon-line-strings',
 ;; `mon-get-process', `mon-toggle-eval-length',
 ;; `mon-line-string-insert-chars-under', `mon-alphabet-as-type',
-;; `mon-get-env-vars-strings',  `mon-get-env-vars-symbols',
-;; `mon-get-env-vars-emacs', `mon-get-emacsd-paths',
-;; `mon-string-replace-char', `mon-string-to-hex-list',
-;; `mon-buffer-exists-so-kill', `mon-string-wonkify',
-;; `mon-after-mon-utils-loadtime', `mon-line-count-buffer',
-;; `mon-g2be', `mon-string-sort-descending',
-;; `mon-with-inhibit-buffer-read-only-TEST', `mon-remove-if',
-;; `mon-string-to-hex-list-cln-chars',
-;; `mon-line-dolines-setup-TEST', `mon-line-dolines-TEST',
-;; `mon-map-obarray-symbol-plist-props', `mon-image-verify-type',
-;; `mon-with-buffer-undo-disabled-TEST',
-;; `mon-line-move-n', `mon-line-move-prev', `mon-line-move-next',
-;; `mon-abort-recursive-edit', `mon-rotate-ascii-cursor',
+;; `mon-get-env-vars-strings', `mon-get-env-vars-symbols',
+;; `mon-get-env-vars-emacs', `mon-get-emacsd-paths', `mon-string-replace-char',
+;; `mon-string-to-hex-list', `mon-buffer-exists-so-kill', `mon-string-wonkify',
+;; `mon-after-mon-utils-loadtime', `mon-line-count-buffer', `mon-g2be',
+;; `mon-string-sort-descending', `mon-remove-if',
+;; `mon-string-to-hex-list-cln-chars', `mon-map-obarray-symbol-plist-props',
+;; `mon-image-verify-type', `mon-line-move-n', `mon-line-move-prev',
+;; `mon-line-move-next', `mon-abort-recursive-edit', `mon-rotate-ascii-cursor',
 ;; `mon-get-syntax-class-at', `mon-string-spread', `mon-quote-sexp',
-;; `mon-delq-cons', `mon-list-proper-p', `mon-list-make-unique', 
+;; `mon-delq-cons', `mon-list-proper-p', `mon-list-make-unique',
 ;; `mon-list-match-tails', `mon-list-reorder', `mon-maybe-cons',
-;; `mon-gensym-counter-randomizer', `mon-gensym-counter-randomizer-TEST',
-;; `mon-list-nshuffle' `mon-list-nshuffle-TEST', `mon-looking-back-p',
+;; `mon-gensym-counter-randomizer', `mon-list-nshuffle', `mon-looking-back-p',
 ;; `mon-delq-dups', `mon-make-random-state', `mon-next-almost-prime',
 ;; `mon-list-shuffle-safe', `mon-bool-vector-pp', `mon-get-bit-table',
 ;; `mon-abort-autosave-when-fucked', `mon-get-buffer-hidden',
@@ -124,16 +111,15 @@
 ;; `mon-alphabet-as-list-stringD', `mon-alphabet-as-list-symbolU',
 ;; `mon-alphabet-as-list-symbolD', `mon-alphabet-as-stringU-w-nl',
 ;; `mon-alphabet-as-stringD-w-nl', `mon-alphabet-as-stringU-w-spc',
-;; `mon-alphabet-as-stringD-w-spc',
-;; `mon-read-keys-as-string', `mon-subseq', `mon-function-object-p', 
-;; `mon-recover-nil-t-default-plist', `mon-char-code',
-;; `mon-list-filter', `mon-list-last',
-;; `mon-member-if', `mon-delete-if', `mon-remove-if-not',
-;; `mon-map1', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
-;; `mon-mapcon', `mon-string-split-commas',
-;; `mon-print-buffer-object-readably', 
-;; `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-get-buffer-window-if',
-;; `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
+;; `mon-alphabet-as-stringD-w-spc', `mon-read-keys-as-string', `mon-subseq',
+;; `mon-function-object-p', `mon-recover-nil-t-default-plist', `mon-char-code',
+;; `mon-list-filter', `mon-list-last', `mon-member-if', `mon-delete-if',
+;; `mon-remove-if-not', `mon-map1', `mon-mapl', `mon-maplist', `mon-mapcar',
+;; `mon-mapcan', `mon-mapcon', `mon-string-split-commas',
+;; `mon-print-buffer-object-readably', `mon-get-buffer-window-if',
+;; `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
+;; `mon-buffer-sub-no-prop-check', `mon-equality-or-pred', `mon-union',
+;; `mon-string-split',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -154,6 +140,7 @@
 ;; VARIABLES:
 ;; `*mon-utils-post-load-requires*', `*mon-ascii-cursor-state*', `*mon-bit-table*',
 ;; `*mon-alphabet-as-type-generate*', `*mon-recover-nil-t-default-plist*',
+;; `*mon-equality-or-pred*',
 ;;
 ;; :GROUPS
 ;; `mon-base'
@@ -228,6 +215,13 @@
 ;; `mon-window-get-if-buffer'        -> `mon-get-buffer-window-if'
 ;; `get-buffer-window-if'            -> `mon-get-buffer-window-if'
 ;; `buffer-narrowed-p'               -> `mon-buffer-narrowed-p'
+;; `mon-string-prefix-p'             -> `vc-string-prefix-p'
+;; `mon-list-union'                  -> `mon-union'
+;; `mon-split-string'                -> `mon-string-split'
+;; `mon-string-escape-lisp-region'   -> `mon-escape-lisp-string-region'
+;; `mon-lisp-escape-region'          -> `mon-escape-lisp-string-region'
+;; `mon-string-unescape-lisp-region' -> `mon-unescape-lisp-string-region'
+;; `mon-lisp-unescape-region'        -> `mon-unescape-lisp-string-region'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
@@ -263,6 +257,16 @@
 ;; `mon-nuke-text-properties-region'              <- mon-text-property-utils.el
 ;; `mon-get-text-properties-category'             <- mon-text-property-utils.el
 ;; `mon-nuke-overlay-buffer'                      <- mon-text-property-utils.el
+;; `mon-list-nshuffle-TEST'                       -> mon-testme-utils.el
+;; `mon-gensym-counter-randomizer-TEST'           -> mon-testme-utils.el
+;; `mon-line-strings-to-list-TEST'                -> mon-testme-utils.el
+;; `mon-with-inhibit-buffer-read-only-TEST'       -> mon-testme-utils.el
+;; `mon-line-dolines-TEST'                        -> mon-testme-utils.el
+;; `mon-line-dolines-setup-TEST'                  -> mon-testme-utils.el
+;; `mon-with-buffer-undo-disabled-TEST'           -> mon-testme-utils.el
+;; `mon-with-inhibit-buffer-read-only-PP-TEST'    -> mon-testme-utils.el
+;; `mon-string-split-TEST'                        -> mon-testme-utils.el
+;; `mon-line-strings-bq-qt-sym-bol-TEST'          -> mon-testme-utils.el
 ;;
 ;; REQUIRES:
 ;;
@@ -383,6 +387,7 @@
 (require 'mon-error-utils)
 (require 'mon-text-property-utils)
 (require 'edebug)
+(require 'easymenu)
 (require 'bytecomp)
 (require 'macroexp)
 
@@ -435,7 +440,7 @@
 ;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T16:54:51-04:00Z}#{10361} - by MON KEY>
 (defvar *mon-utils-post-load-requires* nil
-  "List of features loaded by feature mon-utils.el\n
+  "*List of features loaded by feature mon-utils.el\n
 :CALLED BY `mon-utils-require-features-at-loadtime'\n
 :SEE-ALSO `mon-after-mon-utils-loadtime'.\n►►►")
 ;;
@@ -463,13 +468,15 @@
           mon-doc-help-CL
           mon-tramp-utils
           naf-skeletons
-          ;; :NOTE Should be required already in :FILE mon-default-start-loads.el
+          ;; :NOTE `naf-mode` already have been pulled in by 
+          ;; :FILE mon-default-start-loads.el
           naf-mode 
           ebay-template-mode
           mon-empty-registers
           mon-iptables-vars
           mon-iptables-regexps
-          mon-mysql-utils)))
+          mon-mysql-utils
+          )))
 
 ;;; ==============================
 ;;; :CHANGESET 2142
@@ -941,50 +948,6 @@ invocations per seed symbol. IOW one might create an average of ~9948 unique
 ;; `----
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-07-31T14:41:01-04:00Z}#{10306} - by MON>
-(defun mon-gensym-counter-randomizer-TEST (w-test-str/sym generate-n-results)
-  "Test function for `mon-gensym-counter-randomizer'.\n
-Return results in buffer named \"*MON-GENSYM-COUNTER-RANDOMIZER-TEST*\".\n
-Arg W-TEST-STR/SYM is a string or symbol to build results with.\n
-ARG GENERATE-N-RESULTS is the number of results to generate.\n
-:EXAMPLE\n\n(mon-gensym-counter-randomizer-TEST \"bubba\" 10000)\n
-:SEE-ALSO `mon-gensym', `with-gensyms', `mon-gensym-counter-randomizer'.\n►►►"
-  (let ((mgcr-tst-buf (get-buffer-create "*MON-GENSYM-COUNTER-RANDOMIZER-TEST*"))
-        mlf-dups)
-    (with-current-buffer (get-buffer mgcr-tst-buf)
-      (erase-buffer)
-      (with-temp-message (concat ":FUNCTION `mon-gensym-counter-randomizer-TEST' "
-                                 (format "-- still processing arg %S %d times ... " 
-                                         w-test-str/sym generate-n-results))
-        (save-excursion
-          (dotimes (mlf-i generate-n-results)
-            (princ (mon-gensym-counter-randomizer w-test-str/sym) (current-buffer))
-            (newline))
-          (sort-lines nil (buffer-end 0) (buffer-end 1)))
-        (setq mlf-dups (mon-line-find-duplicates))
-        (save-excursion
-          (apply #'insert 
-                 `(";;; :TESTING-FUNCTION `mon-gensym-counter-randomizer'\n"
-                   ";;; :WITH-ARG w-test-str/sym " ,(format "%S" w-test-str/sym) "\n"
-                   ";;; :WITH-ARG generate-n-results " ,(format "%d" generate-n-results) "\n"
-                   ,@(unless (null mlf-dups)
-                       (list (make-string 68 59) "\n"
-                             ";;; :FOUND-N-DUPLICATES " 
-                             (format "%d" (length mlf-dups)) "\n"
-                             ";;; :AS-PERCENTAGE " 
-                             (format "%%%.5f" (/ (float (length mlf-dups)) 10000)) "\n"
-                             ";;; :DUPLICATES-FOUND\n\n"
-                             (format "%s" mlf-dups) "\n\n"))
-                   ,(make-string 68 59) "\n"
-                   ";;; :GENERATED-RESULTS\n\n")))
-        (display-buffer (current-buffer) t)))))
-;;
-;;; :TEST-ME (mon-gensym-counter-randomizer-TEST "bubba" 10000)
-;;; :TEST-ME (mon-gensym-counter-randomizer-TEST 'bubba  10000)
-;;; :TEST-ME (mon-gensym-counter-randomizer-TEST "bu"  10000)
-
-
-;;; ==============================
 ;;; :NOTE This appears to work similiarly to Lars Brinkhoff's version but
 ;;;  without the CL requirements for `assert' `every' and `mapcar*'.
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/macro-utils.el')
@@ -1074,14 +1037,18 @@ sequence types.\n
   `\(:TREE-EQUAL-MMC-PAIRL ,\(tree-equal rtn-mon-mapcar rtn-pairlis\)
     :MON-MAPCAR/PAIRLIS ,rtn-mon-mapcar :CL-PKG/PAIRLIS ,rtn-pairlis\)\)\n
 :NOTE Last example is basically Emacs lisp's version of Common Lisp's `parilis'.\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-mapcar', `mon-map1', `mon-mapcan', `mon-mapcon', `mon-mapl',
+`mon-maplist', `mon-maptree', `mon-map-combine', `mon-map-append'.\n►►►"
   (if (not seqs2_n)
       `(mapcar ,function ,seq1)
     (let* ((mmc-seqs      (cons seq1 seqs2_n))
            (mmc-cnt       0)
-           (mmc-heads     (mapcar #'(lambda (seq) ;; :NOTE arg SEQ prevents backquote expansion to: "(lambda nil"
-                                      (make-symbol (concat "head" (number-to-string (setq mmc-cnt (1+ mmc-cnt))))))
-                                  mmc-seqs))
+           (mmc-heads     (mapcar 
+                           ;; :NOTE arg SEQ prevents backquote expansion to: "(lambda nil"
+                           #'(lambda (seq) 
+                               (make-symbol 
+                                (concat "head" (number-to-string (setq mmc-cnt (1+ mmc-cnt))))))
+                           mmc-seqs))
            (mmc-rslt      (make-symbol "mmc-rslt"))
            (mmc-rslt-tl   (make-symbol "mmc-rslt-tl")))
       `(let* ,(let* ((bindings  (cons nil nil))
@@ -1103,7 +1070,6 @@ sequence types.\n
                                              (list mmc-h2 (list 'cdr mmc-h2))) 
                                          mmc-heads))))
          (cdr ,mmc-rslt)))))
-         
 
 ;;; ==============================
 ;;; :COURTESY Raphael Van Dyck :HIS km-frames.el :WAS `with-file-buffer'
@@ -1254,33 +1220,7 @@ is not needed.\n
 ;;
 (defalias 'mon-buffer-do-with-undo-disabled 'mon-with-buffer-undo-disabled)
 
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-06-14T15:41:21-04:00Z}#{10241} - by MON KEY>
-(defun mon-with-buffer-undo-disabled-TEST (&optional force-fail)
-  "Test function for `mon-with-buffer-undo-disabled' macro.\n
-When optional arg FORCE-FAIL is non-nil force test failure.\n
-:EXAMPLE\n\n\(mon-with-buffer-undo-disabled-TEST\)\n
-\(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n
-:SEE-ALSO `buffer-undo-list'.\n►►►"
-  (let ((rnd-char (mon-nshuffle-vector (vconcat (append (number-sequence 97 122)
-                                                   (number-sequence 65 90)))))
-        bul)
-    (with-temp-buffer 
-      (mon-with-buffer-undo-disabled (setq bul buffer-undo-list))
-      (unless force-fail
-        (dotimes (jnk 100) 
-          (insert (make-string (random 79) (elt rnd-char (random 52))) "\n"))
-        (delete-region (random (1- (buffer-end 1))) (random (1- (buffer-end 1)))))
-      (setq bul (cons bul buffer-undo-list)))
-    (cond ((or (not (consp bul)) (<= (length bul) 1))
-           (error (concat ":MACRO `mon-with-buffer-undo-disabled' "
-                          "-- failed to toggle `buffer-undo-list' in temp-buffer")))
-          ((and (car bul) (atom (car bul)))
-           (message (concat ":MACRO `mon-with-buffer-undo-disabled' "
-                            "-- success toggling `buffer-undo-list' in temp-buffer"))))))
-;;
-;;; :TEST-ME (mon-with-buffer-undo-disabled-TEST)
-;;; :TEST-ME (mon-with-buffer-undo-disabled-TEST t)
+
 
 
 ;;; ==============================
@@ -1346,6 +1286,7 @@ Default is to return a lisp form for `eval'.\n
 
 
 ;;; ==============================
+;;; :PREFIX "mbep-"
 ;;; :CREATED <Timestamp: #{2010-02-05T14:21:16-05:00Z}#{10055} - by MON KEY>
 (defun mon-buffer-exists-so-kill (buffer-to-kill)
   "If BUFFER-TO-KILL exists kill it.\n
@@ -1361,9 +1302,9 @@ Return `#<killed buffer>' if buffered killed, else nil.\n
 `mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir',
 `with-current-buffer', `with-temp-file', `with-temp-buffer',
 `mon-help-buffer-functions'.\n►►►"
-  (let ((mbep (mon-buffer-exists-p buffer-to-kill)))
-    (if (when mbep (kill-buffer mbep))        
-        (get-buffer mbep))))
+  (let ((mbep-sok (mon-buffer-exists-p buffer-to-kill)))
+    (if (when mbep-sok (kill-buffer mbep-sok))        
+        (get-buffer mbep-sok))))
 
 ;;; ==============================
 ;;; :COURTESY :FILE slime.el :WAS `slime-recently-visited-buffer'
@@ -1463,6 +1404,54 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
              (fboundp 'mon-functionp))
   (defalias 'mon-functionp 'mon-function-object-p))
 
+;;; ==============================
+;;; :CHANGESET 2178
+;;; :CREATED <Timestamp: #{2010-10-04T22:30:10-04:00Z}#{10401} - by MON KEY>
+(defcustom *mon-equality-or-pred* '(eq eql equal memq memql member
+                                       > < <= >= =
+                                       assq assoc rassq rassoc
+                                       string-equal string-lessp 
+                                       string-match-p string-prefix-p
+                                       equal-including-properties
+                                       subregexp-context-p
+                                       time-less-p
+                                       ;; cl
+                                       equalp subsetp tailp typep)
+  "List of predicates or two argument predicate-like functions.\n
+For use with ``mon-equality-or-pred'.\n
+:SEE-ALSO .\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-base)
+
+;;; ==============================
+;;; :CHANGESET 2178
+;;; :CREATED <Timestamp: #{2010-10-04T22:30:05-04:00Z}#{10401} - by MON KEY>
+(defun mon-equality-or-pred (predicate arg1 arg2)
+  "Evaluate PREDICATE with ARG1 ARG2.\n
+PREDICATE is function accepting two args and is either a member of
+`*mon-equality-or-pred*' or a symbol satisfying the predicate
+`mon-function-object-p'.\n
+:EXAMPLE\n\n\(mon-equality-or-pred 
+ 'memq 'eq '\(eq eql equal memq memql member\)\)\n
+\(mon-equality-or-pred 
+ 'member \"string\" '\(\"a\" \"b\" \"c\" \"string\"\)\)\n
+\(mon-equality-or-pred #'\(lambda \(q z\) 
+                          \(and \(stringp q\) \(stringp z\)
+                               \(compare-strings q 0 1 z 0 1\)\)\)
+                       \"bubba\" \"babel\"\)\n
+:SEE-ALSO `mon-booleanp', .\n►►►"  
+  (if (or (and (consp predicate) 
+               (or (eq (car-safe predicate) 'lambda)
+                   (error (concat ":FUNCTION `mon-equality-or-pred' "
+                                  "-- arg PREDICATE satisfies `consp' car not 'lambda "
+                                  " - got: %S") predicate)))
+          (and (symbolp predicate)
+               (memq predicate *mon-equality-or-pred*))
+          (memq (mon-function-object-p predicate)
+                '(function subr macro autoload)))
+      (funcall predicate arg1 arg2)
+    (error (concat ":FUNCTION `mon-equality-or-pred' "
+                   "-- arg PREDICATE not applicable - got: %S") predicate)))
 
 ;;; ==============================
 ;;; :SEE (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2010-09/msg00488.html')
@@ -1476,6 +1465,10 @@ When PUTATIVE-BOOLEAN is any other value return nil.\n
 \(mon-booleanp t\)\n;=> \(t t\)\n
 \(mon-booleanp nil\)\n;=> \(nil t\)\n
 \(mon-booleanp \(\)\)\n;=> \(nil t\)\n
+\(mon-booleanp '\(\)\)\n;=> \(nil t\)\n
+
+\(not \(eq :not-a-boolean \(unless \(cadr \(mon-booleanp nil\)\) :not-a-boolean\)\)\)
+\(eq :not-a-boolean \(unless \(cadr \(mon-booleanp \"bubba\"\)\) :not-a-boolean\)\)
 :NOTE Returning a two element list on success shares some similarity with
 Common Lisp's multiple values which seem pertinent for special cases
 like this one in that there is provision for reflection that is hard
@@ -1487,10 +1480,11 @@ Whereas with a two element proper list:\n
 \(let \(\(query-truth \(eq 8 3\)\)\)
      \(and \(cadr \(booleanp query-truth\)\)
           \(not \(car \(booleanp query-truth\)\)\)\)\)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-equality-or-pred'.\n►►►"
   (or (and (eq putative-boolean t) '(t t))
       (and (eq putative-boolean nil) '(nil t))
       '(nil nil)))
+
 
 ;;; ==============================
 ;;; Following does image extension type checking. Can be used elsewhere as well.
@@ -1832,6 +1826,7 @@ this function can match multiple processes with identical invocation commands.\n
 ;;;              (mon-get-process (invocation-name)))
 
 ;;; ==============================
+;;; "mmsb-"
 ;;; :CREATED <Timestamp: #{2009-12-01T13:54:34-05:00Z}#{09492} - by MON KEY>
 (defun mon-make-shell-buffer ()
   "Return a new *shell* buffer.\n
@@ -1848,15 +1843,11 @@ But, this way MON has fine-grain control over the assigned name suffix.\n
 :SEE-ALSO `generate-new-buffer', `generate-new-buffer-name',
 `mon-make-shell-buffer', `mon-terminal', `mon-help-process-functions',
 `shell'.\n►►►"
-  (let (buffs 
-        buffs-str)
+  (let (buffs buffs-str)
     (setq buffs (with-temp-buffer
-                  (princ
-                   (buffer-list)
-                   (current-buffer))
-                  (buffer-substring-no-properties
-                   (buffer-end 0)
-                   (buffer-end 1))))
+                  (princ (buffer-list) (current-buffer))
+                  ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+                  (mon-buffer-sub-no-prop)))
     (setq buffs (read buffs))
     (setq buffs (mapcar #'(lambda (x) (format "%s" x)) buffs))
     (mapc #'(lambda (x)
@@ -2037,9 +2028,8 @@ in a cmd console.\n
 `browse-url-generic'.\n►►►"
   (interactive "i\np")
   (when intrp
-    (setq url (read-string
-               (concat ":FUNCTION `mon-firefox' "
-                       "-- which URL: "))))
+    (setq url (read-string (concat ":FUNCTION `mon-firefox' "
+                                   "-- which URL: "))))
   (browse-url-firefox url))
 
 ;;; ==============================
@@ -2328,18 +2318,18 @@ When optional arg NO-GO is non-nil return a buffer position
 \(mon-g2be nil t\)\n
 \(mon-g2be t t\)\n
 ;; Following move point:
-\(mon-g2be\)
-\(mon-g2be :min
-\(mon-g2be -1
-\(mon-g2be 0 t\)
-\(mon-g2be t\)
-\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 0\)\)\)
-\(mon-g2be 1\)
-\(mon-g2be \(aref [10 13 15] \(random 3\)\) t\)
-\(mon-g2be :max\)
-\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 1\)\)\)
+\(mon-g2be\)\n
+\(mon-g2be :min)\n
+\(mon-g2be -1\)\n
+\(mon-g2be 0\)\n
+\(mon-g2be t\)\n
+\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 0\)\)\)\n
+\(mon-g2be 1\)\n
+\(mon-g2be \(aref [10 13 15] \(random 3\)\) t\)\n
+\(mon-g2be :max\)\n
+\(mon-g2be \(set-marker \(make-marker\) \(buffer-end 1\)\)\)\n
 :NOTE As a special case when MIN/MAX-GO is a marker that points to a buffer
-postion in current-buffer location of return value is needn't be either only
+postion in current-buffer location of return value needn't be either only
 `point-min'/`point-max' this allows reading in match-data variables bound to
 markers etc. Wnen the constraints on passing a marker value to this function are
 satisfied the return value is a marker not an integer including when the no-go
@@ -2454,7 +2444,7 @@ Following will fail:\n
 `mon-buffer-exists-so-kill', `mon-buffer-exists-p', `mon-get-buffer-w-mode',
 `mon-with-file-buffer', `mon-print-buffer-object-readably',
 `mon-print-in-buffer-if-p', `mon-help-buffer-functions'.\n►►►"
-  (if buf-beg
+  (if (or buf-beg buf-end)
       (apply #'buffer-substring-no-properties 
              (mon-buffer-sub-no-prop-check buf-beg buf-end))
     (buffer-substring-no-properties (point-min) (point-max))))
@@ -2702,7 +2692,9 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
          (apply 'concat 
                 (reverse 
                  (split-string 
-                  (buffer-substring-no-properties reg-begin reg-end) "")))))
+                  ;; :WAS (buffer-substring-no-properties reg-begin reg-end)
+                  (mon-buffer-sub-no-prop reg-begin reg-end)
+                  "")))))
     (cond (intrp (save-excursion 
                    (delete-region reg-begin reg-end)
                    (princ m-reg-rev (current-buffer))))
@@ -2971,69 +2963,6 @@ of `buffer-read-only'.\n
 
 
 ;;; ==============================
-;;; :CHANGESET 2142
-;;; :CREATED <Timestamp: #{2010-09-25T12:22:35-04:00Z}#{10386} - by MON KEY>
-(defun mon-with-inhibit-buffer-read-only-PP-TEST ()
-  "Test function for `mon-with-inhibit-buffer-read-only'.
-:EXAMPLE\n\n(mon-with-inhibit-buffer-read-only-PP-TEST)\n
-\(mon-with-inhibit-buffer-read-only-TEST t\)\n
-:SEE-ALSO `mon-with-inhibit-buffer-read-only-TEST',
-`mon-build-copyright-string-TEST', `mon-help-keys-wikify-TEST',
-`mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-propertize-tags-TEST',
-`mon-help-regexp-symbol-defs-TEST', `mon-help-CL-wget-pkgs-TEST',
-`mon-inhibit-read-only-TEST', `mon-line-strings-to-list-TEST',
-`mon-user-system-conditionals-TEST', `mon-wget-list-to-script-TEST'.\n►►►"
-  (let ((miro-bfr (get-buffer-create 
-                   "*MON-WITH-INHIBIT-BUFFER-READ-ONLY-TEST*")))
-    (with-current-buffer miro-bfr
-      (erase-buffer)
-      (save-excursion 
-        (pp-display-expression 
-         (macroexpand '(mon-with-inhibit-buffer-read-only (insert "bubba")))
-         (buffer-name miro-bfr)))
-      (set (make-local-variable 'buffer-read-only) t))
-    (display-buffer miro-bfr t)))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-26T15:25:28-04:00Z}#{10125} - by MON KEY>
-(defun mon-with-inhibit-buffer-read-only-TEST (&optional w-display-buffer)
-  "Test function for `mon-with-inhibit-buffer-read-only'.
-:EXAMPLE\n\n(mon-with-inhibit-buffer-read-only-TEST)\n
-\(mon-with-inhibit-buffer-read-only-TEST t\)\n
-:SEE-ALSO `mon-with-inhibit-buffer-read-only-PP-TEST',
-`mon-build-copyright-string-TEST', `mon-help-keys-wikify-TEST',
-`mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-propertize-tags-TEST',
-`mon-help-regexp-symbol-defs-TEST', `mon-help-CL-wget-pkgs-TEST',
-`mon-inhibit-read-only-TEST', `mon-line-strings-to-list-TEST',
-`mon-user-system-conditionals-TEST', `mon-wget-list-to-script-TEST'.\n►►►"
-  (let ((mwirot (get-buffer-create "*MON-WITH-INHIBIT-BUFFER-READ-ONLY-TEST*"))
-        shw-msg)
-    (with-current-buffer mwirot
-      (erase-buffer)
-      (set (make-local-variable 'buffer-read-only) t)
-      (mon-with-inhibit-buffer-read-only
-          (save-excursion (dotimes (txt 14) (insert "These lines of text\n")))
-          (when w-display-buffer (display-buffer (current-buffer) t))
-          (when w-display-buffer (sit-for 1))
-        (dotimes (miro 4)
-          (mon-with-inhibit-buffer-read-only 
-              (forward-line 3) (kill-line)
-              (when w-display-buffer (sit-for 1)))))
-      (setq shw-msg 
-            (if (buffer-local-value buffer-read-only (current-buffer))
-                (concat ":MACRO `mon-with-inhibit-buffer-read-only' "
-                        "-- Buffer is buffer-read-only, successfully re-inhibited buffer")
-              (concat ":MACRO `mon-with-inhibit-buffer-read-only' "
-                      "-- failed to re-inhibit buffer-read-only")))
-      (if (not w-display-buffer)
-          (when (eq (get-buffer mwirot) (current-buffer))
-            (kill-buffer mwirot))))
-    (message shw-msg)))
-;;
-;;; :TEST-ME (mon-with-inhibit-buffer-read-only-TEST)
-;;; :TEST-ME (mon-with-inhibit-buffer-read-only-TEST t)
-
-;;; ==============================
 (defun mon-inhibit-modification-hooks (func-arg)
   "Evaluate FUNC-ARG at point with `inhibit-modification-hooks' t.\n
 FUNC-ARG is a function which evaluates without parameters.
@@ -3120,6 +3049,10 @@ the tedium of building the entire scaffolding.\n
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-26T15:45:18-04:00Z}#{09441} - by MON KEY>
 (defun mon-toggle-truncate-line (&optional intrp)
   "Toggle the truncate-line variable and redraw the display.\n
+When optional arg intrp is non-nil or called-interactively message user that
+change has occured.\n
+:EXAMPLE\n\n\(mon-toggle-truncate-line\)\n
+\(mon-toggle-truncate-line t\)\n
 :SEE-ALSO `mon-toggle-eval-length', `print-length',
 `mon-toggle-dired-dwim-target', `mon-toggle-menu-bar'
 `mon-toggle-show-point-mode', `mon-naf-mode-toggle-restore-llm', 
@@ -3127,11 +3060,13 @@ the tedium of building the entire scaffolding.\n
 `mon-inhibit-point-motion-hooks', `mon-inhibit-read-only'.\n►►►"
   (interactive "p")
   (toggle-truncate-lines nil)
-  (if intrp (message
-             (concat ":FUNCTION `mon-toggle-truncate-line' " 
-                     (if truncate-lines
-                         "-- truncating lines (... $)"
-                       "-- wrapping lines (...\\)"))))
+  ;; (buffer-local-value 'truncate-lines (current-buffer))
+  (if intrp 
+      (message
+       (concat ":FUNCTION `mon-toggle-truncate-line' " 
+               (if truncate-lines
+                   "-- truncating lines (... $)"
+                 "-- wrapping lines (...\\)"))))
   (redraw-display))
 
 
@@ -3196,7 +3131,8 @@ at point. Does not move point.\n
           (setq mwt-pnt1 (point))
           (skip-chars-forward "-A-Za-z")
           (setq mwt-pnt2 (point))))
-      (setq mwt-wrap-wrd (buffer-substring-no-properties mwt-pnt1 mwt-pnt2))
+      (setq mwt-wrap-wrd ;; :WAS (buffer-substring-no-properties mwt-pnt1 mwt-pnt2)
+            (mon-buffer-sub-no-prop mwt-pnt1 mwt-pnt2))
       (if (or insrtp intrp)
           (progn
             (goto-char mwt-pnt2) (insert wrap-b)
@@ -3271,7 +3207,8 @@ nil if there is no match in the buffer.\n
          (progn 
            (goto-char pamm-end)
            t)
-         (buffer-substring-no-properties pamm-start pamm-end))))
+         ;; :WAS (buffer-substring-no-properties pamm-start pamm-end)
+         (mon-buffer-sub-no-prop  pamm-start pamm-end))))
 
 ;;; ===================================
 ;; :WHITESPACE 
@@ -3636,9 +3573,9 @@ Return nil at `end-of-buffer'.\n
     (if (eql mlgn-start (point))
 	nil
       (progn (setq mlgn-start (point)) 
-             (buffer-substring-no-properties 
-              mlgn-start 
-              (progn (end-of-line) (point)))))))
+             ;; (buffer-substring-no-properties mlgn-start (progn (end-of-line) (point)))
+             (mon-buffer-sub-no-prop mlgn-start (progn (end-of-line) (point)))))))
+                                             
 ;;
 ;;; :TEST-ME (save-excursion (equal (mon-line-get-next) ""))
 
@@ -3665,10 +3602,12 @@ comparison procedures `set-difference', `union', `intersection', etc.\n
 	gather-dups)
     (save-excursion
       (while (< (line-number-at-pos) max-pon) (= (forward-line) 0)
-	   (let ((mlfd-this-line (buffer-substring-no-properties 
-                             (line-beginning-position 1) (line-end-position 1)))
-		 (mlfd-next-line (buffer-substring-no-properties 
-                             (line-beginning-position 2) (line-end-position 2))))
+	   (let ((mlfd-this-line 
+                  ;; :WAS (buffer-substring-no-properties (line-beginning-position 1) (line-end-position 1))
+                  (mon-buffer-sub-no-prop  (line-beginning-position 1) (line-end-position 1)))
+		 (mlfd-next-line 
+                  ;; :WAS (buffer-substring-no-properties (line-beginning-position 2) (line-end-position 2))))
+                  (mon-buffer-sub-no-prop (line-beginning-position 2) (line-end-position 2))))
 	     (when (equal mlfd-this-line mlfd-next-line)  
                (setq gather-dups (cons mlfd-this-line gather-dups))))))
     (setq gather-dups (remove "" gather-dups))
@@ -4390,6 +4329,68 @@ Wants char literals.\n
 ;;; :TEST-ME (mon-is-alphanum-simp "A");should fail
 ;;; :TEST-ME (mon-is-alphanum-simp (prin1-char 88)) ;should fail
 
+;;; ==============================
+;;; :NOTE Heavily modified version of `dired-split' :SEE :FILE dired-aux.el
+;;; Which had the comment, "here should be a builtin split function - inverse to mapconcat."
+;;; :CHANGESET 2178
+;;; :CREATED <Timestamp: #{2010-10-06T20:15:46-04:00Z}#{10403} - by MON KEY>
+(defun mon-string-split (split-pattern w-string-to-split &optional limit-to w-empty-string)
+  "With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.\n
+Optional third arg LIMIT (>= 1) is a limit to the length of the resulting list.
+:EXAMPLE\n\n\(mon-string-split \"sp\"
+ \"With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.\"\)\n
+\(mon-string-split \" \"
+ \"With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.\"3\)\n
+\(mon-string-split \"Wi\"
+ \"With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.\" 1\)\n
+\(mon-string-split \"s.\"
+ \"With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.\" 66\)\n
+\(mon-string-split \".\" 
+ \"With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into list of substrings.\"\)\n
+\(mon-string-split \".\" 
+ \"With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into list of substrings.\" nil t\)\n
+\(mon-string-split-TEST\)\n
+:NOTE When SPLIT-PATTERN matches _only_ itself and optional arg limit is omitted.
+return value of following form will always be equal W-STRING-TO-SPLIT:\n
+  \(mapconcat 'identity \(mon-string-split SEP W-STRING-TO-SPLIT\) SEP\)\n
+:ALIASED-BY `mon-split-string'\n
+:SEE-ALSO `mon-string-split-TEST', `mon-string-to-symbol',
+`mon-string-ify-list', `mon-string-chop-spaces', `mon-string-replace-char',
+`mon-string-from-sequence', `mon-string-to-sequence', `mon-string-justify-left',
+`mon-string-index', `mon-string-position'.\n►►►"
+  (let ((mch-max (length w-string-to-split)))
+    (if (or (and limit-to (= limit-to 0))
+            (not (string-match-p split-pattern w-string-to-split))
+            (save-match-data (string-match split-pattern w-string-to-split) 
+                             (= (match-end 0) mch-max)))
+        (list w-string-to-split)
+      (save-match-data
+        (let* ((mch-beg  (string-match split-pattern w-string-to-split))
+               (mch-rslt (if (= mch-beg 0) ;; Its an empty string just get the macth
+                             (list (match-string 0 w-string-to-split))
+                           (list (match-string 0 w-string-to-split)
+                                 (substring w-string-to-split 0 mch-beg))))
+               (mch-end  (and mch-beg (match-end 0)))
+               (limit-to (or (and limit-to (1- limit-to)))))
+          (when mch-end
+            (while (and (or (null limit-to) (and (>= (decf limit-to) 0)))
+                        mch-end 
+                        (string-match split-pattern w-string-to-split mch-end))
+              (setq mch-beg (match-beginning 0))
+              (if w-empty-string
+                  (push (substring w-string-to-split mch-end mch-beg) mch-rslt)
+                (unless (= mch-end mch-beg) 
+                  (push (substring w-string-to-split mch-end mch-beg) mch-rslt)))
+              (push (match-string 0 w-string-to-split) mch-rslt)
+              (setq mch-end (match-end 0))))
+          ;; At the end push any remaning unless its an empty string.
+          (when (and mch-end (not (= mch-end mch-max))) 
+            (push (substring w-string-to-split mch-end) mch-rslt))
+          (nreverse mch-rslt))))))
+;; 
+(unless (and (intern-soft "mon-split-string")
+             (fboundp 'mon-split-string))
+(defalias 'mon-split-string 'mon-string-split))
 
 ;;; ==============================
 ;;; :COURTESY calendar/calendar.el :WAS `calendar-string-spread'
@@ -4429,7 +4430,7 @@ If LENGTH is too short, the STRINGS are concatenated and the result truncated.\n
    \(* \(+ biggest-rand 2\) 3\)\)\)\n
 :SEE-ALSO `mon-string-fill-to-col', `truncate-string-to-width',
 `mon-line-strings-indent-to-col', `mon-line-indent-from-to-col',
-`mon-string-set-char-at-idx' `mon-string-insert-string-at-idx',
+`mon-string-split', `mon-string-set-char-at-idx' `mon-string-insert-string-at-idx',
 `mon-string-index', `mon-string-upto-index', `mon-string-after-index',
 `mon-string-position', `mon-string-has-suffix', `mon-string-chop-spaces',
 `mon-string-ify-list', `mon-string-replace-char', `mon-string-sub-old->new',
@@ -4531,9 +4532,12 @@ Default is to remove any trailing whiespace at end of lines.\n
                         \(concat \" \" 
                                 \(make-string \(elt \(mon-nshuffle-vector [7 5 3 9]\) 3\) i\) 
                       jnk\)\)\)\)\)\)\n
-:CALLED-BY `google-define-parse-buffer'\n
-:SEE-ALSO `mon-string-fill-to-col', `truncate-string-to-width', `mon-string-spread'
-`comment-padleft', `comment-padright'.\n►►►"
+:SEE-ALSO `mon-string-fill-to-col', `truncate-string-to-width',
+`mon-string-spread', `comment-padleft', `comment-padright', `mon-string-split',
+`mon-string-spread' `mon-string-set-char-at-idx'
+`mon-string-insert-string-at-idx', `mon-string-index', `mon-string-upto-index',
+`mon-string-after-index', `mon-string-has-suffix', `mon-string-sub-old->new',
+`mon-string-repeat'.\n►►►"
   (let* ((lft-margin (if (null lft-margin) (or left-margin 0) lft-margin)) 
          (msjl-width (if (null justify-width) (or fill-column 72) justify-width))
          (msjl-string (if (not (stringp justify-string)) 
@@ -4608,7 +4612,8 @@ Default is to remove any trailing whiespace at end of lines.\n
             (let ((fill-column to-col))
               (insert str)
               (fill-region (buffer-end 0) (buffer-end 1))
-              (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
+              ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)))))
+              (mon-buffer-sub-no-prop))))
     msftc-fstr))
 ;;
 ;;; :TEST-ME (mon-string-fill-to-col (mon-get-system-specs) 72)
@@ -4616,11 +4621,21 @@ Default is to remove any trailing whiespace at end of lines.\n
 ;;; ==============================
 ;;; :NOTE Alias these and don't forget to use them!
 ;;; :CREATED <Timestamp: Wednesday July 01, 2009 @ 06:32.08 PM - by MON KEY>
-(defalias 'mon-string-combine-and-quote 'combine-and-quote-strings) 
+(unless (and (intern-soft "mon-string-combine-and-quote")
+             (fboundp 'mon-string-combine-and-quote))
+(defalias 'mon-string-combine-and-quote 'combine-and-quote-strings))
 ;;
-(defalias 'mon-string-split-and-unquote 'split-string-and-unquote)
+(unless (and (intern-soft "mon-string-split-and-unquote")
+             (fboundp 'mon-string-split-and-unquote))
+(defalias 'mon-string-split-and-unquote 'split-string-and-unquote))
 ;;
-(defalias 'mon-replace-char-in-region 'subst-char-in-region)
+(unless (and (intern-soft "mon-replace-char-in-region")
+             (fboundp 'mon-replace-char-in-region))
+(defalias 'mon-replace-char-in-region 'subst-char-in-region))
+;;
+(unless (and (intern-soft "mon-string-prefix-p")
+             (fboundp 'mon-string-prefix-p))
+(defalias 'mon-string-prefix-p 'vc-string-prefix-p))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-02T12:47:38-05:00Z}#{10092} - by MON KEY>
@@ -4774,7 +4789,7 @@ list `nil'.\n
    \(make-symbol \"some-uninterned-symbol\"\)\)\)\n
 :SEE-ALSO `mon-string-to-symbol', `mon-string-to-sequence',
 `mon-string-from-sequence', `mon-alphabet-as-type',
-`mon-string-replace-char', `symbol-name'.\n►►►"
+`mon-string-split', `mon-string-replace-char', `symbol-name'.\n►►►"
   (or (and (intern-soft symbol-to-frob)
            (symbol-name symbol-to-frob))
       ;; Which is more correct? (format "%s" symbol) Or:
@@ -4804,9 +4819,9 @@ Signal an error if MORE-STRINGS does not satisfy predicate `string-or-null-p'.\n
 \(mon-string-to-sequence \"str1\" \"str2\" nil \"str3\"\)\n
 \(apply 'mon-string-to-sequence \"str1\" \"str2\" nil \"str3\" nil '\(\"more string\"\)\)\n
 :SEE-ALSO `mon-string-from-sequence', `mon-string-index', `mon-string-position',
-`mon-string-alpha-list', `mon-is-alphanum', `mon-is-digit', `mon-is-letter',
-`mon-alphabet-as-type', `mon-string-replace-char', `string-to-list',
-`string-to-vector'.\n►►►"
+`mon-string-split', `mon-string-alpha-list', `mon-is-alphanum', `mon-is-digit',
+`mon-is-letter', `mon-alphabet-as-type', `mon-string-replace-char',
+`string-to-list', `string-to-vector'.\n►►►"
   ;; :NOTE `string-to-list' does this: (append string nil)
   (if more-strings
       (let ((msts-w/more 
@@ -4833,6 +4848,7 @@ Signal an error if MORE-STRINGS does not satisfy predicate `string-or-null-p'.\n
 ;;; :TEST-ME (mon-string-to-sequence "str1" "str2" "str3" '("str4")) ;; <- error
 
 ;;; ==============================
+;;; :PREFIX "msfs-"
 ;;; :MODIFICATIONS <Timestamp: #{2009-10-09T16:07:57-04:00Z}#{09415} - by MON>
 ;;; :CREATED <Timestamp: #{2009-09-30T13:31:42-04:00Z}#{09403} - by MON KEY>
 (defun mon-string-from-sequence (stringify-seq &rest other-seqs)
@@ -4850,26 +4866,26 @@ any combination these will be concatenated to return value also.\n
 :ALIASED-BY `mon-sequence-to-string', `mon-seq->string'\n
 :SEE-ALSO `mon-string-index',`mon-string-position', `mon-string-alpha-list',
 `mon-is-alphanum',`mon-is-digit',`mon-is-letter', `mon-alphabet-as-type',
-`mon-string-replace-char'.\n►►►"
-  (let ((g-str (lambda (x) (apply 'string x)))
-        (chk-seqs (when (and other-seqs (sequencep other-seqs))
-                    (mapcar #'(lambda (x) 
-                                (cond ((vectorp x) (append x nil))
-                                      ((stringp x) (mon-string-to-sequence x))
-                                      ((listp  x) x)))
+`mon-string-replace-char', `mon-string-split'.\n►►►"
+  (let ((msfs-L-str (lambda (msfs-L-1) (apply #'string msfs-L-1)))
+        (msfs-chk-seqs (when (and other-seqs (sequencep other-seqs))
+                    (mapcar #'(lambda (msfs-L-2) 
+                                (cond ((vectorp msfs-L-2) (append msfs-L-2 nil))
+                                      ((stringp msfs-L-2) (mon-string-to-sequence msfs-L-2))
+                                      ((listp  msfs-L-2) msfs-L-2)))
                             other-seqs)))
-        (seq-seqs))
-    (while chk-seqs 
-      (push (funcall g-str (pop chk-seqs)) seq-seqs))
-    (setq seq-seqs (nreverse seq-seqs))
-    (push (funcall g-str 
+        msfs-seq-seqs)
+    (while msfs-chk-seqs 
+      (push (funcall msfs-L-str (pop msfs-chk-seqs)) msfs-seq-seqs))
+    (setq msfs-seq-seqs (nreverse msfs-seq-seqs))
+    (push (funcall msfs-L-str 
                    (if (nlistp stringify-seq)
                        (cond ((vectorp stringify-seq) 
                               (append stringify-seq nil))
                              ((stringp stringify-seq) 
                               (mon-string-to-sequence stringify-seq)))
-                     stringify-seq)) seq-seqs)
-    (apply 'concat (car seq-seqs) (cdr seq-seqs))))
+                     stringify-seq)) msfs-seq-seqs)
+    (apply #'concat (car msfs-seq-seqs) (cdr msfs-seq-seqs))))
 ;;
 (unless (fboundp (intern-soft "mon-sequence-to-string"))
   (defalias 'mon-sequence-to-string 'mon-string-from-sequence))
@@ -4877,14 +4893,32 @@ any combination these will be concatenated to return value also.\n
 (unless (fboundp (intern-soft "mon-seq->string"))
   (defalias 'mon-seq->string 'mon-string-from-sequence))
 ;;
-;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97))
-;;; :TEST-ME (mon-string-from-sequence (string-to-list "bubba"))
-;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97 115 97) (string-to-list "bubba"))
-;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97) [98 117 98 98 97 115 97])
-;;; :TEST-ME (mon-string-from-sequence '(98 117 98 98 97) 
-;;;          "string0" [98 117 98 98 97 115 97]  "string" [98 117 98 98 97 115 97])
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (string-equal
+;; |  (mon-string-from-sequence '(98 117 98 98 97)) 
+;; |  "bubba")
+;; | 
+;; | (string-equal 
+;; |  (mon-string-from-sequence (string-to-list "bubba")) 
+;; |  "bubba")
+;; | 
+;; | (string-equal 
+;; |  (mon-string-from-sequence '(98 117 98 98 97 115 97) (string-to-list "bubba")) 
+;; |  "bubbasabubba")
+;; | 
+;; | (string-equal 
+;; |  (mon-string-from-sequence '(98 117 98 98 97) [98 117 98 98 97 115 97]) 
+;; |  "bubbabubbasa")
+;; | 
+;; | (string-equal (mon-string-from-sequence '(98 117 98 98 97) 
+;; |                                         "string0" 
+;; |                                         [98 117 98 98 97 115 97] 
+;; |                                         "string" [98 117 98 98 97 115 97])
+;; |               "bubbastring0bubbasastringbubbasa")
+;; `----
 
 ;;; ==============================
+;;; :PREFIX "msal-"
 ;;; :CREATED <Timestamp: Thursday June 25, 2009 @ 11:17.43 AM - by MON KEY>
 (defun mon-string-alpha-list (from-letter to-letter &optional as-symb)
   "Return alphabetized list of ASCII character strings FROM-LETTER TO-LETTER.\n
@@ -4899,36 +4933,59 @@ check.\n\n:EXAMPLE\n
 :SEE-ALSO `mon-alphabet-as-type', `number-sequence', `mon-string-to-sequence', 
 `mon-string-from-sequence',  `mon-is-alphanum', `mon-is-digit',
 `mon-is-letter'.\n►►►"
-  (let ((frm (string-to-char from-letter))
-        (to (string-to-char to-letter))
-        (swap)
-        (rtn))
-    (cond ((and (and (>= frm 65) (<= frm 90))
-                (and (>= to 97) (<= to 127)))
-           (setq to (- to 32)))
-          ((and (and (>= to 65) (<= to 90))
-                (and (>= frm 97) (<= frm 127)))
-           (setq frm (- frm 32))))
-    (when (< to frm)
-      (setq swap frm)
-      (setq frm to)
-      (setq to swap))
-    (split-string (mon-string-from-sequence (number-sequence frm to)) "" t)))
+  (let ((msal-frm (string-to-char from-letter))
+        (msal-to (string-to-char to-letter))
+        msal-swp
+        msal-rtn ;; doesn't appear to be used.
+        )
+    (cond ((and (and (>= msal-frm 65) (<= msal-frm 90))
+                (and (>= msal-to 97) (<= msal-to 127)))
+           (setq msal-to (- msal-to 32)))
+          ((and (and (>= msal-to 65) (<= msal-to 90))
+                (and (>= msal-frm 97) (<= msal-frm 127)))
+           (setq msal-frm (- msal-frm 32))))
+    (when (< msal-to msal-frm)
+      (setq msal-swp msal-frm)
+      (setq msal-frm msal-to)
+      (setq msal-to msal-swp))
+    (split-string (mon-string-from-sequence (number-sequence msal-frm msal-to)) "" t)))
 ;;
-;;; :TEST-ME (mon-string-alpha-list "a" "z")
-;;; :TEST-ME (mon-string-alpha-list "A" "Z")
-;;; :TEST-ME (mon-string-alpha-list "Z" "A")
-;;; :TEST-ME (mon-string-alpha-list "z" "a")
-;;; :TEST-ME (mon-string-alpha-list "Z" "a")
-;;; :TEST-ME (mon-string-alpha-list "a" "Z")
-;;; :TEST-ME (mon-string-alpha-list "z" "Z")
-;;; :TEST-ME (mon-string-alpha-list "A" "a")
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (equal 
+;; |  (mon-string-alpha-list "a" "z")
+;; |  '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" 
+;; |    "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "A" "Z")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" 
+;; |    "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "Z" "A")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" 
+;; |    "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "z" "a")
+;; |  '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" 
+;; |    "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "Z" "a")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" 
+;; |    "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "a" "Z")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" 
+;; |    "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal (mon-string-alpha-list "z" "Z") '("Z"))
+;; | (equal (mon-string-alpha-list "A" "a") '("A"))
+;; `----
+
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-index'
 (defun mon-string-index (string-to-idx needle &optional frompos)
-  "Return the position in STRING of the beginning of first occurence of NEEDLE.\n
-Return nil if needle is not found. NEEDLE is a char, number, or string.
+  "Return position in STRING-TO-IDX beginning with first occurence of NEEDLE.\n
+Return nil if needle is not found.\n
+NEEDLE is a char, number, or string.\n
 When FROMPOS is non-nil begin search for needle from position. 
 Default is to search from start of string.\n
 :EXAMPLE\n\(mon-string-index \"string before ### string after\" \"###\"\)\n
@@ -4937,13 +4994,25 @@ Default is to search from start of string.\n
 `mon-string-chop-spaces', `mon-string-replace-char'.\n►►►"
   (string-match 
    (regexp-quote 
-    (cond ((or (characterp needle) (numberp needle)) (format "%c" needle))
+    (cond ((or (characterp needle) (integerp needle)) (format "%c" needle))
           ((stringp needle) needle)
-          (t (error (concat ":FUNCTION `mon-string-index' "
-                            "-- arg NEEDLE expecting number or string")))))
+          (t ;; e.g. (integerp (set-marker (make-marker) (point)))
+           (error (concat ":FUNCTION `mon-string-index' "
+                          "-- arg NEEDLE expecting number or string, got: %S")
+                  needle))))
    string-to-idx frompos))
 ;; 
-;;; :TEST-ME (mon-string-index "string before ### string after" "###")
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (= (mon-string-index "string before ### string after" "###") 14)
+;; |     
+;; | (string-equal 
+;; |  (substring "string before ### string after" 0 
+;; |             (mon-string-index "string before ### string after" "###"))
+;; |  "string before ")
+;; `----
+
+;; (mon-string-index "string before ### string after" 18)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-01T15:16:26-04:00Z}#{09404} - by MON KEY>
@@ -5003,7 +5072,7 @@ If the SUBSTR is not found, then return nil.\n
 `mon-string-replace-char'.\n►►►"
   (string-match (regexp-quote substr) string frompos))
 ;;
-;;; :TEST-ME (mon-string-position "dogmeat" "meat")
+;;; :TEST-ME (= (mon-string-position "dogmeat" "meat") 3)
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `string-has-suffix'
@@ -5016,14 +5085,18 @@ If the SUBSTR is not found, then return nil.\n
 `mon-string-replace-char'.\n►►►"
   (cond ((or (not (stringp string)) (not (stringp suffix)))
          (error (concat ":FUNCTION `mon-string-has-suffix' "
-                        "-- args STRING and SUFFIX must be strings")))
+                        "-- args STRING or SUFFIX do not satisfy stringp,"
+                        " arg STRING got: %S arg SUFFIX got: %S")
+                string suffix))
         ((< (length string) (length suffix)) nil)
         (t (string-equal 
             (substring string (- (length string) (length suffix)))
             suffix))))
 ;;
-;;; :TEST-ME (mon-string-has-suffix "dogmeat" "meat")
-;;; :TEST-ME (mon-string-has-suffix "butt" "chicken-butt")
+;;; :TEST-ME (and (mon-string-has-suffix "dogmeat" "meat") t)
+;;; :TEST-ME (and (not (mon-string-has-suffix "butt" "chicken-butt")) t)
+;;; :TEST-ME (not (ignore-errors (mon-string-has-suffix 88 "chicken-butt")))
+;;; :TEST-ME (not (ignore-errors (mon-string-has-suffix "butt" 88)))
 
 ;;; ==============================
 ;;; :PREFIX "mscs-"
@@ -5049,6 +5122,7 @@ If the SUBSTR is not found, then return nil.\n
 ;;; :TEST-ME (mon-string-chop-spaces " some string no spaces ")
 
 ;;; ==============================
+;;; :PREFIX "msil-"
 ;;; :RENAMED `mon-stringify-list' -> `mon-string-ify-list'
 (defun mon-string-ify-list (string-given)
   "Return a list of strings by breaking STRING-GIVEN at space boundaries.\n
@@ -5057,21 +5131,27 @@ If the SUBSTR is not found, then return nil.\n
 `mon-string-ify-current-line', `mon-line-get-next', 
 `mon-word-get-list-in-buffer', `mon-alphabet-as-type',
 `mon-string-replace-char'.\n►►►"
-  (let ((string string-given) list)
-    (store-match-data nil)
-    (while (string-match " *\\([^ ]+\\) *" string (match-end 0))
-      (setq list
-	    (cons (substring string (match-beginning 1) (match-end 1)) list)))
-     (nreverse list)))
+  (let ((msil-str string-given)
+        msil-lst)
+    (set-match-data nil)
+    (while (string-match " *\\([^ ]+\\) *" msil-str (match-end 0))
+      (setq msil-lst
+	    (cons (substring msil-str (match-beginning 1) (match-end 1)) msil-lst)))
+    (nreverse msil-lst)))
 ;;
-;;; :TEST-ME (mon-stringify-list \"Make this sentence a list of strings\")
+;;; :TEST-ME (equal  
+;;;           (mon-string-ify-list "Make this sentence a list of strings")
+;;;            '("Make" "this" "sentence" "a" "list" "of" "strings"))
+
 
 ;;; ==============================
+;;; :PREFIX "mssor-"
 ;;; :COURTESY Nelson H. F. Beebe :HIS bibtools.el :WAS `bibtex-split'
 (defun mon-string-split-on-regexp (str regexp)
  "Return list of strings splitting STR at REGEXP.\n
-This function is patterned after the awk split() function.\n
-:SEE-ALSO `mon-string-chop-spaces', `mon-string-sub-old->new',
+This function is patterned after the awk split\(\) function.\n
+:EXAMPLE\n\n\(mon-string-split-on-regexp \"split-on-split\" \"-split\"\)\n
+:SEE-ALSO `mon-string-split', `mon-string-chop-spaces', `mon-string-sub-old->new',
 `mon-string-position', `mon-string-index', `mon-string-replace-char'.\n►►►"
  (if (or (null str) (null regexp)) ;then return nil if either s or regexp is nil
      nil
@@ -5113,20 +5193,44 @@ Signal and error if either TARGET-STRING or FROM-CHAR evaluate non-nil for
 ;;; :COURTESY Nelson H. F. Beebe :HIS bibtools.el :WAS `melvyl-sub'
 ;;; :CREATED <Timestamp: 2009-08-03-W32-1T10:26:52-0400Z - by MON KEY>
 (defun mon-string-sub-old->new (old-str new-str cpy-str)
- "Return copy of CPY-STR with first occurrence of OLD-STR substituted by NEW-STR.\n
+  "Return copy of CPY-STR with first occurrence of OLD-STR substituted by NEW-STR.\n
+Signal an error when an arg does not satisfy `stringp'.\n
+:EXAMPLE\n\n\(mon-string-sub-old->new \"old\" \"new\" \"old old new\"\)\n
 :SEE-ALSO `mon-string-split-on-regexp', `mon-string-chop-spaces',
 `mon-string-position', `mon-string-index', `mon-string-replace-char'.\n►►►"
- (let ((msson-itr 0))
-   (while (and (< msson-itr (1+ (- (length cpy-str) (length old-str))))
-               (not (string-equal old-str (substring cpy-str msson-itr (+ msson-itr (length old-str))))))
-     (setq msson-itr (1+ msson-itr)))
-   (if (and (< msson-itr (1+ (- (length cpy-str) (length old-str))))
-            (string-equal old-str (substring cpy-str msson-itr (+ msson-itr (length old-str)))))
-       (concat (substring cpy-str 0 msson-itr) new-str
-               (substring cpy-str (+ msson-itr (length old-str)) (length cpy-str)))
-     cpy-str)))
+  (let ((msson-itr 0))
+    (and (or (stringp old-str)
+             (error 
+              (mon-error-string-err-format  "mon-string-sub-old->new" "old-str" old-str)))
+         (or (stringp new-str)
+             (error 
+              (mon-error-string-err-format  "mon-string-sub-old->new" "new-str" new-str)))
+         (or (stringp cpy-str)
+             (error 
+              (mon-error-string-err-format  "mon-string-sub-old->new" "cpy-str" cpy-str))
+             ))
+    (while (and 
+            (< msson-itr (1+ (- (length cpy-str) (length old-str))))
+            (not 
+             (string-equal 
+              old-str 
+              (substring cpy-str msson-itr (+ msson-itr (length old-str))))))
+      (setq msson-itr (1+ msson-itr)))
+    (if (and 
+         (< msson-itr (1+ (- (length cpy-str) (length old-str))))
+         (string-equal old-str (substring cpy-str msson-itr (+ msson-itr (length old-str)))))
+        (concat (substring cpy-str 0 msson-itr) new-str
+                (substring cpy-str (+ msson-itr (length old-str)) (length cpy-str)))
+      cpy-str)))
 ;;
-;;; :TEST-ME (mon-string-sub-old->new"old" "new" "old old new")
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (string-equal (mon-string-sub-old->new"old" "new" "old old new") "new old new")
+;; | (not (ignore-errors (mon-string-sub-old->new "old" 'make-new-signal "old old new")))
+;; | (not (ignore-errors (mon-string-sub-old->new 'make-old-signal "new" "old old new")))
+;; | (not (ignore-errors (mon-string-sub-old->new "old" "new" 'make-copy-signal)))
+;; `----
+
+
 
 ;;; ==============================
 ;;; :PREFIX "msr-"
@@ -5190,7 +5294,10 @@ Does not move-point.\n
   (save-excursion    
     (with-current-buffer (if w-buffer (get-buffer w-buffer) (current-buffer))
       (setq mssl-splt-str
-            (buffer-substring-no-properties 
+            ;; :WAS (buffer-substring-no-properties 
+            ;;  (progn (end-of-line 1) (setq mssl-splt-str-e (point)))
+            ;;  (progn (beginning-of-line 1) (setq mssl-splt-str-s (point)))) )))
+            (mon-buffer-sub-no-prop 
              (progn (end-of-line 1) (setq mssl-splt-str-e (point)))
              (progn (beginning-of-line 1) (setq mssl-splt-str-s (point)))))))
   (if (or insrtp intrp)
@@ -5233,8 +5340,8 @@ at point.\n
           (skip-chars-forward "^,")
           (skip-chars-backward " \t\n\f\r")
           (setq mssc-gthr
-                (cons (buffer-substring-no-properties mssc-beg (point))
-                      mssc-gthr))
+                (cons ;; :WAS (buffer-substring-no-properties mssc-beg (point))
+                 (mon-buffer-sub-no-prop mssc-beg (point)) mssc-gthr))
           (skip-chars-forward "^,")
           (skip-chars-forward ", \t\n\f\r"))
         (widen)))
@@ -5326,14 +5433,16 @@ Pier Gerlofs Donia\nBöŏvarr Bjarki\n◄\n
         (mls-ln-str))
     (set-marker mls-str-beg start)
     (set-marker mls-str-end end)
-    (setq mls-ln-str (buffer-substring-no-properties mls-str-beg mls-str-end))
+    (setq mls-ln-str ;; :WAS (buffer-substring-no-properties mls-str-beg mls-str-end))
+          (mon-buffer-sub-no-prop mls-str-beg mls-str-end))
     (setq mls-ln-str
           (with-temp-buffer 
             (insert mls-ln-str)
             (mon-g2be -1) ;; (goto-char (buffer-end 0))
             (while (search-forward-regexp "^\\(.*\\)$" nil t)
               (replace-match "\"\\1\""))
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
       (if (or insrtp intrp)
           (progn
             (delete-region mls-str-beg mls-str-end)
@@ -5378,14 +5487,16 @@ More stringification here\n◄\n
         mlsr-lns-qtd)
     (set-marker mlsr-ln-rgn-beg start)
     (set-marker mlsr-ln-rgn-end end)
-    (setq mlsr-lns-qtd (buffer-substring-no-properties mlsr-ln-rgn-beg mlsr-ln-rgn-end))
+    (setq mlsr-lns-qtd ;; :WAS (buffer-substring-no-properties mlsr-ln-rgn-beg mlsr-ln-rgn-end))
+          (mon-buffer-sub-no-prop mlsr-ln-rgn-beg mlsr-ln-rgn-end))
     (setq mlsr-lns-qtd 
           (with-temp-buffer 
             (insert mlsr-lns-qtd)
             (mon-g2be -1) ;; (goto-char (buffer-end 0))
             (while (search-forward-regexp "^\\(.*\\)$" nil t)
               (replace-match "\"\\1\\\\n\"" t)) ;; Do not alter case.
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
     (if (or insrtp intrp)
         (save-excursion 
           (delete-region mlsr-ln-rgn-beg mlsr-ln-rgn-end)
@@ -5429,7 +5540,8 @@ I-am-not-a-string'\n◄\n
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (mlsqr-rtn)
-    (setq mlsqr-rtn (buffer-substring-no-properties start end))
+    (setq mlsqr-rtn ;; :WAS (buffer-substring-no-properties start end))
+          (mon-buffer-sub-no-prop start end))
     (setq mlsqr-rtn
           (with-temp-buffer 
             (insert mlsqr-rtn)
@@ -5445,7 +5557,8 @@ I-am-not-a-string'\n◄\n
                          (looking-at ;; use `looking-at-p' here instead?
                           "^\\([^;`'()\\[:blank:]]\\)\\([\\[:graph:]]+\\([^\"']\\)\\)$"))
                 (replace-match (concat "\"" (match-string-no-properties 0) "\""))))
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAs (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
     (if (or insrtp intrp)
         (save-excursion (delete-region start end) (insert mlsqr-rtn))
         mlsqr-rtn)))
@@ -5489,7 +5602,8 @@ call-next-method' &rest replacement-args\n◄\n
 `mon-string-split-line', `mon-line-drop-in-words'.\n►►►"
   (interactive "r\ni\np")
   (let (mlsbqsb-rtn)
-    (setq mlsbqsb-rtn (buffer-substring-no-properties start end))
+    (setq mlsbqsb-rtn ;; :WAS (buffer-substring-no-properties start end))
+          (mon-buffer-sub-no-prop start end))
     (setq mlsbqsb-rtn
           (with-temp-buffer 
             (insert mlsbqsb-rtn)
@@ -5521,46 +5635,12 @@ call-next-method' &rest replacement-args\n◄\n
                  "^\\([^;,.()<>`'#►\|\\[:blank:]]\\)\\([\\[:graph:]]+[^']\\)\\([^^ ']\\)\\([ ]\\{1,2\\}\\)\\(.*\\)$" nil t)
               ;; ^^^^1^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^2^^^^^^^^^^^^^^^^^^^^^^^3^^^^^^^^^^4^^^^^^^^^^^^^^^^^5^^^^^
               (replace-match "`\\1\\2\\3' \\5"))
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
     (if (or insrtp intrp)
         (save-excursion (delete-region start end) (insert mlsbqsb-rtn))
         mlsbqsb-rtn)))
 
-;;; ==============================
-;;; :CHANGESET 1789
-;;; :CREATED <Timestamp: #{2010-05-29T20:29:13-04:00Z}#{10216} - by MON KEY>
-(defun mon-line-strings-bq-qt-sym-bol-TEST ()
-  "Test function for `mon-line-strings-bq-qt-sym-bol'.\n
-Return restults to buffer named \"*mon-line-strings-bq-qt-sym-bol-TEST*\".\n
-:SEE-ALSO .\n►►►"
-  (with-current-buffer 
-      (get-buffer-create "*MON-LINE-STRINGS-BQ-QT-SYM-BOL-TEST*")
-    (let ((mlsbqsb-str  (mapconcat #'identity
-                                   '("►" "call-next-method"  
-                                     "call-next-method &rest replacement-args"
-                                     "call-next-method  &rest replacement-args"
-                                     "`call-next-method  &rest replacement-args"
-                                     "call-next-method' &rest replacement-args"
-                                     " call-next-method'  &rest replacement-args"
-                                     "`call-next-method" "call-next-method'" 
-                                     " call-next-method" " call-next-method'"
-                                     " call-next-method" "◄") "\n"))
-          mlsbqsb-mrk)
-      (save-excursion (insert mlsbqsb-str))
-      (save-excursion 
-        (mon-line-strings-bq-qt-sym-bol 
-         (1+ (search-forward-regexp "►"))(search-forward-regexp "◄")  t))
-      (save-excursion 
-        (insert ":TESTING `mon-line-strings-bq-qt-sym-bol'.\n"
-                "Original lines commented below.\n"
-                "With uncommented lines only first three should have succeeded.\n"
-                mlsbqsb-str)
-        (setq mlsbqsb-mrk (point)))
-      (emacs-lisp-mode)
-      (comment-region (point) mlsbqsb-mrk))
-    (display-buffer (current-buffer) t)))
-;; 
-;;; :TEST-ME `mon-line-strings-bq-qt-sym-bol-TEST'
 
 ;;; ==============================
 ;;; :PREFIX "mlspb-"
@@ -5583,14 +5663,16 @@ move point to region-beginning.\n
         mlspb-rplc)
     (set-marker mlspb-rgn-beg start)
     (set-marker mlspb-rgn-end end)
-    (setq mlspb-rplc (buffer-substring-no-properties mlspb-rgn-beg mlspb-rgn-end))
+    (setq mlspb-rplc ;; :WAS (buffer-substring-no-properties mlspb-rgn-beg mlspb-rgn-end))
+          (mon-buffer-sub-no-prop mlspb-rgn-end))
     (setq mlspb-rplc
           (with-temp-buffer 
             (insert mlspb-rplc)
             (mon-g2be -1) ;; (goto-char (buffer-end 0))
             (while (search-forward-regexp "^\\(.*\\)$" nil t)
               (replace-match "| \\1"))
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
       (if (or insrtp intrp)
           (save-excursion
             (delete-region mlspb-rgn-beg mlspb-rgn-end)
@@ -5644,7 +5726,8 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n◄\n
         mlsitc-rplc)
     (set-marker mlsitc-rgn-beg start)
     (set-marker mlsitc-rgn-end end)
-    (setq mlsitc-rplc (buffer-substring-no-properties mlsitc-rgn-beg mlsitc-rgn-end))
+    (setq mlsitc-rplc ;; :WAS (buffer-substring-no-properties mlsitc-rgn-beg mlsitc-rgn-end))
+          (mon-buffer-sub-no-prop  mlsitc-rgn-end))
     (setq mlsitc-rplc
           (with-temp-buffer 
             (insert mlsitc-rplc)
@@ -5654,7 +5737,8 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n◄\n
               (line-move 1 t)
               (when (mon-line-eol-is-eob)
                 (indent-line-to mlsitc-col-n)))
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
     (if (or insrtp intrp)
         (save-excursion
           (delete-region mlsitc-rgn-beg mlsitc-rgn-end)
@@ -5792,130 +5876,6 @@ end of each line of the current-buffer in turn.\n
          nil))))
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-05-26T15:07:47-04:00Z}#{10213} - by MON KEY>
-(defun mon-line-dolines-setup-TEST ()
-  "Helper for `mon-line-dolines' macro's test function `mon-line-dolines-TEST'.\n
-:SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
-:SEE-ALSO .\n►►►"
-  (mon-line-dolines 
-      (start end)
-      (goto-char start)
-    (when (search-forward-regexp "^\\( *?[0-9]*\\)\\( *?[0-9]*\\)\\( *[0-9]*\\)$" end  t)
-      (let ((day   (match-string 1))
-            (month (match-string 2))
-            (year  (match-string 3)))
-        (with-current-buffer (get-buffer-create "*GOT-DAYS*")
-          (insert day "\n"))
-        (with-current-buffer (get-buffer-create "*GOT-MONTHS*")
-          (insert month "\n"))       
-        (with-current-buffer (get-buffer-create "*GOT-YEARS*")
-          (insert year "\n")))))
-  (let ((if-buff '("*GOT-YEARS*" "*GOT-MONTHS*" "*GOT-DAYS*"))
-        this-window-buff)
-    (setq this-window-buff 
-          (cons (buffer-name (current-buffer))
-                (or (get-buffer-window)
-                    (car (get-buffer-window-list (current-buffer))))))
-    (unless (and (car this-window-buff) (cdr this-window-buff) this-window-buff)
-      (progn 
-        (with-current-buffer
-            (get-buffer-create "*MON-LINE-DOLINES-TEST*")
-          (pop-to-buffer (current-buffer) t)
-          (setq this-window-buff 
-                (cons (buffer-name (current-buffer))
-                      (get-buffer-window (current-buffer)))))))
-    (unwind-protect
-        (progn
-          (when (one-window-p) (split-window-vertically))
-          (dolist (ifb if-buff 
-                       (dolist (is-b if-buff)
-                         (select-window (next-window))
-                         (set-window-buffer (selected-window) is-b)
-                         (unless (null if-buff) (pop if-buff)
-                                 (unless (null if-buff)
-                                   (split-window-horizontally)))))
-            (unless (mon-buffer-exists-p ifb) (remove ifb if-buff))))
-      (progn
-        (set-window-buffer 
-         (or (get-buffer-window (car this-window-buff)) (cdr this-window-buff))
-         (car this-window-buff))
-        (pop-to-buffer (car this-window-buff))
-        (when (equal (buffer-name (current-buffer))
-                     "*MON-LINE-DOLINES-TEST*")
-          (save-excursion (mon-line-dolines-TEST)))))))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-05-26T15:28:44-04:00Z}#{10213} - by MON>
-(defun mon-line-dolines-TEST ()
-  "Test function for `mon-line-dolines' macro.\n
-Return the output of that macro as per its original intended use.\n
-Values returned in 3 (or 4) seperate buffers named:\n
- \"*GOT-YEARS*\" \"*GOT-MONTHS*\" \"*GOT-DAYS*\"\n
-When current-buffer does not have a display or is read-only return additional
-details in buffer named \"*MON-LINE-DOLINES-TEST*\".\n
-:SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
-:SEE-ALSO `mon-line-dolines-setup-TEST'.\n►►►"
-  (let ((mldt (mapconcat 'identity
-                         '(":DATE        :MONTH           :YEAR"
-                           ""
-                           "12              5           1955"
-                           "30              6           1931"
-                           "                3           1918"
-                           "28                          1877"
-                           "39              2           1888") "\n"))
-        (exit-c 78)
-        got-N)
-    (save-window-excursion
-      (if (and (not (equal (buffer-name) " *temp*"))
-               (not (equal (buffer-name) "*MON-LINE-DOLINES-TEST*"))
-               (or (not (get-buffer-window (current-buffer)))
-                   buffer-read-only))
-          (with-temp-buffer 
-            (save-excursion (insert  mldt))
-            (mon-line-dolines-setup-TEST))
-        (cond  ((equal (buffer-name) "*MON-LINE-DOLINES-TEST*")
-                (save-excursion
-                  (insert ";;; With this data:\n\n"
-                          mldt "\n\n"
-                          "\n;;;Evaluated `mon-line-dolines' with `mon-line-dolines-setup-TEST' as below:\n\n"
-                          (pp (symbol-function 'mon-line-dolines-setup-TEST))))
-                (emacs-lisp-mode)
-                (while (not got-N)
-                  (when (eq (read-event 
-                             (format (concat "Type `%c' to continue and kill *TEST* buffers,"
-                                             "or %s to exit without killing test buffers.")
-                                     exit-c (key-description [7])))
-                            exit-c)
-                    (let (bld-ksb)
-                      (dolist (ksb 
-                               '("*MON-LINE-DOLINES-TEST*" "*GOT-YEARS*" "*GOT-MONTHS*" "*GOT-DAYS*")
-                               (kill-some-buffers bld-ksb))
-                        (when (get-buffer ksb)
-                          (push (get-buffer ksb) bld-ksb))))
-                    (setq got-N t))))
-               (t (insert  "\n;;;Evaluated `mon-line-dolines' with `mon-line-dolines-setup-TEST'.\n\n"
-                           "\n;; With this data:\n\n")
-                  (push-mark nil nil t)
-                  (insert mldt "\n\n")
-                  (mon-line-dolines-setup-TEST)
-                  (unless (equal (buffer-name) "*MON-LINE-DOLINES-TEST*")
-                    (while (not got-N)
-                      (when (eq (read-event 
-                                 (format (concat "Type `%c' to continue and kill *TEST* buffers,"
-                                                 "or %s to exit without killing test buffers.")
-                                         exit-c (key-description [7])))
-                                exit-c)
-                        (let (bld-ksb)
-                          (dolist (ksb 
-                                   '("*MON-LINE-DOLINES-TEST*" "*GOT-YEARS*" "*GOT-MONTHS*" "*GOT-DAYS*")
-                                   (kill-some-buffers bld-ksb))
-                            (when (get-buffer ksb)
-                              (push (get-buffer ksb) bld-ksb))))
-                        (setq got-N t))))))))))
-;;
-;;; TEST-ME (mon-line-dolines-TEST)
-
-;;; ==============================
 ;;; :PREFIX "mlsptc-"
 ;;; :NOTE (length "=> TO-COLM-NUM-19-!")
 ;;; :CREATED <Timestamp: #{2009-12-09T15:07:13-05:00Z}#{09503} - by MON>
@@ -5937,25 +5897,27 @@ Erik Gordon Corley\n◄\n
 `mon-line-strings', `mon-line-indent-from-to-col',
 `mon-comment-divider->col', `mon-comment-lisp-to-col'.\n►►►"
   (interactive "i\n\i\nP\ni\np")
-  (let  ((mlsptc-rng-beg (make-marker))
+  (let  ((mlsptc-rgn-beg (make-marker))
          (mlsptc-rgn-end (make-marker))
          mlsptc-tmp-pipe)
-    (set-marker mlsptc-rng-beg (cond (intrp (region-beginning))
+    (set-marker mlsptc-rgn-beg (cond (intrp (region-beginning))
                                      (start start)))
     (set-marker mlsptc-rgn-end (cond (intrp (region-end))
                                      (end end)))
-    (setq mlsptc-tmp-pipe (buffer-substring-no-properties mlsptc-rng-beg mlsptc-rgn-end))
+    (setq mlsptc-tmp-pipe ;; :WAS (buffer-substring-no-properties mlsptc-rgn-beg mlsptc-rgn-end))
+          (mon-buffer-sub-no-prop mlsptc-rgn-end))
     (setq mlsptc-tmp-pipe 
           (with-temp-buffer 
             (insert mlsptc-tmp-pipe)
             (mon-line-strings-pipe-bol (buffer-end 0) (buffer-end 1) t)
             (mon-line-strings-indent-to-col (buffer-end 0) (buffer-end 1) 
                                             (if to-col to-col 7) t)
-            (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
     (if (or insrtp intrp)
         (save-excursion 
-          (delete-region mlsptc-rng-beg mlsptc-rgn-end)
-          (goto-char mlsptc-rng-beg)
+          (delete-region mlsptc-rgn-beg mlsptc-rgn-end)
+          (goto-char mlsptc-rgn-beg)
           (insert mlsptc-tmp-pipe))
       mlsptc-tmp-pipe)))
 ;;
@@ -6002,7 +5964,8 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
   (let ((mlstl-rgn-beg start)
         (mlstl-rgn-end end)
         mlstl-rgn-lst)
-    (setq mlstl-rgn-lst (buffer-substring-no-properties start end))
+    (setq mlstl-rgn-lst ;; :WAS (buffer-substring-no-properties start end))
+          (mon-buffer-sub-no-prop start end))
     (save-excursion
       (setq mlstl-rgn-lst (with-temp-buffer
                             (insert mlstl-rgn-lst) 
@@ -6021,45 +5984,13 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
                                   (insert "(;; defvar defconst let let* setq\n'("))
                               (indent-pp-sexp 1)
                               (insert "("))
-                            (buffer-substring-no-properties (point-min) (point-max)))))
+                            ;; :WAS (buffer-substring-no-properties (point-min) (point-max)) )))
+                            (mon-buffer-sub-no-prop))))
     (if (or insrtp intrp)
         (save-excursion 
           (delete-region mlstl-rgn-beg mlstl-rgn-end)
           (insert mlstl-rgn-lst))
       mlstl-rgn-lst)))
-
-;;; ==============================
-;;; :RENAMED `mon-line-strings-to-list-*test*' -> `mon-line-strings-to-list-TEST'
-;;; :CREATED <Timestamp: #{2009-09-13T09:28:46-04:00Z}#{09377} - by MON>
-(defun mon-line-strings-to-list-TEST (&optional with-cdr with-wrap insrtp)
-  "Test function for `mon-line-strings-to-list'.\n
-:SEE-ALSO `mon-build-copyright-string-TEST', `mon-help-regexp-symbol-defs-TEST', 
-`mon-help-propertize-regexp-symbol-defs-TEST', 
-`mon-help-regexp-symbol-defs-TEST', `mon-help-CL-wget-pkgs-TEST', 
-`mon-help-propertize-tags-TEST', `mon-insert-test-cases'.\n►►►"
-  (let ((st01 (make-marker))
-        (en01 (make-marker))
-        (t-str (concat "hendr erit\norci\nultrices\naugue\nAliquam\n"
-                       "odio\nNam\ne ros\nurna\naliquam\nvitae\nlacinia")))
-    (cond ((not insrtp)
-           (with-temp-buffer
-             (insert t-str)
-             (mon-line-strings-to-list (point-min) (point-max) with-cdr with-wrap)))
-          (insrtp 
-           (set-marker st01 (point))
-           (insert t-str)
-           (set-marker en01 (point))
-           (goto-char st01)
-           (mon-line-strings-to-list st01 en01 with-cdr with-wrap t)))))
-;;
-;;; :TEST-ME (mon-line-strings-to-list-TEST)
-;;; :TEST-ME (mon-line-strings-to-list-TEST t nil)
-;;; :TEST-ME (mon-line-strings-to-list-TEST t t)
-;;; :TEST-ME (mon-line-strings-to-list-TEST t nil t)
-;;; :TEST-ME (mon-line-strings-to-list-TEST t t t)
-;;
-;;;(progn (newline) (mon-line-strings-to-list-TEST t t))
-;;;(progn (newline) (mon-line-strings-to-list-TEST nil t))
 
 ;;; ==============================
 ;;; :PREFIX "mlsol-"
@@ -6071,7 +6002,8 @@ When called-interactively and REPLACE-REGION-W-LST is non-nil do so.\n
 `mon-line-strings-region-delimited', `mon-string-ify-list'.\n►►►"
   (interactive "r\n\i\np")
   (let (mlsol-lst)
-    (setq mlsol-lst (buffer-substring-no-properties start end))
+    (setq mlsol-lst ;; :WAS (buffer-substring-no-properties start end))
+          (mon-buffer-sub-no-prop start end))
     (with-temp-buffer      
       (insert mlsol-lst)
       (setq mlsol-lst (mon-line-strings (buffer-end 0) (buffer-end 1))))
@@ -6210,7 +6142,8 @@ Lovett (Robert Abercrombie)\n◄\n
   (let ((mlsun-rgn-beg start)
         (mlsun-rgn-end end)
         mlsun-go-tmp)
-    (setq mlsun-go-tmp (buffer-substring-no-properties mlsun-rgn-beg mlsun-rgn-end))
+    (setq mlsun-go-tmp ;; :WAS (buffer-substring-no-properties mlsun-rgn-beg mlsun-rgn-end))
+          (mon-buffer-sub-no-prop mlsun-rgn-beg mlsun-rgn-end))
     (save-excursion
       (setq mlsun-go-tmp
             (with-temp-buffer
@@ -6223,7 +6156,8 @@ Lovett (Robert Abercrombie)\n◄\n
                 (replace-match  "\\3 \\1"))
               (if as-strings
                   (mon-line-strings-to-list (buffer-end 0) (buffer-end 1))
-                (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))))
+                ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))))
+                (mon-buffer-sub-no-prop)))))
     (if (or insrtp intrp)
         (progn
           (save-excursion 
@@ -6380,7 +6314,8 @@ When `eopb' return nil with point unchanged.\n
               nil)
 	  (setq mwgn-start (point))
 	  (goto-char mwgn-end)
-	  (buffer-substring-no-properties mwgn-start mwgn-end))))))
+	  ;; :WAS (buffer-substring-no-properties mwgn-start mwgn-end) )))))
+          (mon-buffer-sub-no-prop mwgn-start mwgn-end))))))
 
 
 ;;; ==============================
@@ -6479,7 +6414,8 @@ Finally, return nil forever.\n
           (let ((mwio-pnt (point)))
             (if (not (eq mwio-psn mwio-pnt))
                 (progn 
-                  (setq mwio-rslt (buffer-substring-no-properties mwio-psn mwio-pnt))
+                  (setq mwio-rslt ;; :WAS (buffer-substring-no-properties mwio-psn mwio-pnt))
+                        (mon-buffer-sub-no-prop  mwio-psn mwio-pnt))
                   (setq mwio-psn mwio-pnt))))
           (switch-to-buffer mwio-cur-bfr) mwio-rslt)))))
 
@@ -7080,7 +7016,7 @@ Does not move point.\n
   (let ((sha1-r (sha1-region start end)))
     ;; (sha1-string (buffer-substring-no-properties start end))))
     (if (or insrtp intrp)
-        (save-excursion (newline)(princ sha1-r (current-buffer)))
+        (save-excursion (newline) (princ sha1-r (current-buffer)))
         sha1-r)))
 
 
@@ -7310,8 +7246,8 @@ in order to get the cursor there?\n
         (setq fat-belly t)
         (kill-rectangle belly-start belly-end))
       (unless fat-belly
-        (setq fat-belly 
-              (buffer-substring-no-properties belly-start belly-end))
+        (setq fat-belly ;; :WAS (buffer-substring-no-properties belly-start belly-end))
+              (mon-buffer-sub-no-prop belly-start belly-end))
         (goto-char belly-start)
         (kill-line)
         (while (eq (forward-line) 0) (kill-line))
@@ -7460,28 +7396,55 @@ the function is called.\n
 ;;; ==============================
 
 ;;; ==============================
+;;; :CHANGESET 2180
+;;; :CREATED <Timestamp: #{2010-10-10T09:17:24-04:00Z}#{10407} - by MON KEY>
+(defun mon-get-syntax-at (&optional psn-at)
+  "Get syntax at position. Default is position 1+ point.\n
+When PSN-AT an integer is non-nil examine that position from point.\n
+:EXAMPLE\n\n\(mon-get-syntax-at\)\n
+\(mon-get-syntax-at -8\)\n
+:SEE-ALSO `mon-get-syntax-class-at'.\n►►►"
+  (interactive)
+  (let ((at-pnt (if psn-at (+ (point) psn-at) (point))))
+    (and (or (eobp)
+             (and psn-at (or (< at-pnt (point-min)) (>= at-pnt (point-max)))))
+         (error (concat ":FUNCTION `mon-get-syntax-class-at' " 
+                        "-- point or arg PSN exceed buffer-bounds, at point: %d")
+                at-pnt))
+    `(:sytax-at  ,(syntax-after at-pnt)
+      :char-at   ,(char-after at-pnt)
+      :string-at ,(char-to-string (char-after at-pnt))
+      ;; it isn't clear when/if this is relevant
+      ;; :syntax-class-at ,(mon-get-syntax-class-at at-pnt)
+      :point-at     ,at-pnt)))
+
+;;; ==============================
 ;;; :CHANGESET 1974
 ;;; :CREATED <Timestamp: #{2010-07-13T14:21:34-04:00Z}#{10282} - by MON KEY>
 (defun mon-get-syntax-class-at (psn)
   "Return `syntax-class' at PSN.\
 This is just a combination of `syntax-after' and `syntax-class'.\n
- (logand (syntax-class (char-syntax (char-after (point))))
+ \(logand \(syntax-class \(char-syntax \(char-after \(point\)\)\)\)\n
 :EXAMPLE\n\n(mon-get-syntax-class-at (1+ (point))) (\n
 :SEE-ALSO `syntax-after', `syntax-class', `string-to-syntax', `char-syntax'
 `mon-help-syntax-class', `mon-help-syntax-functions'.\n►►►"
-  (let ((after-syn 
-         (progn 
-           (unless (or (< psn (point-min)) (>= psn (point-max)))
-             (let ((st (if parse-sexp-lookup-properties
-                           (get-char-property psn 'syntax-table))))
-               (if (consp st) st
-                 (aref (or st (syntax-table)) (char-after psn))))))))
-    (and after-syn (logand (car after-syn) 65535))))
+    (let ((after-syn 
+           (progn 
+             (unless (or (< psn (point-min)) (>= psn (point-max)))
+               (let ((st (if parse-sexp-lookup-properties
+                             (get-char-property psn 'syntax-table))))
+                 (if (consp st) st
+                   (aref (or st (syntax-table)) (char-after psn))))))))
+      (and after-syn (logand (car after-syn) 65535))))
 ;;
 ;; This is neat:
 ;; (lsh 1 17) => 131072 
 ;; (logior 131072 255) => 131327  
 ;; (- 131327 131072) => 255 (#o377, #xff)
+
+;; (lsh 4 17) ;=> 524288 
+;; (logior 524288 255) ;=> 
+;; (- 524543 524288) => 255
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday May 11, 2009 @ 05:07.49 PM - by MON KEY>
@@ -7519,7 +7482,8 @@ When RTRN-AS-LIST is non-nil returns as list.\n
     (let* ((lnap (line-number-at-pos))
 	   (range-start (marker-position tlc-marker))
 	   (range-end (point))
-	   (at-here (buffer-substring-no-properties range-start range-end))
+	   (at-here ;; :WAS (buffer-substring-no-properties range-start range-end))
+            (mon-buffer-sub-no-prop range-start range-end))
 	   (syn-match at-here)
 	   (syn-is (cond	   
 		    ((and (eq syntax-type 'whitespace) (eq (string-match " " syn-match) 0)) t)
@@ -8094,53 +8058,26 @@ uses O(log n) space.\n
                                        (mrndz-f mrndz-l2 mrndz-n2 (mrndz-f mrndz-l1 mrndz-n1 mrndz-e)))))))))
     (mrndz-f mk-list-random (length mk-list-random) nil)))
 
-;;; ==============================
-;;; :COURTESY gene.ressler@gmail.com comp.lang.lisp 2010-08-01
-;;; :CREATED <Timestamp: #{2010-08-03T18:29:33-04:00Z}#{10312} - by MON>
-(defun mon-list-nshuffle-TEST (w-test-times)
-  "Test function for `mon-list-nshuffle'\n
-Return results of applying `mon-list-nshuffle'W-TEST-TIMES in buffer
-named \"*MON-LIST-NSHUFFLE-TEST*\"\n
-:EXAMPLE\n\n\(mon-list-nshuffle-TEST '\(a b c d\) 100\)\n
-\(mon-list-nshuffle '\(\"a\" \"b\" \"c\" \"d\"\) 100\)\n
-:SEE-ALSO `mon-nshuffle-vector', `mon-list-shuffle-safe'.\n►►►"
-  (with-current-buffer (get-buffer-create "*MON-LIST-NSHUFFLE-TEST*")
-    (erase-buffer)
-    (insert ";; :FUNCTION `mon-list-nshuffle-TEST'\n" 
-            ";; :W-TEST-TIMES " (number-to-string w-test-times) "\n"
-            (make-string 68 59) "\n"
-            ";; Number of times each list occurred\n"
-            ";; |RANDOMIZED-LIST|    |COUNT|\n\n")
-    (loop with count-table = (make-hash-table :test #'equal); :size w-test-times)
-          repeat w-test-times ;; repeat 1000000
-          for perm = (mon-list-nshuffle (list 'a 'b 'c 'd))
-          do (incf (gethash perm count-table 0))
-          finally (loop
-                   for perm being each hash-key in count-table
-                   using (hash-value count)
-                   ;; :WAS CL format string: 
-                   ;; do (format t "~a: ~a~%" perm count))))
-                   do (princ (format "      %s         ; %s\n" perm count) 
-                             (current-buffer))))
-    (mon-g2be -1) ;; (goto-char (buffer-end 0))
-    (display-buffer (current-buffer) t)))
-;;
-;;; :TEST-ME (mon-list-nshuffle-TEST 10000)
-;;; :TEST-ME (mon-list-nshuffle-TEST 100)
+
 
 ;;; ==============================
 ;;; :PREFIX "mlss-"
 ;;; :CREATED <Timestamp: #{2010-08-09T16:40:02-04:00Z}#{10321} - by MON>
-(defun mon-list-shuffle-safe (list-to-shuffle)
+(defun mon-list-shuffle-safe (list-to-shuffle &optional w-no-errors)
   "Shuffle contents of LIST-TO-SHUFFLE non-destructively.\n
-When LIST-TO-SHUFFLE is non-nil, not a `type-of' cons, or does not satisfy the
-predicate `mon-list-proper-p' signal an error.\n
+When LIST-TO-SHUFFLE is non-nil, not a `type-of' cons or vector, or does not
+satisfy the predicate `mon-list-proper-p' signal an error.\n
+When optional arg W-NO-ERRORS is non-nil do not signal an error instead return nil.\n
 :EXAMPLE\n\n\(let \(\(tst-mlss '\(a \(b . c\) q\)\)\)
   `\(:w-shuffle ,\(mon-list-shuffle-safe tst-mlss\) :w/o-shuffle ,tst-mlss\)\)\n
-;; :NOTE Following will fail:
-\(mon-list-proper-p '\(a \(b . c\) . q\)\)\n
+\(mon-list-shuffle-safe '\(a b c q\)\)\n
+\(mon-list-shuffle-safe '\(a \(b . c\) q\)\)\n
+\(mon-list-shuffle-safe  [a \(b . c\) q]\)\n
+\(mon-list-shuffle-safe  [a \[b c\] q]\)\n
 \(mon-list-shuffle-safe nil\)\n
 \(mon-list-shuffle-safe '\(\)\)\n
+;; :NOTE Following will fail:
+\(mon-list-proper-p '\(a \(b . c\) . q\)\)\n
 \(mon-list-shuffle-safe \"won't shuffle\"\)\n
 :SEE-ALSO `mon-list-nshuffle', `mon-nshuffle-vector', `mon-delq-dups',
 `mon-remove-dups', `mon-remove-if', `mon-list-make-unique', `mon-maybe-cons',
@@ -8151,12 +8088,24 @@ predicate `mon-list-proper-p' signal an error.\n
 `mon-sublist-gutted', `mon-remove-dups', `mon-assoc-replace', `mon-moveq',
 `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `mon-list-nshuffle-TEST', `shuffle-vector', `slime-shuffle-list'.\n►►►"
-  (let ((mlss-lst (copy-tree list-to-shuffle)))
-    (if (not (and (eq (type-of mlss-lst) 'cons)
-                  (mon-list-proper-p mlss-lst)))
-        (error (concat ":FUNCTION `mon-list-shuffle-safe' "
-                       "-- arg LIST-TO-SHUFFLE null or not `mon-list-proper-p'"))
-      (setq mlss-lst (append (mon-nshuffle-vector (vconcat mlss-lst)) nil)))))
+  (let* ((vflg (vectorp list-to-shuffle))
+         (mlss-lst (or (and vflg (copy-tree list-to-shuffle t))
+                       (copy-tree list-to-shuffle))))
+    (if (null mlss-lst)
+        mlss-lst
+      (if (or vflg
+              (and (not vflg)
+                   (eq (type-of mlss-lst) 'cons)
+                   (mon-list-proper-p mlss-lst)))
+          (setq mlss-lst 
+                (or (and vflg (mon-nshuffle-vector mlss-lst))
+                    (append (mon-nshuffle-vector (vconcat mlss-lst)) nil)))
+        (if w-no-errors
+            nil
+          (error 
+           (concat ":FUNCTION `mon-list-shuffle-safe' "
+                   "-- arg LIST-TO-SHUFFLE null or not `mon-list-proper-p', got: %S") 
+           list-to-shuffle))))))
 ;;
 ;;; :TEST-ME (let ((tst-mlss '(a (b . c) q)))
 ;;;          `(:w-shffl ,(mon-list-shuffle-safe tst-mlss) :w/o-shffl ,tst-mlss))
@@ -8534,6 +8483,21 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.
       )))
 
 ;;; ==============================
+;;; :COURTESY ert/lisp/emacs-lisp/ert.el :WAS `ert--proper-list-p'
+;; (defun mon-list-proper-p (x)
+;;   "Return non-nil if X is a proper list, nil otherwise."
+;;   (loop
+;;    for firstp = t then nil
+;;    for fast = x then (cddr fast)
+;;    for slow = x then (cdr slow) do
+;;    (when (null fast) (return t))
+;;    (when (not (consp fast)) (return nil))
+;;    (when (null (cdr fast)) (return t))
+;;    (when (not (consp (cdr fast))) (return nil))
+;;    (when (and (not firstp) (eq fast slow)) (return nil))))
+;;; ==============================
+
+;;; ==============================
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-proper-list-p'
 ;;; :CHANGESET 2001
 ;;; :CREATED <Timestamp: #{2010-07-27T16:48:36-04:00Z}#{10302} - by MON KEY>
@@ -8615,6 +8579,44 @@ When optional arg REMV-DUPS is non-nil remove duplicate elements.\n
 ;;; :TEST-ME (mon-list-reorder '(2 6 3 2 1) '(1 2 3 4 5 6))
 ;;; :TEST-ME (mon-list-reorder '(q w b c s a w) '(a b c q z w))
 ;;; :TEST-ME (mon-list-reorder '(q w b c s a w) '(a b c q z w) t)
+
+
+;;; ==============================
+;;; :CHANGESET 2178
+;;; :CREATED <Timestamp: #{2010-10-04T22:35:56-04:00Z}#{10401} - by MON KEY>
+(defun mon-union (lst-1 lst-2 &optional predicate)
+  "Like `union' but without the CL keywords.\n
+Combine lst1 and lst2 using a set-union operation.\n
+The result list contains all items that appear in either lst1 or lst2.\n
+This is a non-destructive function; it makes a copy of the data if necessary
+to avoid corrupting the original lst1 and lst2.\n
+:EXAMPLE\n\n\(mon-union '\(a b c d e\) '\(f q g h\)\)\n
+\(mon-union '\(a b c d e\) nil\)\n
+\(mon-union '\(c b a \"a\" d e\)  '\(\"a\" \"b\" \"c\" \"d\" \"e\"\)\)\n
+\(mon-union '\(c b a \"a\" d e\)  '\(\"a\" \"b\" \"c\" \"d\" \"e\"\)
+           #'\(lambda \(q y\) \(and \(stringp q\) \(not \(stringp y\)\)\)\)\)\n
+\(let \(\(L1 '\(a b c d e\)\)
+      \(L2 '\(f q g h\)\)\)
+  `\(,\(mon-union L1 L2\) ,L1 ,L2\)\)\n
+:SEE-ALSO .\n►►►"
+  (or (and (null lst-1) lst-2)
+      (and (null lst-2) lst-1)
+      (and (equal lst-1 lst-2) lst-1)
+      (let (pred)
+        
+        (or (>= (length lst-1) (length lst-2))
+            (setq lst-1 (prog1 lst-2 (setq lst-2 lst-1))))
+        (while lst-2
+          (or (mon-equality-or-pred (or predicate 'memq) (car lst-2) lst-1)
+              ;; (memq (car lst-2) lst-1)
+              (push (car lst-2) lst-1))
+          (pop lst-2))
+        lst-1)))
+;;
+(unless (and (intern-soft "mon-list-union")
+             (fboundp 'mon-list-union))
+(defalias 'mon-list-union 'mon-union))
+
 
 ;;; ==============================
 ;;; :PREFIX "mmi-"
@@ -9546,6 +9548,8 @@ Region should only contain the characters actually comprising the string
 supplied without the surrounding quotes.\n
 :NOTE Don't evaluate on docstrings containing regexps and expect sensible
 return values.\n
+:ALIASED-BY `mon-string-escape-lisp-region'
+:ALIASED-BY `mon-lisp-escape-region'
 :SEE-ALSO `mon-unescape-lisp-string-region', `mon-escape-string-for-cmd',
 `mon-exchange-slash-and-backslash', `mon-quote-sexp'.\n►►►"
   (interactive "*r")
@@ -9565,6 +9569,14 @@ return values.\n
       (goto-char start)
       (while (search-forward ")" nil t)
 	(replace-match "\\\)" nil t)))))
+;;
+(unless (and (intern-soft "mon-string-escape-lisp-region")
+             (fboundp 'mon-string-escape-lisp-region))
+ (defalias 'mon-string-escape-lisp-region 'mon-escape-lisp-string-region))
+;;
+(unless (and (intern-soft "mon-lisp-escape-region")
+             (fboundp 'mon-lisp-escape-region))
+ (defalias 'mon-lisp-escape-region 'mon-escape-lisp-string-region))
 
 ;;; ==============================
 (defun mon-unescape-lisp-string-region (start end)
@@ -9572,6 +9584,8 @@ return values.\n
 This amounts to removing preceeding backslashes from characters they escape.\n
 :NOTE region should only contain the characters actually comprising the string
 without the surrounding quotes.\n
+:ALIASED-BY `mon-string-unescape-lisp-region'
+:ALIASED-BY `mon-lisp-unescape-region'\n
 :SEE-ALSO `mon-escape-lisp-string-region', `mon-quote-sexp',
 `mon-escape-string-for-cmd', `mon-exchange-slash-and-backslash'.\n►►►"
   (interactive "*r")
@@ -9582,6 +9596,14 @@ without the surrounding quotes.\n
       (while (search-forward "\\" nil t)
 	(replace-match "" nil t)
 	(forward-char)))))
+;;
+(unless (and (intern-soft "mon-string-unescape-lisp-region")
+             (fboundp 'mon-string-unescape-lisp-region))
+ (defalias 'mon-string-unescape-lisp-region 'mon-unescape-lisp-string-region))
+;;
+(unless (and (intern-soft "mon-lisp-unescape-region")
+             (fboundp 'mon-lisp-unescape-region))
+  (defalias 'mon-lisp-unescape-region 'mon-unescape-lisp-string-region))
 
 
 ;;; ==============================
