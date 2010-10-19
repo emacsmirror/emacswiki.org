@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 15:08:31 2010 (-0700)
+;; Last-Updated: Mon Oct 18 11:35:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6700
+;;     Update #: 6704
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -23,14 +23,14 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
 ;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `ring',
-;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -3033,10 +3033,8 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     ;; The pre- and post-command hooks are local to the
     ;; minibuffer, so they are added here, not in `icicle-mode'.
     ;; They are removed in `icicle-mode' when mode is exited.
-    (unless (fboundp 'define-minor-mode) (make-local-hook 'pre-command-hook))
-    (add-hook 'pre-command-hook 'icicle-top-level-prep)
-    (add-hook 'pre-command-hook 'icicle-run-icicle-pre-command-hook nil t)
-    (unless (fboundp 'define-minor-mode) (make-local-hook 'post-command-hook))
+    (add-hook 'pre-command-hook  'icicle-top-level-prep nil t)
+    (add-hook 'pre-command-hook  'icicle-run-icicle-pre-command-hook nil t)
     (add-hook 'post-command-hook 'icicle-run-icicle-post-command-hook nil t)
     ;; Change the region background here dynamically.  It would be better to
     ;; just use a buffer-local face, but those don't yet exist.

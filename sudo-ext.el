@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- sudo support
-;; Time-stamp: <2010-10-17 21:33:46 rubikitch>
+;; Time-stamp: <2010-10-18 20:41:03 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -62,6 +62,7 @@
 ;;
 ;; And the following to your ~/.emacs startup file.
 ;;
+;; (server-start)
 ;; (require 'sudo-ext)
 ;;
 ;; No need more.

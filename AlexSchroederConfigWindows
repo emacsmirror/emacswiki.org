@@ -565,11 +565,11 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#svg-edit"))
-	("irc.perl.org" :channels ("#perlde" "#perl6"))
-	("ircnet.eversible.com" :channels ("#drsrm"))
-	("irc.sorcery.net" :channels ("#rpmn"))
-	("irc.otherworlders.org" :channels ("#enworld" "#pathfinder")))
+	 "#emacs" "#sql" "#perl" "#perl6"))))
+	("irc.perl.org" :channels ("#perlde"
+	("ircnet.eversible.com" :channels ("#drsrm")))
+	;; ("irc.sorcery.net" :channels ("#rpmn"))
+	;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
       ;; "#scheme" "#nethack" "#atom" "#microformats" "#barcamp"
       ;; "#emacs-fu" "#haskell" "#openfire" "##jabber" "#tentacle"
       ;; "#openbsd" "#hcoop" "#scrum" "#eclipse" "#eclipse-de" "#osgi"
@@ -1074,6 +1074,13 @@ br.page {
 
 ;;; EmacsClient
 
+(require 'server)
+(when (and (= emacs-major-version 23)
+           (= emacs-minor-version 1)
+           (equal window-system 'w32))
+  (defun server-ensure-safe-dir (dir) "Noop" t)) ; Suppress error "directory
+                                                 ; ~/.emacs.d/server is unsafe"
+                                                 ; on windows.
 (server-start 1)
 
 ;;; Identica Mode
@@ -1120,5 +1127,3 @@ Use `reverse-region' to reverse the lines in the region."
 	(when chars
 	  (apply 'insert chars))
 	(newline)))))
-
-(server-start)

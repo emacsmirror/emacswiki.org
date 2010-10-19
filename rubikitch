@@ -71,6 +71,7 @@ EevMode is my partner for years.
 * Lisp:time-ext.el -- more function for time/date
 * Lisp:save-load-path.el -- Save load-path of running Emacs to get ready for testing
 * GitDwim -- Context-aware command for [[Git]]
+* Lisp:sudo-ext.el -- Use sudo in M-!, M-x compile, and so on / M-x sudoedit
 * I maintained
 ** OddmuseMode -- Edit oddmuse wikis (including EmacsWiki) in Emacs
 

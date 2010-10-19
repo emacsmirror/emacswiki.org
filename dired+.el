@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Fri Oct  1 11:14:43 2010 (-0700)
+;; Last-Updated: Mon Oct 18 07:59:18 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2739
+;;     Update #: 2744
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `fit-frame', `info', `info+', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `strings', `thingatpt', `thingatpt+',
-;;   `w32-browser', `widget'.
+;;   `w32-browser'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -211,6 +211,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/18 dadams
+;;     diredp-font-lock-keywords-1: Handle decimal pt in file size.  Thx to Michael Heerdegen.
 ;; 2010/10/01 dadams
 ;;     dired-goto-file: Avoid infloop from looking for dir line.  Thx to not-use.dilines.net.
 ;; 2010/09/29 dadams
@@ -1601,7 +1603,8 @@ Don't forget to mention your Emacs and library versions."))
          1 diredp-ignored-file-name t)
    '("[^ .]\\.\\([bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
-   '(" \\([0-9]+\\(\\.[0-9]+\\)?[kKMGTPEZY]?\\)" 1 diredp-inode+size) ; File inode number & size
+   ;; File inode number & size (. and , are for the decimal point, depending on locale)
+   '(" \\([0-9]+\\(\\.[0-9]+\\([.,][0-9][0-9]*\\)?\\)?[kKMGTPEZY]?\\)" 1 diredp-inode+size)
    ;; Directory names
    (list "^..\\([0-9]* \\)*d"
          (list dired-move-to-filename-regexp nil nil)

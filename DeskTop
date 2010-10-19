@@ -114,6 +114,21 @@ Also returns nil if pid is nil."
 
 If anyone has a more robust implementation of `emacs-process-p,' feel free to provide it.
 
+I implemented `emacs-process-p' by following way, it could work on both Windows and Linux.
+
+{{{
+(defun emacs-process-p (pid)
+  "If pid is the process ID of an emacs process, return t, else nil.
+Also returns nil if pid is nil."
+  (when pid
+    (let ((attributes (process-attributes pid)) (cmd))
+      (dolist (attr attributes)
+        (if (string= "comm" (car attr))
+            (setq cmd (cdr attr))))
+      (if (and cmd (or (string= "emacs" cmd) (string= "emacs.exe" cmd))) t))))
+
+}}}
+
 == Minimal Setup ==
 
 This is for people who only want minimal session management functionality,

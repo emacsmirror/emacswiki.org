@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 16:45:20 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:52:17 2010 (-0800)
+;; Last-Updated: Mon Oct 18 11:32:12 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1476
+;;     Update #: 1479
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc+.el
 ;; Keywords: internal, tools, unix
 ;; Compatibility: GNU Emacs 20.x
@@ -22,7 +22,7 @@
 ;;   `ediff-wind', `fit-frame', `frame-cmds', `frame-fns', `info',
 ;;   `info+', `misc-fns', `mkhtml', `mkhtml-htmlize', `ring',
 ;;   `ring+', `strings', `thingatpt', `thingatpt+', `vc', `vc+',
-;;   `vc-', `vc-hooks', `w32-browser'.
+;;   `vc-', `vc-hooks', `w32-browser', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -30,7 +30,7 @@
 ;;
 ;;    Extensions for `vc.el'.
 ;;
-;; Note: This code is quite old, and is likely obsolete now.  You
+;; Note: This code is quite OLD, and is LIKELY OBSOLETE NOW.  You
 ;;       might find it useful in some way to mine - or not. ;-)
 ;;
 ;; -------------------------------------------------------------------
@@ -100,6 +100,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/18 dadams
+;;     vc-dired-mode: Removed (make-local-hook 'dired-after-readin-hook).
 ;; 1999/04/09 dadams
 ;;     Changed binding of vc-ediff in vc-dired-mode-map bc of conflict.
 ;; 1999/03/31 dadams
@@ -751,7 +753,6 @@ You can type `vl', `v=' etc. to invoke `vc-print-log', `vc-diff', and
 the like on the file named on the current Dired buffer line.  `vv'
 invokes `vc-next-action' on this file, or on all files currently
 marked.  The special command, `*l' marks all files currently locked."
-  (make-local-hook 'dired-after-readin-hook)
   (add-hook 'dired-after-readin-hook 'vc-dired-hook nil t)
   ;; The following is slightly modified from `dired.el',
   ;; because file lines look a bit different in `vc-dired-mode'.

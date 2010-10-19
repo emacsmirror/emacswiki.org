@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Jun 23 10:34:21 2010 (-0700)
+;; Last-Updated: Mon Oct 18 11:24:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 519
+;;     Update #: 524
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -85,6 +85,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2010/10/18 dadams
+;;     isearch-mode-hook: Protect isearchp-goto-success-end with fboundp.
 ;; 2010/06/23 dadams
 ;;     Added: isearchp-yank(-sexp)-symbol-or-char.  Bound to C-_, C-(.
 ;; 2010/04/22 dadams
@@ -205,12 +207,14 @@ You can toggle this with `isearchp-toggle-set-region', bound to
             (define-key isearch-mode-map "\M-w"         'isearch-toggle-word)
             (when (fboundp 'isearch-yank-internal)
               (define-key isearch-mode-map "\C-_"       'isearchp-yank-symbol-or-char)
-              (define-key isearch-mode-map [(control ?()] 'isearchp-yank-sexp-symbol-or-char))
+              (define-key isearch-mode-map [(control ?\()]
+                'isearchp-yank-sexp-symbol-or-char))
             (when (and (fboundp 'goto-longest-line) window-system) ; Defined in `misc-cmds.el'
               (define-key isearch-mode-map [(control end)] 'goto-longest-line))
             (define-key isearch-mode-map [next]         'isearch-repeat-forward)
             (define-key isearch-mode-map [prior]        'isearch-repeat-backward)
-            (define-key minibuffer-local-isearch-map "\M-e" 'isearchp-goto-success-end)
+            (when (fboundp 'isearchp-goto-success-end)
+              (define-key minibuffer-local-isearch-map "\M-e" 'isearchp-goto-success-end))
             (when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
                        (not (lookup-key isearch-mode-map [C-M-tab])))
               (define-key isearch-mode-map [C-M-tab] 'isearch-complete))
