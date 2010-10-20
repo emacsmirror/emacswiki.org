@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Mon Oct 18 07:59:18 2010 (-0700)
+;; Last-Updated: Tue Oct 19 17:17:09 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2744
+;;     Update #: 2800
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -87,8 +87,8 @@
 ;;    `diredp-exec-priv', `diredp-executable-tag', `diredp-file-name',
 ;;    `diredp-file-suffix', `diredp-flag-mark',
 ;;    `diredp-flag-mark-line', `diredp-get-file-or-dir-name',
-;;    `diredp-ignored-file-name', `diredp-inode+size',
-;;    `diredp-link-priv', `diredp-no-priv', `diredp-other-priv',
+;;    `diredp-ignored-file-name', `diredp-link-priv',
+;;    `diredp-no-priv', `diredp-number', `diredp-other-priv',
 ;;    `diredp-rare-priv', `diredp-read-priv', `diredp-symlink',
 ;;    `diredp-write-priv'.
 ;;
@@ -211,8 +211,11 @@
 ;;
 ;;; Change log:
 ;;
-;; 2010/10/18 dadams
-;;     diredp-font-lock-keywords-1: Handle decimal pt in file size.  Thx to Michael Heerdegen.
+;; 2010/10/19 dadams
+;;     diredp-font-lock-keywords-1:
+;;       Handle decimal pt in file size.  Thx to Michael Heerdegen.
+;;       Enable Emacs 20/21 to handle -h option (decimal point size).
+;;     Renamed: face diredp-inode+size to diredp-number.
 ;; 2010/10/01 dadams
 ;;     dired-goto-file: Avoid infloop from looking for dir line.  Thx to not-use.dilines.net.
 ;; 2010/09/29 dadams
@@ -1484,11 +1487,12 @@ Don't forget to mention your Emacs and library versions."))
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-file-suffix 'diredp-file-suffix)
 
-(defface diredp-inode+size
+(defface diredp-number
   '((t (:foreground "DarkBlue")))
-  "*Face used for file inode number and file size in dired buffers."
+  "*Face used for numerical fields in dired buffers.
+In particular, inode number, number of hard links, and file size."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
-(defvar diredp-inode+size 'diredp-inode+size)
+(defvar diredp-number 'diredp-number)
 
 (defface diredp-symlink
   '((t (:foreground "DarkOrange")))
@@ -1577,6 +1581,7 @@ Don't forget to mention your Emacs and library versions."))
 (defvar diredp-link-priv 'diredp-link-priv)
 
 
+
 ;;; Define second level of fontifying.
 (defvar diredp-font-lock-keywords-1
   (list
@@ -1586,11 +1591,15 @@ Don't forget to mention your Emacs and library versions."))
    '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
    '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
    ;; 1) Date/time and 2) filename w/o suffix:
-   (list dired-move-to-filename-regexp
+   (list (if (< emacs-major-version 22)
+             ;; Hack to correct Emacs 20-21 to recognize -h option (k, M, etc. for size).
+             (concat "[0-9][BkKMGTPEZY]?" (substring dired-move-to-filename-regexp 7))
+           dired-move-to-filename-regexp)
          (if (or (not (fboundp 'version<)) (version< emacs-version "23.2"))
              (list 1 'diredp-date-time t t)
            (list 2 'diredp-date-time t t)) ; Date/time
          (list "\\(.+\\)$" nil nil (list 0 diredp-file-name 'keep t))) ; Filename
+
    ;; Files to ignore
    (list (concat "^  \\(.*\\("
                  (concat (mapconcat 'regexp-quote
@@ -1603,8 +1612,10 @@ Don't forget to mention your Emacs and library versions."))
          1 diredp-ignored-file-name t)
    '("[^ .]\\.\\([bg]?[zZ]2?\\)[*]?$" 1 diredp-compressed-file-suffix t) ; Compressed (*.z)
    '("\\([*]\\)$" 1 diredp-executable-tag t) ; Executable (*)
-   ;; File inode number & size (. and , are for the decimal point, depending on locale)
-   '(" \\([0-9]+\\(\\.[0-9]+\\([.,][0-9][0-9]*\\)?\\)?[kKMGTPEZY]?\\)" 1 diredp-inode+size)
+   ;; Inode, hard-links, & file size (. and , are for the decimal point, depending on locale)
+   ;; See comment for `directory-listing-before-filename-regexp' in `files.el' or `files+.el'.
+   '("\\(\\([0-9]+\\([.,][0-9]+\\)?\\)[BkKMGTPEZY]? \\)" 1 diredp-number)
+
    ;; Directory names
    (list "^..\\([0-9]* \\)*d"
          (list dired-move-to-filename-regexp nil nil)

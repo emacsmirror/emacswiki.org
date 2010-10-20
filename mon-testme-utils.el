@@ -29,7 +29,8 @@
 ;; `mon-with-inhibit-buffer-read-only-TEST', `mon-line-dolines-TEST',
 ;; `mon-line-dolines-setup-TEST', `mon-with-buffer-undo-disabled-TEST',
 ;; `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-string-split-TEST',
-;; `mon-line-strings-bq-qt-sym-bol-TEST'
+;; `mon-line-strings-bq-qt-sym-bol-TEST', `mon-permute-combine-functions-TEST',
+;; `mon-write-string-reset-bind-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -68,6 +69,7 @@
 ;; `mon-line-strings-bq-qt-sym-bol-TEST'       <- mon-utils.el
 ;; `mon-build-copyright-string-TEST'           <- mon-insertion-utils.el
 ;; `google-define-get-command-TEST'            <- google-define-redux.el
+;; `mon-permute-combine-functions-TEST'        <- mon-name-utils.el
 ;;
 ;; TODO:
 ;;
@@ -856,6 +858,144 @@ kill the leftover buffer `*google-define-get-buffer*'.\n
     (with-current-buffer (get-buffer-create "*google-define-get-command-TEST*")
       (save-excursion  (insert gdgc))
       (display-buffer (current-buffer) t))))
+
+;;; ==============================
+;;; :RENAMED `mon-test-permute-combine-functions' -> `mon-permute-combine-functions-TEST'
+;;; :MODIFICATIONS <Timestamp: #{2010-02-09T20:23:43-05:00Z}#{10063} - by MON KEY>
+(defun mon-permute-combine-functions-TEST ()
+  "Assure functional equivalence of permute/combine functionss.\n
+Return test-case results in buffer named \"*MON-PERMUTE-COMBINE-TEST*\".\n
+Test equivalence of return values of following procedures:\n
+ `mon-permute-combine', `mon-permute-combine-1', `mon-permute-combine-2'\n
+:EXAMPLE\n\n\(mon-permute-combine-functions-TEST\)\n
+:SEE-ALSO `mon-variations', `mon-permutations', `mon-perms'.\n►►►"
+  (let* ((sab '("StringA" "StringB"))
+         (s1-4 '("String1" "String2" "String3" "String4"))
+         (s-symab '(a b))
+         (s-num1-4 '(1 2 3 4))
+         (spc-n   (mon-permute-combine s-symab s-num1-4))
+         (spc-2-n (mon-permute-combine s-symab s-num1-4))
+         (spc-3-n (mon-permute-combine s-symab s-num1-4))
+         (spc-s   (mon-permute-combine sab s1-4))
+         (spc-2-s (mon-permute-combine-1 sab s1-4))
+         (spc-3-s (mon-permute-combine-2 sab s1-4))
+         (spc-str-n   (mon-permute-combine sab s-num1-4))
+         (spc-str-n-2 (mon-permute-combine-1 sab s-num1-4))
+         (spc-str-n-3 (mon-permute-combine-2 sab s-num1-4))
+         (spc-str-symb   (mon-permute-combine sab s-symab))
+         (spc-str-symb-2 (mon-permute-combine-1 sab s-symab))
+         (spc-str-symb-3 (mon-permute-combine-2 sab s-symab))
+         (spcn= (and (equal spc-n spc-2-n) (equal spc-2-n spc-3-n)))
+         (spcs= (and (equal spc-s spc-2-s) (equal spc-2-s spc-3-s)))
+         (spc-str-n= (and (equal spc-str-n spc-str-n-2) (equal spc-str-n-2 spc-str-n-3)))
+         (spc-str-symb-= (and (equal spc-str-symb spc-str-symb-2) (equal spc-str-symb-2 spc-str-symb-3)))
+         (frmt-list
+          '(((spcn=          . "numbers - %S ;")
+             (spcs=          . "Strings - %S ;")
+             (spc-str-n=     . "Strings w/ numbers - %S ;")
+             (spc-str-symb-= . "Strings w/ Symbols - %S ;"))
+            (mon-permute-combine    (spc-s spc-n spc-str-n spc-str-symb))
+            (mon-permute-combine-1  (spc-2-s spc-2-n spc-str-n-2 spc-str-symb-2))
+            (mon-permute-combine-2  (spc-3-s spc-3-n spc-str-n-3 spc-str-symb-3))))
+         (dlm ";;; ==============================")
+         (tpc (get-buffer-create "*MON-PERMUTE-COMBINE-TEST*"))
+         rslt)
+    (dolist (hd (pop frmt-list)
+             (setq rslt (concat dlm "\n;;; "
+                                (mapconcat #'(lambda (x) 
+                                               (format "`%s', " x))(mapcar 'car frmt-list) "")
+                                "\n" dlm "\n" (mapconcat #'identity (nreverse rslt) "\n"))))
+      (push (format (concat ";Functions return `equal' structure with "(cdr hd)) 
+                    (symbol-value (car hd))) rslt))
+    (dolist (prm frmt-list)
+      (let ((prmdo prm)
+            this-rslt)
+        (dolist (i (cadr prmdo)
+                 (setq rslt (concat rslt (concat (format "\n%s\n;;; `%s'\n%s\n" dlm (car prmdo) dlm)
+                                                 (mapconcat #'identity (nreverse this-rslt) "\n")))))
+          (push (format ";`%s'\n  %S\n" (car prmdo) (symbol-value i)) ;i)
+                this-rslt))))
+    (with-current-buffer tpc
+      (princ rslt tpc)
+      (emacs-lisp-mode)
+      (goto-char (buffer-end 0)))
+    (display-buffer tpc t)))
+;; 
+;;; :TEST-ME (mon-permute-combine-functions-TEST)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-10-19T18:50:15-04:00Z}#{10422} - by MON>
+(defun mon-write-string-reset-bind-TEST ()
+  "Test function for `mon-write-string' w/ keyword arg :RESET-BIND.\n
+Return and display results in buffer named \"*MON-WRITE-STRING-TEST*\".\n
+:EXAMPLE\n\n\(mon-write-string-reset-bind-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let ((mwst-tst-bfr (get-buffer-create "*MON-WRITE-STRING-TEST*"))
+        (mwst-tst-mrk (make-marker))
+        mwst-tst-bnd)
+    ;; Testing keyword :reset-bind w/ variable arg:
+    (mon-write-string :reset-null t)
+    (with-current-buffer mwst-tst-bfr (erase-buffer))
+    (set-marker mwst-tst-mrk (point) mwst-tst-bfr)
+    (set-marker-insertion-type mwst-tst-mrk t)
+    (mon-write-string :w-string "passing keyword :reset-bind variable named `mwst-tst-bnd'")  
+    (prin1 (setq mwst-tst-bnd 
+                 `(:RESET-BIND-W-VAR ,(mon-write-string :reset-bind 'mwst-tst-bnd))) mwst-tst-mrk)
+    (setq mwst-tst-bnd (list mwst-tst-bnd))
+    ;; Testing keyword :reset-bind w/ buffer arg:
+    (mon-write-string :w-string "(:RESET-BIND-W-BFR ")
+    (push (mon-write-string :reset-bind mwst-tst-bfr) mwst-tst-bnd)
+    (prin1 (car mwst-tst-bnd) mwst-tst-mrk)
+    (push `(:RESET-BIND-W-BFR ,(pop mwst-tst-bnd)) mwst-tst-bnd)
+    (princ ")" mwst-tst-mrk)
+    ;; Testing keyword :reset-bind w/ marker arg:
+    ;; :NOTE Crazy difficult compensating for marker offsets and we punt below
+    ;; by replacing the markers position w/ "XXX".
+    (mon-write-string :w-string "(:RESET-BIND-W-MRK ")
+    (push (mon-write-string :reset-bind mwst-tst-mrk) mwst-tst-bnd)
+    (prin1 (car mwst-tst-bnd) mwst-tst-mrk)
+    (push `(:RESET-BIND-W-MRK ,(pop mwst-tst-bnd)) mwst-tst-bnd)
+    (princ ")" mwst-tst-mrk)
+    (with-current-buffer mwst-tst-bfr 
+      (setq mwst-tst-bnd
+            `(,(prog1 ;; (buffer-string)
+                   ;; Damn difficult dealing w/ reader/point/marker issues here...
+                   (replace-regexp-in-string 
+                    "\\( \(moves after insertion\) at \\)\\([0-9]\\{3,3\\}\\)" 
+                    "<XXX>"  
+                    (buffer-string) nil nil 2)
+                 (erase-buffer))
+              . ,(progn (mapc #'(lambda (dmpit)
+                                  (prin1 dmpit mwst-tst-bfr ))
+                              (reverse mwst-tst-bnd))
+                        (prog1 ;; (buffer-string)
+                            (replace-regexp-in-string 
+                             "\\( \(moves after insertion\) at \\)\\([0-9]\\{3,3\\}\\)" 
+                             "<XXX>"  
+                             (buffer-string) nil nil 2)
+                          (erase-buffer)))))
+      (let ((mwst-dvdr (concat ";; " (make-string 65 61) "\n")))
+        (insert ";; :MIRRORED-RESULTS\n"
+                (car mwst-tst-bnd) 
+                mwst-dvdr 
+                ";; :EVALUATED-RESULTS\n"
+                (cdr mwst-tst-bnd)
+                mwst-dvdr)
+        (set-marker mwst-tst-mrk nil mwst-tst-bfr)
+        (pp-buffer)
+        (setq mwst-tst-mrk (pop mwst-tst-bnd))
+        (setq mwst-tst-bfr `(,mwst-tst-bnd . ,mwst-tst-mrk))
+        (mon-g2be -1)
+        (insert mwst-dvdr
+                ";; :FUNCTION `mon-write-string'\n"
+                ";; :TESTING keyword :RESET-BIND equivalencies\n"
+                ";; :NOTE Test purposefully sets marker positions to <XXX>\n"
+                (if (equal (car mwst-tst-bfr)(cdr mwst-tst-bfr))
+                    ";; :ALL-TESTS-PASSED\n"
+                  ";; :SOMETHING-FAILED -- See below for deails.\n")
+                mwst-dvdr ))
+      (display-buffer (current-buffer)  t))
+    mwst-tst-bfr))
 
 ;;; ==============================
 (provide 'mon-testme-utils)

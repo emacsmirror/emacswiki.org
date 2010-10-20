@@ -15,8 +15,8 @@
 ;;           : Kevin Whitefoot <kevin.whitefoot@nopow.abb.no>
 ;;           : Randolph Fritz <rfritz@u.washington.edu>
 ;;           : Vincent Belaiche (VB1) <vincentb1@users.sourceforge.net>
-;; Version: 1.4.10d (2010-06-23)
-;; Serial Version: %Id: 31%
+;; Version: 1.4.12 (2010-10-18)
+;; Serial Version: %Id: 32%
 ;; Keywords: languages, basic, Evil
 ;; X-URL:  http://www.emacswiki.org/cgi-bin/wiki/visual-basic-mode.el
 
@@ -140,6 +140,7 @@
 ;;                 - remove the string-to-char for imenu-syntax-alist, for xemacs error
 ;;                 - change the condition of visual-basic-enable-font-lock which prevents emacs from running in command-line mode when the emacs-version is 19.29
 ;;                 - correct the implement of droping tailing comment in visual-basic-if-not-on-single-line
+;; 1.4.12 VB1 - add visual-basic-propertize-attribute
 
 ;;
 ;; Notes:
@@ -252,6 +253,37 @@ types of errors are automatically corrected.
   :type 'integer
   :group 'visual-basic)
 
+(defcustom visual-basic-variable-scope-prefix-re
+  "[gm]?"
+  "Variable naming convention, scope prefix regexp. Please refer
+to
+http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards. This
+is used by function `visual-basic-propertize-attribute'. 
+
+Note: shall not contain any \\( \\) (use \\(?: if need be)."
+  :type 'regexp
+  :group 'visual-basic
+  )
+
+(defcustom visual-basic-variable-type-prefix-re
+  (regexp-opt '("i" ; integer
+		"l" ; long
+		"flt"; single or double
+		"obj" "o"; object
+		"v" ; variant
+		"dbl" "sng"; double single
+		"s"; string
+		) t)
+  "Variable naming convention, type prefix regexp. Please refer
+to
+http://en.wikibooks.org/wiki/Visual_Basic/Coding_Standards. This
+is used by function `visual-basic-propertize-attribute'.
+
+Note: shall not contain any \\( \\) (use \\(?: if need be)."
+  :type 'regexp
+  :group 'visual-basic
+  )
+
 (defvar visual-basic-defn-templates
   (list "Public Sub ()\nEnd Sub\n\n"
         "Public Function () As Variant\nEnd Function\n\n"
@@ -339,6 +371,10 @@ types of errors are automatically corrected.
 (defconst visual-basic-dim-regexp
   "^[ \t]*\\([Cc]onst\\|[Dd]im\\|[Pp]rivate\\|[Pp]ublic\\)\\_>"  )
 
+(defconst visual-basic-lettable-type-regexp 
+  (concat "\\`" 
+	  (regexp-opt '("Integer" "Long" "Variant" "Double" "Single" "Boolean") t)
+	  "\\'"))
 
 ;; Includes the compile-time #if variation.
 ;; KJW fixed if to require a whitespace so as to avoid matching, for
@@ -1462,6 +1498,41 @@ Interting an item means:
 		;; otherwise loop again
 		(t t)))))) ; end of select-case-without-else
       )))
+
+(defun visual-basic-propertize-attribute ()
+  "Insert Let/Set and Get property functions suitable to
+manipulate some private attribute, the cursor is assumed to be on
+the concerned attribute declartion"
+  (interactive)
+
+  (save-excursion
+    (save-match-data
+      (beginning-of-line)
+      (let (variable property type lettable pos type-prefix)
+	(if (looking-at "^\\s-*Private\\s-+\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)\\s-+As\\s-+\\(\\sw\\(?:\\sw\\|\\s_\\)*\\)")
+	    (progn
+	      (setq variable (match-string 1)
+		    type (match-string 2)
+		    lettable (string-match visual-basic-lettable-type-regexp type))
+	      (if (string-match (concat "\\`"
+					visual-basic-variable-scope-prefix-re
+					"\\(" visual-basic-variable-type-prefix-re "\\)")
+				variable)
+		  (setq 
+		   type-prefix (match-string 1 variable)
+		   property (substring variable (match-end 0)))
+		(setq type-prefix ""
+		      property variable))
+	      (beginning-of-line 2)
+	      (insert
+	       "Property " (if lettable "Let" "Set") " " property "(" 
+	       (if lettable "ByVal " "")
+	       type-prefix "NewValue_IN As " type ")\n"
+	       "\t"  (if lettable "Let" "Set") " " variable " = " type-prefix "NewValue_IN\nEnd Property\n"
+	       "Property Get " property "() As " type "\n"
+	       "\t"  (if lettable "Let" "Set") " " property " = " variable "\nEnd Property\n"))
+	  (error "Not on a propertizable variable declaration."))))))
+
 
 ;;; Some experimental functions
 

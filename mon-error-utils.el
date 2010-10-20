@@ -504,26 +504,75 @@ Message is formatted as if by application of `*mon-message-function*'.\n
 
 
 ;;; ==============================
+;;; :NOTE Following establishes a lexical environment for `mon-write-string'
+;;; helper functions.
 ;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T15:02:34-04:00Z}#{10421} - by MON KEY>
 (eval-when (compile load eval)
   (lexical-let (mws-gthr)
-    (defun %mon-write-string-pusher (psh-chr)
-      (funcall #'(lambda (psh-chr)
-                   (setq mws-gthr (nreverse (nconc (list psh-chr) mws-gthr))))
-               psh-chr))
-    (defun %mon-write-string-writer (chr)
-      (funcall #'(lambda (chr)
-                   (write-char chr #'%mon-write-string-pusher)) chr))
-    (defun %mon-write-string-reader () 
+    ;;
+    (defun %mon-write-string-pusher (%mwsp-chr) ;; %mwsp-chr
+      "Helper function for `mon-write-string'.\n
+Arg %MWSP-CHR evaluated in a lexical environment which captures/accesses a
+string-stack state as passed by `%mon-write-string-writer' %MWSP-CHR
+arg. `nconc's %MWSP-CHR onto the stack.\n
+:EXAMPLE\n\n\(indirect-function '%mon-write-string-pusher\)\n
+:SEE-ALSO `%mon-write-string-mapper', `%mon-write-string-reader',
+`%mon-write-string-writer', `%mon-write-string-reset',
+`%mon-write-string-pusher', `mon-write-string-reset-bind-TEST'.\n►►►"
+      (funcall #'(lambda (%mwsp-L-1)
+                   ;; :NOTE Not sure which is better/faster: 
+                   ;;   concat/char-to-string or nconc/list
+                   ;; (setq mws-gthr (concat mws-gthr (char-to-string psh-chr))))
+                   (setq mws-gthr (nconc mws-gthr (list %mwsp-L-1))))
+               %mwsp-chr))
+    ;;
+    (defun %mon-write-string-writer (%mwsw-chr)
+      "Helper function for `mon-write-string'.\n
+Evaluated in a lexical environment which captures/accesses a string-stack state
+arg %MWSW-CHR a character is passed to `write-char' with
+`%mon-write-string-pusher' as its PRINTCHARFUN arg.\n
+:EXAMPLE\n\n\(indirect-function '%mon-write-string-writer\)\n
+:SEE-ALSO `%mon-write-string-mapper', `%mon-write-string-reader',
+`%mon-write-string-writer', `%mon-write-string-reset',
+`%mon-write-string-pusher', `mon-write-string-reset-bind-TEST'.\n►►►"
+      (funcall #'(lambda (%mwsw-L-1)
+                   (write-char %mwsw-L-1 #'%mon-write-string-pusher))
+               %mwsw-chr))
+    ;;
+    (defun %mon-write-string-reader ()
+      "Helper function for `mon-write-string'.\n
+Evaluated in a lexical environment which captures/accesses a string-stack state
+:EXAMPLE\n\n(indirect-function '%mon-write-string-reader)
+:SEE-ALSO `%mon-write-string-mapper', `%mon-write-string-reader',
+`%mon-write-string-writer', `%mon-write-string-reset',
+`%mon-write-string-pusher', `mon-write-string-reset-bind-TEST'.\n►►►"
       (funcall  #'(lambda () 
                     (concat mws-gthr))))
-    (defun %mon-write-string-mapper (char-bag)
-      (funcall #'(lambda (char-bag)
-                   (mapc #'%mon-write-string-writer (vconcat char-bag))
-                   char-bag) char-bag))
+    ;;
+    (defun %mon-write-string-mapper (%mwsm-bag)  ;; 
+      "Helper function for `mon-write-string' key :W-STRING.\n
+Arg %MWSM-BAG is a string the characters to map with `%mon-write-string-writer'.\n
+Evaluated in a lexical environment which captures/accesses a string-stack state.\n
+:EXAMPLE\n\n(indirect-function '%mon-write-string-mapper)\n
+:SEE-ALSO `%mon-write-string-mapper', `%mon-write-string-reader',
+`%mon-write-string-writer', `%mon-write-string-reset',
+`%mon-write-string-pusher', `mon-write-string-reset-bind-TEST'.\n►►►"
+      (funcall #'(lambda (%mwsm-L-1)
+                   (mapc #'%mon-write-string-writer (vconcat %mwsm-L-1))
+                   %mwsm-bag)
+               %mwsm-bag))
+    ;;
     (defun %mon-write-string-reset ()
-      (funcall #'(lambda () 
+      "Helper function for `mon-write-string'.\n
+Arg A-NOOP is ignored but must be passed.\n
+Evaluated in a lexical environment which captures/accesses a string-stack
+state resets the value of the currrently captured string-stack state.\n
+:EXAMPLE\n\n\(indirect-function '%mon-write-string-mapper\)\n
+:SEE-ALSO `%mon-write-string-mapper', `%mon-write-string-reader',
+`%mon-write-string-writer', `%mon-write-string-reset',
+`%mon-write-string-pusher', `mon-write-string-reset-bind-TEST'.\n►►►"
+      (funcall #'(lambda ()
                    (prog1 (concat mws-gthr)
                      (setq mws-gthr nil)))))
     t))
@@ -538,30 +587,62 @@ Message is formatted as if by application of `*mon-message-function*'.\n
 ;;; ==============================
 ;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T21:01:35-04:00Z}#{10421} - by MON KEY>
-(defun* mon-write-string (&key w-string read-current reset-bind reset-null)
-  "
+(defun* mon-write-string (&key w-string read-current reset-null reset-bind)
+  "Capture/access lexical environment value of current string-stack state.\n
 When keyword W-STRING is non-nil it is a string to push onto the current string
-stack.\n
-When keyword READ-CURRENT is non-nil return value of the current string stack.\n
+stack by passing W-STRING to `%mon-write-string-mapper'.\n
+When keyword READ-CURRENT is non-nil return value of the current string stack as
+per `%mon-write-string-reader'.\n
+When keyword RESET-NULL is non-nil reset string stack to the empty string and
+return value of the current string stack as if by `%mon-write-string-reset'.\n
 When keyword RESET-BIND is non-nil reset the current string stack to the empty
 string, but only after dumping it somewhere.\n
-RESET-BIND is a symbol, buffer, marker, or function. \n
-When it is a symbol set, symbol to the value of current string stack and return
-a cons with the format:\n(<STRING> . <SYMBOL>)\n
-When RESET-BIND is a buffer, marker or function output is as per `standard-output'.
-When it is a buffer output the contents of stringstack to that buffer by mapping
-the string string elts as if by `write-char' with output inserted in buffer
-before point.\n
-When it is a marker output is inserted and marker is advanced.\n
+RESET-BIND is a symbol, buffer, marker, or function with output is as per the
+specification for `standard-output' \(which see\).\n
+When it is a symbol, set symbol to the value of current string stack and return
+a cons with the format:\n\n ( <STRING> . <SYMBOL> )\n
+When it is a buffer output the contents of string stack to that buffer by
+mapping the string string elts as if by `write-char' with output inserted in
+buffer before point and return a cons with the format:\n
+ \(buffer . #<BUFFER-OBJECT> \)\n
+When it is a marker, output to marker loacation \(advances marker\) and return a
+cons with the format:\n\n \(marker . #<MARKER-OBJECT> \)\n
+When it is a function of one argument, call it for each char and return a cons
+with the format:\n\n \( <FUNCTION-TYPE> . <FUNCTION-NAME> \)\n\n
+When it is any other type, return value of current string stack inside a cons
+with the format:\n\n \( <STRING> . other\)\n
+:EXAMPLE\n\n\(progn 
+  \(mon-write-string :reset-null t\)
+  \(dotimes \(i 12 \(mon-write-string :read-current t\)\)
+    \(mon-write-string :w-string 
+                      \(format \(concat \"%\" \(number-to-string i\) \"d\"\) i\)\)\)\)\n
+\(let \(\(bots  '\(\"bubba \" \"on \" \"the \" \"stack \"\)\)\)
+  \(mon-write-string :reset-null t\)
+  \(dotimes \(i \(length bots\) 
+              \(prog1
+                  \(mon-write-string :read-current t\)
+                \(mon-write-string :reset-null t\)\)\)
+    \(mon-write-string :w-string \(pop bots\)\)\)\)\n
+\(progn 
+  \(mon-write-string :reset-null t\)
+  \(mon-write-string :w-string \"bubba got nullified\"\)
+  `\(:reset-returned ,\(mon-write-string :reset-null t\)
+    :stack-length-zerop ,\(eq \(length \(mon-write-string :read-current t\)\) 0\)\)\)\n
+\(with-temp-buffer
+  \(mon-write-string :reset-null t\)
+  \(mon-write-string :w-string \"bubba with a marker\"\)
+  `\(,\(mon-write-string :reset-bind
+                       \(set-marker \(make-marker\) \(point\) \(current-buffer\)\)\)
+    ,\(buffer-string\)\)\)\n
+\(mon-write-string-reset-bind-TEST\)\n
 :ALIASED-BY `write-string'\n
 :SEE-ALSO .\n►►►"
-  ;; (mon-write-string :reset-bind (make-marker))
   (cond (w-string      
          (unless (stringp w-string)
            (error (mon-error-string-err-format
                    "mon-write-string" ":w-string" w-string)))
          (%mon-write-string-mapper w-string))
-        (read-current  (%mon-write-string-reader))        
+        (read-current  (%mon-write-string-reader))
         (reset-bind    
          ;; Check for type:
          ;; (mon-write-string :reset-bind (current-buffer))  ;=> buffer
@@ -578,11 +659,13 @@ When it is a marker output is inserted and marker is advanced.\n
                                                (and (not (or (characterp mws-L-2)
                                                              (consp mws-L-2)))
                                                     (car (memq (mon-function-object-p mws-L-2)
-                                                               '(function subr macro autoload)))))
+                                                               '(function subr macro autoload 
+                                                                          compiled-function)))))
                                            reset-bind t)
                      (and (symbolp reset-bind) (not (string-or-null-p reset-bind)) 'symbol)
                      'other))
-           (cond ((memq mws-chk-typ '(buffer marker function subr macro autoload))
+           (cond ((memq mws-chk-typ '(buffer marker function subr macro
+                                      autoload compiled-function))
                   (mapc #'(lambda (mws-L-1)
                             (write-char mws-L-1 reset-bind))
                         (%mon-write-string-reader))
@@ -599,14 +682,24 @@ When it is a marker output is inserted and marker is advanced.\n
 (unless (and (intern-soft "write-string" obarray)
              (fboundp 'write-string))
 (defalias 'write-string 'mon-write-string))
-
+;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; |
+;; | (mon-write-string-reset-bind-TEST)
+;; |
 ;; | (progn 
 ;; |   (mon-write-string :reset-null t)
 ;; |   (dotimes (i 4)
 ;; |     (mon-write-string :w-string "bubba"))
 ;; |   (equal (mon-write-string :read-current t)
 ;; |               "buabbbuabbubbbaubbba"))
+;; | (equal
+;; |  (progn 
+;; |    (mon-write-string :reset-null t)
+;; |    (dotimes (i 12 (mon-write-string :read-current t))
+;; |      (mon-write-string :w-string 
+;; |                        (format (concat "%" (number-to-string i) "d") i))))
+;; |  "01 2  3   4    5     6      7       8        9        10         11")
 ;; | 
 ;; | (mon-write-string :read-current t)
 ;; | (mon-write-string :reset-bind 'some-var)
@@ -622,6 +715,36 @@ When it is a marker output is inserted and marker is advanced.\n
 ;; |   (mon-write-string :reset-bind
 ;; |                     (set-marker some-var (point) 
 ;; |                                 (get-buffer-create "*MON-WRITE-STRING-TEST*"))))
+;; | (equal 
+;; |  (progn 
+;; |    (mon-write-string :reset-null t)
+;; |    (mon-write-string :w-string "bubba ")
+;; |    (mon-write-string :w-string "on ")
+;; |    (mon-write-string :w-string "the ")
+;; |    (mon-write-string :w-string "stack")
+;; |    (prog1
+;; |        (mon-write-string :read-current t)
+;; |      (mon-write-string :reset-null t)))
+;; |  "bubba on the stack")
+;; | 
+;; | (equal
+;; |  (format "%S"
+;; |          (with-temp-buffer
+;; |   (mon-write-string :reset-null t)
+;; |   (mon-write-string :w-string "bubba")
+;; |   `(,(mon-write-string :reset-bind
+;; |                        (set-marker (make-marker) (point) (current-buffer)))
+;; |     ,(buffer-string))))
+;; |  "((marker . #<marker in no buffer>) \"bubba\")")
+;; |
+;; | (equal
+;; |  (progn 
+;; |    (mon-write-string :reset-null t)
+;; |    (mon-write-string :w-string "bubba")
+;; |    `(:reset-returned ,(mon-write-string :reset-null t)  
+;; |                      :stack-length-zerop ,(eq (length (mon-write-string :read-current t)) 0)))
+;; |  '(:reset-returned "bubba" :stack-length-zerop t))
+;; |
 ;; `----
 
 

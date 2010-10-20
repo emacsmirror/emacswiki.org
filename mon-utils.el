@@ -350,18 +350,21 @@
 ;;; ==============================
 ;;; :CHANGESET 2088
 ;;; :CREATED <Timestamp: #{2010-08-25T18:54:20-04:00Z}#{10343} - by MON KEY>
-(unless (and (intern-soft "debug-on-error-toggle")
+(unless (and (intern-soft "debug-on-error-toggle" obarray)
              (fboundp 'debug-on-error-toggle))
-  (defalias 'debug-on-error-toggle 'toggle-debug-on-error))
+(defalias 'debug-on-error-toggle 'toggle-debug-on-error))
 
 ;;; ==============================
 ;;; :NOTE `byte-compile-arglist-warn' has a MACROP parameter.
 ;;; :CHANGESET 2119
 ;;; :CREATED <Timestamp: #{2010-09-13T17:30:20-04:00Z}#{10371} - by MON KEY>
-(unless (and (intern-soft "macrop") (fboundp 'marcrop))
-  (defalias 'macrop 'apropos-macrop))
-(unless (and (intern-soft "mon-macrop") (fboundp 'mon-marcrop))
-  (defalias 'mon-macrop 'apropos-macrop))
+(unless (and (intern-soft "macrop" obarray) 
+             (fboundp 'marcrop))
+(defalias 'macrop 'apropos-macrop))
+;;
+(unless (and (intern-soft "mon-macrop" obarray) 
+             (fboundp 'mon-marcrop))
+(defalias 'mon-macrop 'apropos-macrop))
 
 ;;; ==============================
 (eval-when-compile (require 'cl))
@@ -404,7 +407,7 @@
 ;;;   d) Remove  "(when IS-MON-SYSTEM-P" and comment out unwanted features
 ;;; The preferred solution is `a' as it provides other system conditionals you
 ;;; will most likely need anyway with most of the `mon-*.el' packages.
-;; (when (and (intern-soft "IS-MON-SYSTEM-P")
+;; (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
 ;;            (bound-and-true-p IS-MON-SYSTEM-P))
 ;;   (require 'mon-regexp-symbols)
 ;;   (require 'mon-time-utils)
@@ -444,7 +447,7 @@
 :CALLED BY `mon-utils-require-features-at-loadtime'\n
 :SEE-ALSO `mon-after-mon-utils-loadtime'.\n►►►")
 ;;
-(unless (and (intern-soft "*mon-utils-post-load-requires*")
+(unless (and (intern-soft "*mon-utils-post-load-requires*" obarray)
              (bound-and-true-p *mon-utils-post-load-requires*))
   (setq *mon-utils-post-load-requires*
         '(mon-regexp-symbols
@@ -502,7 +505,7 @@ Called in a post-loadtime environement restores the plist values stored in
 :SEE-ALSO `setplist', `symbol-plist', `mon-after-mon-utils-loadtime', 
 `mon-run-post-load-hooks'.\n►►►"
   (interactive "p")
-  (if (and (intern-soft "*mon-recover-nil-t-default-plist*")
+  (if (and (intern-soft "*mon-recover-nil-t-default-plist*" obarray)
            (bound-and-true-p *mon-recover-nil-t-default-plist*))
       (let ((nval (cadr (memq :nil-default-plist *mon-recover-nil-t-default-plist*)))
             (tval (cadr (memq :t-default-plist *mon-recover-nil-t-default-plist*))))
@@ -600,7 +603,7 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
 Evaluates macro `mon-check-feature-for-loadtime' for each feature listed in
 varaible `*mon-utils-post-load-requires*'\n
 :SEE-ALSO `mon-after-mon-utils-loadtime', `mon-run-post-load-hooks'.\n►►►"
-  ;; (when (and (intern-soft "IS-MON-SYSTEM-P")
+  ;; (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
   ;; 	       (bound-and-true-p IS-MON-SYSTEM-P))
   (let (did-rqr)
     (dolist (req *mon-utils-post-load-requires*)
@@ -612,7 +615,7 @@ varaible `*mon-utils-post-load-requires*'\n
                  (concat ":FUNCTION `mon-utils-require-features-at-loadtime' "
                          "-- :FEATURE mon-utils :REQUIRED :FEATURE " msg " on load")))
             did-rqr)))
-  (when (and (intern-soft "IS-MON-SYSTEM-P")
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
     ;; Load here instead of from :FILE naf-mode.el
     (require 'naf-mode-sql-skeletons nil t)))
@@ -662,7 +665,7 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
      (mon-alphabet-as-map-bc *mon-alphabet-as-type-generate*))
     ;; :NOTE `mon-get-mon-emacsd-paths' is an interpreted function in:
     ;; :FILE mon-default-start-loads.el
-    (when (and (intern-soft "mon-get-mon-emacsd-paths")
+    (when (and (intern-soft "mon-get-mon-emacsd-paths" obarray)
                (fboundp 'mon-get-mon-emacsd-paths))
       (fset 'mon-get-emacsd-paths 
             (byte-compile
@@ -697,7 +700,7 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     (mon-check-feature-for-loadtime       'mon-eight-bit-raw-utils)
     (mon-check-feature-for-loadtime       'mon-drive-transfer-utils)
     (mon-check-feature-for-loadtime       'mon-jg-directory-creator)
-    (if (and (intern-soft "IS-W32-P") 
+    (if (and (intern-soft "IS-W32-P" obarray) 
              (bound-and-true-p IS-W32-P))
         (mon-check-feature-for-loadtime   'mon-boxcutter)
       (mon-check-feature-for-loadtime     'thumbs))))
@@ -816,9 +819,9 @@ All permutations are equally likely.\n
          (setq ,mnsv-incr (1+ ,mnsv-incr)))
        ,mnsv-vec)))
 ;;
-(unless (and (intern-soft "nshuffle-vector")
+(unless (and (intern-soft "nshuffle-vector" obarray)
              (fboundp 'nshuffle-vector))
-  (defalias 'nshuffle-vector 'mon-nshuffle-vector))
+(defalias 'nshuffle-vector 'mon-nshuffle-vector))
 ;;
 ;;; (pp-macroexpand-expression '(mon-nshuffle-vector [37 41 43 47 53 59]))
 
@@ -986,9 +989,9 @@ byte-compiler warning.\n
                                   ,(mon-gensym-counter-randomizer mwg-mks)))) w-syms)
      ,@body))
 ;; 
-(when (and (intern-soft "IS-MON-SYSTEM-P") 
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
            (not (fboundp 'with-gensyms)))
-  (defalias 'with-gensyms 'mon-with-gensyms))
+(defalias 'with-gensyms 'mon-with-gensyms))
 ;;
 ;;,---- :UNCOMMENT-BELOW-TO-TEST
 ;;|
@@ -1156,12 +1159,12 @@ without inversion.\n
              (string (get-buffer  ,mbep-bffr-p))
              (buffer (buffer-name ,mbep-bffr-p))))))))
 ;;
-(when (and (intern-soft "IS-MON-SYSTEM-P")
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
            (bound-and-true-p IS-MON-SYSTEM-P)
-           (if (intern-soft "buffer-exists-p")
+           (if (intern-soft "buffer-exists-p" obarray)
                (not (fboundp 'buffer-exists-p))
              t))
-  (defalias 'buffer-exists-p 'mon-buffer-exists-p))
+(defalias 'buffer-exists-p 'mon-buffer-exists-p))
 ;;
 ;;; :TEST-ME (mon-buffer-exists-p (current-buffer))
 ;;; :TEST-ME (mon-buffer-exists-p (buffer-name (current-buffer)))
@@ -1175,9 +1178,9 @@ without inversion.\n
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:20:53-04:00Z}#{10381} - by MON KEY>
-(unless (and (intern-soft "mon-save-restricton")
+(unless (and (intern-soft "mon-save-restricton" obarray)
              (fboundp 'mon-save-restricton))
-  (defalias 'mon-save-restricton 'edebug-save-restriction))
+(defalias 'mon-save-restricton 'edebug-save-restriction))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-13T11:50:55-04:00Z}#{10237} - by MON>
@@ -1220,9 +1223,6 @@ is not needed.\n
 ;;
 (defalias 'mon-buffer-do-with-undo-disabled 'mon-with-buffer-undo-disabled)
 
-
-
-
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-29T19:16:42-04:00Z}#{10393} - by MON KEY>
@@ -1240,13 +1240,13 @@ When ommitted or nil the default is to search only the `selected-frame'.\n
  (let ((myb-wdw (mon-buffer-exists-p buffer-or-name)))
    (when myb-wdw (get-buffer-window myb-wdw))))
 ;;
-(unless (and (intern-soft "mon-window-get-if-buffer")
+(unless (and (intern-soft "mon-window-get-if-buffer" obarray)
              (fboundp 'mon-window-get-if-buffer))
-  (defalias 'mon-window-get-if-buffer 'mon-get-buffer-window-if))
+(defalias 'mon-window-get-if-buffer 'mon-get-buffer-window-if))
 ;;
-(unless (and (intern-soft "get-buffer-window-if")
+(unless (and (intern-soft "get-buffer-window-if" obarray)
              (fboundp 'get-buffer-window-if))
-  (defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
+(defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
 
 ;;; ==============================
 ;;; :CHANGESET 2142
@@ -1280,10 +1280,9 @@ Default is to return a lisp form for `eval'.\n
           (t (or (and as-form "(get-buffer \"\")")
                  `(get-buffer ""))))))
 ;;
-(unless (and (intern-soft "mon-buffer-name-print-readably")
+(unless (and (intern-soft "mon-buffer-name-print-readably" obarray)
              (fboundp 'mon-buffer-name-print-readably))
-  (defalias 'mon-buffer-name-print-readably 'mon-print-buffer-object-readably))
-
+(defalias 'mon-buffer-name-print-readably 'mon-print-buffer-object-readably))
 
 ;;; ==============================
 ;;; :PREFIX "mbep-"
@@ -1338,12 +1337,13 @@ not already visible. Default is to consider all buffers on all frames.\n
 (defalias 'mon-buffer-get-w-mode 'mon-get-buffer-w-mode)
 
 ;;; ==============================
+;;; :PREFIX "mfop-"
 ;;; :CHANGESET 2119 <Timestamp: #{2010-09-17T21:11:32-04:00Z}#{10375} - by MON KEY>
 ;;; <Timestamp: #{2010-09-16T17:43:19-04:00Z}#{10374} - by MON>
 (defun mon-function-object-p (fncn-sym)
   "Test if FNCN-SYM is a function object.\n
 Return non-nil if the fncn-sym object is any of the following:\n
- subr lambda macro autoload function\n
+ subr lambda macro autoload function compiled-function\n
 When fncn-sym is not null and none of the above return value is per `type-of'
 for the `indirect-function' value of FNCN-SYM.\n
 :EXAMPLE\n\n\(mon-function-object-p 'mon-function-object-p\)\n
@@ -1382,27 +1382,36 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
 `commandp', `indirect-variable', `user-variable-p', `custom-variable-p',
 `edebug-lookup-function', `edebug-lambda-list-keywordp',
 `mon-help-symbol-functions', `mon-help-byte-compile-functions'.\n►►►"
-  (let ((lkng (and fncn-sym (intern-soft (symbol-name fncn-sym))
-                   (fboundp fncn-sym)
-                   (indirect-function fncn-sym t)))
-        cot)
-    (unless (null lkng)
-      (when (subrp lkng) (setq cot 'subr))
-      (unless cot
-        (when (or (byte-code-function-p lkng)
-                  (eq (car-safe lkng) 'lambda))
-          (setq cot 'function)))
-      (unless cot 
-        (when (eq (car-safe (indirect-function lkng)) 'macro)
-          (setq cot 'macro)))
-      (unless cot 
-        (when (eq (car-safe (indirect-function lkng)) 'autoload)
-          (setq cot 'autoload))))
-    (or cot (type-of lkng))))
+  (or 
+   ;; Short circuit stuff we know we don't want.
+   (car (memq (type-of fncn-sym) '(;; We special case `compiled-function` here b/c
+                                   ;; its print syntax is #[{...}] which signals an
+                                   ;; error in the the next branch b/c there we depend
+                                   ;; on FNCN-SYM being a symbol-like.
+                                   compiled-function 
+                                   string integer float marker buffer window 
+                                   frame  bool-vector overlay process)))
+   (let ((mfop-lkng (and fncn-sym (intern-soft (symbol-name fncn-sym) obarray)
+                         (fboundp fncn-sym)
+                         (indirect-function fncn-sym t)))
+         mfop-cot)
+     (unless (null mfop-lkng)
+       (when (subrp mfop-lkng) (setq mfop-cot 'subr))
+       (unless mfop-cot
+         (when (or (byte-code-function-p mfop-lkng)
+                   (eq (car-safe mfop-lkng) 'lambda))
+           (setq mfop-cot 'function)))
+       (unless mfop-cot 
+         (when (eq (car-safe (indirect-function mfop-lkng)) 'macro)
+           (setq mfop-cot 'macro)))
+       (unless mfop-cot 
+         (when (eq (car-safe (indirect-function mfop-lkng)) 'autoload)
+           (setq mfop-cot 'autoload))))
+     (or mfop-cot (type-of mfop-lkng)))))
 ;;
-(unless (and (intern-soft "mon-functionp")
+(unless (and (intern-soft "mon-functionp" obarray)
              (fboundp 'mon-functionp))
-  (defalias 'mon-functionp 'mon-function-object-p))
+(defalias 'mon-functionp 'mon-function-object-p))
 
 ;;; ==============================
 ;;; :CHANGESET 2178
@@ -1448,7 +1457,7 @@ PREDICATE is function accepting two args and is either a member of
           (and (symbolp predicate)
                (memq predicate *mon-equality-or-pred*))
           (memq (mon-function-object-p predicate)
-                '(function subr macro autoload)))
+                '(function subr macro autoload compiled-function)))
       (funcall predicate arg1 arg2)
     (error (concat ":FUNCTION `mon-equality-or-pred' "
                    "-- arg PREDICATE not applicable - got: %S") predicate)))
@@ -1862,9 +1871,9 @@ But, this way MON has fine-grain control over the assigned name suffix.\n
             (format "*shell-%d*" 
                     (1+ (string-to-number (substring buffs 7 8)))))))))
 ;;
-(unless (and (intern-soft "mon-buffer-make-shell")
+(unless (and (intern-soft "mon-buffer-make-shell" obarray)
              (fboundp 'mon-buffer-make-shell))
-  (defalias 'mon-buffer-make-shell 'mon-make-shell-buffer))
+(defalias 'mon-buffer-make-shell 'mon-make-shell-buffer))
 ;;
 ;;; :TEST-ME (mon-make-shell-buffer)
 ;;; :TEST-ME (let ((kl-bf (mon-make-shell-buffer)))
@@ -1882,9 +1891,9 @@ If *shell* exists increment by 1 and return *shell-N*.\n
   (interactive)
   (shell (mon-make-shell-buffer)))
 ;;
-(unless (and (intern-soft "mon-buffer-get-shell")
+(unless (and (intern-soft "mon-buffer-get-shell" obarray)
              (fboundp 'mon-buffer-get-shell))
-  (defalias 'mon-buffer-get-shell 'mon-shell))
+(defalias 'mon-buffer-get-shell 'mon-shell))
 ;;
 ;;; :TEST-ME (progn (mon-shell) (mon-shell))
 
@@ -1956,7 +1965,8 @@ Invoke du as an asynchronous shell command.\n
 :SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*',
 `get-free-disk-space', `directory-free-space-program',
 `directory-free-space-args'.\n►►►"
-  (interactive "DDirectory to du: ") ;(read-directory-name "Directory to du :" nil nil t)))
+  ;; (read-directory-name "Directory to du :" nil nil t)))
+  (interactive "D:FUNCTION `mon-async-du-dir' -- Directory to du: ") 
   (if (fboundp 'async-shell-command)      
       (let ((dir-du
              (file-name-as-directory
@@ -1974,7 +1984,9 @@ Invoke du as an asynchronous shell command.\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-06T16:04:09-04:00Z}#{09412} - by MON KEY>
-(when (or (featurep 'mon-default-start-loads) IS-MON-SYSTEM-P)
+(when (or (featurep 'mon-default-start-loads) 
+          (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+               (bound-and-true-p IS-MON-SYSTEM-P)))
   (defun mon-load-cedet ()
     "Load CEDET if it isn't already.\n
 Alias 'slot-makunbound -> `slot-makeunbound'.
@@ -1989,7 +2001,8 @@ This function will be :DEPRECATED once EMACS <-> CEDET merge is complete.\n►�
       ;; :REMOVE-ME once slot-makeunbound is removed/renamed/aliased in cedet/eieio.el
       (unless (fboundp 'slot-makunbound)
         (defalias 'slot-makunbound 'slot-makeunbound))))
-  )                                     ; :CLOSE when
+) ;; :CLOSE when
+
 ;;; ==============================
 (defun mon-terminal ()
   "When `gnu-linuxp' launch a terminal.\n
@@ -1998,9 +2011,16 @@ When `win32p' invoke Cygwin Bash in cmd console.\n
 `mon-shell', `mon-make-shell-buffer', `w32shell-cmd-here', `w32shell-cmd',
 `w32shell-explorer', `mon-help-process-functions'.\n►►►"
   (interactive)
-  (cond  (IS-BUG-P (message "You don't have the goods for this"))
-         (IS-MON-P-W32 (w32-shell-execute "open" "cmd.exe" "C:\\Cygwin.bat"))
-         (IS-MON-P-GNU (shell-command "terminal"))))
+  (cond  ((and (intern-soft "IS-BUG-P" obarray)
+               (bound-and-true-p IS-BUG-P))
+          (message "You don't have the goods for this"))
+         ((and (intern-soft "IS-MON-P-W32" obarray)
+               (bound-and-true-p IS-MON-P-W32))
+          (w32-shell-execute "open" "cmd.exe" "C:\\Cygwin.bat"))
+         ((and (intern-soft "IS-MON-P-GNU" obarray)
+               (bound-and-true-p IS-MON-P-GNU))
+          (shell-command "terminal"))
+         (t (message ":FUNCTION `mon-terminal' -- check the manual :P"))))
 
 ;;; ==============================
 (defun mon-cmd ()
@@ -2012,13 +2032,14 @@ in a cmd console.\n
 `w32shell-cmd', `w32-shell-execute', `w32shell-explorer', `shell-command',
 `shell', `mon-help-process-functions'.\n►►►"
   (interactive)
-  (cond ((and (intern-soft "IS-W32-P")
+  (cond ((and (intern-soft "IS-W32-P" obarray)
               (bound-and-true-p IS-W32-P))
          (w32-shell-execute "open" "cmd"))
-        ((and (intern-soft "IS-GNU-P")
-              (bound-and-true-p IS-GNU-P)
-              ;; :WAS (shell-command "terminal")
-              (shell-command "mrxvt")))))
+        ((and (intern-soft "IS-GNU-P" obarray)
+              (bound-and-true-p IS-GNU-P))
+         ;; :WAS (shell-command "terminal")
+         (shell-command "mrxvt"))
+        (t (message ":FUNCTION `mon-cmd' -- not sure which terminal/console to use"))))
 
 ;;; ==============================
 (defun mon-firefox (url &optional intrp)
@@ -2046,19 +2067,19 @@ conkeror-rc file:
   (eval-when-compile (require 'browse-url))
   (if (string-match "conkeror" browse-url-generic-program)
       (cond ;; :NOTE These conditionals are here so we can adjust as needed.
-       ((and (intern-soft "IS-MON-P-W32")
+       ((and (intern-soft "IS-MON-P-W32" obarray)
              (bound-and-true-p IS-MON-P-W32))
         (browse-url-generic url))
-       ((and (intern-soft "IS-MON-P-GNU")
+       ((and (intern-soft "IS-MON-P-GNU" obarray)
              (bound-and-true-p IS-MON-P-GNU))
         (browse-url-generic url))
-       ((and (intern-soft "IS-BUG-P")
+       ((and (intern-soft "IS-BUG-P" obarray)
              (bound-and-true-p IS-BUG-P))
         (browse-url-generic url))
-       ((and (intern-soft "IS-MON-SYSTEM-P")
+       ((and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
         (browse-url-generic url))
-       ((and (intern-soft "IS-NOT-A-MON-SYSTEM") 
+       ((and (intern-soft "IS-NOT-A-MON-SYSTEM" obarray) 
              (bound-and-true-p IS-NOT-A-MON-SYSTEM))
         (browse-url-generic url))
        (t (error (concat ":FUNCTION `mon-conkeror' "
@@ -2087,9 +2108,9 @@ current-buffer is \"*scratch*\" erase buffer contents else find an empty scratch
       (switch-to-buffer-other-window "*scratch*"  t))
     )) ;; (lisp-interaction-mode)
 ;;
-(unless (and (intern-soft "mon-buffer-get-scratch")
+(unless (and (intern-soft "mon-buffer-get-scratch" obarray)
              (fboundp 'mon-buffer-get-scratch))
-  (defalias 'mon-buffer-get-scratch 'mon-scratch))
+(defalias 'mon-buffer-get-scratch 'mon-scratch))
 ;;
 ;;; :TEST-ME (mon-scratch)
 ;;; :TEST-ME (mon-scratch t)
@@ -2102,9 +2123,9 @@ current-buffer is \"*scratch*\" erase buffer contents else find an empty scratch
   (interactive)
   (switch-to-buffer "*Messages*"))
 ;;
-(unless (and (intern-soft "mon-buffer-get-messages")
+(unless (and (intern-soft "mon-buffer-get-messages" obarray)
              (fboundp 'mon-buffer-get-messages))
-  (defalias 'mon-buffer-get-messages 'mon-switch-to-messages))
+(defalias 'mon-buffer-get-messages 'mon-switch-to-messages))
 
 ;;; ==============================
 ;;; :RENAMED `scroll-down-in-place' -> `mon-scroll-down-in-place'
@@ -2144,9 +2165,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
     (append-next-kill)
     (kill-ring-save beg end)))
 ;;
-(unless (and (intern-soft "mon-append-next-kill")
+(unless (and (intern-soft "mon-append-next-kill" obarray)
              (fboundp 'mon-append-next-kill))
-  (defalias 'mon-append-next-kill 'mon-append-next-kill))
+(defalias 'mon-append-next-kill 'mon-append-next-kill))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday March 05, 2009 @ 04:49.29 PM - by MON KEY>
@@ -2161,9 +2182,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
 	(switch-to-completions)
 	(delete-completion-window)))))
 ;;
-(unless (and (intern-soft "mon-buffer-kill-completions")
+(unless (and (intern-soft "mon-buffer-kill-completions" obarray)
              (fboundp 'mon-buffer-kill-completions))
-  (defalias 'mon-buffer-kill-completions 'mon-buffer-kill-completions))
+(defalias 'mon-buffer-kill-completions 'mon-buffer-kill-completions))
 
 ;;; ==============================
 (defun mon-flip-windows ()
@@ -2183,9 +2204,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
     (switch-to-buffer bottom-buffer)
     (pop-to-buffer cur-buffer)))
 ;;
-(unless (and (intern-soft "mon-window-flip")
+(unless (and (intern-soft "mon-window-flip" obarray)
              (fboundp 'mon-window-flip))
-  (defalias 'mon-window-flip 'mon-flip-windows))
+(defalias 'mon-window-flip 'mon-flip-windows))
 
 ;;; ==============================
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :HIS fleuret.emacs.el
@@ -2200,9 +2221,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
   (split-window-horizontally)
   (balance-windows))
 ;;
-(unless (and (intern-soft "mon-window-split-horiz")
+(unless (and (intern-soft "mon-window-split-horiz" obarray)
              (fboundp 'mon-window-split-horiz))
-  (defalias 'mon-window-split-horiz 'mon-twin-horizontal))
+(defalias 'mon-window-split-horiz 'mon-twin-horizontal))
 ;;
 ;;; :WAS `ff/twin-vertical-current-buffer' -> `mon-twin-vertical'
 (defun mon-twin-vertical () 
@@ -2214,9 +2235,9 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
   (split-window-vertically)
   (balance-windows))
 ;;
-(unless (and (intern-soft "mon-window-split-vert")
+(unless (and (intern-soft "mon-window-split-vert" obarray)
              (fboundp 'mon-window-split-vert))
-  (defalias 'mon-window-split-vert 'mon-twin-vertical))
+(defalias 'mon-window-split-vert 'mon-twin-vertical))
 
 ;;; ==============================
 ;;; :PREFIX "mtmb-"
@@ -2242,7 +2263,7 @@ Like `append-next-kill' but skips the C M-w M-w finger-chord hoop jump.
   "Append region to text in register REGISTER.\n
 When non-nil prefix arg DELETE-REGION-P will delete region as well.
 Called programaticaly, takes four args: REGISTER, START, END and DELETE-REGION-P.
-START and END are buffer positions indicating what to append.
+START and END are buffer positions indicating what to append.\n
 Redefines `append-to-register' with a \"\n\".\n
 :SEE-ALSO `mon-append-to-buffer', `mon-kill-appending', `mon-append-to-register'.\n►►►"
   (interactive "cAppend to register: \nr\nP")
@@ -2256,9 +2277,9 @@ Redefines `append-to-register' with a \"\n\".\n
                                       "-- REGISTER does not contain text"))))))
   (if delete-region-p (delete-region start end)))
 ;;
-(unless (and (intern-soft "mon-register-append")
+(unless (and (intern-soft "mon-register-append" obarray)
              (fboundp 'mon-register-append))
-  (defalias 'mon-register-append 'mon-append-to-register))
+(defalias 'mon-register-append 'mon-append-to-register))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday June 18, 2009 @ 11:26.02 AM - by MON KEY>
@@ -2292,9 +2313,9 @@ This is an alternative definition of `append-to-buffer' with a \"\n\".\n
 	  (when (= (window-point window) point)
 	    (set-window-point window (point))))))))
 ;;
-(unless (and (intern-soft "mon-buffer-append-to")
+(unless (and (intern-soft "mon-buffer-append-to" obarray)
              (fboundp 'mon-buffer-append-to))
-  (defalias 'mon-buffer-append-to 'mon-append-to-buffer))
+(defalias 'mon-buffer-append-to 'mon-append-to-buffer))
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:59:35-04:00Z}#{10116} - by MON KEY>
@@ -2367,9 +2388,9 @@ integer value.\n
         (goto-char min/max-go)
         min/max-go)))
 ;;
-(unless (and (intern-soft "mon-buffer-end")
+(unless (and (intern-soft "mon-buffer-end" obarray)
              (fboundp 'mon-buffer-end))
-  (defalias 'mon-buffer-end 'mon-g2be))
+(defalias 'mon-buffer-end 'mon-g2be))
 
 ;;; ==============================
 ;;; :CHANGESET 2171
@@ -2401,10 +2422,11 @@ instead. Default is `current-buffer'.\n
           (/= (buffer-size) (1- (point-max)))
           (/= (- (point-max) (point-min)) (buffer-size))))))
 ;;
-(when IS-MON-SYSTEM-P
-  (unless (and (intern-soft "buffer-narrowed-p")
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+           (bound-and-true-p IS-MON-SYSTEM-P))
+  (unless (and (intern-soft "buffer-narrowed-p" obarray)
                (fboundp 'buffer-narrowed-p))
-    (defalias 'buffer-narrowed-p 'mon-buffer-narrowed-p)))
+(defalias 'buffer-narrowed-p 'mon-buffer-narrowed-p)))
 
 
 ;;; ==============================
@@ -2731,9 +2753,9 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
     (setq accum-string `(,@accum-event ,(if (string= accum-string self) self accum-string)))
         (prin1 accum-string)))
 ;; 
-(unless (and (intern-soft "mon-read-keys-last-event")
+(unless (and (intern-soft "mon-read-keys-last-event" obarray)
              (fboundp 'mon-read-keys-last-event))
-  (defalias 'mon-read-keys-last-event 'mon-test-keypresses))
+(defalias 'mon-read-keys-last-event 'mon-test-keypresses))
 ;;
 ;;; :TEST-ME (mon-test-keypresses 1 2 3) ;->("cj")("cj")
 ;;; :TEST-ME (call-interactively 'mon-test-keypresses);-> ("cj")("cj")
@@ -2835,7 +2857,7 @@ When a w-kbd-quit is non-nil a when C-g is caught tail of list is non-nil.
             (apply 'string (reverse tmp-list))))
     `(,mrkas-read ,caught-cg-flag)))
 ;; 
-(unless (and (intern-soft "mon-string-from-keyboard-input")
+(unless (and (intern-soft "mon-string-from-keyboard-input" obarray)
              (fboundp 'mon-string-from-keyboard-input))
 (defalias 'mon-string-from-keyboard-input 'mon-read-keys-as-string))
 ;;
@@ -2857,12 +2879,12 @@ the tedium of building the entire scaffolding.\n
 `mon-with-inhibit-buffer-read-only-TEST', `mon-inhibit-modification-hooks',
 `mon-inhibit-point-motion-hooks', `mon-toggle-read-only-point-motion',
 `view-read-only'.\n►►►"
-(let ((re-inhibit (if (not inhibit-read-only) t nil)))
-  (unwind-protect
-      (progn 
-	(setq inhibit-read-only t)
-	(eval `(,func-arg)))
-    (when re-inhibit (setq inhibit-read-only nil)))))
+  (let ((re-inhibit (if (not inhibit-read-only) t nil)))
+    (unwind-protect
+        (progn 
+          (setq inhibit-read-only t)
+          (eval `(,func-arg)))
+      (when re-inhibit (setq inhibit-read-only nil)))))
 ;;
 ;;; :TEST-ME (let ((tt (propertize "I'm read only!" 'read-only t))
 ;;;                   (buffer-read-only nil))
@@ -2913,17 +2935,17 @@ buffers include:
         (push `(,(buffer-name mgbh-dobl) . ,mgbh-dobl) mgbh-rslt)
         mgbh-rslt))))
 ;;
-(unless (and (intern-soft "mon-get-hidden-buffers")
+(unless (and (intern-soft "mon-get-hidden-buffers" obarray)
              (fboundp 'mon-get-hidden-buffers))
-  (defalias 'mon-get-hidden-buffers 'mon-get-buffer-hidden))
+(defalias 'mon-get-hidden-buffers 'mon-get-buffer-hidden))
 ;;
-(unless (and (intern-soft "mon-help-hidden-buffers")
+(unless (and (intern-soft "mon-help-hidden-buffers" obarray)
              (fboundp 'mon-help-hidden-buffers))
-  (defalias 'mon-help-hidden-buffers 'mon-get-buffer-hidden))
+(defalias 'mon-help-hidden-buffers 'mon-get-buffer-hidden))
 ;;
-(unless (and (intern-soft "mon-buffer-get-hidden")
+(unless (and (intern-soft "mon-buffer-get-hidden" obarray)
              (fboundp 'mon-buffer-get-hidden))
-  (defalias 'mon-buffer-get-hidden   'mon-get-buffer-hidden))
+(defalias 'mon-buffer-get-hidden   'mon-get-buffer-hidden))
 ;;
 ;;; :TEST-ME (mon-get-buffer-hidden)
 ;;; :TEST-ME (mon-get-buffer-hidden t)
@@ -3040,9 +3062,9 @@ the tedium of building the entire scaffolding.\n
       (save-excursion
         (insert in-rear)))))
 ;;
-(unless (and (intern-soft "mon-region-wrap")
+(unless (and (intern-soft "mon-region-wrap" obarray)
              (fboundp 'mon-region-wrap))
-  (defalias 'mon-region-wrap 'mon-wrap-selection))
+(defalias 'mon-region-wrap 'mon-wrap-selection))
 
 ;;; ==============================
 ;;; :RENAMED `mon-trunc' -> `mon-toggle-truncate-line'
@@ -3218,9 +3240,9 @@ nil if there is no match in the buffer.\n
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:21:29-04:00Z}#{10381} - by MON KEY>
-(unless (and (intern-soft "mon-skip-whitespace")
+(unless (and (intern-soft "mon-skip-whitespace" obarray)
              (fboundp 'mon-skip-whitespace))
-  (defalias 'mon-skip-whitespace 'edebug-skip-whitespace
+(defalias 'mon-skip-whitespace 'edebug-skip-whitespace
     "Leave point before the next token, skipping white space and comments.\n
 Skipping is as if by `skip-chars-forward' not `skip-syntax-forward'.\n
 Skips over following chars:\n
@@ -3330,7 +3352,7 @@ If AFTER is non-nil return t when char after point is a 'space'.\n
 :SEE-ALSO `mon-spacep-is-bol', `mon-spacep-not-bol',
 `mon-spacep', `mon-line-bol-is-eol', `mon-line-next-bol-is-eol',
 `mon-line-previous-bol-is-eol', `mon-spacep-at-eol',`mon-cln-spc-tab-eol'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let* ((after-eol (char-after (1+ (line-end-position))))
 	 (after-eol-then (char-after (+ (line-end-position) 2)))	 
 	 (space-char '(9 10 11 12 13 32))
@@ -3698,10 +3720,10 @@ Arg TEST-FROM is a buffer pos to start counting from.\n
 When called-interactively return message in mini-buffer:
 \"The longest line in buffer `mon-utils.el' ends at column 115.\"\n
 :SEE-ALSO `mon-line-count-buffer', `mon-region-length'.\n►►►"
-(interactive "p")
+  (interactive "p")
   (let ((max-len 0))
     (save-excursion
-      (goto-char (point-min))
+      (mon-g2be -1) ;; :WAS (goto-char (point-min))
       (while (eq (forward-line) 0)
         (end-of-line)
         (when (> (current-column) max-len)
@@ -3735,7 +3757,7 @@ by evaluating `mon-alphabet-as-unintern-fun'\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
 `mon-alphabet-as-map-fun-prop', `*mon-alphabet-as-type-generate*'.\n►►►")
 ;;
-(unless (and (intern-soft "*mon-alphabet-as-type-generate*")
+(unless (and (intern-soft "*mon-alphabet-as-type-generate*" obarray)
              (bound-and-true-p *mon-alphabet-as-type-generate*))
   (setq *mon-alphabet-as-type-generate*
         '("plistU->stringU" "plistD->stringD" "plistU->num" "plistD->num"
@@ -3953,7 +3975,7 @@ of being entirely self contained, and therefor does not rely on external calls.\
 (defun mon-alphabet-as-bc (fun-name)
   "Byte compile FUN-NAME defun form returned by `mon-alphabet-as-defun'.\n
 FUN-NAME \(a string\) is an arg to `mon-alphabet-as-type'.\n
-Return a cons of the form:
+Return a cons with the format:\n
  \( <SYMBOL> . FUN-NAME \)\n
 :SEE-ALSO `mon-alphabet-as-bc', `mon-alphabet-as-defun',
 `mon-alphabet-as-doc-loadtime', `mon-alphabet-as-unintern-fun',
@@ -4156,7 +4178,7 @@ Where the first most form \(a list of strings\) is the preferred format.\n
                                                       "-- uninterned functions: "
                                                       (mapconcat #'(lambda (wmfl) (format "`%s'," wmfl))
                                                                  (nreverse w-msg-fu-l) " ")) 0 -1))))
-        (let ((is-um (intern-soft un-maatg)))
+        (let ((is-um (intern-soft un-maatg obarray)))
           (when is-um
             (push  un-maatg  w-msg-fu-l)
             (fmakunbound is-um)
@@ -4388,7 +4410,7 @@ return value of following form will always be equal W-STRING-TO-SPLIT:\n
             (push (substring w-string-to-split mch-end) mch-rslt))
           (nreverse mch-rslt))))))
 ;; 
-(unless (and (intern-soft "mon-split-string")
+(unless (and (intern-soft "mon-split-string" obarray)
              (fboundp 'mon-split-string))
 (defalias 'mon-split-string 'mon-string-split))
 
@@ -4621,19 +4643,19 @@ Default is to remove any trailing whiespace at end of lines.\n
 ;;; ==============================
 ;;; :NOTE Alias these and don't forget to use them!
 ;;; :CREATED <Timestamp: Wednesday July 01, 2009 @ 06:32.08 PM - by MON KEY>
-(unless (and (intern-soft "mon-string-combine-and-quote")
+(unless (and (intern-soft "mon-string-combine-and-quote" obarray)
              (fboundp 'mon-string-combine-and-quote))
 (defalias 'mon-string-combine-and-quote 'combine-and-quote-strings))
 ;;
-(unless (and (intern-soft "mon-string-split-and-unquote")
+(unless (and (intern-soft "mon-string-split-and-unquote" obarray)
              (fboundp 'mon-string-split-and-unquote))
 (defalias 'mon-string-split-and-unquote 'split-string-and-unquote))
 ;;
-(unless (and (intern-soft "mon-replace-char-in-region")
+(unless (and (intern-soft "mon-replace-char-in-region" obarray)
              (fboundp 'mon-replace-char-in-region))
 (defalias 'mon-replace-char-in-region 'subst-char-in-region))
 ;;
-(unless (and (intern-soft "mon-string-prefix-p")
+(unless (and (intern-soft "mon-string-prefix-p" obarray)
              (fboundp 'mon-string-prefix-p))
 (defalias 'mon-string-prefix-p 'vc-string-prefix-p))
 
@@ -4758,17 +4780,17 @@ list `nil'.\n
                    "-- arg STR does not satisfy `stringp'")))
   (let ((sbstr (or (and start (substring str start end))
                    str)))
-    (if (intern-soft sbstr)
+    (if (intern-soft sbstr obarray)
         (read sbstr) 
       (make-symbol sbstr))))
 ;;
 (defalias 'mon-string->symbol 'mon-string-to-symbol)
 ;;
-;;; :TEST-ME (intern-soft (mon-string-to-symbol "mon-string-to-symbol"))
-;;; :TEST-ME (progn (unintern "bubba") (intern-soft (mon-string-to-symbol "bubba")))
+;;; :TEST-ME (intern-soft (mon-string-to-symbol "mon-string-to-symbol") obarray)
+;;; :TEST-ME (progn (unintern "bubba" obarray) (intern-soft (mon-string-to-symbol "bubba")))
 ;;; :TEST-ME (intern-soft (intern (symbol-name (mon-string-to-symbol "bubba"))))
-;;; :TEST-ME (progn (unintern "bubb") (intern-soft (mon-string-to-symbol "bubba" 0 4)))
-;;; :TEST-ME (intern-soft (intern (symbol-name (mon-string-to-symbol "bubba" 0 4))))
+;;; :TEST-ME (progn (unintern "bubb" obarray) (intern-soft (mon-string-to-symbol "bubba" 0 4) obarray))
+;;; :TEST-ME (intern-soft (intern (symbol-name (mon-string-to-symbol "bubba" 0 4))) obarray)
 ;;; :TEST-ME (mon-string-to-symbol "bubba")
 ;;; :TEST-ME (mon-string-to-symbol "mon-string-to-symbol" 4 10)
 ;;; :TEST-ME (mon-string-to-symbol "mon-string-to-symbol" 4)
@@ -4784,13 +4806,13 @@ list `nil'.\n
 :EXAMPLE\n(mon-symbol-to-string 'bubba)\n
 \(mon-symbol-to-string \(mon-string-to-symbol \"bubba\"\)\)\n
 \(progn
-  \(unintern \(intern-soft \"some-uninterned-symbol\"\)\)
+  \(unintern \(intern-soft \"some-uninterned-symbol\" obarray\)\)
   \(mon-symbol-to-string
    \(make-symbol \"some-uninterned-symbol\"\)\)\)\n
 :SEE-ALSO `mon-string-to-symbol', `mon-string-to-sequence',
 `mon-string-from-sequence', `mon-alphabet-as-type',
 `mon-string-split', `mon-string-replace-char', `symbol-name'.\n►►►"
-  (or (and (intern-soft symbol-to-frob)
+  (or (and (intern-soft symbol-to-frob obarray)
            (symbol-name symbol-to-frob))
       ;; Which is more correct? (format "%s" symbol) Or:
       (format "%S" symbol-to-frob)))
@@ -4801,7 +4823,8 @@ list `nil'.\n
 ;;
 ;;; :TEST-ME (mon-symbol->string 'bubba)
 ;;; :TEST-ME (mon-symbol->string (mon-string-to-symbol "bubba"))
-;;; :TEST-ME (progn (unintern (intern-soft "some-uninterned-symbol"))
+;;; :TEST-ME (progn  (and (intern-soft "some-uninterned-symbol" obarray) 
+;;                         (unintern "some-uninterned-symbol" obarray))
 ;;;            (mon-symbol-to-string (make-symbol "some-uninterned-symbol")))
    
 ;;; ==============================
@@ -4887,11 +4910,13 @@ any combination these will be concatenated to return value also.\n
                      stringify-seq)) msfs-seq-seqs)
     (apply #'concat (car msfs-seq-seqs) (cdr msfs-seq-seqs))))
 ;;
-(unless (fboundp (intern-soft "mon-sequence-to-string"))
-  (defalias 'mon-sequence-to-string 'mon-string-from-sequence))
+(unless (and (intern-soft "mon-sequence-to-string" obarray)
+             (fboundp 'mon-sequence-to-string))
+(defalias 'mon-sequence-to-string 'mon-string-from-sequence))
 ;;
-(unless (fboundp (intern-soft "mon-seq->string"))
-  (defalias 'mon-seq->string 'mon-string-from-sequence))
+(unless (and (intern-soft "mon-seq->string" obarray)
+             (fboundp 'mon-seq->string))
+(defalias 'mon-seq->string 'mon-string-from-sequence))
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; | (string-equal
@@ -5285,26 +5310,26 @@ Does not move-point.\n
 `mon-stringify-list', `mon-insert-string-ify', `mon-line-drop-in-words',
 `mon-string-ify-current-line',`mon-word-get-list-in-buffer',
 `mon-string-replace-char'.\n►►►"
-(interactive "i\ni\np")
-(let ((mssl-splt-str-s)
-      (mssl-splt-str-e)
-      (mssl-splt-str))  
-  ;; :WAS (setq w-buffer (or w-buffer (current-buffer)))
-  ;;       (save-excursion (set-buffer w-buffer)
-  (save-excursion    
-    (with-current-buffer (if w-buffer (get-buffer w-buffer) (current-buffer))
-      (setq mssl-splt-str
-            ;; :WAS (buffer-substring-no-properties 
-            ;;  (progn (end-of-line 1) (setq mssl-splt-str-e (point)))
-            ;;  (progn (beginning-of-line 1) (setq mssl-splt-str-s (point)))) )))
-            (mon-buffer-sub-no-prop 
-             (progn (end-of-line 1) (setq mssl-splt-str-e (point)))
-             (progn (beginning-of-line 1) (setq mssl-splt-str-s (point)))))))
-  (if (or insrtp intrp)
-      (if (not buffer-read-only)      
-          (save-excursion (prin1 mssl-splt-str (current-buffer)))
+  (interactive "i\ni\np")
+  (let ((mssl-splt-str-s)
+        (mssl-splt-str-e)
+        (mssl-splt-str))  
+    ;; :WAS (setq w-buffer (or w-buffer (current-buffer)))
+    ;;       (save-excursion (set-buffer w-buffer)
+    (save-excursion    
+      (with-current-buffer (if w-buffer (get-buffer w-buffer) (current-buffer))
+        (setq mssl-splt-str
+              ;; :WAS (buffer-substring-no-properties 
+              ;;  (progn (end-of-line 1) (setq mssl-splt-str-e (point)))
+              ;;  (progn (beginning-of-line 1) (setq mssl-splt-str-s (point)))) )))
+              (mon-buffer-sub-no-prop 
+               (progn (end-of-line 1) (setq mssl-splt-str-e (point)))
+               (progn (beginning-of-line 1) (setq mssl-splt-str-s (point)))))))
+    (if (or insrtp intrp)
+        (if (not buffer-read-only)      
+            (save-excursion (prin1 mssl-splt-str (current-buffer)))
           (prin1 mssl-splt-str))
-    mssl-splt-str)))
+      mssl-splt-str)))
 
 ;;; ==============================
 ;;; :PREFIX "mssc-"
@@ -5391,8 +5416,10 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n
 	   (save-excursion
 	     (progn 
 	       (kill-line)
-               ;; :WAS (mapcar '(lambda (x) (princ (format "%s%s%s " mscl-dlm x mscl-dlm) (current-buffer))) mscl-ss)
-               (mapc #'(lambda (x) (princ (format "%s%s%s " mscl-dlm x mscl-dlm) (current-buffer))) mscl-ss)
+               ;; :WAS (mapcar '(lambda (mscl-L-1) 
+               ;;                (princ (format "%s%s%s " mscl-dlm mscl-L-1 mscl-dlm) (current-buffer))) mscl-ss)
+               (mapc #'(lambda (mscl-L-1) 
+                         (princ (format "%s%s%s " mscl-dlm mscl-L-1 mscl-dlm) (current-buffer))) mscl-ss)
 	       (delete-char -1))) mscl-ss)
 	  ((and intrp buffer-read-only)
 	   (progn
@@ -5403,8 +5430,8 @@ Neither SPLIT-ON nor DELIM have an effect when Invoked interactively.\n
 	  ((and (not intrp) mscl-dlm)
 	   (let (mscl-ss2)
              (setq mscl-ss2 nil)
-	     (mapc #'(lambda (x) (setq mscl-ss2 (cons (format "%s%s" mscl-dlm x) mscl-ss2))) mscl-ss)
-       	     ;; :WAS (mapcar '(lambda (x) (setq mscl-ss2 (cons (format "%s%s" mscl-dlm x) mscl-ss2)))mscl-ss)
+	     (mapc #'(lambda (mscl-L-2) (setq mscl-ss2 (cons (format "%s%s" mscl-dlm mscl-L-2) mscl-ss2))) mscl-ss)
+       	     ;; :WAS (mapcar '(lambda (mscl-L-2) (setq mscl-ss2 (cons (format "%s%s" mscl-dlm mscl-L-2) mscl-ss2)))mscl-ss)
 	     mscl-ss2))
 	  (t mscl-ss))))
 ;;
@@ -5621,8 +5648,7 @@ call-next-method' &rest replacement-args\n◄\n
               (save-match-data
                 (when (and (= (line-end-position) (buffer-end 1))
                            (looking-at "^\\([^;,.()<>`'#► ]\\)[\\[:graph:]]+[^' ]$"))
-                  (replace-match  (concat "`" (match-string-no-properties 0) "'"))))
-              )
+                  (replace-match  (concat "`" (match-string-no-properties 0) "'")))))
             (mon-g2be -1) ;; (goto-char (buffer-end 0))
             ;; :WAS            
             ;; (search-forward-regexp 
@@ -5776,17 +5802,19 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
 :SEE :FILE align.el for alternative approaches.\n
 :ALIASED-BY `mon-indent-lines-from-to-col'\n
 :SEE-ALSO `mon-line-strings-indent-to-col', `mon-line-strings-pipe-to-col',
-`mon-string-fill-to-col', `mon-comment-divider->col',
-`mon-comment-lisp-to-col'.\n►►►"
+`mon-string-fill-to-col', `mon-comment-divider->col', `mon-comment-lisp-to-col'.\n►►►"
   (interactive "i\ni\ni\ni\np")
   (let ((mliftc-frm-c (cond (from-col from-col)
-                     ((or intrp t)
-                      (read-number "col to start from: "
-                                   (car (posn-actual-col-row (posn-at-point)))))))
+                            ((or intrp t)
+                             (read-number 
+                              (concat ":FUNCTION `mon-line-indent-from-to-col' "
+                                      "-- col to start from: ")
+                              (car (posn-actual-col-row (posn-at-point)))))))
         (mliftc-to-c (cond (to-col to-col)
-                    ((or intrp t)
-                     (read-number "col to indent to: " 
-                                  (car (posn-actual-col-row (posn-at-point)))))))
+                           ((or intrp t)
+                            (read-number (concat ":FUNCTION `mon-line-indent-from-to-col' "
+                                                 "-- col to indent to: ")
+                                         (car (posn-actual-col-row (posn-at-point)))))))
         (mliftc-beg-c (cond (start start)
                        ((region-active-p) (region-beginning))))
         (mliftc-end-c (cond (end end)
@@ -5815,9 +5843,9 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
                (indent-to-column mliftc-to-c)
                (setq indent-wrk nil)))))))
 ;;
-(unless (and (intern-soft "mon-indent-lines-from-to-col")
+(unless (and (intern-soft "mon-indent-lines-from-to-col" obarray)
              (fboundp 'mon-indent-lines-from-to-col))
-  (defalias 'mon-indent-lines-from-to-col 'mon-line-indent-from-to-col))
+(defalias 'mon-indent-lines-from-to-col 'mon-line-indent-from-to-col))
 ;;
 ;;; :TEST-ME (let ((st-pnt (make-marker))
 ;;                 (nd-pnt (make-marker))
@@ -6384,9 +6412,9 @@ unique words in a buffer of document.\n
                     (split-string
                      (delete-and-extract-region beg end) "\\b")))))
 ;;
-(unless (and (intern-soft "mon-region-reverse-words")
+(unless (and (intern-soft "mon-region-reverse-words" obarray)
              (fboundp 'mon-region-reverse-words))
-  (defalias 'mon-region-reverse-words 'mon-word-reverse-region))
+(defalias 'mon-region-reverse-words 'mon-word-reverse-region))
 
 ;;; ==============================
 ;;; :PREFIX "mwio-"
@@ -6490,9 +6518,10 @@ Return results and display in buffer named \"*WORD-COUNT*\".\n
             (puthash mwco-k1 (1+ (gethash mwco-k1 mwco-nb 0)) mwco-nb)))))
     (if (<= (hash-table-count mwco-nb) 0)
         (if intrp 
-            (message 
-             (concat ":FUNCTION `mon-word-count-occurrences' "
-                     "-- did not find re-occurences for words with > word-length 3 in buffer: %s") mwco-dpt-buf)
+            (message (concat ":FUNCTION `mon-word-count-occurrences' "
+                             "-- did not find re-occurences for words "
+                             "with > word-length 3 in buffer: %s") 
+                     mwco-dpt-buf)
           `(,@mwco-wrds-chrs :WORDS-W-LEN-GT-3 0))
       (progn
         (maphash #'(lambda (mwco-k2 mwco-v)
@@ -6687,9 +6716,9 @@ Useful for generating a reasonable arg for `make-hash-table's :size keyword.\n
 ;;
 (defalias 'mon-get-next-almost-prime 'mon-next-almost-prime)
 ;;
-(unless (and (intern-soft "next-almost-prime")
+(unless (and (intern-soft "next-almost-prime" obarray)
              (fboundp 'next-almost-prime))
-  (defalias 'next-almost-prime 'mon-next-almost-prime))
+(defalias 'next-almost-prime 'mon-next-almost-prime))
 
 ;;; ==============================
 ;;; :CHANGESET 2043
@@ -6801,8 +6830,9 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
 ;;;               (prin1 k))
 
 ;;; ==============================
+;;; :PREFIX "mswnky-"
 ;;; :NOTE Used in :FILE mon-site-local-defaults.el 
-;;; This function shadows that symbol so it can be compiled.
+;;; This function shadows that symbol so that it can be compiled.
 ;;; :CREATED <Timestamp: #{2010-02-10T19:47:57-05:00Z}#{10064} - by MON KEY>
 (defun mon-string-wonkify (wonk-words wonkify-n-times)
   "Wonkify the string WONK-WORDS.\n
@@ -6810,43 +6840,49 @@ On MON system min. 0.85 seconds is needed between calls to produce unique id's.\
 \(mon-string-wonkify \"These are some wonky words\" 3\)\n
 :SEE-ALSO `mon-zippify-region', `mon-generate-prand-seed', `mon-generate-prand-id',
 `mon-generate-WPA-key', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►" 
-  ;; (eval-when-compile (require 'cookie1)) for `shuffle-vector'
-  (let* ((wonkify wonk-words)
-        (wonk-usr #'(lambda (l eo) 
-                      (let (new-round)
-                        (dolist (u l)
-                          (let ((U u))
-                            (dotimes (i (random (length U)))
-                              (let ((rnd (random (length U))))
-                                (setf (nth rnd U)
-                                      (if eo (upcase (nth rnd U)) (downcase (nth rnd U))))))
-                            (push (apply 'string U) new-round)))
-                        (setq wonkify new-round))))
-        (seqify #'(lambda (q)
-                    (let (reseq)
-                      (mapc #'(lambda (s) (push (string-to-list s) reseq)) 
-                            (cond ((listp q) q)
-                                  ((stringp q) (list q))))
-                      reseq)))
-        (lcl-gcd #'(lambda (&rest lcl-gcd-args)
-                     (let ((a (abs (or (pop lcl-gcd-args) 0))))
-                       (while lcl-gcd-args
-                         (let ((b (abs (pop lcl-gcd-args))))
-                           (while (> b 0) (setq b (% a (setq a b))))))
-                       a))))
-    (setq wonkify (make-list wonkify-n-times (car (funcall seqify  wonkify))))
-    (do ((w wonkify-n-times))
-         ((< w 0)  wonkify)
-      (setq w (1- w))
-      (setq wonkify (apply 'vector wonkify))
-      (setq wonkify (mon-nshuffle-vector wonkify)) ;;(shuffle-vector wonkify))
-      (setq wonkify (append wonkify nil))
-      (when (stringp (car wonkify))
-        (setq wonkify (funcall seqify wonkify)))
-      ;; :WAS (funcall wonk-usr wonkify (if (eq (gcd w 2) 2) t)))))
-      ;; (funcall wonk-usr wonkify (if (eq (cl::gcd w 2) 2) t)))))
-      (funcall wonk-usr wonkify 
-               (if (eq (apply lcl-gcd `(,w 2)) 2) t)))))
+  (let* ((mswnky-wrds wonk-words)
+         ;; :PREFIX "wnkusr-"
+         (wonk-USR #'(lambda (wnkusr-L-1 wnkusr-L-2) 
+              (let (wnkusr-lt-0)
+                (dolist (wnkusr-D-1 wnkusr-L-1)
+                  (let ((wnkusr-lt-1 wnkusr-D-1))
+                    (dotimes (wnkusr-D-2 (random (length wnkusr-lt-1)))
+                      (let ((wnkusr-lt-2 (random (length wnkusr-lt-1))))
+                        (setf (nth wnkusr-lt-2 wnkusr-lt-1)
+                              (if wnkusr-L-2 
+                                  (upcase (nth wnkusr-lt-2 wnkusr-lt-1)) 
+                                (downcase (nth wnkusr-lt-2 wnkusr-lt-1))))))
+                    (push (apply 'string wnkusr-lt-1) wnkusr-lt-0)))
+                (setq mswnky-wrds wnkusr-lt-0))))
+         ;; :PREFIX "sqfy-"
+         (mswnky-seqify #'(lambda (sqfy-L-1)
+                     (let (sqfy-lt-1)
+                       (mapc #'(lambda (sqfy-L-2) 
+                                 (push (string-to-list sqfy-L-2) sqfy-lt-1)) 
+                             (cond ((listp sqfy-L-1) sqfy-L-1)
+                                   ((stringp sqfy-L-1) (list sqfy-L-1))))
+                       sqfy-lt-1)))
+         ;; :PREFIX "lcgc-"
+         (mswnky-GCD #'(lambda (&rest lcgc-L-1)
+                      (let ((lcgc-lt-1 (abs (or (pop lcgc-L-1) 0))))
+                        (while lcgc-L-1
+                          (let ((lcgc-lt-2 (abs (pop lcgc-L-1))))
+                            (while (> lcgc-lt-2 0) 
+                              (setq lcgc-lt-2 
+                                    (% lcgc-lt-1 
+                                       (setq lcgc-lt-1 lcgc-lt-2))))))
+                        lcgc-lt-1))))
+    (setq mswnky-wrds (make-list wonkify-n-times (car (funcall mswnky-seqify mswnky-wrds))))
+    (do ((mswnky-D-1 wonkify-n-times))
+         ((< mswnky-D-1 0)  mswnky-wrds)
+      (setq mswnky-D-1 (1- mswnky-D-1))
+      (setq mswnky-wrds (apply 'vector mswnky-wrds))
+      (setq mswnky-wrds (mon-nshuffle-vector mswnky-wrds))
+      (setq mswnky-wrds (append mswnky-wrds nil))
+      (when (stringp (car mswnky-wrds))
+        (setq mswnky-wrds (funcall mswnky-seqify mswnky-wrds)))
+      (funcall wonk-USR mswnky-wrds 
+               (if (eq (apply mswnky-GCD `(,mswnky-D-1 2)) 2) t)))))
 
 ;;  :)
 (defalias 'mon-generate-wonky 'mon-string-wonkify)
@@ -7102,7 +7138,7 @@ value contains the following key value pairs:\n
              :true-table  ,(vconcat bool-vec)
              :bool-vector ,bool-vec))
 
-       `(:bin-table  ,to-bin 
+       `(:bin-table   ,to-bin 
          :true-table  ,(vconcat bool-vec)
          :bool-vector ,bool-vec)))))
 ;;
@@ -7317,11 +7353,11 @@ Numbers which can be read include (nonexhaustive):\n
 ;;; :COURTESY Noah Friedman <friedman@splode.com> :HIS buffer-fns.el 
 ;;; :WAS `operate-on-rectangle' -> `apply-on-rectangle' -> `mon-rectangle-operate-on'
 ;;; ==============================
-(defun mon-rectangle-operate-on (function start end &rest args)
-  "Call FUNCTION for each line of rectangle with corners at START, END.
-FUNCTION is called with two arguments: the start and end columns of the
+(defun mon-rectangle-operate-on (rec-fun start end &rest args)
+  "Call REC-FUN for each line of rectangle with corners at START, END.
+REC-FUN is called with two arguments: the start and end columns of the
 rectangle, plus ARGS extra arguments.  Point is at the beginning of line when
-the function is called.\n
+REC-FUN is called.\n
 :SEE `apply-on-rectangle' in :FILE rect.el
 :SEE-ALSO `mon-rectangle-operate-on', `mon-rectangle-apply-on-region-points',
 `mon-rectangle-downcase', `mon-rectangle-upcase', `mon-rectangle-capitalize'.\n►►►"
@@ -7342,7 +7378,7 @@ the function is called.\n
       ;; Start looping over lines.
       (goto-char startpt)
       (while (< (point) endpt)
-	(apply function startcol endcol args)
+	(apply rec-fun startcol endcol args)
 	(forward-line 1)))))
 
 ;;; ==============================
@@ -7880,11 +7916,11 @@ plist elements of returned list have the format:\n
      'no-mini t)
     mmwp-wdo-l))
 ;;
-(unless (and (intern-soft "mon-get-window-plist")
+(unless (and (intern-soft "mon-get-window-plist" obarray)
              (fboundp 'mon-get-window-plist))
   (defalias 'mon-get-window-plist 'mon-map-windows->plist))
 ;;
-(unless (and (intern-soft "mon-window-map-active-to-plist")
+(unless (and (intern-soft "mon-window-map-active-to-plist" obarray)
              (fboundp 'mon-window-map-active-to-plist))
   (defalias 'mon-window-map-active-to-plist 'mon-map-windows->plist))
 
@@ -7988,11 +8024,11 @@ plist elements of returned list have the format:\n
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T17:16:18-04:00Z}#{10381} - by MON KEY>
-(unless (and (intern-soft "mon-delq-alist")
+(unless (and (intern-soft "mon-delq-alist" obarray)
              (fboundp 'mon-delq-alist))
   (defalias 'mon-delq-alist 'assq-delete-all))
 ;;
-(unless (and (intern-soft "mon-sort-alist")
+(unless (and (intern-soft "mon-sort-alist" obarray)
              (fboundp 'mon-sort-alist))
   (defalias 'mon-sort-alist 'edebug-sort-alist
     "Return the ALIST sorted with comparison function FUNCTION.\n
@@ -8176,7 +8212,7 @@ Of several `eq' occurrences of an element in DUP-LIST, the first one is kept.\n
       (setq md-dq-tail (cdr md-dq-tail))))
   dup-list)
 ;;
-(unless (and (intern-soft "delq-dups")
+(unless (and (intern-soft "delq-dups" obarray)
              (fboundp 'delq-dups))
   (defalias 'delq-dups 'mon-delq-dups))
 ;;
@@ -8248,7 +8284,7 @@ are the same Lisp object.\n
       mdf-total))
   in-list)
 ;;
-(unless (and (intern-soft "mon-list-delete-first")
+(unless (and (intern-soft "mon-list-delete-first" obarray)
              (fboundp    'mon-list-delete-first))
   (defalias 'mon-list-delete-first 'mon-delete-first))
 
@@ -8352,7 +8388,7 @@ When optional arg AS-TWO-LIST is non-nil return as two elt list.\n
         (push mrd-head mrd-tmp-list)))
     (reverse mrd-tmp-list)))
 ;;
-(unless (and (intern-soft "mon-list-remove-dups")
+(unless (and (intern-soft "mon-list-remove-dups" obarray)
              (fboundp 'mon-list-remove-dups))
   (defalias 'mon-list-remove-dups 'mon-remove-dups))
 ;;
@@ -8471,16 +8507,15 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-23T11:30:09-04:00Z}#{10384} - by MON KEY>
-(when (and (intern-soft "ido-chop") (fboundp 'ido-chop))
-  (unless (and (intern-soft "mon-list-chop") (fboundp 'mon-list-chop))
-    (defalias 'mon-list-chop 'ido-chop
+(when (and (intern-soft "ido-chop" obarray) (fboundp 'ido-chop))
+  (unless (and (intern-soft "mon-list-chop" obarray) (fboundp 'mon-list-chop))
+(defalias 'mon-list-chop 'ido-chop
       "Remove all elements before ELEM and put them at the end of ITEMS.
 :EXAMPLE\n\n\(mon-list-chop '\(a b c d e f\) 'd\)\n
 \(mon-list-chop '\(a b \"c\" d e f) \"c\"\)\n
 \(mon-list-chop '\(a b (c \"c\" \"d\") d e f) '(c \"c\" \"d\"\)\)\n
 \(mon-list-chop '\(a b [c \"c\" \"d\"] d e f\) '[c \"c\" \"d\"]\)
-:SEE-ALSO .\n►►►"
-      )))
+:SEE-ALSO .\n►►►")))
 
 ;;; ==============================
 ;;; :COURTESY ert/lisp/emacs-lisp/ert.el :WAS `ert--proper-list-p'
@@ -8528,13 +8563,13 @@ A proper list is a list ending with a nil or cdr, not an atom.\n
       (setq putatively-proper (cdr putatively-proper)))
     (null putatively-proper)))
 ;;
-(unless (and (intern-soft "proper-list-p")
+(unless (and (intern-soft "proper-list-p" obarray)
              (fboundp 'proper-list-p))
-  (defalias 'proper-list-p 'mon-list-proper-p))
+(defalias 'proper-list-p 'mon-list-proper-p))
 ;;
-(unless (and (intern-soft "mon-proper-list-p")
+(unless (and (intern-soft "mon-proper-list-p" obarray)
              (fboundp 'mon-proper-list-p))
-  (defalias 'mon-proper-list-p 'mon-list-proper-p))
+(defalias 'mon-proper-list-p 'mon-list-proper-p))
 ;;
 ;;; :TEST-ME (mon-list-proper-p '(a . b))
 ;;; :TEST-ME (mon-list-proper-p '(a  b))
@@ -8613,7 +8648,7 @@ to avoid corrupting the original lst1 and lst2.\n
           (pop lst-2))
         lst-1)))
 ;;
-(unless (and (intern-soft "mon-list-union")
+(unless (and (intern-soft "mon-list-union" obarray)
              (fboundp 'mon-list-union))
 (defalias 'mon-list-union 'mon-union))
 
@@ -8789,8 +8824,9 @@ and does not provide intelligent type checking.\n
            (unless (null mintr-res)
              (setq mintr-res (nreverse mintr-res)))))))
 ;;
-(unless (and (intern-soft "mon-list-intersect") (fboundp 'mon-list-intersect))
-  (defalias 'mon-list-intersect 'mon-intersection))
+(unless (and (intern-soft "mon-list-intersect" obarray) 
+             (fboundp 'mon-list-intersect))
+(defalias 'mon-list-intersect 'mon-intersection))
 ;;
 ;;; (defun hfy-interq (set-a set-b)
 ;;;   "Return the intersection \(using `eq'\) of 2 lists."
@@ -9369,13 +9405,13 @@ in COMBINE-LSTS.\n
                            (list (cons (car combine-lsts) mcmbn-L-rst)))
                        (apply #'mon-combine (cdr combine-lsts))))))
 ;;
-(unless (and (intern-soft "mon-list-combine")
+(unless (and (intern-soft "mon-list-combine" obarray)
              (fboundp 'mon-list-combine))
-  (defalias 'mon-list-combine 'mon-combine))
+(defalias 'mon-list-combine 'mon-combine))
 ;;
-(unless (and (intern-soft "mon-map-combine")
+(unless (and (intern-soft "mon-map-combine" obarray)
              (fboundp 'mon-map-combine))
-  (defalias 'mon-map-combine 'mon-combine))
+(defalias 'mon-map-combine 'mon-combine))
 ;;
 ;;; :TEST-ME (mon-combine '(www ftp) '(exa) '(com org))
 
@@ -9474,9 +9510,9 @@ predicate on the elements.\n
         (push (pop list1) mlm-res)))
     (nconc (nreverse mlm-res) list1 list2)))
 ;;
-(unless (and (intern-soft "mon-merge-list")
+(unless (and (intern-soft "mon-merge-list" obarray)
              (fboundp 'mon-merge-list))
-  (defalias 'mon-merge-list 'mon-list-merge))
+(defalias 'mon-merge-list 'mon-list-merge))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-utilities.el :WAS foreach
@@ -9570,13 +9606,13 @@ return values.\n
       (while (search-forward ")" nil t)
 	(replace-match "\\\)" nil t)))))
 ;;
-(unless (and (intern-soft "mon-string-escape-lisp-region")
+(unless (and (intern-soft "mon-string-escape-lisp-region" obarray)
              (fboundp 'mon-string-escape-lisp-region))
- (defalias 'mon-string-escape-lisp-region 'mon-escape-lisp-string-region))
+(defalias 'mon-string-escape-lisp-region 'mon-escape-lisp-string-region))
 ;;
-(unless (and (intern-soft "mon-lisp-escape-region")
+(unless (and (intern-soft "mon-lisp-escape-region" obarray)
              (fboundp 'mon-lisp-escape-region))
- (defalias 'mon-lisp-escape-region 'mon-escape-lisp-string-region))
+(defalias 'mon-lisp-escape-region 'mon-escape-lisp-string-region))
 
 ;;; ==============================
 (defun mon-unescape-lisp-string-region (start end)
@@ -9597,13 +9633,13 @@ without the surrounding quotes.\n
 	(replace-match "" nil t)
 	(forward-char)))))
 ;;
-(unless (and (intern-soft "mon-string-unescape-lisp-region")
+(unless (and (intern-soft "mon-string-unescape-lisp-region" obarray)
              (fboundp 'mon-string-unescape-lisp-region))
- (defalias 'mon-string-unescape-lisp-region 'mon-unescape-lisp-string-region))
+(defalias 'mon-string-unescape-lisp-region 'mon-unescape-lisp-string-region))
 ;;
-(unless (and (intern-soft "mon-lisp-unescape-region")
+(unless (and (intern-soft "mon-lisp-unescape-region" obarray)
              (fboundp 'mon-lisp-unescape-region))
-  (defalias 'mon-lisp-unescape-region 'mon-unescape-lisp-string-region))
+(defalias 'mon-lisp-unescape-region 'mon-unescape-lisp-string-region))
 
 
 ;;; ==============================
@@ -9620,7 +9656,7 @@ without the surrounding quotes.\n
 \(mon-quote-sexp #:is-not\)\n
 :SEE-ALSO `mon-escape-lisp-string-region', `mon-unescape-lisp-string-region'.\n►►►"
   (if (or (memq sexp '(t nil))
-	  (keywordp (intern-soft (format "%S" sexp)))
+	  (keywordp (intern-soft (format "%S" sexp) obarray))
 	  (and (listp sexp) (eq (car sexp) '(lambda)))
 	  (stringp sexp)
 	  (numberp sexp)
@@ -9920,6 +9956,7 @@ With ARG, begin column display at current column, not at left margin.\n
 ;;; :WAS `unbind-function'   -> `mon-unbind-function'
 ;;; :NOTE Commands for unbinding things.
 ;;; ==============================
+;;;###autoload
 (defun mon-unbind-defun ()
   "Unbind the `defun' near `point' in `current-buffer'.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
@@ -9932,6 +9969,7 @@ With ARG, begin column display at current column, not at left margin.\n
         (fmakunbound (cadr (read (current-buffer))))
       (error ":FUNCTION `mon-unbind-defun' -- no defun found near point"))))
 ;; :KEEP-WITH-ABOVE
+;;;###autoload
 (defun mon-unbind-symbol (symbol)
   "Totally unbind SYMBOL.\n
 Includes unbinding function binding, variable binding, and property list.\n
@@ -9939,11 +9977,12 @@ Includes unbinding function binding, variable binding, and property list.\n
 `mon-unbind-variable', `mon-unbind-defun', `mon-compile-when-needed',
 `mon-load-or-alert', `mon-byte-compile-and-load', `mon-dump-object-to-file',
 `mon-nuke-and-eval', `mon-after-mon-utils-loadtime'.\n►►►"
-  (interactive "SSymbol: ")
+  (interactive "S:FUNCTION `mon-unbind-symbol' -- unbind symbol: ")
   (fmakunbound symbol)
   (makunbound symbol)
   (setf (symbol-plist symbol) nil))
 ;; :KEEP-WITH-ABOVE
+;;;###autoload
 (defun mon-unbind-function (fncn-symbol)
   "Remove the function binding of FNCN-SYMBOL.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
@@ -9953,6 +9992,7 @@ Includes unbinding function binding, variable binding, and property list.\n
   (interactive "aFunction: ")
   (fmakunbound fncn-symbol))
 ;; :KEEP-WITH-ABOVE
+;;;###autoload
 (defun mon-unbind-command (cmd-symbol)
   "Remove the command binding of CMD-SYMBOL.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
@@ -9962,6 +10002,7 @@ Includes unbinding function binding, variable binding, and property list.\n
   (interactive "CCommand: ")
   (fmakunbound cmd-symbol))
 ;; :KEEP-WITH-ABOVE
+;;;###autoload
 (defun mon-unbind-variable (var-symbol)
   "Remove the variable binding of VAR-SYMBOL.\n
 :SEE-ALSO `mon-unbind-command', `mon-unbind-symbol', `mon-unbind-function',
@@ -9983,6 +10024,7 @@ Includes unbinding function binding, variable binding, and property list.\n
 ;;; :COURTESY Thierry Volpiatto :WAS `tv-dump-object-to-file'
 ;;; :SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-09/msg00846.html')
 ;;; :CREATED <Timestamp: #{2009-10-01T12:31:29-04:00Z}#{09404} - by MON>
+;;;###autoload
 (defun mon-dump-object-to-file (obj file)
   "Save symbol object OBJ to the byte compiled version of FILE.\n
 OBJ can be any lisp object, list, hash-table, etc.
@@ -10012,6 +10054,7 @@ hash-table.
              obj file)))
 
 ;;; ==============================
+;;;###autoload
 (defun mon-byte-compile-and-load ()
   "Byte compile and load the current .el file.\n
 The function `byte-compile-file' was only easily accesible from the menu.\n
@@ -10029,6 +10072,7 @@ The function `byte-compile-file' was only easily accesible from the menu.\n
 ;;; :SEE (URL `http://www.idiap.ch/~fleuret/files/fleuret.emacs.el')
 ;;; :WAS `ff/compile-when-needed' -> `mon-compile-when-needed'
 ;;; ==============================
+;;;###autoload
 (defun mon-compile-when-needed (comp-fname)
   "Compile the given file with COMP-FNAME only if needed.\n
 Add .el if required, and use `load-path' to find it.\n
@@ -10056,6 +10100,7 @@ Add .el if required, and use `load-path' to find it.\n
 ;;; :COURTESY Francois Fleuret <fleuret@idiap.ch> :WAS `ff/load-or-alert'
 ;;; This is useful when using the same .emacs in many places.
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-05T16:17:17-05:00Z}#{10095} - by MON KEY>
+;;;###autoload
 (defun mon-load-or-alert (lib-name &optional compile-when-needed)
   "Try to load the specified file LIB-NAME.\n
 When optional arg COMPILE-WHEN-NEEDED `mon-compile-when-needed' the file

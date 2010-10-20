@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Mon Oct 18 11:33:55 2010 (-0700)
+;; Last-Updated: Tue Oct 19 09:55:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 4373
+;;     Update #: 4374
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -178,8 +178,6 @@
 ;;
 ;;; Change log:
 ;;
-;; 2010/10/18 dadams
-;;     Info-mode (Emacs 20): Removed: (make-local-hook 'activate-menubar-hook).
 ;; 2010/05/27 dadams
 ;;     Added: Info-set-mode-line.
 ;;     Info-find-node-2:
@@ -3955,6 +3953,7 @@ These are all of the current Info Mode bindings:
           mode-name   "Info"
           tab-width   8)
     (use-local-map Info-mode-map)
+    (make-local-hook 'activate-menubar-hook)
     (add-hook 'activate-menubar-hook 'Info-menu-update nil t)
     (set-syntax-table Info-mode-syntax-table)
     (setq local-abbrev-table  text-mode-abbrev-table

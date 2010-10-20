@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 21.0
-;; Last-Updated: Mon Oct 18 11:29:13 2010 (-0700)
+;; Last-Updated: Tue Oct 19 10:10:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 161
+;;     Update #: 162
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setnu+.el
 ;; Keywords: lines
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -38,8 +38,6 @@
 ;;
 ;;; Change log:
 ;;
-;; 2010/10/18 dadams
-;;     Removed make-local-hook calls (unneeded anyway).
 ;; 2006/10/02 dadams
 ;;     Added soft require of fit-frame.el.  Thx to Andreas Roehler.
 ;; 2005/12/26 dadams
@@ -81,6 +79,8 @@
 
 (remove-hook 'before-change-functions 'setnu-before-change-function)
 (remove-hook 'after-change-functions 'setnu-after-change-function)
+(make-local-hook 'before-change-functions)
+(make-local-hook 'after-change-functions)
 
 (defgroup Setnu-Plus nil "Setnu options." :group 'convenience)
 

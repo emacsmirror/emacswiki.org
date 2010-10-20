@@ -18,7 +18,7 @@ For information on using the menu for actions instead of keys, see CategoryMenus
 * PrefixKey -- Defining a new prefix key
 * KeybindingGuide
 * EmacsKeyBindingCriticisms -- Criticisms of Emacs default key bindings
-* MenuAccessFromKeyboard -- libraries that let you access menus from the keyboard (without the mouse), including:
+* MenuAccessFromKeyboard -- Libraries that let you access menus from the keyboard (without the mouse)
 * ModifierKeys -- Shift, Alt, Meta, Control, Super, Hyper
 
 == Key Problems Solved ==

@@ -565,8 +565,8 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-keywords '("ken" "kens" "kensa" "alex")
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	 "#emacs" "#sql" "#perl" "#perl6"))))
-	("irc.perl.org" :channels ("#perlde"
+	 "#emacs" "#sql" "#perl" "#perl6"))
+	("irc.perl.org" :channels ("#perlde"))
 	("ircnet.eversible.com" :channels ("#drsrm")))
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
 	;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))

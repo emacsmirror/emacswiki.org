@@ -1,61 +1,61 @@
 ==What's LazySearch ?==
-LazySearch is new search mode that base on OneKey.
-It can taken various string around point, and search fast.
+LazySearch is new search mode that is based on OneKey.
+It can take various strings around point and search fast.
 
 : Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
 
-==Why need LazySearch ?==
-* Mark various string around point:
-: Mark various string around point, just type *one* keystroke. 
+==What makes LazySearch useful?==
+* Mark various strings around point:
+: You can mark various strings around point, just type *a single* keystroke. 
 
 * Switch search type:
-: Switch various search type with *one* keystroke.
+: Switch various search types with *a single* keystroke.
 
 * Lazy search:
-: Type *one* keystroke to search next or previous match.
-: Yep, that's me, i won't type second times if i can complete it with *one* keystroke. ;)
+: Type *a single* keystroke to search next or previous match.
+: Yep, that's me, I can't be bothered to type more than a single keystroke for that.
 
 * View in search:
 : You can move cursor or scroll buffer when searching.
-: You can use this feature view buffer or match different search type quickly.
+: You can use this feature to view the buffer or match different search types quickly.
 
 * Copy search object:
-: You can just type *one* keystroke to copy search object.
+: You can just type *a single* keystroke to copy the search object.
 
-* Translate with Isearch:
+* Transfer your search to Isearch:
 : You can translate between LazySearch and [[Isearch]].
 
-* Others advanced:
+* Other advanced features
 ** Edit search object.
 ** Search from yank.
 ** Search previous search object.
-** Query-replace search object.
+** Query-replace search.
 ** Integrate with Lisp:color-moccur.el.
 ** And any feature you like add......
 
 ==Install==
-* This packages need Lisp:one-key.el, make sure you have install it first.
+* This packages needs Lisp:one-key.el.  Make sure you install it first.
 : Download Lisp:one-key.el and Lisp:lazy-search.el
 
-* Then put Lisp:one-key.el and Lisp:lazy-search.el in your load-path, and then add
+* Put Lisp:one-key.el and Lisp:lazy-search.el in your load-path, and then add
 {{{
      (require 'lazy-search)
 }}}
 : in ~/.emacs .
 
-* Or you can use Lisp:auto-install.el install LazySearch with following:
+* Or you can use Lisp:auto-install.el install LazySearch with the following:
 ## M-x auto-install-batch RET
 ## Input "lazy-search"
 
 :: (How to install Lisp:auto-install.el, see AutoInstall)
                                     
-* Bind any keystroke you like to `lazy-search-menu', like me:
+* Bind any keystroke you like to `lazy-search-menu'.  I do:
 :: (global-set-key (kbd "M-s") 'lazy-search-menu)
 
 ==Usage==
-Default, LazySearch will popup help window when you execute command `lazy-search-menu'.
+By default, LazySearch will popup a help window when you execute the command `lazy-search-menu'.
 
-* Feature including in Lisp:lazy-search.el:
+* Features included in Lisp:lazy-search.el:
 
 ** Mark:
 :: w -- Mark word.
@@ -113,13 +113,13 @@ Default, LazySearch will popup help window when you execute command `lazy-search
 :: v -- Moccur.
 :: V -- Moccur all.
 
-: And all above keystrokes you can customize through modified lazy-search-menu-alist.
+: You can customize all these keystrokes by modifying lazy-search-menu-alist.
 
 ==Tips==
-: You can bind command `isearch-to-lazy-search' with `isearch-mode-map', like me:
+: You can bind the command `isearch-to-lazy-search' with `isearch-mode-map'.  I do it like this:
 :: (define-key 'isearch-mode-map (kbd "M-l") 'isearch-to-lazy-search).
 
-: Then type "M-l" when you searching in isearch. Isearch will translate search object to [[LazySearch]] mode.
+: Then type "M-l" when you are searching in isearch. Isearch will transfer its search object to [[LazySearch]] mode.
 
 ==Related==
 * Lisp:lazy-search-extension.el -- Some enhanced functions for LazySearch.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jun  4 10:47:11 2010 (-0700)
+;; Last-Updated: Tue Oct 19 21:18:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2632
+;;     Update #: 2634
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -245,6 +245,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/19 dadams
+;;     enlarge-font: Only do frame-update-faces if Emacs 20 (obsolete in 21).
 ;; 2010/06/04 dadams
 ;;     Added: (toggle-max|restore)-frame(-horizontally|-vertically).  Thx to Uday Reddy for suggestion.
 ;;     Renamed max-frame to maximize-frame.
@@ -1397,7 +1399,7 @@ Optional FRAME parameter defaults to current frame."
     (unless (x-list-fonts fontname) (error "Cannot change font size"))
     (modify-frame-parameters frame (list (cons 'font fontname)))
     ;; Update faces that want a bold or italic version of the default font.
-    (frame-update-faces frame)))
+    (when (< emacs-major-version 21) (frame-update-faces frame))))
 
 (defun enlarged-font-name (fontname frame increment)
   "FONTNAME, after enlarging font size of FRAME by INCREMENT.

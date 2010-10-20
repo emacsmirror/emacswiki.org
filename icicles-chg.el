@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 18 11:37:24 2010 (-0700)
+;; Last-Updated: Sat Oct  9 16:07:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5695
+;;     Update #: 5693
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3148,9 +3148,6 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
-;; 2010/10/18 dadams
-;;     icicle-minibuffer-setup: Removed: (unless (fboundp 'define-minor-mode)
-;;                                         (make-local-hook '(pre|post)-command-hook))
 ;; 2010/10/09 dadams
 ;;     icicle-define-cycling-keys:
 ;;       Define modal keys uncondiationally (no icicle-cycling-respects-completion-mode).

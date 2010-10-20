@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 14 16:45:30 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:55:51 2010 (-0800)
+;; Last-Updated: Tue Oct 19 21:14:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 205
+;;     Update #: 207
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-mac.el
 ;; Keywords: extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -78,7 +78,7 @@
 ;;     Command `doremi-set-bg+' runs this hook after running `doremi':
 ;; (setq define-doremi-after-hook
 ;;       ;; Update the way faces display with new bg.
-;;       '(lambda () (frame-update-face-colors (selected-frame))))
+;;       (lambda () (frame-set-background-mode (selected-frame))))
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -190,7 +190,7 @@ INCREMENT, provided interactively by the prefix argument."
 
 ;; ;; New command `doremi-set-bg+' runs this hook after running `doremi':
 ;; (setq define-doremi-after-hook
-;;       '(lambda () (frame-update-face-colors (selected-frame))))
+;;       (lambda () (frame-set-background-mode (selected-frame))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;

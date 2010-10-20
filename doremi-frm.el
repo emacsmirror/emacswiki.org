@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 12:54:58 2010 (-0800)
+;; Last-Updated: Tue Oct 19 21:25:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2944
+;;     Update #: 2954
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -201,10 +201,10 @@
 ;;   (define-key global-map [menu-bar doremi]
 ;;     (cons "Do Re Mi" menu-bar-doremi-menu))
 ;;   (define-key menu-bar-doremi-menu [doremi-frame-configs+]
-;;     '(menu-item "Frame Configurations" . doremi-frame-configs+
+;;     '(menu-item "Frame Configurations"  doremi-frame-configs+
 ;;       :help "Cycle among frame configurations recorded: `up'/`down'"))
 ;;   (define-key menu-bar-doremi-menu [doremi-font+]
-;;     '(menu-item "Font" . doremi-font+
+;;     '(menu-item "Font"  doremi-font+
 ;;       :help "Successively cycle among fonts, choosing by name: `up'/`down'"))
 ;;   (when (fboundp 'text-scale-increase)    ; Emacs 23+.
 ;;     (define-key menu-bar-doremi-menu [doremi-buffer-font-size+]
@@ -275,12 +275,15 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/19 dadams
+;;     doremi-frame-color-component, doremi-bg/fg-color-name-1, doremi-set-frame-color:
+;;       Replace frame-update-face-colors with frame-set-background-mode for > Emacs 20.
 ;; 2009/11/14 dadams
 ;;     Added: doremi(-face)-(bg|fg)-hue-stepping-saturation+,
 ;;            doremi-(face|frame)-hue-stepping-saturation.  (No keys bound.)  Thx to Ahei.
 ;; 2009/11/10 dadams
 ;;     Added: doremi(-face)-bg/fg-color-name-1.  Thx to Ahei.
-;;     doremi(-face)-(bg|fg)-color-name+: Use doremi(-face)-bg/fg-color-name-1.  Added args.
+;;     doremi(-face)-(bg|fg)-color-name+: Use doremi(-face)-bg/fg-color-name-1.  Add args.
 ;; 2009/11/07 dadams
 ;;     Added: doremi-adjust-increment-for-color-component, doremi-face-bg/fg-1,
 ;;            doremi-face-color-component, doremi-increment-face-color
@@ -1834,7 +1837,9 @@ COMPONENT and INCREMENT are as for `doremi-increment-color'."
             t))
   ;; Recurse with the NEXT-COMPONENT.  Revert increment to `doremi-current-increment'.
   (let ((next-component  (pop unread-command-events)))
-    (frame-update-face-colors frame)    ; Update the way faces display
+    (if (> emacs-major-version 20)      ; Update the way faces display
+        (frame-set-background-mode frame)
+      (frame-update-face-colors frame))
     (when (member next-component '(?r ?g ?b ?h ?s ?v ?R ?H))
       (doremi-frame-color-component frame-parameter next-component
                                     doremi-current-increment frame))))
@@ -1874,7 +1879,9 @@ Optional arg FRAME defaults to the selected frame.  See `doremi-bg+'."
                               'doremi-set-background-color
                             'doremi-set-foreground-color)
                           (or frame (selected-frame)))
-  ;; $$$$$$ (frame-update-face-colors frame)    ; Update the way faces display
+;; $$$$$  (if (> emacs-major-version 20)      ; Update the way faces display
+;; $$$$$      (frame-set-background-mode frame)
+;; $$$$$    (frame-update-face-colors frame))
   (cdr (assq frame-parameter (frame-parameters frame)))) ; Return new value.
 
 (defun doremi-frame-hue-stepping-saturation (frame-parameter increment &optional frame)
@@ -1908,7 +1915,9 @@ See `doremi-bg+' for info about the other args."
             nil                         ; ignored
             (hexrgb-defined-colors)     ; Enumeration list
             t)
-    (frame-update-face-colors frame)))
+    (if (> emacs-major-version 20)      ; Update the way faces display
+        (frame-set-background-mode frame)
+      (frame-update-face-colors frame))))
 
 (defun doremi-increment-face-color (frame-parameter face component increment)
   "Change color FRAME-PARAMETER of FACE by INCREMENT of color COMPONENT.
@@ -2271,8 +2280,9 @@ SPEC is as for `defface'."
 FRAME-PARAMETER can be `background-color' or `foreground-color'."
   (modify-frame-parameters (or frame (selected-frame))
                            (list (cons frame-parameter color-name)))
-  (frame-update-face-colors (or frame (selected-frame))))
-
+  (if (> emacs-major-version 20)        ; Update the way faces display
+      (frame-set-background-mode (or frame (selected-frame)))
+    (frame-update-face-colors (or frame (selected-frame)))))
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

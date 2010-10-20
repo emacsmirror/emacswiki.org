@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 16:45:20 1999
 ;; Version: 20.0
-;; Last-Updated: Mon Oct 18 11:32:12 2010 (-0700)
+;; Last-Updated: Tue Oct 19 10:09:02 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1479
+;;     Update #: 1480
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc+.el
 ;; Keywords: internal, tools, unix
 ;; Compatibility: GNU Emacs 20.x
@@ -100,8 +100,6 @@
 ;;
 ;;; Change log:
 ;;
-;; 2010/10/18 dadams
-;;     vc-dired-mode: Removed (make-local-hook 'dired-after-readin-hook).
 ;; 1999/04/09 dadams
 ;;     Changed binding of vc-ediff in vc-dired-mode-map bc of conflict.
 ;; 1999/03/31 dadams
@@ -753,6 +751,7 @@ You can type `vl', `v=' etc. to invoke `vc-print-log', `vc-diff', and
 the like on the file named on the current Dired buffer line.  `vv'
 invokes `vc-next-action' on this file, or on all files currently
 marked.  The special command, `*l' marks all files currently locked."
+  (make-local-hook 'dired-after-readin-hook)
   (add-hook 'dired-after-readin-hook 'vc-dired-hook nil t)
   ;; The following is slightly modified from `dired.el',
   ;; because file lines look a bit different in `vc-dired-mode'.

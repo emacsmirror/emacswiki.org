@@ -29,9 +29,7 @@ I've done a few things with emacs which I'm trying to push into this wiki:
 == node js for emacs == [http://github.com/nicferrier/elnode elnode]
 is an asynchronous tcp server handling HTTP.
 
-The server is atm implementing the http plumbing. There is not HTTP
-request parsing yet. That's the next bit I have to work on.
-
+As of now elnode is just about functional... it can only handle GET but it does allow params and child processes to be run and everything works asynchronously.
 
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).

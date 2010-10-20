@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Mon Oct 18 10:22:44 2010 (-0700)
+;; Last-Updated: Tue Oct 19 09:37:49 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1769
+;;     Update #: 1770
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -127,7 +127,8 @@
 ;;      and want it to have a shell specifier line that all other headers do not
 ;;      have.  To do this, Place the following lines in a hook called when the
 ;;      mode is invoked or in the code that establishes the mode:
-;;         (add-hook make-header-hook 'header-shell nil t)
+;;         (make-local-hook 'make-header-hook)
+;;         (add-hook make-header-hook 'header-shell)
 
 ;;      The header building blocks are sensitive to the different comment
 ;;      characters in different modes.
