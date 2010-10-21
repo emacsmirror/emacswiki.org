@@ -882,4 +882,18 @@ I didn't learn to read and write, so that I could communicate using a crude syst
 <e1f> how is that possible when the genetic alphabet is only 4 letters?
 <legumbre_> UTF-4
 %
+<myrkraverk> lewellyn! Yes, I like to learn things.  Right now I'm coding for
+             VMS.
+<lewellyn> i'm sorry ;)
+<myrkraverk> Or, that is, that's my current project.
+<lewellyn> though vms has some neat tricks
+<g4lt-mordant> like "send developers to redmond and have them take over an
+               entire codebase"?
+<myrkraverk> g4lt-mordant! No, that's emacs: C-u M-x hostile-codebase-takeover
+             RET redmond RET
+<g4lt-mordant> but then it gets rewitten in lisp
+<myrkraverk> Yes, that's an unfortunate side effect.  Luckily we have a very
+             nice lisp engine, SBCL.
+  -- #solaris
+%
 </pre>

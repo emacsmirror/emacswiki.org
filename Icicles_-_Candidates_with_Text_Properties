@@ -92,7 +92,7 @@ As a shortcut, if you use the value `t' instead of a property list for property 
 This method is similar to that of using property
 `icicle-special-candidate'.  The use case for both is
 propertizing, in a general way, candidates that are symbols.  Both
-can be useful when you have an obarray as the ##COLLECTION## argument
+can be useful when you have an [[obarray]] as the ##COLLECTION## argument
 for `completing-read'.
 
 In this method the symbol name is not used at all; the candidate
@@ -119,7 +119,7 @@ This is the most flexible approach, and it is explained in a bit
 more detail.  It can be used with multi-completions, and it
 affects the `*Completions*' display and the completion return
 value.  However, it is limited to using an [[alist]] or list of
-strings, not an obarray, as the ##COLLECTION## argument to
+strings, not an [[obarray]], as the ##COLLECTION## argument to
 `completing-read'.
 
 In this approach, you simply apply the text properties to the string(s) that represent the candidate, which you then pass to `completing-read' in its ''##COLLECTION##'' parameter.

@@ -1,8 +1,8 @@
 ;;; diredful.el --- colorful file names in dired buffers
 
 ;; Author: Thamer Mahmoud <thamer.mahmoud@gmail.com>
-;; Version: 1.0
-;; Time-stamp: <2010-10-15 15:38:31 thamer>
+;; Version: 1.1
+;; Time-stamp: <2010-10-21 09:32:47 thamer>
 ;; URL: http://www.emacswiki.org/emacs/download/diredful.el
 ;; Keywords: dired, colors, extension, widget
 ;; Compatibility: Tested on GNU Emacs 23.2
@@ -27,8 +27,10 @@
 
 ;;; Commentary:
 ;;
-;; This package provides an easy way to customize dired mode to
-;; display files in different faces and colors.
+;; This package provides a simple way to customize dired mode to
+;; display files in different faces and colors. Faces are chosen based
+;; on file extension, file name, or a regexp that matches the whole
+;; file line.
 ;;
 ;;; Install:
 ;;
@@ -62,6 +64,12 @@
 ;; by doing:
 ;;
 ;;     M-x customize-variable diredful-init-file
+;;
+;; File type names are sorted alphabetically before being
+;; processed. In case two file types have matched the same file, the
+;; file type that comes last in an alphabetically-sorted list will
+;; take precedence (e.g., a file type named "zworldwritable" will take
+;; priority over other file types).
 ;;
 
 ;;; Code:
@@ -137,7 +145,7 @@ only the faces that we've added can be returned."
   (if (and  (stringp (car l))
             (> (length l) 0)
             (= (length (cadr x)) 4))
-      (cadar (last (cadr x)))
+      (car (cdr (car (last (cadr x)))))
     nil))
 
 (defun diredful-apply (regexp face whole enable)

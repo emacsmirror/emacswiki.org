@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Oct 19 17:17:09 2010 (-0700)
+;; Last-Updated: Wed Oct 20 06:31:20 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2800
+;;     Update #: 2810
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -21,7 +21,7 @@
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `fit-frame', `info', `info+', `misc-fns', `mkhtml',
 ;;   `mkhtml-htmlize', `strings', `thingatpt', `thingatpt+',
-;;   `w32-browser'.
+;;   `w32-browser', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -151,9 +151,10 @@
 ;;  Variables defined here:
 ;;
 ;;    `diredp-file-line-overlay', `diredp-font-lock-keywords-1',
-;;    `diredp-menu-bar-immediate-menu', `diredp-menu-bar-mark-menu',
-;;    `diredp-menu-bar-operate-menu', `diredp-menu-bar-regexp-menu',
-;;    `diredp-menu-bar-subdir-menu', `diredp-w32-drives-mode-map'.
+;;    `diredp-loaded-p', `diredp-menu-bar-immediate-menu',
+;;    `diredp-menu-bar-mark-menu', `diredp-menu-bar-operate-menu',
+;;    `diredp-menu-bar-regexp-menu', `diredp-menu-bar-subdir-menu',
+;;    `diredp-w32-drives-mode-map'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `dired.el' have
@@ -207,10 +208,18 @@
 ;;     Use separate frames instead of windows if `pop-up-frames' is
 ;;     non-nil, or if prefix arg < 0.
 ;;
+;;  ***** NOTE: (Emacs 20 only) The following variable defined in
+;;        `dired.el' has been REDEFINED HERE:
+;;
+;;  `dired-move-to-filename-regexp' - Recognize file size in k etc.
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/20 dadams
+;;     Moved Emacs 20 tweak to recognize k in file sizes to var dired-move-to-filename-regexp.
+;;     Added diredp-loaded-p.
 ;; 2010/10/19 dadams
 ;;     diredp-font-lock-keywords-1:
 ;;       Handle decimal pt in file size.  Thx to Michael Heerdegen.
@@ -1580,7 +1589,12 @@ In particular, inode number, number of hard links, and file size."
   :group 'Dired-Plus :group 'font-lock-highlighting-faces)
 (defvar diredp-link-priv 'diredp-link-priv)
 
-
+;; Fix Emacs 20 recognition of fields up through file name when size is expressed using `k' etc.
+(when (and (< emacs-major-version 21) (not (boundp 'diredp-loaded-p))
+           dired-move-to-filename-regexp ; These last two checks are just in case.
+           (eq (aref dired-move-to-filename-regexp 7) ?\  ))
+  (setq dired-move-to-filename-regexp
+        (concat "[0-9][BkKMGTPEZY]?" (substring dired-move-to-filename-regexp 7))))
 
 ;;; Define second level of fontifying.
 (defvar diredp-font-lock-keywords-1
@@ -1591,10 +1605,7 @@ In particular, inode number, number of hard links, and file size."
    '("[^ .]\\.\\([^. /]+\\)$" 1 diredp-file-suffix) ; Suffix
    '("\\([^ ]+\\) -> [^ ]+$" 1 diredp-symlink) ; Symbolic links
    ;; 1) Date/time and 2) filename w/o suffix:
-   (list (if (< emacs-major-version 22)
-             ;; Hack to correct Emacs 20-21 to recognize -h option (k, M, etc. for size).
-             (concat "[0-9][BkKMGTPEZY]?" (substring dired-move-to-filename-regexp 7))
-           dired-move-to-filename-regexp)
+   (list dired-move-to-filename-regexp
          (if (or (not (fboundp 'version<)) (version< emacs-version "23.2"))
              (list 1 'diredp-date-time t t)
            (list 2 'diredp-date-time t t)) ; Date/time
@@ -1623,20 +1634,20 @@ In particular, inode number, number of hard links, and file size."
    '("^..\\([0-9]* \\)*.........\\(x\\)" 2 diredp-exec-priv) ;o x
    '("^..\\([0-9]* \\)*.........\\([lsStT]\\)" 2 diredp-other-priv) ; o misc
    '("^..\\([0-9]* \\)*........\\(w\\)" 2 diredp-write-priv) ; o w
-   '("^..\\([0-9]* \\)*.......\\(r\\)" 2 diredp-read-priv)   ; o r
-   '("^..\\([0-9]* \\)*......\\(x\\)" 2 diredp-exec-priv)    ; g x
+   '("^..\\([0-9]* \\)*.......\\(r\\)" 2 diredp-read-priv) ; o r
+   '("^..\\([0-9]* \\)*......\\(x\\)" 2 diredp-exec-priv) ; g x
    '("^..\\([0-9]* \\)*....[^0-9].\\([lsStT]\\)" 2 diredp-other-priv) ; g misc
    '("^..\\([0-9]* \\)*.....\\(w\\)" 2 diredp-write-priv) ; g w
-   '("^..\\([0-9]* \\)*....\\(r\\)" 2 diredp-read-priv)   ; g r
-   '("^..\\([0-9]* \\)*...\\(x\\)" 2 diredp-exec-priv)    ; u x
+   '("^..\\([0-9]* \\)*....\\(r\\)" 2 diredp-read-priv) ; g r
+   '("^..\\([0-9]* \\)*...\\(x\\)" 2 diredp-exec-priv) ; u x
    '("^..\\([0-9]* \\)*...\\([lsStT]\\)" 2 diredp-other-priv) ; u misc
    '("^..\\([0-9]* \\)*..\\(w\\)" 2 diredp-write-priv) ; u w
-   '("^..\\([0-9]* \\)*.\\(r\\)" 2 diredp-read-priv)   ; u r
+   '("^..\\([0-9]* \\)*.\\(r\\)" 2 diredp-read-priv) ; u r
    '("^..\\([0-9]* \\)*.\\([-rwxlsStT]+\\)" 2 diredp-no-priv keep) ;-
    '("^..\\([0-9]* \\)*\\([bcsmpS]\\)[-rwxlsStT]" 2 diredp-rare-priv) ; (rare)
    '("^..\\([0-9]* \\)*\\(l\\)[-rwxlsStT]" 2 diredp-link-priv) ; l
    (list (concat "^\\([^\n " (char-to-string dired-del-marker) "].*$\\)")
-         1 diredp-flag-mark-line t) ; Flag/mark lines
+         1 diredp-flag-mark-line t)     ; Flag/mark lines
    (list (concat "^\\([" (char-to-string dired-del-marker) "]\\)") ; Deletion flags (D)
          '(1 diredp-deletion t)
          '(".+" (dired-move-to-filename) nil (0 diredp-deletion-file-name t)))
@@ -3735,6 +3746,10 @@ This calls chmod, so symbolic modes like `g+w' are allowed."
     (goto-char (posn-point mouse-pos)))
   (dired-do-chxxx "Owner" dired-chown-program 'chown 1)
   (dired-previous-line 1))
+
+;;;;;;;;;;;;
+
+(setq diredp-loaded-p  t)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; dired+.el ends here

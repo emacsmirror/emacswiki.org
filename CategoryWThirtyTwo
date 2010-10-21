@@ -47,6 +47,7 @@ Help:
 Installation:
 
 * [[EmacsW32]] -- an enhancement and an installation program for Emacs on MS-Windows. '''Note 1:''' It is also a run time environment including keyboard adjustments, printing etc. '''Note 2:''' It can also extract the Emacs MS-Windows binaries .tar.gz file (using 7-zip internally).
+* [[EmacsPortable]] -- Another enhancment and installation program for Emacs on MS-windows especially customized for PortableApplications.  '''Note 1:''' It is also a run time environment including keyboard adjustments for either viper, ergemacs or standard keys, printing (taken from a version of EmacsW32) etc. '''Note 2:''' It can also extract the Emacs MS-Windows binaries .tar.gz file. However, this is done by including the appropriate GnuWin32 binaries instead of relying of 7-zip. '''Note 3:''' This will run on portable drives, and should allow customization of pacakges installed.  It will also install locally.  When running locally AND a portable apps usb drive with EmacsPortable is inserted, the "HOME" directory is changed to the USB drive.  Hence there are portable customizations between each computer.  Just insert your USB drive!
 * MsWindowsInstallation -- Installation guidelines when not using !EmacsW32
 * MsWindowsDotEmacs -- About the .emacs (or _emacs) initialization file on MS-Windows
 * The free (GNU LGPL) open source program [http://www.7-zip.org/ 7-zip] is a good choice for extracting <tt>.tar.gz</tt> files.

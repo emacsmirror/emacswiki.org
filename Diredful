@@ -1,8 +1,42 @@
-This package provides an easy way to customize [[DiredMode]] to display files in different faces and colors. It can determine the type of file using an extension list or regexp search of the whole file line.
+This package provides a simple way to customize [[DiredMode]] to display files in different faces and colors. Colors are chosen based on file extension, file name, or a regexp that matches the whole file line.
+
+==Download==
 
 Lisp:diredful.el
 
+==Usage==
 
+Put the above file in your Emacs-Lisp load path, and add the following into your $HOME/.emacs startup file:
+
+ (require 'diredful)
+
+Then Do:
+
+ M-x diredful-add
+
+This will ask you to define a new name for a new file type, like "Images". You can then customize the face using a widget.el buffer (see screenshot below). Faces will be automatically generated and updated for each file type.
+
+File Types can be added, edited, and deleted using the following three commands:
+
+ M-x diredful-add/delete/edit
+
+Note that changes will only apply to newly created dired buffers.
+
+Settings will be saved to the location of `diredful-init-file' (by default it is "~/.emacs.d/diredful-conf.el"). You may choose a different location by doing:
+
+ M-x customize-variable diredful-init-file
+
+==Tips==
+
+File type names are sorted alphabetically before being processed. In case two file types have matched the same file, the file type that comes last in an alphabetically sorted list will take precedence (e.g., zworldwritable). 
+
+==Screenshots==
+
+[[image:DiredfulShotPageOne]]
+
+The customize file type buffer:
+
+[[image:DiredfulShotPageTwo]]
 
 
 

@@ -44,7 +44,9 @@ DrewAdams has written library <tt>[[dired-details+.el]]</tt>, which provides som
 
 * It automatically shrink-wraps a one-window Dired frame whenever you show/hide details (if you also load library Lisp:autofit-frame.el). See the screenshots above ([[#Screenshots]]).
 
+=== Bugs ===
 
+* When editing file names with dired-toggle-read-only and committing everything works as expected, if changes are aborted details are displayed until the listing is refreshed.
 
 ----
 CategoryDirectories

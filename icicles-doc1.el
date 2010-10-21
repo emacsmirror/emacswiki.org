@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 15 09:59:14 2010 (-0700)
+;; Last-Updated: Wed Oct 20 15:20:38 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25515
+;;     Update #: 25520
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5438,14 +5438,15 @@
 ;;  See (@file :file-name "icicles-doc2.el" :to "Global Filters").
 ;;
 ;;  Variable `icicle-must-pass-predicate' applies to the textual
-;;  candidates that are displayed in buffer `*Completions*'.  You can
-;;  also apply a predicate to the full alist-entry candidates that are
-;;  supplied to `completing-read' or `read-file-name'.  As a
-;;  programmer, you can of course do that when your code calls these
-;;  functions.  As an Icicles user, you can use `M-&' to define and
-;;  apply predicates to such alist-entry candidates on the fly, while
-;;  completing.  See
-;;  (@file :file-name "icicles-doc2.el" :to "Icicles Search Commands, Overview").
+;;  candidates that can be displayed in buffer `*Completions*'.  You
+;;  can also apply a predicate to the full alist-entry or
+;;  obarray-symbol candidates that are supplied to `completing-read'
+;;  or `read-file-name' as its COLLECTION argument.  As a programmer,
+;;  you can of course do that when your code calls these functions.
+;;  As an Icicles user, you can use `M-&' to define and apply
+;;  predicates to such alist-entry candidates on the fly, while
+;;  completing.  See (@file :file-name "icicles-doc2.el" :to "Icicles
+;;  Search Commands, Overview").
 ;;
 ;;(@* "Word Matching and String Matching")
 ;;  ** Word Matching and String Matching **

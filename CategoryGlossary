@@ -59,6 +59,7 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * [[modifier key]] -- (1) a keyboard key that, when pressed, modifies the behavior of another keyboard key pressed at the same time (e.g. Control, Shift, Alt); (2) a soft key that does the same thing (e.g. Control, Shift, Meta, Hyper, Super)
 * [[mule]] -- multilingual environment
 * [[narrowing]]  -- limiting [[buffer]] scope temporarily
+* '''[::obarray]''' -- a [[symbol]] table implemented as a special kind of vector.  Think of it as a hash table for looking up symbols.  The value of [[variable]] `obarray' is the obarray used by default by `intern' and `read'. See [[Manual:Creating Symbols]].
 * [[overlay]] -- a [[property list]] that is similar to a [[text property]] list, but which is associated with [[buffer]] positions, not with characters. Typically used to highlight text.
 * '''[::plist]''' (aka '''[::property list]''') -- A list with an even number of elements that are treated alternately as keys and their values. Both keys and values can be any Lisp objects. A plist can be part of a [[symbol]] or disembodied (independent of any symbol).
 * [[point]] -- where text insertion occurs (sometimes called "cursor position" outside Emacs).

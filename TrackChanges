@@ -70,5 +70,19 @@ This way, you can use highlight-changes in "toggle mode": Once the mode is activ
 [new]
 Concerning colors, you've just got a case of the AngryFruitSalad.  Well, you don't. HighlightChanges does.  It can be  a global problem in Emacs, as discussed at AngryFruitSalad.
 
+[new]
+Following function can make the highlight vanish after save file --[[coldnew]]
+<pre>
+(defun highlight-changes-remove-after-save ()
+  "Remove previous changes after save."
+  (make-local-variable 'after-save-hook)
+  (add-hook 'after-save-hook
+	    (lambda ()
+		(highlight-changes-remove-highlight (point-min) (point-max)))))
+
+</pre>
+
+Add this function to any hook you want.
+
 ----
 CategoryUndo

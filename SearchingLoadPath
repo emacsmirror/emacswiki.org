@@ -1,7 +1,7 @@
 Here scour-load-path-for will search for a file in the load-path returning its path, or nil if the file cannot be found.
 
 <pre>
-(defmacro filter (var condition list)
+(defmacro project-filter (var condition list)
   `(loop for ,var in ,list when ,condition collect ,var))
 
 (defun scour-load-path-for (filename)
@@ -16,3 +16,6 @@ Here scour-load-path-for will search for a file in the load-path returning its p
 
 [new]
 Why not ##locate-library##?
+
+[new]
+This is very inefficient, even as an example.  It will look at all the files in each directory.  It should be using ##file-readable-p##. -tzz

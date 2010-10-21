@@ -127,3 +127,14 @@ http://xwl.appspot.com/ref/cal-china-x.el
 Modified version of the above using traditional Chinese characters (plus some nit picks):
 
 http://github.com/stepnem/emacs-libraries/blob/master/cal-china-x.el
+
+=== Irish ===
+To add a few key Irish public holidays:
+<pre>
+(setq  holiday-irish-holidays 
+       '((holiday-float 5 1 1 "May Day")
+         (holiday-float 6 1 1 "June Bank Holiday")
+         (holiday-float 8 1 1 "August Bank Holiday")
+         (holiday-float 10 1 -1 "October Bank Holiday")
+         (holiday-fixed 12 26 "St. Stephen's Day")))
+</pre>

@@ -1,6 +1,6 @@
 Usually you should not be trying to modify vectors themselves, only the elements stored in the vector, because vectors are designed for ''random access''.  They are fast.  They are not designed to be searched or sorted.  They are also immutable, so you cannot change them (only the elements).  If you want change them (change their size), you must create a copy instead.
 
-= Sorting/Randomizing/Shuffling =
+== Sorting/Randomizing/Shuffling ==
 
     (defun shuffle-vector (vector)
       "Randomly permute the elements of VECTOR (all permutations equally likely)."
@@ -48,7 +48,7 @@ macros only require loading the CL package at compile-time:
 
     (eval-when-compile (require 'cl))
 
-= Library Ring+ =
+== Library Ring+ ==
 
 DrewAdams has written library Lisp:ring+.el, which extends standard library <code>ring.el</code> to provides feature for using vectors as cyclic structures ("rings"). See RingPlus. 
 
@@ -61,17 +61,22 @@ This library includes function `ring-convert-sequence-to-ring', which converts a
 ** char-table (like a vector, but indexed by character codes)
 ** bool-vector (like a vector, but with only `t' and `nil' entries)
 
-= A Gotcha! =
 
-Don't try to treat a vector obarray as a normal vector!  The EmacsLisp manual tells you this clearly, but I nevertheless tried to do this (programming idiom pointed out in the discussion of vectors in the same manual):
+
+
+== A Gotcha! ==
+
+Don't try to treat an [[obarray]] as a normal vector!  The [[Manual:Creating Symbols|Elisp manual]] tells you this clearly, but I nevertheless tried to do this (programming idiom pointed out in the discussion of vectors in the same manual):
 
   (setq my-list (append minibuffer-completion-table nil)) ; Convert vector to list.
 
 '''''Wrong!''''' And it took me while to figure the problem out...
 
-When dealing with obarrays, use `mapatoms' -- always. -- DrewAdams
+When dealing with obarrays, use `mapatoms' -- always.   -- DrewAdams
 
-= See Also =
+
+
+== See Also ==
 
 * LevenshteinDistance - Uses vectors for determining the edit distance between two strings.
 

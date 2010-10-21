@@ -24,9 +24,9 @@ In '''Icicles''', you can add extra completion candidates, using variable `icicl
 variables.  Normally, you do not change them directly; instead, a command can use them to limit or extend the effective domain of discourse. See [[Icicles - Global Filters]].
 
 Variable `icicle-must-pass-predicate' applies to the textual
-candidates that are displayed in [[buffer]] `*Completions*'.  You can
-also apply a predicate to the full [[alist]]-entry candidates that are
-supplied to `completing-read' or `read-file-name'.  As a
+candidates that can be displayed in [[buffer]] `*Completions*'.  You can
+also apply a predicate to the full [[alist]]-entry or [[obarray]]-[[symbol]] candidates that are
+supplied to `completing-read' or `read-file-name' as its ##COLLECTION## argument.  As a
 programmer, you can of course do that when your code calls these
 functions.  As an '''Icicles''' user, you can use `##M-&##' to define and
 apply predicates to such alist-entry candidates on the fly, while completing.
