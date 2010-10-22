@@ -1,5 +1,5 @@
 ;;;; sudo-ext.el --- sudo support
-;; Time-stamp: <2010-10-18 20:41:03 rubikitch>
+;; Time-stamp: <2010-10-22 08:16:35 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -135,7 +135,7 @@ Because BODY is executed as asynchronous function, ARGS should be lexically boun
 
 (defun sudoedit (file)
   "Run `sudoedit FILE' to edit FILE as root."
-  (interactive "fSudoedit: ")
+  (interactive "FSudoedit: ")
   (sudo-wrapper (file)
     (let ((process-environment (copy-sequence process-environment)))
       (setenv "EDITOR" (sudoedit-editor))

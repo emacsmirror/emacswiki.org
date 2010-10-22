@@ -3,15 +3,15 @@
 ;; Filename: texmate-import.el
 ;; Description: Import Texmate macros into yasnippet syntax
 ;; Author: Matthew L. Fidler
-;; Maintainer: 
+;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 
-;; Last-Updated: 
-;;           By: 
-;;     Update #: 0
-;; URL: 
-;; Keywords: 
-;; Compatibility: 
+;; Version: 0.1 
+;; Last-Updated: Thu Oct 21 16:11:12 2010 (-0500)
+;;           By: Matthew L. Fidler
+;;     Update #: 62
+;; URL: http://www.emacswiki.org/emacs/texmate-import.el
+;; Keywords: Yasnippet
+;; Compatibility: Tested with Windows Emacs 23.2
 ;; 
 ;; Features that might be required by this library:
 ;;
@@ -21,11 +21,40 @@
 ;; 
 ;;; Commentary: 
 ;; 
-;; 
+;;  This library allows you to import Texmate bundle snippets to Yasnippet
+;;
+;;  To use, put in a directory in the load path, like ~/elisp and put the
+;;  following in ~/.emacs
+;;
+;;  (autoload 'texmate-import-bundle "texmate-import" "* Import TeXMate files" 't)
 ;;  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 21-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 21 16:10:52 2010 (-0500) #61 (Matthew L. Fidler)
+;;    Selected text bugfix
+;; 21-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 21 15:54:16 2010 (-0500) #56 (Matthew L. Fidler)
+;;    Now handles key-bindings as well.
+;; 21-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 21 13:34:30 2010 (-0500) #26 (Matthew L. Fidler)
+;;    Added a fix to take out spaces in texmate bundles file name translations.
+;; 21-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 21 13:29:00 2010 (-0500) #19 (Matthew L. Fidler)
+;;
+;;    Updated import to find groupings before or after orderings in
+;;    the info.plist.
+;;
+;; 21-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 21 09:05:30 2010 (-0500) #9 (Matthew L. Fidler)
+;;
+;;    Added a yas/root-directory of the current directory if
+;;    undefined.  Allows to be run from the command line by just
+;;    loading this file
+;;
+;; 21-Oct-2010    Matthew L. Fidler  
+;;    Added optional transformation function.
 ;; 20-Oct-2010    Matthew L. Fidler  
 ;;    Bug fix -- added mode.
 ;; 
@@ -50,6 +79,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
+(require 'yasnippet nil 't)
+(defvar yas/root-directory "./") ; Should already be defined by yasnippet.
 (defun texmate-import-get-property (name start stop)
   "* Get property from plist"
   (let ( (val-start nil) (val-stop nil) (content nil) )
@@ -72,23 +103,33 @@
     ("&gt;" ">")
     ("[$][{]\\([0-9]+\\):[$]TM_SELECTED_TEXT[}]" "${\\1:`yas/selected-text`}")
     ("[$][{]\\([0-9]+\\)" "$\\1")
-    ("[$][{]TM_SELECTED_TEXT:\\([^\\}]*\\)[}]" "`(or (yas/selected-text) \"\\1\")`")
+    ("[$][{]TM_SELECTED_TEXT:\\([^\\}]*\\)[}]" "`(or yas/selected-text \"\\1\")`")
+    ("[$][{]TM_SELECTED_TEXT[}]" "`(or yas/selected-text \"\")`")
+    ("[$]TM_SELECTED_TEXT" "`(or yas/selected-text \"\")`")
     )
 ;  "*Texmate import convert known expressions"
   
   )
 (defun texmate-import-convert-template (template)
   "* Converts template to Yasnippet template"
-  (let (ret)
+  (let (ret max )
     (with-temp-buffer
       (insert template)
       (mapc (lambda(x)
               (goto-char (point-min))
               (while (re-search-forward (nth 0 x) nil t)
-                (replace-match (nth 1 x)))
+                (replace-match (nth 1 x) 't nil))
               )
             texmate-import-convert-known-expressions
             )
+      (goto-char (point-min))
+      (setq max "0")
+      (while (re-search-forward "[$][{]?\\([0-9]+\\)" nil t)
+        (setq max (match-string 1))
+        )
+      (setq max (+ 1 (string-to-int max)))
+      (while (search-forward "`(or yas/selected-text \"\")`" nil t)
+        (replace-match (format "${%s:`yas/selected-text`}" max) 't 't))
       (setq ret (buffer-substring (point-min) (point-max)))
       )
     (symbol-value 'ret)
@@ -96,26 +137,32 @@
   )
 (defun texmate-get-group (uuid plist)
   "* Gets group from textmate info.plist file"
-  (let (group)
+  (let (group start stop)
     (with-temp-buffer
       (insert plist)
       (goto-char (point-min))
       (when (search-forward (concat "<string>" uuid "</string>") nil t)
-        (setq group (texmate-import-get-property "name" (point) (point-max)))
+        (when (search-backward "<dict>")
+          (setq start (point))
+          )
+        (when (search-forward "</dict>")
+          (setq stop (point))
+          )
+        (setq group (texmate-import-get-property "name" start stop))
         )
       )
     (symbol-value 'group)
     )
   )
-(defun texmate-import-file (file new-dir &optional original-author plist)
+(defun texmate-import-file (file new-dir &optional original-author plist transform-function)
   "* Imports texmate file"
   (message "Importing %s" file)
   (with-temp-buffer
     (insert-file-contents file)
-    (texmate-import-current-buffer new-dir original-author file plist)
+    (texmate-import-current-buffer new-dir original-author file plist transform-function)
     )
   )
-(defun texmate-import-current-buffer (new-dir &optional original-author buffer-name plist)
+(defun texmate-import-current-buffer (new-dir &optional original-author buffer-name plist transform-function)
   "* Changes Texmate (current buffer) plist to yas snippet."
   (let (
         (start nil)
@@ -129,10 +176,14 @@
         (scope nil)
         (group nil)
         (snippet "")
+        (binding "")
         (bfn (or buffer-name (buffer-file-name)))
         )
     (when (string-match "/\\([^/]*\\)[.][^.]*$" bfn)
       (setq bfn (concat (match-string 1 bfn) ".yasnippet"))
+      )
+    (while (string-match "[ \t]+" bfn)
+      (setq bfn (replace-match "_" nil nil bfn))
       )
     (save-excursion
       (goto-char (point-min))
@@ -146,15 +197,30 @@
           (setq name (texmate-import-get-property "name" start stop))
           (setq scope (texmate-import-get-property "scope" start stop))
           (setq group (texmate-get-group uuid plist))
+          (setq binding (texmate-import-get-property "keyEquivalent" start stop))
+          (when binding
+            (setq binding (downcase binding))
+            (while (string-match "[@]+" binding)
+              (setq binding (replace-match "" nil nil binding)))
+            (while (string-match "\\^+" binding)
+              (setq binding (replace-match "C-" nil nil binding)))
+            )
           (setq snippet (concat "# -*- mode: snippet -*-"
                                 "\n# uuid: " uuid
                                 "\n# contributor: Translated from textmate snippet by texmate-import.el"
                                 "\n# contributor: Imported by " (user-full-name)
                                 (if original-author
-                                    (concat "\n# contributor: Original Author" original-author)
+                                    (concat "\n# contributor: Original Author " original-author)
                                   "")
-                                "\n# name: " name 
-                                "\n# key: " key
+                                "\n# name: " name
+                                (if (not key)
+                                    ""
+                                  (concat "\n# key: " key)
+                                  )
+                                (if (not binding)
+                                    ""
+                                  (concat "\n# binding: \"C-c C-y " binding "\"")
+                                  )
                                 "\n# scope: " scope
                                 (if group
                                     (concat "\n# group: " group)
@@ -163,6 +229,9 @@
                                 (texmate-import-convert-template content)
                                 )
                 )
+          (when transform-function
+            (setq snippet (apply transform-function (list snippet)))
+            )
           (with-temp-file (concat new-dir "/" bfn)
             (insert snippet)
             )
@@ -171,8 +240,11 @@
       )
     )
   )
-(defun texmate-import-bundle (dir mode &optional original-author yas-dir)
+(defun texmate-import-bundle (dir mode &optional original-author transform-function yas-dir)
   "Imports texmate bundle to new-dir."
+  (interactive "fTexmate Bundle Directory: \nsMode: ")
+  (unless (string= "/" (substring dir -1))
+    (setq dir (concat dir "/")))
   (let (snip-dir snips plist (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
                                           yas/root-directory
                                         (nth 0 yas/root-directory)
@@ -190,7 +262,7 @@
         )
       (unless (not (file-exists-p new-dir))
         (mapc (lambda(x)
-                (texmate-import-file x new-dir original-author plist)
+                (texmate-import-file x new-dir original-author plist transform-function)
                 )
               snips
               )
@@ -198,9 +270,72 @@
       )
     )
   )
+(defun texmate-import-stata (dir &optional new-dir)
+  "*Example function for importing Sata snippets into Yasnippet"
+  (message "Importing Stata bundle dir %s" dir)
+  (texmate-import-bundle dir
+                         "ess-mode"
+                         "Timothy Beatty"
+                         (lambda(template)
+                         (let (
+                               (ret template)
+                               )
+                           (with-temp-buffer
+                             (insert template)
+                             (goto-char (point-min))
+                             (while (re-search-forward "# *scope: *source.stata$" nil t)
+                               (end-of-line)
+                               (insert "\n# condition: (string= \"STA\" ess-language)")
+                               )
+                             ;; Ess mode doesn't have keybindings....
+                             (goto-char (point-min))
+                             (while (re-search-forward "# *binding:.*" nil t)
+                               (replace-match ""))
+                             (setq ret (buffer-substring (point-min) (point-max)))
+                             )
+                           (symbol-value 'ret)
+                           )
+                         )
+                       new-dir
+                       )
+  )
+(defun texmate-import-rmate (dir &optional new-dir)
+  "* Example Function for importing Rmate into Yasnippet"
+  (message "Importing Rmate Bundle dir %s" dir)
+  (texmate-import-bundle dir
+                       "ess-mode"
+                       "Hans-Peter Suter"
+                       (lambda(template)
+                         (let (
+                               (ret template)
+                               )
+                           (with-temp-buffer
+                             (insert template)
+                             (goto-char (point-min))
+                             (while (re-search-forward "# *scope: *source.rd$" nil t)
+                               (end-of-line)
+                               (insert "\n# condition: (string-match \"[.]rd\" (downcase (buffer-file-name)))")
+                               )
+                             (goto-char (point-min))
+                             (while (re-search-forward "# *scope: *source.r$" nil t)
+                               (end-of-line)
+                               (insert "\n# condition: (string= \"S\" ess-language)")
+                               )
+                             ;; Ess mode doesn't have keybindings....
+                             (goto-char (point-min))
+                             (while (re-search-forward "# *binding:.*" nil t)
+                               (replace-match ""))
+                             (setq ret (buffer-substring (point-min) (point-max)))
+                             )
+                           (symbol-value 'ret)
+                           )
+                         )
+                       new-dir
+                       )
+  )
 (setq debug-on-error 't)
-;(texmate-import-bundle "c:/tmp/rmate.tmbundle-7d026da/" "ess-mode")
-
+;(texmate-import-rmate "c:/tmp/rmate.tmbundle-7d026da/")
+;(texmate-import-stata "c:/tmp/Stata.tmbundle/")
 (provide 'texmate-import)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; texmate-import.el ends here

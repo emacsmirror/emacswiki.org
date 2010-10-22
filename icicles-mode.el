@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Oct 19 09:43:47 2010 (-0700)
+;; Last-Updated: Thu Oct 21 09:22:58 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6707
+;;     Update #: 6711
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3034,7 +3034,7 @@ Usually run by inclusion in `minibuffer-setup-hook'."
     ;; minibuffer, so they are added here, not in `icicle-mode'.
     ;; They are removed in `icicle-mode' when mode is exited.
     (unless (fboundp 'define-minor-mode) (make-local-hook 'pre-command-hook))
-    (add-hook 'pre-command-hook  'icicle-top-level-prep nil t)
+    (add-hook 'pre-command-hook  'icicle-top-level-prep) ; This must not be LOCAL (nil LOCAL arg).
     (add-hook 'pre-command-hook  'icicle-run-icicle-pre-command-hook nil t)
     (unless (fboundp 'define-minor-mode) (make-local-hook 'post-command-hook))
     (add-hook 'post-command-hook 'icicle-run-icicle-post-command-hook nil t)

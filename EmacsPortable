@@ -4,28 +4,30 @@ http://esnm.sourceforge.net/EmacsPortable.html
 
 The forthcoming release includes the following packages:
 
-* Icicles -- Dynamic Completion.  '''Note 1:''' Icicles does not include bookmark+.  bookmark+ increases loadup time dramatically.
-* Auto-complete 
-* color-theme
-* tiny-tools
+* [[Icicles]] -- Dynamic Completion.  '''Note 1:''' Icicles does not include bookmark+.  bookmark+ increases loadup time dramatically.
+* AutoComplete modified to work with PosTip under windows 
+* ColorTheme
+* TinyTools
 * McompleteMode
 * Iswitchb+
 * AUCTeX
 * Emacs Speaks Statistics
 * Emacs Speaks NONMEM (part of the reson I started this distribution)
 * Anything
-* Vimpulse with viper-in-more-modes
-* Tabbar
-* Yasnippet
-* todochiku
-* nxhtml
-* cursor-chg
+* [[Vimpulse]] with Lisp:viper-in-more-modes.el
+* TabBarMode
+* [[Yasnippet]]
+** Includes Rmate's snippets.  See http://r.789695.n4.nabble.com/Ann-RMate-a-bundle-for-TextMate-and-E-Texteditor-td892012.html
+** Includes limited Stata snippets imported from Texmate.  See http://bylr.net/3/2010/10/stata-bundle-for-textmate/
+* [[ToDoChiKu]]
+* NxhtmlMode
+* Lisp:cursor-chg.el, see ChangingCursorDynamically
 * Unified folding interface (fold-dwim)
 ** Optional org-mode-like tab-based showing and hiding of code
 
 It has the following features:
 
-* Tabbar mode similar in appearance to AquaEmacs
+* Tabbar mode similar in appearance to AquamacsEmacs
 * Popup menu and toolbar (optional)
 * When trying to use Tabbar and ruler-mode together, mouse movement shows the tabbar and typing shows the ruler.
 
@@ -36,3 +38,9 @@ Since this is primarily for Portable Drives, the following space saving devices 
 * Compressing el and elc files with gzip.  This may cause some problems with certain packages like ErgoEmacs.  The compression can be turned on or off with the compress and decompress emacs programs.
 * Stealth installation -- improve speed of Emacs by putting in the windows temporary directory (after it has been installed in a portable drive)
 * Local installation -- install the portable emacs locally (after it has been installed in a portable drive)
+
+Based on a merge of the following emacs distributions:
+
+* Vince Goulet's Emacs Distribution http://vgoulet.act.ulaval.ca/en/ressources/emacs/
+* AquamacsEmacs distribution
+* Easymacs

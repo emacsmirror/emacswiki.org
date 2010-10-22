@@ -110,7 +110,7 @@
 (org-add-link-type "outlook" 'org-outlook-open)
 
 (defgroup outlook-org nil
-  "NONMEM mode Version 0.9;  Allows color-coding, code-compeltion, wrapping, displaying lines over 80 characters, correct captilization without caps-lock."
+  "Outlook Org"
   :group 'org-mode
   )
 

@@ -5,7 +5,7 @@
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 10 Oct 2010 PM 02:44 JST
 ;; Keywords: abbrev convenience emulations wp
-;; Revision: $Id: 2934d0ff710fe92371291e6b7f175bdc42b1f021 $
+;; Revision: $Id: 076836148886f023da61f22e0ac48e4285aca74c $
 ;; URL: http://www.emacswiki.org/emacs/download/multiple-line-edit.el
 ;; GitHub: http://github.com/k-talo/multiple-line-edit.el
 
@@ -100,6 +100,10 @@
 ;; See also `YASnippet support' section end of this file.
 
 ;;; Chane Log:
+
+;;  Changes in 1.1
+;;   - Fixed bug that state of multiple line edit was destroyed
+;;     by a undo command in some cases.
 
 ;;; Code:
 
@@ -356,24 +360,25 @@
                   fn)
       (setq fn (lambda ()
                  (condition-case c
-                     (let* ((ov-beg (mulled/ov-1st-line/get-beg-without-padding ov))
-                            (ov-end (mulled/ov-1st-line/get-end-without-padding ov))
-                            (ov-buf (overlay-buffer ov))
-                            (cur-pt (progn
-                                      ;; Keep cursor inside of 1st line
-                                      ;; moved by undo operation.
-                                      (when mulled/.undo-at
-                                        (goto-char mulled/.undo-at)
-                                        (setq mulled/.undo-at nil))
-                                      (point))))
-                       ;; When the cursor went out of 1st line,
-                       ;; stop multiple line edit.
-                       (when (and (eq (current-buffer)
-                                      ov-buf)
-                                  (not (and (<= ov-beg cur-pt)
-                                            (<= cur-pt ov-end))))
-                         (mulled/ov-1st-line/dispose ov)
-                         (message "[mulled] Multiple line edit exited.")))
+                     (when (mulled/ov-1st-line/ov-1st-line-p ov) ;; Overlay is not disposed.
+                       (let* ((ov-beg (mulled/ov-1st-line/get-beg-without-padding ov))
+                              (ov-end (mulled/ov-1st-line/get-end-without-padding ov))
+                              (ov-buf (overlay-buffer ov))
+                              (cur-pt (progn
+                                        ;; Keep cursor inside of 1st line
+                                        ;; moved by undo operation.
+                                        (when mulled/.undo-at
+                                          (goto-char mulled/.undo-at)
+                                          (setq mulled/.undo-at nil))
+                                        (point))))
+                         ;; When the cursor went out of 1st line,
+                         ;; stop multiple line edit.
+                         (when (and (eq (current-buffer)
+                                        ov-buf)
+                                    (not (and (<= ov-beg cur-pt)
+                                              (<= cur-pt ov-end))))
+                           (mulled/ov-1st-line/dispose ov)
+                           (message "[mulled] Multiple line edit exited."))))
                    ;; To not break pre/post command hooks,
                    ;; we do not rise error in these hooks.
                    (error
@@ -403,45 +408,47 @@
     
     ov))
 
-(defun mulled/ov-1st-line/reactivate (r-beg r-end edit-trailing-edges-p)
-  ;; This function will be called by undo/redo operations.
-  (lexical-let ((ov (mulled/ov-1st-line/activate r-beg r-end edit-trailing-edges-p)))
-    ;; Reset lines after undo/redo operation to deal with them.
-    (run-with-idle-timer 0 nil #'(lambda () (mulled/ov-1st-line/reset-lines ov)))))
-
 ;; Destructor.
 ;;
 (defun mulled/ov-1st-line/dispose (ov)
   (let* ((lines (overlay-get ov 'mulled/lines))
          (edit-trailing-edges-p (overlay-get ov 'mulled/edit-trailing-edges-p))
          (line-num (mulled/lines/count-of lines))
-         (fn (overlay-get ov 'mulled/hook-fn)))
+         (fn (overlay-get ov 'mulled/hook-fn))
+         (lines (overlay-get ov 'mulled/lines)))
     (when (and mulled/reactivate-by-undo
                (listp buffer-undo-list))
-      (push `(apply mulled/ov-1st-line/reactivate
+      (push `(apply mulled/ov-1st-line/activate
                     ,(mulled/lines/nth-beg lines 0)
                     ,(mulled/lines/nth-end lines (1- line-num))
                     ,edit-trailing-edges-p)
             buffer-undo-list))
+
+    (mulled/lines/dispose lines)
+
+    ;; Delete attributes.
+    (overlay-put ov 'mulled/ov-1st-line-p nil)
+    (overlay-put ov 'mulled/lines nil)
+    (overlay-put ov 'mulled/edit-trailing-edges-p nil)
+    (overlay-put ov 'mulled/beg-from-point-min-p nil)
+    (overlay-put ov 'mulled/hook-fn nil)
+    
+    ;; Set modification hooks.
+    (overlay-put ov 'modification-hooks    nil)
+    (overlay-put ov 'insert-in-front-hooks nil)
+    (overlay-put ov 'insert-behind-hooks   nil)
+
+    ;; Set keymap.
+    (overlay-put ov 'keymap nil)
+
     (remove-hook 'pre-command-hook fn)
     (remove-hook 'post-command-hook fn)
-    (mulled/lines/dispose (overlay-get ov 'mulled/lines))
     (delete-overlay ov)
     (setq mulled/.undo-at nil)))
 
 
 ;; Instance Methods.
 ;;
-(defun mulled/ov-1st-line/reset-lines (ov)
-  ;; This function is for undo/redo operations.
-  (multiple-value-bind (ls-beg ls-end)
-      (mulled/lines/range (overlay-get ov 'mulled/lines))
-    (message "%s, %s" ls-beg ls-end)
-    (let ((cur-lines (overlay-get ov 'mulled/lines))
-          (new-lines (mulled/lines/new ls-beg ls-end (overlay-get ov 'mulled/edit-trailing-edges-p))))
-      (mulled/lines/dispose cur-lines)
-      (overlay-put ov 'mulled/lines new-lines))))
-
 (defun mulled/ov-1st-line/switch-direction (ov)
   (let* ((lines (overlay-get ov 'mulled/lines))
          (beg (mulled/lines/nth-beg lines 0))
@@ -474,52 +481,60 @@
 ;; The hook defined below will be called when modifications is
 ;; occur on the overlay placed over the 1st line of multiple edit.
 (defun mulled/ov-1st-line/mod-hook-fn (&rest args)
-  (when (nth 1 args) ;; After modification.
-    (if mulled/.running-primitive-undo-p
-        (setq mulled/.undo-at (point))
-      (let* ((ov             (nth 0 args))
-             ;;(after-p        (nth 1 args))
-             (beg            (nth 2 args))
-             (end            (nth 3 args))
-             (len-removed    (nth 4 args)) ;; Not set in before modification.
-             (lines       (overlay-get ov 'mulled/lines ))
-             (edit-trailing-edges-p (overlay-get ov 'mulled/edit-trailing-edges-p))
-             (out-of-range-p (mulled/lines/out-of-range-op-p lines
-                                                             edit-trailing-edges-p
-                                                             beg
-                                                             end
-                                                             len-removed)))
-        (cond
-         ;; Insertion
-         ((zerop len-removed)
-          (if out-of-range-p
-              (progn
-                (mulled/ov-1st-line/dispose ov)
-                (message "[mulled] Multiple line edit exited due to out of range edit."))
-            (mulled/lines/mirror-insert-op lines edit-trailing-edges-p beg end)))
-         ;; Deletion
-         (t
-          (let (;; Removing text properties.
-                (remove-text-properties-p
-                 (not (= beg end)))
+  (let* ((ov             (nth 0 args))
+         (after-p        (nth 1 args))
+         (beg            (nth 2 args))
+         (end            (nth 3 args))
+         (len-removed    (nth 4 args)) ;; Not set in before modification.
+         (lines       (overlay-get ov 'mulled/lines ))
+         (edit-trailing-edges-p (overlay-get ov 'mulled/edit-trailing-edges-p)))
+    (when (mulled/ov-1st-line/ov-1st-line-p ov) ;; Overlay is not disposed.
+      (if (not after-p)
+          ;; Before modification.
+          (when (not mulled/.running-primitive-undo-p)
+            (when (or (mulled/lines/out-of-1st-line-p lines beg)
+                      (mulled/lines/out-of-1st-line-p lines end))
+              (mulled/ov-1st-line/dispose ov)
+              (message "[mulled] Multiple line edit exited. (out of range)")))
+        ;; After modification.
+        (if mulled/.running-primitive-undo-p
+            (setq mulled/.undo-at (point))
+          (let* ((out-of-range-p (mulled/lines/out-of-range-op-p lines
+                                                                 edit-trailing-edges-p
+                                                                 beg
+                                                                 end
+                                                                 len-removed)))
+            (cond
+             ;; Insertion
+             ((zerop len-removed)
+              (if out-of-range-p
+                  (progn
+                    (mulled/ov-1st-line/dispose ov)
+                    (message "[mulled] Multiple line edit exited. (out of range)"))
+                (mulled/lines/mirror-insert-op lines edit-trailing-edges-p beg end)))
+             ;; Deletion
+             (t
+              (let ( ;; Removing text properties.
+                    (remove-text-properties-p
+                     (not (= beg end)))
                 
-                ;; May be remove newline. ("C-d" at end of line)
-                (remove-newline-at-eol-p
-                 (= end (mulled/ov-1st-line/get-end-with-padding ov)))
+                    ;; May be remove newline. ("C-d" at end of line)
+                    (remove-newline-at-eol-p
+                     (= end (mulled/ov-1st-line/get-end-with-padding ov)))
                 
-                ;; May be backspace at beginning of line.
-                (backspace-at-bol-p
-                 (= end (mulled/ov-1st-line/get-beg-with-padding ov))))
+                    ;; May be backspace at beginning of line.
+                    (backspace-at-bol-p
+                     (= end (mulled/ov-1st-line/get-beg-with-padding ov))))
             
-            (if (or out-of-range-p
-                    remove-newline-at-eol-p
-                    (and backspace-at-bol-p
-                         (not (overlay-get ov 'mulled/beg-from-point-min-p)))) ;;XXX Should be removed?
-                (progn
-                  (mulled/ov-1st-line/dispose ov)
-                  (message "[mulled] Multiple line edit exited due to out of range edit."))
-              (when (not remove-text-properties-p)
-                (mulled/lines/mirror-delete-op lines edit-trailing-edges-p beg end len-removed))))))))))
+                (if (or out-of-range-p
+                        remove-newline-at-eol-p
+                        (and backspace-at-bol-p
+                             (not (overlay-get ov 'mulled/beg-from-point-min-p)))) ;;XXX Should be removed?
+                    (progn
+                      (mulled/ov-1st-line/dispose ov)
+                      (message "[mulled] Multiple line edit exited. (out of range)"))
+                  (when (not remove-text-properties-p)
+                    (mulled/lines/mirror-delete-op lines edit-trailing-edges-p beg end len-removed))))))))))))
 
 ;; To prevent duplication of edit, in the lines next to 1st line,
 ;; which caused by undo/redo operation, we have to aware if the hook
@@ -640,11 +655,6 @@
   "End point of the `NTH' line."
   (marker-position (cdr (nth nth (mulled/lines/be-pair-lst-of lines)))))
 
-(defun mulled/lines/range (lines)
-  "Returns values `beginning of lines' and `end of lines'."
-  (values (mulled/lines/nth-beg lines 0)
-          (mulled/lines/nth-end lines (1- (length (mulled/lines/be-pair-lst-of lines))))))
-
 (defun mulled/lines/map (lines fn)
   "Apply the function `FN' to each line of multiple line edit."
   (loop for i from 0 to (1- (mulled/lines/count-of lines)) do
@@ -654,6 +664,13 @@
   "Apply the function `FN' to each line of multiple line edit, except 1st line."
   (loop for i from 1 to (1- (mulled/lines/count-of lines)) do ;; skip 1st line.
         (funcall fn (mulled/lines/nth-beg lines i) (mulled/lines/nth-end lines i))))
+
+(defun mulled/lines/out-of-1st-line-p (lines pt)
+  "Test if the point is within 1st-line."
+  (let ((beg (mulled/lines/nth-beg lines 0))
+        (end (mulled/lines/nth-end lines 0)))
+    (not (and (<= beg pt)
+              (<= pt end)))))
 
 (defun mulled/lines/out-of-range-op-p (lines edit-trailing-edges-p op-beg op-end len-removed)
   "Test if the operation, specified by `OP-BEG', `OP-END' and `LEN-REMOVE', is

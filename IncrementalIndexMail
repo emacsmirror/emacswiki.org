@@ -189,7 +189,24 @@ After some time, ##~/.swish-e/mail/idx## will be filled with incremental indexes
     # m h  dom mon dow   command
     0 12   * * *   ~/.swish-e/mail/merge.sh
 
-Also note that, while ##merge.sh## is running, ##index.sh## and ##search.sh## mustn't be used.
+Also note that, while ##merge.sh## is running, ##index.sh## and ##search.sh## shouldn't be used.
+
+Another alternative approach is to remove all files in ##~/.swish-e/mail/idx## all together, and create a fresh index from scratch. (I personally prefer this for large mail repositories. I don't have any proofs but this seem to work faster for large index files.) For this purpose, I schedule below ##reset.sh## via cron again.
+
+    #!/bin/bash
+
+    set -e
+
+    SWISH_DIR="${0%/*}"
+    INDEX_DIR="$SWISH_DIR/idx"
+    TIME_FILE="$SWISH_DIR/time"
+    BASENAME="`basename $0`"
+    CURR_DIR="${0%/$BASENAME}"
+
+    rm -f "$TIME_FILE" "$INDEX_DIR"/*
+    $CURR_DIR/index.sh
+
+Just create ##reset.sh## in ##~/.swish-e/bin## and give it symlink under ##~/.swish-e/mail##.
 
 == Summarization ==
 

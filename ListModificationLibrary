@@ -87,41 +87,66 @@ Example:
     (exchange-list-elements 3 5 '(a b c d e f g h))
     => (a b c f e d g h)
 
-== XWEM's functions for list operations ==
+Note, `exchange-list-elements' returns a copy of the LIST arg and does not modify it.
 
-    (defun xwem-insert-after (list aft-el el)
-      "Insert EL after AFT-EL in LIST."
+    (setq *not-mutated-global* '(a b c d e f g h))
+    => (a b c d e f g h)
+
+    (let ((not-mutated *not-mutated-global*)
+          cmpr)
+      (setq cmpr
+            `((:exchanged ,(tt--exchange-list-elements 3 5 not-mutated))
+              (:original  ,not-mutated)))
+      (setq cmpr `(:equal-exchange-oririnal ,(equal (cadr (assq :exchanged cmpr))
+                                                    (cadr (assq :original cmpr)))
+                                            ,@cmpr)))
+
+    => (:equal-exchange-oririnal nil 
+        (:exchanged (a b c f e d g h))   ; elt 'd' is now 'e'
+        (:original  (a b c d e f g h)))  ; the original list remains unchanged
+
+    => *not-mutated-global*
+    => (a b c d e f g h)                 ; the global value is unchanged
+
+== Destructive functions for list operations ==
+
+Following are destructive operations. These do mutate their LIST argument.
+
+    (defun list-insert-after-elt (list aft-el el)
+      "Destructive insert EL after AFT-EL in LIST."
       (push el (cdr (member aft-el list)))
       list)
    
-    (defun xwem-insert-before (list bef-el el)
-      "Insert EL before BEF-EL in LIST."
-      (nreverse (xwem-insert-after (nreverse list) bef-el el)))
+    (defun list-insert-before-elt (list bef-el el)
+      "Destructive insert EL before BEF-EL in LIST."
+      (nreverse (insert-after (nreverse list) bef-el el)))
  
-    (defun xwem-list-set-element (list old-el new-el)
-      "Set OLD-EL to NEW-EL in LIST."
+    (defun list-set-elt (list old-el new-el)
+      "Destructive set OLD-EL to NEW-EL in LIST."
       (setcar (member old-el list) new-el)
       list)
     
-    (defun xwem-list-exchange-els (list el1 el2)
-      "Exchange places of EL1 and EL2 in LIST."
-      (when (or (null (member el1 list))
-    		(null (member el2 list)))
-    	(error "el1 or el2 is not in list."))
+    (defun list-exchange-elt (list el1 el2)
+     "Desturctive exchange places of EL1 and EL2 in LIST."
+     (when (or (null (member el1 list))
+               (null (member el2 list)))
+       (error "el1 or el2 is not in list"))
+     (list-set-elt list el1 el2)
+     (list-set-elt list el2 el1))
     
-      (xwem-list-set-element list el1 'this-fake-name1-should-not-be-in-list)
-      (xwem-list-set-element list el2 el1)
-      (xwem-list-set-element list 'this-fake-name1-should-not-be-in-list el2))
+      (list-set-elt list el1 'this-fake-name1-should-not-be-in-list)
+      (list-set-elt list el2 el1)
+      (list-set-elt list 'this-fake-name1-should-not-be-in-list el2))
 
 Example:
 
-    (xwem-insert-after '(1 2 4) 2 5)
+    (list-insert-after-elt '(1 2 4) 2 5)
     => (1 2 5 4)
-    (xwem-insert-before '(1 2 3) 1 0)
+    (list-insert-before-elt '(1 2 3) 1 0)
     => (0 1 2 3)
-    (xwem-list-set-element '(1 3 3) 3 2)
+    (list-list-set-elt '(1 3 3) 3 2)
     => (1 2 3)
-    (xwem-list-exchange-els '(1 3 2) 2 3)
+    (list-exchange-elt '(1 3 2) 2 3)
     => (1 2 3)
 
 -----
