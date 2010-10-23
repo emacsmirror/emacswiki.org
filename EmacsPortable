@@ -9,11 +9,11 @@ The forthcoming release includes the following packages:
 * ColorTheme
 * TinyTools
 * McompleteMode
-* Iswitchb+
+* Lisp:icomplete+.el See [[IcompleteMode]]
 * AUCTeX
 * Emacs Speaks Statistics
 * Emacs Speaks NONMEM (part of the reson I started this distribution)
-* Anything
+* [[Anything]]
 * [[Vimpulse]] with Lisp:viper-in-more-modes.el
 * TabBarMode
 * [[Yasnippet]]

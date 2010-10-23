@@ -1,3 +1,4 @@
+[[es:Translate_Paste2]]
 ==What is paste2.el ?==
 : paste2.el is simple interface for http://www.paste2.org in Emacs.
 : Send or get paste *asynchronous*.

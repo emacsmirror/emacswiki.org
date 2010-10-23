@@ -87,6 +87,11 @@ Any thoughts?
 
 --DavidOtoole
 
+[new:Zarza:2010-10-22]
+The Windows/NT ./configure script cannot deal with <code>--without-toolkit-scroll-bars --with-x-toolkit=no</code>. Is there another way to tell emacs to use its own scrollbars? 
+-- [[Zarza]]
+
+
 ----
 See also MenuBar, ToolBar, ScrollAllMode
 ----

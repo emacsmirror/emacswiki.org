@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Thu Oct 21 16:11:12 2010 (-0500)
+;; Last-Updated: Fri Oct 22 09:51:37 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 62
+;;     Update #: 87
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
@@ -31,6 +31,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 22-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Fri Oct 22 09:42:57 2010 (-0500) #82 (Matthew L. Fidler)
+;;    Bugfix for ${1:default} expressions
+;; 22-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Fri Oct 22 09:34:06 2010 (-0500) #79 (Matthew L. Fidler)
+;;    Added ability to choose mode by function or mode-name
 ;; 21-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Thu Oct 21 16:10:52 2010 (-0500) #61 (Matthew L. Fidler)
 ;;    Selected text bugfix
@@ -102,7 +108,7 @@
     ("&lt;" "<")
     ("&gt;" ">")
     ("[$][{]\\([0-9]+\\):[$]TM_SELECTED_TEXT[}]" "${\\1:`yas/selected-text`}")
-    ("[$][{]\\([0-9]+\\)" "$\\1")
+    ("[$][{]\\([0-9]+\\)[}]" "$\\1")
     ("[$][{]TM_SELECTED_TEXT:\\([^\\}]*\\)[}]" "`(or yas/selected-text \"\\1\")`")
     ("[$][{]TM_SELECTED_TEXT[}]" "`(or yas/selected-text \"\")`")
     ("[$]TM_SELECTED_TEXT" "`(or yas/selected-text \"\")`")
@@ -154,15 +160,15 @@
     (symbol-value 'group)
     )
   )
-(defun texmate-import-file (file new-dir &optional original-author plist transform-function)
+(defun texmate-import-file (file mode new-dir &optional original-author plist transform-function)
   "* Imports texmate file"
   (message "Importing %s" file)
   (with-temp-buffer
     (insert-file-contents file)
-    (texmate-import-current-buffer new-dir original-author file plist transform-function)
+    (texmate-import-current-buffer mode new-dir original-author file plist transform-function)
     )
   )
-(defun texmate-import-current-buffer (new-dir &optional original-author buffer-name plist transform-function)
+(defun texmate-import-current-buffer (mode-string-or-function new-dir &optional original-author buffer-name plist transform-function)
   "* Changes Texmate (current buffer) plist to yas snippet."
   (let (
         (start nil)
@@ -177,6 +183,7 @@
         (group nil)
         (snippet "")
         (binding "")
+        (mode "")
         (bfn (or buffer-name (buffer-file-name)))
         )
     (when (string-match "/\\([^/]*\\)[.][^.]*$" bfn)
@@ -232,6 +239,19 @@
           (when transform-function
             (setq snippet (apply transform-function (list snippet)))
             )
+          (when (functionp mode-string-or-function)
+            (setq mode (funcall mode-string-or-function snippet))
+            )
+          (when (stringp mode-string-or-function)
+            (setq mode mode-string-or-function)
+            )
+          (unless (string= mode "")
+            (setq mode (concat mode "/"))
+            )
+          (setq new-dir (concat new-dir "/text-mode/" mode))
+          (when (not (file-exists-p new-dir))
+            (make-directory new-dir 't)
+            )
           (with-temp-file (concat new-dir "/" bfn)
             (insert snippet)
             )
@@ -241,7 +261,7 @@
     )
   )
 (defun texmate-import-bundle (dir mode &optional original-author transform-function yas-dir)
-  "Imports texmate bundle to new-dir."
+  "Imports texmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in..."
   (interactive "fTexmate Bundle Directory: \nsMode: ")
   (unless (string= "/" (substring dir -1))
     (setq dir (concat dir "/")))
@@ -249,7 +269,6 @@
                                           yas/root-directory
                                         (nth 0 yas/root-directory)
                                         )))
-    (setq new-dir (concat new-dir "/text-mode/" mode "/"))
     (when (file-exists-p (concat dir "info.plist"))
       (setq plist (with-temp-buffer (insert-file-contents (concat dir "info.plist"))
                                     (buffer-substring (point-min) (point-max))))
@@ -257,12 +276,9 @@
     (setq snip-dir (concat dir "Snippets/"))
     (when (file-exists-p snip-dir)
       (setq snips (file-expand-wildcards (concat snip-dir "*.tmSnippet")))
-      (when (not (file-exists-p new-dir))
-        (make-directory new-dir 't)
-        )
       (unless (not (file-exists-p new-dir))
         (mapc (lambda(x)
-                (texmate-import-file x new-dir original-author plist transform-function)
+                (texmate-import-file x mode new-dir original-author plist transform-function)
                 )
               snips
               )
@@ -303,7 +319,10 @@
   "* Example Function for importing Rmate into Yasnippet"
   (message "Importing Rmate Bundle dir %s" dir)
   (texmate-import-bundle dir
-                       "ess-mode"
+                         (lambda(template)
+                           (if (string-match "# *scope: *source.rd$" template)
+                               "Rd-mode"
+                             "ess-mode"))
                        "Hans-Peter Suter"
                        (lambda(template)
                          (let (
@@ -312,15 +331,19 @@
                            (with-temp-buffer
                              (insert template)
                              (goto-char (point-min))
-                             (while (re-search-forward "# *scope: *source.rd$" nil t)
-                               (end-of-line)
-                               (insert "\n# condition: (string-match \"[.]rd\" (downcase (buffer-file-name)))")
+                             (when (re-search-forward "# *scope: *source.rd$" nil t)
+                               (goto-char (point-min))
+                               (while (re-search-forward "# group:.*\n" nil t)
+                                 (replace-match ""))
                                )
                              (goto-char (point-min))
                              (while (re-search-forward "# *scope: *source.r$" nil t)
                                (end-of-line)
                                (insert "\n# condition: (string= \"S\" ess-language)")
                                )
+                             (goto-char (point-min))
+                             (while (re-search-forward "# *key: *rd[.]" nil t)
+                               (replace-match "# key: "))
                              ;; Ess mode doesn't have keybindings....
                              (goto-char (point-min))
                              (while (re-search-forward "# *binding:.*" nil t)
@@ -333,7 +356,6 @@
                        new-dir
                        )
   )
-(setq debug-on-error 't)
 ;(texmate-import-rmate "c:/tmp/rmate.tmbundle-7d026da/")
 ;(texmate-import-stata "c:/tmp/Stata.tmbundle/")
 (provide 'texmate-import)

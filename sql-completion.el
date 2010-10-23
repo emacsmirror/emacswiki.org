@@ -157,8 +157,8 @@ variable non nil, the sql-mysql-schema will order as this.")
     (sql-mysql-build-databases 'rebuild)))
 
 ;;;###autoload
-(defun sql-mysql-reflesh-schema ()
-  "Reflesh schema of all database. Becareful, this could be very slow."
+(defun sql-mysql-refresh-schema ()
+  "Refresh schema of all databases. Be careful, this could be very slow."
   (interactive)
   (setq sql-mysql-schema nil
         sql-mysql-fields nil

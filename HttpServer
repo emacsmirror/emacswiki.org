@@ -25,10 +25,12 @@ NicFerrier is working on an asychronous http server in elisp.
 His code is sitting [http://github.com/nicferrier/elnode here]. 
 The async approach has several benefits:
 
-* emacs could use an external program (asynchronously of course) to read static files
-* writing dynamic handlers could be relatively easy, as easy as it is with node.js
+* emacs can use an external program (asynchronously of course) to do things
+** elnode uses cat as part of its webserver
+* writing dynamic handlers is relatively easy, as easy as it is with node.js
 * it could serve as the foundation for many different services, [[Edit_with_Emacs]] (the Chrome browser edit tool) needs an emacs http server
 * the async approach doesn't require threads to serve quite high loads
+
 
 ----
 

@@ -8,6 +8,8 @@ The data-debug utility can be extracted from CEDET CVS
 though the default configuration uses functions found in the rest of CEDET.  You can reconfigure 
 <code>data-debug-thing-alist</code> to exclude such items if desired.
 
+Apparently Emacs 23 comes with CEDET, so you can just <code>(require 'data-debug)</code>!
+
 ==Basic Use==
 
 You can use data-debug as the default output of eval by binding it to <code>M-:</code> like this:

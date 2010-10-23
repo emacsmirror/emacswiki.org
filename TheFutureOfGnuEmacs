@@ -78,6 +78,9 @@ and also [http://www.nabble.com/un-deprecating-CL-t4443873.html un-deprecating C
 The problems we encounter will
 point the way to (and show the need for) changes in Emacs itself.
 -- [[dto]]
+
+I agree. And what I’d really love to see is emacs as window manager. Emacs can already provide just about everything a current desktop environment can provide, and I’d like to go a step further and just start X with an emacs session which can embed any x-program in its windows. Then I can finally start kmail in emacs instead of the other way round :) -- [[ArneBab]]
+
 ==Miscellaneous==
 
 I want ELPA to integrate with the Debian packaging system somehow

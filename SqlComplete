@@ -1,4 +1,5 @@
-This package provides a framework for completion of column and table names for SqlMode.
+This package provides a framework for completion of column and table names for SqlMode.  It supports Oracle.
+For Mysql, see SqlCompletion
 
 * Lisp:sql-complete.el
 
@@ -33,10 +34,10 @@ The parsed data dictionary as returned by the function `sql-data-dictionary' and
 
 You can bind the functions `sql-complete' and `sql-complete-table' (which only completes on table names to any key you want.
 
-See also SqlCompletion.
+See also SqlCompletion (for Mysql).
 
 ----
-Mysql has a problem with this setup. There are no SELECT'able metadata views. There are commands to retreve the metadata:
+Mysql has a problem with this setup. There are no SELECT'able metadata views. There are commands to retreive the metadata:
 
     show tables;
     show columns from some_table;
@@ -44,14 +45,49 @@ Mysql has a problem with this setup. There are no SELECT'able metadata views. Th
 But the format they return is fixed. I'm about to write a defun to parse & munge the results into the required format - but it seems like the interface might need to be modified. Ideas? - JoshRobb
 
 ----
+Hi Josh - Mysql has an "information_schema" table you can select from.  I got sql-complete.el to work with Mysql with a bit of hacking - added these two:
+
+  (defcustom sql-mysql-data-dictionary
+     "select concat('\\(', '\\\"', table_name, '\\\" \\\"', column_name, '\\\"', '\\)') 
+     from information_schema.columns 
+     order by table_name;"
+     "SQL Statement to determine all tables and columns."
+     :group 'SQL
+     :type 'string)
+
+  (defun sql-mysql-data-dictionary ()
+     (interactive)
+     ;; FIXME No cleanup
+     (setq sql-data-dictionary
+        (sql-data-dictionary sql-mysql-data-dictionary)))
+
+
+and also modified the parsing code to allow for tabular-format Mysql data:
+
+  -	(when (looking-at "^(.*)$")
+  -	  (let* ((entry (car (read-from-string (match-string 0))))
+  +	(when (looking-at  "^| *\\((.*)\\)" )
+  +	  (let* ((entry (car (read-from-string (match-string 1))))
+
+Finally, it seems to be necessary to set `comint-prompt-regexp' to something
+like "mysql>" and set `comint-use-prompt-regexp-instead-of-fields' to t (does
+not work correctly with input and output fields, this could probably be fixed
+in sql.el)  - CrazyYeti
+
+----
+And, right after doing that (d'oh!) I found this: SqlCompletion which provides
+more fully-functional completion support for Mysql (completes on sql keywords,
+not just tables/columns/etc). - CrazyYeti
+
+----
 What about completion for table names with schema prefix? 
-i slightly customize sql-oracle-data-dictionary
+I slightly customize sql-oracle-data-dictionary
 
     select '("'||owner||'.'||table_name||'" "'||column_name||'")'
        from all_tab_columns 
        order by table_name;
 
-But its seems that after dot completion looks only for columns names.
+But it seems that after dot completion looks only for columns names.
 ----
 
 CategorySql
