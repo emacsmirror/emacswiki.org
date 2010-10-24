@@ -5,7 +5,7 @@
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 10 Oct 2010 PM 02:44 JST
 ;; Keywords: abbrev convenience emulations wp
-;; Revision: $Id: 076836148886f023da61f22e0ac48e4285aca74c $
+;; Revision: $Id: 398473eb8e60a290a2a3830187ce8054613306ff $
 ;; URL: http://www.emacswiki.org/emacs/download/multiple-line-edit.el
 ;; GitHub: http://github.com/k-talo/multiple-line-edit.el
 
@@ -97,11 +97,17 @@
 ;; non-nil value to the variable `inhibit-modification-hooks'
 ;; like `YASnippet'.
 ;;
-;; See also `YASnippet support' section end of this file.
+;; See also `YASnippet support' section at end of this file.
 
 ;;; Chane Log:
 
-;;  Changes in 1.1
+;;  v1.3, Sun Oct 24 00:07:02 2010 JST
+;;   - Fixed bugs regarding to reactivation by undo command.
+;;
+;;  v1.2
+;;   - Added support for replacement operations like `upcase-region'.
+;;
+;;  v1.1
 ;;   - Fixed bug that state of multiple line edit was destroyed
 ;;     by a undo command in some cases.
 
@@ -109,7 +115,7 @@
 
 (provide 'multiple-line-edit)
 
-(defconst multiple-line-edit/version "1.1")
+(defconst multiple-line-edit/version "1.3")
 
 (eval-when-compile
   (require 'cl)
@@ -420,7 +426,9 @@
                (listp buffer-undo-list))
       (push `(apply mulled/ov-1st-line/activate
                     ,(mulled/lines/nth-beg lines 0)
-                    ,(mulled/lines/nth-end lines (1- line-num))
+                    ,(min (+ (mulled/lines/nth-end lines (1- line-num))
+                             1) ;; Include new-line char for empty line.
+                          (point-max))
                     ,edit-trailing-edges-p)
             buffer-undo-list))
 
@@ -512,20 +520,19 @@
                     (mulled/ov-1st-line/dispose ov)
                     (message "[mulled] Multiple line edit exited. (out of range)"))
                 (mulled/lines/mirror-insert-op lines edit-trailing-edges-p beg end)))
+             ;; Replacement
+             ((not (= beg end))
+              (mulled/lines/mirror-replace-op lines edit-trailing-edges-p beg end len-removed))
              ;; Deletion
              (t
-              (let ( ;; Removing text properties.
-                    (remove-text-properties-p
-                     (not (= beg end)))
-                
-                    ;; May be remove newline. ("C-d" at end of line)
+              (let (;; May be "C-d" at end of line.
                     (remove-newline-at-eol-p
                      (= end (mulled/ov-1st-line/get-end-with-padding ov)))
-                
+                    
                     ;; May be backspace at beginning of line.
                     (backspace-at-bol-p
                      (= end (mulled/ov-1st-line/get-beg-with-padding ov))))
-            
+                
                 (if (or out-of-range-p
                         remove-newline-at-eol-p
                         (and backspace-at-bol-p
@@ -726,6 +733,32 @@ accepted by each line of multiple line edit."
                                                        (- end offset))
                                       (delete-region (+ beg offset)
                                                      (+ beg offset len-removed)))))))))
+
+(defun mulled/lines/mirror-replace-op (lines edit-trailing-edges-p op-beg op-end len-removed)
+  "Reflect replace operation, which is occurred in 1st line, to another lines."
+  (lexical-let* ((str (buffer-substring op-beg op-end))
+                 (1st-pair (car lines))
+                 (offset (if edit-trailing-edges-p
+                             ;; Offset from end of line.
+                             (- (mulled/lines/nth-end lines 0) op-end)
+                           ;; Offset from beginning of line.
+                           (- op-beg (mulled/lines/nth-beg lines 0)))))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (mulled/lines/map-but-1st lines
+                                  (lambda (beg end)
+                                    (if edit-trailing-edges-p
+                                        (let ((beg (- end offset len-removed))
+                                              (end (- end offset)))
+                                          (delete-region beg end)
+                                          (goto-char beg)
+                                          (insert str))
+                                      (let ((beg (+ beg offset))
+                                            (end (+ beg offset len-removed)))
+                                        (delete-region beg end)
+                                        (goto-char beg)
+                                        (insert str)))))))))
 
  
 ;;; ===========================================================================

@@ -119,7 +119,8 @@
 ;; `mon-print-buffer-object-readably', `mon-get-buffer-window-if',
 ;; `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
 ;; `mon-buffer-sub-no-prop-check', `mon-equality-or-pred', `mon-union',
-;; `mon-string-split',
+;; `mon-string-split', `mon-list-flatten-rotated', `mon-zero-or-onep',
+;; `mon-booleanp-to-binary',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -129,7 +130,7 @@
 ;; `mon-buffer-exists-p', `mon-check-feature-for-loadtime',
 ;; `mon-with-inhibit-buffer-read-only', `mon-gensym',
 ;; `mon-with-gensyms',  `mon-nshuffle-vector', `mon-mapcar-mac',
-;; `mon-alphabet-as-defun', `mon-list-sift', `mon-booleanp' 
+;; `mon-alphabet-as-defun', `mon-list-sift', `mon-booleanp',
 ;;
 ;; METHODS:
 ;;
@@ -222,7 +223,24 @@
 ;; `mon-lisp-escape-region'          -> `mon-escape-lisp-string-region'
 ;; `mon-string-unescape-lisp-region' -> `mon-unescape-lisp-string-region'
 ;; `mon-lisp-unescape-region'        -> `mon-unescape-lisp-string-region'
+;; `mon-list-flatten-rotated'        -> `mon-rotate-flatten-list'
+;; `mon-flatten'                     -> `mon-list-flatten'
+;; `mon-one-or-zerop'                -> `mon-zero-or-onep'
+;; `zerop-or-one'                    -> `mon-zero-or-onep'
+;; `mon-zerop-or-one'                -> `mon-zero-or-onep'
+;; `mon-1-or-0-p'                    -> `mon-zero-or-onep'
+;; `mon-0-or-1-p'                    -> `mon-zero-or-onep'
+;; `mon-t-to-1'                      -> `mon-booleanp-to-binary'
+;; `mon-nil-to-0'                    -> `mon-booleanp-to-binary'
+;; `mon-true-to-one'                 -> `mon-booleanp-to-binary'
+;; `mon-false-to-zero'               -> `mon-booleanp-to-binary'
+;; `mon-boolean-to-binary'           -> `mon-booleanp-to-binary'
+;; `mon-list-ify-bool-vector'        -> `mon-bool-vector-pp' 
+;; `mon-boolean-vector-to-list'      -> `mon-bool-vector-pp'
+;; `mon-reverse-region-words'        -> `mon-word-reverse-region'
+;; `mon-region-reverse-chars'        -> `mon-region-reverse'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
+;; `mon-capitalize-region'            -> `mon-region-capitalize'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
 ;; DEPRECATED:
@@ -247,6 +265,7 @@
 ;; `mon-cmd'                                      <- default-start-loads.el
 ;; `mon-terminal'                                 <- default-start-loads.el
 ;; `boxcutter-verify-image-type'                  <- mon-boxcutter.el
+;; `mon-list-flatten-rotated'                     <- mon-name-utils.el
 ;; `mon-list-all-properties-in-buffer'            <- mon-text-property-utils.el
 ;; `mon-get-text-properties-region-to-kill-ring'  <- mon-text-property-utils.el
 ;; `mon-nuke-text-properties-buffer'              <- mon-text-property-utils.el
@@ -351,7 +370,7 @@
 ;;; :CHANGESET 2088
 ;;; :CREATED <Timestamp: #{2010-08-25T18:54:20-04:00Z}#{10343} - by MON KEY>
 (unless (and (intern-soft "debug-on-error-toggle" obarray)
-             (fboundp 'debug-on-error-toggle))
+             (fboundp (intern-soft "debug-on-error-toggle" obarray)))
 (defalias 'debug-on-error-toggle 'toggle-debug-on-error))
 
 ;;; ==============================
@@ -359,11 +378,11 @@
 ;;; :CHANGESET 2119
 ;;; :CREATED <Timestamp: #{2010-09-13T17:30:20-04:00Z}#{10371} - by MON KEY>
 (unless (and (intern-soft "macrop" obarray) 
-             (fboundp 'marcrop))
+             (fboundp (intern-soft "macrop" obarray)))
 (defalias 'macrop 'apropos-macrop))
 ;;
 (unless (and (intern-soft "mon-macrop" obarray) 
-             (fboundp 'mon-marcrop))
+             (fboundp (intern-soft "mon-macrop" obarray)))
 (defalias 'mon-macrop 'apropos-macrop))
 
 ;;; ==============================
@@ -666,7 +685,7 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
     ;; :NOTE `mon-get-mon-emacsd-paths' is an interpreted function in:
     ;; :FILE mon-default-start-loads.el
     (when (and (intern-soft "mon-get-mon-emacsd-paths" obarray)
-               (fboundp 'mon-get-mon-emacsd-paths))
+               (fboundp (intern-soft "mon-get-mon-emacsd-paths" obarray)))
       (fset 'mon-get-emacsd-paths 
             (byte-compile
              (indirect-function 'mon-get-mon-emacsd-paths)))
@@ -797,7 +816,8 @@ All permutations are equally likely.\n
 :EXAMPLE\n\n\\(pp-macroexpand-expression 
  '\(mon-nshuffle-vector [37 41 43 47 53 59]\)\)\n
 :ALIASED-BY `nshuffle-vector'\n
-:SEE-ALSO `mon-list-nshuffle', `mon-list-shuffle-safe',`shuffle-vector', `slime-shuffle-list'.\n►►►"
+:SEE-ALSO `mon-list-nshuffle', `mon-list-shuffle-safe',`shuffle-vector',
+`slime-shuffle-list'.\n►►►"
   ;; :NOTE This is called repeatedly by `mon-*-gensym' procedures so we
   ;; need to gensym the local vars by hand.
   (declare (indent 0) (debug t))
@@ -820,7 +840,7 @@ All permutations are equally likely.\n
        ,mnsv-vec)))
 ;;
 (unless (and (intern-soft "nshuffle-vector" obarray)
-             (fboundp 'nshuffle-vector))
+             (fboundp (intern-soft "nshuffle-vector" obarray)))
 (defalias 'nshuffle-vector 'mon-nshuffle-vector))
 ;;
 ;;; (pp-macroexpand-expression '(mon-nshuffle-vector [37 41 43 47 53 59]))
@@ -990,7 +1010,8 @@ byte-compiler warning.\n
      ,@body))
 ;; 
 (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
-           (not (fboundp 'with-gensyms)))
+           (not (and (intern-soft "with-gensyms" obarray)
+                     (fboundp (intern-soft "with-gensyms" obarray)))))
 (defalias 'with-gensyms 'mon-with-gensyms))
 ;;
 ;;,---- :UNCOMMENT-BELOW-TO-TEST
@@ -1076,12 +1097,22 @@ sequence types.\n
 
 ;;; ==============================
 ;;; :COURTESY Raphael Van Dyck :HIS km-frames.el :WAS `with-file-buffer'
+;;; :SEE (URL `http://www.algo.be/cl/KMgen/Free-KMgen.zip')
 ;;; :SEE (URL `http://www.algo.be/dev-logiciels.htm')
 ;;; :CREATED <Timestamp: #{2009-10-23T15:17:35-04:00Z}#{09435} - by MON KEY>
 (defmacro mon-with-file-buffer (buffer-var file &rest body)
-  "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n :SEE-ALSO
-`mon-with-buffer-undo-disabled', `mon-buffer-exists-p', `mon-buffer-written-p',
-`mon-buffer-exists-so-kill', `mon-print-in-buffer-if-p',
+  "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n
+:EXAMPLE\n\n
+
+ (let (read-some)
+   (with-file-buffer some-buffer some-file
+    (save-excursion
+      (set-buffer some-buffer)
+      (mon-g2be -1)
+      (setq read-some (read some-buffer)))))
+
+:SEE-ALSO `mon-with-buffer-undo-disabled', `mon-buffer-exists-p',
+`mon-buffer-written-p', `mon-buffer-exists-so-kill', `mon-print-in-buffer-if-p',
 `mon-get-buffer-w-mode', `mon-get-buffer-parent-dir',
 `mon-get-proc-buffers-directories', `mon-get-buffers-directories',
 `mon-string-split-buffer-name', `mon-string-split-buffer-parent-dir',
@@ -1162,7 +1193,7 @@ without inversion.\n
 (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
            (bound-and-true-p IS-MON-SYSTEM-P)
            (if (intern-soft "buffer-exists-p" obarray)
-               (not (fboundp 'buffer-exists-p))
+               (not (fboundp (intern-soft "buffer-exists-p" obarray)))
              t))
 (defalias 'buffer-exists-p 'mon-buffer-exists-p))
 ;;
@@ -1179,7 +1210,7 @@ without inversion.\n
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:20:53-04:00Z}#{10381} - by MON KEY>
 (unless (and (intern-soft "mon-save-restricton" obarray)
-             (fboundp 'mon-save-restricton))
+             (fboundp (intern-soft "mon-save-restricton" obarray)))
 (defalias 'mon-save-restricton 'edebug-save-restriction))
 
 ;;; ==============================
@@ -1221,7 +1252,9 @@ is not needed.\n
          ,@body)
      (buffer-enable-undo)))
 ;;
-(defalias 'mon-buffer-do-with-undo-disabled 'mon-with-buffer-undo-disabled)
+(unless (and (intern-soft "mon-buffer-do-with-undo-disabled" obarray)
+             (fboundp (intern-soft "mon-buffer-do-with-undo-disabled" obarray)))
+(defalias 'mon-buffer-do-with-undo-disabled 'mon-with-buffer-undo-disabled))
 
 ;;; ==============================
 ;;; :CHANGESET 2142
@@ -1241,11 +1274,11 @@ When ommitted or nil the default is to search only the `selected-frame'.\n
    (when myb-wdw (get-buffer-window myb-wdw))))
 ;;
 (unless (and (intern-soft "mon-window-get-if-buffer" obarray)
-             (fboundp 'mon-window-get-if-buffer))
+             (fboundp (intern-soft "mon-window-get-if-buffer" obarray)))
 (defalias 'mon-window-get-if-buffer 'mon-get-buffer-window-if))
 ;;
 (unless (and (intern-soft "get-buffer-window-if" obarray)
-             (fboundp 'get-buffer-window-if))
+             (fboundp (intern-soft "get-buffer-window-if" obarray)))
 (defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
 
 ;;; ==============================
@@ -1281,7 +1314,7 @@ Default is to return a lisp form for `eval'.\n
                  `(get-buffer ""))))))
 ;;
 (unless (and (intern-soft "mon-buffer-name-print-readably" obarray)
-             (fboundp 'mon-buffer-name-print-readably))
+             (fboundp (intern-soft "mon-buffer-name-print-readably" obarray)))
 (defalias 'mon-buffer-name-print-readably 'mon-print-buffer-object-readably))
 
 ;;; ==============================
@@ -1334,9 +1367,17 @@ not already visible. Default is to consider all buffers on all frames.\n
         finally (error (concat ":FUNCTION `mon-get-buffer-w-mode' "
                                "-- can not locate buffer W-MODE: %S") w-mode)))
 ;;
-(defalias 'mon-buffer-get-w-mode 'mon-get-buffer-w-mode)
+(unless (and (intern-soft "mon-buffer-get-w-mode" obarray)
+             (fboundp (intern-soft "mon-buffer-get-w-mode" obarray)))
+(defalias 'mon-buffer-get-w-mode 'mon-get-buffer-w-mode))
 
 ;;; ==============================
+;;; :TODO This really isn't a predicate and should be renamed
+;;; `mon-function-object-maybe' and add a new function that checks if the
+;;; return-value is one of: 
+;;; { function subr macro autoload compiled-function }
+;;; But, first must decide how to handle return value for interpreted functions
+;;; and macros. See comments below.
 ;;; :PREFIX "mfop-"
 ;;; :CHANGESET 2119 <Timestamp: #{2010-09-17T21:11:32-04:00Z}#{10375} - by MON KEY>
 ;;; <Timestamp: #{2010-09-16T17:43:19-04:00Z}#{10374} - by MON>
@@ -1371,9 +1412,9 @@ A compiled macro:\n
 A subr, primitive, or special operator:\n
  #<subr `SYMBOL-NAME`>\n
 An interpreted function or lambda form:\n
- \(lambda \( <ARG-LIST> \) <DOCSTR> \( <FUNCTION-BODY> \)\)\n
+ \(lambda \( <ARG-LIST> \) <DOCSTR> \( <MACRO-FORM> \)\)\n
 An interpreted macro:\n
- \(macro lambda \( <ARG-LIST> \) <DOCSTR> \( <MACRO-BODY> \)\)\n
+ \(macro lambda \( <ARG-LIST> \) <DOCSTR> \( <MACRO-FORM> \)\)\n
 An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
  \(autoload  <FILENAME> <DOCSTRING-OFFSET> <INTERACTIVE> <TYPE> \)\n 
 :ALIASED-BY `mon-functionp'\n
@@ -1383,14 +1424,31 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
 `edebug-lookup-function', `edebug-lambda-list-keywordp',
 `mon-help-symbol-functions', `mon-help-byte-compile-functions'.\n►►►"
   (or 
-   ;; Short circuit stuff we know we don't want.
+   ;;  want and/or if we find what we want now.
    (car (memq (type-of fncn-sym) '(;; We special case `compiled-function` here b/c
                                    ;; its print syntax is #[{...}] which signals an
                                    ;; error in the the next branch b/c there we depend
-                                   ;; on FNCN-SYM being a symbol-like.
-                                   compiled-function 
-                                   string integer float marker buffer window 
+                                   ;; on FNCN-SYM being a symbol-like but not
+                                   ;; necessarily an `indirect-*' symbol.
+                                   compiled-function
+                                   ;; function ;; This doesn't happen.
+                                   subr
+                                   ;; :NOTE could branch on this and look at the
+                                   ;; return value of an `intern-soft' on this:
+                                   string 
+                                   ;; Short circuit on stuff we know we don't
+                                   integer float marker buffer window 
                                    frame  bool-vector overlay process)))
+   ;; :NOTE It is very-important when interrogating byte-code-function objects
+   ;; that we don' directly access the #[ ... ] objects. Doing so will
+   ;; _immediately_ segfault Emacs -- at least when: (<= 23.2.1 (emacs-version))
+   ;; :SEE bug#6835: 23.2; eval'ing `type-of' with #[abc] as arg gets a Fatal error
+   ;; (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2010-08/msg00289.html')
+   ;; e.g. any of the following will lose _badly_
+   ;; (type-of #[ ... ] 
+   ;; (cdr (thing .  #[abc]))
+   
+   ;; Do
    (let ((mfop-lkng (and fncn-sym (intern-soft (symbol-name fncn-sym) obarray)
                          (fboundp fncn-sym)
                          (indirect-function fncn-sym t)))
@@ -1399,10 +1457,31 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
        (when (subrp mfop-lkng) (setq mfop-cot 'subr))
        (unless mfop-cot
          (when (or (byte-code-function-p mfop-lkng)
+                   ;; There is a problem here. Interpreted functions have the format: 
+                   ;; (lambda {...}
+                   ;; Interpreted macros have the format: 
+                   ;; (macro lambda {...}
+                   ;; How do/should we distinguish between what are essentially
+                   ;; both lambda forms? e.g. which set is best?
+                   ;; 
+                   ;; { 'lambda-function/'lambda-macro 'compiled-function/'compiled-macro }
+                   ;; { 'lambda-function/'lambda-macro 'compiled-lambda-function/'compiled-lambda-macro }
+                   ;; { 'function-interpreted/'macro-interpreted  'compiled-function/'compiled-macro }
+                   ;; { 'interpreted-function/'interpreted-macro  'compiled-function/'compiled-macro }
+                   ;;
                    (eq (car-safe mfop-lkng) 'lambda))
            (setq mfop-cot 'function)))
        (unless mfop-cot 
+         ;; :TODO If we interrogate the list with `mon-proper-list-p'
+         ;; we should be able to tell if the object is a compiled macro or
+         ;; interpreted b/c a compile macro is a cons whereas an interpreted
+         ;; macro is a proper list. But, right now we return 'macro. If we check
+         ;; for a difference what should we return instead 'compiled-macro and
+         ;; 'interpreted-macro 
+         ;; likewise could do: 
+         ;; (listp (cdr-safe (indirect-function 'some-compiled-macro)))
          (when (eq (car-safe (indirect-function mfop-lkng)) 'macro)
+           ;; (if (mon-list-proper-p (indirect-function mfop-lkng))
            (setq mfop-cot 'macro)))
        (unless mfop-cot 
          (when (eq (car-safe (indirect-function mfop-lkng)) 'autoload)
@@ -1475,7 +1554,6 @@ When PUTATIVE-BOOLEAN is any other value return nil.\n
 \(mon-booleanp nil\)\n;=> \(nil t\)\n
 \(mon-booleanp \(\)\)\n;=> \(nil t\)\n
 \(mon-booleanp '\(\)\)\n;=> \(nil t\)\n
-
 \(not \(eq :not-a-boolean \(unless \(cadr \(mon-booleanp nil\)\) :not-a-boolean\)\)\)
 \(eq :not-a-boolean \(unless \(cadr \(mon-booleanp \"bubba\"\)\) :not-a-boolean\)\)
 :NOTE Returning a two element list on success shares some similarity with
@@ -1489,11 +1567,159 @@ Whereas with a two element proper list:\n
 \(let \(\(query-truth \(eq 8 3\)\)\)
      \(and \(cadr \(booleanp query-truth\)\)
           \(not \(car \(booleanp query-truth\)\)\)\)\)\n
-:SEE-ALSO `mon-equality-or-pred'.\n►►►"
-  (or (and (eq putative-boolean t) '(t t))
+\(mon-booleanp-to-binary-TEST\)\n
+:SEE-ALSO `mon-zero-or-onep', `mon-equality-or-pred'.\n►►►" ;
+  (or (and (eq putative-boolean t)   '(t t))
       (and (eq putative-boolean nil) '(nil t))
       '(nil nil)))
+;;
+;;; :TEST-ME (mon-booleanp-to-binary-TEST)
 
+;;; ==============================
+;;; :CHANGESET 2206
+;;; :CREATED <Timestamp: #{2010-10-23T13:54:40-04:00Z}#{10426} - by MON KEY>
+(defun mon-zero-or-onep (maybe-one-or-zero)
+  "Return non-nil when arg MAYBE-ONE-OR-ZERO is and integer 0 or 1.\n
+:EXAMPLE\n\n\(mon-zero-or-onep 0\)\n\n\(mon-zero-or-onep 1\)\n
+\(mon-zero-or-onep #x1\)\n\n\(mon-zero-or-onep #o1\)\n
+\(mon-zero-or-onep #x0\)\n\n\(mon-zero-or-onep #o0\)\n
+\(mapcar  #'mon-zerop-or-one
+         \(cadr \(memq :bin-table \(mon-bool-vector-pp \(make-bool-vector 8 t\)\)\)\)\)\n
+\(mon-zero-or-onep \(length \(not \(not nil\)\)\)\)\n
+\(mon-zero-or-onep \(with-temp-buffer \(point-min\)\)\)\n
+\(not \(mon-zero-or-onep 
+      \(with-temp-buffer \(insert \(make-string 8 32\)\)\(point-max\)\)\)\)\n
+\(not \(mon-zero-or-onep 8\)\)\n\n\(not \(mon-zero-or-onep \"bubba\"\)\)\n
+\(not \(mon-zero-or-onep []\)\)\n\n\(not \(mon-zero-or-onep '\(\)\)\)\n
+\(not \(mon-zero-or-onep nil\)\)\n\n\(not \(mon-zero-or-onep \(not nil\)\)\)\n
+:ALIASED-BY `zerop-or-one'
+:ALIASED-BY `mon-zerop-or-one'
+:ALIASED-BY `mon-one-or-zerop'
+:ALIASED-BY `mon-1-or-0-p'
+:ALIASED-BY `mon-0-or-1-p'\n
+:SEE-ALSO `mon-booleanp', `mon-equality-or-pred'.\n►►►"  
+  (and (wholenump maybe-one-or-zero)
+       (or (zerop maybe-one-or-zero)
+           (zerop (1- maybe-one-or-zero)))))
+;;
+(unless (and (intern-soft "mon-one-or-zerop" obarray)
+              (fboundp 'mon-one-or-zerop))
+(defalias 'mon-one-or-zerop 'mon-zero-or-onep))
+;;
+(unless (and (intern-soft "mon-1-or-0-p" obarray)
+             (fboundp 'mon-1-or-0-p))
+(defalias 'mon-1-or-0-p 'mon-zero-or-onep))
+;;
+(unless (and (intern-soft "mon-1-or-0-p" obarray)
+             (fboundp 'mon-1-or-0-p))
+(defalias 'mon-1-or-0-p 'mon-zero-or-onep))
+;;
+(unless (and (intern-soft "mon-zerop-or-one" obarray)
+             (fboundp 'mon-zerop-or-one))
+(defalias 'mon-zerop-or-one 'mon-zero-or-onep))
+;;
+(unless (and (intern-soft "zerop-or-one" obarray)
+             (fboundp 'zerop-or-one))
+(defalias 'zerop-or-one 'mon-zero-or-onep))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (and (mon-zero-or-onep 0) (mon-zero-or-onep 1)
+;; |      (mon-zero-or-onep #x1)
+;; |      (mon-zero-or-onep #o1)
+;; |      (mon-zero-or-onep #x0)
+;; |      (mon-zero-or-onep #o0)
+;; |      (mon-zero-or-onep (length (not (not nil))))
+;; |      (mon-zero-or-onep 
+;; |       (with-temp-buffer (point-min)))
+;; |      (not (mon-zero-or-onep 
+;; |            (with-temp-buffer (insert (make-string 8 32))(point-max))))
+;; |      (not (mon-zero-or-onep 8))
+;; |      (not (mon-zero-or-onep "bubba"))
+;; |      (not (mon-zero-or-onep [])) 
+;; |      (not (mon-zero-or-onep '())) 
+;; |      (not (mon-zero-or-onep nil)) 
+;; |      (not (mon-zero-or-onep (not nil))))
+;; `----
+
+
+;;; ==============================
+;;; :CHANGESET 2206
+;;; :CREATED <Timestamp: #{2010-10-23T15:08:40-04:00Z}#{10426} - by MON KEY> 
+(defun mon-booleanp-to-binary (maybe-a-boolean &optional return-if-not)
+  "Convert a boolean value to 1 or 0.\n
+When MAYBE-A-BOOLEAN satisfies `mon-booleanp' return 0 when `nil' 1 when `t'.\n
+When optional arg RETURN-IF-NOT is non-nil and MAYBE-A-BOOLEAN is not a boolean
+return MAYBE-A-BOOLEAN.\n
+:EXAMPLE\n\n\(mon-booleanp-to-binary nil\)\n\n\(mon-booleanp-to-binary t\)\n
+\(mon-booleanp-to-binary 0\)\n\n\(mon-booleanp-to-binary 1\)\n
+\(mon-booleanp-to-binary #o1 t\) ;; :NOTE Handy if `wholenump' is already known\n
+\(mon-zero-or-onep \(mon-booleanp-to-binary #x1 t\)\)\n
+\(equal \(mon-booleanp-to-binary \"not-a-boolean\" t) \"not-a-boolean\"\)\n
+\(not \(mon-booleanp-to-binary \"not-a-boolean\"\)\)\n
+\(let \(\(mk-bvec \(make-bool-vector 64 t\)\)\)
+  \(loop for z from 0 upto \(1- \(length mk-bvec\)\)
+        do \(when \(evenp z\)
+             \(aset mk-bvec z nil\)\)
+        finally return 
+        \(loop for bv across \(vconcat mk-bvec\)
+              for i from 0
+              collect \(if bv \(mon-booleanp-to-binary bv\) i\) into rtn
+              finally return rtn\)\)\)\n
+\(let \(\(mk-bvec  \(make-bool-vector 29 t\)\)
+      \(not-true \(number-sequence 1 28 3\)\)
+      rslts\)
+  \(dolist \(tgl not-true mk-bvec\)
+    \(unless \(eq tgl 28\)
+      \(aset mk-bvec tgl nil\)\)\)
+  \(setq rslts 
+        \(mapcar #'mon-booleanp-to-binary
+                \(cadr \(memq :true-table \(mon-bool-vector-pp mk-bvec\)\)\)\)\)
+  \(nconc \(list :true-items \(apply '+ rslts\)\)
+         \(list :not-true-at \(number-sequence 1 28 3\)\)
+         \(list :true-table rslts\)\)\)\n
+:ALIASED-BY `mon-boolean-to-binary'
+:ALIASED-BY `mon-t-to-1'
+:ALIASED-BY `mon-nil-to-0'
+:ALIASED-BY `mon-true-to-one'
+:ALIASED-BY `mon-false-to-zero'\n
+:SEE-ALSO `mon-one-or-zerop', `mon-bool-vector-pp'.\n►►►"
+  (let ((myb-bool (mon-booleanp maybe-a-boolean)))
+    (or (and (cadr myb-bool)
+             (or (and (car myb-bool) 1)
+                 (and (not (car myb-bool)) 0)))
+        (when return-if-not maybe-a-boolean))))
+;;
+(unless (and (intern-soft "mon-boolean-to-binary" obarray)
+             (fboundp 'mon-boolean-to-binary))
+(defalias 'mon-boolean-to-binary 'mon-booleanp-to-binary))
+;;
+(unless (and (intern-soft "mon-t-to-1" obarray)
+             (fboundp 'mon-t-to-1))
+(defalias 'mon-t-to-1 'mon-booleanp-to-binary))
+;;
+(unless (and (intern-soft "mon-true-to-one" obarray)
+             (fboundp 'mon-true-to-one))
+(defalias 'mon-true-to-one 'mon-booleanp-to-binary))
+;;
+(unless (and (intern-soft "mon-nil-to-0" obarray)
+             (fboundp 'mon-nil-to-0))
+(defalias 'mon-nil-to-0 'mon-booleanp-to-binary))
+;;
+(unless (and (intern-soft "mon-false-to-zero" obarray)
+             (fboundp 'mon-false-to-zero))
+(defalias 'mon-false-to-zero 'mon-booleanp-to-binary))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (and 
+;; |  (= (mon-booleanp-to-binary nil) 0)
+;; |  (= (mon-booleanp-to-binary t) 1)
+;; |  (= (mon-booleanp-to-binary 0 t) 0)
+;; |  (= (mon-booleanp-to-binary 1 t) 1)
+;; |  (= (mon-booleanp-to-binary #o1 t) 1)
+;; |  (mon-zero-or-onep (mon-booleanp-to-binary #x1 t))
+;; |  (not (mon-booleanp-to-binary "not-a-boolean"))
+;; |  (equal (mon-booleanp-to-binary "not-a-boolean") "not-a-boolean")
+;; `----
 
 ;;; ==============================
 ;;; Following does image extension type checking. Can be used elsewhere as well.
@@ -2692,14 +2918,42 @@ Stuff all paragraphs paragraphs in the current region into long lines.\n
     (fill-region start end)))
 
 ;;; ==============================
-(defun mon-region-capitalize (start end)
-  "Capitalize the region.\n
-\"mon-\" function name wrapper for consistency, and to aid completion
-because we also have `mon-rectangle-capitalize'.\n
-This function is a 1:1 duplicate of `capitalize-region'.\n
-:SEE-ALSO `mon-region-unfill', `mon-region-length', `mon-region-reverse'.\n►►►"
-  (interactive "r")
-  (capitalize-region start end))
+;; :PREFIX "mrcap-"
+(defun mon-region-capitalize (start end &optional insrtp intrp)
+  "Return capitalized string in region START END.\n
+Return three valued property list with the format:\n
+ (:REGION-CAPITAL   <String-Capitalized>
+  :REGION-ORIGINAL  <STRING-UNCAPITALIZED>
+  :REGION          (<REGION-START> . <REGION-END>))\n
+When optional arg INSRTP is non-nil split line at END and insert return
+value. Does not move point.\n
+When called-interactively replace content of region with capitalized string.
+Does not move point.\n
+:EXAMPLE\n\n\(mon-region-capitalize \(line-beginning-position 3\) \(line-end-position 3\)\)\n
+lowercase string aNd UPERCASE STRING\n
+\(mon-region-capitalize-TEST\)\n
+:ALIASED-BY `mon-capitalize-region'\n
+:SEE-ALSO `capitalize', `capitalize-region', `mon-region-unfill',
+`mon-region-length', `mon-region-reverse'.\n►►►"
+  (interactive "r\ni\np")
+  (let ((mrcap-pre (mon-buffer-sub-no-prop start end)))
+    (setq mrcap-pre `(:REGION-CAPITAL  ,(capitalize mrcap-pre)
+                      :REGION-ORIGINAL ,mrcap-pre
+                      :REGION (,start . ,end)))
+    (cond (intrp (save-excursion
+                   (capitalize-region start end)
+                   (prin1 mrcap-pre)))
+          (insrtp (save-excursion
+                    (goto-char end)
+                    (print mrcap-pre (current-buffer))
+                    (delete-char 1)))
+          (t mrcap-pre))))
+;;
+(unless (and (intern-soft "mon-capitalize-region" obarray)
+              (fboundp (intern-soft "mon-capitalize-region" obarray)))
+(defalias 'mon-capitalize-region 'mon-region-capitalize))
+;;
+;;; :TEST-ME (mon-region-capitalize-TEST)
 
 ;;; ==============================
 (defun mon-region-reverse (reg-begin reg-end &optional insrtp intrp)
@@ -2707,8 +2961,9 @@ This function is a 1:1 duplicate of `capitalize-region'.\n
 When called-interactively insert the reversed as with princ.
 When INSRTP is non-nil insert the reversed as with princ.
 Insertion does not move point. Insertion is whitespace agnostic.\n
+:ALIASED-BY `mon-region-reverse-chars'\n
 :SEE-ALSO `mon-word-reverse-region', `mon-region-unfill',
-`mon-region-capitalize'.\n►►►"
+`mon-region-capitalize', `reverse-region'.\n►►►"
   (interactive "r\ni\np")
   (let ((m-reg-rev 
          (apply 'concat 
@@ -2724,6 +2979,12 @@ Insertion does not move point. Insertion is whitespace agnostic.\n
                     (delete-region reg-begin reg-end)
                     (prin1 m-reg-rev (current-buffer))))
           (t m-reg-rev))))
+;;
+(unless (and (intern-soft "mon-region-reverse-chars" obarray)
+              (fboundp (intern-soft "mon-region-reverse-chars" obarray)))
+(defalias 'mon-region-reverse-chars 'mon-region-reverse))
+
+
 
 ;;; ==============================
 ;;; :NOTE consider macrology? BUGGY but :WORKING-AS-OF
@@ -6023,22 +6284,25 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 ;;; ==============================
 ;;; :PREFIX "mlsol-"
 ;;; :CREATED <Timestamp: #{2010-01-17T12:48:16-05:00Z}#{10027} - by MON>
-(defun mon-line-strings-one-list (start end &optional replace-region-w-lst intrp)
-  "Return lines in region from START TO END as a list of strings.\n
-When called-interactively and REPLACE-REGION-W-LST is non-nil do so.\n
+(defun mon-line-strings-one-list (start end &optional insrtp intrp)
+  "Return lines in region from START to END as a list of strings.\n
+When optional arg insrtp is non-nil or called-interactively replace region with
+the list. Does not move point.\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-strings',
 `mon-line-strings-region-delimited', `mon-string-ify-list'.\n►►►"
-  (interactive "r\n\i\np")
-  (let (mlsol-lst)
-    (setq mlsol-lst ;; :WAS (buffer-substring-no-properties start end))
-          (mon-buffer-sub-no-prop start end))
+  (interactive "r\ni\np")
+  (let ((mlsol-lst (mon-buffer-sub-no-prop start end)))
+    ;; :WAS (let (mlsol-lst) (setq mlsol-lst (mon-buffer-sub-no-prop start end))
     (with-temp-buffer      
       (insert mlsol-lst)
       (setq mlsol-lst (mon-line-strings (buffer-end 0) (buffer-end 1))))
-    (if (or replace-region-w-lst intrp)
+    (if (or insrtp intrp)
         (save-excursion 
           (goto-char start)
           (delete-region start end)
+          ;; :NOTE `prin1' is probably what is wanted here but the existing caller
+          ;; `mon-word-get-list-in-buffer' appears to rely on (and work OK) with `princ'
+          ;; consider adding an optional arg?
           (princ (list mlsol-lst) (current-buffer)))
       mlsol-lst)))
 
@@ -6351,9 +6615,10 @@ When `eopb' return nil with point unchanged.\n
 ;;; :COURTESY Nelson H. F. Beebe :HIS clsc.el :VERSION 1.53 of 2001-05-27
 ;;; :CREATED <Timestamp: #{2010-08-20T13:24:05-04:00Z}#{10335} - by MON KEY>
 (defun mon-word-get-list-in-buffer (&optional intrp)
-  "Convert the entire buffer to a list of `newline' separated ``words''
-in a new buffer `\"*MON-WORD-LIST*\", where a word is defined by `forward-word'
-according to the syntax-table settings.\n
+  "Convert entirety of current-buffer to list of `newline' separated \"words\".\n
+A \"word\" is gathered with `forward-word' the heuristics of which are informed
+by ther current syntax-table settings.\n
+When called-interactively return and display results in a new buffer `\"*MON-WORD-LIST*\", 
 :EXAMPLE\n\n(mon-word-get-list-in-buffer\)\n
 \(mon-word-get-list-in-buffer t\)\n
 :NOTE Apply `sort-lines', `unique-lines', etc. to obtain a list of all the
@@ -6373,10 +6638,11 @@ unique words in a buffer of document.\n
   ;;         (princ (format "%s\n" word)))))))
   (interactive "p")
   (let* ((mwglib-MWL (get-buffer-create "*MON-WORD-LIST*"))
+         ;; (generate-new-buffer-name "*MON-WORD-LIST*")
+         ;; We use this buffer to accumlate results 
          (standard-output (get-buffer mwglib-MWL))
          mwglib-tmp)
-    (with-current-buffer mwglib-MWL
-      (erase-buffer))
+    (with-current-buffer mwglib-MWL (erase-buffer))
     (save-excursion
       (mon-g2be -1) ;;(goto-char (point-min))
       (while (setq mwglib-tmp (mon-word-get-next))
@@ -6386,6 +6652,7 @@ unique words in a buffer of document.\n
       (setq mwglib-MWL `(:BUFFER ,mwglib-tmp 
                          :TOTAL-WORDS ,(count-lines (buffer-end 0) (buffer-end 1))))
       (if intrp 
+
           (progn
             (mon-g2be -1) ;; (goto-char (buffer-end 0))
             (save-excursion            
@@ -6399,22 +6666,59 @@ unique words in a buffer of document.\n
           (kill-buffer (current-buffer)))))
     mwglib-MWL))
 ;;
-(defalias 'mon-buffer-get-word-list 'mon-word-get-list-in-buffer)
+(unless (and (intern-soft "mon-buffer-get-word-list" obarray)
+              (fboundp (intern-soft "mon-buffer-get-word-list" obarray)))
+(defalias 'mon-buffer-get-word-list 'mon-word-get-list-in-buffer))
 
 ;;; ==============================
-(defun mon-word-reverse-region (beg end)
+;;; :CHANGESET 2202 <Timestamp: #{2010-10-20T15:43:46-04:00Z}#{10423} - by MON KEY>
+(defun mon-word-reverse-region (beg end &optional insrtp intrp)
   "Reverse the order of words in region.\n
+When optional arg INSRTP is non-nil or called-interactively delete existing
+region and replace with the reversed words. Does not move point.\n
+Return value has the format:\n
+ \(<REVERSED-STRING> \(<REVERSED-STRING-AS-LIST>\)
+                     \(\(<BEG> <END>\) <ORIGINAL-STRING>\)\)\n
+:EXAMPLE\n\n\(save-excursion \(forward-line 2\)
+  \(mon-word-reverse-region \(line-beginning-position\) \(line-end-position\)\)\)\n
+deleted maybe and reversed be will I\n
 :ALIASED-BY `mon-region-reverse-words'\n
+:ALIASED-BY `mon-reverse-region-words'\n
 :SEE-ALSO `mon-region-reverse'.\n►►►"
-  (interactive "r")
-  (apply #'insert
-         (reverse (save-match-data 
-                    (split-string
-                     (delete-and-extract-region beg end) "\\b")))))
+  (interactive "r\ni\np")
+  (let* ((mwrr-str   (mon-buffer-sub-no-prop beg end))
+         (mwrr-rvrsd (save-match-data (split-string mwrr-str "\\b"))))
+    (setq mwrr-rvrsd 
+          `(,(mapconcat #'identity  (reverse mwrr-rvrsd) "")
+            ,(nreverse mwrr-rvrsd)
+            ((,beg ,end) ,mwrr-str)))
+    (if (or insrtp intrp)
+        (save-excursion
+          (delete-region beg end)
+          (insert (car mwrr-rvrsd))
+          (prin1 mwrr-rvrsd))
+      mwrr-rvrsd)))
 ;;
 (unless (and (intern-soft "mon-region-reverse-words" obarray)
              (fboundp 'mon-region-reverse-words))
 (defalias 'mon-region-reverse-words 'mon-word-reverse-region))
+;;
+(unless (and (intern-soft "mon-reverse-region-words" obarray)
+              (fboundp (intern-soft "mon-reverse-region-words" obarray)))
+(defalias 'mon-reverse-region-words 'mon-word-reverse-region))
+;; 
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (equal 
+;; |  (car (save-excursion 
+;; |         (forward-line 1)
+;; |         (mon-word-reverse-region (line-beginning-position) (line-end-position))))
+;; |  "I will be reversed and maybe deleted")
+;; | deleted maybe and reversed be will I
+;; | ^--< column 0 
+;; `----
+
+
 
 ;;; ==============================
 ;;; :PREFIX "mwio-"
@@ -7071,8 +7375,10 @@ value contains the following key value pairs:\n
  ;=> #&29\"\\377\\377\\377\x1f\"\n
 \(vconcat tt--bv\)\n
  ;=> [t t t t t t t t t t t t t t t t t t t t t t t t t t t t t]\n
-\(dolist \(tgl \(number-sequence 1 29 3\) tt--bv\)
-    \(aset tt--bv tgl nil\)\)\n
+\(dolist \(tgl \(number-sequence 1 28 3\)\)
+  \(unless \(eq tgl 28\)
+    \(aset tt--bv tgl nil\)\)\)
+\n
  ;=> #&29\"m\\333\\266\xd\"\n
 \(vconcat tt--bv\)\n
  ;=> [t nil t t nil t t nil t t nil t t nil t t nil t t nil t t nil t t nil t t nil]
@@ -7084,7 +7390,7 @@ value contains the following key value pairs:\n
       :hex    \"#x16db6db6\"
       :bin-table [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0]
       :true-table [t nil t t nil t t nil t t nil t t nil
-                    t t nil t t nil t t nil t t nil t t nil]
+                   t t nil t t nil t t nil t t nil t t nil]
       :bool-vector #&29\"m\\333\\266\xd\"\)\n
 ;; Beyond the 29th bit\n
 \(setq tt--bv \(make-bool-vector 31 t\)\)\n
@@ -7094,13 +7400,24 @@ value contains the following key value pairs:\n
  ;=> #&31\"m\\333\\266m\"\n
 \(mon-bool-vector-pp tt--bv\)\n
  ;=> \(:bintable  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
-       :true-table [t nil t t nil t t nil t t nil t t nil t
-                   t nil t t nil t t nil t t nil t t nil t t]
+      :true-table [t nil t t nil t t nil t t nil t t nil t
+                    t nil t t nil t t nil t t nil t t nil t t]
       :bool-vector #&31\"m\\333\\266m\"\)\n
- \(unintern 'tt--bv\)\n
-:ALIASED-BY `mon-bool-vector-to-list'\n
+\(unintern \"tt--bv\" obarray\)\n
+:NOTE Changing the prefix for the :binary keyword gets us Common Lisp's print
+representation for `bit-vector's e.g.:\n
+\(let \(\(bv \(make-bool-vector 29 t\)\)
+      el/cl\)
+  \(dolist \(tgl \(number-sequence 1 28 3\) bv\)
+    \(aset bv tgl nil\)\)
+  \(setq el/cl `\(:elisp-bv ,@\(mon-subseq \(mon-bool-vector-pp bv\) 1 2\)\)\)
+  `\(:common-bv ,\(store-substring \(copy-sequence \(cadr el/cl\)\) 1 42\) ,@el/cl\)\)\n
+:ALIASED-BY `mon-bool-vector-to-list'
+:ALIASED-BY `mon-boolean-vector-to-list'
+:ALIASED-BY `mon-list-ify-bool-vector'\n
 :NOTE Assumes return value of `byteorder' is 108 \(big end first\).\n
-:SEE-ALSO `mon-get-bit-table', `*mon-bit-table*', `mon-help-char-raw-bytes',
+:SEE-ALSO `mon-get-bit-table', `*mon-bit-table*', `mon-booleanp',
+`mon-booleanp-to-binary', `mon-zero-or-onep', `mon-help-char-raw-bytes',
 `mon-help-binary-representation'.\n►►►"
  (if (= (length bool-vec) 0)
      (error (concat 
@@ -7142,14 +7459,26 @@ value contains the following key value pairs:\n
          :true-table  ,(vconcat bool-vec)
          :bool-vector ,bool-vec)))))
 ;;
-(defalias 'mon-bool-vector-to-list   'mon-bool-vector-pp)
+(unless (and (intern-soft "mon-list-ify-bool-vector" obarray)
+             (fboundp 'mon-list-ify-bool-vector))
+(defalias 'mon-list-ify-bool-vector   'mon-bool-vector-pp))
+;;
+(unless (and (intern-soft "mon-bool-vector-to-list" obarray)
+             (fboundp 'mon-bool-vector-to-list))
+(defalias 'mon-boolean-vector-to-list 'mon-bool-vector-pp))
+;;
+(unless (and (intern-soft "mon-bool-vector-to-list" obarray)
+             (fboundp 'mon-bool-vector-to-list))
+(defalias 'mon-bool-vector-to-list    'mon-bool-vector-pp))
+
 ;;
 ;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 29 t)) (mon-bool-vector-pp tt--bv))
 ;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 256 t)) (mon-bool-vector-pp tt--bv))
 ;;; :TEST-ME (progn (setq tt--bv (make-bool-vector 0 t)) (mon-bool-vector-pp tt--bv))
 
 ;;; ==============================
-;;; :type '(plist :value-type  (boolean t nil)) ;;(choice :tag "Yes, bind this variable at loadtime"  t "No, do not bind" nil)
+;;; :type '(plist :value-type  (boolean t nil)) 
+;; (choice :tag "Yes, bind this variable at loadtime"  t "No, do not bind" nil)
 ;;; :CHANGESET 2064
 ;;; :CREATED <Timestamp: #{2010-08-16T20:10:59-04:00Z}#{10331} - by MON KEY>
 (defvar *mon-bit-table* nil
@@ -7931,48 +8260,76 @@ plist elements of returned list have the format:\n
 ;;; ==============================
 
 ;;; ==============================
-;;; :COURTESY Andy Stewart :HIS lazycat-toolkit.el
-;;; :WAS insert-after -> `mon-elt->' 
-;;; :WAS insert-before -> `mon-elt-<'
-;;; :WAS list-set-elt -> `mon-elt->elt'
-;;; :WAS list-exchange-els -> `mon-elt-<elt'
+;;; :CHANGESET 2202 <Timestamp: #{2010-10-21T13:03:09-04:00Z}#{10424} - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday June 03, 2009 @ 06:31.33 PM - by MON KEY>
 ;;; ==============================
-(defun mon-elt-> (list aft-el el)
-  "Insert EL after AFT-EL in LIST.\n
+(defun mon-elt-> (w-after-lst after-elt w-insert-after-elt)
+  "Insert W-INSERT-AFTER-ELT AFTER-ELT into W-AFTER-LST.\n
 :SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt',
 `mon-sublist', `mon-sublist-gutted', `mon-map-append', `mon-maptree',
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-remove-if', `mon-mapcar'.\n►►►"
-  (push el (cdr (member aft-el list)))
-  list)
+  (unless (mon-list-proper-p  w-after-lst) 
+    (error (concat ":FUNCTION `mon-elt->' " 
+                   "-- arg W-AFTER-LST does not satisfy `mon-list-proper-p', got: %S")
+           w-after-lst))
+  (push w-insert-after-elt (cdr (member after-elt w-after-lst)))
+  w-after-lst)
 ;;
-(defun mon-elt-< (list bef-el el)
-  "Insert EL before BEF-EL in LIST.\n
+(defun mon-elt-<  (w-before-lst before-elt w-insert-before-elt)
+  "Insert W-INSERT-BEFORE-ELT before BEFORE-ELT in W-BEFORE-LST.\n
+:EXAMPLE\n\n\(let \(\(mutate-lst  '\(a b c d\)\)\)
+              \(mon-elt-< mutate-lst 'b '\(bu bb a\)\)
+              mutate-lst\)\n
 :SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt',
 `mon-sublist', `mon-sublist-gutted', `mon-map-append', `mon-maptree',
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-remove-if', `mon-mapcar'.\n►►►"
-  (nreverse (mon-elt-> (nreverse list) bef-el el)))
+  (unless (mon-list-proper-p  w-before-lst) 
+    (error (concat ":FUNCTION `mon-elt-<' " 
+                   "-- arg W-BEFORE-LST does not satisfy `mon-list-proper-p', got: %S")
+           w-before-lst))
+  (nreverse (mon-elt-> (nreverse w-before-lst) before-elt w-insert-before-elt)))
 ;;
-(defun mon-elt->elt (list old-el new-el)
-  "Set OLD-EL to NEW-EL in LIST.\n
+(defun mon-elt->elt (w-old-make-new-lst w-old-elt w-new-elt)
+  "Set W-OLD-ELT to W-NEW-ELT in W-OLD-MAKE-NEW-LST.\n
+:EXAMPLE\n\n\(mon-elt-<elt '\(a b c d\) 'd  'b\)\n
 :SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt',
 `mon-sublist', `mon-sublist-gutted', `mon-map-append', `mon-maptree',
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-mapcar'.\n►►►"
-  (setcar (member old-el list) new-el)
-  list)
+  (unless (mon-list-proper-p  w-old-make-new-lst) 
+    (error (concat ":FUNCTION 'mon-elt->elt " 
+                   "-- arg W-OLD-MAKE-NEW-LST does not satisfy `mon-list-proper-p', got: %S")
+           w-old-make-new-lst))
+  (setcar (member w-old-elt w-old-make-new-lst) w-new-elt)
+  w-old-make-new-lst)
 ;;
-(defun mon-elt-<elt (list el1 el2)
-  "Exchange places of EL1 and EL2 in LIST.\n
+(defun mon-elt-<elt (w-exchange-lst w-exchange-from-elt w-exchange-to-elt) ;; (list el1 el2)
+  "Exchange places of w-exchange-from-elt and w-exchange-to-elt in W-EXCHANGE-LST.\n
+W-EXCHANGE-LST is a proper-list which satisfies the predicate `mon-list-proper-p'.
+Signal an error when it is not.\n
+Args W-EXCHANGE-FROM-ELT W-EXCHANGE-TO-ELT are existing elts in list which satisfy `member'
+Signal an error when wither is not.\n
+:EXAMPLE\n\n\(mon-elt-<elt '\(a b c d\) 'd  'b\)\n
 :SEE-ALSO `mon-elt->', `mon-elt->elt', `mon-elt-<', `mon-elt-<elt',
 `mon-sublist', `mon-sublist-gutted', `mon-map-append', `mon-maptree',
 `mon-transpose', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-intersection', `mon-remove-if', `mon-mapcar'.\n►►►"
-  (when (or (null (member el1 list))
-            (null (member el2 list)))
-    (error ":FUNCTION `mon-elt-<elt' -- arg EL1 or EL2 not in LIST")))
+  (or (and (not (mon-list-proper-p  w-exchange-lst))
+           (error (concat ":FUNCTION `mon-elt-<elt' " 
+                          "-- arg W-EXCHANGE-LST does not satisfy `mon-list-proper-p', got: %S")
+                  w-exchange-lst))
+      (and (null (member w-exchange-from-elt w-exchange-lst))
+           (error (concat ":FUNCTION `mon-elt-<elt' "
+                          "-- arg W-EXCHANGE-FROM-ELT not member of W-EXCHANGE-LST, got: %S")
+                  w-exchange-from-elt))
+      (and (null (member w-exchange-to-elt  w-exchange-lst))
+           (error (concat ":FUNCTION `mon-elt-<elt' "
+                          "-- arg W-EXCHANGE-TO-ELT not member of W-EXCHANGE-LST, got: %S")
+                  w-exchange-to-elt)))
+  (mon-elt->elt w-exchange-lst w-exchange-from-elt w-exchange-to-elt)
+  (mon-elt->elt w-exchange-lst w-exchange-to-elt w-exchange-from-elt))
 
 ;;; ==============================
 ;;; :COURTESY :FILE macroexp.el :WAS `maybe-cons'
@@ -9301,6 +9658,7 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-list.el :WAS `flatten'
 (defun mon-flatten (tree-to-flatten)
   "Return a tree-to-flatten containing all the elements of the `tree-to-flatten'.\n
+:ALIASED-BY `mon-list-flatten'\n
 :SEE-ALSO `mon-list-proper-p', `mon-maybe-cons', `mon-intersection',
 `mon-combine', `mon-mapcar', `mon-map-append', `mon-maptree-to-flatten', `mon-transpose',
 `mon-flatten', `mon-recursive-apply', `mon-list-match-tails', `mon-sublist',
@@ -9323,6 +9681,34 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 	   (setq tree-to-flatten (car tree-to-flatten)))
 	  (t (push (car tree-to-flatten) mfltn-rslt)
 	     (setq tree-to-flatten (cdr tree-to-flatten))))))
+;;
+(unless (and (intern-soft "mon-list-flatten" obarray)
+             (fboundp (intern-soft "mon-list-flatten" obarray)))
+(defalias 'mon-list-flatten 'mon-flatten))
+
+
+;;; ==============================
+;; mon-list-flatten-rotated
+;;; :CHANGESET 2202 <Timestamp: #{2010-10-20T12:28:20-04:00Z}#{10423} - by MON KEY>
+(defun mon-list-flatten-rotated (list-of-lists)
+  "Flatten LIST-OF-LISTS - a list of lists.\n
+:EXAMPLE\n\n\(mon-list-flatten-rotated '\(\(a b c\) \(1 \(\(2 3\)\)\)\)\)\n
+:ALIASED-BY `mon-rotate-flatten-list'\n
+:SEE-ALSO `mon-flatten', `mon-rotate-string', `mon-rotate-next',
+`mon-rotate-region', `mon-rotate-get-rotations-for',
+`mon-string-rotate-to-regexp', `mon-indent-or-rotate'.\n►►►"
+  (if (null list-of-lists)
+      list-of-lists
+    (if (listp list-of-lists)
+	(append (mon-list-flatten-rotated (car list-of-lists))
+		(mon-list-flatten-rotated (cdr list-of-lists)))
+      (list list-of-lists))))
+;;
+(unless (and (intern-soft "mon-rotate-flatten-list" obarray)
+             (fboundp (intern-soft "mon-rotate-flatten-list" obarray)))
+(defalias 'mon-rotate-flatten-list 'mon-list-flatten-rotated))
+;;
+;;; :TEST-ME (mon-rotate-flatten-list '((a b c) (1 ((2 3)))))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS list.lisp :WAS TRANSPOSE

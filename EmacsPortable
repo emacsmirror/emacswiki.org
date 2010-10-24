@@ -24,6 +24,7 @@ The forthcoming release includes the following packages:
 * Lisp:cursor-chg.el, see ChangingCursorDynamically
 * Unified folding interface (fold-dwim)
 ** Optional org-mode-like tab-based showing and hiding of code
+* [[Yaoddmuse]] (for editing this wiki)
 
 It has the following features:
 

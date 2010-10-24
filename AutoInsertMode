@@ -136,6 +136,12 @@ A second way of using autoinsert is to define skeletons (see SkeletonMode) that 
         ;;}}}
   ))
 
+== Running manually ==
+
+You can also use the functions that auto-insert uses manually, on pre-existing source files.
+
+The key function to know is `auto-insert' which will run the template, interactively asking you questions. 
+
 ----
 CategoryTemplates
 CategoryCode

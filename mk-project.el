@@ -28,7 +28,7 @@
 
 ;; More information about this library, including the most recent
 ;; version and a comprehensive README, is available at
-;; http://http://github.com/mattkeller/mk-project
+;; http://github.com/mattkeller/mk-project
 
 ;;; Code:
 
@@ -36,7 +36,7 @@
 (require 'thingatpt)
 (require 'cl)
 
-(defvar mk-proj-version "1.4.0"
+(defvar mk-proj-version "1.5.1"
   "As tagged at http://github.com/mattkeller/mk-project/tree/master")
 
 ;; ---------------------------------------------------------------------
@@ -85,7 +85,8 @@ is set -- or in grepping when `mk-proj-grep-find-cmd' is set.")
 not one relative to basedir. Value is expanded with expand-file-name.")
 
 (defvar mk-proj-compile-cmd nil
-  "Shell command to build the entire project. Optional. Example: make -k.")
+  "Command to build the entire project. Can be either a string specifying 
+a shell command or the name of a function. Optional. Example: make -k.")
 
 (defvar mk-proj-startup-hook nil
   "Hook function to run after the project is loaded. Optional. Project
@@ -160,7 +161,8 @@ used by `project-find-file' to quickly locate project files.")
                              (cvs . "'*/.CVS/*'")
                              (svn . "'*/.svn/*'")
                              (bzr . "'*/.bzr/*'")
-                             (hg  . "'*/.hg/*'"))
+                             (hg  . "'*/.hg/*'")
+                             (darcs . "'*/_darcs/*'"))
   "When `mk-proj-vcs' is one of the VCS types listed here, ignore
 the associated paths when greping or indexing the project. This
 value is not used if a custom find command is set in
@@ -201,13 +203,19 @@ value is not used if a custom find command is set in
   :type 'boolean
   :group 'mk-project)
 
-(defcustom mk-proj-ack-cmd (if (string-equal system-type "windows-nt") "ack.pl" "ack")
+(defcustom mk-proj-ack-cmd (if (eq system-type 'windows-nt) "ack.pl" "ack")
   "Name of the ack program to run. Defaults to \"ack\" (or \"ack.pl\" on Windows)."
   :type 'string
   :group 'mk-project)
 
 (defcustom mk-proj-file-index-relative-paths t
   "If non-nil, generate relative path names in the file-index buffer"
+  :type 'boolean
+  :group 'mk-project)
+
+(defcustom mk-proj-menu-on t
+  "If non-nil, define the 'mk-project' menu in the menu-bar at
+load time. See also `project-menu-remove'."
   :type 'boolean
   :group 'mk-project)
 
@@ -300,14 +308,16 @@ value is not used if a custom find command is set in
     (maybe-set-var 'file-list-cache #'expand-file-name)
     (maybe-set-var 'open-files-cache #'expand-file-name)))
 
-(defun project-load ()
+(defun project-load (&optional name)
   "Load a project's settings."
   (interactive)
   (catch 'project-load
     (let ((oldname mk-proj-name)
-          (name (if (mk-proj-use-ido)
-                    (ido-completing-read "Project Name (ido): " (mk-proj-names))
-                  (completing-read "Project Name: " (mk-proj-names)))))
+          (name (or name
+                    (if (mk-proj-use-ido)
+                        (ido-completing-read "Project Name (ido): "
+                                             (mk-proj-names))
+                      (completing-read "Project Name: " (mk-proj-names))))))
       (unless (string= oldname name)
         (project-unload))
       (let ((proj-config (mk-proj-find-config name)))
@@ -392,14 +402,17 @@ value is not used if a custom find command is set in
     buffers))
 
 (defun project-status ()
-  "View project's variables."
-  (interactive)
-  (if mk-proj-basedir
-      (let ((msg))
-        (dolist (v mk-proj-proj-vars)
-          (setq msg (concat msg (format "%-24s = %s\n" v (symbol-value v)))))
-        (message msg))
-    (message "No project loaded.")))
+ "View project's variables."
+ (interactive)
+ (if mk-proj-basedir
+   (let ((b (get-buffer-create "*project-status*")))
+     (with-current-buffer b
+       (kill-region (point-min) (point-max))
+       (dolist (v mk-proj-proj-vars)
+         (insert (format "%-24s = %s\n" v (symbol-value v)))))
+     (when (not (eq b (current-buffer)))
+       (switch-to-buffer-other-window b)))
+   (message "No project loaded.")))
 
 ;; ---------------------------------------------------------------------
 ;; Save/Restore open files
@@ -512,18 +525,23 @@ value is not used if a custom find command is set in
 ;; Grep
 ;; ---------------------------------------------------------------------
 
-(defun project-grep ()
-  "Run find-grep on the project's basedir, excluding files in mk-proj-ignore-patterns, tag files, etc.
-With C-u prefix, start from the current directory."
+(defun project-grep (&optional phrase from-current-dir)
+  "Run find-grep on the project's basedir, excluding files in 
+mk-proj-ignore-patterns, tag files, etc.
+
+If the phrase argument is not included, it will prompt for a
+search phrase.  If the from-current-dir argument is true, or with
+C-u prefix, start from the current directory."
   (interactive)
   (mk-proj-assert-proj)
   (let* ((wap (word-at-point))
-         (regex (if wap (read-string (concat "Grep project for (default \"" wap "\"): ") nil nil wap)
-                  (read-string "Grep project for: ")))
+         (regex (or phrase
+                    (if wap (read-string (concat "Grep project for (default \"" wap "\"): ") nil nil wap)
+                      (read-string "Grep project for: "))))
          (find-cmd "find . -type f")
          (grep-cmd (concat "grep -i -n \"" regex "\""))
          (default-directory (file-name-as-directory
-                             (if (mk-proj-has-univ-arg)
+                             (if (or from-current-dir (mk-proj-has-univ-arg))
                                  default-directory
                                mk-proj-basedir))))
     (when mk-proj-ignore-patterns
@@ -555,18 +573,19 @@ With C-u prefix, start from the current directory."
           mk-proj-ack-args " "
           regex))
 
-(defun project-ack ()
+(defun project-ack (&optional phrase from-current-dir)
   "Run ack from project's basedir, using the `ack-args' configuration.
 With C-u prefix, start ack from the current directory."
   (interactive)
   (mk-proj-assert-proj)
   (let* ((wap (word-at-point))
-         (regex (if wap (read-string (concat "Ack project for (default \"" wap "\"): ") nil nil wap)
-                  (read-string "Ack project for: ")))
+         (regex (or phrase
+                    (if wap (read-string (concat "Ack project for (default \"" wap "\"): ") nil nil wap)
+                  (read-string "Ack project for: "))))
          (whole-cmd (mk-proj-ack-cmd regex))
          (confirmed-cmd (read-string "Ack command: " whole-cmd nil whole-cmd))
          (default-directory (file-name-as-directory
-                             (if (mk-proj-has-univ-arg)
+                             (if (or from-current-dir (mk-proj-has-univ-arg))
                                  default-directory
                                mk-proj-basedir))))
     (compilation-start confirmed-cmd 'ack-mode)))
@@ -575,22 +594,26 @@ With C-u prefix, start ack from the current directory."
 ;; Compile
 ;; ---------------------------------------------------------------------
 
-(defun project-compile (opts)
-  "Run the compile command for this project."
-  (interactive "sCompile options: ")
-  (mk-proj-assert-proj)
-  (project-home)
-  (compile (concat mk-proj-compile-cmd " " opts)))
+(defun project-compile (&optional opts)
+ "Run the compile command (string or function) for this project."
+ (interactive)
+ (mk-proj-assert-proj)
+ (let ((default-directory mk-proj-basedir))
+   (cond ((stringp mk-proj-compile-cmd)
+          (when (and (null opts) (called-interactively-p))
+            (setq opts (read-string "Compile options: ")))
+          (compile (concat mk-proj-compile-cmd " " opts)))
+         ((fboundp mk-proj-compile-cmd)
+          (cond ((commandp mk-proj-compile-cmd)
+                 (call-interactively mk-proj-compile-cmd))
+                (opts
+                 (funcall mk-proj-compile-cmd opts))
+                (t (funcall mk-proj-compile-cmd))))
+         (t (message "No compile command defined.")))))
 
 ;; ---------------------------------------------------------------------
-;; Home and Dired
+;; Dired
 ;; ---------------------------------------------------------------------
-
-(defun project-home ()
-  "cd to the basedir of the current project"
-  (interactive)
-  (mk-proj-assert-proj)
-  (cd mk-proj-basedir))
 
 (defun project-dired ()
   "Open dired in the project's basedir (or jump to the existing dired buffer)"
@@ -659,26 +682,40 @@ With C-u prefix, start ack from the current directory."
       (set-process-sentinel (get-process proc-name) 'mk-proj-fib-cb))))
 
 (defun mk-proj-fib-matches (regex)
-  "Return list of files in *file-index* matching regex. 
+  "Return list of files in *file-index* matching regex.
 
 If regex is nil, return all files. Returned file paths are
 relative to the project's basedir."
   (let ((files '()))
     (with-current-buffer mk-proj-fib-name
       (goto-char (point-min))
-      (while 
-          (progn
-            (let ((raw-file (buffer-substring (line-beginning-position) (line-end-position))))
-              (when (> (length raw-file) 0)
-                ;; file names in buffer can be absolute or relative to basedir
-                (let ((file (if (file-name-absolute-p raw-file) 
-                                (file-relative-name raw-file mk-proj-basedir)
-                              raw-file)))
-                  (if regex
-                      (when (string-match regex file) (add-to-list 'files file))
-                    (add-to-list 'files file)))
-                (= (forward-line) 0))))) ; loop test
-      files)))
+      (while
+        (progn
+          (let ((raw-file (mk-proj-normalize-drive-letter
+                            (buffer-substring
+                              (line-beginning-position) (line-end-position)))))
+            (when (> (length raw-file) 0)
+              ;; file names in buffer can be absolute or relative to basedir
+              (let ((file (if (file-name-absolute-p raw-file)
+                              (file-relative-name raw-file mk-proj-basedir)
+                            raw-file)))
+                (if regex
+                    (when (string-match regex file) (add-to-list 'files file))
+                  (add-to-list 'files file)))
+              (= (forward-line) 0))))) ; loop test
+      (sort files #'string-lessp))))
+
+(defun mk-proj-normalize-drive-letter (file)
+  "Convert drive letters to lowercase to be compatible with
+file-relative-name, file-name-as-directory"
+  (if (or (null file) (< (length file) 2))
+      file
+    (let ((c1 (aref file 0))
+          (c2 (aref file 1)))
+      (if (and (= (aref ":" 0) c2)
+               (and (>= c1 (aref "A" 0)) (<= c1 (aref "Z" 0))))
+          (concat (char-to-string (+ c1 32)) (substring file 1))
+        file))))
 
 (defun* project-find-file (regex)
   "Find file in the current project matching the given regex.
@@ -729,6 +766,53 @@ selection of the file. See also: `project-index',
   (multi-occur (mk-proj-filter (lambda (b) (if (buffer-file-name b) b nil)) 
                                (mk-proj-buffers))
                regex))
+
+;; ---------------------------------------------------------------------
+;; Menus
+;; ---------------------------------------------------------------------
+
+(defun mk-proj-menu-item (key label fn &optional always-enabled-p)
+  "Define a mk-project menu item that may not be enabled if a
+project is not loaded."
+  (let ((whole-key `[menu-bar mkproject ,key]))
+    (define-key global-map whole-key
+      `(menu-item ,label ,fn :enable ,(if always-enabled-p 't 'mk-proj-name)))))
+
+(defun mk-proj-menu-item-separator (key)
+  "Define a separator line in the mk-project menu."
+  (define-key global-map `[menu-bar mkproject ,key] '(menu-item "--")))
+
+(defun project-menu ()
+  "Define a menu for mk-project operations."
+  (interactive)
+  ;; define a menu in the top-level menu
+  (define-key-after
+    global-map
+    [menu-bar mkproject]
+    (cons "mk-project" (make-sparse-keymap))
+    'tools)
+
+  ;; define the menu items in reverse order
+  (mk-proj-menu-item 'tags   "Build TAGS"     'project-tags)
+  (mk-proj-menu-item 'index  "Build Index"    'project-index)
+  (mk-proj-menu-item-separator 's2)
+  (mk-proj-menu-item 'dired  "Browse (dired)" 'project-dired)
+  (mk-proj-menu-item 'comp   "Compile   "     'project-compile)
+  (mk-proj-menu-item 'occur  "Multi-occur"    'project-multi-occur)
+  (mk-proj-menu-item 'ack    "Ack"            'project-ack)
+  (mk-proj-menu-item 'grep   "Grep"           'project-grep)
+  (mk-proj-menu-item-separator 's1)
+  (mk-proj-menu-item 'status "Status"         'project-status)
+  (mk-proj-menu-item 'unload "Unload Project" 'project-unload)
+  (mk-proj-menu-item 'load   "Load Project"   'project-load t))
+
+(defun project-menu-remove ()
+  "Remove the mk-project menu from the menu bar"
+  (interactive)
+  (global-unset-key [menu-bar mkproject]))
+
+(when mk-proj-menu-on 
+  (project-menu))
 
 (provide 'mk-project)
 

@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Fri Oct 22 09:51:37 2010 (-0500)
+;; Last-Updated: Sat Oct 23 23:42:37 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 87
+;;     Update #: 89
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
