@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 09:30:21 2010 (-0700)
+;; Last-Updated: Fri Oct 22 15:12:35 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2215
+;;     Update #: 2252
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,11 +20,11 @@
 ;;   `apropos', `apropos-fn+var', `avoid', `cl', `cus-edit',
 ;;   `cus-face', `cus-load', `cus-start', `doremi', `easymenu',
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `hexrgb', `icicles-cmd1', `icicles-face',
-;;   `icicles-fn', `icicles-mcmd', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `misc-fns', `mwheel', `pp', `pp+',
-;;   `ring', `ring+', `strings', `thingatpt', `thingatpt+',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
+;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
+;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mwheel',
+;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `strings',
+;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -838,17 +838,19 @@ bound to `where-is' to `icicle-where-is'.  If you do not want this
 remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
   (lambda (x) (let ((symb  (intern-soft x))) ; Action function
                 (where-is symb (and pref-arg (consp pref-arg)))))
-  "Where is command: " obarray          ; `completing-read' args
-  (if pref-arg
-      'commandp
-    #'(lambda (c)
-        (with-current-buffer orig-buff
-          (and (commandp c) (where-is-internal c overriding-local-map 'non-ascii)))))
-  t nil nil (let ((fn  (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
-                           (function-called-at-point))))
-              (and fn (symbol-name fn)))
+  "Where is command: " obarray nil t nil nil ; `completing-read' args
+  (let ((fn  (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
+                 (function-called-at-point))))
+    (and fn (symbol-name fn)))
   t
   ((pref-arg  current-prefix-arg)       ; Bindings
+   (icicle-must-pass-after-match-predicate
+    (if pref-arg
+        #'(lambda (c) (commandp (intern c)))
+      #'(lambda (c)
+          (setq c  (intern c))
+          (with-current-buffer orig-buff
+            (and (commandp c) (where-is-internal c overriding-local-map 'non-ascii))))))
    (icicle-candidate-help-fn
     #'(lambda (c)
         (with-current-buffer orig-buff
@@ -1345,6 +1347,10 @@ See `apropos-variable' for a description of PATTERN."
               (mapatoms #'(lambda (symb)
                             (when (user-variable-p symb) (put symb 'icicle-special-candidate t))))
               (let ((icicle-fancy-candidates-p  t)
+                    (icicle-must-pass-after-match-predicate
+                     #'(lambda (s)
+                         (setq s  (intern s))
+                         (and (boundp s) (get s 'variable-documentation))))
                     (icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type "variable")))
@@ -1353,10 +1359,8 @@ See `apropos-variable' for a description of PATTERN."
                          (icicle-alt-act-fn-for-type "variable"))))
                 (completing-read
                  (concat "Apropos variable (regexp" (and (>= emacs-major-version 22) " or words")
-                         "): ") obarray
-                 #'(lambda (symbol)
-                     (and (boundp symbol) (get symbol 'variable-documentation)))
-                 nil nil 'regexp-history)))
+                         "): ")
+                 obarray nil nil nil 'regexp-history)))
          (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))))
      (apropos-variable pattern))
 
@@ -1365,10 +1369,11 @@ See `apropos-variable' for a description of PATTERN."
 You can see the list of matches with `S-TAB'.
 See `apropos-option' for a description of PATTERN."
      (interactive
-      (list (completing-read
-             (concat "Apropos user option (regexp" (and (>= emacs-major-version 22) " or words")
-                     "): ") obarray 'user-variable-p nil nil 'regexp-history)))
-     (let ((apropos-do-all                  nil)
+      (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (user-variable-p (intern s)))))
+        (list (completing-read
+               (concat "Apropos user option (regexp" (and (>= emacs-major-version 22) " or words")
+                       "): ") obarray nil nil nil 'regexp-history))))
+     (let ((apropos-do-all  nil)
            (icicle-candidate-alt-action-fn
             (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "option")))
            (icicle-all-candidates-list-alt-action-fn
@@ -1387,7 +1392,8 @@ See `apropos-function' for a description of PATTERN."
             (progn
               (mapatoms #'(lambda (symb)
                             (when (commandp symb) (put symb 'icicle-special-candidate t))))
-              (let ((icicle-fancy-candidates-p  t)
+              (let ((icicle-fancy-candidates-p               t)
+                    (icicle-must-pass-after-match-predicate  #'(lambda (s) (fboundp (intern s))))
                     (icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type "function")))
@@ -1396,7 +1402,7 @@ See `apropos-function' for a description of PATTERN."
                          (icicle-alt-act-fn-for-type "function"))))
                 (completing-read
                  (concat "Apropos function (regexp" (and (>= emacs-major-version 22) " or words")
-                         "): ") obarray 'fboundp nil nil 'regexp-history)))
+                         "): ") obarray nil nil nil 'regexp-history)))
          (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil))))))
      (apropos-function pattern))
 
@@ -1405,13 +1411,14 @@ See `apropos-function' for a description of PATTERN."
 You can see the list of matches with `S-TAB'.
 See `apropos-command' for a description of PATTERN."
      (interactive
-      (let ((icicle-candidate-alt-action-fn
+      (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (commandp (intern s))))
+            (icicle-candidate-alt-action-fn
              (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "command")))
             (icicle-all-candidates-list-alt-action-fn
              (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "command"))))
         (list (completing-read
                (concat "Apropos command (regexp" (and (>= emacs-major-version 22) " or words")
-                       "): ") obarray 'commandp nil nil 'regexp-history))))
+                       "): ") obarray nil nil nil 'regexp-history))))
      (let ((apropos-do-all  nil))  (apropos-command pattern))))
 
   ;; My versions are not available.  Use the vanilla Emacs versions of the `apropos...' commands.
@@ -1435,6 +1442,12 @@ using face `icicle-special-candidate'."
                 (mapatoms #'(lambda (symb)
                               (when (user-variable-p symb) (put symb 'icicle-special-candidate t)))))
               (let ((icicle-fancy-candidates-p  (or current-prefix-arg apropos-do-all))
+                    (icicle-must-pass-after-match-predicate
+                     (if (or current-prefix-arg apropos-do-all)
+                         #'(lambda (s)
+                             (setq s  (intern s))
+                             (and (boundp s) (get s 'variable-documentation)))
+                       #'(lambda (s) (user-variable-p (intern s)))))
                     (icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
@@ -1449,11 +1462,7 @@ using face `icicle-special-candidate'."
                  (concat "Apropos " (if (or current-prefix-arg apropos-do-all)
                                         "variable" "user option")
                          " (regexp" (and (>= emacs-major-version 22) " or words") "): ")
-                 obarray (if (or current-prefix-arg apropos-do-all)
-                             #'(lambda (symbol) (and (boundp symbol)
-                                                     (get symbol 'variable-documentation)))
-                           'user-variable-p)
-                 nil nil 'regexp-history)))
+                 obarray nil nil nil 'regexp-history)))
          (when (or current-prefix-arg apropos-do-all)
            (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil)))))
        current-prefix-arg))
@@ -1481,6 +1490,10 @@ satisfy the predicate VAR-PREDICATE."
                 (mapatoms #'(lambda (symb)
                               (when (commandp symb) (put symb 'icicle-special-candidate t)))))
               (let ((icicle-fancy-candidates-p  (or current-prefix-arg apropos-do-all))
+                    (icicle-must-pass-after-match-predicate
+                     (if current-prefix-arg
+                         #'(lambda (s) (fboundp (intern s)))
+                       #'(lambda (s) (commandp (intern s)))))
                     (icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type (if icicle-fancy-candidates-p
@@ -1495,7 +1508,7 @@ satisfy the predicate VAR-PREDICATE."
                  (concat "Apropos " (if (or current-prefix-arg apropos-do-all)
                                         "command or function" "command")
                          "(regexp" (and (>= emacs-major-version 22) " or words") "): ")
-                 obarray (if current-prefix-arg 'fboundp 'commandp) nil nil 'regexp-history)))
+                 obarray nil nil nil 'regexp-history)))
          (when (or current-prefix-arg apropos-do-all)
            (mapatoms #'(lambda (symb) (put symb 'icicle-special-candidate nil)))))
        current-prefix-arg))
@@ -1612,33 +1625,34 @@ to nil so that candidates with initial spaces can be matched."
   (interactive
    (list (symbol-value
           (intern
-           (let ((icicle-candidate-alt-action-fn
+           (let ((icicle-must-pass-after-match-predicate
+                  `(lambda (s)
+                      (setq s  (intern s))
+                      (and (boundp s) (consp (symbol-value s))
+                           ,(if current-prefix-arg
+                                '(consp (car (symbol-value s)))
+                                '(string-match "alist$" (symbol-name s))))))
+                 (icicle-candidate-alt-action-fn
                   (or icicle-candidate-alt-action-fn
                       (icicle-alt-act-fn-for-type "variable")))
                  (icicle-all-candidates-list-alt-action-fn
                   (or icicle-all-candidates-list-alt-action-fn
                       (icicle-alt-act-fn-for-type "variable"))))
-             (completing-read "Alist (variable): " obarray
-                              `(lambda (symb)
-                                (and
-                                 (boundp symb) (consp (symbol-value symb))
-                                 ,(if current-prefix-arg
-                                      '(consp (car (symbol-value symb)))
-                                      '(string-match "alist$" (symbol-name symb)))))
-                              t nil (if (boundp 'variable-name-history)
-                                        'variable-name-history
-                                      'icicle-variable-name-history)))))
+             (completing-read "Alist (variable): " obarray nil t nil
+                              (if (boundp 'variable-name-history)
+                                  'variable-name-history
+                                'icicle-variable-name-history)))))
          (read
-          (let ((icicle-candidate-alt-action-fn
+          (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
+                (icicle-candidate-alt-action-fn
                  (or icicle-candidate-alt-action-fn
                      (icicle-alt-act-fn-for-type "function")))
                 (icicle-all-candidates-list-alt-action-fn
                  (or icicle-all-candidates-list-alt-action-fn
                      (icicle-alt-act-fn-for-type "function"))))
-            (completing-read "Function: " obarray 'functionp nil nil
-                             (if (boundp 'function-name-history)
-                                 'function-name-history
-                               'icicle-function-name-history))))))
+            (completing-read "Function: " obarray nil nil nil (if (boundp 'function-name-history)
+                                                                  'function-name-history
+                                                                'icicle-function-name-history))))))
 
   (setq icicle-candidate-entry-fn  fn)  ; Save in global variable - used by `icicle-apply-action'.
   (let ((icicle-candidate-action-fn            'icicle-apply-action)
@@ -3210,7 +3224,7 @@ command")))
                                 guts))
                       (error nil))))
        (bmkp-sort-and-remove-dups (funcall ',(intern (format "bmkp-%s-alist-only" type))
-                                        ,@args)))))
+                                   ,@args)))))
     nil                                 ; First code
     (icicle-bookmark-cleanup-on-quit)   ; Undo code
     (icicle-bookmark-cleanup)))         ; Last code
@@ -4201,6 +4215,7 @@ You can use `\\<minibuffer-local-completion-map>\
 variable."
   (interactive "P")
   (let* ((enable-recursive-minibuffers  t)
+         (icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
          (var
           (if askp
               (let ((icicle-candidate-alt-action-fn
@@ -4209,7 +4224,7 @@ variable."
                     (icicle-all-candidates-list-alt-action-fn
                      (or icicle-all-candidates-list-alt-action-fn
                          (icicle-alt-act-fn-for-type "variable"))))
-                (intern (completing-read "Variable: " obarray 'boundp nil nil
+                (intern (completing-read "Variable: " obarray nil nil nil
                                          (if (boundp 'variable-name-history)
                                              'variable-name-history
                                            'icicle-variable-name-history)
@@ -4641,13 +4656,14 @@ filtering:
                                 (confirm-nonexistent-file-or-buffer))
                            nil 'buffer-name-history nil nil))))
       (color (icicle-read-color 1))     ; Use the color name (only).
-      (command (let ((icicle-candidate-alt-action-fn
+      (command (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (commandp (intern s))))
+                     (icicle-candidate-alt-action-fn
                       (or icicle-candidate-alt-action-fn
                           (icicle-alt-act-fn-for-type "command")))
                      (icicle-all-candidates-list-alt-action-fn
                       (or icicle-all-candidates-list-alt-action-fn
                           (icicle-alt-act-fn-for-type "command"))))
-                 (intern (completing-read "Which (command): " obarray 'commandp))))
+                 (intern (completing-read "Which (command): " obarray))))
       (face (let ((icicle-candidate-alt-action-fn
                    (or icicle-candidate-alt-action-fn
                        (icicle-alt-act-fn-for-type "face")))
@@ -4677,20 +4693,23 @@ filtering:
                     (or icicle-all-candidates-list-alt-action-fn
                         (icicle-alt-act-fn-for-type "frame"))))
                (cdr (assoc (completing-read "Which (frame): " frame-alist) frame-alist))))
-      (function (let ((icicle-candidate-alt-action-fn
+      (function (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (fboundp (intern s))))
+                      (icicle-candidate-alt-action-fn
                        (or icicle-candidate-alt-action-fn
                            (icicle-alt-act-fn-for-type "function")))
                       (icicle-all-candidates-list-alt-action-fn
                        (or icicle-all-candidates-list-alt-action-fn
                            (icicle-alt-act-fn-for-type "function"))))
-                  (intern (completing-read "Which (function): " obarray 'fboundp))))
-      (option (let ((icicle-candidate-alt-action-fn
+                  (intern (completing-read "Which (function): " obarray))))
+      (option (let ((icicle-must-pass-after-match-predicate  #'(lambda (s)
+                                                                 (user-variable-p (intern s))))
+                    (icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type "option")))
                     (icicle-all-candidates-list-alt-action-fn
                      (or icicle-all-candidates-list-alt-action-fn
                          (icicle-alt-act-fn-for-type "option"))))
-                (intern (completing-read "Which (user option): " obarray 'user-variable-p))))
+                (intern (completing-read "Which (user option): " obarray))))
       (process (let ((icicle-candidate-alt-action-fn
                       (or icicle-candidate-alt-action-fn
                           (icicle-alt-act-fn-for-type "process")))
@@ -4708,13 +4727,14 @@ filtering:
                      (or icicle-all-candidates-list-alt-action-fn
                          (icicle-alt-act-fn-for-type "symbol"))))
                 (intern (completing-read "Which (symbol): " obarray))))
-      (variable (let ((icicle-candidate-alt-action-fn
+      (variable (let ((icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
+                      (icicle-candidate-alt-action-fn
                        (or icicle-candidate-alt-action-fn
                            (icicle-alt-act-fn-for-type "variable")))
                       (icicle-all-candidates-list-alt-action-fn
                        (or icicle-all-candidates-list-alt-action-fn
                            (icicle-alt-act-fn-for-type "variable"))))
-                  (intern (completing-read "Which (variable): " obarray 'boundp))))
+                  (intern (completing-read "Which (variable): " obarray))))
       (window (let ((icicle-candidate-alt-action-fn
                      (or icicle-candidate-alt-action-fn
                          (icicle-alt-act-fn-for-type "window")))
@@ -4731,15 +4751,16 @@ filtering:
 (defun icicle-read-var-value-satisfying (pred)
   "Read a variable that satisfies predicate PRED and returns its value."
   (symbol-value
-   (let ((orig-window                     (selected-window))
-         (icicle-candidate-alt-action-fn
-          (or icicle-candidate-alt-action-fn (icicle-alt-act-fn-for-type "variable")))
+   (let ((orig-window                             (selected-window))
+         (icicle-must-pass-after-match-predicate  `(lambda (s)
+                                                    (setq s  (intern s))
+                                                    (and (boundp s)
+                                                     (funcall ',pred (symbol-value s)))))
+         (icicle-candidate-alt-action-fn          (or icicle-candidate-alt-action-fn
+                                                      (icicle-alt-act-fn-for-type "variable")))
          (icicle-all-candidates-list-alt-action-fn
           (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "variable"))))
-     (intern (completing-read (format "Which (%s value of variable): " pred) obarray
-                              `(lambda (symb)
-                                   (and (boundp symb)
-                                        (funcall ',pred (symbol-value symb)))))))))
+     (intern (completing-read (format "Which (%s value of variable): " pred) obarray)))))
 
 ;;;###autoload
 (when (fboundp 'map-keymap)             ; Emacs 22.

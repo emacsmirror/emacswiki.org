@@ -5,7 +5,7 @@
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 10 Oct 2010 PM 02:44 JST
 ;; Keywords: abbrev convenience emulations wp
-;; Revision: $Id: 398473eb8e60a290a2a3830187ce8054613306ff $
+;; Revision: $Id: 4116d32ae30dcf635e5bd4718271c5911a056b6b $
 ;; URL: http://www.emacswiki.org/emacs/download/multiple-line-edit.el
 ;; GitHub: http://github.com/k-talo/multiple-line-edit.el
 
@@ -97,10 +97,24 @@
 ;; non-nil value to the variable `inhibit-modification-hooks'
 ;; like `YASnippet'.
 ;;
-;; See also `YASnippet support' section at end of this file.
+;; We wrote experimental patches to run `YASnippet' with
+;; `multiple-line-edit', put a line below in your .emacs startup
+;; file if you are interested in.
+;;
+;;    (mulled/experimental/install-yas-support)
+;;
+
 
 ;;; Chane Log:
 
+;;  v1.4, Sun Oct 24 22:44:13 2010 JST
+;;   - Fixed a fatal error:
+;;     "Symbol's value as variable is void: remove-text-properties-p"
+;;     This bug was brought by failure of merge operation.
+;;
+;;   - Made `mulled/experimental/install-yas-support' not to run
+;;     automatically.
+;;
 ;;  v1.3, Sun Oct 24 00:07:02 2010 JST
 ;;   - Fixed bugs regarding to reactivation by undo command.
 ;;
@@ -115,7 +129,7 @@
 
 (provide 'multiple-line-edit)
 
-(defconst multiple-line-edit/version "1.3")
+(defconst multiple-line-edit/version "1.4")
 
 (eval-when-compile
   (require 'cl)
@@ -525,7 +539,11 @@
               (mulled/lines/mirror-replace-op lines edit-trailing-edges-p beg end len-removed))
              ;; Deletion
              (t
-              (let (;; May be "C-d" at end of line.
+              (let (;; Removing text properties.
+                    (remove-text-properties-p
+                     (not (= beg end)))
+                    
+                    ;; May be "C-d" at end of line.
                     (remove-newline-at-eol-p
                      (= end (mulled/ov-1st-line/get-end-with-padding ov)))
                     
@@ -774,8 +792,8 @@ accepted by each line of multiple line edit."
 ;;
 ;; Here we make patches to cope with this restriction.
 
-(defun mulled/experimental/install-yas-support ()
-  (remove-hook 'yas/minor-mode-hook 'mulled/experimental/install-yas-support)
+(defun mulled/experimental/install-yas-support-aux ()
+  (remove-hook 'yas/minor-mode-hook 'mulled/experimental/install-yas-support-aux)
   
   ;; When snipets are expanded in 1st line, mirror them to another lines.
   ;;
@@ -883,9 +901,10 @@ accepted by each line of multiple line edit."
 
 ;; Install YASnippet support.
 ;;
-(if (featurep 'yasnippet)
-    (mulled/experimental/install-yas-support)
-  (add-hook 'yas/minor-mode-hook
-            'mulled/experimental/install-yas-support))
+(defun mulled/experimental/install-yas-support ()
+  (if (featurep 'yasnippet)
+      (mulled/experimental/install-yas-support-aux)
+    (add-hook 'yas/minor-mode-hook
+              'mulled/experimental/install-yas-support-aux)))
 
 ;;; multiple-line-edit.el ends here

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 324 $  
+;; RCS Version: $Rev: 325 $  
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 324 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 325 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -207,6 +207,7 @@
 (eval-when-compile (require 'cl)
                    (require 'desktop)
                    (require 'esh-mode)
+                   (require 'locate)
                    (require 'recentf)
                    (require 'term))
 
@@ -2701,31 +2702,54 @@ or (c)ontents? ")
     (defun locate-prompt-for-search-string ()
       (error "ERROR: Feature locate not available!"))))
 
+(defun sr-locate-filter (locate-buffer search-string)
+  "Returns the filter function that processes the output produced by the locate
+  process running in the background."
+  `(lambda (process output)
+     (let ((inhibit-read-only t) (inhibit-quit nil)
+           (search-regexp ,(regexp-quote search-string)))
+       (set-buffer ,locate-buffer)
+       (condition-case nil
+           (mapc (lambda (x)
+                   (when (and (string-match search-regexp x) (file-exists-p x))
+                     (goto-char (point-max))
+                     (insert-char 32 2)
+                     (insert-directory x sr-virtual-listing-switches nil nil)))
+                 (split-string output "[\r\n]" t))
+           (quit
+            (interrupt-process process))))))
+
+(defun sr-locate-sentinel (locate-buffer)
+  "Returns the sentinel function used to notify about the termination status of
+  the locate process running in the background."
+  `(lambda (process status)
+     (let ((inhibit-read-only t))
+       (set-buffer ,locate-buffer)
+       (goto-char (point-max))
+       (insert "\n " locate-command " " status)
+       (forward-char -1)
+       (insert " at " (substring (current-time-string) 0 19))
+       (forward-char 1))))
+
 (defun sr-locate (search-string &optional filter arg)
-  "Runs locate and displays results in sunrise virtual mode."
+  "Runs locate asynchronously and displays results in sunrise virtual mode."
   (interactive (list (locate-prompt-for-search-string) nil current-prefix-arg))
-  (sr-save-aspect
-   (locate search-string filter arg)
-   (sr-select-window sr-selected-window)
-   (sr-alternate-buffer
-    (switch-to-buffer (create-file-buffer "*Sunrise Locate*")))
-   (cd "/")
-   (insert "  " default-directory ":")(newline)
-   (insert " Results of: locate " search-string)(newline)
-   (mapc (lambda (file)
-           (setq file (concat default-directory
-                              (replace-regexp-in-string "/$" "" file)))
-           (when (file-exists-p file)
-             (insert-char 32 2)
-             (insert-directory file sr-virtual-listing-switches)
-             (sr-end-of-buffer)
-             (dired-next-line 1)))
-         (sr-buffer-files "*Locate*"))
-   (toggle-read-only 1)
-   (sr-virtual-mode)
-   (sr-keep-buffer)
-   (kill-buffer "*Locate*"))
-  (sr-backup-buffer))
+  (let ((locate-buffer (create-file-buffer "*Sunrise Locate*"))
+        (process-connection-type nil)
+        (locate-process nil))
+    (sr-save-aspect
+     (sr-alternate-buffer (switch-to-buffer locate-buffer))
+     (cd "/")
+     (insert "  " default-directory ":")(newline)
+     (insert " Results of: " locate-command " " search-string)(newline)
+     (sr-virtual-mode)
+     (set-process-filter
+      (setq locate-process
+            (start-process "Async Locate" nil locate-command search-string))
+      (sr-locate-filter locate-buffer search-string))
+     (set-process-sentinel
+      locate-process
+      (sr-locate-sentinel locate-buffer)))))
 
 (defun sr-fuzzy-narrow ()
   "Interactively narrows the contents of  the current pane using fuzzy matching:

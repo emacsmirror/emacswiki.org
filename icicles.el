@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 09:02:52 2010 (-0700)
+;; Last-Updated: Thu Oct 21 13:30:05 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22772
+;;     Update #: 22773
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -23,15 +23,15 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
 ;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
 ;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `ring', `ring+',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `regexp-opt', `ring',
+;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
+;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1043,6 +1043,7 @@
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
 ;;    `icicle-mode-map', `icicle-ms-windows-drive-hash',
 ;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+;;    `icicle-must-pass-after-match-predicate',
 ;;    `icicle-must-pass-predicate',
 ;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates',

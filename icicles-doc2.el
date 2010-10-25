@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 20:09:51 2010 (-0700)
+;; Last-Updated: Sun Oct 24 17:03:33 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27234
+;;     Update #: 27310
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -253,6 +253,8 @@
 ;;    (@> "Scatter-Match Completion")
 ;;    (@> "Swank (Fuzzy Symbol) Completion")
 ;;    (@> "Fuzzy-Match Completion")
+;;    (@> "Levenshtein Completion")
+;;    (@> "Jaro-Winkler Completion")
 ;;
 ;;  (@> "Completion in Other Buffers")
 ;;    (@> "Dynamic Abbreviation")
@@ -3561,7 +3563,11 @@
 ;;
 ;;  There are a few different kinds of what might be called "fuzzy"
 ;;  matching used in Icicles completion, in addition to apropos
-;;  (regexp) matching and prefix matching.
+;;  (regexp) matching and prefix matching.  And if you have your own
+;;  method of matching then you can use that as well, by adding it to
+;;  option `icicle-S-TAB-completion-methods-alist'.
+;;
+;;  The following methods are predefined:
 ;;
 ;;  * Fuzzy - This method uses a fairly sophisticated matching
 ;;    algorithm that seems to account for various typing mistakes.
@@ -3581,11 +3587,16 @@
 ;;    at most a given number of character operations, the so-called
 ;;    "Levenshtein distance".
 ;;
+;;  * Jaro-Winkler - This method gives matching weight to having both
+;;    (a) more characters that match in the right positions (Jara) and
+;;    (b) a longer exact prefix within the first four characters
+;;    (Winkler).
+;;
 ;;  You can use fuzzy or swank completion in place of prefix
-;;  completion (`TAB').  You can use the scatter or Levenshtein
-;;  completion in place of apropos completion (`S-TAB').  You can
-;;  change completion methods easily at any time, by hitting a key in
-;;  the minibuffer:
+;;  completion (`TAB').  You can use scatter, Levenshtein, or
+;;  Jaro-Winkler completion in place of apropos completion (`S-TAB').
+;;  You can change completion methods easily at any time, by hitting a
+;;  key in the minibuffer:
 ;;
 ;;  * `C-(' (command `icicle-next-TAB-completion-method') to cycle
 ;;    among `TAB' completion methods: `basic', `vanilla', `fuzzy', and
@@ -3594,8 +3605,9 @@
 ;;    library `el-swank-fuzzy.el').
 ;;
 ;;  * `M-(' (command `icicle-next-S-TAB-completion-method') to cycle
-;;    `S-TAB' completion methods: `apropos', `scatter', `Levenshtein'
-;;    and `Levenshtein strict'.
+;;    `S-TAB' completion methods: `apropos', `scatter', `Levenshtein',
+;;    `Levenshtein strict', and `Jaro-Winkler' (only if you have the
+;;    Autocomplete library `fuzzy.el').
 ;;
 ;;  Repeating `C-(' and `TAB' or `M-(' and `S-TAB' on the fly for the
 ;;  same input can be a good way to learn the differences between the
@@ -3604,8 +3616,8 @@
 ;;  My opinion about the relative usefulness of the various methods:
 ;;  Basic (prefix) completion and apropos completion are by far the
 ;;  most useful.  They are followed, in order of decreasing
-;;  usefulness, by scatter, fuzzy, Levenshtein, vanilla, and swank
-;;  completion. YMMV.
+;;  usefulness, by scatter, fuzzy, Levenshtein, vanilla, Jaro-Winkler,
+;;  and swank completion. YMMV.
 ;;
 ;;  Besides these methods, remember that you can get ordinary
 ;;  substring matching with `S-TAB' by using `C-`' to turn off
@@ -3616,7 +3628,10 @@
 ;;  and `TAB' is controlled by user options
 ;;  `icicle-S-TAB-completion-methods-alist' and
 ;;  `icicle-TAB-completion-methods', respectively.  By default, the
-;;  first method in each list is used for matching.
+;;  first method in each list is used for matching.  The possible
+;;  methods for `TAB' are predefined, but you can add additional
+;;  methods for `S-TAB' by customizing
+;;  `icicle-S-TAB-completion-methods-alist'.
 ;;
 ;;(@* "Partial Completion")
 ;;  ** Partial Completion **
@@ -3854,8 +3869,8 @@
 ;;  terms, you just need to get a feel for it - learn by doing.  Have
 ;;  fun!
 ;;
-;;(@* "Levenshtein-Match Completion")
-;;  ** Levenshtein-Match Completion **
+;;(@* "Levenshtein Completion")
+;;  ** Levenshtein Completion **
 ;;
 ;;  The "Levenshtein distance" is the maximum number of character
 ;;  insertions, deletions, or replacements that are needed to
@@ -3895,6 +3910,41 @@
 ;;  Levenshtein completion can be quite slow.  In that case, you will
 ;;  no doubt want to turn off incremental completion (`C-#').
 ;;
+;;(@* "Jaro-Winkler Completion")
+;;  **  Jaro-Winkler Completion **
+;;
+;;  The Jaro-Winkler method was developed for comparing names for the
+;;  U.S. census.  It tends to take into account some typical spelling
+;;  mistakes, and it is best suited for use with short candidates.
+;;
+;;  When checking whether two strings match, higher matching weight
+;;  results when there are more characters in each string that are
+;;  also present in the other, and in approximately the same
+;;  positions.
+;;
+;;  Looking only at those characters that nearly match in this sense
+;;  (same character in about the same position), the more exact
+;;  matches there are (same character in exactly the same position),
+;;  the higher the matching weight.  That is, weight is reduced for
+;;  characters that nearly match but are not quite in the right
+;;  position.
+;;
+;;  So far, this describes Jaro matching.  The Jaro matching weight is
+;;  the average of three values; (a) the ratio of the first string's
+;;  near matches to its length, the same for the second string, and
+;;  (c) the ratio of exact matches to total matches (near and exact).
+;;
+;;  The Winkler part of the method comes from giving additional weight
+;;  for prefixes that match exactly.  The longer the exact prefix
+;;  match (up to 4 characters) the greater the weight.
+;;
+;;  Unlike the other matching methods, for Jaro-Winkler to complete
+;;  your input it must have the same number of characters as the
+;;  candidate to be matched, plus or minus two (actually
+;;  `fuzzy-accept-length-difference').  In particular, this means that
+;;  you cannot hit `S-TAB' with an empty minibuffer to see all of the
+;;  candidates.
+;;
 ;;  See Also:
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Icicles Multi `M-x'")
@@ -3902,6 +3952,9 @@
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Apropos Completions")
 ;;    for completion with regexp matching
+;;
+;;  * http://en.wikipedia.org/wiki/Jaro-Winkler_distance for
+;;    information about Jaro-Winkler matching
  
 ;;(@* "Completion in Other Buffers")
 ;;

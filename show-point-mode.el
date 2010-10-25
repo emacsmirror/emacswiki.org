@@ -1,11 +1,12 @@
 ;;; show-point-mode.el --- show point position in status bar
 
 
-;; Copyright (C) 2007 Toby Cubitt
+;; Copyright (C) 2007, 2010 Toby Cubitt
 
 ;; Author: Toby Cubitt <toby-predictive@dr-qubit.org>
-;; Version: 0.1
+;; Version: 0.2
 ;; Keywords: point, mode line
+;; URL: http://www.dr-qubit.org/emacs.php
 
 
 ;; This file is NOT part of Emacs.
@@ -33,7 +34,10 @@
 
 ;;; Change log:
 ;;
-;; version 0.1
+;; Version 0.2
+;; * rewritten without any need for an idle-timer
+;;
+;; Version 0.1
 ;; * initial release
 
 
@@ -41,11 +45,6 @@
 ;;; Code:
 
 (provide 'show-point-mode)
-
-
-(defvar show-point-value nil
-  "Variable used to store point value for display in mode-line.")
-(make-variable-buffer-local 'show-point-value)
 
 
 ;; add point display to mode-line construct
@@ -57,12 +56,12 @@
 		`((show-point-mode
 		   (line-number-mode
 		    ((column-number-mode
-		      (15 " (%l,%c)(" show-point-value ")")
-		      (10 " L%l(" show-point-value ")")))
+		      (20 (" (%l,%c)" (:eval (format "(%d)" (point)))))
+		      (15 (" L%l"     (:eval (format "(%d)" (point)))))))
 		    ((column-number-mode
-		      (10 " C%c(" show-point-value ")"))))
-		   ,linenum-format))))
-)
+		      (15 (" C%c"     (:eval (format "(%d)" (point)))))
+		      (10 (:eval (format "(%d") (point))))))
+		   ,linenum-format)))))
 
 
 (define-minor-mode show-point-mode
@@ -72,23 +71,12 @@ A non-null prefix argument turns the mode on.
 A null prefix argument turns it off.
 
 Note that simply setting the minor-mode variable
-`predictive-which-dict-mode' is not sufficient to enable
-predictive mode."
+`show-point-mode' is not sufficient to enable show-point-mode
+mode.
 
-  ;; initial value, mode-line indicator, and keymap
-  nil nil nil
-  
-  ;; if show-point-mode had been turned on, add update function to
-  ;; `post-command-hook'
-  (if show-point-mode
-      (add-hook 'post-command-hook 'show-point-modeline-update nil t)
-    (remove-hook 'post-command-hook 'show-point-modeline-update t))
-)
-
-
-(defun show-point-modeline-update nil
-  ;; Update variable storing point position for display in mode line.
-  (setq show-point-value (format "%d" (point))))
+When enabled, the value of `point' is displayed in the
+mode-line (after the line and column numbers, if those are being
+displayed too).")
 
 
 ;;; show-point-mode.el ends here

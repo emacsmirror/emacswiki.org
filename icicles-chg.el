@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 21 09:26:37 2010 (-0700)
+;; Last-Updated: Sun Oct 24 17:52:23 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5699
+;;     Update #: 5749
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,14 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/10/24 dadams
+;;     icicle-customize-apropos(-faces|-groups|-options(-of-type)), icicle-execute-extended-command,
+;;       icicle-command-abbrev, icicle-execute-named-keyboard-macro, icicle-(re)set-option-to-(t|nil),
+;;       icicle-toggle-option, icicle-increment-(option|variable), icicle-doremi-increment-variable+:
+;;         Use icicle-must-pass-after-match-predicate, not PREDICATE arg.
+;;     icicle-execute-extended-command-1, icicle-command-abbrev-action,
+;;       icicle-increment-(option|variable), icicle-doremi-increment-variable+:
+;;         Restore orginal icicle-must-pass-after-match-predicate.
 ;; 2010/10/09 dadams
 ;;     icicle-customize-face, icicle-repeat-complex-command, icicle-delete-window:
 ;;       Updated doc string for new prefix and modal cycling keys.
@@ -322,6 +330,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/10/24 dadams
+;;     icicle-where-is, icicle-apropos-(variable|option|function|command), icicle-apply,
+;;       icicle-save-string-to-variable, icicle-choose-candidate-of-type,
+;;       icicle-read-var-value-satisfying:
+;;         Use icicle-must-pass-after-match-predicate, not PREDICATE arg.
 ;; 2010/10/09 dadams
 ;;     icicle-Info-goto-node, icicle-apply, icicle-goto-marker, icicle-occur, icicle-complete-keys,
 ;;       icicle-(comint|compilation)-search, icicle-search(-sentences|-paragraphs|-pages):
@@ -599,6 +612,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/10/24 dadams
+;;     icicle-unsorted(-file-name)-(prefix|apropos)-candidates:
+;;       Respect icicle-must-pass-after-match-predicate.
+;;     icicle-alt-act-fn-for-type: Use icicle-must-pass-after-match-predicate, not PREDICATE arg.
 ;; 2010/10/07 dadams
 ;;     Added: icicle-current-TAB-method (function).  Use it in place of var everywhere.
 ;; 2010/10/04 dadams
@@ -2065,6 +2082,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/10/24 dadams
+;;     icicle-insert-string-from-variable, icicle(-mouse)-candidate-read-fn-invoke,
+;;       icicle-narrow-candidates, icicle-save-predicate-to-variable:
+;;         Use icicle-must-pass-after-match-predicate, not PREDICATE arg.
 ;; 2010/10/09 dadams
 ;;     icicle-minibuffer-help, icicle-help-string-completion, icicle-help-on-candidate (doc string):
 ;;       Updated for change toward modal cycling.  Fix for swank bindings and M-_ toggle.
@@ -4077,6 +4098,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/10/24 dadams
+;;     icicle-S-TAB-completion-methods-alist: Added ("Jaro-Winkler" . fuzzy-match).
 ;; 2010/10/09 dadams
 ;;     Corrections per move to emphasize modal cycling:
 ;;      Renamed: icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.
@@ -4600,6 +4623,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/10/24 adams
+;;     Added: icicle-must-pass-after-match-predicate.
+;;     icicle-must-pass-predicate: Clarified doc string.
 ;; 2010/10/09 dadams
 ;;     icicle-general-help-string:
 ;;       Applied renaming of icicle-cycling-respects-completion-mode to icicle-default-cycling-mode.

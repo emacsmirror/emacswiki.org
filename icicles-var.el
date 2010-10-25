@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 09:02:36 2010 (-0700)
+;; Last-Updated: Sun Oct 24 17:47:05 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1342
+;;     Update #: 1352
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,9 +18,9 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy-match', `hexrgb', `icicles-face', `icicles-opt',
-;;   `kmacro', `levenshtein', `thingatpt', `thingatpt+', `wid-edit',
-;;   `widget'.
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-opt', `kmacro', `levenshtein', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -94,7 +94,9 @@
 ;;    `icicle-list-use-nth-parts', `icicle-menu-map',
 ;;    `icicle-minibuffer-message-ok-p', `icicle-minor-mode-map-entry',
 ;;    `icicle-ms-windows-drive-hash', `icicle-must-match-regexp',
-;;    `icicle-must-not-match-regexp', `icicle-must-pass-predicate',
+;;    `icicle-must-not-match-regexp',
+;;    `icicle-must-pass-after-match-predicate',
+;;    `icicle-must-pass-predicate',
 ;;    `icicle-nb-candidates-before-truncation',
 ;;    `icicle-nb-of-other-cycle-candidates',
 ;;    `icicle-next-apropos-complete-cycles-p',
@@ -592,7 +594,7 @@ noted in parentheses.
 * `icicle-search-replace-common-match-flag' - Replace ECM? (`M-;')
 * `icicle-search-replace-literally-flag' - Replace text literally?
 * `icicle-search-replace-whole-candidate-flag' - Replace input match
-                                           or whole search hit?(`C-,')
+                                           or whole search hit?(`M-_')
 * `icicle-search-ring-max'               - Icicles `search-ring-max'
 * `icicle-search-whole-word-flag'        - Find whole words? (`M-q')
 * `icicle-show-Completions-help-flag'    - Show *Completions* help?
@@ -984,12 +986,26 @@ candidates whose display form does not match it.
 The display form is the string shown in `*Completions*'.
 See also `icicle-must-match-regexp'.")
 
+(defvar icicle-must-pass-after-match-predicate nil
+  "Predicate that completions must satisfy after matching input, or nil.
+This is just like `icicle-must-pass-predicate', except that it is
+applied only to display candidates that match your current input.")
+
 (defvar icicle-must-pass-predicate nil
-  "A predicate that completion candidates must satisfy, or nil.
+  "Predicate that completion display candidates must satisfy, or nil.
 If nil, then this does nothing.  Otherwise, this is a function of one
-argument, a candidate, and only candidates whose display form
-satisfies the predicate are displayed.  The display form is the string
-shown in `*Completions*'.")
+argument, a display candidate (a string), and only the display
+candidates that satisfy the predicate are displayed.  A display
+candidate is a string of text such as you see in buffer
+`*Completions*'.
+
+Note that this predicate is different from the PREDICATE argument for
+function `completing-read' or `read-file-name'.  The latter applies to
+the elements of the COLLECTION argument, which are typically alist
+entries or obarray symbols.  `icicle-must-pass-predicate' applies
+instead to a string, the display form of a completion candidate.
+
+See also `icicle-must-pass-after-match-predicate'.")
 
 (defvar icicle-nb-candidates-before-truncation 0
   "Number of candidates, before truncation per `icicle-max-candidates'.")

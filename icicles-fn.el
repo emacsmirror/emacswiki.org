@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct  7 08:39:01 2010 (-0700)
+;; Last-Updated: Sun Oct 24 17:13:55 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11876
+;;     Update #: 11919
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,9 +18,10 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `el-swank-fuzzy', `ffap',
-;;   `ffap-', `fuzzy-match', `hexrgb', `icicles-face', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `thingatpt',
-;;   `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `ffap-', `fuzzy', `fuzzy-match', `hexrgb', `icicles-face',
+;;   `icicles-opt', `icicles-var', `kmacro', `levenshtein',
+;;   `regexp-opt', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2404,10 +2405,10 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                                         icicle-S-TAB-completion-methods-alist))))
                   (concat "No " typ (and typ " ") "completions"))
               (case (icicle-current-TAB-method)
-                (fuzzy   "No fuzzy completions")
-                (swank   "No swank (fuzzy symbol) completions")
-                (vanilla "No vanilla completions")
-                (t       "No prefix completions")))))
+                (fuzzy        "No fuzzy completions")
+                (swank        "No swank (fuzzy symbol) completions")
+                (vanilla      "No vanilla completions")
+                (t            "No prefix completions")))))
           (t
            (when (> nb-cands icicle-incremental-completion-threshold)
              (message "Displaying completion candidates..."))
@@ -2866,8 +2867,8 @@ Version of `minibuffer-prompt-end' that works for Emacs 20 and later."
   "List of prefix or fuzzy completions for the current partial INPUT.
 INPUT is a string.  Each candidate is a string."
   (setq icicle-candidate-nb  nil)
-  (if (or (and (eq 'fuzzy (icicle-current-TAB-method)) (featurep 'fuzzy-match))
-          (and (eq 'swank (icicle-current-TAB-method)) (featurep 'el-swank-fuzzy)))
+  (if (or (and (eq 'fuzzy        (icicle-current-TAB-method)) (featurep 'fuzzy-match))
+          (and (eq 'swank        (icicle-current-TAB-method)) (featurep 'el-swank-fuzzy)))
       (condition-case nil
           (icicle-transform-candidates (append icicle-extra-candidates icicle-proxy-candidates
                                                (icicle-fuzzy-candidates input)))
@@ -2931,10 +2932,13 @@ prefix over all candidates."
              (filtered-candidates
               (icicle-transform-candidates
                (append icicle-extra-candidates icicle-proxy-candidates
-                       (icicle-remove-if-not (lambda (cand)
-                                               (let ((case-fold-search  completion-ignore-case))
-                                                 (icicle-filter-wo-input cand)))
-                                             candidates)))))
+                       (icicle-remove-if-not
+                        (lambda (cand)
+                          (let ((case-fold-search  completion-ignore-case))
+                            (and (icicle-filter-wo-input cand)
+                                 (or (not icicle-must-pass-after-match-predicate)
+                                     (funcall icicle-must-pass-after-match-predicate cand)))))
+                        candidates)))))
         (when (consp filtered-candidates)
           (let ((common-prefix
                  (if (icicle-not-basic-prefix-completion-p)
@@ -2996,7 +3000,9 @@ prefix over all candidates."
 ;;;                  We don't do it for non-file-name completion, anyway, and it doesn't seem needed.
 ;;;                                  (save-match-data
 ;;;                                    (string-match (concat "^" (regexp-quote input)) cand))
-                               (icicle-filter-wo-input cand)))))
+                               (icicle-filter-wo-input cand)
+                               (or (not icicle-must-pass-after-match-predicate)
+                                   (funcall icicle-must-pass-after-match-predicate cand))))))
                         candidates)))))
         (when (consp filtered-candidates)
           (let ((common-prefix
@@ -3062,7 +3068,9 @@ input over all candidates."
                                        ;; `icicle-apropos-complete-match-fn'.
                                        (condition-case nil
                                            (funcall icicle-apropos-complete-match-fn input cand)
-                                         (error nil))))))
+                                         (error nil)))
+                                   (or (not icicle-must-pass-after-match-predicate)
+                                       (funcall icicle-must-pass-after-match-predicate cand)))))
                           candidates)))))
           (when (and icicle-expand-input-to-common-match-flag (consp filtered-candidates))
             (setq icicle-common-match-string  (icicle-expanded-common-match input
@@ -3124,7 +3132,9 @@ input over all candidates."
                                          ;; call `icicle-apropos-complete-match-fn'.
                                          (condition-case nil
                                              (funcall icicle-apropos-complete-match-fn input cand)
-                                           (error nil)))))))
+                                           (error nil)))
+                                     (or (not icicle-must-pass-after-match-predicate)
+                                         (funcall icicle-must-pass-after-match-predicate cand))))))
                           candidates)))))
           (when icicle-expand-input-to-common-match-flag
             (setq icicle-common-match-string (if (consp filtered-candidates)
@@ -5459,8 +5469,11 @@ current before user input is read from the minibuffer."
                              cands))
         (setq icicle-candidates-alist  actions)
         (let (icicle-saved-completion-candidate)
-          (cond ((null actions)         ; Undefined TYPE - provide all Emacs fns as candidates.
-                 (let ((action  (completing-read "How (action): " obarray 'functionp)))
+          (cond ((null actions)
+                 ;; Undefined TYPE - provide all Emacs `functionp' symbol names as candidates.
+                 (let* ((icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
+                        (action                                  (completing-read "How (action): "
+                                                                                  obarray)))
                    (dolist (cand  cands)
                      (setq icicle-saved-completion-candidate  cand)
                      (icicle-apply-to-saved-candidate action))))

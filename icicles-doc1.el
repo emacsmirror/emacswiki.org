@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 20 15:20:38 2010 (-0700)
+;; Last-Updated: Sun Oct 24 16:59:24 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25520
+;;     Update #: 25521
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -337,6 +337,8 @@
 ;;    (@file :file-name "icicles-doc2.el" :to "Scatter-Match Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Swank (Fuzzy Symbol) Completion")
 ;;    (@file :file-name "icicles-doc2.el" :to "Fuzzy-Match Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "Levenshtein Completion")
+;;    (@file :file-name "icicles-doc2.el" :to "Jaro-Winkler Completion")
 ;;
 ;;  (@file :file-name "icicles-doc2.el" :to "Completion in Other Buffers")
 ;;    (@file :file-name "icicles-doc2.el" :to "Dynamic Abbreviation")

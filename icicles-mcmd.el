@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 10 10:16:52 2010 (-0700)
+;; Last-Updated: Sun Oct 24 16:48:16 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16196
+;;     Update #: 16235
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -18,10 +18,11 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
-;;   `ffap', `ffap-', `fuzzy-match', `hexrgb', `icicles-face',
-;;   `icicles-fn', `icicles-opt', `icicles-var', `kmacro',
-;;   `levenshtein', `mwheel', `pp', `pp+', `ring', `ring+',
-;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
+;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
+;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
+;;   `kmacro', `levenshtein', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `thingatpt', `thingatpt+', `wid-edit',
+;;   `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -1410,9 +1411,9 @@ methods that are available."
   (let ((now  (memq icicle-current-TAB-method icicle-TAB-completion-methods)))
     (setq icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))
     ;; Skip any method that is not currently supported.
-    (while (or (and (eq icicle-current-TAB-method 'fuzzy) (not (featurep 'fuzzy-match)))
-               (and (eq icicle-current-TAB-method 'swank) (not (featurep 'el-swank-fuzzy)))
-               (and (eq icicle-current-TAB-method 'vanilla) (not (boundp 'completion-styles))))
+    (while (or (and (eq icicle-current-TAB-method 'fuzzy)        (not (featurep 'fuzzy-match)))
+               (and (eq icicle-current-TAB-method 'vanilla)      (not (boundp 'completion-styles)))
+               (and (eq icicle-current-TAB-method 'swank)        (not (featurep 'el-swank-fuzzy))))
       (setq now                        (memq icicle-current-TAB-method icicle-TAB-completion-methods)
             icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))))
   (cond ((and (eq icicle-current-TAB-method 'swank) (fboundp 'doremi))
@@ -2449,8 +2450,11 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (save-selected-window
     (select-window (minibuffer-window))
     (if askp
-        (let* ((icicle-whole-candidate-as-text-prop-p  nil)
-               (enable-recursive-minibuffers           t)
+        (let* ((icicle-whole-candidate-as-text-prop-p   nil)
+               ;; If we didn't use this here we'd at least have to bind it to
+               ;; `orig-must-pass-after-match-predicate', because of `icicle-execute-extended-command'.
+               (icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
+               (enable-recursive-minibuffers            t)
                (var
                 (intern
                  (completing-read
@@ -2470,10 +2474,9 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                      rmail-mime-charset-pattern sentence-end shell-prompt-pattern
                                      telnet-prompt-pattern temp-file-name-pattern
                                      thing-at-point-url-regexp)))
-                  (lambda (cand) (boundp (intern (car cand))))
-                  nil nil (if (boundp 'variable-name-history)
-                              'variable-name-history
-                            'icicle-variable-name-history))))
+                  nil  nil nil (if (boundp 'variable-name-history)
+                                   'variable-name-history
+                                 'icicle-variable-name-history))))
                ;; Make sure we use the buffer-local value of the variable, if there is one.
                (text
                 (with-current-buffer (cadr (buffer-list)) (symbol-value var))))
@@ -3137,10 +3140,10 @@ Optional argument WORD-P non-nil means complete only a word at a time."
              (run-hooks 'icicle-no-match-hook)
              (unless (eq no-display-p 'no-msg)
                (minibuffer-message (case (icicle-current-TAB-method)
-                                     (fuzzy   "  [No fuzzy completions]")
-                                     (swank   "  [No swank (fuzzy symbol) completions]")
-                                     (vanilla "  [No vanilla completions]")
-                                     (t       "  [No prefix completions]")))))
+                                     (fuzzy        "  [No fuzzy completions]")
+                                     (vanilla      "  [No vanilla completions]")
+                                     (swank        "  [No swank (fuzzy symbol) completions]")
+                                     (t            "  [No prefix completions]")))))
             ((null (cdr icicle-completion-candidates)) ; Single candidate.  Update minibuffer.
              ;; When `icicle-whole-candidate-as-text-prop-p' is t and
              ;; `icicle-expand-input-to-common-match-flag' is nil, we need to expand the input anyway.
@@ -3227,18 +3230,18 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                      ((and icicle-edit-update-p (not (eq no-display-p 'no-msg)))
                       (minibuffer-message
                        (format (case (icicle-current-TAB-method)
-                                 (fuzzy   "  [One fuzzy completion: %s]")
-                                 (swank   "  [One swank (fuzzy symbol) completion: %s]")
-                                 (vanilla "  [One vanilla completion: %s]")
-                                 (t       "  [One prefix completion: %s]"))
+                                 (fuzzy        "  [One fuzzy completion: %s]")
+                                 (vanilla      "  [One vanilla completion: %s]")
+                                 (swank        "  [One swank (fuzzy symbol) completion: %s]")
+                                 (t            "  [One prefix completion: %s]"))
                                icicle-current-input))
                       (setq mode-line-help  icicle-current-input))
                      ((not (eq no-display-p 'no-msg))
                       (minibuffer-message (case (icicle-current-TAB-method)
-                                            (fuzzy   "  [Sole fuzzy completion]")
-                                            (swank   "  [Sole swank (fuzzy symbol) completion]")
-                                            (vanilla "  [Sole vanilla completion]")
-                                            (t       "  [Sole prefix completion]")))
+                                            (fuzzy        "  [Sole fuzzy completion]")
+                                            (vanilla      "  [Sole vanilla completion]")
+                                            (swank        "  [Sole swank (fuzzy symbol) completion]")
+                                            (t            "  [Sole prefix completion]")))
                       (setq mode-line-help  icicle-current-input)))))
             (t                          ; Multiple candidates.
              (if icicle-edit-update-p
@@ -4709,12 +4712,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                  'icicle-apropos-candidates)
                              (not (eq icicle-current-completion-mode 'prefix)))))
   (let ((icicle-whole-candidate-as-text-prop-p  nil)
-        (enable-recursive-minibuffers           t)
-        (icicle-saved-completion-candidate      icicle-last-completion-candidate)
-        (icicle-candidate-action-fn             'icicle-apply-to-saved-candidate))
+        (enable-recursive-minibuffers            t)
+        (icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
+        (icicle-saved-completion-candidate       icicle-last-completion-candidate)
+        (icicle-candidate-action-fn              'icicle-apply-to-saved-candidate))
     (icicle-apply-to-saved-candidate
      (completing-read (format "Function to apply to `%s': " icicle-saved-completion-candidate)
-                      obarray 'functionp))))
+                      obarray))))
 
 ;;;###autoload
 (defun icicle-mouse-candidate-read-fn-invoke (event) ; Bound to `M-mouse-2' in *Completions*.
@@ -4744,12 +4748,13 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                              (posn-point (event-start event)))
           icicle-last-completion-candidate  choice)
     (let ((icicle-whole-candidate-as-text-prop-p  nil)
-          (enable-recursive-minibuffers           t)
-          (icicle-saved-completion-candidate      icicle-last-completion-candidate)
-          (icicle-candidate-action-fn             'icicle-apply-to-saved-candidate))
+          (enable-recursive-minibuffers            t)
+          (icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
+          (icicle-saved-completion-candidate       icicle-last-completion-candidate)
+          (icicle-candidate-action-fn              'icicle-apply-to-saved-candidate))
       (icicle-apply-to-saved-candidate
        (completing-read (format "Function to apply to `%s': " icicle-saved-completion-candidate)
-                        obarray 'functionp)))))
+                        obarray)))))
 
 (defun icicle-apply-to-saved-candidate (function &optional use-icicle-candidates-alist-p type)
   "Apply FUNCTION to `icicle-saved-completion-candidate'.
@@ -5012,13 +5017,12 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
                                           (icicle-file-name-directory-w-default icicle-current-input)
                                           nil icicle-require-match-p nil
                                           (lambda (file-cand) (member file-cand current-candidates))))
-
                          ((and (icicle-file-name-input-p) (> emacs-major-version 22)) ; Emacs 23.2+
-                          (completing-read "Match also (regexp): "
-                                           'read-file-name-internal
-                                           (lambda (file-cand) (member file-cand current-candidates))
-                                           icicle-require-match-p nil minibuffer-history-variable))
-
+                          (let ((icicle-must-pass-after-match-predicate
+                                 #'(lambda (c) (member c current-candidates))))
+                            (completing-read
+                             "Match also (regexp): " 'read-file-name-internal nil
+                             icicle-require-match-p nil minibuffer-history-variable)))
                          (t             ; Emacs 20, 21
                           ;; In Emacs < 22, there is no PREDICATE arg to `read-file-name', so
                           ;; we use `completing-read' even for file-name completion.  In that case, we
@@ -5144,11 +5148,11 @@ When called from Lisp with non-nil arg PREDICATE, use that to narrow."
           (t
            ;; Read new predicate to apply.
            (let ((pred  (or predicate
-                            (icicle-read-from-minibuf-nil-default "Additional predicate to apply: "
-                                                                  nil read-expression-map t
-                                                                  (if (boundp 'function-name-history)
-                                                                      'function-name-history
-                                                                    'icicle-function-name-history)))))
+                            (icicle-read-from-minibuf-nil-default
+                             "Additional predicate to apply: "
+                             nil read-expression-map t (if (boundp 'function-name-history)
+                                                           'function-name-history
+                                                         'icicle-function-name-history)))))
              ;; Update `read-file-name-predicate' or `minibuffer-completion-predicate'
              ;; to also use new predicate, PRED.
              (cond ((and (icicle-file-name-input-p) (boundp 'read-file-name-predicate))
@@ -5186,17 +5190,18 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 \\[icicle-save-predicate-to-variable]')."
   (interactive "P")
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
-  (let* ((pred                                   minibuffer-completion-predicate)
-         (icicle-whole-candidate-as-text-prop-p  nil)
-         (enable-recursive-minibuffers           t)
-         (var                                    (if askp
-                                                     (intern (completing-read
-                                                              "Save candidates in variable: " obarray
-                                                              'boundp nil nil
-                                                              (if (boundp 'variable-name-history)
-                                                                  'variable-name-history
-                                                                'icicle-variable-name-history)))
-                                                   'icicle-input-string)))
+  (let* ((pred                                    minibuffer-completion-predicate)
+         (icicle-whole-candidate-as-text-prop-p   nil)
+         (enable-recursive-minibuffers            t)
+         (icicle-must-pass-after-match-predicate  #'(lambda (s) (boundp (intern s))))
+         (var                                     (if askp
+                                                      (intern
+                                                       (completing-read
+                                                        "Save candidates in variable: " obarray nil
+                                                        nil nil (if (boundp 'variable-name-history)
+                                                                    'variable-name-history
+                                                                  'icicle-variable-name-history)))
+                                                    'icicle-input-string)))
     (set var (prin1-to-string pred))
     (save-selected-window (select-window (minibuffer-window))
                           (minibuffer-message (format "  [Predicate SAVED to `%s']" var)))))
@@ -5841,9 +5846,10 @@ set and file names.  Return the cache-file name."
   (interactive)
   (let* ((icicle-whole-candidate-as-text-prop-p  nil)
          (set-name                               (icicle-substring-no-properties
-                                                  (completing-read "Saved completion set: "
-                                                                   icicle-saved-completion-sets nil nil
-                                                                   nil 'icicle-completion-set-history)))
+                                                  (completing-read
+                                                   "Saved completion set: "
+                                                   icicle-saved-completion-sets nil nil nil
+                                                   'icicle-completion-set-history)))
          (file-name                              ""))
     (setq file-name  (expand-file-name
                       (read-file-name "Cache file for the set: " default-directory nil nil

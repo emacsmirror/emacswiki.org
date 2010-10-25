@@ -143,7 +143,7 @@ The most important links are '''bold''' here.
 * [[Icicles - Anything]] -- object-action interaction on objects of [[Anything]] types
 * '''[[Icicles - Multi-Completions]]''' -- matching a list of regexps in parallel -- e.g., matching against names and their doc strings
 * [[Icicles - Dot, Dot, Dot]] -- a multi-line `##.##', for matching any character, including newline, in [[regexp]]s
-* [[Icicles - Fuzzy Completion]] -- completion using fuzzy prefix matching
+* [[Icicles - Fuzzy Completion]] -- completion using fuzzy matching
 * [[Icicles - Completion in Other Buffers]] -- non-minibuffer completion of words and other text
 * '''[[Icicles - Customization and General Tips]]''' -- how to ''customize'' '''Icicles''' to your preferences
 * '''[[Icicles - File-Name Completion Tips]]''' -- tips on completing file and directory names

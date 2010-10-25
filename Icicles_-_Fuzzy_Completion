@@ -12,7 +12,11 @@
 
 There are a few kinds of what might be called "fuzzy" matching used in
 '''Icicles''' [[completion]], in addition to [[apropos completion|apropos]] ([[regexp]]) matching and [[prefix completion|prefix]]
-matching.
+matching.  And if you have your own
+method of matching then you can use that as well, by adding it to
+option `<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'.
+
+The following methods are predefined:
 
 * '''[[#FuzzyMatchCompletion|Fuzzy]]''' -- This method uses a fairly sophisticated matching algorithm that seems to
 account for various typing mistakes.  This algorithm is provided
@@ -30,8 +34,13 @@ matching (only), without naming it.
 at most a given number of character operations, the so-called
 [[LevenshteinDistance|Levenshtein distance]].
 
+* '''[[#JaroWinklerMatchCompletion|Jaro-Winkler]]''' -- This method gives matching weight to having both
+(a) more characters that match in the right positions (Jara) and
+(b) a longer exact prefix within the first four characters
+(Winkler).
+
 You can use fuzzy or swank completion in place of prefix completion (`TAB').
-You can use the scatter or Levenshtein completion in place of apropos completion
+You can use the scatter, Levenshtein, or Jaro-Winkler completion in place of apropos completion
 (`S-TAB').  You can change completion methods easily at any time,
 by hitting a key in the [[minibuffer]]:
 
@@ -40,7 +49,7 @@ by hitting a key in the [[minibuffer]]:
 `fuzzy' only if you have library <tt>[[fuzzy-match.el]]</tt>; `swank' only if you have library <tt>[[el-swank-fuzzy.el]]</tt>).
 
 * '''`##M-(##'''' (command `icicle-next-S-TAB-completion-method') to cycle `S-TAB' completion methods: `apropos', `scatter',
-`Levenshtein' and `##Levenshtein strict##'.
+`Levenshtein', `##Levenshtein strict##', and `Jaro-Winkler' (only if you have the Autocomplete library ##fuzzy.el##.
 
 Repeating `##C-(##' and `TAB' or `##M-(##' and `S-TAB' on the fly for the same input
 can be a good way to learn the differences between the various
@@ -49,7 +58,7 @@ completion methods.
 ''My opinion'' about the relative usefulness of the various methods:
 Basic (prefix) completion and apropos completion are by
 far the most useful.  They are followed, in order of decreasing
-usefulness, by scatter, fuzzy, Levenshtein, vanilla, and swank
+usefulness, by scatter, fuzzy, Levenshtein, vanilla, Jaro-Winkler, and swank
 completion. ''YMMV''.
 
 Besides these methods, remember that you can get ordinary
@@ -59,7 +68,10 @@ characters escaped, `S-TAB' does literal substring completion.
 
 The type of completion matching that is used when you hit `S-TAB'
 and `TAB' is controlled by [[user option]]s 
-'''`<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>'''', respectively.  By default, the first method in each list is used for matching.
+'''`<tt>[[Icicles - Customization and General Tips#icicle-S-TAB-completion-methods-alist|icicle-S-TAB-completion-methods-alist]]</tt>'''' and '''`<tt>[[Icicles - Customization and General Tips#icicle-TAB-completion-methods|icicle-TAB-completion-methods]]</tt>'''', respectively.  By default, the first method in each list is used for matching.    The possible
+methods for `TAB' are predefined, but you can add additional
+methods for `S-TAB' by customizing
+`icicle-S-TAB-completion-methods-alist'.
 
 
 
@@ -241,7 +253,7 @@ One takeaway here is that fuzzy completion is complicated. Rather than try to un
 
 [:icicle-levenshtein-distance]
 [:LevenshteinMatchCompletion]
-=== Levenshtein-Match Completion ===
+=== Levenshtein Completion ===
 
 The "[[LevenshteinDistance|Levenshtein distance]]" is the maximum number of character
 insertions, deletions, or replacements that are needed to
@@ -279,9 +291,55 @@ no doubt want to turn off incremental completion (`##C-###').
 
 
 
+
+
+
+[:JaroWinklerMatchCompletion]
+=== Jaro-Winkler Completion ===
+
+The Jaro-Winkler method was developed for comparing names for the
+U.S. census.  It tends to take into account some typical spelling
+mistakes, and it is best suited for use with short candidates.
+
+When checking whether two strings match, higher matching weight
+results when there are more characters in each string that are
+also present in the other, and in approximately the same
+positions.
+
+Looking only at those characters that nearly match in this sense
+(same character in about the same position), the more exact
+matches there are (same character in exactly the same position),
+the higher the matching weight.  That is, weight is reduced for
+characters that nearly match but are not quite in the right
+position.
+
+So far, this describes Jaro matching.  The Jaro matching weight is
+the average of three values; (a) the ratio of the first string's
+near matches to its length, the same for the second string, and
+(c) the ratio of exact matches to total matches (near and exact).
+
+The Winkler part of the method comes from giving additional weight
+for prefixes that match exactly.  The longer the exact prefix
+match (up to 4 characters) the greater the weight.
+
+Unlike the other matching methods, for Jaro-Winkler to complete
+your input it must have the same number of characters as the
+candidate to be matched, plus or minus two (actually
+`fuzzy-accept-length-difference').  In particular, this means that
+you cannot hit `S-TAB' with an empty minibuffer to see all of the
+candidates.
+
+
+
+
+
+
+
 '''See Also:'''
 * [[Icicles - Multi M-x#icicle-command-abbrev|Icicles Multi M-x]] for completion of command abbreviations
 * [[Icicles - Apropos Completions]] for completion with regexp matching
+
+* [[WikiPedia:Jaro-Winkler distance]] for information about Jaro-Winkler matching
 
 ----
 

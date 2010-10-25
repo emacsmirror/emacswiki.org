@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 11:53:14 2010 (-0700)
+;; Last-Updated: Sun Oct 24 16:51:27 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3915
+;;     Update #: 3930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -17,9 +17,9 @@
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy-match',
-;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `thingatpt',
-;;   `thingatpt+', `wid-edit', `widget'.
+;;   `cl', `el-swank-fuzzy', `ffap', `ffap-', `fuzzy', `fuzzy-match',
+;;   `hexrgb', `icicles-face', `kmacro', `levenshtein', `regexp-opt',
+;;   `thingatpt', `thingatpt+', `wid-edit', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -2412,6 +2412,8 @@ The candidates are highlighted in buffer *Completions* using face
 (defcustom icicle-S-TAB-completion-methods-alist ; Cycle with `M-('.
   `(("apropos" . string-match)
     ("scatter" . icicle-scatter-match)
+    ,@(and (require 'fuzzy nil t)       ; `fuzzy.el', part of library Autocomplete.
+           '(("Jaro-Winkler" . fuzzy-match)))
     ,@(and (require 'levenshtein nil t)
            '(("Levenshtein" . icicle-levenshtein-match)
              ("Levenshtein strict" . icicle-levenshtein-strict-match))))
@@ -2442,9 +2444,9 @@ See also option `icicle-TAB-completion-methods'."
 ;;;###autoload
 (defcustom icicle-TAB-completion-methods ; Cycle with `C-('.
   (let ((methods  ()))
-    (when (require 'el-swank-fuzzy nil t) (push 'swank   methods))
-    (when (require 'fuzzy-match nil t)    (push 'fuzzy   methods))
-    (when (boundp 'completion-styles)     (push 'vanilla methods))
+    (when (require 'el-swank-fuzzy nil t) (push 'swank        methods))
+    (when (require 'fuzzy-match nil t)    (push 'fuzzy        methods))
+    (when (boundp 'completion-styles)     (push 'vanilla      methods))
     (push 'basic methods)
     methods)
   "*List of completion methods to use for \
@@ -3029,7 +3031,7 @@ duplicates, by binding it to `icicle-remove-duplicates' or
      frame-face-alist  frame-first-window  frame-focus  frame-height  frame-iconified-p
      frame-parameters  frame-pixel-height  frame-pixel-width frame-root-window
      frame-selected-window  frame-set-background-mode  frame-terminal
-     frame-update-face-colors  frame-visible-p  frame-width  get-a-frame  get-frame-name
+     frame-visible-p  frame-width  get-a-frame  get-frame-name
      hide-frame  icicle-select-frame-by-name  iconify-frame  lower-frame
      make-frame-invisible  make-frame-visible  maximize-frame  maximize-frame-horizontally
      maximize-frame-vertically  menu-bar-open  minimize-frame  next-frame
