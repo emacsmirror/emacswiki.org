@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 21 13:30:05 2010 (-0700)
+;; Last-Updated: Mon Oct 25 09:04:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 22773
+;;     Update #: 22776
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -640,7 +640,6 @@
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
 ;;    `icicle-region-background', `icicle-require-match-flag',
 ;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
-;;    `icicle-search-context-match-predicate',
 ;;    `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
 ;;    `icicle-search-highlight-context-levels-flag',

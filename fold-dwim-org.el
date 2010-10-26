@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Oct  5 12:19:45 2010 (-0500)
 ;; Version: 
-;; Last-Updated: Tue Oct  5 12:57:21 2010 (-0500)
+;; Last-Updated: Mon Oct 25 12:28:01 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 17
+;;     Update #: 76
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -24,6 +24,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 12:27:52 2010 (-0500) #75 (Matthew L. Fidler)
+;;    Removed string check
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 11:35:23 2010 (-0500) #72 (Matthew L. Fidler)
+;;    Changed symbol
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 11:25:15 2010 (-0500) #70 (Matthew L. Fidler)
+;;    Added check based on last point is equal to current point and current line is equal to what is was before.
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 11:18:43 2010 (-0500) #62 (Matthew L. Fidler)
+;;    Added interface to allow pre and post command hooks instead of overwriting the definition of [TAB].  Doesn't mess with as many key bindings...
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 10:57:19 2010 (-0500) #33 (Matthew L. Fidler)
+;;    Added indent-for-tab-command when key is undefined...
 ;; 
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -48,8 +63,8 @@
 ;;; Code:
 (setq debug-on-error 't)
 (require 'fold-dwim)
-
-(defvar fold-dwim-org/trigger-keys-block (list (kbd "TAB"))
+(setq fold-dwim-org/trigger-keys-block nil)
+(defvar fold-dwim-org/trigger-keys-block nil;(list (kbd "TAB"))
   "The keys to bind to toggle block visibility.")
 
 (defvar fold-dwim-org/trigger-keys-all (list [S-tab] [S-iso-lefttab] [(shift tab)] [backtab])
@@ -72,10 +87,44 @@
 
 (defmacro fold-dwim-org/define-keys ()
   `(progn 
-     ,@(mapcar (lambda (key) `(fold-dwim-org/define-key ,key fold-dwim-org/toggle)) fold-dwim-org/trigger-keys-block)
+     ,@(when fold-dwim-org/trigger-keys-block (mapcar (lambda (key) `(fold-dwim-org/define-key ,key fold-dwim-org/toggle)) fold-dwim-org/trigger-keys-block))
      ,@(mapcar (lambda (key) `(fold-dwim-org/define-key ,key fold-dwim-org/hideshow-all)) fold-dwim-org/trigger-keys-all)
     ))
-
+(defvar fold-dwim-org/last-point nil
+  )
+(defvar fold-dwim-org/last-txt nil)
+(defun fold-dwim-org/should-fold (last-point current-point)
+  "* Checks to see if buffer has changed.  If not folding should occur."
+  (equal last-point current-point)
+  )
+(defun fold-dwim-org/hs-pre ()
+  "* Pre-command hook to save last point.  Only used if `fold-dwim-org/trigger-keys-block' is nil"
+  (when fold-dwim-org/minor-mode
+    (unless fold-dwim-org/trigger-keys-block
+      (unless (minibufferp)
+        (setq fold-dwim-org/last-point (point))
+        (setq fold-dwim-org/last-txt (buffer-substring (point-at-bol) (point-at-eol)))
+        )
+      )
+    )
+  )
+(defun fold-dwim-org/hs-post ()
+  "* Post-command hook to hide/show if `fold-dwim-org/trigger-keys-block' is nil"
+  (when fold-dwim-org/minor-mode
+    (unless fold-dwim-org/trigger-keys-block
+      (unless (minibufferp)
+        (when (eq ?\t last-command-event)
+;          (unless (string= fold-dwim-org/last-txt
+;                           (buffer-substring (point-at-bol) (point-at-eol)))
+            (fold-dwim-org/toggle nil fold-dwim-org/last-point)
+;            )
+          )
+        )
+      )
+    )
+  )
+(add-hook 'post-command-hook 'fold-dwim-org/hs-post)
+(add-hook 'pre-command-hook 'fold-dwim-org/hs-pre)
 ;; No closures is killing me!
 (defmacro fold-dwim-org/define-key (key function)
   `(define-key fold-dwim-org/minor-mode-map ,key (lambda () (interactive)
@@ -106,28 +155,34 @@ You can customize the key through `fold-dwim-org/trigger-key-block'."
     (when hs
       (setq hs (cdr hs))
       (if fold-dwim-org/minor-mode
-          (setcar hs (replace-regexp-in-string "!*$" "!" (car hs)))
-        (setcar hs (replace-regexp-in-string "!+$" "" (car hs)))
+          (setcar hs (replace-regexp-in-string "[*]*$" "*" (car hs)))
+        (setcar hs (replace-regexp-in-string "[*]+$" "" (car hs)))
         )
       )
     ;; TODO add indicators in other modes.
     )
   )
 
-(defun fold-dwim-org/toggle (&optional key)
+(defun fold-dwim-org/toggle (&optional key lst-point)
   "Hide or show a block."
   (interactive)
-  (let* ((last-point (point))
+  (let* ((last-point (or lst-point (point)))
          (fold-dwim-org/minor-mode nil)
-         (command (key-binding key))
+         (command (if key (key-binding key) nil))
          (other-keys fold-dwim-org/trigger-keys-block))
+    (unless command
+      (setq command 'indent-for-tab-command)
+      )
     (while (and (null command)
                 (not (null other-keys)))
       (setq command (key-binding (car other-keys)))
       (setq other-keys (cdr other-keys)))
-    (when (commandp command)
-      (call-interactively command))
-    (when (equal last-point (point))
+    (unless lst-point
+      (if (commandp command)
+        (call-interactively command)
+        )
+      )
+    (when (fold-dwim-org/should-fold last-point (point))
       (fold-dwim-toggle)
       )))
 

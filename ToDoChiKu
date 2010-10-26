@@ -25,6 +25,10 @@ Fire todochiku on your load path, and then load it with:
 
 Additionally you may want to add the iconset,  which is available at http://bunny.jonnay.net/todochiku-icons.tar.gz
 
+You may also need to add the following line before loading ToDoChiKu, if you are getting the error "Symbol's function definition is void: case" when loading Emacs:
+  
+  (require 'cl)
+
 Once that is done, you will want to customize todochiku.  If you already have a notification program (Growl or Snarl) set the variable Todochiku Command.  The documentation string has a few suggestions for you, and the default should be filled in according to your os.
 
 If you do not have an external notification program, figure out which way you wish to be notified (either by message on the minibufer, or by tool tip) and enable one or both.  The message method is somewhat subtle and easy to miss.  The tooltip is a bit obtrusive, but it seems to display whether or not emacs is in focus or not (at least on win32).  

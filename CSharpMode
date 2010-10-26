@@ -27,9 +27,10 @@ Note:
 ||[[MSTFS]]||||Emacs integration with Team foundation server, via the tf.exe tool||
 ||[http://stud4.tuwien.ac.at/~e0225855/linum/linum.html Linum.el]||||line numbers||
 ||[http://www.gnu.org/software/emacs/manual/html_node/emacs/Reverting.html Auto-Revert]||||refresh .cs buffers, after you've edited them externally, for example, in Visual Studio.||
-||[http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] ||||Is C# Code Completion in emacs really possible?||
-||[http://code.google.com/p/idebridge/ ide-bridge]|||| C# Code Completion/refactoring/navigation/compilation.  Integrates Emacs with SharpDevelop ||
-||[http://code.google.com/p/csharpmode/source/browse/trunk/csharp-completion.el c# completion]|||| C# code completion, using Powershell. Still in development. Works only on Windows. ||
+||[http://code.google.com/p/csharpmode/source/browse/trunk/csharp-completion.el code completion] ||||Code completion elisp logic, that is integrated with csharp-mode.  It runs powershell as an inferior shell within emacs, to dynamically compile code snippets, and then introspect the result to provide realtime (subsecond) code completion in csharp buffers. To get it to work, you need the [http://code.google.com/p/csharpmode/source/browse/trunk/CscompUtilities.cs C# code], and be sure to read the [http://code.google.com/p/csharpmode/source/browse/trunk/Readme.txt readme]. Works only on Windows. Requires Powershell (free). Does not require Visual Studio, or SharpDevelop.||
+||[http://ozymandias.dk/emacs/emacs.html#vj-complete vj-complete] ||||Is C# Code Completion in emacs really possible? This is an alternative code completion effort that pre-dates the above.||
+||[http://code.google.com/p/idebridge/ ide-bridge]||||C# Code Completion/refactoring/navigation/compilation. Integrates Emacs with SharpDevelop.||
+
 
 
 
@@ -230,8 +231,14 @@ Use for the statement-cont option in c-offsets-alist.  I use it like so:
 
   (statement-cont . (my-lineup-csharp-string-cont +))
 
-
 -- DaveS
+
+[new]
+
+2010 October 25. FYI: The v0.7.4 csharp-mode automatically and correctly lines up multiline strings.  No external code is necessary. 
+
+--DinoChiesa
+
 
 ----
 === Problem with TAB ===
@@ -450,7 +457,7 @@ I get a "Symbol's function definition is void: line number-at-pos" when typing t
 http://i42.tinypic.com/29pdmjd.jpg
 
 === Incorrect indentation ===
-[new]
+
 When not setting c-set-style "bsd" the indentation is incorrect for 
 <pre>
 get {} set {} if {} else {} else if {}
@@ -462,9 +469,11 @@ http://i30.tinypic.com/29da3hj.png
 
 http://i26.tinypic.com/2exuis3.jpg
 
+[new] 
 
-[new]
+2010 October 25.   Have you set the appropriate offsets with c-set-offset?  The pictures here seem to just show code indented according to a particular style.  (I don't see any incorrect indenting of comments, for example)  If you don't like that indenting style you can change the offsets. Would that solve it?   If not, in what version of csharp-mode do you see this behavior?  There have been some changes in the indentation for v0.7.4, that may fix this for you. 
 
+--DinoChiesa
 === Hooks are run too early ===
 
 At the moment the mode hooks are run before local keys bindings are set, which means you can't modify them in a hook if you don't like them.  I modified my copy as follows:-

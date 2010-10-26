@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct  9 14:37:31 2010 (-0700)
+;; Last-Updated: Mon Oct 25 09:17:26 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 548
+;;     Update #: 550
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -194,7 +194,7 @@ before the others."
                                                    icicle-default-value))
     (icicle-must-match-regexp                    icicle-buffer-match-regexp)
     (icicle-must-not-match-regexp                icicle-buffer-no-match-regexp)
-    (icicle-must-pass-predicate                  icicle-buffer-predicate)
+    (icicle-must-pass-after-match-predicate      icicle-buffer-predicate)
     (icicle-require-match-flag                   icicle-buffer-require-match-flag)
     (icicle-extra-candidates                     icicle-buffer-extras)
     (icicle-ignore-space-prefix-flag             icicle-buffer-ignore-space-prefix-flag)
@@ -242,7 +242,7 @@ before the others."
                                                         icicle-default-value)))
     (icicle-must-match-regexp                    icicle-file-match-regexp)
     (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
-    (icicle-must-pass-predicate                  icicle-file-predicate)
+    (icicle-must-pass-after-match-predicate      icicle-file-predicate)
     (icicle-require-match-flag                   icicle-file-require-match-flag)
     (icicle-extra-candidates                     icicle-file-extras)
     (icicle-transform-function                   'icicle-remove-dups-if-extras)

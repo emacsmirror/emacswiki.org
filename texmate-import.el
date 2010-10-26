@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Sat Oct 23 23:42:37 2010 (-0500)
+;; Last-Updated: Mon Oct 25 10:19:15 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 89
+;;     Update #: 112
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
@@ -31,6 +31,15 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 10:17:48 2010 (-0500) #110 (Matthew L. Fidler)
+;;    Bug fix for .yas-parents.
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 10:12:22 2010 (-0500) #97 (Matthew L. Fidler)
+;;    Changed import rmate and stata to mirror new texmate-import function
+;; 25-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 09:59:31 2010 (-0500) #94 (Matthew L. Fidler)
+;;    Changed parent-mode to a prompt and uses .yas-parents as in SVN trunk of yasnippet.
 ;; 22-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Fri Oct 22 09:42:57 2010 (-0500) #82 (Matthew L. Fidler)
 ;;    Bugfix for ${1:default} expressions
@@ -160,15 +169,15 @@
     (symbol-value 'group)
     )
   )
-(defun texmate-import-file (file mode new-dir &optional original-author plist transform-function)
+(defun texmate-import-file (file mode new-dir &optional original-author plist transform-function parent-modes)
   "* Imports texmate file"
-  (message "Importing %s" file)
+  (message "Importing %s " file)
   (with-temp-buffer
     (insert-file-contents file)
-    (texmate-import-current-buffer mode new-dir original-author file plist transform-function)
+    (texmate-import-current-buffer mode new-dir original-author file plist transform-function parent-modes)
     )
   )
-(defun texmate-import-current-buffer (mode-string-or-function new-dir &optional original-author buffer-name plist transform-function)
+(defun texmate-import-current-buffer (mode-string-or-function new-dir &optional original-author buffer-name plist transform-function parent-modes)
   "* Changes Texmate (current buffer) plist to yas snippet."
   (let (
         (start nil)
@@ -248,21 +257,28 @@
           (unless (string= mode "")
             (setq mode (concat mode "/"))
             )
-          (setq new-dir (concat new-dir "/text-mode/" mode))
+          (setq new-dir (concat new-dir mode))
           (when (not (file-exists-p new-dir))
             (make-directory new-dir 't)
             )
           (with-temp-file (concat new-dir "/" bfn)
             (insert snippet)
             )
+          (when (and parent-modes (not (string= parent-modes "")))
+           (unless (file-exists-p (concat new-dir "/.yas-parents"))
+             (with-temp-file (concat new-dir "/.yas-parents")
+               (insert parent-modes)
+               )
+             )
+           )
           )
         )
       )
     )
   )
-(defun texmate-import-bundle (dir mode &optional original-author transform-function yas-dir)
+(defun texmate-import-bundle (dir mode parent-modes &optional original-author transform-function yas-dir)
   "Imports texmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in..."
-  (interactive "fTexmate Bundle Directory: \nsMode: ")
+  (interactive "fTexmate Bundle Directory: \nsMode: \nsParent Modes: ")
   (unless (string= "/" (substring dir -1))
     (setq dir (concat dir "/")))
   (let (snip-dir snips plist (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
@@ -278,7 +294,7 @@
       (setq snips (file-expand-wildcards (concat snip-dir "*.tmSnippet")))
       (unless (not (file-exists-p new-dir))
         (mapc (lambda(x)
-                (texmate-import-file x mode new-dir original-author plist transform-function)
+                (texmate-import-file x mode new-dir original-author plist transform-function parent-modes)
                 )
               snips
               )
@@ -291,6 +307,7 @@
   (message "Importing Stata bundle dir %s" dir)
   (texmate-import-bundle dir
                          "ess-mode"
+                         "text-mode"
                          "Timothy Beatty"
                          (lambda(template)
                          (let (
@@ -323,6 +340,7 @@
                            (if (string-match "# *scope: *source.rd$" template)
                                "Rd-mode"
                              "ess-mode"))
+                         "text-mode"
                        "Hans-Peter Suter"
                        (lambda(template)
                          (let (
@@ -356,6 +374,7 @@
                        new-dir
                        )
   )
+;(setq debug-on-error 't)
 ;(texmate-import-rmate "c:/tmp/rmate.tmbundle-7d026da/")
 ;(texmate-import-stata "c:/tmp/Stata.tmbundle/")
 (provide 'texmate-import)

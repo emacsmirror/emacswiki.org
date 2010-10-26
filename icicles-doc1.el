@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 16:59:24 2010 (-0700)
+;; Last-Updated: Mon Oct 25 09:50:15 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25521
+;;     Update #: 25527
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5429,17 +5429,19 @@
 ;;  In Google, you can limit searching to specific Web sites, or
 ;;  exclude certain Web sites from searching.
 ;;
-;;  In Icicles, you can add extra completion candidates, using
-;;  variable `icicle-extra-candidates', and you can filter out (other)
-;;  candidates globally, using filter variables
-;;  `icicle-must-match-regexp', `icicle-must-not-match-regexp', and
-;;  `icicle-must-pass-predicate'.  These are internal Icicles
-;;  variables.  Normally, you do not change them directly; instead, a
-;;  command can use them to limit or extend the effective domain of
-;;  discourse.
+;;  In Icicles, you can add extra completion candidates using variable
+;;  `icicle-extra-candidates', and you can filter out (other)
+;;  candidates globally using filter variables
+;;  `icicle-must-match-regexp', `icicle-must-not-match-regexp',
+;;  `icicle-must-pass-predicate', and
+;;  `icicle-must-pass-after-match-predicate'.  These are internal
+;;  Icicles variables.  Normally, you do not change them directly;
+;;  instead, a command can use them to limit or extend the effective
+;;  domain of discourse.
 ;;  See (@file :file-name "icicles-doc2.el" :to "Global Filters").
 ;;
-;;  Variable `icicle-must-pass-predicate' applies to the textual
+;;  Variables `icicle-must-pass-predicate' and
+;;  `icicle-must-pass-after-match-predicate' apply to the textual
 ;;  candidates that can be displayed in buffer `*Completions*'.  You
 ;;  can also apply a predicate to the full alist-entry or
 ;;  obarray-symbol candidates that are supplied to `completing-read'
@@ -5447,8 +5449,8 @@
 ;;  you can of course do that when your code calls these functions.
 ;;  As an Icicles user, you can use `M-&' to define and apply
 ;;  predicates to such alist-entry candidates on the fly, while
-;;  completing.  See (@file :file-name "icicles-doc2.el" :to "Icicles
-;;  Search Commands, Overview").
+;;  completing.
+;;  See (@file :file-name "icicles-doc2.el" :to "Icicles Search Commands, Overview").
 ;;
 ;;(@* "Word Matching and String Matching")
 ;;  ** Word Matching and String Matching **

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 17:47:05 2010 (-0700)
+;; Last-Updated: Mon Oct 25 08:52:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 1352
+;;     Update #: 1353
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -584,7 +584,6 @@ noted in parentheses.
 `\\[icicle-candidate-set-retrieve]'
 * `icicle-search-cleanup-flag'           - Remove search highlighting?
                                            (`C-.')
-* `icicle-search-context-match-predicate'- Search-context predicate
 * `icicle-search-from-isearch-keys'      - Isearch-to-Icicles keys
 * `icicle-search-highlight-all-current-flag'- In each hit (`C-^')
 * `icicle-search-highlight-context-levels-flag' -

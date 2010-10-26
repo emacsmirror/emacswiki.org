@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 17:52:23 2010 (-0700)
+;; Last-Updated: Mon Oct 25 11:29:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5749
+;;     Update #: 5765
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/10/25 dadams
+;;     icicle-buffer-list: Use icicle-must-pass-after-match-predicate, not icicle-must-pass-predicate.
+;;     icicle-directory-list:
+;;       Bind icicle-file-predicate instead of using PREDICATE arg.  No emacs-version limit now. 
 ;; 2010/10/24 dadams
 ;;     icicle-customize-apropos(-faces|-groups|-options(-of-type)), icicle-execute-extended-command,
 ;;       icicle-command-abbrev, icicle-execute-named-keyboard-macro, icicle-(re)set-option-to-(t|nil),
@@ -330,6 +334,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/10/25 dadams
+;;     icicle-search: Remove mention of icicle-search-context-match-predicate (no longer exists).
 ;; 2010/10/24 dadams
 ;;     icicle-where-is, icicle-apropos-(variable|option|function|command), icicle-apply,
 ;;       icicle-save-string-to-variable, icicle-choose-candidate-of-type,
@@ -612,6 +618,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/10/25 dadams
+;;     icicle-read-shell-command-completing:
+;;       Use icicle-must-pass-after-match-predicate, not icicle-must-pass-predicate.
 ;; 2010/10/24 dadams
 ;;     icicle-unsorted(-file-name)-(prefix|apropos)-candidates:
 ;;       Respect icicle-must-pass-after-match-predicate.
@@ -1991,6 +2000,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2010/10/25 dadams
+;;     icicle-(buffer|file)-bindings:
+;;       Use icicle-must-pass-after-match-predicate, not icicle-must-pass-predicate
 ;; 2010/10/09 dadams
 ;;     icicle-define(-file)-command: Update generated doc: down/up for modal, end/home for prefix.
 ;; 2010/06/05 dadams
@@ -4098,6 +4110,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/10/25 dadams
+;;     Removed: icicle-search-context-match-predicate (was not used).
+;;     icicle-(buffer|file)-predicate: Mention that they (now) apply after matching.
 ;; 2010/10/24 dadams
 ;;     icicle-S-TAB-completion-methods-alist: Added ("Jaro-Winkler" . fuzzy-match).
 ;; 2010/10/09 dadams
@@ -4623,6 +4638,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/10/25 dadams
+;;     Removed mention of icicle-search-context-match-predicate (no longer exists).
 ;; 2010/10/24 adams
 ;;     Added: icicle-must-pass-after-match-predicate.
 ;;     icicle-must-pass-predicate: Clarified doc string.

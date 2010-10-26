@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Oct 23 07:28:12 2010 (-0700)
+;; Last-Updated: Mon Oct 25 11:31:11 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21405
+;;     Update #: 21448
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -351,7 +351,7 @@
   ;; icicle-candidate-action-fn, icicle-candidate-nb, icicle-candidates-alist,
   ;; icicle-completion-candidates, icicle-current-input, icicle-extra-candidates,
   ;; icicle-get-alist-candidate-function, icicle-incremental-completion-p, icicle-kmacro-alist,
-  ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-predicate,
+  ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-after-match-predicate,
   ;; icicle-re-no-dot, icicle-saved-completion-candidates
 (require 'icicles-opt)
   ;; icicle-add-proxy-candidates-flag, icicle-buffer-configs, icicle-buffer-extras,
@@ -4884,16 +4884,16 @@ the behavior."                          ; Doc string
   nil
   (and (fboundp 'confirm-nonexistent-file-or-buffer) (confirm-nonexistent-file-or-buffer)) ;Emacs23.
   nil 'buffer-name-history nil nil
-  ((buf-names                             ()) ; Bindings
-   (completion-ignore-case                (or (and (boundp 'read-buffer-completion-ignore-case)
-                                                   read-buffer-completion-ignore-case)
-                                              completion-ignore-case))
-   (icicle-must-match-regexp              icicle-buffer-match-regexp)
-   (icicle-must-not-match-regexp          icicle-buffer-no-match-regexp)
-   (icicle-must-pass-predicate            icicle-buffer-predicate)
-   (icicle-extra-candidates               icicle-buffer-extras)
-   (icicle-transform-function             'icicle-remove-dups-if-extras)
-   (icicle-sort-comparer                  (or icicle-buffer-sort icicle-sort-comparer))
+  ((buf-names                               ()) ; Bindings
+   (completion-ignore-case                  (or (and (boundp 'read-buffer-completion-ignore-case)
+                                                     read-buffer-completion-ignore-case)
+                                                completion-ignore-case))
+   (icicle-must-match-regexp                icicle-buffer-match-regexp)
+   (icicle-must-not-match-regexp            icicle-buffer-no-match-regexp)
+   (icicle-must-pass-after-match-predicate  icicle-buffer-predicate)
+   (icicle-extra-candidates                 icicle-buffer-extras)
+   (icicle-transform-function               'icicle-remove-dups-if-extras)
+   (icicle-sort-comparer                    (or icicle-buffer-sort icicle-sort-comparer))
    (icicle-sort-orders-alist
     (append (list '("by last access")   ; Renamed from "turned OFF'.
                   '("*...* last" . icicle-buffer-sort-*...*-last)
@@ -5137,9 +5137,8 @@ Ido-like behavior."                     ; Doc string
     (when (interactive-p) (message "Files: %S" file-names))))
 
 ;;;###autoload
-(when (> emacs-major-version 21)
-  (icicle-define-file-command icicle-directory-list ; Command name
-    "Choose a list of directory names.
+(icicle-define-file-command icicle-directory-list ; Command name
+  "Choose a list of directory names.
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 You can navigate the directory tree, picking directories anywhere in
@@ -5156,26 +5155,30 @@ These options, when non-nil, control candidate matching and filtering:
  `icicle-file-extras'           - Extra directory names to display
  `icicle-file-match-regexp'     - Regexp directory names must match
  `icicle-file-no-match-regexp'  - Regexp dir names must not match
- `icicle-file-predicate'        - Predicate dir names must satisfy
+ `icicle-file-predicate'        - Predicate the dir names must satisfy
  `icicle-file-sort'             - Sort function for candidates
 
 Option `icicle-file-require-match-flag' can be used to override
 option `icicle-require-match-flag'.
 
 Option `icicle-files-ido-like' non-nil gives this command a more
-Ido-like behavior."    ; Doc string
-    (lambda (name) (push name dir-names)) ; Function to perform the action
-    "Choose directory (`RET' when done): " ; `read-file-name' args
-    ;; $$$$$$ nil nil t nil #'(lambda (file) (eq t (car (file-attributes file)))) ; PREDICATE
-    nil nil t nil #'file-directory-p    ; PREDICATE
-    (icicle-file-bindings               ; Bindings
-     ((dir-names                          nil)
-      (icicle-comp-base-is-default-dir-p  t)
-      ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
-      ))
-    nil nil                             ; First code, undo code
-    (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of dirs
-      (when (interactive-p) (message "Directories: %S" dir-names)))))
+Ido-like behavior."                     ; Doc string
+  (lambda (name) (push name dir-names)) ; Function to perform the action
+  "Choose directory (`RET' when done): " ; `read-file-name' args
+  nil nil t nil nil
+  (icicle-file-bindings                 ; Bindings
+   ((dir-names                          ())
+    (user-file-pred                     icicle-file-predicate)
+    (icicle-file-predicate              (if user-file-pred
+                                            #'(lambda (f) (and (file-directory-p f)
+                                                               (funcall user-file-pred f)))
+                                          #'file-directory-p))
+    (icicle-comp-base-is-default-dir-p  t)
+    ;; $$$$$ (icicle-dir-candidate-can-exit-p (not current-prefix-arg))
+    ))
+  nil nil                               ; First code, undo code
+  (prog1 (setq dir-names  (nreverse (delete "" dir-names))) ; Last code - return the list of dirs
+    (when (interactive-p) (message "Directories: %S" dir-names))))
 
 ;;;###autoload
 (icicle-define-file-command icicle-dired

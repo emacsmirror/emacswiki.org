@@ -1,6 +1,6 @@
 Yes, you can use Emacs as the editor for Microsoft Outlook email. I haven't tried doing it myself, but these websites list some different solutions to this question. It basically lets you grab the text of an Outlook email reply/forward/etc., use Emacs to edit the reply or create a new message, and return the result to the Outlook editing window:
 
-* http://disgruntled-programmer.com/notes/emacs-with-outlook.html -- Requires Python to be installed to communicate with Outlook. (FIXME)
+* http://disgruntled-programmer.com/notes/emacs-with-outlook.html -- Requires Python to be installed to communicate with Outlook. ([http://web.archive.org/web/20040220113545/http://disgruntled-programmer.com/notes/emacs-with-outlook.html archive])
 
 * http://mini.net/tcl/EmacsOutlook -- Requires Tcl to be installed to communicate with Outlook.
 
@@ -24,7 +24,7 @@ tcl to Windows script. The outlookedit.el from the first link mentioned above is
 needed. Simply save the following code with extension .wsf somewhere on your path and
 adjust the variables mno-get-outlook-body and mno-put-outlook-body -- MartinStemplinger
 
-outlookedit.el can also be downloaded from http://wiki.tcl.tk/9198. The disgruntled-programmer link above seems to broken. -- NascifAbousalh
+outlookedit.el can also be downloaded from http://wiki.tcl.tk/9198.
 
 
 <pre>

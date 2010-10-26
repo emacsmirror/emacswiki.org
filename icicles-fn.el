@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 17:13:55 2010 (-0700)
+;; Last-Updated: Mon Oct 25 09:36:45 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 11919
+;;     Update #: 11922
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -286,8 +286,8 @@
   ;; icicle-extra-candidates, icicle-ignored-extensions-regexp, icicle-incremental-completion-p,
   ;; icicle-initial-value, icicle-last-completion-candidate, icicle-last-input,
   ;; icicle-must-match-regexp, icicle-must-not-match-regexp, icicle-must-pass-predicate,
-  ;; icicle-nb-of-other-cycle-candidates, icicle-re-no-dot, icicle-reverse-sort-p,
-  ;; icicle-saved-completion-candidates
+  ;; icicle-must-pass-after-match-predicate, icicle-nb-of-other-cycle-candidates, icicle-re-no-dot,
+  ;; icicle-reverse-sort-p, icicle-saved-completion-candidates
 
 ;; This requirement is real, but leads to recursion.
 ;; You should, in any case, just load everything by loading `icicles.el'.
@@ -2264,7 +2264,7 @@ the file's properties."
          (icicle-extra-candidates                     icicle-extra-candidates)
          (icicle-must-match-regexp                    icicle-file-match-regexp)
          (icicle-must-not-match-regexp                icicle-file-no-match-regexp)
-         (icicle-must-pass-predicate                  icicle-file-predicate)
+         (icicle-must-pass-after-match-predicate      icicle-file-predicate)
          (icicle-transform-function                   'icicle-remove-dups-if-extras)
          ;; (icicle-sort-comparer                        (or icicle-file-sort icicle-sort-comparer))
          (icicle-require-match-flag                   icicle-file-require-match-flag)
@@ -4011,7 +4011,11 @@ are used for the filtering:
 
 This filtering is in addition to and prior to matching user input.
 Users do not see any candidates filtered out here.
-This filtering does not affect proxy candidates or extra candidates."
+This filtering does not affect proxy candidates or extra candidates.
+
+See also variable `icicle-must-pass-after-match-predicate', which is
+similar to `icicle-must-pass-predicate' but is used after filtering
+using the user input."
   (and (not (string= "" candidate))     ; Filter out empty strings.
        (or (not icicle-must-match-regexp)
            (save-match-data (string-match icicle-must-match-regexp candidate)))

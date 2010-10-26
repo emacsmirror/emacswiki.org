@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Oct 22 15:12:35 2010 (-0700)
+;; Last-Updated: Mon Oct 25 08:50:08 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2252
+;;     Update #: 2255
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1929,13 +1929,6 @@ context is whatever matches the first subgroup, and so on.  The
 subgroup number is the number of occurrences of `\(', starting at the
 beginning of the regexp.
 
-You can further limit the set of search contexts by setting user
-option `icicle-search-context-match-predicate' to a predicate that
-takes a search-context (string) argument.  Only contexts that satisfy
-the predicate are used.  For example, if the predicate is (lambda (x)
-\(commandp (intern-soft x))), then only contexts that name commands
-are kept.
-
 Search respects `icicle-regexp-quote-flag' and
 `icicle-search-whole-word-flag'.  You can toggle these during search,
 by using `C-`' and `M-q', respectively.  If `icicle-regexp-quote-flag'
@@ -2212,11 +2205,11 @@ predicate, by using `(PREDICATE)' as ARGS: PREDICATE is then passed to
 
 This command is intended for use only in Icicle mode."
   (interactive `(,@(icicle-region-or-buffer-limits)
-                   ,(if icicle-search-whole-word-flag
-                        (icicle-search-read-word)
-                        (icicle-search-read-context-regexp))
-                   ,(not icicle-show-multi-completion-flag)
-                   ,(icicle-search-where-arg)))
+                 ,(if icicle-search-whole-word-flag
+                      (icicle-search-read-word)
+                      (icicle-search-read-context-regexp))
+                 ,(not icicle-show-multi-completion-flag)
+                 ,(icicle-search-where-arg)))
   (setq icicle-search-context-regexp  (and (stringp scan-fn-or-regexp) scan-fn-or-regexp))
   (let ((icicle-candidate-action-fn         (or icicle-candidate-action-fn 'icicle-search-action))
         (icicle-candidate-help-fn           'icicle-search-help)
@@ -2243,10 +2236,10 @@ This command is intended for use only in Icicle mode."
         (completion-ignore-case             case-fold-search)
         (replace-count                      0)) ; Defined in `replace.el'.  Used for replacement.
     (add-hook 'icicle-no-match-hook (lambda () (when (overlayp icicle-search-current-overlay)
-                                            (delete-overlay icicle-search-current-overlay))))
+                                                 (delete-overlay icicle-search-current-overlay))))
     (setq icicle-search-final-choice
           (icicle-explore #'(lambda () (icicle-search-define-candidates beg end scan-fn-or-regexp
-                                                                   require-match where args))
+                                                                        require-match where args))
                           #'icicle-search-final-act #'icicle-search-quit-or-error
                           #'icicle-search-quit-or-error #'icicle-search-cleanup
                           "Choose an occurrence: " nil require-match nil 'icicle-search-history))))

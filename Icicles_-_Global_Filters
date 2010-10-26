@@ -37,12 +37,13 @@ inside the command definition.
 For this reason, some global filtering [[variable]]s are provided by '''Icicles''':
 
   `icicle-must-match-regexp', `icicle-must-not-match-regexp',
-  `icicle-must-pass-predicate', `icicle-extra-candidates'.
+  `icicle-must-pass-predicate', `icicle-must-pass-after-match-predicate',
+  `icicle-extra-candidates'.
 
 The first and second of these are ''[[regexp]]s'' that candidates ''must
 match'' and ''must not match'', respectively, in order for them to be
-displayed.  The third is a ''predicate'' that candidates must satisfy.
-The fourth is a list of ''extra candidates'' to display.  Any of the
+displayed.  The third and fourth are ''predicates'' that candidates must satisfy.
+The fifth is a list of ''extra candidates'' to display.  Any of the
 filters can be `nil', in which case it has no effect.
 
 Each of these except `icicle-extra-candidates' filters not only completion candidates but also the default values passed to `completing-read' and `read-file-name'.
@@ -52,6 +53,23 @@ Variable `icicle-must-match-regexp' is similar to the standard variable
 
 * `completion-regexp-list' is a list of regexps, not just one.
 * `icicle-must-match-regexp' is used after filtering using [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-transform-function|icicle-transform-function]]</tt>''''.
+
+Variables `icicle-must-pass-predicate' and
+`icicle-must-pass-after-match-predicate' act the same: they filter
+display candidates.  The former filters before the current user
+input is matched.  The latter filters after matching -- it is
+applied only to candidates that match.  Neither is like the
+##PREDICATE## argument to `completing-read' in that they do not act on
+full candidates (e.g. alist entries) -- they apply only to display
+candidates (strings).
+
+For apropos completion, the `completing-read' ##PREDICATE## is applied
+to all ##COLLECTION## entries before matching those entries that
+satisfy it against the user input.  If the ##PREDICATE## argument uses
+only the candidate name (it does not make any use of the full
+candidate) then it can sometimes be more efficient to pass `nil' as
+the ##PREDICATE## and use `icicle-must-pass-after-match-predicate'
+instead.
 
 Variable `icicle-extra-candidates' is not really a "filter".  It
 does not ''restrict'' the set of possible candidates -- rather, it
@@ -108,6 +126,11 @@ file names during completion:
 *  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-no-match-regexp|icicle-file-no-match-regexp]]</tt>''' -- Regexp file names must not match
 *  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-predicate|icicle-file-predicate]]</tt>''' -- Predicate files must satisfy
 *  '''`<tt>[[Icicles - Customization and General Tips#icicle-file-extras|icicle-file-extras]]</tt>''' -- Extra file names to display
+
+Note that `icicle-buffer-predicate' and `icicle-file-predicate'
+correspond to `icicle-must-pass-after-match-predicate', not to
+`icicle-must-pass-predicate'.  They are applied after your current
+input filters the candidates.
 
 If you, as a programmer, write a command, and you want to expose
 global filters to users of the command, you should:

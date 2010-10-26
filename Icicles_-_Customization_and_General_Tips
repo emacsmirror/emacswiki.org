@@ -1128,16 +1128,6 @@ are searched for literally, and matches for the string must
 begin and end on a word boundary.  See [[Icicles - Search Commands, Overview]].
 
 ----
-[:icicle-search-context-match-predicate]
-==== Option icicle-search-context-match-predicate ====
-
-User option '''`icicle-search-context-match-predicate'''', if non-`nil',
-is a predicate that takes a search-context (string) argument.
-Only contexts that satisfy the predicate are used.  For example,
-if the predicate is ##(lambda (x) (commandp (intern-soft x)))##,
-then only contexts that name commands are kept.  See [[Icicles - Search Commands, Overview]].
-
-----
 [:icicle-search-replace-whole-candidate-flag]
 ==== Option icicle-search-replace-whole-candidate-flag ====
 
@@ -1230,7 +1220,7 @@ User options '''`icicle-buffer-match-regexp'''',
 '''`icicle-buffer-no-match-regexp'''', '''`icicle-buffer-predicate'''', and
 '''`icicle-buffer-extras'''' determine the behavior of '''Icicles''' buffer commands, such as 
 `icicle-buffer' and `icicle-insert-buffer'.  They determine the set of ''buffer-name''
-candidates initially available for completion.
+candidates available for completion.
 
 The first three
 restrict this set to names that satisfy the properties they
@@ -1242,10 +1232,10 @@ then it will be present twice in the list of all candidates
 (that is, unless `icicle-transform-function' removes duplicate
 candidates).
 
-Since these are user options, they provide an
-''additional'', more ''static'' way to filter the set of candidates.
-Typing input (e.g. a regexp) then dynamically filters the result
-of applying the filter options. See [[Icicles - Global Filters]]. 
+Note that `icicle-buffer-predicate' is applied after matching
+against user input.  It thus corresponds to
+`<tt>[[#icicle-must-pass-after-match-predicate]]</tt>', not to
+`<tt>[[#icicle-must-pass-predicate]]</tt>'.
 
 Options '''`icicle-file-match-regexp'''',
 '''`icicle-file-no-match-regexp'''', '''`icicle-file-predicate'''', and

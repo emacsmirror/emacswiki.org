@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 17:03:33 2010 (-0700)
+;; Last-Updated: Mon Oct 25 09:24:57 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27310
+;;     Update #: 27348
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -477,10 +477,7 @@
 ;;     combine purely syntactic searching (regexp or text-property
 ;;     match) with more semantic search criteria.  After building up a
 ;;     complex predicate by using `M-&', you can save it to a variable
-;;     with `C-M-&' and then reuse it later with `C-='.  In addition
-;;     to, or instead of, using `M-&', you can set user option
-;;     `icicle-search-context-match-predicate' to a predicate that
-;;     takes a CONTEXT as argument (the match string only, no MARKER).
+;;     with `C-M-&' and then reuse it later with `C-='.
 ;;     See also (@file :file-name "icicles-doc1.el" :to "Progressive Completion").
 ;;
 ;;  5. Icicles finds all of the qualified search contexts, and
@@ -4912,12 +4909,6 @@
 ;;    are searched for literally, and matches for the string must
 ;;    begin and end on a word boundary.
 ;;
-;;  * User option `icicle-search-context-match-predicate', if non-nil,
-;;    is a predicate that takes a search-context (string) argument.
-;;    Only contexts that satisfy the predicate are used.  For example,
-;;    if the predicate is (lambda (x) (commandp (intern-soft x))),
-;;    then only contexts that name commands are kept.
-;;
 ;;  * If user option `icicle-search-replace-whole-candidate-flag' is
 ;;    nil, then whatever matches your current input is replaced,
 ;;    within the current search context, when you perform replacement
@@ -4978,8 +4969,8 @@
 ;;    `icicle-buffer-no-match-regexp', `icicle-buffer-predicate', and
 ;;    `icicle-buffer-extras' determine the behavior of Icicles buffer
 ;;    commands, such as `icicle-buffer' and `insert-buffer'.  They
-;;    determine the set of buffer-name candidates initially available
-;;    for completion.
+;;    determine the set of buffer-name candidates available for
+;;    completion.
 ;;
 ;;    The first three restrict this set to names that satisfy the
 ;;    properties they specify.  Option `icicle-buffer-extras' lets you
@@ -4993,10 +4984,10 @@
 ;;    (that is, unless `icicle-transform-function' removes duplicate
 ;;    candidates).
 ;;
-;;    Since these are user options, they provide an additional, more
-;;    static way to filter the set of candidates.  Typing input
-;;    (e.g. a regexp) then dynamically filters the result of applying
-;;    the filter options.
+;;    Note that `icicle-buffer-predicate' is applied after matching
+;;    against user input.  It thus corresponds to
+;;    `icicle-must-pass-after-match-predicate', not to
+;;    `icicle-must-pass-predicate'.
 ;;
 ;;    Options `icicle-file-match-regexp',
 ;;    `icicle-file-no-match-regexp', `icicle-file-predicate', and
@@ -8121,13 +8112,15 @@
 ;;  Icicles:
 ;;
 ;;    `icicle-must-match-regexp', `icicle-must-not-match-regexp',
-;;    `icicle-must-pass-predicate', `icicle-extra-candidates'.
+;;    `icicle-must-pass-predicate',
+;;    `icicle-must-pass-after-match-predicate',
+;;    `icicle-extra-candidates'.
 ;;
 ;;  The first and second of these are regexps that candidates must
 ;;  match and must not match, respectively, in order for them to be
-;;  displayed.  The third is a predicate that candidates must satisfy.
-;;  The fourth is a list of extra candidates to display.  Any of the
-;;  filters can be nil, in which case it has no effect.
+;;  displayed.  The third and fourth are predicates that candidates
+;;  must satisfy.  The fifth is a list of extra candidates to display.
+;;  Any of the filters can be nil, in which case it has no effect.
 ;;
 ;;  Each of these except `icicle-extra-candidates' filters not only
 ;;  completion candidates but also the default values passed to
@@ -8139,6 +8132,23 @@
 ;;  * `completion-regexp-list' is a list of regexps, not just one.
 ;;  * `icicle-must-match-regexp' is used after filtering using option
 ;;    `icicle-transform-function'.
+;;
+;;  Variables `icicle-must-pass-predicate' and
+;;  `icicle-must-pass-after-match-predicate' act the same: they filter
+;;  display candidates.  The former filters before the current user
+;;  input is matched.  The latter filters after matching - it is
+;;  applied only to candidates that match.  Neither is like the
+;;  PREDICATE argument to `completing-read' in that they do not act on
+;;  full candidates (e.g. alist entries) - they apply only to display
+;;  candidates (strings).
+;;
+;;  For apropos completion, the `completing-read' PREDICATE is applied
+;;  to all COLLECTION entries before matching those entries that
+;;  satisfy it against the user input.  If the PREDICATE argument uses
+;;  only the candidate name (it does not make any use of the full
+;;  candidate) then it can sometimes be more efficient to pass nil as
+;;  the PREDICATE and use `icicle-must-pass-after-match-predicate'
+;;  instead.
 ;;
 ;;  Variable `icicle-extra-candidates' is not really a "filter".  It
 ;;  does not restrict the set of possible candidates - rather, it
@@ -8189,6 +8199,11 @@
 ;;    `icicle-file-no-match-regexp' - Regexp file names must not match
 ;;    `icicle-file-predicate'       - Predicate files must satisfy
 ;;    `icicle-file-extras'          - Extra file names to display
+;;
+;;  Note that `icicle-buffer-predicate' and `icicle-file-predicate'
+;;  correspond to `icicle-must-pass-after-match-predicate', not to
+;;  `icicle-must-pass-predicate'.  They are applied after your current
+;;  input filters the candidates.
 ;;
 ;;  If you, as a programmer, write a command, and you want to expose
 ;;  global filters to users of the command, you should:

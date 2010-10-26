@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 16:51:27 2010 (-0700)
+;; Last-Updated: Mon Oct 25 09:16:48 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 3930
+;;     Update #: 3947
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -143,7 +143,6 @@
 ;;    `icicle-regexp-quote-flag', `icicle-regexp-search-ring-max',
 ;;    `icicle-region-background', `icicle-require-match-flag',
 ;;    `icicle-saved-completion-sets', `icicle-search-cleanup-flag',
-;;    `icicle-search-context-match-predicate',
 ;;    `icicle-search-from-isearch-keys',
 ;;    `icicle-search-highlight-all-current-flag',
 ;;    `icicle-search-highlight-context-levels-flag',
@@ -500,7 +499,11 @@ argument, a candidate, and only candidates that satisfy the predicate
 are displayed.  For example, this value will show only buffers that
 are associated with files:
 
-  (lambda (bufname) (buffer-file-name (get-buffer bufname)))"
+  (lambda (bufname) (buffer-file-name (get-buffer bufname)))
+
+This predicate is applied after matching against user input.  It thus
+corresponds to `icicle-must-pass-after-match-predicate', not to
+`icicle-must-pass-predicate'."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Buffers :group 'Icicles-Matching)
 
@@ -1046,7 +1049,11 @@ argument, a candidate, and only candidates that satisfy the predicate
 are displayed.  For example, this value will show only names of files
 with more than 5000 bytes:
 
-  (lambda (fil) (> (nth 5 (file-attributes file)) 5000))"
+  (lambda (fil) (> (nth 5 (file-attributes file)) 5000))
+
+This predicate is applied after matching against user input.  It thus
+corresponds to `icicle-must-pass-after-match-predicate', not to
+`icicle-must-pass-predicate'."
   :type '(choice (const :tag "None" nil) function)
   :group 'Icicles-Files :group 'Icicles-Matching)
 
@@ -2016,20 +2023,6 @@ Instead, you add or remove sets using commands
 If this is nil, highlighting can be removed manually with
 `\\[icicle-search-highlight-cleanup]'."
   :type 'boolean :group 'Icicles-Searching)
-
-;;;###autoload
-(defcustom icicle-search-context-match-predicate nil
-  "*nil or a predicate that candidate search contexts must satisfy.
-If nil, then this does nothing.  Otherwise, this is a predicate of one
-argument, a string, and only search contexts that satisfy it are
-displayed.  Command `icicle-search' binds internal variable
-`icicle-must-pass-predicate' to this value.
-
-Note: This predicate is different from the predicate used by \
-`\\<minibuffer-local-completion-map>\\[icicle-narrow-candidates-with-predicate]'.
-That predicate takes as argument a full search-context candidate,
-which includes the context position."
-  :type '(choice (const :tag "None" nil) function) :group 'Icicles-Matching)
 
 ;;;###autoload
 (defcustom icicle-search-from-isearch-keys '([S-tab] [S-iso-lefttab]) ; `S-TAB'
