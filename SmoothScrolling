@@ -10,6 +10,11 @@
     
     (setq scroll-step 1) ;; keyboard scroll one line at a time
 
+= smooth-scroll.el =
+
+[http://www.emacswiki.org/emacs/smooth-scroll.el "smooth-scroll.el"] provides a minor mode "smooth-scroll-mode" which brings
+"smooth scrolling" and "in-place scrolling" feature to Emacs.
+
 = smooth-scrolling.el =
 
 http://emacs.wordpress.com/2007/09/10/smooth-scrolling/

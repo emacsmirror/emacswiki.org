@@ -137,6 +137,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
 * [[Heaps]] -- Heap data structures (a.k.a. priority queues)
 * [[Icicles]] -- New possibilities for using completion and cycling of completion candidates.
+* IncrementalRead -- support building libraries that act incrementally on input.
 * LaterDo -- Calling functions later, thus do some sort of fake threading
 * LuiMode -- A Linewise User Interface
 * MacroUtilities -- Utilities for writing macros.

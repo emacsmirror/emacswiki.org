@@ -118,3 +118,8 @@ I use the emacswiki, but have no solution for you.
 [new]
 
 I use the wiki, and to prove that someone cares, I've written the UndoTree package to address this :)
+
+== Visual feedback of undo operation ==
+
+[http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightsMode] brings visual
+feedback of "undo" operation by making highlights on text inserted by "undo" command.

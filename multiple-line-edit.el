@@ -5,7 +5,7 @@
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 10 Oct 2010 PM 02:44 JST
 ;; Keywords: abbrev convenience emulations wp
-;; Revision: $Id: 79304a2f98a444e188742ea3fd279438ef09a85f $
+;; Revision: $Id: daf3c3f4eeaedafcebaefe2c2815637e4103610b $
 ;; URL: http://www.emacswiki.org/emacs/download/multiple-line-edit.el
 ;; GitHub: http://github.com/k-talo/multiple-line-edit.el
 
@@ -107,6 +107,12 @@
 
 ;;; Change Log:
 
+;;  v1.6, Wed Oct 27 02:58:04 2010 JST
+;;   - Experimental user option `mulled/apply-special-fn-to-each-line-p'.
+;;     When this value is non-nil, special function defined in
+;;     `mulled/special-fn-alist' will be applied to each line
+;;     instead of mirroring the result of a function applied at 1st line.
+;;
 ;;  v1.5, Mon Oct 25 11:45:06 2010 JST
 ;;   - Fixed bugs regarding to reactivation by undo command.
 ;;     This bug was caused when line breaks ware inserted in
@@ -134,7 +140,7 @@
 
 (provide 'multiple-line-edit)
 
-(defconst multiple-line-edit/version "1.5")
+(defconst multiple-line-edit/version "1.6")
 
 (eval-when-compile
   (require 'cl)
@@ -165,6 +171,32 @@
   '((((class color) (background light)) nil)
     (t nil))
   "The face used to display icons on the fringes."
+  :group 'multiple-line-edit)
+
+(defcustom mulled/apply-special-fn-to-each-line-p nil
+  "Non-nil means special functions defined in `mulled/special-fn-alist'
+will be applied to each lines instead of mirroring the result of
+a function applied at 1st line.
+
+Default value is `t'.
+
+*THIS FEATURE IS EXPERIMENTAL AND MAY BE REMOVED IN THE FUTURE*"
+  :type 'boolean
+  :group 'multiple-line-edit)
+
+;; XXX: Need `mulled/special-cmd-alist'?
+(defcustom mulled/special-fn-alist
+  '((capitalize-region . (lambda (beg end &rest orig-args)
+                           (capitalize-region beg end)))
+    (downcase-region . (lambda (beg end &rest orig-args)
+                           (downcase-region beg end)))
+    (upcase-region . (lambda (beg end &rest orig-args)
+                           (upcase-region beg end))))
+  "Alist name of special functions and callback function which have to
+be applied to each line directory instead of mirroring the result of
+a function applied at 1st line.
+
+*THIS FEATURE IS EXPERIMENTAL AND MAY BE REMOVED IN THE FUTURE*"
   :group 'multiple-line-edit)
 
  
@@ -522,7 +554,15 @@
 ;; The hook defined below will be called when modifications is
 ;; occur on the overlay placed over the 1st line of multiple edit.
 (defun mulled/ov-1st-line/mod-hook-fn (&rest args)
-  (let* ((ov             (nth 0 args))
+  (let* ((parent-frame   (backtrace-frame 3))
+         (fn-name        (let ((name (symbol-name (nth 1 parent-frame))))
+                           (when (string-match "^ad-Orig-" name)
+                             (setq name (replace-match "" nil nil name)))
+                           (intern name)))
+         (fn-callback-pair (assoc fn-name mulled/special-fn-alist)) ;; **EXPERIMENTAL**
+         (orig-fn-args   (nthcdr 2 parent-frame))
+
+         (ov             (nth 0 args))
          (after-p        (nth 1 args))
          (beg            (nth 2 args))
          (end            (nth 3 args))
@@ -546,6 +586,17 @@
                                                                  end
                                                                  len-removed)))
             (cond
+             ;; Special function
+             ((and mulled/apply-special-fn-to-each-line-p
+                   fn-callback-pair)
+              (mulled/lines/mirror-special-fn lines
+                                              edit-trailing-edges-p
+                                              beg
+                                              end
+                                              len-removed
+                                              fn-name
+                                              (cdr fn-callback-pair)
+                                              orig-fn-args))
              ;; Insertion
              ((zerop len-removed)
               (if out-of-range-p
@@ -745,10 +796,10 @@ accepted by each line of multiple line edit."
                                       (delete-region (+ beg offset)
                                                      (+ beg offset len-removed)))))))))
 
-(defun mulled/lines/mirror-replace-op (lines edit-trailing-edges-p op-beg op-end len-removed)
-  "Reflect replace operation, which is occurred in 1st line, to another lines."
-  (lexical-let* ((str (buffer-substring op-beg op-end))
-                 (1st-pair (car lines))
+(defun mulled/lines/mirror-replace-op-aux (lines edit-trailing-edges-p op-beg op-end len-removed fn)
+  (lexical-let* ((edit-trailing-edges-p edit-trailing-edges-p)
+                 (len-removed len-removed)
+                 (fn fn)
                  (offset (if edit-trailing-edges-p
                              ;; Offset from end of line.
                              (- (mulled/lines/nth-end lines 0) op-end)
@@ -762,14 +813,32 @@ accepted by each line of multiple line edit."
                                     (if edit-trailing-edges-p
                                         (let ((beg (- end offset len-removed))
                                               (end (- end offset)))
-                                          (delete-region beg end)
-                                          (goto-char beg)
-                                          (insert str))
+                                          (funcall  fn beg end))
                                       (let ((beg (+ beg offset))
                                             (end (+ beg offset len-removed)))
-                                        (delete-region beg end)
-                                        (goto-char beg)
-                                        (insert str)))))))))
+                                        (funcall fn beg end)))))))))
+
+(defun mulled/lines/mirror-replace-op (lines edit-trailing-edges-p op-beg op-end len-removed)
+  "Reflect replace operation, which is occurred in 1st line, to another lines."
+  (lexical-let* ((str (buffer-substring op-beg op-end)))
+    (mulled/lines/mirror-replace-op-aux lines edit-trailing-edges-p op-beg op-end len-removed
+                                        (lambda ( beg end)
+                                          (delete-region beg end)
+                                          (goto-char beg)
+                                          (insert str)))))
+
+(defun mulled/lines/mirror-special-fn (lines edit-trailing-edges-p op-beg op-end len-removed fn-name callback-fn orig-args)
+  "Reflect replace operation, which is occurred in 1st line, to another lines."
+  (lexical-let* ((fn-name fn-name)
+                 (callback-fn callback-fn)
+                 (orig-args orig-args))
+    (mulled/lines/mirror-replace-op-aux lines edit-trailing-edges-p op-beg op-end len-removed
+                                        (lambda (beg end)
+                                          (condition-case c
+                                              (apply callback-fn beg end orig-args)
+                                            (error
+                                             (message "[mulled] Error in special function `%s':\n%s"
+                                                      fn-name c)))))))
 
  
 ;;; ===========================================================================

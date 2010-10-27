@@ -123,6 +123,7 @@ Other pages (could this please be split in major and minor modes?):
 * TooltipMode -- Display tooltips in Emacs.
 * TopMode -- run "top" from Emacs
 * UnicodeEncoding -- describes oc-unicode
+* [http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightMode] -- Minor mode provides visual feedback on some operations: undo, yank and etc.
 * VersionControl -- and various similar implementations
 * WajigMode -- An interface for wajig
 * WebgenMode -- minor mode for [http://webgen.rubyforge.org/ webgen]

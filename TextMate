@@ -12,6 +12,8 @@ See WholeLineOrRegion for line-wise copying and cutting when no text is selected
 
 If you want !TextMate's Filter Through Command, see ExecuteExternalCommand.
 
+[http://www.emacswiki.org/emacs/multiple-line-edit.el multiple-line-edit] provides a feature similar to the command "Edit Each Line In Selection".
+
 SpeedBar is similar to the !TextMate's Project Drawer. There's also [EmacsCodeBrowser ECB], and [IdeSkel Ide-skel].
 
 AquamacsEmacs has a lot of !TextMate's key bindings by default.

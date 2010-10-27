@@ -435,6 +435,10 @@ Emacs 23.1 joined the killring and the system pasteboard. I prefer the old behav
 (global-set-key (kbd "s-x") 'cut-to-pasteboard)
 </pre>
 
+== Visual feedback of Yank and Yank-Pop operations ==
+
+[http://www.emacswiki.org/emacs/volatile-highlights.el VolatileHighlightsMode] brings visual
+feedback of "yank" and "yank-pop" operations by making highlights on text inserted by these commands.
 
 ----
 CategoryEmulation

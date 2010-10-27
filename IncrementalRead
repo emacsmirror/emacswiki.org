@@ -1,0 +1,3 @@
+IncrementalRead (Iread) is IncrementalSearch without the search---a framework for acting incrementally on user input.  Internally it is implemented as a  minor mode, with a number of normal and abnormal hooks.  But all the moving parts are hidden by the function `iread', which lets you build up incremental read functionality by passing keyword arguments.
+
+http://gopher.ruricolist.com/lisp/iread.el
