@@ -134,11 +134,13 @@
 
 (defmacro deferred:aand (test &rest rest)
   "[internal] Anaphoric AND."
+  (declare (debug ("test" form &rest form)))
   `(let ((it ,test))
-     (if it ,(if rest (macroexpand-all `(deferred:aand ,@rest)) 'it))))
+     (if it ,(if rest `(deferred:aand ,@rest) 'it))))
 
 (defmacro deferred:$ (&rest elements)
   "Anaphoric function chain macro for deferred chains."
+  (declare (debug (&rest form)))
   `(let (it)
      ,@(loop for i in elements
              with it = nil
@@ -148,6 +150,7 @@
 
 (defmacro deferred:lambda (args &rest body)
   "Anaphoric lambda macro for self recursion."
+  (declare (debug ("args" form &rest form)))
   (let ((argsyms (loop for i in args collect (gensym))))
   `(lambda (,@argsyms)
      (lexical-let (self)
@@ -200,7 +203,8 @@ in the asynchronous tasks.")
 
 (defmacro deferred:condition-case (var protected-form &rest handlers)
   "[internal] Custom condition-case. See the comment for
-`deferred:debug-on-signal'." 
+`deferred:debug-on-signal'."
+  (declare (debug (symbolp form &rest form)))
   `(cond
     ((null deferred:debug-on-signal)
      (condition-case ,var ,protected-form ,@handlers))
@@ -216,9 +220,15 @@ in the asynchronous tasks.")
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Back end functions of deferred tasks
 
+(defvar deferred:tick-time 0.001
+  "Waiting time between asynchronous tasks (second).
+The shorter waiting time increases the load of Emacs. The end
+user can tune this paramter. However, applications should not
+modify it because the applications run on various environments.")
+
 (defvar deferred:queue nil
   "[internal] The execution queue of deferred objects. 
-See the functions `deferred:post' and `deferred:worker'.")
+See the functions `deferred:post-task' and `deferred:worker'.")
 
 (defmacro deferred:pack (a b c)
   `(cons ,a (cons ,b ,c)))
@@ -233,7 +243,7 @@ so that the deferred task will not be called twice."
 
 (defun deferred:schedule-worker ()
   "[internal] Schedule consuming a deferred task in the execution queue."
-  (run-at-time 0.001 nil 'deferred:worker))
+  (run-at-time deferred:tick-time nil 'deferred:worker))
 
 (defun deferred:post-task (d which &optional arg)
   "[internal] Add a deferred object to the execution queue
@@ -346,7 +356,9 @@ an argument value for execution of the deferred task."
               (cond
                ((deferred-p value)
                 (deferred:message "WAIT NEST : %s" value)
-                (deferred:set-next value next-deferred))
+                (if next-deferred
+                    (deferred:set-next value next-deferred)
+                  value))
                (t
                 (if next-deferred
                     (deferred:post-task next-deferred 'ok value)
@@ -360,8 +372,12 @@ an argument value for execution of the deferred task."
             (deferred:onerror
               (deferred:call-lambda deferred:onerror err))
             (t
-             (error (deferred:esc-msg (error-message-string err)))))))))
-     ((null callback)
+             (deferred:message "ERROR : %s" err)
+             (message "deferred error : %s" err)
+             (setf (deferred-status d) 'ng)
+             (setf (deferred-value d) (error-message-string err))
+             (deferred:esc-msg (error-message-string err))))))))
+     (t ; <= (null callback)
       (let ((next-deferred (deferred-next d)))
         (cond
          (next-deferred
@@ -375,10 +391,17 @@ an argument value for execution of the deferred task."
   (cond
    ((eq 'ok (deferred-status prev))
     (setf (deferred-status prev) nil)
-    (deferred:exec-task next 'ok (deferred-value prev)))
+    (let ((ret (deferred:exec-task 
+                 next 'ok (deferred-value prev))))
+      (if (deferred-p ret) ret
+        next)))
    ((eq 'ng (deferred-status prev))
     (setf (deferred-status prev) nil)
-    (deferred:exec-task next 'ng (deferred-value prev)))))
+    (let ((ret (deferred:exec-task next 'ng (deferred-value prev))))
+      (if (deferred-p ret) ret
+        next)))
+   (t
+    next)))
 
  
 
@@ -397,7 +420,7 @@ an argument value for execution of the deferred task."
 
 (defun deferred:errorback (d &optional arg)
   "Start deferred chain with an errorback message."
-  (deferred:exec-task d 'ok arg))
+  (deferred:exec-task d 'ng arg))
 
 (defun deferred:callback-post (d &optional arg)
   "Add the deferred object to the execution queue."
@@ -405,7 +428,7 @@ an argument value for execution of the deferred task."
 
 (defun deferred:errorback-post (d &optional arg)
   "Add the deferred object to the execution queue."
-  (deferred:post-task d 'ok arg))
+  (deferred:post-task d 'ng arg))
 
 (defun deferred:cancel (d)
   "Cancel all callbacks and deferred chain in the deferred object."
@@ -452,14 +475,12 @@ is a short cut of following code:
 (defun deferred:nextc (d callback)
   "Create a deferred object with OK callback and connect it to the given deferred object."
   (let ((nd (make-deferred :callback callback)))
-    (deferred:set-next d nd)
-    nd))
+    (deferred:set-next d nd)))
 
 (defun deferred:error (d callback)
   "Create a deferred object with errorback and connect it to the given deferred object."
   (let ((nd (make-deferred :errorback callback)))
-    (deferred:set-next d nd)
-    nd))
+    (deferred:set-next d nd)))
 
 (defun deferred:wait (msec)
   "Return a deferred object scheduled at MSEC millisecond later."
@@ -760,7 +781,7 @@ process."
 
 (eval-after-load "url"
   ;; for url package
-  ;; TODO: cookie, proxy, content
+  ;; TODO: proxy, charaset
   '(progn
 
      (defun deferred:url-retrieve (url &optional cbargs)
@@ -781,6 +802,14 @@ into. Currently dynamic binding variables are not supported."
                    (kill-buffer buf))))
          nd))
 
+     (defun deferred:url-delete-header (buf)
+       (with-current-buffer buf
+         (goto-char (point-min))
+         (let ((pos (re-search-forward "\n\n")))
+           (when pos
+             (delete-region (point-min) (+ 2 pos)))))
+       buf)
+
      (defun deferred:url-get (url &optional params)
        "Perform a HTTP GET method with `url-retrieve'. PARAMS is
 a parameter list of (key . value) or key. The next deferred
@@ -788,7 +817,9 @@ object receives the buffer object that URL will load into."
        (when params
          (setq url
                (concat url "?" (deferred:url-param-serialize params))))
-       (deferred:url-retrieve url))
+       (deferred:$
+         (deferred:url-retrieve url)
+         (deferred:nextc it 'deferred:url-delete-header)))
 
      (defun deferred:url-post (url &optional params)
        "Perform a HTTP POST method with `url-retrieve'. PARAMS is
@@ -813,7 +844,8 @@ object receives the buffer object that URL will load into."
                (lambda (x) 
                  (when (buffer-live-p buf)
                    (kill-buffer buf))))
-         nd))
+         (deferred:$ nd
+           (deferred:nextc it 'deferred:url-delete-header))))
 
      (defun deferred:url-escape (val)
        "[internal] Return a new string that is VAL URI-encoded."
@@ -825,17 +857,19 @@ object receives the buffer object that URL will load into."
      (defun deferred:url-param-serialize (params)
        "[internal] Serialize a list of (key . value) cons cells
 into a query string."
-       (mapconcat
-        (loop for p in params
-              collect
-              (cond
-               ((consp p)
-                (concat 
-                 (deferred:url-escape (car p)) "="
-                 (deferred:url-escape (cdr p))))
-               (t
-                (deferred:url-escape p))))
-        "&"))
+       (when params
+         (mapconcat
+          'identity
+          (loop for p in params
+                collect
+                (cond
+                 ((consp p)
+                  (concat 
+                   (deferred:url-escape (car p)) "="
+                   (deferred:url-escape (cdr p))))
+                 (t
+                  (deferred:url-escape p))))
+          "&")))
      ))
 
 

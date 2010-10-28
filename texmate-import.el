@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Mon Oct 25 10:19:15 2010 (-0500)
+;; Last-Updated: Wed Oct 27 23:12:22 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 112
+;;     Update #: 344
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
@@ -27,10 +27,20 @@
 ;;  following in ~/.emacs
 ;;
 ;;  (autoload 'texmate-import-bundle "texmate-import" "* Import TeXMate files" 't)
+;;  (autoload 'texmate-import-svn-url "texmate-import" "* Import TeXMate snippets from svn.textmate.org" 't)
 ;;  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 27-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Wed Oct 27 23:11:33 2010 (-0500) #342 (Matthew L. Fidler)
+;;    Added fix to allow files to pass for directories in `texmate-import-bundle'
+;; 27-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Wed Oct 27 15:58:57 2010 (-0500) #338 (Matthew L. Fidler)
+;;    Added import from svn.texmate.org using url package.  Use `texmate-import-svn-url'
+;; 27-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Wed Oct 27 14:34:53 2010 (-0500) #259 (Matthew L. Fidler)
+;;    Added a guess-mode function to take out prompting for modes.
 ;; 25-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Oct 25 10:17:48 2010 (-0500) #110 (Matthew L. Fidler)
 ;;    Bug fix for .yas-parents.
@@ -95,7 +105,10 @@
 ;; 
 ;;; Code:
 (require 'yasnippet nil 't)
-(defvar yas/root-directory "./") ; Should already be defined by yasnippet.
+(require 'url)
+(if (not (boundp 'yas/root-directory))
+    (setq yas/root-directory "./") ; Should already be defined by yasnippet.
+  )
 (defun texmate-import-get-property (name start stop)
   "* Get property from plist"
   (let ( (val-start nil) (val-stop nil) (content nil) )
@@ -169,15 +182,102 @@
     (symbol-value 'group)
     )
   )
-(defun texmate-import-file (file mode new-dir &optional original-author plist transform-function parent-modes)
+(defun texmate-import-file (file new-dir &optional mode original-author plist transform-function parent-modes)
   "* Imports texmate file"
   (message "Importing %s " file)
   (with-temp-buffer
     (insert-file-contents file)
-    (texmate-import-current-buffer mode new-dir original-author file plist transform-function parent-modes)
+    (texmate-import-current-buffer new-dir plist file original-author mode transform-function parent-modes)
     )
   )
-(defun texmate-import-current-buffer (mode-string-or-function new-dir &optional original-author buffer-name plist transform-function parent-modes)
+(defun texmate-import-guess-possiblities (p-quote match-string)
+  "* Guesses possible modes..."
+  (add-to-list p-quote (intern (concat match-string "-mode")))
+  (add-to-list p-quote (intern (concat (downcase match-string) "-mode")))
+  (add-to-list p-quote (intern (concat (upcase match-string) "-mode")))
+  (when (< 1 (length match-string))
+    (add-to-list p-quote (intern (concat (upcase (substring match-string 0 1))
+                                         (downcase (substring match-string 1)) "-mode")))
+    )
+  )
+(defvar texmate-import-saved-guesses '()
+  "Saved guesses for texmate import"
+  )
+(defvar texmate-import-saved-ess '())
+(defun texmate-import-guess-mode (scope-o &optional snippet-q)
+  "* Guesses mode based on Texmate scope."
+  (if (assoc scope-o texmate-import-saved-guesses)
+      (let (
+            (ret (nth 1 (assoc scope-o texmate-import-saved-guesses)))
+            )
+        (when (memq 'ess-mode ret)
+          (when (string-match "# *scope: *.*" (symbol-value snippet-q))
+            (set snippet-q
+                 (replace-match
+                  (concat
+                   (match-string 0 (symbol-value snippet-q))
+                   (format "\n# condition: (string= \"%s\" ess-language)"
+                           (nth 1 (assoc scope-o texmate-import-saved-ess))))
+                  't 't (symbol-value snippet-q)
+                  )
+                 )
+            )
+          ;; Take out any Ess keybindings.  They are hard to translate...
+          (when (string-match "\n# *binding:.*" (symbol-value snippet-q))
+            (set snippet-q (replace-match "" 't 't (symbol-value snippet-q))))
+          )
+        (symbol-value 'ret)
+        )
+    (let (
+          (possible-modes '())
+          (tmp '())
+          (scope scope-o)
+          )
+      (when (string-match "\\([A-Za-z0-9]+\\)[.]tmbundle" scope)
+        (texmate-import-guess-possiblities 'possible-modes (match-string 1 scope))
+        )
+      (while (string-match "[.]\\([A-Za-z0-9]+\\)\\>" scope)
+        (texmate-import-guess-possiblities 'possible-modes (match-string 1 scope))
+        (setq scope (replace-match "" nil nil scope))
+        )
+      (setq tmp (remove-if-not
+                 #'(lambda(x) (fboundp x)) possible-modes))
+      (setq possible-modes '())
+      (mapc (lambda(x)
+              (with-temp-buffer
+                (funcall x)
+                (add-to-list 'possible-modes major-mode)
+                ;; Handle Ess's strange handling of modes.
+                (when (and snippet-q (eq 'ess-mode major-mode))
+                  (add-to-list 'texmate-import-saved-ess (list scope-o ess-language))
+                  (when (string-match "# *scope: *.*" (symbol-value snippet-q))
+                    (set snippet-q
+                         (replace-match
+                          (concat
+                           (match-string 0 (symbol-value snippet-q))
+                           (format "\n# condition: (string= \"%s\" ess-language)" ess-language))
+                          't 't (symbol-value snippet-q)
+                          )
+                         )
+                    )
+                  ;; Take out any Ess keybindings.  They are hard to translate...
+                  (when (string-match "\n# *binding:.*" (symbol-value snippet-q))
+                    (set snippet-q (replace-match "" 't 't (symbol-value snippet-q))))
+                  )
+                )
+              )
+            tmp
+            )
+      (unless possible-modes
+        (setq possible-modes (list (intern (completing-read (format "Emacs Mode (Texmate scope: %s): " scope-o) '()))))
+        )
+      (add-to-list 'texmate-import-saved-guesses (list scope-o possible-modes))
+      (symbol-value 'possible-modes)
+      )
+    )
+  )
+
+(defun texmate-import-current-buffer (new-dir &optional plist  buffer-name original-author mode-string-or-function   transform-function parent-modes)
   "* Changes Texmate (current buffer) plist to yas snippet."
   (let (
         (start nil)
@@ -195,10 +295,10 @@
         (mode "")
         (bfn (or buffer-name (buffer-file-name)))
         )
-    (when (string-match "/\\([^/]*\\)[.][^.]*$" bfn)
+    (when (string-match "/?\\([^/]*\\)[.][^.]*$" bfn)
       (setq bfn (concat (match-string 1 bfn) ".yasnippet"))
       )
-    (while (string-match "[ \t]+" bfn)
+    (while (string-match "[^A-Z0-9_]" bfn)
       (setq bfn (replace-match "_" nil nil bfn))
       )
     (save-excursion
@@ -248,37 +348,47 @@
           (when transform-function
             (setq snippet (apply transform-function (list snippet)))
             )
-          (when (functionp mode-string-or-function)
-            (setq mode (funcall mode-string-or-function snippet))
-            )
-          (when (stringp mode-string-or-function)
-            (setq mode mode-string-or-function)
-            )
-          (unless (string= mode "")
-            (setq mode (concat mode "/"))
-            )
-          (setq new-dir (concat new-dir mode))
-          (when (not (file-exists-p new-dir))
-            (make-directory new-dir 't)
-            )
-          (with-temp-file (concat new-dir "/" bfn)
-            (insert snippet)
-            )
-          (when (and parent-modes (not (string= parent-modes "")))
-           (unless (file-exists-p (concat new-dir "/.yas-parents"))
-             (with-temp-file (concat new-dir "/.yas-parents")
-               (insert parent-modes)
-               )
+          (cond
+           ( (functionp mode-string-or-function)
+             (setq mode (list (funcall mode-string-or-function snippet)))
+             )
+           ( (stringp mode-string-or-function)
+             (setq mode (list mode-string-or-function))
+             )
+           ( 't
+             (setq mode (mapcar (lambda(x) (format "%s" x)) (texmate-import-guess-mode scope 'snippet)))
              )
            )
+          ;; (setq new-dir (concat new-dir mode))
+          (mapc (lambda(m)
+                  (unless (string= m "")
+                    (setq m (concat m "/"))
+                    )
+                  (when (not (file-exists-p (concat new-dir m)))
+                    (make-directory (concat new-dir m) 't)
+                    )
+                  (with-temp-file (concat new-dir m "/" bfn)
+                    (insert snippet)
+                    )
+                  (when (and parent-modes (not (string= parent-modes "")))
+                    (unless (file-exists-p (concat new-dir m "/.yas-parents"))
+                      (with-temp-file (concat new-dir m "/.yas-parents")
+                        (insert parent-modes)
+                        )
+                      )
+                    )
+                  )
+                mode
+                )
           )
         )
       )
     )
   )
-(defun texmate-import-bundle (dir mode parent-modes &optional original-author transform-function yas-dir)
+(defun texmate-import-bundle (dir parent-modes &optional original-author yas-dir mode transform-function)
   "Imports texmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in..."
-  (interactive "fTexmate Bundle Directory: \nsMode: \nsParent Modes: ")
+  (interactive "fTexmate Bundle Directory: \nsParent Modes: ")
+  (setq dir (file-name-directory dir)) 
   (unless (string= "/" (substring dir -1))
     (setq dir (concat dir "/")))
   (let (snip-dir snips plist (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
@@ -294,7 +404,7 @@
       (setq snips (file-expand-wildcards (concat snip-dir "*.tmSnippet")))
       (unless (not (file-exists-p new-dir))
         (mapc (lambda(x)
-                (texmate-import-file x mode new-dir original-author plist transform-function parent-modes)
+                (texmate-import-file x new-dir mode original-author plist transform-function parent-modes)
                 )
               snips
               )
@@ -305,77 +415,117 @@
 (defun texmate-import-stata (dir &optional new-dir)
   "*Example function for importing Sata snippets into Yasnippet"
   (message "Importing Stata bundle dir %s" dir)
-  (texmate-import-bundle dir
-                         "ess-mode"
-                         "text-mode"
-                         "Timothy Beatty"
-                         (lambda(template)
-                         (let (
-                               (ret template)
-                               )
-                           (with-temp-buffer
-                             (insert template)
-                             (goto-char (point-min))
-                             (while (re-search-forward "# *scope: *source.stata$" nil t)
-                               (end-of-line)
-                               (insert "\n# condition: (string= \"STA\" ess-language)")
-                               )
-                             ;; Ess mode doesn't have keybindings....
-                             (goto-char (point-min))
-                             (while (re-search-forward "# *binding:.*" nil t)
-                               (replace-match ""))
-                             (setq ret (buffer-substring (point-min) (point-max)))
-                             )
-                           (symbol-value 'ret)
-                           )
-                         )
-                       new-dir
-                       )
+  (texmate-import-bundle dir "text-mode" "Timothy Beatty" new-dir)
   )
 (defun texmate-import-rmate (dir &optional new-dir)
   "* Example Function for importing Rmate into Yasnippet"
   (message "Importing Rmate Bundle dir %s" dir)
-  (texmate-import-bundle dir
-                         (lambda(template)
-                           (if (string-match "# *scope: *source.rd$" template)
-                               "Rd-mode"
-                             "ess-mode"))
-                         "text-mode"
-                       "Hans-Peter Suter"
-                       (lambda(template)
-                         (let (
-                               (ret template)
-                               )
-                           (with-temp-buffer
-                             (insert template)
-                             (goto-char (point-min))
-                             (when (re-search-forward "# *scope: *source.rd$" nil t)
-                               (goto-char (point-min))
-                               (while (re-search-forward "# group:.*\n" nil t)
-                                 (replace-match ""))
-                               )
-                             (goto-char (point-min))
-                             (while (re-search-forward "# *scope: *source.r$" nil t)
-                               (end-of-line)
-                               (insert "\n# condition: (string= \"S\" ess-language)")
-                               )
-                             (goto-char (point-min))
-                             (while (re-search-forward "# *key: *rd[.]" nil t)
-                               (replace-match "# key: "))
-                             ;; Ess mode doesn't have keybindings....
-                             (goto-char (point-min))
-                             (while (re-search-forward "# *binding:.*" nil t)
-                               (replace-match ""))
-                             (setq ret (buffer-substring (point-min) (point-max)))
-                             )
-                           (symbol-value 'ret)
-                           )
-                         )
-                       new-dir
-                       )
+  (texmate-import-bundle dir "text-mode" "Hans-Peter Suter" new-dir)
+  )
+(defvar texmate-import-svn-url "http://svn.textmate.org/trunk/Bundles/"
+  "* Url for Texmate svn"
+  )
+(defvar texmate-import-svn-pkgs-cache nil
+  "* Cached list of Texmate svn bundles"
+  )
+(defun texmate-import-svn-get-pkgs ()
+  "* Imports texmate snippets from TexMate bundles svn"
+  (if texmate-import-svn-pkgs-cache
+      (symbol-value 'texmate-import-svn-pkgs-cache)
+  (let (
+        (buf (url-retrieve-synchronously texmate-import-svn-url))
+        (lst '())
+        )
+    (save-excursion
+      (set-buffer buf)
+      (goto-char (point-min))
+      (while (re-search-forward "\"\\([%A-Z0-9_a-z]+\\)[.]tmbundle/\"" nil t)
+        (add-to-list 'lst (match-string 1)))
+      (kill-buffer (current-buffer))
+      )
+    (setq texmate-import-svn-pkgs-cache (mapcar (lambda(x) (replace-in-string x "%20" " ")) lst))
+    (symbol-value 'texmate-import-svn-pkgs-cache)
+    )
+  ))
+(defun texmate-import-snippets-supported (texmate-url)
+  "Check to see if snippets are supported"
+  (let (
+        (buf (url-retrieve-synchronously texmate-url))
+        (ret nil)
+        )
+    (save-excursion
+      (set-buffer buf)
+      (goto-char (point-min))
+      (setq ret (re-search-forward "\"Snippets/\"" nil t))
+      (kill-buffer (current-buffer))
+      )
+    )
+  )
+(defun texmate-import-svn-snippets (snippet-url plist)
+  "*Imports snippets based on texmate svn tree."
+  (message "Fetching %s" snippet-url)
+  (let (
+        buf
+        (snippets '())
+        (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
+                     yas/root-directory
+                   (nth 0 yas/root-directory)
+                   ))
+        )
+    (setq buf (url-retrieve-synchronously snippet-url))
+    (save-excursion
+      (set-buffer buf)
+      (goto-char (point-min))
+      (while (re-search-forward "\"\\([^\"]*[.]tmSnippet\\)\"" nil 't)
+        (add-to-list 'snippets (match-string 1))
+        )
+      (kill-buffer (current-buffer))
+      )
+    (mapc (lambda(x)
+            (message "Fetching %s" (concat snippet-url x))
+            (setq buf (url-retrieve-synchronously (concat snippet-url x)))
+            (save-excursion
+              (set-buffer buf)
+              (texmate-import-current-buffer new-dir plist
+                                             (replace-in-string (replace-in-string x "%20" " ") "%3c" "<")
+                                             )
+              (kill-buffer (current-buffer))
+              )
+            )
+          snippets)
+    )
+  )
+(defun texmate-import-svn-url ()
+  "* Imports a texmate bundle and extracts snippets from `texmate-import-svn-url'"
+  (interactive)
+  (let (
+        (texmate-name (completing-read "Texmate package: " (texmate-import-svn-get-pkgs) nil 't))
+        textmate-url
+        temp-dir
+        buf
+        plist
+        )
+    (setq texmate-url (concat texmate-import-svn-url (replace-in-string texmate-name " " "%20") ".tmbundle/"))
+    (if (not (texmate-import-snippets-supported texmate-url))
+        (progn
+          (setq texmate-import-svn-pkgs-cache (remove-if
+                                               #'(lambda(x) (string= texmate-name x))
+                                               texmate-import-svn-pkgs-cache))
+          (error "This Texmate package has no snippets")
+          )
+      (message "Fetching %s" (concat texmate-url "info.plist"))
+      (setq buf (url-retrieve-synchronously (concat texmate-url "info.plist")))
+      (save-excursion
+        (set-buffer buf)
+        (setq plist (buffer-substring (point-min) (point-max)))
+        (kill-buffer (current-buffer))
+        )
+      (texmate-import-svn-snippets (concat texmate-url "Snippets/") plist)
+      )
+    )
   )
 ;(setq debug-on-error 't)
-;(texmate-import-rmate "c:/tmp/rmate.tmbundle-7d026da/")
+;(texmate-import-rmate "c:/tmp/swissr-rmate.tmbundle-v0.4.2-0-g7d026da/swissr-rmate.tmbundle-7d026da/")
 ;(texmate-import-stata "c:/tmp/Stata.tmbundle/")
 (provide 'texmate-import)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

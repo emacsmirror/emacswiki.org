@@ -285,6 +285,14 @@ maybe you need to modify auto-complete-config.el file and byte-compile.
 +;;; auto-complete-config.el ends here
 </pre>
 ----
+You can monkey patch using this somewhere else if you don't want to change autocomplete.el
+<pre>
+;; CSS autocomplete inifinite loop hacks
+(add-to-list 'ac-css-value-classes
+	     '(border-width "thin" "medium" "thick" "inherit"))
+
+</pre>
+----
 CategoryCompletion
 
 

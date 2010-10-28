@@ -73,3 +73,6 @@ The function todochiku-get-arguments is responsible for formatting the arguments
 I had to download snarl_command from http://www.darrenkitchen.net/temp/snarl_command.rar. snarl_command doesn't appear to come with Snarl, and appears different from snarl_cmd.
 
 The todochiku-icons link was broken as well, and I had to download them from http://github.com/jpenney/emacs-starter-kit/tree/b8bb2858a85fb3cbfaeeb795ce549490d545e790/jpenney/todochiku-icons
+----
+[new]
+I can't this to work OOTB. I get "File error: Searching for program, no such file or directory, notify-send". What is "notify-send" and where might I find it? Is it part of some other software, or supposed to be part of this, or what?

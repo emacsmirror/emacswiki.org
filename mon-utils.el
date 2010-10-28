@@ -118,9 +118,10 @@
 ;; `mon-mapcan', `mon-mapcon', `mon-string-split-commas',
 ;; `mon-print-buffer-object-readably', `mon-get-buffer-window-if',
 ;; `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop',
-;; `mon-buffer-sub-no-prop-check', `mon-equality-or-pred', `mon-union',
+;; `mon-buffer-sub-no-prop-check', `mon-equality-or-predicate', `mon-union',
 ;; `mon-string-split', `mon-list-flatten-rotated', `mon-zero-or-onep',
-;; `mon-booleanp-to-binary',
+;; `mon-booleanp-to-binary', `mon-string-or-null-and-zerop',
+;; `mon-seqeunce-mappable-p', 
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
@@ -139,9 +140,11 @@
 ;; CONSTANTS:
 ;;
 ;; VARIABLES:
-;; `*mon-utils-post-load-requires*', `*mon-ascii-cursor-state*', `*mon-bit-table*',
-;; `*mon-alphabet-as-type-generate*', `*mon-recover-nil-t-default-plist*',
-;; `*mon-equality-or-pred*',
+;; `*mon-utils-post-load-requires*', `*mon-ascii-cursor-state*',
+;; `*mon-bit-table*', `*mon-alphabet-as-type-generate*',
+;; `*mon-recover-nil-t-default-plist*',
+;; `*mon-equality-or-predicate-function-types*', `*mon-function-object-types*',
+;; `*mon-non-mappable-object-types*',
 ;;
 ;; :GROUPS
 ;; `mon-base'
@@ -239,6 +242,11 @@
 ;; `mon-boolean-vector-to-list'      -> `mon-bool-vector-pp'
 ;; `mon-reverse-region-words'        -> `mon-word-reverse-region'
 ;; `mon-region-reverse-chars'        -> `mon-region-reverse'
+;; `atomp'                           -> `atom'
+;; `mon-line-join-previous'          -> `delete-indentation'
+;; `line-join-previous'              -> `delete-indentation'
+;; `string-or-null-and-zerop'        -> `mon-string-or-null-and-zerop'
+;; `make-array'                      -> `make-vector'
 ;; `mon-buffer-do-with-undo-disabled' -> `mon-with-buffer-undo-disabled'
 ;; `mon-capitalize-region'            -> `mon-region-capitalize'
 ;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
@@ -384,6 +392,32 @@
 (unless (and (intern-soft "mon-macrop" obarray) 
              (fboundp (intern-soft "mon-macrop" obarray)))
 (defalias 'mon-macrop 'apropos-macrop))
+;;
+
+;;; ==============================
+(unless (and (intern-soft "atomp" obarray) 
+             (fboundp (intern-soft "atomp" obarray)))
+(defalias 'atomp 'atom))
+;;
+(unless (and (intern-soft "mon-line-join-previous" obarray) 
+             (fboundp 'mon-line-join-nextline))
+(defalias 'mon-line-join-previous 'delete-indentation))
+;;
+(unless (and (intern-soft "line-join-previous" obarray)
+             (fboundp 'line-join-previous))
+(defalias 'line-join-previous 'delete-indentation))
+
+;;; ==============================
+;;; Is it possible to implement a light-weight CL style `make-array' which
+;;; specializes on a keyword argument for an `:element-type`, e.g. 'bit, 'sbit,
+;;; 'character? Could such a thing maybe leverage
+;;; `make-char-table'/`make-keymap' for displaced arrays?. Maybe for signed-byte
+;;; use a buffer markder combo as an index into an adjustable array and
+;;; position-bytes as its fill-pointer barring unibyte/multibyte/EOL/encoding
+;;; issues of course :P
+(unless (and (intern-soft "make-array" obarray)
+             (fboundp 'make-array))
+(defalias 'make-array 'make-vector))
 
 ;;; ==============================
 (eval-when-compile (require 'cl))
@@ -500,6 +534,67 @@
           mon-mysql-utils
           )))
 
+
+;;; ==============================
+;;; :CHANGESET 2211
+;;; :CREATED <Timestamp: #{2010-10-27T15:06:17-04:00Z}#{10433} - by MON KEY>
+(defvar *mon-non-mappable-object-types* 
+  '(compiled-function subr
+    hash-table char-table 
+    integer marker float
+    buffer overlay 
+    frame window window-configuration
+    process
+    font-entity font-object font-spec
+    ;; :NOTE  Don't be tempted to add `symbol` to this list! 
+    ;; `type-of' returns 'symbol for the empty list: (type-of '()) 
+    ;; Its `mon-seqeunce-mappable-p's job to check for this, so let her do it.
+    ;;
+    ;; :NOTE Leave `t' as last elt. It isn't mappable, and its nice to have it
+    ;; as the _only_ elt when return value from `memq' e.g.:
+    ;;  (memq t *mon-non-mappable-object-types*)
+    ;;  (car (memq t *mon-non-mappable-object-types*))
+    t)
+  "List of Emacs object types which are not mappable.\n
+A \"mappable\" object is one which by can occur as a SEQUENCE arge to:\n
+ `mapc' `mapcar' `mapconcat'\n
+:EXAMPLE\n\n\(memq 'process *mon-non-mappable-object-types*\)\n
+\(not \(memq 'cons *mon-non-mappable-object-types*\)\)\n
+:NOTE Objects of type `hash-table' are mappable with `maphash'.\n
+:NOTE For `nil' and empty list `type-of' returns `symbol' which is why it isn't
+provided by the current list.\n
+:SEE info node `(elisp)Type Predicates'
+:SEE info node `(elisp) Lisp Data Types'\n
+:SEE-ALSO `mon-seqeunce-mappable-p', `mon-list-proper-p', `mon-booleanp',
+`*mon-equality-or-predicate-function-types*',
+`*mon-function-object-types*'.\n►►►")
+
+;;; ==============================
+;;; :CHANGESET 2178
+;;; :CREATED <Timestamp: #{2010-10-04T22:30:10-04:00Z}#{10401} - by MON KEY>
+(defcustom *mon-equality-or-predicate-function-types* 
+  '(eq eql equal memq memql member
+       > < <= >= =
+       assq assoc rassq rassoc
+       string-equal string-lessp 
+       string-match-p string-prefix-p
+       equal-including-properties
+       subregexp-context-p
+       time-less-p
+       ;; 
+       version-list-< version-list-=
+       version-list-<=
+       ;; cl
+       equalp subsetp tailp typep)
+  "List of predicates or two argument predicate-like functions.\n
+For use with `mon-equality-or-predicate'.\n
+:EXAMPLE\n\n\(memq 'equalp *mon-equality-or-predicate-function-types*\)\n
+\(not \(memq 'subrp *mon-equality-or-predicate-function-types*\)\)\n
+:SEE info node `(elisp)Type Predicates'\n
+:SEE-ALSO `*mon-function-object-types*', `*mon-non-mappable-object-types*'.\n►►►"
+  :type  '(repeat symbol)
+  :group 'mon-base)
+
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T15:39:13-04:00Z}#{10381} - by MON>
@@ -591,7 +686,7 @@ the filename of feature FEATURE-AS-SYMBOL when it is in loadpath.\n
                (require ,feature-as-symbol nil t))) ;;,(if w-signal-error t nil))))
          (error 
           (concat ":MACRO `mon-check-feature-for-loadtime' "
-                  "-- arg FEATURE-AS-SYMBOL does not find a feature or file: %s")
+                  "-- arg FEATURE-AS-SYMBOL does not find a feature or file, got: %s")
           ,feature-as-symbol)))))
 ;;
 ;;; :TEST-ME (pp-macroexpand-expression 
@@ -1069,7 +1164,7 @@ sequence types.\n
            (mmc-cnt       0)
            (mmc-heads     (mapcar 
                            ;; :NOTE arg SEQ prevents backquote expansion to: "(lambda nil"
-                           #'(lambda (seq) 
+                           #'(lambda (mmc-L-1) 
                                (make-symbol 
                                 (concat "head" (number-to-string (setq mmc-cnt (1+ mmc-cnt))))))
                            mmc-seqs))
@@ -1085,13 +1180,13 @@ sequence types.\n
          (while (and ,@mmc-heads)
            (setcdr ,mmc-rslt-tl 
                    (cons 
-                    (funcall ,function ,@(mapcar #'(lambda (mmc-h1) 
-                                                     (list 'car mmc-h1))
+                    (funcall ,function ,@(mapcar #'(lambda (mmc-L-2) 
+                                                     (list 'car mmc-L-2))
                                                  mmc-heads)) 
                     nil))
            (setq ,mmc-rslt-tl (cdr ,mmc-rslt-tl)
-                 ,@(apply 'nconc (mapcar #'(lambda (mmc-h2) 
-                                             (list mmc-h2 (list 'cdr mmc-h2))) 
+                 ,@(apply 'nconc (mapcar #'(lambda (mmc-L-3) 
+                                             (list mmc-L-3 (list 'cdr mmc-L-3))) 
                                          mmc-heads))))
          (cdr ,mmc-rslt)))))
 
@@ -1102,15 +1197,13 @@ sequence types.\n
 ;;; :CREATED <Timestamp: #{2009-10-23T15:17:35-04:00Z}#{09435} - by MON KEY>
 (defmacro mon-with-file-buffer (buffer-var file &rest body)
   "Evaluate BODY with BUFFER-VAR bound to buffer visiting FILE.\n
-:EXAMPLE\n\n
-
- (let (read-some)
-   (with-file-buffer some-buffer some-file
-    (save-excursion
-      (set-buffer some-buffer)
-      (mon-g2be -1)
-      (setq read-some (read some-buffer)))))
-
+:EXAMPLE\n
+\(let \(read-some\)
+   \(with-file-buffer some-buffer some-file
+    \(save-excursion
+      \(set-buffer some-buffer\)
+      \(mon-g2be -1\)
+      \(setq read-some \(read some-buffer\)\)\)\)\)\n
 :SEE-ALSO `mon-with-buffer-undo-disabled', `mon-buffer-exists-p',
 `mon-buffer-written-p', `mon-buffer-exists-so-kill', `mon-print-in-buffer-if-p',
 `mon-get-buffer-w-mode', `mon-get-buffer-parent-dir',
@@ -1131,6 +1224,7 @@ sequence types.\n
            (kill-buffer ,buffer-var))))))
 
 ;;; ==============================
+;;; :PREFIX "mbnkr-"
 ;;; :CREATED <Timestamp: #{2009-10-22T16:45:38-04:00Z}#{09434} - by MON>
 (defun mon-buffer-name->kill-ring (&optional or-buffer insrtp)
   "Put buffer-name of current-buffer on kill-ring.\n
@@ -1146,10 +1240,10 @@ buffer-name at point. Does not move point.\n
 `mon-get-buffers-directories', `mon-string-split-buffer-name',
 `mon-string-split-buffer-parent-dir', `mon-help-buffer-functions'.\n►►►"
   (interactive "i\nP")
-  (let ((kn (kill-new (format "%S" (buffer-name or-buffer)))))
+  (let ((mbnkr-kn (kill-new (format "%S" (buffer-name or-buffer)))))
     (if insrtp 
-        (save-excursion (newline) (princ kn (current-buffer)))
-        (princ kn))))
+        (save-excursion (newline) (princ mbnkr-kn (current-buffer)))
+      (princ mbnkr-kn))))
 
 ;;; ==============================
 ;;; :COURTESY :FILE gnus-util.el :WAS `gnus-buffer-exists-p'
@@ -1371,7 +1465,26 @@ not already visible. Default is to consider all buffers on all frames.\n
              (fboundp (intern-soft "mon-buffer-get-w-mode" obarray)))
 (defalias 'mon-buffer-get-w-mode 'mon-get-buffer-w-mode))
 
+
 ;;; ==============================
+;;; :NOTE The list of possible return values a moving target b/c:
+;;; - Improving/adjusting it
+;;; - Still working out what to do w/ compiled vs. interpretted 
+;;; - Pending lexbind integration might change things...
+;;; :CHANGESET 2211
+;;; :CREATED <Timestamp: #{2010-10-26T16:50:41-04:00Z}#{10432} - by MON KEY>
+(defvar *mon-function-object-types* '(function compiled-function 
+                                      subr macro lambda autoload)
+  "List of return values for `mon-function-object-p' which name function objects.\n
+:EXAMPLE\n\n\(memq 'function *mon-function-object-types*\)\n
+\(car \(memq \(mon-function-object-p 'mon-function-object-p\) 
+           *mon-function-object-types*\)\)\n
+:SEE-ALSO `functionp', `indirect-function', `symbol-function', `apropos-macrop',
+`edebug-macrop', `commandp', `*mon-equality-or-predicate-function-types*',
+`*mon-non-mappable-object-types*'.\n►►►")
+
+;;; ==============================
+;;; :TODO Build a test function once all issues finalized.
 ;;; :TODO This really isn't a predicate and should be renamed
 ;;; `mon-function-object-maybe' and add a new function that checks if the
 ;;; return-value is one of: 
@@ -1383,9 +1496,10 @@ not already visible. Default is to consider all buffers on all frames.\n
 ;;; <Timestamp: #{2010-09-16T17:43:19-04:00Z}#{10374} - by MON>
 (defun mon-function-object-p (fncn-sym)
   "Test if FNCN-SYM is a function object.\n
-Return non-nil if the fncn-sym object is any of the following:\n
- subr lambda macro autoload function compiled-function\n
-When fncn-sym is not null and none of the above return value is per `type-of'
+Return non-nil if FNCN-SYM object is \"function-like\" which is any of the
+following object types named in the variable `*mon-function-object-types*'.\n
+When FNCN-SYM is a boolean return 'boolean.\n
+When FNCN-SYM is not null and none of the above return value is per `type-of'
 for the `indirect-function' value of FNCN-SYM.\n
 :EXAMPLE\n\n\(mon-function-object-p 'mon-function-object-p\)\n
 \(mon-function-object-p 'subrp\)\n
@@ -1394,6 +1508,10 @@ for the `indirect-function' value of FNCN-SYM.\n
 \(mon-function-object-p 'goto-next-locus\)\n
 \(mon-function-object-p 'deactivate-mark\)\n
 \(mon-function-object-p 'handwrite\)\n
+\(mon-function-object-p '\(lambda \(x\) x\)\)\n
+\(mon-function-object-p #'\(lambda \(x\) x\)\)\n
+\(mon-function-object-p 't\)\n
+\(mon-function-object-p nil\)\n
 \(mon-function-object-p 'handwrite-13pt-numlines\)\n
 :NOTE Following enumartes structures of the object types which
 `indirect-function' may return.\n
@@ -1423,37 +1541,65 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
 `commandp', `indirect-variable', `user-variable-p', `custom-variable-p',
 `edebug-lookup-function', `edebug-lambda-list-keywordp',
 `mon-help-symbol-functions', `mon-help-byte-compile-functions'.\n►►►"
-  (or 
-   ;;  want and/or if we find what we want now.
+  (or ;; Its a lambda form, e.g.: 
+   ;; (indirect-function (lambda (x) x)) (indirect-function #'(lambda (x) x))
+   (and (consp fncn-sym) 
+        (eq (car-safe (indirect-function fncn-sym t)) 'lambda)
+        'lambda)
+   ;; Some other thing we can't stop now want and/or if we find what we want now.
    (car (memq (type-of fncn-sym) '(;; We special case `compiled-function` here b/c
                                    ;; its print syntax is #[{...}] which signals an
                                    ;; error in the the next branch b/c there we depend
                                    ;; on FNCN-SYM being a symbol-like but not
                                    ;; necessarily an `indirect-*' symbol.
                                    compiled-function
-                                   ;; function ;; This doesn't happen.
                                    subr
-                                   ;; :NOTE could branch on this and look at the
-                                   ;; return value of an `intern-soft' on this:
+                                   ;; :NOTE Could branch on this and interrogate the
+                                   ;; return value of an `intern-soft' on `stringp'
+                                   ;; For example, could be a string naming a
+                                   ;; function object or might be `facep':
                                    string 
-                                   ;; Short circuit on stuff we know we don't
-                                   integer float marker buffer window 
-                                   frame  bool-vector overlay process)))
+                                   ;; Short circuit on stuff we know we don't want:
+                                   integer float 
+                                   marker buffer window frame
+                                   ;; That is, hash-tables don't currently hold
+                                   ;; function objects. Maybe they could?
+                                   hash-table 
+                                   char-table bool-vector
+                                   overlay process)))
+   ;; Its `nil' or `t'
+   (and (cadr (mon-booleanp fncn-sym)) 'boolean)
    ;; :NOTE It is very-important when interrogating byte-code-function objects
-   ;; that we don' directly access the #[ ... ] objects. Doing so will
-   ;; _immediately_ segfault Emacs -- at least when: (<= 23.2.1 (emacs-version))
+   ;; that we don't inadverdently attempt a direct access of  #[ ... ] objects. 
+   ;; Doing so may (in some circumstances) _immediately_ segfault Emacs -- 
+   ;; e.g. each of following will lose _badly_:
+   ;;   (type-of #[abc])  (cdr (thing .  #[abc]))
+   ;; At least when:  (<= 23.2.1 (emacs-version))
    ;; :SEE bug#6835: 23.2; eval'ing `type-of' with #[abc] as arg gets a Fatal error
    ;; (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2010-08/msg00289.html')
-   ;; e.g. any of the following will lose _badly_
-   ;; (type-of #[ ... ] 
-   ;; (cdr (thing .  #[abc]))
-   
-   ;; Do
-   (let ((mfop-lkng (and fncn-sym (intern-soft (symbol-name fncn-sym) obarray)
-                         (fboundp fncn-sym)
-                         (indirect-function fncn-sym t)))
+   (let ((mfop-lkng (and fncn-sym ;; its a something
+                         (and  
+                          ;; Not a list but could evaluate to nil
+                          (nlistp fncn-sym)
+                          ;; Not a cons but could be a symbol evaluates evaluate to nil
+                          (not (consp fncn-sym)) 
+                          ;; Def. not a cons but maybe could evaluate to nil                              
+                          (atom fncn-sym)        
+                          ;; Def. not a nil
+                          (not (null fncn-sym))
+                          ;; Can't do fboundp/boundp on a #[....] but need to
+                          ;; know if its function like and can't make the full
+                          ;; determination without also taking the
+                          ;; indirect-function of an indirect-function
+                          ;; :NOTE Does this finally rule out a `cyclic-function-indirection`?
+                          (or (and (or (and (symbolp fncn-sym)
+                                            (fboundp fncn-sym))
+                                       (and (symbolp fncn-sym) 
+                                            (boundp fncn-sym)))
+                                   (indirect-function fncn-sym t))
+                              (indirect-function fncn-sym t)))))
          mfop-cot)
-     (unless (null mfop-lkng)
+     (unless (null mfop-lkng) ;; Prob can't happen
        (when (subrp mfop-lkng) (setq mfop-cot 'subr))
        (unless mfop-cot
          (when (or (byte-code-function-p mfop-lkng)
@@ -1480,11 +1626,14 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
          ;; 'interpreted-macro 
          ;; likewise could do: 
          ;; (listp (cdr-safe (indirect-function 'some-compiled-macro)))
-         (when (eq (car-safe (indirect-function mfop-lkng)) 'macro)
+         ;; Also, what to do about autoload macros? e.g. `apropos-macrop'
+         ;; 
+         (when (eq (car-safe (indirect-function mfop-lkng t)) 'macro)
            ;; (if (mon-list-proper-p (indirect-function mfop-lkng))
            (setq mfop-cot 'macro)))
+       ;; :TODO This could be an autoload macro! Add recursion.
        (unless mfop-cot 
-         (when (eq (car-safe (indirect-function mfop-lkng)) 'autoload)
+         (when (eq (car-safe (indirect-function mfop-lkng t)) 'autoload)
            (setq mfop-cot 'autoload))))
      (or mfop-cot (type-of mfop-lkng)))))
 ;;
@@ -1494,51 +1643,32 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
 
 ;;; ==============================
 ;;; :CHANGESET 2178
-;;; :CREATED <Timestamp: #{2010-10-04T22:30:10-04:00Z}#{10401} - by MON KEY>
-(defcustom *mon-equality-or-pred* '(eq eql equal memq memql member
-                                       > < <= >= =
-                                       assq assoc rassq rassoc
-                                       string-equal string-lessp 
-                                       string-match-p string-prefix-p
-                                       equal-including-properties
-                                       subregexp-context-p
-                                       time-less-p
-                                       ;; cl
-                                       equalp subsetp tailp typep)
-  "List of predicates or two argument predicate-like functions.\n
-For use with ``mon-equality-or-pred'.\n
-:SEE-ALSO .\n►►►"
-  :type '(repeat symbol)
-  :group 'mon-base)
-
-;;; ==============================
-;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-04T22:30:05-04:00Z}#{10401} - by MON KEY>
-(defun mon-equality-or-pred (predicate arg1 arg2)
+(defun mon-equality-or-predicate (predicate arg1 arg2)
   "Evaluate PREDICATE with ARG1 ARG2.\n
 PREDICATE is function accepting two args and is either a member of
-`*mon-equality-or-pred*' or a symbol satisfying the predicate
+`*mon-equality-or-predicate-function-types*' or a symbol satisfying the predicate
 `mon-function-object-p'.\n
-:EXAMPLE\n\n\(mon-equality-or-pred 
+:EXAMPLE\n\n\(mon-equality-or-predicate 
  'memq 'eq '\(eq eql equal memq memql member\)\)\n
-\(mon-equality-or-pred 
+\(mon-equality-or-predicate 
  'member \"string\" '\(\"a\" \"b\" \"c\" \"string\"\)\)\n
-\(mon-equality-or-pred #'\(lambda \(q z\) 
+\(mon-equality-or-predicate #'\(lambda \(q z\) 
                           \(and \(stringp q\) \(stringp z\)
                                \(compare-strings q 0 1 z 0 1\)\)\)
                        \"bubba\" \"babel\"\)\n
 :SEE-ALSO `mon-booleanp', .\n►►►"  
   (if (or (and (consp predicate) 
                (or (eq (car-safe predicate) 'lambda)
-                   (error (concat ":FUNCTION `mon-equality-or-pred' "
+                   (error (concat ":FUNCTION `mon-equality-or-predicate' "
                                   "-- arg PREDICATE satisfies `consp' car not 'lambda "
                                   " - got: %S") predicate)))
           (and (symbolp predicate)
-               (memq predicate *mon-equality-or-pred*))
+               (memq predicate *mon-equality-or-predicate-function-types*))
           (memq (mon-function-object-p predicate)
                 '(function subr macro autoload compiled-function)))
       (funcall predicate arg1 arg2)
-    (error (concat ":FUNCTION `mon-equality-or-pred' "
+    (error (concat ":FUNCTION `mon-equality-or-predicate' "
                    "-- arg PREDICATE not applicable - got: %S") predicate)))
 
 ;;; ==============================
@@ -1549,13 +1679,15 @@ PREDICATE is function accepting two args and is either a member of
   "Like `booleanp' but return two element list when PUTATIVE-BOOLEAN is either `t' or `nil'.\n
 When PUTATIVE-BOOLEAN is any other value return nil.\n
 :EXAMPLE\n\n
-\(mon-booleanp \"bubba\"\)\n;=>\n(nil nil)\n
+\(mon-booleanp \"bubba\"\)\n;=> (nil nil)\n
 \(mon-booleanp t\)\n;=> \(t t\)\n
 \(mon-booleanp nil\)\n;=> \(nil t\)\n
 \(mon-booleanp \(\)\)\n;=> \(nil t\)\n
 \(mon-booleanp '\(\)\)\n;=> \(nil t\)\n
-\(not \(eq :not-a-boolean \(unless \(cadr \(mon-booleanp nil\)\) :not-a-boolean\)\)\)
-\(eq :not-a-boolean \(unless \(cadr \(mon-booleanp \"bubba\"\)\) :not-a-boolean\)\)
+\(mon-booleanp 't\)\n;=> ;=> \(t t\)   ; :NOTE Understands the quoted t and nil\n 
+\(mon-booleanp 'nil\)\n;=> \(nil t\)\n
+\(not \(eq :not-a-boolean \(unless \(cadr \(mon-booleanp nil\)\) :not-a-boolean\)\)\)\n
+\(eq :not-a-boolean \(unless \(cadr \(mon-booleanp \"bubba\"\)\) :not-a-boolean\)\)\n
 :NOTE Returning a two element list on success shares some similarity with
 Common Lisp's multiple values which seem pertinent for special cases
 like this one in that there is provision for reflection that is hard
@@ -1567,13 +1699,48 @@ Whereas with a two element proper list:\n
 \(let \(\(query-truth \(eq 8 3\)\)\)
      \(and \(cadr \(booleanp query-truth\)\)
           \(not \(car \(booleanp query-truth\)\)\)\)\)\n
-\(mon-booleanp-to-binary-TEST\)\n
-:SEE-ALSO `mon-zero-or-onep', `mon-equality-or-pred'.\n►►►" ;
-  (or (and (eq putative-boolean t)   '(t t))
-      (and (eq putative-boolean nil) '(nil t))
+:SEE-ALSO `mon-zero-or-onep', `mon-string-or-null-and-zerop',
+`mon-equality-or-predicate'.\n►►►"
+  ;; :WAS (or (and (eq putative-boolean t)   '(t t))
+  ;;          (and (eq putative-boolean nil) '(nil t))
+  ;;          '(nil nil)))
+  (or (and (atom putative-boolean)
+           (symbolp putative-boolean)
+           (boundp putative-boolean)
+           (or (and (nlistp putative-boolean)
+                    (and putative-boolean)
+                    (or (and (eq putative-boolean 't) '(t t))
+                        (and (eq putative-boolean t)  '(t t))))
+               (or (and (listp putative-boolean)
+                        (not (consp putative-boolean))
+                        (null putative-boolean)
+                        (and (eq putative-boolean nil) '(nil t)))
+                   (and (eq putative-boolean 'nil) '(nil t)))))
       '(nil nil)))
+
+;;; ==============================
+;;; :CHANGESET 2211
+;;; :CREATED <Timestamp: #{2010-10-26T11:58:20-04:00Z}#{10432} - by MON KEY>
+(defun mon-string-or-null-and-zerop (maybe-str-or-null-obj)
+  "Return non-nil when both `string-or-null-p' and of `length' `zerop'.\n
+Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
+:EXAMPLE\n\n\(mon-string-or-null-and-zerop \"\"\)\n
+\(mon-string-or-null-and-zerop \"longer than 0\"\)\n
+\(mon-string-or-null-and-zerop nil\)\n
+\(mon-string-or-null-and-zerop \(\)\)\n
+\(mon-string-or-null-and-zerop 0\)\n
+\(mon-string-or-null-and-zerop-TEST\)\n
+:ALIASED-BY `string-or-null-and-zerop'\n
+:SEE-ALSO `string-or-null-p', `zerop', `mon-zero-or-onep', `mon-booleanp',
+`mon-booleanp-to-binary'.\n►►►"
+  (and (string-or-null-p maybe-str-or-null-obj)
+       (zerop (length maybe-str-or-null-obj))))
 ;;
-;;; :TEST-ME (mon-booleanp-to-binary-TEST)
+(unless (and (intern-soft "string-or-null-and-zerop" obarray) 
+             (fboundp 'string-or-null-and-zerop))
+(defalias 'string-or-null-and-zerop 'mon-string-or-null-and-zerop))
+;;
+;;; :TEST-ME (mon-string-or-null-and-zerop-TEST)
 
 ;;; ==============================
 ;;; :CHANGESET 2206
@@ -1597,7 +1764,8 @@ Whereas with a two element proper list:\n
 :ALIASED-BY `mon-one-or-zerop'
 :ALIASED-BY `mon-1-or-0-p'
 :ALIASED-BY `mon-0-or-1-p'\n
-:SEE-ALSO `mon-booleanp', `mon-equality-or-pred'.\n►►►"  
+:SEE-ALSO `mon-string-or-null-and-zerop', `mon-booleanp-to-binary',
+`mon-booleanp', `mon-equality-or-predicate'.\n►►►"
   (and (wholenump maybe-one-or-zero)
        (or (zerop maybe-one-or-zero)
            (zerop (1- maybe-one-or-zero)))))
@@ -1677,12 +1845,14 @@ return MAYBE-A-BOOLEAN.\n
   \(nconc \(list :true-items \(apply '+ rslts\)\)
          \(list :not-true-at \(number-sequence 1 28 3\)\)
          \(list :true-table rslts\)\)\)\n
+\(mon-booleanp-to-binary-TEST\)\n
 :ALIASED-BY `mon-boolean-to-binary'
 :ALIASED-BY `mon-t-to-1'
 :ALIASED-BY `mon-nil-to-0'
 :ALIASED-BY `mon-true-to-one'
 :ALIASED-BY `mon-false-to-zero'\n
-:SEE-ALSO `mon-one-or-zerop', `mon-bool-vector-pp'.\n►►►"
+:SEE-ALSO `mon-one-or-zerop', `mon-string-or-null-and-zerop',
+`mon-bool-vector-pp'.\n►►►"
   (let ((myb-bool (mon-booleanp maybe-a-boolean)))
     (or (and (cadr myb-bool)
              (or (and (car myb-bool) 1)
@@ -1709,17 +1879,7 @@ return MAYBE-A-BOOLEAN.\n
              (fboundp 'mon-false-to-zero))
 (defalias 'mon-false-to-zero 'mon-booleanp-to-binary))
 ;;
-;; ,---- :UNCOMMENT-BELOW-TO-TEST
-;; | (and 
-;; |  (= (mon-booleanp-to-binary nil) 0)
-;; |  (= (mon-booleanp-to-binary t) 1)
-;; |  (= (mon-booleanp-to-binary 0 t) 0)
-;; |  (= (mon-booleanp-to-binary 1 t) 1)
-;; |  (= (mon-booleanp-to-binary #o1 t) 1)
-;; |  (mon-zero-or-onep (mon-booleanp-to-binary #x1 t))
-;; |  (not (mon-booleanp-to-binary "not-a-boolean"))
-;; |  (equal (mon-booleanp-to-binary "not-a-boolean") "not-a-boolean")
-;; `----
+;;; :TEST-ME (mon-booleanp-to-binary-TEST)
 
 ;;; ==============================
 ;;; Following does image extension type checking. Can be used elsewhere as well.
@@ -1746,7 +1906,7 @@ convert command could be supported. For a complete list of formats supported:
 :CALLED-BY `boxcutter-big-n-small'\n
 :ALIASED-BY `boxcutter-verify-image-type' \(when \(and \(featurep 'mon-boxcutter\)\)\)\n
 :SEE-ALSO `mon-check-image-type', `*boxcutter-conversion-program*',
-`image-type-available-p', `image-type-from-file-name',\n
+`image-type-available-p', `image-type-from-file-name',
 `image-file-name-extensions', `image-type-file-name-regexps',
 `image-file-name-regexps'.\n►►►"
   (eval-when-compile (require 'image))
@@ -1800,7 +1960,7 @@ convert command could be supported. For a complete list of formats supported:
   "Return the output of shell-command 'uname -a'.\n
 When called-interactively or INSRTP is non-nil insert at point.\n
 Does not move point.\n
-:EXAMPLE\n(mon-get-system-specs)\n
+:EXAMPLE\n\n\(mon-get-system-specs\)\n
 :SEE-ALSO `system-name', `mon-get-env-vars-strings', `mon-get-env-vars-symbols',
 `mon-get-env-vars-emacs', `mon-get-proc-w-name', `mon-get-sys-proc-list',
 `mon-insert-sys-proc-list'.\n►►►"
@@ -2081,7 +2241,6 @@ But, this way MON has fine-grain control over the assigned name suffix.\n
   (let (buffs buffs-str)
     (setq buffs (with-temp-buffer
                   (princ (buffer-list) (current-buffer))
-                  ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
                   (mon-buffer-sub-no-prop)))
     (setq buffs (read buffs))
     (setq buffs (mapcar #'(lambda (x) (format "%s" x)) buffs))
@@ -2228,6 +2387,7 @@ This function will be :DEPRECATED once EMACS <-> CEDET merge is complete.\n►�
       (unless (fboundp 'slot-makunbound)
         (defalias 'slot-makunbound 'slot-makeunbound))))
 ) ;; :CLOSE when
+
 
 ;;; ==============================
 (defun mon-terminal ()
@@ -2591,9 +2751,10 @@ integer value.\n
   (setq min/max-go
         (or (and min/max-go
                  (or (and (integer-or-marker-p min/max-go)
-                          (or (and (integerp min/max-go)
-                                   (or (and (> min/max-go 0) (point-max))
-                                       (and (<= min/max-go 0) (point-min))))
+                          (or (and ;; :NOTE Can't do `natnump' because MIN/MAX-GO can be -1
+                               (integerp min/max-go) 
+                               (or (and (> min/max-go 0) (point-max))
+                                   (and (<= min/max-go 0) (point-min))))
                               (and (markerp min/max-go)
                                    (and (or (eq (marker-buffer min/max-go) (current-buffer))
                                             (error (concat ":FUNCTION `mon-g2be' "
@@ -2766,7 +2927,7 @@ Following will fail:\n
                                                  bfr-beg (point-min)))
                                    (marker-position bfr-beg))))
                      ;; BFR-BEG is integer
-                     (and (or (integerp bfr-beg)
+                     (and (or (integerp bfr-beg) 
                               (funcall mbsnpc-err 
                                        "arg BFR-BEG does not satisfy `integerp' arg BFR-BEG was: %S" bfr-beg))
                           (or (and (<= bfr-beg 0)
@@ -2802,25 +2963,26 @@ Following will fail:\n
                                             bfr-end (point-min)))
                               (marker-position bfr-end)))
                      ;; BFR-END is integer
-                     (and (or (integerp bfr-end)
-                              (funcall mbsnpc-err 
-                                       "arg BFR-END does not satisfy `integerp' arg BFR-END was: %S" bfr-end))
-                          (or (and (< bfr-end 0)
-                                   (funcall mbsnpc-err 
-                                            "arg BFR-END is `<' 0 arg BFR-END was: %d " bfr-beg))
-                              (and nrrwd-p (<  bfr-end (point-min))
-                                   (funcall mbsnpc-err 
-                                            (concat "arg BFR-END is `<' `point-min' outside a `narrow-to-region' "
-                                                    "arg BFR-END was: %d `point-min' was: %d") 
-                                            bfr-end (point-min)))
-                              t)
-                          (or (and nrrwd-p (>  bfr-end (point-max))
-                                   (funcall mbsnpc-err 
-                                            (concat "arg BFR-END is `>' `point-max' outside a `narrow-to-region' "
-                                                    "arg BFR-END was: %d `point-max' was: %d") 
-                                            bfr-end (point-max)))
-                              t)
-                          bfr-end))))
+                     (and ;; Can replace some of below w/ `natnump'??
+                      (or (integerp bfr-end) 
+                          (funcall mbsnpc-err 
+                                   "arg BFR-END does not satisfy `integerp' arg BFR-END was: %S" bfr-end))
+                      (or (and (< bfr-end 0)
+                               (funcall mbsnpc-err 
+                                        "arg BFR-END is `<' 0 arg BFR-END was: %d " bfr-beg))
+                          (and nrrwd-p (<  bfr-end (point-min))
+                               (funcall mbsnpc-err 
+                                        (concat "arg BFR-END is `<' `point-min' outside a `narrow-to-region' "
+                                                "arg BFR-END was: %d `point-min' was: %d") 
+                                        bfr-end (point-min)))
+                          t)
+                      (or (and nrrwd-p (>  bfr-end (point-max))
+                               (funcall mbsnpc-err 
+                                        (concat "arg BFR-END is `>' `point-max' outside a `narrow-to-region' "
+                                                "arg BFR-END was: %d `point-max' was: %d") 
+                                        bfr-end (point-max)))
+                          t)
+                      bfr-end))))
           (if (and mbeg mend)
               (list mbeg mend)
             (funcall mbsnpc-err "Should not see this error")))
@@ -2844,6 +3006,7 @@ Following will fail:\n
            ,'utf-8-unix ,(unless insrtp t))))
 
 ;;; ==============================
+;;; :PREFIX "mrp-"
 (defun mon-region-position (&optional insrtp intrp)
   "Return details of the postion of current region.\n
 Return value is a list of key value pairs as returned by accessor functions:\n
@@ -2864,22 +3027,23 @@ minibuffer as if by `message'.\n
 \(save-excursion \(set-mark \(point\)\) \(forward-char 3\) \(mon-region-position\)\)\n
 :SEE-ALSO `mon-region-unfill', `mon-region-capitalize', `mon-region-reverse'.\n►►►"
   (interactive "P\np")
-  (let ((mrp `(:USE-REGION-P    ,(use-region-p) 
+  (let ((mrp-rtn `(:USE-REGION-P    ,(use-region-p) 
                :REGION-ACTIVE-P ,(region-active-p)  
                :REG-BEG         ,(region-beginning)
                :REG-END         ,(region-end))))
     (if (or insrtp intrp)
         (progn
-          (setq mrp 
+          (setq mrp-rtn 
                 (concat ":FUNCTION `mon-region-position' "
                          "-- current region " 
-                         (mapconcat #'(lambda (fr) (format "%s" fr))
-                                    mrp " ")))
-          (cond (insrtp (save-excursion (insert mrp)))
-                (intrp (message mrp))))
-      mrp)))
+                         (mapconcat #'(lambda (mrp-L-1) (format "%s" mrp-L-1))
+                                    mrp-rtn " ")))
+          (cond (insrtp (save-excursion (insert mrp-rtn)))
+                (intrp (message mrp-rtn))))
+      mrp-rtn)))
          
 ;;; ==============================
+;;; :PREFIX "mrgnl-"
 ;;; :CHANGESET 1788
 ;;; :CREATED <Timestamp: #{2010-05-28T14:44:04-04:00Z}#{10215} - by MON KEY>
 (defun mon-region-length (&optional insrtp intrp)
@@ -2894,15 +3058,15 @@ When called-interactively and INSRTP is ommitted message the region length.\n
   (interactive "P\np")
   (unless (region-active-p)
     (error ":FUNCTION `mon-region-length' -- there is no active region"))
-  (let* ((rerb (- (region-end) (region-beginning)))
-         ;;(rerb-frmt  (format ":REGION-LENGTH %d" rerb)))
-         (rerb-frmt (format (concat ":FUNCTION `mon-region-length' " 
-                                    "-- :REGION-LENGTH %d") rerb)))
-    (cond ((and intrp (not insrtp)) (message rerb-frmt))
+  (let* ((mrgnl-rbe (- (region-end) (region-beginning)))
+         ;;(mrgnl-frmt  (format ":REGION-LENGTH %d" mrgnl)))
+         (mrgnl-frmt (format (concat ":FUNCTION `mon-region-length' " 
+                                    "-- :REGION-LENGTH %d") mrgnl-rbe)))
+    (cond ((and intrp (not insrtp)) (message mrgnl-frmt))
            (insrtp (unless (eq (point) (region-end))
                      (goto-char (region-end)))
-                   (insert rerb-frmt))
-           (t rerb))))
+                   (insert mrgnl-frmt))
+           (t mrgnl-rbe))))
 ;;
 ;;; :TEST-ME (progn (push-mark (line-beginning-position) nil t)
 ;;;                    (mon-region-length nil t))
@@ -4498,45 +4662,56 @@ W-CHAR is a char-literal, string, or symbol.\n
 `mon-coerce->char'.\n►►►"
   (cond ((stringp maybe-digit-char) 
          (mon-is-digit (string-to-char maybe-digit-char)))
-        ((integerp maybe-digit-char) 
-         (and (<= ?0 maybe-digit-char) 
+        ((natnump maybe-digit-char)
+         (and (>= maybe-digit-char ?0)
               (<= maybe-digit-char ?9)))
         (t nil)))
 ;;
 ;;; :TEST-ME (mon-is-digit (char-after (point)))8
 ;;; :TEST-ME (mon-is-digit (char-after (point)))x
 
+;;; `alpha-char-p' constrained to ASCII set whereas isn't `alphanumericp'
+;;; `graphic-char-p'  printing-char (space through ~ in ASCII)
+
+;; CL-USER> (alphanumericp (code-char 9658)) '=> nil
+;; CL-USER> (code-char 5090) '=> #\CHEROKEE_LETTER_TLV
+;; CL-USER> (alphanumericp (code-char 5090))   ;=> T
+;; CL-USER> (princ-to-string (code-char 5090)) ;=> "Ꮲ"
+
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-strings.el :WAS `is-letter'
-(defun mon-is-letter (maybe-alpha-char)
-"Return non-nil when MAYBE-ALPHA-CHAR is an alpha character.\n
+(defun mon-is-letter (maybe-alpha-char) ;; optional ascii-only
+  "Return non-nil when MAYBE-ALPHA-CHAR is an alpha character.\n
 :EXAMPLE\n\(mon-is-alphanum \(char-after \(point\)\)\)\\?56
 \(mon-is-alphanum \(char-after \(point\)\)\)8\n
+\(mon-is-letter ?á\)
+:NOTE Similiar to Common Lisp's `alpha-char-p' but handles non-ASCII
+characters.\n
 :SEE-ALSO `mon-is-digit', `mon-is-alphanum', `mon-string-index',
 `mon-string-position', `mon-alphabet-as-type', `mon-char-code',
 `mon-coerce->char'.\n►►►"
   (cond ((stringp maybe-alpha-char) 
          (mon-is-letter (string-to-char maybe-alpha-char)))
-        ((integerp maybe-alpha-char) 
+        ((natnump maybe-alpha-char)
          (not (equal (downcase maybe-alpha-char) 
                      (upcase maybe-alpha-char))))
         (t nil)))
 ;;
+;;; (mon-is-letter 9658) (upcase "►")
 ;;; :TEST-ME (mon-is-letter (char-after (point)))x
 ;;; :TEST-ME (mon-is-letter (char-after (point)))8
 ;;; :TEST-ME (mon-is-letter ?á)
 
-
 ;;; ==============================
 (defun mon-is-alphanum (maybe-alphanum)
-  "Return t when MAYBE-ALPHANUM is either an alpha character or integer.\n
+  "Return t when MAYBE-ALPHANUM is either an alpha character or an integer.\n
 :EXAMPLE\n\(mon-is-alphanum \(char-after \(point\)\)\)\C-h 
 \(mon-is-alphanum \(char-after \(point\)\)\)8\n
 :SEE-ALSO `mon-is-digit', `mon-is-digit-2', `mon-string-index', 
 `mon-string-position', `mon-alphabet-as-type', `mon-char-code',
 `mon-coerce->char'.\n►►►"
   (or (mon-is-letter maybe-alphanum)
-      (mon-is-digit maybe-alphanum)))
+      (mon-is-digit  maybe-alphanum)))
 ;;
 ;;; :TEST-ME (mon-is-alphanum "8")
 ;;; :TEST-ME (mon-is-alphanum "A")
@@ -4548,7 +4723,7 @@ W-CHAR is a char-literal, string, or symbol.\n
 ;;; :TEST-ME (mon-is-alphanum ?\C-m)
 ;;; :TEST-ME (mon-is-alphanum ?\13)
 ;;; :TEST-ME (mon-is-alphanum 13)
-;;; :TEST-ME (mon-is-alphanum "13")
+;;; :TEST-ME (mon-is-alphanum "13") ;; (char-to-string (string-to-char "13"))
 ;;; :TEST-ME (mon-is-alphanum (let ((what ?\b)) (format "%s" what)))
 ;;; :TEST-ME (progn (insert ?\8) (mon-is-alphanum (char-before (point))))
 ;;; :TEST-ME (progn (insert 8) (mon-is-alphanum (char-before (point))))
@@ -7366,12 +7541,21 @@ Does not move point.\n
 (defun mon-bool-vector-pp (bool-vec)
 "Return print representation of bool-vector BOOL-VECT in various formats.\n
 When BOOL-VECT length is greater than 29 return value has the format:\n
- \(:gray-table [101 ... 010] :true-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
+ \( :bit-string \"#*10 ... 01\" :true-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
 When BOOL-VECT length is less than 29 in addition to the values above return
 value contains the following key value pairs:\n
  ( :binary \"#b10 ... 01\" :decimal 123 ... 9 :octal \"#o7 ... 77\" :hex \"#xFF...00\" 
-   :gray-table [101 ... 010] :true-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
-:EXAMPLE\n\n\(setq tt--bv \(make-bool-vector 28 t\)\)\n
+   :bin-table [101 ... 010] :true-table [t t ... nil t] :bool-vector BOOL-VEC \)\n
+The difference in return value for the first key as `:bit-string` instead of
+`:binary` and with the string prefixed by sharpsign asterisks \"#*\" instead of
+sharpsign b \"#b\" ensures that Emacs Lisp reader won't try to read the :binary
+string as a number _but_ still allows us a to use the value where reasonable
+with Common Lisp as a `simple-bit-vector' e.g.:\n
+ \(setf  *<SOME-BIT-ARRAY>* \(make-array 8 :element-type 'bit\)\)\n
+:EXAMPLE\n
+\(mon-sublist 0 2 \(mon-bool-vector-pp \(make-bool-vector 29 t\)\)\)\n
+\(mon-sublist 0 2 \(mon-bool-vector-pp \(make-bool-vector 30 nil\)\)\)\n
+\(setq tt--bv \(make-bool-vector 28 t\)\)\n
  ;=> #&29\"\\377\\377\\377\x1f\"\n
 \(vconcat tt--bv\)\n
  ;=> [t t t t t t t t t t t t t t t t t t t t t t t t t t t t t]\n
@@ -7399,7 +7583,7 @@ value contains the following key value pairs:\n
    \(aset tt--bv tgl nil\)\)\n
  ;=> #&31\"m\\333\\266m\"\n
 \(mon-bool-vector-pp tt--bv\)\n
- ;=> \(:bintable  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
+ ;=> \(:bin-table  [1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1 0 1 1]
       :true-table [t nil t t nil t t nil t t nil t t nil t
                     t nil t t nil t t nil t t nil t t nil t t]
       :bool-vector #&31\"m\\333\\266m\"\)\n
@@ -7427,7 +7611,21 @@ representation for `bit-vector's e.g.:\n
           (w-props (<= bv-len 29))
           ;; vector of numberic 0's
           (to-bin (make-vector bv-len 0))
-          ;; Make a string array of Os (char 48) -> "000 {...} 000"                 
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ;; :NOTE Can't the entire array frobbing rigmarole below be replaced:
+          ;;
+          ;; (mapconcat #'(lambda (vc) (format "%d" (mon-booleanp-to-binary vc))) bool-vec "") 
+          ;;
+          ;; Including when 0 length bvs:
+          ;;
+          ;; (and (mon-string-or-null-and-zerop
+          ;;       (mapconcat #'(lambda (vc) 
+          ;;                      (format "%d" (mon-booleanp-to-binary vc)))
+          ;;                  (make-bool-vector 0 t) "")) 0)
+          ;;
+          ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+          ;;
+          ;; Make a string array of Os (char 48) -> "000 {...} 000"
           (to-bin-str (when w-props (make-string bv-len 48))))
      (dotimes (blv bv-len)
        ;; If current element bool-vector is `t'
@@ -7454,8 +7652,12 @@ representation for `bit-vector's e.g.:\n
              :bin-table   ,to-bin
              :true-table  ,(vconcat bool-vec)
              :bool-vector ,bool-vec))
-
-       `(:bin-table   ,to-bin 
+         ;; Don't let it be readabe by Elisp, but let Common Lisp still
+         ;; have a chance at frobbing it as a `simple-bit-vector'
+       `(:bit-string ,(concat "#*" (mapconcat #'(lambda (vc) 
+                                     (format "%d" (mon-booleanp-to-binary vc)))
+                                 bool-vec ""))
+         :bin-table   ,to-bin 
          :true-table  ,(vconcat bool-vec)
          :bool-vector ,bool-vec)))))
 ;;
@@ -8383,15 +8585,24 @@ Signal an error when wither is not.\n
 ;;; :CREATED <Timestamp: #{2010-09-20T17:16:18-04:00Z}#{10381} - by MON KEY>
 (unless (and (intern-soft "mon-delq-alist" obarray)
              (fboundp 'mon-delq-alist))
-  (defalias 'mon-delq-alist 'assq-delete-all))
+(defalias 'mon-delq-alist 'assq-delete-all))
 ;;
 (unless (and (intern-soft "mon-sort-alist" obarray)
              (fboundp 'mon-sort-alist))
-  (defalias 'mon-sort-alist 'edebug-sort-alist
+(defalias 'mon-sort-alist 'edebug-sort-alist
     "Return the ALIST sorted with comparison function FUNCTION.\n
 This uses 'sort so the sorting is destructive.
 :EXAMPLE\n\n
 :SEE-ALSO `mon-delq-alist'.\n►►►"))
+
+
+;;; ==============================
+;;; :CHANGESET 2211
+;;; :CREATED <Timestamp: #{2010-10-27T13:45:58-04:00Z}#{10433} - by MON KEY>
+;; (unless (and (intern-soft "mon-list-get-non-zerop")
+;;              (fboundp 'mon-list-get-non-zerop))
+;; (defalias 'mon-list-get-non-zerop 'version-list-not-zero))
+
 
 ;;; ==============================
 ;;; :WAS `randomize'
@@ -8931,6 +9142,134 @@ A proper list is a list ending with a nil or cdr, not an atom.\n
 ;;; :TEST-ME (mon-list-proper-p '(a . b))
 ;;; :TEST-ME (mon-list-proper-p '(a  b))
 
+
+;;; ==============================
+;;; :CHANGESET 2211
+;;; :CREATED <Timestamp: #{2010-10-27T15:43:58-04:00Z}#{10433} - by MON KEY>
+(defun mon-seqeunce-mappable-p (seq-putatively-mappable &optional no-map-null
+                                                        w-return-as-list)
+  "Is SEQ-PUTATIVELY-MAPPABLE with: `mapc', `mapcar', or `mapconcat'.\n
+Like `sequencep' but returns non-nil when an object satisfies one of the
+following predicates:\n
+  `stringp' `mon-proper-list-p' `bool-vector-p' `vectorp'\n
+When optional arg NO-MAP-NULL is non-nil do not consider `nil' mappable.\n
+When optional arg W-RETURN-AS-LIST is non-nil return a list or consed pair.
+The car is non-nil if the object is mappable.
+The cdr contains a type designator describing object.
+Whether cdr is a cons or an atom depends on the value of the NO-MAP-NULL arg.
+When NO-MAP-NULL is non-nil and object is either `t' `nil' or the empty-list
+cdr of return value is a list. In such cases, its cadr will be either the symbol
+`cons` or `boolean` and caddr is a truth-table as per `mon-booleanp'.
+Return value when W-RETURN-AS-LIST is non-nil will have one of these forms:\n
+  \(t   . cons\)                      ;; <PROPER> nil t
+  \(t   . string\)                    ;; <STRING> nil t
+  \(t   . vector\)                    ;; <VECTOR> nil t
+  \(t   . boole-vector\)              ;; <BVECTR> nil t
+  \(nil . <TYPE>\)                    ;; <TYPE>   nil t
+  \(t     cons    \(nil t\)\)           ;; nil      nil t
+  \(nil   boolean \(nil t\)\)           ;; nil        t t
+  \(nil   boolean \(t   t\)\)           ;; t        nil t\n 
+:EXAMPLE\n
+\(mon-seqeunce-mappable-p t\)
+\(mon-seqeunce-mappable-p t nil t\)\n
+\(mon-seqeunce-mappable-p \(\)\)
+\(mon-seqeunce-mappable-p \(\) nil t\)\n
+\(mon-seqeunce-mappable-p \(\) 'no-map-null\)
+\(mon-seqeunce-mappable-p \(\) 'no-map-null t\)\n
+\(mon-seqeunce-mappable-p \(cons nil t\)\)
+\(mon-seqeunce-mappable-p \(cons nil t\) nil t\)\n
+\(mon-seqeunce-mappable-p \(make-list   8 1\) nil t\)
+\(mon-seqeunce-mappable-p \(make-list   8 1\) nil t\)\n
+\(mon-seqeunce-mappable-p \(make-string 8 32\)\)
+\(mon-seqeunce-mappable-p \(make-string 8 32\) nil t\)\n
+\(mon-seqeunce-mappable-p \(make-vector 8 0\) nil t\)
+\(mon-seqeunce-mappable-p \(make-vector 8 0\) nil t\)\n
+\(mon-seqeunce-mappable-p \(make-bool-vector 8 t\)\)
+\(mon-seqeunce-mappable-p \(make-bool-vector 8 t\) nil t\)\n
+\(mon-seqeunce-mappable-p \(current-buffer\)\)
+\(mon-seqeunce-mappable-p \(current-buffer\) nil t\)\n
+:NOTE This function differs with `sequencep' in some subtle but useful ways:\n
+ - It can preempt attempts to map consed lists:\n
+    \(sequencep '\(nil . t\)\)
+    \(mon-seqeunce-mappable-p '\(nil . t\)\)\n
+ - It can short-circuit a potential mapping over the empty list:\n
+   Now, with NO-MAP-NULL we can say, \"Don't bother mapping if thing is null\":\n
+   \(sequencep \(\)\)           
+   \(mon-seqeunce-mappable-p \(\) t\)\n
+- Likewise, if needed, we can now find out when thing was a boolean and whether
+  that boolean was `t' or `nil':\n
+    \(mon-seqeunce-mappable-p \(\) 'no-map-null t\)\n
+- Additionally, when we want to map nil or the empty list but would still like
+  to have access to the type of things given/gotten we can do this too,
+  e.g. when passing strings, vectors, lists, (and possibly sordid other junk):\n
+   \(let \(gthr \(minibuffer-message-timeout  3\)\)
+     \(dolist \(mspp  `\(t nil \(a . b\) \(l i s t\) 
+                      \"string\" [v e c t o r]
+                      ,\(make-bool-vector 8 t\)
+                      ;; Whoops, how'd these get in there?
+                      ,\(make-marker\) ,\(current-buffer\)\)
+                    \(setq gthr \(nreverse gthr\)\)\)
+       \(let \(\(can-map \(mon-seqeunce-mappable-p mspp nil t\)\)\)
+         \(when \(car can-map\)
+           \(ignore 'do-something-here 'with 'car 'of 'can-map\)\)
+         \(push can-map gthr\)\)\)
+     \(prog1 gthr
+       \(mapc #'\(lambda \(x\) 
+                 \(when \(and \(consp \(cdr x\)\)
+                            \(eq  \(cadr x\) 'cons\)
+                            \(minibuffer-message \"Got us a sneaky cons.\"\)
+                            \(minibuffer-message \"Dutifully mapped it anyways: %s\"
+                                                \(when \(car x\) \"yep\"\)\)
+                            \(minibuffer-message  
+                             \"But, was it really just a `nil' in cons clothing: %s\"
+                             \(when \(car \(cdaddr x\)\) \"the evidence suggests it\"\)\)\)\)\)
+             gthr\)\)\)\n
+:SEE-ALSO .\n►►►"
+  (let ((msmp-typ  (type-of seq-putatively-mappable))
+        (msmp-bool (mon-booleanp seq-putatively-mappable))
+        msmp-mybe-rtn)
+    (setq msmp-typ
+          (not (or (and 
+                    ;; We got a boolean `t', `nil', or an empty-list.
+                    ;; We make a record of this for later.
+                    ;; When its a null-like we first consider both
+                    ;; `nil'/empty-list to be 'boolean not a 'cons and not a
+                    ;; 'symbol.  If needed we loosen accordingly in the final
+                    ;; branch according to args W-RETURN-AS-LIST and NO-MAP-NULL
+                    (and (cadr msmp-bool) (setq msmp-mybe-rtn 'boolean))
+                    ;; If its `t' we're done.
+                    (or (and (car msmp-bool) (cadr msmp-bool))
+                        ;; If not its `nil' or an empty list are we gonna map it?
+                        (and no-map-null (and (not (car msmp-bool)) (cadr msmp-bool)))))
+                   (and (memq msmp-typ *mon-non-mappable-object-types*)
+                        (setq msmp-mybe-rtn msmp-typ))
+                   (and (eq msmp-typ 'cons)
+                        (not (mon-list-proper-p seq-putatively-mappable))
+                        (setq msmp-mybe-rtn msmp-typ))
+                   ;; It is a mappable store the type into msmp-mybe-rtn but don't
+                   ;; trigger the `or' conditional in so doing, and don't step
+                   ;; on 'boolean if its already there.
+                   (and (not msmp-mybe-rtn)
+                        (setq msmp-mybe-rtn msmp-typ)
+                        nil))))
+    (if w-return-as-list 
+        (cond ((eq msmp-mybe-rtn 'boolean)
+               (if no-map-null 
+                   ;; Call it a boolean, e.g: -> (t boolean ( <t|nil> t))) 
+                   `(,msmp-typ ,msmp-mybe-rtn ,msmp-bool)
+                 ;; If its `nil' or empty-list call it a cons but record that it
+                 ;; wasn't really, e.g:
+                 ;;  (t cons (nil t))
+                 ;; Else, its `t' do as above and calling it a boolean.
+                 (if (listp seq-putatively-mappable)
+                     `(,msmp-typ cons ,msmp-bool)
+                   `(,msmp-typ ,msmp-mybe-rtn ,msmp-bool))))
+              ;; Return anything else as a consed pair 
+              (t `(,msmp-typ . ,msmp-mybe-rtn)))
+      msmp-typ)))
+
+
+
 ;;; ==============================
 ;;; :PREFIX "mlr-"
 ;;; :COURTESY :FILE lisp/format.el :WAS `format-reorder'
@@ -8999,7 +9338,7 @@ to avoid corrupting the original lst1 and lst2.\n
         (or (>= (length lst-1) (length lst-2))
             (setq lst-1 (prog1 lst-2 (setq lst-2 lst-1))))
         (while lst-2
-          (or (mon-equality-or-pred (or predicate 'memq) (car lst-2) lst-1)
+          (or (mon-equality-or-predicate (or predicate 'memq) (car lst-2) lst-1)
               ;; (memq (car lst-2) lst-1)
               (push (car lst-2) lst-1))
           (pop lst-2))

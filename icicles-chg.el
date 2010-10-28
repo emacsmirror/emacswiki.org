@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 11:29:57 2010 (-0700)
+;; Last-Updated: Wed Oct 27 11:55:41 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5765
+;;     Update #: 5767
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -334,6 +334,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/10/27 dadams
+;;     icicle-where-is: Use different prompt if prefix arg.  Clarify the pref-arg diff in doc string.
 ;; 2010/10/25 dadams
 ;;     icicle-search: Remove mention of icicle-search-context-match-predicate (no longer exists).
 ;; 2010/10/24 dadams

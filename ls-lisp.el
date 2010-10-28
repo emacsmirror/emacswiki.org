@@ -7,7 +7,7 @@
 ;; Author: Sebastian Kremer <sk@thp.uni-koeln.de>
 ;; Modified by: Francis J. Wright <F.J.Wright at qmul.ac.uk>
 ;; Maintainer: Drew Adams
-;; Last-Updated: Tue Oct 26 16:20:04 2010 (-0700)
+;; Last-Updated: Wed Oct 27 07:11:36 2010 (-0700)
 ;;           By: dradams
 ;; URL: http://www.emacswiki.org/emacs/ls-lisp.el
 ;; Keywords: unix, dired, microsoft windows
@@ -83,7 +83,9 @@
 ;; That code was modified slightly by Drew Adams so that it works also
 ;; with Emacs 20 (in addition to later versions).  Changes are marked
 ;; `DADAMS' below.  Drew also restored Francis's commented-out
-;; wildcard-to-regexp test cases.
+;; wildcard-to-regexp test cases.  But because these test regexps
+;; contain the control char ^@, the file could not be uploaded to
+;; Emacs Wiki, so this char was changed to "^@" (2 chars).
 
 
 ;;; Code:
@@ -814,7 +816,171 @@ All ls time options, namely c, t and u, are handled."
 ;; ports of Emacs) the functionality of running ls under bash.  It
 ;; also supports escaping by \ better, but quoting is not supported.
 
+;; NOTE: Because these regexps contain the control char ^@, the file
+;; could not be uploaded to Emacs Wiki, so this char was changed to
+;; "^@" (2 chars).
+
 ;; These test examples are all correctly expanded:
 
 ;; (ls-lisp-wildcard-to-regexp "*.{c,h,cpp}") ->
-;;    "\\`[^
+;;    "\\`[^^@]*\\.\\(c\\|h\\|cpp\\)\\'"
+;; (ls-lisp-wildcard-to-regexp "*.{txt,texi}") ->
+;;    "\\`[^^@]*\\.\\(txt\\|texi\\)\\'"
+;; (ls-lisp-wildcard-to-regexp "*.{txt,}") -> "\\`[^^@]*\\.\\(txt\\|\\)\\'"
+;; (ls-lisp-wildcard-to-regexp "*.{,txt}") -> "\\`[^^@]*\\.\\(\\|txt\\)\\'"
+
+;; but these (correctly) are not:
+
+;; (ls-lisp-wildcard-to-regexp "*.{txt}") -> "\\`[^^@]*\\.{txt}\\'"
+;; (ls-lisp-wildcard-to-regexp "*.{txt\\,texi}") ->
+;;    "\\`[^^@]*\\.{txt\\,texi}\\'"
+;; (ls-lisp-wildcard-to-regexp "*.\\{txt,texi}") ->
+;;    "\\`[^^@]*\\.\\{txt,texi}\\'"
+
+;; Test examples from the bash manual:
+
+;; (ls-lisp-wildcard-to-regexp "/usr/local/src/bash/{old,new,dist,bugs}") ->
+;;    "\\`/usr/local/src/bash/\\(old\\|new\\|dist\\|bugs\\)\\'"
+
+;; (ls-lisp-wildcard-to-regexp "/usr/{ucb/{ex,edit},lib/{ex?.?*,how_ex}}") ->
+;;    "\\`/usr/\\(ucb/\\(ex\\|edit\\)\\|lib/\\(ex[^^@]\\.[^^@][^^@]*\\|how_ex\\)\\)\\'"
+
+(defun ls-lisp-wildcard-to-regexp (wildcard)
+  "Given a shell file name pattern WILDCARD, return an equivalent regexp.
+The generated regexp will match a filename iff the filename
+matches that wildcard according to shell rules.
+If `ls-lisp-support-shell-wildcards' is '{} then also expand `{a,b,...}'
+like bash, allowing arbitrary nesting.  To use `{', `,' and `}' for
+any other purpose they must be escaped by a preceding `\\'."
+  ;; Shell wildcards should match the entire filename,
+  ;; not its part.  Make the regexp say so.
+  (concat "\\`" (ls-lisp-wildcard-to-regexp-1 wildcard) "\\'"))
+
+(defvar i)		       ; bound in ls-lisp-wildcard-to-regexp-1
+
+(defun ls-lisp-wildcard-to-regexp-1 (wildcard)
+  "As `ls-lisp-wildcard-to-regexp' (WILDCARD) but without the \\`...\\'.
+Called recursively by `ls-lisp-wildcard-to-regexp-{}'."
+  (let* ((i (string-match "[[.*+\\^$?{]" wildcard))
+	 ;; Copy the initial run of non-special characters.
+	 (result (substring wildcard 0 i))
+	 (len (length wildcard)))
+    ;; If no special characters, we're almost done.
+    (if i
+	(while (< i len)
+	  (let ((ch (aref wildcard i))
+		j)
+	    (setq
+	     result
+	     (concat result
+		     (cond
+		      ((and (eq ch ?\[)
+			    (< (1+ i) len)
+			    (eq (aref wildcard (1+ i)) ?\]))
+		       "\\[")
+		      ((eq ch ?\[)   ; [...] maps to regexp char class
+		       (progn
+			 (setq i (1+ i))
+			 (concat
+			  (cond
+			   ((eq (aref wildcard i) ?!) ; [!...] -> [^...]
+			    (progn
+			      (setq i (1+ i))
+			      (if (eq (aref wildcard i) ?\])
+				  (progn
+				    (setq i (1+ i))
+				    "[^]")
+				"[^")))
+			   ((eq (aref wildcard i) ?^)
+			    ;; Found "[^".  Insert a `\0' character
+			    ;; (which cannot happen in a filename)
+			    ;; into the character class, so that `^'
+			    ;; is not the first character after `[',
+			    ;; and thus non-special in a regexp.
+			    (progn
+			      (setq i (1+ i))
+			      "[\000^"))
+			   ((eq (aref wildcard i) ?\])
+			    ;; I don't think `]' can appear in a
+			    ;; character class in a wildcard, but
+			    ;; let's be general here.
+			    (progn
+			      (setq i (1+ i))
+			      "[]"))
+			   (t "["))
+			  (prog1      ; copy everything upto next `]'.
+			      (substring wildcard i
+					 (setq j (string-match
+						  "]" wildcard i)))
+			    (setq i (if j (1- j) (1- len)))))))
+		      ((eq ch ?.)  "\\.")
+		      ((eq ch ?*)  "[^\000]*")
+		      ((eq ch ?+)  "\\+")
+		      ((eq ch ?^)  "\\^")
+		      ((eq ch ?$)  "\\$")
+		      ((eq ch ?\\)
+		       (setq i (1+ i))
+		       (if (< i len)
+			   (concat "\\" (char-to-string (aref wildcard i)))
+			 "\\\\"))
+		      ((eq ch ??)  "[^\000]")
+		      ((and (eq ch ?{)	; {a,b,...} -> \(a\|b\|...\)
+			    (eq ls-lisp-support-shell-wildcards '{}))
+		       (ls-lisp-wildcard-to-regexp-{} wildcard))
+		      (t (char-to-string ch)))))
+	    (setq i (1+ i)))))
+    result))
+
+(defun ls-lisp-wildcard-to-regexp-{} (wildcard)
+  "Given a bash `{a,b,...}'-pattern, return an equivalent regexp.
+To be called by `ls-lisp-wildcard-to-regexp-1' only!  The pattern begins at
+index i in string WILDCARD.  The variable i is fluid-bound."
+  ;; [Note that ls-lisp-wildcard-to-regexp-find-,} start index must allow
+  ;; for a preceding character [^\], and so is i rather than (1+ i), etc.]
+  ;; Find first comma:
+  (let (s j ii)
+    (if (not (and (setq j (ls-lisp-wildcard-to-regexp-find-,} wildcard i))
+		  (eq (aref wildcard j) ?,)))
+	"{"				; does not match {a,...}
+      (setq s (concat "\\("	   ; Emacs 21: use shy group "\\(?:" ?
+		      (ls-lisp-wildcard-to-regexp-1
+		       (substring wildcard (1+ i) j)))
+	    ii j)
+      ;; Find subsequent commas or closing brace:
+      (while (and (setq j (ls-lisp-wildcard-to-regexp-find-,} wildcard ii))
+		  (eq (aref wildcard j) ?,))
+	(setq s (concat s "\\|"
+			(ls-lisp-wildcard-to-regexp-1
+			 (substring wildcard (1+ ii) j)))
+	      ii j))
+      ;; Found closing brace or failed:
+      (cond
+       (j (setq s (concat s "\\|"
+			  (ls-lisp-wildcard-to-regexp-1
+			   (substring wildcard (1+ ii) j)))
+		i j)			; update i
+	  (concat s "\\)"))		; return regexp
+       (t "{"))				; does not match {a,...}
+      )))
+
+(defun ls-lisp-wildcard-to-regexp-find-,} (s i)
+  "Return index of first top-level `,' or `}' after `{' in string S at index I.
+Allow nested `{...}' and ignore characters escaped by a preceding `\\'."
+  (setq i (string-match "[^\\][{,}]" s i))
+  (while (and i (eq (aref s (1+ i)) ?{))
+    (setq i (ls-lisp-wildcard-to-regexp-skip-{} s (1+ i)))
+    (if i (setq i (string-match "[^\\][{,}]" s i))))
+  (and i (1+ i)))
+
+(defun ls-lisp-wildcard-to-regexp-skip-{} (s i)
+  "Return index of `}' matching `{' in string S at index I.
+Allow nested `{...}' and ignore characters escaped by a preceding `\\'."
+  (setq i (string-match "[^\\][{}]" s i))
+  (while (and i (eq (aref s (1+ i)) ?{))
+    (setq i (ls-lisp-wildcard-to-regexp-skip-{} s (1+ i)))
+    (if i (setq i (string-match "[^\\][{}]" s i))))
+  (and i (1+ i)))
+
+(provide 'ls-lisp)
+
+;;; ls-lisp.el ends here

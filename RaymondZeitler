@@ -1,31 +1,34 @@
-Page for PlannerMode user RaymondZeitler.
+Page for OrgMode user (formerly a PlannerMode user) RaymondZeitler.
 
 I use Emacs.  I've gone from Brief to Zeus with a tiny diversion to Vedit before switching on July 10, 2000. I'm currently running v23.2.1 on Windows XP Professional SP3.
 
 My background is electrical engineering, but I spend more time designing photomasks and surface acoustic wave devices, and writing code in Visual Basic, Basic, NTScript, VBScript, Fortran and Perl.  My specialty is in applying the techniques of computer automation to design processes, data processing and computer maintenance.  Emacs is also my HTML editor.
 
-I also sometimes use PlannerMode to organize my many endless work projects.  I originally used PlannerMode for a personal journal and a work plan, so I came up with a quick and dirty way of having two planner-directories.  I called this "select-planner-directory" and I posted the snippet in PlannerModeContrib.  "select-planner-directory" was intended to work with the version of Planner that's based on emacs-wiki.
+I used to use PlannerMode to organize my many endless work projects.  I originally used PlannerMode for a personal journal and a work plan, so I came up with a quick and dirty way of having two planner-directories.  I called this "select-planner-directory" and I posted the snippet in PlannerModeContrib.  "select-planner-directory" was intended to work with the version of Planner that's based on emacs-wiki.
 
-On June 8, 2010 I upgraded to Emacs 23.2, and I changed my .emacs to remove unnecessary packages (like gnuserv).  My Planner settings reside in a separate .plan file.  In addition to Planner settings, .plan contains a new version of "select-planner-directory", which I named "select-planner-project".
+But I decided to try OrgMode in June 2010.  When I hunkered down and followed the JohnWiegley online tutorial, I became hooked.
+
+On June 8, 2010 I upgraded to Emacs 23.2, and I changed my .emacs to remove unnecessary packages (like gnuserv).  My OrgMode and PlannerMode settings reside in separate .orgmode and .plan files.  My .orgmode file also contains org-decrypt-to-kill-ring, which I wrote based on org-decrypt-entry.  My .plan (which I maintain here for historical reasons) contains a new version of "select-planner-directory", which I named "select-planner-project".
 
 I read the following Emacs mailing lists regularly:
 
  - http://lists.gnu.org/mailman/listinfo/help-emacs-windows
+ - http://lists.gnu.org/mailman/listinfo/emacs-orgmode
  - https://mail.gna.org/listinfo/planner-el-discuss
  - https://mail.gna.org/listinfo/muse-el-discuss
  - http://lists.nongnu.org/mailman/listinfo/emacs-wiki-discuss (deprecated).
 
 I am an Officer for an IEEE Section in Region 1.
 
-I can be reached at r.zeitler&#64;ieee&#46;org.  But questions or comments that pertain to Emacs or Planner should be posted to one of the above lists.
+I can be reached at r.zeitler&#64;ieee&#46;org.  But questions or comments that pertain to Emacs, Org or Planner should be posted to one of the above lists.
 
 My .emacs:
 <pre>
 ;;; .emacs for version 23.2+ Raymond Zeitler's work computer.
-;; Time-stamp: <2010-06-09 16:32:44 rayz>
+;; Time-stamp: <2010-10-27 16:52:05 rayz>
 ;;
 (setq initial-frame-alist '((top . 0) (left . 285)
-			    (width . 135) (height . 68)
+			    (width . 135) (height . 67)
 			    (cursor-type . bar)
 			    (font . "-outline-Bitstream Vera Sans Mono-normal-r-normal-normal-12-90-96-96-c-70-iso8859-1")))
 (setq frame-title-format '("Emacs-23.2: %b" (buffer-file-name ": %f")))
@@ -75,6 +78,7 @@ My .emacs:
 (global-set-key "\C-cd" 'insert-date-and-time)
 (global-set-key "\C-cf" 'find-file-at-point)
 (global-set-key "\C-ch" 'hfyview-buffer)
+(global-set-key "\C-c\M-w" 'org-decrypt-to-kill-ring)
 (define-key function-key-map [C-kp-home] [?\M-<])
 (define-key function-key-map [C-kp-end] [?\M->])
 ; The following is from Francis Litterio <franl@world.std.com>
@@ -82,11 +86,18 @@ My .emacs:
 (global-set-key [S-right] #'(lambda () (interactive) (scroll-right 1)))
 
 ;;; Modes
+
+;; Required statements for Org Mode
+(load "C:/Emacs-23.2/RZHome/.orgmode")
+
+
 (autoload 'visual-basic-mode "visual-basic-mode" "Visual Basic mode." t)
+(setq visual-basic-mode-indent 4)
 (autoload 'dos-mode "dos" "Edit Dos scripts." t)
+(autoload 'csv-mode "csv-mode-rz" "Major mode for editing comma-separated value files." t)
 (load "c:/emacs-23.2/nxhtml/autostart.el")
 (column-number-mode t)
-(abbrev-mode t)
+(abbrev-mode 1)
 (tool-bar-mode nil)
 (global-font-lock-mode 1)
 (delete-selection-mode t)
@@ -120,10 +131,34 @@ My .emacs:
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
  '(column-number-mode t)
- '(inhibit-startup-screen t)
+ '(epa-file-cache-passphrase-for-symmetric-encryption t)
+ '(inhibit-startup-screen nil)
  '(major-mode (quote text-mode))
+ '(org-agenda-custom-commands (quote (("d" todo "DELEGATED" nil) ("c" todo "DONE|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "<[^>
+]+>"))) (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
+ '(org-agenda-files (quote ("~/todo.org")))
+ '(org-agenda-ndays 7)
+ '(org-agenda-show-all-dates t)
+ '(org-agenda-skip-deadline-if-done t)
+ '(org-agenda-skip-scheduled-if-done t)
+ '(org-agenda-start-on-weekday nil)
+ '(org-deadline-warning-days 14)
+ '(org-default-notes-file "~/notes.org")
+ '(org-fast-tag-selection-single-key (quote expert))
+ '(org-indent-mode-turns-off-org-adapt-indentation nil)
+ '(org-indent-mode-turns-on-hiding-stars t)
+ '(org-log-done (quote time))
+ '(org-modules (quote (org-bbdb org-bibtex org-crypt org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
+ '(org-mouse-features (quote (yank-link activate-stars activate-bullets activate-checkboxes)))
+ '(org-remember-store-without-prompt t)
+ '(org-remember-templates (quote ((116 "* TODO %?
+  %u" "~/todo.org" "Tasks") (110 "* %u %?" "~/notes.org" "Notes"))))
+ '(org-reverse-note-order t)
  '(printer-name "LPT2")
+ '(read-buffer-completion-ignore-case t)
  '(read-quoted-char-radix 10)
+ '(remember-annotation-functions (quote (org-remember-annotation)))
+ '(remember-handler-functions (quote (org-remember-handler)))
  '(require-final-newline t)
  '(truncate-lines t))
 (custom-set-faces
@@ -131,9 +166,87 @@ My .emacs:
   ;; If you edit it by hand, you could mess it up, so be careful.
   ;; Your init file should contain only one such instance.
   ;; If there is more than one, they won't work right.
- )
+ '(org-hide ((((background light)) (:foreground "grey88")))))
 (put 'upcase-region 'disabled nil)
 (put 'downcase-region 'disabled nil)
+</pre>
+
+My .orgmode
+<pre>
+;;; .orgmode -- setup for Org-mode version 7.01g
+;; Time-stamp: <2010-10-27 16:52:01 rayz>
+;; Based on John Wiegley's org-mode tutorial:
+;; http://www.newartisans.com/2007/08/using-org-mode-as-a-day-planner.html
+;; Moved the contents of the custom-set-variables block into my own.
+
+(add-to-list 'auto-mode-alist '("\\.org\\'" . org-mode))
+(global-set-key "\C-cl" 'org-store-link)
+(global-set-key "\C-ca" 'org-agenda)
+(global-set-key "\C-cb" 'org-iswitchb)
+(org-indent-mode 1)
+(require 'org-crypt)
+(org-crypt-use-before-save-magic)
+(setq org-crypt-key "blah-blah")
+
+(defun org-decrypt-to-kill-ring ()
+  "Save to the kill ring the decrypted content of the current headline.
+Based on `org-decrypt-entry' from org-crypt.el version 6.36c."
+  (interactive)
+  (require 'epg)
+  (save-excursion
+    (org-back-to-heading t)
+    (forward-line)
+    (when (looking-at "-----BEGIN PGP MESSAGE-----")
+      (let* ((beg (point))
+             (end (save-excursion
+                    (search-forward "-----END PGP MESSAGE-----")
+                    (forward-line)
+                    (point)))
+             (epg-context (epg-make-context nil t t))
+             (decrypted-text
+	      (decode-coding-string
+	       (epg-decrypt-string
+		epg-context
+		(buffer-substring-no-properties beg end))
+	       'utf-8)))
+        (kill-new decrypted-text)
+        nil))))
+
+
+(define-key mode-specific-map [?a] 'org-agenda)
+
+(eval-after-load "org"
+  '(progn
+     (define-prefix-command 'org-todo-state-map)
+
+     (define-key org-mode-map "\C-cx" 'org-todo-state-map)
+
+     (define-key org-todo-state-map "x"
+       #'(lambda nil (interactive) (org-todo "CANCELLED")))
+     (define-key org-todo-state-map "d"
+       #'(lambda nil (interactive) (org-todo "DONE")))
+     (define-key org-todo-state-map "f"
+       #'(lambda nil (interactive) (org-todo "DEFERRED")))
+     (define-key org-todo-state-map "l"
+       #'(lambda nil (interactive) (org-todo "DELEGATED")))
+     (define-key org-todo-state-map "s"
+       #'(lambda nil (interactive) (org-todo "STARTED")))
+     (define-key org-todo-state-map "w"
+       #'(lambda nil (interactive) (org-todo "WAITING")))
+
+; 2010-10-27 RZ  Added so that I can switch from an Org buffer with my custom keystroke
+     (org-defkey org-mode-map [(control tab)] 'next-buffer)
+     (org-defkey org-mode-map [(control shift tab)] 'previous-buffer)
+
+))
+
+(require 'remember)
+
+(add-hook 'remember-mode-hook 'org-remember-apply-template)
+
+(define-key global-map [(control meta ?r)] 'remember)
+
+(message "Loaded: %s" (buffer-file-name))
 </pre>
 
 My .plan:
@@ -141,9 +254,9 @@ My .plan:
 ;;; .plan --- Initialize planner-mode.
 ;; Time-stamp: <2008-06-02 12:34:05 rayz>
 ;; 
-(add-to-list 'load-path "C:/Emacs22/remember-2.0")
-(add-to-list 'load-path "C:/Emacs22/planner-3.42")
-(add-to-list 'load-path "C:/Emacs22/muse-3.12/lisp")
+(add-to-list 'load-path "C:/emacs-23.2/remember-2.0")
+(add-to-list 'load-path "C:/emacs-23.2/planner-3.42")
+(add-to-list 'load-path "C:/emacs-23.2/muse-3.12/lisp")
 (require 'planner)
 (require 'planner-diary)
 (require 'planner-multi)

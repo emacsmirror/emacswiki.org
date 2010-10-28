@@ -1,0 +1,11 @@
+elnode is an asynchronous HTTP server framework. You can use it to write HTTP services in ELisp.
+
+[http://github.com/nicferrier/elnode Download elnode from github]
+
+elnode is basically an ELisp version of [http://nodejs.org/ node.js], the asynchronous HTTP framework for Google's Javascript engine.
+
+Potentially, elnode could be more useful than node.js because elnode has the Emacs editing and debugging framework around it. It is extremely easy to debug elnode handler code because of Emacs.
+
+elnode's performance is better than I expected, although we haven't done a formal test.
+
+If you're interested in helping it's best to contact NicFerrier or leave a note on this page.

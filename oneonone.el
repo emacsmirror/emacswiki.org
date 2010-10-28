@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Fri Jul  9 13:31:38 2010 (-0700)
+;; Last-Updated: Wed Oct 27 14:13:30 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2521
+;;     Update #: 2526
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -260,11 +260,14 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/10/27 dadams
+;;     1on1-default-frame-alist:
+;;       Put back setting of tool-bar-lines for Emacs 24.  Emacs 24 bug was fixed.
 ;; 2010/07/09 dadams
 ;;     1on1-emacs: Soft-require fit-frame.el.
 ;; 2010/07/04 dadams
 ;;     1on1-default-frame-alist:
-;;       Do not set tool-bar-lines for Emacs 24.  Chong changed the behavior (again).
+;;       Temp workaround: do not set tool-bar-lines for Emacs 24 (Emacs bug).
 ;; 2009/06/19 dadams
 ;;     1on1-completions-frame-zoom-font-difference: Supplied missing :type and :group.
 ;; 2009/05/15 dadams
@@ -1052,7 +1055,7 @@ take effect.")
    (or (assq 'icon-type default-frame-alist)
        (cons 'icon-type (< emacs-major-version 21))) ; `t' for Emacs 21 too?
    (or (assq 'tool-bar-lines default-frame-alist)
-       (and (< emacs-major-version 24) (cons 'tool-bar-lines 1))) ; Emacs 21-23, not 24+.
+       (cons 'tool-bar-lines 1))        ; Emacs 21+
    (if (cdr (assq 'left-fringe default-frame-alist))
        (assq 'left-fringe default-frame-alist)
      (cons 'left-fringe 0))             ; Emacs 21+

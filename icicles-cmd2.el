@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 08:50:08 2010 (-0700)
+;; Last-Updated: Wed Oct 27 11:53:17 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 2255
+;;     Update #: 2264
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -828,17 +828,20 @@ This is a multi-command version of `where-is'.
 
 With no prefix argument, only commands actually bound to keys are
 completion candidates.  With a prefix argument, all commands are
-candidates.
+candidates.  NOTE: This is a significant difference from vanilla
+`where-is', which shows all commands as candidates, even those that
+are not bound.
 
 With a plain (non-numeric) prefix argument, `C-u', insert the message
-in the current buffer.
+in the current buffer.  (This is the same for vanilla `where-is'.)
 
 By default, Icicle mode remaps all key sequences that are normally
 bound to `where-is' to `icicle-where-is'.  If you do not want this
 remapping, then customize option `icicle-top-level-key-bindings'." ; Doc string
   (lambda (x) (let ((symb  (intern-soft x))) ; Action function
                 (where-is symb (and pref-arg (consp pref-arg)))))
-  "Where is command: " obarray nil t nil nil ; `completing-read' args
+  (if pref-arg "Where is command: " "Where is bound command: ")
+  obarray nil t nil nil ; `completing-read' args
   (let ((fn  (or (and (fboundp 'symbol-nearest-point) (symbol-nearest-point))
                  (function-called-at-point))))
     (and fn (symbol-name fn)))
