@@ -1246,6 +1246,7 @@ buffer-name at point. Does not move point.\n
       (princ mbnkr-kn))))
 
 ;;; ==============================
+;;; :PREFIX "mbep-"
 ;;; :COURTESY :FILE gnus-util.el :WAS `gnus-buffer-exists-p'
 ;;; :ADDED let wrapper gensym for local var BUFF-P
 ;;; :CREATED <Timestamp: #{2010-02-04T14:17:59-05:00Z}#{10054} - by MON KEY>
@@ -1274,7 +1275,6 @@ without inversion.\n
 `mon-get-buffers-directories', `mon-string-split-buffer-name',
 `mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
 `with-temp-buffer'.\n►►►"
-  ;; :PREFIX "mbep-"
   (declare (indent 2) (debug t))
   (let ((mbep-bffr-p (make-symbol "mbep-bffr-p")))
     `(let ((,mbep-bffr-p ,buffer-to-check))
@@ -2735,35 +2735,49 @@ When optional arg NO-GO is non-nil return a buffer position
 \(mon-g2be \(aref [10 13 15] \(random 3\)\) t\)\n
 \(mon-g2be :max\)\n
 \(mon-g2be \(set-marker \(make-marker\) \(buffer-end 1\)\)\)\n
-:NOTE As a special case when MIN/MAX-GO is a marker that points to a buffer
-postion in current-buffer location of return value needn't be either only
-`point-min'/`point-max' this allows reading in match-data variables bound to
-markers etc. Wnen the constraints on passing a marker value to this function are
-satisfied the return value is a marker not an integer including when the no-go
-arg is ommitted (i.e. point moves). This return value is unlike `goto-char' in
-that \(goto-char \(1+ \(point\)\)\) returns the value of the point it moved into as an
-integer value.\n
+:NOTE As a special case when MIN/MAX-GO is `markerp' and  points to a buffer
+postion in `current-buffer', location of return value needn't be either only
+`point-min'/`point-max'.
+This allows reading in match-data variables bound to buffer local markers etc. 
+When the constraints on passing a marker value to this function are
+satisfied the return value is a marker not an integer including when the NO-GO
+arg is ommitted (i.e. point moves). 
+This return value is unlike `goto-char' in that: 
+ \(goto-char \(1+ \(point\)\)\) 
+returns the value of the point it moved into as an integer value.\n
 :ALIASED-BY `mon-buffer-end'\n
 :SEE-ALSO `mon-buffer-narrowed-p', `point-min', `point-max', `buffer-end',
 `mon-buffer-narrowed-p', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
 `mon-help-buffer-functions'.\n►►►"
-  ;;(let ((cnsdr-go 
+  ;;(let ((
+  ;; (with-current-buffer (current-buffer)
+  ;; 
   (setq min/max-go
         (or (and min/max-go
-                 (or (and (integer-or-marker-p min/max-go)
-                          (or (and ;; :NOTE Can't do `natnump' because MIN/MAX-GO can be -1
-                               (integerp min/max-go) 
-                               (or (and (> min/max-go 0) (point-max))
-                                   (and (<= min/max-go 0) (point-min))))
-                              (and (markerp min/max-go)
-                                   (and (or (eq (marker-buffer min/max-go) (current-buffer))
-                                            (error (concat ":FUNCTION `mon-g2be' "
-                                                           "-- ARG min/max-go satisfies `markerp' "
-                                                           "but `marker-buffer' not `current-buffer'")))
-                                        (or (and (marker-position min/max-go) min/max-go)
-                                            (error (concat ":FUNCTION `mon-g2be' "
-                                                           "-- ARG min/max-go satisfies `markerp' "
-                                                           "but `marker-position' points nowhere")))))))
+                 (or (and 
+                      ;; its an integer or marker
+                      (integer-or-marker-p min/max-go)
+                      (or  (and ;; :NOTE Can't do `natnump' because MIN/MAX-GO can be -1
+                            (integerp min/max-go) 
+                            (or (and (> min/max-go 0)  (point-max))
+                                (and (<= min/max-go 0) (point-min))))
+                           (and (markerp min/max-go)
+                                (and 
+                                 ;; its a marker in current buffer.
+                                 (or (eq (marker-buffer min/max-go) (current-buffer))
+                                     (error (concat ":FUNCTION `mon-g2be' "
+                                                    "-- ARG min/max-go satisfies `markerp' "
+                                                    "but `marker-buffer' not `current-buffer', "
+                                                    "got: %S in-buffer: %S")
+                                            min/max-go (current-buffer)))
+                                 ;; its a marker with a position return it, else signal
+                                 (or (and (marker-position min/max-go) min/max-go)
+                                     (error (concat ":FUNCTION `mon-g2be' "
+                                                    "-- ARG min/max-go satisfies `markerp' "
+                                                    "but `marker-position' points nowhere"
+                                                    "got: %S in-buffer: %S") 
+                                            min/max-go (current-buffer)))
+                                 ))))
                      (and (or (eq min/max-go 'max) (eq min/max-go :max)) (point-max))
                      (and (or (eq min/max-go 'min) (eq min/max-go :min)) (point-min))
                      (and (booleanp min/max-go)
@@ -2783,13 +2797,27 @@ integer value.\n
 ;;; :CHANGESET 2171
 ;;; :CREATED <Timestamp: #{2010-10-02T13:45:41-04:00Z}#{10396} - by MON KEY>
 (defun mon-buffer-narrowed-p (&optional buffer-or-name)
-  "Test if narrowing is in effect in buffer.
+  "Test if narrowing is in effect in BUFFER-OR-NAME.\n
+Return nil when no detectable‡ narrowing is effect.\n
+When buffer is narrowed return a consed pair, car is `t', cdr is a 5 elt vector.\n
+In which case return value has the format:\n
+ (t . [ <POINT-MIN-WIDEN>    <POINT-MAX-WIDEN> 
+        <POINT-MIN-NARROW>   <POINT-MAX-NARROW>
+        <BUFFER-SIZE> ] )\n
 When optional arg BUFFER-OR-NAME is non-nil check for narrowing in that buffer
 instead. Default is `current-buffer'.\n
 :EXAMPLE\n\n\(prog2 
     \(narrow-to-region \(line-beginning-position\) \(line-end-position\)\)
-    \(mon-buffer-narrowed-p \"*Help*\"\)
-  \(widen\)\)\n
+     \(unwind-protect \(mon-buffer-narrowed-p \"*Help*\"\) \(widen\)\)\)\n
+:NOTE ‡There isn't a clean way to check if BUFFER-OR-NAME is narrowed when the
+size of the narrowed-region is = `buffer-size', esp. when not
+`buffer-modified-p', e.g:\n
+ \(with-temp-buffer 
+   \(narrow-to-region \(point-min\) \(point-max\)\)
+   \(list :bfr-min \(point-min\) :bfr-pnt \(point\) :bfr-max \(point-max\)
+         :bfr-gap \(gap-position\) :bfr-sz \(buffer-size \(current-buffer\)\)
+         :bfr-endp \(eobp\) :bfr-modp \(buffer-modified-p\)
+         :brf-nrrw-p \(mon-buffer-narrowed-p\)\)\)\n
 :ALIASED-BY `buffer-narrowed-p'\n
 :SEE-ALSO `mon-g2be', `mon-buffer-sub-no-prop', `mon-buffer-sub-no-prop-check',
 `mon-buffer-exists-p', `mon-buffer-exists-so-kill', `mon-buffer-get-hidden',
@@ -2797,17 +2825,25 @@ instead. Default is `current-buffer'.\n
 `mon-buffer-name-print-readably', `mon-buffer-written-p',
 `mon-buffer-append-to', `mon-buffer-do-with-undo-disabled',
 `mon-buffer-end'.\n►►►"
-  (let ((chk-bffr (if buffer-or-name 
-                      (or (get-buffer buffer-or-name)
-                          (error  (concat ":FUNCTION `mon-buffer-narrowed-p' "
-                                          "-- optional arg BUFFER-OR-NAME "
-                                          " does not find buffer: `%S'")
-                                  buffer-or-name))
-                    (current-buffer))))
-    (with-current-buffer chk-bffr
-      (or (> (point-min) 1)
-          (/= (buffer-size) (1- (point-max)))
-          (/= (- (point-max) (point-min)) (buffer-size))))))
+  (let (chk-bffr or-chk-wdn)
+    (with-current-buffer (if buffer-or-name
+                             (or (setq chk-bffr (get-buffer buffer-or-name))
+                                 (error  (concat ":FUNCTION `mon-buffer-narrowed-p' "
+                                                 "-- optional arg BUFFER-OR-NAME "
+                                                 " does not find buffer: `%S'")
+                                         buffer-or-name))
+                           (setq chk-bffr (current-buffer)))
+      (setq or-chk-wdn `[,(point-min) ,(point-max) ,(buffer-size chk-bffr)])
+      (and
+       (and
+        (or (>  (aref or-chk-wdn 0) 1)
+            (/= (aref or-chk-wdn 1) (1+ (aref or-chk-wdn 2)))
+            (/= (- (aref or-chk-wdn 1) (aref or-chk-wdn 0)) (aref or-chk-wdn 2))
+            (setq or-chk-wdn))
+        (save-restriction 
+          (widen)
+          (setq or-chk-wdn `(t . [,(point-min) ,(point-max) ,@(append or-chk-wdn nil)]))))
+       or-chk-wdn))))
 ;;
 (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
            (bound-and-true-p IS-MON-SYSTEM-P))
@@ -2823,10 +2859,11 @@ instead. Default is `current-buffer'.\n
   "Convenience function like `buffer-substring-no-properties'.\n
 Return buffer contents from `point-min' to `point-max' without text-properties.\n
 When optional args BUF-BEG and BUF-END non-nil they should satisfy the predicate
-`integer-or-marker-p' and when narrowing is in effect should not extend beyond
-the range the `narrow-to-region' of a buffer satisfying `mon-buffer-narrowed-p'.\n
+`integer-or-marker-p' and when narrowing is in effect as per satisfaction of
+`mon-buffer-narrowed-p' integer or marker loccations should not extend outside
+the region narrowed to.\n
 :EXAMPLE\n\n\(mon-buffer-sub-no-prop\)\n
-\(mon-buffer-sub-no-prop 8 12\)\n
+\(mon-buffer-sub-no-prop  8 12\)\n
 \(mon-buffer-sub-no-prop  8 \(set-marker \(make-marker\) 12\)\)\n
 \(mon-buffer-sub-no-prop \(set-marker \(make-marker\) 8\) 12\)\n
 \(mon-buffer-sub-no-prop \(set-marker \(make-marker\) 8\) \(set-marker \(make-marker\) 12\)\)\n
@@ -2853,15 +2890,17 @@ Following will fail:\n
 `mon-buffer-exists-so-kill', `mon-buffer-exists-p', `mon-get-buffer-w-mode',
 `mon-with-file-buffer', `mon-print-buffer-object-readably',
 `mon-print-in-buffer-if-p', `mon-help-buffer-functions'.\n►►►"
-  (if (or buf-beg buf-end)
+  (if ;; (or buf-beg buf-end)
+      (and buf-beg buf-end)
       (apply #'buffer-substring-no-properties 
-             (mon-buffer-sub-no-prop-check buf-beg buf-end))
+             (mon-buffer-sub-no-prop-check buf-beg buf-end (current-buffer)))
     (buffer-substring-no-properties (point-min) (point-max))))
 
 ;;; ==============================
+;;; :PREFIX "mbsnpc-"
 ;;; :CHANGESET 2171
 ;;; :CREATED <Timestamp: #{2010-10-02T17:17:28-04:00Z}#{10396} - by MON KEY>
-(defun mon-buffer-sub-no-prop-check (bfr-beg bfr-end)
+(defun mon-buffer-sub-no-prop-check (bfr-beg bfr-end bfr-current)
   "Helper function for `mon-buffer-sub-no-prop'.\n
 Checks that args BFR-BEG BFR-END are either integers or markers.\n
 When markers converts to integer.\n
@@ -2903,90 +2942,102 @@ Following will fail:\n
                         (apply 'error
                                `(,(concat ":FUNCTION `mon-buffer-sub-no-prop-check' -- " err-str)
                                  ,@args))))
-        (nrrwd-p (mon-buffer-narrowed-p)))
-    (if (and (or (and bfr-beg (integer-or-marker-p bfr-beg))
-                 (funcall mbsnpc-err 
-                          "optional arg BFR-BEG null or not `integer-or-marker-p' arg was: %S" bfr-beg))
-             (or (and bfr-end (integer-or-marker-p bfr-end))
-                 (funcall mbsnpc-err 
-                          "optional arg BFR-END null or not `integer-or-marker-p' arg was: %S" bfr-end)))
-        (let ((mbeg (or 
-                     ;; BFR-BEG is marker
-                     (and (markerp bfr-beg)
-                          (or (eq (marker-buffer bfr-beg) (current-buffer))
-                              (funcall mbsnpc-err 
-                                       "arg BFR-BEG is marker `%S' but not in `current-buffer'" bfr-beg))
-                          (or (marker-position bfr-beg) ;; (marker-position (set-marker (make-marker) nil))
-                              (funcall mbsnpc-err 
-                                       "arg BFR-BEG is a marker `%S' pointing nowhere" bfr-end))
-                          (and (marker-position bfr-beg)
-                               (or (and nrrwd-p (< (marker-position bfr-beg) (point-min))
-                                        (funcall mbsnpc-err 
-                                                 (concat "arg BFR-BEG is a marker outside a `narrow-to-region' "
-                                                         "BFR-BEG was: %S `point-min' with narrowing was: %d")
-                                                 bfr-beg (point-min)))
-                                   (marker-position bfr-beg))))
-                     ;; BFR-BEG is integer
-                     (and (or (integerp bfr-beg) 
-                              (funcall mbsnpc-err 
-                                       "arg BFR-BEG does not satisfy `integerp' arg BFR-BEG was: %S" bfr-beg))
-                          (or (and (<= bfr-beg 0)
-                                   (funcall mbsnpc-err 
-                                            "arg BFR-BEG is `<' `point-min' or 0 arg BFR-BEG was: %d `point-min' was: %d" 
-                                            bfr-beg (point-min)))
-                              (and nrrwd-p (<  bfr-beg (point-min))
-                                   (funcall mbsnpc-err 
-                                            (concat "arg BFR-BEG is `<' `point-min' outside a `narrow-to-region' "
-                                                    "arg BFR-BEG was: %d `point-min' with narrowing was: %d")
-                                            bfr-beg (point-min)))
-                              t)
-                          (or (and nrrwd-p (>  bfr-beg (point-max))
-                                   (funcall mbsnpc-err 
-                                            (concat "arg BFR-BEG is `>' `point-max' outside a `narrow-to-region' "
-                                                    "arg BFR-BEG was: %d `point-max' with narrowing was: %d")
-                                            bfr-beg (point-max)))
-                              t)
-                          bfr-beg)))
-              (mend (or 
-                     ;; BFR-END is marker
-                     (and (markerp bfr-end) 
-                          (or (eq (marker-buffer bfr-end) (current-buffer))
-                              (funcall mbsnpc-err 
-                                       "arg BFR-END is marker `%S' but not in `current-buffer'" bfr-end))
-                          (or (marker-position bfr-end) ;; (marker-position (set-marker (make-marker) nil))
-                              (funcall mbsnpc-err 
-                                       "arg BFR-END is a marker `%S' pointing nowhere" bfr-end))
-                          (or (and nrrwd-p (< (marker-position bfr-end) (point-min))
-                                   (funcall mbsnpc-err 
-                                            (concat "arg BFR-END is a marker outside a `narrow-to-region'"
-                                                    "BFR-END was: %S `point-min' was: %d")
-                                            bfr-end (point-min)))
-                              (marker-position bfr-end)))
-                     ;; BFR-END is integer
-                     (and ;; Can replace some of below w/ `natnump'??
-                      (or (integerp bfr-end) 
-                          (funcall mbsnpc-err 
-                                   "arg BFR-END does not satisfy `integerp' arg BFR-END was: %S" bfr-end))
-                      (or (and (< bfr-end 0)
-                               (funcall mbsnpc-err 
-                                        "arg BFR-END is `<' 0 arg BFR-END was: %d " bfr-beg))
-                          (and nrrwd-p (<  bfr-end (point-min))
-                               (funcall mbsnpc-err 
-                                        (concat "arg BFR-END is `<' `point-min' outside a `narrow-to-region' "
-                                                "arg BFR-END was: %d `point-min' was: %d") 
-                                        bfr-end (point-min)))
-                          t)
-                      (or (and nrrwd-p (>  bfr-end (point-max))
-                               (funcall mbsnpc-err 
-                                        (concat "arg BFR-END is `>' `point-max' outside a `narrow-to-region' "
-                                                "arg BFR-END was: %d `point-max' was: %d") 
-                                        bfr-end (point-max)))
-                          t)
-                      bfr-end))))
-          (if (and mbeg mend)
-              (list mbeg mend)
-            (funcall mbsnpc-err "Should not see this error")))
-      (funcall mbsnpc-err "an argument is wrong for BFR-BEG got: %S for BFR-END %S" bfr-beg bfr-end))))
+        (mbsnpc-bfr (get-buffer bfr-current))
+        mbsnpc-nwdp
+        ;; Use the narrowing data if needed 
+        ;; mbsnpc-pmin mbsnpc-pmax 
+        )
+    (with-current-buffer mbsnpc-bfr
+      (setq mbsnpc-nwdp (mon-buffer-narrowed-p mbsnpc-bfr))
+      (if (and (or (and bfr-beg (integer-or-marker-p bfr-beg))
+                   (funcall mbsnpc-err 
+                            "optional arg BFR-BEG `null' or not `integer-or-marker-p', got: %S in-buffer: %S" 
+                            bfr-beg mbsnpc-bfr))
+               (or (and bfr-end (integer-or-marker-p bfr-end))
+                   (funcall mbsnpc-err 
+                            "optional arg BFR-END `null' or not `integer-or-marker-p' got: %S in-buffer: %S" 
+                            bfr-end mbsnpc-bfr)))
+          (let ((mbeg (or 
+                       ;; BFR-BEG is marker
+                       (and (markerp bfr-beg)
+                            (or (eq (marker-buffer bfr-beg) mbsnpc-bfr)
+                                (funcall mbsnpc-err 
+                                         "arg BFR-BEG is `markerp' but not in `current-buffer', got-marker: %S in-buffer: %S"
+                                         bfr-beg mbsnpc-bfr))
+                            (or (marker-position bfr-beg) ;; (marker-position (set-marker (make-marker) nil))
+                                (funcall mbsnpc-err 
+                                         "arg BFR-BEG is `markerp' but pointing nowhere, got: %S in-buffer: %S" bfr-end mbsnpc-bfr))
+                            (and (marker-position bfr-beg)
+                                 (or (and mbsnpc-nwdp (< (marker-position bfr-beg) (point-min))
+                                          (funcall mbsnpc-err 
+                                                   (concat "arg BFR-BEG is a marker outside a `narrow-to-region', "
+                                                           "got: %S `point-min' narrowing-details: %s in-buffer: %S"
+                                                           bfr-beg mbsnpc-nwdp mbsnpc-bfr)))
+                                     (marker-position bfr-beg))))
+                       ;; BFR-BEG is integer
+                       (and (or (integerp bfr-beg) 
+                                (funcall mbsnpc-err 
+                                         "arg BFR-BEG does not satisfy `integerp', got: %S in-buffer: %S" bfr-beg mbsnpc-bfr))
+                            (or (and (<= bfr-beg 0)
+                                     (funcall mbsnpc-err 
+                                              (concat "arg BFR-BEG is `integerp' but `<' `point-min' or `zerop', "
+                                                      "got: %d point-min-was: %d in-buffer: %S")
+                                              bfr-beg (point-min) mbsnpc-bfr))
+                                (and mbsnpc-nwdp (<  bfr-beg (point-min))
+                                     (funcall mbsnpc-err 
+                                              (concat "arg BFR-BEG is `integerp' but `<' `point-min' outside a `narrow-to-region', "
+                                                      "got: %d narrowing-details: %s in-buffer: %S")
+                                              bfr-beg mbsnpc-nwdp mbsnpc-bfr))
+                                t)
+                            (or (and mbsnpc-nwdp (>  bfr-beg (point-max))
+                                     (funcall mbsnpc-err 
+                                              (concat "arg BFR-BEG is `>' `point-max' outside a `narrow-to-region', "
+                                                      "got: %d narrowing-details: %s in-buffer: %S")
+                                              bfr-beg mbsnpc-nwdp mbsnpc-bfr))
+                                t)
+                            bfr-beg)))
+                (mend (or 
+                       ;; BFR-END is marker
+                       (and (markerp bfr-end) 
+                            (or (eq (marker-buffer bfr-end) mbsnpc-bfr)
+                                (funcall mbsnpc-err 
+                                         (concat "arg BFR-END is `markerp' `%S' but not in `current-buffer', "
+                                                 "got: %S in-buffer: %S")  bfr-end mbsnpc-bfr))
+                            (or (marker-position bfr-end) ;; (marker-position (set-marker (make-marker) nil))
+                                (funcall mbsnpc-err  (concat "arg BFR-END is `markerp' but pointing nowhere, "
+                                                             "got: %S in-buffer: %S") bfr-end mbsnpc-bfr))
+                            (or (and mbsnpc-nwdp (< (marker-position bfr-end) (point-min))
+                                     (funcall mbsnpc-err  
+                                              (concat "arg BFR-END is `markerp' but outside a `narrow-to-region', "
+                                                      "got: %S narrowing-details: %s in-buffer: %S")
+                                              bfr-end mbsnpc-nwdp  mbsnpc-bfr))
+                                (marker-position bfr-end)))
+                       ;; BFR-END is integer
+                       (and ;; Can replace some of below w/ `natnump'??
+                        (or (integerp bfr-end) 
+                            (funcall mbsnpc-err 
+                                     "arg BFR-END does not satisfy `integerp', got: %S in-buffer: %S " 
+                                     bfr-end mbsnpc-bfr))
+                        (or (and (< bfr-end 0)
+                                 (funcall mbsnpc-err 
+                                          "arg BFR-END is `integerp' and `<' 0, got: %d in-buffer: %S" bfr-beg mbsnpc-bfr))
+                            (and mbsnpc-nwdp (<  bfr-end (point-min))
+                                 (funcall mbsnpc-err 
+                                          (concat "arg BFR-END is `integerp' and `<' `point-min' outside a `narrow-to-region', "
+                                                  "got: %d narrowing-details: %s in-buffer: %S ")
+                                          bfr-end mbsnpc-nwdp mbsnpc-bfr ))
+                            t)
+                        (or (and mbsnpc-nwdp (>  bfr-end (point-max))
+                                 (funcall mbsnpc-err 
+                                          (concat "arg BFR-END is `integerp' and `>' `point-max' outside a `narrow-to-region', "
+                                                  "arg BFR-END was: %d narrowing-details: %s in-buffer: %S") 
+                                          bfr-end mbsnpc-nwdp mbsnpc-bfr))
+                            t)
+                        bfr-end))))
+            (if (and mbeg mend)
+                (list mbeg mend)
+              (funcall mbsnpc-err "Should not see this error")))
+        (funcall mbsnpc-err "an argument is wrong, for BFR-BEG got: %S for BFR-END got: %S" bfr-beg bfr-end)))))
 
 ;;; ==============================
 ;;; :CHANGESET 2117
@@ -4607,7 +4658,8 @@ Where the first most form \(a list of strings\) is the preferred format.\n
           (when is-um
             (push  un-maatg  w-msg-fu-l)
             (fmakunbound is-um)
-            (unintern is-um)))))))
+            ;(unintern is-um obarray)
+            (unintern un-maatg obarray)))))))
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; |
@@ -4824,7 +4876,7 @@ return value of following form will always be equal W-STRING-TO-SPLIT:\n
         (list w-string-to-split)
       (save-match-data
         (let* ((mch-beg  (string-match split-pattern w-string-to-split))
-               (mch-rslt (if (= mch-beg 0) ;; Its an empty string just get the macth
+               (mch-rslt (if (= mch-beg 0) ;; Its an empty string just get the match
                              (list (match-string 0 w-string-to-split))
                            (list (match-string 0 w-string-to-split)
                                  (substring w-string-to-split 0 mch-beg))))
@@ -6234,6 +6286,27 @@ Jean-Paul Fizaine\nRob Havelt\nChris Wysopal\n◄\n
 (defun mon-line-indent-from-to-col (from-col to-col start end &optional intrp)
   "Indent to column starting FROM-COL identing TO-COL in region START to END.\n
 When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
+:EXAMPLE\n
+\(mon-with-inhibit-buffer-read-only
+    \(let \(\(st-pnt \(make-marker\)\)
+          \(nd-pnt \(make-marker\)\)
+          \(fndr  #'\(lambda \(y\) \(search-forward-regexp y nil t\)\)\)\)
+      \(save-excursion
+        \(set-marker st-pnt \(funcall fndr \"^►\"\)\)
+        \(set-marker nd-pnt \(funcall fndr \"◄$\"\)\)
+        \(goto-char st-pnt\)
+        \(mon-line-indent-from-to-col 24 32 st-pnt nd-pnt\)
+        \(goto-char st-pnt\)
+        \(mon-line-indent-from-to-col 46 58 st-pnt nd-pnt\)
+        \(set-marker st-pnt nil\)
+        \(set-marker nd-pnt nil\)\)\)\)\n
+►emacsen.auto_apart     001           001
+emacsen.rug_compat_42   00            00
+emacsen.rug_compt_adorn 00            00       
+emacsen.cache_empire    080           080      
+emacsen.hashdelimiter   no-hash       no-hash
+emacsen.rookie_romain   no value      no value◄\n
+\(mon-line-indent-from-to-col-TEST\)\n
 :NOTE Does not work for one line regions.\n
 :SEE :FILE align.el for alternative approaches.\n
 :ALIASED-BY `mon-indent-lines-from-to-col'\n
@@ -6252,9 +6325,9 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
                                                  "-- col to indent to: ")
                                          (car (posn-actual-col-row (posn-at-point)))))))
         (mliftc-beg-c (cond (start start)
-                       ((region-active-p) (region-beginning))))
+                            ((region-active-p) (region-beginning))))
         (mliftc-end-c (cond (end end)
-                     ((region-active-p) (region-end))))
+                            ((region-active-p) (region-end))))
         (mliftc-mrk-beg  (make-marker))
         (mliftc-mrk-end  (make-marker))
         (indent-wrk t))
@@ -6283,24 +6356,7 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
              (fboundp 'mon-indent-lines-from-to-col))
 (defalias 'mon-indent-lines-from-to-col 'mon-line-indent-from-to-col))
 ;;
-;;; :TEST-ME (let ((st-pnt (make-marker))
-;;                 (nd-pnt (make-marker))
-;;                 (fndr  #'(lambda (y) (search-forward-regexp y nil t))))
-;;             (set-marker st-pnt (funcall fndr "^►")) ;st-pnt)
-;;             (set-marker nd-pnt (funcall fndr "◄$")) ; nd-pnt)
-;;             (goto-char st-pnt)
-;;             (mon-line-indent-from-to-col 24 32 st-pnt nd-pnt)
-;;             (goto-char st-pnt)
-;;             (mon-line-indent-from-to-col 46 58 st-pnt nd-pnt))
-;;
-;; ,---- :UNCOMMENT-BELOW-TO-TEST
-;; |►emacsen.auto_apart     001           001
-;; |emacsen.rug_compat_42   00            00
-;; |emacsen.rug_compt_adorn 00            00       
-;; |emacsen.cache_empire    080           080      
-;; |emacsen.hashdelimiter   no-hash       no-hash
-;; |emacsen.rookie_romain   no value      no value◄
-;; `----
+;;; :TEST-ME (mon-line-indent-from-to-col-TEST)
 
 ;;; ==============================
 ;;; :PREFIX "mld-"
@@ -6310,7 +6366,7 @@ When called-interactively prompt for column numer of FROM-COL and TO-COL.\n
 (defmacro* mon-line-dolines (start-end &body body)
   "Executes the body with START-END `destructoring-bind'ed to the start and
 end of each line of the current-buffer in turn.\n
-:EXAMPLE\n\n(mon-line-dolines-TEST)\n
+:EXAMPLE\n\(mon-line-dolines-TEST\)\n
 :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
 :SEE-ALSO `mon-line-dolines-TEST', `mon-line-dolines-setup-TEST'.\n►►►"
   (declare (indent 2) (debug t))
@@ -6318,25 +6374,25 @@ end of each line of the current-buffer in turn.\n
         (mld-sm     (make-symbol "mld-sm"))
         (mld-em     (make-symbol "mld-em")))
     (destructuring-bind (start-var end-var) start-end
-      `(let((,mld-sm (make-marker))
-            (,mld-em (make-marker)))
+      `(let ((,mld-sm (make-marker))
+             (,mld-em (make-marker)))
          (unwind-protect
              ;; :WAS (progn
              (save-restriction
                (when (use-region-p) ;; (region-active-p) 
                  (narrow-to-region (region-beginning) (region-end)))
-                 (mon-g2be -1) ;; (goto-char (buffer-end 0))
-                 (while (< (point) (buffer-end 1))
-                   (let ((,mld-vline (point)))
-                     (set-marker ,mld-sm (point))
-                     (set-marker ,mld-em (goto-char (line-end-position)))
-                     (let ((,start-var  (marker-position ,mld-sm))
-                           (,end-var    (marker-position ,mld-em)))
-                       ,@body)
-                     (goto-char ,mld-vline)
-                     (forward-line 1))))
-               (set-marker ,mld-sm nil)
-               (set-marker ,mld-em nil))
+               (mon-g2be -1) ;; (goto-char (buffer-end 0))
+               (while (< (point) (buffer-end 1))
+                 (let ((,mld-vline (point)))
+                   (set-marker ,mld-sm (point)) ;; (current-buffer)
+                   (set-marker ,mld-em (goto-char (line-end-position))) ;; (current-buffer)
+                   (let ((,start-var  (marker-position ,mld-sm))
+                         (,end-var    (marker-position ,mld-em)))
+                     ,@body)
+                   (goto-char ,mld-vline)
+                   (forward-line 1))))
+           (set-marker ,mld-sm nil)
+           (set-marker ,mld-em nil))
          nil))))
 
 ;;; ==============================
@@ -6356,61 +6412,55 @@ When called-interactively or INSRTP is non-nil replace region.\n
 \(mon-help-overlay-for-example 'mon-line-strings-pipe-to-col nil 'region 28\)\n
 ►\nWilliam Gibson\nBruce Sterling\nDan Brown\nNeal Stephenson\nLoyd Blankenship
 Erik Gordon Corley\n◄\n
+\(mon-line-strings-pipe-to-col-TEST\)\n
 :SEE :FILE align.el for alternative approaches.\n
-:SEE-ALSO `mon-line-strings-pipe-bol', `mon-line-strings-indent-to-col',
-`mon-line-strings', `mon-line-indent-from-to-col',
-`mon-comment-divider->col', `mon-comment-lisp-to-col'.\n►►►"
+:SEE-ALSO `mon-line-strings-pipe-to-col-TEST', `mon-line-strings-pipe-bol',
+`mon-line-strings-indent-to-col', `mon-line-strings',
+`mon-line-indent-from-to-col', `mon-comment-divider->col',
+`mon-comment-lisp-to-col'.\n►►►"
   (interactive "i\n\i\nP\ni\np")
   (let  ((mlsptc-rgn-beg (make-marker))
          (mlsptc-rgn-end (make-marker))
          mlsptc-tmp-pipe)
-    (set-marker mlsptc-rgn-beg (cond (intrp (region-beginning))
+    (set-marker mlsptc-rgn-beg (cond (intrp (region-beginning)) ;; use-region-p
                                      (start start)))
-    (set-marker mlsptc-rgn-end (cond (intrp (region-end))
+    (set-marker mlsptc-rgn-end (cond (intrp (region-end)) ;; use-region-p
                                      (end end)))
-    (setq mlsptc-tmp-pipe ;; :WAS (buffer-substring-no-properties mlsptc-rgn-beg mlsptc-rgn-end))
-          (mon-buffer-sub-no-prop mlsptc-rgn-end))
+    (setq mlsptc-tmp-pipe (mon-buffer-sub-no-prop mlsptc-rgn-beg mlsptc-rgn-end))
     (setq mlsptc-tmp-pipe 
           (with-temp-buffer 
             (insert mlsptc-tmp-pipe)
-            (mon-line-strings-pipe-bol (buffer-end 0) (buffer-end 1) t)
-            (mon-line-strings-indent-to-col (buffer-end 0) (buffer-end 1) 
+            (mon-line-strings-pipe-bol (mon-g2be -1 t) (mon-g2be  1 t) t)
+            (mon-line-strings-indent-to-col (mon-g2be -1 t) (mon-g2be  1 t)
                                             (if to-col to-col 7) t)
-            ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) ))
+            (untabify (mon-g2be -1 t) (mon-g2be  1 t))
             (mon-buffer-sub-no-prop)))
-    (if (or insrtp intrp)
-        (save-excursion 
-          (delete-region mlsptc-rgn-beg mlsptc-rgn-end)
-          (goto-char mlsptc-rgn-beg)
-          (insert mlsptc-tmp-pipe))
-      mlsptc-tmp-pipe)))
+    (prog1 
+        (if (or insrtp intrp)
+            (save-excursion 
+              (delete-region mlsptc-rgn-beg mlsptc-rgn-end)
+              (mon-g2be mlsptc-rgn-beg)
+              (insert mlsptc-tmp-pipe))
+          mlsptc-tmp-pipe)
+      (set-marker mlsptc-rgn-beg nil)
+      (set-marker mlsptc-rgn-end nil))))
 ;;
-;;; :TEST-ME 
-;;; (let ((reb (1+ (search-forward-regexp "►")))
-;;;       (ree (- (search-forward-regexp "◄") 2)))
-;;;   (mon-line-strings-pipe-to-col reb ree 12))
-;;
-;; ,---- :UNCOMMENT-BELOW-TO-TEST
-;; | ►
-;; | William Gibson
-;; | Bruce Sterling
-;; | Dan Brown
-;; | Neal Stephenson
-;; | Loyd Blankenship
-;; | Erik Gordon Corley
-;; | ◄
-;; `----
+;;; :TEST-ME (mon-line-strings-pipe-to-col-TEST)
+
 
 (declare-function mon-cln-trail-whitespace "mon-replacement-utils")
 ;;; ==============================
 ;;; :PREFIX "mlstl-"
 ;;; :CREATED <Timestamp: #{2009-09-13T09:30:42-04:00Z}#{09377} - by MON>
 (defun mon-line-strings-to-list (start end &optional w-cdr w-wrap insrtp intrp)
-  "Return region's lines as list, each list elt contains string content of line.
-Region between START END should be passed as a line per string/symbol.
-Strips trailing whitespace. Does not preseve tabs converts them to spaces.
+  "Return region's lines as list, each list elt contains string content of line.\n
+Region between START END should be passed as a line per string/symbol.\n
+Strips trailing whitespace. Does not preseve tabs converts them to spaces.\n
 When W-CDR is non-nil or called-interactively with prefix-arg return each
-element of list with an empty string as cdr.\n\n:EXAMPLE\n
+element of list with an empty string as cdr.\n
+Optional arg W-WRAP is a string to put in teh car position of returned list.
+Default is:\n\n  \";; defvar defconst let let* setq\"\n
+:EXAMPLE\n
 Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 =>\((\"Mon Key\"\)\n   \(\"MON\"\)\n   \(\"Mon\"\)\n   \(\"MON KEY\"\)\)\n
 ;; When W-CDR non-nil:\n=>\(\(\"Mon Key\" \"\"\)\n   \(\"MON\" \"\"\)
@@ -6424,12 +6474,32 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
 `mon-make-name-lispy', `mon-make-names-list', `mon-string-ify-current-line',
 `mon-line-strings-qt-region', `mon-string-ify-list', `mon-string-split-line',
 `mon-line-strings', `mon-line-strings-region', `mon-line-drop-in-words'.\n►►►"
+  ;; (<REGION> &optional <W-CDR> <W-WRAP> <INSRTP> <INTRP>)
   (interactive "r\ni\nP\ni\np") ;; (interactive "r\nP\ni\ni\np") make w-cdr the pref arg
   (let ((mlstl-rgn-beg start)
         (mlstl-rgn-end end)
+        (w-wrap-hist '(";; defvar defconst let let* setq" 
+                       "let " "let* " "setq " "setf "
+                       "defvar " "defconst "))
         mlstl-rgn-lst)
-    (setq mlstl-rgn-lst ;; :WAS (buffer-substring-no-properties start end))
-          (mon-buffer-sub-no-prop start end))
+    (when (and intrp w-wrap)       
+      (setq w-wrap
+            (read-from-minibuffer 
+             (concat ":FUNCTION `mon-line-strings-to-list' " 
+                     "-- string to wrap return value with: ") ;prompt
+             ;; init  ;keymap  ;read   ;history         ;default
+             nil    nil      nil      '(w-wrap-hist . 0))) ;; w-wrap-hist  
+      ;; exited the mini-buffer empty handed 
+      (unless (or (mon-string-or-null-and-zerop w-wrap)
+                  (not history-add-new-input))
+        (add-to-history minibuffer-history w-wrap)))
+    ;; non interactive and w-wrap was non-nil but not string
+    (when (and w-wrap (not intrp)) 
+      (setq w-wrap
+            (or (and (stringp w-wrap) w-wrap)
+                ;; Maybe should signal here instead?
+                (and (not (stringp w-wrap)) (car w-wrap-hist)))))
+    (setq mlstl-rgn-lst (mon-buffer-sub-no-prop mlstl-rgn-beg mlstl-rgn-end))
     (save-excursion
       (setq mlstl-rgn-lst (with-temp-buffer
                             (insert mlstl-rgn-lst) 
@@ -6438,22 +6508,26 @@ Mon Key\nMON\nMon\nMON KEY\n\n;; When W-CDR nil:
                             (mon-g2be -1) ;; (goto-char (point-min))
                             (while (search-forward-regexp "^\\(.*\\)$" nil t)
                               (if w-cdr 
-                                  (replace-match "(\"\\1\" \"\")")
-                                (replace-match "(\"\\1\")")))
-                            (mon-g2be -1) ;;(goto-char (point-max)) 
+                                  (replace-match "(\"\\1\" \"\")" t)
+                                (replace-match "(\"\\1\")" t)))
+                            (mon-g2be 1)
                             (if w-wrap (insert "))") (insert ")"))
-                            (mon-g2be -1) ;; (goto-char (point-min))
+                            (mon-g2be -1)
                             (if w-wrap
                                 (save-excursion 
-                                  (insert "(;; defvar defconst let let* setq\n'("))
-                              (indent-pp-sexp 1)
+                                  ;; ";; defvar defconst let let* setq"
+                                  (insert "(" w-wrap "\n'(")
+                                  ;; (when (or intrp insrtp)
+                                  ;;   (with-syntax-table emacs-lisp-mode-syntax-table (indent-pp-sexp 1)))
+                                  )
                               (insert "("))
-                            ;; :WAS (buffer-substring-no-properties (point-min) (point-max)) )))
                             (mon-buffer-sub-no-prop))))
     (if (or insrtp intrp)
-        (save-excursion 
-          (delete-region mlstl-rgn-beg mlstl-rgn-end)
-          (insert mlstl-rgn-lst))
+        (progn
+          (save-excursion 
+            (delete-region mlstl-rgn-beg mlstl-rgn-end)
+            (insert mlstl-rgn-lst))
+          (with-syntax-table emacs-lisp-mode-syntax-table (indent-pp-sexp 1)))
       mlstl-rgn-lst)))
 
 ;;; ==============================
@@ -6486,9 +6560,9 @@ the list. Does not move point.\n
 ;;; :PREFIX "mlsrn-"
 ;;; :CREATED <Timestamp: #{2009-09-19T13:53:29-04:00Z}#{09386} - by MON>
 (defun mon-line-string-rotate-name (name-str-or-elt &optional as-list)
-  "Rotate the namestring NAME-STR-OR-ELT. 
-Return the last whitespace delimited name in string at head top of string.
-Remaining names in string returned inside a parenthetical group.
+  "Rotate the namestring NAME-STR-OR-ELT.\n
+Return the last whitespace delimited name in string at head top of string.\n
+Remaining names in string returned inside a parenthetical group.\n
 NAME-STR-OR-ELT is a string containing one nameform or one elt listsame 
 holding a string containing one nameform.\n
 :EXAMPLE\n\(mon-line-string-rotate-name \"István Tisza\")\n
@@ -6500,10 +6574,12 @@ holding a string containing one nameform.\n
              \(\"Thomas Hart Benton\"\)\(\"Saul Bernstein\"\)
              \(\"George Biddle\"\)\(\"Gutzon Borglum\"\)\)
            \"\\n\"\)\n
+\(mon-line-string-rotate-name-TEST\)\n
 :SEE-ALSO `mon-line-strings', `mon-line-strings-to-list',
 `mon-line-string-rotate-namestrings', `mon-line-string-unrotate-namestrings',
 `mon-line-string-rotate-namestrings-combine', `mon-make-lastname-firstname',
-`mon-make-name-lispy', `mon-make-names-list', `mon-line-strings-region'.\n►►►"
+`mon-make-name-lispy', `mon-make-names-list', `mon-line-strings-region',
+`mon-line-string-rotate-name-TEST'.\n►►►"
   (let* ((mlsrn-nm-elt (if (atom name-str-or-elt)
                         name-str-or-elt
                       (let ((mlsrn-hd name-str-or-elt))
@@ -6521,14 +6597,7 @@ holding a string containing one nameform.\n
                         ((= mlsrn-splt-len 0) nil))))
     (if as-list (list mlsrn-last-in) mlsrn-last-in)))
 ;;
-;;; :TEST-ME (mon-line-string-rotate-name "Elvis")
-;;; :TEST-ME (mon-line-string-rotate-name "István Tisza")
-;;; :TEST-ME (mon-line-string-rotate-name "Thomas Pollock Anshutz")
-;;; :TEST-ME (mon-line-string-rotate-name "Thomas Pollock Anshutz" t)
-;;; :TEST-ME (mon-line-string-rotate-name '("Thomas Pollock Anshutz") t)
-;;; :TEST-ME (mapc #'(lambda (x) (princ (concat "\n" (mon-line-string-rotate-name x)) (current-buffer)))
-;;;        '(("George Charles Aid")("Thomas Pollock Anshutz")("Cecilia Beaux")("Frank Weston Benson")
-;;;          ("Thomas Hart Benton")("Saul Bernstein")("George Biddle")("Gutzon Borglum")))
+;;; :TEST-ME (mon-line-string-rotate-name-TEST)
 
 ;;; ==============================
 ;;; :PREFIX "mlsrn-"
@@ -6555,12 +6624,12 @@ Does not move point.\n
     (if (or insrtp intrp)
         (progn
           (save-excursion
-	  (delete-region mlsrn-rot-nm-beg mlsrn-rot-nm-end)
-	  (if as-strings
-              (mapc #'(lambda (mlsrn-L-2) 
-                        (newline) 
-                        (prin1 mlsrn-L-2 (current-buffer)))
-                    (split-string mlsrn-get-nm-strs "\n"))
+            (delete-region mlsrn-rot-nm-beg mlsrn-rot-nm-end)
+            (if as-strings
+                (mapc #'(lambda (mlsrn-L-2) 
+                          (newline) 
+                          (prin1 mlsrn-L-2 (current-buffer)))
+                      (split-string mlsrn-get-nm-strs "\n"))
               (insert mlsrn-get-nm-strs)))
           (when as-strings (delete-char 1)))
       (if as-strings 
@@ -6722,10 +6791,17 @@ Charles Julius Guiteau\n◄\n
 ;;; :PREFIX "mlsicu-"
 ;;; CREATED: <Timestamp: #{2009-10-20T16:16:44-04:00Z}#{09432} - by MON>
 (defun mon-line-string-insert-chars-under (&optional w-char intrp)
-  "Insert a string of `='s (char 61) beneath the current line.\n
-Inserted string has the length of current line. Does not move point.
-When WITH-CHAR (char or string) is non-nil insert that char instead.
+  "Insert a string of `='s \(char 61\) beneath the current line.\n
+Inserted string has the length of current line. Does not move point.\n
+When WITH-CHAR (char or string) is non-nil insert that char instead.\n
 When called-interactively with prefix-arg prompt for a char to use.\n
+:EXAMPLE\n
+\(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under\)\)\n
+\(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under 9658\)\)\n
+\(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under 9668\)\)\n
+\(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under \"►\"\)\)\n
+\(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under t t\)\)\n
+\(mon-line-string-insert-chars-under-TEST\)\n
 :SEE-ALSO `mon-line-strings-to-list', `mon-line-strings-region-delimited'.\n►►►"
   (interactive "P\np")
   (let ((mlsicu-ln-spec
@@ -6751,10 +6827,8 @@ When called-interactively with prefix-arg prompt for a char to use.\n
                      w-char)
                  61))))))
 ;;
-;;; :TEST-ME (mon-line-string-insert-chars-under)
-;;; :TEST-ME (mon-line-string-insert-chars-under 9658)
-;;; :TEST-ME (mon-line-string-insert-chars-under "►")
-;;; :TEST-ME (mon-line-string-insert-chars-under t t)
+;;; :TEST-ME (mon-line-string-insert-chars-under-TEST)
+
 
 ;;; ==============================
 ;;; :PREFIX "mwgn-"

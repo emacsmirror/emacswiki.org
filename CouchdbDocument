@@ -1,0 +1,12 @@
+Apache !CouchDB is a document-oriented database that can be queried and indexed in a !MapReduce fashion using JavaScript. With Emacs special file name handling, we can open, edit and save !CouchDB document as normal file.
+
+* [[couchdb-document.el]] implement basic file operation on a couchdb document, depend on below "org-json.el".
+* [[org-json.el]] translate a couchdb document(json object) to/from a org file.
+
+Filename to document map: 
+  
+  "/couchdb:host#port:/db/docid" => document with 'docid' in data base 'db' of couchdb server 'host:port'.
+  "/couchdb:host:/db/docid"      => 'port' is optional if it is `couchdb-document-port'(default 5984).
+  "/couchdb:/db/docid"           => 'host' is also optional if it is `couchdb-document-host'(default '127.0.0.1).
+
+

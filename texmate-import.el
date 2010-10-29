@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Wed Oct 27 23:12:22 2010 (-0500)
+;; Last-Updated: Thu Oct 28 14:45:38 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 344
+;;     Update #: 376
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
@@ -27,11 +27,20 @@
 ;;  following in ~/.emacs
 ;;
 ;;  (autoload 'texmate-import-bundle "texmate-import" "* Import TeXMate files" 't)
-;;  (autoload 'texmate-import-svn-url "texmate-import" "* Import TeXMate snippets from svn.textmate.org" 't)
+;;  (autoload 'texmate-import-svn-from-url "texmate-import" "* Import TeXMate snippets from svn.textmate.org" 't)
 ;;  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 28-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 28 14:45:28 2010 (-0500) #375 (Matthew L. Fidler)
+;;    Removed bindings.  They are currently causing problems...
+;; 28-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 28 11:14:35 2010 (-0500) #354 (Matthew L. Fidler)
+;;    Added completed import of svn bundle message.
+;; 28-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 28 10:56:55 2010 (-0500) #348 (Matthew L. Fidler)
+;;    Bug fix to allow files to be .yasnippet instead of _yasnippet files.
 ;; 27-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Wed Oct 27 23:11:33 2010 (-0500) #342 (Matthew L. Fidler)
 ;;    Added fix to allow files to pass for directories in `texmate-import-bundle'
@@ -134,6 +143,9 @@
     ("[$][{]TM_SELECTED_TEXT:\\([^\\}]*\\)[}]" "`(or yas/selected-text \"\\1\")`")
     ("[$][{]TM_SELECTED_TEXT[}]" "`(or yas/selected-text \"\")`")
     ("[$]TM_SELECTED_TEXT" "`(or yas/selected-text \"\")`")
+    ("`date +[+]\\(.*?\\)`" "`(format-time-string \"\\1\")`")
+    ("[$]TM_FULLNAME" "`(user-full-name)`")
+    ("[$][{]\\([A-Za-z].*?\\):\\(\\(?:.*?[\\\\][}]\\)*.*?\\)[}]" "`(or (getenv \"\\1\") \"\\2\")`")
     )
 ;  "*Texmate import convert known expressions"
   
@@ -206,73 +218,77 @@
 (defvar texmate-import-saved-ess '())
 (defun texmate-import-guess-mode (scope-o &optional snippet-q)
   "* Guesses mode based on Texmate scope."
-  (if (assoc scope-o texmate-import-saved-guesses)
-      (let (
-            (ret (nth 1 (assoc scope-o texmate-import-saved-guesses)))
-            )
-        (when (memq 'ess-mode ret)
-          (when (string-match "# *scope: *.*" (symbol-value snippet-q))
-            (set snippet-q
-                 (replace-match
-                  (concat
-                   (match-string 0 (symbol-value snippet-q))
-                   (format "\n# condition: (string= \"%s\" ess-language)"
-                           (nth 1 (assoc scope-o texmate-import-saved-ess))))
-                  't 't (symbol-value snippet-q)
-                  )
-                 )
-            )
-          ;; Take out any Ess keybindings.  They are hard to translate...
-          (when (string-match "\n# *binding:.*" (symbol-value snippet-q))
-            (set snippet-q (replace-match "" 't 't (symbol-value snippet-q))))
-          )
-        (symbol-value 'ret)
-        )
-    (let (
-          (possible-modes '())
-          (tmp '())
-          (scope scope-o)
-          )
-      (when (string-match "\\([A-Za-z0-9]+\\)[.]tmbundle" scope)
-        (texmate-import-guess-possiblities 'possible-modes (match-string 1 scope))
-        )
-      (while (string-match "[.]\\([A-Za-z0-9]+\\)\\>" scope)
-        (texmate-import-guess-possiblities 'possible-modes (match-string 1 scope))
-        (setq scope (replace-match "" nil nil scope))
-        )
-      (setq tmp (remove-if-not
-                 #'(lambda(x) (fboundp x)) possible-modes))
-      (setq possible-modes '())
-      (mapc (lambda(x)
-              (with-temp-buffer
-                (funcall x)
-                (add-to-list 'possible-modes major-mode)
-                ;; Handle Ess's strange handling of modes.
-                (when (and snippet-q (eq 'ess-mode major-mode))
-                  (add-to-list 'texmate-import-saved-ess (list scope-o ess-language))
-                  (when (string-match "# *scope: *.*" (symbol-value snippet-q))
-                    (set snippet-q
-                         (replace-match
-                          (concat
-                           (match-string 0 (symbol-value snippet-q))
-                           (format "\n# condition: (string= \"%s\" ess-language)" ess-language))
-                          't 't (symbol-value snippet-q)
-                          )
-                         )
+  (if (not scope)
+      '(text-mode)
+    (if (assoc scope-o texmate-import-saved-guesses)
+        (let (
+              (ret (nth 1 (assoc scope-o texmate-import-saved-guesses)))
+              )
+          (when (memq 'ess-mode ret)
+            (when (string-match "# *scope: *.*" (symbol-value snippet-q))
+              (set snippet-q
+                   (replace-match
+                    (concat
+                     (match-string 0 (symbol-value snippet-q))
+                     (format "\n# condition: (string= \"%s\" ess-language)"
+                             (nth 1 (assoc scope-o texmate-import-saved-ess))))
+                    't 't (symbol-value snippet-q)
                     )
-                  ;; Take out any Ess keybindings.  They are hard to translate...
-                  (when (string-match "\n# *binding:.*" (symbol-value snippet-q))
-                    (set snippet-q (replace-match "" 't 't (symbol-value snippet-q))))
+                   )
+              )
+            ;; Take out any Ess keybindings.  They are hard to translate...
+            (when (string-match "\n# *binding:.*" (symbol-value snippet-q))
+              (set snippet-q (replace-match "" 't 't (symbol-value snippet-q))))
+            )
+          (symbol-value 'ret)
+          )
+      (let (
+            (possible-modes '())
+            (tmp '())
+            (scope scope-o)
+            )
+        (when (string-match "\\([A-Za-z0-9]+\\)[.]tmbundle" scope)
+          (texmate-import-guess-possiblities 'possible-modes (match-string 1 scope))
+          )
+        (while (string-match "[.]\\([A-Za-z0-9]+\\)\\>" scope)
+          (texmate-import-guess-possiblities 'possible-modes (match-string 1 scope))
+          (setq scope (replace-match "" nil nil scope))
+          )
+        (setq tmp (remove-if-not
+                   #'(lambda(x) (fboundp x)) possible-modes))
+        (setq possible-modes '())
+        (mapc (lambda(x)
+                (with-temp-buffer
+                  (funcall x)
+                  (add-to-list 'possible-modes major-mode)
+                  ;; Handle Ess's strange handling of modes.
+                  (when (and snippet-q (eq 'ess-mode major-mode))
+                    (add-to-list 'texmate-import-saved-ess (list scope-o ess-language))
+                    (when (string-match "# *scope: *.*" (symbol-value snippet-q))
+                      (set snippet-q
+                           (replace-match
+                            (concat
+                             (match-string 0 (symbol-value snippet-q))
+                             (format "\n# condition: (string= \"%s\" ess-language)" ess-language))
+                            't 't (symbol-value snippet-q)
+                            )
+                           )
+                      )
+                    ;; Take out any Ess keybindings.  They are hard to translate...
+                    (when (string-match "\n# *binding:.*" (symbol-value snippet-q))
+                      (set snippet-q (replace-match "" 't 't (symbol-value snippet-q))))
+                    )
                   )
                 )
+              tmp
               )
-            tmp
-            )
-      (unless possible-modes
-        (setq possible-modes (list (intern (completing-read (format "Emacs Mode (Texmate scope: %s): " scope-o) '()))))
+        (unless possible-modes
+          (setq possible-modes (list (intern (completing-read (format "Emacs Mode (Texmate scope: %s): " scope-o) '()))))
+          )
+        (add-to-list 'texmate-import-saved-guesses (list scope-o possible-modes))
+        (message "Guessed the possible modes: %s" possible-modes)
+        (symbol-value 'possible-modes)
         )
-      (add-to-list 'texmate-import-saved-guesses (list scope-o possible-modes))
-      (symbol-value 'possible-modes)
       )
     )
   )
@@ -298,7 +314,7 @@
     (when (string-match "/?\\([^/]*\\)[.][^.]*$" bfn)
       (setq bfn (concat (match-string 1 bfn) ".yasnippet"))
       )
-    (while (string-match "[^A-Z0-9_]" bfn)
+    (while (string-match "[^A-Z0-9_.]" bfn)
       (setq bfn (replace-match "_" nil nil bfn))
       )
     (save-excursion
@@ -313,7 +329,7 @@
           (setq name (texmate-import-get-property "name" start stop))
           (setq scope (texmate-import-get-property "scope" start stop))
           (setq group (texmate-get-group uuid plist))
-          (setq binding (texmate-import-get-property "keyEquivalent" start stop))
+;          (setq binding (texmate-import-get-property "keyEquivalent" start stop))
           (when binding
             (setq binding (downcase binding))
             (while (string-match "[@]+" binding)
@@ -368,7 +384,11 @@
                     (make-directory (concat new-dir m) 't)
                     )
                   (with-temp-file (concat new-dir m "/" bfn)
+                    (set-buffer-file-coding-system 'raw-text)
                     (insert snippet)
+                    )
+                  (if (not parent-modes)
+                      (setq parent-modes "text-mode")
                     )
                   (when (and parent-modes (not (string= parent-modes "")))
                     (unless (file-exists-p (concat new-dir m "/.yas-parents"))
@@ -471,12 +491,14 @@
                      yas/root-directory
                    (nth 0 yas/root-directory)
                    ))
+        (default-buffer-file-coding-system 'utf-8)
+        (x-select-request-type '(UTF8_STRING COMPOUND_TEXT TEXT STRING))
         )
     (setq buf (url-retrieve-synchronously snippet-url))
     (save-excursion
       (set-buffer buf)
       (goto-char (point-min))
-      (while (re-search-forward "\"\\([^\"]*[.]tmSnippet\\)\"" nil 't)
+      (while (re-search-forward "\"\\([^\"]*[.]\\(?:tmSnippet\\|plist\\)\\)\"" nil 't)
         (add-to-list 'snippets (match-string 1))
         )
       (kill-buffer (current-buffer))
@@ -491,11 +513,15 @@
                                              )
               (kill-buffer (current-buffer))
               )
+            (message "Imported %s" (replace-in-string (replace-in-string x "%20" " ") "%3c" "<"))
+            (sleep-for 1)
             )
           snippets)
+    (yas/reload-all)
     )
   )
-(defun texmate-import-svn-url ()
+;;;###autoload 
+(defun texmate-import-svn-from-url ()
   "* Imports a texmate bundle and extracts snippets from `texmate-import-svn-url'"
   (interactive)
   (let (
@@ -520,7 +546,9 @@
         (setq plist (buffer-substring (point-min) (point-max)))
         (kill-buffer (current-buffer))
         )
+      (sleep-for 1)
       (texmate-import-svn-snippets (concat texmate-url "Snippets/") plist)
+      (message "Completed loading snippets from texmate package %s" texmate-name)  
       )
     )
   )

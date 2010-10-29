@@ -8,7 +8,7 @@
 ;; Version: 0.1
 ;; Last-Updated:
 ;;           By:
-;;     Update #: 32
+;;     Update #: 46
 ;; URL:
 ;; Keywords:
 ;; Compatibility:
@@ -27,6 +27,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:
+;; 22-Oct-2010    Matthew L. Fidler  
+;;    Added caching mechanism for 3 characters or less
 ;; 23-Aug-2010    Matthew L. Fidler
 ;;    Initial Version
 ;;
@@ -51,18 +53,47 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
+(defvar ac-R-cache '()
+  "A cache of R autocompletion."
+  )
+(make-variable-buffer-local 'ac-R-cache)
+(defun ac-R-add-to-alist (alist-var elt-cons &optional no-replace)
+  "Add to the value of ALIST-VAR an element ELT-CONS if it isn't there yet.
+If an element with the same car as the car of ELT-CONS is already present,
+replace it with ELT-CONS unless NO-REPLACE is non-nil; if a matching
+element is not already present, add ELT-CONS to the front of the alist.
+The test for presence of the car of ELT-CONS is done with `equal'."
+  (let (
+	(case-fold-search 't)
+	(existing-element (assoc (car elt-cons) (symbol-value alist-var))))
+    (if existing-element
+        (or no-replace
+            (rplacd existing-element (cdr elt-cons)))
+      (set alist-var (cons elt-cons (symbol-value alist-var))))))
 
 (defun ac-R ()
   "Returns a list of completions"
-  (if ess-use-R-completion
-      (ac-R-complete-object-name)
-    (ac-internal-complete-object-name)
+  (let ( (prefix "") present ret)
+    (when (looking-back "\\<[^ \t\n,=.$]*")
+      (setq prefix (match-string 0)))
+    (setq present (assoc prefix ac-R-cache))
+    (if present
+        (setq ret (assoc prefix present))
+      (if ess-use-R-completion
+          (setq ret (ac-R-complete-object-name))
+        (setq ret (ac-internal-complete-object-name))
+        )
+      (when (>= 3 (length prefix))
+        (ac-R-add-to-alist 'ac-R-cache (list prefix ret))
+        )
+      )
+    (symbol-value 'ret)
     )
   )
 
 (setq ac-source-R
       '(
-        (prefix . "\\<[^ \t\n,=]*")
+        (prefix . "\\<[^ \t\n,=.$]*")
         (requires . 1)
         (candidates . ac-R)
         (cache)
@@ -177,5 +208,3 @@ completions are listed [__UNIMPLEMENTED__]."
         )
 
 (provide 'ac-R)
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;;; ac-R.el ends here

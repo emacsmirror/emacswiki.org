@@ -430,6 +430,8 @@ I've attempted to clone the Blackboard theme from textmate [http://jdhuntington.
 
 I have created a color theme based on Tango Palette. Lisp:color-theme-tango.el [http://danran.72pines.com/files/2008/04/emacs_tango.png (screenshot)] -- danran
 
+[Lisp:color-theme-empty-void.el The Empty Void] - A dark theme that I created for myself, with subtle shades; easy on the eyes.
+
 [new]
 I created a color theme based on your color-theme-tango.el. I modified it a bit and added some faces for Gnus, org-mode, customize buffers, etc. You can find screenshots and installation instructions here : http://blog.nozav.org/post/2010/07/12/Updated-tangotango-emacs-color-theme -- JulienBarnier
 

@@ -1,9 +1,7 @@
 Elpoint is a presentation tool which runs on Emacs.
 
-* http://elpoint.sourceforge.net/
-
-None of the file links seem to work at the moment (end of April 2006):
-CVS, Files section, and FTP link all have problems.
+* http://elpoint.sourceforge.net/ -- note that most of the links on that page seem to be broken
+* http://sourceforge.net/projects/elpoint/files/ -- working download link
 
 ----
 CategoryModes

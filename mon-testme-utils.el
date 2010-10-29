@@ -30,7 +30,11 @@
 ;; `mon-line-dolines-setup-TEST', `mon-with-buffer-undo-disabled-TEST',
 ;; `mon-with-inhibit-buffer-read-only-PP-TEST', `mon-string-split-TEST',
 ;; `mon-line-strings-bq-qt-sym-bol-TEST', `mon-permute-combine-functions-TEST',
-;; `mon-write-string-reset-bind-TEST',
+;; `mon-write-string-reset-bind-TEST', `naf-mode-state-to-postal-TEST',
+;; `mon-booleanp-to-binary-TEST', `mon-string-or-null-and-zerop-TEST',
+;; `mon-error-protect-PP-EXPAND-TEST', `mon-line-string-rotate-name-TEST',
+;; `mon-line-indent-from-to-col-TEST', `mon-line-strings-pipe-to-col-TEST',
+;; `mon-line-string-insert-chars-under-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -241,6 +245,7 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 ;;; :NOTE This doesn't seem all that useful in rertrospect.
 ;;; :MODIFICATIONS <Timestamp: 2009-08-01-W31-6T16:03:23-0400Z - by MON KEY>
 ;;; :CREATED <Timestamp: Wednesday March 04, 2009 @ 06:16.40 PM - by MON KEY>
+;;;###autoload
 (defun mon-insert-test-cases (&optional insertp intrp)
   "Easily identified tracing vars for debugging `mon-*' and `naf-mode-*' functions.
 Unbinds all previously bound variables:
@@ -374,13 +379,17 @@ named \"*MON-LIST-NSHUFFLE-TEST*\"\n
     (cond ((not insrtp)
            (with-temp-buffer
              (insert t-str)
-             (mon-line-strings-to-list (point-min) (point-max) with-cdr with-wrap)))
+             (mon-line-strings-to-list (mon-g2be -1 t) (mon-g2be 1 t) with-cdr with-wrap)))
           (insrtp 
-           (set-marker st01 (point))
+           (set-marker st01 (point))           
            (insert t-str)
            (set-marker en01 (point))
-           (goto-char st01)
-           (mon-line-strings-to-list st01 en01 with-cdr with-wrap t)))))
+           (mon-g2be st01)
+           (prog1 
+               (mon-line-strings-to-list st01 en01 with-cdr with-wrap t)
+             (set-marker st01 nil)
+             (set-marker en01 nil))))))
+
 ;;
 ;;; :TEST-ME (mon-line-strings-to-list-TEST)
 ;;; :TEST-ME (mon-line-strings-to-list-TEST t nil)
@@ -485,8 +494,7 @@ named \"*MON-LIST-NSHUFFLE-TEST*\"\n
                     (car (get-buffer-window-list (current-buffer))))))
     (unless (and (car this-window-buff) (cdr this-window-buff) this-window-buff)
       (progn 
-        (with-current-buffer
-            (get-buffer-create "*MON-LINE-DOLINES-TEST*")
+        (with-current-buffer (get-buffer-create "*MON-LINE-DOLINES-TEST*")
           (pop-to-buffer (current-buffer) t)
           (setq this-window-buff 
                 (cons (buffer-name (current-buffer))
@@ -521,6 +529,7 @@ Values returned in 3 (or 4) seperate buffers named:\n
  \"*GOT-YEARS*\" \"*GOT-MONTHS*\" \"*GOT-DAYS*\"\n
 When current-buffer does not have a display or is read-only return additional
 details in buffer named \"*MON-LINE-DOLINES-TEST*\".\n
+:EXAMPLE\n\n\(mon-line-dolines-TEST\)\n
 :SEE (URL `http://lists.gnu.org/archive/html/help-gnu-emacs/2009-12/msg00614.html')\n
 :SEE-ALSO `mon-line-dolines-setup-TEST'.\n►►►"
   (let ((mldt (mapconcat 'identity
@@ -615,8 +624,9 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
 ;;; ==============================
 ;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-06T20:15:12-04:00Z}#{10403} - by MON KEY>
+;;;###autoload
 (defun mon-string-split-TEST (&optional w-msg-usr)
-  "Test function for `mon-string-split'\n
+  "Test function for `mon-string-split'.\n
 :EXAMPLE\n\n\(mon-string-split-TEST\)\n
 :SEE-ALSO .\n►►►"
   (let ((w-chk-str "With regexp SPLIT-PATTERN, split W-STRING-TO-SPLIT into a list of substrings.")
@@ -657,6 +667,7 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
 (defun mon-line-strings-bq-qt-sym-bol-TEST ()
   "Test function for `mon-line-strings-bq-qt-sym-bol'.\n
 Return restults to buffer named \"*mon-line-strings-bq-qt-sym-bol-TEST*\".\n
+:EXAMPLE\n\n\(mon-line-strings-bq-qt-sym-bol-TEST\)\n
 :SEE-ALSO .\n►►►"
   (with-current-buffer 
       (get-buffer-create "*MON-LINE-STRINGS-BQ-QT-SYM-BOL-TEST*")
@@ -685,7 +696,7 @@ Return restults to buffer named \"*mon-line-strings-bq-qt-sym-bol-TEST*\".\n
       (comment-region (point) mlsbqsb-mrk))
     (display-buffer (current-buffer) t)))
 ;; 
-;;; :TEST-ME `mon-line-strings-bq-qt-sym-bol-TEST'
+;;; :TEST-ME (mon-line-strings-bq-qt-sym-bol-TEST)
 
 
 ;;; ==============================
@@ -839,6 +850,7 @@ Performs the following checks:\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-09T18:00:56-04:00Z}#{10233} - by MON KEY>
+;;;###autoload
 (defun google-define-get-command-TEST ()
   "Test function for `google-define-get-command'.\n
 Return the raw html for the gg definition of `snarf'.
@@ -862,6 +874,7 @@ kill the leftover buffer `*google-define-get-buffer*'.\n
 ;;; ==============================
 ;;; :RENAMED `mon-test-permute-combine-functions' -> `mon-permute-combine-functions-TEST'
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-09T20:23:43-05:00Z}#{10063} - by MON KEY>
+;;;###autoload
 (defun mon-permute-combine-functions-TEST ()
   "Assure functional equivalence of permute/combine functionss.\n
 Return test-case results in buffer named \"*MON-PERMUTE-COMBINE-TEST*\".\n
@@ -923,8 +936,11 @@ Test equivalence of return values of following procedures:\n
 ;; 
 ;;; :TEST-ME (mon-permute-combine-functions-TEST)
 
+
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-10-19T18:50:15-04:00Z}#{10422} - by MON>
+;;; :CHANGESET 2201
+;;; :CREATED <Timestamp: #{2010-10-19T21:40:13-04:00Z}#{10422} - by MON KEY>
+;;;###autoload
 (defun mon-write-string-reset-bind-TEST ()
   "Test function for `mon-write-string' w/ keyword arg :RESET-BIND.\n
 Return and display results in buffer named \"*MON-WRITE-STRING-TEST*\".\n
@@ -996,6 +1012,291 @@ Return and display results in buffer named \"*MON-WRITE-STRING-TEST*\".\n
                 mwst-dvdr ))
       (display-buffer (current-buffer)  t))
     mwst-tst-bfr))
+
+;;; ==============================
+;;; :CHANGESET 2203
+;;; :CREATED <Timestamp: #{2010-10-20T20:02:22-04:00Z}#{10423} - by MON KEY>
+;;;###autoload
+(defun mon-region-capitalize-TEST ()
+  "Test function for `mon-region-capitalize'.\n
+:EXAMPLE\n\n(mon-region-capitalize-TEST\)\n
+:SEE-ALSO .\n"
+  (with-temp-buffer 
+    ;; :NOTE don't know why but this unintern is necessary to prevent `rgn-prps' from
+    ;; persisting its variable outside the let binding.
+    (unintern "rgn-prps" obarray) 
+    (let ((rgn-tst "lowercase string aNd UPERCASE STRING")
+          rgn-prps)
+      (setq rgn-prps)
+      (save-excursion (insert rgn-tst))
+      (setplist 'rgn-prps (mon-region-capitalize (line-beginning-position 1) (line-end-position 1)))
+      (setq rgn-prps (list (get 'rgn-prps :REGION)))
+      (and (= (- (cdar rgn-prps) (caar rgn-prps))
+              (length rgn-tst))
+           (push :REGION rgn-prps)
+           (eq (car rgn-prps) :REGION)
+           (push (get 'rgn-prps :REGION-ORIGINAL) rgn-prps)
+           (equal (car rgn-prps) rgn-tst)
+           (push :REGION-ORIGINAL rgn-prps)
+           (eq (car rgn-prps) :REGION-ORIGINAL)
+           (push (get 'rgn-prps :REGION-CAPITAL) rgn-prps)
+           (equal (car rgn-prps) (capitalize rgn-tst))
+           (push :REGION-CAPITAL rgn-prps)
+           (and (equal rgn-prps 
+                       `(:REGION-CAPITAL ,(capitalize rgn-tst)
+                                         :REGION-ORIGINAL ,rgn-tst
+                                         :REGION (1 . ,(1+ (length rgn-tst)))))
+                (push '(:ALL-TESTS-PASSED t) rgn-prps)
+                (setq rgn-prps rgn-prps)))
+      (if (and (listp (car rgn-prps)) (not (eq (car rgn-prps) 1)))
+          rgn-prps
+        `(:TEST-FAILED mon-region-capitalize-TEST :FAILED-AFTER ,rgn-prps)))))
+
+;;; ==============================
+;;; :CHANGESET 2205
+;;; :CREATED <Timestamp: #{2010-10-21T16:08:31-04:00Z}#{10424} - by MON KEY>
+;;;###autoload
+(defun naf-mode-state-to-postal-TEST ()
+  "Test associations forward/backward in variable `*naf-mode-state-to-postal*'.\n
+:EXAMPLE\n\n(naf-mode-state-to-postal-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let (nmstp) 
+    (push (car (assoc-string "Puerto Rico" *naf-mode-state-to-postal*)) nmstp)
+    (push (assoc-string (pop nmstp) *naf-mode-state-to-postal*)  nmstp)
+    (setq nmstp `(,(rassoc (cdar nmstp) *naf-mode-state-to-postal*)
+                  ,@nmstp))
+    (setq nmstp `(:ASSOCIATIONS-EQ ,(eq (car nmstp)  (cadr nmstp)) ,@nmstp))))
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-23T16:05:15-04:00Z}#{10426} - by MON KEY>
+;;;###autoload
+(defun mon-booleanp-to-binary-TEST ()
+  "Test function for `mon-booleanp-to-binary'.\n
+Returns list with format:\n
+ \(:all-tests-passed <BOOLEAN>
+  \(:passed <BOOLEAN> 
+   :with-args \( <TEST-FNCN> <ARG-1> <ARG-2> <TEST-VALUE> \)\n
+Key :all-tests-passed is non-nil when all values of :passed are non-nil.\n
+Key :passed is non-nil when <TEST-FNCN> passed.\n
+Key :with-args indicates test evaulated predicate <TEST-FNCN> with results of
+invoking `mon-booleanp-to-binary' with <ARG-1> <ARG-2> to satisfy <TEST-VALUE>.\n
+:EXAMPLE\n\n\(mon-booleanp-to-binary-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let ((mbtb-tests '((= nil  nil  0)
+                      (=  t   nil  1)
+                      (=  0   t    0)
+                      (eq #o0 nil  nil)
+                      (=  1    t   1)
+                      (eq #o1 nil  nil)
+                      (equal "not-a-boolean" t "not-a-boolean")))
+        mbtb-gthr)
+    (dolist (tst mbtb-tests (setq mbtb-gthr (nreverse mbtb-gthr)))
+      (let* ((tst-it   (apply 'mon-booleanp-to-binary (mon-subseq tst 1 3)))
+             (tst-that (apply (car tst) (list tst-it (mon-list-last tst)))))
+        (push `(:passed ,tst-that 
+                        :with-args ,tst) mbtb-gthr)))
+    (nconc `(:all-tests-passed
+             ,(= 0 (apply #'+ (mapcar #'mon-booleanp-to-binary 
+                                      (mapcar #'(lambda (invrtd)
+                                                  (not (cadr invrtd)))
+                                              mbtb-gthr)))))
+           mbtb-gthr)))
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-26T12:46:36-04:00Z}#{10432} - by MON KEY>
+;;;###autoload
+(defun mon-string-or-null-and-zerop-TEST ()
+  "Test function for `mon-string-or-null-and-zerop'.\n
+Tests evauluation with args as:\n
+ - zero length string 
+ - string with length not `zerop'
+ - null value -- :NOTE There is not a way to verify an emtpy list, so doesn't.
+ - integer 0  -- Fails successfully\n
+Return value has the format:\n
+\(:all-tests-passed-p <BOOLEAN> 
+  \(:test-passed-p <BOOLEAN> :w-sym <LOCAL-SYM> :w-arg <ARG-EVALUATED>\)* ... \)\n
+Key :all-tests-passed-p is non-nil if all tests succeeded.\n
+Key :test-passed-p is non-nil if individual test suceeded.\n 
+:EXAMPLE\n\n\(mon-string-or-null-and-zerop-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let* ((am-zero-str "")
+         am-null       
+         (am-bigr-str "am bigger")
+         (am-zero-not-str 0)
+         (gthr (mapcar #'(lambda (chk-z-or-nul)
+                           (mon-string-or-null-and-zerop (symbol-value chk-z-or-nul)))
+                       '(am-zero-str am-null am-bigr-str am-zero-not-str)))
+         into)
+    (setq gthr (mon-mapcar #'(lambda (x y) 
+                               (push (mon-booleanp-to-binary x) into)
+                               `(:test-passed-p ,x :w-sym ,y :w-arg ,(symbol-value y)))
+                           gthr '(am-zero-str am-null am-bigr-str am-zero-not-str)))
+    (mapc #'(lambda (0-1-p) (setf 0-1-p (mon-booleanp-to-binary 0-1-p)))
+          into)
+    (setq gthr (nconc `(:all-tests-passed-p ,(= (apply '+ (nbutlast (nreverse into) 2)) 2))
+                      gthr))))
+
+;;; ==============================
+;;; :CHANGESET 2141
+;;; :CREATED <Timestamp: #{2010-09-16T21:12:01-04:00Z}#{10374} - by MON KEY>
+;;;###autoload
+(defun mon-error-protect-PP-EXPAND-TEST (expand-form)
+  "Debugging function for macro `mon-error-protect'.\n
+Return and display results to buffer named \"*PP-EXPAND-ALL*\"
+:NOTE Not actually a test.\n
+:SEE-ALSO .\n►►►"
+  (with-current-buffer (get-buffer-create "*PP-EXPAND-ALL*")
+    (erase-buffer)
+    (save-excursion
+      (prin1 (macroexpand-all expand-form) (current-buffer))
+      (emacs-lisp-mode)
+      (pp-buffer)
+      (display-buffer (current-buffer) t))))
+
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-27T21:18:14-04:00Z}#{10433} - by MON KEY>
+;;;###autoload
+(defun mon-line-string-rotate-name-TEST ()
+  "Test function for `mon-line-string-rotate-name'.\n
+Key :all-tests-passed is non-nil if so.\n
+:EXAMPLE\n\n\(mon-line-string-rotate-name-TEST\)\n
+\(and \(cadr \(memq :all-tests-passed \(mon-line-string-rotate-name-TEST\)\)\)\)\n
+:SEE-ALSO .\n►►►"
+  (let* (gthr (*standard-output*  gthr))
+    (setq gthr                  
+          (nconc
+           (list (equal
+                  (with-output-to-string
+                    (mapc #'(lambda (x) (princ (concat (mon-line-string-rotate-name x) "\n" gthr)))
+                          '(("George Charles Aid")("Thomas Pollock Anshutz")
+                            ("Cecilia Beaux")("Frank Weston Benson")
+                            ("Thomas Hart Benton")("Saul Bernstein")
+                            ("George Biddle")("Gutzon Borglum"))))
+                  (concat (mapconcat #'identity '("Aid (George Charles)" "Anshutz (Thomas Pollock)" 
+                                                  "Beaux (Cecilia)" "Benson (Frank Weston)" "Benton (Thomas Hart)"
+                                                  "Bernstein (Saul)" "Biddle (George)" "Borglum (Gutzon)") "\n")
+                          "\n")))
+           (mapcar #'(lambda (x)
+                       (equal
+                        (apply 'mon-line-string-rotate-name `(,(car x) ,(cadr x)))
+                        (caddr x)))
+                   '(("Elvis" nil "Elvis")
+                     ("István Tisza" nil "Tisza (István)")
+                     ("Thomas Pollock Anshutz" nil "Anshutz (Thomas Pollock)")
+                     ("Thomas Pollock Anshutz" t ("Anshutz (Thomas Pollock)"))
+                     (("Thomas Pollock Anshutz") t ("Anshutz (Thomas Pollock)"))))))
+    (list :all-tests-passed (= (apply #'+ (mapcar #'mon-boolean-to-binary (not gthr))) 0))))
+
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-28T18:57:10-04:00Z}#{10434} - by MON KEY>
+;;;###autoload
+(defun mon-line-indent-from-to-col-TEST ()
+  "Test function for `mon-line-indent-from-to-col'.\n
+Key :all-tests-passed is non-nil if so.\n
+:EXAMPLE\n\n\(mon-line-indent-from-to-col-TEST\)\n
+\(and \(cadr \(memq :all-tests-passed \(mon-line-indent-from-to-col-TEST\)\)\)\)\n
+:SEE-ALSO .\n►►►"
+  (let ((fndr  #'(lambda (y) (search-forward-regexp y nil t)))
+        (mliftc-T-with
+         (mapconcat #'identity 
+                    ;; :NOTE Any whitespace below is significant!
+                    '("emacsen.auto_apart      001           001\n"
+                      "emacsen.rug_compat_42   00            00\n"
+                      "emacsen.rug_compt_adorn 00            00\n"
+                      "emacsen.cache_empire    080           080\n"
+                      "emacsen.hashdelimiter   no-hash       no-hash\n"
+                      "emacsen.rookie_romain   no value      no value") ""))
+        (mliftc-T-for
+         (mapconcat #'identity 
+                    ;; :NOTE The whitespace below is significant!
+                    '("emacsen.auto_apart      	001           		  001\n"
+                      "emacsen.rug_compat_42   	00            		  00\n"
+                      "emacsen.rug_compt_adorn 	00            		  00\n"
+                      "emacsen.cache_empire    	080           		  080\n"
+                      "emacsen.hashdelimiter   	no-hash       		  no-hash\n"
+                      "emacsen.rookie_romain   	no value      		  no value") ""))
+        mliftc-T-got)
+    (setq mliftc-T-got     
+          (with-temp-buffer
+            (save-excursion 
+              (insert mliftc-T-with))
+            (mon-line-indent-from-to-col 24 32 (mon-g2be -1 t) (mon-g2be 1 t))
+            (mon-line-indent-from-to-col 46 58 (mon-g2be -1 t) (mon-g2be 1 t))
+            (buffer-substring-no-properties (mon-g2be -1 t) (mon-g2be 1 t))))
+    `(:all-tests-passed ,(equal mliftc-T-got mliftc-T-for)
+      :with-expressions ,'((mon-line-indent-from-to-col 24 32 st-pnt nd-pnt)
+                           (mon-line-indent-from-to-col 46 58 st-pnt nd-pnt))
+      :with-test-data   ,(concat (truncate-string-to-width mliftc-T-for 63) "{...}")
+      :with-test-result ,(concat (truncate-string-to-width mliftc-T-got 63) "{...}"))))
+
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-28T20:16:19-04:00Z}#{10434} - by MON KEY>
+(defun mon-line-strings-pipe-to-col-TEST ()
+  "Test function for `mon-line-strings-pipe-to-col'.\n
+Key :all-tests-passed-p is non-nil if so.\n
+:EXAMPLE\n\n\(mon-line-strings-pipe-to-col-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let ((with-names '("►" "William Gibson" "Bruce Sterling" 
+                      "Dan Brown" "Neal Stephenson"
+                      "Loyd Blankenship" "Erik Gordon Corley" "◄"))
+        (with-ree (make-marker))
+        (with-pad-to 12)
+        with-reb)
+    `(:all-tests-passed
+      ,(equal (setq with-reb 
+                    (with-temp-buffer
+                      (save-excursion (insert (mapconcat #'identity  with-names "\n")))
+                      (setq with-reb (save-excursion (1+ (search-forward-regexp "►"))))
+                      (set-marker with-ree (save-excursion (- (search-forward-regexp "◄") 2)))
+                      (set-marker-insertion-type with-ree t)
+                      (mon-line-strings-pipe-to-col with-reb with-ree with-pad-to t)
+                      (prog1 
+                          (mon-buffer-sub-no-prop with-reb with-ree)
+                        (set-marker with-ree nil))))
+              (setq with-ree (mapconcat #'(lambda (pre)
+                                            (concat (make-string with-pad-to 32) "| " pre))
+                                        (mon-subseq with-names 1 7) "\n")))
+      :with-expression ,`(mon-line-strings-pipe-to-col with-reb with-ree ,with-pad-to t)
+      :with-results ,with-reb 
+      :with-names ,(substring (setq with-names (mapconcat #'identity with-names "\n"))
+                              2 (- (length with-names) 2)))))
+
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-28T21:09:57-04:00Z}#{10434} - by MON KEY>
+(defun mon-line-string-insert-chars-under-TEST ()
+  "Test function for `mon-line-string-insert-chars-under'.\n
+Key :all-tests-passed-p is non-nil if so.\n
+:EXAMPLE\n\n\(mon-line-string-insert-chars-under-TEST\)\n
+:SEE-ALSO .\n►►►"  
+(let ((with-value '((nil 43 95 42) . "I will be followed below by "))
+      with-check
+      with-result)
+    (with-temp-buffer
+      (dolist (chk (car with-value) 
+                   (progn
+                     (setq with-result (mapconcat #'identity (nreverse with-result) "\n"))
+                     (setq with-check  (mapconcat #'identity (nreverse with-check) "\n"))))
+        (insert (cdr with-value) (char-to-string (or chk 61)))
+        (mon-line-string-insert-chars-under chk)
+        (push (delete-and-extract-region (mon-g2be -1 t) (mon-g2be 1 t)) with-result)
+        (push (concat (cdr with-value) (char-to-string (or chk 61)) "\n"
+                      (make-string 29 (or chk 61))) with-check)))
+    `(:all-tests-passed ,(equal with-result with-check)
+      :with-expressions ,`(mapcar #'(lambda (rslt)
+                                     (list 'mon-line-string-insert-chars-under rslt))
+                                 (car with-value))
+      :with-result ,with-result
+      :with-check  ,with-check)))
 
 ;;; ==============================
 (provide 'mon-testme-utils)

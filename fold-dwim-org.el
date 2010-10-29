@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Oct  5 12:19:45 2010 (-0500)
 ;; Version: 
-;; Last-Updated: Mon Oct 25 12:28:01 2010 (-0500)
+;; Last-Updated: Thu Oct 28 15:42:56 2010 (-0500)
 ;;           By: Matthew L. Fidler
-;;     Update #: 76
+;;     Update #: 78
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -24,6 +24,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 28-Oct-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Oct 28 15:42:44 2010 (-0500) #77 (Matthew L. Fidler)
+;;    Do not fold while expanding a yasnippet.
 ;; 25-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Oct 25 12:27:52 2010 (-0500) #75 (Matthew L. Fidler)
 ;;    Removed string check
@@ -116,7 +119,12 @@
         (when (eq ?\t last-command-event)
 ;          (unless (string= fold-dwim-org/last-txt
 ;                           (buffer-substring (point-at-bol) (point-at-eol)))
+          (unless (and (fboundp 'yas/snippets-at-point)
+                       (< 0 (length (yas/snippets-at-point 'all-snippets)))
+                       )
             (fold-dwim-org/toggle nil fold-dwim-org/last-point)
+            )
+                       
 ;            )
           )
         )

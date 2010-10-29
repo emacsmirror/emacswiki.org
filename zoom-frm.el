@@ -93,7 +93,7 @@
 ;;                  'zoom-in)
 ;;  (when (boundp 'mouse-wheel-up-event) ; Emacs 22+
 ;;    (global-set-key (vector (list 'control mouse-wheel-up-event))
-;;                    'zoom-out)))
+;;                    'zoom-out))
 ;;
 ;;  (global-set-key [S-mouse-1]    'zoom-in)
 ;;  (global-set-key [C-S-mouse-1]  'zoom-out)
