@@ -51,7 +51,7 @@ Here's a patch (not fully tested) to autorevert.el to Emacs 22.0.50 that will ma
 
 Is there a quick way or re-visiting the file in current buffer? This is useful when it was modified by an external program.
 
- From: MichaelSlass
+ From: MichaelSlassto
  Subject: Re: revisit-file
  Newsgroups: comp.emacs
  Date: Tue, 22 May 2001 20:13:45 GMT
@@ -112,6 +112,13 @@ Nice idea, I prefer this version of revert-all-buffers:
        (setq buffer (car list))))
   (message "Refreshing open files"))
 
+
+
+I don't know who posted the previous, but I'm using this now, with a small change: My (when) condition is:
+
+ (when (and (buffer-file-name buffer) (not (buffer-modified-p buffer))) ...)
+
+—Mark Dominus
 
 == Inform that the modified file was reverted ==
 

@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.1
+;; Version: 0.3
 ;; Keywords: file, couchdb, json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -27,16 +27,27 @@
 ;;; Commentary:
 
 ;; Usage:
+;;
 ;; (require 'couchdb-document)
 ;; (find-file "/couchdb:/test_db1/doc_XXXX")
 
+;; (require 'couchdb-document-text)
+;; (find-file "/couchdb:/test_db1/secret.org.gpg")
+
 ;; ChangeLog:
+;; 0.3: encode and decode method now can be select by set 'encode and 'decode
+;; with `couchdb-document-open-hook'. A simple text format is provided with
+;; file couchdb-document-text.el.
+;;
+;; 0.2: implement document delete, directory create and delete
+;;
+;; 0.1: implement document open and save
 
 ;; TODO:
 ;; 1. revision(append '@' as revision in filename) support
-;; 2. delete-file, delete-directory(delete db), make-directory(create db)
-;;    using variable enable and disable delete-directory
+;; 2. using couchdb 'change' feature implement verify-visited-file-modtime
 ;; 3. support dired.
+
 
 (require 'json)
 (require 'url)
@@ -44,10 +55,45 @@
 
 ;;; Code:
 
-(defvar couchdb-document-host "127.0.0.1")
-(defvar couchdb-document-port 5984)
+(defgroup couchdb-document nil
+  "Edit couchdb document as file."
+  :group 'files)
 
-(defvar couchdb-document-debug nil)
+(defcustom couchdb-document-host "127.0.0.1"
+  "Default couchdb server address."
+  :group 'couchdb-document
+  :type 'string)
+
+(defcustom couchdb-document-port 5984
+  "Defcustom couchdb server port."
+  :group 'couchdb-document
+  :type 'integer)
+
+(defcustom couchdb-document-debug nil
+  "Enable debug message output."
+  :group 'couchdb-document
+  :type 'boolean)
+
+(defcustom couchdb-document-enable-create-db t
+  "Enable database creation."
+  :group 'couchdb-document
+  :type 'boolean)
+
+(defcustom couchdb-document-enable-delete-db nil
+  "Enable database deletion."
+  :group 'couchdb-document
+  :type 'boolean)
+
+(defcustom couchdb-document-open-hook nil
+  "Hook called when document is opened first time. After all
+information have been saved into `couchdb-document-cache', call
+the hook with single argument `HT'(see document of
+`couchdb-document-decode').
+
+A typical usage is set key `encode' and `decode' of `HT' to
+select an alternative couchdb document encode and decode method."
+  :group 'couchdb-document
+  :type 'hook)
 
 (defvar couchdb-document-cache
   (make-hash-table :test 'equal))
@@ -79,26 +125,30 @@ This function is called when read document from couchdb server.
 
 Argument `HT' is a hashtable including necessary information of
 a couchdb document:
-'_rev => Revision of a document, final text should not depend on this,
-'_id => ID of a document, final text should not depend on this,
-'doc => Lisp representation of document json object(parsed by `json-read').
+_rev => Revision of a document, final text should not depend on this,
+_id => ID of a document, final text should not depend on this,
+doc => Lisp representation of document json object(parsed by `json-read'),
+filename => couchdb document filename,
+encode => encode method,
+decode => decode method.
 
 Return should be a string, that will inserted into file buffer."
-  (funcall (or (gethash :decode ht)
+  (funcall (or (gethash 'decode ht)
                'couchdb-document-org-decode
                ;;'couchdb-document-json-decode
                )
            ht))
 
 (defun couchdb-document-encode (ht)
-  "Encode a json object(lisp representation) from text of `current-buffer' and
-the information in hashtable `ht', this function is called when write document
-back to couchdb server.
+  "Encode a json object(lisp representation) from text of
+`current-buffer' and the information in hashtable `HT'(see
+document of `couchdb-document-decode'), this function is called
+when write document back to couchdb server.
 
-Values of '_id and '_rev in `ht' should not be modified, any key-value pair which
+Values of '_id and '_rev in `HT' should not be modified, any key-value pair which
 key start with '_' will insert into final return json object, then using `json-encode'
 and \"PUT\" to couchdb server."
-  (funcall (or (gethash :encode ht)
+  (funcall (or (gethash 'encode ht)
                'couchdb-document-org-encode
                ;;'couchdb-document-json-encode
                )
@@ -111,9 +161,8 @@ and \"PUT\" to couchdb server."
     (if op
         (apply op args)
       ;; Handle any operation we don't know about.
-      (with-current-buffer "*Messages*"
-        (if couchdb-document-debug
-            (insert (format "call op %S with %S" operation args))))
+      (when couchdb-document-debug
+        (message "call op %S with %S" operation args))
       (apply 'couchdb-document-fallback-handler
              (append (list operation) args)))))
 
@@ -180,7 +229,7 @@ Example:
     (format "http://%s:%d%s" (nth 1 a) (nth 2 a) (nth 5 a))))
 
 (defun couchdb-document-get (filename &optional nocache)
-  (let ((url (couchdb-document-url filename)) json doc metadata)
+  (let ((url (couchdb-document-url filename)) json doc metadata init)
     (let ((url-package-name "couchdb-document.el")
           (url-request-method "GET")
           (url-request-extra-headers '(("Accept" . "application/json"))))
@@ -189,6 +238,12 @@ Example:
         (re-search-forward "\r?\n\r?\n")
         (setq json (json-read-r))
         (kill-buffer)))
+
+    (unless (or (couchdb-document-file-directory-p filename)
+                (assoc '_id json)
+                (not (assoc 'error json)))
+      ;; error
+      (setq json nil))
 
     ;; json maybe is a simple vector, returned by "_all_dbs"
     (mapc (lambda (kv)
@@ -202,28 +257,35 @@ Example:
           json)
 
     (unless nocache
+      (setq init (null (gethash url couchdb-document-cache)))
       (couchdb-document-cache-set filename 'doc doc)
       (dolist (kv metadata)
         (couchdb-document-cache-set filename (car kv) (cdr kv)))
-      (couchdb-document-cache-set filename 'filename filename))
+      (couchdb-document-cache-set filename 'filename filename)
+      (when init
+        (run-hook-with-args 'couchdb-document-open-hook
+                            (gethash url couchdb-document-cache))))
     doc))
 
-(defun couchdb-document-put (filename)
+(defun couchdb-document-put (filename &optional nodata)
   (let ((url (couchdb-document-url filename)) json ht doc ret)
-    (setq ht (couchdb-document-cache-get filename))
-    (setq doc (couchdb-document-cache-get filename 'doc))
-    ;; copy doc to json, avoid change values in hashtable
-    (setq json (copy-list doc))
-    ;; merge metadata
-    (maphash
-     (lambda (k v)
-       (when (and (symbolp k) (string-match "^_" (symbol-name k)))
-         (setq json (nconc json `((,k . ,v))))))
-     ht)
+    (unless nodata
+      (setq ht (couchdb-document-cache-get filename))
+      (setq doc (couchdb-document-cache-get filename 'doc))
+      ;; copy doc to json, avoid change values in hashtable
+      (setq json (copy-list doc))
+      ;; merge metadata
+      (maphash
+       (lambda (k v)
+         (when (and (symbolp k) (string-match "^_" (symbol-name k)))
+           (setq json (nconc json `((,k . ,v))))))
+       ht))
     (let ((url-package-name "couchdb-document.el")
           (url-request-method "PUT")
           (url-request-extra-headers '(("Content-type" . "application/json")))
-          (url-request-data (json-encode-alist json)))
+          url-request-data)
+      (unless nodata
+        (setq url-request-data (json-encode-alist json)))
       (with-current-buffer (url-retrieve-synchronously url)
         (goto-char (point-min))
         (re-search-forward "\r?\n\r?\n")
@@ -240,6 +302,29 @@ Example:
         (setq head (buffer-string))
         (kill-buffer)))
     head))
+
+(defun couchdb-document-delete (filename &optional rev)
+  (let (url ret dir)
+    (setq dir (file-directory-p filename))
+    (setq url (couchdb-document-url filename))
+    (unless (or rev dir)
+      (let ((h (couchdb-document-head filename)))
+        (if (string-match "^Etag: *\"\\(.*\\)\" *$" h)
+            (setq rev (match-string 1 h))
+          (error "No such file %S" filename))))
+
+    (when rev (setq url (format "%s?rev=%s" url rev)))
+    (let ((url-package-name "couchdb-document.el")
+          (url-request-method "DELETE"))
+      (with-current-buffer (url-retrieve-synchronously url)
+        (goto-char (point-min))
+        (re-search-forward "\r?\n\r?\n")
+        (setq ret (json-read-r))
+        (kill-buffer)))
+    (if (assoc 'error ret) (error "%S" ret)
+      (when (not dir)
+        (message "deleted, rev %s" (cdr (assoc 'rev ret)))))))
+
 
 (defun couchdb-document-cache-get (filename &optional key)
   "Get hashtable associated to `FILENAME' from `couchdb-document-cache'.
@@ -384,13 +469,25 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
       (when (file-exists-p fn)
         (delete-file fn)))))
 
+(defun couchdb-document-add-kill-buffer-hook ()
+  "Add some function to kill-buffer-hook."
+  (add-hook (make-local-variable 'kill-buffer-hook)
+            'couchdb-document-cache-clear)
+  (add-hook (make-local-variable 'kill-buffer-hook)
+            'couchdb-document-delete-file-local-copy))
+
 (couchdb-document-define-handler
  file-local-copy (filename)
   (let (local-file ht)
     (setq local-file
           (couchdb-document-file-local-copy-name filename))
     (setq ht (couchdb-document-cache-get filename))
-    (write-region (couchdb-document-decode ht) nil local-file)
+    (file-name-non-special
+     'write-region (couchdb-document-decode ht) nil local-file)
+    ;; add kill hook
+    (when (find-buffer-visiting filename)
+      (with-current-buffer (find-buffer-visiting filename)
+        (couchdb-document-add-kill-buffer-hook)))
     local-file))
 
 (couchdb-document-define-handler
@@ -403,13 +500,7 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
     (insert-file-contents local-file nil beg end replace)
     (when visit
       (setq buffer-file-name filename)
-      (set-visited-file-modtime)
-      ;; add kill-buffer-hook
-      (add-hook (make-local-variable 'kill-buffer-hook)
-                'couchdb-document-cache-clear)
-      (add-hook (make-local-variable 'kill-buffer-hook)
-                'couchdb-document-delete-file-local-copy))))
-
+      (set-visited-file-modtime))))
 
 (couchdb-document-define-handler
  write-region (start end filename &optional append visit
@@ -417,19 +508,28 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
  (when append (error "Can't append to couchdb document"))
  (unless (equal (buffer-file-name) filename)
    (error "Couchdb document not support save to other name: '%s'" filename))
- (when (stringp start)
-   (error "Couchdb document not support write string to file"))
  ;; whole buffer
- (when (not start)
+ (when (null start)
    (setq start (point-min))
    (setq end (point-max)))
- (when (or (not (eq start (point-min))) ; this may support in future
-           (not (eq end (point-max))))
-   (error "Couchdb document not support write part of file"))
 
  (let (doc ht ret rev)
    (setq ht (couchdb-document-cache-get filename))
-   (setq doc (couchdb-document-encode ht))
+
+   (cond ((stringp start) ; string
+          (with-temp-buffer
+            (insert start)
+            (setq doc (couchdb-document-encode ht))))
+         ;; part of buffer
+         ((or (not (eq start (point-min)))
+              (not (eq end (point-max))))
+          (let ((str (buffer-substring start end)))
+          (with-temp-buffer
+            (insert str)
+            (setq doc (couchdb-document-encode ht)))))
+         ;; whole buffer
+         (t (setq doc (couchdb-document-encode ht))))
+
    (couchdb-document-cache-set filename 'doc doc)
    (setq ret (couchdb-document-put filename))
    ;; get rev
@@ -438,8 +538,8 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
             (cdr (assoc 'error ret))))
    (setq rev (cdr (assoc 'rev ret)))
    (couchdb-document-cache-set filename '_rev rev)
+   (when visit (couchdb-document-add-kill-buffer-hook))
    (message "new rev %s" rev)))
-
 
 
 (couchdb-document-define-handler
@@ -539,9 +639,31 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
              (match-string 1 header)))
      (equal rev0 rev1))))
 
+(couchdb-document-define-handler
+ delete-file (filename)
+ (couchdb-document-delete filename))
+
+(couchdb-document-define-handler
+ delete-directory (dir &optional r) ; r is ommitted
+ (let ((en couchdb-document-enable-delete-db))
+   (unless en
+     (error "Delete database is disabled"))
+   (couchdb-document-delete dir)))
+
+(couchdb-document-define-handler
+ make-directory (dir &optional r) ; r is ommitted
+ (let ((en couchdb-document-enable-create-db) ret)
+   (unless en
+     (error "Create database is disabled"))
+   (setq ret (couchdb-document-put dir t))
+   (when (assoc 'error ret) (error "%S" ret))
+   t))
+
+
 ;; add file handler
 (add-to-list 'file-name-handler-alist
              '("\\`/couchdb:" . couchdb-document-handler))
+
 
 (provide 'couchdb-document)
 

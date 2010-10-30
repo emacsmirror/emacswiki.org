@@ -53,7 +53,7 @@
 (modify-face 'font-lock-fic-face fic-foreground-color
              fic-background-color nil t nil t nil nil)
 
-(defvar fic-search-list-re (regexp-opt fic-highlighted-words nil)
+(defvar fic-search-list-re (regexp-opt fic-highlighted-words 'words)
   "regexp constructed from 'fic-highlighted-words")
 
 (defun fic-in-doc/comment-region (pos)

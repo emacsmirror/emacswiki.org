@@ -10,7 +10,18 @@ Library <tt>[[bindings+.el]]</tt> provides this feature. Put this in your InitFi
 
 This library tweaks the standard library ##bindings.el##, hence the name.
 
-This feature has been included in pre-release versions of Emacs 23. Thus, <tt>[[bindings+.el]]</tt> is only useful for Emacs 22.
+[new:DrewAdams:2010-10-29 20:36 UTC]
+I added this feature to vanilla GnuEmacs 23. So for Emacs 23 and later, <tt>[[bindings+.el]]</tt> just provides slightly better feedback than vanilla Emacs.  -- DrewAdams
+
+== Discussion ==
+
+[new]
+Is there some mode to group the mode menus into one menu? When I use a narrow window and many minor modes some mode menus are cut of.  -- JonasBernoulli
+
+[new:DrewAdams:2010-10-29 20:40 UTC]
+What do mean by the mode menus are cut off? The mode menus in question are only displayed when you click the corresponding mode-line lighters.  Are the lighters themselves cut off?  Seems like if you can click a lighter to display its menu then Emacs should be able to display that menu properly, without cutting it off -- e.g. by moving the whole menu  left or right. Maybe you should file an Emacs bug? Perhaps post a screenshot here, to clarify what you see. 
+
+Certainly, if the window is too narrow then some lighters themselves will be cut off (e.g. not shown at all).  It might be nice if, when that is the case, Emacs would gather all of them into a single link/button that gave access to all lighters and their menus.  But then there would still be a problem when the window is too narrow to show even that link/button. The same thing could be applied to all mode-line fields, not just mode lighters: whenever some fields are to be cut off, gather them into a single link.  IOW, in effect make the mode-line extensible via a link that pops up the parts that otherwise cannot be displayed. -- DrewAdams
 
 ----
 CategoryModes

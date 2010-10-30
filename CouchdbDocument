@@ -2,6 +2,7 @@ Apache !CouchDB is a document-oriented database that can be queried and indexed 
 
 * [[couchdb-document.el]] implement basic file operation on a couchdb document, depend on below "org-json.el".
 * [[org-json.el]] translate a couchdb document(json object) to/from a org file.
+* [[couchdb-document-text.el]] use couchdb to save text files.
 
 Filename to document map: 
   
@@ -10,3 +11,13 @@ Filename to document map:
   "/couchdb:/db/docid"           => 'host' is also optional if it is `couchdb-document-host'(default '127.0.0.1).
 
 
+Usage of couchdb-document-text
+
+  (require 'couchdb-document-text)
+  (find-file "/couchdb:/db/aaa.txt")
+  ;; write something, then C-x C-s
+
+  ;; or 
+  (find-file "/couchdb:/db/xxx.org.gpg")
+  ;; open an new document will be read only, just C-x C-q to edit.
+  ;; write something, then C-x C-s
