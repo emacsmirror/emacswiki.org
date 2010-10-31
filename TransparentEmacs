@@ -28,6 +28,14 @@ You can use the following snippet after you've set the alpha as above to assign 
      (set-frame-parameter nil 'alpha '(85 50))))
  (global-set-key (kbd "C-c t") 'toggle-transparency)
 
+A general transparency function:
+
+ ;; Set transparency of emacs
+ (defun transparency (value)
+   "Sets the transparency of the frame window. 0=transparent/100=opaque"
+   (interactive "nTransparency Value 0 - 100 opaque:")
+   (set-frame-parameter (selected-frame) 'alpha value))
+
 Note that unlike other transparency hacks (like the background image hack below), it's not merely showing your desktop background image, but is true translucency—you can see other windows behind your Emacs window. It's not terribly useful to show text underneath because it's hard to read the text in the foreground window. I (AmitPatel) use it to watch TV or movies behind my Emacs. 
 
 : Is it only me, or does it make everything transparent? Including toolbars and the actual text.

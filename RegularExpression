@@ -1,5 +1,5 @@
 A '''[::regular expression]''' (abbreviated "'''[::regexp]'''" or sometimes just "re") is a search-string with ''wildcards'' -- and more.  It is a ''pattern'' that is ''matched'' against the text to be searched.
-See the EmacsManual, node "Regexps". Examples:
+See [[Manual:Regexps]]. Examples:
 
     "alex"
 

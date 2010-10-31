@@ -50,7 +50,6 @@
   "Select text encode & decode method."
   (let ((doc (gethash 'doc ht))
         (fn  (gethash 'filename ht)))
-    (message "called %S" ht)
     (unless (or (gethash 'encode ht)
                 (gethash 'decode ht))
       (when (or (and (assoc 'type doc)

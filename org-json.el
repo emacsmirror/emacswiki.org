@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.1
+;; Version: 0.2
 ;; Keywords: json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -25,7 +25,14 @@
 ;; 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 ;;; Commentary:
-;; 
+;;
+
+;; ChangeLog:
+;;
+;; 0.2: fix org-json-encode for mistake convert single element alist
+;; to vector.
+;;
+;; 0.1: initial version.
 
 ;; Usage:
 
@@ -40,7 +47,7 @@
 ;; * i2 3.4
 ;; * i3 "fdsafs"
 ;; => (("i1" . [2,3,4]) ("i2" . 3.4) ("i3" . "fdsafs"))
-;; 
+;;
 
 ;; * i1
 ;; [2,3,4]
@@ -183,9 +190,9 @@ actural call `org-json-gen-alist1' to work."
 
         (setq r1 (org-json-gen-alist1 (cdr lst) (1+ lv)))
         ;; convert to array if necessray
-        (let ((seq (mapcar (lambda (x)
-                             (string-to-number (car x))) (cdr r1))))
-          (when (equal (number-sequence 0 (1- (length seq)))
+        (let ((seq (mapcar 'car (cdr r1))))
+          (when (equal (mapcar 'number-to-string
+                               (number-sequence 0 (1- (length seq))))
                        seq)
             (setq r1 (cons (car r1)
                            (vconcat (mapcar 'cdr (cdr r1)))))))

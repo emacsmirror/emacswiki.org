@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.3
+;; Version: 0.3.2
 ;; Keywords: file, couchdb, json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -35,6 +35,10 @@
 ;; (find-file "/couchdb:/test_db1/secret.org.gpg")
 
 ;; ChangeLog:
+;; 0.3.2: fix debug related bug.
+;;
+;; 0.3.1: fix for ido-find-file.
+;;
 ;; 0.3: encode and decode method now can be select by set 'encode and 'decode
 ;; with `couchdb-document-open-hook'. A simple text format is provided with
 ;; file couchdb-document-text.el.
@@ -69,7 +73,7 @@
   :group 'couchdb-document
   :type 'integer)
 
-(defcustom couchdb-document-debug nil
+(defcustom couchdb-document-debug-enable nil
   "Enable debug message output."
   :group 'couchdb-document
   :type 'boolean)
@@ -94,6 +98,13 @@ A typical usage is set key `encode' and `decode' of `HT' to
 select an alternative couchdb document encode and decode method."
   :group 'couchdb-document
   :type 'hook)
+
+(defun couchdb-document-debug (&rest args)
+  "Output debug message. `ARGS' are same as `format'"
+  (when couchdb-document-debug-enable
+    (with-current-buffer (get-buffer-create " *Couchdb Debug*")
+      (goto-char (point-max))
+      (insert (apply 'format args) "\n"))))
 
 (defvar couchdb-document-cache
   (make-hash-table :test 'equal))
@@ -159,10 +170,11 @@ and \"PUT\" to couchdb server."
   ;; that we have special handling for.
   (let ((op (get operation 'couchdb-document)))
     (if op
-        (apply op args)
+        (progn
+          (couchdb-document-debug "call +++ %S with %S" operation args)
+          (apply op args))
       ;; Handle any operation we don't know about.
-      (when couchdb-document-debug
-        (message "call op %S with %S" operation args))
+      (couchdb-document-debug "call --- %S with %S" operation args)
       (apply 'couchdb-document-fallback-handler
              (append (list operation) args)))))
 
@@ -199,16 +211,16 @@ Example:
       (setq path (match-string 7 name))
       (setq path
             (concat "/"
-                    (replace-regexp-in-string "^/*\\|/*$" "" path)))
+                    (replace-regexp-in-string "^/*" "" path)))
       (string-match "^/\\(.*?\\)\\(\\(/.*\\)?\\)$" path)
       (setq db (match-string 1 path))
-      (setq id (replace-regexp-in-string "^/" "" (match-string 2 path)))
+      (setq id (replace-regexp-in-string "^/\\|/*$" "" (match-string 2 path)))
       (list user host port db id path))))
 
 (defun couchdb-document-name-check (name)
   (let ((a (couchdb-document-name-extract name)))
     (unless a
-      (if couchdb-document-debug
+      (if couchdb-document-debug-enable
           (backtrace)
         (error "Couchdb document name error, %S" name)))
     a))
@@ -383,10 +395,11 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
    (if (not (equal "" id))
        (setq id "")
      (setq db ""))
-   (couchdb-document-name
-    (nth 1 a) ; host
-    (nth 2 a) ; port
-    db id)))
+   (concat (couchdb-document-name
+            (nth 1 a) ; host
+            (nth 2 a) ; port
+            db id)
+           (if (not (equal db "")) "/"  ""))))
 
 (couchdb-document-define-handler
  file-name-nondirectory (filename)
@@ -413,18 +426,19 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
                     (string-match "Content-Length: \\([0-9]+\\)$" head)
                     (string-to-number (match-string 1 head)))
                    0))
-    (list dir ; dir/sym/file
-          1 ; links
-          (if id-format "-1" -1) ; uid
-          (if id-format "-1" -1) ; gid
-          '(-1 0) ; last access time
-          '(-1 0) ; last modification time
-          '(-1 0) ; last status change time
-          size ; file size
-          (if dir "drwxrwxrwx" "-rw-rw-rw-") ; rw
-          nil ;  t if file's gid would change if file were deleted and recreated.
-          1 ; inode number
-          -1))) ; file system device number
+    (when (string-match "HTTP.* 200 OK$" head)
+      (list dir ; dir/sym/file
+            1 ; links
+            (if id-format "-1" -1) ; uid
+            (if id-format "-1" -1) ; gid
+            '(-1 0) ; last access time
+            '(-1 0) ; last modification time
+            '(-1 0) ; last status change time
+            size ; file size
+            (if dir "drwxrwxrwx" "-rw-rw-rw-") ; rw
+            nil ;  t if file's gid would change if file were deleted and recreated.
+            1 ; inode number
+            -1)))) ; file system device number
 
 
 (couchdb-document-define-handler
@@ -438,7 +452,9 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
              (expand-file-name name)
            (funcall 'couchdb-document-fallback-handler
                     'expand-file-name name))
-       (concat default-directory name))
+       (setq default-directory
+             (replace-regexp-in-string "/*$" "" default-directory))
+       (concat default-directory "/" name))
    (let (a user host port db id)
      (setq a (couchdb-document-name-check name))
      (setq user (nth 0 a))
@@ -464,7 +480,7 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
   "Delete local copy of couchdb document, this is called when buffer is killed."
   (unless filename
     (setq filename (buffer-file-name)))
-  (when filename
+  (when (and filename (couchdb-document-name-extract filename))
     (let ((fn (couchdb-document-file-local-copy-name filename)))
       (when (file-exists-p fn)
         (delete-file fn)))))
@@ -595,6 +611,8 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
 
 (couchdb-document-define-handler
  insert-directory (file switch &optional w full-dir-p)
+ (couchdb-document-debug "call insert-directory %S %S %S %S"
+                         file switch w full-dir-p)
  (error "insert-directory not implement yet."))
 
 (couchdb-document-define-handler
@@ -603,7 +621,14 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
 
 (couchdb-document-define-handler
  file-name-all-completions (file dir)
- (directory-files dir nil file nil))
+ (if (equal dir "/couchdb:")
+     ;; TODO, add host
+     (list "/")
+   (mapcar (lambda (f)
+             (if (file-directory-p (expand-file-name f dir))
+                 (file-name-as-directory f)
+               f))
+           (directory-files dir nil file nil))))
 
 ;; TODO, sort not implement
 (couchdb-document-define-handler

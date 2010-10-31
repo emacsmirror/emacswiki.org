@@ -19,5 +19,4 @@ Usage of couchdb-document-text
 
   ;; or 
   (find-file "/couchdb:/db/xxx.org.gpg")
-  ;; open an new document will be read only, just C-x C-q to edit.
   ;; write something, then C-x C-s

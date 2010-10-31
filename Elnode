@@ -1,4 +1,4 @@
-elnode is an asynchronous HTTP server framework. You can use it to write HTTP services in ELisp.
+elnode is an asynchronous HttpServer framework. You can use it to write HTTP services in ELisp.
 
 [http://github.com/nicferrier/elnode Download elnode from github]
 
