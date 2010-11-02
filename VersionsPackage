@@ -1,6 +1,6 @@
 This page describes package Lisp:versions.el, by ViniciusJoseLatorre.
 
-: .:: ''v1.4'' :: ''part of GNU Emacs (inside ##emacs/lisp/subr.el##)'' ::.
+: .:: ''v1.5'' :: ''part of GNU Emacs (inside ##emacs/lisp/subr.el##)'' ::.
 
 
 == About versions ==
@@ -8,7 +8,7 @@ This page describes package Lisp:versions.el, by ViniciusJoseLatorre.
 This package provides routines to compare string version and to convert
 string version into an integer list.
 
-Lisp:versions.el was tested with GNU Emacs 22.0.50.1.
+Lisp:versions.el was tested with GNU Emacs 22.0.50.1, 23 and 24.
 
 I don't know if it is still compatible with XEmacs.
 
@@ -42,6 +42,9 @@ So, you can compare versions in Emacs Lisp code like:
 
 
 == Acknowledgments ==
+
+Thanks to ChongYidong for extending
+`version-to-list' to handle versions like ##"10.3d"##.
 
 Thanks to EliZaretskii for extending valid syntax for
 version string in `version-regexp-alist'.

@@ -1,5 +1,5 @@
 ;;; display-buffer-for-wide-screen.el --- Set `display-buffer-function' for wide-screen display
-;; $Id: display-buffer-for-wide-screen.el,v 1.3 2010/05/04 09:05:42 rubikitch Exp $
+;; $Id: display-buffer-for-wide-screen.el,v 1.4 2010/11/02 00:25:35 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -85,6 +85,9 @@
 ;;; History:
 
 ;; $Log: display-buffer-for-wide-screen.el,v $
+;; Revision 1.4  2010/11/02 00:25:35  rubikitch
+;; Fix an error when split-window-horizontally-threshold-width == nil
+;;
 ;; Revision 1.3  2010/05/04 09:05:42  rubikitch
 ;; Added bug report command
 ;;
@@ -98,7 +101,7 @@
 
 ;;; Code:
 
-(defvar display-buffer-for-wide-screen-version "$Id: display-buffer-for-wide-screen.el,v 1.3 2010/05/04 09:05:42 rubikitch Exp $")
+(defvar display-buffer-for-wide-screen-version "$Id: display-buffer-for-wide-screen.el,v 1.4 2010/11/02 00:25:35 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup display-buffer-for-wide-screen nil
   "display-buffer-for-wide-screen"
@@ -137,7 +140,7 @@ FORCE-OTHER-WINDOW is ignored."
                (some (lambda (re) (string-match re (buffer-name buffer))) special-display-regexps))
            (funcall special-display-function buffer))
       (if (one-window-p)
-          (let ((new-win (if (> (window-width) split-window-horizontally-threshold-width) ;originally 165
+          (let ((new-win (if (> (window-width) (or split-window-horizontally-threshold-width 160)) ;originally 165
                              (split-window-horizontally)
                            (split-window-vertically))))
             (set-window-buffer new-win buffer)

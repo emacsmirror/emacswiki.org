@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 325 $  
+;; RCS Version: $Rev: 326 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 325 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 326 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -207,7 +207,6 @@
 (eval-when-compile (require 'cl)
                    (require 'desktop)
                    (require 'esh-mode)
-                   (require 'locate)
                    (require 'recentf)
                    (require 'term))
 
@@ -379,7 +378,7 @@
 (defvar sr-selected-window-width nil
   "The width the selected window should have on startup.")
 
-(defvar sr-history-registry '((left)(right)) 
+(defvar sr-history-registry '((left)(right))
   "Registry of visited directories for both panes")
 
 (defvar sr-ti-openterms nil
@@ -987,7 +986,7 @@ automatically:
             (setq sr-left-directory left-directory))
         (if right-directory
             (setq sr-right-directory right-directory))
-        
+
         (setq sr-running t)
         (setq sr-restore-buffer (current-buffer))
         (setq sr-prior-window-configuration (current-window-configuration))
@@ -999,7 +998,7 @@ automatically:
         (setq sr-this-directory default-directory)
         (setq sr-current-frame (window-frame (selected-window)))
         (message "%s" welcome)
-        (sr-highlight)) ;;<-- W32Emacs needs this 
+        (sr-highlight)) ;;<-- W32Emacs needs this
     (let ((my-frame (window-frame (selected-window))))
       (sr-quit)
       (message "All life leaps out to greet the light...")
@@ -1365,7 +1364,7 @@ automatically:
   (unless height (setq sr-selected-window-width t))
   (sr-setup-windows)
   (setq sr-windows-locked t))
- 
+
 (defun sr-max-lock-panes ()
   (interactive)
   (sr-save-panes-width)
@@ -2175,7 +2174,7 @@ automatically:
                             "copying" (sr-files-size items)))
             (sr-clone items target #'copy-file progress ?C)
             (sr-progress-reporter-done progress)))
-        (flet ((message (msg &rest args) (ignore))) 
+        (flet ((message (msg &rest args) (ignore)))
           (dired-unmark-all-marks))))))
 
 (defun sr-do-symlink ()
@@ -2327,7 +2326,7 @@ automatically:
             (unless (file-symlink-p initial-path)
               (sr-clone-directory
                initial-path name target-dir clone-op progress do-overwrite))))
-         
+
          (clone-op
           ;; (message "[[Cloning: %s => %s]]" f target-file)
           (if (file-exists-p target-file)
@@ -2699,8 +2698,9 @@ or (c)ontents? ")
 
 (eval-and-compile
   (unless (featurep 'locate)
+    (defvar locate-command nil)
     (defun locate-prompt-for-search-string ()
-      (error "ERROR: Feature locate not available!"))))
+      (error "ERROR: Locate feature not available!"))))
 
 (defun sr-locate-filter (locate-buffer search-string)
   "Returns the filter function that processes the output produced by the locate
@@ -2717,7 +2717,7 @@ or (c)ontents? ")
                      (insert-directory x sr-virtual-listing-switches nil nil)))
                  (split-string output "[\r\n]" t))
            (quit
-            (interrupt-process process))))))
+            (delete-process process))))))
 
 (defun sr-locate-sentinel (locate-buffer)
   "Returns the sentinel function used to notify about the termination status of
@@ -2729,7 +2729,14 @@ or (c)ontents? ")
        (insert "\n " locate-command " " status)
        (forward-char -1)
        (insert " at " (substring (current-time-string) 0 19))
-       (forward-char 1))))
+       (forward-char 1))
+     (sr-beginning-of-buffer)
+     (sr-highlight)))
+
+(defun sr-locate-prompt ()
+  "Displays the message that appears when a locate process is launched."
+  (message (propertize "Sunrise locate (C-g to abort)"
+                       'face 'minibuffer-prompt)))
 
 (defun sr-locate (search-string &optional filter arg)
   "Runs locate asynchronously and displays results in sunrise virtual mode."
@@ -2747,9 +2754,9 @@ or (c)ontents? ")
       (setq locate-process
             (start-process "Async Locate" nil locate-command search-string))
       (sr-locate-filter locate-buffer search-string))
-     (set-process-sentinel
-      locate-process
-      (sr-locate-sentinel locate-buffer)))))
+     (set-process-sentinel locate-process (sr-locate-sentinel locate-buffer))
+     (set-process-buffer locate-process locate-buffer)
+     (run-with-idle-timer 0.01 nil 'sr-locate-prompt))))
 
 (defun sr-fuzzy-narrow ()
   "Interactively narrows the contents of  the current pane using fuzzy matching:
@@ -2794,7 +2801,7 @@ or (c)ontents? ")
               (sit-for 1)))
           (setq next-char (read-char (concat "Fuzzy narrow: " filter))))))
     (dired-change-marks ?\t ?*)))
-  
+
 (defun sr-recent-files ()
   "Displays the history of recent files maintained by recentf in sunrise virtual
    mode."

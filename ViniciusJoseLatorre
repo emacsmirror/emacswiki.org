@@ -124,7 +124,7 @@ code.
 
 </pre>
 ; ([Self:action=history;id=versions.el history])  Download:versions.el  (VersionsPackage) : Version string comparison.
-: .:: ''v1.4'' :: ''part of GNU Emacs (inside ##emacs/lisp/subr.el##)'' ::.
+: .:: ''v1.5'' :: ''part of GNU Emacs (inside ##emacs/lisp/subr.el##)'' ::.
 <pre>
 
 </pre>
