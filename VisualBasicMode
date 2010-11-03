@@ -33,7 +33,18 @@ You have to make 2 little changes to make it work on a emacs 22
 running on a tty.
 
 One is a broken regexp, the other is to remove a check for emacs 19.
-Contact me if you want it.
+
+here are the snippets:
+
+;;JAVE seems broken emacs 22
+;(defconst visual-basic-continuation-regexp "^.*\\_[ \t]*$")
+(setq visual-basic-continuation-regexp "^.*\_[ \t]*$")
+
+...
+
+(defun visual-basic-enable-font-lock ()
+  ;; Emacs 19.29 requires a window-system else font-lock-mode errs out.
+  (cond ((or visual-basic-xemacs-p window-system t) ;;JAVE just always run this code
 
 JoakimVerona
 
