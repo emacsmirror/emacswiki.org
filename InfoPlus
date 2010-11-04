@@ -1,6 +1,6 @@
 DrewAdams has written library <tt>[[info+.el]]</tt> ('''info+'''), which extends the standard Emacs library ##info.el##.
 
-Library '''info+''' provides:
+'''[::Info+]''' provides:
 
 * '''''NEW''''' --- Breadcrumbs in the [[mode line]]. See where you are in the Info hierarchy, and access higher nodes directly. Turned on by default. See `##Toggle Breadcrumbs##' in `mouse-3' mode-line menu and `##Toggle Breadcrumbs in Mode Line##' in `Info' menu (e.g. in the minor-mode indicator). You can customize [[option]] '''`Info-breadcrumbs-in-mode-line-mode'''' if you want to turn it off by default. (Available for Emacs 23+ only.)
 

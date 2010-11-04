@@ -26,5 +26,10 @@ Finally, you can convert a readable EDI file (line-by-line) back into a standard
 || C-c C-e || Convert file back to ''one-line'' format ||
 || C-c C-c || Query for segment name and count it's occurances ||
 
+== Missing Features ==
+
+* How about different separating chars? It should be configurable
+* How about escaping char? It should be configurable
+
 ----
 CategoryModes

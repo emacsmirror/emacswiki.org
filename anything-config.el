@@ -1804,6 +1804,7 @@ buffer that is not the current buffer."
                                ;; Restore highlighting disabled in *-find-files.
                                (let ((anything-mp-highlight-delay 0.7))
                                  (anything-do-grep (anything-marked-candidates)))))
+           ("Ediff Files" . anything-find-files-ediff-files)
            ("Delete File(s)" . anything-delete-marked-files)
            ("Copy file(s) `C-u to follow'" . anything-find-files-copy)
            ("Rename file(s) `C-u to follow'" . anything-find-files-rename)
@@ -1830,9 +1831,7 @@ ACTION must be an action supported by `anything-dired-action'."
                     (capitalize (symbol-name action)) ifiles))
          (parg     anything-current-prefix-arg)
          (dest     (anything-c-read-file-name
-                    prompt
-                    :persistent-action 'anything-find-files-persistent-action
-                    :persistent-help "Expand candidate"))
+                    prompt))
          (win-conf (current-window-configuration)))
     (unwind-protect
          (with-current-buffer (dired default-directory)
@@ -1866,6 +1865,13 @@ ACTION must be an action supported by `anything-dired-action'."
         (parg     anything-current-prefix-arg))
     (loop for fname in files
        do (byte-compile-file fname parg))))
+
+(defun anything-find-files-ediff-files (candidate)
+  "Default action to ediff files in `anything-find-files'."
+  (ediff-files
+   candidate
+   (anything-c-read-file-name
+    (format "Ediff `%s' With File: " (file-name-nondirectory candidate)))))
 
 (defun* anything-reduce-file-name (fname level &key unix-close expand)
     "Reduce FNAME by LEVEL from end or beginning depending LEVEL value.
@@ -1945,7 +1951,10 @@ If prefix numeric arg is given go ARG level down."
                      (t anything-pattern)))
          (tramp-verbose anything-tramp-verbose)) ; No tramp message when 0.
     (set-text-properties 0 (length path) nil path)
-    (setq anything-pattern (replace-regexp-in-string " " ".*" path))
+    (if (member 'anything-compile-source--match-plugin
+                anything-compile-source-functions)
+        (setq anything-pattern path)
+        (setq anything-pattern (replace-regexp-in-string " " ".*" path)))
     (cond ((or (file-regular-p path)
                (and (not (file-exists-p path)) (string-match "/$" path))
                (and ffap-url-regexp (string-match ffap-url-regexp path)))
@@ -2065,7 +2074,9 @@ If prefix numeric arg is given go ARG level down."
                           i)))))
 
 (defun anything-find-files-action-transformer (actions candidate)
-  (cond ((string-match (image-file-name-regexp) candidate)
+  (cond ((with-current-buffer anything-current-buffer (eq major-mode 'message-mode))
+         (append actions '(("Gnus attach file(s)" . anything-ff-gnus-attach-files))))
+        ((string-match (image-file-name-regexp) candidate)
          (append actions '(("Rotate image right" . anything-ff-rotate-image-right)
                            ("Rotate image left" . anything-ff-rotate-image-left))))
         ((string-match "\.el$" (anything-aif (anything-marked-candidates)
@@ -2075,16 +2086,20 @@ If prefix numeric arg is given go ARG level down."
                            ("Load File(s)" . load-file))))
         (t actions)))
 
+(defun anything-ff-gnus-attach-files (candidate)
+  (let ((flist (anything-marked-candidates)))
+    (gnus-dired-attach flist)))
+
 (defun anything-ff-rotate-current-image1 (file &optional num-arg)
   "Rotate current image at NUM-ARG degrees."
   (if (executable-find "mogrify")
       (progn
         (shell-command (format "mogrify -rotate %s %s" (or num-arg 90) file))
-        (when (buffer-live-p "*image-dired-display-image*")
-          (kill-buffer "*image-dired-display-image*"))
+        (when (buffer-live-p image-dired-display-image-buffer)
+          (kill-buffer image-dired-display-image-buffer))
         (image-dired-display-image file)
         (message nil)
-        (display-buffer (get-buffer "*image-dired-display-image*")))
+        (display-buffer (get-buffer image-dired-display-image-buffer)))
       (error "mogrify not found")))
 
 (defun anything-ff-rotate-image-left (candidate)
@@ -2123,11 +2138,11 @@ If CANDIDATE is alone, open file CANDIDATE filename."
                    (insert-in-minibuffer new-pattern)
                    (if (string-match (image-file-name-regexp) candidate)
                        (progn
-                         (when (buffer-live-p "*image-dired-display-image*")
-                           (kill-buffer "*image-dired-display-image*"))
+                         (when (buffer-live-p image-dired-display-image-buffer)
+                           (kill-buffer image-dired-display-image-buffer))
                          (image-dired-display-image candidate)
                          (message nil)
-                         (display-buffer "*image-dired-display-image*"))
+                         (display-buffer image-dired-display-image-buffer))
                        (find-file candidate)))))))))
 
 (defun anything-c-insert-file-name-completion-at-point (candidate)
@@ -2149,13 +2164,17 @@ If CANDIDATE is alone, open file CANDIDATE filename."
             (error "Aborting completion: No valid file name at point")))))
 
 ;;;###autoload
-(defun anything-find-files ()
-  "Preconfigured `anything' for anything implementation of `find-file'."
-  (interactive)
+(defun anything-find-files (&optional fname)
+  "Preconfigured `anything' for anything implementation of `find-file'.
+In non--interactive use an argument FNAME can be used.
+This is the starting point for nearly all actions you can do on files."
+  (interactive "i")
   (let ((anything-mp-highlight-delay nil))
     (anything :sources 'anything-c-source-find-files
-              :input (anything-find-files-input (ffap-guesser)
-                                                (thing-at-point 'filename))
+              :input (or (and fname (expand-file-name fname))
+                         (anything-find-files-input
+                          (ffap-guesser)
+                          (thing-at-point 'filename)))
               :prompt "Find Files or Url: "
               :buffer "*Anything Find Files*")))
 
@@ -2436,13 +2455,14 @@ You can put (anything-dired-binding 1) in init file to enable anything bindings.
        'anything-dired-hardlink-file 'dired-do-hardlink dired-mode-map)
       (setq anything-dired-bindings nil)))
 
-(defun* anything-c-read-file-name (prompt &key
-                                          (initial-input (expand-file-name default-directory))
-                                          (buffer "*Anything Completions*")
-                                          test
-                                          (marked-candidates nil)
-                                          (persistent-action nil)
-                                          (persistent-help "DoNothing"))
+(defun* anything-c-read-file-name (prompt
+                                   &key
+                                   (initial-input (expand-file-name default-directory))
+                                   (buffer "*Anything Completions*")
+                                   test
+                                   (marked-candidates nil)
+                                   (persistent-action 'anything-find-files-persistent-action)
+                                   (persistent-help "Hit1 Expand Candidate, Hit2 or (C-u) Find file"))
   "Anything `read-file-name' emulation.
 INITIAL-INPUT is a valid path, TEST is a predicate that take one arg."
   (when (get-buffer anything-action-buffer)
@@ -2530,20 +2550,8 @@ The \"-r\" option must be the last option.")
 ;; (anything 'anything-c-source-locate)
 
 ;;; Grep
-(defvar anything-c-grep-command-w32 "FINDSTR")
-(defvar anything-c-grep-command-args-w32 '("/N" "/R"))
 (defvar anything-c-grep-default-command "grep -nH -e '%s' %s %s")
-(defvar anything-c-grep-default-function (if (eq system-type 'windows-nt)
-                                             'anything-c-grep-init-w32
-                                             'anything-c-grep-init))
-
-(defun anything-c-grep-init-w32 (only-files)
-  "Default grep function for windows system.
-It use the dos command FINDSTR defined in `anything-c-grep-command-w32'
-with args defined in `anything-c-grep-command-args-w32'."
-  (apply #'start-process "grep-process" nil anything-c-grep-command-w32
-         (append anything-c-grep-command-args-w32
-                 (list anything-pattern only-files))))
+(defvar anything-c-grep-default-function 'anything-c-grep-init)
 
 (defun anything-c-grep-init (only-files)
   "Start an asynchronous grep process in ONLY-FILES list."
@@ -2567,6 +2575,7 @@ WHERE can be one of other-window, elscreen, other-frame."
       (elscreen     (anything-elscreen-find-file fname))
       (other-frame  (find-file-other-frame fname))
       (t (find-file fname)))
+    (show-all)
     (anything-goto-line lineno)))
 
 (defun anything-c-grep-persistent-action (candidate)
@@ -5540,11 +5549,11 @@ Return an alist with elements like (data . number_results)."
                                for i in cur-list
                                collect (assoc-default 'name i)))))
     (loop for i in candidates
-       if (member i current-playlist)
-       collect (cons (propertize (file-name-nondirectory i)
+       if (member (cdr i) current-playlist)
+       collect (cons (propertize (car i)
                                  'face 'anything-emms-playlist)
-                     i) into lis
-       else collect (cons (file-name-nondirectory i) i) into lis
+                     (cdr i)) into lis
+       else collect i into lis
        finally return lis)))
 
 (defun anything-c-emms-play-current-playlist ()
@@ -5557,8 +5566,13 @@ Return an alist with elements like (data . number_results)."
   '((name . "Emms files")
     (candidates . (lambda ()
                     (loop for v being the hash-values in emms-cache-db
-                       for name = (assoc-default 'name v)
-                       unless (string-match "^http:" name) collect name)))
+                       for name      = (assoc-default 'name v)
+                       for artist    = (or (assoc-default 'info-artist v) "unknown")
+                       for genre     = (or (assoc-default 'info-genre v) "unknown")
+                       for tracknum  = (or (assoc-default 'info-tracknumber v) "unknown")
+                       for song      = (or (assoc-default 'info-title v) "unknown")
+                       for info      = (concat artist " - " genre " - " tracknum ": " song)
+                       unless (string-match "^http:" name) collect (cons info name))))
     (filtered-candidate-transformer . anything-c-emms-files-modifier)
     (action . (("Play file" . emms-play-file)
                ("Add to Playlist and play (C-u clear current)"
@@ -5789,6 +5803,8 @@ See also `anything-create--actions'."
     (candidates-in-buffer)
     (display-to-real . anything-c-top-display-to-real)
     (update . anything-c-top-update)
+    (persistent-action . anything-c-top-sh-persistent-action)
+    (persistent-help . "SIGTERM")
     (action
      ("kill (TERM)" . (lambda (pid) (anything-c-top-sh (format "kill -TERM %s" pid))))
      ("kill (KILL)" . (lambda (pid) (anything-c-top-sh (format "kill -KILL %s" pid))))
@@ -5797,6 +5813,11 @@ See also `anything-create--actions'."
 
 (defun anything-c-top-sh (cmd)
   (message "Executed %s\n%s" cmd (shell-command-to-string cmd)))
+
+(defun anything-c-top-sh-persistent-action (pid)
+  (delete-other-windows)
+  (anything-c-top-sh (format "kill -TERM %s" pid))
+  (anything-force-update))
 
 (defun anything-c-top-init ()
   (with-current-buffer (anything-candidate-buffer 'global)
@@ -6560,7 +6581,7 @@ If not found or a prefix arg is given query the user which tool to use."
                            :must-match t
                            :name "Open file Externally"
                            :history anything-external-command-history)
-                          " %s")))
+                          " '%s'")))
          (real-prog-name (replace-regexp-in-string " %s" "" program)))
     (unless (or def-prog ; Association exists, no need to record it.
                 (not (file-exists-p fname))) ; Don't record non--filenames.
@@ -7474,10 +7495,14 @@ Return nil if bmk is not a valid bookmark."
            ("Find file other window" . find-file-other-window)
            ("Find file other frame" . find-file-other-frame)))
      ("Open dired in file's directory" . anything-c-open-dired)
+     ("Grep File(s)" . (lambda (candidate)
+                         ;; Restore highlighting disabled in *-find-files.
+                         (let ((anything-mp-highlight-delay 0.7))
+                           (anything-do-grep (anything-marked-candidates)))))
      ("View file" . view-file)
      ("Insert file" . insert-file)
      ("Delete file(s)" . anything-delete-marked-files)
-     ("Open file externally" . anything-c-open-file-externally)
+     ("Open file externally (C-u to choose)" . anything-c-open-file-externally)
      ("Open file with default tool" . anything-c-open-file-with-default-tool)
      ("Find file in hex dump" . hexl-find-file))
     (persistent-help . "Show this file")

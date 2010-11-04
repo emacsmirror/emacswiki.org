@@ -20,3 +20,8 @@ Usage of couchdb-document-text
   ;; or 
   (find-file "/couchdb:/db/xxx.org.gpg")
   ;; write something, then C-x C-s
+
+Unsupportted features:
+* revision: alway open the last revision of the document.
+* attatchment: attatchment are not support, using `find-file' to open a couchdb document will cause unexpected result.
+* dired: `insert-directory' of couchdb document are not implemented, so it not works with dired.

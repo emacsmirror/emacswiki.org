@@ -111,8 +111,8 @@ Add this to your .emacs:
         (let (collect-names)
           (mapc (lambda (item)
                   (let ((name (replace-regexp-in-string "-" "_" (car item)))
-                        (file (cdaadr item)))
-                    (message file)
+                        (file (cdr (assoc 'filename 
+                                           (if (cddr item) item (cadr item))))))
                     (when (and (not (tramp-tramp-file-p file))
                                (file-directory-p file))
                       (setq collect-names (cons (concat "~" name) collect-names))

@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.2
+;; Version: 0.3
 ;; Keywords: json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -28,6 +28,7 @@
 ;;
 
 ;; ChangeLog:
+;; 0.3: fix 'true', 'false', '[]' and '{}'.
 ;;
 ;; 0.2: fix org-json-encode for mistake convert single element alist
 ;; to vector.
@@ -224,20 +225,25 @@ actural call `org-json-gen-alist1' to work."
                                    "\\\\" "\\\\" obj))
                                  "\"")))
         ((numberp obj) (number-to-string obj))
-        ((vectorp obj) (let ((n 0) ns)
-                         (mapconcat
-                          (lambda (x)
-                            (prog1
-                                (org-json-kv-decode
-                                 (cons (number-to-string n)
-                                       x)
-                                 lv)
-                              (setq n (1+ n))))
-                          obj "\n")))
+        ((vectorp obj) (if (= (length obj) 0)
+                           "[]"
+                         (let ((n 0) ns)
+                           (mapconcat
+                            (lambda (x)
+                              (prog1
+                                  (org-json-kv-decode
+                                   (cons (number-to-string n)
+                                         x)
+                                   lv)
+                                (setq n (1+ n))))
+                            obj "\n"))))
+        ((equal obj json-null) "{}")
         ((listp obj) (mapconcat
                       (lambda (x)
                         (org-json-kv-decode x lv))
                       obj "\n"))
+        ((equal obj t) "true")
+        ((equal obj json-false) "false")
         (t (error "org-json-decode type error: %S" obj))))
 
 (defun org-json-kv-decode (kv lv)

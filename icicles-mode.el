@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Oct 21 09:22:58 2010 (-0700)
+;; Last-Updated: Wed Nov  3 14:59:22 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6711
+;;     Update #: 6727
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3286,7 +3286,9 @@ No such replacement is done if option
     (defalias 'customize-face                         'icicle-customize-face)
     (defalias 'customize-face-other-window            'icicle-customize-face-other-window)
     (defalias 'dabbrev-completion                     'icicle-dabbrev-completion)
-    (defalias 'lisp-complete-symbol                   'icicle-lisp-complete-symbol)
+    (if (fboundp 'completion-at-point)  ; Emacs 23.2.
+        (defalias 'lisp-completion-at-point           'icicle-lisp-complete-symbol)
+      (defalias 'lisp-complete-symbol                 'icicle-lisp-complete-symbol))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'icicle-minibuffer-default-add-completions))
     (defalias 'read-from-minibuffer                   'icicle-read-from-minibuffer)
@@ -3325,7 +3327,9 @@ See `icicle-redefine-standard-commands'."
     (defalias 'customize-face                         'old-customize-face)
     (defalias 'customize-face-other-window            'old-customize-face-other-window)
     (defalias 'dabbrev-completion                     'old-dabbrev-completion)
-    (defalias 'lisp-complete-symbol                   'old-lisp-complete-symbol)
+    (if (fboundp 'completion-at-point)  ; Emacs 23.2.  It no longer uses `lisp-complete-symbol'.
+        (defalias 'lisp-completion-at-point           'old-lisp-completion-at-point)
+      (defalias 'lisp-complete-symbol                 'old-lisp-complete-symbol))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'old-minibuffer-default-add-completions))
     (defalias 'read-from-minibuffer                   'old-read-from-minibuffer)

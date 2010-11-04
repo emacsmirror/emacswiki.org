@@ -38,3 +38,37 @@ Documentation: [[InfRubyCompany]]
 
 -- [[nschum]]
 
+[:PhpCompletion]
+= Php function completion =
+
+It fetches the list of functions from php.net if it's not fetched already, so it does not need a static completion list, only an internet connections:
+
+<pre>
+ (defun company-my-php-backend (command &optional arg &rest ignored)
+    (case command
+      ('prefix (and (eq major-mode 'php-mode)
+                    (company-grab-symbol)))
+      ('sorted t)
+      ('candidates (all-completions
+                    arg 
+                    (if (and (boundp 'my-php-symbol-hash)
+                             my-php-symbol-hash)
+                        my-php-symbol-hash
+
+                      (message "Fetching completion list...")
+
+                      (with-current-buffer
+                          (url-retrieve-synchronously "http://php.net/quickref.php")
+
+                        (goto-char (point-min))
+
+                        (if (re-search-forward "<!-- result list start -->" nil t)
+                            (let ((end (save-excursion
+                                         (if (re-search-forward "<!-- result list end -->" nil t)
+                                             (point)))))
+                              (if end
+                                  (let ((hash (make-hash-table)))
+                                    (while (re-search-forward ">\\([^<]+\\)</a>" end t)
+                                      (puthash (match-string 1) t hash))
+                                    (setq my-php-symbol-hash hash)))))))))))
+</pre>

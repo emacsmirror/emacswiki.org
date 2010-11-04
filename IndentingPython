@@ -14,6 +14,8 @@ If you have not embraced semantic indentation yet, PyIndent allows the use of C-
 
 The official [http://www.python.org/dev/peps/pep-0008/ Style Guide for Python Code] states that both spaces (preferably 4-space tabs) ''or'' spaces can be used to indent code. However, for new projects, spaces are recommended.
 
+The variable that controls the indentation level is called `python-indent' and defaults to 4.
+
 To automatically guess the style, use GuessStyle, which automatically detects whether the current file uses tabs or spaces for indentation (among other things). For new files it seems to be using spaces, just as we want.
 
 Enable it like so:

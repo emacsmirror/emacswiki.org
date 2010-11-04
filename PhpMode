@@ -214,6 +214,11 @@ Here's a variation of my quick documentation lookup above. It shows short help f
 
 </pre>
 
+
+== Completion with Company ==
+
+See [[CompanyModeBackends#PhpCompletion]]
+
 == Discussion ==
 
 [new]

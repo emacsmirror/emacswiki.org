@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 11:31:11 2010 (-0700)
+;; Last-Updated: Wed Nov  3 15:02:34 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21448
+;;     Update #: 21457
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1389,13 +1389,18 @@ control completion behaviour using `bbdb-completion-type'."
                   (message "Making completion list...done")))))))))
 
 
-;; REPLACE ORIGINAL `lisp-complete-symbol' defined in `lisp.el',
-;; saving it for restoration when you toggle `icicle-mode'.
+;; REPLACE ORIGINAL `lisp-complete-symbol' (< Emacs 23.2)
+;;               or `lisp-completion-at-point' (>= Emacs 23.2),
+;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; Selects *Completions* window even if on another frame.
+;; 1. Select *Completions* window even if on another frame.
+;; 2. Explicitly return nil, for use in `completion-at-point-functions'.
 ;;
-(unless (fboundp 'old-lisp-complete-symbol)
-(defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
+(if (fboundp 'completion-at-point)      ; Emacs 23.2.  It no longer uses `lisp-complete-symbol'.
+    (unless (fboundp 'old-lisp-completion-at-point)
+(defalias 'old-lisp-completion-at-point (symbol-function 'lisp-completion-at-point)))
+  (unless (fboundp 'old-lisp-complete-symbol)
+(defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol))))
 
 ;;;###autoload
 (defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.
@@ -1460,7 +1465,9 @@ considered."
         (setq new  (save-excursion (completing-read "Complete Lisp symbol: "
                                                     obarray predicate t new)))))
     (delete-region beg end)
-    (insert new)))
+    (insert new))
+  ;; Return nil so we can use this for `completion-at-point-functions'.
+  nil)
 
 ;;;###autoload
 (defun icicle-customize-icicles-group ()

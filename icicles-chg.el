@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 27 11:55:41 2010 (-0700)
+;; Last-Updated: Wed Nov  3 15:07:35 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5767
+;;     Update #: 5780
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/11/03 dadams
+;;     defalias old-lisp-completion-at-point, not old-lisp-complete-symbol, for Emacs 23.2+.
+;;     icicle-lisp-complete-symbol:
+;;       Explicitly return nil, for use in completion-at-point-functions (Emacs 23.2+).
 ;; 2010/10/25 dadams
 ;;     icicle-buffer-list: Use icicle-must-pass-after-match-predicate, not icicle-must-pass-predicate.
 ;;     icicle-directory-list:
@@ -3183,6 +3187,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/11/03 dadams
+;;     icicle-(redefine|restore)-standard-commands:
+;;       Updated for Emacs 23.2+: defalias lisp-completion-at-point instead.  Thx to Michael Heerdegen.
 ;; 2010/10/21 dadams
 ;;     icicle-minibuffer-setup:: Revert last change: this must NOT be local.
 ;; 2010/10/19 dadams
