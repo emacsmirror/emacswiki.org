@@ -401,7 +401,10 @@ How much time have I spent on this? A bit, I guess -- time passes way too fast w
 
 3) That function is actually called "fuzzy narrowing". How do you exactly imagine navigating through a listing while narrowing its contents?
 
-4) I didn't know igrep before - will have to have a good look at it :) Thanks for the tip!
+4) I didn't know igrep before - will have to have a good look at it :) Thanks for the tip.
+
+*Update 2010-11-05:* find can be now performed in marked directories too, the implementation uses the traditional find-dired, so no need to include any other external libraries.
+
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 [new]

@@ -1,0 +1,5 @@
+Haml does have an emacs plugin, it is just a bit hard to find:
+
+See http://nex-3.com/posts/79-highlighting-ruby-in-haml-mode
+
+and https://github.com/nex3/haml/blob/syntax-highlighting/extra/haml-mode.el

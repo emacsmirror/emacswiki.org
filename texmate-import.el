@@ -6,16 +6,20 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Mon Nov  1 17:46:56 2010 (-0500)
-;;           By: Matthew L. Fidler
-;;     Update #: 513
+;; Last-Updated: Thu Nov  4 12:47:46 2010 (-0500)
+;;           By: us041375
+;;     Update #: 537
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `assoc', `backquote', `button', `bytecomp', `cl', `easymenu',
+;;   `help-mode', `mail-prsvr', `mailcap', `mm-util', `timer',
+;;   `timezone', `url', `url-cookie', `url-expand', `url-history',
+;;   `url-methods', `url-parse', `url-privacy', `url-proxy',
+;;   `url-util', `url-vars', `view', `yasnippet'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -32,6 +36,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 04-Nov-2010      
+;;    Last-Updated: Thu Nov  4 12:38:32 2010 (-0500) #535 (us041375)
+;;    Changed extension from .yasnippet to what the package is in a svn-import.
+;; 04-Nov-2010      
+;;    Last-Updated: Thu Nov  4 10:55:27 2010 (-0500) #525 (us041375)
+;;    replace-in-string changed to texmate-replace-in-string.  May be missing on some systems.
 ;; 01-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Nov  1 16:19:16 2010 (-0500) #447 (Matthew L. Fidler)
 ;;    Bug fix for expand-env
@@ -132,6 +142,13 @@
   "* Texmate import"
   )
 
+(defun texmate-replace-in-string (string in out)
+  (save-match-data
+    (let ((ret string))
+      (while (string-match in ret)
+        (setq ret (replace-match out 't nil ret)))
+      (symbol-value 'ret))))
+
 (defcustom texmate-menu-definition 0
   "* Defines the type of menu definition that is implemented:
 
@@ -160,6 +177,429 @@ Possible choices are:
     (symbol-value 'content)
     )
   )
+(defun texmate-regexp-to-emacs-regexp (rexp)
+  "* Convert a texmate regular expression to an emacs regular expression"
+  ;; Emacs http://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-of-Regexps.html#Syntax-of-Regexps
+  ;; Texmate http://manual.macromates.com/en/drag_commands#drag_commands
+
+  ;; \w => \w
+  ;; \W => \W
+  ;; \s => \s- (Whitespace)
+  ;; \S => \S-
+  ;; \d => [0-9] Decimal digit character
+  ;; \D => [^0-9] Non-decimal digit character
+  ;; \h => [0-9a-fA-F] Hexadecimal digit character
+  ;; \H => [^0-9a-fA-F] Not Hexadecimal digit character
+  ;; \p{Alnum} => [A-Za-z0-9] Alphanumeirc
+  ;; \p{^Alnum} => [^A-Za-z0-9] Alphanumeirc
+  ;;  Alpha, Blank, Cntrl, Digit, Graph, Lower,
+  ;;       Print, Punct, Space, Upper, XDigit, Word, ASCII,
+
+  ;; The following CANNOT be translated to an emacs regular
+  ;; expression.  The regular expression would need to be extended.
+  ;;
+  ;;
+  ;; If you want to use '[', '-', ']' as a normal character
+  ;; in a character class, you should escape these characters by '\'.
+
+  ;;POSIX bracket ([:xxxxx:], negate [:^xxxxx:])
+
+    ;; Not Unicode Case:
+    ;;   alpha    alphabet
+    ;;   ascii    code value: [0 - 127]
+    ;;   blank    \t, \x20
+    ;;   cntrl
+    ;;   digit    0-9
+    ;;   graph    include all of multibyte encoded characters
+    ;;   lower
+    ;;   print    include all of multibyte encoded characters
+    ;;   punct
+    ;;   space    \t, \n, \v, \f, \r, \x20
+    ;;   upper
+    ;;   xdigit   0-9, a-f, A-F
+    ;;   word     alphanumeric, "_" and multibyte characters
+  
+    ;;   alnum    alphabet or digit char
+
+    ;; Unicode Case:
+
+    ;;   alnum    Letter | Mark | Decimal_Number
+    ;;   alpha    Letter | Mark
+    ;;   ascii    0000 - 007F
+    ;;   blank    Space_Separator | 0009
+    ;;   cntrl    Control | Format | Unassigned | Private_Use | Surrogate
+    ;;   digit    Decimal_Number
+    ;;   graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
+    ;;   lower    Lowercase_Letter
+    ;;   print    [[:graph:]] | [[:space:]]
+    ;;   punct    Connector_Punctuation | Dash_Punctuation | Close_Punctuation |
+    ;;            Final_Punctuation | Initial_Punctuation | Other_Punctuation |
+    ;;            Open_Punctuation
+    ;;   space    Space_Separator | Line_Separator | Paragraph_Separator |
+    ;;            0009 | 000A | 000B | 000C | 000D | 0085
+    ;;   upper    Uppercase_Letter
+    ;;   xdigit   0030 - 0039 | 0041 - 0046 | 0061 - 0066
+    ;;            (0-9, a-f, A-F)
+    ;;   word     Letter | Mark | Decimal_Number | Connector_Punctuation
+
+
+
+
+  ;; {n,m} => \{n,m\}
+  ;; {,n} => \{,n\}
+  ;; \{n,\} => \{n,\}
+
+  ;; *? => Non-greedy
+  ;; *+ => Greedy
+
+  ;; Anchors
+  ;; \b -- \b
+  ;; \B -- Not word boundary.
+  ;; \A -- Beginning of string.
+  ;; \Z -- end of string OR before newline at the end
+  ;; \z -- End of string
+  ;; \G -- Matching start position.
+
+  ;; \t => \t
+  ;; \n => \n
+  ;; \r => \n (Return)
+  ;; \e => escape
+  ;; \nnn => Octal character
+  ;; \xHH => Hexadecimal character
+  ;; \cx => Control character
+  ;; \C-x => Control character
+  ;; \M-x => Meta character
+  ;; \M-\C-x => Meta Control character
+
+
+
+;;        Hiragana, Katakana
+
+;;      + works on UTF8, UTF16, UTF32
+;;        Any, Assigned, C, Cc, Cf, Cn, Co, Cs, L, Ll, Lm, Lo, Lt, Lu,
+;;        M, Mc, Me, Mn, N, Nd, Nl, No, P, Pc, Pd, Pe, Pf, Pi, Po, Ps,
+;;        S, Sc, Sk, Sm, So, Z, Zl, Zp, Zs, 
+;;        Arabic, Armenian, Bengali, Bopomofo, Braille, Buginese,
+;;        Buhid, Canadian_Aboriginal, Cherokee, Common, Coptic,
+;;        Cypriot, Cyrillic, Deseret, Devanagari, Ethiopic, Georgian,
+;;        Glagolitic, Gothic, Greek, Gujarati, Gurmukhi, Han, Hangul,
+;;        Hanunoo, Hebrew, Hiragana, Inherited, Kannada, Katakana,
+;;        Kharoshthi, Khmer, Lao, Latin, Limbu, Linear_B, Malayalam,
+;;        Mongolian, Myanmar, New_Tai_Lue, Ogham, Old_Italic, Old_Persian,
+;;        Oriya, Osmanya, Runic, Shavian, Sinhala, Syloti_Nagri, Syriac,
+;;        Tagalog, Tagbanwa, Tai_Le, Tamil, Telugu, Thaana, Thai, Tibetan,
+;;        Tifinagh, Ugaritic, Yi
+
+
+
+;; 4. Quantifier
+
+;;   greedy
+
+;;     ?       1 or 0 times
+;;     *       0 or more times
+;;     +       1 or more times
+;;     {n,m}   at least n but not more than m times
+;;     {n,}    at least n times
+;;     {,n}    at least 0 but not more than n times ({0,n})
+;;     {n}     n times
+
+;;   reluctant
+
+;;     ??      1 or 0 times
+;;     *?      0 or more times
+;;     +?      1 or more times
+;;     {n,m}?  at least n but not more than m times  
+;;     {n,}?   at least n times
+;;     {,n}?   at least 0 but not more than n times (== {0,n}?)
+
+;;   possessive (greedy and does not backtrack after repeated)
+
+;;     ?+      1 or 0 times
+;;     *+      0 or more times
+;;     ++      1 or more times
+
+;;     ({n,m}+, {n,}+, {n}+ are possessive op. in ONIG_SYNTAX_JAVA only)
+
+;;     ex. /a*+/ === /(?>a*)/
+
+
+;; 5. Anchors
+
+;;   ^       beginning of the line
+;;   $       end of the line
+;;   \b      word boundary
+;;   \B      not word boundary
+;;   \A      beginning of string
+;;   \Z      end of string, or before newline at the end
+;;   \z      end of string
+;;   \G      matching start position 
+
+
+;; 6. Character class
+
+;;   ^...    negative class (lowest precedence operator)
+;;   x-y     range from x to y
+;;   [...]   set (character class in character class)
+;;   ..&&..  intersection (low precedence at the next of ^)
+
+;;     ex. [a-w&&[^c-g]z] ==> ([a-w] AND ([^c-g] OR z)) ==> [abh-w]
+
+;;   * If you want to use '[', '-', ']' as a normal character
+;;     in a character class, you should escape these characters by '\'.
+
+
+;;   POSIX bracket ([:xxxxx:], negate [:^xxxxx:])
+
+;;     Not Unicode Case:
+
+;;       alnum    alphabet or digit char
+;;       alpha    alphabet
+;;       ascii    code value: [0 - 127]
+;;       blank    \t, \x20
+;;       cntrl
+;;       digit    0-9
+;;       graph    include all of multibyte encoded characters
+;;       lower
+;;       print    include all of multibyte encoded characters
+;;       punct
+;;       space    \t, \n, \v, \f, \r, \x20
+;;       upper
+;;       xdigit   0-9, a-f, A-F
+;;       word     alphanumeric, "_" and multibyte characters
+
+
+;;     Unicode Case:
+
+;;       alnum    Letter | Mark | Decimal_Number
+;;       alpha    Letter | Mark
+;;       ascii    0000 - 007F
+;;       blank    Space_Separator | 0009
+;;       cntrl    Control | Format | Unassigned | Private_Use | Surrogate
+;;       digit    Decimal_Number
+;;       graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
+;;       lower    Lowercase_Letter
+;;       print    [[:graph:]] | [[:space:]]
+;;       punct    Connector_Punctuation | Dash_Punctuation | Close_Punctuation |
+;;                Final_Punctuation | Initial_Punctuation | Other_Punctuation |
+;;                Open_Punctuation
+;;       space    Space_Separator | Line_Separator | Paragraph_Separator |
+;;                0009 | 000A | 000B | 000C | 000D | 0085
+;;       upper    Uppercase_Letter
+;;       xdigit   0030 - 0039 | 0041 - 0046 | 0061 - 0066
+;;                (0-9, a-f, A-F)
+;;       word     Letter | Mark | Decimal_Number | Connector_Punctuation
+
+
+
+;; 7. Extended groups
+
+;;   (?#...)            comment
+
+;;   (?imx-imx)         option on/off
+;;                          i: ignore case
+;;                          m: multi-line (dot(.) match newline)
+;;                          x: extended form
+;;   (?imx-imx:subexp)  option on/off for subexp
+
+;;   (?:subexp)         not captured group
+;;   (subexp)           captured group
+
+;;   (?=subexp)         look-ahead
+;;   (?!subexp)         negative look-ahead
+;;   (?<=subexp)        look-behind
+;;   (?<!subexp)        negative look-behind
+
+;;                      Subexp of look-behind must be fixed character length.
+;;                      But different character length is allowed in top level
+;;                      alternatives only.
+;;                      ex. (?<=a|bc) is OK. (?<=aaa(?:b|cd)) is not allowed.
+
+;;                      In negative-look-behind, captured group isn't allowed, 
+;;                      but shy group(?:) is allowed.
+
+;;   (?>subexp)         atomic group
+;;                      don't backtrack in subexp.
+
+;;   (?<name>subexp), (?'name'subexp)
+;;                      define named group
+;;                      (All characters of the name must be a word character.)
+
+;;                      Not only a name but a number is assigned like a captured
+;;                      group.
+
+;;                      Assigning the same name as two or more subexps is allowed.
+;;                      In this case, a subexp call can not be performed although
+;;                      the back reference is possible.
+
+
+;; 8. Back reference
+
+;;   \n          back reference by group number (n >= 1)
+;;   \k<name>    back reference by group name
+;;   \k'name'    back reference by group name
+
+;;   In the back reference by the multiplex definition name,
+;;   a subexp with a large number is referred to preferentially.
+;;   (When not matched, a group of the small number is referred to.)
+
+;;   * Back reference by group number is forbidden if named group is defined 
+;;     in the pattern and ONIG_OPTION_CAPTURE_GROUP is not setted.
+
+
+;;   back reference with nest level
+
+;;     \k<name+n>     n: 0, 1, 2, ...
+;;     \k<name-n>     n: 0, 1, 2, ...
+;;     \k'name+n'     n: 0, 1, 2, ...
+;;     \k'name-n'     n: 0, 1, 2, ...
+
+;;     Destinate relative nest level from back reference position.    
+
+;;     ex 1.
+
+;;       /\A(?<a>|.|(?:(?<b>.)\g<a>\k<b+0>))\z/.match("reer")
+
+;;     ex 2.
+
+;;       r = Regexp.compile(<<'__REGEXP__'.strip, Regexp::EXTENDED)
+;;       (?<element> \g<stag> \g<content>* \g<etag> ){0}
+;;       (?<stag> < \g<name> \s* > ){0}
+;;       (?<name> [a-zA-Z_:]+ ){0}
+;;       (?<content> [^<&]+ (\g<element> | [^<&]+)* ){0}
+;;       (?<etag> </ \k<name+1> >){0}
+;;       \g<element>
+;;       __REGEXP__
+
+;;       p r.match('<foo>f<bar>bbb</bar>f</foo>').captures
+
+
+
+;; 9. Subexp call ("Tanaka Akira special")
+
+;;   \g<name>    call by group name
+;;   \g'name'    call by group name
+;;   \g<n>       call by group number (n >= 1)
+;;   \g'n'       call by group number (n >= 1)
+
+;;   * left-most recursive call is not allowed.
+;;      ex. (?<name>a|\g<name>b)   => error
+;;          (?<name>a|b\g<name>c)  => OK
+
+;;   * Call by group number is forbidden if named group is defined in the pattern
+;;     and ONIG_OPTION_CAPTURE_GROUP is not setted.
+
+;;   * If the option status of called group is different from calling position
+;;     then the group's option is effective.
+
+;;     ex. (?-i:\g<name>)(?i:(?<name>a)){0}  match to "A"
+
+
+;; 10. Captured group
+
+;;   Behavior of the no-named group (...) changes with the following conditions.
+;;   (But named group is not changed.)
+
+;;   case 1. /.../     (named group is not used, no option)
+
+;;      (...) is treated as a captured group.
+
+;;   case 2. /.../g    (named group is not used, 'g' option)
+
+;;      (...) is treated as a no-captured group (?:...).
+
+;;   case 3. /..(?<name>..)../   (named group is used, no option)
+
+;;      (...) is treated as a no-captured group (?:...).
+;;      numbered-backref/call is not allowed.
+
+;;   case 4. /..(?<name>..)../G  (named group is used, 'G' option)
+
+;;      (...) is treated as a captured group.
+;;      numbered-backref/call is allowed.
+
+;;   where
+;;     g: ONIG_OPTION_DONT_CAPTURE_GROUP
+;;     G: ONIG_OPTION_CAPTURE_GROUP
+
+;;   ('g' and 'G' options are argued in ruby-dev ML)
+
+
+
+;; -----------------------------
+;; A-1. Syntax depend options
+
+;;    + ONIG_SYNTAX_RUBY
+;;      (?m): dot(.) match newline
+
+;;    + ONIG_SYNTAX_PERL and ONIG_SYNTAX_JAVA
+;;      (?s): dot(.) match newline
+;;      (?m): ^ match after newline, $ match before newline
+
+
+;; A-2. Original extensions
+
+;;    + hexadecimal digit char type  \h, \H
+;;    + named group                  (?<name>...), (?'name'...)
+;;    + named backref                \k<name>
+;;    + subexp call                  \g<name>, \g<group-num>
+
+
+;; A-3. Lacked features compare with perl 5.8.0
+
+;;    + \N{name}
+;;    + \l,\u,\L,\U, \X, \C
+;;    + (?{code})
+;;    + (??{code})
+;;    + (?(condition)yes-pat|no-pat)
+
+;;    * \Q...\E
+;;      This is effective on ONIG_SYNTAX_PERL and ONIG_SYNTAX_JAVA.
+
+
+;; A-4. Differences with Japanized GNU regex(version 0.12) of Ruby 1.8
+
+;;    + add character property (\p{property}, \P{property})
+;;    + add hexadecimal digit char type (\h, \H)
+;;    + add look-behind
+;;      (?<=fixed-char-length-pattern), (?<!fixed-char-length-pattern)
+;;    + add possessive quantifier. ?+, *+, ++
+;;    + add operations in character class. [], &&
+;;      ('[' must be escaped as an usual char in character class.)
+;;    + add named group and subexp call.
+;;    + octal or hexadecimal number sequence can be treated as 
+;;      a multibyte code char in character class if multibyte encoding
+;;      is specified.
+;;      (ex. [\xa1\xa2], [\xa1\xa7-\xa4\xa1])
+;;    + allow the range of single byte char and multibyte char in character
+;;      class.
+;;      ex. /[a-<<any EUC-JP character>>]/ in EUC-JP encoding.
+;;    + effect range of isolated option is to next ')'.
+;;      ex. (?:(?i)a|b) is interpreted as (?:(?i:a|b)), not (?:(?i:a)|b).
+;;    + isolated option is not transparent to previous pattern.
+;;      ex. a(?i)* is a syntax error pattern.
+;;    + allowed incompleted left brace as an usual string.
+;;      ex. /{/, /({)/, /a{2,3/ etc...
+;;    + negative POSIX bracket [:^xxxx:] is supported.
+;;    + POSIX bracket [:ascii:] is added.
+;;    + repeat of look-ahead is not allowed.
+;;      ex. /(?=a)*/, /(?!b){5}/
+;;    + Ignore case option is effective to numbered character.
+;;      ex. /\x61/i =~ "A"
+;;    + In the range quantifier, the number of the minimum is omissible.
+;;      /a{,n}/ == /a{0,n}/
+;;      The simultanious abbreviation of the number of times of the minimum
+;;      and the maximum is not allowed. (/a{,}/)
+;;    + /a{n}?/ is not a non-greedy operator.
+;;      /a{n}?/ == /(?:a{n})?/
+;;    + invalid back reference is checked and cause error.
+;;      /\1/, /(a)\2/
+;;    + Zero-length match in infinite repeat stops the repeat,
+;;      then changes of the capture group status are checked as stop condition.
+;;      /(?:()|())*\1\2/ =~ ""
+;;      /(?:\1a|())*/ =~ "a"
+
+  )
 (setq texmate-import-convert-known-expressions
   '(
     ("&lt;" "<")
@@ -187,11 +627,6 @@ Possible choices are:
     ;; We can accomplish this by doing a regular expression
     ;; substitution on the placeholder text (when mirroring it). The
     ;; syntax for this is: ${<<tab stop>>/<<regexp>>/<<format>>/<<options>>}.
-
-
-    ;; Texmate regular expressions
-
-    ;; http://manual.macromates.com/en/regular_expressions#replacement_string_syntax_format_strings.html
 
     
     ;; Also see http://manual.macromates.com/en/drag_commands#drag_commands
@@ -366,7 +801,7 @@ Possible choices are:
     )
   )
 
-(defun texmate-import-current-buffer (new-dir &optional plist  buffer-name original-author mode-string-or-function   transform-function parent-modes)
+(defun texmate-import-current-buffer (new-dir &optional plist  buffer-name original-author mode-string-or-function   transform-function parent-modes ext)
   "* Changes Texmate (current buffer) plist to yas snippet."
   (let (
         (start nil)
@@ -384,9 +819,10 @@ Possible choices are:
         (mode "")
         (env "")
         (bfn (or buffer-name (buffer-file-name)))
+        (yas (or ext ".yasnippet"))
         )
     (when (string-match "/?\\([^/]*\\)[.][^.]*$" bfn)
-      (setq bfn (concat (match-string 1 bfn) ".yasnippet"))
+      (setq bfn (concat (match-string 1 bfn) yas))
       )
     (while (string-match "[^A-Z0-9_.]" bfn)
       (setq bfn (replace-match "_" nil nil bfn))
@@ -596,7 +1032,7 @@ Possible choices are:
         (add-to-list 'lst (match-string 1)))
       (kill-buffer (current-buffer))
       )
-    (setq texmate-import-svn-pkgs-cache (mapcar (lambda(x) (replace-in-string x "%20" " ")) lst))
+    (setq texmate-import-svn-pkgs-cache (mapcar (lambda(x) (texmate-replace-in-string x "%20" " ")) lst))
     (symbol-value 'texmate-import-svn-pkgs-cache)
     )
   ))
@@ -614,10 +1050,11 @@ Possible choices are:
       )
     )
   )
-(defun texmate-import-svn-snippets (snippet-url plist)
+(defun texmate-import-svn-snippets (snippet-url plist texmate-name)
   "*Imports snippets based on texmate svn tree."
   (message "Fetching %s" snippet-url)
   (let (
+        (ext texmate-name)
         buf
         (snippets '())
         (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
@@ -636,17 +1073,25 @@ Possible choices are:
         )
       (kill-buffer (current-buffer))
       )
+    (while (string-match "[^A-Za-z0-9_.]+" ext)
+      (setq ext (replace-match "_" 't 't ext)))
+    (setq ext (concat "." ext))
     (mapc (lambda(x)
             (message "Fetching %s" (concat snippet-url x))
             (setq buf (url-retrieve-synchronously (concat snippet-url x)))
             (save-excursion
               (set-buffer buf)
               (texmate-import-current-buffer new-dir plist
-                                             (replace-in-string (replace-in-string x "%20" " ") "%3c" "<")
+                                             (texmate-replace-in-string (texmate-replace-in-string x "%20" " ") "%3c" "<")
+                                             nil
+                                             nil
+                                             nil
+                                             nil
+                                             ext
                                              )
               (kill-buffer (current-buffer))
               )
-            (message "Imported %s" (replace-in-string (replace-in-string x "%20" " ") "%3c" "<"))
+            (message "Imported %s" (texmate-replace-in-string (texmate-replace-in-string x "%20" " ") "%3c" "<"))
             (sleep-for 1)
             )
           snippets)
@@ -664,7 +1109,7 @@ Possible choices are:
         buf
         plist
         )
-    (setq texmate-url (concat texmate-import-svn-url (replace-in-string texmate-name " " "%20") ".tmbundle/"))
+    (setq texmate-url (concat texmate-import-svn-url (texmate-replace-in-string texmate-name " " "%20") ".tmbundle/"))
     (if (not (texmate-import-snippets-supported texmate-url))
         (progn
           (setq texmate-import-svn-pkgs-cache (remove-if
@@ -680,7 +1125,7 @@ Possible choices are:
         (kill-buffer (current-buffer))
         )
       (sleep-for 1)
-      (texmate-import-svn-snippets (concat texmate-url "Snippets/") plist)
+      (texmate-import-svn-snippets (concat texmate-url "Snippets/") plist texmate-name)
       (message "Completed loading snippets from texmate package %s" texmate-name)  
       )
     )
@@ -704,7 +1149,11 @@ Possible choices are:
   )
 ;(texmate-import-rmate "c:/tmp/swissr-rmate.tmbundle-v0.4.2-0-g7d026da/swissr-rmate.tmbundle-7d026da/")
 ;(texmate-import-stata "c:/tmp/Stata.tmbundle/")
-(setq debug-on-error 't)
+
+;(setq debug-on-error 't)
+
+;;https://github.com/subtleGradient/javascript-tools.tmbundle
+
 (provide 'texmate-import)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; texmate-import.el ends here

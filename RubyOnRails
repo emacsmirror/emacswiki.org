@@ -98,3 +98,7 @@ See also [[Icicles - Persistent Completions]] -- DrewAdams
 
 Many in the Ruby community use [http://pastie.caboo.se Pastie] for sharing code snippets. Emacs integration can be found here: 
 [http://pastie.caboo.se/paste/133456 pastie.el] or here Lisp:pastie.el
+
+== Haml Support for emacs ==
+
+See HamlMode.

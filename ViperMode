@@ -94,7 +94,9 @@ The above didn't work for me so well. Here is a method to use different color th
     (add-hook 'pre-command-hook 'esn-viper-pre-command-hook)
     (add-hook 'post-command-hook 'esn-viper-pre-command-hook)
 
--- Matt F.
+-- MatthewFidler
+
+I also put this in a key selection package.  It provides a menu for possible keys and also provides the different color themes for Viper.  It requires ColorTheme as well as  Lisp:key-choices.el, Lisp:color-theme-vim-insert-mode.el, Lisp:color-theme-emacs-revert-theme.el.  If you want ErgoEmacs support is requires the ErgoEmacs keybinding package.  It is provided in EmacsPortable
 
 === Viper and CUA, deleting region ===
 

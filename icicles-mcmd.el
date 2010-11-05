@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct 24 16:48:16 2010 (-0700)
+;; Last-Updated: Thu Nov  4 15:30:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16235
+;;     Update #: 16237
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -637,7 +637,7 @@ POSITION is a buffer position."
     (save-excursion
       (with-current-buffer (get-buffer "*Completions*")
         (goto-char position)
-        (if (eq icicle-completions-format-internal 'horizontal)
+        (if (memq icicle-completions-format-internal '(horizontal nil))
             hor-nb
           (let* ((cols      (icicle-nb-Completions-cols))
                  (nb-cands  (length icicle-completion-candidates))
@@ -5603,7 +5603,7 @@ If the region is active in *Completions*, then
     (icicle-candidate-set-save-more arg)))
 
 ;;;###autoload
-(defun icicle-mouse-save-then-kill (click &optional arg)
+(defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
   "`mouse-save-then-kill', but click same place saves selected candidates."
   (interactive "e\nP")
   (flet ((mouse-save-then-kill-delete-region (beg end)

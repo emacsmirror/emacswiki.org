@@ -257,20 +257,34 @@ in parsed XML OPML."
 	      "name = " (car item) "\n"))))
 
 (defun venus-import-url-list (venus-buffer-name)
-  "Import a list of blog URLs from the current buffer"
+  "Import a list of blog URLs from the current buffer.
+If provided as HTML anchor elements, the element content will be used as
+blog name."
   (interactive "bVenus buffer name: ")
   (require 'goto-addr)
   (goto-char (point-min))
   (let (urls keepers)
     (while (re-search-forward goto-address-url-regexp nil t)
-      (setq urls (cons (match-string 0) urls)))
+      (let ((url (match-string 0))
+	    (name (when (looking-at "\">\\([^<\"]+\\)")
+		    (match-string 1))))
+	(setq urls (cons (cons url name) urls))))
     (set-buffer venus-buffer-name)
-    (dolist (url urls)
-      (goto-char (point-min))
-      (unless (search-forward url nil t)
-	(goto-char (point-max))
-	(newline)
-	(insert "[" url "]")))))      
+    (dolist (item urls)
+      (let ((url (car item))
+	    (name (cdr item)))
+	(goto-char (point-min))
+	(unless (search-forward url nil t)
+	  (goto-char (point-max))
+	  (newline)
+	  (cond ((string-match "blogspot\\.com/$" url)
+		 (setq url (concat url "feeds/posts/default")))
+		((string-match "wordpress\\.com/$" url)
+		 (setq url (concat url "feed/atom/"))))
+	  (insert "[" url "]")
+	  (when name
+	    (newline)
+	    (insert "name = " name)))))))
 
 (defun venus-insert-item (url)
   "Return a venus item based on the blog URL.
@@ -523,16 +537,18 @@ feed address and the blog title."
       rcirc-server-alist
       '(("irc.freenode.net" :channels
 	 ("#emacs" "#emacs-ops" "#rcirc" "#wiki" "#oddmuse" "#epfarms"
-	  "#perl6" "#clojure" "#clojure.de"))
+	  "#perl6"))
+	;; "#clojure" "#clojure.de"
 	("ircnet.eversible.com" :channels ("#drsrm"))
-	("irc.perl.org" :channels ("#perlde"))
+	("irc.perl.org" :channels ("#perlde" "#oddmuse"))
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
-	("localhost" :channels ("&bitlbee" "&bsi" "&roleplaying" "&emacs"))
+	("localhost" :channels ("&bitlbee" "&bsi" "&roleplaying" "&emacs"
+				"&facebook"))
 	("irc.oftc.net" :channels ("#bitlbee")))
       rcirc-decode-coding-system 'undecided
       rcirc-coding-system-alist
       '(("#nihongo" undecided . iso-2022-jp))
-      rcirc-ignore-list '("jordanb" "consolers")
+      rcirc-ignore-list '("jordanb" "consolers" "Nihplod" "raela")
       rcirc-authinfo (with-temp-buffer
 		       (insert-file-contents-literally "~/.rcirc-authinfo")
 		       (read (current-buffer))))
@@ -624,57 +640,6 @@ Returns the list of windows."
 		      (symbol-name rcirc-encode-coding-system))
        (set (make-local-variable 'rcirc-encode-coding-system)
 	    (intern-soft arg)))))
-
-;; Automatically rename Facebook users in Bitlbee
-
-(defvar rcirc-facebook-name-from nil)
-(defvar rcirc-facebook-name-to nil)
-
-(defadvice rcirc-handler-PRIVMSG (after rcirc-handler-facebook-1 activate)
-  "If &bitlbee mentions a user called u<number>,
-this advice sets up a listener to get his real name and rename the user."
-  ;; (when (string= sender "root")
-  ;;   (message "%s %s %s" sender (nth 0 args) (nth 1 args)))
-  (when (= 2 (length args))
-    (cond ((and (string= "root" sender)
-		(or (string= "&bitlbee" (nth 0 args))
-		    (string= rcirc-nick (nth 0 args)))
-		(string-match "\\(u[0-9]+\\)@chat.facebook.com"
-			      (nth 1 args)))
-	   (setq rcirc-facebook-name-from (match-string 1 (nth 1 args))))
-	  ((and (string= "root" sender)
-		(or (string= "&bitlbee" (nth 0 args))
-		    (string= rcirc-nick (nth 0 args)))
-		(string-match "^Name: \\(.*\\)"
-			      (nth 1 args)))
-	   (setq rcirc-facebook-name-to
-		 (mapconcat 'identity
-			    (split-string (match-string 1 (nth 1 args)))
-			    ""))
-	   (when rcirc-facebook-name-from
-	     (rcirc-send-message process sender
-				 (format "rename %s %s"
-					 rcirc-facebook-name-from
-					 rcirc-facebook-name-to))))
-	  ((and (string= "root" sender)
-		(string= rcirc-nick (nth 0 args))
-		(string-match "^Nick `\\(.*\\)' already exists$"
-			      (nth 1 args)))
-	   (setq to (concat (match-string 1 (nth 1 args)) "_"))
-	   (when rcirc-facebook-name-from
-	     (rcirc-send-message process sender
-				 (format "rename %s %s"
-					 rcirc-facebook-name-from
-					 to)))))))
-
-(defadvice rcirc-handler-JOIN (after rcirc-handler-facebook-2 activate)
-  "If a user named u<number> joins channel &bitlbee,
-call info on it. This will automatically rename him.
-See advice on `rcirc-handler-PRIVMSG'."
-  (when (and (string-match "^u[0-9]+$" sender)
-	     (string= (car args) "&bitlbee"))
-    (rcirc-send-message process "root"
-			(format "info %s" sender))))
 
 ;; rcirc occur
 
@@ -895,9 +860,8 @@ cells by columns first."
   (delete-region start end))
 
 (require 'goto-addr)
-(define-generic-mode 'alex-oddmuse-mode
-  nil; comments
-  nil; keywords
+
+(defvar alex-oddmuse-keywords
   `(("^=[^=\n]+=+$" . 'info-title-1)
     ("^==[^=\n]+=+$" . 'info-title-2)
     ("^===[^=\n]+=+$" . 'info-title-3)
@@ -911,11 +875,24 @@ cells by columns first."
     ("//\\(.*?\n\\)*?.*?//" . 'italic)
     ("/.+?/" . 'italic)
     ("__\\(.*?\n\\)*?.*?__" . 'underline)
-    ("_.+?_" . 'underline)); font-lock list
+    ("_.+?_" . 'underline)))
+
+(define-generic-mode 'alex-oddmuse-mode
+  nil; comments
+  nil; keywords
+  alex-oddmuse-keywords; font-lock list
   '(".oddmuse\\'"); auto-mode-alist
   '((lambda () (require 'info) (require 'goto-addr))); function-list
   "Major mode for editing Oddmuse wiki files.
 The particular markup mix is specific to my preferences.")
+
+(defun alex-blog (title)
+  "Blog entry."
+  (interactive (list (read-from-minibuffer
+		      "Post title: "
+		      (format-time-string "%Y-%m-%d "))))
+  (oddmuse-edit "Alex" title)
+  (setq font-lock-keywords alex-oddmuse-keywords))
 
 (defvar campaign-wiki-font-lock-list
   '(("^=[^=\n]+" . 'info-title-1)
@@ -1219,6 +1196,15 @@ cells by columns first."
 	(car s))
       (make-list number nil)
       ", "))))
+
+(defun word-count ()
+  "Count the words in the current buffer."
+  (interactive)
+  (save-excursion
+    (goto-char (point-min))
+    (message "%d words" (count-matches "\\w+"))))
+
+(defalias 'count-words 'word-count)
 
 (defun stirling-fact (n)
   "Aproximate n!.

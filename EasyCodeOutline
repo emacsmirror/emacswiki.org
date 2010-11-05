@@ -6,6 +6,10 @@ The only 'gotcha' with this setup is that code immediately following a function/
 
 (I'm a relative EmacsNewbie myself, so if I'm doing something stupid here please educate me! -- CarlMeyer)
 
+
+You can use outline-magic to fold python code: [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el].  Then you can just use tab to cycle through folding levels.  Agree with the hack using comment headers.  Except its better than a hack because you can use any comment as a header: [https://github.com/tinku99/python-magic/raw/master/sample.py sample.py].   -- Naveen Garg
+
+
     (defun show-onelevel ()
       "show entry and children in outline mode"
       (interactive)

@@ -36,6 +36,11 @@ What is considered as a tab group can be customized. You could set it up so ever
 
 Tab bar mode is implemented using a special emacs display area at the top of Emacs Window, not Emacs Frame. (For example, if you split a window into 3 panes, each will have a tab bar). Some other modes also use this area. For example Info, Dired, Slime, [[ERC]], ruler-mode, etc. So that when switching to these modes, the tabs will not shown. You can get the tabs back by typing “M-x tabbar-local-mode”.
 
+== Pop-Up Tool Bar Solution 2 tabbar-ruler ==
+
+This allows a popup tabbar AND menu bar based on cursor location.  It also switches between tab-bar and ruler mode.  It is included in EmacsPortable.  It requries xpm images [[close-tab.xpm]] [[down.xpm]] [[left.xpm]] [[left-disabled.xpm]] [[right.xpm]] [[right-disabled.xpm]] [[up.xpm]] as well as Lisp:tabbar.el.  It is located in Lisp:tabbar-ruler.el
+
+
 == Documentation ==
 
 Tabbar mode does not have a documentation. However, the header file in the source code contains useful information.

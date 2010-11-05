@@ -41,6 +41,9 @@ So Thanks for this easy-printing-colorfull module.
 [new]
 Just a note: I have been reading everything I have been able to find about printing under MS Windows before. Nothing worked for me before. (I do not know why, it may be something about the way the printers are setup on the network where I tested.)
 
+[new]
+w32-print no longer exists.  I believe that hfyview from nxhtml works, though.
+
 
 
 ----

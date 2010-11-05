@@ -15,46 +15,43 @@ a common scenario for someone who is multi-tasking.
 The following hack uses the text date at the beginning of the
 ##*compilation*## buffer for the comparison.
 
+
   (defun my-buffer-compiled-since-modified-p (buffer)
     "Is file modification for BUFFER newer than last compilation time?"
     (interactive (list (current-buffer)))
-      (if (bufferp (get-buffer "*compilation*"))
-          (let ((mtime (nth 5 (file-attributes (buffer-file-name buffer))))
-                (compile-start
-                 (save-excursion
-                   (with-current-buffer (get-buffer "*compilation*")
-                     (goto-char (point-min))
-                     (search-forward "Compilation started at "
-                                     nil 'noerror)
-                     (apply 'encode-time
-                            ;; Anything missing in the string,
-                            (mapcar
-                             (lambda (a)
-                               (if (null (car a)) (cadr a) (car a)))
-                             ((lambda (&rest args)
-                                "Transpose list of ARGS into one list."
-                                (mapcar
-                                 (lambda (n)
-                                   (delq nil
-                                         (mapcar
-                                          (lambda (arg) (nth n arg))
-                                          args)))
-                                 (let ((len (apply 'max
-                                                   (mapcar 'length args))))
-                                   (number-sequence 0 (1- len)))))
-                              (parse-time-string
-                               (buffer-substring-no-properties
-                                (point)
-                                (progn
-                                  (forward-line 1)
-                                  (forward-char -1)
-                                  (point))))
-                              ;; fold in from current time.
-                              (decode-time))))))))
-            (if (time-less-p compile-start mtime)
-                (prog1 nil (message "Not compiled since last save"))
-              (prog1 t (message "Was compiled after last save"))))
-        (error "No file associated with buffer")))
+      (unless (bufferp (get-buffer "*compilation*"))
+        (error "No file associated with buffer"))
+      (let ((mtime (nth 5 (file-attributes (buffer-file-name buffer))))
+            (compile-start
+             (save-excursion
+               (with-current-buffer (get-buffer "*compilation*")
+                 (goto-char (point-min))
+                 (search-forward "Compilation started at "
+                                 nil 'noerror)
+                 (apply 'encode-time
+                        ;; Anything missing in the string,
+                        (mapcar
+                         (lambda (a)
+                           (if (null (car a)) (cadr a) (car a)))
+                         (ash-transpose
+                          (parse-time-string
+                           (buffer-substring-no-properties
+                            (point)
+                            (progn
+                              (forward-line 1)
+                              (forward-char -1)
+                              (point))))
+                          ;; fold in from current time.
+                          (decode-time))))))))
+        (if (time-less-p compile-start mtime)
+            (prog1 nil
+              (if (buffer-modified-p)
+                  (message "Not compiled since last save (modified)")
+                (message "Not compiled since last save")))
+          (prog1 t
+              (if (buffer-modified-p)
+                  (message "Compiled after last save (modified)")
+                (message "Compiled after last save"))))))
 
 Since this depends on the compilation and file buffer date be close in
 proximity, don't expect the above to work when you are compiling

@@ -158,7 +158,7 @@ lot of typing and thinking while editing your outline.
 OrgMode includes cycling and many more features
 
 The outline-magic package by CarstenDominik provides the command
-`outline-cycle' which changes the visibility of text and headings.
+`outline-cycle' which cycles the visibility / folding level of text and headings.
 
 In addition to outline cycling, this extension provides four commands
 for structure editing.  Using M-up, M-down, M-left, and M-right, you
@@ -176,6 +176,7 @@ You can get it here:
 
 It seems that similar features are provided by AllOut.
 
+You can use outline-magic to fold python code: [http://stackoverflow.com/questions/4079648/combine-python-mode-with-org-mode-for-emacs/4093889#4093889 python-magic.el]
 == Converting Emacs Outline to Other Formats ==
 
 Outline mode is helpful for organizing plain text documents and program

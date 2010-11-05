@@ -219,6 +219,10 @@ Here's a variation of my quick documentation lookup above. It shows short help f
 
 See [[CompanyModeBackends#PhpCompletion]]
 
+== Automatic help with Eldoc ==
+
+See [[ElDoc#Phpdoc]]
+
 == Discussion ==
 
 [new]

@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 326 $
+;; RCS Version: $Rev: 327 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 326 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 327 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -203,6 +203,7 @@
 
 (require 'dired)
 (require 'dired-x)
+(require 'find-dired)
 (require 'font-lock)
 (eval-when-compile (require 'cl)
                    (require 'desktop)
@@ -748,10 +749,11 @@ automatically:
 (defun sr-virtual-dismiss ()
   "Restores normal view of pane in Sunrise VIRTUAL mode."
   (interactive)
-  (if (equal major-mode 'sr-virtual-mode)
-      (sr-save-aspect
-       (sr-alternate-buffer (sr-goto-dir sr-this-directory))
-       (revert-buffer))))
+  (when (equal major-mode 'sr-virtual-mode)
+    (sr-process-kill)
+    (sr-save-aspect
+     (sr-alternate-buffer (sr-goto-dir sr-this-directory))
+     (revert-buffer))))
 
 (defun sr-select-window (side)
   "Select/highlight the given sr window (right or left)."
@@ -2660,17 +2662,48 @@ or (c)ontents? ")
 ;;; ============================================================================
 ;;; File search & analysis functions:
 
+(defun sr-process-kill ()
+  "Kills the process running in the current buffer (if any)."
+  (interactive)
+  (let ((proc (get-buffer-process (current-buffer))))
+    (and proc (eq (process-status proc) 'run)
+         (condition-case nil
+             (delete-process proc)
+           (error nil)))))
+
+(defvar sr-process-map (let ((map (make-sparse-keymap)))
+                         (set-keymap-parent map sr-virtual-mode-map)
+                         (define-key map "\C-c\C-k" 'sr-process-kill)
+                         map)
+  "Local map used in Sunrise panes during find operations.")
+
+(defun sr-find-prompt ()
+  "Displays the message that appears when a find process is launched."
+  (message (propertize "Sunrise find (C-c C-k to kill)"
+                       'face 'minibuffer-prompt)))
+
 (defun sr-find-apply (fun pattern)
   "Helper function for functions sr-find, sr-find-name and sr-find-grep."
   (let* ((suffix (if (eq 'w32 window-system) " {} ;" " \\{\\} \\;"))
          (find-ls-option
           (cons
            (concat "-exec ls -d " sr-virtual-listing-switches suffix)
-           "ls -ld")))
+           "ls -ld"))
+         (sr-find-dirs (sr-quote-marked-dirs)) (dir))
+    (when sr-find-dirs
+      (if (not (y-or-n-p "Search only in marked directories? "))
+          (setq sr-find-dirs nil)
+        (setq dir (directory-file-name (expand-file-name default-directory)))
+        (add-to-list 'file-name-handler-alist (cons dir 'sr-multifind-handler))))
     (sr-save-aspect
      (sr-alternate-buffer (apply fun (list default-directory pattern)))
      (sr-virtual-mode)
-     (sr-keep-buffer))))
+     (use-local-map sr-process-map)
+     (sr-keep-buffer))
+    (run-with-idle-timer 0.01 nil 'sr-find-prompt)
+    (when sr-find-dirs
+      (sit-for 0.2)
+      (set (make-local-variable 'sr-find-dirs) sr-find-dirs))))
 
 (defun sr-find (pattern)
   "Runs find-dired passing the current directory as first parameter."
@@ -2687,14 +2720,44 @@ or (c)ontents? ")
   (interactive "sFind files containing pattern: ")
   (sr-find-apply 'find-grep-dired pattern))
 
-;; This renames automatically the *Find* buffer after every find operation:
+;; This renames automatically the *Find* buffer after every find operation and
+;; replaces the status line if the find operation was made only inside subdirs:
 (defadvice find-dired-sentinel
   (after sr-advice-find-dired-sentinel (proc state))
   (when (eq 'sr-virtual-mode major-mode)
     (rename-uniquely)
-    (revert-buffer)
+    (let ((in-dirs (and (boundp 'sr-find-dirs) (symbol-value 'sr-find-dirs)))
+          (inhibit-read-only t))
+      (when in-dirs
+        (sit-for 0.2)
+        (goto-char (point-min))
+        (forward-line 1)
+        (if (re-search-forward "find \." nil t)
+            (replace-match (format "find %s" in-dirs)))
+        (kill-local-variable 'sr-find-dirs)))
+    (sr-beginning-of-buffer)
+    (sr-highlight)
     (sr-backup-buffer)))
 (ad-activate 'find-dired-sentinel)
+
+(defun sr-multifind-handler (operation &rest args)
+  "Magic file name handler for manipulating the command executed by find-dired
+  when the user requests to perform the find operation in all currently marked
+  subdirectories. Removes itself from the inhibit-file-name-handlers list when
+  executed."
+  (let ((inhibit-file-name-handlers
+         (cons 'sr-multifind-handler
+               (and (eq inhibit-file-name-operation operation)
+                    inhibit-file-name-handlers)))
+        (inhibit-file-name-operation operation)
+        (in-dirs (and (boundp 'sr-find-dirs) (symbol-value 'sr-find-dirs))))
+    (when (eq operation 'shell-command)
+      (setq file-name-handler-alist
+            (rassq-delete-all 'sr-multifind-handler file-name-handler-alist))
+      (if in-dirs
+          (setcar args (replace-regexp-in-string
+                        "find \." (format "find %s" in-dirs) (car args)))))
+    (apply operation args)))
 
 (eval-and-compile
   (unless (featurep 'locate)
@@ -2706,18 +2769,16 @@ or (c)ontents? ")
   "Returns the filter function that processes the output produced by the locate
   process running in the background."
   `(lambda (process output)
-     (let ((inhibit-read-only t) (inhibit-quit nil)
+     (let ((inhibit-read-only t)
            (search-regexp ,(regexp-quote search-string)))
        (set-buffer ,locate-buffer)
-       (condition-case nil
-           (mapc (lambda (x)
-                   (when (and (string-match search-regexp x) (file-exists-p x))
-                     (goto-char (point-max))
-                     (insert-char 32 2)
-                     (insert-directory x sr-virtual-listing-switches nil nil)))
-                 (split-string output "[\r\n]" t))
-           (quit
-            (delete-process process))))))
+       (save-excursion
+         (mapc (lambda (x)
+                 (when (and (string-match search-regexp x) (file-exists-p x))
+                   (goto-char (point-max))
+                   (insert-char 32 2)
+                   (insert-directory x sr-virtual-listing-switches nil nil)))
+               (split-string output "[\r\n]" t))))))
 
 (defun sr-locate-sentinel (locate-buffer)
   "Returns the sentinel function used to notify about the termination status of
@@ -2735,7 +2796,7 @@ or (c)ontents? ")
 
 (defun sr-locate-prompt ()
   "Displays the message that appears when a locate process is launched."
-  (message (propertize "Sunrise locate (C-g to abort)"
+  (message (propertize "Sunrise locate (C-c C-k to kill)"
                        'face 'minibuffer-prompt)))
 
 (defun sr-locate (search-string &optional filter arg)
@@ -2756,6 +2817,7 @@ or (c)ontents? ")
       (sr-locate-filter locate-buffer search-string))
      (set-process-sentinel locate-process (sr-locate-sentinel locate-buffer))
      (set-process-buffer locate-process locate-buffer)
+     (use-local-map sr-process-map)
      (run-with-idle-timer 0.01 nil 'sr-locate-prompt))))
 
 (defun sr-fuzzy-narrow ()
@@ -3449,6 +3511,19 @@ or (c)ontents? ")
             found (and (apply test (list head name)) head)
             tail (cdr tail)))
     found))
+
+(defun sr-quote-marked-dirs ()
+  "Returns a string containing a quoted, space-separated list of all the
+  directories selected in the current pane"
+  (let ((marked (dired-get-marked-files t nil nil t)))
+    (if (< (length marked) 2)
+        (setq marked nil)
+      (if (eq t (car marked)) (setq marked (cdr marked)))
+      (setq marked
+            (delq nil (mapcar (lambda (x) (and (file-directory-p x) x)) marked))
+            marked
+            (format "\"%s\"" (mapconcat 'identity marked "\" \""))))
+      marked))
 
 ;;; ============================================================================
 ;;; Font-Lock colors & styles:
