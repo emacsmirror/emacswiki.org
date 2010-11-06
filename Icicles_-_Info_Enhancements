@@ -80,7 +80,7 @@ use `i' to create and reuse such a set.
 Remember that you can define a candidate set incrementally,
 adding more elements using `##C->##', `##C-)##', `insert', `M-S-mouse-2',
 `M-mouse-3', or `##mouse-1 mouse-3 mouse-3##'.  And you can save a
-candidate set persistently.
+candidate set persistently. [*]
 
 You can even create a virtual book that includes Info nodes from
 ''different manuals''.  For example, you might want to collect
@@ -144,7 +144,12 @@ virtual books, to use at any time.
 * [[Icicles - Bookmark Enhancements]] for information about using Info [[bookmark]]s.
 
 
-
+[* If you click `mouse-1' on a candidate and (starting with Emacs
+22) `mouse-1-click-follows-link' is an integer, then you will need
+to hold the mouse button depressed longer than that many seconds,
+or else that candidate will simply by chosen.  If the value is
+`t', then this won't work at all.  Any other value presents no
+problem.  (Personally, I use `nil'.)]
 
 
 

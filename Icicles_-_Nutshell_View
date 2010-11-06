@@ -387,10 +387,17 @@ them, before acting on them: you can see them all alone in buffer
 with the mouse in `*Completions*':
 
 : ##C-x C-f ##<u>'''##i c i##'''</u> ##TAB## -- Match all file names that begin with ##ici##.
-: Click `mouse-1' inside (or to the left of) `##icicles-face.el##'.
+: Click `mouse-1' inside (or to the left of) `##icicles-face.el##'. [*]
 : Click `mouse-3' inside (or to the right of) `##icicles-mode.el##'.
 : Click `mouse-3' again, in the same place.
 : Click '''`M-S-mouse-2'''' on each of `##icicles.el##' and `##icicles-cmd1.el##'.
+
+[* If you click `mouse-1' on a candidate and (starting with Emacs
+22) `mouse-1-click-follows-link' is an integer, then you will need
+to hold the mouse button depressed longer than that many seconds,
+or else that candidate will simply by chosen.  If the value is
+`t', then this won't work at all.  Any other value presents no
+problem.  (Personally, I use `nil'.)]
 
 The candidates that you selected -- those between `##icicles-face.el##'
 and `##icicles-mode.el##', inclusive, plus `##icicles.el##' and

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  4 15:30:39 2010 (-0700)
+;; Last-Updated: Fri Nov  5 10:45:39 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16237
+;;     Update #: 16261
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4022,7 +4022,7 @@ ALTP is used only if LISTP is nil.
 ALTP is passed to `icicle-candidate-action-1'."
   (let* ((local-saved
           (catch 'i-a-c-a-1
-            (dolist (cand icicle-saved-completion-candidates icicle-saved-completion-candidates)
+            (dolist (cand  icicle-saved-completion-candidates  icicle-saved-completion-candidates)
               (unless (member cand icicle-completion-candidates) (throw 'i-a-c-a-1 nil)))))
          (candidates                      (or local-saved icicle-completion-candidates))
          (failures                        nil)
@@ -5459,7 +5459,9 @@ MOREP non-nil means add the saved candidates, don't replace existing."
                                             (format "  [Saved candidates RESTORED from %s `%s']"
                                                     (if variablep "variable" "cache file") name)
                                           "  [Saved candidates RESTORED]")))
-                  (icicle-narrow-candidates)))))))
+                  (let ((icicle-minibuffer-setup-hook ; Pre-complete
+                         (cons 'icicle-apropos-complete icicle-minibuffer-setup-hook)))
+                    (icicle-narrow-candidates))))))))
 
 ;;;###autoload
 (defun icicle-candidate-set-retrieve-more (&optional arg) ; Bound to `C-<' in minibuffer.
@@ -5603,13 +5605,68 @@ If the region is active in *Completions*, then
     (icicle-candidate-set-save-more arg)))
 
 ;;;###autoload
-(defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
-  "`mouse-save-then-kill', but click same place saves selected candidates."
-  (interactive "e\nP")
-  (flet ((mouse-save-then-kill-delete-region (beg end)
-           (icicle-mouse-candidate-set-save-more nil arg)))
-    (mouse-save-then-kill click))
-  (setq this-command  'mouse-save-then-kill))
+(if (< emacs-major-version 24)
+    (defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
+      "`mouse-save-then-kill', but click same place saves selected candidates."
+      (interactive "e\nP")
+      (flet ((mouse-save-then-kill-delete-region (beg end)
+               (icicle-mouse-candidate-set-save-more nil arg)))
+        (mouse-save-then-kill click))
+      (setq this-command  'mouse-save-then-kill))
+
+  ;; The only thing Icicles-specific here is replacing killing or deleting the region by a call to
+  ;; `icicle-mouse-candidate-set-save-more'.  Otherwise, this is just `mouse-save-then-kill'.
+  (defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
+    "`mouse-save-then-kill', but click same place saves selected candidates."
+    (interactive "e\nP")
+    (mouse-minibuffer-check click)
+    (let* ((posn          (event-start click))
+           (click-pt      (posn-point posn))
+           (window        (posn-window posn))
+           (buf           (window-buffer window))
+           (this-command  this-command) ; Don't let subsequent kill cmd append to this one.
+           ;; Check if the user has multi-clicked to select words/lines.
+           (click-count   (if (and (eq mouse-selection-click-count-buffer buf)
+                                   (with-current-buffer buf (mark t)))
+                              mouse-selection-click-count
+                            0)))
+      (cond ((not (numberp click-pt)) nil)
+            ((and (eq last-command 'icicle-mouse-save-then-kill) ; User clicked without moving point.
+                  (eq click-pt mouse-save-then-kill-posn)
+                  (eq window (selected-window)))
+             ;; Here is the Icicles difference from vanilla `mouse-save-then-kill'.
+             ;; Instead of killing/deleting the region, save the selected candidates.
+             (icicle-mouse-candidate-set-save-more nil arg)
+             (setq mouse-selection-click-count  0
+                   mouse-save-then-kill-posn    nil))
+            ;; If there is a suitable region, adjust it by moving the closest end to CLICK-PT.
+            ((or (with-current-buffer buf (region-active-p))
+                 (and (eq window (selected-window))
+                      (mark t)
+                      (or (and (eq last-command 'icicle-mouse-save-then-kill)
+                               mouse-save-then-kill-posn)
+                          (and (memq last-command '(mouse-drag-region mouse-set-region))
+                               (or mark-even-if-inactive (not transient-mark-mode))))))
+             (select-window window)
+             (let* ((range  (mouse-start-end click-pt click-pt click-count)))
+               (if (< (abs (- click-pt (mark t))) (abs (- click-pt (point))))
+                   (set-mark (car range))
+                 (goto-char (nth 1 range)))
+               (setq deactivate-mark  nil)
+               (mouse-set-region-1)
+               (when mouse-drag-copy-region
+                 ;; Previous region was copied to kill-ring, so replace with adjusted region.
+                 (kill-new (filter-buffer-substring (mark t) (point)) t))
+               (setq mouse-save-then-kill-posn  click-pt))) ; Repeated `mouse-3' will kill the region.
+            (t                          ; Set the mark where point is and move to CLICK-PT.
+             (select-window window)
+             (mouse-set-mark-fast click)
+             (let ((before-scroll (with-current-buffer buf point-before-scroll)))
+               (when before-scroll (goto-char before-scroll)))
+             (exchange-point-and-mark)
+             (mouse-set-region-1)
+             (when mouse-drag-copy-region (kill-new (filter-buffer-substring (mark t) (point))))
+             (setq mouse-save-then-kill-posn  click-pt))))))
 
 ;;;###autoload
 (defun icicle-candidate-set-save (&optional arg) ; Bound to `C-M->' in minibuffer.

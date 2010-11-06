@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Oct  5 12:19:45 2010 (-0500)
 ;; Version: 
-;; Last-Updated: Thu Oct 28 15:42:56 2010 (-0500)
-;;           By: Matthew L. Fidler
-;;     Update #: 78
+;; Last-Updated: Fri Nov  5 08:30:38 2010 (-0500)
+;;           By: US041375
+;;     Update #: 88
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -22,8 +22,14 @@
 ;; git clone git://github.com/secelis/hideshow-org.git
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Change log:
+;;
+;; Change Log:
+;; 05-Nov-2010      
+;;    Last-Updated: Mon Oct 25 10:57:19 2010 (-0500) #33 (Matthew L. Fidler) #87 (US041375)
+;;    Will not hide when there is a region selected.
+;; 02-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov  2 10:15:01 2010 (-0500) #79 (Matthew L. Fidler)
+;;    Made post-command-hook enclosed in condition-case
 ;; 28-Oct-2010    Matthew L. Fidler  
 ;;    Last-Updated: Thu Oct 28 15:42:44 2010 (-0500) #77 (Matthew L. Fidler)
 ;;    Do not fold while expanding a yasnippet.
@@ -64,7 +70,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-(setq debug-on-error 't)
+;(setq debug-on-error 't)
+
+
+
+
+
+
+
+
+
 (require 'fold-dwim)
 (setq fold-dwim-org/trigger-keys-block nil)
 (defvar fold-dwim-org/trigger-keys-block nil;(list (kbd "TAB"))
@@ -100,11 +115,14 @@
   "* Checks to see if buffer has changed.  If not folding should occur."
   (equal last-point current-point)
   )
+(defvar fold-dwim-org/mark-active nil)
+(make-variable-buffer-local 'fold-dwim-org/mark-active)
 (defun fold-dwim-org/hs-pre ()
   "* Pre-command hook to save last point.  Only used if `fold-dwim-org/trigger-keys-block' is nil"
   (when fold-dwim-org/minor-mode
     (unless fold-dwim-org/trigger-keys-block
       (unless (minibufferp)
+        (setq fold-dwim-org/mark-active mark-active)
         (setq fold-dwim-org/last-point (point))
         (setq fold-dwim-org/last-txt (buffer-substring (point-at-bol) (point-at-eol)))
         )
@@ -113,22 +131,30 @@
   )
 (defun fold-dwim-org/hs-post ()
   "* Post-command hook to hide/show if `fold-dwim-org/trigger-keys-block' is nil"
-  (when fold-dwim-org/minor-mode
-    (unless fold-dwim-org/trigger-keys-block
-      (unless (minibufferp)
-        (when (eq ?\t last-command-event)
-;          (unless (string= fold-dwim-org/last-txt
-;                           (buffer-substring (point-at-bol) (point-at-eol)))
-          (unless (and (fboundp 'yas/snippets-at-point)
-                       (< 0 (length (yas/snippets-at-point 'all-snippets)))
-                       )
-            (fold-dwim-org/toggle nil fold-dwim-org/last-point)
+  (condition-case error
+      (progn
+        (when fold-dwim-org/minor-mode
+          (unless fold-dwim-org/trigger-keys-block
+            (unless (minibufferp)
+              (unless fold-dwim-org/mark-active
+                (when (eq ?\t last-command-event)
+                                        ;          (unless (string= fold-dwim-org/last-txt
+                                        ;                           (buffer-substring (point-at-bol) (point-at-eol)))
+                  (unless (and (fboundp 'yas/snippets-at-point)
+                               (< 0 (length (yas/snippets-at-point 'all-snippets)))
+                               )
+                    (fold-dwim-org/toggle nil fold-dwim-org/last-point)
+                    )
+                
+                                        ;            )
+                  )
+                )
+              )
             )
-                       
-;            )
           )
         )
-      )
+    (error
+     (message "HS Org post-command hook error: %s" (error-message-string error)))
     )
   )
 (add-hook 'post-command-hook 'fold-dwim-org/hs-post)

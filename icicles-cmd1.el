@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  3 15:02:34 2010 (-0700)
+;; Last-Updated: Thu Nov  4 10:00:19 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 21457
+;;     Update #: 21460
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1465,9 +1465,11 @@ considered."
         (setq new  (save-excursion (completing-read "Complete Lisp symbol: "
                                                     obarray predicate t new)))))
     (delete-region beg end)
-    (insert new))
-  ;; Return nil so we can use this for `completion-at-point-functions'.
-  nil)
+    (insert new)
+    ;; Emacs 23.2+: return data structure for use by vanilla `lisp-complete-symbol'.
+    (list beg end obarray :predicate predicate
+          :annotate-function (unless (eq predicate 'fboundp)
+                               (lambda (str) (if (fboundp (intern-soft str)) " <f>"))))))
 
 ;;;###autoload
 (defun icicle-customize-icicles-group ()

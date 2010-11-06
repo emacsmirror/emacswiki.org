@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  3 15:07:35 2010 (-0700)
+;; Last-Updated: Fri Nov  5 10:48:22 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5780
+;;     Update #: 5791
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/11/04 dadams
+;;     icicle-lisp-complete-symbol: Fixed return value for Emacs 23.2+.  Thx to Michael Heerdegen.
 ;; 2010/11/03 dadams
 ;;     defalias old-lisp-completion-at-point, not old-lisp-complete-symbol, for Emacs 23.2+.
 ;;     icicle-lisp-complete-symbol:
@@ -2100,6 +2102,11 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/11/05 dadams
+;;     icicle-mouse-save-then-kill: Redefined for Emacs 24 (they changed mouse-save-then-kill).
+;;     icicle-candidate-set-retrieve-1: Call icicle-apropos-complete upon minibuffer setup.
+;; 2010/11/04 dadams
+;;     icicle-nb-of-candidate-in-Completions: Treat nil value the same as horizontal value.
 ;; 2010/10/24 dadams
 ;;     icicle-insert-string-from-variable, icicle(-mouse)-candidate-read-fn-invoke,
 ;;       icicle-narrow-candidates, icicle-save-predicate-to-variable:

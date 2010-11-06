@@ -683,6 +683,13 @@ Then you only need to load:
 [new]
 I find using a [[bookmark]] works quite well: just open a frequently accessed file/directory using tramp and type C-x r m. Then you can give it as short a name as you like. See BookMarks for more details. --EmorySmith
 
+[new]
+Why is multi:... an obsolete format? Was it deemed too easy or something? Why should I have to set up a proxy variable just to open a file once? I understand the desire to add more features (and the proxy thing looks like a useful feature) but not at the expense of existing simplicity.
+
+I hope there's a sensible explanation. I would love to be pointed to a logical explanation of why trying to open /multi:ssh:foo:ssh:bar: will cause the heat death of the universe but I fear there may be no such thing.
+
+-- Matthew
+
 ----
 '''Editing files via sudo doesnt work with vc-svn.el.'''
 

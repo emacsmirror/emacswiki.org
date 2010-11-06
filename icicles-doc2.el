@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 09:24:57 2010 (-0700)
+;; Last-Updated: Fri Nov  5 14:32:31 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27348
+;;     Update #: 27350
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2213,7 +2213,7 @@
 ;;  Remember that you can define a candidate set incrementally, adding
 ;;  more elements using `C->', `C-)', `insert', `M-S-mouse-2',
 ;;  `M-mouse-3', or `mouse-1 mouse-3 mouse-3'.  And you can save a
-;;  candidate set persistently.
+;;  candidate set persistently. [*]
 ;;
 ;;  You can even create a virtual book that includes Info nodes from
 ;;  different manuals.  For example, you might want to collect
@@ -2277,6 +2277,13 @@
 ;;  completion candidates.
 ;;
 ;;  * (@> "Icicles Bookmark Enhancements") for information about using Info bookmarks.
+;;
+;;  [* If you click `mouse-1' on a candidate and (starting with Emacs
+;;  22) `mouse-1-click-follows-link' is an integer, then you will need
+;;  to hold the mouse button depressed longer than that many seconds,
+;;  or else that candidate will simply by chosen.  If the value is
+;;  `t', then this won't work at all.  Any other value presents no
+;;  problem.  (Personally, I use `nil'.)]
 ;;
 ;;(@* "Using Icicle-Search With Info")
 ;;  ** Using Icicle-Search With Info **

@@ -6,20 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
 ;; Version: 0.1 
-;; Last-Updated: Thu Nov  4 12:47:46 2010 (-0500)
-;;           By: us041375
-;;     Update #: 537
+;; Last-Updated: Fri Nov  5 14:37:51 2010 (-0500)
+;;           By: Matthew L. Fidler
+;;     Update #: 1051
 ;; URL: http://www.emacswiki.org/emacs/texmate-import.el
 ;; Keywords: Yasnippet
 ;; Compatibility: Tested with Windows Emacs 23.2
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `assoc', `backquote', `button', `bytecomp', `cl', `easymenu',
-;;   `help-mode', `mail-prsvr', `mailcap', `mm-util', `timer',
-;;   `timezone', `url', `url-cookie', `url-expand', `url-history',
-;;   `url-methods', `url-parse', `url-privacy', `url-proxy',
-;;   `url-util', `url-vars', `view', `yasnippet'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -36,6 +32,16 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 05-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Fri Nov  5 14:33:00 2010 (-0500) #1050 (Matthew L. Fidler)
+;;
+;;    Added better texmate support by providing translations for
+;;    mirrors. Requires the directive # type: command available in the
+;;    SVN version of yasnippet.
+;;
+;; 05-Nov-2010      
+;;    Last-Updated: Fri Nov  5 09:59:30 2010 (-0500) #898 (US041375)
+;;    Changed texmate-replace-in-string with replace-regexp-in-string
 ;; 04-Nov-2010      
 ;;    Last-Updated: Thu Nov  4 12:38:32 2010 (-0500) #535 (us041375)
 ;;    Changed extension from .yasnippet to what the package is in a svn-import.
@@ -142,12 +148,6 @@
   "* Texmate import"
   )
 
-(defun texmate-replace-in-string (string in out)
-  (save-match-data
-    (let ((ret string))
-      (while (string-match in ret)
-        (setq ret (replace-match out 't nil ret)))
-      (symbol-value 'ret))))
 
 (defcustom texmate-menu-definition 0
   "* Defines the type of menu definition that is implemented:
@@ -177,9 +177,25 @@ Possible choices are:
     (symbol-value 'content)
     )
   )
+(setq texmate-regexp-to-emacs-regexp-known '(;TexMate  Emacs
+                                           ;    ("\\w" "\\w")
+                                               ("\\s" "\\s-")
+                                               ("\\S" "\\S-")
+                                               ("\\d" "[0-9]")
+                                               ("\\D" "[^0-9]")
+                                               ("\\p{Alphanum}" "[A-Za-z0-9]")
+                                               ("\\p{^Alphanum}" "[^A-Za-z0-9]")
+                                               ("\\h" "[0-9a-fA-F]")
+                                               ("\\H" "[^0-9a-fA-F]")
+                                               )
+  )
 (defun texmate-regexp-to-emacs-regexp (rexp)
-  "* Convert a texmate regular expression to an emacs regular expression"
-  ;; Emacs http://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-of-Regexps.html#Syntax-of-Regexps
+  "* Convert a texmate regular expression to an emacs regular expression (as much as possible)"
+  (let (ret
+        case-fold-search 
+        )
+    (with-temp-buffer
+        ;; Emacs http://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-of-Regexps.html#Syntax-of-Regexps
   ;; Texmate http://manual.macromates.com/en/drag_commands#drag_commands
 
   ;; \w => \w
@@ -192,414 +208,54 @@ Possible choices are:
   ;; \H => [^0-9a-fA-F] Not Hexadecimal digit character
   ;; \p{Alnum} => [A-Za-z0-9] Alphanumeirc
   ;; \p{^Alnum} => [^A-Za-z0-9] Alphanumeirc
-  ;;  Alpha, Blank, Cntrl, Digit, Graph, Lower,
-  ;;       Print, Punct, Space, Upper, XDigit, Word, ASCII,
-
-  ;; The following CANNOT be translated to an emacs regular
-  ;; expression.  The regular expression would need to be extended.
-  ;;
-  ;;
-  ;; If you want to use '[', '-', ']' as a normal character
-  ;; in a character class, you should escape these characters by '\'.
-
-  ;;POSIX bracket ([:xxxxx:], negate [:^xxxxx:])
-
-    ;; Not Unicode Case:
-    ;;   alpha    alphabet
-    ;;   ascii    code value: [0 - 127]
-    ;;   blank    \t, \x20
-    ;;   cntrl
-    ;;   digit    0-9
-    ;;   graph    include all of multibyte encoded characters
-    ;;   lower
-    ;;   print    include all of multibyte encoded characters
-    ;;   punct
-    ;;   space    \t, \n, \v, \f, \r, \x20
-    ;;   upper
-    ;;   xdigit   0-9, a-f, A-F
-    ;;   word     alphanumeric, "_" and multibyte characters
-  
-    ;;   alnum    alphabet or digit char
-
-    ;; Unicode Case:
-
-    ;;   alnum    Letter | Mark | Decimal_Number
-    ;;   alpha    Letter | Mark
-    ;;   ascii    0000 - 007F
-    ;;   blank    Space_Separator | 0009
-    ;;   cntrl    Control | Format | Unassigned | Private_Use | Surrogate
-    ;;   digit    Decimal_Number
-    ;;   graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
-    ;;   lower    Lowercase_Letter
-    ;;   print    [[:graph:]] | [[:space:]]
-    ;;   punct    Connector_Punctuation | Dash_Punctuation | Close_Punctuation |
-    ;;            Final_Punctuation | Initial_Punctuation | Other_Punctuation |
-    ;;            Open_Punctuation
-    ;;   space    Space_Separator | Line_Separator | Paragraph_Separator |
-    ;;            0009 | 000A | 000B | 000C | 000D | 0085
-    ;;   upper    Uppercase_Letter
-    ;;   xdigit   0030 - 0039 | 0041 - 0046 | 0061 - 0066
-    ;;            (0-9, a-f, A-F)
-    ;;   word     Letter | Mark | Decimal_Number | Connector_Punctuation
-
-
-
-
   ;; {n,m} => \{n,m\}
   ;; {,n} => \{,n\}
   ;; \{n,\} => \{n,\}
-
-  ;; *? => Non-greedy
-  ;; *+ => Greedy
-
-  ;; Anchors
-  ;; \b -- \b
-  ;; \B -- Not word boundary.
-  ;; \A -- Beginning of string.
-  ;; \Z -- end of string OR before newline at the end
-  ;; \z -- End of string
-  ;; \G -- Matching start position.
-
-  ;; \t => \t
-  ;; \n => \n
-  ;; \r => \n (Return)
-  ;; \e => escape
-  ;; \nnn => Octal character
-  ;; \xHH => Hexadecimal character
-  ;; \cx => Control character
-  ;; \C-x => Control character
-  ;; \M-x => Meta character
-  ;; \M-\C-x => Meta Control character
-
-
-
-;;        Hiragana, Katakana
-
-;;      + works on UTF8, UTF16, UTF32
-;;        Any, Assigned, C, Cc, Cf, Cn, Co, Cs, L, Ll, Lm, Lo, Lt, Lu,
-;;        M, Mc, Me, Mn, N, Nd, Nl, No, P, Pc, Pd, Pe, Pf, Pi, Po, Ps,
-;;        S, Sc, Sk, Sm, So, Z, Zl, Zp, Zs, 
-;;        Arabic, Armenian, Bengali, Bopomofo, Braille, Buginese,
-;;        Buhid, Canadian_Aboriginal, Cherokee, Common, Coptic,
-;;        Cypriot, Cyrillic, Deseret, Devanagari, Ethiopic, Georgian,
-;;        Glagolitic, Gothic, Greek, Gujarati, Gurmukhi, Han, Hangul,
-;;        Hanunoo, Hebrew, Hiragana, Inherited, Kannada, Katakana,
-;;        Kharoshthi, Khmer, Lao, Latin, Limbu, Linear_B, Malayalam,
-;;        Mongolian, Myanmar, New_Tai_Lue, Ogham, Old_Italic, Old_Persian,
-;;        Oriya, Osmanya, Runic, Shavian, Sinhala, Syloti_Nagri, Syriac,
-;;        Tagalog, Tagbanwa, Tai_Le, Tamil, Telugu, Thaana, Thai, Tibetan,
-;;        Tifinagh, Ugaritic, Yi
-
-
-
-;; 4. Quantifier
-
-;;   greedy
-
-;;     ?       1 or 0 times
-;;     *       0 or more times
-;;     +       1 or more times
-;;     {n,m}   at least n but not more than m times
-;;     {n,}    at least n times
-;;     {,n}    at least 0 but not more than n times ({0,n})
-;;     {n}     n times
-
-;;   reluctant
-
-;;     ??      1 or 0 times
-;;     *?      0 or more times
-;;     +?      1 or more times
-;;     {n,m}?  at least n but not more than m times  
-;;     {n,}?   at least n times
-;;     {,n}?   at least 0 but not more than n times (== {0,n}?)
-
-;;   possessive (greedy and does not backtrack after repeated)
-
-;;     ?+      1 or 0 times
-;;     *+      0 or more times
-;;     ++      1 or more times
-
-;;     ({n,m}+, {n,}+, {n}+ are possessive op. in ONIG_SYNTAX_JAVA only)
-
-;;     ex. /a*+/ === /(?>a*)/
-
-
-;; 5. Anchors
-
-;;   ^       beginning of the line
-;;   $       end of the line
-;;   \b      word boundary
-;;   \B      not word boundary
-;;   \A      beginning of string
-;;   \Z      end of string, or before newline at the end
-;;   \z      end of string
-;;   \G      matching start position 
-
-
-;; 6. Character class
-
-;;   ^...    negative class (lowest precedence operator)
-;;   x-y     range from x to y
-;;   [...]   set (character class in character class)
-;;   ..&&..  intersection (low precedence at the next of ^)
-
-;;     ex. [a-w&&[^c-g]z] ==> ([a-w] AND ([^c-g] OR z)) ==> [abh-w]
-
-;;   * If you want to use '[', '-', ']' as a normal character
-;;     in a character class, you should escape these characters by '\'.
-
-
-;;   POSIX bracket ([:xxxxx:], negate [:^xxxxx:])
-
-;;     Not Unicode Case:
-
-;;       alnum    alphabet or digit char
-;;       alpha    alphabet
-;;       ascii    code value: [0 - 127]
-;;       blank    \t, \x20
-;;       cntrl
-;;       digit    0-9
-;;       graph    include all of multibyte encoded characters
-;;       lower
-;;       print    include all of multibyte encoded characters
-;;       punct
-;;       space    \t, \n, \v, \f, \r, \x20
-;;       upper
-;;       xdigit   0-9, a-f, A-F
-;;       word     alphanumeric, "_" and multibyte characters
-
-
-;;     Unicode Case:
-
-;;       alnum    Letter | Mark | Decimal_Number
-;;       alpha    Letter | Mark
-;;       ascii    0000 - 007F
-;;       blank    Space_Separator | 0009
-;;       cntrl    Control | Format | Unassigned | Private_Use | Surrogate
-;;       digit    Decimal_Number
-;;       graph    [[:^space:]] && ^Control && ^Unassigned && ^Surrogate
-;;       lower    Lowercase_Letter
-;;       print    [[:graph:]] | [[:space:]]
-;;       punct    Connector_Punctuation | Dash_Punctuation | Close_Punctuation |
-;;                Final_Punctuation | Initial_Punctuation | Other_Punctuation |
-;;                Open_Punctuation
-;;       space    Space_Separator | Line_Separator | Paragraph_Separator |
-;;                0009 | 000A | 000B | 000C | 000D | 0085
-;;       upper    Uppercase_Letter
-;;       xdigit   0030 - 0039 | 0041 - 0046 | 0061 - 0066
-;;                (0-9, a-f, A-F)
-;;       word     Letter | Mark | Decimal_Number | Connector_Punctuation
-
-
-
-;; 7. Extended groups
-
-;;   (?#...)            comment
-
-;;   (?imx-imx)         option on/off
-;;                          i: ignore case
-;;                          m: multi-line (dot(.) match newline)
-;;                          x: extended form
-;;   (?imx-imx:subexp)  option on/off for subexp
-
-;;   (?:subexp)         not captured group
-;;   (subexp)           captured group
-
-;;   (?=subexp)         look-ahead
-;;   (?!subexp)         negative look-ahead
-;;   (?<=subexp)        look-behind
-;;   (?<!subexp)        negative look-behind
-
-;;                      Subexp of look-behind must be fixed character length.
-;;                      But different character length is allowed in top level
-;;                      alternatives only.
-;;                      ex. (?<=a|bc) is OK. (?<=aaa(?:b|cd)) is not allowed.
-
-;;                      In negative-look-behind, captured group isn't allowed, 
-;;                      but shy group(?:) is allowed.
-
-;;   (?>subexp)         atomic group
-;;                      don't backtrack in subexp.
-
-;;   (?<name>subexp), (?'name'subexp)
-;;                      define named group
-;;                      (All characters of the name must be a word character.)
-
-;;                      Not only a name but a number is assigned like a captured
-;;                      group.
-
-;;                      Assigning the same name as two or more subexps is allowed.
-;;                      In this case, a subexp call can not be performed although
-;;                      the back reference is possible.
-
-
-;; 8. Back reference
-
-;;   \n          back reference by group number (n >= 1)
-;;   \k<name>    back reference by group name
-;;   \k'name'    back reference by group name
-
-;;   In the back reference by the multiplex definition name,
-;;   a subexp with a large number is referred to preferentially.
-;;   (When not matched, a group of the small number is referred to.)
-
-;;   * Back reference by group number is forbidden if named group is defined 
-;;     in the pattern and ONIG_OPTION_CAPTURE_GROUP is not setted.
-
-
-;;   back reference with nest level
-
-;;     \k<name+n>     n: 0, 1, 2, ...
-;;     \k<name-n>     n: 0, 1, 2, ...
-;;     \k'name+n'     n: 0, 1, 2, ...
-;;     \k'name-n'     n: 0, 1, 2, ...
-
-;;     Destinate relative nest level from back reference position.    
-
-;;     ex 1.
-
-;;       /\A(?<a>|.|(?:(?<b>.)\g<a>\k<b+0>))\z/.match("reer")
-
-;;     ex 2.
-
-;;       r = Regexp.compile(<<'__REGEXP__'.strip, Regexp::EXTENDED)
-;;       (?<element> \g<stag> \g<content>* \g<etag> ){0}
-;;       (?<stag> < \g<name> \s* > ){0}
-;;       (?<name> [a-zA-Z_:]+ ){0}
-;;       (?<content> [^<&]+ (\g<element> | [^<&]+)* ){0}
-;;       (?<etag> </ \k<name+1> >){0}
-;;       \g<element>
-;;       __REGEXP__
-
-;;       p r.match('<foo>f<bar>bbb</bar>f</foo>').captures
-
-
-
-;; 9. Subexp call ("Tanaka Akira special")
-
-;;   \g<name>    call by group name
-;;   \g'name'    call by group name
-;;   \g<n>       call by group number (n >= 1)
-;;   \g'n'       call by group number (n >= 1)
-
-;;   * left-most recursive call is not allowed.
-;;      ex. (?<name>a|\g<name>b)   => error
-;;          (?<name>a|b\g<name>c)  => OK
-
-;;   * Call by group number is forbidden if named group is defined in the pattern
-;;     and ONIG_OPTION_CAPTURE_GROUP is not setted.
-
-;;   * If the option status of called group is different from calling position
-;;     then the group's option is effective.
-
-;;     ex. (?-i:\g<name>)(?i:(?<name>a)){0}  match to "A"
-
-
-;; 10. Captured group
-
-;;   Behavior of the no-named group (...) changes with the following conditions.
-;;   (But named group is not changed.)
-
-;;   case 1. /.../     (named group is not used, no option)
-
-;;      (...) is treated as a captured group.
-
-;;   case 2. /.../g    (named group is not used, 'g' option)
-
-;;      (...) is treated as a no-captured group (?:...).
-
-;;   case 3. /..(?<name>..)../   (named group is used, no option)
-
-;;      (...) is treated as a no-captured group (?:...).
-;;      numbered-backref/call is not allowed.
-
-;;   case 4. /..(?<name>..)../G  (named group is used, 'G' option)
-
-;;      (...) is treated as a captured group.
-;;      numbered-backref/call is allowed.
-
-;;   where
-;;     g: ONIG_OPTION_DONT_CAPTURE_GROUP
-;;     G: ONIG_OPTION_CAPTURE_GROUP
-
-;;   ('g' and 'G' options are argued in ruby-dev ML)
-
-
-
-;; -----------------------------
-;; A-1. Syntax depend options
-
-;;    + ONIG_SYNTAX_RUBY
-;;      (?m): dot(.) match newline
-
-;;    + ONIG_SYNTAX_PERL and ONIG_SYNTAX_JAVA
-;;      (?s): dot(.) match newline
-;;      (?m): ^ match after newline, $ match before newline
-
-
-;; A-2. Original extensions
-
-;;    + hexadecimal digit char type  \h, \H
-;;    + named group                  (?<name>...), (?'name'...)
-;;    + named backref                \k<name>
-;;    + subexp call                  \g<name>, \g<group-num>
-
-
-;; A-3. Lacked features compare with perl 5.8.0
-
-;;    + \N{name}
-;;    + \l,\u,\L,\U, \X, \C
-;;    + (?{code})
-;;    + (??{code})
-;;    + (?(condition)yes-pat|no-pat)
-
-;;    * \Q...\E
-;;      This is effective on ONIG_SYNTAX_PERL and ONIG_SYNTAX_JAVA.
-
-
-;; A-4. Differences with Japanized GNU regex(version 0.12) of Ruby 1.8
-
-;;    + add character property (\p{property}, \P{property})
-;;    + add hexadecimal digit char type (\h, \H)
-;;    + add look-behind
-;;      (?<=fixed-char-length-pattern), (?<!fixed-char-length-pattern)
-;;    + add possessive quantifier. ?+, *+, ++
-;;    + add operations in character class. [], &&
-;;      ('[' must be escaped as an usual char in character class.)
-;;    + add named group and subexp call.
-;;    + octal or hexadecimal number sequence can be treated as 
-;;      a multibyte code char in character class if multibyte encoding
-;;      is specified.
-;;      (ex. [\xa1\xa2], [\xa1\xa7-\xa4\xa1])
-;;    + allow the range of single byte char and multibyte char in character
-;;      class.
-;;      ex. /[a-<<any EUC-JP character>>]/ in EUC-JP encoding.
-;;    + effect range of isolated option is to next ')'.
-;;      ex. (?:(?i)a|b) is interpreted as (?:(?i:a|b)), not (?:(?i:a)|b).
-;;    + isolated option is not transparent to previous pattern.
-;;      ex. a(?i)* is a syntax error pattern.
-;;    + allowed incompleted left brace as an usual string.
-;;      ex. /{/, /({)/, /a{2,3/ etc...
-;;    + negative POSIX bracket [:^xxxx:] is supported.
-;;    + POSIX bracket [:ascii:] is added.
-;;    + repeat of look-ahead is not allowed.
-;;      ex. /(?=a)*/, /(?!b){5}/
-;;    + Ignore case option is effective to numbered character.
-;;      ex. /\x61/i =~ "A"
-;;    + In the range quantifier, the number of the minimum is omissible.
-;;      /a{,n}/ == /a{0,n}/
-;;      The simultanious abbreviation of the number of times of the minimum
-;;      and the maximum is not allowed. (/a{,}/)
-;;    + /a{n}?/ is not a non-greedy operator.
-;;      /a{n}?/ == /(?:a{n})?/
-;;    + invalid back reference is checked and cause error.
-;;      /\1/, /(a)\2/
-;;    + Zero-length match in infinite repeat stops the repeat,
-;;      then changes of the capture group status are checked as stop condition.
-;;      /(?:()|())*\1\2/ =~ ""
-;;      /(?:\1a|())*/ =~ "a"
-
+      (insert rexp)
+      ;; The following needs to be changed (){} |
+      (goto-char (point-min))
+      (while (re-search-forward (eval-when-compile
+                                  (regexp-opt '("\\("
+                                                "\\)"
+                                                "\\|"
+                                                "\\{"
+                                                "\\}"
+                                                ) 't
+                                                  )) nil t)
+        (replace-match (string (cond 
+                                ( (string= (match-string 0) "\\(") ?\C-a)
+                                ( (string= (match-string 0) "\\)") ?\C-b)
+                                ( (string= (match-string 0) "\\{") ?\C-c)
+                                ( (string= (match-string 0) "\\}") ?\C-d)
+                                ( (string= (match-string 0) "\\|") ?\C-e)
+                                )) nil 't)
+        )
+      (goto-char (point-min))
+      (while (re-search-forward (eval-when-compile (regexp-opt '("(" ")" "{" "}" "|") 't)) nil t)
+        (replace-match (concat "\\" (match-string 0)) nil 't))
+      (goto-char (point-min))
+      (while (re-search-forward (eval-when-compile (regexp-opt (list (string ?\C-a) (string ?\C-b) (string ?\C-c) (string ?\C-d) (string ?\C-e)) 't)) nil t)
+        (replace-match (cond 
+                             ( (string= (match-string 0) (string ?\C-a)) "(")
+                             ( (string= (match-string 0) (string ?\C-b)) ")")
+                             ( (string= (match-string 0) (string ?\C-c)) "{")
+                             ( (string= (match-string 0) (string ?\C-d)) "}")
+                             ( (string= (match-string 0) (string ?\C-e)) "|")) 't 't)
+                             
+        )
+      (mapc
+       (lambda(x)
+         (goto-char (point-min))
+         (while (re-search-forward (regexp-quote (nth 0 x)) nil 't)
+           (replace-match (nth 1 x) 't 't))
+         )
+       texmate-regexp-to-emacs-regexp-known
+       )
+      (setq ret (buffer-substring-no-properties (point-min) (point-max)))
+      )
+    )
   )
+
 (setq texmate-import-convert-known-expressions
   '(
     ("&lt;" "<")
@@ -655,9 +311,38 @@ Possible choices are:
 (defvar texmate-import-convert-env-lst '()
   "List to convert Texmate Environmental variables to customizable fields."
   )
+(defun texmate-import-convert-template-t (begin-text max)
+  "* Subroutine to convert regular expressions to (yas/t expressions)"
+  (let (
+        (str (buffer-substring-no-properties (point) max))
+        (lst '())
+        ret
+        )
+    (delete-region (point) max)
+    (replace-match (format "%s(yas/t/ " begin-text))
+    (while (string-match (eval-when-compile (regexp-quote "\\/")) str)
+      (setq str (replace-match (string ?\C-a) 't 't str)))
+    (setq lst (split-string str "/"))
+    (setq ret
+          (mapconcat
+           (lambda(x)
+             (let ((val x))
+               (while (string-match (eval-when-compile (regexp-quote (string ?\C-a))) val)
+                 (setq val (replace-match "\\/" 't 't val)))
+               (while (string-match "\"" val)
+                 (setq val (replace-match "\\\"" 't 't val)))
+               (setq val (concat "\"" val "\""))
+               (symbol-value 'val)
+               )
+             )
+           lst " ")
+          )
+    (insert ret)
+    )
+  )
 (defun texmate-import-convert-template (template)
   "* Converts template to Yasnippet template"
-  (let (ret max )
+  (let (ret max p1 not-found txt i lst)
     (with-temp-buffer
       (insert template)
       (mapc (lambda(x)
@@ -677,7 +362,45 @@ Possible choices are:
       (setq max (+ 1 (string-to-int max)))
       (while (search-forward "`(or yas/selected-text \"\")`" nil t)
         (replace-match (format "${%s:`yas/selected-text`}" max) 't 't))
-      
+      ;; Now replace TexMate mirrors $(1/reg/expr)
+      (goto-char (point-min))
+      (while (re-search-forward "\\([$][{][0-9]+\\)/" nil t)
+        (setq max (save-match-data (save-excursion
+                    (goto-char (match-beginning 0))
+                    (forward-char 1)
+                    (with-syntax-table text-mode-syntax-table
+                      (forward-sexp 1))
+                    (backward-char 1)
+                    (insert ")")
+                    (- (point) 1)
+                    )))
+        (texmate-import-convert-template-t "\\1:$" max )
+        )
+      ;; Now replace (yas/t/ "".*) with the appropriate list
+      (setq i 0)
+      (goto-char (point-min))           
+      (setq lst "(setq yas/t-lst '(")
+      (while (re-search-forward "(yas/t/ \"" nil t)
+        (setq p1 (- (point) 1))
+        (goto-char (match-beginning 0))
+        (with-syntax-table text-mode-syntax-table
+          (forward-sexp 1))
+        (setq lst (concat lst "\n\t(" (buffer-substring-no-properties p1 (point))))
+        (delete-region (match-beginning 0) (point))
+        (insert (format "(apply 'yas/t/ (nth %s yas/t-lst))" i))
+        (setq i (+ i 1))
+        )
+      (unless (string= "(setq yas/t-lst '(" lst)
+        (setq lst (concat lst "))\n"))
+        (goto-char (point-min))
+        (insert "(yas/expand-snippet \"")
+        (while (search-forward "\"" nil t)
+          (replace-match "\\\"" 't 't))
+        (goto-char (point-max))
+        (insert "\")")
+        (goto-char (point-min))
+        (insert lst)
+        )
       (setq ret (buffer-substring (point-min) (point-max)))
       )
     (symbol-value 'ret)
@@ -814,6 +537,7 @@ Possible choices are:
         (name nil)
         (scope nil)
         (group nil)
+        (type "")
         (snippet "")
         (binding "")
         (mode "")
@@ -855,6 +579,18 @@ Possible choices are:
             (setq env (concat env " (yas/current-path (if (buffer-file-name) (buffer-file-name) \"\")) ")))
           (when (string-match "\\<yas/current-column\\>" snippet)
             (setq env (concat env " (yas/current-column (if (current-column) (current-column) \"\")) ")))
+          (when (string-match "(yas/expand-snippet" snippet)
+            (setq type "\n# type: command")
+            ;; Add environment to expand/snippet on command snippets.
+            (unless (string= "" env)
+              (goto-char (point-max))
+              (when (re-search-backward ")" nil t)
+                (insert "nil nil \"")
+                (insert (replace-regexp-in-string "\"" "\\\"" env 't 't))
+                (insert "\"")
+                )
+              )
+            )
           (setq snippet (concat "# -*- mode: snippet -*-"
                                 "\n# uuid: " uuid
                                 "\n# contributor: Translated from textmate snippet by texmate-import.el"
@@ -870,11 +606,12 @@ Possible choices are:
                                     ""
                                   (concat "\n# key: " key)
                                   )
-                                (if (not binding)
-                                    ""
-                                  (concat "\n# binding: C-c C-y " binding)
-                                  )
+;                                (if (not binding)
+;                                    ""
+;                                  (concat "\n# binding: C-c C-y " binding)
+;                                  )
                                 "\n# scope: " scope
+                                type
                                 (if group
                                     (concat "\n# group: " group)
                                   "")
@@ -1032,7 +769,7 @@ Possible choices are:
         (add-to-list 'lst (match-string 1)))
       (kill-buffer (current-buffer))
       )
-    (setq texmate-import-svn-pkgs-cache (mapcar (lambda(x) (texmate-replace-in-string x "%20" " ")) lst))
+    (setq texmate-import-svn-pkgs-cache (mapcar (lambda(x) (replace-regexp-in-string "%20" " " x)) lst))
     (symbol-value 'texmate-import-svn-pkgs-cache)
     )
   ))
@@ -1082,7 +819,8 @@ Possible choices are:
             (save-excursion
               (set-buffer buf)
               (texmate-import-current-buffer new-dir plist
-                                             (texmate-replace-in-string (texmate-replace-in-string x "%20" " ") "%3c" "<")
+                                             (replace-regexp-in-string "%3c" "<"
+                                                                       (replace-regexp-in-string "%20" " " x))
                                              nil
                                              nil
                                              nil
@@ -1091,7 +829,9 @@ Possible choices are:
                                              )
               (kill-buffer (current-buffer))
               )
-            (message "Imported %s" (texmate-replace-in-string (texmate-replace-in-string x "%20" " ") "%3c" "<"))
+            (message "Imported %s" (replace-regexp-in-string "%3c" "<"
+                                                             (replace-regexp-in-string
+                                                              "%20" " " x)))
             (sleep-for 1)
             )
           snippets)
@@ -1109,7 +849,7 @@ Possible choices are:
         buf
         plist
         )
-    (setq texmate-url (concat texmate-import-svn-url (texmate-replace-in-string texmate-name " " "%20") ".tmbundle/"))
+    (setq texmate-url (concat texmate-import-svn-url (replace-regexp-in-string " " "%20" texmate-name) ".tmbundle/"))
     (if (not (texmate-import-snippets-supported texmate-url))
         (progn
           (setq texmate-import-svn-pkgs-cache (remove-if
@@ -1131,7 +871,7 @@ Possible choices are:
     )
   )
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; Snippet environmental functions.
+;; Snippet helper functions.
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defun yas/getenv (var)
   "* Gets environment variable or customized variable for Textmate->Yasnippet conversion"
@@ -1147,10 +887,218 @@ Possible choices are:
       )
     )
   )
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; macros for yas/replace-match
+;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defmacro yas/format-match-ulm (match-number &optional string downcase)
+  "* Helper macro to change texmate match-string \\u$1 to the correct expression" 
+  `(if (> (length (match-string ,match-number ,string)) 1)
+       (concat (,(if downcase 'downcase 'upcase) (substring (match-string ,match-number ,string) 0 1))
+               (substring (match-string ,match-number ,string) 1))
+     (upcase (match-string ,match-number ,string))))
+(defmacro yas/format-match-UE (text &optional string downcase)
+  "* Helper macro to emulate Texmate case folding in replacement that is \\U\\E and \\U\\L"
+  (let (
+        (lst (make-symbol "lst"))
+        (ret (make-symbol "ret"))
+        (md2 (make-symbol "md2"))
+        (md (make-symbol "md"))
+        (lst2 (make-symbol "lst2"))
+        (ret2 (make-symbol "ret2"))
+        (start (make-symbol "start"))
+        (num (make-symbol "num"))
+        (mtch (make-symbol "mtch"))
+        )
+    `(let (
+           case-fold-search
+           ,lst
+           ,ret
+           (,md (match-data))
+           ,md2
+           )
+       (setq ,lst (split-string ,text ,(if downcase "\\\\L" "\\\\U") 't))
+       (setq ,ret (pop ,lst))
+       (setq ,ret (concat ,ret
+                          (mapconcat
+                           (lambda(x)
+                             (let (,lst2 ,ret2 (,start 0) ,num ,mtch)
+                               (setq ,lst2 (split-string x "\\\\E" 't))
+                               (setq ,ret2 (,(if downcase 'downcase 'upcase) (pop ,lst2)))
+                               (while (string-match "[$]\\([0-9]+\\)" ,ret2 ,start)
+                                 (setq ,num (string-to-number (match-string 1 ,ret2)))
+                                 (setq ,md2 (match-data)) ; Save match in current string
+                                 (set-match-data ,md) ; Set match to actual match we are replacing.
+                                 (setq ,mtch (,(if downcase 'downcase 'upcase) (match-string ,num ,string))) ; get the match data and make it upper case.
+                                 (set-match-data ,md2) ; Put the match data in ret2 back.
+                                 (setq ,start (+ (match-beginning 0) (length ,mtch)))
+                                 (setq ,ret2 (replace-match ,mtch 't 't ,ret2))
+                                 )
+                               ;; Put extra \E values back in.
+                               (setq ,ret2 (concat ,ret2 (mapconcat (lambda(y) y) ,lst2 "\\E")))
+                               (symbol-value ',ret2)
+                               )
+                             )
+                           ,lst
+                           ""
+                           )
+                          )
+             )
+       (set-match-data ,md)
+       (symbol-value ',ret)
+       )
+    ))
+(defmacro yas/format-match-u (text &optional string downcase)
+  "* Macro to replace \\u$1 (or \\l$1) with the correct expansion"
+  (let (
+        (md (make-symbol "md"))
+        (md2 (make-symbol "md2"))
+        (num (make-symbol "num"))
+        (ret (make-symbol "ret"))
+        (start (make-symbol "start"))
+        (mtch (make-symbol "mtch"))
+        )
+    `(let (
+           (,md (match-data))
+           ,md2 ,num ,mtch
+           case-fold-search
+           (,ret ,text)
+           (,start 0)
+           )
+       (while (string-match ,(if downcase "\\\\l[$]\\([0-9]+\\)" "\\\\u[$]\\([0-9]+\\)") ,ret ,start)
+         (setq ,num (string-to-number (match-string 1 ,ret)))
+         (setq ,md2 (match-data))
+         (set-match-data ,md)
+         (setq ,mtch (yas/format-match-ulm ,num ,string ,(if downcase 't 'nil))) ;;downcase
+         (set-match-data ,md2)
+         (setq start (+ (match-beginning 0) (length ,mtch)))
+         (setq ,ret (replace-match ,mtch 't 't ,ret))
+         )
+       (set-match-data ,md)
+       (symbol-value ',ret)
+       )
+    ))
+(defmacro yas/format-match-? (text &optional string)
+  "* Replaces conditional statements (?3:insertion:otherwise) or (?3:insertion)"
+  (let ((md (make-symbol "md"))
+        (md2 (make-symbol "md2"))
+        (num (make-symbol "num"))
+        (ret (make-symbol "ret"))
+        (start (make-symbol "start"))
+        (insert (make-symbol "insert"))
+        (other (make-symbol "other"))
+        (mtch (make-symbol "mtch"))
+        )
+    `(let (
+           (,md (match-data))
+           ,md2 ,num ,mtch
+           (,ret ,text)
+           (,start 0)
+           (,insert "")
+           (,other "")
+           )
+       (while (string-match "([?]\\([0-9]+\\)[:]\\(\\(?:.\\|\n\\)*?\\)\\(?:[:]\\(\\(?:.\\|\n\\)*?\\))\\|)\\)" ,ret ,start)
+         (setq ,other "")
+         (setq ,num (string-to-number (match-string 1 ,ret)))
+         (setq ,insert (match-string 2 ,ret))
+         (if (match-string 3 ,ret)
+             (setq ,other (match-string 3 ,ret)))
+         (setq ,md2 (match-data))
+         (set-match-data ,md)
+         (if (match-string ,num ,string)
+             (if (string= "" (match-string ,num ,string))
+                 (setq ,mtch ,other)
+               (setq ,mtch ,insert)
+               )
+           (setq ,mtch ,other)
+           )
+         (set-match-data ,md2)
+         (setq ,start (+ (match-beginning 0) (length ,mtch)))
+         (setq ,ret (replace-match ,mtch 't 't ,ret))
+         )
+       (set-match-data ,md)
+       (symbol-value ',ret)
+       )
+    ))
+(defmacro yas/format-match-$ (text &optional string)
+  "* Replace $1 with the appropriate match."
+  (let (
+        (ret (make-symbol "ret"))
+        (md (make-symbol "md"))
+        (start (make-symbol "start"))
+        (md2 (make-symbol "md2"))
+        (num (make-symbol "num"))
+        (mtch (make-symbol "mtch"))
+        )
+  `(let (
+         (,ret ,text)
+         (,md (match-data))
+         (,start 0)
+         ,md2 ,num ,mtch)
+       (while (string-match "[$]\\([0-9]+\\)" ,ret ,start)
+         (setq ,num (string-to-number (match-string 1 ,ret)))
+         (setq ,md2 (match-data))
+         (set-match-data ,md)
+         (setq ,mtch (match-string ,num ,string))
+         (set-match-data ,md2)
+         (setq ,start (+ (match-beginning 0) (length ,mtch)))
+         (setq ,ret (replace-match ,mtch 't 't ,ret))
+         )
+       (set-match-data ,md)
+     (symbol-value ',ret)
+     )
+  ))
+(defmacro yas/format-match (text &optional string)
+  "* Use Texmate style format strings to replace match data."
+  (let ((ret (make-symbol "ret")))
+  `(let (,ret)
+     (setq ,ret (yas/format-match-UE ,text ,string))
+     (setq ,ret (yas/format-match-UE ,ret ,string 't))
+     (setq ,ret (yas/format-match-u ,ret ,string))
+     (setq ,ret (yas/format-match-u ,ret ,string 't))
+     (setq ,ret (yas/format-match-? ,ret ,string))
+     (setq ,ret (yas/format-match-$ ,ret ,string))
+     (symbol-value ',ret)
+     )))
+(defun yas/replace-match (text &optional string subexp)
+  "* yas/replace-match is similar to emacs replace-match but using Texmate formats"
+  (replace-match (yas/format-match text string) 't 't string subexp))
+;(defmacro yas/replace-match (match &optional string)
+;  "* Replaces match Texmate style."
+;  )
+(defun yas/t/ (texmate-reg texmate-rep &optional texmate-option t-text)
+  "* Texmate like mirror.  Uses texmate regular expression and texmate formatting."
+  (let (
+        (ret (or t-text yas/text))
+        (start 0)
+        (fix "")
+        (reg (texmate-regexp-to-emacs-regexp texmate-reg))
+        mtch
+        )
+    (cond
+     ( (string-match "[gG]" texmate-option) ;; Global replace
+       (while (string-match reg ret start)
+         (setq mtch (yas/format-match texmate-rep ret))
+         (setq ret (replace-match mtch 't 't ret))
+         (setq start (+ (match-beginning 0) (length mtch)))
+         (setq ret (replace-match mtch 't 't ret))
+         )
+       )
+     ( 't ;; Replace first occurrence
+       (when (string-match reg ret)
+         (setq ret (yas/replace-match texmate-rep ret))
+         )
+       )
+     )
+    (symbol-value 'ret)
+    )
+  )
+(defvar yas/t-lst '()
+  "Variable for expanding texmate transformations with Yasnippet")
+
 ;(texmate-import-rmate "c:/tmp/swissr-rmate.tmbundle-v0.4.2-0-g7d026da/swissr-rmate.tmbundle-7d026da/")
 ;(texmate-import-stata "c:/tmp/Stata.tmbundle/")
 
-;(setq debug-on-error 't)
 
 ;;https://github.com/subtleGradient/javascript-tools.tmbundle
 

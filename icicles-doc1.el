@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 09:50:15 2010 (-0700)
+;; Last-Updated: Fri Nov  5 14:33:25 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 25527
+;;     Update #: 25538
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -742,10 +742,17 @@
 ;;
 ;;  C-x C-f  i c i  TAB - Match all file names that begin with `ici'.
 ;;
-;;  Click `mouse-1' inside (or to the left of) `icicles-face.el'.
+;;  Click `mouse-1' inside (or to the left of) `icicles-face.el'. [*]
 ;;  Click `mouse-3' inside (or to the right of) `icicles-mode.el'.
 ;;  Click `mouse-3' again, in the same place.
 ;;  Click `M-S-mouse-2' on each of `icicles.el' and `icicles-cmd1.el'.
+;;
+;;  [* If you click `mouse-1' on a candidate and (starting with Emacs
+;;  22) `mouse-1-click-follows-link' is an integer, then you will need
+;;  to hold the mouse button depressed longer than that many seconds,
+;;  or else that candidate will simply by chosen.  If the value is
+;;  `t', then this won't work at all.  Any other value presents no
+;;  problem.  (Personally, I use `nil'.)]
 ;;
 ;;  The candidates that you selected - those between `icicles-face.el'
 ;;  and `icicles-mode.el', inclusive, plus `icicles.el' and
@@ -5160,7 +5167,7 @@
 ;;  candidates are saved.  This binding makes it easy to save
 ;;  candidates using the mouse: select them (e.g. drag or double-click
 ;;  `mouse-1', or click `mouse-1' then `mouse-3'), then use
-;;  `M-S-mouse-3' to save.
+;;  `M-S-mouse-3' to save. [*]
 ;;
 ;;  You can process the list of saved candidates in any way you like
 ;;  using Emacs Lisp.  For example, you can save a list of file names
@@ -5201,7 +5208,7 @@
 ;;    again in the same place, acts the same as `C-)'.  That is, click
 ;;    `mouse-1', then click `mouse-3' twice in another location, to
 ;;    save all candidates between the `mouse-1' and `mouse-3'
-;;    positions.
+;;    positions. [*]
 ;;
 ;;  * The `insert' key (`icicle-save/unsave-candidate') adds just the
 ;;    current completion candidate (e.g. during cycling).  Clicking a
@@ -5225,6 +5232,13 @@
 ;;  marked files, using `x'.  It corresponds to what is represented in
 ;;  some user interfaces by filling out a checklist followed by
 ;;  clicking `OK'.
+;;
+;;  [* If you click `mouse-1' on a candidate and (starting with Emacs
+;;  22) `mouse-1-click-follows-link' is an integer, then you will need
+;;  to hold the mouse button depressed longer than that many seconds,
+;;  or else that candidate will simply by chosen.  If the value is
+;;  `t', then this won't work at all.  Any other value presents no
+;;  problem.  (Personally, I use `nil'.)]
 ;;
 ;;(@* "Different Places for Saving and Retrieving Candidates")
 ;;  ** Different Places for Saving and Retrieving Candidates **
