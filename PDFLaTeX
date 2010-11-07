@@ -1,4 +1,4 @@
-Emacs's TeX mode doesn't play nice with PDFLaTeX.  Compiling the file with PDFLaTeX or PdfTeX from Emacs is relatively easy, but changing the view command to view the resulting PDF file instead of a DVI file can prove diffult.
+Emacs's TeX mode doesn't play nice with PDFLaTeX.  Compiling the file with PDFLaTeX or PdfTeX from Emacs is relatively easy, but changing the view command to view the resulting PDF file instead of a DVI file can prove difficult.
 
 JimMenard created a little shell script for Emacs to run. In .emacs he puts
 <pre>

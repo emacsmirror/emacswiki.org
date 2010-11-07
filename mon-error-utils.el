@@ -24,9 +24,9 @@
 ;; points for a lightweight MON specific condition system. Time will tell.
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-error-toplevel', `mon-error', `mon-error-gather', `mon-error-gather-peek',
-;; `mon-error-gather-finalize', `mon-error-gather-reset',
-;; `mon-error-protect-PP-EXPAND-TEST', `mon-display-warning', `mon-message',
+;; `mon-error-toplevel', `mon-error', `mon-error-gather',
+;; `mon-error-gather-peek', `mon-error-gather-finalize',
+;; `mon-error-gather-reset', `mon-display-warning', `mon-message',
 ;; `mon-error-string-err-format', `mon-write-string',
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -134,7 +134,7 @@
 `mon-error-gather', `mon-error-gather-peek', `mon-error-gather-finalize',
 `mon-error-gather-reset', `*mon-emacs-help-errors*', 
 `mon-error-string-err-format', `mon-message', `mon-help-errors',
-`mon-help-CL-error-condition-restart'.\n►►►")
+`mon-help-CL-error-condition-restart', `report-errors'.\n►►►")
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-message-function'
@@ -142,8 +142,18 @@
 ;;; :CREATED <Timestamp: #{2010-10-02T11:10:48-04:00Z}#{10396} - by MON KEY>
 (defcustom *mon-message-function* 'message
   "Defualt message formatting function for `mon-message'.\n
-:EXAMPLE\n\n
-:SEE-ALSO `message', `mon-error-string-err-format'.\n►►►"
+Function is called with a format-string spec and optionally a list of arguments to
+format-string's spec e.g. function is `apply'ed as:\n
+ \(apply <FUNCTION> <FORMAT-SPEC> <FORMAT-ARGS>\)\n
+:EXAMPLE\n\n\(let* \(\(eg-fncn #'\(lambda \(frmt-str &rest frmt-args\)
+                  \(apply 'format frmt-str frmt-args\)\)\)
+       \(*mon-message-function* eg-fncn\)\)
+  \(apply *mon-message-function*
+         \(concat 
+          \"Example with special variable `*mon-message-function*' dynamically bound:\\n\"
+          \"<VALUE-AS-IF-BY-PRINC> %s\\n<VALUE-AS-DECIMAL> %d\\n<VALUE-AS-IF-BY-PRIN1> %S\\n\"\)
+          '\(\"Some `princ' like string \"  8 '\(some-sexp-value \"as if by `prin1'\"\)\)\)\)\n
+:SEE-ALSO `message', `mon-error-string-err-format', `report-errors'.\n►►►"
   :type 'function
   :group 'mon-error-warn)
 ;;
@@ -151,7 +161,7 @@
 ;;              (bound-and-true-p *mon-message-function*))
 ;;   (setq *mon-message-function* 'message))
 
-
+(declare-function mon-error-protect-PP-EXPAND-TEST "ext:mon-testme-utils.el" '(expand-form))
 ;;; ==============================
 ;;; :NOTE Appears deceptively simple :O
 ;;; :CHANGESET 2141
@@ -188,7 +198,7 @@ ERR-ARG is the form returned from the error condition handler.\n
            'error-but-body-executed\)
     ;; First show what happened inside body:
     \(minibuffer-message pre-error\)\)\)\)\n
-:SEE-ALSO `mon-error', `mon-error-toplevel',`mon-error-gather',
+:SEE-ALSO `report-errors', `mon-error', `mon-error-toplevel',`mon-error-gather',
 `mon-error-gather-peek', `mon-error-string-err-format', `mon-message',
 `redirect-debugging-output', `external-debugging-output', `debug-on-signal',
 `debug-on-error', `debug-ignored-errors', `signal-hook-function',
@@ -200,21 +210,6 @@ ERR-ARG is the form returned from the error condition handler.\n
         (unless (ignore-errors (or (null (eval ,bdy-wrap)) t))
           (error ""))
       (error ,err-arg)))))
-
-;;; ==============================
-;;; :CHANGESET 2141
-;;; :CREATED <Timestamp: #{2010-09-16T21:12:01-04:00Z}#{10374} - by MON KEY>
-(defun mon-error-protect-PP-EXPAND-TEST (expand-form)
-  "Test function for macro `mon-error-protect'.\n
-Return and display results to buffer named \"*PP-EXPAND-ALL*\"
-:SEE-ALSO .\n►►►"
-  (with-current-buffer (get-buffer-create "*PP-EXPAND-ALL*")
-    (erase-buffer)
-    (save-excursion
-      (prin1 (macroexpand-all expand-form) (current-buffer))
-      (emacs-lisp-mode)
-      (pp-buffer)
-      (display-buffer (current-buffer) t))))
 
 ;;; ==============================
 (defun mon-error-toplevel (&rest args)
@@ -230,7 +225,7 @@ This function is called from `mon-error'.\n
 `redirect-debugging-output', `external-debugging-output', `debug-on-signal',
 `debug-on-error', `debug-ignored-errors', `signal-hook-function',
 `*mon-emacs-help-errors*', `mon-help-errors',
-`mon-help-CL-error-condition-restart'.\n►►►"
+`mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
   (let ((emsg (mon-error-gather-finalize)))
     (signal 'mon-error-toplevel `(,emsg ,@args))))
 ;;
@@ -242,61 +237,71 @@ This function is called from `mon-error'.\n
 
 ;; (mon-error-toplevel (caddr err))))
 ;;; ==============================
-(defun* mon-error (&key signaler function sig-str sig-arg handler)
-  "FUNCTION is the symbol originating the error.\n
-SINGALER is the type of error specific to the problem. Default is `mon-error'.\n
-HANDLER is a preferred function to invoke to attempt recovering from the error.\n
-SIG-STR string arg is a format spec it takes SIG-ARG as its arguments to
-construct an error message.\n
-SIG-ARG is a list of args, this is the VAR which becomes local in a
-`condition-case' condition form.\n
+;; sig-str sig-arg 
+(defun* mon-error (&key signaler function format-control format-arguments handler)
+  "
+Keyword :FUNCTION a symbol identifying the function originating the error.\n
+Keyword :SIGNALER a symbol designating the error type specific to the problem.
+Default is `mon-error'.\n
+Keyword :HANDLER a symbol, identifying the a preferred function to invoke when
+attempting recovery from the error.\n
+Keyword :FORMAT-CONTROL a string suitable for use as a format spec to construct
+an error message. It is applied with FORMAT-ARGUMENTS as its arguments.\n
+Keyword :FORMAT-ARGUMENTS a list it is applied as both the:\n
+ - arguments applicable to the format spec specified by keyword FORMAT-ARGUMENTS;\n
+ - local symbol applicable as the VAR in a `condition-case' condition form;\n
 :EXAMPLE\n\n\(let \(\(not-a-nmbr \"| local string val not 88 |\"\)\)
   \(condition-case err
       \(unless \(numberp not-a-nmbr\)
         \(mon-error  :signaler 'mon-error
                     :function 'test-fun 
-                    :sig-str \"GOT %S -- wanted `%s'\" 
-                    :sig-arg `\(,not-a-nmbr 88 i-am-an-arg-for-handler\)
+                    :format-control \"arg not numberp, got: %S -- wanted: `%s'\"
+                    :format-arguments `\(,not-a-nmbr 88 i-am-an-arg-for-handler\)
                     :handler 'imaginary-hndlr\)\)
     \(mon-error-toplevel err\)\)\)\n
 :SEE-ALSO `condition-case', `mon-error-toplevel' `mon-error',
 `mon-error-gather', `mon-error-gather-peek', `mon-error-gather-finalize',
 `mon-error-gather-reset', `*mon-error-gather*', `mon-error-string-err-format',
 `mon-message', `mon-help-errors', `*mon-emacs-help-errors*',
-`mon-help-CL-error-condition-restart'.\n►►►"
+`mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
   (let* ( ;;(jstfy (propertize "\t" 'display '(space :align-to 32)))
          (jstfy (make-string  21 32)) ;; <- (eq 21 (length "(mon-error-toplevel \""))
          (emsg (concat (format ":SIGNALER `%s'" signaler)
                        "\n" jstfy (format ":FUNCTION `%s' -- " function)
-                       (cond ((and sig-str sig-arg)
-                              (apply 'format sig-str sig-arg))
-                             ((and sig-str (not sig-arg))
-                              sig-str)
-                             ((and (not sig-str) sig-arg)
-                              (format "applicaple args: %S" sig-arg)))
+                       (cond ((and format-control format-arguments)
+                              (apply 'format format-control format-arguments))
+                             ((and format-control (not format-arguments))
+                              format-control)
+                             ((and (not format-control) format-arguments)
+                              (format "applicaple args: %S" format-arguments)))
                        (or (and handler (format (concat "\n" jstfy ":HANDLER  `%s'") handler))
                            (format (concat "\n" jstfy ":HANDLER  `no-applicable-handler'"))))))
     (princ emsg 'mon-error-gather)
-    (mon-error-toplevel `(:FUNCTION ,function 
+    (mon-error-toplevel `(:FUNCTION ,function
                           :SIGNALER ,signaler 
-                          :HANDLER (,(or handler 'no-applicable-handler) ,@sig-arg))))) 
+                          :HANDLER (,(or handler 'no-applicable-handler) ,@format-arguments))))) 
                                     
 ;;
 (put 'mon-error 'error-conditions '(error mon-error-toplevel mon-error))
 (put 'mon-error 'error-message ":MON-ERROR-MESSAGE")
-;;                     
+;; (put 'no-applicable-handler 'error-conditions 
+;;       '(error mon-error-toplevel mon-error no-applicable-handler))
+;; (put 'no-applicable-handler 'error-message ":MON-ERROR handler unspecifed or not applicaple")
+;;
+;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; | (let ((not-a-nmbr "| local string val not 88 |"))
 ;; |   (condition-case err
 ;; |       (unless (numberp not-a-nmbr)
 ;; |         (mon-error  :signaler 'mon-error
 ;; |                     :function 'test-fun 
-;; |                     :sig-str "GOT %S -- wanted `%s'" 
-;; |                     :sig-arg `(,not-a-nmbr 88 i-am-an-arg-for-handler)
+;; |                     :format-control "arg not numberp, got: %S -- wanted: `%s'"
+;; |                     :format-arguments `(,not-a-nmbr 88 i-am-an-arg-for-handler)
 ;; |                     :handler 'imaginary-hndlr))
-;; |     ;; (mon-error-toplevel (caddr err))))
-;; |     (mon-error-toplevel err))) 
+;; |     (mon-error-toplevel err)))
 ;; `----
+
+
 
 (defun mon-error-string-err (function error-locus handler)
   "
@@ -304,27 +309,44 @@ SIG-ARG is a list of args, this is the VAR which becomes local in a
 :SEE-ALSO `mon-error-string-err-format', `mon-message'.\n►►►"
   (mon-error :signaler 'mon-error-string 
              :function function
-             :sig-str "arg %s does not satisfy `stringp'"
-             :sig-arg `(,error-locus)
+             :format-control "arg %s does not satisfy `stringp'"
+             :format-arguments `(,error-locus)
              :handler handler))
 ;;
 (put 'mon-error-string 'error-conditions '(mon-error-toplevel))
 
 
+
+;; (defun mon-error-string-fun-check-and-format (fun-name)
+;; (let 
+;; (format (concat ":FUNCTION `%s' "
+;;         (or 
+;;          ;; :NOTE This should intern-soft the string symbol, then check the value with `mon-function-object-p'
+;;          ;; (and (stringp fun-name) (mon-function-object-p (intern-soft fun-name obarray))
+;;          (and (stringp fun-name) fun-name)
+;;          (and (symbolp fun-name) (fboundp fun-name) (symbol-name fun-name))
+;;          (let ((mesef-LT-1 `(mon-error-string-err-format fun-name ,fun-name)))
+;;            (error (apply #'mon-error-string-err-format mesef-LT-1)))))
+
 ;;; ==============================
+;;; :PREFIX "mesef-" 
 ;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-07T12:35:40-04:00Z}#{10404} - by MON KEY>
-(defun mon-error-string-err-format (fun-name locus-arg got-arg-val)
-  "Return a formatted mon-error string for an arg not satisfying `stringp'.\n
-FUN-NAME is the function name signaling.
-LOCUS-ARG is the args local symbol name quoting rules apply. 
-It is converted to a string and `upcase'd for format.
+(defun mon-error-string-err-format (fun-name locus-arg got-arg-val
+                                        &optional w-error-signaled)
+  "Return formatted `mon-error-*' string for an arg not satisfying `stringp'.\n
+FUN-NAME is the function name signaling.`n
+LOCUS-ARG is the args local symbol name quoting rules apply.\n
+It is converted to a string and `upcase'd for format.\n
 GOT-ARG-VAL is the argument value. It is passed to evaluate to its value.\n
+When optional arg W-ERROR-SIGNALED is non-nil signal an error with generated
+error-string.\n
 :EXAMPLE\n\n\(mon-error-string-err-format 'subrp 'bubba-arg 'bubba-val\)\n
 \(mon-error-string-err-format \"subrp\" 'bubba-arg 'bubba-val\)\n
 \(mon-error-string-err-format 'subrp 'some-arg 88\)\n
 \(mon-error-string-err-format 'subrp \"some-arg\" 88\)\n
-\(mon-error-string-err-format \"subrp\" \"some-arg\" 88\)\n
+\(mon-error-string-err-format \"subrp\" 'some-arg 88\)\n
+\(mon-error-string-err-format \"subrp\" \"some-arg\" 88 t\)\n
 ;; :NOTE Following should all fail successfully\n
 \(mon-error-string-err-format 'non-existent-function 'bubba-arg 'bubba-val\)\n
 \(mon-error-string-err-format 'subrp 88 'bubba-val\)\n
@@ -333,32 +355,45 @@ GOT-ARG-VAL is the argument value. It is passed to evaluate to its value.\n
 :SEE-ALSO `mon-error', `mon-error-toplevel',`mon-error-gather',
 `mon-error-gather-peek', `mon-error-string-err-format', `mon-message',
 `*mon-emacs-help-errors*', `mon-help-errors',
-`mon-help-CL-error-condition-restart'.\n►►►"
+`mon-help-CL-error-condition-restart', `with-output-to-string', `report-errors'.\n►►►"
   ;; :NOTE As this is an error signalling routine we should assume that the
   ;; args are not always what we expect.
-  (format (concat ":FUNCTION `%s' "
-                  "-- arg %s does not satisfy `stringp', got: %S")
-          (or (and (stringp fun-name) fun-name)
-              (and (symbolp fun-name) (fboundp fun-name) (symbol-name fun-name))
-              (let ((lcl-eargs `(mon-error-string-err-format fun-name ,fun-name)))
-                (error (apply #'mon-error-string-err-format lcl-eargs))))
-          (or (and (stringp locus-arg) (upcase locus-arg))
-              (and (atom locus-arg)
-                   (or (and (not (null locus-arg))
-                            (not (eq locus-arg 'nil)) 
-                            (not (eq locus-arg 't)) 
-                            (not (numberp locus-arg))
-                            (and (symbolp locus-arg) (upcase (symbol-name locus-arg))))
-                       (let ((lcl-eargs `(,fun-name ,(format "%S" locus-arg) ,locus-arg)))
-                         (error (apply #'mon-error-string-err-format lcl-eargs))))))
-          got-arg-val))
+  ;; w-error-signaled
+  (let (mesef-err-str)
+    (setq mesef-err-str
+          (format (concat ":FUNCTION `%s' "
+                          "-- arg %s does not satisfy `stringp', got: %S")
+                  (or 
+                   ;; :NOTE This should intern-soft the string symbol and then
+                   ;; check the value with `mon-function-object-p'
+                   (and (stringp fun-name) fun-name) 
+                   (and (symbolp fun-name) (fboundp fun-name) (symbol-name fun-name))
+                   (let ((mesef-LT-1 `(mon-error-string-err-format fun-name ,fun-name)))
+                     (error (apply #'mon-error-string-err-format mesef-LT-1))))
+                  (or (and (stringp locus-arg) (upcase locus-arg))
+                      (and (atom locus-arg)
+                           (or (and (not (null locus-arg))
+                                    (not (cadr (mon-booleanp locus-arg)))
+                                    (not (number-or-marker-p locus-arg)) ;; (type-of (current-buffer))
+                                    (and (symbolp locus-arg) (upcase (symbol-name locus-arg))))
+                               (let ((mesef-LT-2 `(,fun-name ,(format "%S" locus-arg) ,locus-arg)))
+                                 (error (apply #'mon-error-string-err-format mesef-LT-2))))))
+                  got-arg-val))
+    (if w-error-signaled
+        (error mesef-err-str)
+      mesef-err-str)))
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; | (stringp (mon-error-string-err-format 'subrp 'bubba-arg 'bubba-val))
 ;; | (stringp (mon-error-string-err-format "subrp" 'bubba-arg 'bubba-val))
 ;; | (stringp (mon-error-string-err-format 'subrp 'some-arg 88))
 ;; | (stringp (mon-error-string-err-format 'subrp "some-arg" 88))
-;; | (stringp (mon-error-string-err-format "subrp" "some-arg" 88))
+;; | (stringp (mon-error-string-err-format "subrp" 'some-arg 88))
+;; | (not (ignore-errors (mon-error-string-err-format 'subrp 'bubba-arg 'bubba-val t)))
+;; | (not (ignore-errors (mon-error-string-err-format "subrp" 'bubba-arg 'bubba-val t)))
+;; | (not (ignore-errors (mon-error-string-err-format 'subrp 'some-arg 88 t)))
+;; | (not (ignore-errors (mon-error-string-err-format 'subrp "some-arg" 88 t)))
+;; | (not (ignore-errors (mon-error-string-err-format "subrp" "some-arg" 88 t)))
 ;; | ;; Following successfully fail:
 ;; | (not (ignore-errors (mon-error-string-err-format 'subrp 88 'bubba-val)))
 ;; | (not (ignore-errors (mon-error-string-err-format 'subrp 8.8 'bubba-val)))
@@ -373,6 +408,10 @@ GOT-ARG-VAL is the argument value. It is passed to evaluate to its value.\n
 ;;                   "-- arg %s is not a sequence with length: %d, got: %d")          
 ;;           ))
 
+;;; (defun mon-error-list-proper-p-err-format (fun-name locus-arg got-arg-val)
+;;     (error (concat ":FUNCTION 'mon-elt->elt " 
+;;                    "-- arg W-OLD-MAKE-NEW-LST does not satisfy 'mon-list-proper-p', got: %S")
+;;            w-old-make-new-lst))
 ;;; ==============================
 ;; (defun mon-error-not-a-number-err-format
 ;; (numberp <arg>)
@@ -392,10 +431,10 @@ messages.\n
   \(mon-error-gather-reset\)
   \(princ \"I'm on the `*mon-error-gather*' stack\" 'mon-error-gather\)
  \(mon-error-gather-finalize\)\)\n
-:SEE-ALSO `mon-error-toplevel' `mon-error', `mon-error-gather-peek',
-`mon-error-gather-finalize', `mon-error-gather-reset', `*mon-error-gather*',
-`*mon-help-emacs-errors*', `mon-help-errors',
-`mon-help-CL-error-condition-restart'.\n►►►"
+:SEE-ALSO `with-output-to-string', `mon-error-toplevel' `mon-error',
+`mon-error-gather-peek', `mon-error-gather-finalize', `mon-error-gather-reset',
+`*mon-error-gather*', `*mon-help-emacs-errors*', `mon-help-errors',
+`mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
     (push arg *mon-error-gather*))
 
 
@@ -415,11 +454,10 @@ When stack is empty return the empty string.\n
   \(mon-error-gather-reset\)\)\n
 \(mon-error-gather-peek\)
 :SEE-ALSO `mon-error-toplevel' `mon-error', `mon-error-gather',
-`mon-error-gather-finalize', `mon-error-gather-reset',
-`*mon-help-emacs-errors*', `mon-help-errors',
-`mon-help-CL-error-condition-restart'.\n►►►"
+`mon-error-gather-finalize', `mon-error-gather-reset', `mon-help-errors',
+`*mon-help-emacs-errors*', `mon-help-CL-error-condition-restart',
+`report-errors'.\n►►►"
   (concat (reverse *mon-error-gather*) nil))
-
 
 ;;; ==============================
 ;;; :CHANGESET 2141
@@ -431,8 +469,8 @@ When stack is empty return the empty string.\n
   \(mon-error-gather-reset\)
   \(mon-error-gather-peek\)\)\n
 :SEE-ALSO `mon-error-toplevel' `mon-error', `mon-error-gather',
-`mon-error-gather-peek', `mon-error-gather-finalize', 
-`*mon-help-emacs-errors*', `mon-help-errors', `mon-help-CL-error-condition-restart'.\n►►►"
+`mon-error-gather-peek', `mon-error-gather-finalize', `*mon-help-emacs-errors*',
+`mon-help-errors', `mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
   (setq *mon-error-gather*))
 
 
@@ -453,7 +491,7 @@ Reset it with `mon-error-gather-reset'.\n
   \(null *mon-error-gather*\)\)\n
 :SEE-ALSO `mon-error-toplevel' `mon-error', `mon-error-gather',
 `mon-error-gather-peek', `*mon-help-emacs-errors*', `mon-help-errors',
-`mon-help-CL-error-condition-restart'.\n►►►"
+`mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
   (prog1 (concat (nreverse *mon-error-gather*) nil)
     (mon-error-gather-reset)))
 ;;
@@ -474,20 +512,217 @@ Reset it with `mon-error-gather-reset'.\n
 ;; | 
 ;; `----
 
+(declare-function mon-booleanp-to-binary       "mon-utils")
+(declare-function mon-string-or-null-and-zerop "mon-utils")
+(declare-function mon-bool-vector-to-list      "mon-utils")
+(declare-function mon-list-proper-p            "mon-utils")
+
+
+;; (concat ":FUNCTION `%s' "
+;;         "-- arg %s does not satisfy `stringp', got: %S")
 
 ;;; ==============================
-;;; :COURTESY slime.el :WAS `slime-message'
 ;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T11:10:54-04:00Z}#{10396} - by MON KEY>
-(defun mon-message (format &rest args)
+(defun* mon-message (&key w-spec w-args w-delim (w-msg-fun *mon-message-function*))
   "Like `message' but with special support for multi-line messages.\n
 Single-line messages use the echo area.\n
-Message is formatted as if by application of `*mon-message-function*'.\n
-:EXAMPLE\n\n\(mon-message \(concat \":FUNCTION `mon-message' \" 
+W-SPEC is a string of list of strings to pass to message function.
+When W-SPEC is a list of strings it is coalesced as if by `mapconcat'.
+and FORMAT-ARGUMENTS are as per `format's STRING and
+OBJECTS arguments.\n
+When FORMAT-CONTROL-STRING is a 
+Optional arg W-MESSAGE-FUNCTION is a symbol naming a function to apply to
+FORMAT-CONTOL-STRING's and FORMAT-ARGUMENTS when omitted defaults to value of
+variable `*mon-message-function*'.\n
+:EXAMPLE\n
+\(mon-message :w-spec \(concat \":FUNCTION `mon-message' \" 
                              \"-- example message with arg `%s' and arg `%d'\"\)
-                     'bubba 666\)\n
+             :w-args '(bubba 666\)\)\n
+\(mon-message :w-spec '\(\":FUNCTION `mon-message' \" 
+                         \"-- example message with arg `%s' and arg `%d'\"\)
+             :w-args '\(bubba 666\)\)\n
+\(mon-message  :w-msg-fun '\(lambda \(&rest x\) 
+                              \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+              :w-spec '\(\":FUNCTION `mon-message' \" \"-- `%d'\"\) 
+              :w-delim \"\\n\"
+              :w-args 666\)\n
+\(mon-message :w-msg-fun #'\(lambda \(&rest x\) 
+                              \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+             :w-spec \":FUNCTION `mon-message' -- `%d'\" 
+             :w-args 666\)\n
+\(mon-message  :w-msg-fun #'\(lambda \(&rest x\) 
+                             \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+              :w-spec '\(\":FUNCTION `mon-message' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"\)
+              :w-delim \"\\n-- \"
+              :w-args \(number-sequence 8 10\) \)\n
+\(mon-message :w-spec [\":FUNCTION `mon-message' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"]
+             :w-delim \"\\n-- \"
+             :w-args  \(number-sequence 8 10\)\)\n
+\(mon-message :w-spec [\":FUNCTION `mon-message' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"]
+             :w-delim \"\\n-- \"
+             :w-args  `[,@\(number-sequence 8 10\)]\)\n
+\(mon-message :w-msg-fun '\(lambda \(&rest x\) 
+                              \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+            :w-spec `\(\":FUNCTION `mon-message' \" 
+                          ,\(concat \"example message\" \" with arg `%s' \"\)
+                           \"and arg `%d'\"\)
+            :w-delim \"  \\n-- \"
+            :w-args `[bubba ,\(+ 8 666\)]\)\n
+\(mon-message :w-spec \(make-bool-vector 18 t\)\)\)\n
+\(mon-message :w-spec \(make-bool-vector 31 t\) :w-args '\(8 13 18 22 26\)\)\n
+\(mon-message :w-spec \(make-bool-vector 18 t\) :w-delim \"\\n ---+ \"\)\n
+\(mon-message :w-spec \(make-bool-vector 31 t\) :w-delim \"\\n-- \"\)\n
+\(mon-message :w-spec \(make-bool-vector 31 t\) 
+             :w-args [8 13 18 22 26]
+             :w-delim \"\\n ^_^ \"\)\n
 :SEE-ALSO `mon-display-warning'.\n►►►"
-  (apply *mon-message-function* format args))
+  (apply 
+   (or (and (eq w-msg-fun *mon-message-function*) w-msg-fun)
+       (and (memq (mon-function-object-p w-msg-fun)
+                  ;; Don't bother with `apply' on macros
+                  (remove 'macro *mon-function-object-types*)) 
+            w-msg-fun)
+       (error (concat ":FUNCTION `mon-message' " 
+                      "-- keyword :W-MSG-FUN does not satisfy `mon-function-object-p', got: %S")
+              w-msg-fun))
+   (or 
+    ;; :w-spec is `stringp' or `bool-vector-p'
+    (and (or 
+          ;; w-spec is a string
+          (and (stringp w-spec) w-spec)
+          ;; w-spec is a bool-vector
+          ;; Why not? Could be interesting using boole-vector to
+          ;; indicate where in an EIEIO class vector something went awry.
+          ;; The also, have nice compact read/print format.
+          (and (bool-vector-p w-spec)               
+               (or (and (not w-args) (setq w-spec (mon-bool-vector-to-list w-spec)))
+                   (and w-args
+                        ;; w-args is either a proper list or a vector else signal
+                        (or (or (mon-list-proper-p w-args)
+                                (and (vectorp w-args)
+                                     ;; w-args gets `push'/`pop'd below                                        
+                                     (setq  w-args (append w-args nil))))
+                            (error (concat 
+                                    ":FUNCTION `mon-message' "
+                                    "--  with keyword :W-SPEC `bool-vectorp' and "
+                                    "keyword :W-ARGS not `mon-list-proper-p' or `vectorp'" 
+                                    ",got: %S")
+                                   w-args))
+                        (setq w-spec (mon-bool-vector-to-list w-spec))
+                        (let* ((mmsg-bv (cadr (memq :bool-vector w-spec)))
+                               ;; Don't try to access an elt outside the bv's indexable range
+                               (mmsg-idx-bnd  (length mmsg-bv)))
+                          (setq mmsg-idx-bnd 
+                                (mapcar #'(lambda (mmsg-L-0) 
+                                            ;; `mon-bool-vector-to-list' signals when (= (length  bv) 0)
+                                            ;; IOW don't worry about the 0 length bv bugs, just make
+                                            ;; sure we have `wholenump' that doesn't exceed her bounds.
+                                            (let (mmsg-L-lcl1)
+                                              (when (or (and (wholenump mmsg-L-0) (< mmsg-L-0 mmsg-idx-bnd))
+                                                        (error 
+                                                         (concat 
+                                                          ":FUNCTION `mon-message' "
+                                                          " -- keyword :W-ARGS has elt not `wholenump' "
+                                                          " when keyword :W-SPEC `bool-vectorp', got: %S")
+                                                         w-args))
+                                                (setq mmsg-L-lcl1 (aref mmsg-bv mmsg-L-0))
+                                                (setq mmsg-L-lcl1 
+                                                      `(,mmsg-L-0 
+                                                        (,mmsg-L-lcl1 . ,(mon-booleanp-to-binary mmsg-L-lcl1)))))))
+                                        w-args))
+                          ;; Record how many "w-args" we got. We end up w/ a list with this format: 
+                          ;; (10 (1 (t . 1)) (4 (nil . 0)) (7 (nil . 0)) { ... } )
+                          (setq w-args (push (length mmsg-idx-bnd) mmsg-idx-bnd))
+                          ;; Now map over the W-DELIM string
+                          (and
+                           (or (and w-delim (stringp w-delim)
+                                    ;; Hold onto the W-DELIM arg for when everything comes back together
+                                    (setq w-delim (cons ":at-index %2d :with-value %S" w-delim)))
+                               (and (or (mon-string-or-null-and-zerop w-delim)
+                                        (cadr (mon-booleanp w-delim)) ; we got `t'
+                                        ;; disregard any non-string
+                                        (not (stringp w-delim)))
+                                    (setq w-delim (cons ":at-index %2d :with-value %S" "\n  "))))
+                           ;; Stay inside the `or' branch build up a list
+                           ;; of format strings using W-DELIM and W-ARGS
+                           (setcar w-delim (make-list (pop w-args) (car w-delim)))
+                           (prog2
+                               ;; re-use mmsg-idx-bnd to store mapped value
+                               (setq mmsg-idx-bnd
+                                     (mon-mapcar #'(lambda (frmt-delims frmt-w-args)
+                                                     (apply #'format 
+                                                            `(,frmt-delims 
+                                                              ,(car frmt-w-args) 
+                                                              ,(cadr frmt-w-args))))
+                                                 (car w-delim) w-args))
+                               (setq w-spec
+                                     (concat 
+                                      (cdr w-delim)
+                                      ;; :binary|:bit-string "#[b*]101001 {...} 
+                                      (apply #'format "%s %s " (mon-subseq w-spec 0 2)) 
+                                      (cdr w-delim)
+                                      ;; `mon-bool-vector-pp' has variable
+                                      ;; length return value and we already
+                                      ;; have hold of its last elt so use it.
+                                      (format ":bool-vector %S" mmsg-bv)
+                                      (cdr w-delim)
+                                      ;; "\n  :at-index %d :with-value %S" {...}
+                                      (mapconcat #'identity mmsg-idx-bnd (cdr w-delim)) ))
+                             (setq w-args nil)
+                             (setq w-delim 'bool-vector))))))))
+         ;; W-DELIM was provided and not a zero length string so map it.
+         (or (and (or (and (not (eq w-delim 'bool-vector))
+                           (mon-list-proper-p w-spec)
+                           (mon-string-or-null-and-zerop w-delim)
+                           (setq w-delim "\n  "))
+                      ;; don't look further we've already handled the boole-vector
+                      (not (eq w-delim 'bool-vector)))
+                  w-delim ;; if we're here its not null so the next test guarantee a string
+                  (or (mon-string-or-null-and-zerop w-delim)
+                      ;; allow "" but delay so we error when not `stringp'
+                      (or (stringp w-delim)
+                          ;; :w-delim is not something other than `stringp' so signal.
+                          (mon-error-string-err-format 
+                           "mon-error-string-err-format" "w-delim" w-delim t)))
+                  ;; When :w-spec is `bool-vector-p' it was converted to a list above.
+                  ;; This is the only way :w-spec can possibly satisfy `mon-list-proper-p'
+                  ;; inside this branch. So, get the value of `:binary` or `:bin-string`
+                  ;; keyword either:  "#b..." or "#*..."
+                  (mapconcat #'identity 
+                             (list (or (and (mon-list-proper-p w-spec) 
+                                            (elt w-spec 1))
+                                       w-spec)
+                                   "")
+                             w-delim))
+             w-spec))
+    ;; :w-spec is a proper list or `vectorp'
+    (and  (or (mon-list-proper-p w-spec)
+              (eq (type-of w-spec) 'vector))
+          ;; It is so make sure each elt is `stringp' before mapping
+          (or (= (apply #'+ (mapcar #'(lambda (mmsg-L-1)
+                                        (mon-booleanp-to-binary (not (stringp mmsg-L-1))))
+                                    w-spec)) 
+                 0)
+              ;; :TODO Convert to `mon-error-string-err-format' once finalized.
+              ;; Currently can't specify the second concated protion of generated message
+              ;; (mon-error-string-err-format "mon-error-string-err-format" "w-spec" w-spec t)
+              (error (concat ":FUNCTION `mon-message' " 
+                             "-- element list supplied for keyword :W-SPEC "
+                             "does not satisfy `stringp', got: %S") w-spec))
+          ;; If W-DELIM was provided and `stringp' use it.
+          ;; If not provided, or its a zero length string map `""`.
+          ;; Else, its some other thing - signal error.
+          (mapconcat #'identity w-spec 
+                     (or (and (stringp w-delim) w-delim)
+                         (and (mon-string-or-null-and-zerop w-delim) "")
+                         (and w-delim (mon-error-string-err-format 
+                                       "mon-error-string-err-format" "w-delim" w-delim t))))))
+   ;; Finish up for the outer apply form
+   (or (and (mon-list-proper-p w-args) w-args)
+       (and (vectorp w-args) (append w-args nil))
+       (and (atom w-args) (list w-args)))))
+
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-display-warning'
@@ -562,7 +797,7 @@ Evaluated in a lexical environment which captures/accesses a string-stack state.
                    (mapc #'%mon-write-string-writer (vconcat %mwsm-L-1))
                    %mwsm-bag)
                %mwsm-bag))
-    ;;
+    ;; CL `clear-output'-ish
     (defun %mon-write-string-reset ()
       "Helper function for `mon-write-string'.\n
 Arg A-NOOP is ignored but must be passed.\n
@@ -585,6 +820,7 @@ state resets the value of the currrently captured string-stack state.\n
 ;;   (unintern un obarray))
 
 ;;; ==============================
+;;; :TODO Add support for :start :end indexes into string as per CL's `write-string'
 ;;; :CHANGESET 2195
 ;;; :CREATED <Timestamp: #{2010-10-18T21:01:35-04:00Z}#{10421} - by MON KEY>
 (defun* mon-write-string (&key w-string read-current reset-null reset-bind)
@@ -636,7 +872,7 @@ with the format:\n\n \( <STRING> . other\)\n
     ,\(buffer-string\)\)\)\n
 \(mon-write-string-reset-bind-TEST\)\n
 :ALIASED-BY `write-string'\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `with-output-to-string'.\n►►►"
   (cond (w-string      
          (unless (stringp w-string)
            (error (mon-error-string-err-format
@@ -655,7 +891,7 @@ with the format:\n\n \( <STRING> . other\)\n
          (let (mws-chk-typ)
            (setq mws-chk-typ 
                  (or (car (memq (type-of reset-bind) '(buffer marker)))
-                     (mon-equality-or-pred #'(lambda (mws-L-2 mws-L-3) ;ignore second arg
+                     (mon-equality-or-predicate #'(lambda (mws-L-2 mws-L-3) ;ignore second arg
                                                (and (not (or (characterp mws-L-2)
                                                              (consp mws-L-2)))
                                                     (car (memq (mon-function-object-p mws-L-2)

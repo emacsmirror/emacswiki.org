@@ -78,10 +78,10 @@
          ;; AutoComplete development version.
          ("auto-complete development version" nil nil
           (
-           "http://github.com/m2ym/auto-complete/raw/master/popup.el"
-           "http://github.com/m2ym/auto-complete/raw/master/fuzzy.el"
-           "http://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
-           "http://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
+           "https://github.com/m2ym/auto-complete/raw/master/popup.el"
+           "https://github.com/m2ym/auto-complete/raw/master/fuzzy.el"
+           "https://github.com/m2ym/auto-complete/raw/master/auto-complete.el"
+           "https://github.com/m2ym/auto-complete/raw/master/auto-complete-config.el"
            ))
          ;; Anything
          ("anything-minimal" nil nil
@@ -168,8 +168,8 @@
            "http://www.emacswiki.org/emacs/download/crosshairs.el"))
          ("e2wm" nil nil
           (
-           "http://github.com/kiwanami/emacs-window-layout/raw/master/window-layout.el"
-           "http://github.com/kiwanami/emacs-window-manager/raw/master/e2wm.el"))
+           "https://github.com/kiwanami/emacs-window-layout/raw/master/window-layout.el"
+           "https://github.com/kiwanami/emacs-window-manager/raw/master/e2wm.el"))
          )                              ;/appende
        auto-install-batch-list))        ;/setq
 

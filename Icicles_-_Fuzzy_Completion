@@ -55,6 +55,10 @@ Repeating `##C-(##' and `TAB' or `##M-(##' and `S-TAB' on the fly for the same i
 can be a good way to learn the differences between the various
 completion methods.
 
+If you provide a [[prefix argument]] to `##C-(##' or `##M-(##', then the newly chosen method is used only for the current command.  More
+precisely, the previously active method is restored as soon as you
+return to the top level.
+
 ''My opinion'' about the relative usefulness of the various methods:
 Basic (prefix) completion and apropos completion are by
 far the most useful.  They are followed, in order of decreasing

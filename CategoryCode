@@ -41,6 +41,7 @@ Ordered for pedagogy:
 * VectorUsage -- searching vectors
 * NotANumber -- not-a-number is a number! How to test for it.
 * BackquoteSyntax -- using backquotes
+* MacroBasics -- write code that generates code and save yourself some typing
 
 == Writing a Major Mode ==
 

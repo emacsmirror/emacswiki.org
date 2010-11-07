@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  5 14:32:31 2010 (-0700)
+;; Last-Updated: Sat Nov  6 10:18:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 27350
+;;     Update #: 27353
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3616,6 +3616,11 @@
 ;;  Repeating `C-(' and `TAB' or `M-(' and `S-TAB' on the fly for the
 ;;  same input can be a good way to learn the differences between the
 ;;  various completion methods.
+;;
+;;  If you provide a prefix argument to `C-(' or `M-(', then the newly
+;;  chosen method is used only for the current command.  More
+;;  precisely, the previously active method is restored as soon as you
+;;  return to the top level.
 ;;
 ;;  My opinion about the relative usefulness of the various methods:
 ;;  Basic (prefix) completion and apropos completion are by far the

@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.3
+;; Version: 0.3.1
 ;; Keywords: json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -28,6 +28,8 @@
 ;;
 
 ;; ChangeLog:
+;; 0.3.1: specify `json-object-type to 'alist.
+;;
 ;; 0.3: fix 'true', 'false', '[]' and '{}'.
 ;;
 ;; 0.2: fix org-json-encode for mistake convert single element alist
@@ -81,8 +83,9 @@
 ;;; Code:
 
 (defun json-read-r ()
-  (let ((r (json-read)))
-    (if (listp r) (reverse r) r)))
+  (let ((json-object-type 'alist))
+    (let ((r (json-read)))
+      (if (listp r) (reverse r) r))))
 
 (defun org-json-raw ()
   (let (p1)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  5 10:48:22 2010 (-0700)
+;; Last-Updated: Sat Nov  6 10:33:56 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 5791
+;;     Update #: 5814
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -626,6 +626,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/11/06 dadams
+;;     icicle-fuzzy-candidates: Filter using icicle-must-pass-after-match-predicate.
+;;                              Respect also extra cands and proxy cands.
+;;                              Let C-g exit completion.
 ;; 2010/10/25 dadams
 ;;     icicle-read-shell-command-completing:
 ;;       Use icicle-must-pass-after-match-predicate, not icicle-must-pass-predicate.
@@ -2102,6 +2106,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/11/06 dadams
+;;     icicle-apropos-complete-and-narrow: Do not regexp-quote if non-basic prefix completion.
+;;     icicle-next-TAB-completion-method, icicle-next-S-TAB-completion-method:
+;;       Prefix arg now means the new method is only for the current top-level command.
+;;       Put properties on icicle-last-top-level-command to implement this.
+;;     icicle-candidate-set-retrieve-1: Do icicle-apropos-complete-no-display if that was the last one.
 ;; 2010/11/05 dadams
 ;;     icicle-mouse-save-then-kill: Redefined for Emacs 24 (they changed mouse-save-then-kill).
 ;;     icicle-candidate-set-retrieve-1: Call icicle-apropos-complete upon minibuffer setup.
@@ -3194,6 +3204,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/11/06 dadams
+;;     icicle-top-level-prep: Reset current TAB and S-TAB methods, if temporary.
 ;; 2010/11/03 dadams
 ;;     icicle-(redefine|restore)-standard-commands:
 ;;       Updated for Emacs 23.2+: defalias lisp-completion-at-point instead.  Thx to Michael Heerdegen.

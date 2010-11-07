@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov  3 14:59:22 2010 (-0700)
+;; Last-Updated: Sat Nov  6 08:32:50 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 6727
+;;     Update #: 6728
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -802,8 +802,14 @@ Used on `pre-command-hook'."
 
 (defun icicle-top-level-prep ()
   "Do top-level stuff.  Used in `pre-command-hook'."
-  ;; Reset `icicle-candidates-alist' to (); save top-level command.
+  ;; Reset `icicle-current-TAB-method' and `icicle-apropos-complete-match-fn' if temporary.
+  ;; Save this top-level command as `icicle-last-top-level-command'
+  ;; Reset `icicle-candidates-alist' to ().
   (when (= 0 (recursion-depth))
+    (let ((TAB-method  (get 'icicle-last-top-level-command 'icicle-current-TAB-method))
+          (apropos-fn  (get 'icicle-last-top-level-command 'icicle-apropos-complete-match-fn)))
+      (when TAB-method (setq icicle-current-TAB-method  TAB-method))
+      (when apropos-fn (setq icicle-apropos-complete-match-fn apropos-fn)))
     (setq icicle-last-top-level-command   this-command
           icicle-candidates-alist         ())))
 

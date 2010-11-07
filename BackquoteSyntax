@@ -1,8 +1,8 @@
-Often when setting variables or writing macros, you need to quote
+Often when setting variables or [MacroBasics writing macros], you need to quote
 most, but not all of a list.
 
 When this is the case, <code>quote</code> is too "greedy", it quotes
-everything with no optionof unquoting bits.  You can use
+_everything_ with no option of unquoting bits.  You can use
 <code>list</code> instead of quote, and then individually quote the
 bits of the list that you don't want evaluated.  So you might write:
 

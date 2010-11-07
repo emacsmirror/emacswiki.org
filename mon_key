@@ -25,8 +25,11 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-utils.el -- (MonUtils) This package is the entry point that loads everything else below.
 * Lisp:mon-text-property-utils.el -- Provides functions for working with and manipulating text properties and overlays.
 * Lisp:mon-error-utils.el -- Provides extensions for conditions and error handling.
+* Lisp:mon-alphabet-list-utils.el -- Provides list generation function which returns alphabetic sequences in various formats.
+* Lisp:mon-aliases.el -- Provides single consolidated file for def(var)aliases across MON packages.
 * Lisp:mon-dir-locals-alist.el -- MON global vars bound to commonly used local-site paths.
 * Lisp:mon-dir-utils.el -- Provides a collection of handy functions and interactive commands for working with directories and files.
+* Lisp:mon-dir-utils-local.el -- Provides functions for working with directories and files mostly specific to MON systems.
 * Lisp:mon-insertion-utils.el -- Provides insertion related utilities, templates and string building/manipulation procedures that ease routine chores and interactive command invocation.
 * Lisp:mon-replacement-utils.el -- Provides a collection of routines and commands and abstracts some commonly encountered procedures for processing regexps with their replacements.
 * Lisp:mon-regexp-symbols.el -- Provides a collection of Symbols bound to lisp lists of regexp/replacement pairs. Allows simple easy interactive command invocation using symbols as arguments to containing lists of regexps

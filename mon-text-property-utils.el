@@ -43,10 +43,11 @@
 ;; `mon-insert-w-text-properties', 
 ;; `mon-get-text-properties-region-prop-list', 
 ;; `mon-get-text-properties-region-prop', `mon-search-text-properties-prop',
+;; `%mon-set-buffer-substring-no-properties', `%mon-set-buffer-substring',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
-;; `mon-set-text-properies-region', `mon-get-text-properties-region-prop'
+;; `mon-set-text-properies-region', `mon-get-text-properties-region-prop',
 ;;
 ;; METHODS:
 ;;
@@ -64,7 +65,8 @@
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
-;; `mon-test-props' -> `mon-get-text-properties-category'
+;; `mon-test-props'             -> `mon-get-text-properties-category'
+;; `mon-kill-ring-save-w-props' -> `mon-get-text-properties-region-to-kill-ring'
 ;;
 ;; MOVED:
 ;; `mon-list-all-properties-in-buffer'               <- mon-utils.el
@@ -169,6 +171,26 @@ before and after executing BODY.\n
 ;;
 (put 'mon-set-text-properies-region 'lisp-indent-function 1)
 
+;;; ==============================
+;;; :COURTESY :FILE gnus-util.el :WAS `gnus-faces-at'
+;;; Removed the Xemacs conditional added a `gensym'.
+;;; :CREATED <Timestamp: #{2010-02-04T14:03:31-05:00Z}#{10054} - by MON KEY>
+(defmacro mon-get-face-at-posn (position)
+  "Return a list of faces at POSITION.\n
+:SEE-ALSO `mon-get-face-at-point', `mon-help-faces',
+`mon-help-faces-basic', `mon-help-faces-themes'.\n►►►"
+  (let ((mgfap-pos (make-symbol "mgfap-pos")))
+    `(let ((,mgfap-pos ,position))
+       (delq nil (cons (get-text-property ,mgfap-pos 'face)
+		       (mapcar #'(lambda (overlay)
+                                   (overlay-get overlay 'face))
+                               (overlays-at ,mgfap-pos)))))))
+;;
+;; :ALIASED-BY `mon-get-text-properties-face-at-posn'\n
+;;
+;; (unless (and (intern-soft "mon-get-text-property-face-at-posn")
+;;              (fboundp 'mon-get-text-property-face-at-posn))
+;;   (defalias 'mon-get-text-properties-face-at-posn 'mon-get-face-at-posn))
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-insert-propertized'
@@ -180,9 +202,52 @@ before and after executing BODY.\n
   (mon-set-text-properies-region props (apply #'insert args)))
 
 ;;; ==============================
+;;; :NOTE This is a verbatim copy of `cl-set-buffer-substring' 
+;;; :FILE lisp/emacs-lisp/cl.el 
+;;; The byte compiler whines about CL runtime nonsense (even though there is
+;;; nothing CL related in the function.
+;;; :CHANGESET 2283
+;;; :CREATED <Timestamp: #{2010-11-05T16:19:14-04:00Z}#{10445} - by MON KEY>
+(defun %mon-set-buffer-substring (start end val)
+  "Helper function for `defsetf'.\n
+Used with `%mon-set-buffer-substring-no-properties' to make
+`buffer-substring-no-properties' `setf'able.\n
+:EXAMPLE\n\n\(mon-with-inhibit-buffer-read-only
+     \(%mon-set-buffer-substring 
+      \(line-beginning-position 3\) \(line-end-position 3\)
+      \(propertize \"I'm a bubba\" 'font-lock-face 'bold\)\)\)\n
+I'm not a bubba\n
+:NOTE this is a verbatim copy of `cl-set-buffer-substring', required so
+byte-compiler will shut its yap about runtime warnings.\n
+:SEE-ALSO `mon-set-buffer-substring-no-properties-TEST', `mon-insert-w-text-properties'.\n►►►" 
+  (save-excursion (delete-region start end)
+		  (goto-char start)
+		  (insert val)
+		  val))
+
+;;; ==============================
+;;; :NOTE The defsetf for `buffer-substring-no-properties' ought to exist already in 
+;;; :FILE lisp/emacs-lisp/cl-macs.el  but it isn't there yet. 
+;;;  If it should ever become available a function w/ a name similiar to 
+;;; `cl-set-buffer-substring-no-properties' will most likely appear in 
+;;; :FILE lisp/emacs-lisp/cl.el somewhere near `cl-set-buffer-substring'.
+;;;  Until then, we need this.
+;;; :CHANGESET 2283
+;;; :CREATED <Timestamp: #{2010-11-05T16:19:18-04:00Z}#{10445} - by MON KEY>
+(defun %mon-set-buffer-substring-no-properties (start end val)  
+  "Helper for `defsetf' to make `buffer-substring-no-properties' `setf'able.\n
+:EXAMPLE\n\n\(mon-set-buffer-substring-no-properties-TEST\)\n
+:SEE-ALSO `%mon-set-buffer-substring', `cl-set-buffer-substring', `set-text-properties'.\n►►►"
+  (set-text-properties 0 (length val) nil val)
+  ;; (cl-set-buffer-substring start end val))
+  (%mon-set-buffer-substring start end val))
+;;
+;; (defsetf buffer-substring-no-properties mon-set-buffer-substring-no-properties)
+(defsetf buffer-substring-no-properties %mon-set-buffer-substring-no-properties)
+
+;;; ==============================
 ;;; :NOTE Keep with `mon-list-all-properties-in-buffer'.
-;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
-;;; `mon-nuke-text-properties-buffer'
+;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `plist-keys'
 (defun mon-plist-keys (plist)
   "Cons up a plist of keys with PLIST.\n
 :EXAMPLE\n\(mon-plist-keys \(mon-alphabet-as-type 'plistD->num\)\)\n
@@ -250,18 +315,19 @@ Optional argument OBJECT is the string or buffer containing the text.\n
 `mon-nuke-overlay-buffer', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
 `mon-help-text-property-functions'.\n►►►"
+;; "mntpr-"
   (interactive "r")
   (save-excursion
     (save-restriction
       (narrow-to-region beg end)
-      (goto-char (point-min))
+      (mon-g2be -1) ;; (goto-char (point-min))
       (while (not (eobp))
         (let ((inhibit-read-only t)
-              (plist (text-properties-at (point)))
-              (next-change (or (next-property-change (point) (current-buffer))
-                               (point-max))))
-          (remove-text-properties (point) next-change plist (current-buffer))
-          (goto-char next-change))))))
+              (mntpr-pl (text-properties-at (point)))
+              (mntpr-nxt-chng (or (next-property-change (point) (current-buffer))
+                               (mon-g2be 1 t))))
+          (remove-text-properties (point) mntpr-nxt-chng mntpr-pl (current-buffer))
+          (goto-char mntpr-nxt-chng))))))
 
 ;; ;;; ==============================
 ;; ;;; :RENAMED `mon-what-face' -> `mon-get-face-at-point'
@@ -294,30 +360,6 @@ and DESCRIBE-IT is non-nil describe the face at car of list.\n
           (message (concat ":FUNCTION `mon-get-face-at-point' " 
                            "-- no face at buffer position: %d") 
                    (or face-psn (point)))))))
-
-;;; ==============================
-;;; :COURTESY :FILE gnus-util.el :WAS `gnus-faces-at'
-;;; Removed the Xemacs conditional added a `gensym'.
-;;; :CREATED <Timestamp: #{2010-02-04T14:03:31-05:00Z}#{10054} - by MON KEY>
-(defmacro mon-get-face-at-posn (position)
-  "Return a list of faces at POSITION.\n
-:SEE-ALSO `mon-get-face-at-point', `mon-help-faces',
-`mon-help-faces-basic', `mon-help-faces-themes'.\n►►►"
-  (let ((mgfap-pos (make-symbol "mgfap-pos")))
-    `(let ((,mgfap-pos ,position))
-       (delq nil (cons (get-text-property ,mgfap-pos 'face)
-		       (mapcar #'(lambda (overlay)
-                                   (overlay-get overlay 'face))
-                               (overlays-at ,mgfap-pos)))))))
-;;
-;; :NOTE this macro and and above function should be merged.
-;; `mon-get-text-property-face-at-posn' -> `mon-get-face-at-posn'
-;; :ALIASED-BY `mon-get-text-properties-face-at-posn'\n
-;;
-;; (unless (and (intern-soft "mon-get-text-property-face-at-posn")
-;;              (fboundp 'mon-get-text-property-face-at-posn))
-;;   (defalias 'mon-get-text-properties-face-at-posn 'mon-get-face-at-posn))
-
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-get-region-properties'
@@ -391,7 +433,7 @@ If PROP-VALUE-FN is non-nil use it to extract PROP's value.
           (t (goto-char start) nil))))
 
 ;;; ==============================
-;;; :RENAMED `mon-kill-ring-save-w-props' -> `mon-get-text-properties-region-to-kill-ring'
+;;: :PREFIX  "mgtprtkr-"str
 ;;; :CREATED: <Timestamp: #{2009-10-11T08:44:59-04:00Z}#{09417} - by MON KEY>
 (defun mon-get-text-properties-region-to-kill-ring (start end &optional no-strip)
   "Copy region _with_ text-properties to kill-ring.\n
@@ -406,21 +448,16 @@ leading `#'.\n
 `mon-nuke-text-properties-region', `mon-remove-text-property',
 `mon-remove-single-text-property', `mon-help-text-property-functions',
 `mon-help-text-property-function-ext'.\n►►►"
-  (interactive "r\nP")
-  (let (get-str) 
-    (setq get-str (format "%S" (buffer-substring start end)))
+  (interactive "r\nP")  
+  (let (mgtprtkr-str) 
+    (setq mgtprtkr-str (format "%S" (buffer-substring start end)))
     (kill-new 
-     (substring 
-      get-str 
-      (if no-strip 
-          0
-          (if (= (string-match "^#" get-str) 0)
-              1 
-              0))))))
-;;
-(defalias 'mon-get-text-properties-region->kill-ring 'mon-get-text-properties-region-to-kill-ring)
-;;
-(defalias 'mon-kill-ring-save-w-props 'mon-get-text-properties-region-to-kill-ring)
+     (substring mgtprtkr-str 
+                (if no-strip 
+                    0
+                  (if (= (string-match-p "^#" mgtprtkr-str) 0)
+                      1 
+                    0))))))
 
 ;;; ==============================
 
@@ -447,13 +484,13 @@ leading `#'.\n
 (defun mon-list-all-properties-in-buffer (&optional start-range end-range buffer)
   "List text-properties in current-buffer.\n
 When BUFFER is non-nil list its text-properties instead.\n
-:EXAMPLE\n(mon-list-all-properties-in-buffer)\n
+:EXAMPLE\n\n\(mon-list-all-properties-in-buffer\)\n
 :SEE-ALSO `mon-nuke-text-properties-buffer', `mon-plist-keys',
 `mon-plist-remove', `mon-help-plist-functions',
 `mon-help-text-property-functions'.\n►►►"
   (save-excursion
     (with-current-buffer 
-        (if buffer (get-buffer buffer) (current-buffer))      
+        (if buffer (get-buffer buffer) (current-buffer))
       ;; :NOTE Don't remove commented `delete-duplicates' version below.
       ;;      `delete-dups' uses `equal' maybe we want to use CL features later.
       ;; :WAS (delete-duplicates 
@@ -467,23 +504,39 @@ When BUFFER is non-nil list its text-properties instead.\n
       ;;;     to (or end-range (point-max))
       ;;;     nconc (delete-duplicates (mon-plist-keys (text-properties-at i nil))))))))      
       (delete-dups
-      (loop for i from (or start-range (point-min)) to (or end-range (point-max))
-         nconc (delete-dups (mon-plist-keys (text-properties-at i nil))))))))
+       ;;(loop for i from (or start-range (point-min)) to (or end-range (point-max)) ;; (mon-g2be 1 t)
+       (loop for i from (or start-range (mon-g2be -1 t)) to (or end-range (mon-g2be 1 t))
+             nconc (delete-dups (mon-plist-keys (text-properties-at i (current-buffer)))))))))
 ;;
 ;;; ==============================
-;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
-;;; :NOTE Keep with `mon-list-all-properties-in-buffer', `mon-plist-keys'
-(defun mon-nuke-text-properties-buffer ()
-"Remove text-properites in buffer.\n
-:SEE-ALSO `mon-remove-text-property', `mon-remove-single-text-property', 
-`mon-nuke-text-properties-region', `mon-help-text-property-functions',
-`mon-nuke-overlay-buffer'.\n►►►"
-  (interactive)
-  (remove-list-of-text-properties (point-min) (point-max)
-   (mon-list-all-properties-in-buffer)));; (buffer-name (current-buffer)))))
-
+;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `remove-all-properties'
+;;; :NOTE W/ significant modifications.
+(defun mon-nuke-text-properties-buffer (&optional w-buffer)
+  "Remove text-properites in `current-buffer'.\n
+When optional arg W-BUFFER is non-nil remove text-properites in that buffer instead.\n
+:EXAMPLE\n\n\(mon-with-inhibit-buffer-read-only \(mon-nuke-text-properties-buffer\)\)\n
+:NOTE This won't always remove font-locked faces in modes which frob font-lock
+faces at a low level e.g. `emacs-lisp-mode'.\n
+:SEE-ALSO `mon-remove-text-property', `mon-remove-single-text-property',
+`mon-nuke-text-properties-region', `mon-nuke-overlay-buffer',
+`remove-list-of-text-properties', `mon-list-all-properties-in-buffer',
+`mon-help-text-property-functions', `font-lock-defontify'.\n►►►"
+  (interactive (list (and current-prefix-arg
+                          (read-buffer 
+                           (concat ":FUNCTION `mon-nuke-text-properties-buffer' "
+                                   "-- buffer: " )
+                           (current-buffer) 1))))
+  (with-current-buffer (or (and w-buffer (get-buffer w-buffer)) (current-buffer))
+    ;; (font-lock-defontify)                               ;; won't work
+    ;; (set (make-local-variable 'font-lock-defaults) nil) ;; won't work
+    (remove-list-of-text-properties (mon-g2be -1 t) (mon-g2be 1 t) 
+                                    ;; (nconc '(font-lock-face) ;; won't work
+                                    (mon-list-all-properties-in-buffer 
+                                     (mon-g2be -1 t) (mon-g2be 1 t) (current-buffer))
+                                    (current-buffer))))
 
 ;;; ==============================
+;;; :PREFIX "mgnfpc-"
 ;;; :CREATED <Timestamp: #{2010-02-26T19:31:23-05:00Z}#{10086} - by MON KEY>
 (defun mon-get-next-face-property-change (face-prop-val &optional from-posn)
   "Search for `next-single-property-change' with property 'face.\n
@@ -492,7 +545,7 @@ Return a two element list formatted as:\n
  \(position \(t|nil face-prop-vals\)\)\n
 When FROM-POSN is non-nil search for next face property change FROM-POSN.
 Default is to search from point.\n
-:EXAMPLE\n\n\(mon-get-next-face-property-change 'button \(buffer-end 0\)\)\n
+:EXAMPLE\n\n\(mon-get-next-face-property-change 'button \(mon-g2be -1 t\)\)\n
 \(mon-get-next-face-property-change 
  'help-argument-name \(line-beginning-position -11\)\)\n
 \(mon-get-next-face-property-change 'button \(point\)\)\n
@@ -503,22 +556,20 @@ Default is to search from point.\n
 `mon-list-all-properties-in-buffer', `mon-nuke-text-properties-buffer',
 `mon-nuke-text-properties-region', `mon-remove-text-property',
 `mon-remove-single-text-property'.\n►►►"
-   (let (got-tp)
-     (setq got-tp (next-single-property-change (or from-posn (point)) 'face))
-     (when got-tp
-       (if (consp (get-text-property got-tp 'face))
-           (setq got-tp `(,got-tp  ,(get-text-property got-tp 'face)))
-           (setq got-tp `(,got-tp  (,(get-text-property got-tp 'face))))))
-     (when (and got-tp (cadr got-tp))
-       (if (memq face-prop-val (cadr got-tp))
-           (push t (cadr got-tp))
-           (push nil (cadr got-tp))))
-     got-tp))
-;;
-(defalias 'mon-help-face-next-property-change 'mon-get-next-face-property-change)
-
+  (let (mgnfpc-gthr)
+     (setq mgnfpc-gthr (next-single-property-change (or from-posn (point)) 'face))
+     (when mgnfpc-gthr
+       (if (consp (get-text-property mgnfpc-gthr 'face))
+           (setq mgnfpc-gthr `(,mgnfpc-gthr  ,(get-text-property mgnfpc-gthr 'face)))
+           (setq mgnfpc-gthr `(,mgnfpc-gthr  (,(get-text-property mgnfpc-gthr 'face))))))
+     (when (and mgnfpc-gthr (cadr mgnfpc-gthr))
+       (if (memq face-prop-val (cadr mgnfpc-gthr))
+           (push t (cadr mgnfpc-gthr))
+           (push nil (cadr mgnfpc-gthr))))
+     mgnfpc-gthr))
 
 ;;; ==============================
+;;; :PREFIX "mgnfpci-"
 ;;; :CREATED <Timestamp: #{2010-02-27T19:58:23-05:00Z}#{10087} - by MON KEY>
 (defun mon-get-next-face-property-change-if (test-face-symbol test-at-posn)
   "Test if the face we're looking for is at test-at-posn.\n
@@ -530,16 +581,31 @@ TEST-AT-POSN is a buffer position to examine.\n
 `mon-get-all-face-property-change' `mon-list-all-properties-in-buffer',
 `mon-nuke-text-properties-buffer', `mon-nuke-text-properties-region',
 `mon-remove-text-property', `mon-remove-single-text-property'.\n►►►"
-(let ((pg (plist-get (text-properties-at test-at-posn) 'face)))
-  (when pg 
-    (cond ((consp pg) (memq test-face-symbol pg))
-          (t (eq test-face-symbol pg))))))
+  (let ((mgnfpci-prp (plist-get (text-properties-at test-at-posn) 'face)))
+    (when mgnfpci-prp 
+      (cond ((consp mgnfpci-prp) (memq test-face-symbol mgnfpci-prp))
+            (t (eq test-face-symbol mgnfpci-prp))))))
 ;;
 ;;; (eq (plist-get (text-properties-at (point)) 'face) 'font-lock-comment-face)
-;;; :TEST-ME (mon-get-next-face-property-change-if 'font-lock-comment-face (point));;
+;;; :TEST-ME (mon-get-next-face-property-change-if 'font-lock-comment-face (point)));;
+
+;; :TODO unfinished test case
+;; (with-current-buffer (generate-new-buffer-name 
+;;                       (mapconcat 'number-to-string 
+;;                                  (mon-list-nshuffle
+;;                                   (number-sequence 0 9 (aref [1 2 3] (random 3))))
+;;                                  "")
+;;                       (mon-get-all-face-property-change)
+;;   (emacs-lisp-mode)
+;;   (save-excursion (insert ";;\n ()\n"))
+;;   (with-syntax-table emacs-lisp-mode-syntax-table 
+;;     (mon-get-next-face-property-change-if 'font-lock-comment-face (point))))
+    
+                    
 
 
 ;;; ==============================
+;;; :PREFIX "mgtpr-" 
 ;;; :CREATED <Timestamp: #{2010-03-05T17:35:32-05:00Z}#{10095} - by MON KEY>
 (defun mon-get-text-properties-region (start end)
   "Return region as a two elt list string and strings text properties.\n
@@ -551,17 +617,19 @@ TEST-AT-POSN is a buffer position to examine.\n
  `mon-get-text-properties-print', `mon-get-text-properties-read-temp'\n
 :SEE-ALSO `mon-get-text-properties-region-to-kill-ring'.\n►►►"
   (interactive "r\np")
-  (let (get-str nw-tl) 
-    (setq get-str (substring (format "%S" (buffer-substring start end)) 1))
-    (setq get-str (car (read-from-string get-str)))
-    (setq get-str `(,(car get-str) ,(cdr get-str)))
-    (setq nw-tl (substring (format "%S" (cdr get-str)) 1 -1))
-    (setq nw-tl (replace-regexp-in-string " ?\\([0-9]+ [0-9]+\\( (\\)\\)" ")(\\1" nw-tl t))
-    (setq nw-tl (substring nw-tl 1))
-    (setq nw-tl (concat "(" (substring nw-tl 1) ")"))
-    (setq nw-tl (list (car (read-from-string nw-tl))))
-    (setcdr get-str nw-tl)
-    get-str))
+  (let (mgtpr-bfr-str mgtpr-tp-lst) 
+    (setq mgtpr-bfr-str (substring (format "%S" (buffer-substring start end)) 1))
+    (setq mgtpr-bfr-str (car (read-from-string mgtpr-bfr-str)))
+    (setq mgtpr-bfr-str `(,(car mgtpr-bfr-str) ,(cdr mgtpr-bfr-str)))
+    (setq mgtpr-tp-lst (substring (format "%S" (cdr mgtpr-bfr-str)) 1 -1))
+    (setq mgtpr-tp-lst (replace-regexp-in-string " ?\\([0-9]+ [0-9]+\\( (\\)\\)" ")(\\1" mgtpr-tp-lst t))
+    (setq mgtpr-tp-lst (substring mgtpr-tp-lst 1))
+    (setq mgtpr-tp-lst (concat "(" (substring mgtpr-tp-lst 1) ")"))
+    ;; :NOTE Is there a better way to do this than `read-from-string' or at
+    ;; least read with obarray elsewhere?
+    (setq mgtpr-tp-lst (list (car (read-from-string mgtpr-tp-lst))))
+    (setcdr mgtpr-bfr-str mgtpr-tp-lst)
+    mgtpr-bfr-str))
 ;;
 ;;; :TEST-ME (let ((sfr (save-excursion (search-forward-regexp "(defun.*$"))))
 ;;;               (setq sfr `(,(match-beginning 0). ,(match-end 0)))
@@ -607,7 +675,7 @@ When non-nil optional arg TP-BUFF names a buffer as required by
         re-str 
         str-props)
     (with-current-buffer mgtprt-new
-      (goto-char (buffer-end 0))
+      (mon-g2be -1) ;; (goto-char (buffer-end 0))
       (delete-char 1)
       (setq re-str (read-from-string (car (sexp-at-point))))
       (setq str-props (cdr (sexp-at-point)))
@@ -682,6 +750,7 @@ When non-nil optional arg TP-BUFF names a buffer as required by
 ;;; :TEST-ME (mon-get-text-properties-elisp-string (documentation 'mon-help-mon-help))
 
 ;;; ==============================
+;;; :TODO This should be generalized.
 ;;; :CREATED <Timestamp: #{2010-03-05T19:07:34-05:00Z}#{10096} - by MON KEY>
 (defun mon-get-text-properties-parse-prop-val-type-chk (prop-val)
   "Check that PROP-VAL's type is suitable.\n
@@ -700,9 +769,11 @@ For use with:\n
     \(push `\(,the-bubba 
             . ,\(mon-get-text-properties-parse-prop-val-type-chk the-bubba\)\)
           bubba-types\)\)\)\n
-:SEE-ALSO `mon-help-text-property-functions-ext',
+:SEE-ALSO `mon-equality-for-type', `mon-help-text-property-functions-ext',
 `mon-help-text-property-functions', `mon-help-text-property-properties',
-`typecase', `etypecase', `deftype', `typep', `type-of'.\n►►►"
+`typecase', `etypecase', `deftype', `typep', `type-of', `mon-function-object-p',
+`mon-sequence-mappable-p', `mon-equality-or-predicate',
+`*mon-equality-or-predicate-function-types*'.\n►►►"
   (typecase prop-val
     (string  'equal)           
     (integer 'eq)
@@ -882,6 +953,7 @@ Sublists contain two index values and text-property plist of prop val pairs e.g.
 
 
 ;;; ==============================
+;;; :PREFIX "mgtpmmr-"
 ;;; :CREATED <Timestamp: #{2010-03-05T19:04:53-05:00Z}#{10096} - by MON KEY>
 (defun mon-get-text-properties-map-ranges (text-prop-list)
   "Map the indexes at head of each sublist of TEXT-PROP-LIST to a consed list.\n
@@ -891,8 +963,8 @@ Return value is a list of sublists of the form:\n
 :CALLED-BY `mon-get-text-properties-parse-buffer-or-sym'.\n
 :SEE-ALSO `mon-help-text-property-functions-ext',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (let (mgtpmmr)
-    (setq mgtpmmr
+  (let (mgtpmmr-rng)
+    (setq mgtpmmr-rng
           (mapcar #'(lambda (top) 
                       (let ((bt (butlast top 1)))
                         (setq bt `(,(car bt) . ,(cadr bt)))))
@@ -905,6 +977,7 @@ Return value is a list of sublists of the form:\n
 ;;   (setq mgtppb `(,(mon-get-text-properties-map-ranges mgtppb) ,mgtppb)))
 
 ;;; ==============================
+;;; :PREFIX "mgtpmrs-"
 ;;; :CREATED <Timestamp: #{2010-03-05T20:16:13-05:00Z}#{10096} - by MON KEY>
 (defun mon-get-text-properties-map-ranges-string (string-range-buffer range-buffer)
   "Map a range text-properties in buffer STRING-RANGE-BUFFER.\n 
@@ -912,23 +985,30 @@ Return value inserted in RANGE-BUFFER.\n
 :EXAMPLE\n\n
 :SEE-ALSO `mon-help-text-property-functions-ext',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (let (rr the-str str-range)
-    (setq rr (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
-               (mon-get-text-properties-region (buffer-end 0) (buffer-end 1))))
-    (setq the-str (car rr))
-    (setq rr (cadr rr))
-    (setq rr (mon-get-text-properties-parse-buffer-or-sym 
-              'face 'font-lock-constant-face :read-prop-sym rr))
-    (setq rr (mapcar #'(lambda (idx-pair)
-                         `(,idx-pair ,(substring the-str (car idx-pair) (cdr idx-pair))))
-                     (car rr)))
-    (princ rr (get-buffer range-buffer))))
+  (let (mgtpmrs-rr mgtpmrs-str
+        ;; :NOTE `str-range` apears to be unused.
+        str-range) 
+    (setq mgtpmrs-rr 
+          (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
+            ;; :WAS (mon-get-text-properties-region (buffer-end 0) (buffer-end 1)) ))
+            (mon-get-text-properties-region (mon-g2be -1 t) (mon-g2be 1 t)) ))
+    (setq mgtpmrs-str (car mgtpmrs-rr))
+    (setq mgtpmrs-rr  (cadr mgtpmrs-rr))
+    (setq mgtpmrs-rr  (mon-get-text-properties-parse-buffer-or-sym 
+                       'face 'font-lock-constant-face :read-prop-sym mgtpmrs-rr))
+    (setq mgtpmrs-rr 
+          (mapcar #'(lambda (mgtpmrs-idx-pair)
+                      `(,mgtpmrs-idx-pair 
+                        ,(substring mgtpmrs-str (car mgtpmrs-idx-pair) (cdr mgtpmrs-idx-pair))))
+                  (car mgtpmrs-rr)))
+    (princ mgtpmrs-rr (get-buffer range-buffer))))
 
 
 ;; (mon-get-text-properties-map-ranges-string (current-buffer) (get-buffer-create "*MGTPFES-STRING*"))
 ;; (mon-get-text-properties-parse-buffer-or-sym 'face 'font-lock-keyword-face :read-prop-buffer "mon-text-property-utils.el")
 ;; (insert-buffer-substring "mon-text-property-utils.el" 52839 52870)
 ;;; ==============================
+;;; :PREFIX "mgtpb-"
 ;;; :COURTESY slime.el :WAS `slime-property-bounds'
 ;;; :CHANGESET 2109
 ;;; :CREATED <Timestamp: #{2010-09-04T12:34:27-04:00Z}#{10356} - by MON KEY>
@@ -952,36 +1032,33 @@ PROP is the name of a text property.\n
 `mon-get-text-properties-parse-buffer-or-sym',
 `mon-help-text-property-functions-ext', `mon-help-text-property-functions',
 `mon-help-text-property-properties', `mon-help-overlay-functions'.\n►►►"
-  (assert (get-text-property (point) prop))
-  (let ((end (next-single-char-property-change (point) prop)))
-    (list (previous-single-char-property-change end prop) end)))
+  (assert (get-text-property (point) prop))  
+  (let ((mgtpb-end (next-single-char-property-change (point) prop)))
+    (list (previous-single-char-property-change mgtpb-end prop) mgtpb-end)))
 
 ;;; ==============================
-;; :COURTESY gnus-util.el :WAS `gnus-remove-text-with-property'
+;;; :PREFIX "mgtpra-"
+;;; :COURTESY gnus-util.el :WAS `gnus-remove-text-with-property'
 (defun mon-get-text-property-remove-all (txt-prop)
   "Delete all text in the current buffer with text property TXT-PROP.\n
 :ALIASED-BY `mon-remove-text-with-property'\n
 :SEE-ALSO .\n►►►"
-  (let ((start (point-min))
-	end)
-    (unless (get-text-property start txt-prop)
-      (setq start (next-single-property-change start txt-prop)))
-    (while start
-      (setq end (text-property-any start (point-max) txt-prop nil))
-      (delete-region start (or end (point-max)))
-      (setq start (when end
-		    (next-single-property-change start txt-prop))))))
-;;
-(unless (and (intern-soft "mon-remove-text-with-property")
-             (fboundp 'mon-remove-text-with-property))
-  (defalias 'mon-remove-text-with-property 'mon-get-text-property-remove-all))
-
+  (let ((mgtpra-beg (mon-g2be -1 t))
+	mgtpra-end)
+    (unless (get-text-property mgtpra-beg txt-prop)
+      (setq mgtpra-beg (next-single-property-change mgtpra-beg txt-prop)))
+    (while mgtpra-beg
+      (setq mgtpra-end (text-property-any mgtpra-beg (mon-g2be 1 t) txt-prop nil))
+      (delete-region mgtpra-beg (or mgtpra-end (mon-g2be 1 t)))
+      (setq mgtpra-beg (when mgtpra-end
+                         (next-single-property-change mgtpra-beg txt-prop))))))
 
 ;;; ==============================
 ;;; :OVERLAYS
 ;;; ==============================
 
 ;;; ==============================
+;;; :PREFIX "mgor-"
 ;;; :CHANGESET 2136
 ;;; :CREATED <Timestamp: #{2010-09-16T13:14:39-04:00Z}#{10374} - by MON KEY>
 (defun mon-get-overlays-region (ov-start ov-end &optional intrp)
@@ -1000,19 +1077,20 @@ Return value has the format:\n
 `mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
 `mon-help-overlay-on-region', `mon-help-overlay-result',
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
-`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
+`mon-help-text-property-functions', `mon-help-text-property-properties',
+`overlays-in'.\n►►►"
   (interactive "r\np")
-  (let ((ov-rgn-p 
+  (let ((mgor-ov-rgn-p 
          ;; :NOTE `or'ing ov-end allows: 
          ;;  (mon-get-overlays-region (point) nil)
          (overlays-in ov-start (or ov-end ov-start))))
-    (when ov-rgn-p 
-      (setq ov-rgn-p `(:REGION-START ,ov-start 
-                       :REGION-END   ,(or ov-end ov-start)
-                       :OVERLAYS     ,ov-rgn-p))
+    (when mgor-ov-rgn-p 
+      (setq mgor-ov-rgn-p `(:REGION-START ,ov-start 
+                            :REGION-END   ,(or ov-end ov-start)
+                            :OVERLAYS     ,mgor-ov-rgn-p))
       (if intrp
-          (prin1 ov-rgn-p)
-        ov-rgn-p))))
+          (prin1 mgor-ov-rgn-p)
+        mgor-ov-rgn-p))))
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; |
@@ -1025,6 +1103,7 @@ Return value has the format:\n
 
 
 ;;; ==============================
+;;; :PREFIX "mgormp-"
 ;;; :CHANGESET 2136
 ;;; :CREATED <Timestamp: #{2010-09-16T14:38:31-04:00Z}#{10374} - by MON KEY>
 (defun mon-get-overlays-region-map-props (ov-start ov-end)
@@ -1052,12 +1131,13 @@ Return value has the format:\n
 `mon-help-overlay-on-region', `mon-help-overlay-result',
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (let* ((mgormp (mon-get-overlays-region ov-start ov-end))
-         (omapd (cadr (memq :OVERLAYS mgormp))))
-    (when omapd
-      (setf omapd (mon-get-overlays-map-props omapd)
-            (car (last mgormp)) omapd))
-    mgormp))
+;;mgormp-o-rgn
+  (let* ((mgormp-o-rgn (mon-get-overlays-region ov-start ov-end))
+         (mgormp-ov-mapd (cadr (memq :OVERLAYS mgormp-o-rgn))))
+    (when mgormp-ov-mapd
+      (setf mgormp-ov-mapd (mon-get-overlays-map-props mgormp-ov-mapd)
+            (car (last mgormp-o-rgn)) mgormp-ov-mapd))
+    mgormp-o-rgn))
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; | (let ((inhibit-read-only t))
@@ -1073,6 +1153,7 @@ Return value has the format:\n
 
 
 ;;; ==============================
+;;; :PREFIX "mgomp-"
 ;;; :CHANGESET 2136
 ;;; :CREATED <Timestamp: #{2010-09-16T13:20:24-04:00Z}#{10374} - by MON KEY>
 (defun mon-get-overlays-map-props (overlays-lst)
@@ -1093,20 +1174,22 @@ List elements of retrun value have the format:\n
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
   (unless (null overlays-lst)
-    (let (op-gthr)
-      (dolist (ov-l overlays-lst (setq op-gthr (nreverse op-gthr)))
+    (let (mgomp-op-gthr)
+      (dolist (mgomp-D-1 overlays-lst (setq mgomp-op-gthr (nreverse mgomp-op-gthr)))
+        ;; :NOTE Don't appear to be using the local variable `op-this`
         (let (op-this)
           (push 
-           `(:OVERLAY-ID     ,ov-l
-             :OVERLAY-START  ,(overlay-start ov-l)
-             :OVERLAY-END    ,(overlay-end ov-l)
-             :OVERLAY-BUFFER ,(overlay-buffer ov-l)
-             :OVERLAY-PROPS  ,(overlay-properties ov-l))
-           op-gthr))))))
+           `(:OVERLAY-ID     ,mgomp-D-1
+             :OVERLAY-START  ,(overlay-start mgomp-D-1)
+             :OVERLAY-END    ,(overlay-end mgomp-D-1)
+             :OVERLAY-BUFFER ,(overlay-buffer mgomp-D-1)
+             :OVERLAY-PROPS  ,(overlay-properties mgomp-D-1))
+           mgomp-op-gthr))))))
 ;;
 ;;; :TEST-ME (mon-get-overlays-map-props (mon-get-overlays-buffer))
 
 ;;; ==============================
+;;; :PREFIX "mgob-"
 ;;; :CHANGESET 2136
 ;;; :CREATED <Timestamp: #{2010-09-16T14:30:16-04:00Z}#{10374} - by MON KEY>
 (defun mon-get-overlays-buffer (&optional buffer-or-name)
@@ -1121,13 +1204,15 @@ overlay center.\n
 `mon-help-overlay-on-region', `mon-help-overlay-result',
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
 `mon-help-text-property-functions', `mon-help-text-property-properties',.\n►►►"
-  (let (ov-lsts)
-    (with-current-buffer (or (and buffer-or-name (get-buffer buffer-or-name))
-                             (current-buffer))
-      (setq ov-lsts (overlay-lists)))
-    (when ov-lsts `(,@(car ov-lsts) ,@(cdr ov-lsts)))))
+  (let (mgob-ov-lsts)
+    (with-current-buffer 
+        (or (and buffer-or-name (get-buffer buffer-or-name))
+            (current-buffer))
+      (setq mgob-ov-lsts (overlay-lists)))
+    (when mgob-ov-lsts `(,@(car mgob-ov-lsts) ,@(cdr mgob-ov-lsts)))))
 
 
+;;; ==============================
 ;; :COURTESY lisp/progmodes/cpp.el :WAS `cpp-grow-overlay'
 ;; :NOTE Removed the AFTER argument and the optional LEN arg. 
 ;;       I can't see that these are actually used.
@@ -1135,9 +1220,8 @@ overlay center.\n
 ;; :ADDED optional arg BUFFER-OR-NAME per `move-overlay's optional arg BUFFER.
 (defun mon-set-overlay-range (mv-olay start-olay end-olay &optional buffer-or-name) 
   "Grow overlay MV-OLAY with `move-overlay' into range START-OLAY to END-OLAY.\n
-MV-OLAY is an overlay object.
-START-OLAY END-OLAY are overlay positions 
-
+MV-OLAY is an overlay object.\n
+START-OLAY END-OLAY are overlay positions\n
 Optional arg BUFFER-OR-NAME is as per `move-overlay's optional arg BUFFER.\n
 :EXAMPLE\n\n
 :SEE-ALSO .\n►►►"
@@ -1168,8 +1252,8 @@ Optional arg BUFFER-OR-NAME is as per `move-overlay's optional arg BUFFER.\n
 `mon-help-find-result-for-overlay', `mon-help-overlay-for-example',
 `mon-help-overlay-on-region', `mon-help-overlay-result',
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
-`mon-help-text-property-functions', `mon-help-text-property-properties',.\n►►►"
- (remove-overlays (buffer-end 0) (buffer-end 1) overlay-prop overlay-val))
+`mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
+  (remove-overlays (buffer-end 0) (buffer-end 1) overlay-prop overlay-val))
 
 
 ;;; ==============================
@@ -1251,8 +1335,10 @@ Optional arg BUFFER-OR-NAME is as per `move-overlay's optional arg BUFFER.\n
 (provide 'mon-text-property-utils)
 ;;; ==============================
 
+ 
 ;; Local Variables:
 ;; generated-autoload-file: "./mon-loaddefs.el"
+;; mode: EMACS-LISP
 ;; End:
 
 ;;; ====================================================================

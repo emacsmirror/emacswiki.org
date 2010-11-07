@@ -34,7 +34,9 @@
 ;; `mon-booleanp-to-binary-TEST', `mon-string-or-null-and-zerop-TEST',
 ;; `mon-error-protect-PP-EXPAND-TEST', `mon-line-string-rotate-name-TEST',
 ;; `mon-line-indent-from-to-col-TEST', `mon-line-strings-pipe-to-col-TEST',
-;; `mon-line-string-insert-chars-under-TEST',
+;; `mon-line-string-insert-chars-under-TEST', `mon-list-reorder-TEST',
+;; `mon-regexp-clean-ulan-dispatch-chars-TEST',
+;; `mon-set-buffer-substring-no-properties-TEST', 
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -74,7 +76,7 @@
 ;; `mon-build-copyright-string-TEST'           <- mon-insertion-utils.el
 ;; `google-define-get-command-TEST'            <- google-define-redux.el
 ;; `mon-permute-combine-functions-TEST'        <- mon-name-utils.el
-;;
+;; `mon-regexp-clean-ulan-dispatch-chars-TEST' <- mon-regexp-symbols.el
 ;; TODO:
 ;;
 ;;
@@ -1239,6 +1241,7 @@ Key :all-tests-passed is non-nil if so.\n
 ;;; ==============================
 ;;; :CHANGESET 2208
 ;;; :CREATED <Timestamp: #{2010-10-28T20:16:19-04:00Z}#{10434} - by MON KEY>
+;;;###autoload
 (defun mon-line-strings-pipe-to-col-TEST ()
   "Test function for `mon-line-strings-pipe-to-col'.\n
 Key :all-tests-passed-p is non-nil if so.\n
@@ -1273,6 +1276,7 @@ Key :all-tests-passed-p is non-nil if so.\n
 ;;; ==============================
 ;;; :CHANGESET 2208
 ;;; :CREATED <Timestamp: #{2010-10-28T21:09:57-04:00Z}#{10434} - by MON KEY>
+;;;###autoload
 (defun mon-line-string-insert-chars-under-TEST ()
   "Test function for `mon-line-string-insert-chars-under'.\n
 Key :all-tests-passed-p is non-nil if so.\n
@@ -1297,6 +1301,176 @@ Key :all-tests-passed-p is non-nil if so.\n
                                  (car with-value))
       :with-result ,with-result
       :with-check  ,with-check)))
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-10-29T17:13:16-04:00Z}#{10435} - by MON KEY>
+;;;###autoload
+(defun mon-list-reorder-TEST ()
+  "Test function for `mon-list-reorder'.\n
+Key :all-tests-passed-p is non-nil if so.\n
+:EXAMPLE\n\n\(mon-list-reorder-TEST\)\n
+\(let \(\(gbc \(get-buffer-create \"*mon-list-reorder-TEST*\"\)\)\)
+  \(with-current-buffer gbc \(erase-buffer\)\)
+  \(pp-display-expression \(mon-list-reorder-TEST\)  \(buffer-name gbc\)\)\)\n
+:SEE-ALSO `%mon-list-reorder'.\n►►►"
+ (let ((with-test
+        ;; :ARGS                                     :EXPECT
+        '(((nil nil t)                                nil)
+          ((nil (t . nil) t)                          nil)
+          ((nil (z z a b z c q w z) nil)              nil)
+          (((z z a b z c q w z) nil t)                (z a b c q w))
+          (((z z a b z c q w z) nil nil)              (z z a b z c q w z))
+          (([z z a b z c q w z] nil t)                [z a b c q w])
+          (([z z a b z c q w z] nil nil)              [z z a b z c q w z])
+          (([z z a b z c q w z] (z z a b c q w) t)    [z a b c q w])
+          (((2 6 3 2 1) (1 2 3 4 5 6) nil)            (1 2 3 6 2))
+          (((q w b c s a w) (a b c q z w) nil)        (a b c q w s w))
+          (((q w b c s a w) (a b c q z w) t)          (a b c q w s))
+          (([a b w z w c] [a b c q z w] t)            [a b c z w])
+          (([a b w z w c] [a b c q z w] nil)          [a b c z w w])
+          (((a b w z w c) [a b c q z w] t)            (a b c z w))
+          (((a b q z w c) [a b c q z w] nil)          (a b c q z w))
+          (([a b w z w c] (a b c q z w) t)            [a b c z w])
+          (([a b w z w c] (a b c q z w) nil)          [a b c z w w])
+          (((q w [1 2 3] b c a w) (a b c q z w) t)    (a b c q w [1 2 3]))
+          (((q w [1 2 3] b c a w) (a b c q z w) nil)  (a b c q w [1 2 3] w))
+          (((q w [1 2 3] b c a w) (a b c q z w) nil)  (a b c q w [1 2 3] w))))
+       with-result
+       mlrdr-gthr)
+   (dolist (mlrdr-D-1 with-test
+                      (dolist (mlrdr-D-2
+                               ;; :ARGS                                     :EXPECT
+                               `(((,(make-bool-vector 3 t) (q . z) t) failed-succesfully)
+                                 (((q  z) ,(make-bool-vector 3 t) t)  failed-succesfully)
+                                 (([q  z] ,(current-buffer)  t)       failed-succesfully)
+                                 (((a . b) (z z a b c q w)  t)        failed-succesfully)
+                                 (((z z a b c q w) (q . z)  t)        failed-succesfully))
+                               (setq mlrdr-gthr (nreverse mlrdr-gthr)))
+                        (setq with-result 
+                              (and (null (ignore-errors 
+                                           (apply #'mon-list-reorder (car mlrdr-D-2))))
+                                   (cadr mlrdr-D-2)))
+                        (push `(:test-passed ,(equal with-result (cadr mlrdr-D-2))
+                                :with-test   ,`(mon-list-reorder ,@(car mlrdr-D-2))
+                                :with-result ,with-result
+                                :with-expect ,(cadr mlrdr-D-2))
+                              mlrdr-gthr)
+                        (setq with-result)))
+     (setq with-result
+           (apply #'mon-list-reorder (car mlrdr-D-1)))
+     (push `(:test-passed ,(equal with-result (cadr mlrdr-D-1))
+             :with-test   ,`(mon-list-reorder ,@(car mlrdr-D-1))
+             :with-result ,with-result
+             :with-expect ,(cadr mlrdr-D-1))
+           mlrdr-gthr)
+    (setq with-result))
+   (nconc `(:all-tests-passed 
+            ,(zerop (apply #'+ 
+                           (mapcar #'(lambda (chk-t) 
+                                       (mon-booleanp-to-binary (not (cadr chk-t))))
+                                   mlrdr-gthr))))
+          mlrdr-gthr)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-07-08T15:34:38-04:00Z}#{10274} - by MON>
+;;;###autoload
+(defun mon-regexp-clean-ulan-dispatch-chars-TEST (&optional kywd-str ndl-str)
+  "Test function for variable `*regexp-clean-ulan-dispatch-chars*'.\n
+When optional arg KYWD-STR is non-nil it is a regexp to which should
+satisfy the predicate `string-match-p' with the the car of a sublist
+in `*regexp-clean-ulan-dispatch-chars*'.  Default is:\n
+ \".*:TEACHER-OF\"\n
+When optional arg NDL-STR is non-nil it is a string to search for.
+Default is as follows (not there are two trailing spaces after \"Eman\":\n
+ \":TEACHER-OF Ivory, Percy van Eman\x20\x20
+ (American painter and illustrator, 1883-1960) [500105044]\"\n
+When KYWD-STR is non-ni and NDL-STR is ommitted signal an error.\n
+When KYWD-STR is ommitted and NDL-STR is non-nil use NDL-STR's default.\n
+When a match is made return value is a plist of the form:\n
+ (:w-replace \"<STRING-AFTER-REPLACEMENT>\"
+  :w-match   \"<STRING-THAT-MATCHED>\"
+  :w-regexp  \"<REGEXP-THAT-MATCHED>\"
+  :w-groups  \"<REGEXP-REPLACEMENT-MATCH-GROUPS>\")\n
+:EXAMPLE\n\n\(mon-regexp-clean-ulan-dispatch-chars-TEST\)\n
+\(mon-regexp-clean-ulan-dispatch-chars-TEST
+ \".*:GRANDPARENT-WAS\"
+ \(concat
+ \":GRANDPARENT-WAS Van-Winkle, Pappy von  \"
+ \"\(Dutch painter and illustrator, 1800-1903\) [500000010]\"\)\)\n
+:USED-IN `naf-mode'.\n
+:SEE-ALSO `mon-cln-ulan'.\n►►►"
+  (let* ((the-kwd (if kywd-str
+                      (progn
+                        (unless ndl-str 
+                          (error (concat 
+                                  ":FUNTION `mon-regexp-clean-ulan-dispatch-chars-TEST' "
+                                  "-- arg KYWD-STR given but NDL-STR ommitted")))
+                        kywd-str)
+                    ".*:TEACHER-OF"))
+         (the-ndl (or (and kywd-str ndl-str)
+                      (concat 
+                       ;; :NOTE The two trailing spaces  vv
+                       ":TEACHER-OF Ivory, Percy van Eman  \n" 
+                       "(American painter and illustrator, 1883-1960) [500105044]")))
+         (rcudc-pop *regexp-clean-ulan-dispatch-chars*)
+         fnd-tchr
+         fnd-this)
+    (while (not fnd-tchr)
+      (if (null rcudc-pop)
+          nil 
+        (if (string-match-p  the-kwd (caar rcudc-pop))
+            (setq fnd-tchr (car rcudc-pop))
+          (pop rcudc-pop))))
+    (if (not fnd-tchr)
+        (error (concat
+                ":FUNTION `mon-regexp-clean-ulan-dispatch-chars-TEST' "
+                "-- could not satisfy predicate `string-match-p' w/ regexp: %S")
+               the-kwd)
+      (setq fnd-this
+            ;; :NOTE Uncomment when debugging
+            ;; (with-current-buffer (get-buffer-create "*regexp-clean-ulan-dispatch-chars*")
+            ;; (display-buffer (current-buffer) t)
+            (with-temp-buffer 
+              (save-excursion (insert the-ndl))
+               (when (search-forward-regexp (car fnd-tchr) nil t)
+                (let ((mtch-got (match-string-no-properties 0)))
+                  (replace-match (cadr fnd-tchr))
+                  `(:w-replace ,(buffer-substring-no-properties (buffer-end 0) (buffer-end 1))
+                    :w-match   ,mtch-got
+                    :w-regexp  ,(car fnd-tchr) 
+                    :w-groups  ,(cadr fnd-tchr)))))))))
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-11-05T16:39:34-04:00Z}#{10445} - by MON KEY>
+;;;###autoload
+(defun mon-set-buffer-substring-no-properties-TEST ()
+  "Test function for `%mon-set-buffer-substring-no-properties', `%mon-set-buffer-substring'
+Which in turn are requirements to make `buffer-substring-no-properties' `setf'able.
+:EXAMPLE\n\n\(mon-set-buffer-substring-no-properties-TEST\)
+:SEE-ALSO .\n►►►"
+  (with-current-buffer (get-buffer-create "*DEFSETF-BUF-NO-PROPS*")
+    (erase-buffer)
+    (emacs-lisp-mode)
+    (save-excursion (insert "was: lots of lots and lots of bubba"))
+    (display-buffer (current-buffer) t)
+    (sit-for 2)
+    (setf (buffer-substring (buffer-end 0) (buffer-end 1)) 
+          (propertize "now: lots of lots and lots of bubba" 'font-lock-face 'bold))
+    (sit-for 2)
+    
+    (prog1 
+        (when
+            (equal
+             (setf (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) 
+                   ;; won't get inserted 
+                   (propertize "Are there no bold props here?" 'font-lock-face 'bold))
+             "Are there no bold props here?")
+          "Good, no bold props were seen")
+      (unwind-protect 
+          (sit-for 2)
+        (kill-buffer (current-buffer))))))
 
 ;;; ==============================
 (provide 'mon-testme-utils)

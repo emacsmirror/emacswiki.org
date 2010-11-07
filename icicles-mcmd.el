@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  5 10:45:39 2010 (-0700)
+;; Last-Updated: Sat Nov  6 10:30:53 2010 (-0700)
 ;;           By: dradams
-;;     Update #: 16261
+;;     Update #: 16281
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1399,15 +1399,21 @@ use the `Meta' key (e.g. `M-up') to increment in larger steps."
   (icicle-doremi-increment-variable+ 'icicle-swank-prefix-length 1))
 
 ;;;###autoload
-(defun icicle-next-TAB-completion-method () ; Bound to `C-(' in minibuffer.
+(defun icicle-next-TAB-completion-method (temporary-p) ; Bound to `C-(' in minibuffer.
   "Cycle to the next `TAB' completion method.
 Bound to \\<minibuffer-local-completion-map>`\\[icicle-next-TAB-completion-method]' \
 in the minibuffer.
 Option `icicle-TAB-completion-methods' determines the TAB completion
-methods that are available."
-  (interactive)
+methods that are available.
+
+With a prefix argument, the newly chosen method is used only for the
+current command.  More precisely, the previously active method is
+restored as soon as you return to the top level."
+  (interactive "P")
   (unless icicle-current-TAB-method     ; nil means the same as the default (first).
     (setq icicle-current-TAB-method  (car icicle-TAB-completion-methods)))
+  (put 'icicle-last-top-level-command 'icicle-current-TAB-method
+       (and temporary-p icicle-current-TAB-method))
   (let ((now  (memq icicle-current-TAB-method icicle-TAB-completion-methods)))
     (setq icicle-current-TAB-method  (or (cadr now) (car icicle-TAB-completion-methods)))
     ;; Skip any method that is not currently supported.
@@ -1433,28 +1439,37 @@ methods that are available."
   ;; $$$$$$ Inhibiting sorting is not correct for file-name completion, and sorting would not be
   ;;        restored when change back to non-fuzzy.
   ;; (when (eq 'fuzzy icicle-current-TAB-method) (setq icicle-inhibit-sort-p  t))
-  (icicle-msg-maybe-in-minibuffer "TAB completion is now %s" icicle-current-TAB-method))
+  (icicle-msg-maybe-in-minibuffer "TAB completion is %s %s"
+                                  (icicle-upcase (symbol-name icicle-current-TAB-method))
+                                  (if temporary-p "for this command" "now")))
 
 ;;;###autoload
-(defun icicle-next-S-TAB-completion-method () ; Bound to `M-(' in minibuffer.
+(defun icicle-next-S-TAB-completion-method (temporary-p) ; Bound to `M-(' in minibuffer.
   "Cycle to the next `S-TAB' completion method.
 Bound to `M-(' in the minibuffer.
 Option `icicle-S-TAB-completion-methods-alist' customizes the
-available TAB completion methods."
-  (interactive)
+available TAB completion methods.
+
+With a prefix argument, the newly chosen method is used only for the
+current command.  More precisely, the previously active method is
+restored as soon as you return to the top level."
+  (interactive "P")
+  (put 'icicle-last-top-level-command 'icicle-apropos-complete-match-fn
+       (and temporary-p icicle-apropos-complete-match-fn))
   (let ((entry  (rassq icicle-apropos-complete-match-fn icicle-S-TAB-completion-methods-alist)))
     (setq icicle-apropos-complete-match-fn
           (or (cdadr (member entry icicle-S-TAB-completion-methods-alist))
               (cdar icicle-S-TAB-completion-methods-alist))
           icicle-last-apropos-complete-match-fn  icicle-apropos-complete-match-fn) ; Backup copy.
     (icicle-msg-maybe-in-minibuffer
-     (format "S-TAB completion is now %s%s"
+     (format "S-TAB completion is %s%s %s"
              (icicle-upcase (car (rassq icicle-apropos-complete-match-fn
                                         icicle-S-TAB-completion-methods-alist)))
              (if (memq icicle-apropos-complete-match-fn
                        '(icicle-levenshtein-match icicle-levenshtein-strict-match))
                  (format " (%d)" icicle-levenshtein-distance)
-               "")))))
+               "")
+             (if temporary-p "for this command" "now")))))
     ;; (icicle-complete-again-update) ; No - too slow for some completion methods.
 
 ;;;###autoload
@@ -5091,7 +5106,9 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-minibuffer))
   ;; $$$$$ (let ((icicle-top-level-when-sole-completion-flag  t))
-  (when (and (eq icicle-current-completion-mode 'prefix) icicle-last-input)
+  (when (and (eq icicle-current-completion-mode 'prefix)
+             (eq icicle-current-TAB-method 'basic)
+             icicle-last-input)
     (let ((icicle-incremental-completion-p  nil)
           (regexp-quoted-input              (regexp-quote icicle-last-input)))
       (setq regexp-quoted-input  (if (icicle-file-name-input-p)
@@ -5460,7 +5477,11 @@ MOREP non-nil means add the saved candidates, don't replace existing."
                                                     (if variablep "variable" "cache file") name)
                                           "  [Saved candidates RESTORED]")))
                   (let ((icicle-minibuffer-setup-hook ; Pre-complete
-                         (cons 'icicle-apropos-complete icicle-minibuffer-setup-hook)))
+                         (cons (if (eq icicle-last-completion-command
+                                       'icicle-apropos-complete-no-display)
+                                   'icicle-apropos-complete-no-display
+                                 'icicle-apropos-complete)
+                               icicle-minibuffer-setup-hook)))
                     (icicle-narrow-candidates))))))))
 
 ;;;###autoload

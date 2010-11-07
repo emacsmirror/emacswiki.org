@@ -1,0 +1,79 @@
+Assuming we want to create [SkeletonMode skeletons] for some LaTeX stuff:
+
+    (define-skeleton latex-insert-emph
+      "Insert \\emph{}" nil "\\emph{" _ "}")
+
+    (define-skeleton latex-insert-strong
+      "Insert \\strong{}" nil "\\strong{" _ "}")
+
+And after a while we get tired and would love to reduce the amount of code we type.
+
+*Macros are code generators*. They look like function calls, but what they do is create a list of stuff, return it, and Emacs will then run the list as a command.
+
+Here's a simple example:
+
+    (defmacro ++ (x)
+      `(setq ,x (1+ ,x)))
+
+What happens in the following case?
+
+    (setq foo 5)
+    (++ foo)
+
+This sets foo to 6 because ##(++ foo)## gets replaced by ##(setq foo (1+ foo))##.
+
+Why the [BackquoteSyntax backtick and commas]? We could have written the macro as follows:
+
+    (defmacro ++ (x)
+      (list 'setq x (list '1+ x)))
+
+But this is hard to read. So here's the short summary:
+
+* A list quoted with an *ordinary quote* is just that, quoted: ##'(1 2 (+ 3 4))## => ##(1 2 (+ 3 4))##
+* A list quoted with the *backquote* is quoted *except for the elements prefixed with a comma*. Those are evaluated before inserting. Therefore  ##`(1 2 ,(+ 3 4))## => ##(1 2 7)##.
+
+This little Emacs Lisp feature is totally not limited to writing macros, but it certainly makes writing macros a bit easier. :)
+
+Back to our skeleton macro!
+
+    (defmacro define-my-skel (code)
+      (let ((func (intern (concat "latex-insert-" code))))
+      `(define-skeleton ,func "doc" nil 
+	"\\" ,code  "{" _ "}")))
+
+Notice how we compute the name of the function before creating the list by concatenating "latex-insert-" with the formatting code and interning it (making it a symbol again).
+
+We can even generate an appropriate doc string:
+
+    (defmacro define-my-skel (code)
+      (let ((func (intern (concat "latex-insert-" code)))
+	    (doc (format "Insert \\%s{}." code)))
+      `(define-skeleton ,func ,doc nil
+	 "\\" ,code  "{" _ "}")))
+
+Now we can run the macro a few times!
+
+    (define-my-skel "emph")
+    (define-my-skel "strong")
+
+This will define `latex-insert-emph' and `latex-insert-strong' etc.
+
+----
+I started with the above macro, and slightly modified it. I believe all this is included with AUCTeX, but for those users who don't use AUCTeX (like me), these are pretty useful (the main difference with the above code is that in this modification, the minibuffer asks for the input text which is to be included in the clause):
+
+    (defmacro latex-skeleton (code)
+      (let ((func (intern (concat "latex-skeleton-" code)))
+            (doc (format "Inserts a %s clause in a LaTeX document." code)))
+        `(define-skeleton ,func ,doc "String: "
+           "\\" ,code  "{" str | "insert text" "}")))
+
+    (latex-skeleton "textbf")
+    (latex-skeleton "footnote")
+    (latex-skeleton "texttt")  
+    (latex-skeleton "emph")
+    (latex-skeleton "textsc")
+
+Thanks again to kensanata from #emacs for this.
+
+----
+CategoryCode
