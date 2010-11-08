@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  6 10:30:53 2010 (-0700)
+;; Last-Updated: Sun Nov  7 12:05:05 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 16281
+;;     Update #: 16289
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4024,7 +4024,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive)
   (when (interactive-p) (icicle-barf-if-outside-Completions-and-minibuffer))
   (unless (or icicle-all-candidates-list-alt-action-fn icicle-candidate-alt-action-fn)
-    (error "No alternative action defined."))
+    (error "No alternative action defined"))
   (unless icicle-completion-candidates
     (error "No completion candidates.  Did you use `TAB' or `S-TAB'?"))
   (if icicle-all-candidates-list-alt-action-fn
@@ -4043,7 +4043,7 @@ ALTP is passed to `icicle-candidate-action-1'."
          (failures                        nil)
          (icicle-minibuffer-message-ok-p  nil) ; Avoid delays from `icicle-msg-maybe-in-minibuffer'.
          (icicle-help-in-mode-line-flag   nil) ; Avoid delays for individual candidate help.
-         (icicle-all-candidates-action-p  t))
+         (icicle-all-candidates-action    t))
     (when local-saved (setq icicle-completion-candidates  local-saved))
     (if listp
         (funcall fn-var candidates)
@@ -4793,7 +4793,8 @@ Optional arg TYPE is the type of object that FUNCTION applies to."
         (if current-prefix-arg
             (icicle-pp-eval-expression '(funcall real-fn real-obj))
           (funcall real-fn real-obj)
-          (when (current-message) (sit-for 3))) ; In case the function displays a message.
+          (when (and (not icicle-all-candidates-action) (current-message))
+            (sit-for 3)))               ; In case the function displays a message.
       (error (message  (format "ERROR invoking `%S' on `%s': %s" real-fn
                                icicle-saved-completion-candidate
                                (error-message-string icicle-apply-to-saved-candidate)))

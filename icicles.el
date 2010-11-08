@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 09:04:31 2010 (-0700)
+;; Last-Updated: Sun Nov  7 12:42:37 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 22776
+;;     Update #: 22778
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -100,7 +100,7 @@
 ;;    `icicle-define-command', `icicle-define-file-command',
 ;;    `icicle-define-search-bookmark-command',
 ;;    `icicle-define-sort-command', `icicle-file-bindings',
-;;    `icicle-with-selected-window'.
+;;    `icicle-maybe-cached-action', `icicle-with-selected-window'.
 ;;
 ;;  Commands defined in Icicles -
 ;;
@@ -976,7 +976,7 @@
 ;;  Internal variables and constants defined in Icicles:
 ;;
 ;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev',
-;;    `icicle-advice-info-list', `icicle-all-candidates-action-p',
+;;    `icicle-advice-info-list', `icicle-all-candidates-action',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-anychar-regexp', `icicle-apply-nomsg',

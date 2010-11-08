@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 08:52:08 2010 (-0700)
+;; Last-Updated: Sun Nov  7 12:03:36 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1353
+;;     Update #: 1355
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -33,7 +33,7 @@
 ;;  Internal variables defined here:
 ;;
 ;;    `icicle-abs-file-candidates', `icicle-acting-on-next/prev',
-;;    `icicle-advice-info-list', `icicle-all-candidates-action-p',
+;;    `icicle-advice-info-list', `icicle-all-candidates-action',
 ;;    `icicle-all-candidates-list-action-fn',
 ;;    `icicle-all-candidates-list-alt-action-fn',
 ;;    `icicle-apply-nomsg', `icicle-apropos-complete-match-fn',
@@ -216,9 +216,10 @@ If such redefined functions are advised, then Icicles deactivates the
 advice when you turn on Icicle mode.  It restores the recorded advice
 activation state when you turn off Icicle mode.")
 
-(defvar icicle-all-candidates-action-p nil
+(defvar icicle-all-candidates-action nil
   "Non-nil means that we are acting on all candidates.
-That is, `icicle-all-candidates-action-1' is in progress.")
+That is, `icicle-all-candidates-action-1' is in progress.
+If neither nil nor t, then the value is the action function to use.")
 
 (defvar icicle-all-candidates-list-alt-action-fn nil
   "Alternative action function to apply to a list of matching completions.")

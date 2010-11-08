@@ -1,8 +1,8 @@
 If you want !TextMate-style "fuzzy" file (and other) completion, see [[Icicles - Fuzzy Completion]] or [InteractivelyDoThings IDO-mode].
 
-If you want automatic indentation of pasted text like in !TextMate, see [[AutoIndentation#SmartPaste|AutoIndentation]].
+If you want automatic indentation of pasted text like in !TextMate, see [[AutoIndentation#SmartPaste|AutoIndentation]].  This is also accomplished by [[auto-indent-mode.el]]
 
-See <tt>[http://code.google.com/p/emacs-textmate/ textmate-mode]</tt> for an attempt of having the !TextMate behaviour for parenthesis and quotes (auto-closing, overwriting, smart delete). Alternatively, AutoPairs.
+See <tt>[http://code.google.com/p/emacs-textmate/ textmate-mode]</tt> for an attempt of having the !TextMate behaviour for parenthesis and quotes (auto-closing, overwriting, smart delete). Alternatively, AutoPairs.  Note that AutoPairs, doesn't support the M-Return and S-M-Return keys of !TextMate.  This can be done by using [[auto-indent-mode.el]].  See the file for an example.
 
 Pair insertion goes hand in hand with (vi-like) OpenNextLine commands.
 

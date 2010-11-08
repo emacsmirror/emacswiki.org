@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Sun Nov  7 00:54:41 2010 (-0500)
+;; Last-Updated: Sun Nov  7 18:28:50 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 181
+;;     Update #: 235
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -35,6 +35,8 @@
 ;;  (5) On save, optionally unttabify, remove trailing white-spaces, and
 ;;  definitely indent the file.
 ;;
+;;  (6) TextMate behavior of keys if desired (see below)
+;;
 ;;  All of these options can be customized. (customize auto-indent)
 ;;
 ;;  To use put this in your load path and then put the following in your emacs
@@ -56,12 +58,44 @@
 ;;  You could always turn on the minor mode with the command
 ;;  `auto-indent-minor-mode'
 ;;
+;;  If you would like TextMate behavior of Meta-RETURN going to the
+;;  end of the line and then inserting a newline, as well as
+;;  Meta-shift return going to the end of the line, inserting a
+;;  semi-colon then inserting a newline, use the following:
+;;
+;;  
+;;  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
+;;  (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<M-S-return>")
+;;  (require 'auto-indent-mode)
+;;  (auto-indent-global-mode)
+;;
+;;  This may or may not work on your system.  Many times emacs cannot
+;;  distinguish between M-RET and M-S-RET, so if you don't mind a
+;;  slight redefinition use:
+;;
+;;  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
+;;  (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<C-M-return>")
+;;  (require 'auto-indent-mode)
+;;  (auto-indent-global-mode)
+;;
+;;
+;;  If you want to insert something other than a semi-colon (like a
+;;  colon) in a specific mode, say colon-mode, do the following:
+;;
+;;  (add-hook 'colon-mode-hook (lambda () (setq auto-indent-eol-char ":")))
+;;
+;;
+;;  If you wish to use this with autopairs and yasnippet, please load
+;;  this library first.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
 ;; 07-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Sun Nov  7 18:24:05 2010 (-0600) #233 (Matthew L. Fidler)
+;;    Added the possibility of TextMate type returns.
+;; 07-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Sun Nov  7 00:54:07 2010 (-0500) #180 (Matthew L. Fidler)
-;;    Bug fix where backspace on indented region stopped working.
+;;    Bug fix where backspace on indented region stopped working.Added TextMate 
 ;; 07-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Sun Nov  7 00:30:54 2010 (-0500) #167 (Matthew L. Fidler)
 ;;    Another small bug fix.
@@ -99,9 +133,6 @@
 
 (eval-when-compile
   (require 'cl))
-
-;; Keymap for auto-indent-mode.  Replace return with the appropriate command.
-
 
 (defgroup auto-indent nil
   "* Auto Indent Mode Customizations"
@@ -183,14 +214,82 @@
   "*Auto indentation on moving cursor to blank lines."
   :type 'boolean
   :group 'auto-indent)
+(defcustom auto-indent-key-for-end-of-line-then-newline ""
+  "* Key for the following action: end-of-line then newline. TextMate uses meta return,
+I believe (M-RET).  If blank, no key is defined. The key should be in a
+format used for saving keyboard macros (see `edmacro-mode'). This is useful when used
+in conjunction with something that pairs delimiters like `autopair-mode'."
+  :type 'string
+  :group 'auto-indent)
+
+(defcustom auto-indent-key-for-end-of-line-insert-char-then-newline ""
+  "* Key for the following action: end-of-line, insert character
+`auto-indent-eol-char' then newline.  By default the
+`auto-indent-eol-char' is the semicolon. TextMate uses shift-meta
+return, I believe (S-M-RET). If blank, no key is defined.  The
+key should be in a format used for having keyboard macros (see
+`edmacro-mode'). This is useful when used
+in conjunction with something that pairs delimiters like `autopair-mode'.
+"
+  :type 'string
+  :group 'auto-indent)
+
+(defcustom auto-indent-eol-char ";"
+  "* Character inserted when
+`auto-indent-key-for-end-of-line-inser-char-then-newline' is
+defined.  This is a buffer local variable, therefore if you have
+a mode that instead of using a semi-colon for an end of
+statement, you use a colon, this can be added to the mode as
+follows:
+
+  (add-hook 'strange-mode-hook (lambda() (setq auto-indent-eol-char \":\")))
+
+This is similar to Textmate's behavior.  This is useful when used
+in conjunction with something that pairs delimiters like `autopair-mode'.
+"
+  :type 'string
+  :group 'auto-indent )
+(make-variable-buffer-local 'auto-indent-eol-char)
+
+(defvar auto-indent-eol-ret-save ""
+  "Saved variable for keyboard state")
+
+(defvar auto-indent-eol-ret-semi-save ""
+  "Saved variable for keyboard state")
 
 (defvar auto-indent-minor-mode-map nil
   "* Auto Indent mode map.")
+;; Keymap functions for auto-indent-mode.  Replace return with the appropriate command.
+(defun auto-indent-setup-map ()
+  "* Sets up minor mode map."
+  (when (or (not auto-indent-minor-mode-map)
+            (not (string= auto-indent-eol-ret-save auto-indent-key-for-end-of-line-then-newline))
+            (not (string= auto-indent-eol-ret-semi-save auto-indent-key-for-end-of-line-insert-char-then-newline)) 
+            )
+    (setq auto-indent-minor-mode-map (make-sparse-keymap))
+    (define-key auto-indent-minor-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
+    (unless (string-match "^[ \t]*$" auto-indent-key-for-end-of-line-then-newline)
+      (define-key auto-indent-minor-mode-map (read-kbd-macro auto-indent-key-for-end-of-line-then-newline) 'auto-indent-eol-newline))
+    (unless (string-match "^[ \t]*$" auto-indent-key-for-end-of-line-insert-char-then-newline)
+      (define-key auto-indent-minor-mode-map (read-kbd-macro auto-indent-key-for-end-of-line-insert-char-then-newline) 'auto-indent-eol-char-newline))
+    (setq  auto-indent-eol-ret-save auto-indent-key-for-end-of-line-then-newline)
+    (setq auto-indent-eol-ret-semi-save auto-indent-key-for-end-of-line-insert-char-then-newline)))
 
-(unless auto-indent-minor-mode-map
-  (setq auto-indent-minor-mode-map (make-sparse-keymap))
-  (define-key auto-indent-minor-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
-  )
+
+(auto-indent-setup-map)
+
+(defun auto-indent-eol-newline ()
+  "*Auto-indent function for end-of-line and then newline."
+  (interactive)
+  (end-of-line)
+  (call-interactively auto-indent-indentation-function))
+
+(defun auto-indent-eol-char-newline ()
+  "* Auto-indent function for end-of-line, insert `auto-indent-eol-char', and then newline"
+  (interactive)
+  (end-of-line)
+  (insert auto-indent-eol-char)
+  (call-interactively auto-indent-indentation-function))
 
 (define-minor-mode auto-indent-minor-mode
   "Auto Indent minor mode.
@@ -215,6 +314,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
       " AI"
     "")
   :group 'auto-indent
+  (auto-indent-setup-map)
   (cond (auto-indent-minor-mode
          ;; Setup
          (make-local-variable 'find-file-hook)

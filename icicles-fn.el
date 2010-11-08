@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  6 09:50:56 2010 (-0700)
+;; Last-Updated: Sun Nov  7 12:42:11 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11934
+;;     Update #: 11964
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -30,6 +30,10 @@
 ;;  This is a helper library for library `icicles.el'.  It defines
 ;;  non-interactive functions.  For Icicles documentation, see
 ;;  `icicles-doc1.el' and `icicles-doc2.el'.
+;;
+;;  Macros defined here:
+;;
+;;    `icicle-maybe-cached-action'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -5442,6 +5446,17 @@ If nil, then COLOR-NAME is used to determine the hex RGB string."
         (icicle-candidate-short-help help rgb-string)))
     (list (list color-name rgb-string))))
 
+(defmacro icicle-maybe-cached-action (action)
+  "Evaluate and return ACTION or `icicle-all-candidates-action'.
+If `icicle-all-candidates-action' is nil, use ACTION.
+If it is t, then set it to the value of ACTION, so the next call
+ returns the same value."
+  `(if icicle-all-candidates-action
+    (if (eq icicle-all-candidates-action t)
+        (setq icicle-all-candidates-action  ,action)
+      icicle-all-candidates-action)
+    ,action))
+
 (defun icicle-alt-act-fn-for-type (type)
   "Returns an action function chosen by user for type TYPE (a string).
 Typical use: Bind `icicle-candidate-alt-action-fn' and 
@@ -5493,17 +5508,19 @@ current before user input is read from the minibuffer."
           (cond ((null actions)
                  ;; Undefined TYPE - provide all Emacs `functionp' symbol names as candidates.
                  (let* ((icicle-must-pass-after-match-predicate  #'(lambda (s) (functionp (intern s))))
-                        (action                                  (completing-read "How (action): "
-                                                                                  obarray)))
+                        (action                                  (icicle-maybe-cached-action
+                                                                  (completing-read "How (action): "
+                                                                                   obarray))))
                    (dolist (cand  cands)
                      (setq icicle-saved-completion-candidate  cand)
                      (icicle-apply-to-saved-candidate action))))
                 ((null (cdr actions))
-                 (dolist (cand  cands)  (funcall (cdar actions) cand)))
+                 (dolist (cand  cands)  (funcall (icicle-maybe-cached-action (cdar actions)) cand)))
                 (t
                  (let* ((icicle-show-Completions-initially-flag  t)
-                        (action                                  (completing-read "How (action): "
-                                                                                  actions)))
+                        (action                                  (icicle-maybe-cached-action
+                                                                  (completing-read "How (action): "
+                                                                                   actions))))
                    (icicle-with-selected-window
                     (if (boundp 'orig-window) orig-window (selected-window)) ; Punt: no `orig-window'.
                     (let ((icicle-candidate-alt-action-fn  (icicle-alt-act-fn-for-type "function")))

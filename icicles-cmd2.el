@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Oct 27 11:53:17 2010 (-0700)
+;; Last-Updated: Sun Nov  7 12:04:10 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2264
+;;     Update #: 2265
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2518,7 +2518,7 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
         ;; (icicle-last-input            icicle-last-input)
         (icicle-last-completion-command  icicle-last-completion-command)
         (compl-win                       (get-buffer-window "*Completions*" 0)))
-    (unless (or icicle-candidate-nb icicle-all-candidates-action-p)
+    (unless (or icicle-candidate-nb icicle-all-candidates-action)
       (error "No current candidate.  Cycle or complete to get to a candidate"))
     (unless icicle-search-replacement
       (icicle-search-define-replacement)
@@ -2697,7 +2697,7 @@ current input matches candidate") (sit-for 2))
                (save-match-data
                  (let ((first-p  t))
                    ;; The condition order is important.  Don't search unless first time (or all)
-                   (while (and (or first-p icicle-all-candidates-action-p)
+                   (while (and (or first-p icicle-all-candidates-action)
                                (re-search-forward (or ecm icicle-current-input) nil 'move-to-end))
                      (setq first-p  nil)
                      (icicle-search-replace-match replace-string

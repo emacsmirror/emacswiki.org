@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  6 10:33:56 2010 (-0700)
+;; Last-Updated: Sun Nov  7 12:49:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5814
+;;     Update #: 5827
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -340,6 +340,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/11/07 dadams
+;;     Applied renaming of icicle-all-candidates-action-p to icicle-all-candidates-action.
 ;; 2010/10/27 dadams
 ;;     icicle-where-is: Use different prompt if prefix arg.  Clarify the pref-arg diff in doc string.
 ;; 2010/10/25 dadams
@@ -626,6 +628,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/11/07 dadams
+;;     Added helper macro icicle-maybe-cached-action.
+;;     icicle-alt-act-fn-for-type: use icicle-maybe-cached-action so use same action for all cands.
 ;; 2010/11/06 dadams
 ;;     icicle-fuzzy-candidates: Filter using icicle-must-pass-after-match-predicate.
 ;;                              Respect also extra cands and proxy cands.
@@ -2106,6 +2111,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/11/07 dadams
+;;     icicle-apply-to-saved-candidate: Do not sit-for if icicle-all-candidates-action.
+;;     Applied renaming of icicle-all-candidates-action-p to icicle-all-candidates-action.
 ;; 2010/11/06 dadams
 ;;     icicle-apropos-complete-and-narrow: Do not regexp-quote if non-basic prefix completion.
 ;;     icicle-next-TAB-completion-method, icicle-next-S-TAB-completion-method:
@@ -4666,6 +4674,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-var.el'")
 ;;
+;; 2010/11/07 dadams
+;;     Renamed: icicle-all-candidates-action-p to icicle-all-candidates-action.  Now can cache action.
 ;; 2010/10/25 dadams
 ;;     Removed mention of icicle-search-context-match-predicate (no longer exists).
 ;; 2010/10/24 adams
