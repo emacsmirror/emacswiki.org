@@ -1,8 +1,8 @@
 ;;; speck.el --- minor mode for spell checking
 
-;; Copyright (C) 2006, 2007, 2008 Martin Rudalics
+;; Copyright (C) 2006, 2007, 2008, 2009, 2010 Martin Rudalics
 
-;; Time-stamp: "2008-07-26 10:08:25 martin"
+;; Time-stamp: "2010-05-25 14:09:47 martin"
 ;; Author: Martin Rudalics <rudalics@gmx.at>
 ;; Keywords: spell checking
 
@@ -31,9 +31,13 @@
 ;; _____________________________________________________________________________
 ;;                                                                              
 (defgroup speck nil
-  "Another interface to Aspell and Ispell."
+  "Another interface to Aspell, Hunspell and Ispell."
   :version "23.1"
   :group 'applications)
+
+(defgroup speck-aspell nil
+  "Aspell related options."
+  :group 'speck)
 
 (defcustom speck-aspell-program
   (locate-file "aspell" exec-path exec-suffixes 'file-executable-p)
@@ -45,6 +49,25 @@
   "Return non-nil when `speck-aspell-program' appears executable."
   (and (stringp speck-aspell-program)
        (file-executable-p speck-aspell-program)))
+
+(defgroup speck-hunspell nil
+  "Hunspell related options."
+  :group 'speck)
+
+(defcustom speck-hunspell-program
+  (locate-file "hunspell" exec-path exec-suffixes 'file-executable-p)
+  "File name of Hunspell program."
+  :type '(choice (const :tag "Invalid" nil) (file :tag "File"))
+  :group 'speck-hunspell)
+
+(defsubst speck-hunspell-executable-p ()
+  "Return non-nil when `speck-hunspell-program' appears executable."
+  (and (stringp speck-hunspell-program)
+       (file-executable-p speck-hunspell-program)))
+
+(defgroup speck-ispell nil
+  "Ispell related options."
+  :group 'speck)
 
 (defcustom speck-ispell-program
   (locate-file "ispell" exec-path exec-suffixes 'file-executable-p)
@@ -59,21 +82,46 @@
 
 (defcustom speck-engine
   (cond
+   ((speck-hunspell-executable-p) 'Hunspell)
    ((speck-aspell-executable-p) 'Aspell)
    ((speck-ispell-executable-p) 'Ispell))
   "Spell checker engine used by Speck.
-If you have installed both Aspell and Ispell on your system, you
-can specify your preferences here.
+If you have installed more than one spell-checking engine on your
+system, you can specify your preferences here.
 
 If the value of this variable is `Invalid' \(nil), Speck was not
 able to locate a suitable engine on your system.  In this case
-spell checking will not work and you should install either Ispell
-or Aspell or make sure that Emacs can find that program.
+spell checking will not work and you should install Aspell,
+Hunspell or Ispell or make sure that Emacs can find that program.
 
 Don't set this to `Invalid' yourself - it will break Speck."
   :type '(choice (const :tag "Invalid" nil)
 		 (const Aspell)
+		 (const Hunspell)
 		 (const Ispell))
+  :group 'speck)
+
+(defcustom speck-iso-639-1-alist
+  '(("bg" . "bulgarian") ("ca" . "catalan") ("cs" . "czech")
+    ("da" . "danish") ("de" . "deutsch") ("de" . "german")
+    ("el" . "greek") ("en" . "english") ("eo" . "esperanto")
+    ("es" . "spanish") ("fi" . "finnish") ("fr" . "francais")
+    ("fr" . "french") ("hu" . "hungarian") ("it" . "italiano")
+    ("it" . "italian") ("la" . "latin") ("nl" . "dutch")
+    ("no" . "norwegian") ("pl" . "polish") ("pt" . "portuguese")
+    ("ro" . "romanian") ("ru" . "russian") ("sh" . "serbo-croatian")
+    ("sk" . "slovak") ("sv" . "swedish") ("tr" . "turkish"))
+  "List associating ISO-639-1 language codes with language names.
+This list should ideally provide associations for all languages
+handled by Ispell.  The language code is displayed in the
+mode-line provided Speck finds the appropriate association.
+Otherwise Speck will display the first two characters of the
+dictionary name.  This list is not needed for the Aspell
+interface."
+  :type '(repeat
+	  (cons :format "%v\n"
+		(string :format " %v" :size 2)
+		(string :format " %v" :size 20)))
   :group 'speck)
 
 (defcustom speck-delay 0.5
@@ -557,10 +605,6 @@ doublets."
 ;;;				Aspell group					
 ;; _____________________________________________________________________________
 ;; 										
-(defgroup speck-aspell nil
-  "Aspell related options."
-  :group 'speck)
-
 (defcustom speck-aspell-home-dir nil
   "Directory where personal word lists reside.
 Default uses the default proposed by Aspell.  File means you have
@@ -655,7 +699,7 @@ corresponding to the respective dictionary."
       (with-temp-buffer
 	(insert-file-contents data-file)
 	(goto-char (point-min))
-	(when (re-search-forward "^charset\\s-+" nil t)
+	(when (re-search-forward "^charset " nil t)
 	  (let ((charset (buffer-substring (match-end 0) (line-end-position))))
 	    (when (string-match "\\(iso\\)\\([^-].*\\)$" charset)
 	      ;; iso... should become iso-...
@@ -847,13 +891,253 @@ Probably supported by Aspell only."
 
 ;; _____________________________________________________________________________
 ;; 										
+;;;			    Hunspell group					
+;; _____________________________________________________________________________
+;; 										
+(defsubst speck-hunspell-binary-directory ()
+  "Return directory component of `speck-hunspell-program'."
+  (and speck-hunspell-program
+       (file-directory-p (file-name-directory speck-hunspell-program))
+       (file-name-directory speck-hunspell-program)))
+
+(defcustom speck-hunspell-library-directory (speck-hunspell-binary-directory)
+  "Name of Hunspell library directory.
+This should specify the absolute name of the directory where the
+Hunspell dictionaries reside.  The default value is the directory where
+the Hunspell executable resides."
+  :type '(choice (const :tag "Invalid" nil)
+		 (file :tag "File"))
+  :group 'speck-hunspell)
+
+(defun speck-hunspell-dictionary-alist ()
+  "Return alist of language codes and names of installed Hunspell dictionaries."
+  (cond
+   ((and speck-hunspell-library-directory
+	 (file-exists-p speck-hunspell-library-directory)
+	 (let ((names (directory-files
+		       speck-hunspell-library-directory nil "\\.dic$"))
+	       alist aname)
+	   (dolist (name names)
+	     (setq aname (downcase (file-name-sans-extension name)))
+	     (setq alist
+		   (cons (or (rassoc aname speck-iso-639-1-alist)
+			     (cons (substring aname 0 2) aname))
+			 alist)))
+	   (nreverse alist))))
+   ((and (speck-hunspell-binary-directory)
+	 (file-exists-p (speck-hunspell-binary-directory)))
+    (let ((files (directory-files (speck-hunspell-binary-directory) t))
+	  alist aname)
+      (dolist (file files)
+	(when (and (not (string-equal file "."))
+		   (not (string-equal file ".."))
+		   (file-directory-p file))
+	  (let ((names (directory-files file nil "\\.dic")))
+	    (dolist (name names)
+	      (setq aname (downcase (file-name-sans-extension name)))
+	      (setq alist
+		    (cons (or (rassoc aname speck-iso-639-1-alist)
+			      (cons (substring aname 0 2) aname))
+			  alist))))))
+      (nreverse alist)))))
+
+(defcustom speck-hunspell-dictionary-alist (speck-hunspell-dictionary-alist)
+  "List associating a language code with Hunspell dictionary names.
+This list is generated from the option `speck-iso-639-1-alist'
+and the dictionaries found in `speck-hunspell-library-directory'.
+
+If this list contains two or more entries for the same language
+code, Speck may display the wrong language code in the mode-line.
+Hence, you should make sure that every language code occurs once
+only in this list.  The preferred way to do this is by adding a
+corresponding association to `speck-iso-639-1-alist'."
+  :type '(repeat
+	  (cons :format "%v\n"
+		;; We could use a symbol here.
+		(string :format " %v" :size 2)
+		(string :format " %v" :size 20)))
+  :group 'speck-hunspell)
+
+(defun speck-hunspell-dictionary-names ()
+  "Return list of Hunspell's dictionary names."
+  (let (list)
+    (dolist (entry speck-hunspell-dictionary-alist)
+      (setq list (cons (car entry) list)))
+    (nreverse list)))
+
+(defvar speck-hunspell-dictionary-names (speck-hunspell-dictionary-names)
+  "List of Hunspell's dictionary names.")
+
+(defvar speck-hunspell-non-dictionary-names nil
+  "List of dictionary names asked for but not provided by Hunspell.")
+
+(defvar speck-hunspell-dictionary-names-history (speck-hunspell-dictionary-names)
+  "History of entered Hunspell dictionary names.")
+
+(defcustom speck-hunspell-default-dictionary-name
+  (when speck-hunspell-dictionary-alist
+    ;; Hunspell is not very coopeartive yet.  The following is quite
+    ;; silly.
+    (caar speck-hunspell-dictionary-alist))
+  "Name of Hunspell default dictionary.
+The default dictionary is used for specking a buffer unless you
+specify another dictionary via `speck-buffer' or a file-local
+variable.  The default valus is the first dictionary found in
+`speck-hunspell-dictionary-alist' (which is usually wrong when
+you have installed several dictionaries)."
+  :type `(radio
+	  :indent 2
+	  ,@(mapcar
+	     (lambda (entry)
+	       (list 'const :format "%v \n" (car entry)))
+	     speck-hunspell-dictionary-alist))
+  :group 'speck-hunspell)
+
+(defcustom speck-hunspell-language-options
+  '(("da" utf-8 nil t)
+    ("de" iso-8859-1 nil t)
+    ("en" iso-8859-1 nil nil)
+    ("fr" iso-8859-1 nil nil)
+    ("it" iso-8859-1 nil nil)
+    ("ru" koi8-r nil nil))
+    "Hunspell language options.
+Its value should be a list of five entries for each language.
+
+\(1) The two letter ISO-639-1 language code.  For a
+     correspondence of this code to the names of dictionaries in
+     `speck-hunspell-library-directory' confer the option
+     `speck-hunspell-dictionary-alist'.
+
+\(2) The coding system for sending text to and receiving text
+     from the Hunspell process for this language.
+
+\(3) A minimum word length which tells Hunspell to ignore words
+     shorter than that.
+
+\(4) A run-together words flag telling Hunspell whether words can
+     be strung together.
+
+\(5) Extra Arguments passed to Hunspell.
+
+Specifying \"None\" \(nil) for \(2--4) means do not pass a value
+for this option to Hunspell."
+  :type '(repeat
+	  (list :tag "" :format "%v"
+		(string :tag "Language" :format "%t: %v\n" :size 2)
+		(choice :tag "Coding System" :format "%t: %[Choice%] %v\n"
+			(const :tag "None" nil)
+			(coding-system :tag "Coding System" :size 10 :value utf-8)
+			;; Leave this in: it might be useful when a user changes
+			;; this option and installs a new dictionary later.
+			(const :tag "Hunspell" t))
+		(choice :tag "Minimum Word Length" :format "%t: %[Choice%] %v\n"
+			(const :tag "None" :format "%t" nil)
+			(integer :tag "Length" :format "%t: %v " :size 2))
+		(boolean :tag "Run-together Words")
+		(repeat :tag "Extra Arguments"
+			(string :format "%v\n" :size 40))))
+  :group 'speck-hunspell)
+
+(defcustom speck-hunspell-coding-system nil
+  "Language independent coding system for communicating with Hunspell.
+`None' means accept the setting from
+`speck-hunspell-language-options'.  Specifying a value here will
+override those settings."
+  :type '(choice (cons :tag "None" nil)
+		 (coding-system :tag "Coding System" utf-8))
+  :group 'speck-hunspell)
+
+(defcustom speck-hunspell-minimum-word-length nil
+  "Language independent minimum word length.
+`None' means accept the setting from
+`speck-hunspell-language-options'.  Specifying a value here will
+override those settings."
+  :type '(choice (const :tag "None" nil)
+		 (integer :tag "Length" :format "%t: %v " :size 2))
+  :group 'speck-hunspell)
+
+(defcustom speck-hunspell-run-together nil
+  "Language independent maximum number of run-together words.
+`None' means accept the setting from
+`speck-hunspell-language-options'.  Specifying a value here will
+override those settings."
+  :type 'boolean
+  :group 'speck-hunspell)
+
+(defcustom speck-hunspell-extra-arguments nil
+  "Language independent arguments passed to Hunspell process.
+These arguments are passed to Hunspell regardless of any other
+arguments.  Language dependent arguments can be supplied by
+customizing `speck-hunspell-language-options'."
+  :type '(repeat (string :tag "Argument" :format "%t: %v\n" :size 40))
+  :group 'speck-hunspell)
+
+(defun speck-hunspell-start-process ()
+  "Start Hunspell process."
+  ;; `speck-dictionary' is the language code.
+  (let* ((code-name (symbol-name speck-dictionary))
+	 (dictionary-name
+	  (cdr (assoc code-name speck-hunspell-dictionary-alist)))
+	 (options (assoc code-name speck-hunspell-language-options))
+	 (coding-system (nth 1 options))
+	 (minimum-word-length
+	  ;; A value specified in `speck-hunspell-minimum-word-length' overrides
+	  ;; anything else.
+	  (or speck-hunspell-minimum-word-length
+	      (when options (nth 2 options))))
+	 (run-together
+	  ;; A value specified in `speck-hunspell-maximum-run-together' overrides
+	  ;; anything else.
+	  (or speck-hunspell-run-together (nth 3 options)))
+	 (extra-arguments (nth 4 options))
+	 (arguments
+	  (append
+	   ;; Pipe option and `speck-hunspell-library-directory'
+	   ;; concatenated with `dictionary-name' - Hunspell wants it
+	   ;; this way.
+	   (list "-a" "-d" (concat speck-hunspell-library-directory dictionary-name))
+	   ;; Minimum word length.
+	   (when minimum-word-length
+	     (list (concat "-W" (number-to-string minimum-word-length))))
+	   ;; Run-together words.
+	   (if run-together (list "-C") (list "-B"))
+	   extra-arguments
+	   speck-hunspell-extra-arguments))
+	 (process (rassoc arguments speck-process-argument-alist))
+	 ;; An options should exist when a process exists, but be paranoid here.
+	 (options (when process (assq (car process) speck-process-buffer-alist)))
+	 process-connection-type)
+    (if (and process options)
+	;; Process and options exist.
+	(progn
+	  (setq speck-process (car process))
+	  (setcdr options (cons (current-buffer) (cdr options))))
+      ;; No suitable process exists.
+      (setq speck-process
+	    (let ((default-directory speck-hunspell-library-directory))
+	      (apply 'start-process "speck"
+		     (generate-new-buffer " *speck-process-buffer*")
+		     speck-hunspell-program arguments)))
+      (setq speck-process-buffer-alist
+	    (cons (cons speck-process (list (current-buffer)))
+		  speck-process-buffer-alist))
+      (setq speck-process-argument-alist
+	    (cons (cons speck-process arguments)
+		  speck-process-argument-alist))
+      (setq speck-process-dictionary-alist
+	    ;; Buffer local.
+	    (cons (cons speck-process speck-dictionary)
+		  speck-process-dictionary-alist))
+      (set-process-query-on-exit-flag speck-process nil)
+      (when coding-system
+	(set-process-coding-system
+	 speck-process coding-system coding-system)))))
+
+;; _____________________________________________________________________________
+;; 										
 ;;;			    Ispell group					
 ;; _____________________________________________________________________________
 ;; 										
-(defgroup speck-ispell nil
-  "Ispell related options."
-  :group 'speck)
-
 (defun speck-ispell-vv ()
   "Return Ispell settings.
 Return value is a list with the following elements:
@@ -878,7 +1162,7 @@ Return value is a list with the following elements:
   "Value returned by `speck-ispell-vv'.")
 
 (defcustom speck-ispell-library-directory
-  (or (and speck-ispell-vv
+  (or (and speck-ispell-vv (nth 0 speck-ispell-vv)
 	   (file-directory-p (nth 0 speck-ispell-vv))
 	   (nth 0 speck-ispell-vv))
       (and speck-ispell-program
@@ -889,29 +1173,6 @@ This should name the directory where the Ispell dictionaries
 reside."
   :type '(choice (const :tag "Invalid" nil)
 		 (file :tag "File"))
-  :group 'speck-ispell)
-
-(defcustom speck-iso-639-1-alist
-  '(("bg" . "bulgarian") ("ca" . "catalan") ("cs" . "czech")
-    ("da" . "danish") ("de" . "deutsch") ("de" . "german")
-    ("el" . "greek") ("en" . "english") ("eo" . "esperanto")
-    ("es" . "spanish") ("fi" . "finnish") ("fr" . "francais")
-    ("fr" . "french") ("hu" . "hungarian") ("it" . "italiano")
-    ("it" . "italian") ("la" . "latin") ("nl" . "dutch")
-    ("no" . "norwegian") ("pl" . "polish") ("pt" . "portuguese")
-    ("ro" . "romanian") ("ru" . "russian") ("sh" . "serbo-croatian")
-    ("sk" . "slovak") ("sv" . "swedish") ("tr" . "turkish"))
-  "List associating ISO-639-1 language codes with language names.
-This list should ideally provide associations for all languages
-handled by Ispell.  The language code is displayed in the
-mode-line provided Speck finds the appropriate association.
-Otherwise Speck will display the first two characters of the
-dictionary name.  This list is not needed for the Aspell
-interface."
-  :type '(repeat
-	  (cons :format "%v\n"
-		(string :format " %v" :size 2)
-		(string :format " %v" :size 20)))
   :group 'speck-ispell)
 
 (defsubst speck-ispell-binary-directory ()
@@ -989,7 +1250,7 @@ corresponding association to `speck-iso-639-1-alist'."
   "History of entered Ispell dictionary names.")
 
 (defcustom speck-ispell-default-dictionary-name
-  (when speck-ispell-vv
+  (when (and speck-ispell-vv (nth 1 speck-ispell-vv))
     (let ((name (nth 1 speck-ispell-vv)))
       (car (rassoc name speck-ispell-dictionary-alist))))
   "Name of Ispell default dictionary.
@@ -1096,7 +1357,7 @@ customizing `speck-ispell-language-options'."
 	  (or speck-ispell-minimum-word-length
 	      (when options (nth 2 options))))
 	 (run-together
-	  ;; A value specified in `speck-aspell-maximum-run-together' overrides
+	  ;; A value specified in `speck-ispell-maximum-run-together' overrides
 	  ;; anything else.
 	  (or speck-ispell-run-together (nth 3 options)))
 	 (extra-arguments (nth 4 options))
@@ -1639,12 +1900,16 @@ entry from `speck-dictionary-names-alist'."
 	    (cond
 	     ((eq speck-engine 'Aspell)
 	      speck-aspell-dictionary-names)
+	     ((eq speck-engine 'Hunspell)
+	      speck-hunspell-dictionary-names)
 	     ((eq speck-engine 'Ispell)
 	      speck-ispell-dictionary-names)))
 	   (dictionary-names-history
 	    (cond
 	     ((eq speck-engine 'Aspell)
 	      speck-aspell-dictionary-names-history)
+	     ((eq speck-engine 'Hunspell)
+	      speck-hunspell-dictionary-names-history)
 	     ((eq speck-engine 'Ispell)
 	      speck-ispell-dictionary-names-history)))
 	   (dictionary-name
@@ -1658,6 +1923,8 @@ entry from `speck-dictionary-names-alist'."
 	     (cond
 	      ((eq speck-engine 'Aspell)
 	       speck-aspell-default-dictionary-name)
+	      ((eq speck-engine 'Hunspell)
+	       speck-hunspell-default-dictionary-name)
 	      ((eq speck-engine 'Ispell)
 	       speck-ispell-default-dictionary-name)))
 	   dictionary)
@@ -1671,6 +1938,9 @@ entry from `speck-dictionary-names-alist'."
 	  (if (eq dictionary speck-dictionary)
 	      (message "Dictionary \"%s\" unchanged" dictionary)
 	    (speck-deactivate)
+	    ;; Hunspell occasionally hangs when restarting, maybe the
+	    ;; following helps.
+	    (sleep-for 0.1)
 	    (setq speck-dictionary dictionary)
 	    (let ((speck-retain-local-variables t))
 	      (speck-mode)))
@@ -1683,12 +1953,17 @@ entry from `speck-dictionary-names-alist'."
 	   (cond
 	    ((eq speck-engine 'Aspell)
 	     (intern speck-aspell-default-dictionary-name))
+	    ((eq speck-engine 'Hunspell)
+	     (intern speck-hunspell-default-dictionary-name))
 	    ((eq speck-engine 'Ispell)
 	     (intern speck-ispell-default-dictionary-name)))))
       (if speck-mode
 	  (if (eq dictionary speck-dictionary)
 	      (message "Dictionary \"%s\" unchanged" dictionary)
 	    (speck-deactivate)
+	    ;; Hunspell occasionally hangs when restarting, maybe the
+	    ;; following helps.
+	    (sleep-for 0.1)
 	    (setq speck-dictionary dictionary)
 	    (let ((speck-retain-local-variables t))
 	      (speck-mode)))
@@ -1704,6 +1979,8 @@ entry from `speck-dictionary-names-alist'."
 	    (cond
 	     ((eq speck-engine 'Aspell)
 	      speck-aspell-dictionary-names)
+	     ((eq speck-engine 'Hunspell)
+	      speck-hunspell-dictionary-names)
 	     ((eq speck-engine 'Ispell)
 	      speck-ispell-dictionary-names))))
       (if dictionary
@@ -1712,6 +1989,9 @@ entry from `speck-dictionary-names-alist'."
 		  (if (eq dictionary speck-dictionary)
 		      (message "Dictionary \"%s\" unchanged" dictionary)
 		    (speck-deactivate)
+		    ;; Hunspell occasionally hangs when restarting, maybe the
+		    ;; following helps.
+		    (sleep-for 0.1)
 		    (setq speck-dictionary dictionary)
 		    (let ((speck-retain-local-variables t))
 		      (speck-mode)))
@@ -1750,6 +2030,8 @@ entry from `speck-dictionary-names-alist'."
 	       (cond
 		((eq speck-engine 'Aspell)
 		 (intern speck-aspell-default-dictionary-name))
+		((eq speck-engine 'Hunspell)
+		 (intern speck-hunspell-default-dictionary-name))
 		((eq speck-engine 'Ispell)
 		 (intern speck-ispell-default-dictionary-name))))))
   (setq speck-saved-dictionary speck-dictionary)
@@ -2190,6 +2472,11 @@ START, END, and OLD-LEN have the usual meanings."
 	(speck-aspell-start-process)
       (speck-mode -1)
       (error "Aspell not executable")))
+   ((eq speck-engine 'Hunspell)
+    (if (speck-hunspell-executable-p)
+	(speck-hunspell-start-process)
+      (speck-mode -1)
+      (error "Hunspell not executable")))
    ((eq speck-engine 'Ispell)
     (if (speck-ispell-executable-p)
 	(speck-ispell-start-process)
@@ -2479,11 +2766,13 @@ Do not delete such a process if another buffer still needs it."
 	(speck-start-process)
 	(setq process speck-process)))
     (with-current-buffer (process-buffer process)
+      ;; Wait for latest output from spell-engine (Hunspell).
+      (accept-process-output process 0.1)
       (erase-buffer)
       (process-send-string process (concat "^" word "\n"))
       (while (and (not quit-flag)
 		  (progn
-		    (accept-process-output process 0.01)
+		    (accept-process-output process 0.05)
 		    (goto-char (point-max))
 		    ;; Aspell appends an empty line, wait till it's here.
 		    (not (looking-back "^\n")))))
@@ -2713,6 +3002,8 @@ and within a `save-excursion'."
 		  (cond
 		   ((eq speck-engine 'Aspell)
 		    speck-aspell-dictionary-names)
+		   ((eq speck-engine 'Hunspell)
+		    speck-hunspell-dictionary-names)
 		   ((eq speck-engine 'Ispell)
 		    speck-ispell-dictionary-names)))
 	  (speck-start-process)
@@ -2723,6 +3014,8 @@ and within a `save-excursion'."
 		  (cond
 		   ((eq speck-engine 'Aspell)
 		    speck-aspell-non-dictionary-names)
+		   ((eq speck-engine 'Hunspell)
+		    speck-hunspell-non-dictionary-names)
 		   ((eq speck-engine 'Ispell)
 		    speck-ispell-non-dictionary-names)))
 	  ;; We already know that this dictionary doesn't exist.
@@ -2737,6 +3030,10 @@ and within a `save-excursion'."
 	    (setq speck-aspell-non-dictionary-names
 		  (cons (symbol-name speck-dictionary)
 			speck-aspell-non-dictionary-names)))
+	   ((eq speck-engine 'Hunspell)
+	    (setq speck-hunspell-non-dictionary-names
+		  (cons (symbol-name speck-dictionary)
+			speck-hunspell-non-dictionary-names)))
 	   ((eq speck-engine 'Ispell)
 	    (setq speck-ispell-non-dictionary-names
 		(cons (symbol-name speck-dictionary)
@@ -3631,6 +3928,9 @@ ORIGINAL-PROPERTY must match the speck property of the occurrence."
       (setq speck-filter-mode filter-mode)
       (when speck-mode
 	(speck-deactivate)
+	;; Hunspell occasionally hangs when restarting, maybe the
+	;; following helps.
+	(sleep-for 0.1)
 	(setq speck-retain-local-variables t)
 	(speck-activate)))))
 
@@ -3709,6 +4009,8 @@ the dictionary for text that will be inserted by the next
 	 (cond
 	  ((eq speck-engine 'Aspell)
 	   speck-aspell-dictionary-names)
+	  ((eq speck-engine 'Hunspell)
+	   speck-hunspell-dictionary-names)
 	  ((eq speck-engine 'Ispell)
 	   speck-ispell-dictionary-names)))
 	from to dictionary-name)
@@ -4675,5 +4977,3 @@ properties."
 
 ;;;				 provide us					
 (provide 'speck)
-
-;;; speck.el ends here

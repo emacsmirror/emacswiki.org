@@ -43,7 +43,7 @@ see [http://groups.google.com/group/smart-snippet/browse_thread/thread/d1eae085c
 ElDoc,
 : Does it work with python.el? python.el is supposed to have superior support for this, but I can't get it to work; it worked alright in python-mode.el though! -- CH
 :: nevermind, it works now. shows up in the mini-buffer when you type a function name. -- CH
-:: It may have stopped working when my 'imports' where incomplete. check that the computed value of 'python-imports' is sensible! --CH
+:: It may have stopped working when my 'imports' were incomplete. check that the computed value of 'python-imports' is sensible! --CH
 
 == CEDET ==
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  7 12:49:29 2010 (-0800)
+;; Last-Updated: Mon Nov  8 08:52:54 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5827
+;;     Update #: 5830
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2111,6 +2111,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/11/08 dadams
+;;     icicle-next-TAB-completion-method, icicle-next-S-TAB-completion-method:
+;;       Set the icicle-last-top-level-command property only when set the first temporary method.
 ;; 2010/11/07 dadams
 ;;     icicle-apply-to-saved-candidate: Do not sit-for if icicle-all-candidates-action.
 ;;     Applied renaming of icicle-all-candidates-action-p to icicle-all-candidates-action.

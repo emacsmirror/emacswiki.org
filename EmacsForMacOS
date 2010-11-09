@@ -56,6 +56,12 @@ To download emacs, use the command:
 
     (or `bzr revert; bzr pull', if you already had checked it out)
 
+==== GIT ====
+
+To download emacs using git, use this command:
+
+    git clone git://git.savannah.gnu.org/emacs.git
+
 ==== Tarball ====
 
 Available from the [http://savannah.gnu.org/projects/emacs/ GNU Savannah emacs] page.  Click on "Download Area" under "Quick Overview".

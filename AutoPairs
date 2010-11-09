@@ -49,8 +49,48 @@ but anyway the following code sample turns on autopairs for the modes listed in 
   (ad-activate 'paredit-mode)
 
 </pre>
-
 -- TimCHarper (tweaked by JoaoTavora)
+
+==== Extending with auto-pairs+.el ====
+Auto-pairs+.el extends Autopair functionality as follows:
+
+* Smart quoting of regions
+
+For example selecting the following string:
+
+<pre>
+This is a test of the quoting system, "this is only a test"
+</pre>
+
+And pressing quote, gives:
+
+<pre>
+"This is a test of the quoting system, \"this is only a test\""
+</pre>
+
+ Quoting the whole phrase again gives:
+
+<pre>
+"\"This is a test of the quoting system, \"this is only a test\"\""
+</pre>
+
+You may also select a region within the string and quote it.  When
+this happens, the appropriate escape characters are used.  For
+example by selecting the word quoting and pressing " in
+emacs-lisp-mode gives:
+
+<pre>
+ "\"This is a test of the \"quoting\" system, \"this is only a test\"\""
+</pre>
+
+Quotes are also automatically turned into escaped quotes when in strings.
+
+See [[auto-pair+.el]]
+
+Also check out some bug-fixes and the new variable autopair-skip-whitespace-but-dont-delete.  
+
+-- MatthewFidler
+
 
 [new]
 hi, I use your AutoPairs, its a good tool.

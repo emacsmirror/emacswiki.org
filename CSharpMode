@@ -37,8 +37,9 @@ Note:
 
 == Some History: previous attempts at C# mode ==
 
-; http://mfgames.com/csharp-mode/start
+; http://mfgames.com/csharp-mode
 :Work by DylanMoonfire on a derived cc-mode. See these threads on sourceforge [http://sourceforge.net/mailarchive/forum.php?thread_id=6676996&forum_id=6827], [http://sourceforge.net/mailarchive/forum.php?thread_id=6596410&forum_id=6827] for more info. [http://cinki.mfgames.com/buglist.cgi?bug_status=__all__&product=csharp-mode Bug Tracking] (Broken link as of December 2009)
+:: The above link was changed to point people to the Google Code page since I'm not working on it anymore. I left the link to the historical releases on the site. There were no reported issues when the bug tracker was shut down at the end of 2009. -- DylanMoonfire (November 2010)
 
 
 ; http://www.cybercom.net/~zbrad/DotNet/Emacs/
