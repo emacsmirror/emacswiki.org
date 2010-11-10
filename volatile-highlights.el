@@ -6,7 +6,7 @@
 ;; Created: 03 October 2001. (as utility functions in my `.emacs' file.)
 ;;          14 March   2010. (re-written as library `volatile-highlights.el')
 ;; Keywords: emulations convenience wp
-;; Revision: $Id$
+;; Revision: $Id: ebc9f4de7a47942b6b31cef163f8d1d276e4458d $
 ;; URL: http://www.emacswiki.org/emacs/download/volatile-highlights.el
 ;; GitHub: http://github.com/k-talo/volatile-highlights.el
 
@@ -74,17 +74,35 @@
 ;;
 ;;   `M-x customize-group RET volatile-highlights RET'
 
+
 ;;; Change Log:
+
+;;  v1.1, Tue Nov  9 20:36:09 2010 JST
+;;   - Fixed a bug that mode toggling feature was not working.
 
 ;;; Code:
 
-(defconst vhl/version "1.0")
+(defconst vhl/version "1.1")
 
 (eval-when-compile
   (require 'cl)
-  (require 'easy-mmode))
+  (require 'easy-mmode)
+  (require 'advice))
 
 (provide 'volatile-highlights)
+
+ 
+;;;============================================================================
+;;;
+;;;  Private Variables.
+;;;
+;;;============================================================================
+
+(defconst vhl/.xemacsp (string-match "XEmacs" emacs-version)
+  "A flag if the emacs is xemacs or not.")
+
+(defvar vhl/.hl-lst nil
+  "List of volatile highlights.")
 
  
 ;;;============================================================================
@@ -115,8 +133,7 @@
  :global t
  :init-value nil
  :lighter " VHl"
- (if (or (not (boundp 'smooth-scroll-mode))
-         smooth-scroll-mode)
+ (if volatile-highlights-mode
      (vhl/load-extensions)
    (vhl/unload-extensions)))
 
@@ -164,20 +181,7 @@ be used as the value."
 (defun vhl/force-clear-all ()
   "Force clear all volatile highlights in current buffer."
   (interactive)
-  (vhl/force-clear-all-hl))
-
- 
-;;;============================================================================
-;;;
-;;;  Private Variables.
-;;;
-;;;============================================================================
-
-(defconst vhl/.xemacsp (string-match "XEmacs" emacs-version)
-  "A flag if the emacs is xemacs or not.")
-
-(defconst vhl/.hl-lst nil
-  "List of volatile highlights.")
+  (vhl/.force-clear-all-hl))
 
  
 ;;;============================================================================
@@ -277,8 +281,7 @@ be used as the value."
 
 (defun vhl/unload-extension (sym)
   (let ((fn-off (intern (format "vhl/ext/%s/off" sym))))
-    (if (and (boundp cust-name)
-             (functionp fn-off))
+    (if (functionp fn-off)
         (apply fn-off nil)
       (message "[vhl] No unload function for extension  `%s'" sym))))
 

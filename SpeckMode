@@ -32,5 +32,28 @@ The texinfo documentation can be downloaded on the following page:
 
 This has been updated to a more recent version.  
 
+[new:FelixKlee:2010-11-09 12:02 UTC]
+
+Processing <tt>speck.texi</tt> with <tt>makeinfo</tt> 4.0 gives:
+
+    Making info file `speck' from `speck.texi'.
+    speck.texi:10: Unknown command `copying'.
+    speck.texi:28: Unmatched `@end'.
+    speck.texi:113: Unknown command `indicateurl'.
+    speck.texi:113: Misplaced {.
+    speck.texi:113: Misplaced }.
+    speck.texi:703: Unknown command `indicateurl'.
+    speck.texi:703: Misplaced {.
+    speck.texi:703: Misplaced }.
+    speck.texi:707: Unknown command `indicateurl'.
+    speck.texi:707: Misplaced {.
+    speck.texi:707: Misplaced }.
+    speck.texi:711: Unknown command `indicateurl'.
+    speck.texi:711: Misplaced {.
+    speck.texi:711: Misplaced }.
+    speck.texi:729: Unknown command `indicateurl'.
+    speck.texi:729: Misplaced {.
+    speck.texi:729: Misplaced }.
+  
 ----
 CategorySpelling

@@ -24,7 +24,7 @@ Where to get it:
 ** **2009-11-04** -- [[EmacsW32]] -- **CVS Emacs 23.1.50.1**
 *** Does some extra setup to work better on MS-Windows and includes some unix programs (grep etc) from gnuwin32 and image libraries. It is also slightly patched for the same reason.
 *** For other reasons the packages also includes [NxmlMode nXhtml].
-*** There is also an unpatched version of Emacs available and a zip file with just the unpatched Emacs. (But please see above for official release and pretest binaries.)
+*** Untested versions of EmacsW32 (I use them myself though I am not satisfied enough with them) is uploaded more often to http://ourcomments.org/Emacs/DL/EmacsW32/test/.
 
 ** or build it yourself BuildingOnWindowsTableofContents.
 

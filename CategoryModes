@@ -139,6 +139,7 @@ Other pages (could this please be split in major and minor modes?):
 * XResourceGenericMode
 * XSymbolMode
 * YamlMode -- edit YAML <code>.yml</code> files
+* YangMode -- edit YANG files, RFC 6020 compliant
 
 
 Other functionality specific to some modes:

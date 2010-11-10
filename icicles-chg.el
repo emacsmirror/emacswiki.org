@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  8 08:52:54 2010 (-0800)
+;; Last-Updated: Tue Nov  9 13:50:56 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5830
+;;     Update #: 5833
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -340,6 +340,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/11/09 dadams
+;;     Added: icicle-set-((S-)TAB|completion)-methods-for-command.
 ;; 2010/11/07 dadams
 ;;     Applied renaming of icicle-all-candidates-action-p to icicle-all-candidates-action.
 ;; 2010/10/27 dadams

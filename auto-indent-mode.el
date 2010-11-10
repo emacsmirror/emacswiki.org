@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Sun Nov  7 18:28:50 2010 (-0600)
+;; Last-Updated: Tue Nov  9 22:04:17 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 235
+;;     Update #: 256
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cl'.
+;;   `cl'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -58,7 +58,7 @@
 ;;  You could always turn on the minor mode with the command
 ;;  `auto-indent-minor-mode'
 ;;
-;;  If you would like TextMate behavior of Meta-RETURN going to the
+7;;  If you would like TextMate behavior of Meta-RETURN going to the
 ;;  end of the line and then inserting a newline, as well as
 ;;  Meta-shift return going to the end of the line, inserting a
 ;;  semi-colon then inserting a newline, use the following:
@@ -90,6 +90,21 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 09-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov  9 22:03:34 2010 (-0600) #255 (Matthew L. Fidler)
+;;
+;;    Bug fix when interacting with the SVN version of yasnippet.  It
+;;    will not perform the line indentation when Yasnippet is running.
+;;
+;; 09-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov  9 13:47:18 2010 (-0600) #253 (Matthew L. Fidler)
+;;    Made sure that the auto-paste indentation doesn't work in minibuffer.
+;; 09-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov  9 11:51:07 2010 (-0600) #246 (Matthew L. Fidler)
+;;    When `auto-indent-pre-command-hook' is inactivated by some means, add it back.
+;; 09-Nov-2010      
+;;    Last-Updated: Tue Nov  9 11:13:09 2010 (-0600) #238 (Matthew L. Fidler)
+;;    Added snippet-mode to excluded modes.  Also turned off the kill-line by default.
 ;; 07-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Sun Nov  7 18:24:05 2010 (-0600) #233 (Matthew L. Fidler)
 ;;    Added the possibility of TextMate type returns.
@@ -188,7 +203,7 @@
   :group 'auto-indent
   )
 
-(defcustom auto-indent-kill-line-removes-extra-spaces 't
+(defcustom auto-indent-kill-line-removes-extra-spaces nil
   "* When killing lines, remove extra spaces before killing the line."
   :type 'boolean
   :group 'auto-indent
@@ -199,7 +214,7 @@
   :type 'boolean
   :group 'auto-indent
   )
-(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode)
+(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode)
   "* List of modes disabled when global auto-indent-mode is on."
   :type '(repeat (sexp :tag "Major mode"))
   :tag " Major modes where linum is disabled: "
@@ -348,7 +363,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 ;; Define advices for yank and yank-pop.
 (dolist (command '(yank yank-pop))
   (eval `(defadvice ,command (after auto-indent-minor-mode-advice activate)
-           (and (not current-prefix-arg) auto-indent-minor-mode)
+           (and (not current-prefix-arg) auto-indent-minor-mode (not (minibufferp)))
            (let ((mark-even-if-inactive transient-mark-mode))
              (if auto-indent-on-yank-or-paste
                  (indent-region (region-beginning) (region-end) nil))
@@ -389,7 +404,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (defadvice kill-line (before auto-indent-mode activate)
   "If at end of line, join with following; otherwise kill line.
      Deletes whitespace at join."
-  (if (and auto-indent-minor-mode
+  (if (and auto-indent-minor-mode (not (minibufferp))
            auto-indent-kill-line-removes-extra-spaces)
       (if (and (eolp) (not (bolp)))
           (progn (delete-indentation 't)
@@ -400,18 +415,27 @@ http://www.emacswiki.org/emacs/AutoIndentation
 
 (defun auto-indent-mode-pre-command-hook()
   "Hook for auto-indent-mode to tell if the point has been moved"
-  (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
-  )
+  (condition-case error
+      (when (not (minibufferp))
+        (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
+        )
+    (error
+     (message "[Auto-Indent Mode] Ignoring Error in `auto-indent-mode-pre-command-hook': %s" (error-message-string error)))))
 
 (defun auto-indent-mode-post-command-hook ()
   "Hook for auto-indent-mode to go to the right place when moving around and the whitespace was deleted from the line."
   (condition-case err
-      (when (and auto-indent-minor-mode auto-indent-blank-lines-on-move)
-        (when (and auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
-          (when (and (looking-back "^") (looking-at "$"))
-            (indent-according-to-mode))))
-    (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-post-command-hook'"))
-    ))
+      (when (not (minibufferp))
+        (unless (memq 'auto-indent-mode-pre-command-hook pre-command-hook)
+          (setq auto-indent-mode-pre-command-hook-line -1)
+          (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
+        (when (or (not (fboundp 'yas/snippets-at-point))
+                  (and (= 0 (length (yas/snippets-at-point 'all-snippets)))))
+          (when (and auto-indent-minor-mode auto-indent-blank-lines-on-move)
+            (when (and auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
+              (when (and (looking-back "^") (looking-at "$"))
+                (indent-according-to-mode))))))
+    (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-post-command-hook' %s" (error-message-string err)))))
 (provide 'auto-indent-mode)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; auto-indent-mode.el ends here

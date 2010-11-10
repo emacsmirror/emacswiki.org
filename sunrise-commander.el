@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 327 $
+;; RCS Version: $Rev: 328 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 327 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 328 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2742,9 +2742,9 @@ or (c)ontents? ")
 
 (defun sr-multifind-handler (operation &rest args)
   "Magic file name handler for manipulating the command executed by find-dired
-  when the user requests to perform the find operation in all currently marked
-  subdirectories. Removes itself from the inhibit-file-name-handlers list when
-  executed."
+  when the user requests to perform the find operation on all currently marked
+  items (as opposed to the current default directory). Removes itself from the
+  inhibit-file-name-handlers every time it's executed."
   (let ((inhibit-file-name-handlers
          (cons 'sr-multifind-handler
                (and (eq inhibit-file-name-operation operation)
@@ -2849,18 +2849,16 @@ or (c)ontents? ")
                (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
                (unless stack (setq next-char nil)))
               (t
-               (progn
-                 (setq filter (concat filter (char-to-string next-char))
-                       regex (concat regex "[^" (char-to-string next-char) "]*")
-                       stack (cons (cons filter regex) stack)))))
+               (setq filter (concat filter (char-to-string next-char))
+                     regex (concat regex "[^" (char-to-string next-char) "]*")
+                     stack (cons (cons filter regex) stack))))
         (when next-char
           (setq matches (dired-mark-files-regexp (concat "^" regex "$")))
           (if matches
               (dired-do-kill-lines)
-            (progn
-              (message "Sunrise: Nothing left to filter out!")
-              (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
-              (sit-for 1)))
+            (message "Sunrise: Nothing left to filter out!")
+            (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
+            (sit-for 1))
           (setq next-char (read-char (concat "Fuzzy narrow: " filter))))))
     (dired-change-marks ?\t ?*)))
 
@@ -3519,11 +3517,7 @@ or (c)ontents? ")
     (if (< (length marked) 2)
         (setq marked nil)
       (if (eq t (car marked)) (setq marked (cdr marked)))
-      (setq marked
-            (delq nil (mapcar (lambda (x) (and (file-directory-p x) x)) marked))
-            marked
-            (format "\"%s\"" (mapconcat 'identity marked "\" \""))))
-      marked))
+      (format "\"%s\"" (mapconcat 'identity marked "\" \"")))))
 
 ;;; ============================================================================
 ;;; Font-Lock colors & styles:

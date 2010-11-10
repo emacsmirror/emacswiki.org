@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  7 12:04:10 2010 (-0800)
+;; Last-Updated: Tue Nov  9 13:58:56 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2265
+;;     Update #: 2269
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -109,9 +109,11 @@
 ;;    (+)`icicle-search-specific-files-bookmark',
 ;;    (+)`icicle-search-text-property',
 ;;    (+)`icicle-search-this-buffer-bookmark',
-;;    (+)`icicle-search-url-bookmark', (+)`icicle-search-w3m-bookmark',
-;;    (+)`icicle-search-word', (+)`icicle-select-frame',
-;;    `icicle-select-frame-by-name', (+)`icicle-tags-search',
+;;    (+)`icicle-search-url-bookmark',
+;;    (+)`icicle-search-w3m-bookmark', (+)`icicle-search-word',
+;;    (+)`icicle-select-frame', `icicle-select-frame-by-name',
+;;    `icicle-set-S-TAB-methods-for-command',
+;;    `icicle-set-TAB-methods-for-command', (+)`icicle-tags-search',
 ;;    (+)`icicle-vardoc', (+)`icicle-where-is', (+)`what-which-how'.
 ;;
 ;;  Non-interactive functions defined here:
@@ -173,6 +175,7 @@
 ;;    `icicle-search-replace-fixed-case-p',
 ;;    `icicle-search-replace-match',
 ;;    `icicle-search-replace-search-hit', `icicle-search-where-arg',
+;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-this-command-keys-prefix'.
 ;;
 ;;
@@ -5333,6 +5336,67 @@ used with `C-u', with Icicle mode turned off)."
                           (concat color ": " (hexrgb-color-name-to-hex color))))))))
     (when (interactive-p) (message "Color: `%s'" color))
     color))
+
+(defun icicle-set-TAB-methods-for-command (command &optional arg msgp)
+  "Set the possible TAB completion methods for COMMAND.
+This works by advising COMMAND.
+With a negative prefix arg, restore the original, unadvised behavior.
+With a non-negative prefix arg, advise but do not enable the advice.
+ You can later enable the advice and activate it, using
+ `ad-enable-advice' and `ad-activate'.  The advice name is
+ `icicle-TAB-completion-methods' (same name as option).
+See also `icicle-set-S-TAB-methods-for-command'."
+  (interactive "CCommand: \nP\np")
+  (icicle-set-completion-methods-for-command command 'icicle-TAB-completion-methods arg msgp))
+    
+(defun icicle-set-S-TAB-methods-for-command (command &optional arg msgp)
+  "Set the possible S-TAB completion methods for COMMAND.
+This works by advising COMMAND.
+With a negative prefix arg, restore the original, unadvised behavior.
+With a non-negative prefix arg, advise but do not enable the advice.
+ You can later enable the advice and activate it, using
+ `ad-enable-advice' and `ad-activate'.  The advice name is
+ `icicle-S-TAB-completion-methods-alist' (same name as option).
+See also `icicle-set-TAB-methods-for-command'."
+  (interactive "CCommand: \nP\np")
+  (icicle-set-completion-methods-for-command command 'icicle-S-TAB-completion-methods-alist arg msgp))
+    
+(defun icicle-set-completion-methods-for-command (command var arg msgp)
+  "Set the possible completion methods for COMMAND.
+This works by advising COMMAND.
+VAR is the methods option to affect, `icicle-TAB-completion-methods'
+ or `icicle-S-TAB-completion-methods-alist'.
+Negative ARG means restore the original, unadvised behavior.
+Non-negative ARG means advise but do not enable the advice.
+Null ARG means advise and enable."
+  (if (not (< (prefix-numeric-value arg) 0))
+      (let ((methods       ())
+            (prompt        (if (eq var 'icicle-TAB-completion-methods)
+                               "TAB methods: "
+                             "S-TAB methods: "))
+            (cand-methods  (symbol-value var))
+            meth)
+        (setq cand-methods  (if (consp (car cand-methods))
+                                cand-methods
+                              (mapcar (lambda (m) (list (symbol-name m))) cand-methods)))
+        (while (not (string= "" (setq meth  (completing-read prompt cand-methods nil t))))
+          (if (eq var 'icicle-TAB-completion-methods)
+              (push (intern meth) methods)
+            (push (assoc meth icicle-S-TAB-completion-methods-alist) methods)))
+        (setq methods  (nreverse methods))
+        (ad-add-advice command `(,var
+                                 nil ,(not arg)
+                                 (advice . (lambda () (let ((,var  ',methods)) ad-do-it))))
+                       'around 'first)
+        (ad-activate command)
+        (when msgp (message "`%s' %s%s" command prompt
+                            (if (consp (car methods)) (mapcar #'car methods) methods))))
+    (condition-case nil
+        (ad-remove-advice command 'around var)
+      (error nil))
+    (ad-activate command)               ; This restores original definition unless otherwise advised.
+    (when msgp (message "`%s' now uses default %s methods"
+                        command (if (eq var 'icicle-TAB-completion-methods) "TAB" "S-TAB")))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

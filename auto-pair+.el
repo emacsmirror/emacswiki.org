@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sun Nov  7 18:40:10 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Mon Nov  8 14:16:12 2010 (-0600)
+;; Last-Updated: Tue Nov  9 15:05:21 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 507
+;;     Update #: 521
 ;; URL:  http://www.emacswiki.org/emacs/auto-pair+.el 
 ;; Keywords: Autopair, selection, whitespace
 ;; Compatibility: 
@@ -180,6 +180,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 09-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov  9 12:28:02 2010 (-0600) #518 (Matthew L. Fidler)
+;;    Bugfix for cases where there is no extra syntax pair.
 ;; 08-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Nov  8 12:46:40 2010 (-0600) #398 (Matthew L. Fidler)
 ;;    Initial release.
@@ -588,8 +591,11 @@ f <- function(x){
                                   (getf autopair-extra-pairs :code)
                                   (getf autopair-extra-pairs :everywhere))) 't)))
                    ;; If this is a starting pair, do nothing.   `'|`' type.
-                   (string-match pair-opening-regexp (string pair))))
+                   (if (string= "" pair-opening-regexp)
+                       nil
+                     (string-match pair-opening-regexp (string pair)))))
                 (;; Delete character
+                 't
                  (delete-char 1)))))
             (;; opens an extra line after point, then indents
              (and (eq 'newline action)
@@ -610,7 +616,8 @@ f <- function(x){
                                   (getf autopair-extra-pairs :code)
                                   (getf autopair-extra-pairs :everywhere))) 't)))
                    ;; If this is a starting pair, do nothing.   `'|`' type.
-                   (string-match pair-opening-regexp (string pair))))
+                   (if (string= "" pair-opening-regexp) nil
+                     (string-match pair-opening-regexp (string pair)))))
                 (;; Type in extra return
                  (autopair-texmate-style-newline))))))
     (error

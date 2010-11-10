@@ -4,7 +4,7 @@
 
 ;; Author: Kan-Ru Chen <koster@debian.org>
 ;; Created: 08 Nov 2010
-;; Version: 0.2
+;; Version: 0.3
 ;; Keywords: extensions, lisp, tools
 
 ;; This file is NOT part of GNU Emacs.
@@ -41,15 +41,27 @@
 
 ;;; Code:
 
+(require 'calc-ext)
 (require 'sha1)
 
-(defvar uuid-unix-epoch-delta #x01b21dd213814000
+(defgroup uuid nil
+  "UUID generation.")
+
+(defcustom uuid-suppress-network-info-warnings nil
+  "Non-nil means suppress warning messages for missing\
+`network-interface-list' or `network-interface-info' support."
+  :type 'boolean
+  :group 'uuid)
+
+(defvar uuid-unix-epoch-delta (math-read-radix "1b21dd213814000" 16)
   "The interval between the UUID epoch and the Unix epoch.
 That is the number of 100-nanoseconds between
 1582-10-15 00:00:00 and 1970-01-01 00:00:00.")
 
-(defvar uuid-interface "eth0"
-  "The default interface for time based UUID generation.")
+(defcustom uuid-interface "eth0"
+  "The default interface for time based UUID generation."
+  :type 'string
+  :group 'uuid)
 
 ;; Predefined namespace IDs
 ;; Ref: RFC4122 Appendix C
@@ -79,39 +91,52 @@ position."
   "Convert UUID string to binary representation.
 ID should contain a UUID string, the 8-4-4-4-12 format is
 preferred."
-  (eval (cons 'unibyte-string (uuid-string-to-octets id))))
+  (eval (cons (if (fboundp 'unibyte-string)
+                  'unibyte-string
+                'string)
+              (uuid-string-to-octets id))))
 
 (defun uuid-current-unix-clock ()
   "Get the current Unix time as a 100-nanosecond intervals."
   (let* ((unix-time (current-time))
-         (high (first unix-time))
-         (low (second unix-time))
-         (micro (third unix-time)))
-    (+ (* 10000000 (+ (lsh high 16) low))
+         (high (nth 0 unix-time))
+         (low (nth 1 unix-time))
+         (micro (nth 2 unix-time)))
+    (math-add
+     (math-mul 10000000 (math-add (math-mul high #x10000) low))
        (* 10 micro))
     ))
 
 (defun uuid-system-clock ()
   "Get the 100-nanosecond intervals after UUID epoch."
-  (+ (uuid-current-unix-clock) uuid-unix-epoch-delta))
+  (math-add (uuid-current-unix-clock) uuid-unix-epoch-delta))
+
+(defun uuid-random-clock ()
+  "Get a random generated 60 bit clock."
+  (calcFunc-random (math-power-of-2 60)))
 
 (defun uuid-format-time-low (clock)
   "Format the time_low part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%08x" (logand #xFFFFFFFF clock)))
+  (format "%08x" (math-fixnum
+                  (math-clip clock 32))))
 
 (defun uuid-format-time-mid (clock)
   "Format the time_mid part of the UUID.
 CLOCK should be a integer less than 60 bits."
-  (format "%04x" (logand #xFFFF (lsh clock -32))))
+  (format "%04x" (math-fixnum
+                  (math-clip
+                   (car (math-idivmod clock (math-power-of-2 32))) 16))))
 
 (defun uuid-format-time-hi-version (clock &optional ver)
   "Format the time_hi_and_version part of the UUID.
 CLOCK should be a integer less than 60 bits.
 VER is the UUID variant number.  Valid VER are 1, 3, 4, 5."
   (let ((version (or ver 1)))
-    (format "%04x" (logior (lsh (logand #xF version) 12)
-                           (logand #xFFF (lsh clock -48))))))
+    (format "%01x%03x" ver
+            (math-fixnum
+             (math-clip
+              (car (math-idivmod clock (math-power-of-2 48))) 12)))))
 
 (defun uuid-format-clock-seq-low (clock)
   "Format the clock_seq_low part of the UUID.
@@ -123,9 +148,16 @@ CLOCK should be a integer less than 60 bits."
 CLOCK should be a integer less than 60 bits."
   (format "%02x" (logior #x80 (logand #x3F (lsh clock -8)))))
 
-(defun uuid-get-random-address ()
+(defun uuid-random-address ()
   "Return a address formed by list of random numbers."
   (mapcar (lambda (n) (random 256)) (make-list 6 0)))
+
+(defun uuid-random-multicast-address ()
+  "Return a random multicast address."
+  (let ((addr (uuid-random-address)))
+    ;; Set multicast bit. RFC4122#4.1.6
+    (cons (logior #x10 (car addr))
+          (cdr addr))))
 
 (defun uuid-get-interface (interfaces &optional default)
   "Return the interface for UUID node information.
@@ -143,15 +175,48 @@ If DEFAULT is not nil, check whether interface DEFAULT exists first."
 The return value is a array consist of the address number.
 If there is no interface available then return a random
 multicast address list."
-  (let ((info (network-interface-info
-               (uuid-get-interface
-                (network-interface-list) uuid-interface))))
-    (if info
-        (cdr (nth 3 info))
-      (let ((addr (uuid-get-random-address)))
-        ;; Set multicast bit. RFC4122#4.1.6
-        (cons (logior #x10 (car addr))
-              (cdr addr))))))
+  ;; Some platform doesn't have network-interface-* so we have to
+  ;; check this.
+  (if (and (fboundp 'network-interface-list)
+           (fboundp 'network-interface-info))
+      (let ((info (network-interface-info
+                   (uuid-get-interface
+                    (network-interface-list) uuid-interface))))
+        (if (and info
+                 (nth 3 info))
+            (cdr (nth 3 info))
+          (progn
+            (or uuid-suppress-network-info-warnings
+                (display-warning
+                 '(uuid network-interface-info)
+                 "`network-interface-info' returned nil address.
+
+This means either your NIC has no MAC address or the
+`network-interface-info' implementation on your platform is buggy.
+
+Will use random multicast address instead. Although this is suggested
+by RFC4122, the result might not be desired.
+
+You can customize `uuid-suppress-network-info-warnings' to
+disable this warning or by adding the entry (uuid network-interface-info)
+to the user option `warning-suppress-types', which is defined in the
+`warnings' library.\n"))
+            (uuid-random-multicast-address))
+          ))
+    (progn
+      (or uuid-suppress-network-info-warnings
+          (display-warning
+           'uuid
+           "Missing `network-interface-info' or `network-interface-list' support.
+
+Use random multicast address instead. Although this is suggested
+by RFC4122, the result might not be desired.
+
+You can customize `uuid-suppress-network-info-warnings' to
+disable this warning or by adding the entry (uuid network-interface-info)
+to the user option `warning-suppress-types', which is defined in the
+`warnings' library.\n"))
+      (uuid-random-multicast-address))))
 
 (defun uuid-format-ieee-address ()
   "Format the IEEE address based node name of UUID."
@@ -162,7 +227,7 @@ multicast address list."
 
 (defun uuid-format-random-address ()
   "Format the IEEE address based node name of UUID."
-  (let ((address (uuid-get-random-address)))
+  (let ((address (uuid-random-address)))
     (mapconcat (lambda (var) (format "%02x" var))
                address "")
     ))
@@ -192,7 +257,7 @@ the node information.  Pre-defined ADDR-FUNCTION are
 
 (defun uuid-4 ()
   "Generate UUID form random numbers, aka UUIDv4."
-  (let ((clock (random))
+  (let ((clock (uuid-random-clock))
         (seq (random)))
     (uuid-from-time clock seq 4 'uuid-format-random-address)))
 
