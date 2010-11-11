@@ -154,6 +154,7 @@
 (eval-when-compile (require 'cl)
                    (require 'edebug))
 
+(require 'mon-plist-utils)
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-propertize-region'
@@ -244,19 +245,6 @@ byte-compiler will shut its yap about runtime warnings.\n
 ;;
 ;; (defsetf buffer-substring-no-properties mon-set-buffer-substring-no-properties)
 (defsetf buffer-substring-no-properties %mon-set-buffer-substring-no-properties)
-
-;;; ==============================
-;;; :NOTE Keep with `mon-list-all-properties-in-buffer'.
-;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `plist-keys'
-(defun mon-plist-keys (plist)
-  "Cons up a plist of keys with PLIST.\n
-:EXAMPLE\n\(mon-plist-keys \(mon-alphabet-as-type 'plistD->num\)\)\n
-:SEE-ALSO `mon-plist-remove', `mon-help-plist-functions',
-`mon-map-obarray-symbol-plist-props', `mon-plist-remove-if',
-`mon-plist-remove-consing', `remf', `remprop'.\n►►►"
-  (if (null plist)
-      plist
-      (cons (car plist) (mon-plist-keys (cddr plist)))))
 
 ;;; ==============================
 ;;; :COURTESY  ../emacs/lisp/font-lock.el 
@@ -474,9 +462,10 @@ leading `#'.\n
 	 (prop-value (plist-get my-props 'category)))
     prop-value))
 
+;;; (declare-function mon-plist-keys "mon-plist-utils"
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el
-;;; :NOTE Keep with `mon-nuke-text-properties-buffer', `mon-plist-keys'
+;;; :NOTE Keep with `mon-nuke-text-properties-buffer'
 ;;; :CHANGED `set-buffer' -> `with-current-buffer' 
 ;;; :CHANGED `delete-duplicates' -> `delete-dups'
 ;;; :ADDED (&optional start-range end-range buffer) :WAS (buffer)

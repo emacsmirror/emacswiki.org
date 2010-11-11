@@ -1,4 +1,4 @@
-;;; mon-aliases.el --- 
+;;; mon-aliases.el --- { A one line description of: mon-aliases. }
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
@@ -777,6 +777,10 @@ This uses 'sort so the sorting is destructive.
              (fboundp 'mon-window-map-active-to-plist))
 (defalias 'mon-window-map-active-to-plist 'mon-map-windows->plist))
 ;;
+(unless (and (intern-soft "mon-list-all-booleanp" obarray)
+             (fboundp 'mon-list-all-booleanp))
+(defalias 'mon-list-all-booleanp 'mon-sequence-all-booleanp))
+;;
 (unless (and (intern-soft "mon-list-delq-dups" obarray)
              (fboundp 'mon-list-delq-dups))
 (defalias 'mon-list-delq-dups 'mon-delq-dups))
@@ -800,6 +804,10 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-proper-list-p" obarray)
              (fboundp 'mon-proper-list-p))
 (defalias 'mon-proper-list-p 'mon-list-proper-p))
+;;
+(unless (and (intern-soft "mon-list-mappable-p" obarray) 
+             (fboundp 'mon-list-mappable-p))
+(defalias 'mon-list-mappable-p 'mon-sequence-mappable-p))
 ;;
 (unless (and (intern-soft "mon-mappable-sequence-p" obarray) 
              (fboundp 'mon-mappable-sequence-p))
@@ -1117,6 +1125,7 @@ This uses 'sort so the sorting is destructive.
 ;;; ==============================
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;; ==============================
+
 (unless (and (intern-soft "mon-line-strings-region-delimited" obarray)
              (fboundp 'mon-line-strings-region-delimited))
 (defalias 'mon-line-strings-region-delimited 'mon-help-delimited-region))
@@ -1136,9 +1145,115 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-insert-documentation" obarray)
              (fboundp 'mon-insert-documentation)) 
 (defalias 'mon-insert-documentation 'mon-help-insert-documentation))
+;;
+(unless (and (intern-soft "mon-help-reference-sheet" obarray)
+             (fboundp 'mon-help-reference-sheet)) 
+(defalias 'mon-help-reference-sheet 'mon-help-mon-help))
+;;
+(unless (and (intern-soft "mon-help-finder-keywords" obarray)
+             (fboundp 'mon-help-finder-keywords)) 
+(defalias 'mon-help-finder-keywords 'mon-help-package-keywords))
+;;
+(unless (and (intern-soft "mon-help-directory-file-functions-usage" obarray)
+             (fboundp 'mon-help-directory-file-functions-usage)) 
+(defalias 'mon-help-directory-file-functions-usage 'mon-help-file-dir-functions-usage))
+;;
+(unless (and (intern-soft "mon-help-network-process" obarray)
+             (fboundp 'mon-help-network-process))
+(defalias 'mon-help-network-process 'mon-help-make-network-process))
+;;
+(unless (and (intern-soft "mon-help-types" obarray)
+             (fboundp 'mon-help-types))
+(defalias 'mon-help-types 'mon-help-type-predicates))
+;;
+(unless (and (intern-soft "mon-help-face-functions" obarray)
+             (fboundp 'mon-help-face-functions)) 
+(defalias 'mon-help-face-functions 'mon-help-faces))
+;;
+(unless (and (intern-soft "mon-help-charset-coding-functions" obarray)
+             (fboundp 'mon-help-charset-coding-functions)) 
+(defalias 'mon-help-charset-coding-functions 'mon-help-char-coding-functions))
+;;
+(unless (and (intern-soft "mon-help-ascii-chars" obarray)
+             (fboundp 'mon-help-ascii-chars)) 
+(defalias 'mon-help-ascii-chars 'mon-help-char-ascii)) 
+;;
+(unless (and (intern-soft "mon-help-ecma-48-chars-cntl->hex" obarray)
+             (fboundp 'mon-help-ecma-48-chars-cntl->hex)) 
+(defalias 'mon-help-ecma-48-chars-cntl->hex 'mon-help-char-ecma-48))
+;;
+(unless (and (intern-soft "mon-help-cntl->hex->ecma-35" obarray)
+             (fboundp 'mon-help-cntl->hex->ecma-35)) 
+(defalias 'mon-help-cntl->hex->ecma-35 'mon-help-char-ecma-35)) 
+;;
+(unless (and (intern-soft "mon-help-time-iso-8601" obarray)
+             (fboundp 'mon-help-time-iso-8601)) 
+(defalias 'mon-help-time-iso-8601 'mon-help-iso-8601))
+;;
+(unless (and (intern-soft "mon-help-elisp-info" obarray)
+             (fboundp 'mon-help-elisp-info)) 
+(defalias 'mon-help-elisp-info 'mon-index-elisp-symbol))
+;;
+(unless (and (intern-soft "*reference-sheet-help-A-HAWLEY*" obarray)
+             (bound-and-true-p *reference-sheet-help-A-HAWLEY*))
+(defvaralias '*reference-sheet-help-A-HAWLEY* '*mon-help-reference-keys*))
+
 
 ;;; ==============================
 ;;; mon-doc-help-utils.el◄◄◄
+;;; ==============================
+
+
+;;; ==============================
+;;; mon-time-utils.el◄◄◄
+;;; ==============================
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-stamp-date-only" obarray)
+             (fboundp 'mon-stamp-date-only)) 
+(defalias 'mon-stamp-date-only 'mon-date-stamp))
+;;
+(unless (and (intern-soft "mon-today-stamp" obarray)
+             (fboundp 'mon-today-stamp)) 
+(defalias 'mon-today-stamp  'mon-date-stamp))
+
+;;; ==============================
+;;; mon-time-utils.el◄◄◄
+;;; ==============================
+
+;;; ==============================
+;;; mon-dir-locals-alist.el►►►
+;;; ==============================
+
+(when (and (and (intern-soft "*emacs2html-temp*" obarray) 
+                (bound-and-true-p *emacs2html-temp*))
+           (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+                (bound-and-true-p *mon-bind-dir-locals-alist*)))
+  (unless (and (intern-soft "*mon-emacs2html-temp*" obarray)
+               (bound-and-true-p *mon-emacs2html-temp*))
+(defvaralias '*mon-emacs2html-temp* '*emacs2html-temp*)))
+
+;;; ==============================
+;;; mon-dir-locals-alist.el◄◄◄
+;;; ==============================
+
+;;; ==============================
+;;; mon-boxcutter.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <PREFIX>-<NON-CORE-SYMBOL> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "boxcutter-verify-image-type")
+             (fboundp 'boxcutter-verify-image-type))
+(defalias 'boxcutter-verify-image-type 'mon-image-verify-type))
+
+;;; ==============================
+;;; mon-dir-locals-alist.el◄◄◄
 ;;; ==============================
 
 ;;; ==============================

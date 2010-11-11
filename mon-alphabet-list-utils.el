@@ -155,6 +155,10 @@
 
 (eval-when-compile (require 'cl))
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-11-05T15:36:19-04:00Z}#{10445} - by MON KEY>
@@ -653,6 +657,7 @@ Where the first most form \(a list of strings\) is the preferred format.\n
 ;; Local Variables:
 ;; mode: EMACS-LISP
 ;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
 ;; End:
 
 ;;; ====================================================================

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  6 08:32:50 2010 (-0700)
+;; Last-Updated: Wed Nov 10 11:38:21 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6728
+;;     Update #: 6731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3292,8 +3292,8 @@ No such replacement is done if option
     (defalias 'customize-face                         'icicle-customize-face)
     (defalias 'customize-face-other-window            'icicle-customize-face-other-window)
     (defalias 'dabbrev-completion                     'icicle-dabbrev-completion)
-    (if (fboundp 'completion-at-point)  ; Emacs 23.2.
-        (defalias 'lisp-completion-at-point           'icicle-lisp-complete-symbol)
+    (if (fboundp 'completion-at-point)  ; Emacs 23.2 - return fn that does all of the completion.
+        (defun lisp-completion-at-point () #'icicle-lisp-complete-symbol)
       (defalias 'lisp-complete-symbol                 'icicle-lisp-complete-symbol))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'icicle-minibuffer-default-add-completions))

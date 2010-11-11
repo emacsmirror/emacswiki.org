@@ -15,7 +15,6 @@ a common scenario for someone who is multi-tasking.
 The following hack uses the text date at the beginning of the
 ##*compilation*## buffer for the comparison.
 
-
   (defun my-buffer-compiled-since-modified-p (buffer)
     "Is file modification for BUFFER newer than last compilation time?"
     (interactive (list (current-buffer)))
@@ -33,7 +32,17 @@ The following hack uses the text date at the beginning of the
                         (mapcar
                          (lambda (a)
                            (if (null (car a)) (cadr a) (car a)))
-                         (ash-transpose
+                         ((lambda (&rest args)
+			    "Transpose list of ARGS into one list."
+                            (mapcar
+			     (lambda (n)
+			       (delq nil
+				     (mapcar
+				      (lambda (arg) (nth n arg))
+				      args)))
+			     (let ((len (apply 'max
+					       (mapcar 'length args))))
+			       (number-sequence 0 (1- len)))))
                           (parse-time-string
                            (buffer-substring-no-properties
                             (point)

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Nov  4 10:00:19 2010 (-0700)
+;; Last-Updated: Wed Nov 10 11:23:15 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 21460
+;;     Update #: 21461
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1393,8 +1393,7 @@ control completion behaviour using `bbdb-completion-type'."
 ;;               or `lisp-completion-at-point' (>= Emacs 23.2),
 ;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
 ;;
-;; 1. Select *Completions* window even if on another frame.
-;; 2. Explicitly return nil, for use in `completion-at-point-functions'.
+;; Select *Completions* window even if on another frame.
 ;;
 (if (fboundp 'completion-at-point)      ; Emacs 23.2.  It no longer uses `lisp-complete-symbol'.
     (unless (fboundp 'old-lisp-completion-at-point)
@@ -1465,11 +1464,7 @@ considered."
         (setq new  (save-excursion (completing-read "Complete Lisp symbol: "
                                                     obarray predicate t new)))))
     (delete-region beg end)
-    (insert new)
-    ;; Emacs 23.2+: return data structure for use by vanilla `lisp-complete-symbol'.
-    (list beg end obarray :predicate predicate
-          :annotate-function (unless (eq predicate 'fboundp)
-                               (lambda (str) (if (fboundp (intern-soft str)) " <f>"))))))
+    (insert new)))
 
 ;;;###autoload
 (defun icicle-customize-icicles-group ()

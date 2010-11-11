@@ -13,3 +13,4 @@ Similar to SessionManagement but includes all things that are saved between sess
 * [[Icicles - File-Name Input]] Cache file lists all files on your file system. Use it for regexp [[Completion]] to find a file anywhere.
 * EmacsSession
 * [http://www.thoughtspark.org/node/50 Simple Location/Geometry Persistence] - Persists window location/geometry at quit and loads at startup
+* [https://github.com/tlh/workgroups.el Workgroups] - A window-configuration persistence package, providing storage/restoration, saving/loading, animated window config morphing, and lots more.

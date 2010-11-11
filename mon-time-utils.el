@@ -45,7 +45,7 @@
 ;; CONSTANTS:
 ;;
 ;; VARIABLES:
-;; `*mon-default-comment-divider*', `*mon-default-comment-start*'
+;; `*mon-default-comment-divider*', 
 ;; `*mon-timestamp-cond*' 
 ;;
 ;; ALIASES/ADVISED/SUBST'D:
@@ -53,15 +53,16 @@
 ;; `mon-today-stamp'     -> `mon-date-stamp'
 ;;
 ;; MOVED:
-;; `mon-comp-times-flt-pnt'     <- mon-dir-utils.el
-;; `mon-conv-time-flt-pnt'      <- mon-dir-utils.el
-;; `mon-file-older-than-file-p' <- mon-dir-utils.el
-;; `mon-get-file-mod-times'     <- mon-dir-utils.el
-;; `mon-accessed-stamp'         <- mon-insertion-utils.el
-;; `mon-stamp'                  <- mon-insertion-utils.el
-;; `mon-timestamp'              <- mon-insertion-utils.el
-;; `mon-accessed-time-stamp'    <- mon-insertion-utils.el
-;; `*mon-timestamp-cond*'       <- mon-dir-locals-alist.el
+;; `mon-comp-times-flt-pnt'      <- mon-dir-utils.el
+;; `mon-conv-time-flt-pnt'       <- mon-dir-utils.el
+;; `mon-file-older-than-file-p'  <- mon-dir-utils.el
+;; `mon-get-file-mod-times'      <- mon-dir-utils.el
+;; `mon-accessed-stamp'          <- mon-insertion-utils.el
+;; `mon-stamp'                   <- mon-insertion-utils.el
+;; `mon-timestamp'               <- mon-insertion-utils.el
+;; `mon-accessed-time-stamp'     <- mon-insertion-utils.el
+;; `*mon-timestamp-cond*'        <- mon-dir-locals-alist.el
+;; `*mon-default-comment-start*' -> mon-utils.el
 ;;
 ;; DEPRECATED:
 ;; `mon-accessed-stamp' -> 
@@ -293,27 +294,6 @@
          ":PACKAGE `mon-time-utils' at compile/load time")))))
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2009-10-24T14:12:12-04:00Z}#{09436} - by MON KEY>
-(defvar *mon-default-comment-start* nil
-  "*Comment prefix for `mon-comment-divider-w-len'.\n
-This is a cheap work around so we don't have to deal with `comment-start' with
-mon-comment-* functions which might rely on or calculate a string/substring
-inidex per the value of this var.\n
-:EXAMPLE\n\n(symbol-value '*mon-default-comment-start*)\n
-\(let \(\(*mon-default-comment-start* \"%% \"\)\)
-  *mon-default-comment-start*\)\n
- \(mon-comment-divider-w-len 36\)\n
-:SEE-ALSO `*mon-default-comment-divider*', `mon-set-buffer-local-comment-start',
-`mon-set-buffer-local-comment-start-init', `mon-comment-divider-to-col',
-`mon-comment-divider-to-col-four', `mon-comment-divider-w-len',
-`mon-comment-lisp-to-col'.\n►►►")
-;;
-(unless (bound-and-true-p *mon-default-comment-start*)
-  (setq *mon-default-comment-start* ";;; "))
-;;
-;;; :TEST-ME *mon-default-comment-start*
-
-;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-17T15:49:27-05:00Z}#{10073} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-24T12:51:14-04:00Z}#{09436} - by MON KEY>
 (defun mon-comment-divider-w-len (divider-length 
@@ -371,51 +351,6 @@ If ALT-DIVIDE-CHAR \(a character or string\) is non-nil use it to instead.\n
 ;;; :TEST-ME (length (mon-comment-divider-w-len 85 95 45))
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2009-10-24T12:07:10-04:00Z}#{09436} - by MON KEY>
-(defvar *mon-default-comment-divider* (mon-comment-divider-w-len 30)
-  "*Preferred mon-comment-divider for lisp source sectioning.\n
-:CALLED-BY `mon-comment-divider', `mon-comment-divider-to-col'\n
-:SEE-ALSO `mon-comment-divider-w-len', `mon-comment-divider-to-col'\n►►►")
-;;
-;;; :TEST-ME *mon-default-comment-divider*
-;;;(progn (makunbound '*mon-default-comment-divider*)
-;;;       (unintern '*mon-default-comment-divider*) )
-
-;;; ==============================
-;;; :TODO Factor this var away.
-;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 11:59.08 AM - by MON KEY>
-(defvar *mon-timestamp-cond* nil
-  "*A list of filenames which get alternative timestamp name strings.\n
-Value should be a string without whitespace, delemters or punctuation these will
-get added by the calling function according to heuristics there.\n
-Useful for file based conditional timestamps and obfuscating files/source posted
-to Internet.\n
-:SEE-ALSO `mon-timestamp', `mon-accessed-time-stamp', `mon-accessed-stamp',
-`naf-mode-timestamp-flag'.\n►►►")
-;;
-(unless (bound-and-true-p *mon-timestamp-cond*)
-  (setq *mon-timestamp-cond*
-        `((,(file-name-nondirectory 
-             (directory-file-name *mon-emacs-root*)) 
-            ,(cadr (assoc 6 *MON-NAME*)))
-          (,(file-name-nondirectory 
-             (directory-file-name *mon-naf-mode-root*))
-            ,(cadr (assoc 6 *MON-NAME*)))
-          (,(file-name-nondirectory 
-             (file-name-sans-extension 
-              (locate-library "mon-time-utils")))
-            ,(cadr (assoc 6 *MON-NAME*))))))
-;;; 
-;; (concat " - " (cadr (assoc 7 *MON-NAME*))">")
-;; (let ((mn (cadr (assoc 7 *MON-NAME*)))) (concat " - " ))
-;;
-;;; :TEST-ME  *mon-timestamp-cond*
-;;; :TEST-ME (assoc "reference-sheet-help-utils.el" *mon-timestamp-cond*)
-;;
-;;;(progn (makunbound '*mon-timestamp-cond*) (unintern '*mon-timestamp-cond*) )
-
-
-;;; ==============================
 ;;; :CHANGESET 1711 <Timestamp: #{2010-05-06T15:28:04-04:00Z}#{10184} - by MON KEY>
 ;;; :RENAMED :FUNCTION `mon-today' -> `mon-date-stamp' 
 ;;; :ADDED keywords INSRTP and INTRP
@@ -463,9 +398,6 @@ When keyword INSRTP is non-nil insert return value at point as if with `prin1'\n
     (cond (intrp (insert mds-2day))
           (insrtp (prin1 mds-2day (current-buffer)))
           (t mds-2day))))
-;;;
-(defalias 'mon-stamp-date-only 'mon-date-stamp)
-(defalias 'mon-today-stamp    'mon-date-stamp)
 ;;
 ;;; :TEST-ME (mon-date-stamp :intrp t)
 ;;; :TEST-ME (mon-date-stamp :as-string t)
@@ -928,6 +860,7 @@ the ALT-DIVIDE-CHAR to `mon-comment-divider-w-len'. Default is \"=\" \(char 61\)
         (insert f-tstmp)
       f-tstmp))) 
 
+(declare-function "vc-working-revision" "vc-hooks")
 ;;; ==============================
 ;;; :NOTE The above fncn `mon-stamp-in-context' allows rewriting/simplifiying
 ;;; `mon-lisp-stamp' w/ e.g.:

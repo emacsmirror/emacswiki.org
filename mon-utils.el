@@ -50,6 +50,7 @@
 ;; `mon-transpose',  `mon-recursive-apply', 
 ;;
 ;; `mon-list-proper-p', `mon-list-match-tails',
+;; `mon-list-string-longest',
 ;;
 ;; `mon-subseq', `mon-list-last',
 ;; `mon-sublist', `mon-sublist-gutted', 
@@ -60,7 +61,6 @@
 ;; `mon-map1', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
 ;; `mon-mapcon', `mon-maptree', `mon-map-append',
 ;;
-;; `mon-plist-remove!', `mon-plist-remove-consing', `mon-plist-remove-if',
 ;;
 ;; `mon-inhibit-read-only', `mon-toggle-read-only-point-motion',
 ;; `mon-inhibit-modification-hooks',  `mon-inhibit-point-motion-hooks',
@@ -107,7 +107,7 @@
 ;; `mon-symbol-to-string',  `mon-string-to-symbol', 
 ;; `mon-string-alpha-list', `mon-string-ify-list',
 ;; `mon-string-to-hex-list', `mon-string-to-hex-string',
-;; `mon-string-to-hex-list-cln-chars',  `mon-string-wonkify'
+;; `mon-string-to-hex-list-cln-chars',  `mon-string-wonkify',
 ;; `mon-string-to-sequence', `mon-string-from-sequence',
 ;; `mon-string-chop-spaces', `mon-string-split-on-regexp',
 ;; `mon-string-split-commas', `mon-string-split',
@@ -156,6 +156,7 @@
 ;;
 ;; `mon-scratch', `switch-to-messages', `mon-kill-completions', 
 ;; `mon-toggle-trunc', `mon-toggle-menu-bar', `mon-choose-from-menu',
+;; `mon-postion-for-x-popup-menu',
 ;; `scroll-up-in-place', `scroll-down-in-place',
 ;; `mon-line-move-n', `mon-line-move-prev', `mon-line-move-next'
 ;; `mon-flip-windows', `mon-twin-horizontal', `mon-twin-vertical',
@@ -190,7 +191,8 @@
 ;; `*mon-utils-post-load-requires*', `*mon-ascii-cursor-state*',
 ;; `*mon-bit-table*', `*mon-recover-nil-t-default-plist*',
 ;; `*mon-equality-or-predicate-function-types*', `*mon-function-object-types*',
-;; `*mon-non-mappable-object-types*',
+;; `*mon-non-mappable-object-types*', `*mon-default-comment-start*',
+;; `*mon-popup-pos-x-offset*'
 ;;
 ;; :GROUPS
 ;; `mon-base'
@@ -199,7 +201,6 @@
 ;; :NOTE Aliases defined in :FILE mon-aliases.el
 ;;
 ;; <UNQUALIFIED-ALIAS>                  <PREFIX>-<NON-CORE-SYMBOL>
-;; `debug-on-error-toggle'           -> `toggle-debug-on-error'
 ;; `proper-list-p'                   -> `mon-list-proper-p'
 ;; `next-almost-prime'               -> `mon-next-almost-prime'
 ;; `nshuffle-vector'                 -> `mon-nshuffle-vector'
@@ -353,6 +354,10 @@
 ;; `mon-nuke-text-properties-region'              <- mon-text-property-utils.el
 ;; `mon-get-text-properties-category'             <- mon-text-property-utils.el
 ;; `mon-nuke-overlay-buffer'                      <- mon-text-property-utils.el
+;; `mon-plist-keys'                               <- mon-plist-utils.el
+;; `mon-plist-remove!'                            <- mon-plist-utils.el
+;; `mon-plist-remove-consing'                     <- mon-plist-utils.el
+;; `mon-plist-remove-if'                          <- mon-plist-utils.el
 ;; `mon-list-nshuffle-TEST'                       -> mon-testme-utils.el
 ;; `mon-gensym-counter-randomizer-TEST'           -> mon-testme-utils.el
 ;; `mon-line-strings-to-list-TEST'                -> mon-testme-utils.el
@@ -391,6 +396,7 @@
 ;; `mon-alphabet-as-stringD-w-nl'                 -> mon-alphabet-list-utils.el
 ;; `mon-alphabet-as-stringU-w-spc'                -> mon-alphabet-list-utils.el
 ;; `mon-alphabet-as-stringD-w-spc'                -> mon-alphabet-list-utils.el
+;; `*mon-default-comment-start*'                  <- mon-time-utils.el
 ;;
 ;; REQUIRES:
 ;;
@@ -471,17 +477,16 @@
 ;;; CODE:
 ;;; mon-alphabet-list-utils, mon-alphabet-as-type
 ;;; ==============================
-;;; :W/OUT-MON-NAMESPACE
-;;; :CHANGESET 2088
-;;; :CREATED <Timestamp: #{2010-08-25T18:54:20-04:00Z}#{10343} - by MON KEY>
-(unless (and (intern-soft "debug-on-error-toggle" obarray)
-             (fboundp (intern-soft "debug-on-error-toggle" obarray)))
-(defalias 'debug-on-error-toggle 'toggle-debug-on-error))
+
 
 ;;; ==============================
 (eval-when-compile (require 'cl))
 ;;
 ;; (eval-when-compile (require 'mon-cl-compat nil t))
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
 
 ;;; ==============================
 ;;; :NOTE before :FILE mon-error-utils.el mon-text-property-utils.el
@@ -501,7 +506,7 @@
   :group 'local)
 
 (require 'mon-error-utils)
-(require 'mon-text-property-utils)
+(require 'mon-text-property-utils) ; requires mon-plist-utils.el
 (require 'edebug)
 (require 'easymenu)
 (require 'bytecomp)
@@ -644,6 +649,74 @@ For use with `mon-equality-or-predicate'.\n
 `mon-map-obarray-symbol-plist-props', `mon-help-byte-optimizer-find'.\n►►►"
   :type  '(repeat symbol)
   :group 'mon-base)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T14:12:12-04:00Z}#{09436} - by MON KEY>
+(defcustom  *mon-default-comment-start* ";;; "
+  "*Comment prefix for `mon-comment-divider-w-len'.\n
+This is a cheap work around so we don't have to deal with `comment-start' with
+`mon-comment-*' functions which might rely on or calculate a string/substring
+inidex per the value of this var.\n
+Default is \";;; \"\n
+:EXAMPLE\n\n(symbol-value '*mon-default-comment-start*)\n
+\(let \(\(*mon-default-comment-start* \"%% \"\)\)
+  *mon-default-comment-start*\)\n
+ \(mon-comment-divider-w-len 36\)\n
+:SEE-ALSO `*mon-default-comment-divider*', `mon-set-buffer-local-comment-start',
+`mon-set-buffer-local-comment-start-init', `mon-comment-divider-to-col',
+`mon-comment-divider-to-col-four', `mon-comment-divider-w-len',
+`mon-comment-lisp-to-col'.\n►►►"
+  ;; :TODO :type key should have required match.
+  :type  'string
+  :group 'mon-base)
+;;
+;; (unless (bound-and-true-p *mon-default-comment-start*)
+;;         (setq *mon-default-comment-start* ";;; "))
+
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2009-10-24T12:07:10-04:00Z}#{09436} - by MON KEY>
+(defcustom *mon-default-comment-divider* (mon-comment-divider-w-len 30)
+  "*Preferred mon-comment-divider for lisp source sectioning.\n
+:CALLED-BY `mon-comment-divider', `mon-comment-divider-to-col'\n
+:SEE-ALSO `mon-comment-divider-w-len', `mon-comment-divider-to-col'\n►►►"
+  ;; :TODO :type key should have required match.
+  :type  'string  
+  :group 'mon-base)
+;;
+;;;(progn (makunbound '*mon-default-comment-divider*)
+;;;       (unintern "*mon-default-comment-divider*" obarray) )
+
+;;; ==============================
+;;; :TODO Factor this var away.
+;;; :CREATED <Timestamp: Saturday July 18, 2009 @ 11:59.08 AM - by MON KEY>
+(defcustom *mon-timestamp-cond* nil
+  "A list of filenames which get alternative timestamp name strings.\n
+car is a filename and must be a string without whitespace, delimiters or punctuation.\n
+cadr is a username to insert when timestamping in a file matching car.\n
+These values are used to inform calling functions according to some heuristic.\n
+:NOTE Used for file based conditional timestamps and obfuscating files/source.
+:SEE-ALSO `mon-timestamp', `mon-accessed-time-stamp', `mon-accessed-stamp',
+`naf-mode-timestamp-flag'.\n►►►"
+  :type '(repeat (list string string))
+  :group 'mon-base)
+
+
+;;; ==============================
+;;; :CHANGESET 2291
+;;; :CREATED <Timestamp: #{2010-11-09T22:26:44-05:00Z}#{10452} - by MON KEY>
+(defcustom *mon-popup-pos-x-offset* 
+  (or (and (eq window-system 'x) 40)
+      (and (eq window-system 'w32) 110) 
+      0 ;; terminal
+      )
+  "Position for top place an `x-popup-menu'.\n
+:EXAMPLE\n\n
+:SEE-ALSO `*css-complete-popup-pos-x-offset*'.\n►►►"
+  :type  'integer
+  :group 'mon-base)
+
+;; 
 
 ;;; ==============================
 ;;; :CHANGESET 2142
@@ -841,7 +914,7 @@ Peforms loadtime evaluation of functions defined in mon-utils.el:\n
                        "`byte-compile'd `mon-get-mon-emacsd-paths' at loadtime")))
     (eval-after-load "naf-mode-faces"     '(mon-bind-naf-face-vars-loadtime t))
     ;; (eval-after-load "mon-dir-utils"      '(mon-bind-nefs-photos-at-loadtime))
-    ;;(eval-after-load "mon-dir-utils-local" '(mon-bind-nefs-photos-at-loadtime))
+    (eval-after-load "mon-dir-utils-local" '(mon-bind-nefs-photos-at-loadtime))
     (eval-after-load "mon-doc-help-utils" '(mon-help-utils-loadtime t))
     ;; :NOTE Moved (mon-help-utils-CL-loadtime t) -> `mon-run-post-load-hooks'
     (eval-after-load "mon-doc-help-CL"    '(mon-bind-mon-help-CL-pkgs-loadtime t))
@@ -1054,7 +1127,7 @@ All permutations are equally likely.\n
      \(setq hld-buba `\(,\(make-symbol \(format \"not-a-sym-%d\" \(random\)\)\)\)\)
      \(prin1 hld-buba \(current-buffer\)\)\)\)\)\n
 :ALIASED-BY `with-print-gensyms'\n
-:SEE-ALSO `mon-gensym'.\n►►►"
+:SEE-ALSO `mon-gensym', `print-circle', `read-circle'.\n►►►"
   (declare (indent 0) (debug t))
   `(let ((print-gensym t))
      ,@body))
@@ -1077,7 +1150,8 @@ Like the `gensym' function in CL package but defined as a macro instead.\n
 :NOTE `edebug-gensym' is identical to the `gensym' but doesn't sigal a
 byte-compiler warning.\n
 :SEE-ALSO `mon-gensym-counter-randomizer', `mon-with-gensyms',
-`mon-gensym-counter-randomizer-TEST', `edebug-gensym'.\n►►►"
+`mon-gensym-counter-randomizer-TEST', `edebug-gensym'
+`easy-menu-make-symbol', `easy-menu-item-count'.\n►►►"
   (declare (indent 0) (debug t))
   (let ((mgs-pfix (make-symbol "mgs-pfix"))
         (mgs-num  (make-symbol "mgs-num"))) ;; (print-gensym t))
@@ -1835,7 +1909,8 @@ Whereas with a two element proper list:\n
      \(and \(cadr \(booleanp query-truth\)\)
           \(not \(car \(booleanp query-truth\)\)\)\)\)\n
 :SEE-ALSO `mon-zero-or-onep', `mon-string-or-null-and-zerop',
-`mon-equality-or-predicate', `byte-boolean-vars'.\n►►►"
+`mon-sequence-all-booleanp' `mon-equality-or-predicate',
+`byte-boolean-vars'.\n►►►"
   ;; :WAS (or (and (eq putative-boolean t)   '(t t))
   ;;          (and (eq putative-boolean nil) '(nil t))
   ;;          '(nil nil)))
@@ -1873,7 +1948,8 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 :ALIASED-BY `string-or-null-and-zerop'
 :ALIASED-BY `stringp-and-zerop-or-null'\n
 :SEE-ALSO `mon-string-not-null-nor-zerop', `string-or-null-p', `zerop',
-`mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary'.\n►►►"
+`mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary',
+`mon-sequence-all-booleanp'.\n►►►"
   (and (string-or-null-p maybe-str-or-null-obj)
        (zerop (length maybe-str-or-null-obj))))
 ;;
@@ -1892,7 +1968,8 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 \(and \(not \(mon-string-not-null-nor-zerop 8\)\) \"got 8\"\)\n
 :ALIASED-BY `string-not-null-or-zerop'\n
 :SEE-ALSO `mon-string-or-null-and-zerop', `string-or-null-p', `zerop',
-`mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary'.\n►►►"
+`mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary',
+`mon-sequence-all-booleanp'.\n►►►"
   (and (not (mon-string-or-null-and-zerop w-putative-string))
        (stringp w-putative-string)
        w-putative-string))
@@ -1901,6 +1978,43 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 ;;; :TEST-ME (and (not (mon-string-not-null-nor-zerop nil)) "value null")
 ;;; :TEST-ME (and (not (mon-string-not-null-nor-zerop "")) "empty string")
 ;;; :TEST-ME (and (not (mon-string-not-null-nor-zerop 'I-am-not-a-good-string)) "got symbol")
+
+
+;;; ==============================
+;;; :CHANGESET 2291
+;;; :CREATED <Timestamp: #{2010-11-10T14:15:34-05:00Z}#{10453} - by MON KEY>
+(defun mon-list-string-longest (check-string-lst)
+  "Return length of longest string in sequence CHECK-STRING-LST.\n
+Return value is two elt list, car is an integer, cadr is CHECK-STRING-LST.\n
+If a string does not satisfy `mon-string-not-null-nor-zerop' signal an error.\n
+:EXAMPLE\n\n\(mon-list-string-longest '\(\"EDITOR\" \"HOME\" \"LANG\"\)\)\n
+\(= \(car \(mon-list-string-longest '\(\"EDITOR\" \"HOME\" \"LANG\"\)\)\) 6\)\n
+\(and \(null \(ignore-errors 
+             \(mon-list-string-longest '\(\"EDITOR\" \"HOME\" \"LANG\" 8\)\)\)\)
+     \"errored successfully\"\)\n
+\(let* \(\(vec-w-lngst \(mon-list-string-longest '\(\"EDITOR\" \"HOME\" \"LANG\"\)\)\)
+       \(w-vec  \(make-vector \(car vec-w-lngst\) nil\)\)\)
+  \(dotimes \(wv \(car vec-w-lngst\) 
+               `\(,\(concat w-vec\) ,vec-w-lngst ,w-vec\)\)
+    \(let \(\(w-str \(caadr vec-w-lngst\)\)\)
+      \(aset w-vec wv \(aref w-str wv\)\)\)\)\)\n
+:NOTE The error signalling is intended as a hard filter for functions which
+coerce string elements to vectors.  By preventing null and zerop length strings,
+a calling function which maps a sequence of strings can reuse an existing vector
+rather than repeatedly instantiating a new vector with each iteration.\n
+:SEE-ALSO `mon-sequence-mappable-p' ,`mon-list-string-reader',
+`mon-string-or-null-and-zerop', `string-or-null-p'.\n►►►"
+  (let ((mlsrca-lngst 0))
+    (mapc #'(lambda (mlsr-L-1) 
+              (or (and (mon-string-not-null-nor-zerop mlsr-L-1)
+                       (setq mlsr-L-1 (length mlsr-L-1))
+                       (or (and (> mlsr-L-1 mlsrca-lngst)
+                                (setq mlsrca-lngst mlsr-L-1))
+                           t))
+                  (mon-error-string-err-format 
+                   "mon-list-string-longest" "mlsr-L-1" mlsr-L-1 t)))
+          check-string-lst)
+    (list mlsrca-lngst check-string-lst)))
 
 ;;; ==============================
 ;;; :CHANGESET 2206
@@ -1925,7 +2039,7 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 :ALIASED-BY `mon-1-or-0-p'
 :ALIASED-BY `mon-0-or-1-p'\n
 :SEE-ALSO `mon-string-or-null-and-zerop', `mon-booleanp-to-binary',
-`mon-booleanp', `mon-equality-or-predicate'.\n►►►"
+`mon-booleanp', `mon-sequence-all-booleanp', `mon-equality-or-predicate'.\n►►►"
   (and (wholenump maybe-one-or-zero)
        (or (zerop maybe-one-or-zero)
            (zerop (1- maybe-one-or-zero)))))
@@ -1948,8 +2062,6 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 ;; |      (not (mon-zero-or-onep nil)) 
 ;; |      (not (mon-zero-or-onep (not nil))))
 ;; `----
-
-
 ;;; ==============================
 ;;; :CHANGESET 2206
 ;;; :CREATED <Timestamp: #{2010-10-23T15:08:40-04:00Z}#{10426} - by MON KEY> 
@@ -1992,7 +2104,8 @@ return MAYBE-A-BOOLEAN.\n
 :ALIASED-BY `mon-true-to-one'
 :ALIASED-BY `mon-false-to-zero'\n
 :SEE-ALSO `mon-one-or-zerop', `mon-string-or-null-and-zerop',
-`mon-bool-vector-pp', `byte-boolean-vars', `fillarray'.\n►►►"
+`mon-sequence-all-booleanp' `mon-bool-vector-pp', `byte-boolean-vars',
+`fillarray'.\n►►►"
   (let ((myb-bool (mon-booleanp maybe-a-boolean)))
     (or (and (cadr myb-bool)
              (or (and (car myb-bool) 1)
@@ -2000,6 +2113,125 @@ return MAYBE-A-BOOLEAN.\n
         (when return-if-not maybe-a-boolean))))
 ;;
 ;;; :TEST-ME (mon-booleanp-to-binary-TEST)
+
+
+;;; ==============================
+;;; :CHANGESET 2291
+;;; :CREATED <Timestamp: #{2010-11-10T20:05:57-05:00Z}#{10453} - by MON KEY>
+(defun mon-sequence-all-booleanp (check-t-or-nil w-map-fun w-map-seq 
+                                                 &optional w-type-on-fail)
+  "Whether each elt in mapped sequence is `t' or `nil'.\n
+According to value passed for CHECK-T-OR-NIL, return value has one of formats:\n
+ t              => \(t  t\)    ; Arg was `t' and all mapped elts were eq `t'
+ t              => \(t nil\)   ; Arg was `t' one a mapped elt is not eq `t'
+ nil            => \(nil t\)   ; Arg was `nil' and all mapped elts were `null'
+ nil            => \(nil nil\) ; Arg was `nil' and a mapped elt is `null'
+ w-type-on-fail => \(\(<TYPE> . <POSN>\) <SEQ>\) ; See below\n
+CHECK-T-OR-NIL is a boolean, either `t' or `nil' and should satisfy `mon-booleanp'.
+An error is signaled if not.\n
+W-MAP-FUN is a function object accepting one argument.
+It is passed to `mapcar' and should and return some non-boolean value in W-MAP-SEQ.\n
+W-MAP-SEQ is a mappaple sequence satisfying `mon-sequence-mappable-p'.
+An error is signaled if not.\n
+When W-TYPE-ON-FAIL is non-nil and a non-boolean is encountered inside the
+mapped value of W-MAP-SEQ return value has the form:\n
+ \(\( <TYPE> . <POSN> \) <SEQ> \)\n
+The first elt of list is a consed pair.\n
+The cdr, <POSN> is index into the mapped value of W-MAP-SEQ.\n
+The car, <TYPE> is the non-booleans type.
+It is indicated as if by `type-of', except when <TYPE> is `t' or `nil' in which
+case <TYPE> is indicated as `boolean` and not `symobl` this is a deviation from
+the return value for `type-of'.\n
+The intent is that when a \"non-boolean\" is encountered which is in fact a
+_boolean_ but not one `eq' CHECK-T-OR-NIL, calling functions might benefit by
+not having to re-interrogate quite so vigorously the thing just looked at.\n
+The cadr of return value, <SEQ> is the mapped value of W-MAP-SEQ.\n
+It is therefor possible to invoke `elt' on `cadr' with the `cdar' of return
+value to obtain the value of the offending non-boolean and to do so
+according to some heuristic per the type indicated at `caar'.\n
+:EXAMPLE\n
+\(mon-sequence-all-booleanp t 'cadr '\(\(a t\) \(b t\) \(c t\)\)\)\n
+\(mon-sequence-all-booleanp t 'cadr '\(\(a t\) \(b t\) \(c nil\)\)\)\n
+\(mon-sequence-all-booleanp t 'cadr '\(\(a t\) \(b t\) \(c nil\)\) t\)\n 
+\(mon-sequence-all-booleanp t 'car `\(\(t a\) \(t b\) \(\"I'm a string\" c\)\) t\)\n
+\(mon-sequence-all-booleanp t 'cadr '[\(a t\) \(b t\) \(c t\)]\)\n
+\(mon-sequence-all-booleanp t 'car '[\(t a\) \(nil b\) \(c nil\)]\)\n
+\(mon-sequence-all-booleanp t 'caddr '[\(a 1 t\) \(b 2 t\) \(c 3 nil\)] t\)\n
+\(mon-sequence-all-booleanp t 'caddr `[\(a 1 t\) \(b 2 t\) \(c 3 ,\(make-vector 3 '6\)\)] t\)\n
+\(mon-sequence-all-booleanp nil 'cadr '\(\(a nil\) \(b nil\) \(c nil\)\)\)\n
+\(mon-sequence-all-booleanp nil 'cadr '\(\(a nil\) \(b nil\) \(c t\)\)\)\n
+\(mon-sequence-all-booleanp nil 'cadr '\(\(a nil\) \(b nil\) \(c t\)\) t\)\n
+\(mon-sequence-all-booleanp nil 'car `\(\(nil a\) \(nil b\) \(,\(make-vector 3 '6\) c\)\) t\)\n
+\(mon-sequence-all-booleanp nil 'cadr '[\(a nil\) \(b nil\) \(c nil\)]\)\n
+\(mon-sequence-all-booleanp nil 'car '[\(nil a\) \(t b\) \(c t\)]\)\n
+\(mon-sequence-all-booleanp nil 'caddr '[\(a 1 nil\) \(b 2 nil\) \(c 3 t\)] t\)\n
+\(mon-sequence-all-booleanp nil 'car `\(\(nil a\) \(nil b\) \(\"I'm a string\" c\)\) t\)\n
+;; Following succesfully fail:\n
+\(mon-sequence-all-booleanp 'a #'identity '\(a b\)\)\n
+\(mon-sequence-all-booleanp nil #'identity '\(a . b\)\)\n
+\(mon-sequence-all-booleanp t  #'identity \(current-buffer\)\)\n
+\(mon-sequence-all-booleanp-TEST t\)\n
+:SEE-ALSO `mon-booleanp', `mon-booleanp-to-binary', `mon-zero-or-onep'.\n►►►"
+  (let ((msab-args (mon-booleanp check-t-or-nil)))
+    (and (or (and (cadr msab-args) (progn (setq check-t-or-nil (car msab-args)) t))
+             (error (concat ":FUNCTION `mon-sequence-all-booleanp' "
+                            "-- arg CHECK-T-OR-NIL not `mon-booleanp', got: %S type-of: %s")
+                    check-t-or-nil (type-of check-t-or-nil)))
+         ;; :NOTE Reusing MSAB-ARGS. Now holding `mon-sequence-mappable-p'
+         (setq msab-args (mon-sequence-mappable-p w-map-seq nil t))
+         (or (car msab-args)
+             (error (concat ":FUNCTION `mon-sequence-all-booleanp' "
+                            "-- arg W-MAP-SEQ not `mon-sequence-mappable-p', got: %S type-of: %s")
+                    w-map-seq (cdr msab-args)))
+         ;;
+         ;; :NOTE Check if `w-map-fun' is applicable/funcallable and signal/coerce if not? e.g.:
+         ;; (or (memq (mon-function-object-p w-map-fun) (remq 'macro *mon-function-object-types*)) 
+         ;;
+         ;; Reusing MSAB-ARGS. Reset to nil for use below, but don't kick out of the conditional.
+         (progn (setq msab-args) t))
+    (catch 'failed-at
+      (and w-type-on-fail (setq w-type-on-fail 0))
+      (setq msab-args 
+            (mapcar #'(lambda (msab-L-1)
+                        ;; Convert elt to 1 or 0 if it is `t' or `nil'
+                        (setq msab-L-1 (mon-booleanp-to-binary msab-L-1 t) 
+                              ;; Establish an idx if W-TYPE-ON-FAIL
+                              w-type-on-fail (and w-type-on-fail (1+ w-type-on-fail)))
+                        (or  (and 
+                              w-type-on-fail 
+                              (mon-zero-or-onep msab-L-1) 
+                              (or (and (not check-t-or-nil) 
+                                       (or (= msab-L-1 0) 
+                                           ;; Invert it back to `t' b/c we're gonna throw
+                                           (progn (setq msab-L-1 t) nil)))
+                                  (and check-t-or-nil 
+                                       (or (= msab-L-1 1)
+                                           ;; Invert it back to `nil' b/c we're gonna throw
+                                           (setq msab-L-1 nil))))
+                              msab-L-1)
+                             (and (not w-type-on-fail) (mon-zero-or-onep msab-L-1) msab-L-1)
+                             (throw 'failed-at ;; ((<TYPE> . <POSN>) <SEQ>) 
+                                    (or (and w-type-on-fail 
+                                             (prog1
+                                                 (setq w-type-on-fail
+                                                       ;; Report `t' and `nil' as 'boolean not 'symbol!
+                                                       `((,(or (and (cadr (mon-booleanp msab-L-1)) 'boolean)
+                                                               (type-of msab-L-1)) .  ,w-type-on-fail) ,msab-args))
+                                               (setq msab-args nil)))
+                                        (progn
+                                          (setq w-type-on-fail (list check-t-or-nil nil)
+                                                msab-args nil)
+                                          w-type-on-fail)))))
+                    (setq msab-args (mapcar w-map-fun w-map-seq))))
+      ;; If CHECK-T-OR-NIL is `t' and sum is = length MSAB-ARGS all elts were `t'.
+      ;; If it is `nil' we want 0 e.g.: (= (reduce '+ '(0 0 0)) 0)
+      (or (and msab-args 
+               (setq msab-args `(,check-t-or-nil 
+                                 ,(= (apply '+ msab-args) 
+                                     (or (and check-t-or-nil (length msab-args)) 0)))))
+          w-type-on-fail))))
+;;
+;;; :TEST-ME (mon-sequence-all-booleanp)
 
 ;;; ==============================
 ;;; Following does image extension type checking. Can be used elsewhere as well.
@@ -2083,7 +2315,7 @@ Does not move point.\n
 :EXAMPLE\n\n\(mon-get-system-specs\)\n
 :SEE-ALSO `system-name', `mon-get-env-vars-strings', `mon-get-env-vars-symbols',
 `mon-get-env-vars-emacs', `mon-get-proc-w-name', `mon-get-sys-proc-list',
-`mon-insert-sys-proc-list'.\n►►►"
+`mon-insert-sys-proc-list', `read-envvar-name'.\n►►►"
   (interactive "i\np")
   (if (executable-find "uname")
       (let ((unm (shell-command-to-string "uname -a")))
@@ -2107,7 +2339,7 @@ like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
 :EXAMPLE\n\n(mon-get-env-vars-symbols)\n
 :SEE-ALSO `mon-get-env-vars-strings', `mon-get-system-specs', 
 `mon-help-emacs-introspect', `process-environment', `initial-environment',
-`getenv', `setenv'.\n►►►"
+`getenv', `setenv', `read-envvar-name'.\n►►►"
   (interactive) 
   (let ((mgepev process-environment)
         gthr-pe)
@@ -2122,32 +2354,34 @@ like `mon-get-env-vars-strings' but returns symbols instead of strings.\n
   "Return a list strings for the current process' enviromental variables.
 When AS-STRINGS is non-nil or called with a prefix-arg return as strings.
 When insrtp or called-interactively insert returned vars at point.\n
+:EXAMPLE\(mon-get-env-vars-strings\)\n
 :SEE-ALSO `mon-get-env-vars-symbols', `mon-get-env-vars-emacs',
-`mon-get-system-specs', `mon-help-emacs-introspect', 
-`process-environment', `initial-environment', `setenv', `getenv'.\n►►►"
+`mon-get-system-specs', `mon-help-emacs-introspect', `process-environment',
+`initial-environment', `setenv', `getenv', `read-envvar-name'.\n►►►"
   (interactive "P\ni\np")
   (let ((getenvs
          (mapcar #'(lambda (enventry)
-                   (let ((str (substring enventry 0
-                                         (string-match "=" enventry))))
-                     (if (multibyte-string-p str)
-                         (decode-coding-string
-                          str locale-coding-system t)
+                     (let ((str (substring enventry 0
+                                           (string-match "=" enventry))))
+                       (if (multibyte-string-p str)
+                           (decode-coding-string str locale-coding-system t)
                          str)))
                  ;; :NOTE Why did this use append here?
                  (append process-environment))))
-    (setq getenvs (sort getenvs 'string<))
+    (setq getenvs (sort getenvs #'string<))
     (when as-strings
            (setq getenvs (concat "\"" (mapconcat 'identity getenvs "\"\n\"") "\"")))
     (cond ((or insrtp intrp)
         ;; (mapc (lambda (x) (prin1 x (current-buffer))) getenvs)
            (if as-strings
+               (prin1 getenvs (current-buffer))
                (princ getenvs (current-buffer))
-               (prin1 getenvs (current-buffer))))
+               ))
           (t (if as-strings
                  (prin1 getenvs)
-                 getenvs)))))
+               getenvs)))))
 ;;
+;;; :TEST-ME (mon-get-env-vars-strings)
 ;;; :TEST-ME (mon-get-env-vars-strings t)
 ;;; :TEST-ME (mon-get-env-vars-strings nil nil)
 ;;; :TEST-ME (mon-get-env-vars-strings  t t)
@@ -3759,12 +3993,40 @@ at point. Does not move point.\n
   (mon-wrap-text front-wrap back-wrap insrtp intrp))
 
 ;;; ==============================
+;;; :NOTE Duplicates functionality of `css-pos-for-x-popup-menu' in 
+;;;  (lookup-key global-map [menu-bar]) `mouse-menu-bar-map'
+;;; `mouse-selection-click-count-buffer'
+;;; (posn-x-y (event-start (read-event nil nil 0.0))
+;;; :FILE mon-css-complete.el
+;;; :CHANGESET 2291 
+;;; :CREATED <Timestamp: #{2010-11-09T22:29:47-05:00Z}#{10452} - by MON KEY>
+(defun mon-postion-for-x-popup-menu ()                              
+  "Return a position for displaying an `x-popup-menu'.\n
+Return value has the form:\n
+ \(\(<POSN-X> <POSN-Y>\) <POSN-WINDOW>\)\n
+Returned value is informed by variable `*mon-popup-pos-x-offset*'.\n
+:EXAMPLE\n\n\(mon-postion-for-x-popup-menu\)\n
+\(popup-menu naf-mode-menu \(mon-postion-for-x-popup-menu\)\)\n
+:SEE-ALSO `posn-at-point', `posn-x-y', `posn-window', `mouse-pixel-position',
+`css-pos-for-x-popup-menu'.\n►►►"
+  (let* ((cpfxpm     (posn-at-point))
+         (cpfxpm-x-y (posn-x-y cpfxpm)) ;; (posn-x-y cpfxpm))
+         (cpfxpm-win (posn-window cpfxpm)))
+    `((,(+ *mon-popup-pos-x-offset* (car cpfxpm-x-y)) ,(cdr cpfxpm-x-y))
+      ,cpfxpm-win)))
+
+;;; ==============================
 ;;; :COURTESY Sandip Chitale <sandipchitale@attbi.com>
-(defun mon-choose-from-menu (menu-title menu-items)
-  "Choose from a list of choices from a popup menu.\
-:EXAMPLE\n\(mon-choose-from-menu 
- \"Bubbas-Choice\" '\(\"one-bubba\" \"two-bubba\" \"three-bubba\"\)\)\n
-:SEE-ALSO `choose-completion', `x-popup-menu'.\n►►►"
+(defun mon-choose-from-menu (menu-title menu-items &optional menu-posn)
+  "Choose from a list of choices from a popup menu.\n
+:EXAMPLE\n\n\(mon-choose-from-menu \"Bubbas-Choice\"
+ '\(\"one-bubba\" \"two-bubba\" \"three-bubba\"\)\)\n
+\(mon-choose-from-menu \"Bubbas-Choice\"
+ '\(\"one-bubba\" \"two-bubba\" \"three-bubba\"\) 
+   \(mon-postion-for-x-popup-menu\)\)\n
+:SEE-ALSO `choose-completion', `x-popup-menu',
+`mon-postion-for-x-popup-menu', `popup-menu', `mouse-pixel-position'
+`mouse-menu-bar-map'.\n►►►"
   (let (mcfm-item mcfm-item-list)
     (while menu-items
       (setq mcfm-item (car menu-items))
@@ -3774,7 +4036,9 @@ at point. Does not move point.\n
         (setq mcfm-item-list 
               (cons (cons mcfm-item mcfm-item) mcfm-item-list)))
       (setq menu-items (cdr menu-items)))
-    (x-popup-menu t (list menu-title (cons menu-title (nreverse mcfm-item-list))))))
+    (x-popup-menu 
+     (or menu-posn t)
+     (list menu-title (cons menu-title (nreverse mcfm-item-list))))))
 ;;
 ;;; :TEST-ME (mon-choose-from-menu "Bubbas-Choice" '("one-bubba" "two-bubba" "three-bubba"))
 
@@ -7850,170 +8114,6 @@ When RTRN-AS-LIST is non-nil returns as list.\n
                        gb)))))))))
 
 ;;; ==============================
-;;; :CREATED <Timestamp: #{2010-01-16T17:19:31-05:00Z}#{10026} - by MON KEY>
-(defun mon-plist-remove! (pl-sym property-indicator)
-  "Remove from PL-SYM's plist the PROPERTY-INDICATOR and its value.\n
-Like `cl-remprop' and CL's `remprop' but without the latter's `remf'.\n
-:EXAMPLE\n\n\(let \(the-pl\) 
-  \(setplist the-pl \(mon-alphabet-as-type 'plistD->num\)\)
-  \(dolist \(p-rmv 
-            \(subseq 
-             \(mapcar 'car \(mon-alphabet-as-type 'cons-keyD->num\)\)
-             0 8\)
-           \(pl-sym-plist the-pl\)\)
-    \(mon-plist-remove! the-pl p-rmv\)\)\)\n
-:SEE-ALSO `mon-plist-remove-if',`mon-plist-keys', `mon-plist-remove-consing',
-`remf', `remprop', `mon-remove-if-not', `mon-delete-if', `mon-member-if'
-`mon-help-plist-functions'.\n►►►"
-  (let* ((CLDOREMF
-          #'(lambda  (PLST TAG)
-              (let ((mpr-p (cdr PLST)))
-                (while (and (cdr mpr-p) (not (eq (car (cdr mpr-p)) TAG))) 
-                  (setq mpr-p (cdr (cdr mpr-p))))
-                (and (cdr mpr-p) (progn (setcdr mpr-p (cdr (cdr (cdr mpr-p)))) t)))))
-         (CLREMPROP 
-          #'(lambda (sym tag)
-              (let ((mpr-plst (symbol-plist sym)))
-                (if (and mpr-plst (eq tag (car mpr-plst)))
-                    (progn (setplist sym (cdr (cdr mpr-plst))) t)
-                    (funcall CLDOREMF mpr-plst tag))))))
-    (funcall CLREMPROP pl-sym property-indicator)))
-;;    
-;;;(mon-plist-remove! (mon-alphabet-as-type 'plistD->num) :l)
-;;
-;;; :TEST-ME 
-;;; (let (the-pl) 
-;;;   (setplist the-pl (mon-alphabet-as-type 'plistD->num))
-;;;   (dolist (p-rmv 
-;;;             (subseq 
-;;;              (mapcar 'car (mon-alphabet-as-type 'cons-keyD->num))
-;;;              0 8)
-;;;            (symbol-plist the-pl))
-;;;     (mon-plist-remove! the-pl p-rmv)))
-
-;;; ==============================
-;;; :COURTESY Pascal J. Bourguignon 
-;;; :HIS common-lisp/list.lisp :VERSION 2008-06-24 :WAS `PLIST-REMOVE'
-;;; :NOTE I lifted this one from a Common Lisp file without realizing it would
-;;; cause problems w/ Emacs lisp b/c `remf' is a macro intended for plists as
-;;; generalized variable. Emacs compiler nags b/c `remf' calls `cl-do-remf' at
-;;; runtime. As such, we have commented this one out, however, we leave it here
-;;; as a reminder to be on the watch for the demons of hubris... Who in their
-;;; right mind is shadowing the symbol `cl-do-remf'?  Come on, enough already,
-;;; these types of compiler 'Warnings' don't protect the user's namespace!!!!
-;;; :CREATED <Timestamp: #{2009-09-28T17:32:55-04:00Z}#{09401} - by MON>
-;;
-;; (defun mon-plist-remf (plist prop)
-;;   "Return PLIST with PROP removed using `remf'.\n
-;; :EXAMPLE (mon-plist-remf \(mon-alphabet-as-type 'plistD->num\) :l)
-;; :SEE-ALSO `mon-plist-remove', `mon-plist-keys'.\n►►►"
-;;   (remf plist prop) plist)
-;;
-;;; :TEST-ME (mon-plist-remf (mon-alphabet-as-type 'plistD->num) :l)
-
-;;; ==============================
-;;; :COURTESY Pascal J. Bourguignon :HIS pjb-utilities.el :WAS `plist-remove'
-;;; :CREATED <Timestamp: #{2010-01-16T16:55:29-05:00Z}#{10026} - by MON KEY>
-(defun mon-plist-remove-consing (rmv-in-plist but-key)
-  "Return a new rmv-in-plist with the each element of RMV-IN-PLIST but BUT-KEY.
-:NOTE A suffix in result may be a suffix of RMV-IN-PLIST too.\n
-:EXAMPLE\n\n(mon-plist-remove-consing (mon-alphabet-as-type 'plistD->num) :l)\n
-:SEE-ALSO `mon-plist-remove!', `mon-plist-remove-if',
-`mon-plist-remove-consing', `remf', `remprop', `mon-plist-keys',
-`mon-remove-if-not', `mon-delete-if', `mon-member-if',
-`mon-help-plist-functions', `mon-help-plist-properties'.\n►►►"
-  (if (eq (car rmv-in-plist) but-key)
-      (cdr (cdr rmv-in-plist))
-    (cons (car rmv-in-plist) 
-          (cons (cadr rmv-in-plist) 
-                (mon-plist-remove-consing (cddr rmv-in-plist) but-key)))))
-;;
-;;; :TEST-ME (mon-plist-remove-consing (mon-alphabet-as-type 'plistD->num) :l)
-
-;;; ==============================
-;;; :NOTE Inspired by Pascal Bourguignon's Common Lisp implementation of 
-;;; `PLIST-REMOVE' above. Following doesn't call `remf' and handles predicates.
-;;; :CREATED <Timestamp: #{2010-01-13T15:41:30-05:00Z}#{10023} - by MON KEY>
-(defun mon-plist-remove-if (plist prop &optional plist-pred with-debug)
-  "Return PLIST with PROP removed.\n
-By default comparison for PROP is made `eq' as it is with CL's `remprop'.\n
-When optional arg PLIST-PRED is either `eql' or `equal' the plist property
-comparison is made with that predicate and `memql' or `member' counterparts.\n
-If optional arg WITH-DEBUG is non-nil output as with `message' when 
-return value is `equal' the initial arg given for PLIST.\n
-:EXAMPLE\n\n\(mon-plist-remove-if  
- \(mon-plist-remove-if 
-  \(mon-plist-remove-if \(mon-alphabet-as-type 'plistD->num\) :f\)
-  :a 'eql\)
- :c 'equal\)\n
-\(mon-plist-remove-if '\(this list-a that listb\) 'that\)\n
-\(mon-plist-remove-if '\(this list-a that listb\) 'this 'eql\)\n
-\(mon-plist-remove-if '\(this list-a that listb\) 'nope\)\n
-\(mon-plist-remove-if '\(this list-a that listb\) 'nope 'eql t\)\n
-\(mon-plist-remove-if '\(this list-a that listb\) \"this\"\)\n
-\(mon-plist-remove-if '\(\"this\" list-a \"that\" list-b\) \"this\"\)\n
-\(mon-plist-remove-if '\(\"this\" list-a \"that\" list-b\) \"this\" nil t\)\n
-\(mon-plist-remove-if '\(\"this\" list-a \"that\" list-b\) \"this\" 'equal\)\n
-\(mon-plist-remove-if '\(\"this\" list-a \"that\" list-b\) \"this\" 'eql t\)\n
-:SEE-ALSO `mon-plist-remove!', `mon-plist-remove-consing', `mon-plist-keys',
-`remf', `remprop', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
-`mon-help-plist-functions', `mon-help-plist-properties'.\n►►►"
-  (let* ((pl plist)
-         (pred
-          (if plist-pred 
-              (cond ((eq plist-pred 'eql) `((memql prop pl)  (eql p prop)))
-                    ((eq plist-pred 'equal) `((member prop pl)  (equal p prop)))
-                    (t `((memq prop pl)  (eq p prop))))
-              `((memq prop pl)  (eq p prop))))
-         (idx  (eval (car pred)))
-         nw)
-    (if (and idx (funcall (caadr pred) (car idx) (car pl))) ;;(eval `(,(caadr pred) (car idx) (car pl))))
-        (if (> (length pl) 2)
-            (progn
-              (dotimes (l 2 pl) (pop pl))
-              (setq nw pl))
-            nw)
-        (if idx
-            (progn
-              (dotimes (i 2) (pop idx))
-              (while pl 
-                (funcall #'(lambda (p)
-                             (if (eval (cadr pred))
-                              ;;(funcall (caadr pred) (cadadr pred) (car (cddadr pred)))
-                              ;;(eval `(,(caadr pred) ,(cadadr pred) ,(car (cddadr pred))))
-                              (setq pl nil)
-                              (push p nw))) 
-                         (pop pl)))
-              (setq nw (nconc (nreverse nw) idx)))
-            (setq nw pl))) ;;(error "%S is not a property in %S" prop plist)
-    (if (equal pl nw)
-        (progn
-          (when (or with-debug (eq (caadr pred) 'eq))
-            (message "%S `equal' original PLIST when using PLIST-PRED predicates `%s' and `%s'" 
-                     plist (caadr pred) (caar pred)))
-          nw)
-        nw)))
-;;
-;;; :TEST-ME (mon-plist-remove-if '(this list-a that listb) "this")
-;;; :TEST-ME (mon-plist-remove-if '("this" list-a "that" list-b) "this")
-;;; :TEST-ME (mon-plist-remove-if '("this" list-a "that" list-b) "this" nil t)
-;;; :TEST-ME (mon-plist-remove-if '("this" list-a "that" list-b) "this" 'equal)
-;;; :TEST-ME (mon-plist-remove-if '("this" list-a "that" list-b) "this" 'eql t)
-;;; :TEST-ME (mon-plist-remove-if '(this list-a that listb) 'this 'eql)
-;;; :TEST-ME (mon-plist-remove-if '(this list-a that listb) 'nope 'eql t)
-;;; :TEST-ME (mon-plist-remove-if '(this list-a that listb) 'this 'eql)
-;;; :TEST-ME (mon-plist-remove-if '(this list-a that listb) 'nope)
-;;; :TEST-ME (mon-plist-remove-if '(this list-a that listb) 'that)
-;;; :TEST-ME (mon-plist-remove-if (mon-alphabet-as-type 'plistD->num) :l)
-;;; :TEST-ME (mon-plist-remove-if 
-;;;           (mon-plist-remove-if 
-;;;            (mon-plist-remove-if (mon-alphabet-as-type 'plistD->num) :l) 
-;;;            :a 'eql)
-;;;           :t 'equal)
-
-
-
-;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-05-27T20:09:25-04:00Z}#{10214} - by MON KEY>
 (defun mon-map-obarray-symbol-plist-props (plist-sym &optional display-in-buffer intrp)
@@ -8773,11 +8873,11 @@ A proper list is a list ending with a nil or cdr, not an atom.\n
 \(mon-list-proper-p '\(\(\) . \(\(\) . \(\)\)\)\)\n
 :ALIASED-BY `proper-list-p'
 :ALIASED-BY `mon-proper-list-p'\n
-:SEE-ALSO `mon-maybe-cons', `mon-list-match-tails', `mon-list-make-unique',
-`mon-delq-cons', `mon-delq-cons', `mon-remove-dups', `mon-remove-if',
-`mon-list-reorder', `mon-assoc-replace', `mon-intersection', `mon-combine',
-`mon-mapcar', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
-`mon-recursive-apply', `mon-sublist', `mon-sublist-gutted',
+:SEE-ALSO `mon-sequence-mappable-p', `mon-maybe-cons', `mon-list-match-tails',
+`mon-list-make-unique', `mon-delq-cons', `mon-delq-cons', `mon-remove-dups',
+`mon-remove-if', `mon-list-reorder', `mon-assoc-replace', `mon-intersection',
+`mon-combine', `mon-mapcar', `mon-map-append', `mon-maptree', `mon-transpose',
+`mon-flatten', `mon-recursive-apply', `mon-sublist', `mon-sublist-gutted',
 `mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
 `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
   (when (listp putatively-proper)
@@ -8833,6 +8933,20 @@ Return value when W-RETURN-AS-LIST is non-nil will have one of these forms:\n
 \(mon-sequence-mappable-p \(make-bool-vector 8 t\) nil t\)\n
 \(mon-sequence-mappable-p \(current-buffer\)\)
 \(mon-sequence-mappable-p \(current-buffer\) nil t\)\n
+:NOTE This function is `print-gensym' agnostic and while following returns
+correctly reporting  null when the cons is not mappable:\n
+ \(let \(\(empty-cons  '\(#::not-really-here . #::neither-am-i\)\)\)
+  `\(#::was-mappable   ,\(mon-sequence-mappable-p empty-cons\)
+    #::was-consp      ,\(consp empty-cons\)
+    #::w-empty-cons   ,empty-cons    
+    #::car-empty-p ,\(not \(intern-soft \(car empty-cons\)\)\)
+    #::cdr-empty-p ,\(not \(intern-soft \(cdr empty-cons\)\)\)\)\)\n
+Its list conterpart however returns non-nil, maybe no what you are expecting:\n
+ \(mon-with-print-gensyms
+   \(let \(\(not-a-sym \(list '#::not-really-here '#::neither-am-i\)\)\)
+     \(prin1 \(list '#::was-mappable
+                  \(mon-sequence-mappable-p not-a-sym\)
+                  not-a-sym\)\)\)\)\n
 :NOTE This function differs with `sequencep' in some subtle but useful ways:\n
  - It can preempt attempts to map consed lists:\n
     \(sequencep '\(nil . t\)\)
@@ -8870,9 +8984,9 @@ Return value when W-RETURN-AS-LIST is non-nil will have one of these forms:\n
                              \(when \(car \(cdaddr x\)\) \"the evidence suggests it\"\)\)\)\)\)
              gthr\)\)\)\n
 :ALIASED-BY `mon-mappable-sequence-p'\n
-:SEE-ALSO `mon-map-append', `mon-map-combine', `mon-map1', `mon-mapcan',
-`mon-mapcar', `mon-mapcar-mac', `mon-mapcon', `mon-mapl', `mon-maplist',
-`mon-maptree', `mon-bool-vector-pp', `type-of',
+:SEE-ALSO `mon-list-string-longest', `mon-map-append', `mon-map-combine',
+`mon-map1', `mon-mapcan', `mon-mapcar', `mon-mapcar-mac', `mon-mapcon',
+`mon-mapl', `mon-maplist', `mon-maptree', `mon-bool-vector-pp', `type-of',
 `mon-get-text-properties-parse-prop-val-type-chk',
 `mon-help-sequence-functions'.\n►►►"
   (let ((msmp-typ  (type-of seq-putatively-mappable))
@@ -9325,6 +9439,16 @@ Eliminates duplicates between SET1-LST and SET2-LST using COMPARISON-FUNC.\n
     ;; :WAS (cdr msd-rslt)))
     (nreverse (cdr msd-rslt))))
 
+;;
+;; mon-pairlis
+;; (pairlis (number-sequence 1 26) (mon-alphabet-as-list-symbolD))
+;; (mon-alphabet-as-list-symbolD)
+;; 
+;;; (let ((bubba '(a b c d)))
+;; (pairlis (1 2 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18 19 20 21 22 23 24 25 26)
+;;          (a b c d e f g h i j k l m n o p q r s t u v w x y z) 
+
+
 ;;; ==============================
 ;;; :PREFIX "mclm-"
 ;;; :CHANGESET 2142
@@ -9406,7 +9530,10 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
        (if (consp ,mclm-cpy)
            (if (mon-list-proper-p ,mclm-cpy)
                ;; Could also check `vectorp' here and coerce with:
-               ;; (append <VECTOR> nil) 
+               ;; (append <VECTOR> nil) which might allow extending elisp
+               ;; handling of vectors to the cl mapping fncns but would need to
+               ;; record that it occured so we could coerce it back to a vector
+               ;; once finished...
                (copy-sequence ,mclm-cpy)
              (progn
                (while (consp ,mclm-cpy) (push (pop ,mclm-cpy) ,mclm-res))
@@ -9415,7 +9542,7 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
 
 ;;; ==============================
 ;;; :PREFIX "mmp1-"
-;;; :COURTESY sblc/src/code/list.lisp
+;;; :COURTESY SBCL :FILE sblc/src/code/list.lisp
 ;;; :MODIFICATIONS Now uses catch/throw instead of `return' and `setcdr' instead
 ;;; of `rplacd'. local var arglists now uses `mon-copy-list-mac' instead of
 ;;; `copy-list' to silence byte-compiler.  Elided the outer let binding of fun
@@ -9431,18 +9558,42 @@ Map the designated FUN-DESIGNATOR over ORIGINAL-ARGLISTS in an appropriate way.
 Mapping is complete when any of the arglists runs out.\n
 Until then, cdr down the arglists applying FUN-DESIGNATOR and ACCUMULATE
 results as specified.\n
+FUNCTION-DESIGNATOR ia a function that must take as many arguments as there are
+lists in ORIGINAL-ARGLISTS.
+ORIGINAL-ARGLISTS
 ACCUMULATE is keyword style symbol either `:nconc` or :`list`.\n
 TAKE-CAR
-:NOTE Sourced from SBCL. \n
+The mapping operation involves applying FUN-DESIGNATOR to successive sets of
+ORIGINAL-ARGLISTS in which one argument is obtained from each sequence.\n
+Except for `mon-mapc' and `mon-mapl', the result returned contains the results
+returned by FUN-DESIGNATOR.\n
+Whereas with `mon-mapc' and `mon-mapl', the resulting sequence
+returned is the first-list-arg of ORIGINAL-ARGLISTS.\n
+FUN-DESIGNATOR is called first on all the elements with index \"0\", then on
+all those with index \"1\", and so on.  RESULT-TYPE specifies the type of
+the resulting sequence.\n
+ `mon-mapc'    fun-designator &rest original-arglists -> first-list-arg
+ `mon-mapl'    fun-designator &rest original-arglists -> first-list-arg
+ `mon-mapcar'  fun-designator &rest original-arglists -> result-list
+ `mon-maplist' fun-designator &rest original-arglists -> result-list
+ `mon-mapcan'  fun-designator &rest original-arglists -> concatenated-results
+ `mon-mapcon'  fun-designator &rest original-arglists -> concatenated-results\n
+:NOTE These mapping functions sourced from Steel Bank Common Lisp \(SBCL\).\n
 :SEE :FILE sblc/src/code/list.lisp
 :SEE-ALSO `mon-remove-if-not', `mon-delete-if', `mon-member-if', `mon-subseq',
 `mon-intersection', `mon-mismatch', `mon-set-difference', `mon-char-code'.\n►►►"
+  ;; :TODO Use (memq (mon-function-object-p fun-designator)
+  ;;                 (remq 'macro *mon-function-object-types*))
   (unless 
-      ;; :TODO Use (memq (mon-function-object-p fun-designator) (remq 'macro *mon-function-object-types*))
-      (functionp fun-designator) 
+      (functionp fun-designator) ;; (functionp 'subrp) (functionp '(lambda (x) x)) 
     (error (concat ":FUNCTION `mon-map1' "
                    "-- arg FUN-DESIGNATOR does not satisfy `functionp'")))
+  ;;
+  ;; :NOTE CL ANSI spec says:
+  ;; "If FUNCTION is a symbol, it is `coerce'd to a function as if by
+  ;; `symbol-function'."
   ;; :WAS (let ((fun (%coerce-callable-to-fun fun-designator)))
+  ;;
   (let* (;; :WAS (arglists  (copy-list original-arglists))
          (mmp1-arg-lsts (mon-copy-list-mac original-arglists))
          (mmp1-rtn-list (list nil))
@@ -9474,17 +9625,18 @@ TAKE-CAR
 (defun mon-mapc (mapc-fun mapc-lst &rest more-lsts)
   ;; #!+sb-doc
   "Apply function MAPC-FUN to successive elements of MAPC-LST and MORE-LSTS.\n
-Return the second argument.\n With one sequence like elisp's `mapc' with
-several, it is like the Common Lisp `mapc' but without the extension to
-arbitrary sequence types.\n
+`mon-mapc' is like `mon-mapcar' except that the results of applying MAPC-FUN
+are not accumulated.  Return the second argument.\n
+With one sequence like elisp's `mapc' with several, it is like the Common Lisp
+`mapc' but without the extension to arbitrary sequence types.\n
 :EXAMPLE\n
 \(let \(\(dummy nil\)\)
-  `\(:w-result ,\(mon-mapc #'\(lambda \(&rest x\) 
+  `\(#::w-result ,\(mon-mapc #'\(lambda \(&rest x\) 
                              \(setq dummy \(append dummy x\)\)\)
                          '\(1 2 3 4\)
                          '\(a b c d e\)
                          '\(x y z\)\)
-              :dummy ,dummy\)\)\n
+              #::dummy ,dummy\)\)\n
 :SEE-ALSO `mon-map1', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
 `mon-mapcon', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
 `mon-intersection', `mon-set-difference', `mon-mismatch', `mon-subseq'.\n►►►"
@@ -9500,7 +9652,11 @@ arbitrary sequence types.\n
 (defun mon-mapcar (mapcar-fun mapcar-lst &rest more-lsts)
   ;;#!+sb-doc
   "Apply MAPCAR-FUN to successive elements of MAPCAR-LST.\n
-Return list of MAPCAR-FUN return values.\n
+Return a list of values returned by successive evaluations of MAPCAR-FUN.\n
+`mon-mapcar' operates on successive elements of the list arguments.\n
+MAPCAR-FUN is applied to the first element of each list,, then to the second
+element of each list, and so on. Iteration terminates when the shortest
+list runs out, any excess elements remaining in other lists are ignored.\n
 :EXAMPLE\n\n\(mon-mapcar #'\(lambda \(x &rest y\) \(cons x y\)\)
  '\(b q\) '\(c r\) '\(d s\) '\(q f\) '\(r g\) '\(s t\) 
  '\(b q\) '\(c r\) '\(d s\) '\(q f\) '\(r g\) '\(s t\)\)\n
@@ -9528,7 +9684,7 @@ Return list of MAPCAR-FUN return values.\n
 ;; |
 ;; | (mon-mapcar #'car '((1 a) (2 b) (3 c)))  ;; (1 2 3)
 ;; | (mon-mapcar #'abs '(3 -4 2 -5 -6))       ;; (3 4 2 5 6)
-;; | (mon-mapcar #'cons '(a b c) '(1 2 3))    ;; ((A . 1) (B . 2) (C . 3))
+;; | (mon-mapcar #'cons '(A B C) '(1 2 3))    ;; ((A . 1) (B . 2) (C . 3))
 ;; |
 ;; `----
 
@@ -9540,15 +9696,38 @@ Return list of MAPCAR-FUN return values.\n
   ;;#!+sb-doc
   "Apply MAPCAN-FUN to successive elts of MAPCAN-LST and if provided REST-LST.\n
 Return `nconc' of MAPCAN-FUN results.\n
+`mon-mapcan' is like `mon-mapcar' except the results of applying MAPCAN-FUN are
+combined into a list as if by `nconc' rather than `list', e.g.:\n
+ \(mon-mapcand f x1 { ... } xn\) ≡ \(apply #'nconc \(mapcar f x1 { ... } xn\)\)\n
 :EXAMPLE\n\n\(mon-mapcan #'\(lambda \(x &rest y\) \(cons x y\)\)
             '\(b q\) '\(c r\) '\(d s\) '\(q f\) '\(r g\) '\(s t\) 
             '\(b q\) '\(c r\) '\(d s\) '\(q f\) '\(r g\) '\(s t\)\)\n
 \(mapcan #'\(lambda \(x &rest y\) \(cons x y\)\)
         '\(b q\) '\(c r\) '\(d s\) '\(q f\) '\(r g\) '\(s t\) 
         '\(b q\) '\(c r\) '\(d s\) '\(q f\) '\(r g\) '\(s t\)\)\n
+\(mon-mapcan #'\(lambda \(x y\) \(if \(null x\) nil \(list x y\)\)\)
+          '\(nil nil nil d e\)
+          '\(1 2 3 4 5 6\)\)\n
+\(mon-mapcan #'\(lambda \(x\) \(and \(numberp x\) \(list x\)\)\)
+            '\(a 1 b c 3 4 d 5\)\)\n
 :SEE-ALSO `mon-map1', `mon-mapc', `mon-mapl', `mon-maplist', `mon-mapcar',
 `mon-mapcan', `mon-mapcon', `mon-intersection', `mon-subseq'.\n►►►"
   (mon-map1 mapcan-fun (cons mapcan-lst rest-lst) :nconc t))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | 
+;; | ;; :NOTE Examples from the CL-ansi spec:          :EXPECT
+;; | 
+;; | (mon-mapcan #'(lambda (x y) 
+;; |                 (if (null x) nil (list x y))) ;; (D 4 E 5)
+;; |             '(nil nil nil D E) ;<- Cheating :)
+;; |             '(1 2 3 4 5 6))
+;; | 
+;; | (mon-mapcan #'(lambda (x) 
+;; |                 (and (numberp x) (list x)))   ;; (1 3 4 5)
+;; |             '(a 1 b c 3 4 d 5))
+;; | 
+;; `----
 
 ;;; ==============================
 ;;; :COURTESY sblc/src/code/list.lisp
@@ -9558,6 +9737,8 @@ Return `nconc' of MAPCAN-FUN results.\n
 (defun mon-mapl (mapl-fun mapl-lst &rest more-lsts)
   ;;#!+sb-doc
   "Apply MAPL-FUN to successive cdrs of MAPL-LST. Return nil.\n
+`mon-mapl' is like `mon-maplist' except that the results of applying MAPL-FUN
+are not accumulated; mapl-lst is returned.
 :EXAMPLE\n\n
 :SEE-ALSO `mon-map1', `mon-mapc', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
 `mon-mapcon', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
@@ -9572,6 +9753,9 @@ Return `nconc' of MAPCAN-FUN results.\n
 (defun mon-mapcon (mapcon-fun mapcon-lst &rest more-lsts)
   ;;#!+sb-doc
   "Apply MAPCON-FUN to successive cdrs of MAPCON-LST. Return `nconc'd results.\n
+mon-mapcon is like `mon-maplist' except that the results of applying MAPCON-FUN
+are combined into a list as if by `nconc' rather than `list', e.g:
+ \(mon-mapcon f x1 ... xn\) ≡ \(apply #'nconc \(mon-maplist f x1 ... xn\)\)\n
 :EXAMPLE\n\n\(mon-mapcon #'\(lambda \(x &rest y\) `\(,\(cadr x\) ,\(car x\)\)\)
             '\(b q \(c r\) \(d s\)\)\)\n
 \(mapcon #'\(lambda \(x &rest y\) `\(,\(cadr x\) ,\(car x\)\)\)
@@ -9589,13 +9773,21 @@ Return `nconc' of MAPCAN-FUN results.\n
 (defun mon-maplist (maplist-fun maplist-lst &rest more-lsts)
   ;;  #!+sb-doc
   "Apply MAPLIST-FUN to successive cdrs of MAPLIST-LST. Return list of results.\n
+`mon-maplist' is like `mon-mapcar' except that MAPLIST-FUN is applied to
+successive sublists of the MAPLIST-LST and (optionally) MORE-LSTS.
+MAPLIST-FUN is first applied to the list arguments themselves, and then to the
+cdr of each list, and then to the cdr of the cdr of each list, and so on.\n
 :EXAMPLE\n\n\(mon-maplist #'\(lambda \(x &rest y\) `\(,\(cadr x\) ,\(car x\)\)\)
             '\(b q \(c r\) \(d s\)\)\)\n
 \(maplist #'\(lambda \(x &rest y\) `\(,\(cadr x\) ,\(car x\)\)\)
             '\(b q \(c r\) \(d s\)\)\)\n
 \(mon-maplist #'append '\(1 2 3 4\) '\(1 2\) '\(1 2 3\)\)\n
 \(mon-maplist #'\(lambda \(x\) \(cons 'foo x\)\) '\(a b c d\)\)\n
-\(mon-maplist #'\(lambda \(x\) \(if \(member \(car x\) \(cdr x\)\) 0 1\)\) '\(a b a c d b c\)\)\n
+\(mon-maplist #'\(lambda \(x\) 
+                 \(if \(member \(car x\) \(cdr x\)\) 0 1\)\)
+             '\(a b a c d b c\)\)\n
+:NOTE In last example, an entry is 1 if the corresponding element of the input
+list was the last instance of that element in the input list.\n
 :SEE-ALSO `mon-map1', `mon-mapc', `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan',
 `mon-mapcon', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
 `mon-intersection', `mon-subseq', `mon-char-code'.\n►►►"
@@ -9606,9 +9798,10 @@ Return `nconc' of MAPCAN-FUN results.\n
 ;; | ;; :NOTE Examples from the CL-ansi spec:                 :EXPECT
 ;; | 
 ;; | (mon-maplist #'append '(1 2 3 4) '(1 2) '(1 2 3))     ;; ((1 2 3 4 1 2 1 2 3) (2 3 4 2 2 3))
-;; | (mon-maplist #'(lambda (x) (cons 'foo x)) '(a b c d)) ;; ((foo a b c d) (foo b c d) (foo c d) (foo d))
-;; | (mon-maplist #'(lambda (x)                            ;; '(a b a c d b c)) ;; (0 0 1 0 1 1 1)
-;; |    (if (member (car x) (cdr x)) 0 1))
+;; | (mon-maplist #'(lambda (x) (cons 'FOO x)) '(A B C D)) ;; ((FOO A B C D) (FOO B C D) (FOO C D) (FOO D))
+;; | (mon-maplist #'(lambda (x)                            ;; (0 0 1 0 1 1 1)
+;; |                 (if (member (car x) (cdr x)) 0 1))
+;; |                '(a b a c d b c))
 ;; `----
 
 ;;; ==============================

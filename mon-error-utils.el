@@ -113,6 +113,13 @@
 
 (eval-when-compile (require 'cl))
 
+;; *mon-function-object-types*
+
+(declare-function mon-booleanp              "mon-utils" '(putative-boolean))
+(declare-function mon-function-object-p     "mon-utils" '(fncn-sym))
+(declare-function mon-mapcar                "mon-utils" '(mapcar-fun mapcar-lst &rest more-lsts))
+(declare-function mon-subseq                "mon-utils" '(mon-subseq))
+(declare-function mon-equality-or-predicate "mon-utils" '(predicate arg1 arg2))
 
 ;;; ==============================
 ;;; :CHANGESET 2174
@@ -202,7 +209,7 @@ ERR-ARG is the form returned from the error condition handler.\n
 `mon-error-gather-peek', `mon-error-string-err-format', `mon-message',
 `redirect-debugging-output', `external-debugging-output', `debug-on-signal',
 `debug-on-error', `debug-ignored-errors', `signal-hook-function',
-`*mon-emacs-help-errors*', `mon-help-errors',
+`*mon-emacs-help-errors*', `mon-help-errors', `Info-no-error',
 `mon-help-CL-error-condition-restart'.\n►►►"
   (let ((bdy-wrap (make-symbol "bdy-wrap")))
     `(let ((,bdy-wrap (or ,@body t)))

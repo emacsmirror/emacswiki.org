@@ -1,5 +1,5 @@
 ;;; auto-install.el --- Auto install elisp file
-;; $Id: auto-install.el,v 1.48 2010/05/20 23:29:10 rubikitch Exp $
+;; $Id: auto-install.el,v 1.49 2010/11/10 13:32:37 rubikitch Exp $
 
 ;; Filename: auto-install.el
 ;; Description: Auto install elisp file
@@ -9,7 +9,7 @@
 ;; Copyright (C) 2008, 2009, Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-11 13:56:50
-;; Version: $Revision: 1.48 $
+;; Version: $Revision: 1.49 $
 ;; URL: http://www.emacswiki.org/emacs/download/auto-install.el
 ;; Keywords: auto-install
 ;; Compatibility: GNU Emacs 22 ~ 23
@@ -24,7 +24,7 @@
 ;;   `url-util', `url-vars'.
 ;;
 
-(defvar auto-install-version "$Id: auto-install.el,v 1.48 2010/05/20 23:29:10 rubikitch Exp $")
+(defvar auto-install-version "$Id: auto-install.el,v 1.49 2010/11/10 13:32:37 rubikitch Exp $")
 ;;; This file is NOT part of GNU Emacs
 
 ;;; License
@@ -130,7 +130,7 @@
 ;;    default = "wget"
 ;;  `auto-install-use-wget'
 ;;    *Use wget instead of `url-retrieve'.
-;;    default = nil
+;;    default = t
 ;;  `auto-install-batch-list'
 ;;    This list contain packages information for batch install.
 ;;    default = nil
@@ -296,6 +296,10 @@
 ;;; Change log:
 ;;
 ;; $Log: auto-install.el,v $
+;; Revision 1.49  2010/11/10 13:32:37  rubikitch
+;; Use `wget -q -O- --no-check-certificate' if wget is available.
+;; Change default value: `auto-install-use-wget' = t
+;;
 ;; Revision 1.48  2010/05/20 23:29:10  rubikitch
 ;; `auto-install-update-emacswiki-package-name': Check whether network is reachable
 ;;
@@ -677,7 +681,7 @@ Nil means no confirmation is needed."
   :type 'string  
   :group 'auto-install)
 
-(defcustom auto-install-use-wget nil
+(defcustom auto-install-use-wget t
   "*Use wget instead of `url-retrieve'.
 
 It is enabled by default when wget is found."
@@ -1060,7 +1064,10 @@ default is `auto-install-handle-download-content'."
     (message "Create directory %s for install elisp file." auto-install-directory))
   ;; Download.
   (funcall
-   (if auto-install-use-wget 'auto-install-download-by-wget 'auto-install-download-by-url-retrieve)
+   (if (and auto-install-use-wget
+            (executable-find auto-install-wget-command))
+       'auto-install-download-by-wget
+     'auto-install-download-by-url-retrieve)
    url handle-function (auto-install-get-buffer url)))
 
 (defun auto-install-download-by-wget (url handle-function download-buffer)
@@ -1070,7 +1077,7 @@ default is `auto-install-handle-download-content'."
     (setq auto-install-download-url url)
     (set-process-sentinel
      (start-process "auto-install-wget" (current-buffer)
-                    auto-install-wget-command "-q" "-O-" url)
+                    auto-install-wget-command "-q" "-O-" "--no-check-certificate" url)
      (lexical-let ((handle-function handle-function))
        (lambda (proc stat)
          (auto-install-download-callback-continue (buffer-name (process-buffer proc))

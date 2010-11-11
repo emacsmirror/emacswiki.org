@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Nov  9 13:50:56 2010 (-0800)
+;; Last-Updated: Wed Nov 10 17:24:47 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5833
+;;     Update #: 5850
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/11/10 dadams
+;;     icicle-lisp-complete-symbol: Remove return value.  Let it do everything (chg is in ici*mode.el).
 ;; 2010/11/04 dadams
 ;;     icicle-lisp-complete-symbol: Fixed return value for Emacs 23.2+.  Thx to Michael Heerdegen.
 ;; 2010/11/03 dadams
@@ -340,6 +342,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/11/10 dadams
+;;     Added: icicle-read-args-for-set-completion-methods.
+;;     icicle-set-((S-)TAB|completion)-methods-for-command: Added METHODS arg.
 ;; 2010/11/09 dadams
 ;;     Added: icicle-set-((S-)TAB|completion)-methods-for-command.
 ;; 2010/11/07 dadams
@@ -3217,6 +3222,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/11/10 dadams
+;;     Define lisp-completion-at-point to return Icicles fn (don't defalias).  Thx to M. Heerdegen.
 ;; 2010/11/06 dadams
 ;;     icicle-top-level-prep: Reset current TAB and S-TAB methods, if temporary.
 ;; 2010/11/03 dadams
@@ -4151,6 +4158,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/11/10 dadams
+;;     icicle-top-level-key-bindings: In :set, protect icicle-mode-map with boundp.
 ;; 2010/10/25 dadams
 ;;     Removed: icicle-search-context-match-predicate (was not used).
 ;;     icicle-(buffer|file)-predicate: Mention that they (now) apply after matching.

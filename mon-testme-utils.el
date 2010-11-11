@@ -36,7 +36,13 @@
 ;; `mon-line-indent-from-to-col-TEST', `mon-line-strings-pipe-to-col-TEST',
 ;; `mon-line-string-insert-chars-under-TEST', `mon-list-reorder-TEST',
 ;; `mon-regexp-clean-ulan-dispatch-chars-TEST',
-;; `mon-set-buffer-substring-no-properties-TEST', 
+;; `mon-set-buffer-substring-no-properties-TEST', `mon-plist-values-TEST',
+;; `mon-plist-keys-TEST', `mon-help-propertize-regexp-symbol-defs-TEST',
+;; `mon-help-regexp-symbol-defs-TEST', `mon-help-propertize-tags-TEST',
+;; `mon-help-keys-wikify-TEST', `mon-build-mon-emacsd-example',
+;; `mon-build-misc-path-example', `mon-build-user-name-example',
+;; `mon-user-system-conditionals-TEST', `mon-build-user-name-example-TEST',
+;; `mon-drive-transfer-template-TEST', `mon-sequence-all-booleanp-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -77,27 +83,19 @@
 ;; `google-define-get-command-TEST'            <- google-define-redux.el
 ;; `mon-permute-combine-functions-TEST'        <- mon-name-utils.el
 ;; `mon-regexp-clean-ulan-dispatch-chars-TEST' <- mon-regexp-symbols.el
+;; `mon-help-propertize-regexp-symbol-defs-TEST' <- mon-doc-help-utils.el
+;; `mon-help-regexp-symbol-defs-TEST'            <- mon-doc-help-utils.el
+;; `mon-help-propertize-tags-TEST'               <- mon-doc-help-utils.el
+;; `mon-help-keys-wikify-TEST'                   <- mon-doc-help-utils.el
+;; `mon-drive-transfer-template-TEST'            <- mon-drive-transfer-utils.el
+;;
 ;; TODO:
 ;;
-;;
 ;; Should these `-TEST' fncns be moved into here?
-;; `google-define-get-command-TEST'
-;; `mon-build-copyright-string-TEST' *
-;; `mon-build-user-name-example-TEST'
-;; `mon-drive-transfer-template-TEST'
 ;; `mon-file-stamp-buffer-filename-TEST'
-;; `mon-help-keys-wikify-TEST'
-;; `mon-help-propertize-regexp-symbol-defs-TEST'
-;; `mon-help-propertize-tags-TEST'
-;; `mon-help-regexp-symbol-defs-TEST'
-;; `mon-help-CL-wget-pkgs-TEST' *
-;; `mon-regexp-clean-ulan-dispatch-chars-TEST'
 ;; `mon-permute-combine-functions-TEST'
-;; `mon-user-system-conditionals-TEST'
 ;; `mon-up/down-case-regexp-TEST'
 ;; `mon-wget-list-to-script-TEST'
-;; `mon-with-inhibit-buffer-read-only-TEST'
-;; `mon-with-buffer-undo-disabled-TEST'
 ;;
 ;; NOTES:
 ;;
@@ -153,12 +151,11 @@
 
 ;;; CODE:
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+
 (eval-when-compile (require 'cl))
-
-;; `cl::position'     <- `mon-insert-lisp-testme-fancy'
-;; `cl::intersection' <- `mon-insert-lisp-testme-fancy'
-(eval-when-compile (require 'mon-cl-compat))
-
 
 ;;; ==============================
 ;;; :CHANGESET 2189
@@ -305,7 +302,7 @@ ARG GENERATE-N-RESULTS is the number of results to generate.\n
           (dotimes (mlf-i generate-n-results)
             (princ (mon-gensym-counter-randomizer w-test-str/sym) (current-buffer))
             (newline))
-          (sort-lines nil (buffer-end 0) (buffer-end 1)))
+          (sort-lines nil (mon-g2be -1 t) (mon-g2be 1 t)) )
         (setq mlf-dups (mon-line-find-duplicates))
         (save-excursion
           (apply #'insert 
@@ -358,7 +355,7 @@ named \"*MON-LIST-NSHUFFLE-TEST*\"\n
                    ;; do (format t "~a: ~a~%" perm count))))
                    do (princ (format "      %s         ; %s\n" perm count) 
                              (current-buffer))))
-    (mon-g2be -1) ;; (goto-char (buffer-end 0))
+    (mon-g2be -1) 
     (display-buffer (current-buffer) t)))
 ;;
 ;;; :TEST-ME (mon-list-nshuffle-TEST 10000)
@@ -381,12 +378,13 @@ named \"*MON-LIST-NSHUFFLE-TEST*\"\n
     (cond ((not insrtp)
            (with-temp-buffer
              (insert t-str)
-             (mon-line-strings-to-list (mon-g2be -1 t) (mon-g2be 1 t) with-cdr with-wrap)))
+             (mon-line-strings-to-list (mon-g2be -1 t) (mon-g2be 1 t)
+                                       with-cdr with-wrap)))
           (insrtp 
            (set-marker st01 (point))           
            (insert t-str)
            (set-marker en01 (point))
-           (mon-g2be st01)
+           (goto-char st01)
            (prog1 
                (mon-line-strings-to-list st01 en01 with-cdr with-wrap t)
              (set-marker st01 nil)
@@ -603,15 +601,17 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
 :EXAMPLE\n\n\(mon-with-buffer-undo-disabled-TEST\)\n
 \(mon-with-buffer-undo-disabled-TEST 'force-fail\)\n
 :SEE-ALSO `buffer-undo-list'.\n►►►"
-  (let ((rnd-char (mon-nshuffle-vector (vconcat (append (number-sequence 97 122)
-                                                   (number-sequence 65 90)))))
+  (let ((rnd-char (mon-nshuffle-vector 
+                    (vconcat (append (number-sequence 97 122)
+                                     (number-sequence 65 90)))))
         bul)
     (with-temp-buffer 
       (mon-with-buffer-undo-disabled (setq bul buffer-undo-list))
       (unless force-fail
         (dotimes (jnk 100) 
           (insert (make-string (random 79) (elt rnd-char (random 52))) "\n"))
-        (delete-region (random (1- (buffer-end 1))) (random (1- (buffer-end 1)))))
+        (delete-region (random (1- (mon-g2be 1 t)))
+                       (random (1- (mon-g2be 1 t)))))
       (setq bul (cons bul buffer-undo-list)))
     (cond ((or (not (consp bul)) (<= (length bul) 1))
            (error (concat ":MACRO `mon-with-buffer-undo-disabled' "
@@ -650,15 +650,15 @@ When optional arg FORCE-FAIL is non-nil force test failure.\n
         (push  `((,(or (= got-len chk-len)) . ,(cddr i)) . (,rslt ,(car i) ,chk-len)) pss-fls))
       (incf rslt))
     (setq rslt (concat ":FUNCTION `mon-string-split-TEST' \n"
-                       (mapconcat #'(lambda (fld)
-                                      (apply #'format 
-                                             `(,(cond ((caar fld) ;;(not (integerp (cdar fld))))
-                                                       "-- test %d passed with args: %S length return value was = %d")
-                                                      ((and (not (caar fld)) (and (integerp (cdar fld))(= (cdar fld) 102)))
-                                                       "-- test %d successful failure with args: %S length return value not = %d")
-                                                      (t "-- test %d FAILED with args: %S length return value NOT = %d"))
-                                               ,@(cdr fld))))
-                                  (nreverse pss-fls) "\n")))
+           (mapconcat #'(lambda (fld)
+                          (apply #'format 
+                                 `(,(cond ((caar fld) ;;(not (integerp (cdar fld))))
+                                           "-- test %d passed with args: %S length return value was = %d")
+                                          ((and (not (caar fld)) (and (integerp (cdar fld))(= (cdar fld) 102)))
+                                           "-- test %d successful failure with args: %S length return value not = %d")
+                                          (t "-- test %d FAILED with args: %S length return value NOT = %d"))
+                                   ,@(cdr fld))))
+                      (nreverse pss-fls) "\n")))
     (or (and w-msg-usr (message rslt))
         rslt)))
 
@@ -866,8 +866,7 @@ kill the leftover buffer `*google-define-get-buffer*'.\n
            "www.google.com" 
            "/search?num=100&hl=en&q=define%3A%22snarf%22&btnG=Search")))
         gdgc)
-    (setq gdgc (with-current-buffer gdgc-buff
-                 (buffer-substring-no-properties (buffer-end 0) (buffer-end 1))))
+    (setq gdgc (with-current-buffer gdgc-buff (mon-buffer-sub-no-prop) ))
     (when gdgc-buff (kill-buffer gdgc-buff))
     (with-current-buffer (get-buffer-create "*google-define-get-command-TEST*")
       (save-excursion  (insert gdgc))
@@ -916,24 +915,25 @@ Test equivalence of return values of following procedures:\n
          (tpc (get-buffer-create "*MON-PERMUTE-COMBINE-TEST*"))
          rslt)
     (dolist (hd (pop frmt-list)
-             (setq rslt (concat dlm "\n;;; "
-                                (mapconcat #'(lambda (x) 
-                                               (format "`%s', " x))(mapcar 'car frmt-list) "")
-                                "\n" dlm "\n" (mapconcat #'identity (nreverse rslt) "\n"))))
+                (setq rslt (concat dlm "\n;;; "
+                                   (mapconcat #'(lambda (x) 
+                                                  (format "`%s', " x))
+                                              (mapcar #'car frmt-list) "")
+                                   "\n" dlm "\n" (mapconcat #'identity (nreverse rslt) "\n"))))
       (push (format (concat ";Functions return `equal' structure with "(cdr hd)) 
                     (symbol-value (car hd))) rslt))
     (dolist (prm frmt-list)
       (let ((prmdo prm)
             this-rslt)
         (dolist (i (cadr prmdo)
-                 (setq rslt (concat rslt (concat (format "\n%s\n;;; `%s'\n%s\n" dlm (car prmdo) dlm)
-                                                 (mapconcat #'identity (nreverse this-rslt) "\n")))))
+                   (setq rslt (concat rslt (concat (format "\n%s\n;;; `%s'\n%s\n" dlm (car prmdo) dlm)
+                                                   (mapconcat #'identity (nreverse this-rslt) "\n")))))
           (push (format ";`%s'\n  %S\n" (car prmdo) (symbol-value i)) ;i)
                 this-rslt))))
     (with-current-buffer tpc
       (princ rslt tpc)
       (emacs-lisp-mode)
-      (goto-char (buffer-end 0)))
+      (mon-g2be -1))
     (display-buffer tpc t)))
 ;; 
 ;;; :TEST-ME (mon-permute-combine-functions-TEST)
@@ -1031,7 +1031,8 @@ Return and display results in buffer named \"*MON-WRITE-STRING-TEST*\".\n
           rgn-prps)
       (setq rgn-prps)
       (save-excursion (insert rgn-tst))
-      (setplist 'rgn-prps (mon-region-capitalize (line-beginning-position 1) (line-end-position 1)))
+      (setplist 'rgn-prps 
+                (mon-region-capitalize (line-beginning-position 1) (line-end-position 1)))
       (setq rgn-prps (list (get 'rgn-prps :REGION)))
       (and (= (- (cdar rgn-prps) (caar rgn-prps))
               (length rgn-tst))
@@ -1084,7 +1085,7 @@ Key :passed is non-nil when <TEST-FNCN> passed.\n
 Key :with-args indicates test evaulated predicate <TEST-FNCN> with results of
 invoking `mon-booleanp-to-binary' with <ARG-1> <ARG-2> to satisfy <TEST-VALUE>.\n
 :EXAMPLE\n\n\(mon-booleanp-to-binary-TEST\)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-sequence-all-booleanp-TEST'.\n►►►"
   (let ((mbtb-tests '((= nil  nil  0)
                       (=  t   nil  1)
                       (=  0   t    0)
@@ -1104,6 +1105,55 @@ invoking `mon-booleanp-to-binary' with <ARG-1> <ARG-2> to satisfy <TEST-VALUE>.\
                                                   (not (cadr invrtd)))
                                               mbtb-gthr)))))
            mbtb-gthr)))
+
+;;; ==============================
+;;; :CHANGESET 2291
+;;; :CREATED <Timestamp: #{2010-11-10T18:39:25-05:00Z}#{10453} - by MON KEY>
+;;;###autoload
+(defun mon-sequence-all-booleanp-TEST (&optional w-display-buffer)
+  "Test function for `mon-sequence-all-booleanp'.\n
+Key :all-tests-passed-p is non-nil if so.\n
+When optional arg W-DISPLAY-BUFFER is non-nil return and display results in
+buffer with name \"*MON-SEQUENCE-ALL-BOOLEANP-TEST*\"\n
+:EXAMPLE\n\n\(mon-sequence-all-booleanp-TEST t\)\n
+:SEE-ALSO `mon-booleanp-to-binary-TEST'.\n►►►"
+  (let (gthr)
+    (setq gthr 
+          (mapcar #'(lambda (x) 
+                      `(:test-passed
+                        ,(equal (apply #'mon-sequence-all-booleanp (car x)) (cadr x))
+                        :w-args   ,(car x)
+                        :w-expect ,(cadr x)))
+                  `(((t cadr ((a t) (b t) (c t)))                             (t t))
+                    ((t cadr ((a t) (b t) (c nil)))                           (t nil))
+                    ((t cadr ((a t) (b t) (c nil)) t)                         ((boolean . 3) (t t nil)))
+                    ((t car  ((t a) (t b) ("I'm a string" c)) t)              ((string . 3)  (t t "I'm a string")))
+                    ;;
+                    ((t cadr  [(a t) (b t) (c t)])                             (t t))
+                    ((t car   [(t a) (nil b) (c nil)])                         (t nil))
+                    ((t caddr [(a 1 t) (b 2 t) (c 3 nil)] t)                   ((boolean . 3) (t t nil)))
+                    ((t caddr ,`[(a 1 t) (b 2 t) (c 3 ,(make-vector 3 '6))] t) ((vector . 3) (t t [6 6 6])))
+                    ;;
+                    ((nil cadr ((a nil) (b nil) (c nil)))                      (nil t))
+                    ((nil cadr ((a nil) (b nil) (c t)))                        (nil nil))
+                    ((nil cadr ((a nil) (b nil) (c t)) t)                      ((boolean . 3)      (nil nil t)))
+                    ((nil car  ((nil a) (nil b) (,(make-vector 3 '6) c)) t)    ((vector . 3) (nil nil [6 6 6])))
+                    ;;
+                    ((nil cadr  [(a nil) (b nil) (c nil)])                     (nil t))
+                    ((nil car   [(nil a) (t b) (c t)])                         (nil nil))
+                    ((nil caddr [(a 1 nil) (b 2 nil) (c 3 t)] t)               ((boolean . 3) (nil nil t)))
+                    ((nil car  ,`((nil a) (nil b) ("I'm a string" c)) t)       ((string . 3) (nil nil "I'm a string")))
+                    )))
+    (setq gthr `(:all-tests-passed ,(cadr (mon-sequence-all-booleanp t #'cadr gthr t))
+                                   ,@gthr))
+    (if w-display-buffer
+        (pp-display-expression 
+         gthr
+         (with-current-buffer 
+             (get-buffer-create "*MON-SEQUENCE-ALL-BOOLEANP-TEST*")
+           (erase-buffer)
+           (buffer-name (current-buffer))))
+      gthr)))
 
 ;;; ==============================
 ;;; :CHANGESET 2208
@@ -1436,7 +1486,7 @@ When a match is made return value is a plist of the form:\n
                (when (search-forward-regexp (car fnd-tchr) nil t)
                 (let ((mtch-got (match-string-no-properties 0)))
                   (replace-match (cadr fnd-tchr))
-                  `(:w-replace ,(buffer-substring-no-properties (buffer-end 0) (buffer-end 1))
+                  `(:w-replace ,(mon-buffer-sub-no-prop)
                     :w-match   ,mtch-got
                     :w-regexp  ,(car fnd-tchr) 
                     :w-groups  ,(cadr fnd-tchr)))))))))
@@ -1456,21 +1506,699 @@ Which in turn are requirements to make `buffer-substring-no-properties' `setf'ab
     (save-excursion (insert "was: lots of lots and lots of bubba"))
     (display-buffer (current-buffer) t)
     (sit-for 2)
-    (setf (buffer-substring (buffer-end 0) (buffer-end 1)) 
-          (propertize "now: lots of lots and lots of bubba" 'font-lock-face 'bold))
+    (with-no-warnings
+      (setf (buffer-substring (buffer-end 0) (buffer-end 1))
+          (propertize "now: lots of lots and lots of bubba" 'font-lock-face 'bold)))
     (sit-for 2)
     
     (prog1 
         (when
-            (equal
-             (setf (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) 
-                   ;; won't get inserted 
-                   (propertize "Are there no bold props here?" 'font-lock-face 'bold))
-             "Are there no bold props here?")
+            ;; Rogue CL compiler warning. `setf' forms like this shouldn't warn...
+             (with-no-warnings 
+               (equal
+                (setf (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) 
+                      ;; won't get inserted 
+                      (propertize "Are there no bold props here?" 'font-lock-face 'bold))
+                "Are there no bold props here?"))
           "Good, no bold props were seen")
       (unwind-protect 
           (sit-for 2)
         (kill-buffer (current-buffer))))))
+
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-11-08T13:58:27-05:00Z}#{10451} - by MON KEY>
+;;;###autoload
+(defun mon-plist-keys-TEST ()
+  "Test function for `mon-plist-keys'.\n
+:EXAMPLE\n\n\(mon-plist-keys-TEST\)
+:SEE-ALSO `mon-plist-values-TEST'.\n►►►"
+  (let ((w-plist (mon-alphabet-as-type 'plistD->num))
+        gthr)
+    (push `(:plist-orig ,w-plist) gthr)
+    (push `(:plist-keys ,(mon-plist-keys w-plist)) gthr)
+    (setq gthr `(,:all-tests-passed
+                 ,(equal (cadr (assq :plist-keys gthr))
+                         (loop for chk in w-plist
+                               if (not (numberp chk)) collect chk))
+                 ,@gthr))))
+
+;;; ==============================
+;;; :CHANGESET 2208
+;;; :CREATED <Timestamp: #{2010-11-08T13:42:10-05:00Z}#{10451} - by MON KEY>
+;;;###autoload
+(defun mon-plist-values-TEST ()
+  "Test function for `mon-plist-values'
+Keyword :all-tests-passed is non-nil if so.\n
+:EXAMPLE\n\n\(mon-plist-values-TEST\)\n
+:SEE-ALSO `mon-plist-keys-TEST'.\n►►►"
+  (let ((chk-rtn (mon-alphabet-as-plistD->num)) ;; (mon-alphabet-as-type 'plistD->num)
+        rtn)
+    (push `(,chk-rtn                    . :plist-orig) rtn)
+    (push `(,(mon-plist-keys chk-rtn)   . :plist-keys) rtn)
+    (push `(,(mon-plist-values chk-rtn) . :plist-values) rtn)
+    ;; Succesfully signaled an error when not `mon-list-proper-p':
+    (push `(,(null (ignore-errors (mon-plist-values (append chk-rtn 'a))))
+            . :errored-when-not-proper-list) rtn)
+    ;; Succesfully signaled an error when not length not `evenp':
+    (push `(,(null (ignore-errors (mon-plist-values (append chk-rtn '(a)))))
+            . :errored-when-not-evenp) rtn)
+    (setq rtn 
+          `(:all-tests-passed
+            ,(and 
+              (equal (car (rassq :plist-values rtn)) (number-sequence 1 26))
+              (equal (car (rassq :plist-keys rtn)) (mon-plist-keys chk-rtn))
+              (equal (car (rassq :plist-orig rtn)) (mon-alphabet-as-plistD->num))
+              (car (rassq :errored-when-not-proper-list rtn))
+              (car (rassq :errored-when-not-evenp rtn)))
+            ,@rtn))))
+
+;; (mon-plist-values-TEST)
+
+;;; ==============================
+;;;  mhprsdt
+;;; :CREATED <Timestamp: #{2010-02-11T20:48:23-05:00Z}#{10065} - by MON KEY>
+;;;###autoload
+(defun mon-help-propertize-regexp-symbol-defs-TEST ()
+  "Helper function for `mon-help-regexp-symbol-defs-TEST'.\n
+Propertize symbols matched by regexp `*regexp-symbol-defs*'.\n
+:SEE-ALSO `mon-help-overlay-result'.\n►►►"
+  (let ((fnf ;; `font-lock-function-name-face'
+         '(defun defun* defmacro defmacro* defsubst defsubst* defclass defadvice
+           defgeneric defmethod defsetf defalias))
+        (ftf ;; `font-lock-type-face'
+         '(defclass deftheme defgroup deftype defpackage defstruct))
+        (fvf ;; `font-lock-variable-name-face'
+         '(defface defconstant defconst defvar defparameter defvaralias))
+        (next-ms #'(lambda (n) (search-forward-regexp (concat "match-string" n ": ") nil t)))
+        (got-sym-tp #'(lambda (fc) (let ((mhprsdt-botap ;; :WAS (bounds-of-thing-at-point 'symbol)))
+                                          (save-match-data (bounds-of-thing-at-point 'symbol))))
+                                     ;;(with-syntax-table emacs-lisp-mode-syntax-table <- fails why??
+                                     (unless (null mhprsdt-botap)
+                                       (put-text-property (car mhprsdt-botap) (cdr mhprsdt-botap) 'face fc)))))
+        ;; got-sym-tp 
+        got-def bro)
+    (unwind-protect
+         (when (buffer-local-value 'buffer-read-only (current-buffer))
+           (set 'buffer-read-only nil)
+           (setq bro t))
+      (set-syntax-table emacs-lisp-mode-syntax-table)
+      (while (funcall next-ms "1")
+        (setq got-def (symbol-at-point))
+        (funcall got-sym-tp 'font-lock-keyword-face)
+        (funcall next-ms "3")
+        (when ;; :WAS (looking-at "'") (forward-char))  
+            (eq (char-after (point)) 39)(forward-char))
+        (cond ((memq got-def fnf)(funcall got-sym-tp 'font-lock-function-name-face))
+              ((memq got-def ftf)(funcall got-sym-tp 'font-lock-type-face))
+              ((memq got-def fvf)(funcall got-sym-tp 'font-lock-variable-name-face))))
+      (when bro (set 'buffer-read-only t)))))
+
+;;; ==============================
+;;; :RENAMED `mon-help-regexp-symbol-defs-TEST' -> `mon-help-regexp-symbol-defs-TEST'
+;;; :MODIFICATIONS <Timestamp: #{2010-02-24T20:24:30-05:00Z}#{10084} - by MON KEY>
+;;; :CREATED <Timestamp: #{2009-09-02T16:11:07-04:00Z}#{09363} - by MON KEY>
+;;;###autoload
+(defun mon-help-regexp-symbol-defs-TEST (&optional dis-p do-big-regexp)
+  "Return overlays for matches of regexp in region.\n
+When optional arg DIS-P is non-nil or when called-interactively return formatted
+results to the buffer named *REGEXP-SYMBOL-DEFS-REPORT*.\n
+When optional arg DO-BIG-REGEXP is non-nil use regexps in the 
+variable `*regexp-symbol-defs-big*'. Default is `*regexp-symbol-defs*'.\n
+:EXAMPLE\n\n\(mon-help-regexp-symbol-defs-TEST t\)\n
+\(mon-help-regexp-symbol-defs-TEST t t\)\n
+►
+\(defun some-function \(&optional optional\)
+\(defvar som-bq-list `\(
+\(defun some-function-22 \(&optional optional\)
+\(defvar som-var t
+\(defun *some/-symbol:->name<-2* \(somevar
+\(defmacro some-macro \(\)
+\(defvaralias 'som-var 'som-other-var
+\(defmacro some-macro*:22 \(&rest\)
+\(defvar som-double-list \(\(
+\(defun *some/-symbol:->name<-2* \(somevar
+\(defvar *some-var* 'var
+\(defun *some/-symbol:->name<-2* 'somevar
+\(defconst som-const \"somestringval\"
+\(defun* *some/-symbol:->name<-2* \(&
+\(defmacro some-macro*:22 \(&rest\)
+\(defun *some/-symbol:->name<-2* \(somevar
+\(defvar *some-var* 'var
+\(defun *some/-symbol:->name<-2* 'somevar
+\(defmacro some-macro \(\)
+\(defvar *som-var* nil
+\(defmacro* some-macro*:22 \(&rest\)
+\(defcustom reb-re-syntax 'read
+\(defun* *some/-symbol:->name<-2* \(somevar
+\(defsubst *some/subtst-symbol:->name<-2* \(
+\(defface *some/-symbol:->name<-2* \(\(
+\(defsubst* *some/subtst-symbol:->name<-2* \(
+\(defcustom *some/-custom-symbol:->name<-2* 'somecustom
+\(defconst *some/-symbol:->name<-2* \(someconst
+\(defface *some/-face-symbol:->name<-2* \(someface
+\(defgroup *some/-group-symbol:->name<-2* \(somegroup
+\(deftheme *some/-theme-symbol:->name<-2* \(sometheme
+◄
+
+:SEE-ALSO `mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-overlay-result'
+`lisp-font-lock-keywords', `lisp-font-lock-keywords-1', `lisp-font-lock-keywords-2'.\n►►►"
+  (interactive "p")
+  (eval-when-compile (require 'boxquote))
+  (let ((botp          #'(lambda () `(,(line-beginning-position) . ,(line-end-position))))
+        (mhrsdt-mhor   #'(lambda (bd) (mon-help-overlay-result (car bd) (cdr bd) 78)))
+        (srcher        #'(lambda (srch bnds) (search-forward-regexp srch bnds t)))        
+        (ntst-maybe    #'(lambda (m-fncn m-grp) 
+                           (let ((nmp (funcall m-fncn m-grp)))
+                             (if (numberp nmp) (number-to-string nmp) "!no-match!"))))
+        ;; :IS-STILL 
+        (srched (if do-big-regexp *regexp-symbol-defs-big* *regexp-symbol-defs*))
+        ;; (srched *tt-rsd*) ;; :TEMP-TESTING
+        (mhrsdt-bnd-s (make-marker))
+        (mhrsdt-bnd-e (make-marker))
+        (mhrsdt-step 1)
+        match-report mhrsdt-cnt )
+    (save-excursion
+      (funcall srcher "^►" nil)
+      (set-marker mhrsdt-bnd-s (point))
+      (funcall srcher "◄$" nil)
+      (set-marker mhrsdt-bnd-e (point)))
+    (setq mhrsdt-cnt (- (line-number-at-pos (- (marker-position mhrsdt-bnd-e) 2))
+                        (line-number-at-pos (marker-position mhrsdt-bnd-s))))
+    (save-excursion
+      ;;(goto-char mhrsdt-bnd-s)
+      (goto-char (1+ mhrsdt-bnd-s))
+      (while (< mhrsdt-step mhrsdt-cnt)
+        (funcall srcher srched mhrsdt-bnd-e)
+        (funcall mhrsdt-mhor (funcall botp))
+        (push (concat 
+               "------------------------------------\n"
+               "Match iteration: " (format "%d\n" mhrsdt-step)
+               ;; `font-lock-keyword-face'
+               "\nmatch-string1: " (match-string-no-properties 2) " start2: " 
+               (funcall ntst-maybe 'match-beginning 2) " end2: " 
+               (funcall ntst-maybe 'match-end 2) "\nmatch-string3: "
+               ;; `font-lock-type-face', `font-lock-variable-name-face', `font-lock-function-name-face'
+               (match-string-no-properties 3)" start3: " 
+               (funcall ntst-maybe 'match-beginning 3) " end3: " 
+               (funcall ntst-maybe 'match-end 3) "\nmatch-string4: "
+               (match-string-no-properties 4) " start4: " 
+               (funcall ntst-maybe 'match-beginning 4)  " end4: " 
+               (funcall ntst-maybe 'match-end 4)"\n")
+              match-report)
+        (setq mhrsdt-step (1+ mhrsdt-step))))
+    ;; (push          (match-report
+    ;; (setq match-report (nreverse match-report))
+    (setq srched  ;; :WAS (buffer-substring-no-properties (1- mhrsdt-bnd-s) mhrsdt-bnd-e))
+          (mon-buffer-sub-no-prop (1- mhrsdt-bnd-s) mhrsdt-bnd-e))
+    (setq srched 
+          (with-temp-buffer
+            (save-excursion
+              (princ srched (current-buffer)))
+            (if (fboundp 'boxquote-region)
+                (boxquote-region (mon-g2be -1 t) (mon-g2be 1 t))
+              (comment-region (mon-g2be -1 t) (mon-g2be 1 t)))
+            ;; :WAS (goto-char (buffer-end 0))
+            (mon-g2be -1) 
+            (princ ";;; Regexp Match Report for the following lines:\n" (current-buffer))
+            ;;:WAS (buffer-substring-no-properties (buffer-end 0)(buffer-end 1)) ))
+            (mon-buffer-sub-no-prop)))
+    (setq match-report (nreverse match-report))
+    (push srched match-report)
+    (prog1
+        (setq match-report 
+              (concat (mapconcat #'identity match-report "\n") 
+                      "------------------------------------\n"))
+      (when (or dis-p)
+        (with-current-buffer (get-buffer-create "*REGEXP-SYMBOL-DEFS-REPORT*")
+          (unwind-protect 
+               (let ((buffer-read-only nil))
+                 (erase-buffer)
+                 (save-excursion (princ match-report (current-buffer)))
+                 (mon-help-propertize-regexp-symbol-defs-TEST)
+                 (display-buffer (current-buffer) t t))
+            (set (make-local-variable 'buffer-read-only) t)))))))
+;;
+;;,---- :UNCOMMENT-BELOW-TO-TEST
+;;|
+;;| (mon-help-regexp-symbol-defs-TEST t)
+;;|
+;;|►
+;;|(defun some-function (&optional optional)
+;;|(defvar som-bq-list `(
+;;|(defun some-function-22 (&optional optional)
+;;|(defvar som-var t
+;;|(defun *some/-symbol:->name<-2* (somevar
+;;|(defmacro some-macro ()
+;;|(defvaralias 'som-var 'som-other-var
+;;|(defmacro some-macro*:22 (&rest)
+;;|(defvar som-double-list ((
+;;|(defun *some/-symbol:->name<-2* (somevar
+;;|(defvar *some-var* 'var
+;;|(defun *some/-symbol:->name<-2* 'somevar
+;;|(defconst som-const "somestringval"
+;;|(defun* *some/-symbol:->name<-2* (&
+;;|(defmacro some-macro*:22 (&rest)
+;;|(defun *some/-symbol:->name<-2* (somevar
+;;|(defvar *some-var* 'var
+;;|(defun *some/-symbol:->name<-2* 'somevar
+;;|(defmacro some-macro ()
+;;|(defvar *som-var* nil
+;;|(defmacro* some-macro*:22 (&rest)
+;;|(defcustom reb-re-syntax 'read
+;;|(defun* *some/-symbol:->name<-2* (somevar
+;;|(defsubst *some/subtst-symbol:->name<-2* (
+;;|(defface *some/-symbol:->name<-2* ((
+;;|(defsubst* *some/subtst-symbol:->name<-2* (
+;;|(defcustom *some/-custom-symbol:->name<-2* 'somecustom
+;;|(defconst *some/-symbol:->name<-2* (someconst
+;;|(defface *some/-face-symbol:->name<-2* (someface
+;;|(defgroup *some/-group-symbol:->name<-2* (somegroup
+;;|(deftheme *some/-theme-symbol:->name<-2* (sometheme
+;;|◄
+;;`----
+
+
+
+;;; ==============================
+;;; :REQUIRES `mon-string-justify-left' <- mon-utils.el
+;;; :CREATED <Timestamp: #{2009-11-21T18:45:40-05:00Z}#{09476} - by MON>
+;;;###autoload
+(defun mon-help-propertize-tags-TEST ()
+  "Test function to verify that `mon-help-propertize-tags' is properly
+propertizing.\n
+:EXAMPLE\n\n\(mon-help-propertize-tags-TEST\)\n
+Test the following regexps:
+`*regexp-mon-doc-help-comment-tags*'
+`*regexp-mon-doc-help-docstring-tags*'
+`*regexp-mon-doc-help-meta-tags*'
+`*regexp-mon-doc-help-pointer-tags*'
+`*regexp-mon-doc-help-docstring-tags-URL*'
+`*regexp-mon-doc-help-docstring-tags-DYNAMIC*'
+`*regexp-mon-doc-help-docstring-tags-TABLES*'
+`*regexp-mon-doc-help-docstring-tags-URL*'
+`*regexp-mon-doc-help-builtin-dynamic-tags*'
+`*regexp-mon-doc-help-builtin-static-tags*'\n
+Test the following keywords in:
+`*mon-help-mon-tags-alist*', `*mon-help-custom-faces-builtins-tags*'\n
+Test font-locking of the following faces:
+`mon-help-URL-wrap-tag', `mon-help-DYNATAB-tag', `mon-help-INNER-KEY-tag',
+`mon-help-KEY-tag', `mon-help-META-tag', `mon-help-PNTR-tag',
+`mon-help-COMMENT-tag', `mon-help-BUILTIN-tag'\n
+:SEE-ALSO `mon-help-mon-tags', `mon-help-insert-tags'.\nn►►►"
+  (let ((tags-divd (concat "\n" (make-string 68 95) "\n"))
+         test-mhpt)
+    (setq test-mhpt
+          (with-temp-buffer
+            (princ
+             (mapconcat 
+              #'identity 
+              `(,tags-divd
+                ";;; (*regexp-mon-doc-help-docstring-tags* 'mon-help-KEY-tag) \"light steel blue\"\n"
+                ,@(cadr (assoc 'docstr-tags *mon-help-mon-tags-alist*))
+                ":ALIASED-BY" ":CALLED-BY" ":EXAMPLE" ":FACE-DEFINED-IN" ":FACE-DOCUMENTED-IN"
+                ":FILE" ":IDIOM" ":NOTE" ":SEE" ":SEE-ALSO" ":SOURCE" ":USED-BY"
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-pointer-tags* 'mon-help-PNTR-tag) \"powder blue\"\n"
+                "->" ";->" "; ->" "=>" ";=>" "; =>" "-->" ";-->" "; -->" "--->" "<--" "<--" "; <--"
+                "<---" "<--" ";<--" "; <--" "<---" "==>" ";==>" "; ==>" "===>"
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-docstring-tags-TABLES*  'mon-help-DYNATAB-tag) \"cadet blue\"\n"
+                "| :SOME-SECTIONA | :SOME-SECTIONB | :SOME-SECTIONC |"
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-meta-tags* 'mon-help-META-tag)\n"
+                ,(replace-regexp-in-string "$" " "
+                                           (mon-string-justify-left 
+                                            (mapconcat #'identity 
+                                                       (cadr (assoc 'meta-tags *mon-help-mon-tags-alist*))
+                                                       " ") 68 1))
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-docstring-tags-DYNAMIC* 'mon-help-DYNATAB-tag) \"cadet blue\"\n"
+                ";; :FUNCTION-LISTS" ";; :SEARCHING" ";; :HELP" ";; :TIME" ";; :EIEIO" ";; :CL"
+                ";; :ASCII-ART" ";; :PRESENTATION" ";; :KEYS" ";; :CHAR-TABLES" ";; :RECIPES"
+                ";; :INTROSPECTION-AND-UTILITY" ";; :VARIABLES" ";; :DOUBLED-1 :SEE" ";; :DOUBLED-2 :SEE-ALSO"
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-comment-tags* mon-help-COMMENT-tag) \"DarkSlateGray3\"\n"
+                ,@(cadr (assoc 'comment-tags *mon-help-mon-tags-alist*))
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-builtin-dynamic-tags* mon-help-BUILTIN-tag) \"SteelBlue\""
+                ";;; (*regexp-mon-doc-help-builtin-static-tags* mon-help-BUILTIN-tag) \"SteelBlue\"\n"
+                ,(replace-regexp-in-string "$" " "
+                                           (mon-string-justify-left 
+                                            (mapconcat #'identity *mon-help-custom-faces-builtins-tags* " ") 68 1 ))
+                " :bubba" " :more-bubba" " :another-bubba" ;; Make sure dynamic-tags are matching
+                ,tags-divd
+                ";;; (*regexp-mon-doc-help-docstring-tags-URL* 'mon-help-URL-wrap-tag) \"LightSkyBlue\"\n"
+                ":SEE (URL `http://www.IWasArpanet.com/i-am-really-gopher.html'\)"
+                "some surrounding (URL `http://www.ThisIsNotMilnet.com/not-for-u.html'\) text"
+                "(URL `http://www.IamTheInterWeb.com/wow-i-can-blah.htm'\)"
+                "(URL `http://www.IamTheInterTubes.com/now-blah-is-blahging.htm'\)"
+                ) "\n")
+             (current-buffer))
+            (mon-help-propertize-tags
+             '(*regexp-mon-doc-help-comment-tags*           0 mon-help-COMMENT-tag)
+             '(*regexp-mon-doc-help-docstring-tags-URL*     2 mon-help-URL-wrap-tag)
+             '(*regexp-mon-doc-help-docstring-tags-URL*     4 mon-help-URL-wrap-tag)
+             '("^_\\{68,68\\}$"                             0 mon-help-INNER-KEY-tag)
+             '(*regexp-mon-doc-help-builtin-dynamic-tags*   1 mon-help-BUILTIN-tag)
+             '(*regexp-mon-doc-help-builtin-static-tags*    0 mon-help-BUILTIN-tag))
+            (buffer-string)))
+    (mon-help-temp-docstring-display test-mhpt "*MON-PROPERTIZE-TAGS-TEST*")))
+;;
+;;; :TEST-ME (mon-help-propertize-tags-TEST)
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-27T14:32:18-05:00Z}#{10086} - by MON KEY>
+;;;###autoload
+(defun mon-help-keys-wikify-TEST ()
+  "Test function for `mon-help-keys-wikify' helper functions.\n
+Return cumulative result of evaluating:
+ `mon-help-keys-wikify', `mon-help-keys-wikify-anchors'
+ `mon-help-keys-wikify-heading'\n
+Return value displayed in buffer named *MON-HELP-KEYS-WIKIFY-TEST*.\n
+:SEE `mon-help-keys-wikify' for details of return value format.\n
+:EXAMPLE\n\n(mon-help-keys-wikify-TEST)\n
+:SEE-ALSO `*mon-help-reference-keywords*', `mon-help-keys',
+`mon-help-escape-for-ewiki', `mon-help-unescape-for-ewiki', 
+`mon-help-key-functions'.\n►►►"
+  (let ((mhkwh (mon-help-keys-wikify)))
+    (setq mhkwh (mon-help-keys-wikify-heading `(,(cadr mhkwh) ,(caddr mhkwh))
+                                              2 "Keybinding Table Sections"))
+    (with-current-buffer (get-buffer-create "*MON-HELP-KEYS-WIKIFY-TEST*")
+      (erase-buffer)
+      (save-excursion (prin1 mhkwh (current-buffer)))
+      (pp-buffer)
+      (display-buffer (current-buffer) t))))
+
+
+;;; ==============================
+;;; :CHANGESET 1727
+;;; :CREATED <Timestamp: #{2010-05-13T13:14:12-04:00Z}#{10194} - by MON KEY>
+;;;###autoload
+(defun mon-drive-transfer-template-TEST (&optional log-dest-test)
+  "Test function for `mon-drive-transfer-template-cln'.\n
+Return results in new buffer-name'd \"*MON-DRIVE-TRANSFER-CLN-TEST*\".
+When optional arg LOG-DEST-TEST is non-nil return results of evaluating
+`mon-drive-transfer-template-cln-log-dest' instead.\n
+:SEE-ALSO `mon-drive-transfer-template-cln-all',
+`mon-insert-drive-transfer-template', `*mon-drive-transfer-template*',
+`*mon-drive-transfer-template-src-dest-log*',
+`mon-drive-transfer-template-subst-src-dest-log'.\n►►►"
+  (with-current-buffer (get-buffer-create "*MON-DRIVE-TRANSFER-CLN-TEST*")
+    (erase-buffer)
+    (if log-dest-test
+        (let ((mdtcle (concat (mon-drive-transfer-template-subst-src-dest-log)
+                              (mon-drive-transfer-template-subst-src-dest-log t))))
+          (save-excursion (insert mdtcle))
+          (mon-drive-transfer-template-cln-log-dest
+           "/mnt/frm-this-drv" 
+           "/mnt/to-this-other-drv/subdir" 
+           "/home/me/log-this-to-here"))
+      (mon-drive-transfer-template-cln-all
+       "/mnt/frm-this-drv" "/mnt/to-this-other-drv/subdir"  
+       "/home/me/log-this-to-here" "/mnt/to-this-other-drv" 
+       "bubba-user" "bubba-group"))
+    (display-buffer (current-buffer) t)))
+;;
+;;; :TEST-ME (mon-drive-transfer-template-TEST)
+;;; :TEST-ME (mon-drive-transfer-template-TEST t)
+
+;;; ==============================
+;;; :NOTE Don't remove from this file. Mirrors the defition in:
+;;; :FILE mon-site-local-defaults.el
+;;; :CREATED <Timestamp: #{2010-02-10T16:32:23-05:00Z}#{10063} - by MON KEY>
+;;;###autoload
+(defun mon-build-mon-emacsd-example (&optional bind-var force-bind)
+  "Return an alist of example key value pairs suitable for `*mon-emacsd*'.\n
+When `bind-var' is non-nil if `*mon-emacsd*' is unbound bind it.\n
+When `force-bind' is non-nil force the binding even if `*mon-emacsd*' bound.\n
+:EXAMPLE\n\n\(mon-build-mon-emacsd-example\)\n
+\(assoc 1 \(mon-build-mon-emacsd-example\)\)\n
+\(nth 8 \(assoc 1 \(mon-build-mon-emacsd-example\)\)\)\n
+\(assoc 5 \(mon-build-mon-emacsd-example\)\)\n
+\(assoc 'IS-USER-4-P \(cadr \(assoc 5 \(mon-build-mon-emacsd-example\)\)\)\)\n
+\(assoc \(cadr \(nth 3 \(cadr \(assoc 5 \(mon-build-mon-emacsd-example\)\)\)\)\)\n
+   \(mon-build-mon-emacsd-example\)\)\n\n
+:SEE-ALSO `mon-get-mon-emacsd-paths', `mon-build-misc-path-example'.
+`mon-build-user-name-example', `*mon-emacsd*', `set-emacs-root'.\n►►►"
+  (let (gthr-emacsd usr-map)
+    (dotimes (p 5) 
+      (unless (= p 0)
+        (push `(,p ,@(nreverse (do* ((j 0 (1+ j))
+                                      (k (format "<USER-%s-EMACSD-PATH-Nth-%d>" p j)
+                                         (format "<USER-%s-EMACSD-PATH-Nth-%d>" p j))
+                                      (l () (cons k l)))
+                                     ((>= j 14) l))))
+              gthr-emacsd)
+        (push `(,(car (read-from-string (format "IS-USER-%d-P" p))) ,p) usr-map)))
+    (setq gthr-emacsd (nreverse gthr-emacsd))
+    (setq gthr-emacsd (append gthr-emacsd `((5 ,(nreverse usr-map)))))
+    (cond (bind-var (unless (and (intern-soft "*mon-emacsd*" obarray)  ;; *IS-MON-OBARRAY*
+                                 (bound-and-true-p *mon-emacsd*))
+                      (setq *mon-emacsd* gthr-emacsd)))
+          (force-bind (setq *mon-emacsd* gthr-emacsd))
+          (t gthr-emacsd))))
+;; 
+;;; :TEST-ME (mon-build-mon-emacsd-example)
+;;; :TEST-ME (assoc 1 (mon-build-mon-emacsd-example))
+;;; :TEST-ME (nth 8 (assoc 1 (mon-build-mon-emacsd-example)))
+;;; :TEST-ME (assoc 5 (mon-build-mon-emacsd-example))
+;;; :TEST-ME (assoc 'IS-USER-4-P (cadr (assoc 5 (mon-build-mon-emacsd-example))))
+;;; :TEST-ME (assoc (cadr (nth 3 (cadr (assoc 5 (mon-build-mon-emacsd-example)))))
+;;;             (mon-build-mon-emacsd-example))
+
+;;; ==============================
+;;; :NOTE Don't remove from this file. Mirrors the defition in:
+;;; :FILE mon-site-local-defaults.el
+;;; :MODIFICATIONS <Timestamp: #{2010-03-24T16:52:01-04:00Z}#{10123} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-02-10T14:19:41-05:00Z}#{10063} - by MON KEY>
+;;;###autoload
+(defun mon-build-misc-path-example (&optional bind-var force-bind)
+  "Return pre-formattedkey value pairs for use with `*mon-misc-path-alist*'.\n
+When `bind-var' is non-nil if `*mon-misc-path-alist*' is unbound, bind it with
+return value.\n
+When `force-bind' is non-nil force the binding even if `*mon-misc-path-alist*'
+is already bound.\n
+:EXAMPLE\n\n\(mon-build-misc-path-example\)\n
+\(assoc 'the-1-path \(mon-build-misc-path-example\)\)\n
+\(assoc 'the-emacs-vars \(mon-build-misc-path-example\)\)\n
+\(nth 3 \(assoc 'the-sub \(mon-build-misc-path-example)\)\)\n
+:SEE-ALSO `mon-get-mon-emacsd-paths', `mon-build-mon-emacsd-example',
+`mon-build-user-name-example', `mon-get-env-vars-emacs', 
+`mon-get-env-vars-symbols', `mon-get-env-vars-strings'.\n►►►"
+  (let (pth egs)
+    (do ((i 1 (1+ i)))
+        ((> i 10) i)
+      (push `(,(car (read-from-string  (concat "the-" (number-to-string i) "-path")))
+              ,(concat "<PATHSTRING-" (number-to-string i) ">")) pth))
+    (setq egs (nreverse pth))
+    (setq pth nil)
+    (do ((su 1 (1+ su)))
+        ((> su 10) su)
+      (push `(,(car (read-from-string  (concat "the-sub-" (number-to-string su))))
+              ,(concat "<SUB-PATHSTRING-1-" (number-to-string su) ">")
+              ,(concat "<SUB-PATHSTRING-2-" (number-to-string su) ">"))
+            pth))
+    (setq pth `((the-sub ,@(nreverse pth))))
+    (setq egs (append egs pth))
+    (setq pth nil)
+    ;; <Timestamp: #{2010-06-23T15:54:36-04:00Z}#{10253} - by MON KEY>
+    ;; :NOTE Following lists are supposed to get pushed onto the local var `egs'. 
+    ;; However, Emacs 23.2's backquote template can become broken on quoted
+    ;; lists with , character.  And no matter what we do the list is formed as: 
+    ;; "\, (form to splice)" <- note the whitespace between comma and opening paren.
+    ;; All of the reasonable workarounds I tried failed with even \"best\"
+    ;; solution causing the reader to return a cons instead of a proper
+    ;; list.... IOW, waiting for awhile before incorporating the example forms
+    ;; below. Best I can tell thh fix was checked into trun a few days ago.
+    ;; :SEE Emacs bazaar trunk revno: 100617 timestamp:
+    ;; Fri 2010-06-18 10:05:43 -0400 Which ads a variable
+    ;; `edebug-read-backquote-level' to tweak how comma constructs are
+    ;; read. e.g. the docstring: 
+    ;; 
+    ;; "This controls how we read comma constructs"
+    ;; 
+    ;; '(the-gnu-case-path
+    ;;   ,(case (car (mon-gnu-system-conditionals))
+    ;;      (1 "/home/gnu-user1/dir1")
+    ;;     (2 "/home/gnu-user1/dir1")))
+    ;;
+    ;; '(the-user-case-path
+    ;;  ,(case  (mon-user-name-conditionals t)
+    ;;     (IS-MON-P-GNU    "/mnt/SOME-MOUNT")     
+    ;;     (IS-BUG-P-REMOTE "//some-network-host")))
+    ;;
+    ;; '(the-user-case-lambda-pth
+    ;;  ,(case (mon-user-name-conditionals t)
+    ;;     (IS-MON-P-GNU     #'(lambda ()
+    ;;                           (expand-file-name "SOME-MON-FILE" (getenv "HOME"))))
+    ;;     (IS-BUG-P         #'(lambda () 
+    ;;                           (expand-file-name  "SOME-BUG-FILE" (getenv "HOME"))))))
+    ;;
+    ;; '(the-system-case-lambda-pth
+    ;;  ,(case (mon-system-type-conditionals t)
+    ;;     (IS-GNU-P #'(lambda ()
+    ;;                   (expand-file-name "SOME-GNU-FILE" user-emacs-directory)))
+    ;;     (IS-W32-P #'(lambda () 
+    ;;                   (expand-file-name "SOME-GNU-FILE" user-emacs-directory)))))
+    (let ((var-cnt 0))
+      (dolist (E '(EMC_BIN EMC_CUR EMC_PTH EMC_REPO EMC_W32 EMC_GNUW32
+                           EMACS_LAUNCH EMCS_DUMMY1 EMCS_DUMMY2)
+                 (setq pth `((the-emacs-vars ,(nreverse pth)))))
+        (incf var-cnt)
+        (push (car (read-from-string (format "%S-%d" E var-cnt))) pth)))
+    (setq egs (append egs pth))    
+    (cond (bind-var (unless (and (intern-soft "*mon-misc-path-alist*" obarray) ;; *IS-MON-OBARRAY*
+                                 (bound-and-true-p *mon-misc-path-alist*))
+                      (setq *mon-misc-path-alist* egs)))
+          (force-bind (setq *mon-misc-path-alist* egs))
+          (t egs))))
+;;
+;;; :TEST-ME (assoc 'the-1-path (mon-build-misc-path-example))
+;;; :TEST-ME (assoc 'the-emacs-vars (mon-build-misc-path-example))
+;;; :TEST-ME (nth 3 (assoc 'the-sub (mon-build-misc-path-example)))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-02-10T17:17:59-05:00Z}#{10063} - by MON KEY>
+;;;###autoload
+(defun mon-build-user-name-example (name-count &optional w-this-var bind-var force-bind)
+  "Return pre-formatted list of username  pairs for use with mon packages.\n
+`*BUG-NAME*', `*MON-NAME*', `*MON-ORG-NAME*', etc.
+When `bind-var' is non-nil if `' is unbound bind it.\n
+When `force-bind' is non-nil force the binding even if `' bound.\n
+Elements of the list might have a form such as this:
+\(\(1 \"Short-First Last\"\)\n \(2 \"First\"\) \ \(3 \"FML\"\) 
+ \(4 \"Full-First Last\"\) \n \(5 \"fl\"\) \n \(6 \"MONIKER NAME\"\) 
+ \(7 \"MONIKER\"\) \n \(8 \"MONIKER_NAME\"\) \n \(9 \"moniker_name\"\)\)\n
+:EXAMPLE\n\n(mon-build-user-name-example 5)\n
+\(mon-build-user-name-example-TEST\)
+:SEE-ALSO `mon-build-user-name-example-TEST', `mon-get-mon-emacsd-paths',
+`mon-build-misc-path-example' `mon-build-mon-emacsd-example'.\n►►►"
+  (let ((wonky-user (mon-string-wonkify
+                     (concat (if w-this-var 
+                                 (cond ((equal (symbol-name w-this-var) "*MON-NAME*") 
+                                        user-login-name)
+                                       ((equal (symbol-name w-this-var) "*BUG-NAME*") 
+                                        (format "BUG-%s" user-login-name))
+                                       (t "some-name"))
+                                 user-login-name)
+                             (when (> (length user-full-name) 0)
+                               (concat "-" (length user-full-name)))) name-count))
+        wonky
+        (wonky-step 0))
+    (while wonky-user
+      (setq wonky-step (1+ wonky-step))
+      (push `(,wonky-step ,(format "<%s-%s-%d>" 
+                                   (pop wonky-user) 
+                                   (car (mon-string-wonkify "NAMEFORM" 1)) 
+                                   wonky-step)) 
+            wonky))
+    (setq wonky (nreverse wonky))
+    ;; Don't allow MON to force-bind `*MON-NAME*' or `*BUG-NAME*' by accident : )
+    (if (and force-bind 
+             ;; :WAS (or (eq w-this-var '*MON-NAME*) (eq w-this-var '*BUG-NAME*))
+             (member (format "%s" w-this-var) '("*MON-NAME*" "*BUG-NAME*"))
+             (and  (intern-soft "*mon-misc-path-alist*" obarray) ;; *IS-MON-OBARRAY*
+                   (bound-and-true-p *mon-misc-path-alist*)
+                   (cdr (assoc 'the-only-if-its-a-mon-system *mon-misc-path-alist*))))
+        ;; Its a MON KEY so just return
+        wonky 
+      (cond (force-bind (set w-this-var wonky))
+              (bind-var (unless (bound-and-true-p w-this-var)
+                          (setq w-this-var wonky)))
+              (t wonky)))))
+;;
+;;; :TEST-ME (mon-build-user-name-example 5)
+;;; :TEST-ME (mon-build-user-name-example 5 '*BUG-NAME*)
+;;; :TEST-ME (mon-build-user-name-example 5 '*BUG-NAME* t)
+;;; :TEST-ME (mon-build-user-name-example 5 '*BUG-NAME* nil t)
+;;; :TEST-ME (mon-build-user-name-example 5 '*SOME-RANDOM-VAR* t)
+
+;;; ==============================
+;;; :CHANGESET 1745
+;;; :CREATED <Timestamp: #{2010-03-24T13:38:11-04:00Z}#{10123} - by MON>
+;;;###autoload
+(defun mon-user-system-conditionals-TEST (&rest user-system-test-with)
+  "Test function for `mon-user-name-conditionals' and `mon-system-type-conditionals'.\n
+Return pp'ed results to buffer named \"*MON-USR/SYS-COND-TESTS*\".
+When rest args USER-SYSTEM-TEST-WITH are supplied these are additional username
+system-type tests to be performed.\n
+Each USER-SYSTEM-TEST-WITH is quoted list of the form:\n
+ (<LIST-KEY> <NAME-PROP> <SYSTEM-TYPE> <USER-NAME>)\n
+For example:\n
+ '\(:W32-THIS-USER :W-REAL-USER windows-nt \"i-am-w32-username\"\)
+ '\(:GNU-THIS-USER :W-REAL-USER gnu/linux \"i-am-gnu-username\"\)\)\n
+:EXAMPLE\n
+\(mon-user-system-conditionals-TEST
+ '\(:W32-THIS-USER :W-REAL-USER windows-nt \"i-am-w32-username\"\)
+ '\(:GNU-THIS-USER :W-REAL-USER gnu/linux \"i-am-gnu-username\"\)
+ '\(:DARWIN-THIS-USER :DARWIN-REAL-USER darwin \"i-am-darwin-username\"\)
+ '\(:CYGWIN-THIS-USER :CYGWIN-REAL-USER cygwin \"i-am-cygwin-username\"\)  
+ '\(:MSDOS-THIS-USER :MSDOS-REAL-USER  ms-dos \"i-am-msdos-username\"\)\)\n
+:SEE-ALSO `mon-build-copyright-string-TEST',
+`mon-help-propertize-regexp-symbol-defs-TEST', `mon-help-propertize-tags-TEST',
+`mon-help-regexp-symbol-defs-TEST', `mon-help-CL-wget-pkgs-TEST',
+`mon-wget-list-to-script-TEST', `mon-line-strings-to-list-TEST',
+`mon-help-keys-wikify-TEST', `mon-insert-lisp-testme-fancy',
+`mon-insert-lisp-testme', `mon-insert-test-cases'.\n►►►"
+  (let ((gthrer #'(lambda (lst-key nm-prop sys-typ usr-rln)
+                    (let ((system-type sys-typ)
+                          (user-real-login-name usr-rln))
+                      (push `(,lst-key ,nm-prop ,usr-rln
+                                       (:USER-NAME-COND
+                                        ,(mon-user-name-conditionals)
+                                        ,(mon-user-name-conditionals t))
+                                       (:SYSTEM-TYPE-COND ,nm-prop ,usr-rln
+                                                          ,(mon-system-type-conditionals)
+                                                          ,(mon-system-type-conditionals t)))
+                            gthr))))
+        (test-with `((:W32-NO-USER :W-ANON-USER windows-nt "bubba")
+                     (:W32-THIS-USER :W-REAL-USER windows-nt ,user-real-login-name)
+                     (:GNU-NO-USER :W-ANON-USER gnu/linux  "bubba")
+                     (:GNU-THIS-USER :W-REAL-USER gnu/linux ,user-real-login-name)
+                     ,@user-system-test-with))
+        gthr)
+    (dolist (tw test-with (setq gthr (nreverse gthr)))
+      (funcall gthrer (nth 0 tw) (nth 1 tw) (nth 2 tw) (nth 3 tw)))
+    (pp-display-expression gthr "*MON-USR/SYS-COND-TESTS*")))
+;;
+;;; :TEST-ME (mon-user-system-conditionals-TEST
+;;;              '(:W32-THIS-USER :W-REAL-USER windows-nt "i-am-w32-username")
+;;;              '(:GNU-THIS-USER :W-REAL-USER gnu/linux "i-am-gnu-username")
+;;;              '(:DARWIN-THIS-USER :DARWIN-REAL-USER darwin "i-am-darwin-username")
+;;;              '(:CYGWIN-THIS-USER :CYGWIN-REAL-USER cygwin "i-am-cygwin-username")  
+;;;              '(:MSDOS-THIS-USER :MSDOS-REAL-USER  ms-dos "i-am-msdos-username"))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-03-25T15:35:10-04:00Z}#{10124} - by MON>
+;;;###autoload
+(defun mon-build-user-name-example-TEST ()
+  "Test function for `mon-build-user-name-example'.\n
+Return value displayed in buffer \"*MON-BUILD-USER-NAME-EXAMPLE-TEST*\".\n
+:SEE-ALSO `mon-user-name-conditionals',`mon-system-type-conditionals'.\n►►►"
+  (let ((mk-eu #'(lambda (USER-BIND) 
+                   (eval (defconst USER-BIND nil
+                           "An example user for `mon-build-user-name-example'."))))
+        (rmv-eu #'(lambda (USR)
+                    (progn (makunbound USR) (unintern (symbol-name USR) obarray))))
+        (shw-eu #'(lambda (test-key w-var ev-rslt)
+                    (push `(,test-key :W-NAME-VAR ,(format "%s" w-var) ,ev-rslt) mbunet-gthr)))
+        (l-o-a '((:W-BIND-VAR *SOME-BV-USER* nil t)
+                 (:W-FORCE-BIND *SOME-FB-USER* nil t)
+                 (:W-NO-BIND/FORCE nil nil nil)))
+        mbunet-gthr)
+    (dolist (ev l-o-a (setq mbunet-gthr (nreverse mbunet-gthr)))
+      (let ((tk  (nth 0 ev))
+            (wtv (or (nth 1 ev) '*EXAMPLE-USER*))
+            (bv  (nth 2 ev))
+            (fb  (nth 2 ev)))
+        (progn
+          (funcall mk-eu wtv)
+          (funcall shw-eu tk wtv
+                   (mon-build-user-name-example 5 wtv nil t))
+          (funcall rmv-eu wtv))))
+    (pp-display-expression mbunet-gthr "*MON-BUILD-USER-NAME-EXAMPLE-TEST*")))
 
 ;;; ==============================
 (provide 'mon-testme-utils)

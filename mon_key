@@ -35,7 +35,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-regexp-symbols.el -- Provides a collection of Symbols bound to lisp lists of regexp/replacement pairs. Allows simple easy interactive command invocation using symbols as arguments to containing lists of regexps
 * Lisp:mon-time-utils.el (EbayTime) -- Provides procedures for frobbing time
 * Lisp:mon-testme-utils.el -- Provides `mon-*' tests and template for inserting them
-
+* Lisp:mon-plist-utils.el -- Provides procedures for frobbing plist-like seqs
 [:MON-STANDARDS]
 === :MON-STANDARDS ===
 * Lisp:mon-button-utils.el -- utilities for examining button properties

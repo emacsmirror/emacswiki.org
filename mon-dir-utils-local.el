@@ -11,7 +11,7 @@
 ;; CREATED: 2010-11-04T19:38:33-04:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: 
+;; KEYWORDS: local, lisp
 
 ;;; ================================================================
 
@@ -19,9 +19,21 @@
 
 ;; =================================================================
 ;; DESCRIPTION:
-;; mon-dir-utils-local provides { some description here. }
+;; mon-dir-utils-local provides local directory and file utilities 
+;; Mostly specific to MON site
 ;;
 ;; FUNCTIONS:►►►
+;; `mon-file-map-elisp-fileset', `mon-dir-save-current',
+;; `mon-explorer-naf-artist', `mon-explorer-naf-brand',
+;; `mon-dired-naf-artist-letter' `mon-dired-naf-brand-letter',
+;; `mon-dired-naf-image-dir', `mon-dir-nef-update-photos-alist',
+;; `mon-bind-nefs-photos-at-loadtime', `mon-dir-nef-ranges',
+;; `mon-dir-nef-name-to-head', `mon-dir-nef-remove-if-empty',
+;; `mon-dir-nef-find-dups', `mon-dir-nef-conc-dups', `mon-dir-nef-converge',
+;; `mon-dir-nef-conc-ranges', `mon-dir-nef-keep-3', `mon-dir-nef-big',
+;; `mon-dired-nef-dir', `mon-dir-hash-images' `mon-dir-hashed-complete',
+;; `mon-dir-try-comp', `mon-file-path-for-bug', `mon--local-url-for-bug',
+;; `mon-get-local-url-for-bug',
 ;;
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -36,6 +48,8 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
+;;`*mon-img-hash*', `*mon-nef-img-hash*', `*mon-bmp-img-hash*',
+;;`*mon-jpg-img-hash*',
 ;;
 ;; GROUPS:
 ;;
@@ -117,6 +131,10 @@
 
 (eval-when-compile (require 'cl))
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+
 ;;; `mon-dir-nef-keep-3'   -> `cl::set-difference'
 (eval-when-compile (require 'mon-cl-compat nil t))
 (declare-function cl::set-difference "mon-cl-compat" t t)
@@ -127,6 +145,7 @@
       (fset 'cl::set-difference 'set-difference))))
 
 (require 'mon-hash-utils)
+
 
 ;;; ==============================
 (defvar *mon-img-hash* nil
@@ -205,8 +224,7 @@ Image directories defined in global variables: \n
 ;;
 ;;;(progn (makunbound '*mon-jpg-img-hash*) (unintern "*mon-jpg-img-hash*" obarray) )
 
-
-(when (and (intern-soft "*mon-naf-mode-root*" obarray)
+(when (and (intern-soft "*mon-naf-mode-root*" obarray) ;;*IS-MON-OBARRAY*
            (bound-and-true-p *mon-naf-mode-root*))
 ;;; ==============================
 ;;; :PREFIX "mfmef-"
@@ -317,7 +335,7 @@ lisp/ source tree when Emacs was built with the\n
 ;;|                      "/TEST-mon-file-map-elisp-fileset.el"))
 ;;`----
 
-(when (and (intern-soft "*mon-emacs-root*" obarray) 
+(when (and (intern-soft "*mon-emacs-root*" obarray)  ;; *IS-MON-OBARRAY*
            (bound-and-true-p *mon-emacs-root*))
 ;;; ==============================
 ;;; :NOTE There are better ways to accomplish this and the :TODO's are misguided.
@@ -408,6 +426,7 @@ Default file is held by global var `*mon-record-current-directory*'.\n
 ;;
 ) ;; :CLOSE when `*mon-emacs-root*'
 
+
 (declare-function w32-shell-execute "w32fns.c" t t)
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday February 09, 2009 @ 09:35.31 PM - by MON>
@@ -437,6 +456,7 @@ Default path held by global var: `*mon-artist-naf-path*'.\n
              system-type)))
 ;;
 ;;; :TEST-ME (mon-explorer-naf-artist "b")
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday February 09, 2009 @ 09:35.31 PM - by MON>
@@ -493,15 +513,7 @@ Default naf path held by the var: `*mon-artist-naf-path*'.\n
 	 (naf-alph-path (concat *mon-artist-naf-path* dl))
 	 (default-directory naf-alph-path))
     (dired-other-window naf-alph-path)))
-;;
-(unless (and (intern-soft "naf-drive-dired-artist-letter" obarray)
-             (fboundp 'naf-drive-dired-artist-letter))
-(defalias 'naf-drive-dired-artist-letter 'mon-dired-naf-artist-letter))
-;;
-(unless (and (intern-soft "naf-dired-artist-letter" obarray)
-             (fboundp 'naf-dired-artist-letter))
-(defalias 'naf-dired-artist-letter 'mon-dired-naf-artist-letter))
-;;
+
 ;;; :TEST-ME (mon-dired-naf-artist-letter "b")
 
 ;;; ==============================
@@ -526,20 +538,12 @@ Default naf path held by the var: `*mon-brand-naf-path*'.\n
 	 (naf-alph-path (concat *mon-brand-naf-path* dl))
 	 (default-directory naf-alph-path))
     (dired-other-window naf-alph-path)))
-;;
-(unless (and (intern-soft "naf-drive-dired-brand-letter-letter" obarray)
-             (fboundp 'naf-drive-dired-brand-letter-letter))
-(defalias 'naf-drive-dired-brand-letter 'mon-dired-naf-brand-letter))
-;;
-(unless (and (intern-soft "naf-dired-brand-letter" obarray)
-             (fboundp 'naf-dired-brand-letter))
-(defalias 'naf-dired-brand-letter 'mon-dired-naf-brand-letter))
-;;
+
 ;;; :TEST-ME (mon-dired-naf-brand-letter  "b")
 
 ;;; ==============================
 (eval-when-compile 
-  (when (and (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
+  (when (and (and (intern-soft "*mon-nef-scan-nefs-path*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-nef-scan-nefs-path*))
              (and (intern-soft "*mon-nef-scan-nef2-path*" obarray)
                   (bound-and-true-p *mon-nef-scan-nef2-path*))
@@ -589,62 +593,10 @@ When called-interactively complete the key to dired to the directory val.\n
 ;;
 )) ;; :CLOSE when *mon-vars*
 
-;;; ==============================
-;;; :PREFIX "mgbd-"
-;;; :CREATED <Timestamp: Friday May 08, 2009 @ 12:12.46 PM - by MON>
-(defun mon-get-buffers-directories (&optional opt-dir)
-  "Return buffer list for buffers' directories sub-dirs.\n
-:CALLED-BY `mon-proc-buffers-directories', `mon-get-proc-buffers-directories',
-`mon-cln-blank-lines'.\n
-:CALLS-VARIABLE `*mon-nef-scan-path*' \(when `bound-and-true-p').\n
-:ALIASED-BY `mon-buffer-get-directories'\n
-:NOTE Relies on `insert-directory' and associatively `insert-directory-program'.
-For alternative implementation of same:\n
-:SEE `mon-insert-subdirs-in-buffer', `mon-add-subdirs-to-list'.\n
-:SEE-ALSO `mon-file-dir-attributes->plist', `file-directory-p',
-`file-symlink-p', `file-attributes', `directory-files', `list-directory',
-`list-directory-brief-switches',`list-directory-verbose-switches',
-`insert-directory', `insert-directory-program'.\n►►►"
-  (let ( ;; (insert-default-directory nil)
-        (mgbd-df-dir (file-name-as-directory (file-name-directory default-directory)))
-        mgbd-get-dirs 
-        mgbd-this-dir)
-    (cond (;; Use (file-truename buffer-file-truename) instead?
-           (and (not (buffer-file-name)) (not opt-dir)) 
-	   (if (yes-or-no-p 
-                (concat ":FUNCTION `mon-get-buffers-directories' "
-                        "-- supply an alternate directory path: "))
-               (setq mgbd-this-dir (file-name-directory 
-			       (file-name-as-directory
-				(read-directory-name 
-                                 (concat ":FUNCTION `mon-get-buffers-directories' "
-                                         "-- List subdirs of dir: " )
-                                 (or (and (intern-soft "*mon-nef-scan-path*" obarray)
-                                          (bound-and-true-p *mon-nef-scan-path*))
-                                     mgbd-df-dir) 
-                                 mgbd-df-dir nil t))))
-             (setq mgbd-this-dir mgbd-df-dir)))
-          ;; (error (concat ":FUNCTION `mon-get-buffers-directories' "
-          ;;         "-- `%s' directory not associated with or called from unsaved buffer")
-          ;;         (buffer-name))))
-	  (opt-dir 
-	   (if (file-exists-p (file-name-directory (file-name-as-directory opt-dir)))
-	       (setq mgbd-this-dir (file-name-directory  (file-name-as-directory opt-dir)))
-	     (error (concat ":FUNCTION `mon-get-buffers-directories' "
-                            "-- directory non-existent, not readable, or is a file"))))
-	  ((and (not opt-dir) (buffer-file-name))
-	   (setq mgbd-this-dir (file-name-as-directory (file-name-directory buffer-file-name)))))
-    (setq mgbd-get-dirs
-          (with-temp-buffer
-	    (insert-directory mgbd-this-dir "-gloRBd --dired a" nil t)
-	    (buffer-string)))
-    mgbd-get-dirs))
-;;
-(unless (and (intern-soft "mon-buffer-get-directories" obarray) 
-             (fboundp 'mon-buffer-get-directories))
-(defalias 'mon-buffer-get-directories 'mon-get-buffers-directories))
 
-(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
+(declare-function mon-dir-nef-update-photos-alist "mon-dir-utils-local")
+
+(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p *mon-nef-scan-nefs-path*))
 ;;; ==============================
 ;;; :PREFIX "mdnupa-"
@@ -707,6 +659,9 @@ Return an alist as:\n
                         mdnupa-L-1-lcl-splt-nm))
                   (directory-files *mon-nef-scan-nefs-path* nil "^\\([0-9]\\{2,3\\}_.*\\)")))))
 ;;
+
+
+(declare-function mon-dir-nef-update-photos-alist "mon-dir-utils-local")
 ;;; ==============================
 ;;; :TODO As this is the top level interface to the callers it should check if
 ;;; anything has changed in the persistent cached list stored to file (which we don't have!).
@@ -949,6 +904,7 @@ Second elt is its range.\n
 ;;
 ;;; :TEST-ME (mon-dir-nef-conc-ranges *mon-nefs_photos_nefs-alist*)
 
+
 (declare-function cl::set-difference "mon-cl-compat" t t)
 ;;; ==============================
 ;;; :PREFIX "mdnk-"
@@ -1015,7 +971,8 @@ Return value includes those formatted with:\n
 ;;
 ;;; :TEST-ME (mon-dir-nef-big *mon-nefs_photos_nefs-alist*)
 
-(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray)
+
+(when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p *mon-nef-scan-nefs-path*))
 ;;; ==============================
 ;;; :CREATED <Timestamp: Saturday June 27, 2009 @ 04:27.24 PM - by MON>
@@ -1154,7 +1111,12 @@ List value built with `mon-dir-build-list' per completion specs.\n
 ;; | (mon-dir-nef-keep-3             *mon-nefs_photos_nefs-alist*)
 ;; `----
 
-(when (and (intern-soft "*bug-HG-path*" obarray) 
+
+(declare-function mon--local-url-for-bug "mon-dir-utils-local" '(is-url file-string))
+(declare-function mon-file-path-for-bug "mon-dir-utils-local" '(file-name-path insrtp yankp intrp))
+(declare-function mon-get-local-url-for-bug "mon-dir-utils-local" '(file-string))
+;; 
+(when (and (intern-soft "*bug-HG-path*" obarray)  ;; *IS-MON-OBARRAY*
            (bound-and-true-p *bug-HG-path*))
 ;;; ==============================
 ;;; :CREATED <Timestamp: Tuesday July 21, 2009 @ 05:36.07 PM - by MON>

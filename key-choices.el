@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Nov  4 00:06:18 2010 (-0500)
 ;; Version:  0.1
-;; Last-Updated: Thu Nov  4 08:08:38 2010 (-0500)
-;;           By: us041375
-;;     Update #: 1
+;; Last-Updated: Wed Nov 10 08:35:51 2010 (-0600)
+;;           By: Matthew L. Fidler
+;;     Update #: 3
 ;; URL: 
 ;; Keywords: Viper, Ergoemacs, CUA, Crisp, EDT, TPU
 ;; Compatibility: 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `easymenu'.
+;;   `easymenu', `ergoemacs-mode'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -28,6 +28,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 10-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Wed Nov 10 08:35:17 2010 (-0600) #2 (Matthew L. Fidler)
+;;    Make sure to require `ergoemacs-mode' before loading (ergoemacs-mode)
 ;; 04-Nov-2010      
 ;;    Initial Revision
 ;; 
@@ -65,23 +68,23 @@
 (defcustom key-choices-keybinding 1
   "* Keybinding for emacs"
   :type '(choice (integer :tag "Emacs Keys" :value 1)
-		 (integer :tag "VI Keys" :value 2)
-		 (integer :tag "Windows Keys" :value 3)
-		 (integer :tag "Ergonomic" :value 4)
-		 (integer :tag "Ergonomic + Windows Keys"  :value 5)
-		 (integer :tag "CRiSP/Breif" :value 6)
-		 (integer :tag "EDT (DEC VMS editor)" :value 7)
-		 (integer :tag "TPU (DEC VMS editor)" :value 8)
-		 )
+                 (integer :tag "VI Keys" :value 2)
+                 (integer :tag "Windows Keys" :value 3)
+                 (integer :tag "Ergonomic" :value 4)
+                 (integer :tag "Ergonomic + Windows Keys"  :value 5)
+                 (integer :tag "CRiSP/Breif" :value 6)
+                 (integer :tag "EDT (DEC VMS editor)" :value 7)
+                 (integer :tag "TPU (DEC VMS editor)" :value 8)
+                 )
   :group 'key-choices
   )
 
 (defcustom key-choices-keyboard "us"
   " * Type of keyboard that you are using"
   :type '(choice (string :tag "QWERTY" :value "us")
-		 (string :tag "Dvorak" :value "dv")
-		 (string :tag "Colemak" :value "colemak")
-		 )			
+                 (string :tag "Dvorak" :value "dv")
+                 (string :tag "Colemak" :value "colemak")
+                 )                      
   :group 'key-choices
   )
 
@@ -91,9 +94,9 @@
   )
 (setq key-choices-mode-menu-keys
       '("Key Bindings"
-	["CRiSP/Breif Keys" (key-choices-crisp) :style toggle :selected (= key-choices-keybinding 6)]
-	["EDT Keys" (key-choices-edt) :style toggle :selected (= key-choices-keybinding 7)]
-	["TPU Keys" (key-choices-tpu) :style toggle :selected (= key-choices-keybinding 8)]
+        ["CRiSP/Breif Keys" (key-choices-crisp) :style toggle :selected (= key-choices-keybinding 6)]
+        ["EDT Keys" (key-choices-edt) :style toggle :selected (= key-choices-keybinding 7)]
+        ["TPU Keys" (key-choices-tpu) :style toggle :selected (= key-choices-keybinding 8)]
         ["CUA Keys + Ergonomic Keys" (key-choices-ergonomic-cua) :style toggle :selected (= key-choices-keybinding 5) ]
         ["CUA Keys" (key-choices-cua) :style toggle :selected (= key-choices-keybinding 3)]
         ["Emacs Keys" (key-choices-emacs-keys) :style toggle :selected (= key-choices-keybinding 1)]
@@ -122,7 +125,7 @@
       (crisp-mode -1)
     )
   (if (and (fboundp 'edt-emulation-off)
-	   (boundp 'edt-orig-transient-mark-mode))
+           (boundp 'edt-orig-transient-mark-mode))
       (edt-emulation-off)
     )
   (if (fboundp 'tpu-edt-off)
@@ -201,6 +204,7 @@
 
 (defun key-choices-ergonomic-cua ()
   (interactive)
+  (require 'ergoemacs-mode)
   (key-choices-unload-keys)
   (unless (= key-choices-keybinding 5)
     (setq key-choices-keybinding 5)
@@ -212,6 +216,7 @@
   )
 (defun key-choices-ergonomic-qwerty ()
   (interactive)
+  (require 'ergoemacs-mode)
   (unless (string= key-choices-keyboard "us")
     (setq key-choices-keyboard "us")
     (customize-save-variable 'key-choices-keyboard key-choices-keyboard)
@@ -221,6 +226,7 @@
   )
 (defun key-choices-ergonomic-dvorak ()
   (interactive)
+  (require 'ergoemacs-mode)
   (unless (string= key-choices-keyboard "dv")
     (setq key-choices-keyboard "dv")
     (customize-save-variable 'key-choices-keyboard key-choices-keyboard)
@@ -230,6 +236,7 @@
   )
 (defun key-choices-ergonomic-colemak ()
   (interactive)
+  (require 'ergoemacs-mode)
   (unless (string= key-choices-keyboard "colemak")
     (setq key-choices-keyboard "colemak")
     (customize-save-variable 'key-choices-keyboard key-choices-keyboard)
@@ -280,77 +287,77 @@
 (defun key-choices-viper-pre-command-hook ()
   (interactive)
   (condition-case error 
-  (let ( (deactivate-mark nil) )
-    (when (not (minibufferp))
-      (when (and key-choices-viper-force-it (not (= 2 key-choices-keybinding))
-                 (and (boundp 'viper-mode) (eq viper-mode t)))
-        (viper-go-away))
-      (when (and (= 2 key-choices-keybinding)
-                 (boundp 'viper-current-state)
-                 viper-current-state)
-        (when (and key-choices-viper-force-it (not (and (boundp 'viper-mode) (eq viper-mode t))))
-	  (require 'color-theme)
-	  (when (not (fboundp 'color-theme-robin-hood))
-	    (color-theme-initialize))
-	  (require 'color-theme-emacs-revert-theme)
-	  (require 'color-theme-vim-insert-mode)
+      (let ( (deactivate-mark nil) )
+        (when (not (minibufferp))
+          (when (and key-choices-viper-force-it (not (= 2 key-choices-keybinding))
+                     (and (boundp 'viper-mode) (eq viper-mode t)))
+            (viper-go-away))
+          (when (and (= 2 key-choices-keybinding)
+                     (boundp 'viper-current-state)
+                     viper-current-state)
+            (when (and key-choices-viper-force-it (not (and (boundp 'viper-mode) (eq viper-mode t))))
+              (require 'color-theme)
+              (when (not (fboundp 'color-theme-robin-hood))
+                (color-theme-initialize))
+              (require 'color-theme-emacs-revert-theme)
+              (require 'color-theme-vim-insert-mode)
 
-          (viper-mode))
-        (when (and (not (= 1 key-choices-viper-last-mode))
-                   (eq viper-current-state 'emacs-state)
-                   )
-          ;; Emacs
-          (setq key-choices-viper-last-mode 1)
-          (when key-choices-viper-revert-color-theme
-            (color-theme-emacs-revert-theme))
-          (with-temp-buffer
-            (insert key-choices-viper-emacs-color-theme)
-            (eval-buffer)
-            )
-          )
-        (when (and (not (= 2 key-choices-viper-last-mode))
-                   (eq viper-current-state 'insert-state)
-                   )
-          ;; Insert
-          (when key-choices-viper-revert-color-theme
-            (color-theme-emacs-revert-theme))
-          (setq key-choices-viper-last-mode 2)
-          (with-temp-buffer
-            (insert key-choices-viper-insert-color-theme)
-            (eval-buffer)
-            )
-          )
-        (when (and (not (= 3 key-choices-viper-last-mode))
-                   (eq viper-current-state 'vi-state)
-                   (or (not (boundp 'viper-visual-mode))
-                       (not viper-visual-mode))
-                   )
-          ;; Vi Normal
-          (when key-choices-viper-revert-color-theme
-            (color-theme-emacs-revert-theme))
-          (setq key-choices-viper-last-mode 3)
-          (with-temp-buffer
-            (insert key-choices-viper-vi-color-theme)
-            (eval-buffer)
-            )
-          )
-        (when (and (not (= 4 key-choices-viper-last-mode))
-                   (eq viper-current-state 'vi-state)
-                   (boundp 'viper-visual-mode)
-                   viper-visual-mode)
-	  ;; Vi visual
-          (when key-choices-viper-revert-color-theme
-            (color-theme-emacs-revert-theme))
-          (setq key-choices-viper-last-mode 4)
-          (with-temp-buffer
-            (insert key-choices-viper-vi-visual-color-theme)
-            (eval-buffer)
+              (viper-mode))
+            (when (and (not (= 1 key-choices-viper-last-mode))
+                       (eq viper-current-state 'emacs-state)
+                       )
+              ;; Emacs
+              (setq key-choices-viper-last-mode 1)
+              (when key-choices-viper-revert-color-theme
+                (color-theme-emacs-revert-theme))
+              (with-temp-buffer
+                (insert key-choices-viper-emacs-color-theme)
+                (eval-buffer)
+                )
+              )
+            (when (and (not (= 2 key-choices-viper-last-mode))
+                       (eq viper-current-state 'insert-state)
+                       )
+              ;; Insert
+              (when key-choices-viper-revert-color-theme
+                (color-theme-emacs-revert-theme))
+              (setq key-choices-viper-last-mode 2)
+              (with-temp-buffer
+                (insert key-choices-viper-insert-color-theme)
+                (eval-buffer)
+                )
+              )
+            (when (and (not (= 3 key-choices-viper-last-mode))
+                       (eq viper-current-state 'vi-state)
+                       (or (not (boundp 'viper-visual-mode))
+                           (not viper-visual-mode))
+                       )
+              ;; Vi Normal
+              (when key-choices-viper-revert-color-theme
+                (color-theme-emacs-revert-theme))
+              (setq key-choices-viper-last-mode 3)
+              (with-temp-buffer
+                (insert key-choices-viper-vi-color-theme)
+                (eval-buffer)
+                )
+              )
+            (when (and (not (= 4 key-choices-viper-last-mode))
+                       (eq viper-current-state 'vi-state)
+                       (boundp 'viper-visual-mode)
+                       viper-visual-mode)
+              ;; Vi visual
+              (when key-choices-viper-revert-color-theme
+                (color-theme-emacs-revert-theme))
+              (setq key-choices-viper-last-mode 4)
+              (with-temp-buffer
+                (insert key-choices-viper-vi-visual-color-theme)
+                (eval-buffer)
+                )
+              )
             )
           )
         )
-      )
-    )
-  (error nil)))
+    (error nil)))
 (add-hook 'pre-command-hook 'key-choices-viper-pre-command-hook)
 (add-hook 'post-command-hook 'key-choices-viper-pre-command-hook)
 (defun key-choices-viper ()

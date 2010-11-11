@@ -255,16 +255,19 @@
 ;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-03T19:08:24-04:00Z}#{10443} - by MON KEY>
 (defcustom *mon-add-subdirs-to-list-ignorables*
-  '("." ".." "RCS" "CVS" "rcs" "cvs" "lost+found" ".git" ".bzr" ".hg" ".svn" "_darcs")
+  '("." ".." "RCS" "CVS" "rcs" "cvs"  ".git" ".bzr" ".hg" ".svn" "_darcs"
+    "lost+found" ".NtUninstall")
   "A list of directory namestring components to filter.\n
 Elements of list will not be appear in return values of:\n
  `mon-add-subdirs-to-list' `mon-dir-get-subdirs'\n
 These are not full paths but only the directory name component of one, e.g.:
  \(file-name-nondirectory \(expand-file-name \".bzr\" default-directory\)\)
 Where the return value \".bzr\" is the name of a directory \".bzr\".\n
-:SEE-ALSO `%mon-dir-get-subdirs-filter-full', `%mon-dir-get-subdirs-filter-no-full',
+:SEE-ALSO `%mon-dir-get-subdirs-filter-full',
+`%mon-dir-get-subdirs-filter-no-full',
 `*regexp-add-subdirs-to-list-filter-ignorables*',
-`*mon-add-subdirs-to-list-ignorables*'.\n►►►"
+`*mon-add-subdirs-to-list-ignorables*',
+`ido-work-directory-list-ignore-regexps'.\n►►►"
   :type '(repeat string)
   :group 'mon-dir-utils)
 
@@ -408,7 +411,7 @@ more of Emacs' file/path related functions must interact things become slippery:
 :SEE-ALSO `mon-file-dir-attributes->plist', `mon-file-reduce-name',
 `mon-copy-files-in-sub-dirs', `mon-add-subdirs-to-list', `mon-build-path',
 `*mon-add-subdirs-to-list-ignorables*',
-`*regexp-add-subdirs-to-list-filter-ignorables*'.\n►►►"
+`*regexp-add-subdirs-to-list-filter-ignorables*', `info-file-exists-p'.\n►►►"
   (let (mftp-rtn)
     (and 
      (or (mon-string-not-null-nor-zerop w-putative-file-truename)
@@ -1787,10 +1790,10 @@ Ignore directories with a \".nosearch\" namestring.\n
            ;; (get-list (mon-add-subdirs-to-list misib-pth-lst 'misib-sub-dir-lst))
            ;; (misib-print-lst get-list))	   
            (misib-sub-dir-lst (mon-add-subdirs-to-list misib-pth-lst)))
-      (while misib-sub-dir-lst ;; misib-print-lst
+      (while misib-sub-dir-lst
 	(progn
 	  (newline)
-          (princ (car misib-sub-dir-lst) (current-buffer)))
+	  (princ (car misib-sub-dir-lst) (current-buffer)))
 	(setq misib-sub-dir-lst (cdr misib-sub-dir-lst))))))
 ;;
 ;; (unless (and (intern-soft "" obarray) (fboundp ')) (defalias ' 'mon-insert-subdirs-in-buffer))
@@ -1963,6 +1966,60 @@ When INSRTP is non-nil or called with prefix arg insert path at point.\n
 ;;; :TEST-ME (mon-insert-file-path)
 
 
+;;; ==============================
+;;; :PREFIX "mgbd-"
+;;; :CREATED <Timestamp: Friday May 08, 2009 @ 12:12.46 PM - by MON>
+(defun mon-get-buffers-directories (&optional opt-dir)
+  "Return buffer list for buffers' directories sub-dirs.\n
+:CALLED-BY `mon-proc-buffers-directories', `mon-get-proc-buffers-directories',
+`mon-cln-blank-lines'.\n
+:CALLS-VARIABLE `*mon-nef-scan-path*' \(when `bound-and-true-p').\n
+:ALIASED-BY `mon-buffer-get-directories'\n
+:NOTE Relies on `insert-directory' and associatively `insert-directory-program'.
+For alternative implementation of same:\n
+:SEE `mon-insert-subdirs-in-buffer', `mon-add-subdirs-to-list'.\n
+:SEE-ALSO `mon-file-dir-attributes->plist', `file-directory-p',
+`file-symlink-p', `file-attributes', `directory-files', `list-directory',
+`list-directory-brief-switches',`list-directory-verbose-switches',
+`insert-directory', `insert-directory-program'.\n►►►"
+  (let ( ;; (insert-default-directory nil)
+        (mgbd-df-dir (file-name-as-directory (file-name-directory default-directory)))
+        mgbd-get-dirs 
+        mgbd-this-dir)
+    (cond (;; Use (file-truename buffer-file-truename) instead?
+           (and (not (buffer-file-name)) (not opt-dir)) 
+	   (if (yes-or-no-p 
+                (concat ":FUNCTION `mon-get-buffers-directories' "
+                        "-- supply an alternate directory path: "))
+               (setq mgbd-this-dir (file-name-directory 
+			       (file-name-as-directory
+				(read-directory-name 
+                                 (concat ":FUNCTION `mon-get-buffers-directories' "
+                                         "-- List subdirs of dir: " )
+                                 (or (and (intern-soft "*mon-nef-scan-path*" obarray)
+                                          (bound-and-true-p *mon-nef-scan-path*))
+                                     mgbd-df-dir) 
+                                 mgbd-df-dir nil t))))
+             (setq mgbd-this-dir mgbd-df-dir)))
+          ;; (error (concat ":FUNCTION `mon-get-buffers-directories' "
+          ;;         "-- `%s' directory not associated with or called from unsaved buffer")
+          ;;         (buffer-name))))
+	  (opt-dir 
+	   (if (file-exists-p (file-name-directory (file-name-as-directory opt-dir)))
+	       (setq mgbd-this-dir (file-name-directory  (file-name-as-directory opt-dir)))
+	     (error (concat ":FUNCTION `mon-get-buffers-directories' "
+                            "-- directory non-existent, not readable, or is a file"))))
+	  ((and (not opt-dir) (buffer-file-name))
+	   (setq mgbd-this-dir (file-name-as-directory (file-name-directory buffer-file-name)))))
+    (setq mgbd-get-dirs
+          (with-temp-buffer
+	    (insert-directory mgbd-this-dir "-gloRBd --dired a" nil t)
+	    (buffer-string)))
+    mgbd-get-dirs))
+;;
+(unless (and (intern-soft "mon-buffer-get-directories" obarray) 
+             (fboundp 'mon-buffer-get-directories))
+(defalias 'mon-buffer-get-directories 'mon-get-buffers-directories))
 
 ;;; ==============================
 ;;; :PREFIX "mpbd-"

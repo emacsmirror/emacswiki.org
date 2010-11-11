@@ -1,14 +1,11 @@
-== About ==
-
-The [[Git]] repository mirrores the [[SVN repository]], it contains the
-raw text of all Emacswiki pages.
-
-It can be found at http://github.com/emacsmirror/emacswiki.org
+[http://github.com/emacsmirror/emacswiki.org This] repository mirrores the
+[[SVN repository]], it contains the raw text of all Emacswiki pages.  It uses
+[[Git]] and can be found [http://github.com/emacsmirror/emacswiki.org here].
 
 == Package Branches ==
 
-Individual packages distributed on the EmacsWiki are available from the
-[[Emacsmirror]] - each in it's own _repository_.
+Additionally individual packages distributed on the EmacsWiki are available
+from the [[Emacsmirror]] - each in it's own _repository_.
 
 These packages are also
 [http://github.com/emacsmirror/emacswiki.org/branches available]
@@ -21,4 +18,4 @@ The EmacsWiki repository also contains a
 which categorizes all pages on the EmacsWiki.
 
 ----
-CategoryEmacsWikiSite, WikiDownload
+CategoryEmacsWikiSite

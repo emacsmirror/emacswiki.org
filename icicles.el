@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  7 12:42:37 2010 (-0800)
+;; Last-Updated: Wed Nov 10 17:17:46 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 22778
+;;     Update #: 22781
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -262,6 +262,8 @@
 ;;    `icicle-select-frame', `icicle-select-frame-by-name',
 ;;    `icicle-select-window', `icicle-select-window-by-name',
 ;;    `icicle-send-bug-report', `icicle-set-option-to-t',
+;;    `icicle-set-S-TAB-methods-for-command',
+;;    `icicle-set-TAB-methods-for-command',
 ;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
@@ -876,6 +878,7 @@
 ;;    `icicle-put-at-head', `icicle-put-whole-cand-prop',
 ;;    `icicle-quote-file-name-part-of-cmd',
 ;;    `icicle-raise-Completions-frame', `icicle-readable-to-markers',
+;;    `icicle-read-args-for-set-completion-methods',
 ;;    `icicle-read-char-exclusive', `icicle-read-face-name',
 ;;    `icicle-read-file-name', `icicle-read-from-minibuffer',
 ;;    `icicle-read-from-minibuf-nil-default',
@@ -931,6 +934,7 @@
 ;;    `icicle-search-replace-fixed-case-p',
 ;;    `icicle-search-replace-match', `icicle-search-where-arg',
 ;;    `icicle-select-minibuffer-contents' `icicle-set-calling-cmd',
+;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-set-difference', `icicle-set-intersection',
 ;;    `icicle-set-union', `icicle-shell-command',
 ;;    `icicle-shell-command-on-region',

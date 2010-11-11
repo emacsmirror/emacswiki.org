@@ -48,7 +48,6 @@ Vim has a nice feature where you can indicate that you would like the editor to 
 (global-set-key "\M-?" 'etags-select-find-tag-at-point)
 (global-set-key "\M-." 'etags-select-find-tag)
 
-
 (defun jds-find-tags-file ()
   "recursively searches each parent directory for a file named 'TAGS' and returns the
 path to that file or nil if a tags file is not found. Returns nil if the buffer is
@@ -73,7 +72,7 @@ not visiting a file"
 a file named 'TAGS'. If found, set 'tags-table-list' with that path as an argument
 otherwise raises an error."
   (interactive)
-  (setq tags-table-list (list (jds-find-tags-file))))
+  (setq tags-table-list (cons (jds-find-tags-file) tags-table-list)))
 
 ;; delay search the TAGS file after open the source file
 (add-hook 'emacs-startup-hook 

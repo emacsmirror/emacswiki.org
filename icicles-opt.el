@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 09:16:48 2010 (-0700)
+;; Last-Updated: Wed Nov 10 15:40:18 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3947
+;;     Update #: 3951
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -748,8 +748,8 @@ based only on the number of input characters."
   :type 'integer :group 'Icicles-Completions-Display)
 
 ;;;###autoload
-(defcustom icicle-completions-format (if (boundp 'completions-format)
-                                         completions-format ; Defined in Emacs 23+.
+(defcustom icicle-completions-format (if (boundp 'completions-format) ; Defined in Emacs 23+.
+                                         completions-format
                                        'horizontal)  
   "*Layout of completion candidates in buffer *Completions*.
 `vertical' means display down columns first, then to the right.
@@ -2867,7 +2867,8 @@ before you enter Icicle mode."
              (sexp :tag "Condition"))))
   :set #'(lambda (sym defs)
            (custom-set-default sym defs)
-           (icicle-bind-top-level-commands defs))
+           (when (boundp 'icicle-mode-map) ; Avoid error on initialization.
+             (icicle-bind-top-level-commands defs)))
   :initialize #'custom-initialize-default
   :group 'Icicles-Key-Bindings)
 
