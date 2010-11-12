@@ -84,3 +84,9 @@ Further further addendums.  I might need to clean this up a bit.
 ----
 
 How can I disable the icons? I only want ASCII, even in GUI Emacs.
+
+----
+
+Can I set the default font size for just the sr-speedbar buffer to something other than my other buffers/windows? I tried setting default-frame-alist as suggested by the speedbar-article, but that just caused all my frames to change font size whenever speedbar spawns. It wold be nice if sr-speedbar could default to a small font so that I can get a better overview over large code bases easily.
+
+-- Jeff

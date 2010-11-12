@@ -77,6 +77,26 @@ As I often need to switch between English and German I use this function:
 -- FlorianDiesch
 
 [new]
+
+[new]
+I too cycle through different languages, but not all that is available in the system. I use the following code inside my .emacs.
+
+    (let ((langs '("american" "francais" "brasileiro")))
+      (setq lang-ring (make-ring (length langs)))
+      (dolist (elem langs) (ring-insert lang-ring elem)))didi
+
+    (defun cycle-ispell-languages ()
+      (interactive)
+      (let ((lang (ring-ref lang-ring -1)))
+        (ring-insert lang-ring lang)
+        (ispell-change-dictionary lang)))
+
+    (global-set-key [f6] 'cycle-ispell-languages)
+
+-- DiogoRamos
+
+[new]
+
 How can I ignore or add a word without using the popup menu?
 
 Use flyspell-auto-correct-word.

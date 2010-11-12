@@ -4,7 +4,7 @@
 
 ;; Author: Changyuan Yu <rei.vzy@gmail.com>
 ;; Created: 2010-10-27
-;; Version: 0.3.2
+;; Version: 0.3.5
 ;; Keywords: file, couchdb, json, org
 
 ;; This file is *NOT* part of GNU Emacs
@@ -27,14 +27,36 @@
 ;;; Commentary:
 
 ;; Usage:
-;;
+
 ;; (require 'couchdb-document)
 ;; (find-file "/couchdb:/test_db1/doc_XXXX")
 
 ;; (require 'couchdb-document-text)
 ;; (find-file "/couchdb:/test_db1/secret.org.gpg")
 
+;; *NOTE*
+
+;; After load tramp.el, it's necessary to call
+;; `couchdb-document-register-file-name-handler' if couchdb-document.el is
+;; already loaded, or else emacs will try to use tramp to load couchdb
+;; document. A typical configure file will looks like below:
+
+;; (require 'tramp)
+;; (when (featurep 'couchdb-document)
+;;  (couchdb-document-register-file-name-handler))
+
+
 ;; ChangeLog:
+;;
+;; 0.3.5: add function to register file name handler. If emacs try to open couchdb
+;; document with tramp, then re-call `couchdb-document-register-file-name-handler'.
+;;
+;; 0.3.4: add `couchdb-document-post', `couchdb-document-get' default nocache,
+;; simplify `couchdb-document-put'.
+;;
+;; 0.3.3: `couchdb-document-get' will not remove metadata when not save to
+;; cache; `couchdb-document-put' will take extra parameter.
+;;
 ;; 0.3.2: fix debug related bug.
 ;;
 ;; 0.3.1: fix for ido-find-file.
@@ -48,9 +70,10 @@
 ;; 0.1: implement document open and save
 
 ;; TODO:
-;; 1. revision(append '@' as revision in filename) support
-;; 2. using couchdb 'change' feature implement verify-visited-file-modtime
-;; 3. support dired.
+;; 1. document name with '/', maybe replace with '%2F'.
+;; 2. revision(append '@' as revision in filename) support
+;; 3. using couchdb 'change' feature implement verify-visited-file-modtime
+;; 4. support dired.
 
 
 (require 'json)
@@ -228,8 +251,10 @@ Example:
 (defun couchdb-document-name (host port db id)
   "Construct couchdb document name."
   (format "/couchdb:%s%s:/%s"
-          host
-          (if (equal port couchdb-document-port) ""
+          (or host couchdb-document-host)
+          (if (or (null port)
+                  (equal port couchdb-document-port))
+              ""
             (format "#%d" port))
           (if (equal "" db) ""
             (if (equal "" id) db
@@ -240,7 +265,7 @@ Example:
   (let* ((a (couchdb-document-name-check filename)))
     (format "http://%s:%d%s" (nth 1 a) (nth 2 a) (nth 5 a))))
 
-(defun couchdb-document-get (filename &optional nocache)
+(defun couchdb-document-get (filename &optional cache)
   (let ((url (couchdb-document-url filename)) json doc metadata init)
     (let ((url-package-name "couchdb-document.el")
           (url-request-method "GET")
@@ -257,47 +282,76 @@ Example:
       ;; error
       (setq json nil))
 
-    ;; json maybe is a simple vector, returned by "_all_dbs"
-    (mapc (lambda (kv)
-            (if (listp kv)
-                (let ((k (car kv))
-                      (v (cdr kv)))
-                  (if (string-match "^_" (symbol-name k))
-                      (setq metadata (nconc metadata (list kv)))
-                    (setq doc (nconc doc (list kv)))))
-              (setq doc (nconc doc (list kv)))))
-          json)
+    (if (not cache) (setq doc json)
+      (progn
+        ;; json maybe is a simple vector, returned by "_all_dbs"
+        (mapc (lambda (kv)
+                (if (listp kv)
+                    (let ((k (car kv))
+                          (v (cdr kv)))
+                      (if (string-match "^_" (symbol-name k))
+                          (setq metadata (nconc metadata (list kv)))
+                        (setq doc (nconc doc (list kv)))))
+                  (setq doc (nconc doc (list kv)))))
+              json)
 
-    (unless nocache
-      (setq init (null (gethash url couchdb-document-cache)))
-      (couchdb-document-cache-set filename 'doc doc)
-      (dolist (kv metadata)
-        (couchdb-document-cache-set filename (car kv) (cdr kv)))
-      (couchdb-document-cache-set filename 'filename filename)
-      (when init
-        (run-hook-with-args 'couchdb-document-open-hook
-                            (gethash url couchdb-document-cache))))
+        (setq init (null (gethash url couchdb-document-cache)))
+        (couchdb-document-cache-set filename 'doc doc)
+        (dolist (kv metadata)
+          (couchdb-document-cache-set filename (car kv) (cdr kv)))
+        (couchdb-document-cache-set filename 'filename filename)
+        (when init
+          (run-hook-with-args 'couchdb-document-open-hook
+                              (gethash url couchdb-document-cache)))))
     doc))
 
-(defun couchdb-document-put (filename &optional nodata)
-  (let ((url (couchdb-document-url filename)) json ht doc ret)
-    (unless nodata
-      (setq ht (couchdb-document-cache-get filename))
-      (setq doc (couchdb-document-cache-get filename 'doc))
-      ;; copy doc to json, avoid change values in hashtable
-      (setq json (copy-list doc))
-      ;; merge metadata
-      (maphash
-       (lambda (k v)
-         (when (and (symbolp k) (string-match "^_" (symbol-name k)))
-           (setq json (nconc json `((,k . ,v))))))
-       ht))
+
+(defun couchdb-document-post (filename data)
+  "POST data, for bulk query.
+`FILENAME': couchdb document filename.
+`DATA': json object data."
+  (let ((url (couchdb-document-url filename)) json doc metadata init)
+    (let ((url-package-name "couchdb-document.el")
+          (url-request-method "POST")
+          (url-request-data (if (stringp data) data (json-encode-alist data)))
+          (url-request-extra-headers '(("Content-type" . "application/json")
+                                       ("Accept" . "application/json"))))
+      (with-current-buffer (url-retrieve-synchronously url)
+        (goto-char (point-min))
+        (re-search-forward "\r?\n\r?\n")
+        (setq json (json-read-r))
+        (kill-buffer)))
+    json))
+
+
+(defun couchdb-document-put (filename &optional json-data)
+  "PUT couchdb document.
+`FILENAME': document file name.
+`JSON-DATA': when nil, not put data; when t, put content from `couchdb-document-cache';
+when stringp, as encoded string; otherwise, use `json-encode-alist' to encode."
+  (let ((url (couchdb-document-url filename)) data json ht doc ret)
+    (when json-data
+      (cond ((listp json-data)   (setq data (json-encode-alist json-data)))
+            ((stringp json-data) (setq data json-data))
+            (t
+             (setq ht (couchdb-document-cache-get filename))
+             (setq doc (couchdb-document-cache-get filename 'doc))
+             ;; copy doc to json, avoid change values in hashtable
+             (setq json (copy-list doc))
+             ;; merge metadata
+             (maphash
+              (lambda (k v)
+                (when (and (symbolp k) (string-match "^_" (symbol-name k)))
+                  (setq json (nconc json `((,k . ,v))))))
+              ht)
+             (setq data (json-encode-alist json)))))
     (let ((url-package-name "couchdb-document.el")
           (url-request-method "PUT")
-          (url-request-extra-headers '(("Content-type" . "application/json")))
+          (url-request-extra-headers '(("Content-type" . "application/json")
+                                       ("Accept" . "application/json")))
           url-request-data)
-      (unless nodata
-        (setq url-request-data (json-encode-alist json)))
+      (when json-data
+        (setq url-request-data data))
       (with-current-buffer (url-retrieve-synchronously url)
         (goto-char (point-min))
         (re-search-forward "\r?\n\r?\n")
@@ -344,7 +398,7 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
   (let ((url (couchdb-document-url filename)) ht)
     (setq ht (gethash url couchdb-document-cache))
     (unless ht
-      (couchdb-document-get filename)
+      (couchdb-document-get filename t)
       (setq ht (gethash url couchdb-document-cache)))
     (if key (gethash key ht) ht)))
 
@@ -511,7 +565,7 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
   (barf-if-buffer-read-only)
   (if (and visit (or beg end))
       (error "Attempt to visit less than an entire file"))
-  (couchdb-document-get filename) ;; TODO, check reversion
+  (couchdb-document-get filename t) ;; TODO, check reversion
   (let ((local-file (file-local-copy filename)))
     (insert-file-contents local-file nil beg end replace)
     (when visit
@@ -547,7 +601,7 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
          (t (setq doc (couchdb-document-encode ht))))
 
    (couchdb-document-cache-set filename 'doc doc)
-   (setq ret (couchdb-document-put filename))
+   (setq ret (couchdb-document-put filename t))
    ;; get rev
    (when (assoc 'error ret)
      (error "Couchdb document save error: %s"
@@ -642,7 +696,7 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
        (setq get-db (equal "" db))
        (setq name (if get-db (couchdb-document-name host port "_all_dbs" "")
                     (couchdb-document-name host port db "_all_docs")))
-       (setq doc (couchdb-document-get name t))
+       (setq doc (couchdb-document-get name nil))
        (setq ret (mapcar
                   (lambda (x)
                     (let (id)
@@ -680,14 +734,30 @@ if `KEY' is not nil, return value of `key' instead of hashtable."
  (let ((en couchdb-document-enable-create-db) ret)
    (unless en
      (error "Create database is disabled"))
-   (setq ret (couchdb-document-put dir t))
+   (setq ret (couchdb-document-put dir))
    (when (assoc 'error ret) (error "%S" ret))
    t))
 
 
-;; add file handler
-(add-to-list 'file-name-handler-alist
-             '("\\`/couchdb:" . couchdb-document-handler))
+;; add file handler, before tramp
+(defun couchdb-document-register-file-name-handler ()
+  "Register couchdb document file handler to `file-name-handler-alist',
+This function is called when load couchdb-document.el, but it's necessay to
+call it again after load tramp.el if emacs try to open couchdb document with tramp."
+  (let ((a1 (rassq 'couchdb-document-handler file-name-handler-alist)))
+    (setq file-name-handler-alist (delq a1 file-name-handler-alist)))
+  ;; Add the handlers.
+  (add-to-list 'file-name-handler-alist
+               (cons "\\`/couchdb:" 'couchdb-document-handler))
+  ;; If jka-compr or epa-file are already loaded, move them to the
+  ;; front of `file-name-handler-alist'.
+  (dolist (fnh '(epa-file-handler jka-compr-handler))
+    (let ((entry (rassoc fnh file-name-handler-alist)))
+      (when entry
+	(setq file-name-handler-alist
+	      (cons entry (delete entry file-name-handler-alist)))))))
+
+(couchdb-document-register-file-name-handler)
 
 
 (provide 'couchdb-document)

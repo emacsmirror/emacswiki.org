@@ -1,62 +1,66 @@
 ;;; key-choices.el --- Key Choices -- Also Viper has different colors in different modes
-;; 
+;;
 ;; Filename: key-choices.el
 ;; Description: Key Choices -- Different modes have different colors
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Nov  4 00:06:18 2010 (-0500)
 ;; Version:  0.1
-;; Last-Updated: Wed Nov 10 08:35:51 2010 (-0600)
+;; Last-Updated: Thu Nov 11 12:00:26 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 3
-;; URL: 
+;;     Update #: 8
+;; URL:
 ;; Keywords: Viper, Ergoemacs, CUA, Crisp, EDT, TPU
 ;; Compatibility: 23.x
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
-;;   `easymenu', `ergoemacs-mode'.
+;;   `easymenu'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;  Put the library key-choices.el in the load path and then put
 ;; (require 'key-choices)
 ;; in your ~/.emacs file.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 10-Nov-2010    Matthew L. Fidler  
+;; 11-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Thu Nov 11 11:59:06 2010 (-0600) #6 (Matthew L. Fidler)
+;;    Required vimpulse.  Fixed some error in R-mode (and possibly others)
+;; 10-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Nov 10 08:35:17 2010 (-0600) #2 (Matthew L. Fidler)
 ;;    Make sure to require `ergoemacs-mode' before loading (ergoemacs-mode)
-;; 04-Nov-2010      
+;; 04-Nov-2010
 ;;    Initial Revision
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 (require 'easymenu)
+(require 'vimpulse) ;; Require first.  For some reason if you don't there is some error in R.  It has to do with advices.
 
 (defvar key-choices-emacs-default (current-global-map))
 
@@ -84,7 +88,7 @@
   :type '(choice (string :tag "QWERTY" :value "us")
                  (string :tag "Dvorak" :value "dv")
                  (string :tag "Colemak" :value "colemak")
-                 )                      
+                 )
   :group 'key-choices
   )
 
@@ -263,7 +267,7 @@
 (defcustom key-choices-viper-insert-color-theme "(color-theme-vim-insert-mode)"
   "* Defines the color-theme used for Insert mode."
   :type 'string
-  :group 'key-choices-color 
+  :group 'key-choices-color
   )
 (defcustom key-choices-viper-emacs-color-theme "(color-theme-emacs-revert-theme)"
   "* Defines the color-theme used for Emacs mode."
@@ -286,7 +290,7 @@
   )
 (defun key-choices-viper-pre-command-hook ()
   (interactive)
-  (condition-case error 
+  (condition-case error
       (let ( (deactivate-mark nil) )
         (when (not (minibufferp))
           (when (and key-choices-viper-force-it (not (= 2 key-choices-keybinding))
@@ -409,7 +413,7 @@
                                     ("only" (delete-other-windows))
                                     ("close" (delete-window))
                                     ) ex-token-alist))
-    
+
     (define-key viper-vi-global-user-map "\C-wq" 'delete-window)
     )
   )

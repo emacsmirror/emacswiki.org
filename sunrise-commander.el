@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 328 $
+;; RCS Version: $Rev: 329 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 328 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 329 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -785,6 +785,25 @@ automatically:
       (when force-setup
         (sr-setup-windows)
         (select-window (sr-viewer-window))))))
+
+(defun sr-backup-buffer ()
+  "Creates a background copy of the current buffer to be used as a cache  during
+  revert operations."
+  (if (buffer-live-p sr-backup-buffer) (sr-kill-backup-buffer))
+  (let ((buf (current-buffer)))
+    (set (make-local-variable 'sr-backup-buffer)
+         (generate-new-buffer "*Sunrise Backup*"))
+    (with-current-buffer sr-backup-buffer
+      (insert-buffer-substring buf))
+    (run-hooks 'sr-refresh-hook)))
+
+(defun sr-kill-backup-buffer ()
+  "Kills the back-up buffer associated to the current one, if there is any."
+  (when (buffer-live-p sr-backup-buffer)
+    (kill-buffer sr-backup-buffer)
+    (setq sr-backup-buffer nil)))
+(add-hook 'kill-buffer-hook       'sr-kill-backup-buffer)
+(add-hook 'change-major-mode-hook 'sr-kill-backup-buffer)
 
 ;; This is a hack to avoid some dired mode quirks:
 (defadvice dired-find-buffer-nocreate
@@ -2691,7 +2710,7 @@ or (c)ontents? ")
            "ls -ld"))
          (sr-find-dirs (sr-quote-marked-dirs)) (dir))
     (when sr-find-dirs
-      (if (not (y-or-n-p "Search only in marked directories? "))
+      (if (not (y-or-n-p "Find in marked items only? "))
           (setq sr-find-dirs nil)
         (setq dir (directory-file-name (expand-file-name default-directory)))
         (add-to-list 'file-name-handler-alist (cons dir 'sr-multifind-handler))))
@@ -3438,25 +3457,6 @@ or (c)ontents? ")
   (let* ((side (or side sr-selected-window))
          (window (symbol-value (sr-symbol side 'window))))
     (set (sr-symbol side 'buffer) (window-buffer window))))
-
-(defun sr-backup-buffer ()
-  "Creates a background copy of the current buffer to be used as a cache  during
-  revert operations."
-  (if (buffer-live-p sr-backup-buffer) (sr-kill-backup-buffer))
-  (let ((buf (current-buffer)))
-    (set (make-local-variable 'sr-backup-buffer)
-         (generate-new-buffer "*Sunrise Backup*"))
-    (with-current-buffer sr-backup-buffer
-      (insert-buffer-substring buf))
-    (run-hooks 'sr-refresh-hook)))
-
-(defun sr-kill-backup-buffer ()
-  "Kills the back-up buffer associated to the current one, if there is any."
-  (when (buffer-live-p sr-backup-buffer)
-    (kill-buffer sr-backup-buffer)
-    (setq sr-backup-buffer nil)))
-(add-hook 'kill-buffer-hook       'sr-kill-backup-buffer)
-(add-hook 'change-major-mode-hook 'sr-kill-backup-buffer)
 
 (defun sr-scrollable-viewer (buffer)
   "Sets the other-window-scroll-buffer variable to the given buffer (or nil)."

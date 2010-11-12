@@ -26,5 +26,6 @@ Interesting, thanks !　I also found gnome-open, a command that seems to do what
 
 : For those who would rather not use GNOME, you can use your mailcap file to define associations and then use run-mailcap (or its aliases) to perform the action. This, I suspect is how ##browse-url -*## does it. It is an easier way to configure things than mucking about in the neutered gnome-control-center, imho.
 
+OpenWith is a good alternative that works from everywhere ([[FindFile]], [[Dired]], [[Sunrise_Commander]])
 ----
 CategoryExternalUtilities

@@ -21,6 +21,13 @@ Usage of couchdb-document-text
   (find-file "/couchdb:/db/xxx.org.gpg")
   ;; write something, then C-x C-s
 
+If couchdb-document.el is loaded before tramp.el, `file-name-handler-alist' will then changed by tramp and Emacs will try to use tramp to load couchdb document, so it's necessary to call `couchdb-document-register-file-name-handler' after load tramp.el, a typical config will looks like below:
+
+  (require 'tramp)
+  (when (featurep 'couchdb-document)
+    (couchdb-document-register-file-name-handler))
+
+
 Unsupportted features:
 * revision: alway open the last revision of the document.
 * attatchment: attatchment are not support, using `find-file' to open a couchdb document will cause unexpected result.

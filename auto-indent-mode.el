@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Tue Nov  9 22:04:17 2010 (-0600)
+;; Last-Updated: Thu Nov 11 14:36:09 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 256
+;;     Update #: 321
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl'.
+;;   `backquote', `bytecomp', `cl'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,7 +63,7 @@
 ;;  Meta-shift return going to the end of the line, inserting a
 ;;  semi-colon then inserting a newline, use the following:
 ;;
-;;  
+;;
 ;;  (setq auto-indent-key-for-end-of-line-then-newline "<M-return>")
 ;;  (setq auto-indent-key-for-end-of-line-insert-char-then-newline "<M-S-return>")
 ;;  (require 'auto-indent-mode)
@@ -90,28 +90,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 11-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Thu Nov 11 13:56:15 2010 (-0600) #308 (Matthew L. Fidler)
+;;    Put back processes in.  Made the return key handled by pre and post-command-hooks.
+;; 11-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Thu Nov 11 11:28:42 2010 (-0600) #257 (Matthew L. Fidler)
+;;    Took out processes such as *R* or *eshell*
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 22:03:34 2010 (-0600) #255 (Matthew L. Fidler)
 ;;
 ;;    Bug fix when interacting with the SVN version of yasnippet.  It
 ;;    will not perform the line indentation when Yasnippet is running.
 ;;
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 13:47:18 2010 (-0600) #253 (Matthew L. Fidler)
 ;;    Made sure that the auto-paste indentation doesn't work in minibuffer.
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 11:51:07 2010 (-0600) #246 (Matthew L. Fidler)
 ;;    When `auto-indent-pre-command-hook' is inactivated by some means, add it back.
-;; 09-Nov-2010      
+;; 09-Nov-2010
 ;;    Last-Updated: Tue Nov  9 11:13:09 2010 (-0600) #238 (Matthew L. Fidler)
 ;;    Added snippet-mode to excluded modes.  Also turned off the kill-line by default.
-;; 07-Nov-2010    Matthew L. Fidler  
+;; 07-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sun Nov  7 18:24:05 2010 (-0600) #233 (Matthew L. Fidler)
 ;;    Added the possibility of TextMate type returns.
-;; 07-Nov-2010    Matthew L. Fidler  
+;; 07-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sun Nov  7 00:54:07 2010 (-0500) #180 (Matthew L. Fidler)
-;;    Bug fix where backspace on indented region stopped working.Added TextMate 
-;; 07-Nov-2010    Matthew L. Fidler  
+;;    Bug fix where backspace on indented region stopped working.Added TextMate
+;; 07-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sun Nov  7 00:30:54 2010 (-0500) #167 (Matthew L. Fidler)
 ;;    Another small bug fix.
 ;; 07-Nov-2010    Matthew L. Fidler
@@ -156,18 +162,15 @@
 (defcustom auto-indent-on-yank-or-paste 't
   "* Indent pasted or yanked region."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 (defcustom auto-indent-mode-untabify-on-yank-or-paste 't
   "* Untabify pasted or yanked region."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 (defcustom auto-indent-on-visit-file 't
   "* Auto Indent file upon visit."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
 (defcustom auto-indent-on-save-file 't
   "* Auto Indent on visit file."
   :type 'boolean
@@ -222,8 +225,21 @@
 
 (defcustom auto-indent-indentation-function 'reindent-then-newline-and-indent
   "* Auto indentation function for the return key."
-  :type 'function
-  :tag "Indentation function for AutoComplete mode.  While `reindent-then-newline-and-indent' is a likely candidate `newline-and-indent' also works.  ")
+  :type '(choice
+          (const :tag "Reindent the current line, insert the newline then indent the current line."
+                 reindent-then-newline-and-indent)
+          (const :tag "insert newline then indent current line" 'newline-and-indent)
+          )
+  :tag "Indentation type for AutoComplete mode.  While `reindent-then-newline-and-indent' is a likely candidate `newline-and-indent' also works.  "
+  :group 'auto-indent
+  )
+
+(defcustom use-auto-indentation-ignore-definitions '(reindent-then-newline-and-indent
+                                                     newline-and-indent
+                                                     newline)
+  "* Auto indentation functions where newline is replaced with `auto-indent-indentation-function'"
+  :type '(repeat function)
+  :group 'auto-indent)
 
 (defcustom auto-indent-blank-lines-on-move 't
   "*Auto indentation on moving cursor to blank lines."
@@ -275,37 +291,36 @@ in conjunction with something that pairs delimiters like `autopair-mode'.
 (defvar auto-indent-minor-mode-map nil
   "* Auto Indent mode map.")
 ;; Keymap functions for auto-indent-mode.  Replace return with the appropriate command.
+
 (defun auto-indent-setup-map ()
   "* Sets up minor mode map."
-  (when (or (not auto-indent-minor-mode-map)
-            (not (string= auto-indent-eol-ret-save auto-indent-key-for-end-of-line-then-newline))
-            (not (string= auto-indent-eol-ret-semi-save auto-indent-key-for-end-of-line-insert-char-then-newline)) 
-            )
-    (setq auto-indent-minor-mode-map (make-sparse-keymap))
-    (define-key auto-indent-minor-mode-map (kbd "RET") 'reindent-then-newline-and-indent)
-    (unless (string-match "^[ \t]*$" auto-indent-key-for-end-of-line-then-newline)
-      (define-key auto-indent-minor-mode-map (read-kbd-macro auto-indent-key-for-end-of-line-then-newline) 'auto-indent-eol-newline))
-    (unless (string-match "^[ \t]*$" auto-indent-key-for-end-of-line-insert-char-then-newline)
-      (define-key auto-indent-minor-mode-map (read-kbd-macro auto-indent-key-for-end-of-line-insert-char-then-newline) 'auto-indent-eol-char-newline))
-    (setq  auto-indent-eol-ret-save auto-indent-key-for-end-of-line-then-newline)
-    (setq auto-indent-eol-ret-semi-save auto-indent-key-for-end-of-line-insert-char-then-newline)))
-
+  (setq auto-indent-minor-mode-map (make-sparse-keymap))
+  (unless (string-match "^[ \t]*$" auto-indent-key-for-end-of-line-then-newline)
+    (define-key auto-indent-minor-mode-map (read-kbd-macro auto-indent-key-for-end-of-line-then-newline) 'auto-indent-eol-newline))
+  (unless (string-match "^[ \t]*$" auto-indent-key-for-end-of-line-insert-char-then-newline)
+    (define-key auto-indent-minor-mode-map (read-kbd-macro auto-indent-key-for-end-of-line-insert-char-then-newline) 'auto-indent-eol-char-newline))
+  (setq  auto-indent-eol-ret-save auto-indent-key-for-end-of-line-then-newline)
+  (setq auto-indent-eol-ret-semi-save auto-indent-key-for-end-of-line-insert-char-then-newline))
 
 (auto-indent-setup-map)
+(defun auto-indent-original-binding (key)
+  (or (key-binding key)
+      (key-binding (this-single-command-keys))
+      (key-binding fallback-keys)))
 
 (defun auto-indent-eol-newline ()
   "*Auto-indent function for end-of-line and then newline."
   (interactive)
   (end-of-line)
-  (call-interactively auto-indent-indentation-function))
+  (call-interactively (auto-indent-original-binding (kbd "RET"))))
 
 (defun auto-indent-eol-char-newline ()
   "* Auto-indent function for end-of-line, insert `auto-indent-eol-char', and then newline"
   (interactive)
   (end-of-line)
   (insert auto-indent-eol-char)
-  (call-interactively auto-indent-indentation-function))
-
+  (call-interactively (auto-indent-original-binding (kbd "RET"))))
+(defalias 'auto-indent-mode 'auto-indent-minor-mode)
 (define-minor-mode auto-indent-minor-mode
   "Auto Indent minor mode.
 
@@ -337,24 +352,20 @@ http://www.emacswiki.org/emacs/AutoIndentation
          (add-hook 'write-contents-hooks 'auto-indent-file-when-save)
          (add-hook 'after-save-hook 'auto-indent-mode-post-command-hook nil 't)
          (add-hook 'post-command-hook 'auto-indent-mode-post-command-hook nil 't)
-         (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil 't)
-         )
+         (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook nil 't))
         (t
          ;; Kill
          (remove-hook 'write-contents-hook 'auto-indent-file-when-save)
          (remove-hook 'find-file-hook 'auto-indent-file-when-visit 't)
          (remove-hook 'after-save-hook 'auto-indent-mode-post-command-hook 't)
          (remove-hook 'post-command-hook 'auto-indent-mode-post-command-hook 't)
-         (remove-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook 't)
-         )
-        ))
+         (remove-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook 't))))
 
 (defun auto-indent-minor-mode-on ()
   "* Turn on auto-indent minor mode."
   (unless (or (minibufferp)
               (memq major-mode auto-indent-disabled-modes-list))
-    (auto-indent-minor-mode 1))
-  )
+    (auto-indent-minor-mode 1)))
 
 (define-globalized-minor-mode auto-indent-global-mode auto-indent-minor-mode auto-indent-minor-mode-on
   :group 'auto-indent
@@ -412,27 +423,46 @@ http://www.emacswiki.org/emacs/AutoIndentation
                    (delete-char 1))))))
 (defvar auto-indent-mode-pre-command-hook-line nil)
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
+(defvar auto-indent-last-pre-command-hook-point nil)
+(make-variable-buffer-local 'auto-indent-mode-pre-command-hook-point)
+(defvar auto-indent-last-pre-command-hook-minibufferp nil)
 
 (defun auto-indent-mode-pre-command-hook()
   "Hook for auto-indent-mode to tell if the point has been moved"
   (condition-case error
-      (when (not (minibufferp))
-        (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
-        )
+      (progn
+        (setq auto-indent-last-pre-command-hook-minibufferp (minibufferp))
+        (when (not (minibufferp))
+          (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
+          (setq auto-indent-last-pre-command-hook-point (point))
+          ))
     (error
      (message "[Auto-Indent Mode] Ignoring Error in `auto-indent-mode-pre-command-hook': %s" (error-message-string error)))))
 
 (defun auto-indent-mode-post-command-hook ()
   "Hook for auto-indent-mode to go to the right place when moving around and the whitespace was deleted from the line."
   (condition-case err
-      (when (not (minibufferp))
+      (when (and (not auto-indent-last-pre-command-hook-minibufferp) (not (minibufferp)))
         (unless (memq 'auto-indent-mode-pre-command-hook pre-command-hook)
           (setq auto-indent-mode-pre-command-hook-line -1)
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
         (when (or (not (fboundp 'yas/snippets-at-point))
                   (and (= 0 (length (yas/snippets-at-point 'all-snippets)))))
-          (when (and auto-indent-minor-mode auto-indent-blank-lines-on-move)
-            (when (and auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
+          (when auto-indent-minor-mode
+            (when (memq  last-command-event '(10 13))
+              (save-excursion
+                (when (and auto-indent-last-pre-command-hook-point
+                           (eq auto-indent-indentation-function 'reindent-then-newline-and-indent))
+                  (goto-char auto-indent-last-pre-command-hook-point)
+                  (indent-according-to-mode))
+                (goto-char auto-indent-last-pre-command-hook-point)
+                ;; Remove the trailing white-space after indentation because
+                ;; indentation may introduce the whitespace.
+                (delete-horizontal-space t))
+              (indent-according-to-mode))
+            (when (and last-command-event (eq ?\n last-command-event))
+              (esn-message ":%s" 'last-command))
+            (when (and auto-indent-blank-lines-on-move auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
               (when (and (looking-back "^") (looking-at "$"))
                 (indent-according-to-mode))))))
     (error (message "[Auto-Indent-Mode]: Ignored indentation error in `auto-indent-post-command-hook' %s" (error-message-string err)))))

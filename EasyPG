@@ -109,6 +109,15 @@ You can use public key to save(encrypt) a *.gpg file, and only use private key t
 
 to get it and import it to your system.
 
+----
+
+ I was getting the error 'File exists, but cannot be read' because emacs could not find the gpg command.
+
+ Another way to test if emacs can find it would be to do M-x epa-list-keys
+
+ -johan
+
+----
 
 == Documentation ==
 

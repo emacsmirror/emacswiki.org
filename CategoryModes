@@ -112,6 +112,7 @@ Other pages (could this please be split in major and minor modes?):
 * SpamassassinMode -- a mode for editing spamassassin configurations files
 * SpreadSheet
 * SqlMode -- see also CategorySql
+* [[Sunrise_Commander]] -- major mode that provides a powerful twin-pane file manager based on [[Dired]] and inspired by MC 
 * [[Synonyms]] -- major mode for looking up terms in a thesaurus or browsing it
 * SyslogMode -- viewing log file with highlighting and more
 * TableMode -- edit tables in plain text files

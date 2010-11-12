@@ -411,6 +411,10 @@ to
 I emailed maintainer, but I haven't heard anything.
 
 --MatthewFidler
+
+[new]
+BUG: Do not display completion when there is only one completion *and* the word is already complete! That's just plain nonsensical!
+
 ----
 CategoryCompletion
 
