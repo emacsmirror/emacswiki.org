@@ -340,3 +340,5 @@ Instead they show up labeled "Aquamacs". It was convenient to have the minimized
 in the dock when you are working with many minimized windows.
 DavidReitter: should work fine in Aquamacs 2.1
 
+[new]
+Aquamacs is very nice. Am I mistaken, or does it not play nice with X11? For example, if I ssh into my mac box and then try to get a frame on my local X server it simply does not work (always opens as if -nw). Is there any way (or plan) to get to "old" X11 behavior in such a case?

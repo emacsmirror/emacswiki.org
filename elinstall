@@ -1,0 +1,36 @@
+** What it is
+
+An installer for elisp code. It sets up autoloads, load-path, etc.
+
+** Why use it
+
+There are other package installers and there is "autoload.el", bundled
+with emacs.  Why use elinstall?  Because:
+
+* It works with my-site-start (DotEmacsModular) (which I highly recommend)
+
+* It supports slash-style paths, like 
+  : (require 'emtest/testhelp/tagnames)
+
+* Unlike autoload.el, it can also set up load-path and
+  Info-default-directory-list (that's like load-path for info files)
+
+* Unlike autoload.el, it's not focussed on building emacs, it's
+  focussed on installing elisp.
+
+* Unlike some other installers, it works with canonical
+  loaddefs.el-style autoload files.
+
+* Unlike other installers, what you install doesn't have to be
+  pre-packaged, and there are no restrictions on what means you can
+  use to get the elisp files - elinstall doesn't care, it obeys the
+  motto "do one thing well".
+  But it also works well for packages.
+
+* Because internally it works in articulated stages, it's easier to
+  hack and extend than autoload.el
+
+** Where to get it
+
+It lives at http://repo.or.cz/w/elinstall.git and it will also be available thru ELPA.
+

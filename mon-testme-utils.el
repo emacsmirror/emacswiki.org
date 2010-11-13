@@ -43,6 +43,8 @@
 ;; `mon-build-misc-path-example', `mon-build-user-name-example',
 ;; `mon-user-system-conditionals-TEST', `mon-build-user-name-example-TEST',
 ;; `mon-drive-transfer-template-TEST', `mon-sequence-all-booleanp-TEST',
+;; `mon-cln-xml-escapes-TEST', `mon-up/down-case-regexp-TEST',
+;; `mon-hash-get-symbol-keys-TEST',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -88,13 +90,14 @@
 ;; `mon-help-propertize-tags-TEST'               <- mon-doc-help-utils.el
 ;; `mon-help-keys-wikify-TEST'                   <- mon-doc-help-utils.el
 ;; `mon-drive-transfer-template-TEST'            <- mon-drive-transfer-utils.el
+;; `mon-cln-xml-escapes-TEST'                    <- mon-replacement-utils.el
+;; `mon-up/down-case-regexp-TEST'                <- mon-replacement-utils.el
 ;;
 ;; TODO:
 ;;
 ;; Should these `-TEST' fncns be moved into here?
 ;; `mon-file-stamp-buffer-filename-TEST'
 ;; `mon-permute-combine-functions-TEST'
-;; `mon-up/down-case-regexp-TEST'
 ;; `mon-wget-list-to-script-TEST'
 ;;
 ;; NOTES:
@@ -151,11 +154,13 @@
 
 ;;; CODE:
 
-(unless (and (intern-soft "*IS-MON-OBARRAY*")
-             (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
 
 (eval-when-compile (require 'cl))
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
 
 ;;; ==============================
 ;;; :CHANGESET 2189
@@ -250,9 +255,10 @@ Regexp held by global var `*regexp-symbol-defs*'.\n
 Unbinds all previously bound variables:
  test-aaa, test-bbb, test-ccc, test-ddd,
  test-aa, test-AA, test-ag, test-AG, test-a4, test-A4\n
-Rebinds vars 'default values'.  Called-interactively or INSERTP non-nil insert
-test-cases at point.\n
-:EXAMPLE\n\(mon-insert-test-cases\)\n:SEE-ALSO `mon-insert-lisp-testme'.\n►►►"
+Rebinds vars 'default values'.
+Called-interactively or INSERTP non-nil insert test-cases at point.\n
+:EXAMPLE\n\(mon-insert-test-cases\)\n
+:SEE-ALSO `mon-insert-lisp-testme'.\n►►►"
   (interactive "i\np") 
   (mapc #'makunbound  '(test-aaa test-bbb test-ccc test-ddd test-aa
                                  test-AA test-ag test-AG test-a4 test-A4))
@@ -2142,7 +2148,8 @@ For example:\n
 `mon-wget-list-to-script-TEST', `mon-line-strings-to-list-TEST',
 `mon-help-keys-wikify-TEST', `mon-insert-lisp-testme-fancy',
 `mon-insert-lisp-testme', `mon-insert-test-cases'.\n►►►"
-  (let ((gthrer #'(lambda (lst-key nm-prop sys-typ usr-rln)
+  (let* (gthr
+         (gthrer #'(lambda (lst-key nm-prop sys-typ usr-rln)
                     (let ((system-type sys-typ)
                           (user-real-login-name usr-rln))
                       (push `(,lst-key ,nm-prop ,usr-rln
@@ -2157,8 +2164,7 @@ For example:\n
                      (:W32-THIS-USER :W-REAL-USER windows-nt ,user-real-login-name)
                      (:GNU-NO-USER :W-ANON-USER gnu/linux  "bubba")
                      (:GNU-THIS-USER :W-REAL-USER gnu/linux ,user-real-login-name)
-                     ,@user-system-test-with))
-        gthr)
+                     ,@user-system-test-with)))
     (dolist (tw test-with (setq gthr (nreverse gthr)))
       (funcall gthrer (nth 0 tw) (nth 1 tw) (nth 2 tw) (nth 3 tw)))
     (pp-display-expression gthr "*MON-USR/SYS-COND-TESTS*")))
@@ -2177,17 +2183,18 @@ For example:\n
   "Test function for `mon-build-user-name-example'.\n
 Return value displayed in buffer \"*MON-BUILD-USER-NAME-EXAMPLE-TEST*\".\n
 :SEE-ALSO `mon-user-name-conditionals',`mon-system-type-conditionals'.\n►►►"
-  (let ((mk-eu #'(lambda (USER-BIND) 
+  (let* (mbunet-gthr
+         (mk-eu #'(lambda (USER-BIND) 
                    (eval (defconst USER-BIND nil
                            "An example user for `mon-build-user-name-example'."))))
-        (rmv-eu #'(lambda (USR)
-                    (progn (makunbound USR) (unintern (symbol-name USR) obarray))))
-        (shw-eu #'(lambda (test-key w-var ev-rslt)
-                    (push `(,test-key :W-NAME-VAR ,(format "%s" w-var) ,ev-rslt) mbunet-gthr)))
-        (l-o-a '((:W-BIND-VAR *SOME-BV-USER* nil t)
-                 (:W-FORCE-BIND *SOME-FB-USER* nil t)
-                 (:W-NO-BIND/FORCE nil nil nil)))
-        mbunet-gthr)
+         (rmv-eu #'(lambda (USR)
+                     (progn (makunbound USR) (unintern (symbol-name USR) obarray))))
+         (shw-eu #'(lambda (test-key w-var ev-rslt)
+                     (push `(,test-key :W-NAME-VAR ,(format "%s" w-var) ,ev-rslt) mbunet-gthr)))
+         (l-o-a '((:W-BIND-VAR *SOME-BV-USER* nil t)
+                  (:W-FORCE-BIND *SOME-FB-USER* nil t)
+                  (:W-NO-BIND/FORCE nil nil nil)))
+         )
     (dolist (ev l-o-a (setq mbunet-gthr (nreverse mbunet-gthr)))
       (let ((tk  (nth 0 ev))
             (wtv (or (nth 1 ev) '*EXAMPLE-USER*))
@@ -2199,6 +2206,137 @@ Return value displayed in buffer \"*MON-BUILD-USER-NAME-EXAMPLE-TEST*\".\n
                    (mon-build-user-name-example 5 wtv nil t))
           (funcall rmv-eu wtv))))
     (pp-display-expression mbunet-gthr "*MON-BUILD-USER-NAME-EXAMPLE-TEST*")))
+
+;;; ==============================
+;;; :CHANGESET 2108
+;;; :CREATED <Timestamp: #{2010-09-03T15:45:12-04:00Z}#{10355} - by MON KEY>
+;;;###autoload
+(defun mon-cln-xml-escapes-TEST ()
+  "Test function for `mon-cln-xml-escapes'.\n
+Return and display results in buffer named \"*MON-CLN-XML-ESCAPES-TEST*\".\n
+:EXAMPLE\n\n\(mon-cln-xml-escapes-TEST\)\n
+:SEE-ALSO .\n►►►"
+  (let ((mcxet (mapconcat #'identity
+                          '("e&amp;#769;" "a&amp;#769;" "i&amp;#769;" "o&amp;#769;"
+                            "u&amp;#769;" "y&amp;#769;" "w&amp;#769;" "E&amp;#769;"
+                            "A&amp;#769;" "I&amp;#769;" "O&amp;#769;" "U&amp;#769;"
+                            "Y&amp;#769;" "W&amp;#769;")
+                          "\n")))
+    (with-current-buffer (get-buffer-create "*MON-CLN-XML-ESCAPES-TEST*")
+      (erase-buffer)
+      (save-excursion (insert mcxet)
+                      (mon-cln-xml-escapes)
+                      (mon-g2be -1) ;; :WAS (goto-char (buffer-end 0))
+                      (insert ";; :FUNCTION `mon-cln-xml-escapes'\n"
+                              ";; :CLEANED-FOLLOWING\n"
+                              (make-string 68 59) "\n"
+                              mcxet "\n"
+                              (make-string 68 59) "\n" 
+                              ";; :RESULTS-BELOW\n"))
+      (display-buffer (current-buffer) t))))
+
+;;; ==============================
+;;; :CHANGESET 1956
+;;; :CREATED <Timestamp: #{2010-07-08T18:25:41-04:00Z}#{10274} - by MON KEY>
+;;;###autoload
+(defun* mon-up/down-case-regexp-TEST (&key test-fncn)
+  "Test function for case toggling functions: 
+Keyword test-fncn is one of:\n
+upcase-regexp           -> `mon-upcase-regexp'
+downcase-regexp         -> `mon-downcase-regexp'
+toggle-regexp-up        -> `mon-toggle-case-regexp'
+toggle-regexp-down      -> `mon-toggle-case-regexp'\n
+\(mon-up/down-case-regexp-TEST :test-fncn 'downcase-regexp\)\n
+\(mon-up/down-case-regexp-TEST :test-fncn 'upcase-regexp\)\n
+\(mon-up/down-case-regexp-TEST :test-fncn 'toggle-regexp-down\)\n
+\(mon-up/down-case-regexp-TEST :test-fncn 'toggle-regexp-up\)\n
+:SEE-ALSO `mon-toggle-case-query-user', `mon-toggle-case-regexp',
+`mon-downcase-regexp', `mon-downcase-regexp-region', `mon-upcase-regexp',
+`mon-upcase-regexp-region', `mon-downcase-commented-lines',
+`mon-toggle-case-regexp-region', `mon-downcase-hex-values',
+`mon-rectangle-downcase', `mon-rectangle-upcase',
+`mon-upcase-commented-lines'.\n►►►"
+  (let* ((mudcrT-w-fncn
+          (case test-fncn
+            ;; (upcase-regexp-region    '(up mon-upcase-regexp-region
+            ;;                               ((buffer-end 0) (buffer-end 1)
+            ;;                                "^\\(#[a-z0-9]\\{6,6\\}$\\)")))
+            ;; (downcase-regexp-region   '(down mon-downcase-regexp-region
+            ;;                                  ((buffer-end 0) (buffer-end 1) 
+            ;;                                   "^\\(#[A-Z0-9]\\{6,6\\}$\\)")))
+            (upcase-regexp      '(up mon-upcase-regexp
+                                     ("^\\(#[a-z0-9]\\{6,6\\}$\\)" nil t)))
+            (downcase-regexp    '(down mon-downcase-regexp
+                                  ("^\\(#[A-Z0-9]\\{6,6\\}$\\)" nil t)))
+            (toggle-regexp-up   '(up  mon-toggle-case-regexp
+                                      ("^\\(#[a-z0-9]\\{6,6\\}$\\)" up nil t)))
+            (toggle-regexp-down '(down mon-toggle-case-regexp
+                                       ("^\\(#[A-Z0-9]\\{6,6\\}$\\)" down nil t t)))
+            (t '(up mon-upcase-regexp  '("^\\(#[a-z0-9]\\{6,6\\}$\\)" nil t)))))
+         ;; {upcase|downcase|toggle} {region|nil}
+         (mudcrT-bfr-nm (upcase (format "*%s-eg*" (cadr mudcrT-w-fncn)))))
+    (with-current-buffer 
+        (get-buffer-create mudcrT-bfr-nm)
+      (erase-buffer)
+      ;; :NOTE uncomment when debugging.
+      (display-buffer (current-buffer) t)
+      (let ((brlstr (vconcat (if (eq (car mudcrT-w-fncn) 'down)    
+                                 (number-sequence 65 70) ;uppers
+                               (number-sequence 97 102)) ;lowers
+                             (number-sequence 48 57)))   ;digits
+            brlvar
+            brlgthr)
+        (dotimes (mure 10 
+                       (progn 
+                         (save-excursion 
+                           (insert "\n;;\n;; :AFTER-REGEXP\n;;\n\n"
+                                   (mapconcat #'identity brlgthr "\n")))
+                         (setq brlvar 
+                               (format ";; :W-FUNCTION `%s'\n;;\n;; :W-REGEXP %S\n;;\n;; :BEFORE-REGEXP\n;;\n%s\n"
+                                       (cadr mudcrT-w-fncn) 
+                                       (caaddr mudcrT-w-fncn)
+                                       (mapconcat #'(lambda (mudcrT-bgn) (concat ";; " mudcrT-bgn)) 
+                                                  brlgthr "\n")))))
+          (setq brlvar nil)
+          (dotimes (brl 6 (push (concat "#" (mapconcat 'char-to-string brlvar "")) brlgthr))
+            (push (aref brlstr (random 16)) brlvar)))
+        (if (or (eq test-fncn 'toggle-regexp-down)
+                (eq test-fncn 'toggle-regexp-up))
+                (setq mudcrT-bfr-nm (apply (cadr mudcrT-w-fncn) (caddr mudcrT-w-fncn)))
+          (progn (setq mudcrT-bfr-nm)
+                 (apply (cadr mudcrT-w-fncn) (caddr mudcrT-w-fncn))))
+        (goto-char (buffer-end 0))
+        (when mudcrT-bfr-nm (insert 
+                      (mapconcat #'(lambda (mudcrT-semi)(format ";; %S" mudcrT-semi))
+                                 (save-match-data (split-string mudcrT-bfr-nm "\n"))
+                                 "\n")
+                      ";;\n;;\n"))
+        (insert brlvar))
+      ) ;(display-buffer (current-buffer) t))
+    mudcrT-bfr-nm))
+
+
+
+;;; ==============================
+;;; :CHANGESET 2316
+;;; :CREATED <Timestamp: #{2010-11-12T23:36:08-05:00Z}#{10455} - by MON KEY>
+;;;###autoload
+(defun mon-hash-get-symbol-keys-TEST ()
+"Test function for macro `mon-hash-get-symbol-keys'
+:EXAMPLE\n\n\(mon-hash-get-symbol-keys-TEST\)\n
+:SEE-ALSO .\n►►►"
+ (let ((wonky-hash (make-hash-table))
+       (wonky-tst (mon-string-wonkify 
+                   (concat (mon-nshuffle-vector 
+                             (vconcat (number-sequence 97 122)))) 16))
+       gthr)
+   (mapc #'(lambda (ph) (puthash ph (sxhash ph) wonky-hash)) wonky-tst)
+   (setq gthr (nreverse `(,(mon-hash-get-symbol-keys wonky-hash t)
+                          ,(mapcar #'(lambda (not-in-ob)
+                                       (intern-soft not-in-ob)) wonky-tst))))
+   (and (cadr (mon-sequence-all-booleanp nil #'car (car gthr)))
+        (nconc '(#:all-tests-passed t) gthr ))))
+
 
 ;;; ==============================
 (provide 'mon-testme-utils)

@@ -30,6 +30,9 @@ These methods may be useful with older versions of Emacs, or ports where the 'fu
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
 
+Alternatively, a patch is available [https://github.com/erikcharlebois/patches/blob/master/emacs/w32_set_fullscreen.patch here] 
+that makes the fullscreen frame parameter really fullscreen on Windows.
+
 To get a maximized window you can use: (w32-send-sys-command #xf030)
 
 Attention!

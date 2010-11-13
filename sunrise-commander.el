@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 329 $
+;; RCS Version: $Rev: 330 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 329 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 330 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -1655,7 +1655,11 @@ automatically:
 (defun sr-do-find-marked-files (&optional noselect)
   "Sunrise replacement for dired-do-marked-files."
   (interactive "P")
-  (let ((files (dired-get-marked-files)))
+  (let* ((files (delq nil (mapcar (lambda (x)
+                                    (and (file-regular-p x) x))
+                                  (dired-get-marked-files)))))
+    (unless files
+      (error "Sunrise: no regular files to open"))
     (unless noselect (sr-quit))
     (dired-simultaneous-find-file files noselect)))
 
@@ -2694,7 +2698,7 @@ or (c)ontents? ")
                          (set-keymap-parent map sr-virtual-mode-map)
                          (define-key map "\C-c\C-k" 'sr-process-kill)
                          map)
-  "Local map used in Sunrise panes during find operations.")
+  "Local map used in Sunrise panes during find and locate operations.")
 
 (defun sr-find-prompt ()
   "Displays the message that appears when a find process is launched."
@@ -2708,10 +2712,10 @@ or (c)ontents? ")
           (cons
            (concat "-exec ls -d " sr-virtual-listing-switches suffix)
            "ls -ld"))
-         (sr-find-dirs (sr-quote-marked-dirs)) (dir))
-    (when sr-find-dirs
+         (sr-find-items (sr-quote-marked)) (dir))
+    (when sr-find-items
       (if (not (y-or-n-p "Find in marked items only? "))
-          (setq sr-find-dirs nil)
+          (setq sr-find-items nil)
         (setq dir (directory-file-name (expand-file-name default-directory)))
         (add-to-list 'file-name-handler-alist (cons dir 'sr-multifind-handler))))
     (sr-save-aspect
@@ -2720,9 +2724,8 @@ or (c)ontents? ")
      (use-local-map sr-process-map)
      (sr-keep-buffer))
     (run-with-idle-timer 0.01 nil 'sr-find-prompt)
-    (when sr-find-dirs
-      (sit-for 0.2)
-      (set (make-local-variable 'sr-find-dirs) sr-find-dirs))))
+    (if sr-find-items
+      (set (make-local-variable 'sr-find-items) sr-find-items))))
 
 (defun sr-find (pattern)
   "Runs find-dired passing the current directory as first parameter."
@@ -2745,15 +2748,19 @@ or (c)ontents? ")
   (after sr-advice-find-dired-sentinel (proc state))
   (when (eq 'sr-virtual-mode major-mode)
     (rename-uniquely)
-    (let ((in-dirs (and (boundp 'sr-find-dirs) (symbol-value 'sr-find-dirs)))
-          (inhibit-read-only t))
-      (when in-dirs
-        (sit-for 0.2)
+    (let* ((find-items (and (boundp 'sr-find-items) (symbol-value 'sr-find-items)))
+           (items-len (length find-items))
+           (max-items-len (frame-width))
+           (inhibit-read-only t))
+      (when find-items
         (goto-char (point-min))
         (forward-line 1)
-        (if (re-search-forward "find \." nil t)
-            (replace-match (format "find %s" in-dirs)))
-        (kill-local-variable 'sr-find-dirs)))
+        (when (re-search-forward "find \." nil t)
+          (if (> items-len max-items-len)
+              (setq find-items
+                    (concat (substring find-items 0 max-items-len) "...")))
+          (replace-match (format "find %s" find-items)))
+        (kill-local-variable 'sr-find-items)))
     (sr-beginning-of-buffer)
     (sr-highlight)
     (sr-backup-buffer)))
@@ -2769,13 +2776,13 @@ or (c)ontents? ")
                (and (eq inhibit-file-name-operation operation)
                     inhibit-file-name-handlers)))
         (inhibit-file-name-operation operation)
-        (in-dirs (and (boundp 'sr-find-dirs) (symbol-value 'sr-find-dirs))))
+        (find-items (and (boundp 'sr-find-items) (symbol-value 'sr-find-items))))
     (when (eq operation 'shell-command)
       (setq file-name-handler-alist
             (rassq-delete-all 'sr-multifind-handler file-name-handler-alist))
-      (if in-dirs
+      (if find-items
           (setcar args (replace-regexp-in-string
-                        "find \." (format "find %s" in-dirs) (car args)))))
+                        "find \." (format "find %s" find-items) (car args)))))
     (apply operation args)))
 
 (eval-and-compile
@@ -3510,9 +3517,9 @@ or (c)ontents? ")
             tail (cdr tail)))
     found))
 
-(defun sr-quote-marked-dirs ()
+(defun sr-quote-marked ()
   "Returns a string containing a quoted, space-separated list of all the
-  directories selected in the current pane"
+  entries selected in the current pane"
   (let ((marked (dired-get-marked-files t nil nil t)))
     (if (< (length marked) 2)
         (setq marked nil)

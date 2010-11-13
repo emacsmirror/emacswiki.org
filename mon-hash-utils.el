@@ -36,7 +36,6 @@
 ;; `mon-hash-readlines-file', `mon-hash-readlines-buffer',
 ;; `mon-hash-make-size', `mon-hash<-vector', `mon-hash-add-uniquify',
 ;; `mon-hash-table-complete', `mon-hash-to-alist', `mon-hash-from-alist',
-;;
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -161,6 +160,10 @@
 
 (eval-when-compile (require 'cl))
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
 ;;; ==============================
 ;;; :COURTESY :FILE gnus-util.el
 ;;; :FROM                     -> :TO
@@ -211,9 +214,10 @@ string!  So we use powers of 2 so people can optimize the modulo to a mask.
   (let ((mhmi 1))
     (while (< mhmi min-size)
       (setq mhmi (* 2 mhmi)))
-    mhmi))
+    (mon-next-almost-prime mhmi)))
 
 ;;; ==============================
+;;; :PREFIX "mhfa-"
 ;;; :CHANGESET 2109
 ;;; :CREATED <Timestamp: #{2010-09-04T15:30:26-04:00Z}#{10356} - by MON KEY>
 (defun mon-hash-from-alist (alist)
@@ -225,13 +229,15 @@ string!  So we use powers of 2 so people can optimize the modulo to a mask.
 `mon-hash-get-values', `mon-hash-has-key', `mon-hash-get-symbol-keys',
 `mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe',
 `mon-hash-describe-descend'.\n►►►"
-  (let ((math-alst (make-hash-table :size 4096 :test 'equal)))
-    (mapc #'(lambda (kv-pair)
-              (puthash (car kv-pair) (cdr kv-pair) math-alst))
+  (let ((mhfa-lst (make-hash-table :size (mon-hash-make-size (length alist)) ;4096 
+                                   :test 'equal)))
+    (mapc #'(lambda (mhfa-L-1)
+              (puthash (car mhfa-L-1) (cdr mhfa-L-1) mhfa-lst))
           alist)
-    math-alst))
+    mhfa-lst))
 
 ;;; ==============================
+;;; :PREFIX "mhta-"
 ;;; :CHANGESET 2109
 ;;; :CREATED <Timestamp: #{2010-09-04T15:28:34-04:00Z}#{10356} - by MON KEY>
 (defun mon-hash-to-alist (hash)
@@ -243,11 +249,11 @@ string!  So we use powers of 2 so people can optimize the modulo to a mask.
 `mon-hash-get-values', `mon-hash-has-key', `mon-hash-get-symbol-keys',
 `mon-hash-get-string-keys', `mon-hash-put-CL', `mon-hash-describe',
 `mon-hash-describe-descend'.\n►►►"
-  (let ((mhta-l nil))
-    (maphash #'(lambda (key value)
-                 (setq mhta-l (cons (cons key value) mhta-l)))
+  (let ((mhta-lst nil))
+    (maphash #'(lambda (mhta-L-kk mhta-L-vv)
+                 (setq mhta-lst (cons (cons mhta-L-kk mhta-L-vv) mhta-lst)))
              hash)
-    mhta-l))
+    mhta-lst))
 
 ;;; ==============================
 ;;; :COURTESY Stefan Reichör :HIS xsteve-functions.el 
@@ -280,6 +286,7 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 ;;; `traverse-hash-readlines'             -> `mon-hash-readlines-file'
 ;;; ==============================
 ;;
+;;; :PREFIX "mhrf-"
 (defun mon-hash-readlines-file (hash-file file-table)
   "Load lines in HASH-FILE into hash-table FILE-TABLE line-numbers as keys.\n
 :SEE `mon-help-hash-functions'.\n
@@ -289,15 +296,17 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  (let* ((my-string (with-temp-buffer
+  (save-match-data
+    (let* ((mhrf-str (with-temp-buffer
                        (insert-file-contents hash-file)
                        (buffer-string)))
-          (my-read-list (split-string my-string "\n"))
-          (count 0))
-     (dolist (i my-read-list)
-       (puthash count i file-table)
-       (incf count))))
+           (mhrf-rd-lst (split-string mhrf-str "\n"))
+           (mhrf-cnt 0))
+      (dolist (mhrf-D-1 mhrf-rd-lst)
+        (puthash mhrf-cnt mhrf-D-1 file-table)
+        (incf mhrf-cnt)))))
 ;;
+;;; :PREFIX "mhrb-"
 (defun mon-hash-readlines-buffer (buffer buffer-table)
   "Load BUFFER lines into hash-table BUFFER-TABLE with line-numbers as keys.\n
 :SEE `mon-help-hash-functions'.\n
@@ -307,14 +316,15 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  (let* ((my-string (with-temp-buffer
+  (save-match-data
+    (let* ((mhrb-str (with-temp-buffer
                        (insert-buffer-substring-no-properties buffer)
                        (buffer-string)))
-          (my-read-list (split-string my-string "\n"))
-          (count 0))
-     (dolist (i my-read-list)
-       (puthash count i buffer-table)
-       (incf count))))
+           (mhrb-rd-lst (split-string mhrb-str "\n"))
+           (mhrb-cnt 0))
+      (dolist (mhrb-D-1 mhrb-rd-lst)
+        (puthash mhrb-cnt mhrb-D-1 buffer-table)
+        (incf mhrb-cnt)))))
 
 ;;; ==============================
 ;;; COURTESY: Xah Lee
@@ -326,7 +336,7 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-08T20:32:53-05:00Z}#{10062} - by MON KEY>
 ;;; Xah functions `mon-hash-to-list', `mon-hash-all-keys', `mon-hash-all-values'
-;;; Now use: (push `(, .,) sym) idiom instead of:
+;;; Now use: (push `(, . ,) sym) idiom instead of:
 ;;; (setq sym cons (list k v) sym)
 ;;; ==============================
 ;;
@@ -339,11 +349,11 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  (let (allvals)
-    (maphash #'(lambda (kk vv) 
-                 (push vv allvals))
+  (let (mhav-lst)
+    (maphash #'(lambda (mhav-kk mhav-vv) 
+                 (push mhav-vv mhav-lst))
              hashtable)
-    allvals))
+    mhav-lst))
 ;;
 (defun mon-hash-all-keys (hashtable)
   "Return all keys in HASHTABLE.\n
@@ -354,11 +364,11 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
-  (let (allkeys)
-    (maphash #'(lambda (kk vv)
-                 (push kk allkeys))
+  (let (mhak-gthr)
+    (maphash #'(lambda (mhak-kk mhak-vv)
+                 (push mhak-kk mhak-gthr))
              hashtable)
-    allkeys))
+    mhak-gthr))
 ;;
 (defun mon-hash-to-list (hashtable)
   "Return a list representing key/value pairs in HASHTABLE.\n
@@ -369,11 +379,11 @@ When KEY is already present in TABLE generate a new KEY such that:\n
 `mon-hash-get-items', `mon-hash-get-values', `mon-hash-has-key',
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►► "
-  (let (mylist)
-    (maphash #'(lambda (kk vv) 
-                 (push `(,kk . ,vv) mylist))
+  (let (mhtl-lst)
+    (maphash #'(lambda (mhtl-kk mhtl-vv) 
+                 (push `(,mhtl-kk . ,mhtl-vv) mhtl-lst))
              hashtable)
-    mylist))
+    mhtl-lst))
 ;;
 ;;; ==============================
 ;;; End Xah-lee Section
@@ -395,10 +405,12 @@ Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgk-keys (make-symbol "mhgk-keys")))
     `(let (,mhgk-keys)
-       (maphash #'(lambda (kk vv)
-                    (push kk ,mhgk-keys))
+       (maphash #'(lambda (mhgk-L-1-kk mhgk-L-1-vv)
+                    (push mhgk-L-1-kk ,mhgk-keys))
                 ,hashtable)
        (setq ,mhgk-keys (nreverse ,mhgk-keys)))))
+;;
+;; (put 'mon-hash-get-get-keys 'lisp-indent-function <INT>) 
 
 ;;; ==============================
 ;;; COURTESY: Thierry Volpiatto HIS: macros-func-thierry.el
@@ -433,10 +445,12 @@ Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
 `mon-hash-get-symbol-keys', `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgi-items (make-symbol "mhgi-items")))
-  `(let ((,mhgi-items nil)) 
-     (maphash #'(lambda (x y) (push (list x y) ,mhgi-items))
-              ,hashtable)
-     ,mhgi-items)))
+    `(let ((,mhgi-items nil)) 
+       (maphash #'(lambda (mhgi-L-1 mhgi-L-2) (push (list mhgi-L-1 mhgi-L-2) ,mhgi-items))
+                ,hashtable)
+       ,mhgi-items)))
+;;
+;; (put 'mon-hash-get-items 'lisp-indent-function <INT>) 
 ;;
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:28:11-05:00Z}#{10072} - by MON KEY>
@@ -454,14 +468,28 @@ Macromatic version of `mon-hash-all-keys'. Unlike `mon-hash-get-string-keys' and
            (,mhgv-all (mon-hash-get-items ,hashtable)))
        (setq ,mhgv-val (mapcar #'cadr ,mhgv-all))
        ,mhgv-val)))
+;;
+;; (put 'mon-hash-get-values 'lisp-indent-function <INT>) 
 
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:18:46-05:00Z}#{10072} - by MON KEY>
+;;; :CHANGESET 2316 <Timestamp: #{2010-11-12T23:40:37-05:00Z}#{10455} - by MON KEY>
 (defmacro mon-hash-get-symbol-keys (hashtable &optional coerce-strings)
   "Reuturn a list of all keys in HASHTABLE.\n
 Like `mon-hash-get-string-keys' but return keys that are symbols.\n
 When optional arg COERCE-STRINGS is non-nil when a hashtable key is a string
-read that string -> symbol.\n
+read that string -> symbol but don't intern it.\n
+:EXAMPLE\n
+\(let \(\(wonky-hash \(make-hash-table\)\)
+      \(wonky-tst \(mon-string-wonkify 
+                   \(concat \(mon-nshuffle-vector 
+                             \(vconcat \(number-sequence 97 122\)\)\)\) 16\)\)
+      gthr\)
+  \(mapc #'\(lambda \(ph\) \(puthash ph \(sxhash ph\) wonky-hash\)\) wonky-tst\)
+  \(setq gthr \(nreverse `\(,\(mon-hash-get-symbol-keys wonky-hash t\)
+                          ,\(mapcar #'\(lambda \(not-in-ob\)
+                                       \(intern-soft not-in-ob\)\) wonky-tst\)\)\)\)\)
+\(mon-hash-get-symbol-keys-TEST\)\n
 :SEE `mon-help-hash-functions'.\n
 :SEE-ALSO `mon-hash<-vector', `mon-hash-make-size', `mon-hash-add-uniquify',
 `mon-hash-to-alist', `mon-hash-from-alist', `mon-hash-readlines-buffer',
@@ -470,18 +498,23 @@ read that string -> symbol.\n
 `mon-hash-has-key',  `mon-hash-get-string-keys', `mon-hash-put-CL',
 `mon-hash-describe', `mon-hash-describe-descend'.\n►►►"
   (let ((mhgsk-keys (make-symbol "mhgsk-keys"))
-        (mhgsk-all (make-symbol "mhgsk-all")))
+        (mhgsk-all  (make-symbol "mhgsk-all"))
+        (mhgsk-ob   (make-symbol "mhgsk-ob")))
     `(let ((,mhgsk-keys nil)
-           (,mhgsk-all (mon-hash-get-items ,hashtable)))
-       (setq ,mhgsk-keys (mapcar #'(lambda (mhgsk)
-                                     (if coerce-strings
-                                         (if (stringp (car mhgsk))
-                                             (car (read-from-string (car mhgsk)))
-                                             (car mhgsk))
-                                         (car mhgsk)))
+           (,mhgsk-all (mon-hash-get-items ,hashtable))
+           (,mhgsk-ob  (and ,coerce-strings (make-vector 8 nil))))
+       (setq ,mhgsk-keys (mapcar #'(lambda (mhgsk-L-1)
+                                     (if ,coerce-strings
+                                         (if (stringp (car mhgsk-L-1))
+                                             ;; :WAS (car (read-from-string (car mhgsk)))
+                                             (intern (car mhgsk-L-1) ,mhgsk-ob)
+                                           (car mhgsk-L-1))
+                                       (car mhgsk-L-1)))
                                  ,mhgsk-all))
        ,mhgsk-keys)))
 ;;
+;; (put 'mon-hash-get-symbol-keys 'lisp-indent-function <INT>) 
+
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-02-16T16:10:26-05:00Z}#{10072} - by MON KEY>
 (defmacro mon-hash-get-string-keys (hashtable)
@@ -506,6 +539,8 @@ Like `mon-hash-get-symbol-keys' but return keys as strings.\n
            (push i ,mhgSk-str)
            (push (symbol-name i) ,mhgSk-str)))
      ,mhgSk-str)))
+
+;; (put 'mon-hash-get-string-keys 'lisp-indent-function <INT>) 
 ;;
 ;;; (defalias 'hash-get-string-keys 'mon-hash-get-string-keys)
 ;;;(progn (fmakunbound 'hash-get-string-keys) (unintern 'hash-get-string-keys) )
@@ -531,6 +566,8 @@ KEY must be a symbol \(not a string\) as test uses `memq'/`eq'.\n
            t
            nil))))
 ;;
+;; (put 'mon-hash-has-key 'lisp-indent-function <INT>) 
+
 ;;; ==============================
 (defmacro mon-hash-put-CL (key table value)
   "A `puthash' in the style of Common Lisp using elisp cl.el package's `setf'.\n
@@ -549,6 +586,8 @@ The order of arguments in mon-hash-put-CL is:\n
 `mon-hash-has-key', `mon-hash-get-symbol-keys', `mon-hash-get-string-keys',
 `mon-hash-describe', `mon-hash-describe-descend'.\n ►►►"
   `(setf (gethash ,key ,table) ,value))
+
+;; (put 'mon-hash-put-CL 'lisp-indent-function <INT>) 
 
 ;;; ==============================
 ;;; End Thierry Macros

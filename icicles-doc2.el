@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Nov  6 10:18:50 2010 (-0700)
+;; Last-Updated: Fri Nov 12 14:00:40 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 27353
+;;     Update #: 27380
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3596,6 +3596,28 @@
 ;;    (b) a longer exact prefix within the first four characters
 ;;    (Winkler).
 ;;
+;;  My opinion about the relative usefulness of the various methods:
+;;  Basic (prefix) completion and apropos completion are by far the
+;;  most useful.  They are followed, in order of decreasing
+;;  usefulness, by scatter, fuzzy, Levenshtein, vanilla, Jaro-Winkler,
+;;  and swank completion. YMMV.
+;;
+;;  Besides these methods, remember that you can get ordinary
+;;  substring matching with `S-TAB' by using `C-`' to turn off
+;;  (toggle) escaping of regexp special characters.  With special
+;;  characters escaped, `S-TAB' does literal substring completion.
+;;
+;;  The type of completion matching that is used when you hit `S-TAB'
+;;  and `TAB' is controlled by user options
+;;  `icicle-S-TAB-completion-methods-alist' and
+;;  `icicle-TAB-completion-methods', respectively.  The possible
+;;  methods for `TAB' are predefined, but you can add additional
+;;  methods for `S-TAB' by customizing
+;;  `icicle-S-TAB-completion-methods-alist'.
+;;
+;;(@* "Changing Completion Method")
+;;  ** Changing Completion Method **
+;;
 ;;  You can use fuzzy or swank completion in place of prefix
 ;;  completion (`TAB').  You can use scatter, Levenshtein, or
 ;;  Jaro-Winkler completion in place of apropos completion (`S-TAB').
@@ -3622,25 +3644,42 @@
 ;;  precisely, the previously active method is restored as soon as you
 ;;  return to the top level.
 ;;
-;;  My opinion about the relative usefulness of the various methods:
-;;  Basic (prefix) completion and apropos completion are by far the
-;;  most useful.  They are followed, in order of decreasing
-;;  usefulness, by scatter, fuzzy, Levenshtein, vanilla, Jaro-Winkler,
-;;  and swank completion. YMMV.
+;;  The completion methods available for cycling via `C-(' or `M-('
+;;  are defined by options `icicle-TAB-completion-methods' and
+;;  `icicle-S-TAB-completion-methods-alist', respectively.  By
+;;  default, the first method in each list is used for matching.
 ;;
-;;  Besides these methods, remember that you can get ordinary
-;;  substring matching with `S-TAB' by using `C-`' to turn off
-;;  (toggle) escaping of regexp special characters.  With special
-;;  characters escaped, `S-TAB' does literal substring completion.
+;;  Sometimes you might want to make a different set of completion
+;;  methods available during input.  You can use options
+;;  `icicle-TAB-completion-methods-per-command' and
+;;  `icicle-S-TAB-completion-methods-per-command' to do this.  These
+;;  define the methods to be made available during specific commands
+;;  (that read input with completion).  That is, they give you
+;;  command-specific control over `C-(' and `M-('.
 ;;
-;;  The type of completion matching that is used when you hit `S-TAB'
-;;  and `TAB' is controlled by user options
-;;  `icicle-S-TAB-completion-methods-alist' and
-;;  `icicle-TAB-completion-methods', respectively.  By default, the
-;;  first method in each list is used for matching.  The possible
-;;  methods for `TAB' are predefined, but you can add additional
-;;  methods for `S-TAB' by customizing
-;;  `icicle-S-TAB-completion-methods-alist'.
+;;  The per-command control is provided by advising (`defadvice') the
+;;  particular commands.  You can also do this interactively, using
+;;  commands `icicle-set-TAB-methods-for-command' and
+;;  `icicle-set-S-TAB-methods-for-command'.  Invoking one of these
+;;  with a negative prefix argument removes the advice, restoring the
+;;  default choice of methods for the target command.
+;;
+;;  For example, this sets the available `TAB' methods for command
+;;  `icicle-read-color' to fuzzy (the default for this command) and
+;;  basic:
+;;
+;;    M-x icicle-set-TAB-methods-for-command RET
+;;    Command: icicle-read-color RET
+;;    TAB methods: fuzzy RET
+;;    TAB methods: basic RET
+;;    TAB methods: RET
+;;      
+;;  And this removes the special treatment for `C-(' during
+;;  `icicle-read-color', restoring the default `TAB' methods that are
+;;  defined by option `icicle-TAB-completion-methods':
+;;
+;;    C-- M-x icicle-set-TAB-methods-for-command RET
+;;    Command: icicle-read-color RET
 ;;
 ;;(@* "Partial Completion")
 ;;  ** Partial Completion **
@@ -4832,6 +4871,13 @@
 ;;    and completion candidates are always sorted by decreasing fuzzy
 ;;    match strength.  In other words, fuzzy completion is not
 ;;    affected by `C-A', `M-_', or `C-,'.
+;;
+;;  * User options `icicle-S-TAB-completion-methods-per-command' and
+;;    `icicle-TAB-completion-methods-per-command' provide per-command
+;;    control of the completion methods available when you cycle using
+;;    `C-(' and `M-('.  Use them if you want to specify which methods
+;;    are available for particular commands that read input with
+;;    completion.
 ;;
 ;;  * User option `icicle-levenshtein-distance' is the Levenshtein
 ;;    distance allowed for strings to be considered as matching during

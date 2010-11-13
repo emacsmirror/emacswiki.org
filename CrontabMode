@@ -1,11 +1,31 @@
-Harley Gorrell has written a [http://www.mahalito.net/~harley/elisp/crontab-mode.el crontab-mode.el].
+Here's some choices of modes for editing crontab files,
 
-(Broken link!)
+=Harley Gorrell=
+
+HarleyGorrell has written a crontab-mode.el (original page gone it seems, but get it from archive.org)
+
+: http://www.mahalito.net/~harley/elisp/crontab-mode.el
+
+: http://web.archive.org/web/20080716014153/http://www.mahalito.net/~harley/elisp/crontab-mode.el
 
 From the commentary:
 
 * I want to keep my crontabs under rcs to keep a history of the file.  Editing them with 'crontab -e' is rather cumbersome.  My method is to keep the crontab as a file, under rcs, and check in the changes with 'C-c C-c' after editing.
 * The remote systems are expected to share a filesystem. If they dont, modify crontab-shell or crontab-apply to suit your needs.
+
+= Ch. Tronche =
+
+A <code>crontab-mode.el</code>, includes an rsh to edit crontabs on remote machines,
+
+: http://tronche.com/misc/
+
+= Christopher D. Orr =
+
+<code>crontab.el</code> which comes with XEmacs.  Works in Emacs too.
+
+Save-buffer installs the crontab.  Optionally keeps a copy in ~/.crontab too, if you don't trust the crontab to look after it.
+
+Errors from crontab resulting in the new content not stored don't seem to be reported very well.
 
 ----
 CategoryModes

@@ -60,6 +60,7 @@ that colors and [[Face]]s belong in CategoryFaces.
 == Modifying the DisplayTable ==
 
 * PageBreaks -- change page breaks from a ^L to a horizontal line
+* [http://user42.tuxfamily.org/unicode-disp/index.html unicode-disp.el] -- unicode chars as ascii fallbacks if not displayable
 
 == Saving screen real-estate ==
 

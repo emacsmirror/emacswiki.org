@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 10 17:24:47 2010 (-0800)
+;; Last-Updated: Fri Nov 12 12:56:53 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5850
+;;     Update #: 5853
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4158,6 +4158,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/11/12 dadams
+;;     Added: icicle-(S-)TAB-completion-methods-per-command.
 ;; 2010/11/10 dadams
 ;;     icicle-top-level-key-bindings: In :set, protect icicle-mode-map with boundp.
 ;; 2010/10/25 dadams

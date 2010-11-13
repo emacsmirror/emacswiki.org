@@ -1,8 +1,9 @@
 Here's some stuff I like:
 
-* FillAdapt -- smart paragraph filling/reflowing
+* FillAdapt -- smart paragraph filling/reflowing, much better than the builtin Emacs filling
 * InfoLook -- go to function documentation in info files
-* RfcView -- beautify RFC documents for viewing
+* RfcView -- fonts and links for RFC documents, makes the plain text look much better
+* SavePlace -- remember previous point in each file, surprisingly handy once you get used to jumping into the middle of a file
 
 Stuff by me with its own page includes: AlignLet, [[Chart]], DiffSaveBuffer, GtkLook, GutenbergCoding, HtmlCoding, InfoXref, MakeinfoInfo, ManPreview, MoMode, NobreakFade, [[Pcf2Bdf]], PerlPodCoding, PerlPodGt, PerlPodPreview, QuickYes, ShAutoconf, TexMathPreview, TtyFormat, XmlCoding, [[XTide]].  Or see the [http://user42.tuxfamily.org/index.html#emacs full list].
 

@@ -9,3 +9,56 @@ Potentially, elnode could be more useful than node.js because elnode has the Ema
 elnode's performance is better than I expected, although we haven't done a formal test.
 
 If you're interested in helping it's best to contact NicFerrier or leave a note on this page.
+
+== What can you do with Elnode? ==
+
+Here's a stupid example - publish your emacs contents:
+
+ ;; Expose your running emacs to the local web by using elnode
+ ;; Copyright (C) 2010 by Nic Ferrier
+
+ (defun insideout-html-escape (str)
+   "Escape significant HTML characters in 'str'"
+   (replace-regexp-in-string 
+    "<\\|\\&" 
+    (lambda (src)
+      (cond
+       ((equal src "&") "&amp;")
+       ((equal src "<")  "&lt;")))
+    str))
+
+ (defun insideout-render (buf)
+   "Render buffer 'buf' as HTML"
+   (with-current-buffer (get-buffer buf-name)
+     (format "<html>
+ <body><pre>%s</pre></body>
+ </html>"
+             (insideout-html-escape
+              (buffer-substring-no-properties (point-min) (point-max))))))
+
+ (defun insideout-handler (httpcon)
+   (let ((p (elnode-http-pathinfo httpcon)))
+     (let ((buf-name (progn
+                       (string-match "/\\(.*\\)" p)
+                       (match-string 1 p))))
+       ;; An individual buffer
+       (progn
+         (elnode-http-start httpcon 200 '("Content-Type" . "text/html"))
+         (elnode-http-return 
+          httpcon 
+          (if (bufferp (get-buffer buf-name))
+              (insideout-render buf)
+            ;; The buffer index
+            (format "<html><body><ul>%s</ul></body></html>"
+                    (mapconcat
+                     (lambda (buf)
+                       (if (not (string-match "\\*" (buffer-name buf)))
+                           (format "<li><a href='/%s'>%s</a></li>"
+                                   (buffer-name buf)
+                                   (buffer-name buf))))
+                     (buffer-list)
+                     "\n"))))))))
+
+ (elnode-start 'insideout-handler 8028 "localhost")
+
+ ;; End

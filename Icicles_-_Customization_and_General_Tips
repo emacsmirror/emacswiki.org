@@ -985,7 +985,7 @@ the persistent list of your command abbreviations.
 [:icicle-TAB-completion-methods]
 [:icicle-next-S-TAB-completion-method]
 [:icicle-next-TAB-completion-method]
-==== Options icicle-S-TAB-completion-methods-alist and icicle-TAB-completion-methods-alist ====
+==== Options icicle-S-TAB-completion-methods-alist and icicle-TAB-completion-methods ====
 User options '''`icicle-S-TAB-completion-methods-alist'''' and
 '''`icicle-TAB-completion-methods'''' control which completion method
 is used by `S-TAB' and `TAB', respectively, to complete your input.  By default,
@@ -1001,6 +1001,23 @@ is always case-sensitive; leading spaces are taken into
 account; and completion candidates are always sorted by
 decreasing fuzzy match strength.  In other words, fuzzy completion is
 not affected by `C-A', `##M-_##', or `##C-,##'.
+
+
+
+
+
+
+
+----
+[:icicle-S-TAB-completion-methods-per-command]
+[:icicle-TAB-completion-methods-per-command]
+==== Options icicle-S-TAB-completion-methods-per-command and icicle-TAB-completion-methods-per-command ====
+User options '''`icicle-S-TAB-completion-methods-per-command'''' and
+'''`icicle-TAB-completion-methods-per-command''''  provide per-command control of the completion methods available when you cycle using `##C-(##' and `##M-(##'.  Use them if you want to specify which methods are available for particular commands that read input with completion.
+
+
+
+
 
 
 

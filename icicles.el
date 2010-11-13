@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 10 17:17:46 2010 (-0800)
+;; Last-Updated: Fri Nov 12 12:58:12 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 22781
+;;     Update #: 22783
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -656,8 +656,10 @@
 ;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
 ;;    `icicle-sort-orders-alist', `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
+;;    `icicle-S-TAB-completion-methods-per-command',
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
+;;    `icicle-TAB-completion-methods-per-command',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',

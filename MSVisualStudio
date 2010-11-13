@@ -190,13 +190,15 @@ If you use [[EmacsW32]] which comes with emacsclient instead of gnuserv you can 
     Sub OpenInEmacs()
         Dim filename As String
         Dim linenumber As Integer
+        Dim column As Integer
 
         linenumber = DTE.ActiveDocument.Selection.ActivePoint.Line
+        column = DTE.ActiveDocument.Selection.ActivePoint.VirtualDisplayColumn
         filename = DTE.ActiveDocument.FullName
 
         DTE.StatusBar.Text = "Opening " + filename + ":" + linenumber.ToString + " in Emacs"
 
-        Shell("emacsclientw.exe" + " -n +" + linenumber.ToString + " " + filename)
+        Shell("emacsclientw.exe" + " -n +" + linenumber.ToString + ":" + column.ToString + " " + filename)
     End Sub
 
 Simply bind it to a key or menu command and it will open the current file in Emacs at the current line.

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 10 15:40:18 2010 (-0800)
+;; Last-Updated: Fri Nov 12 12:56:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3951
+;;     Update #: 3960
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -157,8 +157,10 @@
 ;;    `icicle-show-multi-completion-flag', `icicle-sort-comparer',
 ;;    `icicle-sort-orders-alist', `icicle-special-candidate-regexp',
 ;;    `icicle-S-TAB-completion-methods-alist',
+;;    `icicle-S-TAB-completion-methods-per-command',
 ;;    `icicle-swank-prefix-length', `icicle-swank-timeout',
 ;;    `icicle-TAB-completion-methods',
+;;    `icicle-TAB-completion-methods-per-command',
 ;;    `icicle-TAB-shows-candidates-flag',
 ;;    `icicle-test-for-remote-files-flag',
 ;;    `icicle-thing-at-point-functions',
@@ -2418,12 +2420,57 @@ messages to indicate the type of completion matching.
 By default, `S-TAB' is the key for this completion. The actual keys
 used are the value of option `icicle-apropos-complete-keys'.
 
-See also option `icicle-TAB-completion-methods'."
+See also options `icicle-TAB-completion-methods' and
+`icicle-S-TAB-completion-methods-per-command'."
   :type '(alist
           :key-type   (string :tag "Name used in messages")
           :value-type (symbol :tag "Completion matching function"))
   :group 'Icicles-Matching)
 
+;;;###autoload
+(defcustom icicle-S-TAB-completion-methods-per-command ()
+  "Alist of commands and their available S-TAB completion methods.
+Each command is advised so that when invoked only the specified S-TAB
+completion methods are available for it when you use `M-('.  (This
+makes sense only for commands that read input from the minibuffer.)
+
+This option gives you greater control over which completion methods
+are available.  See also option
+`icicle-TAB-completion-methods-per-command', which does the same thing
+for `TAB' completion.  The default behavior is provided by option
+`icicle-S-TAB-completion-methods-alist' (and
+`icicle-TAB-completion-methods' for `TAB').
+
+NOTE: If you remove an entry from this list, that does NOT remove the
+advice for that command.  To do that you will need to explicitly
+invoke command `icicle-set-S-TAB-methods-for-command' using a negative
+prefix argument (or else start a new Emacs session)."
+  :type (let ((methods  ()))
+          (when (require 'levenshtein nil t)
+            (push '(const :tag "Levenshtein strict"
+                    ("Levenshtein strict" . icicle-levenshtein-strict-match))
+                  methods)
+            (push '(const :tag "Levenshtein" ("Levenshtein" . icicle-levenshtein-match))
+                  methods))
+          (when (require 'fuzzy nil t) ; `fuzzy.el', part of library Autocomplete.
+            (push '(const :tag "Jaro-Winkler" ("Jaro-Winkler" . fuzzy-match)) methods))
+          (push '(const :tag "scatter" ("scatter" . icicle-scatter-match)) methods)
+          (push '(const :tag "apropos" ("apropos" . string-match)) methods)
+          `(alist
+            :key-type   (restricted-sexp
+                         :tag "Command"
+                         ;; Use `symbolp' instead of `commandp', in case the library
+                         ;; defining the command is not yet loaded.
+                         :match-alternatives (symbolp) :value ignore)
+            :value-type (repeat :tag "S-TAB completion methods" (choice ,@methods))))
+  :set #'(lambda (sym val)
+           (custom-set-default sym val)
+           (when (fboundp 'icicle-set-S-TAB-methods-for-command)
+             (dolist (entry  val)
+               (icicle-set-S-TAB-methods-for-command (car entry) (cdr entry)))))
+  :initialize #'custom-initialize-default
+  :group 'Icicles-matching)
+            
 ;;;###autoload
 (defcustom icicle-swank-prefix-length 1
   "*Length (chars) of symbol prefix that much match, for swank completion."
@@ -2511,7 +2558,8 @@ libraries `fuzzy-match.el' and `el-swank-fuzzy.el'.
 By default, `TAB' is the key for this completion. The actual keys
 used are the value of option `icicle-prefix-complete-keys'.
 
-See also option `icicle-S-TAB-completion-methods-alist'."
+See also options `icicle-TAB-completion-methods-per-command'
+`icicle-S-TAB-completion-methods-alist'."
   :type (let ((methods  ()))
           (when (require 'el-swank-fuzzy nil t)
             (push '(const :tag "Swank (Fuzzy Symbol)" swank) methods))
@@ -2521,6 +2569,47 @@ See also option `icicle-S-TAB-completion-methods-alist'."
             (push '(const :tag "Vanilla `completion-styles'" vanilla) methods))
           (push '(const :tag "Basic" basic) methods)
           `(repeat (choice ,@methods)))
+  :group 'Icicles-Matching)
+
+;;;###autoload
+(defcustom icicle-TAB-completion-methods-per-command ()
+  "Alist of commands and their available TAB completion methods.
+Each command is advised so that when invoked only the specified TAB
+completion methods are available for it when you use `C-('.  (This
+makes sense only for commands that read input from the minibuffer.)
+
+This option gives you greater control over which completion methods
+are available.  See also option
+`icicle-S-TAB-completion-methods-per-command', which does the same
+thing for `S-TAB' completion.  The default behavior is provided by
+option `icicle-TAB-completion-methods' (and
+`icicle-S-TAB-completion-methods-alist' for `S-TAB').
+
+NOTE: If you remove an entry from this list, that does NOT remove the
+advice for that command.  To do that you will need to explicitly
+invoke command `icicle-set-TAB-methods-for-command' using a negative
+prefix argument (or else start a new Emacs session)."
+  :type (let ((methods  ()))
+          (when (require 'el-swank-fuzzy nil t)
+            (push '(const :tag "Swank (Fuzzy Symbol)" swank) methods))
+          (when (require 'fuzzy-match nil t)
+            (push '(const :tag "Fuzzy" fuzzy) methods))
+          (when (boundp 'completion-styles)
+            (push '(const :tag "Vanilla `completion-styles'" vanilla) methods))
+          (push '(const :tag "Basic" basic) methods)
+          `(alist
+            :key-type   (restricted-sexp
+                         :tag "Command"
+                         ;; Use `symbolp' instead of `commandp', in case the library
+                         ;; defining the command is not yet loaded.
+                         :match-alternatives (symbolp) :value ignore)
+            :value-type (repeat :tag "TAB completion methods" (choice ,@methods))))
+  :set #'(lambda (sym val)
+           (custom-set-default sym val)
+           (when (fboundp 'icicle-set-TAB-methods-for-command)
+             (dolist (entry  val)
+               (icicle-set-TAB-methods-for-command (car entry) (cdr entry)))))
+  :initialize #'custom-initialize-default
   :group 'Icicles-Matching)
 
 ;;;###autoload

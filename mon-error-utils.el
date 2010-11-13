@@ -113,13 +113,23 @@
 
 (eval-when-compile (require 'cl))
 
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
 ;; *mon-function-object-types*
 
-(declare-function mon-booleanp              "mon-utils" '(putative-boolean))
-(declare-function mon-function-object-p     "mon-utils" '(fncn-sym))
-(declare-function mon-mapcar                "mon-utils" '(mapcar-fun mapcar-lst &rest more-lsts))
-(declare-function mon-subseq                "mon-utils" '(mon-subseq))
-(declare-function mon-equality-or-predicate "mon-utils" '(predicate arg1 arg2))
+(declare-function mon-booleanp                 "mon-utils" (putative-boolean))
+(declare-function mon-function-object-p        "mon-utils" (fncn-sym))
+(declare-function mon-mapcar                   "mon-utils" (mapcar-fun mapcar-lst &rest more-lsts))
+(declare-function mon-subseq                   "mon-utils" (in-seq seq-start &optional seq-end))
+(declare-function mon-equality-or-predicate    "mon-utils" (predicate arg1 arg2))
+(declare-function mon-booleanp-to-binary       "mon-utils" (maybe-a-boolean &optional return-if-not))
+(declare-function mon-string-or-null-and-zerop "mon-utils" (maybe-str-or-null-obj))
+(declare-function mon-bool-vector-to-list      "mon-utils" (bool-vec))
+(declare-function mon-list-proper-p            "mon-utils" (putatively-proper))
+
 
 ;;; ==============================
 ;;; :CHANGESET 2174
@@ -168,7 +178,6 @@ format-string's spec e.g. function is `apply'ed as:\n
 ;;              (bound-and-true-p *mon-message-function*))
 ;;   (setq *mon-message-function* 'message))
 
-(declare-function mon-error-protect-PP-EXPAND-TEST "ext:mon-testme-utils.el" '(expand-form))
 ;;; ==============================
 ;;; :NOTE Appears deceptively simple :O
 ;;; :CHANGESET 2141
@@ -217,6 +226,8 @@ ERR-ARG is the form returned from the error condition handler.\n
         (unless (ignore-errors (or (null (eval ,bdy-wrap)) t))
           (error ""))
       (error ,err-arg)))))
+;;
+;; (put 'mon-error-protect 'lisp-indent-function <INT>) 
 
 ;;; ==============================
 (defun mon-error-toplevel (&rest args)
@@ -239,12 +250,11 @@ This function is called from `mon-error'.\n
 ;;; :NOTE We add `t' as :FILE src/eval.c has this comment in find_handler_clause:
 ;;;  /* t is used by handlers for all conditions, set up by C code.  */
 ;;;   if (EQ (handlers, Qt))
+
 (put 'mon-error-toplevel 'error-conditions '(error mon-error-toplevel mon-error t))
 (put 'mon-error-toplevel 'error-message ":MON-ERROR-TOPLEVEL")
 
-;; (mon-error-toplevel (caddr err))))
 ;;; ==============================
-;; sig-str sig-arg 
 (defun* mon-error (&key signaler function format-control format-arguments handler)
   "
 Keyword :FUNCTION a symbol identifying the function originating the error.\n
@@ -421,9 +431,13 @@ error-string.\n
 ;;            w-old-make-new-lst))
 ;;; ==============================
 ;; (defun mon-error-not-a-number-err-format
-;; (numberp <arg>)
-;; (integerp <arg>)
-;; (floatp  <arg>)
+;; (wholenump  <arg>)
+;; (numberp    <arg>)
+;; (integerp   <arg>)
+;; (integer-or-marker-p <arg>)
+;; (number-or-marker-p <arg>)
+;; (floatp     <arg>)
+;; (zerop      <arg>)
 ;; (concat ":FUNCTION `%s' "-- arg END-W not a number") msi-fncn)
 
 
@@ -518,12 +532,6 @@ Reset it with `mon-error-gather-reset'.\n
 ;; |   (princ pc 'mon-error-gather))
 ;; | 
 ;; `----
-
-(declare-function mon-booleanp-to-binary       "mon-utils")
-(declare-function mon-string-or-null-and-zerop "mon-utils")
-(declare-function mon-bool-vector-to-list      "mon-utils")
-(declare-function mon-list-proper-p            "mon-utils")
-
 
 ;; (concat ":FUNCTION `%s' "
 ;;         "-- arg %s does not satisfy `stringp', got: %S")
@@ -921,10 +929,7 @@ with the format:\n\n \( <STRING> . other\)\n
                     `(,(symbol-value reset-bind) . ,reset-bind)))
                  (t `(,(%mon-write-string-reset) . ,mws-chk-typ)))))
         (reset-null    (%mon-write-string-reset))))
-;;
-(unless (and (intern-soft "write-string" obarray)
-             (fboundp 'write-string))
-(defalias 'write-string 'mon-write-string))
+
 ;;
 ;; ,---- :UNCOMMENT-BELOW-TO-TEST
 ;; |

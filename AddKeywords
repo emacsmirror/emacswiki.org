@@ -140,5 +140,25 @@ The former is usually preferred.
 
 Feel free to generalize this (to all Lisps?).
 
+== Format Specifier ==
+highlighting printf format specifier like vim ...
+<pre>
+(defvar font-lock-format-specifier-face		'font-lock-format-specifier-face
+  "Face name to use for format specifiers.")
+
+(defface font-lock-format-specifier-face
+  '((t (:foreground "OrangeRed1")))
+  "Font Lock mode face used to highlight format specifiers."
+  :group 'font-lock-faces)
+
+(add-hook 'c-mode-common-hook
+	  (lambda ()
+	    (font-lock-add-keywords nil
+				    '(("[^%]\\(%\\([[:digit:]]\\+\\$\\)?[-+' #0*]*\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]\\+\\$\\)\\(\\.\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]\\+\\$\\)\\)?\\([hlLjzt]\\|ll\\|hh\\)?\\([aAbdiuoxXDOUfFeEgGcCsSpn]\\|\\[\\^?.[^]]*\\]\\)\\)"
+				       1 font-lock-format-specifier-face t)
+				      ("\\(%%\\)" 
+				       1 font-lock-format-specifier-face t)) )))
+</pre>
+
 ----
 CategoryFaces
