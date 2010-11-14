@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 330 $
+;; RCS Version: $Rev: 331 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 330 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 331 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -565,7 +565,7 @@ substitution may be about to happen."
         C-c t ......... open new terminal or switch to already open one
         C-c T ......... open terminal AND/OR change directory to current
         C-c C-t ....... open always a new terminal in current directory
-        q ............. quit Sunrise Commander, restore previous window setup
+        q, C-x k ...... quit Sunrise Commander, restore previous window setup
         M-q ........... quit Sunrise Commander, don't restore previous windows
 
 Additionally, if you activate the mc-compatible keybindings (by invoking the
@@ -951,6 +951,7 @@ automatically:
 (define-key sr-mode-map "\C-cT"       'sr-term-cd)
 (define-key sr-mode-map "\C-c\C-t"    'sr-term-cd-newterm)
 (define-key sr-mode-map "q"           'sr-quit)
+(define-key sr-mode-map "\C-xk"       'sr-quit)
 (define-key sr-mode-map "\M-q"        'sunrise-cd)
 (define-key sr-mode-map "h"           'sr-describe-mode)
 (define-key sr-mode-map "?"           'sr-summary)

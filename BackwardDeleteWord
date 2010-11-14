@@ -19,8 +19,6 @@ With argument, do this that many times."
 If you use CUA mode, you might want to register these functions as movements, so that shift-<key> works properly:
 
 <pre>
-(dolist (cmd
- '(delete-word backward-delete-word))
-  (put cmd 'CUA 'move)
-)
+(dolist (cmd '(delete-word backward-delete-word))
+  (put cmd 'CUA 'move))
 </pre>

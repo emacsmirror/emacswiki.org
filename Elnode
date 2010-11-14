@@ -60,5 +60,55 @@ Here's a stupid example - publish your emacs contents:
                      "\n"))))))))
 
  (elnode-start 'insideout-handler 8028 "localhost")
+ 
+ ;; End
+
+== More things to do ==
+
+Here's an example of a different use case: putting a webapp together
+with elnode. In my view elnode isn't very good for writing total
+applications but it's great for mapping in simple command line
+programs.
+
+The following example uses two different command line programs:
+
+* crearecreoler.py
+** this takes a creole wiki file (which is how I store my blog files) and renders it to HTML and then through an XSLT to blog specific HTML
+* creare_top
+** renders the latest creole wiki file
+
+Using these two programs to do the work of rendering and non-HTTP specific stuff makes the elisp a snap. 
+
+ ;; Elnode wiki server
+
+ (require 'elnode)
+
+ (defun creole-wiki-handler (httpcon)
+   (elnode-test-path 
+    httpcon "~/blog"
+    (lambda (httpcon docroot targetfile)
+      (elnode-http-start httpcon 200 '("Content-type" . "text/html"))
+      (elnode-child-process 
+       httpcon 
+       "python" 
+       (expand-file-name "~/blog/_creare/crearecreoler.py")
+       (directory-file-name targetfile))
+      )))
+
+ (defun creole-site-handler (httpcon)
+   (elnode-dispatcher 
+    httpcon
+    `(("sitemedia/\\(.*\\)$" . ,(elnode-webserver-handler-maker "~/blog/sitemedia"))
+      ("blog/$" . 
+       ,(lambda (httpcon)
+          (elnode-http-start httpcon 200 '("Content-type" . "text/html"))
+          (elnode-child-process httpcon "bash" 
+                                (expand-file-name "~/blog/_creare/creare_top"))))
+      ("blog/\\(.*\\)$" . creole-wiki-handler)
+      ("\\(.*\\)$" . creole-wiki-handler)
+      )))
+
+ (elnode-start 'creole-site-handler 8027 "localhost")
 
  ;; End
+

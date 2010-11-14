@@ -395,7 +395,7 @@ Hi RedBlue,
 
 How much time have I spent on this? A bit, I guess -- time passes way too fast when you're in the flow ;)
 
-1) I have slightly modified the //sr-dired// function in version 4R315 -- you may want to try that instead (have a look at [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#toc6 this tip]).
+1) I have slightly modified the //sr-dired// function in version 4R315 -- you may want to try that instead (have a look at [[Sunrise_Commander_Tips#ReplaceDiredWithSunrise | this tip]]).
 
 2) Yes, try customizing variables sr-listing-switches and sr-virtual-listing-switches.
 
@@ -453,10 +453,10 @@ into  the  currently  selected directory (if any). I’m assuming you already kn
 about C‐s and friends in emacs and that that kind of search in  Sunrise  is  not
 good enough for you.
 
-Actually  I  have  written  something  a  bit similar in the Tree Extension (see
-[[#TreeExt]]). Why don’t you give it a try (after customizing  the
-//sr‐tree‐isearch‐always‐sticky// variable to make searches always "sticky") and
-let me know how that works for you?
+Actually I have written something a bit similar in the
+[[#TreeExt | Tree Extension]].  Why don't  you give it a  try (after customizing
+the //sr‐tree‐isearch‐always‐sticky// variable to make searches always "sticky")
+and let me know how that works for you?
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 [new]
@@ -502,7 +502,7 @@ Hi again, laxxy,
 
 Actually it was not the "tree-style" navigation (whatever can be so called) in the Tree extension what I wanted to draw your attention to when I suggested to have a look at the extension. It was rather a capability implemented in it called "sticky search". You see, if you install the extension and customize a variable called sr-tree-isearch-always-sticky to be t (instead of nil, which is the default), then whenever you hit C-s you remain in interactive search mode even after you've pressed Return. Then you can do "x RET y RET z RET" to arrive to directory ax1/b2y/3cz -- you have to press C-g to return to command (tree) mode, or Return one more time, to get the regular (browse) mode back. I think I'll try doing something like that directly in browse mode (//update 2010-10-02:// this is already done).
 
-To open files in external applications look [http://www.emacswiki.org/emacs/Sunrise_Commander_Tips#toc3 here] for the recommended way of doing it.
+To open files in external applications look [[Sunrise_Commander_Tips#ExternalApps | here]] for the recommended way of doing it.
 
 Regarding the modification in function sr-find-regular-file you propose, I don't think anything can go wrong by restoring the previous window configuration. Is there anyone against it out there? If there isn't I'll make this the default behavior in the next release.
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
@@ -585,7 +585,7 @@ Now, I think what would be necessary for complete happiness is to have it turn o
 --laxxy
 
 [new:José Alfredo Romero L.:2010-10-02 23:54 UTC]
-I have just implemented sticky search in the [Lisp:sunrise-commander.el latest revision] 8-) Check it out, I've bound it to C-c s.
+I have just implemented sticky search in the [Lisp:sunrise-commander.el latest revision] Check it out, I've bound it to C-c s.
 
 @laxxy: to make it work from the beginning of line, just prefix the search with a space ;-)
 

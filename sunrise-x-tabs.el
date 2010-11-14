@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 317 $
+;; RCS Version: $Rev: 331 $
 ;; Keywords: Sunrise Commander Emacs File Manager Tabs Minor Mode
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -70,7 +70,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 317 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 331 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.
@@ -232,12 +232,15 @@
   to the next buffer tabbed in the active pane, unless there are no more  tabbed
   buffers to fall back, in which case just removes the tab."
   (interactive)
-  (let ((to-kill (current-buffer)) (stack))
-    (sr-tabs-kill)
-    (setq stack (cdr (assq sr-selected-window sr-tabs)))
-    (sr-tabs-next)
-    (unless (or (null stack) (eq to-kill (current-buffer)))
-      (kill-buffer to-kill))))
+  (let ((to-kill (current-buffer))
+        (stack (cdr (assq sr-selected-window sr-tabs))))
+    (if (null stack)
+        (sr-quit)
+      (sr-tabs-kill)
+      (setq stack (cdr stack))
+      (sr-tabs-next)
+      (unless (or (null stack) (eq to-kill (current-buffer)))
+        (kill-buffer to-kill)))))
 
 (defun sr-tabs-rename (&optional new-name)
   (interactive "sRename current tab to: ")
@@ -365,8 +368,8 @@
   "Assembles a new tab line from cached tags and puts it in the line cache."
   (if (memq major-mode '(sr-mode sr-virtual-mode sr-tree-mode))
       (let ((tab-set (cdr (assq sr-selected-window sr-tabs)))
-            (tab-line (if (or (cdr (first sr-tabs))
-                              (cdr (second sr-tabs))) "" nil))
+            (tab-line (if (or (cdar sr-tabs)
+                              (cdadr sr-tabs)) "" nil))
             (current-name (buffer-name)))
         (mapc (lambda (x)
                 (let ((is-current (equal current-name x)))
@@ -426,11 +429,11 @@
             (setq line-list (mapcar 'sr-tabs-empty-mask line-list))
           (setq line-list (mapcar 'sr-tabs-empty-null line-list)))
 
-        (setq header-line-format (first line-list))
+        (setq header-line-format (car line-list))
 
         (when (buffer-live-p other-buffer)
           (with-current-buffer other-buffer
-            (setq header-line-format (second line-list)))))))
+            (setq header-line-format (cadr line-list)))))))
   (force-window-update))
 
 ;;; ============================================================================
@@ -446,8 +449,8 @@
   "Protects the current buffer from being automatically disposed by Sunrise when
   moving to another directory (called from kill-buffer-query-functions hook.)"
   (let ((tab-name (buffer-name)))
-    (not (or (member tab-name (first sr-tabs))
-             (member tab-name (second sr-tabs))))))
+    (not (or (member tab-name (car sr-tabs))
+             (member tab-name (cadr sr-tabs))))))
 
 (defun sr-tabs-engage ()
   "Enables the Sunrise Tabs extension."

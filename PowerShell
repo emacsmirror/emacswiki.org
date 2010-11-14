@@ -37,3 +37,6 @@ I've updated Powershell.el, with a copyright and proper license, as well as some
 
 [new]
 Hi Dino. I upgraded to the latest version 0.2.1 from 0.1. The new version seems to have this problem. Start powershell, then close buffer. Then, when you start standard shell, it no longer have prompts, and is in fact running powershell, not bash or cmd.ex. -- [[Xah Lee]], 2010 June 24
+
+[new]
+Hi Xah. I'll have to look into that. I've been out-of-the-office for an extended period, so I'm catching up on some old stuff.  Will look into this and get back to you here. -- DinoChiesa, 2010 Nov 13

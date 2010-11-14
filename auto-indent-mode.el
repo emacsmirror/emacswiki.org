@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Thu Nov 11 14:36:09 2010 (-0600)
+;; Last-Updated: Sat Nov 13 20:03:22 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 321
+;;     Update #: 335
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `cl'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -90,6 +90,18 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 13-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Sat Nov 13 20:03:10 2010 (-0600) #334 (Matthew L. Fidler)
+;;    Bug fix try #3
+;; 13-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Sat Nov 13 19:55:29 2010 (-0600) #329 (Matthew L. Fidler)
+;;    Anothe bug-fix for yasnippet.
+;; 13-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Sat Nov 13 19:49:47 2010 (-0600) #325 (Matthew L. Fidler)
+;;
+;;    Bug fix for auto-indent-mode.  Now it checks to make sure that
+;;    `last-command-event' is non-nil.
+;;
 ;; 11-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Nov 11 13:56:15 2010 (-0600) #308 (Matthew L. Fidler)
 ;;    Put back processes in.  Made the return key handled by pre and post-command-hooks.
@@ -305,8 +317,7 @@ in conjunction with something that pairs delimiters like `autopair-mode'.
 (auto-indent-setup-map)
 (defun auto-indent-original-binding (key)
   (or (key-binding key)
-      (key-binding (this-single-command-keys))
-      (key-binding fallback-keys)))
+      (key-binding (this-single-command-keys))))
 
 (defun auto-indent-eol-newline ()
   "*Auto-indent function for end-of-line and then newline."
@@ -318,7 +329,8 @@ in conjunction with something that pairs delimiters like `autopair-mode'.
   "* Auto-indent function for end-of-line, insert `auto-indent-eol-char', and then newline"
   (interactive)
   (end-of-line)
-  (insert auto-indent-eol-char)
+  (unless (looking-back "; *")
+    (insert (format "%s" auto-indent-eol-char)))
   (call-interactively (auto-indent-original-binding (kbd "RET"))))
 (defalias 'auto-indent-mode 'auto-indent-minor-mode)
 (define-minor-mode auto-indent-minor-mode
@@ -447,21 +459,21 @@ http://www.emacswiki.org/emacs/AutoIndentation
           (setq auto-indent-mode-pre-command-hook-line -1)
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
         (when (or (not (fboundp 'yas/snippets-at-point))
-                  (and (= 0 (length (yas/snippets-at-point 'all-snippets)))))
+                  (let ((yap (yas/snippets-at-point 'all-snippets)))
+                    (or (not yap) (and yap (= (length yap))))))
           (when auto-indent-minor-mode
-            (when (memq  last-command-event '(10 13))
+            (when (and last-command-event (memq  last-command-event '(10 13)))
               (save-excursion
                 (when (and auto-indent-last-pre-command-hook-point
                            (eq auto-indent-indentation-function 'reindent-then-newline-and-indent))
                   (goto-char auto-indent-last-pre-command-hook-point)
                   (indent-according-to-mode))
-                (goto-char auto-indent-last-pre-command-hook-point)
-                ;; Remove the trailing white-space after indentation because
-                ;; indentation may introduce the whitespace.
-                (delete-horizontal-space t))
+                (when auto-indent-last-pre-command-hook-point
+                  (goto-char auto-indent-last-pre-command-hook-point)
+                  ;; Remove the trailing white-space after indentation because
+                  ;; indentation may introduce the whitespace.
+                  (delete-horizontal-space t)))
               (indent-according-to-mode))
-            (when (and last-command-event (eq ?\n last-command-event))
-              (esn-message ":%s" 'last-command))
             (when (and auto-indent-blank-lines-on-move auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
               (when (and (looking-back "^") (looking-at "$"))
                 (indent-according-to-mode))))))

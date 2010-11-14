@@ -216,15 +216,17 @@ instance, in order to highlight  files  and  directories  that  have  read/write
 permissions  set  for  users other than their owner you could add to your .emacs
 file a snippet like the following:
 
-        (sr-rainbow sr-gorw-dir-face
-                    (:background "misty rose"
-                                 :foreground "blue1"
-                                 :bold t)
-                    "^..\\(d....\\(...\\)?w..*$\\)")
+        (eval-after-load 'sunrise-commander
 
-        (sr-rainbow sr-gorw-face
-                    (:background "misty rose")
-            "^..\\(-....\\(...\\)?w..*$\\)")
+          (sr-rainbow sr-gorw-dir-face
+                      (:background "misty rose"
+                                   :foreground "blue1"
+                                   :bold t)
+                      "^..\\(d....\\(...\\)?w..*$\\)")
+ 
+          (sr-rainbow sr-gorw-face
+                      (:background "misty rose")
+                      "^..\\(-....\\(...\\)?w..*$\\)"))
 
 ----
 [:AvfsSetup]
