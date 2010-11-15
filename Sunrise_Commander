@@ -600,6 +600,61 @@ Personally, I prefer dired-isearch-forward over dired-isearch-filenames, because
 //is there any good place for me to try putting a (dired-isearch-filenames) at?// -- Maybe you could experiment with sr-start-hook (and/or sr-refresh-hook, but it may be overkill. YMMV)
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new]
+Hi. I am new to Sunrise Commander. Looks very powerful! My problem: my screen is not so wide and my file names may be long. Therefore: is there a way to list file name, time, and file size, but NOT the mode bits and number of hard links? I am aware of variable sr-listing-switches, but I can't find the necessary parameters of the ls command. Long listing (-l) shows more information than I want, without -l I can't get size and time. Also, but not as essential, it would be cool to have columns file name, size, and date listed in that order (like I have in midnight commander). 
+-- Sven
+
+[new:::]
+Hi Sven. What you  want to do is perfectly possible, but there  is one thing you
+have to  know first:  Dired, the basis  on which Sunrise  is built,  needs those
+fields to  function properly, so removing  them totally from the  panes (e.g. by
+obviating the -l switch in the underlying calls to ls) is not an option. What we
+can do is to hide  the fields you don't want to see, but doing  so has a cost --
+not as big as to be noticeable in "normal" directories (with up to a few hundred
+entries), but  if you happen to  have directories containing thousands  of files
+and directories you'll probably have to wait a bit for the pane to render.
+
+That being said, you may want to try something like this in your .emacs file:
+
+    (eval-after-load 'sunrise-commander
+     
+      (defvar sr-attributes-to-hide "[drwx-]+ +[0-9]+ +"
+        "(regex) attributes to hide in sr-hide-some-attributes")
+     
+      (defun sr-hide-some-attributes ()
+        "Hides *some* attributes of all files in the active pane."
+        (interactive)
+        (save-excursion
+          (sr-unhide-attributes)
+          (goto-char (point-min))
+          (let ((next (re-search-forward sr-attributes-to-hide  nil t))
+                (attr-list nil)
+                (overlay nil))
+            (while next
+              (beginning-of-line)
+              (setq overlay (make-overlay (+ 2 (point)) (- next 1)))
+              (setq attr-list (cons overlay attr-list))
+              (overlay-put overlay 'invisible t)
+              (overlay-put overlay 'intangible t)
+              (forward-line)
+              (setq next (re-search-forward sr-attributes-to-hide nil t)))
+            (set (make-local-variable 'hidden-attrs) attr-list))))
+     
+      (add-hook 'sr-refresh-hook 'sr-hide-some-attributes))
+
+you'll have  to tweak /sr-attributes-to-hide/ to  match the output ls  gives you
+depending on the concrete value of  /sr-listing-switches/ you use.  You may have
+also issues with the indentation of entries in the pane.
+
+Another possibility is  simply to use the vertical layout  by default: press C-c
+C-s once and see if you like it. If you do you can do:
+
+    M-x customize-variable sr-window-split-style [RET]
+
+choose the vertical layout and press the "Save for future sessions" button.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 ----
 CategoryDirectories
 CategoryEmulation

@@ -12,7 +12,13 @@ If you're interested in helping it's best to contact NicFerrier or leave a note 
 
 == What can you do with Elnode? ==
 
-Here's a stupid example - publish your emacs contents:
+Elnode probably isn't a general purpose web framework. There are quite a few things that it is good for though.
+
+=== Publishing Emacs data ===
+
+Some data is locked in Emacs: diary, org-mode. These are things that could benefit from dynamic access via a browser sometimes.
+
+Here's a stupid example - publish your currently running Emacs' contents:
 
  ;; Expose your running emacs to the local web by using elnode
  ;; Copyright (C) 2010 by Nic Ferrier
@@ -63,12 +69,9 @@ Here's a stupid example - publish your emacs contents:
  
  ;; End
 
-== More things to do ==
+=== A blog with Elnode ===
 
-Here's an example of a different use case: putting a webapp together
-with elnode. In my view elnode isn't very good for writing total
-applications but it's great for mapping in simple command line
-programs.
+Here's the core of a blog app with elnode. Elnode is great at mapping other programs into HTTP, because of Emacs very good async program support.
 
 The following example uses two different command line programs:
 
@@ -112,3 +115,6 @@ Using these two programs to do the work of rendering and non-HTTP specific stuff
 
  ;; End
 
+As you can see, it's really very simple. The programs are pretty easy
+to write and test and Elnode is just a Lisp-powerered mapping
+language.

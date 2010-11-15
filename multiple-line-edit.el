@@ -107,6 +107,10 @@
 
 ;;; Change Log:
 
+;;  v1.8, Sun Nov 14 22:05:08 2010 JST
+;;   - Fixed a bug that the indicator on left fringe was not displayed
+;      when the code is byte compiled.
+;;
 ;;  v1.7, Tue Nov  9 16:48:21 2010 JST
 ;;   - Fixed a bug that column number are not calculated properly
 ;;     on lines which contains wide width characters.
@@ -761,8 +765,11 @@ Line break character will be counted as one column."
   (lexical-let (fringe-ov-lst)
     (mulled/lines/map lines
                       (lambda (beg end)
-                        (let* ((indicator-l (if edit-trailing-edges-p "<" ">"))
-                               (indicator-r (if edit-trailing-edges-p "<" ">"))
+                        ;; Copy strings of `indicator-l' and `indicator-r' not to make them
+                        ;; identical when the code is byte compiled.
+                        ;; -- This may be a bug of the elisp compiler.
+                        (let* ((indicator-l (copy-sequence (if edit-trailing-edges-p "<" ">")))
+                               (indicator-r (copy-sequence (if edit-trailing-edges-p "<" ">")))
                                (fringe (if edit-trailing-edges-p 'right-fringe 'left-fringe))
                                (fringe-bmp (if edit-trailing-edges-p 'mulled/indicator-right
                                              'mulled/indicator-left))
@@ -1113,6 +1120,8 @@ accepted by each line of multiple line edit."
                                         len-removed)))))
   
 (defun mulled/mod-hook-fix/run-with-mod-hook-fix (fn)
+  ;; NOTE: These three variables are used in dynamic binding context,
+  ;;       so just ignore compiler warning `reference to free variable'.
   (let ((mulled/mod-hook-fix/orig-insert-fn        (symbol-function 'insert))
         (mulled/mod-hook-fix/orig-delete-region-fn (symbol-function 'delete-region))
         (mulled/mod-hook-fix/orig-replace-match-fn (symbol-function 'replace-match)))
