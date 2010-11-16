@@ -1,4 +1,4 @@
-Timestamp: Wed Oct  6 20:50:55 BST 2010
+Timestamp: Mon Nov 15 14:12:04 GMT 2010
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -2550,7 +2550,7 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [http://groups.google.com/groups?selm=lu672trqan.fsf%40stest.ch&output=gplain y2k-mode.el] --- Mode to highlights words like "date", "time", etc for year 2000 code walkthroughs. (by Christian Egli)
 
-[http://madbat.mine.nu/public/yaham/yaham.tar.gz yaham.el] --- Yet Another HAskell Mode for GNU Emacs (by Ian Zimmerman)
+[http://primate.net/~itz/packages/yaham/ yaham.el] --- Yet Another HAskell Mode for GNU Emacs (by Ian Zimmerman)
 
 [http://www.yatex.org/ yatex.el] --- Yet Another TeX mode for Emacs (by HIROSE Yuuji)
 

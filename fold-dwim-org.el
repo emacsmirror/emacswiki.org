@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Tue Oct  5 12:19:45 2010 (-0500)
 ;; Version: 
-;; Last-Updated: Fri Nov  5 08:30:38 2010 (-0500)
-;;           By: US041375
-;;     Update #: 88
+;;Last-Updated: Mon Nov 15 11:30:32 2010 (-0600)
+;;           By: Matthew L. Fidler
+;;     Update #: 92
 ;; URL: 
 ;; Keywords: 
 ;; Compatibility: 
@@ -24,6 +24,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;; Change Log:
+;; 15-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Oct 25 10:57:19 2010 (-0500) #33 (Matthew L. Fidler) #91 (Matthew L. Fidler)
+;;    Bug fix -- make sure to save excursion.
 ;; 05-Nov-2010      
 ;;    Last-Updated: Mon Oct 25 10:57:19 2010 (-0500) #33 (Matthew L. Fidler) #87 (US041375)
 ;;    Will not hide when there is a region selected.
@@ -70,12 +73,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Code:
-;(setq debug-on-error 't)
-
-
-
-
-
+;;(setq debug-on-error 't)
 
 
 
@@ -107,7 +105,7 @@
   `(progn 
      ,@(when fold-dwim-org/trigger-keys-block (mapcar (lambda (key) `(fold-dwim-org/define-key ,key fold-dwim-org/toggle)) fold-dwim-org/trigger-keys-block))
      ,@(mapcar (lambda (key) `(fold-dwim-org/define-key ,key fold-dwim-org/hideshow-all)) fold-dwim-org/trigger-keys-all)
-    ))
+     ))
 (defvar fold-dwim-org/last-point nil
   )
 (defvar fold-dwim-org/last-txt nil)
@@ -145,7 +143,7 @@
                                )
                     (fold-dwim-org/toggle nil fold-dwim-org/last-point)
                     )
-                
+                  
                                         ;            )
                   )
                 )
@@ -162,10 +160,10 @@
 ;; No closures is killing me!
 (defmacro fold-dwim-org/define-key (key function)
   `(define-key fold-dwim-org/minor-mode-map ,key (lambda () (interactive)
-                                                  (,function ,key))))
+                                                   (,function ,key))))
 
 (define-minor-mode fold-dwim-org/minor-mode
-    "Toggle fold-dwim-org minor mode.
+  "Toggle fold-dwim-org minor mode.
 With no argument, this command toggles the mode.
 positive prefix argument turns on the mode.
 Negative prefix argument turns off the mode.
@@ -200,25 +198,26 @@ You can customize the key through `fold-dwim-org/trigger-key-block'."
 (defun fold-dwim-org/toggle (&optional key lst-point)
   "Hide or show a block."
   (interactive)
-  (let* ((last-point (or lst-point (point)))
-         (fold-dwim-org/minor-mode nil)
-         (command (if key (key-binding key) nil))
-         (other-keys fold-dwim-org/trigger-keys-block))
-    (unless command
-      (setq command 'indent-for-tab-command)
-      )
-    (while (and (null command)
-                (not (null other-keys)))
-      (setq command (key-binding (car other-keys)))
-      (setq other-keys (cdr other-keys)))
-    (unless lst-point
-      (if (commandp command)
-        (call-interactively command)
+  (save-excursion
+    (let* ((last-point (or lst-point (point)))
+           (fold-dwim-org/minor-mode nil)
+           (command (if key (key-binding key) nil))
+           (other-keys fold-dwim-org/trigger-keys-block))
+      (unless command
+        (setq command 'indent-for-tab-command)
         )
-      )
-    (when (fold-dwim-org/should-fold last-point (point))
-      (fold-dwim-toggle)
-      )))
+      (while (and (null command)
+                  (not (null other-keys)))
+        (setq command (key-binding (car other-keys)))
+        (setq other-keys (cdr other-keys)))
+      (unless lst-point
+        (if (commandp command)
+            (call-interactively command)
+          )
+        )
+      (when (fold-dwim-org/should-fold last-point (point))
+        (fold-dwim-toggle)
+        ))))
 
 (defun fold-dwim-org/hideshow-all (&optional key)
   "Hide or show all blocks."
@@ -236,7 +235,7 @@ You can customize the key through `fold-dwim-org/trigger-key-block'."
     (when (equal last-point (point))
       (if fold-dwim-org/hide-show-all-next
           (fold-dwim-show-all)
-          (fold-dwim-hide-all))
+        (fold-dwim-hide-all))
       (setq fold-dwim-org/hide-show-all-next (not fold-dwim-org/hide-show-all-next)))))
 
 (provide 'fold-dwim-org)

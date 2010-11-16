@@ -4,13 +4,13 @@
 
 = Summary =
 
-Library Lisp:frame-cmds.el has commands for iconifying and restoring [[Frame]]s, tiling frames, and more.
+Library <tt>[[frame-cmds.el]]</tt> has commands for iconifying and restoring [[frame]]s, tiling frames, and more.
 
 * Use `C-M-z' or `C-x C-z' to iconify/hide all frames.
 * Use `C-M-z' in a lone frame to restore all frames.
-* Use `C-mouse-1' in the MiniBuffer to restore all frames.
-* Use `C-mouse-1' in Dired to mark/unmark a file.
-* Use `C-mouse-3' on a mode line to remove a window from a frame.
+* Use `C-mouse-1' in the [[minibuffer]] to restore all frames.
+* Use `C-mouse-1' in [[Dired]] to mark/unmark a file.
+* Use `C-mouse-3' on a [[mode line]] to remove a [[window]] from a frame.
 * Use `tile-frames-horizontally' and `tile-frames-vertically' to tile frames.
 
 
@@ -21,7 +21,7 @@ frames. So, I created this command:
 * `iconify-everything' -- Iconify all frames at once.
 
 However, this created an icon for each frame, cluttering up the Unix
-desktop or the Windows task bar (prior to Windows XP). So, I created
+desktop (or the MS Windows task bar prior to Windows XP). So, I created
 this alternative command:
 
 * `hide-everything' -- Iconify minibuffer-frame; make all
@@ -48,11 +48,11 @@ to raise a frame. In Unix, Linux, and other Windows versions,
 only one icon.
 
 As a variant of `show-hide', I created this mouse command
-(bound to <code>[C-down-mouse-1]</code>) that acts differently,
+(bound to ##[C-down-mouse-1]##) that acts differently,
 depending on where the mouse is clicked.
 
 * `mouse-show-hide-mark-unmark' -- If clicked in the
-minibuffer, call `show-hide'. If clicked in Dired,
+minibuffer, call `show-hide'. If clicked in [[Dired]],
 mark/unmark the file or directory clicked. Otherwise, display
 `mouse-buffer-menu' as a popup menu.
 
@@ -62,7 +62,7 @@ Another useful mouse command is this:
 mouse-3]</code>) -- Iconify frame clicked on, if now mapped (visible).
 Map (raise) it if now iconified.
 
-'''See Libraries:''' Lisp:frame-cmds.el, Lisp:setup-keys.el
+'''See Libraries:''' <tt>[[frame-cmds.el]]</tt>, <tt>[[setup-keys.el]]</tt>
 
 '''See Also:''' FisheyeWithThumbs describes using thumbnail frames as an alternative to iconifying.
 

@@ -124,8 +124,17 @@ If you open a new timeline, a new buffer is generated.
 ; `C-c C-c': Post the current tweet. (`twittering-edit-post-status')
 
 == Timeline Spec ==
-[:timeline-spec]
-under construction...
+By setting the "twittering-initial-timeline-spec-string" you can have twittering-mode fetch timelines, searches, replies and lists on startup.
+
+{{{
+(setq twittering-initial-timeline-spec-string
+      '(":home"
+        ":replies"
+        ":favorites"
+        ":direct_messages"
+        ":search/emacs/"
+        "user_name/list_name"))
+}}}
 
 == Customizing your key bindings ==
 
@@ -147,6 +156,7 @@ You can use `twittering-mode-hook' to customize your configuration. This example
 
  (setq twittering-icon-mode t)                ; Show icons
  (setq twittering-timer-interval 300)         ; Update your timeline each 300 seconds (5 minutes)
+ (setq twittering-url-show-status nil)        ; Keeps the echo area from showing all the http processes
 
 twittering-mode also provides hooks that are run when new tweets arrive. This example calls notify-send (included in the libnotify package) to display a message when new tweets arrive:
 
@@ -191,7 +201,7 @@ You can use the somewhat non-obvious keybinding of C-c C-s (twittering-update-st
 Icon support does not work in windows.  I have gnu wget installed and in path, and the icons are downloading to twittering-tmp-dir.  However, they do not display in icon mode. --Tim Hoolihan
 
 [new]
-Icon Works on Windows needs GNU Win32 image packages (http://gnuwin32.sourceforge.net/packages.html) installed, which includes jpeg, libungif, libpng,  xpm, and zlib, etc. And the packages dir must be set into the %PATH% environment various. 
+Icon Works on Windows needs GNU Win32 image packages (http://gnuwin32.sourceforge.net/packages.html) installed, which includes jpeg, libungif, libpng,  xpm, and zlib, etc. And the packages dir must be set into the %PATH% environment various.
 
 BTW: I wish this code would support HTTPS and third-party API in the future. It would be very useful. --Moses
 
@@ -209,7 +219,7 @@ Sorry for my rudeness. At last, I found tor+privoxy can make a http proxy. privo
 hayamiz has merged my patches into the main repository. The main repository http://github.com/hayamiz/twittering-mode/tree/master now supports icon-mode without external programs. --Tadashi MATSUO
 
 [new]
-Any chance we can have a count of characters while tweeting in the minibuffer? (twit.el has this, I should look at how it's done) 
+Any chance we can have a count of characters while tweeting in the minibuffer? (twit.el has this, I should look at how it's done)
 
 [new]
 If you use 0.9.0, the count is displayed in default. If you use the latest version on github, you may need the following statement in your .emacs;
@@ -265,11 +275,11 @@ Fiddled around with the hook and wrote one I think is more useful than the sugge
             n (if (> n 1) "s" ""))
           (todochiku-icon 'social))
       (dolist (el twittering-new-tweets-statuses)
-	(todochiku-message 
+	(todochiku-message
           (twittering-timeline-spec-to-string twittering-new-tweets-spec)
 	  (concat (cdr (assoc 'user-screen-name el))
-	     " said: " 
-	     (cdr (assoc 'text el)))                                   
+	     " said: "
+	     (cdr (assoc 'text el)))
           (todochiku-icon 'social)))))))
 }}}
 
@@ -287,14 +297,14 @@ Note that `curl.exe' (for Windows) distributed with twittering-mode cannot corre
 :[new]
 Alias may help you. If you have the below configuration, the timeline __$me__ includes such tweets.
 {{{
-  (setq twittering-timeline-spec-alias                                          
-        `(("me" . "$r(YOUR-USER-NAME)")                                                  
-          ("r" . ,(lambda (username) (format "$related-to(%s)" username)))      
-          ("related-to" .                                                       
-           ,(lambda (username)                                                  
-              (if username                                                      
-                  (format ":search/to:%s OR from:%s OR @%s/"                    
-                          username username username)                           
+  (setq twittering-timeline-spec-alias
+        `(("me" . "$r(YOUR-USER-NAME)")
+          ("r" . ,(lambda (username) (format "$related-to(%s)" username)))
+          ("related-to" .
+           ,(lambda (username)
+              (if username
+                  (format ":search/to:%s OR from:%s OR @%s/"
+                          username username username)
                 ":home")))))
 }}}
 To read tweets related to someone, you can use the timeline __$r(HIS-OR-HER-USERNAME)__ . -- Tadashi MATSUO

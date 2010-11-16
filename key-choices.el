@@ -6,16 +6,19 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Thu Nov  4 00:06:18 2010 (-0500)
 ;; Version:  0.1
-;; Last-Updated: Thu Nov 11 12:00:26 2010 (-0600)
+;; Last-Updated: Mon Nov 15 11:27:57 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 8
+;;     Update #: 9
 ;; URL:
 ;; Keywords: Viper, Ergoemacs, CUA, Crisp, EDT, TPU
 ;; Compatibility: 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `easymenu'.
+;;   `advice', `advice-preload', `backquote', `bytecomp', `easymenu',
+;;   `help-fns', `paren', `redo', `ring', `undo-tree', `vimpulse', `viper',
+;;   `viper-cmd', `viper-ex', `viper-init', `viper-keym', `viper-macs',
+;;   `viper-mous', `viper-util'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -60,7 +63,7 @@
 ;;; Code:
 
 (require 'easymenu)
-(require 'vimpulse) ;; Require first.  For some reason if you don't there is some error in R.  It has to do with advices.
+;;(require 'vimpulse) ;; Require first.  For some reason if you don't there is some error in R.  It has to do with advices.
 
 (defvar key-choices-emacs-default (current-global-map))
 

@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Mon Nov 15 00:22:43 2010 (-0600)
+;; Last-Updated: Mon Nov 15 14:28:43 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 337
+;;     Update #: 352
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `warnings'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -90,6 +90,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 15-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Nov 15 14:27:50 2010 (-0600) #351 (Matthew L. Fidler)
+;;    Bugfix for post-command-hook.
+;; 15-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Nov 15 08:53:03 2010 (-0600) #338 (Matthew L. Fidler)
+;;    Added diff-mode to excluded modes for auto-indentaion.
 ;; 15-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Nov 15 00:22:30 2010 (-0600) #336 (Matthew L. Fidler)
 ;;    Added fundamental mode to excluded modes for auto-indentation.
@@ -232,7 +238,7 @@
   :type 'boolean
   :group 'auto-indent
   )
-(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode)
+(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode diff-mode texinfo-mode)
   "* List of modes disabled when global auto-indent-mode is on."
   :type '(repeat (sexp :tag "Major mode"))
   :tag " Major modes where linum is disabled: "
@@ -347,7 +353,7 @@ When auto-indent-minor-mode minor mode is enabled, yanking or pasting automatica
 
 Fall back to default, non-indented yanking by preceding the yanking commands with C-u.
 
-Based on auto-indentation posts, slightly redefined to allow it to be a minor mode
+Based on auto-indentation posts, slightly redefined toallow it to be a minor mode
 
 http://www.emacswiki.org/emacs/AutoIndentation
 
@@ -399,20 +405,22 @@ http://www.emacswiki.org/emacs/AutoIndentation
 
 (defun auto-indent-whole-buffer (&optional save)
   "Auto-indent whole buffer and untabify it"
-  (interactive)
-  (when (or
-         (and save auto-indent-delete-trailing-whitespace-on-save-file)
-         (and (not save) auto-indent-delete-trailing-whitespace-on-visit-file)
-         )
-    (delete-trailing-whitespace))
-  (when (or
-         (and save auto-indent-on-save-file)
-         (and (not save) auto-indent-on-visit-file))
-    (indent-region (point-min) (point-max) nil))
-  (when (or
-         (and (not save) auto-indent-untabify-on-visit-file)
-         (and save auto-indent-untabify-on-save-file))
-    (untabify (point-min) (point-max))))
+  (interactive) 
+  (unless (or (minibufferp)
+              (memq major-mode auto-indent-disabled-modes-list))
+    (when (or
+           (and save auto-indent-delete-trailing-whitespace-on-save-file)
+           (and (not save) auto-indent-delete-trailing-whitespace-on-visit-file)
+           )
+      (delete-trailing-whitespace))
+    (when (or
+           (and save auto-indent-on-save-file)
+           (and (not save) auto-indent-on-visit-file))
+      (indent-region (point-min) (point-max) nil))
+    (when (or
+           (and (not save) auto-indent-untabify-on-visit-file)
+           (and save auto-indent-untabify-on-save-file))
+      (untabify (point-min) (point-max)))))
 
 (defun auto-indent-file-when-save ()
   "* Auto-indent file when save."
@@ -475,7 +483,8 @@ http://www.emacswiki.org/emacs/AutoIndentation
                   (goto-char auto-indent-last-pre-command-hook-point)
                   ;; Remove the trailing white-space after indentation because
                   ;; indentation may introduce the whitespace.
-                  (delete-horizontal-space t)))
+                  (unless (looking-at ".*?[^ \t]")
+                    (delete-horizontal-space t))))
               (indent-according-to-mode))
             (when (and auto-indent-blank-lines-on-move auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
               (when (and (looking-back "^") (looking-at "$"))
