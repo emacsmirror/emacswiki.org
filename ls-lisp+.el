@@ -7,9 +7,9 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Thu Sep 30 08:21:34 2010 (-0700)
+;; Last-Updated: Tue Nov 16 14:13:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 169
+;;     Update #: 174
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -55,6 +55,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/11/16 dadams
+;;     ls-lisp-insert-directory for Emacs 24: ls-lisp-format no longer takes NOW arg.
+;;     For Emacs 20: Soft-load ls-lisp-20.el.
 ;; 2010/09/29 dadams
 ;;     insert-directory: Updated per Emacs 24 code: delete SPC (also) from switches.
 ;; 2010/09/26 dadams
@@ -96,7 +99,10 @@
 ;; 
 ;;; Code:
 
-(require 'ls-lisp)
+(or (and (= emacs-major-version 20)
+         (load "ls-lisp-20" t nil nil 'MUST-SUFFIX))
+    (require 'ls-lisp))
+
 (require 'files+) ;; count-dired-files, dired-describe-listed-directory,
                   ;; dired-mouse-describe-listed-directory
 
@@ -512,8 +518,11 @@ not contain `d', so that a full listing is expected."
                                           (floatp file-size))
                                       sum
                                     (float sum))))
-                     (insert (ls-lisp-format short attr file-size
-                                             switches time-index now))))
+                     (insert
+                      (if (> emacs-major-version 23)
+                          (ls-lisp-format short attr file-size switches time-index)
+                        (ls-lisp-format short attr file-size
+                                        switches time-index now)))))
               ;; Insert total size of all files:
               (save-excursion
                 (goto-char (car total-line))

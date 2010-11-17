@@ -1,3 +1,5 @@
+NOTE: this page appears to be out of date.  There appears to be a well-developed catalog in erc.el
+
 At some point in development, I decided to implement a catalog
 system for ERC much like the one zenirc uses.
 
@@ -11,10 +13,10 @@ Here is an example on how to create a catalog:
   '((ACTION . "* %n %a")
     (INVITE . "%n (%u@%h) invites you to channel %c")
     (JOIN   . "%n (%u@%h) has joined channel %c")
-  (JOIN-you . "You have joined channel %c")
+    (JOIN-you . "You have joined channel %c")
     (MODE   . "%n (%u@%h) has changed mode for %t to %m")
     (NICK   . "%n (%u@%h) is now known as %N")
-  (NICK-you . "Your new nickname is %N")
+    (NICK-you . "Your new nickname is %N")
     (PART   . erc-message-english-PART)
     (QUIT   . "%n (%u@%h) has quit: %r")
     (TOPIC  . "%n (%u@%h) has set the topic for %c: \"%T\"")
@@ -26,15 +28,21 @@ or a symbol which names a function to call. The function gets called
 with the format specifiers as arguments. See `erc-message-english-PART'
 for an example on how to handle this.
 
-=== Notes ===
-There are still some (many?) messages which need to be added to the catalog. 
-So if you have CVS write access, and you are slightly
-bored today, have a look and convert more of those remaining messages to the catalog.
+= Customizing messages =
+
+To redefine messages, you can do something like this:
+
+ (erc-define-catalog-entry 'english 'JOIN  "%n has joined channel %c")
+ (erc-define-catalog-entry 'english 'NICK  "%n is now known as %N")
+ (erc-define-catalog-entry 'english 'QUIT  "%n has quit: %r")
+ (erc-define-catalog-entry 'english 'TOPIC "%n has set the topic for %c: \"%T\"")
+
+= Notes =
 
 There is only one catalog defined for now. The english catalog. When the conversion is finished, we
 can start buidling alternative catalogs, or find friendly translators.
 
-=== Discussion ===
+= Discussion =
 Random idea: If we once have multiple language catalogs, we could utilize something
 like auto-lang-mode to automatically determine a channels language
 and switch to the right catalog if available.

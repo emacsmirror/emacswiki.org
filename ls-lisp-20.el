@@ -1,4 +1,4 @@
-;;; ls-lisp.el --- emulate insert-directory completely in Emacs Lisp
+;;; ls-lisp-20.el --- emulate insert-directory completely in Emacs Lisp
 
 ;; Copyright (C) 1992, 1994, 2000, 2004 Free Software Foundation, Inc.
 ;;               2005 Lars Hansen
@@ -7,7 +7,7 @@
 ;; Author: Sebastian Kremer <sk@thp.uni-koeln.de>
 ;; Modified by: Francis J. Wright <F.J.Wright at qmul.ac.uk>
 ;; Maintainer: Drew Adams
-;; Last-Updated: Wed Oct 27 07:11:36 2010 (-0700)
+;; Last-Updated: Tue Nov 16 14:12:21 2010 (-0800)
 ;;           By: dradams
 ;; URL: http://www.emacswiki.org/emacs/ls-lisp.el
 ;; Keywords: unix, dired, microsoft windows
@@ -31,6 +31,9 @@
 
 ;; OVERVIEW ==========================================================
 
+;; This is a version of `ls-lisp.el' that is usable for Emacs versions
+;; from 20 through 23.
+
 ;; This file redefines the function `insert-directory' to implement it
 ;; directly from Emacs lisp, without running ls in a subprocess.  It
 ;; is useful if you cannot afford to fork Emacs on a real memory UNIX,
@@ -48,7 +51,7 @@
 ;; .emacs file:
 ;;
 ;; (add-hook 'dired-load-hook
-;;           (lambda () (load "ls-lisp")))
+;;           (lambda () (load "ls-lisp-20")))
 
 ;; RESTRICTIONS ======================================================
 
@@ -982,5 +985,6 @@ Allow nested `{...}' and ignore characters escaped by a preceding `\\'."
   (and i (1+ i)))
 
 (provide 'ls-lisp)
+(provide 'ls-lisp-20)
 
-;;; ls-lisp.el ends here
+;;; ls-lisp-20.el ends here

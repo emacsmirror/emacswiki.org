@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Mon Nov 15 14:28:43 2010 (-0600)
+;; Last-Updated: Tue Nov 16 13:16:16 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 352
+;;     Update #: 362
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `warnings'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -23,17 +23,17 @@
 ;;
 ;;  Provides auto-indentation minor mode.  This allows the following:
 ;;
-;;  (1) Return automatically indents the code appropriately.
+;;  (1) Return automatically indents the code appropriately (if enabled)
 ;;
 ;;  (2) Pasting/Yanking indents the appropriately
 ;;
-;;  (3) Killing line will take off unneeded spaces
+;;  (3) Killing line will take off unneeded spaces (if enabled)
 ;;
 ;;  (4) On visit file, indent appropriately, but DONT SAVE. (Pretend like
-;;  nothing happened)
+;;  nothing happened, if enabled)
 ;;
 ;;  (5) On save, optionally unttabify, remove trailing white-spaces, and
-;;  definitely indent the file.
+;;  definitely indent the file (if enabled).
 ;;
 ;;  (6) TextMate behavior of keys if desired (see below)
 ;;
@@ -42,6 +42,7 @@
 ;;  To use put this in your load path and then put the following in your emacs
 ;;  file:
 ;;
+;;  (setq auto-indent-on-visit-file t) ;; If you want auto-indent on for files
 ;;  (require 'auto-indent-mode)
 ;;
 ;;  If you (almost) always want this on, add the following to ~/.emacs:
@@ -90,6 +91,12 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 16-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov 16 13:16:05 2010 (-0600) #361 (Matthew L. Fidler)
+;;    Added conf-windows-mode to ignored modes.
+;; 15-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Nov 15 17:23:03 2010 (-0600) #354 (Matthew L. Fidler)
+;;    Bugfix for deletion of whitespace
 ;; 15-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Mon Nov 15 14:27:50 2010 (-0600) #351 (Matthew L. Fidler)
 ;;    Bugfix for post-command-hook.
@@ -188,11 +195,11 @@
   "* Untabify pasted or yanked region."
   :type 'boolean
   :group 'auto-indent)
-(defcustom auto-indent-on-visit-file 't
+(defcustom auto-indent-on-visit-file nil
   "* Auto Indent file upon visit."
   :type 'boolean
   :group 'auto-indent)
-(defcustom auto-indent-on-save-file 't
+(defcustom auto-indent-on-save-file t
   "* Auto Indent on visit file."
   :type 'boolean
   :group 'auto-indent
@@ -238,7 +245,7 @@
   :type 'boolean
   :group 'auto-indent
   )
-(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode diff-mode texinfo-mode)
+(defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode diff-mode texinfo-mode conf-windows-mode)
   "* List of modes disabled when global auto-indent-mode is on."
   :type '(repeat (sexp :tag "Major mode"))
   :tag " Major modes where linum is disabled: "
@@ -483,8 +490,11 @@ http://www.emacswiki.org/emacs/AutoIndentation
                   (goto-char auto-indent-last-pre-command-hook-point)
                   ;; Remove the trailing white-space after indentation because
                   ;; indentation may introduce the whitespace.
-                  (unless (looking-at ".*?[^ \t]")
-                    (delete-horizontal-space t))))
+                  (save-restriction
+                    (narrow-to-region (point-at-bol) (point-at-eol))
+                    (delete-trailing-whitespace))
+                  )
+                )
               (indent-according-to-mode))
             (when (and auto-indent-blank-lines-on-move auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
               (when (and (looking-back "^") (looking-at "$"))
