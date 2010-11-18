@@ -73,6 +73,17 @@ In addition to doing this manually, which was explained by other posters, you ca
  (global-auto-revert-mode 1)
 
 we have found that an awful lot of our network traffic can be people visiting multiple files across the network and having global-auto-revert-mode on so no longer use it all the time
+
+
+== KISS ==
+
+In <tt>[[misc-cmds.el]]</tt> you will find this extremely complex command definition:
+
+  (defun revert-buffer-no-confirm ()
+    "Revert buffer without confirmation."
+    (interactive) (revert-buffer t t))
+
+I bind it to `##<F5>##'. -- DrewAdams
  
 == Revert all buffers that are visiting a file ==
 I wrote a litte function that is usefull (to me) when editing several files that might for any reason change on disk (for me its a cvs commit).  It reverts all buffers that are visiting a file.
@@ -119,6 +130,19 @@ I don't know who posted the previous, but I'm using this now, with a small chang
  (when (and (buffer-file-name buffer) (not (buffer-modified-p buffer))) ...)
 
 —Mark Dominus
+
+Here's more compact version of the above, which avoids (1) hand-rolling one's own list iteration, and (2) changing the user's current buffer out from under him.
+
+  (defun revert-all-buffers ()
+    "Refreshes all open buffers from their respective files."
+    (interactive)
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+        (when (and (buffer-file-name) (not (buffer-modified-p)))
+          (revert-buffer t t t) )))
+    (message "Refreshed open files.") )
+
+-- Colin K.
 
 == Inform that the modified file was reverted ==
 

@@ -35,7 +35,7 @@ The Savannah contains a link to snapshot tarball, if you prefer it over the Git:
   #   or if you prefer traditional: ~/elisp
 
   INSTALL=$HOME/.emacs.d
-  mkdir $install
+  mkdir $INSTALL
 
   #   cd to directory where you unpacked the tarball
   install -m 644 lisp/tiny/*.el lisp/other/*.el $INSTALL/

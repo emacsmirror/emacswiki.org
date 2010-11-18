@@ -27,6 +27,8 @@ Lisp:auto-complete-verilog.el   is some enhancement by Yen-Chin,Lee.
 
 [http://github.com/brianjcj/auto-complete-clang Clang source for Auto Complete]
 
+[http://kristianrumberg.wordpress.com/2010/04/22/smart-autocompletion-for-c-in-emacs/ Another clang autocompletion source]
+
 Other extensions are found in [[AutoCompleteSources]].
 
 == Development Version Notes ==
@@ -414,6 +416,9 @@ I emailed maintainer, but I haven't heard anything.
 
 [new]
 BUG: Do not display completion when there is only one completion *and* the word is already complete! That's just plain nonsensical!
+
+[new]
+Could you please write more documentation on how to use/reuse popup menus from popup.el. It would be nice to have an easy to use popup menus (implemented as overlays) in different contexts, for example in CompletionUI. --SewerynKokot 
 
 ----
 CategoryCompletion

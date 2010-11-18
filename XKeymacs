@@ -28,8 +28,10 @@ Current File Movement Commands:
    
    First File		C-a
    Last File		C-e
-   Next File		C-n
-   Previous File	C-p
+   Next below		C-n
+   File above   	C-p
+   File to the right    C-f
+   File to the left     C-b
    Start Selection	C-Space
    Clear Selection	C-Space (when selection active)
 

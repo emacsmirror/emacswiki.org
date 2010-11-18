@@ -14,6 +14,7 @@ I used Xrefactory in my previous job, on a fairly large Java code
   it is still being updated (the downloadable version does not support
   newer JDKs). --Damien Diederen
 [new]
+These products (xrefactory c/java, xrefactory c++) seems to be abandoned. The c++ version does not work very well with recent c++ code (like one found in new versions of boost). 
 
 
 ----
