@@ -6,10 +6,11 @@ Anyone interested in hacking on woome.com can come talk to [mailto:nic@woome.com
 
 I've done a few things with emacs which I'm trying to push into this wiki:
 
-* [[pastebin]] - a simple interface to the [http://www.pastebin.com pastebin.com] webservice
-* [[rcircPresence]] - for syncing rcirc with some other presence thing (eg: skype)
+* [[pastebin]] -- a simple interface to the [http://www.pastebin.com pastebin.com] webservice
+* [[rcircPresence]] -- for syncing rcirc with some other presence thing (eg: skype)
 * [[imapua]] -- a purely IMAP based email client for Emacs
 * [[trac_editor]] -- a very simple interface to trac.py
+* [[WikiDoc]] -- a program to make wiki documentation from Elisp functions
 
 == Emacs under Mercurial ==
 

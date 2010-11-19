@@ -109,6 +109,7 @@
            "http://www.emacswiki.org/emacs/download/anything-gtags.el" ; GNU GLOBAL interface
            "http://www.emacswiki.org/emacs/download/ipa.el" ; In-Place-Annotation
            "http://www.emacswiki.org/emacs/download/anything-ipa.el" ; In-Place-Annotation
+           "http://www.emacswiki.org/emacs/download/anything-obsolete.el" ; obsolete functions
            "http://www.emacswiki.org/emacs/download/anything-startup.el" ; Startup file
            ))
          ;; SDCV (Interface for StartDict console version)

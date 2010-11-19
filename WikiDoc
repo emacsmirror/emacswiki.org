@@ -1,0 +1,35 @@
+This is about making wiki documentation from Elisp.
+
+== Why? ==
+
+Emacs has GNU Info documentation. It's very good. But it is a bit laborious to make web pages from. You end up with a lot of artifacts left over in the page which are intended for print, or a lot of structure that you don't particularly want. 
+
+A lot of Wiki languages now have good tools for turning them into HTML in a variety of situations. A bit easier to build a website from than Info.
+
+In addition, the Info generators are expensive and quite opaque. Not easy to read or alter.
+
+== What is it? ==
+
+WikiDoc is an Elisp file that you can load into Emacs and will let you make a buffer of Wiki output from function documentation. 
+
+It is very much a work in progress but it does make [[http://wikicreole.org|Wiki Creole]] pages from Elisp function documentation.
+
+== Get it ==
+
+The Elisp is available [[wikidoc.el|here]].
+
+== Using it ==
+
+Load wikidoc.el into Emacs and then:
+
+{{{
+M-x wikidoc-insert
+}}}
+
+You will have to enter a prefix for documentation to generate. This is an Elisp name prefix, such as:
+
+{{{
+wikidoc
+}}}
+
+to generate all of wikidoc's documentation.

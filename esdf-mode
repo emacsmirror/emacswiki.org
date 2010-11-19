@@ -1,0 +1,37 @@
+I use this hack to let me use my left hand more often, which in turn lightens the load on my right hand. I started with the more common "wasd" but I quickly noticed that "esdf" is much more convenient from the home position.
+
+    (defun esdf-pre-command-hook ()
+      "This hook turns OFF `esdf-mode` if you hit
+      \(i\) ENTER or
+     \(ii\) BACKSPACE or,
+    \(iii\) an ASCII character other than esdf (case-insensitive)."
+      (let ((k (elt (this-command-keys-vector) 0)))
+        (when (or (memq k '(13 backspace))
+     	      (and (numberp k) (>= k 32) (<= k 126)
+     		   (not (memq k '(?e ?E ?s ?S ?d ?D ?f ?F)))))
+          (esdf-mode 0))))
+    (define-minor-mode esdf-mode
+      "If enabled, esdf will behave exactly like the arrow keys in an inverted-T."
+      :global t
+      :init-value nil
+      :lighter " esdf "
+      :keymap '(([4] . (lambda () (interactive) (esdf-mode 0)))
+     	    ("e" . [up]) ("E" . [S-up])
+     	    ("s" . [left]) ("S" . [S-left])
+     	    ("d" . [down]) ("D" . [S-down])
+     	    ("f" . [right]) ("F" . [S-right]))
+      (if esdf-mode (add-hook 'pre-command-hook 'esdf-pre-command-hook)
+        (remove-hook 'pre-command-hook 'esdf-pre-command-hook))
+      (message "esdf-mode turned %s" (if esdf-mode "ON" "OFF")))
+
+I use the following bindings to start this minor mode. Mouse-3 is the right mouse button on my laptop and it sits right under the space-bar.
+
+    (gsk [mouse-3] 'esdf-mode)
+    (gsk [escape ?e] (lambda () (interactive) (esdf-mode) (previous-line)))
+    (gsk [escape ?s] (lambda () (interactive) (esdf-mode) (backward-char)))
+    (gsk [escape ?d] (lambda () (interactive) (esdf-mode) (next-line)))
+    (gsk [escape ?f] (lambda () (interactive) (esdf-mode) (forward-char)))
+
+Tested on Emacs 23.2 on Windows.
+
+P.S. In practice I bind the unshifted keys in the keymap to actual functions like <code>previous-line</code> and <code>next-line</code> so that [[Accelerate]] can pick them up.

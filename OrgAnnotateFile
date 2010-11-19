@@ -39,6 +39,26 @@ C-c C-l (on the above line for example) you will get:
 
 Note that both of the above will be links.
 
+= OrgAnnotateFile and Bookmark-Mode =
+
+You can very easily integrate OrgAnnotateFile with bookmark mode to open a file's annotations in bookmark mode with the following code:
+
+<pre>
+(defun bookmark-show-org-annotations ()
+  "Opens the annotations window for the currently selected bookmark file."
+  (interactive)
+  (bookmark-bmenu-other-window)
+  (org-annotate-file-show-section))
+</pre>
+
+Override bookmark-mode's standard "show this file's annotations" command with the following:
+
+<pre>
+(add-hook 'bookmark-bmenu-mode-hook
+  (lambda ()
+	(local-set-key (kbd "a") 'bookmark-show-org-annotations)))
+</pre>
+
 = See also =
 * [[ipa.el]] In place annotations.
 * [[Annotate]] Simple annotation system for files.

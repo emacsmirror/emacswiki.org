@@ -9,7 +9,7 @@ Here are some libraries I wrote:
 * '''Lisp:erc-babel.el''' -- automatic translation of IRC messages between different (spoken) languages
 
 ==One-Key==
-I am the current maintainer for [[OneKey]], [[LazySearch]] and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
+I am the current maintainer for [[OneKey]] (Lisp:one-key.el), [[LazySearch]] (Lisp:lazy-search.el), and Lisp:lazy-search-extension.el written by [[AndyStewart]] and [[rubikitch]].
 I have also written the following extension for [[OneKey]]:
 
 * '''Lisp:one-key-dir.el''' -- navigate directories using [[OneKey]]

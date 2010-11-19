@@ -1,20 +1,21 @@
-OneKey is designed to help you remember keybindings.  It saves your time and frees up your head!
+OneKey is designed to help you remember keybindings.  It saves you time and frees up your head!
 
 : Please send suggestions and bug reports to [http://www.emacswiki.org/emacs/JoeBloggs JoeBloggs], he's the new maintainer. Thanks! -- AndyStewart
 
 ==What is OneKey ?==
-OneKey is a mode popup help window which appears when you type a *Top Key*.
+OneKey is a popup help window which appears when you type a *Top Key*.
 It shows *Keystrokes* and *Commands* in a help window.
 
 ==Why I needed OneKey ?==
 * *I had too many commands I needed to remember*:
-:: When I install so many useful extension in Emacs, I always forgot the bindings for their commands, because there are so many to remember.
+:: When I install lots of useful extension in Emacs, I always forget the bindings for their commands, because there are so many to remember.
 * *I don't have a spare, easy keystroke free to bind to a command.*:
 :: Emacs has so many handy commands, but I don't have any keystrokes free to bind new commands to.
 
 : OneKey provides a single top-level keystroke, which gives you a kestroke menu in a pop-up window. 
 : You simply type the keystroke shown in the window, which executes the corresponding command.
 : So you just need remember the Top keystroke with the group command, and the other keystrokes will be displayed in a pop-up window.
+: You can also have different menus displayed depending on the current major mode.
 
 : [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc11 Here] is a screenshot to show how OneKey works.
 : [[rubikitch]] wrote Lisp:one-key-default.el for learning Emacs's default keymaps, [http://www.emacswiki.org/cgi-bin/emacs/OneKey#toc10 here] you can find the install tutorial.
@@ -80,9 +81,11 @@ It shows *Keystrokes* and *Commands* in a help window.
 
 ==Generate Template Code==
 * You can use the command `one-key-insert-template" to insert template code in the current buffer.
-* Or you can use command `one-key-show-template'.  It is like `one-key-insert-template', instead of inserting the template code, it shows it in a buffer called "One-Key-Template".
+* Or you can use command `one-key-show-template'.  It is like `one-key-insert-template', instead of inserting the template code, it shows it in a buffer called "One-Key-Template". 
 
 : Thanks [[rubikitch]] add this feature! Very convenient! ;) -- AndyStewart
+
+* I have added a major mode for the "One-Key-Template" buffer which binds some keys to useful functions to help you create your menu (E.g. "C-c C-t" to load the menu, "M-<up>/<down>" to move the current entry up/down, functions to sort the entries, etc.). I have also made a one-key menu for this mode so you just need to type M-x one-key-get-menu (or press the associated keybinding) in this mode to see the available helper functions. -- JoeBloggs
 
 ==Example Template Code==
 : Lisp:one-key-config.el has many examples of template code for use with OneKey . 
@@ -112,18 +115,28 @@ All the options below can be customized by M-x customize-group RET one-key RET
 
 : You can customize `one-key-template-buffer-name' to change the buffer name that contain template code.
 
+* Auto-load one-key menus
+
+: If you have a lot of one-key menus you may want to keep them in seperate files instead of cluttering your .emacs file.
+: You can define a directory in which to keep your one-key menus as seperate .el files, and have them automatically
+: loaded at startup.
+
+* Major mode associations
+
+: You can associate a different one-key menu with each major mode which is opened by default for that mode.
+
 ==Tips==
 
 : Type "?" to toggle help window display.
+: Type "C-?" followed by one of the keys in the menu to show a description of the associated command.
 : Type "q" to quit OneKey and hide help window.
-: Type "C-n" or "C-p" to scroll help window one line when.
-: Type "C-j" or "C-k" to scroll help window one screen whe.
+: Type "C-b" to go back to the previous or toplevel menu
 
-:: NOTE: The above default keystrokes are build-in for controlling the help window.  Of course if you bind them to another command, OneKey will instead execute that. 
+:: NOTE: The keystrokes above are built-ins for controlling the help window.  Of course if you bind them to another command, OneKey will instead execute that. 
 
 :: And whatever your binding, you can use the keystroke "C-g" to abort OneKey. 
 
-==Describe==
+==Description==
 The core function is `one-key-menu'.  Here is some more detail about its arguments.
 
 * title:

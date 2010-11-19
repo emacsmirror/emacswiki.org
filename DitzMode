@@ -1,0 +1,3 @@
+Ditz (http://ditz.rubyforge.org) is a [http://en.wikipedia.org/wiki/Bug_tracking_system#Distributed_bug_tracking distributed bug tracker], suitable for use with VersionControl systems such as Git and Mercurial.
+
+Kentaro Kuribayashi has written a simple [[Ditz]] Emacs mode.  Glenn Hutchings has taken this as a starting point and developed it further.  You can find the latest version at [http://www.bitbucket.org/zondo/ditz-mode Bitbucket].

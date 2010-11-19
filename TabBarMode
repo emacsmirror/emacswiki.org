@@ -259,6 +259,10 @@ The function expects one argument; the buffer name. Here is how the example abov
               (t '("Rest"))))
 </pre>
 - Grant Rettke
+
+Grant, should the above work in xemacs?  I cannot get xemacs to force all files to a single buffer with multiple tabs.
+
+-Russell
 ----
 
 Aquamacs tabbar work with standard emacs.Just check it out.
