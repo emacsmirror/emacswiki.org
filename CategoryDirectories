@@ -45,8 +45,10 @@ Click the heading to search for all pages related to manipulating files and dire
 ** MidnightCommanderMode
 ** NortonCommanderMode
 ** [[Sunrise Commander]] -- also based on dired, but with many more features than mc.el and heavily influenced by the Orthodox File Manager standard.
+** [[Sunrise Commander For Noobs]]
 * SystemTrash - Set up emacs to use the same trash can as GNOME and KDE (the freedesktop.org trash spec)
 * [[Diredful]] - colorful file names in dired buffers.
+
 ---- 
 [new]
 Some of these packages, including lslisp, do not seem to be in xemacs

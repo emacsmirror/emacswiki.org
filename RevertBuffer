@@ -131,7 +131,7 @@ I don't know who posted the previous, but I'm using this now, with a small chang
 
 —Mark Dominus
 
-Here's more compact version of the above, which avoids (1) hand-rolling one's own list iteration, and (2) changing the user's current buffer out from under him.
+Here's a more compact version of the above, which avoids (1) hand-rolling one's own list iteration, and (2) changing the user's current buffer out from under him.
 
   (defun revert-all-buffers ()
     "Refreshes all open buffers from their respective files."

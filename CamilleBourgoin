@@ -2,38 +2,13 @@
 
 Bonjour,
 
-Je m'appelle Camille Bourgoin, ou plus précisément Jean-Baptiste
-Camille Kléber Bourgoin. Jean-Baptiste dans la rue, et Camille sur le
-Net. Vous pouvez me croiser sur l'irc et les newsgroup en tant que
-"Camille_B" , et sur le forum Ubuntu sous le pseudo "Mesmento" (je ne
-participe plus à ce forum). Je suis maintenant un fervent utilisateur
-de Foresight.
-
-Je suis utilisateur d'Emacs depuis quelques années déjà. Notre
-première rencontre ? Sur papier. Dans un article de feu Dream, numéro
-4O et quelques je crois. Ma première vrai rencontre ? Ce fut sur une
-Red Hat 6.0. Je fus quelque peu déconcerté : «mais pourquoi diantre ne
-veut-il pas m'ouvrir un nouveau fichier ?» (et oui la notion de
-"visite de fichier" m'était encore inconnue). Et voilà, adopté !
-
-J'avoue lui avoir fais une infidélité pendant un an et demi, il y a
-quelque temps... avec vim ...
-
-Mais ce fut une expérience positive. 1) J'ai découvert un éditeur très
-sympathique (je le connaissais un peu avant, le minimum, juste de quoi
-m'en sortir si je devais tomber dessus), mais surtout : 2) lors de mon
-retour sur Emacs j'ai pus apprécier toute la puissance de cet éditeur
-que je n'ai fais que survoler pendant toutes ces années.
-
-Voilà pour la petite histoire.
+Je m'appelle Jean-Baptiste Camille Bourgoin. Je suis utilisateur d'Emacs depuis plusieurs années. Notre première rencontre ? Sur papier. Dans un article de feu Dream, numéro 40 je crois. Ma première vrai rencontre ? Ce fut sur une Red Hat 6.0. Je fus quelque peu déconcerté : «mais pourquoi diantre ne veut-il pas m'ouvrir un nouveau fichier ?» (et oui la notion de "visite de fichier" m'était encore inconnue). Et voilà, adopté !
 
 *Fichiers de configuration :*
 
-Pour Emacs 22 (local) : CamilleBourgoinDotEmacs
+Ma configuration publique est accessible sur github :
 
-Configuration Emacs 22 globale : CamilleBourgoinSiteStart
-
-Pour Gnus : CamilleBourgoinDotGnus
+https://github.com/jbbourgoin/Emacs-configuration
 
 *Contributions :*
 
@@ -41,8 +16,6 @@ Elles ne sont pas encore très nombreuses ;)
 
 Lisp:mpcel.el : un tout petit client à [http://www.musicpd.org/ mpd] (Music
 Player Daemon) qui nécessite l'installation de [http://www.musicpd.org/mpc.shtml mpc].
-
-Je dispose d'un dépôt Foresight personnel contenant, entre autre, un groupe Emacs installant Emacs 22 et une série de programmes elisp supplémentaires (Icicles, Malyon, Quack etc.). Pour l'installer il vous suffit d'ajouter camilleb.rpath.org@rpl:devel à la fin de la ligne "installLabelPath" de votre fichier /etc/conary/config.d/foresight
 
 *Liens*
 

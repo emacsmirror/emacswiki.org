@@ -27,10 +27,13 @@ I've done a few things with emacs which I'm trying to push into this wiki:
 * python editing
 * exploting emacs async nature
 
-== node js for emacs == [http://github.com/nicferrier/elnode elnode]
-is an asynchronous tcp server handling HTTP.
+== node js for emacs == 
+[[Elnode]] is an asynchronous TCP server handling HTTP.
 
-As of now elnode is just about functional... it can only handle GET but it does allow params and child processes to be run and everything works asynchronously.
+As of now elnode is just about functional. I am starting to write things with it including a port of my wiki based blog.
+
+It's pretty good. I hope people pick it up because it's an interesting way to leverage Emacs.
+
 
 == Emacs in a screen terminal: colors ==
 I do some remote pair programming inside screen. I would like to use emacs. Standard colors are too difficult for me to read (my eyes are going!).
