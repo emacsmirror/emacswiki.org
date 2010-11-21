@@ -246,6 +246,11 @@
 
 ;;; Change log:
 ;;
+;; 2010/11/20
+;;    * Joe Bloggs
+;;       * Added `one-key-template-write' function for saving *One-Key-Template* buffer in `one-key-menus-location',
+;;         and added keybinding `one-key-template-mode' and item to `one-key-menu-one-key-template-alist'.
+;;       
 ;; 2010/11/18
 ;;    * Joe Bloggs
 ;;       * Added new major mode for editing one-key-menus in *One-Key-Template* buffer
@@ -484,14 +489,14 @@ If region is not active then move the current line instead."
 If no prefix is given then N will be set to 1.
 If no region is active then just the current line will be moved."
   (interactive "r\np")
-  (move-region start end (if (null n) -1 (- n))))
+  (one-key-template-move-line-region start end (if (null n) -1 (- n))))
 
 (defun one-key-template-move-line-region-down (start end n)
   "Move the current line/region down by N lines where N is the prefix arg.
 If no prefix is given then N will be set to 1.
 If no region is active then just the current line will be moved."  
   (interactive "r\np")
-  (move-region start end (if (null n) 1 n)))
+  (one-key-template-move-line-region start end (if (null n) 1 n)))
 
 (defun one-key-template-test-menu ()
   "Test the one-key menu defined in this buffer."
@@ -531,6 +536,17 @@ If no region is active then just the current line will be moved."
   (interactive)
   (sort-regexp-fields nil "^\\(\\s-\\|;\\)+((\"\\(.+?\\)\" \\. \"\\(.+?\\)\") \\. \\(.+?\\))\\s-*$" "\\2" (region-beginning) (region-end)))
 
+(defun one-key-template-write ()
+  "Prompt user to save current one-key menu to `one-key-menus-location' with the name one-key-menu_??.el
+where ?? is the name of the menu."
+  (interactive)
+  (let (name)
+    (goto-char (point-max))
+    (if (re-search-backward "^ *(one-key-menu \"\\(.*?\\)\"" nil t)
+        (progn (setq name (concat "one-key-menu_" (match-string 1) ".el"))
+               (ido-file-internal 'write 'write-file one-key-menus-location "Save as: " nil name 'ignore))
+      (message "No one-key-menu function found!"))))
+
 (define-key one-key-template-mode-map (kbd "M-<up>") 'one-key-template-move-line-region-up)
 (define-key one-key-template-mode-map (kbd "M-<down>") 'one-key-template-move-line-region-down)
 (define-key one-key-template-mode-map (kbd "M-p") 'one-key-template-move-line-region-up)
@@ -540,8 +556,7 @@ If no region is active then just the current line will be moved."
 (define-key one-key-template-mode-map (kbd "C-c C-SPC") 'one-key-template-mark-key-items)
 (define-key one-key-template-mode-map (kbd "C-c c") 'comment-region)
 (define-key one-key-template-mode-map (kbd "C-c u") 'uncomment-region)
-
-
+(define-key one-key-template-mode-map (kbd "C-c C-w") 'one-key-template-write)
 ;; (define-prefix-command 'one-key-template-sort-map)
 ;; (define-key one-key-template-mode-map (kbd "C-c C-s") 'one-key-template-sort-map)
 ;; (define-key one-key-template-mode-map (kbd "C-c C-s c") 'one-key-template-sort-key-items-by-command-alphabetically)
@@ -581,6 +596,7 @@ If no region is active then just the current line will be moved."
 	(("C-M-q" . "Indent sexp (C-M-q)") . indent-sexp)
         (("M-TAB" . "Completion At Point (M-TAB)") . completion-at-point)
 	(("C-t" . "Test menu (C-c C-t)") . one-key-template-test-menu)
+        (("C-w" . "Write template to one-key menus folder (C-c C-w)") . one-key-template-write)
 	(("C-s" . "Sort commands (C-c C-s)") . one-key-menu-one-key-template-sort)
 	))
 
@@ -594,9 +610,9 @@ If no region is active then just the current line will be moved."
 
 (setq one-key-menu-one-key-template-sort-alist
       '(
-	(("c" . "Sort Lines By Command Alphabetically (C-c C-s c)") . one-key-template-sort-lines-by-command-alphabetically)
-	(("d" . "Sort Lines By Description Alphabetically (C-c C-s d)") . one-key-template-sort-lines-by-description-alphabetically)
-	(("k" . "Sort Lines By Key Alphabetically (C-c C-s k)") . one-key-template-sort-lines-by-key-alphabetically)
+	(("c" . "Sort items by command alphabetically (C-c C-s c)") . one-key-template-sort-key-items-by-command-alphabetically)
+	(("d" . "Sort items by description alphabetically (C-c C-s d)") . one-key-template-sort-key-items-by-description-alphabetically)
+	(("k" . "Sort items by key alphabetically (C-c C-s k)") . one-key-template-sort-key-items-by-key-alphabetically)
 	(("C-b" . "back to previous menu") . one-key-menu-one-key-template)))
 
 (defun one-key-menu-one-key-template-sort ()
@@ -637,8 +653,9 @@ TITLE is title name of the menu. It can be any string you like."
       (one-key-template-mode)
       ;; Insert template.
       (erase-buffer)
+      (insert (concat ";; one-key menu for " title "\n\n"))
       (insert (one-key-make-template keymap title))
-      (insert "\n;; use the `one-key-get-menu' command to show menu/keybindings for this buffer:\n")
+      (insert "\n;; Use the `one-key-get-menu' command to show menu/keybindings for this buffer.\n")
       (insert "\n;; Uncomment and edit following line to set this menu as default for mode.")
       (insert (concat "\n;;(add-to-list 'one-key-mode-alist '("
                       (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-" title "))"))
@@ -660,8 +677,10 @@ TITLE is title name of the menu. It can be any string you like."
                        (read-string (concat "Title (" mmode "): ") nil nil mmode))))
   (let ((keymap (one-key-read-keymap keystroke)))
     ;; Insert.
+    (insert (concat ";; one-key menu for " title "\n\n"))
+    (forward-line 1)
     (insert (one-key-make-template keymap title))
-    (insert "\n;; use the `one-key-get-menu' command to show menu/keybindings for this buffer:\n")
+    (insert "\n;; Use the `one-key-get-menu' command to show menu/keybindings for this buffer.\n")
     (insert "\n;; Uncomment and edit following line to set this menu as default for mode.")
     (insert (concat "\n;;(add-to-list 'one-key-mode-alist '("
                     (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-" title "))"))
@@ -1055,8 +1074,7 @@ TITLE is title name that any string you like."
       (goto-char (point-max))
       (insert "))\n\n")
       ;; Insert function.
-      (insert (format "(defun one-key-menu-%s ()\n\"The `one-key' menu for %s\"\n(interactive)\n(one-key-menu \"%s\" one-key-menu-%s-alist))\n"
-                      funcname title title funcname))
+      (insert (format "(defun one-key-menu-%s ()\n\"The `one-key' menu for %s\"\n(interactive)\n(one-key-menu \"%s\" one-key-menu-%s-alist))\n" funcname title title funcname))
       ;; Indent.
       (emacs-lisp-mode)
       (indent-region (point-min) (point-max))

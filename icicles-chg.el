@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 12 12:56:53 2010 (-0800)
+;; Last-Updated: Sat Nov 20 17:39:19 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5853
+;;     Update #: 5862
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -635,6 +635,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/11/20 dadams
+;;     icicle-toggle-icicle-mode-twice: Soft-require icicles-mode.el.
+;;     eval-after-load for crm.el:
+;;       Put toggle-twice on eval-after-load of icicles-mode, instead of doing it if i-m.el is loaded.
 ;; 2010/11/07 dadams
 ;;     Added helper macro icicle-maybe-cached-action.
 ;;     icicle-alt-act-fn-for-type: use icicle-maybe-cached-action so use same action for all cands.
@@ -3222,6 +3226,12 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/11/20 dadams
+;;     For eval-after-load's:
+;;       Protect eval of icicle-mode with boundp.
+;;       If the library is already loaded, then add the eval-after-load to icicles-mode.el instead.
+;;       Uncommented the code for simple.el for Emacs 23+.
+;;     dolist eval-after-load at end: Removed test for icicles-mode feature.
 ;; 2010/11/10 dadams
 ;;     Define lisp-completion-at-point to return Icicles fn (don't defalias).  Thx to M. Heerdegen.
 ;; 2010/11/06 dadams

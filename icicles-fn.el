@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  7 12:42:11 2010 (-0800)
+;; Last-Updated: Sat Nov 20 17:36:30 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11964
+;;     Update #: 11967
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1903,7 +1903,7 @@ If `hexrgb.el' is not loaded, then just return COLOR-NAME."
     (when (fboundp 'crm-init-keymaps) (crm-init-keymaps)) ; Emacs 22, but not 23.
     ;; Save vanilla CRM stuff as `old-' stuff.
     (unless (fboundp 'old-completing-read-multiple)
-(defalias 'old-completing-read-multiple (symbol-function 'completing-read-multiple)))
+      (defalias 'old-completing-read-multiple (symbol-function 'completing-read-multiple)))
     (defvar old-crm-local-completion-map crm-local-completion-map "Original CRM completion map.")
     (defvar old-crm-local-must-match-map crm-local-must-match-map "Original CRM must-match map.")
 
@@ -1977,7 +1977,7 @@ Analog of `minibuffer-local-completion-map'.")
 Analog of `minibuffer-local-must-match-map' for crm.")
 
     ;; Now, toggle Icicle mode, to take into account loading `crm.el' and redefining its stuff.
-    (when (featurep 'icicles-mode) (icicle-toggle-icicle-mode-twice))))
+    (eval-after-load "icicles-mode" '(icicle-toggle-icicle-mode-twice))))
 
 
 ;; REPLACE ORIGINAL `read-shell-command' defined in `simple.el',
@@ -5529,8 +5529,9 @@ current before user input is read from the minibuffer."
                         (icicle-apply-to-saved-candidate action t ,type))))))))))))
 
 (defun icicle-toggle-icicle-mode-twice ()
-  "Toggle Icicle mode twice."
+  "Toggle Icicle mode twice.  Load `icicles-mode.el' if not loaded."
   ;; Just a convenience function, to avoid Emacs warning about calling `icy-mode' with no arg.
+  (require 'icicles-mode)
   (let ((curr  (if (and (boundp 'icicle-mode) icicle-mode) 1 -1)))
     (icy-mode (- curr))  (icy-mode curr)))
 

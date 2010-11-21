@@ -4,9 +4,9 @@
 
 ;; Author: Fang lungang <lungangfang at 163.com>
 ;; Created: Fang lungang 11/14/2010
-;; Modified: Fang lungang 11/15/2010 23:23>
+;; Modified: Fang lungang 11/20/2010 23:02>
 ;; Keywords: convenience, frames
-;; Version: 0.0.1
+;; Version: 0.0.2
 
 ;; This file is NOT part of GNU Emacs
 
@@ -186,7 +186,7 @@
                   (unless
                       (and (string= " " (substring (buffer-name x) 0 1))
                            (null (buffer-file-name x)))
-                    (add-to-list 'bufs x)))
+                    (add-to-list 'bufs x t)))
                 (buffer-list))
         ;; Still no enough bufs, repeat current buffer
         (while (< (length bufs) numOfWins)

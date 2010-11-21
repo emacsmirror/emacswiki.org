@@ -84,7 +84,9 @@ InPlaceAnnotations does not work with VisibleLines in some condition. This advic
 
 -- [[rubikitch]]
 
-== Annotations on right? ==
+== Feature Requests ==
+
+=== Annotations on right? ===
 
 I find the inline annotations to be kind of disruptive. I would rather have the
 annotations float to the right of the text, without interfering with the
@@ -102,3 +104,9 @@ text? I looked into modifying it myself, but my overlay- and properties-foo is
 not strong.
 
 -- [[DanielHackney]]
+
+=== Annotations in their own buffer, too? ===
+
+To take Daniel's FR a step further, I'd love to see annotations also in their own 
+buffer, as OrgAnnotateFile does.  Being able to displaying annotations in their 
+own buffer AND inline in the file would be nothing short of magical wonderfulness.

@@ -35,12 +35,14 @@ To edit !LaTeX documents, you will probably want to include the following in you
     (setq TeX-parse-self t)
     (setq-default TeX-master nil)
 
-    (add-hook 'LaTeX-mode-hook 'auto-fill-mode)
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
     (add-hook 'LaTeX-mode-hook 'flyspell-mode)
     (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
 
     (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
     (setq reftex-plug-into-AUCTeX t)
+
+You may prefer auto-fill-mode instead of visual-line-mode.
 
 == preview-latex ==
 

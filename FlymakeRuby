@@ -91,4 +91,36 @@ makes)."
 Can someone please test and see if this works?
 
 ----
+
+Here's some code to check ERB templates with flymake. You can find a detailed explanation of what this code does in [http://mnemonikk.org/2010/11/05/using-flymake-to-check-erb-templates/ this post]. 
+
+<pre>
+(defun flymake-erb-init ()
+  (let* ((check-buffer (current-buffer))
+         (temp-file (flymake-create-temp-inplace (buffer-file-name) "flymake"))
+         (local-file (file-relative-name
+                      temp-file
+                      (file-name-directory buffer-file-name))))
+    (save-excursion
+      (save-restriction
+        (widen)
+        (with-temp-file temp-file 
+          (let ((temp-buffer (current-buffer)))
+            (set-buffer check-buffer)
+            (call-process-region (point-min) (point-max) "erb" nil temp-buffer nil "-x"))))
+      (setq flymake-temp-source-file-name temp-file)
+      (list "ruby" (list "-c" local-file)))))
+
+(eval-after-load "flymake"
+  '(progn
+     (push '(".+\\.\\(rhtml\\|erb\\)$" flymake-erb-init) flymake-allowed-file-name-masks)
+     (push '("^\\(.*\\):\\([0-9]+\\): \\(.*\\)$" 1 2 nil 3) flymake-err-line-patterns)))
+
+(defun turn-on-flymake-for-erb-files ()
+  (when (string-match "\.erb$" (buffer-file-name))
+    (flymake-mode 1)))
+(add-hook 'find-file-hook 'turn-on-flymake-for-erb-files)
+</pre>
+
+----
 FlyMake

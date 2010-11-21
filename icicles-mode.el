@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 10 11:38:21 2010 (-0800)
+;; Last-Updated: Sat Nov 20 15:30:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6731
+;;     Update #: 6804
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3456,85 +3456,103 @@ See `icicle-redefine-standard-commands'."
       (face-spec-reset-face 'completions-first-difference)
       (set-face-attribute 'completions-first-difference nil :inherit nil))))
 
-;; Save original functions, so they can be restored when leave Icicle mode.
-;; If load the original library when in Icicle mode, toggle the mode to
-;; pick up the original defn.
 
-(eval-after-load "comint"               ; `comint-dynamic-complete',
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))          ; `comint-replace-by-expanded-filename'
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'comint-dynamic-complete) (not (fboundp 'old-comint-dynamic-complete)))
-(defalias 'old-comint-dynamic-complete (symbol-function 'comint-dynamic-complete)))
-      (when (and (fboundp 'comint-replace-by-expanded-filename)
-                 (not (fboundp 'old-comint-replace-by-expanded-filename)))
-(defalias 'old-comint-replace-by-expanded-filename
-            (symbol-function 'comint-replace-by-expanded-filename)))
-      (when icyp (icicle-mode 1)))))
+;;; Save original functions, so they can be restored when leave Icicle mode.
+;;; Toggle Icicle mode after loading the library (and `icicles-mode.el'),
+;;; to pick up the original definition.
+;;;
+;;; Note: The `boundp' test for `icicle-mode' is just in case the form gets evaluated while
+;;; loading `icicles-mode.el' (e.g. the library gets loaded while loading `icicles-mode.el').
 
-(eval-after-load "ess-site"             ; `ess-complete-object-name'
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'ess-complete-object-name) (not (fboundp 'old-ess-complete-object-name)))
-(defalias 'old-ess-complete-object-name (symbol-function 'ess-complete-object-name)))
-      (when icyp (icicle-mode 1)))))
+;;; `comint.el' - `comint-dynamic-complete', `comint-replace-by-expanded-filename'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'comint-dynamic-complete)
+                          (not (fboundp 'old-comint-dynamic-complete)))
+                 (defalias 'old-comint-dynamic-complete (symbol-function 'comint-dynamic-complete)))
+               (when (and (fboundp 'comint-replace-by-expanded-filename)
+                          (not (fboundp 'old-comint-replace-by-expanded-filename)))
+                 (defalias 'old-comint-replace-by-expanded-filename
+                     (symbol-function 'comint-replace-by-expanded-filename)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'comint) (eval-after-load "icicles-mode" form) (eval-after-load "comint" form)))
 
-(eval-after-load "gud"                  ; `gud-gdb-complete-command'
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'gud-gdb-complete-command) (not (fboundp 'old-gud-gdb-complete-command)))
-(defalias 'old-gud-gdb-complete-command (symbol-function 'gud-gdb-complete-command)))
-      (when icyp (icicle-mode 1)))))
+;;; `ess-site.el' - `ess-complete-object-name'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'ess-complete-object-name)
+                          (not (fboundp 'old-ess-complete-object-name)))
+                 (defalias 'old-ess-complete-object-name (symbol-function
+                                                          'ess-complete-object-name)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'ess-site) (eval-after-load "icicles-mode" form) (eval-after-load "ess-site" form)))
 
-(eval-after-load "bbdb-com"             ; `bbdb-complete-name'
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'bbdb-complete-name) (not (fboundp 'old-bbdb-complete-name)))
-(defalias 'old-bbdb-complete-name (symbol-function 'bbdb-complete-name)))
-      (when icyp (icicle-mode 1)))))
+;;; `gud.el' - `gud-gdb-complete-command'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'gud-gdb-complete-command)
+                          (not (fboundp 'old-gud-gdb-complete-command)))
+                 (defalias 'old-gud-gdb-complete-command (symbol-function
+                                                          'gud-gdb-complete-command)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'gud) (eval-after-load "icicles-mode" form) (eval-after-load "gud" form)))
 
-(eval-after-load "dired-x"              ; `dired-read-shell-command'
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'dired-read-shell-command) (not (fboundp 'old-dired-read-shell-command)))
-(defalias 'old-dired-read-shell-command (symbol-function 'dired-read-shell-command)))
-      (unless (fboundp 'read-shell-command) ; Emacs < 23.
-        (when (and (fboundp 'dired-smart-shell-command)
-                   (not (fboundp 'old-dired-smart-shell-command)))
-(defalias 'old-dired-smart-shell-command (symbol-function 'dired-smart-shell-command))))
-      (when icyp (icicle-mode 1)))))
+;;; `bbdb-com.el' -  `bbdb-complete-name'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'bbdb-complete-name) (not (fboundp 'old-bbdb-complete-name)))
+                 (defalias 'old-bbdb-complete-name (symbol-function 'bbdb-complete-name)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'bbdb-com) (eval-after-load "icicles-mode" form) (eval-after-load "bbdb-com" form)))
 
-(eval-after-load "dired-aux"            ; `dired-read-shell-command'
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'dired-read-shell-command) (not (fboundp 'old-dired-read-shell-command)))
-(defalias 'old-dired-read-shell-command (symbol-function 'dired-read-shell-command)))
-      (when icyp (icicle-mode 1)))))
+;;; `dired-aux.el' - `dired-read-shell-command'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'dired-read-shell-command)
+                          (not (fboundp 'old-dired-read-shell-command)))
+                 (defalias 'old-dired-read-shell-command (symbol-function
+                                                          'dired-read-shell-command)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'dired-aux)
+      (eval-after-load "icicles-mode" form)
+    (eval-after-load "dired-aux" form)))
 
-;; (when (> emacs-major-version 22)        ; Not needed - `simple.el' is preloaded.
-;;   (eval-after-load "simple"             ; `read-shell-command'
-;;     '(when (featurep 'icicles-mode)
-;;       (let ((icyp  icicle-mode))
-;;         (when icyp (icicle-mode -1))
-;;         (when (and (fboundp 'read-shell-command) ; Defined in Emacs 23.
-;;                    (not (fboundp 'old-read-shell-command)))
-;; (defalias 'old-read-shell-command (symbol-function 'read-shell-command)))
-;;         (when icyp (icicle-mode 1))))))
+;;; `dired-x.el' - `dired-read-shell-command', `dired-smart-shell-command'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'dired-read-shell-command)
+                          (not (fboundp 'old-dired-read-shell-command)))
+                 (defalias 'old-dired-read-shell-command (symbol-function
+                                                          'dired-read-shell-command)))
+               (unless (fboundp 'read-shell-command) ; `dired-smart-shell-command' in Emacs < 23.
+                 (when (and (fboundp 'dired-smart-shell-command)
+                            (not (fboundp 'old-dired-smart-shell-command)))
+                   (defalias 'old-dired-smart-shell-command (symbol-function
+                                                             'dired-smart-shell-command))))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'dired-x) (eval-after-load "icicles-mode" form) (eval-after-load "dired-x" form)))
 
-(eval-after-load "recentf"              ; `recentf'
-  '(when (featurep 'icicles-mode)
-    (let ((icyp  icicle-mode))
-      (when icyp (icicle-mode -1))
-      (when (and (fboundp 'recentf-make-menu-items) (not (fboundp 'old-recentf-make-menu-items)))
-(defalias 'old-recentf-make-menu-items (symbol-function 'recentf-make-menu-items)))
-      (when icyp (icicle-mode 1)))))
+;;; `simple.el' - `read-shell-command' - Emacs 23+.
+(when (> emacs-major-version 22)
+  ;; `simple.el' is preloaded for Emacs 23+, so just do it now.
+  (let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+    (when icyp (icicle-mode -1))
+    (when (and (fboundp 'read-shell-command) (not (fboundp 'old-read-shell-command)))
+      (defalias 'old-read-shell-command (symbol-function 'read-shell-command)))
+    (when icyp (icicle-mode 1))))
 
+;;; `recentf.el' - `recentf-make-menu-items'.
+(let ((form  '(let ((icyp  (and (boundp 'icicle-mode) icicle-mode)))
+               (when icyp (icicle-mode -1))
+               (when (and (fboundp 'recentf-make-menu-items)
+                          (not (fboundp 'old-recentf-make-menu-items)))
+                 (defalias 'old-recentf-make-menu-items (symbol-function 'recentf-make-menu-items)))
+               (when icyp (icicle-mode 1)))))
+  (if (featurep 'recentf) (eval-after-load "icicles-mode" form) (eval-after-load "recentf" form)))
 
+      
+;; Do this last.
+;;
 ;; When these libraries are first loaded, toggle Icicle mode to pick up the definitions
 (dolist (library '("bookmark+" "buff-menu" "comint" "dired" "ess-site" "gud" "ibuffer"
                    "idlw-shell"         ; (untested - I don't have an `idl' program)
@@ -3542,8 +3560,7 @@ See `icicle-redefine-standard-commands'."
   (unless (if (fboundp 'load-history-regexp) ; Emacs 22+
               (load-history-filename-element (load-history-regexp library))
             (assoc library load-history))
-    (eval-after-load library
-      '(when (featurep 'icicles-mode) (icicle-toggle-icicle-mode-twice)))))
+    (eval-after-load library '(icicle-toggle-icicle-mode-twice))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

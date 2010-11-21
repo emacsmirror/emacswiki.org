@@ -305,7 +305,7 @@
 ;; `anything-c-find-files-show-icons'
 ;; Default Value: t
 ;; `anything-c-find-files-icons-directory'
-;; Default Value: "/usr/share/emacs/23.2.50/etc/images/tree-widget/default"
+;; Default Value: "/usr/share/emacs/24.0.50/etc/images/tree-widget/default"
 ;; `anything-c-browse-code-regexp-lisp'
 ;; Default Value: "^ *	(def\\(un\\|subst\\|macro\\|face\\|alias\\|advice\\|struct\\|type\\|th [...]
 ;; `anything-c-browse-code-regexp-python'
@@ -1800,10 +1800,11 @@ buffer that is not the current buffer."
             . anything-c-insert-file-name-completion-at-point)
            ("Open file externally `C-u to choose'"
             . anything-c-open-file-externally)
-           ("Grep File(s)" . (lambda (candidate)
-                               ;; Restore highlighting disabled in *-find-files.
-                               (let ((anything-mp-highlight-delay 0.7))
-                                 (anything-do-grep (anything-marked-candidates)))))
+           ("Grep File(s) `C-u Recurse'"
+            . (lambda (candidate)
+                (if anything-current-prefix-arg
+                    (anything-do-grep (anything-marked-candidates) 'recurse)
+                    (anything-do-grep (anything-marked-candidates)))))
            ("Ediff File" . anything-find-files-ediff-files)
            ("Ediff Merge File" . anything-find-files-ediff-merge-files)
            ("Delete File(s)" . anything-delete-marked-files)
@@ -2410,7 +2411,8 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
                      (concat (file-name-as-directory dest)
                              basename-src)
                      dest)
-     collect fname))
+     collect fname into tmp-list
+     finally return (sort tmp-list 'string<)))
 
 (defun anything-c-maybe-mark-candidates ()
   "Mark all candidates of list `anything-ff-cand-to-mark'."
@@ -2613,33 +2615,90 @@ The \"-r\" option must be the last option.")
 ;; (anything 'anything-c-source-locate)
 
 ;;; Grep
-(defvar anything-c-grep-default-command "grep -niH -e %s %s %s")
+(defvar anything-c-grep-default-command "grep -niH -e %s %s %s"
+  "Default format command for `anything-do-grep'.
+If you want to enable recursion just add the -r option like this:
+\"grep -nirH -e %s %s %s\".
+NOTE: This option is accessible with a prefix arg
+from all anything grep commands without setting it here.")
+
 (defvar anything-c-grep-default-function 'anything-c-grep-init)
 
+(defface anything-grep-match
+  '((t (:inherit match)))
+  "Face used to highlight grep matches."
+  :group 'anything)
+
+(defface anything-grep-file
+  '((t (:foreground "BlueViolet" :underline t)))
+  "Face used to highlight grep results filenames."
+  :group 'anything)
+
+(defface anything-grep-lineno
+  '((t (:foreground "Darkorange1")))
+  "Face used to highlight grep number lines."
+  :group 'anything)
+
+(defun anything-c-grep-prepare-candidates (candidates)
+  "Prepare filenames and directories candidates for grep command line."
+  ;; If one or more candidate is a directory, search in all files
+  ;; of this candidate (e.g /home/user/directory/*).
+  ;; If r option is enabled search also in subdidrectories.
+  ;; We need here to expand wildcards to support crap windows filenames
+  ;; as grep don't accept quoted wildcards (e.g "dir/*.el").
+  (loop for i in candidates append
+       (cond ((and (file-directory-p i)
+                   (anything-c-grep-recurse-p))
+              (if (eq system-type 'windows-nt)
+                  (list i)
+                  (list (file-name-as-directory
+                         (replace-regexp-in-string "[.]$" "" i)))))
+             ((file-directory-p i)
+              (file-expand-wildcards (concat (file-name-as-directory i) "*") t))
+             ((string-match "\*" i) (file-expand-wildcards i t))
+             (t (list i))) into of
+       finally return
+       (mapconcat #'(lambda (x) (shell-quote-argument x)) of " ")))
+
+(defun anything-c-grep-recurse-p ()
+  "Check if `anything-do-grep1' have switched to recursive."
+  (let ((args (replace-regexp-in-string
+               "grep" "" anything-c-grep-default-command)))
+    (string-match-p "r\\|recurse" args)))
+  
 (defun anything-c-grep-init (only-files)
   "Start an asynchronous grep process in ONLY-FILES list."
-  (kill-local-variable 'mode-line-format)
-  (setq mode-line-format
-        '(" " mode-line-buffer-identification " "
-          (line-number-mode "%l") " "
-          (:eval (propertize "(Grep Process Running) "
-                  'face '((:foreground "red"))))))
-  (prog1
-      (start-process-shell-command
-       "grep-process" nil
-       (format anything-c-grep-default-command
-               (shell-quote-argument anything-pattern)
-               only-files
-               (mapconcat
-                #'(lambda (x)
-                    (concat "--exclude=" (shell-quote-argument x)))
-                grep-find-ignored-files " ")))
-    (set-process-sentinel
-     (get-process "grep-process")
-     #'(lambda (process event)
-         (when (string= event "finished\n")
-           (with-anything-window
-             (anything-update-move-first-line)))))))
+  (let* ((fnargs        (anything-c-grep-prepare-candidates only-files))
+         (ignored-files (mapconcat
+                         #'(lambda (x)
+                             (concat "--exclude=" (shell-quote-argument x)))
+                         grep-find-ignored-files " "))
+         (ignored-dirs  (mapconcat ; Need grep version 2.5.4 of Gnuwin32 on windoze. 
+                         #'(lambda (x)
+                             (concat "--exclude-dir=" (shell-quote-argument x)))
+                         grep-find-ignored-directories " "))
+         (exclude       (if (anything-c-grep-recurse-p)
+                            (concat ignored-files " " ignored-dirs)
+                            ignored-files)))
+    (setq mode-line-format
+          '(" " mode-line-buffer-identification " "
+            (line-number-mode "%l") " "
+            (:eval (propertize "(Grep Process Running) "
+                    'face '((:foreground "red"))))))
+    (prog1
+        (start-process-shell-command
+         "grep-process" nil
+         (format anything-c-grep-default-command
+                 (shell-quote-argument anything-pattern)
+                 fnargs
+                 exclude))
+      (set-process-sentinel
+       (get-process "grep-process")
+       #'(lambda (process event)
+           (when (string= event "finished\n")
+             (kill-local-variable 'mode-line-format)
+             (with-anything-window
+               (anything-update-move-first-line))))))))
 
 (defun anything-c-grep-action (candidate &optional where)
   "Define a default action for `anything-do-grep' on CANDIDATE.
@@ -2663,35 +2722,17 @@ WHERE can be one of other-window, elscreen, other-frame."
   (anything-c-grep-action candidate)
   (anything-match-line-color-current-line))
 
-;;;###autoload
-(defun anything-do-grep (only)
-  "Preconfigured anything for grep.
-Contrarily to Emacs `grep' no default directory is given, but
-the full path of candidates in ONLY.
-That allow to grep different files not only in `default-directory' but anywhere
-by marking them (C-<SPACE>). If one or more directory is selected
-grep will search in all files of these directories
-like -d recursive, or -r would do.
-You can use also wildcard in the base name of candidate."
-  (interactive (list
-                (anything-c-read-file-name "Search in file(s): "
-                                           :marked-candidates t)))
+(defun anything-do-grep1 (only &optional recurse)
+  "Launch grep with a list of ONLY files.
+When RECURSE is given use -r option of grep."
   (let ((anything-compile-source-functions
          ;; rule out anything-match-plugin because the input is one regexp.
          (delq 'anything-compile-source--match-plugin
-               (copy-sequence anything-compile-source-functions))))
-    ;; If one or more candidate is a directory, search in all files
-    ;; of this candidate e.g /home/user/directory/*
-    ;; We need here to expand wildcards to support crap windows filenames
-    ;; as grep don't accept quoted wildcards (e.g "dir/*.el").
-    (setq only
-          (loop for i in only append
-               (cond ((file-directory-p i)
-                      (file-expand-wildcards (concat (file-name-as-directory i) "*")))
-                     ((string-match "\*" i) (file-expand-wildcards i))
-                     (t (list i))) into of
-               finally return
-               (mapconcat #'(lambda (x) (shell-quote-argument x)) of " ")))
+               (copy-sequence anything-compile-source-functions)))
+        (anything-c-grep-default-command (if recurse "grep -nirH -e %s %s %s"
+                                             anything-c-grep-default-command))
+        ;; FIXME: Remove support for highlighting until fixed in match-plugin.
+        (anything-mp-highlight-delay nil))
     ;; When called as action from an other source e.g *-find-files
     ;; we have to kill action buffer.
     (when (get-buffer anything-action-buffer)
@@ -2704,8 +2745,8 @@ You can use also wildcard in the base name of candidate."
         (init . (lambda ()
                   ;; Load `grep-find-ignored-files'.
                   (require 'grep)))
-        (candidates . (lambda ()
-                        (funcall anything-c-grep-default-function only)))
+        (candidates
+         . (lambda () (funcall anything-c-grep-default-function only)))
         (filtered-candidate-transformer anything-c-grep-cand-transformer)
         (action . ,(delq
                     nil
@@ -2721,34 +2762,63 @@ You can use also wildcard in the base name of candidate."
                        . (lambda (candidate)
                            (anything-c-grep-action candidate 'other-frame))))))
         (persistent-action . (lambda (candidate)
-                               (anything-c-grep-persistent-action
-                                candidate)))
+                               (anything-c-grep-persistent-action candidate)))
         (requires-pattern . 3)
         (delayed)))
      :buffer "*anything grep*")))
 
+;;;###autoload
+(defun anything-do-grep (only &optional arg)
+  "Preconfigured anything for grep.
+Contrarily to Emacs `grep' no default directory is given, but
+the full path of candidates in ONLY.
+That allow to grep different files not only in `default-directory' but anywhere
+by marking them (C-<SPACE>). If one or more directory is selected
+grep will search in all files of these directories.
+You can use also wildcard in the base name of candidate.
+If a prefix arg is given use the -r option of grep."
+  (interactive (list
+                (anything-c-read-file-name
+                 "Search in file(s): " :marked-candidates t)
+                "\nP"))
+  (anything-do-grep1 only arg))
+
 (defun anything-c-grep-cand-transformer (candidates sources)
   "Filtered candidate transformer function for `anything-do-grep'."
   (loop for i in candidates
-     for split  = (split-string i ":")
-     for fname  = (if (eq system-type 'windows-nt)
-                      (concat (car split) ":" (second split))
-                      (car split))
-     for lineno = (if (eq system-type 'windows-nt)
-                      (nth 2 split)
-                      (nth 1 split))
-     for str    = (if (eq system-type 'windows-nt)
-                      (nth 3 split)
-                      (nth 2 split))
-     collect (cons (concat (propertize (file-name-nondirectory fname)
-                                       'face '((:foreground "BlueViolet"))
-                                       'help-echo fname)
-                           ":"
-                           (propertize lineno
-                                       'face '((:foreground "Darkorange1")))
-                           ":"
-                           str)
-                   i)))
+     for split  = (and i (split-string i ":"))
+     for fname  = (and split
+                       (if (eq system-type 'windows-nt)
+                           (concat (car split) ":" (second split))
+                           (car split)))
+     for lineno = (and split
+                       (if (eq system-type 'windows-nt)
+                           (nth 2 split)
+                           (nth 1 split)))
+     for str    = (and split
+                       (if (eq system-type 'windows-nt)
+                           (nth 3 split)
+                           (nth 2 split)))
+     when (and split fname lineno str)
+     collect
+       (cons (concat (propertize (file-name-nondirectory fname)
+                                 'face 'anything-grep-file
+                                 'help-echo fname) ":"
+                     (propertize lineno 'face 'anything-grep-lineno) ":"
+                     (anything-c-grep-highlight-match str))
+             i)))
+
+(defun anything-c-grep-highlight-match (str)
+  "Highlight in STR all occurences matching `anything-pattern'."
+  (with-temp-buffer
+    (insert str)
+    (goto-char (point-min))
+    (while (and (re-search-forward anything-pattern nil t)
+                (> (- (match-end 0) (match-beginning 0)) 0))
+      (add-text-properties
+       (match-beginning 0) (match-end 0)
+       '(face anything-grep-match)))
+    (buffer-string)))
 
 ;;;###autoload
 (defun anything-c-grep-precedent-file ()
@@ -7601,10 +7671,11 @@ Return nil if bmk is not a valid bookmark."
            ("Find file other window" . find-file-other-window)
            ("Find file other frame" . find-file-other-frame)))
      ("Open dired in file's directory" . anything-c-open-dired)
-     ("Grep File(s)" . (lambda (candidate)
-                         ;; Restore highlighting disabled in *-find-files.
-                         (let ((anything-mp-highlight-delay 0.7))
-                           (anything-do-grep (anything-marked-candidates)))))
+     ("Grep File(s) `C-u recurse'"
+      . (lambda (candidate)
+          (if anything-current-prefix-arg
+              (anything-do-grep (anything-marked-candidates) 'recurse)
+              (anything-do-grep (anything-marked-candidates)))))
      ("View file" . view-file)
      ("Insert file" . insert-file)
      ("Delete file(s)" . anything-delete-marked-files)

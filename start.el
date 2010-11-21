@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Wed Apr 21 10:53:47 2010 (-0700)
+;; Last-Updated: Sat Nov 20 17:17:43 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2840
+;;     Update #: 2866
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -18,22 +18,24 @@
 ;;
 ;;   `appt', `apropos', `apropos+', `apropos-fn+var', `assoc',
 ;;   `autofit-frame', `avoid', `bookmark', `bookmark+',
-;;   `browse-kill-ring', `browse-kill-ring+', `buff-menu+',
-;;   `cal-dst', `cal-julian', `cal-menu', `cal-opts', `cal-persia',
-;;   `calendar', `calendar+', `cl', `color-moccur', `compile',
-;;   `compile+20', `compile-20', `cus-edit', `cus-edit+', `cus-face',
-;;   `cus-load', `cus-start', `custom', `diary-lib', `dired',
-;;   `dired+', `dired-aux', `dired-details', `dired-details+',
-;;   `dired-sort-menu', `dired-sort-menu+', `dired-x', `doremi',
-;;   `doremi-cmd', `doremi-frm', `easymenu', `ediff', `ediff+',
-;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
-;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
-;;   `em-joc', `emacsbug', `eshell-auto', `eyedropper', `facemenu',
-;;   `facemenu+', `faces', `faces+', `ffap', `ffap-', `files+',
-;;   `find-dired', `find-dired+', `find-dired-', `finder', `finder+',
-;;   `finder-inf', `fit-frame', `font-lock', `font-menus', `frame',
-;;   `frame+', `frame-cmds', `frame-fns', `fuzzy-match', `header2',
-;;   `help+20', `hexrgb', `highlight', `icicles', `icicles-cmd1',
+;;   `bookmark+-1', `bookmark+-bmu', `bookmark+-lit',
+;;   `bookmark+-mac', `browse-kill-ring', `browse-kill-ring+',
+;;   `buff-menu+', `cal-dst', `cal-julian', `cal-menu', `cal-opts',
+;;   `cal-persia', `calendar', `calendar+', `cl', `color-moccur',
+;;   `compile', `compile+20', `compile-20', `cus-edit', `cus-edit+',
+;;   `cus-face', `cus-load', `cus-start', `custom', `diary-lib',
+;;   `dired', `dired+', `dired-aux', `dired-details',
+;;   `dired-details+', `dired-sort-menu', `dired-sort-menu+',
+;;   `dired-x', `doremi', `doremi-cmd', `doremi-frm', `easymenu',
+;;   `ediff', `ediff+', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `em-joc', `emacsbug', `eshell-auto',
+;;   `eyedropper', `facemenu', `facemenu+', `faces', `faces+',
+;;   `ffap', `ffap-', `files+', `find-dired', `find-dired+',
+;;   `find-dired-', `finder', `finder+', `finder-inf', `fit-frame',
+;;   `font-lock', `font-menus', `frame', `frame+', `frame-cmds',
+;;   `frame-fns', `fuzzy', `fuzzy-match', `header2', `help+20',
+;;   `hexrgb', `highlight', `icicles', `icicles-cmd1',
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
 ;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
 ;;   `icomplete', `icomplete+', `imenu', `imenu+', `info', `info+',
@@ -44,13 +46,13 @@
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
 ;;   `mouse+', `mwheel', `occur-schroeder', `oneonone', `paren',
 ;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `replace+', `ring', `ring+', `savehist-20+', `second-sel',
-;;   `sendmail', `setup', `setup-keys', `simple+', `solar',
-;;   `speedbar', `start', `strings', `swiss-move', `synonyms',
-;;   `thing-cmds', `thingatpt', `thingatpt+', `thumb-frm', `timer',
-;;   `timer+', `unaccent', `vc', `vc+', `vc-', `vc-hooks',
-;;   `vc-hooks+', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `regexp-opt', `replace+', `ring', `ring+', `savehist-20+',
+;;   `second-sel', `sendmail', `setup', `setup-keys', `simple+',
+;;   `solar', `speedbar', `start', `strings', `swiss-move',
+;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
+;;   `thumb-frm', `timer', `timer+', `unaccent', `vc', `vc+', `vc-',
+;;   `vc-hooks', `vc-hooks+', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget', `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -86,6 +88,9 @@
 ;;
 ;; Change log:
 ;;
+;; 2010/11/20 dadams
+;;     Removed soft require of font-menus.el for Emacs 24+.  It uses var font-lock-defaults-alist.
+;;     Removed load-library of my ls-lisp.el.
 ;; 2010/04/21 dadams
 ;;     Soft-require wide-n.el.
 ;; 2010/02/26 dadams
@@ -375,10 +380,12 @@
   (require 'face-remap+ nil t))         ; Resize window/frame when scale text.
 (when (> emacs-major-version 20)        ; Ring/stack of narrowings.
   (require 'wide-n nil t))
-;; Use Francis Wright's version of `ls-lisp.el', if available.
-(when (and (< emacs-major-version 21) (memq system-type '(windows-nt ms-dos macos)))
-  (require 'cl) ;; FJW's `ls-lisp.el' uses `mapc', so we need `cl.el'.  Too bad.
-  (load-library "ls-lisp")) ; Don't use `require', so get FJW's version, not vanilla version.
+;;; ;; Use my update to Francis Wright's version of `ls-lisp.el', if available.
+;;; (when (and (< emacs-major-version 21) (memq system-type '(windows-nt ms-dos macos)))
+;;;   ;; If you don't have my version, from http://www.emacswiki.org/emacs/ls-lisp.el, and you use
+;;;   ;; Emacs 20, then you will need to do this, because FJW's `ls-lisp.el' uses `mapc':
+;;;   ;;(require 'cl)
+;;;   (load-library "ls-lisp")) ; Don't use `require', so get FJW's version, not vanilla version.
 (unless (and (memq system-type '(windows-nt ms-dos macos)) ; Redefinitions.  
              (require 'ls-lisp+ nil t)) ; This loads `files+.el'.
   (require 'files+ nil t))
@@ -576,7 +583,8 @@ See the Dired-X Info pages (type \\[info]) for information on this package.")
 (require 'local-ps-print nil t)         ; Local settings for PostScript printing.
 (require 'printing nil t)               ; Printing from menu bar etc.
 ;; Load `font-menus' before `facemenu+'.
-(require 'font-menus nil t)             ; Additional font menus.
+(when (< emacs-major-version 24)        ; (Needs to be fixed for 24: uses `font-lock-defaults-alist'.)
+  (require 'font-menus nil t))          ; Additional font menus.
 (require 'facemenu+ nil t)              ; New Text Properties menu items.
 (when (> emacs-major-version 21)
   (require 'font-lock+ nil t))             ; Enhancements to `font-lock.el'.

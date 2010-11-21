@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 332 $
+;; RCS Version: $Rev: 333 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 332 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 333 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2852,14 +2852,13 @@ or (c)ontents? ")
   * press Delete or Backspace to revert the buffer to its previous state
   * press Return, C-n or C-p to exit and accept the current narrowed state
   * press Esc or C-g to abort the operation and revert the buffer.
-  Once narrowed and accepted, you can  restore the original contents of the pane
+  Once narrowed and accepted, you can restore the original contents of the pane
   by pressing g (revert-buffer)."
   (interactive)
   (when sr-running
     (sr-beginning-of-buffer)
     (dired-change-marks ?* ?\t)
-    (let ((stack nil) (filter "") (regex "") (next-char nil) (matches nil)
-          (inhibit-quit t))
+    (let ((stack nil) (filter "") (regex "") (next-char nil) (inhibit-quit t))
       (setq next-char (read-char "Fuzzy narrow: "))
       (sr-backup-buffer)
       (while next-char
@@ -2880,12 +2879,8 @@ or (c)ontents? ")
                      regex (concat regex "[^" (char-to-string next-char) "]*")
                      stack (cons (cons filter regex) stack))))
         (when next-char
-          (setq matches (dired-mark-files-regexp (concat "^" regex "$")))
-          (if matches
-              (dired-do-kill-lines)
-            (message "Sunrise: Nothing left to filter out!")
-            (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
-            (sit-for 1))
+          (if (dired-mark-files-regexp (concat "^" regex "$"))
+              (dired-do-kill-lines))
           (setq next-char (read-char (concat "Fuzzy narrow: " filter))))))
     (dired-change-marks ?\t ?*)))
 

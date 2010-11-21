@@ -41,17 +41,23 @@ Note that both of the above will be links.
 
 = OrgAnnotateFile and Bookmark-Mode =
 
-You can very easily integrate OrgAnnotateFile with bookmark mode to open a file's annotations in bookmark mode with the following code:
+You can very easily integrate OrgAnnotateFile with bookmark mode
+to open a file's annotations in bookmark mode with the following
+code:
 
 <pre>
 (defun bookmark-show-org-annotations ()
   "Opens the annotations window for the currently selected bookmark file."
   (interactive)
   (bookmark-bmenu-other-window)
-  (org-annotate-file-show-section))
+  (org-annotate-file)
+  ;; or, if you're using the http://bitbucket.org/nickdaly/org-annotate-file fork,
+  ;; (org-annotate-file-show-annotations)
+  )
 </pre>
 
-Override bookmark-mode's standard "show this file's annotations" command with the following:
+Override bookmark-mode's standard "show this file's annotations"
+command with the following:
 
 <pre>
 (add-hook 'bookmark-bmenu-mode-hook
@@ -63,3 +69,4 @@ Override bookmark-mode's standard "show this file's annotations" command with th
 * [[ipa.el]] In place annotations.
 * [[Annotate]] Simple annotation system for files.
 * [http://github.com/dto/radio/tree/master radio.el] Another org based annotation system
+* [https://bitbucket.org/nickdaly/org-annotate-file/src/tip/org-annotate-file.el org-annotate-file.el] A fork of org-annotate-file that appends new entries to the end of the list and adds a "show-annotations" command to view annotations without adding new ones.

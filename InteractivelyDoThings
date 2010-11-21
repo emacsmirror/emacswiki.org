@@ -6,12 +6,15 @@
 
 The ido.el package by KimStorm lets you interactively do things with buffers and files.
 
-To activate, place this in your .emacs:
+To activate, place this in your InitFile:
 
-    ;;in the .emacs
     (require 'ido)
-    (ido-mode t)
-    (setq ido-enable-flex-matching t) ;; enable fuzzy matching
+
+Then do
+
+    M-x customize-group ido RET
+
+and configure ido-mode. Another good setting to enable is ido-enable-flex-matching.
 
 == Using IDO ==
 

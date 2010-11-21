@@ -36,6 +36,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-time-utils.el (EbayTime) -- Provides procedures for frobbing time
 * Lisp:mon-testme-utils.el -- Provides `mon-*' tests and template for inserting them
 * Lisp:mon-plist-utils.el -- Provides procedures for frobbing plist-like seqs
+
 [:MON-STANDARDS]
 === :MON-STANDARDS ===
 * Lisp:mon-button-utils.el -- utilities for examining button properties
@@ -43,7 +44,8 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-cl-compat-regexps.el -- Provides regular expressions for replacing the symbol-names from the cl-seq.el package with a `cl::' prefix
 * Lisp:mon-empty-registers.el (EmptyRegisters) -- Provides utilities for filling/emptying register locations en masse. Also provides interactive tools for register centric coercion, manipulation, round-tripping of chars, strings, etc.
 * Lisp:mon-hash-utils.el -- Provides a collection of procedures to extend Emacs lisp hash table functionality.
-* Lisp:mon-name-utils.el -- procedures to rotate, combine, and permute string-like name forms
+* Lisp:mon-name-utils.el -- Provides procedures to rotate, combine, and permute string-like name forms.
+* Lisp:mon-image-utils.el -- Provides procedures for interfacing with image manipulation processes.
 * Lisp:mon-rename-image-utils.el (RenameImageUtils) -- Provides utility functions for working with images and EmacsImageManipulation.
 
 [:MON-EXTRAS]

@@ -89,7 +89,6 @@ after the 60th with '...'"
 (defun org-annotate-file-show-section (&optional buffer)
   "Visit the buffer named `org-annotate-file-storage-file' and
 show the relevant section"
-  (interactive)
   (let* ((filename (abbreviate-file-name (or buffer (buffer-file-name))))
          (line (buffer-substring-no-properties (point-at-bol) (point-at-eol)))
          (link (org-make-link-string (concat "file:" filename)))
