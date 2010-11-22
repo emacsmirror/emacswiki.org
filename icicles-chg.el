@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 20 17:39:19 2010 (-0800)
+;; Last-Updated: Sun Nov 21 09:09:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5862
+;;     Update #: 5868
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/11/21 dadams
+;;     defalias both old-lisp-complete-symbol and (for Emacs 23+) old-lisp-completion-at-point.
 ;; 2010/11/10 dadams
 ;;     icicle-lisp-complete-symbol: Remove return value.  Let it do everything (chg is in ici*mode.el).
 ;; 2010/11/04 dadams
@@ -3226,6 +3228,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/11/21 dadams
+;;     icicle-(redefine|restore)-standard-commands:
+;;       defalias lisp-complete-symbol unconditionally (it's still needed in some places for Emacs 23).
 ;; 2010/11/20 dadams
 ;;     For eval-after-load's:
 ;;       Protect eval of icicle-mode with boundp.

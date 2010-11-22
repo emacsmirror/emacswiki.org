@@ -536,7 +536,7 @@ No problem -- I just thought you might have made the substitution automatically 
 Thanks for your excellent stuffs. By the way, There is a tiny bug in switch-file.el, line 220. The parameters of string-match are in reverse order. -- SeungcheolJung
 
 [new]
-Thanks for your correction. -- ViniciusJoseLatorre
+: Thanks for your correction. -- ViniciusJoseLatorre
 
 -----
 [new]
@@ -545,13 +545,14 @@ A question about whitespace.el (12.1): When I add a new paragraph to a text file
 My settings:  '(whitespace-style (quote (tabs spaces trailing lines-tail space-before-tab newline indentation empty space-after-tab space-mark tab-mark newline-mark))))
 
 [new]
-Hi Joerg,
+: Hi Joerg,
 
-I've just tested whitespace v12.1 using Emacs v24.0.50.1 and I couldn't reproduce this problem.
+: I've just tested whitespace v12.1 using Emacs v24.0.50.1 and I couldn't reproduce this problem.
 
-Please, send me an email with the Emacs version you're using and the steps needed to reproduce this problem, starting with ##emacs -Q##.
+: Please, send me an email with the Emacs version you're using and the steps needed to reproduce this problem, starting with:
+:: ##emacs -Q##.
 
--- ViniciusJoseLatorre
+: -- ViniciusJoseLatorre
 
 ------
 

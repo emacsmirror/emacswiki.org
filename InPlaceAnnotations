@@ -110,3 +110,5 @@ not strong.
 To take Daniel's FR a step further, I'd love to see annotations also in their own 
 buffer, as OrgAnnotateFile does.  Being able to displaying annotations in their 
 own buffer AND inline in the file would be nothing short of magical wonderfulness.
+
+: according to the source code you can switch to the file ~/.ipa which contains the annotations, so you can see all of them there and even can press return there on an annotation to go to the location  -- Anonymous

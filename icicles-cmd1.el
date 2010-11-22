@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 10 11:23:15 2010 (-0800)
+;; Last-Updated: Sun Nov 21 07:58:06 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 21461
+;;     Update #: 21466
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1389,17 +1389,17 @@ control completion behaviour using `bbdb-completion-type'."
                   (message "Making completion list...done")))))))))
 
 
-;; REPLACE ORIGINAL `lisp-complete-symbol' (< Emacs 23.2)
-;;               or `lisp-completion-at-point' (>= Emacs 23.2),
-;; defined in `lisp.el', saving it for restoration when you toggle `icicle-mode'.
+;; REPLACE ORIGINAL `lisp-complete-symbol' (< Emacs 23.2),
+;; REPLACE ORIGINAL `lisp-completion-at-point' (>= Emacs 23.2),
+;; defined in `lisp.el', saving them for restoration when you toggle `icicle-mode'.
 ;;
 ;; Select *Completions* window even if on another frame.
 ;;
-(if (fboundp 'completion-at-point)      ; Emacs 23.2.  It no longer uses `lisp-complete-symbol'.
-    (unless (fboundp 'old-lisp-completion-at-point)
-(defalias 'old-lisp-completion-at-point (symbol-function 'lisp-completion-at-point)))
-  (unless (fboundp 'old-lisp-complete-symbol)
-(defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol))))
+(unless (fboundp 'old-lisp-complete-symbol)
+  (defalias 'old-lisp-complete-symbol (symbol-function 'lisp-complete-symbol)))
+(when (fboundp 'completion-at-point)    ; Emacs 23.2.
+  (unless (fboundp 'old-lisp-completion-at-point)
+    (defalias 'old-lisp-completion-at-point (symbol-function 'lisp-completion-at-point))))
 
 ;;;###autoload
 (defun icicle-lisp-complete-symbol (&optional predicate) ; `M-TAB' (`C-M-i', `ESC-TAB'), globally.

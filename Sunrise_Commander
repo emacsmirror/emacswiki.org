@@ -655,6 +655,12 @@ C-s once and see if you like it. If you do you can do:
 choose the vertical layout and press the "Save for future sessions" button.
 
 [http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
+
+[new]
+j.a., thank you very much for your fast answer and great help! I guess a "'(progn " is needed in the eval-after-load function, otherwise I got a warning about wrong number of arguments. With your above code, it looks much better to me now! I would prefer a different column order though. I am everything but a lisp expert, but if I understand your code, this could be achieved inside the while loop. I might try later when I find more time to really dive into sunrise commander. Again, thank you very much! Great work!
+-- Sven
+
+
 ----
 CategoryDirectories
 CategoryEmulation

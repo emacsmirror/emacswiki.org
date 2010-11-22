@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 333 $
+;; RCS Version: $Rev: 335 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -154,7 +154,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 333 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 335 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -2876,11 +2876,12 @@ or (c)ontents? ")
                (unless stack (setq next-char nil)))
               (t
                (setq filter (concat filter (char-to-string next-char))
-                     regex (concat regex "[^" (char-to-string next-char) "]*")
+                     regex (concat regex (char-to-string next-char) ".*")
                      stack (cons (cons filter regex) stack))))
         (when next-char
-          (if (dired-mark-files-regexp (concat "^" regex "$"))
-              (dired-do-kill-lines))
+          (dired-mark-files-regexp (concat "^.*" regex "$"))
+          (dired-toggle-marks)
+          (dired-do-kill-lines)
           (setq next-char (read-char (concat "Fuzzy narrow: " filter))))))
     (dired-change-marks ?\t ?*)))
 

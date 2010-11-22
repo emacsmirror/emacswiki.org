@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 20 15:30:27 2010 (-0800)
+;; Last-Updated: Sun Nov 21 08:59:22 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6804
+;;     Update #: 6807
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3292,9 +3292,9 @@ No such replacement is done if option
     (defalias 'customize-face                         'icicle-customize-face)
     (defalias 'customize-face-other-window            'icicle-customize-face-other-window)
     (defalias 'dabbrev-completion                     'icicle-dabbrev-completion)
-    (if (fboundp 'completion-at-point)  ; Emacs 23.2 - return fn that does all of the completion.
-        (defun lisp-completion-at-point () #'icicle-lisp-complete-symbol)
-      (defalias 'lisp-complete-symbol                 'icicle-lisp-complete-symbol))
+    (defalias 'lisp-complete-symbol                   'icicle-lisp-complete-symbol)
+    (when (fboundp 'completion-at-point) ; Emacs 23.2 - return fn that does all of the completion.
+      (defun lisp-completion-at-point () #'icicle-lisp-complete-symbol))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'icicle-minibuffer-default-add-completions))
     (defalias 'read-from-minibuffer                   'icicle-read-from-minibuffer)
@@ -3333,9 +3333,9 @@ See `icicle-redefine-standard-commands'."
     (defalias 'customize-face                         'old-customize-face)
     (defalias 'customize-face-other-window            'old-customize-face-other-window)
     (defalias 'dabbrev-completion                     'old-dabbrev-completion)
-    (if (fboundp 'completion-at-point)  ; Emacs 23.2.  It no longer uses `lisp-complete-symbol'.
-        (defalias 'lisp-completion-at-point           'old-lisp-completion-at-point)
-      (defalias 'lisp-complete-symbol                 'old-lisp-complete-symbol))
+    (defalias 'lisp-complete-symbol                   'old-lisp-complete-symbol)
+    (when (fboundp 'completion-at-point) ; Emacs 23.2.
+      (defalias 'lisp-completion-at-point             'old-lisp-completion-at-point))
     (when (fboundp 'old-minibuffer-default-add-completions)
       (defalias 'minibuffer-default-add-completions   'old-minibuffer-default-add-completions))
     (defalias 'read-from-minibuffer                   'old-read-from-minibuffer)

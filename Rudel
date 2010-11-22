@@ -179,6 +179,13 @@ to the .emacs init file. After the next restart of Emacs, a "Rudel" menu item sh
 
 In case you need additional assistance, try the #rudel IRC channel periodically. Sooner or later somebody who can help should be there. --JanMoringen
 
+[new]
+I am interested in automating rudel configuration, e.g. as an el-get recipe. The procedure to eval rudel-compile.el to produce rudel-loaddefs.el complicated automatic deployment. The following command worked for me:
+
+    emacs -batch -l rudel-compile.el -eval "(eval-buffer)"
+
+Eventually, it would be nice to have an easier method, e.g. a rudel-initialize function designed to be called from emacs init, tasked with creating or creating rudel-loadefs as needed.
+
 == Contributed Code ==
 
 === Send Chat Messages (obby Protocol only) ===
