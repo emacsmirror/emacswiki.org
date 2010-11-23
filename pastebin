@@ -8,21 +8,20 @@ pastebin allows sending of regions or whole buffers and let's you specify the vi
 
 The code is downloadable from the wiki here: [[pastebin.el]]
 
+The code is also on a [https://github.com/nicferrier/elpastebin github repo here.]
 ----
 
-File updated to match new [http://pastebin.com/api.php pastebin.com API]. It also has customization group added allowing to set default prefix (subdomain) and modes-alist. 
-
-Newest version can be reached at [http://tweedle-dee.org/svn/emacs.d/site-lisp/pastebin.el pastebin.el]
-
-IvanKorotkov
+There are two versions of pastebin's code. One is the main site available on the Internet, the other is an earlier downloadable version. The pastebin elisp library supports both of these via configuration which allows the version supported by a particular domain to be specified.
 
 ----
 
-There is either a bug in pastebin.el or a bug in pastebin.com's api. Customize and change pastebin-type-assoc for diff-mode to "dff". I've written pastebin.com to see if it can be aliased to "diff" (Almost nothing in the API is shortened, so I suspect this is a problem on their side).
+IvanKorotkov kindly updated this code to match the new [http://pastebin.com/api.php pastebin.com API] and also added customization group added allowing to set default prefix (subdomain) and modes-alist. 
 
-I'm going to update pastebin.el as well.
+He keeps his version here: [http://tweedle-dee.org/svn/emacs.d/site-lisp/pastebin.el pastebin.el]
 
-RyanDavis
+----
+
+RyanDavis customized and changed pastebin-type-assoc for diff-mode to "dff". He also tried  rewriting pastebin.com to see if it can be aliased to "diff" (Almost nothing in the API is shortened, so I suspect this is a problem on their side).
 
 ----
 CategoryInterface

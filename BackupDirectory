@@ -58,6 +58,8 @@ If you visit the backup directory from time to time to retrieve an old file vers
 
 == backup-dir package ==
 
+Note: backup-dir defines msdos-long-file-names and lets it return nil. This causes problems from Info in GNU Emacs-to-be-24 (specifically when finding a node in a gzipped multi-file document, as is the case with the gdb docs in ubuntu 10.04).
+
 Backup-dir works very well with GNU Emacs 21 and XEmacs.  Backup-dir's features are the superset of those offered by GNU Emacs and XEmacs out of the box.
 
 {{{

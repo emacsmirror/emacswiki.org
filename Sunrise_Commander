@@ -618,30 +618,31 @@ and directories you'll probably have to wait a bit for the pane to render.
 That being said, you may want to try something like this in your .emacs file:
 
     (eval-after-load 'sunrise-commander
-     
-      (defvar sr-attributes-to-hide "[drwx-]+ +[0-9]+ +"
-        "(regex) attributes to hide in sr-hide-some-attributes")
-     
-      (defun sr-hide-some-attributes ()
-        "Hides *some* attributes of all files in the active pane."
-        (interactive)
-        (save-excursion
-          (sr-unhide-attributes)
-          (goto-char (point-min))
-          (let ((next (re-search-forward sr-attributes-to-hide  nil t))
-                (attr-list nil)
-                (overlay nil))
-            (while next
-              (beginning-of-line)
-              (setq overlay (make-overlay (+ 2 (point)) (- next 1)))
-              (setq attr-list (cons overlay attr-list))
-              (overlay-put overlay 'invisible t)
-              (overlay-put overlay 'intangible t)
-              (forward-line)
-              (setq next (re-search-forward sr-attributes-to-hide nil t)))
-            (set (make-local-variable 'hidden-attrs) attr-list))))
-     
-      (add-hook 'sr-refresh-hook 'sr-hide-some-attributes))
+      '(progn
+
+         (defvar sr-attributes-to-hide "[drwx-]+ +[0-9]+ +"
+           "(regex) attributes to hide in sr-hide-some-attributes")
+
+         (defun sr-hide-some-attributes ()
+           "Hides *some* attributes of all files in the active pane."
+           (interactive)
+           (save-excursion
+             (sr-unhide-attributes)
+             (goto-char (point-min))
+             (let ((next (re-search-forward sr-attributes-to-hide  nil t))
+                   (attr-list nil)
+                   (overlay nil))
+               (while next
+                 (beginning-of-line)
+                 (setq overlay (make-overlay (+ 2 (point)) (- next 1)))
+                 (setq attr-list (cons overlay attr-list))
+                 (overlay-put overlay 'invisible t)
+                 (overlay-put overlay 'intangible t)
+                 (forward-line)
+                 (setq next (re-search-forward sr-attributes-to-hide nil t)))
+               (set (make-local-variable 'hidden-attrs) attr-list))))
+
+         (add-hook 'sr-refresh-hook 'sr-hide-some-attributes)))
 
 you'll have  to tweak /sr-attributes-to-hide/ to  match the output ls  gives you
 depending on the concrete value of  /sr-listing-switches/ you use.  You may have
@@ -659,6 +660,11 @@ choose the vertical layout and press the "Save for future sessions" button.
 [new]
 j.a., thank you very much for your fast answer and great help! I guess a "'(progn " is needed in the eval-after-load function, otherwise I got a warning about wrong number of arguments. With your above code, it looks much better to me now! I would prefer a different column order though. I am everything but a lisp expert, but if I understand your code, this could be achieved inside the while loop. I might try later when I find more time to really dive into sunrise commander. Again, thank you very much! Great work!
 -- Sven
+
+[new:::]
+Hello again, Sven. Thanks a lot for noticing the error (the eval-after-load was an afterthought, but fortunately you got the idea anyway). I'm not sure whether "changing" the order or the columns (again, we cannot change them underneath, but I believe overwriting them should be possible) wouldn't end being too complex to be worth the effort. I'll give the idea a spin tonight when I'm back home and let you know what comes out of it. Of course, if you succeed in doing it by yourself I'll be more than happy to know ;)
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
 
 
 ----

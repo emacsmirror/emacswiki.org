@@ -2,9 +2,9 @@
 ;;
 ;; Author: Lennart Borgman (lennart O borgman A gmail O com)
 ;; Created: 2010-03-16 Tue
-;; Version:
-;; Last-Updated:
-;; URL:
+;; Version: 0.5
+;; Last-Updated: 2010-03-18 Thu
+;; URL: http://bazaar.launchpad.net/~nxhtml/nxhtml/main/annotate/head%3A/util/sml-modeline.el
 ;; Keywords:
 ;; Compatibility:
 ;;
@@ -17,6 +17,7 @@
 ;;; Commentary:
 ;;
 ;; Show scrollbar like position indicator in mode line.
+;; See the global minor mode `sml-modeline-mode' for more information.
 ;;
 ;; Idea and part of this code is adapted from David Engster's and Drew
 ;; Adam's code in these mail messages:
@@ -52,88 +53,140 @@
 
 ;;;###autoload
 (defgroup sml-modeline nil
-  "Customization group for `sml-mode'."
+  "Customization group for `sml-modeline-mode'."
   :group 'frames)
 
-(defcustom sml-len 12
+(defun sml-modeline-refresh ()
+  "Refresh after option changes if loaded."
+  (when (featurep 'sml-modeline)
+    (when (and (boundp 'sml-modeline-mode)
+               sml-modeline-mode)
+      (sml-modeline-mode -1)
+      (sml-modeline-mode 1))))
+
+(defcustom sml-modeline-len 12
   "Mode line indicator total length."
   :type 'integer
+  :set (lambda (sym val)
+         (set-default sym val)
+         (sml-modeline-refresh))
   :group 'sml-modeline)
 
-(defcustom sml-borders nil
+(defcustom sml-modeline-borders nil
   "Indicator borders.
 This is a pair of indicators, like [] or nil."
   :type '(choice (const :tag "None" nil)
                  (cons (string :tag "Left border")
                        (string :tag "Right border")))
+  :set (lambda (sym val)
+         (set-default sym val)
+         (sml-modeline-refresh))
   :group 'sml-modeline)
 
-(defface sml-end-face
+(defcustom sml-modeline-numbers 'percentage
+  "Position number style.
+This can be 'percentage or 'line-number."
+  :type '(choice (const :tag "Line numbers" line-numbers)
+                 (const :tag "Percentage" percentage))
+  :set (lambda (sym val)
+         (set-default sym val)
+         (sml-modeline-refresh))
+  :group 'sml-modeline)
+
+(defface sml-modeline-end-face
   '((t (:inherit match)))
   "Face for invisible buffer parts."
   :group 'sml-modeline)
 ;; 'face `(:background ,(face-foreground 'mode-line-inactive)
 ;;         :foreground ,(face-background 'mode-line))
 
-(defface sml-vis-face
+(defface sml-modeline-vis-face
   '((t (:inherit region)))
   "Face for invisible buffer parts."
   :group 'sml-modeline)
 ;; 'face `(:background ,(face-foreground 'mode-line)
 ;;         :foreground ,(face-background 'mode-line))
 
-;;(sml-create)
-(defun sml-create ()
-  (let* ((wstart (window-start))
-         (wend (window-end))
-         (real-point-max (save-restriction (widen) (point-max)))
-         (percentage-beg (/ (float wstart) (float real-point-max)))
-         (percentage-end (/ (float wend) (float real-point-max)))
-         (sml-begin (or (car sml-borders) ""))
-         (sml-end   (or (cdr sml-borders) ""))
-         (inner-len (- sml-len (length sml-begin) (length sml-end)))
-         bpad-len
-         epad-len
-         (start (floor (* percentage-beg inner-len)))
-         (end (ceiling (* percentage-end inner-len)))
-         string)
-    (if (not (or (< wend real-point-max) (> wstart 1)))
-        ""
-      (setq string
-            (concat (format "%02d" (round (* percentage-beg 100)))
-                    "-"
-                    (format "%02d" (round (* percentage-end 100))) "%%"))
-      (setq bpad-len (floor (/ (- inner-len (length string)) 2.0)))
-      (setq epad-len (- inner-len (length string) bpad-len))
-      (setq string (concat sml-begin
-                           (make-string bpad-len 32)
-                           string
-                           (make-string epad-len 32)
-                           sml-end))
-      ;;(assert (= (length string) sml-len) t)
-      (when (= start sml-len) (setq start (1- start)))
-      (setq start (+ start (length sml-begin)))
-      (put-text-property start end 'face 'sml-vis-face string)
-      (when (and (= 0 (length sml-begin))
-                 (= 0 (length sml-end)))
-        (put-text-property 0 start 'face 'sml-end-face string)
-        (put-text-property end sml-len 'face 'sml-end-face string))
-      string)))
+;;(sml-modeline-create)
+(defun sml-modeline-create ()
+ (let* ((wstart (window-start))
+        (wend (window-end))
+        number-max number-beg number-end
+        (sml-begin (or (car sml-modeline-borders) ""))
+        (sml-end   (or (cdr sml-modeline-borders) ""))
+        (inner-len (- sml-modeline-len (length sml-begin) (length sml-end)))
+        bpad-len epad-len
+        pos-%
+        start end
+        string)
+   (if (not (or (< wend (save-restriction (widen) (point-max)))
+                (> wstart 1)))
+       ""
+     (cond
+      ((eq sml-modeline-numbers 'percentage)
+       (setq number-max (save-restriction (widen) (point-max)))
+       (setq number-beg (/ (float wstart) (float number-max)))
+       (setq number-end (/ (float wend) (float number-max)))
+       (setq start (floor (* number-beg inner-len)))
+       (setq end (floor (* number-end inner-len)))
+       (setq string
+             (concat (format "%02d" (round (* number-beg 100)))
+                     "-"
+                     (format "%02d" (round (* number-end 100))) "%%")))
+      ((eq sml-modeline-numbers 'line-numbers)
+       (save-restriction
+         (widen)
+         (setq number-max (line-number-at-pos (point-max)))
+         (setq number-beg (line-number-at-pos wstart))
+         (setq number-end (line-number-at-pos wend)))
+       (setq start (floor (* (/ number-beg (float number-max)) inner-len)))
+       (setq end   (floor (* (/ number-end (float number-max)) inner-len)))
+       (setq string
+             (concat "L"
+                     (format "%02d" number-beg)
+                     "-"
+                     (format "%02d" number-end))))
+      (t (error "Unknown sml-modeline-numbers=%S" sml-modeline-numbers)))
+     (setq inner-len (max inner-len (length string)))
+     (setq bpad-len (floor (/ (- inner-len (length string)) 2.0)))
+     (setq epad-len (- inner-len (length string) bpad-len))
+     (setq pos-% (+ bpad-len (length string) -1))
+     (setq string (concat sml-begin
+                          (make-string bpad-len 32)
+                          string
+                          (make-string epad-len 32)
+                          sml-end))
+     ;;(assert (= (length string) sml-modeline-len) t)
+     (when (= start sml-modeline-len) (setq start (1- start)))
+     (setq start (+ start (length sml-begin)))
+     (when (= start end) (setq end (1+ end)))
+     (when (= end pos-%) (setq end (1+ end))) ;; If on % add 1
+     (put-text-property start end 'face 'sml-modeline-vis-face string)
+     (when (and (= 0 (length sml-begin))
+                (= 0 (length sml-end)))
+       (put-text-property 0 start 'face 'sml-modeline-end-face string)
+       (put-text-property end sml-modeline-len 'face 'sml-modeline-end-face string))
+     string)))
 
-(defvar sml-old-car-mode-line-position nil)
+(defvar sml-modeline-old-car-mode-line-position nil)
 
 ;;;###autoload
-(define-minor-mode sml-mode
-  "Show buffer size and position like scrollbar in mode line."
+(define-minor-mode sml-modeline-mode
+  "Show buffer size and position like scrollbar in mode line.
+You can customize this minor mode, see option `sml-modeline-mode'.
+
+Note: If you turn this mode on then you probably want to turn off
+option `scroll-bar-mode'."
   :global t
   :group 'sml-modeline
-  (if sml-mode
+  (if sml-modeline-mode
       (progn
-        (unless sml-old-car-mode-line-position
-          (setq sml-old-car-mode-line-position (car mode-line-position)))
-        (setcar mode-line-position '(:eval (list (sml-create)))))
-    (setcar mode-line-position sml-old-car-mode-line-position)))
+        (unless sml-modeline-old-car-mode-line-position
+          (setq sml-modeline-old-car-mode-line-position (car mode-line-position)))
+        (setcar mode-line-position '(:eval (list (sml-modeline-create)))))
+    (setcar mode-line-position sml-modeline-old-car-mode-line-position)))
 
 
+(provide 'sml-modeline)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; sml-modeline.el ends here

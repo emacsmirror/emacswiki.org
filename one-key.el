@@ -246,6 +246,10 @@
 
 ;;; Change log:
 ;;
+;; 2010/11/23
+;;    * Joe Bloggs
+;;       * Added `one-key-template-group-key-items-by-regexps', and associated menu item.
+;;
 ;; 2010/11/20
 ;;    * Joe Bloggs
 ;;       * Added `one-key-template-write' function for saving *One-Key-Template* buffer in `one-key-menus-location',
@@ -484,19 +488,23 @@ If region is not active then move the current line instead."
         (if reg (progn (setq deactivate-mark nil) (set-mark start))
           (forward-line -1))))))
 
-(defun one-key-template-move-line-region-up (start end n)
+(defun one-key-template-move-line-region-up nil
   "Move the current line/region up by N lines where N is the prefix arg.
 If no prefix is given then N will be set to 1.
 If no region is active then just the current line will be moved."
-  (interactive "r\np")
-  (one-key-template-move-line-region start end (if (null n) -1 (- n))))
+  (interactive)
+  (if (not (mark)) (push-mark (point)))
+  (let ((start (region-beginning)) (end (region-end)) (n current-prefix-arg))
+    (one-key-template-move-line-region start end (if (null n) -1 (- n)))))
 
-(defun one-key-template-move-line-region-down (start end n)
+(defun one-key-template-move-line-region-down nil
   "Move the current line/region down by N lines where N is the prefix arg.
 If no prefix is given then N will be set to 1.
 If no region is active then just the current line will be moved."  
-  (interactive "r\np")
-  (one-key-template-move-line-region start end (if (null n) 1 n)))
+  (interactive)
+  (if (not (mark)) (push-mark (point)))
+  (let ((start (region-beginning)) (end (region-end)) (n current-prefix-arg))
+    (one-key-template-move-line-region start end (if (null n) 1 n))))
 
 (defun one-key-template-test-menu ()
   "Test the one-key menu defined in this buffer."
@@ -535,6 +543,40 @@ If no region is active then just the current line will be moved."
   "Sort one-key key definitions in region by key alphabetically."
   (interactive)
   (sort-regexp-fields nil "^\\(\\s-\\|;\\)+((\"\\(.+?\\)\" \\. \"\\(.+?\\)\") \\. \\(.+?\\))\\s-*$" "\\2" (region-beginning) (region-end)))
+
+(defun one-key-template-group-key-items-by-regexps (reverse beg end regexps)
+  "Group lines between positions BEG and END according to which regexp in REGEXPS they match.
+The groups are then placed in the same order as in REGEXPS; top first if REVERSE is nil, or bottom first if non-nil.
+When called interactively the regexp's are prompted for until a blank is entered, BEG and END are defined by the currently
+active region, and REVERSE is set to t if a prefix arg is passed but nil otherwise."
+  (interactive (list current-prefix-arg (region-beginning) (region-end) nil))
+  (let ((n 0) (regexp t) (intp (interactive-p)))
+    (while (and intp (not (equal regexp "")))
+      (setq regexps
+            (append regexps (list (read-string (concat "Enter regexps to match, in order (leave blank to end): ")))))
+      (setq regexp (nth n regexps))
+      (setq n (1+ n))))
+  (save-excursion
+    (save-restriction
+      (narrow-to-region beg end)
+      (goto-char (point-min))
+      (let ((inhibit-field-text-motion t))
+	(sort-subr reverse 'forward-line 'end-of-line nil nil
+		   (lambda (str1 str2) 
+                     (let ((cur 0) (match nil))
+                       (while (and (< cur (length regexps)) (not match))
+                         (let* ((regexp (nth cur regexps))
+                                (m1 (string-match regexp (buffer-substring (car str1) (cdr str1))))
+                                (m2 (string-match regexp (buffer-substring (car str2) (cdr str2)))))
+                           (setq cur (1+ cur))
+                           (setq match
+                                 (cond ((and (not m1) (not m2)) nil)
+                                       ((and m1 (not m2)) 1)
+                                       ((and (not m1) m2) -1)
+                                       ((< m1 m2) 1)
+                                       (t -1)))))
+                       (> match 0))))))))
+
 
 (defun one-key-template-write ()
   "Prompt user to save current one-key menu to `one-key-menus-location' with the name one-key-menu_??.el
@@ -588,6 +630,7 @@ where ?? is the name of the menu."
 
 (setq one-key-menu-one-key-template-alist
       '(
+	(("C-s" . "Sort commands (C-c C-s)") . one-key-menu-one-key-template-sort)
 	(("C-c c" . "Comment Region (C-c c)") . comment-region)
 	(("C-c u" . "Uncomment Region (C-c u)") . uncomment-region)
 	(("SPC" . "Mark key items (C-c C-SPC)") . one-key-template-mark-key-items)
@@ -597,7 +640,7 @@ where ?? is the name of the menu."
         (("M-TAB" . "Completion At Point (M-TAB)") . completion-at-point)
 	(("C-t" . "Test menu (C-c C-t)") . one-key-template-test-menu)
         (("C-w" . "Write template to one-key menus folder (C-c C-w)") . one-key-template-write)
-	(("C-s" . "Sort commands (C-c C-s)") . one-key-menu-one-key-template-sort)
+        (("e" . "emacs-lisp-mode") . emacs-lisp-mode)
 	))
 
 (defun one-key-menu-one-key-template ()
@@ -613,6 +656,8 @@ where ?? is the name of the menu."
 	(("c" . "Sort items by command alphabetically (C-c C-s c)") . one-key-template-sort-key-items-by-command-alphabetically)
 	(("d" . "Sort items by description alphabetically (C-c C-s d)") . one-key-template-sort-key-items-by-description-alphabetically)
 	(("k" . "Sort items by key alphabetically (C-c C-s k)") . one-key-template-sort-key-items-by-key-alphabetically)
+        (("g" . "Group items by regexp matches (C-c C-s g)") . one-key-template-group-key-items-by-regexps)
+        (("G" . "Group items by regexp matches, reverse order (C-c C-s G)") . (lambda nil (interactive) (setq current-prefix-arg 1) (call-interactively 'one-key-template-group-key-items-by-regexps)))
 	(("C-b" . "back to previous menu") . one-key-menu-one-key-template)))
 
 (defun one-key-menu-one-key-template-sort ()

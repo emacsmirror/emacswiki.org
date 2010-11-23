@@ -246,6 +246,15 @@ candidates are proxy candidates for these functions.)
 information about using `##C-M-{##' in the minibuffer to retrieve the
 value of any variable as minibuffer input.
 
+
+'''Gotcha:''' Your minibuffer input is matched against proxy
+candidates, as usual.  If `insert-default-directory' is non-`nil'
+when you use `C-x d' (`icicle-dired') then the default directory
+is inserted as part of your input.  If you use `TAB' for
+completion then you will first need to use `M-k' to remove the
+directory, as it will not match any of the proxy candidates.
+
+
 ----
 
 There are lots of '''Icicles''' features that enhance the display and behavior of `*Completions*' in some way. Read on...

@@ -509,6 +509,14 @@ In addition to the 20 or so files identified as "data", I get one mistaken for a
 == Empty files in subversion mirror ==
 
 The subversion repository contains two empty pages:  DavidSpreen and ScreencastProductions. As you can see they don't exist anymore on the wiki. Alex, please remove these. -- JonasBernoulli
+
+
+== colorgcc compatibility ==
+colorgcc is not compatible with flymake, I've opened a bug:
+
+https://sourceforge.net/tracker/?group_id=77501&atid=550421
+
+for an example see here: http://stackoverflow.com/questions/4149995/flymake-cfgerr-problem
 ----
 CategoryEmacsWikiSite
 

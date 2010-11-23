@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Nov  5 14:33:25 2010 (-0700)
+;; Last-Updated: Mon Nov 22 15:00:01 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25538
+;;     Update #: 25544
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2915,10 +2915,17 @@
 ;;       - Single-quoted names of color-valued variables - proxy for
 ;;         the variable value.
 ;;
-;;  See Also:
-;;  (@> "Different Places for Saving and Retrieving Candidates") for
-;;  information about using `C-M-{' in the minibuffer to retrieve the
-;;  value of any variable as minibuffer input.
+;;    See Also:
+;;    (@> "Different Places for Saving and Retrieving Candidates")
+;;    for information about using `C-M-{' in the minibuffer to
+;;    retrieve the value of any variable as minibuffer input.
+;;
+;;    Gotcha: Your minibuffer input is matched against proxy
+;;    candidates, as usual.  If `insert-default-directory' is non-nil
+;;    when you use `C-x d' (`icicle-dired') then the default directory
+;;    is inserted as part of your input.  If you use `TAB' for
+;;    completion then you will first need to use `M-k' to remove the
+;;    directory, as it will not match any of the proxy candidates.
 ;;
 ;;  There are lots of Icicles features that enhance the display and
 ;;  behavior of `*Completions*' in some way.  Read on...

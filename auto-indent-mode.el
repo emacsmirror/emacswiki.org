@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Tue Nov 16 13:16:16 2010 (-0600)
+;; Last-Updated: Mon Nov 22 12:00:34 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 362
+;;     Update #: 364
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `warnings'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -91,6 +91,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 22-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Mon Nov 22 12:00:07 2010 (-0600) #363 (Matthew L. Fidler)
+;;    auto-indent bug fix for save on save buffer hooks.
 ;; 16-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Tue Nov 16 13:16:05 2010 (-0600) #361 (Matthew L. Fidler)
 ;;    Added conf-windows-mode to ignored modes.
@@ -431,7 +434,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
 
 (defun auto-indent-file-when-save ()
   "* Auto-indent file when save."
-  (if (buffer-file-name)
+  (if (and auto-indent-minor-mode (buffer-file-name))
       (auto-indent-whole-buffer 't)))
 
 (defun auto-indent-file-when-visit ()
