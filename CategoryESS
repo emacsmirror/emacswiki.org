@@ -12,6 +12,8 @@ Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
 == Tips about Using ESS ==
 
+* [[http://code.google.com/p/ess-tracebug/|ess-tracebug]] -- Visual debugger and error tracer for ESS. Will considerably speed  up error navigation and debugging.
+
 * [[ESSIciclesCompletion|Icicles Completion]] -- Completion for ESS.
 
 

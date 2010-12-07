@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 4
-;; RCS Version: $Rev: 335 $
+;; RCS Version: $Rev: 344 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -71,7 +71,8 @@
 ;; fuzzy (a.k.a. flex) matching, then:
 ;;    - press Delete or Backspace to revert the buffer to its previous state
 ;;    - press Return, C-n or C-p to exit and accept the current narrowed state
-;;    - press Esc or C-g to abort the operation and revert the buffer.
+;;    - press Esc or C-g to abort the operation and revert the buffer
+;;    - use ! to prefix characters that should NOT appear after a given position
 ;; Once narrowed and accepted, you can restore the original contents of the pane
 ;; by pressing g (revert-buffer).
 
@@ -154,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 335 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 344 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -174,30 +175,24 @@
 
 ;; 2) Add a (require 'sunrise-commander) to your .emacs file.
 
-;; 3) If you want the function keys bound to the usual MC commands (F5 for copy,
-;; F6 for rename, and so on) add: (sunrise-mc-keys)  after  the  "require"  line
-;; (IMHO  these  bindings  are not optimal for emacs, but I'm including them be-
-;; cause some MC power users may have them too deeply embedded in  their  spinal
-;; cord)
-
-;; 4)  Choose  some  unused  extension for files to be opened in Sunrise VIRTUAL
+;; 3)  Choose  some  unused  extension for files to be opened in Sunrise VIRTUAL
 ;; mode and add it to auto-mode-alist, e.g. if you want  to  name  your  virtual
 ;; directories  like  *.svrm  just  add  to  your  .emacs  file  a line like the
 ;; following:
 ;;
 ;;     (add-to-list 'auto-mode-alist '("\\.srvm\\'" . sr-virtual-mode))
 
-;; 5) Evaluate the new lines, or reload your .emacs file, or restart emacs.
+;; 4) Evaluate the new lines, or reload your .emacs file, or restart emacs.
 
-;; 6) Type M-x sunrise to invoke the Sunrise Commander (or much better: bind the
+;; 5) Type M-x sunrise to invoke the Sunrise Commander (or much better: bind the
 ;; function to your favorite key combination). The  command  sunrise-cd  invokes
 ;; Sunrise  and  automatically  selects  the  current file wherever it is in the
 ;; filesystem. Type h at any moment for information on available key bindings.
 
-;; 7)  Type  M-x customize-group <RET> sunrise <RET> to customize options, fonts
+;; 6)  Type  M-x customize-group <RET> sunrise <RET> to customize options, fonts
 ;; and colors (activate AVFS support here, too).
 
-;; 8) Enjoy :)
+;; 7) Enjoy :)
 
 ;;; Code:
 
@@ -309,6 +304,13 @@
   "Number of entries to keep in each of the pane history rings."
   :group 'sunrise
   :type 'integer)
+
+(defcustom sr-fuzzy-negation-character ?!
+  "Character to use for negating patterns when fuzzy-narrowing a pane."
+  :group 'sunrise
+  :type '(choice
+          (const :tag "Fuzzy matching negation disabled" nil)
+          (character :tag "Fuzzy matching negation character" ?!)))
 
 (defcustom sr-start-hook nil
   "List of functions to be called after the Sunrise panes are displayed"
@@ -488,6 +490,7 @@ substitution may be about to happen."
         C-u o, C-u v .. kill quick-visited buffer (restores normal scrolling)
 
         + ............. create new directory
+        M-+ ........... create new empty file(s)
         C ............. copy marked (or current) files and directories
         R ............. rename marked (or current) files and directories
         D ............. delete marked (or current) files and directories
@@ -568,8 +571,8 @@ substitution may be about to happen."
         q, C-x k ...... quit Sunrise Commander, restore previous window setup
         M-q ........... quit Sunrise Commander, don't restore previous windows
 
-Additionally, if you activate the mc-compatible keybindings (by invoking the
-sunrise-mc-keys function) you'll get the following ones:
+Additionally, the following traditional commander-style keybindings are provided
+ (these may be disabled by customizing the ``sr-use-commander-keys'' option):
 
         F2 ............ go to directory
         F3 ............ quick visit selected file
@@ -908,6 +911,7 @@ automatically:
 (define-key sr-mode-map "\M-H"        'dired-do-hardlink)
 (define-key sr-mode-map "\C-x\C-q"    'sr-editable-pane)
 (define-key sr-mode-map "@"           'sr-fast-backup-files)
+(define-key sr-mode-map "\M-+"        'sr-create-files)
 
 (define-key sr-mode-map "="           'sr-diff)
 (define-key sr-mode-map "\C-c="       'sr-ediff)
@@ -972,24 +976,43 @@ automatically:
 
 (define-key sr-mode-map (kbd "<down-mouse-1>")  'ignore)
 
-(defun sunrise-mc-keys ()
-  "Binds the function keys F2 to F10 the traditional MC way."
-  (interactive)
-  (define-key sr-mode-map [(f2)]            'sr-goto-dir)
-  (define-key sr-mode-map [(f3)]            'sr-quick-view)
-  (define-key sr-mode-map [(f4)]            'sr-advertised-find-file)
-  (define-key sr-mode-map [(f5)]            'sr-do-copy)
-  (define-key sr-mode-map [(f6)]            'sr-do-rename)
-  (define-key sr-mode-map [(f7)]            'dired-create-directory)
-  (define-key sr-mode-map [(f8)]            'sr-do-delete)
-  (define-key sr-mode-map [(f10)]           'keyboard-escape-quit)
-  (define-key sr-mode-map [(control f3)]    'sr-sort-by-name)
-  (define-key sr-mode-map [(control f4)]    'sr-sort-by-extension)
-  (define-key sr-mode-map [(control f5)]    'sr-sort-by-time)
-  (define-key sr-mode-map [(control f6)]    'sr-sort-by-size)
-  (define-key sr-mode-map [(shift f7)]      'sr-do-symlink)
-  (define-key sr-mode-map [(insert)]        'sr-mark-toggle)
-  (define-key sr-mode-map [(control prior)] 'sr-dired-prev-subdir))
+(defvar sr-commander-keys
+  '(([(f2)]            . sr-goto-dir)
+    ([(f3)]            . sr-quick-view)
+    ([(f4)]            . sr-advertised-find-file)
+    ([(f5)]            . sr-do-copy)
+    ([(f6)]            . sr-do-rename)
+    ([(f7)]            . dired-create-directory)
+    ([(f8)]            . sr-do-delete)
+    ([(f10)]           . sr-quit)
+    ([(control f3)]    . sr-sort-by-name)
+    ([(control f4)]    . sr-sort-by-extension)
+    ([(control f5)]    . sr-sort-by-time)
+    ([(control f6)]    . sr-sort-by-size)
+    ([(shift f7)]      . sr-do-symlink)
+    ([(insert)]        . sr-mark-toggle)
+    ([(control prior)] . sr-dired-prev-subdir))
+  "Traditional commander-style keybindings for the Sunrise Commander")
+
+(defun sr-set-commander-keys (symbol value)
+  "Setter function for the sr-use-commander-keys customizable option."
+  (if value
+      (mapc (lambda (x)
+              (define-key sr-mode-map (car x) (cdr x))) sr-commander-keys)
+    (mapc (lambda (x)
+            (define-key sr-mode-map (car x) nil)) sr-commander-keys))
+  (set symbol value))
+
+(defcustom sr-use-commander-keys t
+  "Whether to use the traditional commander-style keys (F5 = copy, etc)."
+  :group 'sunrise
+  :type 'boolean
+  :set 'sr-set-commander-keys)
+
+;; These are for backward compatibility:
+(defun sunrise-mc-keys () "Currently does nothing" (interactive) (ignore))
+(make-obsolete 'sunrise-mc-keys
+               "Customize variable sr-commander-keys instead" "4R340")
 
 ;;; ============================================================================
 ;;; Initialization and finalization functions:
@@ -1424,7 +1447,8 @@ automatically:
   a virtual directory served by AVFS."
   (interactive (find-file-read-args "Find file or directory: " nil))
   (cond ((file-directory-p filename) (sr-find-regular-directory filename))
-        ((sr-avfs-dir filename) (sr-find-regular-directory (sr-avfs-dir filename)))
+        ((sr-avfs-directory-p filename)
+         (sr-find-regular-directory (sr-avfs-dir filename)))
         ((sr-virtual-directory-p filename) (sr-find-virtual-directory filename))
         (t (sr-find-regular-file filename wildcards))))
 
@@ -2140,6 +2164,29 @@ automatically:
 ;;; ============================================================================
 ;;; File manipulation functions:
 
+(defun sr-create-files (&optional qty)
+  "Interactively creates one or more (with numeric prefix QTY) empty files with
+  the given name or template. *NEVER* overwrites existing files. A template may
+  contain one %-format sequence like those used by the \"format\" function, but
+  the only supported specifiers are: d (decimal), x (hex) or o (octal)."
+  (interactive "p")
+  (let* ((qty (or (and (integerp qty) (< 0 qty) qty) 1))
+         (prompt (if (>= 1 qty) "Create file: "
+                   (format "Create %d files using template: " qty)))
+         (filename (read-file-name prompt)) (name))
+    (with-temp-buffer
+      (if (>= 1 qty)
+          (unless (file-exists-p filename) (write-file filename))
+        (unless (string-match "%[0-9]*[dox]" filename)
+          (setq filename (concat filename ".%d")))
+        (setq filename (replace-regexp-in-string "%\\([^%]\\)" "%%\\1" filename)
+              filename (replace-regexp-in-string
+                        "%%\\([0-9]*[dox]\\)" "%\\1" filename))
+        (dotimes (n qty)
+          (setq name (format filename (1+ n)))
+          (unless (file-exists-p name) (write-file name)))))
+    (sr-revert-buffer)))
+
 (defun sr-editable-pane ()
   "Puts the current pane in Editable Dired mode (WDired)."
   (interactive)
@@ -2172,7 +2219,8 @@ automatically:
            (let ((was-virtual (local-variable-p 'sr-virtual-buffer))
                  (saved-point (point)))
              (setq major-mode 'wdired-mode)
-             ad-do-it
+             (flet ((yes-or-no-p (prompt) nil))
+               ad-do-it)
              (sr-readonly-pane was-virtual)
              (goto-char saved-point)))
         ad-do-it)))
@@ -2851,7 +2899,8 @@ or (c)ontents? ")
   "Interactively narrows the contents of  the current pane using fuzzy matching:
   * press Delete or Backspace to revert the buffer to its previous state
   * press Return, C-n or C-p to exit and accept the current narrowed state
-  * press Esc or C-g to abort the operation and revert the buffer.
+  * press Esc or C-g to abort the operation and revert the buffer
+  * use ! to prefix characters that should NOT appear beyond a given position.
   Once narrowed and accepted, you can restore the original contents of the pane
   by pressing g (revert-buffer)."
   (interactive)
@@ -2859,31 +2908,40 @@ or (c)ontents? ")
     (sr-beginning-of-buffer)
     (dired-change-marks ?* ?\t)
     (let ((stack nil) (filter "") (regex "") (next-char nil) (inhibit-quit t))
-      (setq next-char (read-char "Fuzzy narrow: "))
-      (sr-backup-buffer)
-      (while next-char
-        (cond ((memq next-char '(?\e ?\C-g))
-               (setq next-char nil) (sr-revert-buffer))
-              ((eq next-char ?\C-n)
-               (setq next-char nil) (sr-beginning-of-buffer))
-              ((eq next-char ?\C-p)
-               (setq next-char nil) (sr-end-of-buffer))
-              ((memq next-char '(?\n ?\r))
-               (setq next-char nil))
-              ((memq next-char '(?\b ?\d))
-               (revert-buffer)
-               (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
-               (unless stack (setq next-char nil)))
-              (t
-               (setq filter (concat filter (char-to-string next-char))
-                     regex (concat regex (char-to-string next-char) ".*")
-                     stack (cons (cons filter regex) stack))))
-        (when next-char
-          (dired-mark-files-regexp (concat "^.*" regex "$"))
-          (dired-toggle-marks)
-          (dired-do-kill-lines)
-          (setq next-char (read-char (concat "Fuzzy narrow: " filter))))))
-    (dired-change-marks ?\t ?*)))
+      (flet ((read-next (f) (read-char (concat "Fuzzy narrow: " f))))
+        (setq next-char (read-next filter))
+        (sr-backup-buffer)
+        (while next-char
+          (cond ((memq next-char '(?\e ?\C-g))
+                 (setq next-char nil) (sr-revert-buffer))
+                ((eq next-char ?\C-n)
+                 (setq next-char nil) (sr-beginning-of-buffer))
+                ((eq next-char ?\C-p)
+                 (setq next-char nil) (sr-end-of-buffer))
+                ((memq next-char '(?\n ?\r))
+                 (setq next-char nil))
+                ((memq next-char '(?\b ?\d))
+                 (revert-buffer)
+                 (setq stack (cdr stack) filter (caar stack) regex (cdar stack))
+                 (unless stack (setq next-char nil)))
+                (t
+                 (setq filter (concat filter (char-to-string next-char)))
+                 (if (not (eq next-char sr-fuzzy-negation-character))
+                     (setq next-char (char-to-string next-char)  
+                           regex (if (string= "" regex) ".*" regex)
+                           regex (concat regex (regexp-quote next-char) ".*"))
+                   (setq next-char (char-to-string (read-next filter))
+                         filter (concat filter next-char)
+                         regex (replace-regexp-in-string "\\.\\*\\'" "" regex)
+                         regex (concat regex "[^"(regexp-quote next-char)"]*")
+                         regex (replace-regexp-in-string "\\]\\*\\[\\^" "" regex)))
+                 (setq stack (cons (cons filter regex) stack))))
+          (when next-char
+            (dired-mark-files-regexp (concat "^" regex "$"))
+            (dired-toggle-marks)
+            (dired-do-kill-lines)
+            (setq next-char (read-next filter)))))
+      (dired-change-marks ?\t ?*))))
 
 (defun sr-recent-files ()
   "Displays the history of recent files maintained by recentf in sunrise virtual
@@ -3477,8 +3535,8 @@ or (c)ontents? ")
 
 (defun sr-equal-dirs (dir1 dir2)
   "Determines whether two directory paths represent the same directory."
-  (string= (expand-file-name (concat dir1 "/"))
-           (expand-file-name (concat dir2 "/"))))
+  (string= (expand-file-name (concat (directory-file-name dir1) "/"))
+           (expand-file-name (concat (directory-file-name dir2) "/"))))
 
 (defun sr-summary ()
   "Summarize basic Sunrise commands and show recent dired errors."

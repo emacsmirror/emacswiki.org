@@ -224,16 +224,17 @@ permissions  set  for  users other than their owner you could add to your .emacs
 file a snippet like the following:
 
         (eval-after-load 'sunrise-commander
+          '(progn
 
-          (sr-rainbow sr-gorw-dir-face
-                      (:background "misty rose"
-                                   :foreground "blue1"
-                                   :bold t)
-                      "^..\\(d....\\(...\\)?w..*$\\)")
+             (sr-rainbow sr-gorw-dir-face
+                         (:background "misty rose"
+                                      :foreground "blue1"
+                                      :bold t)
+                         "^..\\(d....\\(...\\)?w..*$\\)")
  
-          (sr-rainbow sr-gorw-face
-                      (:background "misty rose")
-                      "^..\\(-....\\(...\\)?w..*$\\)"))
+             (sr-rainbow sr-gorw-face
+                         (:background "misty rose")
+                         "^..\\(-....\\(...\\)?w..*$\\)")))
 
 ----
 [:AvfsSetup]

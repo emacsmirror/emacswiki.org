@@ -370,3 +370,5 @@ This should be installed as an `after-change-function'."
 ;; tested on 23.0.90, please test on your emacs
 ;; -- dtaht
 
+;; 30 Nov 2010: @Rikal: Are you ending sentences as required (e.g.: with two spaces)? Check "C-h f sentence-end RET".
+;; -- elena

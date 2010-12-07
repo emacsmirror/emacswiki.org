@@ -171,7 +171,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-  (setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+  (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 
 ;;; :TODO Figure out why Emacs 23.2 clobbers the minibuffer when Emacs is
@@ -467,7 +467,8 @@ Used for hooks othwerwise is equivalent to calling `show-point-mode'.\n
   "Initialize local Emacs temporary directories on MON systems.\n 
 Set these Emacs \"temporary\" directories relative to `*mon-local-emacs-temp-dir*':\n
  `temporary-file-directory', `thumbs-thumbsdir', `thumbs-temp-dir',
- `doc-view-cache-directory', `slime-temp-directory', `url-temporary-directory'\n
+ `doc-view-cache-directory', `url-temporary-directory'
+ `browse-url-temp-dir', 
 When these directories do not exist created them.\n
 Signal an error when `IS-NOT-MON-SYSTEM'.\n
 When optional arg WARN-ONLY is non-nil message a warning instead of an error if
@@ -476,26 +477,53 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO `*mon-local-emacs-temp-dir*'.\n►►►"
   (mon-default-start-error/sane 
    'mon-set-emacs-temp-file/dir-init warn-only
+   ;; Make sure the following directories exist first:
+   (let* ((temporary-file-directory
+           (concat *mon-local-emacs-temp-dir* "/misc-emacs-temp"))
+          (thumbs-thumbsdir
+           (expand-file-name (format "thumbs-%d" (user-uid))
+                             (concat *mon-local-emacs-temp-dir* "/emacs-thumbs")))
+          (thumbs-temp-dir 
+           (expand-file-name (format "thumbs-%d-temp" (user-uid)) thumbs-thumbsdir))
+          (doc-view-cache-directory
+           (expand-file-name (format "docview%d" (user-uid)) 
+                             (concat *mon-local-emacs-temp-dir* "/docview-cache")))
+          (browse-url-temp-dir 
+           (expand-file-name  (format "url-%d-temp" (user-uid)) 
+                              *mon-local-emacs-temp-dir*))
+          (mon-tramp-temp-dir (expand-file-name "tramp" *mon-local-emacs-temp-dir*)))
+     (dolist (ensure-dir '(thumbs-thumbsdir thumbs-temp-dir doc-view-cache-directory
+                                                 temporary-file-directory browse-url-temp-dir
+                                                 mon-tramp-temp-dir))
+            (when (null (car (file-attributes (symbol-value ensure-dir))))
+              (mkdir (symbol-value ensure-dir) t))))
    (require 'doc-view)
    (custom-set-variables
     ;; :NOTE BZR revno: 102144 2010-10-28 removed `temporary-file-directory' from lisp/files.el
     ;; and added its customomization to lisp/cus-start.el
     ;; If something breaks around here in emacs-24 start there.
     '(temporary-file-directory 
-      (concat *mon-local-emacs-temp-dir* "/misc-emacs-temp"))
+      (concat *mon-local-emacs-temp-dir* "/misc-emacs-temp") t)
     '(thumbs-thumbsdir 
       (expand-file-name (format "thumbs-%d" (user-uid))
-       (concat *mon-local-emacs-temp-dir* "/emacs-thumbs")) t)
+                        (concat *mon-local-emacs-temp-dir* "/emacs-thumbs")))
     '(thumbs-temp-dir
-      (expand-file-name (format "thumbs-%d-temp" (user-uid)) thumbs-thumbsdir) t)
-   '(doc-view-cache-directory
-     (expand-file-name (format "docview%d" (user-uid)) 
-      (concat *mon-local-emacs-temp-dir* "/docview-cache")) t))
-   ;; Make sure the above directories exist.
-   (dolist (ensure-dir '(thumbs-temp-dir thumbs-thumbsdir
-					 temporary-file-directory doc-view-cache-directory))
-     (when (null (car (file-attributes (symbol-value ensure-dir))))
-       (mkdir (symbol-value ensure-dir) t)))))
+      (expand-file-name (format "thumbs-%d-temp" (user-uid)) thumbs-thumbsdir))
+    '(doc-view-cache-directory
+      (expand-file-name (format "docview%d" (user-uid)) 
+                        (concat *mon-local-emacs-temp-dir* "/docview-cache")) t)
+    '(browse-url-temp-dir 
+      (expand-file-name  (format "url-%d-temp" (user-uid)) 
+                         *mon-local-emacs-temp-dir*) t)
+    '(url-temporary-directory browse-url-temp-dir))
+   ;; :SEE `mon-purge-tramp-persistency-file', `tramp-compat-temporary-file-directory', 
+   (when (and (intern-soft "IS-MON-P" obarray) ;;*IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-P))
+     (custom-set-variables '(tramp-persistency-file-name 
+                             (expand-file-name (format "tramp-persist-%d" (user-uid))
+                                               (concat *mon-local-emacs-temp-dir* "/tramp")))))
+   ;;'( `slime-temp-directory'  {...} ) this is hardwired to value of `temporary-file-directory'
+    ))
 ;;
 ;; (mon-set-emacs-temp-file/dir-init t)
 (mon-set-emacs-temp-file/dir-init)
@@ -526,7 +554,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      (when (and (intern-soft  "Info-dir-contents" obarray)
                 (bound-and-true-p Info-dir-contents))
        (setq Info-dir-contents nil))
-     (when (and (intern-soft  "Info-dir-contents-directory" obarray)
+     (when (and (intern-soft  "Info-dir-contents-directory" obarray) ;; *IS-MON-OBARRAY*
                 (bound-and-true-p Info-dir-contents-directory))
        (setq Info-dir-contents-directory nil))
      (let ((emc-pth (getenv "EMC_PTH"))
@@ -684,7 +712,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 `find-function-source-path', `internal-doc-file-name', `mon-help-emacs-introspect'.\n►►►"
   (mon-default-start-error/sane 
    'mon-set-C-source-directory-init warn-only
-   (cond  ((and (intern-soft "IS-MON-P-W32" obarray) (bound-and-true-p IS-MON-P-W32))
+   (cond  ((and (intern-soft "IS-MON-P-W32" obarray)  ;; *IS-MON-OBARRAY*
+                (bound-and-true-p IS-MON-P-W32))
            (let ((c-srcs 
                   (file-expand-wildcards (concat (getenv "SP_BIN") "/*/emacs-cur-src/*/src") t)))
              (when (car c-srcs)
@@ -701,7 +730,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
           ;; shared repo bzr setup, e.g. wildcard expansion of the environment
           ;; variable "DEVHOME".
           ;; 
-          ((and (intern-soft "IS-MON-P-GNU" obarray) (bound-and-true-p IS-MON-P-GNU))
+          ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                (bound-and-true-p IS-MON-P-GNU))
            (let ((c-srcs
                   (or (car (file-expand-wildcards (concat (getenv "DEVHOME") "/ema*/tr*/src") t))
                       ;;(car (file-expand-wildcards (concat *mon-HG-root-path* "/ema*/tr*/src") t))
@@ -736,7 +766,8 @@ Sets the following variables:
 `mon-help-diacritics', `mon-help-char-representation'.\n►►►"
   (mon-default-start-error/sane 
    'mon-set-unicodedata-init warn-only ;; nil
-   (when (and (intern-soft "IS-MON-P" obarray) (bound-and-true-p IS-MON-P))
+   (when (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-P))
      (require 'descr-text)
      (let ((chk-UCF (expand-file-name "UNICODE-DATA/UnicodeData.txt" *mon-site-lisp-root*)))
        (when (file-exists-p chk-UCF)
@@ -748,13 +779,14 @@ Sets the following variables:
          ;;     (list (custom-quote (eval describe-char-unicodedata-file))))
          (set-variable 'describe-char-unicodedata-file chk-UCF)
          (custom-note-var-changed 'describe-char-unicodedata-file))
-     ;; (custom-set-variables '(describe-char-unidata-list chk-UCF))
-     ;; describe-char-unidata-list 
-     (custom-set-variables '(describe-char-unidata-list
-                             '(name general-category decomposition 
-                                    digit-value numeric-value old-name iso-10646-comment)))
-     ))
+       ;; (custom-set-variables '(describe-char-unidata-list chk-UCF))
+       ;; describe-char-unidata-list 
+       (custom-set-variables 
+        '(describe-char-unidata-list '(name general-category decomposition 
+                                       digit-value numeric-value old-name 
+                                       iso-10646-comment)))))
    ))
+;;
 ;; (mon-set-unicodedata-init)
 ;; (mon-set-unicodedata-init)
 
@@ -778,7 +810,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 `*mon-pdftotext-exec-path*', `*mon-pdfinfo-exec-path*'.\n►►►"
   (mon-default-start-error/sane 
    'mon-set-doc-view-programs-init warn-only ;; nil
-   (when (and (intern-soft "IS-MON-P-W32" obarray) (bound-and-true-p IS-MON-P-W32))
+   (when (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-P-W32))
      (custom-set-variables
       '(doc-view-dvipdf-program nil)
       '(doc-view-dvipdfm-program 
@@ -836,8 +869,10 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
    ;; :NOTE Imagemagick is supplied with Emacs prop. Emacs 24 we can re-enable
    ;; svg for w32 (assuming libsvg or equiv) is no longer a required dependency
    ;;
-   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) (bound-and-true-p IS-MON-SYSTEM-P))
-     (if (and (intern-soft "IS-W32-P" obarray) (bound-and-true-p IS-W32-P))
+   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-SYSTEM-P))
+     (if (and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-W32-P))
          (custom-set-variables       
           '(image-file-name-extensions 
             '("jpeg" "jpg" "gif" "tiff" "tif" 
@@ -864,7 +899,6 @@ of the ImageMagick executables convert.exe and imconvert.exe\n
 ;; (mon-set-thumbs-conversion-program-init t)
 (mon-set-thumbs-conversion-program-init)
 
-
 ;;; ==============================
 ;;; :CHANGESET 2292
 ;;; :CREATED <Timestamp: #{2010-11-09T20:36:53-05:00Z}#{10452} - by MON KEY>
@@ -890,7 +924,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
           ;; :NOTE In case we want to create the API for imagemagick's import.
           ;; 9/10 times on a GNU this will return /usr/bin but we do it here
           ;; for the sake of consistency...
-          (when (and (intern-soft "IS-MON-P-GNU" obarray)
+          (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                      (bound-and-true-p IS-MON-P-GNU))
             (when (executable-find "import")
               (directory-file-name 
@@ -921,9 +955,11 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
    'mon-set-ispell-init warn-only
    (custom-set-variables
     '(ispell-program-name 
-      (cond ((and (intern-soft "IS-MON-P-GNU" obarray) (bound-and-true-p IS-MON-P-GNU))
+      (cond ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
+                  (bound-and-true-p IS-MON-P-GNU))
              (executable-find "aspell"))
-            ((and (intern-soft "IS-W32-P" obarray) (bound-and-true-p IS-W32-P))
+            ((and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
+                  (bound-and-true-p IS-W32-P))
              (or (convert-standard-filename (executable-find "aspell"))
                  (convert-standard-filename (concat (getenv "SP_ASPLL") "\\aspell.exe")))))))
    ))
@@ -1041,7 +1077,8 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
   (mon-default-start-error/sane
    'mon-set-ido-init warn-only
    ;; :NOTE .ido.last used to be "ido_last"
-   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) (bound-and-true-p IS-MON-SYSTEM-P))
+   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+              (bound-and-true-p IS-MON-SYSTEM-P))
      (require 'ido)
      (let ((mk-ido-d (concat (file-truename (getenv "HOME")) "/.emacs.d/ido")))
        (unless (file-directory-p mk-ido-d) (mkdir mk-ido-d))
@@ -1080,13 +1117,16 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
          ;; ido-max-work-directory-list ;; :DEFAULT 50
          ;; ido-auto-merge-work-directories-length ;; :DEFAULT 0 -- merge when 0 chars don't match 
          ))
-     (cond ((and (intern-soft "IS-MON-P-W32" obarray) (bound-and-true-p IS-MON-P-W32))
+     (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
+                 (bound-and-true-p IS-MON-P-W32))
             (custom-set-variables 
              '(ido-work-directory-list-ignore-regexps 
                '("c:/WINDOWS/.NtUninstall.*") t)))
            ((and (intern-soft "IS-MON-P-GNU" obarray) (bound-and-true-p IS-MON-P-GNU))
             (custom-set-variables 
-             '(ido-work-directory-list-ignore-regexps  '(".*lost+found.*") t)))))
+             '(ido-work-directory-list-ignore-regexps  
+               (list ".*lost+found.*" (concat ".*" (regexp-opt '(".git" ".bzr" ".hg" ".svn" "_darcs"))))
+               t)))))
    ))
 ;;
 ;; (mon-set-ido-init t)
@@ -1181,12 +1221,12 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 (defun mon-set-custom-file-init-w32-configs (&optional warn-only)
   "Set w32 specific configs at init time.\n
 :SEE-ALSO `mon-keybind-w32-init', `mon-keybind-put-hooks-init'.\n►►►"
-  (when (and (intern-soft "IS-W32-P" obarray) 
-             (intern-soft "IS-MON-SYSTEM-P" obarray)
+  (when (and (intern-soft "IS-W32-P" obarray)  ;; *IS-MON-OBARRAY*
+             (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P)
              ;;(featurep 'emacsw32)
              )
-    (when (not (and (intern-soft "IS-MON-P" obarray)
+    (when (not (and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
                     (bound-and-true-p IS-MON-P)))
       (custom-set-variables
        '(initial-major-mode 'fundamental-mode)
@@ -1237,13 +1277,13 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
   (mon-default-start-error/sane
    'mon-set-custom-file-init warn-only
    (let* ((*mon-user-emacsd* (file-name-as-directory *mon-user-emacsd*))
-          (mscf (cond ((and (intern-soft "IS-MON-P-W32" obarray) 
+          (mscf (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
                             (bound-and-true-p IS-MON-P-W32))
                        (concat *mon-user-emacsd* (nth 2 (assoc 1 *mon-emacsd*))))
-                      ((and (intern-soft "IS-BUG-P" obarray) 
+                      ((and (intern-soft "IS-BUG-P" obarray)  ;; *IS-MON-OBARRAY*
                             (bound-and-true-p IS-BUG-P))
                        (concat *mon-user-emacsd* (nth 2 (assoc 3 *mon-emacsd*))))
-                      ((and (intern-soft "IS-MON-P-GNU" obarray) 
+                      ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                             (bound-and-true-p IS-MON-P-GNU))
                        (concat *mon-user-emacsd* (nth 2 (assoc 2 *mon-emacsd*)))))))
      (setq custom-file mscf))
@@ -1283,11 +1323,11 @@ the function `mon-help-CL-symbols' and variable `*mon-help-CL-symbols*' in:
 :SEE-ALSO `mon-purge-cl-symbol-buffers-on-load'.\n►►►"
   (mon-default-start-error/sane
    'mon-set-common-lisp-hspec-init warn-only
-   (when (or (and (intern-soft "IS-MON-P-GNU" obarray) 
+   (when (or (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p IS-MON-P-GNU))
-             (and (intern-soft "IS-MON-P-W32" obarray) 
+             (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p IS-MON-P-32)
-                  (not (and (intern-soft "IS-BUG-P" obarray) 
+                  (not (and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
                             (bound-and-true-p IS-BUG-P)))))
      (unless (and (bound-and-true-p common-lisp-hyperspec-root)
                   (bound-and-true-p common-lisp-hyperspec-issuex-table)
@@ -1315,12 +1355,12 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO .\n►►►"
   (mon-default-start-error/sane
    'mon-set-slime-init warn-only
-   (when (and (intern-soft "IS-MON-P-W32" obarray) 
+   (when (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-P-W32))
      (load-file "slime-loads.el"))
    ;; (when IS-MON-P-GNU (require 'slime-loads-GNU-clbuild)
    ;;        (mon-slime-setup-init))
-   (when (and (intern-soft "IS-MON-P" obarray) 
+   (when (and (intern-soft "IS-MON-P" obarray)  ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-P))
      (add-hook 'emacs-lisp-mode-hook
                (function (lambda () 
@@ -1330,10 +1370,10 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
                  (set (make-local-variable 'indent-tabs-mode) nil))))
      (add-hook 'emacs-lisp-mode-hook 
                (function (lambda ()  ;; `minibuffer-completing-symbol'
-                 (set (make-local-variable 'eval-expression-print-level) 8))))
+                           (set (make-local-variable 'eval-expression-print-level) 8))))
      (add-hook 'emacs-lisp-mode-hook 
                (function (lambda () 
-                 (set (make-local-variable 'eval-expression-print-length) nil))))
+                           (set (make-local-variable 'eval-expression-print-length) nil))))
      ;; ==============================
      ;; :NOTE Following should be added/removed according to need:
      ;; -*-truncate-lines: t; -*-
@@ -1371,7 +1411,7 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
      ;; (proced-toggle-auto-update 1)))
      (proced))
    ;; Lets see the tty's when on a GNU/Linux box.
-   (when (and (intern-soft "IS-MON-P-GNU" obarray) 
+   (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-P-GNU))
      (setq proced-format 'medium))))
 ;;
@@ -1388,10 +1428,10 @@ function is already a member of variable `*mon-default-start-load-sanity*' as pe
 :SEE-ALSO .\n►►►"
   (mon-default-start-error/sane
    'mon-set-auctex-init warn-only
-   (when (and (intern-soft "IS-MON-P-GNU" obarray) 
+   (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
               (bound-and-true-p IS-MON-P-GNU))
-     (load "auctex" t);;nil t t)
-     (load "preview-latex" t));;nil t t))
+     (load "auctex" t)
+     (load "preview-latex" t))
    ))
 ;;
 ;; (mon-set-auctex-init t)
@@ -1994,15 +2034,15 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
   (mon-default-start-error/sane
    'mon-set-system-specific-and-load-init warn-only
    (mon-set-mon-feature-customs-init)
-   (cond ((or (and (intern-soft "IS-MON-P-W32" obarray) 
+   (cond ((or (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
                    (bound-and-true-p IS-MON-P-W32))
-              (and (intern-soft "IS-BUG-P" obarray) 
+              (and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
                    (bound-and-true-p IS-BUG-P)))
           (require 'mon-w32-load))
-         ((and (intern-soft "IS-MON-P" obarray) 
+         ((and (intern-soft "IS-MON-P" obarray) ;; *IS-MON-OBARRAY*
                (bound-and-true-p IS-MON-P))
           (require 'grep)
-          (when (and (intern-soft "IS-MON-P-GNU" obarray) 
+          (when (and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                      (bound-and-true-p IS-MON-P-GNU))
             (require 'mon-GNU-load)
             ;; (require 'mon-GNU-load-no-HG)          
@@ -2031,7 +2071,7 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
    (mon-set-lisp-init)
    (mon-set-dvc-init)   
    (mon-set-css-path-init)
-   (mon-set-auctex-init)
+   ;; (mon-set-auctex-init)
    (mon-set-proced-init)
    (mon-set-rst-mode-faces-init)
    (mon-set-traverselisp-init)
@@ -2087,7 +2127,8 @@ When `IS-MON-P-GNU' require mon-GNU-load.el\n
 (provide 'mon-default-start-loads)
 ;;; ==============================
 
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) (bound-and-true-p IS-MON-SYSTEM-P))
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+           (bound-and-true-p IS-MON-SYSTEM-P))
   (eval-after-load "mon-default-start-loads" '(require 'mon-post-load-hooks)))
 
  

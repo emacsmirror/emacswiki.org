@@ -6,7 +6,7 @@
 ;; Created: 03 October 2001. (as utility functions in my `.emacs' file.)
 ;;          14 March   2010. (re-written as library `volatile-highlights.el')
 ;; Keywords: emulations convenience wp
-;; Revision: $Id: ebc9f4de7a47942b6b31cef163f8d1d276e4458d $
+;; Revision: $Id: 94f8a6e3c508948c02040446c342b14ca029dbdf $
 ;; URL: http://www.emacswiki.org/emacs/download/volatile-highlights.el
 ;; GitHub: http://github.com/k-talo/volatile-highlights.el
 
@@ -77,12 +77,18 @@
 
 ;;; Change Log:
 
+;;   - Fixed a bug that highlights won't be appear when
+;;     occurrences is in folded line.
+;;
+;;  v1.2, Tue Nov 30 01:07:48 2010 JST
+;;   - In `vhl/ext/occur', highlight all occurrences.
+;;
 ;;  v1.1, Tue Nov  9 20:36:09 2010 JST
 ;;   - Fixed a bug that mode toggling feature was not working.
 
 ;;; Code:
 
-(defconst vhl/version "1.1")
+(defconst vhl/version "1.2")
 
 (eval-when-compile
   (require 'cl)
@@ -421,35 +427,62 @@ be used as the value."
   "Turn on volatile highlighting for `occur'."
   (interactive)
   
-  (lexical-let ((*occur-str* nil))
+  (lexical-let ((*occur-str* nil)) ;; Text in current line.
     (defun vhl/ext/occur/.pre-hook-fn ()
       (save-excursion
         (let* ((bol (progn (beginning-of-line) (point)))
                (eol (progn (end-of-line) (point)))
-               (bos (text-property-any bol eol 'occur-match t))
-               (eos (next-single-property-change bos 'occur-match)))
-          (setq *occur-str* (and bos eos
-                                 (buffer-substring bos eos))))))
+               (bos (text-property-any bol eol 'occur-match t)))
+          (setq *occur-str* (and bos eol
+                                 (buffer-substring bos eol))))))
 
     (defun vhl/ext/occur/.post-hook-fn ()
       (let ((marker (and *occur-str*
-                         (get-text-property 0 'occur-target *occur-str*))))
+                         (get-text-property 0 'occur-target *occur-str*)))
+            (len (length *occur-str*))
+            (ptr 0)
+            (be-lst nil))
         (when marker
+          ;; Detect position of each occurrence by scanning face
+          ;; `list-matching-lines-face' put on them.
+          (while (and ptr
+                      (setq ptr (text-property-any ptr len
+                                                   'face
+                                                   list-matching-lines-face
+                                                   *occur-str*)))
+            (let ((beg ptr)
+                  (end (or (setq ptr
+                                 (next-single-property-change
+                                  ptr 'face *occur-str*))
+                           ;; Occurrence ends at eol.
+                           len)))
+              (push (list beg end)
+                    be-lst)))
+          ;; Put volatile highlights on occurrences.
           (with-current-buffer (marker-buffer marker)
-            (let* ((bos (marker-position marker))
-                   (eos (+ bos (length *occur-str*))))
-              (mapcar (lambda (ov)
-                        (when (overlay-get ov 'invisible)
-                          (save-excursion
-                            (goto-char (overlay-start ov))
-                            (beginning-of-line)
-                            (setq bos (min bos (point)))
-                            (goto-char (overlay-end ov))
-                            (end-of-line)
-                            (setq eos (max eos (point)))
-                            )))
-                      (overlays-at bos))
-              (vhl/add bos eos))))))
+            (let* ((bol (marker-position marker)))
+              (dolist (be be-lst)
+                (let ((pt-beg (+ bol (nth 0 be)))
+                      (pt-end (+ bol (nth 1 be))))
+                  ;; When the occurrence is in folded line,
+                  ;; put highlight over whole line which
+                  ;; contains folded part.
+                  (mapcar (lambda (ov)
+                            (when (overlay-get ov 'invisible)
+                              (message "INVISIBLE: %s" ov)
+                              (save-excursion
+                                (goto-char (overlay-start ov))
+                                (beginning-of-line)
+                                (setq pt-beg (min pt-beg (point)))
+                                (goto-char (overlay-end ov))
+                                (end-of-line)
+                                (setq pt-end (max pt-end (point))))))
+                          (overlays-at pt-beg))
+                  
+                  (vhl/add pt-beg
+                           pt-end
+                           nil
+                           list-matching-lines-face))))))))
     
       
     (defadvice occur-mode-goto-occurrence (before vhl/ext/occur/pre-hook (&optional event))

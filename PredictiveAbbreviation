@@ -84,5 +84,8 @@ Normally hitting ##TAB## a second time after a completion will take you to a sug
 (fset 'pabbrev-suggestions-goto-buffer 'pabbrevx-suggestions-goto-buffer)
 </pre>
 
+[new]
+This hack does not work with the latest stable auto-complete version because ac-prefix-function does not exist. Could somebody update it, please?
+
 ----
 CategoryCompletion

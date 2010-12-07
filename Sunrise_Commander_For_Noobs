@@ -22,7 +22,15 @@ In the end, then, here's a shot at my mission statement: /build a body of docume
 ----
 [:Basics]
 ==Emacs basics & tips==
-To come...
+I began using emacs specifically because I found [http://orgmode.org Org-mode]. I had no emacs knowledge, and even though Org-mode looked fantastic, learning emacs just to get at its functionality was a big scary obstacle. I had been using [http://www.tiddlywiki.com TiddlyWiki], installed emacs and tried Org-mode for literally about 5 minutes and decided it just wasn't worth the investment of my time. It felt like the time I installed FreeBSD on my MacBook just to attempt to be more of a Unix "purist." After leaving it running for about a week straight to compile what I wanted (calling my wife several times a day from work to tell her to mark various compile options and tell it to continue), I realized that it just wasn't worth it. That's how I felt about emacs and Org-mode. 
+
+Eventually, though, my frustrations with TiddlyWiki built to the point that I tried again. This time I took a step back and learned some of emacs first. Just the bare bones basics for just learning how to open a file, save a file, and close emacs. I printed out a [http://media.commandline.org.uk/code/emacs.pdf cheat sheet] (probably not the best, but it seemed concise and easy to follow) and pinned it to my cubicle wall. It's still there after probably 9 months now.
+
+I include this somewhat irrelevant anecdote specifically for noobs who can relate. I have found various emacs modes to be priceless compared to the alternatives. Emacs has become so integral in such a short time for my work that I would rank it right under Linux in the best computer/software related items I've ever found. If you have read about Sunrise Commander (or any emacs mode) and thought, "That just sounds like ''exactly'' what I want," but are turned away by emacs... I encourage you to try again. I'm specifically writing this page to try and save others from being "emacs quitters" like I almost was! It's worth it!
+
+So, onto some basics. Don't stick with these, though; go read up on [http://www2.lib.uchicago.edu/keith/tcl-course/emacs-tutorial.html some] [http://jeremy.zawodny.com/emacs/emacs.html emacs] [http://xahlee.org/emacs/emacs.html tutorials] as well. I just want to provide something for the complete beginner so that you don't do what I did and literally stare at the screen with finger paralysis.
+
+*More to come...*
 
 
 ----

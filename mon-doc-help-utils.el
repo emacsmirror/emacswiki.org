@@ -426,7 +426,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; :NOTE `mon-help-parse-interactive-spec' has failover in mon-doc-help-utils-supplemental.el
 ;;; :NOTE `mon-help-function-spit-doc' has failover inlined but defaults to `intersection'
@@ -441,15 +441,16 @@
 (require 'mon-regexp-symbols)
 (require 'mon-insertion-utils)
 
-(declare-function mon-check-feature-for-loadtime "mon-utils")
-(declare-function mon-string-index               "mon-utils")
-(declare-function mon-string-upto-index          "mon-utils")
-(declare-function mon-string-after-index         "mon-utils")
-(declare-function mon-string-justify-left        "mon-utils")
-(declare-function mon-comment-divider            "mon-insertion-utils")
-(declare-function mon-insert-lisp-testme         "mon-testme-utils")
-(declare-function mon-buffer-sub-no-prop         "mon-utils")
-(declare-function mon-g2be                       "mon-utils")
+(declare-function mon-check-feature-for-loadtime "mon-utils" (feature-as-symbol &optional req-w-filname))
+(declare-function mon-string-index               "mon-utils" (string-to-idx needle &optional frompos))
+(declare-function mon-string-upto-index          "mon-utils" (in-string upto-string))
+(declare-function mon-string-after-index         "mon-utils" (in-str after-str))
+(declare-function mon-string-justify-left        "mon-utils" (justify-string &optional justify-width lft-margin no-rmv-trail-wspc))
+(declare-function mon-comment-divider            "mon-insertion-utils" (&optional no-insrtp intrp))
+(declare-function mon-insert-lisp-testme         "mon-testme-utils" (&optional search-func test-me-count insertp intrp))
+(declare-function mon-g2be                       "mon-buffer-utils"    (&optional min/max-go no-go))
+(declare-function mon-buffer-sub-no-prop         "mon-buffer-utils"        (&optional buf-beg buf-end))
+
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-06T11:43:27-05:00Z}#{10056} - by MON KEY>
@@ -2592,6 +2593,8 @@ When non-nil PST-V-STR is a string to insert after value string of var-name.\n
                  (concat ,getv-doc ,pre-v-str ,getv-val ,pst-v-str)
                  (concat (car ,getv-doc) ,pre-v-str ,getv-val ,pst-v-str (cadr ,getv-doc))))
        (put ,func-name 'function-documentation ,putf-doc))))
+
+;;; (put 'mon-help-put-var-doc-val->func  'lisp-indent-function <INT>) 
 ;; 
 ;;; :TEST-ME (pp-macroexpand-expression '(mon-help-put-var-doc-val->func 
 
@@ -2704,8 +2707,8 @@ from lists bound variables.\n
        ;; (put var-name 'variable-documentation ,c-doc)
        (plist-put (symbol-plist ',var-name)   'variable-documentation ,v-doc))))
 ;;
-;;; (progn (fmakunbound 'mon-help-swap-var-doc-const-val)
-;;;        (unintern "mon-help-swap-var-doc-const-val" obarray) )
+;;; (put 'mon-help-swap-var-doc-const-val  'lisp-indent-function <INT>) 
+;;
 ;;
 ;;,---- :UNCOMMENT-BELOW-TO-TEST
 ;;| (progn
@@ -3964,7 +3967,7 @@ Default is `*mon-doc-cookie*'.\n
 
 ;; :MON-FUNCTIONS-STRING
 `mon-string-spread'
-`mon-string-split-commas'
+`mon-region-split-commas'
 `mon-string->strings-splice-sep'
 `mon-string->symbol'
 `mon-string-after-index'
@@ -3981,7 +3984,7 @@ Default is `*mon-doc-cookie*'.\n
 `mon-string-ify-current-line'
 `mon-string-ify-list'
 `mon-string-incr'
-`mon-string-incr-padded'
+`mon-line-string-incr-padded'
 `mon-string-index'
 `mon-string-infix'
 `mon-string-insert-string-at-idx'
@@ -4000,7 +4003,7 @@ Default is `*mon-doc-cookie*'.\n
 `mon-string-split-dir-recurse'
 `mon-string-splice-sep'
 `mon-string-split-and-unquote'
-`mon-string-split-line'
+`mon-line-string-get'
 `mon-string-split-on-regexp'
 `mon-string-sub-old->new'
 `mon-string-to-hex-list'
@@ -4358,7 +4361,7 @@ Default is `*mon-doc-cookie*'.\n
 `mon-line-strings-pipe-bol'
 `naf-backup-the-list'
 `mon-delete-back-up-list'
-`mon-pipe-list'
+`mon-line-pipe-lines'
 
 ;; :MON-FUNCTIONS-REPLACE
 `mon-regexp-map-match'
@@ -4803,6 +4806,57 @@ Unless indicated as a '<FUNCTION>' items listed are '<VARIABLE>'.\n
                      "-- pass non-nil for optional arg INTRP"))))
 ;;
 ;;; :TEST-ME (mon-help-emacs-introspect t)
+
+
+;;; ==============================
+;;; :CHANGESET 2327
+;;; :CREATED <Timestamp: #{2010-11-24T13:22:55-05:00Z}#{10473} - by MON KEY>
+(defvar *mon-emacs-external-programs-vars* 
+  '((find-program                     . "lisp/progmodes/grep.el")
+    (xargs-program                    . "lisp/progmodes/grep.el")
+    (grep-program                     . "lisp/progmodes/grep.el")
+    (tramp-smb-program                . "lisp/net/tramp-smb.el")
+    (jka-compr-compression-info-list  . "lisp/jka-cmpr-hook.el")
+    (insert-directory-program         . "lisp/files.el")
+    (directory-free-space-program     . "lisp/files.el")
+    (ispell-program-name              .  "lisp/textmodes/ispell.el")
+    (thumbs-conversion-program        . "lisp/thumbs.el")
+    (browse-url-firefox-program       . "lisp/net/browse-url.el")
+    (browse-url-mozilla-program       . "lisp/net/browse-url.el")
+    (browse-url-netscape-program      . "lisp/net/browse-url.el")
+    (browse-url-galeon-program        . "lisp/net/browse-url.el")
+    (browse-url-epiphany-program      . "lisp/net/browse-url.el")
+    (browse-url-gnome-moz-program     . "lisp/net/browse-url.el")
+    (browse-url-mosaic-program        . "lisp/net/browse-url.el")
+    (browse-url-xterm-program         . "lisp/net/browse-url.el")
+    (browse-url-gnudoit-program       . "lisp/net/browse-url.el")
+    (browse-url-text-lisp/net/browser . "lisp/net/browse-url.el")
+    (browse-url-kde-program           . "lisp/net/browse-url.el")
+    (inferior-lisp-program            . "slime.el"))
+ "List of variables that point to external executables used by Emacs.
+Each elt of list is a cons the car is a variable the cdr a string designating
+the defining files name. For libraries distributed with Emacs it may be either
+a relative path, e.g. lisp/emacs-lisp/*.el for external libraries it is a
+filename only.\n
+:SEE-ALSO `mon-help-emacs-external-programs', `mon-help-process-functions',
+`mon-help-network-process', `mon-help-server-functions'.\n►►►")
+
+;; 
+;;; ==============================
+;; (defun mon-help-emacs-external-programs  (&optional insertp intrp)
+;;   "List of external programs Emacs variables and functions invoke or access.\n
+;;  :SEE-ALSO `*mon-emacs-external-programs-vars*'.\n►►►"
+;;   (interactive "i\nP")
+;;   (if (or insertp intrp)
+;;       (mon-help-function-spit-doc 'mon-help-emacs-introspect :insertp t)
+;;     (message (concat ":FUNCTION `mon-help-emacs-introspect' " 
+;;                      "-- pass non-nil for optional arg INTRP"))))
+;;
+;;; :TEST-ME (mon-help-emacs-introspect )
+;;; :TEST-ME (mon-help-emacs-introspect )
+;;; :TEST-ME (mon-help-emacs-introspect )
+
+
 
 ;;; ==============================
 ;;; :TODO Maybe refactor this to build the docstring at loadtime.
@@ -5459,6 +5513,7 @@ This is different from getting the char's syntax:
 `insert-file'
 `load-file'
 `make-temp-file'
+`make-temp-name'
 `make-symbolic-link'
 `process-file'
 `start-file-process'
@@ -5467,6 +5522,7 @@ This is different from getting the char's syntax:
 `append-to-file'
 `delete-file'
 `make-directory'
+`make-directory-internal'
 `rename-file'
 `with-temp-file'                ; :NOTE Output to generated bufer \" *temp file*\"
 `write-file'\n
@@ -5482,6 +5538,7 @@ This is different from getting the char's syntax:
 `desktop-read'
 `file-readable-p'
 `find-file-read-args'
+`find-backup-file-name'
 `next-read-file-uses-dialog-p'
 `read-abbrev-file'
 `read-directory-name'
@@ -5544,6 +5601,7 @@ This is different from getting the char's syntax:
 `file-truename'
 `minibuffer-completing-file-name'
 `parse-colon-path'
+`tramp-drop-volume-letter'
 `x-file-dialog'\n
 ;; :FILE-DIRECTORY-PREDICATE
 `file-name-absolute-p'
@@ -5562,6 +5620,15 @@ This is different from getting the char's syntax:
 `file-exists-p'
 `file-locked-p'
 `next-read-file-uses-dialog-p'\n
+;; :FILE-DIRECTORY-COMINT
+`comint-replace-by-expanded-filename'
+`comint-dynamic-list-filename-completions'
+`comint-dynamic-complete-as-filename'
+`comint-dynamic-complete-filename'
+`comint-match-partial-filename'
+`comint-completion-addsuffix'
+`comint-directory'
+`comint-file-name-quote-list' ;<VARIABLE>\n
 ;; :FILE-DIRECTORY-FIND
 `file-expand-wildcards'
 `wildcard-to-regexp'
@@ -5928,6 +5995,9 @@ This is different from getting the char's syntax:
 `start-file-process-shell-command'
 `start-process-shell-command'
 `stop-process'\n
+;; :PROCESS-COMINT
+`comint-check-proc'
+`make-comint-in-buffer'\n
 ;; :PROCESS-INSPECT
 `process-datagram-address'
 `process-mark'
@@ -5938,7 +6008,7 @@ This is different from getting the char's syntax:
 `process-exit-status'
 `process-command'
 `process-id'
-`process-filter'
+`process-filter'           
 `process-plist'
 `process-name'
 `process-sentinel'
@@ -5982,7 +6052,8 @@ This is different from getting the char's syntax:
 `mon-get-proc-w-name'
 `mon-get-sys-proc-list'
 `mon-insert-sys-proc-list'\n
-:SEE :FILE process.c
+:NOTE :SEE :FILE lisp/vc/diff.el for usage examples\n
+:SEE :FILE process.c\n
 :SEE info node `(elisp)Processes'\n
 :SEE-ALSO `mon-help-make-network-process', `mon-help-server-functions',
 `mon-help-file-dir-functions', `mon-help-file-dir-functions',
@@ -11355,6 +11426,8 @@ the composition.\n
    | :CHAR-ASCII |                                                      
  __|_____________|______________________________________________67.
 |                                                                 |
+| :CHAR-ASCII-OCTAL                                               |
+|                                                                 |
 | 000 NUL|001 SOH|002 STX|003 ETX|004 EOT|005 ENQ|006 ACK|007 BEL |
 | 010 BS |011 HT |012 NL |013 VT |014 NP |015 CR |016 SO |017 SI  |
 | 020 DLE|021 DC1|022 DC2|023 DC3|024 DC4|025 NAK|026 SYN|027 ETB |
@@ -11373,6 +11446,8 @@ the composition.\n
 | 170  x |171  y |172  z |173  { |174  | |175  } |176  ~ |177 DEL |
 |_________________________________________________________________|
 |                                                                 |
+| :CHAR-ASCII-HEX                                                 |
+|                                                                 |
 | 00 NUL| 01 SOH| 02 STX| 03 ETX| 04 EOT| 05 ENQ| 06 ACK| 07 BEL  |
 | 08 BS | 09 HT | 0A NL | 0B VT | 0C NP | 0D CR | 0E SO | 0F SI   |
 | 10 DLE| 11 DC1| 12 DC2| 13 DC3| 14 DC4| 15 NAK| 16 SYN| 17 ETB  |
@@ -11390,6 +11465,8 @@ the composition.\n
 | 70  p | 71  q | 72  r | 73  s | 74  t | 75  u | 76  v | 77  w   |
 | 78  x | 79  y | 7a  z | 7b  { | 7c  | | 7d  } | 7e  ~ | 7f DEL  |
 |_________________________________________________________________|
+|                                                                 |
+| :CHAR-ASCII-DECIMAL                                             |
 |                                                                 |
 |  0 NUL|  1 SOH|  2 STX|  3 ETX|  4 EOT|  5 ENQ|  6 ACK|  7 BEL  |
 |  8 BS |  9 HT | 10 NL | 11 VT | 12 NP | 13 CR | 14 SO | 15 SI   |

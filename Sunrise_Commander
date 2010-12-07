@@ -298,7 +298,8 @@ Ponce, does work in the console  as well as in graphical environments and offers
 three different sets of key bindings (mouse centric, arrow keys and alphanumeric
 keys) to easily adapt to a wide variety of usage patterns.
 
-Navigation inside compressed archives (via AVFS) is now supported in tree views.
+Navigation inside compressed archives (via AVFS) is supported in tree views
+(press # to toggle).
 
 Here are two screenshots of exactly the same thing: one in graphical and the
 other in console mode (click to enlarge):

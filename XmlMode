@@ -47,7 +47,7 @@ The ultimate XML editing environment by PaulKinnucan.  It enables you
 to use Emacs and a browser to create, transform, and display XML
 documents. The XAE requires Java.
 
-* http://xae.sunsite.dk/
+* http://xae.sunsite.dk/ *Note:* 2010-12-04 URL is no longer there; the sunsite was shut down 2009.
 
 == XSL-Mode ==
 A modified version of xslide, made into a derived mode of PsgmlMode.  Features intelligent abbreviation expansion.  Part of a future project for editing specific XML document types.  See EmaXML.

@@ -250,17 +250,10 @@ If you want this AHK script to remain in effect across windows restarts place th
 See the [http://www.autohotkey.com/docs/FAQ.htm#Startup startup section of the AHK FAQ] for more specific directions.
 
 === Registry ===
-'''CAUTION'''
-* Breaks Ctrl-Alt-Del sequence, causing it to bring up "Windows Task Manager" instead of the default behavior of offering the logoff screen.
-** This behaviour may not a side-effect of the registry entry, but may instead be a confusion of the original author.  To explain specifically: C-A-DEL displays the TaskManager by default in "XP Home Edition" *without* this registry entry, so maybe the original author was misled by his simultaneous change in OS (he moved from W2k to XP Home) into thinking his application of this registry entry caused the 'break' in his C-A-DEL.  Unless the original claim can be verified, both of these lines should be removed.
-* Untested on NT4, NT3.5.1. (Remove any in this list if you test with success).
 * Applies across all user accounts.
 * Requires Administrator access to write to the registry.
-* Some say ''"It's better to avoid edit the registry directly, maybe."''
 
-Otherwise save and run either of the following as a .reg file and then press enter if in WindowsExplorer or Alt-Enter if in NoteMacs.
-
-====Caps2Ctrl, leave Ctrl alone====
+====NoCaps====
 <pre>
 REGEDIT4
 
@@ -268,13 +261,14 @@ REGEDIT4
 "Scancode Map"=hex:00,00,00,00,00,00,00,00,02,00,00,00,1d,00,3a,00,00,00,00,00
 </pre>
 
-====Caps2Ctrl *AND* Ctrl2Caps====
+====SwapCaps====
 <pre>
 REGEDIT4
 
 [HKEY_LOCAL_MACHINE\SYSTEM\CurrentControlSet\Control\Keyboard Layout]
 "Scancode Map"=hex:00,00,00,00,00,00,00,00,03,00,00,00,1d,00,3a,00,3a,00,1d,00,00,00,00,00
 </pre>
+
 
 This can also be done by manually editing the registry to accomplish the same thing, see [http://geekquanta.blogspot.com/2007/07/remapping-ctrl-and-caps-lock-in-windows.html] for an explanation. The Synaptics touchpad driver for Windows reads the unmodified scancodes while 'PalmTouch' is active, so if you switch Ctrl and Capslock you will also have to turn off PalmTouch if you want to send 'Ctrl-Taps' using the touchpad.
 

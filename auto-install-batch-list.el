@@ -33,7 +33,7 @@
           ("http://www.emacswiki.org/emacs/download/sr-speedbar.el"
            "http://www.emacswiki.org/emacs/download/speedbar-extension.el"))
          ;; Icicles.
-         ("icicles" 21 10
+         ("icicles" 21 5
           (
            "http://www.emacswiki.org/emacs/download/col-highlight.el" ; Column highlighting
            "http://www.emacswiki.org/emacs/download/crosshairs.el" ; Crosshairs highlighting
@@ -96,7 +96,7 @@
            "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
            
            ))
-         ("anything" 21 10
+         ("anything" 30 5
           (
            "anything-minimal"
            "http://www.emacswiki.org/emacs/download/anything-migemo.el" ; Migemo extension for Japanese

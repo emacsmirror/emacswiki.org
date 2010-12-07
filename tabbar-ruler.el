@@ -1,22 +1,22 @@
 ;;; tabbar-ruler.el --- Setup tabbar to look pretty...
-;; 
+;;
 ;; Filename: tabbar-setup.el
 ;; Description: Changes tabbar setup to be similar to Aquaemacs.
 ;; Author: Matthew Fidler, Nathaniel Cunningham
-;; Maintainer: 
+;; Maintainer:
 ;; Created: Mon Oct 18 17:06:07 2010 (-0500)
-;; Version: 
-;; Last-Updated: Thu Nov  4 09:45:01 2010 (-0500)
-;;           By: us041375
-;;     Update #: 336 
-;; URL: 
+;; Version:
+;; Last-Updated: Wed Dec  1 15:40:00 2010 (-0600)
+;;           By: Matthew L. Fidler
+;;     Update #: 354
+;; URL:
 ;; Keywords: Tabbar, Ruler Mode, Menu, Tool Bar.
 ;; Compatibility: Windows Emacs 23.x
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;; Tabbar appearance based on reverse engineering Aquaemacs code and
 ;; changing to my preferences, and Emacs Wiki.
 ;;
@@ -34,90 +34,93 @@
 ;; (setq EmacsPortable-popup-toolbar 't) ; If you want a popup toolbar
 ;;
 ;; (require 'tabbar-ruler)
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change log:
-;; 04-Nov-2010      
+;; 01-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Wed Dec  1 15:26:37 2010 (-0600) #341 (Matthew L. Fidler)
+;;    Added scratch buffers to list.
+;; 04-Nov-2010
 ;;    Last-Updated: Thu Nov  4 09:39:14 2010 (-0500) (us041375)
 ;;    Made tabbar mode default.
-;; 02-Nov-2010    Matthew L. Fidler  
+;; 02-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  2 10:14:12 2010 (-0500) (Matthew L. Fidler)
 ;;    Make post-command-hook handle errors gracefully.
-;; 20-Oct-2010    Matthew L. Fidler  
+;; 20-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375)
 ;;
 ;;    Changed behavior when outside the window to assume the last
 ;;    known mouse position. This fixes the two problems below.
 ;;
-;; 20-Oct-2010    Matthew L. Fidler  
+;; 20-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375)
 ;;
 ;;    As it turns out when the toolbar is hidden when the mouse is
 ;;    outside of the emacs window, it also hides when navigating the
 ;;    menu.  Switching behavior back.
 ;;
-;; 20-Oct-2010    Matthew L. Fidler  
+;; 20-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375)
 ;;    Made popup menu and toolbar be hidden when mouse is oustide of emacs window.
-;; 20-Oct-2010    Matthew L. Fidler  
+;; 20-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375)
 ;;    Changed to popup ruler-mode if tabbar and ruler are not displayed.
-;; 19-Oct-2010    Matthew L. Fidler  
+;; 19-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Oct 19 15:37:53 2010 (-0500) (us041375)
 ;;    Changed tabbar, menu, toolbar and ruler variables to be buffer
 ;;    or frame local.
-;; 
-;;  
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Code:
 
 (require 'tabbar)
 (set-face-attribute 'tabbar-default nil
-		    :inherit nil
-		    :weight 'normal
-		    :width 'normal
-		    :slant 'normal
-		    :underline nil
-		    :strike-through nil
-                    ;; inherit from frame		    :inverse-video
-		    :stipple nil
-		    :background "gray80"
-		    :foreground "black"
-                    ;;		    :box '(:line-width 2 :color "white" :style nil)
-		    :box nil
-		    :family "Lucida Grande"
+                    :inherit nil
+                    :weight 'normal
+                    :width 'normal
+                    :slant 'normal
+                    :underline nil
+                    :strike-through nil
+                    ;; inherit from frame                   :inverse-video
+                    :stipple nil
+                    :background "gray80"
+                    :foreground "black"
+                    ;;              :box '(:line-width 2 :color "white" :style nil)
+                    :box nil
+                    :family "Lucida Grande"
                     )
 
 (set-face-attribute 'tabbar-selected nil
-		    :background "gray95"
-		    :foreground "gray20"
-		    :inherit 'tabbar-default
-		    :box '(:line-width 3 :color "grey95" :style nil))
-;; 		    :box '(:line-width 2 :color "white" :style released-button))
+                    :background "gray95"
+                    :foreground "gray20"
+                    :inherit 'tabbar-default
+                    :box '(:line-width 3 :color "grey95" :style nil))
+;;                  :box '(:line-width 2 :color "white" :style released-button))
 
 (set-face-attribute 'tabbar-unselected nil
-		    :inherit 'tabbar-default
-		    :background "gray80"
-		    :box '(:line-width 3 :color "grey80" :style nil))
+                    :inherit 'tabbar-default
+                    :background "gray80"
+                    :box '(:line-width 3 :color "grey80" :style nil))
 
 (defface tabbar-selected-highlight '((t
                                       :foreground "black"
@@ -133,13 +136,13 @@
   :group 'tabbar)
 
 (set-face-attribute 'tabbar-button nil
-		    :inherit 'tabbar-default
-		    :box nil)
+                    :inherit 'tabbar-default
+                    :box nil)
 
 (set-face-attribute 'tabbar-separator nil
-		    :background "grey50"
- 		    :foreground "grey50"
-		    :height 1.0)
+                    :background "grey50"
+                    :foreground "grey50"
+                    :height 1.0)
 
 (setq tabbar-home-button-enabled-image
       '((:type xpm :file "down.xpm")))
@@ -182,7 +185,7 @@
   "Make IMAGE centered and transparent.
 If optional MARGIN is non-nil, it must be a number of pixels to add as
 an extra margin around the image.  If optional NOMASK is non-nil, no mask
-property is included." 
+property is included."
   (let ((plist (cdr image)))
     (or (plist-get plist :ascent)
         (setq plist (plist-put plist :ascent 'center)))
@@ -207,7 +210,7 @@ argument is the MODE for the new buffer.")
 (defun tabbar-buffer-close-tab (tab)
   (let (
         (buffer (tabbar-tab-value tab))
-	)
+        )
     (with-current-buffer buffer
       (kill-buffer buffer)
       )
@@ -223,14 +226,14 @@ mouse click event, and TAB.
 Optional argument TYPE is a mouse click event type (see the function
 `tabbar-make-mouse-event' for details)."
   (let* ((mouse-event (tabbar-make-mouse-event type))
-	 (mouse-button (event-basic-type mouse-event)))
+         (mouse-button (event-basic-type mouse-event)))
     (if (eq action 'close-tab)
-	(when (and (eq mouse-button 'mouse-1) tabbar-close-tab-function)
-	  (funcall tabbar-close-tab-function tab))
+        (when (and (eq mouse-button 'mouse-1) tabbar-close-tab-function)
+          (funcall tabbar-close-tab-function tab))
       (when tabbar-select-tab-function
-	(funcall tabbar-select-tab-function
-		 (tabbar-make-mouse-event type) tab)
-	(tabbar-display-update)))))
+        (funcall tabbar-select-tab-function
+                 (tabbar-make-mouse-event type) tab)
+        (tabbar-display-update)))))
 
 (defun tabbar-select-tab-callback (event)
   "Handle a mouse EVENT on a tab.
@@ -262,7 +265,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
                     )
                   ))
           )
-    (concat 
+    (concat
      (propertize "[x]"
                  'display (tabbar-normalize-image close-button-image 0)
                  'face face
@@ -320,7 +323,7 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   "Face for unselected, highlighted tabs."
   :group 'tabbar)
 
-(setq tabbar-separator '(0.25)) 
+(setq tabbar-separator '(0.25))
 
 (defface tabbar-selected-modified
   '((t
@@ -389,6 +392,11 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
   :type 'integer
   :group 'EmacsPortable
   )
+
+(defcustom EmacsPortable-excluded-buffers '("*Messages*" "*Completions*" "*ESS*")
+  "* Excluded buffers in tabbar."
+  :type '(repeat (string :tag "Buffer Name"))
+  :group 'EmacsPortable)
 
 (defvar ep-tabbar-off 't
   )
@@ -567,52 +575,69 @@ Call `tabbar-tab-label-function' to obtain a label for TAB."
           )
         )
       )
-    (setq ep-movement-timer (run-with-timer 
+    (setq ep-movement-timer (run-with-timer
                              0.5
-                             nil 
+                             nil
                              'ep-mouse-movement))
-
+    
     )
   )
 (ep-mouse-movement)
 
-(defadvice ep-switch-to-buffer (around switch-to-buffer activate)
-  "* EP Switch to buffer advice, adds hook to initialize tabbar or ruler mode."
-  ad-do-it
-  (ruler-mode 1)
-  (tabbar-mode -1)
-  (when ep-ruler-off
-    (setq ep-ruler-off nil)
-    )
-  (unless ep-tabbar-off
-    (setq ep-tabbar-off 't)
-    )
-  )
-(defadvice ep-iswitchb-buffer (around switch-to-buffer activate)
-  "* EP Switch to buffer advice, adds hook to initialize tabbar or ruler mode."
-  ad-do-it
-  (ruler-mode 1)
-  (tabbar-mode -1)
-  (when ep-ruler-off
-    (setq ep-ruler-off nil)
-    )
-  (unless ep-tabbar-off
-    (setq ep-tabbar-off 't)
-    )
-  )
-(defadvice ep-icicle-buffer (around icicle-buffer activate)
-  "* EP Switch to buffer advice, adds hook to initialize tabbar or ruler mode."
-  ;; I'm not sure this works...
-  ad-do-it
-  (ruler-mode 1)
-  (tabbar-mode -1)
-  (when ep-ruler-off
-    (setq ep-ruler-off nil)
-    )
-  (unless ep-tabbar-off
-    (setq ep-tabbar-off 't)
-    )
-  )
+
+(setq tabbar-buffer-groups-function 'tabbar-buffer-groups)
+
+(defun last-ep-tabbar-buffer-groups nil)
+
+(defun ep-tabbar-buffer-groups ()
+  "Return the list of group names the current buffer belongs to.
+Return a list of one element based on major mode."
+  (setq last-ep-tabbar-buffer-groups
+        (list
+         (cond
+          ;;          ((or (get-buffer-process (current-buffer))
+          ;;               ;; Check if the major mode derives from `comint-mode' or
+          ;;               ;; `compilation-mode'.
+          ;;               (tabbar-buffer-mode-derived-p
+          ;;                major-mode '(comint-mode compilation-mode)))
+          ;;           "Process")
+          ;;    ((string-match "^ *[*]" (buffer-name))
+          ;;     "Common"
+          ;;     )
+          ((eq major-mode 'dired-mode)
+           "Dired")
+          ((memq major-mode
+                 '(help-mode apropos-mode Info-mode Man-mode))
+           "Help")
+          ((memq major-mode
+                 '(rmail-mode
+                   rmail-edit-mode vm-summary-mode vm-mode mail-mode
+                   mh-letter-mode mh-show-mode mh-folder-mode
+                   gnus-summary-mode message-mode gnus-group-mode
+                   gnus-article-mode score-mode gnus-browse-killed-mode))
+           "Mail")
+          (t
+           "Files"
+           ))))
+  (symbol-value 'last-ep-tabbar-buffer-groups))
+(setq tabbar-buffer-groups-function 'ep-tabbar-buffer-groups)
+(defun ep-tabbar-buffer-list ()
+  "Return the list of buffers to show in tabs.
+Exclude buffers whose name starts with a space or *, when they are not
+visiting a file.  The current buffer is always included."
+  (delq nil
+        (mapcar #'(lambda (b)
+                    (cond
+                     ;; Always include the current buffer.
+                     ((eq (current-buffer) b) b)
+                     ((buffer-file-name b) b)
+                     ((member (buffer-name b) EmacsPortable-excluded-buffers) nil)
+                     ;;                     ((string= "*Messages*" (format "%s" (buffer-name b))))
+                     ((char-equal ?\  (aref (buffer-name b) 0)) nil)
+                     ;;((char-equal ?* (aref (buffer-name b) 0)) nil)
+                     ((buffer-live-p b) b)))
+                (buffer-list))))
+(setq tabbar-buffer-list-function 'ep-tabbar-buffer-list)
 (provide 'tabbar-ruler)
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; tabbar-ruler.el ends here

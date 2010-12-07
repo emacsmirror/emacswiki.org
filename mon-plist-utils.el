@@ -113,7 +113,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
 ;;; :COURTESY Pascal J. Bourguignon :HIS pjb-emacs.el :WAS `plist-keys'
@@ -351,8 +351,9 @@ return value is `equal' the initial arg given for PLIST.\n
 
  
 ;; Local Variables:
-;; generated-autoload-file: "./mon-loaddefs.el"
 ;; mode: EMACS-LISP
+;; coding: utf-8
+;; generated-autoload-file: "./mon-loaddefs.el"
 ;; End:
 
 ;;; ====================================================================

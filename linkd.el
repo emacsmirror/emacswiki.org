@@ -17,7 +17,7 @@
 ;; Website, original version: http://dto.github.com/notebook/linkd.html
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/linkd.el
 ;; URL: http://www.emacswiki.org/emacs/linkd.tar.gz
-;; Keywords: hypermedia help
+;; Keywords: hypermedia help 
 ;; Compatibility: GNU Emacs 21.x, GNU Emacs 22.x
 ;;
 ;; Features that might be required by this library:

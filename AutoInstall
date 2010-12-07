@@ -257,3 +257,43 @@ If you got any trouble, send a bug report via M-x auto-install-send-bug-report .
 (setq auto-install-use-wget t) works. Thanks a lot.
 
 -- David Young
+
+[new:NicFerrier:2010-12-05 11:02 UTC]
+Are there any plans to get this into Emacs proper? It seems fantasically useful if you keep a lot of Emacs around. Or even if it could be put into ELPA.
+
+Although, I can't actually see how it causes auto-installed files to be reloaded on startup? This is something I really want... so I wrote a patch:
+
+{{{
+;; Automatic loading
+
+(defcustom auto-install-inhibit-startup-loading nil
+  "Controls whether auto-installed packaged are loaded at startup.
+
+If set to 't this inhibts the automatic loading of auto-load
+files at startup. 
+
+Otherwise all files in the 'auto-install-directory' are loaded
+when auto-install is required."
+  :type 'string
+  :group 'auto-install)
+
+(defun auto-install-on-startup ()
+  "Require everything in the auto-install directory."
+  (when (not auto-install-inhibit-startup-loading)
+    (mapc (lambda (direntry)
+            (let ((path (concat
+                         (file-name-as-directory auto-install-directory)
+                         direntry)))
+              (when (and (file-readable-p path) 
+                         (not (file-directory-p path))
+                         (equal "el" (file-name-extension path)))
+                (load-file path))))
+          (directory-files auto-install-directory))))
+
+;; Attempt to load all the auto-install files
+(auto-install-on-startup)
+}}}
+
+Damn. I also seem to have trouble updating, ie: doing auto-install-from-emacswiki for a package that I've already done that with. 
+ 
+-- [[NicFerrier]]

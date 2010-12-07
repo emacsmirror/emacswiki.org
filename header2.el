@@ -10,9 +10,9 @@
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Tue Oct 19 09:37:49 2010 (-0700)
+;; Last-Updated: Sat Dec  4 14:19:47 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1770
+;;     Update #: 1780
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -125,10 +125,10 @@
 ;;     ---------------------
 ;;      Not all headers need look alike.  Suppose that you have a unix script mode
 ;;      and want it to have a shell specifier line that all other headers do not
-;;      have.  To do this, Place the following lines in a hook called when the
+;;      have.  To do this, Place the following line in a hook called when the
 ;;      mode is invoked or in the code that establishes the mode:
-;;         (make-local-hook 'make-header-hook)
-;;         (add-hook make-header-hook 'header-shell)
+;;
+;;         (add-hook 'make-header-hook 'header-shell nil t)
 
 ;;      The header building blocks are sensitive to the different comment
 ;;      characters in different modes.
@@ -137,13 +137,13 @@
 ;;     ----------------------------
 ;;      Suppose something needs to be automatically maintained only in certain
 ;;      modes.  An example is the .TH macro in man pages.  You can create mode-
-;;      specific update actions by placing lines such as the following in the mode
-;;      creation function of the mode hook.
-;;        (make-local-hook 'file-header-update-alist)
+;;      specific update actions by placing code like the following in the
+;;      mode creation function of the mode hook.
+;;
 ;;        (register-file-header-action
 ;;          "^\.TH[ \t]+[^\" \t]+[ \t]+[^\" \t]+[ \t]+\"\\([^\"]*\\)\""
 ;;         'update-last-modified-date-macro)
-
+;;
 ;;     Define individual header elements.  These are the building blocks
 ;;     used to construct a site specific header.  You may add your own
 ;;     functions either in this file or in your `.emacs' file.  The

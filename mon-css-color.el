@@ -125,7 +125,7 @@
 ;; `css-color:hsv-value-down', `css-color:hsv-value-up',
 ;; `css-color:what-channel', `css-color:within-bounds',
 ;; `css-color-turn-on-in-buffer', `css-color-global-mode',
-;; `css-color:html-color-by-name', `css-color:html-color-both-cases'
+;; `css-color:html-color-by-name', `css-color:html-color-both-cases',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; CONSTANTS:
@@ -178,12 +178,16 @@
 
 ;;; Code:
 
+(eval-when-compile (require 'cl))
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
 ;;; ==============================
 (defconst css-color:version "MON-0.04"
   "<Timestamp: #{2010-06-04T17:23:15-04:00Z}#{10225} - by MON KEY>
 :SEE-ALSO `css-color-mode'.\n►►►")
-
-(eval-when-compile (require 'cl))
 
 ;;;###autoload
 (defgroup css-color ()
@@ -208,23 +212,27 @@
 (defconst *css-color:hex-chars* (concat (number-sequence 48 57) 
                                         (number-sequence 97 102) 
                                         (number-sequence 65 70))
-  "Composing chars in hexadecimal notation, save for the hash (#) sign.
+  "Composing chars in hexadecimal notation, save for the hash (#) sign.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:hex-chars*) (unintern '*css-color:hex-chars*) )
+;;;(progn (makunbound '*css-color:hex-chars*) (unintern "*css-color:hex-chars*" obarray) )
 
 ;;; ==============================
 ;;; :NOTE :FILE faces.el `read-color' has this regexp:
 ;;;  "^#?\\([a-fA-F0-9][a-fA-F0-9][a-fA-F0-9]\\)+$"
+;;; :NOTE Also, there is the regexp character class `[:xdigit:]'.
 (defconst *regexp-css-color-hex* "#\\([a-fA-F[:digit:]]\\{6\\}\\|[a-fA-F[:digit:]]\\{3\\}\\)"
   "A regexp to match css-color hexadecimal strings.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`read-color', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*regexp-css-color-hex*) (unintern '*regexp-css-color-hex*) )
+;;;(progn (makunbound '*regexp-css-color-hex*) (unintern "*regexp-css-color-hex*" obarray) )
 
 ;;; ==============================
 (defconst *regexp-css-color-hsl* 
@@ -237,9 +245,10 @@
   "A regexp to match css-colors as hue saturation value strings.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*regexp-css-color-hsl*) (unintern '*regexp-css-color-hsl*) )
+;;;(progn (makunbound '*regexp-css-color-hsl*) (unintern "*regexp-css-color-hsl*" obarray) )
 
 ;;; ==============================
 (defconst *regexp-css-color-rgb* 
@@ -252,9 +261,10 @@
   "A regexp to match css-colors as rgb value strings.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*regexp-css-color-rgb*) (unintern '*regexp-css-color-rgb*) )
+;;;(progn (makunbound '*regexp-css-color-rgb*) (unintern "*regexp-css-color-rgb*" obarray) )
 
 ;;; ==============================
 (defconst *css-color:html-colors*
@@ -375,7 +385,7 @@
     ("Peru" "#CD853F")
     ("Pink" "#FFC0CB")
     ("Plum" "#DDA0DD")
-    ("PowderBlue" "#B0E0E6")
+    ("PowderBlue" "#B0E0E6") ;; (assoc-ignore-case "PowderBlue" color-name-rgb-alist)
     ("Purple" "#800080")
     ("Red" "#FF0000")
     ("RosyBrown" "#BC8F8F")
@@ -406,13 +416,18 @@
     ("Yellow" "#FFFF00")
     ("YellowGreen" "#9ACD32"))
   "List of color names mapped to their hexadecimal values.\n
-W3C SVG color keywords:
+:EXAMPLE\n\n\(assoc-ignore-case \"yellowgreen\" *css-color:html-colors*\)\n
+:NOTE The 16-bit RGB values X color name conversions can be found in
+`color-name-rgb-alist' and accessed with:\n
+\(assoc-ignore-case \"PowderBlue\" color-name-rgb-alist\)\n
+These are the W3C SVG color keywords found here:
 :SEE (URL `http://www.w3.org/TR/SVG/types.html#ColorKeywords ')\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:html-colors*) (unintern '*css-color:html-colors*) )
+;;;(progn (makunbound '*css-color:html-colors*) (unintern "*css-color:html-colors*" obarray) )
 
 
 ;;; ==============================
@@ -421,9 +436,10 @@ W3C SVG color keywords:
 (defun css-color:html-color-both-cases ()
   "Return both cases of HTML colors in car of `*css-color:html-colors*'.\n
 :EXAMPLE\n\n\(css-color:html-color-both-cases\)\n
-\(mapcar 'car *css-color:html-colors*\)\n
+\(mapcar #'car *css-color:html-colors*\)\n
 :SEE-ALSO `css-color:html-color-by-name', `*css-color:html-colors*',
-`css-color:examine-color',`*regexp-css-color-html*'.\n►►►"
+`css-color:examine-color', `*regexp-css-color-html*', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (let (html-color-up-n-down)
    (mapc #'(lambda (hcund) 
              (let ((up-n-down (car hcund)))
@@ -440,16 +456,14 @@ W3C SVG color keywords:
 ;;;
 (defvar *regexp-css-color-html*
   ;;  (concat "\\([^.+:_-]" (regexp-opt (css-color:html-color-both-cases)) "[^.+:_-]\\)")
-   (concat "\\<\\(" 
-           (funcall 'regexp-opt (css-color:html-color-both-cases))
-           "\\)\\>")
-
+  (concat "\\<\\(" (funcall 'regexp-opt (css-color:html-color-both-cases)) "\\)\\>")
   "*Regexp generated from values of `*css-color:html-colors*'.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*regexp-css-color-html*) (unintern '*regexp-css-color-html*) )
+;;;(progn (makunbound '*regexp-css-color-html*) (unintern "*regexp-css-color-html*" obarray) )
 
 ;;; ==============================
 ;;; (defconst *regexp-css-color-color*
@@ -481,35 +495,34 @@ W3C SVG color keywords:
   "Regular expression containing only shy groups matching any type of CSS color.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*regexp-css-color-color*) (unintern '*regexp-css-color-color*) )
+;;;(progn (makunbound '*regexp-css-color-color*) (unintern "*regexp-css-color-color*" obarray) )
 
 ;;; ==============================
+;;; :PREFIX "cck-"
 (defvar *css-color:keywords*
   `((,*regexp-css-color-hex*
      (0 (progn
-          (when (= 7 (- (match-end 0) 
-                        (match-beginning 0)))
-            (put-text-property (match-beginning 0) 
-                               (match-end 0) 'keymap *css-color:map*))
-          (put-text-property (match-beginning 0) 
-                             (match-end 0) 'color-css-type 'hex)
+          (when (= 7 (- (match-end 0) (match-beginning 0)))
+            (put-text-property (match-beginning 0) (match-end 0) 'keymap *css-color:map*))
+          (put-text-property (match-beginning 0) (match-end 0) 'color-css-type 'hex)
           (put-text-property (match-beginning 0) (match-end 0) 'rear-nonsticky t) 
           (put-text-property (match-beginning 0) (match-end 0) 
                              'face (list :background (match-string-no-properties 0)
                                          :foreground (css-color:foreground-color (match-string-no-properties 0)))))))
     (,*regexp-css-color-html*
-     (0 (let ((color (css-color:string-name-to-hex (match-string-no-properties 0))))
+     (0 (let ((cck-htm-clr (css-color:string-name-to-hex (match-string-no-properties 0))))
           (put-text-property (match-beginning 0) (match-end 0) 'keymap *css-color:generic-map*)
           (put-text-property (match-beginning 0) (match-end 0) 'color-css-type 'name)
           (put-text-property (match-beginning 0) (match-end 0) 'rear-nonsticky t)
           (put-text-property (match-beginning 0) (match-end 0) 
-                             'face (list :background color
-                                         :foreground (css-color:foreground-color color))))))
+                             'face (list :background cck-htm-clr
+                                         :foreground (css-color:foreground-color cck-htm-clr))))))
     (,*regexp-css-color-hsl*
-     (0 (let ((color (concat "#" (apply 'css-color:hsl-to-hex
-                                        (mapcar 'string-to-number
+     (0 (let ((cck-hsl-clr (concat "#" (apply #'css-color:hsl-to-hex
+                                        (mapcar #'string-to-number
                                                 (list (match-string-no-properties 1)
                                                       (match-string-no-properties 2)
                                                       (match-string-no-properties 3)))))))
@@ -517,36 +530,36 @@ W3C SVG color keywords:
           (put-text-property (match-beginning 0) (match-end 0) 'color-css-type 'hsl)
           (put-text-property (match-beginning 0) (match-end 0) 'rear-nonsticky t)
           (put-text-property (match-beginning 0) (match-end 0)
-                             'face   (list :background color
-                                           :foreground (css-color:foreground-color color))))))
+                             'face   (list :background cck-hsl-clr
+                                           :foreground (css-color:foreground-color cck-hsl-clr))))))
     (,*regexp-css-color-rgb*
-     (0 (let ((color (css-color:string-rgb-to-hex (match-string-no-properties 0))))
+     (0 (let ((cck-rgb-clr (css-color:string-rgb-to-hex (match-string-no-properties 0))))
           (put-text-property (match-beginning 0) (match-end 0) 'keymap *css-color:generic-map*)
           (put-text-property (match-beginning 0) (match-end 0) 'color-css-type 'rgb)
           (put-text-property (match-beginning 0) (match-end 0) 'rear-nonsticky t)
           (put-text-property (match-beginning 0) (match-end 0)
-                             'face (list :background color
-                                         :foreground (css-color:foreground-color color)))))))
+                             'face (list :background cck-rgb-clr
+                                         :foreground (css-color:foreground-color cck-rgb-clr)))))))
   "*A list of regexps for font-locking css-color's in `css-color-mode'.\n
 :SEE-ALSO `*regexp-css-color-hex*', `*regexp-css-color-hsl*',
 `*regexp-css-color-rgb*', `*regexp-css-color-html*', `*regexp-css-color-color*',
-`*css-color:keywords*', `*css-color:html-colors*'.\n►►►")
+`*css-color:keywords*', `*css-color:html-colors*', `*regexp-rgb-hex*',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:keywords*) (unintern '*css-color:keywords*) )
+;;;(progn (makunbound '*css-color:keywords*) (unintern "*css-color:keywords*" obarray) )
 
 ;;; ==============================
 ;;;###autoload
 (define-minor-mode css-color-mode
   "Show hex color literals with the given color as background.\n
 In this mode hexadecimal colour specifications like #3253ff are
-displayed with the specified colour as background.
-
-Certain keys are bound to special colour editing commands when
+displayed with the specified colour as background.\n
+Adds kiybindings for special CSS colour editing commands when
 point is at a hexadecimal colour:\n\n
 \\{*css-color:map*}\n\n
 :SEE-ALSO `css-color-turn-on-in-buffer', `css-color-global-mode',
-`*css-color:map*', `*css-color:generic-map*', `css-color:font-lock-hook-fun'.\n►►►"
-
+`*css-color:map*', `*css-color:generic-map*', `css-color:font-lock-hook-fun',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   :initial-value nil
   :group 'css-color
   (unless font-lock-defaults
@@ -589,7 +602,8 @@ point is at a hexadecimal colour:\n\n
   "Add css-color pattern to font-lock's.\n
 :SEE-ALSO `css-color-mode', `css-color-turn-on-in-buffer',
 `css-color-global-mode', `*css-color:map*', `*css-color:generic-map*',
-`css-color:font-lock-hook-fun'.\n►►►"  
+`css-color:font-lock-hook-fun', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (if font-lock-mode
       (font-lock-add-keywords nil *css-color:keywords* t)
     (css-color-mode -1)))
@@ -609,10 +623,12 @@ point is at a hexadecimal colour:\n\n
     (define-key css-c-map (kbd "<SPC>") 'css-color:cycle-type)
     css-c-map)
   "Mode map for minor-mode `css-color-mode'.\n
+\\{*css-color:map*}\n
 :SEE-ALSO `css-color-turn-on-in-buffer', `css-color-global-mode',
-`*css-color:map*', `*css-color:generic-map*', `css-color:font-lock-hook-fun'.\n►►►")
+`*css-color:map*', `*css-color:generic-map*', `css-color:font-lock-hook-fun',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:map*) (unintern '*css-color:map*) )
+;;;(progn (makunbound '*css-color:map*) (unintern "*css-color:map*" obarray) )
 
 ;;; ==============================
 (defvar *css-color:generic-map* 
@@ -624,17 +640,20 @@ point is at a hexadecimal colour:\n\n
     (define-key css-g-map (kbd "TAB") 'css-color:next-channel)
     css-g-map)
   "Mode map for simple numbers in minor-mode `css-color-mode'.\n
+\\{*css-color:generic-map*}\n
 :SEE-ALSO `css-color-turn-on-in-buffer', `css-color-global-mode',
-`*css-color:map*', `*css-color:generic-map*', `css-color:font-lock-hook-fun'.\n►►►")
+`*css-color:map*', `*css-color:generic-map*', `css-color:font-lock-hook-fun',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:generic-map*) (unintern '*css-color:generic-map*) )
+;;;(progn (makunbound '*css-color:generic-map*) (unintern "*css-color:generic-map*" obarray) )
 
 ;;; ==============================
 (defun css-color:pal-lumsig (r->pal g->pal b->pal)
   "Return PAL luminance signal, but in range 0-255.\n
 Arguments are as follows:
 \n R->PAL = rgb Red;\n G->PAL = rgb Green;\n B->PAL = RGB Blue.\n
-:SEE-ALSO `color-distance', `color-values', `mon-help-color-functions'.\n►►►"
+:SEE-ALSO `color-distance', `color-values', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (+ (* 0.3 r->pal) (* 0.59 g->pal) (* 0.11 b->pal)))
 
 ;;; ==============================
@@ -647,8 +666,8 @@ otherwise return \"gray100\" (hex #ffffff).\n
 \(x-color-values \(css-color:foreground-color  \"#f08080\"\)\)\n
 \(css-color:foreground-color \"#696969\"\)\n
 \(x-color-values \(css-color:foreground-color \"#696969\"\)\)\n
-:SEE-ALSO `css-color:hex-to-rgb', `color-values',
-`mon-help-color-functions'.\n►►►"
+:SEE-ALSO `css-color:hex-to-rgb', `color-values', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (r g b) (css-color:hex-to-rgb hex-color)
     (if (< (css-color:pal-lumsig r g b) 128)
 	"#fff"
@@ -657,16 +676,17 @@ otherwise return \"gray100\" (hex #ffffff).\n
 ;;; ==============================
 (defun css-color:normalize-hue (normalize-hue)
   "Normalize value of NORMALIZE-HUE -- a css-color.\n
-:SEE-ALSO `css-color:hsl-to-rgb', `css-color:num-up',
-`css-color:num-down'.\n►►►"
+:SEE-ALSO `css-color:hsl-to-rgb', `css-color:num-up', `css-color:num-down',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
  (mod (+ (mod normalize-hue 360) 360) 360))
 
 ;;; ==============================
-(defun css-color:within-bounds (num-bnd min max)
-  "Test if NUM-BND is within range MIN and MAX.\n
-:SEE-ALSO `css-color:adjust-hex-at-posn', `css-color:hsl-to-rgb', 
-`css-color:incr-hsv-sat', `css-color:incr-hsv-val'.\n►►►"
-  (min (max min num-bnd) max))
+(defun css-color:within-bounds (num-bnd min-rng max-rng)
+  "Test if NUM-BND is within range MIN-RNG and MAX-RNG.\n
+:SEE-ALSO `css-color:adjust-hex-at-posn', `css-color:hsl-to-rgb',
+`css-color:incr-hsv-sat', `css-color:incr-hsv-val', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (min (max min-rng num-bnd) max-rng))
 
 ;;; ==============================
 (defun css-color:hex-to-rgb (hex-str->rgb)
@@ -674,7 +694,8 @@ otherwise return \"gray100\" (hex #ffffff).\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (cond ((not (string-match "^#?[a-fA-F[:digit:]]*$" hex-str->rgb))
          (error (concat ":FUNCTION `css-color:hex-to-rgb' "
                         "-- no valid hexadecimal: %s")
@@ -697,22 +718,24 @@ otherwise return \"gray100\" (hex #ffffff).\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (r g b) (css-color:hex-to-rgb hex->hsv)
     (css-color:rgb-to-hsv r g b)))
 
 ;;; ==============================
 (defun css-color:rgb-to-hex (r g b)
-  "Return R G B as #rrggbb in hexadecimal, propertized to have
-the keymap `*css-color:map*'.\n
+  "Return R G B as #rrggbb in hexadecimal, propertized keymap `*css-color:map*'.\n
 Arguments are as follows:\n R = Red;\n G = Green;\n B = Blue.\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
    (format "%02x%02x%02x" r g b))
 
 ;;; ==============================
+;;; :PREFIX "ccrthsv-"
 (defun css-color:rgb-to-hsv (r g b)
   "Return list of (hue saturation value).\n
 Arguments are as follows:\n R = Red;\n G = Green;\n B = Blue.\n
@@ -721,36 +744,39 @@ GIMP-style, that is.\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (let* ((r (float r))
 	 (g (float g))
 	 (b (float b))
-	 (max (max r g b))
-	 (min (min r g b)))
+	 (ccrthsv-max (max r g b))
+	 (ccrthsv-min (min r g b)))
     (values (round (cond ((and (= r g) (= g b)) 0)
-                         ((and (= r max)
+                         ((and (= r ccrthsv-max)
                                (>= g b))
-                          (* 60 (/ (- g b) (- max min))))
-                         ((and (= r max)
+                          (* 60 (/ (- g b) (- ccrthsv-max ccrthsv-min))))
+                         ((and (= r ccrthsv-max)
                                (< g b))
-                          (+ 360 (* 60 (/ (- g b) (- max min)))))
-                         ((= max g)
-                          (+ 120 (* 60 (/ (- b r) (- max min)))))
-                         ((= max b)
-                          (+ 240 (* 60 (/ (- r g) (- max min)))))))
-            (round (* 100 (if (= max 0) 
+                          (+ 360 (* 60 (/ (- g b) (- ccrthsv-max ccrthsv-min)))))
+                         ((= ccrthsv-max g)
+                          (+ 120 (* 60 (/ (- b r) (- ccrthsv-max ccrthsv-min)))))
+                         ((= ccrthsv-max b)
+                          (+ 240 (* 60 (/ (- r g) (- ccrthsv-max ccrthsv-min)))))))
+            (round (* 100 (if (= ccrthsv-max 0) 
                               0 
-                            (- 1 (/ min max))))) 
-            (round (/ max 2.55)))))
+                            (- 1 (/ ccrthsv-min ccrthsv-max))))) 
+            (round (/ ccrthsv-max 2.55)))))
 
 ;;; ==============================
+;;; :PREFIX "ccrthsl-"
 (defun css-color:rgb-to-hsl (r g b)
-  "Return R G B (in range 0-255) converted to HSL (0-360 for hue, rest in %).\n
+  "Return R G B (in range 0-255) converted to HSL \(0-360 for hue, rest in %\).\n
 Arguments are as follows:\n R = Red;\n G = Green;\n B = Blue.\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (let* ((r (/ r 255.0))
 	 (g (/ g 255.0))
 	 (b (/ b 255.0))
@@ -760,33 +786,33 @@ Arguments are as follows:\n R = Red;\n G = Green;\n B = Blue.\n
 	 (v (max r g b))
 	 (m (min r g b))
 	 (l (/ (+ m v) 2.0))
-	 (vm 0)
-	 (r2 0)
-	 (g2 0)
-	 (b2 0))
+	 (ccrthsl-vm 0)
+	 (ccrthsl-r2 0)
+	 (ccrthsl-g2 0)
+	 (ccrthsl-b2 0))
     (multiple-value-bind (h s v)
 	(if (<= l 0)
 	    (values h s l)
-	  (setq vm (- v m)
-		s vm)
+	  (setq ccrthsl-vm (- v m)
+		s ccrthsl-vm)
 	  (if (>= 0 s)
 	      (values h s l)
 	    (setq s (/ s (if (<= l 0.5)
 			     (+ v m)
 			   (- 2.0 v m))))
-	    (if (not (= 0 vm))
-                (setq r2 (/ (- v r) vm)
-		      g2 (/ (- v g) vm)
-		      b2 (/ (- v b) vm)))
+	    (if (not (= 0 ccrthsl-vm))
+                (setq ccrthsl-r2 (/ (- v r) ccrthsl-vm)
+		      ccrthsl-g2 (/ (- v g) ccrthsl-vm)
+		      ccrthsl-b2 (/ (- v b) ccrthsl-vm)))
 	    (cond ((= r v) (setq h (if (= g m)
-                                       (+ 5.0 b2)
-                                     (- 1.0 g2))))
+                                       (+ 5.0 ccrthsl-b2)
+                                     (- 1.0 ccrthsl-g2))))
 		  ((= g v) (setq h (if (= b m)
-                                       (+ 1.0 r2)
-                                     (- 3.0 b2))))
+                                       (+ 1.0 ccrthsl-r2)
+                                     (- 3.0 ccrthsl-b2))))
 		  (t (setq h (if (= r m)
-                                 (+ 3.0 g2)
-                               (- 5.0 r2)))))
+                                 (+ 3.0 ccrthsl-g2)
+                               (- 5.0 ccrthsl-r2)))))
 	    (values (/ h 6.0) s l)))
       (list (round (* 360 h)) (* 100 s) (* 100 l)))))
 
@@ -798,7 +824,8 @@ Arguments are as follows:\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (r g b) (css-color:hsv-to-rgb h s v)
     (css-color:rgb-to-hsl r g b)))
 
@@ -810,10 +837,12 @@ Arguments are as follows:\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex',.\n►►►"
-   (apply 'css-color:rgb-to-hex (css-color:hsv-to-rgb h s v)))
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+   (apply #'css-color:rgb-to-hex (css-color:hsv-to-rgb h s v)))
 
 ;;; ==============================
+;;; :PREFIX "cchtr-"
 (defun css-color:hsv-to-rgb (h s v)
   "Convert a point in the H S V color space to list of normalized rgb values.\n
 H is the HUE an angle in the range of 0 degrees inclusive to 360 exclusive.
@@ -824,26 +853,27 @@ Returns a list of values in the range of 0 to 255.\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   ;; Coerce to float and get hue into range.
   (setq h (mod h 360.0)
         s (/ (float s) 100)
         v (/ (float v) 100))
-  (let* ((hi (floor h 60.0))
-         (f (- (/ h 60.0) hi))
-         (p (* v (- 1.0 s)))
-         (q (* v (- 1.0 (* f s))))
+  (let* ((cchtr-hi (floor h 60.0))
+         (cchtr-f (- (/ h 60.0) cchtr-hi))
+         (cchtr-p (* v (- 1.0 s)))
+         (cchtr-q (* v (- 1.0 (* cchtr-f s))))
          ;; cannot use variable t, obviously.
-         (u (* v (- 1.0 (* (- 1.0 f) s))))
+         (cchtr-u (* v (- 1.0 (* (- 1.0 cchtr-f) s))))
          r g b)
-    (case hi
-      (0 (setq r v g u b p))
-      (1 (setq r q g v b p))
-      (2 (setq r p g v b u))
-      (3 (setq r p g q b v))
-      (4 (setq r u g p b v))
-      (5 (setq r v g p b q)))
-    (mapcar #'(lambda (color) (round (* 255 color))) (list r g b))))
+    (case cchtr-hi
+      (0 (setq r v g cchtr-u b cchtr-p))
+      (1 (setq r cchtr-q g v b cchtr-p))
+      (2 (setq r cchtr-p g v b cchtr-u))
+      (3 (setq r cchtr-p g cchtr-q b v))
+      (4 (setq r cchtr-u g cchtr-p b v))
+      (5 (setq r v g cchtr-p b cchtr-q)))
+    (mapcar #'(lambda (cchtr-L-1) (round (* 255 cchtr-L-1))) (list r g b))))
 
 ;;; ==============================
 (defun css-color:hsv-to-prop-hexstring (color-data)
@@ -851,32 +881,31 @@ Returns a list of values in the range of 0 to 255.\n
 Put the keymap property as `*css-color:map*'.\n
 Put the css-color property as COLOR-DATA.\n
 :SEE-ALSO `css-color:incr-hsv-hue', `css-color:incr-hsv-sat',
-`css-color:incr-hsv-val'.\n►►►"
-  (propertize
-   (apply 'css-color:hsv-to-hex color-data)
-   'keymap *css-color:map*
-   ;; 'color color-data))
-    'color-css-type color-data))
-
+`css-color:incr-hsv-val', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
+  (propertize (apply #'css-color:hsv-to-hex color-data)
+              'keymap *css-color:map* 'color-css-type color-data)) ;; 'color color-data))
 
 ;;; ==============================
+;;; :PREFIX "cchtrf-"
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-31T12:52:02-04:00Z}#{10133} - by MON KEY>
-;;; :ADDED let binding for local var `m1' `m2'.
+;;; :ADDED let binding for local vars `cchtrf-m1` `cchtrf-m2`.
 (defun css-color:hsl-to-rgb-fractions (h s l)
   "Convert H S L to fractional rgb values.\n
 H is the hsl HUE;\n S is the hsl Saturation;\n L is the hsl lightness;\n
 :SEE-ALSO `css-color:hue-to-rgb',`css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
-  (let (m1 m2)
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (let (cchtrf-m1 cchtrf-m2)
     (if (<= l 0.5)
-        (setq m2 (* l (+ s 1)))
-        (setq m2 (- (+ l s) (* l s))))
-    (setq m1 (- (* l 2) m2))
-    (values (css-color:hue-to-rgb m1 m2 (+ h (/ 1 3.0)))
-            (css-color:hue-to-rgb m1 m2 h)
-            (css-color:hue-to-rgb m1 m2 (- h (/ 1 3.0))))))
+        (setq cchtrf-m2 (* l (+ s 1)))
+        (setq cchtrf-m2 (- (+ l s) (* l s))))
+    (setq cchtrf-m1 (- (* l 2) cchtrf-m2))
+    (values (css-color:hue-to-rgb cchtrf-m1 cchtrf-m2 (+ h (/ 1 3.0)))
+            (css-color:hue-to-rgb cchtrf-m1 cchtrf-m2 h)
+            (css-color:hue-to-rgb cchtrf-m1 cchtrf-m2 (- h (/ 1 3.0))))))
 
 ;;; ==============================
 (defun css-color:hsl-to-rgb (h s l)
@@ -886,7 +915,8 @@ H is the hsl HUE;\n S is the hsl Saturation;\n L is the hsl lightness;\n
 :SEE-ALSO `css-color:within-bounds', `css-color:hex-to-rgb',
 `css-color:hex-to-hsv', `css-color:hsv-to-hsl', `css-color:hsv-to-hex',
 `css-color:hsv-to-rgb', `css-color:rgb-to-hsv', `css-color:rgb-to-hex',
-`css-color:rgb-to-hsl', `css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:rgb-to-hsl', `css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (r g b)
       (css-color:hsl-to-rgb-fractions
        (/ h 360.0)
@@ -903,8 +933,9 @@ H is the hsl HUE;\n S is the hsl Saturation;\n L is the hsl lightness;\n
 :SEE-ALSO `css-color:hex-to-rgb', `css-color:hex-to-hsv',
 `css-color:hsv-to-hsl', `css-color:hsv-to-hex', `css-color:hsv-to-rgb',
 `css-color:rgb-to-hsv', `css-color:rgb-to-hex', `css-color:rgb-to-hsl',
-`css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
-  (apply 'css-color:rgb-to-hex (css-color:hsl-to-rgb h s l)))
+`css-color:hsl-to-rgb', `css-color:hsl-to-hex', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (apply #'css-color:rgb-to-hex (css-color:hsl-to-rgb h s l)))
 
 ;;; ==============================
 (defun css-color:hue-to-rgb (x y h)
@@ -912,7 +943,8 @@ H is the hsl HUE;\n S is the hsl Saturation;\n L is the hsl lightness;\n
 :SEE-ALSO `css-color:hsl-to-rgb-fractions', `css-color:hex-to-rgb',
 `css-color:hex-to-hsv', `css-color:hsv-to-hsl', `css-color:hsv-to-hex',
 `css-color:hsv-to-rgb', `css-color:rgb-to-hsv', `css-color:rgb-to-hex',
-`css-color:rgb-to-hsl', `css-color:hsl-to-rgb', `css-color:hsl-to-hex'.\n►►►"
+`css-color:rgb-to-hsl', `css-color:hsl-to-rgb', `css-color:hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (when (< h 0) (incf h))
   (when (> h 1) (decf h))
   (cond ((< h (/ 1 6.0)) (+ x (* (- y x) h 6)))
@@ -921,26 +953,29 @@ H is the hsl HUE;\n S is the hsl Saturation;\n L is the hsl lightness;\n
         (t x)))
 
 ;;; ==============================
+;;; :PREFIX "ccph-"
 ;;; :ADDED `save-match-data'
 ;;; :MODIFICATIONS <Timestamp: #{2010-06-07T12:38:23-04:00Z}#{10231} - by MON KEY>
 (defun css-color:parse-hsl (hsl-string)
   "Parse `*regexp-css-color-hsl*' matches for HSL-STRING.\n
 Return matches for hue saturation luminance as list of numbers.\n
-:SEE-ALSO `css-color:string-hsl-to-rgb', `css-color:string-hsl-to-hex'.\n►►►"
+:SEE-ALSO `css-color:string-hsl-to-rgb', `css-color:string-hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (save-match-data
     (string-match *regexp-css-color-hsl* hsl-string)
-    (let ((rtn-hsl-str (mapcar 'string-to-number
+    (let ((ccph-rtn-hsl-str (mapcar #'string-to-number
                                (list (match-string 1 hsl-string)
                                      (match-string 2 hsl-string)
                                      (match-string 3 hsl-string)))))
-      rtn-hsl-str)))
+      ccph-rtn-hsl-str)))
 
 ;;; ==============================
 (defun css-color:incr-hsv-hue (hsv-color hsv-hue-incr) 
   "Increment the hue of HSV-COLOR by HSV-HUE-INCR.\n
 :SEE-ALSO `css-color:parse-hsl', `css-color:hsv-to-prop-hexstring',
 `css-color:incr-hsv-sat', `css-color:incr-hsv-val', `css-color:hsv-hue-up',
-`css-color:hsv-value-up', `css-color:hsv-value-down'.\n►►►"
+`css-color:hsv-value-up', `css-color:hsv-value-down',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (h s v) hsv-color
     (css-color:hsv-to-prop-hexstring (list (+ hsv-hue-incr h) s v))))
 
@@ -949,7 +984,8 @@ Return matches for hue saturation luminance as list of numbers.\n
   "Increment the satruation of HSV-COLOR by HSV-SAT-INCR.\n
 :SEE-ALSO `css-color:hsv-to-prop-hexstring', `css-color:within-bounds',
 `css-color:incr-hsv-hue', `css-color:incr-hsv-val', `css-color:hsv-saturation-up',
-`css-color:hsv-value-up', `css-color:hsv-value-down'.\n►►►"
+`css-color:hsv-value-up', `css-color:hsv-value-down',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (h s v) hsv-color
     (css-color:hsv-to-prop-hexstring
      (list h (css-color:within-bounds (+ hsv-sat-incr s) 0 100) v))))
@@ -959,7 +995,8 @@ Return matches for hue saturation luminance as list of numbers.\n
   "Increment the satruation of HSV-COLOR by HSV-VAL-INCR.\n
 :SEE-ALSO `css-color:hsv-to-prop-hexstring', `css-color:within-bounds',
 `css-color:incr-hsv-hue', `css-color:incr-hsv-sat', `css-color:hsv-value-up',
-`css-color:hsv-value-up', `css-color:hsv-value-down'.\n►►►"
+`css-color:hsv-value-up', `css-color:hsv-value-down',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (h s v) hsv-color
     (css-color:hsv-to-prop-hexstring
      (list h s (css-color:within-bounds (+ hsv-val-incr v) 0 100)))))
@@ -967,33 +1004,38 @@ Return matches for hue saturation luminance as list of numbers.\n
 ;;; ==============================
 (defun css-color:hexval-beginning ()
   "Go to beginning of a css-color with a hex value.\n
-:SEE-ALSO `*css-color:hex-chars*'.\n►►►"
+:SEE-ALSO `*css-color:hex-chars*', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (skip-chars-backward *css-color:hex-chars*)
   (when (eq (char-after) 35)
     (forward-char 1)))
 
 ;;; ==============================
+;;; :PREFIX "ccrcap-"
 (defun css-color:repl-color-at-posn (css-color:fun incr-replace)
   "Replace css-color at position with return value of `css-color:fun' incremented
 by INCR-REPLACE.\n
-:SEE-ALSO `css-color:hexval-beginning', `css-color:get-color-at-point'.\n►►►"
-  (let ((pos (point)))
+:SEE-ALSO `css-color:hexval-beginning', `css-color:get-color-at-point',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (let ((ccrcap-psn (point)))
     (css-color:hexval-beginning)
     (insert (funcall css-color:fun (css-color:get-color-at-point) incr-replace))
     (delete-region (point) (+ (point) 6))
-    (goto-char pos)))
+    (goto-char ccrcap-psn)))
 
 ;;; ==============================
+;;; :PREFIX "ccgcap-"
 (defun css-color:get-color-at-point ()
   "Get the css-color at point.\n
 :SEE-ALSO `css-color:hexval-beginning', `css-color:hex-to-hsv',
-`css-color:repl-color-at-posn'.\n►►►"
+`css-color:repl-color-at-posn', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (save-excursion
     (css-color:hexval-beginning)
-    (let ((saved-color (get-text-property (point) 'color-css-type))) ;; 'color)))
-      (or saved-color
-	  (css-color:hex-to-hsv
-	   (buffer-substring-no-properties (point) (+ (point) 6)))))))
+    (let ((ccgcap-saved-color (get-text-property (point) 'color-css-type))) ;; 'color)))
+      (or ccgcap-saved-color
+          ;;(css-color:hex-to-hsv (buffer-substring-no-properties (point) (+ (point) 6)) )))))
+	  (css-color:hex-to-hsv (mon-buffer-sub-no-prop (point) (+ (point) 6))  )))))
 
 ;;; ==============================
 (defun css-color:adjust-hsv-hue-at-posn (hsv-hue-adj-incr)
@@ -1001,7 +1043,8 @@ by INCR-REPLACE.\n
 :SEE-ALSO `css-color:repl-color-at-posn', `css-color:incr-hsv-hue',
 `css-color:adjust-hsv-sat-at-posn', `css-color:adjust-hsv-hue-at-posn',
 `css-color:adjust-hsv-val-at-posn', `css-color:hsv-value-up',
-`css-color:hsv-value-down'.\n►►►"
+`css-color:hsv-value-down', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:repl-color-at-posn 'css-color:incr-hsv-hue hsv-hue-adj-incr))
 
@@ -1011,7 +1054,8 @@ by INCR-REPLACE.\n
 :SEE-ALSO `css-color:repl-color-at-posn', `css-color:incr-hsv-sat',
 `css-color:adjust-hsv-sat-at-posn', `css-color:adjust-hsv-hue-at-posn',
 `css-color:adjust-hsv-val-at-posn', `css-color:hsv-value-up',
-`css-color:hsv-value-down'.\n►►►"
+`css-color:hsv-value-down', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:repl-color-at-posn 'css-color:incr-hsv-sat hsv-sat-adj-incr))
 
@@ -1021,57 +1065,68 @@ by INCR-REPLACE.\n
 :SEE-ALSO `css-color:repl-color-at-posn', `css-color:incr-hsv-val',
 `css-color:repl-color-at-posn', `css-color:adjust-hsv-sat-at-posn',
 `css-color:adjust-hsv-hue-at-posn', `css-color:adjust-hsv-val-at-posn'
-`css-color:hsv-value-up', `css-color:hsv-value-down'.\n►►►"
+`css-color:hsv-value-up', `css-color:hsv-value-down', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:repl-color-at-posn 'css-color:incr-hsv-val hsv-val-adj-incr))
 
 ;;; ==============================
+;;; :PREFIX "ccwc-"
 (defun css-color:what-channel ()
   "Move backward over the `*css-color:hex-chars*'.\n
-:SEE-ALSO `css-color:adjust-hex-at-posn'.\n►►►"
-  (let ((pos (point)))
+:SEE-ALSO `css-color:adjust-hex-at-posn', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (let ((ccwc-psn (point)))
     (prog1
 	(/ (skip-chars-backward *css-color:hex-chars*) -2)
-      (goto-char pos))))
+      (goto-char ccwc-psn))))
 
 ;;; ==============================
+;;; :PREFIX "ccahap-"
 (defun css-color:adjust-hex-at-posn (incr-hex)
   "Increment the hex css-color at point by INCR-HEX.\n
 :SEE-ALSO `css-color:what-channel', `css-color:hexval-beginning',
 `css-color:within-bounds', `*css-color:map*', `css-color:rgb-up',
-`css-color:rgb-down'.\n►►►"
+`css-color:rgb-down', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
-  (let ((pos (point))
-	(channel (css-color:what-channel)))
+  (let ((ccahap-psn (point))
+	(ccahap-chnl (css-color:what-channel)))
     (css-color:hexval-beginning)
-    (let ((rgb (css-color:hex-to-rgb
-                (buffer-substring-no-properties (point) (+ 6 (point))))))
-      (setf (nth channel rgb)
-	    (css-color:within-bounds (+ incr-hex (nth channel rgb)) 0 255))
+    (let ((ccahap-rgb (css-color:hex-to-rgb
+                ;;(buffer-substring-no-properties (point) (+ 6 (point))) )))
+                (mon-buffer-sub-no-prop (point) (+ 6 (point))) )))
+      (setf (nth ccahap-chnl ccahap-rgb)
+	    (css-color:within-bounds (+ incr-hex (nth ccahap-chnl ccahap-rgb)) 0 255))
       (delete-region (point) (+ 6 (point)))
-      (insert (propertize (with-no-warnings (format "%02x%02x%02x" rgb))  
-                          'keymap *css-color:map* 'css-color nil 'rear-nonsticky t)))
-    (goto-char pos)))
+      (insert (propertize ;(with-no-warnings (format "%02x%02x%02x" ccahap-rgb))
+               (ignore-errors ;; (format "%02x%02x%02x" ccahap-rgb))
+                 (apply 'format "%02x%02x%02x" ccahap-rgb))
+               'keymap *css-color:map* 'css-color nil 'rear-nonsticky t)))
+    (goto-char ccahap-psn)))
 
 ;;; ==============================
 (defun css-color:rgb-up (incr-rgb-val)
   "Increment the rgb hex css-color by INCR-RGB-VAL.\n
-:SEE-ALSO `css-color:rgb-down', `css-color:adjust-hex-at-posn'.\n►►►"
+:SEE-ALSO `css-color:rgb-down', `css-color:adjust-hex-at-posn',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hex-at-posn incr-rgb-val))
 
 ;;; ==============================
 (defun css-color:rgb-down (decr-rgb-val)
   "Decrement the rgb hex css-color by DECR-RGB-VAL.\n
-:SEE-ALSO `css-color:rgb-up', `css-color:adjust-hex-at-posn'.\n►►►"
+:SEE-ALSO `css-color:rgb-up', `css-color:adjust-hex-at-posn',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hex-at-posn (- decr-rgb-val)))
 
 ;;; ==============================
 (defun css-color:hsv-hue-up (incr-hsv-hue)
   "Increment the hsv hue css-color by INCR-HSV-HUE.\n
-:SEE-ALSO `css-color:hsv-hue-down' `css-color:adjust-hue-at-p',
-`css-color:incr-hsv-hue'.\n►►►"
+:SEE-ALSO `css-color:hsv-hue-down', `css-color:adjust-hue-at-p',
+`css-color:incr-hsv-hue', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hsv-hue-at-posn incr-hsv-hue))
 
@@ -1079,80 +1134,90 @@ by INCR-REPLACE.\n
 (defun css-color:hsv-hue-down (decr-hsv-hue)
   "Decrement the hsv hue css-color by DECR-HSV-HUE.\n
 :SEE-ALSO `css-color:hsv-hue-up', `css-color:adjust-hue-at-p',
-`css-color:incr-hsv-hue'.\n►►►"
+`css-color:incr-hsv-hue', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hsv-hue-at-posn (- decr-hsv-hue))) 
 
 ;;; ==============================
 (defun css-color:hsv-saturation-up (incr-hsv-sat)
   "Increment the hsv saturation css-color by INCR-HSV-SAT.\n
-:SEE-ALSO `css-color:adjust-hsv-sat-at-posn', `css-color:incr-hsv-sat'.\n►►►"
+:SEE-ALSO `css-color:adjust-hsv-sat-at-posn', `css-color:incr-hsv-sat',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hsv-sat-at-posn incr-hsv-sat))
 
 ;;; ==============================
 (defun css-color:hsv-saturation-down (decr-hsv-sat)
   "Decrement the hsv saturation css-color by DECR-HSV-SAT.\n
-:SEE-ALSO `css-color:adjust-hsv-sat-at-posn', `css-color:incr-hsv-sat'.\n►►►"
+:SEE-ALSO `css-color:adjust-hsv-sat-at-posn', `css-color:incr-hsv-sat',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hsv-sat-at-posn (- decr-hsv-sat)))
 
 ;;; ==============================
 (defun css-color:hsv-value-up (incr-hsv-val)
   "Increment the hsv value css-color by INCR-HSV-VAL.\n
-:SEE-ALSO `css-color:adjust-hsv-val-at-posn', `css-color:incr-hsv-val'.\n►►►"
+:SEE-ALSO `css-color:adjust-hsv-val-at-posn', `css-color:incr-hsv-val',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hsv-val-at-posn incr-hsv-val))
 
 ;;; ==============================
 (defun css-color:hsv-value-down (decr-hsv-val)
   "Decrement the hsv value css-color by DECR-HSV-VAL.\n
-:SEE-ALSO `css-color:adjust-hsv-val-at-posn', `css-color:incr-hsv-val'.\n►►►"
+:SEE-ALSO `css-color:adjust-hsv-val-at-posn', `css-color:incr-hsv-val',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "p")
   (css-color:adjust-hsv-val-at-posn (- decr-hsv-val)))
 
 ;;; ==============================
+;;; :PREFIX "ccnu-"
 (defun css-color:num-up (incr-arg)
   "Increase css-color value by INCR-ARG.\n
 :SEE-ALSO `*css-color:generic-map*', `css-color:normalize-hue',
-`css-color:rgb-up'.\n►►►"
+`css-color:rgb-up', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
   (save-excursion
-    (let ((digits (concat `(,@(number-sequence 49 57) 48))))
-      (skip-chars-backward digits)
+    (let ((ccnu-digits (concat `(,@(number-sequence 49 57) 48))))
+      (skip-chars-backward ccnu-digits)
       (save-match-data
         (when (looking-at "[[:digit:]]+")
           (replace-match
            (propertize
-            (let ((num (+ (string-to-number (match-string 0)) incr-arg)))
+            (let ((ccnu-num (+ (string-to-number (match-string 0)) incr-arg)))
               (save-match-data
                 (cond ((looking-at "[[:digit:]]+%")
-                       (setq num (min num 100)))
+                       (setq ccnu-num (min ccnu-num 100)))
                       ((looking-back "hsla?(")
-                       (setq num (css-color:normalize-hue num)))
+                       (setq ccnu-num (css-color:normalize-hue ccnu-num)))
                       ((memq 'color-css-type (text-properties-at (point)))
-                       (setq num (min num 255)))))
-              (number-to-string num))
+                       (setq ccnu-num (min ccnu-num 255)))))
+              (number-to-string ccnu-num))
             'keymap *css-color:generic-map*)))))))
 
 ;;; ==============================
+;;; :PREFIX "ccnd-"
 (defun css-color:num-down (decr-arg)
   "Decrease css-color value by DECR-ARG.\n
-:SEE-ALSO `css-color:normalize-hue', `*css-color:generic-map*', `css-color:rgb-down'.\n►►►"
+:SEE-ALSO `css-color:normalize-hue', `*css-color:generic-map*',
+`css-color:rgb-down', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive "p")
   (save-excursion
-    (let ((digits (concat `(,@(number-sequence 49 57) 48))))
-      (skip-chars-backward digits)
+    (let ((ccnd-digits (concat `(,@(number-sequence 49 57) 48))))
+      (skip-chars-backward ccnd-digits)
       (save-match-data
         (when  (looking-at "[[:digit:]]+")
           (replace-match
            (propertize
-            (let ((num (- (string-to-number (match-string 0)) decr-arg)))
+            (let ((ccnd-num (- (string-to-number (match-string 0)) decr-arg)))
               (save-match-data
                 (cond ((looking-back "hsla?(")
-                       (setq num (css-color:normalize-hue num)))
-                      (t (setq num (max 0 num)))))
-              (number-to-string num))
+                       (setq ccnd-num (css-color:normalize-hue ccnd-num)))
+                      (t (setq ccnd-num (max 0 ccnd-num)))))
+              (number-to-string ccnd-num))
             'keymap *css-color:generic-map*)))))))
 
 ;;; ==============================
@@ -1160,7 +1225,8 @@ by INCR-REPLACE.\n
   "Skip to beginning of color.\n
 Return cons `point' and the color-type text-property.\n
 :SEE-ALSO `css-color:text-property-color-end',
-`css-color:text-property-color-region'.\n►►►"
+`css-color:text-property-color-region', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (while (memq 'color-css-type (text-properties-at (point)))
     (backward-char 1))
   (forward-char 1)
@@ -1171,22 +1237,26 @@ Return cons `point' and the color-type text-property.\n
   "Skip to end of color.\n
 Return cons `point' and the color-type text-property.\n
 :SEE-ALSO `css-color:text-property-color-start',
-`css-color:text-property-color-region'.\n►►►"
+`css-color:text-property-color-region', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (while (plist-get (text-properties-at (point)) 'color-css-type)
     (forward-char 1))
   (cons (point) (plist-get (text-properties-at (1- (point))) 'color-css-type)))
 
 ;;; ==============================
+;;; :PREFIX "cctpcr-"
 (defun css-color:text-property-color-region ()
   "Helper function to get the range of color in region as a list.\n
 When evaluated with `region-active-p' `desctructoring-bind's return values of
 `css-color:text-property-color-end' `css-color:text-property-color-start'.\n
 :SEE-ALSO `css-color:cycle-type', `css-color:next-channel',
-`css-color:toggle-percentage'.\n►►►"
-  (destructuring-bind ((beg . cycle-type) (end . cycle-type))
+`css-color:toggle-percentage', `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
+  (destructuring-bind ((cctpcr-beg . cycle-type) (cctpcr-end . cycle-type))
       (list (css-color:text-property-color-start)
             (css-color:text-property-color-end))
-    (list beg end cycle-type (buffer-substring-no-properties beg end))))
+    ;; (list beg end cycle-type  (buffer-substring-no-properties cctpcr-beg cctpcr-end))
+    (list cctpcr-beg cctpcr-end cycle-type (mon-buffer-sub-no-prop  cctpcr-beg cctpcr-end) )))
 
 ;;; ==============================
 ;;; :CHANGESET 1828
@@ -1195,28 +1265,31 @@ When evaluated with `region-active-p' `desctructoring-bind's return values of
   "*A format string evaluated by `css-color:cycle-type' inside an `intern-soft'.\n
 Used to conditionally generate a function name b/c we don't know yet know what
 `css-color:next-type' will return.\n
-function names so generated include:\n
-`css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
-`css-color:string-hsl-to-rgb', `css-color:string-name-to-hex'
-`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'\n
-:SEE-ALSO .\n►►►")
+Function names so generated include:\n
+ `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
+ `css-color:string-hsl-to-rgb', `css-color:string-name-to-hex'
+ `css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'\n
+:SEE-ALSO `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:string-frob*) (unintern '*css-color:string-frob*) )
+;;;(progn (makunbound '*css-color:string-frob*) (unintern "*css-color:string-frob*" obarray) )
 
 ;;; ==============================
 (defconst *css-color:type-circle* '#1=(hex hsl rgb name . #1#)
    "Circular list value of css-color types.\n
  :SEE-ALSO `css-color:next-type', `css-color:cycle-type'.\n►►►")
 ;;
-;;;(progn (makunbound '*css-color:type-circle*) (unintern '*css-color:type-circle*) )
+;;;(progn (makunbound '*css-color:type-circle*) (unintern "*css-color:type-circle*" obarray) )
 
 ;;; ==============================
 (defun css-color:next-type (color-type-sym)
   "Get the COLOR-TYPE-SYM from the circular list `*css-color:type-circle*'.\n
-:SEE-ALSO `css-color:cycle-type'.\n►►►"
+:SEE-ALSO `css-color:cycle-type', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (cadr (member color-type-sym *css-color:type-circle*)))
 
 ;;; ==============================
+;;; :PREFIX "ccct-"
 (defun css-color:cycle-type ()
   "Cycle the the text-properties of the css-color according to its type.\n
 :SEE-ALSO `css-color:next-type', `*css-color:type-circle*',
@@ -1224,22 +1297,24 @@ function names so generated include:\n
 `*css-color:map*',`*css-color:generic-map*', `css-color:string-hex-to-hsl',
 `css-color:string-hsl-to-hex', `css-color:string-hsl-to-rgb',
 `css-color:string-name-to-hex', `css-color:string-rgb-to-hex',
-`css-color:string-rgb-to-name'.\n►►►"
+`css-color:string-rgb-to-name', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive)
-  (destructuring-bind (beg end cycle-type color) (css-color:text-property-color-region)
-    (if (or (= 0 (length color)) (null cycle-type))
+  (destructuring-bind (ccct-beg ccct-end ccct-cycle-type ccct-color)
+      (css-color:text-property-color-region)
+    (if (or (= 0 (length ccct-color)) (null ccct-cycle-type))
         (error (concat ":FUNCTION `css-color:cycle-type' "
                        "-- region does not contain a color to cycle")))
-    (delete-region beg end)
+    (delete-region ccct-beg ccct-end)
     (insert (propertize
              (funcall (intern-soft
-                       (format *css-color:string-frob* cycle-type
-                               (css-color:next-type cycle-type))) color)
-             'keymap (if (eq (css-color:next-type cycle-type) 'hex)
+                       (format *css-color:string-frob* ccct-cycle-type
+                               (css-color:next-type ccct-cycle-type))) ccct-color)
+             'keymap (if (eq (css-color:next-type ccct-cycle-type) 'hex)
                          *css-color:map*
                        *css-color:generic-map*)
              'rear-nonsticky t))
-    (goto-char beg)))
+    (goto-char ccct-beg)))
 
 ;;; ==============================
 (defun css-color:string-hex-to-hsl (hex-color-str->hsl)
@@ -1248,9 +1323,10 @@ function names so generated include:\n
 `css-color:cycle-type', `*css-color:string-frob*', `css-color:next-type'
 `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
 `css-color:string-hsl-to-rgb', `css-color:string-name-to-hex'
-`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'.\n►►►"
+`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (h s l)
-      (apply 'css-color:rgb-to-hsl (css-color:hex-to-rgb hex-color-str->hsl))
+      (apply #'css-color:rgb-to-hsl (css-color:hex-to-rgb hex-color-str->hsl))
     (format "hsl(%d,%d%%,%d%%)" h s l)))
 
 ;;; ==============================
@@ -1260,23 +1336,26 @@ function names so generated include:\n
 `css-color:cycle-type', `*css-color:string-frob*', `css-color:next-type',
 `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
 `css-color:string-hsl-to-rgb', `css-color:string-name-to-hex',
-`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'.\n►►►"
+`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (multiple-value-bind (h s l)
       (css-color:parse-hsl hsl-color-str->rgb)
-    (apply 'format "rgb(%d,%d,%d)"
-           (mapcar 'round (css-color:hsl-to-rgb h s l)))))
+    (apply #'format "rgb(%d,%d,%d)" 
+           (mapcar #'round (css-color:hsl-to-rgb h s l)))))
 
 ;;; ==============================
+;;; :PREFIX "ccsrtn-"
 (defun css-color:string-rgb-to-name (rgb-color-str->name)
   "Convert RGB-COLOR-STR->NAME to css-color name from `*css-color:html-colors*'.\n
 :SEE-ALSO `css-color:string-rgb-to-hex', `css-color:string-hex-to-hsl',
 `css-color:cycle-type', `*css-color:string-frob*', `css-color:next-type',
 `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
 `css-color:string-hsl-to-rgb', `css-color:string-name-to-hex',
-`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'.\n►►►"
-  (let ((c2hex (css-color:string-rgb-to-hex rgb-color-str->name)))
-    (or (car (rassoc (list (upcase c2hex)) *css-color:html-colors*))
-        c2hex)))
+`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'\n►►►"
+  (let ((ccsrtn-c2hex (css-color:string-rgb-to-hex rgb-color-str->name)))
+    (or (car (rassoc (list (upcase ccsrtn-c2hex)) *css-color:html-colors*))
+        ccsrtn-c2hex)))
 
 ;;; ==============================
 ;;; :WAS (defun css-color:string-name-to-hex (str)
@@ -1294,13 +1373,16 @@ function names so generated include:\n
 `css-color:cycle-type', `*css-color:string-frob*', `css-color:next-type',
 `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
 `css-color:string-hsl-to-rgb', `css-color:string-name-to-hex',
-`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'.\n►►►"
-  (let ((to-hex-myb (assoc-string color-name-str->hex *css-color:html-colors* t)))
-    (when to-hex-myb (cadr to-hex-myb))))
+`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (let ((ccsnth-to-hex-myb 
+         (assoc-string color-name-str->hex *css-color:html-colors* t)))
+    (when ccsnth-to-hex-myb (cadr ccsnth-to-hex-myb))))
 ;;
 ;;; :TEST-ME (css-color:string-name-to-hex "MediumTurquoise")
 
 ;;; ==============================
+;;; :PREFIX "ccsrthx-"
 (defun css-color:string-rgb-to-hex (rgb-color-str->hex)
   "Convert the RGB-COLOR-STR->HEX value.\n
 :EXAMPLE\n\n\(css-color:string-rgb-to-hex \"rgb\(173,47,93\)\"\)\n
@@ -1308,15 +1390,16 @@ function names so generated include:\n
 `css-color:cycle-type', `*css-color:string-frob*', `css-color:next-type',
 `css-color:string-hex-to-hsl', `css-color:string-hsl-to-hex',
 `css-color:string-hsl-to-rgb', `css-color:string-name-to-hex',
-`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name'.\n►►►"
+`css-color:string-rgb-to-hex', `css-color:string-rgb-to-name',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (save-match-data
     (string-match *regexp-css-color-rgb* rgb-color-str->hex)
     (concat "#"
-            (apply 'css-color:rgb-to-hex
-                   (mapcar #'(lambda (rcsh) 
-                               (if (= (aref rcsh (1- (length rcsh))) ?\%)
-                                   (round (* (string-to-number rcsh) 2.55))
-                                 (string-to-number rcsh)))
+            (apply #'css-color:rgb-to-hex
+                   (mapcar #'(lambda (ccsrthx-L-1) 
+                               (if (= (aref ccsrthx-L-1 (1- (length ccsrthx-L-1))) ?\%)
+                                   (round (* (string-to-number ccsrthx-L-1) 2.55))
+                                 (string-to-number ccsrthx-L-1)))
                     (list (match-string-no-properties 1 rgb-color-str->hex)
                           (match-string-no-properties 2 rgb-color-str->hex)
                           (match-string-no-properties 3 rgb-color-str->hex)))))))
@@ -1331,16 +1414,16 @@ function names so generated include:\n
 `css-color:next-type', `css-color:string-hex-to-hsl',
 `css-color:string-hsl-to-hex', `css-color:string-hsl-to-rgb',
 `css-color:string-name-to-hex', `css-color:string-rgb-to-hex',
-`css-color:string-rgb-to-name'.\n►►►"
-  (concat "#" (apply 'css-color:hsl-to-hex 
-                     (css-color:parse-hsl hsl-color-str->hex))))
+`css-color:string-rgb-to-name', `mon-help-css-color',
+`mon-help-color-functions', `mon-help-color-chart'.\n►►►"
+  (concat "#" (apply #'css-color:hsl-to-hex (css-color:parse-hsl hsl-color-str->hex))))
 
 ;;; ==============================
 (defun css-color:next-channel ()
   "Return the next css-color's channel.\n
 :SEE-ALSO `css-color:text-property-color-region',
-`css-color:text-property-color-end',
-`css-color:text-property-color-region'.\n►►►"
+`css-color:text-property-color-end', `css-color:text-property-color-region',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive)
   (multiple-value-bind (beg end cycle-type color)
       (save-excursion (css-color:text-property-color-region))
@@ -1356,7 +1439,8 @@ function names so generated include:\n
 ;;; ==============================
 (defun css-color:hexify-anystring (hexify-str)
   "Try to HEXIFY-STR no matter what its color type.\n
-:SEE-ALSO `css-color:string-rgb-to-hex', `css-color:string-hsl-to-hex'.\n►►►"
+:SEE-ALSO `css-color:string-rgb-to-hex', `css-color:string-hsl-to-hex',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (cond ((string-match "^hsl" hexify-str)
 	 (css-color:string-hsl-to-hex hexify-str))
 	((string-match "^rgb" hexify-str)
@@ -1364,34 +1448,36 @@ function names so generated include:\n
 	(t hexify-str)))
 
 ;;; ==============================
+;;; :PREFIX "cctp-"
 (defun css-color:toggle-percentage ()
   "Toggle `css-color-mode' display of colors values in percentages.\n
-:SEE-ALSO `*css-color:generic-map*', `css-color:text-property-color-region'.\n►►►"
+:SEE-ALSO `*css-color:generic-map*', `css-color:text-property-color-region',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive)
-  (let ((pos (point)))
+  (let ((cctp-psn (point))) ;; Used?
     (if (eq (nth 2 (save-excursion (css-color:text-property-color-region))) 'rgb)
 	(let ((chars (concat `(37 ,@(number-sequence 49 57) 48 46))))
 	  (skip-chars-backward chars)
           (save-match-data
             (when (looking-at "[[:digit:]]+\\(?:\.?[[:digit:]]*%\\)?%?")
-              (let ((s (match-string 0)))
-                (replace-match
-                 (propertize
-                  (if (= (aref s (1- (length s))) ?\%)
-                      (number-to-string (round (* (string-to-number s) 2.55)))
-                    (format "%d%%" (/ (string-to-number s) 2.55)))
-                  'keymap *css-color:generic-map* 'rear-nonsticky t))))))
+              (let ((cctp-str (match-string 0)))
+                (replace-match (propertize
+                                (if (= (aref cctp-str (1- (length cctp-str))) ?\%)
+                                    (number-to-string (round (* (string-to-number cctp-str) 2.55)))
+                                  (format "%d%%" (/ (string-to-number cctp-str) 2.55)))
+                                'keymap *css-color:generic-map* 'rear-nonsticky t))))))
       (message (concat ":FUNCTION `css-color:toggle-percentage' "
                        "-- color-type at point not formatted as rgb(NN,NN,NN) type <SPC>")))))
 
 ;;; ==============================
 (defvar *css-color:fg-history* nil
-  "List used for completion history with html color lookups.
+  "List used for completion history with HTML color lookups.\n
 :SEE-ALSO `css-color:html-color-by-name', `css-color:examine-color'.\n►►►")
 ;;
 ;; (setq *css-color:fg-history* nil)
 
 ;;; ==============================
+;;; :PREFIX "cchtcbn-"
 ;;; :CHANGESET 1833
 ;;; :CREATED <Timestamp: #{2010-06-08T17:31:52-04:00Z}#{10232} - by MON KEY>
 (defun css-color:html-color-by-name (&optional this-css-color insrtp intrp prompt)
@@ -1399,7 +1485,7 @@ function names so generated include:\n
 Optional arg THIS-CSS-COLOR is a symbol or string name to `*css-color:html-colors*'
 When INSRTP is non-nil or called-interactively insert return value at point.
 Does not move point.\n
-Optional arg prompt is a string for `completing-read'.
+Optional arg PROMPT is a string for `completing-read'.
 Default prompt is: \"CSS color name: \"\n
 :EXAMPLE\n\n(css-color:html-color-by-name 'aliceblue)\n
 \(css-color:html-color-by-name \"aliceblue\"\)\n
@@ -1407,59 +1493,62 @@ Default prompt is: \"CSS color name: \"\n
 \(css-color:html-color-by-name\)\n
 \(css-color:html-color-by-name\)\n
 \(with-temp-buffer \(css-color:html-color-by-name nil nil t) \(buffer-string\)\)\n
-:SEE-ALSO `css-color:examine-color', `css-color:html-color-both-cases'.\n►►►"
+:SEE-ALSO `css-color:examine-color', `css-color:html-color-both-cases',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive "i\ni\np")
-  (let ((ht-cmp (if this-css-color
-                    (assoc-string this-css-color *css-color:html-colors* t)
-                  (assoc-string (completing-read (or prompt "CSS color name: " )
-                                                 (css-color:html-color-both-cases)
-                                                 nil nil nil '(*css-color:fg-history* . 1)
-                                                 (car *css-color:fg-history*))
-                                *css-color:html-colors* t))))
-    ;;(when (or intrp prompt) (push (car ht-cmp) *css-color:fg-history*))
-    (if (and ht-cmp (or insrtp intrp))
+  (let ((cchtcbn-cmp (if this-css-color
+                         (assoc-string this-css-color *css-color:html-colors* t)
+                       (assoc-string (completing-read (or prompt "CSS color name: " )
+                                                      (css-color:html-color-both-cases)
+                                                      nil nil nil '(*css-color:fg-history* . 1)
+                                                      (car *css-color:fg-history*))
+                                     *css-color:html-colors* t))))
+    ;;(when (or intrp prompt) (push (car cchtcbn-cmp) *css-color:fg-history*))
+    (if (and cchtcbn-cmp (or insrtp intrp))
         (save-excursion
-          (insert (format ":HTML-COLOR-NAME %s\n:RGB-HEX-VALUE   %s" (car ht-cmp) (cadr ht-cmp))))
-      ht-cmp)))
+          (insert (format ":HTML-COLOR-NAME %s\n:RGB-HEX-VALUE   %s" 
+                          (car cchtcbn-cmp) (cadr cchtcbn-cmp))))
+      cchtcbn-cmp)))
 ;;
 ;;; :TEST-ME (css-color:html-color-by-name "aliceblue")
 ;;; :TEST-ME (with-temp-buffer (apply 'css-color:html-color-by-name "aliceblue" '(nil t)) (buffer-string))
 
 ;;; ==============================
+;;; :PREFIX "ccec-"
 ;;; :CHANGESET 1839
 ;;; :CREATED <Timestamp: #{2010-06-09T21:05:21-04:00Z}#{10233} - by MON KEY>
 (defun css-color:examine-color (fg-color bg-color)
   "Test css-colors interactively.\n
-The css-colors are displayed in the echo area. You can specify the
-colors of any viable css color.\n
+The css-colors are displayed in the echo area.\n
+One can specify the colors of any viable CSS color.\n
 :EXAMPLE\n\n\(css-color:examine-color \"Red\" \"#000\"\)\n
 \(css-color:examine-color \"#0C0\" \"#b0ff00\"\)\n
 \(css-color:examine-color \"hsla\(100, 50%, 25%\)\" \"rgb\(255,100,120\)\"\)\n
 \(call-interactively 'css-color:examine-color\)\n 
 :SEE-ALSO `css-color:html-color-by-name', `css-color:hexify-anystring',
-`*css-color:bg-history*', `*css-color:fg-history*' `list-colors-display'.\n►►►"
+`*css-color:bg-history*', `*css-color:fg-history*' `list-colors-display',
+`mon-help-css-color', `mon-help-color-functions', `mon-help-color-chart'.\n►►►"
   (interactive (list 
                 (car (css-color:html-color-by-name nil nil nil "Foreground color: "))
                 (car (css-color:html-color-by-name nil nil nil "Background color: "))))
-  (let* ((s (concat " Foreground: " fg-color ", Background: " bg-color " ")))
-    (put-text-property 0 (length s)
+  (let* ((ccec-str (concat " Foreground: " fg-color ", Background: " bg-color " ")))
+    (put-text-property 0 (length ccec-str)
                        'face `(:foreground ,(css-color:hexify-anystring fg-color)
-                               :background ,(css-color:hexify-anystring bg-color)) s)
+                               :background ,(css-color:hexify-anystring bg-color)) ccec-str)
     (progn
-      (message (concat ":FUNCTION `css-color:examine-color' "
-                       " -- here are the colors:\n %s") s)
+      (minibuffer-message (concat ":FUNCTION `css-color:examine-color' "
+                       " -- here are the colors:\n %s") ccec-str)
       (sit-for 2))))
 
 ;;; ==============================             
 (defun css-color:run-tests ()
   "Test function for :FILE mon-css-color.el\n
 Test following features:\n
- `css-color:string-hex-to-hsl'
- `css-color:string-rgb-to-hex'
- `css-color:string-hsl-to-rgb'
- `css-color:string-hsl-to-hex'\n
+ `css-color:string-hex-to-hsl' `css-color:string-rgb-to-hex'
+ `css-color:string-hsl-to-rgb' `css-color:string-hsl-to-hex'\n
 :EXAMPLE\n\n(css-color:run-tests)\n
-:SEE-ALSO .\n►►►"
+:SEE-ALSO `mon-help-css-color', `mon-help-color-functions',
+`mon-help-color-chart'.\n►►►"
   (interactive)
   (unless
       (progn
@@ -1471,18 +1560,10 @@ Test following features:\n
 	 (string= (css-color:string-hsl-to-rgb "hsl(60, 100%, 50%)") "rgb(255,255,0)"))
 	(assert
 	 (string= (css-color:string-hsl-to-hex "hsl(60, 100%, 50%)") "#ffff00")))
-    (message (concat ":FUNCTION `css-color:run-tests'"
+    (message (concat ":FUNCTION `css-color:run-tests' "
                      "-- all tests passed"))))
 
 ;;; ==============================
-(provide 'css-color)
-(provide 'mon-css-color)
-;;; ==============================
-
-;;; ================================================================
-;;; mon-css-color.el ends here
-;;; EOF
-
 ;; W3C SVG color keywords
 ;; :SEE (URL `http://www.w3.org/TR/SVG/types.html#ColorKeywords')
 
@@ -1633,3 +1714,18 @@ Test following features:\n
 ;;; ("whitesmoke" "#f5f5f5" (245 245 245)
 ;;; ("yellow" "#ffff00" (255 255 0)
 ;;; ("yellowgreen" "#9acd32" (154 205 50)
+;;; ==============================
+
+;;; ==============================
+(provide 'css-color)
+(provide 'mon-css-color)
+;;; ==============================
+
+ 
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; End:
+
+;;; ================================================================
+;;; mon-css-color.el ends here
+;;; EOF

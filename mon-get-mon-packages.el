@@ -1,54 +1,52 @@
 ;;; mon-get-mon-packages.el --- snarf MON libraries with wget.
 ;; -*- mode: EMACS-LISP; -*-
 ;;; ================================================================
-;;; DESCRIPTION:
-;;; mon-get-mon-packages provides var and function to snarf MON libraries with
-;;; wget.
-;;;
-;;; AUTHOR: MON KEY
-;;; MAINTAINER: MON KEY
-;;;
-;;; FUNCTIONS:►►►
-;;; `mon-wget-mon-pkgs' 
-;;;
-;;; FUNCTIONS:◄◄◄
-;;;
-;;; MACROS:
-;;;
-;;; METHODS:
-;;;
-;;; CLASSES:
-;;;
-;;; CONSTANTS:
-;;;
-;;; VARIABLES:
-;;; `*mon-el-library*'
-;;;
-;;; ALIASED/ADVISED/SUBST'D:
-;;;
-;;; DEPRECATED:
-;;;
-;;; RENAMED:
-;;;
-;;; MOVED:
-;;;
-;;; TODO:
-;;;
-;;; NOTES:
-;;;
-;;; SNIPPETS:
-;;;
-;;; REQUIRES:
-;;;
-;;; THIRD-PARTY-CODE:
-;;;
+;; DESCRIPTION:
+;; mon-get-mon-packages provides var and function to snarf MON libraries with
+;; wget.
+;;
+;; AUTHOR: MON KEY
+;; MAINTAINER: MON KEY
+;;
+;; FUNCTIONS:►►►
+;; `mon-wget-mon-pkgs',
+;; FUNCTIONS:◄◄◄
+;;
+;; MACROS:
+;;
+;; METHODS:
+;;
+;; CLASSES:
+;;
+;; CONSTANTS:
+;;
+;; VARIABLES:
+;; `*mon-el-library*',
+;;
+;; ALIASED/ADVISED/SUBST'D:
+;;
+;; DEPRECATED:
+;;
+;; RENAMED:
+;;
+;; MOVED:
+;;
+;; TODO:
+;;
+;; NOTES:
+;;
+;; SNIPPETS:
+;;
+;; REQUIRES:
+;;
+;; THIRD-PARTY-CODE:
+;;
 ;; URL: http://www.emacswiki.org/emacs/mon-get-mon-packages.el
-;;; FIRST-PUBLISHED:
-;;;
+;; FIRST-PUBLISHED:
+;;
 ;; EMACSWIKI: {URL of an EmacsWiki describing mon-get-mon-packages.}
-;; CREATED:
-;;; <Timestamp: #{2010-02-17T18:55:33-05:00Z}#{10073} - by MON KEY>
-
+;; FILE-CREATED:
+;; <Timestamp: #{2010-02-17T18:55:33-05:00Z}#{10073} - by MON KEY>
 ;;; ================================================================
 ;; Copyright © 2010 MON KEY. All rights reserved.
 ;;; ================================================================
@@ -94,56 +92,111 @@
 ;;; :NOTE Intent in keeping this list to ease bundling of working tarballs.
 ;;; :CREATED <Timestamp: #{2010-02-15T16:03:40-05:00Z}#{10071} - by MON KEY>
 (defvar *mon-el-library*
-  '( ;; mon-GNU-load.el
+  '(;; mon-GNU-load.el
     ;; slime-loads-GNU.el
     ;; slime-loads.el
     ;; mon-animate-nursery-rhymes.el
     ;; SuperDuperRedundantPlus+.el  
-    ;; mon-bzr-utils.el
-    ;; mon-ps-pdf-utils.el
+
     ;; naf-mode-abbrevs.el
     ;; naf-mode-sql-skeletons.el
     ;; naf-mode-ulan-help-docs.el
-    ;; mon-eight-bit-raw-utils.el
+
+    ;; "mon-syntax-utils.el"
+    ;; "mon-testme-fancy.el"
+    ;; "mon-bzr-utils.el"
+    ;; "mon-ps-pdf-utils.el"
+    ;; "mon-eight-bit-raw-utils.el"
+    ;; "mon-rename-image-utils-supplemental.el"
+    ;; "google-define-redux-supplemental.el"
+    ;; "mon-doc-help-utils-supplemental.el"
+    ;; ==============================
+    ;;
     "monDOTemacs.el"
-    "mon-site-local-defaults.el"
+    ;; ../*mon-HG-root-path*/*mon-emacs-root*/
+    "mon-w32-load.el"
+    "mon-post-load-hooks.el"
     "mon-default-loads.el"
     "mon-default-start-loads.el"
-    "mon-w32-load.el"
-    "mon-wget-utils.el"
+    "mon-site-local-defaults.el"
     "mon-keybindings.el"
-    "mon-utils.el"
-    "mon-dir-locals-alist.el"
-    "mon-dir-utils.el"
-    "mon-insertion-utils.el"
-    "mon-replacement-utils.el"
-    "mon-regexp-symbols.el"
-    "mon-time-utils.el"
+    ;;
+    ;; ../*mon-HG-root-path*/*mon-emacs-root*/*mon-naf-mode-root*/
     "mon-testme-utils.el"
-    "mon-cl-compat.el"
-    "mon-cl-compat-regexps.el"
+    "mon-alphabet-list-utils.el"    
+    "mon-text-property-utils.el"
+    "mon-utils.el"
+    "mon-time-utils.el"    
     "mon-empty-registers.el"
     "mon-hash-utils.el"
+    "mon-insertion-utils.el"
+    "mon-aliases.el"
+    "mon-regexp-symbols.el"
     "mon-rename-image-utils.el"
-    "mon-tramp-utils.el"
-    "mon-boxcutter.el"
-    "mon-color-utils.el"
-    "mon-mysql-utils.el"
-    "mon-rename-image-utils-supplemental.el"
-    "mon-url-utils.el"
-    "mon-cifs-utils.el"
+    "mon-replacement-utils.el"
+    "mon-macs"
+    "mon-type-utils-vars"
+    "mon-type-utils"
+    "mon-error-utils"
+    "mon-plist-utils"
+    "mon-seq-utils"
+    "mon-buffer-utils"
+    "mon-window-utils"
+    "mon-randomize-utils"
+    "mon-event-utils"
+    "mon-line-utils"
+    "mon-region-utils"
+    "mon-string-utils"
+    "mon-env-proc-utils"
+    "mon-rectangle-utils"
+    "mon-word-syntax-utils"
+    ;;
     "google-define-redux.el"
-    "mon-doc-help-utils.el"
-    "mon-doc-help-utils-supplemental.el"
-    "mon-doc-help-proprietary.el"
-    "mon-doc-help-pacman.el"
+    "mon-button-utils.el"
+    "mon-url-utils.el"
+    ;;
+    "mon-tramp-utils.el"
+    "mon-cifs-utils.el"
+    ;;
+    "mon-cl-compat-regexps.el"
+    "mon-cl-compat.el"
+    ;;
+    "mon-color-utils.el"
+    "mon-css-color.el"
+    "mon-css-check.el"
+    "mon-css-complete.el"
+    ;;
+    "mon-dir-locals-alist.el"
+    "mon-dir-utils-local.el"
+    "mon-dir-utils.el"
+    ;;
     "mon-doc-help-CL.el"
+    "mon-doc-help-mail.el"
+    "mon-doc-help-pacman.el"
+    "mon-doc-help-proprietary.el"
+    "mon-doc-help-tidy.el"
+    "mon-doc-help-utils.el"
+    ;;
     "mon-iptables-regexps.el"
-    "mon-iptables-vars.el"
-    "perlisisms.el"
-    "STING-software-engineering-glossary.el"
+    "mon-iptables-vars.el"    
+    ;;
+    "mon-drive-transfer-utils.el"
+    "mon-jg-directory-creator.el"    
+    ;;
+    "mon-get-freenode-lisp-logs.el"
+    "mon-wget-utils.el"
+    "mon-get-mon-packages.el"
+    ;;
+    "mon-boxcutter.el"
+    "mon-mysql-utils.el"
+    ;;
+    ;; ../*mon-HG-root-path*/*mon-emacs-root*/*mon-naf-mode-root*/*mon-ebay-tmplt-mode-root*/
     "ebay-template-mode.el"
     "ebay-template-tools.el"
+    ;;
+    "perlisisms.el"
+    "STING-software-engineering-glossary.el"
+    ;; 
     "naf-mode.el"
     "naf-mode-faces.el"
     "naf-mode-insertion-utils.el"
@@ -178,8 +231,9 @@
     "naf-mode-xrefs.el")
   "*A list of MON files published online EmacsWiki.\n
 :SEE (URL `http://www.emacswiki.org/emacs/mon_key')
-:SEE-ALSO `mon-wget-mon-pkgs'.\n►►►")
-
+:SEE-ALSO `mon-wget-mon-pkgs', `mon-file-map-elisp-fileset'.\n►►►")
+;;
+;;;(progn (makunbound '*mon-el-library*) (unintern '*mon-el-library*) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-02-18T17:45:15-05:00Z}#{10074} - by MON KEY>
@@ -195,31 +249,23 @@ If omitted files are are downloaded to `default-directory'.\n
       (if in-dir
           (unless (file-exists-p mel)
             (mkdir mel))
-          mkdir mel)
+          (mkdir mel))
       (cd mel)
       (mon-wget-list-give-script-to-shell-command 
        *mon-el-library* 
        "http://www.emacswiki.org/emacs/download/" 
        (format-time-string "mon-wget-el-%y-%m-%d-%S")
-       ;; EmacsWiki appears throttled. With lower values may cause 503 errors.
-       "--wait=8" 
-       )))
+       ;; EmacsWiki appears throttled. Lower wait times may cause 503 errors.
+       "--wait=8")))
 ;;
 ;;; :TEST (mon-wget-mon-pkgs)
 
 ;;; :TODO Build lowtech tarball packages from list in variable *mon-el-library*.
-;;; (directory-files (or some-dir mon-naf-mode-root) nil ".*.el$") 
+;;; (directory-files (or some-dir *mon-naf-mode-root*) nil ".*.el$") 
 ;;; :SEE `mon-get-mon-pkgs2', `mon-get-mon-pkgs-w-wget' after EOF for alternative
 ;;; approach which attempted to incorporate that functionality inline. w32 fail!.
 
 ;;; ==============================
-(provide 'mon-get-mon-packages)
-;;; ==============================
-
-;;; ================================================================
-;;; mon-get-mon-packages.el ends here
-;;; EOF
-
 ;;; ==============================
 ;;; ==============================
 ;;; :NOTE Following not trustworthy on w32. 
@@ -298,5 +344,18 @@ If omitted files are are downloaded to `default-directory'.\n
 ;;;       (erase-buffer))
 ;;;     (shell-command (concat mgmp))))
 ;;; ==============================
+
+;;; ==============================
+(provide 'mon-get-mon-packages)
 ;;; ==============================
 
+ 
+;; Local Variables:
+;; mode: EMACS-LISP
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
+
+;;; ================================================================
+;;; mon-get-mon-packages.el ends here
+;;; EOF

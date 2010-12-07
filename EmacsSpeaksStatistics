@@ -9,6 +9,9 @@ Emacs Speaks Statistics (also sometimes called EmacsStatisticalSystem, but usual
 
 * R: http://www.r-project.org/
 
+== ess-tracebug ==
+
+[[http://code.google.com/p/ess-tracebug/|ess-tracebug]]  is a visual debugger and error tracer for ESS. 
 
 == Icicles Completion for ESS ==
 

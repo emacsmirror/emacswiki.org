@@ -84,6 +84,7 @@ Projects (code) -- Creating and managing:
 ** [[GrepMode#GrepOnlyMarkedFiles|grep only marked files in Dired]] -- search project files
 * [[ELPA]]
 * EmacsCodeBrowser (ECB)
+* [[Emacs-IDE]]
 * [[eproject]] - Project workspaces for Emacs.
 * EtaskMode
 * FindFileInProject

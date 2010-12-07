@@ -66,12 +66,13 @@
 ;; `*regexp-clean-html-named-char-entity*', `*regexp-clean-xml-parse*',
 ;; `*regexp-clean-gilt-group*',`*regexp-clean-benezit-fields*',
 ;; `*regexp-clean-mon-file-keywords*', `*regexp-rgb-hex*',
-;; `*regexp-symbol-defs-big*', `*regexp-symbol-defs*', `*mon-whitespace-chars*',
-;; `*regexp-whitespace-chars*',
+;; `*regexp-symbol-defs-big*', `*regexp-symbol-defs*', 
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `*mon-regexp-version-alist*' -> `version-regexp-alist'
 ;; `*whitespace-chars*'         -> `*mon-whitespace-chars*'
+;; `*mon-digit-chars*'          -> `parse-time-digits'
+;; :NOTE Aliases located in :FILE mon-aliases.el
 ;;
 ;; DEPRECATED:
 ;;
@@ -83,6 +84,7 @@
 ;; MOVED:
 ;; `mon-help-regexp-symbol-defs-TEST'          -> mon-doc-help-utils.el
 ;; `mon-regexp-clean-ulan-dispatch-chars-TEST' -> mon-testme-utils.el
+;;
 ;; REQUIRES:
 ;;
 ;; NOTES: ATTENTION ALL MONKEYS!!!!
@@ -147,7 +149,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-05T20:19:31-04:00Z}#{10142} - by MON>
@@ -206,53 +208,9 @@
           *regexp-clean-ulan-fields*
           *regexp-clean-ulan-dispatch-chars*
           *regexp-ulan-contribs*
-          *mon-whitespace-chars*
           )))
 ;;
 ;;(progn (makunbound '*mon-regexp-symbols-xrefs*) (unintern "*mon-regexp-symbols-xrefs*" obarray) )
-
-
-;;; ==============================
-;;; :CREATED <Timestamp: Wednesday July 01, 2009 @ 06:39.55 PM - by MON KEY>
-;; 
-(unless (and (intern-soft "*regexp-version-alist*" obarray) 
-             (bound-and-true-p *regexp-version-alist*))
-(defvaralias '*regexp-version-alist* 'version-regexp-alist))
-
-;;; ==============================
-;;; :CHANGESET 2256
-;;; :CREATED <Timestamp: #{2010-11-01T13:04:03-04:00Z}#{10441} - by MON KEY>
-(defvar *mon-whitespace-chars* '(12 11 13 10 9 32) 
-  "List of ASCII whitespace chars.\n
-List includes:\n
- SPACE                \\x20    (32, #o40, #x20)
- CHARACTER TABULATION \\x9     ( 9, #o11, #x9)
- LINE FEED (LF)       \\xa C-j (10, #o12, #xa)
- LINE TABULATION      \xb  C-k (11, #o13, #xb)
- FORM FEED (FF)       \xc  C-l (12, #o14, #xc)
- CARRIAGE RETURN (CR) \xd      (13, #o15, #xd)\n
-:EXAMPLE\n\n\(mapcar #'char-to-string *mon-whitespace-chars*\)\n
-\(memq (string-to-char \"\\xb\") *mon-whitespace-chars*\)\n
-:NOTE Order of list elements is specified least to most important. This provides
-a handle for reductive queries which further filter their return value, e.g.:\n
- \(let \(\(some-char-val 10\) wspc-myb\)
-   \(prog2 
-       \(setq wspc-myb \(memq some-char-val *mon-whitespace-chars*\)\)
-       \(and wspc-myb \(or \(and \(= \(car wspc-myb\) 32\) 32\)
-                         \(and \(= \(car wspc-myb\) 9\) 9\)
-                         \(car wspc-myb\)\)\)\)\)\n
-:ALIASED-BY `*whitespace-chars*'\n
-:SEE-ALSO `*regexp-whitespace-chars*', `mon-spacep', `mon-spacep-is-bol',
-`mon-spacep-not-bol', `mon-spacep', `mon-line-bol-is-eol',
-`mon-line-next-bol-is-eol', `mon-line-previous-bol-is-eol',
-`mon-spacep-is-after-eol', `mon-cln-spc-tab-eol'`mon-skip-whitespace',
-`mon-cln-BIG-whitespace' `mon-cln-trail-whitespace', `mon-cln-whitespace',
-`mon-insert-whitespace', `mon-kill-whitespace'.\n►►►")
-;;
-(unless (and (intern-soft "*whitespace-chars*" obarray) 
-             (bound-and-true-p *whitespace-chars*))
-(defvaralias '*whitespace-chars* '*mon-whitespace-chars*))
-
 
 ;;; ==============================
 ;;; :CHANGESET 2256
@@ -276,7 +234,7 @@ a handle for reductive queries which further filter their return value, e.g.:\n
 `whitespace-space-before-tab-regexp', `whitespace-space-after-tab-regexp',
 `whitespace-empty-at-eob-regexp', `whitespace-empty-at-bob-regexp',
 `whitespace-indentation-regexp'.\n►►►")
- 
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-08-31T21:03:05-04:00Z}#{09362} - by MON KEY>
 (defvar *regexp-clean-xml-parse* '((" \"$" "")
@@ -516,9 +474,6 @@ Regexp's are of the form:\n
 ;;;(progn (makunbound '*regexp-simple-abrv-month->canonical*) 
 ;;;       (unintern "*regexp-simple-abrv-month->canonical*" obarray) )
 
-
-
-
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 06:19.33 PM - by MON KEY>
 (defvar *regexp-clean-ebay-time-chars*  
@@ -588,8 +543,6 @@ Matches abbreviated months occuring inside strings with the format:\n
 ;;
 ;;;(progn (makunbound '*regexp-clean-ebay-month->canonical-style1*) 
 ;;;       (unintern "*regexp-clean-ebay-month->canonical-style1*" obarray) )
-
-
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday July 29, 2009 @ 06:58.46 PM - by MON KEY>
@@ -909,7 +862,6 @@ Replacements of abbreviated YY inserts the prefix 19 to yield 19YY.\n
 ;;;       (unintern "*regexp-philsp-apos*" obarray) )
 
 ;;; ==============================
-;;; :FIXME The "[: :]" stuff is wrong, something got messed up in a regexp during refactoring.
 (defvar *regexp-philsp-location*
   `((,(concat 
        "\\(^[ ]\\{4,4\\}\\*[ ]?\\)"
@@ -927,6 +879,7 @@ Discard trailing (semi-colon;) and wrap target string with #hash-symbols#.\n
 ;;;(progn (makunbound '*regexp-philsp-location*)
 ;;;       (unintern   "*regexp-philsp-location*" obarray) )
 ;;; (search-forward-regexp "[[:space:]]" (line-end-position 1) t) 
+
 ;;; ==============================
 (defvar *regexp-philsp-swap-location*
   '(("^\\(#\\(.*\\)#\\)\\(.*$\\)" "\\3 - \\2"))
@@ -941,7 +894,6 @@ Shift the former to the EOL position and the later to BOL.\n
 ;;;       (unintern "*regexp-philsp-swap-location*" obarray) )
 
 ;;; ==============================
-;;; :FIXME The "[: :]" stuff is wrong, something got messed up in a regexp during refactoring.
 (defvar *regexp-philsp-fix-month-dates* 
   '(("\\(\\(January\\)\\([[:blank:]]\\([0123][0-9]\\)\\{1,1\\}[[:blank:]]\\)\\)" "\\2 \\4, ")
     ("\\(\\(February\\)\\([[:blank:]]\\([0123][0-9]\\)\\{1,1\\}[[:blank:]]\\)\\)" "\\2 \\4, ")
@@ -1054,8 +1006,8 @@ unique to Wikpedia's mutli-user entered text.\n
 ;;; ==============================
 (defvar *regexp-clean-whitespace*
   '(("\\(\\> +\\)" " ") ("\\(\\_> +\\)" " "))
-  ;; A more exact but ascii perverted approach:
-  ;; \([A-z]\)\([:  :]+?\)\([A-z]\)  \1 \3
+  ;; A more exact but ASCII perverted approach:
+  ;; \([A-z]\)\([[:blank:]+?\)\([A-z]\)  \1 \3
   "*Regexp to match in string whitespace for cleanup functions.\n
 :CALLED-BY `mon-cln-whitespace'.\n
 :USED-IN `naf-mode'.\n
@@ -2667,6 +2619,7 @@ Lists have the form:\n
 (provide 'mon-regexp-symbols)
 ;;; ==============================
 
+ 
 ;; Local Variables:
 ;; generated-autoload-file: "./mon-loaddefs.el"
 ;; coding: utf-8

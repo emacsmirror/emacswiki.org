@@ -86,6 +86,9 @@ It shows *Keystrokes* and *Commands* in a help window.
 : Thanks [[rubikitch]] add this feature! Very convenient! ;) -- AndyStewart
 
 * I have added a major mode for the "One-Key-Template" buffer which binds some keys to useful functions to help you create your menu (E.g. "C-c C-t" to load the menu, "M-<up>/<down>" to move the current entry up/down, functions to sort the entries, etc.). I have also made a one-key menu for this mode so you just need to type M-x one-key-get-menu (or press the associated keybinding) in this mode to see the available helper functions. -- JoeBloggs
+* Also, when you use the `one-key-show-template' or `one-key-insert-template' command, the default choices for keymap and title will be chosen according to the current major mode.
+* Also you can edit an existing menu by pressing "C-/" in the menu. This keybinding can be configured (along with the
+* keybindings for other fixed keys).
 
 ==Example Template Code==
 : Lisp:one-key-config.el has many examples of template code for use with OneKey . 

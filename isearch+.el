@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Mon Oct 18 11:24:38 2010 (-0700)
+;; Last-Updated: Sun Dec  5 07:01:57 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 524
+;;     Update #: 541
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -26,16 +26,12 @@
 ;;
 ;;  Commands defined here:
 ;;
-;;    `isearchp-goto-success-end',
+;;    `isearchp-goto-success-end', `isearchp-toggle-invisible',
 ;;    `isearchp-toggle-regexp-quote-yank',
 ;;    `isearchp-toggle-set-region', `isearch-toggle-word',
 ;;    `isearchp-yank-sexp-symbol-or-char',
 ;;    `isearchp-sexp-symbol-or-char',
 ;;    `set-region-around-search-target'.
-;;
-;;  Non-interactive functions defined here:
-;;
-;;    `isearchp-set-region'.
 ;;
 ;;  User options defined here:
 ;;
@@ -44,6 +40,14 @@
 ;;  Faces defined here:
 ;;
 ;;    `isearch-fail'.
+;;
+;;  Non-interactive functions defined here:
+;;
+;;    `isearchp-set-region'.
+;;
+;;  Internal variables defined here:
+;;
+;;    `isearchp-last-non-nil-invisible'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `isearch.el' have
@@ -59,6 +63,7 @@
 ;;  (`C-s' prefix):
 ;;
 ;;    `C-`'        `isearchp-toggle-regexp-quote-yank'
+;;    `C-+'        `isearchp-toggle-invisible'
 ;;    `C-SPC'      `isearchp-toggle-set-region'
 ;;    `C-c'        `isearch-toggle-case-fold'
 ;;    `C-h'        `isearch-mode-help'
@@ -85,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2010/12/05 dadams
+;;     Added: isearchp-toggle-invisible, isearchp-last-non-nil-invisible.
 ;; 2010/10/18 dadams
 ;;     isearch-mode-hook: Protect isearchp-goto-success-end with fboundp.
 ;; 2010/06/23 dadams
@@ -165,7 +172,14 @@
 
 (require 'misc-cmds nil t) ;; goto-longest-line
 
+
+;; Quiet the byte compiler.
+(defvar subword-mode)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defvar isearchp-last-non-nil-invisible (or search-invisible 'open)
+  "Last non-nil value of `search-invisible'.")
 
 (when (> emacs-major-version 21)        ; Emacs 22
   (defface isearch-fail
@@ -197,6 +211,7 @@ You can toggle this with `isearchp-toggle-set-region', bound to
 
 (add-hook 'isearch-mode-hook
           (lambda ()
+            (define-key isearch-mode-map [(control ?+)] 'isearchp-toggle-invisible)
             (define-key isearch-mode-map [(control ?`)] 'isearchp-toggle-regexp-quote-yank)
             (define-key isearch-mode-map [(control ? )] 'isearchp-toggle-set-region)
             (define-key isearch-mode-map "\C-h"         'isearch-mode-help)
@@ -221,6 +236,15 @@ You can toggle this with `isearchp-toggle-set-region', bound to
             (when (and (eq system-type 'windows-nt) ; Windows uses M-TAB for something else.
                        (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
               (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))))
+
+(defun isearchp-toggle-invisible ()
+  "Toggle `search-invisible'."
+  (interactive)
+  (when search-invisible (setq isearchp-last-non-nil-invisible  search-invisible))
+  (setq search-invisible  (if search-invisible nil isearchp-last-non-nil-invisible))
+  (if search-invisible
+      (message "Searching invisible text is now ON")
+    (message "Searching invisible text is now OFF")))
 
 (defun isearchp-toggle-regexp-quote-yank ()
   "Toggle `isearchp-regexp-quote-yank-flag'."

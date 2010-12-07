@@ -353,6 +353,20 @@ I have this in my .emacs:
 hth Memnon
 [new]
 
+
+===More integrated way of invoking the default browser under Mac OSX in Emacs 23===
+Emacs 23 comes with a way to execute applescript with a handy function.  It's used for instances where you want a new browser window as the default _open_ doesn't support a way to open new windows.
+[new]
+{{{
+(defun browse-url-default-macosx-browser (url &optional new-window)
+  (interactive (browse-url-interactive-arg "URL: "))
+  (if (and new-window (>= emacs-major-version 23))
+      (ns-do-applescript
+       (format (concat "tell application \"Safari\" to make document with properties {URL:\"%s\"}\n"
+		       "tell application \"Safari\" to activate") url))
+    (start-process (concat "open " url) nil "open" url)))
+}}}
+[new]
 ----
 CategoryDotEmacs CategoryHypermedia
 

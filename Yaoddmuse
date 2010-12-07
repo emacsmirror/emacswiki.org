@@ -491,6 +491,10 @@ It contains some other fixes, too; but I don't use Yaoddmuse that often, and
 when I do, then it's only a small part of its functionality, so it might need some
 testing. Comments welcome (best via e-mail or IRC).
 
+[new]
+Please, the code should contain a way for detect if the user is at a
+text console, like I usually do.  --SuSo
+
 ----
 CategoryHypermedia
 

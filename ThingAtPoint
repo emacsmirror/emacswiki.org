@@ -191,6 +191,10 @@ The following add new kinds of things at point. They provide examples of how to 
 * [[Chart]] -- stock and commodity symbols (ie. ticker codes)
 * TexMathPreview -- TeX math expressions
 * ThingAtPointPlus -- things at or ''nearest'' point: list, number, word, sentence, sexp, symbol, symbol name
+* ThingAtPointUtils -- Delivers a set of functions to return,
+mover over or manipulate a given THING. THING may be a
+well known form as symbol', `list', `sexp', `defun' but
+also a new defined and abstract thing.
 
 
 

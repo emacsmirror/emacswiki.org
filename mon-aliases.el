@@ -1,4 +1,4 @@
-;;; mon-aliases.el --- { A one line description of: mon-aliases. }
+;;; mon-aliases.el --- consolidated aliases for functions provided by MON
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
@@ -11,7 +11,7 @@
 ;; CREATED: 2010-11-04T20:03:21-04:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: 
+;; KEYWORDS: emacs, lisp, extensions, local
 
 ;;; ================================================================
 
@@ -19,7 +19,7 @@
 
 ;; =================================================================
 ;; DESCRIPTION:
-;; mon-aliases provides { some description here. }
+;; mon-aliases provides consolidated aliases for functions provided by MON
 ;;
 ;; FUNCTIONS:►►►
 ;;
@@ -47,6 +47,8 @@
 ;; `macrop'               -> `apropos-macrop'
 ;; `make-array'           -> `make-vector'
 ;; `line-join-previous'   -> `delete-indentation'
+;; `shell-command-async'        -> `async-shell-command'
+;; `asynchronous-shell-command' ->`shell-command-async'
 ;;
 ;; DEPRECATED:
 ;;
@@ -114,7 +116,7 @@
 ;; - A symbol with a namespace prefix.
 ;;   These are denoted as: <PREFIX>-<QUALIFIED>
 ;;
-;; An aliasing symbol can be of the form:
+;; An aliasing symbol can be of the form**:
 ;;
 ;;   (defalias '<QUALIFIED-ALIAS>    '<CORE-SYMBOL>)
 ;;   (defalias '<UNQUALIFIED-ALIAS>  '<CORE-SYMBOL>)
@@ -124,6 +126,9 @@
 ;;   (defalias '<UNQUALIFIED-ALIAS>  '<PREFIX>-<NON-CORE-SYMBOL>)
 ;;   (defalias '<PREFIX>-<QUALIFIED> '<PREFIX>-<NON-CORE-SYMBOL>)
 ;;   (defalias '<PREFIX>-<NON-CORE-SYMBOL> '<PREFIX>-<NON-CORE-SYMBOL>)
+;;
+;;   ** Presumably above enumeration w/ "<PREFIX>-" can be inverted as
+;;      "-<SUFFIX>" and the following discussion remains applicable.
 ;;
 ;; An aliasing symbol may only be of type <QUALIFIED-ALIAS> when it is defined
 ;; within an Emacs core file and aliases a <CORE-SYMBOL>. <QUALIFIED-ALIAS>'s
@@ -196,7 +201,7 @@
 ;; THIRD-PARTY-CODE:
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-aliases.el
-;; FIRST-PUBLISHED:
+;; FIRST-PUBLISHED: <Timestamp: #{2010-11-10T22:28:27-05:00Z}#{10453} - by MON>
 ;;
 ;; EMACSWIKI: { URL of an EmacsWiki describing mon-aliases. }
 ;;
@@ -243,61 +248,21 @@
 
 (eval-when-compile (require 'cl))
 
-;;; :NOTE Lines below begginig w/ "(defalias" occur without indentation for etags
-;;; which likes to find them at BOL.
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-;;; ==============================
-;;; mon-text-property-utils.el►►►
-;;; ==============================
+;;; :NOTE Lines below begginig w/ "(defalias" occur without indentation for
+;;; etags which likes to find them at BOL.
 
+;; :NOTE Following aliases do not have a corresponding mon-*.el file
+ 
+ 
 ;;; ==============================
-;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
-(unless (and (intern-soft "mon-get-text-properties-region->kill-ring" obarray)
-             (fboundp 'mon-get-text-properties-region->kill-ring))
-(defalias 'mon-get-text-properties-region->kill-ring 'mon-get-text-properties-region-to-kill-ring))
-;;
-(unless (and (intern-soft "mon-kill-ring-save-w-props" obarray)
-            (fboundp 'mon-kill-ring-save-w-props))
-(defalias 'mon-kill-ring-save-w-props 'mon-get-text-properties-region-to-kill-ring))
-
-(unless (and (intern-soft "mon-help-face-next-property-change" obarray) 
-             (fboundp 'mon-help-face-next-property-change))
-(defalias 'mon-help-face-next-property-change 'mon-get-next-face-property-change))
-;;
-(unless (and (intern-soft "mon-remove-text-with-property" obarray)
-             (fboundp 'mon-remove-text-with-property))
-(defalias 'mon-remove-text-with-property 'mon-get-text-property-remove-all))
-;;
-(unless (and (intern-soft "with-print-gensyms" obarray) 
-             (fboundp 'with-print-gensyms))
-(defalias 'with-print-gensyms 'mon-with-print-gensyms))
-
-;;; ==============================
-;;; mon-text-property-utils.el►►►
+;;; mon-aliases.el►►►
 ;;; ==============================
 
-;;; ==============================
-;;; mon-utils.el►►►
-;;; ==============================
-
-;;; ==============================
 ;;; <UNQUALIFIED-ALIAS> <CORE-SYMBOL>
-;;; ==============================
-
-;;; ==============================
-;;; :NOTE Is it possible to implement a light-weight CL style `make-array' which
-;;; specializes on a keyword argument for an `:element-type`, e.g. 'bit, 'sbit,
-;;; 'character? Could such a thing maybe leverage `make-char-table' or
-;;; `make-keymap' for displaced arrays?. Maybe for signed-byte use a buffer
-;;; markder combo as an index into an adjustable array and position-bytes as its
-;;; fill-pointer barring unibyte/multibyte/EOL/encoding issues of course :P
-;;;
-;;; <UNQUALIFIED-ALIAS> <CORE-SYMBOL>
-(unless (and (intern-soft "make-array" obarray)
-             (fboundp 'make-array))
-(defalias 'make-array 'make-vector))
 ;;
 (unless (and (intern-soft "atomp" obarray) 
              (fboundp (intern-soft "atomp" obarray)))
@@ -307,7 +272,6 @@
              (fboundp 'line-join-previous))
 (defalias 'line-join-previous 'delete-indentation))
 ;;
-
 (unless (and (intern-soft "stringp-or-null" obarray) 
              (fboundp 'stringp-or-null)) 
 (defalias 'stringp-or-null 'string-or-null-p))
@@ -323,93 +287,43 @@
 (unless (and (intern-soft "character-or-strinp" obarray) 
              (fboundp 'character-or-strinp))
 (defalias 'character-or-strinp 'char-or-string-p))
-
+;;
+(unless (and (intern-soft "shell-command-async" obarray) 
+             (fboundp 'shell-command-async))
+(defalias 'shell-command-async 'async-shell-command))
+;;
+(unless (and (intern-soft "asynchronous-shell-command" obarray) 
+             (fboundp 'asynchronous-shell-command))
+(defalias 'asynchronous-shell-command 'shell-command-async))
+;;
 ;;; ==============================
-;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
-;;; ==============================
-;;; :NOTE `byte-compile-arglist-warn' has a MACROP parameter.
-;;; :CHANGESET 2119
-;;; :CREATED <Timestamp: #{2010-09-13T17:30:20-04:00Z}#{10371} - by MON KEY>
+;;; :NOTE Is it possible to implement a light-weight CL style `make-array' which
+;;; specializes on a keyword argument for an `:element-type`, e.g. 'bit, 'sbit,
+;;; 'character? Could such a thing maybe leverage `make-char-table' or
+;;; `make-keymap' for displaced arrays?. Maybe for signed-byte use a buffer
+;;; markder combo as an index into an adjustable array and position-bytes as its
+;;; fill-pointer barring unibyte/multibyte/EOL/encoding issues of course :P
+(unless (and (intern-soft "make-array" obarray)
+             (fboundp 'make-array))
+(defalias 'make-array 'make-vector))
+;;
 ;;; <UNQUALIFIED-ALIAS> <PREFIX>-<CORE-SYMBOL>
+;;
+;;; :NOTE `byte-compile-arglist-warn' has a MACROP parameter.
 (unless (and (intern-soft "macrop" obarray) 
              (fboundp (intern-soft "macrop" obarray)))
 (defalias 'macrop 'apropos-macrop))
-;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
-           (bound-and-true-p IS-MON-SYSTEM-P))
-  (unless (and (intern-soft "buffer-narrowed-p" obarray)
-               (fboundp 'buffer-narrowed-p))
-(defalias 'buffer-narrowed-p 'mon-buffer-narrowed-p)))
-;;
-(unless (and (intern-soft "nshuffle-vector" obarray)
-             (fboundp (intern-soft "nshuffle-vector" obarray)))
-(defalias 'nshuffle-vector 'mon-nshuffle-vector))
-;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
-           (not (and (intern-soft "with-gensyms" obarray)
-                     (fboundp (intern-soft "with-gensyms" obarray)))))
-(defalias 'with-gensyms 'mon-with-gensyms))
-;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
-           (bound-and-true-p IS-MON-SYSTEM-P)
-           (if (intern-soft "buffer-exists-p" obarray)
-               (not (fboundp (intern-soft "buffer-exists-p" obarray)))
-             t))
-(defalias 'buffer-exists-p 'mon-buffer-exists-p))
-;;
-(unless (and (intern-soft "string-or-null-and-zerop" obarray) 
-             (fboundp 'string-or-null-and-zerop))
-(defalias 'string-or-null-and-zerop 'mon-string-or-null-and-zerop))
-;;
-(unless (and (intern-soft "stringp-and-zerop-or-null" obarray) 
-             (fboundp 'stringp-and-zerop-or-null))
-(defalias 'stringp-and-zerop-or-null 'mon-string-or-null-and-zerop))
-;;
-(unless (and (intern-soft "string-not-null-or-zerop" obarray) 
-             (fboundp 'string-not-null-or-zerop))
-(defalias 'string-not-null-or-zerop 'mon-string-not-null-nor-zerop))
-;;
-(unless (and (intern-soft "stringp-not-null-nor-zerop" obarray) 
-             (fboundp 'stringp-not-null-nor-zerop))
-(defalias 'stringp-not-null-nor-zerop 'mon-string-not-null-nor-zerop))
-;;
-(unless (and (intern-soft "zerop-or-one" obarray)
-             (fboundp 'zerop-or-one))
-(defalias 'zerop-or-one 'mon-zero-or-onep))
-;;
-(unless (and (intern-soft "next-almost-prime" obarray)
-             (fboundp 'next-almost-prime))
-(defalias 'next-almost-prime 'mon-next-almost-prime))
-;;
-(unless (and (intern-soft "delq-dups" obarray)
-             (fboundp 'delq-dups))
-(defalias 'delq-dups 'mon-delq-dups))
-;;
-(unless (and (intern-soft "proper-list-p" obarray)
-             (fboundp 'proper-list-p))
-(defalias 'proper-list-p 'mon-list-proper-p))
+
 
 ;;; ==============================
-;;; <PREFIX>-<QUALIFIED> <CORE-SYMBOL>
+;;; mon-aliases.el►►►
 ;;; ==============================
 
-(unless (and (intern-soft "mon-line-keep-match" obarray) 
-             (fboundp 'mon-line-keep-match))
-(defalias 'mon-line-keep-match  'keep-lines))
-;;
-(unless (and (intern-soft "mon-line-delete-match" obarray) 
-             (fboundp 'mon-line-delete-match))
-(defalias 'mon-line-delete-match 'flush-lines))
-;;
-(unless (and (intern-soft "mon-line-count-match" obarray) 
-             (fboundp 'mon-line-count-match))
-(defalias 'mon-line-count-match  'how-many))
-;;
-(unless (and (intern-soft "mon-line-join-previous" obarray) 
-             (fboundp 'mon-line-join-nextline))
-(defalias 'mon-line-join-previous 'delete-indentation))
+ 
+;;; ==============================
+;;; mon-utils.el►►►
+;;; ==============================
+
 ;;
 ;;; ==============================
 ;;; :NOTE Alias these and don't forget to use them!
@@ -432,6 +346,7 @@
 (unless (and (intern-soft "mon-delq-alist" obarray)
              (fboundp 'mon-delq-alist))
 (defalias 'mon-delq-alist 'assq-delete-all))
+;;
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-02T12:47:38-05:00Z}#{10092} - by MON KEY>
 ;;; `store-substring' <- mule-util.el
@@ -512,7 +427,6 @@ This uses 'sort so the sorting is destructive.
 :EXAMPLE\n\n\(mon-string-prefix-p \"mon-\" \"mon-string-prefix-p\"\)\n
 \(mon-string-prefix-p \"mon-\" \"string-mon-prefix-p\"\)\n
 :SEE-ALSO .\n►►►"))
-
 ;;
 ;;; ==============================
 ;;; :CHANGESET 2142
@@ -539,10 +453,6 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-window-get-if-buffer" obarray)
              (fboundp (intern-soft "mon-window-get-if-buffer" obarray)))
 (defalias 'mon-window-get-if-buffer 'mon-get-buffer-window-if))
-;;
-(unless (and (intern-soft "get-buffer-window-if" obarray)
-             (fboundp (intern-soft "get-buffer-window-if" obarray)))
-(defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
 ;;
 (unless (and (intern-soft "mon-buffer-name-print-readably" obarray)
              (fboundp (intern-soft "mon-buffer-name-print-readably" obarray)))
@@ -592,85 +502,13 @@ This uses 'sort so the sorting is destructive.
              (fboundp 'mon-false-to-zero))
 (defalias 'mon-false-to-zero 'mon-booleanp-to-binary))
 ;;
-(unless (and (intern-soft "mon-buffer-make-shell" obarray)
-             (fboundp 'mon-buffer-make-shell))
-(defalias 'mon-buffer-make-shell 'mon-make-shell-buffer))
+
 ;;
-(unless (and (intern-soft "mon-buffer-get-shell" obarray)
-             (fboundp 'mon-buffer-get-shell))
-(defalias 'mon-buffer-get-shell 'mon-shell))
+
+
 ;;
-(unless (and (intern-soft "mon-buffer-get-scratch" obarray)
-             (fboundp 'mon-buffer-get-scratch))
-(defalias 'mon-buffer-get-scratch 'mon-scratch))
-;;
-(unless (and (intern-soft "mon-buffer-get-messages" obarray)
-             (fboundp 'mon-buffer-get-messages))
-(defalias 'mon-buffer-get-messages 'mon-switch-to-messages))
-;;
-(unless (and (intern-soft "mon-append-next-kill" obarray)
-             (fboundp 'mon-append-next-kill))
-(defalias 'mon-append-next-kill 'mon-kill-appending))
-;;
-(unless (and (intern-soft "mon-buffer-kill-completions" obarray)
-             (fboundp 'mon-buffer-kill-completions))
-(defalias 'mon-buffer-kill-completions 'mon-kill-completions))
-;;
-(unless (and (intern-soft "mon-window-flip" obarray)
-             (fboundp 'mon-window-flip))
-(defalias 'mon-window-flip 'mon-flip-windows))
-;;
-(unless (and (intern-soft "mon-window-split-horiz" obarray)
-             (fboundp 'mon-window-split-horiz))
-(defalias 'mon-window-split-horiz 'mon-twin-horizontal))
-;;
-(unless (and (intern-soft "mon-window-split-vert" obarray)
-             (fboundp 'mon-window-split-vert))
-(defalias 'mon-window-split-vert 'mon-twin-vertical))
-;;
-(unless (and (intern-soft "mon-register-append" obarray)
-             (fboundp 'mon-register-append))
-(defalias 'mon-register-append 'mon-append-to-register))
-;;
-(unless (and (intern-soft "mon-buffer-append-to" obarray)
-             (fboundp 'mon-buffer-append-to))
-(defalias 'mon-buffer-append-to 'mon-append-to-buffer))
-;;
-(unless (and (intern-soft "mon-buffer-end" obarray)
-             (fboundp 'mon-buffer-end))
-(defalias 'mon-buffer-end 'mon-g2be))
-;;
-(unless (and (intern-soft "mon-capitalize-region" obarray)
-              (fboundp (intern-soft "mon-capitalize-region" obarray)))
-(defalias 'mon-capitalize-region 'mon-region-capitalize))
-;;
-(unless (and (intern-soft "mon-region-reverse-chars" obarray)
-              (fboundp (intern-soft "mon-region-reverse-chars" obarray)))
-(defalias 'mon-region-reverse-chars 'mon-region-reverse))
-;; 
-(unless (and (intern-soft "mon-read-keys-last-event" obarray)
-             (fboundp 'mon-read-keys-last-event))
-(defalias 'mon-read-keys-last-event 'mon-test-keypresses))
-;; 
-(unless (and (intern-soft "mon-string-from-keyboard-input" obarray)
-             (fboundp 'mon-string-from-keyboard-input))
-(defalias 'mon-string-from-keyboard-input 'mon-read-keys-as-string))
-;;
-(unless (and (intern-soft "mon-get-hidden-buffers" obarray)
-             (fboundp 'mon-get-hidden-buffers))
-(defalias 'mon-get-hidden-buffers 'mon-get-buffer-hidden))
-;;
-(unless (and (intern-soft "mon-help-hidden-buffers" obarray)
-             (fboundp 'mon-help-hidden-buffers))
-(defalias 'mon-help-hidden-buffers 'mon-get-buffer-hidden))
-;;
-(unless (and (intern-soft "mon-buffer-get-hidden" obarray)
-             (fboundp 'mon-buffer-get-hidden))
-(defalias 'mon-buffer-get-hidden   'mon-get-buffer-hidden))
-;;
-(unless (and (intern-soft "mon-region-wrap" obarray)
-             (fboundp 'mon-region-wrap))
-(defalias 'mon-region-wrap 'mon-wrap-selection))
+
+
 ;;
 (unless (and (intern-soft "mon-split-string" obarray)
              (fboundp 'mon-split-string))
@@ -716,25 +554,7 @@ This uses 'sort so the sorting is destructive.
              (fboundp 'mon-indent-lines-from-to-col))
 (defalias 'mon-indent-lines-from-to-col 'mon-line-indent-from-to-col))
 ;;
-(unless (and (intern-soft "mon-buffer-get-word-list" obarray)
-              (fboundp (intern-soft "mon-buffer-get-word-list" obarray)))
-(defalias 'mon-buffer-get-word-list 'mon-word-get-list-in-buffer))
-;;
-(unless (and (intern-soft "mon-region-reverse-words" obarray)
-             (fboundp 'mon-region-reverse-words))
-(defalias 'mon-region-reverse-words 'mon-word-reverse-region))
-;;
-(unless (and (intern-soft "mon-reverse-region-words" obarray)
-              (fboundp (intern-soft "mon-reverse-region-words" obarray)))
-(defalias 'mon-reverse-region-words 'mon-word-reverse-region))
-;; 
-(unless (and (intern-soft "mon-buffer-get-word-count" obarray) 
-             (fboundp 'mon-buffer-get-word-count))
-(defalias 'mon-buffer-get-word-count 'mon-word-count-occurrences))
-;;
-(unless (and (intern-soft "mon-get-next-almost-prime" obarray)
-             (fboundp 'mon-get-next-almost-prime))
-(defalias 'mon-get-next-almost-prime 'mon-next-almost-prime))
+
 ;;  :)
 (unless (and (intern-soft "mon-generate-wonky" obarray) 
              (fboundp 'mon-generate-wonky))
@@ -743,31 +563,255 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-hex-list-as-string" obarray) 
              (fboundp 'mon-hex-list-as-string))
 (defalias 'mon-hex-list-as-string 'mon-string-from-hex-list))
+
 ;;
-(unless (and (intern-soft "mon-list-ify-bool-vector" obarray)
-             (fboundp 'mon-list-ify-bool-vector))
-(defalias 'mon-list-ify-bool-vector   'mon-bool-vector-pp))
+(unless (and (intern-soft "mon-string-escape-lisp-region" obarray)
+             (fboundp 'mon-string-escape-lisp-region))
+(defalias 'mon-string-escape-lisp-region 'mon-escape-lisp-string-region))
 ;;
-(unless (and (intern-soft "mon-bool-vector-to-list" obarray)
-             (fboundp 'mon-bool-vector-to-list))
-(defalias 'mon-boolean-vector-to-list 'mon-bool-vector-pp))
+(unless (and (intern-soft "mon-lisp-escape-region" obarray)
+             (fboundp 'mon-lisp-escape-region))
+(defalias 'mon-lisp-escape-region 'mon-escape-lisp-string-region))
 ;;
-(unless (and (intern-soft "mon-bool-vector-to-list" obarray)
-             (fboundp 'mon-bool-vector-to-list))
-(defalias 'mon-bool-vector-to-list    'mon-bool-vector-pp))
+(unless (and (intern-soft "mon-string-unescape-lisp-region" obarray)
+             (fboundp 'mon-string-unescape-lisp-region))
+(defalias 'mon-string-unescape-lisp-region 'mon-unescape-lisp-string-region))
 ;;
-;; :NOTE This is a bad name but its hard to fit it in with my other mnemonics :(
-(unless (and (intern-soft "mon-byte-table-bits" obarray)
-             (fboundp 'mon-byte-table-bits))
-(defalias 'mon-byte-table-bits 'mon-get-bit-table))
+(unless (and (intern-soft "mon-lisp-unescape-region" obarray)
+             (fboundp 'mon-lisp-unescape-region))
+(defalias 'mon-lisp-unescape-region 'mon-unescape-lisp-string-region))
+
+
+
 ;;
-(unless (and (intern-soft "mon-bit-table-bits" obarray)
-             (fboundp 'mon-bit-table-bits))
-(defalias 'mon-bit-table-bits  'mon-get-bit-table))
+(unless (and (intern-soft "mon-string-ify-current-line" obarray) 
+             (fboundp 'mon-string-ify-current-line))
+(defalias 'mon-string-ify-current-line 'mon-line-string-split))
+
+;;; ==============================
+;;; mon-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-macs.el►►►
+;;; ==============================
+
+;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "with-print-gensyms" obarray) 
+             (fboundp 'with-print-gensyms))
+(defalias 'with-print-gensyms 'mon-with-print-gensyms))
+;;
+(unless (and (intern-soft "nshuffle-vector" obarray)
+             (fboundp (intern-soft "nshuffle-vector" obarray)))
+(defalias 'nshuffle-vector 'mon-nshuffle-vector))
+;;
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
+           (not (and (intern-soft "with-gensyms" obarray)
+                     (fboundp (intern-soft "with-gensyms" obarray)))))
+(defalias 'with-gensyms 'mon-with-gensyms))
+;;
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+           (bound-and-true-p IS-MON-SYSTEM-P)
+           (if (intern-soft "buffer-exists-p" obarray)
+               (not (fboundp (intern-soft "buffer-exists-p" obarray)))
+             t))
+(defalias 'buffer-exists-p 'mon-buffer-exists-p))
+
+;;; ==============================
+;;; mon-macs.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-text-property-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-get-text-properties-region->kill-ring" obarray)
+             (fboundp 'mon-get-text-properties-region->kill-ring))
+(defalias 'mon-get-text-properties-region->kill-ring 'mon-get-text-properties-region-to-kill-ring))
+;;
+(unless (and (intern-soft "mon-kill-ring-save-w-props" obarray)
+            (fboundp 'mon-kill-ring-save-w-props))
+(defalias 'mon-kill-ring-save-w-props 'mon-get-text-properties-region-to-kill-ring))
+
+(unless (and (intern-soft "mon-help-face-next-property-change" obarray) 
+             (fboundp 'mon-help-face-next-property-change))
+(defalias 'mon-help-face-next-property-change 'mon-get-next-face-property-change))
+;;
+(unless (and (intern-soft "mon-remove-text-with-property" obarray)
+             (fboundp 'mon-remove-text-with-property))
+(defalias 'mon-remove-text-with-property 'mon-get-text-property-remove-all))
+;;
+(unless (and (intern-soft "mon-remove-text-properties-region-all" obarray) 
+             (fboundp 'mon-remove-text-properties-region-all))
+(defalias 'mon-remove-text-properties-region-all 'mon-nuke-text-properties-region))
+;;
+(unless (and (intern-soft "mon-remove-all-text-properties-region" obarray) 
+             (fboundp 'mon-remove-all-text-properties-region))
+(defalias 'mon-remove-all-text-properties-region 'mon-nuke-text-properties-region))
+
+;;; ==============================
+;;; mon-text-property-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-error-utils.el►►►
+;;; ==============================
+
+;;; <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "write-string" obarray)
+             (fboundp 'write-string))
+(defalias 'write-string 'mon-write-string))
+
+;;; <PREFIX>-<QUALIFIED> <CORE-SYMBOL>
+;;
+;;; :NOTE To remember function exists. `prin1-char' is defined in lisp-mode.el
+(defalias 'mon-prin1-char->?char 'prin1-char
+  "Return a string representing char as a character rather than as an integer.\n
+If char is not a character, return nil.\n
+:EXAMPLE\n\(prin1-char 32\)\n\(prin1-char 63\)\n\(prin1-char 10\)\n
+:SEE-ALSO `mon-write-string', `prin1-char', `princ', `prin1',
+`with-output-to-string', `mon-help-print-functions'.\n►►►")
+
+;;; ==============================
+;;; mon-error-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-buffer-utils.el►►►
+;;; ==============================
+
+;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+           (bound-and-true-p IS-MON-SYSTEM-P))
+  (unless (and (intern-soft "buffer-narrowed-p" obarray)
+               (fboundp 'buffer-narrowed-p))
+(defalias 'buffer-narrowed-p 'mon-buffer-narrowed-p)))
+;;
+(unless (and (intern-soft "get-buffer-window-if" obarray)
+             (fboundp (intern-soft "get-buffer-window-if" obarray)))
+(defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
+;;
+;;;  <PREFIX>-<QUALIFIED>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-buffer-end" obarray)
+             (fboundp 'mon-buffer-end))
+(defalias 'mon-buffer-end 'mon-g2be))
+;;
+(unless (and (intern-soft "mon-get-hidden-buffers" obarray)
+             (fboundp 'mon-get-hidden-buffers))
+(defalias 'mon-get-hidden-buffers 'mon-get-buffer-hidden))
+;;
+(unless (and (intern-soft "mon-help-hidden-buffers" obarray)
+             (fboundp 'mon-help-hidden-buffers))
+(defalias 'mon-help-hidden-buffers 'mon-get-buffer-hidden))
+;;
+(unless (and (intern-soft "mon-buffer-get-hidden" obarray)
+             (fboundp 'mon-buffer-get-hidden))
+(defalias 'mon-buffer-get-hidden   'mon-get-buffer-hidden))
+;;
+(unless (and (intern-soft "mon-longlines-mode-p" obarray) 
+             (fboundp 'mon-longlines-mode-p))
+(defalias 'mon-longlines-mode-p 'mon-buffer-longlines-mode-p))
+;;
+(unless (and (intern-soft "mon-buffer-append-to" obarray)
+             (fboundp 'mon-buffer-append-to))
+(defalias 'mon-buffer-append-to 'mon-append-to-buffer))
+;;
+(unless (and (intern-soft "mon-buffer-make-shell" obarray)
+             (fboundp 'mon-buffer-make-shell))
+(defalias 'mon-buffer-make-shell 'mon-make-shell-buffer))
+;;
+(unless (and (intern-soft "mon-buffer-get-shell" obarray)
+             (fboundp 'mon-buffer-get-shell))
+(defalias 'mon-buffer-get-shell 'mon-shell))
+
+;;; ==============================
+;;; mon-buffer-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-randomize-utils.el►►►
+;;; ==============================
+
+;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "next-almost-prime" obarray)
+             (fboundp 'next-almost-prime))
+(defalias 'next-almost-prime 'mon-next-almost-prime))
+;;
+;;;  <PREFIX>-<QUALIFIED>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-get-next-almost-prime" obarray)
+             (fboundp 'mon-get-next-almost-prime))
+(defalias 'mon-get-next-almost-prime 'mon-next-almost-prime))
+
+;;; ==============================
+;;; mon-randomize-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-rectangle-utils.el►►►
+;;; ==============================
+
 ;;
 (unless (and (intern-soft "mon-rectangle-kill-w-longest-line" obarray)
              (fboundp 'mon-rectangle-kill-w-longest-line))
 (defalias 'mon-rectangle-kill-w-longest-line 'mon-kill-rectangle-w-beer-belly))
+
+;;; ==============================
+;;; mon-rectangle-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-line-utils.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED> <CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-line-keep-match" obarray) 
+             (fboundp 'mon-line-keep-match))
+(defalias 'mon-line-keep-match  'keep-lines))
+;;
+(unless (and (intern-soft "mon-line-delete-match" obarray) 
+             (fboundp 'mon-line-delete-match))
+(defalias 'mon-line-delete-match 'flush-lines))
+;;
+(unless (and (intern-soft "mon-line-count-match" obarray) 
+             (fboundp 'mon-line-count-match))
+(defalias 'mon-line-count-match  'how-many))
+;;
+(unless (and (intern-soft "mon-line-join-previous" obarray) 
+             (fboundp 'mon-line-join-nextline))
+(defalias 'mon-line-join-previous 'delete-indentation))
+;;
+(unless (and (featurep 'slime)
+             (intern-soft "mon-line-same-p" obarray)
+             (fboundp 'mon-line-same-p))
+(defalias 'mon-line-same-p 'slime-same-line-p))
+
+;;; ==============================
+;;; mon-line-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-window-utils.el►►►
+;;; ==============================
+
 ;;
 (unless (and (intern-soft "mon-get-window-plist" obarray)
              (fboundp 'mon-get-window-plist))
@@ -777,41 +821,50 @@ This uses 'sort so the sorting is destructive.
              (fboundp 'mon-window-map-active-to-plist))
 (defalias 'mon-window-map-active-to-plist 'mon-map-windows->plist))
 ;;
-(unless (and (intern-soft "mon-list-all-booleanp" obarray)
-             (fboundp 'mon-list-all-booleanp))
-(defalias 'mon-list-all-booleanp 'mon-sequence-all-booleanp))
+(unless (and (intern-soft "mon-buffer-get-scratch" obarray)
+             (fboundp 'mon-buffer-get-scratch))
+(defalias 'mon-buffer-get-scratch 'mon-scratch))
 ;;
-(unless (and (intern-soft "mon-list-delq-dups" obarray)
-             (fboundp 'mon-list-delq-dups))
-(defalias 'mon-list-delq-dups 'mon-delq-dups))
-;; 
-(unless (and (intern-soft "mon-delete-dups-eql" obarray) 
-             (fboundp 'mon-delete-dups-eql))
-(defalias 'mon-delete-dups-eql 'mon-deleql-dups))
+(unless (and (intern-soft "mon-buffer-get-messages" obarray)
+             (fboundp 'mon-buffer-get-messages))
+(defalias 'mon-buffer-get-messages 'mon-switch-to-messages))
 ;;
-(unless (and (intern-soft "mon-list-deleql-dups" obarray) 
-             (fboundp 'mon-list-deleql-dups))
-(defalias 'mon-list-deleql-dups 'mon-deleql-dups))
+(unless (and (intern-soft "mon-buffer-kill-completions" obarray)
+             (fboundp 'mon-buffer-kill-completions))
+(defalias 'mon-buffer-kill-completions 'mon-kill-completions))
 ;;
-(unless (and (intern-soft "mon-list-delete-first" obarray)
-             (fboundp    'mon-list-delete-first))
-(defalias 'mon-list-delete-first 'mon-delete-first))
+(unless (and (intern-soft "mon-window-flip" obarray)
+             (fboundp 'mon-window-flip))
+(defalias 'mon-window-flip 'mon-flip-windows))
 ;;
-(unless (and (intern-soft "mon-list-remove-dups" obarray)
-             (fboundp 'mon-list-remove-dups))
-(defalias 'mon-list-remove-dups 'mon-remove-dups))
+(unless (and (intern-soft "mon-window-split-horiz" obarray)
+             (fboundp 'mon-window-split-horiz))
+(defalias 'mon-window-split-horiz 'mon-twin-horizontal))
 ;;
-(unless (and (intern-soft "mon-proper-list-p" obarray)
-             (fboundp 'mon-proper-list-p))
-(defalias 'mon-proper-list-p 'mon-list-proper-p))
+(unless (and (intern-soft "mon-window-split-vert" obarray)
+             (fboundp 'mon-window-split-vert))
+(defalias 'mon-window-split-vert 'mon-twin-vertical))
+
+;;; ==============================
+;;; mon-window-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-seq-utils.el►►►
+;;; ==============================
+
+;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
-(unless (and (intern-soft "mon-list-mappable-p" obarray) 
-             (fboundp 'mon-list-mappable-p))
-(defalias 'mon-list-mappable-p 'mon-sequence-mappable-p))
+(unless (and (intern-soft "delq-dups" obarray)
+             (fboundp 'delq-dups))
+(defalias 'delq-dups 'mon-delq-dups))
 ;;
-(unless (and (intern-soft "mon-mappable-sequence-p" obarray) 
-             (fboundp 'mon-mappable-sequence-p))
-(defalias 'mon-mappable-sequence-p 'mon-sequence-mappable-p))
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-string-longest-in-list" obarray) 
+             (fboundp 'mon-string-longest-in-list))
+(defalias 'mon-string-longest-in-list 'mon-list-string-longest))
 ;;
 (unless (and (intern-soft "mon-reorder-vector" obarray) 
              (fboundp 'mon-reorder-vector)) 
@@ -880,31 +933,295 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-merge-list" obarray)
              (fboundp 'mon-merge-list))
 (defalias 'mon-merge-list 'mon-list-merge))
+
+(unless (and (intern-soft "mon-list-delq-dups" obarray)
+             (fboundp 'mon-list-delq-dups))
+(defalias 'mon-list-delq-dups 'mon-delq-dups))
+;; 
+(unless (and (intern-soft "mon-delete-dups-eql" obarray) 
+             (fboundp 'mon-delete-dups-eql))
+(defalias 'mon-delete-dups-eql 'mon-deleql-dups))
 ;;
-(unless (and (intern-soft "mon-string-escape-lisp-region" obarray)
-             (fboundp 'mon-string-escape-lisp-region))
-(defalias 'mon-string-escape-lisp-region 'mon-escape-lisp-string-region))
+(unless (and (intern-soft "mon-list-deleql-dups" obarray) 
+             (fboundp 'mon-list-deleql-dups))
+(defalias 'mon-list-deleql-dups 'mon-deleql-dups))
 ;;
-(unless (and (intern-soft "mon-lisp-escape-region" obarray)
-             (fboundp 'mon-lisp-escape-region))
-(defalias 'mon-lisp-escape-region 'mon-escape-lisp-string-region))
+(unless (and (intern-soft "mon-list-delete-first" obarray)
+             (fboundp    'mon-list-delete-first))
+(defalias 'mon-list-delete-first 'mon-delete-first))
 ;;
-(unless (and (intern-soft "mon-string-unescape-lisp-region" obarray)
-             (fboundp 'mon-string-unescape-lisp-region))
-(defalias 'mon-string-unescape-lisp-region 'mon-unescape-lisp-string-region))
+(unless (and (intern-soft "mon-list-remove-dups" obarray)
+             (fboundp 'mon-list-remove-dups))
+(defalias 'mon-list-remove-dups 'mon-remove-dups))
 ;;
-(unless (and (intern-soft "mon-lisp-unescape-region" obarray)
-             (fboundp 'mon-lisp-unescape-region))
-(defalias 'mon-lisp-unescape-region 'mon-unescape-lisp-string-region))
+(unless (and (intern-soft "mon-bool-vector-to-list" obarray)
+             (fboundp 'mon-bool-vector-to-list))
+(defalias 'mon-bool-vector-to-list    'mon-bool-vector-pp))
+;;
+(unless (and (intern-soft "mon-list-ify-bool-vector" obarray)
+             (fboundp 'mon-list-ify-bool-vector))
+(defalias 'mon-list-ify-bool-vector   'mon-bool-vector-pp))
+;;
+(unless (and (intern-soft "mon-bool-vector-to-list" obarray)
+             (fboundp 'mon-bool-vector-to-list))
+(defalias 'mon-boolean-vector-to-list 'mon-bool-vector-pp))
+;;
+(unless (and (intern-soft "mon-pop2" obarray) 
+             (fboundp 'mon-pop2))
+(defalias 'mon-pop2 'cl-pop2
+  "Pop car and car and cadr from PLACE return cadr.\n
+:EXAMPLE\n\n\(let \(\(bubba '\(a 1 3 e\)\)\)
+ \(cl-pop2 bubba\)\)\n
+\(let \(\(bubba '\(a 1 3 e\)\)\)
+ \(cl-pop2 bubba\)
+  bubba\)\n
+:SEE-ALSO `pop', `push', `setf'.\n►►►"))
+;;
+(unless (and (intern-soft "mon-list-pop2" obarray)
+             (fboundp 'mon-list-pop2))
+(defalias 'mon-list-pop2 'cl-pop2))
+;;
+(eval-when-compile
+  (put 'cl-pop2 'function-documentation (get 'mon-pop2 'function-documentation))
+  (put 'mon-list-pop2 'function-documentation (get 'mon-pop2 'function-documentation)))
 
 ;;; ==============================
-;;; mon-utils.el◄◄◄
+;;; mon-seq-utils.el◄◄◄
 ;;; ==============================
 
+ 
+;;; ==============================
+;;; mon-event-utils.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-region-append-to-register" obarray) 
+             (fboundp 'mon-region-append-to-register))
+(defalias 'mon-region-append-to-register 'mon-append-to-register))
+;;
+(unless (and (intern-soft "mon-append-next-kill" obarray)
+             (fboundp 'mon-append-next-kill))
+(defalias 'mon-append-next-kill 'mon-kill-appending))
+;;
+(unless (and (intern-soft "mon-register-append" obarray)
+             (fboundp 'mon-register-append))
+(defalias 'mon-register-append 'mon-append-to-register))
+;; 
+(unless (and (intern-soft "mon-read-keys-last-event" obarray)
+             (fboundp 'mon-read-keys-last-event))
+(defalias 'mon-read-keys-last-event 'mon-test-keypresses))
+;; 
+(unless (and (intern-soft "mon-string-from-keyboard-input" obarray)
+             (fboundp 'mon-string-from-keyboard-input))
+(defalias 'mon-string-from-keyboard-input 'mon-read-keys-as-string))
+
+;;; ==============================
+;;; mon-event-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-type-utils.el►►►
+;;; ==============================
+
+;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "alpha-char-p" obarray) 
+             (fboundp 'alpha-char-p))
+(defalias 'alpha-char-p 'mon-alpha-char-p))
+;;
+(unless (and (intern-soft "zerop-or-one" obarray)
+             (fboundp 'zerop-or-one))
+(defalias 'zerop-or-one 'mon-zero-or-onep))
+;;
+(unless (and (intern-soft "proper-list-p" obarray)
+             (fboundp 'proper-list-p))
+(defalias 'proper-list-p 'mon-list-proper-p))
+(unless (and (intern-soft "string-or-null-and-zerop" obarray) 
+             (fboundp 'string-or-null-and-zerop))
+(defalias 'string-or-null-and-zerop 'mon-string-or-null-and-zerop))
+;;
+(unless (and (intern-soft "stringp-and-zerop-or-null" obarray) 
+             (fboundp 'stringp-and-zerop-or-null))
+(defalias 'stringp-and-zerop-or-null 'mon-string-or-null-and-zerop))
+;;
+(unless (and (intern-soft "string-not-null-or-zerop" obarray) 
+             (fboundp 'string-not-null-or-zerop))
+(defalias 'string-not-null-or-zerop 'mon-string-not-null-nor-zerop))
+;;
+(unless (and (intern-soft "stringp-not-null-nor-zerop" obarray) 
+             (fboundp 'stringp-not-null-nor-zerop))
+(defalias 'stringp-not-null-nor-zerop 'mon-string-not-null-nor-zerop))
+;;
+;; <PREFIX>-<QUALIFIED>                <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-is-alpha-char" obarray) 
+             (fboundp 'mon-is-alpha-char))
+(defalias 'mon-is-alpha-char 'mon-alpha-char-p))
+;;
+(unless (and (intern-soft "mon-proper-list-p" obarray)
+             (fboundp 'mon-proper-list-p))
+(defalias 'mon-proper-list-p 'mon-list-proper-p))
+;;
+(unless (and (intern-soft "mon-list-mappable-p" obarray) 
+             (fboundp 'mon-list-mappable-p))
+(defalias 'mon-list-mappable-p 'mon-sequence-mappable-p))
+;;
+(unless (and (intern-soft "mon-mappable-sequence-p" obarray) 
+             (fboundp 'mon-mappable-sequence-p))
+(defalias 'mon-mappable-sequence-p 'mon-sequence-mappable-p))
+;;
+(unless (and (intern-soft "mon-list-all-booleanp" obarray)
+             (fboundp 'mon-list-all-booleanp))
+(defalias 'mon-list-all-booleanp 'mon-sequence-all-booleanp))
+;;
+;; :NOTE This is a bad name but its hard to fit it in with my other mnemonics :(
+(unless (and (intern-soft "mon-byte-table-bits" obarray)
+             (fboundp 'mon-byte-table-bits))
+(defalias 'mon-byte-table-bits 'mon-get-bit-table))
+;;
+(unless (and (intern-soft "mon-bit-table-bits" obarray)
+             (fboundp 'mon-bit-table-bits))
+(defalias 'mon-bit-table-bits  'mon-get-bit-table))
+;;
+(unless (and (intern-soft "mon-char-coerce")
+             (fboundp 'mon-char-coerce))
+(defalias 'mon-char-coerce 'mon-coerce->char))
+
+;;; ==============================
+;;; mon-type-utils.el◄◄◄
+;;; ==============================
+
+
+
+ 
+;;; ==============================
+;;; mon-region-utils.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED>       <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-capitalize-region" obarray)
+              (fboundp (intern-soft "mon-capitalize-region" obarray)))
+(defalias 'mon-capitalize-region 'mon-region-capitalize))
+;;
+(unless (and (intern-soft "mon-region-reverse-chars" obarray)
+              (fboundp (intern-soft "mon-region-reverse-chars" obarray)))
+(defalias 'mon-region-reverse-chars 'mon-region-reverse))
+;;
+(unless (and (intern-soft "mon-region-wrap" obarray)
+             (fboundp 'mon-region-wrap))
+(defalias 'mon-region-wrap 'mon-wrap-selection))
+;;
+(unless (and (intern-soft "mon-string-split-commas" obarray) 
+             (fboundp 'mon-string-split-commas))
+(defalias 'mon-string-split-commas 'mon-region-split-commas))
+;;
+(unless (and (intern-soft "mon-split-region-at-commas" obarray) 
+             (fboundp 'mon-split-region-at-commas))
+(defalias 'mon-split-region-at-commas 'mon-region-split-commas))
+;;
+(unless (and (intern-soft "mon-indent-refill-region" obarray) 
+             (fboundp 'mon-indent-refill-region))
+(defalias 'mon-indent-refill-region 'mon-region-indent-refill))
+;;
+(unless (and (intern-soft "mon-indent-region-refill" obarray) 
+             (fboundp 'mon-indent-region-refill))
+(defalias 'mon-indent-region-refill 'mon-region-indent-refill))
+;;
+(unless (and (intern-soft "mon-region-refill-indent" obarray) 
+             (fboundp 'mon-region-refill-indent))
+(defalias 'mon-region-refill-indent 'mon-region-indent-refill))
+;;
+(unless (and (intern-soft "mon-region-count-regexp-matches" obarray)
+             (fboundp 'mon-region-count-regexp-matches))
+(defalias 'mon-region-count-regexp-matches 'comint-how-many-region))
+
+;;; ==============================
+;;; mon-region-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-string-utils.el►►►
+;;; ==============================
+
+(unless (and (intern-soft "mon-string-at-point" obarray) 
+             (fboundp 'mon-string-at-point))
+(defalias 'mon-string-at-point 'comint-extract-string))
+
+;;; ==============================
+;;; mon-string-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-env-proc-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; mon-env-proc-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-name-utils.el►►►
+;;; ==============================
+;;
+(unless (and (intern-soft "mon-permute-string" obarray) 
+             (fboundp 'mon-permute-string))
+(defalias 'mon-permute-string 'mon-string-permute))
+
+;;; ==============================
+;;; mon-name-utils.el◄◄◄
+;;; ==============================
+ 
+;;; ==============================
+;;; mon-word-syntax-utils.el►►►
+;;; ==============================
+
+(unless (and (intern-soft "mon-buffer-get-word-list" obarray)
+              (fboundp (intern-soft "mon-buffer-get-word-list" obarray)))
+(defalias 'mon-buffer-get-word-list 'mon-word-get-list-in-buffer))
+;;
+(unless (and (intern-soft "mon-region-reverse-words" obarray)
+             (fboundp 'mon-region-reverse-words))
+(defalias 'mon-region-reverse-words 'mon-word-reverse-region))
+;;
+(unless (and (intern-soft "mon-reverse-region-words" obarray)
+              (fboundp (intern-soft "mon-reverse-region-words" obarray)))
+(defalias 'mon-reverse-region-words 'mon-word-reverse-region))
+;; 
+(unless (and (intern-soft "mon-buffer-get-word-count" obarray) 
+             (fboundp 'mon-buffer-get-word-count))
+(defalias 'mon-buffer-get-word-count 'mon-word-count-occurrences))
+
+;;; ==============================
+;;; mon-word-syntax-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-alphabet-list-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-make-list-alphabet" obarray) 
+             (fboundp 'mon-make-list-alphabet))
+(defalias 'mon-make-list-alphabet 'mon-alphabet-as-type))
+
+;;; ==============================
+;;; mon-alphabet-list-utils.el◄◄◄
+;;; ==============================
+
+ 
 ;;; ==============================
 ;;; mon-dir-utils.el►►►
 ;;; ==============================
-
 
 ;;; ==============================
 ;;; <UNQUALIFIED-ALIAS> <PREFIX>-<NON-CORE-SYMBOL>
@@ -975,6 +1292,7 @@ This uses 'sort so the sorting is destructive.
 ;;; ==============================
 ;;; <PREFIX>-<NON-CORE-SYMBOL> <PREFIX>-<NON-CORE-SYMBOL>
 ;;; ==============================
+
 (unless (and (intern-soft "dired-find-file-other-frame" obarray)
              (fboundp 'dired-find-file-other-frame))
 (defalias 'dired-find-file-other-frame 'mon-dired-find-file-other-frame))
@@ -1002,6 +1320,7 @@ This uses 'sort so the sorting is destructive.
 ;;; ==============================
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;; ==============================
+
 (unless (and (intern-soft "mon-get-buffer-visiting-other-live-frame" obarray) 
              (fboundp 'mon-get-buffer-visiting-other-live-frame))
 (defalias 'mon-get-buffer-visiting-other-live-frame 'mon-find-buffer-visiting-other-live-frame))
@@ -1097,27 +1416,49 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-buffer-subdirs-insert" obarray) 
              (fboundp 'mon-buffer-subdirs-insert))
 (defalias 'mon-buffer-subdirs-insert 'mon-insert-subdirs-in-buffer))
+;;
+(unless (and (intern-soft "mon-dir-get-subdir" obarray) 
+             (fboundp 'mon-dir-get-subdir))
+(defalias 'mon-dir-get-subdir 'mon-get-dir-subdir-default))
+;;
+(unless (and (intern-soft "mon-file-rename-serial" obarray) 
+             (fboundp 'mon-file-rename-serial))
+(defalias 'mon-file-rename-serial  'mon-rename-file-serial))
+;;
+(unless (and (intern-soft "mon-file-copy-path" obarray) 
+             (fboundp 'mon-file-copy-path))
+(defalias 'mon-file-copy-path        'mon-copy-file-path))
+;;
+(unless (and (intern-soft "mon-buffer-file-copy-path" obarray) 
+             (fboundp 'mon-buffer-file-copy-path))
+(defalias 'mon-buffer-file-copy-path 'mon-copy-file-path))
+;;
+(unless (and (intern-soft "mon-buffer-get-directories" obarray) 
+             (fboundp 'mon-buffer-get-directories))
+(defalias 'mon-buffer-get-directories 'mon-get-buffers-directories))
+;;
+(unless (and (intern-soft "mon-dir-get-subdirs-descend" obarray) 
+             (fboundp 'mon-dir-get-subdirs-descend))
+(defalias 'mon-dir-get-subdirs-descend 'mon-add-subdirs-to-list))
+;;
+(unless (and (intern-soft "mon-get-directory-and-subdirs-list" obarray) 
+             (fboundp 'mon-dir-add-subdirs-to-list))
+(defalias 'mon-get-directory-and-subdirs-list 'mon-add-subdirs-to-list))
+;;
+(unless (and (intern-soft "mon-dir-async-du" obarray) 
+             (fboundp 'mon-dir-async-du))
+(defalias 'mon-dir-async-du 'mon-async-du-dir))
+;;
+(unless (and (intern-soft "mon-directory-du-async" obarray) 
+             (fboundp 'mon-directory-du-async))
+(defalias 'mon-directory-du-async 'mon-async-du-dir))
 
 ;;; ==============================
 ;;; mon-dir-utils.el◄◄◄
 ;;; ==============================
 
-;;; ==============================
-;;; mon-alphabet-list-utils.el►►►
-;;; ==============================
 
-;;; ==============================
-;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
-(unless (and (intern-soft "mon-make-list-alphabet" obarray) 
-             (fboundp 'mon-make-list-alphabet))
-(defalias 'mon-make-list-alphabet 'mon-alphabet-as-type))
-
-;;; ==============================
-;;; mon-alphabet-list-utils.el◄◄◄
-;;; ==============================
-
+ 
 ;;; ==============================
 ;;; mon-doc-help-utils.el►►►
 ;;; ==============================
@@ -1194,16 +1535,16 @@ This uses 'sort so the sorting is destructive.
              (fboundp 'mon-help-elisp-info)) 
 (defalias 'mon-help-elisp-info 'mon-index-elisp-symbol))
 ;;
+;;; <VARIABLE>
 (unless (and (intern-soft "*reference-sheet-help-A-HAWLEY*" obarray)
              (bound-and-true-p *reference-sheet-help-A-HAWLEY*))
 (defvaralias '*reference-sheet-help-A-HAWLEY* '*mon-help-reference-keys*))
-
 
 ;;; ==============================
 ;;; mon-doc-help-utils.el◄◄◄
 ;;; ==============================
 
-
+ 
 ;;; ==============================
 ;;; mon-time-utils.el◄◄◄
 ;;; ==============================
@@ -1224,13 +1565,15 @@ This uses 'sort so the sorting is destructive.
 ;;; mon-time-utils.el◄◄◄
 ;;; ==============================
 
+ 
 ;;; ==============================
 ;;; mon-dir-locals-alist.el►►►
 ;;; ==============================
 
+;;; <VARIABLE>
 (when (and (and (intern-soft "*emacs2html-temp*" obarray) 
                 (bound-and-true-p *emacs2html-temp*))
-           (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+           (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY* ???
                 (bound-and-true-p *mon-bind-dir-locals-alist*)))
   (unless (and (intern-soft "*mon-emacs2html-temp*" obarray)
                (bound-and-true-p *mon-emacs2html-temp*))
@@ -1240,12 +1583,298 @@ This uses 'sort so the sorting is destructive.
 ;;; mon-dir-locals-alist.el◄◄◄
 ;;; ==============================
 
+
+;;; ==============================
+;;; mon-dir-locals-alist.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-insertion-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <UNQUALIFIED-ALIAS> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "comment-divider" obarray)
+             (fboundp 'comment-divider))
+(defalias 'comment-divider 'mon-comment-divider))
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-buffer-print-in-if" obarray)
+             (fboundp  'mon-buffer-print-in-if))
+(defalias 'mon-buffer-print-in-if  'mon-print-in-buffer-if-p))
+;;
+(unless (and (intern-soft "mon-string-insert-n-fancy-times" obarray)
+             (fboundp 'mon-string-n-fancy-times))
+(defalias 'mon-string-n-fancy-times 'mon-insert-string-n-fancy-times))
+;;
+(unless (and (intern-soft "mon-string-insert-n-times" obarray)
+             (fboundp 'mon-string-insert-n-times))
+(defalias 'mon-string-insert-n-times 'mon-insert-string-n-times))
+;;
+(unless (and (intern-soft "mon-comment-divider->col" obarray) 
+             (fboundp 'mon-comment-divider->col))
+(defalias 'mon-comment-divider->col 'mon-comment-divider-to-col))
+;;
+(unless (and (intern-soft "mon-lisp-comment-to-col" obarray) 
+             (fboundp 'mon-lisp-comment-to-col))
+(defalias 'mon-lisp-comment-to-col 'mon-comment-lisp-to-col))
+;;
+(unless (and (intern-soft "mon-CL-package-complete" obarray) 
+             (fboundp 'mon-CL-package-complete))
+(defalias 'mon-CL-package-complete 'mon-lisp-CL-package-complete))
+;;
+(unless (and (intern-soft "mon-insert-CL-mode-line-template" obarray) 
+             (fboundp 'mon-insert-CL-mode-line-template))
+(defalias 'mon-insert-CL-mode-line-template 'mon-insert-lisp-CL-mode-line-template))
+;;
+(unless (and (intern-soft "mon-add-lisp-CL-file-local-prop-template" obarray) 
+             (fboundp 'mon-add-lisp-CL-file-local-prop-template))
+(defalias 'mon-add-lisp-CL-file-local-prop-template  'mon-insert-lisp-CL-mode-line-template))
+;;
+(unless (and (intern-soft "mon-insert-CL-file-template" obarray) 
+             (fboundp 'mon-insert-CL-file-template))
+(defalias 'mon-insert-CL-file-template 'mon-insert-lisp-CL-file-template))
+;;
+(unless (and (intern-soft "mon-insert-CL-package-template" obarray) 
+             (fboundp 'mon-insert-CL-package-template))
+(defalias 'mon-insert-CL-package-template 'mon-insert-lisp-CL-package-template))
+;;
+(unless (and (intern-soft "mon-insert-doc-xref-eg" obarray)
+             (fboundp 'mon-insert-doc-xref-eg))
+(defalias 'mon-insert-doc-xref-eg 'mon-insert-lisp-doc-eg-xref))
+;;
+;;; :NOTE It isn't clear if this is prfx-non-core e.g. `bug-reference-*'...
+(unless (and (intern-soft "bug-insert-copyright" obarray) 
+             (fboundp 'bug-insert-copyright)) 
+(defalias 'bug-insert-copyright 'mon-insert-copyright
+  "Insert a copyright string with relevant details.\n
+Conditional upon `IS-BUG-P' returning non-nil.\n
+:ALIAS-OF `mon-insert-copyright'\n
+:SEE-ALSO `mon-build-copyright-string'.\nUsed in `naf-mode'.\n►►►"))
+;;
+(unless (and (intern-soft "mon-insert-naf-mode-file-template" obarray) 
+             (fboundp 'mon-insert-naf-mode-file-template))
+(defalias 'mon-insert-naf-mode-file-template 'mon-insert-file-template))
+
+;;; ==============================
+;;; mon-insertion-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-regexp-symbols.el►►►
+;;; ==============================
+
+;;; <VARIABLE>
+(unless (and (intern-soft "*regexp-version-alist*" obarray) 
+             (bound-and-true-p *regexp-version-alist*))
+(defvaralias '*regexp-version-alist* 'version-regexp-alist))
+;;
+;;; <VARIABLE>
+(unless (and (intern-soft "*whitespace-chars*" obarray) 
+             (bound-and-true-p *whitespace-chars*))
+(defvaralias '*whitespace-chars* '*mon-whitespace-chars*))
+;;
+(unless (and (intern-soft "*mon-digit-chars*" obarray) 
+             (bound-and-true-p *mon-digit-chars*))
+(defvaralias '*mon-digit-chars* 'parse-time-digits
+  "A 256 elt simple array with indexes for the digit chars 0-9.\n
+:EXAMPLE\n\n\(aref *mon-digit-chars* ?0\)\n
+\(mapcar #'\(lambda \(dgt-chr\)
+             \(aref *mon-digit-chars* dgt-chr\)\)
+        \(number-sequence 48 57\)\)\n
+:SEE-ALSO `*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `mon-is-digit'.\n►►►"))
+
+;;; ==============================
+;;; mon-regexp-symbols.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-replacement-utils.el►►►
+;;; ==============================
+;;
+;;; ==============================
+;;; :NOTE MON always forget to use these functions, lets get reminded!
+;;; :CREATED <Timestamp: Wednesday May 13, 2009 @ 01:33.46 PM - by MON KEY>
+
+;;; ==============================
+;;; <NON-CORE-SYMBOL>-<SUFFIX> <CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "replace-char-in-string-mon" obarray) 
+             (fboundp 'replace-char-in-string-mon))
+(defalias 'replace-char-in-string-mon 'subst-char-in-string))
+;;
+(unless (and (intern-soft "replace-in-string-mon" obarray) 
+             (fboundp 'replace-in-string-mon))
+(defalias 'replace-in-string-mon      'subst-char-in-string))
+
+;;; ==============================
+;;; <PREFIX>-<NON-CORE-SYMBOL> <CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-replace-char-in-string" obarray) 
+             (fboundp 'mon-replace-char-in-string))
+(defalias 'mon-replace-char-in-string 'subst-char-in-string))
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-canonical-string" obarray)
+             (fboundp 'mon-string-canonical))
+(defalias 'mon-canonical-string 'mon-string-canonical))
+;;
+(unless (and (intern-soft "mon-map-regexp-matches" obarray)
+             (fboundp 'mon-map-regexp-matches))
+(defalias 'mon-map-regexp-matches 'mon-regexp-map-match))
+;;
+(unless (and (intern-soft "mon-map-regexp-matches-in-region")
+             (fboundp 'mon-map-regexp-matches-in-region))
+(defalias 'mon-map-regexp-matches-in-region 'mon-regexp-map-match-in-region))
+;;
+(unless (and (intern-soft "mon-region-increment-line-numbers" obarray) 
+             (fboundp 'mon-region-increment-line-numbers))
+(defalias 'mon-region-increment-line-numbers 'mon-line-number-region-incr))
+;;
+(unless (and (intern-soft "mon-region-increment-numbered-lines" obarray) 
+             (fboundp 'mon-region-increment-numbered-lines))
+(defalias 'mon-region-increment-numbered-lines 'mon-line-number-region-incr))
+
+;;
+(unless (and (intern-soft "mon-cln-duplicate-lines" obarray) 
+             (fboundp 'mon-cln-duplicate-lines))
+(defalias 'mon-cln-duplicate-lines 'mon-line-find-duplicates-cln))
+;;
+(unless (and (intern-soft "mon-remove-duplicate-lines" obarray) 
+             (fboundp 'mon-remove-duplicate-lines))
+(defalias 'mon-remove-duplicate-lines 'mon-line-find-duplicates-cln))
+
+;;
+(unless (and (intern-soft "naf-delete-back-up-list" obarray) 
+             (fboundp 'naf-delete-back-up-list))
+(defalias 'naf-delete-back-up-list 'mon-delete-back-up-list))
+;;
+(unless (and (intern-soft "mon-defranc-benezit" obarray) 
+             (fboundp 'mon-defranc-benezit))
+(defalias 'mon-defranc-benezit 'mon-cln-benezit))
+;;
+(unless (and (intern-soft "mon-defranc-benezit-fields" obarray) 
+             (fboundp 'mon-defranc-benezit-fields))
+(defalias 'mon-defranc-benezit-fields 'mon-cln-benezit-fields))
+;;
+;;
+(unless (and (intern-soft "mon-cln-common-abbrevs" obarray) 
+             (fboundp 'mon-cln-common-abbrevs))
+(defalias 'mon-cln-common-abbrevs 'mon-replace-common-abbrevs))
+
+;;; ==============================
+;;; mon-replacement-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-color-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <UNQUALIFIED-ALIAS> <CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "list-colors-defined" obarray)
+              (fboundp 'list-colors-defined))
+(defalias 'list-colors-defined 'defined-colors))
+
+;;; ==============================
+;; <PREFIX>-<NON-CORE-SYMBOL> <CORE-SYMBOL>
+;;; ==============================
+;;
+(unless (and (intern-soft "mon-color-list-defined" obarray)
+              (fboundp 'mon-color-list-defined))
+(defalias 'mon-color-list-defined 'defined-colors))
+;;
+;; :NOTE there is also `facemenu-read-color'
+(unless (and (intern-soft "mon-color-read" obarray)
+              (fboundp 'mon-color-read))
+(defalias 'mon-color-read 'read-color))
+;;
+(unless (and (intern-soft "mon-color-list-duplicates" obarray)
+              (fboundp 'mon-color-list-duplicates))
+(defalias 'mon-color-list-duplicates 'list-colors-duplicates))
+;;
+(unless (and (intern-soft "mon-color-list-display" obarray)
+              (fboundp 'mon-color-list-display))
+(defalias 'mon-color-list-display 'list-colors-display))
+
+;;; ==============================
+;;; mon-color-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-rename-image-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <UNQUALIFIED-ALIAS> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "get-bmps-in-dir" obarray) 
+             (fboundp 'get-bmps-in-dir))
+(defalias 'get-bmps-in-dir 'mon-get-ebay-bmps-in-dir))
+;;
+(unless (and (intern-soft "get-nefs-in-dir" obarray) 
+             (fboundp 'get-nefs-in-dir))
+(defalias 'get-nefs-in-dir 'mon-get-nefs-in-dir))
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-get-ebay-bmps-list" obarray) 
+             (fboundp 'mon-get-ebay-bmps-list))
+(defalias 'mon-get-ebay-bmps-list 'mon-get-ebay-bmps-in-dir))
+
+;;; ==============================
+;;; mon-rename-image-utils.el◄◄◄
+;;; ==============================
+
+
+;;; ==============================
+;;; mon-image-utils.el►►►
+;;; ==============================
+
+;;; ==============================
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;; ==============================
+
+(unless (and (intern-soft "mon-rotate-images" obarray) 
+             (fboundp 'mon-rotate-images))
+(defalias 'mon-rotate-images 'mon-image-rotate))
+;;
+(unless (and (intern-soft "mon-identify-image" obarray) 
+             (fboundp 'mon-identify-image))
+(defalias 'mon-identify-image 'mon-image-identify))
+
+;;; ==============================
+;;; mon-image-utils.el◄◄◄
+;;; ==============================
+
+
+ 
 ;;; ==============================
 ;;; mon-boxcutter.el►►►
 ;;; ==============================
 
 ;;; ==============================
-;;; <PREFIX>-<NON-CORE-SYMBOL> <PREFIX>-<NON-CORE-SYMBOL>
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;; ==============================
 
 (unless (and (intern-soft "boxcutter-verify-image-type")
@@ -1253,8 +1882,43 @@ This uses 'sort so the sorting is destructive.
 (defalias 'boxcutter-verify-image-type 'mon-image-verify-type))
 
 ;;; ==============================
-;;; mon-dir-locals-alist.el◄◄◄
+;;; mon-boxcutter.el◄◄◄
 ;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-dir-utils-locals.el►►►
+;;; ==============================
+;;
+(unless (and (intern-soft "naf-drive-dired-artist-letter" obarray)
+             (fboundp 'naf-drive-dired-artist-letter))
+(defalias 'naf-drive-dired-artist-letter 'mon-dired-naf-artist-letter))
+;;
+(unless (and (intern-soft "naf-dired-artist-letter" obarray)
+             (fboundp 'naf-dired-artist-letter))
+(defalias 'naf-dired-artist-letter 'mon-dired-naf-artist-letter))
+;;
+(unless (and (intern-soft "naf-drive-dired-brand-letter-letter" obarray)
+             (fboundp 'naf-drive-dired-brand-letter-letter))
+(defalias 'naf-drive-dired-brand-letter 'mon-dired-naf-brand-letter))
+;;
+(unless (and (intern-soft "naf-dired-brand-letter" obarray)
+             (fboundp 'naf-dired-brand-letter))
+(defalias 'naf-dired-brand-letter 'mon-dired-naf-brand-letter))
+
+;;; ==============================
+;;; mon-dir-utils-locals.el◄◄◄
+;;; ==============================
+
+ 
+;; :NOTE Can be removed once `slot-makeunbound' is removed/renamed/aliased in
+;; :FILE lisp/emacs-lisp/eieio.el
+(eval-after-load "eieio"
+  '(when (and (intern-soft "slot-makeunbound" obarray)
+             (fboundp 'slot-makeunbound))
+     (unless (and (intern-soft "slot-makunbound" obarray)
+                  (fboundp 'slot-makunbound))
+(defalias 'slot-makunbound 'slot-makeunbound))))
 
 ;;; ==============================
 (provide 'mon-aliases)

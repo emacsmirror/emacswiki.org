@@ -39,7 +39,7 @@
 ;; `mon-toggle-case-query-user', `mon-toggle-case-regexp',
 ;; `mon-downcase-regexp-region', `mon-downcase-regexp',
 ;; `mon-upcase-regexp', `mon-upcase-regexp-region',
-;; `mon-line-number-region-incr', `mon-pipe-list', `mon-cln-piped-list',
+;; `mon-line-number-region-incr', `mon-cln-piped-list',
 ;; `mon-delete-back-up-list', `naf-backup-the-list', `mon-cln-philsp',
 ;; `mon-cln-ulan', `mon-cln-imdb', `mon-cln-loc', `mon-cln-wiki',
 ;; `mon-cln-bib', `mon-cln-BIG-whitespace', `mon-cln-whitespace',
@@ -54,14 +54,13 @@
 ;; `mon-replace-string-pairs-region-no-insert', `mon-cln-xml<-parsed-strip-nil',
 ;; `mon-cln-up-colon', `mon-regexp-map-match', `mon-regexp-map-match-in-region',
 ;; `mon-walk-regexps-in-file', `mon-replace-regexps-in-file-list',
-;; `mon-cln-mail-headers', `mon-line-find-duplicates-cln',
-;; `mon-cln-xml-escapes', `mon-replace-unintern-w-query',
+;; `mon-cln-mail-headers', `mon-cln-xml-escapes',
+;; `mon-replace-unintern-w-query',
 ;; `mon-make-iso-latin-1-approximation-loadtime',
 ;; FUNCTIONS:◄◄◄
 ;; 
 ;; MACROS:
-;; `mon-naf-mode-toggle-restore-llm',
-;;
+;; 
 ;; METHODS:
 ;;
 ;; CLASSES:
@@ -81,22 +80,22 @@
 ;; `mon-insert-regexp-template-yyyy'     -> mon-insertion-utils.el
 ;; `mon-cln-xml-escapes-TEST'            -> mon-testme-utils.el
 ;; `mon-up/down-case-regexp-TEST'        -> mon-testme-utils.el
+;; `mon-line-pipe-lines'                 -> mon-line-utils.el
+;; `mon-line-find-duplicates-cln'        -> mon-line-utils.el
+;; `mon-toggle-restore-llm'              -> mon-macs.el
+;; `mon-naf-mode-toggle-restore-llm'     -> mon-macs.el
 ;;
 ;; ALIASED/ADVISED/SUBST'd:
 ;; `naf-delete-back-up-list'             -> `mon-delete-back-up-list'
 ;; `mon-map-regexp-matches'              -> `mon-regexp-map-match'
-;; `mon-cln-duplicate-lines'             -> `mon-line-find-duplicates-cln'
-;; `mon-remove-duplicate-lines'          -> `mon-line-find-duplicates-cln'
 ;; `mon-string-canonical'                -> `mon-canonical-string'
-;; `mon-region-increment-line-numbers'   -> `mon-line-number-region-incr'
-;; `mon-region-increment-numbered-lines' -> `mon-line-number-region-incr'
 ;;
 ;; REQUIRES:
 ;; Regexps for functions defined here are set with defvar forms in the file:
 ;; :SEE (URL `http://www.emacswiki.org/emacs/mon-regexp-symbols.el')
 ;;
 ;; References the following: CONSTANTS OR VARIABLES:
-;; `*regexp-philsp-months*',`*regexp-philsp-apos*', `*regexp-philsp-location*' 
+;; `*regexp-philsp-months*',`*regexp-philsp-apos*', `*regexp-philsp-location*',
 ;; `*regexp-philsp-swap-location*' `*regexp-philsp-fix-month-dates*', `*regexp-clean-ulan*',
 ;; `*regexp-clean-imdb*', `*regexp-clean-loc*', `*regexp-clean-wikipedia*',
 ;; `*regexp-clean-bib*', `regexp-cleanBIG-whitespace', `*regexp-clean-whitespace*',
@@ -177,15 +176,16 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 (require 'mon-regexp-symbols)
+
 
  
 ;;; ==============================
 ;;; :MODIFICATIONS <Timestamp: #{2010-03-12T14:14:46-05:00Z}#{10105} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-08T12:56:12-04:00Z}#{09372} - by MON KEY>
-(defun mon-is-naf-mode-p (&optional check-naf-buffer) 
+(defun mon-is-naf-mode-p (&optional check-naf-buffer)  
   "Test if buffer is in `naf-mode'.\n
 When optional arg CHECK-NAF-BUFFER is non-nil check that buffer.\n
 Signal an error if CHECK-NAF-BUFFER does not exist. Default is `current-buffer'.\n
@@ -206,17 +206,9 @@ Signal an error if CHECK-NAF-BUFFER does not exist. Default is `current-buffer'.
 `mon-naf-mode-toggle-restore-llm' to test for active naf-mode before running
 additional longlines-mode checks.\n
 :USED-IN `naf-mode'.\n
-:SEE-ALSO `mon-longlines-mode-p', `mon-toggle-restore-llm'.\n►►►"
-  ;; :WAS  (eq (buffer-local-value 'major-mode (current-buffer)) 'naf-mode))
-  (eq (buffer-local-value 
-       'major-mode 
-       (cond ((and check-naf-buffer (get-buffer check-naf-buffer))
-              (get-buffer check-naf-buffer))
-             ((and check-naf-buffer (not (get-buffer check-naf-buffer)))
-              (error (concat ":FUNCTION `mon-is-naf-mode-p' "
-                             "-- arg CHECK-NAF-BUFFER not a buffer")))
-             (t (current-buffer))))
-      'naf-mode))
+:SEE-ALSO `mon-buffer-longlines-mode-p', `mon-toggle-restore-llm'.\n►►►"
+  (and (featurep 'naf-mode)
+    (mon-buffer-check-major-mode 'naf-mode (or check-naf-buffer (current-buffer)))))
 ;;
 ;;; :TEST-ME (mon-is-naf-mode-p)
 ;;; :TEST-ME (with-temp-buffer (naf-mode) (mon-is-naf-mode-p))n
@@ -247,58 +239,6 @@ Automatically becomes buffer-local whenever `naf-mode' initiated in buffer.\n
 :SEE-ALSO `mon-is-naf-mode-p' `mon-is-naf-mode-and-llm-p'.\n►►►")
 
 ;;; ==============================
-;;; :NOTE Weird stuff happens with longlines-mode checks:
-;;;  (memq 'longlines-mode (assoc 'longlines-mode (buffer-local-variables (get-buffer <THE-BUFFER>))))
-;;; :CREATED <Timestamp: #{2010-03-12T13:26:58-05:00Z}#{10105} - by MON KEY>
-(defun mon-longlines-mode-p (&optional llm-in-buffer)
-  "Return non-nil if buffer is in `longlines-mode'.
-When optional arg LLM-IN-BUFFER is non-nil check value in that buffer.\n
-Signal an error if that buffer does not exist. Default is current-buffer.\n
-:EXAMPLE\n\n\(mon-longlines-mode-p\)\n
-\(let \(chk\) 
-  \(with-temp-buffer 
-    \(longlines-mode\) \(push \(mon-longlines-mode-p\) chk\) 
-    \(longlines-mode\) \(push \(mon-longlines-mode-p\) chk\)
-    \(nreverse chk\)\)\)\n
-\(let* \(ltb-chk
-       \(ltb \(get-buffer-create \"*LLM-TEST*\"\)\)
-       \(do-ltb #'\(lambda \(\) \(with-current-buffer ltb \(longlines-mode\)\)
-                         \(push \(mon-longlines-mode-p \(get-buffer ltb\)\) ltb-chk\)\)\)\)
-  \(dotimes \(l 2 \(progn \(with-current-buffer ltb \(kill-buffer\)\)
-                       \(nreverse ltb-chk\)\)\)
-    \(funcall do-ltb\)\)\)\n
-:SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
-`mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
-  (let (llm-check)
-    (cond ((and llm-in-buffer (get-buffer llm-in-buffer))
-           (setq llm-check
-                 (buffer-local-value 'longlines-mode (get-buffer llm-in-buffer))))
-          ((and llm-in-buffer (not (get-buffer llm-in-buffer))
-                (error ":FUNCTION `mon-longlines-mode-p' - Arg LLM-IN-BUFFER is not a buffer")))
-          (t (setq llm-check
-                   (buffer-local-value 'longlines-mode (current-buffer)))))))
-;;
-;; ,---- :UNCOMMENT-TO-TEST
-;; | (let (chk) 
-;; |   (with-temp-buffer 
-;; |     (longlines-mode) (push (mon-longlines-mode-p) chk) 
-;; |     (longlines-mode) (push (mon-longlines-mode-p) chk)
-;; |     (nreverse chk)))
-;; `----
-;;
-;; ,---- :UNCOMMENT-TO-TEST
-;; | (let* ((ltb (get-buffer-create "*llm-test-buffer*"))
-;; |        ltb-chk
-;; |        (do-ltb #'(lambda () (with-current-buffer ltb (longlines-mode))
-;; |                          (push (mon-longlines-mode-p (get-buffer ltb)) ltb-chk))))
-;; |   (dotimes (l 2 (progn (with-current-buffer ltb (kill-buffer))
-;; |                        (nreverse ltb-chk)))
-;; |     (funcall do-ltb)))
-;; `----
-;; 
-;;; :TEST-ME (mon-longlines-mode-p)
-
-;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-09-08T12:59:41-04:00Z}#{09372} - by MON KEY>
 (defun mon-is-naf-mode-and-llm-p (&optional naf-buffer-name)
   "Test if buffer is in `naf-mode' and `longlines-mode' is enabled.\n
@@ -323,14 +263,17 @@ to test for active naf-mode before evaluating body.\n
 :USED-IN `naf-mode'.\n
 :SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
 `mon-is-naf-mode-p'.\n►►►"
-  (let ((do-nbn 
-         (if naf-buffer-name
-             (if (and naf-buffer-name (get-buffer naf-buffer-name))
-                 (get-buffer naf-buffer-name)
-               (error (concat ":FUNCTION `mon-is-naf-mode-and-llm-p' "
-                              "-- arg NAF-BUFFER-NAME not a buffer: %s")
-                      (current-buffer))))))
-    (and (mon-is-naf-mode-p do-nbn) (mon-longlines-mode-p do-nbn))))
+  ;; (let ((do-nbn 
+  ;;        (if naf-buffer-name
+  ;;            (if (and naf-buffer-name (get-buffer naf-buffer-name))
+  ;;                (get-buffer naf-buffer-name)
+  ;;              (error (concat ":FUNCTION `mon-is-naf-mode-and-llm-p' "
+  ;;                             "-- arg NAF-BUFFER-NAME not a buffer: %s")
+  ;;                     (current-buffer))))))
+  ;;   (and (mon-is-naf-mode-p do-nbn) (mon-buffer-longlines-mode-p do-nbn))))
+  (and (featurep 'naf-mode)
+       (mon-is-naf-mode-p naf-buffer-name)
+       (mon-buffer-longlines-mode-p naf-buffer-name)))
 ;;
 ;;; :TEST-ME (mon-is-naf-mode-and-llm-p)
 ;;; :TEST-ME (with-temp-buffer (naf-mode) (mon-is-naf-mode-and-llm-p))
@@ -349,100 +292,6 @@ to test for active naf-mode before evaluating body.\n
 ;; |          (with-current-buffer nmtb (kill-buffer))
 ;; |          (nreverse nmtb-chk)))
 ;; `----
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-12T13:23:06-05:00Z}#{10105} - by MON KEY>
-;;; :WAS
-;;; (defmacro mon-toggle-restore-llm (&optional toggle-in-buffer &rest body)
-;;;   "Wrapper macro to temporarily toggle `longlines-mode' in current-buffer.\n
-;;; Like `mon-naf-mode-toggle-restore-llm' but doesn't perform `naf-mode' check.
-;;; :EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
-;;; :SEE-ALSO `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
-;;;   (declare (indent 1) (debug t))
-;;;   (let ((llm-toggled (make-symbol "llm-toggled")))
-;;;     `(let ((,llm-toggled 
-;;;             (if (mon-is-naf-mode-and-llm-p) t nil)))
-;;;        (when ,llm-toggled (longlines-mode 0))
-;;;        (unwind-protect
-;;;             ,@body
-;;; 	 (when ,llm-toggled (longlines-mode 1))))))
-
-;;; ==============================
-;;; :CREATED <Timestamp: #{2010-03-17T16:36:06-04:00Z}#{10113} - by MON KEY>
-(defmacro mon-toggle-restore-llm (&optional toggle-in-buffer &rest body)
-  "Wrapper macro to temporarily toggle `longlines-mode' in current-buffer.\n
-When optional arg TOGGLE-IN-BUFFER is non-nil check value in that buffer and
-exectute BODY there. Default is `current-buffer'.
-:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
-\(progn \(get-buffer-create \"*MON-TOGGLE-RESTORE-LLM-TEST*\"\)
-       \(pp-macroexpand-expression 
-        '\(mon-toggle-restore-llm \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
-          \(with-current-buffer \"*MON-TOGGLE-RESTORE-LLM-TEST*\" 
-            \(longlines-mode\) 
-           \(prog1 \(buffer-name\)\(kill-buffer \"*MON-TOGGLE-RESTORE-LLM-TEST*\"\)\)\)\)\)
-       \(display-buffer \"*Pp Macroexpand Output*\"\)\)\n
-:SEE-ALSO `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
-  (declare (indent 1) (debug t))
-  (let ((llm-toggled (make-symbol "llm-toggled")))
-    `(let ((,llm-toggled 
-            (cond (,toggle-in-buffer
-                   (cond ((mon-is-naf-mode-p ,toggle-in-buffer)
-                          (mon-is-naf-mode-and-llm-p ,toggle-in-buffer))
-                         ((mon-longlines-mode-p ,toggle-in-buffer))))
-                  ((not ,toggle-in-buffer)
-                   (if (mon-is-naf-mode-p (get-buffer (current-buffer))) ;; ,(current-buffer))
-                       (mon-is-naf-mode-and-llm-p (get-buffer (current-buffer)));; ,(current-buffer))
-                       (mon-longlines-mode-p (get-buffer (current-buffer))))))))
-                       ;;,(current-buffer)))))))
-       (when ,llm-toggled 
-         (with-current-buffer 
-             (or ,toggle-in-buffer (get-buffer (current-buffer)));;,(current-buffer))
-           (longlines-mode 0)))
-       (unwind-protect
-            ,@body
-         (when ,llm-toggled 
-           (with-current-buffer 
-               (or ,toggle-in-buffer (get-buffer (current-buffer)))
-             (longlines-mode 1)))))))
-;;
-;; (put 'mon-toggle-restore-llm 'lisp-indent-function <INT>) 
-;;
-;;; :TEST-ME \(progn \(get-buffer-create \"mmm\"\)
-;;;                    \(pp-macroexpand-expression 
-;;;                     '\(mon-toggle-restore-llm \"mmm\" 
-;;;                       \(with-current-buffer \"mmm\" \(buffer-name\)\)\)\)
-;;;                    \(display-buffer \"*Pp Macroexpand Output*\"\)\)
-
-;;; ==============================
-;;; :MODIFICATIONS <Timestamp: #{2010-03-17T17:48:29-04:00Z}#{10113} - by MON KEY>
-;;; :CREATED <Timestamp: #{2009-09-08T15:52:50-04:00Z}#{09372} - by MON KEY>
-;; :WAS
-;;; (defmacro mon-naf-mode-toggle-restore-llm (&rest body)
-;;;   "Wrapper macro to temporarily toggle `longlines-mode' in `naf-mode' buffers.\n
-;;; :EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm \"bubba\"\)\)\n
-;;; :SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
-;;; `mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
-;;;   (declare (indent 1) (debug t))
-;;;   (let ((llm-toggled (make-symbol "llm-toggled")))
-;;;     `(let ((,llm-toggled (if (mon-is-naf-mode-and-llm-p) t nil)))
-;;;        (when ,llm-toggled (longlines-mode 0))
-;;;        (unwind-protect
-;;;             ,@body
-;;; 	 (when ,llm-toggled (longlines-mode 1))))))
-;;
-(defmacro mon-naf-mode-toggle-restore-llm (&optional toggle-buffer &rest naf-body)
-  "Wrapper macro to temporarily toggle `longlines-mode' in `naf-mode' buffers.\n
-When optional arg TOGGLE-BUFFER is non-nil check value in that buffer and
-exectute BODY there. Default is `current-buffer'.
-:EXAMPLE\n\n\(pp-macroexpand-expression '\(mon-naf-mode-toggle-restore-llm nil \"bubba\"\)\)\n
-:SEE-ALSO `mon-toggle-restore-llm', `mon-naf-mode-toggle-restore-llm',
-`mon-is-naf-mode-and-llm-p', `mon-is-naf-mode-p'.\n►►►"
-  (declare (indent 1) (debug t))
-  `(mon-toggle-restore-llm ,toggle-buffer ,@naf-body))
-;;
-;; (put 'mon-naf-mode-toggle-restore-llm 'lisp-indent-function <INT>) 
-;;
-;;; :TEST-ME (pp-macroexpand-expression '(mon-naf-mode-toggle-restore-llm "bubba"))
 
  
 ;;; ==============================
@@ -790,7 +639,7 @@ NOTE: To clean discarding text-properties use:
             (with-temp-buffer
               (insert rspr3-str)
               (mapc #'(lambda (rspr3-arg)
-                        (mon-g2be -1) ;; (goto-char (buffer-end 0))
+                        (mon-g2be -1)
                         (while (search-forward-regexp (car rspr3-arg) nil t) 
                           (replace-match (cadr rspr3-arg) t t) ))
                     pairs-replace-lst)
@@ -850,11 +699,10 @@ cadr can be a subexp to replace with.\n
             (with-temp-buffer
               (insert mrsprni-str)
               (mapc #'(lambda (mrsprni-L-1)
-                        (mon-g2be -1) ;; :WAS (goto-char (buffer-end 0))
+                        (mon-g2be -1)
                         (while (search-forward-regexp (car mrsprni-L-1) nil t) 
-                          (replace-match (cadr mrsprni-L-1) t t) ))
+                          (replace-match (cadr mrsprni-L-1) t t)))
                     str-pairs-replace-lst)
-              ;; :WAS (buffer-substring-no-properties (buffer-end 0) (buffer-end 1)) )))
               (mon-buffer-sub-no-prop) )))
     mrsprni-str))
 ;;
@@ -1687,11 +1535,6 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
 		 ("\\([a-z]\\{1,1\\}\\)\\([:.:]\\)\\([A-Z]\\{1,1\\}\\)" . "\\1\\2 \\3")))
         mcht-rgx mcht-sub)
     (mon-toggle-restore-llm nil
-      ;; :WAS (let* ((test-llm (mon-is-naf-mode-and-llm-p))
-      ;;        (is-on test-llm)
-      ;;        (llm-off))
-      ;;   (progn
-      ;;     (when is-on (longlines-mode 0) (setq llm-off 't))
       (save-excursion
         (save-restriction
           (narrow-to-region beg end)
@@ -1703,9 +1546,7 @@ Replace  & ,  > ,  <  with their respective encoded representation.\n
             (cond (mcht-sub (while (search-forward-regexp mcht-rgx nil t)
                          (replace-match mcht-sub)))
                   (t (while (search-forward-regexp mcht-rgx nil t)
-                       (delete-region (match-beginning 0) (match-end 0))))))))
-      ;;(when llm-off (longlines-mode 1) (setq llm-off 'nil))))))
-      )))
+                       (delete-region (match-beginning 0) (match-end 0)))))))))))
 
 ;;; ==============================
 ;;; :PREFIX "mcxe-"
@@ -1864,7 +1705,7 @@ upcase and colonize me \n
                                   "-- INTRP but no start end values found")))))
     (set-marker mcuc-bl (car mcuc-rgn-ln-if))
     (set-marker mcuc-el (cdr mcuc-rgn-ln-if))
-    (setq mcuc-sstr (upcase (buffer-substring-no-properties mcuc-bl mcuc-el)))
+    (setq mcuc-sstr (upcase (mon-buffer-sub-no-prop mcuc-bl mcuc-el)))
     (setq mcuc-sstr (upcase mcuc-sstr))
     (let ((mcuc-chop-sstr (string-to-list mcuc-sstr))
           (chop-tail #'(lambda (mcuc-L-1) (car (last mcuc-L-1))))
@@ -2187,7 +2028,7 @@ that were upcased.\n
   "Rudely fix whitespace in region.\n
 More comprehensive than `mon-cln-whitespace' with treatement of leading and
 trailing whitespace but can't be trusted to DTRT.\n
-For interactive cleaning of trailing tabs and spaces in *<BUFFER>*:
+For interactive cleaning of trailing tabs and spaces of entirety of current-buffer:
 :SEE `mon-kill-whitespace', `mon-cln-trail-whitespace', `mon-cln-blank-lines'\n
 :USED-IN `naf-mode'.\n
 :SEE-ALSO `mon-cln-imdb', `mon-trans-cp1252-to-latin1',
@@ -2196,9 +2037,9 @@ For interactive cleaning of trailing tabs and spaces in *<BUFFER>*:
   (interactive "r\np")
   (mon-toggle-restore-llm nil  
       (save-excursion
-        (let ((whsp-str)
-              (whsp-start start)
-              (whsp-end end))
+        (let ((whsp-start start)
+              (whsp-end end)
+              whsp-str)
           (setq whsp-str (mon-buffer-sub-no-prop whsp-start whsp-end))
           (setq whsp-str
                 (with-temp-buffer
@@ -2215,7 +2056,7 @@ For interactive cleaning of trailing tabs and spaces in *<BUFFER>*:
                       (replace-match "\\3" nil nil))
                     (mon-g2be -1)
                     (while (search-forward "\t" nil t)
-                      (untabify (1- (point)) (buffer-end 1)))
+                      (untabify (1- (point)) (mon-g2be 1 t)))
                     ;; (let ((start (buffer-end 0))
                     ;;       (end (buffer-end 1)))
                     (mon-g2be -1)
@@ -2246,16 +2087,20 @@ It handles leading and trailing wspc, but can't always be trusted to DTRT.\n
 `url-strip-leading-spaces'.\n►►►"
   (interactive "r\np")
   (mon-replace-region-regexp-lists-nonint start end *regexp-clean-whitespace*)
-  (when intrp (message ":FUNCTION `mon-cln-whitespace' -- whitespace has been rudely adjusted")))
+  (when intrp 
+    (message 
+     (concat ":FUNCTION `mon-cln-whitespace' "
+             "-- whitespace has been rudely adjusted in region: %d %d")
+     start end)))
 
 ;;; ==============================
 (defun mon-cln-trail-whitespace ()
     "Indiscriminately clean trailing whitespace in _ENTIRE_ buffer.\n
-Delete any trailing whitespace, converting tabs to spaces.
-Use `mon-kill-whitespace' to kill tabs to 1 (one) space.
-Operate on entire *<BUFFER>* not region. For interactive whitespace
-region adjustment use `mon-cln-BIG-whitespace', `mon-cln-blank-lines',
-or `mon-cln-whitespace'.\n
+Delete any trailing whitespace, converting tabs to spaces.\n
+Use `mon-kill-whitespace' to kill tabs to 1 \(one\) space.\n
+:NOTE Operates on entirety of current-buffer not a region.
+For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
+`mon-cln-blank-lines', or `mon-cln-whitespace'.\n
 :USED-IN `naf-mode'.\n
 :SEE-ALSO `url-eat-trailing-space', `url-strip-leading-spaces'.\n►►►"
     (interactive)
@@ -2278,7 +2123,7 @@ For interactive whitespace region adjustment use `mon-cln-BIG-whitespace',
 :SEE-ALSO `mon-cln-uniq-lines', `url-eat-trailing-space', `url-strip-leading-spaces'.\n►►►"
   (interactive)
   (save-excursion
-    (mon-g2be -1) ;; :WAS (goto-char (buffer-end 0))
+    (mon-g2be -1)
     (while (search-forward-regexp "[ \t]+$" nil t)
       (replace-match "" nil nil))))
 
@@ -2378,53 +2223,6 @@ mitigated those issues.\n
                   (goto-char next-line))))))
       (setq kill-ring mcul-ring))))
 
-;;; ==============================
-;;; :PREFIX "mlfdc-"
-;;; :CHANGESET 1708
-;;; :CREATED <Timestamp: #{2010-04-12T16:12:49-04:00Z}#{10151} - by MON KEY>
-(defun mon-line-find-duplicates-cln (cln-from cln-to &optional insrtp intrp)
-  "Remove duplicate lines CLN-FROM to CLN-TO return list of lines cleaned.\n
-Upon return point is at CLN-FROM.\n
-When called-interactively or INSRTP is non-nil insert the list of lines cleaned
-before CLN-FROM.\n
-:NOTE Procedure occurs inside of the `mon-toggle-restore-llm' macro so should be
-safe to evaluate in `naf-mode' buffers.\n
-:ALIASED-BY `mon-cln-duplicate-lines'
-:ALIASED-BY `mon-remove-duplicate-lines'\n
-:SEE-ALSO `mon-line-find-duplicates', `mon-cln-uniq-lines'.\n►►►"
-  (interactive "r\ni\np")
-  (mon-toggle-restore-llm nil
-    (let ((mlfdc-rgn (mon-buffer-sub-no-prop cln-from cln-to))
-          mlfdc-clnd)
-      (with-temp-buffer 
-        (save-excursion 
-          (insert mlfdc-rgn)
-          (mon-g2be -1)
-          (setq mlfdc-clnd (mon-line-find-duplicates)))
-        (dolist (mlfdc-D-1 mlfdc-clnd)
-          (save-excursion 
-            (mon-g2be -1)
-            (while (search-forward-regexp (concat "^" mlfdc-D-1 "$") nil t)
-              (let ((mlfdc-D-1-lcl-fnd `(,(match-beginning 0) . ,(match-end 0))))
-                (when  
-                    ;; :WAS (equal (buffer-substring-no-properties (car mlfdc-D-1-lcl-fnd) (cdr mlfdc-D-1-lcl-fnd))
-                    ;;        (buffer-substring-no-properties (line-beginning-position 2) (line-end-position 2))
-                    (equal (mon-buffer-sub-no-prop (car mlfdc-D-1-lcl-fnd) (cdr mlfdc-D-1-lcl-fnd))
-                           (mon-buffer-sub-no-prop (line-beginning-position 2) (line-end-position 2)))
-                  (delete-region (car mlfdc-D-1-lcl-fnd) (cdr mlfdc-D-1-lcl-fnd))
-                  (unless (eobp)
-                    (when (eq (line-end-position) (line-beginning-position))
-                      (delete-char 1))))))))
-        (setq mlfdc-rgn (mon-buffer-sub-no-prop)))
-      (save-excursion 
-        (goto-char cln-from)
-        (delete-region cln-from cln-to)
-        (insert mlfdc-rgn))
-      (if (or insrtp intrp)
-          (save-excursion
-            (princ (format ";;; :W-REGION :FROM %d :TO %d :REPLACED-DUPLICATES\n%s\n;;;\n"
-                           cln-from cln-to mlfdc-clnd)(current-buffer)))
-        mlfdc-clnd))))
 
 ;;; ==============================
 ;;; :PREFIX "mesab-"
@@ -2445,52 +2243,6 @@ Exchange in region when region-active-p is non-nil.\n
           (cond ((string-equal (match-string 0) "/") (replace-match "\\\\" nil nil))
                 ((string-equal (match-string 0) "\\") (replace-match "/" nil nil)))
           (message (format "%d changes made." mesab-rplc-cnt)))))))
-
-;;; ==============================
-;;; :PREFIX "mlnri-"
-;;; :TODO Needs to take a step argument to adjust count-rep's increment on each pass.
-;;; :RENAMED `mon-re-number-region' -> `mon-line-number-region-incr'
-;;; :MODIFICATIONS <Timestamp: #{2010-01-26T20:16:13-05:00Z}#{10043} - by MON KEY>
-;;; :CREATED <Timestamp: Saturday February 28, 2009 @ 02:25.53 PM - by MON KEY>
-(defun mon-line-number-region-incr (start end &optional start-num intrp)
-  "Sequentially renumber numbers (0-999 inclusive) in a region.\n
-When called-interactively, prompt for starting number. Default is 0.\n
-Useful for re-numbering out of sequence numbers in filenames.\n
-:ALIASED-BY `mon-region-increment-line-numbers'
-:ALIASED-BY `mon-region-increment-numbered-lines'\n
-:USED-IN `naf-mode'.\n
-:SEE-ALSO `mon-string-incr',`mon-string-incr-padded', `mon-line-number-region',
-`mon-rectangle-sum-column', `mon-line-count-region', `mon-line-count-matchp',
-`mon-line-length-max', `mon-line-count-buffer',
-`mon-line-find-duplicates'.\n►►►"
-  (interactive "r\nP\np")
-  (mon-toggle-restore-llm nil  
-       (let ((mlnri-cnt-rep 
-              (cond (start-num start-num)
-                    ((and (not intrp) (not start-num)) 0)
-                    (intrp (read-number 
-                            (concat ":FUNCTION `mon-line-number-region-incr'" 
-                                    " -- start from number: ") 0))))
-             (mlnri-rgn-nums)
-             (mlnri-rgn-strt start)
-             (mlnri-rgn-end end))
-         (setq mlnri-rgn-nums (mon-buffer-sub-no-prop mlnri-rgn-strt mlnri-rgn-end))
-         (setq mlnri-rgn-nums
-               (with-temp-buffer
-                 (insert mlnri-rgn-nums)
-                 (mon-g2be -1)
-                 (while (search-forward-regexp "[0-9]\\{1,3\\}" nil t )
-                   (replace-match
-                    (number-to-string
-                     (prog1
-                         (identity mlnri-cnt-rep)
-                       (setq mlnri-cnt-rep (1+ mlnri-cnt-rep))))))
-                 (mon-buffer-sub-no-prop) ))
-         (if intrp
-             (save-excursion
-               (delete-region mlnri-rgn-strt mlnri-rgn-end)
-               (insert mlnri-rgn-nums))
-           mlnri-rgn-nums))))
 
 ;;; ==============================
 ;;; :PREFIX "mccm-"
@@ -2521,7 +2273,7 @@ Piped lists are used in the naf-mode sections:
  Used-for: Appeared-in: Ads-for: Artist-associated: Authors-associated:
  Products-associated: Slogans: Content-and-subjects: etc.\n
 :USED-IN `naf-mode'.\n
-:SEE-ALSO `mon-pipe-list', `naf-backup-the-list', `mon-delete-back-up-list',
+:SEE-ALSO `mon-line-pipe-lines', `naf-backup-the-list', `mon-delete-back-up-list',
 `mon-line-strings-pipe-bol', `mon-line-strings-pipe-to-col',
 `mon-cln-mail-headers', `mon-cln-csv-fields', `mon-cln-file-name-string',
 `mon-cln-up-colon', `mon-cln-whitespace', `mon-cln-uniq-lines',
@@ -2531,7 +2283,6 @@ Piped lists are used in the naf-mode sections:
     (let ((mcpl-strt start)
 	  (mcpl-end end)
 	  mcpl-pipe-rgn)
-      ;; :WAS (setq mcpl-pipe-rgn (buffer-substring-no-properties mcpl-strt mcpl-end))
       (setq mcpl-pipe-rgn (mon-buffer-sub-no-prop mcpl-strt mcpl-end))
       (save-excursion
 	(setq mcpl-pipe-rgn
@@ -2572,7 +2323,7 @@ With each successive previous line deleting until point is no longer greater tha
 :NOTE Be careful, function can wreck data, evaluate using `with-temp-buffer'.\n
 :ALIASED-BY `naf-delete-back-up-list'\n
 :USED-IN `naf-mode'.\n
-:SEE-ALSO `mon-pipe-list', `mon-cln-piped-list', `naf-backup-the-list',
+:SEE-ALSO `mon-line-pipe-lines', `mon-cln-piped-list', `naf-backup-the-list',
 `mon-delete-back-up-list', `mon-line-strings-pipe-bol',
 `mon-line-strings-pipe-to-col',  `mon-cln-mail-headers', `mon-cln-csv-fields',
 `mon-cln-file-name-string', `mon-cln-up-colon', `mon-cln-whitespace',
@@ -2585,7 +2336,6 @@ With each successive previous line deleting until point is no longer greater tha
       (let ((mdbul-bak-strt start)
             (mdbul-bak-end end)
             mdbul-bak-pipe)
-        ;; :WAS (setq mdbul-bak-pipe (buffer-substring-no-properties mdbul-bak-strt mdbul-bak-end))
         (setq mdbul-bak-pipe (mon-buffer-sub-no-prop mdbul-bak-strt mdbul-bak-end))
         (save-excursion
           (setq mdbul-bak-pipe
@@ -2608,67 +2358,10 @@ With each successive previous line deleting until point is no longer greater tha
           (insert mdbul-bak-pipe))))))
 
 ;;; ==============================
-;;; :PREFIX "mpl-"
-;;; :CREATED <Timestamp: Wednesday February 11, 2009 @ 04:34.31 PM - by MON KEY>
-(defun mon-pipe-list (start end  &optional intrp)
-  "Insert \" | \" between each item on an item per line region.\n
-Useful for building piped lists in sections of `naf-mode' .naf files including:
-  Used-for: Appeared-in: Ads-for: Artist-associated: Authors-associated:
-  Products-associated: Slogans: Content-and-subjects: etc.\n
-:NOTE Item on last line in region should be an empty line.\n
-:SEE-ALSO `mon-cln-piped-list',`mon-line-strings-pipe-bol',
-`mon-line-strings-pipe-to-col', `naf-backup-the-list',
-`mon-delete-back-up-list'.\n►►►"
-  (interactive "r\np")
-  (save-excursion
-    (save-restriction
-      (narrow-to-region start end)
-      (mon-g2be 1)
-      (progn
-	(unless (and (mon-g2be 1 t) (mon-spacep))
-	  (newline))
-	(while (mon-spacep)
-	  (let* ((mpl-frwd-cnt (skip-chars-forward "[:space:]")) ;; is this used?
-		 (mpl-bkwd-cnt (skip-chars-backward "[:space:]"))
-		 (mpl-empt (and (eolp) (bolp))))
-	    (when mpl-empt
-	      (delete-backward-char 1))
-	    (when (< mpl-bkwd-cnt 0)
-	      (let* ((mpl-cnt-bak (abs mpl-bkwd-cnt)))
-		(delete-char mpl-cnt-bak)))
-            ;; Test for abutting characters.
-	    (if (and (not (mon-spacep)) (not (mon-spacep nil t)))
-		(progn
-		  (insert " | ")
-		  (beginning-of-line)))))
-	(when (and (mon-spacep) (bolp) (not (mon-spacep nil t)))
-	  (progn
-	    (backward-char 1)
-	    (if (eolp)
-		(delete-char 1)
-	      (while (mon-spacep nil t)
-		(delete-char 1)))
-            ;; Test for abutting characters.
-	    (when (and (not (mon-spacep)) (not (mon-spacep nil t)))
-	      (progn
-		(insert " | ")
-		(beginning-of-line))))))
-      (mon-g2be 1)
-      ;; Matches trailing " | " on tail of returned piped-list.
-      (progn		   
-	(re-search-backward "[[:space:]]|[[:space:]]$" nil t)
-	(replace-match ""))))
-  (when intrp (message 
-               (concat ":FUNCTION `mon-pipe-list' "
-                       "-- finished piping that list"))))
-;;
-;;(defalias ' ' )
-
-;;; ==============================
 (defun naf-backup-the-list (start end)
   "Dedicated interactive function name for `mon-delete-back-up-list'.\n
 :USED-IN `naf-mode'.\n
-:SEE-ALSO `mon-pipe-list', `mon-cln-piped-list', `mon-line-strings-pipe-bol',
+:SEE-ALSO `mon-line-pipe-lines', `mon-cln-piped-list', `mon-line-strings-pipe-bol',
 `mon-line-strings-pipe-to-col'.\n►►►"
   (interactive "r")
   (mon-delete-back-up-list start end))

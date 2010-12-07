@@ -3,9 +3,15 @@ You can use rsync to get copies from there. Note that the setup does not contain
 files that can be read as-is. You will need a webserver and [http://www.oddmuse.org/ Oddmuse]
 to read them!
 
+(The DNS service seems unreliable, therefore use 201.238.193.36 instead of zeus.blueplanet.cl!)
+
+List what's available:
+
+    rsync 201.238.193.36::
+
 Here's how to get or update a copy into your current directory:
 
-    rsync -avz mirror.blueplanet.cl::emacswiki .
+    rsync -avz 201.238.193.36::emacswiki .
 
 Alternatively, get a copy of the raw text files via the [[SVN repository]].
 Or if you're just interested in source files, get them via the [[CVS repository]].

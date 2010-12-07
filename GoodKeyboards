@@ -1,5 +1,8 @@
 This is a place to recommend and discuss keyboards that work well for Emacs users.
 
+[new]
+
+FelixKlee: Thinking about it, the worst thing I probably do to my hand is when I reach for the cursor keys in the lower right hand corner of my laptop's keyboard. I don't like moving my palms, and so I tend to use the thumb for that. Remapping the cursor keys to "Caps Lock"-{i,j,k,l} appears to be quite comfortable. Anyone here having experience with remapping the cursor keys on a laptop keyboard? What's your preferred position?
 
 [new]
 
@@ -130,6 +133,8 @@ I also prefer the mechanical "buckling spring" keyboard. I keep a few IBM Model-
 I also mouse as little as possible, customizing my X and OSX environments to keep my hands on the keyboard. When I do need to take my hands off the keyboard I use a trackball.
 
 Update 2009-02-11, since my comment on 2007-12-31 I've been having issues with the Matias keyboard, the most annoying are "ghost" key presses when typing some key sequences (where incorrect or extra chars appear) and occasional sticking keys. I've switched back to the Apple Extended keyboard while I wait for a USB Type-M from http:/pckeyboard.com/ to arrive.
+
+Update 2010-11-30, The new Model-M from pckeyboard turned out to be good, but did not feel as good as the old ones and occasionally didn't respond quite right during very fast typing. I replaced it six months ago with a Filco Majestouch 104MCEB based on Cherry Blue tactile switches from http://www.elitekeyboards.com/. Excellent keyboard.
 
 -- RossLonstein
 

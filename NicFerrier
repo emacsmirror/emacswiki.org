@@ -1,8 +1,9 @@
 I’m [::nicferrier], a hacker trying to do interesting things. I use Emacs every day all the time.
 
-I am currently the CTO at [http://woome.com woome.com]
-
-Anyone interested in hacking on woome.com can come talk to [mailto:nic@woome.com me]
+I am currently the CTO at [http://woome.com woome.com]. Anyone who may
+be interested in a job hacking at woome.com can come talk to
+[mailto:nic@woome.com me]. We use python and gnu-linux and all good
+things.
 
 I've done a few things with emacs which I'm trying to push into this wiki:
 
@@ -11,11 +12,16 @@ I've done a few things with emacs which I'm trying to push into this wiki:
 * [[imapua]] -- a purely IMAP based email client for Emacs
 * [[trac_editor]] -- a very simple interface to trac.py
 * [[WikiDoc]] -- a program to make wiki documentation from Elisp functions
+* [[tzhelp]] -- a small set of tools for dealing with timezones
 
 == Emacs under Mercurial ==
 
 * I host a mercurial copy of the emacs bzr repo at bitbucket: https://bitbucket.org/nic/emacs
 ** and [https://bitbucket.org/nic/emacs-update/changeset/14a32e93c535 here is the update script I use]
+
+Mercurial is really good at making upstream/downstream hacks. Is
+anyone interested in a clone of Emacs with, say auto-install,
+pre-installed.
 
 == Things I am interested in doing ==
 
@@ -66,19 +72,68 @@ So I wrote one:
 This toggles bold on the dark ones, which I think is all the vim thing is doing.
 
 == Small Init Files ==
-For a long time I've used a complex init file with loads of stuff in it. This is great, it means emacs starts up with all my goodies. But it also means when I go to another emacs I'm lost. It's also non-trivial to move my stuff to another emacs.
 
-I am trying to pair down my emacs use to the standard dist delivered behaviour and then add obvious extras on top. This is a process I started long ago but is still underway.
+For a long time I've used a complex init file with loads of stuff in
+it. This is great, it means emacs starts up with all my goodies. But
+it also means when I go to another emacs I'm lost. It's also
+non-trivial to move my stuff to another emacs.
 
-I am about to get rid of this keybinding from my personal emacs:
+I am trying to pair down my emacs use to the standard dist delivered
+behaviour and then add obvious extras on top. This is a process I
+started long ago but is still underway.
+
+I've just discovered [[AutoInstall|auto install]] which helps greatly
+in defining a smaller .emacs. Why? Because now I can keep the packages
+I use in the EmacsWiki and just use auto-install to load them:
 
 {{{
-(global-set-key "\C-xh" 'toggle-truncate-lines)
+;; Nic's init file
+
+(add-to-list 'load-path (expand-file-name "~/.emacs.d/"))
+(require 'auto-install)
+
+;; config stuff...
+...
+;; End
 }}}
 
-That's been something I've used quite a bit over the years... but it turns out it was just one of those things I adopted because I didn't understand emacs correctly. It should be a customized setting, occasionaly switching it to untruncated by using the toggle.
+I have patched auto-install slightly. It's a very simple patch that
+causes everything that has been auto-installed to be loaded on
+startup:
 
-Once I have a minimally changed emacs I can start looking to distribute extensions in a more sensible manner.
-   
-----
-CategoryHomepage
+{{{
+;; Automatic loading
+
+(defcustom auto-install-inhibit-startup-loading nil
+  "Controls whether auto-installed packaged are loaded at startup.
+
+If set to 't this inhibts the automatic loading of auto-load
+files at startup. 
+
+Otherwise all files in the 'auto-install-directory' are loaded
+when auto-install is required."
+  :type 'string
+  :group 'auto-install)
+
+(defun auto-install-on-startup ()
+  "Require everything in the auto-install directory."
+  (when (not auto-install-inhibit-startup-loading)
+    (mapc (lambda (direntry)
+            (let ((path (concat
+                         (file-name-as-directory auto-install-directory)
+                         direntry)))
+              (when (and (file-readable-p path) 
+                         (not (file-directory-p path))
+                         (equal "el" (file-name-extension path)))
+                (load-file path))))
+          (directory-files auto-install-directory))))
+
+;; Attempt to load all the auto-install files
+(auto-install-on-startup)
+}}}
+
+Hopefully [[rubikitch]] will be able to add that to
+auto-install. Ideally, it would do the kind of things that [[ELPA]]
+does.
+
+---- CategoryHomepage

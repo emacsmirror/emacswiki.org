@@ -91,6 +91,27 @@ The command, `C-c C-w' can yank the current regular expression to the KillRing. 
 [new]
 : Lisp:re-builder+.el provides reb+regexp-replace that is 'regexp-replace like re-builder interface'. -- [[k1LoW]]
 
+[new]
+When you use reb-query-replace it starts from the current position of point in the target buffer.
+Here are a couple of functions to change that position:
+
+    (defun reb-beginning-of-buffer ()
+      "In re-builder, move target buffer point position back to beginning."
+      (interactive)
+      (set-window-point (get-buffer-window reb-target-buffer)
+                        (with-current-buffer reb-target-buffer (point-min))))
+    
+    (defun reb-end-of-buffer ()
+      "In re-builder, move target buffer point position back to beginning."
+      (interactive)
+      (set-window-point (get-buffer-window reb-target-buffer)
+                        (with-current-buffer reb-target-buffer (point-max))))
+
+Another little trick that I find useful is to use [[Yasnippet]] to store useful but hard to remember regexp's.
+If you put your snippets in a folder names "reb-mode" under the "snippets" directory then they will be available to
+you in re-builder. -- JoeBloggs
+
+                        
 ----
 CategoryRegexp
 CategoryProgrammerUtils

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Mon Nov 22 15:00:01 2010 (-0800)
+;; Last-Updated: Wed Dec  1 20:26:06 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25544
+;;     Update #: 25547
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1787,8 +1787,8 @@
 ;;  apropos-completing you often need to try variants of a regexp,
 ;;  editing it and observing which candidates match in
 ;;  `*Completions*', until you get the regexp right.
-;;  Longest-common-match completion has the disadvantage that you lose
-;;  your regexp as input, which makes it hard to edit it!
+;;  Expanded-common-match completion has the disadvantage that you
+;;  lose your regexp as input, which makes it hard to edit it!
 ;;
 ;;  To retrieve it, use `C-l' (`icicle-retrieve-previous-input')
 ;;  during completion.  You can repeat `C-l' to retrieve older
@@ -1796,7 +1796,7 @@
 ;;  (that is, `C-L') to cycle previous inputs in the other direction -
 ;;  see (@> "History Enhancements").  You can set option
 ;;  `icicle-expand-input-to-common-match-flag' to nil to turn off
-;;  longest-common-match completion altogether, if you prefer.  You
+;;  expanded-common-match completion altogether, if you prefer.  You
 ;;  can also toggle it from the minibuffer at any time, using `C-;'.
 ;;
 ;;  Just what is meant by the "expanded common match" that Icicles

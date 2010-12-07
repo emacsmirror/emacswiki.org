@@ -19,14 +19,15 @@ Welcome to the wiki. -- DrewAdams
 * [[BrowseKillRing]]
 * [EdiffMode Ediff] and [[EdiffTrees]]
 * [[FileSets]] and [[filesets+.el]]
-* [[grep-a-lot.el]], [[grep-ed.el]] and [[grep-o-matic.el]]
+* [[grep-a-lot.el]], [[grep-ed.el]], [[grep-buffers.el]] and [[grep-o-matic.el]]
 * [[slurp.el]], [[Ack]] and [[TraverseDirectory]]
 * [[modeline-posn.el]]
 * [[DiredPlus]] and [[dired-sort-map.el]]
 * [[DVC]]
 * [[RememberMode]] within [[OrgMode]]
 * [CategoryEshell Eshell]
-* emacs 23
+* [[IbufferMode]]
+* [[KeyboardMacros]]
 
 == Still to learn/master/enable: ==
 
@@ -37,6 +38,9 @@ Welcome to the wiki. -- DrewAdams
 * [JavaDevelopmentEnvironment JDEE], [CollectionOfEmacsDevelopmentEnvironmentTools CEDET], [EmacsCodeBrowser ECB] and [[toggle.el]]
 * [[Anything]]
 * [[Yasnippet]]
+* [[Registers]]
+* [[Narrowing]]
+* [[Bookmarks]]
 
 == Probably never going to learn/master/enable: ==
 

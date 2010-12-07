@@ -5,6 +5,7 @@
 ;; Author: Andy Stewart <lazycat.manatee@gmail.com>
 ;;         rubikitch <rubikitch@ruby-lang.org>
 ;; Maintainer: Joe Bloggs <vapniks@yahoo.com>
+;; Copyleft (Ↄ) 2010, Joe Bloggs, all rites reversed.
 ;; Copyright (C) 2008, 2009, 2010 Andy Stewart, all rights reserved.
 ;; Copyright (C) 2009, rubikitch, all rights reserved.
 ;; Created: 2008-12-22 21:54:30
@@ -77,7 +78,7 @@
 ;; (defun one-key-menu-emms ()
 ;;   "`One-Key' menu for EMMS."
 ;;   (interactive)
-;;   (one-key-menu "EMMS" one-key-menu-emms-alist t))
+;;   (one-key-menu "emms" one-key-menu-emms-alist t))
 ;;
 ;; Add an item to `one-key-toplevel-alist' in the customization buffer for one-key
 ;; (M-x customize-group RET one-key RET). The first item should be the key (e.g. m), the second item
@@ -196,6 +197,19 @@
 ;; by pressing "C-c C-s" followed by d/k/c.
 ;; You can quickly test your menu by pressing "C-c C-t".
 ;;
+;; Fixed menu keys:
+;;
+;; Some keys are available for all menus and are always the same, they can be configured with the following variables:
+;;  `one-key-key-hide'   :  key to hide the menu, default is "?"
+;;  `one-key-key-quit'   :  key to quit the menu, default is "q"
+;;  `one-key-key-up'     :  key to scroll the menu down one line, default is "<up>"
+;;  `one-key-key-down'   :  key to scroll the menu up one line, default is "<down>"
+;;  `one-key-key-pgup'   :  key to scroll the menu down one page, default is "<prior>"
+;;  `one-key-key-pgdown' :  key to scroll the menu up one page, default is "<next>"
+;;  `one-key-key-help'   :  when this key is pressed, the next keypress will show help for the corresponding command,
+;;                          default is "C-?"
+;;  `one-key-key-edit'   :  key to edit the menu (if the source file can be found), default is "C-/"
+;;
 ;; Auto-load one-key menus:
 ;;
 ;; If you set `one-key-auto-load-menus' to t (in the customization group for one-key), then any files
@@ -239,16 +253,36 @@
 ;; `one-key-prompt-face' : face for highlighting prompt
 ;; `one-key-template-buffer-name' : the buffer name of the template code.
 ;; `one-key-title-face' : face for highlighting title
+;; `one-key-key-hide'   :  key to hide the menu, default is "?"
+;; `one-key-key-quit'   :  key to quit the menu, default is "q"
+;; `one-key-key-up'     :  key to scroll the menu down one line, default is "<up>"
+;; `one-key-key-down'   :  key to scroll the menu up one line, default is "<down>"
+;; `one-key-key-pgup'   :  key to scroll the menu down one page, default is "<prior>"
+;; `one-key-key-pgdown' :  key to scroll the menu up one page, default is "<next>"
+;; `one-key-key-help'   :  when this key is pressed, the next keypress will show help for the corresponding command,
+;;                         default is "C-?"
+;; `one-key-key-edit'   :  key to edit the menu (if the source file can be found), default is "C-/"
 
 ;; All above options can by customized through:
 ;;      M-x customize-group RET one-key RET
 ;;
 
 ;;; Change log:
-;;
+;; 2010/12/07
+;;    * Joe Bloggs
+;;       * Added key-binding ("C-/" by default) to jump to source file of current one-key menu for editing.
+;;       * Made fixed menu keys configurable with variables `one-key-key-hide' `one-key-key-quit' `one-key-key-up'
+;;         `one-key-key-down' `one-key-key-pgup' `one-key-key-pgdown' `one-key-key-help' `one-key-key-edit'
+;;         (they are called one-key-key-??? instead of one-key-???-key so that they will group together in the
+;;          customization buffer).
+;; 2010/11/27
+;;    * Joe Bloggs
+;;       * Quick fix to one-key-template-write so that it remains in one-key-template-mode after writing
+;;       
 ;; 2010/11/23
 ;;    * Joe Bloggs
-;;       * Added `one-key-template-group-key-items-by-regexps', and associated menu item.
+;;       * Added `one-key-template-group-key-items-by-regexps', `one-key-template-describe-command',
+;;         and associated keybindings and menu items.
 ;;
 ;; 2010/11/20
 ;;    * Joe Bloggs
@@ -439,6 +473,62 @@ The key should be entered in the same format as that returned by `describe-key'.
   :type '(alist :key-type (cons string string) :value-type function)
   :group 'one-key)
 
+(defcustom one-key-key-quit "q"
+  "String representing the quit key for one-key menus. This key is available in all one-key menus, and when
+pressed will quit the menu.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-hide "?"
+  "String representing the hide key for one-key menus. This key is available in all one-key menus, and when
+pressed will hide the menu.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-help "C-?"
+  "String representing the help key for one-key menus. This key is available in all one-key menus, and when
+pressed then the next keypress will show help for the corresponding command from the menu.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-edit "C-/"
+  "String representing the edit key for one-key menus. This key is available in all one-key menus, and when
+pressed will try to find the source file for the menu and open it if found. The menu can then be editing.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-up "<up>"
+  "String representing the up key for one-key menus. This key is available in all one-key menus, and when
+pressed will scroll the menu down one line.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-down "<down>"
+  "String representing the down key for one-key menus. This key is available in all one-key menus, and when
+pressed will scroll the menu up one line.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-pgup "<prior>"
+  "String representing the page up key for one-key menus. This key is available in all one-key menus, and when
+pressed will scroll the menu down one page
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
+(defcustom one-key-key-pgdown "<next>"
+  "String representing the page down key for one-key menus. This key is available in all one-key menus, and when
+pressed will scroll the menu up one page.
+The string should be the same as the string displayed by the `describe-key' function after pressing the key."
+  :type 'string
+  :group 'one-key)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defface one-key-title
   '((t (:foreground "Gold")))
@@ -578,6 +668,16 @@ active region, and REVERSE is set to t if a prefix arg is passed but nil otherwi
                        (> match 0))))))))
 
 
+(defun one-key-template-describe-command ()
+  "Show description for command associated with one-key item on current line."
+  (interactive)
+  (save-excursion
+    (save-restriction
+      (if (re-search-forward "\\(\\(?:\\s_\\|\\sw\\)+\\))\\s-*$" nil t)
+          (describe-function (intern-soft (match-string 1)))
+        (message "No command found!")))))
+
+
 (defun one-key-template-write ()
   "Prompt user to save current one-key menu to `one-key-menus-location' with the name one-key-menu_??.el
 where ?? is the name of the menu."
@@ -586,7 +686,8 @@ where ?? is the name of the menu."
     (goto-char (point-max))
     (if (re-search-backward "^ *(one-key-menu \"\\(.*?\\)\"" nil t)
         (progn (setq name (concat "one-key-menu_" (match-string 1) ".el"))
-               (ido-file-internal 'write 'write-file one-key-menus-location "Save as: " nil name 'ignore))
+               (ido-file-internal 'write 'write-file one-key-menus-location "Save as: " nil name 'ignore)
+               (one-key-template-mode))
       (message "No one-key-menu function found!"))))
 
 (define-key one-key-template-mode-map (kbd "M-<up>") 'one-key-template-move-line-region-up)
@@ -599,6 +700,7 @@ where ?? is the name of the menu."
 (define-key one-key-template-mode-map (kbd "C-c c") 'comment-region)
 (define-key one-key-template-mode-map (kbd "C-c u") 'uncomment-region)
 (define-key one-key-template-mode-map (kbd "C-c C-w") 'one-key-template-write)
+(define-key one-key-template-mode-map (kbd "C-c C-h") 'one-key-template-describe-command)
 ;; (define-prefix-command 'one-key-template-sort-map)
 ;; (define-key one-key-template-mode-map (kbd "C-c C-s") 'one-key-template-sort-map)
 ;; (define-key one-key-template-mode-map (kbd "C-c C-s c") 'one-key-template-sort-key-items-by-command-alphabetically)
@@ -639,6 +741,7 @@ where ?? is the name of the menu."
 	(("C-M-q" . "Indent sexp (C-M-q)") . indent-sexp)
         (("M-TAB" . "Completion At Point (M-TAB)") . completion-at-point)
 	(("C-t" . "Test menu (C-c C-t)") . one-key-template-test-menu)
+        (("C-h" . "Describe command of current item (C-c C-h)") . one-key-template-describe-command)
         (("C-w" . "Write template to one-key menus folder (C-c C-w)") . one-key-template-write)
         (("e" . "emacs-lisp-mode") . emacs-lisp-mode)
 	))
@@ -758,7 +861,7 @@ Will highlight this `MSG' with face `MSG-FACE'."
 
 (defun one-key-highlight-help (title keystroke)
   "Highlight TITLE help information with KEYSTROKE."
-  (setq title (one-key-highlight (format "Here is a list of <%s> keystrokes. Type '?' to hide, 'q' to exit, 'up/down' and 'page up/page down' to scroll.\n                                         Type 'C-?' for help about next keystroke\n" title)
+  (setq title (one-key-highlight (format "Here is a list of <%s> keystrokes. Type '%s' to hide, '%s' to exit, '%s/%s' and '%s/%s' to scroll.\n               Type '%s' for help about next keystroke, and type '%s' to edit this menu\n" title one-key-key-hide one-key-key-quit one-key-key-up one-key-key-down one-key-key-pgup one-key-key-pgdown one-key-key-help one-key-key-edit)
                                  "\\(<[^<>]*>\\|'[^']*'\\)"
                                  '(face one-key-title)))
   (setq keystroke (one-key-highlight keystroke
@@ -847,32 +950,37 @@ last command when it miss matches in key alist."
             ;; Handle last.
             (one-key-handle-last alternate-function self recursion-p))
            ;; Match build-in keystroke.
-           ((one-key-match-keystroke key "q")
+           ((one-key-match-keystroke key one-key-key-quit)
             ;; quit
             (keyboard-quit))
-           ((one-key-match-keystroke key "?")
+           ((one-key-match-keystroke key one-key-key-hide)
             ;; toggle help window
             (one-key-help-window-toggle title info-alist)
             (funcall self))
-           ((one-key-match-keystroke key "C-?")
+           ((one-key-match-keystroke key one-key-key-help)
             ;; show help
 	    (setq one-key-menu-show-help t)
             (funcall self))
-           ((one-key-match-keystroke key "<down>")
+           ((one-key-match-keystroke key one-key-key-edit)
+            ;; try to find file containing one-key menu, and open it if found.
+            (let ((file (find-lisp-object-file-name (intern-soft (concat "one-key-menu-" title "-alist")) 'defvar)))
+              (if file 
+                  (progn (find-file-other-window file)
+                         (setq one-key-help-window-configuration nil))
+                (message "Can't find associated source file!"))))
+           ((one-key-match-keystroke key one-key-key-down)
             ;; scroll up one line
             (one-key-help-window-scroll-up-line)
             (funcall self))
-           ((one-key-match-keystroke key "<up>")
+           ((one-key-match-keystroke key one-key-key-up)
             ;; scroll down one line
             (one-key-help-window-scroll-down-line)
             (funcall self))
-           ((or (one-key-match-keystroke key "C-j")
-                (one-key-match-keystroke key [next]))
+           ((one-key-match-keystroke key one-key-key-pgdown)
             ;; scroll up one screen
             (one-key-help-window-scroll-up)
             (funcall self))
-           ((or (one-key-match-keystroke key "C-k")
-                (one-key-match-keystroke key [prior]))
+           ((one-key-match-keystroke key one-key-key-pgup)
             ;; scroll down one screen
             (one-key-help-window-scroll-down)
             (funcall self))
@@ -993,6 +1101,7 @@ Argument INFO-ALIST is help information as format ((key . describe) . command)."
   "Close the help window."
   ;; Kill help buffer.
   (when (bufferp (get-buffer one-key-buffer-name))
+    (delete-window (get-buffer-window one-key-buffer-name))
     (kill-buffer one-key-buffer-name))
   ;; Restore window layout if
   ;; `one-key-help-window-configuration' is valid value.

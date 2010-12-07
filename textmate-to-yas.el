@@ -1,18 +1,18 @@
 ;;; textmate-to-yas.el --- Import Textmate macros into yasnippet syntax
-;; 
+;;
 ;; Filename: textmate-to-yas.el
 ;; Description: Import Textmate macros into yasnippet syntax
 ;; Author: Matthew L. Fidler
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Wed Oct 20 15:08:50 2010 (-0500)
-;; Version: 0.1 
-;; Last-Updated: Wed Nov 10 08:05:57 2010 (-0600)
+;; Version: 0.1
+;; Last-Updated: Sun Nov 28 15:14:31 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 1414
+;;     Update #: 1464
 ;; URL: http://www.emacswiki.org/emacs/textmate-import.el
 ;; Keywords: Yasnippet Textmate
 ;; Compatibility: Tested with Windows Emacs 23.2
-;; 
+;;
 ;; Features that might be required by this library:
 ;;
 ;;   `assoc', `backquote', `button', `bytecomp', `cl',
@@ -20,12 +20,12 @@
 ;;   `mail-prsvr', `mailcap', `mm-util', `timer', `timezone', `url',
 ;;   `url-cookie', `url-expand', `url-history', `url-methods',
 ;;   `url-parse', `url-privacy', `url-proxy', `url-util', `url-vars',
-;;   `view', `yasnippet'.
+;;   `view', `warnings', `yasnippet'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
-;;; Commentary: 
-;; 
+;;
+;;; Commentary:
+;;
 ;;  This library allows you to import TextMate bundle snippets to
 ;;  Yasnippet
 ;;
@@ -33,151 +33,158 @@
 ;;  the following in ~/.emacs
 ;;
 ;;  (require 'textmate-to-yas)
+;;
+;;  If you wish to use a snippet from GitHub, just drag the .tar.gz
+;;  file to emacs while Yasnippet is running
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Change Log:
-;; 10-Nov-2010    Matthew L. Fidler  
+;; 28-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Sun Nov 28 15:14:17 2010 (-0600) #1463 (Matthew L. Fidler)
+;;    bug fix for yas/t/ when $1 doesn't exist.
+;; 12-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Fri Nov 12 17:00:33 2010 (-0600) #1457 (Matthew L. Fidler)
+;;    Added #bindings back.
+;; 10-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Nov 10 06:57:05 2010 (-0600) #1412 (Matthew L. Fidler)
-;;    Bug fxi to Textmate to Emacs regular expression matching.
-;; 09-Nov-2010    Matthew L. Fidler  
+;;    Bug fix to Textmate to Emacs regular expression matching.
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 23:46:39 2010 (-0600) #1341 (Matthew L. Fidler)
 ;;    Added error fix for TextMate formats (upper and lower case when match isn't found.)
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 23:11:41 2010 (-0600) #1333 (Matthew L. Fidler)
 ;;    Bug fix for complicated yas/t/ snippets not converting the \ character to \\.
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 23:02:51 2010 (-0600) #1328 (Matthew L. Fidler)
 ;;    yas/t/ bugfix for missing text.
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 22:58:35 2010 (-0600) #1326 (Matthew L. Fidler)
 ;;    Added error handler when guessing modes.
-;; 09-Nov-2010    Matthew L. Fidler  
+;; 09-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov  9 20:14:39 2010 (-0600) #1315 (Matthew L. Fidler)
 ;;    Added drag and drop support for Github tar.gz files.  Requires Yasnippet to be running.
-;; 06-Nov-2010    Matthew L. Fidler  
+;; 06-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sat Nov  6 10:49:48 2010 (-0500) #1215 (Matthew L. Fidler)
 ;;    Changed name.
-;; 06-Nov-2010    Matthew L. Fidler  
+;; 06-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sat Nov  6 08:40:34 2010 (-0500) #1210 (Matthew L. Fidler)
 ;;    Handle nested conditional replacements.  For example (?3:one:(?2:two:none))
-;; 05-Nov-2010    Matthew L. Fidler  
+;; 05-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Fri Nov  5 16:28:05 2010 (-0500) #1052 (Matthew L. Fidler)
 ;;    Textmate import file handles errors gracefully.
-;; 05-Nov-2010    Matthew L. Fidler  
+;; 05-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Fri Nov  5 14:33:00 2010 (-0500) #1050 (Matthew L. Fidler)
 ;;
 ;;    Added better textmate support by providing translations for
 ;;    mirrors. Requires the directive # type: command available in the
 ;;    SVN version of yasnippet.
 ;;
-;; 05-Nov-2010      
+;; 05-Nov-2010
 ;;    Last-Updated: Fri Nov  5 09:59:30 2010 (-0500) #898 (US041375)
 ;;    Changed textmate-replace-in-string with replace-regexp-in-string
-;; 04-Nov-2010      
+;; 04-Nov-2010
 ;;    Last-Updated: Thu Nov  4 12:38:32 2010 (-0500) #535 (us041375)
 ;;    Changed extension from .yasnippet to what the package is in a svn-import.
-;; 04-Nov-2010      
+;; 04-Nov-2010
 ;;    Last-Updated: Thu Nov  4 10:55:27 2010 (-0500) #525 (us041375)
 ;;    replace-in-string changed to textmate-replace-in-string.  May be missing on some systems.
-;; 01-Nov-2010    Matthew L. Fidler  
+;; 01-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov  1 16:19:16 2010 (-0500) #447 (Matthew L. Fidler)
 ;;    Bug fix for expand-env
-;; 01-Nov-2010    Matthew L. Fidler  
+;; 01-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov  1 15:16:01 2010 (-0500) #442 (Matthew L. Fidler)
 ;;    Added more supported tags.
-;; 01-Nov-2010    Matthew L. Fidler  
+;; 01-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov  1 13:27:13 2010 (-0500) #413 (Matthew L. Fidler)
-;;    Took out #scope pseudo-directive. 
-;; 01-Nov-2010    Matthew L. Fidler  
+;;    Took out #scope pseudo-directive.
+;; 01-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov  1 12:04:30 2010 (-0500) #385 (Matthew L. Fidler)
 ;;    Added more file extensions.
-;; 28-Oct-2010    Matthew L. Fidler  
+;; 28-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 28 14:45:28 2010 (-0500) #375 (Matthew L. Fidler)
 ;;    Removed bindings.  They are currently causing problems...
-;; 28-Oct-2010    Matthew L. Fidler  
+;; 28-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 28 11:14:35 2010 (-0500) #354 (Matthew L. Fidler)
 ;;    Added completed import of svn bundle message.
-;; 28-Oct-2010    Matthew L. Fidler  
+;; 28-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 28 10:56:55 2010 (-0500) #348 (Matthew L. Fidler)
 ;;    Bug fix to allow files to be .yasnippet instead of _yasnippet files.
-;; 27-Oct-2010    Matthew L. Fidler  
+;; 27-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Oct 27 23:11:33 2010 (-0500) #342 (Matthew L. Fidler)
 ;;    Added fix to allow files to pass for directories in `textmate-import-bundle'
-;; 27-Oct-2010    Matthew L. Fidler  
+;; 27-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Oct 27 15:58:57 2010 (-0500) #338 (Matthew L. Fidler)
 ;;    Added import from svn.textmate.org using url package.  Use `textmate-import-svn-url'
-;; 27-Oct-2010    Matthew L. Fidler  
+;; 27-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Wed Oct 27 14:34:53 2010 (-0500) #259 (Matthew L. Fidler)
 ;;    Added a guess-mode function to take out prompting for modes.
-;; 25-Oct-2010    Matthew L. Fidler  
+;; 25-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Oct 25 10:17:48 2010 (-0500) #110 (Matthew L. Fidler)
 ;;    Bug fix for .yas-parents.
-;; 25-Oct-2010    Matthew L. Fidler  
+;; 25-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Oct 25 10:12:22 2010 (-0500) #97 (Matthew L. Fidler)
 ;;    Changed import rmate and stata to mirror new textmate-import function
-;; 25-Oct-2010    Matthew L. Fidler  
+;; 25-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Oct 25 09:59:31 2010 (-0500) #94 (Matthew L. Fidler)
 ;;    Changed parent-mode to a prompt and uses .yas-parents as in SVN trunk of yasnippet.
-;; 22-Oct-2010    Matthew L. Fidler  
+;; 22-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Fri Oct 22 09:42:57 2010 (-0500) #82 (Matthew L. Fidler)
 ;;    Bugfix for ${1:default} expressions
-;; 22-Oct-2010    Matthew L. Fidler  
+;; 22-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Fri Oct 22 09:34:06 2010 (-0500) #79 (Matthew L. Fidler)
 ;;    Added ability to choose mode by function or mode-name
-;; 21-Oct-2010    Matthew L. Fidler  
+;; 21-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 21 16:10:52 2010 (-0500) #61 (Matthew L. Fidler)
 ;;    Selected text bugfix
-;; 21-Oct-2010    Matthew L. Fidler  
+;; 21-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 21 15:54:16 2010 (-0500) #56 (Matthew L. Fidler)
 ;;    Now handles key-bindings as well.
-;; 21-Oct-2010    Matthew L. Fidler  
+;; 21-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 21 13:34:30 2010 (-0500) #26 (Matthew L. Fidler)
 ;;    Added a fix to take out spaces in textmate bundles file name translations.
-;; 21-Oct-2010    Matthew L. Fidler  
+;; 21-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 21 13:29:00 2010 (-0500) #19 (Matthew L. Fidler)
 ;;
 ;;    Updated import to find groupings before or after orderings in
 ;;    the info.plist.
 ;;
-;; 21-Oct-2010    Matthew L. Fidler  
+;; 21-Oct-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Oct 21 09:05:30 2010 (-0500) #9 (Matthew L. Fidler)
 ;;
 ;;    Added a yas/root-directory of the current directory if
 ;;    undefined.  Allows to be run from the command line by just
 ;;    loading this file
 ;;
-;; 21-Oct-2010    Matthew L. Fidler  
+;; 21-Oct-2010    Matthew L. Fidler
 ;;    Added optional transformation function.
-;; 20-Oct-2010    Matthew L. Fidler  
+;; 20-Oct-2010    Matthew L. Fidler
 ;;    Bug fix -- added mode.
-;; 
-;; 
+;;
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;; This program is free software; you can redistribute it and/or
 ;; modify it under the terms of the GNU General Public License as
 ;; published by the Free Software Foundation; either version 3, or
 ;; (at your option) any later version.
-;; 
+;;
 ;; This program is distributed in the hope that it will be useful,
 ;; but WITHOUT ANY WARRANTY; without even the implied warranty of
 ;; MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 ;; General Public License for more details.
-;; 
+;;
 ;; You should have received a copy of the GNU General Public License
 ;; along with this program; see the file COPYING.  If not, write to
 ;; the Free Software Foundation, Inc., 51 Franklin Street, Fifth
 ;; Floor, Boston, MA 02110-1301, USA.
-;; 
+;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; 
+;;
 ;;; Code:
 
 
 ;;
 ;; TODO: Fix yas/env when they are transformations...
-;; TODO: Key bindings.
-;; TODO: Fix transformations of variables ${TM_SELECTED_TEXT/(.*)/\u$1/} becomes `(yas/t/ "(.*)" "\\u$1" "")`}
 (require 'yasnippet nil 't)
 (require 'url)
 (provide 'texmate-import)
@@ -226,7 +233,7 @@ Possible choices are:
                                               ("\\S" "\\S-")
                                               ("\\w" "\\sw")
                                               ("\\W" "\\Sw")
-                                              
+
                                               ("\\d" "[0-9]")
                                               ("\\D" "[^0-9]")
                                               ("\\n" "\n")
@@ -235,7 +242,7 @@ Possible choices are:
                                               ;; multibyte, nonascii, print, punct, space, unibyte, upper
                                               ;; word, xdigit
                                               ;; I'm not sure negation works the same [:^ascii:].  I will assume so for
-                                              ;; now. 
+                                              ;; now.
                                               ("\\p{Alphanum}" "[A-Za-z0-9]")
                                               ("\\p{^Alphanum}" "[^A-Za-z0-9]")
                                               ("\\h" "[0-9a-fA-F]")
@@ -246,12 +253,12 @@ Possible choices are:
   "* Convert a textmate regular expression to an emacs regular expression (as much as possible)"
   (save-match-data
     (let (ret
-          case-fold-search 
+          case-fold-search
           )
       (with-temp-buffer
         ;; Emacs http://www.gnu.org/software/emacs/manual/html_node/elisp/Syntax-of-Regexps.html#Syntax-of-Regexps
         ;; Textmate http://manual.macromates.com/en/drag_commands#drag_commands
-        
+
         ;; \w => \w
         ;; \W => \W
         ;; \s => \s- (Whitespace)
@@ -266,15 +273,15 @@ Possible choices are:
         ;; {,n} => \{,n\}
         ;; \{n,\} => \{n,\}
         (insert rexp)
-        ;; Deal with expressions where [\w]  is inside of the brackets...  Should do some sexp expression handling to be precise. 
+        ;; Deal with expressions where [\w]  is inside of the brackets...  Should do some sexp expression handling to be precise.
         (goto-char (point-min))
         (while (re-search-forward "\\[\\^\\(.*?\\)\\\\\\([wsdh]\\)\\(.*?\\)\\]\\([+*?]*\\|{.*?}\\)" nil t)
           (replace-match (format "(?:\\\\%s\\4|[^\\1\\3]\\4)" (upcase (match-string 2)) 't)))
-        
+
         (goto-char (point-min))
         (while (re-search-forward "\\[\\^\\(.*?\\)\\\\\\([WSDH]\\)\\(.*?\\)\\]\\([+*?]*\\|{.*?}\\)" nil t)
           (replace-match (format "(?:\\\\%s\\4|[^\\1\\3]\\4)" (downcase (match-string 2)) 't)))
-        
+
         (goto-char (point-min))
         (while (re-search-forward "\\[\\^\\(.*?\\)\\\\\\([WSDHwsdh]\\)\\(.*?\\)\\]\\([+*?]*\\|{.*?}\\)" nil t)
           (replace-match "(?:\\\\\\2\\4|[^\\1\\3]\\4)" 't))
@@ -289,7 +296,7 @@ Possible choices are:
                                                   "\\}"
                                                   ) 't
                                                     )) nil t)
-          (replace-match (string (cond 
+          (replace-match (string (cond
                                   ( (string= (match-string 0) "\\(") ?\C-a)
                                   ( (string= (match-string 0) "\\)") ?\C-b)
                                   ( (string= (match-string 0) "\\{") ?\C-c)
@@ -303,14 +310,14 @@ Possible choices are:
           (replace-match (concat "\\" (match-string 0)) nil 't))
         (goto-char (point-min))
         (while (re-search-forward (eval-when-compile (regexp-opt (list (string ?\C-a) (string ?\C-b) (string ?\C-c) (string ?\C-d) (string ?\C-e) (string ?\C-f)) 't)) nil t)
-          (replace-match (cond 
+          (replace-match (cond
                           ( (string= (match-string 0) (string ?\C-a)) "(")
                           ( (string= (match-string 0) (string ?\C-b)) ")")
                           ( (string= (match-string 0) (string ?\C-c)) "{")
                           ( (string= (match-string 0) (string ?\C-d)) "}")
                           ( (string= (match-string 0) (string ?\C-f)) "\\\\")
                           ( (string= (match-string 0) (string ?\C-e)) "|")) 't 't)
-          
+
           )
         (mapc
          (lambda(x)
@@ -351,9 +358,9 @@ Possible choices are:
         ;; substitution on the placeholder text (when mirroring it). The
         ;; syntax for this is: ${<<tab stop>>/<<regexp>>/<<format>>/<<options>>}.
 
-        
+
         ;; Also see http://manual.macromates.com/en/drag_commands#drag_commands
-        
+
         ;; TM_DROPPED_FILE -- relative path of the file dropped (relative
         ;; to the document directory, which is also set as the current
         ;; directory).
@@ -365,20 +372,20 @@ Possible choices are:
         ;; SHIFT|CONTROL|OPTION|COMMAND (in case all modifiers were down).
 
         ("[$][{]\\([A-Za-z].*?\\):[$]TM_FULLNAME[}]" "`(or (yas/getenv \"\\1\") (user-full-name))`") ;
-        
+
         ("[$][{]\\([A-Za-z].*?\\):[$]TM_CURRENT_LINE[}]" "`(or (yas/getenv \"\\1\") yas/current-line)`") ;
         ("[$][{]\\([A-Za-z].*?\\):[$]TM_CURRENT_WORD[}]" "`(or (yas/getenv \"\\1\") yas/current-word)`") ;
-        
+
 
         ("[$]TM_FULLNAME" "`(user-full-name)`")
                                         ;    ("`date +[+]\\(.*?\\)`" "`(format-time-string \"\\1\")`")
-        
+
         ;; Unknown environment commands.  They can be taught!
         ("[$][{]\\([A-Za-z].*?\\):\\(\\(?:.*?[\\\\][}]\\)*.*?\\)[}]" "`(or (yas/getenv \"\\1\") \"\\2\")`") ;
         ("[$][{]\\([A-Za-z].*?\\)[}]" "`(or (yas/getenv \"\\1\") \"\")`")
         )
                                         ;  "*Textmate import convert known expressions"
-      
+
       )
 (defvar textmate-import-convert-env-lst '()
   "List to convert Textmate Environmental variables to customizable fields."
@@ -415,9 +422,35 @@ Possible choices are:
   )
 (defun textmate-import-convert-template (template)
   "* Converts template to Yasnippet template"
-  (let (ret max p1 not-found txt i lst ok)
+  (let (ret max p1 not-found txt i lst tmp tmp0)
     (with-temp-buffer
       (insert template)
+      ;; First replace duplicate transformations like
+      ;; \begin{${1:enumerate}}
+      ;; $0
+      ;; \end{${1:enumerate}}
+      ;;
+      ;; Should be
+      ;;
+      ;; \begin{${1:enumerate}}
+      ;; $0
+      ;; \end{$1}
+      (while (re-search-forward "[$]{\\([0-9]\\):" nil t)
+        (goto-char (match-beginning 0))
+        (setq p1 (point))
+        (forward-char 1)
+        (save-match-data
+          (save-excursion
+            (with-syntax-table c-mode-syntax-table
+              (forward-sexp 1)
+              (setq tmp (buffer-substring-no-properties p1 (point))))))
+        (goto-char (match-end 0))
+        (setq tmp0 (match-string 1))
+        (save-excursion
+          (while (search-forward tmp nil t)
+            (replace-match (concat "$" tmp0) t t)
+            )))
+
       ;; Now replace Textmate mirrors $(1/reg/expr)
       (goto-char (point-min))
       (while (re-search-forward "\\([$][{][0-9]+\\)/" nil t)
@@ -480,10 +513,10 @@ Possible choices are:
       (setq max (+ 1 (string-to-int max)))
       (while (search-forward "`(or yas/selected-text \"\")`" nil t)
         (replace-match (format "${%s:`yas/selected-text`}" max) 't 't))
-      
+
       ;; Now replace (yas/t/ "".*) with the appropriate list
       (setq i 0)
-      (goto-char (point-min))           
+      (goto-char (point-min))
       (setq lst "(setq yas/t-lst (list ")
       (while (re-search-forward "(yas/t/ \"" nil t)
         (setq p1 (- (point) 1))
@@ -660,6 +693,7 @@ Possible choices are:
         (mode "")
         (env "")
         (bfn (or buffer-name (buffer-file-name)))
+        (debug-on-error t)
         (yas (or ext ".yasnippet")))
     (when (string-match "/?\\([^/]*\\)[.][^.]*$" bfn)
       (setq bfn (concat (match-string 1 bfn) yas)))
@@ -677,9 +711,50 @@ Possible choices are:
           (setq name (textmate-import-get-property "name" start stop))
           (setq scope (textmate-import-get-property "scope" start stop))
           (setq group (textmate-get-group uuid plist))
-                                        ;          (setq binding (textmate-import-get-property "keyEquivalent" start stop))
+          (setq binding (textmate-import-get-property "keyEquivalent" start stop))
+
           (when binding
             ;; Need to convert bindings.
+            (setq binding (downcase binding))
+            (mapc (lambda(x)
+                    (let ((start 0) len)
+                      (while (string-match (if (stringp (nth 0 x)) (nth 0 x) (string (nth 0 x))) binding start)
+                        (setq len (length binding))
+                        (setq binding (replace-match (nth 1 x) t nil binding))
+                        (setq start (+ (- (length binding) len) (match-end 0))))))
+                  '(
+                    ("&lt;" "<")
+                    ("&gt;" ">")
+                    ("[@]\\(.\\)" "M-\\1")
+                    ("\\^\\(.\\)" "C-\\1")
+                    (?\C-a "C-a ")
+                    (?\C-b "C-b ")
+                    (?\C-c "C-c ")
+                    (?\C-d "C-d ")
+                    (?\C-e "C-e ")
+                    (?\C-f "C-f ")
+                    (?\C-g "C-g ")
+                    (?\C-h "C-h ")
+                    (?\C-i "C-i ")
+                    (?\C-j "C-j ")
+                    (?\C-k "C-k ")
+                    (?\C-l "C-l ")
+                    (?\C-m "C-m ")
+                    (?\C-n "C-n ")
+                    (?\C-o "C-o ")
+                    (?\C-p "C-p ")
+                    (?\C-q "C-q ")
+                    (?\C-r "C-r ")
+                    (?\C-s "C-s ")
+                    (?\C-t "C-t ")
+                    (?\C-u "C-u ")
+                    (?\C-v "C-v ")
+                    (?\C-w "C-w ")
+                    (?\C-x "C-x ")
+                    (?\C-y "C-y ")
+                    (?\C-z "C-z ")
+                    ))
+            (setq binding (concat "C-c C-y " binding))
             )
           (setq snippet (textmate-import-convert-template content))
           ;; Get Environment
@@ -718,10 +793,10 @@ Possible choices are:
                                     ""
                                   (concat "\n# key: " key)
                                   )
-                                        ;                                (if (not binding)
-                                        ;                                    ""
-                                        ;                                  (concat "\n# binding: C-c C-y " binding)
-                                        ;                                  )
+                                (if (not binding)
+                                    ""
+                                  (concat "\n# binding:" binding)
+                                  )
                                 "\n# scope: " scope
                                 type
                                 (if group
@@ -799,7 +874,7 @@ Possible choices are:
     (when (and yas/minor-mode
                (string-match "[/\\\\]\\([^\n/\\\\-]*?\\)-\\([^\n/\\\\.]*?\\)\\([.]tmbundle\\)\\(.*\\)\\([.]tar[.]gz\\)$" uri)
                (yes-or-no-p (format "Would you like to import %s git-hub tarball into Yasnippet?" uri)))
-      (textmate-import-git-tar.gz f (completing-read "Parent Modes: " '()))
+      (textmate-import-git-tar.gz f "text-mode")
       (setq ret 't))
     (symbol-value 'ret)
     ))
@@ -844,7 +919,7 @@ Possible choices are:
           (message "%s" (apply cmd (list (format "%s -d -c %s | %s -xv" gz file tar))))
           (setq new-file (concat temp-dir "/" (match-string 1 file) "-" (match-string 2 file) (match-string 3 file)
                                  (match-string 4 file) "/"))
-          (textmate-import-bundle new-file parent-modes original-author)          
+          (textmate-import-bundle new-file parent-modes original-author)
           )))
     (cd temp-dir)
     (message "%s" (apply cmd (list (format "%s -rf %s" rm temp-dir))))))
@@ -852,7 +927,7 @@ Possible choices are:
   "Imports textmate bundle to new-dir.  Mode may be a string or a function determining which mode to place files in..."
   (interactive "fTextmate Bundle Directory: \nsParent Modes: ")
   (setq textmate-import-convert-env-lst '())
-  (setq dir (file-name-directory dir)) 
+  (setq dir (file-name-directory dir))
   (unless (string= "/" (substring dir -1))
     (setq dir (concat dir "/")))
   (let (snip-dir snips plist (new-dir (if (eq (type-of 'yas/root-directory) 'symbol)
@@ -987,7 +1062,7 @@ Possible choices are:
     (yas/reload-all)
     )
   )
-;;;###autoload 
+;;;###autoload
 (defun textmate-import-svn-from-url ()
   "* Imports a textmate bundle and extracts snippets from `textmate-import-svn-url'"
   (interactive)
@@ -1015,7 +1090,7 @@ Possible choices are:
         )
       (sleep-for 1)
       (textmate-import-svn-snippets (concat textmate-url "Snippets/") plist textmate-name)
-      (message "Completed loading snippets from textmate package %s" textmate-name)  
+      (message "Completed loading snippets from textmate package %s" textmate-name)
       )
     )
   )
@@ -1041,7 +1116,7 @@ Possible choices are:
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 (defmacro yas/format-match-ulm (match-number &optional string downcase)
-  "* Helper macro to change textmate match-string \\u$1 to the correct expression" 
+  "* Helper macro to change textmate match-string \\u$1 to the correct expression"
   `(if (> (length (match-string ,match-number ,string)) 1)
        (concat (,(if downcase 'downcase 'upcase) (substring (match-string ,match-number ,string) 0 1))
                (substring (match-string ,match-number ,string) 1))
@@ -1215,11 +1290,13 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
          (setq ,mtch (match-string ,num ,string))
          (set-match-data ,md2)
          (setq ,start (+ (match-beginning 0) (length ,mtch)))
-         (setq ,ret (replace-match ,mtch 't 't ,ret))
+         (if ,mtch
+             (setq ,ret (replace-match ,mtch 't 't ,ret))
+           (setq ,ret (replace-match "" t t ,ret)))
          )
        (set-match-data ,md)
        (symbol-value ',ret)
-       ) 
+       )
     ))
 (defmacro yas/format-match (text &optional string treat-empty-matches-as-missing-matches)
   "* Use Textmate style format strings to replace match data."
@@ -1249,36 +1326,37 @@ Also tries to handle nested conditional statements like (?1:$0:(?2:\\t$0))
         case-fold-search
         )
     (when (string-match "[iI]" option)
-      (setq case-fold-search 't) ;; Case insensitive search
-      )
-    (when (string-match "[sS]" option)
-                                        ; Treat string as a single line.
-      )
-    (when (string-match "[mM]" option)
-      ;; Treat string as multiple lines.  Instead of matching ^ or $ to
-      ;; the beginning or ending of the string, it matches the
-      ;; beginning or ending of the line.
-      
-      ;; In theory, the default behavior is to match the beginning and
-      ;; ending of the string.
-      
-      
-      ;; Currently this does NOTHING.
-      )
-    (cond
-     ( (string-match "[gG]" option) ;; Global replace
+            (setq case-fold-search 't) ;; Case insensitive search
+            )
+          (when (string-match "[sS]" option)
+            ;; Treat string as a single line.
+            )
+          (when (string-match "[mM]" option)
+            ;; Treat string as multiple lines.  Instead of matching ^ or $ to
+            ;; the beginning or ending of the string, it matches the
+            ;; beginning or ending of the line.
+            
+            ;; In theory, the default behavior is to match the beginning and
+            ;; ending of the string.
+            
+            
+            ;; Currently this does NOTHING.
+            )
+          (cond
+           ( (string-match "[gG]" option) ;; Global replace
                                         ;       (esn-message "%s" reg)
-       (while (string-match reg ret start)
-         (setq mtch (yas/format-match textmate-rep ret))
+             (while (string-match reg ret start)
+               (setq mtch (yas/format-match textmate-rep ret))
                                         ;         (esn-message "Match String %s,%s" (match-string 0 ret) mtch)
-         (setq start (+ (match-beginning 0) (length mtch)))
-         (setq ret (replace-match mtch t t ret))))
-     ( 't ;; Replace first occurrence
-       (when (string-match reg ret)
-         (setq ret (yas/replace-match textmate-rep ret))
-         )))
-    (symbol-value 'ret)))
+               (setq start (+ (match-beginning 0) (length mtch)))
+               (setq ret (replace-match mtch t t ret))))
+           ( 't ;; Replace first occurrence
+             (when (string-match reg ret)
+               (setq ret (yas/replace-match textmate-rep ret))
+               )))
+          (symbol-value 'ret)))
 ;;(message "%s" (yas/t/ "\\\\\\w+\\{(.*?)\\}|\\\\(.)|(\\w+)|([^\\w\\\\]+)" "(?4:_:\\L$1$2$3)" "g" "SUBSUBSECTION name"))
+;;(message "%s" (yas/t/ "\\w+\\((.*)\\)|.*" "$1" "" "name(me)"))
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Functions for yas/text-on-moving-away and yas/ma
 ;; ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;

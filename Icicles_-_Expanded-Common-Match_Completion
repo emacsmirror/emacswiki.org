@@ -52,7 +52,7 @@ library Lisp:color-moccur.el), and your input to `C-h f' is
 Expanded-common-match completion is convenient, but when
 apropos-completing you often need to try variants of a regexp,
 editing it and observing which candidates match in `*Completions*',
-until you get the regexp right.  Longest-common-match completion
+until you get the regexp right.  Expanded-common-match completion
 has the disadvantage that you lose your regexp as input, which
 makes it hard to edit it!  
 
@@ -60,7 +60,7 @@ To retrieve it, use '''`C-l''''
 (`icicle-retrieve-previous-input') during completion.  You can repeat `C-l' to retrieve older completion inputs, cycling among them, and you can use
 `C-S-l' (that is, `##C-##'''##L##'''') to cycle previous inputs in the other
 direction -- see [[Icicles - History Enhancements]].  You can set [[option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-expand-input-to-common-match-flag|icicle-expand-input-to-common-match-flag]]</tt>'''' to
-`nil' to turn off longest-common-match completion altogether, if you
+`nil' to turn off expanded-common-match completion altogether, if you
 prefer.   You can also toggle it from the minibuffer at any time, using '''`##C-;##''''.
 
 Just what is meant by the "expanded common match" that '''Icicles'''

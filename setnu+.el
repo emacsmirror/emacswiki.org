@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 21.0
-;; Last-Updated: Tue Oct 19 10:10:50 2010 (-0700)
+;; Last-Updated: Sat Dec  4 14:01:04 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 162
+;;     Update #: 165
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setnu+.el
 ;; Keywords: lines
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -38,6 +38,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/12/04 dadams
+;;     Removed make-local-hook calls (no longer exists in Emacs 24).
 ;; 2006/10/02 dadams
 ;;     Added soft require of fit-frame.el.  Thx to Andreas Roehler.
 ;; 2005/12/26 dadams
@@ -69,7 +71,6 @@
 ;;
 ;;; Code:
 
-(and (< emacs-major-version 20) (eval-when-compile (require 'cl))) ;; when, unless
 (require 'setnu)
 
 (require 'frame-cmds nil t) ;; enlarge-frame-horizontally
@@ -77,10 +78,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-(remove-hook 'before-change-functions 'setnu-before-change-function)
-(remove-hook 'after-change-functions 'setnu-after-change-function)
-(make-local-hook 'before-change-functions)
-(make-local-hook 'after-change-functions)
+;;; (remove-hook 'before-change-functions 'setnu-before-change-function)
+;;; (remove-hook 'after-change-functions 'setnu-after-change-function)
+;;; (make-local-hook 'before-change-functions)
+;;; (make-local-hook 'after-change-functions)
 
 (defgroup Setnu-Plus nil "Setnu options." :group 'convenience)
 

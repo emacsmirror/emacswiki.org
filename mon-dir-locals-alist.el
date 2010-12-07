@@ -477,7 +477,7 @@ with `mon-bind-nefs-photos-at-loadtime'.\n
 :EXAMPLE\n\n\(cons *mon-ebay-images-bmp-path*
       \(file-directory-p *mon-ebay-images-bmp-path*\)\)\n
 \(concat *mon-ebay-images-path* \"/BMP-Scans\"\)\n
-:SUBDIR-OF `*mon-ebay-images-path*'
+:SUBDIR-OF `*mon-ebay-images-path*'\n
 :CALLED-BY `mon-dir-try-comp', `mon-dired-naf-image-dir'.\n
 :SEE-ALSO `*mon-nef-scan-drive*', `*mon-nef-scan-base-path*',
 `*mon-nef-scan-path*', `*mon-nef-scan-nefs-path*', `*mon-nef-scan-nef2-path*',
@@ -623,17 +623,18 @@ For example the following backqute template would expand to valid valus:\n
 ;;; ==============================
 ;;; :NOTE Everything below sets up mon-local requiremnts per the custom forms above:
 (eval-when (compile load eval)
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P))
-    (unless (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)
+    (unless (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
                  (bound-and-true-p *mon-bind-dir-locals-alist*))
       (setq *mon-bind-dir-locals-alist* t))))
 ;;
-(unless (and (and (intern-soft "*mon-HG-root-path*" obarray)
+(unless (and (and (intern-soft "*mon-HG-root-path*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-HG-root-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P") (bound-and-true-p IS-MON-SYSTEM-P))  
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+             (bound-and-true-p IS-MON-SYSTEM-P))  
     (let ((mhrp (nth 5 (assoc (cond (IS-MON-P-W32     1)
                                     (IS-BUG-P-REMOTE  4)
                                     (IS-BUG-P         3)
@@ -641,11 +642,12 @@ For example the following backqute template would expand to valid valus:\n
                               *mon-emacsd*))))
       (setq *mon-HG-root-path* mhrp))))
 ;;
-(unless (and (and (intern-soft "*mon-smith-poster-HG-path*" obarray)
+(unless (and (and (intern-soft "*mon-smith-poster-HG-path*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-smith-poster-HG-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P") (bound-and-true-p IS-MON-SYSTEM-P))
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+             (bound-and-true-p IS-MON-SYSTEM-P))
     (setq *mon-smith-poster-HG-path* 
           (funcall 
            (cadr (assoc 'the-smith-poster-docs-pth *mon-misc-path-alist*))))))
@@ -662,20 +664,20 @@ For example the following backqute template would expand to valid valus:\n
                                                  *mon-misc-path-alist*)))))
               (expand-file-name "CL-NOTES" clscrtch))))))
 ;;
-(when (intern-soft "IS-MON-SYSTEM-P" obarray)
-  (unless (and (and (intern-soft "*bug-HG-path*" obarray)
+(when (intern-soft "IS-MON-SYSTEM-P" obarray)              ;; *IS-MON-OBARRAY*
+  (unless (and (and (intern-soft "*bug-HG-path*" obarray) ;; *IS-MON-OBARRAY*
                     (bound-and-true-p *bug-HG-path*))
-               (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+               (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
                          (bound-and-true-p *mon-bind-dir-locals-alist*))))
     (setq *bug-HG-path* 
           (cond (IS-MON-P-W32 (nth 6 (assoc 3 *mon-emacsd* ))) ;; Get path from BUG alist.
                 ((or IS-BUG-P-REMOTE IS-BUG-P IS-MON-P-GNU) *mon-emacs-root*)))))
 ;;
-(unless (and (and (intern-soft "*mon-record-current-directory*" obarray)
+(unless (and (and (intern-soft "*mon-record-current-directory*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-record-current-directory*))
              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (intern-soft "IS-MON-SYSTEM-P" obarray)  
+  (when (intern-soft "IS-MON-SYSTEM-P" obarray)   ;; *IS-MON-OBARRAY*
     (setq *mon-record-current-directory* 
           (concat *mon-emacs-root* "/current-directory"))))
 ;;
@@ -683,11 +685,11 @@ For example the following backqute template would expand to valid valus:\n
 ;;;        already be `bound-and-true-p'. So, it is better to bind it directly
 ;;;        with setq.
 ;;; :WAS (unless (bound-and-true-p *emacs2html-temp*)
-(unless  (and (and (intern-soft "*emacs2html-temp*" obarray)
+(unless  (and (and (intern-soft "*emacs2html-temp*" obarray) ;; *IS-MON-OBARRAY*
                    (bound-and-true-p *emacs2html-temp*))
-              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
                         (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (let ((e2ht (cond ((and (intern-soft "IS-MON-SYSTEM-P" obarray)
+  (let ((e2ht (cond ((and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
                           (bound-and-true-p IS-MON-SYSTEM-P))
                      (concat *mon-local-emacs-temp-dir* "/emacs2html-temp"))
                     (t (concat 
@@ -700,7 +702,7 @@ For example the following backqute template would expand to valid valus:\n
     (if (file-exists-p e2ht)
         (setq *emacs2html-temp* e2ht)
       ;; Shouldn't write to file system when `IS-NOT-A-MON-SYSTEM'
-      (if (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+      (if (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
                (bound-and-true-p IS-MON-SYSTEM-P))
           (progn 
             (mkdir e2ht)
@@ -717,7 +719,7 @@ For example the following backqute template would expand to valid valus:\n
                  "%17c Before using these functions verify path and/or \(re\)bind accordingly")
                 32 *emacs2html-temp* 32 32 32 32 32))))))
 ;;
-(unless (and (and (intern-soft "*mon-html-fontify-file-name-template*" obarray)
+(unless (and (and (intern-soft "*mon-html-fontify-file-name-template*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-html-fontify-file-name-template*))
              (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
@@ -725,75 +727,77 @@ For example the following backqute template would expand to valid valus:\n
              (bound-and-true-p IS-MON-SYSTEM-P))
     (setq *mon-html-fontify-file-name-template* "%s/emacs2firefox-%d.html")))
 ;;
-(unless (and (and (intern-soft "*mon-artist-naf-path*" obarray)
+(unless (and (and (intern-soft "*mon-artist-naf-path*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-artist-naf-path*))
-             (and (intern-soft "*mon-emacsd*" obarray)
+             (and (intern-soft "*mon-emacsd*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-emacsd*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P") (bound-and-true-p IS-MON-SYSTEM-P))
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+             (bound-and-true-p IS-MON-SYSTEM-P))
     (let ((anp (nth 7 (assoc 
                        ;; :NOTE Conditionals are fall through cases, order is important.
-                       (cond ((and (intern-soft "IS-MON-P-W32" obarray)
+                       (cond ((and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
                                    (bound-and-true-p IS-MON-P-W32))    1)
-                             ((and (intern-soft "IS-BUG-P-REMOTE" obarray)
+                             ((and (intern-soft "IS-BUG-P-REMOTE" obarray) ;; *IS-MON-OBARRAY*
                                    (bound-and-true-p IS-BUG-P-REMOTE)) 4) 
-                             ((and (intern-soft "IS-BUG-P" obarray)
+                             ((and (intern-soft "IS-BUG-P" obarray)     ;; *IS-MON-OBARRAY*
                                    (bound-and-true-p IS-BUG-P))        3)
-                             ((and (intern-soft "IS-MON-P-GNU" obarray)
+                             ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY* 
                                    (bound-and-true-p IS-MON-P-GNU))    2)
                              (t nil))
                        *mon-emacsd*))))
       (setq *mon-artist-naf-path* (concat anp "/ARTISTS")))))
 ;;
-(unless (and (and (intern-soft "*mon-brand-naf-path*" obarray)
+(unless (and (and (intern-soft "*mon-brand-naf-path*" obarray)  ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-brand-naf-path*))    
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P))
     (setq *mon-brand-naf-path*
-          (cond ((or (and (intern-soft "IS-MON-P-W32" obarray)
+          (cond ((or (and (intern-soft "IS-MON-P-W32" obarray) ;; *IS-MON-OBARRAY*
                           (bound-and-true-p IS-MON-P-W32 ))
-                     (and (intern-soft "IS-BUG-P" obarray)
+                     (and (intern-soft "IS-BUG-P" obarray) ;; *IS-MON-OBARRAY*
                           (bound-and-true-p IS-BUG-P)))
                  (concat *mon-artist-naf-path* "/BRANDS"))
-                ((and (intern-soft "IS-MON-P-GNU" obarray)
+                ((and (intern-soft "IS-MON-P-GNU" obarray) ;; *IS-MON-OBARRAY*
                       (bound-and-true-p IS-MON-P-GNU))
                  (concat (directory-file-name 
                           (file-name-directory *mon-artist-naf-path*)) "/BRANDS"))
                 ;; Not available on following machine kept here for completeness:
-                ((and (intern-soft "IS-BUG-P-REMOTE" obarray)
+                ((and (intern-soft "IS-BUG-P-REMOTE" obarray)         ;; *IS-MON-OBARRAY*
                       (bound-and-true-p IS-BUG-P-REMOTE)) nil)))))
 ;;
-(unless (and (and (intern-soft "*mon-nef-scan-drive*" obarray)
+(unless (and (and (intern-soft "*mon-nef-scan-drive*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-nef-scan-drive*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P))
     (setq *mon-nef-scan-drive* (cadr (assoc 'the-nef-drv *mon-misc-path-alist*)))))
 ;;
-(unless (and (and (intern-soft "*mon-nef-scan-base-path*" obarray)
+(unless (and (and (intern-soft "*mon-nef-scan-base-path*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-nef-scan-base-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) (bound-and-true-p IS-MON-SYSTEM-P))
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)  ;; *IS-MON-OBARRAY*
+             (bound-and-true-p IS-MON-SYSTEM-P))
     ;; :NOTE Filesystems, dirs, mounts etc. change periodically across
     ;;  OS's so we must do this silliness.
     (setq *mon-nef-scan-base-path*  
           (concat *mon-nef-scan-drive*
-                  (cond ((and (intern-soft "IS-W32-P" obarray)
+                  (cond ((and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
                               (bound-and-true-p IS-W32-P)) "/")
                         ( ;; :WAS (IS-MON-P-GNU (concat (nth 3 (assoc 2 *mon-emacsd*)) "/"))))
-                         (and (intern-soft "IS-MON-P-GNU" obarray)
+                         (and (intern-soft "IS-MON-P-GNU" obarray)  ;; *IS-MON-OBARRAY*
                               (bound-and-true-p IS-MON-P-GNU)) "-"))))))
 ;;
-(unless (and (and (intern-soft "*mon-nef-scan-path*" obarray)
+(unless (and (and (intern-soft "*mon-nef-scan-path*" obarray) ;; *IS-MON-OBARRAY*
                   (bound-and-true-p *mon-nef-scan-path*))
-             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) 
+             (not (and (intern-soft "*mon-bind-dir-locals-alist*" obarray) ;; *IS-MON-OBARRAY*
                        (bound-and-true-p *mon-bind-dir-locals-alist*))))
-  (when (intern-soft "IS-MON-SYSTEM-P" obarray)
+  (when (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
     (setq *mon-nef-scan-path* 
           (cond (IS-W32-P (concat *mon-nef-scan-base-path* "NEFS_PHOTOS"))
                 (IS-MON-P-GNU (concat *mon-nef-scan-base-path* "\x42"))))))

@@ -7,3 +7,5 @@ http://NSIS.sf.net/Nsi-mode_for_emacs
 http://www.xs4all.nl/%7Ehdam/nsi-mode.el
 
 Should we archive a copy to the ElispArea?
+
+This mode does not have very much to it.  I wrote a mode with better highlighting: [[nsis-mode.el]]

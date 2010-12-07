@@ -29,7 +29,7 @@
 ;; `mon-shorten-rename-image-path', `mon-parse-rename-lengths',
 ;; `mon-pad-rename-lengths', `mon-build-rename-buffer' 
 ;; `mon-get-image-dimensions', `mon-get-image-dimensions-im',
-;; `mon-get-image-md5', `%mapcar*%', `%mapcar-many%',
+;; `mon-get-image-md5',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; :EXTERNAL-FUNCTIONS
@@ -60,12 +60,18 @@
 ;; `*mon-nef-scan-path*'                   -> mon-dir-locals-alist.el
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
+;; `get-bmps-in-dir'        ->  `mon-get-ebay-bmps-in-dir'
+;; `mon-get-ebay-bmps-list' ->  `mon-get-ebay-bmps-in-dir'
+;; `get-nefs-in-dir'        ->  `mon-get-nefs-in-dir'
+;; :NOTE Aliases defined in :FILE mon-aliases.el
 ;;
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
 ;;
 ;; MOVED:
+;; `mon-ebay-image-directory-not-ok'    <- mon-dir-utils.el
+;; `mon-ebay-image-directory-ok-p'      <- mon-dir-utils.el
 ;; `mon-get-image-dimensions'           <- mon-url-utils.el
 ;; `mon-get-image-dimensions-im'        <- mon-url-utils.el
 ;; `mon-get-image-md5'                  <- mon-url-utils.el
@@ -94,7 +100,8 @@
 ;; :SEE (URL `http://www.emacswiki.org/downloads/mon-dir-locals-alist.el')
 ;;
 ;; mon-utils.el
-;; | -> `mon-toggle-read-only-point-motion', `mon-line-bol-is-eol'
+;; | -> `mon-toggle-read-only-point-motion', `mon-line-bol-is-eol',
+;; | -> `mon-mapcar', `mon-g2be'
 ;; :SEE (URL `http://www.emacswiki.org/emacs/mon-utils.el')
 ;;
 ;; mon-dir-utils.el
@@ -409,9 +416,12 @@
 
 ;;; CODE:
 
-;; Make sure we have all the CL var symbols in the environment.
-;; `mon-rename-imgs-in-dir' uses `%mapcar*%', `%mapcar-many%' 
+ 
 (eval-when-compile (require 'cl)) 
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; :NOTE The library mon-css-color is pulled in by a require in mon-dir-utils.el
 (unless (featurep 'mon-css-color)
@@ -437,10 +447,6 @@ When ALT-PATH is non-nil use dir-path as value instead of current-buffers.
     (setq get-files (directory-files this-dir full-path "\\.bmp"))
     get-files))
 ;;
-(defalias 'get-bmps-in-dir 'mon-get-ebay-bmps-in-dir)
-;;
-(defalias 'mon-get-ebay-bmps-list 'mon-get-ebay-bmps-in-dir)
-;;
 ;;; :TEST-ME  (mon-get-ebay-bmps-in-dir)
 ;;; :TEST-ME  (mon-get-ebay-bmps-in-dir t)
 
@@ -462,8 +468,6 @@ When ALT-PATH is non-nil use dir-path as value instead of current-buffers.\n
     (setq this-dir (file-name-directory buffer-file-name)))
     (setq get-files (directory-files this-dir full-path "\\.nef"))
     get-files))
-;;
-(defalias 'get-nefs-in-dir 'mon-get-nefs-in-dir)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: Wednesday April 29, 2009 @ 04:12.25 PM - by MON KEY>
@@ -493,10 +497,10 @@ When FULL-PATH non-nil insert full-path of .bmp files.\n
   (let ((jpg-path (concat (expand-file-name "../../") "BIG-cropped-jpg/" 
 		   (file-name-nondirectory (directory-file-name default-directory))))	
 	(this-dir (file-name-nondirectory (directory-file-name default-directory)))
-	(collect-jpg-path))
+	collect-jpg-path)
     (if (file-exists-p jpg-path)
 	(let ((in-path (directory-files jpg-path full-path ".jpg"))
-	      (walk-files))
+	      walk-files)
 	  (setq walk-files in-path)
 	  (while walk-files
 	    (add-to-list 'collect-jpg-path (car walk-files))
@@ -575,9 +579,15 @@ Return error message if items jpg path doesn't exist.\n
 (defun mon-cln-img-magic-hex ()
   "Clean the formatting from output of ImageMagick color analysis script.\n
 Return only hex color values.\n
-:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css', 
-`mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count', 
-`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors'.\n►►►"
+:SEE-ALSO `mon-get-ebay-img-name-to-col', `mon-get-ebay-img-css',
+`mon-get-ebay-css-pp-region-to-file', `mon-get-ebay-bmps-count',
+`mon-get-ebay-bmps-in-dir', `mon-insert-css-colors', `mon-string-from-hex-list',
+`mon-string-to-hex-list', `mon-string-to-hex-string',
+`mon-string-to-hex-list-cln-chars',
+`mon-hexcolor-add-to-font-lock',`hexl-hex-string-to-integer',
+`url-hexify-string', `url-unhex-string', `url-unhex', `*css-color:hex-chars*',
+`*regexp-rgb-hex*', `*regexp-css-color-hex*', `*regexp-hexcolor-keywords*',
+`*regexp-hexcolor-keywords*'.\n►►►"
   (interactive)
   (let ((count 4))
     (search-forward-regexp "^\\(# Image\\)") ;"\\(^# Image\\)")
@@ -633,8 +643,8 @@ Return only hex color values.\n
 	(imgs (mon-get-ebay-bmps-in-dir)))
     (setq buf-string '())
     (while imgs
-      (let* ((in-buf)
-	     (w-file)
+      (let* (in-buf
+	     w-file
 	     (img-bmp (car imgs))
 	     (img-png (replace-regexp-in-string "\.bmp" "\.png" img-bmp t t)))
 	(message (format "%s %s" img-bmp img-png))
@@ -651,7 +661,7 @@ Return only hex color values.\n
             "\"" img-png "\""
             " \"" img-png "\""
             " -colors 16 +dither +matte -unique-colors txt:-") nil t t)
-	(goto-char (point-min))
+          (mon-g2be -1)
 	(mon-cln-img-magic-hex)
 	(kill-line)
 	(setq in-buf (split-string (buffer-substring (point-min) (point-max))))
@@ -670,11 +680,11 @@ Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
 `mon-cln-img-magic-hex'.\n►►►"
   (let ((put-cols (mon-get-ebay-bmps-in-dir))
 	(img-cnt (string-to-number (mon-get-ebay-bmps-count)))
-	(img-strt))
+	img-strt)
     (setq img-strt 0)
     (while put-cols
       (let* ((img-nm-rp (car put-cols))
-	     (img-nm)
+	     img-nm
 	     (img-col (* img-strt 8))
 	     (img-to-col (move-to-column img-col )))
 	(if img-nm-rp
@@ -733,8 +743,10 @@ Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
   (let  ((assoc-bmp (mon-get-ebay-bmps-in-dir))
 	 (css-col (mon-get-ebay-img-css))
 	 (num-cols (mon-get-ebay-bmps-count))
-	 (col-cnt) (pnt-mrkr))
+	 col-cnt 
+         pnt-mrkr)
     (if (not (buffer-modified-p))
+         ;; Is this correct why aren't we at point already?
 	(goto-char (point))
       (newline) (beginning-of-line)
       (setq pnt-mrkr (point-marker)))
@@ -742,7 +754,7 @@ Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
     (while assoc-bmp
       (let* ((walk-assoc (car assoc-bmp))
 	     (css-vals (cadr (assoc walk-assoc css-col)))
-	     (put-cnt) (put-step) (put-size) (col-set))
+	     put-cnt put-step put-size col-set)
 	(setq col-set t) 
 	(setq put-cnt 1)
 	(setq put-size (length css-vals))
@@ -815,16 +827,16 @@ Helper function for `mon-get-ebay-css-pp' don't evaluate elsewhere.
 (defun mon-get-image-dimensions-im (img-file-path)
   "Return a image file's width and height as a list.\n
 Function requires ImageMagick's \"identity\" shell command.
-:NOTE `mon-get-image-dimensions' which returns same but uses Elisp's
-`create-image'.
-:SEE-ALSO .\n►►►"
+:NOTE `mon-get-image-dimensions' which returns same but uses `create-image'.\n
+:SEE-ALSO `mon-get-image-md5'.\n►►►"
   (let* ((cmd-name (executable-find "identify"))
          (sh-output 
           (if cmd-name
               (shell-command-to-string (concat cmd-name " " img-file-path))
               (error (concat ":FUNCTION `mon-get-image-dimensions-im'"
                              " - Executable \"identify\" not in path"))))
-         width height)
+         width 
+         height)
     ;; sample output from “identify”:
     ;; xyz.png PNG 520x429+0+0 DirectClass 8-bit 9.1k 0.0u 0:01
     (string-match "^[^ ]+ [^ ]+ \\([0-9]+\\)x\\([0-9]+\\)" sh-output)
@@ -864,6 +876,8 @@ Function requires ImageMagick's \"identity\" shell command.
 ;;; 'rotations' are made by pivoting on the short name assoc list e.g. {1 2 3 4} -> {4 1 2 3} "
 ;;;; ==============================
 
+(declare-function mon-mapcar "mon-seq-utils"  (mapcar-fun mapcar-lst &rest more-lsts))
+
 ;;; ==============================
 ;;; :FIXME This case isn't working:
 ;;; (mon-rename-imgs-in-dir ".jpg" (expand-file-name  "e1144" *mon-ebay-images-bmp-path*))
@@ -873,17 +887,18 @@ Function requires ImageMagick's \"identity\" shell command.
 ;;; :PARTIALLY-WORKING-AS-OF
 ;;; :CREATED <Timestamp: Thursday June 04, 2009 @ 08:01.23 PM - by MON KEY>
 (defun mon-rename-imgs-in-dir (image-type &optional alt-path) 
-  "IMAGE-TYPE is a string of type `.bmp' `.nef' `.jpg'.
+  "IMAGE-TYPE is a string of type `.bmp' `.nef' `.jpg'.\n
 When non-nil ALT-PATH specifies a directory conatining images of IMAGE-TYPE.
-Else path defaults to; 
-a) current buffer's dirs if it has images-of type.
-b) if not, get the image-type alist `mon-ebay-image-directory-ok-p' 
-  and use `completing-read' to prompt for a dir beneath.
-build a list of filenames of IMAGE-type in resulting path.
+Else, path defaults to:\n
+ a) current buffer's dirs if it has images-of type;\n
+ b) if not, get the IMAGE-TYPE alist `mon-ebay-image-directory-ok-p' 
+    and use `completing-read' to prompt for a dir beneath;\n
+build a list of filenames of IMAGE-TYPE in resulting path.
 :SEE-ALSO .\n►►►"
-  (interactive "sRename images of type :")
-  (let ((starting) (rnm-prompt)
-	(alt-p alt-path))
+  (interactive "sRename images of type: ")
+  (let (starting 
+        rnm-prompt
+        (alt-p alt-path))
     (setq starting (mon-get-buffer-parent-dir t))
     (unwind-protect
 	(let (passed)
@@ -912,11 +927,11 @@ build a list of filenames of IMAGE-type in resulting path.
 	   (img-pth (caddr rnm-prompt)) 
 	   (img-pth-len (length (file-name-as-directory img-pth)))
            ;; :WAS (img-assoc-l (mapcar* 'cons img-seq long-names))
-	   (img-assoc-l (%mapcar*% 'cons img-seq long-names)) 
-	   (img-assoc-s))
+	   (img-assoc-l (mon-mapcar #'cons img-seq long-names)) 
+	   img-assoc-s)
       (setq img-assoc-s
             ;; :WAS (mapcar* #'(lambda (x) 
-            (%mapcar*% #'(lambda (x) 
+            (mon-mapcar #'(lambda (x) 
                            (let* ((lng-pth-key (car x))
                                   (lng-pth (cdr x))
                                   (lng-pth-len (length lng-pth)))
@@ -960,7 +975,8 @@ Helper function for `ebay-template-mode's image related functions.
 	 (this-dir (split-string in-directory "/"))
 	 (head-match (eval dir-type))
 	 (match-with (mapcar 'caddr  *mon-ebay-images-lookup-path*))
-	 (caught) (make-ok))
+	 caught
+         make-ok)
     (while (and match-with (not caught))
       (let ((looking (car match-with)))
 	(when (member looking this-dir)
@@ -1002,19 +1018,24 @@ Return a list of three elements:\n\car: image-type;\n
 	 (dir-type (nth 1 (assoc img-type img-alist)))
 	 (dir-matcher (nth 2 (assoc img-type img-alist))) ;(nth 2 (assoc ".jpg" *mon-ebay-images-lookup-path*))
 	 (split-buff (mon-string-split-buffer-name))
-	 (buff-ok) (alt-ok) (this-file) (ret-swp) (ret) (rel-pth))
+	 buff-ok
+         alt-ok
+         this-file
+         ret-swp
+         ret
+         rel-pth)
     (let* ((tested-ok)
 	   (test-buf (car (member dir-matcher split-buff)))
-	   (nope))
+	   nope)
       (cond (test-buf (setq tested-ok test-buf))
 	    ((not test-buf)
 	     (while (not nope)
 	       (let ((test-new 
 		      (mon-ebay-image-directory-not-ok 
-		       img-type ;; image-type
-		       (mon-get-buffer-parent-dir t) ;; in-dir
-		      (mon-truncate-path-for-prompt)));; Called from dir
-		      (looked-at))
+		       img-type                         ;; image-type
+		       (mon-get-buffer-parent-dir t)    ;; in-dir
+                       (mon-truncate-path-for-prompt))) ;; Called from dir
+                     looked-at)
 		 (when test-new
 		   (setq looked-at (split-string test-new "/"))
 		   (when (car (member dir-matcher looked-at))
@@ -1187,7 +1208,7 @@ IMG-LIST acquired with: `mon-rename-imgs-in-dir'.\n\n
 `mon-image-rename-propertize',`mon-build-rename-buffer'.\n►►►"
   (let* ( ;;include `file-name-sans-extension' if we want to use this on files also
 	 (shorten  (last (split-string (directory-file-name shorten-path) "/" ) 3 ))
-	 (showpath (concat "../"(mapconcat 'identity shorten "/"))))
+	 (showpath (concat "../" (mapconcat 'identity shorten "/"))))
     showpath))
 
 ;;; ==============================
@@ -1211,9 +1232,9 @@ IMAGES should be a list of two alists generated with `mon-rename-imgs-in-dir'.\n
     ;; :WAS (mapcar  #'(lambda (m) 
     (mapc  #'(lambda (m) 
                  (let* ((w (cdr (assoc m short-assoc))) ;; The short filename
-                        (x (file-name-sans-extension w));; Short filename without .ext
-                        (y (length x))			;; Length of filename without .ext
-                        (z))
+                        (x (file-name-sans-extension w)) ;; Short filename without .ext
+                        (y (length x)) ;; Length of filename without .ext
+                        z)
 	  (setq new-val (cons `(,m ,y) new-val))
 	  (rplacd (assoc m short-assoc) x)))
      parse-short-keys)
@@ -1354,59 +1375,6 @@ image-rename-prefix: [ ]\nimage-rename-suffix: [ ]\nimage-rename-start#: [ ]
         (princ (format "\n%s" img-rnm-div) (current-buffer))
         (mon-image-rename-propertize (point-min))))
     (display-buffer "*rename-images*")))
-
-;;; ==============================
-;;; Make the byte-compiler shut its pie-hole.
-;;; :CHANGESET 1878
-;;; :CREATED <Timestamp: #{2010-06-15T18:03:21-04:00Z}#{10242} - by MON KEY>
-(defun %mapcar*% (cl-func cl-x &rest cl-rest)
-  "Apply FUNCTION to each element of SEQ, and make a list of the results.
-If there are several SEQs, FUNCTION is called with that many arguments,
-and mapping stops as soon as the shortest list runs out.  With just one
-SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
-`mapcar' function extended to arbitrary sequence types.
-\n(fn FUNCTION SEQ...)"
-  (if cl-rest
-      (if (or (cdr cl-rest) (nlistp cl-x) (nlistp (car cl-rest)))
-	  (%mapcar-many% cl-func (cons cl-x cl-rest))
-	(let ((cl-res nil) (cl-y (car cl-rest)))
-	  (while (and cl-x cl-y)
-	    (push (funcall cl-func (pop cl-x) (pop cl-y)) cl-res))
-	  (nreverse cl-res)))
-    (mapcar cl-func cl-x)))
-;;
-(defun %mapcar-many% (cl-func cl-seqs)
-  (if (cdr (cdr cl-seqs))
-      (let* ((cl-res nil)
-	     (cl-n (apply 'min (mapcar 'length cl-seqs)))
-	     (cl-i 0)
-	     (cl-args (copy-sequence cl-seqs))
-	     cl-p1 cl-p2)
-	(setq cl-seqs (copy-sequence cl-seqs))
-	(while (< cl-i cl-n)
-	  (setq cl-p1 cl-seqs cl-p2 cl-args)
-	  (while cl-p1
-	    (setcar cl-p2
-		    (if (consp (car cl-p1))
-			(prog1 (car (car cl-p1))
-			  (setcar cl-p1 (cdr (car cl-p1))))
-		      (aref (car cl-p1) cl-i)))
-	    (setq cl-p1 (cdr cl-p1) cl-p2 (cdr cl-p2)))
-	  (push (apply cl-func cl-args) cl-res)
-	  (setq cl-i (1+ cl-i)))
-	(nreverse cl-res))
-    (let ((cl-res nil)
-	  (cl-x (car cl-seqs))
-	  (cl-y (nth 1 cl-seqs)))
-      (let ((cl-n (min (length cl-x) (length cl-y)))
-	    (cl-i -1))
-	(while (< (setq cl-i (1+ cl-i)) cl-n)
-	  (push (funcall cl-func
-			    (if (consp cl-x) (pop cl-x) (aref cl-x cl-i))
-			    (if (consp cl-y) (pop cl-y) (aref cl-y cl-i)))
-		   cl-res)))
-      (nreverse cl-res))))
-;;; ==============================
 
 ;;; ==============================
 ;;; :TEST-CASES
@@ -1613,13 +1581,6 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 ;; |     this-5 this-5-b this-5-c this-5-d))
 ;; `----
 
-;;; ==============================
-(provide 'mon-rename-image-utils)
-;;; ==============================
-
-;;; ================================================================
-;;; mon-rename-image-utils.el ends here
-;;; EOF
 
 
 ;;; ==============================
@@ -1683,3 +1644,18 @@ SEQ, this is like `mapcar'.  With several, it is like the Common Lisp
 ;;; :TEST-ME (mon-get-imgs-in-dir-int "bmp" nil (concat *mon-ebay-images-bmp-path* "/e1072/"))
 ;;; :TEST-ME (mon-get-imgs-in-dir-int "bmp" t nil)
 ;;; :TEST-ME (call-interacively 'mon-get-imgs-in-dir-int)
+;;; ==============================
+
+;;; ==============================
+(provide 'mon-rename-image-utils)
+;;; ==============================
+
+ 
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
+;; End:
+
+;;; ================================================================
+;;; mon-rename-image-utils.el ends here
+;;; EOF

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:18:50 2010 (-0800)
+;; Last-Updated: Fri Nov 26 14:04:04 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2540
+;;     Update #: 2605
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -106,7 +106,7 @@
 ;;    `hlt-mouse-toggle-link-highlighting',
 ;;    `hlt-mouse-toggle-property-highlighting',
 ;;    `hlt-region-or-buffer-limits', `hlt-set-intersection',
-;;    `hlt-set-union'.
+;;    `hlt-set-union', `hlt-unhighlight-for-overlay'.
 ;;
 ;;  Internal variables defined here:
 ;;
@@ -235,9 +235,8 @@
 ;;  argument, property `mouse-face' is used, not property `face'.
 ;;
 ;;  Command `hlt-eraser' lets you delete highlighting by dragging the
-;;  mouse.  However, its behavior is quite different for overlays and
-;;  text properties, and it is perhaps different from you expect - see
-;;  the `hlt-eraser' doc string.
+;;  mouse.  However, its behavior is different for overlays and text
+;;  properties - see the `hlt-eraser' doc string.
 ;;
 ;;(@* "User Option `hlt-act-on-any-face-flag'")
 ;;  ** User Option `hlt-act-on-any-face-flag' **
@@ -272,7 +271,7 @@
 ;;     becomes hidden.
 ;;
 ;;  After text has been hidden this way, and unless the highlighting
-;;  as been removed completely by unhighlighting the text, the
+;;  has been removed completely by unhighlighting the text, the
 ;;  `invisible' property of that text keeps the names of the faces
 ;;  that have been applied to that text and hidden previously, even
 ;;  after you show that text again.  Showing a hidden face simply
@@ -313,12 +312,13 @@
 ;;  `hlt-choose-visible-faces', `hlt-hide', `hlt-hide-only',
 ;;  `hlt-show', `hlt-show-only'.
 ;;
-;;  These are all multi-commands, which means that they each let you
-;;  choose multiple completion candidates or all candidates that match
-;;  your current input (a regexp).  You can use command `hlt-hide' to
-;;  hide any number of visible faces.  Any text is hidden that has
-;;  that face as a text property or an overlay property, depending on
-;;  the value of `hlt-use-overlays-flag'.
+;;  These are all Icicles multi-commands, which means that they each
+;;  let you choose multiple completion candidates or all candidates
+;;  that match your current input (a regexp).  To use them you must
+;;  also use Icicles.  You can use command `hlt-hide' to hide any
+;;  number of visible faces.  Any text is hidden that has that face as
+;;  a text property or an overlay property, depending on the value of
+;;  `hlt-use-overlays-flag'.
 ;;
 ;;  Command `hlt-show' is the opposite of `hlt-hide': it shows
 ;;  invisible text that has the faces you choose.  Neither `hlt-hide'
@@ -399,8 +399,8 @@
 ;;  load library `menu-bar+.el'.
 ;;
 ;;  Otherwise, library `highlight.el' makes no key bindings.  Here are
-;;  some suggested bindings (`C-x y', `C-x mouse-2', `C-x S-mouse-2',
-;;  `S-C-p', and `S-C-n'):
+;;  some suggested bindings (`C-x C-y', `C-x mouse-2', `C-x
+;;  S-mouse-2', `C-S-p', and `C-S-n', respectively):
 ;;
 ;;   (define-key ctl-x-map [(control ?y)] 'hlt-highlight)
 ;;   (define-key ctl-x-map [(down-mouse-2)] 'hlt-highlighter)
@@ -457,6 +457,11 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2010/11/26 dadams
+;;     Added: hlt-unhighlight-for-overlay.
+;;     hlt-eraser, hlt-unhighlight-region:
+;;       Use hlt-unhighlight-for-overlay, not hlt-delete-highlight-overlay.
+;;     hlt-eraser: Update doc string to reflect new behavior.
 ;; 2009/09/24 dadams
 ;;     Removed hlt-no-op - use function ignore instead.
 ;; 2009/08/02 dadams
@@ -721,9 +726,8 @@ affect both kinds of highlighting."
   (setq hlt-last-face  face)
   (when (interactive-p) (message "Highlighting will now use face `%s'" face)))
 
-;; Bind this to, for instance, `C-x mouse-2'.
 ;;;###autoload
-(defun hlt-highlighter (start-event)
+(defun hlt-highlighter (start-event)    ; Suggested binding: `C-x mouse-2'.
   "Highlight the text you drag the mouse over.
 The face used is the last face that was used for highlighting.
 You can use command `hlt-choose-default-face' to choose a different face."
@@ -763,9 +767,8 @@ You can use command `hlt-choose-default-face' to choose a different face."
         (setq buffer-read-only  read-only)
         (set-buffer-modified-p modified-p)))))
 
-;; Bind this to, for instance, `C-x S-mouse-2'.
 ;;;###autoload
-(defun hlt-eraser (start-event)
+(defun hlt-eraser (start-event)         ; Suggested binding: `C-x S-mouse-2'.
   "Erase highlights that you click or drag the mouse over.
 If `hlt-use-overlays-flag' is non-nil, then overlay highlighting is
 removed for the last face that was used for highlighting.  (You can
@@ -773,21 +776,15 @@ use command `hlt-choose-default-face' first to choose a different
 face.)  If `hlt-use-overlays-flag' is not `only', then text-property
 highlighting is removed for *ALL* faces (not just highlighting faces).
 This means, in particular, that a value of nil erases both overlays
-for the last face and text properties for all faces.
-
-Note: When text properties are affected, this is like using an eraser:
-only characters you drag over lose their faces.  But when overlays are
-affected, an overlay is erased as soon as any part of it is touched.
-You need not drag over the entire overlay to delete it, and there is
-no way to erase only part of it."
+for the last face and text properties for all faces."
   (interactive "e")
   (save-excursion
     (run-hooks 'mouse-leave-buffer-hook) ; Let temporary modes like isearch turn off.
     (let* ((original-window  (selected-window))
            (echo-keystrokes  0)
            (start-posn       (event-start start-event))
-           (start-point      (posn-point start-posn))
-           (end-point        start-point)
+           (start            (posn-point start-posn))
+           (end              start)
            (start-window     (posn-window start-posn)))
       (let ((read-only                          buffer-read-only)
             (modified-p                         (buffer-modified-p))
@@ -801,13 +798,13 @@ no way to erase only part of it."
                         (or (mouse-movement-p event)
                             (memq (car-safe event) '(switch-frame select-window))))
             (unless (memq (car-safe event) '(switch-frame select-window))
-              (setq end-point  (posn-point (event-end event))))
+              (setq end  (posn-point (event-end event))))
             (when hlt-use-overlays-flag
-              (mapcar (lambda (o) (hlt-delete-highlight-overlay o hlt-last-face))
-                      (overlays-in start-point end-point)))
+              (mapcar (lambda (o) (hlt-unhighlight-for-overlay o start end hlt-last-face))
+                      (overlays-in start end)))
             (unless (eq 'only hlt-use-overlays-flag)
-              (remove-text-properties start-point end-point
-                                      '(face nil hlt-highlight nil font-lock-ignore nil)))))
+              (remove-text-properties
+               start end '(face nil hlt-highlight nil font-lock-ignore nil)))))
         (setq buffer-read-only  read-only)
         (set-buffer-modified-p modified-p)))))
 
@@ -823,9 +820,8 @@ no way to erase only part of it."
   (message "Drag mouse over to erase highlighting") (sleep-for 1)
   (hlt-eraser (read-event)))
 
-;; Bind this to, for instance, `C-x C-y'.
 ;;;###autoload
-(defun hlt-highlight (&optional prefix)
+(defun hlt-highlight (&optional prefix) ; Suggested binding: `C-x C-y'.
   "Highlight region, regexp (PREFIX +), or unhighlight region (PREFIX -).
 PREFIX arg non-negative means `hlt-highlight-regexp-region'
 PREFIX arg negative means `hlt-unhighlight-region'
@@ -1024,7 +1020,8 @@ Optional 5th arg MOUSE-P non-nil means use `mouse-face' property, not
         (modified-p   (buffer-modified-p)))
     (setq buffer-read-only  nil)
     (when hlt-use-overlays-flag
-      (mapcar (lambda (o) (hlt-delete-highlight-overlay o face)) (overlays-in start end)))
+      (mapcar (lambda (o) (hlt-unhighlight-for-overlay o start end face))
+              (overlays-in start end)))
     (unless (eq 'only hlt-use-overlays-flag)
       (let ((beg  start)
             hi-face)
@@ -1052,6 +1049,12 @@ that uses FACE.  Interactively, you are prompted for the face.
 This works only for overlay highlighting, not text-property
 highlighting.
 
+Note: When text in the region has been highlighted using more than one
+face, unhighlighting for one of those faces can mean that adjacent
+highlighting outside the region appears to change.  That outside text
+still has the same multiple-overlay face highlighting, but the overlay
+stacking order is not the same as it was.
+
 Optional arg FACE is the face to use.
   Interactively, this is the last face that was used for highlighting.
   (You can use command `hlt-choose-default-face' to choose a different face.)
@@ -1067,6 +1070,7 @@ Optional arg MOUSE-P non-nil means use `mouse-face' property, not
                                   end    (cadr start-end))))
   (hlt-unhighlight-region start end face (interactive-p) mouse-p))
 
+;; No longer used - use `hlt-unhighlight-for-overlay' instead.
 (defun hlt-delete-highlight-overlay (overlay &optional face)
   "Delete OVERLAY if it was created by highlighting (library `highlight').
 Optional arg FACE is a face symbol.  If non-nil, then delete only
@@ -1074,6 +1078,63 @@ overlays with that FACE."
   (let ((highlight-face  (overlay-get overlay 'hlt-highlight)))
     (when (and highlight-face (or (not face) (eq face highlight-face)))
       (delete-overlay overlay))))
+
+;;; (defun hlt-unhighlight-for-overlay (overlay start end &optional face)
+;;;   "Remove OVERLAY highlighting from START to END.
+;;; Acts only on an OVERLAY that was created by library `highlight'.
+;;; If OVERLAY extends beyond the region from START to END, then replace
+;;; it with two overlays: one that ends at START and the other that starts
+;;; at END.  Otherwise, delete OVERLAY.
+;;; Optional arg FACE is a face symbol.  If non-nil, then delete only
+;;; overlays with that FACE."
+;;;   (let ((oface   (overlay-get overlay 'hlt-highlight))
+;;;         (ostart  (overlay-start overlay))
+;;;         (oend    (overlay-end   overlay)))
+;;;     (when (and oface (or (not face) (eq face oface)))
+;;;       (delete-overlay overlay)
+;;;       (when (< ostart start) (hlt-highlight-region ostart start face))
+;;;       (when (> oend end) (hlt-highlight-region end oend face)))))
+
+;; This version has an implementation similar to `remove-overlays' in Emacs 22+.
+(defun hlt-unhighlight-for-overlay (overlay start end &optional face)
+  "Remove OVERLAY highlighting from START to END.
+Acts only on an OVERLAY that was created by library `highlight'.
+OVERLAY might be moved or split or both.
+
+Optional arg FACE is a face symbol.  If non-nil, then remove only
+highlighting with that FACE."
+  ;; (overlay-recenter end)                ; Speed up loops over overlays.
+  (when (< end start) (setq start (prog1 end (setq end start))))
+  (let ((oface   (overlay-get overlay 'hlt-highlight))
+        (ostart  (overlay-start overlay))
+        (oend    (overlay-end   overlay)))
+    (when (and oface (or (not face) (eq face oface)))
+      ;; Either push OVERLAY outside region or split it to exclude region
+      ;; or delete it (if it is entirely contained in region).
+      (if (< ostart start)
+          (if (<= oend end)
+              (move-overlay overlay ostart start)
+            (move-overlay (copy-overlay overlay) ostart start)
+            (move-overlay overlay end oend))
+        (if (> oend end)
+            (move-overlay overlay end oend)
+          (delete-overlay overlay))))))
+
+(unless (fboundp 'copy-overlay)         ; Defined in Emacs 22+.
+  (defun copy-overlay (o)
+    "Return a copy of overlay O."
+    (let ((o1 (if (overlay-buffer o)
+                  (make-overlay (overlay-start o) (overlay-end o)
+                                ;; FIXME: there's no easy way to find the
+                                ;; insertion-type of the two markers.
+                                (overlay-buffer o))
+                (let ((o1 (make-overlay (point-min) (point-min))))
+                  (delete-overlay o1)
+                  o1)))
+          (props (overlay-properties o)))
+      (while props
+        (overlay-put o1 (pop props) (pop props)))
+      o1)))
 
 ;;;###autoload
 (defun hlt-replace-highlight-face (old-face new-face &optional start end msg-p mouse-p)
@@ -1338,7 +1399,7 @@ that can be added."
     (add-to-list 'orig-val val-to-add)
     orig-val)
 
-  ;; Bind these to, for instance, `S-C-n' and `S-C-p'.
+  ;; Suggested binding: `C-S-n'.
   (defun hlt-next-highlight (&optional start end face mouse-p backward-p no-error-p)
     "Go to the next highlight in FACE.
 Interactively, FACE is the last face used for highlighting, but
@@ -1408,6 +1469,7 @@ When called non-interactively:
             (next-single-char-property-change (point) (if mouse-p 'mouse-face 'face)
                                               nil (if backward-p start end)))))
 
+  ;; Suggested binding: `C-S-p'.
   (defun hlt-previous-highlight (&optional start end face mouse-p no-error-p)
     "Go to the previous highlight in the last face used for highlighting.
 This is the same as `hlt-previous-highlight', except movement is backward."

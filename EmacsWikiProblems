@@ -177,32 +177,7 @@ Are the changes from 21:40 UTC -> 21:55 UTC your attempts to reproduce the probl
 If not then the 20+ uploads between then 20:48 and 21:16 UTC may be more than this little wiki can handle.
 Weird internal server errors can also indicate a looming hard-disk failure...  --[[mon_key]]
 
-== Cannot Download Previous Versions of a File ==
 
-At this page, I click the `Download' link, and I get this message:
-
-  This page does not exist, but you can [Self:action=edit;id=bookmark%20.el create it now].
-
-That's not very helpful. And I don't know how to do what it suggests. I had to click `##Edit this page##' to get to the source code. -- DrewAdams
-
-[new]
-Indeed. This was an encoding problem. The plus sign was apparently not encoded, and without encoding the + itself encodes a space. Thus asking for revision 74 of ##bookmark+.el## resulted in an URL that tried to show revision 74 of ##bookmark .el## (the + being replaced with a space).
-Hopefully this is fixed, now. -- Alex
-
-[new:DrewAdams:2009-10-16 14:53 UTC]
-Thanks. Almost fixed. The file name that shows up in the `##File name:##' field of the `##Save As##' dialog box is this, however: `##emacs.el;raw=1;revision=71##', instead of the name of the file, ##bookmark+.el##. But at least I can modify that text by hand to give it the right name -- and downloading then works. -- DrewAdams
-
-[new]
-Downloading of elisp files seems to be impossible now.
-I tried at http://www.emacswiki.org/emacs/doremi.el.
-The download link is behind a html button.
-Alex, did you accidently restore some old version of the wiki software? -- LennartBorgman
-
-[new:DrewAdams:2009-12-27 00:28 UTC]
-It seems that page still has the old (less new) Download button. Alex, can you run some script to update all of the Elisp pages so they use your new pseudo-button? If not, what do we need to do? Do we need to edit each library with a fictitious change and then save? That will take quite a while. Thx -- DrewAdams
-
-[new]
-I deleted the cached HTML for each page. It'll be regenerated as people visit the pages, and therefore all these download links will be fixed. Theoretically it is possible that pages that haven't been changed in years now look different because the markup rules might have changed since their cached HTML has last been generated. Those pages would have changed anyway once somebody edited them. -- AlexSchroeder
 
 [:StalePagesServed]
 == Browser Cache Not Refreshed - Stale Pages Served ==
@@ -321,12 +296,6 @@ them on their name page? -- AlexSchroeder
 
 I just edited and saved a reply someone posted at DrewsElispLibraries. I refrefreshed RecentChanges (with rollbacks and minor changes included), but my edit does not appear. That wiki page is listed, but still at the time and user of the previous edit. However, after clicking List only major changes it was listed. I had previously cleared my cache, so I don't think that was the problem. I'm guessing it was a cache problem nevertheless, but thought I'd mention it, in case it's not. -- DrewAdams
 
-== Rogue file in Elisp area ==
-
-I noticed by accident that there is a file Lisp:find-dired++.el listed in the Elisp area. But clicking on it brings up a blank page -- no header, nothing. I imagine that it can be deleted, but I don't know how to delete it. (Please don't delete the similarly named <tt>[[find-dired+.el]]</tt>.) -- DrewAdams
-
-[new]
-This one appears to be resolved? -- Alex
 
 == TOC heading in wrong language ==
 
@@ -341,18 +310,6 @@ Yeah, it's saving the TOC title in the language of the user saving it and not re
 [new]
 More info on this at [[2006-01-12]]. -- AaronHawley
 
-== Image Files Not Displayed ==
-
-Some image files are consistently not displayed. I don't know if it is my browser only, but, for example, the first 3 images at this page are not displayed in line: http://www.emacswiki.org/cgi-bin/wiki/Icicles_-_Customization_and_General_Tips. I see only an X and a link with the name of the image page. Refreshing the browser has no effect. If I visit that image page by clicking the link, the image is shown, and it is presumably then in my browser cache. However, refreshing the first-mentioned page still does not show the images. Similarly, some (7) images are not shown on this page: http://www.emacswiki.org/cgi-bin/wiki/Icicles_-_Screenshots. All of the image files are present and can be shown by clicking the missing-image link. This seems to be a recent problem. Could it be related to anti-spam changes? -- DrewAdams
-
-[new:DrewAdams:2007-11-05 02:29 UTC]
-I don't think it's a browser problem. I see the same thing, with the same image files, in both FireFox and IE6. I suspect it's an EmacsWiki problem. -- DrewAdams
-
-[new] Hm... The page is still there but the static copy has disappeared from http://www.emacswiki.org/pics/static/... How annoying.
-I think the problem is that I allowed a new MIME type (image/x-png) without specifying that the file extension for this page was going to be PNG. Recently I discovered this error and fixed it because I suspected it to be the cause of a different error. The fix now requires the extension that files uploaded in a certain time window don't have. I'll fix those manually. Please report any that are still missing. At the moment I fixed the following: IciclesKeyCompletionsSortByCmdName IciclesKeyCompletionsSortLocalFirst IciclesKeyCompletionsSortPrefixFirst DrewsEmacsColorNameCompletions DrewsEmacsIciclesFaces DrewsEmacsIciclesOptionsCustomizeMenu DrewsEmacsIciclesOptionsMenu DrewsEmacsPseudoColorCompletions. -- AlexSchroeder
-
-[new:DrewAdams:2007-11-05 15:38 UTC]
-Thanks very much, Alex. I'll let you know if I find any others. BTW, I noticed that some image pages (e.g. DrewsEmacsSSMinibuff) have some automatic text in German, but that's not a problem. -- DrewAdams
 
 == Markup of `RET C-i' ==
 
@@ -471,15 +428,6 @@ It can't get perfect, but something like this might be useable:
 
 -- LennartBorgman
 
-== Some files/wiki packages are broken ==
-
-The files multi-eshell.el and planner-hierarchy.el and their respective wiki pages are broken. The wiki pages don't feature a download button and the lisp code is not htmlized. The elisp files contain some non-lisp blob at the beginning and end.
-
-I was able to fix a similar problem for gosh.el by simply removing the mess, but this did not work for the other mentioned files.
-
-[new]
-The site expects elisp files to start with three semicolons (##;;;##). See [[Manual:Library Headers]] ("The very first line should have this format: ##;;; FILENAME --- DESCRIPTION##"). I will add the missing semicolon. -- AlexSchroeder
-
 == RSS for single-pages doesn't work in Google Reader ==
 
 I haven't figured out what the problem is yet, but I added http://www.emacswiki.org/emacs/?action=rss;rcidonly=IciclesDiscussion to Google Reader, and it didn't get a "new item" notification when the page was changed. -- EthanGlasserCamp
@@ -506,17 +454,6 @@ In addition to the 20 or so files identified as "data", I get one mistaken for a
 
 -- SamuelBronson
 
-== Empty files in subversion mirror ==
-
-The subversion repository contains two empty pages:  DavidSpreen and ScreencastProductions. As you can see they don't exist anymore on the wiki. Alex, please remove these. -- JonasBernoulli
-
-
-== colorgcc compatibility ==
-colorgcc is not compatible with flymake, I've opened a bug:
-
-https://sourceforge.net/tracker/?group_id=77501&atid=550421
-
-for an example see here: http://stackoverflow.com/questions/4149995/flymake-cfgerr-problem
 ----
 CategoryEmacsWikiSite
 

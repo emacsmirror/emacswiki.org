@@ -9,7 +9,7 @@
 ;; Maintainer: IRIE Shinsuke
 ;; Keywords: Localization, Japanese, menu-bar
 
-(defconst menu-tree-version "0.96"
+(defconst menu-tree-version "0.97"
   "Version number of the menu-tree package.")
 
 ;; This program is free software: you can redistribute it and/or modify
@@ -56,6 +56,10 @@
 ;;
 
 ;;; History:
+;;  2010-11-30  S. Irie
+;;          * Version 0.97
+;;          * Fixed bug: Loading CEDET causes errors for undefined keymaps
+;;
 ;;  2010-08-06  S. Irie
 ;;          * Version 0.96
 ;;          * Fixed bug: `rmail' and `compose-mail' are not updated dynamically
@@ -1723,9 +1727,11 @@ specifying the sub menu or the menu item."
 (eval-after-load "redo+"
   '(menu-tree-update 'global-map '(edit redo)))
 (eval-after-load "ede"
-  '(menu-tree-update 'global-ede-mode-map))
+  '(if (boundp 'global-ede-mode-map)
+       (menu-tree-update 'global-ede-mode-map)))
 (eval-after-load "semantic"
-  '(menu-tree-update 'semantic-mode-map))
+  '(if (boundp 'semantic-mode-map)
+       (menu-tree-update 'semantic-mode-map)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Dynamic overriding menu

@@ -85,6 +85,8 @@ to implicitly include all header files from the GTK toolkit files. This should g
 
 For a detailed explanation see http://navaneethkn.wordpress.com/2009/10/11/getting-smart-completion-wxwidgets-cedet-emacs
 
+* [http://wiki.kldp.org/wiki.php/CedetWxWidgets Another way (Korean)]
+
 == Qt ==
 
 Qt is using some preprocessor symbols in its class definitions. You need to set them manually via

@@ -1,5 +1,5 @@
 ;;;; auto-async-byte-compile.el --- Automatically byte-compile when saved
-;; Time-stamp: <2010-05-04 18:15:04 rubikitch>
+;; Time-stamp: <2010-12-05 11:36:45 rubikitch>
 
 ;; Copyright (C) 2010  rubikitch
 
@@ -151,7 +151,8 @@ This minor-mode performs `batch-byte-compile' automatically after saving elisp f
   (interactive)
   (and buffer-file-name
        (string-match "\\.el$" buffer-file-name)
-       (not (string-match auto-async-byte-compile-exclude-files-regexp buffer-file-name))
+       (not (and auto-async-byte-compile-exclude-files-regexp
+                 (string-match auto-async-byte-compile-exclude-files-regexp buffer-file-name)))
        (aabc/doit)))
 
 (defun aabc/doit ()
@@ -215,11 +216,11 @@ How to send a bug report:
 (defun aabc/-send-bug-report ()
   (interactive)
   (reporter-submit-bug-report
-   aabc/-maintainer-mail-address
+   aabc/maintainer-mail-address
    "auto-async-byte-compile.el"
    (apropos-internal "^\\(aabc\\|auto-async-byte-compile\\)" 'boundp)
    nil nil
-   aabc/-bug-report-salutation))
+   aabc/bug-report-salutation))
 
 (provide 'auto-async-byte-compile)
 

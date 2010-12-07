@@ -14,15 +14,6 @@ Discussion about the TextFormattingRules used in contributing to pages  is at Te
 
 '''Add your suggestions below this line.'''
 
-== Jari Alto and lack of history == 
-[new]
-Jari Alto has discovered emacswiki, and has taken over the [[TinyTools]] page.  Whatever critical remarks I've made there have been deleted only my complimentary remarks remain.  (1) we may need to think about a policy for dealing with egocentric people doing vanity edits (2) we could use a working diff to compare previous versions to the present.  -- [[Doom]]
-
-[new]
-I don't know the nature of these deletes, but it's important to keep in mind that pages can be bogged down with discussion and attempts to clean them up shouldn't be frowned upon even if they are by individuals with a seeming "conflict of interest".  Currently, these are often the only people motivated for the task.
-
-Alex has built a Wiki with KeptPages, but they only go back 3 weeks.  So if you don't visit EmacsWiki for a month or two and no one notices material being deleted, then  the revision is no longer available from the Wiki.  This is why it is important to keep private backups or to WikiDownload backups of everything. -- AaronHawley
-
 == Elisp files status ==
 
 I just saw that Elena had tested some libraries for capitalising and found that
@@ -218,54 +209,6 @@ Any suggestions for improvement? It would obviously be easy to style these occur
 But how?
 -- AlexSchroeder
 
-=== Download Links ===
-
-I maintain vimpulse.el which is stored on this wiki.  Whenever I promote it on a website, I link to the editable file at /elisp, not the downloadable file at /elisp/download.  Since new Emacs users (old Vim) users will be getting it, I want it to be easy to find the download link.  The download links as-is (just plain text "Download" is a little too easy to ignore and accidentally scroll past.  Can we instead use something like the following for download links for elisp files?
-
-<table cellspacing="0" cellpadding="20" bgcolor="#b6fa42"><tr><td
-style="border-style: outset; border-color: green; -moz-border-radius:
-12px;"><a href="NONEXISTENT.EXAMPLE.COM"><font color="#174504"
-face="sans-serif">Click to Download</font></a></td></tr></table>
-
--- JasonSpiro
-
-[new]
-How about using the button element? I implemented it but haven't flushed the HTML cache of any pages. Follow this link to see the effect:
-http://www.emacswiki.org/emacs/AlexSchroederErcConfig?cache=0 -- it's a bit subtler than what you've posted. Do we need it to be even more obvious? -- AlexSchroeder
-
-[new]
-I changed the button element back to an ordinary link and will use some green background instead. -- AlexSchroeder
-
-== Indexing Schemes ==
-
-[new:DrewAdams:2004-12-24 23:00 UTC]
-
-See HowAboutIndexingSchemes for suggestions to use one or more IndexingSchemes for EmacsWiki. -- DrewAdams
-
-[new]
-AlexSchroeder: Which one would you start with?
-
-[new:DrewAdams:2005-11-01 22:06 UTC]
-The first one mentioned there: "''usage statistics'', organized by hit (access) rank."  One general ranking of HitCounts and one per category.  In spite of their inadequacies for measurement of page quality, they do give some idea of reader interest. That can help (but also mislead!) both maintainers and readers.  -- DrewAdams
-
-[new]
-We could start by looking at the webserver logs of the last seven days.  I wonder whether that's just going
-to copy RecentChanges, however.  Maybe we should look at all the entry pages -- ie. where the referrer page
-is not on emacswiki.org. -- Alex
-
-== Info Manuals Mirrored on the Wiki =
-
-Linking to the manual is discussed on EmacsManual.
-
-[new]
-Any reason not to write a script to just wikify the whole manual?  It might foster some participation from people like me, that might contribute some documentation, but don't want the overhead of setting things up just to do manual...labor.  Or does the Free Documentation License become too challenging?  -- ChristopherSmith
-
-[new]
-Hmm. wget -r and elinks -dump or lynx -dump should make it easy to copy the manual. Also, EMacro http://www.emacswiki.org/cgi-bin/wiki?id=EmacsMacro as well as JDE, etc already launch local static html pages from Emacs help. Does anyone know an easy way to determine the current major and minor modes, and pass them as parameters to look up, in EmacsWiki? The major mode alone should not be hard, but I'm thinking an index of minor modes, built on-the-fly. -- BruceIngalls
-
-[new]
-I wonder who would contribute changes made to the wikified manual back upstream? -- AlexSchroeder
-
 == Please write a summary ==
 
 2007-08-12
@@ -283,24 +226,8 @@ As for time stamps: Aren't we aiming for "timeless" information? At least as far
 
 When it comes to page content, I guess you're right. We're somewhere between the FAQ (but there aren't many frequently asked questions), and an extension of the ElispManual. We're certainly not the manual itself.
 
-== #REDIRECT to external pages ==
-
-[new]
-[http://www.w3.org/Provider/Style/URI Cool URLs don't change] but it's also uncool to have libraries laying around on the Emacswiki that only serve as a pointer to it's new URL (for example [[emms-lyric.el]] and [[struct+.el]]) and do so in a crude fashion.
-
-I therefore propose that #REDIRECT should support external sources. -- JonasBernoulli
-
-[new]
-Really, those pages shouldn't exist.  Instead, the pages !EmmsLyric and !StructPlus should exist instead.  I've redirect emms-lyric.el to [[EMMS]] although nothing points to it.  The link for struct+.el doesn't even work, so I'm not sure where defstruct+.el is.  Clearly the maintainer of [[ELL]] will need to track it down.
-
-Were there any other examples where you thought redirects to URIs would be useful?
-
-Good URLs are critically important, thus the reason InterLinks are very useful on this site. -- AaronHawley
-
-[new]
-Not currently no. If I find more I will report it here. -- Jonas
-
 == Drew Adams' Libraries == 
+
 Drew I respect your work and all that you've done with Emac and on EmacsWiki. However, PLEASE can a emacswiki pages be required by sanction to be limited to only 1 (One!) reference to instances of Drew's libraries, and then *ONLY* after other relevant examples, code, etc. pertinent to the a pages context. This site is *SERIOUSLY* limited by Drew's spam and suffers because of it to the extent that it is becoming unusable because of the superfluous `Icicles.*' references strewn about.  There is a point at which the entire Emacs community suffers because of Drew's insistence on xrefs to anything remotely related to his libraries. -- mon_key
 
 [new]
@@ -352,33 +279,6 @@ There is div.content and there is div.wrapper.  I'm not a CSS expert, so I can't
 [new]
 This are CSS classes, not Id:s. Putting id:s on some important div tags makes it easier to under stand IMO. -- LennartBorgman
 
-== Cette page est aussi disponible en français ==
-
-There are many pages that start with a line like this.  On other pages that are available in multiple languages there are less intrusive links to these versions on the bottom of the page.  I prefer the second variant.  Is the former the old way of doing it and has been deprecated?  Can I freely replace the former with the latter?  A note about this should be added to HowLanguagesWork. -- JonasBernoulli
-
-[new]
-Yes, you are right. These links are the old way of doing it. Feel free to replace them. Thanks! -- AlexSchroeder
-
-[new]
-Done!  At least for French and a few English ones.  I might do some more languages another time - but this time programmatically.  Also could someone tell we what strings I have to grep for for other languages, please.  -- JonasBernoulli
-
-[new:DrewAdams:2010-03-16 00:00 UTC]
-I disagree that the new is a full replacement for the old. The new assumes that if you are reading the wiki in, say, French, then you just want to see the French version of a page. However, in some cases there are significant differences between the versions of the same page in different languages. 
-
-I have nothing against changing to the new as a general default. But there is no reason not to allow explicit references to a different version in another language, especially if the text calling that out indicates clearly that the other-language version might not be as up-to-date as the English version. In sum, there is nothing wrong with using explicit links, if one thinks they can help users. -- DrewAdams
-
-[new]
-(Also see suggestion below.)
-
-If think that the English page Foo should not have a link/text like "There is also a French page but it is totally not up-to-date: Fôô" that is pretty much useless to any one not speaking French and of little value to those actually speaking French.  Instead Fôô should have something like "This the French translation of: Foo. Unfortunately it is not up-to-date, so you might want to have a look at the English version also". (All this in French of course.) -- JonasBernoulli
-
-[new:DrewAdams:2010-03-16 14:41 UTC]
-I think we ''should'' not worry so much about what "''should''" be the case on individual pages. ;-)
-
-Someone who more easily reads French might nevertheless find herself on the English page Foo (for various reasons). She might welcome the knowledge that there is also a French page Fôô, and might consult it even knowing that it might not be up to date -- for comparison on some particular point, for example. It is not unusual to be able to read a second language (e.g. English) but still feel more comfortable in one's native language.
-
-The point is that people are different, and explicit indication helps people, themselves, decide. As I said, "I have nothing against changing to the new as a general default." It's about letting page readers (and writers) judge for themselves. Letting readers know that a version of the page in another language is not up to date helps them decide. -- DrewAdams
- 
 == Click the heading to search for pages in this category / that link here ==
 
 This bothers me similarly to the above since it just adds clutter for anyone who knows what clicking on a header does.  I would like to remove this too but this would probably not be well received.  I would suggest that this information is somehow shown on all pages but in an less intrusive way.
@@ -386,6 +286,7 @@ This bothers me similarly to the above since it just adds clutter for anyone who
 Maybe somewhere in the footer close to where the language links are too.  Then again this link ("Pages linking here") as well as the links to the translations can easily be missed.  Maybe both kinds should be placed somewhere more visible?  But if you do this please do so in a way that makes it easy to hide it using a style sheet.  -- JonasBernoulli
 
 == Discussions ==
+
 I use the emacswiki quite extensively primarily as a source of information. One of the confusing aspects of this wiki is that the discussions are intermingled with the content. Is it possible to have a discussion page such as the one that comes out-of-the-box with a MediaWiki package? 
 
 [new]

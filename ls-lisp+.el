@@ -7,17 +7,16 @@
 ;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Tue Nov 16 14:13:27 2010 (-0800)
+;; Last-Updated: Tue Nov 23 07:28:02 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 174
+;;     Update #: 176
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
 ;;
-;;   `files+', `ls-lisp', `misc-fns', `strings', `thingatpt',
-;;   `thingatpt+'.
+;;   `files+', `misc-fns', `strings', `thingatpt', `thingatpt+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
@@ -55,6 +54,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/11/23 dadams
+;;     ls-lisp-insert-directory: Finish last fix - second call to ls-lisp-format.
 ;; 2010/11/16 dadams
 ;;     ls-lisp-insert-directory for Emacs 24: ls-lisp-format no longer takes NOW arg.
 ;;     For Emacs 20: Soft-load ls-lisp-20.el.
@@ -556,12 +557,13 @@ not contain `d', so that a full listing is expected."
             (setq file (substring file 0 -1)))
         (let ((fattr (file-attributes file 'string)))
           (if fattr
-              (insert (ls-lisp-format
-                       (if (and (> emacs-major-version 23) (memq ?F switches))
-                           (ls-lisp-classify-file file fattr)
-                         file)
-                       fattr (nth 7 fattr)
-                       switches time-index (current-time)))
+              (insert
+               (if (> emacs-major-version 23)
+                   (ls-lisp-format (if (memq ?F switches)
+                                       (ls-lisp-classify-file file fattr)
+                                     file)
+                                   fattr (nth 7 fattr) switches time-index)
+                 (ls-lisp-format file fattr (nth 7 fattr) switches time-index (current-time))))
             (message "%s: doesn't exist or is inaccessible" file)
             (ding) (sit-for 2)))))))    ; to show user the message!
 

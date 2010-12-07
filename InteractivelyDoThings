@@ -318,6 +318,12 @@ It's a lot easier to scan long path names if they're displayed vertically, inste
 
 -- [[timcharper]], [[jpkotta]]
 
+This is a nice feature, thanks.  The `add-hook' line causes this error (GNU Emacs 23.2):
+
+if: Wrong number of arguments: #[(file form) " ; 
+
+Tried on "emacs -Q" too.  Am I alone?  However, afterwards the code works as advertised.
+
 
 === Control-TAB buffer switching with Ido ===
 

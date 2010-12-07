@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:18:01 2010 (-0800)
+;; Last-Updated: Mon Dec  6 14:37:48 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 733
+;;     Update #: 737
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/12/06 dadams
+;;     hexrgb-hex-to-color-values: Correct start offset for blue.  Thx to "Linda" on Emacs Wiki.
 ;; 2009/11/14 dadams
 ;;    hexrgb-rgb-to-hsv: Corrected hue when > 1.0.  Use strict inequality for hue limit tests.
 ;;    hexrgb-approx-equal: Convert RFUZZ and AFUZZ to their absolute values.
@@ -156,7 +158,7 @@
 ;;
 ;;; Code:
 
-(eval-when-compile (require 'cl)) ;; case; plus, for Emacs < 20: when, unless
+(eval-when-compile (require 'cl)) ;; case
 
 ;; Unless you first load `hexrgb.el', then either `palette.el' or `eyedropper.el', you will get
 ;; warnings about variables and functions with prefix `eyedrop-' when you byte-compile
@@ -583,7 +585,7 @@ The output list is as for `x-color-values'."
     (setq color  (substring color (match-beginning 2) (match-end 2))
           red    (hexrgb-hex-to-int (substring color 0 ndigits))
           green  (hexrgb-hex-to-int (substring color ndigits (* 2 ndigits)))
-          blue   (hexrgb-hex-to-int (substring color ndigits (* 3 ndigits))))
+          blue   (hexrgb-hex-to-int (substring color (* 2 ndigits) (* 3 ndigits))))
     (list red green blue)))
     
 ;;;###autoload

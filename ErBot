@@ -630,7 +630,10 @@ This list may be outdated. Please consult the AUTHORS file that comes with erbot
 == Done reading already? ==
 Erbot has a bunch of other newer features (like natural language translation) which may not be documented here at all, or which may be documented on other pages. So,  scroll down (== page-up) and go on to other pages like  ErbotEmacs :)
 
+== Discussion ==
 
+[new]
+Here can erbot be downloaded from? I mirror this package on the [[Emacsmirror]] so people can get a copy from their but the place where I used to get this package (http://mwolson.org/static/dist/erbot-latest.tar.gz) seams to be dead. -- JonasBernoulli
 
 
 ----

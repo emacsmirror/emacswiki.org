@@ -157,6 +157,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * UseCustomizeForKeyBindings -- Widget and `defcustom' code to let users use Customize for key bindings.
 * VectorModificationLibrary -- Functions to modify vectors
 * XmlParser -- Writing code which reads and manipulates XML.  Pointers to DOM, XPath, etc.
+* [[Infix]]    -- Writing infix math expressions
 
 == Proof of Concept ==
 

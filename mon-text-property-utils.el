@@ -11,7 +11,7 @@
 ;; CREATED: 2010-09-04T12:51:48-04:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: lisp, extensions, display,
+;; KEYWORDS: lisp, emacs, extensions, display,
 
 ;;; ================================================================
 
@@ -47,7 +47,6 @@
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
-;; `mon-set-text-properies-region', `mon-get-text-properties-region-prop',
 ;;
 ;; METHODS:
 ;;
@@ -60,13 +59,20 @@
 ;; VARIABLES:
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
-;; `mon-remove-text-with-property'      -> `mon-get-text-property-remove-all'
+;; :NOTE Aliases defined in :FILE mon-aliases.el
+;;
+;;  <PREFIX>-<QUALIFIED>                           <PREFIX>-<NON-CORE-SYMBOL>
+;; `mon-remove-text-with-property'             -> `mon-get-text-property-remove-all'
+;; `mon-remove-text-properties-region-all'     -> `mon-nuke-text-properties-region'
+;; `mon-remove-all-text-properties-region'     -> `mon-nuke-text-properties-region'
+;; `mon-get-text-properties-region->kill-ring' -> `mon-get-text-properties-region-to-kill-ring'
+;; `mon-kill-ring-save-w-props'                -> `mon-get-text-properties-region-to-kill-ring'
 ;;
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
-;; `mon-test-props'             -> `mon-get-text-properties-category'
-;; `mon-kill-ring-save-w-props' -> `mon-get-text-properties-region-to-kill-ring'
+;; `mon-test-props'                            -> `mon-get-text-properties-category'
+;; `mon-kill-ring-save-w-props'                -> `mon-get-text-properties-region-to-kill-ring'
 ;;
 ;; MOVED:
 ;; `mon-list-all-properties-in-buffer'               <- mon-utils.el
@@ -93,7 +99,8 @@
 ;; `mon-get-text-properties-map-ranges'              <- mon-doc-help-utils.el
 ;; `mon-get-text-properties-map-ranges-string'       <- mon-doc-help-utils.el
 ;; `mon-get-text-property-bounds'                    <- mon-doc-help-utils.el
-;;
+;; `mon-set-text-properies-region'                   -> mon-macs.el
+;; `mon-get-face-at-posn'                            -> mon-macs.el
 ;;
 ;; TODO:
 ;;
@@ -151,47 +158,15 @@
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl)
                    (require 'edebug))
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
 (require 'mon-plist-utils)
-
-;;; ==============================
-;;; :COURTESY slime.el :WAS `slime-propertize-region'
-;;; :CHANGESET 2142
-;;; :CREATED <Timestamp: #{2010-09-29T13:51:01-04:00Z}#{10393} - by MON KEY>
-(defmacro mon-set-text-properies-region (props &rest body)
-  "Execute BODY and add PROPS to all the text it inserts.\n
-More precisely, PROPS are added to the region between the point's positions
-before and after executing BODY.\n
-:SEE-ALSO `mon-insert-w-text-properties'.\n►►►"
-  (let ((start (edebug-gensym)))
-    `(let ((,start (point)))
-       (prog1 (progn ,@body)
-         (add-text-properties ,start (point) ,props)))))
-;;
-(put 'mon-set-text-properies-region 'lisp-indent-function 1)
-
-;;; ==============================
-;;; :COURTESY :FILE gnus-util.el :WAS `gnus-faces-at'
-;;; Removed the Xemacs conditional added a `gensym'.
-;;; :CREATED <Timestamp: #{2010-02-04T14:03:31-05:00Z}#{10054} - by MON KEY>
-(defmacro mon-get-face-at-posn (position)
-  "Return a list of faces at POSITION.\n
-:SEE-ALSO `mon-get-face-at-point', `mon-help-faces',
-`mon-help-faces-basic', `mon-help-faces-themes'.\n►►►"
-  (let ((mgfap-pos (make-symbol "mgfap-pos")))
-    `(let ((,mgfap-pos ,position))
-       (delq nil (cons (get-text-property ,mgfap-pos 'face)
-		       (mapcar #'(lambda (overlay)
-                                   (overlay-get overlay 'face))
-                               (overlays-at ,mgfap-pos)))))))
-;;
-;; :ALIASED-BY `mon-get-text-properties-face-at-posn'\n
-;;
-;; (unless (and (intern-soft "mon-get-text-property-face-at-posn")
-;;              (fboundp 'mon-get-text-property-face-at-posn))
-;;   (defalias 'mon-get-text-properties-face-at-posn 'mon-get-face-at-posn))
 
 ;;; ==============================
 ;;; :COURTESY slime.el :WAS `slime-insert-propertized'
@@ -246,6 +221,8 @@ byte-compiler will shut its yap about runtime warnings.\n
 ;; (defsetf buffer-substring-no-properties mon-set-buffer-substring-no-properties)
 (defsetf buffer-substring-no-properties %mon-set-buffer-substring-no-properties)
 
+;; (add-text-properties start end '(invisible t))
+
 ;;; ==============================
 ;;; :COURTESY  ../emacs/lisp/font-lock.el 
 ;;; :NOTE For completeness: this is to `remove-text-properties' as
@@ -295,27 +272,30 @@ Optional argument OBJECT is the string or buffer containing the text.\n
      (setq start (text-property-not-all next end prop nil object)))))
 
 ;;; ==============================
+;;; :PREFIX "mntpr-"
 ;;; :COURTESY Noah Friedman :HIS buffer-fns.el
 (defun mon-nuke-text-properties-region (beg end)
   "Eliminate all text properties in current buffer from BEG to END.\n
 :NOTE Only removes text properties, does not remove overlays.\n
+:ALIASED-BY `mon-remove-text-properties-region-all' 
+:ALIASED-BY `mon-remove-all-text-properties-region'\n
 :SEE-ALSO `remove-text-property', `mon-remove-single-text-property',
 `mon-nuke-overlay-buffer', `add-text-properties', `put-text-property',
 `next-single-property-change', `mon-list-all-properties-in-buffer',
 `mon-help-text-property-functions'.\n►►►"
-;; "mntpr-"
   (interactive "r")
   (save-excursion
     (save-restriction
       (narrow-to-region beg end)
-      (mon-g2be -1) ;; (goto-char (point-min))
-      (while (not (eobp))
-        (let ((inhibit-read-only t)
-              (mntpr-pl (text-properties-at (point)))
-              (mntpr-nxt-chng (or (next-property-change (point) (current-buffer))
-                               (mon-g2be 1 t))))
-          (remove-text-properties (point) mntpr-nxt-chng mntpr-pl (current-buffer))
-          (goto-char mntpr-nxt-chng))))))
+      (mon-g2be -1)
+      (mon-with-inhibit-buffer-read-only
+          (while (not (eobp))
+            (let (;; (mntpr-cb (current-buffer))
+                  (mntpr-pl (text-properties-at (point)))
+                  (mntpr-nxt-chng (or (next-property-change (point) (current-buffer))
+                                      (mon-g2be 1 t))))
+              (remove-text-properties (point) mntpr-nxt-chng mntpr-pl (current-buffer))
+              (goto-char mntpr-nxt-chng)))))))
 
 ;; ;;; ==============================
 ;; ;;; :RENAMED `mon-what-face' -> `mon-get-face-at-point'
@@ -330,7 +310,7 @@ e.g. situtations where return value is:\n
  \(font-lock-constant-face font-lock-doc-face\)\n
 and DESCRIBE-IT is non-nil describe the face at car of list.\n
 :SEE-ALSO `mon-get-face-at-posn', `mon-help-faces', `mon-help-faces-basic',
-`mon-help-faces-themes'.\n►►►"
+`mon-help-faces-themes', `read-face-name'.\n►►►"
   (interactive "d\nP")
   (let ((mgfap-face 
          ;; :NOTE `get-char-property-and-overlay'
@@ -847,6 +827,7 @@ Sublists contain two index values and text-property plist of prop val pairs e.g.
 
 
 ;;; ==============================
+;;; :PREFIX "mgtpps-"
 ;;; :CREATED <Timestamp: #{2010-03-05T14:10:07-05:00Z}#{10095} - by MON KEY>
 (defun mon-get-text-properties-parse-sym (prop prop-val props-in-sym)
   "Filter text-property list for sublists containing PROP and PROP-VAL.\n
@@ -861,21 +842,21 @@ Format of PROPS-IN-SYM are as per `mon-get-text-properties-parse-buffer-or-sym'.
 :SEE-ALSO `mon-get-text-properties-region', `mon-get-text-properties-parse-buffer',
 `mon-help-text-property-functions-ext', `mon-help-text-property-functions', 
 `mon-help-text-property-properties'.\n►►►"
-  (let ((comp-type 
+  (let ((mgtpps-cmp-typ 
          (mon-get-text-properties-parse-prop-val-type-chk prop-val))
-        i-red)
-    (mapc #'(lambda (im-reding)
-              (let* ((red-prop (plist-member (caddr im-reding) prop))
-                     (red-prop-val (cadr red-prop)))
-                (when red-prop 
-                  (cond ((consp red-prop-val)
-                         (when (member prop-val red-prop-val)
-                           (push im-reding i-red)))
-                        ((and (not (null red-prop-val)) (atom red-prop-val))
-                         (when (funcall comp-type prop-val red-prop-val)
-                           (push im-reding i-red)))))))
+        mgtpps-got)
+    (mapc #'(lambda (mgtpps-L-1)
+              (let* ((mgtpps-prop-red (plist-member (caddr mgtpps-L-1) prop))
+                     (mgtpps-prop-val (cadr mgtpps-prop-red)))
+                (when mgtpps-prop-red 
+                  (cond ((consp mgtpps-prop-val)
+                         (when (member prop-val mgtpps-prop-val)
+                           (push mgtpps-L-1 mgtpps-got)))
+                        ((and (not (null mgtpps-prop-val)) (atom mgtpps-prop-val))
+                         (when (funcall mgtpps-cmp-typ prop-val mgtpps-prop-val)
+                           (push mgtpps-L-1 mgtpps-got)))))))
           props-in-sym)
-    (setq i-red (nreverse i-red))))
+    (setq mgtpps-got (nreverse mgtpps-got))))
 ;;
 ;;; :TEST-ME 
 ;;; (let ((mgtppb (mon-get-text-properties-parse-buffer 'face 'font-lock-constant-face "*MGTPFES*")))
@@ -954,8 +935,8 @@ Return value is a list of sublists of the form:\n
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
   (let (mgtpmmr-rng)
     (setq mgtpmmr-rng
-          (mapcar #'(lambda (top) 
-                      (let ((bt (butlast top 1)))
+          (mapcar #'(lambda (mgtpmmr-L-1) 
+                      (let ((bt (butlast mgtpmmr-L-1 1)))
                         (setq bt `(,(car bt) . ,(cadr bt)))))
                   text-prop-list))))
 ;;
@@ -979,7 +960,6 @@ Return value inserted in RANGE-BUFFER.\n
         str-range) 
     (setq mgtpmrs-rr 
           (with-current-buffer string-range-buffer ;;"*MGTPFES-STRING*"
-            ;; :WAS (mon-get-text-properties-region (buffer-end 0) (buffer-end 1)) ))
             (mon-get-text-properties-region (mon-g2be -1 t) (mon-g2be 1 t)) ))
     (setq mgtpmrs-str (car mgtpmrs-rr))
     (setq mgtpmrs-rr  (cadr mgtpmrs-rr))
@@ -991,11 +971,11 @@ Return value inserted in RANGE-BUFFER.\n
                         ,(substring mgtpmrs-str (car mgtpmrs-idx-pair) (cdr mgtpmrs-idx-pair))))
                   (car mgtpmrs-rr)))
     (princ mgtpmrs-rr (get-buffer range-buffer))))
-
-
+;;
 ;; (mon-get-text-properties-map-ranges-string (current-buffer) (get-buffer-create "*MGTPFES-STRING*"))
 ;; (mon-get-text-properties-parse-buffer-or-sym 'face 'font-lock-keyword-face :read-prop-buffer "mon-text-property-utils.el")
 ;; (insert-buffer-substring "mon-text-property-utils.el" 52839 52870)
+
 ;;; ==============================
 ;;; :PREFIX "mgtpb-"
 ;;; :COURTESY slime.el :WAS `slime-property-bounds'
@@ -1242,7 +1222,7 @@ Optional arg BUFFER-OR-NAME is as per `move-overlay's optional arg BUFFER.\n
 `mon-help-overlay-on-region', `mon-help-overlay-result',
 `mon-get-overlays-buffer', `mon-help-overlay-functions',
 `mon-help-text-property-functions', `mon-help-text-property-properties'.\n►►►"
-  (remove-overlays (buffer-end 0) (buffer-end 1) overlay-prop overlay-val))
+  (remove-overlays (mon-g2be -1 t) (mon-g2be 1 t) overlay-prop overlay-val))
 
 
 ;;; ==============================
@@ -1326,8 +1306,9 @@ Optional arg BUFFER-OR-NAME is as per `move-overlay's optional arg BUFFER.\n
 
  
 ;; Local Variables:
-;; generated-autoload-file: "./mon-loaddefs.el"
 ;; mode: EMACS-LISP
+;; coding: utf-8
+;; generated-autoload-file: "./mon-loaddefs.el"
 ;; End:
 
 ;;; ====================================================================

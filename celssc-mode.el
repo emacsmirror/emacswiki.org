@@ -7,9 +7,9 @@
 ;; Copyright Author: Olexandr Sydorchuk <olexandr_syd [at] users dot sourceforge dot net>.
 ;; Created: Sun Dec  7 22:34:36 2008
 ;; Version: 
-;; Last-Updated: Tue Dec  9 11:08:46 2008 (7200 EET)
+;; Last-Updated: Wed Nov 24 22:16:39 2010 (0 UTC)
 ;;           By: Olexandr Sydorchuk
-;;     Update #: 2
+;;     Update #: 3
 ;; URL: 
 ;; Keywords: celestia major-mode
 ;; Compatibility: 
@@ -37,6 +37,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
+;; 24-Nov-2010    Olexandr Sydorchuk  
+;;    Fix indent
 ;; 9-Feb-2009    Olexandr Sydorchuk  
 ;;    Some highlight of patch for ScriptedOrbits 
 ;;    (http://www.shatters.net/forum/viewtopic.php?f=9&t=13428)
@@ -360,7 +362,7 @@
                 (progn
                   (setq cur-indent (current-indentation))
                   (setq not-indented nil))
-	      (if (looking-at "^[ \t]*[a-zA-Z0-9 \t]*\\({\\|\\[\\)$")
+	      (if (looking-at "^[ \t]*[a-zA-Z0-9 \t]*\\({\\|\\[\\)\\s-*$")
                   (progn
                     (setq cur-indent (+ (current-indentation) tab-width))
                     (setq not-indented nil))

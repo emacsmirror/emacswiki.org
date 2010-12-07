@@ -134,9 +134,9 @@ My .emacs:
  '(epa-file-cache-passphrase-for-symmetric-encryption t)
  '(inhibit-startup-screen nil)
  '(major-mode (quote text-mode))
- '(org-agenda-custom-commands (quote (("d" todo "DELEGATED" nil) ("c" todo "DONE|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "<[^>
+ '(org-agenda-custom-commands (quote (("x" "My agenda" agenda "" ((org-agenda-ndays 7) (org-agenda-skip-function (quote my-org-skip-sunrise)))) ("d" todo "DELEGATED" nil) ("c" todo "DONE|CANCELLED" nil) ("w" todo "WAITING" nil) ("W" agenda "" ((org-agenda-ndays 21))) ("A" agenda "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote notregexp) "\\=.*\\[#A\\]"))) (org-agenda-ndays 1) (org-agenda-overriding-header "Today's Priority #A tasks: "))) ("u" alltodo "" ((org-agenda-skip-function (lambda nil (org-agenda-skip-entry-if (quote scheduled) (quote deadline) (quote regexp) "<[^>
 ]+>"))) (org-agenda-overriding-header "Unscheduled TODO entries: "))))))
- '(org-agenda-files (quote ("~/todo.org")))
+ '(org-agenda-files (quote ("~/todo.org" "C:/JOBS/1616-07/SAT_DM.org" "C:/JOBS/DEV/SSDev/SSDFC.org")))
  '(org-agenda-ndays 7)
  '(org-agenda-show-all-dates t)
  '(org-agenda-skip-deadline-if-done t)
@@ -150,6 +150,7 @@ My .emacs:
  '(org-log-done (quote time))
  '(org-modules (quote (org-bbdb org-bibtex org-crypt org-docview org-gnus org-info org-jsinfo org-irc org-mew org-mhe org-rmail org-vm org-wl org-w3m)))
  '(org-mouse-features (quote (yank-link activate-stars activate-bullets activate-checkboxes)))
+ '(org-refile-targets (quote ((org-agenda-files :maxlevel . 1) (nil :maxlevel . 1))))
  '(org-remember-store-without-prompt t)
  '(org-remember-templates (quote ((116 "* TODO %?
   %u" "~/todo.org" "Tasks") (110 "* %u %?" "~/notes.org" "Notes"))))

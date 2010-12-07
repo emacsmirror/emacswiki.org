@@ -35,6 +35,11 @@ This file requires the following external programs to work:
 
         for fetching the name of the emacs window, and handing it to recordmydesktop
 
+----
+Are there any versions or analogs of these programs for Windows/Cygwin?
+
+[new]
+Don't know, but you can use "wink" on Windows, see EmacsScreencasts.
 
 ----
 CategoryHelp

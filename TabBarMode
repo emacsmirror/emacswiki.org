@@ -204,6 +204,30 @@ and I removed the when stuff:
 
 --yswzing
 
+==Put most buffers into one group==
+
+See http://www.ficml.org/jemimap/wordpress/2004/10/11/tabbar/
+
+==Show buffers in the current directory==
+
+I have too many buffers to reasonably put them all into tabbar at the same time, and I wanted to group by project instead of by major-mode, so I use this:
+
+ (setq tabbar-buffer-groups-function
+     (lambda (buffer)
+   "Put all files in the same directory into the same tab bar"
+   (with-current-buffer (get-buffer buffer)
+     (let ((dir (expand-file-name default-directory)))
+       (cond ((member (buffer-name) '("*Completions*"
+                                      "*scratch*"
+                                      "*Messages*"
+                                      "*Ediff Registry*"))
+              (list "#misc"))
+             ((string-match-p "/.emacs.d/" dir)
+              (list ".emacs.d"))
+             (t (list dir)))))))
+
+Certain buffers get put into the #misc group; everything under <code>~/.emacs.d/</code> gets put into one group, and everything else gets put into a group with its directory, so that all files in that directory (and associated buffers like compilation) get put together. For multi-directory projects I plan to add special cases like the one for <code>.emacs.d</code> to group buffers under the parent directory. --AmitPatel
+
 ==Questions and Answers==
 
 Where is it on the GNU emacs CVS site? I was unable to find it (but have to confess to not being interested in spending all afternoon looking for it...).

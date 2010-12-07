@@ -41,7 +41,7 @@
 ;; MACROS:
 ;; `mon-hash-get-items',`mon-hash-get-values', `mon-hash-get-symbol-keys',
 ;; `mon-hash-get-keys', `mon-hash-has-key', `mon-hash-get-string-keys',
-;; `cl-put-hash',
+;; `cl-put-hash', `mon-hash-get-symbol-name-if',
 ;;
 ;; METHODS:
 ;;
@@ -158,12 +158,145 @@
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
+
+;;; ==============================
+;;; :CHANGESET 2331
+;;; :CREATED <Timestamp: #{2010-11-30T20:53:45-05:00Z}#{10482} - by MON KEY>
+(defun mon-hash-get-symbol-name-if (hash-string-or-symbol-name &optional as-cons)
+  "Like `hash-table-p' but accepts quoted symbols and strings.
+HASH-STRING-OR-SYMBOL-NAME is a quoted symbol or string satisfying 
+either `symbolp' or `mon-string-not-null-nor-zerop'.\n
+When optional arg AS-CONS is ommitted return value is one of the following:\n
+ <SYMBOL> hash-table nil\n
+Return <SYMBOL> if symbol-value of HASH-STRING-OR-SYMBOL-NAME is `hash-table-p'.
+Return the symbol `hash-table` when argument is a literal with hash-table
+notation e.g. #s(hash-table { ... } )
+Else, return value is nil.\n
+When optional arg AS-CONS is non-nil return value is a consd pair with one of
+the following formats:\n
+- Arg neither `stringp' nor `symbolp', value was `hash-table-p'
+ \(hash-table hash-table <HASHTBL>\)\n
+- Arg satisfied `symbolp', its value was `hash-table-p'
+ \(<SYMBOL> symbol <HASHTBL>\)\n
+- Arg satisfied `mon-string-not-null-nor-zerop' its value was `hash-table-p'
+ \(<SYMBOL> string <HASHTBL>\)\n
+- Arg was `symbolp' or `stringp', not `hash-table-p', its value was
+  `mon-sequence-mappable-p'
+ \(nil string  \(t . <TYPE-MAPPAPLE>\)\)
+ \(nil symbol  \(t . <TYPE-MAPPAPLE>\)\)\n
+- Arg was `symbolp' or `stringp', not `hash-table-p', its value was not
+  `mon-sequence-mappable-p' 
+ \(nil symbol  \(nil . <TYPE-NON-MAPPAPLE>\)\)
+ \(nil string  \(nil . <TYPE-NON-MAPPAPLE>\)\)\n
+- Arg was `symbolp' or `stringp', not `hash-table-p' its value was not
+  consdiered `mon-sequence-mappable-p' b/c it was either `t' or `nil'
+ \(nil string  \(nil boolean \(t t\)\)\)
+ \(nil string  \(nil boolean \(nil t\)\)\)
+ \(nil symbol  \(nil boolean \(t t\)\)\)
+ \(nil symbol  \(nil boolean \(nil t\)\)\)\n
+- Arg `symbolp' or `stringp' its value was void
+ \(nil symbol  void\)
+ \(nil string  void\)\n
+:NOTE When AS-CONS is ommitted signals an error if value of
+HASH-STRING-OR-SYMBOL-NAME is void.\n
+:EXAMPLE\n\n\(setq tt--qtd-htable \(make-hash-table\)\)\n
+\(hash-table-p tt--qtd-htable\)
+\(hash-table-p 'tt--qtd-htable\)
+\(hash-table-p \"tt--qtd-htable\"\)
+
+\(mon-hash-get-symbol-name-if 'tt--qtd-htable\)
+\(mon-hash-get-symbol-name-if \"tt--qtd-htable\"\)
+\(mon-hash-get-symbol-name-if tt--qtd-htable\)
+
+\(mon-hash-get-symbol-name-if 'tt--qtd-htable t\)
+\(mon-hash-get-symbol-name-if \"tt--qtd-htable\" t\)
+\(mon-hash-get-symbol-name-if tt--qtd-htable t\)
+
+\(setq tt--qtd-htable '\(a b c d\)\)
+
+\(mon-hash-get-symbol-name-if 'tt--qtd-htable\)
+\(mon-hash-get-symbol-name-if \"tt--qtd-htable\"\)
+\(mon-hash-get-symbol-name-if tt--qtd-htable\)
+
+\(mon-hash-get-symbol-name-if 'tt--qtd-htable t\)
+\(mon-hash-get-symbol-name-if \"tt--qtd-htable\" t\)
+\(mon-hash-get-symbol-name-if tt--qtd-htable t\)
+
+\(setq tt--qtd-htable \(current-buffer\)\)
+
+\(mon-hash-get-symbol-name-if 'tt--qtd-htable t\)
+\(mon-hash-get-symbol-name-if \"tt--qtd-htable\" t\)
+\(mon-hash-get-symbol-name-if tt--qtd-htable t\)
+
+\(setq tt--qtd-htable [a b c]\)
+
+\(mon-hash-get-symbol-name-if 'tt--qtd-htable t\)
+\(mon-hash-get-symbol-name-if \"tt--qtd-htable\" t\)
+\(mon-hash-get-symbol-name-if tt--qtd-htable t\)
+
+\(unintern \"tt--qtd-htable\" obarray\)\n
+:SEE-ALSO `mon-hash-or-mappable-p', `mon-sequence-mappable-p',
+`mon-string-not-null-nor-zerop', `mon-sequence-mappable-p',
+`mon-booleanp'.\n►►►"
+  (setq as-cons
+        `(,as-cons
+          ,(or 
+            (and (eq (type-of hash-string-or-symbol-name) 'hash-table) 'hash-table)
+            (and (mon-string-not-null-nor-zerop hash-string-or-symbol-name)
+                 (funcall #'(lambda (mhgsni-L-1)
+                              (setq mhgsni-L-1 (intern-soft mhgsni-L-1 obarray))
+                              (and mhgsni-L-1
+                                   (boundp mhgsni-L-1)
+                                   (hash-table-p (symbol-value mhgsni-L-1))
+                                   mhgsni-L-1))
+                          hash-string-or-symbol-name))
+            (and (not (or (stringp hash-string-or-symbol-name)
+                          (null hash-string-or-symbol-name)
+                          (not (symbolp hash-string-or-symbol-name))
+                          (not (boundp hash-string-or-symbol-name))))
+                 (hash-table-p (symbol-value hash-string-or-symbol-name))
+                 (intern-soft (symbol-name hash-string-or-symbol-name) obarray)))))
+  (if (not (car as-cons))
+      (cadr as-cons)
+    (or (and (cadr as-cons)
+             (or (and (eq (cadr as-cons) 'hash-table)
+                      (list (cadr as-cons) 
+                            (cadr as-cons) hash-string-or-symbol-name))
+                 (list (cadr as-cons) 
+                       (type-of hash-string-or-symbol-name)
+                       (symbol-value (cadr as-cons)))))
+        (and (not (cadr as-cons))
+             (setq hash-string-or-symbol-name
+                   `(nil 
+                     ,@(case (type-of hash-string-or-symbol-name)
+                         (symbol 
+                          `(symbol 
+                            ,(setq as-cons 
+                                   (or 
+                                    (and (boundp hash-string-or-symbol-name)
+                                         (mon-sequence-mappable-p 
+                                          (symbol-value hash-string-or-symbol-name) t t))
+                                    'void))))
+                         (string 
+                          `(string 
+                            ,(and 
+                              (setq as-cons (intern-soft hash-string-or-symbol-name obarray))
+                              (setq as-cons 
+                                    (or 
+                                     (and (boundp as-cons)
+                                          (mon-sequence-mappable-p (symbol-value as-cons) t t))
+                                     'void)))))
+                         (t `(,(type-of hash-string-or-symbol-name)
+                              ,(mon-sequence-mappable-p hash-string-or-symbol-name t t))))))))))
+
+ 
 ;;; ==============================
 ;;; :COURTESY :FILE gnus-util.el
 ;;; :FROM                     -> :TO

@@ -1,4 +1,9 @@
-see PythonProgrammingInEmacs
+For information regarding using Python in Emacs,
+please see PythonProgrammingInEmacs
+
+-
+-
+-
 
 this is a very, very confusing page. It's hard to make head nor tail of what could and should be used in emacs 23 and I will try to annotate/clip this page when I know more. The whole python.el v python-mode.el thing is really messy -- RichardRiley
 
@@ -12,3 +17,5 @@ How about PythonProgrammingInEmacs --CH
 :::: Ok, I finally got around to doing it. The pages still need work though, and sorry if I clobbered any changes, I did my best :/ --CH
 
 ::::: Hi all. I'm a beginner to emacs looking to using Emacs as an IDE for python. If I type the search term "Python Emacs" in Google I end up at this page. It took me a minute to realize what I was looking at because it's quite confusing. Can you change this page so that beginner like me can find comprehensive information about Python for Emacs? Thanks - AnEmacsNewbie 
+
+:::::: This page is essentially left as a reminder of what happened to the 'PythonMode' page. The new page is PythonProgrammingInEmacs . I've made the link at the top a bit more noticable. I'm not sure whether that page is 'comprehensive' though, I think it still needs work, although it's the best starting point. -- CH

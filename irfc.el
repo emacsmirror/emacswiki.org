@@ -1164,7 +1164,8 @@ Argument TITLE-LINE-POINT is the title line point of RFC buffer after render."
     (when (re-search-forward (concat
 			      "\\([^ \t\f\r\n].*[^ \t\f\r\n]\\)"
 			      "\\(\r?\n[ \t]*[^ \t\f\r\n].*[^ \t\f\r\n]\\)*"))
-      (setq rfc-title (match-string 0)))
+      (setq rfc-title (match-string 0))
+      (setq rfc-title (replace-regexp-in-string "[\r\n\t\f ]+" " " rfc-title)))
     ;; Set RFC txt
     (when (string-match "\\(rfc[0-9]+\.txt\\)" (buffer-name))
       (setq rfc-txt (match-string 1 (buffer-name))))

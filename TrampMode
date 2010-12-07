@@ -122,6 +122,11 @@ then
 fi
 }}}
 
+''' Tramp hangs #4: UTF8 LANG'''
+
+To connect to a very old system I had to switch the remote, default LANG to a ''non''-utf8 one (in ##/etc/sysconfig/i18n##) Otherwise tramp would hang right after sending ##exec /bin/sh##. Tracing showed any utf8 LANG to somehow output extra CRs characters, causing tramp to wait the prompt forever. This could be locale bug.
+
+
 == Tips and tricks ==
 
 '''Using su to edit stuff as root'''

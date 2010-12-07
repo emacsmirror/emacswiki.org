@@ -1,6 +1,7 @@
-JuanLeónLahozGarcía has written Lisp:wdired.el which allows you to rename files by just editing the Dired buffer. This is really really great for renaming all those MP3 files :) -- especially when combined with [http://www.antisleep.com/download/elisp/gse-number-rect.el gse-number-rect] by ScottEvans.
+*Note:* This package has been included in Emacs 22.1. In a Dired buffer key `e' runs command `wdired-change-to-wdired-mode' to to make a dired buffer editable. Change the filenames as you see fit. Commit chnages to disk with `C-c C-c'.
 
-In a Dired buffer in Emacs 22, use `M-x wdired-change-to-wdired-mode' to to make a buffer writable (recent CVS versions also have this bound to `C-x C-q'). Change the filenames as you see fit and hit `C-c C-c' to make your changes permanent.
+JuanLeónLahozGarcía wrote Lisp:wdired.el which allow renaming files in the Dired buffer. This is really really great for renaming all those MP3 files :) -- especially when combined with [http://www.antisleep.com/download/elisp/gse-number-rect.el gse-number-rect] by ScottEvans.
+
 
 == Make parent directories patch ==
 Here is a small patch to make wdired create parent directories.
@@ -102,6 +103,10 @@ name and similar things.
 == Wdired and DiredPlus ==
 
 * <tt>[[wuxch-dired.el]]</tt>, <tt>[[wuxch-dired-copy-paste.el]]</tt> -– libraries that build on DiredPlus and [[WDired]]
+
+== Wdired and Sunrise Commander ==
+
+You can use Wdired in The [[Sunrise_Commander]] by pressing C-x C-q (then C-c C-c to commit, C-c C-k to cancel) 
 
 ----
 CategoryDirectories

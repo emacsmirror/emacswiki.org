@@ -24,5 +24,11 @@ topics, but that cannot be blamed on Emacs.  Poetry is mostly harmless, while
 codified, lest the energy spent forging the cage kills the bird, silencing its
 song.
 
+[new]
+Your Emacs packages gnugo, hideshow and qa can not be downloaded
+from http://www.gnuvola.org/software anymore - do they have a new home?
+
+(I mirror your packages on the [[Emacsmirror]].
+
 ----
 CategoryHomepage

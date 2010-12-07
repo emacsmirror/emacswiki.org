@@ -28,10 +28,11 @@
 ;; `mon-error-gather-peek', `mon-error-gather-finalize',
 ;; `mon-error-gather-reset', `mon-display-warning', `mon-message',
 ;; `mon-error-string-err-format', `mon-write-string',
+;; `mon-truncate-path-for-prompt', `mon-format',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
-;; `mon-error-protect',
+;; 
 ;; METHODS:
 ;;
 ;; CLASSES:
@@ -47,13 +48,15 @@
 ;; `mon-error-warn'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
-;; `write-string' -> `mon-write-string'
+;; `write-string'                             -> `mon-write-string'
+;; `mon-dir-name-truncate-for-prompt'         -> `mon-truncate-path-for-prompt'
 ;;
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
 ;;
 ;; MOVED:
+;; `mon-truncate-path-for-prompt'       <- mon-dir-utils.el
 ;;
 ;; TODO:
 ;;
@@ -120,15 +123,16 @@
 
 ;; *mon-function-object-types*
 
-(declare-function mon-booleanp                 "mon-utils" (putative-boolean))
-(declare-function mon-function-object-p        "mon-utils" (fncn-sym))
-(declare-function mon-mapcar                   "mon-utils" (mapcar-fun mapcar-lst &rest more-lsts))
-(declare-function mon-subseq                   "mon-utils" (in-seq seq-start &optional seq-end))
-(declare-function mon-equality-or-predicate    "mon-utils" (predicate arg1 arg2))
-(declare-function mon-booleanp-to-binary       "mon-utils" (maybe-a-boolean &optional return-if-not))
-(declare-function mon-string-or-null-and-zerop "mon-utils" (maybe-str-or-null-obj))
-(declare-function mon-bool-vector-to-list      "mon-utils" (bool-vec))
-(declare-function mon-list-proper-p            "mon-utils" (putatively-proper))
+(declare-function %mon-format-chk-keys         "mon-macs"      (w-keys-lst))
+(declare-function mon-booleanp                 "mon-utils"     (putative-boolean))
+(declare-function mon-function-object-p        "mon-utils"     (fncn-sym))
+(declare-function mon-equality-or-predicate    "mon-utils"     (predicate arg1 arg2))
+(declare-function mon-booleanp-to-binary       "mon-utils"     (maybe-a-boolean &optional return-if-not))
+(declare-function mon-string-or-null-and-zerop "mon-utils"     (maybe-str-or-null-obj))
+(declare-function mon-bool-vector-pp           "mon-seq-utils" (bool-vec))
+(declare-function mon-subseq                   "mon-seq-utils" (in-seq seq-start &optional seq-end))
+(declare-function mon-mapcar                   "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
+(declare-function mon-list-proper-p            "mon-seq-utils" (putatively-proper))
 
 
 ;;; ==============================
@@ -179,57 +183,6 @@ format-string's spec e.g. function is `apply'ed as:\n
 ;;   (setq *mon-message-function* 'message))
 
 ;;; ==============================
-;;; :NOTE Appears deceptively simple :O
-;;; :CHANGESET 2141
-;;; :CREATED <Timestamp: #{2010-09-17T19:17:27-04:00Z}#{10375} - by MON KEY>
-(defmacro mon-error-protect (err-arg &rest body)
-  "Signal an error inside a `condition-case' form but ignore it momentarily.\n
-The \"protected\" condidtion-case BODYFORM is evaluated with `ignore-errors'
-non-nil for the duration of BODY.\n
-When body returns normally (i.e. no errors were signaled during body) protect when
-`error` is the default handler.\n
-ERR-ARG is the form returned from the error condition handler.\n
-:EXAMPLE\n\n\(let \(pre-error\) ;; Value we want to ensure executes inside BODY
-  ;; If an error is signaled in body let us know, but delay
-  \(prog1 \(when \(eq \(mon-error-protect 
-                    'error-but-body-executed
-                    \(progn 
-                      \(setq pre-error \"pre-error got set\"\)
-                      \(error \"\"\)\)\) 'error-but-body-executed\)
-           'error-but-body-executed\)
-    ;; First show what happened inside body:
-    \(minibuffer-message pre-error\)\)\)\n
-\(mon-error-protect-PP-EXPAND-TEST 
- '\(mon-error-protect 'never-see-me\)\)\n
-\(mon-error-protect-PP-EXPAND-TEST 
- '\(mon-error-protect 'will-see-me '\(/ 0 0\)\)\)\n
-\(mon-error-protect-PP-EXPAND-TEST
- '\(let \(pre-error\) ;; Value we want to ensure executes inside body
-  ;; If an error is signaled in body let us know, but delay
-  \(prog1 \(when \(eq \(mon-error-protect 
-                    'error-but-body-executed
-                    '\(progn 
-                      \(setq pre-error \"pre-error got set\"\)
-                      \(error \"\"\)\)\) 'error-but-body-executed\)
-           'error-but-body-executed\)
-    ;; First show what happened inside body:
-    \(minibuffer-message pre-error\)\)\)\)\n
-:SEE-ALSO `report-errors', `mon-error', `mon-error-toplevel',`mon-error-gather',
-`mon-error-gather-peek', `mon-error-string-err-format', `mon-message',
-`redirect-debugging-output', `external-debugging-output', `debug-on-signal',
-`debug-on-error', `debug-ignored-errors', `signal-hook-function',
-`*mon-emacs-help-errors*', `mon-help-errors', `Info-no-error',
-`mon-help-CL-error-condition-restart'.\n►►►"
-  (let ((bdy-wrap (make-symbol "bdy-wrap")))
-    `(let ((,bdy-wrap (or ,@body t)))
-       (condition-case nil
-        (unless (ignore-errors (or (null (eval ,bdy-wrap)) t))
-          (error ""))
-      (error ,err-arg)))))
-;;
-;; (put 'mon-error-protect 'lisp-indent-function <INT>) 
-
-;;; ==============================
 (defun mon-error-toplevel (&rest args)
   "Top lovel error MON error form.\n
 When evaluated `signal's itself by passing a list containg ARGS and the error
@@ -238,7 +191,7 @@ The string on stack is retrieved via `mon-error-gather-finalize' which also
 resets the stack with `mon-error-gather-reset'.\n
 This function is called from `mon-error'.\n
 :EXAMPLE\n\n
-:SEE-ALSO `condition-case', `mon-error', `mon-error-gather',
+:SEE-ALSO `handler-case', `condition-case', `mon-error', `mon-error-gather',
 `mon-error-gather-peek', `mon-error-string-err-format', `mon-message',
 `redirect-debugging-output', `external-debugging-output', `debug-on-signal',
 `debug-on-error', `debug-ignored-errors', `signal-hook-function',
@@ -276,7 +229,7 @@ Keyword :FORMAT-ARGUMENTS a list it is applied as both the:\n
                     :format-arguments `\(,not-a-nmbr 88 i-am-an-arg-for-handler\)
                     :handler 'imaginary-hndlr\)\)
     \(mon-error-toplevel err\)\)\)\n
-:SEE-ALSO `condition-case', `mon-error-toplevel' `mon-error',
+:SEE-ALSO `handler-case', `condition-case', `mon-error-toplevel' `mon-error',
 `mon-error-gather', `mon-error-gather-peek', `mon-error-gather-finalize',
 `mon-error-gather-reset', `*mon-error-gather*', `mon-error-string-err-format',
 `mon-message', `mon-help-errors', `*mon-emacs-help-errors*',
@@ -319,7 +272,7 @@ Keyword :FORMAT-ARGUMENTS a list it is applied as both the:\n
 ;; `----
 
 
-
+;;; ==============================
 (defun mon-error-string-err (function error-locus handler)
   "
 :EXAMPLE\n\n
@@ -333,7 +286,7 @@ Keyword :FORMAT-ARGUMENTS a list it is applied as both the:\n
 (put 'mon-error-string 'error-conditions '(mon-error-toplevel))
 
 
-
+;;; ==============================
 ;; (defun mon-error-string-fun-check-and-format (fun-name)
 ;; (let 
 ;; (format (concat ":FUNCTION `%s' "
@@ -458,7 +411,6 @@ messages.\n
 `mon-help-CL-error-condition-restart', `report-errors'.\n►►►"
     (push arg *mon-error-gather*))
 
-
 ;;; ==============================
 ;;; :CHANGESET 2141
 ;;; :CREATED <Timestamp: #{2010-09-17T19:18:26-04:00Z}#{10375} - by MON KEY>
@@ -536,207 +488,413 @@ Reset it with `mon-error-gather-reset'.\n
 ;; (concat ":FUNCTION `%s' "
 ;;         "-- arg %s does not satisfy `stringp', got: %S")
 
+ 
+;;; ==============================
+;;; :CHANGESET 2353
+;;; :CREATED <Timestamp: #{2010-12-06T12:56:39-05:00Z}#{10491} - by MON KEY>
+(defun mon-format (&rest fmt-keys)
+  "Like `format' but supports keywords and multi string/arg sequences.\n
+Keywords supported: :w-fun :w-spec w-args w-delim\n
+Keyword W-FUN is a symbol naming a function to apply to W-SPEC and W-ARGS.
+When omitted defaults to `format'
+Siganl an error if it does not satisfy `mon-function-object-p'.\n
+Keyword W-SPEC is a string, or list of strings to pass to message W-MSG-FUN it
+is coalesced as if by `mapconcat'.\n
+Keyword W-ARGS is an atom or sequence of arguments satisyfying
+`mon-sequence-mappable-p' and is applied as arguments to a `format' spec.\n
+Keyword W-DELIM is a string to delimit _prefix_ of each line of return value by.\n
+:EXAMPLE\n
+\(mon-format :w-fun #'error 
+            :w-spec '\(\":FUNCTION `mon-format' \" 
+                      \"-- keyword :W-FUN does not satisfy \"
+                      \"`mon-function-object-p', got: %S\"\)
+            :w-args 'some-fun-that-is-not\)\n
+\(mon-format :w-spec \(concat \":FUNCTION `mon-format' \" 
+                            \"-- example message with arg `%s' and arg `%d'\"\)
+            :w-args '(bubba 666\)\)\n
+\(mon-format :w-spec '\(\":FUNCTION `mon-format' \" 
+                      \"-- example message with arg `%s' and arg `%d'\"\)
+            :w-args '\(bubba 666\)\)\n
+\(mon-format :w-msg-fun '\(lambda \(&rest x\) 
+                          \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+            :w-spec '\(\":FUNCTION `mon-format' \" \"-- `%d'\"\) 
+            :w-delim \"\\n\"
+            :w-args 666\)\n
+\(mon-format :w-msg-fun #'\(lambda \(&rest x\) 
+                           \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+            :w-spec \":FUNCTION `mon-format' -- `%d'\" 
+            :w-args 666\)\n
+\(mon-format :w-msg-fun #'\(lambda \(&rest x\) 
+                           \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+            :w-spec '\(\":FUNCTION `mon-format' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"\)
+            :w-delim \"\\n-- \"
+            :w-args \(number-sequence 8 10\)\)\n
+\(mon-format :w-spec [\":FUNCTION `mon-format' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"]
+            :w-delim \"\\n-- \"
+            :w-args  \(number-sequence 8 10\)\)\n
+\(mon-format :w-spec [\":FUNCTION `mon-format' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"]
+            :w-delim \"\\n-- \"
+            :w-args  `[,@\(number-sequence 8 10\)]\)\n
+\(mon-format :w-msg-fun '\(lambda \(&rest x\) 
+                          \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
+            :w-spec `\(\":FUNCTION `mon-format' \" 
+                      ,\(concat \"example message\" \" with arg `%s' \"\)
+                      \"and arg `%d'\"\)
+            :w-delim \"  \\n-- \"
+            :w-args `[bubba ,\(+ 8 666\)]\)
+
+As a special case, when keyword W-SPEC is a bool-vector, return value has a
+somewhat different semantics, and its final value depends on the interaction of
+W-ARGS and W-DELIM.
+
+When W-ARGS is non-nil, it should be a sequence of integer indexes into a
+bool-vector greater than length 0. These are mapped and displayed according to
+the boolean value at each integer index such that each generateds a
+corresponding line formatted in return value having as either:\n
+ :at-index <INT> :with-value \(t . 1\)
+ :at-index <INT> :with-value \(nil . 0\)
+
+The consed pair of the second key `:with-value` corresponds to the boolean
+value of a bool-vector index. These are prsented in both t|nil and 0|1
+representation.
+
+When W-ARGS is non-nil the first two elements of return value will always
+contain the folloowing keys:\n
+ `:bit-string` and `:bool-vector`
+
+The first, `:bit-string`, will appear on first line of return value and is always
+suffixed as either:\n
+ :bit-string #b{...}
+ :bit-string #*{...}
+
+The #b{...} is for bool-vectors with length less than 29.
+This notation is readable by Emacs and Common Lisp as a binary number.
+
+The #*{...} is returned for bool-vectors with length greater than 29.
+This notation is readable by Common Lisp as a bit vector.
+
+The second, `:bool-vector` will appear on the second line of return value and is
+always suffixed as:\n
+  :bool-vector #&<INT>\"{....}\"
+
+This is a readable bool-vector for use with Emacs lisp returned as if by `prin1'.
+
+When W-ARGS is non-nil and W-DELIM is ommited or its value is `t', the default
+prefix for each line of return value is \" \".
+
+When W-ARGS is non-nil and W-DELIM is non-nil, it is a string to prepend to each
+line of return value.  Its first character should be a \\n followed by any
+number of additional characters. However, the first line of return value will
+not be preceded by a leading \\n, it is stripped but any remaining chars remain.
+
+When W-ARGS is ommited and W-DELIM is ommitted return value is a single line
+without trailing whitespace containing the appropriate bit-vector or binary
+number form with either the #*{...} or #b{...} notation.
+
+When W-ARGS is ommited and W-DELIM it `t' return value is as the default above
+with each line prepended with \" \" with and with line one containing an
+appropriate keys/value pair either:\n
+  :bit-string #b{...}
+  :bit-string #*{...}
+
+and line two containing the key/value pair for a readable bool-vector, e.g.:\n
+  :bool-vector #&<INT>\"{....}\"
+
+When W-ARGS is ommited and W-DELIM is the empty string \"\" return value is as
+above but line one does not contain the `:bit-string' prefix nor leading
+whitespace and instead contains only a bit-vector or binary number form with
+either the #*{...} or #b{...} notation.
+
+When W-ARGS is ommited and W-DELIM is non-nil and neither `t' nor the
+empty-string, it should be a string value to prepend to both the first and
+second line of return value. Its first character should be a \\n followed by any
+number of additional characters. Again, the first line of return value will not
+be preceded by a leading \\n, it is stripped but any remaining chars remain.
+
+:EXAMPLE\n
+\(mon-format :w-spec \(make-bool-vector 18 t\)\)\n
+\(mon-format :w-spec \(make-bool-vector 38 t\) :w-delim \"\"\)\n
+\(mon-format :w-spec \(make-bool-vector 28 t\) :w-delim t\)\n
+\(mon-format :w-spec \(make-bool-vector 31 t\) :w-delim \"\\n-- \"\)
+\(mon-format :w-spec \(make-bool-vector 31 t\) :w-args '\(8 13 18 22 26\)\)\n
+\(mon-format :w-spec \(make-bool-vector 18 t\) :w-delim \"\\n ---+ \"\)\n
+\(mon-format :w-spec \(make-bool-vector 31 t\) :w-delim \"\\n-- \"\)\n
+\(mon-format :w-spec \(let \(\(bv \(make-bool-vector 18 t\)\)\)
+                       \(dolist \(i \(number-sequence 1 18 3\) bv\)
+                         \(aset bv i nil\)\)\)
+             :w-delim \"\\n ---+ \" 
+             :w-args \(number-sequence 0 17\)\)\n
+\(mon-format :w-spec \(make-bool-vector 31 t\) 
+             :w-args [8 13 18 22 26]
+             :w-delim \"\\n ^_^ \"\)\n
+:SEE-ALSO `mon-message', `mon-display-warning', `mon-sequence-mappable-p',
+`mon-bool-vector-pp', `mon-booleanp-to-binary', `mon-string-or-null-and-zerop',
+`mon-booleanp', `mon-string-not-null-nor-zerop', `mon-string-or-null-and-zerop',
+`mon-list-proper-p', `mon-subseq', `mon-mapcar', `vectorp', `stringp',
+`bool-vector-p', `*mon-function-object-types*'.\n►►►
+\n(fn [:W-FUN <VALUE> :W-SPEC <VALUE> :W-ARGS <VALUE> :W-DELIM <VALUE>])"
+  (destructuring-bind (w-fun w-spec w-args w-delim)
+      (%mon-format-chk-keys fmt-keys)
+    (apply
+     (or (and (null w-fun) #'format)
+         ;; :TODO Convert macro args to lambda forms.
+         (and (memq (mon-function-object-p w-fun)
+                    (remove 'macro *mon-function-object-types*)) 
+              w-fun)
+         (mon-format :w-fun #'error 
+                     :w-spec '(":FUNCTION `mon-format' " 
+                               "-- keyword :W-FUN does not satisfy "
+                               "`mon-function-object-p', got: %S")
+                     :w-args w-fun))
+     (or 
+      ;; :w-spec is `stringp' or `bool-vector-p'
+      (and 
+       (or 
+        ;; w-spec is a string
+        (and (stringp w-spec) w-spec)
+        ;; w-spec is a bool-vector
+        ;; Why not? Could be interesting using bool-vector to
+        ;; indicate where in an EIEIO class vector something went awry.
+        ;; Also, bool-vectors have nice compact read/print format.
+        (and (bool-vector-p w-spec)               
+             (or (and (not w-args) 
+                      (setq w-args (mon-bool-vector-pp w-spec))
+                      (setq w-spec `(,(elt w-args 1)
+                                     ,(format "%s %S" 
+                                              (car (memq :bool-vector w-args))
+                                              (cadr (memq :bool-vector w-args)))))
+                      (or (setq w-args nil) t))
+                 (and w-args
+                      ;; W-ARGS is either a proper list or a vector else signal
+                      (or (or (mon-list-proper-p w-args)
+                              (and (vectorp w-args)
+                                   ;; w-args gets `push'/`pop'd below                                        
+                                   (setq  w-args (append w-args nil))))
+                          ;; (error (concat 
+                          ;;         ":FUNCTION `mon-format' "
+                          ;;         "--  with keyword :W-SPEC `bool-vectorp' and "
+                          ;;         "keyword :W-ARGS not `mon-list-proper-p' or `vectorp', " 
+                          ;;         "got: %S")
+                          ;;        w-args)
+                          (mon-format :w-fun #'error 
+                                      :w-spec '(":FUNCTION `mon-format' "
+                                                "--  with keyword :W-SPEC `bool-vectorp' and "
+                                                "keyword :W-ARGS not `mon-list-proper-p' or `vectorp', " 
+                                                "got: %S")
+                                      :w-args w-args))
+                      (setq w-spec (mon-bool-vector-pp w-spec))
+                      (let* ((mmsg-bv (cadr (memq :bool-vector w-spec)))
+                             ;; Don't try to access an elt outside the bv's indexable range
+                             (mmsg-idx-bnd  (length mmsg-bv)))
+                        (setq mmsg-idx-bnd 
+                              (mapcar #'(lambda (mmsg-L-0) 
+                                          ;; `mon-bool-vector-pp' signals when (= (length  bv) 0)
+                                          ;; IOW don't worry about the 0 length bv bugs, just make
+                                          ;; sure we have `wholenump' that doesn't exceed her bounds.
+                                          (let (mmsg-L-lcl1)
+                                            (when (or (and (wholenump mmsg-L-0) (< mmsg-L-0 mmsg-idx-bnd))
+                                                      ;; (error 
+                                                      ;;  (concat 
+                                                      ;;   ":FUNCTION `mon-format' "
+                                                      ;;   " -- keyword :W-ARGS has elt not `wholenump' "
+                                                      ;;   " when keyword :W-SPEC `bool-vectorp', got: %S")
+                                                      ;;  w-args)
+                                                      (mon-format 
+                                                       :w-fun #'error
+                                                       :w-spec '(":FUNCTION `mon-format' "
+                                                                 " -- keyword :W-ARGS has elt not `wholenump' "
+                                                                 " when keyword :W-SPEC `bool-vectorp', got: %S")
+                                                       :w-args w-args))
+                                              (setq mmsg-L-lcl1 (aref mmsg-bv mmsg-L-0))
+                                              (setq mmsg-L-lcl1 
+                                                    `(,mmsg-L-0 
+                                                      (,mmsg-L-lcl1 . ,(mon-booleanp-to-binary mmsg-L-lcl1)))))))
+                                      w-args))
+                        ;; Record how many "w-args" we got. We end up w/ a list with this format: 
+                        ;; (10 (1 (t . 1)) (4 (nil . 0)) (7 (nil . 0)) { ... } )
+                        (setq w-args (push (length mmsg-idx-bnd) mmsg-idx-bnd))
+                        ;; Now map over the W-DELIM string
+                        (and (or (and w-delim (stringp w-delim)
+                                      ;; Hold onto the W-DELIM arg for when everything comes back together
+                                      (setq w-delim (cons ":at-index %2d :with-value %S" w-delim)))
+                                 (and (or (mon-string-or-null-and-zerop w-delim)
+                                          ;; w-delim was `t' - ignore it.
+                                          (and (car (mon-booleanp w-delim))
+                                               (or (setq w-delim nil) t))
+                                          ;; disregard any non-string
+                                          (not (stringp w-delim)))
+                                      ;; Putting "w-delim-ommitted\n " so we can prevent
+                                      ;; putting "\n " at beggining of return string.
+                                      (setq w-delim (cons ":at-index %2d :with-value %S" "w-delim-ommitted\n  "))))
+                             ;; Stay inside the `or' branch build up a list
+                             ;; of format strings using W-DELIM and W-ARGS
+                             (setcar w-delim (make-list (pop w-args) (car w-delim)))
+                             (prog2
+                                 ;; Re-use mmsg-idx-bnd to store mapped value
+                                 (setq mmsg-idx-bnd (mon-mapcar #'(lambda (frmt-delims frmt-w-args)
+                                                                    (apply #'format `(,frmt-delims 
+                                                                                      ,(car frmt-w-args) 
+                                                                                      ,(cadr frmt-w-args))))
+                                                                (car w-delim) w-args))
+                                 (setq w-spec (concat 
+                                               ;; :NOTE Following is to allow using a
+                                               ;; user-supplied delim on every line
+                                               ;; including first. Otherwise, all lines
+                                               ;; prefixed with two spaces
+                                               (or (and (string-match-p "w-delim-ommitted\n  " (cdr w-delim))
+                                                        (setcdr w-delim (replace-regexp-in-string "w-delim-ommitted" "" (cdr w-delim)))
+                                                        "  ")
+                                                   (replace-regexp-in-string "^\n" "" (cdr w-delim)))
+                                               ;; (replace-regexp-in-string "^\n" "" (cdr w-delim))
+                                               ;;
+                                               ;; :binary|:bit-string "#[b*]101001 {...} 
+                                               (apply #'format "%s %s%s" `(,@(mon-subseq w-spec 0 2) ,(cdr w-delim) ))
+                                               ;; `mon-bool-vector-pp' has variable length return value
+                                               ;;  We already have hold of its last elt, so use it.
+                                               (format ":bool-vector %S%s" mmsg-bv (cdr w-delim))
+                                               ;; "\n  :at-index %d :with-value %S" {...}
+                                               (mapconcat #'identity mmsg-idx-bnd (cdr w-delim)) ))
+                               (setq w-args nil)
+                               (setq w-delim 'bool-vector))))))))
+       ;; W-DELIM was provided and not a zero length string so map it.
+       (or (and (or (and (not (eq w-delim 'bool-vector))
+                         ;; If W-SPEC is a list it was originally abool-vector.
+                         (mon-list-proper-p w-spec)
+                         (or ;; it was a boolean t
+                          (and (car (mon-booleanp w-delim))
+                               ;; This for congruence with the return value when w-args was non-nil. 
+                               ;; e.g. every line is preceded by with 
+                               ;;  " :colon-pfxd-key <VALUE>" 
+                               ;; Else, we leave first line as: 
+                               ;;  "#b{...}" or "#*{...}"
+                               ;; and callers can still easily parse the bit-rep up to the first EOL
+                               (setcar w-spec (concat "  :bit-string " (car w-spec)))
+                               (setq w-delim "\n  "))
+                          (and (mon-string-not-null-nor-zerop w-delim)
+                               (setcar w-spec 
+                                       (concat 
+                                        (replace-regexp-in-string "^\n" "" w-delim)
+                                        ":bit-string " (car w-spec))))
+                          ;; It was null or zero length string
+                          (and (mon-string-or-null-and-zerop w-delim)
+                               ;; If it was null return only the one line as
+                               ;; "#b{...}" or "#*{...}" 
+                               ;; else return two lines, only second is prefixed:
+                               ;; "#b{...}"
+                               ;; :bit-vector #&{...}
+                               (or (and (null w-delim)
+                                        (setq w-delim "")
+                                        (setq w-spec (car w-spec)))
+                                   (setq w-delim "\n")))))
+                    ;; Don't look further we've already handled the bool-vector
+                    (not (eq w-delim 'bool-vector)))
+                (or ;; W-DELIM was boolean `t'
+                 (and (cadr (mon-booleanp w-delim)) (setq w-delim ""))
+                 ;; If we're here its not null so the next test guarantees a string 
+                 w-delim)
+                (or (mon-string-or-null-and-zerop w-delim)
+                    ;; allow "" but delay so we error when not `stringp'
+                    (or (stringp w-delim)
+                        ;; W-DELIM is not something other than `stringp' so signal.
+                        (mon-error-string-err-format 
+                         "mon-error-string-err-format" "w-delim" w-delim t)))
+                ;; When W-SPEC is `bool-vector-p' it was converted to a list above.
+                ;; This is the only way :w-spec can possibly satisfy `mon-list-proper-p'
+                ;; inside this branch. So, get the value of `:binary` or `:bin-string`
+                ;; keyword either:  "#b{...}" or "#*{...}"
+                (mapconcat #'identity 
+                           (or (and (mon-list-proper-p w-spec)
+                                    w-spec)
+                               (list (or w-spec "")))
+                           w-delim))
+           w-spec))
+      ;; W-SPEC is a proper list or `vectorp'
+      (and  (or (mon-list-proper-p w-spec)
+                (eq (type-of w-spec) 'vector))
+            ;; It is so make sure each elt is `stringp' before mapping
+            (or (= (apply #'+ (mapcar #'(lambda (mmsg-L-1)
+                                          (mon-booleanp-to-binary (not (stringp mmsg-L-1))))
+                                      w-spec)) 
+                   0)
+                ;; :TODO Convert to `mon-error-string-err-format' once finalized.
+                ;; Currently can't specify the second concated portion of generated message
+                ;; (mon-error-string-err-format "mon-error-string-err-format" "w-spec" w-spec t)
+                ;; :WAS (error (concat ":FUNCTION `mon-format' " 
+                ;;                "-- element list supplied for keyword :W-SPEC "
+                ;;                "does not satisfy `stringp', got: %S") w-spec))
+                (mon-format :w-fun #'error
+                            :w-spec '(":FUNCTION `mon-format' " 
+                                      "-- element list supplied for keyword :W-SPEC "
+                                      "does not satisfy `stringp', got: %S")
+                            :w-args w-spec))
+            ;; If W-DELIM was provided and `stringp' use it.
+            ;; If we got `t' and W-ARGS is null use "\n" as delim.
+            ;; If not provided, or , or its a zero length string map `""`.
+            ;; Else, its some other thing - signal error.
+            (mapconcat #'identity w-spec 
+                       (or (and (stringp w-delim) w-delim)
+                           (or (and (mon-string-or-null-and-zerop w-delim) "")
+                               (and (car (mon-booleanp w-delim))
+                                    (or (and (not w-args) "\n")
+                                        "")))
+                           (and w-delim (mon-error-string-err-format 
+                                         "mon-error-string-err-format" "w-delim" w-delim t))))))
+     ;; Finish up for the outer apply form
+     (or (and (mon-list-proper-p w-args) w-args)
+         (and (vectorp w-args) (append w-args nil))
+         (and (atom w-args) (list w-args))))))
+ 
 ;;; ==============================
 ;;; :CHANGESET 2174
 ;;; :CREATED <Timestamp: #{2010-10-02T11:10:54-04:00Z}#{10396} - by MON KEY>
-(defun* mon-message (&key w-spec w-args w-delim (w-msg-fun *mon-message-function*))
-  "Like `message' but with special support for multi-line messages.\n
-Single-line messages use the echo area.\n
-W-SPEC is a string of list of strings to pass to message function.
-When W-SPEC is a list of strings it is coalesced as if by `mapconcat'.
-and FORMAT-ARGUMENTS are as per `format's STRING and
-OBJECTS arguments.\n
-When FORMAT-CONTROL-STRING is a 
-Optional arg W-MESSAGE-FUNCTION is a symbol naming a function to apply to
-FORMAT-CONTOL-STRING's and FORMAT-ARGUMENTS when omitted defaults to value of
-variable `*mon-message-function*'.\n
+(defun* mon-message (&key msg-spec msg-args msg-delim (msg-fun *mon-message-function*))
+  "Like `message' but supports keyword args and multi-line delimited messages.\n
+Keywords supported: :msg-fun :msg-spec :msg-args :msg-delim\n
+Keywords are as those of `mon-format' and have the equivalent semantcis as:\n
+ :w-fun :w-spec :w-args :w-delim\n
+Keyword MSG-MSG-FUN is a symbol naming a function to apply to MSG-SPEC and MSG-ARGS.
+When omitted defaults to value of variable `*mon-message-function*'.
+Siganl an error if it does not satisfy `mon-function-object-p'.\n
+Keyword MSG-SPEC is a string, or list of strings to pass to message MSG-MSG-FUN it
+is coalesced as if by `mapconcat'.\n
+Keyword MSG-ARGS is an atom or sequence of arguments satisyfying
+`mon-sequence-mappable-p' and is applied as arguments to a `format' spec.\n
+Keyword MSG-DELIM is a string to delimit _prefix_ of each line of return value by.\n
 :EXAMPLE\n
-\(mon-message :w-spec \(concat \":FUNCTION `mon-message' \" 
+\(mon-message  :msg-spec '\(\":FUNCTION `mon-message' \" \"-- `%d'\"\) 
+              :msg-delim \"\\n\"
+              :msg-args 666\)\n
+\(mon-message :msg-fun #'minibuffer-message
+             :msg-spec \(concat \":FUNCTION `mon-message' \" 
                              \"-- example message with arg `%s' and arg `%d'\"\)
-             :w-args '(bubba 666\)\)\n
-\(mon-message :w-spec '\(\":FUNCTION `mon-message' \" 
-                         \"-- example message with arg `%s' and arg `%d'\"\)
-             :w-args '\(bubba 666\)\)\n
-\(mon-message  :w-msg-fun '\(lambda \(&rest x\) 
-                              \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
-              :w-spec '\(\":FUNCTION `mon-message' \" \"-- `%d'\"\) 
-              :w-delim \"\\n\"
-              :w-args 666\)\n
-\(mon-message :w-msg-fun #'\(lambda \(&rest x\) 
-                              \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
-             :w-spec \":FUNCTION `mon-message' -- `%d'\" 
-             :w-args 666\)\n
-\(mon-message  :w-msg-fun #'\(lambda \(&rest x\) 
-                             \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
-              :w-spec '\(\":FUNCTION `mon-message' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"\)
-              :w-delim \"\\n-- \"
-              :w-args \(number-sequence 8 10\) \)\n
-\(mon-message :w-spec [\":FUNCTION `mon-message' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"]
-             :w-delim \"\\n-- \"
-             :w-args  \(number-sequence 8 10\)\)\n
-\(mon-message :w-spec [\":FUNCTION `mon-message' \" \"bubba-%d\" \"bubba-%d\" \"bubba-%d\"]
-             :w-delim \"\\n-- \"
-             :w-args  `[,@\(number-sequence 8 10\)]\)\n
-\(mon-message :w-msg-fun '\(lambda \(&rest x\) 
-                              \(with-output-to-string \(princ \(apply 'format x\)\)\)\)
-            :w-spec `\(\":FUNCTION `mon-message' \" 
-                          ,\(concat \"example message\" \" with arg `%s' \"\)
-                           \"and arg `%d'\"\)
-            :w-delim \"  \\n-- \"
-            :w-args `[bubba ,\(+ 8 666\)]\)\n
-\(mon-message :w-spec \(make-bool-vector 18 t\)\)\)\n
-\(mon-message :w-spec \(make-bool-vector 31 t\) :w-args '\(8 13 18 22 26\)\)\n
-\(mon-message :w-spec \(make-bool-vector 18 t\) :w-delim \"\\n ---+ \"\)\n
-\(mon-message :w-spec \(make-bool-vector 31 t\) :w-delim \"\\n-- \"\)\n
-\(mon-message :w-spec \(make-bool-vector 31 t\) 
-             :w-args [8 13 18 22 26]
-             :w-delim \"\\n ^_^ \"\)\n
-:SEE-ALSO `mon-display-warning'.\n►►►"
-  (apply 
-   (or (and (eq w-msg-fun *mon-message-function*) w-msg-fun)
-       (and (memq (mon-function-object-p w-msg-fun)
-                  ;; Don't bother with `apply' on macros
-                  (remove 'macro *mon-function-object-types*)) 
-            w-msg-fun)
-       (error (concat ":FUNCTION `mon-message' " 
-                      "-- keyword :W-MSG-FUN does not satisfy `mon-function-object-p', got: %S")
-              w-msg-fun))
-   (or 
-    ;; :w-spec is `stringp' or `bool-vector-p'
-    (and (or 
-          ;; w-spec is a string
-          (and (stringp w-spec) w-spec)
-          ;; w-spec is a bool-vector
-          ;; Why not? Could be interesting using boole-vector to
-          ;; indicate where in an EIEIO class vector something went awry.
-          ;; The also, have nice compact read/print format.
-          (and (bool-vector-p w-spec)               
-               (or (and (not w-args) (setq w-spec (mon-bool-vector-to-list w-spec)))
-                   (and w-args
-                        ;; w-args is either a proper list or a vector else signal
-                        (or (or (mon-list-proper-p w-args)
-                                (and (vectorp w-args)
-                                     ;; w-args gets `push'/`pop'd below                                        
-                                     (setq  w-args (append w-args nil))))
-                            (error (concat 
-                                    ":FUNCTION `mon-message' "
-                                    "--  with keyword :W-SPEC `bool-vectorp' and "
-                                    "keyword :W-ARGS not `mon-list-proper-p' or `vectorp'" 
-                                    ",got: %S")
-                                   w-args))
-                        (setq w-spec (mon-bool-vector-to-list w-spec))
-                        (let* ((mmsg-bv (cadr (memq :bool-vector w-spec)))
-                               ;; Don't try to access an elt outside the bv's indexable range
-                               (mmsg-idx-bnd  (length mmsg-bv)))
-                          (setq mmsg-idx-bnd 
-                                (mapcar #'(lambda (mmsg-L-0) 
-                                            ;; `mon-bool-vector-to-list' signals when (= (length  bv) 0)
-                                            ;; IOW don't worry about the 0 length bv bugs, just make
-                                            ;; sure we have `wholenump' that doesn't exceed her bounds.
-                                            (let (mmsg-L-lcl1)
-                                              (when (or (and (wholenump mmsg-L-0) (< mmsg-L-0 mmsg-idx-bnd))
-                                                        (error 
-                                                         (concat 
-                                                          ":FUNCTION `mon-message' "
-                                                          " -- keyword :W-ARGS has elt not `wholenump' "
-                                                          " when keyword :W-SPEC `bool-vectorp', got: %S")
-                                                         w-args))
-                                                (setq mmsg-L-lcl1 (aref mmsg-bv mmsg-L-0))
-                                                (setq mmsg-L-lcl1 
-                                                      `(,mmsg-L-0 
-                                                        (,mmsg-L-lcl1 . ,(mon-booleanp-to-binary mmsg-L-lcl1)))))))
-                                        w-args))
-                          ;; Record how many "w-args" we got. We end up w/ a list with this format: 
-                          ;; (10 (1 (t . 1)) (4 (nil . 0)) (7 (nil . 0)) { ... } )
-                          (setq w-args (push (length mmsg-idx-bnd) mmsg-idx-bnd))
-                          ;; Now map over the W-DELIM string
-                          (and
-                           (or (and w-delim (stringp w-delim)
-                                    ;; Hold onto the W-DELIM arg for when everything comes back together
-                                    (setq w-delim (cons ":at-index %2d :with-value %S" w-delim)))
-                               (and (or (mon-string-or-null-and-zerop w-delim)
-                                        (cadr (mon-booleanp w-delim)) ; we got `t'
-                                        ;; disregard any non-string
-                                        (not (stringp w-delim)))
-                                    (setq w-delim (cons ":at-index %2d :with-value %S" "\n  "))))
-                           ;; Stay inside the `or' branch build up a list
-                           ;; of format strings using W-DELIM and W-ARGS
-                           (setcar w-delim (make-list (pop w-args) (car w-delim)))
-                           (prog2
-                               ;; re-use mmsg-idx-bnd to store mapped value
-                               (setq mmsg-idx-bnd
-                                     (mon-mapcar #'(lambda (frmt-delims frmt-w-args)
-                                                     (apply #'format 
-                                                            `(,frmt-delims 
-                                                              ,(car frmt-w-args) 
-                                                              ,(cadr frmt-w-args))))
-                                                 (car w-delim) w-args))
-                               (setq w-spec
-                                     (concat 
-                                      (cdr w-delim)
-                                      ;; :binary|:bit-string "#[b*]101001 {...} 
-                                      (apply #'format "%s %s " (mon-subseq w-spec 0 2)) 
-                                      (cdr w-delim)
-                                      ;; `mon-bool-vector-pp' has variable
-                                      ;; length return value and we already
-                                      ;; have hold of its last elt so use it.
-                                      (format ":bool-vector %S" mmsg-bv)
-                                      (cdr w-delim)
-                                      ;; "\n  :at-index %d :with-value %S" {...}
-                                      (mapconcat #'identity mmsg-idx-bnd (cdr w-delim)) ))
-                             (setq w-args nil)
-                             (setq w-delim 'bool-vector))))))))
-         ;; W-DELIM was provided and not a zero length string so map it.
-         (or (and (or (and (not (eq w-delim 'bool-vector))
-                           (mon-list-proper-p w-spec)
-                           (mon-string-or-null-and-zerop w-delim)
-                           (setq w-delim "\n  "))
-                      ;; don't look further we've already handled the boole-vector
-                      (not (eq w-delim 'bool-vector)))
-                  w-delim ;; if we're here its not null so the next test guarantee a string
-                  (or (mon-string-or-null-and-zerop w-delim)
-                      ;; allow "" but delay so we error when not `stringp'
-                      (or (stringp w-delim)
-                          ;; :w-delim is not something other than `stringp' so signal.
-                          (mon-error-string-err-format 
-                           "mon-error-string-err-format" "w-delim" w-delim t)))
-                  ;; When :w-spec is `bool-vector-p' it was converted to a list above.
-                  ;; This is the only way :w-spec can possibly satisfy `mon-list-proper-p'
-                  ;; inside this branch. So, get the value of `:binary` or `:bin-string`
-                  ;; keyword either:  "#b..." or "#*..."
-                  (mapconcat #'identity 
-                             (list (or (and (mon-list-proper-p w-spec) 
-                                            (elt w-spec 1))
-                                       w-spec)
-                                   "")
-                             w-delim))
-             w-spec))
-    ;; :w-spec is a proper list or `vectorp'
-    (and  (or (mon-list-proper-p w-spec)
-              (eq (type-of w-spec) 'vector))
-          ;; It is so make sure each elt is `stringp' before mapping
-          (or (= (apply #'+ (mapcar #'(lambda (mmsg-L-1)
-                                        (mon-booleanp-to-binary (not (stringp mmsg-L-1))))
-                                    w-spec)) 
-                 0)
-              ;; :TODO Convert to `mon-error-string-err-format' once finalized.
-              ;; Currently can't specify the second concated protion of generated message
-              ;; (mon-error-string-err-format "mon-error-string-err-format" "w-spec" w-spec t)
-              (error (concat ":FUNCTION `mon-message' " 
-                             "-- element list supplied for keyword :W-SPEC "
-                             "does not satisfy `stringp', got: %S") w-spec))
-          ;; If W-DELIM was provided and `stringp' use it.
-          ;; If not provided, or its a zero length string map `""`.
-          ;; Else, its some other thing - signal error.
-          (mapconcat #'identity w-spec 
-                     (or (and (stringp w-delim) w-delim)
-                         (and (mon-string-or-null-and-zerop w-delim) "")
-                         (and w-delim (mon-error-string-err-format 
-                                       "mon-error-string-err-format" "w-delim" w-delim t))))))
-   ;; Finish up for the outer apply form
-   (or (and (mon-list-proper-p w-args) w-args)
-       (and (vectorp w-args) (append w-args nil))
-       (and (atom w-args) (list w-args)))))
+             :msg-args '\(bubba 666\)\)\n
+:SEE-ALSO `mon-display-warning'.\n►►►
+\n(fn [:MSG-FUN <VALUE> :MSG-SPEC <VALUE> :MSG-ARGS <VALUE> :MSG-DELIM <VALUE>])"
+  (apply 'mon-format `(:w-fun ,msg-fun :w-spec ,msg-spec :w-args ,msg-args :w-delim ,msg-delim)))
+
+;;; ==============================
+;;; :PREFIX "mtpfp-"
+;;; :CREATED <Timestamp: Friday May 29, 2009 @ 07:26.02 PM - by MON>
+(defun mon-truncate-path-for-prompt (&optional intrp)
+  "Return a truncated path string of current buffers path.\n
+Useful for passing around to helper functions that prompt.\n
+:EXAMPLE\n\n(mon-truncate-path-for-prompt)\n
+:ALIASED-BY `mon-dir-name-truncate-for-prompt'\n
+:SEE-ALSO `mon-file-reduce-name'.\n►►►"
+  (interactive "p")
+  (let* ((mtpfp-pth (directory-file-name (expand-file-name "./")))
+	 (mtpfp-splt (save-match-data (split-string mtpfp-pth "/")))
+	 (mtpfp-len (length mtpfp-splt))
+	 mtpfp-gthr)
+    (setq mtpfp-gthr (cond ((>= mtpfp-len 3)(last mtpfp-splt 3))
+                        ((>= mtpfp-len 2)(last mtpfp-splt 2))
+                        ((>= mtpfp-len 1)(last mtpfp-splt))))
+    (setq mtpfp-gthr (mapconcat #'identity mtpfp-gthr "/"))
+    (if intrp (message (concat ":FUNCTION `mon-truncate-path-for-prompt' "
+                               "-- truncated path: %s")
+                       mtpfp-gthr) mtpfp-gthr)))
+;;
+;;; :TEST-ME (mon-truncate-path-for-prompt)
 
 
 ;;; ==============================
@@ -995,7 +1153,46 @@ with the format:\n\n \( <STRING> . other\)\n
 ;; |
 ;; `----
 
-
+;;; ==============================
+;;; :CHANGESET 1980
+;;; :CREATED <Timestamp: #{2010-07-16T12:57:27-04:00Z}#{10285} - by MON KEY>
+;; (defun mon-error-format (symbol-type symbol-name descr-spec &rest fmt-args)
+;;   "Return a formatted error string.\n
+;; SYMBOL-TYPE is the type of symbol to report about it is one of:
+;;  function macro variable constant\n
+;; SYMBOL-NAME is the name of the symbol for report.\n
+;; DESCR-SPEC format spec string as per format.\n
+;; FMT-ARGS any number of individual arguments to format DESCR-SPEC string.\n
+;; Return value is a string with the form:
+;;  \":<SYMBOL-TYPE> <SYMBOL-NAME> \\n
+;;   -- <DESCR-SPEC>\"
+;; "
+;;   (let* ((styp (case symbol-type
+;;                  (function ":FUNCTION")
+;;                  (macro ":MACRO")
+;;                  (variable ":VARIABLE")
+;;                  (constant ":CONSTANT")
+;;                  ;;(face ":FACE "))
+;;                  ;;(theme ":THEME "))
+;;                  ))
+;;          (synm (format "`%s'" symbol-name))
+;;          (rtn-fmt
+;;           (apply 'format (concat styp " " synm " \n-- " descr-spec) fmt-args)))
+;;     (signal 'error (list rtn-fmt))))
+;; 
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (mon-error-format 'function 'mon-error-format 
+;; |                   "has signalled an error with FMT-ARGS %d and %d" 5 5)
+;; | 
+;; | (mon-error-format 'function 'mon-error-format 
+;; |                   "has signalled an error with FMT-ARGS")
+;; | 
+;; | (mon-error-format 'variable 'mon-error-format 
+;; |                   " signalled an error with FMT-ARGS %d and %d" 5 5)
+;; | 
+;; | (mon-error-format 'constant 'mon-error-format 
+;; |                   " signalled an error with FMT-ARGS %d and %d" 5 5)
+;; `----
 
 ;;; ==============================
 (provide 'mon-error-utils)
@@ -1003,6 +1200,8 @@ with the format:\n\n \( <STRING> . other\)\n
 
  
 ;; Local Variables:
+;; mode: EMACS-LISP
+;; coding: utf-8
 ;; generated-autoload-file: "./mon-loaddefs.el"
 ;; End:
 

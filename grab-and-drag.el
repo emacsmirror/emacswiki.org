@@ -6,7 +6,7 @@
 ;; Maintainer: S. Irie
 ;; Keywords: mouse, scroll
 
-(defconst grab-and-drag-version "0.3.2")
+(defconst grab-and-drag-version "0.4.0")
 
 ;; This program is free software; you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -57,6 +57,14 @@
 ;;
 ;; Then, start Emacs and grab-and-drag-mode is activated.
 ;;
+;; If you prefer using middle mouse button for scroll, put the following
+;; instead of the above:
+;;
+;;   (require 'grab-and-drag)
+;;   (setq grab-and-drag-ignore-short-click t)
+;;   (global-set-key [down-mouse-2] 'grab-and-drag)
+;;
+;;
 ;; Tips:
 ;;
 ;; On low spec machine like ARM-based tablet, changing the pointer shape
@@ -92,6 +100,9 @@
 ;;
 
 ;; History:
+;; 2010-11-28  S. Irie
+;;         * Version 0.4.0
+;;         * Add option `grab-and-drag-ignore-short-click'
 ;; 2010-10-15  S. Irie
 ;;         * Version 0.3.2
 ;;         * Add functions to save original definitions of scroll commands:
@@ -319,6 +330,12 @@ The value nil means don't set the pointer shape."
 (defcustom grab-and-drag-enable-inertia t
   "Non-nil means enable `grab-and-drag' to cause an inertial scrolling
 after mouse dragging."
+  :group 'grab-and-drag
+  :type 'boolean)
+
+(defcustom grab-and-drag-ignore-short-click nil
+  "Non-nil means don't execute a command originally bound to mouse click
+if the click time is shorter than `grab-and-drag-timeout'."
   :group 'grab-and-drag
   :type 'boolean)
 
@@ -770,6 +787,7 @@ updating the window."
 		(setq event0 (read-event nil nil grab-and-drag-timeout))
 		(if event0
 		    (push event0 unread-command-events)
+		  ;; Timeout. Execute a command originally bound to mouse click.
 		  (unless (eq (and (boundp 'x-pointer-shape) x-pointer-shape)
 			      grab-and-drag-orig-pointer-shape)
 		    (setq x-pointer-shape grab-and-drag-orig-pointer-shape)
@@ -874,8 +892,9 @@ updating the window."
 				(grab-and-drag-scroll-left))))))
 		    ;; If pointer wasn't moved, put the up-event back and run
 		    ;; a command bound to the click event with lower priority.
-		    (push event unread-command-events)
-		    (grab-and-drag-call-default-binding click))
+		    (unless grab-and-drag-ignore-short-click
+		      (push event unread-command-events)
+		      (grab-and-drag-call-default-binding click)))
 		  (throw 'exit nil))
 		;; Horizontal scrolling.
 		(if truncated

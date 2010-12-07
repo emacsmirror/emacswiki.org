@@ -18,17 +18,18 @@ Features:
 
 * '''`##C-(##'''' yanks successive [[sexp]]s (or symbols or words or chars) into the search string.
 
-
 * New command and binding to toggle (incremental) word search (from JuriLinkov): `isearch-toggle-word', bound to '''`M-w''''.
 
-
+* New command and binding to toggle invisible-text sensitivity while searching: `isearchp-toggle-invisible, bound to '''`##C-+##''''.
 
 * New bindings during Isearch (the standard bindings for some of these use the Meta modifier, `M-',  instead):
 ** '''`next'''', '''`prior'''' repeat the last Isearch forward and backward (easier than using the [[chord]]s `C-s', `C-r'.
 ** '''`C-h'''' provides ''help'' on Isearch while isearching. Library <tt>[[isearch+.el]]</tt> also redefines `isearch-mode-help' so that it lists ''all'' Isearch bindings and ends Isearch properly
 ** '''`C-t'''' lets you toggle between [[regular expression]] isearching and normal isearching. (Standard binding `M-r'.)
 ** '''`C-c'''' lets you toggle ''case-sensitivity'' while isearching. (Standard binding `M-c'.)
+** '''`##C-+##'''' lets you toggle ''invisible-text sensitivity'' while isearching.
 ** '''`C-SPC'''' lets you toggle setting the region around the last found occurrence.
+
 ** '''`C-end'''' -- go to the longest line. Repeat to go to the longest line following that one in the buffer. As usual, `C-g' puts you back where you started. This binding is made only if you also use library <tt>[[misc-cmds.el]]</tt>. See [[FindLongLines#goto-longest-line|Find Long Lines]].
 
 * Highlighting of the failed portion of your search string in the [[minibuffer]]-- that is, the portion that will be removed if you do `C-g'. (I added this feature to vanilla Emacs in release 23.1.)

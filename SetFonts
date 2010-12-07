@@ -43,6 +43,8 @@ Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in a
 
 * <tt>[[face-remap+.el]]</tt> -- For ''all'' of the above, let buffer font resizing also zoom the [[window]] size accordingly (horizontally, vertically, or both). That way, you can take advantage of the space freed up by resizing (text-scaling) to a smaller font.
 
+[new] If you use a fontset with Xft, `##C-x C-+##` this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) --, increasing the text size does not scale the Korean characters. --cinsk
+
 
 
 [:ZoomFrame]

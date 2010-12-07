@@ -58,8 +58,33 @@
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
+;; `*img-hash*'                               -> `*mon-img-hash*'
+;; `mon-dir-nef-rmv-empt'                     -> `mon-dir-nef-remove-if-empty'
+;; `mon-dir-nef-alist'                        -> `mon-dir-nef-name-to-head'
 ;;
 ;; MOVED:
+;; `mon-dired-nef-dir'                        <- mon-dir-utils.el
+;; `mon-dir-nef-big'                          <- mon-dir-utils.el
+;; `mon-dir-nef-converge'                     <- mon-dir-utils.el
+;; `mon-dir-nef-keep-3'                       <- mon-dir-utils.el
+;; `mon-dir-nef-name-to-head'                 <- mon-dir-utils.el
+;; `mon-dir-nef-conc-ranges'                  <- mon-dir-utils.el
+;; `mon-dir-nef-ranges'                       <- mon-dir-utils.el
+;; `mon-dir-nef-conc-dups'                    <- mon-dir-utils.el
+;; `mon-dir-nef-find-dups'                    <- mon-dir-utils.el
+;; `mon-dir-nef-remove-if-empty'              <- mon-dir-utils.el
+;; `mon--local-url-for-bug'                   <- mon-dir-utils.el
+;; `mon-get-local-url-for-bug'                <- mon-dir-utils.el
+;; `mon-explorer-naf-artist'                  <- mon-dir-utils.el
+;; `mon-explorer-naf-brand'                   <- mon-dir-utils.el
+;; `mon-dired-naf-artist-letter'              <- mon-dir-utils.el
+;; `mon-dired-naf-brand-letter'               <- mon-dir-utils.el
+;; `mon-dir-save-current'                     <- mon-dir-utils.el
+;; `mon-dir-save-current-to-file'             <- mon-dir-utils.el
+;; `*mon-img-hash*'                           <- mon-dir-utils.el
+;; `*mon-nef-img-hash*'                       <- mon-dir-utils.el
+;; `*mon-jpg-img-hash*'                       <- mon-dir-utils.el
+;; `*mon-bmp-img-hash*'                       <- mon-dir-utils.el
 ;;
 ;; TODO:
 ;;
@@ -68,10 +93,6 @@
 ;; SNIPPETS:
 ;;
 ;; REQUIRES:
-;;
-;; :FILE mon-cl-compat.el
-;;  `mon-dir-nef-keep-3'   -> `cl::set-difference'
-;; :SEE (URL `http://www.emacswiki.org/emacs/mon-cl-compat.el')
 ;;
 ;; :FILE mon-dir-locals-alist.el
 ;;  |-> `*mon-nefs_photos_nefs-alist*' `*mon-nef-scan-nefs-path*' `*mon-ebay-images-bmp-path*'
@@ -133,19 +154,17 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
-
-;;; `mon-dir-nef-keep-3'   -> `cl::set-difference'
-(eval-when-compile (require 'mon-cl-compat nil t))
-(declare-function cl::set-difference "mon-cl-compat" t t)
-
-(eval-when-compile 
-  (unless (featurep 'mon-cl-compat)
-    (with-no-warnings
-      (fset 'cl::set-difference 'set-difference))))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 (require 'mon-hash-utils)
 
+(declare-function w32-shell-execute "w32fns.c" t t)
+(declare-function mon-set-difference              "mon-seq-utils" (set1-lst set2-lst comparison-func))
+(declare-function mon-mapcar                      "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
+(declare-function mon--local-url-for-bug          "mon-dir-utils-local" (is-url file-string))
+(declare-function mon-file-path-for-bug           "mon-dir-utils-local" (file-name-path insrtp yankp intrp))
+(declare-function mon-get-local-url-for-bug       "mon-dir-utils-local" (file-string))
+(declare-function mon-dir-nef-update-photos-alist "mon-dir-utils-local")
 
 ;;; ==============================
 (defvar *mon-img-hash* nil
@@ -309,7 +328,7 @@ lisp/ source tree when Emacs was built with the\n
            (with-current-buffer (find-file-noselect mfmef-to-flset t)
              (when (intern-soft "mon-file-stamp")
                (mon-file-stamp t))
-             (goto-char (buffer-end 0))
+             (mon-g2be -1)
              (princ ";; -*- mode: EMACS-LISP; no-byte-compile: t; -*-\n" (current-buffer))
              (write-file (buffer-file-name (current-buffer)))
              (kill-buffer (current-buffer)))
@@ -368,7 +387,6 @@ lisp/ source tree when Emacs was built with the\n
         ;; (delete-region (point-min) (point-max)) 
         (when (equal system-type 'windows-nt)
           (setq file-name (replace-regexp-in-string "/" "\\\\" file-name)))
-        ;;(goto-char (point-max))
         (mon-g2be 1)
         (princ file-name (current-buffer)) ;; (insert file-name)
         (newline)
@@ -427,7 +445,7 @@ Default file is held by global var `*mon-record-current-directory*'.\n
 ) ;; :CLOSE when `*mon-emacs-root*'
 
 
-(declare-function w32-shell-execute "w32fns.c" t t)
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: Monday February 09, 2009 @ 09:35.31 PM - by MON>
 (defun mon-explorer-naf-artist (prefix)
@@ -470,7 +488,7 @@ Default path held in var: `*mon-brand-naf-path*'.\n
 `mon-dired-naf-brand-letter', `mon-dired-naf-image-dir',
 `mon-explorer-open'.\n►►►"
   (interactive "p")
-  (if (and (intern-soft "IS-W32-P" obarray) 
+  (if (and (intern-soft "IS-W32-P" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p IS-W32-P))
       (let* ((dl (format "%s-Brand-NAFs"
                          (if (numberp w-prefix)
@@ -552,7 +570,6 @@ Default naf path held by the var: `*mon-brand-naf-path*'.\n
              (and (intern-soft "*mon-ebay-images-jpg-path*" obarray)
                   (bound-and-true-p *mon-ebay-images-jpg-path*)))
 ;;
-(declare-function mon-mapcar "mon-utils")
 ;;; ==============================
 ;;; :CREATED <Timestamp: Thursday June 25, 2009 @ 06:03.54 PM - by MON>
 (defun mon-dired-naf-image-dir (pth-nm &optional intrp)
@@ -594,7 +611,6 @@ When called-interactively complete the key to dired to the directory val.\n
 )) ;; :CLOSE when *mon-vars*
 
 
-(declare-function mon-dir-nef-update-photos-alist "mon-dir-utils-local")
 
 (when (and (intern-soft "*mon-nef-scan-nefs-path*" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p *mon-nef-scan-nefs-path*))
@@ -661,7 +677,7 @@ Return an alist as:\n
 ;;
 
 
-(declare-function mon-dir-nef-update-photos-alist "mon-dir-utils-local")
+
 ;;; ==============================
 ;;; :TODO As this is the top level interface to the callers it should check if
 ;;; anything has changed in the persistent cached list stored to file (which we don't have!).
@@ -673,7 +689,7 @@ Finds `directory-files' in `*mon-nef-scan-nefs-path*' with
 :SEE-ALSO `mon-bind-cifs-vars-at-loadtime', `mon-set-register-tags-loadtime',
 `mon-bind-iptables-vars-at-loadtime', `mon-CL-cln-colon-swap'.\n►►►"
   ;; :NOTE __DON'T SNARF IF ON REMOTE MACHINES!!__
-  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P)
              (not (and (intern-soft "IS-BUG-P-REMOTE" obarray)
                        (bound-and-true-p IS-BUG-P-REMOTE))))
@@ -875,7 +891,10 @@ Directory names of FOLDER-ALIST are folded back into the surronding alist.\n
 ;;
 ;;; :TEST-ME (mon-dir-nef-converge *mon-nefs_photos_nefs-alist*)
 
+
+;; *IS-MON-OBARRAY*
 ;;; ==============================
+;;; :PREFIX "mdncr-"
 ;;; :CREATED <Timestamp: Saturday June 27, 2009 @ 04:27.24 PM - by MON>
 (defun mon-dir-nef-conc-ranges (folder-alist) ;*mon-nefs_photos_nefs-alist*
   "Return FOLDER-ALIST as two strings with the directory name in head position.\n
@@ -884,19 +903,19 @@ Second elt is its range.\n
 `mon-dir-nef-keep-3', `mon-dir-nef-name-to-head', `mon-dir-nef-ranges',
 `mon-dir-nef-conc-dups', `mon-dir-nef-find-dups', `mon-dir-nef-remove-if-empty',
 `*mon-nefs_photos_nefs-alist*', `*mon-nef-scan-nefs-path*'.\n►►►"
-  (let ((not-empt (mapcar #'(lambda (x) (nreverse x)) 
+  (let ((not-empt (mapcar #'(lambda (mdncr-L-1) (nreverse mdncr-L-1)) 
                           (mon-dir-nef-remove-if-empty folder-alist)))
-        (ranges (mapcar #'(lambda (x) (nreverse x))
+        (ranges (mapcar #'(lambda (mdncr-L-2) (nreverse mdncr-L-2))
                         (mon-dir-nef-ranges  folder-alist)))
         rangename>)
-    (mapc #'(lambda (x)
-              (let ((mk-rngnm (assoc (car x) not-empt))
+    (mapc #'(lambda (mdncr-L-3)
+              (let ((mk-rngnm (assoc (car mdncr-L-3) not-empt))
                     new)
                 (when mk-rngnm 
                   (setq new `(,(concat  
                                 (cadr mk-rngnm) 
                                 " |In-Range-> " 
-                                (cadr x)) 
+                                (cadr mdncr-L-3)) 
                               ,(car mk-rngnm)))
                   (setq rangename> (cons new rangename>)))))
           ranges)
@@ -905,7 +924,8 @@ Second elt is its range.\n
 ;;; :TEST-ME (mon-dir-nef-conc-ranges *mon-nefs_photos_nefs-alist*)
 
 
-(declare-function cl::set-difference "mon-cl-compat" t t)
+;; (declare-function cl::set-difference "mon-cl-compat" t t)
+
 ;;; ==============================
 ;;; :PREFIX "mdnk-"
 ;;; :CREATED <Timestamp: Saturday June 27, 2009 @ 04:27.24 PM - by MON>
@@ -932,7 +952,8 @@ These were removed from surrounding list by `mon-dir-nef-remove-if-empty' for us
          ;;     (cl::set-difference mdnk-lst-3 mdnk-lst-1)
          ;;   (cl::set-difference mdnk-lst-3 mdnk-lst-1))))
          ;; :TODO use `mon-set-difference' instead.
-         (mdnk-lst-4 (cl::set-difference mdnk-lst-3 mdnk-lst-1))
+         ;; :WAS (mdnk-lst-4 (cl::set-difference mdnk-lst-3 mdnk-lst-1))
+         (mdnk-lst-4 (mon-set-difference mdnk-lst-3 mdnk-lst-1 'equal))
          (mdnk-lst-5 (mapcar #'(lambda (mdnk-L-4) (assoc mdnk-L-4 mdnk-lst-2)) mdnk-lst-4))
          (mdnk-lst-6 (mapcar #'(lambda (mdnk-L-5)
                          (nreverse mdnk-L-5)) 
@@ -1111,10 +1132,6 @@ List value built with `mon-dir-build-list' per completion specs.\n
 ;; | (mon-dir-nef-keep-3             *mon-nefs_photos_nefs-alist*)
 ;; `----
 
-
-(declare-function mon--local-url-for-bug "mon-dir-utils-local" '(is-url file-string))
-(declare-function mon-file-path-for-bug "mon-dir-utils-local" '(file-name-path insrtp yankp intrp))
-(declare-function mon-get-local-url-for-bug "mon-dir-utils-local" '(file-string))
 ;; 
 (when (and (intern-soft "*bug-HG-path*" obarray)  ;; *IS-MON-OBARRAY*
            (bound-and-true-p *bug-HG-path*))

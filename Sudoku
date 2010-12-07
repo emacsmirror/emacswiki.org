@@ -2,9 +2,18 @@ JesseRosenthal's sudoku.el is available from his page: "A major mode for playing
 
 * http://www.columbia.edu/~jr2075/elisp/index.html
 
+   (that link is now dead --- 11/26/10 --- kc5gmr)
+
 KimStorm posted a solver on [[gnu.emacs.sources]]:
 
 * Groups:sudoku-solver.el
+
+The format of the web source has changed, resulting in an error when you try to load a new puzzle from the web. To fix this, change line 1300 to this:
+
+    "<FORM NAME=\"board\" METHOD=POST ACTION=\"./\" STYLE=\"margin:0;\">"))
+
+    (11/29/10 --- kc5gmr)
+
 
 ----
 CategoryGames

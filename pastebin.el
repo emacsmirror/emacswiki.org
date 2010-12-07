@@ -213,7 +213,7 @@ different domain.
                     'pastebin-version-error 
                     "pastebin.el doesn't support that version of pastebin"))))
          (data (buffer-substring-no-properties start end))
-         (pastebin-url (format "http://%s%s" domain pastebin-version-path))
+         (pastebin-url (format "http://%s%s" domain path))
          (url-request-method "POST")
          (url-request-extra-headers
           '(("Content-Type" . "application/x-www-form-urlencoded")))

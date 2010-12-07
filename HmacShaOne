@@ -61,9 +61,9 @@ encoding, which we can generate as follows:
 For keys and values that are already unibyte, the
 `encode-coding-string' calls just return the same string."
   (when (multibyte-string-p key)
-    (error "key must be unibyte" key))
+    (error "key %s must be unibyte" key))
   (when (multibyte-string-p message)
-    (error "message must be unibyte" message))
+    (error "message %s must be unibyte" message))
 
   ;; The key block is always exactly the block size of the hash
   ;; algorithm.  If the key is too small, we pad it with zeroes (or

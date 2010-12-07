@@ -27,7 +27,7 @@ Put the following in your ~/.emacs InitFile:
 == Procmail Documentation ==
 
 You may want to check out JariAalto<code>'</code>s excellent procmail tips page 
-at http://pm-doc.sourceforge.net/pm-tips.html
+at http://pm-doc.sourceforge.net/
 
 ----
 CategoryMailAddons | CategoryModes | TinyTools

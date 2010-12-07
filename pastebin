@@ -6,7 +6,12 @@ You can use it to send little snippets of code (or whole buffers) to the web for
 
 pastebin allows sending of regions or whole buffers and let's you specify the virtual host for pastebin. So you can send code to emacs.pastebin.com or myproject.pastebin.com.
 
-The code is downloadable from the wiki here: [[pastebin.el]]
+The code is downloadable from the wiki here: [[pastebin.el]] 
+
+[new:IvanKorotkov:2010-11-25 19:04 UTC] Apparently this version is broken as reported by RyanDavis: <code>pastebin-version-path</code> is undefined. - IvanKorotkov
+[new:NicFerrier:2010-11-25 19:56 UTC] Fixed now. Thanks. - NicFerrier
+
+----
 
 The code is also on a [https://github.com/nicferrier/elpastebin github repo here.]
 ----

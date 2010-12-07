@@ -9,9 +9,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
 ;; Version: 20.1
-;; Last-Updated: Fri Jan 15 10:06:29 2010 (-0800)
+;; Last-Updated: Sat Dec  4 14:05:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 673
+;;     Update #: 674
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
@@ -20,21 +20,21 @@
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cal-dst',
 ;;   `cal-julian', `cal-menu', `cal-persia', `calendar', `calendar+',
-;;   `cl', `color-theme', `cus-edit', `cus-face', `cus-load',
-;;   `cus-start', `custom', `diary-lib', `dired', `dired+',
-;;   `dired-aux', `dired-x', `doremi', `easymenu', `ediff-diff',
-;;   `ediff-help', `ediff-init', `ediff-merg', `ediff-mult',
-;;   `ediff-util', `ediff-wind', `el-swank-fuzzy', `faces', `ffap',
-;;   `ffap-', `fit-frame', `frame-cmds', `frame-fns', `fuzzy-match',
-;;   `help+20', `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `cl', `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
+;;   `diary-lib', `dired', `dired+', `dired-aux', `dired-x',
+;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
+;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
+;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
+;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
 ;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
 ;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
 ;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `reporter', `ring',
-;;   `ring+', `second-sel', `sendmail', `solar', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `solar', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -190,7 +190,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
-;; 
+;;
+;; 2010/12/04 dadams
+;;     Removed make-local-hook call.
 ;; 2006/03/31 dadams
 ;;     No longer use display-in-minibuffer.
 ;; 2005/12/18 dadams
@@ -1325,7 +1327,7 @@ Prefix arg makes the entry nonmarking."
     (when appt-audible (beep 1))
     (message "No appointments.")))
       
-(make-local-hook 'temp-buffer-show-hook)
+;; (make-local-hook 'temp-buffer-show-hook)
 (remove-hook 'temp-buffer-show-hook 'help-mode-finish 'local-only)
 
 (defun show-reminders ()

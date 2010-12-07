@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Nov  8 08:50:08 2010 (-0800)
+;; Last-Updated: Thu Dec  2 08:19:13 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 16303
+;;     Update #: 16325
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -20,9 +20,9 @@
 ;;   `apropos', `apropos-fn+var', `cl', `doremi', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fuzzy', `fuzzy-match', `hexrgb',
 ;;   `icicles-face', `icicles-fn', `icicles-opt', `icicles-var',
-;;   `kmacro', `levenshtein', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `thingatpt', `thingatpt+', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `kmacro', `levenshtein', `mouse3', `mwheel', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `thingatpt', `thingatpt+',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -376,7 +376,8 @@
   (defvar saved-overriding-map))
 
 (when (< emacs-major-version 23)
-  (defvar read-buffer-completion-ignore-case))
+  (defvar read-buffer-completion-ignore-case)
+  (defvar mouse-drag-copy-region))
 
 (defvar filesets-data)                  ; Defined in `filesets.el'.
 (defvar minibuffer-confirm-exit-commands) ; Defined in `minibuffer.el' in Emacs 23+.
@@ -1641,19 +1642,20 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
 (defun icicle-minibuffer-help ()        ; Bound to `C-?' in minibuffer.
   "Describe Icicles minibuffer and *Completion* buffer bindings."
   (interactive)
-  (with-output-to-temp-buffer "*Help*"
-    (when (icicle-completing-p)
-      (princ (concat "You are completing input" (and icicle-candidate-action-fn
-                                                     " for an Icicles multi-command")
-                     ".\n\n"))
-      (princ "To show help on individual completion candidates:
+  (let ((cur-buf  (current-buffer)))
+    (with-output-to-temp-buffer "*Help*"
+      (when (icicle-completing-p)
+        (princ (concat "You are completing input" (and icicle-candidate-action-fn
+                                                       " for an Icicles multi-command")
+                       ".\n\n"))
+        (princ "To show help on individual completion candidates:
      Current candidate                       C-M-RET, C-M-mouse-2
      Next, previous candidate                C-M-down, C-M-up,
                                               C-M- plus mouse wheel
                     prefix-match candidate   C-M-end, C-M-home
                     apropos-match candidate  C-M-next, C-M-prior\n\n")
-      (when icicle-candidate-action-fn
-        (princ "To act on individual candidates:
+        (when icicle-candidate-action-fn
+          (princ "To act on individual candidates:
      Current candidate                       C-RET, C-mouse-2
      Next, previous candidate                C-down, C-up,
                                               C- plus mouse wheel
@@ -1662,40 +1664,41 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
      All candidates at once                  C-! (each) or M-! (list)
      Delete object named by candidate        S-delete
      Object-action: apply a fn to candidate  M-RET"))
-      (when icicle-candidate-alt-action-fn
-        (princ "\nFor alt action, use `C-S-' instead of `C-', but use `C-|' or `M-|',\n\
+        (when icicle-candidate-alt-action-fn
+          (princ "\nFor alt action, use `C-S-' instead of `C-', but use `C-|' or `M-|',\n\
      instead of `C-!' or `M-!', to act on all.\n")))
-    (if icicle-completing-p
-        (princ (concat "\n" (icicle-help-string-completion)))
-      (princ (icicle-help-string-non-completion))))
-  ;; Don't bother to do this for Emacs 21.3.  Its `help-insert-xref-button' signature is different.
-  (when (and (> emacs-major-version 21)
-             (require 'help-mode nil t) (fboundp 'help-insert-xref-button)) ; In `help-mode.el'.
-    (save-excursion
-      (with-current-buffer (get-buffer "*Help*")
-        (let ((buffer-read-only  nil))
-          (goto-char (point-min))
-          (help-insert-xref-button "[Icicles Help on the Web]" 'icicle-help-button)
-          (insert "                        ")
-          (help-insert-xref-button "[Icicles Doc, Part 1]" 'icicle-commentary1-button)
-          (insert "\n")
-          (help-insert-xref-button "[Icicles Options & Faces]" 'icicle-customize-button)
-          (insert "                        ")
-          (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
-          (insert "\n\n")
-          (goto-char (point-max))
-          (insert "\n\nSend an Icicles bug report: `\\[icicle-send-bug-report]'.\n\n")
-          (help-insert-xref-button "[Icicles Help on the Web]" 'icicle-help-button)
-          (insert "                        ")
-          (help-insert-xref-button "[Icicles Doc, Part 1]" 'icicle-commentary1-button)
-          (insert "\n")
-          (help-insert-xref-button "[Icicles Options & Faces]" 'icicle-customize-button)
-          (insert "                        ")
-          (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
-          (insert "\n\n")
-          (goto-char (point-min))))))
-  (select-window (minibuffer-window))
-  (select-frame-set-input-focus (selected-frame)))
+      (if icicle-completing-p
+          (princ (concat "\n" (icicle-help-string-completion)))
+        (princ (icicle-help-string-non-completion))))
+    ;; Don't bother to do this for Emacs 21.3.  Its `help-insert-xref-button' signature is different.
+    (when (and (> emacs-major-version 21)
+               (require 'help-mode nil t) (fboundp 'help-insert-xref-button)) ; In `help-mode.el'.
+      (save-excursion
+        (with-current-buffer (get-buffer "*Help*")
+          (let ((buffer-read-only  nil))
+            (goto-char (point-min))
+            (help-insert-xref-button "[Icicles Help on the Web]" 'icicle-help-button)
+            (insert "                        ")
+            (help-insert-xref-button "[Icicles Doc, Part 1]" 'icicle-commentary1-button)
+            (insert "\n")
+            (help-insert-xref-button "[Icicles Options & Faces]" 'icicle-customize-button)
+            (insert "                        ")
+            (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
+            (insert "\n\n")
+            (goto-char (point-max))
+            (insert "\n\nSend an Icicles bug report: `\\[icicle-send-bug-report]'.\n\n")
+            (help-insert-xref-button "[Icicles Help on the Web]" 'icicle-help-button)
+            (insert "                        ")
+            (help-insert-xref-button "[Icicles Doc, Part 1]" 'icicle-commentary1-button)
+            (insert "\n")
+            (help-insert-xref-button "[Icicles Options & Faces]" 'icicle-customize-button)
+            (insert "                        ")
+            (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
+            (insert "\n\n")
+            (goto-char (point-min))))))
+    (when (memq cur-buf (list (window-buffer (minibuffer-window)) (get-buffer "*Completions*")))
+      (select-window (minibuffer-window))
+      (select-frame-set-input-focus (selected-frame)))))
 
 (defun icicle-help-string-completion ()
   "Update the bindings within the Icicles completion help string."
@@ -2197,6 +2200,8 @@ minibuffer (`\\<minibuffer-local-completion-map>\
                              (prog1 (completing-read
                                      "Retrieve input: " (mapcar #'list prev-inputs) nil t)
                                (setq icicle-last-input  nil)))
+                         ;; Exclude "" for cycling.
+                         (setq prev-inputs  (icicle-remove-if (lambda (x) (string= "" x)) prev-inputs))
                          (if (or (not interactive-p)
                                  (not (memq last-command '(icicle-retrieve-next-input
                                                            icicle-retrieve-previous-input))))
@@ -2506,12 +2511,17 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
 
 ;;;###autoload
 (defun icicle-insert-list-join-string () ; Bound to `C-M-j' in minibuffer during completion.
-  "Insert `icicle-list-join-string' in the minibuffer."
+  "Insert `icicle-list-join-string' in the minibuffer.
+Then, if `1on1-fit-minibuffer-frame-flag' is defined and non-nil, fit
+a standalone minibuffer frame to the new minibuffer contents.
+You need library `fit-frame.el' for the frame-fitting part."
   (interactive)
   (icicle-insert-thing icicle-list-join-string 'no-replace)
   (let ((len  (length icicle-list-join-string)))
-    (when (and (fboundp '1on1-fit-minibuffer-frame) ; Defined in `oneonone.el'.
-               (string= "\C-j" (substring icicle-list-join-string (1- len) len)))
+    (when (and (string= "\C-j" (substring icicle-list-join-string (1- len) len))
+               (boundp '1on1-fit-minibuffer-frame-flag) ; Defined in `oneonone.el'.
+               1on1-fit-minibuffer-frame-flag
+               (require 'fit-frame nil t))
       (1on1-fit-minibuffer-frame))))
 
 ;;;###autoload
@@ -2570,11 +2580,15 @@ This just calls `pp-eval-expression' from a recursive minibuffer."
 ;;;###autoload
 (defun icicle-insert-newline-in-minibuffer (arg) ; Bound to `C-j' in minibuffer.
   "Insert a newline character (`C-j'), in the minibuffer.
-Then, if `1on1-fit-minibuffer-frame' is defined, call it to fit a
-standalone minibuffer frame to the new minibuffer contents."
+Then, if `1on1-fit-minibuffer-frame-flag' is defined and non-nil, fit
+a standalone minibuffer frame to the new minibuffer contents.
+You need library `fit-frame.el' for the frame-fitting part."
   (interactive "p")
   (icicle-self-insert arg)
-  (when (fboundp '1on1-fit-minibuffer-frame) (1on1-fit-minibuffer-frame))) ; Defined in `oneonone.el'.
+  (when (and (boundp '1on1-fit-minibuffer-frame-flag) ; Defined in `oneonone.el'.
+             1on1-fit-minibuffer-frame-flag
+             (require 'fit-frame nil t))
+    (1on1-fit-minibuffer-frame)))
 
 ;; Bound in minibuffer to keys in `icicle-modal-cycle-down-keys' (`down', `wheel-down').
 ;;;###autoload
@@ -3277,7 +3291,8 @@ Optional argument WORD-P non-nil means complete only a word at a time."
                    (select-window (active-minibuffer-window))
                    (insert icicle-current-input))
                  ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
-                 (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag)
+                 (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
+                            (require 'fit-frame nil t))
                    (1on1-fit-minibuffer-frame))) ; Defined in `oneonone.el'.
                (deactivate-mark)
                (icicle-highlight-initial-whitespace icicle-current-input)
@@ -3588,7 +3603,8 @@ message either.  NO-DISPLAY-P is passed to
              (icicle-clear-minibuffer)
              (insert icicle-current-input) ; Update minibuffer.
              ;; Shouldn't need to do this if it is on `post-command-hook', but it seems we need to.
-             (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag)
+             (when (and (boundp '1on1-fit-minibuffer-frame-flag) 1on1-fit-minibuffer-frame-flag
+                        (require 'fit-frame nil t))
                (1on1-fit-minibuffer-frame)) ; Defined in `oneonone.el'.
              (deactivate-mark)
              (icicle-highlight-initial-whitespace icicle-current-input)
@@ -4641,7 +4657,7 @@ You can use this command only from the minibuffer or *Completions*
     (let* ((help-window  (get-buffer-window "*Help*" 0))
            (help-frame   (and help-window (window-frame help-window))))
       (when help-frame (redirect-frame-focus help-frame frame-with-focus))))
-  (message nil))                        ; Let minibuffer contents show immmediately.
+  (message nil))                        ; Let minibuffer contents show immediately.
 
 (defun icicle-help-on-candidate-symbol (symb)
   "Helper function for `icicle-help-on-candidate'.  The arg is a symbol."
@@ -5632,69 +5648,80 @@ If the region is active in *Completions*, then
       (icicle-candidate-set-save-more-selected arg)
     (icicle-candidate-set-save-more arg)))
 
+;;; `mouse-3' in *Completions*.
 ;;;###autoload
-(if (< emacs-major-version 24)
-    (defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
-      "`mouse-save-then-kill', but click same place saves selected candidates."
-      (interactive "e\nP")
-      (flet ((mouse-save-then-kill-delete-region (beg end)
-               (icicle-mouse-candidate-set-save-more nil arg)))
-        (mouse-save-then-kill click))
-      (setq this-command  'mouse-save-then-kill))
+(cond ((require 'mouse3 nil t)
+       (defun icicle-mouse-save-then-kill (click &optional arg)
+         "`mouse-save-then-kill', but click same place saves selected candidates."
+         (interactive "e\nP")
+         (let ((mouse3-save-then-kill-command  `(lambda (event prefix-arg)
+                                                 (icicle-mouse-candidate-set-save-more nil ,arg))))
+           (mouse-save-then-kill click))
+         (setq this-command  'mouse-save-then-kill)))
 
-  ;; The only thing Icicles-specific here is replacing killing or deleting the region by a call to
-  ;; `icicle-mouse-candidate-set-save-more'.  Otherwise, this is just `mouse-save-then-kill'.
-  (defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
-    "`mouse-save-then-kill', but click same place saves selected candidates."
-    (interactive "e\nP")
-    (mouse-minibuffer-check click)
-    (let* ((posn          (event-start click))
-           (click-pt      (posn-point posn))
-           (window        (posn-window posn))
-           (buf           (window-buffer window))
-           (this-command  this-command) ; Don't let subsequent kill cmd append to this one.
-           ;; Check if the user has multi-clicked to select words/lines.
-           (click-count   (if (and (eq mouse-selection-click-count-buffer buf)
-                                   (with-current-buffer buf (mark t)))
-                              mouse-selection-click-count
-                            0)))
-      (cond ((not (numberp click-pt)) nil)
-            ((and (eq last-command 'icicle-mouse-save-then-kill) ; User clicked without moving point.
-                  (eq click-pt mouse-save-then-kill-posn)
-                  (eq window (selected-window)))
-             ;; Here is the Icicles difference from vanilla `mouse-save-then-kill'.
-             ;; Instead of killing/deleting the region, save the selected candidates.
-             (icicle-mouse-candidate-set-save-more nil arg)
-             (setq mouse-selection-click-count  0
-                   mouse-save-then-kill-posn    nil))
-            ;; If there is a suitable region, adjust it by moving the closest end to CLICK-PT.
-            ((or (with-current-buffer buf (region-active-p))
-                 (and (eq window (selected-window))
-                      (mark t)
-                      (or (and (eq last-command 'icicle-mouse-save-then-kill)
-                               mouse-save-then-kill-posn)
-                          (and (memq last-command '(mouse-drag-region mouse-set-region))
-                               (or mark-even-if-inactive (not transient-mark-mode))))))
-             (select-window window)
-             (let* ((range  (mouse-start-end click-pt click-pt click-count)))
-               (if (< (abs (- click-pt (mark t))) (abs (- click-pt (point))))
-                   (set-mark (car range))
-                 (goto-char (nth 1 range)))
-               (setq deactivate-mark  nil)
-               (mouse-set-region-1)
-               (when mouse-drag-copy-region
-                 ;; Previous region was copied to kill-ring, so replace with adjusted region.
-                 (kill-new (filter-buffer-substring (mark t) (point)) t))
-               (setq mouse-save-then-kill-posn  click-pt))) ; Repeated `mouse-3' will kill the region.
-            (t                          ; Set the mark where point is and move to CLICK-PT.
-             (select-window window)
-             (mouse-set-mark-fast click)
-             (let ((before-scroll (with-current-buffer buf point-before-scroll)))
-               (when before-scroll (goto-char before-scroll)))
-             (exchange-point-and-mark)
-             (mouse-set-region-1)
-             (when mouse-drag-copy-region (kill-new (filter-buffer-substring (mark t) (point))))
-             (setq mouse-save-then-kill-posn  click-pt))))))
+      ((< emacs-major-version 24)
+       (defun icicle-mouse-save-then-kill (click &optional arg)
+         "`mouse-save-then-kill', but click same place saves selected candidates."
+         (interactive "e\nP")
+         (flet ((mouse-save-then-kill-delete-region (beg end)
+                  (icicle-mouse-candidate-set-save-more nil arg)))
+           (mouse-save-then-kill click))
+         (setq this-command  'mouse-save-then-kill)))
+
+      (t
+       ;; The only thing Icicles-specific here is replacing killing or deleting the region by a call to
+       ;; `icicle-mouse-candidate-set-save-more'.  Otherwise, this is just `mouse-save-then-kill'.
+       (defun icicle-mouse-save-then-kill (click &optional arg) ; `mouse-3' in *Completions*.
+         "`mouse-save-then-kill', but click same place saves selected candidates."
+         (interactive "e\nP")
+         (mouse-minibuffer-check click)
+         (let* ((posn          (event-start click))
+                (click-pt      (posn-point posn))
+                (window        (posn-window posn))
+                (buf           (window-buffer window))
+                (this-command  this-command) ; Don't let subsequent kill cmd append to this one.
+                ;; Check if the user has multi-clicked to select words/lines.
+                (click-count   (if (and (eq mouse-selection-click-count-buffer buf)
+                                        (with-current-buffer buf (mark t)))
+                                   mouse-selection-click-count
+                                 0)))
+           (cond ((not (numberp click-pt)) nil)
+                 ((and (eq last-command 'icicle-mouse-save-then-kill) ; User clicked at same position.
+                       (eq click-pt mouse-save-then-kill-posn)
+                       (eq window (selected-window)))
+                  ;; Here is the Icicles difference from vanilla `mouse-save-then-kill'.
+                  ;; Instead of killing/deleting the region, save the selected candidates.
+                  (icicle-mouse-candidate-set-save-more nil arg)
+                  (setq mouse-selection-click-count  0
+                        mouse-save-then-kill-posn    nil))
+                 ;; If there is a suitable region, adjust it by moving the closest end to CLICK-PT.
+                 ((or (with-current-buffer buf (region-active-p))
+                      (and (eq window (selected-window))
+                           (mark t)
+                           (or (and (eq last-command 'icicle-mouse-save-then-kill)
+                                    mouse-save-then-kill-posn)
+                               (and (memq last-command '(mouse-drag-region mouse-set-region))
+                                    (or mark-even-if-inactive (not transient-mark-mode))))))
+                  (select-window window)
+                  (let* ((range  (mouse-start-end click-pt click-pt click-count)))
+                    (if (< (abs (- click-pt (mark t))) (abs (- click-pt (point))))
+                        (set-mark (car range))
+                      (goto-char (nth 1 range)))
+                    (setq deactivate-mark  nil)
+                    (mouse-set-region-1)
+                    (when mouse-drag-copy-region
+                      ;; Previous region was copied to kill-ring, so replace with adjusted region.
+                      (kill-new (filter-buffer-substring (mark t) (point)) t))
+                    (setq mouse-save-then-kill-posn  click-pt))) ; Repeated `mouse-3' kills region.
+                 (t                     ; Set the mark where point is and move to CLICK-PT.
+                  (select-window window)
+                  (mouse-set-mark-fast click)
+                  (let ((before-scroll (with-current-buffer buf point-before-scroll)))
+                    (when before-scroll (goto-char before-scroll)))
+                  (exchange-point-and-mark)
+                  (mouse-set-region-1)
+                  (when mouse-drag-copy-region (kill-new (filter-buffer-substring (mark t) (point))))
+                  (setq mouse-save-then-kill-posn  click-pt)))))))
 
 ;;;###autoload
 (defun icicle-candidate-set-save (&optional arg) ; Bound to `C-M->' in minibuffer.

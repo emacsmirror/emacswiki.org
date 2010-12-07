@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Wed Oct 27 14:13:30 2010 (-0700)
+;; Last-Updated: Tue Nov 30 07:29:56 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2526
+;;     Update #: 2528
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -260,6 +260,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/11/30 dadams
+;;     1on1-minibuffer-frame-alist: Change fallback value from nil to 0 (Emacs bug #1077).
 ;; 2010/10/27 dadams
 ;;     1on1-default-frame-alist:
 ;;       Put back setting of tool-bar-lines for Emacs 24.  Emacs 24 bug was fixed.
@@ -748,7 +750,7 @@ for the new value to take effect."
    (or (assq 'cursor-color minibuffer-frame-alist)
        (cons 'cursor-color 1on1-minibuffer-frame-cursor-color))
    (or (assq 'menu-bar-lines minibuffer-frame-alist)
-       (cons 'menu-bar-lines nil))
+       (cons 'menu-bar-lines 0))
    (or (assq 'left minibuffer-frame-alist)
        (cons 'left 1on1-minibuffer-frame-left))
    (or (assq 'height minibuffer-frame-alist)

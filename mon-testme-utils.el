@@ -888,7 +888,7 @@ Return test-case results in buffer named \"*MON-PERMUTE-COMBINE-TEST*\".\n
 Test equivalence of return values of following procedures:\n
  `mon-permute-combine', `mon-permute-combine-1', `mon-permute-combine-2'\n
 :EXAMPLE\n\n\(mon-permute-combine-functions-TEST\)\n
-:SEE-ALSO `mon-variations', `mon-permutations', `mon-perms'.\n►►►"
+:SEE-ALSO `mon-list-variant-forms', `mon-list-permutations', `mon-perms'.\n►►►"
   (let* ((sab '("StringA" "StringB"))
          (s1-4 '("String1" "String2" "String3" "String4"))
          (s-symab '(a b))

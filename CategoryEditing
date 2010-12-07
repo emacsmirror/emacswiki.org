@@ -51,6 +51,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** InsertingTodaysDate -- insert today's date in letters or source code
 ** InsertFileName -- have Emacs help insert file name into the [[buffer]]
 ** ParEdit -- structured editing of s-expressions (parentheses)
+** RepeatInsert -- insert repeating patterns, such as lists of numbers
 ** RotateWordCapitalization -- rotate the capitalization of the current word
 ** SimplerWordCapitalization -- make `upcase-word' (M-u), `downcase-word' (M-l), and `capitalize-word' (M-c) work on [[region]]s too.
 ** [[Multiverse]] -- manage multiple versions of [[buffer]]s in an Emacs session

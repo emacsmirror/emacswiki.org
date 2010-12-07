@@ -52,7 +52,7 @@
 ;; FUNCTIONS:►►►
 ;; `boxcutter-gen-tstamp', `boxcutter-incr-cntr', `boxcutter-gen-fname',
 ;; `boxcutter-big-n-small', `boxcutter-get-win-coords',
-;; `boxcutter-get-frame-coords', `boxcutter-capture',
+;; `boxcutter-get-frame-coords', `boxcutter-capture', `boxcutter-mkdir-loadtime',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -70,15 +70,17 @@
 ;; `*boxcutter-title-bar-vig*', `*boxcutter-counter*', `*boxcutter-tstamp*',
 ;; `*boxcutter-captured-last*',
 ;;
+;; GROUPS:
+;; `mon-boxcutter'
+;;
 ;; ALIASED/ADVISED/SUBST'D:
-;; `boxcutter-verify-image-type' -> `mon-image-verify-type'
 ;;
 ;; DEPRECATED:
 ;;
 ;; RENAMED:
 ;;
 ;; MOVED:
-;;`boxcutter-verify-image-type'  -> mon-utils.el 
+;;`boxcutter-verify-image-type'  -> mon-utils.el, mon-image-utils.el
 ;;
 ;; TODO:
 ;; - Currently doesn't work on multi-head setups (e.g. more than one monitor)
@@ -91,6 +93,7 @@
 ;; - or add individual commands that leverage the various keyword args to
 ;; - `boxcutter-capture-set-crop'.
 ;; 
+;; NOTES:
 ;; Following forms evaluated to these values when this package was created.
 ;;
 ;; (about-emacs) ;=>GNU Emacs 23.1.50.1 (i386-mingw-nt5.1.2600)
@@ -110,6 +113,12 @@
 ;; :NOTE Even though I'm actually running a 3(three) head display on two cards:
 ;; (display-screens) ;=> 1
 ;;
+;; ,---- (:FILE screenshot-default.sh
+;; | #!/bin/sh
+;; | import -quality 100 -silent <*boxcutter-captures*>/screenshot-`date +%F[%R]`.jpg
+;; | import -quality 100 -silent <*boxcutter-captures*>/screenshot-`date +%F[%R]`.jpg
+;; `----
+;; 
 ;; SNIPPETS:
 ;; Following forms useful for investigating your current setup:
 ;; image-library-alist
@@ -204,7 +213,7 @@
 ;; Foundation; with no Invariant Sections, no Front-Cover Texts,
 ;; and no Back-Cover Texts. A copy of the license is included in
 ;; the section entitled ``GNU Free Documentation License''.
-;; 
+
 ;; A copy of the license is also available from the Free Software
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
@@ -214,21 +223,43 @@
 
 ;;; CODE:
 
-(eval-when-compile (require 'cl))
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-;;; :NOTE mon-boxcutter.el utilizes procedures from :FILE mon-utils.el
-(unless (not (and IS-MON-SYSTEM-P (featurep 'mon-utils)))
-  (eval-when-compile (require 'mon-utils)))
+(eval-when-compile (require 'cl)
+                   ;; :NOTE mon-boxcutter.el utilizes procedures from :FILE mon-utils.el
+                   (unless (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+                                (bound-and-true-p IS-MON-SYSTEM-P)
+                                (featurep 'mon-utils))
+                     (require 'mon-utils)))
 ;;
 (eval-when (compile load) (require 'thumbs))
-  
+
+(require 'mon-image-utils)
+
+(declare-function w32-shell-execute  "w32fns.c" t t)
+
+;;; ==============================
+;;; :CHANGESET 2292
+;;; :CREATED <Timestamp: #{2010-11-09T20:22:00-05:00Z}#{10452} - by MON KEY>
+(defgroup mon-boxcutter nil
+  "Customizations for mon-boxcutter related features.\n
+►►►"
+  :link  '(url-link :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-boxcutter.el")
+  :link  '(emacs-library-link "mon-boxcutter.el")
+  :prefix "boxcutter-"
+  :group 'mon-base)
+
 ;;; ==============================
 ;;; CREATED: <Timestamp: #{2009-10-21T20:14:43-04:00Z}#{09434} - by MON>
-(defvar *boxcutter-conversion-program*
-  (or (executable-find "imconvert.exe")
-      thumbs-conversion-program
-      (executable-find "convert.exe"))
-  "*The path to the boxcutter conversion program, e.g. Imagemagick's convert.\n
+;; (defvar *boxcutter-conversion-program*
+(defcustom *boxcutter-conversion-program* (or (executable-find "imconvert.exe")
+                                              (and (bound-and-true-p thumbs-conversion-program))
+                                              (and (eq system-type 'windows-nt)
+                                                   (or (executable-find "convert.exe")
+                                                       "convert.exe")))
+  "The path to the boxcutter conversion program, e.g. Imagemagick's convert.\n
 If imagemagick is installed system it ought to be named imconvert.exe.
 If it isn't consider renaming it from convert.exe to imconvert.exe
 Unfortunately, Windows XP has a program called CONVERT.EXE which is used for
@@ -238,22 +269,23 @@ need to customize this value to the absolute filename.\n
 :SEE Notes in header of :FILE mon-boxcutter.el for additional discussion.\n
 :CALLED-BY `boxcutter-call-convert'\n
 :SEE-ALSO `*boxcutter-path*', `boxcutter-capture', `thumbs-conversion-program',
-`mon-set-thumbs-conversion-program-init'\n►►►")
+`mon-set-thumbs-conversion-program-init'.\n►►►"
+  :type '(file :must-match t)
+  :group 'mon-boxcutter)
 
 ;;; ==============================
+;;; :CHANGESET 1915 <Timestamp: #{2010-06-23T16:32:06-04:00Z}#{10253} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-10-17T17:58:20-04:00Z}#{09426} - by MON>
-(defvar *boxcutter-path* 
-  (or (getenv "SP_BXC")
-      (when (or (executable-find "boxcutter.exe") 
-                (executable-find "boxcutter-fs.exe"))
-        (directory-file-name
-         (file-name-directory ;; (file-name-sans-extension  
-          (or (executable-find "boxcutter.exe") 
-              (executable-find "boxcutter-fs.exe"))))))
-  "*Path to the local boxcutter exectuable.\n
+(defcustom *boxcutter-path* 
+  (and (or (executable-find "boxcutter.exe") 
+           (executable-find "boxcutter-fs.exe"))
+       (directory-file-name (file-name-directory
+                             (or (executable-find "boxcutter.exe") 
+                                 (executable-find "boxcutter-fs.exe")))))
+  "Path to the local boxcutter exectuable.\n
 :NOTE On MON system the environmental variable \"SP_BXC\" points to the
 boxcutter exectubal path.\n
-If Emacs cann't find the boxcutter executables:\n
+If Emacs can't find the boxcutter executables:\n
  boxcutter.exe or boxcutter-fs.exe\n
 You will need to set the path by hand, to do so either set the enviriinment
 variable \"SP_BXC\" with:\n
@@ -261,30 +293,41 @@ variable \"SP_BXC\" with:\n
 Or, supply the path dirictly as this variables value, e.g.\n
  (setq *boxcutter-path* <PATH/TO/BOXCTR-EXECS/>\n
 :CALLED-BY `boxcutter-capture'\n
-:SEE-ALSO `*boxcutter-conversion-program*'.\n►►►")
+:SEE-ALSO `*boxcutter-conversion-program*'.\n►►►"
+  :type  'directory ;'(file :must-match t)
+  :group 'mon-boxcutter)
 ;;
-;;; :TEST-ME *boxcutter-path*
+;;; :TEST-ME (file-directory-p *boxcutter-path*)
 
 ;;; ==============================
+;;; :TODO Adjust this path to something semi-permanent and sensible.
 ;;; :CREATED <Timestamp: #{2009-10-17T17:58:53-04:00Z}#{09426} - by MON>
-(defvar *boxcutter-captures*  nil  
+(defcustom *boxcutter-captures* (expand-file-name  "boxcutter-screenshots" user-emacs-directory)
   "*Path or for holding boxcutter screen-captures.\n
+:EXAMPLE\n\n\(file-directory-p *boxcutter-captures*\)\n
+:NOTE When `IS-MON-SYSTEM-P' path is bound to the value returned by the lambda
+form held in the cadr of the return value for the key 'the-boxcutter-pth in
+`*mon-misc-path-alist*', e.g:\n
+ \(cadr \(assoc 'the-boxcutter-pth *mon-misc-path-alist*\)\)\n
+:SEE :FILE mon-site-local-defaults.el
 :CALLED-BY `boxcutter-gen-fname'.\n
-:SEE-ALSO `boxcutter-capture'.\n►►►")
+:SEE-ALSO `boxcutter-capture'.\n►►►"
+  :type 'directory
+  :group 'mon-boxcutter)
 ;;
-;;; :TEST-ME *boxcutter-captures*
+;; (eval-after-load "mon-boxcutter"
+;;   (when (bound-and-true-p *boxcutter-captures*)
+;;     (unless (file-directory-p *boxcutter-captures*)
+;;       (mkdir *boxcutter-captures*))))
 ;;
-;;;(progn (makunbound '*boxcutter-captures*) (unintern '*boxcutter-captures*) )
+;;; :TEST-ME (file-directory-p *boxcutter-captures*)
 ;;
-;; :TODO Adjust this path to something semi-permanent and sensible.
-(unless (bound-and-true-p *boxcutter-captures*)
-  (setq *boxcutter-captures* 
-        (concat *mon-HG-root-path* "/mon-notes-HG/Screenshots")))
+;;;(progn (makunbound '*boxcutter-captures*) (unintern "*boxcutter-captures*" obarray) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-21T18:33:08-04:00Z}#{09433} - by MON>
-(defvar *boxcutter-title-bar-vig* 20
-  "*The approximate pixel height of the title-bar.\n
+(defcustom *boxcutter-title-bar-vig* 20
+  "The approximate pixel height of the title-bar.\n
 To Access this setting on winxp find the Display Properties dialog.
 Right click on the desktop and select: 'Properties'
 Or, from Control Panel select: 'Display'
@@ -293,26 +336,32 @@ Once the Display Properties dialog is open select:
 :NOTE the 'Size' field, this is the vigorish stolen by MS-Windows manager.\n
 :CALLED-BY `*boxcutter-title-bar-vig*'\n
 :SEE-ALSO `boxcutter-capture', `boxcutter-get-frame-coords',
-`boxcutter-get-win-coords'.\n►►►")
+`boxcutter-get-win-coords'.\n►►►"
+  :type 'integer
+  :group 'mon-boxcutter)
 ;;
 ;;; :TEST-ME *boxcutter-title-bar-vig*
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-17T18:29:55-04:00Z}#{09426} - by MON>
-(defvar *boxcutter-counter* 0
+;;(defvar *boxcutter-counter* 0
+(defcustom *boxcutter-counter* 0
   "*Counter for incrementing screnshots.\n
 :CALLED-BY `boxcutter-incr-cntr', and `boxcutter-gen-fname'.\n
-:SEE-ALSO `*boxcutter-tstamp*', `boxcutter-capture'\n►►►")
+:SEE-ALSO `*boxcutter-tstamp*', `boxcutter-capture'\n►►►"
+  :type 'integer
+  :group 'mon-boxcutter)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-17T18:29:51-04:00Z}#{09426} - by MON>
-(defvar *boxcutter-tstamp* "%y-%m-%d"
-  "*Timestring concatenated with`*boxcutter-counter*'s incrementer.\n
-Return timestring formatted  yy-mm-dd e.g. 09-10-17.\n
-:EXAMPLE *boxcutter-tstamp*\n\n:CALLED-BY `boxcutter-gen-tstamp'
-:SEE-ALSO `boxcutter-capture'.\n►►►")
-;;
-;;; :TEST-ME *boxcutter-tstamp*
+(defcustom *boxcutter-tstamp* "%y-%m-%d"
+  "Timestring concatenated with`*boxcutter-counter*'s incrementer.\n
+Return timestring formatted as yy-mm-dd, e.g. 09-10-17.\n
+:EXAMPLE\n\n\(format-time-string *boxcutter-tstamp*\)\n
+:CALLED-BY `boxcutter-gen-tstamp'
+:SEE-ALSO `boxcutter-capture'.\n►►►"
+  :type  'string
+  :group 'mon-boxcutter)
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-21T20:44:03-04:00Z}#{09434} - by MON>
@@ -351,12 +400,23 @@ When RESET is non-nil reset `*boxcutter-counter*' to 0 before incrementing.\n
 ;;; :TEST-ME (boxcutter-incr-cntr)
 
 ;;; ==============================
-;;; :MOVED `boxcutter-verify-image-type' -> mon-utils.el 
-;;; :RENAMED `boxcutter-verify-image-type' -> `mon-image-verify-type'
-;;; :ADDED :ALIAS `boxcutter-verify-image-type' `mon-image-verify-type'
-;;; :CHANGESET 1786
-;;; :CREATED <Timestamp: #{2010-05-28T13:36:42-04:00Z}#{10215} - by MON KEY>
-(defalias 'boxcutter-verify-image-type 'mon-image-verify-type)
+;;; :CHANGESET 2292
+;;; :CREATED <Timestamp: #{2010-11-12T21:40:43-05:00Z}#{10455} - by MON KEY>
+(defun boxcutter-mkdir-loadtime ()
+  "Create `*boxcutter-captures*' directory at if it doesn't already exist.\n
+May be evaluated at loadtime as if by: 
+ \(eval-after-load \"mon-boxcutter\" '\(boxcutter-mkdir-loadtime\)\)\n
+:SEE-ALSO .\n►►►"
+  (when (bound-and-true-p *boxcutter-captures*)
+    (or (and (file-exists-p *boxcutter-captures*)
+             (file-directory-p *boxcutter-captures*))
+        (and (not (file-directory-p *boxcutter-captures*))
+             (not (file-symlink-p *boxcutter-captures*))
+             (unwind-protect
+                 (message (concat ":FUNCTION `boxcutter-mkdir-loadtime' "
+                                  "evaluatated at loadtime created *boxcutter-captures* directory: #P%s")
+                          *boxcutter-captures*)
+               (ignore-errors (make-directory *boxcutter-captures* t)))))))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-17T18:46:51-04:00Z}#{09426} - by MON>
@@ -386,7 +446,7 @@ When RESET is non-nil reset `*boxcutter-counter*' to 0 before incrementing.\n
                                       "-- arg FNAME-STRING not a string integer value"))))
                     "-"))
                (boxcutter-gen-tstamp) "-"
-               (boxcutter-incr-cntr step-val reset) ".bmp"))
+               (boxcutter-incr-cntr step-val reset) ".bmp")) ;; ".pnm"
       (setq *boxcutter-captured-last* nil))
     (if bxc-gf (setq *boxcutter-captured-last* bxc-gf))))
 ;;
@@ -539,7 +599,6 @@ DO-CROP     - When non-nil capture a crop selection. Can do windows of ext APP.
 DO-WINDOW   - When non-nil capture current-buffer window or window W-BUFFER name.
 W-BUFFER    - When DO-WINDOW is non-nil capture the window W-BUFFER name.
 INSIDE-EDGE - When non-nil capture the inside of frame or window.\n
-
 :EXAMPLE\n
 \(boxcutter-capture nil nil nil t\)\n
 \(boxcutter-capture t\) nil t\)\n
@@ -655,6 +714,17 @@ ACTION-PREFIX is the symbol to place before the ACTION command
 ;;; ==============================
 (provide 'mon-boxcutter)
 ;;; ==============================
+
+(unless (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
+             (bound-and-true-p IS-MON-SYSTEM-P))
+  (eval-after-load "mon-boxcutter" '(boxcutter-mkdir-loadtime)))
+
+ 
+;; Local Variables:
+;; mode: EMACS-LISP
+;; coding: utf-8
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; End:
 
 ;;; ================================================================
 ;;; mon-boxcutter.el ends here

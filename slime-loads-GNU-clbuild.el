@@ -11,7 +11,7 @@
 ;; CREATED: 2009-09-06T10:19:19-04:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: 
+;; KEYWORDS: environment, external, lisp, programming, processes
 
 ;;; ================================================================
 
@@ -33,8 +33,11 @@
 ;; `quicklisp-dot-swank-current-p', 
 ;; `quicklisp-hash-system-completions', `quicklisp-system-complete',
 ;; `quicklisp-hash-system-completions-slime-loadtime',
+;; `mon-prev-xref-slime', `mon-next-xref-slime', `mon-quit-slime-description-window',
+;; `mon-lisp-set-indent-hook', `mon-lisp-set-indent',
+;; `slime-echo-arglist-STFU', `slime-echo-arglist-behave-or-back-to-your-cage',
 ;; FUNCTIONS:◄◄◄
-;;
+;; 
 ;; MACROS:
 ;;
 ;; METHODS:
@@ -46,9 +49,15 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
-;; `*quicklisp-path*', `*quicklisp-systems*', 
+;; `*quicklisp-path*', `*quicklisp-systems*', `*slime-echo-arglist-STFU*',
+;;
+;; GROUPS:
+;; `mon-qucklisp'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
+;; `mon-slime-quit-description' -> `mon-quit-slime-description-window'
+;; `slime-next-xref'            -> `mon-next-xref-slime' 
+;; `slime-prev-xref'            -> `mon-prev-xref-slime' 
 ;;
 ;; DEPRECATED:
 ;;
@@ -105,13 +114,15 @@
 ;; (URL `http://quicklisp.org/')
 ;; (URL `http://blog.quicklisp.org/')
 ;; (URL `git://github.com/quicklisp/quicklisp-projects.git')
+;; (URL `git://github.com/quicklisp/quicklisp-client.git')
+;; (URL `git://github.com/quicklisp/quicklisp-bootstrap.git')
 ;; (URL `http://www.youtube.com/watch?v=11wYPAy9qNw&feature=PlayList&p=9A2D7E31B7D039AF&index=0&playnext=1&hd=1')
 ;; (URL `http://github.com/quicklisp/boston-lisp-meeting/raw/master/blm-lightning-talk.pdf')
 ;; (URL `http://xach.com/tmp/ql.pdf')
 ;; (URL `http://xach.com/tmp/fails/')
 ;; (URL `http://groups.google.com/group/quicklisp')
 ;; (URL `http://dist.quicklisp.org/quicklisp.txt')
-;;
+;; 
 ;;; ==============================
 ;; :SLIME-MODE-PACKAGES
 ;;
@@ -265,23 +276,59 @@
 
 
 ;;; ==============================
+;;; :CHANGESET 2205
+;;; :CREATED <Timestamp: #{2010-10-21T18:59:23-04:00Z}#{10424} - by MON KEY>
+(defgroup mon-qucklisp nil
+  "Configuations for Zach Beane's Common Lisp Quicklisp related procedures.\n
+:SEE-ALSO .\n►►►"
+  :link '(url-link :tag ":EMACSWIKI-FILE" 
+                   "http://www.emacswiki.org/emacs/slime-loads-GNU-clbuild.el")
+  ;;
+  :link '(emacs-library-link 
+          "slime-loads-GNU-clbuild.el")
+  :link '(url-link :tag ":QUICKLISP" 
+                   "http://www.quicklisp.org/")
+  ;;
+  :link '(url-link :tag ":QUICKLISP-BLOG"
+                   "http://blog.quicklisp.org/")
+  :link '(url-link :tag ":QUICKLISP-GG-GROUP"
+                   "http://groups.google.com/group/quicklisp")
+  ;;
+  :link '(url-link :tag ":QUICKLISP-CLIENT-FROM-GIT"
+                    "http://github.com/quicklisp/quicklisp-client.git")
+  :link '(url-link :tag ":QUICKLISP-PROJECTS-FROM-GIT"
+          "git://github.com/quicklisp/quicklisp-projects.git")
+  :link '(url-link :tag ":QUICKLISP-BOOTSTRAP-FROM-GIT"
+                   "git://github.com/quicklisp/quicklisp-bootstrap.git")
+  ;;
+  ;; :link '(url-link :tag ":QUICKLISP-SLIME-HELPER"
+  ;;                        "http://github.com/quicklisp/quicklisp-slime-helper"')
+  :prefix "quicklisp-"
+  :group 'mon-base
+  :group 'mon-doc-help-utils)
+
+;;; ==============================
 ;;; :PASTED (URL `http://paste.lisp.org/+2EGF')
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:13:46-04:00Z}#{10263} - by MON KEY>
-(defvar *quicklisp-path* nil
-  "Names a directory for use with quicklisp.\n
-Defaults to the value of:
+(defcustom *quicklisp-path* (concat (getenv "HOME") "/quicklisp/")
+  "Names a directory for use with Zach Beane's Quicklisp for Common Lisp.\n
+Defaults to the value of:\n
  \(merge-pathnames \"quicklisp/\" \(user-homedir-pathname\)\)\n
 :SEE (URL `http://www.quicklisp.org').\n
 :SEE-ALSO `slime-backend', `quicklisp-find-slime',
 `quicklisp-current-swank-loader', `quicklisp-write-dot-swank-loader-if',
 `quicklisp-write-dot-swank-loader', `quicklisp-dot-swank-current-p',
-`*quicklisp-path*'.\n►►►")
+`*quicklisp-path*'.\n►►►"
+  :type  'directory
+  :group 'mon-quicklisp
+  :group 'mon-doc-help-CL)
 ;;
-(unless (bound-and-true-p *quicklisp-path*)
-  ;; (setq *quicklisp-path* (substitute-in-file-name "$HOME/quicklisp")
-  ;; (setq *quicklisp-path* (expand-file-name "quicklisp/" (getenv "HOME")))
-  (setq *quicklisp-path* (concat (getenv "HOME") "/quicklisp/")))
+;; (unless (and (intern-soft "*quicklisp-path*" obarray)
+;;              (bound-and-true-p *quicklisp-path*))
+;;   ;; (setq *quicklisp-path* (substitute-in-file-name "$HOME/quicklisp")
+;;   ;; (setq *quicklisp-path* (expand-file-name "quicklisp/" (getenv "HOME")))
+;;   (setq *quicklisp-path* (concat (getenv "HOME") "/quicklisp/")))
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-06-30T16:13:52-04:00Z}#{10263} - by MON KEY>
@@ -337,6 +384,7 @@ in the software subdir of `*quicklisp-path*'.\n
 ;;; :TEST-ME (quicklisp-find-slime)
 ;;; :TEST-ME (quicklisp-find-slime "~/quicklisp/")
 
+ 
 ;;; ==============================
 ;;; :CHANGESET 1929
 ;;; :CREATED <Timestamp: #{2010-06-30T16:44:21-04:00Z}#{10263} - by MON KEY>
@@ -369,13 +417,13 @@ elt2 is the truename of the most current swank-loader.lisp\n
     (and (or ;; Unless, Slime-devs change this flname should be ok. Check anyhow.
           (file-exists-p swk-ldr) 
           (error (concat ":FUNCTION `quicklisp-current-swank-loader' "
-                         "-- non-existent file: %s") swk-ldr))
+                         "-- non-existent :FILE %S") swk-ldr))
          (cond ((file-exists-p dt-swk-ldr) 
                 (setq dt-swk-ldr `(t . ,dt-swk-ldr)))
                ((file-writable-p dt-swk-ldr) 
                 (setq dt-swk-ldr `(nil . ,dt-swk-ldr)))
                (t (error (concat ":FUNCTION `quicklisp-current-swank-loader' "
-                                 "-- non-writable file: %s") swk-ldr)))
+                                 "-- non-writable :FILE %S") swk-ldr)))
     `(,dt-swk-ldr ,swk-ldr-pth ,swk-ldr))))
 ;;
 ;;; :TEST-ME (quicklisp-current-swank-loader)
@@ -413,8 +461,8 @@ indicating that file has changed.\n
     (if w-msg-user
         (progn
           (message (concat ":FUNCTION `quicklisp-write-dot-swank-loader' "
-                         "-- wrote:\n:FILE \"%s\"\n"
-                         ":FINDS-FILE \"%s\"") dot-swank ldr-swank)
+                         "-- wrote:\n:FILE #S\n"
+                         ":FINDS-FILE %S") dot-swank ldr-swank)
           dot-swank)
       dot-swank)))
 ;;
@@ -497,7 +545,8 @@ quicklisp directory as per `quicklisp-find-slime'./n
 :SEE-ALSO `quicklisp-system-complete', `quicklisp-hash-system-completions',
 `quicklisp-hash-system-completions-slime-loadtime', `*quicklisp-path*'.\n►►►")
 ;;
-(unless (bound-and-true-p *quicklisp-systems*)
+(unless (and (intern-soft "*quicklisp-systems*" obarray)
+             (bound-and-true-p *quicklisp-systems*))
   (setq *quicklisp-systems* (make-hash-table :test 'equal)))
 
 ;;; ==============================
@@ -520,7 +569,7 @@ hash-table, this effectivley forces a rehash of existing systems.\n
             rd-got)
         (if (not (file-exists-p ql-sys-txt))
             (error (concat ":FUNCTION `quicklisp-hash-system-completions' "
-                           "-- non-existent file: %s")
+                           "-- non-existent :FILE %s") 	
                    ql-sys-txt)
           (with-current-buffer (get-buffer-create ql-sys-bfr)
             (save-excursion (insert-file-contents ql-sys-txt))
@@ -625,6 +674,72 @@ in current-buffer moving point.\n
 ;; `----
 
 ;; ==============================
+;;; ==============================
+;;; :CHANGESET 2180
+;;; :CREATED <Timestamp: #{2010-10-16T11:19:11-04:00Z}#{10416} - by MON KEY>
+;; :COURTESY gbbopen/gbbopen-indent.el :WAS `set-indent-hook'
+(defun mon-lisp-set-indent (symbol value)
+  "Put VALUE on SYMBOL's `lisp-indent-function` property.\n
+Run on the `lisp-mode-hook' by `mon-lisp-set-indentation'.\n
+:EXAMPLE\n\n
+:SEE-ALSO `mon-lisp-set-indent-hook', `lisp-indent-function'.\n►►►"
+  ;; (put symbol 'fi:lisp-indent-hook value))
+  ;;(unless 
+  (put symbol 'lisp-indent-function value))
+
+;; (remove-hook 'lisp-mode-hook #'mon-lisp-set-indent-hook)
+;; (add-hook 'lisp-mode-hook #'mon-lisp-set-indent-hook))
+
+;;; ==============================
+;;; :COURTESY gbbopen/gbbopen-indent.el:WAS `gbbopen:add-indentation'
+;;; :CHANGESET 2180
+;;; :CREATED <Timestamp: #{2010-10-16T15:45:46-04:00Z}#{10416} - by MON KEY>
+(defun mon-lisp-set-indent-hook ()
+  "Put `lisp-indent-function` property for all `*mon-CL-indent-specs*' symbols.\n
+Run on the `lisp-mode-hook'.\n
+:SEE-ALSO `mon-lisp-set-indent'.\n►►►"
+  (interactive)
+  (dolist (sih *mon-CL-indent-specs*)
+    (mon-lisp-set-indent (car sih) (cdr sih))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2010-10-31T16:15:03-04:00Z}#{10437} - by MON>
+(defvar *slime-echo-arglist-STFU* nil
+  "When non-nil `slime-space' won't invoke `slime-echo-arglist' verbosely.\n
+`slime-echo-arglist-behave-or-back-to-your-cage' toggles `slime-echo-arglist'
+back on, and `slime-echo-arglist-STFU' shuts it up again.\n
+Evaluate `slime-show-arglist' explicitly if an arglist is needed.\n
+:SEE-ALSO `slime-echo-arglist-function'.\n►►►")
+;;
+(make-variable-buffer-local '*slime-echo-arglist-STFU*)
+(put '*slime-echo-arglist-STFU* 'permanent-local t)
+(set-default '*slime-echo-arglist-STFU* nil)
+
+
+;;; ==============================
+;;; :CHANGESET 2259
+;;; :CREATED <Timestamp: #{2010-11-01T16:55:20-04:00Z}#{10441} - by MON KEY>
+(defun slime-echo-arglist-behave-or-back-to-your-cage ()
+  "De-gimpify `slime-space's and allow `slime-echo-arglist' in current-buffer.\n
+Evaluate `slime-echo-arglist-STFU' to tone down the minibuffer noise.\n
+:SEE ALSO `*slime-echo-arglist-STFU*', `slime-echo-arglist-function'.\n►►►"
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (set (make-local-variable 'slime-echo-arglist-STFU)
+         nil)))
+
+;;; ==============================
+;;; :CHANGESET 2259
+;;; :CREATED <Timestamp: #{2010-11-01T16:55:16-04:00Z}#{10441} - by MON KEY>
+(defun slime-echo-arglist-STFU ()
+  "Silence `slime-space's invocation of `slime-echo-arglist' in current-buffer.\n
+Evaluate `slime-echo-arglist-behave-or-back-to-your-cage' to turn it back on.\n
+Evaluate `slime-show-arglist' explicitly if an arglist is needed.
+:SEE-ALSO `*slime-echo-arglist-STFU*', `slime-echo-arglist-function'.\n►►►"
+  (interactive)
+  (with-current-buffer (current-buffer)
+    (set (make-local-variable 'slime-echo-arglist-STFU)
+         t)))
 
 ;;; ==============================
 ;;; :CHANGESET 1917
@@ -647,7 +762,7 @@ Evaluates `slime-setup', `slime-require'.\n
   (set-language-environment "UTF-8")
   ;; :QUICKLISP-SLIME-PATH
   (let ((this-swank (quicklisp-current-swank-loader)))
-    (add-to-list 'load-path (concat (cadr this-swank) "/contrib"))
+    (add-to-list 'load-path  (concat (cadr this-swank) "/contrib"))
     (add-to-list 'load-path  (cadr this-swank))
     (add-to-list 'load-path  (cadr this-swank))
     ) ;;(load (locate-library "slime")))
@@ -674,11 +789,16 @@ Evaluates `slime-setup', `slime-require'.\n
    '(slime-truncate-lines nil)
    ;; :NOTE Setting `slime-use-autodoc-mode' is about the only to stop the
    ;;       insanity once it starts.
+   '(slime-complete-symbol-function 'slime-fuzzy-complete-symbol)
    '(slime-use-autodoc-mode nil)
    '(slime-autodoc-delay 2)
    '(slime-autodoc-accuracy-depth 4) ;; The default: 10 is prob. way to much IMHO
    )
-  (require 'slime)
+  (setq slime-lisp-modes '(lisp-mode lisp-interaction-mode))
+  (progn (require 'slime)
+	 (when (or (slime-bytecode-stale-p)
+		   (not (file-exists-p (concat (file-name-sans-extension (locate-library "slime")) ".elc"))))
+	 (slime-recompile-bytecode)))
   ;; (require 'slime-autoloads)
   (slime-setup '(slime-fancy slime-sbcl-exts slime-asdf slime-tramp			     
                  slime-presentation-streams ;slime-highlight-edits 
@@ -720,31 +840,115 @@ Evaluates `slime-setup', `slime-require'.\n
   (add-hook 'slime-mode-hook 
             (function (lambda ()
                         (set (make-local-variable 'slime-use-autodoc-mode) nil))))
-
+  ;;
   ;;(remove-hook 'slime-mode-hook 
   ;; (add-hook 'slime-mode-hook 
   ;;              (function (lambda () (slime-list-threads))))
-  
-                                        
+  ;;
   ;; (remove-hook 'slime-load-hook 
   ;; (add-hook 'slime-load-hook 
   ;;           (when (buffer-local-value 'slime-highlight-edits-mode (current-buffer))
   ;;             (slime-highlight-edits-mode -1)))
-  
-
+  ;;
+  ;; :SLIME-LISP-MODES
+  (add-hook 'lisp-interaction-mode-hook 'slime-mode)
+  (add-hook 'lisp-mode-hook 'slime-mode)
+  ;;
   ;; (remove-hook 'slime-mode-hook
   (add-hook 'slime-mode-hook
             (function (lambda () 
                         (set (make-local-variable 'lisp-indent-function)  
                              'common-lisp-indent-function))))
+
   ;;
   (add-to-list 'auto-mode-alist  '("\\.kif\\'" . lisp-interaction-mode))
+  ;; 
+  ;; define after slime is loaded and shadow `slime-space' so we can silence
+  ;; `slime-echo-arglist' more easily.
+  (eval-and-compile
+    (defun slime-space (n)
+      (interactive "p")
+      (self-insert-command n)
+      (when (and (not *slime-echo-arglist-STFU*) ;; <- redefined here.
+                 (slime-background-activities-enabled-p))
+        (slime-echo-arglist))))
+  (put 'slime-space 'function-documentation
+       (mapconcat #'identity
+       '("Insert a space and print some relevant information (function arglist).\n"
+         "Designed to be bound to the SPC key.\n"
+         "Prefix argument can be used to insert more than one space.\n"
+         ":SEE-ALSO `slime-echo-arglist-STFU', `*slime-echo-arglist-STFU*',"
+         "`slime-echo-arglist-behave-or-back-to-your-cage', `slime-echo-arglist-function'."
+         "►►►") "\n"))
   )
 
 ;; (mon-slime-setup-init)
 
 
+;;; ==============================
+;;; :TODO When `IS-MON-SYSTEM-P' bound by `mon-keybind-slime' on the `slime-mode-hook'.\n
+;;; :CHANGESET 2160
+;;; :CREATED <Timestamp: #{2010-09-29T13:18:37-04:00Z}#{10393} - by MON KEY>
+(defun mon-next-xref-slime ()
+  "Invoke `slime-goto-next-xref' and move forward to next slime-xref.\n
+:ALIASED-BY `slime-next-xref'.\n
+:SEE-ALSO `mon-prev-xref-slime', `slime-xref-last-buffer',
+`slime-next-location', `slime-xref-next-line', `slime-next-location-function',
+`slime-xref-show-location', `slime-show-xref-buffer', `slime-show-xrefs',
+`slime-insert-xrefs', `slime-with-xref-buffer', `slime-xref-last-buffer',
+`slime-xref-mode', `slime-xref-mode-map'.\n►►►"
+  (interactive)
+  (slime-goto-next-xref))
+;;
+(unless (and (intern-soft "slime-next-xref" obarray)
+             (fboundp 'slime-next-xref))
+(defalias 'slime-next-xref 'mon-next-xref-slime))
 
+;;; ==============================
+;;; :TODO When `IS-MON-SYSTEM-P' bound by `mon-keybind-slime' on the `slime-mode-hook'.\n
+;;; :CHANGESET 2160
+;;; :CREATED <Timestamp: #{2010-09-29T13:18:35-04:00Z}#{10393} - by MON KEY>
+(defun mon-prev-xref-slime ()
+  "Invoke `slime-goto-next-xref' and move backward to prev slime-xref.\n
+:ALIASED-BY `slime-prev-xref'.\n
+:SEE-ALSO `mon-next-xref-slime', `slime-xref-last-buffer',
+`slime-prev-location', `slime-xref-prev-line',
+`slime-previous-location-function', `slime-xref-show-location',
+`slime-show-xref-buffer', `slime-show-xrefs', `slime-insert-xrefs',
+`slime-with-xref-buffer', `slime-xref-last-buffer', `slime-xref-mode',
+`slime-xref-mode-map'.\n►►►"
+  (interactive)
+  (slime-goto-next-xref t))
+;;
+(unless (and (intern-soft "slime-prev-xref" obarray)
+             (fboundp 'slime-prev-xref))
+(defalias 'slime-prev-xref 'mon-prev-xref-slime))
+
+
+;;; ==============================
+;;; :CHANGESET 2173
+;;; :CREATED <Timestamp: #{2010-10-01T21:07:38-04:00Z}#{10395} - by MON KEY>
+(defun mon-quit-slime-description-window ()
+  "If buffer \"*slime-description*\" is active and displayed then quit-window.\n
+:ALIASED-BY `mon-slime-quit-description'\n
+:SEE-ALSO `mon-next-xref-slime', `mon-prev-xref-slime',
+`slime-with-popup-buffer', `slime-make-popup-buffer', `slime-init-popup-buffer',
+`slime-display-popup-buffer', `slime-popup-buffer-mode',
+`slime-popup-buffer-quit-function', `slime-popup-restore-data', `window-buffer',
+`selected-window'.\n►►►"
+  (let ((slm-dscr (get-buffer (slime-buffer-name :description))))
+    (if (and slm-dscr (eq (current-buffer) slm-dscr))
+        (quit-window)
+      (when (and slm-dscr (buffer-live-p slm-dscr)
+                 (get-buffer-window slm-dscr 'visible))
+        (with-selected-window (get-buffer-window slm-dscr 'visible)
+          (quit-window))))))
+;;
+(unless (and (intern-soft "mon-slime-quit-description" obarray)
+             (fboundp 'mon-slime-quit-description))
+(defalias 'mon-slime-quit-description 'mon-quit-slime-description-window))
+
+;;; ==============================
 ;; :WAS `slime-fancy'
 ;; (define-slime-contrib mon-slime-fancy
 ;;   "Make SLIME fancy."
@@ -788,9 +992,20 @@ Evaluates `slime-setup', `slime-require'.\n
 ;;     ;(set (make-local-variable 'eldoc-mode) nil)))
     
 
+;;; ==============================
+;;; :CHANGESET 2142
+;;; :CREATED <Timestamp: #{2010-09-29T14:08:07-04:00Z}#{10393} - by MON KEY>
+;; (defun slime-autodoc-mode-first-change-hook ()
+;;   (when *slime-autodoc-mode-STFU*
+;;     (make-local-variable 'first-change-hook)
+;;     'slime-auto-doc-mode-STFU))
+
+;;  (add-hook 'slime-mode-hook 'slime-autodoc-mode-first-change-hook)
 
 
 ;;; ==============================
+;;; :GUILE/GEISER
+
 ;;; :NOTE This can't be installed until >= Guile 1.9.12 is installed.
 ;;
 ;; :FILE geiser-install.el

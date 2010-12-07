@@ -11,6 +11,10 @@ redo.el by KyleJones does away with this.  You can get it here:
 
 * http://www.wonderworks.com/download/redo.el
 
+However, redo.el is out-of-date and often destroys the contents of buffer because the behavior of ‘primitive-undo’ has been slightly different from old one since Emacs 22. RedoPlus is a fork of redo.el and correctly works in newer version of Emacs.  You can get RedoPlus here:
+
+* http://www.emacswiki.org/emacs/redo+.el
+
 Note: it also seems to be available already in xemacs, at least for me.
 --gambarimasu who is at gmail
 

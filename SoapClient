@@ -2,6 +2,7 @@ The `soap-client.el` library provides access to a SOAP web service.  It can load
 
 A sample interface for accessing JIRA functionality is provided as an example.
 
+Unfortunately the jira2.el package is a programatic interface to JIRA using SOAP. It does not contain user level functionality, but only functions you can call from your own programs to perform JIRA operations. The only interactive function inside is jira2-login. See further discussion at the [http://code.google.com/p/emacs-soap-client/wiki/QuickStart QuickStart page]
 
 ----
 CategoryInterface

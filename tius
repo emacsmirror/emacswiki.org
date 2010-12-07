@@ -6,6 +6,27 @@ I use <b>Emacs</b>
 
 This is my [http://tius.it/.emacs .emacs] file
 
+=== Blog ===
+
+<rss http://tius.it/blog/?feed=rss2>
+
+
+How I use Emacs
+
+=== Internet relay chat ===
+
+ERC: for chat on FreeSoftware in LibrePlanet Italia channel
+
+
+=== Microblogging ===
+
+Identica-mode: for write and follow posts on Identi.ca Microblogging service
+
+
+=== Music Player ===
+
+EMMS: to listen good music when I work on PC
+
 
 [new]
 Bienvenuto to the wiki! :) -- AlexSchroeder

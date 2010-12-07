@@ -56,7 +56,7 @@
 
 ;;;###autoload
 (defun wikidoc-grab-list (prefix &optional no-private)
-  "Grab a list or functions matching 'prefix' possibly with 'no-private'"
+  "Grab a list or functions matching PREFIX possibly with NO-PRIVATE"
   (let ((prefix-sym (symbol-name prefix))
         (res '()))
     (mapatoms 
@@ -72,9 +72,9 @@
     res))
 
 (defun wikidoc--convert-line (line)
-  "Converts a single line of function documentation.
+  "Converts a single LINE of function documentation.
 
-This deals with things like quited LISP forms which can be turned into links"
+This deals with things like quoted LISP forms which can be turned into links"
   (save-match-data
     (while (string-match ".*\\('[^']+'\\).*" line)
       (setq line (replace-match 
@@ -85,7 +85,7 @@ This deals with things like quited LISP forms which can be turned into links"
                   nil nil line 1))) line))
 
 (defun wikidoc--convert (str)
-  "Convert function documentation type doc 'str' to creole."
+  "Convert function documentation type doc STR to creole."
   (let (in-pre
         )
     (mapconcat
@@ -106,26 +106,46 @@ This deals with things like quited LISP forms which can be turned into links"
      "\n")))
 
 ;;;###autoload
-(defun wikidoc-insert (prefix-to-doc buffer)
-  "Make creole doc in 'buffer' from elisp function doc on functions matching 'prefix'."
+(defun wikidoc-insert (elisp-prefix buffer)
+  "Make creole doc for functions beginning with ELISP-PREFIX in BUFFER.
+
+When called interactively with a PREFIX argument this function
+will use the current buffer for BUFFER. 
+
+Otherwise the BUFFER will be created named like:
+
+ *wikidoc-ELISP-PREFIX*
+
+If Transient Mark mode is set in the specified buffer the active
+region is killed before the new wiki text is inserted.
+"
   (interactive 
-   (let ((prefix-to-use (completing-read "elisp prefix: " obarray 't nil nil nil)))
-     (list (intern prefix-to-use) nil)))
+   (let ((elisp-prefix (completing-read "elisp prefix: " obarray 't nil nil nil)))
+     (list (intern elisp-prefix)    
+           (if current-prefix-arg
+               (current-buffer)
+             nil))))
   (let* ((lst (sort 
-               (wikidoc-grab-list prefix-to-doc 't)
+               (wikidoc-grab-list elisp-prefix 't)
                'string-lessp))
          ;; We're relying on dynamic scope here to set buffer later
          (mapfn (lambda (fn)
                   (with-current-buffer buffer
                     (insert (format "=== %s %s ===\n\n%s\n\n\n" 
                                     (symbol-name fn) 
-                                    (help-function-arglist fn)
+                                    ;; Could also capture the keywords here in some sort of hash
+                                    ;; so we can refer to them easily
+                                    (let ((args (help-function-arglist fn)))
+                                      (upcase (format "%s" args)))
                                     (wikidoc--convert (documentation fn))))))))
     (if (not (bufferp buffer))
         (progn
-          (setq buffer (get-buffer-create (format "*wikidoc-%s*" prefix-to-doc)))
+          (setq buffer (get-buffer-create (format "*wikidoc-%s*" elisp-prefix)))
           (mapc mapfn lst)
           (switch-to-buffer buffer))
-      (mapc mapfn lst))))
+      (progn
+        (if (use-region-p)
+            (delete-region (region-beginning) (region-end)))
+        (mapc mapfn lst)))))
 
 ;; End

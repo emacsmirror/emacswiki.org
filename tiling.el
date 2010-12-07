@@ -2,11 +2,11 @@
 
 ;; Copyright (C) 2010  Fang lungang
 
-;; Author: Fang lungang <lungangfang at 163.com>
+;; Author: Fang lungang <fanglungang at 163.com>
 ;; Created: Fang lungang 11/14/2010
-;; Modified: Fang lungang 11/20/2010 23:02>
+;; Modified: Fang lungang 12/01/2010 13:18>
 ;; Keywords: convenience, frames
-;; Version: 0.0.2
+;; Version: 0.0.4
 
 ;; This file is NOT part of GNU Emacs
 
@@ -47,8 +47,8 @@
 ;; ;; Navgating: Windmove uses C-<up> etc.
 ;; (define-key global-map (kbd "C-<up>"   ) 'windmove-up)
 ;; (define-key global-map (kbd "C-<down>" ) 'windmove-down)
-;; (define-key global-map (kbd "C-<left>" ) 'windmove-right)
-;; (define-key global-map (kbd "C-<right>") 'windmove-left)
+;; (define-key global-map (kbd "C-<right>") 'windmove-right)
+;; (define-key global-map (kbd "C-<left>" ) 'windmove-left)
 ;; ;; Swap buffers: M-<up> etc.
 ;; (define-key global-map (kbd "M-<up>"   ) 'buf-move-up)
 ;; (define-key global-map (kbd "M-<down>" ) 'buf-move-down)
@@ -96,17 +96,17 @@
   (when (= 4 (length bufs))
     (delete-other-windows)
     (set-window-buffer nil (nth 0 bufs))
-    
+
     (split-window-horizontally)
     (other-window 1)
     (set-window-buffer nil (nth 1 bufs))
-      
+
     (split-window-vertically)
     (other-window 1)
     (set-window-buffer nil (nth 2 bufs))
 
     (other-window 1)
-    
+
     (split-window-vertically)
     (other-window 1)
     (set-window-buffer nil (nth 3 bufs))
@@ -191,25 +191,25 @@
         ;; Still no enough bufs, repeat current buffer
         (while (< (length bufs) numOfWins)
           (setq bufs (append bufs (list (car bufs)))))
-      
+
         ;; show first n buffers being shown
         (nbutlast bufs (- (length bufs) numOfWins))))
 
-    ;; find next layout
-    (dolist (layout tiling-layouts)
-      (if (eq layout tiling-current-layout)
-          (setq found t) ; and continue with next iteration
-        (if (and found (not new-layout))
-            ;; previous layout is current layout
-            (setq new-layout layout))))
-    (if (not new-layout) ; current-layout must be the last in the list
-        (setq new-layout (car tiling-layouts))) ; wrap
-    (setq tiling-current-layout new-layout)
-    (funcall tiling-current-layout bufs)))
-
+    (when (> (length bufs) 1)
+      ;; find next layout
+      (dolist (layout tiling-layouts)
+        (if (eq layout tiling-current-layout)
+            (setq found t) ; and continue with next iteration
+          (if (and found (not new-layout))
+              ;; previous layout is current layout
+              (setq new-layout layout))))
+      (if (not new-layout) ; current-layout must be the last in the list
+          (setq new-layout (car tiling-layouts))) ; wrap
+      (setq tiling-current-layout new-layout)
+      (funcall tiling-current-layout bufs))))
 
 ;; tweak layout
-  
+
 (defun tiling-tile-move (direction)
   (let ((other-win (windmove-find-other-window direction))
         (this-buf (window-buffer (selected-window))))

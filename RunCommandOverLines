@@ -14,9 +14,8 @@
 
 Also, try map-lines -- it does what your code does, with regexps, and you get the lines collected on top of the kill ring:
 
-* http://asf.void.at/emacs/map-lines.el
+*  The code is here:  https://github.com/PaulHobbs/Map-lines  and is included in the Debian package "emacs-goodies-el".
 
-
-Note- the above page is down.  You can get map-lines from the debian package emacs-goodies-el.
+It is maintained by Paul Hobbs <paul . mcdill . hobbs atsign gmail> (2010).
 ----
 CategoryEditing

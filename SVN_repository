@@ -11,6 +11,11 @@ Sources for this stuff: [http://www.emacswiki.org/scripts/emacs-svn-update emacs
 == Discussion ==
 
 [new]
+Savannah has been down for a while now and while it did come up for a few days (I think) no updates were pushed to the Emacswiki repository during the time Savannah was up again. Once Savannah is up again will you push changes again? I do not use subversion so I am not certain about this but I think that you can not commit when the server hosting the subversion repository. If that is so we lost history which isn't all that important but I would still like to suggest switching to a distributed vcs and pushing to multiple locations. If you decide to switch to git then I can help adapting the script. Thanks. -- JonasBernoulli
+
+----
+
+[new]
 Why not make this DVC be part of the "Save modification" process ?
 This would help in making it a AppropriateMedia of choice instead of
 the EmacsNewsgroups or EmacsMailingLists to discuss or to have
@@ -48,7 +53,7 @@ When this basic support works, one could implement direct sync with filesystem h
 --JoakimVerona
 
 [new]
-I've sent [[zeus]] an email asking him about the administration issues involved. The benefit of a wiki is, of course, that anybody can just write. Anybody who wants write access to SVN, however, needs to apply for it, the admin has to do something, and so on. I don't like it very much. Let's hope somebody else volunteers for it. ;) -- Alex
+The benefit of a wiki is, of course, that anybody can just write. Anybody who wants write access to SVN, however, needs to apply for it, the admin has to do something, and so on. I don't like it very much. Somebody else will have to work on this. -- Alex
 
 ----
 CategoryEmacsWikiSite

@@ -1,4 +1,4 @@
-Climacs is a promising and quickly growing editor implementation in [[CommonLisp]], using the Common Lisp interface Manager [[CLIM]]. It is meant to provide only text-editing facilities for CLIM. For more information (downloading, mailing lists, development, screenshots), see http://common-lisp.net/project/climacs/. The design of Climacs is mostly based on [[Zmacs]], not [[GnuEmacs]].
+Climacs is a promising editor implementation in [[CommonLisp]], using the Common Lisp interface Manager [[CLIM]]. It is meant to provide only text-editing facilities for CLIM. For more information (downloading, mailing lists, development, screenshots), see http://common-lisp.net/project/climacs/. The design of Climacs is mostly based on [[Zmacs]], not [[GnuEmacs]].
 
 More descriptions:
 

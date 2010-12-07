@@ -24,6 +24,7 @@
 ;; FUNCTIONS:►►►
 ;; `mon-keybind-w3m', `mon-keybind-emacs-lisp-mode', `mon-keybind-slime',
 ;; `mon-keybind-lisp-interaction-mode', `mon-keybind-dired-mode',
+;; `mon-keybind-conf-mode'
 ;; 
 ;; FUNCTIONS:◄◄◄
 ;; 
@@ -102,6 +103,12 @@
 ;; [(shift tab)]
 ;; [backtab]
 ;;  (kbd "<S-SPC>") 
+;;     [mouse-1]     [mouse-2]      [mouse-2]
+;; [C-M-mouse-1] [C-S-mouse-2]  [M-S-mouse-3] 
+;; [C-M-mouse-1] [C-S-mouse-2]  [M-S-mouse-3]  
+;; [C-M-mouse-1] [C-S-mouse-2]  [M-S-mouse-3]  <M-S-mouse-3>
+;; [C-down-mouse-3] [C-down-mouse-2] [C-down-mouse-1] <C-down-mouse-1>
+;; [follow-link]
 ;; (event-modifiers ((kbd "<S-SPC>")) (listify-key-sequence (kbd "<S-SPC>"))) 
 ;; (event-modifiers (event-convert-list (listify-key-sequence "<S-SPC>")(kbd "<S-SPC>"))))
 ;; (listify-key-sequence (kbd "<S-SPC>")) 
@@ -171,6 +178,10 @@
 
 (eval-when-compile (require 'cl))
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+
 ;;; ==============================
 ;; :TODO `narrow-to-region' <- "C-xnr"
 
@@ -181,7 +192,7 @@
 (global-set-key (kbd "<C-backspace>") 'backward-kill-word)
 (global-set-key (kbd "<S-backspace>") (kbd "DEL"))
 ;;
-(when (and (intern-soft "IS-W32-P") (bound-and-true-p IS-W32-P))
+(when (and (intern-soft "IS-W32-P" obarray) (bound-and-true-p IS-W32-P))
   (global-set-key [(f3)] 'w32-maximize-frame)
   ;; "M-!" doesn't like it when IS-W32-P :(
   (global-set-key "\C-c!"       'shell-command))
@@ -284,11 +295,11 @@ Added to the `dired-mode-hook' at intit with `mon-keybind-put-hooks-init'.\n
   (define-key dired-mode-map "\C-cui"     'mon-dired-uninsert-subdir)
   (define-key dired-mode-map "\C-cua"     'mon-dired-uninsert-subdir-all)
   (define-key dired-mode-map "\C-c\M-wd"  'wdired-change-to-wdired-mode)
-  (define-key dired-mode-map "\C-c\M-u" 'mon-dired-unmark-elc)
+  (define-key dired-mode-map "\C-c\M-u"   'mon-dired-unmark-elc)
   ;; :ADDED `dired-efap' keybinding.
   ;; :MODIFICATIONS <Timestamp: #{2009-09-07T14:48:26-04:00Z}#{09371} - by MON>
   (when (featurep 'dired-efap)
-    (if (and (intern-soft "IS-MON-P-W32")
+    (if (and (intern-soft "IS-MON-P-W32" obarray)
              (bound-and-true-p IS-MON-P-W32))
         (define-key dired-mode-map  [M-f2] 'dired-efap)
       (define-key dired-mode-map  [f2] 'dired-efap))))
@@ -315,11 +326,56 @@ Binds `mon-line-move-next', `mon-line-move-prev', and `scroll-up'.\n
   (define-key completion-list-mode-map "n"          'mon-line-move-next)
   (define-key completion-list-mode-map "p"          'mon-line-move-prev)
   (define-key completion-list-mode-map (kbd "SPC")  'scroll-up)
+  (local-unset-key "q")
+  (define-key completion-list-mode-map "q" 'delete-completion-window)
+  (define-key completion-list-mode-map "Q" 'quit-window)
   ;; (define-key completion-list-mode-map (kbd "<S-SPC>")  'scroll-down)
   )
 
 ;; (remove-hook 'completion-list-mode-hook 'mon-keybind-completions)
 ;; (add-hook 'completion-list-mode-hook 'mon-keybind-completions)
+
+;; (delete-completion-window)
+
+;; let-bind the current slime buffer the set that to the local
+;; `completion-reference-buffer' on entry to buffer
+;; `slime-completions-buffer-name'
+;; `completion-setup-hook'
+;; `completion-setup-function'
+;; `completion-annotate-function'
+;; (set (make-local-variable 'completion-reference-buffer) )
+;; minibuffer-completion-help
+;; minibuffer-hide-completions
+;; display-buffer-mark-dedicated
+
+;; (let ((comp-ref-bfr
+;;        (or (minibufferp completion-reference-buffer)
+;;            (window-minibuffer-p (selected-window))
+;;            (eq (current-buffer) completion-reference-buffer)
+;;            (eq (help-buffer) completion-reference-buffer)
+;;            (string-match-p "^ " (buffer-name completion-reference-buffer))
+;;            (null (buffer-live-p (get-buffer completion-reference-buffer)))
+;;            ;; fall thru
+;;            (other-buffer (get-buffer-window "*Completions*" 0) 
+;;                          completion-reference-buffer) nil t)
+;;        ))
+
+
+;; (buffer-live-p completion-reference-buffer)
+;; bury-buffer
+;; 
+;; completion-list-mode-map
+;; 
+;; slime-complete-symbol-function
+;; slime-complete-symbol
+;; completion-reference-buffer
+;; deletei
+
+;; (when (get-buffer slime-completions-buffer-name)
+
+;; slime-completions-window
+;; slime-completions-buffer-name
+;; display-completion-list
 
 ;;; ==============================
 ;;(remove-hook'Info-mode-hook  
@@ -342,8 +398,7 @@ Binds `mon-line-move-next', `mon-line-move-prev', and `scroll-up'.\n
            (lambda ()
              (define-key ido-completion-map (kbd "<backtab>") 'ido-complete))))
 
-
-(cond ((and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
+(cond ((and (intern-soft "IS-MON-P" obarray) (bound-and-true-p IS-MON-P))
        (when (bound-and-true-p Tex-mode-map)  
          (define-key TeX-mode-map (kbd "<S-iso-lefttab>") 'TeX-complete-symbol))))
 
@@ -397,9 +452,10 @@ Can be manually removed later with:
 :SEE-ALSO `mon-keybind-dired-mode', `mon-keybind-w32-init',
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `mon-help-key-functions', `mon-help-keys'.\n►►►"
-  ;;
+  (let ((mkw3-msg (concat
+                    ":FUNCTION `mon-keybind-w3m' "
+                    "-- evaluated on `w3m-mode-hook")))
   ;; :LOCAL-UNSET
-  ;;
   (local-unset-key  (kbd "<up>"))
   (local-unset-key  (kbd "<down>"))
   (local-unset-key  (kbd "M-C"))
@@ -445,8 +501,8 @@ Can be manually removed later with:
   ;; `w3m-print-current-url' Display the url of the current page and put it into `kill-ring'.
   ;; :NOTE `w3m-copy-current-url-as-kill' aliases `w3m-print-current-url' in mon-url-utils.el
   ;; (local-set-key    (kbd "M-C")    'w3m-print-current-url) 
-  (define-key w3m-mode-map (kbd "M-C") (or (intern-soft "w3m-copy-current-url-as-kill") 
-                                           (intern-soft "w3m-print-current-url")))
+  (define-key w3m-mode-map (kbd "M-C") (or (intern-soft "w3m-copy-current-url-as-kill" obarray) 
+                                           (intern-soft "w3m-print-current-url" obarray)))
   ;;
   ;;(local-set-key    "c"            'mon-w3m-kill-url-at-point)
   (define-key w3m-mode-map "c" 'mon-w3m-kill-url-at-point)
@@ -454,8 +510,8 @@ Can be manually removed later with:
   ;; `w3m-print-this-url' Display the url under point and put it into `kill-ring'.
   ;; `w3m-copy-this-url-as-kill' aliases `w3m-print-this-url' in mon-url-utils.el
   ;;(local-set-key    "u"            'w3m-print-this-url)
-  (define-key w3m-mode-map "u" (or (intern-soft "w3m-copy-this-url-as-kill")
-                                   (intern-soft "w3m-print-this-url")))
+  (define-key w3m-mode-map "u" (or (intern-soft "w3m-copy-this-url-as-kill" obarray)
+                                   (intern-soft "w3m-print-this-url" obarray)))
   ;;
   ;; `w3m-goto-url-new-session' Visit the web page in a new session.
   ;;(local-set-key   (kbd "C-u f")        'w3m-goto-url-new-session)
@@ -480,7 +536,8 @@ Can be manually removed later with:
   ;;(local-set-key          (kbd "<up>")   'mon-scroll-down-in-place)
   (define-key w3m-mode-map (kbd "<up>")    'mon-scroll-down-in-place)
   ;; (local-set-key    (kbd "<down>")      'mon-scroll-up-in-place)
-  (define-key w3m-mode-map  (kbd "<down>") 'mon-scroll-up-in-place))
+  (define-key w3m-mode-map  (kbd "<down>") 'mon-scroll-up-in-place)
+  (minibuffer-message mkw3-msg)))
 ;;
 ;; (remove-hook 'w3m-mode-hook 'mon-keybind-w3m)
 ;; (add-hook 'w3m-mode-hook 'mon-keybind-w3m)
@@ -505,37 +562,42 @@ Run on the `emacs-lisp-mode-hook'\n
   ;; :SEE (URL `http://debbugs.gnu.org/cgi/bugreport.cgi?bug=6192')
   ;; :FIXME This needs to be globally unbound :(
   (local-unset-key [?\C-l])
-  (define-key emacs-lisp-mode-map "\M-i"        'indent-according-to-mode)
-  (define-key emacs-lisp-mode-map "\C-c\M-:"    'mon-eval-expression)
-  (define-key emacs-lisp-mode-map "\C-cc"       'comment-region)
-  (define-key emacs-lisp-mode-map "\C-c\C-uc"   'uncomment-region)
-  (define-key emacs-lisp-mode-map "\C-c\C-di"   'mon-comment-divider)
-  (define-key emacs-lisp-mode-map "\C-c\C-d4"   'mon-comment-divider-to-col-four)
-  (define-key emacs-lisp-mode-map "\C-cst"      'mon-insert-lisp-stamp)
-  (define-key emacs-lisp-mode-map "\C-ctm"      'mon-insert-lisp-testme)
+  (define-key emacs-lisp-mode-map "\M-i"         'indent-according-to-mode)
+  (define-key emacs-lisp-mode-map "\C-cc"        'comment-region)
+  (define-key emacs-lisp-mode-map "\C-c\C-uc"    'uncomment-region)
+  (define-key emacs-lisp-mode-map "\C-c\C-di"    'mon-comment-divider)
+  (define-key emacs-lisp-mode-map "\C-c\C-d4"    'mon-comment-divider-to-col-four)
+  (define-key emacs-lisp-mode-map "\C-cst"       'mon-insert-lisp-stamp)
+  (define-key emacs-lisp-mode-map "\C-ctm"       'mon-insert-lisp-testme)
   ;; :NOTE  C-c C-b bound to `slime-interrupt' in Slime-mode!!
-  ;; (define-key emacs-lisp-mode-map "\C-c\C-b"    'mon-eval-sexp-at-point)
-  (define-key emacs-lisp-mode-map "\C-c\C-j"    'mon-eval-print-last-sexp)
-  (define-key emacs-lisp-mode-map "\C-c\C-cb"   'mon-princ-cb)
-  (define-key emacs-lisp-mode-map "\C-cal"      'align-let) ;; :WAS [?\C-c ?\C-a] in align-let.el
-  (define-key emacs-lisp-mode-map "\C-cel"      'mon-escape-lisp-string-region)
+  (define-key emacs-lisp-mode-map "\C-cBr"       'boxquote-region)
+  (define-key emacs-lisp-mode-map "\C-cBu"       'boxquote-unbox)
+  (define-key emacs-lisp-mode-map "\C-c\C-x\C-e" 'mon-eval-sexp-at-point)
+  (define-key emacs-lisp-mode-map "\C-c\M-:"     'mon-eval-expression)
+  (define-key emacs-lisp-mode-map "\C-c\C-j"     'mon-eval-print-last-sexp)
+  (define-key emacs-lisp-mode-map "\C-c\C-cb"    'mon-princ-cb)
+  (define-key emacs-lisp-mode-map "\C-cal"       'align-let) ;; :WAS [?\C-c ?\C-a] in align-let.el
+  (define-key emacs-lisp-mode-map "\C-cel"       'mon-escape-lisp-string-region)
   ;; (define-key emacs-lisp-mode-map "\C-cexs"     'mon-insert-lisp-doc-eg-xref)
-  (define-key emacs-lisp-mode-map "\C-c\C-dc"   'mon-insert-lisp-doc-eg-xref)
-  (define-key emacs-lisp-mode-map "\C-cul"      'mon-unescape-lisp-string-region)
-  (define-key emacs-lisp-mode-map "\C-clsl"     'mon-line-strings-to-list)
-  (define-key emacs-lisp-mode-map "\C-clb"      'mon-line-strings-bq-qt-sym-bol)
-  (define-key emacs-lisp-mode-map "\C-c\t"      'lisp-complete-symbol)
+  (define-key emacs-lisp-mode-map "\C-c\C-dc"    'mon-insert-lisp-doc-eg-xref)
+  (define-key emacs-lisp-mode-map "\C-cul"       'mon-unescape-lisp-string-region)
+  (define-key emacs-lisp-mode-map "\C-clsl"      'mon-line-strings-to-list)
+  (define-key emacs-lisp-mode-map "\C-clb"       'mon-line-strings-bq-qt-sym-bol)
+  (define-key emacs-lisp-mode-map "\C-c\t"       'lisp-complete-symbol)
   (define-key emacs-lisp-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol)
   (define-key emacs-lisp-mode-map (kbd "<backtab>")  'lisp-complete-symbol)
   (define-key emacs-lisp-mode-map (kbd "<S-tab>")  'lisp-complete-symbol)
+  ;; :NOTE `slime-compile-and-load-file' is on C-c C-k
+  (define-key emacs-lisp-mode-map "\C-c\C-k"  'emacs-lisp-byte-compile-and-load)
   )
 ;;
-;; (when (and (intern-soft "IS-MON-SYSTEM-P")
+;; (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
 ;;            (bound-and-true-p IS-MON-SYSTEM-P))
 ;;   ;; (remove-hook 'emacs-lisp-mode-hook 'mon-keybind-emacs-lisp-mode)
 ;;   (add-hook 'emacs-lisp-mode-hook  'mon-keybind-emacs-lisp-mode))
 
 ;;; ==============================
+;;; :PREFIX "mklim-"
 ;; :LISP-INTERACTION-MODE-KEYMAP
 (defun mon-keybind-lisp-interaction-mode ()
   "Bind keys on the `lisp-interaction-mode-map'.\n
@@ -546,18 +608,28 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
 :SEE-ALSO `mon-keybind-emacs-lisp-mode', `mon-keybind-dired-mode',
 `mon-keybind-w3m', `mon-keybind-w32-init', `mon-help-key-functions',
 `mon-help-keys'.\n►►►"
-  (local-unset-key "\C-j")
-  (define-key lisp-interaction-mode-map "\C-j" 'newline-and-indent)
-  (define-key lisp-interaction-mode-map "\C-c\C-j" 'mon-eval-print-last-sexp)
-  (define-key lisp-interaction-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol)
-  (define-key lisp-interaction-mode-map (kbd "<S-tab>") 'lisp-complete-symbol)
-  (define-key lisp-interaction-mode-map (kbd "<backtab>") 'lisp-complete-symbol))
+  (let ((mklim-msg (cons 
+                    (concat
+                     ":FUNCTION `mon-keybind-lisp-interaction-mode' "
+                     "-- evaluated on `lisp-interaction-mode-hook' on entry in buffer %S")
+                    (get-buffer (current-buffer)))))
+    ;; :NOTE Slime binds C-j to `slime-eval-print-last-expression'
+    (local-unset-key "\C-j")
+    (define-key lisp-interaction-mode-map "\C-j" 'newline-and-indent)
+    (define-key lisp-interaction-mode-map "\C-c\C-j" 'mon-eval-print-last-sexp)
+    (define-key lisp-interaction-mode-map (kbd "<S-iso-lefttab>")  'lisp-complete-symbol)
+    (define-key lisp-interaction-mode-map (kbd "<S-tab>") 'lisp-complete-symbol)
+    (define-key lisp-interaction-mode-map (kbd "<backtab>") 'lisp-complete-symbol)
+    ;; (slime-log-event (format (car mklim-msg) (cdr mklim-msg)))
+    ;;(minibuffer-message (car mklim-msg) (cdr mklim-msg))
+    (message (car mkb-slm-msg) (cdr mkb-slm-msg))))
 ;; 
-(when (and (intern-soft "IS-MON-P") (bound-and-true-p IS-MON-P))
+(when (and (intern-soft "IS-MON-P" obarray) (bound-and-true-p IS-MON-P))
   ;; (remove-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode)
   (add-hook 'lisp-interaction-mode-hook 'mon-keybind-lisp-interaction-mode))
 
 ;;; ==============================
+;;; :PREFIX "mkb-slm-"
 ;;; :CHANGESET 1895
 ;;; :CREATED <Timestamp: #{2010-06-17T15:04:09-04:00Z}#{10244} - by MON KEY>
 (defun mon-keybind-slime ()
@@ -565,57 +637,118 @@ Added to the `lisp-interaction-mode-hook' at init with `mon-keybind-put-hooks-in
 Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 :EXAMPLE\n\n\(symbol-function 'mon-keybind-slime\)\n
 \(symbol-value 'slime-mode-map\)\n
-;; :SLIME-KEYBINDINGS
-`slime-prefix-bindings'
-`slime-editing-keys'
-`slime-keys'
-`slime-doc-bindings'
-`slime-who-bindings'\n
-;; :SLIME-KEYMAPS
-`slime-parent-map'
-`slime-parent-bindings'
-`slime-prefix-map'
-`slime-who-map'\n
-:NOTE Can be removed with:
+:NOTE Can be removed with:\n
  \(remove-hook 'slime-mode-hook 'mon-keybind-slime\)\n
-:SEE-ALSO `mon-help-CL-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init' 
+;; :SLIME-KEYMAPS                     :SLIME-KEY-BINDINGS 
+`slime-mode-map'                      `slime-keys'
+`slime-mode-indirect-map'             
+`slime-parent-map'                    `slime-parent-bindings'
+`slime-prefix-map'                    `slime-prefix-bindings'
+`slime-editing-map'                   `slime-editing-keys'
+`slime-doc-map'                       `slime-doc-bindings'
+`slime-who-map'                       `slime-who-bindings'
+`slime-popup-buffer-mode-map'         `slime-popup-buffer-mode'  
+`slime-xref-mode-map'                 `slime-xref-mode'
+`slime-inspector-mode-map'            `slime-inspector-mode'
+`slime-connection-list-mode-map'      `slime-connection-list-mode'
+`slime-thread-control-mode-map'       `slime-thread-control-mode'
+`sldb-mode-map'                       `sldb-mode'
+`slime-macroexpansion-minor-mode-map' `slime-macroexpansion-minor-mode'\n
+`slime-fuzzy-completions-map'         `slime-fuzzy-completions-mode'
+;; :SLIME-MENUS
+`slime-cheat-sheet-table'
+`slime-sldb-easy-menu'
+`slime-easy-menu'\n
+;; :SLIME-KEYMAP-FUNCTIONS
+`slime-init-keymaps'
+`slime-init-keymap'
+`slime-bind-keys'
+`slime-define-keys'
+`slime-add-easy-menu'
+`slime-sldb-add-easy-menu'
+`slime-cheat-sheet-table'\n
+:NOTE Slime doesn't always directly map commands to bindings and many maps are
+bound inside forms wrapped with `slime-init-keymaps', `slime-init-keymap',
+`slime-bind-keys', `slime-define-keys', etc. As such, finding keybindings isn't
+always easy.\n As a friendly reminder, here is how it is done:\n
+\(lookup-key slime-mode-map \"<SOME><KEYS>\"\)\n
+\(lookup-key slime-mode-map \"\\C-cB\"\)\n
+\(where-is '<SOME-SLIME-COMMAND>\)\n
+\(where-is 'slime-interrupt\)\n
+:SEE-ALSO `mon-help-CL-slime-keys', `slime-cheat-sheet', `mon-slime-setup-init',
 `mon-keybind-lisp-interaction-mode', `mon-keybind-emacs-lisp-mode',
 `mon-keybind-dired-mode', `mon-keybind-w3m', `mon-keybind-w32-init',
 `mon-help-key-functions', `mon-help-keys'.\n►►►"
-  (when (and (intern-soft "IS-MON-P")
-             (bound-and-true-p IS-MON-P))
-    (local-unset-key "\C-c\C-c")
-    (define-key slime-mode-map "\C-cc"     'comment-region)
-    (define-key slime-mode-map "\C-c\C-o"  'slime-compile-defun)
-    ;;
-    (local-unset-key "\M-n")
-    (define-key slime-mode-map "\M-n"     'mon-scroll-up-in-place)
-    (define-key slime-mode-map "\C-c\M-n" 'slime-next-note)
-    ;;
-    (local-unset-key "\M-p")
-    (define-key slime-mode-map "\M-p"     'mon-scroll-down-in-place)
-    (define-key slime-mode-map "\C-c\M-p" 'slime-previous-note)
-    ;;
-    (define-key slime-mode-map "\C-c\C-dc" 'mon-insert-lisp-doc-eg-xref)
-    (define-key slime-mode-map "\C-ctm"    'mon-insert-lisp-testme)
-    (define-key slime-mode-map "\C-cst"    'mon-insert-lisp-stamp)
-    (define-key slime-mode-map "\C-c\C-j"  'slime-eval-print-last-expression))
-  ;; (when IS-MON-P-W32
-  ;;   (define-key slime-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
-  ;;   (define-key slime-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
-  ;;   (define-key slime-repl-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
-  ;;   (define-key slime-repl-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
-  ;;   ;; :NOTE I don't think this is getting used. Can it hurt?
-  ;;   (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol))
-  (when (and (intern-soft "IS-MON-P-GNU") 
-             (bound-and-true-p IS-MON-P-GNU))
-    (define-key slime-mode-map (kbd "<S-tab>")         'slime-complete-symbol)
-    (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol)
-    (define-key slime-mode-map (kbd "<backtab>")       'slime-complete-symbol)
-    (define-key slime-repl-mode-map (kbd "<S-tab>")    'slime-complete-symbol)
-    (define-key slime-repl-mode-map (kbd "<backtab>")  'slime-complete-symbol)
-    (define-key slime-repl-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol)))
-          
+  (let ((mkb-slm-msg (cons 
+                      (concat
+                     ":FUNCTION `mon-keybind-slime' "
+                     "-- evaluated on `slime-mode-hook' on entry in to buffer %S")
+                    (get-buffer (current-buffer)))))
+    (when (and (intern-soft "IS-MON-P" obarray)
+               (bound-and-true-p IS-MON-P))
+      (local-unset-key "\C-c\C-b")
+      (define-key slime-mode-map "\C-cB"      'slime-interrupt)
+      (local-unset-key "\C-c\C-c")
+      (define-key slime-mode-map "\C-cc"      'comment-region)
+      (local-unset-key "\C-c\C-uc") ;; :WAS `slime-undefine-function'
+      (define-key slime-mode-map "\C-c\C-uc"  'uncomment-region)
+      (define-key slime-mode-map "\C-c\C-ud"  'slime-undefine-function)
+      ;;
+      ;; FU slime-package-fu.el not only does it not work well but... 
+      ;; the default binding for `slime-export-symbol-at-point' to "C-cx" really sucks!
+      (when (featurep 'slime-package-fu)    
+        (local-unset-key  "\C-cx") ;;  :WAS `slime-export-symbol-at-point'
+        (define-key slime-mode-map "\C-cex" 'slime-export-symbol-at-point))
+      ;;
+      (define-key slime-mode-map "\C-c\C-o"  'slime-compile-defun)
+      ;;
+      (local-unset-key "\M-n")
+      (define-key slime-mode-map "\M-n"     'mon-scroll-up-in-place)
+      (define-key slime-mode-map "\C-c\M-n" 'slime-next-note)
+      ;;
+      (local-unset-key "\M-p")
+      (define-key slime-mode-map "\M-p"     'mon-scroll-down-in-place)
+      (define-key slime-mode-map "\C-c\M-p" 'slime-previous-note)
+      ;;
+      (define-key slime-mode-map "\C-cel"    'mon-escape-lisp-string-region)
+      (define-key slime-mode-map "\C-cul"    'mon-unescape-lisp-string-region)
+      (define-key slime-mode-map "\C-c\C-dc" 'mon-insert-lisp-doc-eg-xref)
+      (define-key slime-mode-map "\C-c\C-dj" 'mon-insert-jump-lisp-doc)
+      (define-key slime-mode-map "\C-ctm"    'mon-insert-lisp-testme)
+      (define-key slime-mode-map "\C-cst"    'mon-insert-lisp-stamp)
+      (define-key slime-mode-map "\C-c\C-j"  'slime-eval-print-last-expression)
+      ;; 
+      ;; `slime-compile-file'
+      ;; `slime-compile-and-load-file' is on C-c C-k
+      ;; 
+                                        ;(define-key 'slime-mode-map 'mon-quit-slime-description-window)
+      ;; 'mon-next-xref-slime)
+      ;; 'mon-prev-xref-slime)
+      )
+    ;; (when IS-MON-P-W32
+    ;;   (define-key slime-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
+    ;;   (define-key slime-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
+    ;;   (define-key slime-repl-mode-map  (kbd "<backtab>") 'slime-complete-symbol)
+    ;;   (define-key slime-repl-mode-map  (kbd "<S-tab>")  'slime-complete-symbol)
+    ;;   ;; :NOTE I don't think this is getting used. Can it hurt?
+    ;;   (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol))
+    (when (and (intern-soft "IS-MON-P-GNU" obarray) 
+               (bound-and-true-p IS-MON-P-GNU))
+      (define-key slime-mode-map (kbd "<S-tab>")         'slime-complete-symbol)
+      (define-key slime-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol)
+      (define-key slime-mode-map (kbd "<backtab>")       'slime-complete-symbol)
+      (define-key slime-repl-mode-map (kbd "<S-tab>")    'slime-complete-symbol)
+      (define-key slime-repl-mode-map (kbd "<backtab>")  'slime-complete-symbol)
+      (define-key slime-repl-mode-map (kbd "<S-iso-lefttab>") 'slime-complete-symbol))
+    ;; (minibuffer-message (car mkb-slm-msg) (cdr mkb-slm-msg))
+    (message (car mkb-slm-msg) (cdr mkb-slm-msg))
+    ))
+
+
+;; `slime-fuzzy-target-buffer'
+;; (listify-key-sequence )
+;; (event-modifiers (kbd "<super>f"))
+
 ;;; ==============================
 ;; :MESSAGE-MODE-KEYBINDINGS
 ;; (remove-hook 'message-mode-hook
@@ -624,13 +757,38 @@ Added to the `slime-mode-hook' at init with `mon-keybind-put-hooks-init'.\n
 	   (lambda ()
 	     (progn
 	       (local-unset-key "\C-c\C-d")
-	       (define-key message-mode-map "\C-c\C-dd" 'message-dont-send))))
-          )
+	       (define-key message-mode-map "\C-c\C-dd" 'message-dont-send)))))
+
+
+;;; ==============================
+;;; :CHANGESET 2142 <Timestamp: #{2010-09-27T13:51:19-04:00Z}#{10391} - by MON KEY>
+;;; :CREATED <Timestamp: #{2010-09-26T12:59:09-04:00Z}#{10387} - by MON>
+(defun mon-keybind-conf-mode ()
+  "Add local keybindings to `conf-mode-map'.\n
+Change C-c C-c mapping from `conf-colon-mode' to `comment-region'.\n
+Add binding for C-cst for `mon-stamp-in-context'.\n
+Run on the `conf-mode-hook' when `IS-MON-P'.\n
+:SEE-ALSO `conf-mode'.\n►►►"
+  (local-unset-key "\C-c\C-c") ;; '`conf-colon-mode' :NOTE still bound to "\C-c:"
+  (define-key conf-mode-map "\C-cc"     'comment-region)
+  (define-key conf-mode-map "\C-cst" #'(lambda (w-changed)
+                                         (interactive "P")
+                                         (mon-stamp-in-context nil t 
+                                                               :w-changed t 
+                                                               :w-divider nil 
+                                                               :w-newline t))))
+;;
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+           (bound-and-true-p IS-MON-SYSTEM-P)
+           (intern-soft "IS-MON-P" obarray)
+           (bound-and-true-p IS-MON-P))
+  ;;(remove-hook 'conf-mode-hook 'mon-keybind-conf-mode)
+  (add-hook 'conf-mode-hook 'mon-keybind-conf-mode))
 
 ;;; ==============================
 ;; :EMACS-SERVER-KEYBINDINGS
 ;;; :CREATED <Timestamp: #{2010-01-27T22:48:03-05:00Z}#{10043} - by MON KEY>
-(when (and (intern-soft "IS-MON-P-GNU")
+(when (and (intern-soft "IS-MON-P-GNU" obarray)
            (bound-and-true-p IS-MON-P-GNU))
   ;; (remove-hook 'server-switch-hook  
   (add-hook 'server-switch-hook  

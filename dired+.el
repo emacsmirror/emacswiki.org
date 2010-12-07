@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Wed Oct 20 06:31:20 2010 (-0700)
+;; Last-Updated: Sun Nov 28 11:00:33 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2810
+;;     Update #: 2816
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -217,6 +217,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/11/28 dadams
+;;     diredp-mouse-3-menu: Added Toggle Marked/Unmarked for region menu.
 ;; 2010/10/20 dadams
 ;;     Moved Emacs 20 tweak to recognize k in file sizes to var dired-move-to-filename-regexp.
 ;;     Added diredp-loaded-p.
@@ -3235,6 +3237,11 @@ With non-nil prefix arg UNMARK-P, mark them instead."
                  ""
                  '("Mark" . diredp-mark-region-files)
                  '("Unmark" . diredp-unmark-region-files)
+                 '("Toggle Marked/Unmarked" .
+                   (lambda (start end)
+                     (interactive "r")
+                     (save-restriction (narrow-to-region start end)
+                                       (dired-do-toggle))))
                  '("Flag for Deletion" .
                    diredp-flag-region-files-for-deletion)))))
       (let* ((mouse-pos                  (event-start event))

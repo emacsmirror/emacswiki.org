@@ -125,7 +125,7 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-(declare-function mon-g2be                 "mon-utils"      (&optional min/max-go no-go))
+(declare-function mon-g2be                 "mon-buffer-utils"      (&optional min/max-go no-go))
 (declare-function mon-string-from-sequence "mon-utils"      (stringify-seq &rest other-seqs))
 (declare-function mon-string-after-index   "mon-utils"      (in-str after-str))
 (declare-function mon-string-to-symbol     "mon-utils"      (str-to-sym &optional start end))

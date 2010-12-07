@@ -1,5 +1,5 @@
 ;;; mon-post-load-hooks.el --- fncns to perform after initializing MON Emacsen
-;; -*- mode: EMACS-LISP; -*-
+;; -*- mode: EMACS-LISP; no-byte-compile: t -*-
 
 ;;; ================================================================
 ;; Copyright © 2010 MON KEY. All rights reserved.
@@ -106,7 +106,12 @@
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl))
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
 
 ;;; ==============================
 ;;; :TODO incorporate these:
@@ -145,8 +150,8 @@ Names of buffers removed at loadtime when present:
 `*mon-purge-emacs-temp-file-dir-fncns*',
 `*mon-post-load-hook-trigger-buffer*'.\n►►►"
   (when ;;(and 
-      (or (and (intern-soft "IS-MON-P-GNU") (bound-and-true-p IS-MON-P-GNU))
-          (and (intern-soft "IS-MON-P-W32") (bound-and-true-p IS-MON-P-32))
+      (or (and (intern-soft "IS-MON-P-GNU" obarray) (bound-and-true-p IS-MON-P-GNU))
+          (and (intern-soft "IS-MON-P-W32" obarray) (bound-and-true-p IS-MON-P-32))
           (or (bound-and-true-p common-lisp-hyperspec-root)
               (bound-and-true-p common-lisp-hyperspec-issuex-table)
               (bound-and-true-p common-lisp-hyperspec-symbol-table)))
@@ -194,16 +199,17 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
       ;;
       (with-current-buffer (get-buffer-create *mon-post-load-hook-trigger-buffer*)
         ;; IS-MON-SYSTEM-P        
-        (when (and (intern-soft "IS-MON-SYSTEM-P")
+        (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
                    (bound-and-true-p IS-MON-P-GNU))
           ;; IS-MON-P-GNU
-          (when (and (intern-soft "IS-MON-P-GNU")
+          (when (and (intern-soft "IS-MON-P-GNU" obarray)
                      (bound-and-true-p IS-MON-P-GNU))
             (mon-help-utils-CL-loadtime t)
             (add-hook 'kill-buffer-hook 'mon-purge-cl-symbol-buffers-on-load nil t)
+            ;; (remove-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime  t)
             (add-hook 'kill-buffer-hook 'mon-update-tags-tables-loadtime nil t))
           ;; IS-W32-P
-          (when (and (intern-soft "IS-W32-P") 
+          (when (and (intern-soft "IS-W32-P" obarray) 
                      (bound-and-true-p IS-W32-P)
                      (fboundp  'mon-maximize-frame-w32))
             (add-hook 'kill-buffer-hook 'mon-maximize-frame-w32 nil t))
@@ -214,6 +220,8 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
                              "-- evaluated `visit-tags-table-buffer' at loadtime"))
             (message (concat ":FUNCTION `mon-run-post-load-hooks' "
                              "-- value of current `tags-file-name': #P%S") tags-file-name)))
+        ;; (buffer-local-value 'kill-buffer-hook (current-buffer))
+        ;; (prin1 (buffer-local-variables (current-buffer)) (current-buffer))
         (when (get-buffer *mon-post-load-hook-trigger-buffer*)
           (kill-buffer (get-buffer *mon-post-load-hook-trigger-buffer*))))
     ;; PROTECTED-FORM
@@ -241,7 +249,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-purge-temporary-file-directory', `mon-htmlfontify-dir-purge-on-quit',
 `mon-its-all-text-purge-on-quit', `mon-purge-cl-symbol-buffers-on-load',
 `*mon-purge-emacs-temp-file-dir-fncns*'.\n►►►"
-  (when (and (intern-soft "IS-MON-SYSTEM-P")
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P)
              (file-exists-p doc-view-cache-directory)
              (file-directory-p doc-view-cache-directory))
@@ -261,7 +269,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-purge-thumbs-directory', `mon-purge-temporary-file-directory',
 `mon-htmlfontify-dir-purge-on-quit', `mon-its-all-text-purge-on-quit',
 `*mon-purge-emacs-temp-file-dir-fncns*', `mon-purge-cl-symbol-buffers-on-load'.\n►►►"
-  (when (and (intern-soft "IS-MON-SYSTEM-P")
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P))
     (eval-when (compile load eval)
       (require 'thumbs))
@@ -275,7 +283,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
   "Delete any `slime-swank-port-file's in `slime-temp-directory'.\n
 :SEE-ALSO `slime-delete-swank-port-file', `mon-purge-temporary-file-directory',
 `mon-purge-tramp-persistency-file'.\n►►►"
-  (let ((sspf (when (and (intern-soft "slime-swank-port-file")
+  (let ((sspf (when (and (intern-soft "slime-swank-port-file" obarray) ;; *IS-MON-OBARRAY*
                          (fboundp 'slime-swank-port-file))
                 (slime-swank-port-file))))
     (when (and sspf (file-exists-p sspf))
@@ -287,13 +295,14 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 (defun mon-purge-tramp-persistency-file ()
   "Delete the file with `tramp-persistency-file-name'.\n
 :SEE info node `(tramp)Connection caching'.\n
-:SEE-ALSO `mon-purge-temporary-file-directory',
+:SEE-ALSO `tramp-compat-temporary-file-directory',
+`mon-set-emacs-temp-file/dir-init', `mon-purge-temporary-file-directory',
 `mon-purge-slime-swank-port-file', `mon-run-post-load-hooks',
 `mon-purge-doc-view-cache-directory', `mon-purge-thumbs-directory',
 `mon-purge-temporary-file-directory', `mon-htmlfontify-dir-purge-on-quit',
 `mon-its-all-text-purge-on-quit', `mon-purge-cl-symbol-buffers-on-load',
 `*mon-purge-emacs-temp-file-dir-fncns*'.\n►►►"
-  (when (and (intern-soft "tramp-persistency-file-name")
+  (when (and (intern-soft "tramp-persistency-file-name" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p tramp-persistency-file-name))
     (when (file-exists-p tramp-persistency-file-name)
       (delete-file tramp-persistency-file-name))))
@@ -310,7 +319,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-its-all-text-purge-on-quit', `*mon-purge-emacs-temp-file-dir-fncns*',
 `mon-run-post-load-hooks'.\n►►►"
   ;;(when IS-MON-SYSTEM-P
-  (when (and (intern-soft "IS-MON-SYSTEM-P")
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
     (let ((tfd (mon-remove-if 
                 #'(lambda (f-chk) 
@@ -331,7 +340,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
 `mon-purge-temporary-file-directory', `mon-htmlfontify-dir-purge-on-quit',
 `mon-its-all-text-purge-on-quit'.\n►►►")
 ;;
-(unless (and (intern-soft "*mon-purge-emacs-temp-file-dir-fncns*")
+(unless (and (intern-soft "*mon-purge-emacs-temp-file-dir-fncns*" obarray)
              (bound-and-true-p *mon-purge-emacs-temp-file-dir-fncns*))
   (setq *mon-purge-emacs-temp-file-dir-fncns*
         `(mon-purge-doc-view-cache-directory
@@ -343,7 +352,7 @@ Killing this buffer will run that buffer's local `kill-buffer-hook'.\n
           mon-its-all-text-purge-on-quit)))
 ;;
 ;;;(progn (makunbound '*mon-purge-emacs-temp-file-dir-fncns*)
-;;;       (unintern  '*mon-purge-emacs-temp-file-dir-fncns*) )
+;;;       (unintern  "*mon-purge-emacs-temp-file-dir-fncns*" obarray) )
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-29T20:46:44-04:00Z}#{10132} - by MON KEY>
@@ -354,14 +363,14 @@ Empty/Delete the following when the `kill-emacs-hook' is run:\n
 `mon-purge-temporary-file-directory', `mon-htmlfontify-dir-purge-on-quit',
 `mon-its-all-text-purge-on-quit', `*mon-purge-emacs-temp-file-dir-fncns*'
 `*mon-purge-emacs-temp-file-dir-fncns*', `mon-purge-slime-swank-port-file'.\n►►►"
-  (when (and (intern-soft "IS-MON-SYSTEM-P")
+  (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
              (bound-and-true-p IS-MON-SYSTEM-P))
     (dolist (p-o-q *mon-purge-emacs-temp-file-dir-fncns*)
       (unless (null p-o-q)
         (funcall p-o-q)))))
 ;;
 ;; Now, add-hook to purge the directory on quit.
-(when (and (intern-soft "IS-MON-SYSTEM-P")
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
            (bound-and-true-p IS-MON-SYSTEM-P)
            (file-directory-p *emacs2html-temp*))
   (add-hook 'kill-emacs-hook 'mon-purge-emacs-temp-files-on-quit))
@@ -377,6 +386,14 @@ Empty/Delete the following when the `kill-emacs-hook' is run:\n
 ;;; ==============================
 (provide 'mon-post-load-hooks)
 ;;; ==============================
+
+ 
+;; Local Variables:
+;; generated-autoload-file: "./naf-mode/mon-loaddefs.el"
+;; no-byte-compile: t
+;; coding: utf-8
+;; mode: EMACS-LISP
+;; End:
 
 ;;; ====================================================================
 ;;; mon-post-load-hooks.el ends here

@@ -7,6 +7,11 @@ An alternative implementation of a grep-like compilation mode is [http://rooijan
 (custom-set-variables '(grep-program "ack -H -a --nogroup"))
 }}}
 
+---
+
+On emacs 24, it appears to be `grep-command`, not `grep-program`, unless I'm not loading the right library. -- RyanDavis
+
+Ah, no... it `grep-program` is defined in grep.el, but it isn't a customized var. Looks like it needs to be set via `grep-setup-hook` . -- RyanDavis
 
 ----
 CategoryExternalUtilities CategoryRegexp

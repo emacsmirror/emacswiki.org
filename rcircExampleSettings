@@ -54,6 +54,15 @@ Here's some examples of stuff you can do to configure [[rcirc]].
 
 See BitlBee for an explanation of that last line.
 
+== Changes in Emacs 23 ==
+
+rcirc-startup-channels-alist changed to rcirc-server-alist in Emacs 23, see http://www.gnu.org/software/emacs/manual/html_node/rcirc/Configuration.html.  The example there did not work for me, the first time you set it the list does not yet exist use something like the following:
+
+<pre>
+(setq rcirc-server-alist
+      '(("irc.freenode.net" :channels ("#emacs" "#python" "#sml" "#nasm" "#gcc"))))
+</pre>
+
 == New Commands ==
 
 Process and target are dynamically bound, so you only need to know about `defun-rcirc-command' and `rcirc-send-message'.

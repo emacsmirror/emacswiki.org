@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 21 08:59:22 2010 (-0800)
+;; Last-Updated: Tue Nov 23 11:38:18 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6807
+;;     Update #: 6810
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -830,7 +830,8 @@ Used on `pre-command-hook'."
       '(menu-item "Customize Icicles" icicle-customize-icicles-group))
     (define-key icicle-menu-map [icicle-help]
       '(menu-item "Help" icicle-minibuffer-help
-        :help "Display help for minibuffer input and completion" :keys "C-?"))
+        :help "Display help for minibuffer input and completion"
+        :keys "C-? in minibuf"))
     (define-key icicle-menu-map [icicle-separator-last] '("--"))
 
     (unless icicle-touche-pas-aux-menus-flag ; Use Dired > Multiple or Operate menu.

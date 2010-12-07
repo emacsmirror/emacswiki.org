@@ -42,7 +42,7 @@ The following unit test frameworks exist for Emacs Lisp.
 
 '''[[EmacsLispForRuby|El4r]]''' (Emacs Lisp for Ruby) leverages Ruby's ##Test::Unit## framework by using the EmacsRuby extension language. You write unit tests in EmacsRuby, while the code is in EmacsLisp. In other words, you can treat the EmacsLisp code as a black box and feed it inputs and check the outputs using EmacsRuby.
 
-'''[http://panix.com/~tehom/my-code/regress.el regress.el]''' by [TomBreton Tom Breton]'s is a "regression test harness for Emacs Lisp code". In this framework, test comparisions can be done by equal (default) and user defined test conditions. The last developed version is from 1999.
+'''[[Emtest]]''' is a modular, extensible testing framework.  It supersedes [http://panix.com/~tehom/my-code/regress.el regress.el], also by [TomBreton Tom Breton].  It lives in [http://savannah.nongnu.org/git/?group=emtest a git repo] on Savannah.
 
 '''[http://www.wanglianghome.org/svn/test/test.el test.el]''' is developed for testing operations on a buffer (but can also be used to test operations unrelated to buffers). [http://www.wanglianghome.org/images/test.png Screenshot].
 

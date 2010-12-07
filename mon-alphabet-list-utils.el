@@ -35,7 +35,7 @@
 ;; `mon-alphabet-as-list-stringD', `mon-alphabet-as-list-symbolU',
 ;; `mon-alphabet-as-list-symbolD', `mon-alphabet-as-stringU-w-nl',
 ;; `mon-alphabet-as-stringD-w-nl', `mon-alphabet-as-stringU-w-spc',
-;; `mon-alphabet-as-stringD-w-spc',
+;; `mon-alphabet-as-stringD-w-spc', `mon-string-alpha-list'
 ;;
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -92,6 +92,7 @@
 ;; `mon-alphabet-as-stringD-w-nl'       <- mon-utils.el
 ;; `mon-alphabet-as-stringU-w-spc'      <- mon-utils.el
 ;; `mon-alphabet-as-stringD-w-spc'      <- mon-utils.el
+;; `mon-string-alpha-list'              <- mon-utils.el
 ;;
 ;; TODO:
 ;;
@@ -157,7 +158,7 @@
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
-(setq *IS-MON-OBARRAY* (make-vector 16 nil)))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 
 ;;; ==============================
@@ -413,6 +414,8 @@ of being entirely self contained, and therefor does not rely on external calls.\
        (list ,as-fun
              `(defalias ',,as-fun #'(lambda () () 
                                       (mon-alphabet-as-type ',,as-typ)))))))
+;;
+;;; (put 'mon-alphabet-as-defun 'lisp-indent-function <INT>) 
 
 ;;; ==============================
 ;;; :CHANGESET 2117
@@ -647,6 +650,67 @@ Where the first most form \(a list of strings\) is the preferred format.\n
 ;; |
 ;; | (mon-alphabet-as-doc-loadtime (mon-alphabet-as-map-bc *mon-alphabet-as-type-generate*))
 ;; |
+;; `----
+
+;;; ==============================
+;;; :PREFIX "msal-"
+;;; :CREATED <Timestamp: Thursday June 25, 2009 @ 11:17.43 AM - by MON KEY>
+(defun mon-string-alpha-list (from-letter to-letter &optional as-symb)
+  "Return alphabetized list of ASCII character strings FROM-LETTER TO-LETTER.\n
+If either FROM-LETTER or TO-LETTER is upper-cased return value will be uppercased.\n
+When TO-LETTER comes before FROM-LETTER in a lexicographic sort the two args are
+swapped; this check is exclusive of case check.\n
+:EXAMPLE\n\n\(mon-string-alpha-list \"a\" \"f\"\)\n\(mon-string-alpha-list \"A\" \"F\"\)
+\(mon-string-alpha-list \"l\" \"G\"\)\n\(mon-string-alpha-list \"g\" \"l\"\)\n
+:NOTE Use this to get a list of symbols instead:\n
+\(princ \(mon-string-alpha-list \"m\" \"r\"\)\)\n
+:SEE-ALSO `mon-alphabet-as-type', `number-sequence', `mon-string-to-sequence', 
+`mon-string-from-sequence',  `mon-is-alphanum', `mon-is-digit',
+`mon-is-letter'.\n►►►"
+  (let ((msal-frm (string-to-char from-letter))
+        (msal-to (string-to-char to-letter))
+        msal-swp
+        msal-rtn ;; doesn't appear to be used.
+        )
+    (cond ((and (and (>= msal-frm 65) (<= msal-frm 90))
+                (and (>= msal-to 97) (<= msal-to 127)))
+           (setq msal-to (- msal-to 32)))
+          ((and (and (>= msal-to 65) (<= msal-to 90))
+                (and (>= msal-frm 97) (<= msal-frm 127)))
+           (setq msal-frm (- msal-frm 32))))
+    (when (< msal-to msal-frm)
+      (setq msal-swp msal-frm)
+      (setq msal-frm msal-to)
+      (setq msal-to msal-swp))
+    (split-string (mon-string-from-sequence (number-sequence msal-frm msal-to)) "" t)))
+;;
+;; ,---- :UNCOMMENT-BELOW-TO-TEST
+;; | (equal 
+;; |  (mon-string-alpha-list "a" "z")
+;; |  '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" 
+;; |    "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "A" "Z")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" 
+;; |    "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "Z" "A")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" 
+;; |    "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "z" "a")
+;; |  '("a" "b" "c" "d" "e" "f" "g" "h" "i" "j" "k" "l" 
+;; |    "m" "n" "o" "p" "q" "r" "s" "t" "u" "v" "w" "x" "y" "z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "Z" "a")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" "L" 
+;; |    "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal 
+;; |  (mon-string-alpha-list "a" "Z")
+;; |  '("A" "B" "C" "D" "E" "F" "G" "H" "I" "J" "K" 
+;; |    "L" "M" "N" "O" "P" "Q" "R" "S" "T" "U" "V" "W" "X" "Y" "Z"))
+;; | (equal (mon-string-alpha-list "z" "Z") '("Z"))
+;; | (equal (mon-string-alpha-list "A" "a") '("A"))
 ;; `----
 
 ;;; ==============================

@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sun Nov  7 18:40:10 2010 (-0600)
 ;; Version: 0.1
-;; Last-Updated: Tue Nov  9 15:05:21 2010 (-0600)
+;; Last-Updated: Tue Nov 30 14:05:00 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 521
+;;     Update #: 550
 ;; URL:  http://www.emacswiki.org/emacs/auto-pair+.el 
 ;; Keywords: Autopair, selection, whitespace
 ;; Compatibility: 
@@ -98,7 +98,8 @@
 ;;
 ;; Currently quoting only occurs outside of comments.
 ;;
-;; Also when typing inside a string, quotes are generated automatically.
+;; Also when typing inside a string, quotes are generated automatically.  When
+;; typing twice, the quoted quotes are change to regular quotes.
 ;;
 ;; In addition to having  a backspace change:
 ;;  " \"|\" "
@@ -180,6 +181,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change Log:
+;; 30-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Tue Nov 30 13:52:41 2010 (-0600) #547 (Matthew L. Fidler)
+;;    When pressing quote inside of a string first assume \"\".  After another quote,
+;;    assume ""
+;; 19-Nov-2010    Matthew L. Fidler  
+;;    Last-Updated: Fri Nov 19 08:36:24 2010 (-0600) #523 (Matthew L. Fidler)
+;;    String Quote bug-fix.
 ;; 09-Nov-2010    Matthew L. Fidler  
 ;;    Last-Updated: Tue Nov  9 12:28:02 2010 (-0600) #518 (Matthew L. Fidler)
 ;;    Bugfix for cases where there is no extra syntax pair.
@@ -509,18 +517,27 @@ f <- function(x){
                    (progn
                      ;; Actually skip-quote action.
                      (replace-match "")
-                     (save-excursion
-                       (backward-char 1)
-                       (insert (format autopair-quote-string (string pair)))))
-                 (when strp                 
-                   (save-excursion (backward-char 1) (insert (format autopair-quote-string (string pair))))
-                   (insert (format autopair-quote-string (string pair)))
-                   )
-                 (insert pair)
-                 (when strp
-                   (backward-char 1))
-                 (autopair-blink)
-                 (backward-char 1))))
+                     (looking-at ".*")
+                     (if (looking-back (regexp-quote (format "%s%s%s" autopair-quote-string (string pair) (string pair))))
+                         (progn ;; Quote pressed twice change \"\" to ""
+                           (replace-match "")
+                           (insert (format "%s%s" (string pair) (string pair)))
+                           (backward-char 1)
+                           )
+                       (save-excursion
+                         (backward-char 1)
+                         (insert (format autopair-quote-string (string pair))))))
+                 (if (and strp (looking-at "[ \t]*$")) nil ;; If looking at the end of line, just insert the quote.
+                   (when strp          
+                     (save-excursion (backward-char 1) (insert (format autopair-quote-string (string pair))))
+                     (insert (format autopair-quote-string (string pair)))
+                     )
+                   (insert pair)
+                   (when strp
+                     (backward-char 1)))
+                 (unless (and strp (looking-at "[ \t]*$")) ;; Don't move backwards if just inserted a single quote.
+                   (autopair-blink)
+                   (backward-char 1)))))
             (;; automatically skip open closer quote delimiter
              (and (eq 'skip-quote action)
                   (eq pair (char-after (point))))

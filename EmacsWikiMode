@@ -315,7 +315,6 @@ file automatically, just after publishing:
 
    (add-hook 'emacs-wiki-after-file-publish-hook 'my-emacs-wiki-chmod-644-published-file)
 
--- DirkBernhardt
 
 == Add skeletons into your emacs wiki pages easily ==
 

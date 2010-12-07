@@ -6,9 +6,9 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Mon Nov 22 12:00:34 2010 (-0600)
+;; Last-Updated: Thu Dec  2 13:02:51 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 364
+;;     Update #: 412
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
@@ -91,31 +91,52 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
-;; 22-Nov-2010    Matthew L. Fidler  
+;; 02-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec  2 13:02:02 2010 (-0600) #411 (Matthew L. Fidler)
+;;    Made ignoring of modes with indent-relative and indent-relative-maybe apply to indenting returns as well.
+;; 02-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec  2 11:38:37 2010 (-0600) #402 (Matthew L. Fidler)
+;;    Removed auto-indent on paste/yank for modes with indent-relative and indent-relative-maybe.  This has annoyed me forever.
+;; 02-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec  2 10:40:05 2010 (-0600) #397 (Matthew L. Fidler)
+;;    Added an advice to delete-char.  When deleting a new-line character, shrink white-spaces afterward.
+;; 02-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec  2 08:59:49 2010 (-0600) #386 (Matthew L. Fidler)
+;;    Speed enhancement by checking for yasnippets only on indentation.
+;; 29-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Mon Nov 29 13:19:38 2010 (-0600) #377 (Matthew L. Fidler)
+;;    Bug fix to allow authotkey files to save.
+;; 29-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Mon Nov 29 12:10:09 2010 (-0600) #367 (Matthew L. Fidler)
+;;    Change auto-indent-on-save to be disabled by default.
+;; 22-Nov-2010    Matthew L. Fidler
+;;    Last-Updated: Mon Nov 22 14:36:10 2010 (-0600) #365 (Matthew L. Fidler)
+;;    Yasnippet bug-fix.
+;; 22-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 22 12:00:07 2010 (-0600) #363 (Matthew L. Fidler)
 ;;    auto-indent bug fix for save on save buffer hooks.
-;; 16-Nov-2010    Matthew L. Fidler  
+;; 16-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Tue Nov 16 13:16:05 2010 (-0600) #361 (Matthew L. Fidler)
 ;;    Added conf-windows-mode to ignored modes.
-;; 15-Nov-2010    Matthew L. Fidler  
+;; 15-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 15 17:23:03 2010 (-0600) #354 (Matthew L. Fidler)
 ;;    Bugfix for deletion of whitespace
-;; 15-Nov-2010    Matthew L. Fidler  
+;; 15-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 15 14:27:50 2010 (-0600) #351 (Matthew L. Fidler)
 ;;    Bugfix for post-command-hook.
-;; 15-Nov-2010    Matthew L. Fidler  
+;; 15-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 15 08:53:03 2010 (-0600) #338 (Matthew L. Fidler)
 ;;    Added diff-mode to excluded modes for auto-indentaion.
-;; 15-Nov-2010    Matthew L. Fidler  
+;; 15-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Mon Nov 15 00:22:30 2010 (-0600) #336 (Matthew L. Fidler)
 ;;    Added fundamental mode to excluded modes for auto-indentation.
-;; 13-Nov-2010    Matthew L. Fidler  
+;; 13-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sat Nov 13 20:03:10 2010 (-0600) #334 (Matthew L. Fidler)
 ;;    Bug fix try #3
-;; 13-Nov-2010    Matthew L. Fidler  
+;; 13-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sat Nov 13 19:55:29 2010 (-0600) #329 (Matthew L. Fidler)
 ;;    Anothe bug-fix for yasnippet.
-;; 13-Nov-2010    Matthew L. Fidler  
+;; 13-Nov-2010    Matthew L. Fidler
 ;;    Last-Updated: Sat Nov 13 19:49:47 2010 (-0600) #325 (Matthew L. Fidler)
 ;;
 ;;    Bug fix for auto-indent-mode.  Now it checks to make sure that
@@ -202,7 +223,7 @@
   "* Auto Indent file upon visit."
   :type 'boolean
   :group 'auto-indent)
-(defcustom auto-indent-on-save-file t
+(defcustom auto-indent-on-save-file nil
   "* Auto Indent on visit file."
   :type 'boolean
   :group 'auto-indent
@@ -237,21 +258,43 @@
   :group 'auto-indent
   )
 
-(defcustom auto-indent-kill-line-removes-extra-spaces nil
+(defcustom auto-indent-delete-line-char-remove-extra-spaces t
+  "* When deleting a return, delete any extra spaces between the newly joined lines"
+  :type 'boolean
+  :group 'auto-indent)
+
+(defcustom auto-indent-kill-line-removes-extra-spaces t
   "* When killing lines, remove extra spaces before killing the line."
   :type 'boolean
-  :group 'auto-indent
-  )
+  :group 'auto-indent)
+
+(defcustom auto-indent-kill-next-line-when-at-end-of-current-line nil
+  "* When killing lines, if at the end of a line, remove all lines until the next line."
+  :type 'boolean
+  :group 'auto-indent)
 
 (defcustom auto-indent-minor-mode-symbol 't
   "* When true, Auto Indent puts AI on the mode line."
   :type 'boolean
   :group 'auto-indent
   )
+(defcustom auto-indent-disabled-modes-on-save '(ahk-mode)
+  "* List of modes where indent-region of the whole file is ignored"
+  :type '(repeat (sexp :tag "Major mode"))
+  :tag " Major modes where linum is disabled: "
+  :group 'auto-indent)
+
 (defcustom auto-indent-disabled-modes-list '(eshell-mode wl-summary-mode compilation-mode org-mode text-mode dired-mode snippet-mode fundamental-mode diff-mode texinfo-mode conf-windows-mode)
   "* List of modes disabled when global auto-indent-mode is on."
   :type '(repeat (sexp :tag "Major mode"))
   :tag " Major modes where linum is disabled: "
+  :group 'auto-indent)
+
+(defcustom auto-indent-disabled-indent-functions '(indent-relative indent-relative-maybe)
+  "* List of functions that auto-indent ignores the indent-region
+  on paste and automated indent by pressing return.  The default is indent-relative and
+  indent-relative-maybe.  If these are used the indentation is may not specified for the current mode."
+  :type '(repeat (symbol :tag "Ignored indent-function"))
   :group 'auto-indent)
 
 (defcustom auto-indent-indentation-function 'reindent-then-newline-and-indent
@@ -407,17 +450,19 @@ http://www.emacswiki.org/emacs/AutoIndentation
   (eval `(defadvice ,command (after auto-indent-minor-mode-advice activate)
            (and (not current-prefix-arg) auto-indent-minor-mode (not (minibufferp)))
            (let ((mark-even-if-inactive transient-mark-mode))
-             (if auto-indent-on-yank-or-paste
-                 (indent-region (region-beginning) (region-end) nil))
-             (if auto-indent-mode-untabify-on-yank-or-paste
-                 (untabify (region-beginning) (region-end)))))))
+             (unless (memq indent-line-function auto-indent-disabled-indent-functions)
+               (if auto-indent-on-yank-or-paste
+                   (indent-region (region-beginning) (region-end) nil))
+               (if auto-indent-mode-untabify-on-yank-or-paste
+                   (untabify (region-beginning) (region-end))))))))
 
 
 (defun auto-indent-whole-buffer (&optional save)
   "Auto-indent whole buffer and untabify it"
-  (interactive) 
+  (interactive)
   (unless (or (minibufferp)
-              (memq major-mode auto-indent-disabled-modes-list))
+              (memq major-mode auto-indent-disabled-modes-list)
+              (and save (memq major-mode auto-indent-disabled-modes-on-save)))
     (when (or
            (and save auto-indent-delete-trailing-whitespace-on-save-file)
            (and (not save) auto-indent-delete-trailing-whitespace-on-visit-file)
@@ -434,17 +479,29 @@ http://www.emacswiki.org/emacs/AutoIndentation
 
 (defun auto-indent-file-when-save ()
   "* Auto-indent file when save."
-  (if (and auto-indent-minor-mode (buffer-file-name))
-      (auto-indent-whole-buffer 't)))
+  (if (not (minibufferp))
+      (if (and auto-indent-minor-mode (buffer-file-name) auto-indent-on-save-file)
+          (auto-indent-whole-buffer 't))))
 
 (defun auto-indent-file-when-visit ()
   "* auto-indent file when visit."
-                                        ;(make-local-variable 'find-file-hook)
   (when (buffer-file-name)
     (auto-indent-whole-buffer)
     (when auto-indent-on-visit-pretend-nothing-changed
       (set-buffer-modified-p nil) ; Make the buffer appear "not modified"
       )))
+
+(defadvice delete-char (around auto-indent-mode activate)
+  "If at the end of the line, take out whitespace after deleting character"
+  (let ((del-eol (eolp)))
+    ad-do-it
+    (when (and del-eol
+             auto-indent-minor-mode (not (minibufferp))
+             auto-indent-delete-line-char-remove-extra-spaces)
+        (shrink-whitespaces)
+        (when (and (eolp) (looking-back "[ \t]+" nil t))
+          (replace-match "")))))
+
 (defadvice kill-line (before auto-indent-mode activate)
   "If at end of line, join with following; otherwise kill line.
      Deletes whitespace at join."
@@ -452,8 +509,10 @@ http://www.emacswiki.org/emacs/AutoIndentation
            auto-indent-kill-line-removes-extra-spaces)
       (if (and (eolp) (not (bolp)))
           (progn (delete-indentation 't)
-                 (when (looking-at " $")
-                   (delete-char 1))))))
+                 (when auto-indent-kill-next-line-when-at-end-of-current-line
+                   (while (looking-at " $")
+                     (delete-char 1)
+                     (delete-indentation t)))))))
 (defvar auto-indent-mode-pre-command-hook-line nil)
 (make-variable-buffer-local 'auto-indent-mode-pre-command-hook-line)
 (defvar auto-indent-last-pre-command-hook-point nil)
@@ -465,7 +524,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
   (condition-case error
       (progn
         (setq auto-indent-last-pre-command-hook-minibufferp (minibufferp))
-        (when (not (minibufferp))
+        (when (and (not (minibufferp)))
           (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
           (setq auto-indent-last-pre-command-hook-point (point))
           ))
@@ -475,15 +534,17 @@ http://www.emacswiki.org/emacs/AutoIndentation
 (defun auto-indent-mode-post-command-hook ()
   "Hook for auto-indent-mode to go to the right place when moving around and the whitespace was deleted from the line."
   (condition-case err
-      (when (and (not auto-indent-last-pre-command-hook-minibufferp) (not (minibufferp)))
+      (when (and (not auto-indent-last-pre-command-hook-minibufferp) (not (minibufferp))
+                 (not (memq indent-line-function auto-indent-disabled-indent-functions)))
         (unless (memq 'auto-indent-mode-pre-command-hook pre-command-hook)
           (setq auto-indent-mode-pre-command-hook-line -1)
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
-        (when (or (not (fboundp 'yas/snippets-at-point))
-                  (let ((yap (yas/snippets-at-point 'all-snippets)))
-                    (or (not yap) (and yap (= (length yap))))))
-          (when auto-indent-minor-mode
-            (when (and last-command-event (memq  last-command-event '(10 13)))
+        (when auto-indent-minor-mode
+          (when (and last-command-event (memq  last-command-event '(10 13)))
+            (when (or (not (fboundp 'yas/snippets-at-point))
+                      (and yas/minor-mode
+                           (let ((yap (yas/snippets-at-point 'all-snippets)))
+                             (or (not yap) (and yap (= 0 (length yap)))))))
               (save-excursion
                 (when (and auto-indent-last-pre-command-hook-point
                            (eq auto-indent-indentation-function 'reindent-then-newline-and-indent))

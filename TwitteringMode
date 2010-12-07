@@ -168,6 +168,15 @@ twittering-mode also provides hooks that are run when new tweets arrive. This ex
                     (format "You have %d new tweet%s"
                             n (if (> n 1) "s" ""))))))
 
+== Enabling Spell Check for Tweets ==
+Add the hook below to enable spell checking before tweets
+
+{{{
+(add-hook 'twittering-edit-mode-hook (lambda () (ispell-minor-mode) (flyspell-mode)))
+}}}
+
+
+
 == Discussion ==
 [new:halloleo:2010-01-20 01:00 UTC]
 

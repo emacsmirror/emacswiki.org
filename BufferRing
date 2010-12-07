@@ -14,6 +14,8 @@ of hooks.
 
 In essence I wanted a ring, not a Dyson's Sphere :)
 
+: 'Halo' vs 'Dyson's Sphere' might work, since both are large space structures. In this case 'ring' vs 'torus' might be more appropriate. --CH
+
 This implementation is simple, a couple of files massing only 500+ lines.
 
 Here are the buffer-ring commands:
@@ -54,3 +56,12 @@ Version 0.0.2 2009-4-16
 
 * [[dynamic-ring.el]]
 * [[buffer-ring.el]]
+
+== Comments ==
+
+This is great, a simpler MTorus. But what would be greater is integration with ibuffer. ibuffer can filter buffers according to rules, it would be good if I could create buffer rings from such ibuffer groups. Also, There is no completion on buffer add/delete. Could you put these files on github (or somesuch) so I could contribute if needed, thanks. --CH
+
+
+----
+
+CategoryBufferSwitching

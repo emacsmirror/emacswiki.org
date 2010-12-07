@@ -439,9 +439,12 @@ I've created color-theme-dirac, a nice (for me) pastel color theme on black back
 
 I have created a color theme based on the TextMate Mac Classic theme. It's stored in a git repo via http://github.com/jbw/color-theme-mac-classic along with a screenshot and install instructions. --jbw
 
+A port of VIM's desert theme can be found [https://github.com/superbobry/color-theme-desert here]. Any comments / suggestions are welcome! -- superbobry
 
 [new]
 Live color theme screenshots at the [http://color-theme-select.heroku.com/ (color-theme-select)] web site (almost ~130 themes) -- vic
+
+Bill Clementson has published his color theme: http://bc.tech.coop/ubuntu-config/elisp/color-theme-billc.el
 
 == History ==
 The original color theme code was written by Jonadab the Unsightly

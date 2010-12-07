@@ -177,10 +177,15 @@
 
 (require 'font-lock)
 
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-20T11:44:49-04:00Z}#{10116} - by MON KEY>
 (defgroup google-define-redux nil
-  "*Extensions for `google-define'.\n
+  "Extensions for `google-define'.\n
 :SEE-ALSO `google-define', `google-define-get-command',
 `google-define-parse-buffer', `google-define-font-lock',
 `google-define-kill-def-buffers', `mon-string-justify-left'
@@ -210,86 +215,6 @@
 ;;
 ;;; :TEST-ME (symbol-plist 'google-define-redux-faces)
 ;;; :TEST-ME (documentation-property 'google-define-redux-faces 'group-documentation)
-
-;;; ==============================
-;;; :COURTESY Jeremy English :HIS google-define.el 
-;;; :NOTE When `IS-MON-SYSTEM-P' this constant _should_ be bound in:
-;;; :FILE mon-regexp-symbols.el It is provided here for completentess.
-;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:34:07-04:00Z}#{10116} - by MON KEY>
-;;;  Replaced Character literal for SOFT HYPHEN (173, #o255, #xad) with hex representation.
-;;; :CREATED <Timestamp: #{2010-03-20T12:15:24-04:00Z}#{10116} - by MON KEY>
-(unless (and (intern-soft "*google-define-html-entry-table*")
-             (bound-and-true-p *google-define-html-entry-table*))
-(defconst *google-define-html-entry-table*
-  `(("&#34;"  "&quot;" "\"")  ("&#38;"  "&amp;" "&")    ("&#39;" "&yow;" "'")
-    ("&#62;"  "&gt;" ">")     ("&#161;" "&iexcl;" "¡")
-    ("&#162;" "&cent;" "¢")   ("&#163;" "&pound;" "£")  ("&#164;" "&curren;" "¤")
-    ("&#165;" "&yen;" "¥")    ("&#166;" "&brvbar;" "¦") ("&#167;" "&sect;" "§")
-    ("&#168;" "&uml;" "¨")    ("&#169;" "&copy;" "©")   ("&#170;" "&ordf;" "ª")
-    ("&#171;" "&laquo;" "«")  ("&#172;" "&not;" "¬")    ("&#173;" "&shy;" "\xad") ;<- :CHANGED
-    ("&#174;" "&reg;" "®")    ("&#175;" "&macr;" "¯")   ("&#176;" "&deg;" "°")
-    ("&#177;" "&plusmn;" "±") ("&#178;" "&sup2;" "²")   ("&#179;" "&sup3;" "³")
-    ("&#180;" "&acute;" "´")  ("&#181;" "&micro;" "µ")  ("&#182;" "&para;" "¶")
-    ("&#183;" "&middot;" "·") ("&#184;" "&cedil;" "¸")  ("&#185;" "&sup1;" "¹")
-    ("&#186;" "&ordm;" "º")   ("&#187;" "&raquo;" "»")  ("&#188;" "&frac14;" "¼")
-    ("&#189;" "&frac12;" "½") ("&#190;" "&frac34;" "¾") ("&#191;" "&iquest;" "¿")
-    ("&#192;" "&Agrave;" "À") ("&#193;" "&Aacute;" "Á") ("&#194;" "&Acirc;" "Â")
-    ("&#195;" "&Atilde;" "Ã") ("&#196;" "&Auml;" "Ä")   ("&#197;" "&Aring;" "Å")
-    ("&#198;" "&AElig;" "Æ")  ("&#199;" "&Ccedil;" "Ç") ("&#200;" "&Egrave;" "È")
-    ("&#201;" "&Eacute;" "É") ("&#202;" "&Ecirc;" "Ê")  ("&#203;" "&Euml;" "Ë")
-    ("&#204;" "&Igrave;" "Ì") ("&#205;" "&Iacute;" "Í") ("&#206;" "&Icirc;" "Î")
-    ("&#207;" "&Iuml;" "Ï")   ("&#208;" "&ETH;" "Ð")    ("&#209;" "&Ntilde;" "Ñ")
-    ("&#210;" "&Ograve;" "Ò") ("&#211;" "&Oacute;" "Ó") ("&#212;" "&Ocirc;" "Ô")
-    ("&#213;" "&Otilde;" "Õ") ("&#214;" "&Ouml;" "Ö")   ("&#215;" "&times;" "×")
-    ("&#216;" "&Oslash;" "Ø") ("&#217;" "&Ugrave;" "Ù") ("&#218;" "&Uacute;" "Ú")
-    ("&#219;" "&Ucirc;" "Û")  ("&#220;" "&Uuml;" "Ü")   ("&#221;" "&Yacute;" "Ý")
-    ("&#222;" "&THORN;" "Þ")  ("&#223;" "&szlig;" "ß")  ("&#224;" "&agrave;" "à")
-    ("&#225;" "&aacute;" "á") ("&#226;" "&acirc;" "â")  ("&#227;" "&atilde;" "ã")
-    ("&#228;" "&auml;" "ä")   ("&#229;" "&aring;" "å")  ("&#230;" "&aelig;" "æ")
-    ("&#231;" "&ccedil;" "ç") ("&#232;" "&egrave;" "è") ("&#233;" "&eacute;" "é")
-    ("&#234;" "&ecirc;" "ê")  ("&#235;" "&euml;" "ë")   ("&#236;" "&igrave;" "ì")
-    ("&#237;" "&iacute;" "í") ("&#238;" "&icirc;" "î")  ("&#239;" "&iuml;" "ï")
-    ("&#240;" "&eth;" "ð")    ("&#241;" "&ntilde;" "ñ") ("&#242;" "&ograve;" "ò")
-    ("&#243;" "&oacute;" "ó") ("&#244;" "&ocirc;" "ô")  ("&#245;" "&otilde;" "õ")
-    ("&#246;" "&ouml;" "ö")   ("&#247;" "&divide;" "÷") ("&#248;" "&oslash;" "ø")
-    ("&#249;" "&ugrave;" "ù") ("&#250;" "&uacute;" "ú") ("&#251;" "&ucirc;" "û")
-    ("&#252;" "&uuml;" "ü")   ("&#253;" "&yacute;" "ý") ("&#254;" "&thorn;" "þ")
-    ("&#255;" "&yuml;" "ÿ")   ("&#60;" "&lt;" "<")
-    ;; ("&#160;" "&nbsp;" "\xa0")
-    ("&#160;" "&nbsp;" " "))
-  "*When `IS-MON-SYSTEM-P' *google-define-html-entry-table* _should_ be in:
-:FILE mon-regexp-symbols.el It is provided here for completeness.\n\n
-A list of triples mapping HTML character refrences to text characters.\n
-elt0 of triple is an HTML numeric decimal char ref of the form: \"&#<NNNN>\"\n
-elt1 of triple is an HTML4 DTD named char entity of the form: \"&<CHAR-NAME>\"\n
-elt2 of triple is an unescaped character literal.\n
-:EXAMPLE\n\n`\(:entity \":&#160;\" 
-  :equivalences
-  \(,\(when \(equal 
-           \(cadr \(assoc-string \"&#160;\" *google-define-html-entry-table*\)\) \"&nbsp;\"\)
-      '\(\"&nbsp;\" . t\)\)
-   ,\(when \(eq \(string-to-char 
-               \(caddr \(assoc-string \"&#160;\" *google-define-html-entry-table*\)\)\) 32\) 
-      '\(\" \" . t\)\)
-   ,\(unless \(eq \(string-to-char 
-                 \(caddr \(assoc-string \"&#160;\" *google-define-html-entry-table*\)\)\) 160\)
-      \(list \(char-to-string #xa0\) nil\)\)\)\)\n
-:NOTE The entities \"&#160;\" \"&nbsp;\" are NO-BREAK SPACE
-e.g. return value of: \"\\xa0\" -> code point: 0xA0 character: \(160, #o240, #xa0\)
-It is not clear that we want this char to appear in return values as these would
-display with the face `nobreak-space' \(describe-face 'nobreak-space\).
-This type of display may not be what is expected/wanted so we punt and use a
-vanilla \" \" (char 32) instead.\n
-:CALLED-BY `*regexp-clean-html-decimal-char-entity*', `*regexp-clean-html-named-char-entity*'\n
-:SEE (URL `http://en.wikipedia.org/wiki/HTML_encoding')\n
-:SEE (URL `http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references')\n
-:SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent')\n
-:SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent')\n
-:SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent')\n
-:SEE-ALSO `*regexp-wrap-url-schemes*', `*regexp-clean-xml-parse*',
-`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-ulan-diacritics*',
-`*regexp-cp1252-to-latin1*'.\n►►►")
-) ;; :CLOSE unless
 
 ;;; ==============================
 ;;; :GOOGLE-DEFINE-ADDITIONS-EXTENSIONS-MODIFICATIONS
@@ -578,7 +503,7 @@ Print in a temp-buffer, parse, and convert for presentation.\n
        "%22&btnG=Search")))
     (unwind-protect
         (progn
-          (mon-g2be)
+          (mon-g2be -1)
           (while (search-forward-regexp "<li>\\([^<]+\\)" nil t)
             (incf gdpb-cnt)
             (let ((gdpb-wrd-def 
@@ -597,14 +522,14 @@ Print in a temp-buffer, parse, and convert for presentation.\n
                                     (GD-RPS ;; :WAS `google-define-replace-string'
                                      #'(lambda (frm-str to-str) 
                                          (progn 
-                                           (mon-g2be)
+                                           (mon-g2be -1)
                                            (while (search-forward frm-str nil t)
                                              (replace-match to-str nil t))))))
                                 (funcall GD-RPS (car gdpb-DL-1) gdpb-ascii)
                                 (funcall GD-RPS (cadr gdpb-DL-1) gdpb-ascii)))))
                        (GDRU ;; :WAS `google-define-replace-unicode'
                         #'(lambda ()
-                            (mon-g2be)
+                            (mon-g2be -1)
                             (while (search-forward-regexp "&#\\([0-9]+\\);" nil t)
                               (let* ((GDRU-ucs (string-to-number (match-string 1)))
                                      (GDRU-rep (char-to-string (or (decode-char 'ucs GDRU-ucs) ?~))))
@@ -633,7 +558,8 @@ Print in a temp-buffer, parse, and convert for presentation.\n
                    (fill-region-as-paragraph gdpb-gt-pnt gdpb-lt-pnt)
                    (funcall GDRH)
                    (funcall GDRU))
-                 (buffer-substring (buffer-end 0) (buffer-end 1)))
+                 ;; :WAS (buffer-substring (buffer-end 0) (buffer-end 1)) )
+                 (mon-buffer-sub-no-prop) )
                (get-buffer gdpb-gthr-bffr))))
           (set-buffer gdpb-gthr-bffr))    ; :CLOSE progn
       ;;
@@ -650,7 +576,8 @@ Print in a temp-buffer, parse, and convert for presentation.\n
     (setq gdpb-gthr-bffr 
           (with-current-buffer gdpb-gthr-bffr 
             (google-define-font-lock search-word)
-            (buffer-substring (buffer-end 0) (buffer-end 1))))
+            ;; (buffer-substring (buffer-end 0) (buffer-end 1)) ))
+            (mon-buffer-sub-no-prop) ))
     ;; Put name of `gdpb-gthr-bffr' on the `gdpb-cnt' var and kill that buffer too. 
     (setq gdpb-cnt (current-buffer))
     (when (get-buffer gdpb-cnt) (kill-buffer gdpb-cnt))
@@ -669,8 +596,8 @@ Fontify with the following faces:\n
  `gg-def-base', `gg-def-num', `gg-def-delim',
  `gg-def-inition', `gg-def-defined'\n
 :SEE-ALSO `google-define', `google-define-get-command',
-`google-define-parse-buffer', `google-define-font-lock',
-`google-define-kill-def-buffers'.\n►►►"
+`google-define-parse-buffer', `google-define-kill-def-buffers',
+`*regexp-google-defined-fontlock*'.\n►►►"
   (let* ((gdfl-help-props
           `(;; :NOTE `google-define-parse-buffer' spat stings matched by elt 0 and 3.
             ,(cdr (assq 'definition-hdr *regexp-google-defined-fontlock*))
@@ -684,7 +611,7 @@ Fontify with the following faces:\n
               ,@(cddr (assq 'definition-word *regexp-google-defined-fontlock*))
               ))))
     (mapc #'(lambda (gdfl-L-1)
-              (mon-g2be)
+              (mon-g2be -1)
               (while (search-forward-regexp  (elt gdfl-L-1 0) nil t)
                 (add-text-properties 
                  (match-beginning (elt gdfl-L-1 1)) (match-end (elt gdfl-L-1 1)) 
@@ -774,6 +701,7 @@ When called-interactively message with the buffers killed.\n
 ;;;                     (google-define-kill-def-buffers t))
 ;;;              (google-define i)))
 
+ 
 ;;; ==============================
 ;;; ==============================
 ;;: :NOTE Really _BAD_ stuff can happen when goofing around with `view-mode's
@@ -831,7 +759,7 @@ When called-interactively message with the buffers killed.\n
 ;;;     (let ((ascii (caddr x))
 ;;;           (GD-RPS #'(lambda (frm-str to-str) 
 ;;;                       (progn 
-;;;                         (mon-g2be) ;; mon-g2be <- mon-utils.el
+;;;                         (mon-g2be -1) ;; mon-g2be <- mon-utils.el
 ;;;                         (while (search-forward frm-str nil t)
 ;;;                           (replace-match to-str nil t))))))
 ;;;       (funcall GD-RPS (car x) ascii)
@@ -859,6 +787,88 @@ When called-interactively message with the buffers killed.\n
 ;;;       (google-define-replace-string (cadr x) ascii)
 ;;; ==============================
 
+ 
+;;; ==============================
+;;; :COURTESY Jeremy English :HIS google-define.el 
+;;; :NOTE When `IS-MON-SYSTEM-P' this constant _should_ be bound in:
+;;; :FILE mon-regexp-symbols.el It is provided here for completentess.
+;;; :MODIFICATIONS <Timestamp: #{2010-03-20T12:34:07-04:00Z}#{10116} - by MON KEY>
+;;;  Replaced Character literal for SOFT HYPHEN (173, #o255, #xad) with hex representation.
+;;; :CREATED <Timestamp: #{2010-03-20T12:15:24-04:00Z}#{10116} - by MON KEY>
+(unless (and (intern-soft "*google-define-html-entry-table*" obarray)
+             (bound-and-true-p *google-define-html-entry-table*))
+(defconst *google-define-html-entry-table*
+  `(("&#34;"  "&quot;" "\"")  ("&#38;"  "&amp;" "&")    ("&#39;" "&yow;" "'")
+    ("&#62;"  "&gt;" ">")     ("&#161;" "&iexcl;" "¡")
+    ("&#162;" "&cent;" "¢")   ("&#163;" "&pound;" "£")  ("&#164;" "&curren;" "¤")
+    ("&#165;" "&yen;" "¥")    ("&#166;" "&brvbar;" "¦") ("&#167;" "&sect;" "§")
+    ("&#168;" "&uml;" "¨")    ("&#169;" "&copy;" "©")   ("&#170;" "&ordf;" "ª")
+    ("&#171;" "&laquo;" "«")  ("&#172;" "&not;" "¬")    ("&#173;" "&shy;" "\xad") ;<- :CHANGED
+    ("&#174;" "&reg;" "®")    ("&#175;" "&macr;" "¯")   ("&#176;" "&deg;" "°")
+    ("&#177;" "&plusmn;" "±") ("&#178;" "&sup2;" "²")   ("&#179;" "&sup3;" "³")
+    ("&#180;" "&acute;" "´")  ("&#181;" "&micro;" "µ")  ("&#182;" "&para;" "¶")
+    ("&#183;" "&middot;" "·") ("&#184;" "&cedil;" "¸")  ("&#185;" "&sup1;" "¹")
+    ("&#186;" "&ordm;" "º")   ("&#187;" "&raquo;" "»")  ("&#188;" "&frac14;" "¼")
+    ("&#189;" "&frac12;" "½") ("&#190;" "&frac34;" "¾") ("&#191;" "&iquest;" "¿")
+    ("&#192;" "&Agrave;" "À") ("&#193;" "&Aacute;" "Á") ("&#194;" "&Acirc;" "Â")
+    ("&#195;" "&Atilde;" "Ã") ("&#196;" "&Auml;" "Ä")   ("&#197;" "&Aring;" "Å")
+    ("&#198;" "&AElig;" "Æ")  ("&#199;" "&Ccedil;" "Ç") ("&#200;" "&Egrave;" "È")
+    ("&#201;" "&Eacute;" "É") ("&#202;" "&Ecirc;" "Ê")  ("&#203;" "&Euml;" "Ë")
+    ("&#204;" "&Igrave;" "Ì") ("&#205;" "&Iacute;" "Í") ("&#206;" "&Icirc;" "Î")
+    ("&#207;" "&Iuml;" "Ï")   ("&#208;" "&ETH;" "Ð")    ("&#209;" "&Ntilde;" "Ñ")
+    ("&#210;" "&Ograve;" "Ò") ("&#211;" "&Oacute;" "Ó") ("&#212;" "&Ocirc;" "Ô")
+    ("&#213;" "&Otilde;" "Õ") ("&#214;" "&Ouml;" "Ö")   ("&#215;" "&times;" "×")
+    ("&#216;" "&Oslash;" "Ø") ("&#217;" "&Ugrave;" "Ù") ("&#218;" "&Uacute;" "Ú")
+    ("&#219;" "&Ucirc;" "Û")  ("&#220;" "&Uuml;" "Ü")   ("&#221;" "&Yacute;" "Ý")
+    ("&#222;" "&THORN;" "Þ")  ("&#223;" "&szlig;" "ß")  ("&#224;" "&agrave;" "à")
+    ("&#225;" "&aacute;" "á") ("&#226;" "&acirc;" "â")  ("&#227;" "&atilde;" "ã")
+    ("&#228;" "&auml;" "ä")   ("&#229;" "&aring;" "å")  ("&#230;" "&aelig;" "æ")
+    ("&#231;" "&ccedil;" "ç") ("&#232;" "&egrave;" "è") ("&#233;" "&eacute;" "é")
+    ("&#234;" "&ecirc;" "ê")  ("&#235;" "&euml;" "ë")   ("&#236;" "&igrave;" "ì")
+    ("&#237;" "&iacute;" "í") ("&#238;" "&icirc;" "î")  ("&#239;" "&iuml;" "ï")
+    ("&#240;" "&eth;" "ð")    ("&#241;" "&ntilde;" "ñ") ("&#242;" "&ograve;" "ò")
+    ("&#243;" "&oacute;" "ó") ("&#244;" "&ocirc;" "ô")  ("&#245;" "&otilde;" "õ")
+    ("&#246;" "&ouml;" "ö")   ("&#247;" "&divide;" "÷") ("&#248;" "&oslash;" "ø")
+    ("&#249;" "&ugrave;" "ù") ("&#250;" "&uacute;" "ú") ("&#251;" "&ucirc;" "û")
+    ("&#252;" "&uuml;" "ü")   ("&#253;" "&yacute;" "ý") ("&#254;" "&thorn;" "þ")
+    ("&#255;" "&yuml;" "ÿ")   ("&#60;" "&lt;" "<")
+    ;; ("&#160;" "&nbsp;" "\xa0")
+    ("&#160;" "&nbsp;" " "))
+  "*When `IS-MON-SYSTEM-P' *google-define-html-entry-table* _should_ be in:
+:FILE mon-regexp-symbols.el It is provided here for completeness.\n\n
+A list of triples mapping HTML character refrences to text characters.\n
+elt0 of triple is an HTML numeric decimal char ref of the form: \"&#<NNNN>\"\n
+elt1 of triple is an HTML4 DTD named char entity of the form: \"&<CHAR-NAME>\"\n
+elt2 of triple is an unescaped character literal.\n
+:EXAMPLE\n\n`\(:entity \":&#160;\" 
+  :equivalences
+  \(,\(when \(equal 
+           \(cadr \(assoc-string \"&#160;\" *google-define-html-entry-table*\)\) \"&nbsp;\"\)
+      '\(\"&nbsp;\" . t\)\)
+   ,\(when \(eq \(string-to-char 
+               \(caddr \(assoc-string \"&#160;\" *google-define-html-entry-table*\)\)\) 32\) 
+      '\(\" \" . t\)\)
+   ,\(unless \(eq \(string-to-char 
+                 \(caddr \(assoc-string \"&#160;\" *google-define-html-entry-table*\)\)\) 160\)
+      \(list \(char-to-string #xa0\) nil\)\)\)\)\n
+:NOTE The entities \"&#160;\" \"&nbsp;\" are NO-BREAK SPACE
+e.g. return value of: \"\\xa0\" -> code point: 0xA0 character: \(160, #o240, #xa0\)
+It is not clear that we want this char to appear in return values as these would
+display with the face `nobreak-space' \(describe-face 'nobreak-space\).
+This type of display may not be what is expected/wanted so we punt and use a
+vanilla \" \" (char 32) instead.\n
+:CALLED-BY `*regexp-clean-html-decimal-char-entity*', `*regexp-clean-html-named-char-entity*'\n
+:SEE (URL `http://en.wikipedia.org/wiki/HTML_encoding')\n
+:SEE (URL `http://en.wikipedia.org/wiki/List_of_XML_and_HTML_character_entity_references')\n
+:SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-lat1.ent')\n
+:SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-symbol.ent')\n
+:SEE (URL `http://www.w3.org/TR/xhtml1/DTD/xhtml-special.ent')\n
+:SEE-ALSO `*regexp-wrap-url-schemes*', `*regexp-clean-xml-parse*',
+`*regexp-percent-encoding-reserved-chars*', `*regexp-clean-ulan-diacritics*',
+`*regexp-cp1252-to-latin1*'.\n►►►")
+) ;; :CLOSE unless
+
+ 
 ;;; ==============================
 ;;; :COURTESY Jeremy English :HIS google-define.el 
 ;;; (defun google-define-number-entry (entry)
@@ -901,10 +911,13 @@ When called-interactively message with the buffers killed.\n
 (provide 'google-define-redux)
 ;;; ==============================
 
+ 
 ;; Local Variables:
+;; mode: EMACS-LISP
 ;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
 ;; End:
 
-;;; ================================================================
+;;; ==============================
 ;;; google-define-redux.el ends here
 ;;; EOF

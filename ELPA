@@ -4,12 +4,14 @@ http://tromey.com/elpa/
 
 "Our goal is to make it simple to install, use, and upgrade Emacs Lisp packages. We supply ##package.el##, a simple package manager for Emacs, and a repository of pre-packed Emacs Lisp code."
 
-As of 18-Jun-2010, ##package.el## (from ELPA) has been merged with Emacs and an ELPA repository set up at http://elpa.gnu.org/
+##package.el## (from ELPA) will be added to vanilla GnuEmacs, version 24.  As of 2010-06-18, ##package.el## has been merged with the development version of Emacs, and an ELPA repository has been set up at http://elpa.gnu.org/.
 
-The Emacs version of package.el will support multiple repositories.  You can use the global ELPA plus the Emacs GNU repository like this:
+The Emacs version of ##package.el## will support multiple repositories.  You can use the global ELPA plus the Emacs GNU repository like this:
 
   (setq package-archives '(("ELPA" . "http://tromey.com/elpa/") 
                            ("gnu" . "http://elpa.gnu.org/packages/")))
+
+See also 2010-11-15 discussion about ELPA in Emacs 24.x at http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
 
 --
 CategoryCode

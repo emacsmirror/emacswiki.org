@@ -45,11 +45,10 @@
 ;; is their assembly in the aggregate.!!!
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-rgb-to-hsv' 
-;; `mon-colorcomp-pp',`mon-colorcomp', `mon-colorcomp-mod'
-;; `mon-colorcomp-R-more', `mon-colorcomp-G-more', `mon-colorcomp-B-more'
-;; `mon-colorcomp-R-less', `mon-colorcomp-G-less', `mon-colorcomp-B-less'
-;; `mon-colorcomp-copy-as-kill-and-exit', `mon-color-mix'
+;; `mon-rgb-to-hsv', `mon-colorcomp-pp',`mon-colorcomp', `mon-colorcomp-mod',
+;; `mon-colorcomp-R-more', `mon-colorcomp-G-more', `mon-colorcomp-B-more',
+;; `mon-colorcomp-R-less', `mon-colorcomp-G-less', `mon-colorcomp-B-less',
+;; `mon-colorcomp-copy-as-kill-and-exit', `mon-color-mix', `mon-color-mix-display',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -63,14 +62,18 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
-;; `*mon-colorcomp-ewoc*', `*mon-colorcomp-data*'
-;; `*mon-colorcomp-mode-map*',`*mon-colorcomp-labels*'
+;; `*mon-colorcomp-ewoc*', `*mon-colorcomp-data*',
+;; `*mon-colorcomp-mode-map*',`*mon-colorcomp-labels*',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
-;; `read-color' -> `mon-read-color'
+;; `list-colors-defined'       -> `defined-colors'
+;; `mon-color-list-defined'    -> `defined-colors'
+;; `mon-color-list-duplicates' -> `list-colors-duplicates'
+;; `mon-color-list-display'    -> `list-colors-display'
+;; `mon-color-read'            -> `read-color' 
 ;;
 ;; DEPRECATED:
-;; `mon-list-colors-display', `mon-list-colors-key', `*mon-list-colors-sort*' 
+;; `mon-list-colors-display', `mon-list-colors-key', `*mon-list-colors-sort*',
 ;;
 ;; RENAMED:
 ;;
@@ -86,7 +89,7 @@
 ;;
 ;; REQUIRES:
 ;; `ewoc' ; mon-color-comp functions
-;; `cl'  ; `mon-color-mix' uses `mapcar*'
+;; mon-utils.el ;; `mon-color-mix' uses `mon-mapcar'
 ;;
 ;; THIRD-PARTY-CODE:
 ;; :FOLLOWING `list-colors-display', `list-colors-key', `list-colors-sort', `rgb-to-hsv'
@@ -141,70 +144,132 @@
 
 ;;; CODE:
 
-;; `mapcar*' <- `mon-color-mix'
-(eval-when-compile (require 'cl)) 
+(eval-when-compile (require 'cl))
+
+(unless (and (intern-soft "*IS-MON-OBARRAY*")
+             (bound-and-true-p *IS-MON-OBARRAY*))
+(setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
+ ;; `mon-mapcar' <- `mon-color-mix'
+(declare-function mon-mapcar "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
 
 ;;; ==============================
-;;; COURTESY: PJB HIS: pjb-utilities.el WAS: `color-mix'
-;;; CREATED: <Timestamp: #{2009-09-28T17:11:25-04:00Z}#{09401} - by MON>
+;;; :PREFIX "mcm-"
+;;; :COURTESY PJB HIS: pjb-utilities.el WAS: `color-mix'
+;;; :CREATED <Timestamp: #{2009-09-28T17:11:25-04:00Z}#{09401} - by MON>
 (defun mon-color-mix  (color-a color-b &optional factor)
-  "PRE:     factor in [0.0 1.0], default is 0.5.
-RETURN:  A triplet (red green blue)
-         = color-a + ( color-b - color-a ) * factor
-:SEE-ALSO \n►►►"
-  (setq factor (or factor 0.5))
-  (when (or (<= factor 0.0) (<= 1.0 factor))
-    (error "Factor %f is out of range [0.0,1.0]." factor))
-  (mapcar* (lambda (a b) (truncate (+ a (* (- b a)  factor)))) color-a color-b))
+  "PRE:  FACTOR is a float in the range [0.0 1.0]. Default is 0.5.\n
+RETURN:  A triplet \(red green blue\)\n
+         = COLOR-A + \( COLOR-B - COLOR-A \) * FACTOR\n
+ (mon-color-mix '(61166 57311 52428) '(61166 41634 44461) 0.6)
+:SEE-ALSO `mon-color-mix-display', `color-distance',
+`mon-defined-colors-without-duplicates', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
+  (or (and (null factor) (setq factor 0.5))
+      (and factor 
+           (or (and (numberp factor) 
+                    (setq factor (float factor))
+                    (not (and (or (<= factor 0.0) (<= 1.0 factor))
+                              (error (concat ":FUNCTION `mon-color-mix' "
+                                             "-- arg FACTOR is out of range [0.0,1.0], got: %S") factor)))
+                    factor)
+               (error (concat ":FUNCTION `mon-color-mix' "
+                              "-- arg FACTOR not `numberp', got: %S") 
+                      factor))))
+  (mon-mapcar #'(lambda (mcm-L-1 mcm-L-2) 
+                  (truncate (+ mcm-L-1 (* (- mcm-L-2 mcm-L-1)  factor))))
+              color-a color-b))
 
 
 ;;; ==============================
-;;; COURTESY: faces.el
-;;; Commented out because it was decided that it was better to include the
+;;; :CHANGESET 2313
+;;; :CREATED <Timestamp: #{2010-11-12T15:16:25-05:00Z}#{10455} - by MON KEY>
+(defun mon-color-mix-display (&optional mix-factor)                       
+  "Read two color names and return a mixed color value.\n
+Return value displaye in buffer \"*COLOR-MIX-RESULTS*\".\n
+:EXAMPLE\n\n\(mon-color-mix-interactive\)=n
+:SEE-ALSO `mon-color-mix'.\n►►►"
+  (interactive)
+  (let* ((color1 (color-values (read-color "color: ")))
+         (color2 (color-values (read-color "color: ")))
+         (color3 (mon-color-mix color1 color2 (or mix-factor 0.7))))
+    (with-current-buffer (get-buffer-create "*COLOR-MIX-RESULTS*")
+      (erase-buffer)
+      (save-excursion
+        (dolist (mcm-D-1 `(("color1" ,(concat "#" (apply #'css-color:rgb-to-hex color1)))
+                           ("color2" ,(concat "#" (apply #'css-color:rgb-to-hex color2)))
+                           ("MIXED"  ,(concat "#" (apply #'css-color:rgb-to-hex color3)))))
+          (insert (propertize (car mcm-D-1) 'face `(:foreground ,(cadr mcm-D-1)))
+                  "\n")))
+      (princ (format (concat ";;; color mix results\n"
+                             ";;; :MIX-FACTOR %.1f\n"
+                             ";;; :COLOR1-VAL %S\n"
+                             ";;; :COLOR2-VAL %S\n"
+                             ";;; :COLOR3-VAL %S\n")
+                     (or mix-factor 0.7) color1 color2 color3)
+             (current-buffer))
+      (display-buffer (current-buffer) t))))
+
+;;; ==============================
+;;; :PREFIX "mdcwd-"
+;;; :COURTESY :FILE lisp/faces.el
+;;; :NOTE Was commented out b/c it was decided that it was better to include the
 ;;; duplicates in read-color's completion list.
 (defun mon-defined-colors-without-duplicates ()
-   "Return the list of `defined-colors', without the no-space versions.
+  "Return the list of `defined-colors', without the no-space versions.\n
 For each color name, we keep the variant that DOES have spaces.\n
-:SEE-ALSO `mon-color-mix'.\n►►►"
-   (let ((result (copy-sequence (defined-colors)))
-         to-be-rejected)
-     (save-match-data
-       (dolist (this result)
-         (if (string-match " " this)
-             (push (replace-regexp-in-string " " ""
-                                             this)
-                   to-be-rejected)))
-       (dolist (elt to-be-rejected)
-         (let ((as-found (car (member-ignore-case elt result))))
-           (setq result (delete as-found result)))))
-     result))
+:ALIASED-BY mon-colors-without-
+:SEE-ALSO `list-colors-duplicates', `list-colors-display', `list-colors-print',
+`defined-colors', `mon-color-mix', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
+  (let ((mdcwd-rslt (copy-sequence (defined-colors)))
+        mdcwd-reject)
+    ;; (save-match-data ;; :NOTE Prob. not needed now that using `string-match-p'
+    (dolist (mdcwd-D-1 mdcwd-rslt)
+      (when (string-match-p " " mdcwd-D-1)
+        (push (replace-regexp-in-string " " "" mdcwd-D-1) mdcwd-reject)))
+    (dolist (mdcwd-D-2 mdcwd-reject)
+      (let ((as-found (car (member-ignore-case mdcwd-D-2 mdcwd-rslt))))
+        (setq mdcwd-rslt (delete as-found mdcwd-rslt))))
+    ;; ) ;; :CLOSE save-match-data
+    mdcwd-rslt))
+;;
+;;; (progn (replace-regexp-in-string "bub" "xxx" "bubba") (match-data))
+;; (unless (and (intern-soft "")
+;;              (fboundp '))
+;; (mon-defined-colors-without-duplicates)
+
+
 
 ;;; ==============================
-;;; :NOTE This fncn returns different hsv value than `css-color-rgb-to-hsv'
+;;; :NOTE This fncn returns different HSV value than `css-color:rgb-to-hsv'
 ;;; :COURTESY Juri Linkov :WAS `rgb-to-hsv'
+;;; :CHANGESET 1720 <Timestamp: #{2010-05-07T14:05:50-04:00Z}#{10185} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2009-09-04T16:08:42-04:00Z}#{09365} - by MON KEY>
-(defun mon-rgb-to-hsv (r g b)
-  "For R, G, B color components return a list of hue, saturation, value.\n
-R, G, B input values should be in [0..65535] range.\n
+(defun mon-rgb-to-hsv (red-val green-val blue-val)
+  "Return RED-VAL, GREEN-VAL, BLUE-VAL colors as hue, saturation, value list.\n
+RED-VAL, GREEN-VAL, BLUE-VAL input values should be in [0..65535] range.\n
 Output values for hue are in [0..360] range.\n
 Output values for saturation and value are in [0..1] range.\n
 :EXAMPLE\n\n\(xw-color-values \"NavajoWhite\"\)\n
 \(apply 'mon-rgb-to-hsv \(xw-color-values \"NavajoWhite\"\)\)\n
-:NOTE This fncn returns different hsv value than `css-color-rgb-to-hsv'.\n
-:SEE-ALSO `mon-defined-colors-without-duplicates', `mon-color-mix'.\n►►►"
-  (let* ((r (/ r 65535.0)
-         (g (/ g 65535.0))
-         (b (/ b 65535.0))
-         (max (max r g b))
-         (min (min r g b))
-         (h (cond ((= max min) 0)
-                  ((= max r) (mod (+ (* 60 (/ (- g b) (- max min))) 360) 360))
-                  ((= max g) (+ (* 60 (/ (- b r) (- max min))) 120))
-                  ((= max b) (+ (* 60 (/ (- r g) (- max min))) 240))))
-         (s (cond ((= max 0) 0)
+:NOTE This fncn returns different hsv value than `css-color:rgb-to-hsv'.\n
+:SEE-ALSO `mon-defined-colors-without-duplicates', `mon-color-mix',
+`htmlfontify-load-rgb-file', `mon-help-color-functions', `mon-help-color-chart',
+`mon-help-css-color'.\n►►►"
+  (let* ((red-val (/ red-val 65535.0))
+         (green-val (/ green-val 65535.0))
+         (blue-val (/ blue-val 65535.0))
+         (max (max red-val green-val blue-val))
+         (min (min red-val green-val blue-val))
+         (hue-val (cond ((= max min) 0)
+                        ((= max red-val) (mod (+ (* 60 (/ (- green-val blue-val) (- max min))) 360) 360))
+                        ((= max green-val) (+ (* 60 (/ (- blue-val red-val) (- max min))) 120))
+                        ((= max blue-val) (+ (* 60 (/ (- red-val green-val) (- max min))) 240))))
+         (sat-val (cond ((= max 0) 0)
                   (t (- 1 (/ min max)))))
-         (v max))
-    (list h s v)))
+         (value-val max))
+    (list hue-val sat-val value-val)))
 
 ;;; ==============================
 ;;; :COLORCOMP 
@@ -216,13 +281,13 @@ Output values for saturation and value are in [0..1] range.\n
 ;;;
 ;;; This example can be extended to be a "color selection widget" (in
 ;;; other words, the controller part of the "model/view/controller" design
-;;; paradigm) by defining commands to modify `colorcomp-data' and to
+;;; paradigm) by defining commands to modify `*mon-colorcomp-data*' and to
 ;;; "finish" the selection process, and a keymap to tie it all together
 ;;; conveniently.
 ;;;
 ;;; Note that we never modify the data in each node, which is fixed when
 ;;; the ewoc is created to be either `nil' or an index into the vector
-;;; `colorcomp-data', the actual color components.
+;;; `*mon-colorcomp-data*', the actual color components.
 ;;;
 ;;; :SEE (info "(elisp)Abstract Display Example")
 ;;; ==============================
@@ -252,8 +317,9 @@ Output values for saturation and value are in [0..1] range.\n
 ;;; :WAS `colorcomp-pp'
 (defun mon-colorcomp-pp (data)
   "Pretty print propertized color DATA.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
-`mon-colorcomp-copy-as-kill-and-exit'.\n►►►"
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
+`mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (if data
       (let ((comp (aref *mon-colorcomp-data* data)))
 	(insert (aref *mon-colorcomp-labels* data) "\t: #x"
@@ -274,13 +340,15 @@ Output values for saturation and value are in [0..1] range.\n
 (defun mon-colorcomp (color)
   "Allow fiddling with COLOR in a new buffer.
 The buffer is in MON Color Components mode.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
-`mon-colorcomp-copy-as-kill-and-exit'.\n►►►"
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
+`mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive "sColor (name or #RGB or #RRGGBB): ")
   (when (string= "" color)
     (setq color "green"))
   (unless (color-values color)
-    (error "No such color: %S" color))
+    (error (concat ":FUNCTION `mon-colorcomp' "
+                   "-- no such color: %S" ) color))
   (switch-to-buffer
    (generate-new-buffer (format "originally: %s" color)))
   (kill-all-local-variables)
@@ -289,26 +357,26 @@ The buffer is in MON Color Components mode.\n
   (use-local-map *mon-colorcomp-mode-map*)
   (erase-buffer)
   (buffer-disable-undo)
-  (let ((data (apply 'vector (mapcar (lambda (n) (ash n -8))
-				     (color-values color))))
-	(ewoc (ewoc-create 'mon-colorcomp-pp
+  (let ((mclrcmp-data (apply 'vector (mapcar #'(lambda (mclrcmp-L-1) (ash mclrcmp-L-1 -8))
+                                             (color-values color))))
+	(mclrcmp-ewoc (ewoc-create 'mon-colorcomp-pp
 			   "\nMON Color Components\n\n"
 			   (substitute-command-keys
 			    "\n\\{*mon-colorcomp-mode-map*}"))))
-    (set (make-local-variable '*mon-colorcomp-data*) data)
-    (set (make-local-variable '*mon-colorcomp-ewoc*) ewoc)
-    (ewoc-enter-last ewoc 0)
-    (ewoc-enter-last ewoc 1)
-    (ewoc-enter-last ewoc 2)
-    (ewoc-enter-last ewoc nil)))
+    (set (make-local-variable '*mon-colorcomp-data*) mclrcmp-data)
+    (set (make-local-variable '*mon-colorcomp-ewoc*) mclrcmp-ewoc)
+    (ewoc-enter-last mclrcmp-ewoc 0)
+    (ewoc-enter-last mclrcmp-ewoc 1)
+    (ewoc-enter-last mclrcmp-ewoc 2)
+    (ewoc-enter-last mclrcmp-ewoc nil)))
 
 ;;; ==============================
 ;;; :WAS `colorcomp-mod'
 (defun mon-colorcomp-mod (index limit delta)
   "Modify the color INDEX by LIMIT according to DELTA.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
-`mon-colorcomp-copy-as-kill-and-exit'.\n►►►"
-
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
+`mon-colorcomp-copy-as-kill-and-exit', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (let ((cur (aref *mon-colorcomp-data* index)))
     (unless (= limit cur)
       (aset *mon-colorcomp-data* index (+ cur delta)))
@@ -322,51 +390,57 @@ The buffer is in MON Color Components mode.\n
 ;;;      `colorcomp-R-less', `colorcomp-G-less', `colorcomp-B-less'
 (defun mon-colorcomp-R-more () 
   "Increase Red value.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-colorcomp-R-more',
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
-`mon-colorcomp-G-less', `mon-colorcomp-B-less'.\n►►►"
+`mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive) 
   (mon-colorcomp-mod 0 255 1))
-
+;;
 (defun mon-colorcomp-G-more () 
   "Increase Green value.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-colorcomp-R-more',
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
-`mon-colorcomp-G-less', `mon-colorcomp-B-less'.\n►►►"
+`mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive) (mon-colorcomp-mod 1 255 1))
-
+;;
 (defun mon-colorcomp-B-more () 
   "Increase Blue value.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-colorcomp-R-more',
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
-`mon-colorcomp-G-less', `mon-colorcomp-B-less'.\n►►►"
+`mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive) (mon-colorcomp-mod 2 255 1))
-
+;;
 (defun mon-colorcomp-R-less () 
   "Decrease Red value.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-colorcomp-R-more',
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
-`mon-colorcomp-G-less', `mon-colorcomp-B-less'.\n►►►"
+`mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive) (mon-colorcomp-mod 0 0 -1))
-
+;;
 (defun mon-colorcomp-G-less () 
    "Decrease Green value.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-colorcomp-R-more',
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
-`mon-colorcomp-G-less', `mon-colorcomp-B-less'.\n►►►"
+`mon-colorcomp-G-less', `mon-colorcomp-B-less',`mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive) (mon-colorcomp-mod 1 0 -1))
-
+;;
 (defun mon-colorcomp-B-less () 
    "Decrease Blue value.\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
 `mon-colorcomp-copy-as-kill-and-exit', `mon-colorcomp-R-more',
 `mon-colorcomp-G-more', `mon-colorcomp-B-more', `mon-colorcomp-R-less',
-`mon-colorcomp-G-less', `mon-colorcomp-B-less'.\n►►►"
+`mon-colorcomp-G-less', `mon-colorcomp-B-less', `mon-help-color-functions',
+`mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive) (mon-colorcomp-mod 2 0 -1))
 
 ;;; ==============================
@@ -374,38 +448,33 @@ The buffer is in MON Color Components mode.\n
 (defun mon-colorcomp-copy-as-kill-and-exit ()
   "Copy the color components into the kill ring and kill the buffer.\n
 The string is formatted #RRGGBB (hash followed by six hex digits).\n
-:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp'.\n►►►"
+:SEE-ALSO `mon-colorcomp-mod', `mon-colorcomp', `mon-colorcomp-pp',
+`mon-help-color-functions', `mon-help-color-chart', `mon-help-css-color'.\n►►►"
   (interactive)
   (kill-new (format "#%02X%02X%02X"
-		    (aref colorcomp-data 0)
-		    (aref colorcomp-data 1)
-		    (aref colorcomp-data 2)))
+		    (aref *mon-colorcomp-data* 0)
+		    (aref *mon-colorcomp-data* 1)
+		    (aref *mon-colorcomp-data* 2)))
   (kill-buffer nil))
 
 ;;; ==============================
+;;; :PREFIX "mcm-"
 ;;; :NOTE Changed default bindings. 
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-04T16:32:08-04:00Z}#{09365} - by MON KEY>
 ;;; :WAS `colorcomp-mode-map'
-(setq *mon-colorcomp-mode-map*
-      (let ((m (make-sparse-keymap)))
-	(suppress-keymap m)
-	(define-key m "r" 'mon-colorcomp-R-less)
-	(define-key m "R" 'mon-colorcomp-R-more)
-	(define-key m "g" 'mon-colorcomp-G-less)
-	(define-key m "G" 'mon-colorcomp-G-more)
-	(define-key m "b" 'mon-colorcomp-B-less)
-	(define-key m "B" 'mon-colorcomp-B-more)
-	(define-key m " " 'mon-colorcomp-copy-as-kill-and-exit)
-	m))
-
-;;; ==============================
-(provide 'mon-color-utils)
-;;; ==============================
-
-;;; ================================================================
-;;; mon-color-utils.el ends here
-;;; EOF
-
+(unless (and (intern-soft "*mon-colorcomp-mode-map*" obarray)
+             (bound-and-true-p  *mon-colorcomp-mode-map*))
+  (setq *mon-colorcomp-mode-map*
+        (let ((mcm-map (make-sparse-keymap)))
+          (suppress-keymap mcm-map)
+          (define-key mcm-map "r" 'mon-colorcomp-R-less)
+          (define-key mcm-map "R" 'mon-colorcomp-R-more)
+          (define-key mcm-map "g" 'mon-colorcomp-G-less)
+          (define-key mcm-map "G" 'mon-colorcomp-G-more)
+          (define-key mcm-map "b" 'mon-colorcomp-B-less)
+          (define-key mcm-map "B" 'mon-colorcomp-B-more)
+          (define-key mcm-map " " 'mon-colorcomp-copy-as-kill-and-exit)
+          mcm-map)))
 
 ;;; ==============================
 ;;; SOURCE: (URL `http://lists.gnu.org/archive/html/emacs-devel/2009-08/msg00188.html')
@@ -541,3 +610,17 @@ The string is formatted #RRGGBB (hash followed by six hex digits).\n
 ;;;                          (list-colors-print colours-l))))
 ;;;                     nil t)))))
 ;;; ==============================
+
+
+;;; ==============================
+(provide 'mon-color-utils)
+;;; ==============================
+
+ 
+;; Local Variables:
+;; generated-autoload-file: "./mon-loaddefs.el"
+;; End:
+
+;;; ================================================================
+;;; mon-color-utils.el ends here
+;;; EOF

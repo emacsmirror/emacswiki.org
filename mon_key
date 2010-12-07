@@ -36,9 +36,20 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-time-utils.el (EbayTime) -- Provides procedures for frobbing time
 * Lisp:mon-testme-utils.el -- Provides `mon-*' tests and template for inserting them
 * Lisp:mon-plist-utils.el -- Provides procedures for frobbing plist-like seqs
-
-[:MON-STANDARDS]
-=== :MON-STANDARDS ===
+* Lisp:mon-macs.el -- Provides macros for use with mon-*utils features
+* Lisp:mon-type-utils.el -- Provides procedures useful for interrogating lisp objects
+* Lisp:mon-type-utils-vars.el -- Provides variables useful for interrogating lisp objects
+* Lisp:mon-window-utils.el -- Provides window related procedures for mon-*utils features
+* Lisp:mon-word-syntax-utils.el -- Provides counting things with word syntax
+* Lisp:mon-buffer-utils.el -- Provides buffer related procedures for mon-*utils features
+* Lisp:mon-event-utils.el -- Provides event related procedures for mon-*utils features
+* Lisp:mon-line-utils.el -- Provides line centric procedures for mon-*utils features
+* Lisp:mon-region-utils.el -- Provides region oriented procedures for mon-*utils features
+* Lisp:mon-seq-utils.el -- Provides procedures for frobbing sequences
+* Lisp:mon-string-utils.el -- Provides string frobbing procedures for mon-*utils features
+* Lisp:mon-env-proc-utils.el -- Provides procedures for interacting w/ process environment
+* Lisp:mon-randomize-utils.el -- Provides procedures for generating pseudo randomness
+* Lisp:mon-rectangle-utils.el -- Provides procedures for manipulating rectangles
 * Lisp:mon-button-utils.el -- utilities for examining button properties
 * Lisp:mon-cl-compat.el -- This is intendeed to be used as a drop-in replacement for the cl-seq.el When compiling your packages: (eval-when-compile (require 'mon-cl-compat))
 * Lisp:mon-cl-compat-regexps.el -- Provides regular expressions for replacing the symbol-names from the cl-seq.el package with a `cl::' prefix
@@ -47,10 +58,6 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-name-utils.el -- Provides procedures to rotate, combine, and permute string-like name forms.
 * Lisp:mon-image-utils.el -- Provides procedures for interfacing with image manipulation processes.
 * Lisp:mon-rename-image-utils.el (RenameImageUtils) -- Provides utility functions for working with images and EmacsImageManipulation.
-
-[:MON-EXTRAS]
-=== :MON-EXTRAS ===
-
 * Lisp:mon-boxcutter.el -- For initializing w32 screen captures from Emacs using Matthew D. Rasmussen's Boxcutter screen-capture executables: boxcutter-fs.exe and boxcutter.exe
 * Lisp:mon-color-utils.el -- Provides an assembled set of routines for manipulations/examinations of 'color'.
 * Lisp:mon-mysql-utils.el (MySqlHelp) -- Provides interactive procedures for stripping content from MySQL query result tables.  Also, provides an alist of MySQL help categories and topics and a rudimentary completion functionality for accessing MySQL's `mysql' client help facility.
@@ -70,10 +77,6 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-css-color.el -- This is css-color.el version "0.03" of 2008 e.g. CssColor without NxhtmlMode dependencies.
 * Lisp:mon-css-complete.el -- This is a highly modified version of Niels Giesen's css-complete.el :SEE http://github.com/pft/elisp-assorted/blob/master/css-complete.el
 * Lisp:mon-drive-transfer-utils.el -- Template builder for transferring backing up large harddrives.
-
-[:MON-DOC-UTILS]
-=== :MON-DOC-UTILS ===
-
 * Lisp:mon-doc-help-utils.el -- (ReferenceSheetHelpUtils) (MonDocHelpUtilsDictionary)
 * Lisp:mon-doc-help-utils-supplemental.el -- Provides functions and vars required to bootstrap mon-doc-help-utils
 * Lisp:mon-doc-help-css.el -- Extends Lisp:mon-doc-help-utils.el with CSS related docs
@@ -84,12 +87,9 @@ The package mon-utils is the entry point which loads the rest of the system and 
 * Lisp:mon-doc-help-proprietary.el -- Extends mon-doc-help-utils with ms w32 related docs.
 * Lisp:mon-iptables-regexps.el -- Provides interactive utilities for converting iptables short flags to long flags.  Also provides procedures for using Emacs help-mode to document the order of position for the symbols, flags, etc. used with `iptables' AKA `netfilter'.
 * Lisp:mon-iptables-vars.el -- Provides gigantic alist `*mon-iptables-alst*' needed for use with mon-iptables-regexps
+
 * Lisp:perlisisms.el (Perlisisms) -- 
 * Lisp:STING-software-engineering-glossary.el --
-
-[:EBAY-TOOLS]
-=== :EBAY-TOOLS ===
-
 * Lisp:ebay-template-mode.el -- 
 * Lisp:ebay-template-tools.el -- 
 
@@ -132,7 +132,7 @@ The package mon-utils is the entry point which loads the rest of the system and 
 == :MON-LOAD-ORDER ==
 
 <pre>
-Roughly the sequence with which MON brings his Emacs' systems up. 
+Roughly, the sequence with which MON brings his Emacs' systems up. 
 
 :NOTE Not all of these libraries are required to get a working system but as MON
 stacks dependencies it may be helpful to remember that anything loaded from

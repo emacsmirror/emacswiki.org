@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Nov 21 09:09:00 2010 (-0800)
+;; Last-Updated: Thu Dec  2 08:23:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5868
+;;     Update #: 5885
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2124,6 +2124,17 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/12/02 dadams
+;;     icicle-retrieve-previous-input: Exclude "" from past-input cycling.
+;; 2010/11/30 dadams
+;;     icicle-mouse-save-then-kill: If soft-require of mouse3.el, then use a simpler definition. 
+;; 2010/11/27 dadams
+;;     icicle-insert-list-join-string, icicle-pp-eval-expression-in-minibuffer:
+;;       Protect with 1on1-fit-minibuffer-frame-flag and soft-require of fit-frame.el.
+;;     icicle-(apropos|prefix)-complete-1: Soft-require of fit-frame.el for 1on1-fit-minibuffer-frame.
+;; 2010/11/23 dadams
+;;     icicle-minibuffer-help:
+;;       Don't switch to minibuf window unless start in minibuf or *Completions*.  Thx to M. Heerdegen.
 ;; 2010/11/08 dadams
 ;;     icicle-next-TAB-completion-method, icicle-next-S-TAB-completion-method:
 ;;       Set the icicle-last-top-level-command property only when set the first temporary method.
@@ -3228,6 +3239,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/11/23 dadams
+;;     icicle-define-icicle-maps: Added "in minibuf" to :key for C-?.  Thx to Michael Heerdegen.
 ;; 2010/11/21 dadams
 ;;     icicle-(redefine|restore)-standard-commands:
 ;;       defalias lisp-complete-symbol unconditionally (it's still needed in some places for Emacs 23).

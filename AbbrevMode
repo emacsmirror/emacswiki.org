@@ -221,6 +221,14 @@ I use this macro to define abbrev with command. -- [[rubikitch]]
 Was it just my imagination, or wasn't there a way to have abbrevs run elisp code?  I thought there was a way to specify that in edit-abbrevs?
   - yes - M-x edit-abbrevs shows a list of abbrevs, their replacements, and a lisp function to run - I use this to activate tempo expansions
 
+== Abbrev Prefixes ==
+
+If you find yourself editing a lot of scientific articles (or even if you don't), you might find the abbrev-prefix-mark (M-') command useful.  Basically, this lets you expand one or more abbrevs within a word.  This is most useful when you're dealing with a lot of jargon or technical terms that have multiple and lengthy morphemes, prefixes, or suffixes.
+
+For example, you might have an abbrev em that expands to electromagnetic, but what about if you find yourself typing a lot of similar terms as well: electrochemical, electrolysis, biochemical, and so on?  You can then define abbrevs for electro(el), magnetic(mag), and chemical(chem).  So instead of typing "electromagnetic" you would type: el M-' mag; and emacs will expand it to "electromagnetic".  Similarly: el M-' chem; expands to "electrochemical".  You can type: bio M-' chem; expands to biochemical, and so on.  Try it, it works.
+
+-- parolang
+
 ----
 CategoryModes
 CategoryTemplates

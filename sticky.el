@@ -1,5 +1,5 @@
 ;;; sticky.el --- Sticky key for capital letters
-;; $Id: sticky.el,v 1.7 2010/05/04 09:03:00 rubikitch Exp $
+;; $Id: sticky.el,v 1.8 2010/10/31 16:09:21 rubikitch Exp $
 
 ;; Copyright (C) 2009  rubikitch
 
@@ -86,6 +86,9 @@
 ;;; History:
 
 ;; $Log: sticky.el,v $
+;; Revision 1.8  2010/10/31 16:09:21  rubikitch
+;; use-sticky-key: avoid error: = -> eq
+;;
 ;; Revision 1.7  2010/05/04 09:03:00  rubikitch
 ;; Added bug report command
 ;;
@@ -113,7 +116,7 @@
 ;;; Code:
 
 ;; (find-sh0 "emacs -Q -L ~/emacs/lisp -l sticky --eval '(use-sticky-key \";\" sticky-alist:ja)'")
-(defvar sticky-version "$Id: sticky.el,v 1.7 2010/05/04 09:03:00 rubikitch Exp $")
+(defvar sticky-version "$Id: sticky.el,v 1.8 2010/10/31 16:09:21 rubikitch Exp $")
 (eval-when-compile (require 'cl))
 (defgroup sticky nil
   "sticky"
@@ -149,7 +152,7 @@ STICKY-ALIST is an alist whose element is a pair of character and shifted charac
   (loop for i from ?a to ?z do
         (define-key key-translation-map (vector sticky-key i) (vector (- i 32))))
   (loop for (noshift . shift) in sticky-alist
-        unless (= sticky-key noshift)
+        unless (eq sticky-key noshift)
         do (define-key key-translation-map (vector sticky-key noshift) (vector shift)))
   (when (integerp sticky-key)
     (global-set-key (vector sticky-key sticky-key)

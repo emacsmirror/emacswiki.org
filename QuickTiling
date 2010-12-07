@@ -1,7 +1,9 @@
 Lisp:tiling.el
 
-I use this package together with windmove, buffermove, minner-mode. I really enjoy this package. Download this small package and try out following key-bindings with 2/3/4... windows within one fame. Hope you'll like too. 
+It micmic xmonad/tmux. I really enjoy this package, hope you too. 
 
+
+I use this package together with windmove, buffermove, minner-mode. Download this small package and try out following key-bindings with 2/3/4... windows within one fame.
 <pre>
 ;; As the display geting larger and larger, "Tiling" is getting more and more
 ;; popular. Emacs is tiling windows within the frame for sure. However, by
