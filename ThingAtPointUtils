@@ -1,0 +1,6 @@
+From the package website: "thing-at-point-utils.el: Delivers a set of functions to return,
+mover over or manipulate a given THING. THING may be a
+well known form as symbol', `list', `sexp', `defun' but
+also a new defined and abstract thing."
+
+https://launchpad.net/s-x-emacs-werkstatt

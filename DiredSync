@@ -1,0 +1,28 @@
+[[Dired]] is a very useful file manager. Unfortunatlly it lacks a synchronization command.
+
+[https://github.com/renard/dired-sync dired-sync] is designed to fill that missing feature.
+
+== Features ==
+
+* <tt>rsync</tt> and <tt>ssh</tt> based.
+* Can synchronize:
+** local / local directories.
+** local / remote and remote / local directories.
+** remote / remote directories
+* Optimization for remote / remote directories synchronization.
+
+== Installation ==
+
+drop [https://github.com/renard/dired-sync/blob/master/dired-sync.el dired-sync.el] in your
+load-path and bind (suggested) <tt>C-s S</tt> key to <tt>dired-sync</tt>:
+
+{{{
+(when (require 'dired-sync nil t)
+   (define-key dired-mode-map (kbd "C-c S") 'dired-do-sync))
+}}}
+
+Please have a look in [https://github.com/renard/dired-sync/blob/master/dired-sync.el dired-sync.el] comments for further information.
+
+
+----
+CategoryDirectories

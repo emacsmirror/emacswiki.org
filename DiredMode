@@ -30,6 +30,7 @@ These pages describe Dired tips and additional features:
 * DiredSortMenu -- Lets you sort Dired listings in various ways. Provides a [[menu bar]] menu and a popup menu for this.
 * DiredTweaks -- Small Dired tweaks.
 * DiredView -- Browse and select files using the first character of their names.
+* DiredSync -- Synchronize directories within dired
 * [[Files+]] -- 
 ** Integrates `find-file' (`C-x C-f') and related commands with Dired
 ** Together with <tt>[[ls-lisp+.el]]</tt>, modifies `insert-directory' so that Dired's second header line lists the number of files:

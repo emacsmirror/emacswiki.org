@@ -4,5 +4,13 @@ I use Emacs like [http://www.emacswiki.org/emacs-en?search=%22uses%3F+emacs%22+C
 
 mailto:jonas@emacsmirror.org
 
+== Emacs reading list ==
+
+(TODO add more and summarize)
+
+* [http://www.gnu.org/software/emacs/emacs-paper.html EMACS: The Extensible, Customizable Display Editor] /Richard Stallman/
+* [http://steve-yegge.blogspot.com/2008/04/xemacs-is-dead-long-live-xemacs.html XEmacs is Dead. Long Live XEmacs!] /Steve Yegge/
+* [http://edward.oconnor.cx/2010/07/comint The story of comint mode] /Edward O’Connor/
+
 ----
 CategoryHomepage

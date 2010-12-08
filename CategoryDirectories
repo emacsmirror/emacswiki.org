@@ -48,6 +48,7 @@ Click the heading to search for all pages related to manipulating files and dire
 ** [[Sunrise Commander For Noobs]]
 * SystemTrash - Set up emacs to use the same trash can as GNOME and KDE (the freedesktop.org trash spec)
 * [[Diredful]] - colorful file names in dired buffers.
+* DiredSync -- Synchronize directories within dired.
 * Try ##C-h v directory-abbrev-alist RET## for information on an elegant way to shorten your paths. Suppose you'd like long paths like ##/opt/some/software/project/source/file.c## to be shortened to ##/proj/source/file.c##. The solution would be setting an appropriate symlink named ##proj## in your root directory and adding the following to your [[InitFile]]:
 
     (setq directory-abbrev-alist '("^/opt/some/software/project" . "/proj"))

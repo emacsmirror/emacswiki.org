@@ -1,0 +1,23 @@
+Emtest is a  modular, estensible testing framework for emacs.  It lives in a [http://savannah.nongnu.org/git/?group=emtest git repo] on Savannah.
+
+It consists of these parts:
+* The test-runner itself
+* Multiple test-launchers:
+** By function being tested
+** By file
+** By library
+* The test-report presenter
+* A rich library of testhelp libraries:
+** deep-type-checker
+** match
+** misc
+** persist
+** standard
+** tagnames
+** testpoint
+** types
+** mocks
+*** dirtree
+*** filebuf
+*** libversion
+* Editing help for writing tests

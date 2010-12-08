@@ -1,0 +1,93 @@
+[[en:MH-E]]
+
+= Introducción a MH y MH-E =
+
+Este es el frontis estándar de Emacs para el '''Mail Handler de
+Rand''', es decir MH.  MH es un ''agente de correo de usuario'' (MUA)
+para entornos shell de unix.  En vez de ser un programa monolítico,
+toda la funcionalidad se proporciona mediante una colección de
+pequeñas herramientas.  De tal manera que uno emplea su propia shell
+para conducirlo, y como los mensajes están cada uno en su propio
+fichero y las carpetas están implementadas como directorios del
+sistema de ficheros, también se puede usar cualquier comando general
+en su forma más natural, la vía Unix.  La implementación moderna de MH
+se llama "nmh".  Se encuentra en [http://savannah.nongnu.org
+Savannah], y tiene su página web en http://www.nongnu.org/nmh.
+
+
+= Dónde estamos =
+
+La página web de MH-E está en SourceForge, en http://mh-e.sourceforge.net.
+
+Tiene una réplica en castellano en
+http://gnu.manticore.es/paginas-replica/mh-e/index.html
+
+= Acerca de la documentación =
+
+MH-E posee su propia documentación en Info que viene con Emacs.  La
+versión más reciente se mantiene sincronizada con la versión liberada
+del software. [http://sourceforge.net/forum/forum.php?forum_id=566555]
+
+En muchos submodos de MH-E `?' (`mh-help') proporciona una lista
+rápida de algunas de las asociaciones de teclas más comunes.
+
+Después está el libro de Jerry Peek publicado por O'Reilly titulado
+"MH & nmh: Email for Users & Programmers" de libre disposición en
+http://rand-mh.sourceforge.net/book/.  Solía tener un capítulo acerca
+de MH-E, pero la documentación oficial incluida en Emacs lo suplantó,
+gracias al duro esfuerzo de Bill Wohler.
+
+= Foros =
+
+Existen varias listas de correo en SourceForge, en particular
+"mh-e-announce", "mh-e-devel" y "mh-e-users".  Todas ellas están
+redirigidas bidireccionalmente hacia Gmane, que reside en
+http://www.gmane.org.  A través de este servicio se puede acceder a
+las listas no sólo mediante correo y HTTP (SourceForge también lo
+hace), sino incluso con NNTP.  Se puede contactar con el servidor NNTP
+'''news.gmane.org''' o ver la página web
+http://dir.gmane.org/index.php?prefix=gmane.mail.mh-e para conocer el
+directorio de todos los grupos relacionados.  Los archivos se leen
+bien.
+
+= MH-E como agente de correo predeterminado =
+
+Si se quiere que MH-E sea el sistema de correo preferido, se pone la
+variable `mail-user-agent' en "mh-e-user-agent".  Si se esta usando
+GnuEmacs, también se puede preferir MH-E para la lectura del correo,
+poniendo `read-mail-command' en "mh-rmail".
+
+
+= Complementos =
+
+MhCrypt, utilidad para almacenar mensajes en formato cifrado
+Lisp:mh-crypt.el
+
+MhBiff (herramienta de notificación)
+http://www.yynet.tama.tokyo.jp/~yokota/mh-biff/
+
+Alternativa a MhBiff, para aquellos que no entiendan japonés
+
+    ;; Notification stuff: use display-time minor mode to notify about new mail
+    ;; in mode-line, but omit time and load info. Print comma separated list
+    ;; of folders with new mail in mode-line.
+    (setq display-time-mail-function
+          (lambda ()
+            (let ((input (shell-command-to-string "/usr/local/nmh/bin/flist -all"))
+                  (dirs nil)
+                  (start 0))
+              (while (string-match "^\\([a-z-+]*\\) *has [1-9].*$" input start)
+                (push (match-string 1 input) dirs)
+                (setq start (match-end 0)))
+              (setq display-time-mail-string (mapconcat 'identity dirs ", ")))))
+								  
+    (setq display-time-interval 10
+          display-time-format ""
+          display-time-default-load-average nil
+          display-time-mail-face 'custom-themed)
+    
+    (display-time)
+
+----
+
+CategoríaCorreo
