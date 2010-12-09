@@ -19,6 +19,11 @@ With most recent Emacs versions (e.g. 23.1.92.1) no hooks are needed and the fol
     (setq dired-omit-files
           (concat dired-omit-files "\\|^\\..+$"))
 
+----
+
+One thing that I want is for dot-files (e.g., .bashrc, .emacs, etc.) to be colored in the same dim face that the other uninteresting files are colored in.  I set (setq dired-omit-files "^\\.?#\\|^\\.$\\|^\\.\\.$\\|^\\..*$"), which does hide my dot-files when I hit M-o, but these files aren't colored in the dim face.  It seems it only dims the files that match the extensions in dired-omit-extensions, but obviously this won't work for dot-files.  Does anyone have a work-around for this? Thanks.
+
+-- parolang
 
 '''See also Dired+''' (DiredPlus), for a way to color less-interesting files differently in Dired. Combined with DiredOmitMode, this can do either of the following:
 * Give you two levels of disinterest.

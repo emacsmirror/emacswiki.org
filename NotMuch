@@ -4,7 +4,44 @@ Notmuch comes bundled with an emacs mail client that relies on message-mode for 
 
 For more information about Notmuch, see [[http://notmuchmail.org/|the official wiki]].
 
+== NotMuch and Gnus ==
 It is also possible to use NotMuch to index mail that is otherwise read in [[Gnus]]. See http://article.gmane.org/gmane.emacs.gnus.user/13308 for more details.
+
+
+http://roland.entierement.nu/blog/2010/09/08/gnus-dovecot-offlineimap-search-a-howto.html
+suggests one way of setting up notmuch to work with [[Gnus]]. However,
+the functions for going from a notmuch result to the message in gnus
+needed some fiddling with on my end:
+
+     (defun notmuch-file-to-group (file)
+       "Calculate the Gnus group name from the given file name."
+       (let ((group (file-name-directory (directory-file-name (file-name-directory file)))))
+         (setq group (replace-regexp-in-string ".*/.Maildir/" "nnimap+local:" group))
+         (setq group (replace-regexp-in-string "/$" "" group))
+         (if (string-match ":$" group)
+     	(concat group "INBOX")
+           (replace-regexp-in-string ":\\." ":" group))
+         ;; Seems like we don't even need this part:
+         (setq group (replace-regexp-in-string "nnimap\\+local:\\.?" "" group))))
+
+     (defun notmuch-goto-message-in-gnus ()
+       "Open a summary buffer containing the current notmuch
+     article."
+       (interactive)
+       (unless (gnus-alive-p) (with-temp-buffer (gnus)))
+       (let ((group (notmuch-file-to-group (notmuch-show-get-filename)))
+     	(message-id
+     	 (replace-regexp-in-string "\"" ""
+     	  (replace-regexp-in-string "^id:" ""
+     				    (notmuch-show-get-message-id)))))
+         (if (and group message-id)
+     	(progn
+     	  (gnus-summary-read-group group 1) ; have to show at least one old message
+     	  (gnus-summary-refer-article message-id)) ; simpler than org-gnus method?
+           (message "Couldn't get relevant infos for switching to Gnus."))))
+
+     (define-key notmuch-show-mode-map (kbd "C-c C-c") 'notmuch-goto-message-in-gnus)
+     
 
 ----
 CategoryMail

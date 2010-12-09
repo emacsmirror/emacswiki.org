@@ -1153,7 +1153,7 @@ If user option '''`icicle-search-replace-whole-candidate-flag''''
   within the current search context, when you perform replacement
  during '''Icicles''' searching (e.g. `S-C-RET').  If the value is
  non-`nil' (the default value), then the entire ''search context'' is
- replaced, instead.  You can use '''`##C-,##'''' at any time during
+ replaced, instead.  You can use '''`##M-_##'''' at any time during
  searching and replacing, to ''toggle'' the value.  See [[Icicles - Search-And-Replace]].
 
 ----

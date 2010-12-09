@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 12 14:00:40 2010 (-0800)
+;; Last-Updated: Thu Dec  9 00:03:59 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 27380
+;;     Update #: 27387
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -774,7 +774,7 @@
 ;;    current search context, when you perform replacement
 ;;    (e.g. `C-S-RET').  If the value is non-nil (the default value),
 ;;    then the entire search context is replaced, instead.  You can
-;;    use `C-,' at any time during searching and replacing, to toggle
+;;    use `M-_' at any time during searching and replacing, to toggle
 ;;    the value.
 ;;
 ;;  * Command `icicle-search-word' (bound to `C-c $') always searches
@@ -1037,11 +1037,11 @@
 ;;      in replacement text are intrepreted as for
 ;;      `query-replace-regexp'.
 ;;
-;;   * `C-,' toggles `icicle-search-replace-whole-candidate-flag'.  By
+;;   * `M-_' toggles `icicle-search-replace-whole-candidate-flag'.  By
 ;;     default, this is non-nil, which means that the entire current
 ;;     search context is replaced, that is, whatever matches the
 ;;     context regexp that you entered initially using `RET'.
-;;     However, you can use `C-,' anytime during searching to toggle
+;;     However, you can use `M-_' anytime during searching to toggle
 ;;     between this default behavior and replacement of whatever your
 ;;     current minibuffer input matches.
 ;;
@@ -1361,7 +1361,7 @@
 ;;  can replace the entire grep regexp match or just the part of it
 ;;  that matches your current input, depending on the value of option
 ;;  `icicle-search-replace-whole-candidate-flag' (which you can toggle
-;;  with `C-,').  Replacement acts here just as it does for
+;;  with `M-_').  Replacement acts here just as it does for
 ;;  `icicle-search'.
 ;;
 ;;  You can also use a non-`grep' compilation buffer to perform search
@@ -1801,7 +1801,7 @@
 ;;  See Also:
 ;;
 ;;  * (@> "Icicles Search Commands, Overview") for general information
-;;    about Icicles search commmands.
+;;    about Icicles search commands.
 ;;
 ;;  * (@file :file-name "icicles-doc1.el" :to "Nutshell View of Icicles")
 ;;    for information about progressive completion and chipping away
@@ -4972,7 +4972,7 @@
 ;;    within the current search context, when you perform replacement
 ;;    during Icicles searching (e.g. `C-S-RET').  If the value is
 ;;    non-nil (the default value), then the entire search context is
-;;    replaced, instead.  You can use `C-,' at any time during
+;;    replaced, instead.  You can use `M-_' at any time during
 ;;    searching and replacing, to toggle the value.
 ;;
 ;;  * User option `icicle-search-replace-literally-flag' determines

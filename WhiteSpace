@@ -1,6 +1,6 @@
 This page describes package Lisp:whitespace.el, by ViniciusJoseLatorre.
 
-: .:: ''v13.1'' :: ''part of GNU Emacs'' ::.
+: .:: ''v13.2'' :: ''part of GNU Emacs'' ::.
 
 : It runs on Emacs 24.
 
@@ -29,7 +29,7 @@ This package is a minor mode to visualize blanks (TAB, (HARD) SPACE and NEWLINE)
 WhiteSpace uses two ways to visualize blanks: [[Face]]s and display table.
 
 * [[Face]]s are used to highlight the background with a color. WhiteSpace uses
-font-lock to highlight blank characters.
+font-lock to highlight blank characters, see FontLockMode.
 
 * Display table changes the way a character is displayed, that is,
 it provides a visual mark for characters,

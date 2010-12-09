@@ -1,4 +1,4 @@
-[[Dired]] is a very useful file manager. Unfortunatlly it lacks a synchronization command.
+[[Dired]] is a very useful file manager. Unfortunately it lacks a synchronization command.
 
 [https://github.com/renard/dired-sync dired-sync] is designed to fill that missing feature.
 
@@ -14,7 +14,7 @@
 == Installation ==
 
 drop [https://github.com/renard/dired-sync/blob/master/dired-sync.el dired-sync.el] in your
-load-path and bind (suggested) <tt>C-s S</tt> key to <tt>dired-sync</tt>:
+load-path and bind (suggested) <tt>C-c S</tt> key to <tt>dired-sync</tt>:
 
 {{{
 (when (require 'dired-sync nil t)

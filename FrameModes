@@ -43,6 +43,8 @@ The properties of all frames are user-configurable using variables.
 
 This section describes commands (interactive functions) dealing with frames.
 
+
+[:frame-cmds.el]
 == frame-cmds.el ==
 
 DrewAdams has written <tt>[[frame-cmds.el]]</tt>, a library of frame commands. Using the suggested key bindings, you can:

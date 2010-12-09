@@ -69,11 +69,11 @@ default, this is `nil', which means that `\' character sequences
 in replacement text are intrepreted as for
 `query-replace-regexp'.
 
-* '''`##C-,##'''' toggles 
+* '''`##M-_##'''' toggles 
 '''`icicle-search-replace-whole-candidate-flag''''.  By default, this is non-`nil', which means that the
 entire current [[search context]] is replaced, that is, whatever
 matches the context regexp that you entered initially using
-`RET'.  However, you can use `##C-,##' anytime during searching to toggle between
+`RET'.  However, you can use `##M-_##' anytime during searching to toggle between
 this default behavior and replacement of whatever your current
 minibuffer input matches.
 

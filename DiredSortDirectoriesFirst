@@ -36,4 +36,16 @@ Here is a better method that is based on the above code, but doesn't break after
 See DiredSortMenu for info on FrancisWright's library <code>dired-sort-menu.el</code>. It lets you do this and much, much more. -- DrewAdams
 
 ----
+
+I don't know if this is a new feature of GNU ls, but you can use the ``--group-directories-first'' option to accomplish this.  Here's what I have in my init.el:
+
+<pre>
+(setq dired-listing-switches "-lXGh --group-directories-first")
+</pre>
+
+Alternatively, type C-u s while in a Dired buffer will prompt you for new ``ls'' switches which will let you sort the buffer any way you want that is available to ``ls''.  The key is to read the ``ls'' manual :)
+
+-- parolang
+
+----
 CategoryDirectories DiredMode

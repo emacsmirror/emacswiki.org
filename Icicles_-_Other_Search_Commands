@@ -161,7 +161,7 @@ In Emacs 22 and later, you can also ''replace'' search-hit text.  You
 can replace the entire `grep' regexp match or just the part of it
 that matches your current input, depending on the value of [[option]]
 '''`<tt>[[Icicles - Customization and General Tips#icicle-search-replace-whole-candidate-flag|icicle-search-replace-whole-candidate-flag]]</tt>'''' (which you can toggle
-with `##C-,##').  Replacement acts here just as it does for
+with `##M-_##').  Replacement acts here just as it does for
 `icicle-search'.  
 
 You can also use a non-`grep' compilation buffer to perform search and replace. Use it, for example, to correct errors in source files.

@@ -404,9 +404,21 @@
 
 ;;; TODO
 ;;
+;; Add configurable colourization of menu items.
+;; Could have alist of alists, called e.g. `one-key-colours-regexp-alist',
+;; the keys to the list would be symbols for the one-key menu alists (e.g. 'one-key-menu-bookmark-alist)
+;; and each value would be an alist of regexp/colour pairs.
+;; Then when a menu is formatted, any items matching a regexp in the associated colours-regexp alist
+;; would be coloured with the associated colour. E.g. could make items that are themselves one-key menus
+;; all the same colour, and other items a different colour.
 ;;
+;; Option to automatically split menu when creating templates based on prefix keys.
 ;;
-
+;; Function to split items matching regexp into seperate menu in when editing menu in `one-key-template-mode'.
+;;
+;; Automatically generate one-key menus for common keybindings and store them in memory. This is already implemented
+;; to a certain extent but I think it could be improved. Needs further investigation.
+;;
 ;;; Require
 (eval-when-compile (require 'cl))
 
@@ -538,6 +550,7 @@ pressed will scroll the menu up one page.
 The string should be the same as the string displayed by the `describe-key' function after pressing the key."
   :type 'string
   :group 'one-key)
+
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Faces ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 (defface one-key-title
@@ -850,6 +863,7 @@ TITLE is title name of the menu. It can be any string you like."
 
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Utilities Functions ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defun one-key-highlight (msg msg-regexp msg-face)
   "Highlight special `MSG' with regular expression `MSG-REGEXP'.
 Will highlight this `MSG' with face `MSG-FACE'."
@@ -972,7 +986,7 @@ last command when it miss matches in key alist."
                   (progn (find-file-other-window file)
                          (one-key-template-mode)
                          (goto-char (point-min))
-                         (re-search-forward varname nil t)
+                         (search-forward varname nil t)
                          (setq one-key-help-window-configuration nil))
                 (message "Can't find associated source file!"))))
            ((one-key-match-keystroke key one-key-key-down)

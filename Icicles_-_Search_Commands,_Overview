@@ -428,7 +428,7 @@ regexp subgroups.  The [[face]]s for these are, respectively:
 replaced, within the current search context, when you perform
 replacement (e.g. `C-S-RET').  If the value is non-`nil' (the
 default value), then the
-entire search context is replaced, instead.  You can use '''`##C-,##'''' at
+entire search context is replaced, instead.  You can use '''`##M-_##'''' at
 any time during searching and replacing, to toggle the value.
 
 * Command `icicle-search-word' (bound to `##C-c $##') always searches

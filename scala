@@ -76,3 +76,14 @@ you can hit F10 which will prompt you for the new command. Press enter to keep o
 			 (append (list "-classpath" ".") 
 				 (split-string scala-run-command)))))
       (ensime-show-compile-result-buffer notes-in))))
+
+
+Note: you need to set the root-dir in your .ensime file - so add :root-dir = "/path/"
+Note: Hit F10 to set the run command which will run when you hit F9. If you have jars (in your root directory), you need to enter something like this:
+-classpath .:*.jar core.Test
+where Test is your class you want to run (actually, it is usually an object which extends application). 
+
+
+object Test extends Application {
+  println("hello")
+}
