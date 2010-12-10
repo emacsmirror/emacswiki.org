@@ -4,5 +4,7 @@ Seriously, JemPkg is a little elisp library that should facilitate the managemen
 emacs installation. It has support for several versions of the same package, and for several configuration
 schemes (one for the laptop and one for house's computer, for example). 
 
-Details about the usage of the package and the package itself are on its homepage: http://es.gnu.org/~jemarch/homepage/JemPkg.html
+Details about the usage of the package and the package itself are on its homepage: http://www.jemarch.net/jempkg.html
 
+-----
+CategoryPackaging

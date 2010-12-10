@@ -312,23 +312,11 @@ I don't know why (define-key csharp-mode-map ...) doesn't work but c-mode-map do
 
 [new]
 
-There's codedoc support in the v0.7.2 version.  fill-paragraph now works as expected.  Also, type three slashes and you get a synthetic codedoc template inserted into the buffer, similar to the effect in VisualStudio.  -- DinoChiesa
+There's codedoc support in the v0.7.2 version.  Type three slashes and you get a synthetic codedoc template inserted into the buffer, similar to the effect in VisualStudio.  Also, fill-paragraph now works as expected. -- DinoChiesa
 
-type two slashes:
+Example:
 
-http://i40.tinypic.com/mws569.jpg
-
-...and with the third slash, the template appears: 
-
-http://i42.tinypic.com/mtl8i0.jpg
-
-two more slashes:
-
-http://i42.tinypic.com/dn291t.jpg
-
-..and again, with the third slash, a new template appears: 
-
-http://i44.tinypic.com/qywd8n.jpg
+http://imgur.com/vFvf3.gif
 
 It tries to be smart about which template to insert.  If you type 3 slashes after a closing </para>, then you'll get another set of <para></para> . 
 

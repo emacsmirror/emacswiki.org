@@ -1,0 +1,183 @@
+== Description ==
+
+=== Terminology ===
+
+DELPS - *Distributed Emacs Lisp Package System* by JariAalto. The
+DELPS is the framework, the blueprint of the design concepts.
+Emacs extensions in DELPS format are called [[Epackage]]s.
+
+=== History ===
+
+Emacs has been around for decades now. Many new version have come and
+gone. And yet there are wealth of useful extensions available e.g. et
+<http://emacswiki.org> that add new features not yet available in
+standard Emacs. The typical procedure to add a new extension to Emacs
+has been:
+
+*   Find an extension at places like
+    http://dir.gmane.org/gmane.emacs.sources or
+    http://www.emacswiki.org
+*   Download and save the *.el file(s) along `load-path'
+*   Read the installation information. Usually embedded in comments
+    at the beginning of *.el file(s).
+*   Modify the Emacs startup file `~/.emacs'
+    to arrange loading the extension to one's liking.
+
+That's quite a bit of work for each extension; reaching
+thousands out there. Many Linux distributions offer package
+managers to download and install programs. E.g. Debian has
+command *apt-get*/*aptitude* [1], Redhat uses *rpm* [2], Suse
+uses *yast* [3]. So why not make one for Emacs as well.
+
+* [1] http://en.wikipedia.org/wiki/Advanced_Packaging_Tool
+* [2] http://en.wikipedia.org/wiki/RPM_Package_Manager
+* [3] http://en.wikipedia.org/wiki/YaST See also
+  http://en.wikipedia.org/wiki/Yellowdog_Updater,_Modified
+
+=== Concepts ===
+
+The DELPS /epackages/ are in the form of distributed[1] git[2] version
+control repositories. The traditional packaging methods, like
+[[ELPA]], have previously relied on archives like *.tar.gz to hold the
+code. In contrast, the DVCS approach offers interesting features over
+traditional archive distribution approach:
+
+*   Efficient downloads; fast, only deltas are transferred.
+*   Local modifications are possible; users can create their own
+    customizations and track them easily,
+*   Helping package authors made easy; have you found an error?
+    Have a spare time to fix it? Generate
+    [http://en.wikipedia.org/wiki/Diff diff] straight from the
+    version control repository.
+*   Select any version; pick latest or
+    downgrade to a older version with ease.
+*   Contains history of package in one place. No more scattered
+    pieces around Internet.
+*   Encourages social collaboration; more easier interacting
+    with the upstream e.g. through http://github.com
+    push/pull.
+
+[[image:EpackagePictureDelpsDiagram]]
+
+In the picture above, the user downloads *yellow pages* that contains
+information about available packages. At upper left: when a prospective developer
+wants to make an epackage available for others, he first
+[http://help.github.com/forking/ forks] the
+current *yellow pages*, adds new information to it and sends a
+[http://help.github.com/pull-requests/ pull request]
+inside [http://github.com Github.com] to ask to merge changes back to the master *yellow pages*.
+The epackage maintainer keeps an eye on new upstream releases and provides new
+epackages by updating his publicly available Git repository.
+To the lower right: it is possible that upstream and the epackage maintainer is
+the same person. This is the ideal situation.
+
+Each Emacs extension is wrapped into /epackage/ format which
+basically follows the Debian packaging style[3] where a separate
+control directory named <code>epackage/</code> is used for all the
+packaging details: activation, autoloads and installation etc.
+In addition, each /epackage/ is imported in and deployed using
+Git Distributed Version Control System (DVCS). A specific
+"Yellow pages" file lists the available Git repositories where
+user can download packages. Once an /epackage/ has been
+downloaded, subsequent downloads are very efficient because
+only deltas are transferred.
+
+* [1] DVCS = Distributed Version Control System
+      http://en.wikipedia.org/wiki/Distributed_revision_control
+* [2] http://git-scm.org
+* [3] http://www.debian.org/doc/developers-reference/best-pkging-practices.html#bpp-debian-control
+
+== Developers ==
+
+To make an Emacs extension available in DELPS /epackage/ format, read the
+Specification to understand the directory layout and used files,
+then clone "Epackage template files" mentioned below.
+The "Epackage template files" link also contains README at Github
+to quickly explain the procedure.
+
+== Specification ==
+
+* Epackage manual: http://www.nongnu.org/emacs-epackage/manual
+
+== Implementation ==
+
+The DELPS package manager has been implemented in epackage.el available
+from "main project hub" which points to Savannah Git repository. There
+rest of the framework (Yellow pages, epackage repositories, developer
+templates) are also available below.
+
+* Epackage main project hub (epackage.el):
+  http://freshmeat.net/projects/emacs-epackage
+* Epackage template files for developers:
+  https://github.com/jaalto/project--emacs-epackage-template
+* Epackage sources list Yellow Pages for developers:
+  https://github.com/jaalto/project--emacs-epackage-sources-list
+
+== Download and Install ==
+
+The reference implementation of DELPS, the epackage.el, is available
+at Savannah. Mirror at Github,
+
+    #  Location where you keep your Emacs extensions
+    mkdir -p $HOME/emacs.d/packages
+    cd $HOME/emacs.d/packages
+
+    # Or use Github URL: git://github.com/jaalto/project--emacs-epackage.git
+    git clone git://git.savannah.nongnu.org/emacs-epackage.git emacs-epackage.git
+
+    git checkout --track -b devel origin/devel
+    ... to get new updates from time to time
+    git pull
+
+Add following to your `~/.emacs' startup file:
+
+    ;; One big file to boot all installed packages
+    ;; Automatically generated. Do not edit.
+    (load "~/.emacs.d/epackage/00conf/epackage-loader" 'noerr)
+
+    ;; M-x epackage* interactive user functions
+    (autoload 'epackage "epackage" "" t)
+
+    (autoload 'epackage-loader-file-byte-compile    "epackage" "" t)
+    (autoload 'epackage-loader-file-generate        "epackage" "" t)
+    (autoload 'epackage-cmd-autoload-package        "epackage" "" t)
+    (autoload 'epackage-cmd-enable-package          "epackage" "" t)
+    (autoload 'epackage-cmd-disable-package         "epackage" "" t)
+    (autoload 'epackage-cmd-activate-package        "epackage" "" t)
+    (autoload 'epackage-cmd-deactivate-package      "epackage" "" t)
+    (autoload 'epackage-cmd-clean-package           "epackage" "" t)
+    (autoload 'epackage-cmd-remove-package          "epackage" "" t)
+    (autoload 'epackage-cmd-upgrade-package         "epackage" "" t)
+    (autoload 'epackage-cmd-upgrade-all-packages    "epackage" "" t)
+    (autoload 'epackage-cmd-download-sources-list   "epackage" "" t)
+    (autoload 'epackage-cmd-download-package        "epackage" "" t)
+    (autoload 'epackage-initialize                  "epackage" "" t)
+    (autoload 'epackage-version                     "epackage" "" t)
+    (autoload 'epackage-documentation               "epackage" "" t)
+
+The epackage manager can also be called from command line UI:
+
+    emacs --batch -Q -l /path/to/epackage.el -f epackage-batch-ui-menu
+
+== Contact ==
+
+Please send comments, suggestion, ideas, bug reports to my me directly
+or to the Bug tracker as no-one is following information added to
+this page. Thanks --Jari.
+
+* Bug Tracker: https://savannah.nongnu.org/bugs/?group=emacs-epackage
+* Email: jari dot aalto A cante net. Help me to notice your mail by starting
+  subject with "Emacs epackage:"
+
+== Pictures ==
+
+2010-12. A rudimentary implementation of early concept of the software
+is available for testing. The features can be accessed from
+command line UI or with standard Emacs `M-x' `epacakge*' commands.
+The full buffer mode based UI (like in ELPA) is planned to be ready
+somewhere around late spring 2011.
+
+[[image:EpackagePictureUiCommandLine]]
+
+----
+CategoryPackaging

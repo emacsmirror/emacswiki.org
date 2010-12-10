@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Thu Dec  2 13:02:51 2010 (-0600)
+;; Last-Updated: Thu Dec  9 09:20:02 2010 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 412
+;;     Update #: 416
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `backquote', `bytecomp', `warnings'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -91,6 +91,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
+;; 09-Dec-2010    Matthew L. Fidler  
+;;    Last-Updated: Thu Dec  9 09:17:45 2010 (-0600) #414 (Matthew L. Fidler)
+;;    Bugfix.  Now instead of indenting the region pasted, indent the region-pasted + beginning of line at region begin and end of line at region end.
 ;; 02-Dec-2010    Matthew L. Fidler  
 ;;    Last-Updated: Thu Dec  2 13:02:02 2010 (-0600) #411 (Matthew L. Fidler)
 ;;    Made ignoring of modes with indent-relative and indent-relative-maybe apply to indenting returns as well.
@@ -452,7 +455,8 @@ http://www.emacswiki.org/emacs/AutoIndentation
            (let ((mark-even-if-inactive transient-mark-mode))
              (unless (memq indent-line-function auto-indent-disabled-indent-functions)
                (if auto-indent-on-yank-or-paste
-                   (indent-region (region-beginning) (region-end) nil))
+                   (indent-region (save-excursion (goto-char (region-beginning)) (point-at-bol))
+                                  (save-excursion (goto-char (region-end)) (point-at-eol)) nil))
                (if auto-indent-mode-untabify-on-yank-or-paste
                    (untabify (region-beginning) (region-end))))))))
 
@@ -526,8 +530,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
         (setq auto-indent-last-pre-command-hook-minibufferp (minibufferp))
         (when (and (not (minibufferp)))
           (setq auto-indent-mode-pre-command-hook-line (line-number-at-pos))
-          (setq auto-indent-last-pre-command-hook-point (point))
-          ))
+          (setq auto-indent-last-pre-command-hook-point (point))))
     (error
      (message "[Auto-Indent Mode] Ignoring Error in `auto-indent-mode-pre-command-hook': %s" (error-message-string error)))))
 

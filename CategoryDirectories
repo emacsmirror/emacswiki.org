@@ -52,6 +52,8 @@ Click the heading to search for all pages related to manipulating files and dire
 * Try ##C-h v directory-abbrev-alist RET## for information on an elegant way to shorten your paths. Suppose you'd like long paths like ##/opt/some/software/project/source/file.c## to be shortened to ##/proj/source/file.c##. The solution would be setting an appropriate symlink named ##proj## in your root directory and adding the following to your [[InitFile]]:
 
     (setq directory-abbrev-alist '("^/opt/some/software/project" . "/proj"))
+[new]
+If there is a symbolic link in the file system, why do we need this translation table, should it not work even without it?
 
 ---- 
 [new]

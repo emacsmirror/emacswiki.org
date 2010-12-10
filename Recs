@@ -11,7 +11,7 @@ recs is a simple regexp-based command suggestion minor mode.
 
 == Download ==
 
-It's located at http://github.com/tlh/re-suggest.el
+It's located at https://github.com/tlh/recs-mode.el
 
 == Install ==
 

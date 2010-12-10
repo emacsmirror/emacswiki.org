@@ -1,0 +1,36 @@
+This category is about packaging Emacs extension, or about utilities that can automate searching, downloading and installing extensions.
+
+== Discussions ==
+
+* RationalElispPackaging -- Discussion and presentations of existing packaging systems.
+* [http://stackoverflow.com/questions/454259 What do you expect from a package manager for Emacs]
+
+== Implementations ==
+
+=== Systems/Mirrors ===
+
+* [[DELPS]] -- Distributed Emacs Lisp Package System or [[Epackage]] for short to install Git packaged repositories.
+* [[ELPA]] -- package.el archive manager to install Emacs extensions.
+* EmacsLispList
+* [[Emacsmirror]]
+
+=== Package Managers ===
+
+* [http://www.emacswiki.org/emacs/AutoInstall auto-install]
+* [http://www.emacswiki.org/emacs/el-get.el el-get]
+* [http://repo.or.cz/w/elinstall.git elinstall]
+* [http://github.com/jaalto/project--emacs-epackage epackage]
+* [http://github.com/tarsius/epkg epkg]
+* [http://www.iro.umontreal.ca/~monnier/elisp/install.el install]
+* [http://www.emacswiki.org/emacs/install-elisp.el install-elisp]
+* [http://www.jemarch.net/jempkg.html jem-pkg]
+* [http://tromey.com/elpa/ package]
+* [https://launchpad.net/pases pases]
+* [http://github.com/eggcaker/pelm pelm]
+* [http://gmarceau.qc.ca/plugin.el plugin]
+* [http://www.emacswiki.org/emacs/UsePackage use-package]
+* [http://www.xemacs.org/Documentation/packageGuide.html XEmacs package manager]
+
+=== Related Tools ===
+
+* [http://www.emacswiki.org/emacs/EmacsLispList ell.el] -- to browse and download files from [http://www.emacswiki.org/emacs/WikifiedEmacsLispList Emacs Lips List].

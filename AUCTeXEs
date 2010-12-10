@@ -1,0 +1,243 @@
+Traducción concentrada del original inglés de esta Wiki.  --SuSo
+
+
+De la introducción del manual de AUCTeX:
+
+: !AUCTeX es un entorno integrado ampliamente personalizable para la
+escritura de ficheros !TeX/LaTeX/ConTeXt/Texinfo/docTeX usando
+Emacs o XEmacs.
+
+: Permite procesar los ficheros fuente mediante la ejecución de TeX y
+herramientas relacionadas (tales como filtros de salida, post
+procesadores que generan índices y bibliografías, y visores) desde
+dentro de Emacs.  !AUCTeX permite navegar los errores reportados por
+!TeX, mientras mueve el cursor directamente al error reportado y
+muestra alguna documentación acerca de ese error en particular.  Esto
+funcionará incluso cuando el documento se extienda sobre varios
+ficheros.
+
+: Un componente de !AUCTeX que los usuarios de LaTeX encontrarán
+atractivo es ##preview-latex##, una combinación de encarpetado y
+pre-visualización de las fuentes internas que proporciona una
+verdadera experiencia "Lo que se ve es lo que se obtiene" en el búfer
+de fuentes, mientras le sigue permitiendo al usuario mantener un
+control pleno.  ##preview-latex## tiene su propio manual.
+
+: !AUCTeX sangra automáticamente las fuentes en LaTeX, no sólo
+mientras se escriben: también se puede sangrar y formatear un
+documento entero.  Posee una característica especial de esquema que
+ayuda grandemente a visualizar el conjunto del documento.
+
+: Aparte de estas características especiales, !AUCTeX proporciona un
+amplio espectro de útiles macros Emacs, que pueden ayudar al usuario a
+a escribir sus documentos con rápidez y sin temores.
+
+
+== Direcciones ==
+
+La página web de !AUCTeX está en
+* http://www.gnu.org/software/auctex/
+
+Su réplica en español está en
+* http://gnu.manticore.es/paginas-replica/auctex/index.html
+
+El manual en español se puede consultar en línea en
+
+* http://gnu.manticore.es/manual-auctex-emacs
+
+
+== Uso ==
+
+Se hace ##C-c C-c## para ejecutar !LaTeX sobre el documento y después,
+una vez se haya compilado correctamente, de nuevo ##C-c C-c## para
+verlo.  Si falló la compilación se hace ##C-c `## para ver los
+errores.
+
+Si se emplea XEmacs, !AUCTeX y !MikTeX en Windows, el usuario puede
+caer en el problema de que al enviar el comando ##C-c C-c## se llegue
+a ErrorCantFindFile.
+
+Funciona bien con RefTeX (existe una opción en !RefTeX para
+engancharlo a !AUCTeX).
+
+
+== Personalización acostumbrada ==
+
+Para editar documentos !LaTeX, probablemente se quiera incluir lo
+siguiente en el <tt>[FicheroInit ~/.emacs]</tt>.
+
+    (setq TeX-auto-save t)
+    (setq TeX-parse-self t)
+    (setq-default TeX-master nil)
+
+    (add-hook 'LaTeX-mode-hook 'visual-line-mode)
+    (add-hook 'LaTeX-mode-hook 'flyspell-mode)
+    (add-hook 'LaTeX-mode-hook 'LaTeX-math-mode)
+
+    (add-hook 'LaTeX-mode-hook 'turn-on-reftex)
+    (setq reftex-plug-into-AUCTeX t)
+
+También se puede preferir el auto-fill-mode antes que el
+visual-line-mode.
+
+== preview-latex ==
+
+##preview-latex## (también conocido como !PreviewLaTeX) es una parte
+  integrante de !AUCTeX a partir de la versión 11.80, que permite ver
+  previsualizaciones del documento (matemáticas, figuras, tablas,
+  gráficas y otras cosas) directamente en el búfer de Emacs.  Se
+  entregaba por separado en el pasado, pero siempre dependió de
+  !AUCTeX para ejecutarse.
+
+== CDLaTeX ==
+
+CDLaTeX es un modo /menor/ que permite la rápida inserción de
+plantillas de entornos y material matemático en !LaTeX, escrito por
+CarstenDominik.  !CDLaTeX intenta ser rápido, con muy pocas teclas que
+además sean fáciles de recordar, y ayuda el vuelo inteligente.  Como
+modo menor, se puede usar dentro de !AUCTeX.
+
+== Complementos ==
+
+* [http://people.debian.org/~psg/elisp/latex-units.el latex-units.el]
+Le añade un sub-menú Units al menú del modo matemático de !AUCTeX (de
+Peter S. Galbraith).
+
+* [[Lisp:pstricks.el]] añade alguna funcionalidad para usar pstricks
+  con !AUCTeX (Jean-Philippe Georget)
+
+== Documentación TeX ==
+
+##C-c ?## (o ##M-x TeX-doc##) proporciona documentación sobre el
+símbolo bajo el punto, o de cualquier paquete, comando o documento.
+
+
+== El modo Abbrev y AUCTeX ==
+
+Lo predeterminado es que !AUCTeX comparta sus abreviaturas con el modo
+mayor Text.  Esto significa que las abreviaturas guardadas con
+<code>C-x a l</code> (<code>add-mode-abbrev</code>) se guardan en la
+tabla <code>text-mode-abbrev-table</code> y están disponibles en todos
+los búferes que usen ese modo o derivado.  Este puede no ser el
+comportamiento esperado.  A continuación se muestra cómo definir las
+abreviaturas para que funcionen sólo en los modos de auctex, sin
+interferir con el modo de texto estándar.  En el FicheroInit se pone:
+
+   (define-abbrev-table 'TeX-mode-abbrev-table (make-abbrev-table))
+   (add-hook 'TeX-mode-hook (lambda ()
+      (setq abbrev-mode t)
+      (setq local-abbrev-table TeX-mode-abbrev-table)))
+
+
+== Comillas inteligentes ==
+
+La tecla '##"##' en !AUCTeX inserta "##``##" y "##''##" de acuerdo al
+contexto (que !LaTeX convierte en *“* y *”*).  Las cadenas
+##TeX-open-quote## y ##TeX-close-quote## albergan las secuencias de
+apertura y cierre que se insertan y pueden cambiarse, v.g.,
+
+    (setq TeX-open-quote "<<")
+    (setq TeX-close-quote ">>")
+
+
+=== Cómo envolver la región con comillas dobles ===
+
+El comando ##TeX-insert-quote##, asociado a '##"##', inserta comillas
+de apertura y cierre de acuerdo al  contexto.  Podemos extenderlo para
+que trabaje también con regiones activas en modo TransientMark, tal
+que si tenemos seleccionada una palabra,
+
+    esta [palabra] está entrecomillada
+
+donde '##[##' y '##]##' son el comienzo y final de la región, al
+presionar '##"##' se produce
+
+    esta ``palabra'' está entrecomillada
+
+La siguiente ##defadvice##, que emplea SkeletonMode, es quien lo consigue:
+
+    (defadvice TeX-insert-quote (around wrap-region activate)
+      (cond
+       (mark-active
+        (let ((skeleton-end-newline nil))
+          (skeleton-insert `(nil ,TeX-open-quote _ ,TeX-close-quote) -1)))
+       ((looking-at (regexp-opt (list TeX-open-quote TeX-close-quote)))
+        (forward-char (length TeX-open-quote)))
+       (t
+        ad-do-it)))
+    (put 'TeX-insert-quote 'delete-selection nil)
+
+Esto hace también que la tecla '##"##' se "mueva por encima" de las
+comillas existentes. V.g., si el punto está al principio de la
+##``palabra''##, al presionar ##"## las pone en la primera letra.
+
+=== Cómo envolver la región con comillas simples ===
+
+Es bueno disponer del mismo comportamiento para la tecla '##'##', es
+decir insertar "##`##" o "##'##" de acuerdo al contexto y envolver la
+región con comillas simples:
+
+    (defun TeX-insert-single-quote (arg)
+      (interactive "p")
+      (cond
+       (mark-active
+        (let ((skeleton-end-newline nil))
+          (skeleton-insert
+           `(nil ?` _ ?') -1)))
+       ((or (looking-at "\\<")
+            (looking-back "^\\|\\s-\\|`"))
+        (insert "`"))
+       (t
+        (self-insert-command arg))))
+
+    (add-hook 'LaTeX-mode-hook
+              '(lambda ()
+                 (local-set-key "'" 'TeX-insert-single-quote)))
+
+== Detección automágica del fichero maestro ==
+
+Cuando se edita un documento multi-fichero, es necesario establecer la
+variable ##TeX-master## para que !AUCTeX y !RefTeX trabajen
+apropiadamente.  Aunque esto se puede hacer usando variables locales
+al fichero, tiene la desventaja de añadirle ruido a los ficheros
+fuente.  Una alternativa sería añadir la línea siguiente al
+##latex-mode-hook##:
+
+    (setq TeX-master (guess-TeX-master (buffer-file-name)))
+
+Por supuesto, también hay que definir esta función
+##guess-TeX-master##, por ejemplo con el siguiente fragmente de
+código:
+
+    (defun guess-TeX-master (fichero)
+      "Deduce el fichero maestro del FICHERO a partir de los .tex abiertos en esos momentos."
+      (let ((candidato nil)
+            (fichero (file-name-nondirectory fichero)))
+        (save-excursion
+          (dolist (buffer (buffer-list))
+            (with-current-buffer buffer
+              (let ((name (buffer-name))
+                    (file buffer-file-name))
+                (if (and file (string-match "\\.tex$" file))
+                    (progn
+                      (goto-char (point-min))
+                      (if (re-search-forward (concat "\\\\input{" fichero "}") nil t)
+                          (setq candidato file))
+                      (if (re-search-forward (concat "\\\\include{" (file-name-sans-extension fichero) "}") nil t)
+                          (setq candidato file))))))))
+        (if candidato
+            (message "Documento maestro TeX: %s" (file-name-nondirectory candidato)))
+        candidato))
+
+Esta función se puede ajustar a más necesidades (por ejemplo
+añadiéndole soporte a otras formas de la sintaxis "##include##"), pero
+a mí me funciona bastante bien.  Se recuerda que devolverá ##nil##
+para los ficheros que no están incluidos en otros ficheros, lo que es
+el caso de los documentos de un solo fichero, o de los ficheros
+maestros en sí. En este caso, la variable ##TeX-master## se pone en
+##nil##, lo que funciona.
+
+
+----
+CategoryModes
+CategoryTex

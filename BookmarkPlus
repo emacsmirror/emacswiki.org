@@ -2700,6 +2700,8 @@ Not sure I understand. Does `bookmark-bmenu-list' work for you in vanilla Emacs 
 
 The first thing to try is removing (e.g. renaming) your bookmarks file. If it works then, then try commenting-out half of the file, then a quarter, etc. until you find the bad bookmark(s). -- DrewAdams
 
+[new]
+Recent changes in bookmark.el (bzr emacs) broke bookmark+, i just see empty list and message "bmkp-bmenu-list-1: Symbol's function definition is void: bookmark-name-from-full-record" in the minibuffer when calling `bookmark-bmenu-list'. -- [[Anonymous]]
 ----
 CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo

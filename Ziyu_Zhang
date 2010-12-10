@@ -1,0 +1,28 @@
+(defun zy-increment-number-at-point (&optional arg)
+  "Increment the number under point by `amount'"
+  (interactive "p")
+  (or arg (setq arg 1))
+  (cond
+   ((zy-in-hex-number) (zy-increment-number-hexadecimal arg))
+   (t (zy-increment-decimal-at-point arg))))
+
+(defun zy-in-hex-number ()
+  (and (looking-at "[0-9a-fA-F]")
+       (or
+        (save-excursion
+          (skip-chars-backward "0123456789abcdefABCDEF")
+          (looking-back "[0/#][xX]")
+          )
+        (save-excursion
+          (skip-chars-forward "0123456789abcdefABCDEF")
+          (looking-at "[hH]")
+          ))))
+
+
+[new:DrewAdams:2010-12-10 05:54 UTC]
+Welcome to the wiki. (I guess this is a homepage ;-).) -- DrewAdams
+
+
+
+----
+CategoryHomepage

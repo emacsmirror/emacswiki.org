@@ -15,6 +15,9 @@ How about a [[multi-command]] replacement for `M-x'?   Instead of executing a si
 
 
 
+
+
+
 [:icicle-execute-extended-command]
 === Multi `M-x': `icicle-execute-extended-command' ===
 
@@ -31,6 +34,10 @@ With the default value of [[option]]
 `icicle-execute-extended-command' whenever you are in ''Icicle'' mode.
 If you never use it as a multi-command, you won't notice any
 difference from `execute-extended-command'.
+
+
+
+
 
 
 
@@ -107,6 +114,8 @@ top-level##' should always straighten you out.
 
 
 
+
+
 [:describe-variable]
 [:describe-function]
 ==== What About describe-variable and describe-function? ====
@@ -126,6 +135,10 @@ I've reported this design misfeature to the Emacs developers, and I hope it will
 
 
 
+
+
+
+
 [:EveryCommandAMultiCommand]
 ==== Multi `M-x' Turns Every Command into a Multi-Command ====
 
@@ -138,19 +151,28 @@ The other point is that you can move from one command to another within the same
 
 
 
+
+
+
 ----
 [:icicle-command-abbrev]
 === Multi `M-x' with Abbreviations: `icicle-command-abbrev' ===
 
 The second multi-command that you can use in place of
 `execute-extended-command' is '''`icicle-command-abbrev'''', bound in
-''Icicle mode'' to '''`C-x SPC''''.  It is similar to `M-x'
+''Icicle'' mode to '''`C-x SPC''''.  It is similar to `M-x'
 (`icicle-execute-extended-command'), with the added twist that it
 lets you input command ''abbreviations'', as well as commands.
 
+If option '''`<tt>[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]</tt>'''' is non-`nil', then command
+abbreviations, as well as commands, are available as completion
+candidates.  Otherwise, only commands are available.  You can
+toggle this user option using `##C-M-_##' in the minibuffer.
+
+
 Emacs [[partial completion]] and some other libraries provide ways for
 you to enter command abbreviations instead of command names at the
-command prompt (`M-x').  ExecAbbrevCmd by TassiloHorn is an example.  
+command prompt (`M-x').  ExecAbbrevCmd by TassiloHorn is an example.
 
 So just what is a command '''abbreviation'''?  Hyphens ('''`-'''') in command names
 divide them into parts.  For example, `find-file' has two parts:

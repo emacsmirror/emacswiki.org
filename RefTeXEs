@@ -1,0 +1,56 @@
+[[en: RefTeX]]
+
+Traducción condensada de la página en inglés de esta Wiki.  --SuSo
+
+El mantenimiento actual de RefTeX lo lleva a cabo el equipo de AUCTeX.
+
+RefTeX proporciona un amplio soporte para crear etiquetas, referencias
+cruzadas, citas e índices en LaTeX.  Funciona tanto con Emacs como con
+XEmacs y se ejecuta como modo menor en cualquiera de los modos mayores
+de LaTeX, pero especialmente con AUCTeX.
+
+RefTeX va incluido y preinstalado con Emacs desde su versión 20.2.  
+También lo estuvo en XEmacs 19.16--20.x.  Los usuarios de XEmacs 21.x
+tendrán que instalar el paquete correspondiente, disponible en el
+sitio ftp de XEmacs.  Véase la documentación de XEmacs 21.x acerca de
+la instalación de paquetes para conocer los detalles.
+
+La página web oficial en inglés de RefTeX es
+http://www.gnu.org/software/auctex/reftex.html
+
+Su réplica en español está en 
+http://gnu.manticore.es/paginas-replica/auctex/reftex.es.html
+
+El Manual de RefTex en español se puede leer en línea en
+http://gnu.manticore.es/manual-reftex-emacs
+
+
+'''Enganche a AUCTeX''
+
+Se pone algo en el fichero .emacs para hacer que RefTeX trabaje
+apropiadamente con AUCTeX:
+
+   (setq reftex-plug-into-AUCTeX t)
+
+'''Secciones y etiquetas personalizadas'''
+
+Una características atractiva de RefTeX es la habilidad de crear
+etiquetas personalizadas además de aquellas reconocidas por otros
+paquetes.  Las etiquetas pasan a estar disponibles para su acceso
+rápido y navegación en el búfer del Índice de Contenidos (TOC).  El
+siguiente es un ejemplo de cómo se crea una etiqueta "Poema" que
+además se muestra como entrada de nivel 3 en el Índice de Contenidos:
+
+    (add-hook 'reftex-load-hook
+      (lambda ()
+        (setq reftex-section-levels
+            (cons '("título-poema" . -3) reftex-section-levels))))
+    
+    (setq reftex-label-alist
+	    '(("\\título-poema" ?P "poema:" "\\ref{%s}" nil ("poema" "título-poema"))))
+
+----
+Se pueden ver más sugerencias de código en la página en inglés RefTeX
+
+----
+CategoryTex

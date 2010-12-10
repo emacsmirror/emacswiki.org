@@ -14,7 +14,7 @@ I've contributed to some others:
 
 * [http://github.com/technomancy/clojure-mode Clojure Mode] and [http://github.com/technomancy/ Swank Clojure]. I maintain these modes.
 * [[Rudel]] for collaborative editing.
-* [[ELPA]], a package manager.
+* [http://bit.ly/pkg-el package.el], a package manager.
 * ErtTestLibrary for automated testing.
 * [[Magit]] for working with Git repositories.
 * EmacsRi for reading Ruby documentation

@@ -2,7 +2,7 @@
 ;; Copy to the following URL from time to time:
 ;; http://www.emacswiki.org/cgi-bin/wiki?action=edit;id=AlexSchroederConfigWindows
 ;; This is free software.
-;; Currently for GNU Emacs 23.0.60.1 (i386-mingw-nt5.1.2600) of 2008-09-09 on LENNART-69DE564 (patched)
+;; Currently for GNU Emacs 23.1.50.1 (i386-mingw-nt5.1.2600) of 2009-11-04 on LENNART-69DE564 (patched)
 
 ;; ╭∩╮⎝⏠_⏠⎠╭∩╮
 ;; ▇█▓▒░◕~◕░▒▓█▇
@@ -10,17 +10,25 @@
 (require 'cl)
 
 (add-to-list 'load-path (expand-file-name "elisp" (getenv "HOME")))
-(add-to-list 'exec-path "c:/cygwin/bin")
-(add-to-list 'exec-path "c:/Programme/GnuWin32/bin")
+(add-to-list 'exec-path "C:/cygwin/bin")
+(add-to-list 'exec-path "C:/Programme/cygwin/bin")
+(add-to-list 'exec-path "C:/Programme/GnuWin32/bin")
 (add-to-list 'exec-path "~/Eigene Dateien/Eigene Software")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
+(add-to-list 'exec-path "C:/oracle/product/10.2.0.3/db_1e/bin")
 
-(dolist (path '("C:\\Programme\\GnuWin32\\bin"
-		"C:\\cygwin\\bin"
-		"c:\\Dokumente und Einstellungen\\asc\\Eigene Dateien\\Eigene Software"))
-  (when (and (file-exists-p path)
-	     (not (string-match (regexp-quote path) (getenv "PATH"))))
-    (setenv "PATH" (concat path ";" (getenv "PATH")))))
+(quietly-read-abbrev-file "~/.emacs.d/abbreviations")
+
+(let (seen)
+  (dolist (path (mapcar 'file-truename
+			(append exec-path
+				(split-string (getenv "PATH") ";" t))))
+    (when (and (file-exists-p path)
+	       (not (member path seen)))
+      (setq seen (cons path seen))))
+  (setenv "PATH" (mapconcat 'identity (nreverse seen) ";" )))
+
+(setenv "CYGWIN" "nodosfilewarning")
 
 (prefer-coding-system 'utf-8)
 (setq default-file-name-coding-system 'cp1252)
@@ -116,6 +124,8 @@
 ;;; bs instead of buffer-menu
 (global-set-key (kbd "C-x C-b") 'bs-show)
 
+(defvar sqlplus-connect-string nil)
+
 (setq bs-configurations
       '(("all" nil nil nil nil nil)
         ("files" nil nil nil bs-visits-non-file bs-sort-buffer-interns-are-last)
@@ -126,9 +136,9 @@
         ("sql" nil nil nil
 	 (lambda (buf)
            (with-current-buffer buf
-             (not (or (eq major-mode 'sql-mode)
-		      (eq major-mode 'sql-interactive-mode)
-		      (eq major-mode 'sqlplus-mode))))) nil)
+             (and (not (memq major-mode '(sql-mode sql-interactive-mode
+						   sqlplus-mode plsql-mode)))
+		  (not sqlplus-connect-string)))) nil)
         ("java" nil nil nil
 	 (lambda (buf)
            (with-current-buffer buf
@@ -155,6 +165,12 @@
   "Sort buffers A and B using `rcirc-sort-name'."
   (string< (rcirc-sort-name a)
 	   (rcirc-sort-name b)))
+
+;;; elpoint, ept
+
+(add-to-list 'auto-mode-alist '("\\.ept\\'" . ept-mode))
+
+;;; Apache
 
 (define-generic-mode 'htaccess-mode
   '(?#)
@@ -249,26 +265,31 @@ Indent by DEPTH, if required"
 (autoload 'sqlplus "sqlplus" nil t)
 (autoload 'sqlplus-mode "sqlplus" nil t)
 
-(dolist (item '(("\\.sqp\\'" . sqlplus-mode)
-		("\\.sql\\'" . sqlplus-mode)))
-  (add-to-list 'auto-mode-alist item))
+;; (dolist (item '(("\\.sqp\\'" . sqlplus-mode)
+;; 		("\\.sql\\'" . sqlplus-mode)))
+;;   (add-to-list 'auto-mode-alist item))
 
 (autoload 'plsql-mode "plsql" nil t)
 
 (dolist (item '(("\\.pls\\'" . plsql-mode) ("\\.pkg\\'" . plsql-mode)
 		("\\.pks\\'" . plsql-mode) ("\\.pkb\\'" . plsql-mode)
-		("\\.sql\\'" . plsql-mode) ("\\.prc\\'" . plsql-mode)
-		("\\.fnc\\'" . plsql-mode) ("\\.trg\\'" . plsql-mode)
-		("\\.vw\\'" . plsql-mode)))
+		("\\.prc\\'" . plsql-mode) ("\\.fnc\\'" . plsql-mode)
+		("\\.trg\\'" . plsql-mode) ("\\.vw\\'" . plsql-mode)))
+  ;; ("\\.sql\\'" . plsql-mode)
   (add-to-list 'auto-mode-alist item))
 
-(global-set-key (kbd "C-c q") 'sqlplus)
+;; (global-set-key (kbd "C-c q") 'sqlplus)
 
 (add-hook 'sqlplus-mode-hook
 	  (lambda ()
 	    (local-set-key (kbd "C-z") 'bury-buffer)
 	    (set-process-coding-system (get-process (sqlplus-get-process-name sqlplus-connect-string))
 				       'latin-1 'latin-1)))
+
+(add-hook 'plsql-mode-hook
+	  (lambda ()
+	    (setq indent-tabs-mode nil)
+	    (local-set-key (kbd "<C-return>") 'sqlplus-send-current)))
 
 ;; (add-hook 'sql-mode-hook (lambda () 
 ;; 			   (setq c-basic-offset 3
@@ -284,36 +305,56 @@ Indent by DEPTH, if required"
 ;;       (goto-char (point-max))
 ;;       (insert sym ", "))))
 
-;; (global-set-key (kbd "C-c q") 'sql-oracle)
+(global-set-key (kbd "C-c q") 'sql-oracle)
 
-;; (setq sql-user "DEV"
-;;       sql-password ""
-;;       sql-database "BSICRM")
+(setq sql-user "ors"
+      sql-password ""
+      sql-database "hermes.vd_5023")
 
-;; (setq sql-input-ring-file-name "~/.sql_history"
-;;       sql-product 'oracle
-;;       comint-input-ring-size 500)
+(setq sql-input-ring-file-name "~/.sql_history"
+      sql-product 'oracle
+      comint-input-ring-size 500)
 ;; (add-to-list 'auto-mode-alist '("\\.pls\\'" . sql-mode))
 
-;; (add-hook 'sql-mode-hook
-;; 	  (lambda ()
-;; 	    (local-set-key (kbd "C-z") 'sql-oracle)
-;; 	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
-;; 	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)))
-;; (add-hook 'sql-interactive-mode-hook
-;; 	  (lambda ()
-;; 	    (local-set-key (kbd "C-z") 'bury-buffer)
-;; 	    (set-process-coding-system (get-buffer-process sql-buffer) 'latin-1 'latin-1)))
+(add-hook 'sql-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'sql-oracle)
+	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
+	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)
+	    (local-set-key (kbd "<C-return>") 'sql-send-modified-paragraph)))
+(add-hook 'sql-interactive-mode-hook
+	  (lambda ()
+	    (local-set-key (kbd "C-z") 'bury-buffer)
+	    (set-process-coding-system (get-buffer-process sql-buffer) 'latin-1 'latin-1)))
 
-;; (add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
+(add-hook 'sql-interactive-mode-hook 'my-sql-set-buffer)
 
-;; (defun my-sql-set-buffer ()
-;;   (let ((new-buffer (current-buffer)))
-;;     (dolist (buf (buffer-list))
-;;       (with-current-buffer buf
-;; 	(unless (buffer-live-p sql-buffer)
-;; 	  (setq sql-buffer new-buffer)
-;; 	  (run-hooks 'sql-set-sqli-hook))))))
+(defun my-sql-quote-for-java (start end)
+  (interactive "r")
+  (setq end (copy-marker end))
+  (goto-char end)
+  (insert "'")
+  (goto-char start)
+  (save-excursion
+    (while (re-search-forward "[0-9][0-9]+" end t)
+      (replace-match "?")))
+  (save-excursion
+    (while (search-forward "'" end t)
+      (replace-match "''")))
+  (save-excursion
+    (while (search-forward "\n" end t)
+      (replace-match "'\n||' ")))
+  (insert "'"))
+
+(defun my-sql-set-buffer ()
+  "Sets the SQLi buffer for all unconnected SQL buffers.
+Called from `sql-interactive-mode-hook'."
+  (let ((new-buffer (current-buffer)))
+    (dolist (buf (buffer-list))
+      (with-current-buffer buf
+	(unless (buffer-live-p sql-buffer)
+	  (setq sql-buffer new-buffer)
+	  (run-hooks 'sql-set-sqli-hook))))))
 
 (defcustom sql-replacements
   '(("#W#" . ""))
@@ -324,6 +365,9 @@ Indent by DEPTH, if required"
   "Send paragraph and replace all variables
 using `sql-replacments'."
   (interactive)
+  (unless sql-buffer
+    (sql-oracle)
+    (sit-for 3))
   (let ((str (buffer-substring-no-properties
 	      (save-excursion
 		(backward-paragraph)
@@ -342,6 +386,8 @@ using `sql-replacments'."
 		  sql-replacements (cons (cons key val) sql-replacements)))
 	  (replace-match val)))
       (setq str (buffer-string)))
+    (with-current-buffer sql-buffer
+      (goto-char (point-max)))
     (sql-send-string str)))
 
 (defun sql-replacement-delete (key)
@@ -566,7 +612,7 @@ Each line consists of a lastname, a tab, and a firstname."
       rcirc-server-alist
       '(("irc.freenode.net" :channels ("#rcirc" "#wiki" "#oddmuse" "#epfarms"
 	 "#emacs" "#sql" "#perl" "#perl6"))
-	("irc.perl.org" :channels ("#perlde"))
+	("irc.perl.org" :channels ("#perlde" "#oddmuse"))
 	("ircnet.eversible.com" :channels ("#drsrm")))
 	;; ("irc.sorcery.net" :channels ("#rpmn"))
 	;; ("irc.otherworlders.org" :channels ("#enworld" "#pathfinder"))
@@ -654,8 +700,8 @@ Limitation: in its interactive form, you can only op one nick."
 
 (eval-after-load 'rcirc '(require 'rcirc-color))
 (eval-after-load 'rcirc '(require 'rcirc-controls))
-(eval-after-load 'rcirc '(require 'rcirc-pounce))
-(eval-after-load 'rcirc '(require 'rcirc-groups))
+(eval-after-load 'rcirc '(require 'rcirc-pounce nil t))
+(eval-after-load 'rcirc '(require 'rcirc-groups nil t))
 
 ;; Windows doesn't like "*foo*" filenames
 (eval-after-load 'rcirc
@@ -680,6 +726,7 @@ This is used for the initial name given to IRC buffers."
 (add-hook 'rcirc-mode-hook
 	  (lambda ()
 	    (rcirc-track-minor-mode 1)
+	    (abbrev-mode 1)
 	    (local-set-key (kbd "M-q") 'rcirc-unfill)))
 
 (defadvice my-invisible-preference (after rcirc-connect activate)

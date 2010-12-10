@@ -10,8 +10,8 @@ Regarding elisp programs distribution, consider the following issues:
 
 == Software localization ==
 
-There are dozens of elisp packages lurking on the network, hosted on dozens of websites. 
-It is usually tedious to search for some specific package or (even worse) for some package that implement some desired 
+There are dozens of elisp packages lurking on the network, hosted on dozens of websites.
+It is usually tedious to search for some specific package or (even worse) for some package that implement some desired
 functionality. Elisp software repositories (like the ElispArea) minimizes the need for deep internet search.
 
 So there is a real need for elisp software repositories.
@@ -19,32 +19,32 @@ So there is a real need for elisp software repositories.
 == Software installation ==
 
 Ok... installing elisp software is in theory a trivial task. Just copy a file such as `foo.el' into some
-directory, update your `auto-path' if necessary and then `require' it. But in practice some troubles 
+directory, update your `auto-path' if necessary and then `require' it. But in practice some troubles
 arise:
 
-- Non trivial (several files) packages
+* Non trivial (several files) packages
 
-- Installing several packages
+* Installing several packages
 
-- Non-pure elisp packages (containing texinfo documentation and/or data files)
+* Non-pure elisp packages (containing texinfo documentation and/or data files)
 
-- Versioning
+* Versioning
 
-- Uninstalling packages
+* Uninstalling packages
 
-- Keeping your `.emacs' file clean
+* Keeping your `.emacs' file clean
 
 So there is a real need for common installation procedures.
 
 = Requisites =
 
-- Emacs flavor independent
- 
-- Minimal
+* Emacs flavor independent
 
-- Simple
+* Minimal
 
-- Should not alienate the host Emacs affecting its basic functionality, such as the XEmacs packaging system, wich would
+* Simple
+
+* Should not alienate the host Emacs affecting its basic functionality, such as the XEmacs packaging system, wich would
 require severe modifications into GNU Emacs in order to run
 
 = Anatomy of an elisp package =
@@ -63,16 +63,16 @@ Attending to package's contents:
 
 Binary packages... makes sense? Here goes some reasons for not considering "binary packages":
 
-- Any running Emacs is capable to compile emacs lisp.
+* Any running Emacs is capable to compile emacs lisp.
 
-- All libraries required for compilation are also required for execution.
+* All libraries required for compilation are also required for execution.
 
-- Compiled elisp is quite sensitive to the Emacs version in which it was compiled.
+* Compiled elisp is quite sensitive to the Emacs version in which it was compiled.
 
 
 = What is the right approach? =
 
-I very much agree with AlexSchroeder that a good starting point would be to write a library containing useful functionalities for 
+I very much agree with AlexSchroeder that a good starting point would be to write a library containing useful functionalities for
 installing elisp programs. - JoseEMarchesi
 
 We still need to list the arguments for not taking the existing packaging thing from XEmacs.  Too complicated?
@@ -94,18 +94,17 @@ The package-specific file type is the classical approach. Another (perhaps bette
    ;;; eval: elp-launch-installation
    ;;; End:
 
-In that way elisp libraries composed by only one file 'foo.el' wont become overloaded by extra packaging metadata on extra files. 
+In that way elisp libraries composed by only one file 'foo.el' wont become overloaded by extra packaging metadata on extra files.
 Packages composed by several files could include such local variables on, say, `install-package.el' or, alternatively, insert it
 into the main source file (such as 'erc.el'). -- JoseEMarchesi
 
-
-= package.el =
+= package.el - Emacs Lisp Package Archive (ELPA) =
 
 I've been working on [http://lists.gnu.org/archive/html/gnu-emacs-sources/2007-03/msg00025.html package.el], a simple Emacs packaging system.  It handles versions, installation, activation, and has a buffer-menu-like interface to package management (including downloading things from the package archive).
 
 It is still pretty early in development, but you can already use it to install a few fun packages, like the bubbles game.
 
-Read the pointed-to thread for more information.  Current work includes changing how activation is handled, so that startup is faster.  
+Read the pointed-to thread for more information.  Current work includes changing how activation is handled, so that startup is faster.
 
 Ultimately what I would like to do here is have this incorporated directly into Emacs, and also set up a package archive (I'm calling it "ELPA") as a project on savannah.  Then, hopefully, developers would migrate their lisp code from ELL, gnu-emacs-sources, and the wiki to ELPA.
 
@@ -113,6 +112,47 @@ Currently [http://tromey.com/elpa/ ELPA] is hosted on my site.  There's an auto-
 
 
 Note: the program 'inversion.el' which is a part of CEDET does version checking via 'require statements, loaded data files, and the like.  It could provide a simple baseline for version checking.  - EricLudlam
+
+= Epackage - Distributed Emacs Lisp Package System (DELPS) =
+
+I wrote a new packaging system based on lessons learned in how Debian
+packages software. These concepts were applied to packaging Emacs
+extensions.
+
+In this system packages are available in a form of
+distributed[1] git[2] version control repositories. The
+traditional packaging methods (like ELPA[2]) have previously
+relied on archives like *.tar.gz to hold the code. In contrast
+the DVCS approach offers important features over monolithic archive
+approach:
+
+*   Efficient downloads; fast, only deltas are transferred.
+*   Local modifications are possible; users can create their own
+    customizations and track them easily,
+*   Helping package authors made easy; have you found an error?
+    Have a spare time to fix it? Generate diff straight from the
+    version control repository.
+*   Select any version; pick latest or
+    downgrade to a older version with ease.
+*   Contains history of package in one place. No more scattered
+    pieces around Internet.
+*   Encourages social collaboration; more easier interacting
+    with the upstream e.g. through http://github.com
+    push/pull.
+
+Each Emacs extension is prepared for use with this system:
+upstream code is imported into a git repository, the epackage
+system is installe don top of upstream code in separate
+directory, the whole git repository is made available online
+and add information about its availability is recorded to a
+separate seources list yellow pages. The epackaging work can
+be done by anyone who wants to set up a repository. It doesn't
+necesarily need to be done by the original Emacs extension
+author (upstream) who may not be familiar with the `git(1)'
+
+For more information, see wiki pages [[DELPS]] and [[Epackage]]
+
+-- JariAalto
 
 = jempkg.el =
 

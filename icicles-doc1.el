@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Dec  1 20:26:06 2010 (-0800)
+;; Last-Updated: Thu Dec  9 13:29:53 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25547
+;;     Update #: 25549
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4952,6 +4952,11 @@
 ;;  Icicle mode to `C-x SPC'.  It is similar to `M-x'
 ;;  (`icicle-execute-extended-command'), with the added twist that it
 ;;  lets you input command abbreviations, as well as commands.
+;;
+;;  If option `icicle-add-proxy-candidates-flag' is non-nil, then
+;;  command abbreviations, as well as commands, are available as
+;;  completion candidates.  Otherwise, only commands are available.
+;;  You can toggle this user option using `C-M-_' in the minibuffer.
 ;;
 ;;  Emacs partial completion and some other libraries provide ways for
 ;;  you to enter command abbreviations instead of command names at the

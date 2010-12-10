@@ -1,0 +1,28 @@
+Is it possible to set the current directory for Emacs? After
+closing "all" buffers, `C-x C-f' reverts to the home directory.
+
+The easy answer is `M-x cd'.
+But usually I just try to start Emacs in whatever I want the
+default directory to be.
+
+Basically the way it works is that you cannot ever close "all"
+your buffers. The last buffer will have a current directory, and
+when you use `C-x C-f' there, that's what you'll get. `M-x cd' will
+just change /that/ buffer's default directory.
+
+If you then close all buffers and end up with a /different/ last
+buffer, then you'll get that buffer's default directory. So I'm
+not sure that `M-x cd' is what you really need. I find it hardly
+ever helps.
+
+You just need to make sure that almost all buffers (including
+those most likely to be your "last" buffers such as ##*scratch*## or
+##*Messages*##) get created with the right default directory. And
+that means making sure you start Emacs in the correct
+directory.
+
+(The value of [[variable]] `default-directory' is the default (aka current) directory.)
+
+
+----
+CategoryDirectories

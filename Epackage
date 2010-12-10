@@ -1,0 +1,12 @@
+== Description ==
+
+Epackage refers to two terms:
+
+* It is a DVCS repository that has a laid out according to [[DELPS]] specification.
+  In short: some Emacs utility has been wrapped in a Git repository, made publicly available e.g. through http://github.com
+  and announced in a specific central "Yellow page".
+* It a is the name of reference implementation of the [[DELPS]]. The Emacs extension is called epackage.el.
+  With it, you can download, install, remove and manage packages from GUI within Emacs.
+  Similar to the manner of [[ELPA]] package manager.
+
+See [[DELPS]] page and its links for more information about how to make epackages and where to get epackage.el.
