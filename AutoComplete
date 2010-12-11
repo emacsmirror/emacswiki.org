@@ -420,6 +420,9 @@ BUG: Do not display completion when there is only one completion *and* the word 
 [new]
 Could you please write more documentation on how to use/reuse popup menus from popup.el. It would be nice to have an easy to use popup menus (implemented as overlays) in different contexts, for example in CompletionUI. --SewerynKokot 
 
+[new]
+In css-mode, as soon as I hit ';' to complete a declaration, the auto-complete menu appears and auto-selects a completion. Naturally, I'll hit RET to begin a new line, but instead the first-selected auto-completion is inserted! I have to use C-j to get new lines. How can I prevent this without disabling auto-complete in every other mode?
+
 ----
 CategoryCompletion
 

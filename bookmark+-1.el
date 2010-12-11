@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Tue Sep 28 08:38:57 2010 (-0700)
+;; Last-Updated: Fri Dec 10 09:38:24 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 906
+;;     Update #: 922
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -455,13 +455,19 @@
 ;; bookmark-make-record, bookmark-maybe-historicize-string,
 ;; bookmark-maybe-load-default-file, bookmark-maybe-message,
 ;; bookmark-maybe-upgrade-file-format, bookmark-menu-popup-paned-menu,
-;; bookmark-name-from-full-record,
+;; bookmark-name-from-full-record, bookmark-name-from-record,
 ;; bookmark-popup-menu-and-apply-function, bookmark-prop-get,
 ;; bookmarks-already-loaded, bookmark-save-flag, bookmark-search-size,
 ;; bookmark-set-annotation, bookmark-set-filename, bookmark-set-name,
 ;; bookmark-set-position, bookmark-store, bookmark-time-to-save-p,
 ;; bookmark-use-annotations, bookmark-version-control,
 ;; bookmark-yank-point
+
+;;; Fix incompatibility introduced by gratuitous Emacs name change.
+(cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
+       (defalias 'bookmark-name-from-full-record 'bookmark-name-from-record))
+      ((and (fboundp 'bookmark-name-from-full-record) (not (fboundp 'bookmark-name-from-record)))
+       (defalias 'bookmark-name-from-record 'bookmark-name-from-full-record)))
 
 (require 'bookmark+-mac)
 ;; bmkp-define-cycle-command, bmkp-define-file-sort-predicate, bmkp-menu-bar-make-toggle,
@@ -514,8 +520,8 @@
 (defvar Info-mode-menu)                 ; Defined in `info.el'.
 (defvar Man-arguments)                  ; Defined in `man.el'.
 (defvar Man-mode-map)                   ; Defined in `man.el'.
-;;; (defvar mouse-wheel-down-event)         ; Defined in `mwheel.el'.
-;;; (defvar mouse-wheel-up-event)           ; Defined in `mwheel.el'.
+(defvar mouse-wheel-down-event)         ; Defined in `mwheel.el'.
+(defvar mouse-wheel-up-event)           ; Defined in `mwheel.el'.
 (defvar read-file-name-completion-ignore-case) ; Emacs 23+.
 (defvar last-repeatable-command)        ; Defined in `repeat.el'.
 (defvar repeat-previous-repeated-command) ; Defined in `repeat.el'.
@@ -3690,9 +3696,8 @@ predicate."
 
 (defun bmkp-repeat-command (command)
   "Repeat COMMAND."
-  (let ((repeat-previous-repeated-command  command)
-        (repeat-message-function           'ignore)
-        (last-repeatable-command           'repeat))
+  (let ((repeat-message-function  'ignore))
+    (setq last-repeatable-command  command)
     (repeat nil)))
 
 
@@ -6744,20 +6749,22 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   (define-key bookmark-map "n"          'bmkp-next-bookmark-this-buffer-repeat)
   (define-key bookmark-map "\C-n"       'bmkp-next-bookmark-this-buffer-repeat)
 
-  ;; This will have to wait for the fix I provided for Emacs bug #6542.
-  ;; Until then, you can at least bind the wheel event to `bmkp-next-bookmark-this-buffer'
-  ;; in the global map.  IOW, for now a mouse event won't work with `repeat'.
-  ;;   (define-key bookmark-map (vector (list mouse-wheel-up-event))
-  ;;     'bmkp-next-bookmark-this-buffer-repeat)
+  ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
+  ;; For older Emacs versions you can bind the wheel event to `bmkp-next-bookmark-this-buffer'
+  ;; in the global map.  IOW, prior to Emacs 23.3 a mouse event won't work with `repeat'.
+  (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 2)))
+    (define-key bookmark-map (vector (list mouse-wheel-up-event))
+      'bmkp-next-bookmark-this-buffer-repeat))
   (define-key bookmark-map [up]         'bmkp-previous-bookmark-this-buffer-repeat)
   (define-key bookmark-map "p"          'bmkp-previous-bookmark-this-buffer-repeat)
   (define-key bookmark-map "\C-p"       'bmkp-previous-bookmark-this-buffer-repeat)
 
-  ;; This will have to wait for the fix I provided for Emacs bug #6542.
-  ;; Until then, you can at least bind the wheel event to `bmkp-previous-bookmark-this-buffer'
-  ;; in the global map.  IOW, for now a mouse event won't work with `repeat'.
-  ;;   (define-key bookmark-map (vector (list mouse-wheel-down-event))
-  ;;     'bmkp-previous-bookmark-this-buffer-repeat)
+  ;; This requires the fix for Emacs bug #6256, which is in Emacs 23.3 (presumably).
+  ;; For older Emacs versions you can bind the wheel event to `bmkp-previous-bookmark-this-buffer'
+  ;; in the global map.  IOW, prior to Emacs 23.3 a mouse event won't work with `repeat'.
+  (when (or (> emacs-major-version 23) (and (= emacs-major-version 23) (> emacs-minor-version 2)))
+    (define-key bookmark-map (vector (list mouse-wheel-down-event))
+      'bmkp-previous-bookmark-this-buffer-repeat))
   (define-key bookmark-map [right]      'bmkp-next-bookmark-repeat)
   (define-key bookmark-map "f"          'bmkp-next-bookmark-repeat)
   (define-key bookmark-map "\C-f"       'bmkp-next-bookmark-repeat)

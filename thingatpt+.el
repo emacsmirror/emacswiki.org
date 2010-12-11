@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Jan 24 08:04:29 2010 (-0800)
+;; Last-Updated: Fri Dec 10 17:59:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 831
+;;     Update #: 848
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/12/10 dadams
+;;     form-at-point-with-bounds:
+;;       Moved condition-case to around whole.  Let sexp be any format of nil.
 ;; 2010/01/24 dadams
 ;;     Added: region-or-word-nearest-point.
 ;; 2008/10/22 dadams
@@ -330,15 +333,13 @@ Optional arguments:
   THING is the kind of form desired (default: `sexp').
   PRED is a predicate that THING must satisfy to qualify.
   SYNTAX-TABLE is a syntax table to use."
-  (let* ((thing+bds (thing-at-point-with-bounds (or thing 'sexp)
-                                                syntax-table))
-         (sexp (and thing+bds
-                    (condition-case nil
-                        (read-from-whole-string (car thing+bds))
-                      (error nil)))))   ; E.g. tries to read `.'.
-    (and (or sexp (and thing+bds (string= "nil" (car thing+bds)))) ; Could be `nil'.
-         (or (not pred) (funcall pred sexp))
-         (cons sexp (cdr thing+bds)))))
+  (condition-case nil                   ; E.g. error if tries to read `.'.
+      (let* ((thing+bds  (thing-at-point-with-bounds (or thing 'sexp) syntax-table))
+             (bounds     (cdr thing+bds))
+             (sexp       (and bounds (read-from-whole-string (car thing+bds)))))
+        (and bounds (or (not pred) (funcall pred sexp))
+             (cons sexp bounds)))
+    (error nil)))
 
 ;;;###autoload
 (defun bounds-of-form-at-point (&optional thing pred syntax-table)

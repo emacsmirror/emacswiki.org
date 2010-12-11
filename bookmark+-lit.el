@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Sat Sep 25 18:11:38 2010 (-0700)
+;; Last-Updated: Fri Dec 10 09:38:56 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 680
+;;     Update #: 685
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -176,8 +176,14 @@
 ;; bookmark-alist, bookmark-bmenu-bookmark, bookmark-completing-read,
 ;; bookmark-get-bookmark, bookmark-get-position,
 ;; bookmark-handle-bookmark, bookmark-maybe-load-default-file,
-;; bookmark-name-from-full-record, bookmark-prop-get,
+;; bookmark-name-from-full-record, bookmark-name-from-record, bookmark-prop-get,
 ;; bookmark-prop-set
+
+;;; Fix incompatibility introduced by gratuitous Emacs name change.
+(cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
+       (defalias 'bookmark-name-from-full-record 'bookmark-name-from-record))
+      ((and (fboundp 'bookmark-name-from-full-record) (not (fboundp 'bookmark-name-from-record)))
+       (defalias 'bookmark-name-from-record 'bookmark-name-from-full-record)))
 
 ;; (eval-when-compile (require 'bookmark+-bmu))
 ;; bmkp-bmenu-barf-if-not-in-menu-list, bmkp-bmenu-filter-function,

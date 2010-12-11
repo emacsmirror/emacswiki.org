@@ -324,7 +324,7 @@ if: Wrong number of arguments: #[(file form) " ;
 
 Tried on "emacs -Q" too.  Am I alone?  However, afterwards the code works as advertised.
 
-
+10 Dec 2010: It was a mistake.  The `add-hook' line is fine.
 === Control-TAB buffer switching with Ido ===
 
 [NxhtmlMode nXhtml] tweaks Ido to do ControlTABbufferCycling combined with Ido's normal buffer switching.

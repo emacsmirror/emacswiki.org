@@ -1828,6 +1828,9 @@ Next:     '''`C-x p n'''', '''`C-x p C-n'''', '''`C-x p down''''
 
 Previous: '''`C-x p p'''', '''`C-x p C-p'''', '''`C-x p up''''
 
+Starting with Emacs 23.3 (Emacs fix for bug #6256), you can also
+use the mouse wheel to cycle: `C-x p' then just rotate the wheel.
+
 Again, you can bind any keys you want to these commands (e.g. `f2', `S-f2').  If you
 do not need to use a prefix key, then bind commands
 `bmkp-next-bookmark-this-buffer' and
@@ -2702,6 +2705,11 @@ The first thing to try is removing (e.g. renaming) your bookmarks file. If it wo
 
 [new]
 Recent changes in bookmark.el (bzr emacs) broke bookmark+, i just see empty list and message "bmkp-bmenu-list-1: Symbol's function definition is void: bookmark-name-from-full-record" in the minibuffer when calling `bookmark-bmenu-list'. -- [[Anonymous]]
+
+[new:DrewAdams:2010-12-10 17:50 UTC]
+Thanks for the heads-up.  That should be fixed now.  Emacs Dev, in its infinite wisdom, gratuitously renamed function `##bookmark-name-from##<tt>__-full__</tt>##-record##' to `bookmark-name-from-record' -- presumably to save 5 chars!  Naturally, that breaks any 3rd-party code that uses this very basic function.  Sheesh! -- DrewAdams
+
+
 ----
 CategoryHypermedia CategoryPersistence 
 CategoryProgramming CategoryRegion CategoryWThirtyTwo

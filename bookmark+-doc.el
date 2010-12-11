@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Sep 28 08:43:36 2010 (-0700)
+;; Last-Updated: Fri Dec 10 10:04:00 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 13437
+;;     Update #: 13438
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-doc.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search,
 ;;           info, url, w3m, gnus
@@ -1776,6 +1776,9 @@
 ;;
 ;;  Next:     `C-x p n', `C-x p C-n', `C-x p down'
 ;;  Previous: `C-x p p', `C-x p C-p', `C-x p up'
+;;
+;;  Starting with Emacs 23.3 (Emacs fix for bug #6256), you can also
+;;  use the mouse wheel to cycle: `C-x p' then just rotate the wheel.
 ;;
 ;;  Again, you can bind any keys you want to these commands
 ;;  (e.g. `f2', `S-f2').  If you do not need to use a prefix key, then

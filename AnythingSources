@@ -926,7 +926,7 @@ This have to be used with Lisp:w3m-meteo.el
 You must install the cheat program before using it.
 
 http://cheat.errtheblog.com/
-http://sami.samhuri.net/assets/2007/8/10/cheat.el
+https://github.com/samsonjs/cheat.el/blob/master/cheat.el
 
 $ gem install cheat
 
@@ -2183,7 +2183,7 @@ Enjoy!
 
 == Grails Project File Finder ==
 
-This source lists all the relevant files in a standard Grails project tree, to see the full grails-mode using this it is on [http://github.com/wolfmanjm/wolfmanblog-grails Github]
+This source lists all the relevant files in a standard Grails project tree, to see the full grails-mode using this it is on [http://github.com/wolfmanjm/grails-mode Github]
 
 <pre>
 (defun grails-make-displayable-name (path)

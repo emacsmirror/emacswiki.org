@@ -1,10 +1,9 @@
 Here is an example for a /slap command.
 
     (defun erc-cmd-SLAP (&rest nick)
-      (erc-send-action (erc-default-target) (concat "slaps "
-	    				    (car nick)
-		    			    " around the solar system "
-			    		    "-- just out of spite!")))
+      (erc-send-action (erc-default-target)
+                       (concat "slaps " (car nick) " around the solar system "
+                               "-- just out of spite!")))
 
 And here is an eXtended slap, it slaps repeatedly all of the given nicks.
 
@@ -14,5 +13,5 @@ And here is an eXtended slap, it slaps repeatedly all of the given nicks.
 
 Some black magic voodoo will fix the nick completion for /xlap, simply by adding the following defun:
 
-    (defun pcomplete/erc-mode/XLAP () (while (pcomplete-here
-      (pcomplete-erc-nicks))))
+    (defun pcomplete/erc-mode/XLAP ()
+      (while (pcomplete-here (pcomplete-erc-nicks))))

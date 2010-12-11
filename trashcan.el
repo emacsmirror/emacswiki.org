@@ -6,6 +6,11 @@
 ;; Keywords: Amiga MacOS Trash Can Windows Recycle Bin
 ;; Version: 1.0
 
+;; NOTE: this file contains a slight alteration to the `trashcan--is-a-windows-system'
+;; function from the original. I couldn't find the contact details for the original author
+;; (the weblink is dead), but I'm posting to emacswiki anyway for the benefit of others.
+;; Joe Bloggs (<vapniks@yahoo.com>).
+
 ;;; Limitation of Warranty
 
 ;; This file is free software; you can redistribute it and/or modify
@@ -73,6 +78,11 @@
 ;;      moved in or out of a trashcan directory
 
 ;;  (3) Windows detection function trashcan--is-a-windows-system could be improved
+;;  ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+;;  NOTE: I (Joe Bloggs - vapniks@yahoo.com) have now changed this function to use
+;;        the `system-type' variable since I was having problems with the original function.
+;;        I could not find the contact details of the original author (the weblink is dead)
+;;        but I am posting this on emacswiki anyway for the benefit of others.
 
 ;;  (4) The name of this file trashcan.el might conflict with other Lisp files
 
@@ -83,12 +93,16 @@
 ;;; Code:
 
 (defun trashcan--is-a-windows-system ()
-  (file-exists-p "c:/"))
+  (memq system-type '(windows-nt ms-dos)))
+
+;; If above function doesn't work try using the one below instead.
+;; (defun trashcan--is-a-windows-system ()
+;;   (file-exists-p "c:/"))
 
 (defun trashcan--is-a-unix-system ()
   (not (trashcan--is-a-windows-system)))
 
-(defvar trashcan-dirname (if (trashcan--is-a-windows-system) "TRASHCAN" ".TRASHCAN")
+(defvar trashcan-dirname (if (trashcan--is-a-windows-system) "TRASHCAN" ".Trash")
 
   "This variable specifies what directory to move files into with the
 \"x\" key in dired mode.  Do not add any prefix to the directory such

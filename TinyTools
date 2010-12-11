@@ -57,17 +57,26 @@ Note that Savannah requires registration in order to use its resources.
 
 This is only an excerpt:
 
-* MailboxMode -- Standard mailbox browsing minor mode
-* TinyPage -- handling ^L pages, select, cut, copy, head renumber
-* ProcmailMode -- mode for editing procmail configuration files
-* TinyDebian -- BTS interface to email based "debbugs" used in Debian, Emacs, GNU projects. Limited support for other BTS's include Ubuntu Freshmeat, Sourceforge, Launchpad, Gnome, KDE, MySQL. Contains also Debian specific utilities.
+* TinyDebian -- BTS interface to email based Bug Tracking systems like
+  "debbugs" used in Debian, Emacs, GNU projects. Limited support for
+  other BTS's include Ubuntu Freshmeat, Sourceforge, Launchpad, Gnome,
+  KDE, MySQL. Originally written to help Debian maintainer; contains
+  some Debian specific utilities.
+* TinyDesktop -- Load/unload session files and directories. Switch
+  between "projects". Saves current Emacs session (files, dirs).
+* TinyEat -- Deleting text easily with overloaded BACKSPACE key.
 * TinyGnus -- Gnus plug-in. Additional functions.
 * TinyMail -- Some mail add-ons, TAB-autocomplete email addresses
-* TinyPerl -- Accessing Perl documentation and dealing with POD documentation in general.
-* TinyEat -- Deleting text easily with overloaded BACKSPACE key.
+* MailboxMode -- Standard mailbox browsing minor mode
+* TinyPage -- handling ^L pages, select, cut, copy, head renumber
+* TinyPerl -- Accessing Perl documentation and dealing with POD
+  documentation in general.
+* TinyProcmail -- mode for editing procmail configuration files
 * TinyUrl -- Buttonize line for URLs automatically in any buffer.
-  Works for Perl and Emacs Lisp calls like <code>(require 'font-lock)</code> too.
-* TinyTf -- Write plain text documents easily. Can also convert to HTML with the help of separate utility.
+  Works for Perl and Emacs Lisp calls like <code>(require
+  'font-lock)</code> too.
+* TinyTf -- Write plain text documents easily. Can also convert to
+  HTML with the help of separate utility.
 
 == Other ==
 

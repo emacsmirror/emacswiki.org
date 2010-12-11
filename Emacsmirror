@@ -1,13 +1,13 @@
 The Emacsmirror *collects* Emacs Lisp packages and *distributes* them in
 form of [[Git]] repositories --- one per package.  Additionally *metadata*
 is extracted from the packages and made available in human and machine
-readable formats.  The packages already being mirrored are listed and
-linked to on [http://www.emacsmirror.org/packages.html this] page.
+readable formats.
 
 This is an *alpha release*.
 
 Please see the projects [http://github.com/emacsmirror/p/wiki homepage] for more
-information.
+information.  I also used to maintain a nicer [http://www.emacsmirror.org homepage]
+with pages for each package, but that is currently not being updated.
 
 == Mirroring the Emacswiki ==
 
@@ -42,5 +42,5 @@ emails about missing packages you may also report them here.
 -- JonasBernoulli
 
 The list of missing packages that used to be here has been removed.  Many
-packages have since been imported; even from http://www.archive.org/, the
+packages have since been imported; even from http://www.archive.org/. The
 rest probably isn't worth making yet another effort to locate them.

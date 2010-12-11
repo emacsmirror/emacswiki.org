@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Sep 24 11:34:41 2010 (-0700)
+;; Last-Updated: Fri Dec 10 09:38:40 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 351
+;;     Update #: 356
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -281,7 +281,14 @@
 ;; bookmark-get-annotation, bookmark-get-bookmark,
 ;; bookmark-get-filename, bookmark-get-handler, bookmark-kill-line,
 ;; bookmark-maybe-load-default-file, bookmark-name-from-full-record,
-;; bookmark-prop-get, bookmark-show-annotation, bookmark-store
+;; bookmark-name-from-record, bookmark-prop-get,
+;; bookmark-show-annotation, bookmark-store
+
+;;; Fix incompatibility introduced by gratuitous Emacs name change.
+(cond ((and (fboundp 'bookmark-name-from-record) (not (fboundp 'bookmark-name-from-full-record)))
+       (defalias 'bookmark-name-from-full-record 'bookmark-name-from-record))
+      ((and (fboundp 'bookmark-name-from-full-record) (not (fboundp 'bookmark-name-from-record)))
+       (defalias 'bookmark-name-from-record 'bookmark-name-from-full-record)))
 
 (require 'bookmark+-mac) ;; bmkp-define-sort-command
 

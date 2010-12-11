@@ -6,9 +6,9 @@
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Tue Sep 28 08:52:08 2010 (-0700)
+;; Last-Updated: Fri Dec 10 09:47:20 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 13261
+;;     Update #: 13273
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,12 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2010/12/10 dadams
+;;     Added defalias for bookmark-name-from(-full)-record, to fix gratuitous Emacs name change.
+;; 2010/10/22 dadams
+;;     Uncommented key bindings for mouse wheel, since Emacs bug #6256 has now been fixed.
+;;     bmkp-repeat-command: Don't bother to let-bind repeat-previous-repeated-command,
+;;                          and use setq, not let, for last-repeatable-command. Thx to Stefan Monnier.
 ;; 2010/09/28 dadams
 ;;     Added: bmkp-delete-autonamed(-this-buffer)-no-confirm.
 ;; 2010/09/25 dadams
@@ -196,6 +202,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2010/12/10 dadams
+;;     Added defalias for bookmark-name-from(-full)-record, to fix gratuitous Emacs name change.
 ;; 2010/09/24 dadams
 ;;     Added: bmkp-bmenu-show-only-autonamed.  Bound to # S.  Added to bmkp-bmenu-show-menu.
 ;;     bookmark-bmenu-mode: Updated doc string for autonamed jumps, show.
@@ -228,6 +236,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2010/12/10 dadams
+;;     Added defalias for bookmark-name-from(-full)-record, to fix gratuitous Emacs name change.
 ;; 2010/09/25 dadams
 ;;     Added: bmkp-set-lighting-for(bookmarks|(-this)-buffer).  Requested by Joe Bloggs.
 ;;     bmkp-set-lighting-for-bookmark: Added LIGHT-NOW-P arg (from prefix arg).
