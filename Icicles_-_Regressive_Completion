@@ -45,6 +45,15 @@ of which alternative they match.  One use of regressive completion
 is with '''[[Icicles - Search Commands, Overview|Icicles search]]''' -- it corresponds to the OR searching of
 common search engines.
 
+'''Gotcha:''' When completing file names that are not absolute
+(e.g. using `C-x C-f', not `C-u C-x C-f'), be sure that the
+default directory is not included in your minibuffer input when
+you hit `##M-+##'.  You don't want the overall regexp that `##M-+##'
+constructs to be something like ##\(/my/default/dir/foo\|bar\)## -- you
+want it to be just ##\(foo\|bar\)##.  For absolute file name
+completion there is no such problem, because the completion  candidates themselves have a directory component.  So either use a
+`nil' value of `insert-default-directory' or use `M-k' to remove the directory component before hitting `##M-+##'.
+
 
 ----
 

@@ -10,11 +10,17 @@ The tinyeat offers a lot of useful delete functionality. E.g. helpers for two ki
 
 and operations on words:
 
-* eat parts of words (i.e. QuickDele?teBrown -> QuickBrown) which is great for misspelled vars when programming
+* eat parts of words. I.e. position cursor at "(*)" in Quick(*)!BrownFox -> !QuickFox,
+  this useful for misspelled variables when programming.
 * eat whole word
 * lines
 * paragraphs
+* eat extra space between words, extra whitespaces (newlines) between paragraphs.
 * etc.
+
+== Demo ==
+
+[[image:TinyeatPictureAnimateDemo]]
 
 == Customization ==
 

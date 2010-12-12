@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Nov 20 17:36:30 2010 (-0800)
+;; Last-Updated: Sat Dec 11 21:22:52 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11967
+;;     Update #: 11978
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -542,7 +542,8 @@ so it is called after completion-list buffer text is written."
                        0))))))))
 
 ;;;###autoload
-(when (>= emacs-major-version 22)
+(when (or (= emacs-major-version 22)    ; Emacs 22 or 23.1
+          (and (= emacs-major-version 23) (= emacs-minor-version 1)))
   (defun icicle-completion-setup-function ()
     "Set up for completion.  This goes in `completion-setup-hook'
 so it is called after completion-list buffer text is written."
@@ -599,6 +600,29 @@ so it is called after completion-list buffer text is written."
                   (if (get-char-property element-common-end 'mouse-face)
                       (put-text-property element-common-end (1+ element-common-end)
                                          'font-lock-face 'completions-first-difference)))))))))))
+
+;;;###autoload
+(when (or (> emacs-major-version 23)    ; Emacs 23.2+
+          (and (= emacs-major-version 23) (= emacs-minor-version 2)))
+  (defun icicle-completion-setup-function ()
+    "Set up for completion.  This goes in `completion-setup-hook'
+so it is called after completion-list buffer text is written."
+    ;; I could probably get rid of even more of the vanilla vestiges here...
+    (save-excursion
+      (let* ((mainbuf        (current-buffer))
+             (mbuf-contents  (minibuffer-completion-contents)) ; Get contents only up to point.
+             ;; $$$$$ Should we `expand-file-name' mbuf-contents first?  Vanilla Emacs does that.
+             (dir-of-input   (and minibuffer-completing-file-name
+                                  (icicle-file-name-directory mbuf-contents))))
+        ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
+        ;; completion command, then set `default-directory' so it will be copied into *Completions*.
+        (when (and dir-of-input
+                   (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
+                       (not icicle-comp-base-is-default-dir-p)))
+          (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
+        (with-current-buffer standard-output
+          (completion-list-mode)
+          (set (make-local-variable 'completion-reference-buffer) mainbuf))))))
 
 (defun icicle-insert-Completions-help-string ()
   "Add or remove help in *Completions*.

@@ -95,28 +95,15 @@ I use ERC, and I wanted to bind something to the equivalent of "C-x b #": that i
 
 === M-x mode ==
 
- (setq ido-execute-command-cache nil)
-
- (defun ido-execute-command ()
-   (interactive)
-   (call-interactively
-    (intern
-     (ido-completing-read
-      "M-x "
-      (progn
-        (unless ido-execute-command-cache
-          (mapatoms (lambda (s)
-                      (when (commandp s)
-                        (setq ido-execute-command-cache
-                              (cons (format "%S" s) ido-execute-command-cache))))))
-        ido-execute-command-cache)))))
-    
- (add-hook 'ido-setup-hook
-           (lambda ()
-             (setq ido-enable-flex-matching t)
-             (global-set-key "\M-x" 'ido-execute-command)))
-
--- ChrisDone, modified by AttilaLendvai
+    (global-set-key
+     "\M-x"
+     (lambda ()
+       (interactive)
+       (call-interactively
+        (intern
+         (ido-completing-read
+          "M-x "
+          (all-completions "" obarray 'commandp))))))
 
 You can also check out [[Smex]]. On top of a M-x Ido interface it features ranking heuristics and some other extras.
 
@@ -230,39 +217,7 @@ If you define projects using [[ProjectSettings | project-root.el]] you can quick
 
 --fas
 
-=== Ido on steroids (make it to complete everything) ===
-
-Hocus pocus, abracadabra, presto!
-
-    (defadvice completing-read
-      (around foo activate)
-      (if (boundp 'ido-cur-list)
-          ad-do-it
-        (setq ad-return-value
-              (ido-completing-read
-               prompt
-               (all-completions "" collection predicate)
-               nil require-match initial-input hist def))))
-
-That works with everything but subr's, from which execute-extended-command is the one that matters (what is binded to M-x). But we can get what we want from M-x
-
-    (global-set-key
-     "\M-x"
-     (lambda ()
-       (interactive)
-       (call-interactively
-        (intern
-         (ido-completing-read
-          "M-x "
-          (all-completions "" obarray 'commandp))))))
-
-==== Make Ido complete almost anything (except the stuff where it shouldn't) ====
-
-This is a refinement of the above. It adds two features:
-
-1. You can force the original completing-read to be used in specific cases by locally binding a variable.
-
-2. If there are no possible completions, the original completing-read will be used, since ido can't contribute anything in this case.
+=== Make Ido complete almost anything (except the stuff where it shouldn't) ===
 
     (defvar ido-enable-replace-completing-read t
       "If t, use ido-completing-read instead of completing-read if possible.
@@ -279,7 +234,8 @@ This is a refinement of the above. It adds two features:
     (defadvice completing-read
       (around use-ido-when-possible activate)
       (if (or (not ido-enable-replace-completing-read) ; Manual override disable ido
-              (boundp 'ido-cur-list)) ; Avoid infinite loop from ido calling this
+              (and (boundp 'ido-cur-list)
+                   ido-cur-list)) ; Avoid infinite loop from ido calling this
           ad-do-it
         (let ((allcomp (all-completions "" collection predicate)))
           (if allcomp
@@ -289,20 +245,17 @@ This is a refinement of the above. It adds two features:
                                    nil require-match initial-input hist def))
             ad-do-it))))
 
-===== Problem using advice to reset to completing-read =====
+==== Problem using advice to reset to completing-read ====
 1. Incompatible Libraries
 * kill-ring-search
 ** Fix: Use a patched version: http://pastie.org/paste/1017562 (builds upon v1.1). Diff: http://pastie.org/paste/1017592
 
-2. I like using ido for (almost) everything a lot but it gets slow for a long list of possible completions (e.g. for describe-function). Using the defadvice as described does not work for me? Is it just me or is this a bug? TIA
--- sebhofer
-[new:stepnem:2010-04-27 19:55 UTC]
-Yeah, doesn't work for me either. IMO you have to change ##(boundp
-'ido-cur-list)## to just ##ido-cur-list## (##ido-cur-list## appears to be
-bound all the time after loading ido, so the test doesn't make sense; but I'm
-not changing it in the example in case it's version specific or whatnot (23
-here)).
+2. I like using ido for (almost) everything a lot but it gets slow for a long list of possible completions (e.g. for describe-function).
 
+Using the defadvice as described does not work for me? Is it just me or is this a bug? TIA
+-- sebhofer
+
+Fixed.  It seems in version >=23, ido-cur-list is always bound and you need to check it as well. -- LeWang
 
 == Ido Hacks (modifying Ido's behavior) ==
 

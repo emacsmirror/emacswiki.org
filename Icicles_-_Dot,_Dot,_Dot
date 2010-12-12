@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completion in Other Buffers]] ||
+|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Fuzzy Completion]] ||
 
 ----
 
@@ -87,7 +87,7 @@ against multi-line candidates.  Typical use cases include
 
 ----
 
-|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Completion in Other Buffers]] ||
+|| *Previous:*  [[Icicles - Multi-Completions]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Fuzzy Completion]] ||
 
 
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  2 08:23:32 2010 (-0800)
+;; Last-Updated: Sat Dec 11 21:26:35 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5885
+;;     Update #: 5887
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -637,6 +637,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/12/11 dadams
+;;     icicle-completion-setup-function: Added a version for Emacs 23.2+.  Thx to Michael Heerdegen.
 ;; 2010/11/20 dadams
 ;;     icicle-toggle-icicle-mode-twice: Soft-require icicles-mode.el.
 ;;     eval-after-load for crm.el:
@@ -1432,7 +1434,7 @@
 ;;     Added: icicle-read-number, icicle-read-string-completing.
 ;;     icicle-read-file-name: Remove icicle-proxy-candidate property in unwind-protect.
 ;; 2007/11/25 dadams
-;;     Added: icicle-command-abbrev(save|-used-more-p).
+;;     Added: icicle-command-abbrev(-save|-used-more-p).
 ;; 2007/11/24 dadams
 ;;     icicle-longest-common-match,  first loop: string-match -> not string-match.
 ;;                                               len-first -> length of lcm.

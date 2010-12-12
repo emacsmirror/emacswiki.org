@@ -842,6 +842,25 @@ I'm also using LineNumbers, and whitespace mode affects the spaces next to the n
 :: Another solution could be to change LineNumbers packages to not use spaces to separate the line number from the line, but use the width text property.
 :: -- ViniciusJoseLatorre
 
+::: --------------
+::: Here's some code I came up with. It uses Unicode x2007 FIGURE SPACE, a space that always has the same width as a digit. It also supports dynamic width.
+
+{{{
+(add-hook 'linum-before-numbering-hook
+ (lambda ()
+  (let ((w (length (number-to-string (count-lines (point-min) (point-max))))))
+   (setq linum-format
+    `(lambda (line)
+      (propertize (concat
+       (truncate-string-to-width ""
+        (- ,w (length (number-to-string line)))
+        nil
+        ?\x2007)
+       (number-to-string line)) 'face 'linum))))))
+}}}
+
+::: -- StefanThomas
+
 ----
 
 [new]

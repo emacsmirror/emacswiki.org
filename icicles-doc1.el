@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  9 13:29:53 2010 (-0800)
+;; Last-Updated: Sat Dec 11 21:36:17 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25549
+;;     Update #: 25551
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2154,6 +2154,17 @@
 ;;  of which alternative they match.  One use of regressive completion
 ;;  is with Icicles search - it corresponds to the OR searching of
 ;;  common search engines.
+;;
+;;  Gotcha: When completing file names that are not absolute
+;;  (e.g. using `C-x C-f', not `C-u C-x C-f'), be sure that the
+;;  default directory is not included in your minibuffer input when
+;;  you hit `M-+'.  You don't want the overall regexp that `M-+'
+;;  constructs to be something like \(/my/default/dir/foo\|bar\) - you
+;;  want it to be just \(foo\|bar\).  For absolute file name
+;;  completion there is no such problem, because the completion
+;;  candidates themselves have a directory component.  So either use a
+;;  nil value of `insert-default-directory' or use `M-k' to remove the
+;;  directory component before hitting `M-+'.
  
 ;;(@* "Completion On Demand")
 ;;
