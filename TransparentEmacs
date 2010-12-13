@@ -82,6 +82,12 @@ If you'd rather hack it by hand, something like the following will work:
 [new]
 This doesn't work for me on GNU Emacs 23.2.1 (i386-mingw-nt5.1.2600).  I get ##(wrong-type-argument stringp ((image :type jpeg :file "...") :origin display))##. -- AlexSchroeder
 
+[new]
+On Mac GNU Emacs 23.2.1 I can use:
+    (set-face-attribute 'default nil
+                    :stipple "/Path/to/your/image.jpg")
+However, once I set it, I can't set it again without first setting the stipple to nil. I also get weird drawing artifacts. I suspect this feature isn't fully baked but I don't know for sure. --AmitPatel
+
 == (Obsolete) Transparent Emacs Branch ==
 
 If you use MilesBader transparent Emacs branch (currently only available via arch) you can make the buffer have a variety of different image backgrounds. Example [http://snogglethorpe.googlepages.com/emacs-candy-light-0.png here].

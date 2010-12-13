@@ -217,6 +217,70 @@ Perhaps you are confused by this statement in the file header:
 
 This lists all libraries that ##oneonone.el## can take advantage of, not all libraries that are strictly required. Please see [[DrewsElispLibraries#LibraryDependencies]] for an explanation.  -- DrewAdams
 
+[new:pauljohn32:2010-12-13 04:22 UTC]
+I was googling for "one frame per buffer" because I hate the emacs behavior, and I found your writeup and it is exactly what I want.  However, I wonder if you couldn't make it easier to download the current versions of the libraries.  As far as I can tell, I'm supposed to individually click each el file and download it.  SLOW!  And you say check back often?  Why not put all this in SVN or some other framework from which we could update? Even a tarball would be better than this point-and-click ordeal we now experience.
+
+I'm just aiming to get the better frame management you want--let the system window manager can do that. I gather that Aquamacs does one-frame-per-buffer already.  Before I found your page, I've tried to discourage Emacs from splitting with this:
+
+(setq split-window-preferred-function nil)
+
+It helps a bit, but not entirely because Emacs is biased against making separate frames, as you point out.
+
+Thanks for sharing the code, I'll keep downloading el files until I get emacs to start :) -- [[pauljohn32]]
+
+
+
+[new:DrewAdams:2010-12-13 04:40 UTC]
+Sorry for your trouble.  The only library that is required by ##oneonone.el## is <tt>[[hexrgb.el]]</tt>.  The other libraries mentioned are only ''soft''-required, that is, suggested, and loaded if present in your `load-path'.  See also my reply to a similar question directly before your post here.
+
+So downloading means right-clicking and saving from only two file links, unless you choose to also use the suggested libraries.
+
+If you are getting errors trying to start Emacs without some of the suggested files, then there is likely a bug somewhere -- let me know, please.
+
+I don't see where I said "check back often", but if you point it out to me I'll remove such a statement because it is out of date.  I haven't done anything special to any of these libraries in quite a while (just the occasional bug fix -- no active development).  So there is no need to download lots or often.  HTH.  -- DrewAdams
+
+P.S. I believe that Aquamacs uses some of the libraries I mention (e.g. <tt>[[fit-frame.el]]</tt>).
+
+[new:pauljohn32:2010-12-13 06:43 UTC]
+Oh, I don't mean to say there's trouble.  This whole setup is interesting.
+
+The "check back often" comment is in this page:
+
+http://www.emacswiki.org/emacs/DrewsElispLibraries
+
+I actually did download everything, one by one, but it ended up changing too many things about Emacs to suit my taste. 
+
+So I went back at the beginning trying to steal just the one frame fix.  Actually, I also like the one that shrinks frames for those small popup "menu" windows.  That's really nice.  Anyway, in my lib dir, I have just  oneonone.el and  hexrgb.el.  Your emacs-init has (require 'start) and (require 'start-opt), so Emacs is not happy.  I guessed  and it appears (require 'oneonone) works. 
+
+Just a couple of follow-up questions, if you don't mind.  
+
+1. When I was running all of your libs, I learned C-MB2 let me choose colors from a lovely pallet. But I could not figure how to save those colors.  Usual Emacs customize/save didn't get it.
+
+2. In emacs 23.1 on Ubuntu, the toolbar buttons are gone and the buttons menu item has no effect. There's no error in message.  I found I can just disable the tool-bar+ in the start file, but wondered if you know anything about this. 
+
+3. I want to put the minibuffer back onto the frame's bottom. The Compiz window manager kept pushing it down off the bottom of the page, I couldn't stand it.  Comments in emacs-init seem to indicate this should work, but doesn't:
+
+(defvar 1on1-separate-minibuffer-frame-flag nil)
+
+But I did find a change in oneonone.el that got the job done...
+
+(defcustom 1on1-minibuffer-frame-flag nil
+
+I notice the slight inconsistency with the word "separate" in those commands.
+
+4. I like this option you have in the init file:
+
+(defvar fit-frame-max-height-percent 82) 
+
+It seems to me that ought to work even after I change to use (require 'oneonone), but it doesn't. I kept fit-frame.el in the lib directory. What do you think?
+
+In any case, I'm finding this to be very educational.  Thanks for the help.
+
+pj
+
+
+
+
 ----
 
 CategoryFrames CategoryModes FrameModes CategoryDisplay CategoryHistory CategoryDotEmacs CategoryWishList CategoryCustomize

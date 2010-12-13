@@ -1,0 +1,88 @@
+   this is Auto Java Complete ,or Another Java Complete !!!     
+  this is my email <jixiuf@gmail.com>
+===Install=== 
+  first you should have installed [http://www.emacswiki.org/emacs/AutoComplete]
+ then install this one for java complete 
+
+Add this lines  in your .emacs file 
+
+    (add-to-list 'load-path (   "~/.emacs.d/ajc-java-complete") )
+    (require 'ajc-java-complete-config)
+
+   read ajc-java-complete-config  for more info . 
+      run 
+      javac Tags.java 
+      java Tags 
+   to generate the tag file ~/.java_base.tag
+    restart your emacs ,and enjoy.
+===Source===
+
+you can find source code here  on github 
+[https://github.com/jixiuf/ajc-java-complete  auto-java-complete]
+
+ you can clone it like this  
+      git clone git://github.com/jixiuf/ajc-java-complete.git
+
+ there is a  video 15M ,in the respo ,you can fetch it .   
+ 
+* 1. it can complete import package Class , 
+  for example when you typed in 
+
+      import   java.
+               java.lang
+               java.util
+               java.io
+
+ will listed with the support of  http://www.emacswiki.org/emacs/AutoComplete
+* 2. it can complete class name 
+  when you typed in 
+
+     public void test(){
+        Str
+  
+        String
+        StringBuffer
+        StringBuilder
+ will list
+* 3. it can complete method 
+  for example ,when you typed in 
+
+     System.
+            out
+            in
+            err
+            gc()  
+            getProperty(String)
+
+ /// it can't tell the different between static method and normal method ,so  all method will list 
+ it can do more ,even 
+    public void test(){
+        Map<String,List<String,Object>> map= new  HashMap<String,List<String,Object>> ();
+            map.
+  will list 
+            map.clear()
+                put(Object,Object)
+                get(Object)
+
+ even 
+              System. getProperty(file. getName()).to
+ will list                                         toString()
+                                                   toUpperCase()
+                                                   toCharArray()
+
+*  4. it can auto import Class in buffer 
+  with  
+  auto import all Class in source file    
+     (global-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class-candidates))
+  import Class where under point 
+      (global-set-key (kbd "C-c m") (quote ajc-import-class-under-point-candidates))
+
+== To Do ==
+
+* when complete method ,show return type 
+* work with yasnipper or other snipper  when complete method ,so user can use  Tab switch between each parameters 
+
+----
+CategoryCompletion
+
+

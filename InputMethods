@@ -56,6 +56,12 @@ For MS Windows, you may need to use DisableImeForEmacs.
 Is there a way to synchronize OS keyboard layout (ubuntu in my case) with Emacs input method?
 [new]
 It is not convenient to use different bindings for switching languages inside and outside of Emacs...
+
+[new]
+*Question:*
+How do I allow input methods such as SCIM to override Emacs keybindings in a desktop environment such as GNOME (instead of using the version of SCIM internal to Emacs)?
+[new]
+Set ##LC_CTYPE=ja_JP.UTF-8## before launching Emacs, and Emacs will recognize your SCIM keys, such as ##C-SPC## to change input method.
 ----
 
 '''See Also:''' ChangingCursorDynamically to automatically change the TextCursor color when you are using an input method. This makes it easy to tell if an input method is in use.

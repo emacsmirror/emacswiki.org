@@ -1799,6 +1799,7 @@ buffer that is not the current buffer."
     (persistent-action . anything-find-files-persistent-action)
     (persistent-help . "Hit1 Expand Candidate, Hit2 or (C-u) Find file")
     (volatile)
+    (candidate-number-limit . 9999)
     (action-transformer . anything-find-files-action-transformer)
     (action
      . ,(delq
@@ -2036,7 +2037,6 @@ If prefix numeric arg is given go ARG level down."
     (setq anything-ff-default-directory (if (string= anything-pattern "")
                                             (if (eq system-type 'windows-nt) "c:/" "/")
                                             (file-name-directory path)))
-    (push anything-ff-default-directory anything-ff-history)
     (when (string= path "Invalid tramp file name")
       (setq unfinished-tramp-name t))
     (cond ((or (file-regular-p path)
@@ -2050,6 +2050,12 @@ If prefix numeric arg is given go ARG level down."
            (append
             (list path)
             (directory-files (file-name-directory path) t))))))
+
+(defun anything-ff-save-history ()
+  "Store the last value of `anything-ff-default-directory' in `anything-ff-history'."
+  (when anything-ff-default-directory
+    (push anything-ff-default-directory anything-ff-history)))
+(add-hook 'anything-cleanup-hook 'anything-ff-save-history)
 
 (defface anything-dired-symlink-face
   '((t (:foreground "DarkOrange")))
@@ -2298,15 +2304,18 @@ Use it for non--interactive calls of `anything-find-files'."
   "The `anything-find-files' history.
 Show the first `anything-ff-history-max-length' elements of `anything-ff-history'
 in an `anything-comp-read'."
-  (let ((history (loop with dup for i in anything-ff-history
+  (let ((history (when anything-ff-history
+                   (loop with dup for i in anything-ff-history
                     unless (member i dup) collect i into dup
-                    finally return dup))) ; Remove dups.
-    (when anything-ff-history
+                    finally return dup)))) ; Remove dups.
+    (when history
+      (setq anything-ff-history
+            (if (>= (length history) anything-ff-history-max-length)
+                (subseq history 0 anything-ff-history-max-length)
+                history))
       (anything-comp-read
        "Switch to Directory: "
-       (if (>= (length history) anything-ff-history-max-length)
-           (subseq history 0 anything-ff-history-max-length)
-           history)
+       anything-ff-history
        :name "Anything Find Files History"
        :must-match t))))
 
@@ -6037,6 +6046,7 @@ Line is parsed for BEG position to END position."
               (anything-candidate-buffer anything-current-buffer)
               (with-current-buffer anything-current-buffer
                 (jit-lock-fontify-now))))
+    (candidate-number-limit . 9999)
     (candidates-in-buffer)
     (get-line . anything-c-browse-code-get-line)
     (type . line)

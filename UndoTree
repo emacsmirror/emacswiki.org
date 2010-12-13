@@ -8,7 +8,7 @@ It gets better. You don't have to imagine the undo tree, because ##undo-tree-mod
 
 The only downside to this more advanced yet simpler undo system is that it was inspired by Vim. But, after all, most successful religions steal the best ideas from their competitors!
 
-For more information, see the Commentary at the top of the ##undo-tree.el## file. (Note that ##undo-tree-mode## does not yet support undo-in-region, nor, for low-level reasons, does it restore marker adjustments. I plan to support both of these in a future version.)
+For more information, see the Commentary at the top of the ##undo-tree.el## file. (Note that ##undo-tree-mode## does not yet support undo-in-region. Support for this is planned for a future version.)
 
 
 == Downloading ==
