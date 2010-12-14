@@ -1,0 +1,41 @@
+some char are not printable ,so I put this image for you 
+  [[image:joseph-go-to-char-image]]
+;;;
+{{{
+you know ,in vim  there is a command "f" to search a char for example "fa" search "a' when you press "." it will find "a" again ,so you can 
+use it move your point to where you want quickly ,this function do something similiarly ,maybe more powerful
+I bind it to Ctrl+f (it can do anything like the old function binding to Ctrl+f: forward-char ) ,
+when you press Ctrl+f then press "a"  it will find "a" press "a" again ,find next "a"  press Ctrl+H find backward
+you can still use Ctrl+f to (forward-char 1) this function can do as well as (forward-char ) ,so bind it to Ctrl+f is a good idea .
+;;{{{ ;此函数可以进行快速定位 ,vi 中有个f命令如fa 搜索a 并跳到相应位置, 如果这个函数用熟了完全可以去掉C-f 与C-b这两个键
+;; 而这个命令与之相似，如将命令绑到C-f后，按下C-f后 连续按一个字母如s则会一直搜索s 并定位到相应的位置，按C-h可反向搜索
+;;直到按下不同的字母(源码在王垠的wy-go-tochar上进行了修改，可以进行反向搜索)
+;;郑重向大家推荐我写的 ,把它绑定到C-f ,它具有普通C-f 向前移到一个字符的功能,同时又能根据特定字符快速定位
+(defun joseph-go-to-char (n )
+  "Move forward to Nth occurence of CHAR.
+Typing `joseph-go-to-char-key' again will move forwad to the next Nth
+occurence of CHAR. Typing Ctrl+H will move back . Ctrl+F just move forward  a char ,like the old Ctrl+f "
+  (interactive "p")
+  (forward-char 1)
+  (let( (char (read-char "Go to char:" ) ))
+  (message (string char) )
+  (if (string-equal " " (string char) )
+      (forward-char 1)
+    (unless   ( char-equal ?   char)
+         (search-forward (string char) nil nil n)
+               (let ((readed-char (read-char "go to next position" ))  )       
+                 (while (or (char-equal readed-char char)  ;;it equals to the original inputed char ,then search it again
+                            (char-equal ?  readed-char )  ;; Ctrl+h     means   search back for the char
+                            )
+                   (if    (char-equal ?  readed-char);;C-h backward search
+                           (search-backward (string char) nil nil n   )                         
+                           (search-forward (string char) nil nil n) )
+                 (setq readed-char (read-char "C-h for backward search ,same char for forward search")) )
+                 (setq unread-command-events (list last-input-event)) ) 
+      ) ) ) )
+(define-key global-map (kbd "C-f") 'joseph-go-to-char)
+;;}}}
+}}}
+
+
+

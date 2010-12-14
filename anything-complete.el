@@ -234,7 +234,7 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
         (if (loop for src in (anything-get-sources)
                   thereis (string-match "^dabbrev" (assoc-default 'name src)))
             anything-dabbrev-last-target
-          (anything-aif (tap-symbol) (symbol-name it) "")))
+          (or (tap-symbol) "")))
   (anything-candidate-buffer (get-buffer bufname)))
 
 (defcustom anything-complete-sort-candidates nil
@@ -443,11 +443,12 @@ used by `anything-lisp-complete-symbol-set-timer' and `anything-apropos'"
   (anything-update))
 
 (defun tap-symbol ()
-  "Get symbol before point."
+  "Get symbol name before point."
   (save-excursion
     (let ((beg (point)))
-      (when (re-search-backward "\(\\|\\s-\\|^\\|\r\\|'\\|#'" (point-at-bol))
-        (intern (buffer-substring-no-properties beg (match-end 0)))))))
+      ;; older regexp "\(\\|\\s-\\|^\\|\\_<\\|\r\\|'\\|#'"
+      (when (re-search-backward "\\_<" (point-at-bol) t)
+        (buffer-substring-no-properties beg (match-end 0))))))
 
 (defun alcs-initial-input (partial-match)
   (anything-aif (tap-symbol)
@@ -950,6 +951,7 @@ So, (anything-read-string-mode 1) and
   'anything-c-source-complete-emacs-commands)
 (defvaralias 'anything-c-source-complete-emacs-functions-partial-match
   'anything-c-source-complete-emacs-functions)
+
 
 
 (provide 'anything-complete)

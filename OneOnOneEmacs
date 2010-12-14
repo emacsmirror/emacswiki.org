@@ -241,11 +241,12 @@ I don't see where I said "check back often", but if you point it out to me I'll 
 
 P.S. I believe that Aquamacs uses some of the libraries I mention (e.g. <tt>[[fit-frame.el]]</tt>).
 
+
+
 [new:pauljohn32:2010-12-13 06:43 UTC]
 Oh, I don't mean to say there's trouble.  This whole setup is interesting.
 
 The "check back often" comment is in this page:
-
 http://www.emacswiki.org/emacs/DrewsElispLibraries
 
 I actually did download everything, one by one, but it ended up changing too many things about Emacs to suit my taste. 
@@ -260,26 +261,76 @@ Just a couple of follow-up questions, if you don't mind.
 
 3. I want to put the minibuffer back onto the frame's bottom. The Compiz window manager kept pushing it down off the bottom of the page, I couldn't stand it.  Comments in emacs-init seem to indicate this should work, but doesn't:
 
-(defvar 1on1-separate-minibuffer-frame-flag nil)
+ (defvar 1on1-separate-minibuffer-frame-flag nil)
 
 But I did find a change in oneonone.el that got the job done...
 
-(defcustom 1on1-minibuffer-frame-flag nil
+ (defcustom 1on1-minibuffer-frame-flag nil
 
 I notice the slight inconsistency with the word "separate" in those commands.
 
 4. I like this option you have in the init file:
 
-(defvar fit-frame-max-height-percent 82) 
+ (defvar fit-frame-max-height-percent 82) 
 
-It seems to me that ought to work even after I change to use (require 'oneonone), but it doesn't. I kept fit-frame.el in the lib directory. What do you think?
+It seems to me that ought to work even after I change to use (require 'oneonone), but it doesn't. I kept <tt>[[fit-frame.el]]</tt> in the lib directory. What do you think?
 
-In any case, I'm finding this to be very educational.  Thanks for the help.
-
-pj
+In any case, I'm finding this to be very educational.  Thanks for the help. -- pj
 
 
+[new:DrewAdams:2010-12-13 16:04 UTC]
 
+OK, that comment about checking back often was generic.  Maybe I should be clearer.  I should probably also warn people about trying <tt>[[start.el]]</tt> and <tt>[[start-opt.el]]</tt>.  Those are meant mainly as food for thought/experimentation, in case they help.  They should not be simply used as is, especially by someone starting out.  I use them, but I'm probably the only one for whom they make sense.
+
+1. I guess you're referring to <tt>[[palette.el]]</tt>?  What do mean by "saving" a color?  What is it that you want to do?
+
+
+2. No, I wasn't aware that '''Buttons''' doesn't work in Ubuntu.  Can you try to debug it a bit, if you have the time?  To do that, load <tt>[[tool-bar+.el]]</tt> (not ##tool-bar+.elc##), then `M-x debug-on-entry RET show-tool-bar-for-one-command'.  Step through the debugger using `d' (or `c' to skip descending into a given function).
+
+3. Thanks for the typo correction.  <tt>[[emacs-init.el]]</tt> is a bit like <tt>[[start.el]]</tt>.  It probably shouldn't be just tried as is.  And it might be somewhat out of date, as you discovered.
+
+But if you do want a standalone minibuffer, it should work correctly, being put by default at the bottom of your display.  I'm not sure whether you're saying that you don't want it or you do want it but it didn't work correctly.
+
+4. What do you mean by it not working?  Give me a recipe/description of the problem.  Yes, it should work with ##oneonone.el##.  I use both together.  See the doc in <tt>[[fit-frame.el]]</tt> about `fit-frame-max-height-percent' etc.
+
+Thx -- DrewAdams
+
+[new:pauljohn32:2010-12-14 06:15 UTC]
+
+Thanks for your patience.
+
+So you understand what I'm after. I've got to teach people how to write programs, we need Emacs because it exists on all platforms and has some particular modes we need, but its weird behaviors really bother me.  I show students how to install Emacs on Windows, but it is still very confusing.  Buffer content does not "stay" where we try to put it. Emacs splits the frame to show a new buffer, and then it will hide a buffer I'm trying to work on. If I'm running Emacs with ESS, for example, Emacs compulsively wants to create horizontal split windows and then re-assign buffers among windows. As you pointed out, Emacs is very serious about keeping everything in one frame. I don't want Emacs to try to be the window manager, I want to let X and the OS handle that. I just want Emacs to pop up a separate frame for every single buffer it spawns, and optimally, I want to use your fit frame approach as well. So I'm more or less trying to figure out what is necessary from your framework.  (Well, that's enough venting for now.)
+
+Concerning the questions:
+
+1. How can I save the color settings between sessions?  Your palette thing works well. Fun, in fact. However, you don't explain how to save the color assignments permanently. It's a drag to have to re-set them every time.
+
+2. I'm stumped on debugging '''Buttons'''. 
+
+I run "M-x load library tool-bar+" and the message buffer says
+Loading /home/pauljohn/DrewEmacsLibs/tool-bar+.el (source)...done
+
+However, I never get a Backtrace buffer to open up.  I click on "Buttons" in Menu, nothing happens. However, this does work to pop up the menu bar:
+
+M-x tool-bar-here-mode
+
+That toggles the bar on and off.  Appears to me the problem is the mouse-click on "buttons" is not linked to the tool bar mode.
+
+3. I do NOT want the detached minibuffer. I think I've got that one solved.  The practical problem with the separate minibuffer is just that the Compiz window manager and the gnome bottom panel make the minibuffer hard to use.  Compiz pushes the minibuffer down under the panel. Plus I think I don't really want a detached minibuffer. If I have several code frames open, it is conceptually more clear to have the minibuffer fastened to the bottom of each one. If I'm interacting with more than one frame, it seems ambiguous to try to have just the one minibuffer.
+
+4. I mean it has no effect--the Emacs frame's size is still too big.  If I use your whole setup, the frame is resized nicely. Emacs pops open with a large frame, but the system wrestles it back within the display.  Frames stay nicely within the display.  The default Emacs on this system has a bad tendency to pop open so the menu bar is forced off the bottom of the screen. I've used some settings to stop that in the past, but your 82% idea seems cleaner. 
+
+But that's just a minor thing.  Getting the one-frame-per-buffer thing to work with the frame fitter would be awesome.
+
+I wonder if I'm not getting your modules running in the proper way. In the top of your el files, eg fit-frame.el, the instructions say things like:
+
+(require 'fit-frame)
+
+However, I notice that when you call for that same thing in frame+.el, your command is
+
+ (require 'fit-frame nil t) 
+
+What is "nil t"?  Should I use that in ~/.emacs when trying to activate things?
 
 ----
 
