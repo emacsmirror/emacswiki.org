@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 11 21:26:35 2010 (-0800)
+;; Last-Updated: Tue Dec 14 13:57:18 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5887
+;;     Update #: 5924
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -344,6 +344,15 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/12/14 dadams
+;;     icicle-search-regexp-scan: Don't create marker if hit string is "".
+;;     icicle-search-highlight-all-input-matches:
+;;       Don't search within empty search contexts.  Do nothing if input and expanded input are "".
+;;       If search doesn't advance point then forward-char.  Stop searching if eobp.
+;;       Don't add (empty) overlay if search is empty.
+;;     icicle-search-highlight-context-levels: Don't add overlay for empty match.
+;;     icicle-search-highlight-input-matches-here: If search doesn't advance point then forward-char.
+;;     icicle-search-char-property-scan: Don't create empty overlays.
 ;; 2010/11/10 dadams
 ;;     Added: icicle-read-args-for-set-completion-methods.
 ;;     icicle-set-((S-)TAB|completion)-methods-for-command: Added METHODS arg.
@@ -637,6 +646,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/12/14 dadams
+;;     Added: icicle-expand-file-name-20.
+;;     Renamed: icicle-expand-file-name to icicle-expand-file-or-dir-name.
+;;     icicle-abbreviate-or-expand-file-name, icicle-expand-file-or-dir-name:
+;;       Use icicle-expand-file-name-20.
+;;     icicle-completion-setup-function for Emacs < 22: Fix typo: last-command -> this-command.
+;;     icicle-expanded-common-match: Removed from doc string: statement that result is regexp-quoted.
 ;; 2010/12/11 dadams
 ;;     icicle-completion-setup-function: Added a version for Emacs 23.2+.  Thx to Michael Heerdegen.
 ;; 2010/11/20 dadams
@@ -2126,6 +2142,13 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/12/14 dadams
+;;     icicle-retrieve-previous-input:
+;;       Added optional arg ALLOW-EMPTY-P (not used yet in calls).
+;;       Remove "" systematically, unless ALLOW-EMPTY-P.
+;;       Non-interactively, use last-recorded if current try is "" (unless ALLOW-EMPTY-P).
+;;     icicle-toggle-highlight-all-current: Turn off incremental completion while erase minibuffer.
+;;     icicle-insert-input: Apply renaming: icicle-expand-file-name to icicle-expand-file-or-dir-name.
 ;; 2010/12/02 dadams
 ;;     icicle-retrieve-previous-input: Exclude "" from past-input cycling.
 ;; 2010/11/30 dadams

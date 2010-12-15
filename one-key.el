@@ -1237,23 +1237,23 @@ TITLE is title name that any string you like."
               (format "(setq one-key-menu-%s-alist\n'(\n" funcname))
       ;; Insert (("key" . "desc") . command).
       (while (not (eobp))
-        (unless (or (eq (point-at-bol) (point-at-eol)) 
-		    (equal " " (char-to-string (char-after (point-at-bol)))))
-          (destructuring-bind (key cmd)
-              (split-string (buffer-substring (point-at-bol) (point-at-eol)) "\t+")
-            (delete-region (point-at-bol) (point-at-eol))
-	    (let ((keystr (replace-regexp-in-string
-                             "\\\"" "\\\\\""
-                             (replace-regexp-in-string "\\\\" "\\\\\\\\" key))))
-	      (insert (format "((\"%s\" . \"%s (%s)\") . %s)" 
-			      keystr
-			      (capitalize (replace-regexp-in-string "-" " " cmd))
-			      keystr
-			      cmd)))
-            (when (and cmd
-                       (string-match " " (concat key cmd)))
-              (forward-sexp -1)
-              (insert ";; "))))
+        (let ((pair (split-string (buffer-substring (point-at-bol) (point-at-eol)) "\t+")))
+          (if (and (eq 2 (length pair)) (not (equal "" (car pair))))
+              (destructuring-bind (key cmd)
+                  (split-string (buffer-substring (point-at-bol) (point-at-eol)) "\t+")
+                (delete-region (point-at-bol) (point-at-eol))
+                (let ((keystr (replace-regexp-in-string
+                               "\\\"" "\\\\\""
+                               (replace-regexp-in-string "\\\\" "\\\\\\\\" key))))
+                  (insert (format "((\"%s\" . \"%s (%s)\") . %s)" 
+                                  keystr
+                                  (capitalize (replace-regexp-in-string "-" " " cmd))
+                                  keystr
+                                  cmd)))
+                (when (and cmd
+                           (string-match " " (concat key cmd)))
+                  (forward-sexp -1)
+                  (insert ";; ")))))
         (forward-line 1))
       (goto-char (point-max))
       (insert "))\n\n")

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 12 12:58:12 2010 (-0800)
+;; Last-Updated: Tue Dec 14 12:37:03 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 22783
+;;     Update #: 22784
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -28,10 +28,10 @@
 ;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
 ;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
 ;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `regexp-opt', `ring',
-;;   `ring+', `second-sel', `strings', `thingatpt', `thingatpt+',
-;;   `unaccent', `w32-browser', `w32browser-dlgopen', `wid-edit',
-;;   `wid-edit+', `widget'.
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -772,7 +772,8 @@
 ;;    `icicle-ensure-overriding-map-is-bound',
 ;;    `icicle-execute-extended-command-1',
 ;;    `icicle-expanded-common-match',
-;;    `icicle-expanded-common-match-1', `icicle-expand-file-name',
+;;    `icicle-expanded-common-match-1', `icicle-expand-file-name-20',
+;;    `icicle-expand-file-or-dir-name',
 ;;    `icicle-explicit-saved-completion-candidates', `icicle-explore',
 ;;    `icicle-extra-candidates-first-p',
 ;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',

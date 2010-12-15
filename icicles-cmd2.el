@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Wed Nov 10 17:17:21 2010 (-0800)
+;; Last-Updated: Tue Dec 14 11:09:29 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2327
+;;     Update #: 2427
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -22,8 +22,8 @@
 ;;   `el-swank-fuzzy', `ffap', `ffap-', `frame-cmds', `frame-fns',
 ;;   `fuzzy', `fuzzy-match', `hexrgb', `icicles-cmd1',
 ;;   `icicles-face', `icicles-fn', `icicles-mcmd', `icicles-opt',
-;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mwheel',
-;;   `pp', `pp+', `regexp-opt', `ring', `ring+', `strings',
+;;   `icicles-var', `kmacro', `levenshtein', `misc-fns', `mouse3',
+;;   `mwheel', `pp', `pp+', `regexp-opt', `ring', `ring+', `strings',
 ;;   `thingatpt', `thingatpt+', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -2341,7 +2341,7 @@ The hit's frame is raised and selected."
 
 ;; Free vars here: `orig-win-explore' is bound in `icicle-explore'.
 (defun icicle-search-cleanup ()
-  "Clean up search highlighting, if `icicle-search-highlight-cleanup'.
+  "Clean up search highlighting, if `icicle-search-cleanup-flag'.
 Select original window."
   (when icicle-search-cleanup-flag (icicle-search-highlight-cleanup))
   (when (window-live-p orig-win-explore)
@@ -2429,11 +2429,13 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
                   (unless (match-beginning icicle-search-context-level)
                     (error "Search context has no subgroup of level %d - try a lower number"
                            icicle-search-context-level))
-                  (let* ((hit-string  (buffer-substring-no-properties
-                                       (match-beginning icicle-search-context-level)
-                                       (match-end icicle-search-context-level)))
-                         (end-marker  (copy-marker (match-end icicle-search-context-level))))
-                    (when (and (not (string= "" hit-string))
+                  (let ((hit-string  (buffer-substring-no-properties
+                                      (match-beginning icicle-search-context-level)
+                                      (match-end icicle-search-context-level)))
+                        end-marker)
+                    (when (and (not (string= "" hit-string)) ; Do nothing if empty hit.
+                               (setq end-marker  (copy-marker
+                                                  (match-end icicle-search-context-level)))
                                (or (not predicate)
                                    (save-match-data (funcall predicate hit-string end-marker))))
                       (icicle-candidate-short-help
@@ -2485,31 +2487,43 @@ Highlight the matches in face `icicle-search-main-regexp-others'."
   (when icicle-search-highlight-all-current-flag
     (setq input  (or input icicle-current-input))
     (unless (or (string= "" input) (null icicle-search-overlays))
-      (let ((hits  ()))
+      (let ((hits  ())
+            pos)
         (save-excursion
           (dolist (ov  icicle-search-overlays)
             (set-buffer (overlay-buffer ov))
-            (save-restriction ; Search within the current search context.
-              (narrow-to-region (overlay-start ov) (overlay-end ov))
-              (goto-char (point-min))
-              (when (condition-case nil (re-search-forward input nil 'move-to-end) (error nil))
-                (push (buffer-substring-no-properties (point-min) (point-max)) hits))))
-          (when (and icicle-expand-input-to-common-match-flag  hits)
-            (setq icicle-search-ecm  (icicle-expanded-common-match input hits)))
-          (dolist (ov  icicle-search-overlays)
-            (set-buffer (overlay-buffer ov))
-            (save-restriction ; Search within the current search context.
-              (narrow-to-region (overlay-start ov) (overlay-end ov))
-              (when (member (buffer-substring-no-properties (point-min) (point-max)) hits)
+            (unless (equal (overlay-start ov) (overlay-end ov))
+              (save-restriction         ; Search within the current search context.
+                (narrow-to-region (overlay-start ov) (overlay-end ov))
                 (goto-char (point-min))
-                (save-match-data
-                  (while (condition-case nil
-                             (re-search-forward (or icicle-search-ecm input) nil 'move-to-end)
-                           (error nil))
-                    (setq ov  (make-overlay (match-beginning 0) (match-end 0)))
-                    (push ov icicle-search-refined-overlays)
-                    (overlay-put ov 'priority 220)
-                    (overlay-put ov 'face 'icicle-search-current-input)))))))))))
+                (when (condition-case nil (re-search-forward input nil 'move-to-end) (error nil))
+                  (push (buffer-substring-no-properties (point-min) (point-max)) hits)))))
+          (when (and icicle-expand-input-to-common-match-flag  hits)
+            (setq icicle-search-ecm  (icicle-expanded-common-match input hits))
+            (when (string= "" icicle-search-ecm) (setq icicle-search-ecm  nil)))
+          (when (or icicle-search-ecm (and input (not (string= "" input))))
+            (dolist (ov  icicle-search-overlays)
+              (set-buffer (overlay-buffer ov))
+              (unless (equal (overlay-start ov) (overlay-end ov))
+                (save-restriction       ; Search within the current search context.
+                  (narrow-to-region (overlay-start ov) (overlay-end ov))
+                  (when (member (buffer-substring-no-properties (point-min) (point-max)) hits)
+                    (goto-char (setq pos  (point-min)))
+                    (save-match-data
+                      (while (and (not (eobp))
+                                  (condition-case nil
+                                      (re-search-forward (or icicle-search-ecm input)
+                                                         nil 'move-to-end)
+                                    (error nil)))
+                        (if (or (and (equal (match-beginning 0) (match-end 0)) (not (eobp)))
+                                (equal (point) pos))
+                            (forward-char)
+                          (setq pos  (point))
+                          (unless (equal (match-beginning 0) (match-end 0))
+                            (setq ov  (make-overlay (match-beginning 0) (match-end 0)))
+                            (push ov icicle-search-refined-overlays)
+                            (overlay-put ov 'priority 220)
+                            (overlay-put ov 'face 'icicle-search-current-input)))))))))))))))
 
 (defun icicle-search-replace-search-hit (candidate) ; Bound to `C-S-RET' (`icicle-search').
   "Replace search hit CANDIDATE with `icicle-search-replacement'."
@@ -2586,12 +2600,12 @@ display string as in `icicle-search-action'."
     (condition-case icicle-search-action-1
         (progn
           ;; Move cursor to the match in the original buffer and highlight it.
-          (let* ((candidate   (if (consp (car-safe cand+mrker))
-                                  (car-safe (car-safe cand+mrker))
-                                (car-safe cand+mrker)))
-                 (marker      (cdr-safe cand+mrker))
-                 (icicle-search-in-context-fn
-                  (or icicle-search-in-context-fn 'icicle-search-in-context-default-fn)))
+          (let* ((candidate                    (if (consp (car-safe cand+mrker))
+                                                   (car-safe (car-safe cand+mrker))
+                                                 (car-safe cand+mrker)))
+                 (marker                       (cdr-safe cand+mrker))
+                 (icicle-search-in-context-fn  (or icicle-search-in-context-fn
+                                                   'icicle-search-in-context-default-fn)))
             (unless marker (error "No such occurrence"))
             (condition-case icicle-search-action-1-save-window
                 (save-selected-window
@@ -2611,7 +2625,7 @@ display string as in `icicle-search-action'."
                     (funcall icicle-search-in-context-fn cand+mrker replace-string)
                     (icicle-highlight-candidate-in-Completions)
                     (run-hooks 'icicle-search-hook)))
-              (error        ; Ignore disappearance of `*Completions*'.
+              (error                    ; Ignore disappearance of `*Completions*'.
                (unless (string-match "Wrong type argument: window-live-p,"
                                      (error-message-string icicle-search-action-1-save-window))
                  (error (message (error-message-string icicle-search-action-1-save-window))
@@ -2758,7 +2772,7 @@ current input matches candidate") (sit-for 2))
             (setq icicle-candidate-nb  0))
           (icicle-highlight-candidate-in-Completions)
           (icicle-search-highlight-context-levels))))
-    replacement-p)) ; Return indication of whether we tried to replace something.
+    replacement-p))                     ; Return indication of whether we tried to replace something.
 
 (defun icicle-search-replace-match (replace-string fixedcase)
   "Replace current match with REPLACE-STRING, interpreting escapes.
@@ -2805,11 +2819,12 @@ No such highlighting is done if any of these conditions holds:
         (re-search-forward icicle-search-context-regexp nil t)
         (condition-case nil
             (while (<= level max-levels)
-              (let ((ov  (make-overlay (match-beginning level) (match-end level))))
-                (push ov icicle-search-level-overlays)
-                (overlay-put ov 'priority (+ 205 level)) ; > ediff's 100+, < isearch-overlay's 1001.
-                (overlay-put ov 'face (intern (concat "icicle-search-context-level-"
-                                                      (number-to-string level)))))
+              (unless (equal (match-beginning level) (match-end level))
+                (let ((ov  (make-overlay (match-beginning level) (match-end level))))
+                  (push ov icicle-search-level-overlays)
+                  (overlay-put ov 'priority (+ 205 level)) ; > ediff's 100+, < isearch-overlay's 1001.
+                  (overlay-put ov 'face (intern (concat "icicle-search-context-level-"
+                                                        (number-to-string level))))))
               (setq level  (1+ level)))
           (error nil))))))
 
@@ -2830,10 +2845,12 @@ No such highlighting is done if any of these conditions holds:
       (save-match-data
         (while (and (not (eobp)) (re-search-forward (or icicle-search-ecm icicle-current-input)
                                                     nil 'move-to-end))
-          (setq ov  (make-overlay (match-beginning 0) (match-end 0)))
-          (push ov icicle-search-refined-overlays)
-          (overlay-put ov 'priority 220) ; Greater than any possible context-level priority (213).
-          (overlay-put ov 'face 'icicle-search-current-input))))))
+          (if (equal (match-beginning 0) (match-end 0))
+              (forward-char 1)
+            (setq ov  (make-overlay (match-beginning 0) (match-end 0)))
+            (push ov icicle-search-refined-overlays)
+            (overlay-put ov 'priority 220) ; Greater than any possible context-level priority (213).
+            (overlay-put ov 'face 'icicle-search-current-input)))))))
 
 (defun icicle-search-replace-fixed-case-p (from)
   "Return non-nil if FROM should be replaced without transferring case.
@@ -3449,8 +3466,9 @@ PREDICATE is nil or a Boolean function that takes these arguments:
                                 end-marker)
                           temp-list)
                     ;; Highlight search context in buffer.
-                    (when (<= (+ (length temp-list) (length icicle-candidates-alist))
-                              icicle-search-highlight-threshold)
+                    (when (and (not (equal beg zone-end))
+                               (<= (+ (length temp-list) (length icicle-candidates-alist))
+                                   icicle-search-highlight-threshold))
                       (let ((ov  (make-overlay beg zone-end)))
                         (push ov icicle-search-overlays)
                         (overlay-put ov 'priority 200) ; > ediff's 100+, but < isearch overlays
@@ -5032,7 +5050,7 @@ Other args are as for `icicle-read-kbd-macro'."
       (let* ((help-window  (get-buffer-window "*Help*" 0))
              (help-frame   (and help-window (window-frame help-window))))
         (when help-frame (redirect-frame-focus help-frame frame-with-focus))))
-    (message nil))                      ; Let minibuffer contents show immmediately.
+    (message nil))                      ; Let minibuffer contents show immediately.
 
   (defun icicle-read-kbd-macro (start &optional end no-angles)
     "Read the region as a keyboard macro definition.

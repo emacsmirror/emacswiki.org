@@ -7,7 +7,7 @@ Then install this one for java completion.
 
 Add this lines  in your .emacs file:
 
-    (add-to-list 'load-path (   "~/.emacs.d/ajc-java-complete") )
+    (add-to-list 'load-path   "~/.emacs.d/ajc-java-complete" )
     (require 'ajc-java-complete-config)
 
 Read ajc-java-complete-config  for more info.
@@ -60,7 +60,7 @@ It *cannot tell the different between static methods and normal methods*, so all
 It can do more:
 
     public void test(){
-        Map<String,List<String,Object>> map= new  HashMap<String,List<String,Object>> ();
+        Map<String,List<String>> map= new  HashMap<String,List<String>> ();
             map.
                 clear()
                 put(Object,Object)
@@ -76,8 +76,8 @@ And this:
 It can *auto import* class in buffer.
 Here are two suggested keybindings:
 
-     (global-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class-candidates))
-     (global-set-key (kbd "C-c m") (quote ajc-import-class-under-point-candidates))
+     (global-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class))
+     (global-set-key (kbd "C-c m") (quote ajc-import-class-under-point))
 
 == To Do ==
 

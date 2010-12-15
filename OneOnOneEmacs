@@ -330,7 +330,67 @@ However, I notice that when you call for that same thing in frame+.el, your comm
 
  (require 'fit-frame nil t) 
 
-What is "nil t"?  Should I use that in ~/.emacs when trying to activate things?
+What is "nil t"?  Should I use that in ~/.emacs when trying to activate things? -- pj
+
+
+
+[new:DrewAdams:2010-12-14 15:05 UTC]
+1. You still haven't said what you mean by "saving" a "color setting" or "color assignment".  I have no idea what you mean.  Each face has a foreground and background color.  Each frame has a foreground and background color.  The frame colors are, by default, the colors of face `default'.
+
+You can customize any face to have any colors you want.  Other than this, I cannot imagine what you mean by setting or saving colors.
+
+2. Did you do as I suggested: 
+
+ M-x debug-on-entry RET show-tool-bar-for-one-command RET
+
+If not, the debugger will not open when function `show-tool-bar-for-one-command ' is invoked.
+
+3. ''If'' you did want a standalone minibuffer frame, then the problem of its positioning is easily solved.  See [[option]] `1on1-minibuffer-frame-top/bottom'.  If the option is `nil' then the function of the same name is used instead, and that positions the frame just above the bottom of your display.  That function knows nothing about the Gnome bottom panel (there is no way to know about it), so if you need to adjust the height then customize the option:
+
+ M-x customize-option RET 1on1-minibuffer-frame-top/bottom RET
+
+If you in any case do not want a standalone minibuffer frame, then what is the question you have here?
+
+4. I don't understand the question about `fit-frame-max-height-percent'.  I guess you are saying that when you use ##oneonone.el## `fit-frame-max-height-percent' has no effect. Is that correct?  I don't see how that could be true.  Is `fit-frame-max-height' `nil'? (It must be, for `fit-frame-max-height-percent' to have any effect.)
+
+You can follow what happens when a frame is fit, by debugging function `fit-frame-max-height': 
+
+  M-x debug-on-entry RET fit-frame-max-height RET
+
+That should let you see the problem.  The function bases the max frame height on a percentage of the display height.  And the display height includes your Gnome bottom panel.  Try a smaller number than 82 to see if you notice a difference.
+
+(You can cancel debugging of a given function using command `cancel-debug-on-entry'.)
+
+5. Use `C-h f RET require RET' to learn about `require'.
+##(require 'foo nil t)## means load library ##foo## if it has not already been loaded, but do not raise an error if the library is not found.  ##(require 'foo)## is the same but raises an error if the library is not found.  That's the only difference.  I call the former a "''soft'' `require'". So a library that soft-requires ##fit-frame.el## loads it if it is in your `load-path' but raises no error if cannot be found.  IOW, for that library, library ##fit-frame.el## is just a nice-to-have; it is not strictly required. -- DrewAdams
+
+[new:pauljohn32:2010-12-14 18:34 UTC]
+
+OK, lets tackle one thing at a time.  About colors.  I don't understand what you don't understand :)  Emacs does not remember the color choices I make inside your system.  Your Emacs has blue background. I hate that. I do C-middle button to bring up the palette chooser, make the background white again.  I try the usual menu Options /Save Options, but the color choice I make is not remembered when I close/restart Emacs. If I change background/foreground colors in Emacs in the ordinary way--without your libraries installed--I'm pretty sure Options /Save Options does record the colors.  As it is, Options / Save Options drops this on the end of my ~/.emacs: 
+
+{{{
+(custom-set-faces
+  ;; custom-set-faces was added by Custom.
+  ;; If you edit it by hand, you could mess it up, so be careful.
+  ;; Your init file should contain only one such instance.
+  ;; If there is more than one, they won't work right.
+ '(diff-added ((t (:foreground "DarkGreen"))) t)
+ '(diff-changed ((t (:foreground "MediumBlue"))) t)
+ '(diff-context ((t (:foreground "Black"))) t)
+ '(diff-file-header ((t (:foreground "Red" :background "White"))) t)
+ '(diff-header ((t (:foreground "Red"))) t)
+ '(diff-hunk-header ((t (:foreground "White" :background "Salmon"))) t)
+ '(diff-index ((t (:foreground "Green"))) t)
+ '(diff-nonexistent ((t (:foreground "DarkBlue"))) t)
+ '(diff-removed ((t (:foreground "DarkMagenta"))) t))
+}}}
+
+Close, restart.  Still blue background. See what I mean? Color choices not saved.
+
+I don't have any progress to report on the debugger thing. I'll keep trying. I'm going to look for a local user who has done this.
+
+pj  
+
 
 ----
 

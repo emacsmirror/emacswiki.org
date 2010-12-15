@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 11 21:22:52 2010 (-0800)
+;; Last-Updated: Tue Dec 14 13:06:12 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 11978
+;;     Update #: 12011
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -77,7 +77,8 @@
 ;;    `icicle-display-completion-list', `icicle-display-Completions',
 ;;    `icicle-display-candidates-in-Completions',
 ;;    `icicle-expanded-common-match',
-;;    `icicle-expanded-common-match-1', `icicle-expand-file-name',
+;;    `icicle-expanded-common-match-1', `icicle-expand-file-name-20',
+;;    `icicle-expand-file-or-dir-name',
 ;;    `icicle-explicit-saved-completion-candidates',
 ;;    `icicle-extra-candidates-first-p',
 ;;    `icicle-face-valid-attribute-values', `icicle-file-directory-p',
@@ -520,7 +521,7 @@ so it is called after completion-list buffer text is written."
         ;; If reading file name and either `icicle-comp-base-is-default-dir-p' is nil or this is a
         ;; completion command, then set `default-directory' so it will be copied into *Completions*.
         (when (and dir-of-input
-                   (or (and (symbolp last-command) (get this-command 'icicle-completing-command))
+                   (or (and (symbolp this-command) (get this-command 'icicle-completing-command))
                        (not icicle-comp-base-is-default-dir-p)))
           (with-current-buffer mainbuf (setq default-directory  dir-of-input)))
         (with-current-buffer standard-output
@@ -3193,9 +3194,7 @@ input over all candidates."
 (defun icicle-expanded-common-match (input candidates)
   "Return the expanded common match for INPUT among all CANDIDATES.
 This assumes that INPUT matches each string in list CANDIDATES.
-Return nil if there is no common match.  This actually returns
-`regexp-quote' applied to the expanded common match, so that special
-characters in the match don't throw off regexp matching.
+Return nil if there is no common match.
 
 The expanded common match is typically, but not always, the longest
 common match.  See the documentation, section `Expanded-Common-Match
@@ -4866,20 +4865,29 @@ Character FROM is affected (possibly deleted).  Character TO is not."
                    icicle-command-abbrev-alist)))
     (error (message "Cannot save new value of `icicle-command-abbrev-alist'") (sleep-for 3))))
 
-(defun icicle-expand-file-name (input dir)
+(defun icicle-expand-file-or-dir-name (input dir)
   "Expand file-name INPUT in directory DIR.
 Similar to `expand-file-name', except:
 
  - If INPUT does not end in a slash, and DIR/INPUT is a directory,
-   a trailing slash is added.
+   add a trailing slash.
 
  - If INPUT ends in a slash, but DIR/INPUT is not a directory, then
-   the trailing slash is removed."
-  (let ((expanded-input  (directory-file-name (expand-file-name input dir))))
+   remove the trailing slash.
+
+ - if INPUT or DIR contains consecutive slashes (`/'), do not collapse
+   them to a single slash."
+  (let ((expanded-input  (directory-file-name (icicle-expand-file-name-20 input dir))))
     ;; Add trailing slash if input is a directory.
     (when (file-directory-p expanded-input)
       (setq expanded-input  (file-name-as-directory expanded-input)))
     expanded-input))
+
+(defun icicle-expand-file-name-20 (input dir)
+  "Emacs 20's `expand-file-name': does not collapse consecutive slashes."
+  (let ((escaped-input  (replace-regexp-in-string "//" (make-string 5 7) input)) ; Replace with five ^Gs.
+        (escaped-dir    (replace-regexp-in-string "//" (make-string 5 7) dir)))
+    (replace-regexp-in-string (make-string 5 7) "//" (expand-file-name escaped-input escaped-dir))))
 
 (defun icicle-start-of-candidates-in-Completions ()
   "Return buffer position of the first candidate in *Completions*."
@@ -4949,14 +4957,15 @@ Elements of ALIST that are not conses are ignored."
 
 (defun icicle-abbreviate-or-expand-file-name (filename &optional dir)
   "Expand FILENAME, and abbreviate it if `icicle-use-~-for-home-dir-flag'.
-If FILENAME is not absolute, call `expand-file-name' to make it absolute.
+If FILENAME is not absolute, call `icicle-expand-file-name-20' to make
+ it absolute.  This does not collapse consecutive slashes (`/').
 If `icicle-use-~-for-home-dir-flag', call `abbreviate-file-name'.
 
-If DIR is absolute, pass it to `expand-file-name'.  Otherwise, ignore
-it (treat it as nil)."
+If DIR is absolute, pass it to `icicle-expand-file-name-20'.
+Otherwise, ignore it (treat it as nil)."
   (unless (file-name-absolute-p filename)
     (when (and dir (not (file-name-absolute-p dir))) (setq dir  nil)) ; Don't use a relative dir.
-    (setq filename (expand-file-name filename dir)))
+    (setq filename (icicle-expand-file-name-20 filename dir)))
   (if icicle-use-~-for-home-dir-flag (abbreviate-file-name filename) filename))
 
 (defun icicle-reversible-sort (list &optional key)

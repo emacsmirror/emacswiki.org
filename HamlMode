@@ -3,3 +3,13 @@ Haml does have an emacs plugin.
 Get it here: https://github.com/nex3/haml-mode
 
 Also see http://nex-3.com/posts/79-highlighting-ruby-in-haml-mode
+
+Comment by -- [[WolfmanJM]]
+Note that as HAML uses spaces only for indentation make sure you turn off tabs, also you can enable auto-indent mode.
+
+     (add-hook 'haml-mode-hook
+                  '(lambda ()
+                         (setq indent-tabs-mode nil)
+                         (define-key haml-mode-map "\C-m" 'newline-and-indent)))
+
+

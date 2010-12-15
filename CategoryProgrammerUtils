@@ -96,7 +96,7 @@ Projects (code) -- Creating and managing:
 * [[Profiles]] - Non-invasive user settings common to multiple projects.
 * ProjectBufferMode -- Generic mode to handle projects.
 * ProjectLocalVariables
-* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el]
+* [http://www.shellarchive.co.uk/content/lisp/project-root.el project-root.el] (link down as of 2010-12-15)
 * ProjectSettings
 * ProjectWizard
 * ProjmanMode

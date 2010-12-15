@@ -26,7 +26,7 @@ re-builder is also available as easily installable XEmacs Package.
 I just managed to add perl regexp support to re-builder, of which
 there will be a re-builder XEmacs pre-release package soon. -- AdrianAichner
 
-* http://cvs.xemacs.org/viewcvs.cgi/XEmacs/packages/xemacs-packages/re-builder/re-builder.el?rev=1.5&content-type=text/vnd.viewcvs-markup
+* http://alioth.debian.org/scm/viewvc.php/*checkout*/XEmacs/packages/xemacs-packages/re-builder/re-builder.el?revision=1.5&root=xemacs
 
 In GnuEmacs 21.4, it needs slightly modifications.
 

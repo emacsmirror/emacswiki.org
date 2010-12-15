@@ -1,6 +1,6 @@
 Emacs Interfaces to Online Utilities.
 
-(Most of theses packages require [[w3]])
+(Most of these packages require [[w3]])
 
 * Archie ([http://www.stud.ifi.uio.no/~larsi/other/archie.el archie.el] -- '''''broken link''''') -- query archie servers and parse the results (by LarsMagneIngebrigtsen)
 * BitLy -- Shorten URLs using the bitly service.
@@ -19,6 +19,7 @@ Emacs Interfaces to Online Utilities.
 ** LookUp -- unified search interface for several online dictionaries
 ** Rdict ([http://lgarc.narod.r_u/xemacs-tips/packages/rdict-0.2.tar.gz rdict-0.2.tar.gz]) -- Emacs interface to the Lingvo online English<->Russian Dictionary.
 * LookUpHTMLDoc -- Look up documentation in HTML form
+* [http://github.com/cefstat/simplenote.el simplenote.el] -- using [http://simplenoteapp.com Simplenote] from within Emacs
 * Slashdot ([http://www.tardis.ed.ac.uk/~skx/win/slashdot.el slashdot.el] -- '''''broken link''''') -- View headlines from Slashdot.org (by SteveKemp)
 * Editing remote wikis (see WikiModeDiscussion)
 ** OddmuseMode -- Edit pages on this wiki, supercedes WikiRemote and SimpleWikiEditMode
@@ -48,6 +49,7 @@ Emacs Interfaces to Online Utilities.
 
 Interfaces to code snippet sites on the Internet
 
+* [http://github.com/defunkt/gist.el gist.el] -- post snippets to [http://gist.github.com GitHub Gist]
 * SnipplrMode -- copy snippets to and from [http://snipplr.com Snipplr]
 * Lisp:openpaste.el -- Commit posts to [http://openpaste.org OpenPastebin]
 * [[Paste2]] -- Paste or get code with [http://paste2.org paste2.org]

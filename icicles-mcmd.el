@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  2 08:19:13 2010 (-0800)
+;; Last-Updated: Tue Dec 14 12:38:37 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 16325
+;;     Update #: 16367
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2160,7 +2160,7 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
   (interactive "P")
   (icicle-retrieve-previous-input arg 'interactive-p))
 
-(defun icicle-retrieve-previous-input (&optional arg reversep) ; Bound to `C-l' in minibuffer.
+(defun icicle-retrieve-previous-input (&optional arg reversep allow-empty-p) ; `C-l' in minibuffer.
   "Retrieve previous minibuffer input.
 The possible inputs were not necessarily those entered with `RET'.
 With a negative prefix arg, this just empties the completion history.
@@ -2170,8 +2170,10 @@ Otherwise:
    `icicle-retrieve-previous-input' is not used interactively.
  Otherwise, just cycle to the previous input.
 
-Non-interactively, non-nil argument REVERSEP means reverse the history
-order: return the next, not the previous, input.
+Non-interactively:
+ Non-nil argument REVERSEP means reverse the history order: return the
+  next, not the previous, input.
+ Non-nil ALLOW-EMPTY-P means the retrieved input can be \"\".
 
 You can use this command only from buffer *Completions or from the
 minibuffer (`\\<minibuffer-local-completion-map>\
@@ -2190,7 +2192,11 @@ minibuffer (`\\<minibuffer-local-completion-map>\
              (save-selected-window
                (select-window (minibuffer-window))
                (icicle-clear-minibuffer)
-               (let ((prev-inputs  (symbol-value prev-inputs-var)))
+               (let ((prev-inputs
+                      (if allow-empty-p
+                          (symbol-value prev-inputs-var)
+                        (icicle-remove-if (lambda (x) (string= "" x)) ; Exclude "".
+                                          (symbol-value prev-inputs-var)))))
                  (setq input
                        (if (and interactive-p (or (and icicle-C-l-uses-completion-flag (not arg))
                                                   (and (not icicle-C-l-uses-completion-flag) arg)))
@@ -2200,14 +2206,15 @@ minibuffer (`\\<minibuffer-local-completion-map>\
                              (prog1 (completing-read
                                      "Retrieve input: " (mapcar #'list prev-inputs) nil t)
                                (setq icicle-last-input  nil)))
-                         ;; Exclude "" for cycling.
-                         (setq prev-inputs  (icicle-remove-if (lambda (x) (string= "" x)) prev-inputs))
                          (if (or (not interactive-p)
                                  (not (memq last-command '(icicle-retrieve-next-input
                                                            icicle-retrieve-previous-input))))
                              ;; We use this one, to exclude common-match expansions from completion
                              ;; history, and to save the typed input only when you complete.
-                             (if icicle-cycling-p icicle-last-input icicle-current-raw-input)
+                             (let ((try  (if icicle-cycling-p
+                                             icicle-last-input
+                                           icicle-current-raw-input)))
+                               (if (or allow-empty-p (not (equal "" try))) try (car prev-inputs)))
 
                            ;; You can use this one instead, if you want to include common-match
                            ;; expansions and save the typed input even when you don't complete.
@@ -2279,7 +2286,7 @@ minibuffer."
   (insert (if (and (icicle-file-name-input-p) insert-default-directory
                    (or (not (member input icicle-extra-candidates))
                        icicle-extra-candidates-dir-insert-p))
-              (icicle-expand-file-name input (icicle-file-name-directory input))
+              (icicle-expand-file-or-dir-name input (icicle-file-name-directory input))
             input)))
 
 ;;;###autoload
@@ -6563,12 +6570,13 @@ Bound to `C-^' in the minibuffer during Icicles searching (only)."
   (setq icicle-search-highlight-all-current-flag  (not icicle-search-highlight-all-current-flag))
   ;; Rehighlight to see effect of toggle.
   (let ((icicle-candidate-nb  icicle-candidate-nb))
-    (let ((icicle-current-input  icicle-current-input)) (icicle-erase-minibuffer))
+    (let ((icicle-current-input             icicle-current-input)
+          (icicle-incremental-completion-p  nil))
+      (icicle-erase-minibuffer))
     (icicle-retrieve-last-input)
-    (funcall (or icicle-last-completion-command
-                 (if (eq icicle-current-completion-mode 'prefix)
-                     #'icicle-prefix-complete
-                   #'icicle-apropos-complete))))
+    (funcall (or icicle-last-completion-command  (if (eq icicle-current-completion-mode 'prefix)
+                                                     #'icicle-prefix-complete
+                                                   #'icicle-apropos-complete))))
   (icicle-search-highlight-all-input-matches icicle-current-input)
   (when icicle-candidate-nb (icicle-search-action "DUMMY")) ; Get back to current.
   (select-window (minibuffer-window))

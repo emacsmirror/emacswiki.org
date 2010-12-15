@@ -45,6 +45,6 @@ CategoryExtensionLanguage
 ----
 
 Update 2009/06/06 - PyMacs is required for PySmell
-* you can clone pymacs from their git repository 
-** http://pymacs.progiciels-bpi.ca/notes/Pymacs_maintainer_s_scratchpad.html#back2
+* you can clone pymacs from their git repository: https://github.com/pinard/Pymacs 
+
 

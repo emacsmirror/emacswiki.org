@@ -13,5 +13,5 @@ The Emacs version of ##package.el## will support multiple repositories.  You can
 
 See also 2010-11-15 discussion about ELPA in Emacs 24.x at http://thread.gmane.org/gmane.emacs.devel/132634/focus=132640
 
---
+----
 CategoryCode CategoryPackaging
