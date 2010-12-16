@@ -1,4 +1,4 @@
-Speedbar is another frame which displays information about the current buffer, allowing you to better navigate your sources.  In a way, it's similar to ImenuMode, but much more powerful.
+Speedbar is another frame which displays information about the current buffer, allowing you to better navigate your sources.  In a way, it's similar to ImenuMode, but much more powerful. It is a part of GNU Emacs since version 23.2.
 
 * http://cedet.sf.net/speedbar.shtml -- see also CollectionOfEmacsDevelopmentEnvironmentTools
 
@@ -204,22 +204,6 @@ EmacsCodeBrowser (ecb) overlaps much of Speedbar, and requires Speedbar and othe
 : ''Question: is it possible to tell the speedbar to go into the buffer mode when it is loaded? I was unable to find the appropriate function...'' --Andrius Kurtinaitis
 
 :: Yes, see the documentation for: speedbar-change-initial-expansion-list -- EricLudlam
-----
-
-[new]
-Is it possible to run SpeedBar in a separate window rather than in a separate frame? I'd like to use SpeedBar in the console. --ShaeErisson
-[new]
-: No. -- AlexSchroeder
-
-[new]
-EmacsCodeBrowser 1.90 can display speedbar in a separate window in console in xemacs, not sure how it works though --ShaeErisson
-----
-
-[new]
-I was wondering if it is at all possible to load the SpeedBar when emacs first loads. I have spent quite a few days looking around for a mod to my InitFile, with no success. Also as I am new to emacs I would love to know good places to find out about emacs. (apart from this site that is :)) -- Luke
-
-[new]
-: Put (speedbar 1) in your InitFile.  As to the references for emacs, this site has become the definitive site for all things emacs and emacs related.  Even after using emacs for years, I'm still learning things from this site on an almost daily basis.  I think AlexSchroeder deserves a lot of credit and praise for bringing this site up so fast. -- LathI
 
 ----
 

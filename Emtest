@@ -6,6 +6,7 @@ It consists of these parts:
 ** By function being tested
 ** By file
 ** By library
+** By script for external programs, somewhat like %%DejaGNU%%, but in elisp instead of TCL.
 * The test-report presenter
 * A rich library of testhelp libraries:
 ** deep-type-checker
@@ -21,3 +22,7 @@ It consists of these parts:
 *** filebuf
 *** libversion
 * Editing help for writing tests
+
+== Screenshot ==
+[[image:EmtestScreenshot]]
+

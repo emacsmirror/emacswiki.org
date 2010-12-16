@@ -39,19 +39,20 @@ When the matching paren is offscreen, show-paren-mode highlights only the paren 
 
     (defadvice show-paren-function
       (after show-matching-paren-offscreen activate)
-      "If the matching paren is offscreen, show the matching line in the                               
-    echo area. Has no effect if the character before point is not of                                   
-    the syntax class ')'."
+      "If the matching paren is offscreen, show the matching line in the
+        echo area. Has no effect if the character before point is not of
+        the syntax class ')'."
       (interactive)
-      (let ((matching-text nil))
-        ;; Only call `blink-matching-open' if the character before point                               
-        ;; is a close parentheses type character. Otherwise, there's not                               
-        ;; really any point, and `blink-matching-open' would just echo                                 
-        ;; "Mismatched parentheses", which gets really annoying.                                       
-        (if (char-equal (char-syntax (char-before (point))) ?\))
-            (setq matching-text (blink-matching-open)))
-        (if (not (null matching-text))
-            (message matching-text))))
+      (if (not (minibuffer-prompt))
+          (let ((matching-text nil))
+            ;; Only call `blink-matching-open' if the character before point
+            ;; is a close parentheses type character. Otherwise, there's not
+            ;; really any point, and `blink-matching-open' would just echo
+            ;; "Mismatched parentheses", which gets really annoying.
+            (if (char-equal (char-syntax (char-before (point))) ?\))
+                (setq matching-text (blink-matching-open)))
+            (if (not (null matching-text))
+                (message matching-text)))))
 
 [new:PaulTipper:2008-06-05 09:02 UTC]
 
@@ -60,6 +61,10 @@ This behaviour seems to occur already in my GNU Emacs 23.0.60.2 with (show-paren
 [new]
 
 Not in my emacs: 22.2.1.  Glad to have it though.
+
+[new]
+
+In GNU Emacs 23.2, this information shows up when ``show-paren-mode'' is enabled, but then only directly after typing a closing paren.  If you use the above code, the information will show up every time the point is placed behind a closing paren.
 
 == Links ==
 

@@ -19,7 +19,7 @@ Overall, emacs templates packages can be divided into those whose syntax for def
 
 * SmartSnippet -- improvement of SnippetMode. Obsoleted by YaSnippetMode.
 
-* YaSnippetMode -- Full featured improvement and rewrite of SnippetMode.
+* [[Yasnippet]] -- Full featured improvement and rewrite of SnippetMode.
 
 * SemanticRecoder -- Part of CollectionOfEmacsDevelopmentEnvironmentTools with GoogleTemplates like syntax.  Created for language agnostic code generation applications.
 

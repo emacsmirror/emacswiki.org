@@ -237,14 +237,14 @@ You can combine this with the minibuffer printing...
 </pre>
 
 
-=== Change the colors for errors/warnings or set underlinings:
+=== Change the colors for errors/warnings or set underlinings: ===
 
 Customize the faces flymake-errline and flymake-warnline:
-
+<pre>
 (custom-set-faces
  '(flymake-errline ((((class color)) (:background "LightYellow" :underline "OrangeRed"))))
  '(flymake-warnline ((((class color)) (:background "LightBlue2" :underline "Yellow")))))
-
+</pre>
 You can do this using the graphical menu: Help -> Describe -> Face -> flymake-errline (select customize) and Help -> Describe -> Face -> flymake-warnline
 
 

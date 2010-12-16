@@ -65,6 +65,11 @@ following to your ~/.emacs file:
 This will read the definitions from the default file,
 "~/.abbrev_defs".
 
+If you want to avoid errors if the abbrev-file is missing, use something like:
+
+    (if (file-exists-p abbrev-file-name)
+        (quietly-read-abbrev-file))
+
 == Using Abbrevs ==
 
 `M-x abbrev-mode' toggles Abbrev mode.  You can also put the following

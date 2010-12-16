@@ -142,8 +142,10 @@ Now, the above code is probably supposed to go to a separate elisp file so as no
 <pre>
 (add-hook 'rcirc-mode-hook
           (lambda ()
-            ;;Change this to your favorite IRC server(s)
-            (if (string-match "\\*irc\\.foonetic\\.net" (buffer-name)) 
+            (if (string-match (regexp-opt '("irc.freenode.net"
+                                            "irc.inet.tele.dk"
+                                            "irc.perl.org")
+                              (buffer-name))
                 (rcirc-reconnect-mode 1))))
 </pre>
 

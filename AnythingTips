@@ -61,6 +61,22 @@ This code creates an extra frame when invoking anything. It's not that sophistic
 
 -HannesJanetzek
 
+===Debugging===
+
+It is very difficult to debug anything because you cannot use edebug, and any commands entered in the minibuffer affect
+the `*anything source select*' buffer.
+One thing I have found useful is to bind a key to a function that you can use for testing things, e.g:
+
+<pre>
+(define-key anything-map (kbd <f6>) 'anything-my-test)
+(defun anything-my-test nil
+  (interactive)
+  (with-anything-window
+    (message (number-to-string (count-lines-page)))))
+</pre>
+
+-- JoeBloggs
+
 == Implemented ==
 
 === Start anything with the symbol at point ===

@@ -89,7 +89,67 @@ I'm writing anything-startup.el to address installation/configuration complexity
 [new:sneazle:2009-01-17]
 Great - I added a very basic Getting Started section at the top now, because I figured some of it out. Would you be so kind as to update the Getting Started section once it's ready?
 
+=== Visible marks functions ===
 
+A few extra functions for visible marks:
+
+<pre>
+(defun anything-unmark-all ()
+  "Unmark all marked candidates."
+  (interactive)
+  (with-anything-window
+    (save-excursion
+      (goto-char (point-min))
+      (anything-next-line)
+      (let ((maxline (1- (line-number-at-pos (point-max)))))
+        (while (< (current-line) maxline)
+          (anything-aif (anything-this-visible-mark)
+              (anything-delete-visible-mark it))
+          (anything-next-line))
+        (anything-aif (anything-this-visible-mark)
+            (anything-delete-visible-mark it))))
+    (anything-mark-current-line)))
+
+(defun anything-mark-all ()
+  "Mark all unmarked candidates."
+  (interactive)
+  (with-anything-window
+    (save-excursion
+      (goto-char (point-min))
+      (anything-next-line)
+      (let ((maxline (1- (line-number-at-pos (point-max)))))
+        (while (< (current-line) maxline)
+          (if (not (anything-this-visible-mark))
+              (anything-make-visible-mark))
+            (anything-next-line))
+        (if (not (anything-this-visible-mark))
+            (anything-make-visible-mark))))
+    (anything-mark-current-line)))
+
+(defun anything-toggle-all-marks ()
+  "Toggle marks of all candidates."
+  (interactive)
+  (with-anything-window
+    (save-excursion
+      (goto-char (point-min))
+      (anything-next-line)
+      (let ((maxline (1- (line-number-at-pos (point-max)))))
+        (while (< (current-line) maxline)
+          (anything-toggle-visible-mark))
+        (anything-toggle-visible-mark)))
+    (anything-mark-current-line)))
+
+
+(define-key anything-map (kbd "M-u") 'anything-unmark-all)
+(define-key anything-map (kbd "M-m") 'anything-mark-all)
+(define-key anything-map (kbd "M-t") 'anything-toggle-all-marks)
+</pre>
+
+-- JoeBloggs
+
+Incidentally [[rubikitch]], what is the point of visible marks on actions?
+Do you intend to implement a feature to apply all marked actions?
+(cannot think of any specific examples of when this would be useful, but it feels like it should be).
 
 ----
 
@@ -156,7 +216,24 @@ Create the candidates function that splits an orgfile into entries.
 Then create an action that extracts the link from an entry.
 `org-map-entries' would help you. -- [[rubikitch]]
 
+=== Anything Sources Selection ===
+
+Slight improvement to `anything-c-source-call-source' function:
+replace `candidate' with (`anything-marked-candidates') in call to `anything' function in `action' attribute.
+Then you can select multiple sources by marking them first with `C-SPC'.
+
+-- JoeBloggs
+
 == Other Anything-related proposals ==
+
+===toggle anything-match-plugin on/off===
+
+I find the anything-match-plugin to be too slow for filtering large sources (e.g emacs variables/functions/commands).
+This is even when I have `(setq anything-mp-highlight-delay nil)'.
+It would be nice if it was possible to toggle between match plugin filtering and normal filtering.
+
+-- JoeBloggs
+
 
 === Mailing list ===
 
@@ -415,4 +492,5 @@ I think tilde(~) is more readable than $HOME. Don't you?
 Yes! -- [[rubikitch]]
 
 ----
+
 [[Anything]]
