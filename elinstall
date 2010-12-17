@@ -1,36 +1,100 @@
-** What it is
+* What it is
 
 An installer for elisp code. It sets up autoloads, load-path, etc.
 
-** Why use it
+* Why use it
 
 There are other package installers and there is "autoload.el", bundled
 with emacs.  Why use elinstall?  Because:
 
-* It works with my-site-start (DotEmacsModular) (which I highly recommend)
+** It works with my-site-start (DotEmacsModular) (which I highly recommend)
 
-* It supports slash-style paths, like 
+** It supports slash-style paths, like 
   : (require 'emtest/testhelp/tagnames)
 
-* Unlike autoload.el, it can also set up load-path and
+** Unlike autoload.el, it can also set up load-path and
   Info-default-directory-list (that's like load-path for info files)
 
-* Unlike autoload.el, it's not focussed on building emacs, it's
+** Unlike autoload.el, it's not focussed on building emacs, it's
   focussed on installing elisp.
 
-* Unlike some other installers, it works with canonical
+** Unlike some other installers, it works with canonical
   loaddefs.el-style autoload files.
 
-* Unlike other installers, what you install doesn't have to be
+** Unlike other installers, what you install doesn't have to be
   pre-packaged, and there are no restrictions on what means you can
   use to get the elisp files - elinstall doesn't care, it obeys the
   motto "do one thing well".
   But it also works well for packages.
 
-* Because internally it works in articulated stages, it's easier to
+** Because internally it works in articulated stages, it's easier to
   hack and extend than autoload.el
 
-** Where to get it
+** Because it supports plugins.
+
+* Where to get it
 
 It lives at http://repo.or.cz/w/elinstall.git and it will also be available thru ELPA.
 
+== How to autoload plugins with elinstall ==
+
+Sometimes a large package will want to have plugins, optional modules that relate to the package in a specific predefined manner.  That's difficult to support in emacs. You can write autoloads for each one, but how do you tell the large package which plugins are available?  How do you arrange it so that your users can put a plugin into the appropriate directory and have it just work?
+
+Elinstall makes that possible and not all that hard.  Here's how I do it for Emtest:
+
+** Write a function that takes a plugin name and entry points and adds it to a list to be checked.  In Emtest, it's just this:
+
+    (defun emtt:add-explorer (pred func &optional name &rest dummy)
+       "Add an explorer to our alist of explorers"
+
+       (unless (assq pred emtt:test-finder:method-list)
+	  (push 
+	     (list pred func name)
+	     emtt:test-finder:method-list)))
+
+
+** In each plugin, write an autoload form to call that function.  For instance: 
+
+    ;;;###autoload (emtt:add-explorer #'emthow:form-p #'emtt:explore-literal-clause
+    ;;;###autoload "Literal clause") 
+
+** One or more plugins should define a feature-check and a provide form.  It has to be done that way because right now there's no good way to add non-file forms to autoload files; that could change if there's demand for it.  Looks like this:
+
+    ;;;###autoload (unless (fboundp 'emtt:add-explorer)
+    ;;;###autoload   (error "emtest/runner/explorers/all must be loaded"))
+
+    ;;;(Other stuff here)
+
+    ;;;###autoload (provide 'emtest/runner/loadexplorers)
+
+** In your do-elinstall script, add a spec to define an autoloads file (here "emtest/runner/loadexplorers.el") constructed from everything in the target directory (here "emtest/runner/explorers").  It will look like:
+
+    (def-file "emtest/runner/loadexplorers.el" nil
+	     (dir "emtest/runner/explorers"))
+
+For reference, Emtest's entire elinstall call looks like:
+
+    (elinstall
+       "emtest"
+       (elinstall-directory-true-name)
+       '(load-path 
+	   (all 
+	      (block-in-subtree 
+		 (  "^tests\\.el"
+		    "^testhelp\\.el"
+		    "^explorers$"
+		    "^rtest\\.el"
+		    "^vtests\\.el"
+		    "^examples$"
+		    "^qexamples\\.el")
+		 t) 
+	      ;;Explorer plugins use this to inform top about their
+	      ;;existence
+	      (def-file "emtest/runner/loadexplorers.el" nil
+		 (dir "emtest/runner/explorers"))
+	      ;;Runner plugins use this to inform clause.el about their
+	      ;;existence
+	      (def-file "emtest/runner/runners/def-runners.el" nil
+		 (dir "emtest/runner/runners"))))
+
+       t)

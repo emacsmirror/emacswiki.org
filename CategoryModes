@@ -71,6 +71,7 @@ Other pages (could this please be split in major and minor modes?):
 * ItunesMode -- For Windows: http://www.geocities.jp/tmjb2006/itunes/itunes-mode.html
 * JiraMode -- Major mode for use with the Jira bug tracking software.
 * LicenseCopyright -- Insert a license header into the active buffer
+* ExtraLicense -- Insert a license header into the active buffer with keywords substitution.
 * LineNumbers
 * LojbanMode -- support for lojban language.
 * LongLinesJpMode -- longlines mode for Japanese.

@@ -60,21 +60,23 @@
 		  (buffer-substring (point) 
 				    (location-of (forward-sexp)))))))))
 
+
 (defun ph/copy-thing-from-next-line (&optional arg)
   (interactive "P")
   (if (eq last-command 'ph/copy-thing-from-next-line)
       (progn 
 	(undo)
-	(copy-sexp-from-next-line arg))
-    (copy-next-line arg)))
+	(copy-next-line arg))
+    (copy-sexp-from-next-line arg)))
 
 (defun ph/copy-thing-from-prev-line (&optional arg)
   (interactive "P")
   (if (eq last-command 'ph/copy-thing-from-prev-line)
       (progn 
 	(undo)
-	(copy-sexp-from-prev-line arg))
-    (copy-prev-line arg)))
+	(copy-prev-line arg))
+    (copy-sexp-from-prev-line arg)))
+
 
 (defun copy-next-line (&optional arg)
   "Copy characters from next nonblank line, starting just above point.

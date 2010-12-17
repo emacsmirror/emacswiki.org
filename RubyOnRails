@@ -74,6 +74,8 @@ Find the latest version of Rinari at github http://github.com/eschulte/rinari/tr
 
 When you install gems such as Rails, there is no ri documentation generated for it by default. You can do this manually by changing to your gems directory and running "rdoc -Y", but it takes a very long time to do. Once the ri is generated, use [http://rubyforge.org/projects/ri-emacs/ Ri for Emacs] to access it.
 
+[[YARI]] seems to work better for the latest version of RDoc (2.5.11).
+
 == Populating FileNameCache ==
 
 FileNameCache is a tool that helps with find-file to easily complete filenames regardless of their directory location.  Here's a little defun I wrote to simplify loading a Rails project into FileNameCache:

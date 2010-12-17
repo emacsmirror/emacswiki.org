@@ -234,10 +234,29 @@ It would be nice if it was possible to toggle between match plugin filtering and
 
 -- JoeBloggs
 
+[new] Check out last version on git and M-x anything-c-toggle-match-plugin.
+
+-- ThierryVolpiatto
+
+[new] Thanks! -- JoeBloggs
+
+[new] Hmm, now I get the following problem: Symbol's function definition is void: anything-compile-source--match-plugin
+
+-- JoeBloggs
+
+[new] This is not helpful send me a recipe of what you are doing (you can send by mail), it seem you have not required match-plugin, in this case of course you can't toggle it.
+
+-- ThierryVolpiatto
 
 === Mailing list ===
 
 An emacs-anything mailing list would be great.
+
+=== anything-etag request ===
+
+It would be nice if the file name were shown with the matching tag. eg in rails if I search on `show` it brings up a bunch of matches but no way of knowing
+which controller they are in. Something like what the standard tags-apropos displays would be nice. -- [[WolfmanJM]]
+
 
 == Implemented Proposals for anything-config.el ==
 

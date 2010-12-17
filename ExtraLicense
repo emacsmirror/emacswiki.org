@@ -1,0 +1,62 @@
+xlicense(eXtra License) inserts a license text of your choice into the current buffer.
+
+== Features ==
+Lots of license templates are provided (e.g. gpl, gpl2, bsd, boost, apache, etc.)
+
+License text is inserted as multi-line comment block (if the current buffer has a comment syntax)
+
+Automatically inserts your name, current year, and your organization if needed.
+
+== Downloading ==
+* Grab the source from [[xlicense.el]]
+* You need to download license templates from http://www.cinsk.org/emacs/xlicense.tar.gz
+
+== Installing ==
+
+To install, download xlicense.tar.gz in above location and untar in your ##~/.emacs.d/## directory:
+
+    $ # if ~/.emacs.d does not exist,
+    $ mkdir ~/.emacs.d
+
+    $ tar -C ~/.emacs.d -xzf licenses.tar.gz
+
+    $ # copy xlicense.el into your ~/.emacs.d/
+    $ cp xlicense.el ~/.emacs.d
+
+Then, load ##xlicense.el##:
+
+    (load-library "~/.emacs.d/xlicense.el")
+
+Additional abbreviation setup is recommended:
+
+    (define-abbrev-table 'global-abbrev-table
+      '(
+        ("$$license" "" license-skeleton)
+        ))
+
+    (add-hook 'c-mode-hook (function (lambda nil (abbrev-mode 1))))
+    (add-hook 'c++-mode-hook (function (lambda nil (abbrev-mode 1))))
+
+== Using ==
+
+`##M-x insert-license##' asks the license type you want with completion.  Then it asks one line short description of what your file does, and inserts the license text in your buffer in current comment syntax.   For example, if your buffer is in c-mode, the license is inserted in C comment (##/* ... */##).   If no comment syntax is defined in the current buffer, the text is inserted as it is.
+
+If abbreviation is enabled via above setup, typing ##$$license## automatically invoke `##insert-license##'.
+
+== Customization ==
+
+Each license template is installed in your ##~/.emacs.d/license/## directory.  If the license contains a keyword, it is replaced to appropriate value.  For example, if the license template contains "##@author@##" in it, it will be substituted for your full name.   Additionaly keywords are "##@email@##", "##@year@##", and "##@organization@##".    "##@organization@##" read the value of the environment variable, "##ORGANIZATION##".
+
+To add a custom license template, create new license template file in ##~/.emacs.d/license/## directory, then add it into `##license-types##'.
+
+To add a custom keyword, modify `##license-keywords-alist##' in the source.
+
+== See also ==
+
+Another license feature is provided by LicenseCopyright.
+
+----
+##xlicense.el## is poorly written, yet it works -- CinSK
+----
+
+CategoryModes EmacsLispList CinSK

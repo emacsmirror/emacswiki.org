@@ -460,6 +460,21 @@ I use this source to issue rake within Emacs.
 
 -- [[rubikitch]]
 
+Here is a version that uses ruby-compilation.el, which allows error detectionand jumping to the error...
+<pre>
+(defvar anything-c-source-rake-task
+	  '((name . "Rake Task")
+		(candidates . (lambda ()
+						(cons '("rake" . "default")
+							  (mapcar (lambda (line)
+										(cons line (second (split-string line " +"))))
+									  (with-current-buffer anything-current-buffer
+										(split-string (shell-command-to-string "rake -s -T") "\n" t))))))
+	
+		(action ("Rake" .(lambda (c) (ruby-compilation-rake c)))
+				("Rake with command-line edit" . (lambda (c) (ruby-compilation-rake t (concat c " ")))))))
+</pre>
+-- [[WolfmanJM]]
 == Occur ==
 
 <pre>
@@ -2056,6 +2071,51 @@ RubikitchAnythingConfiguration is my anything configuration. – rubikitch
 
 </pre>
 
+[new]
+
+I made the following alterations so that you can easily create different sources for different recoll config directories:
+
+<pre>
+(defvar anything-c-recoll-options
+  '("recoll" "-t" "-b") 
+  "A list where the `car' is the name of the recoll program followed by options.
+You do not need to include the -c option since this is already included, and the config directory
+can be passed as a argument to `anything-c-source-recoll'")
+
+(defun anything-c-source-recoll (name confdir)
+  "Function to create anything source for recoll search results.
+The source variable will be named `anything-c-source-recoll-NAME' where NAME is the first arg to the function
+ (and should be a valid symbol name - i.e. no spaces).
+The CONFDIR arg should be a string indicating the path to the config directory which recoll should use."
+  (eval
+   `(defvar ,(intern (concat "anything-c-source-recoll-" name))
+      '((name . ,(concat "Recoll " name))
+        (candidates . (lambda ()
+                        (apply 'start-process "recoll-process" nil 
+                               (append anything-c-recoll-options
+                                       '("-c" ,confdir)
+                                       (list anything-pattern)))))
+        (candidate-transformer
+         . (lambda (cs)
+             (mapcar (function (lambda (c)
+                                 (replace-regexp-in-string "file://" "" c)))
+                     cs)))
+        (type . file)
+        (requires-pattern . 3)
+        (delayed))
+      ,(concat "Source for retrieving files matching the current input pattern, using recoll with the configuration in "
+               confdir))))
+</pre>
+
+Then to create a source for recoll using a particular recoll config, e.g. "~/.recoll_reports",
+just call anything-c-source-recoll like this:
+
+<pre>
+(anything-c-source-recoll "reports" "~/.recoll_reports")
+</pre>
+
+-- JoeBloggs
+
 ==aspell/ispell==
 
 For use with just an "aspell/ispell -a".
@@ -2184,6 +2244,11 @@ Here are the sources and helper functions:
 Enjoy!
 
 -- MaDa
+
+== Rails Project File Finder ==
+This source gathers most of the relevant files in a Rails project...
+
+https://github.com/wolfmanjm/anything-on-rails
 
 
 == Grails Project File Finder ==

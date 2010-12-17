@@ -38,5 +38,8 @@ If you would like to modify the default license, try:
 
 There is no LGPL or GPL 3 in license.el, I added them in my copy and going to email to the Marcelo for a new release after some tests
 
+== See Also ==
+ExtraLicense -- Another license adding script.
+
 ----
 CategoryModes EmacsLispList MarceloToledo

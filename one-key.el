@@ -829,10 +829,11 @@ TITLE is title name of the menu. It can be any string you like."
       (insert "\n;; Use the `one-key-get-menu' command to show menu/keybindings for this buffer.\n")
       (insert "\n;; Uncomment and edit following line to set this menu as default for mode.")
       (insert (concat "\n;;(add-to-list 'one-key-mode-alist '("
-                      (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-" title "))"))
+                      (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-"
+                      (replace-regexp-in-string " " "-" title) "))"))
       (insert "\n;; Uncomment and edit following line to add this menu to toplevel menu.")
       (insert (concat "\n;;(add-to-list 'one-key-toplevel-alist '((\"type key here\" . \""
-                      title "\") . one-key-menu-" title "))"))
+                      title "\") . one-key-menu-" (replace-regexp-in-string " " "-" title) "))"))
       ;; Pop to buffer.
       (switch-to-buffer (current-buffer))
       (forward-line -3)
@@ -854,10 +855,11 @@ TITLE is title name of the menu. It can be any string you like."
     (insert "\n;; Use the `one-key-get-menu' command to show menu/keybindings for this buffer.\n")
     (insert "\n;; Uncomment and edit following line to set this menu as default for mode.")
     (insert (concat "\n;;(add-to-list 'one-key-mode-alist '("
-                    (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-" title "))"))
+                    (replace-regexp-in-string "-map" "" keystroke) " . one-key-menu-"
+                    (replace-regexp-in-string " " "-" title) "))"))
     (insert "\n;; Uncomment and edit following line to add this menu to toplevel menu.")
     (insert (concat "\n;;(add-to-list 'one-key-toplevel-alist '((\"type key here\" . \""
-                    title "\") . one-key-menu-" title "))"))
+                    title "\") . one-key-menu-" (replace-regexp-in-string " " "-" title) "))"))
     (forward-line -3)
     (beginning-of-line)))
 

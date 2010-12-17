@@ -5,17 +5,15 @@ Tramp was formerly called RCP or rcp.el.
 
 It allows you transparent access to files on remote access.  "Transparent" means that usually the user doesn't have to worry about anything.  All that changes is the filename convention to indicate that the file resides on a remote system.
 
-If Tramp isn't fast enough for you, try shfs at http://shfs.sourceforge.net/
-
 If Tramp still isn't fast enough for you (or if you don't use linux), try http://linux.com/feature/54498
 
 == Obtaining TRAMP ==
 
+TrampMode is a part of Emacs starting with version 22.1.
+
 You can get it from here:
 
 * http://savannah.gnu.org/projects/tramp
-
-Or from recent Emacs CVS HEAD.  TrampMode is a part of Emacs starting with version 22.1.
 
 Tramp Documentation:
 

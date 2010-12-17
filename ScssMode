@@ -1,5 +1,5 @@
 Trivial mode for editing [http://sass-lang.com/ SCSS files] derived from css-mode, added highlight for variables and automatic compiling.
 
-[http://github.com/blastura/dot-emacs/blob/master/lisp-personal/scss-mode.el scss-mode.el]
+[https://github.com/antonj/scss-mode scss-mode at github]
 
 -- [[AntonJohansson]]
