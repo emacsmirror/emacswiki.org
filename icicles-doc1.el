@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 11 21:36:17 2010 (-0800)
+;; Last-Updated: Fri Dec 17 12:13:37 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25551
+;;     Update #: 25564
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1318,9 +1318,9 @@
 ;;  Using `M-.' or a proxy candidate on demand, instead of binding
 ;;  keys to ffap commands, lets you control which buffer text you use
 ;;  as minibuffer input and how that text should be interpreted (file
-;;  name, URL, and so on).  By default, `M-.' uses `ffap-guesser', but
-;;  you can change this by customizing user option
-;;  `icicle-thing-at-point-functions'.
+;;  name, URL, and so on).  You can change the behavior of `M-.'
+;;  (which string-inserting functions are used) by customizing user
+;;  option `icicle-thing-at-point-functions'.
 ;;
 ;;  Actually, `M-.' acts differently if you use it successively.
 ;;  Successive uses of `M-.' grab and insert either 1) alternative
@@ -1353,13 +1353,10 @@
 ;;
 ;;  * The car (first part) is a list of functions that grab different
 ;;    kinds of strings at or near point (#1, above).  Any number of
-;;    functions can be used.  They are used in sequence by `M-.'.  By
-;;    default, there are four functions, which alternately grab:
-;;
-;;    1) whatever `ffap-guesser' returns (e.g. file name at point)
-;;    2) the symbol or file name at point
-;;    3) the word at point
-;;    4) the URL at point
+;;    functions can be used.  They are used in sequence by `M-.'.  I
+;;    recommend that you also use library `thingatpt+.el', so that
+;;    `M-.' can take advantage of the string-grabbing functions it
+;;    defines.
 ;;
 ;;  * The cdr (second part) is a function that advances point one text
 ;;    thing (#2, above).  Each time command `M-.' is used

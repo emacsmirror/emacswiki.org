@@ -7,7 +7,6 @@ For information on how to get them directly, see:
 
 * EmacsFromBazaar -- get sources using bzr -- the vcs choosen by the maintainers
 * EmacsFromGit -- get sources using git -- another popular vcs
-* EmacsFromArch -- get sources using arch -- does this still work?
 
 See BuildingEmacs for how to build Emacs from the source package.
 

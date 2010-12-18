@@ -39,7 +39,8 @@ These functions will usually return the appropriate object type for the particul
 
 Specific ''thing''-at-point functions are available for most major types of things and are defined in ##thingatpt.el##.  Any other things you want the library to recognize you have to extend the library by defining functions that can recognize your ''thing''.
 
-== Example: Extending the interface for integers ==
+
+== Example: integers as things ==
 
 Function `thing-at-point' can find numbers.  Function `number-at-point' uses Emacs's `read-from-string' function to return the current S-expression and then verifies that it is a number. This strategy can sometimes be too general.  Sometimes you want a function that retrieves only integers or retrieves only floating-point numbers ("floats"), rather than allowing both.  The other disadvantage is that `number-at-point' is an incomplete implementation of `thing-at-point'.  Information about the number's location (buffer bounds) in the buffer is not available.  The function `number-at-point' relies on the Emacs Lisp interpreter which cannot (currently) provide the buffer location.
 
@@ -178,11 +179,11 @@ Libraries are available that extend library ##thingatpt.el## in various ways.
 
 * StringAtPoint -- determine a programming language string under point.
 
+* [[ThingAtPoint+]] -- general extension of ##thingatpt.el##: <tt>[[thingatpt+.el]]</tt>
+
 * ThingAtPointCommands -- select successive objects of different types: <tt>[[thing-cmds.el]]</tt>
 
 * ThingAtPointOptional -- utilities similar to ThingAtPointCommands.
-
-* ThingAtPointPlus -- general extension of ##thingatpt.el##: <tt>[[thingatpt+.el]]</tt>
 
 * ThingEdit, <tt>[[thing-edit-extension.el]]</tt> -- copy/paste various things at point.
 
@@ -190,7 +191,7 @@ The following add new kinds of things at point. They provide examples of how to 
 
 * [[Chart]] -- stock and commodity symbols (ie. ticker codes)
 * TexMathPreview -- TeX math expressions
-* ThingAtPointPlus -- things at or ''nearest'' point: list, number, word, sentence, sexp, symbol, symbol name
+* [[ThingAtPoint+]] -- things at or ''nearest'' point: list, number, word, sentence, sexp, symbol, symbol name
 * ThingAtPointUtils -- Delivers a set of functions to return,
 mover over or manipulate a given THING. THING may be a
 well known form as symbol', `list', `sexp', `defun' but

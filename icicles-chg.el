@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 14 13:57:18 2010 (-0800)
+;; Last-Updated: Fri Dec 17 13:19:07 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5924
+;;     Update #: 5930
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2142,6 +2142,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/12/17 dadams
+;;     icicle-remove-Completions-window: Added FORCE arg.  Remove if FORCE or interactive.
+;;     icicle-abort-recursive-edit: Call icicle-remove-Completions-window with FORCE arg.
 ;; 2010/12/14 dadams
 ;;     icicle-retrieve-previous-input:
 ;;       Added optional arg ALLOW-EMPTY-P (not used yet in calls).
@@ -4211,6 +4214,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/12/17 dadams
+;;     icicle-thing-at-point-functions: Added to default: list-nearest-point-as-string (1,2,3).
 ;; 2010/11/12 dadams
 ;;     Added: icicle-(S-)TAB-completion-methods-per-command.
 ;; 2010/11/10 dadams

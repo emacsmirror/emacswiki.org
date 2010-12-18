@@ -139,7 +139,26 @@ A few extra functions for visible marks:
         (anything-toggle-visible-mark)))
     (anything-mark-current-line)))
 
+(defun anything-kill-marked-candidates ()
+  "Store each marked candidate to the kill-ring (as seperate items),
+or if no candidates are marked, store the current candidate.
+This function does not quit anything when it has finished."
+  (interactive)
+  (with-anything-window
+    (save-excursion
+      (let ((max (length (anything-marked-candidates)))
+            (count 0))
+        (if (eq max 1)
+            (kill-new (anything-get-selection nil t))
+          (goto-char (point-min))
+          (while (< count max)
+            (anything-next-visible-mark)
+            (kill-new (anything-get-selection nil t))
+            (setq count (1+ count))))))
+    (anything-mark-current-line)))
 
+    
+(define-key anything-map (kbd "M-k") 'anything-kill-marked-candidates)
 (define-key anything-map (kbd "M-u") 'anything-unmark-all)
 (define-key anything-map (kbd "M-m") 'anything-mark-all)
 (define-key anything-map (kbd "M-t") 'anything-toggle-all-marks)
@@ -150,6 +169,11 @@ A few extra functions for visible marks:
 Incidentally [[rubikitch]], what is the point of visible marks on actions?
 Do you intend to implement a feature to apply all marked actions?
 (cannot think of any specific examples of when this would be useful, but it feels like it should be).
+
+[new] These functions are not acceptable since the display in anything is not always the same like it is in dired for example.
+With anything-find-files for example, the display change at each time you change directory and the marks you put here will not be visible there.
+
+-- ThierryVolpiatto
 
 ----
 
@@ -245,6 +269,16 @@ It would be nice if it was possible to toggle between match plugin filtering and
 -- JoeBloggs
 
 [new] This is not helpful send me a recipe of what you are doing (you can send by mail), it seem you have not required match-plugin, in this case of course you can't toggle it.
+
+-- ThierryVolpiatto
+
+[new] Ahh.. yes.. (blushes), I forgot that I'd commented out the require statement.
+
+I have another request though; the value of `anything-mp-highlight-delay' is not preserved if you turn the match-plugin off and then on again. If I set it to nil, then apply `anything-c-toggle-match-plugin' twice (perhaps with some intervening commands) it is set back to 0.7. Could this be fixed?
+
+-- JoeBloggs
+
+[new] Yes, i have hardcoded the original value (0.7) i will fix that as soon as possible. 
 
 -- ThierryVolpiatto
 

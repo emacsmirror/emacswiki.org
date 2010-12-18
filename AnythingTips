@@ -77,6 +77,15 @@ One thing I have found useful is to bind a key to a function that you can use fo
 
 -- JoeBloggs
 
+You can use C-x C-x C-d (anything-debug-output) in anything session.
+<pre>
+(setq anything-debug-forms '((count-lines-page)))
+</pre>
+
+-- rubikitch
+
+Thanks! but I think that should be C-c C-x C-d -- JoeBloggs
+
 == Implemented ==
 
 === Start anything with the symbol at point ===

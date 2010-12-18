@@ -311,6 +311,49 @@ path. To copy more than one file name/path at once, mark (by pressing //m//) all
 the entries you're interested in, then press //w// or //0w//.
 
 ----
+[:CompareDirectories]
+==How do I compare two directories in Sunrise?==
+
+# CD to the directories to compare (in left and right panes)
+
+# Press C-M-=
+
+# Press one of d, s, a, n or c to compare by Date, Size, date And
+size or file Contents.
+
+# Use = to run diff or C-= to run ediff on the files marked. 
+
+This facility is not limited to comparing two directories in the file system, it
+actually compares whatever left and right panes contain at the moment it is
+invoked: e.g. the results of find/locate operations, contents of compressed
+archives, etc.
+
+----
+[:CompareDirectoriesRecursively]
+==How do I compare *recursively* two directories in Sunrise?==
+
+To perform recursive comparisons with Sunrise you need first to "flatten the
+tree":
+
+# press C-c C-n to bring up find by name,
+
+# type in "*" (a single asterisk) and press Return
+
+this will display recursively all the contents of the current directory,
+including sub-directories. Alternatively:
+
+# press C-c C-f to bring up find with args,
+
+# type in "-not -type d" and press Return
+
+this will recursively display everything that is *not* a directory inside the
+current one. There are many ways to flatten the tree in order to make the pane
+contain exactly what you're interested in. Once that's done you can perform a
+recursive comparison in exactly the same way as you'd do a regular one.
+
+At any moment you can press C-c C-c to return to normal mode.
+
+----
 [:NavigationAndTracking]
 ==Advanced navigation and location tracking.==
 

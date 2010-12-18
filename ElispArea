@@ -96,7 +96,7 @@ implementation ##epackage.el## package manager. This a modern implementation of 
 * Various package hosting solutions (with version control).  Some of the more popular ones are (links to Emacs specific pages for your searching pleasure):
 
 ** Using [[Git]] --
-   [http://repo.or.cz/w?a=roject_list;temacs repo.or.cz],
+   [http://repo.or.cz/w?a=project_list;temacs repo.or.cz],
    [http://gitorious.org/search?q=category:emacs gitorious],
    [http://github.com/languages/Emacs%20Lisp github]
    ([http://git.wiki.kernel.org/index.php/GitHosting more])
@@ -122,7 +122,7 @@ Additional tips can be found on ElispAreaDiscussions
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 260%
+%Id: 261%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

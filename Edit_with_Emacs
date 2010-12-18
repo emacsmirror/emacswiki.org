@@ -45,3 +45,6 @@ your running Emacs instance do:
 === Integrating with other modes ===
 
 TODO: Look at integrating as-external...
+
+On OS X, running Aquamacs 2.1, how would I force Aquamacs to bring the new message frame above Chrome? Currently, a new frame is opened on top of Aquamacs, but below
+Chrome.  Also, i think the ALT+E button doesn't function on Chrome 10.0.612.1 dev - no Aquamacs window is raised.

@@ -51,6 +51,7 @@ Click the page heading to find all pages acting as glossary entries. See also th
 * [[major mode]] -- there is one major mode per [[buffer]]
 * [[mark]] -- a [[buffer]] location that you can change, return to...
 * '''[::marker]''' -- a Lisp object that contains information about a position in a [[buffer]]
+* '''[::mark ring]''' -- ring of [[#mark]]s.  [[#variable|Variable]] `mark-ring' holds the marks of the current buffer; variable `global-mark-ring' holds the global marks (across all buffers).
 * [[menu bar]] -- menus at the top of an Emacs [[frame]]
 * '''[::Meta] key''' (written '''`M-'''') -- a logical modifier key that is usually realized as the '''Alt''' keyboard key
 * [[minibuffer]] -- special [[buffer]] at the bottom of a [[frame]], which you use to enter commands

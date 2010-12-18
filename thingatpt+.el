@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Feb 13 16:47:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Dec 10 17:59:29 2010 (-0800)
+;; Last-Updated: Fri Dec 17 11:38:06 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 848
+;;     Update #: 984
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thingatpt+.el
 ;; Keywords: extensions, matching, mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -38,7 +38,8 @@
 ;;    `bounds-of-symbol-at-point', `bounds-of-symbol-nearest-point',
 ;;    `bounds-of-thing-nearest-point', `form-at-point-with-bounds',
 ;;    `form-nearest-point', `form-nearest-point-with-bounds',
-;;    `forward-char-same-line', `list-nearest-point',
+;;    `forward-char-same-line', `list-at/nearest-point',
+;;    `list-nearest-point', `list-nearest-point-as-string',
 ;;    `non-nil-symbol-name-at-point',
 ;;    `non-nil-symbol-name-nearest-point',
 ;;    `non-nil-symbol-nearest-point', `number-nearest-point',
@@ -48,7 +49,9 @@
 ;;    `symbol-nearest-point', `symbol-nearest-point-with-bounds',
 ;;    `thing-at-point-with-bounds',
 ;;    `thing/form-nearest-point-with-bounds', `thing-nearest-point',
-;;    `thing-nearest-point-with-bounds', `word-nearest-point'.
+;;    `thing-nearest-point-with-bounds', `unquoted-list-at-point',
+;;    `unquoted-list-nearest-point',
+;;    `unquoted-list-nearest-point-as-string', `word-nearest-point'.
 ;;
 ;;
 ;;  ***** NOTE: The following functions defined in `thingatpt.el'
@@ -56,13 +59,10 @@
 ;;
 ;;  `bounds-of-thing-at-point' - Added optional argument SYNTAX-TABLE.
 ;;  `form-at-point'            - Added optional argument SYNTAX-TABLE.
-;;  `list-at-point'            - Added optional argument SYNTAX-TABLE.
-;;  `number-at-point'          - Added optional argument SYNTAX-TABLE.
-;;  `sentence-at-point'        - Added optional argument SYNTAX-TABLE.
-;;  `sexp-at-point'            - Added optional argument SYNTAX-TABLE.
+;;  `list-at-point'            - Better behavior.
+;;                               Added optional argument SYNTAX-TABLE.
 ;;  `symbol-at-point'          - Added optional argument NON-NIL.
 ;;  `thing-at-point'           - Added optional argument SYNTAX-TABLE.
-;;  `word-at-point'            - Added optional argument SYNTAX-TABLE.
 ;;
 ;;
 ;;  A reminder (the doc strings are not so good):
@@ -81,6 +81,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/12/17 dadams
+;;     Added: (unquoted-)list-(at|nearest)-point, list-at/nearest-point,
+;;            unquoted-list-nearest-point-as-string.
+;;     list-nearest-point: Redefined using list-at/nearest-point.
 ;; 2010/12/10 dadams
 ;;     form-at-point-with-bounds:
 ;;       Moved condition-case to around whole.  Let sexp be any format of nil.
@@ -109,11 +113,11 @@
 ;;       Treat nil as legitimate symbol.
 ;; 1996/06/11 dadams
 ;;     bounds-of-symbol-at-point, bounds-of-symbol-nearest-point,
-;;     symbol-at-point, symbol-at-point-with-bounds,
-;;     symbol-name-nearest-point, symbol-nearest-point,
-;;     symbol-nearest-point-with-bounds: No longer use a syntax-table
-;;     arg.  Always dealing with elisp symbols, so use
-;;     emacs-lisp-mode-syntax-table.
+;;       symbol-at-point, symbol-at-point-with-bounds,
+;;       symbol-name-nearest-point, symbol-nearest-point,
+;;       symbol-nearest-point-with-bounds: No longer use a syntax-table
+;;       arg.  Always dealing with elisp symbols, so use
+;;       emacs-lisp-mode-syntax-table.
 ;; 1996/03/20 dadams
 ;;     1. Added redefinitions of thing-at-point, form-at-point, with optional
 ;;        syntax table arg.
@@ -183,17 +187,20 @@ To constrain search to the same line as point, set this to zero.
 Used by functions that provide default text for minibuffer input.
 Some functions might ignore or override this setting temporarily."
   :type 'integer :group 'minibuffer)
-
-
-;;; THINGS ----------------------------------------------------------
+ 
+;;; THINGS -----------------------------------------------------------
 
 (or (fboundp 'old-bounds-of-thing-at-point)
 (fset 'old-bounds-of-thing-at-point (symbol-function
                                      'bounds-of-thing-at-point)))
 
-;; REPLACES ORIGINAL in `thingatpt.el':
+;; REPLACES ORIGINAL in `thingatpt.el'.
 ;; Added optional argument SYNTAX-TABLE.
+;;
+;; Note: in Emacs releases prior to Emacs 23 this can give incorrect results.
+;;
 ;; NOTE: All of the other functions here are based on this function.
+;;
 ;;;###autoload
 (defun bounds-of-thing-at-point (thing &optional syntax-table)
   "Determine the start and end buffer locations for the THING at point.
@@ -277,10 +284,11 @@ Other arguments are as for `thing-nearest-point-with-bounds'."
                         (<= ind1 max-x)
                         (not f-or-t+bds))
               (unless bolp (save-excursion ; Left.
-                             (setq bolp (forward-char-same-line (- ind1))
-                                   f-or-t+bds (if pred
-                                                  (funcall fn thing pred syntax-table)
-                                                (funcall fn thing syntax-table)))))
+                             (setq bolp  (forward-char-same-line (- ind1))
+                                   f-or-t+bds
+                                   (if pred
+                                       (funcall fn thing pred syntax-table)
+                                     (funcall fn thing syntax-table)))))
               (unless (or f-or-t+bds eolp) ; Right.
                 (save-excursion
                   (setq eolp (forward-char-same-line ind1)
@@ -320,9 +328,8 @@ A related function:
 SYNTAX-TABLE is a syntax table to use."
   (let ((thing+bds (thing-nearest-point-with-bounds thing syntax-table)))
     (and thing+bds (car thing+bds))))
-
-
-;;; FORMS ----------------------------------------------------------
+ 
+;;; FORMS ------------------------------------------------------------
 
 ;;;###autoload
 (defun form-at-point-with-bounds (&optional thing pred syntax-table)
@@ -407,8 +414,7 @@ Optional arguments:
   SYNTAX-TABLE is a syntax table to use."
   (let ((form+bds (form-nearest-point-with-bounds thing pred syntax-table)))
     (and form+bds (car form+bds))))
-
-
+ 
 ;;; SYMBOLS ----------------------------------------------------------
 
 ;;;###autoload
@@ -516,9 +522,99 @@ Some related functions:
 Note that these last three functions return strings, not symbols."
   (let ((symb+bds (symbol-nearest-point-with-bounds t)))
     (and symb+bds (car symb+bds))))
+ 
+;;; LISTS ------------------------------------------------------------
+
+;;; This simple definition is nowhere near as good as the one below.
+;;;
+;;; (defun list-nearest-point (&optional syntax-table)
+;;;   "Return the list nearest to point, if any, else nil.
+;;; This does not distinguish between finding no list and finding
+;;; the empty list.  \"Nearest\" to point is determined as for
+;;; `thing-nearest-point'.
+;;; SYNTAX-TABLE is a syntax table to use."
+;;;   (form-nearest-point 'list 'listp syntax-table))
 
 
-;;; MISC: SYMBOL NAMES, WORDS, SENTENCES, etc. ----------------------------
+;; REPLACE ORIGINAL defined in `thingatpt.el'.
+;;
+;; 1. Added optional arg UP.
+;; 2. Better, consistent behavior.
+;;
+;;;###autoload
+(defun list-at-point (&optional up)
+  "Return the non-nil list at point, or nil if none.
+If inside a list, return the enclosing list.
+
+UP (default: 0) is the number of list levels to go up to start with.
+
+Note: If point is inside a string that is inside a list:
+ This can sometimes return nil.
+ This can sometimes return an incorrect list value if the string or
+ nearby strings have contain parens.
+ (These are limitations of function `up-list'.)"
+  (list-at/nearest-point 'sexp-at-point up))
+
+;;;###autoload
+(defun unquoted-list-at-point (&optional up)
+  "Return the non-nil list at point, or nil if none.
+Same as `list-at-point', but removes the car if it is `quote' or
+`backquote-backquote-symbol' (\`)."
+  (list-at/nearest-point 'sexp-at-point up 'UNQUOTED))
+
+;;;###autoload
+(defun list-nearest-point (&optional up)
+  "Return the non-nil list nearest point, or nil if none.
+Same as `list-at-point', but returns the nearest list."
+  (list-at/nearest-point 'sexp-nearest-point up))
+
+;;;###autoload
+(defun unquoted-list-nearest-point (&optional up)
+  "Return the non-nil list nearest point, or nil if none.
+UP (default: 0) is the number of list levels to go up to start with.
+Same as `list-nearest-point', but removes the car if it is `quote' or
+`backquote-backquote-symbol' (\`)."
+  (list-at/nearest-point 'sexp-nearest-point up 'UNQUOTED))
+
+(defun list-at/nearest-point (at/near &optional up unquotedp)
+  "Helper for `list-at-point' and `list-nearest-point'.
+UP (default: 1) is the number of list levels to go up.
+Non-nil UNQUOTEDP means remove the car if it is `quote' or
+`backquote-backquote-symbol'."
+  (save-excursion
+    (cond ((looking-at "\\s-*\\s(") (skip-syntax-forward "-"))
+          ((looking-at "\\s)\\s-*") (skip-syntax-backward "-")))
+    (let ((sexp   (funcall at/near)))
+      (condition-case nil               ; Handle an `up-list' error.
+          (progn
+            (when up (up-list (- up)) (setq sexp  (sexp-at-point)))
+            (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point)))
+            (when (and unquotedp (consp sexp)
+                       (memq (car sexp) (list backquote-backquote-symbol 'quote)))
+              (setq sexp  (cadr sexp)))
+            (while (not (listp sexp)) (up-list -1) (setq sexp  (sexp-at-point))))
+        (error (setq sexp  nil)))
+      sexp)))
+
+
+;; The following functions return a string, not a list.
+;; They can be useful to pull a sexp into minibuffer.
+
+;;;###autoload
+(defun list-nearest-point-as-string (&optional up)
+  "Return a string of the non-nil list nearest point, or \"\" if none.
+If not \"\", the list in the string is what is returned by
+`list-nearest-point'."
+  (format "%s" (list-at/nearest-point 'sexp-nearest-point up)))
+
+;;;###autoload
+(defun unquoted-list-nearest-point-as-string (&optional up)
+  "Return a string of the non-nil list nearest point, or \"\" if none.
+If not \"\", the list in the string is what is returned by
+`unquoted-list-nearest-point'."
+  (format "%s" (list-at/nearest-point 'sexp-nearest-point up 'UNQUOTED)))
+ 
+;;; MISC: SYMBOL NAMES, WORDS, SENTENCES, etc. -----------------------
 
 ;;;###autoload
 (defun non-nil-symbol-name-at-point ()
@@ -587,22 +683,13 @@ SYNTAX-TABLE is a syntax table to use."
 SYNTAX-TABLE is a syntax table to use."
   (form-nearest-point 'sexp 'numberp syntax-table))
 
-;;;###autoload
-(defun list-nearest-point (&optional syntax-table)
-  "Return the list nearest to point, if any, else nil.
-This does not distinguish between finding no list and finding
-the empty list.  \"Nearest\" to point is determined as for
-`thing-nearest-point'.
-SYNTAX-TABLE is a syntax table to use."
-  (form-nearest-point 'list 'listp syntax-table))
 
 ;; `defun' type
 (put 'defun 'beginning-op 'beginning-of-defun)
 (put 'defun 'end-op 'end-of-defun)
 (put 'defun 'forward-op 'end-of-defun)
-
-
-;;; COMMANDS ----------------------------
+ 
+;;; COMMANDS ---------------------------------------------------------
 
 ;; Copied from `misc-cmds.el'.
 ;;;###autoload

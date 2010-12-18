@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Nov 12 12:56:00 2010 (-0800)
+;; Last-Updated: Fri Dec 17 12:03:01 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3960
+;;     Update #: 3976
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -229,9 +229,9 @@
 (require 'hexrgb nil t)     ;; (no error if not found): hexrgb-color-values-to-hex,
                             ;; hexrgb-increment-(red|green|blue), hexrgb-rgb-to-hsv,
                             ;; hexrgb-color-values-to-hex, hexrgb-hsv-to-rgb
-(require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point,
-(require 'thingatpt+ nil t) ;; (no error if not found): symbol-name-nearest-point,
-                            ;; word-nearest-point
+(require 'thingatpt)        ;; symbol-at-point, thing-at-point, thing-at-point-url-at-point
+(require 'thingatpt+ nil t) ;; (no error if not found): list-nearest-point-as-string,
+                            ;; region-or-word-nearest-point, symbol-name-nearest-point
 (require 'icicles-face)     ;; icicle-increment-color-hue.
 
 ;; Quiet the byte-compiler.
@@ -2666,6 +2666,11 @@ during Icicles search)."
             ,(if (fboundp 'region-or-word-nearest-point)
                  'region-or-word-nearest-point
                  (lambda () (thing-at-point 'word)))
+            ,@(and (fboundp 'list-nearest-point-as-string) '(list-nearest-point-as-string))
+            ,@(and (fboundp 'list-nearest-point-as-string)
+                   '((lambda () (list-nearest-point-as-string 2))))
+            ,@(and (fboundp 'list-nearest-point-as-string)
+                   '((lambda () (list-nearest-point-as-string 3))))
             ,@(and (fboundp 'ffap-guesser) '(ffap-guesser))
             thing-at-point-url-at-point)
           'forward-word))
@@ -2673,11 +2678,10 @@ during Icicles search)."
 A cons cell whose car and cdr may each be empty.
 
 The car of the cons cell is a list of functions that grab different
-kinds of strings at or near point.  By default, there are four
-functions, which grab 1) whatever `ffap-guesser' finds, 2) the symbol
-or file name, 3) the word, 4) the URL at point.  Any number of
-functions can be used.  They are used in sequence by command
-`icicle-insert-string-at-point' (bound to `M-.').
+kinds of strings at or near point.  They are used in sequence by
+command `icicle-insert-string-at-point' (bound to `M-.').  I recommend
+that you also use library `thingatpt+.el', so that `M-.' can take
+advantage of the string-grabbing functions it defines.
 
 The cdr of the cons cell is nil or a function that advances point one
 text thing.  Each time command `icicle-insert-string-at-point' is

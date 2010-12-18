@@ -1,11 +1,11 @@
-This page describes library Lisp:thingatpt+.el, by DrewAdams. This is an extension of standard library `<code>thingatpt.el</code>' (See ThingAtPoint). It provides various functions for determining (returning) different objects at or near point.
+This page describes library '''[::ThingAtPoint+]''' (<tt>[[thingatpt+.el]]</tt>). This is an extension of standard library ##thingatpt.el## (See ThingAtPoint). It provides various functions for determining (returning) different objects at or near [[point]].
 
 
 The objects are ''THING''s for which there is either a corresponding
 `forward-'''THING'' operation, or corresponding `beginning-of-'''THING'' and
 `end-of-'''THING'' operations. 
 
-Examples of ''THING'' are `word', `sentence', and `defun'. For example, words have Emacs Lisp functions `forward-word', `beginning-of-word', and `end-of-word' functions. Library `<code>thingatpt+.el</code>' uses such functions to return the word at or nearest the TextCursor (and [[Point]]).
+Examples of ''THING'' are `word', `sentence', and `defun'. For example, words have Emacs Lisp functions `forward-word', `beginning-of-word', and `end-of-word' functions. Library ##thingatpt+.el## uses such functions to return the word at or nearest the [[cursor]].
 
 Library <tt>[[thingatpt+.el]]</tt> also provides functions to pick up things that are ''near'' the cursor, not just things that are exactly under the cursor. For this feature, you can customize two user options that control what "'''near'''" means, that is, how far from the cursor to look.
 
@@ -13,10 +13,11 @@ The following categories are detailed below:
 
 * '''things''' -- See [[#Things]].
 * '''forms''' -- Forms are particular kinds of things. See [[#Forms]]. 
-* '''symbols''' -- Symbols are particular kinds of forms. See [[#Symbols]]. 
-* other: '''symbol names''', '''words''', '''sentences''', '''sexp''', '''number''', '''list'''. See [[#Other]].
+* '''symbols''' -- Symbols are particular kinds of forms. See [[#Symbols]].
+* '''lists''' -- Lists.  See [[#Lists]].
+* other: '''symbol names''', '''words''', '''sentences''', '''sexp''', '''number'''. See [[#Other]].
 
-'''See Also:''' ThingAtPointCommands, for commands to select different kinds of things at or near the cursor.
+'''See Also:''' ThingAtPointCommands, for commands to ''select'' different kinds of things at or near point.
 
 
 
@@ -58,10 +59,29 @@ A form is a particular kind of Lisp thing that optionally satisfies a particular
 * `bounds-of-symbol-at-point', `bounds-of-symbol-nearest-point', `non-nil-symbol-at-point', `non-nil-symbol-name-at-point', `non-nil-symbol-name-nearest-point', `non-nil-symbol-nearest-point', `symbol-at-point', `symbol-nearest-point', `symbol-at-point-with-bounds', `symbol-name-nearest-point', `symbol-nearest-point-with-bounds'.
 
 
-[:Other]
-== Other: Words, Sentences, Sexps, Numbers, Lists ==
+[:Lists]
+== Lists ==
 
-* `word-nearest-point', `sentence-nearest-point', `sexp-nearest-point', `number-nearest-point', `list-nearest-point'.
+* `list-at-point', `list-nearest-point', `unquoted-list-at-point', `unquoted-list-nearest-point', `unquoted-list-nearest-point-as-string'
+
+
+The %%ThingAtPt+%% list functions all accept an optional argument `UP', which is the number of list levels to go up to start with.  IOW, `UP' lets you retrieve a wider list than the one immediately surrounding point.
+
+In addition, the %%ThingAtPt+%% redefinition of standard function `list-at-point' provides better and more consistent behavior: it does what you would expect.
+
+The `unquoted-' functions remove any quote or backquote, so that, e.g., ##'bar## and ##`(foo a b)## gives you ##bar## and ##(foo a b)## instead of ##(quote bar)## and ##(backquote-backquote-symbol(foo a b))##, which is ##`(foo a b)##.
+
+See also: ThingAtPointCommands, for commands such as `mark-enclosing-sexp', to ''select'' successively larger lists surroundig point.
+
+
+
+[:Other]
+== Other: Words, Sentences, Sexps, Numbers ==
+
+* `word-nearest-point', `sentence-nearest-point', `sexp-nearest-point', `number-nearest-point'
+
+See also: ThingAtPointCommands, for commands such as `mark-enclosing-sexp', to ''select'' successively larger sexps surroundig point.
+
 
 ----
 

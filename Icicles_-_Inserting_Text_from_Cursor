@@ -52,9 +52,7 @@ Another way is to use one of the [[Icicles - Completions Display#ProxyCandidates
 
 Using `##M-.##' or a proxy candidate on demand, instead of binding keys to ffap commands,
 lets you control which [[buffer]] text you use as minibuffer input and
-how that text should be interpreted (file name, URL, and so on).
-By default, `##M-.##' uses `ffap-guesser', but you can change this by
-customizing [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>''''.
+how that text should be interpreted (file name, URL, and so on).  You can change the behavior of `##M-.##' (which string-inserting functions are used) by customizing [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-thing-at-point-functions|icicle-thing-at-point-functions]]</tt>''''.
 
 Actually, `##M-.##' acts <u>differently if you **u**se it successively</u>.
 Successive uses of `##M-.##' grab and insert either '''1''') alternative
@@ -87,16 +85,10 @@ near the cursor `##M-.##' inserts into the minibuffer.  It is a [[cons cell]], t
 * The ''[[car]]'' (first part) is a list of
 functions that ''grab different kinds of strings'' at or near [[point]] (#1, above). Any number of
 functions can be used.  They are used in sequence by `##M-.##'.
-By default, there are four functions, which alternately grab:
+I recommend that you also use library <tt>[[thingatpt+.el]]</tt>, so that
+`##M-.##' can take advantage of the string-grabbing functions it
+defines.
 
-## whatever `ffap-guesser' returns (e.g. file name at point)
-
-## the [[symbol]] or
-file name at point 
-
-## the word at point 
-
-## the URL at point 
 
 * The ''[[cdr]]'' (second part) is a function that
 advances point one text thing (#2, above).  Each time command `##M-.##' is used

@@ -39,6 +39,10 @@ The first line suppresses command line output, but if anyone knows a quick and e
 
 Pro tip: Under Windows Vista/7 with your emacs directory in "Program Files", do *NOT* use Emacs itself to create or edit the batch file. Windows creates a "Virtual Store" in the environment of the current user when it sees an executable messing with it's own directory under "Program Files". This could cause some confusing problems.
 
+[new]
+17 Dec 2010: @Pro tip: what do you mean "when it sees an executable messing with it's own directory"?  Can't an executable run another executable under same directory?  Could you please provide more details?  Thanks.
+[new]
+
 Then it's as easy as associating whatever files you like with with the new emacs.bat file.
 
 Inspired by the original text:

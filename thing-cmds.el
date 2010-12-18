@@ -7,9 +7,9 @@
 ;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Fri Jan 15 13:47:31 2010 (-0800)
+;; Last-Updated: Fri Dec 17 11:11:24 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 124
+;;     Update #: 139
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,8 +28,9 @@
 ;; 
 ;;  Commands defined here:
 ;;
-;;    `cycle-thing-region', `mark-thing', `select-thing-near-point',
-;;    `thing-region'.
+;;    `cycle-thing-region', `mark-enclosing-sexp',
+;;    `mark-enclosing-sexp-backward', `mark-enclosing-sexp-forward',
+;;    `mark-thing', `select-thing-near-point', `thing-region'.
 ;;
 ;;  User options defined here:
 ;;
@@ -39,18 +40,28 @@
 ;;
 ;;    `mark-thing-type', `thing-region-index'.
 ;;
-;;  Put this in your init file (`~/.emacs'): (require 'thing-cmds)
+;;  Put this in your init file (`~/.emacs'):
 ;;
-;;  Suggested key bindings (these will replace the standard bindings
-;;  for `mark-sexp' and `mark-word'):
+;;   (require 'thing-cmds)
 ;;
-;;  (global-set-key [(control meta ? )] 'mark-thing) ; vs `mark-sexp'
-;;  (global-set-key [(meta ?@)] 'cycle-thing-region) ; vs `mark-word'
+;;  Suggested key bindings:
+;;
+;;   These two replace the std bindings for `mark-sexp' & `mark-word':
+;;   (global-set-key [(control meta ? )] 'mark-thing) ; vs `mark-sexp'
+;;   (global-set-key [(meta ?@)] 'cycle-thing-region) ; vs `mark-word'
+;;
+;;   (global-set-key [(control meta shift ?u)] 'mark-enclosing-sexp)
+;;   (global-set-key [(control meta shift ?b)] ; or [(control meta ?()]
+;;                   'mark-enclosing-sexp-backward)
+;;   (global-set-key [(control meta shift ?f)] ; or [(control meta ?))]
+;;                   'mark-enclosing-sexp-forward)
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
 ;;; Change log:
 ;;
+;; 2010/12/17 dadams
+;;     Added: mark-enclosing-sexp(-forward|-backward).
 ;; 2008/11/29 dadams
 ;;     mark-thing: Set point to beginning/end of thing, so whole thing gets marked.
 ;;                 Make completion default be the first element of thing-types.
@@ -209,6 +220,55 @@ to select more THINGS of the last kind selected."
     (unless (memq this-cmd (list last-cmd 'cycle-thing-region))
       (forward-thing mark-thing-type (if (< (mark) (point)) 1 -1))))
   (setq deactivate-mark  nil))
+
+(defun mark-enclosing-sexp (&optional arg allow-extend) ; `C-M-U'
+  "Select a sexp surrounding the current cursor position.
+If the mark is active (e.g. when the command is repeated), widen the
+region to a sexp that encloses it.
+
+The starting position is added to the mark ring before doing anything
+else, so you can return to it (e.g. using `C-u C-SPC').
+
+A prefix argument determines which enclosing sexp is selected: 1 means
+the immediately enclosing sexp, 2 means the sexp immediately enclosing
+that one, etc.
+
+A negative prefix argument puts point at the beginning of the region
+instead of the end.
+
+In Lisp code, point is moved to (up-list ARG), and mark is at the
+other end of the sexp.
+
+This command does not work if point is in a string or a comment."
+  (interactive "P\np")
+  (cond ((and allow-extend
+	      (or (and (eq last-command this-command) (mark t))
+		  (and transient-mark-mode mark-active)))
+	 (setq arg  (if arg (prefix-numeric-value arg)
+                      (if (< (mark) (point)) 1 -1)))
+	 (set-mark (save-excursion (up-list (- arg)) (point)))
+         (up-list arg))
+	(t
+         (push-mark nil t)                     ; So user can get back.
+	 (setq arg  (prefix-numeric-value arg))
+         (push-mark (save-excursion (up-list (- arg)) (point)) nil t)
+         (up-list arg))))
+
+(defun mark-enclosing-sexp-forward (&optional arg) ; `C-M-F' or maybe `C-M-)'
+  "`mark-enclosing-sexp' leaving point at region end."
+  (interactive "P")
+  (if (or (and (eq last-command this-command) (mark t))
+		  (and transient-mark-mode mark-active))
+      (mark-enclosing-sexp nil (prefix-numeric-value arg))
+    (mark-enclosing-sexp (prefix-numeric-value arg) t)))
+
+(defun mark-enclosing-sexp-backward (&optional arg) ; `C-M-B' or maybe `C-M-('
+  "`mark-enclosing-sexp' leaving point at region start."
+  (interactive "P")
+  (if (or (and (eq last-command this-command) (mark t))
+		  (and transient-mark-mode mark-active))
+      (mark-enclosing-sexp nil (- (prefix-numeric-value arg)))
+    (mark-enclosing-sexp (- (prefix-numeric-value arg)) t)))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 

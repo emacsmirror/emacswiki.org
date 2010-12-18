@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 14 12:38:37 2010 (-0800)
+;; Last-Updated: Fri Dec 17 13:19:50 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 16367
+;;     Update #: 16374
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1303,7 +1303,7 @@ Bound to `M-_' in the minibuffer when searching."
 ;;;###autoload
 (defun icicle-toggle-dot ()             ; Bound to `C-M-.' in minibuffer.
   "Toggle `icicle-dot-string' between `.' and `icicle-anychar-regexp'.
-Bound to C-M-.' in the minibuffer."
+Bound to `C-M-.' in the minibuffer."
   (interactive)
   (setq icicle-dot-string           (if (string= icicle-dot-string ".") (icicle-anychar-regexp) "."))
   (icicle-msg-maybe-in-minibuffer
@@ -2025,7 +2025,7 @@ you do not want this remapping, then customize option
   (interactive)
   (if (not (active-minibuffer-window))
       (when (get-buffer "*Completions*") (kill-buffer (get-buffer "*Completions*")))
-    (icicle-remove-Completions-window))
+    (icicle-remove-Completions-window 'FORCE))
   (abort-recursive-edit))
 
 (defun icicle-ensure-overriding-map-is-bound ()
@@ -6798,12 +6798,16 @@ Bound to `C-A' in the minibuffer, that is, `C-S-a'."
          (case-fold-search "Case-sensitive comparison is now OFF, except for files and buffers")
          (t "Case-sensitive comparison is now ON, everywhere"))))
 
+;; `icicle-delete-window' (`C-x 0') does this in minibuffer.
+;; `icicle-abort-recursive-edit' does this with FORCE.
 ;;;###autoload
-(defun icicle-remove-Completions-window () ; `icicle-delete-window' (`C-x 0') does this in minibuffer.
+(defun icicle-remove-Completions-window (&optional force)
   "Remove the *Completions* window."
   (interactive)
   (when (and (get-buffer-window "*Completions*" 'visible) ; Only if visible and not the selected window.
-             (not (eq (window-buffer (selected-window)) (get-buffer "*Completions*"))))
+             (or force                  ; Let user use `C-g' to get rid of it even if selected.
+                 (not (eq (window-buffer (selected-window)) (get-buffer "*Completions*")))
+                 (interactive-p)))
     ;; Ignore error, in particular, "Attempt to delete the sole visible or iconified frame".
     (condition-case nil (icicle-delete-windows-on "*Completions*")  (error nil))))
 
