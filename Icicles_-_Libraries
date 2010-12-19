@@ -7,10 +7,12 @@
 
 == Icicles Libraries ==
 
-"'''Icicles'''" refers to a set of libraries that enhance [[minibuffer]] input, providing [[Icicles - Cycling Completions|cycling]] among completion candidates and more powerful [[completion]]. It is composed of the following ''required'' libraries:
+"'''Icicles'''" refers to a set of libraries that enhance [[minibuffer]] input, providing [[Icicles - Cycling Completions|cycling]] among completion candidates and more powerful [[completion]]. It is composed of the following '''''required''''' libraries:
+
 
 
 [:Required]
+=== Required ===
 * '''<tt>[[icicles.el]]</tt>''' -- main library
 * <tt>[[icicles-chg.el]]</tt> -- change logs (no code)
 * <tt>[[icicles-cmd1.el]]</tt> -- top-level [[command]]s, part 1
@@ -28,18 +30,34 @@
 When you load (e.g. `load-library' or `require') the driver library, '''<tt>[[icicles.el]]</tt>''', the others are all loaded automatically, except for ##icicles-chg.el##, ##icicles-doc1.el## and ##icicles-doc2.el##, which need not be loaded (they contain only a change log and documentation, as comments).
 
 
-[:Optional]
-The following libraries are ''optional'' (loaded by <tt>[[icicles.el]]</tt> if
-in your `load-path'), but recommended.
 
-* <tt>[[bookmark+.el]]</tt> -- Many bookmark enhancements. See BookmarkPlus and [[Icicles - Bookmark Enhancements]].
-* <tt>[[col-highlight.el]]</tt> -- Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentColumn.
-* <tt>[[crosshairs.el]]</tt> -- Highlight target positions -- see CrosshairHighlighting.
-* <tt>[[hexrgb.el]]</tt> -- Color manipulation.
-* <tt>[[hl-line+.el]]</tt> -- Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentLine.
-* <tt>[[icomplete+.el]]</tt> -- See [[Icicles - Icompletion]] and '''[[IcompleteMode#IcompleteModePlus|Icomplete Plus]]'''.
-* <tt>[[lacarte.el]]</tt> -- Keyboard access to the [[menu bar]] menus -- see '''LaCarte'''.  Used with '''Icicles''', you can type a substring or a [[regexp]] that matches any part of a [[menu bar]] menu tree, and you can cycle among [[completion]] candidates to easily navigate menus and choose a menu item.
-* <tt>[[vline.el]]</tt> -- Required by ##crosshairs.el## (Emacs 22+). See VlineMode.
+
+
+[:Optional]
+=== Optional ===
+The following libraries are recommended but '''''optional''''' (loaded by <tt>[[icicles.el]]</tt> if
+in your `load-path', otherwise ignored).  They are enhanced by '''Icicles''', or '''Icicles''' is enhanced by them, or both.
+
+
+||<tt>[[apropos-fn+var.el]]</tt> ||Apropos enhancements for functions and [[variable]]s. ||
+||<tt>[[bookmark+.el]]</tt> ||Many bookmark enhancements. See '''[[Bookmark+]]''' and [[Icicles - Bookmark Enhancements]].||
+||<tt>[[col-highlight.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentColumn.||
+||<tt>[[crosshairs.el]]</tt> ||Highlight target positions -- see CrosshairHighlighting.||
+||<tt>[[doremi.el]]</tt>, <tt>[[doremi-frm.el]]</tt> ||Incremental changes -- see [[Icicles - Completions Display]], [[Icicles - Fuzzy Completion#SwankCompletion|Icicles - Fuzzy Symbol Completion]], and [[option]] <tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>.||
+||<tt>[[frame-cmds.el]]</tt> ||[[FrameModes#frame-cmds.el|Frame and window commands]].||
+||<tt>[[fuzzy-match.el]]</tt> ||See [[Icicles - Fuzzy Completion]].||
+||<tt>[[hexrgb.el]]</tt> ||Color manipulation.  I strongly recommend that you include this library.||
+||<tt>[[hl-line+.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See HighlightCurrentLine.||
+||<tt>[[icomplete+.el]]</tt> ||See [[Icicles - Icompletion]] and '''[[IcompleteMode#IcompleteModePlus|Icomplete+]]'''.||
+||<tt>[[info+.el]]</tt> ||See [[Icicles - Info Enhancements]] and '''[[Info+]]'''.||
+||<tt>[[lacarte.el]]</tt> ||Keyboard access to the [[menu bar]] menus -- see '''LaCarte'''.  Used with '''Icicles''', you can type a substring or a [[regexp]] that matches any part of a [[menu bar]] menu tree, and you can cycle among [[completion]] candidates to easily navigate menus and choose a menu item.||
+||<tt>[[mb-depth+.el]]</tt> ||MinibufferDepthIndicator, for recursive [[minibuffer]]s (Emacs 22 and later).||
+||<tt>[[pp+.el]]</tt> ||Pretty-printing for `##M-:##'.  See '''[[EvaluatingExpressions#PpPlus|Pp+]]'''.||
+||<tt>[[synonyms.el]]</tt> ||A hypertext thesaurus.  See '''[[Synonyms]]'''.||
+||<tt>[[thingatpt+.el]]</tt> ||Better defaults when using commands; better possibilities for `##M-.##'. See '''[[ThingAtPoint+]]''' and [[Icicles - Inserting Text from Cursor]].||
+||<tt>[[vline.el]]</tt> ||Required by ##crosshairs.el## (Emacs 22+). See VlineMode.||
+
+Be aware that some of these libraries in turn require other libraries.  For example, library ##frame-cmds.el## requires library <tt>[[frame-fns.el]]</tt>
 
 Depending on your platform, if you use '''Icicles''' in a text
 terminal (that is, without a window system/manager), then you

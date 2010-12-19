@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 17 13:19:07 2010 (-0800)
+;; Last-Updated: Sat Dec 18 23:21:03 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5930
+;;     Update #: 5958
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2010/12/18 dadams
+;;     Added more autoload cookies for cmds & macros; removed from non-cmd fns.  Thx to Richard Kim.
+;;       Specify cmd and file for cmds defined by Icicles macros.
+;;     Require icicles-opt.el before icicles-var.el (but it makes no difference).
 ;; 2010/11/21 dadams
 ;;     defalias both old-lisp-complete-symbol and (for Emacs 23+) old-lisp-completion-at-point.
 ;; 2010/11/10 dadams
@@ -344,6 +348,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd2.el'")
 ;;
+;; 2010/12/18 dadams
+;;     Added more autoload cookies for commands.  Thx to Richard Kim.
+;;       Specify command and file for commands defined by Icicles macros.
+;;     Require icicles-opt.el before icicles-var.el (but it makes no difference).
 ;; 2010/12/14 dadams
 ;;     icicle-search-regexp-scan: Don't create marker if hit string is "".
 ;;     icicle-search-highlight-all-input-matches:
@@ -646,6 +654,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/12/18 dadams
+;;     Moved icicle-assoc-delete-all to icicles-mac.el, since used there.
+;;     Added autoload cookies for cmds & macro; removed them from non-interactive functions.
 ;; 2010/12/14 dadams
 ;;     Added: icicle-expand-file-name-20.
 ;;     Renamed: icicle-expand-file-name to icicle-expand-file-or-dir-name.
@@ -2048,6 +2059,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2010/12/18 dadams
+;;     icicle-assoc-delete-all: Moved here from icicles-fn.el, since used here.
+;;     Added autoload cookies.
 ;; 2010/10/25 dadams
 ;;     icicle-(buffer|file)-bindings:
 ;;       Use icicle-must-pass-after-match-predicate, not icicle-must-pass-predicate
@@ -2142,6 +2156,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2010/12/18 dadams
+;;     Added more autoload cookies for commands.  Thx to Richard Kim.
+;;       Specify command and file for commands defined by Icicles macros.
 ;; 2010/12/17 dadams
 ;;     icicle-remove-Completions-window: Added FORCE arg.  Remove if FORCE or interactive.
 ;;     icicle-abort-recursive-edit: Call icicle-remove-Completions-window with FORCE arg.
@@ -3267,6 +3284,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2010/12/18 dadams
+;;     Added more autoload cookies for commands.  Thx to Richard Kim.
 ;; 2010/11/23 dadams
 ;;     icicle-define-icicle-maps: Added "in minibuf" to :key for C-?.  Thx to Michael Heerdegen.
 ;; 2010/11/21 dadams
@@ -4214,6 +4233,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2010/12/18 dadams
+;;     Added some missing autoload cookies.
 ;; 2010/12/17 dadams
 ;;     icicle-thing-at-point-functions: Added to default: list-nearest-point-as-string (1,2,3).
 ;; 2010/11/12 dadams

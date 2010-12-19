@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Dec  9 00:03:59 2010 (-0800)
+;; Last-Updated: Sat Dec 18 11:27:24 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 27387
+;;     Update #: 27390
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3589,7 +3589,8 @@
 ;;
 ;;  * Levenshtein - This method checks whether two strings differ by
 ;;    at most a given number of character operations, the so-called
-;;    "Levenshtein distance".
+;;    "Levenshtein distance".  You must have library `levenshtein.el'
+;;    to use this.
 ;;
 ;;  * Jaro-Winkler - This method gives matching weight to having both
 ;;    (a) more characters that match in the right positions (Jara) and
@@ -6297,6 +6298,7 @@
 ;;    `C-x w'   - `icicle-doremi-candidate-width-factor+'
 ;;    `C-x |'   - `icicle-doremi-inter-candidates-min-spaces+'
 ;;    `C-x -'   - `icicle-doremi-zoom-Completions+'
+;;    `C-x #'   - increment/decrement option `icicle-max-candidates'
 ;;
 ;;  When used in the minibuffer, the following Icicles global binding
 ;;  lets you remove the `*Completions*' window.

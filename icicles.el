@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 14 12:37:03 2010 (-0800)
+;; Last-Updated: Sat Dec 18 21:43:38 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 22784
+;;     Update #: 22787
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -264,7 +264,6 @@
 ;;    `icicle-send-bug-report', `icicle-set-option-to-t',
 ;;    `icicle-set-S-TAB-methods-for-command',
 ;;    `icicle-set-TAB-methods-for-command',
-;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-dynamic-complete-command',
 ;;    `icicle-shell-dynamic-complete-environment-variable',
 ;;    `icicle-shell-dynamic-complete-filename', `icicle-sit-for',
@@ -940,6 +939,7 @@
 ;;    `icicle-set-completion-methods-for-command',
 ;;    `icicle-set-difference', `icicle-set-intersection',
 ;;    `icicle-set-union', `icicle-shell-command',
+;;    `icicle-shell-command-on-file',
 ;;    `icicle-shell-command-on-region',
 ;;    `icicle-shell-dynamic-complete-as-command',
 ;;    `icicle-shell-dynamic-complete-as-environment-variable',

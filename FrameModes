@@ -15,7 +15,7 @@ Use these libraries especially if you use frames, instead of Emacs windows, by d
 See [[Shrink-Wrapping Frames]] for more information.
 
 
-
+[:OneOnOne]
 == Custom Frames Setup ==
 
 Library <tt>[[oneonone.el]]</tt> makes Emacs more ''frame-oriented''.
@@ -47,7 +47,7 @@ This section describes commands (interactive functions) dealing with frames.
 [:frame-cmds.el]
 == frame-cmds.el ==
 
-DrewAdams has written <tt>[[frame-cmds.el]]</tt>, a library of frame commands. Using the suggested key bindings, you can:
+Library <tt>[[frame-cmds.el]]</tt> is a library of frame commands. Using the suggested key bindings, you can:
 
 * Use `C-M-' with the arrow keys (up, down, left, right) to resize a frame incrementally.
 * Use `M-' with the arrow keys to move a frame incrementally.
@@ -98,7 +98,8 @@ minibuffer frame, if any).
 * `delete-1-window-frames-on' -- Delete all visible 1-window frames showing buffer.
 
 
-
+[:fit-frame.el]
+[:auto-fit-frame.el]
 == fit-frame.el, autofit-frame.el ==
 
 For commands to resize a frame to fit its selected window, see libraries <tt>[[fit-frame.el]]</tt> and <tt>[[autofit-frame.el]]</tt> (and more info at [[Shrink-Wrapping Frames]]). In Windows, library ##fit-frame.el## also has commands to maximize and restore a frame.

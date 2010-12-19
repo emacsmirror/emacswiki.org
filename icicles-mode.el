@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Nov 23 11:38:18 2010 (-0800)
+;; Last-Updated: Sat Dec 18 22:10:35 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6810
+;;     Update #: 6820
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -27,10 +27,10 @@
 ;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mcmd',
 ;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
 ;;   `levenshtein', `menu-bar', `menu-bar+', `misc-cmds', `misc-fns',
-;;   `mkhtml', `mkhtml-htmlize', `mwheel', `pp', `pp+', `regexp-opt',
-;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
-;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget'.
+;;   `mkhtml', `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+',
+;;   `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -129,7 +129,7 @@
 ;;
 ;;; Code:
 
-(require 'icicles-opt)
+(require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
   ;; icicle-default-cycling-mode, icicle-incremental-completion-flag,
   ;; icicle-default-value, icicle-kmacro-ring-max, icicle-minibuffer-setup-hook,
@@ -138,10 +138,10 @@
   ;; icicle-region-background, icicle-search-ring-max, icicle-show-Completions-initially-flag,
   ;; icicle-top-level-key-bindings, icicle-touche-pas-aux-menus-flag,
   ;; icicle-word-completion-keys, icicle-yank-function
-(require 'icicles-fn) ;; assq-delete-all, icicle-completing-p,
-                      ;; icicle-isearch-complete-past-string, icicle-toggle-icicle-mode-twice,
-                      ;; icicle-unhighlight-lighter
-(require 'icicles-var)
+(require 'icicles-fn)                   ; (This is required anyway by `icicles-cmd1.el'.)
+  ;; assq-delete-all, icicle-completing-p, icicle-isearch-complete-past-string,
+  ;; icicle-toggle-icicle-mode-twice, icicle-unhighlight-lighter
+(require 'icicles-var)                  ; (This is required anyway by `icicles-fn.el'.)
   ;; icicle-candidate-action-fn, icicle-candidate-nb, icicle-cmd-calling-for-completion,
   ;; icicle-completing-p, icicle-completion-candidates,
   ;; icicle-current-completion-mode, icicle-default-directory, icicle-ignored-extensions,
@@ -152,7 +152,7 @@
   ;; icicle-saved-regexp-search-ring-max, icicle-saved-region-background,
   ;; icicle-saved-search-ring-max, icicle-search-current-overlay, icicle-search-overlays,
   ;; icicle-search-refined-overlays
-(require 'icicles-cmd1)
+(require 'icicles-cmd1)                 ; (This is required anyway by `icicles-cmd2.el'.)
   ;; icicle-add-buffer-candidate, icicle-add-buffer-config, icicle-bbdb-complete-name,
   ;; icicle-customize-face, icicle-customize-face-other-window, icicle-dabbrev-completion,
   ;; icicle-select-bookmarked-region
@@ -242,6 +242,7 @@ bindings in *Completions*.")
 ;;; Icicle mode command ----------------------------------------------
 
 ;; Main command.  Inspired from `icomplete-mode'.
+;;;###autoload
 (defalias 'icy-mode 'icicle-mode)
 ;;;###autoload
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
@@ -535,6 +536,7 @@ bindings are not available to you."
           (run-hooks 'icicle-mode-hook)
           (message "Turning %s Icicle mode...done" (if icicle-mode "ON" "OFF")))))
 
+;;;###autoload
 (unless (fboundp 'define-minor-mode)    ; Emacs 20 ------------
   (defun icicle-mode (&optional arg)
     "Icicle mode: Toggle minibuffer input completion and cycling.
@@ -1888,6 +1890,7 @@ Used on `pre-command-hook'."
   (define-key global-map [handle-switch-frame] 'icicle-skip-this-command)
   (define-key global-map [switch-frame] 'icicle-handle-switch-frame))
 
+;;;###autoload
 (defun icicle-bind-isearch-keys ()
   "Bind Icicles Isearch commands."
   (dolist (key icicle-search-from-isearch-keys)
@@ -2021,11 +2024,13 @@ keymap.  If KEYMAP-VAR is not bound to a keymap, it is ignored."
 
 ;;; Other Icicles functions that define Icicle mode ------------------
 
+;;;###autoload
 (defun icicle-skip-this-command ()
   "Prevent `handle-switch-frame' from being added to `this-command'."
   (interactive)
   (setq this-command  last-command))
 
+;;;###autoload
 (defun icicle-handle-switch-frame (event)
   "Call `handle-switch-frame', but don't add it to `this-command'."
   (interactive "e")
@@ -3347,8 +3352,9 @@ See `icicle-redefine-standard-commands'."
 ;;; In Emacs versions before 22:
 ;;; Save original `read-file-name'.  We redefine it as `icicle-read-file-name' (which calls it).
 ;;; Then we restore it when you quit Icicle mode.  (In Emacs 22+, no redefinition is needed.)
+;;;###autoload
 (unless (or (boundp 'read-file-name-function) (fboundp 'orig-read-file-name))
-(defalias 'orig-read-file-name (symbol-function 'read-file-name)))
+  (defalias 'orig-read-file-name (symbol-function 'read-file-name)))
 
 (defun icicle-redefine-std-completion-fns ()
   "Replace some standard functions with versions for Icicle mode."

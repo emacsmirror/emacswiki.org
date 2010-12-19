@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Dec 14 13:06:12 2010 (-0800)
+;; Last-Updated: Sat Dec 18 23:10:26 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 12011
+;;     Update #: 12037
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -42,7 +42,7 @@
 ;;    `icicle-alt-act-fn-for-type', `icicle-any-candidates-p',
 ;;    `icicle-apropos-any-candidates-p',
 ;;    `icicle-apropos-any-file-name-candidates-p',
-;;    `icicle-apropos-candidates', `icicle-assoc-delete-all',
+;;    `icicle-apropos-candidates',
 ;;    `icicle-barf-if-outside-Completions',
 ;;    `icicle-barf-if-outside-Completions-and-minibuffer',
 ;;    `icicle-barf-if-outside-minibuffer',
@@ -273,7 +273,7 @@
        (error nil))
      (require 'icicles-mac)))           ; Require, so can load separately if not on `load-path'.
   ;; icicle-with-selected-window
-(require 'icicles-opt)
+(require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-Completions-display-min-input-chars, icicle-cycle-into-subdirs-flag,
   ;; icicle-expand-input-to-common-match-flag, icicle-highlight-historical-candidates-flag,
   ;; icicle-highlight-input-initial-whitespace-flag, icicle-ignore-space-prefix-flag,
@@ -354,9 +354,8 @@
 ;; Free variable `completion-reference-buffer' is defined in `simple.el'.
 ;;
 (unless (fboundp 'old-choose-completion-string)
-(defalias 'old-choose-completion-string (symbol-function 'choose-completion-string)))
+  (defalias 'old-choose-completion-string (symbol-function 'choose-completion-string)))
 
-;;;###autoload
 (cond ((> emacs-major-version 21)       ; Emacs 22+
        (defun icicle-choose-completion-string (choice &optional buffer base-size)
          "Switch to BUFFER and insert the completion choice CHOICE.
@@ -505,9 +504,8 @@ the following is true:
 ;; That's so we can fit the *Completions* window to the buffer, including the help lines.
 ;;
 (unless (fboundp 'old-completion-setup-function)
-(defalias 'old-completion-setup-function (symbol-function 'completion-setup-function)))
+  (defalias 'old-completion-setup-function (symbol-function 'completion-setup-function)))
 
-;;;###autoload
 (when (< emacs-major-version 22)
   (defun icicle-completion-setup-function ()
     "Set up for completion.  This goes in `completion-setup-hook'
@@ -542,7 +540,6 @@ so it is called after completion-list buffer text is written."
                        ;; Otherwise, in minibuffer, the whole input is being completed.
                        0))))))))
 
-;;;###autoload
 (when (or (= emacs-major-version 22)    ; Emacs 22 or 23.1
           (and (= emacs-major-version 23) (= emacs-minor-version 1)))
   (defun icicle-completion-setup-function ()
@@ -602,7 +599,6 @@ so it is called after completion-list buffer text is written."
                       (put-text-property element-common-end (1+ element-common-end)
                                          'font-lock-face 'completions-first-difference)))))))))))
 
-;;;###autoload
 (when (or (> emacs-major-version 23)    ; Emacs 23.2+
           (and (= emacs-major-version 23) (= emacs-minor-version 2)))
   (defun icicle-completion-setup-function ()
@@ -745,9 +741,8 @@ lax: a match is not required."
 ;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'old-completing-read)
-(defalias 'old-completing-read (symbol-function 'completing-read)))
+  (defalias 'old-completing-read (symbol-function 'completing-read)))
 
-;;;###autoload
 (defun icicle-completing-read (prompt collection &optional predicate require-match
                                initial-input hist-m@%=!$+&^*z def inherit-input-method)
   "Read string in minibuffer, with completion and cycling of completions.
@@ -1012,7 +1007,6 @@ Returns a new propertized string corresponding to (car CAND)."
   (let ((full-cand  (or (funcall icicle-get-alist-candidate-function cand) (list cand))))
     (cons cand full-cand)))
 
-;;;###autoload
 (defun icicle-read-file-name (prompt &optional dir default-filename
                               require-match initial-input predicate)
   "Read file name, prompting with PROMPT and completing in directory DIR.
@@ -1127,7 +1121,6 @@ and `read-file-name-function'."
          result)
     (setq icicle-proxy-candidates  ())))
 
-;;;###autoload
 (defun icicle-read-file-name-1 (prompt &optional dir default-filename
                                 require-match initial-input predicate)
   "Helper function for `icicle-read-file-name'."
@@ -1222,9 +1215,8 @@ Returns the modified copy of PLIST."
 ;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'old-read-from-minibuffer)
-(defalias 'old-read-from-minibuffer (symbol-function 'read-from-minibuffer)))
+  (defalias 'old-read-from-minibuffer (symbol-function 'read-from-minibuffer)))
 
-;;;###autoload
 (defun icicle-read-from-minibuffer (prompt &optional initial-contents keymap read
                                     hist-m@%=!$+&^*z default-value inherit-input-method)
   "Read a string from the minibuffer, prompting with string PROMPT.
@@ -1306,8 +1298,8 @@ functions, which use zero-indexing for POSITION."
 ;;
 (when (fboundp 'minibuffer-default-add-completions) ; Emacs 23+.
   (unless (fboundp 'old-minibuffer-default-add-completions)
-(defalias 'old-minibuffer-default-add-completions
-    (symbol-function 'minibuffer-default-add-completions)))
+    (defalias 'old-minibuffer-default-add-completions
+        (symbol-function 'minibuffer-default-add-completions)))
 
   ;; Use this as `minibuffer-default-add-function'.
   (defun icicle-minibuffer-default-add-completions ()
@@ -1331,7 +1323,7 @@ functions, which use zero-indexing for POSITION."
 ;;
 (when (fboundp 'read-number)            ; Emacs 22+
   (unless (fboundp 'old-read-number)
-(defalias 'old-read-number (symbol-function 'read-number)))
+    (defalias 'old-read-number (symbol-function 'read-number)))
 
   (defun icicle-read-number (prompt &optional default)
     "Read a number in the minibuffer, prompting with PROMPT (a string).
@@ -1592,9 +1584,8 @@ before you call this function."
 ;; `#1=#:hist'...`#1#'...`#1' read syntax to use an uninterned symbol.
 ;;
 (unless (fboundp 'old-read-string)
-(defalias 'old-read-string (symbol-function 'read-string)))
+  (defalias 'old-read-string (symbol-function 'read-string)))
 
-;;;###autoload
 (defun icicle-read-string (prompt &optional initial-input hist-m@%=!$+&^*z
                            default-value inherit-input-method)
   "Read a string from the minibuffer, prompting with string PROMPT.
@@ -1623,9 +1614,8 @@ Fifth arg INHERIT-INPUT-METHOD, if non-nil, means the minibuffer inherits
 ;; Show face names in *Completions* with the faces they name.
 ;;
 (unless (fboundp 'old-read-face-name)
-(defalias 'old-read-face-name (symbol-function 'read-face-name)))
+  (defalias 'old-read-face-name (symbol-function 'read-face-name)))
 
-;;;###autoload
 (cond ((< emacs-major-version 21)
        (defun icicle-read-face-name (prompt) ; Emacs 20
          "Read a face name with completion and return its face symbol.
@@ -1858,9 +1848,8 @@ FACE."
 ;;
 (when (fboundp 'face-valid-attribute-values) ; Emacs 21+.
   (unless (fboundp 'old-face-valid-attribute-values)
-(defalias 'old-face-valid-attribute-values (symbol-function 'face-valid-attribute-values)))
+    (defalias 'old-face-valid-attribute-values (symbol-function 'face-valid-attribute-values)))
 
-;;;###autoload
   (defun icicle-face-valid-attribute-values (attribute &optional frame)
     "Return valid values for face attribute ATTRIBUTE.
 The optional argument FRAME is used to determine available fonts
@@ -2034,6 +2023,7 @@ For completion, pass args to `icicle-read-shell-command-completing'."
 ;; Uses Icicles completion.
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
+;;;###autoload
 (unless (fboundp 'read-shell-command)   ; Emacs 23
   (defun icicle-dired-smart-shell-command (command &optional output-buffer error-buffer)
     "Like `icicle-shell-command', but in the current Virtual Dired directory.
@@ -2055,9 +2045,10 @@ Uses Icicles completion - see `icicle-read-shell-command-completing'."
 ;; Uses Icicles completion.
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
+;;;###autoload
 (unless (fboundp 'read-shell-command)   ; Emacs 23.
   (unless (fboundp 'old-shell-command)
-(defalias 'old-shell-command (symbol-function 'shell-command)))
+    (defalias 'old-shell-command (symbol-function 'shell-command)))
 
   (defun icicle-shell-command (command &optional output-buffer error-buffer)
     "Execute string COMMAND in inferior shell; display output, if any.
@@ -2123,9 +2114,10 @@ specifies the value of ERROR-BUFFER."
 ;; Uses Icicles completion.
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
+;;;###autoload
 (unless (fboundp 'read-shell-command)   ; Emacs 23.
   (unless (fboundp 'old-shell-command-on-region)
-(defalias 'old-shell-command-on-region (symbol-function 'shell-command-on-region)))
+    (defalias 'old-shell-command-on-region (symbol-function 'shell-command-on-region)))
 
   (defun icicle-shell-command-on-region (start end command &optional output-buffer replace
                                          error-buffer display-error-buffer)
@@ -2226,6 +2218,7 @@ Call `icicle-read-shell-command-completing', passing PROMPT and FILES."
 ;; we include also the commands from `dired-guess-default'.
 ;;
 ;; Free var here: `files' is bound in `icicle-dired-read-shell-command'.
+;;;###autoload
 (defun icicle-minibuffer-default-add-dired-shell-commands ()
   "Return a list of all commands associated with current dired files.
 The commands are from `minibuffer-default-add-dired-shell-commands',
@@ -2705,9 +2698,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
 ;;    `completions-common-part' are used on candidates.
 ;;
 (unless (fboundp 'old-display-completion-list)
-(defalias 'old-display-completion-list (symbol-function 'display-completion-list)))
+  (defalias 'old-display-completion-list (symbol-function 'display-completion-list)))
 
-;;;###autoload
 (defun icicle-display-completion-list (completions &optional ignored)
   "Display the list of completions, COMPLETIONS, using `standard-output'.
 Each element may be just a symbol or string or may be a list of two
@@ -4933,19 +4925,6 @@ Elements of ALIST that are not conses are ignored."
           (setq tail  tail-cdr))))
     alist))
 
-(defun icicle-assoc-delete-all (key alist)
-  "Delete from ALIST all elements whose car is `equal' to KEY.
-Return the modified alist.
-Elements of ALIST that are not conses are ignored."
-  (while (and (consp (car alist)) (equal (car (car alist)) key))
-    (setq alist  (cdr alist)))
-  (let ((tail  alist)  tail-cdr)
-    (while (setq tail-cdr  (cdr tail))
-      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
-          (setcdr tail (cdr tail-cdr))
-        (setq tail  tail-cdr))))
-  alist)
-
 (defun icicle-first-N (n list)
   "Return a new list of at most the N first elements of LIST."
   (let ((firstN  ()))
@@ -5479,6 +5458,7 @@ If nil, then COLOR-NAME is used to determine the hex RGB string."
         (icicle-candidate-short-help help rgb-string)))
     (list (list color-name rgb-string))))
 
+;;;###autoload
 (defmacro icicle-maybe-cached-action (action)
   "Evaluate and return ACTION or `icicle-all-candidates-action'.
 If `icicle-all-candidates-action' is nil, use ACTION.

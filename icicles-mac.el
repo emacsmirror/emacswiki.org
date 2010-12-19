@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Mon Oct 25 09:17:26 2010 (-0700)
+;; Last-Updated: Sat Dec 18 22:02:54 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 550
+;;     Update #: 554
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -36,7 +36,7 @@
 ;;
 ;;  Functions defined here:
 ;;
-;;    `icicle-try-switch-buffer'.
+;;    `icicle-assoc-delete-all', `icicle-try-switch-buffer'.
 ;;
 ;;  Standard Emacs function defined here for older Emacs versions:
 ;;
@@ -113,6 +113,7 @@
 
 ;;; Macros -----------------------------------------------------------
 
+;;;###autoload
 (if (fboundp 'with-selected-window)     ; Emacs 22+
     (defalias 'icicle-with-selected-window (symbol-function 'with-selected-window))
   (defmacro icicle-with-selected-window (window &rest body)
@@ -157,6 +158,7 @@ the buffer list ordering."
                 (select-window save-selected-window-window 'norecord) ; Emacs 22+
               (select-window save-selected-window-window))))))))
 
+;;;###autoload
 (defmacro icicle-define-add-to-alist-command (command doc-string construct-item-fn alist-var
                                               &optional dont-save)
   "Define COMMAND that adds an item to an alist user option.
@@ -176,6 +178,7 @@ Optional arg DONT-SAVE non-nil means do not call
       ,(unless dont-save `(customize-save-variable ',alist-var ,alist-var))
       (message "Added to `%s': `%S'" ',alist-var new-item))))
 
+;;;###autoload
 (defmacro icicle-buffer-bindings (&optional more-bindings)
   "Bindings to use in multi-command definitions for buffer names.
 MORE-BINDINGS is a list of additional bindings, which are created
@@ -222,6 +225,7 @@ before the others."
            (cdr (assq 'buffer-list (frame-parameters))))
        (buffer-list)))))
 
+;;;###autoload
 (defmacro icicle-file-bindings (&optional more-bindings)
   "Bindings to use in multi-command definitions for file names.
 MORE-BINDINGS is a list of additional bindings, which are created
@@ -254,6 +258,7 @@ before the others."
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "file")))
     (icicle-delete-candidate-object              'icicle-delete-file-or-directory)))
 
+;;;###autoload
 (defmacro icicle-define-command
     (command doc-string function prompt collection &optional
      predicate require-match initial-input hist def inherit-input-method
@@ -395,6 +400,7 @@ This is an Icicles command - see command `icicle-mode'.")
                (error "%s" (error-message-string act-on-choice))))
       ,last-sexp)))
 
+;;;###autoload
 (defmacro icicle-define-file-command
     (command doc-string function prompt &optional
      dir default-filename require-match initial-input predicate
@@ -540,6 +546,7 @@ This is an Icicles command - see command `icicle-mode'.")
                (error "%s" (error-message-string act-on-choice))))
       ,last-sexp)))
 
+;;;###autoload
 (defmacro icicle-define-sort-command (sort-order comparison-fn doc-string)
   "Define a command to sort completions by SORT-ORDER.
 SORT-ORDER is a short string (or symbol) describing the sort order.
@@ -571,6 +578,19 @@ DOC-STRING is the doc string of the new command."
 ;;(@* "Functions")
 
 ;;; Functions --------------------------------------------------------
+
+(defun icicle-assoc-delete-all (key alist)
+  "Delete from ALIST all elements whose car is `equal' to KEY.
+Return the modified alist.
+Elements of ALIST that are not conses are ignored."
+  (while (and (consp (car alist)) (equal (car (car alist)) key))
+    (setq alist  (cdr alist)))
+  (let ((tail  alist)  tail-cdr)
+    (while (setq tail-cdr  (cdr tail))
+      (if (and (consp (car tail-cdr))  (equal (car (car tail-cdr)) key))
+          (setcdr tail (cdr tail-cdr))
+        (setq tail  tail-cdr))))
+  alist)
 
 (defun icicle-try-switch-buffer (buffer)
   "Try to switch to BUFFER, first in same window, then in other window."

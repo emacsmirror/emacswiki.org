@@ -886,8 +886,7 @@ advantage of these, you must also use '''DoReMi'''.
 <tt>[[doremi.el]]</tt>)
 * '''`C-x -'''' -- `##icicle-doremi-zoom-Completions+##' (requires 
 <tt>[[doremi-frm.el]]</tt> and Emacs 23 or later)
-
-
+* '''`##C-x ###'''' -- increment/decrement option '''`<tt>[[Icicles - Customization and General Tips#icicle-max-candidates|icicle-max-candidates]]</tt>''''
 
 When used in the minibuffer, the following '''Icicles''' global binding lets you remove the `*Completions*' window.
 

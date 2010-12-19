@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 17 12:03:01 2010 (-0800)
+;; Last-Updated: Sat Dec 18 22:14:27 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3976
+;;     Update #: 3979
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2343,6 +2343,7 @@ completion and their order."
         (and (string-match "^\\*" b2) (string< b1 b2))
       (or (string-match "^\\*" b2) (string< b1 b2)))))
 
+;;;###autoload
 (when (> emacs-major-version 20)
   (defcustom icicle-sort-orders-alist ()
     "*Alist of available sort functions.
@@ -2369,6 +2370,7 @@ Each alist element has the form (SORT-ORDER . COMPARER):
                            (function :tag "Final Predicate")))))
     :group 'Icicles-Completions-Display :group 'Icicles-Matching))
 
+;;;###autoload
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
   (defcustom icicle-sort-orders-alist ()
     "*Alist of available sort functions.
@@ -2704,6 +2706,7 @@ reverses the meaning of `icicle-default-thing-insertion'."
   :group 'Icicles-Miscellaneous)
 
 ;; Must be before `icicle-top-level-key-bindings'.
+;;;###autoload
 (define-widget 'icicle-key-definition 'lazy
   "Key definition type for Icicle mode keys.
 A list of three components: KEY, COMMAND, CONDITION, that represents

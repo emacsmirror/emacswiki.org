@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 17 12:13:37 2010 (-0800)
+;; Last-Updated: Sat Dec 18 10:50:01 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25564
+;;     Update #: 25565
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3826,9 +3826,9 @@
 ;;
 ;;  You can also cycle among elements of a set, performing actions, if
 ;;  you use my libraries `doremi.el', `doremi-cmd.el', and
-;;  `doremi-frm.el'.  Like Icicles, DoReMi lets you see the effect of
-;;  a choice immediately, whenever you make changes.  Each library has
-;;  its own advantages and special uses.  Advantages of Icicles
+;;  `doremi-frm.el'.  Like Icicles, Do Re Mi lets you see the effect
+;;  of a choice immediately, whenever you make changes.  Each library
+;;  has its own advantages and special uses.  Advantages of Icicles
 ;;  include:
 ;;
 ;;    - completion to candidate values

@@ -109,10 +109,7 @@ implementation ##epackage.el## package manager. This a modern implementation of 
    ([http://mercurial.selenic.com/wiki/MercurialHosting more])
 
 ** Various vcs --
-   [http://savannah.gnu.org/search/?words=emacs&type_of_search=soft&Search=Search&exact=1#options savannah],
-
-[http://savannah.nongnu.org/ savannah nongnu],
-   [http://sourceforge.net/search/?type_of_search=soft&words=emacs&search=Search sourceforge]
+   [http://savannah.gnu.org/search/?words=emacs&type_of_search=soft&Search=Search&exact=1#options savannah], [http://savannah.nongnu.org/ savannah nongnu], [http://sourceforge.net/search/?type_of_search=soft&words=emacs&search=Search sourceforge]
 
 == Tips ==
 
@@ -122,7 +119,7 @@ Additional tips can be found on ElispAreaDiscussions
 
 If you put a percent sign (%), then "Id:" (the colon is necessary), then another %, in a page of elisp code, it will end up being expanded into a revision number and look like this:
 
-%Id: 261%
+%Id: 262%
 
 So you can have lisp files on the wiki be version-numbered automatically instead of manually.
 

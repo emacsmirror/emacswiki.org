@@ -32,7 +32,7 @@ matching (only), without naming it.
 
 * '''[[#LevenshteinMatchCompletion|Levenshtein]]''' -- This method checks whether two strings differ by
 at most a given number of character operations, the so-called
-[[LevenshteinDistance|Levenshtein distance]].
+[[LevenshteinDistance|Levenshtein distance]].    You must have library <tt>[[levenshtein.el]]</tt> to use this.
 
 * '''[[#JaroWinklerMatchCompletion|Jaro-Winkler]]''' -- This method gives matching weight to having both
 (a) more characters that match in the right positions (Jara) and

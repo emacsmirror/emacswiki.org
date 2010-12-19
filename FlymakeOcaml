@@ -265,3 +265,32 @@ team of flymake-mode and the anonymous reviewers. This article is derived strong
 Please write comments on the above instruction here.
 
 ----
+I've adapted the concise perl code from FlymakeHaskell comments:
+
+    $ocamlc = '/usr/bin/ocamlc'; # where is ocamlc?
+    
+    @ocamlc_options  = qw(-w A -thread);
+    @ocamlc_packages = qw(unix.cma threads.cma graphics.cma);
+    
+    ### the following should not been edited ###
+    my $src = $ARGV[0];
+    
+    my @command = ($ocamlc, qw{-c}, @ocamlc_options, $src, @ocamlc_packages);
+    open(MESSAGE, "@command 2>&1 |");
+    while (<MESSAGE>) {
+        chomp;
+        if (/^File "(\S+\.ml[yilp]?)", line (\d+), characters     (\d+)-\d+:\s?(.*)/) {
+            print "\n$1:$2:$3:";
+            
+            $error = (<MESSAGE>);
+            print "$error ";
+        } elsif (/^\s+(.+)$/) {
+            print "$1 ";
+        }
+    }
+    close MESSAGE;
+
+The file is a drop-in replacement for the one described in the article above. Thanks to the author of the original code in the Haskell article and the authors of this article.
+
+-- kanak
+----

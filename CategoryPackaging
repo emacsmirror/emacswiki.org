@@ -2,8 +2,9 @@ This category is about packaging Emacs extension, or about utilities that can au
 
 == Discussions ==
 
-* RationalElispPackaging -- Discussion and presentations of existing packaging systems.
-* [http://stackoverflow.com/questions/454259 What do you expect from a package manager for Emacs]
+* [http://lists.nongnu.org/mailman/listinfo/emacs-pms-dev Emacs Package Managers] -- Dedicated mailing list.
+* RationalElispPackaging -- Discussion and presentations of existing implementation.
+* [http://stackoverflow.com/questions/454259 What do you expect from a package manager for Emacs] -- Opinions of various users.
 
 == Implementations ==
 
@@ -34,7 +35,3 @@ This category is about packaging Emacs extension, or about utilities that can au
 === Related Tools ===
 
 * [http://www.emacswiki.org/emacs/EmacsLispList ell.el] -- Browse and download files from [http://www.emacswiki.org/emacs/WikifiedEmacsLispList Emacs Lips List].
-
-=== Mailing List ==
-
-A mailing list for discussions about package managers called "Emacs Package Managers" can be found at [http://savannah.nongnu.org/projects/emacs-pms Savannah].
