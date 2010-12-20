@@ -22,40 +22,6 @@ All of this could have been prevented if we had used a vcs that did not depend o
 If you should decide to switch to git I could help with the process. Please contact my because it would be nice if you could use my existing git import. If you use another dvcs or do not use my import this will mean that I have to do a lot of work for nothing. Just like today. -- JonasBernoulli
 
 [new]
-
-The manual commit to the subversion repository does not include files that were newly added.
-
-For the time between 24-27 these files are:
-
-<pre>
-A       BitLy
-A       VladimirAlexiev
-A       bitly.el
-A       mon-buffer-utils.el
-A       mon-env-proc-utils.el
-A       mon-event-utils.el
-A       mon-line-utils.el
-A       mon-macs.el
-A       mon-randomize-utils.el
-A       mon-rectangle-utils.el
-A       mon-region-utils.el
-A       mon-seq-utils.el
-A       mon-string-utils.el
-A       mon-type-utils-vars.el
-A       mon-type-utils.el
-A       mon-window-utils.el
-A       mon-word-syntax-utils.el
-A       RepeatInsert
-A       emacs-init-check.el
-A       repeat-insert.el
-A       Bookmarks
-</pre>
-
-For 28-7 I do not know. -- JonasBernoulli
-
-[new]
-I'm hoping that the new automatic update and commit will add those. Let's check in 24h.
-
 As for your offer to move to git...
 
     aschroeder@thinkmo:~$ git
@@ -100,9 +66,6 @@ sed -i -e "s/emacswikipages/emacswikipages-git/" emacs-git-update
 If something goes wrong at some point in the future I am here to help. I will update the wikipages. I will do whatever has to be done so that you don't feel like you are doing useless work.
 
 Please reconsider. While this does mean some work for you, I will try to do as much as possible. E.g. I can get the cvs repository and simulate the import on my machine for a few days (starting this weekend), so that the changes are smaller that something goes wrong when deploying emacs-git-update on your machine. -- JonasBernoulli
-
-[new]
-Jupiiii, savannah is down again - more useless work waiting for me -- JonasBernoulli
 
 == Discussion ==
 

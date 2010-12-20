@@ -32,9 +32,9 @@ Seems very good, to me. It looks like a good candidate to replace ##setnu.el##. 
 I was wondering if there is way to change the color of the line numbers e.g change color/change background color so that it can be readily differentiated from the neighboring text. Great code. Thanks -- Saptarshi
 Also is there a way to turn on linum mode automatically for any opened file? - Thanks Saptarshi
 
-:Try M-x customize-face RET linum. Also try M-x global-linum-mode, or append (add-hook 'find-file-hook (lambda () (linum-mode 1))) to your .emacs.
+: Try ##M-x customize-face RET linum##. Also try ##M-x global-linum-mode##, or append ##(add-hook 'find-file-hook (lambda () (linum-mode 1)))## to your ##.emacs##.
 
-:Append (global-linum-mode 1) to your .emacs.
+: Append ##(global-linum-mode 1)## to your ##.emacs##.
 
 [new:Guillermo:2008-12-18]
 With org-mode, it make crash all emacs with a "Fatal error (10)Bus error" when you try to collapse a tree (S-tab)
@@ -63,18 +63,23 @@ I, personally, wanted a one-space separation between the line number display and
 -- ChrisDone
 
 Putting the following in your .emacs yields almost the same result without modification of linum.el:
-<code>(setq linum-format "%d ")</code>
+
+    (setq linum-format "%d ")
 
 Or you can set it as a function like the following if you'd like it right justified. The body of the function is modified from linum-0.9x.
-<code>(setq linum-format
-      (lambda (line)
-        (propertize (format
-                 (let ((w (length (number-to-string
-                                   (count-lines (point-min) (point-max))))))
-                   (concat "%" (number-to-string w) "d ")) line) 'face 'linum)))</code>
+
+    (setq linum-format
+          (lambda (line)
+            (propertize (format
+                         (let ((w (length (number-to-string
+                                           (count-lines (point-min) (point-max))))))
+                           (concat "%" (number-to-string w) "d "))
+                         line)
+                        'face 'linum)))
 
 You can use `linum-before-numbering-hook' to count and store the number of lines only once per update. Thus you can avoid the somewhat expensive `count-lines' call for each updated line. And a more simplistic constant-width version of the above could look like:
-<code>(setq linum-format "%6d ")</code>
+
+    (setq linum-format "%6d ")
 
 == Linum: Numbering the last line of the buffer ==
 [new:AdamKerz:2009-05-08 01:35 UTC]

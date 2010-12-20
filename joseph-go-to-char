@@ -3,42 +3,40 @@ No need for that, just  use the syntax <code>?\C-f</code> for this purpose.  Als
 [new]
 ;;;
 {{{
-   you know ,in vim  there is a command "f" to search a char, for example "fa" search "a'.
-when you press "." it will find "a" again ,so you can use it move your point to where
-you want quickly ,this function do something similiarly ,maybe more powerful than that
-I bind it to ?\C-f  (it can works like function:forward-char ) ,
-when you press  ?\C-f  then press a char like  "a"  ,it will find "a", press "a"
- again ,find next "a" , press  ?\C-h will find it backward.
+;;  you know ,in vim  there is a command "f" to search a char, for example "fa" search "a'.
+;;when you press "." it will find "a" again ,so you can use it move your point to where
+;;you want quickly ,this function do something similarly ,maybe more powerful than that
+;;I bind it to ?\C-f  (it can works like function:forward-char ) ,
+;;when you press  ?\C-f  then press a char like  "a"  ,it will find "a", press "a"
+;; again ,find next "a" , press  ?\C-h will find it backward.
 ;;此函数可以进行快速定位 ,vi 中有个f命令如fa 搜索a 并跳到相应位置,
 ;;而这个命令与之相似，如将命令绑到C-f后，按下C-f后 连续按一个字母如s则会一直搜索s 
 ;;并定位到相应的位置，按 ?\C-h 可反向搜索直到按下不同的字母
-(defun joseph-go-to-char (n )
-  "Move forward to Nth occurence of CHAR.
+ (defun joseph-go-to-char (n )
+  "Move forward to Nth occurrence of CHAR.
 Typing `joseph-go-to-char-key' again will move forward to the next Nth
-occurence of CHAR. Typing \C-h will move back ."
+occurrence of CHAR. Typing \C-h will move back ."
   (interactive "p")
-  (forward-char 1)
-  (let( (char (read-char "Go to char:" ) ))
-  (message (string char) )
-  (if (char-equal ?\C-f char )
-      (forward-char 1)
-    (unless   ( char-equal ?\C-h  char)
-         (search-forward (string char) nil nil n)
-               (let ((readed-char (read-char "go to next position" ))  )
-                 (while (or (char-equal readed-char char)  
-                            (char-equal ?\C-h readed-char ) )
-                   (if    (char-equal ?\C-h readed-char)
-                           (search-backward (string char) nil nil n   )
-                           (search-forward (string char) nil nil n) )
-                 (setq readed-char (read-char
-                        (concat "?\C-h for backward search ,\"" 
-                              (string char)   "\" for forward search")) ))
-                 (setq unread-command-events (list last-input-event)) )
-      ) ) ) )
+  (forward-char n)
+  (let( (char (read-char "Go to Char:" ) ))
+  (if (string-match "[[:cntrl:]]" (string char) )
+      (setq unread-command-events (list last-input-event))
+      (progn    (message (string char) )
+        (search-forward (string char) nil nil n)
+        (let ( ( readed-char (read-char
+                (concat "?\C-h for backward search ,\"" (string char)   "\" for forward search:")) )   )
+          (while (or (char-equal readed-char char)  
+                     (char-equal ?\C-h readed-char ) )
+            (if    (char-equal ?\C-h readed-char)
+                (search-backward (string char) nil nil n   )
+              (search-forward (string char) nil nil n) )
+            (setq readed-char (read-char
+                  (concat "?\C-h for backward search ,\"" (string char)   "\" for forward search:")) ))
+          (setq unread-command-events (list last-input-event)) )
+        ) 
+    )
+  ) )
 
 (define-key global-map (kbd "C-f") 'joseph-go-to-char)
 ;;}}}
 }}}
-
-
-
