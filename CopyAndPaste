@@ -26,10 +26,6 @@ See also http://www.oreillynet.com/lpt/wlg/6162 which suggests
  (setq x-select-enable-clipboard t) ; as above
  (setq interprogram-paste-function 'x-cut-buffer-or-selection-value)
 
-For the record, none of these have allowed me to copy and paste between Emacs and Firefox/386 1.5.0.1 on Ubuntu/amd64. -- EraEriksson
-
-Copying to Firefox 2.0 (and other programs) works fine for me on Kubuntu/i386. --MattFlaschen
-
 ==== GNU Emacs CVS / 23 : ====
 
 This has recently been expanded with more possible customisations.

@@ -109,3 +109,8 @@ For more information about how I see the mirror in relation to other Emacs relat
 So maybe my opinion boils down to this: The Emacswiki is perfectly fine as it is.  As a wiki that is - as a way to distribute packages there are better solutions nowadays, github being my favorite.  So I would _encourage_ (not force) users to not publish new packages on the wiki but use github (or launchpad etc.) instead, but still create a page about them on the wiki.
 
 -- JonasBernoulli
+
+[new]
+I have only a simple opinion to that: Whatever you do, keep the content. Avoid the rewriting trap, the content is much too valuable to be lost or “deprecated till it fits into the new cathegories” or such. 
+
+-- ArneBab

@@ -37,13 +37,20 @@ Starting with GnuEmacs 23, you can zoom the text in the current [[buffer]], in a
 
 * Vanilla Emacs: You can use `##C-x C-+##' and `C-x C--' to increase or decrease the buffer text size (`##C-+##' or `C--' to repeat). `S-mouse-1' pops up a menu where you can choose these same actions.
 
+[new]
+: If you use a fontset with Xft, `##C-x C-+##` this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) --, increasing the text size does not scale the Korean characters. --cinsk
+[new]
+
+
 * '''`zoom-in'''', '''`zoom-out'''' (in <tt>[[zoom-frm.el]]</tt>) -- Use the mouse wheel, like you do in a Web browser, or use mouse clicks. You can use these same commands to zoom a frame (see [[#ZoomFrame|above]]): `C-u' toggles the buffer/frame behavior.
 
 * '''`doremi-buffer-font-size'''' (in <tt>[[doremi-frm.el]]</tt>) -- Change buffer font size incrementally using the arrow keys or the mouse wheel.
 
 * <tt>[[face-remap+.el]]</tt> -- For ''all'' of the above, let buffer font resizing also zoom the [[window]] size accordingly (horizontally, vertically, or both). That way, you can take advantage of the space freed up by resizing (text-scaling) to a smaller font.
 
-[new] If you use a fontset with Xft, `##C-x C-+##` this does not scale the secondary font.  For example, If you use a fontset -- ##dejavu-sans-mono## for latin, ##NanumGothic_Coding## for hangul(Korean) --, increasing the text size does not scale the Korean characters. --cinsk
+* [[GlobalTextScaleMode]] -- Adjust font size for all buffers at once.
+
+
 
 
 

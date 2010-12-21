@@ -4,7 +4,7 @@ Here are some things for working with Perl in Emacs.  Click the title heading to
 
 * PerlDevelopEnvironment is a bundle of perl-related elisp distributed as a CPAN package called [http://search.cpan.org/dist/Emacs-PDE Emacs::PDE].
 
-* [[Sepia]] is an Elisp package for interactive Perl development. 
+* [[Sepia]] is an Elisp package for interactive Perl development, available as a CPAN package called [http://search.cpan.org/dist/Sepia/ Sepia]. 
 
 * [http://search.cpan.org/dist/Devel-PerlySense/ PerlySense] is a  Perl IDE back-end that integrates with editor front-ends,
 currently Emacs.

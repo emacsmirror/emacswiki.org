@@ -24,9 +24,32 @@ IvanKorotkov kindly updated this code to match the new [http://pastebin.com/api.
 
 He keeps his version here: [http://tweedle-dee.org/svn/emacs.d/site-lisp/pastebin.el pastebin.el]
 
-----
+---
 
-RyanDavis customized and changed pastebin-type-assoc for diff-mode to "dff". He also tried  rewriting pastebin.com to see if it can be aliased to "diff" (Almost nothing in the API is shortened, so I suspect this is a problem on their side).
+That version varies widely from the one on here and it looks like the
+one on here is newer. Unfortunately, the one on here seems more than a
+little shortsighted. To use subdomains you used to be able to
+customize the following:
+
+    '(pastebin-default-subdomain "zenspider")
+
+Now, you must do all of:
+
+    '(pastebin-default-domain "zenspider.pastebin.com")
+    '(pastebin-domain-versions (quote (("pastebin.com" "/api_public.php")
+                                       ("zenspider.pastebin.com" "/api_public.php")
+                                       ("pastebin.example.com" "/pastebin.php"))))
+
+The subdomain code was much more straightforward.
+
+---
+
+I just found another bug. Using it with subdomains now returns urls
+like:
+
+    http://zenspider.pastebin.com.pastebin.com/BAPMb2A3
+
+-- RyanDavis
 
 ----
 CategoryInterface

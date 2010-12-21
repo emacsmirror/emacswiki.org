@@ -154,7 +154,7 @@ highlighting printf format specifier like vim ...
 (add-hook 'c-mode-common-hook
 	  (lambda ()
 	    (font-lock-add-keywords nil
-				    '(("[^%]\\(%\\([[:digit:]]\\+\\$\\)?[-+' #0*]*\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]\\+\\$\\)\\(\\.\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]\\+\\$\\)\\)?\\([hlLjzt]\\|ll\\|hh\\)?\\([aAbdiuoxXDOUfFeEgGcCsSpn]\\|\\[\\^?.[^]]*\\]\\)\\)"
+				    '(("[^%]\\(%\\([[:digit:]]+\\$\\)?[-+' #0*]*\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]+\\$\\)\\(\\.\\([[:digit:]]*\\|\\*\\|\\*[[:digit:]]+\\$\\)\\)?\\([hlLjzt]\\|ll\\|hh\\)?\\([aAbdiuoxXDOUfFeEgGcCsSpn]\\|\\[\\^?.[^]]*\\]\\)\\)"
 				       1 font-lock-format-specifier-face t)
 				      ("\\(%%\\)" 
 				       1 font-lock-format-specifier-face t)) )))

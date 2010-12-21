@@ -44,7 +44,7 @@ Which was nice. And I used to maximize "by hand" the window itself. But yesterda
 Having scrollbar-less Terminal.app windows is yet another reason not to switch to 10.5
 
 
-= Links to my pages =
+= Links to my contributions =
 
 so that I can keep en eye on 'em (I whish there was a "backlinks" feature on this wiki...)
 
@@ -53,6 +53,7 @@ so that I can keep en eye on 'em (I whish there was a "backlinks" feature on thi
 * [[InteractivelyDoThings#toc8]] Tweak of ido-find-file to make it look more like find-file
 * [[TransparentEmacs#toc3]] Is there a hope to have only the //background// transparent (as opposed to the whole window ?)
 * [[AUCTeX#toc12]] automagic detection of master file il multifile latex documents
+* [[GlobalTextScaleMode]] Because I usually want to enlarge font for //all// buffers at once
 
 And a few bug reports:
 

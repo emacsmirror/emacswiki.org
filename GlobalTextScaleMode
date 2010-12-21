@@ -1,0 +1,35 @@
+[[Gyom]] I used  to  have  M-0, M-+  and  M-- bound  to
+ordinary 'text-scale-adjust'  commands,   but  I  found  it  quite
+annoying  to  have  to  zoom  in  *each*  buffer  separately.  This
+globalized-mode hack is not very elegant, but it works fo me.
+
+Note  that using,  at the  same  time, commands  from the  original
+text-scale-mode  and  from  this  globalized  mode  yields  strange
+results due to  the way buffer-local variables are  handled. What we
+would need  here is a way to  *undo* the make-variable-buffer-local
+statement of face-remap.el, in order for the  adjustments to be properly perceived by
+everyone, but I don't know how to get that at all.
+
+Until then, this globalized version will be just fine for me !
+
+  (define-globalized-minor-mode 
+    global-text-scale-mode
+    text-scale-mode
+    (lambda () (text-scale-mode 1)))
+  
+  (defun global-text-scale-adjust (inc) (interactive)
+    (kill-local-variable 'text-scale-mode-amount)
+    (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
+    (global-text-scale-mode 1)
+  )
+  
+  (global-set-key (kbd "M-0")
+                  '(lambda () (interactive)
+                     (global-text-scale-adjust (- text-scale-mode-amount))
+                     (global-text-scale-mode -1)))
+  (global-set-key (kbd "M-+")
+                  '(lambda () (interactive) (global-text-scale-adjust 1)))
+  (global-set-key (kbd "M--")
+                  '(lambda () (interactive) (global-text-scale-adjust -1)))
+  
+  

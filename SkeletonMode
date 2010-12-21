@@ -260,6 +260,8 @@ entry points:
        (add-hook 'skeleton-end-hook 'skeleton-make-markers)
 
        (defun skeleton-make-markers ()
+         (while skeleton-markers
+           (set-marker (pop skeleton-markers) nil))
          (setq skeleton-markers 
                (mapcar 'copy-marker (reverse skeleton-positions))))
 
@@ -268,15 +270,16 @@ entry points:
          (let ((positions (mapcar 'marker-position skeleton-markers))
                (comp (if reverse '> '<))
                pos)
-           (if (catch 'break
-                 (while (setq pos (pop positions))
-                   (when (funcall comp (point) pos)
-                     (throw 'break t))))
-               (goto-char pos)
-             (goto-char (marker-position
-                         (if reverse
-                             (car (last skeleton-markers))
-                           (car skeleton-markers)))))))
+           (when positions
+             (if (catch 'break
+                   (while (setq pos (pop positions))
+                     (when (funcall comp (point) pos)
+                       (throw 'break t))))
+                 (goto-char pos)
+               (goto-char (marker-position
+                           (if reverse
+                               (car (last skeleton-markers))
+                             (car skeleton-markers))))))))
 
 Simply bind skeleton-next-position to some convenient key and you'll
 be able to cycle through the completion points within the template. 

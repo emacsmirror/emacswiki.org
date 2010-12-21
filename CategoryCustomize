@@ -18,4 +18,4 @@ Here are some of the pages in category Customize:
 * CustomizeNewGUI -- a proposal for some changes to Emacs GUI that you can test.
 * ChangeFontsPermanentlyOnWindows -- how to save fonts on Windows.
 * MsWindowsRegistry -- How X Windows resources are handled on Windows ports, via the Windows Registry
-
+* CustomizeByPlatform -- How to set up platform- and machine- specific customizations
