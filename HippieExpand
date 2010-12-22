@@ -155,7 +155,83 @@ Here's a function based on hippie expand dabbrev expansion which performs substr
 
 </pre>
 
+== Flexible match expansion ==
 
+I find it hard to give this hack a name but I know a similar feature in ido is called "flexible" matching, or similar, so I will use that in lack of a better term. 
+
+The idea is to let the user type any characters in the word he wants to complete/expand. So, for example, to match "thisLongWord" the user can type "this" (which normal prefix matching would also match) or "long" or "word" (like substring matching) but also "tld" or "lwd". That way it can be easier to match long words which have the same prefix. In a way, the user can create special abbreviations on the fly. Or something like that... :)
+
+To try it out, evaluate the following expressions:
+
+<pre>
+
+(defun try-expand-flexible-abbrev (old)
+  "Try to complete word using flexible matching.
+
+Flexible matching works by taking the search string and then
+interspersing it with a regexp for any character. So, if you try
+to do a flexible match for `foo' it will match the word
+`findOtherOtter' but also `fixTheBoringOrange' and
+`ifthisisboringstopreadingnow'.
+
+The argument OLD has to be nil the first call of this function, and t
+for subsequent calls (for further possible completions of the same
+string).  It returns t if a new completion is found, nil otherwise."
+  (if (not old)
+      (progn
+	(he-init-string (he-lisp-symbol-beg) (point))
+	(if (not (he-string-member he-search-string he-tried-table))
+	    (setq he-tried-table (cons he-search-string he-tried-table)))
+	(setq he-expand-list
+	      (and (not (equal he-search-string ""))
+		   (he-flexible-abbrev-collect he-search-string)))))
+  (while (and he-expand-list
+	      (he-string-member (car he-expand-list) he-tried-table))
+    (setq he-expand-list (cdr he-expand-list)))
+  (if (null he-expand-list)
+      (progn
+	(if old (he-reset-string))
+	())
+      (progn
+	(he-substitute-string (car he-expand-list))
+	(setq he-expand-list (cdr he-expand-list))
+	t)))
+
+(defun he-flexible-abbrev-collect (str)
+  "Find and collect all words that flex-matches STR.
+See docstring for `try-expand-flexible-abbrev' for information
+about what flexible matching means in this context."
+  (let ((collection nil)
+        (regexp (he-flexible-abbrev-create-regexp str)))
+    (save-excursion
+      (goto-char (point-min))
+      (while (search-forward-regexp regexp nil t)
+        ;; Is there a better or quicker way than using
+        ;; `thing-at-point' here?
+        (setq collection (cons (thing-at-point 'word) collection))))
+    collection))
+
+(defun he-flexible-abbrev-create-regexp (str)
+  "Generate regexp for flexible matching of STR.
+See docstring for `try-expand-flexible-abbrev' for information
+about what flexible matching means in this context."
+  (concat "\\b" (mapconcat (lambda (x) (concat "\\w*" (list x))) str "")
+          "\\w*" "\\b"))
+
+(setq hippie-expand-try-functions-list
+      (cons 'try-expand-flexible-abbrev hippie-expand-try-functions-list))
+
+</pre>
+
+If you have any comments or suggestions for improvements, don't hesitate to contact me.
+
+Happy hacking!
+
+-- MaDa
+
+
+
+== BUGS ==
 
 [new]
 I find a bug in try-expand-dabbrev-visible. When there is no further expansions, the cursor moves, which is very annoying. My simple fix:

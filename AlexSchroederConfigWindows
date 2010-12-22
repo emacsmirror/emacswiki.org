@@ -16,8 +16,7 @@
 (add-to-list 'exec-path "~/Eigene Dateien/Eigene Software")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0/db_1/bin")
 (add-to-list 'exec-path "C:/oracle/product/10.2.0.3/db_1e/bin")
-
-(quietly-read-abbrev-file "~/.emacs.d/abbreviations")
+(setenv "RSH" "SSH")
 
 (let (seen)
   (dolist (path (mapcar 'file-truename
@@ -316,8 +315,18 @@ Indent by DEPTH, if required"
       comint-input-ring-size 500)
 ;; (add-to-list 'auto-mode-alist '("\\.pls\\'" . sql-mode))
 
+(define-skeleton ors-uc
+  "Insert ORS_UTIL.GET_USER_CODE(UID, LANGUAGE_ID)."
+  nil
+  "substr(ors_util.get_user_code(" _ ", 246), 0, 30) \"code\"")
+
+(eval-after-load 'sql
+  '(define-abbrev sql-mode-abbrev-table "orsuc" "" 'ors-uc))
+
 (add-hook 'sql-mode-hook
 	  (lambda ()
+	    (setq indent-tabs-mode nil)
+	    (abbrev-mode 1)
 	    (local-set-key (kbd "C-z") 'sql-oracle)
 	    (local-set-key (kbd "C-c n") 'my-insert-next-key)
 	    (local-set-key (kbd "C-c C-c") 'sql-send-modified-paragraph)
@@ -361,10 +370,14 @@ Called from `sql-interactive-mode-hook'."
   "Replacements to do."
   :type 'alist)
 
-(defun sql-send-modified-paragraph ()
+(defun sql-send-modified-paragraph (reset)
   "Send paragraph and replace all variables
-using `sql-replacments'."
-  (interactive)
+using `sql-replacments'. If the optional argument RESET is given,
+reset `sql-replacments' to nil and ask for all the replacements
+again."
+  (interactive "P")
+  (when reset
+    (setq sql-replacements nil))
   (unless sql-buffer
     (sql-oracle)
     (sit-for 3))
@@ -378,7 +391,7 @@ using `sql-replacments'."
     (with-temp-buffer
       (insert str)
       (goto-char (point-min))
-      (while (re-search-forward "\\(:[a-zA-Z0-9_.]+\\|\\(#\\w+#\\)\\|<eval>.*</eval>\\)" nil t)
+      (while (re-search-forward "\\(:[a-zA-Z0-9_.]+\\|\\(#\\w+#\\)\\|<eval>.*</eval>\\|\\?\\)" nil t)
 	(let* ((key (match-string 0))
 	       (val (cdr (assoc key sql-replacements))))
 	  (when (not val)
@@ -386,8 +399,10 @@ using `sql-replacments'."
 		  sql-replacements (cons (cons key val) sql-replacements)))
 	  (replace-match val)))
       (setq str (buffer-string)))
-    (with-current-buffer sql-buffer
-      (goto-char (point-max)))
+    (save-excursion
+      (pop-to-buffer sql-buffer)
+      (goto-char (point-max))
+      (recenter -1))
     (sql-send-string str)))
 
 (defun sql-replacement-delete (key)
@@ -576,7 +591,7 @@ Each line consists of a lastname, a tab, and a firstname."
 	try-complete-file-name-partially try-complete-file-name))
 
 ;;; shell
-(setq shell-file-name "C:/cygwin/bin/bash.exe")
+(setq shell-file-name "C:/Programme/cygwin/bin/bash.exe")
 
 ;;; eshell
 (global-set-key (kbd "C-z") 'eshell)
@@ -665,19 +680,6 @@ Each line consists of a lastname, a tab, and a firstname."
 	(window--display-buffer-2 buf (selected-window)))
       (delete-window win)))
   (balance-windows))
-
-;; operator access /op
-
-(eval-after-load 'rcirc
-  '(defun-rcirc-command op (nicks)
-     "Send OP for `nicks'.
-Limitation: in its interactive form, you can only op one nick."
-     (interactive (list (completing-read "Op nick: "
-					 (with-rcirc-server-buffer
-					  rcirc-nick-table))))
-     (dolist (nick (split-string nicks " "))
-       (rcirc-send-string process
-			  (format "ChanServ OP %s %s" target nick)))))
 
 ;; (eval-after-load 'rcirc
 ;;   '(add-to-list 'rcirc-markup-text-functions 'rcirc-smileys))
@@ -829,6 +831,72 @@ Example use: /all away food or /all quit zzzz."
 	     (insert "/" input)
 	     (rcirc-send-input)))))))
 
+;; rcirc /op
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command op (input)
+     "Op myself on the current channel."
+     (interactive "s")
+     (rcirc-send-message process "chanserv"
+			 (concat "op " target))))
+
+;; rcirc /deop
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command deop (input)
+     "Deop myself on the current channel."
+     (interactive "s")
+     (rcirc-send-message process "chanserv"
+			 (concat "deop " target))))
+
+;; rcirc /mute
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command mute (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s +q %s!*@*"
+					target input))))
+
+;; rcirc /unmute
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command unmute (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s -q %s!*@*"
+					target input))))
+
+;; rcirc /ban
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command ban (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s +b %s!*@*"
+					target input))))
+
+;; rcirc /unban
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command unban (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s -b %s!*@*"
+					target input))))
+
+;; rcirc /kickban
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command kickban (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s +b %s!*@*"
+					target input))
+     (rcirc-send-string process (format "KICK %s %s kickban!"
+					target input))))
+
+;; other
 
 (defun irc-version-summary ()
   "Run this after you've sent a /CTCP #test VERSION."

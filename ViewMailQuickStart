@@ -25,21 +25,21 @@ Make a directory to store your email folders.  ~/email would not be a bad choice
 
 We configure VM by setting variables that tell it where to get your mail and where to put your mail, among other things.  Broadly speaking, you can either write your VM configuration in ~/.vm or ~/.emacs.  Which you choose depends on how you prefer to organize your emacs session.  Let us consider the relative merits of each way.
 
-* Writing the configuration in vm-init-file (~.vm)
+; Writing the configuration in vm-init-file (~.vm): vm-init-file defaults to ~/.vm.
+This file is loaded the first time you run VM in an Emacs session.  It is loaded even if you start emacs with the -q option.
+In vm-mode, "L" is bound to vm-load-init-file, so you have a convenient way to load .vm when you make changes to it.
 
-vm-init-file defaults to ~/.vm
-
-This file is loaded the first time you run VM in an Emacs session.
-
-In vm-mode, "L" is bound to vm-load-init-file, so you have a convenient key binding available for when you make changes to your .vm.
-
-* Writing the configuration in ~/.emacs
-
+; Writing the configuration in ~/.emacs:
 Maybe you want your VM settings grouped with other email-related settings in your .emacs, or in a separate script loaded from it.  A lot of people like to keep private information in a script separate from their .emacs.
-
 For tidiness, you should set vm-init-file to nil.
 
-    (setq vm-init-file nil)
+VM has very many configuration options ("preferences") and it is useful to have a way of blocking them for trouble shooting purposes.  To use this facility, place the preferences in a separate vm-preferences file (~/.vm.preferences).  The standard configuration options should still go in ~/.vm or ~/.emacs file, which include:
+
+* the location of INBOX, spool files or mail server settings, mail directories etc.
+
+* the choice of helper applications, such as for MIME decoding/encoding, image viewers etc.
+
+All other settings for VM variables should go in the ~/.vm.preferences file.
 
 ----
 == Local folders or Server folders? ==

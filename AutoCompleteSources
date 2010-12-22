@@ -173,3 +173,8 @@ An auto-complete source for Slime, providing lisp symbol completion and pop-up d
 
 --StevePurcell
 
+
+== Writing your own sources ==
+
+21 Dec 2010: Is there any tutorial about how to write your own sources?  I'd like to write a source on top of http://www.emacswiki.org/emacs/el-swank-fuzzy.el the way it has been done for Anything, but I can't understand what is the expected interface from sources.  Thanks.
+

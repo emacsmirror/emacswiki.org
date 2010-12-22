@@ -69,6 +69,14 @@ This works well with erc-auto-query set to bury.  It wont directly interrupt you
     ad-do-it))
 </pre>
 
+If you're using the below 'Minimal Distraction' hack you'll need this code too; otherwise it makes the above code do nothing:
+<pre>
+(defadvice erc-track-modified-channels (around erc-track-modified-channels-promote-query activate)
+  (if (erc-query-buffer-p) (setq erc-track-priority-faces-only 'nil))
+  ad-do-it
+  (if (erc-query-buffer-p) (setq erc-track-priority-faces-only 'all)))
+</pre>
+
 == Minimal Distraction ==
 Combining ErcHighlighting with channel tracking can help reduce distraction.
 
