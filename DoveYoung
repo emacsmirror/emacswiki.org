@@ -1,6 +1,6 @@
 ==I love Emacs==
 
-[mailto:dove.young@gmail.com dove.young@gmail.com]
+[mailto:dove.young@gmail.com dove.young@gmail.com] [::dove.young]
 
 * CopyWithoutSelection -- simply copy current line, current word and current paragraph to the kill-ring without select to each line, each word or each paragraph
 * NavigatingParentheses -- navigating between paretheses

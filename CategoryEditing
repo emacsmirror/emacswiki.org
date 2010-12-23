@@ -15,7 +15,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** Motion/kill do-what-I-mean -- [[cursor]] movement and [[kill|killing]] [[DWIM]] functions.  Lisp:motion-and-kill-dwim.el
 ** duplicate-previous/next-line lets you replace current line with a neighboring one by cycling through them like you can with history in Bash. I bind them to M-n and M-p.  Lisp:duplicate-line.el
 ** [[Anything]] -- `M-x anything-show-kill-ring' narrows the kill-ring by multiple patterns.
-
+** See also CategoryRegion
 * [[register|Registers]]:
 ** RegAdhoc -- automatically add [[register]]s and show their destinations
 ** BetterRegisters -- [[register]] enhancements, [[keyboard macro]]s
@@ -55,6 +55,7 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** RotateWordCapitalization -- rotate the capitalization of the current word
 ** SimplerWordCapitalization -- make `upcase-word' (M-u), `downcase-word' (M-l), and `capitalize-word' (M-c) work on [[region]]s too.
 ** [[Multiverse]] -- manage multiple versions of [[buffer]]s in an Emacs session
+** See also EmacsNiftyTricks
 * [[line|Lines]]:
 ** LineCommands
 ** RunCommandOverLines -- execute a command for several lines, like in `ed' (TheTruePath)
@@ -67,5 +68,3 @@ This category is about editing, not modes.  See CategoryModes, instead.
 ** BreadcrumbForEmacs -- Leave breadcrumb bookmarks in the buffers, and jump back to them quickly.
 ** [[Icicles - Tripping]] -- Jump around among various sets of things (projects, files, [[bookmark]]s, [[buffer]]s, [[marker]]s, [[Info]] pages, search hits, [[window]]s, [[frame]]s,...).
 ** FastNav -- Multiple commands to support quick jump to, replace at, kill at, etc. the next/previous occurences of characters.
-
-See also EmacsNiftyTricks.

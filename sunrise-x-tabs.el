@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Oct 2009
 ;; Version: 1
-;; RCS Version: $Rev: 331 $
+;; RCS Version: $Rev: 345 $
 ;; Keywords: Sunrise Commander Emacs File Manager Tabs Minor Mode
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-tabs.el
 ;; Compatibility: GNU Emacs 22+
@@ -47,15 +47,22 @@
 ;; * Press C-j (or select Sunrise > Tabs > Add Tab in the menu) to create a new
 ;; tab or to rename an already existing tab.
 
-;; * Press C-k (or right-click the tab) to kill an existing tab.
+;; * Press C-k (or right-click the tab) to kill an existing tab. Combine with M-
+;; (M-C-k) to kill the tab on the passive pane. Prefix with a digit to kill tabs
+;; by relative order (e.g. 2 C-k kills the second tab in the current pane, while
+;; 4 M-C-k kills the fourth tab in the passive pane).
 
 ;; *  Press  C‐n and C‐p to move from tab to tab ("Next", "Previous"), or simply
 ;; left‐click on the tab to focus its assigned buffer. These two keybindings can
 ;; be prefixed with an integer to move faster.
 
-;; *  The last four bindings can be combined with Meta (i.e. C‐M‐j, C‐M‐k, C‐M‐n
-;; and C‐M‐p) to perform the same operation on the  passive  pane  or  (when  in
-;; synchronized navigation mode) on both panes simultaneously.
+;; * The last four bindings can be  combined with Meta (i.e. M‐C‐j, M‐C‐k, M‐C‐n
+;; and M‐C‐p) to  perform the equivalent operation on the  passive pane or (when
+;; in synchronized navigation mode) on both panes simultaneously.
+
+;; * Press * C-k to kill in one go all the tabs in the current pane.  Similarly,
+;; press * M-C-k to wipe all the tabs off the passive pane or (when synchronized
+;; mode is active) on both panes simultaneously.
 
 ;; *  Killing  the  current  buffer with C‐x k automatically switches to the one
 ;; assigned to the first available tab (if any).
@@ -70,7 +77,7 @@
 ;; Sunrise  panes.  It’s meant to be simple and to work nicely with Sunrise with
 ;; just a few tabs (up to 10‐15 per pane, maybe).
 
-;; This is version 1 $Rev: 331 $ of the Sunrise Commander Tabs Extension.
+;; This is version 1 $Rev: 345 $ of the Sunrise Commander Tabs Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.
@@ -160,12 +167,26 @@
   "Removes  the tab to which the given buffer is assigned in the active pane. If
   the optional argument is nil, removes the tab to which the current  buffer  is
   assigned, if any."
-  (interactive)
-  (let* ((tab-name (buffer-name tab-buffer))
-         (side (or side sr-selected-window))
+  (interactive "P")
+  (let* ((side (or side sr-selected-window))
+         (tab-name (if (integerp tab-buffer)
+                       (nth tab-buffer (assoc side sr-tabs))
+                     (buffer-name tab-buffer)))
+         (tab-buffer (and tab-name (get-buffer tab-name)))
          (tab-set (assq side sr-tabs)))
-    (setcdr tab-set (delete tab-name (cdr tab-set))))
+    (setcdr tab-set (delete tab-name (cdr tab-set)))
+    (unless (or (null tab-buffer)
+                (eq tab-buffer (current-buffer))
+                (eq tab-buffer (sr-other 'buffer)))
+      (kill-buffer (get-buffer tab-name))))
   (sr-tabs-refresh))
+
+(defun sr-tabs-clean ()
+  "Removes all tabs from the current pane."
+  (interactive)
+  (let ((tab))
+    (while (setq tab (nth 1 (assoc sr-selected-window sr-tabs)))
+      (sr-tabs-remove 1))))
 
 (defun sr-tabs-kill (&optional name side)
   "Removes  the tab  with the  given name  from the  active pane  and  kills its
@@ -239,7 +260,9 @@
       (sr-tabs-kill)
       (setq stack (cdr stack))
       (sr-tabs-next)
-      (unless (or (null stack) (eq to-kill (current-buffer)))
+      (unless (or (null stack)
+                  (eq to-kill (current-buffer))
+                  (eq to-kill (sr-other 'buffer)))
         (kill-buffer to-kill)))))
 
 (defun sr-tabs-rename (&optional new-name)
@@ -477,6 +500,7 @@
 (defvar sr-tabs-mode-map (make-sparse-keymap))
 (define-key sr-tabs-mode-map [(control ?j)] 'sr-tabs-add)
 (define-key sr-tabs-mode-map [(control ?k)] 'sr-tabs-remove)
+(define-key sr-tabs-mode-map "*\C-k" 'sr-tabs-clean)
 (define-key sr-tabs-mode-map [(control ?p)] 'sr-tabs-prev)
 (define-key sr-tabs-mode-map [(control ?n)] 'sr-tabs-next)
 (define-key sr-tabs-mode-map [(meta tab)] 'sr-tabs-next)
@@ -484,13 +508,15 @@
 (define-key sr-tabs-mode-map [(control meta ?j)]
   (lambda () (interactive) (sr-in-other (sr-tabs-add))))
 (define-key sr-tabs-mode-map [(control meta ?k)]
-  (lambda () (interactive) (sr-in-other (sr-tabs-remove))))
+  (lambda () (interactive) (sr-in-other (call-interactively 'sr-tabs-remove))))
 (define-key sr-tabs-mode-map [(control meta ?p)]
   (lambda () (interactive) (sr-in-other (sr-tabs-prev))))
 (define-key sr-tabs-mode-map [(control meta ?n)]
   (lambda () (interactive) (sr-in-other (sr-tabs-next))))
 (define-key sr-tabs-mode-map [(control meta tab)] 
   (lambda () (interactive) (sr-in-other (sr-tabs-next))))
+(define-key sr-tabs-mode-map "*\C-\M-k"
+  (lambda () (interactive) (sr-in-other (sr-tabs-clean))))
 
 (define-key sr-tabs-mode-map "\C-xk" 'sr-tabs-kill-and-go)
 (define-key sr-tabs-mode-map "\M-T"  'sr-tabs-transpose)
@@ -547,8 +573,8 @@
   (sr-tabs-mode t)
   (sr-tabs-menu-init)
   (remove-hook 'sr-start-hook 'sr-tabs-start-once)
-  (unintern 'sr-tabs-menu-init)
-  (unintern 'sr-tabs-start-once))
+  (unintern 'sr-tabs-menu-init obarray)
+  (unintern 'sr-tabs-start-once obarray))
 (add-hook 'sr-start-hook 'sr-tabs-start-once)
 
 ;;; ============================================================================

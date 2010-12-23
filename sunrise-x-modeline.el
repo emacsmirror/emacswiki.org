@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 10 Oct 2009
 ;; Version: 2
-;; RCS Version: $Rev: 329 $
+;; RCS Version: $Rev: 345 $
 ;; Keywords: Sunrise Commander Emacs File Manager Path Mode Line
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-modeline.el
 ;; Compatibility: GNU Emacs 22+
@@ -56,7 +56,7 @@
 ;; The  extension  is  provided  as a minor mode, so you can enable / disable it
 ;; totally by issuing the command (M-x) sr-modeline.
 
-;; This is version 2 $Rev: 329 $ of the Sunrise Commander Modeline Extension.
+;; This is version 2 $Rev: 345 $ of the Sunrise Commander Modeline Extension.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 22) for  Windows.
@@ -162,7 +162,7 @@
   available width of the pane."
   (let ((path (expand-file-name default-directory))
         (path-length (length default-directory))
-        (max-length (- (window-width) 8)))
+        (max-length (- (window-width) 12)))
     (if (< max-length path-length)
         (setq path (concat "..." (substring path (- path-length max-length)))))
     (eval
@@ -301,8 +301,8 @@
   (sr-modeline t)
   (sr-modeline-menu-init)
   (remove-hook 'sr-start-hook 'sr-modeline-start-once)
-  (unintern 'sr-modeline-menu-init)
-  (unintern 'sr-modeline-start-once))
+  (unintern 'sr-modeline-menu-init obarray)
+  (unintern 'sr-modeline-start-once obarray))
 (add-hook 'sr-start-hook 'sr-modeline-start-once)
 
 ;;; ============================================================================

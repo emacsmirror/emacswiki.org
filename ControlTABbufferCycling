@@ -42,6 +42,35 @@ Features:
 * Uses custom: easy to configure.
 * AdrianKubala would be happy to add your favorite feature. :)
 
+LeWang
+* The download link above isn't working, so I've uploaded my version of it to the wiki: Lisp:buffer-stack.el.
+* I've also uploaded my supplemental library Lisp:buffer-stack-suppl.el for only switching amongst buffers of the current major-mode.
+* Here is a snipplet of my emacs.el.  I use f9-f10-f11 for same major-mode switching and *shift* commands for switching amongst all buffers.
+
+<pre>
+;;;;;;;;;;;;;;;;;
+; buffer-stack ;;
+;;;;;;;;;;;;;;;;;
+
+(setq buffer-stack-show-position 'buffer-stack-show-position-buffers)
+
+(autoload 'buffer-stack-down "buffer-stack"  nil t)
+(autoload 'buffer-stack-up "buffer-stack"  nil t)
+(autoload 'buffer-stack-bury-and-kill "buffer-stack"  nil t)
+(autoload 'buffer-stack-bury "buffer-stack"  nil t)
+(eval-after-load "buffer-stack" '(require 'buffer-stack-suppl))
+
+(global-set-key [(f10)] 'buffer-stack-bury)
+(global-set-key [(control f10)] 'buffer-stack-bury-and-kill)
+(global-set-key [(f9)] 'buffer-stack-down)
+(global-set-key [(f11)] 'buffer-stack-up)
+(global-set-key [(shift f10)] 'buffer-stack-bury-thru-all)
+(global-set-key [(shift f9)] 'buffer-stack-down-thru-all)
+(global-set-key [(shift f11)] 'buffer-stack-up-thru-all)
+
+</pre>
+
+
 [:PcBufsw]
 = PC-BufSw =
 

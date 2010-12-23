@@ -79,7 +79,7 @@ Please also consider visiting these pages in order to getting started:
 ; [[rcircJoinRestrictedChannel]]: how to automatically join a restricted channel
 ; [[rcircFacebook]]: how to use Facebook chat
 ; [[rcircOccur]]: find stuff in all your rcirc buffers
-
+; [[rcircOperator]]: ##/op##, ##/deop##, ##/mute##, ##/unmute##, ##/ban##, ##/unban##, ##/kickban##
 ==Related stuff that might be of interest==
 
 ; [[rcirc for bs-show]]: A configuration for `M-x bs-show' users

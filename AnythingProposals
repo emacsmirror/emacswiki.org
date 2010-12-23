@@ -94,24 +94,48 @@ Great - I added a very basic Getting Started section at the top now, because I f
 A few extra functions for visible marks:
 
 <pre>
-(defun anything-unmark-all ()
-  "Unmark all marked candidates."
-  (interactive)
-  (with-anything-window
+(defun anything-unmark-all (arg)
+  "With no prefix arg (or if ARG is nil when called from a function), unmark all candidates.
+With a single prefix arg (or a value of 4 for ARG), unmark all visible candidates.
+With a double prefix arg (or a value of 16 for ARG), unmark all non-visible candidates."
+  (interactive "p")
+  (with-anything-window 
     (save-excursion
-      (goto-char (point-min))
-      (anything-next-line)
-      (let ((maxline (1- (line-number-at-pos (point-max)))))
-        (while (< (current-line) maxline)
-          (anything-aif (anything-this-visible-mark)
-              (anything-delete-visible-mark it))
-          (anything-next-line))
-        (anything-aif (anything-this-visible-mark)
-            (anything-delete-visible-mark it))))
-    (anything-mark-current-line)))
+      (cond ((eq arg 1) ; unmark all candidates
+             (setq anything-visible-mark-overlays nil)
+             (setq anything-c-marked-candidate-list nil)
+             (setq anything-marked-candidates nil))
+            ((> arg 3) ; unmark all visible/non-visible candidates
+             (goto-char (point-min))
+             (anything-next-line)
+             (if (not (anything-this-visible-mark))
+                 (anything-next-visible-mark))
+             (let* ((pnts (remove nil (mapcar 'overlay-start anything-visible-mark-overlays)))
+                    (maxpoint (if pnts (eval `(max ,@pnts)) 0))
+                    temp-overlays temp-candidates temp-c-candidates)
+               (while (<= (point) maxpoint)
+                 (anything-aif (anything-this-visible-mark)
+                     (if (eq arg 4) ; unmark visible candidates if single prefix
+                         (anything-delete-visible-mark it)
+                       ;; else add to temp vars to replace marked candidates
+                       ;; (thus unmarking non-visible candidates)
+                       (progn (add-to-list 'temp-overlays it)
+                              (add-to-list 'temp-candidates
+                                           (cons (anything-get-current-source)
+                                                 (anything-get-selection)))
+                              (add-to-list 'temp-c-candidates
+                                           (anything-current-line-contents)))))
+                 (if (< (point) maxpoint) (anything-next-visible-mark)
+                   (setq maxpoint (1- maxpoint))))))))
+    (anything-mark-current-line))
+  (if (< arg 5)
+      (anything-force-update)))
 
+    
 (defun anything-mark-all ()
-  "Mark all unmarked candidates."
+  "Mark all unmarked candidates.
+NOTE: this will not affect candidates that are not visible. To do that you need to
+redisplay all candidates first (e.g. by pressing C-k)."
   (interactive)
   (with-anything-window
     (save-excursion
@@ -127,7 +151,9 @@ A few extra functions for visible marks:
     (anything-mark-current-line)))
 
 (defun anything-toggle-all-marks ()
-  "Toggle marks of all candidates."
+  "Toggle marks of all visible candidates.
+NOTE: this will not affect candidates that are not visible. To do that you need to
+redisplay all candidates first (e.g. by pressing C-k)."
   (interactive)
   (with-anything-window
     (save-excursion
@@ -140,9 +166,11 @@ A few extra functions for visible marks:
     (anything-mark-current-line)))
 
 (defun anything-kill-marked-candidates ()
-  "Store each marked candidate to the kill-ring (as seperate items),
-or if no candidates are marked, store the current candidate.
-This function does not quit anything when it has finished."
+  "Store each marked visible candidate to the kill-ring (as seperate items),
+or if no visible candidates are marked, store the current candidate.
+This function does not quit anything when it has finished.
+NOTE: this will not affect candidates that are not visible. To do that you need to
+redisplay all candidates first (e.g. by pressing C-k)."
   (interactive)
   (with-anything-window
     (save-excursion
@@ -172,6 +200,16 @@ Do you intend to implement a feature to apply all marked actions?
 
 [new] These functions are not acceptable since the display in anything is not always the same like it is in dired for example.
 With anything-find-files for example, the display change at each time you change directory and the marks you put here will not be visible there.
+
+-- ThierryVolpiatto
+
+[new] I have changed `anything-unmark-all' so that you can choose whether to unmark all, all visible, or all non-visible marked candidates. I think the behaviour for `anything-toggle-all-marks', `anything-mark-all' and `anything-kill-marked-candidates' is OK since in these cases you probably only want to affect the visible candidates, and you can always redisplay all candidates (by deleting minibuffer contents) if you need to affect all candidates.
+What do you think?
+
+-- JoeBloggs
+[new] You should always unmark all, no need to unmark only visibles or non--visibles. If you have more than one source, your code will mark all candidates of all sources,
+you should act only on current source.
+BTW i have created a new google group at https://groups.google.com/group/emacs-anything?hl=fr where it's easier to communicate that here.
 
 -- ThierryVolpiatto
 
@@ -285,6 +323,10 @@ I have another request though; the value of `anything-mp-highlight-delay' is not
 === Mailing list ===
 
 An emacs-anything mailing list would be great.
+
+[new] I have created a google group at https://groups.google.com/group/emacs-anything?hl=fr
+
+-- ThierryVolpiatto
 
 === anything-etag request ===
 

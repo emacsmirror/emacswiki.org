@@ -1,4 +1,4 @@
-This page is about library '''<tt>[[mouse+.el]]</tt>''', which enhances standard Emacs library ##mouse.el##. Besides some minor enhancements of `mouse-choose-completion', `mouse-tear-off-window', and `mouse-yank-secondary', <tt>[[mouse+.el]]</tt> provides these new features:
+This page is about library '''[::Mouse+]''' (<tt>[[mouse+.el]]</tt>), which enhances standard Emacs library ##mouse.el##. Besides some minor enhancements of `mouse-choose-completion', `mouse-tear-off-window', and `mouse-yank-secondary', ##mouse+.el## provides these new features:
 
 * Temporarily highlight the exact mouse position when you click `mouse-2' -- [[#HighlightYankPosition]].
 

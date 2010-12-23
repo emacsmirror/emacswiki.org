@@ -201,7 +201,7 @@ This page describes my Emacs Lisp libraries: '''DrewsElispLibraries'''.
 * GrepPlus -- '''Grep+''' (<tt>[[compile-.el]]</tt>, <tt>[[compile+.el]]</tt>, <tt>[[grep+.el]]</tt>): highlighting, frame fitting
 * [[OccurBuffer#ReplacePlus]] -- '''Occur+''' (<tt>[[replace+.el]]</tt>): regexp highlighting, frame fitting
 * KillingBuffers -- replacement for `kill-buffer' that also deletes [[window]]s on [[buffer]]
-* RingPlus -- extensions to standard library ##ring.el##. Circular lists etc.
+* RingPlus -- (<tt>[[ring+.el]]</tt>) extensions to standard library ##ring.el##. Circular lists etc.
 * ThingAtPointPlus -- functions to return various Lisp objects and text entities at or near [[point]]
 * ThingAtPointCommands -- commands to select various Lisp objects and text entities at or near [[point]]
 * HighlightTemporarily -- highlight/unhighlight [[region]]s, [[regexp]]s...  (<tt>[[highlight.el]]</tt>)
@@ -263,9 +263,6 @@ Here are some screenshots of my Emacs.
 
 
 == Mailbox ==
-
-[new]
-Hey Drew, thanks for all the great code.  Just wondering, is cus-edit+.el compatible with the recent "Custom Themes" feature?  TIA --DaveAbrahams
 
 ----
 
@@ -341,12 +338,18 @@ In ##hl-line+##, the function ##hl-line-flash## ignores the ##arg## argument and
 [new:DrewAdams:2010-10-04 05:25 UTC]
 Yes, of course it would.  Dunno why I left it like that. Thx - DrewAdams
 
+[new]
+Hey Drew, thanks for all the great code.  Just wondering, is <tt>[[cus-edit+.el]]</tt> compatible with the recent "Custom Themes" feature?  TIA --DaveAbrahams
+
+[new:DrewAdams:2010-12-22 15:14 UTC]
+Hi Dave. Dunno. I haven't changed it in years, so it is probably out of date in some respects. If you have the time to take a look and let me know, I'll put it on my to-do list.  Thx -- DrewAdams
+
 
 ----
 
 Libraries referenced here: 
 
-Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:dired+.el, Lisp:emacs-init.el, Lisp:grep+.el, Lisp:highlight.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:menu-bar+.el, Lisp:mkhtml.el, Lisp:replace+.el
+Lisp:buff-menu+.el, Lisp:compile-.el, Lisp:compile+.el, Lisp:cus-edit+.el, Lisp:dired+.el, Lisp:emacs-init.el, Lisp:grep+.el, Lisp:highlight.el, Lisp:icomplete+.el, Lisp:imenu+.el, Lisp:info+.el, Lisp:menu-bar+.el, Lisp:mkhtml.el, Lisp:replace+.el, ring+.el
 
 
 ------

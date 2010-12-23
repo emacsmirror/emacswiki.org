@@ -5,8 +5,8 @@
 ;; Author: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
-;; Version: 4
-;; RCS Version: $Rev: 344 $
+;; Version: 5
+;; RCS Version: $Rev: 345 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 344 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 345 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -749,14 +749,24 @@ automatically:
         (kill-buffer last-buf)))))
 (add-hook 'bookmark-after-jump-hook 'sr-bookmark-jump)
 
+(defun sr-virtualize-pane ()
+  "Puts the current normal view in VIRTUAL mode."
+  (interactive)
+  (when (equal major-mode 'sr-mode)
+    (let ((focus (dired-get-filename 'verbatim t)))
+      (sr-virtual-mode)
+      (if focus (sr-focus-filename focus)))))
+
 (defun sr-virtual-dismiss ()
   "Restores normal view of pane in Sunrise VIRTUAL mode."
   (interactive)
   (when (equal major-mode 'sr-virtual-mode)
-    (sr-process-kill)
-    (sr-save-aspect
-     (sr-alternate-buffer (sr-goto-dir sr-this-directory))
-     (revert-buffer))))
+    (let ((focus (dired-get-filename 'verbatim t)))
+      (sr-process-kill)
+      (sr-save-aspect
+       (sr-alternate-buffer (sr-goto-dir sr-this-directory))
+       (if focus (sr-focus-filename focus))
+       (revert-buffer)))))
 
 (defun sr-select-window (side)
   "Select/highlight the given sr window (right or left)."
@@ -924,7 +934,7 @@ automatically:
 (define-key sr-mode-map "\C-c/"       'sr-fuzzy-narrow)
 (define-key sr-mode-map "\C-c\C-r"    'sr-recent-files)
 (define-key sr-mode-map "\C-c\C-d"    'sr-recent-directories)
-(define-key sr-mode-map "\C-cv"       'sr-virtual-mode)
+(define-key sr-mode-map "\C-cv"       'sr-virtualize-pane)
 (define-key sr-mode-map "\C-c\C-v"    'sr-pure-virtual)
 (define-key sr-mode-map "Q"           'sr-do-query-replace-regexp)
 (define-key sr-mode-map "F"           'sr-do-find-marked-files)
@@ -1447,7 +1457,7 @@ automatically:
   a virtual directory served by AVFS."
   (interactive (find-file-read-args "Find file or directory: " nil))
   (cond ((file-directory-p filename) (sr-find-regular-directory filename))
-        ((sr-avfs-directory-p filename)
+        ((and (sr-avfs-directory-p filename) (sr-avfs-dir filename))
          (sr-find-regular-directory (sr-avfs-dir filename)))
         ((sr-virtual-directory-p filename) (sr-find-virtual-directory filename))
         (t (sr-find-regular-file filename wildcards))))
@@ -2715,8 +2725,8 @@ or (c)ontents? ")
         (setq other (sr-pop-mark))
         (sr-change-window)
         (setq other (or other this))))
-    (setq this (concat default-directory this))
-    (setq other (concat sr-other-directory other))
+    (setq this (concat default-directory this)
+          other (concat sr-other-directory other))
     (list fun this other)))
 
 (defun sr-pop-mark ()

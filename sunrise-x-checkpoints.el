@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 29 Dec 2009
 ;; Version: 1
-;; RCS Version: $Rev: 309 $
+;; RCS Version: $Rev: 345 $
 ;; Keywords: Sunrise Commander Emacs File Manager Checkpoints Bookmarks
 ;; URL: http://www.emacswiki.org/emacs/sunrise-x-checkpoints.el
 ;; Compatibility: GNU Emacs 23+
@@ -39,7 +39,7 @@
 ;; other  one is deprecated and will eventually disappear once Emacs 23+ becomes
 ;; the "stable" release.
 
-;; This is version 1 $Rev: 309 $ of the Sunrise Commander Checkpoints Extension.
+;; This is version 1 $Rev: 345 $ of the Sunrise Commander Checkpoints Extension.
 
 ;; It  was  written and tested on GNU Emacs 23 on Linux.
 
@@ -69,7 +69,9 @@
 (defun sr-checkpoint-restore (&optional arg)
   "Calls interactively bookmark-jump."
   (interactive "p")
-  (call-interactively 'bookmark-jump))
+  (call-interactively 'bookmark-jump)
+  (sr-history-push default-directory)
+  (sr-in-other (sr-history-push default-directory)))
 
 (defun sr-make-checkpoint-record ()
   "Generates a the bookmark record for a new checkpoint."

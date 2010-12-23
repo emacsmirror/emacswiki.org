@@ -1,3 +1,5 @@
+For another rectangle selection mode that tries to unify rectangle and normal selection operations, try CuaMode (which is part of Emacs, unlike this package).
+
 Based on the Commentary of the file:
 
 The packages makes it possible to highlight
@@ -48,8 +50,6 @@ following to your ~/.emacs:
       "Kill a rectangular region and save it in the kill ring." t)
     (autoload 'rm-kill-ring-save "rect-mark"
       "Copy a rectangular region to the kill ring." t)
-
-For another rectangle selection mode that tries to unify rectangle and normal selection operations, try CuaMode.
 
 ----
 CategoryRegion

@@ -1,0 +1,71 @@
+Here are some useful commands for your init file if you use [[rcirc]] and you're an operator.
+
+The ##/op## and ##/deop## commands are specific to Freenode's irc server, I think. They tell !ChanServ to op you instead of using the ##/mode##command.
+
+{{{
+;; rcirc /op
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command op (input)
+     "Op myself on the current channel."
+     (interactive "s")
+     (rcirc-send-message process "chanserv"
+			 (concat "op " target))))
+
+;; rcirc /deop
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command deop (input)
+     "Deop myself on the current channel."
+     (interactive "s")
+     (rcirc-send-message process "chanserv"
+			 (concat "deop " target))))
+
+;; rcirc /mute
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command mute (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s +q %s!*@*"
+					target input))))
+
+;; rcirc /unmute
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command unmute (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s -q %s!*@*"
+					target input))))
+
+;; rcirc /ban
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command ban (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s +b %s!*@*"
+					target input))))
+
+;; rcirc /unban
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command unban (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s -b %s!*@*"
+					target input))))
+
+;; rcirc /kickban
+
+(eval-after-load 'rcirc
+  '(defun-rcirc-command kickban (input)
+     "Mute nick"
+     (interactive "s")
+     (rcirc-send-string process (format "MODE %s +b %s!*@*"
+					target input))
+     (rcirc-send-string process (format "KICK %s %s kickban!"
+					target input))))
+
+}}}
