@@ -1,7 +1,6 @@
 This README is the Ansys mode documentation (The text formatting is
 targeted for the Emacs Wiki)
 
-Time-stamp: "2010-01-08 21:10:05 uidg1626"
 Copyright (C) 2006 - 2010  H. Dieter Wilhelm GPL V3
 
 == Introduction ==
@@ -19,41 +18,36 @@ Ansys solver processes as well.
 The mode's capabilities are sophisticated but the comprehensive
 documentation is targeted for Ansys users with little Emacs
 experience.  Any suggestions for improvements are very welcome.  The
-current stable version (ansys-mode-12.0.1) and development versions
-are available at Google Code (http://code.google.com/p/ansys-mode).
-For installing, further instructions and issues please have a look at
-the Ansys mode Wiki (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).
-
-== Table of contents ==
-
-= Requirements
-= Features
-= Installation
-= Usage and customisation
-= Experienced Emacs users
-= History and News
-= Resources
-= Bugs and Problems
+current stable version 12.0.1 is available at the Google Code site
+http://code.google.com/p/ansys-mode ("wget
+http://ansys-mode.googlecode.com/files/ansys-mode-12.0.1.tgz",
+development versions can be checked out with "svn checkout
+http://ansys-mode.googlecode.com/svn/trunk ansys-mode").  For the
+installation, issues and comments please have a look at the Ansys mode
+Wiki (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).
 
 == Requirements ==
 
 The code is based on Ansys version 12.0 and is written for the editor
 GNU Emacs (not consciously targeted for XEmacs).  It is tested with
-Emacs 23.1 under XP and GNU/Linux.  The code won't run without minor
-adaptions with Emacs 21.4.
+Emacs-23.2 and Emacs-23.1 under XP32, XP64 and GNU/Linux.  The code
+compiles also with Emacs-22.1, i. e. it should work with this and any
+newer version.  (Emacs-23.1 was relased in Jul. 2009, Emacs-22.1 in
+Jul. 2007.)  The code can be loaded but won't run flawlessly without
+minor adaptions for Emacs-21.3 (released in Mar. 2003).
 
-If possible grab the Win32 package with a preconfigured Ansys mode
-together with a precompiled Emacs at above Googel Code site and unpack
-the archive in any directory on your system.  Or visit
-http://ftp.gnu.org/pub/gnu/emacs/ for an original versions of GNU
-Emacs.
+If applicable please grab the package of a pre-compiled Emacs-23.2 for
+Windows together with a preconfigured Ansys mode at above Google Code
+site and unpack this archive anywhere on your system.  Alternatively
+visit http://ftp.gnu.org/pub/gnu/emacs/ for an original version of GNU
+Emacs and/or extract and configure the Ansys mode package separately.
 
 The Ansys solver control and communication capabilities are somewhat
 restricted on non-UNIX systems.
 
-Ansys Mode needs now more than one lisp file, be sure you have all
-necessary files, please see the == Installation == section for a list
-of them.
+The latest Ansys Mode consists of more than one lisp file, be sure you
+have all necessary files, please consult the == Installation ==
+section for a list of them.
 
 == Features ==
 
@@ -79,9 +73,9 @@ of them.
   optionally also user defined variables (experimental)
 
 * Overview of *every* variable definition (*GET, *DIM, *SET, =, *DO,
-  CM, *VGET, ...) as well as component names in the current file,
-  shown in another window.  In the highest decoration level these
-  objects are highlighted as well.
+  CM, *VGET, ...), as well as component names, in the current file.
+  These are shown in another window.  In the highest decoration level
+  (2) these user variables are highlighted as well
 
 * Preview and insertion (optionally auto-insertion) of header and
   Ansys code templates for APDL files.  Respective snippets represent
@@ -102,16 +96,16 @@ of them.
   i. e. with writting a "nickname" Emacs exchanges the characters with
   a whole code template
 
-* Ansys mode changes some Emacs defaults to smooth the transition from
-  other editors
+* Ansys mode changes some Emacs default behaviour to alleviate the
+  transition from other editors and user interface standards
 
 As a visual example, a screen-shot on EmacsWiki and Google code show
-an Emacs frame with a ripped off Ansys menu field.  The APDL file is
-in the right window with the (experimental) user variable highlighting
-switched on and a help overlay (in yellow background) activated. The
-smaller windows on the left hand side are showing the "Variable
-definitions buffer" of the same file and a preview buffer of a certain
-code template, respectively.
+an Emacs frame (GTK+ toolkit under Linux) with a ripped off Ansys menu
+field.  The APDL file is in the right window with the (experimental)
+user variable highlighting switched on and a help overlay (in yellow
+background) activated. The smaller windows on the left hand side are
+showing the "Variable definitions buffer" of the same file and a
+preview buffer of a certain code template, respectively.
 
 http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
@@ -119,45 +113,62 @@ http://www.duenenhof-wilhelm.de/dieter/ansys-mode.jpg
 
 === Files ===
 
-Code:
+Sources:
 * ansys-mode.el
 * ansys-keyword.el
 * ansys-template.el
 * ansys-process.el
 
+(and possibly their compiled versions with the suffix '.elc'.  In case
+you are using the mode with an older version of Emacs than 23 please
+remove the .elc files.)
+
 Auxiliaries:
 * README -- this file
 * TODO -- todos and deficiencies
-* LICENSE -- the GPL V3 license
-* default_.el -- configuration example of an Emacs default.el
+* LICENSE -- the GPL (Gnu Puplic License) Version 3
+* default_el -- configuration examples (of an Emacs 'default.el')
 * fontification.mac -- highlighting APDL example
 
 === Short instructions ===
 
-For Windows system please use the Emacs archive with a preconfigured
-Ansys mode.  Unpack it anywhere on the system, you might run the
-program addpm.exe (located in the bin directory) to add an Emacs entry
-to the Windows Start menu (please refer to the README.W32 file).  Run
-the Emacs executable and get used to this great Editor.  Ansys mode is
-immediately availabel, please open or create an APDL file with a .mac
-suffix.
+__For Windows systems:__
+
+Please use the Emacs archive bundled with the latest stable
+preconfigured Ansys mode at http://code.google.com/p/ansys-mode.
+Unpack the archive anywhere on the system (you do not need
+administrator rights).  You might subsequently run the program
+addpm.exe (located in the bin directory) to add an Emacs entry to the
+Windows Start menu (please refer to the README.W32 file) otherwise
+start the Emacs executable runemacs.exe from there.  Ansys mode is
+immediately availabel, by opening (check the fontification.mac
+example) or creating a new APDL file with a .mac suffix.  Have fun!
+
+(If you did not install Ansys in its default Installation directory on
+drive C:, please adjust the `default.el' file in Emacs' `site-lisp'
+directory accordingly, if you want to be ablet to start 'anslic_admin'
+or the Ansys help program directly from Ansys mode.)
+
+__For existing Emacs installations on Windows or UNIX:__
 
 ==== Direct way; no file configuration necessary ====
 
-Important prerequisite: Emacs must know where all the code (.el) files
-reside!  Extract the mode archive into an Emacs directory which is in
-its default load-path (a good place is the "site-lisp" folder in your
-Emacs installation tree) or indicate the directory with the
-environment variable EMACSLOADPATH).
+Important prerequisite: Emacs must know where all the code (.el or its
+compiled versions .elc) files reside!  Extract the mode archive into
+an Emacs directory which is in its default load-path (a good place is
+the "site-lisp" folder in your Emacs installation tree) or indicate
+the directory with the environment variable EMACSLOADPATH).
 
 From there on you must load first the mode definitions with `M-x
 load-file ansys-mode RET', i. e. typing "M-x" (first) the "Alt" key
 and then the "x" key simultaneously, you'll end up in the so called
 Emacs minibuffer prompt, now type "load-file" (you might apply the
 "TAB" key for the Emacs auto-completion feature at every intermediate
-stage 8-)) and conclude this input with the "RET" key. Emacs will then
-prompt you for a file, type in the path and "ansys-mode.el" and press
-RET.  Thereafter call the mode function itself with `M-x ansys-mode
+stage ) and conclude this input with the "RET" key. Emacs will then
+prompt you for a file, type in the directory where you have extracted
+the code and "ansys-mode.el" (or better "ansys-mode.elc" for speed
+reasons if the compiled version is available) and press RET to execude
+the loading.  Thereafter call the mode itself with `M-x ansys-mode
 RET' for every new or existing APDL file.
 
 ==== More convenient way; file configuration necessary ====
@@ -178,7 +189,7 @@ automatically applied for all files with suffixes ".mac", ".dat" and
 
 === Verbose instructions ===
 
-* direct way, no configuration necessary (loading "by hand")
+* Direct way, no configuration necessary (loading "by hand")
 
 Please consult the "direct way" description above.
 
@@ -188,12 +199,13 @@ the menu bar), it doesn't take too much time and the investment will
 be worth it since it will accelerate your general editing capabilities
 in the future.
 
-* permanent configuration
+* Permanent configuration
 
-When it becomes tiring of loading 'ansys-mode.el' every time you are
-starting a new Emacs session, you should specify the installation path
-for the mode files in your '~/.emacs' file (the configuration file
-'.emacs' of GNU Emacs in your home directory '~\').
+When it becomes tiring of loading 'ansys-mode.el' (or
+'ansys-mode.elc') every time you are starting a new Emacs session, you
+should specify the installation path for the mode files in your
+'~/.emacs' file (the configuration file '.emacs' of GNU Emacs in your
+home directory '~\').
 
      (add-to-list 'load-path
 		  "C:\\YOUR\\DIRECTORY\\WHERE\\MODE\\FILES\\RECIDE")
@@ -202,7 +214,7 @@ for the mode files in your '~/.emacs' file (the configuration file
 From here you are able to type "M-x ansys-mode RET" to activate the
 mode for every interesting file.
 
-* automatic mode assignment
+* Automatic mode assignment
 
 When you intend to apply the mode automatically, for all files with
 the extensions ".mac", ".dat", ".inp" and ".anf" ( .dat and .inp are
@@ -220,7 +232,7 @@ which contains also an APDL header and footer.
 
      (add-to-list 'auto-mode-alist '("\\.anf$" . ansys-mode))
 
-* autoinsertion of code
+* Autoinsertion of code
 
 In case you also want to enjoy the auto insertion feature, which puts
 (optionally) some predefined body of Ansys commands to every new APDL
@@ -230,7 +242,7 @@ file insert the following into '.emacs':
      (setq auto-insert-query t) ;insert only after request
      (add-to-list 'auto-insert-alist '(ansys-mode . [ansys-skeleton-compilation]))
 
-* autoloading of helper functions
+* Autoloading of helper functions
 
 With below section you are also able to use certain Ansys related
 commands in a new Emacs session without the need of previously having
@@ -243,10 +255,10 @@ explicitely called ansys-mode.
  TODO: -license-file, -license-program variables
      (autoload 'ansys-license-status "ansys-mode" "Activate the function for displaying Ansys license status or starting a license utility." 'interactive)
 
-* further configuration method
+* A further configuration method
 
 As a summary and example to these and further customisation options
-please have a look at the accompanying "default_.el" example. This is
+please have a look at the accompanying "default_el" example. This is
 helpful especially if you intend to use the mode's solver
 communication capabilities.  This file can be used, after renaming it
 to "default.el" and adjusting as as system wide startup file for Emacs
@@ -260,59 +272,80 @@ When you have a file under `ansys-mode' check out the menu bar's
 "Ansys" entry for its possibilities and select the entry "Describe
 Ansys Mode" or type "C-h m" (i. e. the CTRL key together with the "h"
 key and subsequently the "m" key), which will display the Ansys mode
-help which is your "online" guide for its usage and customisation 8-).
-
+help which is your "online" guide for its usage, keybindings and
+customisation options.
 
 Templates, i.e. code snippets or skeletons might be extended in
-"ansys-template.el" and can be used similar or complementary to a
+"ansys-template.el" and can be used similarly or complementarily to a
 classical Ansys macro library.
 
 == Experienced Emacs users ==
 
 Ansys mode changes the default behaviour of Emacs
 
-globally: (delete-selection-mode t)
+globally:
+* Activated Delete Selection Mode (delete-selection-mode t)
+* Advised M-w (kill-ring-save) without active region to copy the whole line
+* Activated Show Paren Mode (show-paren-mode t)
 
-locally: (setq scroll-preserve-screen-position t)
-locally: M-h (mark-paragraph) has improved, in my opinion
+(Delete Selection Mode can be switched off in the Ansys menu.)
+
+locally:
+* (setq scroll-preserve-screen-position t)
+* Changed M-h (mark-paragraph) to move the cursor to the end of the region
 
 == Acknowledgements ==
 
 In no particular order:
 
-Holger Sparr,
-Eli Zaretzki,
-Markus Triska,
-Mathias Dahl,
-rms
+* Alex Schroeder
+* Holger Sparr
+* Eli Zaretzki
+* Markus Triska
+* Mathias Dahl
+* And of course: rms
 
 == History and News ==
 
-The version scheme is a mixture of the Ansys version (12.0) on which
-some code is based and the version of the Ansys mode (1) itself.
+The version scheme is a mixture of the Ansys release (currently 12.0)
+on which the highlighting and completing code is based and the version
+increments (currently .1) of Ansys mode for this particular Ansys
+release.
 
 === Version 12.0.1 ===
 
+* Some new graphics commands like ansys-zoom-in, -zoom-out,
+  -move-left, -right, -up, -down, etc.
+
 * The lisp code had to be split up for better maintance, the code
-  files for are now provided in an archive.
+  files for are now provided in an archive together with their
+  compiled state for speed reasons.
 
 * Reworked the fontification mainly for the sake of speed.  There are
   now highlighting levels to choose from, offering e. g. higlighting
   of deprecated element types in a warning-face, deprecated Ansys *
-  comments, ...
+  comments and so on
 
-* Reworked and hopefully improved the mode's help and README
+* Updated and improved the readability of the mode's help and the
+  README file
 
 * The output from the LMUtil license status tool (C-c C-l) is now
-  filtered to be better readable and concise.
+  filtered on UNIX to be more concise.
 
 * The `ansys-send-to-ansys' (C-c C-c) and the ansys-copy-or-send-above
   (C-c C-u) commands are now generalised so that they are also doing
-  some useful stuff without a running Ansys process (they copy in that
-  case the cursor line/the chosen region and from the file beginning
-  to the cursor line, respectively, to the clipboard).
+  some useful stuff without a running Ansys interpreter process (they
+  copy in that case the cursor line/the chosen region and copy from
+  the file beginning to the cursor line, respectively, to the
+  clipboard).  Given a prefix argument to these commands, the cursor
+  won't move to the next code line.
 
-* Added tooltips to all Ansys menu entries.
+* The completion of Ansy keywords is reworked and has improved.  Ansys
+  symbols are now completed in 3 ways: Upcase, downcase and
+  capitalise.
+
+* New: Added tooltips to all Ansys menu entries.  Activated or
+  deactivated menue entries according to the context
 
 * Ansys mode tries to gather information from the OS environment when
   the variable `ansys-license-file' is not set by the user and uses
@@ -326,6 +359,9 @@ some code is based and the version of the Ansys mode (1) itself.
   customisation options in the code files itself are changed and
   require a code reloading to take effect.
 
+* Ansys mode changes some Emacs default behaviour to smooth the
+  transition from other editors
+
 === Version 11.0.2 ===
 
 * Enabled the preview of code templates or fragments (called
@@ -334,8 +370,8 @@ some code is based and the version of the Ansys mode (1) itself.
 * Removed "buffer has no process" bug when killing an ansys-mode
   buffer.
 
-* Submitting interactively Ansys commands (via minibuffer query not
-  only written in a macro file) to the solver process,
+* Submitting interactively Ansys commands (via minibuffer query, not
+  only as written in a macro file) to the solver process,
   ansys-query-ansys-command (C-c C-q).
 
 === ansys-mode.el 11.0.1 in comparison to ansys-mod.el: ===
@@ -396,10 +432,10 @@ some code is based and the version of the Ansys mode (1) itself.
   comment sign e. g.: %% a = 3 **4 %% results in "a" having the value
   3, whereas %% a = 3**4 %% sets "a" to 81!
 
-* New: A line beginning with a comma is indented to the lenght of
-  the last non slash or asterisk command as a reminder that the
-  Ansys solver interprets this as a space holder for the last
-  command keyword (the Ansys default command concept).
+* New: A line beginning with a comma is indented to the length of the
+  last non slash or asterisk command as a reminder that the Ansys
+  solver interprets this as a space holder for the last command
+  keyword (the Ansys default command concept).
 
 * Extended documentation, code cleaning and simplification of
   commands (e.g. comment handling) with the application of standard
@@ -407,11 +443,11 @@ some code is based and the version of the Ansys mode (1) itself.
 
 == Resources ==
 
-http://www.emacswiki.org
-http://www.ansys.net -- general Ansys repository
-http://www.ansys.com
-http://www.ansyssolutions.com -- The Ansys solutions magazine
-http://www.xansys.org -- ansys online community
+* http://www.emacswiki.org
+* http://www.ansys.net -- general Ansys repository
+* http://www.ansys.com
+* http://www.ansyssolutions.com -- The Ansys solutions magazine
+* http://www.xansys.org -- ansys online community
 
 == Bugs and Problems ==
 
@@ -423,7 +459,9 @@ variable definitions are taken into account only when the variable
 ansys-dynamic-highlighting-flag is set (for very large files this
 slows Emacs and this flag is only implemented for ".mac" files) or any
 times when you activate the variable display (with C-c C-v) and the
-maximum highlighting level.
+maximum highlighting level.  If not already the case try to use the
+code in compiled form, please have a look at the documentation of the
+Emacs function `byte-recompile-directory'.
 
 Ansys "format line" (multi-line highlighting) and "user variable"
 highlighting (when the mentioned flag above ist not set) are somewhat
@@ -436,9 +474,11 @@ If you experience problems installing or running this mode you have
 the following options:
 
 * Write an email to the mode maintainer (you can trigger a bug report
-  from the menu--at least a useful template when you are not in the
-  position of sending emails within Emacs--or calling directly the
-  function `ansys-submit-bug-report').
+  from the menu or directly calling the function
+  `ansys-submit-bug-report'.  Even when you are not in the position of
+  sending emails from within Emacs this will give at least a useful
+  mail template with valuable information about internal mode
+  settings).
 
 * When you have already a (cost free) Google account you are able
   to issue a bug report at the Google Code hosted page
@@ -448,10 +488,3 @@ the following options:
 * It might be helpful for you to visit the Emacs Wiki
   (http://www.emacswiki.org/cgi-bin/wiki/AnsysMode).  At the Wiki you
   can add some comments or wishes.
-
-Local Variables:
-word-wrap: t
-show-trailing-whitespace: t
-time-stamp-active: t
-indicate-empty-lines: t
-End:

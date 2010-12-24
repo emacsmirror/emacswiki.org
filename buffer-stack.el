@@ -1,4 +1,4 @@
-;;; buffer-stack-new.el --- Enhanced intelligent switch-to-other-buffer replacement.
+;;; buffer-stack.el --- Enhanced intelligent switch-to-other-buffer replacement.
 
 ;; Copyright (C) 2002 Adrian Kubala
 

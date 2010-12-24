@@ -131,7 +131,7 @@ This is how add stuff to the PATH variable, a must if you try to use Emacs for T
 
 
 Alternatively, you can set up the path for all applications launched from the Finder by editing <code>~/.MacOSX/environment.plist</code> [http://developer.apple.com/qa/qa2001/qa1067.html]
-[http://www.astro.washington.edu/owen/AquaEnvVar.html], or using the RCEnvironment preferences pane [http://www.rubicode.com/Software/RCEnvironment/].
+[http://www.astro.washington.edu/users/rowen/AquaEnvVar.html], or using the RCEnvironment preferences pane [http://www.rubicode.com/Software/RCEnvironment/].
 
 Emacs lisp support for Mac OS X plist files (including the environment plist file used by the Finder) is here: [[MacOSXPlist]]
 

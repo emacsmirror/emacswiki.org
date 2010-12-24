@@ -48,7 +48,7 @@ commands, but it is otherwise not possible with other search
 methods such as regexp Isearch.  A regexp simply cannot express
 intersection ("and") except in the limited form of "followed by".
 
-Here's a screenshot of using `icicle-occur' to find lines that match the regexp `##regexp.*match##'. The text matching the input regexp is highlighted with green. The line highlighted with pink corresponds to the current candidate during cycling (with `C-next'). The next cycling candidate is shown in the [[minibuffer]] and is highlighted in `*Completions*'.
+Here's a screenshot of using `icicle-occur' to find lines that match the regexp `##regexp.*match##'. The text matching the input regexp is highlighted with green. The line highlighted with pink corresponds to the current candidate during cycling (with `C-next'). The current cycling candidate is shown in the [[minibuffer]] and is highlighted in `*Completions*'.
 
 [[image:IciclesOccurScreenshot]]
 

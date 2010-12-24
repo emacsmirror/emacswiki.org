@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 23:10:26 2010 (-0800)
+;; Last-Updated: Thu Dec 23 16:45:43 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 12037
+;;     Update #: 12040
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4877,8 +4877,9 @@ Similar to `expand-file-name', except:
 
 (defun icicle-expand-file-name-20 (input dir)
   "Emacs 20's `expand-file-name': does not collapse consecutive slashes."
-  (let ((escaped-input  (replace-regexp-in-string "//" (make-string 5 7) input)) ; Replace with five ^Gs.
-        (escaped-dir    (replace-regexp-in-string "//" (make-string 5 7) dir)))
+  ;; Replace // with five ^Gs, then replace back again.
+  (let ((escaped-input  (and input (replace-regexp-in-string "//" (make-string 5 7) input)))
+        (escaped-dir    (and dir (replace-regexp-in-string "//" (make-string 5 7) dir))))
     (replace-regexp-in-string (make-string 5 7) "//" (expand-file-name escaped-input escaped-dir))))
 
 (defun icicle-start-of-candidates-in-Completions ()

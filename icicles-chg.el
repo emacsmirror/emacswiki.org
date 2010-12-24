@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 23:21:03 2010 (-0800)
+;; Last-Updated: Thu Dec 23 16:45:07 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 5958
+;;     Update #: 5959
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -654,6 +654,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2010/12/23 dadams
+;;     icicle-expand-file-name-20: Allow for inputs to be nil.
 ;; 2010/12/18 dadams
 ;;     Moved icicle-assoc-delete-all to icicles-mac.el, since used there.
 ;;     Added autoload cookies for cmds & macro; removed them from non-interactive functions.

@@ -1,13 +1,13 @@
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; wcheck-mode.el (2010-08-07)
-;;
-;; Interface for external spell-checkers and text-filtering programs.
-
+;;; wcheck-mode.el --- Interface for external spelling checkers
 
 ;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
-;;
-;; LICENSE
-;;
+
+;; Author: Teemu Likonen <tlikonen@iki.fi>
+;; Maintainer: Teemu Likonen <tlikonen@iki.fi>
+;; Created: 2009-07-04
+;; Version: 2010.12.23
+;; Keywords: spell check languages ispell
+
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
 ;; the Free Software Foundation, either version 3 of the License, or (at
@@ -21,7 +21,8 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs. If not, see <http://www.gnu.org/licenses/>.
 
-
+;;; Commentary:
+;;
 ;; INSTALLATION
 ;;
 ;; Put this file to some directory in your "load-path" and add the
@@ -37,8 +38,8 @@
 ;; See customize group "wcheck" for information on how to configure
 ;; Wcheck mode. (M-x customize-group RET wcheck RET)
 
+;;; Code:
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Settings
 
 
@@ -387,7 +388,6 @@ This is used when language does not define a face."
   :group 'wcheck)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Variables
 
 
@@ -416,7 +416,6 @@ This is used when language does not define a face."
   "Process name for `wcheck-mode'.")
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Interactive commands
 
 
@@ -573,7 +572,6 @@ the right-click mouse menu)."
     (wcheck-remove-local-hooks (current-buffer))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Timers
 
 
@@ -715,7 +713,6 @@ call. The delay between consecutive calls is defined in variable
                          (1- repeat))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Hooks
 
 
@@ -820,7 +817,6 @@ Turn off `wcheck-mode' before changing major mode."
   (wcheck-mode -1))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Processes
 
 
@@ -903,7 +899,6 @@ BUFFER from the list."
   wcheck-buffer-data)
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Read and paint words
 
 
@@ -1040,7 +1035,6 @@ visible in BUFFER within position range from BEG to END."
                     (setq old-point (point))))))))))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Spelling suggestions
 
 
@@ -1198,6 +1192,7 @@ or nil."
 
           (delete-char -2)
           (goto-char (point-min))
+          (goto-char (line-end-position))
           (setq buffer-read-only t)
 
           (let* ((window-min-height 2)
@@ -1250,12 +1245,12 @@ or nil."
 (defun wcheck-parse-suggestions-ispell ()
   "Parser for Ispell-compatible programs' output."
   (let ((search-spaces-regexp nil))
-    (when (re-search-forward "^& [^:]+: \\(.+\\)$" nil t)
-      (delete-dups (split-string (match-string-no-properties 1)
-                                 ", " t)))))
+    (when (re-search-forward "^& [^ ]+ \\([0-9]+\\) [0-9]+: \\(.+\\)$" nil t)
+      (let ((count (string-to-number (match-string-no-properties 1)))
+            (words (split-string (match-string-no-properties 2) ", " t)))
+        (delete-dups (nbutlast words (- (length words) count)))))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Face information functions
 
 
@@ -1313,7 +1308,6 @@ Both arguments are lists."
         (throw 'found t)))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Miscellaneous low-level functions
 
 
@@ -1437,7 +1431,6 @@ according to A's and all overlapping A B ranges are combined."
           (t (append (list a) b)))))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Overlays
 
 
@@ -1479,7 +1472,6 @@ suggestion function."
   (wcheck-spelling-suggestions (posn-point (event-end event)) event))
 
 
-;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Buffer data access functions
 
 
@@ -1527,3 +1519,5 @@ with the matching KEY VALUE."
 
 
 (provide 'wcheck-mode)
+
+;;; wcheck-mode.el ends here
