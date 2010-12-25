@@ -9,12 +9,13 @@ Here's some elisp code i wrote:
 
 * [[http://ergoemacs.org/ ErgoEmacs]]. A emacs distribution, together with [[http://www.davidcapello.com.ar/ David Capello]].
 * [[http://xahlee.org/emacs/ergonomic_emacs_keybinding.html ErgoEmacs Keybinding]]. A emacs keybinding set based on ergonomics.
+* [[http://xahlee.org/emacs/xmsi-math-symbols-input.html emacs unicode symbols input (xmsi-mode)]]. A minor mode to input math symbols and unicode.
 * [[http://xahlee.org/emacs/unicode-browser.html Unicode Browser mode (xub-mode)]]. For browsing unicode character palette.
 * [[http://xahlee.org/emacs/xbbcode-mode.html BBCode mode (xbbcode-mode)]]. For editing lighweight markup BBCode. Emacswiki page here: [[BbCode]]
 * [[http://xahlee.org/mswin/emacs_autohotkey_mode.html AutoHotkey mode (xahk-mode)]] A mode for editing AutoHotkey script.
 * [[http://code.google.com/p/lsl-mode/ LSL mode (xlsl-mode)]]. A mode for editing Linden Scripting Language. Emacswiki page here: [[LSLMode]]
 * [[http://xahlee.org/emacs/elisp_idiom_templates.html emacs lisp yasnippet templates]]. A collection of 105 yasnippet templates for coding emacs lisp.
-  
+
 I am a mild supporter of FSF/GNU. I urge programers to take a class in college on sociology, economics, history, philosophy.
 
 Most Open Source or FSF proponents are youngsters who's got nothing to loose, and “freedom” is just their execuse to advance their self interests. Freedom fighters are almost always losers to begin with, and invariably they are the primary beneficiary of the “freedom” they clamour. When you are poor, student, no ability or interest in business, then, you are likely to love opinions advanced by orgnization such as FSF, e.g. no patent, open source. But if you do have business abilities, have commercially valuable software, have patents, you are not likely to believe in FSF's ideas. Most FSF fans are just another a form egocentric [[http://xahlee.org/Netiquette_dir/hackernews_xahleeorg_politics.html politcal struggle]]. This is nothing unusual when looking at the history of human animals. (e.g. most political upheavals, revolutions, are started by youngsters or the mob who have not much to lose).

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Fri Aug 27 20:04:19 2010 (-0700)
+;; Last-Updated: Fri Dec 24 15:43:07 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1240
+;;     Update #: 1302
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -79,8 +79,8 @@
 ;;
 ;;    `fit-frame', `fit-frame-or-mouse-drag-vertical-line',
 ;;    `fit-frame-maximize-frame', `fit-frame-minimize-frame',
-;;    `fit-frame-restore-frame', `maximize-frame', `minimize-frame',
-;;    `restore-frame',
+;;    `fit-frame-restore-frame', `fit-frame-to-image',
+;;    `maximize-frame', `minimize-frame', `restore-frame',
 ;;
 ;;  User options (variables) defined here:
 ;;
@@ -128,6 +128,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2010/12/24 dadams
+;;     Added: fit-frame-to-image.
+;;     fit-frame: Call fit-frame-to-image if frame is in an image mode.
 ;; 2010/08/27 dadams
 ;;     Added: fit-frame-fringe-width.
 ;;     fit-frame-max-frame-size: Increase width by fit-frame-fringe-width.
@@ -265,6 +268,9 @@
 ;;; Code:
 
 (when (< emacs-major-version 21) (eval-when-compile (require 'cl))) ;; dolist
+
+;; Quiet the byte compiler.
+(defvar image-minor-mode)
 
 ;;;;;;;;;;;;;;;;;;;;;;;
  
@@ -462,56 +468,101 @@ from such wrapping."
                              (string-to-number (read-string "New height: "))))
                   (frame-height)))
            (atom current-prefix-arg))))
-  (setq frame  (or frame (selected-frame)))
-  (unless fit-frame-inhibit-fitting-flag
-    (let ((extra-lines  0)
-          computed-max-frame-size empty-buf-p specbuf-p)
-      (save-window-excursion
-        (select-frame frame)
-        (setq empty-buf-p  (and (= (point-min) (point-max))
-                                (one-window-p (selected-window)))
-              specbuf-p    (and empty-buf-p
-                                (special-display-p (buffer-name (window-buffer))))))
-      ;; `extra-lines' for minimum frame height.  Starting with Emacs 21+,
-      ;; `set-frame-size' includes the tool-bar and the minibuffer.  For Emacs
-      ;; without a toolkit, the one-line menu-bar is also included - add 1 line
-      ;; for that.  Add 1 line for the minibuffer, unless it is standalone.
-      ;; Perhaps we should also take into account a possible horizontal scroll
-      ;; bar, but we don't do that.
-      (let* ((fparams     (frame-parameters frame))
-             (menu-lines  (or (cdr (assq 'menu-bar-lines fparams)) 0)))
-        (when (> emacs-major-version 20)
-          (setq extra-lines  (or (cdr (assq 'tool-bar-lines fparams)) 0))
-          (when (and (not (eq system-type 'windows-nt)) (not (featurep 'x-toolkit)))
+  (if (and (fboundp 'image-mode-fit-frame) ; Emacs 23+
+           (if (or (null frame) (eq frame (selected-frame)))
+               (or (eq major-mode 'image-mode) image-minor-mode)
+             (save-window-excursion (select-frame frame)
+                                    (or (eq major-mode 'image-mode) image-minor-mode))))
+      (fit-frame-to-image (interactive-p) frame)
+    (setq frame  (or frame (selected-frame)))
+    (unless fit-frame-inhibit-fitting-flag
+      (let ((extra-lines  0)
+            computed-max-frame-size empty-buf-p specbuf-p)
+        (save-window-excursion
+          (select-frame frame)
+          (setq empty-buf-p  (and (= (point-min) (point-max))
+                                  (one-window-p (selected-window)))
+                specbuf-p    (and empty-buf-p
+                                  (special-display-p (buffer-name (window-buffer))))))
+        ;; `extra-lines' for minimum frame height.  Starting with Emacs 21+,
+        ;; `set-frame-size' includes the tool-bar and the minibuffer.  For Emacs
+        ;; without a toolkit, the one-line menu-bar is also included - add 1 line
+        ;; for that.  Add 1 line for the minibuffer, unless it is standalone.
+        ;; Perhaps we should also take into account a possible horizontal scroll
+        ;; bar, but we don't do that.
+        (let* ((fparams     (frame-parameters frame))
+               (menu-lines  (or (cdr (assq 'menu-bar-lines fparams)) 0)))
+          (when (> emacs-major-version 20)
+            (setq extra-lines  (or (cdr (assq 'tool-bar-lines fparams)) 0))
+            (when (and (not (eq system-type 'windows-nt)) (not (featurep 'x-toolkit)))
+              (setq extra-lines  (1+ extra-lines))))
+          ;; We can't really know whether menu-bar gets wrapped.  Assume it wraps once.
+          (when (> menu-lines 0)
+            (setq extra-lines  (+ extra-lines (1+ menu-lines))))
+          (when (and (cdr (assq 'minibuffer fparams)) ; Frame has a minibuffer, but
+                     (save-window-excursion (select-frame frame) ; it's not standalone.
+                                            (not (one-window-p nil 'selected-frame))))
             (setq extra-lines  (1+ extra-lines))))
-        ;; We can't really know whether menu-bar gets wrapped.  Assume it wraps once.
-        (when (> menu-lines 0)
-          (setq extra-lines  (+ extra-lines (1+ menu-lines))))
-        (when (and (cdr (assq 'minibuffer fparams)) ; Frame has a minibuffer, but
-                   (save-window-excursion (select-frame frame) ; it's not standalone.
-                                          (not (one-window-p nil 'selected-frame))))
-          (setq extra-lines  (1+ extra-lines))))
-      (unless (or empty-buf-p (and width height))
-        (setq computed-max-frame-size  (fit-frame-max-frame-size frame all-windows-p)))
-      (set-frame-size
-       ;; Frame
-       frame
-       ;; Columns
-       (or width
-           (and empty-buf-p (if specbuf-p
-                                fit-frame-empty-special-display-width
-                              fit-frame-empty-width))
-           (max fit-frame-min-width window-min-width
-                (min (or fit-frame-max-width (fit-frame-max-width frame))
-                     (1+ (car computed-max-frame-size)))))
-       ;; Rows
-       (or height
-           (and empty-buf-p (if specbuf-p
-                                fit-frame-empty-special-display-height
-                              fit-frame-empty-height))
-           (max fit-frame-min-height window-min-height
-                (min (or fit-frame-max-height (fit-frame-max-height frame))
-                     (+ (cdr computed-max-frame-size) extra-lines))))))))
+        (unless (or empty-buf-p (and width height))
+          (setq computed-max-frame-size  (fit-frame-max-frame-size frame all-windows-p)))
+        (set-frame-size
+         ;; Frame
+         frame
+         ;; Columns
+         (or width
+             (and empty-buf-p (if specbuf-p
+                                  fit-frame-empty-special-display-width
+                                fit-frame-empty-width))
+             (max fit-frame-min-width window-min-width
+                  (min (or fit-frame-max-width (fit-frame-max-width frame))
+                       (1+ (car computed-max-frame-size)))))
+         ;; Rows
+         (or height
+             (and empty-buf-p (if specbuf-p
+                                  fit-frame-empty-special-display-height
+                                fit-frame-empty-height))
+             (max fit-frame-min-height window-min-height
+                  (min (or fit-frame-max-height (fit-frame-max-height frame))
+                       (+ (cdr computed-max-frame-size) extra-lines)))))))))
+
+;; Similar to `image-mode-fit-frame'.
+;;
+;; 1. Adds the optional arg FRAME.
+;; 2. Does not toggle between original size and fit size unless interactive.
+;;    When called from code it always fits.
+;;
+;;;###autoload
+(defun fit-frame-to-image (interactivep &optional frame)
+  "Fit FRAME to the current image.
+If FRAME is not the selected frame, fit it to its first image.
+Interactively, if frame has already been fit to the image, then
+ restore the size from before it was fit.
+This function assumes that FRAME has only one window."
+  ;; Vanilla Emacs FIXME: This does not take into account decorations
+  ;; like mode-line, minibuffer, header-line, ...
+  (interactive "p")
+  (unless (fboundp 'image-mode-fit-frame)
+    (error "This command requires the image support of Emacs 23 or later"))
+  (let* ((saved    (frame-parameter frame 'image-mode-saved-size))
+         (display  (if (or (null frame) (equal frame (selected-frame)))
+                       (image-get-display-property)
+                     (save-selected-window (select-frame frame)
+                                           (image-get-display-property))))
+         (size     (image-display-size display nil frame)))
+    (setq frame  (or frame (selected-frame)))
+    (if (and interactivep saved
+             (eq (caar saved) (frame-width frame))
+             (eq (cdar saved) (frame-height frame)))
+        (progn                          ; Restore previous size, before it was fit.
+          (set-frame-parameter frame 'image-mode-saved-size nil)
+          (setq size (cdr saved)))
+      ;; Round up size, and save current size so we can toggle back to it.
+      (setcar size (ceiling (car size)))
+      (setcdr size (ceiling (cdr size)))
+      (set-frame-parameter
+       frame 'image-mode-saved-size
+       (cons size (cons (frame-width frame) (frame-height frame)))))
+    (set-frame-size frame (car size) (cdr size))))
 
 ;;;###autoload
 (defun fit-frame-or-mouse-drag-vertical-line (start-event)
