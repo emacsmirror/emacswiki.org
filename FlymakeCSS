@@ -42,8 +42,6 @@ If it works, add this to a suitable place loaded by emacs:
 }}}
 
 Hope it worked out for you   &mdash;[[AntonJohansson]]
-----
-FlyMake
 
 ----
 
@@ -70,4 +68,27 @@ Otherwise everything worked perfectly, thanks again.  &mdash;[[NoahSussman]]
 
 [new:NoahSussman:2009-09-11 04:07 UTC]
 
+----
+cssutils
 
+If you don't want to use the W3C validator (maybe you just don't want to install Java on your 4GB netbook), you can use a Python module named cssutils.
+
+Install cssutils with pip or easy_install and add this to your config:
+
+    (defun flymake-css-init ()
+      (let* ((temp-file (flymake-init-create-temp-buffer-copy
+                         'flymake-create-temp-inplace))
+             (local-file (file-relative-name
+                          temp-file
+                          (file-name-directory buffer-file-name))))
+        (list "cssparse" (list local-file))))
+    (add-to-list 'flymake-allowed-file-name-masks
+                 '("\\.css$" flymake-css-init))
+    (add-to-list 'flymake-err-line-patterns
+                 '("\\(.*\\) \\[\\([0-9]+\\):\\([0-9]+\\): \\(.*\\)\\]"
+                   nil 2 3 1))
+    (add-hook 'css-mode-hook
+              (lambda () (flymake-mode t)))
+
+----
+FlyMake

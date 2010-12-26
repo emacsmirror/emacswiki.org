@@ -320,4 +320,5 @@ To read tweets related to someone, you can use the timeline __$r(HIS-OR-HER-USER
 ----
 See also: [[Twitter]] [[Identica-mode]]
 
-
+[new]
+Any way to add support for user switching? I.e. if you have multiple Twitter accounts. TwIt had this, but now has been discontinued, with its developer switching to TwitteringMode... -- JJ

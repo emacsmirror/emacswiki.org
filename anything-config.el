@@ -1127,6 +1127,12 @@ After closing firefox, you will be able to browse you bookmarks.
                          "*anything pp bookmarks*"))
 
 ;;;###autoload
+(defun anything-c-insert-latex-math ()
+  "Preconfigured anything for latex math symbols completion."
+  (interactive)
+  (anything-other-buffer anything-c-source-latex-math "*anything latex*"))
+
+;;;###autoload
 (defun anything-register ()
   "Preconfigured `anything' for Emacs registers."
   (interactive)
@@ -1293,23 +1299,11 @@ http://cvs.savannah.gnu.org/viewvc/*checkout*/bm/bm/bm.el"
   "Goto LINENO without modifying outline visibility if needed."
   (flet ((gotoline (numline)
            (goto-char (point-min)) (forward-line (1- numline))))
-    (if (and (fboundp 'org-save-outline-visibility)
-             (or (eq major-mode 'org-mode)
-                 outline-minor-mode))
+    (if (or (eq major-mode 'org-mode)
+            outline-minor-mode)
         (progn
-          ;; Open all, goto line LINENO, move to
-          ;; precedent heading and restore precedent state
-          ;; of visibility.
-          (org-save-outline-visibility nil
-            (show-all)
-            (gotoline lineno)
-            (outline-previous-heading))
-          ;; Make heading visible
-          (outline-show-heading)
-          ;; Open heading
-          (show-subtree)
-          (gotoline lineno))
-        (show-all)
+          (gotoline lineno)
+          (org-reveal))
         (gotoline lineno))))
 
 (defun anything-c-regexp-persistent-action (pt)
@@ -1587,6 +1581,61 @@ The match is done with `string-match'."
   "STRING is symbol or string."
   (kill-new (anything-c-stringify string) replace yank-handler))
 
+;;; Toggle all marks.
+
+(defun anything-mark-all ()
+  "Mark all visible unmarked candidates in current source."
+  (with-anything-window
+    (save-excursion
+      (goto-char (anything-get-previous-header-pos))
+      (anything-next-line)
+      (let* ((next-head (anything-get-next-header-pos))
+             (end       (and next-head
+                             (save-excursion
+                               (goto-char next-head)
+                               (forward-line -2)
+                               (point))))
+             (maxpoint  (or end (point-max))))
+        (while (< (point) maxpoint)
+          (let ((prefix (get-text-property (point-at-bol) 'display)))
+            (when (and (not (anything-this-visible-mark))
+                       (not (or (string= prefix "[?]")
+                                (string= prefix "[@]"))))
+              ;; FIXME: This is a bug in `anything-make-visible-mark'
+              ;; it should not assume that overlay is on line and
+              ;; BTW not use `anything-get-selection' to get
+              ;; the real value of candidate.
+              ;; So for the moment just mark this line.
+              (anything-mark-current-line)
+              ;; Don't mark possibles directories ending with . or ..
+              (unless (string-match "\\.$" (anything-get-selection))
+                (anything-make-visible-mark))))
+          (forward-line 1) (end-of-line))))
+    (anything-mark-current-line)
+    (message "%s candidates marked" (length anything-marked-candidates))))
+
+(defun anything-unmark-all ()
+  "Unmark all candidates in all sources of current anything session."
+  (with-anything-window
+    (let ((len (length anything-marked-candidates)))
+      (save-excursion
+        (anything-clear-visible-mark))
+      (setq anything-marked-candidates nil)
+      (anything-mark-current-line)
+      (message "%s candidates unmarked" len))))
+
+(defun anything-toggle-all-marks ()
+  "Toggle all marks.
+Mark all visible candidates of current source or unmark all candidates
+visible or invisible in all sources of current anything session"
+  (interactive)
+  (let ((marked (anything-marked-candidates)))
+    (if (> (length marked) 1)
+        (anything-unmark-all)
+        (anything-mark-all))))
+
+(define-key anything-map (kbd "M-m") 'anything-toggle-all-marks)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;; Prefix argument in action ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; TODO: This should be integrated in anything.el instead of having
 ;; a defadvice here.
@@ -1603,6 +1652,8 @@ It will be cleared at start of next `anything' call when \
 ;; using this hook instead of `anything-after-action-hook'
 ;; allow to record the prefix args and keep their values
 ;; when using `anything-comp-read'.
+;; i.e when quitting `anything-comp-read' prefix args are preserved
+;; for the following action.
 (add-hook 'anything-before-initialize-hook
           (lambda () (setq anything-current-prefix-arg nil)))
 
@@ -1868,7 +1919,9 @@ ACTION must be an action supported by `anything-dired-action'."
                     (capitalize (symbol-name action)) ifiles))
          (parg     anything-current-prefix-arg)
          (dest     (anything-c-read-file-name
-                    prompt :initial-input anything-ff-default-directory))
+                    prompt
+                    :initial-input (car anything-ff-history)
+                    :history (anything-find-files-history :comp-read nil)))
          (win-conf (current-window-configuration)))
     (unwind-protect
          ;; Create temporarily a dired buffer to call dired functions.
@@ -1979,14 +2032,13 @@ If EXPAND is non--nil expand-file-name."
 (defun anything-file-completion-source-p ()
   "Test if current source is a dired or find-files source."
   (let ((ff-sources '("Find Files" "Copy Files"
+                      "Read File Name History"
                       "Rename Files" "Symlink Files"
                       "Hardlink Files" "Write File"
                       "Insert File" "Read file name"))
         (cur-source (cdr (assoc 'name (anything-get-current-source)))))
-    (catch 'break
-      (dolist (i ff-sources)
-        (when (equal cur-source (concat i anything-c-find-files-doc-header))
-          (throw 'break t))))))
+    (loop for i in ff-sources
+       thereis (string= cur-source (concat i anything-c-find-files-doc-header)))))
 
 (defun anything-find-files-down-one-level (arg)
   "Go down one level like unix command `cd ..'.
@@ -2320,24 +2372,26 @@ Use it for non--interactive calls of `anything-find-files'."
               :prompt "Find Files or Url: "
               :buffer "*Anything Find Files*")))
 
-(defun anything-find-files-history ()
+(defun* anything-find-files-history (&key (comp-read t))
   "The `anything-find-files' history.
 Show the first `anything-ff-history-max-length' elements of `anything-ff-history'
 in an `anything-comp-read'."
   (let ((history (when anything-ff-history
                    (loop with dup for i in anything-ff-history
-                    unless (member i dup) collect i into dup
-                    finally return dup)))) ; Remove dups.
+                      unless (member i dup) collect i into dup
+                      finally return dup)))) ; Remove dups.
     (when history
       (setq anything-ff-history
             (if (>= (length history) anything-ff-history-max-length)
                 (subseq history 0 anything-ff-history-max-length)
                 history))
-      (anything-comp-read
-       "Switch to Directory: "
-       anything-ff-history
-       :name "Anything Find Files History"
-       :must-match t))))
+      (if comp-read
+          (anything-comp-read
+           "Switch to Directory: "
+           anything-ff-history
+           :name "Anything Find Files History"
+           :must-match t)
+          anything-ff-history))))
 
 (defun anything-find-files-initial-input (&optional input)
   "Return INPUT if present, otherwise try to guess it."
@@ -2673,6 +2727,7 @@ You can put (anything-dired-binding 1) in init file to enable anything bindings.
                                    (initial-input (expand-file-name default-directory))
                                    (buffer "*Anything Completions*")
                                    test
+                                   (history nil)
                                    (marked-candidates nil)
                                    (persistent-action 'anything-find-files-persistent-action)
                                    (persistent-help "Hit1 Expand Candidate, Hit2 or (C-u) Find file"))
@@ -2687,7 +2742,14 @@ INITIAL-INPUT is a valid path, TEST is a predicate that take one arg."
                  (identity candidate))))
       (or (anything
            :sources
-           `((name . ,(concat "Read file name" anything-c-find-files-doc-header))
+           `(((name . ,(concat "Read File Name History" anything-c-find-files-doc-header))
+              (candidates . (lambda ()
+                              (anything-comp-read-get-candidates history)))
+              (volatile)
+              (persistent-action . ,persistent-action)
+              (persistent-help . ,persistent-help)
+              (action . ,'action-fn))
+             ((name . ,(concat "Read file name" anything-c-find-files-doc-header))
              ;; It is needed for filenames with capital letters
              (disable-shortcuts)
              (candidates . (lambda ()
@@ -2700,7 +2762,7 @@ INITIAL-INPUT is a valid path, TEST is a predicate that take one arg."
              (persistent-action . ,persistent-action)
              (persistent-help . ,persistent-help)
              (volatile)
-             (action . ,'action-fn))
+             (action . ,'action-fn)))
            :input initial-input
            :prompt prompt
            :resume 'noresume
@@ -4386,10 +4448,15 @@ http://mercurial.intuxication.org/hg/emacs-bookmark-extension"
               'help-echo (anything-c-firefox-bookmarks-get-value i))))
 
 ;; W3m bookmark
-(eval-when-compile (require 'w3m-bookmark nil t))
-(unless (and (require 'w3m nil t)
-             (require 'w3m-bookmark nil t))
-  (defvar w3m-bookmark-file "~/.w3m/bookmark.html"))
+;; Bugfix:
+;; Some users have the emacs-w3m library in load-path
+;; without having the w3m executable :-;
+;; So check if w3m program is present before trying to load
+;; emacs-w3m.
+(eval-when-compile
+  (when (executable-find "w3m")
+    (require 'w3m-bookmark nil t)))
+(defvar w3m-bookmark-file "~/.w3m/bookmark.html")
 
 
 (defface anything-w3m-bookmarks-face '((t (:foreground "cyan1" :underline t)))
@@ -5190,6 +5257,24 @@ replace with STR as yanked string."
      collect (cdr cell)))
 
 ;; (anything 'anything-c-source-register)
+
+;;; Latex completion
+(defun anything-c-latex-math-candidates ()
+  "Collect candidates for latex math completion."
+  (loop for i in (cddr LaTeX-math-menu)
+     for elm = (loop for s in i when (vectorp s)
+                  collect (cons (aref s 0) (aref s 1)))
+     append elm))
+
+(defvar anything-c-source-latex-math
+  '((name . "Latex Math Menu")
+    (init . (lambda ()
+              (with-current-buffer anything-current-buffer
+                (LaTeX-math-mode 1))))
+    (candidate-number-limit . 9999)
+    (candidates . anything-c-latex-math-candidates)
+    (action . (lambda (candidate)
+                (call-interactively candidate))))) 
 
 ;;;; <Headline Extraction>
 (defvar anything-c-source-fixme
