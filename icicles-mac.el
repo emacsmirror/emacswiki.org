@@ -4,12 +4,12 @@
 ;; Description: Macros for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 22:02:54 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:19:32 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 554
+;;     Update #: 556
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -113,7 +113,6 @@
 
 ;;; Macros -----------------------------------------------------------
 
-;;;###autoload
 (if (fboundp 'with-selected-window)     ; Emacs 22+
     (defalias 'icicle-with-selected-window (symbol-function 'with-selected-window))
   (defmacro icicle-with-selected-window (window &rest body)

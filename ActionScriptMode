@@ -37,3 +37,7 @@ public var sides:Array = [
 [new Point(100, 300), new Point(300, 300)]
                             ];
 </pre>
+
+[new]
+
+http://code.google.com/p/flyparse-mode/ - an ActionScript parser.

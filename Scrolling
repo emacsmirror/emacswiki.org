@@ -87,6 +87,27 @@ This works, instead:
 
 The functions `next-line' and `previous-line' use a previously-remembered column number only if the previous command was either `next-line' or `previous-line'.  Otherwise, they save the current column number to be used in future calls.  Since the previous command was always either `sfp-page-down' or `sfp-page-up', whatever column the point landed on would be used for the next destination column.  So, I set `this-command' to trick them.  --sfp
 
+To make the two functions more cooperative with the ShiftSelectMode of Emacs 23, you may add an (unused) argument and specify `^' in interactive's argument: <code>(&optional arg) (interactive "^P")</code>. And for shift selection of CuaMode to work, you need to set the `CUA' property. So, as a result of a discussion on [http://stackoverflow.com/questions/4513692/emacs-is-there-a-better-pgdn-pgup-behaviour-with-cua-mode Stackoverflow], these functions take the following form:
+
+    (defun sfp-page-down (&optional arg)
+      (interactive "^P")
+      (setq this-command 'next-line)
+      (next-line
+       (- (window-text-height)
+          next-screen-context-lines)))
+    (put 'sfp-page-down 'isearch-scroll t)
+    (put 'sfp-page-down 'CUA 'move)
+    
+    (defun sfp-page-up (&optional arg)
+      (interactive "^P")
+      (setq this-command 'previous-line)
+      (previous-line
+       (- (window-text-height)
+          next-screen-context-lines)))
+    (put 'sfp-page-up 'isearch-scroll t)
+    (put 'sfp-page-up 'CUA 'move)
+
+
 == Modern Page-up and Page-down ==
 
 The following shows how to use `condition-case' as an alternative approach to extending the behavior for `scroll-up' and `scroll-down'.

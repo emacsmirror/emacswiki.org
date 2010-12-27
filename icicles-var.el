@@ -4,12 +4,12 @@
 ;; Description: Internal variables for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:23:26 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Nov  7 12:03:36 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:20:11 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 1355
+;;     Update #: 1356
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-var.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command

@@ -4,12 +4,12 @@
 ;; Description: Minibuffer completion and cycling.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 10:50:01 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:20:41 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25565
+;;     Update #: 25566
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command

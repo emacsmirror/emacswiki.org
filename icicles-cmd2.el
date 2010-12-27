@@ -4,12 +4,12 @@
 ;; Description: Top-level commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu May 21 13:31:43 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 21:57:31 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:18:15 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 2451
+;;     Update #: 2454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd2.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -728,7 +728,6 @@ Remove pseudo-node `*'.  (This just fixes a bug in Emacs 21 and 22.1.)"
   "Non-nil if Info node S1 comes before node S2 in the book."
   t)        ; This just reverses the default order, which is reversed.
 
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun icicle-Info-virtual-book (nodeset)
     "Open Info on a virtual book of saved Info nodes.
@@ -1339,7 +1338,6 @@ Function names are highlighted using face `icicle-special-candidate'."
     current-prefix-arg))
   (apropos apropos-regexp do-all))
 
-;;;###autoload
 (cond
   ;; Use my versions of the `apropos*' commands, defined in `apropos-fn+var.el'.
   ;; Note that unlike my versions of `apropos-option' and `apropos-command', the `icicle-'
@@ -3502,7 +3500,6 @@ PREDICATE is nil or a Boolean function that takes these arguments:
     (while val2 (add-to-list 'result (pop val2)))
     result))
 
-;;;###autoload
 (if (fboundp 'next-single-char-property-change)
     (defalias 'icicle-next-single-char-property-change 'next-single-char-property-change)
   (defun icicle-next-single-char-property-change (position prop &optional object limit)
@@ -4261,7 +4258,6 @@ variable."
                                          (format "Text to save in `%s': " var))))
     (set var text)))
 
-;;;###autoload
 (when (and icicle-define-alias-commands-flag (not (fboundp 'any)))
   (defalias 'any 'icicle-anything))
 (when (> emacs-major-version 21)
@@ -4312,10 +4308,8 @@ current candidate, using `S-delete'.
 This is just `icicle-object-action' with type `buffer'."
     (interactive) (icicle-object-action 'buffer)))
 
-;;;###autoload
 (when (and icicle-define-alias-commands-flag (not (fboundp 'a)))
   (defalias 'a 'icicle-object-action))
-;;;###autoload
 (when (and icicle-define-alias-commands-flag (not (fboundp 'what-which-how)))
   (defalias 'what-which-how 'icicle-object-action))
 ;;;###autoload
@@ -4792,7 +4786,6 @@ filtering:
           (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "variable"))))
      (intern (completing-read (format "Which (%s value of variable): " pred) obarray)))))
 
-;;;###autoload
 (when (fboundp 'map-keymap)             ; Emacs 22.
 
   ;; This is a quick-and-dirty definition, not an efficient one.
@@ -5185,7 +5178,6 @@ NO-ANGLES is the same as for `icicle-read-kbd-macro'."
                                     ch (+ ch 128))))
         res))))
 
-;;;###autoload
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (eval '(define-minor-mode icicle-ido-like-mode
           "Ido-like mode for use with Icicles.

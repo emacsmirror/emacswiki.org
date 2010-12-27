@@ -4,12 +4,12 @@
 ;; Description: Minibuffer commands for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 22:05:14 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:19:43 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 16411
+;;     Update #: 16414
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -395,7 +395,6 @@
 ;;
 ;; Selects minibuffer contents and leaves point at its beginning.
 ;;
-;;;###autoload
 (unless (fboundp 'old-next-history-element)
   (defalias 'old-next-history-element (symbol-function 'next-history-element)))
 
@@ -416,7 +415,6 @@ With argument N, it uses the Nth following element."
 ;; Remove input mismatch highlighting.
 ;; Remove *Completion* window.
 ;;
-;;;###autoload
 (unless (fboundp 'old-exit-minibuffer)
   (defalias 'old-exit-minibuffer (symbol-function 'exit-minibuffer)))
 
@@ -460,7 +458,6 @@ Remove `*Completions*' window.  Remove Icicles minibuffer faces."
 ;;
 ;; Use Icicles completion.
 ;;
-;;;###autoload
 (unless (fboundp 'old-minibuffer-complete-and-exit)
   (defalias 'old-minibuffer-complete-and-exit (symbol-function 'minibuffer-complete-and-exit)))
 
@@ -544,7 +541,6 @@ is to `minibuffer-complete'.  That is, it is the regexp-match version."
 ;; Don't iconify frame or bury buffer.
 ;; Don't strip text properties.
 ;;
-;;;###autoload
 (unless (fboundp 'old-choose-completion)
   (defalias 'old-choose-completion (symbol-function 'choose-completion)))
 
@@ -584,7 +580,6 @@ is to `minibuffer-complete'.  That is, it is the regexp-match version."
 ;; Return the number of the completion.
 ;; Don't strip text properties.
 ;;
-;;;###autoload
 (when (and (fboundp 'mouse-choose-completion) (not (fboundp 'old-mouse-choose-completion)))
   (defalias 'old-mouse-choose-completion (symbol-function 'mouse-choose-completion)))
 
@@ -729,7 +724,6 @@ POSITION is a buffer position."
 ;;
 ;; Selects *Completions* window even if on another frame.
 ;;
-;;;###autoload
 (unless (fboundp 'old-switch-to-completions)
   (defalias 'old-switch-to-completions (symbol-function 'switch-to-completions)))
 
@@ -946,7 +940,6 @@ See description of `kill-region'."
   (interactive "r")
   (icicle-call-then-update-Completions #'kill-region beg end))
 
-;;;###autoload
 (when (fboundp 'kill-region-wimpy)
   (defun icicle-kill-region-wimpy (beg end) ; Bound to `C-w' in minibuffer.
     "`kill-region-wimpy' and update *Completions* with input matches.
@@ -1061,7 +1054,6 @@ See description of `yank-pop'."
   (interactive "*p")
   (icicle-call-then-update-Completions #'yank-pop arg))
 
-;;;###autoload
 (when (fboundp 'yank-secondary)         ; Defined in `second-sel.el'.
   (defun icicle-yank-secondary ()       ; Bound to `C-M-y' in minibuffer.
     "Insert the secondary selection at point.
@@ -2116,11 +2108,9 @@ you do not want this remapping, then customize option
 ;; Ensure that `sit-for' after `C-u' in the minibuffer is immediately interrupted by user input.
 ;; This fix is not needed for Emacs < 23.
 ;;
-;;;###autoload
 (unless (fboundp 'old-sit-for)
   (defalias 'old-sit-for (symbol-function 'sit-for)))
 
-;;;###autoload
 (when (> emacs-major-version 22)
   (defun icicle-sit-for (seconds &optional nodisp obsolete)
     "Perform redisplay, then wait for SECONDS seconds or until input is available.
@@ -4709,7 +4699,6 @@ You can use this command only from the minibuffer or *Completions*
 
 ;; This is the same as `describe-file' in `misc-cmds.el', but we avoid requiring that library.
 ;; This is a top-level command, but we put it here to avoid library require cycles.
-;;;###autoload
 (if (and (not (fboundp 'icicle-describe-file)) (fboundp 'describe-file))
     (defalias 'icicle-describe-file (symbol-function 'describe-file))
   (defun icicle-describe-file (filename) ; Suggestion: bind to `C-h M-f'.
@@ -5673,7 +5662,6 @@ If the region is active in *Completions*, then
     (icicle-candidate-set-save-more arg)))
 
 ;;; `mouse-3' in *Completions*.
-;;;###autoload
 (cond ((require 'mouse3 nil t)
        (defun icicle-mouse-save-then-kill (click &optional arg)
          "`mouse-save-then-kill', but click same place saves selected candidates."
@@ -6313,7 +6301,6 @@ You can use this command only from the minibuffer (`\\<minibuffer-local-completi
          (setq isearch-message  (mapconcat 'isearch-text-char-description isearch-string ""))
          (isearch-edit-string))))
 
-;;;###autoload
 (when (fboundp 'text-scale-increase)    ; Bound to `C-x -' in the minibuffer (Emacs 23+).
   (defun icicle-doremi-zoom-Completions+ (&optional increment)
     "Zoom the text in buffer `*Completions*' incrementally.

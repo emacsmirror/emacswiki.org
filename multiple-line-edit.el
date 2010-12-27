@@ -5,7 +5,7 @@
 ;; Author: K-talo Miyazaki <Keitaro dot Miyazaki at gmail dot com>
 ;; Created: 10 Oct 2010 PM 02:44 JST
 ;; Keywords: abbrev convenience emulations wp
-;; Revision: $Id: 1615bba7c76c04dd400eb7afc8c9393f2ad47d7f $
+;; Revision: $Id: 16d1fe108a0150265b15e04b909d3922673b1afd $
 ;; URL: http://www.emacswiki.org/emacs/download/multiple-line-edit.el
 ;; GitHub: http://github.com/k-talo/multiple-line-edit.el
 
@@ -55,7 +55,7 @@
 ;; below.
 ;;
 ;;   1. Select multiple line that you want to edit.
-;
+;;
 ;;   2. If you want to edit the leading edges of each line,
 ;;      type `M-x mulled/edit-leading-edges RET'.
 ;;
@@ -66,47 +66,143 @@
 ;;            placed in `"Edit" > "Multiple Line Edit"'.
 ;;
 ;;   3. When multiple line edit is activated, the cursor will be
-;;      moved to the 1st line of the selected lines.
+;;      appeared on each selected lines.
 ;;
-;;      And then, your modification in the 1st line will be
-;;      reflected to another lines automatically.
+;;      And then, your modification will be applied to each lines
+;;      at a time.
 ;;
 ;;      NOTE: While multiple line edit is active, indicator icons
-;;            will be appear on the fringes.
+;;            will be appear on the fringes if you are running Emacs
+;;            on graphical environment like X Window System.
 ;;
 ;;           (The icon `>>' will be used for leading edges edit, and
 ;;            the icon `<<' will be used for trailing edges edit)
 ;;
-;;   4. To finish multiple line edit, type `C-g' or move cursor
-;;      to outside of the 1st line.
+;;      While you are in multiple line editing, you can toggle leading
+;;      edge edit and trailing edge edit by commands `mulled/edit-leading-edges'
+;;      and `mulled/edit-trailing-edges'.
+;;
+;;      Note that multiple edit will be exit when the color of cursor
+;;      on each line is red, it means cursor position is out of the
+;;      range on some lines.
+;;
+;;   4. To finish multiple line edit, type `C-g', or move cursor
+;;      to outside of the each line.
+;;
+;;   5. If you finished multiple line edit unexpectedly, you can
+;;      restore multiple line edit session by command `undo'.
+;;
+;;      This behavior is customized via user option
+;;      `mulled/reactivate-by-undo'.
 ;;
 ;; Also check out the customization group
 ;;
 ;;   `M-x customize-group RET multiple-line-edit RET'
 ;;
 ;;
+;; COMMANDS
+;; ========
+;;  `M-x mulled/edit-trailing-edges RET'
+;;
+;;      Start editing on trailing edge of multiple line.
+;;      
+;;      You have to select lines, that you want to edit at a time,
+;;      before you run this command.
+;;      
+;;      When called with prefix argument, cursor remains at current
+;;      position.
+;;      
+;;      Otherwise, cursor will be moved to beginning of the lines.
+;;      
+;;      You can abort multiple lines edit by typing "C-g"
+;;      or move cursor to outside of each line.
+;;
+;;  `M-x mulled/edit-leading-edges RET'
+;;
+;;      Start editing on leading edge of multiple line.
+;;      
+;;      You have to select lines, that you want to edit at a time,
+;;      before you run this command.
+;;      
+;;      When called with prefix argument, cursor remains at current
+;;      position.
+;;      
+;;      Otherwise, cursor will be moved to end of the lines.
+;;      
+;;      You can abort multiple lines edit by typing "C-g"
+;;      or move cursor to outside of each line.
+;;
+;;  `M-x mulled/switch-direction RET'
+;;
+;;      Switch Leading Edges Edit and Trailing Edges Edit.
+;;            
+;;      When called with prefix argument, cursor won't be moved to
+;;      each edges.
+;;            
+;;      Otherwise, cursor will be moved to either edge.
+;;      
+;;      You can also switch editing direction by commands
+;;      `mulled/edit-leading-edges' and `mulled/edit-trailing-edges'.
+;;
+;;  `C-g'
+;;  `M-x mulled/abort RET'
+;;
+;;      Exit from multiple line edit.
+;;      You can restore multiple line edit session, which aborted
+;;      by this command, with the command `undo'.
+;;
+;;  `M-x mulled/force-abort RET'
+;;      Force abort multiple line edit.
+;;      Try this command when multiple line edit is broken
+;;      by errors.
+;;
+;;
 ;; Key map Examples
 ;; ================
-;; (global-set-key [(control c) (<)] 'mulled/edit-trailing-edges)
-;; (global-set-key [(control c) (>)] 'mulled/edit-leading-edges)
+;; This library does not assign keys by default.
+;; Put lines below to your .emacs start up file then
+;; customize them as you like.
+;;
+;;   (global-set-key "\C-c<" 'mulled/edit-trailing-edges)
+;;   (global-set-key "\C-c>" 'mulled/edit-leading-edges)
 ;;
 ;;
 ;; KNOWN PROBLEMS
 ;; ==============
-;; Multiple line edit won't work with commands that sets
-;; non-nil value to the variable `inhibit-modification-hooks'
-;; like `YASnippet'.
+;; - Codes aside, this document should be rewritten.
+;;   My English sucks :-(
 ;;
-;; We wrote experimental patches to run `YASnippet' with
-;; `multiple-line-edit', put a line below in your .emacs startup
-;; file if you are interested in.
-;;
-;;    (mulled/experimental/install-yas-support)
+;; - Multiple line edit won't work with commands that sets
+;;   non-nil value to the variable `inhibit-modification-hooks'
+;;   like `YASnippet'.
+;;  
+;;   We wrote experimental patches to run `YASnippet' with
+;;   `multiple-line-edit', put a line below in your .emacs startup
+;;   file if you are interested in.
+;;  
+;;      (mulled/experimental/install-yas-support)
 ;;
 
 
 ;;; Change Log:
 
+;;  v2.0.0 Mon Dec 27 03:06:00 2010 JST
+;;   - Changed version numbering rule from x.y to x.y.z.
+;;   - Display pseudo cursors on each multiple edit lines.
+;;
+;;  v1.11 Mon Dec 27 01:48:21 2010
+;;   - Fixed a bug that the feature `reactivation by undo' does not
+;;     work if the deactivation was not triggered by keyboard quit.
+;;
+;;   - Fixed error in `mulled/pt-offset-by-col-num' which occurred
+;;     when the COL-NUM is negative number.
+;;
+;;  v1.10 Sat Dec  4 16:15:07 2010 JST
+;;   - Fixed a bug that cursor position won't be set properly
+;;     by `mulled/edit-leading-edges' and `mulled/edit-trailing-edges'
+;;     with `keep-offset' option when wide-width character such as
+;;     TAB and Kanji characters are in lines.
+;;
 ;;  v1.9, Fri Dec  3 17:55:52 2010 JST
 ;;   - Restore position of cursor when multiple line edit is
 ;;     re-activated by `undo'.
@@ -165,6 +261,7 @@
 (defvar mulled/.running-primitive-undo-p nil)
 (defvar mulled/.undo-at nil)
 (defvar mulled/.last-pt nil)
+(make-variable-buffer-local 'mulled/.last-pt)
 
  
 ;;; ===========================================================================
@@ -178,8 +275,24 @@
   :group 'editing)
 
 (defcustom mulled/reactivate-by-undo t
-  "Non-nil means reactivate multiple line edit after undo/redo."
+  "Non-nil means reactivate multiple line edit by undo/redo."
   :type 'boolean
+  :group 'multiple-line-edit)
+
+(defface mulled/cursor-face
+  '((((class color) (background light))
+     :background "grey")
+    (((class color) (background dark))
+     :background "white")
+     (t :inverse-video t))
+  "Face used for cursor of multiple line edit."
+  :group 'multiple-line-edit)
+
+(defface mulled/out-of-range-cursor-face
+  '((((class color)) :foreground "white" :background "Red1")
+    (t :inverse-video t :weight bold))
+  "Face used for cursor of multiple line edit when
+when either cursor is outside of each line."
   :group 'multiple-line-edit)
 
 (defface mulled/fringe-face
@@ -224,14 +337,18 @@ a function applied at 1st line.
 ;; Commands
 ;;
 (defun mulled/edit-trailing-edges (&optional keep-offset)
-  "Edit trailing edge of multiple line.
+  "Start editing on trailing edge of multiple line.
 
-When called with prefix argument, cursor will moved
-to 1st line of current region with keeping offset
-from end of current line to current point.
+You have to select lines, that you want to edit at a time,
+before you run this command.
 
-Otherwise, cursor will be moved to end of
-the 1st line."
+When called with prefix argument, cursor remains at current
+position.
+
+Otherwise, cursor will be moved to beginning of the lines.
+
+You can abort multiple lines edit by typing \"C-g\"
+or move cursor to outside of each line."
   (interactive "P")
   (cond
    ((mulled/is-leading-edges-edit-in-progress )
@@ -244,14 +361,18 @@ the 1st line."
     (message "[mulled] Select multiple line first."))))
 
 (defun mulled/edit-leading-edges (&optional keep-offset)
-  "Edit leading edge of multiple line.
+  "Start editing on leading edge of multiple line.
 
-When called with prefix argument, cursor will moved
-to 1st line of current region with keeping offset
-from beginning of current line to current point.
+You have to select lines, that you want to edit at a time,
+before you run this command.
 
-Otherwise, cursor will be moved to beginning of
-the 1st line."
+When called with prefix argument, cursor remains at current
+position.
+
+Otherwise, cursor will be moved to end of the lines.
+
+You can abort multiple lines edit by typing \"C-g\"
+or move cursor to outside of each line."
   (interactive "P")
   (cond
    ((mulled/is-trailing-edges-edit-in-progress)
@@ -265,12 +386,14 @@ the 1st line."
 
 (defun mulled/switch-direction (&optional keep-offset)
   "Switch Leading Edges Edit and Trailing Edges Edit.
+      
+When called with prefix argument, cursor won't be moved to
+each edges.
+      
+Otherwise, cursor will be moved to either edge.
 
-When called with prefix argument, cursor won't be moved.
-
-Otherwise, cursor will be moved to beginning of line
-when switched to Leading Edges Edit, or moved to end
-of line when switched to Trailing Edges Edit."
+You can also switch editing direction by commands
+`mulled/edit-leading-edges' and `mulled/edit-trailing-edges'."
   (interactive "P")
   (let ((ov (mulled/ov-1st-line/find-at (point))))
     (if ov
@@ -278,7 +401,9 @@ of line when switched to Trailing Edges Edit."
       (message "[mulled] Multiple line edit is not in progress."))))
 
 (defun mulled/abort ()
-  "Exit from multiple line edit."
+  "Exit from multiple line edit.
+You can restore multiple line edit session, which aborted
+by this command, with the command `undo'."
   (interactive)
   (let ((ov (mulled/ov-1st-line/find-at (point))))
     (if ov
@@ -287,7 +412,9 @@ of line when switched to Trailing Edges Edit."
       (mulled/force-abort))))
 
 (defun mulled/force-abort ()
-  "Force exit from multiple line edit."
+  "Force abort multiple line edit.
+Try this command when multiple line edit is broken
+by errors."
   (interactive)
   (save-restriction
     (widen)
@@ -377,7 +504,11 @@ of line when switched to Trailing Edges Edit."
 (defun mulled/pt-offset-by-col-num (pt-beg col-num)
   "Calculate point offset from PT-BEG by COL-NUM.
 
-Line break character will be counted as one column."
+Line break character will be counted as one column.
+
+When COL-NUM is negative number, returns PT-BEG.
+When the result exceeds `point-max' of current buffer,
+returns `point-max'."
   (let ((done nil))
     (save-excursion
       (save-restriction
@@ -391,7 +522,7 @@ Line break character will be counted as one column."
           (let ((cur-col (current-column)))
             (if (<= col-num cur-col)
                 (progn
-                  (move-to-column col-num)
+                  (move-to-column (max 0 col-num))
                   (setq done t))
               ;; Count line break as 1 column.
               (progn
@@ -524,15 +655,20 @@ Line break character will be counted as one column."
                                           (goto-char mulled/.undo-at)
                                           (setq mulled/.undo-at nil))
                                         (point))))
-                         ;; When the cursor went out of 1st line,
-                         ;; stop multiple line edit.
-                         (when (and (eq (current-buffer)
-                                        ov-buf)
-                                    (not (and (<= ov-beg cur-pt)
-                                              (<= cur-pt ov-end))))
-                           (mulled/ov-1st-line/dispose ov)
-                           (message "[mulled] Multiple line edit exited."))
-                         (setq mulled/.last-pt cur-pt)))
+                         (when (eq (current-buffer)
+                                   ov-buf)
+                           (cond
+                            ((not (and (<= ov-beg cur-pt)
+                                       (<= cur-pt ov-end)))
+                             ;; When the cursor went out of 1st line,
+                             ;; stop multiple line edit.
+                             (mulled/ov-1st-line/dispose ov)
+                             (message "[mulled] Multiple line edit exited."))
+                            ((not (equal mulled/.last-pt cur-pt))
+                             ;; Cursor is moved.
+                             (mulled/ov-1st-line/update-cursor-pos ov)))
+                         
+                           (setq mulled/.last-pt cur-pt))))
                    ;; To not break pre/post command hooks,
                    ;; we do not rise error in these hooks.
                    (error
@@ -554,40 +690,36 @@ Line break character will be counted as one column."
     ;;
     (cond
      ((and keep-offset
+           ;; Inside of multiple line edit?
            (mulled/lines/nth-from-pt lines (point)))
-      ;; Save position as possible as we can.
+      ;; Do not move cursor as possible as we can.
       ;;
-      (let ((offset (cond
-                     (edit-trailing-edges-p
-                      (- (mulled/lines/col-num-nth lines
-                                                   (mulled/lines/nth-from-pt
-                                                    lines (point)))
-                         (current-column)))
-                     (t
-                      (current-column)))))
-        (goto-char beg)
-        (cond
-         (edit-trailing-edges-p
-          (end-of-line)
-          (backward-char (min offset
-                              (mulled/lines/col-num-min lines))))
-         (t
-          (beginning-of-line)
-          (forward-char (min offset
-                             (mulled/lines/col-num-min lines)))))))
-      (t
-       ;; Move to edges.
-       ;;
-       (goto-char beg)
-       (cond
-        (edit-trailing-edges-p
-         (end-of-line))
-        (t
-         (beginning-of-line)))))
+      (let* ((nth         (mulled/lines/nth-from-pt lines (point)))
+             (col-num     (mulled/lines/col-num-nth lines nth))
+             (col-num-1st (mulled/lines/col-num-nth lines 0))
+             (new-col-1st (cond
+                           (edit-trailing-edges-p
+                            (let ((offset (- col-num (current-column))))
+                              (max 0 (- col-num-1st offset))))
+                           (t
+                            (min col-num (current-column))))))
+        (goto-char beg) ;; Move to 1st line.
+        (beginning-of-line)
+        (move-to-column new-col-1st)))
+     (t
+      ;; Move to edges.
+      ;;
+      (goto-char beg)
+      (cond
+       (edit-trailing-edges-p
+        (end-of-line))
+       (t
+        (beginning-of-line)))))
 
     ;; Deactivate selection.
     (setq mark-active nil)
     
+    (mulled/lines/update-cursor-ov-lst lines edit-trailing-edges-p)
     ov))
 
 ;; Destructor.
@@ -600,6 +732,8 @@ Line break character will be counted as one column."
          (lines (overlay-get ov 'mulled/lines)))
     (when (and mulled/reactivate-by-undo
                (listp buffer-undo-list))
+      (when (not (null (car buffer-undo-list)))
+        (push nil buffer-undo-list))
       (when mulled/.last-pt
         (push `(apply goto-char ,mulled/.last-pt) buffer-undo-list))
       (push (mulled/ov-1st-line/make-reactivate-form ov) buffer-undo-list))
@@ -641,6 +775,13 @@ Line break character will be counted as one column."
 (defun mulled/ov-1st-line/make-dispose-form (ov)
 `(apply mulled/ov-1st-line/find-and-dispose-at
         ,(mulled/ov-1st-line/get-beg-without-padding ov)))
+
+(defun mulled/ov-1st-line/update-cursor-pos (ov)
+  (let* ((lines                 (overlay-get ov 'mulled/lines))
+         (edit-trailing-edges-p (overlay-get ov 'mulled/edit-trailing-edges-p)))
+    (mulled/lines/update-cursor-ov-lst
+     lines
+     edit-trailing-edges-p)))
 
 (defun mulled/ov-1st-line/switch-direction (ov &optional keep-offset)
   (let* ((lines (overlay-get ov 'mulled/lines))
@@ -782,7 +923,8 @@ Line break character will be counted as one column."
                                                      col-beg
                                                      col-end
                                                      col-num-removed)))))))
-            (setq mulled/ov-1st-line/.str-to-be-modified "")))))))
+            (setq mulled/ov-1st-line/.str-to-be-modified "")
+            (mulled/ov-1st-line/update-cursor-pos ov)))))))
 
 ;; To prevent duplication of edit, in the lines next to 1st line,
 ;; which caused by undo/redo operation, we have to aware if the hook
@@ -814,8 +956,10 @@ Line break character will be counted as one column."
 (defun mulled/lines/new-by-be-pair-lst (be-pair-lst edit-trailing-edges-p)
   (mulled/lines/be-pair-lst/activate-marker be-pair-lst)
   (let* ((fringe-ov-lst (mulled/lines/init-fringe-ov-lst (list be-pair-lst)
+                                                         edit-trailing-edges-p))
+         (cursor-ov-lst (mulled/lines/init-cursor-ov-lst (list be-pair-lst)
                                                          edit-trailing-edges-p)))
-    (list be-pair-lst fringe-ov-lst)))
+    (list be-pair-lst fringe-ov-lst cursor-ov-lst)))
 
 ;; Initialize indicator icons on fringe of each line.
 ;;
@@ -826,56 +970,19 @@ Line break character will be counted as one column."
 (defun mulled/lines/init-fringe-ov-lst (lines edit-trailing-edges-p)
   (lexical-let (fringe-ov-lst
                 (cur-win (selected-window)))
-    (mulled/lines/map
-     lines
-     (if ;; Test if fringe bitmaps is available.
-         (and (boundp 'fringe-bitmaps)
-              (display-images-p)
-              (>= (or left-fringe-width
-                      (and cur-win (car (window-fringes cur-win)))
-                      0)
-                  8)
-              (>= (or right-fringe-width
-                      (and cur-win (cadr (window-fringes cur-win)))
-                      0)
-                  8))
-         ;; Fringe bitmap is available.
-         ;;
-         (lambda (nth)
-           ;; Copy strings of `indicator-l' and `indicator-r' not to make them
-           ;; identical when the code is byte compiled.
-           ;; -- This may be a bug of the elisp compiler.
-           (let* ((beg (mulled/lines/pt-nth-beg lines nth))
-                  (end (mulled/lines/pt-nth-end lines nth))
-                  (indicator-l (copy-sequence (if edit-trailing-edges-p "<" ">")))
-                  (indicator-r (copy-sequence (if edit-trailing-edges-p "<" ">")))
-                  (fringe (if edit-trailing-edges-p 'right-fringe 'left-fringe))
-                  (fringe-bmp (if edit-trailing-edges-p 'mulled/indicator-right
-                                'mulled/indicator-left))
-                  (ov (make-overlay beg
-                                    end
-                                    nil
-                                    nil
-                                    t)))
-             (when (boundp 'fringe-bitmaps)
-               (put-text-property 0 (length indicator-l)
-                                  'display (list 'left-fringe
-                                                 fringe-bmp
-                                                 'mulled/fringe-face)
-                                  indicator-l)
-               (put-text-property 0 (length indicator-r)
-                                  'display (list 'right-fringe
-                                                 fringe-bmp
-                                                 'mulled/fringe-face)
-                                  indicator-r))
-             (overlay-put ov 'before-string indicator-l)
-             (overlay-put ov 'after-string indicator-r)
-                          
-             (overlay-put ov  'priority 100)
-                          
-             (push ov fringe-ov-lst)))
-       ;; Fringe bitmap is NOT available.
-       ;;
+    (when ;; Test if fringe bitmaps is available.
+        (and (boundp 'fringe-bitmaps)
+             (display-images-p)
+             (>= (or left-fringe-width
+                     (and cur-win (car (window-fringes cur-win)))
+                     0)
+                 8)
+             (>= (or right-fringe-width
+                     (and cur-win (cadr (window-fringes cur-win)))
+                     0)
+                 8))
+      (mulled/lines/map
+       lines
        (lambda (nth)
          ;; Copy strings of `indicator-l' and `indicator-r' not to make them
          ;; identical when the code is byte compiled.
@@ -883,35 +990,53 @@ Line break character will be counted as one column."
          (let* ((beg (mulled/lines/pt-nth-beg lines nth))
                 (end (mulled/lines/pt-nth-end lines nth))
                 (indicator-l (copy-sequence (if edit-trailing-edges-p "<" ">")))
-                (indicator-r (concat (if edit-trailing-edges-p "<" ">")
-                                     (if (< end (point-max)) "\n" "")))
-                (ov-beg (make-overlay beg
-                                      beg
-                                      nil
-                                      nil
-                                      nil))
-                (ov-end (make-overlay end
-                                      (if (< end (point-max)) (1+ end) end)
-                                      nil
-                                      t
-                                      (if (< end (point-max)) nil t))))
-           (overlay-put ov-beg 'before-string indicator-l)
-           (overlay-put ov-end
-                        (if (< end (point-max))
-                            'display
-                          'before-string)
-                        indicator-r)
+                (indicator-r (copy-sequence (if edit-trailing-edges-p "<" ">")))
+                (fringe (if edit-trailing-edges-p 'right-fringe 'left-fringe))
+                (fringe-bmp (if edit-trailing-edges-p 'mulled/indicator-right
+                              'mulled/indicator-left))
+                (ov (make-overlay beg
+                                  end
+                                  nil
+                                  nil
+                                  t)))
+           (when (boundp 'fringe-bitmaps)
+             (put-text-property 0 (length indicator-l)
+                                'display (list 'left-fringe
+                                               fringe-bmp
+                                               'mulled/fringe-face)
+                                indicator-l)
+             (put-text-property 0 (length indicator-r)
+                                'display (list 'right-fringe
+                                               fringe-bmp
+                                               'mulled/fringe-face)
+                                indicator-r))
+           (overlay-put ov 'before-string indicator-l)
+           (overlay-put ov 'after-string indicator-r)
                           
-           (overlay-put ov-beg  'priority 100)
-           (overlay-put ov-end  'priority 100)
-
-           (push ov-beg fringe-ov-lst)
-           (push ov-end fringe-ov-lst)))))
+           (overlay-put ov  'priority 100)
+                          
+           (push ov fringe-ov-lst)))))
     (reverse fringe-ov-lst)))
+
+(defun mulled/lines/init-cursor-ov-lst (lines edit-trailing-edges-p)
+  (lexical-let ((cursor-ov-lst nil))
+    (mulled/lines/map
+     lines
+     (lambda (idx)
+       (push (let ((ov (make-overlay (point) (point))))
+               (overlay-put ov 'priority 1000)
+               ov)
+             cursor-ov-lst)))
+    ;; (mulled/lines/update-cursor-ov-lst-aux lines cursor-ov-lst
+    ;;                                        edit-trailing-edges-p)
+    cursor-ov-lst))
 
 (defun mulled/lines/dispose (lines)
   ;; Dispose icons on fringe.
   (dolist (ov (mulled/lines/indicator-ov-lst-of lines))
+    (delete-overlay ov))
+  ;; Dispose cursors on each line.
+  (dolist (ov (mulled/lines/cursor-ov-lst-of lines))
     (delete-overlay ov))
   (mulled/lines/be-pair-lst/dispose (mulled/lines/be-pair-lst-of lines)))
 
@@ -921,6 +1046,9 @@ Line break character will be counted as one column."
 
 (defun mulled/lines/indicator-ov-lst-of (lines)
   (nth 1 lines))
+
+(defun mulled/lines/cursor-ov-lst-of (lines)
+  (nth 2 lines))
 
 (defun mulled/lines/count-of (lines)
   "Total amount of lines targeted for multiple line edit."
@@ -1018,6 +1146,73 @@ accepted by each line of multiple line edit."
                                   (when (< col-num-cur-line col-required)
                                     (setq retval t)))))
     retval))
+
+(defun mulled/lines/update-cursor-ov-lst (lines edit-trailing-edges-p)
+  (mulled/lines/update-cursor-ov-lst-aux
+   lines
+   (mulled/lines/cursor-ov-lst-of lines)
+   edit-trailing-edges-p))
+
+(defun mulled/lines/update-cursor-ov-lst-aux (lines cursor-ov-lst edit-trailing-edges-p)
+  (let* ((tail-p           edit-trailing-edges-p)
+         (col-1st-line     (mulled/lines/col-from-pt-in-nth
+                            lines 0 (point)))
+         (col-num-1st-line (mulled/lines/col-num-nth lines 0))
+         (offset-1st-line  (cond
+                            (tail-p (- col-num-1st-line col-1st-line))
+                            (t      col-1st-line)))
+         (out-of-range-err (mulled/lines/out-of-range-op-p
+                            lines tail-p
+                            col-1st-line col-1st-line 0))
+         (face             (if out-of-range-err
+                               'mulled/out-of-range-cursor-face
+                             'mulled/cursor-face))
+         (pseudo-cursor    (let ((str (copy-sequence " ")))
+                             (put-text-property 0 1 'face face str)
+                             str)))
+    (mulled/lines/map
+     lines
+     (lambda (nth)
+       (let* ((ov      (nth nth cursor-ov-lst))
+              (col-num (mulled/lines/col-num-nth lines nth))
+              (col     (cond
+                        ;; COL must be in current line.
+                        (tail-p (max 0 (- col-num offset-1st-line)))
+                        (t      (min offset-1st-line col-num))))
+              (pt      (mulled/lines/pt-from-col-in-nth lines nth col)))
+         
+         ;; Make looking of the pseudo cursor good.
+         ;;
+         (let ((display       nil)
+               (after-str     nil))
+           (cond
+            ;; Trim "\t" into cursor and spaces.
+            ((eq (char-after pt) 09)
+             (let ((col-next-char (mulled/lines/col-from-pt-in-nth
+                                   lines nth (1+ pt))))
+               (setq display   pseudo-cursor)
+               (setq after-str (make-string (1- ;; = Exclude cursor width.
+                                             (- col-next-char col))
+                                            ?\ ))))
+            ;; Put cursor over "\n".
+            ((eq (char-after pt) 10)
+             (setq display   (concat pseudo-cursor))
+             (setq after-str "\n"))
+            
+            ;; Put cursor at EOF.
+            ((null (char-after pt))
+             (setq after-str (concat pseudo-cursor))))
+           
+           (overlay-put ov 'display      display)
+           (overlay-put ov 'after-string after-str))
+         
+         (move-overlay ov pt (1+ pt))
+         (overlay-put ov 'face face))))
+    
+    ;; Redisplay pseudo cursors.
+    (when (and (not mulled/.running-primitive-undo-p) ;; Inhibit flicker.
+               (not executing-kbd-macro))
+      (sit-for 0))))
 
 (defun mulled/lines/mirror-insert-op (lines edit-trailing-edges-p col-beg col-end)
   "Reflect input operation, which is occurred in 1st line, to another lines."

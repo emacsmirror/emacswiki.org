@@ -4,12 +4,12 @@
 ;; Description: User options (variables) for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 22:14:27 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:20:02 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 3979
+;;     Update #: 3981
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -773,7 +773,6 @@ It only happens if *Completions* is alone in its frame.
 This can be useful to make *Completions* more visible."
   :type 'boolean :group 'Icicles-Completions-Display)
 
-;;;###autoload
 (when (fboundp 'text-scale-decrease)    ; Emacs 23+
   (defcustom icicle-Completions-text-scale-decrease 0.66
     "*Initial height decrease for text in buffer `*Completions*'.
@@ -1459,7 +1458,6 @@ Do not add any of the translation keymaps, `function-key-map',
 will not work."
   :type '(repeat symbol) :group 'Icicles-Key-Completion :group 'Icicles-Key-Bindings)
 
-;;;###autoload
 (when (boundp 'kmacro-ring)             ; Emacs 22+
   (defcustom icicle-kmacro-ring-max (if (boundp 'most-positive-fixnum)
                                         most-positive-fixnum
@@ -1740,7 +1738,6 @@ For the meanings of the symbols, see the doc string of
 prefix-argument bindings for the command."
   :type '(list symbol symbol symbol symbol symbol symbol) :group 'Icicles-Key-Bindings)
 
-;;;###autoload
 (when (> emacs-major-version 22)
   (defcustom icicle-populate-interactive-history-flag nil
     "*Non-nil means populate `icicle-interactive-history'.
@@ -2160,7 +2157,6 @@ It is an option mainly to persist its value.
 See `icicle-guess-commands-in-path'."
   :type '(repeat sexp) :group 'Icicles-Miscellaneous)
 
-;;;###autoload
 (if (and (fboundp 'defvaralias) (boundp 'completion-show-help))
     (defvaralias 'icicle-show-Completions-help-flag 'completion-show-help)
   (defcustom icicle-show-Completions-help-flag t
@@ -2343,7 +2339,6 @@ completion and their order."
         (and (string-match "^\\*" b2) (string< b1 b2))
       (or (string-match "^\\*" b2) (string< b1 b2)))))
 
-;;;###autoload
 (when (> emacs-major-version 20)
   (defcustom icicle-sort-orders-alist ()
     "*Alist of available sort functions.
@@ -2370,7 +2365,6 @@ Each alist element has the form (SORT-ORDER . COMPARER):
                            (function :tag "Final Predicate")))))
     :group 'Icicles-Completions-Display :group 'Icicles-Matching))
 
-;;;###autoload
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
   (defcustom icicle-sort-orders-alist ()
     "*Alist of available sort functions.

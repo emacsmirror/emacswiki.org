@@ -4,12 +4,12 @@
 ;; Description: Icicle Mode definition for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sat Dec 18 22:10:35 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:44:54 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 6820
+;;     Update #: 6826
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -129,6 +129,9 @@
 ;;
 ;;; Code:
 
+;;;###autoload (autoload 'icicle-mode "icicles" "Toggle Icicle mode." t nil)
+;;;###autoload (autoload 'icy-mode    "icicles" "Toggle Icicle mode." t nil)
+
 (require 'icicles-opt)                  ; (This is required anyway by `icicles-var.el'.)
   ;; icicle-buffer-configs, icicle-buffer-extras, icicle-change-region-background-flag,
   ;; icicle-default-cycling-mode, icicle-incremental-completion-flag,
@@ -244,7 +247,6 @@ bindings in *Completions*.")
 ;; Main command.  Inspired from `icomplete-mode'.
 ;;;###autoload
 (defalias 'icy-mode 'icicle-mode)
-;;;###autoload
 (when (fboundp 'define-minor-mode)      ; Emacs 21+ ------------
   (when (> emacs-major-version 22)
     (defadvice call-interactively (after icicle-save-to-history disable activate)
@@ -536,7 +538,6 @@ bindings are not available to you."
           (run-hooks 'icicle-mode-hook)
           (message "Turning %s Icicle mode...done" (if icicle-mode "ON" "OFF")))))
 
-;;;###autoload
 (unless (fboundp 'define-minor-mode)    ; Emacs 20 ------------
   (defun icicle-mode (&optional arg)
     "Icicle mode: Toggle minibuffer input completion and cycling.
@@ -3352,7 +3353,6 @@ See `icicle-redefine-standard-commands'."
 ;;; In Emacs versions before 22:
 ;;; Save original `read-file-name'.  We redefine it as `icicle-read-file-name' (which calls it).
 ;;; Then we restore it when you quit Icicle mode.  (In Emacs 22+, no redefinition is needed.)
-;;;###autoload
 (unless (or (boundp 'read-file-name-function) (fboundp 'orig-read-file-name))
   (defalias 'orig-read-file-name (symbol-function 'read-file-name)))
 

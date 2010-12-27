@@ -1,6 +1,9 @@
 '''ParEdit''' (##paredit.el##) is a minor mode for performing structured editing of S-expression data. The typical example of this would be Lisp or Scheme source code.
 
-%%ParEdit%% helps keep parentheses balanced and adds many keys for moving S-expressions and moving around in S-expressions.
+%%ParEdit%% helps __**keep parentheses balanced**__ and adds many keys for moving S-expressions and moving around in S-expressions.
+
+Skeleton like matching paren insertion is a small part of ParEdit's functionality; its true genius won't be obvious until you code in some list oriented language.
+
 
 '''The latest stable version is available at <tt>[http://mumble.net/~campbell/emacs/paredit.el paredit.el]</tt>.''' See also the [http://mumble.net/~campbell/emacs/paredit.html Reference Table], the [http://mumble.net/~campbell/emacs/paredit.release Release Notes] and the PareditCheatsheet.
 
@@ -106,6 +109,8 @@ I downloaded %%ParEdit%% a long time ago, but I did not succeed in using it dail
 1. What is really ''useful'' with %%ParEdit%% that we can't get with standard skeletons?
 
 [new]
+
+:[new:LeWang:2010-12-27 02:46 UTC] On the surface it looks like both ParEdit and skeleton are inserting matching parenthesis.  However, a skeleton insertion is the end of the story.  Think of a ParEdit insertion is just an indicator to show *you* the context.  You can move past ")" to use it or just completely pretend it's not there.  The insertion is just a side-effect of ParEdit's true purpose -- *clarify context while coding*. -- LeWang
 
 : Check out the %%ParEdit%% reference table mentioned above, especially the parts "Depth-Changing Commands" and "Barfage & Slurpage". Skeletons are like templates, they're static. %%ParEdit%% can modify the structure of Lisp code. So basically, they have different purposes. -- PeterBarabas
 

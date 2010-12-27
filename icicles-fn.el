@@ -4,12 +4,12 @@
 ;; Description: Non-interactive functions for Icicles
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Dec 23 16:45:43 2010 (-0800)
+;; Last-Updated: Sun Dec 26 12:19:24 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 12040
+;;     Update #: 12042
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2023,7 +2023,6 @@ For completion, pass args to `icicle-read-shell-command-completing'."
 ;; Uses Icicles completion.
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
-;;;###autoload
 (unless (fboundp 'read-shell-command)   ; Emacs 23
   (defun icicle-dired-smart-shell-command (command &optional output-buffer error-buffer)
     "Like `icicle-shell-command', but in the current Virtual Dired directory.
@@ -2045,7 +2044,6 @@ Uses Icicles completion - see `icicle-read-shell-command-completing'."
 ;; Uses Icicles completion.
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
-;;;###autoload
 (unless (fboundp 'read-shell-command)   ; Emacs 23.
   (unless (fboundp 'old-shell-command)
     (defalias 'old-shell-command (symbol-function 'shell-command)))
@@ -2114,7 +2112,6 @@ specifies the value of ERROR-BUFFER."
 ;; Uses Icicles completion.
 ;; Not needed for Emacs 23+ - Icicles completion is automatic via `icicle-read-shell-command'.
 ;;
-;;;###autoload
 (unless (fboundp 'read-shell-command)   ; Emacs 23.
   (unless (fboundp 'old-shell-command-on-region)
     (defalias 'old-shell-command-on-region (symbol-function 'shell-command-on-region)))
