@@ -1,9 +1,10 @@
-Tthis is Auto Java Complete, or Another Java Complete!     
+This is Auto Java Complete.     
  My email is <jixiuf@gmail.com>.
 
 ===Install===
-First you should have installed AutoComplete.
-Then install this one for java completion.
+First you should have installed
+ AutoComplete and  [http://yasnippet.googlecode.com/svn/trunk/doc/index.html Yasnippet]
+   Then install this one for java completion.
 
 Add this lines  in your .emacs file:
 
@@ -19,7 +20,19 @@ and restart your Emacs:
 
 Enjoy!
 
+==My Config Example==
+ about yasnippet auto-complete and ajc-java-complete.el 
+* Lisp:ajc-java-complete-my-config-example.el
+
 ==Source==
+
+* Lisp:ajc-java-complete.el
+* Lisp:ajc-java-complete-config.el
+* https://github.com/jixiuf/ajc-java-complete/raw/master/Tags.java
+
+  if Tags.java can not work on your PC. you can use the generated tag file 
+  just bunzip and rename it to ~/.java_base.tag
+* https://github.com/jixiuf/ajc-java-complete/raw/master/java_base.tag.bz2
 
 You can find source code on github:
 [https://github.com/jixiuf/ajc-java-complete  auto-java-complete].
@@ -28,8 +41,14 @@ You can clone it using
 
       git clone git://github.com/jixiuf/ajc-java-complete.git
 
-There is a 15M video in the repo, too.   
- 
+==Video Demo==
+
+There is a 2.8M video demo in another repos .   
+
+  wget --no-check-certificate   https://github.com/jixiuf/screencast-repos/raw/master/auto-java-complete-demo-2010-12-25.mp4.bz2
+
+==Features==
+
 It can complete *imports*:
 
       import   java.
@@ -74,20 +93,16 @@ And this:
                                                    toCharArray()
 
 It can *auto import* class in buffer.
-Here are two suggested keybindings:
+Here are two suggested keybindings(included in ajc-java-complete-config.el):
 
-     (global-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class))
-     (global-set-key (kbd "C-c m") (quote ajc-import-class-under-point))
+     (local-set-key (kbd "C-c i") (quote ajc-import-all-unimported-class))
+     (local-set-key (kbd "C-c m") (quote ajc-import-class-under-point))
 
-== To Do ==
-
-* when complete method, show return type 
-* work with yasnipper or other snipper  when complete method so users can use Tab to switch between parameters.
 
 == Screenshots  ==
 
 [[image:auto-java-complete.jpg]]
-
+[[image:auto-java-complete-method-templete.jpg]]
 [[image:AutoJavaComplete-class]]
 
 [[image:AutoJavaComplete-constructor]]
@@ -95,6 +110,13 @@ Here are two suggested keybindings:
 [[image:AutoJavaComplete-import]]
 
 [[image:AutoJavaComplete-import2]]
+
+== To Do ==
+
+* when completing method, show return type more gentlely
+* shorten time of  opening first java source file .
+* implements source navigate ,find out Class Method definition position 
+    by searching source path (maybe need support of decompile.el (jad ))
 
 ----
 CategoryCompletion

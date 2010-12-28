@@ -1,12 +1,13 @@
-;;; wcheck-mode.el --- Interface for external spelling checkers
+;;; wcheck-mode.el --- General interface for text checkers
 
 ;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
 
 ;; Author: Teemu Likonen <tlikonen@iki.fi>
 ;; Maintainer: Teemu Likonen <tlikonen@iki.fi>
 ;; Created: 2009-07-04
-;; Version: 2010.12.23
-;; Keywords: spell check languages ispell
+;; Version: 2010.12.27
+;; Keywords: text spell check languages ispell
+
 
 ;; This program is free software: you can redistribute it and/or modify
 ;; it under the terms of the GNU General Public License as published by
@@ -21,12 +22,11 @@
 ;; You should have received a copy of the GNU General Public License
 ;; along with GNU Emacs. If not, see <http://www.gnu.org/licenses/>.
 
-;;; Commentary:
-;;
+
 ;; INSTALLATION
 ;;
-;; Put this file to some directory in your "load-path" and add the
-;; following lines to your Emacs initialization file (~/.emacs):
+;; Put this file to some directory in your Emacs's "load-path" and add
+;; the following lines to Emacs's initialization file (~/.emacs):
 ;;
 ;;     (autoload 'wcheck-mode "wcheck-mode"
 ;;       "Toggle wcheck-mode." t)
@@ -38,15 +38,142 @@
 ;; See customize group "wcheck" for information on how to configure
 ;; Wcheck mode. (M-x customize-group RET wcheck RET)
 
+
+;;; Commentary:
+;;
+;; General interface for text checkers
+;;
+;; Wcheck is a minor mode for automatically checking and marking words
+;; or other text elements in Emacs buffer. Wcheck sends (parts of)
+;; buffer's content to a user-configured checker program and, based on
+;; its output, decides if some parts of text should be marked.
+;;
+;; Wcheck can be used with external spell-checker programs such as
+;; Ispell, Aspell and Enchant. The mode can be useful with other kind of
+;; external tools. Any tool that can receive text stream from standard
+;; input and send text to standard output can be used. The checker
+;; program can also be an Emacs Lisp function.
+
+
 ;;; Code:
+
 
 ;;; Settings
 
 
 ;;;###autoload
 (defgroup wcheck nil
-  "Interface for external text-filtering programs."
+  "General interface for text checkers."
   :group 'applications)
+
+
+(defconst wcheck-language-data-customize-interface
+  '(choice
+    :format "%[Option%] %v"
+
+    (cons :tag "Program" :format "%v"
+          (const :tag "Program" :format "%t: " program)
+          (choice :format "%[Type%] %v"
+                  (file :tag "Filename" :format "\n\t\t%t: %v")
+                  (function :tag "Function" :format "\n\t\t%t: %v")))
+
+    (cons :tag "Arguments" :format "%v"
+          (const :format "" args)
+          (repeat :tag "Arguments"
+                  :value-to-internal
+                  (lambda (widget value)
+                    (cond ((stringp value)
+                           (split-string-and-unquote value "[ \t\n]+"))
+                          ((listp value)
+                           value)))
+                  :match (lambda (widget value)
+                           (or (listp value)
+                               (stringp value)))
+                  (string :format "%v")))
+
+    (cons :tag "Connection type" :format "%v"
+          (const :tag "Connection: " :format "%t" connection)
+          (choice :format "%[Type%] %v" :value nil
+                  (const :tag "pipe (nil)" nil)
+                  (const :tag "pty" :match (lambda (widget value)
+                                             (or (eq value t)
+                                                 (eq value 'pty)))
+                         pty)))
+
+    (cons :tag "Face" :format "%v"
+          (const :tag "Face" :format "%t: " face)
+          (symbol :format "%v"))
+
+    (cons :tag "Syntax table" :format "%v"
+          (const :tag "Syntax table" :format "%t: " syntax)
+          (variable :format "%v"))
+
+    (cons :tag "Regexp start" :format "%v"
+          (const :tag "Regexp start" :format "%t: " regexp-start)
+          (regexp :format "%v"))
+
+    (cons :tag "Regexp body" :format "%v"
+          (const :tag "Regexp body" :format "%t: " regexp-body)
+          (regexp :format "%v"))
+
+    (cons :tag "Regexp end" :format "%v"
+          (const :tag "Regexp end" :format "%t: " regexp-end)
+          (regexp :format "%v"))
+
+    (cons :tag "Regexp discard" :format "%v"
+          (const :tag "Regexp discard" :format "%t: " regexp-discard)
+          (regexp :format "%v"))
+
+    (cons :tag "Regexp case" :format "%v"
+          (const :tag "Regexp" :format "%t: " case-fold)
+          (choice :format "%[Case%] %v" :value nil
+                  (const :tag "sensitive" nil)
+                  (const :tag "insensitive" t)))
+
+    (cons :tag "Suggestion program" :format "%v"
+          (const :tag "Suggestion program" :format "%t: " suggestion-program)
+          (choice :format "%[Type%] %v"
+                  (file :tag "Filename" :format "\n\t\t%t: %v")
+                  (function :tag "Function" :format "\n\t\t%t: %v")))
+
+    (cons :tag "Suggestion program's arguments" :format "%v"
+          (const :format "" suggestion-args)
+          (repeat :tag "Suggestion program's arguments"
+                  (string :format "%v")))
+
+    (cons :tag "Suggestion parser function" :format "%v"
+          (const :tag "Suggestion parser" :format "%t: "
+                 suggestion-parser)
+          (choice :format "%[Parser%] %v" :value nil
+                  (const :tag "Ispell" wcheck-parse-suggestions-ispell)
+                  (const :tag "Lines" wcheck-parse-suggestions-lines)
+                  (const :tag "Whitespace" wcheck-parse-suggestions-ws)
+                  (function :tag "Custom function"
+                            :format "%t:\n\t\t%v")))
+
+    (cons
+     :tag "Read or skip faces" :format "%v"
+     (const :tag "Read or skip faces" :format "%t" read-or-skip-faces)
+     (repeat
+      :tag ""
+      (cons :format "%v"
+            (choice :format "%[Major mode%] %v"
+                    (symbol :tag "Select mode" :format "%t: %v"
+                            :match (lambda (widget value) value)
+                            :value foo-mode)
+                    (const :tag "All major modes"
+                           :match (lambda (widget value) (not value))
+                           nil))
+            (choice :format "%[Operation mode%] %v"
+                    (const :tag "Read everything" nil)
+                    (cons :tag "Read selected faces" :format "%v"
+                          (const :tag "Read selected faces"
+                                 :format "%t" read)
+                          (repeat :tag "" (sexp :format "%v")))
+                    (cons :tag "Skip selected faces" :format "%v"
+                          (const :tag "Skip selected faces"
+                                 :format "%t" skip)
+                          (repeat :tag "" (sexp :format "%v")))))))))
 
 
 ;;;###autoload
@@ -55,30 +182,49 @@
 
 Elements of this alist are of the form:
 
-  (LANGUAGE (KEY . VALUE) [(KEY . VALUE) ...])
+    (LANGUAGE (KEY . VALUE) [(KEY . VALUE) ...])
 
 LANGUAGE is a name string for a language and KEY and VALUE pairs
-denote settings for the language. Here is a list of possible KEYs
-and a description of VALUE types:
+denote settings for the language. Here is a description of
+possible KEYs:
 
 program
-    VALUE is a string that is the name of the external executable
-    program responsible for spell-checking LANGUAGE. This the
-    only setting that is mandatory. Communication with the
-    external program is managed through standard input and output
-    streams. See options `regexp-start', `regexp-body' and
-    `regexp-end' below for details.
+    VALUE can be a string or a function. If VALUE is a string, it
+    must be the name of the external executable program which is
+    responsible for text-checking LANGUAGE. Communication with
+    the external program is managed through standard input and
+    output streams.
+
+    `wcheck-mode' collects text strings from the buffer and sends
+    them (each on a separate line) to the external program for
+    analyzing. The program must output (on separate lines) only
+    the strings which it thinks should be marked in the Emacs
+    buffer. Usually the reason is that the word is misspelled.
+    The program should output nothing if it doesn't think that
+    the string should be marked in Emacs buffer.
+
+    VALUE can also be an Emacs Lisp function (a symbol or a
+    lambda). Then that function is used as the text checker. The
+    function is called with one argument: a list of strings
+    collected from the buffer. The function is supposed to check
+    them and return a list of strings (or nil). The returned
+    strings will be marked in the buffer.
+
+    See options `regexp-start', `regexp-body' and `regexp-end'
+    below for details on how text is collected from the buffer.
 
 args
     Optional command-line arguments for the program. The VALUE is
     a list of strings. Each string is a single argument for the
-    program.
+    program. (This option is ignored when the program is a
+    function.)
 
 connection
     The VALUE is used to set variable `process-connection-type'
     when starting the process for LANGUAGE. If the VALUE is nil
     use a pipe for communication; if it's `pty' (or t) use a PTY.
-    The default is to use a pipe (nil).
+    The default is to use a pipe (nil). (This option is ignored
+    when the program is a function.)
 
 face
     A symbol referring to the face which is used to mark text with
@@ -98,19 +244,14 @@ regexp-end
     body, characters within the body and the end of the body,
     respectively.
 
-    This is how they are used in practice: `wcheck-mode' looks
-    for strings that matches the construct `regexp-start +
-    regexp-body + regexp-end'. The string that matches
-    regexp-body is sent (on a line of its own) to the external
-    program to analyze. The external program must output the same
-    string (on a line of its own) if it thinks that the string
-    should be marked in the Emacs buffer. Usually the reason is
-    that the word is misspelled. The program should output
-    nothing if it doesn't think that the string should be marked
-    in Emacs.
+    This is how they are used in practice: `wcheck-mode' scans
+    buffer's content and looks for strings that match the
+    construct `regexp-start + regexp-body + regexp-end'. Strings
+    that match regexp-body (but not `regexp-discard', see below)
+    are sent to the text checker program or function to analyze.
 
-    Lines returned from the external program are marked in Emacs
-    buffer using the following construction: `regexp-start
+    Strings returned from the program or function are marked in
+    Emacs buffer using the following construction: `regexp-start
     + (regexp-quote STRING) + regexp-end'. The middle part is
     marked with `face' (see above) .
 
@@ -120,33 +261,36 @@ regexp-end
     can use \"shy\" groups `\\(?: ... \\)' which do not record
     the matched substring.
 
-    The default values for the regular expressions are:
+    The default values for the regular expressions are
 
         \\=\\<'*         (regexp-start)
         \\w+?         (regexp-body)
         '*\\=\\>         (regexp-end)
 
-    Effectively they match word characters defined in the
-    effective syntax table. Single quotes (') at the start and
-    end of a word are excluded. This is probably a good thing
+    Effectively they match a series of word characters defined in
+    the effective syntax table. Single quotes (') at the start
+    and end of a word are excluded. This is probably a good thing
     when using `wcheck-mode' as a spelling checker.
 
 regexp-discard
-    The string that matched regexp-body is then matched against
+    The string that matched `regexp-body' is then matched against
     the value of this option. If this regular expression matches,
-    then the word is discarded and won't be sent to the external
-    program. You can use this to define exceptions to the
-    regexp-body match. The default value is
+    then the word is discarded and won't be sent to the
+    text-checker program or function to analyze. You can use this
+    to define exceptions to the regexp-body match. The default
+    value is
 
         \\`'+\\'
 
     which discards the body string if it consists only of single
-    quotes. This was chosen as the default because the standard
+    quotes. This was chosen as the default because the default
     syntax table `text-mode-syntax-table' defines single quote as
     a word character. It's probably not useful to mark individual
     single quotes in a buffer when `wcheck-mode' is used as a
-    spelling checker. If you don't want to have any discarding
-    rules set this to empty string.
+    spelling checker.
+
+    If you don't want to have any discarding rules set this
+    option to empty string.
 
 case-fold
     This boolean value is used to set value for variable
@@ -158,24 +302,38 @@ case-fold
 
 suggestion-program
 suggestion-args
-    `suggestion-program' is name (string) of an external
-    executable program and `suggestion-args' are the command-line
-    arguments (a list of strings) for the program. When user
-    clicks the right mouse button on marked text, or executes
-    command `wcheck-spelling-suggestions', the marked text will
-    be sent to the `suggestion-program' as standard input stream.
-    The program should send suggested substitutes (in one way or
-    another) to standard output stream.
+    `suggestion-program' is either name (a string) of an external
+    executable program or an Emacs Lisp function (a symbol or a
+    lambda). When it's the name of an executable program then
+    `suggestion-args' are the command-line arguments (a list of
+    strings) for the program.
+
+    When user clicks the right mouse button on marked text, or
+    executes command `wcheck-spelling-suggestions', the marked
+    text will be sent to the `suggestion-program' as standard
+    input stream. The program should send suggested
+    substitutes (in one way or another) to the standard output
+    stream. The output is parsed with `suggestion-parser'
+    function (see below).
+
+    When `suggestion-program' is an Emacs Lisp function the
+    function is called with one argument: the marked text (a
+    string) which user wants spelling suggestions for. The
+    function must return all substitute suggestions as a list of
+    strings or nil if there are no suggestions.
 
 suggestion-parser
-    `suggestion-parser' is an Emacs Lisp function which is
+    VALUE of this option is an Emacs Lisp function which is
     responsible for parsing the output of `suggestion-program'.
-    The function is run without arguments and within the context
-    of a temporary buffer. The buffer contains all the output
-    from the external program and the point is located at the
-    beginning of the buffer. `suggestion-parser' function should
-    collect all the substitute suggestions from the buffer and
-    return them as a list of strings or nil if there are no
+    This parser function is only used when `suggestion-program'
+    is an external executable program (not a function).
+
+    The parser function is run without arguments and within the
+    context of a temporary buffer. The buffer contains all the
+    output from the external program and the point is located at
+    the beginning of the buffer. `suggestion-parser' function
+    should collect all the substitute suggestions from the buffer
+    and return them as a list of strings or nil if there are no
     suggestions.
 
     For the most common cases there are three parser functions
@@ -184,7 +342,7 @@ suggestion-parser
         `wcheck-parse-suggestions-ispell' parses substitute
         suggestions from the output of Ispell or compatible
         program, such as Enchant or Aspell. Use this function as
-        the `suggestion-parser' if you get suggestions from
+        the `suggestion-parser' if you get suggestions from an
         Ispell-like program with its \"-a\" command-line option.
 
         `wcheck-parse-suggestions-lines' function turns each line
@@ -194,117 +352,165 @@ suggestion-parser
         `wcheck-parse-suggestions-ws'. Each whitespace-separated
         token in the program's output is a separate suggestion.
 
-Here's an example on how to set the `wcheck-language-data'
-variable:
+read-or-skip-faces
+    This option controls which faces `wcheck-mode' should read or
+    skip when scanning buffer's content. The value must be a list
+    and its items are also lists:
 
-    ((\"suomi\"
+        (MAJOR-MODE [OPERATION-MODE [FACE ...]])
+
+    MAJOR-MODE (a symbol) is the major mode which the settings
+    are for. Use nil as the MAJOR-MODE to define default
+    settings. Settings that come after the pseudo major-mode nil
+    are ignored.
+
+    OPERATION-MODE is symbol `read' or `skip' defining whether
+    the FACEs should be read or skipped. If it's `read' then only
+    the listed faces are read. If it's `skip' then the listed
+    faces are skipped and all other faces are read. If
+    OPERATION-MODE is nil or it doesn't exist at all then
+    everything will be read.
+
+    The rest of the items are FACEs. They are typically symbols
+    but some Emacs modes may use strings, property lists or cons
+    cells for defining faces. For more information see Info
+    node `(elisp) Special Properties'. Use nil as the face to
+    refer to the normal text which does not have a face text
+    property.
+
+    Example:
+
+        (read-or-skip-faces
+         (emacs-lisp-mode read font-lock-comment-face
+                          font-lock-doc-face)
+         (org-mode skip font-lock-comment-face org-link)
+         (text-mode)
+         (nil read nil))
+
+    It says that in `emacs-lisp-mode' only the text which have
+    been highlighted with font-lock-comment-face or
+    font-lock-doc-face is read (i.e., checked). In `org-mode'
+    faces font-lock-comment-face and org-link are skipped (i.e.,
+    not checked) and all other faces are read. In `text-mode'
+    everything is read. Finally, in all other major modes only
+    the normal text (nil) is read.
+
+    The global default is equivalent to
+
+        (read-or-skip-faces
+         (nil))
+
+    which means that in all major modes read everything. It is
+    sometimes useful to have this setting in language-specific
+    options too because the parsing stops right there. Therefore
+    it discards all global settings which user may have
+    configured with variable `wcheck-language-data-defaults'.
+
+    Note: You can use command `\\[what-cursor-position]' with a
+    prefix argument to see what faces are active at the cursor
+    position. Then you can use the information to configure this
+    option.
+
+Here's an example value for the `wcheck-language-data' variable:
+
+    ((\"Finnish\"
       (program . \"/usr/bin/enchant\")
-      (args . (\"-l\" \"-d\" \"fi\"))
+      (args  \"-l\" \"-d\" \"fi\")
       (syntax . my-finnish-syntax-table)
-      (suggestion-command . \"/usr/bin/enchant\")
-      (suggestion-args . (\"-a\" \"-d\" \"fi\"))
+      (suggestion-program . \"/usr/bin/enchant\")
+      (suggestion-args \"-a\" \"-d\" \"fi\")
       (suggestion-parser . wcheck-parse-suggestions-ispell))
      (\"British English\"
       (program . \"/usr/bin/ispell\")
-      (args . (\"-l\" \"-d\" \"british\"))
-      (suggestion-command . \"/usr/bin/ispell\")
-      (suggestion-args . (\"-a\" \"-d\" \"british\"))
+      (args \"-l\" \"-d\" \"british\")
+      (suggestion-program . \"/usr/bin/ispell\")
+      (suggestion-args \"-a\" \"-d\" \"british\")
       (suggestion-parser . wcheck-parse-suggestions-ispell))
      (\"Trailing whitespace\"
-      (program . \"/bin/cat\")
+      (program . identity)
+      (suggestion-program . (lambda (string) (list \"\")))
+      (face . highlight)
       (regexp-start . \"\")
-      (regexp-body . \"\\\\s-+\")
+      (regexp-body . \"[ \\t]+\")
       (regexp-end . \"$\")
-      (regexp-discard . \"\")))"
+      (regexp-discard . \"\")
+      (read-or-skip-faces)
+       (nil))
+     (\"Highlight FIXMEs\"
+      (program . (lambda (words)
+                   (when (member \"FIXME\" words)
+                     (list \"FIXME\"))))
+      (face . highlight)
+      (read-or-skip-faces
+       (emacs-lisp-mode read font-lock-comment-face)
+       (c-mode read font-lock-comment-face)
+       (nil))))
+
+You can use variable `wcheck-language-data-defaults' to define
+default values for all these options. The defaults are used when
+language-specific option does not exist or is not valid."
 
   :group 'wcheck
   :type
-  '(repeat
-    (list
-     :format "%v"
-     (string :tag "Language")
-     (repeat
-      :inline t
-      :tag "Settings"
-      (choice
-       :format "%[Value Menu%] %v"
-       (cons :tag "Program" :format "%v"
-             (const :tag "Program: " :format "%t" program)
-             (file :format "%v"))
-       (cons :tag "Arguments" :format "%v"
-             (const :format "" args)
-             (repeat :tag "Arguments"
-                     :value-to-internal
-                     (lambda (widget value)
-                       (cond ((stringp value)
-                              (split-string-and-unquote value "[ \t\n]+"))
-                             ((listp value)
-                              value)))
-                     :match (lambda (widget value)
-                              (or (listp value)
-                                  (stringp value)))
-                     (string :format "%v")))
-       (cons :tag "Connection type" :format "%v"
-             (const :tag "Connection type: " :format "%t" connection)
-             (choice :format "%[Value Menu%] %v" :value nil
-                     (const :tag "pipe (nil)" nil)
-                     (const :tag "pty" :match (lambda (widget value)
-                                                (or (eq value t)
-                                                    (eq value 'pty)))
-                            pty)))
-       (cons :tag "Face" :format "%v"
-             (const :tag "Face: " :format "%t" face)
-             (symbol :format "%v" :value wcheck-default-face))
-       (cons :tag "Syntax table" :format "%v"
-             (const :tag "Syntax table: " :format "%t" syntax)
-             (variable :format "%v" :value text-mode-syntax-table))
-       (cons :tag "Regexp start" :format "%v"
-             (const :tag "Regexp start: " :format "%t" regexp-start)
-             (regexp :format "%v" :value "\\<'*"))
-       (cons :tag "Regexp body" :format "%v"
-             (const :tag "Regexp body: " :format "%t" regexp-body)
-             (regexp :format "%v" :value "\\w+?"))
-       (cons :tag "Regexp end" :format "%v"
-             (const :tag "Regexp end: " :format "%t" regexp-end)
-             (regexp :format "%v" :value "'*\\>"))
-       (cons :tag "Regexp discard" :format "%v"
-             (const :tag "Regexp discard: " :format "%t" regexp-discard)
-             (regexp :format "%v" :value "\\`'+\\'"))
-       (cons :tag "Regexp case" :format "%v"
-             (const :tag "Regexp case: " :format "%t" case-fold)
-             (choice :format "%[Value Menu%] %v" :value nil
-                     (const :tag "sensitive" nil)
-                     (const :tag "insensitive" t)))
-       (cons :tag "Suggestion program" :format "%v"
-             (const :tag "Suggestion program: " :format "%t" suggestion-program)
-             (file :format "%v"))
-       (cons :tag "Suggestion program's arguments" :format "%v"
-             (const :format "" suggestion-args)
-             (repeat :tag "Suggestion program's arguments"
-                     (string :format "%v")))
-       (cons :tag "Suggestion parser function" :format "%v"
-             (const :tag "Suggestion parser: " :format "%t"
-                    suggestion-parser)
-             (choice :format "%[Value Menu%] %v" :value nil
-                     (const :tag "Ispell" wcheck-parse-suggestions-ispell)
-                     (const :tag "Lines" wcheck-parse-suggestions-lines)
-                     (const :tag "Whitespace" wcheck-parse-suggestions-ws)
-                     (function :tag "Function" :format "%v" :value ignore))))))))
+  `(repeat
+    (list :format "%v"
+          (string :tag "Language")
+          (repeat :inline t
+                  :tag "Options"
+                  ,wcheck-language-data-customize-interface))))
 
 
-(defconst wcheck-language-data-defaults
-  '((args . nil)
-    (connection . nil)
+;;;###autoload
+(defconst wcheck-language-data-defaults-hard-coded
+  '((connection . nil)
     (face . wcheck-default-face)
     (syntax . text-mode-syntax-table)
     (regexp-start . "\\<'*")
     (regexp-body . "\\w+?")
     (regexp-end . "'*\\>")
     (regexp-discard . "\\`'+\\'")
-    (case-fold . nil))
-  "Default language configuration for `wcheck-mode'.
+    (case-fold . nil)
+    (read-or-skip-faces (nil)))
+  "Hard-coded default language configuration for `wcheck-mode'.
 This constant is for Wcheck mode's internal use only. This
-provides useful defaults for `wcheck-language-data'.")
+provides useful defaults if both `wcheck-language-data' and
+`wcheck-language-data-defaults' fail.")
+
+
+;;;###autoload
+(defcustom wcheck-language-data-defaults
+  wcheck-language-data-defaults-hard-coded
+  "Default language configuration for `wcheck-mode'.
+These default values are used when language-specific settings
+don't provide a valid value. `wcheck-mode' will choose some
+useful defaults even if this variable is not (properly) set. See
+variable `wcheck-language-data' for information about possible
+settings.
+
+Here's an example value for the variable:
+
+    ((connection . nil)
+     (face . wcheck-default-face)
+     (syntax . text-mode-syntax-table)
+     (regexp-start . \"\\\\=\\<'*\")
+     (regexp-body . \"\\\\w+?\")
+     (regexp-end . \"'*\\\\=\\>\")
+     (regexp-discard . \"\\\\`'+\\\\'\")
+     (case-fold . nil)
+     (read-or-skip-faces
+      (emacs-lisp-mode read font-lock-comment-face font-lock-doc-face)
+      (message-mode read nil message-header-subject message-cited-text)))"
+
+  :group 'wcheck
+  :type `(repeat ,wcheck-language-data-customize-interface))
+
+
+(defvar wcheck-read-or-skip-faces nil
+  "This variable is not used anymore.
+This variable's functionality is now included in variables
+`wcheck-language-data' and `wcheck-language-data-defaults'. See
+the documentation of the former variable for information on how
+to configure the feature.")
 
 
 ;;;###autoload
@@ -326,58 +532,6 @@ changing just the value of this variable takes effect only when
   :type '(string :tag "Default language")
   :group 'wcheck)
 (make-variable-buffer-local 'wcheck-language)
-
-
-;;;###autoload
-(defcustom wcheck-read-or-skip-faces nil
-  "Control which faces to read and which ones to skip.
-
-This variables controls which faces `wcheck-mode' should read or
-skip. Face is a text property Emacs uses to highlight text
-elements in buffers. The value must be a list and its items are
-also lists. Each item is of the form:
-
-  (MAJOR-MODE OPERATION-MODE FACE [FACE ...])
-
-MAJOR-MODE (a symbol) is the major mode which the settings are
-for. OPERATION-MODE is symbol `read' or `skip' defining whether
-the FACEs should be read or skipped. If `read' is used then only
-the listed faces are spell-checked. If `skip' is used then the
-listed faces are skipped and all other faces are spell-checked.
-The rest of the items are FACEs. They are typically symbols but
-some Emacs modes may use strings, property lists or cons cells
-for defining faces. See Info node `(elisp) Special Properties'
-for more information. Use nil as the face to refer to the normal
-text which does not have a face text property.
-
-Example:
-
-  ((emacs-lisp-mode read font-lock-comment-face font-lock-doc-face)
-   (message-mode read nil message-header-subject message-cited-text)
-   (org-mode skip font-lock-comment-face))
-
-It says that in `emacs-lisp-mode' only the text which have been
-highlighted with font-lock-comment-face or font-lock-doc-face is
-read (i.e., spell-checked). In `message-mode' only the normal
-text (nil), subject header and cited text is read. In `org-mode'
-text with font-lock-comment-face is skipped (i.e., not
-spell-checked) and all other text is read.
-
-Note: You can use command `\\[what-cursor-position]' with a
-prefix argument to see what faces are active at the cursor
-position. Then you can use the information to configure this
-variable."
-
-  :group 'wcheck
-  :type
-  '(repeat
-    (list :format "%v"
-          (symbol :tag "Major mode")
-          (choice :tag "Operation mode"
-                  (const :tag "read" read)
-                  (const :tag "skip" skip))
-          (repeat :inline t :tag "Faces (s-expressions)"
-                  (sexp :format "%v")))))
 
 
 ;;;###autoload
@@ -451,21 +605,21 @@ interactively) then change the global default language."
 
       ;; Change the buffer-local value.
       (setq wcheck-language language)
-      ;; If the mode is currently turned on check if language's program
-      ;; is executable and if all is OK request update for the buffer.
+      ;; If the mode is currently turned on check if language's checker
+      ;; program or function is configured and if all is OK request
+      ;; update for the buffer.
       (when wcheck-mode
-        (let ((program (wcheck-query-language-data wcheck-language 'program)))
-          (if (wcheck-program-executable-p program)
-              ;; It's executable; update the buffer.
-              (progn
-                (wcheck-update-buffer-data (current-buffer) wcheck-language)
-                (wcheck-timer-add-read-request (current-buffer))
-                (wcheck-remove-overlays))
+        (if (wcheck-program-configured-p wcheck-language)
+            ;; It's OK; update the buffer.
+            (progn
+              (wcheck-update-buffer-data (current-buffer) wcheck-language)
+              (wcheck-timer-add-read-request (current-buffer))
+              (wcheck-remove-overlays))
 
-          ;; It's not executable; turn off.
+          ;; It's not OK; turn off.
           (wcheck-mode -1)
           (when (interactive-p)
-            (wcheck-error-program-not-executable wcheck-language program))))))
+            (wcheck-error-program-not-configured wcheck-language)))))
 
     ;; Return the language.
     language))
@@ -473,37 +627,34 @@ interactively) then change the global default language."
 
 ;;;###autoload
 (define-minor-mode wcheck-mode
-  "Interface for external spell-checkers and filtering programs.
+  "General interface for text checkers.
 
 With optional (prefix) ARG turn on the mode if ARG is positive,
 otherwise turn it off. If ARG is not given toggle the mode.
 
 Wcheck is a minor mode for automatically checking and marking
 words or other text elements in Emacs buffer. Wcheck sends (parts
-of) buffer's content to an external text-filtering program and,
+of) buffer's content to a user-configured checker program and,
 based on its output, decides if some parts of text should be
 marked.
 
-Wcheck can be used with spell-checker programs such as Ispell,
-Aspell and Enchant. Then the semantics of operation is that the
-words returned from a spelling checker are spelling mistakes and
-are marked as such in Emacs buffer.
+Wcheck can be used with external spell-checker programs such as
+Ispell, Aspell and Enchant. The mode can be useful with other
+kind of external tools. Any tool that can receive text stream
+from standard input and send text to standard output can be used.
+The checker program can also be an Emacs Lisp function.
 
-The mode can also be useful with other kind of external tools.
-Any tool that can receive text stream from standard input and
-send text to standard output can be used. User is free to
-interpret the semantics. In Wcheck configuration different
-semantical units are called \"languages\".
-
-See the documentation of variables `wcheck-language-data',
-`wcheck-language' and `wcheck-read-or-skip-faces' for information
-on how to configure Wcheck mode. You can access the variables
-through customize group `wcheck'.
+In Wcheck mode different configuration units are called
+\"languages\". See the documentation of variables
+`wcheck-language-data', `wcheck-language' and
+`wcheck-read-or-skip-faces' for information on how to configure
+Wcheck mode. You can access the variables through customize group
+`wcheck'.
 
 Interactive command `wcheck-change-language' is used to switch
 languages. Command `wcheck-spelling-suggestions' gives spelling
-suggestions for misspelled text at point (also accessible through
-the right-click mouse menu)."
+suggestions for marked text at point (also accessible through the
+right-click mouse menu)."
 
   :init-value nil
   :lighter " wck"
@@ -526,13 +677,9 @@ the right-click mouse menu)."
                      (format "\"%s\" " wcheck-language)
                    "")))
 
-       ((not (wcheck-program-executable-p
-              (wcheck-query-language-data wcheck-language 'program)))
-        ;; The program does not exist or is not executable.
+       ((not (wcheck-program-configured-p wcheck-language))
         (wcheck-mode -1)
-        (wcheck-error-program-not-executable
-         wcheck-language
-         (wcheck-query-language-data wcheck-language 'program)))
+        (wcheck-error-program-not-configured wcheck-language))
 
        (t
         ;; We are ready to really turn on the mode.
@@ -653,6 +800,33 @@ other text elements in buffers."
                        ;; Repeat the timer 3 times after the initial
                        ;; call:
                        3))
+
+
+(defun wcheck-send-words (buffer strings)
+  "Send STRINGS for the process that handles BUFFER.
+STRINGS is a list of strings to be sent as input for the external
+process which handles BUFFER. Each string in STRINGS is sent as
+separate line."
+  (let ((program (wcheck-query-language-data
+                  (wcheck-get-data :buffer buffer :language)
+                  'program)))
+
+    (cond ((or (wcheck-get-data :buffer buffer :process)
+               (stringp program))
+           (process-send-string
+            (wcheck-start-get-process buffer)
+            (concat (mapconcat #'identity strings "\n") "\n")))
+          ((functionp program)
+           (when (buffer-live-p buffer)
+             (with-current-buffer buffer
+               (let ((words (save-match-data (funcall program strings))))
+                 (when (wcheck-list-of-strings-p words)
+                   (setq wcheck-received-words words)
+                   (wcheck-timer-add-paint-request buffer))))))
+          (t
+           (when (buffer-live-p buffer)
+             (with-current-buffer buffer
+               (wcheck-mode -1)))))))
 
 
 (defun wcheck-receive-words (process string)
@@ -830,9 +1004,9 @@ operation was unsuccessful."
       ;; It doesn't exist so start a new one.
       (let* ((language (wcheck-get-data :buffer buffer :language))
              (program (wcheck-query-language-data language 'program))
-             (args (wcheck-query-language-data language 'args t))
+             (args (wcheck-query-language-data language 'args))
              (process-connection-type
-              (wcheck-query-language-data language 'connection t))
+              (wcheck-query-language-data language 'connection))
              proc)
 
         (when (wcheck-program-executable-p program)
@@ -914,22 +1088,17 @@ elements between BEG and END; all hidden parts are omitted."
 
         (let* ((language (wcheck-get-data :buffer buffer :language))
                (regexp (concat
-                        (wcheck-query-language-data language 'regexp-start t)
+                        (wcheck-query-language-data language 'regexp-start)
                         "\\("
-                        (wcheck-query-language-data language 'regexp-body t)
+                        (wcheck-query-language-data language 'regexp-body)
                         "\\)"
-                        (wcheck-query-language-data language 'regexp-end t)))
+                        (wcheck-query-language-data language 'regexp-end)))
 
-               (syntax (eval (wcheck-query-language-data language 'syntax t)))
-               (discard (wcheck-query-language-data language 'regexp-discard t))
+               (syntax (eval (wcheck-query-language-data language 'syntax)))
+               (discard (wcheck-query-language-data language 'regexp-discard))
                (case-fold-search
-                (wcheck-query-language-data language 'case-fold t))
-               (user-faces (wcheck-major-mode-faces major-mode))
-               (face-p (if (and font-lock-mode user-faces)
-                           (wcheck-generate-face-predicate
-                            (wcheck-major-mode-op-mode major-mode)
-                            user-faces)
-                         t))
+                (wcheck-query-language-data language 'case-fold))
+               (face-p (wcheck-generate-face-predicate language major-mode))
                (search-spaces-regexp nil)
                (old-point 0)
                words)
@@ -963,15 +1132,6 @@ elements between BEG and END; all hidden parts are omitted."
           words)))))
 
 
-(defun wcheck-send-words (buffer strings)
-  "Send STRINGS for the process that handles BUFFER.
-STRINGS is a list of strings to be sent as input for the external
-process which handles BUFFER. Each string in STRINGS is sent as
-separate line."
-  (process-send-string (wcheck-start-get-process buffer)
-                       (concat (mapconcat #'identity strings "\n") "\n")))
-
-
 (defun wcheck-paint-words (buffer beg end wordlist)
   "Mark words of WORDLIST in BUFFER.
 Mark all words (or other text elements) of WORDLIST which are
@@ -981,19 +1141,14 @@ visible in BUFFER within position range from BEG to END."
     (with-current-buffer buffer
       (save-excursion
         (let* ((language (wcheck-get-data :buffer buffer :language))
-               (r-start (wcheck-query-language-data language 'regexp-start t))
-               (r-end (wcheck-query-language-data language 'regexp-end t))
-               (syntax (eval (wcheck-query-language-data language 'syntax t)))
+               (r-start (wcheck-query-language-data language 'regexp-start))
+               (r-end (wcheck-query-language-data language 'regexp-end))
+               (syntax (eval (wcheck-query-language-data language 'syntax)))
                (case-fold-search
-                (wcheck-query-language-data language 'case-fold t))
-               (user-faces (wcheck-major-mode-faces major-mode))
-               (face-p (if (and font-lock-mode user-faces)
-                           (wcheck-generate-face-predicate
-                            (wcheck-major-mode-op-mode major-mode)
-                            user-faces)
-                         t))
+                (wcheck-query-language-data language 'case-fold))
+               (face-p (wcheck-generate-face-predicate language major-mode))
                (search-spaces-regexp nil)
-               (ol-face (wcheck-query-language-data language 'face t))
+               (ol-face (wcheck-query-language-data language 'face))
                (ol-keymap (make-sparse-keymap))
                (ol-mouse-face nil)
                (ol-help-echo nil)
@@ -1108,41 +1263,56 @@ was replaced."
 
 
 (defun wcheck-get-suggestions (language text)
-  "Get suggestions from external program.
-Run LANGUAGE's external suggestion program (if configured) and
-send TEXT as standard input stream for the program. Parse
-program's output with user-configured parser function (see
-`wcheck-language-data') and return possible substitute
-suggestions as a list of strings (or nil if there aren't any)."
+  "Get suggestions from external program or function.
+
+If LANGUAGE uses an external program for suggestions, then this
+function runs the program and sends TEXT as standard input stream
+for the program. Program's output is parsed with user-configured
+parser function (see `wcheck-language-data') and possible
+substitute suggestions are returned as a list of strings (or nil
+if there aren't any).
+
+If LANGUAGE uses an Emacs Lisp function for suggestions, then
+call the function with single argument TEXT. The function must
+return substitute suggestions as a list of strings (or nil if
+there aren't any)."
+
   (let ((program (wcheck-query-language-data language 'suggestion-program))
         (args (wcheck-query-language-data language 'suggestion-args))
-        (func (wcheck-query-language-data language 'suggestion-parser)))
-    (cond ((or (not (stringp program))
-               (and (stringp program)
-                    (zerop (length program))))
-           (message "Language \"%s\": suggestion program is not configured"
+        (parser (wcheck-query-language-data language 'suggestion-parser)))
+
+    (cond ((not (wcheck-suggestion-program-configured-p language))
+           (message
+            "Language \"%s\": suggestion program or function is not configured"
+            language)
+           'error)
+
+          ((and (stringp program)
+                (not parser))
+           (message "Language \"%s\": parser function is not configured"
                     language)
            'error)
-          ((not (wcheck-program-executable-p program))
-           (message "Language \"%s\": program \"%s\" is not executable"
-                    language program)
-           'error)
-          ((not func)
-           (message "Parser function for language \"%s\" is not configured"
-                    language)
-           'error)
-          (t
+
+          ((stringp program)
            (with-temp-buffer
              (insert text)
              (apply #'call-process-region (point-min) (point-max)
                     program t t nil args)
              (goto-char (point-min))
-             (let ((suggestions (save-match-data (funcall func))))
+             (let ((suggestions (save-match-data (funcall parser))))
                (if (wcheck-list-of-strings-p suggestions)
                    suggestions
                  (message
                   "Parser function must return a list of strings or nil")
-                 'error)))))))
+                 'error))))
+
+          ((functionp program)
+           (let ((suggestions (save-match-data (funcall program text))))
+             (if (wcheck-list-of-strings-p suggestions)
+                 suggestions
+               (message
+                "Suggestion function must return a list of strings or nil")
+               'error))))))
 
 
 (defun wcheck-choose-suggestion-popup (suggestions event)
@@ -1153,7 +1323,10 @@ choice (a string) or nil."
   (let ((menu (list "Choose a substitute"
                     (cons "" (if suggestions
                                  (mapcar #'(lambda (item)
-                                             (cons item item))
+                                             (cons (if (> (length item) 0)
+                                                       item
+                                                     "[Empty string]")
+                                                   item))
                                          suggestions)
                                (list "[No suggestions]"))))))
     (x-popup-menu event menu)))
@@ -1177,22 +1350,25 @@ or nil."
             (while (and suggestions chars)
               (setq sug (car suggestions)
                     suggestions (cdr suggestions)
-                    string (concat (propertize (format "(%c)" (car chars))
+                    string (concat (propertize (format "%c)" (car chars))
                                                'face 'bold)
-                                   " " sug "  ")
+                                   " "
+                                   (if (> (length sug) 0)
+                                       sug
+                                     "[Empty string]")
+                                   "  ")
                     alist (cons (cons (car chars) sug) alist)
                     chars (cdr chars))
               (insert string)
               (when (and suggestions chars
                          (> (+ (- (point) (line-beginning-position))
-                               (length (concat "( ) " (car suggestions))))
+                               (length (concat "x) " (car suggestions))))
                             (window-width)))
                 (delete-char -2)
                 (newline 1))))
 
           (delete-char -2)
           (goto-char (point-min))
-          (goto-char (line-end-position))
           (setq buffer-read-only t)
 
           (let* ((window-min-height 2)
@@ -1267,36 +1443,16 @@ or nil."
     (delete-dups faces)))
 
 
-(defun wcheck-major-mode-op-mode (mode)
-  "Return the associated operation mode for major mode MODE.
-See the variable `wcheck-read-or-skip-faces' for more
-information."
-  (cadr (assq mode wcheck-read-or-skip-faces)))
-
-
-(defun wcheck-major-mode-faces (mode)
-  "Return the face list configuration for major mode MODE.
-See the variable `wcheck-read-or-skip-faces' for more
-information."
-  (cddr (assq mode wcheck-read-or-skip-faces)))
-
-
-(defun wcheck-generate-face-predicate (op-mode faces)
-  "Generate a predicate expression for reading words.
-This function creates a predicate expression which, by evaluating
-it, is used to check whether or not the current match should be
-read or skipped. OP-MODE is either symbol `read' or `skip' and
-FACES is a list of faces. This is only for `wcheck-mode's
-internal use."
-  (cond ((eq 'read op-mode)
-         `(wcheck-face-found-p
-           ',faces (wcheck-collect-faces (match-beginning 1)
-                                         (match-end 1))))
-        ((eq 'skip op-mode)
-         `(not (wcheck-face-found-p
-                ',faces (wcheck-collect-faces (match-beginning 1)
-                                              (match-end 1)))))
-        (t)))
+(defun wcheck-major-mode-face-settings (language major-mode)
+  "Return read/skip face settings for MAJOR-MODE."
+  (let ((data (wcheck-query-language-data language 'read-or-skip-faces))
+        conf)
+    (catch 'answer
+      (while data
+        (setq conf (pop data))
+        (when (or (eq nil (car conf))
+                  (eq major-mode (car conf)))
+          (throw 'answer conf))))))
 
 
 (defun wcheck-face-found-p (user-faces buffer-faces)
@@ -1308,55 +1464,93 @@ Both arguments are lists."
         (throw 'found t)))))
 
 
+(defun wcheck-generate-face-predicate (language major-mode)
+  "Generates a face predicate expression for scanning buffer.
+Return a predicate expression that is used to decide whether
+`wcheck-mode' should read or paint text at the current point
+position with LANGUAGE and MAJOR-MODE. Evaluating the predicate
+expression will return a boolean."
+  (let* ((face-settings (wcheck-major-mode-face-settings
+                        language major-mode))
+         (mode (nth 1 face-settings))
+         (faces (nthcdr 2 face-settings)))
+    (cond ((not font-lock-mode)
+           t)
+          ((eq mode 'read)
+           `(wcheck-face-found-p
+             ',faces (wcheck-collect-faces
+                      (match-beginning 1) (match-end 1))))
+          ((eq mode 'skip)
+           `(not (wcheck-face-found-p
+                  ',faces (wcheck-collect-faces
+                           (match-beginning 1) (match-end 1)))))
+          (t t))))
+
+
 ;;; Miscellaneous low-level functions
 
 
-(defun wcheck-query-language-data (language key &optional default)
+(defun wcheck-language-data-valid-p (key value)
+  (cond ((and (eq key 'syntax)
+              (syntax-table-p (and (boundp value) (eval value)))))
+        ((and (eq key 'face)
+              (facep value)))
+        ((and (stringp value)
+              (or (eq key 'regexp-start)
+                  (eq key 'regexp-body)
+                  (eq key 'regexp-end)
+                  (eq key 'regexp-discard))))
+        ((and (or (eq key 'program)
+                  (eq key 'suggestion-program))
+              (or (stringp value)
+                  (functionp value))))
+        ((and (eq key 'args)
+              (or (wcheck-list-of-strings-p value)
+                  ;; For backwards compatibility
+                  (stringp value))))
+        ((and (eq key 'suggestion-args)
+              (wcheck-list-of-strings-p value)))
+        ((and (eq key 'suggestion-parser)
+              (functionp value)))
+        ((or (eq key 'connection)
+             (eq key 'case-fold)))
+        ((and (eq key 'read-or-skip-faces)
+              (wcheck-list-of-lists-p value)))))
+
+
+(defun wcheck-query-language-data (language key)
   "Query `wcheck-mode' language data.
 Return LANGUAGE's value for KEY as defined in variable
-`wcheck-language-data'. If DEFAULT is non-nil and value for KEY
-does not exist return the default value for the KEY as defined in
-variable `wcheck-language-data-defaults'. Also, if DEFAULT is
-non-nil and value for KEY is invalid return the default value as
-defined in `wcheck-language-data-defaults'."
-  (let* ((key-value (assq key (cdr (assoc language wcheck-language-data))))
-         (value (cdr key-value))
-         (default-value
-           (and default (cdr (assq key wcheck-language-data-defaults)))))
-    (cond ((not key-value)
-           default-value)
-          ((eq key 'syntax)
-           (if (syntax-table-p (and (boundp value)
-                                    (eval value)))
-               value
-             default-value))
-          ((eq key 'face)
-           (if (facep value) value default-value))
-          ((or (eq key 'program)
-               (eq key 'regexp-start)
-               (eq key 'regexp-body)
-               (eq key 'regexp-end)
-               (eq key 'regexp-discard)
-               (eq key 'suggestion-program))
-           (if (stringp value) value default-value))
-          ((eq key 'args)
-           (cond ((wcheck-list-of-strings-p value) value)
-                 ((stringp value)
-                  ;; For backwards compatibility
-                  (split-string-and-unquote value "[ \t\n]+"))
-                 (t default-value)))
-          ((eq key 'suggestion-args)
-           (when (wcheck-list-of-strings-p value) value))
-          ((eq key 'suggestion-parser)
-           (when (functionp value) value))
-          ((or (eq key 'connection)
-               (eq key 'case-fold))
-           value))))
+`wcheck-language-data'. If it does not define a (valid) value for
+the KEY then query the value from `wcheck-language-data-defaults'
+or `wcheck-language-data-defaults-hard-coded'."
+
+  (when (wcheck-language-exists-p language)
+    (let* ((data
+            (and (wcheck-list-of-lists-p wcheck-language-data)
+                 (assq key (cdr (assoc language wcheck-language-data)))))
+           (default
+             (and (wcheck-list-of-lists-p wcheck-language-data-defaults)
+                  (assq key wcheck-language-data-defaults)))
+           (hard-coded
+            (assq key wcheck-language-data-defaults-hard-coded))
+           (conf
+            (list (when (wcheck-language-data-valid-p key (cdr data))
+                    data)
+                  (when (wcheck-language-data-valid-p key (cdr default))
+                    default)
+                  (when (wcheck-language-data-valid-p key (cdr hard-coded))
+                    hard-coded))))
+
+      (if (eq key 'read-or-skip-faces)
+          (apply #'append (mapcar #'cdr conf))
+        (cdr (assq key conf))))))
 
 
 (defun wcheck-language-exists-p (language)
   "Return t if LANGUAGE exists in `wcheck-language-data'."
-  (and (member language (mapcar #'car wcheck-language-data))
+  (and (wcheck-list-of-lists-p wcheck-language-data)
+       (member language (mapcar #'car wcheck-language-data))
        (stringp language)
        (> (length language) 0)
        t))
@@ -1370,17 +1564,31 @@ defined in `wcheck-language-data-defaults'."
        t))
 
 
+(defun wcheck-program-configured-p (language)
+  (let ((program (wcheck-query-language-data language 'program)))
+    (or (wcheck-program-executable-p program)
+        (functionp program))))
+
+
+(defun wcheck-suggestion-program-configured-p (language)
+  (let ((program (wcheck-query-language-data language 'suggestion-program)))
+    (or (wcheck-program-executable-p program)
+        (functionp program))))
+
+
 (defun wcheck-list-of-strings-p (object)
   (and (listp object)
        (not (memq nil (mapcar #'stringp object)))))
 
 
-(defun wcheck-error-program-not-executable (language program)
-  (if (and (stringp program)
-           (> (length program) 0))
-      (message "Language \"%s\": program \"%s\" is not executable"
-               language program)
-    (message "Language \"%s\": program is not configured" language)))
+(defun wcheck-list-of-lists-p (object)
+  (and (listp object)
+       (not (memq nil (mapcar #'listp object)))))
+
+
+(defun wcheck-error-program-not-configured (language)
+  (message "Language \"%s\": checker program or function not configured"
+           language))
 
 
 (defun wcheck-current-idle-time-seconds ()

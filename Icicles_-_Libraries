@@ -34,7 +34,7 @@ When you load (e.g. `load-library' or `require') the driver library, '''<tt>[[ic
 
 
 [:Optional]
-=== Optional ===
+=== Optional, But Recommended ===
 The following libraries are recommended but '''''optional''''' (loaded by <tt>[[icicles.el]]</tt> if
 in your `load-path', otherwise ignored).  They are enhanced by '''Icicles''', or '''Icicles''' is enhanced by them, or both.
 

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:20:41 2010 (-0800)
+;; Last-Updated: Mon Dec 27 15:20:34 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 25566
+;;     Update #: 25645
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -49,31 +49,47 @@
 ;;
 ;;    You will need all of these libraries (loaded by `icicles.el'):
 ;;
-;;      `icicles-chg.el'  (not loaded - change logs only)
-;;      `icicles-cmd1.el'
-;;      `icicles-cmd2.el'
-;;      `icicles-doc1.el' (not loaded - doc only)
-;;      `icicles-doc2.el' (not loaded - doc only)
-;;      `icicles-face.el'
-;;      `icicles-fn.el'
-;;      `icicles-mac.el'
-;;      `icicles-mcmd.el'
-;;      `icicles-mode.el'
-;;      `icicles-opt.el'
-;;      `icicles-var.el'
+;;     `icicles-chg.el'  (not loaded - change logs only)
+;;     `icicles-cmd1.el'
+;;     `icicles-cmd2.el'
+;;     `icicles-doc1.el' (not loaded - doc only)
+;;     `icicles-doc2.el' (not loaded - doc only)
+;;     `icicles-face.el'
+;;     `icicles-fn.el'
+;;     `icicles-mac.el'
+;;     `icicles-mcmd.el'
+;;     `icicles-mode.el'
+;;     `icicles-opt.el'
+;;     `icicles-var.el'
 ;;
-;;    The following libraries are optional (loaded by `icicles.el' if
-;;    in your `load-path'), but recommended.  They are all available
-;;    at Emacs Wiki, http://www.emacswiki.org/cgi-bin/wiki/ElispArea.
+;;    The following libraries are recommended but optional (loaded by
+;;    `icicles.el' if in your `load-path').  They are enhanced by
+;;    Icicles, or Icicles is enhanced by them, or both.  They are all
+;;    available at Emacs Wiki,
+;;    http://www.emacswiki.org/cgi-bin/wiki/ElispArea.
 ;;
-;;      `bookmark+.el'     - many bookmark enhancements
-;;      `col-highlight.el' - (required by `crosshairs.el') - Emacs 22+
-;;      `crosshairs.el'    - highlight target positions    - Emacs 22+
-;;      `hexrgb.el'        - color manipulation
-;;      `hl-line+.el'      - (required by `crosshairs.el') - Emacs 22+
-;;      `icomplete+.el'    - enhancements to `icomplete.el'
-;;      `lacarte.el'       - keyboard access to the menubar menus
-;;      `vline.el'         - (required by `crosshairs.el') - Emacs 22+
+;;     `apropos-fn+var.el' - Apropos enhancements for fns and vars.
+;;     `bookmark+.el'      - Many bookmark enhancements.
+;;     `col-highlight.el'  - Required by `crosshairs.el'.  Emacs 22+
+;;     `crosshairs.el'     - Highlight target positions.  Emacs 22+
+;;     `doremi.el' and
+;;     `doremi-frm.el'     - Incremental changes.
+;;     `frame-cmds.el'     - Frame and window commands.
+;;     `fuzzy-match.el'    - Fuzzy completion (matching).
+;;     `hexrgb.el'         - Color manipulation.
+;;     `hl-line+.el'       - Required by `crosshairs.el'.  Emacs 22+
+;;     `icomplete+.el'     - Enhancements to `icomplete.el'
+;;     `info+.el'          - Enhancements to `info'.
+;;     `lacarte.el'        - Keyboard access to the menubar menus.
+;;     `mb-depth+.el'      - Minibuffer depth indicator.  Emacs 22+
+;;     `pp+.el'            - Pretty-printing for `M-:'.
+;;     `synonyms.el'       - A hypertext thesaurus.
+;;     `thingatpt+.el'     - Better defaults for commands, `M-.'.
+;;     `vline.el'          - Required by `crosshairs.el'.  Emacs 22+
+;;
+;;    Be aware that some of these libraries in turn require other
+;;    libraries.  For example, library `frame-cmds.el' requires
+;;    library `frame-fns.el'.
 ;;
 ;;    Depending on your platform, if you use Icicles in a text
 ;;    terminal (that is, without a window system/manager), then you
@@ -141,7 +157,8 @@
 ;;  ----------------------------------------------
 ;;
 ;;  (@> "Nutshell View of Icicles")
-;;    (@> "README for Non-Readers")
+;;    (@> "README for NON-Readers")
+;;    (@> "README")
 ;;    (@> "Toggle Options on the Fly")
 ;;    (@> "Cycle Completion Candidates")
 ;;    (@> "Display Completion Candidates")
@@ -439,6 +456,168 @@
 ;;  this it is similar to the help you get when you use `C-?' in the
 ;;  minibuffer, but with the menu you can also act, not just be
 ;;  reminded.
+;;
+;;(@* "README")
+;;  ** README **
+;;
+;;  Icicles enhances minibuffer completion.  It does so generally,
+;;  throughout Emacs.  It does this by improving the basic Emacs
+;;  functions that read minibuffer input with completion:
+;;  `completing-read', `read-file-name', and `read-from-minibuffer'.
+;;
+;;  This means that Icicles affects every kind of minibuffer
+;;  completion, not just buffers or files or commands or variables or
+;;  faces or...  Every kind.  (You can even complete key sequences.)
+;;  Lisp code need not call a special completion function to get this
+;;  advantage - each call to `completing-read' etc. benefits
+;;  automatically.
+;;
+;;  Icicles has this effect only when you are in Icicle minor mode.
+;;  Turn off Icicle mode and Emacs behaves as usual (vanilla).
+;;
+;;  To best understand what Icicles offers you, you need to think a
+;;  bit differently about minibuffer completion.
+;;
+;;  During (vanilla) Emacs completion:
+;;
+;;  v1. You type some input.  Then you ask Emacs (`TAB') to look for a
+;;      match of your input against the domain of input possibilities:
+;;      the completion candidates.  If a match is found, your input is
+;;      completed and you hit `RET' to accept it (commit it as your
+;;      final input).  If there are several matches you type some more
+;;      text and recomplete ... until there is only one match.  Then
+;;      you hit `RET'.
+;;
+;;  v2. The goal here is to complete and then enter your input, as
+;;      easily and rapidly as possible.
+;;
+;;  v3. The process starts with a domain of possible inputs: the
+;;      initial set of candidates.  This domain can be realized
+;;      intensionally, via a function, or more commonly extensionally,
+;;      via an explicit set.
+;;
+;;  v4. Sometimes completion is "lax" instead of "strict", meaning
+;;      that you can input any text you like in the end (`RET'), but a
+;;      set of candidates is still provided for the convenience of
+;;      completion (`TAB').
+;;
+;;  v5. When you hit `TAB' to complete, your current input in the
+;;      minibuffer (the contents) filters the domain, narrowing it
+;;      down to the set of matching candidates, which is shown in
+;;      buffer `*Completions*'.
+;;
+;;  (See also (@> "Background on Vanilla Emacs Input Completion").)
+;;
+;;  For Icicles it is the completion *process* that is important, and
+;;  this process can serve several goals.  So instead of focusing on
+;;  the goal of entering a final input (v2), let's consider the
+;;  overall process: There is a set (domain) of possible candidates
+;;  (v3) that you filter with your input (v1).
+;;
+;;  If you edit your input and recomplete using `TAB', then the domain
+;;  is refiltered to a different set of matching completion
+;;  candidates.  Each time you do this your input corresponds to a
+;;  different set.  The process of completion thus provides a great
+;;  way to filter a set interactively.
+;;
+;;  Now if all you do in the minibuffer at the end of the day is enter
+;;  your final input (`RET'), then changing your input and
+;;  recompleting (`TAB') is pretty much a waste of time, a detour.
+;;  But if you can do more along the way, if you can make use of the
+;;  current set of matches in some way, then the story is different.
+;;
+;;  This is the key to understanding what Icicles offers.  Think of
+;;  minibuffer completion as a pattern-matching user interface, a
+;;  general way to interact with sets of named objects.
+;;
+;;  No doubt you have already used completion sometimes as more than
+;;  just a means toward the end of inputting a value.  Perhaps you
+;;  have used `TAB' during file-name completion to take a look at the
+;;  nearby directory structure, possibly even finishing with `C-g'
+;;  instead of entering any file name definitively (`RET').  In that
+;;  scenario, you are exploring the set of file-name candidates, using
+;;  minibuffer completion as a help feature.
+;;
+;;  Icicles binds different keys in the minibuffer keymaps to provide
+;;  different ways to interact with the current set of matches
+;;  (completion candidates).  To exploit the possibilities of
+;;  filtering a set dynamically by pattern matching, Icicles provides
+;;  different features that work together.
+;;
+;;  These are the most important Icicles features:
+;;
+;;  i1. Incremental completion.  By default, each change you make to
+;;      your minibuffer input automatically rematches and recompletes
+;;      it (v5).  IOW, the set of current candidates is updated
+;;      dynamically, incrementally.  You can always see (in the
+;;      `*Completions*' window) what your current input (the
+;;      minibuffer content) matches.  This is a help and exploration
+;;      feature.
+;;
+;;  i2. Cycling and the current candidate.  You can cycle among the
+;;      current set of candidates (minibuffer matches).  The current
+;;      candidate is placed in the minibuffer as you do this, for
+;;      possible editing.  You can of course hit `RET' to commit the
+;;      current candidate, edited or not, as your final input.
+;;
+;;  i3. Help, multiple actions, alternative actions.  But you can also
+;;      instead hit a key to provide information (help) about the
+;;      current candidate; hit a key to act on it (accept it as input
+;;      but without ending the minibuffer); hit a key to perform some
+;;      alternative action on it (without ending the minibuffer); and
+;;      so on.  Candidate help is perhaps the Icicles feature used
+;;      most often.
+;;
+;;  i4. Multi-commands.  A command that lets you act on a candidate
+;;      without ending the minibuffer, so that you can thus act on
+;;      several candidates, is called a "multi-command".  Not every
+;;      command is a multi-command.
+;;
+;;  i5. Set operations.  You can hit a key to act not on any
+;;      particular matching candidate but on each of them individually
+;;      or on all of them collectively.  Among the collective set
+;;      operations are union, intersection, difference/complementing,
+;;      and saving for later reuse.
+;;
+;;  i6. Progressive completion.  Set intersection can take a couple of
+;;      forms.  The most useful is "progressive completion": use the
+;;      current set of matching candidates as the domain for a
+;;      recursive minibuffer.  That is, start over and match different
+;;      inputs against a subset of the original domain that was
+;;      defined by the previous matching operation.  This is analogous
+;;      to piping `grep' outputs through additional `grep' filters.
+;;
+;;  i7. More powerful matching.  Using your input (minibuffer content)
+;;      as a dynamic filter is very important in Icicles.  In line
+;;      with this, you can employ different matching methods.  The
+;;      most powerful is regexp matching (which includes substring
+;;      matching).
+;;
+;;  i8. Candidate sorting.  You can sort the current candidates on the
+;;      fly in different ways, so that you can cycle them in different
+;;      orders.  The possible sort orders at any time depend on the
+;;      context and type of candidates.  You can define your own sort
+;;      orders.
+;;
+;;  Most of these features are unique to Icicles.  Others were
+;;  original with Icicles but have since been copied by vanilla Emacs
+;;  or other libraries.  But only Icicles offers these features (and
+;;  more) together, combining them cooperatively.
+;;
+;;  Icicles is very general.  It affects many aspects of minibuffer
+;;  completion.  As you learn to take advantage of its features it can
+;;  change how you use Emacs.  But Icicles also stays out of the way
+;;  if you don't ask for its help.  If you just use `TAB' completion
+;;  and you use none of the keys bound specially during completion
+;;  (for cycling, progressive completion, etc.), then you will hardly
+;;  notice Icicles.
+;;
+;;  All Lisp code that uses minibuffer completion automatically takes
+;;  advantage of Icicles.  But some other libraries go beyond this by
+;;  defining Icicles multi-commands or otherwise making some special
+;;  use of Icicles features.  None of these libraries are required in
+;;  order to use Icicles, but they are recommended because of the
+;;  synergy they provide.  See (@> "Installing Icicles").
 ;;
 ;;(@* "Toggle Options on the Fly")
 ;;  ** Toggle Options on the Fly **
@@ -1426,6 +1605,7 @@
 ;;
 ;;  This section reviews standard Emacs behavior regarding input
 ;;  completion.  It does not describe any Icicles completion features.
+;;  See also (@> "README").
 ;;
 ;;  When you are prompted in the minibuffer to enter something, you
 ;;  are sometimes presented with a default value.  This might be

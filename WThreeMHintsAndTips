@@ -93,7 +93,7 @@ following function.
   (let ((url (or (w3m-anchor) (w3m-image))))
     (if url
 	(let ((proc (start-process "wget" (format "*wget %s*" url)
-				   "wget" "--passive-ftp" "-nv" 
+				   "wget" "--passive-ftp" "-nv"
 				   "-P" (expand-file-name loc) url)))
 	  (with-current-buffer (process-buffer proc)
 	    (erase-buffer))
@@ -146,7 +146,7 @@ The above does not work with Emacs 22.1 and later, due to changes in
 desktop.el API. This works for me with Emacs 23:
 
 {{{
-(defun w3m-register-desktop-save () 
+(defun w3m-register-desktop-save ()
   "Set `desktop-save-buffer' to a function returning the current URL."
   (setq desktop-save-buffer (lambda (desktop-dirname) w3m-current-url)))
 
@@ -228,7 +228,7 @@ buffer using the w3m-mode-hook.
   	  (kill-new (w3m-anchor))
         (message "No URL at point!"))))
 
-   (add-hook 'w3m-mode-hook 
+   (add-hook 'w3m-mode-hook
 	  (lambda ()
 	    (local-set-key "\M-W" 'w3m-copy-url-at-point)))
 
@@ -237,23 +237,23 @@ Isn't this what <code>w3m-print-this-url</code> mentioned above does?
 
 == Google Suggest ==
 
-Intrigued by the Firefox google bar completion, I hacked the following 
+Intrigued by the Firefox google bar completion, I hacked the following
 function for use with emacs-w3m:
 
     (defun google-suggest ()
      "Search `w3m-search-default-engine' with google completion canditates."
      (interactive)
      (w3m-search w3m-search-default-engine
-		 (completing-read  "Google search: " 
+		 (completing-read  "Google search: "
 				   (dynamic-completion-table
 				   'google-suggest-aux))))
 
    (defun google-suggest-aux (input)
-     (with-temp-buffer 
+     (with-temp-buffer
        (insert
 	(shell-command-to-string
-	 (format "w3m -dump_source %s" 
-		 (shell-quote-argument 
+	 (format "w3m -dump_source %s"
+		 (shell-quote-argument
 		  (format
 		   "http://www.google.com/complete/search?hl=en&js=true&qu=%s"
 		   input)))))
@@ -277,7 +277,7 @@ DamienProfeta : should work now with ' before google-suggest-aux
 
 Are you ever in a position when you're browsing a page in emacs-w3m and find yourself wishing you could keep looking at this page, but also open the previous (or next) page in history in the minimum number of keystrokes? Maybe not, but I definitely have.
 
-Therefore, I wrote a couple of revised history navigation functions. They each work by calling the original, but if given an argument of at least 16 (C-u C-u) the page will open in a new buffer. 
+Therefore, I wrote a couple of revised history navigation functions. They each work by calling the original, but if given an argument of at least 16 (C-u C-u) the page will open in a new buffer.
 
 I find this most useful if bound to the respective keys currently bound to `w3m-view-previous-page' and `w3m-view-next-page'. Anyway, here's the code:
 
@@ -286,7 +286,7 @@ I find this most useful if bound to the respective keys currently bound to `w3m-
     If `count' is a positive integer, move backward count times in the
     history.  If `count' is a negative integer, moving forward is performed.
     `count' is treated as 1 by default if it is omitted.
-    
+
     If `count' is 16 (C-u C-u), it will open in a new buffer. If it is greater
     than 16, it will open in a new buffer and move backward `count' - 16 times."
       (interactive "p")
@@ -305,7 +305,7 @@ I find this most useful if bound to the respective keys currently bound to `w3m-
     If `count' is a positive integer, move forward count times in the
     history.  If `count' is a negative integer, moving backwards is performed.
     `count' is treated as 1 by default if it is omitted.
-    
+
     If `count' is 16 (C-u C-u), it will open in a new buffer. If it is greater
     than 16, it will open in a new buffer and move forward `count' - 16 times."
       (interactive "p")
@@ -370,7 +370,7 @@ Then, here goes:
    here: [[http://mail.google.com/mail/x]], and, again, sign in as usual. The
    benefit of this approach is that this provides you with a stripped-down
    summary buffer of incoming mails.
-   
+
    And, finally, Google Docs (yes, Google Docs):
 
  * Google Docs & Spreadsheets: Access the mobile interface to Google Docs here:
@@ -386,7 +386,7 @@ If anyone else has had similar success with other online apps and services, this
 might be a good place to add up a nice list...
 
 [[KamenNedev]]
- 
+
 
 == Use isearch for link following ==
 
@@ -486,7 +486,7 @@ RichardRiley
 
 == Import/merge bookmarks from Firefox ==
 
-A Python script to transfer bookmarks exported from Firefox in the JSON format to the html format used by emacs-w3m, optionally merging them with an existing emacs-w3m bookmarks file (normally ~/.w3m/bookmark.html): http://jim.sdf-eu.org/etc/ffox2w3m.py . Written for my own purposes and not heavily tested, let me know if you have problems. 
+A Python script to transfer bookmarks exported from Firefox in the JSON format to the html format used by emacs-w3m, optionally merging them with an existing emacs-w3m bookmarks file (normally ~/.w3m/bookmark.html): http://jim.sdf-eu.org/etc/ffox2w3m.py . Written for my own purposes and not heavily tested, let me know if you have problems.
 JimBurton
 
 [new]
@@ -502,3 +502,40 @@ When that done, you can see these bookmarks with bookmark-extensions.el (See Boo
 to show firefox bookmarks.
 
 -- ThierryVolpiatto
+
+== Conkeror/Vimperator functionality ==
+
+If you like Conkeror/Vimperator style element selection/search, try
+w3m-lnum.el (part of emacs-w3m) as of X.2010.
+
+It enhances many point commands beyond current point.  For example, if
+you're not over link and invoke the enhanced version of
+w3m-print-this-url (w3m-linknum-print-this-url), you'll be asked to
+select a link to be copied by entering number, where entering letters
+will filter currently visible links on their text part
+(<ctrl>+<number> will add <number> to the search string and
+ <ctrl>+<space> adds space).
+
+The swiss-army knife is w3m-linknum-follow which depending on selected
+element may visit link, activate form field, toggle image or push a
+button.  With prefix arguments its behaviour may be further
+controlled.
+
+For full list of such commands try `L C-h' within emacs-w3m buffer.
+
+You may replace original point commands with their enhanced versions
+(and also put w3m-linknum-follow at `f' as in Conkeror and
+w3m-go-to-linknum at `F' for quickly moving cursor to some link,
+image, form field or button) by activating the w3m-link-numbering-mode
+minor mode (`M-x w3m-link-numbering-mode' toggles it).  You can
+automatically activate it by adding
+
+(w3m-link-numbering-mode 1)
+
+to your .emacs-w3m file or
+
+(add-hook 'w3m-mode-hook 'w3m-link-numbering-mode)
+
+before loading w3m.
+
+-- Andrey Kotlarski

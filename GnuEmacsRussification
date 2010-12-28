@@ -259,3 +259,14 @@ ValeriyaA
 Иными словами control,meta,super должны временно влючать латинскую раскладку
 
 [new:IvanKorotkov:2010-12-24 00:15 UTC]Лично я таких способов так и не нашел, но по-моему проще использовать внутреннее емаксовое переключение раскладки (C-\), оставляя при этом системным языком английский. Плюс еще и в том, что для каждого буфера раскладка будет переключаться индивидуально. --IvanKorotkov
+
+Я пока спасаюсь вот таким:
+<pre>
+(loop
+  for from across "йцукенгшщзхъфывапролджэячсмитьбюЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖ\ЭЯЧСМИТЬБЮ№"
+  for to   across "qwertyuiop[]asdfghjkl;'zxcvbnm,.QWERTYUIOP{}ASDFGHJKL:\"ZXCVBNM<>#"
+  do
+  (eval `(define-key key-translation-map (kbd ,(concat "C-" (string from))) (kbd ,(concat "C-" (string to)))))
+  (eval `(define-key key-translation-map (kbd ,(concat "M-" (string from))) (kbd ,(concat "M-" (string to))))))
+</pre>
+Это не распространяется на последовательности клавиш, содержащие буквы без модификаторов (такие как C-x b), но хоть что-то. --YuriKhan

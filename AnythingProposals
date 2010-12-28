@@ -281,7 +281,7 @@ Then create an action that extracts the link from an entry.
 === Anything Sources Selection ===
 
 Slight improvement to `anything-c-source-call-source' function:
-replace `candidate' with (`anything-marked-candidates') in call to `anything' function in `action' attribute.
+replace `candidate' with `(anything-marked-candidates)' in call to `anything' function in `action' attribute.
 Then you can select multiple sources by marking them first with `C-SPC'.
 
 -- JoeBloggs

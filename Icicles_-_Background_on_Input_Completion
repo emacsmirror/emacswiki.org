@@ -6,7 +6,7 @@
 
 == Background on Vanilla Emacs Input Completion ==
 
-This page reviews standard Emacs behavior regarding input [[completion]]. It does ''not'' describe any '''Icicles''' completion features, but it does define some of the vocabulary used on other '''Icicles''' pages.
+This page reviews standard Emacs behavior regarding input [[completion]]. It does ''not'' describe any '''Icicles''' completion features, but it does define some of the vocabulary used on other '''Icicles''' pages.  See also [[Icicles - Nutshell View#VanillaCompletion|vanilla completion]].
 
 When you are prompted in the [[minibuffer]] to enter something, you
 are sometimes presented with a ''default value''.  This might be

@@ -5,7 +5,7 @@ You can get it from [[gnus-notify+.el]].
 
 The original, older one, is at [[gnus-notify.el]]. It has different albeit still useful features.
 
-There are even more alternatives, like [[GnusBiff]].
+There are even more alternatives, see GnusNotificationComparison.
 
 ==How to use gnus-notify.el==
 gnus-notify allows you to select which groups you want to include in the report; it does this via a „group parameter“ you have to add manually.
@@ -13,9 +13,9 @@ gnus-notify allows you to select which groups you want to include in the report;
 To do it: use ##G p## in the group buffer, then add ##(modeline-notify t)## to the list there; if it were the only property, it would look like this: ##((modeline-notify t))##
 
 ==Comparison and which one to choose==
-A little comparison between alternatives (please add stuff here):
-* gnus-notify+ works with a timer, and each time it runs, slows down your Emacs for a moment
 * gnus-notify allows you to select which groups you want to include in the report; see above for how
+* gnus-notify+ works with a timer, and each time it runs, slows down your Emacs for a moment
 * gnus-notify+ shows only a total count of unread messages, whereas gnus-notify shows the group names which contain unread messages but doesn't tell you hoy many
-* GnusBiff is „too primitive“ according to its description
-* …
+
+----
+GnusNotificationComparison, CategoryGnus

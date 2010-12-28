@@ -1,0 +1,11 @@
+A little comparison between notification agents alternatives (please add stuff here):
+
+* GnusNotify allows you to select which groups you want to include in the report; see above for how
+* [GnusNotify gnus-notify+] works with a timer, and each time it runs, slows down your Emacs for a moment
+* [GnusNotify gnus-notify+] shows only a total count of unread messages, whereas gnus-notify shows the group names which contain unread messages but doesn't tell you hoy many
+* GnusBiff is „too primitive“ according to its description
+* GnusDesktopNotify can be configured per-group and can call any arbitrary program in response to new mail
+* …
+
+----
+CategoryGnus
