@@ -1,4 +1,4 @@
-;;; edje-mode-el -- Major mode for editing Edje files
+;;; edje-mode.el -- Major mode for editing Edje files
 
 ;; svn co http://barbieri-playground.googlecode.com/svn/dot-files/edje-mode.el
 

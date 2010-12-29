@@ -6,6 +6,7 @@ Where to get it:
 ** stable - <b>Emacs 23.2 (released 2010-05-08)</b>
 *** ftp://ftp.gnu.org/gnu/emacs/windows/
 *** http://ftp.gnu.org/gnu/emacs/windows/
+*** Note that most people will want the bin file, not the barebin file. The barebin file includes only the compiled binaries, not the rest of Emacs. (It's intended for people who downloaded the source and then changed their mind about compiling it themselves.)
 ** pretest - Emacs 23, <b>There is currently no pretest so there is no pretest binaries</b>
 *** ftp://alpha.gnu.org/gnu/emacs/pretest/windows/
 *** http://alpha.gnu.org/gnu/emacs/pretest/windows/

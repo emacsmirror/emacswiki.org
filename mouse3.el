@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Thu Dec  2 14:33:40 2010 (-0800)
+;; Last-Updated: Tue Dec 28 12:56:53 2010 (-0800)
 ;;           By: dradams
-;;     Update #: 201
+;;     Update #: 263
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -77,6 +77,10 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2010/12/28 dadams
+;;     mouse3-region-popup-menu: Name the menu Selection, not Region.
+;;     mouse3-dired-region-menu: Name the menu Selected Files, not Files in Region.
+;;     mouse3-dired-use-*: Added doc string.
 ;; 2010/12/02 dadams
 ;;     Removed: mouse3-org-region-menu, mouse3-picture-rectangle-menu.
 ;;     Mode add-hook's: Add mode-specific submenu to mouse3-region-popup-submenus, instead of
@@ -325,7 +329,7 @@ restore it by yanking."
               '(("Highlight Bookmarks"          . bmkp-light-bookmarks-in-region)))
      ,@`,(and (fboundp 'browse-url-of-region) ; Defined in `browse-url.el'.
               '(("Open in Browser"              . browse-url-of-region)))))
-  "Submenus of `Region' popup menu for `mouse-3' to act on the selected text."
+  "Submenus of popup menu for `mouse-3' to act on the selected text."
   :type '(alist
           :key-type   (string   :tag "Submenu Name")
           :value-type (repeat
@@ -365,7 +369,7 @@ For Emacs prior to Emacs 22, always kill region."
   "Pop up a menu of actions for the selected text."
   (interactive "e\nP")
   (sit-for 0)
-  (let ((selection  (x-popup-menu event `("Region" ,@mouse3-region-popup-submenus))))
+  (let ((selection  (x-popup-menu event `("Selection" ,@mouse3-region-popup-submenus))))
     (and selection (call-interactively selection))))
 
 
@@ -440,7 +444,7 @@ For Emacs prior to Emacs 22, always kill region."
          (x-popup-menu
           event
           (list
-           "Files in Region"
+           "Selected Files"
            '(""
              ("Mark" . mouse3-dired-mark-region-files)
              ("Unmark" . mouse3-dired-unmark-region-files)
@@ -449,6 +453,7 @@ For Emacs prior to Emacs 22, always kill region."
     (and selection (call-interactively selection))))
 
 (defun mouse3-dired-use-menu ()
+  "Make a second `mouse-3' click at the same place pop up a menu in Dired."
   (interactive)
   ;; The `define-key's are not needed unless you use `dired+.el'.
   ;; In that case, this overrides the Dired+ behavior, which is a more complex menu.
@@ -465,6 +470,7 @@ For Emacs prior to Emacs 22, always kill region."
                    'mouse3-dired-region-menu))))
 
 (defun mouse3-dired-use-toggle-marks ()
+  "Make a second `mouse-3' click at the same place toggle marks in Dired."
   (interactive)
   ;; The `define-key's are not needed unless you use `dired+.el'.
   ;; In that case, this overrides the Dired+ behavior, which is a complex menu.
@@ -544,7 +550,7 @@ With non-nil prefix arg UNMARK-P, mark them instead."
 ;;;;             (interactive)
 ;;;;             (exchange-point-and-mark)
 ;;;;             (call-interactively #'picture-yank-rectangle-from-register))))
-;;;;   "Picture mode submenu of `Region' popup menu for `mouse-3'."
+;;;;   "Picture mode submenu of popup menu for `mouse-3'."
 ;;;;   :type '(repeat
 ;;;;           (choice
 ;;;;            (cons :tag "Item"

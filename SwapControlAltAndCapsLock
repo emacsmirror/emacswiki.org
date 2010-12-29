@@ -36,7 +36,7 @@ RAlt::Ctrl
 
 You'll have to put "swap_ctrl_alt.ahk" in your Startup folder if you want the keys swapped every time you log in.
 
-== Linux Virutal Terminals ==
+== Linux Virtual Terminals ==
 
 === Debian ===
 
@@ -53,3 +53,82 @@ Then, edit your "/etc/rc.local" file to include the line:
 <pre>
 loadkeys /usr/share/keymaps/i386/qwerty/lisp-emacs-us.kmap.gz
 </pre>
+
+== A Bit More Extreme ==
+
+I have been using a similar configuration for the past few months,
+but I remap the bottom row as:
+
+Super - Meta - Ctrl - Space - Ctrl - Meta - Meta - Super
+
+Attached are the scripts for Windows and *nix. Note that I have 
+only tested this with Debian Squeeze on amd64 with the US and
+Dvorak keyboard layouts, and on Windows XP.
+
+I have set both Super_R (Windows) & Menu to Alt_R, as some laptop
+(Asus) and 'modern' keyboards don't have Super_R keys, just
+Menu. I only use Super keys for window manager shortcuts anyway,
+YMMV.
+
+=== *nix ===
+
+Xmodmap file for *nix:
+
+<pre>
+! output taken from:
+! xmodmap -pke | egrep '(Control|Super|Alt|Menu)'
+! Use to set keycodes correctly below. List reordered to match
+! keys from left to right.
+
+! keycode  37 = Control_L NoSymbol Control_L
+! keycode 133 = Super_L NoSymbol Super_L
+! keycode  64 = Alt_L Meta_L Alt_L Meta_L
+! keycode 108 = Alt_R Meta_R Alt_R Meta_R
+! keycode 134 = Super_R NoSymbol Super_R
+! keycode 135 = Menu
+! keycode 105 = Control_R NoSymbol Control_R
+
+! First clear all modifiers, caps lock & control
+clear lock
+clear control
+clear mod1
+clear mod4
+
+keycode  37 = Super_L
+keycode 133 = Alt_L Meta_L
+keycode  64 = Control_L
+keycode 108 = Control_R
+keycode 134 = Alt_R Meta_R
+keycode 135 = Alt_R Meta_R
+keycode 105 = Super_R
+
+! We need to set keycodes first, as some programs (emacs!) read
+! the key names and seem to ignore what's below.
+add mod1    = Alt_R Alt_L Meta_R Meta_L
+add mod4    = Super_R Super_L Menu
+add control = Control_R Control_L
+</pre>
+
+=== Windows ===
+
+For Windows, enter the following into an autohotkey script. The
+final line is required to make Alt+Tab work correctly, it's on the
+autohotkey wiki.
+
+<pre>
+LCtrl::LWin
+LWin::LAlt
+LAlt::LCtrl
+
+RAlt::RCtrl
+RWin::RAlt
+AppsKey::RAlt
+RCtrl::AppsKey
+*Tab::Send {Blind}{Tab}
+</pre>
+
+Personally I find it much easier to use emacs shortcuts with this
+configuration, although the changeover is hard. C-M shortcuts are
+a bit of a pain, but normally I tilt my thumb over the two keys to
+press them together.
+

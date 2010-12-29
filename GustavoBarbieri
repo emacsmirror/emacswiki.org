@@ -14,7 +14,7 @@ As you might guess, I use Emacs to edit all of my text documents, from LaTeX to 
 == EmacsWiki Contributions ==
 * GObjectClassHelpers
 * [[E17CModeStyle]] - C-style to match raster's style (like joe default mode).
-* EdjeMode - Mode to edit Edje (.edc) files.
+* Lisp:edje-mode.el - Mode to edit Edje (.edc) files.
 
 == Messages ==
 
