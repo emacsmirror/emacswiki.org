@@ -21,6 +21,10 @@ You can download the code via git (The repository is browsable at http://wjsulli
 
 The canonical home page for the project is http://wjsullivan.net/delicious-el.html.
 
+From that page: "As of October 2010, it is maintained by Štěpán Němec."
+
+A git repository maintained by Štěpán Němec can be found at http://gitorious.org/delicious-el.
+
 == Setup ==
 
 * Install files into your LoadPath

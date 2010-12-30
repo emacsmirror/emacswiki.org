@@ -328,10 +328,14 @@ An emacs-anything mailing list would be great.
 
 -- ThierryVolpiatto
 
-=== anything-etag request ===
+=== anything-etag improvement ===
 
 It would be nice if the file name were shown with the matching tag. eg in rails if I search on `show` it brings up a bunch of matches but no way of knowing
-which controller they are in. Something like what the standard tags-apropos displays would be nice. -- [[WolfmanJM]]
+which controller they are in. Something like what the standard tags-apropos displays would be nice.
+So I have patched the existing anything-etags.el to show the filename each match belongs to
+it is here  https://github.com/wolfmanjm/anything-on-rails/raw/master/vendor/anything-etags.el 
+Feel free to incorporate it into the existing version, or maybe it should be yet another version?
+-- [[WolfmanJM]]
 
 
 == Implemented Proposals for anything-config.el ==

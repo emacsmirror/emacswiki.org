@@ -20,3 +20,25 @@ Just do as hi-lock; add this to the end of fic-mode:
 
 And I suggest removing the lighter. It is not very important to show it and there is a lack of room in the modeline.
 
+----
+
+This highlighting of FIXMEs etc. can be done with WcheckMode. Here's an example configuration:
+
+    (defvar my-highlight-words
+      '("FIXME" "TODO" "BUG"))
+
+    ;; Ensure that the variable exists.
+    (defvar wcheck-language-data nil)
+
+    (push '("FIXME"
+            (program . (lambda (strings)
+                         (let (found)
+                           (dolist (word my-highlight-words found)
+                             (when (member word strings)
+                               (push word found))))))
+            (face . highlight)
+            (read-or-skip-faces
+             (nil)))
+          wcheck-language-data)
+
+Now `wcheck-change-language' to FIXME and turn on `wcheck-mode' (a minor mode).

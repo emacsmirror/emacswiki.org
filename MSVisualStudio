@@ -203,7 +203,17 @@ If you use [[EmacsW32]] which comes with emacsclient instead of gnuserv you can 
 
 Simply bind it to a key or menu command and it will open the current file in Emacs at the current line.
 
+=== Another way to do this, without a macro... ===
 
+In visual Studio, Configure external tools.  Add a tool with the following configuration:
+<pre>
+Name: Emacs (for example)
+Location: c:\path-to\emacsclientw.exe
+Arguments: -n +$(CurLine):$(CurCol) $(ItemFileName)$(ItemFileExt) 
+*note there is a variable button that will help you with the shortcuts like $(CurLine)
+WorkingDirectory: $(ItemDirectory)
+</pre>
+Then bind whatever keys you prefer to the external tools (Will be called something like ExternalToolsn, with n depending on your tool order) in your keyboard preferences (I use Ctl-Alt-E).
 == See Also ==
 
 For Visual Studio-style bookmarking:
