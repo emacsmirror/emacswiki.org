@@ -1,5 +1,5 @@
 ;;; ajc-java-complete-config.el --- Auto Java Completion  for GNU Emacs
-
+        
 (require 'auto-complete)
 (require 'yasnippet)
 (require 'ajc-java-complete)
@@ -36,7 +36,7 @@
   '((candidates . (ajc-complete-class-candidates ))
    (prefix . "\\b\\([A-Z][a-zA-Z0-9_]*\\)")
    (cache)
-   (action . ajc-remove-package-name-when-complete-class-with-ac)
+;   (action . ajc-remove-package-name-when-complete-class-with-ac)
 ))
 
 (ac-define-source ajc-constructor
@@ -86,12 +86,36 @@
       (delete-backward-char (length last-complete-string)  )
       (yas/expand-snippet yasnippet-templete))))
 
-(defun ajc-remove-package-name-when-complete-class-with-ac ()
-  (let* ((last-complete-string (cdr ac-last-completion))
-         (class-name (gethash last-complete-string ajc-class-name-candidates-hashmap )))
-    (when class-name
-     (delete-backward-char (length last-complete-string)  )
-      (insert class-name))))
+;; (defun ajc-remove-package-name-when-complete-class-with-ac ()
+;;   (let* ((last-complete-string (cdr ac-last-completion))
+;;          (class-name (gethash last-complete-string ajc-class-name-candidates-hashmap )))
+;;     (when class-name
+;;      (delete-backward-char (length last-complete-string)  )
+;;       (insert class-name))))
 
+(defadvice ac-selected-candidate  (around ajc ) ""
+  ad-do-it
+  (let* ((original-return-string ad-return-value)
+         (value (gethash original-return-string
+                         ajc-full-short-candidate-hashmap)))
+    (when value
+      (add-text-properties 0
+                           (length value)
+                           (text-properties-at 0 ad-return-value)
+                           value  )
+      (setq ad-return-value value ))
+
+    )
+  )
+(ad-activate 'ac-selected-candidate)
+
+(defadvice  ac-expand-common (before ajc-expand-common) ""
+  (when (and ac-common-part ajc-full-short-candidate-hashmap)
+      (setq ac-common-part
+            (gethash ac-common-part ajc-full-short-candidate-hashmap ac-common-part))
+      ))
+(ad-activate 'ac-expand-common)
 
 (provide 'ajc-java-complete-config)
+
+

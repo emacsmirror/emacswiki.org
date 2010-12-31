@@ -8,9 +8,9 @@ Wcheck mode can use external programs or Emacs Lisp functions for checking text.
 
 == Features ==
 
-In terms of spelling checker and user interface Wcheck mode is an on-the-fly checker which can also offer spelling suggestions (corrections) when asked. In Wcheck mode different configuration groups are called languages. They don't have to be human languages, though. Language is just a configuration unit for certain kind of text checking purpose.
+In terms of spelling checker and user interface Wcheck mode is an on-the-fly checker which can also offer spelling suggestions (corrections) when asked. In Wcheck mode different configuration units are called languages. They don't have to be human languages, though. Language is just a configuration unit for certain kind of text checking purpose.
 
-Each language can use its own checker engine (external program or a function), command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. On-the-fly checker can use different program than the spelling correction feature. User can choose which "face" is used to mark text elements in buffer. All the settings are language-specific and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean. When using Wcheck mode as a spelling checker we usually think of them as misspellings. In some other setting marked text elements might be asking for some other kind of attention.
+Each language can use its own checker engine (external program or a function), command-line arguments and other settings, such as the regular expressions and syntax table that are used to match words (or other text elements) in Emacs buffer. On-the-fly checker can use different program than the spelling correction feature. User can choose which "face" is used to mark text elements in buffer. All the settings are language-specific and user is free to interpret the semantics of text analyzing: it's left open what marked text elements in the buffer actually mean. When using Wcheck mode as a spelling checker we usually think of marked words as misspellings. In some other setting marked text elements might be asking for other kind of attention.
 
 User can create language and major mode specific settings defining which "faces" to read or skip in the buffers. A typical use for this feature is to spell-check only those areas in the buffer which are written in human language. For example, in email messages usually the message body and Subject header are important enough to spell-check. In programming modes user could spell-check only documentation strings and comments (or the opposite if you want to use Wcheck mode to check keywords and syntax of the programming language itself).
 
@@ -31,7 +31,7 @@ Put Lisp:wcheck-mode.el file to some directory in your Emacs's `load-path' and a
     (autoload 'wcheck-spelling-suggestions "wcheck-mode"
       "Spelling suggestions." t)
 
-See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the spell-checker for the current buffer. Command `wcheck-change-language' is used to switch languages and command `wcheck-spelling-suggestions' (or right mouse button) gives spelling suggestion for marked words (if the suggestion program is properly configured).
+See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the text-checker in the current buffer. Command `wcheck-change-language' is used to switch languages and command `wcheck-spelling-suggestions' (or right mouse button) gives spelling suggestion for marked words (if the suggestion program is properly configured).
 
 Below is an example configuration for spell-checking languages Finnish (using Enchant) and British English (using Ispell). The default language will be "Finnish". There are also two non-human languages: "Trailing whitespace" is a checker which highlights trailing whitespace characters in lines and "Highlight FIXMEs" highlights FIXME words if they appear in comments in `emacs-lisp-mode' or `c-mode' (or anywhere in other modes). The example also configures some global defaults for all languages. For example, text-checkers will read only certain buffer areas (faces) in `emacs-lisp-mode' and `message-mode'.
 
@@ -74,7 +74,6 @@ Below is an example configuration for spell-checking languages Finnish (using En
          (nil))))
 
      wcheck-language-data-defaults
-
      '((connection . nil)
        (face . wcheck-default-face)
        (syntax . text-mode-syntax-table)

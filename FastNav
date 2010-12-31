@@ -41,5 +41,8 @@ I like the idea. You should prefix your functions with fastnav- to avoid polluti
 
 Amúgy szép munka. ;)
 
+[new]
+This is very efficient. I wonder, though, if a function could be added that jumps to the Nth word that begins with a specified character (so it only highlights letters at the beginning of words). Often I want to jump several words forward or backward without having to guess which numerical argument to put in. Anyone know of a function out there that already does this?
+
 ----
 CategoryKeys, CategoryEditing

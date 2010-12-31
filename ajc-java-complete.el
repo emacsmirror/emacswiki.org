@@ -28,6 +28,7 @@
 ;;}}}
 
 ;;{{{ Commentary 
+
 ;;; Commentary:
 
 ;;1. it depends on auto complete ,so it would complete
@@ -50,6 +51,7 @@
 ;;   always  press <RET> to active the 'action function'
 ;;   you can choose do not showing return type by customing
 ;;   ajc-show-more-info-when-complete-class-and-method  .
+
 ;;}}}
 
 ;;{{{ Features 
@@ -98,6 +100,7 @@
 ;;}}}
 
 ;;{{{ Install 
+
 ;;; Install
 
 ;; 1. generate the tag file .
@@ -140,6 +143,7 @@
 ;;     read ajc-java-complete-config.el  for more info .
 
 ;;     restart your emacs ,and enjoy.
+
 ;;}}}
 
 ;; actually the default config is in ajc-java-complete.el file ,just load it ,or write 
@@ -183,8 +187,18 @@ and  use this class like this
   "the length of class name at dropdown-menu ,if the class
 name is shorter than this value ,then empty string are append
 .and return type are at position 37 " )
-(defcustom ajc-return-type-char ":")
-(defcustom ajc-throws-char " #")
+(defcustom ajc-return-type-char ":"
+  "the char  before return type when
+  completing methods."
+  :type 'string
+  :group 'ajc-java-complete
+  )
+(defcustom ajc-throws-char "   #"
+  "the char  before Exceptions  when completing
+  method"
+  :type 'string
+  :group 'ajc-java-complete
+  )
 
 ;;private variables
 (defvar ajc-all-sorted-class-items nil "this is a list,
@@ -243,13 +257,31 @@ to import packages, so in (ajc-complete-class-candidates)
 we may stop complete class depending on this variable . " )
 
 (defvar ajc-method-templetes-4-yasnippet-hashmap
-  (make-hash-table :test 'equal))
+  (make-hash-table :test 'equal)
+"the key is the method string without return type and
+exceptions ,value is the yasnippet templete" )
 
 (defvar ajc-constructor-templetes-4-yasnippet-hashmap
-  (make-hash-table :test 'equal :size 15))
+  (make-hash-table :test 'equal :size 15)
+  "the key is the constructor name without throws
+value is the yasnippet templete for it . ")
 
-(defvar ajc-class-name-candidates-hashmap
-  (make-hash-table :test 'equal ))
+;; (defvar ajc-class-name-candidates-hashmap
+;;   (make-hash-table :test 'equal ))
+
+(defvar ajc-full-short-candidate-hashmap 
+  (make-hash-table :test 'equal )
+"when complete method ,I want to show return type on the
+ dropdown-menu behind each method candidate on the same line,
+and show package name behind class name when completing class
+name. but auto-complete 1.3 do not support it .so I try to
+find another way ,the candidates send to auto-complete is
+'toString() String',and  the this hashmap will store
+'toString() String' -->'toString()' ,so I can get 'toString()'
+by query this hashmap,and II 
+defadvice an advice on (ac-selected-candidate)  ,when user
+select special candidate ,I can replace it with the correct
+one . " )
 
 (defun ajc-goto-line ( line-num &optional buffer)
   (with-current-buffer (or buffer (current-buffer))
@@ -350,8 +382,8 @@ we may stop complete class depending on this variable . " )
 
 ;(ajc-field-to-string (ajc-split-field " in`24:691" ) )
 
-(defun ajc-field-to-string (field-item)
-  (if ajc-show-more-info-when-complete-class-and-method
+(defun ajc-field-to-string (field-item &optional with-return-type)
+  (if  with-return-type 
       
       (let ((field-string  (car field-item) ) (return-type (nth 1 field-item)))
         (let ((len (length field-string)));; insert whitespace between classname and return type
@@ -374,7 +406,7 @@ we may stop complete class depending on this variable . " )
     (car field-item)))
 
 
-(defun ajc-method-to-string (method-item  )
+(defun ajc-method-to-string (method-item &optional  with-return-type-and-throws )
   "this is a toString() like function .
    when param with-detail is not null, it will include
   return type and exceptions, default it only include method name
@@ -395,7 +427,7 @@ we may stop complete class depending on this variable . " )
                                                (car (ajc-split-pkg-item-by-pkg-ln (nth 1 param) ))  "."  
                                                (car param)  " , " ) ) ) ) )
         (setq method-string  (replace-regexp-in-string  " , $" ")" method-string ) ) ) )
-    (when ajc-show-more-info-when-complete-class-and-method
+    (when with-return-type-and-throws
       (let ((len (length method-string)));; insert whitespace between classname and return type
       (if (< len ajc-default-length-of-class )
           (setq method-string
@@ -556,7 +588,7 @@ we may stop complete class depending on this variable . " )
 ;;                 (concat method-string
 ;;                         (make-string (- ajc-default-length-of-class len ) 32 )));;32 mean whitespace
 ;;          (setq method-string (concat method-string "     ")) ))
-(defun ajc-constructor-to-string (constructor-item)
+(defun ajc-constructor-to-string (constructor-item &optional is-with-exceptions)
   (let((constructor-string  (car constructor-item) )
        (params (nth 1 constructor-item)   )
        (exceptions (nth 2 constructor-item)) )
@@ -572,6 +604,7 @@ we may stop complete class depending on this variable . " )
                                                (car (ajc-split-pkg-item-by-pkg-ln (nth 1 param) ))  "."  
                                                (car param)  " , " ) ) ) ) )
         (setq constructor-string  (replace-regexp-in-string  " , $" ")" constructor-string ) ) ) )
+    (when is-with-exceptions
     (when (listp exceptions )  
       (setq constructor-string (concat constructor-string ajc-throws-char))
       (dolist (exception  exceptions )
@@ -582,7 +615,7 @@ we may stop complete class depending on this variable . " )
             (setq constructor-string (concat constructor-string
                                              (car (ajc-split-pkg-item-by-pkg-ln (nth 1 exception) ))  "."  
                                              (car exception)  " , " ) ) ) ) )
-      (setq constructor-string  (replace-regexp-in-string  ", $" "" constructor-string ) ) ) 
+      (setq constructor-string  (replace-regexp-in-string  ", $" "" constructor-string ) ) )) 
     (setq constructor-string constructor-string) ) )
 
 (defun ajc-constructor-to-yasnippet-templete (constructor-item)
@@ -1072,7 +1105,7 @@ return a list of each line string (exclude keyword 'import') "
 
 (defun ajc-complete-constructor-candidates ()
   (interactive)
-  (let ((return-matched-list));;if find keyword:new ,then do construtor complete ,then do class complete
+  (let ((return-matched-list));;if find keyword:new ,then do constructor complete ,then do class complete
     (setq case-fold-search nil)
     (if (looking-back "\\bnew[ \t]+\\([A-Z][a-zA-Z0-9_]*\\)[ \t]*([ \t]*"  (line-beginning-position) )
         (setq return-matched-list (ajc-complete-constructor (match-string-no-properties 1)))
@@ -1109,12 +1142,15 @@ return a list of each line string (exclude keyword 'import') "
                 (setq matching-constructor nil) )
             (setq line-num (+ line-num 1)) )
           (clrhash ajc-constructor-templetes-4-yasnippet-hashmap)
+          (clrhash ajc-full-short-candidate-hashmap)
           (dolist (constructor matched-constructor-items)
-            (let ((constructor-string (ajc-constructor-to-string constructor)))
-            (add-to-list 'return-complete-list  constructor-string t)
-            (puthash constructor-string  (ajc-constructor-to-yasnippet-templete constructor)
-                     ajc-constructor-templetes-4-yasnippet-hashmap  )
-            )) ) ) 
+            (let ((constructor-full-string (ajc-constructor-to-string constructor t))
+                  (constructor-short-string (ajc-constructor-to-string constructor nil)) )
+            (add-to-list 'return-complete-list  constructor-full-string t)
+            (puthash constructor-full-string constructor-short-string ajc-full-short-candidate-hashmap)
+            (puthash constructor-short-string  (ajc-constructor-to-yasnippet-templete constructor)
+                     ajc-constructor-templetes-4-yasnippet-hashmap)
+            )))) 
  return-complete-list))
 
 
@@ -1152,10 +1188,10 @@ return a list of each line string (exclude keyword 'import') "
   (when (ajc-is-available-4-complete-class-p)
     (let ((candidate)(candidates)
           (class-items (ajc-complete-class-with-cache ajc-current-class-prefix-4-complete-class)))
-      (clrhash ajc-class-name-candidates-hashmap)
+      (clrhash ajc-full-short-candidate-hashmap)
       (dolist (class-item class-items)
         (setq candidate  (ajc-class-to-string class-item))
-        (puthash candidate (car class-item) ajc-class-name-candidates-hashmap )
+        (puthash candidate (car class-item) ajc-full-short-candidate-hashmap)
         (add-to-list 'candidates candidate t)
      ) candidates
       ) ))
@@ -1285,19 +1321,22 @@ empty string it will return all members under class-item"
                   (setq return-list (ajc-find-members class-item   (pop stack-list) )) ) )
  ) )
     (clrhash ajc-method-templetes-4-yasnippet-hashmap)
+    (clrhash ajc-full-short-candidate-hashmap)
     ;;(setq ajc-method-templetes-4-yasnippet (make-hash-table :test 'equal  :size (length return-list) ))
 ;    (setq ajc-default-length-of-class ajc-default-length-of-class-backup )
     (dolist (member return-list);; translate item to string
       (if (= 2   (length member ) );; lenth of field is 2 (only field and returntype )
-          (let ((field-string (ajc-field-to-string member)))
-            (if (null field-string) (print member))
-            (add-to-list 'return-string-list     field-string t)
-            (puthash field-string (car member) ajc-method-templetes-4-yasnippet-hashmap) )
-        (let( (method-string  (ajc-method-to-string member )))
-          (add-to-list 'return-string-list   method-string t)
-          (puthash method-string (ajc-method-to-yasnippet-templete member) ajc-method-templetes-4-yasnippet-hashmap)
+          (let ((field-full-string (ajc-field-to-string member t))
+                (field-short-string (ajc-field-to-string member nil)))
+            (puthash field-full-string field-short-string  ajc-full-short-candidate-hashmap)
+            (add-to-list 'return-string-list     field-full-string t))
+        (let( (method-full-string  (ajc-method-to-string member t))
+              (method-short-string (ajc-method-to-string member nil)))
+          (add-to-list 'return-string-list   method-full-string t)
+          (puthash method-full-string method-short-string ajc-full-short-candidate-hashmap)
+          (puthash method-short-string (ajc-method-to-yasnippet-templete member) ajc-method-templetes-4-yasnippet-hashmap)
           )
-        )  )  
+        ))  
     return-string-list
     ))
 
@@ -1436,7 +1475,6 @@ then this function split it to
 (provide 'ajc-java-complete)
 
 ;; End.
-
 
 
 

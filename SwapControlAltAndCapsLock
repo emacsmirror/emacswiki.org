@@ -132,3 +132,16 @@ configuration, although the changeover is hard. C-M shortcuts are
 a bit of a pain, but normally I tilt my thumb over the two keys to
 press them together.
 
+[new]
++1 for this configuration. I've been using almost exactly the same
+for years now and I'm very satisfied with it. It makes a lot of sense
+once you have a look at the layout of the
+[http://en.wikipedia.org/wiki/Space-cadet_keyboard Space Cadet
+keyboard], which is one of the keyboards on which Emacs was
+originally developed.
+
+The only difference in my case is the second Meta on the right (the
+menu key originally): I use that key for ISO_Level3_Shift instead,
+for typing national characters and the like.
+
+[http://www.emacswiki.org/emacs/Jos%c3%a9_Alfredo_Romero_L. j.a.]
