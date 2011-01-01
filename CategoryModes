@@ -44,6 +44,7 @@ Other pages (could this please be split in major and minor modes?):
 * DfMode -- show space left on devices in the mode line
 * DiaryMode
 * DiredMode
+* DrelaMode -- mode for editing input files to a suite of popular aerodynamics codes
 * EevMode -- lets you to interpret e-scripts(execute shell commands/follow EmacsLisp hyperlinks in a buffer)
 * EdiMode -- mode for editing EDI files
 * EmacsWikiMode

@@ -189,7 +189,7 @@ enlarge/shrink the window. Any other key ends the resize operation.
           (call-interactively 'v-resize)) 
        (t (push key unread-command-events))))                
 
-  (global-set-key "C-c+" 'v-resize)
+  (global-set-key "\C-c+" 'v-resize)
 
 An iterative version of the previous command was posted on the gnu.emacs.help mailing list:
 

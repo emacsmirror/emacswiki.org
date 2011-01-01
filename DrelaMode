@@ -1,0 +1,12 @@
+drela-mode.el is a mode for editing files used in Drela's aerodynamic codes
+
+This is a major mode for editing files used in Drela's aerodynamic
+codes.  The mode supports syntax highlighting, easy tabbing through
+and indentation of data elements, plotting of geometries, and running
+AVL within EMACS.  This version only supports AVL.  Future versions 
+will support other Drela codes.
+
+* Download: https://github.com/cloudchamber/Drela-mode/blob/master/drela-mode.el
+----
+CategoryModes
+
