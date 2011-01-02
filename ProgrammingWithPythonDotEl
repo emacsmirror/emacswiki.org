@@ -62,3 +62,25 @@ See SmartTabs (toc5) or TabCompletion (tabkey2 stuff)
 == Useful Functions ===
 
 python-end-of-block instead of py-next-block?
+
+== auto-complete ==
+
+The following will integrate python.el completions with auto-complete. You need to have installed and loaded auto-complete.el first:
+
+
+(defvar ac-source-python
+  '((candidates .
+
+		(lambda ()
+
+		  (mapcar '(lambda (completion)
+
+			     (first (last (split-string completion "\\." t))))
+
+			  (python-symbol-completions (python-partial-symbol)))))))
+
+
+(add-hook 'python-mode-hook
+
+	  (lambda() (setq ac-sources '(ac-source-python))))
+

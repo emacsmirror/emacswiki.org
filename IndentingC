@@ -386,6 +386,11 @@ this will be reformatted as:
 
 Not what I want! Does any have the magic code to do the right thing with C++ as well? Thanks!
 
+
+-----------------
+[new]
+Google's C/C++ style: http://google-styleguide.googlecode.com/svn/trunk/google-c-style.el
+
 ----
 CategoryIndentation
 CategoryProgramming

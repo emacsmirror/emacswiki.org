@@ -1,11 +1,11 @@
 ;;; wcheck-mode.el --- General interface for text checkers
 
-;; Copyright (C) 2009-2010 Teemu Likonen <tlikonen@iki.fi>
+;; Copyright (C) 2009-2011 Teemu Likonen <tlikonen@iki.fi>
 
 ;; Author: Teemu Likonen <tlikonen@iki.fi>
 ;; Maintainer: Teemu Likonen <tlikonen@iki.fi>
 ;; Created: 2009-07-04
-;; Version: 2010.12.27
+;; Version: 2011.01.01
 ;; Keywords: text spell check languages ispell
 
 
@@ -275,7 +275,7 @@ regexp-end
 regexp-discard
     The string that matched `regexp-body' is then matched against
     the value of this option. If this regular expression matches,
-    then the word is discarded and won't be sent to the
+    then the string is discarded and won't be sent to the
     text-checker program or function to analyze. You can use this
     to define exceptions to the regexp-body match. The default
     value is
@@ -437,8 +437,8 @@ Here's an example value for the `wcheck-language-data' variable:
       (read-or-skip-faces)
        (nil))
      (\"Highlight FIXMEs\"
-      (program . (lambda (words)
-                   (when (member \"FIXME\" words)
+      (program . (lambda (strings)
+                   (when (member \"FIXME\" strings)
                      (list \"FIXME\"))))
       (face . highlight)
       (read-or-skip-faces
@@ -552,17 +552,9 @@ This is used when language does not define a face."
 (defvar wcheck-timer nil)
 (defconst wcheck-timer-idle .4
   "`wcheck-mode' idle timer delay (in seconds).")
-(defvar wcheck-timer-read-requested nil)
-(defvar wcheck-timer-paint-requested nil)
 
 (defvar wcheck-change-language-history nil
   "Language history for command `wcheck-change-language'.")
-
-(defvar wcheck-received-words nil)
-(make-variable-buffer-local 'wcheck-received-words)
-
-(defvar wcheck-buffer-window-areas nil)
-(make-variable-buffer-local 'wcheck-buffer-window-areas)
 
 (defvar wcheck-buffer-data nil)
 
@@ -612,8 +604,9 @@ interactively) then change the global default language."
         (if (wcheck-program-configured-p wcheck-language)
             ;; It's OK; update the buffer.
             (progn
-              (wcheck-update-buffer-data (current-buffer) wcheck-language)
-              (wcheck-timer-add-read-request (current-buffer))
+              (wcheck-buffer-lang-proc-data-update
+               (current-buffer) wcheck-language)
+              (wcheck-buffer-data-set (current-buffer) :read-req t)
               (wcheck-remove-overlays))
 
           ;; It's not OK; turn off.
@@ -633,10 +626,9 @@ With optional (prefix) ARG turn on the mode if ARG is positive,
 otherwise turn it off. If ARG is not given toggle the mode.
 
 Wcheck is a minor mode for automatically checking and marking
-words or other text elements in Emacs buffer. Wcheck sends (parts
-of) buffer's content to a user-configured checker program and,
-based on its output, decides if some parts of text should be
-marked.
+strings in Emacs buffer. Wcheck sends (parts of) buffer's content
+to a user-configured checker program and, based on its output,
+decides if some parts of text should be marked.
 
 Wcheck can be used with external spell-checker programs such as
 Ispell, Aspell and Enchant. The mode can be useful with other
@@ -691,27 +683,27 @@ right-click mouse menu)."
         (wcheck-add-local-hooks (current-buffer))
         (wcheck-add-global-hooks)
 
-        ;; Add this buffer to buffer database.
-        (wcheck-update-buffer-data (current-buffer) wcheck-language)
+        ;; Add this buffer to the buffer database and update
+        ;; language-process data.
+        (wcheck-buffer-lang-proc-data-update (current-buffer) wcheck-language)
 
         ;; Ensure that the idle timer is running. The timer runs a
         ;; function which updates buffers which have requested for that.
         (wcheck-timer-start)
 
         ;; Request update for this buffer.
-        (wcheck-timer-add-read-request (current-buffer))))
+        (wcheck-buffer-data-set (current-buffer) :read-req t)))
 
     ;; Turn off the mode.
 
     ;; We clear overlays form the buffer, remove the buffer from buffer
-    ;; database and clear the variable holding words received from
-    ;; external process.
+    ;; database.
     (wcheck-remove-overlays)
-    (wcheck-update-buffer-data (current-buffer) nil)
+    (wcheck-buffer-lang-proc-data-update (current-buffer) nil)
 
     ;; If there are no buffers using wcheck-mode anymore, stop the idle
     ;; timer and remove global hooks.
-    (when (null (wcheck-get-all-data :buffer))
+    (when (null (wcheck-buffer-data-get-all :buffer))
       (wcheck-timer-stop)
       (wcheck-remove-global-hooks))
 
@@ -737,61 +729,62 @@ right-click mouse menu)."
     (setq wcheck-timer nil)))
 
 
-(defun wcheck-timer-add-read-request (buffer)
-  (add-to-list 'wcheck-timer-read-requested buffer))
-(defun wcheck-timer-remove-read-request (buffer)
-  (setq wcheck-timer-read-requested
-        (delq buffer wcheck-timer-read-requested)))
+(defmacro wcheck-loop-over-reqs-engine (key var &rest body)
+  `(dolist (,var (delq nil (mapcar (lambda (buffer)
+                                     (when (wcheck-buffer-data-get
+                                            :buffer buffer ,key)
+                                       buffer))
+                                   (wcheck-buffer-data-get-all :buffer))))
+     (when (buffer-live-p ,var)
+       (with-current-buffer ,var
+         ,@body))))
 
-(defun wcheck-timer-add-paint-request (buffer)
-  (add-to-list 'wcheck-timer-paint-requested buffer))
-(defun wcheck-timer-remove-paint-request (buffer)
-  (setq wcheck-timer-paint-requested
-        (delq buffer wcheck-timer-paint-requested)))
+(defmacro wcheck-loop-over-read-reqs (var &rest body)
+  `(wcheck-loop-over-reqs-engine :read-req ,var ,@body))
+(defmacro wcheck-loop-over-paint-reqs (var &rest body)
+  `(wcheck-loop-over-reqs-engine :paint-req ,var ,@body))
 
 
 (defun wcheck-timer-read-event ()
-  "Send windows' content to external program.
-This function is usually called by the wcheck-mode idle timer.
-The function walks through all windows which belong to the buffer
+  "Send windows' content to checker program or function.
+
+This function is usually called by the `wcheck-mode' idle timer.
+The function walks through all windows which belong to buffers
 that have requested update. It reads windows' content and sends
-it to the external program associated with the buffer. Finally,
-this function starts another idle timer for marking words or
-other text elements in buffers."
+it checker program or function associated with the buffer's
+language. Finally, this function starts another idle timer for
+marking strings in buffers."
 
-  (dolist (buffer wcheck-timer-read-requested)
-    (when (buffer-live-p buffer)
-      (with-current-buffer buffer
+  (wcheck-loop-over-read-reqs
+   buffer
 
-        ;; We are about to fulfill buffer's window-reading request so
-        ;; remove this buffer from the request list.
-        (wcheck-timer-remove-read-request buffer)
+   ;; We are about to fulfill buffer's window-reading request so
+   ;; remove the request. Reset also the list of received strings
+   ;; and visible window areas.
+   (wcheck-buffer-data-set buffer :read-req nil)
+   (wcheck-buffer-data-set buffer :strings nil)
+   (wcheck-buffer-data-set buffer :areas nil)
 
-        ;; Reset also the list of received words and visible window
-        ;; areas.
-        (setq wcheck-received-words nil
-              wcheck-buffer-window-areas nil)
+   ;; Walk through all windows which belong to this buffer.
+   (let (area-alist strings)
+     (walk-windows #'(lambda (window)
+                       (when (eq buffer (window-buffer window))
+                         ;; Store the visible buffer area.
+                         (push (cons (window-start window)
+                                     (window-end window t))
+                               area-alist)))
+                   'nomb t)
 
-        ;; Walk through all windows which belong to this buffer.
-        (let (area-alist words)
-          (walk-windows #'(lambda (window)
-                            (when (eq buffer (window-buffer window))
-                              ;; Store the visible buffer area.
-                              (push (cons (window-start window)
-                                          (window-end window t))
-                                    area-alist)))
-                        'nomb t)
-
-          ;; Combine overlapping buffer areas and read words from all
-          ;; areas.
-          (setq wcheck-buffer-window-areas (wcheck-combine-overlapping-areas
-                                            area-alist))
-          (dolist (area wcheck-buffer-window-areas)
-            (setq words (append (wcheck-read-words
-                                 buffer (car area) (cdr area))
-                                words)))
-          ;; Send words to external process.
-          (wcheck-send-words buffer words)))))
+     ;; Combine overlapping buffer areas and read strings from all
+     ;; areas.
+     (let ((combined (wcheck-combine-overlapping-areas area-alist)))
+       (wcheck-buffer-data-set buffer :areas combined)
+       (dolist (area combined)
+         (setq strings (append (wcheck-read-strings
+                                buffer (car area) (cdr area))
+                               strings))))
+     ;; Send strings to checker engine.
+     (wcheck-send-strings buffer strings)))
 
   ;; Start a timer which will mark text in buffers/windows.
   (run-with-idle-timer (+ wcheck-timer-idle
@@ -802,45 +795,65 @@ other text elements in buffers."
                        3))
 
 
-(defun wcheck-send-words (buffer strings)
+(defmacro wcheck-with-language-data (language bindings &rest body)
+  (let ((lang-var (make-symbol "--wck-language--")))
+    `(let* ((,lang-var ,(cadr language))
+            ,@(when (car language)
+                `((,(car language) ,lang-var)))
+            ,@(mapcar
+               (lambda (var)
+                 (cond ((symbolp var)
+                        (list var `(wcheck-query-language-data
+                                    ,lang-var ',var)))
+                       ((and var (listp var))
+                        (list (car var) `(wcheck-query-language-data
+                                          ,lang-var ',(cadr var))))))
+               bindings))
+       ,@body)))
+
+
+(defun wcheck-send-strings (buffer strings)
   "Send STRINGS for the process that handles BUFFER.
 STRINGS is a list of strings to be sent as input for the external
 process which handles BUFFER. Each string in STRINGS is sent as
 separate line."
-  (let ((program (wcheck-query-language-data
-                  (wcheck-get-data :buffer buffer :language)
-                  'program)))
+  (wcheck-with-language-data
+   (language (wcheck-buffer-data-get :buffer buffer :language))
+   (program)
 
-    (cond ((or (wcheck-get-data :buffer buffer :process)
-               (stringp program))
-           (process-send-string
-            (wcheck-start-get-process buffer)
-            (concat (mapconcat #'identity strings "\n") "\n")))
-          ((functionp program)
-           (when (buffer-live-p buffer)
-             (with-current-buffer buffer
-               (let ((words (save-match-data (funcall program strings))))
-                 (when (wcheck-list-of-strings-p words)
-                   (setq wcheck-received-words words)
-                   (wcheck-timer-add-paint-request buffer))))))
-          (t
-           (when (buffer-live-p buffer)
-             (with-current-buffer buffer
-               (wcheck-mode -1)))))))
+   (cond ((or (wcheck-buffer-data-get :buffer buffer :process)
+              (stringp program))
+          (process-send-string
+           (wcheck-start-get-process buffer)
+           (concat (mapconcat #'identity strings "\n") "\n")))
+         ((functionp program)
+          (when (buffer-live-p buffer)
+            (with-current-buffer buffer
+              (let ((received (save-match-data (funcall program strings))))
+                (when (and received (wcheck-list-of-strings-p received))
+                  (wcheck-buffer-data-set buffer :strings received)
+                  (wcheck-buffer-data-set buffer :paint-req t))))))
+         (t
+          (when (buffer-live-p buffer)
+            (with-current-buffer buffer
+              (wcheck-mode -1)))))))
 
 
-(defun wcheck-receive-words (process string)
+(defun wcheck-receive-strings (process string)
   "`wcheck-mode' process output handler function."
-  (let ((buffer (wcheck-get-data :process process :buffer)))
+  (let ((buffer (wcheck-buffer-data-get :process process :buffer)))
     (when (buffer-live-p buffer)
       (with-current-buffer buffer
 
-        ;; If process is running proceed to collect and paint the words.
+        ;; If process is running proceed to collect and paint the
+        ;; strings.
         (if (eq 'run (process-status process))
-            (progn (setq wcheck-received-words
-                         (append (split-string string "\n+" t)
-                                 wcheck-received-words))
-                   (wcheck-timer-add-paint-request buffer))
+            (progn
+              (wcheck-buffer-data-set
+               buffer :strings (append (split-string string "\n+" t)
+                                       (wcheck-buffer-data-get :buffer buffer
+                                                               :strings)))
+              (wcheck-buffer-data-set buffer :paint-req t))
 
           ;; It's not running. Turn off the mode.
           (wcheck-mode -1)
@@ -849,33 +862,31 @@ separate line."
 
 
 (defun wcheck-timer-paint-event (&optional repeat)
-  "Mark text in windows.
+  "Mark strings in windows.
 
 This is normally called by the `wcheck-mode' idle timer. This
-function marks (with overlays) words or other text elements in
-buffers that have requested it through the variable
-`wcheck-timer-paint-requested'.
+function marks (with overlays) strings in the buffers that have
+requested it.
 
 If the optional argument REPEAT exists and is an integer then
 also call the function repeatedly that many times after the first
 call. The delay between consecutive calls is defined in variable
 `wcheck-timer-idle'."
 
-  (dolist (buffer wcheck-timer-paint-requested)
-    (when (buffer-live-p buffer)
-      (with-current-buffer buffer
-        (wcheck-remove-overlays)
+  (wcheck-loop-over-paint-reqs
+   buffer
 
-        ;; We are about to mark text in this buffer so remove the buffer
-        ;; from the request list.
-        (wcheck-timer-remove-paint-request buffer)
-
-        ;; Walk through the visible text areas and mark text based on
-        ;; the word list returned by an external process.
-        (when wcheck-mode
-          (dolist (area wcheck-buffer-window-areas)
-            (wcheck-paint-words buffer (car area) (cdr area)
-                                wcheck-received-words))))))
+   (wcheck-remove-overlays)
+   ;; We are about to mark text in this buffer so remove this
+   ;; buffer's request.
+   (wcheck-buffer-data-set buffer :paint-req nil)
+   ;; Walk through the visible text areas and mark text based on
+   ;; the string list returned by an external process.
+   (when wcheck-mode
+     (dolist (area (wcheck-buffer-data-get :buffer buffer :areas))
+       (wcheck-paint-strings buffer (car area) (cdr area)
+                             (wcheck-buffer-data-get :buffer buffer
+                                                     :strings)))))
 
   ;; If REPEAT is positive integer call this function again after
   ;; waiting wcheck-timer-idle. Pass REPEAT minus one as the argument.
@@ -934,7 +945,7 @@ Request update for the buffer when its window have been
 scrolled."
   (with-current-buffer (window-buffer window)
     (when wcheck-mode
-      (wcheck-timer-add-read-request (current-buffer)))))
+      (wcheck-buffer-data-set (current-buffer) :read-req t))))
 
 
 (defun wcheck-hook-window-size-change (frame)
@@ -944,8 +955,8 @@ changed."
   (walk-windows #'(lambda (window)
                     (with-current-buffer (window-buffer window)
                       (when wcheck-mode
-                        (wcheck-timer-add-read-request
-                         (current-buffer)))))
+                        (wcheck-buffer-data-set (current-buffer)
+                                                :read-req t))))
                 'nomb
                 frame))
 
@@ -957,8 +968,8 @@ changed."
   (walk-windows #'(lambda (window)
                     (with-current-buffer (window-buffer window)
                       (when wcheck-mode
-                        (wcheck-timer-add-read-request
-                         (current-buffer)))))
+                        (wcheck-buffer-data-set (current-buffer)
+                                                :read-req t))))
                 'nomb
                 'currentframe))
 
@@ -969,14 +980,14 @@ Request update for the buffer when its content has been edited."
   ;; The buffer that has changed is the current buffer when this hook
   ;; function is called.
   (when wcheck-mode
-    (wcheck-timer-add-read-request (current-buffer))))
+    (wcheck-buffer-data-set (current-buffer) :read-req t)))
 
 
 (defun wcheck-hook-outline-view-change ()
   "`wcheck-mode' hook for outline view change.
 Request update for the buffer when its outline view has changed."
   (when wcheck-mode
-    (wcheck-timer-add-read-request (current-buffer))))
+    (wcheck-buffer-data-set (current-buffer) :read-req t)))
 
 
 (defun wcheck-hook-kill-buffer ()
@@ -1000,31 +1011,28 @@ Start a new process or get already existing process for BUFFER.
 Return the object of that particular process or nil if the
 operation was unsuccessful."
   ;; If process for this BUFFER exists return it.
-  (or (wcheck-get-data :buffer buffer :process)
+  (or (wcheck-buffer-data-get :buffer buffer :process)
       ;; It doesn't exist so start a new one.
-      (let* ((language (wcheck-get-data :buffer buffer :language))
-             (program (wcheck-query-language-data language 'program))
-             (args (wcheck-query-language-data language 'args))
-             (process-connection-type
-              (wcheck-query-language-data language 'connection))
-             proc)
+      (wcheck-with-language-data
+       (language (wcheck-buffer-data-get :buffer buffer :language))
+       (program args (process-connection-type connection))
 
-        (when (wcheck-program-executable-p program)
-          ;; Start the process.
-          (setq proc (apply #'start-process wcheck-process-name nil
-                            program args))
-          ;; Add the process Lisp object to database.
-          (wcheck-set-buffer-data buffer :process proc)
-          ;; Set the output handler function.
-          (set-process-filter proc #'wcheck-receive-words)
-          ;; Prevent Emacs from querying user about running processes
-          ;; when killing Emacs.
-          (set-process-query-on-exit-flag proc nil)
-          ;; Return the process object.
-          proc))))
+       (when (wcheck-program-executable-p program)
+         ;; Start the process.
+         (let ((proc (apply #'start-process wcheck-process-name nil
+                            program args)))
+           ;; Add the process Lisp object to database.
+           (wcheck-buffer-data-set buffer :process proc)
+           ;; Set the output handler function.
+           (set-process-filter proc #'wcheck-receive-strings)
+           ;; Prevent Emacs from querying user about running processes
+           ;; when killing Emacs.
+           (set-process-query-on-exit-flag proc nil)
+           ;; Return the process object.
+           proc)))))
 
 
-(defun wcheck-update-buffer-data (buffer language)
+(defun wcheck-buffer-lang-proc-data-update (buffer language)
   "Update process and language data for BUFFER.
 Calling this function is the primary way to maintain the language
 and process data associated to BUFFER. If LANGUAGE is nil remove
@@ -1034,49 +1042,44 @@ BUFFER from the list."
                  (not language)))
 
     ;; Construct a list of currently used processes.
-    (let ((old-processes (wcheck-get-all-data :process))
-          new-processes)
+    (let ((old-processes (remq nil (wcheck-buffer-data-get-all :process))))
 
       ;; Remove dead buffers and possible minibuffers from the list.
-      (dolist (item (wcheck-get-all-data :buffer))
+      (dolist (item (wcheck-buffer-data-get-all :buffer))
         (when (or (not (buffer-live-p item))
                   (minibufferp item))
-          (wcheck-delete-buffer-data item)))
+          (wcheck-buffer-data-delete item)))
 
       (if language
           (progn
             ;; LANGUAGE was given. If data for this buffer does not
             ;; exist create it.
-            (unless (wcheck-get-data :buffer buffer)
-              (wcheck-create-buffer-data buffer))
+            (unless (wcheck-buffer-data-get :buffer buffer)
+              (wcheck-buffer-data-create buffer))
             ;; Add this BUFFER's language info and reset the process
             ;; info.
-            (wcheck-set-buffer-data buffer :language language)
-            (wcheck-set-buffer-data buffer :process nil))
+            (wcheck-buffer-data-set buffer :language language)
+            (wcheck-buffer-data-set buffer :process nil))
 
         ;; LANGUAGE was not given so this normally means that
         ;; wcheck-mode is being turned off for this buffer. Remove
-        ;; BUFFER from the list of buffers which request for wcheck
-        ;; update and remove all buffer data.
-        (wcheck-timer-remove-read-request buffer)
-        (wcheck-delete-buffer-data buffer)
-        (setq wcheck-received-words nil
-              wcheck-buffer-window-areas nil))
+        ;; BUFFER's data.
+        (wcheck-buffer-data-delete buffer))
 
       ;; Construct a list of processes that are still used.
-      (setq new-processes (wcheck-get-all-data :process))
-      ;; Stop those processes which are no longer needed.
-      (dolist (proc old-processes)
-        (unless (memq proc new-processes)
-          (delete-process proc)))))
+      (let ((new-processes (remq nil (wcheck-buffer-data-get-all :process))))
+        ;; Stop those processes which are no longer needed.
+        (dolist (proc old-processes)
+          (unless (memq proc new-processes)
+            (delete-process proc))))))
 
-  wcheck-buffer-data)
-
-
-;;; Read and paint words
+  (wcheck-buffer-data-get :buffer buffer))
 
 
-(defun wcheck-read-words (buffer beg end)
+;;; Read and paint strings
+
+
+(defun wcheck-read-strings (buffer beg end)
   "Return a list of text elements in BUFFER.
 Scan BUFFER between positions BEG and END and search for text
 elements according to buffer's language settings (see
@@ -1086,108 +1089,103 @@ elements between BEG and END; all hidden parts are omitted."
     (with-current-buffer buffer
       (save-excursion
 
-        (let* ((language (wcheck-get-data :buffer buffer :language))
-               (regexp (concat
-                        (wcheck-query-language-data language 'regexp-start)
-                        "\\("
-                        (wcheck-query-language-data language 'regexp-body)
-                        "\\)"
-                        (wcheck-query-language-data language 'regexp-end)))
+        (wcheck-with-language-data
+         (language (wcheck-buffer-data-get :buffer buffer :language))
+         (regexp-start regexp-body regexp-end regexp-discard
+                       syntax (case-fold-search case-fold))
 
-               (syntax (eval (wcheck-query-language-data language 'syntax)))
-               (discard (wcheck-query-language-data language 'regexp-discard))
-               (case-fold-search
-                (wcheck-query-language-data language 'case-fold))
+         (let ((regexp
+                (concat regexp-start "\\(" regexp-body "\\)" regexp-end))
                (face-p (wcheck-generate-face-predicate language major-mode))
                (search-spaces-regexp nil)
                (old-point 0)
-               words)
+               strings)
 
-          (with-syntax-table syntax
-            (goto-char beg)
-            (save-match-data
-              (catch 'infinite
-                (while (re-search-forward regexp end t)
-                  (cond ((= (point) old-point)
-                         ;; Make sure we don't end up in an infinite
-                         ;; loop when the regexp always matches with
-                         ;; zero width in the current point position.
-                         (throw 'infinite t))
+           (with-syntax-table (eval syntax)
+             (goto-char beg)
+             (save-match-data
+               (catch 'infinite
+                 (while (re-search-forward regexp end t)
+                   (cond ((= (point) old-point)
+                          ;; Make sure we don't end up in an infinite
+                          ;; loop when the regexp always matches with
+                          ;; zero width in the current point position.
+                          (throw 'infinite t))
 
-                        ((invisible-p (match-beginning 1))
-                         ;; This point is invisible. Let's jump forward
-                         ;; to next change of "invisible" property.
-                         (goto-char (next-single-char-property-change
-                                     (match-beginning 1) 'invisible buffer
-                                     end)))
+                         ((invisible-p (match-beginning 1))
+                          ;; This point is invisible. Let's jump forward
+                          ;; to next change of "invisible" property.
+                          (goto-char (next-single-char-property-change
+                                      (match-beginning 1) 'invisible buffer
+                                      end)))
 
-                        ((and (eval face-p)
-                              (or (equal discard "")
-                                  (not (string-match
-                                        discard
-                                        (match-string-no-properties 1)))))
-                         ;; Add the match to the word list.
-                         (add-to-list 'words (match-string-no-properties 1))))
-                  (setq old-point (point))))))
-          words)))))
+                         ((and (eval face-p)
+                               (or (equal regexp-discard "")
+                                   (not (string-match
+                                         regexp-discard
+                                         (match-string-no-properties 1)))))
+                          ;; Add the match to the string list.
+                          (add-to-list
+                           'strings (match-string-no-properties 1))))
+                   (setq old-point (point))))))
+           strings))))))
 
 
-(defun wcheck-paint-words (buffer beg end wordlist)
-  "Mark words of WORDLIST in BUFFER.
-Mark all words (or other text elements) of WORDLIST which are
-visible in BUFFER within position range from BEG to END."
+(defun wcheck-paint-strings (buffer beg end strings)
+  "Mark strings in buffer.
+Mark all strings in STRINGS which are visible in BUFFER within
+position range from BEG to END."
 
   (when (buffer-live-p buffer)
     (with-current-buffer buffer
       (save-excursion
-        (let* ((language (wcheck-get-data :buffer buffer :language))
-               (r-start (wcheck-query-language-data language 'regexp-start))
-               (r-end (wcheck-query-language-data language 'regexp-end))
-               (syntax (eval (wcheck-query-language-data language 'syntax)))
-               (case-fold-search
-                (wcheck-query-language-data language 'case-fold))
-               (face-p (wcheck-generate-face-predicate language major-mode))
+
+        (wcheck-with-language-data
+         (language (wcheck-buffer-data-get :buffer buffer :language))
+         (regexp-start regexp-end syntax (case-fold-search case-fold)
+                       (ol-face face) suggestion-program)
+
+         (let ((face-p (wcheck-generate-face-predicate language major-mode))
                (search-spaces-regexp nil)
-               (ol-face (wcheck-query-language-data language 'face))
                (ol-keymap (make-sparse-keymap))
                (ol-mouse-face nil)
                (ol-help-echo nil)
                regexp old-point)
 
-          (when (wcheck-query-language-data language 'suggestion-program)
-            (define-key ol-keymap [down-mouse-3] 'wcheck-mouse-click-overlay)
-            (define-key ol-keymap [mouse-3] 'undefined)
-            (setq ol-mouse-face 'highlight
-                  ol-help-echo "mouse-3: show suggestions"))
+           (when suggestion-program
+             (define-key ol-keymap [down-mouse-3] 'wcheck-mouse-click-overlay)
+             (define-key ol-keymap [mouse-3] 'undefined)
+             (setq ol-mouse-face 'highlight
+                   ol-help-echo "mouse-3: show suggestions"))
 
-          (with-syntax-table syntax
-            (save-match-data
-              (dolist (word wordlist)
-                (setq regexp (concat r-start "\\("
-                                     (regexp-quote word) "\\)"
-                                     r-end)
-                      old-point 0)
-                (goto-char beg)
+           (with-syntax-table (eval syntax)
+             (save-match-data
+               (dolist (string strings)
+                 (setq regexp (concat regexp-start "\\("
+                                      (regexp-quote string) "\\)"
+                                      regexp-end)
+                       old-point 0)
+                 (goto-char beg)
 
-                (catch 'infinite
-                  (while (re-search-forward regexp end t)
-                    (cond ((= (point) old-point)
-                           ;; We didn't move forward so break the loop.
-                           ;; Otherwise we would loop endlessly.
-                           (throw 'infinite t))
-                          ((invisible-p (match-beginning 1))
-                           ;; The point is invisible so jump forward to
-                           ;; the next change of "invisible" text
-                           ;; property.
-                           (goto-char (next-single-char-property-change
-                                       (match-beginning 1) 'invisible buffer
-                                       end)))
-                          ((eval face-p)
-                           ;; Make an overlay.
-                           (wcheck-make-overlay
-                            buffer ol-face ol-mouse-face ol-help-echo ol-keymap
-                            (match-beginning 1) (match-end 1))))
-                    (setq old-point (point))))))))))))
+                 (catch 'infinite
+                   (while (re-search-forward regexp end t)
+                     (cond ((= (point) old-point)
+                            ;; We didn't move forward so break the loop.
+                            ;; Otherwise we would loop endlessly.
+                            (throw 'infinite t))
+                           ((invisible-p (match-beginning 1))
+                            ;; The point is invisible so jump forward to
+                            ;; the next change of "invisible" text
+                            ;; property.
+                            (goto-char (next-single-char-property-change
+                                        (match-beginning 1) 'invisible buffer
+                                        end)))
+                           ((eval face-p)
+                            ;; Make an overlay.
+                            (wcheck-make-overlay
+                             buffer ol-face ol-mouse-face ol-help-echo ol-keymap
+                             (match-beginning 1) (match-end 1))))
+                     (setq old-point (point)))))))))))))
 
 
 ;;; Spelling suggestions
@@ -1277,42 +1275,46 @@ call the function with single argument TEXT. The function must
 return substitute suggestions as a list of strings (or nil if
 there aren't any)."
 
-  (let ((program (wcheck-query-language-data language 'suggestion-program))
-        (args (wcheck-query-language-data language 'suggestion-args))
-        (parser (wcheck-query-language-data language 'suggestion-parser)))
+  (wcheck-with-language-data
+   (nil language)
+   ((program suggestion-program)
+    (args suggestion-args)
+    (parser suggestion-parser))
 
-    (cond ((not (wcheck-suggestion-program-configured-p language))
-           (message
-            "Language \"%s\": suggestion program or function is not configured"
-            language)
-           'error)
+   (cond ((not (wcheck-suggestion-program-configured-p language))
+          (message
+           "Language \"%s\": suggestion program or function is not configured"
+           language)
+          'error)
 
-          ((and (stringp program)
-                (not parser))
-           (message "Language \"%s\": parser function is not configured"
-                    language)
-           'error)
+         ((and (stringp program)
+               (not parser))
+          (message "Language \"%s\": parser function is not configured"
+                   language)
+          'error)
 
-          ((stringp program)
-           (with-temp-buffer
-             (insert text)
-             (apply #'call-process-region (point-min) (point-max)
-                    program t t nil args)
-             (goto-char (point-min))
-             (let ((suggestions (save-match-data (funcall parser))))
-               (if (wcheck-list-of-strings-p suggestions)
-                   suggestions
-                 (message
-                  "Parser function must return a list of strings or nil")
-                 'error))))
+         ((stringp program)
+          (with-temp-buffer
+            (insert text)
+            (apply #'call-process-region (point-min) (point-max)
+                   program t t nil args)
+            (goto-char (point-min))
+            (let ((suggestions (save-match-data (funcall parser))))
+              (if (wcheck-list-of-strings-p suggestions)
+                  suggestions
+                (progn
+                  (message
+                   "Parser function must return a list of strings or nil")
+                  'error)))))
 
-          ((functionp program)
-           (let ((suggestions (save-match-data (funcall program text))))
-             (if (wcheck-list-of-strings-p suggestions)
-                 suggestions
-               (message
-                "Suggestion function must return a list of strings or nil")
-               'error))))))
+         ((functionp program)
+          (let ((suggestions (save-match-data (funcall program text))))
+            (if (wcheck-list-of-strings-p suggestions)
+                suggestions
+              (progn
+                (message
+                 "Suggestion function must return a list of strings or nil")
+                'error)))))))
 
 
 (defun wcheck-choose-suggestion-popup (suggestions event)
@@ -1330,6 +1332,12 @@ choice (a string) or nil."
                                          suggestions)
                                (list "[No suggestions]"))))))
     (x-popup-menu event menu)))
+
+
+(defun wcheck-read-key (prompt)
+  (if (fboundp 'read-key)
+      (read-key prompt)
+    (read-char prompt)))
 
 
 (defun wcheck-choose-suggestion-minibuffer (suggestions)
@@ -1396,7 +1404,7 @@ or nil."
             (set-window-buffer window (current-buffer))
             (set-window-dedicated-p window t)
             ;; Return the choice or nil.
-            (cond ((cdr (assq (read-key prompt) alist)))
+            (cond ((cdr (assq (wcheck-read-key prompt) alist)))
                   (t
                    (message "Not a valid character")
                    nil)))))
@@ -1471,7 +1479,7 @@ Return a predicate expression that is used to decide whether
 position with LANGUAGE and MAJOR-MODE. Evaluating the predicate
 expression will return a boolean."
   (let* ((face-settings (wcheck-major-mode-face-settings
-                        language major-mode))
+                         language major-mode))
          (mode (nth 1 face-settings))
          (faces (nthcdr 2 face-settings)))
     (cond ((not font-lock-mode)
@@ -1683,47 +1691,68 @@ suggestion function."
 ;;; Buffer data access functions
 
 
-(defun wcheck-create-buffer-data (buffer)
-  "Create data instance for BUFFER."
-  (unless (wcheck-get-data :buffer buffer)
-    (push (list :buffer buffer :process nil :language nil)
-          wcheck-buffer-data))
-  wcheck-buffer-data)
+(defconst wcheck-buffer-data-keys
+  '(:buffer :process :language :read-req :paint-req :areas :strings))
 
 
-(defun wcheck-delete-buffer-data (buffer)
+(defun wcheck-buffer-data-key-index (key)
+  "Return the index of KEY in buffer data object."
+  (let ((index 0))
+    (catch 'answer
+      (dolist (data-key wcheck-buffer-data-keys nil)
+        (if (eq key data-key)
+            (throw 'answer index)
+          (setq index (1+ index)))))))
+
+
+(defun wcheck-buffer-data-create (buffer)
+  "Create data instance for BUFFER.
+But only if it doesn't exist already."
+  (unless (wcheck-buffer-data-get :buffer buffer)
+    (let ((data (make-vector (length wcheck-buffer-data-keys) nil)))
+      (aset data (wcheck-buffer-data-key-index :buffer) buffer)
+      (push data wcheck-buffer-data))))
+
+
+(defun wcheck-buffer-data-delete (buffer)
   "Delete all data associated to BUFFER."
-  (setq wcheck-buffer-data
-        (remove nil (mapcar #'(lambda (item)
-                                (unless (eq buffer (plist-get item :buffer))
-                                  item))
-                            wcheck-buffer-data))))
+  (let ((index (wcheck-buffer-data-key-index :buffer)))
+    (setq wcheck-buffer-data
+          (delq nil (mapcar (lambda (item)
+                              (unless (eq buffer (aref item index))
+                                item))
+                            wcheck-buffer-data)))))
 
 
-(defun wcheck-get-data (key value &optional target-key)
+(defun wcheck-buffer-data-get (key value &optional target-key)
   "Query the first matching KEY VALUE pair and return TARGET-KEY.
 If optional TARGET-KEY is not given return all data associated
 with the matching KEY VALUE."
-  (catch :answer
+  (catch 'answer
     (dolist (item wcheck-buffer-data)
-      (when (equal value (plist-get item key))
-        (throw :answer (if target-key (plist-get item target-key) item))))))
+      (when (equal value (aref item (wcheck-buffer-data-key-index key)))
+        (throw 'answer (if target-key
+                           (aref item (wcheck-buffer-data-key-index
+                                       target-key))
+                         item))))))
 
 
-(defun wcheck-get-all-data (key)
-  "Return every buffer's value for KEY."
-  (remove nil (mapcar #'(lambda (item)
-                          (plist-get item key))
-                      wcheck-buffer-data)))
+(defun wcheck-buffer-data-get-all (&optional key)
+  "Return every buffer's value for KEY.
+If KEY is nil return all buffer's all data."
+  (if key
+      (let ((index (wcheck-buffer-data-key-index key)))
+        (mapcar (lambda (item)
+                  (aref item index))
+                wcheck-buffer-data))
+    wcheck-buffer-data))
 
 
-(defun wcheck-set-buffer-data (buffer key value)
+(defun wcheck-buffer-data-set (buffer key value)
   "Set KEY's VALUE for BUFFER."
-  (let ((item (wcheck-get-data :buffer buffer)))
+  (let ((item (wcheck-buffer-data-get :buffer buffer)))
     (when item
-      (wcheck-delete-buffer-data buffer)
-      (setq item (plist-put item key value))
-      (push item wcheck-buffer-data))))
+      (aset item (wcheck-buffer-data-key-index key) value))))
 
 
 (provide 'wcheck-mode)

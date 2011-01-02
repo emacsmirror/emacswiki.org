@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:43:42 2010 (-0800)
+;; Last-Updated: Sat Jan  1 07:27:10 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5966
+;;     Update #: 5969
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -3298,6 +3298,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mode.el'")
 ;;
+;; 2011/01/01 dadams
+;;     icicle-define-icicle-maps: Typo: icicle-search-tags-menu-map -> icicle-menu-map.  Thx Le Wang.
 ;; 2010/12/26 dadams
 ;;     Added autoload cookies to load icicles.el when command icicle-mode is invoked.
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.

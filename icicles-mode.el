@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 10:21:10 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:44:54 2010 (-0800)
+;; Last-Updated: Sat Jan  1 07:23:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 6826
+;;     Update #: 6827
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mode.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1654,11 +1654,11 @@ Used on `pre-command-hook'."
              '(menu-item "+ Find Tag ..." icicle-find-tag :visible icicle-mode
                :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame))))))
           (t
-           (define-key icicle-search-tags-menu-map [icicle-tags-search]
+           (define-key icicle-menu-map [icicle-tags-search]
              '(menu-item "+ Search Tagged Files ..." icicle-tags-search
                :visible icicle-mode
                :enable (not (window-minibuffer-p (frame-selected-window menu-updating-frame)))))
-           (define-key icicle-search-tags-menu-map [icicle-pop-tag-mark]
+           (define-key icicle-menu-map [icicle-pop-tag-mark]
              '(menu-item "+ Back (Pop Tag Mark)" icicle-pop-tag-mark :visible icicle-mode
                :enable (and (boundp 'find-tag-marker-ring)
                         (not (ring-empty-p find-tag-marker-ring))

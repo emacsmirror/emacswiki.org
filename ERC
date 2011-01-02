@@ -248,9 +248,9 @@ Check the [https://savannah.gnu.org/mail/?group=erc Savannah mailing page for
 ERC] for subscription information.
 
 The mailing lists are also available on [http://gmane.org Gmane].
-# gmane.emacs.erc.announce -- Announcements
-# gmane.emacs.erc.general -- General discussion
-# gmane.emacs.erc.cvs -- Log messages for changes to the ERC source code
+# [http://news.gmane.org/gmane.emacs.erc.announce gmane.emacs.erc.announce] -- Announcements
+# [http://news.gmane.org/gmane.emacs.erc.general gmane.emacs.erc.general] -- General discussion
+# [http://news.gmane.org/gmane.emacs.erc.cvs gmane.emacs.erc.cvs] -- Log messages for changes to the ERC source code
 
 ----
 CategoryChatClient InternetRelayChat

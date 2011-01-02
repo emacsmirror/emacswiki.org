@@ -10,6 +10,11 @@ Add this lines  in your .emacs file:
 
     (add-to-list 'load-path   "~/.emacs.d/ajc-java-complete" )
     (require 'ajc-java-complete-config)
+[new:Joseph:2011-1-2 12:16 UTC]
+ For some reason ,please delete the byte-compiled auto-complete.elc 
+in your auto-complete directory
+[new]
+
 
 Read ajc-java-complete-config  for more info.
 Run the following to generate the tag file ##~/.java_base.tag##
