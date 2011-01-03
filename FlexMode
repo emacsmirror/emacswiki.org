@@ -1,4 +1,4 @@
-flex and bison files are apparently supported by cc-mode.
+flex and bison files are not supported by cc-mode.
 
 (DEAD LINK as of Sept 2004) There is a flex-mode.el to be found here: http://www.eecs.tulane.edu/www/Beuscher/emacs/elisp.html#flex-mode.el
 

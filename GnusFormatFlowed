@@ -1,0 +1,58 @@
+Gnus supports [http://www.faqs.org/rfcs/rfc3676.html format=flowed] when both sending and receiving messages, but it doesn't actually /flow/ the text to windows boundaries like other mail clients do. Doing so requires heavy tinkering, as discussed below.
+
+== What is flowed text==
+
+##format=flowed## is defined in [http://www.faqs.org/rfcs/rfc3676.html RFC3676] and enables mail clients to support the distinction between physical and logical lines, while still supporting older clients.
+
+The message is sent wrapped (usually to the 66th column), with newlines encoded. Graphical clients can unwrap the message back to its original form, performing word-wrapping at window's margins. Older clients can simply disregard newline information, and display the wrapped message.
+
+The most obvious advantage of ##format=flowed##, for client that fully endorse the concept, is to avoid the need of wrapping (and thus damaging) long URLs without resorting to HTML. Another advantage (if an entire conversation is handled with ##format=flowed##) is the improved handling of quoted text, since each paragraph is usually a single logical line that gets re-wrapped by the client dynamically.
+
+== Gnus and the hard reality ==
+
+##format=flowed## is enabled by default in Gnus, in the sense that encoded messages are correctly decoded and rewrapped according to `fill-flowed-display-column' (which is usually `fill-column'), but that's about it. Enabling `use-hard-newlines' in `message-mode' (as documented) will send flowed messages (which still get wrapped by `auto-fill'), but won't work as expected when citing an existing message or yanking text from other buffers.
+
+== Displaying and composing flowed messages ==
+
+The following only works since Emacs 23, where `word-wrap' and `truncate-lines' was introduced. We can use Emacs's built-in word-wrapping functionality and avoid `auto-fill' and `use-hard-newlines' entirely with the following ([http://article.gmane.org/gmane.emacs.gnus.user/14508 source]):
+
+{{{
+
+(defun harden-newlines ()
+  (save-excursion
+    (goto-char (point-min))
+    (while (search-forward "\n" nil t)
+      (put-text-property (1- (point)) (point) 'hard t))))
+
+(setq fill-flowed-display-column nil)
+
+(add-hook 'message-setup-hook
+  (lambda ()
+    (when message-this-is-mail
+      (turn-off-auto-fill)
+      (setq
+	truncate-lines nil
+	word-wrap t
+	use-hard-newlines t))))
+
+(add-hook 'message-send-hook
+  (lambda ()
+    (when use-hard-newlines
+      (harden-newlines))))
+
+(add-hook 'gnus-article-mode-hook
+  (lambda ()
+    (setq
+      truncate-lines nil
+      word-wrap t)))
+
+}}}
+
+The gotcha here is to avoid using `use-hard-newlines' entirely, and simply compose a message with long lines. In `message-send-hook' all newlines are converted to hard newlines, forcing Gnus to post a ##format=flowed## messages, preserving the existing formatting.
+
+By default, composing a flowed message is only enabled for mail, but it also works for groups coming from mail-to-news gateways such as [http://www.gmane.org GMane]. Change `message-setup-hook' accordingly if you wish to do that.
+
+Messages with long quoted text are not completely unfolded currently. This seems to be a bug in Gnus's decoding routine.
+
+----
+CategoryGnus

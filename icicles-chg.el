@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  1 07:27:10 2011 (-0800)
+;; Last-Updated: Sun Jan  2 23:41:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5969
+;;     Update #: 5973
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4252,6 +4252,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/01/02 dadams
+;;     icicle-region-background:
+;;       Use frame param background-mode, not frame-background-mode.  Thx to Le Wang.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/12/18 dadams

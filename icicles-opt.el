@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:20:02 2010 (-0800)
+;; Last-Updated: Sun Jan  2 23:41:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3981
+;;     Update #: 3992
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1962,14 +1962,17 @@ time using `C-`'."
                             1on1-active-minibuffer-frame-background) ; In `oneonone.el'.
                        (let ((frame-bg  (cdr (assq 'background-color (frame-parameters)))))
                          (when (member frame-bg '(nil unspecified "unspecified-bg"))
-                           (setq frame-bg (if (eq frame-background-mode 'dark) "Black" "White")))
+                           (setq frame-bg  (if (eq (frame-parameter nil 'background-mode) 'dark)
+                                               "Black"
+                                             "White")))
                          (and frame-bg (x-color-defined-p frame-bg) frame-bg))
                        (face-background 'region)))
              (sat  (condition-case nil (hexrgb-saturation bg) (error nil))))
         (if sat
             (if (hexrgb-approx-equal sat 0.0)
-                (icicle-increment-color-value bg ; Grayscale - change bg value slightly.
-                                              (if (eq frame-background-mode 'dark) 20 -10))
+                (icicle-increment-color-value
+                 bg                     ; Grayscale - change bg value slightly.
+                 (if (eq (frame-parameter nil 'background-mode) 'dark) 20 -10))
               (icicle-increment-color-hue bg 24)) ; Color - change bg hue slightly.
           (face-background 'region)))
     (face-background 'region))          ; Use normal region background.

@@ -1,17 +1,17 @@
-;;; mouse3.el --- Variable behavior for `mouse-3' second click at same spot.
+;;; mouse3.el --- Customizable behavior for `mouse-3'.
 ;; 
 ;; Filename: mouse3.el
-;; Description: Variable behavior for `mouse-3' second click at same spot.
+;; Description: Customizable behavior for `mouse-3'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Tue Dec 28 12:56:53 2010 (-0800)
+;; Last-Updated: Sun Jan  2 11:37:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 263
+;;     Update #: 1234
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
-;; Keywords: mouse menu kill rectangle region
+;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;; 
 ;; Features that might be required by this library:
@@ -20,50 +20,242 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Commentary: 
-;; 
-;; This library redefines standard command `mouse-save-then-kill'.
-;; The only change affects a second `mouse-3' click at the same spot.
-;; Instead of this behavior being hard-wired to kill or delete the
-;; region, it is variable.
+;;; Commentary:
+;;
+;; This library lets you customize the behavior of `mouse-3' in
+;; several ways.
+;;
+;; It redefines standard command `mouse-save-then-kill' to give you
+;; custom behavior for a second `mouse-3' click at the same spot.
+;;
+;; Vanilla Emacs hard-wires the behavior to kill or delete the region
+;; (depending on the value of `mouse-drag-copy-region').  That action
+;; can be handy, but it is sometimes inappropriate (e.g., in a
+;; read-only buffer).  In any case, it is only one possible action;
+;; there are often other actions on the selected text that you might
+;; want to take instead.
+;;
+;; The redefined `mouse-save-then-kill' command in `mouse3.el' just
+;; uses function `mouse3-second-click-command' to handle a second
+;; click at the same spot.  That function returns the command that is
+;; invoked: either the command that is the value of variable
+;; `mouse3-save-then-kill-command' or, if that is nil the command that
+;; is the value of user option `mouse3-second-click-default-command'.
+;;
+;; Special contexts can bind variable `mouse3-save-then-kill-command'
+;; to provide particular behavior.  For example, Icicles does this
+;; during completion so that a second `mouse-3' at the same spot in
+;; buffer *Completions* marks the selected completions (saves them for
+;; later reuse).
 ;;
 ;; You can use option `mouse3-second-click-default-command' to
-;; customize this behavior to either pop up a menu or invoke a command
-;; you choose.  To obtain the standard behavior, just customize the
-;; value to command `mouse3-kill/delete-region'.
+;; customize the behavior to either pop up a menu or invoke any
+;; command you choose.  The default value is
+;; `mouse3-region-popup-menu', which pops up a menu.  To obtain the
+;; vanilla Emacs behavior when is `mouse3-save-then-kill-command' nil,
+;; customize the option value to command `mouse3-kill/delete-region'.
 ;;
-;; If you choose to pop up a menu, then you can use option
-;; `mouse3-region-popup-submenus' to customize that menu.
+;; If you opt for the default behavior of letting the second `mouse-3'
+;; click pop up a menu, you can kill or delete the selected text by
+;; double-clicking `mouse-3' instead of single clicking.  In other
+;; words, in this case you have two possibilities:
 ;;
-;; If you choose to pop up a menu, you can double-click `mouse-3' to
-;; kill or delete the selected text.  In other words, in this case you
-;; have two possibilities:
+;;  2nd single-click: Pop up a menu and choose how to act on the
+;;                    selected text.
 ;;
-;;  single-click: Pop up a menu and choose how to act on the seletion.
-;;  double-click: Kill or delete the selection, according to option
-;;                `mouse-drag-copy-region'.
+;;  double-click:     Kill or delete the selection, according to
+;;                    standard option `mouse-drag-copy-region'.
+;;
+;; When you choose a value for option
+;; `mouse3-second-click-default-command', key sequence
+;; `double-mouse-3' is automatically bound or unbound as appropriate.
+;;
+;;
+;; Pop-up Menu
+;; -----------
+;;
+;; If you choose to pop up a menu you can customize that menu using
+;; various user options.  The command that pops up the menu is
+;; `mouse3-region-popup-menu'.  See the documentation for that command
+;; for more explanation of the use of options.
+;;
+;; A fairly complete default menu is provided out of the box, so you
+;; do not need to customize anything unless you want to.
+;;
+;; `mouse3-region-popup-menu' ultimately invokes function
+;; `x-popup-menu' to do its work.  The menu definition used by
+;; `x-popup-menu' can take two alternative forms which are quite
+;; different.  Which form you choose to use is controlled by option
+;; `mouse3-region-popup-x-popup-panes-flag'.
+;;
+;; If that option is nil (the default value), you can use keymaps and
+;; extended menu items to define the popup menu.  This is recommended.
+;; If the value is non-nil then you can use option
+;; `mouse3-region-popup-x-popup-panes' to make use of the alternative,
+;; `x-popup-menu'-specific form.
+;;
+;; That alternative form is easy to use, but it does not offer you all
+;; of the possibilities that a standard menu definition does.  In
+;; particular, it does not let you provide keywords such as `:visible'
+;; and `:enable' that control the display and makeup of submenus and
+;; menu items.  Examples of both methods are provided in this file.
+;;
+;; The default behavior takes advantage of keywords to dynamically
+;; remove or disable submenus and menu items that are inappropriate
+;; for the current context.  For example, it removes or disables
+;; buffer-modifying items and submenus if the current buffer is
+;; read-only, and it removes or disables region-related items and
+;; submenus when the region is empty.
+;;
+;; The rest of the description here assumes that
+;; `mouse3-region-popup-x-popup-panes-flag' is nil (the default value
+;; and recommended).
+;;
+;; You can optionally include, at the beginning of the menu, a submenu
+;; that has, as its own submenus, the global menus that are currently
+;; available.  This is controlled by option
+;; `mouse3-region-popup-include-global-menus-flag'.  If the menu bar
+;; is not shown currently, then these submenus are the menu-bar menus.
+;; Otherwise they are the major-mode menus.  (Inclusion of the global
+;; menus is available only for Emacs 23 and later.)
+;;
+;; For example, if the menu bar is showing, then in Dired mode the
+;; first submenu is `Dired by name', which itself has submenus
+;; `Operate', `Mark', `Regexp', `Immediate', and `Subdir'.
+;;
+;; You define the rest of the popup menu (other than the global part)
+;; using submenu keymaps and `menu-item' bindings (extended menu
+;; items).  You do this by customizing option
+;; `mouse3-region-popup-entries'.  You can reuse existing keymaps or
+;; create menu items and submenus from scratch.  See the documentation
+;; for `mouse3-region-popup-entries'.  If you reuse existing keymaps
+;; you can add their menu items either as a submenu or as individual
+;; items.
+;;
+;;
+;; Mode-Specific Popup Menu
+;; ------------------------
+;;
+;; You can provide mode-specific behavior by either replacing the
+;; default `mouse-3' popup menu or augmenting it with mode-specific
+;; entries.
+;;
+;; `mouse3.el' provides useful behavior for Dired mode.  You can do
+;; the same for other modes you use.  Simple example code is also
+;; provided here for Picture mode.  The menu implementation for these
+;; two modes is different, to give you an idea of what is possible.
+;; For Dired mode, `mouse3-region-popup-entries' is used.  For Picture
+;; mode, `mouse3-region-popup-x-popup-panes' is used, and both
+;; `mouse3-region-popup-x-popup-panes-flag' and
+;; `mouse3-region-popup-x-popup-panes' are made buffer-local.
+;;
+;; The example code for Picture mode provides actions on the rectangle
+;; defined by the region: items such as `Draw Rectangle' and `Clear
+;; Rectangle'.
+;;
+;; Let's look at the behavior for Dired mode in more detail.  The
+;; vanilla Emacs behavior just raises an error, because Dired is
+;; read-only.  Why not let a second `mouse-3' click at the same spot
+;; do something wrt the selected file and dir names?  Two obvious
+;; possibilities come to mind: toggle whether each file/dir is marked,
+;; or pop up a menu that lets you act in various ways on each of the
+;; selected files and dirs.
+;;
+;; Option `mouse3-dired-function' lets you choose between these two
+;; behaviors.  The default value is `mouse3-dired-use-menu', which
+;; means to pop up a menu.  This is just like the default popup menu
+;; except that it has an additional submenu, `Selected Files', that is
+;; Dired-specific.  The first submenu is the global major-mode menu,
+;; `Dired by name'.  The second, `Selected Files', has items that act
+;; on the files and directories that are selected (in the region):
+;;
+;;  `Mark'
+;;  `Unmark'
+;;  `Toggle Marked/Unmarked'
+;;  `Flag for Deletion'
+;;  `Stop Using Menu'
+;;
+;; That last item just switches from having `mouse-3' pop up a menu to
+;; having it toggle the markings of the selected files (the
+;; alternative behavior of `mouse3-dired-function').
+;;
+;; If you also use library Dired+ (`dired+.el'), which I recommend,
+;; then that last menu item is not present, and when the region is
+;; empty you get a different popup menu which pertains only to the
+;; file where you clicked `mouse-3'.
+;;
+;;
+;; Context-Specific Behavior (for Emacs-Lisp Programmers)
+;; ------------------------------------------------------
+;;
+;; As mentioned above, Icicles provides an example of a program
+;; imposing context-specific behavior for the second `mouse-3' click
+;; at the same spot.  The context in this case is (a) completion and
+;; (b) clicking in buffer `*Completions*'.  For that, Icicles sets a
+;; buffer-local value of variable `mouse3-save-then-kill-command'.
+;;
+;; If you write Emacs-Lisp code, note that this is an example where
+;; the text is a set of entries in tabular format (columns).  Each
+;; `*Completions*' entry (candidate) is defined by its mouse-face, not
+;; by its text.  For example, it is not delimited by whitespace
+;; (completion candidates can contain spaces and newlines).  A
+;; context-specific function picks up the set of selected completions
+;; as a list.
+;;
+;; Similar opportunities can exist for other tabular or line-list
+;; data: `*Buffer List*', compile/grep output, Info breadcrumbs,...
+;; Use your imagination.  The Dired example is typical here: the
+;; region sweeps out text linearly, but the only thing we are really
+;; interested in are the file and subdirectory names that are inside
+;; the region.
+;;
+;; -------------------------------------------------------------------
 ;;
 ;;
 ;; User options defined here:
 ;;
-;;   `mouse3-region-popup-submenus',
+;;   `mouse3-dired-function', `mouse3-picture-mode-x-popup-panes',
+;;   `mouse3-region-popup-entries',
+;;   `mouse3-region-popup-include-global-menus-flag',
+;;   `mouse3-region-popup-x-popup-panes',
+;;   `mouse3-region-popup-x-popup-panes-flag',
 ;;   `mouse3-second-click-default-command'.
 ;;
 ;; Commands defined here:
 ;;
 ;;   `mouse3-dired-flag-region-files-for-deletion',
-;;   `mouse3-dired-mark-region-files', `mouse3-dired-region-menu',
+;;   `mouse3-dired-mark-region-files',
 ;;   `mouse3-dired-toggle-marks-in-region',
+;;   `mouse3-dired-toggle-marks-in-region-from-mouse',
 ;;   `mouse3-dired-unmark-region-files', `mouse3-dired-use-menu',
 ;;   `mouse3-dired-use-toggle-marks', `mouse3-kill/delete-region',
 ;;   `mouse3-region-popup-menu'.
 ;;   
 ;; Non-interactive functions defined here:
 ;;
+;;   `mouse3-dired-add-region-menu',
+;;   `mouse3-dired-set-to-toggle-marks',
+;;   `mouse3-dired-this-file-marked-p',
+;;   `mouse3-dired-this-file-unmarked-p',
+;;   `mouse3-dired-toggle-marks-in-region',
+;;   `mouse3-nonempty-region-p', `mouse3-region-popup-choice',
+;;   `mouse3-region-popup-choice-1',
+;;   `mouse3-region-popup-custom-entries',
 ;;   `mouse3-second-click-command'.
 ;;
 ;; Internal variables defined here:
 ;;
+;;   `mouse3-region-popup-change-text-submenu',
+;;   `mouse3-region-popup-check-convert-submenu',
+;;   `mouse3-region-popup-copy-submenu',
+;;   `mouse3-region-popup-count-submenu',
+;;   `mouse3-region-popup-highlight-submenu',
+;;   `mouse3-region-popup-misc-submenu',
+;;   `mouse3-region-popup-print-submenu',
+;;   `mouse3-region-popup-rectangle-submenu',
+;;   `mouse3-region-popup-register-submenu',
+;;   `mouse3-region-popup-remove/replace-items',
+;;   `mouse3-region-popup-remove/replace-rect-submenu',
 ;;   `mouse3-save-then-kill-command'.
 ;;
 ;;
@@ -77,10 +269,30 @@
 ;; 
 ;;; Change Log:
 ;;
-;; 2010/12/28 dadams
-;;     mouse3-region-popup-menu: Name the menu Selection, not Region.
-;;     mouse3-dired-region-menu: Name the menu Selected Files, not Files in Region.
-;;     mouse3-dired-use-*: Added doc string.
+;; 2011/01/02 dadams
+;;     Changed :group to mouse3 (added).
+;;     Removed: mouse3-dired-region-menu (replaced by mouse3-dired-add-region-menu, a complete rewrite).
+;;     Added: mouse3-picture-mode-x-popup-panes, mouse3-nonempty-region-p,
+;;            mouse3-dired-(set-to-toggle-marks|this-file-(un)marked-p|add-region-menu|function|
+;;                          this-file-(un)marked-p|toggle-marks-in-region).
+;;     Added: mouse3-region-popup-(
+;;              include-global-menus-flag|custom-entries|entries|remove/replace-items|
+;;              change-text-submenu|check-convert-submenu|copy-submenu|count-submenu|highlight-submenu|
+;;              misc-submenu|print-submenu|rectangle-submenu|register-submenu|remove/replace-rect-submenu|
+;;              choice(-1))|x-popup-panes-flag.
+;;     Renamed: mouse3-region-popup-submenus to mouse3-region-popup-x-popup-panes.
+;;     Renamed: mouse3-dired-toggle-marks-in-region to mouse3-dired-toggle-marks-in-region-from-mouse.
+;;       Rewrote to use new mouse3-dired-toggle-marks-in-region, which is a helper borrowed from Dired+.
+;;     Renamed: mouse3-picture-mode-submenu to mouse3-picture-mode-x-popup-panes.
+;;              Added boundp for picture-killed-rectangle.
+;;     mouse3-region-popup-menu:
+;;       Rewrote to respect mouse3-region-popup-x-popup-panes-flag and use new menu constants & options.
+;;     mouse3-dired-use-menu: Do not remove Dired+ bindings.
+;;                            Add mouse3-dired-add-region-menu to dired-after-readin-hook.
+;;     mouse3-dired-use-toggle-marks: Do not remove Dired+ bindings.  Do not do any remove-hook.
+;;                                    Use dired-after-load-hook, not dired-mode-hook.
+;;     mouse3-dired-*-region-files*: Imported new versions from Dired+.
+;;     In (picture|org)-mode-hook: Bound mouse3-region-popup-x-popup-panes-flag to t.  Comment-out org stuff.
 ;; 2010/12/02 dadams
 ;;     Removed: mouse3-org-region-menu, mouse3-picture-rectangle-menu.
 ;;     Mode add-hook's: Add mode-specific submenu to mouse3-region-popup-submenus, instead of
@@ -114,6 +326,24 @@
 (defvar picture-killed-rectangle)
 (defvar mouse-drag-copy-region)         ; For Emacs < 22.
 
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+(defgroup mouse3 nil
+  "Behaviors for `mouse-3' 2nd click at same spot, including popup menu."
+  :prefix "mouse3-"
+  :group 'mouse
+  :link `(url-link :tag "Send Bug Report"
+          ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=mouse3.el bug: \
+&body=Describe bug here, starting with `emacs -q'.  \
+Don't forget to mention your Emacs version and mouse3.el `Update #'."))
+  :link '(url-link :tag "Other Libraries by Drew"
+          "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
+  :link '(url-link :tag "Download"
+          "http://www.emacswiki.org/cgi-bin/wiki/mouse3.el")
+  :link '(url-link :tag "Description"
+          "http://www.emacswiki.org/cgi-bin/wiki/Mouse3")
+  :link '(emacs-commentary-link :tag "Doc" "mouse3"))
+
 (defvar mouse3-save-then-kill-command nil
   "Command used for a 2nd `mouse-3' click at the same location, or nil.
 The command must accept 2 args: mouse click event and prefix arg.
@@ -121,6 +351,7 @@ If non-nil, the command is used in priority over the value of user
 option `mouse3-second-click-default-command'.  If nil, this var has no
 effect on `mouse-3' behavior.")
 
+;;;###autoload
 (defcustom mouse3-second-click-default-command 'mouse3-region-popup-menu
   "Command used for a second `mouse-3' click at the same location.
 The command must accept 2 args: mouse click event and prefix arg.
@@ -133,31 +364,50 @@ Two particular values:
  `mouse3-kill/delete-region': Kill or delete the region, according to
                               `mouse-drag-copy-region'."
   :type '(choice
-          (const :tag "Menu"
-           :value mouse3-region-popup-menu)
-          (const :tag "Kill/delete, per `mouse-drag-copy-region'"
-           :value mouse3-kill/delete-region)
-          (restricted-sexp :tag "Other Command (two args)"
-           :match-alternatives (commandp)))
+          (const :tag "Menu" :value mouse3-region-popup-menu)
+          (const :tag "Kill/delete, per `mouse-drag-copy-region'" :value mouse3-kill/delete-region)
+          (restricted-sexp :tag "Other Command (two args)" :match-alternatives (commandp)))
   :set (lambda (symbol value)
          (set symbol value)
          (if (eq value 'mouse3-region-popup-menu)
              (global-set-key [double-mouse-3] 'mouse3-kill/delete-region)
            (global-set-key [double-mouse-3] nil)))
   :initialize 'custom-initialize-set
-  :group 'mouse)
+  :group 'mouse3)
 
-(defcustom mouse3-region-popup-submenus
+;;;###autoload
+(defcustom mouse3-region-popup-include-global-menus-flag t
+  "Non-nil means `mouse-3' menu includes major-mode or menu-bar menus.
+When non-nil:
+ If the menu bar is visible then include the major-mode menus.
+ Otherwise, include the menu-bar menus.
+
+This option has no effect unless
+`mouse3-region-popup-x-popup-panes-flag' is nil, and it has no effect
+before Emacs 23."
+  :type 'boolean :group 'mouse3)
+
+;;;###autoload
+(defcustom mouse3-region-popup-x-popup-panes-flag nil
+  "Non-nil means use `mouse3-region-popup-x-popup-panes'.
+If nil, or if `mouse3-region-popup-x-popup-panes' is nil, use
+`mouse3-region-popup-entries' instead."
+  :type 'boolean :group 'mouse3)
+
+
+;; I guess there is no way to turn stuff off in this case, when buffer is read-only.
+;; Another good reason to use the standard format instead.
+;;;###autoload
+(defcustom mouse3-region-popup-x-popup-panes
   `(("Remove/Replace"
      ,@`(("Kill"                                . kill-region)
          ("Delete"                              . delete-region)
          ("Yank (Replace)"                      . (lambda (start end)
                                                     "Replace selected text by last text killed."
                                                     (interactive "r")
-                                                    (when (string=
-                                                           (buffer-substring-no-properties
-                                                            (point) (mark))
-                                                           (car kill-ring))
+                                                    (when (string= (buffer-substring-no-properties
+                                                                    (point) (mark))
+                                                                   (car kill-ring))
                                                       (current-kill 1))
                                                     (delete-region start end)
                                                     (yank)))
@@ -184,25 +434,24 @@ restore it by yanking."
               (exchange-point-and-mark)
               (condition-case nil
                   (call-interactively #'insert-register)
-                (error (exchange-point-and-mark)
-                       (yank-rectangle)))))))
+                (error (exchange-point-and-mark) (yank-rectangle)))))))
     ("Copy"
      ("Copy as Kill"                            . kill-ring-save)
      ("Copy to Register"                        . copy-to-register)
      ("--")
      ("Copy Rectangle to Register"              . copy-rectangle-to-register))
-    ("To Register"
-     ("Copy"                                    . copy-to-register)
-     ("Delete"
+    ("Register"
+     ("Copy to..."                              . copy-to-register)
+     ("Delete to..."
       . (lambda (register start end)
           "Delete the selected text, and copy it to a register you name."
           (interactive "cDelete region to register: \nr")
           (copy-to-register register start end t)))
-     ("Append"                                  . append-to-register)
-     ("Prepend"                                 . prepend-to-register)
+     ("Append to..."                            . append-to-register)
+     ("Prepend to..."                           . prepend-to-register)
      ("--")
-     ("Copy Rectangle"                          . copy-rectangle-to-register)
-     ("Delete Rectangle"
+     ("Copy Rectangle to..."                    . copy-rectangle-to-register)
+     ("Delete Rectangle to..."
       . (lambda (register start end)
           "Delete the selected rectangle, and copy it to a register you name."
           (interactive "cDelete rectangle to register: \nr")
@@ -239,8 +488,7 @@ restore it by yanking."
           (exchange-point-and-mark)
           (condition-case nil
               (call-interactively #'insert-register)
-            (error (exchange-point-and-mark)
-                   (yank-rectangle)))))
+            (error (exchange-point-and-mark) (yank-rectangle)))))
      ("Copy to Register"                        . copy-rectangle-to-register))
     ("Change Text"
      ,@`,(and (fboundp 'boxquote-region) ; Defined in `boxquote.el'.
@@ -329,7 +577,17 @@ restore it by yanking."
               '(("Highlight Bookmarks"          . bmkp-light-bookmarks-in-region)))
      ,@`,(and (fboundp 'browse-url-of-region) ; Defined in `browse-url.el'.
               '(("Open in Browser"              . browse-url-of-region)))))
-  "Submenus of popup menu for `mouse-3' to act on the selected text."
+  "Submenus of `mouse-3' `Region' popup menu.
+Used only if `mouse3-region-popup-x-popup-panes-flag' is non-nil.
+
+A list of `x-popup-menu' pane menus, where each has the form
+ (TITLE ITEM1 ITEM2...), with each ITEM a string or a cons cell
+ (STRING . VALUE).  See `x-popup-menu'.
+
+If you want to use features offered by extended menu items, then do
+not use this option.  Instead, set option
+`mouse3-region-popup-x-popup-panes-flag' to nil and use option
+`mouse3-region-popup-entries' to define the menu."
   :type '(alist
           :key-type   (string   :tag "Submenu Name")
           :value-type (repeat
@@ -340,7 +598,437 @@ restore it by yanking."
                          ;; (restricted-sexp :tag "Command" :match-alternatives (commandp))
                          (sexp :tag "Command"))
                         (list :tag "Separator" (const "--")))))
-  :group 'mouse)
+  :group 'mouse3)
+
+(defun mouse3-nonempty-region-p ()
+  "Return non-nil if region is active and non-empty."
+  (and mark-active (not (zerop (length (buffer-substring (region-beginning) (region-end)))))))
+
+;;;###autoload
+(defconst mouse3-region-popup-remove/replace-items ; These are individual menu items: no submenu.
+    `((kill        menu-item "Kill"   kill-region
+       :visible (and (not buffer-read-only) (mouse3-nonempty-region-p)))
+      (delete      menu-item "Delete" delete-region
+       :visible (and (not buffer-read-only) (mouse3-nonempty-region-p)))
+      (yank        menu-item "Yank (Replace)" (lambda (start end)
+                                                "Replace selected text by last text killed."
+                                                (interactive "r")
+                                                (when (string= (buffer-substring-no-properties
+                                                                (point) (mark))
+                                                               (car kill-ring))
+                                                  (current-kill 1))
+                                                (delete-region start end)
+                                                (yank))
+       :keys ,(key-description (car (where-is-internal 'yank))) ; "C-y"
+       :help "Replace selected text by last text killed."
+       :visible (not buffer-read-only)
+       :enable (and kill-ring (mouse3-nonempty-region-p))))
+  "Menu items for removing or replacing the mouse selection.")
+
+;;;###autoload
+(defconst mouse3-region-popup-remove/replace-rect-submenu
+    '(remove/replace-rect-menu
+      menu-item
+      "Remove/Replace Rectangle"
+      (keymap
+       (kill-rect   menu-item "Kill Rectangle" kill-rectangle)
+       (delete-rect menu-item "Delete Rectangle" delete-rectangle)
+       (yank-rect   menu-item "Yank Rectangle (Replace)"
+        (lambda (start end)
+          "Replace the selected rectangle by the last rectangle killed."
+          (interactive "r")
+          (delete-rectangle start end)
+          (exchange-point-and-mark)
+          (yank-rectangle))
+        :help "Replace the selected rectangle by the last rectangle killed."
+        :visible (and (boundp 'killed-rectangle) killed-rectangle))
+       (clear-rect  menu-item "Clear Rectangle (Replace)" clear-rectangle)
+       (string-rect menu-item "String Rectangle (Replace)" string-rectangle)
+       (yank-rect   menu-item "Replace Rectangle from Register"
+        (lambda (start end)
+          "Replace the selected rectangle by the contents of a register you name.
+Note that the rectangle currently selected is first killed.  You can
+restore it by yanking."
+          (interactive "r")
+          (kill-rectangle start end)
+          (exchange-point-and-mark)
+          (condition-case nil
+              (call-interactively #'insert-register)
+            (error (exchange-point-and-mark) (yank-rectangle))))
+        "Replace selected rectangle by a register you name.  The rectangle is killed."))
+      ;; Disable this submenu if you cannot edit the buffer or the region is empty.
+      :enable (and (not buffer-read-only) (mouse3-nonempty-region-p)))
+  "Submenu for removing or replacing the rectangle selected by the mouse.")
+
+;;;###autoload
+(defconst mouse3-region-popup-copy-submenu
+    '(copy-menu
+      menu-item
+      "Copy"
+      (keymap
+       (copy-as-kill          menu-item "Copy as Kill" kill-ring-save)
+       (copy-to-register      menu-item "Copy to Register" copy-to-register)
+       (sep-copy "--")
+       (copy-rect-to-register menu-item "Copy Rectangle to Register" copy-rectangle-to-register))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for copying the mouse selection.")
+    
+;;;###autoload
+(defconst mouse3-region-popup-register-submenu
+    '(to-register-menu
+      menu-item
+      "Register"
+      (keymap
+       (copy                       menu-item "Copy to..." copy-to-register)
+       (delete                     menu-item "Delete to..."
+        (lambda (register start end)
+          "Delete the selected text, and copy it to a register you name."
+          (interactive "cDelete region to register: \nr")
+          (copy-to-register register start end t))
+        :visible (not buffer-read-only)
+        :help "Delete the selected text, and copy it to a register that you name.")
+       (append                     menu-item "Append to..." append-to-register)
+       (prepend                    menu-item "Prepend to..." prepend-to-register)
+       (sep-to-register "--")
+       (copy-rectangle-to-register menu-item "Copy Rectangle to..." copy-rectangle-to-register)
+       (copy-rectangle-to-register menu-item "Delete Rectangle to..."
+        (lambda (register start end)
+          "Delete the selected rectangle, and copy it to a register that you name."
+          (interactive "cDelete rectangle to register: \nr")
+          (copy-rectangle-to-register register start end t))
+        :visible (not buffer-read-only)
+        :help "Delete the selected rectangle, and copy it to a register that you name."))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for putting the mouse selection in a register.")
+
+;;;###autoload
+(defconst mouse3-region-popup-rectangle-submenu
+    `(rectangle-menu
+      menu-item
+      "Rectangle"
+      (keymap
+       (kill-rectangle               menu-item "Kill"   kill-rectangle   :visible (not buffer-read-only))
+       (delete-rectangle             menu-item "Delete" delete-rectangle :visible (not buffer-read-only))
+       (open-rectangle               menu-item "Open"   open-rectangle   :visible (not buffer-read-only))
+       (yank-rectangle               menu-item "Yank (Replace)"
+        (lambda (start end)
+          "Replace the selected rectangle by the last rectangle killed."
+          (interactive "r")
+          (delete-rectangle start end)
+          (exchange-point-and-mark)
+          (yank-rectangle))
+        :enable (and (boundp 'killed-rectangle) killed-rectangle)
+        :visible (not buffer-read-only)
+        :keys ,(key-description (car (where-is-internal 'yank-rectangle))) ; "<M-S-insert>"
+        :help "Replace the selected rectangle by the last rectangle killed.")
+       (clear-rectangle              menu-item "Clear (Replace)"  clear-rectangle
+        :visible (not buffer-read-only))
+       (string-rectangle             menu-item "String (Replace)" string-rectangle
+        :visible (not buffer-read-only))
+       (delimit-columns-rectangle    menu-item "Delimit Columns"  delimit-columns-rectangle
+        :visible (and (fboundp 'delimit-columns-rectangle) (not buffer-read-only))) ; Emacs 21+.
+       (sep-rectangle                menu-item "--" nil :visible (not buffer-read-only))
+       (delete-rectangle-to-register menu-item "Delete to Register"
+        (lambda (register start end)
+          "Delete the selected rectangle, and copy it to a register you name."
+          (interactive "cDelete rectangle to register: \nr")
+          (copy-rectangle-to-register register start end t))
+        :visible (not buffer-read-only)
+        :help "Delete the selected rectangle, and copy it to a register you name.")
+       (yank-rectangle               menu-item "Replace from Register"
+        (lambda (start end)
+          "Replace the selected rectangle by the contents of a register you name.
+Note that the rectangle currently selected is first killed.  You can
+restore it by yanking."
+          (interactive "r")
+          (kill-rectangle start end)
+          (exchange-point-and-mark)
+          (condition-case nil
+              (call-interactively #'insert-register)
+            (error (exchange-point-and-mark) (yank-rectangle))))
+        :visible (not buffer-read-only)
+        :help "Replace selected rectangle with register you name (rect. is killed).")
+       ;; This is the only item that should show when the buffer is read-only.
+       (copy-rectangle-to-register   menu-item "Copy to Register" copy-rectangle-to-register))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for operations on the rectangle selected by the mouse.")
+        
+;;;###autoload
+(defconst mouse3-region-popup-change-text-submenu
+    '(change-text-menu
+      menu-item
+      "Change Text"
+      (keymap
+       (boxquote-region             menu-item "Boxquote" boxquote-region ; Defined in `boxquote.el'.
+        :visible (fboundp 'boxquote-region))
+       (boxquote-unbox-region       menu-item "Unboxquote" boxquote-unbox-region ; Defined in `boxquote.el'.
+        :visible (fboundp 'boxquote-unbox-region))
+       (delimit-columns-region      menu-item "Delimit Columns" delimit-columns-region
+        :visible (fboundp 'delimit-columns-rectangle)) ; Emacs 21+.
+       (comment-or-uncomment-region menu-item "Comment/Uncomment" comment-or-uncomment-region
+        :visible (fboundp 'comment-or-uncomment-region))
+       (comment-region              menu-item "Comment" comment-region
+        :visible (not (fboundp 'comment-or-uncomment-region)))
+       (uncomment-region            menu-item "Uncomment" uncomment-region
+        :visible (not (fboundp 'comment-or-uncomment-region)))
+       (sep-fill "--")
+       (fill                        menu-item "Fill" fill-region)
+       (fill-as-para                menu-item "Fill as Paragraph" fill-region-as-paragraph)
+       (canonically-space           menu-item "Canonically Space" canonically-space-region)
+       (indent                      menu-item "Indent" indent-region)
+       (sep-word-case "--")
+       (capitalize                  menu-item "Capitalize" capitalize-region)
+       (upcase                      menu-item "Upcase" upcase-region)
+       (downcase                    menu-item "Downcase" downcase-region)
+       (unaccent-region             menu-item "Remove Accents" unaccent-region
+        :visible (fboundp 'unaccent-region))
+       (sep-lines "--")
+       (center-region               menu-item "Center" center-region)
+       (reverse-region              menu-item "Reverse Line Order" reverse-region))
+      ;; Disable this submenu if you cannot edit the buffer or the region is empty.
+      :enable (and (not buffer-read-only) (mouse3-nonempty-region-p)))
+  "Submenu for operations on the mouse selection that change the text.")
+
+;;;###autoload
+(defconst mouse3-region-popup-check-convert-submenu
+    '(check-convert-menu
+      menu-item "Check, Correct, Convert"
+      (keymap
+       (ispell-region             menu-item "Ispell" ispell-region)
+       (flyspell-region           menu-item "Flyspell" flyspell-region)
+       (whitespace-report-region  menu-item "Check Whitespace" whitespace-report-region
+        :visible (fboundp 'whitespace-cleanup-region))
+       (whitespace-cleanup-region menu-item "Clean Up Whitespace" whitespace-cleanup-region
+        :visible (and (fboundp 'whitespace-cleanup-region) (not buffer-read-only)))
+       (printify-region           menu-item "Printify" printify-region
+        :visible (not buffer-read-only))
+       (pr-printify-region        menu-item "PR Printify" pr-printify-region
+        :visible (not buffer-read-only))
+       (compose-region            menu-item "Compose Characters" compose-region
+        :visible (not buffer-read-only))
+       (decompose-region          menu-item "Decompose Characters" decompose-region
+        :visible (not buffer-read-only))
+       (sep-encode                menu-item "--" nil
+        :visible (not buffer-read-only))
+       (encode-coding-region      menu-item "Encode using Coding System" encode-coding-region
+        :visible (not buffer-read-only))
+       (decode-coding-region      menu-item "Decode using Coding System" decode-coding-region
+        :visible (not buffer-read-only))
+       (format-encode-region      menu-item "Encode using Format" format-encode-region
+        :visible (not buffer-read-only))
+       (format-decode-region      menu-item "Decode using Format" format-decode-region
+        :visible (not buffer-read-only))
+       (yenc-decode-region        menu-item "Decode Yenc" yenc-decode-region
+        :visible (and (fboundp 'yenc-decode-region) (not buffer-read-only)))
+       (sep-encrypt               menu-item "--" nil :visible (not buffer-read-only))
+       (epa-encrypt-region        menu-item "EPA Encrypt" epa-encrypt-region
+        :visible (not buffer-read-only))
+       (epa-decrypt-region        menu-item "EPA Decrypt" epa-decrypt-region
+        :visible (not buffer-read-only))
+       (pgg-encrypt-region        menu-item "PGG Encrypt" pgg-encrypt-region
+        :visible (not buffer-read-only))
+       (pgg-decrypt-region        menu-item "PGG Decrypt" pgg-decrypt-region
+        :visible (not buffer-read-only)))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for operations that check, correct, or convert mouse-selection text.")
+
+;;;###autoload
+(defconst mouse3-region-popup-highlight-submenu
+    '(hlt-highlight-menu
+      menu-item "Highlight"
+      (keymap
+       (hlt-highlight-region            menu-item "Highlight" hlt-highlight-region)
+       (hlt-highlight-regexp-region     menu-item "Highlight Regexp" hlt-highlight-regexp-region)
+       (hlt-unhighlight-region          menu-item "Unhighlight" hlt-unhighlight-region)
+       (hlt-unhighlight-region-for-face menu-item "Unhighlight for Face" hlt-unhighlight-region-for-face))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for highlighting or unhighlighting text in the mouse selection.")
+
+;;;###autoload
+(defconst mouse3-region-popup-print-submenu
+    '(print-menu
+      menu-item "Print"
+      (keymap
+       (ps-print-region            menu-item "PostScript Print" ps-print-region)
+       (ps-print-region-with-faces menu-item "PostScript Print with Faces" ps-print-region-with-faces)
+       (pr-ps-region-preview       menu-item "PostScript Preview" pr-ps-region-preview)
+       (ps-nb-pages-region         menu-item "PostScript Number of Pages" ps-nb-pages-region)
+       (sep-print "--")
+       (pr-txt-region              menu-item "Print to Text Printer" pr-txt-region)
+       (lpr-region                 menu-item "Print to Text Printer (`lpr')" lpr-region)
+       (sep-bnf "--" :visible (fboundp 'ebnf-print-region))
+       (ebnf-syntax-region         menu-item "BNF PostScript Analyze" ebnf-syntax-region
+        :visible (fboundp 'ebnf-print-region))
+       (ebnf-print-region          menu-item "BNF PostScript Print " ebnf-print-region
+        :visible (fboundp 'ebnf-print-region))
+       (ebnf-eps-region            menu-item "BNF PostScript Save" ebnf-eps-region
+        :visible (fboundp 'ebnf-print-region)))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for printing the mouse selection.")
+
+;;;###autoload
+(defconst mouse3-region-popup-count-submenu
+    '(count-menu
+      menu-item "Count"
+      (keymap
+       (region-length      menu-item "Characters" region-length
+        :visible (fboundp 'region-length))
+       (count-words-region menu-item "Words" count-words-region)
+       (count-lines-region menu-item "Lines" count-lines-region))
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for counting text objects in the mouse selection.")
+
+;;;###autoload
+(defconst mouse3-region-popup-misc-submenu
+    '(misc-menu
+      menu-item "Misc"
+      (keymap
+       (narrow-to-region            menu-item "Narrow" narrow-to-region)
+       (eval-region                 menu-item "Eval" eval-region)
+       (apply-macro-to-region-lines menu-item "Key-Macro on Region Lines" apply-macro-to-region-lines
+        :enable last-kbd-macro
+        :visible (not buffer-read-only))
+       (shell-command-on-region     menu-item "Shell Command" shell-command-on-region)
+       (write-region                menu-item "Write to File" write-region)
+       (bmkp-set-autonamed-regexp   menu-item "Create Bookmarks Matching" bmkp-set-autonamed-regexp-region
+        :visible (fboundp 'bmkp-set-autonamed-regexp-region)) ; Defined in `bookmark+-1.el'.
+       (bmkp-light-bookmarks        menu-item "Highlight Bookmarks" bmkp-light-bookmarks-in-region
+        :visible (fboundp 'bmkp-light-bookmarks-in-region)) ; Defined in `bookmark+-lit.el'.
+       (browse-url-of-region        menu-item "Open in Browser" browse-url-of-region
+        :visible (fboundp 'browse-url-of-region))) ; Defined in `browse-url.el'.
+      :enable (mouse3-nonempty-region-p)) ; Disable this submenu if the region is empty.
+  "Submenu for miscellaneous operations on the mouse selection.")
+
+;;;###autoload
+(defcustom mouse3-region-popup-entries `(,@mouse3-region-popup-remove/replace-items
+                                         (sep1-std-entries menu-item "--" nil
+                                          :visible (not buffer-read-only))
+                                         ,mouse3-region-popup-remove/replace-rect-submenu
+                                         ,mouse3-region-popup-copy-submenu
+                                         ,mouse3-region-popup-register-submenu
+                                         ,mouse3-region-popup-rectangle-submenu
+                                         ,mouse3-region-popup-change-text-submenu
+                                         ,mouse3-region-popup-check-convert-submenu
+                                         ,(and (fboundp 'hlt-highlight-region)
+                                               mouse3-region-popup-highlight-submenu)
+                                         ,mouse3-region-popup-print-submenu
+                                         ,mouse3-region-popup-count-submenu
+                                         ,mouse3-region-popup-misc-submenu
+                                         )
+  "Entries for the `mouse-3' popup menu.
+The option value is a list.  Each element defines a submenu or a menu
+item.  A null element (`nil') is ignored.
+
+Used only if `mouse3-region-popup-x-popup-panes-flag' is nil.
+
+If `mouse3-region-popup-include-global-menus-flag' is non-nil then a
+global submenu is added at the beginning of the popup menu, before the
+entries from `mouse3-region-popup-entries'.
+
+Several alternative entry formats are available.  When customizing,
+choose an alternative in the Customize `Value Menu'.
+
+In this description:
+ SYMBOL      is a symbol identifying the menu entry.
+ `menu-item' is just that text, literally.
+ NAME        is a string naming the menu item or submenu.
+ COMMAND     is the command to be invoked by an item.
+ MENU-KEYMAP is a menu keymap or a var whose value is a menu keymap.
+ KEYWORDS    is a property list of menu keywords (`:enable',
+             `:visible', `:filter', `:keys', etc.).
+
+1. Single menu item.  For a selectable item, use
+   (SYMBOL menu-item NAME COMMAND . KEYWORDS).  For a non-selectable
+   item such as a separator, use (SYMBOL NAME) or
+   (SYMBOL menu-item NAME nil . KEYWORDS).
+
+2. Items taken from a menu-keymap variable, such as
+   `menu-bar-edit-menu'.  Just use the name of the variable (a
+   symbol).  The items appear at the top level of the popup menu, not
+   in a submenu.
+
+3. Submenu.  Use (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS) or
+   (SYMBOL NAME . MENU-KEYMAP).  Remember that MENU-KEYMAP can also be
+   a variable (symbol) whose value is a menu keymap.
+
+All of these are standard menu elements, with the exception of the use
+of a keymap variable to represent its value.
+
+See also:
+ * (elisp) Format of Keymaps
+ * (elisp) Classifying Events
+ * (elisp) Extended Menu Items
+
+Example submenu element:
+ (edit menu-item \"Edit\" menu-bar-edit-menu)
+
+Example selectable menu-item element:
+ (kill menu-item \"Kill\"   kill-region
+       :visible (and (not buffer-read-only)
+                     (mouse3-nonempty-region-p)))
+
+\(`mouse3-nonempty-region-p' returns non-nil if the region is active
+and not empty.)"
+  :type  '(repeat
+           (choice
+            ;; These could be combined, but it's better for users to see separate choices.
+            (restricted-sexp
+             :tag "Submenu (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS) or (SYMBOL NAME . MENU-KEYMAP)"
+             :match-alternatives
+             ((lambda (x)
+                (and (consp x) (symbolp (car x))
+                     (or (and (stringp (cadr x)) (cddr x)) ; (SYMBOL NAME . MENU-KEYMAP)
+                         ;; (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS)
+                         (and (eq 'menu-item (cadr x))
+                              (stringp (car (cddr x)))
+                              (or (keymapp (car (cdr (cddr x)))) ; Can be a keymap var.
+                                  (and (symbolp (car (cdr (cddr x))))
+                                       (boundp (car (cdr (cddr x))))
+                                       (keymapp (symbol-value (car (cdr (cddr x)))))))))))
+              'nil))
+            (restricted-sexp
+             :tag "Items from a keymap variable's value."
+             :match-alternatives ((lambda (x) (and (symbolp x) (keymapp (symbol-value x))))
+                                  'nil))
+            (restricted-sexp
+             :tag "Selectable item (SYMBOL menu-item NAME COMMAND . KEYWORDS)"
+             :match-alternatives ((lambda (x) (and (consp x) (symbolp (car x))
+                                                   (eq 'menu-item (cadr x))
+                                                   (stringp (car (cddr x)))
+                                                   (commandp (car (cdr (cddr x))))))
+                                  'nil))
+            (restricted-sexp
+             :tag "Non-selectable item (SYMBOL NAME) or (SYMBOL menu-item NAME nil . KEYWORDS)"
+             :match-alternatives ((lambda (x) (and (consp x) (symbolp (car x))
+                                                   (or (and (stringp (cadr x)) (null (caddr x)))
+                                                       (and (eq 'menu-item (cadr x))
+                                                            (stringp (car (cddr x)))
+                                                            (null (car (cdr (cddr x))))))))
+                                  'nil))))
+  :group 'mouse3)
+
+(defun mouse3-region-popup-custom-entries ()
+  "In `mouse3-region-popup-entries', replace keymap vars by their values."
+  (let ((new  ()))
+    (dolist (jj  mouse3-region-popup-entries)
+      (cond ((and (symbolp jj) (keymapp (symbol-value jj))) ; Just a keymap var.
+             (setq jj  (symbol-value jj))
+             (dolist (ii  jj) (push ii new)))
+            ;; (SYMBOL menu-item NAME MENU-KEYMAP . KEYWORDS), with a keymap var.
+            ((and (consp jj) (symbolp (car jj)) (eq 'menu-item (cadr jj))
+                  (stringp (car (cddr jj))) (symbolp (car (cdr (cddr jj))))
+                  (not (commandp (car (cdr (cddr jj))))) (boundp (car (cdr (cddr jj))))
+                  (keymapp (symbol-value (car (cdr (cddr jj))))))
+             (setq jj  `(,(car jj) menu-item ,(car (cddr jj))
+                         ,(symbol-value (car (cdr (cddr jj)))) ; Replace keymap var by its value.
+                         ,@(cdr (cdr (cddr jj))))) ; Keywords.
+             (push jj new))
+            ((and (consp jj) (symbolp (car jj)) (stringp (cadr jj)) ; (SYMBOL NAME . MENU-KEYMAP)
+                  (symbolp (cddr jj)) (boundp (cddr jj)) (keymapp (symbol-value (cddr jj))))
+             (setq jj  `(,(car jj) ,(cadr jj) ,@(symbol-value (cddr jj)))) ; Replace keymap var by value.
+             (push jj new))
+            (t (push jj new))))
+    (nreverse new)))
 
 (defun mouse3-second-click-command ()
   "Command used for a second `mouse-3' click at the same location.
@@ -349,8 +1037,9 @@ Return the value of `mouse3-save-then-kill-command' if non-nil, else
 return the value of `mouse3-second-click-default-command'."
   (or mouse3-save-then-kill-command
       mouse3-second-click-default-command
-      'mouse3-kill/delete-region))
+      'mouse3-kill/delete-region))      ; Should never happen, since option cannot be customized to nil.
 
+;;;###autoload
 (defun mouse3-kill/delete-region (event killp)
   "Delete the active region.  Kill it if KILLP is non-nil.
 Kill it anyway if `mouse-drag-copy-region' is non-nil.
@@ -365,18 +1054,104 @@ For Emacs prior to Emacs 22, always kill region."
           (kill-region (region-beginning) (region-end))
         (delete-region (region-beginning) (region-end))))))
 
-(defun mouse3-region-popup-menu (event prefix)
-  "Pop up a menu of actions for the selected text."
+;;;###autoload
+(defun mouse3-region-popup-menu (event ignored)
+  "Pop up a `Region' menu of actions for the selected text.
+See options `mouse3-region-popup-entries',
+`mouse3-region-popup-x-popup-panes-flag', and
+`mouse3-region-popup-x-popup-panes'.  .
+
+You have two alternatives, which correspond to the value of option
+`mouse3-region-popup-x-popup-panes-flag' (and to the
+possibilities for the MENU argument of function `x-popup-menu'):
+
+1. nil (recommended) - Define the menu as a keymap, using submenu
+   keymaps and `menu-item' bindings.
+
+2. non-nil - Define the menu using a (non-keymap) `x-popup-menu' panes
+   list, `mouse3-region-popup-x-popup-panes'.
+
+The first alternative lets you make use of keywords such as `:enable'
+and `:visible', and it lets you reuse existing menu keymaps.
+
+The second alternative allows easy customization of individual menu
+items, but it does not let you use menu keywords or reuse existing
+keymaps.
+
+For the first alternative, in addition to the items and submenus
+supplied by `mouse3-region-popup-entries', a submenu is added at the
+beginning of the popup menu for either (a) the menu-bar menus (if the
+menu bar is not visible) or (b) the major-mode menus.  (This is only
+for Emacs 23+.)"
   (interactive "e\nP")
   (sit-for 0)
-  (let ((selection  (x-popup-menu event `("Selection" ,@mouse3-region-popup-submenus))))
-    (and selection (call-interactively selection))))
+  (let* ((menus   (if (and mouse3-region-popup-x-popup-panes-flag
+                           mouse3-region-popup-x-popup-panes)
+                      `(,(if (mouse3-nonempty-region-p) "Region" "No Region")
+                        ,@mouse3-region-popup-x-popup-panes)
+
+                    `((keymap ,(if (mouse3-nonempty-region-p) "Region" "No Region")
+
+                       ;; Global menus - Emacs 23+ only.
+                       ,@(and mouse3-region-popup-include-global-menus-flag (fboundp 'mouse-menu-bar-map)
+                              (if (zerop (or (frame-parameter nil 'menu-bar-lines) 0))
+                                  `((menu-bar-maps "Menu Bar" ,@(mouse-menu-bar-map)))
+                                ;; Alternative: a `@' prefix in the name makes Emacs splice
+                                ;; in the major-mode menunstead of having a submenu
+                                ;; with the major-mode name.
+                                ;; `((major-mode-map "@" ,@(mouse-menu-major-mode-map)))
+                                `((major-mode-map ,mode-name ,@(mouse-menu-major-mode-map)))))
+                       ,@(and mouse3-region-popup-include-global-menus-flag (fboundp 'mouse-menu-bar-map)
+                              '((sep1-global "--")))
+
+                       ;; Entries from `mouse3-region-popup-entries'.
+                       ,@(mouse3-region-popup-custom-entries)))))
+         (choice  (x-popup-menu event menus)))
+    (mouse3-region-popup-choice menus choice)))
+
+(defun mouse3-region-popup-choice (menus choice)
+  "Invoke the command from MENUS that is represented by user's CHOICE.
+MENUS is a list that is acceptable as the second argument for
+`x-popup-menu'.  That is, it is one of the following, where MENU-TITLE
+is the menu title and PANE-TITLE is a submenu title.
+
+* a keymap - MENU-TITLE is its `keymap-prompt'
+* a list of keymaps - MENU-TITLE is the first keymap's `keymap-prompt'
+* a menu of multiple panes, which has this form: (MENU-TITLE PANE...),
+  where each PANE has this form: (PANE-TITLE ITEM...),
+  where each ITEM has one of these forms:
+  - STRING - an unselectable menu item
+  - (STRING . COMMAND) - a selectable item that invokes COMMAND"
+  (catch 'mouse3-region-popup-choice (mouse3-region-popup-choice-1 menus choice)))
+
+(defun mouse3-region-popup-choice-1 (menus choice)
+  "Helper function for `mouse3-region-popup-choice'."
+  (cond((keymapp menus)
+         ;; Look up each ITEM-LIST entry in keymap MENUS.
+         ;;   If what is found is a keymap, use that as MENUS for next iteration.
+         ;;   If what is found is a command, invoke it (done).
+         (let (binding)
+           (while choice
+             (setq binding  (lookup-key menus (vector (car choice))))
+             (cond ((keymapp binding)
+                    (setq menus   binding
+                          choice  (cdr choice)))
+                   ((commandp binding)
+                    (throw 'mouse3-region-popup-choice (call-interactively binding))) ; You only get one.
+                   (t (error "`mouse3-region-popup-choice', binding: %s" binding))))))
+        ((consp menus)                  ; A list of keymaps or panes.
+         (dolist (menu  menus)
+           (if (keymapp menu)
+               (mouse3-region-popup-choice-1 menu choice)
+             (when choice               ; MENU is a pane.
+               (throw 'mouse3-region-popup-choice (call-interactively choice)))))))) ; You only get one.
 
 
 ;; REPLACE ORIGINAL in `mouse.el'.
 ;;
 ;; Use `mouse3-second-click-command' to determine the action for a second `mouse-3' click.
 ;;
+;;;###autoload
 (defun mouse-save-then-kill (click &optional prefix)
   "Like vanilla `mouse-save-then-kill', but uses `mouse3-second-click-command'."
   (interactive "e\nP")
@@ -436,179 +1211,224 @@ For Emacs prior to Emacs 22, always kill region."
 ;;; Behavior for particular modes.
 
 ;;; Dired mode.
-(defun mouse3-dired-region-menu (event prefix)
-  "Popup menu for Dired mode, to act on the selected files."
-  (interactive "e\nP")
-  (sit-for 0)
-  (let ((selection
-         (x-popup-menu
-          event
-          (list
-           "Selected Files"
-           '(""
-             ("Mark" . mouse3-dired-mark-region-files)
-             ("Unmark" . mouse3-dired-unmark-region-files)
-             ("Toggle Marked/Unmarked" . mouse3-dired-toggle-marks-in-region)
-             ("Flag for Deletion" . mouse3-dired-flag-region-files-for-deletion))))))
-    (and selection (call-interactively selection))))
 
+;;;###autoload
 (defun mouse3-dired-use-menu ()
   "Make a second `mouse-3' click at the same place pop up a menu in Dired."
   (interactive)
-  ;; The `define-key's are not needed unless you use `dired+.el'.
-  ;; In that case, this overrides the Dired+ behavior, which is a more complex menu.
-  (when (featurep 'dired+)
-    (define-key dired-mode-map [down-mouse-3] nil)
-    (define-key dired-mode-map [mouse-3] nil))
-  (remove-hook 'dired-mode-hook
-               (lambda ()
-                 (set (make-local-variable 'mouse3-save-then-kill-command)
-                      'mouse3-dired-toggle-marks-in-region)))
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (set (make-local-variable 'mouse3-save-then-kill-command)
-                   'mouse3-dired-region-menu))))
+  (remove-hook 'dired-after-readin-hook 'mouse3-dired-set-to-toggle-marks)
+  (add-hook 'dired-after-readin-hook 'mouse3-dired-add-region-menu))
 
+(defun mouse3-dired-add-region-menu ()
+  "Add a `Selected Files' submenu to `mouse-3' pop-up menu.
+Provides commands to act on the selected files and directories."
+  (set (make-local-variable 'mouse3-region-popup-x-popup-panes-flag) nil)
+  (let ((default-entries  mouse3-region-popup-entries))
+    (set (make-local-variable 'mouse3-region-popup-entries)
+         `((dired-menu
+            "Selected Files" keymap
+            (mark-region   menu-item "Mark"                   mouse3-dired-mark-region-files)
+            (unmark-region menu-item "Unmark"                 mouse3-dired-unmark-region-files)
+            (toggle-marked menu-item "Toggle Marked/Unmarked" mouse3-dired-toggle-marks-in-region-from-mouse)
+            (flag          menu-item "Flag for Deletion"      mouse3-dired-flag-region-files-for-deletion)
+            ;; If not using Dired+, include an item to turn off menu.
+            ,@(and (eq (lookup-key dired-mode-map [mouse-3]) 'mouse-save-then-kill)
+                   '((sep1-dired "--")
+                     (turn-off-menu menu-item "Stop Using Menu" mouse3-dired-use-toggle-marks))))
+           ,@default-entries))))
+
+;; This needs to come after the definitions of `mouse3-dired-use-menu' and `mouse3-dired-add-region-menu'.
+;;;###autoload
+(defcustom mouse3-dired-function 'mouse3-dired-use-menu
+  "Fuction to call to update `dired-after-readin-hook' for `mouse-3' behavior."
+  :type '(choice
+          (function :tag "Use menu"     'mouse3-dired-use-menu)
+          (function :tag "Toggle marks" 'mouse3-dired-use-toggle-marks)
+          (const    :tag "No special behavior" :value nil))
+  :set #'(lambda (sym defs)
+           (custom-set-default sym defs)
+           (if (functionp mouse3-dired-function)
+               (funcall mouse3-dired-function)
+             (remove-hook 'dired-after-readin-hook 'mouse3-dired-set-to-toggle-marks)
+             (remove-hook 'dired-after-readin-hook 'mouse3-dired-add-region-menu))
+           (when (eq major-mode 'dired-mode) (revert-buffer))) ; Refresh to get new binding.
+  :initialize #'custom-initialize-reset
+  :group 'mouse3)
+
+;;;###autoload
 (defun mouse3-dired-use-toggle-marks ()
-  "Make a second `mouse-3' click at the same place toggle marks in Dired."
+  "Make a second `mouse-3' click at the same place toggle marks in Dired.
+If you use Dired+ (`dired+.el') then this is a no-op."
   (interactive)
-  ;; The `define-key's are not needed unless you use `dired+.el'.
-  ;; In that case, this overrides the Dired+ behavior, which is a complex menu.
-  (when (featurep 'dired+)
-    (define-key dired-mode-map [down-mouse-3] nil)
-    (define-key dired-mode-map [mouse-3] nil))
-  (remove-hook 'dired-mode-hook
-               (lambda ()
-                 (set (make-local-variable 'mouse3-save-then-kill-command)
-                      'mouse3-dired-region-menu)))
-  (add-hook 'dired-mode-hook
-            (lambda ()
-              (set (make-local-variable 'mouse3-save-then-kill-command)
-                   'mouse3-dired-toggle-marks-in-region))))
+  (if (not (featurep 'dired+))
+      (add-hook 'dired-after-readin-hook 'mouse3-dired-set-to-toggle-marks)
+    (ding) (message "Canceled.  Use the popup menu in Dired+.")))
 
-(defun mouse3-dired-toggle-marks-in-region (ignore1 ignore2)
+(defun mouse3-dired-set-to-toggle-marks ()
+  "Set `mouse3-save-then-kill-command' to toggle Dired marks."
+  (set (make-local-variable 'mouse3-save-then-kill-command) 'mouse3-dired-toggle-marks-in-region-from-mouse))
+
+;;;###autoload
+(defun mouse3-dired-toggle-marks-in-region-from-mouse (ignore1 ignore2)
   "Toggle marked and unmarked files and directories in region."
   (interactive "e\nP")
-  (save-restriction (narrow-to-region (region-beginning) (region-end))
-                    (if (< emacs-major-version 21)
-                        (dired-do-toggle)
-                      (dired-toggle-marks))))
+  (mouse3-dired-toggle-marks-in-region (region-beginning) (region-end)))
 
-;; The next 3 commands are borrowed from `dired+.el'.
-(defun mouse3-dired-mark-region-files (&optional unmark-p)
+
+;;;-------------------------------------------------------------------
+;;; The next 6 functions are borrowed from `dired+.el'.
+;;; Only the prefix was changed, from `diredp-' to `mouse3-dired-'.
+
+;;;###autoload
+(defun mouse3-dired-toggle-marks-in-region (start end) ; Same as `diredp-toggle-marks-in-region.
+  "Toggle marks in the region."
+  (interactive "r")
+  (save-excursion
+    (save-restriction
+      (if (not (fboundp 'dired-toggle-marks))
+          ;; Pre-Emacs 22.  Use bol, eol.  If details hidden, show first.
+          (let ((details-hidden-p  (and (boundp 'dired-details-state)
+                                        (eq 'hidden dired-details-state))))
+            (widen)
+            (when details-hidden-p (dired-details-show))
+            (goto-char start)
+            (setq start  (line-beginning-position))
+            (goto-char end)
+            (setq end    (line-end-position))
+            (narrow-to-region start end)
+            (dired-do-toggle)
+            (when details-hidden-p (dired-details-hide)))
+        (narrow-to-region start end)
+        (dired-toggle-marks))))
+  (when (and (get-buffer-window (current-buffer)) (fboundp 'fit-frame-if-one-window))
+    (fit-frame-if-one-window)))
+
+(defun mouse3-dired-this-file-marked-p (&optional mark-char) ; Same as `diredp-this-file-marked-p'.
+  "Return non-nil if the file on this line is marked.
+Optional arg MARK-CHAR is the type of mark to check.
+ If nil, then if the file has any mark, including `D', it is marked."
+  (and (dired-get-filename t t)
+       (save-excursion (beginning-of-line)
+                       (if mark-char
+                           (looking-at (concat "^" (char-to-string mark-char)))
+                         (not (looking-at "^ "))))))
+
+(defun mouse3-dired-this-file-unmarked-p (&optional mark-char) ; Same as `diredp-this-file-unmarked-p'.
+  "Return non-nil if the file on this line is unmarked.
+Optional arg MARK-CHAR is the type of mark to check.
+ If nil, then if the file has no mark, including `D', it is unmarked.
+ If non-nil, then it is unmarked for MARK-CHAR if it has no mark or
+ it has any mark except MARK-CHAR."
+  (and (dired-get-filename t t)
+       (save-excursion (beginning-of-line)
+                       (if mark-char
+                           (not (looking-at (concat "^" (char-to-string mark-char))))
+                         (looking-at "^ ")))))
+
+;;;###autoload
+(defun mouse3-dired-mark-region-files (&optional unmark-p) ; Same as `diredp-mark-region-files'.
   "Mark all of the files in the current region (if it is active).
-With non-nil prefix arg UNMARK-P, unmark them instead."
+With non-nil prefix arg, unmark them instead."
   (interactive "P")
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
+          end  (save-excursion (goto-char end) (end-of-line) (point)))
     (let ((dired-marker-char  (if unmark-p ?\040 dired-marker-char)))
-      (dired-mark-if (and (<= (point) end) (>= (point) beg)) "in region"))))
+      (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p))
+                     "region file"))))
 
-(defun mouse3-dired-unmark-region-files (&optional mark-p)
+;;;###autoload
+(defun mouse3-dired-unmark-region-files (&optional mark-p) ; Same as `diredp-unmark-region-files'.
   "Unmark all of the files in the current region (if it is active).
-With non-nil prefix arg UNMARK-P, mark them instead."
+With non-nil prefix arg, mark them instead."
   (interactive "P")
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
+          end  (save-excursion (goto-char end) (end-of-line) (point)))
     (let ((dired-marker-char  (if mark-p dired-marker-char ?\040)))
-      (dired-mark-if (and (<= (point) end) (>= (point) beg)) "in region"))))
+      (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-marked-p))
+                     "region file"))))
 
-(defun mouse3-dired-flag-region-files-for-deletion ()
+;;;###autoload
+(defun mouse3-dired-flag-region-files-for-deletion () ; Same as `diredp-flag-region-files-for-deletion'.
   "Flag all of the files in the current region (if it is active) for deletion."
   (interactive)
   (let ((beg                        (min (point) (mark)))
         (end                        (max (point) (mark)))
         (inhibit-field-text-motion  t)) ; Just in case.
-    (setq beg (save-excursion (goto-char beg) (beginning-of-line) (point))
-          end (save-excursion (goto-char end) (end-of-line) (point)))
+    (setq beg  (save-excursion (goto-char beg) (beginning-of-line) (point))
+          end  (save-excursion (goto-char end) (end-of-line) (point)))
     (let ((dired-marker-char  dired-del-marker))
-      (dired-mark-if (and (<= (point) end) (>= (point) beg)) "in region"))))
-
+      (dired-mark-if (and (<= (point) end) (>= (point) beg) (mouse3-dired-this-file-unmarked-p ?\D))
+                     "region file"))))
+ 
 ;;; Picture mode.
-;;;; (defcustom mouse3-picture-mode-submenu
-;;;;   `,@`(("Clear Rectangle"             . picture-clear-rectangle)
-;;;;        ("Kill Rectangle"
-;;;;         . (lambda (start end)
-;;;;             "Kill the selected rectangle.
-;;;; You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
-;;;;             (interactive "r")
-;;;;             (picture-clear-rectangle start end 'KILLP)))
-;;;;        ("Clear Rectangle to Register" . picture-clear-rectangle-to-register)
-;;;;        ("Draw Rectangle"              . picture-draw-rectangle)
-;;;;        ,@(and (consp picture-killed-rectangle) 
-;;;;               '(("Yank Picture Rectangle (Replace)"
-;;;;                  . picture-yank-rectangle)))
-;;;;        ("Yank Rectangle from Register (Replace)"
-;;;;         . (lambda ()
-;;;;             "Replace the selected rectangle by the contents of a register you name."
-;;;;             (interactive)
-;;;;             (exchange-point-and-mark)
-;;;;             (call-interactively #'picture-yank-rectangle-from-register))))
-;;;;   "Picture mode submenu of popup menu for `mouse-3'."
-;;;;   :type '(repeat
-;;;;           (choice
-;;;;            (cons :tag "Item"
-;;;;             (string :tag "Name")
-;;;;             ;; This is more correct but gives `mismatch' in Emacs < version 24:
-;;;;             ;; (restricted-sexp :tag "Command" :match-alternatives (commandp))
-;;;;             (sexp :tag "Command"))
-;;;;            (list :tag "Separator" (const "--"))))
-;;;;   :group 'mouse)
+;;;
+;;; This code shows an example of using a (local) non-nil `mouse3-region-popup-x-popup-panes-flag'.
 
-;;;; (add-hook
-;;;;  'picture-mode-hook
-;;;;  (lambda ()
-;;;;    (set (make-local-variable 'mouse3-region-popup-submenus)
-;;;;         (cons
-;;;;          `("Picture Mode" mouse3-picture-mode-submenu)
-;;;;          (copy-tree mouse3-region-popup-submenus)))))
+;;;###autoload
+(defcustom mouse3-picture-mode-x-popup-panes
+  `,@`(("Clear Rectangle"             . picture-clear-rectangle)
+       ("Kill Rectangle"
+        . (lambda (start end)
+            "Kill the selected rectangle.
+You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
+            (interactive "r")
+            (picture-clear-rectangle start end 'KILLP)))
+       ("Clear Rectangle to Register" . picture-clear-rectangle-to-register)
+       ("Draw Rectangle"              . picture-draw-rectangle)
+       ,@(and (boundp 'picture-killed-rectangle) (consp picture-killed-rectangle)
+              '(("Yank Picture Rectangle (Replace)"
+                 . picture-yank-rectangle)))
+       ("Yank Rectangle from Register (Replace)"
+        . (lambda ()
+            "Replace the selected rectangle by the contents of a register you name."
+            (interactive)
+            (exchange-point-and-mark)
+            (call-interactively #'picture-yank-rectangle-from-register))))
+  "Picture mode submenu of popup menu for `mouse-3'."
+  :type '(repeat
+          (choice
+           (cons :tag "Item"
+            (string :tag "Name")
+            ;; This is more correct but gives `mismatch' in Emacs < version 24:
+            ;; (restricted-sexp :tag "Command" :match-alternatives (commandp))
+            (sexp :tag "Command"))
+           (list :tag "Separator" (const "--"))))
+  :group 'mouse)
 
 (add-hook
  'picture-mode-hook
  (lambda ()
-   (set (make-local-variable 'mouse3-region-popup-submenus)
-        (cons
-         `("Picture Mode"
-           ,@`(("Clear Rectangle"             . picture-clear-rectangle)
-               ("Kill Rectangle"
-                . (lambda (start end)
-                    "Kill the selected rectangle.
-You can yank it using \\<picture-mode-map>`\\[picture-yank-rectangle]'."
-                    (interactive "r")
-                    (picture-clear-rectangle start end 'KILLP)))
-               ("Clear Rectangle to Register" . picture-clear-rectangle-to-register)
-               ("Draw Rectangle"              . picture-draw-rectangle)
-               ,@(and (consp picture-killed-rectangle) 
-                      '(("Yank Picture Rectangle (Replace)"
-                         . picture-yank-rectangle)))
-               ("Yank Rectangle from Register (Replace)"
-                . (lambda ()
-                    "Replace the selected rectangle by the contents of a register you name."
-                    (interactive)
-                    (exchange-point-and-mark)
-                    (call-interactively #'picture-yank-rectangle-from-register)))))
-         (copy-tree mouse3-region-popup-submenus)))))
+   (set (make-local-variable 'mouse3-region-popup-x-popup-panes-flag) t)
+   (set (make-local-variable 'mouse3-region-popup-x-popup-panes)
+        (cons `("Picture Mode" ,@mouse3-picture-mode-x-popup-panes)
+              (copy-tree mouse3-region-popup-x-popup-panes)))))
 
-;;; Org mode.
-(add-hook 'org-mode-hook
-          (lambda ()
-            (set (make-local-variable 'mouse3-region-popup-submenus)
-                 (cons '("Org Mode"
-                         ("Shift Time"          . org-timer-change-times-in-region)
-                         ("Convert to ASCII"    . org-replace-region-by-ascii)
-                         ("Convert to HTML"     . org-replace-region-by-html)
-                         ("Convert to DocBook"  . org-replace-region-by-docbook)
-                         ("Convert to LaTeX"    . org-replace-region-by-latex))
-                       (copy-tree mouse3-region-popup-submenus)))))
+
+;;; Org mode - example popup menu.
+
+;;; ;; TO-DO: Use a keymap, not x-popup panes, to at least recuperate any standard Org mode menus.
+;;; (add-hook 'org-mode-hook
+;;;           (lambda ()
+;;;             (set (make-local-variable 'mouse3-region-popup-x-popup-panes-flag) t)
+;;;             (set (make-local-variable 'mouse3-region-popup-x-popup-panes)
+;;;                  (cons '("Org Mode"
+;;;                          ("Shift Time"          . org-timer-change-times-in-region)
+;;;                          ("Convert to ASCII"    . org-replace-region-by-ascii)
+;;;                          ("Convert to HTML"     . org-replace-region-by-html)
+;;;                          ("Convert to DocBook"  . org-replace-region-by-docbook)
+;;;                          ("Convert to LaTeX"    . org-replace-region-by-latex))
+;;;                        (copy-tree mouse3-region-popup-x-popup-panes)))))
 
 
 
+;;; --------------------------------------------------
+;;;
 ;;; An example of binding variable `mouse3-save-then-kill-command', taken from Icicles.
 ;;; Without the variable this definition would need to duplicate all of the
 ;;; `mouse-save-then-kill' code, changing just one line of it.

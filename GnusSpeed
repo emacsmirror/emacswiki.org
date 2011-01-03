@@ -32,6 +32,8 @@ There is no variable which says â€žonly download attachments when I ask you toâ€
 
 A plan to implement this functionality is sketched [http://article.gmane.org/gmane.emacs.gnus.general/68849 in this message]. Other previous discussions: [http://thread.gmane.org/gmane.emacs.gnus.general/62566/focus=62942], [http://article.gmane.org/gmane.emacs.gnus.general/45714]
 
+The current Gnus development version has this functionality.  Have a look at the variable `nnimap-fetch-partial-articles'.
+
 ==What would be needed in the long term to make Gnus fast?==
 
 ===Work asynchronously===

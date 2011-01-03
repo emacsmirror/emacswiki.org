@@ -100,6 +100,7 @@
           (
            "anything-minimal"
            "http://www.emacswiki.org/emacs/download/anything-migemo.el" ; Migemo extension for Japanese
+           "http://www.emacswiki.org/emacs/download/anything-obsolete.el" ; obsolete functions
            "http://www.emacswiki.org/emacs/download/anything-complete.el" ; Completion
            "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
            "http://www.emacswiki.org/emacs/download/anything-auto-install.el" ; auto-install extension
@@ -109,7 +110,6 @@
            "http://www.emacswiki.org/emacs/download/anything-gtags.el" ; GNU GLOBAL interface
            "http://www.emacswiki.org/emacs/download/ipa.el" ; In-Place-Annotation
            "http://www.emacswiki.org/emacs/download/anything-ipa.el" ; In-Place-Annotation
-           "http://www.emacswiki.org/emacs/download/anything-obsolete.el" ; obsolete functions
            "http://www.emacswiki.org/emacs/download/anything-startup.el" ; Startup file
            ))
          ;; SDCV (Interface for StartDict console version)
