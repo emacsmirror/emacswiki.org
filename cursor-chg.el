@@ -4,12 +4,12 @@
 ;; Description: Change cursor dynamically, depending on the context.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 29 11:23:06 2006
 ;; Version: 20.1
-;; Last-Updated: Fri Jan 15 12:43:43 2010 (-0800)
+;; Last-Updated: Mon Jan  3 20:29:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 192
+;;     Update #: 198
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cursor-chg.el
 ;; Keywords: cursor, accessibility
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -92,6 +92,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookies for defcustom and commands.
 ;; 2006/10/28 dadams
 ;;     curchg-default-cursor-color, curchg-input-method-cursor-color:
 ;;       Changed :type to 'color for Emacs 21+.
@@ -141,31 +143,38 @@ use either \\[customize] or command `change-cursor-mode'."
     :initialize 'custom-initialize-default
     :type 'boolean :group 'cursor :require 'cursor-chg))
 
+;;;###autoload
 (defcustom curchg-change-cursor-on-input-method-flag t
   "*Non-nil means to use a different cursor when using an input method."
   :type 'boolean :group 'cursor)
 
+;;;###autoload
 (defcustom curchg-change-cursor-on-overwrite/read-only-flag t
   "*Non-nil means use a different cursor for overwrite mode or read-only."
   :type 'boolean :group 'cursor)
 
+;;;###autoload
 (defcustom curchg-default-cursor-color (or (cdr (assq 'cursor-color default-frame-alist))
                                            "Red")
   "*Default text cursor color for non-special frames."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'cursor)
 
+;;;###autoload
 (defcustom curchg-default-cursor-type 'bar "*Default text cursor type."
   :type 'symbol :group 'cursor)
 
+;;;###autoload
 (defcustom curchg-idle-cursor-type 'box
   "*Text cursor type when Emacs is idle."
   :type 'symbol :group 'cursor)
 
+;;;###autoload
 (defcustom curchg-input-method-cursor-color "Orange"
   "*Default cursor color if using an input method.
 This has no effect if `curchg-change-cursor-on-input-method-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'cursor)
 
+;;;###autoload
 (defcustom curchg-overwrite/read-only-cursor-type 'box
   "*Default text cursor type for overwrite mode or read-only buffer.
 This applies only to non-special frames.  This has no effect if
@@ -201,6 +210,7 @@ Do NOT change this yourself; instead, use `\\[toggle-cursor-type-when-idle]'.")
 
 (unless (fboundp 'set-cursor-type) (defalias 'set-cursor-type 'curchg-set-cursor-type))
 ;; This is essentially from Juri Linkov <juri@jurta.org>.
+;;;###autoload
 (defun curchg-set-cursor-type (cursor-type)
   "Set the cursor type of the selected frame to CURSOR-TYPE.
 When called interactively, prompt for the type to use.
@@ -210,7 +220,9 @@ To get the frame's current cursor type, use `frame-parameters'."
                                   (mapcar 'list '("box" "hollow" "bar" "hbar" nil))))))
   (modify-frame-parameters (selected-frame) (list (cons 'cursor-type cursor-type))))
 
+;;;###autoload
 (defalias 'toggle-cursor-type-when-idle 'curchg-toggle-cursor-type-when-idle)
+;;;###autoload
 (defun curchg-toggle-cursor-type-when-idle (&optional arg)
 "Turn on or off automatically changing cursor type when Emacs is idle.
 When on, use `curchg-idle-cursor-type' whenever Emacs is idle.
@@ -227,6 +239,7 @@ With prefix argument, turn on if ARG > 0; else turn off."
          (remove-hook 'pre-command-hook 'curchg-change-cursor-to-idle-type-off)
          (message "Turned OFF changing cursor when Emacs is idle."))))
 
+;;;###autoload
 (defun curchg-change-cursor-when-idle-interval (secs)
   "Set wait until automatically change cursor type when Emacs is idle.
 Whenever Emacs is idle for this many seconds, the cursor type will

@@ -4,15 +4,15 @@
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 16:38:23 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:40:10 2010 (-0800)
+;; Last-Updated: Mon Jan  3 20:05:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 794
+;;     Update #: 803
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+.el
 ;; Keywords: tools, processes
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -62,6 +62,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Corrected compatibility: Emacs 22+, not 21+.
 ;; 2009/02/22 dadams
 ;;     compilation-goto-locus:
 ;;       Respect until-move value of next-error-highlight (defined in simple+.el).
@@ -103,7 +105,7 @@
 ;;; Code:
 
 (require 'compile-) ;; compilation-mouseover
-(require 'compile) ;; compilation-error-regexp-alist-alist, compilation-minor-mode-map,
+(require 'compile) ;; compilation-error-regexp-alist-alist, compilation-minor-mode-map
 
 (require 'misc-fns nil t) ;; (no error if not found): undefine-killer-commands
 

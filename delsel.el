@@ -4,13 +4,13 @@
 ;; Description: Delete the region (selection) upon char insertion or DEL.
 ;; Author: Matthieu Devin <devin@lucid.com>, Drew Adams
 ;; Maintainer: D. ADAMS
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 1992 Free Software Foundation, Inc.
 ;; Created: Fri Dec  1 13:51:31 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:49:43 2010 (-0800)
+;; Last-Updated: Mon Jan  3 20:50:15 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 323
+;;     Update #: 326
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/delsel.el
 ;; Keywords: abbrev, emulations, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -88,6 +88,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookie for command.
 ;; 2009/10/02 dadams
 ;;     minibuffer-keyboard-quit:
 ;;       Don't call delete-windows-on if no buffer.  Thx to Tetzlaff.
@@ -330,6 +332,7 @@ either \\[customize] or function `delete-selection-mode'."
 
 ;; This can be used to cancel a selection in the minibuffer without
 ;; aborting the minibuffer.
+;;;###autoload
 (defun minibuffer-keyboard-quit ()
   "Abort recursive edit.
 In Delete Selection mode, if the mark is active, just deactivate it;

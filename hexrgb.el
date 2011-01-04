@@ -4,12 +4,12 @@
 ;; Description: Functions to manipulate colors, including RGB hex strings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Sat Dec 18 20:50:02 2010 (-0800)
+;; Last-Updated: Mon Jan  3 14:36:40 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 739
+;;     Update #: 743
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/12/18 dadams
 ;;     hexrgb-canonicalize-defined-colors: Added autoload cookie.  Thx to Richard Kim.
 ;; 2010/12/06 dadams
@@ -171,7 +173,6 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;###autoload
 (eval-and-compile
  (defun hexrgb-canonicalize-defined-colors (list)
    "Copy of LIST with color names canonicalized.
@@ -353,7 +354,6 @@ Optional arg PROMPT is the prompt.  Nil means use a default prompt."
       (when (interactive-p) (message "Color: `%s'" color))
       color)))
 
-;;;###autoload
 (defun hexrgb-rgb-hex-string-p (color &optional laxp)
   "Non-nil if COLOR is an RGB string #XXXXXXXXXXXX.
 Each X is a hex digit.  The number of Xs must be a multiple of 3, with
@@ -432,7 +432,6 @@ COLOR is a color name or hex RGB string that starts with \"#\"."
     (/ (hexrgb-hex-to-int (substring color start (+ start len)))
        (expt 16.0 (/ (1- (length color)) 3.0)))))
 
-;;;###autoload
 (defun hexrgb-rgb-to-hsv (red green blue)
   "Convert RED, GREEN, BLUE components to HSV (hue, saturation, value).
 Each input component is 0.0 to 1.0, inclusive.
@@ -469,7 +468,6 @@ Returns a list of HSV components of value 0.0 to 1.0, inclusive."
               saturation  0.0)))
     (list hue saturation value)))
 
-;;;###autoload
 (defun hexrgb-hsv-to-rgb (hue saturation value)
   "Convert HUE, SATURATION, VALUE components to RGB (red, green, blue).
 Each input component is 0.0 to 1.0, inclusive.
@@ -506,7 +504,6 @@ Returns a list of RGB components of value 0.0 to 1.0, inclusive."
                          blue   qq))))
     (list red green blue)))
 
-;;;###autoload
 (defun hexrgb-hsv-to-hex (hue saturation value)
   "Return the hex RBG color string for inputs HUE, SATURATION, VALUE.
 The inputs are each in the range 0 to 1.
@@ -514,7 +511,6 @@ The output string is of the form \"#RRRRGGGGBBBB\"."
   (hexrgb-color-values-to-hex
    (mapcar (lambda (x) (floor (* x 65535.0))) (hexrgb-hsv-to-rgb hue saturation value))))
 
-;;;###autoload
 (defun hexrgb-rgb-to-hex (red green blue)
   "Return the hex RBG color string for inputs RED, GREEN, BLUE.
 The inputs are each in the range 0 to 1.
@@ -522,7 +518,6 @@ The output string is of the form \"#RRRRGGGGBBBB\"."
   (hexrgb-color-values-to-hex
    (mapcar (lambda (x) (floor (* x 65535.0))) (list red green blue))))
 
-;;;###autoload
 (defun hexrgb-hex-to-hsv (color)
   "Return a list of HSV (hue, saturation, value) color components.
 Each component is a value from 0.0 to 1.0, inclusive.
@@ -532,7 +527,6 @@ components."
   (let ((rgb-components  (hexrgb-hex-to-rgb color)))
     (apply #'hexrgb-rgb-to-hsv rgb-components)))
 
-;;;###autoload
 (defun hexrgb-hex-to-rgb (color)
   "Return a list of RGB (red, green, blue) color components.
 Each component is a value from 0.0 to 1.0, inclusive.
@@ -545,7 +539,6 @@ components."
           (/ (hexrgb-hex-to-int (substring color (1+ len) (+ 1 len len))) 65535.0)
           (/ (hexrgb-hex-to-int (substring color (+ 1 len len))) 65535.0))))
 
-;;;###autoload
 (defun hexrgb-color-name-to-hex (color)
   "Return the RGB hex string for the COLOR name, starting with \"#\".
 If COLOR is already a string starting with \"#\", then just return it."
@@ -561,7 +554,6 @@ If COLOR is already a string starting with \"#\", then just return it."
 ;; Color "components" would be better in the name than color "value"
 ;; but this name follows the Emacs tradition (e.g. `x-color-values',
 ;; 'ps-color-values', `ps-e-x-color-values').
-;;;###autoload
 (defun hexrgb-color-values-to-hex (values)
   "Convert list of rgb color VALUES to a hex string, #XXXXXXXXXXXX.
 Each X in the string is a hexadecimal digit.
@@ -570,7 +562,6 @@ Input VALUES is as for the output of `x-color-values'."
           (hexrgb-int-to-hex (nth 1 values) 4) ; green
           (hexrgb-int-to-hex (nth 2 values) 4))) ; blue
 
-;;;###autoload
 (defun hexrgb-hex-to-color-values (color)
   "Convert hex COLOR to a list of rgb color values.
 COLOR is a hex rgb color string, #XXXXXXXXXXXX
@@ -591,7 +582,6 @@ The output list is as for `x-color-values'."
           blue   (hexrgb-hex-to-int (substring color (* 2 ndigits) (* 3 ndigits))))
     (list red green blue)))
     
-;;;###autoload
 (defun hexrgb-increment-red (hex nb-digits increment &optional wrap-p)
   "Increment red value of rgb string HEX by INCREMENT.
 String HEX starts with \"#\".  Each color is NB-DIGITS hex digits long.
@@ -603,7 +593,6 @@ around to \"#000000000\"."
           (substring hex (1+ nb-digits) (1+ (* nb-digits 2)))
           (substring hex (1+ (* nb-digits 2)))))
 
-;;;###autoload
 (defun hexrgb-increment-green (hex nb-digits increment &optional wrap-p)
   "Increment green value of rgb string HEX by INCREMENT.
 String HEX starts with \"#\".  Each color is NB-DIGITS hex digits long.
@@ -617,7 +606,6 @@ around to \"#000000000\"."
                          wrap-p)
    (substring hex (1+ (* nb-digits 2)))))
 
-;;;###autoload
 (defun hexrgb-increment-blue (hex nb-digits increment &optional wrap-p)
   "Increment blue value of rgb string HEX by INCREMENT.
 String HEX starts with \"#\".  Each color is NB-DIGITS hex digits long.
@@ -629,7 +617,6 @@ around to \"#000000000\"."
                                 nb-digits
                                 wrap-p)))
 
-;;;###autoload
 (defun hexrgb-increment-equal-rgb (hex nb-digits increment &optional wrap-p)
   "Increment each color value (r,g,b) of rgb string HEX by INCREMENT.
 String HEX starts with \"#\".  Each color is NB-DIGITS hex digits long.
@@ -643,7 +630,6 @@ around to \"#000000000\"."
                          wrap-p)
    (hexrgb-increment-hex (substring hex (1+ (* nb-digits 2))) increment nb-digits wrap-p)))
 
-;;;###autoload
 (defun hexrgb-increment-hex (hex increment nb-digits &optional wrap-p)
   "Increment HEX number (a string NB-DIGITS long) by INCREMENT.
 For example, incrementing \"FFFFFFFFF\" by 1 will cause it to wrap
@@ -657,7 +643,6 @@ around to \"000000000\"."
         (hexrgb-int-to-hex new-int nb-digits) ; Use incremented number.
       hex)))                            ; Don't increment.
 
-;;;###autoload
 (defun hexrgb-hex-to-int (hex)
   "Convert HEX string argument to an integer.
 The characters of HEX must be hex characters."
@@ -672,7 +657,6 @@ The characters of HEX must be hex characters."
     int))
 
 ;; From `hexl.el'.  This is the same as `hexl-hex-char-to-integer' defined there.
-;;;###autoload
 (defun hexrgb-hex-char-to-integer (character)
   "Take a CHARACTER and return its value as if it were a hex digit."
   (if (and (>= character ?0) (<= character ?9))
@@ -685,7 +669,6 @@ The characters of HEX must be hex characters."
 ;; Originally, I used the code from `int-to-hex-string' in `float.el'.
 ;; This version is thanks to Juri Linkov <juri@jurta.org>.
 ;;
-;;;###autoload
 (defun hexrgb-int-to-hex (int &optional nb-digits)
   "Convert integer argument INT to a #XXXXXXXXXXXX format hex string.
 Each X in the output string is a hexadecimal digit.
@@ -697,7 +680,6 @@ the hex equivalent of 256 decimal is 100, which is more than 2 digits."
   (substring (format (concat "%0" (int-to-string nb-digits) "X") int) (- nb-digits)))
 
 ;; Inspired by Elisp Info manual, node "Comparison of Numbers".
-;;;###autoload
 (defun hexrgb-approx-equal (x y &optional rfuzz afuzz)
   "Return non-nil if numbers X and Y are approximately equal.
 RFUZZ is a relative fuzz factor.  AFUZZ is an absolute fuzz factor.
@@ -711,7 +693,6 @@ The algorithm is:
         afuzz  (abs afuzz))
   (< (abs (- x y)) (+ afuzz (* rfuzz (+ (abs x) (abs y))))))
 
-;;;###autoload
 (defun hexrgb-color-value-to-float (n)
   "Return the floating-point equivalent of color value N.
 N must be an integer between 0 and 65535, or else an error is raised."
@@ -719,7 +700,6 @@ N must be an integer between 0 and 65535, or else an error is raised."
     (error "Not a whole number less than 65536"))
   (/ (float n) 65535.0))
 
-;;;###autoload
 (defun hexrgb-float-to-color-value (x)
   "Return the color value equivalent of floating-point number X.
 X must be between 0.0 and 1.0, or else an error is raised."

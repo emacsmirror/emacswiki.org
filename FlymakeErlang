@@ -36,6 +36,7 @@ main([File_Name]) ->
 
 
 [new:Habitue01:] Would it be possible to alter this script to get output from dialyzer as well?
+: bkil: I've successfully connected it with Dialyzer! Get it from here: http://code.google.com/p/bkil-open/source/browse/trunk/volatile#volatile%2Fpg%2Fflyerl
 
 Would it be possible to check also .hrl header files?
 

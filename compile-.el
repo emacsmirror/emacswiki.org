@@ -4,19 +4,19 @@
 ;; Description: Extensions to `compile.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 16 17:04:11 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:41:43 2010 (-0800)
+;; Last-Updated: Mon Jan  3 20:15:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 92
+;;     Update #: 98
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile-.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `avoid', `fit-frame', `frame-fns'.
+;;   None
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -24,13 +24,15 @@
 ;;
 ;;    Extensions to `compile.el'.
 ;;
-;;  See also the companion file `compile+.el'.
+;;  See also the companion file `compile+.el', if you are using Emacs
+;;  22 or later.
+;;
 ;;        `compile-.el' should be loaded before `compile.el'.
 ;;        `compile+.el' should be loaded after `compile.el'.
 ;;
 ;;  Put this in your initialization file (`~/.emacs'):
 ;;
-;;    (require 'compile+)
+;;    (require 'compile-)
 ;;
 ;;
 ;;  New face defined here:
@@ -51,6 +53,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookie for the defcustom.  Corrected install instructions.
 ;; 2006/04/02 dadams
 ;;     Added defcustom of compilation-message-face (nil) to get rid of underlining.
 ;; 2005/12/26 dadams
@@ -91,6 +95,7 @@
 
 
 ;; Use nil, not `underline', to turn off underlining.
+;;;###autoload
 (defcustom compilation-message-face nil
   "Face name to use for whole messages.
 Faces `compilation-error-face', `compilation-warning-face',

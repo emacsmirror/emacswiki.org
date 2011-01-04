@@ -4,12 +4,12 @@
 ;; Description: Highlight the current column.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 08 11:06:35 2006
 ;; Version: 22.0
-;; Last-Updated: Tue Aug 31 08:17:49 2010 (-0700)
+;; Last-Updated: Mon Jan  3 19:55:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 313
+;;     Update #: 320
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el
 ;; Keywords: faces, frames, emulation, highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -111,6 +111,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookies for defgroup, defcustom, defface, and commands.
 ;; 2008/09/03 dadams
 ;;     col-highlight-highlight: Bind vline-current-window-only to t.
 ;; 2008/08/08 dadams
@@ -153,6 +155,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;###autoload
 (defgroup column-highlight nil
   "Highlight the current column."
   :prefix "col-highlight-"
@@ -167,15 +170,18 @@ Don't forget to mention your Emacs and library versions."))
   :link '(url-link :tag "Download"
           "http://www.emacswiki.org/cgi-bin/wiki/col-highlight.el"))
 
+;;;###autoload
 (defcustom col-highlight-vline-face-flag t
   "*Non-nil means `column-highlight-mode' uses `col-highlight-face'.
 nil means that it uses `vline-face'."
   :type 'boolean :group 'column-highlight)
 
+;;;###autoload
 (defcustom col-highlight-period 1
   "*Number of seconds to highlight the current column."
   :type 'integer :group 'column-highlight)
 
+;;;###autoload
 (defface col-highlight '((t (:background "SlateGray3")))
   "*Face for current-column highlighting by `column-highlight-mode'.
 Not used if `col-highlight-vline-face-flag' is nil."
@@ -206,6 +212,7 @@ Do NOT change this yourself; instead, use
 ;; You must use `toggle-highlight-column-when-idle' to turn it on.
 (cancel-timer col-highlight-idle-timer)
 
+;;;###autoload
 (define-minor-mode column-highlight-mode
     "Toggle highlighting the current column.
 With ARG, turn column highlighting on if and only if ARG is positive.
@@ -234,7 +241,9 @@ Don't forget to mention your Emacs and library versions."))
          (remove-hook 'pre-command-hook #'col-highlight-unhighlight)
          (remove-hook 'post-command-hook #'col-highlight-highlight))))
 
+;;;###autoload
 (defalias 'toggle-highlight-column-when-idle 'col-highlight-toggle-when-idle)
+;;;###autoload
 (defun col-highlight-toggle-when-idle (&optional arg)
   "Turn on or off highlighting the current column when Emacs is idle.
 With prefix argument, turn on if ARG > 0; else turn off."
@@ -251,6 +260,7 @@ With prefix argument, turn on if ARG > 0; else turn off."
          (remove-hook 'pre-command-hook #'col-highlight-unhighlight)
          (message "Turned OFF highlighting current column when Emacs is idle."))))
 
+;;;###autoload
 (defun col-highlight-set-interval (secs)
   "Set wait until highlight current column when Emacs is idle.
 Whenever Emacs is idle for this many seconds, the current column
@@ -265,7 +275,9 @@ when Emacs is idle, use `\\[toggle-highlight-column-when-idle]."
                        (setq col-highlight-idle-interval secs) t))
 
 
+;;;###autoload
 (defalias 'flash-column-highlight 'col-highlight-flash)
+;;;###autoload
 (defun col-highlight-flash (&optional arg)
   "Highlight the current column for `col-highlight-period' seconds.
 With a prefix argument, highlight for that many seconds."

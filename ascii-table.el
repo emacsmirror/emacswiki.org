@@ -40,6 +40,8 @@ LIMIT.  Try 254 for example.
 Optional argument BASE can be either 8 for octal, 10 for decimal, or
 16 for hex."
   (interactive "P")
+  (setq buffer-read-only nil)      ;; added -- read only buffer.
+  (local-set-key "q" 'bury-buffer) ;; added -- bury buffer on 'q'
   (switch-to-buffer "*ASCII*")
   (erase-buffer)
   (let ((fmt (cond ((eq base 16) "%4x %4s")

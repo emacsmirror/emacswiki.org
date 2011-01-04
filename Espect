@@ -1,0 +1,9 @@
+hosted at https://github.com/rafl/espect/blob/master/espect.el
+
+from the lisp file:
+
+
+"This mode makes it easy to configure settings for individual buffers with a concice and extensible mini-language. It abstracts away common configuration selection tasks, like checking the mode or filename, into a simple declarative syntax. Declare conditions; run a function when the new buffer matches them. This makes it easy to do things like turn on flyspell-prog-mode for your favorite programming languages, or make all text-mode buffers ending in .mkn have special properties.
+
+
+Additionally, the mini-language is extensible, so you can define and use your own tests. espect's 'built-in' rules use the extension mechanism, so your rules need not be second-class citizens."

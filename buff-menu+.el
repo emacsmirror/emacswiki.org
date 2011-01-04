@@ -4,12 +4,12 @@
 ;; Description: Extensions to `buff-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 11 10:29:56 1995
 ;; Version: 21.0
-;; Last-Updated: Thu Jul 15 14:14:08 2010 (-0700)
+;; Last-Updated: Mon Jan  3 15:40:52 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2510
+;;     Update #: 2514
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/buff-menu+.el
 ;; Keywords: mouse, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -142,6 +142,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from non def* sexps.
 ;; 2010/07/15 dadams
 ;;     Buffer-menu-fontify-and-adjust-frame:
 ;;       Added call to font-lock-refresh-defaults.  Thx to Bastian Beischer.
@@ -379,7 +381,6 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;;###autoload
 (unless (> emacs-major-version 21)
   (defgroup Buffer-Menu-Plus nil
     "Enhancements to the buffer menu."
@@ -397,12 +398,11 @@ Don't forget to mention your Emacs and library versions."))
     :link '(emacs-commentary-link :tag "Commentary" "buff-menu+")
     :group 'tools :group 'convenience))
 
-;;;###autoload
 (when (> emacs-major-version 21)
   (defgroup Buffer-Menu-Plus nil
     "Enhancements to the buffer menu."
     :link `(url-link :tag "Send Bug Report"
-                     ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
+            ,(concat "mailto:" "drew.adams" "@" "oracle" ".com?subject=\
 buff-menu+.el bug: \
 &body=Describe bug here, starting with `emacs -q'.  \
 Don't forget to mention your Emacs and library versions."))
@@ -480,7 +480,7 @@ Update `buffer-menu-font-lock-keywords' accordingly."
      (list "^\\(CRM.*\\)" 1 'buffer-menu-headings) ; CRM
      (list "^....\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+\\(.* \\(AM\\|PM\\)\\)?\\([^/\n]+\\)"
            (list 1 'buffer-menu-buffer-name)) ; Default buffer name
-     (cond (Buffer-menu-mode-flag             ; Directory buffer name
+     (cond (Buffer-menu-mode-flag       ; Directory buffer name
             (list "^....\\(.*[^ \t\n]\\)[ \t]+[0-9]+[ \t]+[a-zA-Z :0-9]*[ \t]+Dired"
                   1 'buffer-menu-directory-buffer t t))
            (Buffer-menu-file-flag
@@ -842,7 +842,6 @@ Save/Delete: x;   Misc: g,~,%%,t"))
 ;; 2. mouse-face on whole line, not just buffer name.
 ;; 3. Compatible with Emacs prior to Emacs 22 also.
 ;;
-;;;###autoload
 (when (< emacs-major-version 23)
   (defun Buffer-menu-mode ()
     "Major mode for editing a list of buffers.
@@ -970,7 +969,6 @@ Bindings in Buffer Menu mode:
 ;; `buff-menu+.elc', in Emacs 23, then keys such as `q' and `g' will not be defined.  It's best
 ;; to byte-compile `buff-menu+.el' with the same Emacs version where you use `buff-menu+.elc'.
 ;;
-;;;###autoload
 (when (> emacs-major-version 22)
   ;; Buffer Menu mode is suitable only for specially formatted data.
   (put 'Buffer-menu-mode 'mode-class 'special)
@@ -1222,7 +1220,6 @@ else, all windows previously in the frame are replaced by this one."
 ;; When COLUMN = `Buffer-menu-sort-column', then flip `Buffer-menu-sort-column'.
 ;; Message at end.
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun Buffer-menu-sort (column)
     "Sort the buffer menu by COLUMN.
@@ -1281,7 +1278,6 @@ Consecutive executions of the same COLUMN reverse the sort order."
 ;; CRM is indicated by COLUMN = 1, not by nil COLUMN.
 ;; Apply different face to sort column heading, depending on direction.
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun Buffer-menu-make-sort-button (name button-column)
     (let ((the-sort-column-p nil))
@@ -1320,7 +1316,6 @@ see `Buffer-menu-use-frame-buffer-list'"))
 ;;   `set-window-buffer'.  Otherwise, *Buffer List* cannot be dedicated.
 ;; Go to beginning of buffer if `desired-point' is not defined.
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun list-buffers-noselect (&optional files-only buffer-list)
     "Create and return a buffer with a list of names of existing buffers.

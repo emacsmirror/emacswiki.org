@@ -4,12 +4,12 @@
 ;; Description: Enhancements to standard library `bindings.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Oct 04 10:54:38 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 10:12:36 2010 (-0800)
+;; Last-Updated: Mon Jan  3 15:37:06 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 153
+;;     Update #: 155
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bindings+.el
 ;; Keywords: 
 ;; Compatibility: GNU Emacs 22.x, GNU Emacs 23.x

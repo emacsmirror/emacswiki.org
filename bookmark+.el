@@ -4,12 +4,12 @@
 ;; Description: Bookmark+: extensions to standard library `bookmark.el'.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Thu Aug 19 07:54:26 2010 (-0700)
+;; Last-Updated: Mon Jan  3 09:57:15 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 14946
+;;     Update #: 14949
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -127,8 +127,10 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defconst bmkp-version-number "3.2.0")
 
+;;;###autoload
 (defun bmkp-version ()
   "Show version number of library `bookmark+.el'."
   (interactive)

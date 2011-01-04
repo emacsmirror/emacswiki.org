@@ -4,12 +4,12 @@
 ;; Description: Extensions to `c-mode.el' & `cc-mode.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Aug 30 13:01:25 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 12:38:01 2010 (-0800)
+;; Last-Updated: Mon Jan  3 15:52:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 65
+;;     Update #: 66
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cc-mode+.el
 ;; Keywords: c, c++, programming
 ;; Compatibility: GNU Emacs 20.x
@@ -18,7 +18,7 @@
 ;;
 ;;   `cc-align', `cc-cmds', `cc-defs', `cc-engine', `cc-langs',
 ;;   `cc-menus', `cc-mode', `cc-styles', `cc-vars', `custom',
-;;   `derived', `easymenu', `imenu', `imenu+', `outline'.
+;;   `derived', `easymenu', `imenu', `imenu+', `outline', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

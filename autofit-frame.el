@@ -4,12 +4,12 @@
 ;; Description: Automatically resize one-window frames to fit.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 10:06:18 2000
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 10:10:16 2010 (-0800)
+;; Last-Updated: Mon Jan  3 14:53:03 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 590
+;;     Update #: 597
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/autofit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -122,6 +122,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies: non def* sexps, non-interactive functions.
 ;; 2009/05/03 dadams
 ;;     Use (fboundp 'window--display-buffer-1), not Emacs version test.
 ;; 2009/03/08 dadams
@@ -215,7 +217,6 @@ Don't forget to mention your Emacs and library versions.")))
 
 ;; This is not used here.  It is useful as a `temp-buffer-show-hook':
 ;;   (add-hook 'temp-buffer-show-hook 'fit-frame-if-one-window 'append)
-;;;###autoload
 (defun fit-frame-if-one-window ()
   "Resize frame to fit selected window if it is alone in the frame.
 Usable in `temp-buffer-show-hook'.
@@ -232,7 +233,6 @@ This does nothing if `autofit-frames-flag' is nil."
   ;; Calls my version of `display-buffer'.  Needed because built-in
   ;; `pop-to-buffer' calls C version, Fdisplay_buffer, not `display-buffer'.
   ;;
-;;;###autoload
   (defun pop-to-buffer (buffer &optional other-window norecord)
     "Select buffer BUFFER in some window, preferably a different one.
 BUFFER may be a buffer, a string (a buffer name), or nil.
@@ -257,7 +257,6 @@ of `display-buffer' for additional customization information."
  
 ;;; Commands ---------------------------------------------------
 
-;;;###autoload
 (unless (> emacs-major-version 22)
 
   (or (fboundp 'old-display-buffer)
@@ -332,7 +331,6 @@ it manually)."
 ;; REPLACES ORIGINAL defined in `window.el' (Emacs 23+):
 ;; Resizes frame to fit sole window if `autofit-frames-flag'.
 ;;
-;;;###autoload
 (when (fboundp 'window--display-buffer-1) ; Emacs 23+
 
   ;; We save the original anyway, but we don't use it.

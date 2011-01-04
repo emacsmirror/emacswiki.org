@@ -4,11 +4,11 @@
 ;; Description: Macros for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Aug 15 11:12:30 2010 (-0700)
-;; Last-Updated: Sat Sep 25 14:56:49 2010 (-0700)
+;; Last-Updated: Mon Jan  3 10:48:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 70
+;;     Update #: 76
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-mac.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -150,6 +150,7 @@ Elements of ALIST that are not conses are ignored."
 
 ;;; Macros -----------------------------------------------------------
 
+;;;###autoload
 (defmacro bmkp-define-cycle-command (type &optional otherp)
   "Define a cycling command for bookmarks of type TYPE.
 Non-nil OTHERP means define a command that cycles in another window."
@@ -175,6 +176,7 @@ In Lisp code:
                             (,(intern (format "bmkp-%s-alist-only" type))))))
       (bmkp-cycle increment ,otherp startoverp))))
 
+;;;###autoload
 (defmacro bmkp-define-next+prev-cycle-commands (type)
   "Define `next' and `previous' commands for bookmarks of type TYPE."
   `(progn
@@ -214,6 +216,7 @@ See `bmkp-next-%s-bookmark-repeat'." type type)
       (require 'repeat)
       (bmkp-repeat-command ',(intern (format "bmkp-previous-%s-bookmark" type))))))
 
+;;;###autoload
 (defmacro bmkp-define-sort-command (sort-order comparer doc-string)
   "Define a command to sort bookmarks in the bookmark list by SORT-ORDER.
 SORT-ORDER is a short string or symbol describing the sorting method.
@@ -265,6 +268,7 @@ sort, and unsorted.")
                  ((equal bmkp-sort-comparer ',comparer)       "(Repeat: unsorted)")
                  (t                                           "(Repeat: sort)"))))))))
 
+;;;###autoload
 (defmacro bmkp-define-file-sort-predicate (att-nb)
   "Define a predicate for sorting bookmarks by file attribute ATT-NB.
 See function `file-attributes' for the meanings of the various file
@@ -345,6 +349,7 @@ Treat remote file bookmarks like non-file bookmarks."
             (t;; Neither is a file.
              nil)))))
 
+;;;###autoload
 (defmacro bmkp-menu-bar-make-toggle (name variable doc message help &rest body)
   "Return a valid `menu-bar-make-toggle' call in Emacs 20 or later.
 NAME is the name of the toggle command to define.

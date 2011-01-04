@@ -6,12 +6,12 @@
 ;;      Drew Adams
 ;; Maintainer: Drew Adams 
 ;; Copyright (C) 1989, 1990, 1994, 1998 Free Software Foundation, Inc.
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug  3 18:14:22 1995
 ;; Version: 20.1
-;; Last-Updated: Sat Dec  4 14:05:00 2010 (-0800)
+;; Last-Updated: Mon Jan  3 14:46:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 674
+;;     Update #: 680
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: calendar, local
 ;; Compatibility: GNU Emacs 20.x
@@ -191,6 +191,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from defvars and non-interactive functions.
 ;; 2010/12/04 dadams
 ;;     Removed make-local-hook call.
 ;; 2006/03/31 dadams
@@ -541,7 +543,6 @@
     "Face for minibuffer prompts."
     :group 'basic-faces))
 
-;;;###autoload
 (defvar view-appointments-initially nil
   "*Non-nil => Display today's appointments whenever `appt-make-list' is \
 called.
@@ -616,18 +617,15 @@ Also, the interval between repetitions of the same reminder."
   :type 'integer
   :group 'appt)
   
-;;;###autoload
 (defvar appt-buffer-name "*Today's Appointments*"
   "*Name of appointments buffer.")
 (put 'appt-buffer-name 'variable-interactive "sName of appointments buffer: ")
 
-;;;###autoload
 (defvar appt-disp-window-function 'appt-remind
   "*Function called to display appointments window.")
 (put 'appt-disp-window-function 'variable-interactive
      "aFunction to display appointments window: ")
 
-;;;###autoload
 (defvar appt-delete-window-function 'appt-hide-reminders
   "*Function called to remove appointments window.")
 (put 'appt-delete-window-function 'variable-interactive
@@ -729,7 +727,6 @@ Examples of allowed time formats: 2:15, 02:15, 2:15am, 02:15am,
           (delete-if (function (lambda (ap) (< (caar ap) cur-time)))
                      appt-time-msg-list))))
 
-;;;###autoload
 (defun appt-check ()
   "Check for an appointment now (or soon).
 An appointment time must come first in a diary line.
@@ -1000,7 +997,6 @@ list?  \"Yes\" will reinitialize it using your diary. ")))
 ;; that the diary is being processed for.  It is also assumed that
 ;; `diary-entries-list' and `original-date' are correctly bound (in
 ;; `list-diary-entries').
-;;;###autoload
 (defun appt-make-list ()
   "Create appointment reminders list from today's diary buffer.
 This function is intended as a value for `diary-hook', which is

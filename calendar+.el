@@ -4,12 +4,12 @@
 ;; Description: Calendar, diary and appointments stuff.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 13:11:46 1996
 ;; Version: 20.0
-;; Last-Updated: Mon Mar 29 19:41:00 2010 (-0700)
+;; Last-Updated: Mon Jan  3 15:51:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 832
+;;     Update #: 838
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/calendar+.el
 ;; Keywords: calendar, mouse, local
 ;; Compatibility: GNU Emacs 20.x
@@ -23,15 +23,16 @@
 ;;   `doremi', `easymenu', `ediff-diff', `ediff-help', `ediff-init',
 ;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
 ;;   `el-swank-fuzzy', `faces', `ffap', `ffap-', `fit-frame',
-;;   `frame-cmds', `frame-fns', `fuzzy-match', `help+20', `hexrgb',
-;;   `icicles', `icicles-cmd1', `icicles-cmd2', `icicles-face',
-;;   `icicles-fn', `icicles-mac', `icicles-mcmd', `icicles-mode',
-;;   `icicles-opt', `icicles-var', `info', `info+', `kmacro',
-;;   `levenshtein', `lisp-float-type', `menu-bar', `menu-bar+',
-;;   `misc-cmds', `misc-fns', `mkhtml', `mkhtml-htmlize', `mwheel',
-;;   `pp', `pp+', `ring', `ring+', `second-sel', `solar', `strings',
-;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
-;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
+;;   `frame-cmds', `frame-fns', `fuzzy', `fuzzy-match', `help+20',
+;;   `hexrgb', `icicles', `icicles-cmd1', `icicles-cmd2',
+;;   `icicles-face', `icicles-fn', `icicles-mac', `icicles-mcmd',
+;;   `icicles-mode', `icicles-opt', `icicles-var', `info', `info+',
+;;   `kmacro', `levenshtein', `lisp-float-type', `menu-bar',
+;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `solar', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -140,6 +141,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from defvars and non-interactive defuns.
 ;; 2010/03/29 dadams
 ;;     Use calendar-(update-mode-line|generate-window). Thx to Jean-Luc Rene.
 ;;
@@ -523,14 +526,12 @@
         (dayname "\\W")))               ; `Fri'
 
 
-;;;###autoload
 (defvar weekend-face
   (and (fboundp 'set-face-background)
        (prog1 (make-face 'weekend-face)
          (set-face-background 'weekend-face "Gray")))
   "*Default face used in *Calendar* buffer to display weekend days.")
 
-;;;###autoload
 (defvar cal-mode-line-key-help
   "\\<calendar-mode-map>\\[calendar-goto-today]\\[calendar-other-month]g \
 p\\[calendar-cursor-holidays] \\[view-diary-entries]i\
@@ -1264,7 +1265,6 @@ Prefix ARG makes the entry nonmarking."
 
 ;; REPLACES ORIGINAL in `calendar.el':
 ;;   Puts weekend days in `weekend-face'.
-;;;###autoload
 (defun generate-calendar-month (month year indent)
   "Produce a calendar for MONTH, YEAR on the Gregorian calendar.
 The calendar is inserted in the buffer starting at the line on which point
@@ -1409,7 +1409,6 @@ Return the number of weekdays in the calendar region, in any case."
 ;; REPLACES ORIGINAL in `calendar.el':
 ;;   Does not add a new overlay if one is already present with face MARK.
 ;;   This is to allow for overlapping overlays.  Arg PRIORITY is new too.
-;;;###autoload
 (defun mark-visible-calendar-date (date &optional mark priority)
   "Mark DATE in the calendar window with MARK, if not so marked already.
 MARK is either a single-character string or a face.
@@ -1441,7 +1440,6 @@ PRIORITY is an optional priority to give to MARK's face overlay."
 ;;;;; ;;   (calendar-cursor-to-date t) -> date.
 ;;;;; ;;   This is a *correction*, not an extension.
 ;;;;; ;;   NOTE: DATE is a free variable here.
-;;;;; ;;;###autoload
 ;;;;; (defun diary-french-date ()
 ;;;;;   "French calendar equivalent of date diary entry."
 ;;;;;   (let ((f (calendar-french-date-string date)))
@@ -1454,7 +1452,6 @@ PRIORITY is an optional priority to give to MARK's face overlay."
 ;;   This is so that when it is added to the diary this is not interpreted
 ;;   as an appointment time.
 ;;   NOTE: DATE is a free variable here.
-;;;###autoload
 (defun solar-sunrise-sunset-string (date)
   "String of *local* times of sunrise, sunset, and daylight on Gregorian DATE."
   (require 'solar)
@@ -1530,7 +1527,6 @@ The holidays are those in the list `local-holidays'."
 
 ;; Adapted from holiday-easter-etc, in `holidays.el'.
 ;; Note: DISPLAYED-MONTH and DISPLAYED-YEAR are free variables here.
-;;;###autoload
 (defun monday-after-easter ()
   "Monday after Easter, as visible in calendar window."
   (unless (and (> displayed-month 5) (not all-christian-calendar-holidays))

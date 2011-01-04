@@ -61,6 +61,38 @@ Version 0.0.2 2009-4-16
 
 This is great, a simpler MTorus. But what would be greater is integration with ibuffer. ibuffer can filter buffers according to rules, it would be good if I could create buffer rings from such ibuffer groups. Also, There is no completion on buffer add/delete. Could you put these files on github (or somesuch) so I could contribute if needed, thanks. --CH
 
+Ok, I've Tried using Buffer-Ring with [[Espect]] with some sucess:
+
+ ; start buffer-ring with espect filtering
+ (require 'espect)
+ (require 'buffer-ring)
+ (setq espect-buffer-settings
+       '(((:mode "eshell-mode")
+ 	 (:mode "term-mode")
+ 	 (lambda () (buffer-ring-add "term")))
+ 	((:mode "org-mode")
+ 	 (lambda () (buffer-ring-add "ORG")))
+ 	((:mode "emacs-lisp-mode")
+ 	 (lambda () (buffer-ring-add "elisp")))
+ 	((:mode "c-mode")
+ 	 (lambda () (buffer-ring-add "C-SRC")))
+ 	((:mode "python-mode")
+ 	 (lambda () (buffer-ring-add "Python-SRC")))
+ 	((:mode "dired-mode")
+ 	 (lambda () (buffer-ring-add "dired")))
+ 	((:name "^\\*scratch\\*")
+ 	 (lambda () (buffer-ring-add "emacs-regular")))
+ 	))
+ 
+ ; this needs to be done specially
+ (save-excursion
+   (switch-to-buffer "\*Messages\*")
+   (buffer-ring-add "emacs-regular"))
+ ; don't show welcome message
+ (setq inhibit-splash-screen t)
+ ;; It might be better just to use the
+ ;; filters, and to run all current
+ ;; buffers through it once espect starts.
 
 ----
 

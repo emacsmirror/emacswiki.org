@@ -17,6 +17,8 @@ There are commands for octal, decimal, and hexadecimal codes.
   (defun ascii-table ()
     "Display basic ASCII table (0 thru 128)."
     (interactive)
+    (setq buffer-read-only nil)        ;; Not need to edit the content, just read mode (added)
+    (local-set-key "q" 'bury-buffer)   ;; Nice to have the option to bury the buffer (added)
     (switch-to-buffer "*ASCII*")
     (erase-buffer)
     (save-excursion (let ((i -1))

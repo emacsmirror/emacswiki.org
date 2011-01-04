@@ -4,12 +4,12 @@
 ;; Description: Bookmark+ code for the `*Bookmark List*' (bmenu).
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 09:05:21 2010 (-0700)
-;; Last-Updated: Fri Dec 10 09:38:40 2010 (-0800)
+;; Last-Updated: Mon Jan  3 10:30:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 356
+;;     Update #: 370
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-bmu.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -537,7 +537,6 @@ was the last time you used it."
   :group 'bookmark-plus)
 
 ;; This is a general option.  It is in this file because it is used mainly by the bmenu code.
-;;;###autoload
 (when (> emacs-major-version 20)
   (defcustom bmkp-sort-orders-alist ()
     "*Alist of all available sort functions.
@@ -571,7 +570,6 @@ Each alist element has the form (SORT-ORDER . COMPARER):
                            (function :tag "Final Predicate")))))
     :group 'bookmark-plus))
 
-;;;###autoload
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
   (defcustom bmkp-sort-orders-alist ()
     "*Alist of all available sort functions.
@@ -647,7 +645,6 @@ The first time the list is displayed, it is set to nil.")
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
 
-;;;###autoload
 (when (< emacs-major-version 22)
   (defun bookmark-bmenu-relocate ()
     "Change the file path of the bookmark on the current line,
@@ -765,6 +762,7 @@ the deletions."
 ;; 5. If option `bmkp-bmenu-commands-file' is non-nil, then read that file, which contains
 ;;    user-defined `*Bookmark List*' commands.
 ;;
+;;;###autoload
 (defalias 'list-bookmarks 'bookmark-bmenu-list)
 ;;;###autoload
 (defun bookmark-bmenu-list (&optional filteredp) ; Bound to `C-x r l'
@@ -1362,6 +1360,7 @@ non-nil, then do nothing."
 ;; 1. Prefix arg reverses `bmkp-use-region'.
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-1-window (&optional use-region-p) ; Bound to `1' in bookmark list
   "Select this line's bookmark, alone, in full frame.
 See `bookmark-jump' for info about the prefix arg."
@@ -1378,6 +1377,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 1. Prefix arg reverses `bmkp-use-region'.
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-2-window (&optional use-region-p) ; Bound to `2' in bookmark list
   "Select this line's bookmark, with previous buffer in second window.
 See `bookmark-jump' for info about the prefix arg."
@@ -1399,6 +1399,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 1. Prefix arg reverses `bmkp-use-region'.
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-this-window (&optional use-region-p) ; Bound to `RET' in bookmark list
   "Select this line's bookmark in this window.
 See `bookmark-jump' for info about the prefix arg."
@@ -1415,6 +1416,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 2. Prefix arg reverses `bmkp-use-region'.
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-other-window (&optional use-region-p) ; Bound to `o' in bookmark list
   "Select this line's bookmark in other window.  Show `*Bookmark List*' still.
 See `bookmark-jump' for info about the prefix arg."
@@ -1431,6 +1433,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 1. Prefix arg reverses `bmkp-use-region'.
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-switch-other-window (&optional use-region-p) ; Bound to `C-o' in bookmark list
   "Make the other window select this line's bookmark.
 The current window remains selected.
@@ -1451,6 +1454,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 1. Prefix arg reverses `bmkp-use-region'.
 ;; 2. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-other-window-with-mouse (event &optional use-region-p)
   "Select clicked bookmark in other window.  Show `*Bookmark List*' still."
   (interactive "e\nP")
@@ -1465,6 +1469,7 @@ See `bookmark-jump' for info about the prefix arg."
 ;; 2. Call `bookmark-show-annotation' with arg MSGP.
 ;; 3. Raise error if not in buffer `*Bookmark List*'.
 ;;
+;;;###autoload
 (defun bookmark-bmenu-show-annotation (msgp)
   "Show the annotation for the current bookmark in another window."
   (interactive "p")
@@ -2060,7 +2065,6 @@ With a prefix argument, do not mark remote files or directories."
   (interactive)
   (bmkp-bmenu-mark-bookmarks-satisfying 'bmkp-region-bookmark-p))
 
-;;;###autoload
 (when (featurep 'bookmark+-lit)
   (defun bmkp-bmenu-mark-lighted-bookmarks () ; Bound to `H M' in bookmark list
     "Mark the highlighted bookmarks."
@@ -2324,7 +2328,6 @@ You can then mark some of them and use `bmkp-bmenu-unomit-marked' to
 ;;(@* "Search-and-Replace Locations of Marked Bookmarks")
 ;;  *** Search-and-Replace Locations of Marked Bookmarks ***
 
-;;;###autoload
 (when (> emacs-major-version 22)
   (defun bmkp-bmenu-isearch-marked-bookmarks () ; Bound to `M-s a C-s' in bookmark list
     "Isearch the marked bookmark locations, in their current order."
@@ -2344,6 +2347,7 @@ You can then mark some of them and use `bmkp-bmenu-unomit-marked' to
           (bmkp-use-region  nil))  ; Suppress region handling.
       (bmkp-isearch-bookmarks-regexp bookmarks)))) ; Defined in `bookmark+-1.el'.
 
+;;;###autoload
 (defun bmkp-bmenu-search-marked-bookmarks-regexp (regexp) ; Bound to `M-a' in bookmark list
   "Search the marked file bookmarks, in their current order, for REGEXP.
 Use `\\[tags-loop-continue]' to advance among the search hits.
@@ -2359,6 +2363,7 @@ Marked directory and non-file bookmarks are ignored."
                             (push file files)))
                         (setq files  (nreverse files)))))
 
+;;;###autoload
 (defun bmkp-bmenu-query-replace-marked-bookmarks-regexp (from to ; Bound to `M-q' in bookmark list
                                                          &optional delimited)
   "`query-replace-regexp' FROM with TO, for all marked file bookmarks.
@@ -3370,7 +3375,6 @@ compare them by bookmark name.")
 ;; This is a general option.  It is in this file because it is used mainly by the bmenu code.
 ;; Its definitions MUST COME AFTER the calls to macro `bmkp-define-sort-command'.
 ;; Otherwise, they won't pick up a populated `bmkp-sort-orders-alist'.
-;;;###autoload
 (when (> emacs-major-version 20)
   (defcustom bmkp-sort-orders-for-cycling-alist (copy-sequence bmkp-sort-orders-alist)
     "*Alist of sort orders used for cycling via `s s'...
@@ -3392,7 +3396,6 @@ this value."
                            (function :tag "Final Predicate")))))
     :group 'bookmark-plus))
 
-;;;###autoload
 (unless (> emacs-major-version 20)      ; Emacs 20: custom type `alist' doesn't exist.
   (defcustom bmkp-sort-orders-for-cycling-alist (copy-sequence bmkp-sort-orders-alist)
     "*Alist of sort orders used for cycling via `s s'...
@@ -3464,101 +3467,56 @@ With a prefix argument, show the internal definitions."
 
 ;; `bookmark-bmenu-mode-map'
 
-;;;###autoload
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map (kbd "RET")          'bookmark-bmenu-this-window))
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "."                    'bmkp-bmenu-show-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map ">"                    'bmkp-bmenu-toggle-show-only-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "<"                    'bmkp-bmenu-toggle-show-only-unmarked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "M-<DEL>")        'bmkp-bmenu-unmark-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "="                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "=bM"                  'bmkp-bmenu-mark-specific-buffer-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "=fM"                  'bmkp-bmenu-mark-specific-file-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "=bS"                  'bmkp-bmenu-show-only-specific-buffer)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "=fS"                  'bmkp-bmenu-show-only-specific-file)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "%"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "%m"                   'bmkp-bmenu-regexp-mark)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "*"                    nil) ; For Emacs 20
-;;;###autoload
 (when (< emacs-major-version 21)
   (define-key bookmark-bmenu-mode-map "*m"                 'bookmark-bmenu-mark))
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "#"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "#S"                   'bmkp-bmenu-show-only-autonamed)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-a"                 'bmkp-bmenu-search-marked-bookmarks-regexp)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "B"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "BM"                   'bmkp-bmenu-mark-non-file-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "BS"                   'bmkp-bmenu-show-only-non-files)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "c"                    'bmkp-bmenu-define-command)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "C"                    'bmkp-bmenu-define-full-snapshot-command)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-c"                 'bmkp-bmenu-define-jump-marked-command)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "D"                    'bmkp-bmenu-delete-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d"                 nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d>"                'bmkp-bmenu-dired-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d\M-m"             'bmkp-bmenu-mark-dired-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-d\M-s"             'bmkp-bmenu-show-only-dired)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "E"                    'bmkp-bmenu-edit-bookmark)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "F"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "FM"                   'bmkp-bmenu-mark-file-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "FS"                   'bmkp-bmenu-show-only-files)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "g"                    'bmkp-bmenu-refresh-menu-list)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "G"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "GM"                   'bmkp-bmenu-mark-gnus-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "GS"                   'bmkp-bmenu-show-only-gnus)
-;;;###autoload
 (if (fboundp 'command-remapping)
     (define-key bookmark-bmenu-mode-map [remap describe-mode] 'bmkp-bmenu-mode-status-help)
   ;; In Emacs < 22, the `substitute-...' affects only `?', not `C-h m', so we add it separately.
   (substitute-key-definition 'describe-mode 'bmkp-bmenu-mode-status-help bookmark-bmenu-mode-map)
   (define-key bookmark-bmenu-mode-map "\C-hm"              'bmkp-bmenu-mode-status-help))
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h >")          'bmkp-bmenu-describe-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h RET")        'bmkp-bmenu-describe-this-bookmark)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-h C-<return>") 'bmkp-bmenu-describe-this-bookmark)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-<down>")       'bmkp-bmenu-describe-this+move-down)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "C-<up>")         'bmkp-bmenu-describe-this+move-up)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map (kbd "M-<return>")     'bmkp-bmenu-w32-open)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map [M-mouse-2]            'bmkp-bmenu-w32-open-with-mouse)
-;;;###autoload
 (when (featurep 'bookmark+-lit)
   (define-key bookmark-bmenu-mode-map "H"                  nil) ; For Emacs 20
   (define-key bookmark-bmenu-mode-map "H+"                 'bmkp-bmenu-set-lighting)
@@ -3569,179 +3527,93 @@ With a prefix argument, show the internal definitions."
   (define-key bookmark-bmenu-mode-map "HS"                 'bmkp-bmenu-show-only-lighted)
   (define-key bookmark-bmenu-mode-map "H>U"                'bmkp-bmenu-unlight-marked)
   (define-key bookmark-bmenu-mode-map "HU"                 'bmkp-bmenu-unlight))
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "I"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "IM"                   'bmkp-bmenu-mark-info-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "IS"                   'bmkp-bmenu-show-only-info-nodes)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "K"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "KM"                   'bmkp-bmenu-mark-desktop-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "KS"                   'bmkp-bmenu-show-only-desktops)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "L"                    'bmkp-switch-bookmark-file)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "M"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "MM"                   'bmkp-bmenu-mark-man-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "MS"                   'bmkp-bmenu-show-only-man-pages)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-m"                 'bmkp-bmenu-mark-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "O"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "O>"                   'bmkp-bmenu-omit/unomit-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "OS"                   'bmkp-bmenu-show-only-omitted)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "OU"                   'bmkp-unomit-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "P"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "PA"                  'bmkp-bmenu-filter-annotation-incrementally)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "PB"               'bmkp-bmenu-filter-bookmark-name-incrementally)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "PF"                   'bmkp-bmenu-filter-file-name-incrementally)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "PT"                   'bmkp-bmenu-filter-tags-incrementally)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "q"                    'bmkp-bmenu-quit)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-q"          'bmkp-bmenu-query-replace-marked-bookmarks-regexp)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "R"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "RM"                   'bmkp-bmenu-mark-region-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "RS"                   'bmkp-bmenu-show-only-regions)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-r"                 'bookmark-bmenu-relocate) ; `R' in Emacs
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "S"                    'bookmark-bmenu-save) ; `s' in Emacs
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "s"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "s>"                   'bmkp-bmenu-sort-marked-before-unmarked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "s0"                   'bmkp-bmenu-sort-by-creation-time)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sb"               'bmkp-bmenu-sort-by-last-buffer-or-file-access)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sfd"                  'bmkp-bmenu-sort-by-local-file-type)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sfn"                  'bmkp-bmenu-sort-by-file-name)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sfs"                  'bmkp-bmenu-sort-by-local-file-size)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sft"                  'bmkp-bmenu-sort-by-last-local-file-access)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sfu"                  'bmkp-bmenu-sort-by-last-local-file-update)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sg"                   'bmkp-bmenu-sort-by-Gnus-thread)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "si"                   'bmkp-bmenu-sort-by-Info-location)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sk"                   'bmkp-bmenu-sort-by-bookmark-type)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sn"                   'bmkp-bmenu-sort-by-bookmark-name)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sr"                   'bmkp-reverse-sort-order)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "s\C-r"                'bmkp-reverse-multi-sort-order)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "ss"                   'bmkp-bmenu-change-sort-order-repeat)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "st"                   'bmkp-bmenu-sort-by-last-bookmark-access)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "su"                   'bmkp-bmenu-sort-by-url)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "sv"                 'bmkp-bmenu-sort-by-bookmark-visit-frequency)
-;; ;;;###autoload
-;; (define-key bookmark-bmenu-mode-map "sw"                   'bmkp-bmenu-sort-by-w3m-url)
-;;;###autoload
+;; ;; (define-key bookmark-bmenu-mode-map "sw"                   'bmkp-bmenu-sort-by-w3m-url)
 (when (> emacs-major-version 22)        ; Emacs 23+
  (define-key bookmark-bmenu-mode-map (kbd "M-s a C-s")     'bmkp-bmenu-isearch-marked-bookmarks)
  (define-key bookmark-bmenu-mode-map (kbd "M-s a M-C-s") 'bmkp-bmenu-isearch-marked-bookmarks-regexp))
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "T"                    nil) ; For Emacs20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "T0"                   'bmkp-remove-all-tags)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "T+"                   'bmkp-add-tags)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "T-"                   'bmkp-remove-tags)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "T>+"                  'bmkp-bmenu-add-tags-to-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "T>-"                  'bmkp-bmenu-remove-tags-from-marked)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Td"                   'bmkp-remove-tags-from-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tl"                   'bmkp-list-all-tags)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm*"                  'bmkp-bmenu-mark-bookmarks-tagged-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm%"                  'bmkp-bmenu-mark-bookmarks-tagged-regexp)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm+"                  'bmkp-bmenu-mark-bookmarks-tagged-some)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm~*"                 'bmkp-bmenu-mark-bookmarks-tagged-not-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tm~+"                 'bmkp-bmenu-mark-bookmarks-tagged-none)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tr"                   'bmkp-rename-tag)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Ts"                   'bmkp-define-tags-sort-command)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "TS"                   'bmkp-bmenu-show-only-tagged)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tu*"                  'bmkp-bmenu-unmark-bookmarks-tagged-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tu+"                  'bmkp-bmenu-unmark-bookmarks-tagged-some)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tu~*"                'bmkp-bmenu-unmark-bookmarks-tagged-not-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tu~+"                 'bmkp-bmenu-unmark-bookmarks-tagged-none)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "Tv"                   'bmkp-bmenu-set-tag-value)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-l"                 'bmkp-toggle-saving-menu-list-state)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-~"                 'bmkp-toggle-saving-bookmark-file)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-t"            'bookmark-bmenu-toggle-filenames) ; `t' in Emacs
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "t"                    'bmkp-bmenu-toggle-marks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "U"                    'bmkp-bmenu-unmark-all)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-u"                 nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-uM"                'bmkp-bmenu-mark-url-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-uS"                'bmkp-bmenu-show-only-urls)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "V"                    nil) ; For Emacs20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "VS"                   'bmkp-bmenu-show-only-variable-lists)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "\M-o"                 'bmkp-bmenu-w32-open-select)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "W"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "WM"                   'bmkp-bmenu-mark-w3m-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "WS"                   'bmkp-bmenu-show-only-w3m-urls)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "X"                    nil) ; For Emacs 20
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "XM"                   'bmkp-bmenu-mark-bookmark-file-bookmarks)
-;;;###autoload
 (define-key bookmark-bmenu-mode-map "XS"                   'bmkp-bmenu-show-only-bookmark-files)
 
 
@@ -4125,7 +3997,6 @@ With a prefix argument, show the internal definitions."
 
 ;;; Mouse-3 menu binding.
 
-;;;###autoload
 (defvar bmkp-bmenu-line-overlay nil
   "Overlay to highlight the current line for `bmkp-bmenu-mouse-3-menu'.")
 (define-key bookmark-bmenu-mode-map [mouse-3] 'bmkp-bmenu-mouse-3-menu)

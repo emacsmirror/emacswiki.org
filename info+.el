@@ -4,12 +4,12 @@
 ;; Description: Extensions to `info.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Sep 12 16:30:11 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Oct 19 09:55:11 2010 (-0700)
+;; Last-Updated: Mon Jan  3 14:29:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 4374
+;;     Update #: 4378
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/info+.el
 ;; Keywords: help, docs, internal
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -178,6 +178,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from non def* sexps.
 ;; 2010/05/27 dadams
 ;;     Added: Info-set-mode-line.
 ;;     Info-find-node-2:
@@ -715,7 +717,6 @@ you want to include, such as form-feed (^L) and newline (^J), with ^Q.
 For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
   :type 'string :group 'Info-Plus)
 
-;;;###autoload
 (when (> emacs-major-version 22)
   (defcustom Info-breadcrumbs-in-header-flag nil
     "*Non-nil means breadcrumbs are shown in the header line."
@@ -882,7 +883,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 ;; reason not to use a separate window, if the user, e.g., sets
 ;; `pop-up-windows' or `pop-up-frames' non-nil.
 ;;
-;;;###autoload
 (if (>= emacs-major-version 22)
     (remove-hook 'same-window-regexps "\\*info\\*\\(\\|<[0-9]+>\\)")
   (remove-hook 'same-window-buffer-names "*info*"))
@@ -896,7 +896,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 (put 'Info-goto-emacs-key-command-node 'info-file "emacs")
 
 
-;;;###autoload
 (unless (>= emacs-major-version 22)
   ;; I previously called this `emacs-info', but Emacs 21 came out with this name.
   (defun info-emacs-manual ()
@@ -918,7 +917,6 @@ For example, type `^Q^L^Q^J* ' to set this to \"\\f\\n* \"."
 ;; REPLACE ORIGINAL in `info.el':
 ;; Call `fit-frame' if `Info-fit-frame-flag'.
 ;;
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun Info-find-node (filename nodename &optional no-going-back)
     ;; Go to an info node specified as separate FILENAME and NODENAME.
@@ -1132,7 +1130,6 @@ or file: `%s'"
 ;; REPLACE ORIGINAL in `info.el':
 ;; Call `fit-frame' if `Info-fit-frame-flag'.
 ;;
-;;;###autoload
 (when (eq emacs-major-version 21)
   (defun Info-find-node-2 (filename nodename &optional no-going-back)
     (buffer-disable-undo (current-buffer))
@@ -1259,7 +1256,6 @@ or file: `%s'"
 ;; REPLACE ORIGINAL in `info.el':
 ;; Call `fit-frame' if `Info-fit-frame-flag'.
 ;;
-;;;###autoload
 (when (= emacs-major-version 22)
   (defun Info-find-node-2 (filename nodename &optional no-going-back)
     (buffer-disable-undo (current-buffer))
@@ -1423,7 +1419,6 @@ or file: `%s'"
 ;; REPLACE ORIGINAL in `info.el':
 ;; Call `fit-frame' if `Info-fit-frame-flag'.
 ;;
-;;;###autoload
 (when (> emacs-major-version 22)
   (defun Info-find-node-2 (filename nodename &optional no-going-back)
     (buffer-disable-undo (current-buffer))
@@ -2062,7 +2057,6 @@ to search again for `%s'.")
 ;; 6. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-;;;###autoload
 (unless (> emacs-major-version 21)
   (defun Info-fontify-node ()
     (save-excursion
@@ -2131,7 +2125,6 @@ to search again for `%s'.")
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-;;;###autoload
 (when (= emacs-major-version 22)
   (defun Info-fontify-node ()
     "Fontify the node."
@@ -2536,7 +2529,6 @@ to search again for `%s'.")
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-;;;###autoload
 (when (and (> emacs-major-version 22) (not (fboundp 'Info-breadcrumbs))) ; Emacs 23.1, not 23.2+
   (defun Info-fontify-node ()
     "Fontify the node."
@@ -2904,7 +2896,6 @@ to search again for `%s'.")
 ;; 2. If `Info-fontify-quotations-flag', fontify `...' in face `info-quoted-name',
 ;;    "..." in face `info-string', and ' in face `info-single-quote'.
 ;;
-;;;###autoload
 (when (and (> emacs-major-version 22) (fboundp 'Info-breadcrumbs)) ; Emacs 23.2+
   (defun Info-fontify-node ()
     "Fontify the node."
@@ -3379,7 +3370,6 @@ Command:\\|User Option:\\|Macro:\\|Syntax class:\\)\\(.*\\)"
 ;; 1. Fits frame if `one-window-p'.
 ;; 2. Highlights the found regexp if `search-highlight'.
 ;;
-;;;###autoload
 (unless (>= emacs-major-version 22)
   (defun Info-search (regexp)
     "Search for REGEXP, starting from point, and select node it's found in.
@@ -3467,7 +3457,6 @@ To remove the highlighting, just start an incremental search: \
 ;; 1. Fits frame if `one-window-p'.
 ;; 2. Highlights the found regexp if `search-highlight'.
 ;;
-;;;###autoload
 (when (= emacs-major-version 22)
   (defun Info-search (regexp &optional bound noerror count direction)
     "Search for REGEXP, starting from point, and select node it's found in.
@@ -3659,7 +3648,6 @@ To remove the highlighting, just start an incremental search: \
 ;; 1. Fits frame if `one-window-p'.
 ;; 2. Highlights the found regexp if `search-highlight'.
 ;;
-;;;###autoload
 (when (> emacs-major-version 22)
   (defun Info-search (regexp &optional bound noerror count direction)
     "Search for REGEXP, starting from point, and select node it's found in.
@@ -3832,7 +3820,6 @@ To remove the highlighting, just start an incremental search: \
 ;; REPLACES ORIGINAL in `info.el':
 ;; Added optional arg FORK.
 ;;
-;;;###autoload
 (when (>= emacs-major-version 22)
   (defun Info-mouse-follow-nearest-node (click &optional fork)
     "\\<Info-mode-map>Follow a node reference near point.
@@ -3852,7 +3839,6 @@ With a prefix argument, open the node in a separate window."
 ;; Use `Info-mode-syntax-table' (bug #3312).
 ;; Doc string changed: displays all bindings.
 ;;
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun Info-mode ()
     "\\<Info-mode-map>
@@ -3979,7 +3965,6 @@ These are all of the current Info Mode bindings:
 ;; Use `Info-mode-syntax-table' (bug #3312).
 ;; Doc string changed: displays all bindings.
 ;;
-;;;###autoload
 (when (= emacs-major-version 21)
 
   ;; For some reason, this doesn't seem to be bound when `tool-bar.el' is loaded (?) in Emacs 21.
@@ -4116,7 +4101,6 @@ These are all of the current Info Mode bindings:
 ;; Use `Info-mode-syntax-table' (bug #3312).
 ;; Doc string changed: displays all bindings.
 ;;
-;;;###autoload
 (when (= emacs-major-version 22)
   (defun Info-mode ()
     "Provides commands for browsing through the Info documentation tree.
@@ -4271,7 +4255,6 @@ These are all of the current Info Mode bindings:
 ;; Use `Info-mode-syntax-table' (bug #3312).
 ;; Doc string changed: displays all bindings.
 ;;
-;;;###autoload
 (when (> emacs-major-version 22)
   (defun Info-mode ()
     "Provides commands for browsing through the Info documentation tree.

@@ -4,11 +4,11 @@
 ;; Description: Change logs for Bookmark+ libraries.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep 15 07:58:41 2000
-;; Last-Updated: Fri Dec 10 09:47:20 2010 (-0800)
+;; Last-Updated: Mon Jan  3 14:16:23 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 13273
+;;     Update #: 13292
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-chg.el
 ;; Keywords: bookmarks, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -101,6 +101,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-1.el'")
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from non def* sexps and from define-key and define-prefix-command.
+;;     Added some missing autoload cookies for commands, in particular redefined standard commands.
 ;; 2010/12/10 dadams
 ;;     Added defalias for bookmark-name-from(-full)-record, to fix gratuitous Emacs name change.
 ;; 2010/10/22 dadams
@@ -202,6 +205,9 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-bmu.el'")
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from non def* sexps and from define-key.
+;;     Added missing autoload cookies for commands, in particular redefined std commands & defalias.
 ;; 2010/12/10 dadams
 ;;     Added defalias for bookmark-name-from(-full)-record, to fix gratuitous Emacs name change.
 ;; 2010/09/24 dadams
@@ -236,6 +242,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-lit.el'")
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookies: defcustoms and commands.
 ;; 2010/12/10 dadams
 ;;     Added defalias for bookmark-name-from(-full)-record, to fix gratuitous Emacs name change.
 ;; 2010/09/25 dadams
@@ -260,6 +268,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+-mac.el'")
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookies: defmacro.
 ;; 2010/09/25 dadams
 ;;     Added: bmkp-define-next+prev-cycle-commands.
 ;; 2010/09/24 dadams
@@ -271,6 +281,8 @@
  
 ;;;(@* "CHANGE LOG FOR `bookmark+.el'")
 ;;
+;; 2011/01/03 dadams
+;;     Added autoload cookies: defconst, command.
 ;; 2010/08/19
 ;;     bmkp-version-number: Version 3.2.0.
 ;; 2010/08/15 dadams

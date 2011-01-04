@@ -4,12 +4,12 @@
 ;; Description: Enhancements to cus-edit.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jun 29 13:19:36 2000
 ;; Version: 21.1
-;; Last-Updated: Thu Jul 22 15:37:55 2010 (-0700)
+;; Last-Updated: Mon Jan  3 20:44:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1262
+;;     Update #: 1272
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/cus-edit+.el
 ;; Keywords: help, customize, help, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -343,6 +343,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies on remove-hook and non-interactive functions.
+;;     Added some missing autoload cookies for commands.
 ;; 2010/07/22 dadams
 ;;     custom-variable-menu: Sync with Emacs 24 dev code.
 ;; 2008/04/24 dadams
@@ -824,6 +827,7 @@ widget.  If FILTER is nil, ACTION is always valid.")
 
 ;;; FUNCTIONS ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun customize-apropos-options-of-type (type regexp &optional arg)
   "Customize all loaded customizable options of type TYPE that match REGEXP.
 With no prefix arg, each option is defined with `defcustom' type TYPE.
@@ -1097,7 +1101,6 @@ for example, `Consider Unchanged') are always ignored here."
 (add-hook 'kill-emacs-query-functions
           (lambda () (condition-case nil (customize-customized) (error t))))
 
-;;;###autoload (remove-hook 'same-window-regexps "\\`\\*Customiz.*\\*\\'")
 (remove-hook 'same-window-regexps "\\`\\*Customiz.*\\*\\'")
 
 ;;;###autoload
@@ -1260,7 +1263,6 @@ Use `\\[Custom-reset-standard]' to undo."))))
 ;;       not work - the `y-or-n-p' does not ask you anything, and it
 ;;       assumes `n'.
 ;;
-;;;###autoload
 (defun custom-ignore-unsaved-preference (widget)
   "Ignore any unsaved changes to this preference.
 Add it to the list of preferences that `customize-customized' will
@@ -1318,7 +1320,6 @@ without being saved.  Continue? "))
 ;; Due to a `cus-edit.el' bug (hidden widgets are not saved), we need to temporarily
 ;; show hidden widgets.
 ;;
-;;;###autoload
 (defun custom-consider-face-unchanged (widget)
   "Consider this face as being unchanged now.
 This does not save the current face properties; it just considers the
@@ -1354,7 +1355,6 @@ face, since it was considered unchanged."
 ;; Should we (put symbol 'saved-value...) only if not
 ;; (eq (widget-get widget :custom-state) 'standard), as in `custom-face-save'?
 ;;
-;;;###autoload
 (defun custom-consider-variable-unchanged (widget)
   "Consider this variable as being unchanged now.
 This does not save the current value; it just considers the value to
@@ -1389,6 +1389,7 @@ variable, since it was considered unchanged."
 
 ;;; $$$$$$$$ PBS FOR EMACS 21 - MAYBE FIRST CALL UPDATE-ALL, THEN DO THIS? $$$$$$$
 
+;;;###autoload
 (defun customize-consider-all-unchanged ()
   "Consider all customizable preferences as saved, without saving them."
   (interactive)
@@ -1447,6 +1448,7 @@ variable, since it was considered unchanged."
 ;;   (message
 ;;    "All variables are now considered unchanged (\"saved\"), but they were not saved."))
 
+;;;###autoload
 (defun customize-consider-all-vars-unchanged ()
   "Consider all customizable variables as saved, without saving them."
   (interactive)
@@ -1467,6 +1469,7 @@ variable, since it was considered unchanged."
   (message
    "All variables are now considered unchanged (\"saved\"), but they were not saved."))
 
+;;;###autoload
 (defun customize-consider-all-faces-unchanged ()
   "Consider all customizable faces as saved, without saving them."
   (interactive)
@@ -1681,7 +1684,6 @@ Reset all values in buffer to standard settings, updating your custom file."
 ;; REPLACES ORIGINAL in `cus-edit.el'.
 ;; Fit frame expanding and collapsing tree nodes.
 ;;
-;;;###autoload
 (when (fboundp 'fit-frame-if-one-window)
   (defadvice custom-browse-visibility-action
     (after customize-toggle-tree-node-fit-frame activate)
@@ -1697,7 +1699,6 @@ Reset all values in buffer to standard settings, updating your custom file."
 ;;       this not to work yet - the buffer isn't selected! This will
 ;;       work when the bug is fixed.
 ;;
-;;;###autoload
 (when (fboundp 'fit-frame-if-one-window)
   (defadvice customize-group-other-window (after customize-group-fit-frame activate)
     "Fit frame to buffer if only one window."

@@ -4,12 +4,12 @@
 ;; Description: First part of package Bookmark+.
 ;; Author: Drew Adams, Thierry Volpiatto
 ;; Maintainer: Drew Adams (concat "drew.adams" "@" "oracle" ".com")
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 2009, Thierry Volpiatto, all rights reserved.
 ;; Created: Mon Jul 12 13:43:55 2010 (-0700)
-;; Last-Updated: Fri Dec 10 09:38:24 2010 (-0800)
+;; Last-Updated: Mon Jan  3 10:53:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 922
+;;     Update #: 941
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-1.el
 ;; Keywords: bookmarks, bookmark+, placeholders, annotations, search, info, url, w3m, gnus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -1076,7 +1076,6 @@ the state of buffer `*Bookmark List*' at the time it is created:
 ;;(@* "Compatibility Code for Older Emacs Versions")
 ;;; Compatibility Code for Older Emacs Versions ----------------------
 
-;;;###autoload
 (when (< emacs-major-version 23)
 
   ;; These definitions are for Emacs versions prior to Emacs 23.
@@ -1200,7 +1199,6 @@ The return value has the form (BUFFER . POINT), where BUFFER is a
 buffer and POINT is the location within BUFFER."
     (save-excursion (bookmark-handle-bookmark bookmark) (cons (current-buffer) (point)))))
 
-;;;###autoload
 (when (< emacs-major-version 22)
 
   ;; These definitions are for Emacs versions prior to Emacs 22.
@@ -1226,6 +1224,7 @@ See `bookmark-jump-other-window'."
 ;;
 ;; BUG fix: Need bookmark arg in `interactive' spec.
 ;;
+;;;###autoload
 (defun bookmark-edit-annotation-mode (bookmark)
   "Mode for editing the annotation of bookmark BOOKMARK.
 When you have finished composing, type \\[bookmark-send-annotation].
@@ -1259,6 +1258,7 @@ BOOKMARK is a bookmark name or a bookmark record.
 ;; 2. Refresh menu list, to pick up the `a' marker.
 ;; 3. Delete window also, if `misc-cmds.el' loaded.
 ;;
+;;;###autoload
 (defun bookmark-send-edited-annotation ()
   "Use buffer contents as annotation for a bookmark.
 Lines beginning with `#' are ignored."
@@ -1286,6 +1286,7 @@ Lines beginning with `#' are ignored."
 ;;
 ;; Added `interactive' spec.
 ;;
+;;;###autoload
 (defun bookmark-edit-annotation (bookmark)
   "Pop up a buffer for editing bookmark BOOKMARK's annotation.
 BOOKMARK is a bookmark name or a bookmark record."
@@ -1401,6 +1402,7 @@ Non-nil VISITS means record it as the `visits' entry."
 ;; 5. Prompt for tags if `bmkp-prompt-for-tags-flag' is non-nil.
 ;; 6. Possibly highlight bookmark and other bookmarks in buffer, per `bmkp-auto-light-when-set'.
 ;;
+;;;###autoload
 (defun bookmark-set (&optional name parg interactivep) ; `C-x r m'
   "Set a bookmark named NAME, then run `bmkp-after-set-hook'.
 If the region is active (`transient-mark-mode') and nonempty, then
@@ -2651,6 +2653,7 @@ navigation list are those that would be currently shown in the
   (bookmark-bmenu-surreptitiously-rebuild-list)
   (cons "CURRENT *Bookmark List*" (bmkp-make-bookmark-list-record)))
 
+;;;###autoload
 (defun bmkp-choose-navlist-of-type (type) ; Bound to `C-x p :'
   "Set the bookmark navigation list to the bookmarks of a type you choose.
 The pseudo-type `any' sets the navigation list to all bookmarks.
@@ -2833,7 +2836,6 @@ BOOKMARK is a bookmark name or a bookmark record."
 ;;(@* "Search-and-Replace Locations of Marked Bookmarks")
 ;;  *** Search-and-Replace Locations of Marked Bookmarks ***
 
-;;;###autoload
 (when (> emacs-major-version 22)
   (defvar bmkp-isearch-bookmarks nil
     "List of bookmarks whose locations are to be incrementally searched.")
@@ -4462,7 +4464,6 @@ The value is based on `bmkp-default-handler-associations'."
   "Handler for sound files: play the sound file that is BOOKMARK's file."
   (play-sound-file (bookmark-get-filename bookmark)))
 
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun bmkp-compilation-target-set (&optional prefix) ; `C-c C-b'
     "Set a bookmark at the start of the line for this compilation hit.
@@ -4498,7 +4499,6 @@ POSITION is the beginning of the line indicated by the message."
            (spec-dir   (if directory (expand-file-name directory) default-directory)))
       (cons (expand-file-name filename spec-dir) line))))
     
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun bmkp-compilation-target-set-all (prefix &optional msgp) ; `C-c C-M-b'
     "Set a bookmark for each hit of a compilation buffer.
@@ -4532,7 +4532,6 @@ number."
 ;; We could make the `occur' code work for Emacs 20 & 21 also, but you would not be able to
 ;; delete some occurrences and bookmark only the remaining ones.
 
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun bmkp-occur-target-set (&optional prefix) ; `C-c C-b'
     "Set a bookmark at the start of the line for this `(multi-)occur' hit.
@@ -4565,7 +4564,6 @@ You can use this only in `Occur' mode (commands such as `occur' and
                           (bookmark-set (format "%s%s, line %s" prefix buf line)
                                         99 'INTERACTIVEP)))))))
 
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun bmkp-occur-target-set-all (prefix &optional msgp) ; `C-c C-M-b'
     "Set a bookmark for each hit of a `(multi-)occur' buffer.
@@ -5207,7 +5205,6 @@ in the same directory, then you will need to relock it.)"
   (bookmark-delete bookmark-name))
 
 ;; Variable-list bookmarks
-;;;###autoload
 (when (boundp 'wide-n-restrictions)
   (defun bmkp-set-restrictions-bookmark ()
     "Save the ring of restrictions for the current buffer as a bookmark.
@@ -5529,6 +5526,7 @@ BOOKMARK is a bookmark name or a bookmark record."
       (save-excursion			; Hide subdirs that were hidden.
         (dolist (dir  hidden-dirs)  (when (dired-goto-subdir dir) (dired-hide-subdir 1)))))))
 
+;;;###autoload
 (defun bmkp-dired-subdirs ()
   "Alist of inserted subdirectories, without their positions (markers).
 This is like `dired-subdir-alist' but without the top-level dir and
@@ -6569,7 +6567,6 @@ Non-interactively, act at POSITION, not point."
       (error "No such line: %d (%d lines total)" number (1+ (count-lines (point-min) (point-max)))))
     (bmkp-set-autonamed-bookmark (point))))
 
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun bmkp-occur-create-autonamed-bookmarks ( &optional msgp)
     "Create an autonamed bookmark for each `occur' hit.
@@ -6693,33 +6690,19 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 
 ;; `bookmark-map'
 
-;;;###autoload
 (define-key ctl-x-map "p" bookmark-map)
-;;;###autoload
 (define-key ctl-x-map "pj" 'bookmark-jump-other-window)
-;;;###autoload
 (define-key ctl-x-map "rK" 'bmkp-set-desktop-bookmark)
-;;;###autoload
 (define-key bookmark-map "0"      'bmkp-empty-file)
-;;;###autoload
 (define-key bookmark-map "B"      'bmkp-choose-navlist-from-bookmark-list)
-;;;###autoload
 (define-key bookmark-map "E"      'bmkp-edit-bookmark)
-;;;###autoload
 (define-key bookmark-map "I"      'bookmark-insert-location) ; The original in `bookmark.el' was `f'.
-;;;###autoload
 (define-key bookmark-map "K"      'bmkp-set-desktop-bookmark)
-;;;###autoload
 (define-key bookmark-map "L"      'bmkp-switch-bookmark-file)
-;;;###autoload
 (define-key bookmark-map "N"      'bmkp-navlist-bmenu-list)
-;;;###autoload
 (define-key bookmark-map "o"      'bookmark-jump-other-window)
-;;;###autoload
 (define-key bookmark-map "q"      'bookmark-jump-other-window)
-;;;###autoload
 (define-key bookmark-map "x"      'bmkp-set-bookmark-file-bookmark)
-;;;###autoload
 (when (featurep 'bookmark+-lit)
   (define-key bookmark-map "h"    'bmkp-light-bookmark-this-buffer)
   (define-key bookmark-map "H"    'bmkp-light-bookmarks)
@@ -6727,15 +6710,10 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
   (define-key bookmark-map "U"    'bmkp-unlight-bookmarks)
   (define-key bookmark-map "\C-u" 'bmkp-unlight-bookmark-here)
   (define-key bookmark-map "="    'bmkp-bookmarks-lighted-at-point))
-;;;###autoload
 (define-key bookmark-map "."      'bmkp-this-buffer-bmenu-list)
-;;;###autoload
 (define-key bookmark-map "?"      'bmkp-describe-bookmark)
-;;;###autoload
 (define-key bookmark-map ":"      'bmkp-choose-navlist-of-type)
-;;;###autoload
 (define-key bookmark-map "\r"     'bmkp-toggle-autonamed-bookmark-set/delete)
-;;;###autoload
 (define-key bookmark-map [delete] 'bmkp-delete-bookmarks)
 
 ;; If you use Emacs before Emacs 22, then you will want to bind the commands
@@ -6743,7 +6721,6 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 ;; For example, you might want to bind `bmkp-next-bookmark-this-buffer'
 ;; (not `bmkp-next-bookmark-this-buffer-repeat') to a key such as [f2].
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (define-key bookmark-map [down]       'bmkp-next-bookmark-this-buffer-repeat)
   (define-key bookmark-map "n"          'bmkp-next-bookmark-this-buffer-repeat)
@@ -6782,22 +6759,14 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 
 (defvar bmkp-set-map nil "Keymap containing bindings for bookmark set commands.")
 
-;;;###autoload
 (define-prefix-command 'bmkp-set-map)
-;;;###autoload
 (define-key bookmark-map "c"  bmkp-set-map) ; `C-x p c' for create
 
-;;;###autoload
 (define-key bmkp-set-map "K"  'bmkp-set-desktop-bookmark) ; `C-x p c K'
-;;;###autoload
 (define-key bmkp-set-map "f"  'bmkp-file-target-set) ; `C-x p c f'
-;;;###autoload
 (define-key bmkp-set-map "m"  'bookmark-set) ; `C-x p c m'
-;;;###autoload
 (define-key bmkp-set-map "x"  'bmkp-set-bookmark-file-bookmark) ; `C-x p c x'
-;;;###autoload
 (define-key bmkp-set-map "u"  'bmkp-url-target-set) ; `C-x p c u'
-;;;###autoload
 (define-key bmkp-set-map "\r" 'bmkp-toggle-autonamed-bookmark-set/delete) ; `C-x p c RET'
 
 
@@ -6836,143 +6805,78 @@ Optional arg ALIST is the alist of bookmarks.  It defaults to
 (defvar bmkp-jump-other-window-map nil
   "Keymap containing bindings for bookmark jump other-window commands.")
 
-;;;###autoload
 (define-prefix-command 'bmkp-jump-map)
-;;;###autoload
 (define-prefix-command 'bmkp-jump-other-window-map)
-;;;###autoload
 (define-key ctl-x-map   "j" bmkp-jump-map)
-;;;###autoload
 (define-key ctl-x-4-map "j" bmkp-jump-other-window-map)
 
-;;;###autoload
 (define-key bmkp-jump-map              "."    'bmkp-this-buffer-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "."    'bmkp-this-buffer-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "#"    nil) ; For Emacs 20
-;;;###autoload
 (define-key bmkp-jump-other-window-map "#"    nil) ; For Emacs 20
-;;;###autoload
 (define-key bmkp-jump-map              "##"   'bmkp-autonamed-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "##"   'bmkp-autonamed-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "#."   'bmkp-autonamed-this-buffer-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "#."   'bmkp-autonamed-this-buffer-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "="    nil) ; For Emacs 20
-;;;###autoload
 (define-key bmkp-jump-other-window-map "="    nil) ; For Emacs 20
-;;;###autoload
 (define-key bmkp-jump-map              "=b"   'bmkp-specific-buffers-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "=b"   'bmkp-specific-buffers-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "=f"   'bmkp-specific-files-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "=f"   'bmkp-specific-files-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "b"    'bmkp-non-file-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "b"    'bmkp-non-file-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "B"    'bmkp-bookmark-list-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "B"    'bmkp-bookmark-list-jump) ; Same
-;;;###autoload
 (define-key bmkp-jump-map              "d"    'bmkp-dired-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "d"    'bmkp-dired-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "f"    'bmkp-file-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "f"    'bmkp-file-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "g"    'bmkp-gnus-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "g"    'bmkp-gnus-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "h"    'bmkp-lighted-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "h"    'bmkp-lighted-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "i"    'bmkp-info-jump)
-;;;###autoload
 (define-key bmkp-jump-other-window-map "i"    'bmkp-info-jump-other-window)
-;;;###autoload
 (define-key bmkp-jump-map              "j"    'bookmark-jump)
 (put 'bookmark-jump :advertised-binding "\C-xjj")
-;;;###autoload
+
 (define-key bmkp-jump-other-window-map "j"    'bookmark-jump-other-window)
 (put 'bookmark-jump-other-window :advertised-binding "\C-x4jj")
 (put 'jump-other :advertised-binding "\C-x4jj")
-;;;###autoload
-(define-key bmkp-jump-map              "K"    'bmkp-desktop-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump) ; Same
-;;;###autoload
-(define-key bmkp-jump-map              "l"    'bmkp-local-file-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "l"    'bmkp-local-file-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "m"    'bmkp-man-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "m"    'bmkp-man-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "n"    'bmkp-remote-file-jump) ; "_n_etwork"
-;;;###autoload
-(define-key bmkp-jump-other-window-map "n"    'bmkp-remote-file-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "N"    'bmkp-jump-in-navlist)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "N"    'bmkp-jump-in-navlist-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "r"    'bmkp-region-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "r"    'bmkp-region-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "t"    nil) ; For Emacs 20
-;;;###autoload
-(define-key bmkp-jump-other-window-map "t"    nil) ; For Emacs 20
-;;;###autoload
-(define-key bmkp-jump-map              "t*"   'bmkp-all-tags-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "t*"   'bmkp-all-tags-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "t+"   'bmkp-some-tags-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "t+"   'bmkp-some-tags-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "t%"   nil) ; For Emacs 20
-;;;###autoload
-(define-key bmkp-jump-other-window-map "t%"   nil) ; For Emacs 20
-;;;###autoload
-(define-key bmkp-jump-map              "t%*"  'bmkp-all-tags-regexp-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "t%*"  'bmkp-all-tags-regexp-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "t%+"  'bmkp-some-tags-regexp-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "t%+"  'bmkp-some-tags-regexp-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "u"    'bmkp-url-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump)
-;;;###autoload
-(define-key bmkp-jump-map              "w"    'bmkp-w3m-jump)
-;;;###autoload
-(define-key bmkp-jump-other-window-map "w"    'bmkp-w3m-jump-other-window)
-;;;###autoload
-(define-key bmkp-jump-map              "x"    'bmkp-bookmark-file-jump)
-;;;###autoload
-(define-key bmkp-jump-map              ":"    'bmkp-jump-to-type)
-;;;###autoload
-(define-key bmkp-jump-other-window-map ":"    'bmkp-jump-to-type-other-window)
 
+(define-key bmkp-jump-map              "K"    'bmkp-desktop-jump)
+(define-key bmkp-jump-other-window-map "K"    'bmkp-desktop-jump) ; Same
+(define-key bmkp-jump-map              "l"    'bmkp-local-file-jump)
+(define-key bmkp-jump-other-window-map "l"    'bmkp-local-file-jump-other-window)
+(define-key bmkp-jump-map              "m"    'bmkp-man-jump)
+(define-key bmkp-jump-other-window-map "m"    'bmkp-man-jump-other-window)
+(define-key bmkp-jump-map              "n"    'bmkp-remote-file-jump) ; "_n_etwork"
+(define-key bmkp-jump-other-window-map "n"    'bmkp-remote-file-jump-other-window)
+(define-key bmkp-jump-map              "N"    'bmkp-jump-in-navlist)
+(define-key bmkp-jump-other-window-map "N"    'bmkp-jump-in-navlist-other-window)
+(define-key bmkp-jump-map              "r"    'bmkp-region-jump)
+(define-key bmkp-jump-other-window-map "r"    'bmkp-region-jump-other-window)
+(define-key bmkp-jump-map              "t"    nil) ; For Emacs 20
+(define-key bmkp-jump-other-window-map "t"    nil) ; For Emacs 20
+(define-key bmkp-jump-map              "t*"   'bmkp-all-tags-jump)
+(define-key bmkp-jump-other-window-map "t*"   'bmkp-all-tags-jump-other-window)
+(define-key bmkp-jump-map              "t+"   'bmkp-some-tags-jump)
+(define-key bmkp-jump-other-window-map "t+"   'bmkp-some-tags-jump-other-window)
+(define-key bmkp-jump-map              "t%"   nil) ; For Emacs 20
+(define-key bmkp-jump-other-window-map "t%"   nil) ; For Emacs 20
+(define-key bmkp-jump-map              "t%*"  'bmkp-all-tags-regexp-jump)
+(define-key bmkp-jump-other-window-map "t%*"  'bmkp-all-tags-regexp-jump-other-window)
+(define-key bmkp-jump-map              "t%+"  'bmkp-some-tags-regexp-jump)
+(define-key bmkp-jump-other-window-map "t%+"  'bmkp-some-tags-regexp-jump-other-window)
+(define-key bmkp-jump-map              "u"    'bmkp-url-jump)
+(define-key bmkp-jump-other-window-map "u"    'bmkp-url-jump-other-window)
+(define-key bmkp-jump-map              "v"    'bmkp-variable-list-jump)
+(define-key bmkp-jump-map              "w"    'bmkp-w3m-jump)
+(define-key bmkp-jump-other-window-map "w"    'bmkp-w3m-jump-other-window)
+(define-key bmkp-jump-map              "x"    'bmkp-bookmark-file-jump)
+(define-key bmkp-jump-map              ":"    'bmkp-jump-to-type)
+(define-key bmkp-jump-other-window-map ":"    'bmkp-jump-to-type-other-window)
 
 ;; Add jump commands to other keymaps: Buffer-menu, Dired, Gnus, Info, Man, Woman, W3M.
 (add-hook 'buffer-menu-mode-hook

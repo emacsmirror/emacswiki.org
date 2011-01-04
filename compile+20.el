@@ -4,12 +4,12 @@
 ;; Description: Extensions to `compile.el'.
 ;; Author: Drew ADAMS
 ;; Maintainer: Drew ADAMS
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 12:40:56 2010 (-0800)
+;; Last-Updated: Mon Jan  3 20:21:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 833
+;;     Update #: 840
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -80,6 +80,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/03 dadams
+;;     Removed autoload cookies from non-interactive functions.
+;;     Added some missing autoload cookies for commands.
+;;     Removed autoload cookies: non def* sexps, non-interactive functions.
 ;; 2007/12/04 dadams
 ;;     grep, grep-default-regexp-fn: Changed single-quote to double-quote.
 ;; 2007/12/02 dadams
@@ -234,7 +238,6 @@ The default value matches lines that begin with a Lisp comment."
 (defvar grep-pattern nil "Search pattern used by latest \\[grep] command.")
 
 
-;;;###autoload
 (defun grep-default-regexp-fn ()
   "*Function of 0 args called to provide default search regexp to \\[grep].
 This is used only if both of the following are true:
@@ -613,6 +616,7 @@ The following bindings are in effect in this mode:
 
 ;; REPLACES ORIGINAL in `compile.el':
 ;; Calls `what-line' at end to display line number.
+;;;###autoload
 (defun compilation-next-error (nth)
   "Move point to the NTH next error in the compilation buffer.
 Does NOT find the source line like \\[next-error].
@@ -690,7 +694,6 @@ NEXT-ERROR is the locus of the next compilation error."
 ;; REPLACES ORIGINAL in `compile.el':
 ;; 1) Use `compile-buffer-mouse-face', not `highlight', as `mouse-face'.
 ;; 2) Put `mouse-face' on the whole line.
-;;;###autoload
 (defun compile-reinitialize-errors (reparse &optional limit-search find-at-least)
   "Parse new errors in compilation buffer, or reparse from the beginning
 if the user has asked for that."
@@ -749,7 +752,6 @@ if the user has asked for that."
 
 ;; REPLACES ORIGINAL in `compile.el':
 ;; Use `compile-buffer-mouse-face', not `highlight', as `mouse-face'.
-;;;###autoload
 (defun compilation-forget-errors ()
   "Set `compilation-error-list' to nil, and unchain markers
 that point to the error messages and their text, so that they no

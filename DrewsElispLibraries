@@ -185,6 +185,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 
 * <tt>[[bindings+.el]]</tt> -- [[minor mode|Minor mode]] menus from the [[mode line]] -- see ModeLineMinorModeMenu
 * <tt>[[col-highlight.el]]</tt> -- highlight the current column; see HighlightCurrentColumn
+* <tt>[[compile+.el]]</tt> -- extensions to standard library `compile'; see also '''GrepPlus'''
 * <tt>[[crosshairs.el]]</tt> -- highlight the current line and the current column, like a pair of cross hairs, letting you easily locate the [[cursor]] -- see CrosshairHighlighting
 * <tt>[[find-func+.el]]</tt> -- extensions to standard library `find-func'
 * <tt>[[font-lock+.el]]</tt> -- extensions to standard library `font-lock' (see HighLight and FaceMenuPlus)
@@ -203,7 +204,6 @@ I make minor changes to some libraries often, so check for the latest versions.
 === Emacs 21 and later (will not work in Emacs 20) ===
 
 * <tt>[[compile-.el]]</tt> -- extensions to standard library `compile'; see also '''GrepPlus'''
-* <tt>[[compile+.el]]</tt> -- extensions to standard library `compile'; see also '''GrepPlus'''
 * <tt>[[diff+.el]]</tt> -- extensions to standard library `diff'  -- see '''DiffEnhancements'''
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode'  -- see '''DiffEnhancements'''
 * <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''

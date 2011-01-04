@@ -118,5 +118,14 @@ Are there plans to integrate this (the first solution) in the official distribut
 apply: Wrong number of arguments: #[(server port key cert) "Æ^PÇ^QÈ^R^K^T^M^V^K^K^M^N^L^N^MFC^V^N^K^M^N^O^N^PFC^V^QÉÊ^K^M^N^R$?" [starttls-use-gnutls starttls-gnutls-program starttls-extra-arguments server smtpmail-smtp-server port t "gnutls-cli" nil message ...] 5 ("/home/goo/.gnus.el" . 1634)], 6
 
 
+Instead of wrapping, how about just using defadvice?
+
+ (defadvice smtpmail-via-smtp (before set-smtp-account
+ 				     (&optional recipient smtpmail-text-buffer))
+   "First set SMTP account."
+     (with-current-buffer smtpmail-text-buffer (change-smtp)))
+
+
+
 ----
 CategoryGnus

@@ -4,12 +4,12 @@
 ;; Description: Macro for defining faces & their variables.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 09:08:55 1999
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:49:05 2010 (-0800)
+;; Last-Updated: Mon Jan  3 20:47:59 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 84
+;;     Update #: 86
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/def-face-const.el
 ;; Keywords: faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -69,6 +69,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;###autoload
 (defmacro define-face-const (foreground background)
   "Define a constant variable (via `defconst') naming a new face.
 FOREGROUND is either nil or a string naming the new face's foreground color.

@@ -4,11 +4,11 @@
 ;; Description: Bookmark highlighting for Bookmark+.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2111, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 23 07:49:32 2010 (-0700)
-;; Last-Updated: Fri Dec 10 09:38:56 2010 (-0800)
+;; Last-Updated: Mon Jan  3 14:19:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 685
+;;     Update #: 692
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/bookmark+-lit.el
 ;; Keywords: bookmarks, highlighting, bookmark+
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -246,12 +246,14 @@ This face must be combinable with face `bmkp-t-mark'."
 ;;(@* "User Options (Customizable)")
 ;;; User Options (Customizable) --------------------------------------
 
+;;;###autoload
 (defcustom bmkp-auto-light-relocate-when-jump-flag t
   "*Non-nil means highlight the relocated, instead of the recorded, position.
 This has an effect only when the highlighting style for the bookmark
 is `point'."
   :type 'boolean :group 'bookmark-plus)
 
+;;;###autoload
 (defcustom bmkp-auto-light-when-jump nil
   "*Which bookmarks to automatically highlight when jumped to."
   :type '(choice
@@ -264,6 +266,7 @@ is `point'."
           (const :tag "None (no automatic highlighting)"   nil))
   :group 'bookmark-plus)
 
+;;;###autoload
 (defcustom bmkp-auto-light-when-set nil
   "*Which bookmarks to automatically highlight when set."
   :type '(choice
@@ -276,6 +279,7 @@ is `point'."
           (const :tag "None (no automatic highlighting)"   nil))
   :group 'bookmark-plus)
 
+;;;###autoload
 (defcustom bmkp-light-priorities '((bmkp-autonamed-overlays        . 160)
                                    (bmkp-non-autonamed-overlays    . 150))
   "*Priorities of bookmark highlighting overlay types.
@@ -297,7 +301,7 @@ This option is not used for Emacs versions before Emacs 22."
     :type (cons 'choice (mapcar (lambda (bb) (list 'const bb)) fringe-bitmaps))
     :group 'bookmark-plus))
 
-;; Must be before options that use it.
+;; Must be before any options that use it.
 (defvar bmkp-light-styles-alist (append '(("Line Beginning"      . bol)
                                           ("Position"            . point)
                                           ("Line"                . line)
@@ -315,18 +319,21 @@ This option is not used for Emacs versions before Emacs 22."
   (cons 'choice
         (mapcar (lambda (xx) (list 'const :tag (car xx) (cdr xx))) bmkp-light-styles-alist)))
 
+;;;###autoload
 (defcustom bmkp-light-style-autonamed (if (not (fboundp 'fringe-columns)) ; Emacs 20-21.
                                           'line
                                         'line+lfringe)
   "*Default highlight style for autonamed bookmarks."
   :group 'bookmark-plus :type (bmkp-light-style-choices))
 
+;;;###autoload
 (defcustom bmkp-light-style-non-autonamed (if (not (fboundp 'fringe-columns)) ; Emacs 20-21.
                                               'line
                                             'line+rfringe)
   "*Default highlight style for non-autonamed bookmarks."
   :group 'bookmark-plus :type (bmkp-light-style-choices))
 
+;;;###autoload
 (defcustom bmkp-light-threshold 100000
   "*Maximum number of bookmarks to highlight."
   :type 'integer :group 'bookmark-plus)
