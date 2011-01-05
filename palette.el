@@ -4,12 +4,12 @@
 ;; Description: Color palette useful with RGB, HSV, and color names
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat May 20 07:56:06 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:33:50 2010 (-0800)
+;; Last-Updated: Tue Jan  4 13:08:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 514 4
+;;     Update #: 551 4
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/palette.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -275,7 +275,7 @@
 ;;    `palette-toggle-verbose', `palette-up', `palette-up+pick',
 ;;    `palette-where-is-color', `pick-background-color',
 ;;    `pick-foreground-color', `rgb', `toggle-palette-cursor-color',
-;;    `toggle-palette-verbose', .
+;;    `toggle-palette-verbose'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
@@ -329,8 +329,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies (for defgroup, defcustom, and commands).
 ;; 2009/11/18 dadams
 ;;     Added: palette-saved-blink-cursor-mode, palette-update-blink-cursor-mode.
 ;;     palette-mode: add-hook palette-update-blink-cursor-mode.
@@ -454,6 +456,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;###autoload
 (defgroup Color-Palette nil
   "A color palette: 1) hue x saturation palette and 2) brightness scale."
   :prefix "palette-" :group 'doremi :group 'frames :group 'faces
@@ -470,16 +473,19 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/ColorPalette")
   :link '(emacs-commentary-link :tag "Commentary" "palette"))
 
+;;;###autoload
 (defcustom palette-update-cursor-color-flag nil
   "Non-nil means dynamically update the cursor to make it stand out.
 This can cause redisplay of the palette frame, which means a slowdown."
   :type 'boolean :group 'Color-Palette :group 'doremi)
 
+;;;###autoload
 (defcustom palette-verbose-flag nil
   "Non-nil: display color info often; nil: display it only on demand.
 Non-nil slows things down to recalculate color components often."
   :type 'boolean :group 'Color-Palette :group 'doremi)
 
+;;;###autoload
 (defcustom palette-message-info 'all
   "Type of information to print in a palette message.
 Possible values are:
@@ -500,6 +506,7 @@ Possible values are:
            (const :tag "RGB decimal and HSV decimal information"           rgb+hsv))
    :group 'Color-Palette :group 'doremi)
 
+;;;###autoload
 (defcustom palette-font
   (and window-system
        (or (car (x-list-fonts "-*-Courier-*-*-*-*-5-*-*-*-*-*-iso8859-1" nil nil 1))
@@ -524,6 +531,7 @@ NOTE: Do not try to use library `palette.el' without a window manager.
       That is, do not try to use it with `emacs -nw'."
   :type 'string :group 'Color-Palette :group 'doremi)
 
+;;;###autoload
 (defcustom palette-change-color-hook nil
   "*Functions to run at the end of `palette-set-current-color'.
 Typically, applications bind this hook to a function that does
@@ -531,6 +539,7 @@ something with the new value of `palette-current-color' after a color
 change."
   :type 'hook :group 'Color-Palette)
 
+;;;###autoload
 (defcustom palette-exit-hook nil
   "*Functions to run at the end of `palette-exit'.
 This is reset to nil after running.
@@ -543,6 +552,7 @@ can be used
 by this hook."
   :type 'hook :group 'Color-Palette)
 
+;;;###autoload
 (defcustom palette-save-color-hook nil
   "*Functions to run at the end of `palette-save-new-color'."
   :type 'hook :group 'Color-Palette)
@@ -976,16 +986,19 @@ No update is made if we are in the palette."
   (unless (eq major-mode 'palette-mode)
     (setq palette-saved-blink-cursor-mode  blink-cursor-mode)))
 
+;;;###autoload
 (defun palette-popup-menu (event)       ; Bound to `mouse-3'.
   "Display a popup menu of palette commands."
   (interactive "e")
   (popup-menu palette-popup-map))
 
+;;;###autoload
 (defun palette-help ()                  ; Bound to `C-h m'.
   "Describe Color Palette mode."
   (interactive)
   (let ((pop-up-frames  t)) (describe-mode (get-buffer "Palette (Hue x Saturation)"))))
 
+;;;###autoload
 (defun palette-hex-info (color)
   "Print the hexadecimal RGB string for COLOR.
 With prefix arg, prompts for color name.
@@ -994,6 +1007,7 @@ Otherwise, uses the color at the cursor."
    (list (if current-prefix-arg (hexrgb-read-color) (palette-background-at-point))))
   (message "RGB hex: %s" color))
 
+;;;###autoload
 (defun palette-hsv-info (color)
   "Print the HSV components of COLOR.
 With prefix arg, prompts for color name.
@@ -1002,6 +1016,7 @@ Otherwise, uses the color at the cursor."
    (list (if current-prefix-arg (hexrgb-read-color) (palette-background-at-point))))
   (message "HSV: %s" (hexrgb-hex-to-hsv color)))
 
+;;;###autoload
 (defun palette-rgb-info (color)
   "Print the RGB components of COLOR.
 With prefix arg, prompts for color name.
@@ -1010,6 +1025,7 @@ Otherwise, uses the color at the cursor."
    (list (if current-prefix-arg (hexrgb-read-color) (palette-background-at-point))))
   (message "RGB: %s" (hexrgb-hex-to-rgb color)))
 
+;;;###autoload
 (defun palette-current-color (&optional msg-p)
   "Return the current palette color, `palette-current-color'.
 Interactively, display a message with information about the color."
@@ -1017,7 +1033,9 @@ Interactively, display a message with information about the color."
   (when msg-p (palette-color-message palette-current-color t))
   palette-current-color)
 
+;;;###autoload
 (defalias 'eyedrop-background-at-mouse 'palette-background-at-mouse)
+;;;###autoload
 (defun palette-background-at-mouse (event &optional msg-p) ; Bound to `mouse-1'.
   "Return the background color under the mouse pointer.
 Non-nil optional arg MSG-P means display an informative message."
@@ -1030,7 +1048,9 @@ Non-nil optional arg MSG-P means display an informative message."
     (when msg-p (if bg (palette-color-message bg t) (message "No background color here")))
     bg))
 
+;;;###autoload
 (defalias 'eyedrop-foreground-at-mouse 'palette-foreground-at-mouse)
+;;;###autoload
 (defun palette-foreground-at-mouse (event &optional msg-p)
   "Return the foreground color under the mouse pointer.
 Non-nil optional arg MSG-P means display an informative message."
@@ -1061,8 +1081,11 @@ Return nil if there is no face at point."
                           (t nil))))    ; Invalid face value.
     (if (facep face) face nil)))
 
+;;;###autoload
 (defalias 'background-color 'palette-background-at-point)
+;;;###autoload
 (defalias 'eyedrop-background-at-point 'palette-background-at-point)
+;;;###autoload
 (defun palette-background-at-point (&optional msg-p) ; Bound to `?'.
   "Return the background color under the text cursor.
 There need be no defined face at the cursor position (point).
@@ -1102,8 +1125,11 @@ NOTE: The cursor is positioned in each of the windows so that it
     (when msg-p (if bg (palette-color-message bg t) (message "No background color here")))
     bg))
 
+;;;###autoload
 (defalias 'foreground-color 'palette-foreground-at-point)
+;;;###autoload
 (defalias 'eyedrop-foreground-at-point 'palette-foreground-at-point)
+;;;###autoload
 (defun palette-foreground-at-point (&optional msg-p)
   "Return the foreground color under the text cursor.
 There need be no defined face at the cursor position (point).
@@ -1133,7 +1159,9 @@ Non-nil optional arg MSG-P means display an informative message."
     (when msg-p (if fg (palette-color-message fg t) (message "No foreground color here")))
     fg))
 
+;;;###autoload
 (defalias 'eyedrop-pick-background-at-mouse 'palette-pick-background-at-mouse)
+;;;###autoload
 (defun palette-pick-background-at-mouse (event &optional show-p)
   "Set the current color to the background color under the mouse pointer.
 The background color is saved in `palette-picked-background' and
@@ -1165,7 +1193,9 @@ Use this everywhere instead of (setq palette-current-color new-value)."
   (prog1 (setq palette-current-color  new-value)
     (run-hooks 'palette-change-color-hook)))
 
+;;;###autoload
 (defalias 'eyedrop-pick-foreground-at-mouse 'palette-pick-foreground-at-mouse)
+;;;###autoload
 (defun palette-pick-foreground-at-mouse (event &optional show-p) ; Bound to `mouse-2'.
   "Set the current color to the foreground color under the mouse pointer.
 The foreground color is saved in `palette-picked-foreground' and
@@ -1188,9 +1218,13 @@ If called from the color palette, update the current color there."
     (select-window win)
     fg))
 
+;;;###autoload
 (defalias 'eyedropper-background 'palette-pick-background-at-point)
+;;;###autoload
 (defalias 'pick-background-color 'palette-pick-background-at-point)
+;;;###autoload
 (defalias 'eyedrop-pick-background-at-point 'palette-pick-background-at-point)
+;;;###autoload
 (defun palette-pick-background-at-point (&optional show-p) ; Bound to `RET'.
   "Set the current color to the background color under the text cursor.
 The background color is saved in `palette-picked-background' and
@@ -1213,9 +1247,13 @@ If called from the color palette, update the current color there."
   (when (and palette-action (eq major-mode 'palette-mode)) (funcall palette-action))
   palette-current-color)
 
+;;;###autoload
 (defalias 'eyedropper-foreground 'palette-pick-foreground-at-point)
+;;;###autoload
 (defalias 'pick-foreground-color 'palette-pick-foreground-at-point)
+;;;###autoload
 (defalias 'eyedrop-pick-foreground-at-point 'palette-pick-foreground-at-point)
+;;;###autoload
 (defun palette-pick-foreground-at-point (&optional show-p)
   "Set the current color to the foreground color under the text cursor.
 The foreground color is saved in `palette-picked-foreground' and
@@ -1236,6 +1274,7 @@ If called from the color palette, update the current color there."
           (show-p (palette palette-current-color))))
   palette-current-color)
 
+;;;###autoload
 (defun palette-pick-color-by-name (color) ; Bound to `c', `M-c'.
   "Set the current color to a color you name.
 Instead of a color name, you can use an RGB string #XXXXXXXXXXXX,
@@ -1293,7 +1332,9 @@ This is the action function, when `palette.el' is used with Icicles."
       (palette-swatch))
     palette-current-color))
 
+;;;###autoload
 (defalias 'rgb 'palette-pick-color-by-rgb)
+;;;###autoload
 (defun palette-pick-color-by-rgb (red green blue) ; Bound to `M-r'.
   "Set the current color by providing red, green, and blue components.
 Each component is from 0.0 to 1.0 inclusive."
@@ -1306,7 +1347,9 @@ Each component is from 0.0 to 1.0 inclusive."
     (palette-swatch))
   palette-current-color)
 
+;;;###autoload
 (defalias 'hsv 'palette-pick-color-by-hsv)
+;;;###autoload
 (defun palette-pick-color-by-hsv (hue saturation value) ; Bound to `M-h'.
   "Set the current color by providing hue, saturation, and value.
 Each component is from 0.0 to 1.0 inclusive."
@@ -1319,7 +1362,9 @@ Each component is from 0.0 to 1.0 inclusive."
     (palette-swatch))
   palette-current-color)
 
+;;;###autoload
 (defalias 'complement 'palette-pick-color-complement)
+;;;###autoload
 (defun palette-pick-color-complement () ; Bound to `~'.
   "Set the current palette color to its complement."
   (interactive)
@@ -1331,6 +1376,7 @@ Each component is from 0.0 to 1.0 inclusive."
     (palette-swatch))
   palette-current-color)
 
+;;;###autoload
 (defun palette-save-new-color ()        ; Bound to `n', `C-s'.
   "Save the current color as the old (original) color.
 The old color becomes the last color, so it is available by \
@@ -1345,6 +1391,7 @@ The saved color is returned."
   (run-hooks 'palette-save-color-hook)
   palette-old-color)
 
+;;;###autoload
 (defun palette-swap-last-color ()       ; Bound to `l', `u'.
   "Swap the last color and the current color."
   (interactive)
@@ -1355,6 +1402,7 @@ The saved color is returned."
     (palette-brightness-scale)
     (palette-swatch)))
 
+;;;###autoload
 (defun palette-restore-old-color ()     ; Bound to `o', `C-o'.
   "Restore the old (original) color as the current color."
   (interactive)
@@ -1365,6 +1413,7 @@ The saved color is returned."
     (palette-brightness-scale)
     (palette-swatch)))
 
+;;;###autoload
 (defun palette-refresh ()               ; Bound to `C-l'.
   "Refresh the color palette."
   (interactive)
@@ -1372,6 +1421,7 @@ The saved color is returned."
     (let ((win  (get-buffer-window "Current/Original" 'visible)))
       (when win (select-window win) (goto-char (point-min)) (recenter)))))
 
+;;;###autoload
 (defun palette-exit ()                  ; Bound to `x'.
   "Exit the color palette with exit action, if defined.
 Call `palette-quit', then run `palette-exit-hook', then reset
@@ -1389,6 +1439,7 @@ Return `palette-current-color'."
     (remove-hook 'blink-cursor-mode-hook 'palette-update-blink-cursor-mode)
     palette-current-color))             ; Return latest value.
 
+;;;###autoload
 (defun palette-quit (&optional dont-reset) ; Bound to `q'.
   "Quit the color palette without any exit action.
 Unlike palette-exit', this does not run `palette-exit-hook'.
@@ -1413,6 +1464,7 @@ Return `palette-current-color'."
     (remove-hook 'blink-cursor-mode-hook 'palette-update-blink-cursor-mode)
     palette-current-color))             ; Return latest value.
 
+;;;###autoload
 (defun palette-where-is-color (color &optional cursor-color) ; Bound to `w'.
   "Move to the palette location of COLOR.
 This does not change the current color."
@@ -1445,6 +1497,7 @@ This does not change the current color."
                                                        ,(cons 'mouse-color col)))))
       (when palette-verbose-flag (palette-color-message color)))))
 
+;;;###autoload
 (defun palette-right (&optional arg)    ; Bound to `C-f'.
   "Move right ARG places, wrapping around from the left.
 ARG < 0 means move left, wrapping around from the right."
@@ -1465,6 +1518,7 @@ ARG < 0 means move left, wrapping around from the right."
         (if bg (palette-color-message bg t) (message "No background color here"))
         bg))))
 
+;;;###autoload
 (defun palette-left (&optional arg)    ; Bound to `C-b'.
   "Move left ARG chars, wrapping around from the right.
 ARG < 0 means move right, wrapping around from the left."
@@ -1472,6 +1526,7 @@ ARG < 0 means move right, wrapping around from the left."
   (palette-right (- (prefix-numeric-value arg))))
 
 ;; This assumes that each line ends with a newline.
+;;;###autoload
 (defun palette-down (&optional arg)     ; Bound to `C-n'.
   "Move down ARG places, wrapping around from the top.
 ARG < 0 means move up, wrapping around from the bottom."
@@ -1498,12 +1553,14 @@ ARG < 0 means move up, wrapping around from the bottom."
       (if bg (palette-color-message bg t) (message "No background color here"))
       bg)))
 
+;;;###autoload
 (defun palette-up (&optional arg)     ; Bound to `C-p'.
   "Move up ARG chars, wrapping around from the bottom.
 ARG < 0 means move down, wrapping around from the top."
   (interactive "p")
   (palette-down (- (prefix-numeric-value arg))))
 
+;;;###autoload
 (defun palette-right+pick (&optional arg) ; Bound to `S-right', `C-S-f' (`C-F').
   "`palette-right' followed by `palette-pick-background-at-point'."
   (interactive "p")
@@ -1511,6 +1568,7 @@ ARG < 0 means move down, wrapping around from the top."
   (palette-right arg)
   (unless (input-pending-p) (palette-pick-background-at-point)))
 
+;;;###autoload
 (defun palette-left+pick (&optional arg) ; Bound to `S-left', `C-S-b' (`C-B').
   "`palette-left' followed by `palette-pick-background-at-point'."
   (interactive "p")
@@ -1518,6 +1576,7 @@ ARG < 0 means move down, wrapping around from the top."
   (palette-left arg)
   (unless (input-pending-p) (palette-pick-background-at-point)))
 
+;;;###autoload
 (defun palette-down+pick (&optional arg) ; Bound to `S-down', `C-S-n' (`C-N').
   "`palette-down' followed by `palette-pick-background-at-point'."
   (interactive "p")
@@ -1525,6 +1584,7 @@ ARG < 0 means move down, wrapping around from the top."
   (palette-down arg)
   (unless (input-pending-p) (palette-pick-background-at-point)))
 
+;;;###autoload
 (defun palette-up+pick (&optional arg) ; Bound to `S-up', `C-S-p' (`C-P').
   "`palette-up' followed by `palette-pick-background-at-point'."
   (interactive "p")
@@ -1532,6 +1592,7 @@ ARG < 0 means move down, wrapping around from the top."
   (palette-up arg)
   (unless (input-pending-p) (palette-pick-background-at-point)))
 
+;;;###autoload
 (defun palette-increase-hue (&optional arg) ; Bound to `H'.
   "Increase the hue component of the current color by ARG/100."
   (interactive "p")
@@ -1546,12 +1607,14 @@ ARG < 0 means move down, wrapping around from the top."
       (palette-swatch)))
   palette-current-color)
 
+;;;###autoload
 (defun palette-decrease-hue (&optional arg) ; Bound to `h'.
   "Decrease the hue component of the current color by ARG/100."
   (interactive "p")
   (setq palette-last-color  palette-current-color)
   (palette-increase-hue (- arg)))
 
+;;;###autoload
 (defun palette-increase-saturation (&optional arg) ; Bound to `S'.
   "Increase the saturation component of the current color by ARG/100."
   (interactive "p")
@@ -1566,12 +1629,14 @@ ARG < 0 means move down, wrapping around from the top."
       (palette-swatch)))
   palette-current-color)
 
+;;;###autoload
 (defun palette-decrease-saturation (&optional arg) ; Bound to `s'.
   "Decrease the saturation component of the current color by ARG/100."
   (interactive "p")
   (setq palette-last-color  palette-current-color)
   (palette-increase-saturation (- arg)))
 
+;;;###autoload
 (defun palette-increase-value (&optional arg) ; Bound to `V'.
   "Increase the value component of the current color by ARG/100."
   (interactive "p")
@@ -1586,12 +1651,14 @@ ARG < 0 means move down, wrapping around from the top."
       (palette-swatch)))
   palette-current-color)
 
+;;;###autoload
 (defun palette-decrease-value (&optional arg) ; Bound to `v'.
   "Decrease the value component of the current color by ARG/100."
   (interactive "p")
   (setq palette-last-color  palette-current-color)
   (palette-increase-value (- arg)))
 
+;;;###autoload
 (defun palette-increase-red (&optional arg) ; Bound to `R'.
   "Increase the red component of the current color by ARG/100."
   (interactive "p")
@@ -1606,12 +1673,14 @@ ARG < 0 means move down, wrapping around from the top."
       (palette-swatch)))
   palette-current-color)
 
+;;;###autoload
 (defun palette-decrease-red (&optional arg) ; Bound to `r'.
   "Decrease the red component of the current color by ARG/100."
   (interactive "p")
   (setq palette-last-color  palette-current-color)
   (palette-increase-red (- arg)))
 
+;;;###autoload
 (defun palette-increase-green (&optional arg) ; Bound to `G'.
   "Increase the green component of the current color by ARG/100."
   (interactive "p")
@@ -1626,12 +1695,14 @@ ARG < 0 means move down, wrapping around from the top."
       (palette-swatch)))
   palette-current-color)
 
+;;;###autoload
 (defun palette-decrease-green (&optional arg) ; Bound to `g'.
   "Decrease the green component of the current color by ARG/100."
   (interactive "p")
   (setq palette-last-color  palette-current-color)
   (palette-increase-green (- arg)))
 
+;;;###autoload
 (defun palette-increase-blue (&optional arg) ; Bound to `B'.
   "Increase the blue component of the current color by ARG/100."
   (interactive "p")
@@ -1646,13 +1717,16 @@ ARG < 0 means move down, wrapping around from the top."
       (palette-swatch)))
   palette-current-color)
 
+;;;###autoload
 (defun palette-decrease-blue (&optional arg) ; Bound to `b'.
   "Decrease the blue component of the current color by ARG/100."
   (interactive "p")
   (setq palette-last-color  palette-current-color)
   (palette-increase-blue (- arg)))
 
-(defun toggle-palette-verbose 'palette-toggle-verbose)
+;;;###autoload
+(defalias 'toggle-palette-verbose 'palette-toggle-verbose)
+;;;###autoload
 (defun palette-toggle-verbose ()        ; Bound to `f'.
   "Toggle using frequent color info feedback.
 This toggles option `palette-toggle-verbose-flag'."
@@ -1660,7 +1734,9 @@ This toggles option `palette-toggle-verbose-flag'."
   (setq palette-verbose-flag  (not palette-verbose-flag))
   (message "Verbose color feedback is now %s" (if palette-verbose-flag "ON" "OFF")))
 
-(defun toggle-palette-cursor-color 'palette-toggle-cursor-color)
+;;;###autoload
+(defalias 'toggle-palette-cursor-color 'palette-toggle-cursor-color)
+;;;###autoload
 (defun palette-toggle-cursor-color ()   ; Bound to `e'.
   "Toggle updating the cursor color so the cursor stands out.
 This toggles option `palette-update-cursor-color-flag'."
@@ -1672,7 +1748,9 @@ This toggles option `palette-update-cursor-color-flag'."
      '((foreground-color . "Black") (cursor-color . "Black") (mouse-color . "Black"))))
   (message "Cursor highlighting is now %s" (if palette-update-cursor-color-flag "ON" "OFF")))
 
+;;;###autoload
 (defalias 'colors 'palette)
+;;;###autoload
 (defun palette (&optional color)
   "Display a color-palette frame in Color Palette mode.
 This includes these areas:
@@ -1762,6 +1840,7 @@ See `palette-mode' for more information."
   (palette-color-message color)         ; Orig. name.
   palette-current-color)
 
+;;;###autoload
 (defun palette-brightness-scale (&optional color)
   "Display a brightness (value) scale for COLOR.
 If a color palette is already displayed, then just update it."
@@ -1843,6 +1922,7 @@ If a color palette is already displayed, then just update it."
                ;; Get rid of any header line from `tabbar-mode' etc.
                (when (interactive-p) (redisplay t))))))))
 
+;;;###autoload
 (defun palette-swatch (&optional oldp color)
   "Display a color swatch for COLOR.
 OLDP non-nil means update the original (old) color;

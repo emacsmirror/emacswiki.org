@@ -4,12 +4,12 @@
 ;; Description: Look up synonyms for a word or phrase in a thesaurus.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 14:39:26 2005
 ;; Version: 1.0
-;; Last-Updated: Fri Aug 20 09:17:22 2010 (-0700)
+;; Last-Updated: Tue Jan  4 14:25:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2440
+;;     Update #: 2454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/synonyms.el
 ;; Keywords: text, dictionary, thesaurus, spelling, apropos, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -22,15 +22,15 @@
 ;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
 ;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
 ;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
-;;   `fuzzy-match', `help+20', `hexrgb', `icicles', `icicles-cmd1',
-;;   `icicles-cmd2', `icicles-face', `icicles-fn', `icicles-mac',
-;;   `icicles-mcmd', `icicles-mode', `icicles-opt', `icicles-var',
-;;   `info', `info+', `kmacro', `levenshtein', `menu-bar',
-;;   `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `pp', `pp+', `ring', `ring+',
-;;   `second-sel', `strings', `thingatpt', `thingatpt+', `unaccent',
-;;   `w32-browser', `w32browser-dlgopen', `wid-edit', `wid-edit+',
-;;   `widget'.
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles',
+;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
+;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
+;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
+;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `pp', `pp+', `regexp-opt',
+;;   `ring', `ring+', `second-sel', `strings', `thingatpt',
+;;   `thingatpt+', `unaccent', `w32-browser', `w32browser-dlgopen',
+;;   `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -484,8 +484,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies (for defgroup, defface, defcustom, and commands).
 ;; 2010/08/20 dadams
 ;;     synonyms - non-Icicles version: Made ARG optional too.
 ;;     synonyms(-no-read|-history-(backward|forward)):
@@ -607,6 +609,7 @@
  
 ;;; Faces (alphabetical) -----------------------------------
 
+;;;###autoload
 (defgroup Synonyms nil
   "Commands to look up synonyms in a thesaurus."
   :prefix "synonyms-"
@@ -620,21 +623,24 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/DrewsElispLibraries")
   :link '(url-link :tag "Download" "http://www.emacswiki.org/cgi-bin/wiki/synonyms.el")
   :link '(url-link :tag "Description" "http://www.emacswiki.org/cgi-bin/wiki/Synonyms")
-  :link '(emacs-commentary-link :tag "Commentary" "synonyms")
-  )
+  :link '(emacs-commentary-link :tag "Commentary" "synonyms"))
 
+;;;###autoload
 (defface synonyms-heading '((t (:foreground "Blue")))
   "*Face for different synonym types."
   :group 'Synonyms :group 'faces)
 
+;;;###autoload
 (defface synonyms-search-text '((t (:foreground "Red")))
   "*Face for the term whose synonyms were sought."
   :group 'Synonyms :group 'faces)
 
+;;;###autoload
 (defface synonyms-link '((t (:foreground "Blue" :underline t)))
   "*Face for history links."
   :group 'Synonyms :group 'faces)
 
+;;;###autoload
 (defface synonyms-mouse-face '((t (:background "Cyan")))
   "*Mouse face for the term whose synonyms were sought."
   :group 'Synonyms :group 'faces)
@@ -644,6 +650,7 @@ Don't forget to mention your Emacs and library versions."))
  
 ;;; User Options (alphabetical) ----------------------------
 
+;;;###autoload
 (defcustom synonyms-append-result-flag nil
   "*t means that `synonyms' appends search result to previous results.
 No other value, besides t, has this effect.
@@ -653,21 +660,25 @@ for example, `M--'.  If you use `C-u C-u', then both this and
 `synonyms-match-more-flag' are overridden."
   :type 'boolean :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-cache-file ""
   "*Location to write cache file containing synonyms.
 Written to save the list of synonyms used for completion.
 This is an absolute (complete-path) location, including the file name."
   :type '(file :must-match t) :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-file ""
   "*Location of thesaurus file `mthesaur.txt'.
 This is an absolute (complete-path) location, including the file name."
   :type '(file :must-match t) :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-fill-column 80
   "*Synonyms* buffer text is wrapped (filled) to this many columns."
   :type 'integer :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-match-more-flag nil
   "*t means additional thesaurus entries can be matched by `synonyms'.
 No other value, besides t, has this effect.
@@ -681,10 +692,12 @@ This can be overridden by using a positive prefix argument,
 `synonyms-append-result-flag' are overridden."
   :type 'boolean :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-mode-hook nil
   "Normal hook run when entering Thesaurus mode."
   :type 'hook :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-use-cygwin-flag nil
   "*Non-nil means to double backslashes in arguments to `call-process'.
 There is apparently a bug in the Emacs (at least versions 20-22) C
@@ -697,11 +710,13 @@ probably will want to use a non-nil value for
 `synonyms-use-cygwin-flag'."
   :type 'boolean :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-dictionary-url "http://dictionary.reference.com/search?q="
   "*URL of a Web dictionary lookup.  Text to look up is appended to this.
 See also `synonyms-dictionaries-url'."
   :type 'string :group 'Synonyms)
 
+;;;###autoload
 (defcustom synonyms-dictionary-alternate-url "http://www.onelook.com/?ls=b&w="
   "*URL of a Web dictionary lookup.  Text to look up is appended to this.
 The default value, \"http://www.onelook.com/?ls=b&w=\" lets you use `?'
@@ -713,9 +728,6 @@ regexp `.*'.  See http://www.onelook.com/?c=faq#patterns for more
 information on the allowed wildcard patterns.
 See also `synonyms-dictionary-url'."
   :type 'string :group 'Synonyms)
-
-
-
  
 ;;; Internal variables (alphabetical) ----------------------
 
@@ -781,6 +793,7 @@ See also `synonyms-dictionary-url'."
  
 ;;; Functions ----------------------------------------------
 
+;;;###autoload
 (define-derived-mode synonyms-mode text-mode "Synonyms"
   "Major mode for browsing thesaurus entries (synonyms).
 Like Text mode but with these additional key bindings:
@@ -832,6 +845,7 @@ Turning on Synonyms mode runs the normal hooks `text-mode-hook' and
   (setq fill-column  synonyms-fill-column)
   (set (make-local-variable 'transient-mark-mode) t))
 
+;;;###autoload
 (defun synonyms-ensure-synonyms-read-from-cache ()
   "Ensure synonyms are in `synonyms-obarray', from `synonyms-cache-file'.
 If this file does not yet exist, then it and the obarray are created.
@@ -850,6 +864,7 @@ This does nothing if the obarray is already complete."
       (synonyms-make-obarray)           ; Create obarray from scratch
       (synonyms-write-synonyms-to-cache)))) ; and write it out, for next time.
 
+;;;###autoload
 (defun synonyms-make-obarray ()
   "Fill `synonyms-obarray' with the available synonyms."
   (interactive)
@@ -878,6 +893,7 @@ This does nothing if the obarray is already complete."
                                 (setq synonyms-file  (expand-file-name synonyms-file))
                                 'now))))
 
+;;;###autoload
 (defun synonyms-write-synonyms-to-cache ()
   "Write synonyms in `synonyms-obarray' to file `synonyms-cache-file'."
   (interactive)
@@ -996,6 +1012,7 @@ APPENDP and MOREP are free here."
   (setq search-text  (replace-regexp-in-string "\\." "[^,]" search-text nil t))
   (synonyms-lookup search-text (and (boundp 'appendp) appendp) (and (boundp 'morep) morep)))
 
+;;;###autoload
 (defun synonyms-no-read (arg)
   "Same as command `synonyms', but uses the default input text (regexp)."
   (interactive "P")
@@ -1010,30 +1027,35 @@ APPENDP and MOREP are free here."
     (setq search-text  (replace-regexp-in-string "\\." "[^,]" search-text nil t))
     (synonyms-lookup search-text appendp morep)))
 
+;;;###autoload
 (defun synonyms-match-more ()
   "Same as using `synonyms' with `synonyms-match-more-flag' = t."
   (interactive)
   (let ((synonyms-match-more-flag  t))
     (synonyms)))
 
+;;;###autoload
 (defun synonyms-match-more-no-read (arg)
   "Same as using `synonyms' with `synonyms-match-more-flag' = t."
   (interactive "P")
   (let ((synonyms-match-more-flag  t))
     (synonyms-no-read arg)))
 
+;;;###autoload
 (defun synonyms-append-result ()
   "Same as using `synonyms' with `synonyms-append-result-flag' = t."
   (interactive)
   (let ((synonyms-append-result-flag  t))
     (synonyms)))
 
+;;;###autoload
 (defun synonyms-append-result-no-read (arg)
   "Same as using `synonyms' with `synonyms-append-result-flag' = t."
   (interactive "P")
   (let ((synonyms-append-result-flag  t))
     (synonyms-no-read arg)))
 
+;;;###autoload
 (defun synonyms-match-more+append-result ()
   "Like `synonyms-match-more-flag' = `synonyms-append-result-flag' = t."
   (interactive)
@@ -1041,6 +1063,7 @@ APPENDP and MOREP are free here."
         (synonyms-append-result-flag  t))
     (synonyms)))
 
+;;;###autoload
 (defun synonyms-match-more+append-result-no-read (arg)
   "Like `synonyms-match-more-flag' = `synonyms-append-result-flag' = t."
   (interactive "P")
@@ -1048,6 +1071,7 @@ APPENDP and MOREP are free here."
         (synonyms-append-result-flag  t))
     (synonyms-no-read arg)))
 
+;;;###autoload
 (defun synonyms-mouse (event arg)
   "Show synonyms that match a regular expression (e.g. a word or phrase).
 The regexp to match is the synonym or region clicked with mouse-2.  If
@@ -1081,18 +1105,21 @@ results are revisited."
                (deactivate-mark))       ; User did not click inside region, so deactivate it.
              (synonyms-no-read arg)))))
 
+;;;###autoload
 (defun synonyms-mouse-match-more (event arg)
   "Same as `synonyms-mouse' with `synonyms-match-more-flag' = t."
   (interactive "e\nP")
   (let ((synonyms-match-more-flag  t))
     (synonyms-mouse event arg)))
 
+;;;###autoload
 (defun synonyms-mouse-append-result (event arg)
   "Same as `synonyms-mouse' with `synonyms-append-result-flag' = t."
   (interactive "e\nP")
   (let ((synonyms-append-result-flag  t))
     (synonyms-mouse event arg)))
 
+;;;###autoload
 (defun synonyms-mouse-match-more+append-result (event arg)
   "Like `synonyms-match-more-flag' = `synonyms-append-result-flag' = t."
   (interactive "e\nP")
@@ -1336,6 +1363,7 @@ separator line between previous search results and the current results."
     (synonyms-mode)
     (setq buffer-read-only  t)))
 
+;;;###autoload
 (defun synonyms-history-backward (arg)
   "Run `synonyms' on a previous argument, moving backward in the history.
 A prefix argument has the same meaning as for command `synonyms'."
@@ -1360,6 +1388,7 @@ A prefix argument has the same meaning as for command `synonyms'."
           (recenter 0)
           (message "%s" (buffer-substring (match-beginning 1) (match-end 1))))))))
 
+;;;###autoload
 (defun synonyms-history-forward (arg)
   "Run `synonyms' on a previous argument, moving forward in the history.
 A prefix argument has the same meaning as for command `synonyms'."
@@ -1384,8 +1413,9 @@ A prefix argument has the same meaning as for command `synonyms'."
           (recenter 0)
           (message "%s" (buffer-substring (match-beginning 1) (match-end 1))))))))
 
+;;;###autoload
 (defalias 'dictionary-definition 'synonyms-definition)
-
+;;;###autoload
 (defun synonyms-definition (search-text alternate-p)
   "Look up the definition of a word or phrase using online dictionaries.
 The dictionary used is `synonyms-dictionary-url'.
@@ -1399,6 +1429,7 @@ With prefix arg, look up the definition in the alternate dictionary,
   (browse-url (concat  (if alternate-p synonyms-dictionary-alternate-url synonyms-dictionary-url)
                        search-text)))
 
+;;;###autoload
 (defun synonyms-definition-no-read (alternate-p)
   "Look up the definition of a word or phrase using online dictionaries.
 The dictionary used is `synonyms-dictionary-url'.
@@ -1407,6 +1438,7 @@ With prefix arg, look up the definition in the alternate dictionary,
   (interactive "P")
   (synonyms-definition (synonyms-default-regexp) alternate-p))
 
+;;;###autoload
 (defun synonyms-definition-mouse (event alternate-p)
   "Look up the definition of a word or phrase using online dictionaries.
 The dictionary used is `synonyms-dictionary-url'.

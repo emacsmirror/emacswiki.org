@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library finder.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Mar 12 10:00:16 2008 (Pacific Standard Time)
 ;; Version: 21.0
-;; Last-Updated: Sat Aug 28 13:25:29 2010 (-0700)
+;; Last-Updated: Tue Jan  4 09:30:50 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 104
+;;     Update #: 107
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/finder+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -28,6 +28,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookie for command.
 ;; 2010/08/28 dadams
 ;;     finder-exit, finder-mode: Redefine only for Emacs < 23. 
 ;; 2010/02/28 dadams
@@ -128,6 +130,7 @@ Delete the window and kill the buffer."
 ;; Names the buffer *Commentary, <file>*, not *Finder-package*.
 ;; Fits the frame and raises it afterward.
 ;;
+;;;###autoload
 (defun finder-commentary (file)
   "Display FILE's commentary section.
 FILE should be in a form suitable for passing to `locate-library'."

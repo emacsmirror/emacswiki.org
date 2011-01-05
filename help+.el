@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:14:17 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:58:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2072
+;;     Update #: 2077
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -69,6 +69,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive function and define-key.
 ;; 2008-01-03 dadams
 ;;     describe-key: Replaced newline with ", " before "which is".
 ;; 2007/12/20 dadams
@@ -115,23 +117,14 @@
 
 (defvar help-origin-buffer nil "Buffer that we left, to go to *Help*.")
 
-;;;###autoload
 (define-key help-map [?\C-m] 'help-on-click/key) ; RET
-;;;###autoload
 (define-key help-map "u" 'manual-entry) ; in `man.el'
-;;;###autoload
 (define-key help-map "\C-a" 'apropos)
-;;;###autoload
 (define-key help-map "\M-o" 'pop-to-help-toggle)
-;;;###autoload
 (define-key help-map "\C-l" 'locate-library)
-;;;###autoload
 (define-key help-map "\M-a" 'apropos-documentation)
-;;;###autoload
 (define-key help-map "\C-\M-a" 'tags-apropos)
-;;;###autoload
 (define-key help-map [down-mouse-1] 'mouse-help-on-click)
-;;;###autoload
 (define-key help-map [mode-line down-mouse-1] 'mouse-help-on-mode-line-click)
 
 
@@ -422,7 +415,6 @@ in the current buffer."
           (princ string)))))
   nil)
 
-;;;###autoload
 (defun help-on-click/key-lookup (key &optional pp-key where)
   "Look up information on KEY via `describe-key' and `info'.
 Optional args PP-KEY and WHERE are strings naming KEY and its type.

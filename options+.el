@@ -4,12 +4,12 @@
 ;; Description: Extensions to `options.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Feb  6 16:50:23 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:32:36 2010 (-0800)
+;; Last-Updated: Tue Jan  4 12:54:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 88
+;;     Update #: 90
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/options+.el
 ;; Keywords: docs, help, internal
 ;; Compatibility: GNU Emacs 20.x
@@ -37,7 +37,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 1996/03/19 dadams
 ;;     list-options: Added in-progress msgs.
@@ -64,7 +64,6 @@
 ;;; Code:
 
 (require 'options)
-
 
 ;;;;;;;;;;;;;;;;;;;;;
 

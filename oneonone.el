@@ -4,12 +4,12 @@
 ;; Description: Frame configuration that uses one frame per window.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Tue Nov 30 07:29:56 2010 (-0800)
+;; Last-Updated: Tue Jan  4 12:52:35 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2528
+;;     Update #: 2546
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/oneonone.el
 ;; Keywords: local, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -258,8 +258,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defgroup, defcustom, and commands.
 ;; 2010/11/30 dadams
 ;;     1on1-minibuffer-frame-alist: Change fallback value from nil to 0 (Emacs bug #1077).
 ;; 2010/10/27 dadams
@@ -540,6 +542,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;###autoload
 (defgroup One-On-One nil
   "Options to define initial frame configuration."
   :prefix "1on1-" :group 'frames
@@ -564,6 +567,7 @@ Don't forget to mention your Emacs and library versions."))
   "Minibuffer-only frame used by One-on-One Emacs.
 Note: This is not used if `1on1-minibuffer-frame-flag' is nil.")
 
+;;;###autoload
 (defcustom 1on1-minibuffer-frame-flag t
   "*Non-nil means use a separate, specialized frame for the minibuffer.
 If you change this variable, you will need to restart Emacs for it to
@@ -591,18 +595,21 @@ This is used only to define the standard value of
 If you change this variable, you will need to restart Emacs for it to
 take effect.")
 
+;;;###autoload
 (defcustom 1on1-active-minibuffer-frame-background "PaleGoldenrod"
   "*The color of the `1on1-minibuffer-frame' when it is active.
 
 Note: This is not used if `1on1-minibuffer-frame-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-inactive-minibuffer-frame-background 1on1-minibuffer-frame-background
   "*The color of the `1on1-minibuffer-frame' when it is inactive.
 
 Note: This is not used if `1on1-minibuffer-frame-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-isearch-minibuffer-frame-background "bisque"
   "*Color of the `1on1-minibuffer-frame' when `isearch' is active.
 See `1on1-color-isearch-minibuffer-frame'.
@@ -610,29 +617,34 @@ See `1on1-color-isearch-minibuffer-frame'.
 Note: This is not used if `1on1-minibuffer-frame-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-color-mode-line-flag t
   "*Non-nil means use `1on1-(in)active-mode-line-background'.
 If you change this variable, you will need to restart Emacs for it to
 take effect."
   :type 'boolean :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-color-minibuffer-frame-on-exit-increment 5
   "*Increment to change minibuffer-frame hue when minibuffer is exited.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-setup-increment.'"
   :type 'integer :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-color-minibuffer-frame-on-setup-increment -10
   "*Increment to change minibuffer-frame hue when minibuffer is entered.
 This should be opposite in sign to
 `1on1-color-minibuffer-frame-on-exit-increment.'"
   :type 'integer :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-active-mode-line-background 1on1-active-minibuffer-frame-background
   "*The color of the mode-line when it is active.
 Note: This is not used if `1on1-color-mode-line-flag' is nil."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-inactive-mode-line-background "LightGray"
   "*The color of the mode-line when it is inactive.
 Note: This is not used if `1on1-color-mode-line-flag' is nil."
@@ -682,6 +694,7 @@ This is used only to define the standard value of
 If you change this variable, you will need to restart Emacs for it to
 take effect.")
 
+;;;###autoload
 (defcustom 1on1-minibuffer-frame-left 0
   "*Position of left edge of minibuffer frame, in pixels.
 An integer.  If negative, then the position is that of the frame
@@ -695,6 +708,7 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type 'integer :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-minibuffer-frame-top/bottom nil
   "*Position of top (or bottom) of minibuffer frame, in pixels.
 If nil, function `1on1-set-minibuffer-frame-top/bottom' will position
@@ -713,6 +727,7 @@ for the new value to take effect."
                  (integer :tag "Pixels from top (>= 0) or bottom (< 0)" :value 0))
   :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-minibuffer-frame-width nil
   "*Width, in characters, for minibuffer frame.
 If nil, then function `1on1-set-minibuffer-frame-width' is used instead.
@@ -725,6 +740,7 @@ for the new value to take effect."
                  (integer :tag "Width, in characters, for minibuffer frame" :value 0))
   :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-minibuffer-frame-width-percent 100
   "*Max percent of the total display width to give to minibuffer frame.
 See function `1on1-set-minibuffer-frame-width'.
@@ -737,6 +753,7 @@ for the new value to take effect."
 
 ;; Use values from the standard list, when available.  However, we have no way of
 ;; distinguishing values predefined in vanilla Emacs from user settings.
+;;;###autoload
 (defcustom 1on1-minibuffer-frame-alist
   (list
    (or (assq 'foreground-color minibuffer-frame-alist)
@@ -810,6 +827,7 @@ This has no effect if you do not use library `fit-frame.el'."
 ;;;   Display of *Help* buffer in custom frame.
 ;;;   Background, height, cursor and pointer colors.
 ;;;
+;;;###autoload
 (defcustom 1on1-*Help*-frame-flag t
   "*Non-nil means use a special appearance for the *Help* frame.
 
@@ -817,6 +835,7 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type 'boolean :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-help-frame-background "Thistle"
   "*Default background color for the *Help* buffer's frame.
 
@@ -826,6 +845,7 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-help-frame-mouse+cursor-color "Blue Violet"
   "*Default color for cursor & pointer of *Help* frame.
 
@@ -841,6 +861,7 @@ for the new value to take effect."
 ;;;   Display of *Completion* buffer in custom frame.
 ;;;   Background, height, cursor and pointer colors.
 ;;;
+;;;###autoload
 (defcustom 1on1-*Completions*-frame-flag t
   "*Non-nil means use a special appearance for the *Completions* frame.
 
@@ -848,12 +869,14 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type 'boolean :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-*Completions*-frame-at-right-flag nil
   "*Non-nil means place *Completions* frame at right edge of display.
 This can be useful to make *Completions* more visible.
 This has no effect if `1on1-*Completions*-frame-flag' is nil."
   :type 'boolean :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-completions-frame-background "LavenderBlush2"
   "Default background color for the *Completions* buffer's frame.
 
@@ -863,6 +886,7 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-completions-frame-mouse+cursor-color "VioletRed"
   "Default color for cursor & pointer of *Completions* frame.
 
@@ -872,6 +896,7 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-completions-frame-width 100
   "Width, in characters, for *Completions* frame.
 If this is nil, then the pertinent default frame width is used.
@@ -882,6 +907,7 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type 'integer :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-completions-frame-zoom-font-difference
   (or (and (require 'zoom-frm 'nil t) (* 2 frame-zoom-font-difference))
       2)
@@ -927,12 +953,14 @@ This is used only to define the standard value of
 If you change this variable, you will need to restart Emacs for it to
 take effect.")
 
+;;;###autoload
 (defcustom 1on1-change-cursor-on-input-method-flag t
   "*Non-nil means to use a different cursor when using an input method.
 If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type 'boolean :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-default-frame-cursor-color "Red"
   "*Default text cursor color for non-special frames.
 If you customize this variable, you will need to rerun `1on1-emacs'
@@ -943,6 +971,7 @@ back to nil, if that's the value you want).  Otherwise, the new value
 will take effect only after you restart Emacs."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-default-frame-cursor-color-input-method "Orange"
   "*Default cursor color for non-special frames if using an input method.
 This has no effect if `1on1-change-cursor-on-input-method-flag' is nil.
@@ -950,12 +979,14 @@ If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type (if (>= emacs-major-version 21) 'color 'string) :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-change-cursor-on-overwrite/read-only-flag t
   "*Non-nil means use a different cursor when overwrite mode or read-only.
 If you customize this variable, you will need to rerun `1on1-emacs'
 for the new value to take effect."
   :type 'boolean :group 'One-On-One)
 
+;;;###autoload
 (defcustom 1on1-default-frame-cursor-type 'bar
   "*Default text cursor type for non-special frames.
 If you customize this variable, you will need to rerun `1on1-emacs'
@@ -968,6 +999,7 @@ will take effect only after you restart Emacs."
 
 (defvar 1on1-last-cursor-type 1on1-default-frame-cursor-type "Saved last cursor type.")
 
+;;;###autoload
 (defcustom 1on1-default-frame-cursor-type-overwrite/read-only 'box
   "*Default text cursor type for overwrite mode or read-only buffer.
 This applies only to non-special frames.  This has no effect if
@@ -1024,6 +1056,7 @@ take effect.")
 
 ;; Use values from the standard list, when available.  However, we have no way of
 ;; distinguishing values predefined in vanilla Emacs from user settings.
+;;;###autoload
 (defcustom 1on1-default-frame-alist
   (list
    (or (assq 'foreground-color default-frame-alist)
@@ -1152,6 +1185,7 @@ it to take effect.")
 
 ;; Use values from the standard list, when available.  However, we have no way of
 ;; distinguishing values predefined in vanilla Emacs from user settings.
+;;;###autoload
 (defcustom 1on1-special-display-frame-alist
   (list
    (or (assq 'font special-display-frame-alist)
@@ -1325,6 +1359,7 @@ and another cursor type otherwise."
 
 (unless (fboundp 'set-cursor-type) (defalias 'set-cursor-type '1on1-set-cursor-type))
 ;; This is essentially from Juri Linkov <juri@jurta.org>.
+;;;###autoload
 (defun 1on1-set-cursor-type (cursor-type)
   "Set the cursor type of the selected frame to CURSOR-TYPE.
 When called interactively, prompt for the type to use.
@@ -1345,7 +1380,9 @@ To get the frame's current cursor type, use `frame-parameters'."
   "Turn off changing the cursor to a box cursor when Emacs is idle."
   (when 1on1-last-cursor-type (1on1-set-cursor-type 1on1-last-cursor-type)))
 
+;;;###autoload
 (defalias 'toggle-box-cursor-when-idle '1on1-toggle-box-cursor-when-idle)
+;;;###autoload
 (defun 1on1-toggle-box-cursor-when-idle (&optional arg)
   "Turn on or off automatically changing to a box cursor when idle.
 When on, the cursor is changed to a box whenever Emacs is idle.
@@ -1362,6 +1399,7 @@ With prefix argument, turn on if ARG > 0; else turn off."
          (remove-hook 'pre-command-hook '1on1-box-cursor-when-idle-off)
          (message "Turned OFF making cursor a box when Emacs is idle."))))
 
+;;;###autoload
 (defun 1on1-set-box-cursor-when-idle-interval (secs)
   "Set wait until automatically change to a box cursor when Emacs is idle.
 Whenever Emacs is idle for this many seconds it will change the cursor

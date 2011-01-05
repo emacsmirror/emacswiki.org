@@ -4,12 +4,12 @@
 ;; Description: Extensions to `pp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 13:45:40 1999
 ;; Version: 21.0
-;; Last-Updated: Mon Jun 21 21:00:21 2010 (-0700)
+;; Last-Updated: Tue Jan  4 13:11:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 196
+;;     Update #: 200
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp+.el
 ;; Keywords: lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -46,8 +46,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom.
 ;; 2010/06/21 dadams
 ;;     pp-display-expression: Set the hooks locally instead of let-binding them, to
 ;;       avoid msg "Making change-major-mode-hook buffer-local while locally
@@ -116,11 +118,13 @@
     (set-keymap-parent map minibuffer-local-map)
     (setq pp-read-expression-map  map)))
 
+;;;###autoload
 (defcustom pp-eval-expression-print-length nil
   "Value for `print-length' while printing value in `pp-eval-expression'.
 A value of nil means no limit."
   :group 'pp :group 'lisp :type '(choice (const :tag "No Limit" nil) integer))
 
+;;;###autoload
 (defcustom pp-eval-expression-print-level nil
   "Value for `print-level' while printing value in `pp-eval-expression'.
 A value of nil means no limit."

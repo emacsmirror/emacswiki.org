@@ -4,12 +4,12 @@
 ;; Description: Secondary selection commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2011, Drew Adams, all rights reserved.
 ;; Created: Fri May 23 09:58:41 2008 ()
 ;; Version: 22.0
-;; Last-Updated: Thu Apr 22 08:42:25 2010 (-0700)
+;; Last-Updated: Tue Jan  4 13:53:11 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 248
+;;     Update #: 255
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/second-sel.el
 ;; Keywords: region, selection, yank, paste, edit
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -65,8 +65,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies (for defcustom and commands).
 ;; 2010/04/22 dadams
 ;;     Added: isearch-yank-secondary.
 ;; 2009/06/25 dadams
@@ -135,12 +137,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defcustom secondary-selection-ring-max 60
   "*Maximum length of `secondary-selection-ring'.
 After the ring is maximally filled, adding a new element replaces the
 oldest element."
   :type 'integer :group 'killing)
 
+;;;###autoload
 (defcustom secondary-selection-yank-commands (if (boundp 'browse-kill-ring-yank-commands)
                                                  browse-kill-ring-yank-commands
                                                '(yank icicle-yank-maybe-completing))
@@ -148,6 +152,7 @@ oldest element."
   :type '(repeat (restricted-sexp :match-alternatives (symbolp commandp) :value ignore))
   :group 'killing)
 
+;;;###autoload
 (defcustom secondary-selection-yank-secondary-commands '(mouse-yank-secondary
                                                          secondary-dwim
                                                          yank-secondary)
@@ -169,6 +174,7 @@ Function is called with two parameters, START and END corresponding to
 the value of the mark and point; it is guaranteed that START <= END.
 Normally set from the UNDO element of a yank-handler; see `insert-for-yank'."))
 
+;;;###autoload
 (defun secondary-dwim (arg)
   "Do-What-I-Mean with the secondary selection.
 Prefix arg:
@@ -201,6 +207,7 @@ selection."
          (when delete-selection-mode (delete-selection-pre-hook)) ; Hack!
          (call-interactively #'yank-secondary))))
 
+;;;###autoload
 (defun yank-secondary (&optional arg)
   "Insert the secondary selection at point.
 Moves point to the end of the inserted text.  Does not change mark.
@@ -232,6 +239,7 @@ selection yanked."
   (when (eq this-command t) (setq this-command  'yank-secondary)) ; Do this last.
   nil)
 
+;;;###autoload
 (defun isearch-yank-secondary ()
   "Yank string from secondary-selection ring into search string."
   (interactive)
@@ -240,6 +248,7 @@ selection yanked."
 ;; Tell `delete-selection-mode' to replace active region by yanked secondary selection.
 (put 'yank-secondary 'delete-selection 'yank)
 
+;;;###autoload
 (defun primary-to-secondary (beg end)
   "Make the region in the current buffer into the secondary selection.
 Deactivate the region.  Do not move the cursor."
@@ -258,6 +267,7 @@ Deactivate the region.  Do not move the cursor."
   (when (> beg end) (exchange-point-and-mark))
   (setq mark-active  nil))
 
+;;;###autoload
 (defun secondary-swap-region (beg end)
   "Make the region into the secondary selection, and vice versa.
 Pop to the buffer that has the secondary selection, and change it to
@@ -294,6 +304,7 @@ original buffer's region."
     (goto-char osec-end)
     (setq deactivate-mark  nil)))
 
+;;;###autoload
 (defun secondary-to-primary ()
   "Convert the secondary selection into the active region.
 Select the secondary selection and pop to its buffer."
@@ -346,6 +357,7 @@ argument should still be a useful string for such uses."
       (setcdr (nthcdr (1- secondary-selection-ring-max) secondary-selection-ring) nil)))
   (setq secondary-selection-ring-yank-pointer  secondary-selection-ring))
 
+;;;###autoload
 (defun yank-pop-commands (&optional arg)
   "`yank-pop' or `yank-pop-secondary', depending on previous command.
 If previous command was a yank-secondary command, then
@@ -369,6 +381,7 @@ Suggestion: Bind this command to `M-y'."
          (browse-kill-ring current-prefix-arg))
         ((fboundp 'browse-kill-ring) (browse-kill-ring)))) ; `browse-ring.el'.
 
+;;;###autoload
 (defun yank-pop-secondary (&optional arg)
   "Replace just-yanked secondary selection with a different one.
 You can use this only immediately after a `yank-secondary' or a
@@ -420,6 +433,7 @@ move the yanking point; just return the Nth kill forward."
     (car secondary-elt)))
 
 ;; Not used.
+;;;###autoload
 (defun rotate-secondary-selection-yank-pointer (arg)
   "Rotate the yanking point in the secondary selection ring.
 With prefix arg, rotate that many kills forward or backward."
@@ -444,6 +458,7 @@ With prefix arg, rotate that many kills forward or backward."
 ;;;
 ;;; Use `add-secondary-to-ring' instead of `kill-new'.
 ;;;
+;;;###autoload
 (defun mouse-secondary-save-then-kill (click)
   "Extend or delete secondary selection and save in ring.
 Adds the extended secondary selection to `secondary-selection-ring'.

@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous non-interactive functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:21:28 1996
 ;; Version: 21.0
-;; Last-Updated: Tue May 25 10:58:29 2010 (-0700)
+;; Last-Updated: Tue Jan  4 11:33:24 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 562
+;;     Update #: 568
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-fns.el
 ;; Keywords: internal, unix, lisp, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -57,6 +57,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive fns.  Added for defcustom.
 ;; 2010/05/25 dadams
 ;;     Added: unique-name.
 ;; 2010/01/12 dadams
@@ -169,11 +171,11 @@
 
 ;;;$ MODE-LINE ----------------------------------------------------------------
 
+;;;###autoload
 (defcustom mode-line-reminder-duration 10
   "*Maximum number of seconds to display a reminder in the mode-line."
   :type 'integer)
 
-;;;###autoload
 (defun display-in-mode-line (text)
   "Display TEXT in mode line for `mode-line-reminder-duration' seconds."
   (let ((mode-line-format (list text)))
@@ -181,7 +183,6 @@
     (sit-for mode-line-reminder-duration))
   (force-mode-line-update))
 
-;;;###autoload
 (defun force-time-redisplay ()
   "Force a redisplay.
 This is probably obsolete now.  Use `force-mode-line-update'."
@@ -193,7 +194,6 @@ This is probably obsolete now.  Use `force-mode-line-update'."
 
 ;;;$ BUFFERS ------------------------------------------------------------------
 
-;;;###autoload
 (defun another-buffer (&optional buffer visible-ok)
   "First buffer in `buffer-list' whose name does not start with a space.
 This is the first buffer in the list.
@@ -222,14 +222,12 @@ BUFFER may be either a buffer or its name (a string)."
   (setq buffer (and buffer (get-buffer buffer))) ; Convert to buffer, if any.
   (and buffer (buffer-name buffer)))    ; Return buffer's name.
 
-;;;###autoload
 (defun interesting-buffer-p (buffer)
   "Non-nil if BUFFER is a live buffer whose name does not start with SPC."
   (and buffer (setq buffer (live-buffer-name buffer)) ; Live buffer's name.
        (or (zerop (length buffer))      ; Not an empty name.
            (not (char-equal ?\  (aref buffer 0)))))) ; Starts with non-blank.
 
-;;;###autoload
 (defun unique-name (name existing-names &optional min use-base-p maxp)
   "Return NAME or NAME<N>, a name that is not in EXISTING-NAMES.
 Return NAME if NAME is not a member of EXISTING-NAMES.
@@ -290,7 +288,6 @@ As an example, `generate-new-buffer-name' could be defined this way:
             (setq indx  (max min (1+ indx)))))))))
 
 ;; Stolen from file `intes.el.2'
-;;;###autoload
 (defun current-line ()
   "Current line number of cursor."
   (+ (count-lines (point-min) (point))
@@ -306,7 +303,6 @@ Any arguments besides BUFFER (IGNORE list) are ignored."
 
 ;;;$ REGION -------------------------------------------------------------------
 
-;;;###autoload
 (defun make-transient-mark-mode-buffer-local (&optional default)
   "Make variable `transient-mark-mode' permanent-local everywhere.
 Set default value to arg DEFAULT, if non-nil, else `default-value' of
@@ -338,7 +334,6 @@ See function `notify-user-of-mode'."
   "*Face used for notifying user of current major mode.
 See function `notify-user-of-mode'.")
 
-;;;###autoload
 (defun notify-user-of-mode (&optional buffer anyway)
   "Display msg naming major mode of BUFFER (default: current buffer).
 A message is never displayed if the minibuffer is active.  Otherwise:
@@ -360,7 +355,6 @@ Useful as a mode hook.  For example:
 
 ;;;$ FILES --------------------------------------------------------------------
 
-;;;###autoload
 (defun do-files (files fn &optional kill-buf-after)
   "Visit each file in list FILES, executing function FN once in each.
 Optional arg KILL-BUF-AFTER non-nil means kill buffer after saving it."
@@ -442,7 +436,6 @@ For each key in KEYMAP that is indirectly bound to one of the commands in
 `buffer-modifying-cmds', rebind it to `undefined'."
   (mapcar (lambda (cmd) (undefine-keys-bound-to cmd keymap)) buffer-modifying-cmds))
 
-;;;; ;;;###autoload
 ;;;; (defun name+key (cmd)
 ;;;;   "Returns string naming command CMD (a symbol), with its current bindings."
 ;;;;   (let ((keys (mapconcat 'key-description
@@ -457,7 +450,6 @@ For each key in KEYMAP that is indirectly bound to one of the commands in
 ;;;; ;; WARNING: the value of C-g (7) is still hard coded in one place in the
 ;;;; ;; minibuffer code.  Thus, swapping C-g with another key may cause a minor
 ;;;; ;; problem.  (Fixed in Emacs 18.58.)
-;;;; ;;;###autoload
 ;;;; (defun swap-keys (key1 key2)
 ;;;;   "Swap keys KEY1 and KEY2 using function map-key."
 ;;;;   (map-key key1 key2)

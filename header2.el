@@ -5,14 +5,14 @@
 ;; Author: Lynn Slater
 ;;         Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 1989 Free Software Foundation, Inc.
 ;; Copyright (C) 1988 Lynn Randolph Slater, Jr.
 ;; Created: Tue Aug  4 17:06:46 1987
 ;; Version: 21.0
-;; Last-Updated: Sat Dec  4 14:19:47 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:54:59 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1780
+;;     Update #: 1784
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/header2.el
 ;; Keywords: tools, docs, maint, abbrev, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -162,6 +162,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/08/03 dadams
 ;;     update-file-name: Use ---, not just -, in title line, per newer standard.
 ;;     make-revision: Escape ; in string, for Emacs 20 (else C-M-q problem).
@@ -806,7 +808,6 @@ Is sensitive to language-dependent comment conventions."
     (t ";; ")))       ; Use Lisp as default.
 
 ;; Usable as a programming language mode hook.
-;;;###autoload
 (defun auto-make-header ()
   "Call `make-header' if current buffer is empty and is a file buffer."
   (and (zerop (buffer-size)) (not buffer-read-only) (buffer-file-name)
@@ -950,7 +951,6 @@ the strings that cause them to be invoked."
             (funcall (cdr (car patterns))))
           (setq patterns  (cdr patterns)))))))
 
-;;;###autoload
 (defun auto-update-file-header ()
   "Update file header if file is modified.
 If file is modified, size is greater than 100 and buffer is not
@@ -983,6 +983,7 @@ read only then call `update-file-header."
       (insert str)
       (error "Invalid number for update count `%s'" str))))
 
+;;; ;;;###autoload
 ;;; (defun update-VCS-version ()
 ;;;   "Update VCS version, of the form $VERSION = \"NUM\".
 ;;; NUM is a decimal number with one or more decimal points -

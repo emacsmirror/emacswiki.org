@@ -4,12 +4,12 @@
 ;; Description: Enhancements of standard library `ls-lisp.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2008-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2008-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Feb 29 10:54:37 2008 (Pacific Standard Time)
 ;; Version: 20.0
-;; Last-Updated: Tue Nov 23 07:28:02 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:10:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 176
+;;     Update #: 184
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ls-lisp+.el
 ;; Keywords: internal, extensions, local, files, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,14 +42,10 @@
 ;;
 ;;    files 276 total 27359
 ;;
-;;  This library also provides a bug fix for Emacs 21 and 22, for the
-;;  case where switches `F' and `R' are both provided.  This is Emacs
-;;  bug #2801, which is fixed in Emacs 23.
+;;  This library also provides a fix for bug #2801 for Emacs 21 and 22
+;;  for the case where switches `F' and `R' are both provided.  This
+;;  is fixed in vanilla Emacs 23.
 ;;
-;;  This library also provides a bug fix for Emacs bug #7027, for
-;;  Emacs 23+.  It lets you use wildcards in file names of an explicit
-;;  cons arg to `dired'.
-;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change log:

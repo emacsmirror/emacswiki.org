@@ -4,12 +4,12 @@
 ;; Description: Extensions to `diff-mode.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Nov 08 16:36:09 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 12:51:56 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:02:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 648
+;;     Update #: 651
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/diff-mode-.el
 ;; Keywords: data, matching, tools, unix, local, font, face
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -78,6 +78,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defface.
 ;; 2008/01/01 dadams
 ;;     Added :group for deffaces.
 ;; 2006/01/04 dadams
@@ -112,12 +114,14 @@
 
 
 ;;; Define some additional faces.
+;;;###autoload
 (defface diff-file1-hunk-header
   '((t (:foreground "Blue" :background "DarkSeaGreen1")))
   "Face used to highlight a diff hunk for the first `diff' argument."
   :group 'diff-mode)
 (defvar diff-file1-hunk-header-face 'diff-file1-hunk-header)
 
+;;;###autoload
 (defface diff-file2-hunk-header
   '((t (:foreground "Red" :background "PaleGoldenrod")))
   "Face used to highlight a diff hunk for the second `diff' argument."
@@ -125,18 +129,21 @@
 (defvar diff-file2-hunk-header-face 'diff-file2-hunk-header)
 
 ;;; These faces are standard in Emacs 22, but they are new for Emacs 21.
+;;;###autoload
 (defface diff-indicator-changed
   '((t (:foreground "PaleGoldenrod" :background "MediumBlue")))
   "*Face used to highlight the line-start indicator of a modified line."
   :group 'diff-mode)
 (defvar diff-indicator-changed-face 'diff-indicator-changed)
 
+;;;###autoload
 (defface diff-indicator-added
   '((t (:foreground "PaleGoldenrod" :background "DarkGreen")))
   "*Face used to highlight the line-start indicator of an inserted line."
   :group 'diff-mode)
 (defvar diff-indicator-added-face 'diff-indicator-added)
 
+;;;###autoload
 (defface diff-indicator-removed
   '((t (:foreground "PaleGoldenrod" :background "DarkMagenta")))
   "*Face used to highlight the line-start indicator of a removed line."

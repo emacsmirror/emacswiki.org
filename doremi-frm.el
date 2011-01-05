@@ -4,12 +4,12 @@
 ;; Description: Incrementally adjust face attributes and frame parameters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 11 10:40:32 2004
 ;; Version: 22.0
-;; Last-Updated: Tue Oct 19 21:25:39 2010 (-0700)
+;; Last-Updated: Tue Jan  4 08:37:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2954
+;;     Update #: 2973
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-frm.el
 ;; Keywords: frames, extensions, convenience, keys, repeat, cycle
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -275,6 +275,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non def* sexps and non-interactive functions.
+;;     Added missing autoload cookies for defgroup, defcustom, defalias, commands.
 ;; 2010/10/19 dadams
 ;;     doremi-frame-color-component, doremi-bg/fg-color-name-1, doremi-set-frame-color:
 ;;       Replace frame-update-face-colors with frame-set-background-mode for > Emacs 20.
@@ -583,6 +586,7 @@
  
 ;;; User Options (Variables)
 
+;;;###autoload
 (defgroup doremi-frame-commands nil
   "Commands to incrementally adjust face attributes and frame parameters."
   :prefix "doremi-" :group 'doremi :group 'frames :group 'faces
@@ -600,10 +604,12 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "doremi-frm")
   )
 
+;;;###autoload
 (defcustom doremi-frame-config-ring-size 20
   "*Maximum number of stored frame configurations."
   :type 'integer :group 'Doremi-Frame-Commands)
 
+;;;###autoload
 (defcustom doremi-move-frame-wrap-within-display-flag t
   "*Non-nil means wrap frame movements within the display.
 Commands `doremi-frame-horizontally+' and `doremi-frame-vertically+'
@@ -611,12 +617,14 @@ then move the frame back onto the display when it moves off of it.
 If nil, you can move the frame as far off the display as you like."
   :type 'boolean :group 'doremi-frame-commands)
 
+;;;###autoload
 (defcustom doremi-push-frame-config-for-cmds-flag nil
   "*Non-nil means commands that change frame config save it first.
 This is done by advising all commands that change frame configuration
 when library `doremi-frm.el' is loaded."
   :type 'boolean :group 'Doremi-Frame-Commands)
 
+;;;###autoload
 (defcustom doremi-RGB-increment-factor 1
   "*Factor to scale up RGB incrementing for some Do Re Mi functions.
 Because RGB incrementing is by nature finer scale than HSV
@@ -664,6 +672,7 @@ scaling.  For example, `doremi-bg+' scales RGB, but you can use
 `doremi-increment-background-color' instead, for finer tuning."
   :type 'integer :group 'doremi-frame-commands)
 
+;;;###autoload
 (defcustom doremi-wrap-color-flag t
   "*Non-nil means wrap color changes around past the max and min.
 For example, if non-nil, a current color value has FFFF as the red
@@ -714,6 +723,7 @@ current color, so it toggles between the last two values.")
 ;; which is defined in `frame-cmds.el'.
 ;;;###autoload
 (defalias 'doremi-font-size+ 'doremi-frame-font-size+)
+;;;###autoload
 (defun doremi-frame-font-size+ (&optional increment frame)
   "Change font size for FRAME by INCREMENT.
 Interactively, INCREMENT is given by the prefix argument.
@@ -727,7 +737,6 @@ Optional FRAME parameter defaults to current frame."
 
 ;; This command uses an incremental growth function, `text-scale-increase',
 ;; which is defined in `face-remap.el' or (enhanced) in `face-remap+.el'.
-;;;###autoload
 (when (fboundp 'text-scale-increase)    ; Emacs 23+.
   (defun doremi-buffer-font-size+ (&optional increment)
     "Change font size for current buffer by INCREMENT steps.
@@ -803,6 +812,7 @@ Height of frame FRAME is increased in increments of amount INCREMENT."
 ;; ;; This does the same thing as `doremi-frame-height+'.
 ;; ;; Example command that uses an incrementing function, `enlarge-frame',
 ;; ;; defined in `frame-cmds.el'.
+;; ;;;###autoload
 ;; (defun doremi-frame-height-bis+ (&optional increment frame)
 ;;   "Change frame height incrementally."
 ;;   (interactive "p")
@@ -889,7 +899,6 @@ INCR is the increment to use when changing the position."
       (when (> new-pos display-dimension) (setq new-pos  (- frame-dimension)))
       new-pos)))
 
-;;;###autoload
 (defun doremi-push-current-frame-config ()
   "Push the current frame configuration to `doremi-frame-config-ring'
 after removing frame parameters `buffer-list' and `minibuffer'."
@@ -898,8 +907,6 @@ after removing frame parameters `buffer-list' and `minibuffer'."
     (unless (ring-member doremi-frame-config-ring curr-conf)
       (ring-insert doremi-frame-config-ring curr-conf))))
 
-
-;;;###autoload
 (defun doremi-frame-config-wo-parameters (frame-config params-to-remove)
   "A copy of FRAME-CONFIG, but without frame parameters PARAMS-TO-REMOVE."
   (cons 'frame-configuration
@@ -914,7 +921,6 @@ after removing frame parameters `buffer-list' and `minibuffer'."
 
 ;; NOTE: Frame parameters `buffer-list' and `minibuffer' are ignored
 ;;       when determining if two frame configurations are equal here.
-;;;###autoload
 (defun doremi-push-frame-config-for-command (command)
   "Advise COMMAND to save frame configuration.
 You can restore previous frame configurations with \\[doremi-frame-configs+]."
@@ -934,7 +940,6 @@ with \\[doremi-frame-configs+]."
                (format "Use `\\[jump-to-frame-config-register]' (`C-x r j %c') or \
 `\\[doremi-frame-configs+]' to restore frames as before (undo)." frame-config-register)
              "Use `\\[doremi-frame-configs+]' to restore frames as before (undo)."))))))))
-
 
 ;; Undo (rotate) frame configuration changes made by the
 ;; frame-changing commands defined here (see mapcar, at end of file).
@@ -1035,6 +1040,8 @@ Prefix arg is the INCREMENT to change."
   (doremi-bg+ ?h increment nil (consp current-prefix-arg)))
 
 ;;;###autoload
+(defalias 'doremi-bg-purity+ 'doremi-bg-saturation+)
+;;;###autoload
 (defun doremi-bg-saturation+ (&optional increment)
   "Change frame background color saturation incrementally.
 Prefix arg is the INCREMENT to change.  See `doremi-bg+'."
@@ -1042,16 +1049,16 @@ Prefix arg is the INCREMENT to change.  See `doremi-bg+'."
   (doremi-bg+ ?s increment nil (consp current-prefix-arg)))
 
 ;;;###autoload
+(defalias 'doremi-bg-brightness+ 'doremi-bg-value+)
+;;;###autoload
 (defun doremi-bg-value+ (&optional increment)
   "Change frame background brightness (HSV \"value\") incrementally.
 Prefix arg is the INCREMENT to change.  See `doremi-bg+'."
   (interactive "p")
   (doremi-bg+ ?v increment nil (consp current-prefix-arg)))
 
-(defalias 'doremi-bg-brightness+ 'doremi-bg-value+)
-(defalias 'doremi-bg-purity+ 'doremi-bg-saturation+)
 
-;; Do not use this non-interactively - use `doremi-bg-1'.
+;; Do NOT use this non-interactively - use `doremi-bg-1'.
 ;;;###autoload
 (defun doremi-bg+ (component &optional increment frame pickup-p interactive-p)
   "Change FRAME's background color incrementally.
@@ -1288,6 +1295,8 @@ Prefix arg is the INCREMENT to change."
   (doremi-fg+ ?h increment nil (consp current-prefix-arg)))
 
 ;;;###autoload
+(defalias 'doremi-fg-purity+ 'doremi-fg-saturation+)
+;;;###autoload
 (defun doremi-fg-saturation+ (&optional increment)
   "Change frame foreground color saturation incrementally.
 See `doremi-fg+'.  Prefix arg is the INCREMENT to change."
@@ -1295,16 +1304,16 @@ See `doremi-fg+'.  Prefix arg is the INCREMENT to change."
   (doremi-fg+ ?s increment nil (consp current-prefix-arg)))
 
 ;;;###autoload
+(defalias 'doremi-fg-brightness+ 'doremi-fg-value+)
+;;;###autoload
 (defun doremi-fg-value+ (&optional increment)
   "Change frame foreground brightness (HSV \"value\") incrementally.
 See `doremi-fg+'.  Prefix arg is the INCREMENT to change."
   (interactive "p")
   (doremi-fg+ ?v increment nil (consp current-prefix-arg)))
 
-(defalias 'doremi-fg-brightness+ 'doremi-fg-value+)
-(defalias 'doremi-fg-purity+ 'doremi-fg-saturation+)
 
-;; Do not use this non-interactively - use `doremi-frame-hue-stepping-saturation'.
+;; Do NOT use this non-interactively - use `doremi-frame-hue-stepping-saturation'.
 ;;;###autoload
 (defun doremi-fg-hue-stepping-saturation+ (&optional increment frame pickup-p
                                            interactive-p)
@@ -1402,6 +1411,7 @@ FRAME parameter."
  
 ;;; Face and Color Commands
 
+;;;###autoload
 (defalias 'toggle-doremi-wrap-color 'doremi-toggle-wrap-color)
 ;;;###autoload
 (defun doremi-toggle-wrap-color ()

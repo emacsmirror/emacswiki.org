@@ -4,12 +4,12 @@
 ;; Description: Extensions to `window.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 25 14:22:13 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:54:49 2010 (-0800)
+;; Last-Updated: Tue Jan  4 15:50:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 87
+;;     Update #: 92
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/window+.el
 ;; Keywords: internal, window
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -40,8 +40,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookie for command quit-window.
 ;; 2008/02/27 dadams
 ;;     Added redefinition of quit-window.
 ;; 1996/01/25 dadams
@@ -103,6 +105,7 @@ even if it is active.  (See function `walk-windows'.)"
 ;; This way, if you use my version of `delete-window' (defined in
 ;; `frame-cmds.el'), then the frame is also deleted if `one-window-p'.
 ;;
+;;;###autoload
 (defun quit-window (&optional kill window)
   "Quit the current buffer.  Bury it, and maybe delete the selected frame.
 \(The frame is deleted if it contains a dedicated window for the buffer.)

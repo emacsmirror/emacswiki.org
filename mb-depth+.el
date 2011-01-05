@@ -4,12 +4,12 @@
 ;; Description: Indicate minibuffer-depth in prompt
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 18 16:37:53 2006
 ;; Version: 
-;; Last-Updated: Fri Jan 15 13:27:31 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:19:10 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 67
+;;     Update #: 68
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mb-depth+.el
 ;; Keywords: convenience
 ;; Compatibility: GNU Emacs: 22.x, 23.x

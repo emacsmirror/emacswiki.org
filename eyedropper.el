@@ -4,12 +4,12 @@
 ;; Description: Pick foreground and background colors at cursor or pointer.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 23 08:07:15 2006
 ;; Version: 20
-;; Last-Updated: Fri Jan 15 12:58:39 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:53:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 158
+;;     Update #: 165
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/eyedropper.el
 ;; Keywords: color, rgb, hsv, hexadecimal, face, frame
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -74,6 +74,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for commands.
 ;; 2007/10/11 dadams
 ;;     eyedrop-(back|fore)ground-at-(mouse|point),
 ;;     eyedrop-pick-(back|fore)ground-at-(mouse|point), pick-(back|fore)ground-color:
@@ -141,6 +143,7 @@ interned in the initial obarray."
     (message (format "Color: %s, RGB: %s, HSV: %s" color rgb hsv)))
   color)                                ; Return it.
 
+;;;###autoload
 (defun eyedrop-background-at-mouse (event &optional msg-p)
   "Return the background color under the mouse pointer.
 Non-nil optional arg MSG-P means display an informative message."
@@ -153,6 +156,7 @@ Non-nil optional arg MSG-P means display an informative message."
     (when msg-p (if bg (eyedrop-color-message bg) (message "No background color here")))
     bg))
 
+;;;###autoload
 (defun eyedrop-foreground-at-mouse (event &optional msg-p)
   "Return the foreground color under the mouse pointer.
 Non-nil optional arg MSG-P means display an informative message."
@@ -183,7 +187,9 @@ Return nil if there is no face at point."
     (if (facep face) face nil)))
 
 ;; RMS added this function to Emacs (23) as `background-color-at-point'.
+;;;###autoload
 (defalias 'background-color 'eyedrop-background-at-point)
+;;;###autoload
 (defun eyedrop-background-at-point (&optional msg-p)
   "Return the background color under the text cursor.
 Non-nil optional arg MSG-P means display an informative message."
@@ -207,7 +213,9 @@ Non-nil optional arg MSG-P means display an informative message."
     bg))
 
 ;; RMS added this function to Emacs (23) as `foreground-color-at-point'.
+;;;###autoload
 (defalias 'foreground-color 'eyedrop-foreground-at-point)
+;;;###autoload
 (defun eyedrop-foreground-at-point (&optional msg-p)
   "Return the foreground color under the text cursor.
 Non-nil optional arg MSG-P means display an informative message."
@@ -230,6 +238,7 @@ Non-nil optional arg MSG-P means display an informative message."
       (if fg (eyedrop-color-message fg) (message "No foreground color here")))
     fg))
 
+;;;###autoload
 (defun eyedrop-pick-background-at-mouse (event &optional msg-p)
   "Pick background of face or frame at character under the mouse pointer.
 Save the background color in `eyedrop-picked-background' and
@@ -242,6 +251,7 @@ Non-nil optional arg MSG-P means display an informative message."
   (when msg-p (eyedrop-color-message eyedrop-picked-background))
   eyedrop-picked-background)
 
+;;;###autoload
 (defun eyedrop-pick-foreground-at-mouse (event &optional msg-p)
   "Pick foreground of face or frame at character under the mouse pointer.
 Save the foreground color in `eyedrop-picked-foreground' and
@@ -254,8 +264,11 @@ Non-nil optional arg MSG-P means display an informative message."
   (when msg-p (eyedrop-color-message eyedrop-picked-foreground))
   eyedrop-picked-foreground)
 
+;;;###autoload
 (defalias 'eyedropper-background 'eyedrop-pick-background-at-point)
+;;;###autoload
 (defalias 'pick-background-color 'eyedrop-pick-background-at-point)
+;;;###autoload
 (defun eyedrop-pick-background-at-point (&optional msg-p)
   "Pick background of face or frame at character at text cursor (point).
 Save the background color in `eyedrop-picked-background' and
@@ -268,8 +281,11 @@ Non-nil optional arg MSG-P means display an informative message."
   (when msg-p (eyedrop-color-message eyedrop-picked-background))
   eyedrop-picked-background)
 
+;;;###autoload
 (defalias 'eyedropper-foreground 'eyedrop-pick-foreground-at-point)
+;;;###autoload
 (defalias 'pick-foreground-color 'eyedrop-pick-foreground-at-point)
+;;;###autoload
 (defun eyedrop-pick-foreground-at-point (&optional msg-p)
   "Pick foreground of face or frame at character at text cursor (point).
 Save the foreground color in `eyedrop-picked-foreground' and

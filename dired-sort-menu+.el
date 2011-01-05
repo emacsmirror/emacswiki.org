@@ -4,12 +4,12 @@
 ;; Description: Extensions to `dired-sort-menu.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 07 12:39:36 2005
 ;; Version: 20
-;; Last-Updated: Fri Jan 15 12:53:18 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:23:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 75
+;;     Update #: 77
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-sort-menu+.el
 ;; Keywords: directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -333,8 +333,6 @@ This command *must* be run in the Dired buffer!"
                (dired-sort-dialogue-buffer-p (buffer-name buf)))
       (set-window-dedicated-p (selected-window) nil)
       (kill-buffer buf))))
-
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

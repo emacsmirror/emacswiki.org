@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `wid-edit.el'.
 ;; Author: Drew Adams, Lennart Borgman
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 21 10:25:32 2007
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:53:59 2010 (-0800)
+;; Last-Updated: Tue Jan  4 15:04:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 249
+;;     Update #: 252
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wid-edit+.el
 ;; Keywords: widget, color
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -58,7 +58,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2008/05/11 dadams
 ;;     Added: (conditional-)key-definition, widgetp-define-key-from-key-def,
@@ -105,6 +105,7 @@
 
 ;;; `editable-field' widget
 
+;;;###autoload
 (defun widgetp-keyboard-quit ()
   "Same as `keyboard-quit', but also removes *Completions* window."
   (interactive)

@@ -4,12 +4,12 @@
 ;; Description: Run Windows application associated with a file.
 ;; Author: Emacs Wiki, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 13:40:52 2004
 ;; Version: 21.0
-;; Last-Updated: Thu Jan 21 10:40:40 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:57:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 209
+;;     Update #: 211
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32-browser.el
 ;; Keywords: mouse, dired, w32, explorer
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -34,7 +34,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/01/21 dadams
 ;;     Added: dired(-mouse)-w32-browser-reuse-dir-buffer.

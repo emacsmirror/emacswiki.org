@@ -4,12 +4,12 @@
 ;; Description: Create HTML with links.  (Extensions to `htmlize.el'.)
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jul 18 13:11:51 2000
 ;; Version: 20.1
-;; Last-Updated: Fri Jan 15 13:28:43 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:34:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2323
+;;     Update #: 2324
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mkhtml.el
 ;; Keywords: tools, hypermedia, www, info
 ;; Compatibility: Emacs 20.x
@@ -18,7 +18,7 @@
 ;;
 ;;   `cl', `custom', `dired', `easymenu', `fit-frame', `info',
 ;;   `info+', `misc-fns', `mkhtml-htmlize', `strings', `thingatpt',
-;;   `thingatpt+'.
+;;   `thingatpt+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;

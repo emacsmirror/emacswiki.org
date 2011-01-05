@@ -4,12 +4,12 @@
 ;; Description: Enhancements to Ediff
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 26 11:14:34 2006
 ;; Version: 20
-;; Last-Updated: Fri Jan 15 12:57:06 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:48:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 93
+;;     Update #: 99
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ediff+.el
 ;; Keywords: comparing, merging, patching, version control
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -62,6 +62,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for commands.
 ;; 2008/04/24 dadams
 ;;     ediff-setup-keymap: Updated for Emacs 23.
 ;; 2006/03/02 dadams
@@ -107,6 +109,7 @@ This variable can be set either in .emacs or toggled interactively.
 Use `setq-default' if setting it in .emacs")
 
 
+;;;###autoload
 (defun ediff-toggle-ignore-case ()
   (interactive)
   (ediff-barf-if-not-control-buffer)
@@ -340,6 +343,7 @@ Normally, not a user option. See `ediff-help-message' for details.")
 ;; REPLACE ORIGINAL in `ediff-help.el'
 ;; Include `#c'.
 ;;
+;;;###autoload
 (defun ediff-help-for-quick-help ()
   "Explain Ediff commands in more detail."
   (interactive)

@@ -4,13 +4,13 @@
 ;; Description: Require confirmation for large region deletion.
 ;; Author: Bard Bloom, bard@theory.lcs.mit.edu, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) Bard Bloom, June 1989
 ;; Created: Wed Nov 22 14:57:17 1995
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 17:19:12 2010 (-0800)
+;; Last-Updated: Tue Jan  4 15:14:49 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 167
+;;     Update #: 172
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wimpy-del.el
 ;; Keywords: region, cut, kill, copy
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -50,8 +50,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2010/01/04 dadams
+;;     Removed autoload cookies from defvars.
 ;; 2005/11/08 dadams
 ;;     Updated menu-enable properties.
 ;; 1996/02/06 dadams
@@ -92,12 +94,10 @@
 
 ;;;;;;;;;;;;;;;;;
 
-;;;###autoload
 (defvar wimpy-delete-size 2000
    "*`kill-region-wimpy' asks you to confirm killing more than this many chars.
 Setting this to nil inhibits deletion confirmation altogether.")
 
-;;;###autoload
 (defvar wimpy-delete-dopey-message "OK, region not killed."
   "*Message `kill-region-wimpy' displays when told not to delete the region.
 If nil, no message is displayed.")
@@ -155,7 +155,6 @@ Else, if the region is > `wimpy-delete-size', you must confirm the kill."
 ;;; For use in menu-bar.
 (put 'clipboard-kill-region-wimpy 'menu-enable '(and mark-active (not buffer-read-only)))
 (put 'kill-region-wimpy 'menu-enable '(and mark-active (not buffer-read-only)))
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 

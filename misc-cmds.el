@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:20:41 1995
 ;; Version: 21.1
-;; Last-Updated: Tue Jan 12 15:48:26 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:30:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2891
+;;     Update #: 2906
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/misc-cmds.el
 ;; Keywords: internal, unix, extensions, maint, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for commands.  Removed from non-interactive function.
 ;; 2010/01/12 dadams
 ;;     region-to-buffer: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/09/24 dadams
@@ -253,10 +255,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun view-X11-colors ()
   "View file `/usr/lib/X11/rgb.txt', which lists available X11 colors."
   (interactive) (view-file-other-window "/usr/lib/X11/rgb.txt")) ; In `view.el'.
 
+;;;###autoload
 (defun forward-overlay (&optional arg)
   "Move forward ARG overlays.
 Move cursor to next position where an overlay starts or ends.
@@ -265,7 +269,6 @@ If there are no more overlay boundaries, move to (point-max)."
   (setq arg (or arg 1))
   (setq arg (1- arg))
   (while (natnump arg) (goto-char (next-overlay-change (point))) (decf arg)))
-
 
 ;;;###autoload
 (defun forward-char-same-line (&optional arg)
@@ -282,6 +285,7 @@ Returns the signed number of chars moved if /= ARG, else returns nil."
     (forward-char (if fwd-p (min max arg) (max max arg)))
     (and (< (abs max) (abs arg)) max)))
 
+;;;###autoload
 (defun end-of-line+ (&optional n)
   "Move cursor to end of current line or end of next line if repeated.
 This is similar to `end-of-line', but:
@@ -300,6 +304,7 @@ This is similar to `end-of-line', but:
   (let ((inhibit-field-text-motion t))
     (end-of-line)))
 
+;;;###autoload
 (defun beginning-of-line+ (&optional n)
   "Move cursor to beginning of current line or next line if repeated.
 This is the similar to `beginning-of-line', but:
@@ -319,6 +324,7 @@ This is the similar to `beginning-of-line', but:
       (forward-line -1)
     (forward-line (- n))))
 
+;;;###autoload
 (defun beginning-or-indentation (&optional n)
   "Move cursor to beginning of this line or to its indentation.
 If at indentation position of this line, move to beginning of line.
@@ -334,6 +340,7 @@ Interactively, N is the prefix arg."
          (forward-line 0))
         (t (back-to-indentation))))
 
+;;;###autoload
 (defun recenter-top-bottom (&optional arg)
   "Move current line to window center, top, and bottom, successively.
 With a prefix argument, this is the same as `recenter':
@@ -381,6 +388,7 @@ from true window top and bottom."
        (recenter)))))
 
 ;; An alternative.
+;;;###autoload
 (defun recenter-top-bottom-1 (&optional arg)
   "Move current line to window center, top, and bottom, successively.
 With prefix ARG, move current line to window-line ARG.
@@ -396,6 +404,7 @@ from true top and bottom."
         (t (recenter arg))))
 
 ;; Another alternative.
+;;;###autoload
 (defun recenter-top-bottom-2 (&optional arg)
   "Move current line to line ARG, window center, top, or bottom.
 With a prefix argument, this is the same as `recenter':
@@ -421,6 +430,7 @@ from true top and bottom."
                  ((< (- bottom current) (/ total 3)) (recenter '(4)))
                  (t (recenter scroll-conservatively)))))))
 
+;;;###autoload
 (defun mark-buffer-after-point (reversep)
   "Select the part of the buffer after point.
 With a prefix argument, select the part before point."
@@ -428,14 +438,18 @@ With a prefix argument, select the part before point."
   (push-mark (if reversep (point-min) (point-max)) nil t)
   (setq deactivate-mark nil))
 
+;;;###autoload
 (defun mark-buffer-before-point (reversep)
   "Select the part of the buffer before point.
 With a prefix argument, select the part after point."
   (interactive "P")
   (mark-buffer-after-point t))
 
+;;;###autoload
 (defalias 'selection-length 'region-length)
+;;;###autoload
 (defalias 'count-chars-in-region 'region-length)
+;;;###autoload
 (defun region-length ()
   "Display the number of characters in the region in a message."
   (interactive)
@@ -450,6 +464,7 @@ Counting starts at (point-min), so any narrowing restriction applies."
     (1+ (count-lines (point-min) (save-excursion (when pos (goto-char pos))
                                                  (forward-line 0) (point))))))
 
+;;;###autoload
 (defun goto-longest-line (beg end)
   "Go to the first of the longest lines in the region or buffer.
 If the region is active, it is checked.
@@ -544,6 +559,7 @@ buffer, you can use `C-SPC' to set the mark, then use this
            (list (car long-lines) max-width (cdr long-lines)
                  (- line start-line))))))
 
+;;;###autoload
 (defun goto-long-line (len)
   "Go to the first line that is at least LEN characters long.
 Use a prefix arg to provide LEN.
@@ -566,6 +582,7 @@ Plain `C-u' (no number) uses `fill-column' as LEN."
            (goto-line start-line)
            (message "Not found")))))
 
+;;;###autoload
 (defun delete-lines (num-lines)
   "Delete NUM-LINES lines, starting at point.
 Lines are deleted, not killed.
@@ -584,23 +601,21 @@ With negative prefix arg, deletion is backward."
       (when (eq (following-char) ?\n) (delete-char 1))
       (move-to-column column))))
 
-;;;;;;###autoload
 ;;;(defvar default-pr-switches "-fl68"
 ;;;  "*String of default switches to pass to `pr'.
 ;;;These may be overridden in `pr-declp-buffer' and `pr-declp-region'.")
 ;;;(put 'default-pr-switches 'variable-interactive
 ;;;     "sDefault switches to pass to `pr' (e.g. \"-fl68\"): ")
 
-;;;;;;###autoload
 ;;;(defvar declp-switches nil
 ;;;  "*List of strings to pass as extra switch args to `declp-command'.")
 
-;;;;;;###autoload
 ;;;(defvar declp-command "declp" "*Shell command for printing a file.
 ;;;Should usually be either \"declp\" or \"declpt\".")
 ;;;(put 'declp-command 'variable-interactive
 ;;;     "sShell command for printing a file. (\"declp\" or \"declpt\"): ")
 
+;;;;;;###autoload
 ;;;(defmacro declp-sheet-options (number-up)
 ;;;  (` (if (and (integerp (, number-up)) (not (zerop (, number-up))))
 ;;;         (if (natnump (, number-up))
@@ -912,7 +927,6 @@ just the REGION? "
 ;   "Click in X window you want to capture as image file `%s'." xwd-file)
 ;  (shell-command (concat "xwd " options " -out " xwd-file)))
 
-;;;###autoload
 (defun read-shell-file-command (command)
   "Prompt for shell COMMAND, using current buffer's file as default arg.
 If buffer is not associated with a file, you are prompted for a file.
@@ -924,18 +938,21 @@ COMMAND is a symbol."
      "" (cons (concat command (and file (concat " " file)))
               (length command)))))
 
+;;;###autoload
 (defun chmod (cmd)
   "Execute Unix command `chmod'.  Current buffer's file is default arg.
 CMD is the command to execute (interactively, `chmod')."
   (interactive (list (read-shell-file-command 'chmod)))
   (shell-command cmd))
 
+;;;###autoload
 (defun chgrp (cmd)
   "Execute Unix command `chgrp'.  Current buffer's file is default arg.
 CMD is the command to execute (interactively, `chgrp')."
   (interactive (list (read-shell-file-command 'chgrp)))
   (shell-command cmd))
 
+;;;###autoload
 (defun chown (cmd)
   "Execute Unix command `chown'.  Current buffer's file is default arg.
 CMD is the command to execute (interactively, `chown')."
@@ -993,6 +1010,7 @@ BUFFER may be either a buffer or its name (a string)."
          (error "Cannot kill buffer.  Not a live buffer: `%s'" buffer))))
 
 ;;; Like `clone-indirect-buffer' of Emacs 21.
+;;;###autoload
 (defun indirect-buffer ()
   "Edit stuff in this buffer in an indirect-buffer window.
 The indirect buffer can have a different major mode from current."
@@ -1000,8 +1018,9 @@ The indirect buffer can have a different major mode from current."
   (let ((buffer-name (generate-new-buffer-name "*indirect*")))
     (pop-to-buffer (make-indirect-buffer (current-buffer) buffer-name))))
 
+;;;###autoload
 (defalias 'clear-search-ring 'clear-search-history)
-
+;;;###autoload
 (defun clear-search-history (&optional regexp-too-p)
   "Clear the search history (empty it).
 With prefix arg, clear also the regular-expression search history."
@@ -1009,8 +1028,9 @@ With prefix arg, clear also the regular-expression search history."
   (setq search-ring nil)
   (when regexp-too-p (setq regexp-search-ring nil)))
 
+;;;###autoload
 (defalias 'clear-regexp-search-ring 'clear-regexp-search-history)
-
+;;;###autoload
 (defun clear-regexp-search-history (&optional simple-too-p)
   "Clear the regular-expression search history (empty it).
 With prefix arg, clear also the simple search history."
@@ -1018,12 +1038,14 @@ With prefix arg, clear also the simple search history."
   (setq regexp-search-ring nil)
   (when simple-too-p (setq search-ring nil)))
 
+;;;###autoload
 (defun clear-search-histories ()
   "Clear both search histories: simple search and regexp search."
   (interactive)
   (setq regexp-search-ring nil)
   (setq search-ring nil))
 
+;;;###autoload
 (defun revert-buffer-no-confirm ()
   "Revert buffer without confirmation."
   (interactive) (revert-buffer t t))

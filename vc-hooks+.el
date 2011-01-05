@@ -4,12 +4,12 @@
 ;; Description: Extensions to `vc-hooks.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Jun 19 10:51:38 2000
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:53:15 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:56:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 86
+;;     Update #: 88
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc-hooks+.el
 ;; Keywords: version control
 ;; Compatibility: GNU Emacs 20.x
@@ -46,7 +46,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -84,17 +84,13 @@
 
 ;;;;;;; Key bindings
 
-;;; `vc-prefix-map' is defined in `vc-hooks.el' (always loaded).
-;;; `vc-dired-mode-map' is defined in `vc.el' (via `define-derived-mode',
-;;;                     so no ;;;###autoload).
+;;; `vc-prefix-map' is defined in `vc-hooks.el'.
+;;; `vc-dired-mode-map' is defined in `vc.el'.
 
-;;;###autoload
 (define-key vc-prefix-map [?\C-r] 'vc-rename-file)
 
 ;; Switch standard `vc-diff' bindings.
-;;;###autoload
 (define-key vc-prefix-map [?\C-=] 'vc-diff)
-;;;###autoload
 (define-key vc-prefix-map [?=] 'vc-ediff)
 ;; Do this in `vc+.el', not here:
 ;; (define-key vc-dired-mode-map [?\"] 'vc-ediff)
@@ -103,17 +99,12 @@
   (define-key menu-bar-ediff-menu [ediff-revision]
     '("File with Revision..." . vc-ediff)))
 
-;;;###autoload
 (define-key vc-prefix-map "." 'vc-status-here)
 
-;;;###autoload
 (define-key ctl-x-4-map "v." 'vc-status-here-other-window)
-;;;###autoload
 (define-key ctl-x-4-map "vd" 'vc-directory-other-window)
 
-;;;###autoload
 (define-key ctl-x-5-map "v." 'vc-status-here-other-frame)
-;;;###autoload
 (define-key ctl-x-5-map "vd" 'vc-directory-other-frame)
 
 

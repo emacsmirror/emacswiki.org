@@ -4,12 +4,12 @@
 ;; Description: Set up `mode-line-position'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 14 08:15:39 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:29:29 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:38:58 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 74
+;;     Update #: 78
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/modeline-posn.el
 ;; Keywords: mode-line, region, column
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -55,8 +55,10 @@
 ;; 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defface, defcustom, and command.
 ;; 2009/06/11 dadams
 ;;     Added Emacs 23 version.
 ;; 2007/04/02 dadams
@@ -87,12 +89,14 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defface modelinepos-column-warning '((t (:foreground "Red")))
   "*Face used to highlight the modeline column number.
 This is used when the current column number is greater than
 `modelinepos-column-limit'."
   :group 'Modeline :group 'Convenience :group 'Help :group 'faces)
 
+;;;###autoload
 (defcustom modelinepos-column-limit 70
   "Current column greater than this means highlight column in mode-line."
   :type 'integer :group 'Modeline :group 'Convenience :group 'Help)
@@ -103,6 +107,7 @@ This is used when the current column number is greater than
 ;; Doc string updated to mention region size indication.
 ;; Added groups `Modeline', `Convenience', and `Help'.
 ;;
+;;;###autoload
 (define-minor-mode size-indication-mode
     "Toggle Size Indication mode.
 With arg, turn Size Indication mode on iff arg is positive.

@@ -4,12 +4,12 @@
 ;; Description: Highlight whitespace of various kinds.
 ;; Author: Peter Steiner <unistein@isbe.ch>, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Jun 21 08:54:53 2000
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:44:05 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:05:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 283
+;;     Update #: 286
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/show-wspace.el
 ;; Keywords: highlight, whitespace
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -79,8 +79,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defgroup and defface.
 ;; 2009/06/25 dadams
 ;;     show-ws-dont-*: Should be no-op's for Emacs 20, 21.
 ;; 2009/06/17 dadams
@@ -132,6 +134,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defgroup Show-Whitespace nil
   "Highlight whitespace of various kinds."
   :prefix "show-ws-"
@@ -150,14 +153,17 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "show-wspace")
   )
 
+;;;###autoload
 (defface show-ws-tab '((t (:background "LemonChiffon")))
   "*Face for highlighting tab characters (`C-i') in Font-Lock mode."
   :group 'Show-Whitespace :group 'font-lock :group 'faces)
 
+;;;###autoload
 (defface show-ws-trailing-whitespace '((t (:background "Gold")))
   "*Face for highlighting whitespace at line ends in Font-Lock mode."
   :group 'Show-Whitespace :group 'font-lock :group 'faces)
 
+;;;###autoload
 (defface show-ws-hard-space '((t (:background "PaleGreen")))
   "*Face for highlighting non-breaking spaces (`\240')in Font-Lock mode."
   :group 'Show-Whitespace :group 'font-lock :group 'faces)

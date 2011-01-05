@@ -4,12 +4,12 @@
 ;; Description: Customizations to be done at the end of startup.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Sat Aug  7 12:53:08 2010 (-0700)
+;; Last-Updated: Tue Jan  4 14:11:22 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1879
+;;     Update #: 1884
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start-opt.el
 ;; Keywords: local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,7 +54,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/08/07 dadams
 ;;     Removed - use Customize instead:
@@ -385,8 +385,9 @@
 
 (setq-default indent-tabs-mode nil)     ; SPCs only (no TABs), when indenting.
 
-;;; The defcustom's in Francis Wright's `ls-lisp.el' cannot take effect, because `ls-lisp.el'
-;;; is a standard library, preloaded. So, make the assignments by hand.
+;;; The defcustom's in Francis Wright's `ls-lisp.el' cannot take
+;;; effect, because `ls-lisp.el' is a standard library, preloaded.
+;;; So, make the assignments here.
 (when (featurep 'ls-lisp)
   (setq ls-lisp-emulation
         (cond ((memq system-type '(windows-nt ms-dos emx)) 'Microsoft)

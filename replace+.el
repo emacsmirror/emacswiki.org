@@ -4,12 +4,12 @@
 ;; Description: Extensions to `replace.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Jan 30 15:01:06 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 17:49:36 2010 (-0800)
+;; Last-Updated: Tue Jan  4 13:40:49 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1051
+;;     Update #: 1060
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/replace+.el
 ;; Keywords: matching, help, internal, tools, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -105,8 +105,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies for non def* sexps, defadvice, and non-interactive fns.  Added for cmds.
 ;; 2010/01/12 dadams
 ;;     occur, occur-mode-mouse-goto: save-excursion + set-buffer -> with-current-buffer.
 ;; 2009/04/26 dadams
@@ -291,7 +293,6 @@ Some reasonable choices are defined in `thingatpt+.el':
 ;; However, in addition, this provides an initial value by
 ;; `search/replace-default-fn'.
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun query-replace-read-from (string regexp-flag)
     "Query and return the `from' argument of a query-replace operation.
@@ -351,7 +352,6 @@ Non-nil `replace-w-completion-flag' means you can use completion."
 ;; However, in addition, this provides an initial value by
 ;; `search/replace-default-fn'.
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun query-replace-read-to (from string regexp-flag)
     "Query and return the `to' argument of a query-replace operation."
@@ -438,7 +438,7 @@ Non-nil `replace-w-completion-flag' means you can use completion."
   "Replace some occurrences of OLD text with NEW one.
 Fourth and fifth arg START and END specify the region to operate on.
 
-This is the same as commmand `query-replace', except for the treatment
+This is the same as command `query-replace', except for the treatment
 of a prefix argument.
 
 No PREFIX argument (nil) means replace literal string matches.
@@ -484,7 +484,6 @@ replacement."
 ;; 1. Uses `completing-read' if `replace-w-completion-flag' is non-nil.
 ;; 2. The default regexps are provided by `search/replace-default-fn'.
 ;;
-;;;###autoload
 (unless (> emacs-major-version 21)
   (defun query-replace-read-args (string regexp-flag &optional noerror)
     "Read arguments for replacement functions such as `\\[query-replace]'.
@@ -519,7 +518,6 @@ insert a `SPC' or `TAB' character, you will need to preceed it by \
 ;; 1. Prompt changed, to mention that lines after point are affected.
 ;; 2. The default regexp is provided by `search/replace-default-fn'.
 ;; 3. An in-progress message has been added.
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun keep-lines (regexp)
     "Delete all lines after point except those with a match for REGEXP.
@@ -559,7 +557,6 @@ the matching is case-sensitive."
 ;; 1. Prompt changed, to mention that lines after point are affected.
 ;; 2. The default regexp is provided by `search/replace-default-fn'.
 ;; 3. An in-progress message has been added.
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun flush-lines (regexp)
     "Delete lines after point that contain a match for REGEXP.
@@ -589,7 +586,6 @@ the matching is case-sensitive."
 ;; 1. Prompt changed, to mention that lines after point are affected.
 ;; 2. The default regexp is provided by `search/replace-default-fn'.
 ;; 3. An in-progress message has been added.
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun how-many (regexp)
     "Print number of matches for REGEXP following point.
@@ -624,7 +620,6 @@ the matching is case-sensitive."
 ;; 1. The default regexp is provided by `search/replace-default-fn'.
 ;; 2. Regexp is saved as `occur-regexp' for use by `occur-mode-mouse-goto'
 ;;    and `occur-mode-goto-occurrence'.
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun occur (regexp &optional nlines)
     "Show all lines in the current buffer containing a match for REGEXP.
@@ -844,7 +839,6 @@ the matching is case-sensitive."
 
 ;; REPLACES ORIGINAL in `replace.el':
 ;; Regexp is saved as `occur-regexp' for use by `occur-mode-mouse-goto' and `occur-mode-goto-occurrence'.
-;;;###autoload
 (when (>= emacs-major-version 21)
   (defadvice occur (before occur-save-regexp activate compile)
     (setq occur-regexp  regexp)))        ; Save for highlighting.
@@ -853,7 +847,6 @@ the matching is case-sensitive."
 
 ;; REPLACES ORIGINAL in `replace.el':
 ;; The default regexp is provided by `search/replace-default-fn'.
-;;;###autoload
 (when (>= emacs-major-version 21)
   (defun occur-read-primary-args ()
     (list (let* ((default  (if (fboundp search/replace-default-fn)
@@ -873,7 +866,6 @@ the matching is case-sensitive."
 ;; REPLACES ORIGINAL in `replace.el':
 ;; Highlights visited linenum in occur buffer.
 ;; Highlights regexp in source buffer.
-;;;###autoload
 (defadvice occur-mode-mouse-goto (around occur-mode-mouse-goto-highlight activate compile)
   "Highlight visited line number in occur buffer.
 Alo highlight occur regexp in source buffer."
@@ -899,7 +891,6 @@ Alo highlight occur regexp in source buffer."
 ;; REPLACES ORIGINAL in `replace.el':
 ;; Highlights visited linenum in occur buffer.
 ;; Highlights regexp in source buffer.
-;;;###autoload
 (defadvice occur-mode-goto-occurrence (around occur-mode-goto-occurrence-highlight activate compile)
   "Highlight visited line number in occur buffer.
 Also highlight occur regexp in source buffer."
@@ -927,6 +918,7 @@ Also highlight occur regexp in source buffer."
 ;; REPLACES ORIGINAL in `replace.el' (Emacs 22):
 ;; Highlights visited linenum in occur buffer.
 ;; Highlights regexp in source buffer.
+;;;###autoload
 (defun occur-mode-goto-occurrence-other-window ()
   "Go to the occurrence the current line describes, in another window."
   (interactive)
@@ -951,6 +943,7 @@ Also highlight occur regexp in source buffer."
 ;; REPLACES ORIGINAL in `replace.el' (Emacs 22):
 ;; Highlights visited linenum in occur buffer.
 ;; Highlights regexp in source buffer.
+;;;###autoload
 (defun occur-mode-display-occurrence ()
   "Display in another window the occurrence the current line describes."
   (interactive)
@@ -982,7 +975,6 @@ Also highlight occur regexp in source buffer."
 
 ;;;Emacs19 ;; REPLACES ORIGINAL in `replace.el':
 ;;;Emacs19 ;; When change markers to numbers (after query loop), ensure they are markers.
-;;;Emacs19 ;;;###autoload
 ;;;Emacs19 (defun perform-replace (from-string replacements query-flag regexp-flag
 ;;;Emacs19                                     delimited-flag &optional repeat-count map)
 ;;;Emacs19   "Subroutine of `query-replace'.  Its complexity handles interactive queries.

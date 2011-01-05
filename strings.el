@@ -4,12 +4,12 @@
 ;; Description: Miscellaneous string functions.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 17:09:08 1996
 ;; Version: 21.0
-;; Last-Updated: Mon Jun 28 08:56:06 2010 (-0700)
+;; Last-Updated: Tue Jan  4 14:18:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 509
+;;     Update #: 512
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/strings.el
 ;; Keywords: internal, strings, text
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -62,8 +62,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/06/28 dadams
 ;;     read-buffer: Don't provide a default if none given, unless interactive.
 ;; 2010/02/22 dadams
@@ -169,7 +171,6 @@ M and N are the numbers."
   `(and ,name (not (string= "" ,name)) ,name))
 
 ;; Stolen from `diary.el' (`diary-ordinal-suffix').
-;;;###autoload
 (defun ordinal-suffix (n)
   "Ordinal suffix for N.  That is, `st', `nd', `rd', or `th', as appropriate."
   (if (or (memq (% n 100) '(11 12 13)) (< 3 (% n 10)))
@@ -177,7 +178,6 @@ M and N are the numbers."
     (aref ["th" "st" "nd" "rd"] (% n 10))))
 
 ;; Stolen from `wimpy-del.el'.
-;;;###autoload
 (defun pick-some-words (pos direction limit)
   "Get string from buffer of at most LIMIT chars, with one end at position POS.
 Tries to fit as many words into the string as possible.  If it cannot fit even
@@ -203,7 +203,6 @@ for backward."
         (buffer-substring pos (point))))))
 
 ;; Stolen from `wimpy-del.el'
-;;;###autoload
 (defun region-description (width &optional prefix suffix begin end)
   "Return a string containing a one-line description of the region.
 WIDTH arg is max length of string (must be at least 20 chars).
@@ -233,7 +232,6 @@ Optional args BEGIN and END delimit the region to use."
                    end-words suffix chars-string)))))
 
 ;; From `header2.el'.
-;;;###autoload
 (defun current-d-m-y-string ()
   "Return string of current day, month, and year, in form \"dd-mon-year\"."
   (let ((str (current-time-string)))
@@ -243,7 +241,6 @@ Optional args BEGIN and END delimit the region to use."
             "-" (substring str 4 7) "-" (substring str 20 24))))
 
 ;; Adapted from file `intes.el.2'.
-;;;###autoload
 (defun current-line-string (&optional buffer)
   "Return current line of text in BUFFER as a string."
   (setq buffer (or buffer (current-buffer)))
@@ -282,7 +279,6 @@ Interactively:
       (keep-lines string))
     (set-buffer-modified-p nil)))
 
-;;;###autoload
 (defun word-before-point ()
   "Return the word at (or before) the cursor, as a string.
 \"Word\" is as defined by `forward-word'.
@@ -303,7 +299,6 @@ Note that these last two functions return symbols, not strings."
       (forward-word 1)
       (buffer-substring beg (point)))))
 
-;;;###autoload
 (defun symbol-name-before-point ()
   "Return the name of the symbol at (or before) the cursor, as a string.
 If no symbol is found, returns the empty string, \"\".
@@ -329,7 +324,6 @@ Note that these last two functions return symbols, not strings."
               (point))))))
 
 ;; Stolen from `sql-mode.el'.
-;;;###autoload
 (defun echo-in-buffer (buffer-name string &optional force-display-p)
   "Display string STRING in buffer BUFFER-NAME, creating buffer if needed.
 FORCE-DISPLAY-P non-nil means buffer is displayed."
@@ -342,17 +336,14 @@ FORCE-DISPLAY-P non-nil means buffer is displayed."
     (when force-display-p
       (set-window-point (get-buffer-window buffer-name) (point-max)))))
 
-;;;###autoload
 (defvar minibuffer-empty-p t "Non-nil iff minibuffer is empty (not guaranteed).
 This flag is not guaranteed to represent the state of the minibuffer,
 but only the memorized state.  Use the function of the same name to be sure.")
 
-;;;###autoload
 (defun set-minibuffer-empty-p (flag)
   "Set value of variable `set-minibuffer-empty-p' to FLAG."
   (setq minibuffer-empty-p flag))
 
-;;;###autoload
 (defun minibuffer-empty-p ()
   "Return non-nil iff minibuffer is empty.
 Sets variable `minibuffer-empty-p' to returned value."
@@ -388,7 +379,6 @@ alternative, see `erase-nonempty-inactive-minibuffer'."
           (set-minibuffer-empty-p t)))
       (message nil))))                  ; Clear any messages to show minibuf.
 
-;;;###autoload
 (defun string-w-face (arg)
   "Convert ARG (of form (FACE OBJECT)) to a string with face FACE.
 If ARG is already a string, any text (face) properties are preserved.
@@ -474,7 +464,6 @@ NOTE: For versions of Emacs that do not have faces, a list of
 ;; 3. Emacs 23 compatible: handles `read-buffer-function'
 ;;    and `read-buffer-completion-ignore-case'.
 ;;
-;;;###autoload
 (defun read-buffer (prompt &optional default require-match)
   "Read the name of a buffer and return it as a string.
 Prompts with first arg, PROMPT (a string).
@@ -499,7 +488,6 @@ Non-nil REQUIRE-MATCH means to allow only names of existing buffers."
        prompt (mapcar (lambda (b) (list (buffer-name b))) (buffer-list))
        nil require-match nil 'minibuffer-history default t))))
 
-;;;###autoload
 (defun buffer-alist (&optional nospacep)
   "Alist of (BUF-NAME . BUF) items, where BUF-NAME (a string) names BUF,
 which is in (buffer-list).  Non-nil NOSPACEP means do not include
@@ -511,7 +499,6 @@ buffers whose names start with SPACE."
             (buffer-list))
     (reverse bn-alist)))
 
-;;;###autoload
 ;; Same as Emacs 22 standard definition, except:
 ;;  1. Allow for `replace-regexp-in-string' not being defined.
 ;;  2. Allow for error reading input.
@@ -549,7 +536,6 @@ DEFAULT is returned if the user hits `RET' without typing anything."
 ;; Uses `symbol-nearest-point' and `completing-read' to get default.
 ;;      `symbol-nearest-point' is defined in `thingatpt+.el'.
 ;;      `symbol-at-point' is defined in `thingatpt.el'.
-;;;###autoload
 (defun read-variable (prompt &optional default-value)
   "Read name of a user variable (an option) and return it as a symbol.
 Prompt with string PROMPT.  By default, return DEFAULT-VALUE if
@@ -568,7 +554,6 @@ A user variable is one for which `user-variable-p' returns non-nil."
                                                     (symbol-name symb)))
                              t))))
 
-;;;###autoload
 (defun read-any-variable (prompt &optional default-value)
   "Read name of a variable and return it as a symbol.
 Unlike `read-variable', which reads only user options, this reads the
@@ -590,7 +575,6 @@ is a variable, then return that by default."
                              t))))
 
 ;;; See also `make-frame-names-alist', defined in `frame.el'.
-;;;###autoload
 (defun frame-alist ()
   "Alist of (FR-NAME . FR) items.  FR-NAME names FR in `frame-list'.
 FR-NAME is a string.  The alist is sorted by ASCII code in reverse

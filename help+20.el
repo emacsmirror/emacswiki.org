@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help.el' for Emacs 20.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar 16 14:18:11 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:14:56 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:01:46 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2094
+;;     Update #: 2098
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help+20.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive function and define-key.
 ;; 2009/08/30 dadams
 ;;     describe-keymap: Don't print nil if the map has no doc.
 ;; 2008/08/19 dadams
@@ -246,45 +248,26 @@
 
 (defvar help-origin-buffer nil "Buffer that we left, to go to *Help*.")
 
-;;;###autoload
 (define-key help-map "c" 'describe-command)
-;;;###autoload
 (define-key help-map "o" 'describe-option)
-;;;###autoload
 (define-key help-map "u" 'manual-entry) ; in `man.el'
-;;;###autoload
 (define-key help-map "\C-a" 'apropos)
-;;;###autoload
 (define-key help-map "\C-c" 'describe-key-briefly)
-;;;###autoload
 (define-key help-map "\C-l" 'locate-library)
-;;;###autoload
 (define-key help-map [?\C-m] 'help-on-click/key) ; RET
-;;;###autoload
 (define-key help-map [?\C-n] 'view-emacs-lisp-news)
-;;;###autoload
 (define-key help-map "\C-o" 'describe-option-of-type)
-;;;###autoload
 (define-key help-map "\C-s" 'save-*Help*-buffer)
-;;;###autoload
 (define-key help-map "\M-a" 'apropos-documentation)
-;;;###autoload
 (define-key help-map "\M-c" 'describe-copying)
-;;;###autoload
 (define-key help-map "\M-f" 'describe-file)
-;;;###autoload
 (define-key help-map "\M-k" 'describe-keymap)
-;;;###autoload
 (define-key help-map "\M-o" 'pop-to-help-toggle)
-;;;###autoload
 (define-key help-map "\M-\C-a" 'tags-apropos)
-;;;###autoload
 (define-key help-map [down-mouse-1] 'mouse-help-on-click)
-;;;###autoload
 (define-key help-map [mode-line down-mouse-1] 'mouse-help-on-mode-line-click)
 
 ;; `help-mode' too needs a quit key.
-;;;###autoload
 (define-key help-mode-map "q" 'View-quit)
 
 
@@ -1087,7 +1070,6 @@ and the file name is displayed in the echo area."
         (message "Saved contents of *Help* buffer to buffer %s."
                  saved-help)))))
 
-;;;###autoload
 (defun help-on-click/key-lookup (key &optional pp-key where)
   "Look up information on KEY via `describe-key' and `info'.
 Optional args PP-KEY and WHERE are strings naming KEY and its type.

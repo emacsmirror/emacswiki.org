@@ -4,12 +4,12 @@
 ;; Description: Enhancements of standard library `files.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 11 14:24:13 1995
 ;; Version: 21.0
-;; Last-Updated: Wed Sep 29 09:26:32 2010 (-0700)
+;; Last-Updated: Tue Jan  4 09:20:29 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 556
+;;     Update #: 563
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/files+.el
 ;; Keywords: internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -54,6 +54,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defmacro and commands.
 ;; 2010/09/29 dadams
 ;;     insert-directory: Updated per Emacs 24: Add -d switch if not full-directory-p.
 ;; 2009/10/23 dadams
@@ -191,6 +193,7 @@ regardless of the language.")
 
 
 ;; Copied here from `files.el', for use by `find-file-read-args'.
+;;;###autoload
 (defmacro minibuffer-with-setup-hook (fun &rest body)
   "Add FUN to `minibuffer-setup-hook' while executing BODY.
 BODY should use the minibuffer at most once.
@@ -234,6 +237,7 @@ Recursive uses of the minibuffer will not be affected."
 ;; Use `read-buffer' (not "B...") in the interactive spec.
 ;; Raise frame of selected window. This has an effect for non-nil `pop-up-frames'.
 ;;
+;;;###autoload
 (defun switch-to-buffer-other-window (buffer &optional norecord)
   "Select buffer BUFFER in another window.
 If BUFFER does not identify an existing buffer, then this function
@@ -268,6 +272,7 @@ documentation for additional customization information."
 ;; Use `read-buffer' (not "B...") in the interactive spec.
 ;; Return the buffer switched to.
 ;;
+;;;###autoload
 (defun switch-to-buffer-other-frame (buffer &optional norecord)
   "Switch to buffer BUFFER in another frame.
 Optional second arg NORECORD non-nil means
@@ -294,6 +299,7 @@ documentation for additional customization information."
 ;; Rewrote, using `switch-to-buffer-other-frame' and `select-frame-set-input-focus'.
 ;; Return the window displaying the buffer.
 ;;
+;;;###autoload
 (defun display-buffer-other-frame (buffer)
   "Show BUFFER in another frame, but don't select it.
 See documentation of `display-buffer' for more information."
@@ -665,6 +671,7 @@ and `..'."
 \[RET, mouse-2: more info]")))
           (set-buffer-modified-p nil))))))
 
+;;;###autoload
 (defun dired-describe-listed-directory ()
   "In Dired, describe the current listed directory."
   (interactive)
@@ -677,6 +684,7 @@ and `..'."
     
     (describe-file dirname)))
 
+;;;###autoload
 (defun dired-mouse-describe-listed-directory (event)
   "Describe the current listed directory."
   (interactive "e")
@@ -685,11 +693,13 @@ and `..'."
     (goto-char (posn-point (event-end event)))
     (dired-describe-listed-directory)))
 
+;;;###autoload
 (defun dired-describe-file ()
   "In Dired, describe this file or directory."
   (interactive)
   (describe-file (dired-get-filename nil t)))
 
+;;;###autoload
 (defun dired-mouse-describe-file (event)
   "Describe the clicked file."
   (interactive "e")
@@ -701,6 +711,7 @@ and `..'."
     (describe-file file)))
 
 ;; This is the same definition as in `help-fns+.el' and `help+20.el'.
+;;;###autoload
 (defun describe-file (filename)
   "Describe the file named FILENAME.
 If FILENAME is nil, describe the current directory."

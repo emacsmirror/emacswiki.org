@@ -6,10 +6,7 @@ for your use.  For questions about color-theme, see
 
 In order not to clean up this page, please visit ColorTheme webpage
 at http://www.nongnu.org/color-theme for instructions on getting
-started.  Note that the instructions are wrong, do not add the following line to your .emacs
-
-<code> (color-theme-initialize) </code>
-
+started.
 
 (Note that byte compiling this on non-Windows may fail.  Convert the
 line endings from CRLF to LF. skip@pobox.com 2004-03-12)

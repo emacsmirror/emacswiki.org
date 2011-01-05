@@ -4,12 +4,12 @@
 ;; Description: Some key bindings.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 12:34:20 1999
 ;; Version: 21.1
-;; Last-Updated: Thu Apr 22 08:44:43 2010 (-0700)
+;; Last-Updated: Tue Jan  4 13:59:48 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 993
+;;     Update #: 994
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-keys.el
 ;; Keywords: mouse, keyboard, menus, menu-bar
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -65,7 +65,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/04/22 dadams
 ;;     Bound C-M-y to isearch-yank-secondary in isearch-mode-map.

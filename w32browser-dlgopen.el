@@ -4,12 +4,12 @@
 ;; Description:  Use w32browser with standard Windows Open File box.
 ;; Author: Binu Jose Philip, Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 21.0
-;; Last-Updated: Tue Jan 12 16:59:29 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:59:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 176
+;;     Update #: 178
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/w32browser-dlgopen.el
 ;; Keywords: files, extensions, convenience, dialog
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -45,7 +45,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/01/12 dadams
 ;;     dlgopen-open-files: set-buffer -> with-current-buffer.
@@ -83,11 +83,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
-;;;###autoload
 (defvar dlgopen-executable-path "getfile.exe"
   "*Executable path for open dialog.")
 
-;;;###autoload
 (defvar dlgopen-other-window t
   "*Non-nil => display chosen file(s) in separate windows.
 Nil => display a single chosen file in the current window;

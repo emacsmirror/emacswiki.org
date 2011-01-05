@@ -4,12 +4,12 @@
 ;; Description: Display Control-l characters in a buffer in a pretty way
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Feb 08 20:28:09 2007
 ;; Version: 1.0
-;; Last-Updated: Wed Apr 28 14:32:49 2010 (-0700)
+;; Last-Updated: Tue Jan  4 13:15:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 196
+;;     Update #: 201
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pp-c-l.el
 ;; Keywords: display, convenience, faces
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -58,8 +58,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoloads: non def* sexps & non-interactive fns.  Added for defalias.
 ;; 2010/04/28 dadams
 ;;     Added autoload cookie for pp^L-^L-display-table-entry.  Thx to Peter Galbraith.
 ;; 2010/04/08 dadams
@@ -171,7 +173,6 @@ This text is not highlighted."
 This text is not highlighted."
   :type 'string :group 'convenience :group 'wp)
 
-;;;###autoload
 (unless (fboundp 'define-minor-mode)    ; Emacs 20.
   (defcustom pretty-control-l-mode nil
     "*Toggle pretty display of Control-l (`^L') characters.
@@ -181,7 +182,6 @@ use either \\[customize] or command `pretty-control-l-mode'."
     :initialize 'custom-initialize-default
     :type 'boolean :group 'Pretty-Control-L))
 
-;;;###autoload
 (defun pp^L-^L-display-table-entry (window)
   "Returns the display-table entry for Control-l (`^L') char in WINDOW.
 A vector determining how a Control-l character is displayed in WINDOW.
@@ -197,8 +197,8 @@ and `pp^L-^L-string-post'."
                      pp^L-^L-string))
            (mapconcat (lambda (c) (list c)) pp^L-^L-string-post "")))
 
-(defalias 'pp^l 'pretty-control-l-mode)
 ;;;###autoload
+(defalias 'pp^l 'pretty-control-l-mode)
 (if (fboundp 'define-minor-mode)
     ;; Emacs 21 and later.
     ;; We eval this so that even if the library is byte-compiled with Emacs 20,

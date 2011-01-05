@@ -6,12 +6,12 @@
 ;;      Sebastian Kremer <sk@thp.uni-koeln.de>,
 ;;      Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Jan 10 14:31:50 1996
 ;; Version: 20.0
-;; Last-Updated: Wed Mar 24 14:29:06 2010 (-0700)
+;; Last-Updated: Tue Jan  4 09:24:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 568
+;;     Update #: 571
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired+.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -75,6 +75,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoloads for defvar, defconst, and non-interactive functions.
 ;; 2010/03/24 dadams
 ;;     find-grep-dired:
 ;;       Added missing DEFAULT arg for read-from-minibuffer.
@@ -157,11 +159,9 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
-;;;###autoload
 (defvar find-dired-hook nil
   "*Hook to be run at the end of each `find-dired' execution.")
 
-;;;###autoload
 (defvar find-dired-default-fn (and (fboundp 'symbol-name-nearest-point)
                                     'symbol-name-nearest-point)
   "*Function of 0 args called to provide default input for \\[find-dired],
@@ -178,7 +178,6 @@ If this is nil, then no default input is provided.")
 ;; Note: `defconst' is necessary here because this is preloaded by basic emacs:
 ;; it is not sufficient to do a defvar before loading `find-dired.el'.  Too bad.
 ;; Otherwise, this could be just a `defvar' in `find-dired-.el'.
-;;;###autoload
 (defconst find-ls-option
   (cond ((eq system-type 'berkeley-unix)
          '("-ls" . "-gilsb"))
@@ -307,7 +306,6 @@ Thus REGEXP can also contain additional grep options."
 
 ;; REPLACES ORIGINAL in `find-dired.el':
 ;; Removes lines that just list a file.
-;;;###autoload
 (defun find-dired-filter (proc string)
   "Filter for \\[find-dired] processes.
 PROC is the process.
@@ -353,7 +351,6 @@ STRING is the string to insert."
 ;; REPLACES ORIGINAL in `find-dired.el':
 ;; 1. Highlights file lines.
 ;; 2. Puts `find' in mode-line.
-;;;###autoload
 (defun find-dired-sentinel (proc state)
   "Sentinel for \\[find-dired] processes.
 PROC is the process.

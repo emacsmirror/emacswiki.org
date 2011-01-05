@@ -4,12 +4,12 @@
 ;; Description: Extensions to `faces.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 15:07:06 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:01:15 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:08:11 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 272
+;;     Update #: 275
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/faces+.el
 ;; Keywords: faces, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -48,6 +48,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non def* sexps and non-interactive functions.
 ;; 2009/11/16 dadams
 ;;     face-(foreground|background)-20+: Use condition-case.  Don't test for face-attribute.
 ;; 2006/06/25 dadams
@@ -113,7 +115,6 @@
 
 ;; REPLACES ORIGINAL in `faces.el': `highlight' face is the default.
 ;;
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun read-face-name (prompt)
     "Read name of a face (default: \"highlight\") and return it as a symbol.
@@ -133,7 +134,6 @@ Prompts with arg PROMPT (a string)."
 ;; `symbol-nearest-point' is defined in `thingatpt+.el'.
 ;; `symbol-at-point' is defined in `thingatpt.el'.
 ;;
-;;;###autoload
 (if (< emacs-major-version 21)
     (defun make-face (name &optional no-resources)
       "Define a new face named NAME, on all frames.  
@@ -198,14 +198,12 @@ as a face, leave it unmodified.  Value is FACE."
         (make-face-x-resource-internal face)))
     face))
 
-;;;###autoload
 (defun face-foreground-20+ (face &optional frame inherit)
   "A version of `face-foreground' that will work with Emacs 20 and later."
   (condition-case nil
       (face-foreground face frame inherit) ; Emacs 22+.
     (error (face-foreground face frame))))
 
-;;;###autoload
 (defun face-background-20+ (face &optional frame inherit)
   "A version of `face-background' that will work with Emacs 20 and later."
   (condition-case nil

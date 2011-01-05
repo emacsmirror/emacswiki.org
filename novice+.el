@@ -4,12 +4,12 @@
 ;; Description: Extensions to `novice.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jul 11 17:10:39 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:31:13 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:46:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 134
+;;     Update #: 136
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/novice+.el
 ;; Keywords: internal, help
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -17,19 +17,19 @@
 ;; Features that might be required by this library:
 ;;
 ;;   `apropos', `apropos+', `apropos-fn+var', `avoid', `cl',
-;;   `color-theme', `cus-edit', `cus-face', `cus-load', `cus-start',
-;;   `custom', `dired', `dired+', `dired-aux', `dired-x', `doremi',
-;;   `easymenu', `ediff-diff', `ediff-help', `ediff-init',
-;;   `ediff-merg', `ediff-mult', `ediff-util', `ediff-wind',
-;;   `el-swank-fuzzy', `ffap', `ffap-', `fit-frame', `frame-cmds',
-;;   `frame-fns', `fuzzy-match', `help+20', `hexrgb', `icicles',
+;;   `cus-edit', `cus-face', `cus-load', `cus-start', `custom',
+;;   `dired', `dired+', `dired-aux', `dired-x', `doremi', `easymenu',
+;;   `ediff-diff', `ediff-help', `ediff-init', `ediff-merg',
+;;   `ediff-mult', `ediff-util', `ediff-wind', `el-swank-fuzzy',
+;;   `ffap', `ffap-', `fit-frame', `frame-cmds', `frame-fns',
+;;   `fuzzy', `fuzzy-match', `help+20', `hexrgb', `icicles',
 ;;   `icicles-cmd1', `icicles-cmd2', `icicles-face', `icicles-fn',
 ;;   `icicles-mac', `icicles-mcmd', `icicles-mode', `icicles-opt',
 ;;   `icicles-var', `info', `info+', `kmacro', `levenshtein',
 ;;   `menu-bar', `menu-bar+', `misc-cmds', `misc-fns', `mkhtml',
-;;   `mkhtml-htmlize', `mwheel', `novice', `novice+', `pp', `pp+',
-;;   `reporter', `ring', `ring+', `second-sel', `sendmail',
-;;   `strings', `thingatpt', `thingatpt+', `unaccent', `w32-browser',
+;;   `mkhtml-htmlize', `mouse3', `mwheel', `novice', `novice+', `pp',
+;;   `pp+', `regexp-opt', `ring', `ring+', `second-sel', `strings',
+;;   `thingatpt', `thingatpt+', `unaccent', `w32-browser',
 ;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -54,7 +54,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/01/12 dadams
 ;;     (enable|disable)-command: save-excursion + set-buffer -> with-current-buffer.

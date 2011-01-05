@@ -4,12 +4,12 @@
 ;; Description: Extensions to `ring.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Apr 11 16:46:04 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:37:07 2010 (-0800)
+;; Last-Updated: Tue Jan  4 13:43:06 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 208
+;;     Update #: 211
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ring+.el
 ;; Keywords: extensions, lisp, emacs-lisp
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -37,8 +37,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies (non-interactive commands).
 ;; 2004/09/26 dadams
 ;;     Renamed convert-sequence-to-ring to ring-convert-sequence-to-ring
 ;; 2004/09/08 dadams
@@ -72,7 +74,6 @@
 ;;;;;;;;;;;;;;;;;
 
 
-;;;###autoload
 (defun ring-member (ring item)
   "Return index of ITEM if on RING, else nil.  Comparison via `equal'.
 The index is 0-based."
@@ -84,7 +85,6 @@ The index is 0-based."
       (setq ind (1+ ind)))
     (and memberp ind)))
 
-;;;###autoload
 (defun ring-next (ring item)
   "Return the next item in the RING, after ITEM.
 Raise error if ITEM is not in the RING."
@@ -92,7 +92,6 @@ Raise error if ITEM is not in the RING."
     (unless curr-index (error "Item is not in the ring: `%s'" item))
     (ring-ref ring (ring-plus1 curr-index (ring-length ring)))))
 
-;;;###autoload
 (defun ring-previous (ring item)
   "Return the previous item in the RING, before ITEM.
 Raise error if ITEM is not in the RING."
@@ -101,7 +100,6 @@ Raise error if ITEM is not in the RING."
     (ring-ref ring (ring-minus1 curr-index (ring-length ring)))))
 
 
-;;;###autoload
 (defun ring-insert+extend (ring item &optional grow-p)
   "Like ring-insert, but if GROW-P is non-nil, then enlarge ring.
 Insert onto ring RING the item ITEM, as the newest (last) item.
@@ -123,7 +121,6 @@ If the ring is full, behavior depends on GROW-P:
           (setcar ring (ring-plus1 hd veclen))
         (setcar (cdr ring) (1+ ringlen))))))
 
-;;;###autoload
 (defun ring-remove+insert+extend (ring item &optional grow-p)
   "`ring-remove' ITEM from RING, then `ring-insert+extend' it.
 This ensures that there is only one ITEM on RING.
@@ -135,7 +132,6 @@ If the RING is full, behavior depends on GROW-P:
     (while (setq ind (ring-member ring item)) (ring-remove ring ind)))
   (ring-insert+extend ring item grow-p))
 
-;;;###autoload
 (defun ring-convert-sequence-to-ring (seq)
   "Convert sequence SEQ to a ring.  Return the ring.
 If SEQ is already a ring, return it."

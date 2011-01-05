@@ -6,12 +6,12 @@
 ;;         See http://www.emacswiki.org/emacs/PrettyLambda for the original
 ;;         code snippet and its history.
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2009-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jun 14 11:07:04 2009 (-0700)
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:35:51 2010 (-0800)
+;; Last-Updated: Tue Jan  4 13:18:23 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 137
+;;     Update #: 141
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/pretty-lambdada.el
 ;; Keywords: convenience display
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -67,8 +67,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies (for defgroup, defcustom, and commands).
 ;; 2009/06/14 dadams
 ;;     Added: group pretty-lambda, (global-)pretty-lambda-mode,
 ;;            pretty-lambda-for-modes, pretty-lambda-auto-modes,
@@ -101,15 +103,18 @@
 ;;
 ;;; Code:
 
+;;;###autoload
 (defgroup pretty-lambda nil
   "Display of the word `lambda' as the Greek character."
     :group 'convenience :group 'programming)
 
+;;;###autoload
 (defcustom pretty-lambda-auto-modes
   '(lisp-mode emacs-lisp-mode lisp-interaction-mode scheme-mode)
   "*Modes affected by `pretty-lambda-for-modes'."
   :type '(repeat symbol) :group 'pretty-lambda)
 
+;;;###autoload
 (defun pretty-lambda-for-modes (&optional turn-off)
   "Use `pretty-lambda-mode' for modes in `pretty-lambda-auto-modes'.
 `C-u' to turn off."
@@ -130,6 +135,7 @@
            (when (memq major-mode pretty-lambda-auto-modes)
              (turn-on-pretty-lambda-mode)))))) ; Current buffer
 
+;;;###autoload
 (define-minor-mode pretty-lambda-mode
     "Buffer-local minor mode to display the word `lambda' as the Greek letter.
 With ARG, turn mode on if ARG is positive, off otherwise."
@@ -148,6 +154,7 @@ With ARG, turn mode on if ARG is positive, off otherwise."
            (while (re-search-forward "\\<lambda\\>" nil t)
              (decompose-region (match-beginning 0) (match-end 0)))))))
 
+;;;###autoload
 (define-globalized-minor-mode global-pretty-lambda-mode
     pretty-lambda-mode turn-on-pretty-lambda-mode
     "Global minor mode to display the word `lambda' as the Greek letter.

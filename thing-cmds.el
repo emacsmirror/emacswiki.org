@@ -4,12 +4,12 @@
 ;; Description: Commands that use things, as defined by `thingatpt.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Jul 30 16:40:29 2006
 ;; Version: 20.1
-;; Last-Updated: Fri Dec 17 11:11:24 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:32:38 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 139
+;;     Update #: 148
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/thing-cmds.el
 ;; Keywords: thingatpt, thing, region, selection
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -58,8 +58,11 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; 
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom and commands.
+;;     Added groups for defcustom.
 ;; 2010/12/17 dadams
 ;;     Added: mark-enclosing-sexp(-forward|-backward).
 ;; 2008/11/29 dadams
@@ -99,6 +102,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defun thing-region (thing)
   "Set the region around a THING near the cursor.
 You are prompted for the type of thing.  Completion is available for
@@ -124,7 +128,9 @@ the original location by using `C-u C-SPC' twice."
            (setq deactivate-mark  nil)
            nil))))                      ; Return nil: no thing found.
 
+;;;###autoload
 (defalias 'select-thing-near-point 'cycle-thing-region)
+;;;###autoload
 (defun cycle-thing-region ()
   "Select a thing near point.  Successive uses select different things.
 The default thing type is the first element of option `thing-types'. 
@@ -145,6 +151,7 @@ successive things of the same type, but to do that you must first use
     (when (>= thing-region-index (length thing-types))
       (setq thing-region-index  0))))
 
+;;;###autoload
 (defcustom thing-types '("word" "symbol" "sexp" "list" "line" "sentence"
                          "paragraph" "page" "defun" "number" "form")
   "List of thing types.  Used for completion and `cycle-thing-region'.
@@ -155,7 +162,7 @@ Examples include \"word\", \"sentence\", and \"defun\".
 
 The first element is the default thing type used by `mark-thing' and
 `cycle-thing-region'."
-  :type '(repeat string))
+  :type '(repeat string) :group 'lisp :group 'editing)
 
 (defvar thing-region-index 0 "Index of current thing in `thing-types'.")
 
@@ -164,6 +171,7 @@ The first element is the default thing type used by `mark-thing' and
 (defvar cycle-thing-region-point nil
   "Position of point before `cycle-thing-region'.")
 
+;;;###autoload
 (defun mark-thing (thing &optional arg allow-extend)
   "Set point at one end of THING and set mark ARG THINGs from point.
 THING is a symbol that names a type of thing.  Interactively, the
@@ -221,6 +229,7 @@ to select more THINGS of the last kind selected."
       (forward-thing mark-thing-type (if (< (mark) (point)) 1 -1))))
   (setq deactivate-mark  nil))
 
+;;;###autoload
 (defun mark-enclosing-sexp (&optional arg allow-extend) ; `C-M-U'
   "Select a sexp surrounding the current cursor position.
 If the mark is active (e.g. when the command is repeated), widen the
@@ -254,6 +263,7 @@ This command does not work if point is in a string or a comment."
          (push-mark (save-excursion (up-list (- arg)) (point)) nil t)
          (up-list arg))))
 
+;;;###autoload
 (defun mark-enclosing-sexp-forward (&optional arg) ; `C-M-F' or maybe `C-M-)'
   "`mark-enclosing-sexp' leaving point at region end."
   (interactive "P")
@@ -262,6 +272,7 @@ This command does not work if point is in a string or a comment."
       (mark-enclosing-sexp nil (prefix-numeric-value arg))
     (mark-enclosing-sexp (prefix-numeric-value arg) t)))
 
+;;;###autoload
 (defun mark-enclosing-sexp-backward (&optional arg) ; `C-M-B' or maybe `C-M-('
   "`mark-enclosing-sexp' leaving point at region start."
   (interactive "P")

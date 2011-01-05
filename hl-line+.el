@@ -4,12 +4,12 @@
 ;; Description: Extensions to hl-line.el.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2006-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2006-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Oct  3 22:21:32 2010 (-0700)
+;; Last-Updated: Tue Jan  4 10:25:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 424
+;;     Update #: 432
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-line+.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -100,6 +100,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom, defface and commands.
 ;; 2010/10/03 dadams
 ;;     hl-line-flash:
 ;;       Set ARG in interactive spec and use it.  Thx to Philip Weaver.
@@ -158,15 +160,18 @@
 
 ;; This will be ignored, since this is now defined by default in Emacs 22.
 ;; I include it here as a different face definition that you might want to try.
+;;;###autoload
 (defface hl-line '((t (:background "SlateGray3"))) ; Try also (:underline "Yellow")
   "Face to use for `hl-line-face'." :group 'hl-line)
 (setq hl-line-face 'hl-line)
 
+;;;###autoload
 (defcustom hl-line-flash-show-period 1
   "Number of seconds for `hl-line-flash' to highlight the line."
   :type 'integer :group 'cursor :group 'hl-line)
 
 ;; Possible value: `(Info-mode help-mode view-mode Man-mode)'
+;;;###autoload
 (defcustom hl-line-inhibit-highlighting-for-modes ()
   "Modes where highlighting is inhibited for `hl-line-highlight-now'.
 A list of `major-mode' values (symbols)."
@@ -190,7 +195,9 @@ Do NOT change this yourself to change the wait period; instead, use
   "Non-nil means to turn on `global-hl-line-mode' whenever Emacs is idle.
 Do NOT change this yourself; instead, use `\\[toggle-hl-line-when-idle]'.")
 
+;;;###autoload
 (defalias 'toggle-hl-line-when-idle 'hl-line-toggle-when-idle)
+;;;###autoload
 (defun hl-line-toggle-when-idle (&optional arg)
   "Turn on or off using `global-hl-line-mode' when Emacs is idle.
 When on, use `global-hl-line-mode' whenever Emacs is idle.
@@ -205,6 +212,7 @@ With prefix argument, turn on if ARG > 0; else turn off."
          (cancel-timer hl-line-idle-timer)
          (message "Turned OFF using `global-hl-line-mode' when Emacs is idle."))))
 
+;;;###autoload
 (defun hl-line-when-idle-interval (secs)
   "Set wait until using `global-hl-line-mode' when Emacs is idle.
 Whenever Emacs is idle for this many seconds, `global-hl-line-mode'
@@ -229,7 +237,9 @@ use `\\[toggle-hl-line-when-idle]."
   (global-hl-line-unhighlight)
   (remove-hook 'pre-command-hook 'hl-line-unhighlight-now))
 
+;;;###autoload
 (defalias 'flash-line-highlight 'hl-line-flash)
+;;;###autoload
 (defun hl-line-flash (&optional arg)
   "Highlight the current line for `hl-line-flash-show-period' seconds.
 With a prefix argument, highlight for that many seconds."

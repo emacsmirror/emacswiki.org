@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `simple.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 10:56:45 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:44:41 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:08:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 397
+;;     Update #: 404
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/simple+.el
 ;; Keywords: internal, lisp, extensions, abbrev
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -61,8 +61,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookie for command set-any-variable.
 ;; 2009-02-22 dadams
 ;;     Added: next-error(-highlight(-no-select)).
 ;; 2006/09/15 dadams
@@ -330,6 +332,7 @@ With a prefix argument, set VARIABLE to VALUE buffer-locally."
   ;; has an effect on the display, like `tab-width' has.
   (force-mode-line-update))
 
+;;;###autoload
 (defun set-any-variable (variable value &optional make-local)
   "Set VARIABLE to VALUE.  VALUE is a Lisp object.
 VARIABLE can be any Lisp variable, unlike `set-variable', where it

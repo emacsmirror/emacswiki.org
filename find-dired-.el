@@ -4,12 +4,12 @@
 ;; Description: Extensions to `find-dired.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 18 10:17:13 2000
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:05:04 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:27:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 30
+;;     Update #: 34
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/find-dired-.el
 ;; Keywords: internal, unix, tools, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -36,7 +36,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
+;;
+;; 2011/01/04 dadams
+;;     Removed autoload for defvar.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -63,7 +66,6 @@
 
 ;; REPLACES ORIGINAL in `find-dired.el':
 ;; Doc string added.
-;;;###autoload
 (defvar find-args-history ()
   "Minibuffer input history of args for `find-dired'.")
 

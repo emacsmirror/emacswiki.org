@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Sun Jan  2 12:18:09 2011 (-0800)
+;; Last-Updated: Tue Jan  4 08:17:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2964
+;;     Update #: 2979
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -218,6 +218,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     defsubst -> defun everywhere.
+;;     Removed autoload cookies from non def* sexps, defvar, and non-interactive functions.
+;;     Added some missing autoload cookies for defcustom and commands.
 ;; 2011/01/02 dadams
 ;;     Added: diredp-this-file-(un)marked-p, diredp-toggle-marks-in-region.
 ;;     diredp-(un)mark-region-files, diredp-flag-region-files-for-deletion:
@@ -491,11 +495,13 @@
 (when (fboundp 'dired-toggle-marks) (defalias 'dired-do-toggle 'dired-toggle-marks))
 
 ;;; This is duplicated in `diff.el' and `vc.el'.
+;;;###autoload
 (defcustom diff-switches "-c"
   "*A string or list of strings specifying switches to be passed to diff."
   :type '(choice string (repeat string))
   :group 'dired :group 'diff)
 
+;;;###autoload
 (defcustom diredp-w32-local-drives '(("C:" "Local disk"))
   "Local MS Windows drives that you want to use for `diredp-w32-drives'.
 Each entry is a list (DRIVE DESCRIPTION), where DRIVE is the drive
@@ -710,7 +716,6 @@ SHOW-PROGRESS if non-nil means redisplay dired after each file."
                     (downcase string) count total (dired-plural-s total))
             failures)))))
 
-;;;###autoload
 (when (boundp 'dired-subdir-switches)   ; Emacs 22+
   (defun dired-do-redisplay (&optional arg test-for-subdir)
     "Redisplay all marked (or next ARG) files.
@@ -745,7 +750,6 @@ See Info node `(emacs)Subdir switches' for more details."
       (dired-move-to-filename)
       (message "Redisplaying...done"))))
 
-;;;###autoload
 (unless (boundp 'dired-subdir-switches) ; Emacs 20, 21
   (defun dired-do-redisplay (&optional arg test-for-subdir)
     "Redisplay all marked (or next ARG) files.
@@ -862,7 +866,6 @@ If HDR is non-nil, insert a header line with the directory name."
 
 ;;; Stuff from `image-dired.el'.
 
-;;;###autoload
 (when (fboundp 'image-dired-get-thumbnail-image) ; Emacs 22+
   (defun image-dired-dired-insert-marked-thumbs ()
     "Insert thumbnails before file names of marked files in the dired buffer."
@@ -903,7 +906,6 @@ If HDR is non-nil, insert a header line with the directory name."
 ;;
 ;; REPLACE ORIGINAL "Immediate" menu in `dired.el'.
 ;;
-;;;###autoload
 (defvar diredp-menu-bar-immediate-menu (make-sparse-keymap "Single"))
 (define-key dired-mode-map [menu-bar immediate]
   (cons "Single" diredp-menu-bar-immediate-menu))
@@ -1016,7 +1018,6 @@ If HDR is non-nil, insert a header line with the directory name."
 ;;
 ;; REPLACE ORIGINAL "Operate" menu in `dired.el'.
 ;;
-;;;###autoload
 (defvar diredp-menu-bar-operate-menu (make-sparse-keymap "Multiple"))
 (define-key dired-mode-map [menu-bar operate]
   (cons "Multiple" diredp-menu-bar-operate-menu))
@@ -1167,7 +1168,6 @@ If HDR is non-nil, insert a header line with the directory name."
 ;;
 ;; REPLACE ORIGINAL "Regexp" menu in `dired.el'.
 ;;
-;;;###autoload
 (defvar diredp-menu-bar-regexp-menu (make-sparse-keymap "Regexp"))
 (define-key dired-mode-map [menu-bar regexp]
   (cons "Regexp" diredp-menu-bar-regexp-menu))
@@ -1207,7 +1207,6 @@ If HDR is non-nil, insert a header line with the directory name."
 ;;
 ;; REPLACE ORIGINAL "Mark" menu in `dired.el'.
 ;;
-;;;###autoload
 (defvar diredp-menu-bar-mark-menu (make-sparse-keymap "Mark"))
 (define-key dired-mode-map [menu-bar mark] (cons "Mark" diredp-menu-bar-mark-menu))
 
@@ -1296,7 +1295,6 @@ If HDR is non-nil, insert a header line with the directory name."
 ;;
 ;; REPLACE ORIGINAL "Subdir" menu in `dired.el'.
 ;;
-;;;###autoload
 (defvar diredp-menu-bar-subdir-menu (make-sparse-keymap "Dir"))
 (define-key dired-mode-map [menu-bar subdir]
   (cons "Dir" diredp-menu-bar-subdir-menu))
@@ -2146,7 +2144,6 @@ As a side effect, killed dired buffers for DIR are removed from
 ;; These are provided here in case you want to bind them directly - for example, in case your
 ;; code does not use `find-file-read-args'.
 ;;
-;;;###autoload
 (when (fboundp 'dired-get-file-for-visit) ; Defined in Emacs 22.
   (defun diredp-find-a-file (filename &optional wildcards)
     "`find-file', but use file on current line as default (`M-n')."
@@ -2171,7 +2168,6 @@ As a side effect, killed dired buffers for DIR are removed from
           t)))
 
 ;; Define these for Emacs 20 and 21.
-;;;###autoload
 (unless (fboundp 'dired-get-file-for-visit) ; Defined in Emacs 22.
   (defun dired-get-file-for-visit ()
     "Get the current line's file name, with an error if file does not exist."
@@ -2221,6 +2217,8 @@ Unlike `dired-find-alternate-file' this does not use
       (find-file (file-name-sans-versions file t)))))
 
 ;;;###autoload
+(defalias 'diredp-toggle-find-file-reuse-dir 'toggle-dired-find-file-reuse-dir)
+;;;###autoload
 (defun toggle-dired-find-file-reuse-dir (force-p)
   "Toggle whether Dired `find-file' commands reuse directories.
 A prefix arg specifies directly whether or not to reuse.
@@ -2238,9 +2236,6 @@ your ~/.emacs, where VALUE is 1 to reuse or -1 to not reuse:
     (if (where-is-internal 'dired-find-file dired-mode-map 'ascii)
         (diredp-make-find-file-keys-reuse-dirs)
       (diredp-make-find-file-keys-not-reuse-dirs))))
-
-;;;###autoload
-(defalias 'diredp-toggle-find-file-reuse-dir 'toggle-dired-find-file-reuse-dir)
 
 (defun diredp-make-find-file-keys-reuse-dirs ()
   "Make find-file keys reuse Dired buffers."
@@ -2309,7 +2304,7 @@ given to `ediff'; the file at the cursor is the first."
   (ediff-files (dired-get-filename) file2)) ; In `ediff.el'.
 
 
-(defsubst diredp-fewer-than-2-files-p (arg)
+(defun diredp-fewer-than-2-files-p (arg)
   "Return non-nil iff fewer than two files are to be treated by dired.
 More precisely, return non-nil iff ARG is nil and fewer than two
 files are marked, or ARG is -1, 0 or 1."
@@ -2374,7 +2369,6 @@ A prefix argument ARG specifies files to use instead of marked.
   (interactive "P")
   (dired-map-over-marks-check #'dired-load arg 'load (diredp-fewer-than-2-files-p arg)))
 
-;;;###autoload
 (when (< emacs-major-version 22)
   (defun diredp-do-grep (command-args)
     "Run `grep' on marked (or next prefix arg) files.
@@ -2385,7 +2379,6 @@ files in the Dired buffer."
                         (list (diredp-do-grep-1))))
     (grep command-args)))
 
-;;;###autoload
 (unless (< emacs-major-version 22)
   (defun diredp-do-grep (command-args)
     "Run `grep' on marked (or next prefix arg) files.
@@ -2753,7 +2746,6 @@ the variable `window-min-height'."
 ;;
 ;; Reset `mode-line-process' to nil.
 ;;
-;;;###autoload
 (when (< emacs-major-version 21)
   (or (fboundp 'old-dired-revert) (fset 'old-dired-revert (symbol-function 'dired-revert)))
   (defun dired-revert (&optional arg noconfirm)
@@ -2766,7 +2758,6 @@ the variable `window-min-height'."
 ;; 1. Put `mouse-face' on whole line, not just file name.
 ;; 2. Add text property `dired-filename' to the file name (only).
 ;;
-;;;###autoload
 (defun dired-insert-set-properties (beg end)
   "Highlight entire dired line upon mouseover.
 Add text property `dired-filename' to the file name."
@@ -2792,6 +2783,7 @@ Add text property `dired-filename' to the file name."
 ;;
 ;; If at root on a Windows drive, go up to a list of available drives.
 ;;
+;;;###autoload
 (defun dired-up-directory (&optional other-window)
   "Run Dired on parent directory of current directory.
 Find the parent directory either in this buffer or another buffer.
@@ -3017,38 +3009,59 @@ rest lower case."
 
 
 ;;; Versions of `dired-do-*' commands for just this line's file.
-(defsubst diredp-delete-this-file ()
+;;;###autoload
+(defun diredp-delete-this-file ()
   "In dired, delete the file on the cursor line, upon confirmation."
   (interactive) (dired-do-delete 1))
-(defsubst diredp-capitalize-this-file ()
+
+;;;###autoload
+(defun diredp-capitalize-this-file ()
   "In dired, rename the file on the cursor line by capitilizing it.
 This gives the file name a first character in upper case and the rest
 lower case."
   (interactive) (diredp-capitalize 1))
-(defsubst diredp-downcase-this-file ()
+
+;;;###autoload
+(defun diredp-downcase-this-file ()
   "In dired, rename the file on the cursor line to lower case."
   (interactive) (dired-downcase 1))
-(defsubst diredp-upcase-this-file ()
+
+;;;###autoload
+(defun diredp-upcase-this-file ()
   "In dired, rename the file on the cursor line to upper case."
   (interactive) (dired-upcase 1))
-(defsubst diredp-rename-this-file ()
+
+;;;###autoload
+(defun diredp-rename-this-file ()
   "In dired, rename the file on the cursor line."
   (interactive) (dired-do-rename 1))
-(defsubst diredp-copy-this-file ()
+
+;;;###autoload
+(defun diredp-copy-this-file ()
   "In dired, copy the file on the cursor line."
   (interactive) (dired-do-copy 1))
-(defsubst diredp-relsymlink-this-file ()
+
+;;;###autoload
+(defun diredp-relsymlink-this-file ()
   "In dired, make a relative symbolic link to file on cursor line."
   (interactive) (and (fboundp 'dired-do-relsymlink) (dired-do-relsymlink 1)))
-(defsubst diredp-symlink-this-file ()
+
+;;;###autoload
+(defun diredp-symlink-this-file ()
   "In dired, make a symbolic link to the file on the cursor line."
   (interactive) (dired-do-symlink 1))
-(defsubst diredp-hardlink-this-file ()
+
+;;;###autoload
+(defun diredp-hardlink-this-file ()
   "In dired, add a name (hard link) to the file on the cursor line."
   (interactive) (dired-do-hardlink 1))
-(defsubst diredp-print-this-file ()
+
+;;;###autoload
+(defun diredp-print-this-file ()
   "In dired, print the file on the cursor line."
   (interactive) (dired-do-print 1))
+
+;;;###autoload
 (defun diredp-grep-this-file ()
   "In dired, grep the file on the cursor line."
   (interactive)
@@ -3056,28 +3069,42 @@ lower case."
                                 (eq grep-use-null-device t)))
     (grep-compute-defaults))
   (grep (diredp-do-grep-1 (list (dired-get-filename t)))))
-(defsubst diredp-compress-this-file ()
+
+;;;###autoload
+(defun diredp-compress-this-file ()
   "In dired, compress or uncompress the file on the cursor line."
   (interactive) (dired-do-compress 1))
-(defsubst diredp-shell-command-this-file (command)
+
+;;;###autoload
+(defun diredp-shell-command-this-file (command)
   "In dired, run a shell COMMAND on the file on the cursor line."
   (interactive
    (list (dired-read-shell-command (concat "! on " "%s: ") 1
                                    (list (dired-get-filename t)))))
   (dired-do-shell-command command 1))
-(defsubst diredp-byte-compile-this-file ()
+
+;;;###autoload
+(defun diredp-byte-compile-this-file ()
   "In dired, byte compile the (Lisp source) file on the cursor line."
   (interactive) (dired-do-byte-compile 1))
-(defsubst diredp-load-this-file ()
+
+;;;###autoload
+(defun diredp-load-this-file ()
   "In dired, load the file on the cursor line."
   (interactive) (dired-do-load 1))
-(defsubst diredp-chmod-this-file ()
+
+;;;###autoload
+(defun diredp-chmod-this-file ()
   "In dired, change the mode of the file on the cursor line."
   (interactive) (dired-do-chmod 1))
-(defsubst diredp-chgrp-this-file ()
+
+;;;###autoload
+(defun diredp-chgrp-this-file ()
   "In dired, change the group of the file on the cursor line."
   (interactive) (dired-do-chgrp 1))
-(defsubst diredp-chown-this-file ()
+
+;;;###autoload
+(defun diredp-chown-this-file ()
   "In dired, change the owner of the file on the cursor line."
   (interactive) (dired-do-chown 1))
 
@@ -3268,7 +3295,6 @@ With non-nil prefix arg, mark them instead."
 ;;; Mouse 3 menu.
 ;;;;;;;;;;;;;;;;;
 
-;;;###autoload
 (defvar diredp-file-line-overlay nil)
 
 ;;;###autoload
@@ -3378,7 +3404,6 @@ With non-nil prefix arg, mark them instead."
 ;;
 ;; Allow `.' and `..', by using non-nil second arg to `dired-get-filename'.
 ;;
-;;;###autoload
 (when (< emacs-major-version 21)
   (defun dired-find-file ()
     "In dired, visit the file or directory named on this line."

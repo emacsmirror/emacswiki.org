@@ -4,12 +4,12 @@
 ;; Description: Extensions to `diff.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 21.0
-;; Last-Updated: Sun Dec 19 09:36:11 2010 (-0800)
+;; Last-Updated: Tue Jan  4 07:56:56 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 569
+;;     Update #: 570
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/diff+.el
 ;; Keywords: data, matching, tools, unix, local
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x

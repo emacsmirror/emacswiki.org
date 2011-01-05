@@ -4,12 +4,12 @@
 ;; Description:
 ;; Author: Markus Hoenika
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Jan 15 11:13:38 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:42:29 2010 (-0800)
+;; Last-Updated: Tue Jan  4 13:57:04 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 95
+;;     Update #: 100
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup-cygwin.el
 ;; Keywords: os, unix, cygwin
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -27,8 +27,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for commands.
 ;; 2009/10-15 dadams
 ;;     Set ediff-shell to shell-file-name.
 ;; 2007/12/08 dadams
@@ -123,6 +125,7 @@ loaded as such.)"
 ;;;;; (setq shell-file-name explicit-shell-file-name)
 
 
+;;;###autoload
 (defun bash ()
   "Start `bash' shell."
   (interactive)
@@ -135,6 +138,7 @@ loaded as such.)"
 
 
 ;; From: http://www.dotfiles.com/files/6/235_.emacs
+;;;###autoload
 (defun set-shell-bash()
   "Enable on-the-fly switching between the bash shell and DOS."
   (interactive)
@@ -148,6 +152,7 @@ loaded as such.)"
   ;;;;;(setq mswindows-quote-process-args t)) ; Undefined?
   )
 
+;;;###autoload
 (defun set-shell-cmdproxy()
   "Set shell to `cmdproxy'."
   (interactive)

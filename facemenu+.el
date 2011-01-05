@@ -4,12 +4,12 @@
 ;; Description: Extensions to `facemenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Jun 25 14:42:07 2005
 ;; Version:
-;; Last-Updated: Fri Jan 15 13:00:33 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:04:12 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1528
+;;     Update #: 1542
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/facemenu+.el
 ;; Keywords: faces, extensions, convenience, menus, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -189,6 +189,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom, defconst, commands.  Removed from non-interactive fn.
 ;; 2009/11/16 dadams
 ;;     Added: facemenup-palette-update-while-editing-flag.  Thx to Ahei.
 ;;     facemenup-palette-face-(bg|fg)-at-(mouse|point):
@@ -313,6 +315,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defcustom facemenup-palette-update-while-editing-flag t
   "Non-nil means update the face whose color you're editing in the palette.
 The face is updated automatically each time you change the palette's
@@ -339,6 +342,7 @@ palette using `x'."
 (when (featurep 'font-menus)
   (define-key-after facemenu-menu [display-fonts] '("Display Fonts" . display-fonts) 'dc))
 
+;;;###autoload
 (defconst facemenup-highlight-menu
     (easy-menu-create-menu
     "Highlight"
@@ -455,6 +459,7 @@ palette using `x'."
 (easy-menu-add-item facemenu-mouse-menu ()
                     ["Customize Face" facemenup-customize-face-at-mouse t])
 
+;;;###autoload
 (defun facemenup-help (event)
   "Open the Emacs manual to help about formatted text."
   (interactive "e") (info "(emacs)Editing Format Info"))
@@ -518,6 +523,7 @@ palette using `x'."
 
 ;;; ----------------------------------
 
+;;;###autoload
 (defun facemenup-describe-text-properties-at-mouse (event)
   "Describe text properties of character under the mouse pointer."
   (interactive "e")
@@ -534,6 +540,7 @@ palette using `x'."
 ;; the minibuffer if `tooltip-mode' is disabled (-1). Emacs Bug
 ;; reported 2006-06-25.
 
+;;;###autoload
 (defun facemenup-face-bg-restore ()
   "Restore background of last face changed by face menu to last color.
 This is not an undo: It always restores the previous color as
@@ -547,6 +554,7 @@ This does not work for face changes made by Do Re Mi."
     (message "Background of `%s' restored to `%s'"
              facemenup-last-face-changed facemenup-last-face-bg)))
 
+;;;###autoload
 (defun facemenup-face-fg-restore ()
   "Restore foreground of last face changed by face menu to last color.
 This is not an undo: It always restores the previous color as
@@ -776,6 +784,7 @@ initial value for `facemenup-change-fg-of-face-at-point+'."
 Adjust red, green, blue, hue, saturation, or value? [rgbhsv]: " face))
                        increment (consp current-prefix-arg)))))
 
+;;;###autoload
 (defun facemenup-set-face-bg-RGB-at-mouse (event)
   "Set RGB of background of face at character under the mouse pointer.
 RGB is specified in decimal."
@@ -803,6 +812,7 @@ RGB is specified in decimal."
             facemenup-last-face-changed  face))
     (set-face-background face (format "#%s%s%s" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-fg-RGB-at-mouse (event)
   "Set RGB of foreground of face at character under the mouse pointer.
 RGB is specified in decimal."
@@ -830,6 +840,7 @@ RGB is specified in decimal."
             facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%s%s%s" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-bg-RGB-at-point ()
   "Set RGB of background of face at character following cursor (point).
 RGB is specified in decimal, from 0 to 255."
@@ -851,6 +862,7 @@ RGB is specified in decimal, from 0 to 255."
             facemenup-last-face-changed  face))
     (set-face-background face (format "#%s%s%s" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-fg-RGB-at-point ()
   "Set RGB of foreground of face at character following cursor (point).
 RGB is specified in decimal, from 0 to 255."
@@ -872,6 +884,7 @@ RGB is specified in decimal, from 0 to 255."
             facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%s%s%s" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-bg-RGB-hex-at-mouse (event)
   "Set RGB of background of face at character under the mouse pointer.
 RGB is specified in hexadecimal, from 0 to FFFF."
@@ -908,6 +921,7 @@ RGB is specified in hexadecimal, from 0 to FFFF."
             facemenup-last-face-changed  face))
     (set-face-background face (format "#%04x%04x%04x" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-fg-RGB-hex-at-mouse (event)
   "Set RGB of foreground of face at character under the mouse pointer.
 RGB is specified in hexadecimal, from 0 to FFFF."
@@ -944,6 +958,7 @@ RGB is specified in hexadecimal, from 0 to FFFF."
             facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%04x%04x%04x" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-bg-RGB-hex-at-point ()
   "Set RGB of background of face at character following cursor (point).
 RGB is specified in hexadecimal, from 0 to FFFF."
@@ -974,6 +989,7 @@ RGB is specified in hexadecimal, from 0 to FFFF."
             facemenup-last-face-changed  face))
     (set-face-background face (format "#%04x%04x%04x" red green blue))))
 
+;;;###autoload
 (defun facemenup-set-face-fg-RGB-hex-at-point ()
   "Set RGB of foreground of face at character following cursor (point).
 RGB is specified in hexadecimal, from 0 to FFFF."
@@ -1004,6 +1020,7 @@ RGB is specified in hexadecimal, from 0 to FFFF."
             facemenup-last-face-changed  face))
     (set-face-foreground face (format "#%04x%04x%04x" red green blue))))
 
+;;;###autoload
 (defun facemenup-paste-to-face-bg-at-mouse (event)
   "Paste last color copied to background of face under mouse.
 The last color copied is in `eyedrop-last-picked-color'."
@@ -1018,6 +1035,7 @@ The last color copied is in `eyedrop-last-picked-color'."
             facemenup-last-face-changed  face))
     (set-face-background face eyedrop-last-picked-color)))
 
+;;;###autoload
 (defun facemenup-paste-to-face-fg-at-mouse (event)
   "Paste last color copied to foreground of face under mouse.
 The last color copied is in `eyedrop-last-picked-color'."
@@ -1032,6 +1050,7 @@ The last color copied is in `eyedrop-last-picked-color'."
             facemenup-last-face-changed  face))
     (set-face-foreground face eyedrop-last-picked-color)))
 
+;;;###autoload
 (defun facemenup-paste-to-face-bg-at-point ()
   "Paste last color copied to background of face at cursor (point).
 The last color copied is in `eyedrop-last-picked-color'."
@@ -1044,6 +1063,7 @@ The last color copied is in `eyedrop-last-picked-color'."
             facemenup-last-face-changed  face))
     (set-face-background face eyedrop-last-picked-color)))
 
+;;;###autoload
 (defun facemenup-paste-to-face-fg-at-point ()
   "Paste last color copied to foreground of face at cursor (point).
 The last color copied is in `eyedrop-last-picked-color'."
@@ -1099,6 +1119,7 @@ You are prompted for the face, attribute to change, and its new value."
     (let ((face  (intern (symbol-name (read-face-name "Modify face: ")))))
       (facemenup-set-face-attribute-at--1 face))))
 
+;;;###autoload
 (defun facemenup-customize-face-at-mouse (event)
   "Customize the face used at character under the mouse pointer."
   (interactive "e")
@@ -1108,6 +1129,7 @@ You are prompted for the face, attribute to change, and its new value."
     (unless face (read-face-name facemenup-err-mouse))
     (customize-face face)))
 
+;;;###autoload
 (defun facemenup-customize-face-at-point ()
   "Customize the face used at character following cursor (point)."
     (interactive)
@@ -1133,7 +1155,6 @@ For Emacs 22+, this is `face-foreground' inheriting from `default'."
 ;; REPLACES ORIGINAL in `facemenu.el':
 ;; Use `icicle-read-color' if defined.  If not, use `hexrgb-read-color' if defined.
 ;;
-;;;###autoload
 (defun facemenu-read-color (&optional prompt)
   "Read a color using the minibuffer."
   (setq prompt  (or prompt "Color: "))

@@ -2,7 +2,17 @@ Basically, you have to add and remove the MIME types you want handled
 differently from the various variables available to you.
 
 It may seem very confusing, but in the end it will allow you maximum
-flexibility.  The following examples show some common uses:
+flexibility.  The following examples show some common uses.
+
+A simple case is when you just want to tell Emacs about a viewer it doesn't know about. E.g. I like using okular as my external pdf viewer (while Emacs wants to start up gv), so I add the following to /etc/mailcap (alternatively ~/.mailcap on a per-user basis):
+
+    application/pdf; /usr/bin/okular %s
+
+And then, in Emacs, do "M-x mailcap-parse-mailcaps" to force a re-read of that file. Another nice line is
+
+    application/*; xdg-open %s
+
+which opens most files in the system-defined viewer.
 
 Since Emacs can display images inline, you may not want to treat them
 as real attachments (ie. no clicking on them and saving them).  Here's

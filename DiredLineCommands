@@ -18,8 +18,38 @@ I don't like that `##dired-(next|previous)-line##' moves to "not useful" lines i
 
 [new:Agamestor:2009-08-16 18:57 UTC]
 I changed the place of the last line in each function. This works for me.
-[new]
+-----
+[new:joseph:2011-01-05 18:17 UTC]
+I use this one (Joseph):    
+   
+  (defadvice dired-next-line (around dired-next-line+ activate)
+  "Replace current buffer if file is a directory."
+        ad-do-it
+        (while (and  (not  (eobp)) (not ad-return-value))
+          (forward-line)
+          (setq ad-return-value(dired-move-to-filename))
+          )
+        (when (eobp)
+            (forward-line -1)
+            (setq ad-return-value(dired-move-to-filename))
+            )
+  )
 
+       
+  (defadvice dired-previous-line (around dired-previous-line+ activate)
+  "Replace current buffer if file is a directory."
+        ad-do-it
+        (while (and  (not  (bobp)) (not ad-return-value))
+          (forward-line -1)
+          (setq ad-return-value(dired-move-to-filename))
+          )
+        (when (bobp)
+          (call-interactively 'dired-next-line)
+            )
+  )
+
+
+[new]
 See also DiredTweaks.
 
 ----

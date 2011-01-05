@@ -4,12 +4,12 @@
 ;; Description: Frame and window commands (interactive functions).
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Mar  5 16:30:45 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Oct 19 21:18:24 2010 (-0700)
+;; Last-Updated: Tue Jan  4 09:41:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2634
+;;     Update #: 2637
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame-cmds.el
 ;; Keywords: internal, extensions, mouse, frames, windows, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -245,6 +245,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookie from non-interactive function.
 ;; 2010/10/19 dadams
 ;;     enlarge-font: Only do frame-update-faces if Emacs 20 (obsolete in 21).
 ;; 2010/06/04 dadams
@@ -1138,7 +1140,6 @@ If called from a program, all frames in list FRAMES are tiled."
   (interactive (and current-prefix-arg (read-args-for-tile-frames)))
   (tile-frames 'vertical frames))
 
-;;;###autoload
 (defun tile-frames (direction frames)
   "Tile visible frames horizontally or vertically, depending on DIRECTION.
 Arg DIRECTION is `horizontal' or `vertical'.

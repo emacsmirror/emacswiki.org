@@ -4,12 +4,12 @@
 ;; Description: Startup assignments: hooks etc.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 28 09:15:00 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:43:26 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:03:33 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 725
+;;     Update #: 731
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setup.el
 ;; Keywords: internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -49,7 +49,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2009/04/18 dadams
 ;;     Don't invoke 1on1-emacs if no graphics display.

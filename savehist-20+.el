@@ -1,7 +1,7 @@
 ;;; savehist-20+.el --- Save minibuffer history.
 ;; Author: Hrvoje Niksic <hniksic@xemacs.org>
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2010, Drew Adams
+;; Copyright (C) 2007-2011, Drew Adams
 ;; Copyright (C) 1997, 2005, 2006, 2007  Free Software Foundation, Inc.
 
 ;; Keywords: minibuffer history
@@ -26,10 +26,13 @@
 
 ;;; Commentary:
 
-;; This is vanilla Emacs `savehist.el', modified slightly to work also
-;; with versions of GNU Emacs prior to Emacs 22.  (You can of course
-;; use it with Emacs 22 and later also.)  All changes made are marked
-;; with "DADAMS".  - Drew Adams
+;; This is essentially vanilla Emacs `savehist.el', modified slightly
+;; to work also with versions of GNU Emacs prior to Emacs 22.  (You
+;; can of course use it with Emacs 22 and later also.)
+;;
+;; Some other changes were also made, such as removing text properties
+;; from history elements.  All changes are marked with "DADAMS".
+;; - Drew Adams
 
 ;; Many editors (e.g. Vim) have the feature of saving minibuffer
 ;; history to an external file after exit.  This package provides the
@@ -56,6 +59,10 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defgroup, defcustom, and commands.
+;; 2010/04/27 dadams
+;;     savehist-save: Unpropertize history elements.
 ;; 2007/12/08 dadams
 ;;     savehist-save, savehist-printable: Updated wrt CVS of 2007-11-28.
 ;;     savehist-coding-system: Use emacs-mule-unix for all Emacs versions.
@@ -81,11 +88,11 @@
 ;;; Code:
 
 (require 'custom)
-(eval-when-compile
-  (require 'cl))
+(eval-when-compile (require 'cl))
 
 ;; User variables
 
+;;;###autoload
 (defgroup savehist nil
   "Save minibuffer history."
   :version "22.1"
@@ -102,6 +109,7 @@ interface."
   :require 'savehist
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-save-minibuffer-history t
   "*If non-nil, save all recorded minibuffer histories.
 If you want to save only specific histories, use `savehist-save-hook' to
@@ -109,6 +117,7 @@ modify the value of `savehist-minibuffer-history-variables'."
   :type 'boolean
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-additional-variables ()
   "*List of additional variables to save.
 Each element is a symbol whose value is persisted across Emacs
@@ -124,11 +133,13 @@ minibuffer histories, such as `compile-command' or `kill-ring'."
   :type '(repeat variable)
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-ignored-variables nil ;; '(command-history)
   "*List of additional variables not to save."
   :type '(repeat variable)
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-file
   (cond
    ;; Backward compatibility with previous versions of savehist.
@@ -157,6 +168,7 @@ set to a coding system that exists in both emacsen."
   :group 'savehist)
 
 ;; DADAMS, 2005-10-15: changed to decimal 384.
+;;;###autoload
 (defcustom savehist-file-modes 384      ; Octal: #o600
   "*Default permissions of the history file.
 This is decimal, not octal.  The default is 384 (0600 in octal).
@@ -166,17 +178,20 @@ the user's privacy."
   :type 'integer
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-autosave-interval (* 5 60)
   "*The interval between autosaves of minibuffer history.
 If set to nil, disables timer-based autosaving."
   :type 'integer
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-mode-hook nil
   "Hook called when `savehist-mode' is turned on."
   :type 'hook
   :group 'savehist)
 
+;;;###autoload
 (defcustom savehist-save-hook nil
   "Hook called by `savehist-save' before saving the variables.
 You can use this hook to influence choice and content of variables to
@@ -339,6 +354,7 @@ Normally invoked by calling `savehist-mode' to unset the minor mode."
       (cancel-timer savehist-timer))
     (setq savehist-timer nil)))
 
+;;;###autoload
 (defun savehist-save (&optional auto-save)
   "Save the values of minibuffer history variables.
 Unbound symbols referenced in `savehist-additional-variables' are ignored.
@@ -365,7 +381,7 @@ If AUTO-SAVE is non-nil, compare the saved contents to the one last saved,
 	(dolist (symbol savehist-minibuffer-history-variables)
 	  (when (and (boundp symbol)
 		     (not (memq symbol savehist-ignored-variables)))
-	    (let ((value (savehist-trim-history (symbol-value symbol)))
+	    (let ((value  (savehist-trim-history (symbol-value symbol)))
 		  excess-space)
 	      (when value		; Don't save empty histories.
 		(insert "(setq ")
@@ -376,7 +392,9 @@ If AUTO-SAVE is non-nil, compare the saved contents to the one last saved,
 		(setq excess-space (point))
 		;; Print elements of VALUE one by one, carefully.
 		(dolist (elt value)
-		  (let ((start (point)))
+                  ;; DADAMS 2010-04-27: Unpropertize element.
+                  (set-text-properties 0 (length elt) nil elt)
+		  (let ((start  (point)))
 		    (insert " ")
 		    (prin1 elt (current-buffer))
 		    ;; Try to read the element we just printed.

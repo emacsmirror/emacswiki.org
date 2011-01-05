@@ -4,12 +4,12 @@
 ;; Description: Extensions for `vc.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Mar 11 16:45:20 1999
 ;; Version: 20.0
-;; Last-Updated: Sat Dec  4 14:07:26 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:52:55 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1482
+;;     Update #: 1485
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/vc+.el
 ;; Keywords: internal, tools, unix
 ;; Compatibility: GNU Emacs 20.x
@@ -98,7 +98,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 2010/12/04 dadams
 ;;     vc-dired-mode: Removed call to make-local-hook.
@@ -209,14 +209,12 @@
 ;; Switch standard `vc-diff' bindings.
 (define-key vc-dired-mode-map [?\"] 'vc-ediff)
 
-;;;###autoload
 (defvar vc-log-width 76
   "*`window-min-width' and `fill-column' for buffer \"*VC Log*\".")
 
 
 ;; REPLACES ORIGINAL in `vc.el':
 ;; Calls `vc-register' with FILE argument.
-;;;###autoload
 (defun vc-next-action-on-file (file verbose &optional comment)
   ;; COMMENT is used as an admin or checkin comment.
   (let ((vc-type (vc-backend file))
@@ -569,7 +567,6 @@ COMMENT is the comment for registering."
 ;; `vc-comment-search-reverse', and `vc-comment-search-forward' in message.
 ;; Uses `vc-log-width'.
 ;; NOTE: `vc-log-version' is free here.
-;;;###autoload
 (defun vc-start-entry (file rev comment msg action &optional after-hook)
   "Accept a comment for an operation on FILE version REV.
 If COMMENT is nil, pop up the *VC Log* buffer, emit MSG, and set the
@@ -716,7 +713,6 @@ If ARG is positive, go forward, not back."
 
 ;; REPLACES ORIGINAL in `vc.el'.
 ;; Treat Dired buffers as if in `vc-dired-mode'.
-;;;###autoload
 (defun vc-ensure-vc-buffer ()
   "Make sure that the current buffer visits a version-controlled file."
   (if (or vc-dired-mode (eq major-mode 'dired-mode))
@@ -816,7 +812,6 @@ use \\[universal-argument] \\[vc-next-action] RET to do so."
     (vc-backend-revert file)
     (vc-resynch-window file t t)))
 
-;;;###autoload
 (defvar vc-last-dired-option nil
   "The value of the last choice for vc-dired display:
 `Checked-out', `Registered', or `Unregistered'.

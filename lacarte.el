@@ -4,12 +4,12 @@
 ;; Description: Execute menu items as commands, with completion.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Aug 12 17:18:02 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Jun 25 21:05:15 2010 (-0700)
+;; Last-Updated: Tue Jan  4 10:59:52 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 632
+;;     Update #: 638
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lacarte.el
 ;; Keywords: menu-bar, menu, command, help, abbrev, minibuffer, keys,
 ;;           completion, matching, local, internal, extensions,
@@ -258,6 +258,8 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defgroup, defcustom, and commands.
 ;; 2010/06/26 dadams
 ;;    lacarte-execute-command: Protected Icicles vars with boundp.  Thx to Alexey Romanov.
 ;; 2010/05/11 dadams
@@ -344,6 +346,7 @@
 
 ;;; User Options -------------------------------------------
 
+;;;###autoload
 (defgroup lacarte nil
   "Execute menu items as commands, with completion."
   :prefix "lacarte-" :group 'menu
@@ -359,6 +362,7 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "lacarte.el")
   )
 
+;;;###autoload
 (defcustom lacarte-convert-menu-item-function nil
   "*Function to call to convert a menu item.
 Used by `lacarte-execute-menu-command'.  A typical use would be to
@@ -390,6 +394,7 @@ COMMAND is the command  bound to the menu item.")
  
 ;;; Functions -------------------------------
 
+;;;###autoload
 (defun lacarte-execute-command (&optional no-commands-p)
   "Execute a menu-bar menu command or an ordinary command.
 Type a menu item or a command name.  Completion is available.
@@ -447,6 +452,7 @@ using face `icicle-special-candidate'."
   (save-match-data
     (and (string-match " > " s1) (not (string-match " > " s2)))))    
 
+;;;###autoload
 (defun lacarte-execute-menu-command ()
   "Execute a menu-bar menu command.
 Type a menu item.  Completion is available.

@@ -38,6 +38,8 @@ And then changed magit-highlight-section as follows:
       +                    magit-use-highlights)
 
 -- MarcoCraveiro
+[new]
+There's a fork of Magit with TRAMP support to work remotely: http://atomized.org/2009/01/forked-magit-that-works-with-tramp/
 
 ----
 CategoryVersionControl

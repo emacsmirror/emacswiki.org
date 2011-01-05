@@ -4,12 +4,12 @@
 ;; Description: Extensions to `frame.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr 12 16:42:12 1996
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:09:58 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:38:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 176
+;;     Update #: 179
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/frame+.el
 ;; Keywords: frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -42,6 +42,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookie from non-interactive function.
 ;; 2005/05/31 dadams
 ;;     special-display-popup-frame: Put with-current-buffer around fit-frame.
 ;; 2005/05/29 dadams
@@ -91,7 +93,6 @@
 ;;    (e.g. `after-make-frame-functions') will use BUFFER, not the previously
 ;;    current buffer.  This fix is only needed prior to Emacs 21.
 ;; 2. Calls `fit-frame'.
-;;;###autoload
 (defun special-display-popup-frame (buffer &optional args)
   "Display BUFFER in its own frame, reusing an existing window if any.
 Return the window chosen.  Window is not selected within its frame.

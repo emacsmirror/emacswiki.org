@@ -4,12 +4,12 @@
 ;; Description: Main Emacs startup file: require/autoload other files.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Aug  2 11:12:24 1995
 ;; Version: 21.1
-;; Last-Updated: Sat Nov 20 17:17:43 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:13:44 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2866
+;;     Update #: 2868
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/start.el
 ;; Keywords: abbrev, internal, local, init
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -44,15 +44,16 @@
 ;;   `local-lpr', `local-ps-print', `lpr', `ls-lisp', `ls-lisp+',
 ;;   `ls-lisp-verbosity', `menu-bar', `menu-bar+', `misc-cmds',
 ;;   `misc-fns', `mkhtml', `mkhtml-htmlize', `moccur-edit', `mouse',
-;;   `mouse+', `mwheel', `occur-schroeder', `oneonone', `paren',
-;;   `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing', `ps-print',
-;;   `regexp-opt', `replace+', `ring', `ring+', `savehist-20+',
-;;   `second-sel', `sendmail', `setup', `setup-keys', `simple+',
-;;   `solar', `speedbar', `start', `strings', `swiss-move',
-;;   `synonyms', `thing-cmds', `thingatpt', `thingatpt+',
-;;   `thumb-frm', `timer', `timer+', `unaccent', `vc', `vc+', `vc-',
-;;   `vc-hooks', `vc-hooks+', `w32-browser', `w32browser-dlgopen',
-;;   `wid-edit', `wid-edit+', `widget', `window+', `zoom-frm'.
+;;   `mouse+', `mouse3', `mwheel', `occur-schroeder', `oneonone',
+;;   `paren', `pcmpl-auto', `pp', `pp+', `pp-c-l', `printing',
+;;   `ps-print', `regexp-opt', `replace+', `ring', `ring+',
+;;   `savehist-20+', `second-sel', `sendmail', `setup', `setup-keys',
+;;   `simple+', `solar', `speedbar', `start', `strings',
+;;   `swiss-move', `synonyms', `thing-cmds', `thingatpt',
+;;   `thingatpt+', `thumb-frm', `timer', `timer+', `unaccent', `vc',
+;;   `vc+', `vc-', `vc-hooks', `vc-hooks+', `w32-browser',
+;;   `w32browser-dlgopen', `wid-edit', `wid-edit+', `widget',
+;;   `window+', `zoom-frm'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -86,7 +87,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;; Change log:
+;; Change Log:
 ;;
 ;; 2010/11/20 dadams
 ;;     Removed soft require of font-menus.el for Emacs 24+.  It uses var font-lock-defaults-alist.

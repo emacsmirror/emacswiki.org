@@ -2,14 +2,14 @@
 ;;
 ;; Filename: compile+20.el
 ;; Description: Extensions to `compile.el'.
-;; Author: Drew ADAMS
-;; Maintainer: Drew ADAMS
+;; Author: Drew Adams
+;; Maintainer: Drew Adams
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Apr  2 16:55:16 1999
 ;; Version: 20.0
-;; Last-Updated: Mon Jan  3 20:21:09 2011 (-0800)
+;; Last-Updated: Tue Jan  4 08:14:43 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 840
+;;     Update #: 842
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/compile+20.el
 ;; Keywords: tools, processes
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -83,7 +83,6 @@
 ;; 2011/01/03 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;;     Added some missing autoload cookies for commands.
-;;     Removed autoload cookies: non def* sexps, non-interactive functions.
 ;; 2007/12/04 dadams
 ;;     grep, grep-default-regexp-fn: Changed single-quote to double-quote.
 ;; 2007/12/02 dadams

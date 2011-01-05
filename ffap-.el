@@ -4,12 +4,12 @@
 ;; Description: Extensions to library `ffap.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Feb 08 10:47:56 2006
 ;; Version: 20
-;; Last-Updated: Fri Jan 15 13:01:48 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:17:21 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 100
+;;     Update #: 104
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/ffap-.el
 ;; Keywords: files, hypermedia, matching, mouse, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -83,6 +83,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom.
 ;; 2006/12/29 dadams 
 ;;     Removed top-level call to ffap-bindings - users do it explicitly or not.
 ;; 
@@ -107,6 +109,7 @@
 ;; 
 ;;; Code:
 
+;;;###autoload
 (defcustom ffap-bindings
   '(
     (global-set-key [S-mouse-2] 'ffap-at-mouse)
@@ -134,6 +137,7 @@
   "List of key-binding forms evaluated by function `ffap-bindings'."
   :type 'sexp :group 'ffap)
 
+;;;###autoload
 (defcustom ffap-inhibit-ffap-flag nil
   "Non-nil means that `ffap-*' functions should do nothing special.
 For example, `ffap' then acts simply as `find-file' (or, more

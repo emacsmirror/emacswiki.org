@@ -4,12 +4,12 @@
 ;; Description: Commands to list Emacs Lisp library dependencies.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec 30 12:29:29 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:24:48 2010 (-0800)
+;; Last-Updated: Tue Jan  4 11:02:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 732
+;;     Update #: 735
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/lib-requires.el
 ;; Keywords: libraries, files
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -43,6 +43,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookie for defgroup.
 ;; 2009/10/25 dadams
 ;;     Use library prefix "libreq-" for everything.  Thx to Jari Aalto.
 ;;       lib-requires-header -> libreq-file-header
@@ -122,6 +124,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;###autoload
 (defgroup Library-Dependencies nil
   "Commands to list Emacs-Lisp library dependencies."
   :prefix "libreq-"

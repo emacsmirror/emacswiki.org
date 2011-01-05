@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library `grep.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 16 13:36:47 2005
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:12:51 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:52:06 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 422
+;;     Update #: 430
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/grep+.el
 ;; Keywords: tools, processes, compile
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -79,6 +79,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive functions.  Added them for defalias commands.
 ;; 2007/12/04 dadams
 ;;     grep, grepp-default-regexp-fn: Changed single-quote to double-quote.
 ;; 2007/12/02 dadams
@@ -158,8 +160,6 @@ Otherwise, if the value is not a function, then function
           (function :tag "Function of zero args to provide default search regexp"))
   :group 'grep)
 
-
-;;;###autoload
 (defun grepp-default-regexp-fn ()
   "*Function of 0 args called to provide default search regexp to \\[grep].
 This is used only if both of the following are true:
@@ -185,7 +185,6 @@ first of these that references a defined function:
 ;;; REPLACE ORIGINAL in `grep.el'
 ;;; Use `grepp-default-regexp-fn' to define `tag-default'.
 ;;;
-;;;###autoload
 (defun grep-default-command ()
   (let ((tag-default (shell-quote-argument (or (funcall (grepp-default-regexp-fn)) "")))
         (sh-arg-re "\\(\\(?:\"\\(?:[^\"]\\|\\\\\"\\)+\"\\|'[^']+'\\|[^\"' \t\n]\\)+\\)")
@@ -268,6 +267,7 @@ temporarily highlight in visited source lines."
                      'grep-mode nil highlight-regexp))
 
 
+;;;###autoload
 (defalias 'new-grep-buffer 'grepp-new-grep-buffer)
 ;;;###autoload
 (defun grepp-new-grep-buffer ()
@@ -281,6 +281,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
   (grep-mode))
 
 
+;;;###autoload
 (defalias 'choose-grep-buffer 'grepp-choose-grep-buffer)
 ;;;###autoload
 (defun grepp-choose-grep-buffer (buf)
@@ -302,6 +303,7 @@ Current buffer must be a grep buffer.  It is renamed to *grep*<N>."
         (push (list (buffer-name buf)) bufs)))
     (nreverse bufs)))
 
+;;;###autoload
 (defalias 'remove-grep-comments 'grepp-remove-comments)
 ;;;###autoload
 (defun grepp-remove-comments (&optional read-regexp-p)
@@ -328,6 +330,7 @@ between /* and */."
              grepp-default-comment-line-regexp)))
       (save-excursion (flush-lines regexp (point-min) (point-max))))))
 
+;;;###autoload
 (defalias 'toggle-grep-comments 'grepp-toggle-comments)
 ;;;###autoload
 (defun grepp-toggle-comments ()

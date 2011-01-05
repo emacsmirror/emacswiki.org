@@ -4,12 +4,12 @@
 ;; Description: Extensions to standard library tool-bar.el
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Oct 05 17:02:16 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:50:09 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:47:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 209
+;;     Update #: 215
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/tool-bar+.el
 ;; Keywords: tool-bar, convenience, mouse, button, frame
 ;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
@@ -62,8 +62,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies (for commands).
 ;; 2008/04/24 dadams
 ;;     Use add-to-list, not setq, for menu-bar-final-items.
 ;; 2006/09/15 dadams
@@ -99,6 +101,7 @@
  
 ;;; Local Tool Bar Mode -------------------------
 
+;;;###autoload
 (define-minor-mode tool-bar-here-mode
   "Toggle use of the tool bar on this frame only.
 With numeric ARG, display the tool bar if and only if ARG is positive.
@@ -144,6 +147,7 @@ Don't forget to mention your Emacs and library versions."))
 (add-to-list 'menu-bar-final-items 'pop-up-tool-bar 'append)
 
 
+;;;###autoload
 (define-minor-mode tool-bar-pop-up-mode
   "Toggle tool-bar pop-up.
 With numeric ARG, turn on tool-bar pop-up if and only if ARG is positive.
@@ -173,6 +177,7 @@ Note: Command `tool-bar-pop-up-mode' functions as a toggle only
 ;; up, relative to the mouse, and a region is selected (without ever
 ;; physically moving the mouse).
 ;;
+;;;###autoload
 (defun show-tool-bar-for-one-command ()
   "Pop up the tool bar so you can click a button.
 The tool bar stays visible until one command is executed
@@ -194,7 +199,6 @@ The tool bar stays visible until one command is executed
             (when tb-lines (scroll-down tb-lines))
           (error (tool-bar-here-mode -99)))) ; E.g. "Beginning of buffer" error
       (tool-bar-here-mode -99))))            ; Hide tool-bar
-
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 

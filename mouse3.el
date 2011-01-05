@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Sun Jan  2 11:37:51 2011 (-0800)
+;; Last-Updated: Tue Jan  4 11:43:28 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1234
+;;     Update #: 1235
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -328,6 +328,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defgroup mouse3 nil
   "Behaviors for `mouse-3' 2nd click at same spot, including popup menu."
   :prefix "mouse3-"

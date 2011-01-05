@@ -4,12 +4,12 @@
 ;; Description: Extensions to `isearch.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Dec 15 10:44:14 1995
 ;; Version: 21.0
-;; Last-Updated: Sun Dec  5 07:01:57 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:57:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 541
+;;     Update #: 548
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/isearch+.el
 ;; Keywords: help, matching, internal, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -90,6 +90,8 @@
 ;;
 ;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom and commands.
 ;; 2010/12/05 dadams
 ;;     Added: isearchp-toggle-invisible, isearchp-last-non-nil-invisible.
 ;; 2010/10/18 dadams
@@ -193,12 +195,14 @@
     "Face for highlighting failed part in Isearch echo-area message."
     :group 'isearch))
 
+;;;###autoload
 (defcustom isearchp-regexp-quote-yank-flag t
   "Non-nil means escape special chars in text yanked for a regexp isearch.
 You can toggle this with `isearchp-toggle-regexp-quote-yank', bound to
 `C-`' during isearch."
   :type 'boolean :group 'isearch)
 
+;;;###autoload
 (defcustom isearchp-set-region-flag nil
   "Non-nil means set region around search target.
 This is used only for Transient Mark mode.
@@ -237,6 +241,7 @@ You can toggle this with `isearchp-toggle-set-region', bound to
                        (not (lookup-key minibuffer-local-isearch-map [C-M-tab])))
               (define-key minibuffer-local-isearch-map [C-M-tab] 'isearch-complete-edit))))
 
+;;;###autoload
 (defun isearchp-toggle-invisible ()
   "Toggle `search-invisible'."
   (interactive)
@@ -246,6 +251,7 @@ You can toggle this with `isearchp-toggle-set-region', bound to
       (message "Searching invisible text is now ON")
     (message "Searching invisible text is now OFF")))
 
+;;;###autoload
 (defun isearchp-toggle-regexp-quote-yank ()
   "Toggle `isearchp-regexp-quote-yank-flag'."
   (interactive)
@@ -260,6 +266,7 @@ This is used only for Transient Mark mode."
   (when (and isearchp-set-region-flag transient-mark-mode)
     (push-mark isearch-other-end t 'activate)))
 
+;;;###autoload
 (defun isearchp-toggle-set-region ()
   "Toggle `isearchp-set-region-flag'."
   (interactive)
@@ -268,6 +275,7 @@ This is used only for Transient Mark mode."
       (message "Setting region around search target is now ON")
     (message "Setting region around search target is now OFF")))
 
+;;;###autoload
 (defun set-region-around-search-target ()
   "Set the region around the last search or query-replace target."
   (interactive)

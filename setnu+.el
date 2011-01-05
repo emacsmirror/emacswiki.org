@@ -4,12 +4,12 @@
 ;; Description: Extensions to `setnu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Nov 30 08:51:07 2000
 ;; Version: 21.0
-;; Last-Updated: Sat Dec  4 14:01:04 2010 (-0800)
+;; Last-Updated: Tue Jan  4 13:55:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 165
+;;     Update #: 168
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/setnu+.el
 ;; Keywords: lines
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -36,8 +36,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defgroup and defcustom.
 ;; 2010/12/04 dadams
 ;;     Removed make-local-hook calls (no longer exists in Emacs 24).
 ;; 2006/10/02 dadams
@@ -83,14 +85,17 @@
 ;;; (make-local-hook 'before-change-functions)
 ;;; (make-local-hook 'after-change-functions)
 
+;;;###autoload
 (defgroup Setnu-Plus nil "Setnu options." :group 'convenience)
 
+;;;###autoload
 (defcustom setnu+-newline-deletion-flag t
   "*Non-nil means check for newline deletions when numbering lines
 via `setnu'."
   :type 'boolean :group 'Setnu-Plus)
 (make-variable-buffer-local 'setnu+-newline-deletion-flag)
 
+;;;###autoload
 (defcustom setnu+-fit-frame-flag t
   "*Non-nil means `setnu-mode' fits frame to buffer, if `one-window-p'.
 This has no effect if function `fit-frame' is not defined."

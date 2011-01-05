@@ -4,12 +4,12 @@
 ;; Description: Cycle among buffer restrictions
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Apr 18 12:58:07 2010 (-0700)
 ;; Version: 20.0
-;; Last-Updated: Mon Apr 26 17:03:47 2010 (-0700)
+;; Last-Updated: Tue Jan  4 15:09:18 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 322
+;;     Update #: 330
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/wide-n.el
 ;; Keywords: narrow restriction widen
 ;; Compatibility: Emacs 21.x, 22.x, 23.x
@@ -101,6 +101,8 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies (for commands).
 ;; 2010/04/26 dadams
 ;;     Added: wide-n-push, wide-n-push-anyway-p.
 ;;     narrow-to-*: Call wide-n-push when interactive or wide-n-push-anyway-p.
@@ -146,6 +148,12 @@
 ;; 
 ;;; Code:
 
+
+;; Quiet byte-compiler
+(defvar narrow-map)
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (defvar wide-n-restrictions '(all)
   "List of buffer restrictions.
 Each entry is either `all' or a cons (START . END), where START and
@@ -161,6 +169,7 @@ value here overrides the push inhibition.  You can bind this to
 non-nil in Lisp code to populate `wide-n-restrictions' during
 narrowing.")
 
+;;;###autoload
 (defun wide-n (arg)
   "Widen to a previous buffer restriction.
 With no prefix arg, widen to the previous restriction.
@@ -233,6 +242,7 @@ START and END are as for `narrrow-to-region'."
        (last-repeatable-command           'repeat))
    (repeat nil)))
 
+;;;###autoload
 (defun wide-n-repeat (arg)
   "Cycle to the next buffer restriction.
 This is a repeatable version of `wide-n'."
@@ -259,6 +269,7 @@ You can use `C-x n x' to widen to a previous buffer restriction."
 ;;
 ;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
 ;;
+;;;###autoload
 (defun narrow-to-defun (&optional arg)
   "Make text outside current defun invisible.
 The defun visible is the one that contains point or follows point.
@@ -295,6 +306,7 @@ Optional ARG is ignored."
 ;;
 ;; Call `wide-n-push' if interactive or `wide-n-push-anyway-p'.
 ;;
+;;;###autoload
 (defun narrow-to-page (&optional arg)
   "Make text outside current page invisible.
 A numeric arg specifies to move forward or backward by that many pages,

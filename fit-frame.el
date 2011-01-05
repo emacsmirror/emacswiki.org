@@ -4,12 +4,12 @@
 ;; Description: Resize a frame.  In particular, fit a frame to its buffers.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2000-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2000-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Dec  7 09:32:12 2000
 ;; Version: 22.0
-;; Last-Updated: Fri Dec 24 15:43:07 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:34:53 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1302
+;;     Update #: 1305
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fit-frame.el
 ;; Keywords: internal, extensions, convenience, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -128,6 +128,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non def* sexps.
 ;; 2010/12/24 dadams
 ;;     Added: fit-frame-to-image.
 ;;     fit-frame: Call fit-frame-to-image if frame is in an image mode.
@@ -572,7 +574,6 @@ This function assumes that FRAME has only one window."
 
 ;; Note that in Windows you can also just double-click the title bar
 ;; of a frame to alternately maximize and restore it.
-;;;###autoload
 (when (eq window-system 'w32)
   (defalias 'restore-frame 'fit-frame-restore-frame)
   (defun fit-frame-restore-frame (&optional frame)
@@ -580,7 +581,6 @@ This function assumes that FRAME has only one window."
     (interactive)
     (w32-send-sys-command 61728 frame)))
 
-;;;###autoload
 (when (eq window-system 'w32)
   (defalias 'maximize-frame 'fit-frame-maximize-frame)
   (defun fit-frame-maximize-frame (&optional frame)

@@ -4,13 +4,13 @@
 ;; Description: fuzzy matching
 ;; Author: Simon Marshall <s i m o n  AT  g n u . o r g>
 ;; Maintainer: Drew Adams <d r e w . a d a m s  AT  o r a c l e . c o m>
-;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Copyright (C) 1993, 1994 Simon Marshall, all rights reserved.
 ;; Created: 1993, by Simon Marshall
 ;; Version: 1.04
-;; Last-Updated: Fri Jan 15 13:11:58 2010 (-0800)
+;; Last-Updated: Tue Jan  4 09:45:32 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 170
+;;     Update #: 174
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/fuzzy-match.el
 ;; Keywords: matching completion string
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -169,6 +169,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for commands.
 ;; 2007/10/01 dadams
 ;;     FM-lessiness:
 ;;       Return t if no occurrence of a STRING prefix in STRING1 or STRING2.
@@ -398,6 +400,7 @@ STRING and elements of STRINGS can be character lists."
      (sort strings (function (lambda (string1 string2)
                                (FM-lessiness string string1 string2)))))))
  
+;;;###autoload
 (defun FM-offer-corrections (item candidates &optional prompt-p)
   "Offer corrections for ITEM from CANDIDATES.  Maybe replace ITEM.
 If PROMPT-P is non-nil and there is only one candidate, ask the user before
@@ -460,6 +463,7 @@ Returns: nil if no correction was inserted.
  
 ;;; Example code (see comment header):
 
+;;;###autoload
 (defun lisp-spell-symbol (prompt)
   "Perform spell checking on Lisp symbol preceding point.
 With prefix arg(s) and only one candidate, ask the user before replacing.

@@ -40,3 +40,26 @@ Hi Dino. I upgraded to the latest version 0.2.1 from 0.1. The new version seems 
 
 [new]
 Hi Xah. I'll have to look into that. I've been out-of-the-office for an extended period, so I'm catching up on some old stuff.  Will look into this and get back to you here. -- DinoChiesa, 2010 Nov 13
+
+[new]
+When I ran it on emacs 23.1 it would fail with "invalid argument, looking for stringp got nil" (to that effect) on 
+{{{
+    (if (string-match (concat "^" powershell-prompt-regex "\\(.*\\)\\'")
+                       powershell-command-reply)
+}}}
+I changed the if statement to skip if power-shell-command-reply is null, and set it to "", still get a startup error but it works (normally as far as I can tell but I'm not sure if I'm missing any highlighting I'm supposed to get.  Here's my workaround
+{{{
+        (if (and (not (null powershell-command-reply))
+		    (string-match (concat "^" powershell-prompt-regex "\\(.*\\)\\'")
+                             powershell-command-reply))
+               (setq powershell-command-reply
+                     (substring powershell-command-reply
+                                (match-beginning 1)
+                                (match-end 1)))
+	     (setq powershell-command-reply "")
+	     )
+}}}
+
+
+
+

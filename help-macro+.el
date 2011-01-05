@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help-macro.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug 24 15:36:18 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:16:45 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:10:39 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 107
+;;     Update #: 110
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-macro+.el
 ;; Keywords: help
 ;; Compatibility: GNU Emacs 20.x
@@ -60,6 +60,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookie for defmacro.
 ;; 2007/12/14 dadams
 ;;     make-help-screen:
 ;;       Don't delete the frame if there are unread-command-events (mouse click).
@@ -103,6 +105,7 @@
 ;; Fits frame if `one-window-p'.
 ;; Does not iconify *Help* frame.
 ;;
+;;;###autoload
 (defmacro make-help-screen (fname help-line help-text helped-map)
   "Construct help-menu function name FNAME.
 When invoked, FNAME shows HELP-LINE and reads a command using HELPED-MAP.

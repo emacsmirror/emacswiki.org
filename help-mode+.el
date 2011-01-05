@@ -4,15 +4,15 @@
 ;; Description: Extensions to `help-mode.el'
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Nov 06 15:14:12 2004
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:17:22 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:12:48 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 98
+;;     Update #: 100
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-mode+.el
 ;; Keywords: help
-;; Compatibility: GNU Emacs: 21.x, 22.x, 23.x
+;; Compatibility: GNU Emacs: 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
@@ -40,6 +40,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookie from non-interactive function.
 ;; 2007/12/14 dadams
 ;;     Added redefinition of help-mode.
 ;;     Removed pop-to-help-buffer and help-origin-buffer to (new) help+.el.
@@ -105,7 +107,6 @@ Commands:
 ;; 2006-01-20: This no longer works, because the call to this function
 ;; from `describe-variable was commented out in `help-fns.el'.
 ;;
-;;;###autoload
 (defun help-xref-on-pp (from to)
   "Add xrefs for symbols in `pp's output between FROM and TO."
   (if (> (- to from) 5000) nil

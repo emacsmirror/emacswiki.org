@@ -4,12 +4,12 @@
 ;; Description: Incremental change using arrow keys or mouse wheel.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Sep 02 08:21:37 2004
 ;; Version: 21.1
-;; Last-Updated: Fri Jan 15 12:56:24 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:44:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1560
+;;     Update #: 1570
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi.el
 ;; Keywords: keys, cycle, repeat, higher-order
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -67,14 +67,11 @@
 ;; the standard library `ring.el' to let you manipulate circular
 ;; structures.
 ;;
-;;  Commands defined here:
-;;
-;;    `doremi'.
 ;;
 ;;  Non-interactive functions defined here:
 ;;
-;;    `doremi-intersection', `doremi-limit', `doremi-set-new-value',
-;;    `doremi-wrap'.
+;;    `doremi', `doremi-intersection', `doremi-limit',
+;;    `doremi-set-new-value', `doremi-wrap'.
 ;;
 ;;  User options (variables) defined here:
 ;;
@@ -107,6 +104,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non-interactive functions.
+;;     Added autoload cookies for defgroup, defcustom.
 ;; 2009/11/14 dadams
 ;;     doremi-wrap: Wrap value around, instead of just moving to the other limit.
 ;; 2009/11/07 dadams
@@ -209,6 +209,7 @@
  
 ;;; User Options (Variables)
 
+;;;###autoload
 (defgroup doremi nil
   "Do Re Mi: Incremental change using arrow keys or mouse wheel.
 Define commands to perform repetitive or incremental operations."
@@ -224,9 +225,9 @@ Don't forget to mention your Emacs and library versions."))
           "http://www.emacswiki.org/cgi-bin/wiki/doremi.el")
   :link '(url-link :tag "Description"
           "http://www.emacswiki.org/cgi-bin/wiki/Doremi")
-  :link '(emacs-commentary-link :tag "Commentary" "doremi")
-  )
+  :link '(emacs-commentary-link :tag "Commentary" "doremi"))
 
+;;;###autoload
 (defcustom doremi-up-keys '(up)
   "*Keys (events) associated with one direction of adjusting by `doremi'.
 The other direction is associated with `doremi-down-keys'.
@@ -235,6 +236,7 @@ The value must be a list of keyboard events: characters or symbols.
 For example, a list element might be `?\C-p' or `prior'."
   :type '(repeat (restricted-sexp :match-alternatives (integerp symbolp))) :group 'doremi)
 
+;;;###autoload
 (defcustom doremi-down-keys '(down)
   "*Keys (events) associated with one direction of adjusting by `doremi'.
 The other direction is associated with `doremi-up-keys'.
@@ -243,6 +245,7 @@ The value must be a list of keyboard events: characters or symbols.
 For example, a list element might be `?\C-n' or `next'."
   :type '(repeat (restricted-sexp :match-alternatives (integerp symbolp))) :group 'doremi)
 
+;;;###autoload
 (defcustom doremi-boost-up-keys '(M-up)
   "*Like `doremi-up-keys', but increments by `doremi-boost-scale-factor'.
 
@@ -250,6 +253,7 @@ The value must be a list of keyboard events: characters or symbols.
 For example, a list element might be `?\M-p' or `S-prior'."
   :type '(repeat (restricted-sexp :match-alternatives (integerp symbolp))) :group 'doremi)
 
+;;;###autoload
 (defcustom doremi-boost-down-keys '(M-down)
   "*Like `doremi-down-keys', but increments by `doremi-boost-scale-factor'.
 
@@ -257,6 +261,7 @@ The value must be a list of keyboard events: characters or symbols.
 For example, a list element might be `?\M-n' or `S-next'."
   :type '(repeat (restricted-sexp :match-alternatives (integerp symbolp))) :group 'doremi)
 
+;;;###autoload
 (defcustom doremi-boost-scale-factor 10
   "*Factor to boost incremental change of numerical properties.
 Using `doremi-boost-up-keys' or `doremi-boost-down-keys', instead of
@@ -272,9 +277,8 @@ the same effect as using `doremi-boost-up-keys' or
           (boundp 'doremi-down-key) (boundp 'doremi-boost-down-key))
   (message "WARNING: Single-key options `doremi-...-key' are OBSOLETE. Use `doremi-...-keys'."))
  
-;;; Commands (Interactive Functions)
+;;; Non-Interactive Functions
 
-;;;###autoload
 (defun doremi (setter-fn init-val incr &optional growth-fn enum allow-new-p)
   "Use arrow keys and/or mouse wheel to adjust some parameter.
 
@@ -481,8 +485,6 @@ This is a non-destructive operation: it copies the data if necessary."
              (single-key-description (car doremi-up-keys))
              (single-key-description (car doremi-down-keys))
              newval)))
- 
-;;; Non-Interactive Functions
 
 (defun doremi-limit (value min max)
   "Limit VALUE to MIN or MAX limit if either is overshot.

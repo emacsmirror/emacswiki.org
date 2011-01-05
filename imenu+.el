@@ -4,12 +4,12 @@
 ;; Description: Extensions to `imenu.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 26 16:05:01 1999
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:22:31 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:50:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 567
+;;     Update #: 573
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/imenu+.el
 ;; Keywords: tools, menus
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -63,6 +63,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from defvar, non-interactive fns.  Added for command.
 ;; 2007/01/16 dadams
 ;;     imenu-lisp-fn-defn-regexp: Updated for icicle-define-add-to-alist-command.
 ;; 2005/12/09 dadams
@@ -122,25 +124,25 @@
 
 (require 'imenu)
 
+;; Quiet the byte-compiler
+(defvar imenu-menubar-modified-tick)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 ;;; Customizable variables
 
 (defconst imenu-sort-function 'imenu--sort-by-name)
 
-;;;###autoload
 (defvar imenu-emacs-key-defn-regexp-1 "(\\s-*\\(\\(global\\|local\\)-\\(un\\)?\
 set-key\\|undefine-keys-bound-to\\)\\s-*\\(\"[^\"]+\"\\|[[][^]]+[]]\\)"
   "*Regexp that recognizes Emacs key definitions.
 See also `imenu-emacs-key-defn-regexp-2'.")
 
-;;;###autoload
 (defvar imenu-emacs-key-defn-regexp-2 "(\\s-*\\(define-key\\(-after\\)?\\s-+\
 \\|substitute-key-definition\\s-+'\\)\\(\\S-+\\)\\s-*'?\\(\"[^\"]+\"\\|[[][^]]+[]]\\)"
   "*Regexp that recognizes Emacs key definitions.
 See also `imenu-emacs-key-defn-regexp-1'.")
 
-;;;###autoload
 (defvar imenu-lisp-other-defn-regexp
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
@@ -151,7 +153,6 @@ See also `imenu-emacs-key-defn-regexp-1'.")
     "(\\s-*def\\(type\\|class\\|ine-condition\\)\\s-+'?\\([^ \t()]+\\)")
   "*Regexp that recognizes other Lisp definitions.")
 
-;;;###autoload
 (defvar imenu-lisp-fn-defn-regexp
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
@@ -170,20 +171,16 @@ See also `imenu-emacs-key-defn-regexp-1'.")
             "\\s-+\\(\\sw\\(\\sw\\|\\s_\\)+\\)"))
   "*Regexp that recognizes Lisp function definitions.")
 
-;;;###autoload
 (defvar imenu-lisp-macro-defn-regexp
   "(\\s-*\\(defmacro\\|define-compiler-macro\\|define-modify-macro\\)\\s-+\\([^ \t()]+\\)"
   "*Regexp that recognizes Lisp macro definitions.")
 
-;;;###autoload
 (defvar imenu-emacs-face-defn-regexp "(\\s-*\\(defface\\)\\s-+\\([^ \t()]+\\)"
   "*Regexp for Emacs face definitions (defface).")
 
-;;;###autoload
 (defvar imenu-emacs-option-defn-regexp "(\\s-*\\(defcustom\\)\\s-+\\([^ \t()]+\\)"
   "*Regexp for Emacs user option definitions (defcustom).")
 
-;;;###autoload
 (defvar imenu-lisp-var-defn-regexp
   (if (>= emacs-major-version 22)
       (concat "^\\s-*("
@@ -206,7 +203,6 @@ See also `imenu-emacs-key-defn-regexp-1'.")
   "*Imenu generic expression for Lisp mode.
 See `imenu-generic-expression'.")
 
-;;;###autoload
 (defvar emacs-lisp-imenu-generic-expression
   (list
    (list "Other" imenu-lisp-other-defn-regexp 2)
@@ -243,6 +239,7 @@ See `imenu-generic-expression'.")
 
 ;;;###autoload
 (defalias 'toggle-imenu-sort 'imenu-toggle-sort)
+;;;###autoload
 (defun imenu-toggle-sort (force-p)
   "Toggle imenu between sorting menus and not.
 Non-nil prefix FORCE-P => Sort iff FORCE-P >= 0."
@@ -280,7 +277,6 @@ See `imenu' for more information."
 
 ;;; REPLACES ORIGINAL in `imenu.el'.
 ;;; Sorts each submenu before splitting submenus, instead of sorting among submenus after.
-;;;###autoload
 (defun imenu-update-menubar ()
   "Update the imenu. Use as `menu-bar-update-hook'."
   (when (and (current-local-map)
@@ -322,7 +318,6 @@ See `imenu' for more information."
 ;;; REPLACES ORIGINAL in `imenu.el'.
 ;;; Sorts each submenu before splitting submenus, instead of sorting among submenus after.
 ;;
-;;;###autoload
 (defun imenu--mouse-menu (index-alist event &optional title)
   "Let the user select from a buffer index from a mouse menu.
 INDEX-ALIST is the buffer index.

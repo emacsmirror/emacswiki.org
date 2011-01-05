@@ -4,12 +4,12 @@
 ;; Description: Enhancements to library `dired-details+.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2005-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2005-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Dec 20 13:33:01 2005
 ;; Version: 
-;; Last-Updated: Fri Jan 15 12:52:40 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:21:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 184
+;;     Update #: 190
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired-details+.el
 ;; Keywords: dired, frames
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -70,6 +70,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom.
 ;; 2009/06/07 dadams
 ;;     eval-after-load dired-details, and require dired.  Thx to Suvayu Ali.
 ;;     dired-details-propagate-flag: Added :group's.  Thx to Thierry Volpiatto.
@@ -121,6 +123,7 @@
 ;;; the empty string, so the overlay doesn't give a false impression
 ;;; of the current column number.  This is important for frame fitting
 ;;; (see library `fit-frame.el', required by `autofit-frame.el').
+;;;###autoload
 (defcustom dired-details-hidden-string ""
   "*This string will be shown in place of file details and symbolic links."
   :group 'dired-details :group 'dired :type 'string)
@@ -132,6 +135,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;
 
 
+;;;###autoload
 (defcustom dired-details-propagate-flag t
   "Non-nil means next Dired buffer should be displayed the same.
 The last `dired-details-state' value set is used by the next Dired
@@ -141,7 +145,6 @@ buffer created."
 (defvar dired-details-last-state nil
   "Last `dired-details-state' value.
 This is changed each time any Dired buffer's state changes.")
-
 
 
 

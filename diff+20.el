@@ -4,12 +4,12 @@
 ;; Description: Extensions to `diff.el' for Emacs 20 or older.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 15 09:33:29 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 12:51:12 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:00:07 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 618
+;;     Update #: 622
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/diff+20.el
 ;; Keywords: data, matching, tools, unix, local
 ;; Compatibility: GNU Emacs 20.x, GNU Emacs 21.x
@@ -54,6 +54,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defface and command.
 ;; 2008/01/17 dadams
 ;;     Removed soft require of icicles.el.
 ;; 2007/11/27 dadams
@@ -119,6 +121,7 @@
 
 (add-hook 'compilation-mode-hook 'font-lock-fontify-buffer)
 
+;;;###autoload
 (defface diff-old-file
     '((((class color) (background dark))
        (:foreground "SlateBlue" :background "PaleGoldenrod"))
@@ -127,6 +130,7 @@
 as well as deleted lines ."
   :group 'diff)
 
+;;;###autoload
 (defface diff-new-file
     '((((class color) (background dark))
        (:foreground "DarkCyan" :background "PaleGoldenrod"))
@@ -134,6 +138,7 @@ as well as deleted lines ."
   "*Face used to highlight `diff's \"new\" file argument."
   :group 'diff)
 
+;;;###autoload
 (defface diff-add
     '((((class color) (background dark))
        (:foreground "DarkCyan" :background "PaleGoldenrod"))
@@ -141,6 +146,7 @@ as well as deleted lines ."
   "*Face used to highlight `diff' addition lines."
   :group 'diff)
 
+;;;###autoload
 (defface diff-chg
     '((((class color) (background dark))
        (:foreground "DarkMagenta" :background "PaleGoldenrod"))
@@ -148,10 +154,12 @@ as well as deleted lines ."
   "*Face used to highlight `diff' change lines (`!')."
   :group 'diff)
 
+;;;###autoload
 (defface diff-chg-header '((t (:foreground "Red")))
   "*Face used to highlight `diff' change header lines."
   :group 'diff)
 
+;;;###autoload
 (defface diff-buffer-header '((t (:foreground "DarkMagenta")))
   "*Face used to highlight first two lines of `diff' buffer."
   :group 'diff)
@@ -198,6 +206,7 @@ as well as deleted lines ."
 
 ;; REPLACES ORIGINAL in `diff.el':
 ;; *diff* buffer is highlighted.
+;;;###autoload
 (defun diff (old new &optional switches)
   "Find and display differences between OLD and NEW files.
 Interactively the current buffer's file name is the default for NEW

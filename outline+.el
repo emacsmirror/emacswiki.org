@@ -4,12 +4,12 @@
 ;; Description: Extensions to `outline.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 21 08:56:04 1996
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:33:10 2010 (-0800)
+;; Last-Updated: Tue Jan  4 12:56:55 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 328
+;;     Update #: 332
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/outline+.el
 ;; Keywords: abbrev, matching, local
 ;; Compatibility: GNU Emacs 20.x
@@ -67,8 +67,10 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from defvar.
 ;; 2006/03/30 dadams
 ;;     No longer use display-in-minibuffer.
 ;; 2005/12/30 dadams
@@ -113,11 +115,9 @@
     "Face for minibuffer prompts."
     :group 'basic-faces))
 
-;;;###autoload
 (defvar outline-minor-mode-exit-hook nil
   "*Functions to be called when `outline-minor-mode' is exited.")
 
-;;;###autoload
 (defvar outline-minor-mode-hook nil
   "*Functions to be called when `outline-minor-mode' is entered.")
 

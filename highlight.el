@@ -4,12 +4,12 @@
 ;; Description: Highlighting commands.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1995-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1995-2011, Drew Adams, all rights reserved.
 ;; Created: Wed Oct 11 15:07:46 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Nov 26 14:04:04 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:21:03 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2605
+;;     Update #: 2611
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/highlight.el
 ;; Keywords: faces, help, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -457,6 +457,9 @@
 ;;
 ;;(@* "Change log")
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non def* sexps and non-interactive functions.
+;;     Added some missing autoload cookies for commands.
 ;; 2010/11/26 dadams
 ;;     Added: hlt-unhighlight-for-overlay.
 ;;     hlt-eraser, hlt-unhighlight-region:
@@ -665,14 +668,12 @@
 ;;; Variables and Faces --------------------------------
 
 ;; This is defined in `faces.el', Emacs 22.  This definition is adapted to Emacs 20.
-;;;###autoload
 (unless (facep 'minibuffer-prompt)
   (defface minibuffer-prompt '((((background dark)) (:foreground "cyan"))
                                (t (:foreground "dark blue")))
     "Face for minibuffer prompts."
     :group 'basic-faces))
 
-;;;###autoload
 (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
   (defface hlt-property-highlight '((((background dark)) (:background "Navy"))
                                     (t (:background "Wheat")))
@@ -808,12 +809,14 @@ for the last face and text properties for all faces."
         (setq buffer-read-only  read-only)
         (set-buffer-modified-p modified-p)))))
 
+;;;###autoload
 (defun hlt-highlighter-mouse ()
   "Same as `hlt-highlighter', but for binding to a menu item."
   (interactive)
   (message "Drag mouse to highlight text") (sleep-for 1)
   (hlt-highlighter (read-event)))
 
+;;;###autoload
 (defun hlt-eraser-mouse ()
   "Same as `hlt-eraser', but for binding to a menu item."
   (interactive)
@@ -1225,6 +1228,7 @@ Optional arg MSG-P non-nil means display a progress message."
           (forward-line 1)))))
   (when msg-p (message "Putting mouse face `%s' on each line... done." face)))
 
+;;;###autoload
 (defun hlt-toggle-use-overlays-flag ()
   "Toggle `hlt-use-overlays-flag'.
 If the current value is non-nil, it is set to nil.
@@ -1246,7 +1250,6 @@ If the current value is nil, it is set to the last non-nil value."
 
 ;;; Misc Functions - Emacs 21+ ---------------------------------------
 
-;;;###autoload
 (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
   (defun hlt-show-default-face (face)
     "Show FACE, by default, the default highlighting face.
@@ -1520,7 +1523,6 @@ Only highlighting faces are included, that is, faces associated with a
 
 ;;; Functions for Use with Icicles - Emacs 21+ -----------------------
 
-;;;###autoload
 (when (and (featurep 'icicles)          ; These are Icicles multi-commands.
            (fboundp 'next-single-char-property-change)) ; Don't bother, for Emacs 20.
 
@@ -1684,7 +1686,6 @@ cycling, these keys with prefix `C-' act on the current face name:
 
 ;;; Functions for Highlighting Propertized Text - Emacs 21+ ----------
 
-;;;###autoload
 (when (fboundp 'next-single-char-property-change) ; Don't bother, for Emacs 20.
   (defun hlt-highlight-property-with-value (prop &optional values start end face
                                             type msg-p mouse-p)

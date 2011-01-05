@@ -4,12 +4,12 @@
 ;; Description: Extensions to `help-fns.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2007-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Sep 01 11:01:42 2007
 ;; Version: 22.1
-;; Last-Updated: Fri Feb 12 14:18:19 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:06:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 408
+;;     Update #: 413
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/help-fns+.el
 ;; Keywords: help, faces
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -72,6 +72,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non def* sexps and define-key.
 ;; 2010/02/12 dadams
 ;;     Added variable-name-history.
 ;; 2009/08/30 dadams
@@ -185,21 +187,13 @@
 
 (defvar variable-name-history () "Minibuffer history for variable names.")
 
-;;;###autoload
 (define-key help-map "c" 'describe-command)
-;;;###autoload
 (define-key help-map "o" 'describe-option)
-;;;###autoload
 (define-key help-map "\C-c" 'describe-key-briefly)
-;;;###autoload
 (define-key help-map "\C-o" 'describe-option-of-type)
-;;;###autoload
 (define-key help-map "\M-c" 'describe-copying)
-;;;###autoload
 (define-key help-map "\M-f" 'describe-file)
-;;;###autoload
 (define-key help-map "\M-k" 'describe-keymap)
-;;;###autoload
 (define-key help-map "\M-l" 'find-function-on-key)
 
 
@@ -248,7 +242,6 @@ Return the description that was displayed, as a string."
 ;; REPLACES ORIGINAL in `help.el':
 ;; Fill long lines.  Add `,' before "which".
 ;;
-;;;###autoload
 (when (< emacs-major-version 23)
   (defun describe-function-1 (function)
     (let* ((def (if (symbolp function)
@@ -441,7 +434,6 @@ Same as using a prefix arg with `describe-function'."
 ;; Uses `substitute-command-keys' on doc string.
 ;; Preserves text properties.
 ;;
-;;;###autoload
 (when (< emacs-major-version 23)
   (defun describe-variable (variable &optional buffer optionp)
     "Display the full documentation of VARIABLE (a symbol).

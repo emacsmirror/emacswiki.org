@@ -2,9 +2,7 @@
 
 http://nschum.de/src/emacs/full-ack/full-ack.png
 
-Full-ack version 0.2.2 or newer is required if you use Ack version 1.94 or newer.
-
-: //Where does 0.2.2 come from? Website and ELPA only have 0.2.1 -- MichaelIvey//
+Full-ack version 0.2.2 or newer (available on [http://github.com/nschum/full-ack github]) is required if you use Ack version 1.94 or newer.
  
 On Debian you probably want to add this :
 

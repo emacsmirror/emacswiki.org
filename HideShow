@@ -6,13 +6,6 @@ See HideIfDef mode for a way to fold <code>#ifdef</code> macro blocks in C code.
 
 Invoke HideShow mode with M-x hs-minor-mode.
 
-For Emacs 20:
-
-* C-c S show all
-* C-c H hide all
-* C-c s show block
-* C-c h hide block
-
 For Emacs 21:
 
 * C-c @ ESC C-s show all
@@ -21,24 +14,50 @@ For Emacs 21:
 * C-c @ C-h hide block
 * C-c @ C-c toggle hide/show
 
+For Emacs 20:
+
+* C-c S show all
+* C-c H hide all
+* C-c s show block
+* C-c h hide block
+
+
 == Example ==
 
-If you hide all (C-c H) the code looks as follows:
+Given the following C++ code, 
 
 <pre>
-    ObjectInfo::ObjectInfo(FILE *fname)...
-    ObjectInfo::~ObjectInfo()...
-</pre>
-
-If you put the TextCursor on <nowiki>~ObjectInfo()</nowiki>, and show block (C-c s), the code expands:
-
-<pre>
-    ObjectInfo::ObjectInfo(FILE *fname)...
     ObjectInfo::~ObjectInfo() {
       if(animations)
         delete [] animations;
       }
 </pre>
+
+HideShow will recognize the blocks as delimited by braces. So if you do hide all (C-c @ ESC C-h) the code will look as follows:
+
+<pre>
+    ObjectInfo::~ObjectInfo() {...}
+</pre>
+
+If you do show all (C-c @ ESC C-s), or put the cursor on the line and do show block (C-c @ C-s) or toggle block (C-c @ C-c), the code will then reappear. 
+
+
+== How it works ==
+
+Blocks are recognized by regular expressions which match the start and end strings. 
+
+The variable hs-special-modes-alist stores the settings for some major modes:
+
+<pre>
+(defvar hs-special-modes-alist
+  (mapcar 'purecopy
+  '((c-mode "{" "}" "/[*/]" nil nil)
+    (c++-mode "{" "}" "/[*/]" nil nil)
+    (bibtex-mode ("@\\S(*\\(\\s(\\)" 1))
+    (java-mode "{" "}" "/[*/]" nil nil)
+    (js-mode "{" "}" "/[*/]" nil)))
+</pre>
+
 
 == Versions and Language Support ==
 

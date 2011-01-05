@@ -4,12 +4,12 @@
 ;; Description: Extensions to `icomplete.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Oct 16 13:33:18 1995
 ;; Version: 21.0
-;; Last-Updated: Fri Jan 15 13:21:51 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:43:58 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 880
+;;     Update #: 891
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icomplete+.el
 ;; Keywords: help, abbrev, internal, extensions, local
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -62,6 +62,10 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookies from non def* sexps.  Added them for defgroup, defface.
+;; 2010/07/29 dadams
+;;     with-local-quit, with-no-input: Protect declare with fboundp.
 ;; 2009/08/06 dadams
 ;;     icomplete-completions (Emacs < 23): Bind, don't set, to initialize nb-candidates.
 ;; 2008/06/01 dadams
@@ -152,6 +156,7 @@
 
 ;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defgroup Icomplete-Plus nil
   "Icomplete Enhancements."
   :prefix "icompletep-"
@@ -170,17 +175,20 @@ Don't forget to mention your Emacs and library versions."))
   :link '(emacs-commentary-link :tag "Commentary" "icomplete+")
   )
 
+;;;###autoload
 (defface icompletep-choices
     '((((background dark)) (:foreground "Snow4"))
       (t (:foreground "DarkBlue")))
   "*Face for minibuffer reminder of possible completion suffixes."
   :group 'Icomplete-Plus)
 
+;;;###autoload
 (defface icompletep-determined
     '((t (:foreground "SeaGreen")))
   "*Face for minibuffer reminder of possible completion prefix."
   :group 'Icomplete-Plus)
 
+;;;###autoload
 (defface icompletep-nb-candidates
   '((((background dark)) (:foreground "SpringGreen"))
     (t (:foreground "DarkMagenta")))
@@ -188,6 +196,7 @@ Don't forget to mention your Emacs and library versions."))
 This has no effect unless library `icicles.el' is being used."
   :group 'Icomplete-Plus)
 
+;;;###autoload
 (defface icompletep-keys
     '((t (:foreground "Red")))
   "*Face for minibuffer reminder of possible completion key bindings."
@@ -209,7 +218,6 @@ This has no effect unless library `icicles.el' is being used."
 ;; Save match-data.
 ;; Don't insert if input begins with `(' (e.g. `repeat-complex-command').
 ;;
-;;;###autoload
 (when (< emacs-major-version 23)        ; Emacs 20, 21, 22.
   (defun icomplete-exhibit ()
     "Insert icomplete completions display.
@@ -266,7 +274,7 @@ See `icomplete-mode' and `minibuffer-setup-hook'."
 When a quit terminates BODY, `with-local-quit' returns nil but
 requests another quit.  That quit will be processed as soon as quitting
 is allowed once again.  (Immediately, if `inhibit-quit' is nil.)"
-  (declare (debug t) (indent 0))
+  (when (fboundp 'declare) (declare (debug t) (indent 0)))
   `(condition-case nil
     (let ((inhibit-quit nil))
       ,@body)
@@ -283,7 +291,7 @@ is allowed once again.  (Immediately, if `inhibit-quit' is nil.)"
 If input arrives, that ends the execution of BODY,
 and `while-no-input' returns t.  Quitting makes it return nil.
 If BODY finishes, `while-no-input' returns whatever value BODY produced."
-  (declare (debug t) (indent 0))
+  (when (fboundp 'declare) (declare (debug t) (indent 0)))
   (let ((catch-sym (make-symbol "input")))
     `(with-local-quit
       (catch ',catch-sym
@@ -298,8 +306,7 @@ If BODY finishes, `while-no-input' returns whatever value BODY produced."
 ;; Save match-data.
 ;; Don't insert if input begins with `(' (e.g. `repeat-complex-command').
 ;;
-;;;###autoload
-(when (> emacs-major-version 22)        ; Emacs 23.
+(when (> emacs-major-version 22)        ; Emacs 23+
   (defun icomplete-exhibit ()
     "Insert icomplete completions display.
 Should be run via minibuffer `post-command-hook'.  See `icomplete-mode'
@@ -325,11 +332,12 @@ and `minibuffer-setup-hook'."
                       ;; Delay - give some grace time for next keystroke, before
                       ;; embarking on computing completions:
                       (sit-for icomplete-compute-delay)))
-            (let ((text (while-no-input
-                         (icomplete-completions (field-string)
-                                                minibuffer-completion-table
-                                                minibuffer-completion-predicate
-                                                (not minibuffer-completion-confirm))))
+            (let ((text             (while-no-input
+                                     (icomplete-completions
+                                      (field-string)
+                                      minibuffer-completion-table
+                                      minibuffer-completion-predicate
+                                      (not minibuffer-completion-confirm))))
                   (buffer-undo-list t)
                   deactivate-mark)
               ;; Do nothing if `while-no-input' was aborted.
@@ -350,7 +358,6 @@ and `minibuffer-setup-hook'."
 ;; 3. Highlights key-binding text.
 ;; 4. Appends number of remaining cycle candidates (for Icicles).
 ;;
-;;;###autoload
 (when (< emacs-major-version 23)        ; Emacs 20, 21, 22.
   (defun icomplete-completions (name candidates predicate require-match)
     "Identify prospective candidates for minibuffer completion.
@@ -475,7 +482,6 @@ following the rest of the icomplete info:
 ;; 3. Highlights key-binding text.
 ;; 4. Appends number of remaining cycle candidates (for Icicles).
 ;;
-;;;###autoload
 (when (> emacs-major-version 22)        ; Emacs 23.
   (defun icomplete-completions (name candidates predicate require-match)
     "Identify prospective candidates for minibuffer completion.

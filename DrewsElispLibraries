@@ -192,6 +192,7 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[grep+.el]]</tt> -- extensions to standard library `grep'; see also '''GrepPlus'''
 * <tt>[[help+.el]]</tt> -- extensions to standard library `help'; see also '''HelpPlus''' and '''HelpMenuBarPlus'''
 * <tt>[[help-fns+.el]]</tt> -- extensions to standard library `help-fns'; see also '''HelpPlus'''
+* <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
 * <tt>[[hl-line+.el]]</tt> -- extensions to standard library `hl-line' -- see HighlightCurrentLine
 * <tt>[[hl-spotlight.el]]</tt> -- spotlight the lines around the [[cursor]]; see [[Highlight#HlSpotlight|HL Spotlight]]
 * <tt>[[modeline-posn.el]]</tt> -- enhanced [[mode line]] information -- see '''ModeLinePosition'''
@@ -206,7 +207,6 @@ I make minor changes to some libraries often, so check for the latest versions.
 * <tt>[[compile-.el]]</tt> -- extensions to standard library `compile'; see also '''GrepPlus'''
 * <tt>[[diff+.el]]</tt> -- extensions to standard library `diff'  -- see '''DiffEnhancements'''
 * <tt>[[diff-mode-.el]]</tt> -- extensions to standard library `diff-mode'  -- see '''DiffEnhancements'''
-* <tt>[[help-mode+.el]]</tt> -- extensions to standard library `help-mode'; see also '''HelpPlus''' and '''HelpModePlus'''
 * <tt>[[tool-bar+.el]]</tt> -- extensions to standard library `tool-bar'; see also '''ToolBar'''
 * <tt>[[wide-n.el]]</tt> -- cycle among MultipleNarrowings
 

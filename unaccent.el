@@ -4,12 +4,12 @@
 ;; Description: Functions dealing with accented characters.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1999-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Sep  3 11:02:14 1999
 ;; Version: 20.0
-;; Last-Updated: Fri Jan 15 13:51:10 2010 (-0800)
+;; Last-Updated: Tue Jan  4 14:50:09 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 53
+;;     Update #: 55
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/unaccent.el
 ;; Keywords: i18n, language, accents
 ;; Compatibility: GNU Emacs 20.x
@@ -39,7 +39,7 @@
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
-;;; Change log:
+;;; Change Log:
 ;;
 ;; 1999/09/03 dadams
 ;;     1. reverse-iso-chars-alist: defconst -> defvar.
@@ -96,6 +96,7 @@
     (?\241 . ?!)                        ; Upside-down exclamation mark (¡)
     ))
 
+;;;###autoload
 (defun unaccent-word (num)
   "Move curseur forward NUM (prefix arg) words, removing accents.
 Guillemet -> quote, degree -> @, s-zed -> ss, upside-down ?! -> ?!."

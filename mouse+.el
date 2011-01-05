@@ -4,12 +4,12 @@
 ;; Description: Extensions to `mouse.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Jun 28 14:47:12 1996
 ;; Version: 21.0
-;; Last-Updated: Tue Oct 12 08:22:18 2010 (-0700)
+;; Last-Updated: Tue Jan  4 11:42:00 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 510
+;;     Update #: 514
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse+.el
 ;; Keywords: mouse
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -96,6 +96,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Removed autoload cookie from non def* sexp.  Added for defface.
 ;; 2010/10/12 dadams
 ;;     mouse-flash-position: Updated doc string for Emacs 24.
 ;; 2009/04/26 dadams
@@ -154,10 +156,12 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defface mouse-scan-lines '((t (:background "Yellow")))
   "*Face used to temporarily highlight line at mouse position."
   :group 'mouse)
 
+;;;###autoload
 (defface mouse-flash-position '((t (:background "Yellow")))
   "*Face used to highlight mouse position temporarily."
   :group 'mouse)
@@ -400,7 +404,6 @@ Otherwise, this command effectively clones the frame and window."
 ;; If click in echo area and `*Messages*' is already displayed,
 ;; then do `M-x' and delete `*Messages*' window.
 ;;
-;;;###autoload
 (when (> emacs-major-version 21)
   (defun mouse-drag-region (start-event)
     "Set the region to the text that the mouse is dragged over.

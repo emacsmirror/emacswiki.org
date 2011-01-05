@@ -4,12 +4,12 @@
 ;; Description: Extension of hl-line.el to spotlight current few lines.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2009-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2009-2011, Drew Adams, all rights reserved.
 ;; Created: Sat Aug 26 18:17:18 2006
 ;; Version: 22.0
-;; Last-Updated: Fri Jan 15 13:19:59 2010 (-0800)
+;; Last-Updated: Tue Jan  4 10:27:36 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 445
+;;     Update #: 454
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hl-spotlight.el
 ;; Keywords: highlight, cursor, accessibility
 ;; Compatibility: GNU Emacs: 22.x, 23.x
@@ -76,6 +76,8 @@
 ;; 
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookies for defcustom, defface, and commands.
 ;; 2009/02/16 dadams
 ;;     Added: hl-spotlight-scan*, hl-spotlight-down.
 ;;     Created: Moved code from hl-line+.el.
@@ -123,20 +125,24 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (defface hl-spotlight
   '((t :inherit highlight))
   "Face for the spotlight in Hl-Line-Window mode."
   :group 'hl-line)
 
+;;;###autoload
 (defcustom hl-spotlight-height 2
   "*Number of lines to highlight, before and after the current line."
   :type 'integer :group 'hl-line)
 
+;;;###autoload
 (defcustom hl-spotlight-keep-centered-flag t
   "*Non-nil means keep the cursor and spotlight centered in the window.
 This has no effect unless library `centered-cursor-mode' is available."
   :type 'boolean :group 'hl-line)
 
+;;;###autoload
 (defcustom hl-spotlight-scan-period 1.5
   "*Number of seconds to wait before moving cursor to next line.
 Set this to nil if you do not want the cursor to automatically scan."
@@ -151,6 +157,7 @@ Set this to nil if you do not want the cursor to automatically scan."
 (defvar hl-spotlight-scan-timer (timer-create)
   "Timer used to move point downward.")
 
+;;;###autoload
 (defun hl-spotlight-enlarge (n)
   "Enlarge the hl-line spotlight by N lines.
 N is the numeric prefix arg (one, by default).
@@ -168,6 +175,7 @@ The spotlight is used by `hl-spotlight-mode' and
         (end    (save-excursion (forward-line (1+ hl-spotlight-height)) (point))))
     (cons start end)))
 
+;;;###autoload
 (define-minor-mode hl-spotlight-mode
     "Buffer-local minor mode to highlight lines surrounding point.
 With ARG, turn Hl-Spotlight mode on if ARG is positive, off otherwise.
@@ -220,6 +228,7 @@ Hl-Spotlight mode also turns off Hl-Line mode."
          (remove-hook 'pre-command-hook #'hl-line-unhighlight t)))
   (hl-line-mode (if hl-spotlight-mode 1 -1)))
 
+;;;###autoload
 (define-minor-mode global-hl-spotlight-mode
     "Global minor mode to highlight lines around point in current window.
 With ARG, turn Global-Hl-Spotlight mode on if ARG is positive, off
@@ -260,6 +269,7 @@ that between `hl-spotlight-mode' and `hl-line-mode'."
          (remove-hook 'post-command-hook #'global-hl-line-highlight)))
   (global-hl-line-mode (if global-hl-spotlight-mode 1 -1)))
 
+;;;###autoload
 (defun hl-spotlight-scan (arg)
   "Scan the buffer, moving the cursor down automatically.
 Every `hl-spotlight-scan-period' seconds, move the cursor down one

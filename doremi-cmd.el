@@ -4,20 +4,19 @@
 ;; Description: Miscellaneous Do Re Mi commands
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 2004-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Sun Sep 12 17:13:58 2004
 ;; Version: 21.0
-;; Last-Updated: Tue Mar  9 13:57:40 2010 (-0800)
+;; Last-Updated: Tue Jan  4 08:26:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 326
+;;     Update #: 331
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/doremi-cmd.el
 ;; Keywords: keys, cycle, repeat
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   `cl', `color-theme', `cus-face', `doremi', `easymenu', `mwheel',
-;;   `reporter', `ring', `ring+', `sendmail', `wid-edit', `widget'.
+;;   `doremi', `mwheel', `ring', `ring+'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -145,6 +144,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     Added autoload cookie for defgroup.
 ;; 2010/03/09 dadams
 ;;     doremi-color-themes: Initialize to ().
 ;;     doremi-color-themes+: Do the real init of var doremi-color-themes here.
@@ -208,10 +209,15 @@
 
 (require 'doremi) ;; doremi
 
+;; Quiet the byte-compiler.
+(defvar color-theme-initialized)
+(defvar color-themes)
+
 ;;;;;;;;;;;;;;;;;;;;;;;;
  
 ;;; User Options (Variables)
 
+;;;###autoload
 (defgroup doremi-misc-commands nil
   "Miscellaneous Do Re Mi commands."
   :prefix "doremi-" :group 'doremi :group 'color-theme

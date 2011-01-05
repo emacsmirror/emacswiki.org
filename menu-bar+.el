@@ -4,12 +4,12 @@
 ;; Description: Extensions to `menu-bar.el'.
 ;; Author: Drew Adams
 ;; Maintainer: Drew Adams
-;; Copyright (C) 1996-2010, Drew Adams, all rights reserved.
+;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Thu Aug 17 10:05:46 1995
 ;; Version: 21.1
-;; Last-Updated: Fri Jun  4 10:49:23 2010 (-0700)
+;; Last-Updated: Tue Jan  4 11:24:45 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3358
+;;     Update #: 3368
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/menu-bar+.el
 ;; Keywords: internal, local, convenience
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -66,8 +66,7 @@
 ;;                              `sub-kill-buffer-and-its-windows'.
 ;;  `menu-bar-options-save' - Added options are saved (>= Emacs 21).
 ;;
-;;  `menu-bar-select-buffer' -  1. Uses -other-frame.
-;;                              2. defun -> defsubst.
+;;  `menu-bar-select-buffer' - Uses -other-frame.
 ;;
 ;;  `menu-bar-select-frame' - Use Emacs 22 version for Emacs 20.
 ;;
@@ -89,6 +88,9 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/04 dadams
+;;     defsubst -> defun.
+;;     Removed autoload cookies from defvar.  Added for commands.
 ;; 2010/06/04 dadams
 ;;     Frames menu: Handle fit-frame.el and frame-cmds.el separately.  Added Toggle Max stuff.
 ;; 2010/05/28 dadams
@@ -353,8 +355,9 @@
 
 
 ;; REPLACES ORIGINAL in `menu-bar.el':
-;; Uses -other-frame.  defun -> defsubst.
-(defsubst menu-bar-select-buffer ()
+;; Uses -other-frame.
+;;;###autoload
+(defun menu-bar-select-buffer ()
   "Switch to `last-command-event' buffer in other frame."
   (interactive) (switch-to-buffer-other-frame last-command-event)) ;`files+.el'
 
@@ -363,7 +366,6 @@
 
 ;;; Main MENU-BAR entries.
 ;; Divider before standard menus.
-;;;###autoload
 (defvar menu-bar-divider-menu (make-sparse-keymap "Divider"))
 (define-key global-map [menu-bar divider] (cons "||" menu-bar-divider-menu))
 (define-key menu-bar-divider-menu [menu-bar-divider-hint]
@@ -620,6 +622,7 @@ submenu of the \"Help\" menu."))
              (menu-bar-non-minibuffer-window-p))
     :help "Create and edit a new file"))
 
+;;;###autoload
 (defun menu-bar-create-directory (directory)
   "Create a subdirectory of `default-directory' called DIRECTORY."
   (interactive (list (read-file-name "Create directory: ")))
@@ -650,7 +653,8 @@ submenu of the \"Help\" menu."))
 
 
 ;; REPLACES ORIGINAL in `menu-bar.el':
-;; Deletes buffer's windows as well.  defun -> defsubst.
+;; Deletes buffer's windows as well.
+;;;###autoload
 (defun kill-this-buffer ()
 "Delete the current buffer and delete all of its windows."
   (interactive)
@@ -1102,6 +1106,7 @@ string.\nIt is most convenient from the keyboard.  Try it!")))
 ;----------------------
 (define-key menu-bar-search-tags-menu [separator-tags-regexp] '("--"))
 
+;;;###autoload
 (defun menu-bar-next-tag-other-window ()
   "Find the next definition of the tag already specified."
   (interactive)
