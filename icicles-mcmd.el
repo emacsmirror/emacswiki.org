@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:19:43 2010 (-0800)
+;; Last-Updated: Wed Jan  5 09:33:01 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16414
+;;     Update #: 16417
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -155,7 +155,7 @@
 ;;    `icicle-sit-for', `icicle-sort-alphabetical',
 ;;    `icicle-sort-by-abbrev-frequency',
 ;;    `icicle-sort-by-directories-first',
-;;    `icicle-sort-by-directories-last',
+;;    `icicle-sort-by-directories-last', `icicle-sort-by-file-type',
 ;;    `icicle-sort-by-last-file-modification-time',
 ;;    `icicle-sort-by-last-use-as-input',
 ;;    `icicle-sort-by-previous-use-alphabetically',
@@ -1209,6 +1209,15 @@ case if `completion-ignore-case' or `case-fold-search' is non-nil.")
     icicle-last-modified-first-p        ; `icicle-sort-by-last-file-modification-time'
   "Sort file-name completion candidates in order of last modification.
 If not doing file-name completion, then sort alphabetically.")
+
+;;;###autoload (autoload 'icicle-sort-by-file-type "icicles-mcmd.el")
+(icicle-define-sort-command "by file type" ; `icicle-sort-by-file-type'
+    icicle-file-type-less-p
+  "Sort file-name completion candidates by file type.
+Directories sort first, alphabetically.
+Then sort by file type (extension), alphabetically.
+Sort names that have the same extension alphabetically.
+If not doing file-name completion, sort candidates alphabetically.")
 
 ;;;###autoload (autoload 'icicle-sort-by-directories-first "icicles-mcmd.el")
 (icicle-define-sort-command "by directories first" ; `icicle-sort-by-directories-first'

@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  2 23:41:40 2011 (-0800)
+;; Last-Updated: Wed Jan  5 08:48:47 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3992
+;;     Update #: 3993
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2237,7 +2237,7 @@ The value must be one of the following:
 * a list of the form ((PRED...) FINAL-PRED), where each PRED and
   FINAL-PRED are binary predicates
 
-If the value is a list of predicates, then each PRED is tried in turn
+If the value is a non-empty list, then each PRED is tried in turn
 until one returns a non-nil value.  In that case, the result is the
 car of that value.  If no non-nil value is returned by any PRED, then
 FINAL-PRED is used and its value is the result.

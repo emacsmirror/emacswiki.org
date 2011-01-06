@@ -177,6 +177,7 @@ Here are some of the '''Icicles''' sort orders that exist by default:
 * ''by mode-line mode name'' (buffer names)
 * by file/process name (buffer names)
 * '''by last file modification time''' (file names) -- see [[Icicles - File-Name Input#ReadingFileNames|Reading File Names]]
+* '''by file type (extension)''' (file names)
 * '''by directories first or last''' (file names)
 * '''in book order''' (Info) -- see [[Icicles - Info Enhancements#IciclesCompletionForInfo|Icicles Completion for Info]]
 * '''special candidates first''' -- see [[Icicles - Key Completion#HighlightLocalBindings|Local Bindings are Highlighted]], [[Icicles - Candidates with Text Properties]], [[Icicles - Object-Action Interaction]]

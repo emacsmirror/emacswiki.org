@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:19:24 2010 (-0800)
+;; Last-Updated: Wed Jan  5 09:28:14 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12042
+;;     Update #: 12057
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -87,13 +87,14 @@
 ;;    `icicle-file-name-directory-w-default',
 ;;    `icicle-file-name-input-p', `icicle-file-name-nondirectory',
 ;;    `icicle-file-name-prefix-candidates', `icicle-file-readable-p',
-;;    `icicle-file-remote-p', `icicle-file-writable-p',
-;;    `icicle-filesets-files-under', `icicle-files-within',
-;;    `icicle-files-within-1', `icicle-filter-alist',
-;;    `icicle-filter-wo-input', `icicle-first-matching-candidate',
-;;    `icicle-first-N', `icicle-fit-completions-window',
-;;    `icicle-fix-default-directory', `icicle-frames-on',
-;;    `icicle-fuzzy-candidates', `icicle-get-alist-candidate',
+;;    `icicle-file-remote-p', `icicle-file-type-less-p',
+;;    `icicle-file-writable-p', `icicle-filesets-files-under',
+;;    `icicle-files-within', `icicle-files-within-1',
+;;    `icicle-filter-alist', `icicle-filter-wo-input',
+;;    `icicle-first-matching-candidate', `icicle-first-N',
+;;    `icicle-fit-completions-window', `icicle-fix-default-directory',
+;;    `icicle-frames-on', `icicle-fuzzy-candidates',
+;;    `icicle-get-alist-candidate',
 ;;    `icicle-get-candidates-from-saved-set',
 ;;    `icicle-dired-guess-shell-command', `icicle-help-line-buffer',
 ;;    `icicle-help-line-file',
@@ -2594,7 +2595,8 @@ NO-DISPLAY-P non-nil means do not display the candidates; just
                            (save-restriction
                              (narrow-to-region beg end) ; Restrict to the completion candidate.
                              (let ((fn  (if (and (eq 'prefix icicle-current-completion-mode)
-                                                 (not (memq (icicle-current-TAB-method) '(fuzzy swank))))
+                                                 (not (memq (icicle-current-TAB-method)
+                                                            '(fuzzy swank))))
                                             ;; $$$$$$ What is best for `vanilla' (Emacs 23) completion?
                                             'search-forward
                                           (case icicle-apropos-complete-match-fn
@@ -4567,8 +4569,10 @@ If no highlighting was attempted, return nil."
                                           (point-max)))
 
            (cond (icicle-input-completion-fail-overlay ; Don't recreate if exists.
+                  ;; Specify buffer in case overlay exists but is in a diff (e.g. recursive) minibuffer.
                   (move-overlay icicle-input-completion-fail-overlay
-                                (1- icicle-input-fail-pos) (point-max))
+                                (1- icicle-input-fail-pos) (point-max)
+                                (window-buffer (active-minibuffer-window)))
                   (overlay-put icicle-input-completion-fail-overlay
                                'face (if (icicle-require-match-p)
                                          'icicle-input-completion-fail
@@ -5688,6 +5692,29 @@ Buffers not associated with files or processes are sorted last."
                    (if (memq system-type '(ms-dos windows-nt cygwin))
                        (string-lessp (icicle-upcase fp-b1) (icicle-upcase fp-b2))
                      (string-lessp fp-b1 fp-b2))))))
+
+
+(put 'icicle-file-type-less-p 'icicle-file-name-sort-predicate t)
+;; This predicate is used for file-name completion.
+(defun icicle-file-type-less-p (s1 s2)
+  "Non-nil means type of file S1 is less than that of S2, or S1 < S2 (alpha).
+A directory has a lower file type than a non-directory.
+The type of a non-directory is its extension.  Extensions are compared
+ alphabetically.
+If not doing file-name completion, then this is the same as
+`icicle-case-string-less-p'."
+  (if (icicle-file-name-input-p)
+      (let ((s1-dir-p  (icicle-file-directory-p s1))
+            (s2-dir-p  (icicle-file-directory-p s2)))
+        (cond ((and s1-dir-p s2-dir-p) (icicle-case-string-less-p s1 s2)) ; Both are dirs, so alpha.
+              ((not (or s1-dir-p s2-dir-p)) ; Neither is a dir.  Compare extensions.
+               (let ((es1  (file-name-extension s1 t))
+                     (es2  (file-name-extension s2 t)))
+                 (if (string= es1 es2)  ; If extensions the same, then compare file names.
+                     (icicle-case-string-less-p s1 s2)
+                   (icicle-case-string-less-p es1 es2))))
+              (s1-dir-p)))              ; Directories come before files.
+    (icicle-case-string-less-p s1 s2)))
 
 
 (put 'icicle-dirs-first-p 'icicle-file-name-sort-predicate t)

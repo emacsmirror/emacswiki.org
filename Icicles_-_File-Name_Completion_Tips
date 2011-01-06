@@ -10,18 +10,20 @@
 This page contains some tips about [[completion|completing]] file and directory names.
 
 ----
+[:icicle-file-type-less-p]
 [:icicle-dirs-first-p]
 [:icicle-dirs-last-p]
-==== Sort Function icicle-dirs-first-p, icicle-dirs-last-p ====
-Functions '''`icicle-dirs-first-p'''' and '''`icicle-dirs-last-p'''' are
-provided as possible values for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>''''.  They treat
-file and directory names specially, sorting directory names ''before'' or ''after''
-file names; otherwise, they are the same as `icicle-case-string-less-p'. 
+==== Sort Functions `icicle-file-type-less-p', `icicle-dirs-first-p', and `icicle-dirs-last-p' ====
+Functions '''`icicle-file-type-less-p'''', '''`icicle-dirs-first-p'''', and '''`icicle-dirs-last-p'''' are
+provided as possible values for [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-sort-comparer|icicle-sort-comparer]]</tt>''''.  When choosing a sort order using
+`##C-,##' or `##M-,##', these are called '''`##by file type##'''', '''`##by directories first##'''', and '''`##by directories last##''''.  They sort directory names (alphabetically) before non-directory names (after, for `icicle-dirs-last-p').  Function `icicle-file-type-less-p' sorts
+non-directories by file type (extension) alphabetically.  For
+non-file-name input these all act like `icicle-case-string-less-p'. 
 
 
 ----
 [:icicle-cycle-into-subdirs-flag]
-==== Option icicle-cycle-into-subdirs-flag ====
+==== Option `icicle-cycle-into-subdirs-flag' ====
 User option '''`<tt>[[Icicles - Customization and General Tips#icicle-cycle-into-subdirs-flag|icicle-cycle-into-subdirs-flag]]</tt>'''' controls whether or
 not [[minibuffer]]-input cycling ''explores subdirectories''.  By default,
 it is `nil', meaning that cycling does ''not'' descend into
@@ -47,7 +49,7 @@ merely as a cycling candidate.
 
 ----
 [:DotDotSlashAndTilde]
-==== .., /, and ~/ ====
+==== `..', `/', and `~/' ====
 
 You can use '''`##..##'''' during [[completion]] to access a parent directory,
 and you can use '''`##/##'''' and '''`##~/##'''' to shadow input to the left.  There
@@ -57,7 +59,7 @@ is currently no special treatment of MS Windows drive letters
 
 ----
 [:icicle-hide-common-match-in-Completions-flag]
-==== Option icicle-hide-common-match-in-Completions-flag, C-x . ====
+==== Option `icicle-hide-common-match-in-Completions-flag', `C-x .' ====
 
 Non-`nil' user option '''`icicle-hide-common-match-in-Completions-flag'''' hides the common
 match for your current input from each candidate in
@@ -70,7 +72,7 @@ component.
 
 ----
 [:completion-ignored-extensions]
-==== Option completion-ignored-extensions ====
+==== Option `completion-ignored-extensions' ====
 
 Standard Emacs user option '''`completion-ignored-extensions'''' is a list of file-name extensions. File names that match any of these extensions are generally ignored for completion (but see the doc string for particulars).  In '''Icicles''', however, the behavior is slightly different:
 
@@ -86,7 +88,7 @@ ignored extensions.   (Just load the library -- do not enable its minor mode or 
 
 ----
 [:icicle-use-tilde-for-home-dir-flag]
-==== Option icicle-use-~-for-home-dir-flag ====
+==== Option `icicle-use-~-for-home-dir-flag' ====
 User option '''`##icicle-use-~-for-home-dir-flag##'''' controls whether
 your home directory is written in the minibuffer using `##~##' or in
 expanded form, during completion.  The default value is `t',
@@ -111,7 +113,7 @@ Regexp matching is used only for apropos (not [[prefix completion|prefix]]) comp
 
 ----
 [:DollarInEnvVarAndRegexps]
-==== $ in Environment Variables and in Regexps ====
+==== `$' in Environment Variables and in Regexps ====
 
 You can use '''`<code>$</code>'''' for both environment variables and as a regexp
 special character.  For example, you can use a pattern such as
@@ -133,7 +135,7 @@ addition to the expansion of complete environment variables
 
 ----
 [:BackslashWDollarMatchesDirectories]
-==== \W$ Matches Directories ====
+==== `\W$' Matches Directories ====
 
 You can use the idiom `'''##\W$##'''' as input to match only ''directories'',
 when a command asks for a file or directory name.  The `##\W##' says

@@ -1,0 +1,48 @@
+== Apl In Debian ==
+Disclaimer: This is a Work-in-Progress page.
+
+Sorry for the terrible markup -- I am unable to enter linebreaks
+
+Apl comes under Debian under the Aplus packages.  These supposedly work 
+under xemacs. 
+=== Apl under Xemacs ===
+I could get it to work some 5 years ago. I could not recently. So...
+Someone else can fill this :-)
+
+I am going to stick to 
+=== Apl under Gnu Emacs ===
+Cleaned up from 
+http://groups.google.com/group/gnu.emacs.help/browse_thread/thread/1c6284278d3713d6/05e2dc099ce4a7db?lnk=raot&fwc=1
+
+==== Assumptions ====
+# You are running a recent gnuemacs under a recent debian.
+In my case this is emacs 23 and 24 with debian unstable.
+# You have the aplus-fsf packages installed. This is the list
+aplus-fsf, xfonts-kapl and aplus-fsf-{doc,el,dev}
+To test that aplus is running run a+ (not aplus) at a shell prompt
+You should get a banner and a strange indent.
+2 + 3 RET
+should give you 5
+
+Char encoding issues will prevent much more here, so get out with a Ctrl-d
+# You have Markus Triska's apl.el from
+http://stud4.tuwien.ac.at/~e0225855/unicapl/apl.el
+
+Load it into emacs.
+set-input-method to apl-ascii (in a fresh buffer if you like)
+The left corner of the mode line should show 'apl' to indicate that emacs can deal with apl chars [toggle with C-\]
+Typing {rho} {iota} {is} should give you rho iota and left arrow: (is ⍴ ⍳ ← )
+==== Inferior Apl ====
+# Set the load path in inferior-apl to the path where apl.el is
+# Load inferior-apl.el (preferably into a fresh emacs) Lisp:inferior-apl.el 
+# M-x run-apl
+should start apl in an emacs buffer
+
+Type A {is} 2 3 {rho} {iota} 6
+The {is} {rho} and {iota} should immediately convert to ← ⍴ ⍳
+Type A and a 2x3 matrix should be there
+
+==== Apl Chars are where? ====
+Look at the top of the apl.el file
+
+Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} 

@@ -81,6 +81,9 @@ Both of these commands fail to cycle through all shell buffers in Gnu Emacs 23.0
 
 check in the when condition makes the problem go away.
 
+Also, you'll probably want to customize same-window-regexps to include ##"\\*shell.*\\*\\(\\|<[0-9]+>\\)"## to make sure that when you cycle through the shell buffers, they all stay in the same window.
+
+
 ==garbage ls output / garbage gcc output==
 
 Take a look at AnsiColor.

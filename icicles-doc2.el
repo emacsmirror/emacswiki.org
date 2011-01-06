@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:18:40 2010 (-0800)
+;; Last-Updated: Wed Jan  5 09:59:58 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27391
+;;     Update #: 27401
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5501,11 +5501,16 @@
 ;;  This section contains some tips about completing file and
 ;;  directory names.
 ;;
-;;  * Functions `icicle-dirs-first-p' and `icicle-dirs-last-p' are
-;;    provided as possible values for user option
-;;    `icicle-sort-comparer'.  They treat file and directory names
-;;    specially, sorting directory names before or after file names;
-;;    otherwise, they are the same as `icicle-case-string-less-p'.
+;;  * Functions `icicle-file-type-less-p', `icicle-dirs-first-p', and
+;;    `icicle-dirs-last-p' are provided as possible values for user
+;;    option `icicle-sort-comparer'.  When choosing a sort order using
+;;    `C-,' or `M-,', these are called `by file type', `by directories
+;;    first', and `by directories last'.  They sort directory names
+;;    (alphabetically) before non-directory names (after, for
+;;    `icicle-dirs-last-p').  Function `icicle-file-type-less-p' sorts
+;;    non-directories by file type (extension) alphabetically.  For
+;;    non-file-name input these all act like
+;;    `icicle-case-string-less-p'.
 ;;
 ;;  * User option `icicle-cycle-into-subdirs-flag' controls whether or
 ;;    not minibuffer-input cycling explores subdirectories.  By

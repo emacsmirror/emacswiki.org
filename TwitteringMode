@@ -317,8 +317,12 @@ Alias may help you. If you have the below configuration, the timeline __$me__ in
                 ":home")))))
 }}}
 To read tweets related to someone, you can use the timeline __$r(HIS-OR-HER-USERNAME)__ . -- Tadashi MATSUO
-----
-See also: [[Twitter]] [[Identica-mode]]
 
 [new]
 Any way to add support for user switching? I.e. if you have multiple Twitter accounts. TwIt had this, but now has been discontinued, with its developer switching to TwitteringMode... -- JJ
+
+:[new]
+I like the feature in /rcirc/ that allows toggling between unread /msgs and the current coding buffer using `C-c C-@' (`@' -> space). Is there a chance of introducing this feature? -- Djui
+
+----
+See also: [[Twitter]] [[Identica-mode]]

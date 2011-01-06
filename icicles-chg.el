@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Sun Jan  2 23:41:07 2011 (-0800)
+;; Last-Updated: Wed Jan  5 09:31:57 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5973
+;;     Update #: 5977
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -660,6 +660,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/01/05 dadams
+;;     Added: icicle-file-type-less-p.
+;;     icicle-highlight-input-noncompletion: When move overlay, specify buffer (for recursive minibuf).
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/12/23 dadams
@@ -2168,6 +2171,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mcmd.el'")
 ;;
+;; 2011/01/05 dadams
+;;     Added: icicle-sort-by-file-type.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/12/18 dadams
