@@ -8,5 +8,5 @@ See odf-mode.el:
 http://www.cb1.com/~john/computing/emacs/lisp/editing/odf-mode.el
 
 ==Convert ODT to other formats Emacs can handle==
-There is a working program which transforms from odt to [[OrgMode]]; it handles lists, links, images, tables etc. This tool, odt2org, is written in Python and can be downloaded here: http://mantiel.wikidot.com/os:odt2org
+There is a working program which transforms from odt to [[OrgMode]]; it handles lists, links, images, tables etc. This tool, odt2org, is written in Python and can be downloaded here: https://bitbucket.org/josemaria.alkala/odt2org/wiki/Home
 It is very useful to have the content in org-mode because then you can export it to many other formats (HTML, PDF, wikis, LaTeX, Docbook, …).

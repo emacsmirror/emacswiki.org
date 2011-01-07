@@ -1,0 +1,67 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Google Matching]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - File-Name Input]] ||
+
+----
+
+
+== Buffer-Name Input ==
+
+The '''Icicles''' [[command]]s that read [[buffer]] names are [[multi-command]]s, so you can act on more than one
+buffer during a given command invocation.
+
+These commands all let you use a [[prefix argument]] to control which
+buffers are completion candidates.  It is the numeric value of the
+prefix arg that matters:
+
+* '''Positive:''' only buffers visiting ''files''
+* '''Zero:'''     only buffers with the ''same [[major mode|mode]]'' as the current buffer
+* '''Negative:''' only buffers associated with the selected ''[[frame]]''
+
+In addition to the usual '''Icicles''' key bindings, during buffer-name
+completion you can use the following keys:
+
+* '''`C-x M'''' (`icicle-filter-buffer-cands-for-mode') to filter the
+  buffer-name candidates to keep only those with a ''given major
+  mode''.  You are prompted for the mode.
+
+* '''`C-x m'''' (`icicle-bookmark-non-file-other-window') to visit a
+  [[BookmarkPlus#AdditionalTypes|bookmarked buffer]].  This is available only if you use library
+  '''[[Bookmark+]]'''.  This too is a [[multi-command]], so you can actually
+  visit any number of buffer bookmarks with one use of `C-x m'.  When finished, you can
+  continue with non-bookmark buffer-name completion.
+
+* '''`S-delete'''' to ''kill'' the buffer named by the current completion
+  candidate.
+
+During completion, candidate sorting is specific to buffer names.
+`##C-,##' cycles among the following ''sort orders'':
+
+* by ''last access''
+* `##*## ... ##*##' last: put buffers such as `*Messages*' and `*Help*' last
+* by buffer ''size''
+* by ''major mode'' name
+* by mode-line mode name (''mode name'' that appears in the [[mode line]])
+* by (absolute) ''file'' or ''process'' name
+
+'''See Also:'''
+
+* [[Icicles - Ido and IswitchB]] to use '''Icicles''' with a buffer-switching
+  behavior that is similar to [[Ido]] and [[IswitchB]]
+* [[Icicles - Progressive Completion#Predicates]] to filter the
+  buffer candidates on the fly in multiple ways (e.g. size)
+
+----
+
+
+|| *Previous:*  [[Icicles - Google Matching]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - File-Name Input]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryBufferSwitching
+
+

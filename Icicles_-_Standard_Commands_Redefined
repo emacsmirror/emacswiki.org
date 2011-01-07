@@ -24,7 +24,7 @@ non-`nil', then '''Icicles''' automatically redefines a few standard Emacs
 * `switch-to-completions'
 
 '''Icicles''' automatically redefines these standard Emacs commands for
-use in the minibuffer or `*Completions*':
+use in the [[minibuffer]] or `*Completions*':
 
 * `choose-completion'
 * `exit-minibuffer'

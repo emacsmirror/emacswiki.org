@@ -31,6 +31,7 @@ about defining a custom candidate-help action for a command.
 
 
 
+
 [:AlternativeActions]
 === Alternative Actions ===
 
@@ -167,14 +168,16 @@ It assumes that you really want to operate on a buffer, not its
 name (a string), so it automatically calls `get-buffer' before
 applying the alternative action function.
 
-
-
-
 '''See Also:'''
 * [[Icicles - Nutshell View#AlternativeOperations|Perform Alternative Operations on the Fly]]
 * [[Icicles - Object-Action Interaction]]
 * [[Icicles - Search-And-Replace]]
 * [[Icicles - Choose All Candidates]]
+
+
+
+
+
 
 
 [:DeletingObjects]
@@ -197,7 +200,7 @@ deletion action is defined.
 As an example of a deletion action, '''Icicles''' command
 `icicle-buffer-other-window', bound to `C-x 4 b', opens [[buffer]]s
 named by the individual candidates you act on, using `C-RET'.
-But it also kills any buffer that you act on, using `S-delete'.  This
+But it also lets you kill any buffer that you act on, using `S-delete'.  This
 is not the ''alternative'' action for the command (which is bound to
 `C-S-RET'); it is the ''deletion'' action.  Similarly, command
 `icicle-bookmark' jumps to a bookmark,
@@ -275,6 +278,11 @@ The option has no effect on other keys.
 
 You can toggle `icicle-use-C-for-actions-flag' at any time using
 '''`M-g'''' ('''`icicle-toggle-C-for-actions'''') in the minibuffer.
+
+
+
+
+
 
 
 [:AccessingBookmarks]

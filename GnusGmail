@@ -163,6 +163,10 @@ How can you see in a single thread both the received message and the sent messag
 [new]
 Create a nnvirtual group that contains both "nnimap+imap.gmail.com:INBOX" and "nnimap+imap.gmail.com:[Gmail]/Sent Mail", and you can have conversational view in that group.
 
+===*Article* extracts/previews in *Summary*===
+Is it possible to show the first non-reply line of the article within `gnus-summary-line-format', in order to get a "preview"?
+
+
 ===Tags===
 How can you assign and remove tags from messages?
 
@@ -234,6 +238,21 @@ You can put the following in your .gnus or init.el or whatever:
 <pre>
 (setq bbdb/news-auto-create-p t)
 </pre>
+
+===Reply-to with the same address as it was sent to===
+You can emulate this Gmail feature with the variable `gnus-posting-styles', which also allows you to set a whole bunch of other variables based on the email you reply to or the group you're in. A very simple example, for just two addresses, would be:
+
+    (setq gnus-posting-styles
+      '(((header "to" "myname@gmail.com")
+         (address "myname@gmail.com"))
+	((header "to" "blah@blah.com")
+         (address "blah@blah.com"))
+	((header "cc" "myname@gmail.com")
+         (address "myname@gmail.com"))
+	((header "cc" "blah@blah.com")
+         (address "blah@blah.com"))))
+
+See the info node on that variable, you could easily automatically add this from a list.
 
 ===Chat===
 Gmail provides a chat interface which uses the XMPP (Jabber) protocol; therefore you can use Emacs Jabber (see [[JabberEl]] or [[BitlBee]]) to chat with your contacts and with anyone who has a Jabber account.

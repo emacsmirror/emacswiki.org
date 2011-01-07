@@ -22,5 +22,53 @@ Have fun!
 
 [[image:RedoPlusScreenshot]]
 
+== Bug ==
+[new]
+Hi, thank you for providing redo+. Because I could not find any contact information I try this way to contact you (I don't speak Japanese, so I'm totally lost on your web-pages ;)
+
+When loading redo+ (the version on EmacsWiki) in my Emacs 22.3.1 I get the following error message:
+
+    (require 'redo+)
+
+{{{
+Debugger entered--Lisp error: (wrong-type-argument consp nil)
+  setcar(nil (and (not buffer-read-only) (consp buffer-undo-list) (or (not ...) (listp pending-undo-list))))
+  (lambda (map) (setcar (cdr ...) (quote ...)))((keymap))
+}}}
+
+It seems as when building the menu-items, some list may contain a nil. The following patch worked for me:
+{{{
+--- redo+.el    2011-01-07 08:51:07.000000000 +0100
++++ my-redo+.el 2011-01-07 08:44:24.000000000 +0100
+@@ -262,14 +262,16 @@
+ (unless (featurep 'xemacs)
+   ;; condition to undo
+   (mapc (lambda (map)
+-         (setcar (cdr (memq :enable (assq 'undo (cdr map))))
+-                 '(and (not buffer-read-only)
+-                       (consp buffer-undo-list)
+-                       (or (not (or (eq last-buffer-undo-list
+-                                        buffer-undo-list)
+-                                    (eq last-buffer-undo-list
+-                                        (cdr buffer-undo-list))))
+-                           (listp pending-undo-list)))))
++         (let ((p (cdr (memq :enable (assq 'undo (cdr map))))))
++           (if p
++               (setcar p 
++                       '(and (not buffer-read-only)
++                             (consp buffer-undo-list)
++                             (or (not (or (eq last-buffer-undo-list
++                                              buffer-undo-list)
++                                          (eq last-buffer-undo-list
++                                              (cdr buffer-undo-list))))
++                                 (listp pending-undo-list)))))))
+        (append (list menu-bar-edit-menu)
+                (if window-system (list tool-bar-map))))
+   ;; redo's menu-bar entry
+}}}
+
+Another comment: the version number in the comment is 1.15, but the variable "redo-version" is still set to 1.14. 
+
+-- Frank
 ----
 CategoryUndo

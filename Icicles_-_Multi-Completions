@@ -221,7 +221,7 @@ face `escape-glyph', which is used for control characters such as
 control characters can be used in regexps that also use `^' as a special character. I use an orange background with a blue foreground for this face.
 
 Because multi-completions often extend over multiple lines, and
-candidates in buffer `*Completion*' appear one right after the
+candidates in buffer `*Completions*' appear one right after the
 other, it's helpful to add additional separation between
 multi-completion candidates.  That is the purpose of user option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-list-end-string|icicle-list-end-string]]</tt>'''', whose default value is "##^J^J##"(two newline

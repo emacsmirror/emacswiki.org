@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 09:59:58 2011 (-0800)
+;; Last-Updated: Thu Jan  6 13:36:25 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27401
+;;     Update #: 27430
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -151,6 +151,8 @@
 ;;    (@file :file-name "icicles-doc1.el" :to "Word Matching and String Matching")
 ;;    (@file :file-name "icicles-doc1.el" :to "AND Matching and OR Matching")
 ;;    (@file :file-name "icicles-doc1.el" :to "NOT Matching")
+;;
+;;  (@file :file-name "icicles-doc1.el" :to "Buffer-Name Input")
 ;;
 ;;  (@file :file-name "icicles-doc1.el" :to "File-Name Input and Locating Files Anywhere")
 ;;    (@file :file-name "icicles-doc1.el" :to "Function `read-file-name'")
@@ -335,9 +337,9 @@
 ;;
 ;;  You've no doubt used standard Emacs command `occur'.  It finds all
 ;;  lines in a buffer that match a regexp that you enter.  It displays
-;;  the matching lines as links in buffer *Occur* - you can click a
+;;  the matching lines as links in buffer `*Occur*' - you can click a
 ;;  link to navigate to the corresponding line in the original buffer.
-;;  Using buffer *Occur* is similar to using the output of the Emacs
+;;  Using buffer `*Occur*' is similar to using the output of the Emacs
 ;;  `grep' command.
 ;;
 ;;  Command `icicle-occur' is similar to `occur', but instead of
@@ -1341,7 +1343,7 @@
 ;;(@* "Compile/Grep Search")
 ;;  ** Compile/Grep Search **
 ;;
-;;  In a compilation-results buffer, such as `*Compilation* or
+;;  In a compilation-results buffer, such as `*Compilation*' or
 ;;  `*grep*', you can use command `icicle-compilation-search', bound
 ;;  to `C-c `', to search among the result set (search hits).  This is
 ;;  similar to `icicle-search', but when you use `C-RET', `C-mouse-2',
@@ -2329,10 +2331,10 @@
 ;;  want complete flattening of the chosen subtree, in a single
 ;;  buffer, so you use a prefix arg of zero: `C-u 0 +'.
 ;;
-;;  This does not replace the *Info* buffer that you started with; it
-;;  creates a new buffer, named after the root node of the subtree you
-;;  flattened.  A principle use of `Info-merge-subnodes' is to print
-;;  out a manual or a portion of it.  Also, I wrote a library
+;;  This does not replace the `*Info*' buffer that you started with;
+;;  it creates a new buffer, named after the root node of the subtree
+;;  you flattened.  A principle use of `Info-merge-subnodes' is to
+;;  print out a manual or a portion of it.  Also, I wrote a library
 ;;  (`mkhtml.el', outdated now) that lets you convert the result to
 ;;  HTML.
 ;;
@@ -3272,8 +3274,9 @@
 ;;  This has the added benefit (in Emacs 22 or later) of hiding the
 ;;  `^G' - it's there, but you don't see it.  This hiding is only
 ;;  cosmetic; you still match the characters `^G' and `^J'.  In the
-;;  same way, Icicles hides the `^G' part of `^G^J' in *Completions*,
-;;  so the join string appears as a newline character.
+;;  same way, Icicles hides the `^G' part of `^G^J' in
+;;  `*Completions*', so the join string appears as a newline
+;;  character.
 ;;
 ;;  This hiding of `^G' happens only when option
 ;;  `icicle-list-join-string' has its (ugly but useful) default value.
@@ -3381,7 +3384,7 @@
 ;;  foreground for this face.
 ;;
 ;;  Because multi-completions often extend over multiple lines, and
-;;  candidates in buffer *Completion* appear one right after the
+;;  candidates in buffer `*Completions*' appear one right after the
 ;;  other, it's helpful to add additional separation between
 ;;  multi-completion candidates.  That is the purpose of user option
 ;;  `icicle-list-end-string', whose default value is "^J^J" (two
@@ -3463,8 +3466,8 @@
 ;;  period.  For example, your input regexp can limit candidates to
 ;;  those files last modified sometime in July, 2008, and you can then
 ;;  access these chronologically (by cycling or in buffer
-;;  *Completions*).  And don't forget that you can always reverse the
-;;  current sort order, using `C-N C-,' where N is an integer.
+;;  `*Completions*').  And don't forget that you can always reverse
+;;  the current sort order, using `C-N C-,' where N is an integer.
 ;;
 ;;  See Also:
 ;;
@@ -4578,7 +4581,7 @@
 ;;  * Non-nil user option
 ;;    `icicle-hide-common-match-in-Completions-flag' hides the common
 ;;    match for your current input from each candidate in
-;;    *Completions*.  You can toggle this at any time during
+;;    `*Completions*'.  You can toggle this at any time during
 ;;    completion using `C-x .' (`icicle-toggle-hiding-common-match').
 ;;
 ;;  * User option `icicle-show-Completions-initially-flag' controls
@@ -5135,7 +5138,7 @@
 ;;
 ;;    The default value of `icicle-list-join-string' is `^G^J'.  With
 ;;    Emacs 22 and later, the `^G' part is hidden when it appears in
-;;    *Completions*, and you can hide it in the minibuffer also by
+;;    `*Completions*', and you can hide it in the minibuffer also by
 ;;    using `C-M-j' instead of typing `C-q C-g C-j'.  See the doc
 ;;    string for more information.
 ;;
@@ -5544,7 +5547,7 @@
 ;;  * Non-nil user option
 ;;    `icicle-hide-common-match-in-Completions-flag' hides the common
 ;;    match for your current input from each candidate in
-;;    *Completions*.  You can toggle this at any time during
+;;    `*Completions*'.  You can toggle this at any time during
 ;;    completion using `C-x .' (`icicle-toggle-hiding-common-match').
 ;;    This can be especially useful when reading an absolute file name
 ;;    (e.g. `C-u C-x C-f'), by removing any common directory
@@ -5906,7 +5909,7 @@
 ;;  minibuffer and `*Completions*' bindings.
 ;;
 ;;  The following key is helpful during any minibuffer input.  It pops
-;;  up the *Help* buffer with information about using the minibuffer
+;;  up the `*Help*' buffer with information about using the minibuffer
 ;;  in Icicle mode.  During completion, this includes information
 ;;  similar to what you are reading now.  It also lists toggle
 ;;  commands and the current toggle values.
@@ -6115,6 +6118,19 @@
 ;;  change the current directory on the fly (think UNIX command `cd').
 ;;  See also
 ;;  (@file :file-name "icicles-doc1.el" :to "Absolute File Names and Different Directories").
+;;
+;;  During buffer-name completion, the following minibuffer bindings
+;;  are also in effect:
+;;
+;;    `C-x m'         - `icicle-bookmark-non-file-other-window':
+;;                      Visit a buffer (non-file) bookmark.  See also
+;;  (@file :file-name "icicles-doc1.el" :to "Accessing Saved Locations (Bookmarks) on the Fly").
+;;                      (Available only if you use `bookmark+.el'.)
+;;
+;;    `C-x M'         - `icicle-filter-buffer-cands-for-mode':
+;;                      Filter the buffer candidate to keep only those
+;;                      in a given major mode (you are prompted for
+;;                      the mode).
 ;;
 ;;  The following minibuffer binding moves the cursor to the start of
 ;;  the part of your input, if any, that is highlighted because it
@@ -6565,7 +6581,7 @@
 ;;    `switch-to-completions'.
 ;;
 ;;  Icicles automatically redefines these standard Emacs commands for
-;;  use in the minibuffer or *Completions*:
+;;  use in the minibuffer or `*Completions*':
 ;;
 ;;    `choose-completion', `exit-minibuffer',
 ;;    `minibuffer-complete-and-exit', `mouse-choose-completion',
@@ -7279,7 +7295,7 @@
 ;;
 ;;  Command `icicle-all-candidates-action' (`C-!' -- see
 ;;  (@file :file-name "icicles-doc1.el" :to "Choose All Completion Candidates"))
-;;  can report in buffer *Help* on the objects that it did not act
+;;  can report in buffer `*Help*' on the objects that it did not act
 ;;  upon successfully.  For this reporting to work, the function bound
 ;;  to `icicle-candidate-action-fn'
 ;;  (e.g. `my-delete-file-or-directory', above) should return `nil'
@@ -7772,11 +7788,11 @@
 ;;   my-menu-action
 ;;   "`C-mouse-2' or `C-RET' to choose menu items"
 ;;   my-menu-items nil t nil nil nil nil
-;;   ((icicle-show-*Completions*-initially-flag t)))
+;;   ((icicle-show-Completions-initially-flag t)))
 ;;
 ;;  This just adds a binding for
-;;  `icicle-show-*Completions*-initially-flag', so that
-;;  `*Completions*' is displayed initially.
+;;  `icicle-show-Completions-initially-flag', so that `*Completions*'
+;;  is displayed initially.
 ;;
 ;;  Granted, the `*Completions*' display doesn't exactly look like
 ;;  your average menu.  And the header line doesn't mention the

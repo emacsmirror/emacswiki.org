@@ -331,7 +331,7 @@ to keys in ''Icicle'' mode -- they are ''not'' bound by '''Icicles''' (except to
 * `icicle-search-buff-menu-marked' -- Search marked buffers, in order
 * `icicle-search-buffer' -- Search multiple buffers
 * `icicle-search-char-property' - Search for character properties
-* `icicle-search-dired-bookmark' -- Search Dired bookmarks
+* `icicle-search-dired-bookmark' -- Search [[Dired]] bookmarks
 * `icicle-search-dired-marked' -- Search the marked files in Dired
 * `icicle-search-file'  -- Search multiple files
 * `icicle-search-file-bookmark' -- Search file bookmarks
@@ -378,7 +378,7 @@ way to learn minibuffer and `*Completions*' bindings.
 
 
 The following key is helpful during any minibuffer input.  It pops
-up the *Help* buffer with information about using the minibuffer
+up the `*Help*' buffer with information about using the minibuffer
 in ''Icicle'' mode.  During completion, this includes information
 similar to what you are reading now.  It also lists toggle
 commands and the current toggle values.
@@ -582,11 +582,24 @@ minibuffer bindings are also in effect:
 
 * '''`##C-c +##''''  -- `icicle-make-directory': Create a directory.
 
-* '''`C-x m'''' -- `icicle-bookmark-file-other-window': Visit a file or directory (Dired) bookmark. See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]]. (Available only if you use <tt>[[bookmark+.el]]</tt>.)
+* '''`C-x m'''' -- `icicle-bookmark-file-other-window': Visit a file or directory ([[Dired]]) bookmark. See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]]. (Available only if you use '''[[Bookmark+]]'''.)
 
 During absolute file-name completion, you can use '''`C-c C-d'''' to
 change the current directory on the fly (think UNIX command `cd').
 See also [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Different Directories]].
+
+
+
+
+During [[buffer]]-name completion, the following minibuffer bindings
+are also in effect:
+
+* '''`C-x m'''' -- `icicle-bookmark-non-file-other-window': Visit a [[BookmarkPlus#AdditionalTypes|buffer (non-file) bookmark]].  See also [[Icicles - More About Multi-Commands#AccessingBookmarks|Accessing Saved Locations (Bookmarks) on the Fly]].  (Available only if you use '''[[Bookmark+]]'''.)
+
+* '''`C-x M'''' -- `icicle-filter-buffer-cands-for-mode': Filter the buffer candidate to keep only those in a given [[major mode]] (you are prompted for the mode).
+
+
+
 
 
 

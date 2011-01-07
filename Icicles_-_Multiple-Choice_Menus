@@ -54,11 +54,14 @@ menu items that look more like menu items ;-).
 A user does `M-x my-menu-command' and hits `TAB' to display this
 menu in the `*Completions*' buffer:
 
+[new:DrewAdams:2011-01-06 21:44 UTC]
+
   Click mouse-2 on a completion to select it.  (C-h: help)
 
   Possible completions are:
   Foobar                             Titi
   Toto
+[new]
 
 * The user presses and holds the Control key.  
 * S?he clicks `Foobar' -- message "Foobar chosen" appears.  
@@ -88,10 +91,10 @@ the menu? Then just use this code instead:
    my-menu-action
    "`C-mouse-2' or `C-RET' to choose menu items"
    my-menu-items nil t nil nil nil nil
-   ((icicle-show-*Completions*-initially-flag t))) ; Extra bindings
+   ((icicle-show-Completions-initially-flag t))) ; Extra bindings
 
 This just adds a binding for
-`icicle-show-*Completions*-initially-flag', so that `*Completions*'
+`icicle-show-Completions-initially-flag', so that `*Completions*'
 is displayed initially.
 
 Granted, the `*Completions*' display doesn't exactly look like your

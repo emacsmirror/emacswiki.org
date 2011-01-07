@@ -94,7 +94,7 @@
           (
            "anything-minimal"
            "http://www.emacswiki.org/emacs/download/anything-show-completion.el" ; Show completion prettily
-           
+           "http://www.emacswiki.org/emacs/download/anything-obsolete.el" ; obsolete functions
            ))
          ("anything" 30 5
           (

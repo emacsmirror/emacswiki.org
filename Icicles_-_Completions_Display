@@ -108,8 +108,13 @@ of the height for command `bar'. If you use such code, evaluate it after you loa
 
 
 
+
+
+
+
 [:TextSizeInCompletions]
 === Smaller Text in *Completions* ===
+
 Starting with Emacs 23, if you also use '''DoReMi''' library <tt>[[doremi-frm.el]]</tt>, then you can use '''`##C-x -##'''' in the minibuffer to
 zoom the `*Completions*' buffer text, shrinking or enlarging it
 incrementally using '''`##-##'''' or '''`##=##'''', respectively (`##=##' is typically
@@ -270,7 +275,7 @@ Here is a screenshot of buffer `*Completions*' (shown in its own frame):
 * [[Icicles - Moving Between the Minibuffer and Other Buffers]] for information on the `pause' key, which is somewhat related to using `C-insert'.
 
 * [[Icicles - Candidates with Text Properties]] and [[Icicles - Programming Multi-Completions]] for information about using text
-properties in *Completions*.  These sections are for Emacs-Lisp
+properties in `*Completions*'.  These sections are for Emacs-Lisp
 programmers.
 
 

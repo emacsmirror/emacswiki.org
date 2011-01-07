@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 09:33:01 2011 (-0800)
+;; Last-Updated: Thu Jan  6 08:44:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16417
+;;     Update #: 16419
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -6841,7 +6841,10 @@ Bound to `C-A' in the minibuffer, that is, `C-S-a'."
 ;; `icicle-abort-recursive-edit' does this with FORCE.
 ;;;###autoload
 (defun icicle-remove-Completions-window (&optional force)
-  "Remove the *Completions* window."
+  "Remove the `*Completions*' window.
+If not called interactively and `*Completions*' is the selected
+window, then do not remove it unless optional argument FORCE is
+non-nil."
   (interactive)
   (when (and (get-buffer-window "*Completions*" 'visible) ; Only if visible and not the selected window.
              (or force                  ; Let user use `C-g' to get rid of it even if selected.

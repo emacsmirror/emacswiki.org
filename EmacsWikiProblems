@@ -10,6 +10,10 @@ Note that this page is not about EmacsWikiMode.
 
 ----
 
+== Page not found by search ==
+
+Just mentioning in case it indicates a bug: Search for ##DiredPlus## and you will not see the DiredPlus page in the list.  But search for ##GrepPlus## and you will see the GrepPlus page.  Wonder why. -- DrewAdams
+
 
 == Server error! ==
 

@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Google Matching]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  Persistent Completions]] ||
+|| *Previous:*  [[Icicles - Buffer-Name Input]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  Persistent Completions]] ||
 
 ----
 
@@ -289,7 +289,7 @@ original `default-directory' is restored.
 ----
 
 
-|| *Previous:*  [[Icicles - Google Matching]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  Persistent Completions]] ||
+|| *Previous:*  [[Icicles - Buffer-Name Input]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles -  Persistent Completions]] ||
 
 
 

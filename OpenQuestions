@@ -9,6 +9,13 @@ only once you actually Save.
 When a question is answered--and sometimes before it is answered, it is moved to a more appropriate page on ThisWiki (See OpenQuestionsDiscussion).
 The [EmacsWiki:action=rc;rcidonly=OpenQuestions;from=1;showedit=1 change log] should usually say where a question was moved to.
 
+== Help I'm in an infinite loop...==
+
+[new] I downloaded the latest, but when I run it it says something like "This version of Aquamacs won't work on this version of the os" or words to that effect. (I have MacOS X 10.4.11 on ppc). When I go to the bug page, it says "download the latest version".... Why not display on the download page which versions of OS each version works with?
+
+And on the reporting-bug page it says please use the bug-reporting feature of Aquamacs to report the bug.
+
+Begin reading this message, unless you have already begun to read it. (Knuth , Art of Computer Programing Vol1)
 
 ==Ediff opens a file selector window which hangs==
 

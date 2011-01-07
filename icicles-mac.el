@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:24:28 2006
 ;; Version: 22.0
-;; Last-Updated: Sun Dec 26 12:19:32 2010 (-0800)
+;; Last-Updated: Thu Jan  6 08:56:13 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 556
+;;     Update #: 561
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mac.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -187,9 +187,9 @@ before the others."
                                                       read-buffer-completion-ignore-case)
                                                   completion-ignore-case))
     (icicle-show-Completions-initially-flag      (or icicle-show-Completions-initially-flag
-                                                     icicle-buffers-ido-like-flag))
+                                                  icicle-buffers-ido-like-flag))
     (icicle-top-level-when-sole-completion-flag  (or icicle-top-level-when-sole-completion-flag
-                                                     icicle-buffers-ido-like-flag))
+                                                  icicle-buffers-ido-like-flag))
     (icicle-default-value                        (if (and icicle-buffers-ido-like-flag
                                                           icicle-default-value)
                                                      icicle-buffers-ido-like-flag
@@ -219,9 +219,15 @@ before the others."
      (or icicle-all-candidates-list-alt-action-fn (icicle-alt-act-fn-for-type "buffer")))
     (bufflist
      (if current-prefix-arg
-         (if (wholenump (prefix-numeric-value current-prefix-arg))
-             (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))
-           (cdr (assq 'buffer-list (frame-parameters))))
+         (cond ((zerop (prefix-numeric-value current-prefix-arg))
+                (let ((this-mode  major-mode))
+                  (icicle-remove-if-not (lambda (bf)
+                                          (with-current-buffer bf (eq major-mode this-mode)))
+                                        (buffer-list))))
+               ((< (prefix-numeric-value current-prefix-arg) 0)
+                (cdr (assq 'buffer-list (frame-parameters))))
+               (t
+                (icicle-remove-if-not #'(lambda (bf) (buffer-file-name bf)) (buffer-list))))
        (buffer-list)))))
 
 ;;;###autoload

@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 09:31:57 2011 (-0800)
+;; Last-Updated: Thu Jan  6 10:53:05 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5977
+;;     Update #: 5987
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -75,6 +75,10 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-cmd1.el'")
 ;;
+;; 2011/01/06 dadams
+;;     Added: icicle-filter-buffer-cands-for-mode.
+;;     icicle-(kill|insert)-buffer, icicle-buffer(-other-window), icicle-add-buffer-candidate:
+;;       Bind C-x M to icicle-filter-buffer-cands-for-mode.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/12/18 dadams
@@ -2072,6 +2076,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-mac.el'")
 ;;
+;; 2011/01/06 dadams
+;;     icicle-buffer-bindings: Zero prefix arg limits candidates to buffers with same mode as current.
 ;; 2010/12/26 dadams
 ;;     Removed autoload cookies except simple ones & ones with sexp on same line.  Thx to Richard Kim.
 ;; 2010/12/18 dadams

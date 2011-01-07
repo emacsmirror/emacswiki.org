@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 09:22:57 2011 (-0800)
+;; Last-Updated: Thu Jan  6 13:10:37 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 25646
+;;     Update #: 25732
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc1.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -253,6 +253,8 @@
 ;;    (@> "Word Matching and String Matching")
 ;;    (@> "AND Matching and OR Matching")
 ;;    (@> "NOT Matching")
+;;
+;;  (@> "Buffer-Name Input")
 ;;
 ;;  (@> "File-Name Input and Locating Files Anywhere")
 ;;    (@> "Function `read-file-name'")
@@ -3012,7 +3014,7 @@
 ;;
 ;;  * You can use `C-x .' (`icicle-toggle-hiding-common-match') in the
 ;;    minibuffer at any time during completion to toggle hiding of the
-;;    matched portions of the candidates in *Completions*.  This
+;;    matched portions of the candidates in `*Completions*'.  This
 ;;    portion is replaced by ellipsis, `...'.  (In Emacs 20, it is
 ;;    replaced by nothing.)
 ;;
@@ -3651,7 +3653,7 @@
 ;;  For example, if you use standard command `switch-to-buffer' and
 ;;  you cycle among candidate buffer names using `C-M-end' (prefix
 ;;  completion), then the major and minor modes of each candidate
-;;  buffer are described in buffer *Help* as the buffer name appears
+;;  buffer are described in buffer `*Help*' as the buffer name appears
 ;;  in the minibuffer.
 ;;
 ;;  By default, you need not use the Meta key for candidate help; the
@@ -3681,7 +3683,7 @@
 ;;  out', then type `S-TAB' to display all variables that match "out"
 ;;  (in buffer `*Completions*').  Then use `C-M-next' repeatedly to
 ;;  cycle among those variables, displaying their documentation in the
-;;  *Help* buffer as they appear one by one in the minibuffer.  Or
+;;  `*Help*' buffer as they appear one by one in the minibuffer.  Or
 ;;  click individual variable names with `C-M-mouse-2', to display
 ;;  their documentation.
 ;;
@@ -3692,13 +3694,13 @@
 ;;  similarly named candidates to choose.  Seeing a candidate's
 ;;  documentation along with its name can help you decide.
 ;;
-;;  You can click links in buffer *Help* to look up more info, and
+;;  You can click links in buffer `*Help*' to look up more info, and
 ;;  then resume `C-M-next' where you left off, all without leaving
 ;;  completion.
 ;;
 ;;  This also works with menu items, if you load library `lacarte.el'
 ;;  as well as Icicles.  As you cycle among matching menu items, the
-;;  corresponding command documentation is displayed in *Help*.
+;;  corresponding command documentation is displayed in `*Help*'.
 ;;
 ;;  If you also use library `help-fns+.el' (Emacs 22 or later) or
 ;;  library `help+.el' (or `help+20.el' for Emacs 20), then you can
@@ -3716,7 +3718,7 @@
 ;;
 ;;  As an example, try `C-h C-o ici C-M-j string S-TAB' (`C-M-j' just
 ;;  separates the option name and type parts).  In buffer
-;;  *Completions*, you see all options whose name contains `ici' and
+;;  `*Completions*', you see all options whose name contains `ici' and
 ;;  whose type (or an inherited type) definition contains `string'.
 ;;  That means not only options that are strings, but options that are
 ;;  lists that contain string elements, options that can be a string
@@ -3724,8 +3726,8 @@
 ;;
 ;;  Browse the doc for these options, one after the other, using
 ;;  `C-M-next'.  This is a way to see, at the same time, the
-;;  documentation for individual options (in buffer *Help*) and the
-;;  types their values must satisfy (in *Completions*).
+;;  documentation for individual options (in buffer `*Help*') and the
+;;  types their values must satisfy (in `*Completions*').
 ;;
 ;;  And remember that you can leave the option-name part or the type
 ;;  part empty, to see all options of a certain type or options of all
@@ -3784,7 +3786,7 @@
 ;;  `C-M-home'.
 ;;
 ;;  If you use one-buffer-per-frame (`pop-up-frames' non-nil), then
-;;  displaying *Help* in one frame might interfere with viewing
+;;  displaying `*Help*' in one frame might interfere with viewing
 ;;  `*Completions*' in another.  For that reason, the `*Completions*'
 ;;  frame is raised to the front.  Also, if user option
 ;;  `icicle-Completions-frame-at-right-flag' is non-nil (default
@@ -4220,11 +4222,11 @@
 ;;  As an example of a deletion action, Icicles command
 ;;  `icicle-buffer-other-window', bound to `C-x 4 b', opens buffers
 ;;  named by the individual candidates you act on, using `C-RET'.  But
-;;  it also kills any buffer that you act on, using `S-delete'.  This
-;;  is not the alternative action for the command (which is bound to
-;;  `C-S-RET'); it is the deletion action.  Similarly, command
-;;  `icicle-bookmark' jumps to a bookmark, but you can also use
-;;  `S-delete' with it to delete individual bookmarks.
+;;  it also lets you kill any buffer that you act on, using
+;;  `S-delete'.  This is not the alternative action for the command
+;;  (which is bound to `C-S-RET'); it is the deletion action.
+;;  Similarly, command `icicle-bookmark' jumps to a bookmark, but you
+;;  can also use `S-delete' with it to delete individual bookmarks.
 ;;
 ;;  When you use `S-delete' with a command that allows duplicate
 ;;  candidate names that represent different candidate objects, it
@@ -4772,8 +4774,8 @@
 ;;  * If input completion is not available, then `S-TAB' performs key
 ;;    completion (it is, in effect, bound to `icicle-complete-keys').
 ;;
-;;  In addition, in buffer *Completions* `S-TAB' moves backward among
-;;  the candidate completions.
+;;  In addition, in buffer `*Completions*' `S-TAB' moves backward
+;;  among the candidate completions.
 ;;
 ;;  This is by design; it takes advantage of the fact that these
 ;;  contexts are mutually exclusive.  However, this economy comes at a
@@ -5077,7 +5079,7 @@
 ;;  `describe-function', you might be in for a surprise.  In Emacs 20,
 ;;  they both work fine.  In later Emacs versions, `describe-variable'
 ;;  gives you the message "You did not specify a variable", and
-;;  `describe-function' displays a *Help* buffer that says that each
+;;  `describe-function' displays a `*Help*' buffer that says that each
 ;;  function you choose is really a keyboard macro!
 ;;
 ;;  Why?  It's a bit complex, but worth hearing about if you want to
@@ -5213,7 +5215,7 @@
 ;;  the minibuffer, is a shorthand way of doing that: act on all
 ;;  candidates that match the current input.  In many contexts, `C-!'
 ;;  reports on any objects that were not acted upon successfully (in
-;;  buffer *Help*).
+;;  buffer `*Help*').
 ;;
 ;;  All multi-commands let you use `C-!' in this way.  Whenever a
 ;;  command defines a special action for `C-RET' to perform on the
@@ -5711,6 +5713,57 @@
 ;;  *not* match this".  See (@> "Sets of Completion Candidates") and
 ;;  (@> "Progressive Completion").
  
+;;(@* "Buffer-Name Input")
+;;
+;;  Buffer-Name Input
+;;  -----------------
+;;
+;;  The Icicles commands that read buffer names are multi-commands
+;;  (see (@> "Multi-Commands")), so you can act on more than one
+;;  buffer during a given command invocation.
+;;
+;;  These commands all let you use a prefix argument to control which
+;;  buffers are completion candidates.  It is the numeric value of the
+;;  prefix arg that matters:
+;;
+;;  * Positive: only buffers visiting files
+;;  * Zero:     only buffers with the same mode as the current buffer
+;;  * Negative: only buffers associated with the selected frame
+;;
+;;  In addition to the usual Icicles key bindings, during buffer-name
+;;  completion you can use the following keys:
+;;
+;;  * `C-x M' (`icicle-filter-buffer-cands-for-mode') to filter the
+;;    buffer-name candidates to keep only those with a given major
+;;    mode.  You are prompted for the mode.
+;;
+;;  * `C-x m' (`icicle-bookmark-non-file-other-window') to visit a
+;;    bookmarked buffer.  This is available only if you use library
+;;    `bookmark+.el'.  This too is a multi-command, so you can
+;;    actually visit any number of buffer bookmarks with one use of
+;;    `C-x m'.  When finished, you can continue with non-bookmark
+;;    buffer-name completion.
+;;
+;;  * `S-delete' to kill the buffer named by the current completion
+;;    candidate.
+;;
+;;  During completion, candidate sorting is specific to buffer names.
+;;  `C-,' cycles among the following sort orders:
+;;
+;;  * by last access
+;;  * `*...*' last: put buffers such as `*Messages*' and `*Help*' last
+;;  * by buffer size
+;;  * by major mode name
+;;  * by mode-line mode name (mode name that appears in the mode line)
+;;  * by (absolute) file or process name
+;;
+;;  See Also:
+;;
+;;  * (@> "Ido and IswitchB") to use Icicles with a buffer-switching
+;;    behavior that is similar to Ido and IswitchB
+;;  * (@> "`M-&': Satisfying Additional Predicates") to filter the
+;;    buffer candidates on the fly in multiple ways (e.g. size)
+ 
 ;;(@* "File-Name Input and Locating Files Anywhere")
 ;;
 ;;  File-Name Input and Locating Files Anywhere
@@ -5748,8 +5801,7 @@
 ;;  * `M-|' (`icicle-all-candidates-list-alt-action') to open Dired on
 ;;    the currently matching file names.  That is, it opens a special
 ;;    Dired buffer that contains only the matching files.  You are
-;;    prompted for the Dired buffer name.  See (@> "Alternative
-;;    Actions").
+;;    prompted for the Dired buffer name.  See (@> "Alternative Actions").
 ;;
 ;;  Note: Whether a command supports file-name globbing wildcards such
 ;;  as `*' is independent of whether it uses `read-file-name' or

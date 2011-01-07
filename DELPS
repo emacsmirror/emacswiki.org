@@ -123,15 +123,17 @@ at Savannah. Mirror at Github,
     cd $HOME/emacs.d/packages
 
     # Or use Github URL: git://github.com/jaalto/project--emacs-epackage.git
-    git clone git://git.savannah.nongnu.org/emacs-epackage.git emacs-epackage.git
+    git clone git://git.savannah.nongnu.org/emacs-epackage.git epackage
 
+    cd epackage
     git checkout --track -b devel origin/devel
-    ... to get new updates from time to time
+
+    # to get new updates from time to time
     git pull
 
 Add following to your `~/.emacs' startup file:
 
-    ;; One big file to boot all installed packages
+    ;; One big file to boot all installed epackages
     ;; Automatically generated. Do not edit.
     (load "~/.emacs.d/epackage/00conf/epackage-loader" 'noerr)
 
@@ -161,9 +163,9 @@ The epackage manager can also be called from command line UI:
 
 == Contact ==
 
-Please send comments, suggestion, ideas, bug reports to my me directly
-or to the Bug tracker as no-one is following information added to
-this page. Thanks --Jari.
+Please send comments, suggestion, ideas, bug reports to me directly
+or to the bug tracker. please Do not send questions to this page.
+Thanks --Jari.
 
 * Bug Tracker: https://savannah.nongnu.org/bugs/?group=emacs-epackage
 * Email: jari dot aalto A cante net. Help me to notice your mail by starting
@@ -172,10 +174,8 @@ this page. Thanks --Jari.
 == Pictures ==
 
 2010-12. A rudimentary implementation of early concept of the software
-is available for testing. The features can be accessed from
-command line UI or with standard Emacs `M-x' `epacakge*' commands.
-The full buffer mode based UI (like in ELPA) is planned to be ready
-somewhere around late spring 2011.
+is available for testing. The full buffer mode based UI (like in ELPA)
+is planned to be ready somewhere around late spring 2011.
 
 [[image:EpackagePictureUiCommandLine]]
 
