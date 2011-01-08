@@ -17,7 +17,7 @@ ways:
 
 * In any [[buffer]], it provides completion for '''`##M-!##'''' and '''`##M-|##''''.
 
-* In DiredMode mode, it provides '''Icicles''' completion for '''`##!##'''', and '''`##&##''''.  See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].
+* In [[Dired]] mode, it provides '''Icicles''' completion for '''`##!##'''', and '''`##&##''''.  See [[Icicles - Dired Enhancements#CompleteShellCommands|Shell Commands on Marked Files]].
 
 
 This section describes the completion available for `##M-!##' and
@@ -45,16 +45,16 @@ want, not just a completion candidate, and you can edit completed
 input, to add switches (options) and arguments.
 
 [:icicle-guess-commands-in-path]
-Though file-name completion is used for reading shell commands, ''extra'', known commands are also made available as completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
+Though file-name completion is used for reading shell commands, extra, known commands are also made available as ''proxy'' completion candidates if option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil' (it is `nil' by default).  These extra candidates are the names of all executable
 files (or of all files, if `shell-completion-execonly' is `nil') in
 your ''search path''.
 
-The fact that these are '''Icicles''' ''extra'' candidates means that they
+The fact that these are '''Icicles''' proxy candidates means that they
 are available regardless of the current default-directory -- they
 are not in fact treated as file-name candidates, even though they
 are available during file-name completion.  You can easily
-recognize Icicles extra candidates in buffer `*Completions*': they
-have face `icicle-extra-candidates'. See [[Icicles - Global Filters]].
+recognize '''Icicles''' proxy candidates in buffer `*Completions*': they
+have face `icicle-proxy-candidates'.  See [[Icicles - Completions Display#ProxyCandidates|Proxy Candidates]].
 
 [:icicle-shell-command-candidates-cache]
 If `icicle-guess-commands-in-path' is non-`nil', the list of

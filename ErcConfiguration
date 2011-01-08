@@ -360,5 +360,39 @@ character.
 This version is tested to work, so (with the original author's consent) the
 other version could be removed.
 
+== Notify on direct query message ==
+Sometimes I'm working in another application outside Emacs (hard to
+believe, I know), and so it's nice to still know when I've received a
+direct message. I thought I'd share the code I use to achieve this:
+{{{
+(defun ysph-erc-privmsg-notify (proc res)
+  (flet ((rtrim-string (s) (replace-regexp-in-string "\\([[:space:]\n]*$\\)" "" s)))
+    (let ((channel-buffers     (erc-channel-list proc))
+          (sender              (or (car (split-string (erc-response.sender res) "!"))
+                                   (erc-response.sender res)))
+          (target-channel-name (car (erc-response.command-args res)))
+          (xwindow-class       (rtrim-string (shell-command-to-string "stumpish current-window-class"))))
+      (unless (or (string= xwindow-class "Emacs") ; we are in an emacs frame
+                  (member (get-buffer target-channel-name) channel-buffers)) ; this is a channel message
+        (progn (notify-show-message
+                :id       10
+                :body     (format "Direct message from %s" sender)
+                :icon     "/home/ysph/.emacs.d/emacs.png"
+                :hints    nil
+                :timeout  120000
+                :app-name "ERC"
+                :summary  "Instant message!")
+               nil        ; we never want this to interrupt processing
+               )))))
+(add-hook 'erc-server-PRIVMSG-functions 'ysph-erc-privmsg-notify)               
+}}}
+This requires Lisp:notify.el, but you can use whatever notification
+lib is best suited to your setup. I also use stumpish (a part of
+stumpwm) to determine whether an Emacs frame is focused. I should
+note, I occasionally ran into issues with stumpish never returning and
+thus shell-command-to-string never returning, which of course could be
+resolved by killing stumpish, but a more robust approach would be to
+introduce an async command with timeout.  JosephGay
+
 ----
 [[ERC]]

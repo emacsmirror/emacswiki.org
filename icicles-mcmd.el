@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  6 08:44:31 2011 (-0800)
+;; Last-Updated: Fri Jan  7 22:14:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 16419
+;;     Update #: 16420
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-mcmd.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1699,7 +1699,8 @@ If ALTERNATIVEP is non-nil, the alternative sort order is returned."
             (help-insert-xref-button "[Icicles Doc, Part 2]" 'icicle-commentary2-button)
             (insert "\n\n")
             (goto-char (point-max))
-            (insert "\n\nSend an Icicles bug report: `\\[icicle-send-bug-report]'.\n\n")
+            (insert (substitute-command-keys
+                     "\n\nSend an Icicles bug report: `\\[icicle-send-bug-report]'.\n\n"))
             (help-insert-xref-button "[Icicles Help on the Web]" 'icicle-help-button)
             (insert "                        ")
             (help-insert-xref-button "[Icicles Doc, Part 1]" 'icicle-commentary1-button)

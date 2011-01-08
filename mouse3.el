@@ -7,9 +7,9 @@
 ;; Copyright (C) 2010-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 30 15:22:56 2010 (-0800)
 ;; Version: 
-;; Last-Updated: Tue Jan  4 11:43:28 2011 (-0800)
+;; Last-Updated: Fri Jan  7 15:18:08 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 1235
+;;     Update #: 1334
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/mouse3.el
 ;; Keywords: mouse menu keymap kill rectangle region
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -25,8 +25,9 @@
 ;; This library lets you customize the behavior of `mouse-3' in
 ;; several ways.
 ;;
-;; It redefines standard command `mouse-save-then-kill' to give you
-;; custom behavior for a second `mouse-3' click at the same spot.
+;; It redefines standard command `mouse-save-then-kill' in a trivial
+;; way to give you custom behavior for a second `mouse-3' click at the
+;; same spot.
 ;;
 ;; Vanilla Emacs hard-wires the behavior to kill or delete the region
 ;; (depending on the value of `mouse-drag-copy-region').  That action
@@ -37,52 +38,89 @@
 ;;
 ;; The redefined `mouse-save-then-kill' command in `mouse3.el' just
 ;; uses function `mouse3-second-click-command' to handle a second
-;; click at the same spot.  That function returns the command that is
-;; invoked: either the command that is the value of variable
-;; `mouse3-save-then-kill-command' or, if that is nil the command that
-;; is the value of user option `mouse3-second-click-default-command'.
+;; click at the same spot.  That function returns the command that
+;; `mouse-save-then-kill' invokes: either the command that is the
+;; value of variable `mouse3-save-then-kill-command' or, if that is
+;; nil the command that is the value of user option
+;; `mouse3-second-click-default-command'.
 ;;
 ;; Special contexts can bind variable `mouse3-save-then-kill-command'
 ;; to provide particular behavior.  For example, Icicles does this
-;; during completion so that a second `mouse-3' at the same spot in
-;; buffer *Completions* marks the selected completions (saves them for
-;; later reuse).
+;; during minibuffer completion so that a second `mouse-3' at the same
+;; spot in buffer `*Completions*' marks the selected completions
+;; (saves them for later reuse).
 ;;
 ;; You can use option `mouse3-second-click-default-command' to
 ;; customize the behavior to either pop up a menu or invoke any
 ;; command you choose.  The default value is
 ;; `mouse3-region-popup-menu', which pops up a menu.  To obtain the
-;; vanilla Emacs behavior when is `mouse3-save-then-kill-command' nil,
-;; customize the option value to command `mouse3-kill/delete-region'.
+;; vanilla Emacs behavior, customize the option value to command
+;; `mouse3-kill/delete-region'.
 ;;
-;; If you opt for the default behavior of letting the second `mouse-3'
-;; click pop up a menu, you can kill or delete the selected text by
-;; double-clicking `mouse-3' instead of single clicking.  In other
-;; words, in this case you have two possibilities:
+;; Option `mouse3-double-click-command' associates a command with a
+;; `mouse-3' double-click.  The default value is command
+;; `mouse3-kill/delete-region', so with the default setup you can kill
+;; or delete the selected text by double-clicking `mouse-3' instead of
+;; single clicking.  In other words, in the default setup you have two
+;; possibilities:
 ;;
-;;  2nd single-click: Pop up a menu and choose how to act on the
-;;                    selected text.
+;;  2nd single-click: Pop up a menu so you can choose how to act on
+;;                    the selected text.
 ;;
 ;;  double-click:     Kill or delete the selection, according to
 ;;                    standard option `mouse-drag-copy-region'.
 ;;
-;; When you choose a value for option
-;; `mouse3-second-click-default-command', key sequence
-;; `double-mouse-3' is automatically bound or unbound as appropriate.
+;; If you choose to customize one of these two options,
+;; `mouse3-second-click-default-command' or
+;; `mouse3-double-click-command', then you will probably want to
+;; customize both of them.
+;;
+;; To make either a single-click or a double-click do nothing,
+;; customize the appropriate option to the command `ignore'.
+;;
+;; Note:
+;;
+;; I do not recommend that you try reversing the option values from
+;; their defaults, so that a double-click pops up a menu and the
+;; second single-click at the same spot deletes the selected text.
+;; That does not work well in general because of a flaw (or a feature,
+;; depending on your view) in the Emacs design.
+;;
+;; Here's the problem: When you double-click to get the menu, Emacs
+;; first sends a single-click event, before the double-click event.
+;; (That's the flaw/feature.)  So if you double-click at the same spot
+;; then the selection is first deleted, before the menu pops up.
+;;
+;; If you double-click at a different spot then this does not happen,
+;; but instead the selection is extended or reduced to match the
+;; double-click position.  The selection might then not be the region
+;; you want the menu items to act on.  Things work pretty well,
+;; however, if you start selecting by double-clicking `mouse-1', click
+;; `mouse-3' here and there to extend, and finally double-click
+;; `mouse-3' near the end of the selection, because in that case the
+;; double-click position does not extend the selection any more.
+;;
+;; In sum, in general I do not recommend that you reverse the default
+;; values.  If you want `mouse-3' to pop up a menu, it is better to
+;; either (a) use the default setup so that the menu pops up on the
+;; second single-click, not on a double-click or (b) let
+;; `mouse3-double-click-command' pop up the menu, but set
+;; `mouse3-second-click-default-command' to a command other than
+;; `mouse3-kill/delete-region'.
 ;;
 ;;
-;; Pop-up Menu
-;; -----------
+;; Customized Pop-Up Menu
+;; ----------------------
 ;;
-;; If you choose to pop up a menu you can customize that menu using
-;; various user options.  The command that pops up the menu is
-;; `mouse3-region-popup-menu'.  See the documentation for that command
-;; for more explanation of the use of options.
+;; If you choose for `mouse-3' to pop up a menu then you can customize
+;; that menu using various user options.  The command that pops up the
+;; menu is `mouse3-region-popup-menu'.  See the documentation for that
+;; command for more explanation of the use of options.
 ;;
 ;; A fairly complete default menu is provided out of the box, so you
 ;; do not need to customize anything unless you want to.
 ;;
-;; `mouse3-region-popup-menu' ultimately invokes function
+;; `mouse3-region-popup-menu' ultimately invokes standard function
 ;; `x-popup-menu' to do its work.  The menu definition used by
 ;; `x-popup-menu' can take two alternative forms which are quite
 ;; different.  Which form you choose to use is controlled by option
@@ -113,11 +151,11 @@
 ;;
 ;; You can optionally include, at the beginning of the menu, a submenu
 ;; that has, as its own submenus, the global menus that are currently
-;; available.  This is controlled by option
+;; available.  (These are the same menus that are popped up by
+;; `C-mouse-3'.)  This is controlled by option
 ;; `mouse3-region-popup-include-global-menus-flag'.  If the menu bar
 ;; is not shown currently, then these submenus are the menu-bar menus.
-;; Otherwise they are the major-mode menus.  (Inclusion of the global
-;; menus is available only for Emacs 23 and later.)
+;; Otherwise they are the major-mode menus.
 ;;
 ;; For example, if the menu bar is showing, then in Dired mode the
 ;; first submenu is `Dired by name', which itself has submenus
@@ -196,11 +234,11 @@
 ;;
 ;; If you write Emacs-Lisp code, note that this is an example where
 ;; the text is a set of entries in tabular format (columns).  Each
-;; `*Completions*' entry (candidate) is defined by its mouse-face, not
-;; by its text.  For example, it is not delimited by whitespace
-;; (completion candidates can contain spaces and newlines).  A
-;; context-specific function picks up the set of selected completions
-;; as a list.
+;; `*Completions*' entry (candidate) is defined by its `mouse-face'
+;; property, not by its text.  For example, it is not delimited by
+;; whitespace (completion candidates can contain spaces and newlines).
+;; A context-specific function picks up the set of selected
+;; completions as a list.
 ;;
 ;; Similar opportunities can exist for other tabular or line-list
 ;; data: `*Buffer List*', compile/grep output, Info breadcrumbs,...
@@ -214,7 +252,8 @@
 ;;
 ;; User options defined here:
 ;;
-;;   `mouse3-dired-function', `mouse3-picture-mode-x-popup-panes',
+;;   `mouse3-dired-function', `mouse3-double-click-command',
+;;   `mouse3-picture-mode-x-popup-panes',
 ;;   `mouse3-region-popup-entries',
 ;;   `mouse3-region-popup-include-global-menus-flag',
 ;;   `mouse3-region-popup-x-popup-panes',
@@ -269,6 +308,9 @@
 ;; 
 ;;; Change Log:
 ;;
+;; 2011/01/07 dadams
+;;     Added: mouse3-double-click-command.
+;;     mouse3-second-click-default-command: Removed the :set.
 ;; 2011/01/02 dadams
 ;;     Changed :group to mouse3 (added).
 ;;     Removed: mouse3-dired-region-menu (replaced by mouse3-dired-add-region-menu, a complete rewrite).
@@ -356,6 +398,7 @@ effect on `mouse-3' behavior.")
 (defcustom mouse3-second-click-default-command 'mouse3-region-popup-menu
   "Command used for a second `mouse-3' click at the same location.
 The command must accept 2 args: mouse click event and prefix arg.
+
 This is a default value, which can be programmatically overridden in
 various contexts.  This option is used only if variable
 `mouse3-save-then-kill-command' is nil.
@@ -363,16 +406,57 @@ various contexts.  This option is used only if variable
 Two particular values:
  `mouse3-region-popup-menu':  Pop up a menu of actions on the region.
  `mouse3-kill/delete-region': Kill or delete the region, according to
-                              `mouse-drag-copy-region'."
+                              `mouse-drag-copy-region'.
+
+See also `mouse3-double-click-command'.  You will probably want to
+customize these two options together.  To make either a no-op, set the
+value to command `ignore'.
+
+Note that setting `mouse3-double-click-command' to
+`mouse3-region-popup-menu' and `mouse3-second-click-default-command'
+to `mouse3-kill/delete-region' is not recommended, because in Emacs a
+double-click event is always preceded automatically by the associated
+single-click event.  See `(elisp) Repeat Events'."
   :type '(choice
           (const :tag "Menu" :value mouse3-region-popup-menu)
           (const :tag "Kill/delete, per `mouse-drag-copy-region'" :value mouse3-kill/delete-region)
           (restricted-sexp :tag "Other Command (two args)" :match-alternatives (commandp)))
+;;; $$$$$$  :set (lambda (symbol value)
+;;;          (set symbol value)
+;;;          (if (eq value 'mouse3-region-popup-menu)
+;;;              (global-set-key [double-mouse-3] 'mouse3-kill/delete-region)
+;;;            (global-set-key [double-mouse-3] nil)))
+  :initialize 'custom-initialize-set
+  :group 'mouse3)
+
+;;;###autoload
+(defcustom mouse3-double-click-command 'mouse3-kill/delete-region
+  "Command used for a `mouse-3' double-click.
+The command must accept 2 args: mouse click event and prefix arg.
+
+Two particular values:
+ `mouse3-region-popup-menu':  Pop up a menu of actions on the region.
+ `mouse3-kill/delete-region': Kill or delete the region, according to
+                              `mouse-drag-copy-region'.
+
+See also `mouse3-second-click-default-command'.  You will probably
+want to customize these two options together.  To make either a no-op,
+set the value to command `ignore'.
+
+Note that setting `mouse3-double-click-command' to
+`mouse3-region-popup-menu' and `mouse3-second-click-default-command'
+to `mouse3-kill/delete-region' is not recommended, because in Emacs a
+double-click event is always preceded automatically by the associated
+single-click event.  See `(elisp) Repeat Events'."
+  :type '(choice
+          (const :tag "Kill/delete, per `mouse-drag-copy-region'" :value mouse3-kill/delete-region)
+          (const :tag "Menu" :value mouse3-region-popup-menu)
+          (restricted-sexp :tag "Other Command (two args)" :match-alternatives (commandp)))
   :set (lambda (symbol value)
          (set symbol value)
-         (if (eq value 'mouse3-region-popup-menu)
-             (global-set-key [double-mouse-3] 'mouse3-kill/delete-region)
-           (global-set-key [double-mouse-3] nil)))
+         (global-set-key [double-mouse-3] value)
+         (global-set-key [left-fringe double-mouse-3] value)
+         (global-set-key [right-fringe double-mouse-3] value))
   :initialize 'custom-initialize-set
   :group 'mouse3)
 

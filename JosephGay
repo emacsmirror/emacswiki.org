@@ -1,16 +1,16 @@
 Joseph Gay
 gilleylen:at:gmail:dot:com
 
-ysph on #emacs and http://twitter.com/ysph
+ysph on #emacs and http://twitter.com/psydotai
 
 I use GNU Emacs
 
-* IM at work and at home using JabberEl and bitlbee (gilleylen on google talk)
-* reading and composing mail over IMAP using [[Mew]]
+* IM at work and at home using ERC and bitlbee (gilleylen on google talk)
+* reading and composing mail over IMAP using [[Gnus]]
 * web browsing (mostly technical docs) using [[w3m]]
 * server administration using TrampMode
-* twitter via TwIt
-* note taking and writing in OrgMode
+* twitter via bitlbee
+* note taking, writing, agenda, and time clock in OrgMode
 * i try to keep a learning log using RememberMode
 * SlimeMode for hacking on clojure and sbcl (in my spare time)
 
@@ -27,21 +27,15 @@ Things I'd like to try/get working:
    and notmuch for fast email searches.  I have nearly 100.000 mails, and
    Gnus/notmuch make it managable. -- TassiloHorn
 
+   Update: thanks Tassilo. I'm now using for Gnus for e-mail, news,
+   and RSS (via gwene) and I've enjoyed it very much thus far.
+
 * something to replace Google Reader, perhaps NewsTicker, Gnus?
+  Update: I've mostly accomplished this with gwene and Gnus (GnusRss)
 
 ** I use newsticker, but with the plain interface, not the fancy tree view. For
    me, it does all I need, and it does work with any format.  The last time I
    tried gnus for that, it had some troubles with some feeds. -- TassiloHorn
 
-Things that will make Emacs cooler (if that's possible):
-* [[Google Wave for Emacs]]
-* Emacs webkit and/or gecko integration (maybe something like ezbl)
- 
-[new]
-Welcome to the wiki! :) As for the webkit stuff, did you take a look at EmacsXembed? -- AlexSchroeder
-
-[new]
-Alex, Thanks for the welcome :) I've been looking at ezbl, which uses
-EmacsXembed to embed uzbl. -- JosephGay
 ----
 CategoryHomepage

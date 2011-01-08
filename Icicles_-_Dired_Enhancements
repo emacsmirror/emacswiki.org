@@ -25,11 +25,10 @@
 === Shell Commands On Marked Files ===
 
 In ''Icicle mode'', '''`##!##'''' and '''`##&##'''' in Dired let you complete a shell command.  All '''Icicles''' [[completion]] features are available.  This is the same program-file completion that is available anywhere when a shell command is read (see
-[[Icicles - Shell-Command Enhancements]]), but in Dired the extra
-candidates include commands that '''Icicles''' thinks might be
+[[Icicles - Shell-Command Enhancements]]), but in Dired the extra, [[proxy candidate]]s include commands that '''Icicles''' thinks might be
 particularly appropriate for the marked files.
 
-These extra candidates are not necessarily only command names.
+These proxy candidates are not necessarily only command names.
 They can include switches (options) that specialize a command.
 For example, if a PDF file (##*.pdf##) is marked in Dired, the
 completion candidates might include `##gv -safer##', `##pdftotext ?  -##',
@@ -37,7 +36,7 @@ and `##xpdf##'.  The first two of these are not just command names
 (`##-safer##' is a command switch).
 
 Starting with Emacs 23, '''Icicles''' uses both of the following
-methods to guess extra candidates that are file type-specific:
+methods to guess extra (proxy) candidates that are file type-specific:
 
 * MIME-type associations
 
@@ -50,18 +49,18 @@ file, candidates `##gv -safer##' and `##pdftotext ? -##' are provided by
 MIME-type associations, and candidate `##xpdf##' is provided by the
 [[Dired X]] rules.  Note that you can customize the rules.
 
-Any candidates that are specific to the marked files are '''Icicles''' ''extra'' candidates -- see
-[[Icicles - Global Filters]].  These
+Any candidates that are specific to the marked files are '''Icicles''' proxy candidates -- see
+[[Icicles - Completions Display#ProxyCandidates|Proxy Candidates]].  These
 are available regardless of the current default-directory.  They
 are not treated as file-name candidates, even though they are
-available during file-name completion.  '''Icicles''' extra candidates
-have face `icicle-extra-candidates' in buffer `*Completions*'.
+available during file-name completion.  '''Icicles''' proxy candidates
+have face `icicle-proxy-candidates' in buffer `*Completions*'.
 
 [:icicle-dired-guess-all-shell-cmds-flag]
 Again, everything that is true for shell-command completion
 elsewhere is also true for shell-command completion in Dired.  See
 [[Icicles - Shell-Command Enhancements]].  This includes adding
-all commands from your search path as extra candidates if option
+all commands from your search path as proxy candidates if option
 '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-commands-in-path|icicle-guess-commands-in-path]]</tt>'''' is non-`nil', and providing help on
 individual candidates (shell commands or files) during completion.
 

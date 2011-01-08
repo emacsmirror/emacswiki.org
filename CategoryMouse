@@ -15,23 +15,23 @@ In sum, if a page teaches you something about the mouse or about extending use o
  
 These pages are in category Mouse:
 
-* EmacsNewbie -- Background about mouse actions and other [[key sequence]]s
-* [[Region]] -- Use the mouse to select, copy, cut, and paste text regions of text.
-* MouseBindingNotation -- How to bind mouse buttons.
-* SecondarySelection -- A second selection (like a second region).  You can create, copy, cut, and paste it using the mouse, the same way you manipulate the region.
-* PointerShape -- Change the shape of the pointer.
-* MouseAvoidance -- Automatically move the pointer out of your way.
-
-* MousePlus -- Highlight the position where the mouse will paste, until you release the mouse button. Lets you correct your aim. Also: use `mouse-2' in the [[echo area]] to initiate `M-x'.
-* DoReMi -- Use the mouse wheel to repeat commands, run commands in sequence, increment things, or cycle through enumerations.
-* DiredPlus -- Use the mouse to mark files, including in ways similar to Windows Explorer.
-* HighLight -- Apply mouse-over (`mouse-face') highlighting to text.
-* CopyingWholeLines -- Use the mouse to copy lines.
-* StrokeMode -- Trace patterns with the mouse to execute commands.
 * ArtistMode -- Draw freehand with the mouse.
+* CopyingWholeLines -- Use the mouse to copy lines.
+* [[Dired+]] -- Use the mouse to mark files, including in ways similar to Windows Explorer.
+* DoReMi -- Use the mouse wheel to repeat commands, run commands in sequence, increment things, or cycle through enumerations.
+* EmacsNewbie -- Background about mouse actions and other [[key sequence]]s
+* <tt>[[follow-mouse.el]]</tt> -- Make the [[frame]] focus follow the pointer.
+* GrabAndDrag -- Scroll a window by mouse dragging
+* HighLight -- Apply mouse-over (`mouse-face') highlighting to text.
+* [[Mouse3]] -- Customize how `mouse-3' behaves.  Context-sensitive menus.
+* [[Mouse+]] -- Highlight the position where the mouse will paste, until you release the mouse button. Lets you correct your aim. Also: use `mouse-2' in the [[echo area]] to initiate `M-x'.
+* MouseAvoidance -- Automatically move the pointer out of your way.
+* MouseBindingNotation -- How to bind mouse buttons.
 * MouseEvent -- Write mouse-event code compatible with different EmacsLisp dialects.
-* Lisp:follow-mouse.el -- Make the [[frame]] focus follow the pointer.
-* GrabAndDrag -- scroll a window by mouse dragging
+* PointerShape -- Change the shape of the [[pointer]].
+* [[Region]] -- Use the mouse to select, copy, cut, and paste selected text.
+* SecondarySelection -- A second selection (like a second [[region]]).  You can create, copy, cut, and paste it using the mouse, the same way you manipulate the region.
+* StrokeMode -- Trace patterns with the mouse to execute commands.
 
 ----
 CategoryKeys CategoryDisplay

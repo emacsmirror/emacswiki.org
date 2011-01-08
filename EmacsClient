@@ -37,6 +37,8 @@ Create an emacs.bat file in your Emacs "bin" directory. (Perhaps something like 
 
 The first line suppresses command line output, but if anyone knows a quick and easy trick to prevent the batch file from popping a command window in the process, that'd be nice. The "%~dp0" returns the directory in which the batch file resides, which is why it's important to put it alongside "emacsclientw.exe" and "runemacs.exe". Everything is set in quotes to handle for spaces in path names. A script seen elsewhere suggested use of "-n/--no-wait". If you'd like Emacs to create a new window (an Emacs frame) consider adding the "-c/--create-frame" option to the beginning of the options argument.
 
+The -a option specifies a fallback program to run if the emacs server is not found. In this case, it is runemacs.exe, which runs emacs without opening a console window. 
+
 Pro tip: Under Windows Vista/7 with your emacs directory in "Program Files", do *NOT* use Emacs itself to create or edit the batch file. Windows creates a "Virtual Store" in the environment of the current user when it sees an executable messing with it's own directory under "Program Files". This could cause some confusing problems.
 
 [new]
@@ -51,7 +53,9 @@ Under Windows I used someting like this wedit.bat:
 
 "\emacs-22.3\bin\emacsclientw.exe" --alternate-editor="\emacs-22.3-bin-i386\emacs-22.3\bin\runemacs.exe" "%1"
 
+Note: Make sure you have (server-start) in your .emacs file, so the first time emacs is run it will run as a server. 
 
+Note: I had to remove the quotes from around the %1, and then in the registry, have something like "c:\apps\emacs\bin\emacs.bat" "%1" for the shell/open/command entries. Otherwise file paths with spaces in them would get parsed incorrectly. 
 
 = Starting Emacs automatically =
 

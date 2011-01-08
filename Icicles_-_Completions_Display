@@ -145,6 +145,9 @@ If you use library <tt>[[oneonone.el]]</tt> with a standalone
 '''`1on1-completions-frame-zoom-font-difference''''.
 
 
+
+
+
 [:icicle-candidate-width-factor]
 [:icicle-inter-candidates-min-spaces]
 [:ChangeCompletionsSpacingOnTheFly]
@@ -162,6 +165,10 @@ instead of just customizing the options once and for all?
 Because different sets of candidates have different candidate
 lengths and distributions of those lengths.  Play with it a bit
 and you will see.  One size does ''not'' fit all in an ideal way.
+
+
+
+
 
 
 [:HideCommonMatchPortion]
@@ -214,9 +221,14 @@ properly for a vertical layout.
 See [[Icicles - Customization and General Tips#icicle-completions-format|Customization and General Tips]] for more information.
 
 
+
+
+
+
+
 [:ProxyCandidates]
 === Proxy Candidates ===
-In some cases, '''Icicles''' adds one or more additional, '''proxy''' completion candidates.  These are placeholders for real candidates.  If you choose a proxy candidate, then the real candidate that is referred to is used.  Typical proxy candidates include a reference to a name under the cursor, a reference to whatever you then click `mouse-2' on, and a reference to a name that is the value of a [[variable]].
+In some cases, '''Icicles''' adds one or more additional, '''proxy''' completion candidates.  These are placeholders for real candidates.  If you choose a [::proxy candidate], then the real candidate that is referred to is used.  Typical proxy candidates include a reference to a name under the cursor, a reference to whatever you then click `mouse-2' on, and a reference to a name that is the value of a [[variable]].
 
 The inclusion of proxy candidates is controlled by user option '''`<tt>[[Icicles - Customization and General Tips#icicle-add-proxy-candidates-flag|icicle-add-proxy-candidates-flag]]</tt>''''.  You can toggle this inclusion at any time during completion, using '''`##C-M-_##''''.    For
 performance reasons, you must re-invoke some commands after toggling the flag on, to make the proxy candidates available.  Examples:

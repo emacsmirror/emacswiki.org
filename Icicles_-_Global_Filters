@@ -81,8 +81,11 @@ candidates are displayed in buffer `*Completions*' using face
 Note that an extra candidate need not have anything in common with
 the normal (non-extra) candidates.  In particular, because it is
 provided explicitly, it does not follow the restrictions implied
-by the current candidate-generation method.  For example, when
-option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-cmds-in-path-flag|icicle-guess-cmds-in-path-flag]]</tt>'''' is non-`nil', the extra
+by the current candidate-generation method.  
+
+In this, extra candidates are similar to [[proxy candidate]]s.
+For example, when
+option '''`<tt>[[Icicles - Customization and General Tips#icicle-guess-cmds-in-path-flag|icicle-guess-cmds-in-path-flag]]</tt>'''' is non-`nil', the proxy
 shell-command candidates provided have no connection with the
 file-name completion that is used to generate the other candidates
 (see [[Icicles - Shell-Command Enhancements]]).

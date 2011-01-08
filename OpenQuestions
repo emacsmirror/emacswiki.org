@@ -28,6 +28,14 @@ Begin reading this message, unless you have already begun to read it. (Knuth , A
 
 -- Michael
 
+Yes, with an overlay:
+
+ (defun set-buffer-background-color (color)
+   (let ((overlay (make-overlay (buffer-end -1) (buffer-end +1) (current-buffer) nil t)))
+     (overlay-put overlay 'face (list ':background color))))
+
+--AmitPatel
+
 ==Changing *scratch* buffername permanently==
 
 [new]
@@ -446,6 +454,9 @@ How do you show an image (PNG, JPEG, GIF) in Emacs 21.2, like it does on the int
 [new]
 Does Emacs 21.2 support viewing of any images (BMP,XBM,ICO,PNG...) on Windows?  See AutoImageFileMode.
 
+[new]
+If you want to save a text file with images you need a new file format. MULE is used for non-Ascii text encodings, not for images. Normally Emacs will save only the text of a buffer, not its overlays (colors, fonts, etc.). You can re-attach an image to the text file by creating an overlay with the <code>'display</code> property on it (see AutoSmiley for an example package that adds images to a text file). --AmitPatel
+
 == update-file-header,_time-stamp_and_undo ==
 
 [new]
@@ -466,7 +477,8 @@ undo-more. Comments?
       	(setq buffer-undo-list my-buffer-undo)
       	(buffer-enable-undo)))))
 
-[new]
+== Older versions of Debian's libc6 ==
+
 Has anyone compiled emacs22 to work with older versions of Debian's libc6 (2.3.6.ds1-4)?
 
 == Looking for a Mark Scope function ==
@@ -478,6 +490,10 @@ Does anyone know of an implementation of a `mark-scope' function? Or `beginning-
 Ideally it would start by marking the smallest current scope, then the region would include bigger and bigger scopes until the whole buffer is marked.
 
 Thanks!
+
+[new]
+You can mark an area with <code>mark-sexp</code> or ThingAtPoint or <code>mark-enclosing-sexp</code> (from ThingAtPointCommands). However if you want to edit within this region while it's marked, you may want to use BasicNarrowing after you've marked a region. --AmitPatel
+
 
 == From *Help* buffer how to automatically examine *.el source in view-mode? ==
 
@@ -513,6 +529,8 @@ I had a look at it, for me it works if I advice two functions. Try the following
 [new]
 Great Thanks!  Works for me. I hesitate to reveal the path I went down to attempt accomplishing the same :P I've been wondering about a solution for that puzzle for quite awhile now. I'd be curious to learn if there is a way to accomplish the same without advice... --mon_key
 
+[new]
+A different approach might be to set auto-mode-alist to use view-mode on anything in the standard Emacs lisp directories. --AmitPatel
 
 [:FAQ]
 = Answers to Frequent Questions =

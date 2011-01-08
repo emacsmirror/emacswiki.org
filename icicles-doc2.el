@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  6 13:36:25 2011 (-0800)
+;; Last-Updated: Fri Jan  7 23:14:34 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27430
+;;     Update #: 27445
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -1880,18 +1880,19 @@
 ;;  edit completed input, to add switches (options) and arguments.
 ;;
 ;;  Though file-name completion is used for reading shell commands,
-;;  extra, known commands are also made available as completion
+;;  extra, known commands are also made available as proxy completion
 ;;  candidates if option `icicle-guess-commands-in-path' is non-nil
 ;;  (it is nil by default).  These extra candidates are the names of
 ;;  all executable files (or of all files, if
 ;;  `shell-completion-execonly' is nil) in your search path.
 ;;
-;;  The fact that these are Icicles *extra* candidates means that they
+;;  The fact that these are Icicles proxy candidates means that they
 ;;  are available regardless of the current default-directory - they
 ;;  are not in fact treated as file-name candidates, even though they
 ;;  are available during file-name completion.  You can easily
-;;  recognize Icicles extra candidates in buffer `*Completions*': they
-;;  have face `icicle-extra-candidates'.  See (@> "Global Filters").
+;;  recognize Icicles proxy candidates in buffer `*Completions*': they
+;;  have face `icicle-proxy-candidates'.  See 
+;;  (@file :file-name "icicles-doc1.el" :to "Completions Display").
 ;;
 ;;  If `icicle-guess-commands-in-path' is non-nil, the list of
 ;;  search-path candidate commands is computed once and cached as the
@@ -1978,11 +1979,11 @@
 ;;  command.  All Icicles completion features are available.  This is
 ;;  the same program-file completion that is available anywhere when a
 ;;  shell command is read (see
-;;  (@> "Icicles Shell-Command Enhancements")), but in Dired the extra
-;;  candidates include commands that Icicles thinks might be
-;;  particularly appropriate for the marked files.
+;;  (@> "Icicles Shell-Command Enhancements")), but in Dired the
+;;  extra, proxy candidates include commands that Icicles thinks might
+;;  be particularly appropriate for the marked files.
 ;;
-;;  These extra candidates are not necessarily only command names.
+;;  These proxy candidates are not necessarily only command names.
 ;;  They can include switches (options) that specialize a command.
 ;;  For example, if a PDF file (*.pdf) is marked in Dired, the
 ;;  completion candidates might include `gv -safer', `pdftotext ?  -',
@@ -1990,7 +1991,7 @@
 ;;  (`-safer' is a command switch).
 ;;
 ;;  Starting with Emacs 23, Icicles uses both of the following methods
-;;  to guess extra candidates that are file type-specific:
+;;  to guess extra (proxy) candidates that are file type-specific:
 ;;
 ;;  * MIME-type associations
 ;;
@@ -2004,16 +2005,17 @@
 ;;  Dired X rules.  Note that you can customize the rules.
 ;;
 ;;  Any candidates that are specific to the marked files are Icicles
-;;  *extra* candidates -- see (@> "Global Filters").  These are
-;;  available regardless of the current default-directory.  They are
-;;  not treated as file-name candidates, even though they are
-;;  available during file-name completion.  Icicles extra candidates
-;;  have face `icicle-extra-candidates' in buffer `*Completions*'.
+;;  proxy candidates - see
+;;  (@file :file-name "icicles-doc1.el" :to "Completions Display").
+;;  These are available regardless of the current default-directory.
+;;  They are not treated as file-name candidates, even though they are
+;;  available during file-name completion.  Icicles proxy candidates
+;;  have face `icicle-proxy-candidates' in buffer `*Completions*'.
 ;;
 ;;  Again, everything that is true for shell-command completion
 ;;  elsewhere is also true for shell-command completion in Dired.  See
 ;;  (@> "Icicles Shell-Command Enhancements").  This includes adding
-;;  all commands from your search path as extra candidates if option
+;;  all commands from your search path as proxy candidates if option
 ;;  `icicle-guess-commands-in-path' is non-nil, and providing help on
 ;;  individual candidates (shell commands or files) during completion.
 ;;
@@ -8241,11 +8243,13 @@
 ;;  Note that an extra candidate need not have anything in common with
 ;;  the normal (non-extra) candidates.  In particular, because it is
 ;;  provided explicitly, it does not follow the restrictions implied
-;;  by the current candidate-generation method.  For example, when
-;;  option `icicle-guess-commands-in-path' is non-nil, the extra
-;;  shell-command candidates provided have no connection with the
-;;  file-name completion that is used to generate the other candidates
-;;  (see (@* "Icicles Shell-Command Enhancements")).
+;;  by the current candidate-generation method.  
+;;
+;;  In this, extra candidates are similar to proxy candidates.  For
+;;  example, when option `icicle-guess-commands-in-path' is non-nil,
+;;  the proxy shell-command candidates provided have no connection
+;;  with the file-name completion that is used to generate the other
+;;  candidates (see (@* "Icicles Shell-Command Enhancements")).
 ;;
 ;;  Note too that if an extra candidate is already a candidate anyway
 ;;  then it will be present twice in the list of all candidates (that

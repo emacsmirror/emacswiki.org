@@ -183,6 +183,16 @@ I find it useful to add ansi-color support with
 
 I've put it on github: http://github.com/krick/autotest.el
 
+[new::7/1/2011]
+
+Updated re in ##compilation-error-regexp-alist##:
+{{{
+     ("^ # *\\([[+]\\)?\\([^:
+]+\\):\\([0-9]+\\):" 2 3)
+}}}
+
+Note extra two characters '# ' which seem to be emitted by rspec2 stack trace. I suppose they could be made conditional for backwards compatibility
+
 === toggle.el ===
 [new:nsq:2009-06-11]
 I suggest transposing 'pairs' and '(mapcar ...)' in the pair doubling section (so that it looks like this):
