@@ -271,7 +271,7 @@ so that it will be used next time. See [[Icicles - Nutshell View]] for more abou
 ==== Option icicle-redefine-standard-commands-flag ====
 
 User option '''`icicle-redefine-standard-commands-flag'''' controls
-whether '''Icicles''' redefines some standard commands, enhancing them
+whether '''Icicles''' redefines some standard functions, enhancing them
 to use '''Icicles''' completion.  A non-`nil' value causes redefinition.
 
 

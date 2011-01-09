@@ -96,7 +96,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 ** defining -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-clear-option|key binding]]''
 ** use -- [[Icicles - Customization and General Tips]]
 
-* `customize-apropos', `customize-apropos-faces', `customize-apropos-groups', `customize-apropos-options' -- [[Icicles - Standard Commands Redefined]]
+* `customize-apropos', `customize-apropos-faces', `customize-apropos-groups', `customize-apropos-options' -- [[Icicles - Standard Functions Redefined]]
 
 * `icicle-change-alternative-sort-order' -- ''[[Icicles - Key Bindings#icicle-change-alternative-sort-order|key binding]]''
 
@@ -132,7 +132,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 [:D]
 ==== D ====
 
-* `dabbrev-completion' (`##C-M-/##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]]
+* `dabbrev-completion' (`##C-M-/##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Functions Redefined]]
 
 * (+) '''`icicle-delete-file''''
 ** defining -- [[Icicles - Defining Icicles Commands]]
@@ -259,7 +259,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 
 * (+) '''`icicle-kmacro'''' (`f5') -- [[Icicles - Multi-Commands]], [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-kmacro|key binding]]''
 
-* `icicle-lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#icicle-lisp-complete-symbol|key binding]]''
+* `icicle-lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Functions Redefined]], ''[[Icicles - Key Bindings#icicle-lisp-complete-symbol|key binding]]''
 
 * (+) '''`icicle-locate'''' -- [[IciclesUserDefinedCommands#icicle-locate]]
 
@@ -267,7 +267,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 ** defining -- [[Icicles - Defining Icicles Commands]], ''[[Icicles - Key Bindings#icicle-locate-file|key binding]]''
 ** use -- [[Icicles - File-Name Input]], [[Icicles - File-Name Completion Tips]], [[Icicles - Persistent Completions]], [[Icicles - Large Candidate Sets]]
 
-* `lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#lisp-complete-symbol|key binding]]''
+* `lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Functions Redefined]], ''[[Icicles - Key Bindings#lisp-complete-symbol|key binding]]''
 
 
 
@@ -334,7 +334,7 @@ These are the '''Icicles''' commands that are intended to be used mainly at the 
 
 * (+) '''`icicle-reset-option-to-nil'''' -- see `[[#clear-option|clear-option]]'
 
-* `repeat-complex-command' (`C-x M-ESC', `##C-x M-:##') -- [[Icicles - Standard Commands Redefined]]
+* `repeat-complex-command' (`C-x M-ESC', `##C-x M-:##') -- [[Icicles - Standard Functions Redefined]]
 
 
 
@@ -629,9 +629,9 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 [:mH]
 ==== D, E, F, G, H ====
 
-* `digit-argument' (`##C-<0-9>##', `##M-<0-9>##', `##C-M-<0-9>##') -- [[Icicles - Standard Commands Redefined]]
+* `digit-argument' (`##C-<0-9>##', `##M-<0-9>##', `##C-M-<0-9>##') -- [[Icicles - Standard Functions Redefined]]
 
-* `exit-minibuffer' (`C-m' (`RET'), `##\n##') -- [[Icicles - Standard Commands Redefined]]
+* `exit-minibuffer' (`C-m' (`RET'), `##\n##') -- [[Icicles - Standard Functions Redefined]]
 ** alternatives -- [[Icicles - Progressive Completion]], [[Icicles - Alternative Libraries]], [[Icicles - S-RET]], [[Icicles - Customization and General Tips#icicle-top-level-when-sole-completion-flag]]
 ** compared with `C-RET' -- [[Icicles - Nutshell View]], [[Icicles - Multi-Commands]], [[Icicles - Multi M-x]], [[Icicles - Multi-Commands the Hard Way]], [[Icicles - Note to Programmers]]
 ** completion outside minibuffer -- [[Icicles - Completion in Other Buffers]]
@@ -702,9 +702,9 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 [:mM]
 ==== L, M ====
 
-* `minibuffer-complete-and-exit' (`C-m', `##\n##') -- [[Icicles - Standard Commands Redefined]]
+* `minibuffer-complete-and-exit' (`C-m', `##\n##') -- [[Icicles - Standard Functions Redefined]]
 
-* `mouse-choose-completion' (`mouse-2') -- [[Icicles - Nutshell View]], [[Icicles - Background on Input Completion]], [[Icicles - Completions Display]], [[Icicles - Standard Commands Redefined]], [[Icicles - Multiple-Choice Menus]], ''[[Icicles - Key Bindings#mouse-choose-completion|key binding]]''
+* `mouse-choose-completion' (`mouse-2') -- [[Icicles - Nutshell View]], [[Icicles - Background on Input Completion]], [[Icicles - Completions Display]], [[Icicles - Standard Functions Redefined]], [[Icicles - Multiple-Choice Menus]], ''[[Icicles - Key Bindings#mouse-choose-completion|key binding]]''
 
 * `icicle-mouse-candidate-action' (`C-mouse-2') -- [[Icicles - Help on Candidates]], [[Icicles - Multi-Commands]], [[Icicles - Multiple-Choice Menus]], ''[[Icicles - Key Bindings#icicle-mouse-candidate-action|key binding]]''
 
@@ -731,7 +731,7 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 
 * `icicle-move-to-previous-completion' (`left') -- ''[[Icicles - Key Bindings#icicle-move-to-previous-completion|key binding]]''
 
-* `lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Commands Redefined]]
+* `lisp-complete-symbol' (`M-TAB', that is, `##ESC TAB##') -- [[Icicles - Completion in Other Buffers]], [[Icicles - Standard Functions Redefined]]
 
 
 
@@ -765,7 +765,7 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 * `icicle-next-prefix-candidate-alt-action' (`C-S-down') -- 
 [[Icicles - More About Multi-Commands]], ''[[Icicles - Key Bindings#icicle-next-prefix-candidate-alt-action|key binding]]''
 
-* `negative-argument' (`M--', `C-M--') -- [[Icicles - Standard Commands Redefined]]
+* `negative-argument' (`M--', `C-M--') -- [[Icicles - Standard Functions Redefined]]
 
 
 
@@ -846,7 +846,7 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 
 * `icicle-switch-to/from-minibuffer' (`pause') -- [[Icicles - Moving Between the Minibuffer and Other Buffers]], [[Icicles - Completions Display]],''[[Icicles - Key Bindings#icicle-switch-to-from-minibuffer|key binding]]''
 
-* `switch-to-completions' -- [[Icicles - Moving Between the Minibuffer and Other Buffers]], [[Icicles - Completions Display]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#switch-to-completions|key binding]]''
+* `switch-to-completions' -- [[Icicles - Moving Between the Minibuffer and Other Buffers]], [[Icicles - Completions Display]], [[Icicles - Standard Functions Redefined]], ''[[Icicles - Key Bindings#switch-to-completions|key binding]]''
 
 
 
@@ -914,12 +914,12 @@ These are the '''Icicles''' commands intended to be run mainly from the minibuff
 
 * `icicle-widen-candidates' (`##M-+##') -- [[Icicles - Regressive Completion]]
 
-* `universal-argument' (`C-u') -- [[Icicles - Standard Commands Redefined]]
+* `universal-argument' (`C-u') -- [[Icicles - Standard Functions Redefined]]
 
-* `yank' (`C-y', `S-insert') -- [[Icicles - Customization and General Tips]], [[Icicles - Standard Commands Redefined]], ''[[Icicles - Key Bindings#yank|key binding]]''
+* `yank' (`C-y', `S-insert') -- [[Icicles - Customization and General Tips]], [[Icicles - Standard Functions Redefined]], ''[[Icicles - Key Bindings#yank|key binding]]''
 
 
-* `yank-pop' (`M-y', `M-insert') -- [[Icicles - Standard Commands Redefined]]
+* `yank-pop' (`M-y', `M-insert') -- [[Icicles - Standard Functions Redefined]]
 
 
 

@@ -1,0 +1,82 @@
+: [[image:iciclesimage]]
+
+|| *Previous:*  [[Icicles - Customizing Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming with Fancy Candidates]] ||
+
+----
+
+
+= Icicles Redefines Some Standard Functions =
+
+If [[user option]] '''`<tt>[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|icicle-redefine-standard-commands-flag]]</tt>'''' is
+non-`nil', then '''Icicles''' automatically redefines a few functions from standard Emacs and some other packages, enhancing them for '''Icicles''' [[completion]].  These redefinitions hold only
+when you are in ''Icicle'' mode.
+
+* `bbdb-complete-name' (from [[BBDB]])
+* `comint-dynamic-complete'
+* `comint-dynamic-complete-filename'
+* `comint-replace-by-expanded-filename'
+* `customize-apropos'
+* `customize-apropos-faces'
+* `customize-apropos-groups'
+* `customize-apropos-options'
+* `customize-apropos-options-of-type' (from <tt>[[cus-edit+.el]]</tt>)
+* `customize-face'
+* `customize-face-other-window'
+* `dabbrev-completion'
+* `ess-complete-object-name' (from ESS)
+* `gud-gdb-complete-command'
+* `dired-read-shell-command'
+* `lisp-complete-symbol'
+* `lisp-completion-at-point'
+* `minibuffer-default-add-completions'
+* `read-from-minibuffer'
+* `read-shell-command'
+* `read-string'
+* `recentf-make-menu-items'
+* `repeat-complex-command'
+
+'''Icicles''' unconditionally redefines these standard Emacs functions while in ''Icicle'' mode:
+
+* `choose-completion'
+* `choose-completion-string'
+* `completing-read'
+* `completing-read-multiple'
+* `completion-setup-function'
+* `dired-smart-shell-command'
+* `display-completion-list'
+* `exit-minibuffer'
+* `face-valid-attribute-values'
+* `minibuffer-complete-and-exit'
+* `mouse-choose-completion'
+* `next-history-element'
+* `read-face-name'
+* `read-file-name'
+* `read-number'
+* `shell-command'
+* `shell-command-on-region'
+* `sit-for'
+* `switch-to-completions'
+
+When you exit ''Icicle'' mode, the standard definitions are
+restored.
+
+
+
+----
+
+
+
+|| *Previous:*  [[Icicles - Customizing Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Programming with Fancy Candidates]] ||
+
+
+
+DrewsElispLibraries referenced here: Lisp:icicles.el
+
+CategoryCommands 
+CategoryCompletion
+CategoryProgrammerUtils
+CategoryCode
+
+
+
+

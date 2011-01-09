@@ -2371,6 +2371,10 @@ Opening javadocs.
 
 -- TakeshiBanse
 
+[new] This doesn't work for me.
+When I press enter on a candidate I get the following error: (wrong-type-argument stringp nil)
+I did a bit of debugging and I think the problem is that the text properties are not getting passed to the action function with the candidate (even though they are displayed in the anything buffer). I am using anything version 1.287.
+
 ==Wmctrl==
 
 <pre>

@@ -1,12 +1,13 @@
 ;;; ascii.el --- ASCII code display.
 
-;; Copyright (C) 1999, 2000, 2001, 2006, 2007 Vinicius Jose Latorre
+;; Copyright (C) 1999, 2000, 2001, 2006, 2007, 2008, 2009, 2010, 2011
+;; Vinicius Jose Latorre
 
 ;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
+;; Time-stamp:	<2011/01/08 22:58:17 vinicius>
 ;; Keywords:	data, ascii
-;; Time-stamp:	<2007/04/05 01:40:12 vinicius>
-;; Version:	2.2.1
+;; Version:	3.0
 ;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
@@ -58,7 +59,7 @@
 ;;
 ;; This will generate ascii.elc, which will be loaded instead of ascii.el.
 ;;
-;; ascii was tested with GNU Emacs 20.4.1.
+;; It runs on GNU Emacs 20.4.1, 21, 22 and 23.
 ;;
 ;;
 ;; Using ascii
@@ -186,6 +187,8 @@
 ;; Acknowledgments
 ;; ---------------
 ;;
+;; Thanks to Steven W. Orr <steveo@syslang.net> for patch to Emacs 23.
+;;
 ;; Thanks to Roman Belenov <roman@nstl.nnov.ru> for suggestion on dynamic ascii
 ;; table evaluation (depending on character encoding).
 ;;
@@ -203,6 +206,11 @@
 	 (string-match "XEmacs\\|Lucid\\|Epoch" emacs-version))
        (not (require 'overlay))
        (error "`ascii' requires `overlay' package.")))
+
+
+;; GNU Emacs 20, 21 and 22 compatibility
+(or (fboundp 'characterp)
+    (defalias 'characterp 'char-valid-p))
 
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -392,9 +400,7 @@ If ARG is anything else, turn on display."
     (setq ascii-display         t
 	  ascii-reference-count (1+ ascii-reference-count))
     ;; local hooks
-    (make-local-hook 'post-command-hook)
-    (add-hook 'post-command-hook 'ascii-post-command)
-    (make-local-hook 'kill-buffer-hook)
+    (add-hook 'post-command-hook 'ascii-post-command nil t)
     (add-hook 'kill-buffer-hook 'ascii-off nil t)
     ;; own hook
     (run-hooks 'ascii-hook)
@@ -426,9 +432,6 @@ If ARG is anything else, turn on display."
  
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Internal variables
-
-
-(make-local-hook 'ascii-hook)
 
 
 (defconst ascii-table
@@ -763,7 +766,7 @@ COL-INDEX is the ASCII table column index.")
 		  ?\n)
 		 ((looking-at "=\\([0-9A-Fa-f][0-9A-Fa-f]\\)")
 		  (set var-sym "Quoted")
-		  (string-to-int (ascii-string-matched 1) 16)))))
+		  (string-to-number (ascii-string-matched 1) 16)))))
      ;; HTML
      ((and (memq 'html ascii-code)
 	   (let ((case-fold-search t))
@@ -772,7 +775,7 @@ COL-INDEX is the ASCII table column index.")
       (let ((str (ascii-string-matched 1)))
 	(cond ((eq (aref str 0) ?#)
 	       (aset str 0 ?\ )
-	       (let ((int (string-to-int str)))
+	       (let ((int (string-to-number str)))
 		 (if (and (<= 0 int) (<= int 255))
 		     int
 		   (set var-sym nil)
@@ -916,7 +919,7 @@ COL-INDEX is the ASCII table column index.")
 			       nil t)
 			  (delete-char 4)
 			  (setq base (1+ base))
-			  (if (not (char-valid-p base))
+			  (if (not (characterp base))
 			      (insert "?   ")
 			    (insert base)
 			    (let ((cols (- (current-column)
@@ -938,7 +941,7 @@ COL-INDEX is the ASCII table column index.")
 			       nil t)
 			  (delete-char 1)
 			  (setq base (1+ base))
-			  (if (not (char-valid-p base))
+			  (if (not (characterp base))
 			      (insert "?")
 			    (insert base)
 			    (let ((cols (- (current-column)

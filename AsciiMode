@@ -1,6 +1,6 @@
 This page describes package Lisp:ascii.el, by ViniciusJoseLatorre.
 
-: .:: ''v2.2.1'' ::.
+: .:: ''v3.0'' ::.
 
 == About ascii ==
 
@@ -29,7 +29,7 @@ For good performance, be sure to byte-compile Lisp:ascii.el, e.g.
 
 This will generate ##ascii.elc##, which will be loaded instead of Lisp:ascii.el.
 
-Lisp:ascii.el was tested with GNU Emacs 20.4.1.
+Lisp:ascii.el runs on GNU Emacs 20.4.1, 21, 22 and 23.
 
 
 == Using ascii ==

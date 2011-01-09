@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Fri Jan  7 23:14:34 2011 (-0800)
+;; Last-Updated: Sat Jan  8 08:22:31 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27445
+;;     Update #: 27476
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -279,7 +279,7 @@
 ;;    (@> "Customizing Icicle Mode Bindings")
 ;;    (@> "Customizing Minibuffer Bindings")
 ;;
-;;  (@> "Icicles Redefines Some Standard Commands")
+;;  (@> "Icicles Redefines Some Standard Functions")
 ;;  (@> "Programming with Fancy Candidates")
 ;;  (@> "Programming Multi-Completions")
 ;;    (@> "Variable icicle-list-use-nth-parts")
@@ -4372,7 +4372,7 @@
 ;;    it and save the new value, so it will be used next time.
 ;;
 ;;  * User option `icicle-redefine-standard-commands-flag' controls
-;;    whether Icicles redefines some standard commands, enhancing them
+;;    whether Icicles redefines some standard functions, enhancing them
 ;;    to use Icicles completion.  A non-nil value causes redefinition.
 ;;
 ;;  * Option `icicle-inhibit-advice-functions' is a list of functions
@@ -6565,29 +6565,43 @@
 ;;  * (@> "Customization and General Tips") for information
 ;;    about other customizations, besides key bindings.
  
-;;(@* "Icicles Redefines Some Standard Commands")
+;;(@* "Icicles Redefines Some Standard Functions")
 ;;
-;;  Icicles Redefines Some Standard Commands
-;;  ----------------------------------------
+;;  Icicles Redefines Some Standard Functions
+;;  -----------------------------------------
 ;;
 ;;  If user option `icicle-redefine-standard-commands-flag' is
-;;  non-nil, then Icicles automatically redefines a few standard Emacs
-;;  commands when you are in Icicle mode, enhancing them for Icicles
-;;  completion:
+;;  non-nil, then Icicles automatically redefines a few functions from
+;;  standard Emacs and some other packages, enhancing them for Icicles
+;;  completion.  These redefinitions hold only when you are in Icicle
+;;  mode.
 ;;
-;;    `bbdb-complete-name' (from BBDB), `customize-apropos',
+;;    `bbdb-complete-name' (from BBDB), `comint-dynamic-complete',
+;;    `comint-dynamic-complete-filename',
+;;    `comint-replace-by-expanded-filename', `customize-apropos',
 ;;    `customize-apropos-faces', `customize-apropos-groups',
-;;    `customize-apropos-options', `customize-face',
+;;    `customize-apropos-options', `customize-apropos-options-of-type'
+;;    (from `cus-edit+.el'), `customize-face',
 ;;    `customize-face-other-window', `dabbrev-completion',
-;;    `lisp-complete-symbol', `repeat-complex-command',
+;;    `ess-complete-object-name' (from ESS),
+;;    `gud-gdb-complete-command', `dired-read-shell-command',
+;;    `lisp-complete-symbol', `lisp-completion-at-point',
+;;    `minibuffer-default-add-completions', `read-from-minibuffer',
+;;    `read-shell-command', `read-string', `recentf-make-menu-items',
+;;    `repeat-complex-command'.
+;;
+;;  Icicles unconditionally redefines these standard Emacs functions
+;;  while in Icicle mode:
+;;
+;;    `choose-completion', `choose-completion-string',
+;;    `completing-read', `completing-read-multiple',
+;;    `completion-setup-function', `dired-smart-shell-command',
+;;    `display-completion-list', `exit-minibuffer',
+;;    `face-valid-attribute-values', `minibuffer-complete-and-exit',
+;;    `mouse-choose-completion', `next-history-element',
+;;    `read-face-name', `read-file-name', `read-number',
+;;    `shell-command', `shell-command-on-region', `sit-for',
 ;;    `switch-to-completions'.
-;;
-;;  Icicles automatically redefines these standard Emacs commands for
-;;  use in the minibuffer or `*Completions*':
-;;
-;;    `choose-completion', `exit-minibuffer',
-;;    `minibuffer-complete-and-exit', `mouse-choose-completion',
-;;    `next-history-element'.
 ;;
 ;;  When you exit Icicle mode, the standard definitions are restored.
  

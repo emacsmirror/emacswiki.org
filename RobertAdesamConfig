@@ -1,12 +1,13 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;;
 ;;; Emacs init file by
-;;; Robert Andersson, robert.andersson¬¬@gu.se
+;;; Robert Adesam, robert@adesam.se
+;;; http://www.adesam.se/robert/
 ;;;
-;;; This is my init file for Emacs version 22 and
-;;; 23 on both MacOSX and Linux
+;;; This is my init file for Emacs 23 on
+;;; MacOSX, Linux, and Windows/Cygwin
 ;;;
-;;; TODO: Solaris & Windows
+;;; TODO: Solaris
 ;;;
 ;;; N.B. Alot of this is reused from other Emacs 
 ;;; users that have published their init-files on
@@ -16,8 +17,9 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Load-path, exec-path, info-path
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; load-path
 (setq load-path (cons "~/.emacs.d" load-path))
-(load "~/.emacs.d/local.el")
 
 (if (eq system-type 'darwin)
     (setq exec-path
@@ -33,11 +35,67 @@
 
 ;; Setting PATH... why... my Emacs does not seem to inherit PATH from
 ;; .MacOSX/environment.plist, ~/.bash_profile, nor /etc/bashrc on my Mac :(
-(setenv "PATH" "/usr/local/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin")
+(if (eq system-type 'darwin)
+    (setenv "PATH" "/usr/local/bin:/opt/local/bin:/opt/local/sbin:/usr/bin:/bin:/usr/sbin:/sbin"))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Windows/Cygwin
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; Emacs on Windows 7, M-x version output:
+;;   GNU Emacs 23.2.1 (i386-mingw-nt6.1.7600)
+;;   of 2010-05-08 on G41R2F1
+;;
+;; N.B. executed
+;;
+;;   setx HOME c:\cygwin\home\robert
+;;
+;; in cmd.exe to set the HOME environment variable
+
+;; Adding cygwin stuff
+(if (eq system-type 'windows-nt)
+    (progn
+      (setenv "PATH" 
+	      (concat 
+	       "c:\\cygwin\\usr\\local\\bin" ";"
+	       "c:\\cygwin\\usr\\bin" ";"
+	       "c:\\cygwin\\bin" ";"
+	       (getenv "PATH")))
+      (setq exec-path (cons "c:/cygwin/bin/" exec-path))
+      ;; Adding cygwin mounts
+      (require 'cygwin-mount)
+      (cygwin-mount-activate)
+      ;; Adding cygwin bash shell
+      (setq shell-file-name "c:/cygwin/bin/bash")
+      (setenv "SHELL" shell-file-name)
+      (setq explicit-shell-file-name shell-file-name)
+      (setq ediff-shell shell-file-name)
+      (setq explicit-shell-args '("--login" "-i"))
+      (setq w32-quote-process-args ?\")
+      ))
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; Load local packages
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
+;; I install quite alot of local Emacs packages,
+;; maybe they should be installed elsewhere...
+;; in ~/.emacs.d?
+(let ((start-dir 
+       (cond
+        ((eq system-type 'windows-nt)
+         "c:/cygwin/usr/local/share/emacs/site-lisp/site-start.d")
+        ((eq system-type 'darwin)
+         "/usr/local/share/emacs/site-lisp/site-start.d")
+        ((eq system-type 'gnu/linux)
+         "/usr/local/share/emacs/site-lisp/site-start.d"))))      
+  (if (file-exists-p start-dir)
+      (mapc 'load (directory-files start-dir t "\\.el\\'"))))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Environment
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 ;; Some things I do not want...
 (setq inhibit-startup-echo-area-message "robert"
       inhibit-startup-screen t
@@ -54,30 +112,42 @@
 (transient-mark-mode t)
 (setq mark-even-if-inactive t)
 (auto-compression-mode t)
+(setq display-time-format " %R, %d %b v%V "
+      display-time-load-average-threshold 1)
+(display-time-mode)
+(setq read-file-name-completion-ignore-case t)
 
 ;; Frames, colours etc
+;; TODO: these should be system-name dependent, not system-type
 (setq default-frame-alist 
-      (cond 
-       ((eq system-type 'darwin)
+      (cond
+       ((string= system-name "SKRUTT") ; windows 7 on 10" netbook @home
         '((scroll-bar-width . 2) 
           (foreground-color . "gray15")
           (background-color . "antiquewhite1")
           (cursor-color . "gray30")
-          (left-fringe . 2)
-          (right-fringe . 2)
+          (left-fringe . 5)
+          (right-fringe . 5)
+          (width . 88) 
+          (height . 35)
+          (left . 295)))
+       ((eq system-type 'darwin) ; MacOS X 10.5.x on Mac Mini @work
+        '((scroll-bar-width . 2) 
+          (foreground-color . "gray15")
+          (background-color . "antiquewhite1")
+          (cursor-color . "gray30")
+          (left-fringe . 3)
+          (right-fringe . 3)
           (width . 141) 
           (height . 60)
           (left . 400)))          
-       ((eq system-type 'gnu/linux)
-        '((scroll-bar-width . 2)
-          (foreground-color . "gray15")
-          (background-color . "antiquewhite2")
-          (cursor-color . "gray50")
-          (left-fringe . 2)
-          (right-fringe . 2)
-          (width . 99)
-          (height . 50)
-          (left . 100)))))
+       ((eq system-type 'gnu/linux) ; Mandriva Linux 2010.0 on 14" ThinkPad T60 @work
+        '((height . 80)
+          (width . 103)
+          (left . 2)
+          (scroll-bar-width . 2)
+          (left-fringe . 5)
+          (right-fringe . 5)))))
 
 ;; Faces
 (if (eq system-type 'gnu/linux)
@@ -85,7 +155,7 @@
      '(default
        ((t (:inherit nil
             :stipple nil
-            :background "#ffffff"
+            :background "antiquewhite2"
             :foreground "Black"
             :inverse-video nil
             :box nil
@@ -94,17 +164,20 @@
             :underline nil
             :slant normal
             :weight normal
-            :height 100
+            :height 90
             :width normal
             :foundry "unknown"
             :family "DejaVu Sans Mono"))))
      '(org-column
        ((t (:inherit default
             :background "grey90"
-            :height 100
+            :height 90
             :family "DejaVu Sans Mono"))))))
 
-;; This is needed when running emacs 23, vm-mail otherwise crashes
+(custom-set-faces
+ '(org-document-title ((((class color) (background light)) (:foreground "midnight blue" :weight bold)))))
+
+;; This is needed when running Emacs 23, vm-mail otherwise crashes
 ;; emacs -nw when setting frame name, Fatal Error (10). Reported, see
 ;; http://debbugs.gnu.org/cgi/bugreport.cgi?bug=4765
 (if window-system (set-frame-name 
@@ -116,7 +189,7 @@
 
 ;; Character encoding
 (prefer-coding-system 'utf-8-unix)
-(if (eq system-type 'darwin)
+(if (or (eq system-type 'darwin) (eq system-type 'windows-nt))
     (progn
       (set-default-coding-systems 'utf-8-unix)
       (if (< emacs-major-version 23)
@@ -128,15 +201,15 @@
 (define-coding-system-alias 'utf-8-emacs 'utf-8) ; needed by bbdb...
 
 ;; Fullscreen, does not work on my Emacs for Mac... yet...
-(cond 
- ((eq system-type 'darwin) 
-  (defun fullscreen (&optional f)
-    (interactive)
-    (set-frame-parameter f 'fullscreen
-                         (if (frame-parameter f 'fullscreen) nil 'fullboth))))
-  ((eq system-type 'gnu/linux)
-   (require 'fullscreen)))
-(add-hook 'after-make-frame-functions 'fullscreen)
+;; (cond 
+;;  ((eq system-type 'darwin) 
+;;   (defun fullscreen (&optional f)
+;;     (interactive)
+;;     (set-frame-parameter f 'fullscreen
+;;                          (if (frame-parameter f 'fullscreen) nil 'fullboth))))
+;;   ((eq system-type 'gnu/linux)
+;;    (require 'fullscreen)))
+;; (add-hook 'after-make-frame-functions 'fullscreen)
 
 ;; Text
 (setq sentence-end-double-space nil)
@@ -149,14 +222,34 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Persona
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq user-full-name    "Robert Andersson"
-      user-mail-address "robert.andersson¬¬@gu.se")
+
+(setq user-full-name    "Robert Adesam"
+      user-mail-address "robert.adesam@gu.se")
+
+;; Function for inserting my son's first text 
+;; written with Emacs. He was only 8 months old 
+;; when producing this master piece.
+;; I am a very proud father! :)
+(defun alexanders-first-emacs-text ()
+  (interactive)
+  (insert " , ..lölökojjoinnnbhm,mmm,7hij,jj,.ölmetz in y5t
+yy8byb89tryb85yb8rn9b4n8b9trbtbbtbjkp
+¨pöööj09hu6u b5bitntintin4hghhe"))
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;; Calendar/Diary
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq diary-file "~/.diary"
-      calendar-date-style 'iso
+
+(setq diary-file 
+      (cond
+       ((eq system-type 'windows-nt)
+        "c:/Users/robert/My Dropbox/gtd/diary")
+       ((eq system-type 'darwin)
+        "~/gtd/diary")
+       ((eq system-type 'gnu/linux)
+        "~/gtd/diary")))
+
+(setq calendar-date-style 'iso
       diary-show-holidays-flag nil
       calendar-week-start-day 1
       calendar-mark-diary-entries-flag t
@@ -169,6 +262,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Printing
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq ps-paper-type 'a4
       ps-line-number nil
       ps-line-number-step 3
@@ -179,7 +273,8 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Global keys
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; When using emacs version > 22 on darwin
+
+;; When using Emacs version > 22 on darwin
 (if (and (> emacs-major-version 22)
          (eq system-type 'darwin))
     (progn 
@@ -189,16 +284,19 @@
       ))
 
 ;; Global keyboard tweaks
-(global-set-key "\C-xf" 'find-file) ; i always hit the wrong key-combo
-(global-set-key "\C-xm" 'vm-mail)
-(global-set-key (kbd "C-c a") 'org-agenda)
-(global-set-key (kbd "C-c r") 'remember)
 (global-set-key [f9] "[")
 (global-set-key [f10] "]")
 (global-set-key [f11] "{")
 (global-set-key [f12] "}")
 (global-set-key [f5] 'fullscreen)
-(global-set-key "\C-cg" 'gtd)
+(global-set-key "\C-xf" 'find-file) ; i always hit the wrong key-combo
+(global-set-key "\C-xm" 'vm-mail)
+(global-set-key (kbd "C-c a") 'org-agenda)
+;; (global-set-key (kbd "C-c r") 'remember) ; replaced by org-capture
+(global-set-key "\C-cr" 'org-capture)
+(global-set-key "\C-cg" 'ra/gtd)
+(global-set-key "\C-cn" 'ra/note)
+(global-set-key "\C-cw" 'ra/review)
 
 ;; Wheel mouse
 (defun up-slightly () (interactive) (scroll-up 5))
@@ -206,11 +304,10 @@
 (global-set-key [mouse-4] 'down-slightly)
 (global-set-key [mouse-5] 'up-slightly)
 
-;; Scroll with C-next/prev
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Filename extensions
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+
 (setq auto-mode-alist
       (append
        '(("\\.ale$" . ale-prolog-mode) ;; file.ale loads ale-prolog-mode
@@ -220,7 +317,7 @@
          ("\\.vm$" . emacs-lisp-mode)
          ("\\.cl$" . lisp-mode)
          ("\\.script$" . fst-mode)
-         ("\\.html\\...$" . html-helper-mode)
+         ("\\.x?html\\...$" . nxhtml-mode)
          ("environment" . shell-script-mode)
          ("alias" . shell-script-mode)
          ("path" . shell-script-mode)
@@ -230,6 +327,7 @@
          ("cms\\.it\\.gu\\.se.*\\.txt$" . nxhtml-mumamo-mode)
          ("\\.org$" . org-mode)
          ("\\.org.old$" . org-mode)
+         ("\\.sorg$" . org-mode)
          ("\\.pho$" . mbrola-mode)
          ) auto-mode-alist))
 
@@ -239,26 +337,35 @@
 ;; I use VM, please check my .vm file for 
 ;; additional settings.
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq mail-archive-file-name "~/mail/SENT")
 
-;; smtp to smtpgw.gu.se
-(setq send-mail-function 'smtpmail-send-it
-      message-send-mail-function 'smtpmail-send-it
-      smtpmail-starttls-credentials
-      '(("smtpgw.gu.se" 587 nil nil))
-      smtpmail-auth-credentials
-      '(("smtpgw.gu.se" 587 "USERNAME" nil))
-      smtpmail-default-smtp-server "smtpgw.gu.se"
-      smtpmail-smtp-server "smtpgw.gu.se"
-      smtpmail-smtp-service 587
-      smtpmail-sendto-domain "gslt.hum.gu.se"
-      smtpmail-debug-info t
-      )
+(setq read-mail-command 'vm)
 
-;; smtp to google
-;; (setq send-mail-function 'smtpmail-send-it
-;;       message-send-mail-function 'smtpmail-send-it
-;;       smtpmail-starttls-credentials
+;; smtp settings
+(if (eq system-type 'windows-nt)
+    (progn
+      (setq mail-archive-file-name "m:/mail/SENT"
+            sendmail-program "c:/cygwin/usr/sbin/msmtp.exe"
+            send-mail-function 'sendmail-send-it
+            mail-host-address "gu.se"))
+  (progn
+    (setq mail-archive-file-name "~/mail/SENT"
+          send-mail-function 'smtpmail-send-it
+          message-send-mail-function 'smtpmail-send-it
+          ;; smtp to smtpgw.gu.se
+          smtpmail-starttls-credentials
+          '(("smtpgw.gu.se" 587 nil nil))
+          smtpmail-auth-credentials
+          '(("smtpgw.gu.se" 587 "USERNAME" nil))
+          smtpmail-default-smtp-server "smtpgw.gu.se"
+          smtpmail-smtp-server "smtpgw.gu.se"
+          smtpmail-smtp-service 587
+          smtpmail-sendto-domain "gslt.hum.gu.se"
+          smtpmail-debug-info t)))
+
+(require 'smtpmail)
+
+;; smtp to google via smtpmail
+;; (setq smtpmail-starttls-credentials
 ;;       '(("smtp.gmail.com" 587 nil nil))
 ;;       smtpmail-auth-credentials
 ;;       '(("smtp.gmail.com" 587 "USERNAME" nil))
@@ -267,8 +374,6 @@
 ;;       smtpmail-smtp-service 587
 ;;       smtpmail-debug-info t)
 
-(require 'smtpmail)
-
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; Modes
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
@@ -276,7 +381,7 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; GNUS
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-;; should be in ~/.gnus.el?
+;; should be in ~/.gnus.el? is usenet dying?
 
 (setq gnus-select-method 
       '(nntp "oravannahka.helsinki.fi"))
@@ -287,8 +392,8 @@
 
 (setq gnus-posting-styles
       '((".*"
-         (name "Robert Andersson")
-         (address "robert.andersson¬¬@gu.se")
+         (name "Robert Adesam")
+         (address "robert.adesam@gu.se")
          (organization "University of Gothenburg")
          (signature-file "~/.signature.gnus")))) ; one less row
 
@@ -299,7 +404,15 @@
 (autoload 'sc-cite-original     "supercite" "Supercite 3.1" t)
 (autoload 'sc-submit-bug-report "supercite" "Supercite 3.1" t)
 (add-hook 'mail-citation-hook 'sc-cite-original)
-(add-hook 'sc-load-hook 'sc-setup-filladapt)
+(add-hook 'sc-load-hook 
+          (cond
+           ((eq system-type 'darwin)
+            'sc-setup-filladapt)
+           ((eq system-type 'windows-nt)
+            'sc-setup-filladapt)
+           ((eq system-type 'gnu/linux)
+               (lambda ()
+                 (filladapt-mode 1)))))
 (setq message-cite-function 'sc-cite-original
       news-reply-header-hook nil
       sc-citation-leader ""
@@ -315,23 +428,41 @@
       sc-nested-citation-p nil
       sc-auto-fill-region-p nil
       sc-blank-lines-after-headers nil
-      ;; sc-attrib-selection-list
-      ;; '(("sc-from-address" ((".*" . (bbdb/sc-consult-attr (sc-mail-field "sc-from-address"))))))
-      ;; sc-mail-glom-frame
-      ;; '((begin                        (setq sc-mail-headers-start (point)))
-      ;;   ("^x-attribution:[ \t]+.*$"   (sc-mail-fetch-field t) nil t)
-      ;;   ("^\\S +:.*$"                 (sc-mail-fetch-field) nil t)
-      ;;   ("^$"                         (progn (bbdb/sc-default)
-      ;;                                        (list 'abort '(step . 0))))
-      ;;   ("^[ \t]+"                    (sc-mail-append-field))
-      ;;   (sc-mail-warn-if-non-rfc822-p (sc-mail-error-in-mail-field))
-      ;;   (end                          (setq sc-mail-headers-end (point))))
+      sc-attrib-selection-list
+      '(("sc-from-address" ((".*" . (bbdb/sc-consult-attr (sc-mail-field "sc-from-address"))))))
+      sc-mail-glom-frame
+      '((begin                        (setq sc-mail-headers-start (point)))
+        ("^x-attribution:[ \t]+.*$"   (sc-mail-fetch-field t) nil t)
+        ("^\\S +:.*$"                 (sc-mail-fetch-field) nil t)
+        ("^$"                         (progn (bbdb/sc-default)
+                                             (list 'abort '(step . 0))))
+        ("^[ \t]+"                    (sc-mail-append-field))
+        (sc-mail-warn-if-non-rfc822-p (sc-mail-error-in-mail-field))
+        (end                          (setq sc-mail-headers-end (point))))
       )
+
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+;; MAIRIX SEARCH
+;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
+(require 'mairix)
+(setq mairix-file-path "~/tmp"
+      mairix-mail-program (quote vm)
+      mairix-search-file "search")
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; BBDB
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
-(setq bbdb-file "~/mail/.database.bbdb"
+(require 'bbdb)
+(bbdb-initialize 'vm)
+(setq bbdb-file
+      (cond
+       ((eq system-type 'windows-nt)
+        "m:/mail/.database.bbdb")
+       ((eq system-type 'darwin)
+        "~/mail/.database.bbdb")
+       ((eq system-type 'gnu/linux)
+        "~/mail/.database.bbdb"))
+      bbdb-readonly-p nil
       bbdb-send-mail-style 'vm
       bbdb-offer-save 'automatic
       bbdb-use-pop-up nil
@@ -347,6 +478,7 @@
         ("From" ("@cling.gu.se" company "University of Gothenburg, Educational Programme in Language Technology, Department of Philosopy, Linguistics, and Theory of Science"))
         ("From" ("@cs.chalmers.se" company "Chalmers University of Technology, Department of Computer Science and Engineering "))
         ("From" ("@sics.se" company "SICS"))
+        ("From" ("@gu.se" company "University of Gothenburg"))
         ("From" ("@svenska.gu.se" company "University of Gothenburg, Department of Swedish Language"))
         ("Organization" (".*" company 0 t)))
       bbdb-notice-hook 'bbdb-auto-notes-hook
@@ -354,6 +486,7 @@
       '(("To" . "cl4rande")
         ("To" . "robert")
         ("To" . "robert\.andersson")
+        ("To" . "robert\.adesam")
         ("To" . "ra@c?ling")
         ("Cc" . "cl4rande")
         ("Cc" . "ra@c?ling")))
@@ -366,13 +499,13 @@
       '(("/itsalltext/.*wiki" as-external-for-wiki)
         ;; ("cms\\.it\\.gu\\.se.*\\.txt" as-external-its-all-text-default)
         (as-external-its-all-text-regexp as-external-its-all-text-default))
-      nxhtml-skip-welcome t
       nxml-slash-auto-complete-flag t)
 
+;; mumamo, like mumin
 (add-hook 'nxhtml-mumamo-mode-hook
           (lambda ()
-            ;; (setq nxhtml-validation-header-if-mumamo 1)
-            (nxhtml-validation-header-mode 1)
+            (setq nxhtml-validation-header-if-mumamo 1)
+;;            (nxhtml-validation-header-mode 1)
             (rng-validate-mode nil)
             (mumamo-post-command)))
 
@@ -389,6 +522,10 @@
         (quote 
          (("^pdf$" "." "open -a preview %s.pdf")
           ("^html?$" "." "open %o"))))
+       ((eq system-type 'windows-nt)
+        (quote
+         (("^pdf$" "." "\"C:/Program Files/SumatraPDF/SumatraPDF.exe\" %o")
+          ("^html?$" "." "start %o"))))
        ((eq system-type 'gnu/linux)
         (quote
          (("^pdf$" "." "okular %s.pdf")
@@ -427,22 +564,69 @@
 (require 'org-install)
 
 ;; functions for special org-files
-(defun gtd ()
+(defun ra/gtd ()
    (interactive)
-   (find-file "~/gtd/tasks.org")
-   (delete-other-windows)
-)
-(defun order ()
+   (find-file 
+    (cond
+     ((eq system-type 'windows-nt)
+      "c:/Users/robert/My Dropbox/gtd/tasks.org")
+     ((eq system-type 'darwin)
+      "~/gtd/tasks.org")
+     ((eq system-type 'gnu/linux)
+      "~/gtd/tasks.org")))
+   (delete-other-windows))
+(defun ra/note ()
+  (interactive)
+   (find-file
+    (cond
+     ((eq system-type 'windows-nt)
+      "c:/Users/robert/My Dropbox/gtd/notes.org")
+     ((eq system-type 'darwin)
+      "~/gtd/notes.org")
+     ((eq system-type 'gnu/linux)
+      "~/gtd/notes.org")))
+   (delete-other-windows))
+(defun ra/review ()
+   (interactive)
+   (find-file
+    (cond
+     ((eq system-type 'windows-nt)
+      "c:/Users/robert/My Dropbox/gtd/review.org")
+     ((eq system-type 'darwin)
+      "~/gtd/review.org")
+     ((eq system-type 'gnu/linux)
+      "~/gtd/review.org")))
+   (delete-other-windows))
+(defun ra/order ()
   (interactive)
   (find-file "~/Documents/admin/orders.org")
-  (delete-other-windows)
-)
+  (delete-other-windows))
+(defun ra/gtd-inbox ()
+  (interactive)
+  (find-file
+   (cond
+     ((eq system-type 'windows-nt)
+      "c:/Users/robert/My Dropbox/gtd/inbox.org")
+     ((eq system-type 'darwin)
+      "~/gtd/inbox.org")
+     ((eq system-type 'gnu/linux)
+      "~/gtd/inbox.org")))
+  (delete-other-windows))
 
-;; org setup
-(setq org-modules 
-      '(org-bbdb org-bibtex org-vm org-crypt)
-      ;; where things go
-      org-directory "~/gtd"
+;; main org directory
+(setq org-directory
+      (cond
+       ((eq system-type 'windows-nt)
+        "c:/Users/robert/My Dropbox/gtd")
+       ((eq system-type 'darwin)
+        "~/gtd")
+       ((eq system-type 'gnu/linux)
+        "~/gtd")))
+
+;; misc setup
+(setq org-modules
+      '(org-bbdb org-bibtex org-vm org-crypt org-mairix)
+      ;; how to archive
       org-archive-location "archive/%s.old::* Archive"
       ;; logging
       org-log-done nil ; using the logbook instead
@@ -461,17 +645,19 @@
       org-global-properties 
       '(("effort_ALL" . "0:10 0:30 1:00 2:00 3:00 4:00 5:00 6:00 8:00"))
       ;; global tags
-      org-tag-alist '(("@home" . ?h) ("@office" . ?o) ("@phone" . ?p) ("@cms" . ?w) ("@computer" . ?c) ("@errands" . ?e) ("@bvc" . ?b) ("@ltlunch" . ?l) ("@2020" . ?2)  ("someday" . ?s) ("@emacs" . ?g) ("flov" . ?f))
-      ;; agenda setup
-      org-agenda-files
-      (list
-       "~/gtd/inbox.org"
-       "~/gtd/tasks.org"
-       "~/gtd/projects.org")
-      org-agenda-include-diary t
-      org-agenda-include-all-todo t
-      org-columns-default-format "%60ITEM %TODO %TAGS %6effort(EFFORT){:}"
-      org-tags-column -90
+      org-tag-alist
+      '(("@home" . ?h)
+        ("@office" . ?o)
+        ("@phone" . ?p)
+        ("@cms" . ?w)
+        ("@computer" . ?c)
+        ("@errands" . ?e)
+        ("@bvc" . ?b)
+        ("@ltlunch" . ?l)
+        ("@2020" . ?2)
+        ("someday" . ?s)
+        ("@emacs" . ?g)
+        ("flov" . ?f))
       ;; blank lines
       org-cycle-separator-lines 2
       org-blank-before-new-entry
@@ -484,11 +670,49 @@
         (gnus . gnus)
         (file . find-file-other-window)))
 
+;; agenda setup
+(setq org-agenda-files
+      ;; add notes.org?
+      (cond
+       ((eq system-type 'windows-nt)
+        (list
+         "c:/Users/robert/My Dropbox/gtd/inbox.org"
+         "c:/Users/robert/My Dropbox/gtd/tasks.org"
+         "c:/Users/robert/My Dropbox/gtd/projects.org"))
+       ((eq system-type 'darwin)
+        (list
+         "~/gtd/inbox.org"
+         "~/gtd/tasks.org"
+         "~/gtd/projects.org"))
+       ((eq system-type 'gnu/linux)
+        (list
+         "~/gtd/inbox.org"
+         "~/gtd/tasks.org"
+         "~/gtd/projects.org"))))
+
+
+(setq org-agenda-include-diary t
+      org-agenda-include-all-todo t
+      org-columns-default-format "%60ITEM %TODO %TAGS %6effort(EFFORT){:}"
+      org-tags-column -90)
+
+;; custom agenda commands
+(setq org-agenda-custom-commands
+      '(("i" "Inbox entries" tags "CATEGORY=\"Stuff\"")))
+
+;; higiligt the cursor row in agenda view
+(add-hook 'org-agenda-mode-hook 
+          (lambda ()
+            (hl-line-mode t)
+            (local-set-key (kbd "r") 'org-agenda-refile)))
+
+;; adding shortcuts
 (add-hook 'org-mode-hook 
           (lambda () 
             (auto-fill-mode 1)
             (local-set-key (kbd "C-c t") 'org-todo)
             (local-set-key (kbd "C-c e") 'org-set-effort)
+            (local-set-key (kbd "C-c i") 'ra/gtd-inbox)
             (local-set-key (kbd "C-c C-r") 'org-decrypt-entry)))
 
 ;; publish web pages
@@ -517,32 +741,42 @@
 \\usepackage[utf8x]{inputenc}
 \\usepackage{graphicx}
 \\usepackage{longtable}
-\\usepackage{hyperref}"
+\\usepackage{hyperref}
+\\usepackage[swedish]{babel}"
          ("\\section{%s}" . "\\section*{%s}")
          ("\\subsection{%s}" . "\\subsection*{%s}")
          ("\\subsubsection{%s}" . "\\subsubsection*{%s}")
          ("\\paragraph{%s}" . "\\paragraph*{%s}")
          ("\\subparagraph{%s}" . "\\subparagraph*{%s}"))))
 
-;; remember-mode
-(require 'remember-autoloads)
-(setq remember-annotation-functions
-      '(org-remember-annotation)
-      remember-handler-functions
-      '(org-remember-handler)
-      org-remember-templates
-      '(("Task" ?y "* TODO %^{description} %^g%^{effort}p\n  :LOGBOOK:\n  - State \"TODO\"       from \"\"           %U\n  :END:\n\n  %?%i \n  :%a:" "inbox.org" "Inbox")
-        ("Task woL" ?t "* TODO %^{description} %^g%^{effort}p\n  :LOGBOOK:\n  - State \"TODO\"       from \"\"           %U\n  :END:\n\n  %?%i \n" "inbox.org" "Inbox")
-        ("Someday" ?s "* %^{description} :someday:%^g%^{effort}p\n  :PROPERTIES:\n  :added:    %U\n  :END:\n\n  %?%i \n" "inbox.org" "Inbox")))
-
-(eval-after-load 'remember
-  '(add-hook 'remember-mode-hook 'org-remember-apply-template))
+;; remember-mode is since org-mode version 7 replaced by org-capture
+(setq org-default-notes-file (concat org-directory "/inbox.org"))
+(setq org-capture-templates
+      '(("y" "Task" entry
+         (file+headline "inbox.org" "Inbox")
+         "* TODO %^{description} %^g%^{effort}p\n  :LOGBOOK:\n  - State \"TODO\"       from \"\"           %U\n  :END:\n\n  %?%i \n  :%a:")
+        ("t" "Task woL" entry
+         (file+headline "inbox.org" "Inbox")
+         "* TODO %^{description} %^g%^{effort}p\n  :LOGBOOK:\n  - State \"TODO\"       from \"\"           %U\n  :END:\n\n  %?%i \n")
+        ("s" "Someday" entry
+         (file+headline "inbox.org" "Inbox")
+         "* %^{description} :someday:%^g%^{effort}p\n  :PROPERTIES:\n  :added:    %U\n  :END:\n\n  %?%i \n")))
+      
 
 ;; We also want to be able to encrypt subtrees in org-mode, requires
 ;; the epa-setup package
 (require 'org-crypt)
 (org-crypt-use-before-save-magic)
 (setq org-crypt-key "93A4BE9DEAB7218E")
+
+;; Org-babel
+(require 'org-babel-init)
+
+;; Load babel support for Emacs lisp
+(require 'org-babel-emacs-lisp)
+
+;; Load helper functions etc
+(org-babel-load-library-of-babel)
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;; SQL-mode
@@ -563,3 +797,5 @@
       (append
        '(("\\.gu.se$" . org-mode)
          ) auto-mode-alist))
+
+(put 'scroll-left 'disabled nil)

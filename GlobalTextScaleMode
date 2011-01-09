@@ -12,12 +12,14 @@ everyone, but I don't know how to get that at all.
 
 Until then, this globalized version will be just fine for me !
 
+ 
   (define-globalized-minor-mode 
     global-text-scale-mode
     text-scale-mode
     (lambda () (text-scale-mode 1)))
   
   (defun global-text-scale-adjust (inc) (interactive)
+    (text-scale-set 1)
     (kill-local-variable 'text-scale-mode-amount)
     (setq-default text-scale-mode-amount (+ text-scale-mode-amount inc))
     (global-text-scale-mode 1)
@@ -31,5 +33,4 @@ Until then, this globalized version will be just fine for me !
                   '(lambda () (interactive) (global-text-scale-adjust 1)))
   (global-set-key (kbd "M--")
                   '(lambda () (interactive) (global-text-scale-adjust -1)))
-  
   

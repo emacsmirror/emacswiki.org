@@ -312,7 +312,7 @@ columns of candidates are displayed in `*Completions*' -- [[Icicles - Completion
 
 * '''`##icicle-read+insert-file-name-keys##'''' -- Keys to use for `##icicle-read+insert-file-name##' -- [[Icicles - Completion On Demand]], [[Icicles - Customizing Key Bindings]], ''[[Icicles - Customization and General Tips#icicle-read-insert-file-name-keys|main]]''
 
-* '''`icicle-redefine-standard-commands-flag'''' -- Whether ''Icicle'' mode redefines some standard Emacs commands -- [[Icicles - Standard Commands Redefined]], [[Icicles - Completion in Other Buffers]], ''[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|main]]''
+* '''`icicle-redefine-standard-commands-flag'''' -- Whether ''Icicle'' mode redefines some standard Emacs functions -- [[Icicles - Standard Functions Redefined]], [[Icicles - Completion in Other Buffers]], ''[[Icicles - Customization and General Tips#icicle-redefine-standard-commands-flag|main]]''
 
 * '''`icicle-regexp-quote-flag'''' -- Whether special characters in regexps are automatically escaped.  Toggle with `##C-`##'. -- [[Icicles - Special Characters in Input Patterns]], ''[[Icicles - Customization and General Tips#icicle-regexp-quote-flag|main]]''
 

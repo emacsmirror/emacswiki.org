@@ -1,6 +1,6 @@
 : [[image:iciclesimage]]
 
-|| *Previous:*  [[Icicles - Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Standard Commands Redefined]] ||
+|| *Previous:*  [[Icicles - Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Standard Functions Redefined]] ||
 
 ----
 
@@ -189,7 +189,7 @@ just use `define-key' to change the bindings of `M-p' and `M-n'.
 ----
 
 
-|| *Previous:*  [[Icicles - Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Standard Commands Redefined]] ||
+|| *Previous:*  [[Icicles - Key Bindings]] || '''[[Icicles]]''' || IciclesIndex || *Next:* [[Icicles - Standard Functions Redefined]] ||
 
 
 

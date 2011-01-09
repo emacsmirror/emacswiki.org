@@ -1,6 +1,6 @@
 [[fr:FaireDesChosesIntéractivement]]
 
-'''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version at http://cvs.savannah.gnu.org/viewvc/*checkout*/emacs/emacs/lisp/ido.el or you can get a very outdated version of it at http://www.cua.dk/.
+'''[::Ido]''' is part of Emacs, starting with release 22. You can get the latest version from the unofficial [http://bazaar.launchpad.net/~vcs-imports/emacs/trunk/annotate/head%3A/lisp/ido.el bzr mirror] or [http://repo.or.cz/w/emacs.git/blob_plain/HEAD:/lisp/ido.el git mirror]. You may get a current version from the canonical emacs bzr repository at Savannah when it gains a web interface ([[BzrForEmacsDevs#toc6]]). Or you can get a very outdated version of it at http://www.cua.dk/.
 
 = Overview of Ido =
 

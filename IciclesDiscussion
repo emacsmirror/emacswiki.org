@@ -874,7 +874,7 @@ Is it normal behavior? Or icicle-occur doesn't work without enabling icy-mode? -
 
 Thus, most of the '''Icicles''' commands do not work unless you are in ''Icicle'' mode.  I could raise an error in case you call such a command outside ''Icicle'' mode, but I don't bother to.
 
-About the only commands that work outside ''Icicle'' mode are those that replace standard commands (see [[Icicles - Standard Commands Redefined]]), and in such cases they typically have the same name but with the prefix `icicle-', and when you are not in ''Icicle'' mode they just do what the vanilla commands of the same name do.
+About the only commands that work outside ''Icicle'' mode are those that replace standard commands (see [[Icicles - Standard Functions Redefined]]), and in such cases they typically have the same name but with the prefix `icicle-', and when you are not in ''Icicle'' mode they just do what the vanilla commands of the same name do.
 
 2. '''Icicles''' can be overwhelming if you let yourself get overwhelmed easily. ;-)  There is no reason not to take your time and learn it slowly.  For the most part you can carry on as usual without noticing much difference from vanilla Emacs.  For example, if you don't use `S-TAB' from the minibuffer then you get the usual, prefix completion matching.  If you don't use the cycling keys then, well, you get the same as vanilla Emacs: no cycling. ;-)
 

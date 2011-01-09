@@ -1,8 +1,8 @@
 == Overview ==
 
-This page collects information for creating a usable Python
-programming environment in Emacs. There are two implementations of a
-Python mode for Emacs:
+This page collects information for creating a usable Python programming environment in Emacs. 
+
+There are two implementations of a Python mode for Emacs: python.el and python-mode.el. Python.el comes with Emacs.
 
 # ProgrammingWithPythonDotEl
 
