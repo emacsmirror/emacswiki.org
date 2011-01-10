@@ -102,10 +102,18 @@ See [[Icicles - File-Name Input#AbsoluteFileNames|Absolute File Names and Differ
 
 
 
+
+
 [:OpenDiredOnSavedFiles]
 === Open Dired for a Set of File Names ===
 
-In Dired with '''Icicles''' you can use `##C-M-<##' (`icicle-dired-chosen-files-other-window') to open Dired for a set of file or directory names that you choose interactively or that you have previously saved (persistently or not) as completion candidates.  The Dired buffer that is created is named '''`Icy File Set'''' (suffixed with '''`<1>'''', '''`<2>'''', etc. as needed), and it contains only the chosen file names.
+In Dired with '''Icicles''' you can use `##C-M-<##' (`icicle-dired-chosen-files-other-window') to open Dired for a set of file or directory names that you choose interactively or that you have previously [[#SaveFilesAsCandidates|saved]] (persistently or not) as completion candidates.
+
+For example, this opens Dired on all files whose names match the [[regexp]] `##.*foo.*bar##' (the initial `##.*##' is implicit):
+
+  C-M-<  foo.*bar  S-TAB  C-!  C-g
+
+The Dired buffer that is created is named '''`Icy File Set'''' (suffixed with '''`<1>'''', '''`<2>'''', etc. as needed), and it contains only the chosen file names.
 
 The file names are checked to be sure they reference existing files. If any of the names are relative names, those files are checked for existence in the Dired directory.  If you use a [[prefix argument]], then you are prompted for the directory to use.
 

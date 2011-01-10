@@ -1,0 +1,26 @@
+org2blog/atom is one of two packages named org2blog.  [[Org2BlogWp]] is the other.  Both org2blogs let you post blogs from OrgMode, just to different blogs.  
+
+org2blog/atom is for blogs that use the Atom API, for instance Google's Blogger.  It depends on [GoogleClient g-client].  org2blog/atom lives in a git repo [[http://repo.or.cz/r/org2blog.git here]].
+
+It recognizes the usual org file export properties, such as %%#+TITLE:%% %%#+OPTIONS:%%, and %%#+AUTHOR:%%  It also recognizes %%#+BLOGLABELS:%%, which gives one or more labels to your post.
+
+Entry points are:
+
+** org2blog/atom-post
+** org2blog/atom-dir-add-new-photos
+
+Instructions how to use it:
+
+** Write a blog post as an org file
+
+** In that org buffer, command:
+   %%M-x org2blog/atom-post%%
+
+That will prompt you for a blog location and blog name if neccessary.  Then it will put you in a gclient gblogger buffer with the post all set up.  It should be ready to go, but you can inspect it anyways.
+
+** When you're satisfied, C-c C-c.  It will post to blogger without further intervention.
+
+** It will capture a mapping from the local filename to the remote URL, so if you make other posts that link to it (the local file), they will point correctly to it (the url of the respective blog post)
+
+The same works for photos, as long as org2blog/atom is loaded when they are uploaded via gclient or via %%org2blog-dir-add-new-photos%%
+

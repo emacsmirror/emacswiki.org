@@ -136,6 +136,7 @@ Writing code that works on different versions of Emacs and XEmacs is Comparative
 * DictionaryTrees -- Advanced dictionary data structures
 * ElispParser -- A small parser tool written in EmacsLisp.
 * EmacsDataBase is a flexible system for defining, accessing, modifying, summarizing, and generally playing with, a set of records.  You can view each record individually or summarized (with other records) in separate buffer. Record format (field names and their types) can be arbitrarily complex.
+* TinyDb -- A mini-database, smaller than EmacsDataBase
 * ParserCompiler -- A macro that compiles Recursive Descent parsers in elisp.
 * [[Heaps]] -- Heap data structures (a.k.a. priority queues)
 * [[Icicles]] -- New possibilities for using completion and cycling of completion candidates.

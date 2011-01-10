@@ -30,10 +30,22 @@ Put Lisp:wcheck-mode.el file to some directory in your Emacs's `load-path' and a
       "Switch wcheck-mode languages." t)
     (autoload 'wcheck-spelling-suggestions "wcheck-mode"
       "Spelling suggestions." t)
+    (autoload 'wcheck-jump-forward "wcheck-mode"
+      "Move point forward to next marked text area." t)
+    (autoload 'wcheck-jump-backward "wcheck-mode"
+      "Move point backward to previous marked text area." t)
 
-See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the text-checker in the current buffer. Command `wcheck-change-language' is used to switch languages and command `wcheck-spelling-suggestions' (or right mouse button) gives spelling suggestion for marked words (if the suggestion program is properly configured).
+See the documentation of variable `wcheck-language-data' for information on how to configure Wcheck mode. For easy configuration you can use the options in customize group named "wcheck" (##M-x customize-group RET wcheck RET##). Interactive command `wcheck-mode' toggles the text-checker in the current buffer. Command `wcheck-change-language' is used to switch languages and command `wcheck-spelling-suggestions' (or right mouse button) gives spelling suggestion for marked text (if the suggestion program is properly configured). Commands `wcheck-jump-forward' and `wcheck-jump-backward' jump to next or previous marked text area.
 
-Below is an example configuration for spell-checking languages Finnish (using Enchant) and British English (using Ispell). The default language will be "Finnish". There are also two non-human languages: "Trailing whitespace" is a checker which highlights trailing whitespace characters in lines and "Highlight FIXMEs" highlights FIXME words if they appear in comments in `emacs-lisp-mode' or `c-mode' (or anywhere in other modes). The example also configures some global defaults for all languages. For example, text-checkers will read only certain buffer areas (faces) in `emacs-lisp-mode' and `message-mode'.
+It might be convenient if Wcheck commands are bound to some easily accessible keys, for example:
+
+    (global-set-key (kbd "C-c s") 'wcheck-mode)
+    (global-set-key (kbd "C-c l") 'wcheck-change-language)
+    (global-set-key (kbd "C-c c") 'wcheck-spelling-suggestions)
+    (global-set-key (kbd "C-c n") 'wcheck-jump-forward)
+    (global-set-key (kbd "C-c p") 'wcheck-jump-backward)
+
+Below is an example configuration for spell-checking languages Finnish (using Enchant) and British English (using Ispell). The default language will be "Finnish". There are also two non-human languages: "Trailing whitespace" is a checker which highlights trailing whitespace characters in lines and "Highlight FIXMEs" highlights FIXME words if they appear in comments in `emacs-lisp-mode' or `c-mode' (or anywhere in other modes). The example also configures some global defaults for all languages. For example, text-checkers will read only certain buffer areas (faces) in `emacs-lisp-mode', `c-mode' and `message-mode'.
 
     (setq-default
 
@@ -69,8 +81,7 @@ Below is an example configuration for spell-checking languages Finnish (using En
                        (list "FIXME"))))
         (face . highlight)
         (read-or-skip-faces
-         (emacs-lisp-mode read font-lock-comment-face)
-         (c-mode read font-lock-comment-face)
+         ((emacs-lisp-mode c-mode) read font-lock-comment-face)
          (nil))))
 
      wcheck-language-data-defaults
@@ -83,8 +94,10 @@ Below is an example configuration for spell-checking languages Finnish (using En
        (regexp-discard . "\\`'+\\'")
        (case-fold . nil)
        (read-or-skip-faces
-        (emacs-lisp-mode read font-lock-comment-face font-lock-doc-face)
-        (message-mode read nil message-header-subject message-cited-text))))
+        ((emacs-lisp-mode c-mode) read
+         font-lock-comment-face font-lock-doc-face)
+        (message-mode read nil
+         message-header-subject message-cited-text))))
 
 == Questions and Other Things ==
 

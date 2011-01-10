@@ -1,0 +1,18 @@
+Emacs user since 2009
+
+Added a Texinfo generator to the documentation system used by Python so I could access it using Info.
+
+* [http://sphinx.pocoo.org/latest/ Sphinx]
+
+Wrote a package to improve `info-lookup-symbol' in python-mode.
+
+* [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info]
+
+
+
+[new:DrewAdams:2011-01-09 13:41 UTC]
+Welcome to the wiki. -- DrewAdams
+
+
+----
+CategoryHomepage

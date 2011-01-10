@@ -1,0 +1,6 @@
+Tinydb is a mini-database.  Much smaller than EmacsDataBase, it does
+not provide display or interaction - if you need that, use
+EmacsDataBase.
+
+Tinydb helps packages store persisting data in a database-like way.
+It is currently used by [[Emtest]] and [[Org2BlogAtom]].

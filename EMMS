@@ -187,6 +187,49 @@ Inspired by http://tanstaafl.cn/Home/EmacsEmms.html
                                (keyboard-quit))
                       "mplayer")))
 </pre>
+
+=== Patch to show "YEAR" of flac tracks -lgfang ===
+<pre>
+*** /home/lgfang/tmp/emms/lisp/emms-info-metaflac.el	2011-01-09 21:53:40.904903408 +0800
+--- /home/storage/daily/my-notes/emacs/extensions/emms/emms-info-metaflac.el	2011-01-09 21:58:08.134903811 +0800
+***************
+*** 62,68 ****
+      "--show-tag=ARTIST"
+      "--show-tag=ALBUM"
+      "--show-tag=NOTE"
+!     "--show-tag=YEAR"
+      "--show-tag=TRACKNUMBER"
+      "--show-tag=GENRE")
+    "The argument to pass to `emms-info-metaflac-program-name'."
+--- 62,68 ----
+      "--show-tag=ARTIST"
+      "--show-tag=ALBUM"
+      "--show-tag=NOTE"
+!     "--show-tag=DATE"
+      "--show-tag=TRACKNUMBER"
+      "--show-tag=GENRE")
+    "The argument to pass to `emms-info-metaflac-program-name'."
+***************
+*** 91,97 ****
+                               (string-to-number (buffer-substring (point) (line-end-position))))))
+          (forward-line 1)
+          (while (looking-at "^\\([^=\n]+\\)=\\(.*\\)$")
+!           (let ((name (intern (concat "info-" (downcase (match-string 1)))))
+                  (value (match-string 2)))
+              (when (> (length value)
+                       0)
+--- 91,98 ----
+                               (string-to-number (buffer-substring (point) (line-end-position))))))
+          (forward-line 1)
+          (while (looking-at "^\\([^=\n]+\\)=\\(.*\\)$")
+!           (let ((name (intern (concat "info-" (if (string-equal "DATE" (match-string 1)) "year"
+!                                         (downcase (match-string 1))))))
+                  (value (match-string 2)))
+              (when (> (length value)
+                       0)
+
+</pre>
+
 == Screenshots ==
 
 [http://www.gnu.org/software/emms/screenshots.html]

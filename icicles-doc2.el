@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Aug  1 14:21:16 1995
 ;; Version: 22.0
-;; Last-Updated: Sat Jan  8 08:22:31 2011 (-0800)
+;; Last-Updated: Sun Jan  9 10:22:42 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 27476
+;;     Update #: 27483
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-doc2.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -2072,9 +2072,16 @@
 ;;  (`icicle-dired-chosen-files-other-window') to open Dired for a set
 ;;  of file or directory names that you choose interactively or that
 ;;  you have previously saved (persistently or not) as completion
-;;  candidates or as an Emacs fileset.  The Dired buffer that is
-;;  created is named `Icy File Set' (suffixed with <1>, <2>, etc. as
-;;  needed), and it contains only the chosen file names.
+;;  candidates or as an Emacs fileset.
+;;
+;;  For example, this opens Dired on all files whose names match the
+;;  regexp `.*foo.*bar' (the initial `.*' is implicit):
+;;
+;;    C-M-<  foo.*bar  S-TAB  C-!  C-g
+;;
+;;  The Dired buffer that is created is named `Icy File Set' (suffixed
+;;  with <1>, <2>, etc. as needed), and it contains only the chosen
+;;  file names.
 ;;
 ;;  The file names are checked to be sure they reference existing
 ;;  files.  If any of the names are relative names, those files are

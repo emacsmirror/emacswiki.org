@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:04 2006
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  6 09:27:18 2011 (-0800)
+;; Last-Updated: Sun Jan  9 10:12:11 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 21584
+;;     Update #: 21586
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-cmd1.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -5241,15 +5241,24 @@ Otherwise:
 ;;;###autoload (autoload 'icicle-file-list "icicles-cmd1.el")
 (icicle-define-file-command icicle-file-list ; Command name
   "Choose a list of file and directory names.
+The list of file names (strings) is returned.
+
 Use multi-command action keys (e.g. `C-RET', `C-mouse-2') to choose,
 and a final-choice key (e.g. `RET', `mouse-2') to choose the last one.
 You can navigate the directory tree, picking files and directories
 anywhere in the tree.
 
+Remember too that you can use `C-!' to gather all of the file names
+matching your current input.  For example, apropos-completing with
+input `foo.*bar' and hitting `C-!' adds all file names matching that
+regexp.
+
+You can use either `RET' or `C-g' to finish adding file names to the
+list.
+
 You can use `S-delete' during completion to delete a candidate file.
   Careful: This deletes the file, it does not just remove it as a
   candidate.
-The list of file names (strings) is returned.
 
 These options, when non-nil, control candidate matching and filtering:
 

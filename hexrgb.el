@@ -7,9 +7,9 @@
 ;; Copyright (C) 2004-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Sep 20 22:58:45 2004
 ;; Version: 21.0
-;; Last-Updated: Mon Jan  3 14:36:40 2011 (-0800)
+;; Last-Updated: Sun Jan  9 22:33:54 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 743
+;;     Update #: 745
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/hexrgb.el
 ;; Keywords: number, hex, rgb, color, background, frames, display
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -81,6 +81,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/08 dadams
+;;     Restored autoload cookie for eval-and-compile hexrgb-canonicalize-defined-colors.
 ;; 2011/01/03 dadams
 ;;     Removed autoload cookies from non-interactive functions.
 ;; 2010/12/18 dadams
@@ -173,6 +175,7 @@
 
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;
 
+;;;###autoload
 (eval-and-compile
  (defun hexrgb-canonicalize-defined-colors (list)
    "Copy of LIST with color names canonicalized.
