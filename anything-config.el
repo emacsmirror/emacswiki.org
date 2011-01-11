@@ -7,10 +7,10 @@
 ;; Maintainer: Tassilo Horn <tassilo@member.fsf.org>
 ;;             rubikitch    <rubikitch@ruby-lang.org>
 ;;             Thierry Volpiatto <thierry.volpiatto@gmail.com>
-;; Copyright (C) 2007 ~ 2010, Tassilo Horn, all rights reserved.
+;; Copyright (C) 2007 ~ 2011, Tassilo Horn, all rights reserved.
 ;; Copyright (C) 2009, Andy Stewart, all rights reserved.
-;; Copyright (C) 2009 ~ 2010, rubikitch, all rights reserved.
-;; Copyright (C) 2009 ~ 2010, Thierry Volpiatto, all rights reserved.
+;; Copyright (C) 2009 ~ 2011, rubikitch, all rights reserved.
+;; Copyright (C) 2009 ~ 2011, Thierry Volpiatto, all rights reserved.
 ;; Created: 2009-02-16 21:38:23
 ;; Version: 0.4.1
 ;; URL: http://www.emacswiki.org/emacs/download/anything-config.el
@@ -524,6 +524,9 @@
 (require 'thingatpt)
 (require 'ffap)
 (require 'cl)
+(require 'dired-aux)
+(require 'tramp)
+(require 'grep)
 
 ;;; Code:
 
@@ -1130,7 +1133,7 @@ After closing firefox, you will be able to browse you bookmarks.
 (defun anything-c-insert-latex-math ()
   "Preconfigured anything for latex math symbols completion."
   (interactive)
-  (anything-other-buffer anything-c-source-latex-math "*anything latex*"))
+  (anything-other-buffer 'anything-c-source-latex-math "*anything latex*"))
 
 ;;;###autoload
 (defun anything-register ()
@@ -1858,8 +1861,8 @@ buffer that is not the current buffer."
     ;; It is needed for filenames with capital letters
     (disable-shortcuts)
     (init . (lambda ()
-              (require 'tramp)
-              (require 'dired-aux)
+              ;(require 'tramp)
+              ;(require 'dired-aux)
               (setq ffap-newfile-prompt t)
               ;; This is needed when connecting with emacsclient -t
               ;; on remote host that have an anything started on a window-system.
@@ -1889,6 +1892,7 @@ buffer that is not the current buffer."
                 (if anything-current-prefix-arg
                     (anything-do-grep1 (anything-marked-candidates) 'recurse)
                     (anything-do-grep1 (anything-marked-candidates)))))
+           ("Switch to Eshell" . anything-ff-switch-to-eshell)
            ("Eshell command on file(s)" . anything-find-files-eshell-command-on-file)
            ("Ediff File" . anything-find-files-ediff-files)
            ("Ediff Merge File" . anything-find-files-ediff-merge-files)
@@ -2004,6 +2008,23 @@ will not be loaded first time you use this."
          for com = (concat command " " (shell-quote-argument i))
          do (eshell-command com)))))
 
+
+(declare-function eshell-send-input "esh-mode" (&optional use-region queue-p no-newline))
+(defun anything-ff-switch-to-eshell (candidate)
+  "Switch to eshell and cd to `anything-ff-default-directory'."
+  (flet ((cd-eshell ()
+           (goto-char (point-max))
+           (insert
+            (format "cd %s" (shell-quote-argument
+                             anything-ff-default-directory)))
+           (eshell-send-input)))
+    (if (get-buffer "*eshell*")
+        (progn
+          (switch-to-buffer "*eshell*")
+          (cd-eshell))
+        (call-interactively 'eshell)
+        (cd-eshell))))
+
 (defun* anything-reduce-file-name (fname level &key unix-close expand)
     "Reduce FNAME by LEVEL from end or beginning depending LEVEL value.
 If LEVEL is positive reduce from end else from beginning.
@@ -2067,7 +2088,7 @@ If prefix numeric arg is given go ARG level down."
          (loop with v = (tramp-dissect-file-name fname)
             for i across v collect i)))
 
-(defun* anything-ff-set-pattern (&optional (pattern anything-pattern))
+(defun* anything-ff-set-pattern (pattern)
   (let ((methods (mapcar 'car tramp-methods))
         (reg "\\`/\\([^[/:]+\\|[^/]+]\\):.*:")
         cur-method tramp-name)
@@ -2099,7 +2120,7 @@ If prefix numeric arg is given go ARG level down."
   "*Number of elements shown in `anything-find-files' history.")
 (defun anything-find-files-get-candidates ()
   "Create candidate list for `anything-c-source-find-files'."
-  (let* ((path          (anything-ff-set-pattern))
+  (let* ((path          (anything-ff-set-pattern anything-pattern))
          (path-name-dir (file-name-directory path))
          (tramp-verbose anything-tramp-verbose)) ; No tramp message when 0.
     (set-text-properties 0 (length path) nil path)
@@ -2289,46 +2310,51 @@ If CANDIDATE is alone, open file CANDIDATE filename.
 That's mean:
 First hit on C-z expand CANDIDATE second hit open file.
 If a prefix arg is given or `anything-follow-mode' is on open file."
-  (let ((follow (buffer-local-value
-                 'anything-follow-mode
-                 (get-buffer-create anything-buffer))))
+  (let ((follow        (buffer-local-value
+                        'anything-follow-mode
+                        (get-buffer-create anything-buffer)))
+        (new-pattern   (anything-get-selection))
+        (num-lines-buf (with-current-buffer anything-buffer
+                         (count-lines (point-min) (point-max)))))
     (flet ((insert-in-minibuffer (fname)
              (with-selected-window (minibuffer-window)
                (unless follow
                  (delete-minibuffer-contents)
                  (set-text-properties 0 (length fname) nil fname)
                  (insert fname)))))
-      (cond ((and (file-directory-p candidate) (file-symlink-p candidate))
+      (cond (;; A symlink directory, expand it's truename.
+             (and (file-directory-p candidate) (file-symlink-p candidate))
              (insert-in-minibuffer (file-name-as-directory
                                     (file-truename
                                      (expand-file-name candidate)))))
+            ;; A directory, open it.
             ((file-directory-p candidate)
              (insert-in-minibuffer (file-name-as-directory
                                     (expand-file-name candidate))))
+            ;; A symlink file, expand to it's true name. (first hit)
             ((file-symlink-p candidate)
              (insert-in-minibuffer (file-truename candidate)))
-            (t
-             ;; First hit on C-z expand CANDIDATE second hit open file.
-             ;; If a prefix arg is given or `anything-follow-mode' is on, open file.
-             (let ((new-pattern   (anything-get-selection))
-                   (num-lines-buf (with-current-buffer anything-buffer
-                                    (count-lines (point-min) (point-max)))))
-               (if (and (> num-lines-buf 3) (not current-prefix-arg) (not follow))
-                   (insert-in-minibuffer new-pattern)
-                   (cond ((string-match (image-file-name-regexp) candidate)
-                          (when (buffer-live-p image-dired-display-image-buffer)
-                            (kill-buffer image-dired-display-image-buffer))
-                          (image-dired-display-image candidate)
-                          (message nil)
-                          (display-buffer image-dired-display-image-buffer))
-                         ;; Allow browsing archive on avfs fs.
-                         ;; Assume volume is already mounted with mountavfs.
-                         ((and anything-ff-avfs-directory
-                               (string-match anything-ff-avfs-directory
-                                             (file-name-directory candidate))
-                               (anything-ff-file-compressed-p candidate))
-                          (insert-in-minibuffer (concat candidate "#")))
-                         (t (find-file candidate))))))))))
+            ;; A regular file, expand it, (first hit)
+            ((and (>= num-lines-buf 3) (not current-prefix-arg) (not follow))
+             (insert-in-minibuffer new-pattern))
+            ;; An image file and it is the second hit on C-z,
+            ;; show the file in `image-dired'.
+            ((string-match (image-file-name-regexp) candidate)
+             (when (buffer-live-p image-dired-display-image-buffer)
+               (kill-buffer image-dired-display-image-buffer))
+             (image-dired-display-image candidate)
+             (message nil)
+             (display-buffer image-dired-display-image-buffer))
+            ;; Allow browsing archive on avfs fs.
+            ;; Assume volume is already mounted with mountavfs.
+            ((and anything-ff-avfs-directory
+                  (string-match
+                   (regexp-quote (expand-file-name anything-ff-avfs-directory))
+                   (file-name-directory candidate))
+                  (anything-ff-file-compressed-p candidate))
+             (insert-in-minibuffer (concat candidate "#")))
+            ;; On second hit we open file.
+            (t (find-file candidate))))))
 
 (defvar anything-ff-avfs-directory nil
   "*The default avfs directory, usually '.avfs'.
@@ -2586,6 +2612,7 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
                   ('hardlink       dired-keep-marker-hardlink))))
     (dired-create-files
      fn (symbol-name action) files
+     ;; CANDIDATE is the destination.
      (if (file-directory-p candidate)
          ;; When CANDIDATE is a directory, build file-name in this directory.
          ;; Else we use CANDIDATE.
@@ -2607,18 +2634,21 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
 
 (defun anything-get-dest-fnames-from-list (flist dest-cand)
   "Transform filenames of FLIST to abs of DEST-CAND."
+  ;; At this point files have been renamed/copied at destination.
   (loop
      with dest = (expand-file-name dest-cand)
      for src in flist
      for basename-src = (if (file-directory-p src)
-                           (file-relative-name
-                            (directory-file-name src)
-                            (file-name-directory src))
-                           (file-name-nondirectory src))
+                            (file-relative-name
+                             (directory-file-name src)
+                             (file-name-directory src))
+                            (file-name-nondirectory src))
      for fname = (if (file-directory-p dest)
                      (concat (file-name-as-directory dest)
                              basename-src)
                      dest)
+     ;; Needed in case we rename a dir on itself. (e.g foo=>foo1)
+     when (file-exists-p fname) 
      collect fname into tmp-list
      finally return (sort tmp-list 'string<)))
 
@@ -2627,15 +2657,15 @@ ACTION is a key that can be one of 'copy, 'rename, 'symlink, 'relsymlink."
   (when (and (string= (assoc-default 'name (anything-get-current-source))
                       (assoc-default 'name anything-c-source-find-files))
              anything-ff-cand-to-mark)
-      (with-anything-window
-        (while anything-ff-cand-to-mark
-          (if (search-forward (car anything-ff-cand-to-mark) (point-at-eol) t)
-              (progn
-                (call-interactively 'anything-toggle-visible-mark)
-                (setq anything-ff-cand-to-mark (cdr anything-ff-cand-to-mark)))
-              (call-interactively 'anything-next-line)))
-        (unless (anything-this-visible-mark)
-          (call-interactively 'anything-prev-visible-mark)))))
+    (with-anything-window
+      (while anything-ff-cand-to-mark
+        (if (search-forward (car anything-ff-cand-to-mark) (point-at-eol) t)
+            (progn
+              (call-interactively 'anything-toggle-visible-mark)
+              (setq anything-ff-cand-to-mark (cdr anything-ff-cand-to-mark)))
+            (call-interactively 'anything-next-line)))
+      (unless (anything-this-visible-mark)
+        (call-interactively 'anything-prev-visible-mark)))))
 
 (add-hook 'anything-after-update-hook #'anything-c-maybe-mark-candidates)
 
@@ -2984,9 +3014,6 @@ If it's not empty use it instead of `grep-find-ignored-files'."
     (anything
      :sources
      `(((name . "Grep (M-up/down - next/prec file)")
-        (init . (lambda ()
-                  ;; Load `grep-find-ignored-files'.
-                  (require 'grep)))
         (candidates
          . (lambda () (if include-files
                           (funcall anything-c-grep-default-function only include-files)
@@ -3626,7 +3653,12 @@ source.")
                     (if (> (length wfiles) 1)
                         (woman-find-file (anything-comp-read "ManFile: " wfiles
                                                              :must-match t))
-                        (woman candidate))))))
+                        ;; If woman is unable to format correctly
+                        ;; use man instead.
+                        (condition-case err
+                            (woman candidate)
+                          (error (kill-buffer) ; Kill woman buffer.
+                                 (man candidate))))))))
     ;; Woman does not work OS X
     ;; http://xahlee.org/emacs/modernization_man_page.html
     (action-transformer . (lambda (actions candidate)
@@ -4728,6 +4760,8 @@ http://ctags.sourceforge.net/")
 (declare-function semantic-format-tag-summarize "ext:format.el" (tag &optional parent color) t)
 (declare-function semantic-tag-components "ext:tag.el" (tag) t)
 (declare-function semantic-go-to-tag "ext:tag-file.el" (tag) t)
+(declare-function semantic-tag-type "ext:tag-file.el" (tag) t)
+(declare-function semantic-tag-class "ext:tag-file.el" (tag) t)
 (defvar anything-semantic-candidates nil)
 
 (defun anything-semantic-construct-candidates (tags depth)
@@ -5880,11 +5914,11 @@ Return an alist with elements like (data . number_results)."
     (,browse-url-xterm-program . browse-url-text-xterm))
   "*Alist of (executable . function) to try to find a suitable url browser.")
 
-(defun* anything-c-generic-browser (url &key name exe args)
+(defun* anything-c-generic-browser (url name &rest args)
   (let ((proc (concat name " " url)))
     (message "Starting %s..." name)
-    (apply 'start-process proc nil exe
-           (append (list url) args))
+    (apply 'start-process proc nil name
+           (append args (list url)))
     (set-process-sentinel
      (get-process proc)
      #'(lambda (process event)
@@ -5893,10 +5927,9 @@ Return an alist with elements like (data . number_results)."
 
 (defun browse-url-chromium (url)
   (interactive "sURL: ")
-  (let ((name (concat "chromium " url))
-        (exe  "chromium-bin")
-        (args '("--enable-plugins")))
-    (anything-c-generic-browser url :name name :exe exe :args args)))
+  (anything-c-generic-browser
+   url browse-url-chromium-program
+   "--enable-plugins"))
 
 (defun anything-browse-url-default-browser (url &rest args)
   "Find a suitable browser and ask it to load URL."
@@ -7875,14 +7908,8 @@ The SPEC is like source. The symbol `REST' is replaced with original attribute v
             ;; A a non--existing filename ending with /
             ;; Create a directory and jump to it.
             (when (y-or-n-p (format "Create directory `%s'? " candidate))
-              (let ((cur-dir default-directory))
-                (unwind-protect
-                     (progn
-                       (make-directory candidate 'parent)
-                       (when (file-exists-p candidate)
-                         (cd candidate)
-                         (anything-find-files1 candidate)))
-                  (setq default-directory cur-dir))))
+              (make-directory candidate 'parent)
+              (anything-find-files1 candidate))
             ;; A non--existing filename NOT ending with / or
             ;; an existing filename, create or jump to it.
             (find-file-at-point (car marked))))))

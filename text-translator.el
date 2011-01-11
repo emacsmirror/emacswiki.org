@@ -187,7 +187,7 @@ specified site, and receives translation result."
                                         80)))
          ;;(process-connection-type nil)
          (enc-str (text-translator-url-encode-string str (nth 4 type)))
-         (post-str (format (nth 3 type) enc-str))
+         (post-str (if (nth 3 type) (format (nth 3 type) enc-str) nil))
          (truncate-partial-width-windows nil))
     (unless all
       (add-to-history 'text-translator-engine-history engine)
@@ -200,7 +200,13 @@ specified site, and receives translation result."
       (process-send-string
        proc
        (concat
-        "POST " (nth 2 type) "\r\n"
+        (cond
+         (post-str
+          ;; use POST method
+          (concat "POST " (nth 2 type) "\r\n"))
+         (t
+          ;; use GET method
+          (concat "GET " (format (nth 2 type) enc-str) "\r\n")))
         (and text-translator-proxy-server
              text-translator-proxy-user
              text-translator-proxy-password
@@ -216,11 +222,13 @@ specified site, and receives translation result."
         "Accept-Charset: Shift_JIS,utf-8;q=0.7,*;q=0.7\r\n"
         "Keep-Alive: 300" "\r\n"
         "Connection: keep-alive" "\r\n"
-        "Content-Type: application/x-www-form-urlencoded\r\n"
-        "Content-Length: "
-        (number-to-string (string-bytes post-str)) "\r\n"
-        "\r\n"
-        post-str "\r\n"
+        (when post-str
+          (concat
+           "Content-Type: application/x-www-form-urlencoded\r\n"
+           "Content-Length: "
+           (number-to-string (string-bytes post-str)) "\r\n"
+           "\r\n"
+           post-str "\r\n"))
         "\r\n"))
       (message "Translating...")
       (unless (or all

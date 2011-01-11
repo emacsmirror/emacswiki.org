@@ -8,8 +8,8 @@ Invoke HideShow mode with M-x hs-minor-mode.
 
 For Emacs 21:
 
-* C-c @ ESC C-s show all
-* C-c @ ESC C-h hide all
+* C-c @ C-M-s show all
+* C-c @ C-M-h hide all
 * C-c @ C-s show block
 * C-c @ C-h hide block
 * C-c @ C-c toggle hide/show

@@ -19,13 +19,13 @@ The following should work in Emacs 23:
     ; read _after_ the initial frame is created.
     (add-hook 'after-make-frame-functions 'toggle-fullscreen)
 
-It does not work on MS Windows, see below for that.
+It does not work on MS Windows or vanilla Mac Emacs 23; see below.
 
 == Platform-specific methods ==
 
 These methods may be useful with older versions of Emacs, or ports where the 'fullscreen' frame parameter is not supported.
 
-=== Fullscreen on MS Windows ===
+=== MS Windows ===
 
 If you're using MS Windows, and want to use "real fullscreen", i.e, getting rid of the top titlebar and all, see
 w32-fullscreen at the site for [http://www.martyn.se/code/emacs/darkroom-mode/ darkroom-mode]
@@ -121,32 +121,36 @@ And bind the option "Toggle fullscreen mode" to a key which can be used when usi
 
 The disadvantage of this is that if you bind F11 so that emacs matches other programs, then the window manager handles the resize/de-chroming and the application does not get a chance to modify it's appearance. For example, Mozilla Firefox will not set its toolbars to auto-hide.
 
-=== Fullscreen on OS X ===
-[http://citizen428.net/archives/432-Fullscreen-Emacs-on-MacOS-X.html A step by step guide] on patching Cocoa Emacs (based on the 2 links directly below), including a download link to a version of Emacs 24.0.50 with fullscreen support.
+=== Mac OS X ===
 
-The procedure described at http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html is working as of late June 2010. 
+==== Frame parameter ====
 
-http://www.sanityinc.com/full-screen-support-for-cocoa-emacs-on-osx (Jan 2010) has details of a patch which works well with Emacs 23.1.95 pretest.
+This is the simplest approach, and works with CarbonEmacs and Aquamacs.  Use the function at the top of the page, or use this:
 
-The function at the top of the page should work with CarbonEmacs and Aquamacs but fullscreen functionality has not made it into Emacs-23 as of early 2009.
-
-The following line can be added to your .emacs
 {{{
 (set-frame-parameter nil 'fullscreen 'fullboth)
 }}}
 
-The current CVS version of Emacs-23 does not support the above technique.
+The fullscreen functionality has not made it into Emacs-23 as of late 2010.
 
-Use [ftp://ftp.math.s.chiba-u.ac.jp/emacs/ Emacs 23 Mac Port Patch].
+==== Patching the binary ====
 
-The following line can be added to your .emacs
+To add the fullscreen functionality into Emacs, you can compile your own binary.
+
+The procedure described on [http://www.stratospark.com/blog/2010/fullscreen_emacs_on_osx.html this page] uses [http://unknownplace.org/memo/2009/12/17/1/ typester's patch from Dec 2009].  Use <code>M-x ns-toggle-fullscreen</code>.
+
+[http://www.sanityinc.com/full-screen-support-for-cocoa-emacs-on-osx Patch for Emacs 23.1.95 pretest] was posted Jan 2010, and contains instructions for using typester's patch with newer versions of Emacs.  (Recommended)
+
+[http://citizen428.net/archives/432 This blog post] uses typester's patch with newer versions of Emacs, and includes a download link to for a patched version of Emacs 24.0.50.
+
+[ftp://ftp.math.s.chiba-u.ac.jp/emacs/ Emacs 23 Mac Port] contains another patch; it's unclear whether it's related to the above.
+
+==== Resizing the window ====
+
+If your Emacs does not support fullscreen, it can be faked with the maxframe library, which resizes the window to approximately cover the entire screen.  Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el] for Cocoa/Nextstep Emacs. You can see the original version from [http://files.emacsblog.org/ryan/elisp/maxframe.el maxframe.el], which works for Windows, X11, and Carbon.
+
 {{{
-(set-frame-parameter nil 'fullscreen 'fullboth)
-}}}
-
-Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxframe.el]. You can see the original version from [http://files.emacsblog.org/ryan/elisp/maxframe.el maxframe.el].
-
-{{{
+(require 'maxframe)
 (defvar my-fullscreen-p t "Check if fullscreen is on or off")
 
 (defun my-toggle-fullscreen ()
@@ -159,7 +163,7 @@ Use [http://github.com/jmjeong/my-dot-emacs/blob/master/maxframe.el patched maxf
 (global-set-key (kbd "M-RET") 'my-toggle-fullscreen)
 }}}
 
-=== Toggle fullscreen - linux and windows ===
+=== Linux and Windows ===
 
 {{{
 (defvar my-fullscreen-p t "Check if fullscreen is on or off")

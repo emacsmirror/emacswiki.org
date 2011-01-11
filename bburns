@@ -1,0 +1,11 @@
+Hi, I'm Brian Burns, just another Emacs user. 
+
+I started using Emacs in 2008 or so, when I had to log in to the school's network from home, using Putty. I thought I should learn Emacs, as it would be more extensible than the other options. 
+
+Well, I'm still learning it, three years later! I figure it will pay off though, since text editing is such a fundamental part of programming. 
+
+Mostly I've been trying to slowly mold it more into something I'm accustomed to, which means all the years spent with things like SciTE (which I still use a lot) and Visual Studio. I think Emacs should come by default with more modern settings, and I'm glad that it's been moving that way recently. When I first started using it, it was really frustrating having to spend all this time trying to get it to do word wrapping properly, and display line numbers in the margin - simple things that you don't think you would have to mess with in an editor. 
+
+But I'm glad to see all the recent development - every version has added lots of great stuff into the core distribution, which is really helpful for new users. 
+
+If I ever write a module for emacs, it would be something to help deal with key bindings, especially for new users. 

@@ -240,6 +240,9 @@ My bindings use ALT + arrows and CTRL + ALT + arrows to navigate outlines:
 (global-set-key [C-M-down] 'outline-next-visible-heading)
 }}}
 
+Nice - I bound M-right to show-subtree though, so it's easy to expand and hide individual sections of text with M-left and M-right. 
+
+
 == Code Editing ==
 
 For _years_ i wanted to modify outline-minor-mode, so that comments starting at the beginning of line  were left visible.  Now I add the condition that they don't get marked as headers. Here's the code:

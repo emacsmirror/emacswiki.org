@@ -26,7 +26,7 @@
 
 ;;; Code:
 
-(defconst text-translator-version "0.7.3"
+(defconst text-translator-version "0.7.4"
   "version numbers of this version of text-translator")
 
 (defconst text-translator-buffer "*translated*"
