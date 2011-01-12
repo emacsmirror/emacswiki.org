@@ -92,6 +92,10 @@ Use find to list everything that's not a directory: press C-c C-f and type:
 followed by Return. To get everything (including the subdirectories) use find by
 name instead: C-c C-n * [RET]
 
+[new:::]
+This  trick is so useful that in version 5R346 I have added a keybinding for it:
+C-c b
+
 ----
 [:ExternalApps]
 ==Opening files in external applications.==

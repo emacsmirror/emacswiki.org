@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Thu Jan  6 10:53:05 2011 (-0800)
+;; Last-Updated: Tue Jan 11 21:04:02 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5987
+;;     Update #: 5991
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -664,6 +664,9 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-fn.el'")
 ;;
+;; 2011/01/11 dadams
+;;     icicle-choose-completion-string:
+;;       Removed code that uses base-size, choose-completion-delete-max-match.  Just replace all input.
 ;; 2011/01/05 dadams
 ;;     Added: icicle-file-type-less-p.
 ;;     icicle-highlight-input-noncompletion: When move overlay, specify buffer (for recursive minibuf).

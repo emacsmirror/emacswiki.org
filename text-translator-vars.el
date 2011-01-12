@@ -340,6 +340,20 @@ described. To update site-data, evalute `text-translator-site-data-init`."
      utf-8
      "<p class=\"large align-left box\">\\(\\(.\\|\n\\)*?\\)</p>")
 
+    ;; tatoeba.org (Furigana, romaji)
+    ("tatoeba.org_furigana"
+     "tatoeba.org"
+     "/eng/tools/romaji_furigana?query=%s&type=furigana HTTP/1.1"
+     nil
+     utf-8
+     "class=\"furigana\">\\(\\(.\\|\n\\)*?\\)</div><form id=\"ToolRomajiFuriganaForm")
+    ("tatoeba.org_romaji"
+     "tatoeba.org"
+     "/eng/tools/romaji_furigana?query=%s&type=romaji HTTP/1.1"
+     nil
+     utf-8
+     "class=\"furigana\">\\(\\(.\\|\n\\)*?\\)</div><form id=\"ToolRomajiFuriganaForm")
+
     ;; traduku.net (Esperanto, English)
     ("traduku.net_eoen"
      "traduku.net"

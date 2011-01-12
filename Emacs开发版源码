@@ -4,8 +4,6 @@ Emacs开发版源码在 http://savannah.gnu.org/ 的CVS仓库中。
 
 如何方便地获取最新源码，请参考：
 
-* EmacsFromCVS -- 如何从CVS中获取开发版源代码。
-* EmacsFromArch -- 如何用arch（tla)版本控制系统获取当前开发版源码。
 * EmacsFromBazaar -- 使用bzr获取Emacs。
 * EmacsFromGit -- 如何从半官方git仓库中获取emacs源码。
 
@@ -16,7 +14,6 @@ Emacs开发版源码在 http://savannah.gnu.org/ 的CVS仓库中。
 == 编译快照 ===
 从CVS快照中编译的二进制版本请参询：
 
-* EmacsCvsAndDebian
 * EmacsApp
 * CategoryWThirtyTwo has a list of unofficial CVS Emacs binaries.
 

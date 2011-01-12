@@ -6,7 +6,6 @@ Some pages are listed here explicitly:
 
 * BuildingEmacs
 * BuildingXEmacs
-* EmacsAndIon
 * EmacsOnAIX
 * EmacsOnGnuLinux -- simple compile from source, how to use stow. See also EmacsCvsAndDebian, EmacsSnapshotAndDebian and EmacsForLinuxPPC (links to patches needed).
 * EmacsOnMacOS

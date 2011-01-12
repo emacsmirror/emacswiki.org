@@ -43,7 +43,7 @@ As to learning '''Icicles''' -- You can access most '''Icicles''' features from 
 
 == So what is Icicles, anyway, and why bother? ==
 
-'''Icicles''' is documented here: '''[[Icicles]]'''. The doc is pretty comprehensi__ve__, and much of it should also be comprehensi__ble__ by Emacs n00bs -- by you, that is.
+'''Icicles''' is documented here: '''[[Icicles]]'''. The doc is pretty comprehensi__ve__, and much of it should also be comprehensi__ble__ by Emacs [[WikiPedia:newbie|n00bs]] -- by you, that is.
 
 '''Icicles''' adds lots of features to vanilla Emacs, the most important feature being enhanced support for input [[completion]], that is, completion of what you type in the [[minibuffer]].  '''Icicles''' lets you do the following things that are of particular help to you as an EmacsNewbie:
 

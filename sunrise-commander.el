@@ -6,7 +6,7 @@
 ;; Maintainer: José Alfredo Romero L. <escherdragon@gmail.com>
 ;; Created: 24 Sep 2007
 ;; Version: 5
-;; RCS Version: $Rev: 345 $
+;; RCS Version: $Rev: 346 $
 ;; Keywords: Sunrise Commander Emacs File Manager Midnight Norton Orthodox
 ;; URL: http://www.emacswiki.org/emacs/sunrise-commander.el
 ;; Compatibility: GNU Emacs 22+
@@ -155,7 +155,7 @@
 ;; emacs, so you know your bindings, right?), though if you really  miss it just
 ;; get and install the sunrise-x-buttons extension.
 
-;; This is version 4 $Rev: 345 $ of the Sunrise Commander.
+;; This is version 4 $Rev: 346 $ of the Sunrise Commander.
 
 ;; It  was  written  on GNU Emacs 23 on Linux, and tested on GNU Emacs 22 and 23
 ;; for Linux and on EmacsW32 (version 23) for  Windows.  I  have  also  received
@@ -546,13 +546,15 @@ substitution may be about to happen."
         C-M-= ......... compare panes
         C-x = ......... compare panes (console compatible)
 
-        C-c C-f ....... execute find-dired in Sunrise VIRTUAL mode
-        C-c C-n ....... execute find-name-dired in Sunrise VIRTUAL mode
-        C-c C-g ....... execute find-grep-dired in Sunrise VIRTUAL mode
-        C-c C-l ....... execute locate in Sunrise VIRTUAL mode
-        C-c / ......... narrow the contents of the current pane using fuzzy matching
-        C-c C-r ....... browse list of recently visited files (requires recentf)
+        C-c C-f ....... execute Find-dired in Sunrise VIRTUAL mode
+        C-c C-n ....... execute find-Name-dired in Sunrise VIRTUAL mode
+        C-c C-g ....... execute find-Grep-dired in Sunrise VIRTUAL mode
+        C-c C-l ....... execute Locate in Sunrise VIRTUAL mode
+        C-c C-r ....... browse list of Recently visited files (requires recentf)
         C-c C-c ....... [after find, locate or recent] dismiss virtual buffer
+        C-c / ......... narrow the contents of the current pane using fuzzy matching
+        C-c b ......... partial Branch view of selected items in the current pane
+        C-c p ......... Prune paths matching regular expression from current pane
         ; ............. follow file (go to same directory as selected file)
         M-; ........... follow file in passive pane
         C-M-o ......... follow a projection of current directory in passive pane
@@ -930,6 +932,8 @@ automatically:
 (define-key sr-mode-map "\C-c\C-f"    'sr-find)
 (define-key sr-mode-map "\C-c\C-n"    'sr-find-name)
 (define-key sr-mode-map "\C-c\C-g"    'sr-find-grep)
+(define-key sr-mode-map "\C-cb"       'sr-flatten-branch)
+(define-key sr-mode-map "\C-cp"       'sr-prune-paths)
 (define-key sr-mode-map "\C-c\C-l"    'sr-locate)
 (define-key sr-mode-map "\C-c/"       'sr-fuzzy-narrow)
 (define-key sr-mode-map "\C-c\C-r"    'sr-recent-files)
@@ -970,6 +974,8 @@ automatically:
 (define-key sr-mode-map "h"           'sr-describe-mode)
 (define-key sr-mode-map "?"           'sr-summary)
 (define-key sr-mode-map "k"           'dired-do-kill-lines)
+(define-key sr-mode-map [remap undo]  'sr-undo)
+(define-key sr-mode-map [remap undo-only] 'sr-undo)
 (define-key sr-mode-map [backspace]   'dired-unmark-backward)
 
 (define-key sr-mode-map [mouse-1]     'sr-mouse-advertised-find-file)
@@ -2055,6 +2061,12 @@ automatically:
   (interactive)
   (if other-window-scroll-buffer (scroll-other-window-down nil)))
 
+(defun sr-undo ()
+  "Restores selection as it was before the last file operation."
+  (interactive)
+  (dired-undo)
+  (sr-highlight))
+
 ;;; ============================================================================
 ;;; Passive & synchronized navigation functions:
 
@@ -2229,7 +2241,9 @@ automatically:
            (let ((was-virtual (local-variable-p 'sr-virtual-buffer))
                  (saved-point (point)))
              (setq major-mode 'wdired-mode)
-             (flet ((yes-or-no-p (prompt) nil))
+             (flet ((yes-or-no-p (prompt) nil)
+                    (revert-buffer
+                     (&optional ignore-auto noconfirm preserve-modes) nil))
                ad-do-it)
              (sr-readonly-pane was-virtual)
              (goto-char saved-point)))
@@ -2843,6 +2857,31 @@ or (c)ontents? ")
           (setcar args (replace-regexp-in-string
                         "find \." (format "find %s" find-items) (car args)))))
     (apply operation args)))
+
+(defun sr-flatten-branch (&optional mode)
+  "Displays a partial branch view of selected items in the current directory and
+  all its subdirectories in the active pane."
+  (interactive "cFlatten branch showing: (E)verything, (D)irectories,\
+ (N)on-directories or (F)iles only?")
+  (let ((success t))
+    (if (and mode (>= mode 97)) (setq mode (- mode 32)))
+    (cond ((eq ?E mode) (sr-find-name "*"))
+          ((eq ?D mode) (sr-find "-type d"))
+          ((eq ?N mode) (sr-find "-not -type d"))
+          ((eq ?F mode) (sr-find "-type f"))
+          (t (setq success nil)))
+    (if success
+        (rename-uniquely))))
+
+(defun sr-prune-paths (regexp)
+  "Kills all the lines (not files) for which the displayed path in the current
+  pane match the given regular expression"
+  (interactive "sPrune paths matching: ")
+  (dired-unmark-all-marks)
+  (condition-case description
+      (dired-mark-sexp `(string-match ,regexp name))
+    (error (ignore)))
+  (dired-do-kill-lines))
 
 (eval-and-compile
   (unless (featurep 'locate)

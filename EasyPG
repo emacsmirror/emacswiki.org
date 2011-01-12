@@ -119,6 +119,15 @@ to get it and import it to your system.
 
 ----
 
+----
+
+With Emacs 23 epa-list-keys was working correctly but trying to open a gpg file gave me the error: 'File exists, but cannot be read'
+Downgrading to gpg 1.4.11 from 2.0.16 allowed me to open gpg files again. 
+
+ -goibhniu
+
+----
+
 == Documentation ==
 
 Being difficult to find it online I decided to extract and publish the EasyPG Assistant User's Manual found within the package of Emacs 23.1.

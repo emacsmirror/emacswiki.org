@@ -34,6 +34,7 @@ Other extensions are found in [[AutoCompleteSources]].
 == Development Version Notes ==
 If you are using the current development version of AutoComplete (0.20 at the time of this edit) be aware that ac-source-semantic is now included in the package.  Furthermore, if you are using the semantic source,  make sure that you have required semantic-ia in your init file.  If you do not then it falls back to a method of gathering the tags that appears to not check the semantic cache slowing the whole thing up rather tremendously (especially with omnicompletion).
 
+[I'm pretty sure this is horribly outdated! (current version 1.4)]
 Speaking of omnicompletion, the way it functions was changed recently.  Since it is not documented yet here is an example of how it works:
 
 

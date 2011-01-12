@@ -1,6 +1,6 @@
 This page describes package Lisp:ascii.el, by ViniciusJoseLatorre.
 
-: .:: ''v3.0'' ::.
+: .:: ''v3.1'' ::.
 
 == About ascii ==
 
@@ -155,6 +155,8 @@ out the current Emacs session.
 
 
 == Acknowledgments ==
+
+Thanks to Steven W. Orr <_steveo_@_syslang_._net_> for patch to Emacs 23.
 
 Thanks to Roman Belenov <_roman_@_nstl_._nnov_._ru_> for suggestion on dynamic
 ASCII table evaluation (depending on character encoding).

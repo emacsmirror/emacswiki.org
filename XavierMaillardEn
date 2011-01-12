@@ -110,7 +110,6 @@ In unsorted order:
 
 === Page initiated ===
 
-* GnusCvsForDebian - Or how to have Oort Gnus under Debian GNU/Linux
 * GnusPGG - A native crypto module for Gnus
 * GnusSpam - The anti-spam module for Gnus
 * SigningMail -

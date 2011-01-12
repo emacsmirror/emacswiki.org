@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:25:53 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 09:28:14 2011 (-0800)
+;; Last-Updated: Tue Jan 11 21:02:19 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 12057
+;;     Update #: 12062
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-fn.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -379,11 +379,17 @@ the following is true:
              (set-buffer buffer)
              (unless (run-hook-with-args-until-success 'choose-completion-string-functions
                                                        choice buffer mini-p base-size)
-               ;; Insert the completion into the buffer where completion was requested.
-               (if base-size
-                   (delete-region (+ base-size (if mini-p (minibuffer-prompt-end) (point-min)))
-                                  (if mini-p (point-max) (point)))
-                 (choose-completion-delete-max-match choice))
+;;; $$$$$$ Removed this because it led to an error in Emacs 24, since base-size is nil there.
+;;;        Anyway, Icicles doesn't really need or use base-size or `choose-completion-delete-max-match'.
+;;;                ;; Insert the completion into the buffer where completion was requested.
+;;;                (if base-size
+;;;                    (delete-region (+ base-size (if mini-p (minibuffer-prompt-end) (point-min)))
+;;;                                   (if mini-p (point-max) (point)))
+;;;                  (choose-completion-delete-max-match choice))
+
+               ;; Forget about base-size altogether.  Replace the whole input always.
+               (delete-region (+ (or base-size 0) (if mini-p (minibuffer-prompt-end) (point-min)))
+                              (if mini-p (point-max) (point)))
                (when mini-p (goto-char (point-max))) ; $$$$$ (was unconditional)
                (insert choice)
                (remove-text-properties (- (point) (length choice)) (point) '(mouse-face nil))

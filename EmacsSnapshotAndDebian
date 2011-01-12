@@ -1,17 +1,9 @@
-Following are the steps and packages required to compile Emacs from CVS or git on Debian.
+Following are the steps and packages required to compile Emacs from git on Debian.
 
 
 == Getting Latest Source==
 
-NB : also see http://www.emacswiki.org/emacs/EmacsCvsAndDebian
-
-I also feel this page might be a misnomer since its not a "snapshot" which is a term normally reserved for a repository which is maintained as "stable" for people to use.  It's about building directly from the head of the RCS (whether git or cvs).
-
-=== Using CVS ===
-
-    cvs -z3 -d:pserver:anonymous@cvs.savannah.gnu.org:/sources/emacs co emacs
-
-=== Using git ===
+I also feel this page might be a misnomer since its not a "snapshot" which is a term normally reserved for a repository which is maintained as "stable" for people to use.  It's about building directly from the head of the git repository.
 
     git clone --depth 1 git://git.sv.gnu.org/emacs.git
 

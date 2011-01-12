@@ -10,14 +10,10 @@ For information on how to get them directly, see:
 
 See BuildingEmacs for how to build Emacs from the source package.
 
-See EmacsPretest for information about getting sources snapshots made by the Emacs maintainers before a release.
-
-See the EmacsBzrFeatures for how to find out about new features.
-
 Binary packages built from Bazaar snapshots are available for various systems:
 
-* EmacsApp
-* CategoryWThirtyTwo has a list of unofficial Emacs binaries.
+* EmacsPretest -- sources snapshots made by the Emacs maintainers before a release.
+* CategoryWThirtyTwo -- has a list of unofficial Emacs binaries.
 
 ----
 CategoryBuilding

@@ -1,13 +1,10 @@
-Note the code below does not work for gnus 5.9.0 or lesser; has only been tested with Oort Gnus series aka GnusCvs (with 0.16 it works great).
-
 Once you went through the trouble of creating an Face or X-Face header for yourself
 (see GnusFace and GnusXFace), you might want to store and view other people's
 Faces in the Big Brother Database.
 
 The code on this page uses the X-Face/Face support by Gnus to handle
 everything.  You might have to add the following in order to load the
-relevant Gnus code.  The code is in GnusCvs, so perhaps it won't work
-for you.
+relevant Gnus code.
 
 == Emacs ==
 

@@ -5,9 +5,9 @@
 
 ;; Author:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
 ;; Maintainer:	Vinicius Jose Latorre <viniciusjl@ig.com.br>
-;; Time-stamp:	<2011/01/08 22:58:17 vinicius>
+;; Time-stamp:	<2011/01/12 00:58:17 vinicius>
 ;; Keywords:	data, ascii
-;; Version:	3.0
+;; Version:	3.1
 ;; X-URL:	http://www.emacswiki.org/cgi-bin/wiki/ViniciusJoseLatorre
 
 ;; This file is *NOT* (yet?) part of GNU Emacs.
@@ -836,7 +836,8 @@ COL-INDEX is the ASCII table column index.")
 	 (set-buffer ascii-buffer-name)
 	 (let ((pos (aref ascii-position code))
 	       beg end)
-	   (goto-line (aref pos 0))
+	   (goto-char (point-min))
+	   (forward-line (1- (aref pos 0)))
 	   (if (and (> code 127) (/= ascii-charset-base 127))
 	       (save-match-data
 		 (re-search-forward

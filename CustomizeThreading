@@ -20,11 +20,9 @@ To ignore whitespace, "Re:" and diverse other things when comparing subjects, yo
 == Adding a message to an existing thread ==
 
 KaiGrossjohann said on the ding mailing list (the mailing list for
-GnusCvs) that you can select a message which is to be the parent, hit
+[[Gnus]]) that you can select a message which is to be the parent, hit
 `#' on it, then select the message to be added to that thread, and hit
 `T ^' on that.
 
 ----
 CategoryGnus
-
- 

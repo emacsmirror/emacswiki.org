@@ -18,6 +18,7 @@ Commonly used window commands include these:
     C-x 3 split the current window vertically
     C-x ^ make selected window taller
     C-x } make selected window wider
+    C-x - shrink window if larger than buffer
 
 See also WindowsAndFrames.
 

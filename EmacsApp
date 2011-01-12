@@ -17,8 +17,6 @@ Install via macports:
 sudo port install emacs-app-devel
 }}}
 
-[[http://drop.io/emacsapp|Emacs.app 23 binary package]] (built from 2009-01-04 CVS version using macports) for Mac OS X Tiger (10.4) or higher users (PowerPC only).
-
 == Enhancement ==
 
 A set of enhancements making Emacs.app more Mac-like without going as far as AquamacsEmacs or similar distributions is available as an elisp package: NSPlatformSupport.

@@ -143,10 +143,7 @@ Suggestions:
 
 == Getting Gnus ==
 
-* GnusCvs -- CVS for the bleeding edge
-** GnusCvsForDebian -- Useful for Debian lazy users
-** GnusCvsForGentoo -- Install Gnus CVS from Portage tree
-* GnusFromArch -- Getting Gnus source using the arch revision control system
+TODO explain how to get it from git.  Preferably without creating a new page.
 
 == Merchandise ==
 

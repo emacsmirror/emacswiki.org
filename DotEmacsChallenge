@@ -155,7 +155,7 @@ Stuff to use only when running EmacsOnWindowsNT
        
        (setq ange-ftp-ftp-program-name "C:\\bin\\ftp.exe")))
 
-Stuff to use only when running EmacsOnGnuLinux
+Stuff to use only when running Emacs on Gnu/Linux
 
   (cond ((eq system-type 'gnu/linux)
        (setq ange-ftp-ftp-program-name "pftp")))
