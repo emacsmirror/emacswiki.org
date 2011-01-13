@@ -1,9 +1,9 @@
-Brother of MikaelBrockman and just another GNU Emacs user.  You can reach me at <daniel@brockman.se> or as `[::dbrock]' on the EmacsChannel.
+Brother of MikaelBrockman and just another GNU Emacs user.  You can reach me at <daniel@brockman.se> or (seldom nowadays) as `[::dbrock]' on the EmacsChannel.
 
 I maintain three worthwhile Emacs packages:
-* The Zenburn color theme: <http://www.brockman.se/software/zenburn/>
-* The [[Bongo]] media player: <http://www.brockman.se/software/bongo/>
-* The Emacs sound volume adjustor: <http://www.brockman.se/software/volume-el/>
+* The Zenburn color theme: <http://github.com/dbrock/zenburn-el>
+* The [[Bongo]] media player: <http://github.com/dbrock/bongo>
+* The Emacs sound volume adjustor: <http://github.com/dbrock/volume-el>
 
 ----
 CategoryHomepage

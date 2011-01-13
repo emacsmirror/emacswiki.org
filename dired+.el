@@ -7,9 +7,9 @@
 ;; Copyright (C) 1999-2011, Drew Adams, all rights reserved.
 ;; Created: Fri Mar 19 15:58:58 1999
 ;; Version: 21.2
-;; Last-Updated: Tue Jan  4 08:17:01 2011 (-0800)
+;; Last-Updated: Wed Jan 12 23:25:16 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 2979
+;;     Update #: 2983
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/dired+.el
 ;; Keywords: unix, mouse, directories, diredp, dired
 ;; Compatibility: GNU Emacs: 20.x, 21.x, 22.x, 23.x
@@ -218,6 +218,8 @@
 ;;
 ;;; Change log:
 ;;
+;; 2011/01/12 dadams
+;;     dired-do-flagged-delete: Removed sit-for added on 1/02.
 ;; 2011/01/04 dadams
 ;;     defsubst -> defun everywhere.
 ;;     Removed autoload cookies from non def* sexps, defvar, and non-interactive functions.
@@ -2960,9 +2962,10 @@ non-empty directories is allowed."
   (interactive)
   (unless no-msg
     (ding)
-    (message "NOTE: Deletion of files flagged `%c' (not those marked `%c')."
+    (message "NOTE: Deletion of files flagged `%c' (not those marked `%c')"
              dired-del-marker dired-marker-char)
-    (sit-for 2))
+    ;; Too slow/annoying, but without it the message is never seen: (sit-for 2)
+    )
   (let* ((dired-marker-char  dired-del-marker)
          (regexp             (dired-marker-regexp))
          case-fold-search)

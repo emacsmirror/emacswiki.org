@@ -1,13 +1,11 @@
 ;;; get-rfc.el --- Getting and viewing RFCs
-;; $Id: get-rfc.el,v 1.12 2004/02/27 21:28:12 wence Exp $
 
 ;; This file is NOT part of Emacs.
 
-;; Copyright (C) 2002, 2003 lawrence mitchell <wence@gmx.li>
+;; Copyright (C) 2002, 2003, 2011 Lawrence Mitchell <wence@gmx.li>
 ;; Filename: get-rfc.el
-;; Version: $Revision: 1.12 $
-;; Author: lawrence mitchell <wence@gmx.li>
-;; Maintainer: lawrence mitchell <wence@gmx.li>
+;; Version: 1.14
+;; Author: Lawrence Mitchell <wence@gmx.li>
 ;; Created: 2002-04-16
 ;; Keywords: convenience RFCs
 
@@ -122,7 +120,7 @@ This *must* end in a trailing slash."
   :group 'get-rfc
   :type 'string)
 
-(defcustom get-rfc-view-rfc-mode 'rfcview-mode
+(defcustom get-rfc-view-rfc-mode nil
   "*Mode for viewing RFCs.
 
 Set this to the name of your favourite mode for viewing RFCs."
@@ -155,7 +153,7 @@ Files are saved in `get-rfc-local-rfc-directory' (q.v.)."
   "*Flags to pass to grep.")
 
 (defconst get-rfc-version
-  "$Id: get-rfc.el,v 1.12 2004/02/27 21:28:12 wence Exp $"
+  "1.14"
   "get-rfc.el's version number.")
 
 ;;;
@@ -176,8 +174,10 @@ Return the file it was saved in, so we can do
         (browse-url rfc-full)
       (call-process get-rfc-wget-program nil nil nil
                     rfc-full (concat get-rfc-wget-output-flag tmp-file))
-      (if get-rfc-save-new-rfcs-locally
-          (copy-file tmp-file (concat get-rfc-local-rfc-directory rfc)))
+      (when get-rfc-save-new-rfcs-locally
+        (let ((file (concat get-rfc-local-rfc-directory rfc)))
+          (copy-file tmp-file file)
+          (setq tmp-file file)))
       tmp-file)))
 
 ;;;
@@ -250,4 +250,3 @@ You may also specify where on the web to find RFCs by setting
 (provide 'get-rfc)
 
 ;;; get-rfc.el ends here
-

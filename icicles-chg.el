@@ -7,9 +7,9 @@
 ;; Copyright (C) 2007-2011, Drew Adams, all rights reserved.
 ;; Created: Tue Nov 27 07:47:53 2007
 ;; Version: 22.0
-;; Last-Updated: Tue Jan 11 21:04:02 2011 (-0800)
+;; Last-Updated: Wed Jan 12 17:11:51 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 5991
+;;     Update #: 5992
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-chg.el
 ;; Keywords: extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -4266,6 +4266,8 @@
  
 ;;;(@* "CHANGE LOG FOR `icicles-opt.el'")
 ;;
+;; 2011/01/12 dadams
+;;     Changed default value of icicle-Completions-text-scale-decrease from 0.66 to 0.75.
 ;; 2011/01/02 dadams
 ;;     icicle-region-background:
 ;;       Use frame param background-mode, not frame-background-mode.  Thx to Le Wang.

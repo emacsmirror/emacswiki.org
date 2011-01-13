@@ -1,8 +1,0 @@
-Information on compiling Emacs for LinuxPPC can be found here:
-
-http://www.livingtorah.org/~csebold/emacs/linuxppc.phtml
-
-Summary: all current distributions have the latest released version of Emacs 20, that is, 20.7.  21.2 compiles out of the box (for the first time in GNU Emacs' history) and I recommend that version wholeheartedly.  21.1 may work under some LinuxPPC variants but does not compile under Debian Woody; a patch has been made available for that in gnu.emacs.bug and at the site above.  That patch has already been checked into CVS as well.  If you are running LinuxPPC 1999 or 2000Q1 and are trying to compile a later Emacs, the patches necessary can be found above.  XEmacs has always compiled on LinuxPPC.
-
-----
-CategoryPorts CategoryBuilding

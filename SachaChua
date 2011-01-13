@@ -14,8 +14,7 @@ How I use Emacs
 
 === Planning ===
 
--I use PlannerMode to an insane extent. You can see the results at http://sacha.free.net.ph and read my notes at http://sacha.free.net.ph/notebook/PlannerMode.php .-
-I used to use PlannerMode a lot. Then I switched my blog to Wordpress (http://sachachua.com) and started using Emacs Org + Toodledo for my task management.
+I used to use PlannerMode a lot. Then I switched my blog to Wordpress (http://sachachua.com) and started using Emacs Org + Toodledo for my task management. Now I use org2blog to post some entries from my Giant Org File of Awesomeness.
 
 === Communication ===
 

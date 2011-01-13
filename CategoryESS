@@ -8,7 +8,11 @@ ESS is a package that integrates various statistical software with Emacs. S, R (
 
 Consider using the prefix "ESS" for new ESS-related pages. -- PaulJohnson
 
+== The must-haves in your .emacs ==
 
+ (setq ess-eval-visibly-p nil) ;otherwise C-c C-r (eval region) takes forever
+ (setq ess-ask-for-ess-directory nil) ;otherwise you are prompted each time you start an interactive R session
+ (require 'ess-eldoc) ;to show function arguments while you are typing them
 
 == Tips about Using ESS ==
 

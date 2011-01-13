@@ -414,6 +414,23 @@ Thanks.  Please try the latest.  Let me know if you encounter a problem.  -- Dre
 
 [new]
 Latest version works good, thanks. -- [[Anonymous]]
+
+[new]
+I noticed one annoying regression in recent version of dired+: when function `dired-do-flagged-delete' called it takes few seconds for it to show deletion prompt (or show message than no files selected for deletion). Used to work without noticeable delay few weeks ago. -- [[Anonymous]]
+
+[new:DrewAdams:2011-01-12 19:12 UTC]
+Yes, I added a call ##(sit-for 2)## after this message, so you will see the message:
+
+  NOTE: Deletion of files flagged `D' (not those marked `*')
+
+That waits 2 seconds, but if you type a key then the timeout is interrupted (no wait).  I'm not sure what the right thing to do is.  If I remove the `sit-for' then you will never see the message.  Maybe the message is not so important.  What do you think? -- DrewAdams 
+
+[new]
+I think that message is not really important, users who read dired manual alredy know that, ones who didn't — probably won't use that command :) Also i consider prompt delay confusing, even if keys work immediately (but you have to wait anyway to see the ##*Deletions*## buffer with list of files to delete). -- [[Anonymous]]
+
+[new:DrewAdams:2011-01-13 07:28 UTC]
+OK, I removed the `sit-for'.  Thanks for the feedback. -- DrewAdams
+
 ----
 CategoryDirectories
 CategoryFiles

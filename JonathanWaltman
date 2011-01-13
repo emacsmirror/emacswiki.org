@@ -9,10 +9,51 @@ Wrote a package to improve `info-lookup-symbol' in python-mode.
 * [https://bitbucket.org/jonwaltman/pydoc-info/ pydoc-info]
 
 
-
 [new:DrewAdams:2011-01-09 13:41 UTC]
 Welcome to the wiki. -- DrewAdams
 
+[new]
+Wow this info file is over 9MB uncompressed.  makeinfo defaults to splitting info files in 300k byte chunks by default.  I think it is time to bump up this value to some higher value, but 9MB is by far the largest info file I've ever seen.  However it may be ok these days with most computers having several gigabytes of memory.  -- RichardKim
+
+[new]
+Thanks for the latest python.info!  I am very glad that you added texinfo support to Sphinx.  I've been using python info files for version 2.4, because of lack of texinfo support in Sphinx.  Now I can upgrade the python info files to version 2.7.  I would be interested in knowing what you changed to info-lookup-symbol, because I've been using the following elisp for years to setup info-lookup. -- RichardKim
+
+
+(eval-after-load "info-look"
+  '(let ()
+
+     (info-lookup-add-help
+      :mode 'python-mode :topic 'symbol
+      :regexp "[_a-zA-Z][_a-zA-Z0-9]*"
+      :doc-spec '(
+                  ("(python-lib)Function-Method-Variable Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-lib)Miscellaneous Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-lib)Module Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-lib)Class-Exception-Object Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-ref)Function-Method-Variable Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-ref)Class-Exception-Object Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-ref)Miscellaneous Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  ("(python-ref)Module Index" nil
+                   ;;"^[ \t]+- [^:]+:[ \t]*" "\\b"
+                   nil nil)
+                  )
+      )
+
+     ))
 
 ----
 CategoryHomepage

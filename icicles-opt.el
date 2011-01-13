@@ -7,9 +7,9 @@
 ;; Copyright (C) 1996-2011, Drew Adams, all rights reserved.
 ;; Created: Mon Feb 27 09:22:14 2006
 ;; Version: 22.0
-;; Last-Updated: Wed Jan  5 08:48:47 2011 (-0800)
+;; Last-Updated: Wed Jan 12 17:06:41 2011 (-0800)
 ;;           By: dradams
-;;     Update #: 3993
+;;     Update #: 3994
 ;; URL: http://www.emacswiki.org/cgi-bin/wiki/icicles-opt.el
 ;; Keywords: internal, extensions, help, abbrev, local, minibuffer,
 ;;           keys, apropos, completion, matching, regexp, command
@@ -774,7 +774,7 @@ This can be useful to make *Completions* more visible."
   :type 'boolean :group 'Icicles-Completions-Display)
 
 (when (fboundp 'text-scale-decrease)    ; Emacs 23+
-  (defcustom icicle-Completions-text-scale-decrease 0.66
+  (defcustom icicle-Completions-text-scale-decrease 0.75
     "*Initial height decrease for text in buffer `*Completions*'.
 A value of 0.0 means the height is not decreased at all.
 This is used as the argument to function `text-scale-decrease'.

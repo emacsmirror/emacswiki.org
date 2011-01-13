@@ -6,16 +6,16 @@
 ;; Maintainer: Matthew L. Fidler
 ;; Created: Sat Nov  6 11:02:07 2010 (-0500)
 ;; Version: 0.1
-;; Last-Updated: Thu Dec  9 09:20:02 2010 (-0600)
+;; Last-Updated: Wed Jan 12 16:28:38 2011 (-0600)
 ;;           By: Matthew L. Fidler
-;;     Update #: 416
+;;     Update #: 422
 ;; URL: http://www.emacswiki.org/emacs/auto-indent-mode.el
 ;; Keywords: Auto Indentation
 ;; Compatibility: Tested with Emacs 23.x
 ;;
 ;; Features that might be required by this library:
 ;;
-;;   None
+;;   `backquote', `bytecomp', `warnings'.
 ;;
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
@@ -91,7 +91,10 @@
 ;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;
 ;;
 ;;; Change Log:
-;; 09-Dec-2010    Matthew L. Fidler  
+;; 12-Jan-2011    Matthew L. Fidler  
+;;    Last-Updated: Wed Jan 12 16:27:21 2011 (-0600) #420 (Matthew L. Fidler)
+;;    Added fix for ortbl-minor-mode.  Now it will work when orgtbl-minor mode is enabled.
+;; 09-Dec-2010    Matthew L. Fidler
 ;;    Last-Updated: Thu Dec  9 09:17:45 2010 (-0600) #414 (Matthew L. Fidler)
 ;;    Bugfix.  Now instead of indenting the region pasted, indent the region-pasted + beginning of line at region begin and end of line at region end.
 ;; 02-Dec-2010    Matthew L. Fidler  
@@ -543,7 +546,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
           (setq auto-indent-mode-pre-command-hook-line -1)
           (add-hook 'pre-command-hook 'auto-indent-mode-pre-command-hook))
         (when auto-indent-minor-mode
-          (when (and last-command-event (memq  last-command-event '(10 13)))
+          (when (and last-command-event (memq last-command-event '(10 13 return)))
             (when (or (not (fboundp 'yas/snippets-at-point))
                       (and yas/minor-mode
                            (let ((yap (yas/snippets-at-point 'all-snippets)))
@@ -559,9 +562,7 @@ http://www.emacswiki.org/emacs/AutoIndentation
                   ;; indentation may introduce the whitespace.
                   (save-restriction
                     (narrow-to-region (point-at-bol) (point-at-eol))
-                    (delete-trailing-whitespace))
-                  )
-                )
+                    (delete-trailing-whitespace))))
               (indent-according-to-mode))
             (when (and auto-indent-blank-lines-on-move auto-indent-mode-pre-command-hook-line (not (= (line-number-at-pos) auto-indent-mode-pre-command-hook-line)))
               (when (and (looking-back "^") (looking-at "$"))
