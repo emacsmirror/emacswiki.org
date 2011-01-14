@@ -1,16 +1,16 @@
 == Locally Documented ==
 Mainstream GNU Emacs and derivates:
-* GnuEmacs
-* [[XEmacs]], formerly LucidEmacs
-* [[SXEmacs]], a fork of [[XEmacs]]
+* GnuEmacs -- ([http://www.gnu.org/software/emacs/#Obtaining download])
+* [[XEmacs]] -- formerly LucidEmacs ([http://www.xemacs.org/Download/index.html download])
+* [[SXEmacs]] -- a fork of [[XEmacs]] ([http://www.sxemacs.org/download.html download])
 
 Other implementations still alive:
-* GNU [[Zile]], a tiny Emacs clone.
-* [[Climacs]], based on CommonLisp.
-* EdWin, based on [[Scheme]].
-* EfunsEditor, based on ObjectiveCaml.
-* [[Mg]], a lightweight public domain Emacs clone
-* [[Ymacs]], an Emacs-like editor for the Web
+* GNU [[Zile]] -- a tiny Emacs clone.
+* [[Climacs]] -- based on CommonLisp.
+* EdWin -- based on [[Scheme]].
+* EfunsEditor -- based on ObjectiveCaml.
+* [[Mg]] -- a lightweight public domain Emacs clone
+* [[Ymacs]] -- an Emacs-like editor for the Web
 
 Other more or less obscure implementations:
 * [[EINE]]
@@ -35,7 +35,7 @@ Not locally documented:
 
 It is a pretty long page, though.
 
-This document, by Craig Finseth, provides a partial -- and not
+This document, by  CraigFinseth, provides a partial -- and not
 comprehensive -- list of implementations of Emacs-type editors and
 literature about such editors. You can help make it more comprehensive
 by sending the author additional information and/or updates.
@@ -45,7 +45,7 @@ This document is also gradually acquiring the role of a repository of
 to itself, this document will probably serve until someone (<i>not</i>
 the author!) writes one.
 
-See also: EditorsUsedByOthers, CraigFinseth.
+See also: EditorsUsedByOthers
 
 ----
 CategoryHistory CategoryPorts

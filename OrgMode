@@ -65,6 +65,7 @@ There is a Ubuntu repository with the latest for non-cvs Emacs.  Add the followi
 * FreeMind lets you import/export between org-mode and freemind file format.
 * mobileorg is a FREE (open-source) iPhone and iPod Touch application for storing, searching, viewing and editing your Org-mode files. Its home page is at http://mobileorg.ncogni.to/ and its EmacsWiki page is at http://www.emacswiki.org/emacs/mobileorg
 * OrgOutlook lets you integrate with Microsoft Outlook
+* Lisp:org-table-comment.el provides orgtbl-mode (via orgtbl-comment-mode) support for modes that don't support block comments. 
 
 == Texts on using org-mode ==
 

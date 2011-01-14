@@ -3,7 +3,9 @@ Works on iPAQ.
 
 This port requires celib.dll and ports of grep and ftp -- all available from the same site.
 
-* http://www.rainer-keuchel.de/wince/emacs-wince.html
+* h t t p : //www.rainer-keuchel.de/wince/emacs-wince.html
+
+(This link obviously doesnt work - at least since 2011, January - so it is now *deactivated*!)
 
 ----
 CategoryPorts

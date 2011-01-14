@@ -51,7 +51,7 @@
     (list
      ; since we can't specify batch comments through the syntax table,
      ; we have to specify it here, and override whatever is highlighted
-     '( "^[ \t]*rem\\>.*" (0 font-lock-comment-face t))
+     '( "^[ \t]*@?rem\\>.*" (0 font-lock-comment-face t))
 
      ; since the argument to the echo command is a string, we format it
      ; as a string
@@ -160,6 +160,7 @@
 	0))))
 
 (add-to-list 'auto-mode-alist '("\\.bat\\'" . batch-mode))
+(add-to-list 'auto-mode-alist '("\\.cmd\\'" . batch-mode))
   
 (provide 'batch-mode)
 

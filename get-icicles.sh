@@ -7,7 +7,7 @@ required_libraries="icicles.el \
  icicles-mcmd.el icicles-mode.el icicles-opt.el \
  icicles-var.el "
 optional_libraries="col-highlight.el crosshairs.el \
- doremi.el hexrgb.el hl-line+.el \
+ doremi.el ring+.el hexrgb.el hl-line+.el \
  icicles-chg.el icicles-doc1.el icicles-doc2.el \
  icomplete+.el lacarte.el \
  synonyms.el vline.el"

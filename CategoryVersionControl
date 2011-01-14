@@ -5,6 +5,8 @@ These are version control systems that interact with Emacs in a generic way.
 ** VcIcon displays an icon indicating the vc status of a file (up-to-date or modified with respect to the repository).
 ** VersionControlAlways
 ** VcTopDirectory automatically chdirs <code>vc-dir</code> buffer to top-level directory for git/Bazaar which list files with absolute paths
+** [[VC-Jump]] -- jump to corresponding VC status buffer
+
 * DistributedVersionControl is an interface to various *distributed* version control systems.  It doesn't come with Emacs.  Currently DVC supports Git, Mercurial, Bazaar and GNU Arch. Monotone is only partially supported and Darcs support is not usable yet.
 
 This is information on specific centralized version control systems.

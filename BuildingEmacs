@@ -5,8 +5,8 @@ files distributed with Emacs.
 
 Because these instructions have been repeated so many times on this wiki,
 a brief summary of the basic steps is provided here.  Nevertheless you
-should really also read the official documentation anyway.  We won't
-repeat anything said there just so for the sake of it.
+should really also read the official documentation.  We won't repeat
+everything said there just for the sake of it.
 
     $ cd /where/you/unpacked/or/branched/emacs
     $ ./configure

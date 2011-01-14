@@ -1,0 +1,30 @@
+VC-Jump provides vc-jump, which jumps to the VersionControl status buffer if detected.
+
+== Description ==
+`##M-x vc-jump##' jumps to corresponding VC status buffer.
+
+If you're familiar with `##M-x dired-jump##' (or ##C-x C-j##), you might already knew what `##M-x vc-jump##' goes.
+
+For example, if you are visiting a file controlled by CVS, `##M-x vc-jump##' will launch `##cvs-update##' automatically.  If the ##*cvs*## buffer (resulting from `##cvs-update##') already exists, it just switch to ##*cvs*##, and refresh it.
+
+Likewise, if you are visiting a file controlled by GIT, `##M-x vc-jump##' will launch `##git-update##'.
+
+Currently, supported VC backends are CVS, SVN, and GIT.
+
+It is tested on GNU Emacs 23.2.1, git.el from git 1.7.2.2, psvn.el from subversion 1.6.13 on Gentoo Linux system.
+
+== Installing ==
+
+Download [[vc-jump.el]] and place it any directory in `##load-path##'.
+
+In your ~/.emacs,
+
+    (require 'vc-jump)
+    (global-set-key [f12] 'vc-jump)    ; for your convenience
+
+
+----
+I'll be embarassed if this feature is already provided by Emacs.  Let me know if that is the case. -- CinSK
+----
+
+CategoryVersionControl EmacsLispList CinSK

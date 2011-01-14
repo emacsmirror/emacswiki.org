@@ -108,7 +108,6 @@
            "http://www.emacswiki.org/emacs/download/anything-grep.el" ; Grep with anything
            "http://www.emacswiki.org/emacs/download/anything-menu.el" ; menu selection outside emacs
            "http://www.emacswiki.org/emacs/download/anything-gtags.el" ; GNU GLOBAL interface
-           "http://www.emacswiki.org/emacs/download/anything-etags.el" ; etags interface
            "http://www.emacswiki.org/emacs/download/ipa.el" ; In-Place-Annotation
            "http://www.emacswiki.org/emacs/download/anything-ipa.el" ; In-Place-Annotation
            "http://www.emacswiki.org/emacs/download/anything-startup.el" ; Startup file
