@@ -43,4 +43,8 @@ Type A and a 2x3 matrix should be there
 === Apl Chars are where? ===
 Look at the top of the apl.el file
 
-Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} 
+Note the mappings are not one-one -- assignment can be written as any of {is} {gets} {<-} (ie 'less-than' 'hyphen')
+
+=== TODOs ===
+# Better integration between apl.el and inferior-apl.el
+# Better font-locking

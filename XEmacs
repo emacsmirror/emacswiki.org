@@ -1,5 +1,4 @@
-'''XEmacs''' is a ~decade-old fork from [[GnuEmacs]]. See [http://www.xemacs.org/ http://www.xemacs.org/] for more details; there's also an active newsgroup at [news:comp.emacs.xemacs comp.emacs.xemacs]. 
-
+'''XEmacs''' is a ~decade-old fork from [[GnuEmacs]]. See [http://www.xemacs.org/ http://www.xemacs.org/] for more details; there's also an active newsgroup at [news:comp.emacs.xemacs comp.emacs.xemacs].  Download from http://www.xemacs.org/Download/
 
 Around 1994, [http://www.sun.com/ Sun Microsystems] and [http://www.dreamsongs.com/NewFiles/PatternsOfSoftware.pdf Lucid Inc.] decided to cooperate on a version of Emacs, distinct from that maintained by the [http://www.fsf.org/ Free Software Foundation]. Lucid Inc. had been writing a version they called "Lucid Emacs"; Sun had been sponsoring something called "Epoch," another version of Emacs.
 

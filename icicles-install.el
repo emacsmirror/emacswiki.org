@@ -145,6 +145,7 @@ Default value is the Emacs Wiki site."
    "lacarte.el"                 ; Menu-bar access from keyboard
    "synonyms.el"                ; Synonym lookup
    "vline.el"                   ; Column highlighting
+  )
   "*Icicles files to download.
 Icicles is made to take advantage of some libraries that are not
 strictly required.  All of these are recommended, but only some are

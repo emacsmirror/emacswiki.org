@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-seq-utils.el
@@ -36,8 +36,9 @@
 ;; `mon-union'
 ;;
 ;; `%mon-list-reorder'
-
+;;
 ;; `mon-list-add-non-nil'
+;; `mon-list-ensure'
 ;; `mon-list-match-tails'
 ;; `mon-list-filter'
 ;; `mon-remove-dups'
@@ -97,8 +98,10 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
+;; `*mon-seq-utils-xrefs*'
 ;;
 ;; GROUPS:
+;; `mon-seq-utils'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;;
@@ -231,7 +234,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -244,6 +247,51 @@
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T19:01:43-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-seq-utils nil
+  "Customization group for variables and functions of :FILE mon-seq-utils.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-seq-utils.el")
+  :link '(emacs-library-link "mon-seq-utils.el")
+  :group 'mon-base)
+
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T19:01:45-05:00Z}#{11022} - by MON KEY>
+(defcustom *mon-seq-utils-xrefs* 
+  '(mon-elt-> mon-elt-< mon-elt->elt mon-elt-<elt mon-maybe-cons mon-delq-cons
+    mon-list-nshuffle mon-list-shuffle-safe mon-delq-dups mon-deleql-dups
+    mon-delete-first mon-list-last mon-list-make-unique mon-remove-dups
+    mon-list-filter mon-list-match-tails mon-list-add-non-nil mon-list-ensure
+    %mon-list-reorder mon-list-reorder mon-union mon-member-if mon-delete-if
+    mon-remove-if-not mon-remove-if mon-intersection mon-set-difference
+    mon-pairlis mon-map mon-map1 mon-mapc mon-mapcar mon-mapcan mon-mapl
+    mon-mapcon mon-maplist mon-subseq mon-sublist mon-sublist-gutted
+    mon-map-append mon-assoc-replace mon-moveq mon-flatten
+    mon-list-flatten-rotated mon-transpose mon-list-intersperse mon-every
+    mon-mismatch mon-maptree mon-recursive-apply mon-list-merge mon-combine
+    mon-list-variant-forms mon-list-permute-variants mon-list-permute-1
+    mon-list-permute-2 mon-permute-combine mon-permute-combine-1
+    mon-list-string-longest mon-bool-vector-pp *mon-seq-utils-xrefs*)
+  "Xrefing list of mon sequences related symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-seq-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*mon-buffer-utils-xrefs*',
+`*mon-line-utils-xrefs*', `*mon-plist-utils-xrefs*' `*mon-seq-utils-xrefs*',
+`*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-seq-utils
+  :group 'mon-xrefs)
+
+ 
 ;;; ==============================
 ;;; :ELISP-RELATED
 ;;; ==============================
@@ -553,16 +601,19 @@ are the same Lisp object.\n
 ;;; :PREFIX "mdf-"
 ;;; :COURTESY bytecomp.el, gnus-util.el  
 ;;; :WAS `byte-compile-delete-first' :WAS `gnus-delete-first'
-(defun mon-delete-first (list-elt in-list &optional test-pred)
-  "Delete by side effect the first `eq' occurrence of LIST-ELT as member of IN-LIST.\n
+(defun mon-delete-first (list-elt in-list &optional w-pred)
+  "Delete by side effect the first `eq' occurrence of LIST-ELT IN-LIST.\n
+Optional arg W-PRED is a predicate symbol one of `equal', `eql', or `eq' default
+is `eq'.
 :EXAMPLE\n\n \(let \(\(mdf '\(\(a b c\) b\)\)\) \(mon-delete-first '\(a b c\) mdf\) mdf\)\n
 :ALIASED-BY `mon-list-delete-first'\n
 :SEE-ALSO `mon-delq-dups', `mon-deleql-dups', `mon-list-last', `mon-delete-if',
-`mon-remove-if-not', `mon-remove-dups', `mon-list-make-unique'.\n"
+`mon-remove-if-not', `mon-remove-dups', `mon-list-make-unique',  `mon-list-sift',
+`mon-equality-or-predicate', `mon-equality-for-type', `car-less-than-car'.\n"
   ;; :NOTE `defsubst'd in bytecomp.el
   ;; (byte-compile-delete-first list-elt in-list))
   (if ;; :WAS (eq (car in-list) list-elt)
-      (case test-pred
+      (case w-pred
         (equal (equal (car in-list) list-elt))
         (eql   (eql (car in-list) list-elt))
         (t     (eq (car in-list) list-elt)))
@@ -572,7 +623,7 @@ are the same Lisp object.\n
     (let ((mdf-total in-list))
       (while (and (cdr in-list)
                   ;; :WAS (not (eq (cadr in-list) list-elt))
-                  (not (case test-pred
+                  (not (case w-pred
                          (equal (equal (cadr in-list) list-elt))
                          (eql   (eql   (cadr in-list) list-elt))
                          (t     (eq    (cadr in-list) list-elt)))))
@@ -605,7 +656,8 @@ the dotted list at tail not the atom in cdr of dotted list, e.g.\n
  \(mon-list-last '\(\"e\" nil\)\)\n
  \(last '\(nil \"e\"\)\)\n
  \(mon-list-last '\(nil \"e\"\)\)\n
-:SEE-ALSO `mon-list-sift', `mon-list-filter', `mon-delete-first'.\n►►►"
+:SEE-ALSO `mon-list-sift', `mon-list-filter', `mon-delete-first',
+`mon-list-proper-p', `mon-sequence-mappable-p'.\n►►►"
   (if (listp in-list)
       (cond ((mon-list-proper-p  in-list)
              (car (last in-list)))
@@ -735,7 +787,7 @@ When the last items of the two do not satsify equivialence return nil.\n
 `mon-mapcar', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
 `mon-recursive-apply', `mon-maybe-cons', `mon-delq-cons', `mon-remove-dups',
 `mon-sublist', `mon-sublist-gutted', `mon-assoc-replace', `mon-moveq',
-`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt'.\n►►►"
+`mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `car-less-than-car'.\n►►►"
   (let ((mlct-a (length comp-a))
 	(mlct-b (length comp-b)))
     ;; Make sure they are the same length
@@ -757,7 +809,7 @@ When the last items of the two do not satsify equivialence return nil.\n
 ;;; :CREATED <Timestamp: #{2010-09-13T14:58:49-04:00Z}#{10371} - by MON KEY>
 (defun mon-list-add-non-nil (add-elts-to add-elts-frm)
   "Add non-nil elements to tail of list.\n
-ADD-ELTS-TO list with ADD-ELTS-FRM list. 
+ADD-ELTS-TO list with ADD-ELTS-FRM list.\n
 :EXAMPLE\n\n\(let \(\(atl  '\(8 9 10\)\)
       \(afl  '\(a nil b nil c nil d\)\)\)
   `\(:ADD-ELTS-TO ,atl 
@@ -792,6 +844,25 @@ ADD-ELTS-TO list with ADD-ELTS-FRM list.
 ;; |   `(:ADD-ELTS-TO ,atl :ADD-ELTS-FRM ,afl 
 ;; |     :RETURN ,(mon-list-add-non-nil atl afl)))
 ;; `----
+
+
+;;; ==============================
+;;; :COURTESY lisp/erc/erc.el :WAS `erc-list' -- use or/and/nlistp instead of if/listp
+;;; :CHANGESET 2367
+;;; :CREATED <Timestamp: #{2010-12-17T12:42:55-05:00Z}#{10505} - by MON KEY>r
+(defun mon-list-ensure (obj-or-lst)
+  "Return OBJ-OR-LST as a list, when OBJ-OR-LST is `nlistp' make it a list.\n
+:EXAMPLE\n\n\(mon-list-ensure '\(a\)\)\n
+\(mon-list-ensure 'a\)\n
+\(mon-list-ensure  \(mon-list-ensure 'a\)\)\n
+\(mon-list-ensure '\(\)\)\n
+\(mon-list-ensure nil\)\n
+\(mon-list-ensure \(mon-list-ensure nil\)\)\n
+:SEE-ALSO `mon-list-proper-p', `mon-list-add-non-nil', `mon-maybe-cons',
+`mon-delq-cons', `consp', `listp', `nlistp', `atom'.\n►►►"
+  (or (and (nlistp obj-or-lst)
+           (list obj-or-lst))
+      obj-or-lst))
 
 
 ;;; ==============================
@@ -874,7 +945,7 @@ SEQ-ORDER takes precedence else default to elt at index in SEQ-ITEMS, e.g.:\n
 `mon-mapcar', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
 `mon-recursive-apply', `mon-sublist', `mon-sublist-gutted', `mon-remove-dups',
 `mon-assoc-replace', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
-`mon-elt-<elt'.\n►►►"
+`mon-elt-<elt', `car-less-than-car'.\n►►►"
   (let (mlr-vec-flag)
     (if ;; Both SEQ-ITEMS/SEQ-ORDER or SEQ-ITEMS null. Don't bother.
         (or (and (not seq-items) (not seq-order)) (not seq-items))
@@ -950,7 +1021,7 @@ to avoid corrupting the original lst1 and lst2.\n
   `\(,\(mon-union L1 L2\) ,L1 ,L2\)\)\n
 :ALIASED-BY `mon-list-union'\n
 :SEE-ALSO `mon-intersection', `mon-member-if', `mon-equality-or-predicate',
-`cvs-union'.\n►►►"
+`cvs-union', `car-less-than-car'.\n►►►"
   (or (and (null lst-1) lst-2)
       (and (null lst-2) lst-1)
       (and (equal lst-1 lst-2) lst-1)
@@ -1002,7 +1073,7 @@ whenever possible.\n
 :ALIASED-BY `mon-list-delete-if'\n
 :SEE-ALSO `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon',
 `mon-remove-if', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
-`mon-char-code', `mon-subseq'.\n►►►"
+`mon-char-code', `mon-subseq', `car-less-than-car'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'
   (unless (functionp predicate)
     (error (concat ":FUNCTION `mon-delete-if' "
@@ -1036,7 +1107,7 @@ avoid corrupting IN-SEQ.\n
 :ALIASED-BY `mon-list-remove-if-not'\n
 :SEE-ALSO `mon-mapl', `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon',
 `mon-remove-if', `mon-remove-if-not', `mon-delete-if', `mon-member-if',
-`mon-subseq', `mon-intersection', `mon-char-code'.\n►►►"
+`mon-subseq', `mon-intersection', `mon-char-code', `car-less-than-car'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'/`mon-equality-or-predicate'
   (unless (functionp predicate)
     (error (concat ":FUNCTION `mon-remove-if-not' "
@@ -1068,7 +1139,7 @@ RMV-IF-PREDICATE is unary function.\n
 `mon-elt-<elt', `mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
 `mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
 `mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons',
-`mon-delq-cons'.\n►►►"
+`mon-delq-cons', `car-less-than-car'.\n►►►"
   ;; :TODO incorporate `mon-function-object-p'/`mon-mappable-sequence-p'/`mon-equality-or-predicate'
   (unless (functionp rmv-if-predicate)
     (error (concat ":FUNCTION `mon-remove-if' "
@@ -1117,7 +1188,7 @@ and does not provide intelligent type checking.\n
 `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-delq-cons',
 `mon-list-make-unique', `mon-list-match-tails', `mon-list-reorder',
 `mon-nshuffle-vector', `mon-list-nshuffle', `mon-list-shuffle-safe',
-`mon-list-proper-p', `hfy-interq', `smtpmail-intersection'.\n►►►"
+`mon-list-proper-p', `hfy-interq', `smtpmail-intersection', `car-less-than-car'.\n►►►"
   ;; :TODO Use `mon-list-proper-p'/`mon-sequence-mappable-p' here instead.
   (unless (and (or (consp list1) (null list1))
                (or (consp list2) (null list2)))
@@ -1182,7 +1253,7 @@ Eliminates duplicates between SET1-LST and SET2-LST using COMPARISON-FUNC.\n
 :SEE-ALSO `mon-equality-or-predicate', `mon-intersection', `mon-union',
 `mon-mismatch', `mon-remove-if', `mon-mapcar', `mon-map-append', `mon-mapl',
 `mon-maplist', `mon-mapcar', `mon-mapcan', `mon-mapcon', `mon-remove-if-not',
-`mon-delete-if', `mon-member-if', `mon-subseq', `mon-char-code'.\n►►►"
+`mon-delete-if', `mon-member-if', `mon-subseq', `mon-char-code', `car-less-than-car'.\n►►►"
   (let ((msd-rslt (list 'a)) ;; The 'a gives `list' something to hold onto.
         ;; :WAS `ediff-member' Use comparison-func to decide who is a member
         (msd-pred 
@@ -1231,7 +1302,7 @@ must satisfy `mon-list-proper-and-dotted-p'. Signal an error if any one does not
   \(mon-pairlis \(number-sequence 1 26\)
                \(number-sequence 5 \(* 5  26\) 5\)
                append-to\)\)\n
-:SEE-ALSO `mon-mapcar'.\n►►►"
+:SEE-ALSO `mon-mapcar', `car-less-than-car'.\n►►►"
   (nconc 
    (mon-mapcar #'cons 
                (or (and (mon-list-proper-p keys-lst) keys-lst)
@@ -1249,9 +1320,20 @@ must satisfy `mon-list-proper-and-dotted-p'. Signal an error if any one does not
 ;;; ==============================
 ;;; :COURTESY `cvs-map' pcvs.el
 (defun mon-map (w-rslt-type map-fun map-lst &rest map-lsts)
-  "MAP-FUN across one or more SEQUENCEs returning a sequence.\n
-W-RSLT-TYPE is the sequence type to return. Signal an error if sequence can non
-be coerced to the type.\n
+  "MAP-FUN across sequences MAP-LST and MAP-LSTS and return value W-RSLT-TYPE.\n
+MAP-FUN is a function object.\n
+Argument MAP-LST and rest args MAP-LSTS are sequences satisfying `mon-sequence-mappable-p'.\n
+W-RSLT-TYPE is a symbol naming the type of return value. It is one of:
+  list vector string array array character float
+Signal an error if the collected result of mapping MAP-FUN can not be coerced to
+the type specified of W-RSLT-TYPE. Additionally, an error is signalled if the
+following applicable constraints hold for the value of mapped thing:\n
+- When type is float and mapped thing does not satisfy `number-or-marker-p'.\n
+- When type is character and mapped thing is neither `stringp' nor `symbolp' or
+  does not satisfy `mon-string-not-null-nor-zerop'.
+  :NOTE This latter constraint prevents attempts to perform character
+  \"coercion\" of null value and empty strings and provides an alternative
+  behaviour than that of the `coerce' function defined in :FILE cl-extra.el.\n
 :EXAMPLE\n\n\(map 'list #'- '\(1 2 3 4\)\)\n
 \(map 'string #'\(lambda \(x\) \(if \(oddp x\) ?1 ?0\)\) '\(1 2 3 4\)\)\n
 \(map 'vector #'cons \"abc\" \"de\"\)
@@ -1263,19 +1345,68 @@ be coerced to the type.\n
       (push (apply map-fun (mapcar #'car map-lsts)) mmp-gthr)
       (setq map-lsts (mapcar #'cdr map-lsts)))
     (setq mmp-gthr (nreverse mmp-gthr))
-    (cond ((eq w-rslt-type 'list) (if (listp mmp-gthr) mmp-gthr (append mmp-gthr nil)))
-          ((eq w-rslt-type 'vector) (if (vectorp mmp-gthr) mmp-gthr (vconcat mmp-gthr)))
-          ((eq w-rslt-type 'string) (if (stringp mmp-gthr) mmp-gthr (concat mmp-gthr)))
-          ((eq w-rslt-type 'array) (if (arrayp mmp-gthr) mmp-gthr (vconcat mmp-gthr)))
-          ((and (eq w-rslt-type 'character) (stringp mmp-gthr) (= (length mmp-gthr) 1)) (aref mmp-gthr 0))
-          ((and (eq w-rslt-type 'character) (symbolp mmp-gthr)) (coerce (symbol-name mmp-gthr) w-rslt-type))
-          ((eq w-rslt-type 'float) (float mmp-gthr))
-          ((eq 'w-rslt-type (type-of mmp-gthr)) mmp-gthr)
-          (t (mon-format :w-fun #'error
-                         :w-spec '(":FUNCTION `mon-map' "
-                                  "Can't coerce mapped thing to W-RSLT-TYPE-TYPE %s, "
-                                  "mapped thing is type-of: %s with non-coerceable value: %S")
-                         :w-args '(w-rslt-type (type-of mmp-gthr) mmp-gthr))))))
+    (setq mmp-gthr
+          ;; :NOTE Following conditional is a modified version of the `case'
+          ;; form of coerce from :FILE cl-extra.el
+          (cond ((eq w-rslt-type 't) mmp-gthr)
+                ((eq w-rslt-type 'list)
+                 ;; :WAS (if (listp mmp-gthr) mmp-gthr (append mmp-gthr nil))
+                 (or (and (listp mmp-gthr) mmp-gthr) (append mmp-gthr nil)))
+                ((eq w-rslt-type 'vector) 
+                 ;; :WAS (if (vectorp mmp-gthr) mmp-gthr (vconcat mmp-gthr)))
+                 (or (and (vectorp mmp-gthr) mmp-gthr) 
+                     ;; (and (mon-sequence-mappable-p [] nil t)
+                     (vconcat mmp-gthr)))
+                ((eq w-rslt-type 'string) 
+                 (if (stringp mmp-gthr) mmp-gthr (concat mmp-gthr)))
+                ;; (or (stringp mmp-gthr) mmp-gthr (concat mmp-gthr)))
+                ((eq w-rslt-type 'array) 
+                 (if (arrayp mmp-gthr) mmp-gthr (vconcat mmp-gthr)))
+                ((and (eq w-rslt-type 'character) 
+                      (aref 
+                       (or (and (stringp mmp-gthr)
+                                (or (mon-string-not-null-nor-zerop mmp-gthr)
+                                    (mon-string-not-null-nor-zerop-ERROR 
+                                     :fun-name "mon-map"
+                                     :locus "w-rslt-type"
+                                     :got-val mmp-gthr
+                                     :w-error t)))
+                           (and (symbolp mmp-gthr) 
+                                (or (mon-string-not-null-nor-zerop
+                                     ;; The `and' is to catch situations where mmp-gthr is `null'.
+                                     (and mmp-gthr (setq mmp-gthr (symbol-name mmp-gthr))))
+                                    (mon-string-not-null-nor-zerop-ERROR 
+                                     :fun-name "mon-map"
+                                     :locus "w-rslt-type"
+                                     :got-val mmp-gthr
+                                     :w-error t))))
+                       0)
+                      ;; (<= (max-char) ...?...) (max-char)
+                      ))
+                ;; :NOTE Following form is from definition of `coerce' in :FILE lisp/emacs-lisp/cl-extra.el 
+                ;; We can't just this merge that form here verbatim b/c it recurses
+                ;; and therefore signals a byte-compiler warning. So, we coalesce the
+                ;; `stringp' and `symbolp' checks into a single conditional in the
+                ;; above form instead and add additional checks which guard against
+                ;; attempts to perform character "coercion" of null values and empty strings.
+                ;;
+                ;; ((and (eq w-rslt-type 'character) (symbolp mmp-gthr)) 
+                ;;  (coerce (symbol-name mmp-gthr) w-rslt-type))
+                ;; 
+                ((eq w-rslt-type 'float) 
+                 (or (and (number-or-marker-p mmp-gthr) (float mmp-gthr))
+                     (mon-format :w-fun #'error
+                                 :w-spec '(":FUNCTION `mon-map' "
+                                           "Arg W-RSLT-TYPE was float, "
+                                           "mapped thing must satisfy `number-or-marker-p' to coerce "
+                                           "mapped thing is type-of: %s with non-coerceable value: %S")
+                                 :w-args `(,(type-of mmp-gthr) ,mmp-gthr))))
+                ((eq 'w-rslt-type (type-of mmp-gthr)) mmp-gthr)
+                (t (mon-format :w-fun #'error
+                               :w-spec '(":FUNCTION `mon-map' "
+                                         "Can not coerce mapped thing to W-RSLT-TYPE-TYPE %s, "
+                                         "mapped thing is type-of: %s with non-coerceable value: %S")
+                               :w-args `(,w-rslt-type ,(type-of mmp-gthr) ,mmp-gthr)))))))
 
 ;;; ==============================
 ;;; :PREFIX "mmp1-"
@@ -1618,7 +1749,7 @@ If SEQ-END is omitted, it defaults to the length of SEQ.\n
 `mon-transpose', `mon-maptree', `mon-mapcar', `mon-recursive-apply',
 `mon-combine', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `mon-moveq', `mon-nshuffle-vector', `mon-list-nshuffle',
-`mon-list-shuffle-safe', `mon-list-reorder'.\n►►►"
+`mon-list-shuffle-safe', `mon-list-reorder', `car-less-than-car'.\n►►►"
   (cond ((null in-seq) (error (concat ":FUNCTON `mon-subseq'"
                                       "-- arg IN-SEQ can not be null")))
         ((listp in-seq)
@@ -1768,7 +1899,7 @@ SEQ1 where the car of elt SEQ1 matches the car of elt SEQ2.\n
 `mon-mapcar', `mon-map-append', `mon-maptree', `mon-transpose', `mon-flatten',
 `mon-recursive-apply', `mon-list-match-tails', `mon-sublist',
 `mon-sublist-gutted', `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt',
-`mon-elt-<elt', `mon-maybe-cons', `mon-list-proper-p'.\n►►►"
+`mon-elt-<elt', `mon-maybe-cons', `mon-list-proper-p', `car-less-than-car'.\n►►►"
   (let (mar-rtn)
     (setq mar-rtn
           (mapcar #'(lambda (mar-L-1)
@@ -1798,7 +1929,7 @@ well... null.\n
 `mon-recursive-apply', `mon-delq-cons', `mon-delq-dups', `mon-remove-if',
 `mon-remove-dups', `mon-list-make-unique', `mon-assoc-replace',
 `mon-list-match-tails', `mon-list-reorder', `mon-nshuffle-vector',
-`mon-list-nshuffle', `mon-list-shuffle-safe'.\n►►►"
+`mon-list-nshuffle', `mon-list-shuffle-safe', `car-less-than-car'.\n►►►"
   ;; :WAS  (list 'progn (list 'setq enqueue-new with-old-to-null) 
   ;;       (list 'setq with-old-to-null 'nil)) )
   `(prog1 
@@ -1851,19 +1982,19 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
 ;;; ==============================
 ;; mon-list-flatten-rotated
 ;;; :CHANGESET 2202 <Timestamp: #{2010-10-20T12:28:20-04:00Z}#{10423} - by MON KEY>
-(defun mon-list-flatten-rotated (list-of-lists)
-  "Flatten LIST-OF-LISTS - a list of lists.\n
+(defun mon-list-flatten-rotated (lst-of-lsts)
+  "Flatten LST-OF-LSTS - a list of lists.\n
 :EXAMPLE\n\n\(mon-list-flatten-rotated '\(\(a b c\) \(1 \(\(2 3\)\)\)\)\)\n
 :ALIASED-BY `mon-rotate-flatten-list'\n
 :SEE-ALSO `mon-flatten', `mon-rotate-string', `mon-rotate-next',
 `mon-rotate-region', `mon-rotate-get-rotations-for',
 `mon-string-rotate-to-regexp', `mon-indent-or-rotate'.\n►►►"
-  (if (null list-of-lists)
-      list-of-lists
-    (if (listp list-of-lists)
-	(append (mon-list-flatten-rotated (car list-of-lists))
-		(mon-list-flatten-rotated (cdr list-of-lists)))
-      (list list-of-lists))))
+  (if (null lst-of-lsts)
+      lst-of-lsts
+    (if (listp lst-of-lsts)
+	(append (mon-list-flatten-rotated (car lst-of-lsts))
+		(mon-list-flatten-rotated (cdr lst-of-lsts)))
+      (list lst-of-lsts))))
 ;;
 ;;; :TEST-ME (mon-list-flatten-rotated '((a b c) (1 ((2 3)))))
 
@@ -1881,7 +2012,8 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
 `mon-list-proper-p', `mon-maybe-cons', `mon-moveq', `mon-elt->', `mon-elt-<',
 `mon-elt->elt', `mon-elt-<elt', `mon-delq-cons', `mon-delq-dups'
 `mon-remove-if', `mon-remove-dups', `mon-assoc-replace', `mon-list-make-unique',
-`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►"
+`mon-list-reorder', `mon-nshuffle-vector',
+`mon-list-nshuffle'. `car-less-than-car'.\n►►►"
   (if (atom trans-tree)
       trans-tree
       (cons (mon-transpose (cdr trans-tree))
@@ -1934,7 +2066,7 @@ TREE-TO-FLATTEN is a proper-list, consed pair, or vector.\n
 (defun mon-every (ev-pred ev-lst &rest ev-lsts)
   "Return true if predicate ev-pred is true of every element of ev-lst or ev-lsts.
 When EV-LSTS is non-nil the predicate EV-PRED must take as many arguments as
-there are sequences.
+there are sequences.\n
 Evaluate EV-PRED predicate and one or more sequences \(a list or array\).
 As soon as an invocation of the predictae returns NIL, MON-EVERY returns NIL.
 If the end of a sequence is reached, EVERY returns non-NIL.  So EVERY
@@ -1959,7 +2091,7 @@ Each sequence should satisfy `mon-sequence-mappable-p', signal an error if not.\
                  \(and \(numberp x\) \(numberp y\) \(numberp z\)\)\)
              '\(0 1 2 3 4\) '\(5 6 7 8 9 mmm\) '\(4 3 2 1 0\)\)\n
 :SEE-ALSO `mon-mapc', `mon-sequence-mappable-p', `mon-mismatch',
-`cvs-every'.\n►►►"
+`cvs-every', `car-less-than-car'.\n►►►"
   (setq ev-lsts
         (mapcar #'(lambda (me-L-1-lsts)
                     (or (and (consp me-L-1-lsts) me-L-1-lsts)
@@ -2002,7 +2134,7 @@ Should byte-compile without CL runtime package warnings.\n
 `mon-maptree', `mon-transpose', `mon-elt->', `mon-elt-<', `mon-elt->elt',
 `mon-elt-<elt', `mon-flatten', `mon-combine', `mon-recursive-apply',
 `mon-delq-cons', `mon-list-make-unique', `mon-list-match-tails',
-`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons'.\n►►►"
+`mon-list-reorder', `mon-list-proper-p', `mon-maybe-cons', `car-less-than-car'.\n►►►"
   (edmacro-mismatch sqn1 sqn2 sqn1-str sqn1-end  sqn2-str sqn2-end))
 
 ;;; ==============================
@@ -2022,7 +2154,7 @@ Should byte-compile without CL runtime package warnings.\n
 `mon-elt-<elt', `mon-sublist', `mon-sublist-gutted', `mon-remove-if',
 `mon-remove-dups', `mon-delq-dups', `mon-delq-cons', `mon-list-make-unique',
 `mon-assoc-replace', `mon-list-reorder', `mon-nshuffle-vector',
-`mon-list-nshuffle'\n►►►"
+`mon-list-nshuffle', `car-less-than-car'.\n►►►"
   ;; :WAS
   ;; (cond ((null trees) nil)
   ;;       ((every (function null)  trees) nil)
@@ -2058,7 +2190,7 @@ Only the elements from LIST-A must be an atom to be passed to ATOM-FUN.\n
 `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-delq-cons',
 `mon-delq-dups', `mon-remove-dups', `mon-remove-if', `mon-list-make-unique',
 `mon-assoc-replace', `mon-list-reorder', `mon-nshuffle-vector',
-`mon-list-nshuffle'.\n►►►"
+`mon-list-nshuffle', `car-less-than-car'.\n►►►"
   (cond ((null list-a) nil)
         ((atom list-a) (apply atom-fun (list list-a list-b)))
         (t (cons (mon-recursive-apply atom-fun (car list-a) (car list-b)) 
@@ -2081,7 +2213,8 @@ predicate on the elements.\n
 `mon-maybe-cons', `mon-sublist', `mon-sublist-gutted', `mon-moveq', `mon-elt->',
 `mon-elt-<', `mon-elt->elt', `mon-elt-<elt', `mon-delq-cons', `mon-delq-dups',
 `mon-remove-dups', `mon-remove-if', `mon-assoc-replace', `mon-list-make-unique',
-`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle'\n►►►"
+`mon-list-reorder', `mon-nshuffle-vector', `mon-list-nshuffle',
+`car-less-than-car'.\n►►►"
   (let ((mlm-res nil))
     (while (and list1 list2)
       (if (funcall pred (car list2) (car list1))
@@ -2107,7 +2240,7 @@ in COMBINE-LSTS.\n
 `mon-moveq', `mon-elt->', `mon-elt-<', `mon-elt->elt', `mon-elt-<elt',
 `mon-delq-cons', `mon-delq-dups', `mon-remove-dups', `mon-remove-if',
 `mon-assoc-replace', `mon-list-make-unique', `mon-list-reorder',
-`mon-nshuffle-vector', `mon-list-nshuffle'\n►►►"
+`mon-nshuffle-vector', `mon-list-nshuffle', `car-less-than-car'.\n►►►"
   ;; :NOTE cl--mapcan -> `mapcan' from cl*.el 
   ;; :WAS (defun mon-combine (&rest rest) 
   ;; (flet ((cl--mapcan (func seq &rest rest)
@@ -2135,7 +2268,7 @@ in COMBINE-LSTS.\n
 ;;; :NOTE I mis-interpreted the `permut' in Pascal's `permutation's which is
 ;;;  duplicate agnositic in the true sense of the combinatoric use of a perm.
 ;;; What was wanted was a `combin-utation'. Pascal suggested as a solution the
-;;; following helper fncn which can be leveraged by `mon-list-permute-variants'
+;;; following helper fncn which can be leveraged by `mon-list-permute-variants'.
 ;;; :PREFIX "mvrtn-"
 ;;; :COURTESY Pascal J. Bourguignon :WAS `variations' :SOURCE email-correspondence
 ;;; :CREATED <Timestamp: #{2010-02-09T18:42:33-05:00Z}#{10062} - by MON KEY>
@@ -2231,10 +2364,10 @@ recursion and non-local exits with catch/throw.\n
 ;;; :SOURCE (URL `http://groups.google.com/group/comp.lang.lisp/msg/18821391508def0d')
 (defun mon-list-permute-2 (perm-lst)
   "Return a list of all permutations of the input PERM-LST.\n
-PERM-LST is a list of list.
+PERM-LST is a list of lists.\n
 :EXAMPLE\n\n\(mon-list-permute-2 '\(a b c d\)\)\n
 :NOTE This is one of three list permuting functions.
-This one accumulates permuatations as if by `loop'\n
+This one accumulates permutations as if by `loop'.\n
 :SEE-ALSO `mon-list-permute-1', `mon-list-permute-variants',
 `mon-list-variant-forms', `mon-permute-combine', `mon-permute-combine-1'.\n►►►"
   (if (< (length perm-lst) 2)
@@ -2449,7 +2582,7 @@ representation for `bit-vector's e.g.:\n
 :NOTE Assumes return value of `byteorder' is 108 \(big end first\).\n
 :SEE-ALSO `mon-get-bit-table', `*mon-bit-table*', `mon-booleanp',
 `mon-booleanp-to-binary', `mon-zero-or-onep', `mon-help-char-raw-bytes',
-`mon-help-binary-representation', `fillarray'.\n►►►"
+`mon-help-binary-representation', `logb', `fillarray'.\n►►►"
  (if (= (length bool-vec) 0)
      (error (concat 
              ":FUNCTION `mon-bool-vector-pp' "

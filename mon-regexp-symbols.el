@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2008-2010 MON KEY. All rights reserved.
+;; Copyright © 2008-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-regexp-symbols.el
@@ -66,7 +66,11 @@
 ;; `*regexp-clean-html-named-char-entity*', `*regexp-clean-xml-parse*',
 ;; `*regexp-clean-gilt-group*',`*regexp-clean-benezit-fields*',
 ;; `*regexp-clean-mon-file-keywords*', `*regexp-rgb-hex*',
-;; `*regexp-symbol-defs-big*', `*regexp-symbol-defs*', 
+;; `*regexp-symbol-defs-big*', `*regexp-symbol-defs*',
+;; `*regexp-clean-irc-logs*',
+;;
+;; GROUPS: 
+;; `mon-regexp-symbols',
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; `*mon-regexp-version-alist*' -> `version-regexp-alist'
@@ -140,9 +144,10 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2008-2010 MON KEY 
+;; Copyright © 2008-2011 MON KEY 
 ;;; ==============================
 
+ 
 ;;; CODE:
 
 (eval-when-compile (require 'cl))
@@ -152,65 +157,76 @@
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T15:24:47-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-regexp-symbols nil
+  "Customization group for variables and functions of :FILE mon-regexp-symbols.el\n
+:SEE-ALSO `*mon-regexp-xrefs'.\n►►►"
+  :prefix "*regexp-"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-regexp-symbols.el")
+  :link '(emacs-library-link "mon-regexp-symbols.el")
+  :group 'mon-base)
+
+;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-05T20:19:31-04:00Z}#{10142} - by MON>
-(defvar *mon-regexp-symbols-xrefs* nil
-  "*Xrefing list of functions constants and variables defined in:
-:FILE mon-regexp-symbols.el\n
-:SEE-ALSO `*naf-mode-xref-of-xrefs*'.\n►►►")
-;;
-(unless (and (intern-soft "*mon-regexp-symbols-xrefs*" obarray)
-             (bound-and-true-p *mon-regexp-symbols-xrefs*))
-  (setq *mon-regexp-symbols-xrefs*
-        '(*mon-regexp-symbols-xrefs*
-          mon-regexp-clean-ulan-dispatch-chars-TEST
-          *regexp-clean-xml-parse*
-          *regexp-clean-mon-file-keywords*
-          *regexp-symbol-defs*
-          *regexp-symbol-defs-big*
-          *regexp-abrv-dotted-month->canonical*
-          *regexp-simple-abrv-month->canonical*
-          *regexp-clean-ebay-time-chars*  
-          *regexp-clean-ebay-month->canonical-style1*
-          *regexp-clean-ebay-month->canonical-style2*
-          *regexp-clean-ebay-month->canonical-style3*
-          *regexp-bound-month->canonical*
-          *regexp-month->canonical-ws*
-          *regexp-month->MM*
-          *regexp-MM->month*
-          *regexp-MM->month-whitespace-aware*
-          *regexp-philsp-months*
-          *regexp-philsp-apos* 
-          *regexp-philsp-location*
-          *regexp-philsp-swap-location*
-          *regexp-philsp-fix-month-dates* 
-          *regexp-clean-wikipedia*
-          *regexp-clean-whitespace*
-          *regexp-clean-big-whitespace*
-          *regexp-clean-imdb*
-          *regexp-clean-loc*
-          *regexp-clean-gilt-group* 
-          *regexp-ital-to-eng* 
-          *regexp-defranc-dates*
-          *regexp-defranc-places* 
-          *regexp-defranc-benezit*
-          *regexp-clean-benezit-fields*
-          *regexp-german-to-eng*
-          *regexp-clean-bib*
-          *regexp-common-abbrevs*
-          *regexp-wrap-url-schemes*
-          *regexp-rgb-hex*
-          *regexp-percent-encoding-reserved-chars*
-          *regexp-cp1252-to-latin1*
-          *regexp-clean-html-decimal-char-entity*
-          *regexp-clean-html-named-char-entity*
-          *regexp-clean-ulan-diacritics*
-          *regexp-clean-ulan*
-          *regexp-clean-ulan-fields*
-          *regexp-clean-ulan-dispatch-chars*
-          *regexp-ulan-contribs*
-          )))
-;;
-;;(progn (makunbound '*mon-regexp-symbols-xrefs*) (unintern "*mon-regexp-symbols-xrefs*" obarray) )
+(defcustom *mon-regexp-symbols-xrefs* 
+  '(*mon-regexp-symbols-xrefs*
+    mon-regexp-clean-ulan-dispatch-chars-TEST
+    *regexp-clean-xml-parse*
+    *regexp-clean-mon-file-keywords*
+    *regexp-symbol-defs*
+    *regexp-symbol-defs-big*
+    *regexp-abrv-dotted-month->canonical*
+    *regexp-simple-abrv-month->canonical*
+    *regexp-clean-ebay-time-chars*  
+    *regexp-clean-ebay-month->canonical-style1*
+    *regexp-clean-ebay-month->canonical-style2*
+    *regexp-clean-ebay-month->canonical-style3*
+    *regexp-bound-month->canonical*
+    *regexp-month->canonical-ws*
+    *regexp-month->MM*
+    *regexp-MM->month*
+    *regexp-MM->month-whitespace-aware*
+    *regexp-philsp-months*
+    *regexp-philsp-apos* 
+    *regexp-philsp-location*
+    *regexp-philsp-swap-location*
+    *regexp-philsp-fix-month-dates* 
+    *regexp-clean-wikipedia*
+    *regexp-clean-whitespace*
+    *regexp-clean-big-whitespace*
+    *regexp-clean-imdb*
+    *regexp-clean-loc*
+    *regexp-clean-gilt-group* 
+    *regexp-ital-to-eng* 
+    *regexp-defranc-dates*
+    *regexp-defranc-places* 
+    *regexp-defranc-benezit*
+    *regexp-clean-benezit-fields*
+    *regexp-german-to-eng*
+    *regexp-clean-bib*
+    *regexp-common-abbrevs*
+    *regexp-wrap-url-schemes*
+    *regexp-rgb-hex*
+    *regexp-percent-encoding-reserved-chars*
+    *regexp-cp1252-to-latin1*
+    *regexp-clean-html-decimal-char-entity*
+    *regexp-clean-html-named-char-entity*
+    *regexp-clean-ulan-diacritics*
+    *regexp-clean-ulan*
+    *regexp-clean-ulan-fields*
+    *regexp-clean-ulan-dispatch-chars*
+    *regexp-ulan-contribs*
+    *regexp-clean-irc-logs*)
+  "Xrefing list mon regexp variables `*regexp-<SUFFIX>*' and related symbols.\n
+The symbols contained of this list are defined in :FILE mon-regexp-symbols.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*naf-mode-xref-of-xrefs*'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-regexp-symbols
+  :group 'mon-xrefs)
 
 ;;; ==============================
 ;;; :CHANGESET 2256
@@ -917,6 +933,19 @@ Shift the former to the EOL position and the later to BOL.\n
 ;;
 ;;;(progn (makunbound '*regexp-philsp-fix-month-dates*)
 ;;;       (unintern "*regexp-philsp-fix-month-dates*" obarray) )
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T13:51:26-05:00Z}#{11022} - by MON KEY>
+(defvar *regexp-clean-irc-logs* "^[[:digit:]:]+ -+ \\(join\\|quit\\|part\\): .*$"
+  "Regexp to match IRC join/part/quit lines for use with `mon-cln-freenode-log'.\n
+Matches lines which have the following general pattern:\n
+NN:NN:NN --- join: <USER1> (~<USER1>@some.ip.address.abc) joined #<CHANNEL>
+NN:NN:NN --- quit: <USER2> (<ACTION-OR-REASON>)
+NN:NN:NN --- part: <USER3> left #<CHANNEL>\n
+:EXAMPLE\n\n\(mon-cln-freenode-log-TEST\)\n
+:SEE-ALSO `mon-cln-freenode-log-TEST', `mon-wget-freenode-lisp-logs',
+`*freenode-lisp-logs*', `mon-help-CL-minion'.\n►►►")
 
 ;;; ==============================
 (defvar *regexp-clean-wikipedia*

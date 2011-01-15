@@ -1,7 +1,7 @@
 ;;; mon-utils.el --- common utilities and BIG require for other of MON packages
 ;; -*- mode: EMACS-LISP; -*-
 ;;; ================================================================
-;; Copyright © 2008-2010 MON KEY. All rights reserved.
+;; Copyright © 2008-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-utils.el
@@ -61,10 +61,10 @@
 ;;
 ;; VARIABLES:
 ;; `*mon-utils-post-load-requires*', `*mon-recover-nil-t-default-plist*',
-;; `*mon-default-comment-start*', 
+;; `*mon-default-comment-start*', `*mon-xrefs-xrefs*',
 ;;
 ;; :GROUPS
-;; `mon-base'
+;; `mon-base', `mon-xrefs',
 ;;
 ;; ALIASED:
 ;; :NOTE Aliases defined in :FILE mon-aliases.el
@@ -445,7 +445,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ===================================
-;; Copyright © 2008-2010 MON KEY 
+;; Copyright © 2008-2011 MON KEY 
 ;;; ===================================
 
 ;;; CODE:
@@ -467,35 +467,53 @@
   :prefix "mon-"
   :prefix "*mon-"
   :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-utils.el")
-  :link '(emacs-library-link "mon-utils.el")
-  :link '(custom-group-link mon-doc-help-utils-faces)
-  :link '(custom-group-link mon-doc-help-utils)
-  :link '(custom-group-link mon-error-warn)
+          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-utils.el')"
+          "http://www.emacswiki.org/emacs/mon-utils.el")
+  :link '(emacs-library-link 
+          :tag ":FILE mon-utils.el" 
+          "mon-utils.el")
   :group 'local)
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T14:24:52-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-xrefs nil
+  "Customization group for xrefing variables `*mon-.*-xrefs*'.\n
+An xrefing variable holds a list of symbol names provided by a `mon-*.el' feature.\n
+The intent in maintaining these xrefing lists is to allow eventual aggregation
+of of per symbol graphs of related/associated symbol names for use in a context
+oriented extension to the Emacs *Help* facility.\n
+:NOTE While it is relatively straight forward to locate these symbols with `features',
+`featurep', `load-history', etc. the respective return values of these functions
+are not necessarily easy to parse/disambiguate esp. w/re to docstrings and
+relative to the symbol-type.\n
+Likewise, Emacs doesn't effectively provide a centralized/canonical per feature
+location where one can store aggregate metadata regarding the \"auxillary\" data
+about the symbols provided by a given feature. Such a feature, (were it to
+exist) would likely benefit from the use of plists esp. where these data
+structures are a natural lisp extension and are pre-established with a
+privileged state as a symbol cell and can be easily extended by attaching
+hash-tables as values for plist properties. However, effective utilization of
+such plists demands that we establish a global symbol specially dedicated to
+hold this data. Note too that there is no immediate utility in store this data
+directly in hash-tableas the Elisp API does not expose the ability to
+attach/access hash-tables on a symbol cell e.g. there is not a `symbol-plist'
+equivalent named `symbol-hash-table' and we must still establish a global
+special value to hold the hash-table.
+Note also that we do not consider either `defcustom' or is the package feature
+of Emacs 24+ \(at least in their current configurations\) applicable to these
+needs.\n
+:SEE-ALSO `*mon-xrefs-xrefs*', `*mon-regexp-symbols-xrefs*',
+`*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*naf-mode-xref-of-xrefs*'.\n►►►"
+  :link '(emacs-library-link :tag ":FILE mon-utils.el" "mon-utils.el")
+  :group 'mon-base)
 
 (require 'edebug)
 (require 'easymenu)
 (require 'bytecomp)
 (require 'macroexp)
-
-(require 'mon-macs)
-(require 'mon-type-utils-vars)      ;; Required by mon-type-utils.el
-(require 'mon-type-utils)
-(require 'mon-error-utils)
-(require 'mon-plist-utils)          ;; Required by mon-text-property-utils.el
-(require 'mon-text-property-utils) 
-(require 'mon-seq-utils)
-(require 'mon-buffer-utils)
-(require 'mon-window-utils)
-(require 'mon-randomize-utils)
-(require 'mon-event-utils) ;; safe after above
-(require 'mon-line-utils)
-(require 'mon-region-utils)
-(require 'mon-string-utils)
-(require 'mon-env-proc-utils)
-(require 'mon-rectangle-utils)
-(require 'mon-word-syntax-utils)
 
 ;;; ==============================
 ;;; :NOTE The :CONSTANT `IS-MON-SYSTEM-P' is bound in:
@@ -511,8 +529,9 @@
 ;; (when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
 ;;            (bound-and-true-p IS-MON-SYSTEM-P))
 
+ 
 ;;; ==============================
-;;; :TODO extend this list into an alist with elements containing 
+;;; :TODO Extend this list into an alist with elements containing 
 ;;; plist keys :requires :required-by :optional etc.
 ;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T16:54:51-04:00Z}#{10361} - by MON KEY>
@@ -521,12 +540,32 @@
 :CALLED BY `mon-utils-require-features-at-loadtime'\n
 :SEE-ALSO `mon-after-mon-utils-loadtime'.\n►►►")
 ;;
-(unless (and (intern-soft "*mon-utils-post-load-requires*" obarray)
+(unless (and (intern-soft "*mon-utils-post-load-requires*" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p *mon-utils-post-load-requires*))
   (setq *mon-utils-post-load-requires*
-        '(mon-alphabet-list-utils
+        '(mon-macs
+          mon-type-utils-vars      ;; Required by mon-type-utils.el
+          mon-type-utils
+          mon-error-utils
+          mon-plist-utils          ;; Required by mon-text-property-utils.el
+          mon-text-property-utils 
+          mon-seq-utils
+          mon-buffer-utils
+          mon-window-utils
+          mon-randomize-utils
+          mon-event-utils           ;; safe after above
+          mon-line-utils
+          mon-region-utils
+          mon-string-utils
+          mon-env-proc-utils
+          mon-rectangle-utils
+          mon-word-syntax-utils
+          mon-testme-utils
+          ;;
+          mon-alphabet-list-utils
           mon-regexp-symbols
           mon-time-utils
+          ;;
           ;; :FILE mon-replacement-utils.el :BEFORE :FILE mon-dir-utils.el mon-insertion-utils.el
           mon-replacement-utils 
           ;; :FILE mon-dir-utils.el :LOADS mon-dir-locals-alist.el 
@@ -554,44 +593,81 @@
           mon-empty-registers
           mon-iptables-vars
           mon-iptables-regexps
+          mon-get-freenode-lisp-logs
           mon-mysql-utils
           )))
- 
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T14:27:34-05:00Z}#{11022} - by MON KEY>
+(defcustom *mon-xrefs-xrefs*
+  '(*mon-regexp-symbols-xrefs* *mon-default-loads-xrefs*
+  *mon-default-start-loads-xrefs* *mon-dir-locals-alist-xrefs*
+  *mon-error-utils-xrefs* *mon-testme-utils-xrefs* *mon-buffer-utils-xrefs*
+  *mon-button-utils-xrefs* *mon-bzr-utils-xrefs* *mon-keybindings-xrefs*
+  *mon-line-utils-xrefs* *mon-macs-xrefs* *mon-post-load-hooks-xrefs*
+  *mon-plist-utils-xrefs* *mon-seq-utils-xrefs* *mon-slime-xrefs*
+  *mon-string-utils-xrefs* *mon-type-utils-xrefs* *mon-window-utils-xrefs*
+  *naf-mode-xref-of-xrefs* *naf-mode-faces-xrefs* *naf-mode-date-xrefs*
+  *mon-ulan-utils-xrefs* *mon-xrefs-xrefs*)
+  "Meta list of mon-xrefing variables, e.g. those named `*mon-.*-xrefs*'.\n
+:SEE-ALSO `*mon-regexp-symbols-xrefs*', `*mon-default-loads-xrefs*',
+`*mon-default-start-loads-xrefs*', `*mon-dir-locals-alist-xrefs*',
+`*mon-testme-utils-xrefs*', `*mon-button-utils-xrefs*',
+`*naf-mode-xref-of-xrefs*', `*mon-xrefs-xrefs*'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-xrefs)
+
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2009-10-24T14:12:12-04:00Z}#{09436} - by MON KEY>
-(defcustom  *mon-default-comment-start* ";;; "
-  "*Comment prefix for `mon-comment-divider-w-len'.\n
+(defcustom *mon-default-comment-start* ";;; "
+  "Comment prefix for `mon-comment-divider-w-len'.\n
 This is a cheap work around so we don't have to deal with `comment-start' with
 `mon-comment-*' functions which might rely on or calculate a string/substring
 inidex per the value of this var.\n
-Default is \";;; \"\n
+Its value is a string consisting of one or more identical graphic prefix chars
+followed by a single space \(char 32\). Default is \";;; \"\n
+When an alternate value is supplied it should have the following format:\n
+ \"<PREFIX-CHARS>+<SPC>\"\n
+Such that evaluation of the following two forms returns non-nil:\n
+\(= \(mon-list-last \(append *mon-default-comment-start* nil\)\) 32\)\n
+\(let* \(\(*mon-default-comment-start* \";;[ \"\)
+       \(sub-cmnt-start \(nreverse \(cdr \(reverse \(append *mon-default-comment-start* nil\)\)\)\)\)\)
+  \(catch 'prefix-not-same   
+    \(equal *mon-default-comment-start*
+           \(concat 
+            \(mapc #'\(lambda \(x\)
+                      \(unless \(= x \(car sub-cmnt-start\)\)
+                        \(throw 'prefix-not-same 
+                               \(format \"prefix chars not identical, failed-at: %c\" x\)\)\)\)
+                  sub-cmnt-start\)
+            \" \"\)\)\)\)\n
 :EXAMPLE\n\n(symbol-value '*mon-default-comment-start*)\n
 \(let \(\(*mon-default-comment-start* \"%% \"\)\)
   *mon-default-comment-start*\)\n
  \(mon-comment-divider-w-len 36\)\n
+:NOTE This variable is dynamically let-bound by `mon-*' functions.\n
 :SEE-ALSO `*mon-default-comment-divider*', `mon-set-buffer-local-comment-start',
 `mon-set-buffer-local-comment-start-init', `mon-comment-divider-to-col',
 `mon-comment-divider-to-col-four', `mon-comment-divider-w-len',
 `mon-comment-lisp-to-col'.\n►►►"
-  ;; :TODO :type key should have required match.
+  ;; :TODO The `:type` key should have required match see docstring for potential tests:
   :type  'string
   :group 'mon-base)
-;;
-;; (unless (bound-and-true-p *mon-default-comment-start*)
-;;         (setq *mon-default-comment-start* ";;; "))
 
 ;;; ==============================
+;; :TODO The `:type` key should have required match.
 ;;; :CREATED <Timestamp: #{2009-10-24T12:07:10-04:00Z}#{09436} - by MON KEY>
 (defcustom *mon-default-comment-divider* (mon-comment-divider-w-len 30)
-  "*Preferred mon-comment-divider for lisp source sectioning.\n
+  "Preferred mon-comment-divider for lisp source sectioning.\n
+The first four chars should have the same form as `*mon-default-comment-start*'
+such that (substring 
+Default is the return value of following form:\n
+ \(mon-comment-divider-w-len 30\)\n
 :CALLED-BY `mon-comment-divider', `mon-comment-divider-to-col'\n
 :SEE-ALSO `mon-comment-divider-w-len', `mon-comment-divider-to-col'\n►►►"
-  ;; :TODO :type key should have required match.
   :type  'string  
   :group 'mon-base)
-;;
-;;;(progn (makunbound '*mon-default-comment-divider*)
-;;;       (unintern "*mon-default-comment-divider*" obarray) )
 
 ;;; ==============================
 ;;; :TODO Factor this var away.
@@ -621,8 +697,8 @@ Recover plists with `mon-recover-nil-t-default-plist' if they become corrupted.\
 
 ;;; ==============================
 ;;; :TODO This should be evaluated before slime.el b/c she is the one stepping
-;;;       on `nil'.  Currently this isn't happening as it would require moving
-;;;       it much further up in the loadtime sequence...
+;;;       on `nil's plist! Currently this isn't happening as it would require
+;;;       moving it much further up in the loadtime sequence...
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:01:23-04:00Z}#{10381} - by MON KEY>
 (defun mon-recover-nil-t-default-plist (&optional intrp)
@@ -659,8 +735,8 @@ Called in a post-loadtime environement restores the plist values stored in
     (progn
       (setq *mon-recover-nil-t-default-plist*
             `(:nil-default-plist ,(symbol-plist nil) :t-default-plist  ,(symbol-plist t)))
-      (message (concat ":FUNCTION `mon-recover-nil-t-default-plist' "
-                       "-- :VARIALBE `*mon-recover-nil-t-default-plist*' bound at loadtime")))))
+      (mon-message :msg-spec '(":FUNCTION `mon-recover-nil-t-default-plist' "
+                               "-- :VARIALBE `*mon-recover-nil-t-default-plist*' bound at loadtime")))))
 
 ;;; ==============================
 ;;; :NOTE `mon-get-mon-emacsd-paths' is an interpreted function in:
@@ -751,7 +827,8 @@ varaible `*mon-utils-post-load-requires*'\n
   (when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
              (bound-and-true-p IS-MON-SYSTEM-P))
     ;; Load here instead of from :FILE naf-mode.el
-    (require 'naf-mode-sql-skeletons nil t)))
+    (require 'naf-mode-sql-skeletons nil t)
+    (require 'mon-dbc-xml-utils)))
 
 ;;; ==============================
 ;;; :TODO Build additional fncn/macro to populate docstrings at loadtime.
@@ -1407,6 +1484,7 @@ With ARG, begin column display at current column, not at left margin.\n
        (point)))))
 ;;
 ;;; :TEST-ME (call-interactively 'mon-show-columns)
+
 
 ;;; ==============================
 ;;; :PREFIX "mnae-"

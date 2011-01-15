@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-randomize-utils.el
@@ -19,16 +19,12 @@
 
 ;; =================================================================
 ;; DESCRIPTION:
-;; mon-randomize-utils provides { some description here. }
+;; mon-randomize-utils provides procedures for generating pseudo randomness
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-next-almost-prime'
-;; `mon-gensym-counter-randomizer'
-;; `mon-make-random-state'
-;; `mon-generate-prand-id'
-;; `mon-generate-prand-seed'
-;; `mon-string-wonkify'
-;; `mon-generate-WPA-key'
+;; `mon-next-almost-prime', `mon-gensym-counter-randomizer',
+;; `mon-make-random-state', `mon-generate-prand-id', `mon-generate-prand-seed',
+;; `mon-mix-fields', `mon-string-wonkify', `mon-generate-WPA-key',
 ;;
 ;; FUNCTIONS:◄◄◄
 ;;
@@ -79,7 +75,7 @@
 ;; THIRD-PARTY-CODE:
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-randomize-utils.el
-;; FIRST-PUBLISHED:
+;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
 ;;
 ;; EMACSWIKI: { URL of an EmacsWiki describing mon-randomize-utils. }
 ;;
@@ -119,11 +115,12 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
@@ -137,6 +134,7 @@
 
  
 ;;; ==============================
+;;; :NOTE :FILE calc-comb.el has `math-primes-table'
 ;;; :COURTESY :FILE fns.c `next_almost_prime'
 ;;; :CREATED <Timestamp: #{2010-08-05T16:09:48-04:00Z}#{10314} - by MON>
 (defun mon-next-almost-prime (w-integer)
@@ -180,7 +178,7 @@ Useful for generating a reasonable arg for `make-hash-table's :size keyword.\n
 :ALIASED-BY `next-almost-prime'\n
 :SEE-ALSO `mon-gensym-counter-randomizer', `mon-make-random-state',
 `mon-generate-prand-seed', `mon-generate-WPA-key', `mon-generate-prand-id',
-`mon-string-wonkify', `random'.\n►►►"
+`mon-string-wonkify', `random', `math-primes-table'.\n►►►"
   (let ((mnapN w-integer))
     (when (= (% mnapN 2) 0) (setq mnapN (1+ mnapN)))
     (when (= (% mnapN 3) 0) (setq mnapN (+ mnapN 2)))
@@ -196,7 +194,7 @@ Useful for generating a reasonable arg for `make-hash-table's :size keyword.\n
 (defun mon-gensym-counter-randomizer (randomize-sym/str)
   "Generate a semi-randomized integer from RANDOMIZE-SYM/STR.\n
 Helper function for `mon-with-gensyms'.\n
-:EXAMPLE\n\n(mon-gensym-counter-randomizer-TEST \"bubba\" 10000\)\n
+:EXAMPLE\n\n\(mon-gensym-counter-randomizer-TEST \"bubba\" 10000\)\n
 \(mon-gensym-counter-randomizer-TEST 'bu  10000\)\n
 :NOTE On average this function will return ~45-60 duplicates per 10,000
 invocations per seed symbol. IOW one might create an average of ~9948 unique
@@ -204,10 +202,10 @@ invocations per seed symbol. IOW one might create an average of ~9948 unique
 :SEE-ALSO `mon-gensym', `mon-gensym-counter-randomizer-TEST'.\n►►►"
   (let ((mgcr-pr1
          [37 41 43 47 53 59 61 67 71 73 79 83 89 97 101 103 107 109 113 127 131
-             137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227
-             229 233 239 241 251 257 263 269 271 277 281 283 293 307 311 313 317
-             331 337 347 349 353 359 367 373 379 383 389 397 401 409 419 421 431
-             433 439 443 449 457 461 463 467 479 487 491 499 503 509 521 523 541])
+          137 139 149 151 157 163 167 173 179 181 191 193 197 199 211 223 227
+          229 233 239 241 251 257 263 269 271 277 281 283 293 307 311 313 317
+          331 337 347 349 353 359 367 373 379 383 389 397 401 409 419 421 431
+          433 439 443 449 457 461 463 467 479 487 491 499 503 509 521 523 541])
         (mgcr-pr2 (make-vector 6 0)) ;; 6th elt of is length randomize-sym/str
         (mgcr-pr3 (make-vector 6 0)) ;; 6th elt of is string-bytes randomize-sym/str
         (mgcr-merp [3 5 7 13 17 19]) 
@@ -284,6 +282,33 @@ invocations per seed symbol. IOW one might create an average of ~9948 unique
 ;; |        (benchmark 10000 '(mon-gensym-counter-randomizer 'bu)))
 ;; |
 ;; `----
+
+;;; ==============================
+;;; :COURTESY Roman Marynchak 2010-11-24
+;;; Subject: [PATCH] better MIX function for SXHASH
+;;; ,----
+;;; | Add more "randomness" to MIX function by shifting
+;;; | the input values combination XY in both directions
+;;; | and counting X and Y values with the different
+;;; | coefficients during the mixing process.
+;;; `----
+;;; :SEE sbcl/src/code/target-sxhash.lisp
+;;; :SEE (URL `https://bugs.launchpad.net/sbcl/+bug/309443')
+;;; :CHANGESET 2331
+;;; :CREATED <Timestamp: #{2010-12-02T19:16:16-05:00Z}#{10484} - by MON KEY>
+(defun mon-mix-fields (mmf-x mmf-y)
+  "
+:EXAMPLE\n\n\(mon-mix-fields 37 41\)\n
+:SEE-ALSO `mon-make-random-state', `mon-gensym-counter-randomizer'.\n►►►" 
+  (let ((mmf-xy (+ (* mmf-x 3) mmf-y)))
+    (logand most-positive-fixnum ;; 536870911
+            (logxor 441516657
+                    ;; - mmf-xy
+                    (ash (- mmf-xy (* mmf-y 13) 8738747) 9)  ;; +
+                    (ash (+ mmf-xy (* mmf-x 23) 7882763) -9) ;; +
+                    (ash mmf-xy -5)))))
+
+;;; 
 
 ;;; ==============================
 ;;; :CHANGESET 2043

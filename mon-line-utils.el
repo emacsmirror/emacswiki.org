@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-line-utils.el
@@ -31,6 +31,7 @@
 ;; `mon-line-get-next'
 ;;
 ;; `mon-line-drop-in-words'
+;; `mon-line-previous-duplicate'
 ;;
 ;; `mon-line-string-insert-chars-under'
 ;; `mon-line-string-rotate-namestrings-combine'
@@ -67,6 +68,12 @@
 ;; `mon-spacep-is-after-bol'
 ;; `mon-spacep-not-bol'
 ;;
+;; `mon-backspace'
+;;
+;; `mon-goto-line-25%'
+;; `mon-goto-line-50%'
+;; `mon-goto-line-75%'
+;;
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -80,11 +87,18 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
+;; `*mon-line-utils-xrefs*'
 ;;
 ;; GROUPS:
+;; `mon-line-utils'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; :NOTE Aliases defined in :FILE mon-aliases.el
+;;
+;; <UNQUALIFIED-ALIAS>                  <PREFIX>-<NON-CORE-SYMBOL>
+;; `goto-line-25%'                   -> `mon-goto-line-25%'
+;; `goto-line-50%'                   -> `mon-goto-line-50%'
+;; `goto-line-50%'                   -> `mon-goto-line-75%'
 ;;
 ;; <PREFIX>-<QUALIFIED>                               <CORE-SYMBOL>
 ;; `mon-line-keep-match'                           -> `keep-lines'
@@ -156,7 +170,7 @@
 ;; THIRD-PARTY-CODE:
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-line-utils.el
-;; FIRST-PUBLISHED:
+;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
 ;;
 ;; EMACSWIKI: { URL of an EmacsWiki describing mon-line-utils. }
 ;;
@@ -196,16 +210,61 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
-
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T18:53:00-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-line-utils nil
+  "Customization group for variables and functions of :FILE mon-line-utils.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-line-utils.el")
+  :link '(emacs-library-link "mon-line-utils.el")
+  :group 'mon-base)
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T18:52:06-05:00Z}#{11022} - by MON KEY>
+(defcustom *mon-line-utils-xrefs*
+  '(mon-line-get-next mon-line-find-duplicates mon-line-find-duplicates-cln
+    mon-line-previous-duplicate mon-line-count-region mon-line-count-buffer
+    mon-line-count-matchp mon-line-length-max mon-line-strings
+    mon-line-strings-region mon-line-strings-qt-region
+    mon-line-strings-bq-qt-sym-bol mon-line-strings-pipe-bol
+    mon-line-strings-indent-to-col mon-line-indent-from-to-col
+    mon-line-strings-pipe-to-col mon-line-pipe-lines mon-line-strings-to-list
+    mon-line-strings-one-list mon-line-string-rotate-name
+    mon-line-string-rotate-namestrings mon-line-string-unrotate-namestrings
+    mon-line-string-rotate-namestrings-combine
+    mon-line-string-insert-chars-under mon-line-drop-in-words
+    mon-line-string-incr-padded mon-line-number-region-incr mon-line-string-get
+    mon-line-string-split mon-spacep mon-spacep-not-bol mon-spacep-is-bol
+    mon-spacep-is-after-eol mon-spacep-is-after-eol-then-graphic
+    mon-spacep-at-eol mon-spacep-first mon-line-bol-is-eol
+    mon-line-previous-bol-is-eol mon-line-next-bol-is-eol mon-line-eol-is-eob
+    mon-line-end-or-code-end *mon-line-utils-xrefs*)
+  "Xrefing list of `mon-*-<TYP>'symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-line-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*mon-buffer-utils-xrefs*',
+`*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-line-utils
+  :group 'mon-xrefs)
 
 ;;; ==============================
 ;;; :PREFIX "mlgn-"
@@ -302,6 +361,48 @@ safe to evaluate in `naf-mode' buffers.\n
             (princ (format ";;; :W-REGION :FROM %d :TO %d :REPLACED-DUPLICATES\n%s\n;;;\n"
                            cln-from cln-to mlfdc-clnd)(current-buffer)))
         mlfdc-clnd))))
+
+
+;;; ==============================
+;;; :SEE (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2010-11/msg00622.html')
+;;; :CHANGESET 2331
+;;; :CREATED <Timestamp: #{2010-11-29T12:55:26-05:00Z}#{10481} - by MON KEY>
+(defun mon-line-previous-duplicate (&optional keep-props insrtp intrp)
+  "Return content of previous line.\n
+When optional arg KEEP-PROPS is non-nil return value is as if by `buffer-substring'. 
+Default is as if by `buffer-substring-no-properties'.\n
+When optional arg INSRTP is non-nil or called-interactively, insert return value
+at point. Does not move point.\n
+:EXAMPLE\n
+;; I'm a bubba on a line.
+\(mon-with-inhibit-buffer-read-only \(mon-line-previous-duplicate\)\)\n
+;; I'm another bubba on a line.
+\(mon-with-inhibit-buffer-read-only \(mon-line-previous-duplicate nil t\)\)\n
+;; Double Bubbas on a line.
+\(mon-with-inhibit-buffer-read-only \(mon-line-previous-duplicate t t\)\)\n
+;; I'm a Bubba on a line found interactively.
+\(mon-with-inhibit-buffer-read-only 
+    \(progn \(beginning-of-line -1\)
+    \(apply #'mon-line-previous-duplicate '\(nil nil t\)\)\)\)\n
+:SEE-ALSO `mon-line-get-next', `mon-line-string-insert-chars-under'.\n►►►"
+  (interactive "*P\ni\np")
+  (save-excursion
+    (let ((mlpd-psns `(,(progn (forward-line -1) (point)) .
+                       ,(progn (forward-line 1) (point)))))
+      (set (or (and intrp  (quote intrp))
+               (and insrtp (quote insrtp))
+               (and (set (quote intrp) (quote insrtp)) (quote insrtp)))
+           (or (and keep-props (buffer-substring  (car mlpd-psns) (cdr mlpd-psns)))
+               (mon-buffer-sub-no-prop (car mlpd-psns) (cdr mlpd-psns)))))
+    (or (and (not (eq intrp 'insrtp)) (stringp insrtp) (insert insrtp))
+        (and intrp (stringp intrp) (insert intrp))
+        insrtp)))
+;;
+;;; :TEST-ME (mon-line-previous-duplicate)                    
+;;; :TEST-ME (mon-line-previous-duplicate nil t)              
+;;; :TEST-ME (mon-line-previous-duplicate t t)                
+;;; :TEST-ME (mon-line-previous-duplicate t t)                
+
 
 ;;; ==============================
 (defun mon-line-count-region (start end)
@@ -1293,20 +1394,23 @@ When called-interactively with prefix-arg prompt for a char to use.\n
 \(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under \"►\"\)\)\n
 \(mon-with-inhibit-buffer-read-only \(mon-line-string-insert-chars-under t t\)\)\n
 \(mon-line-string-insert-chars-under-TEST\)\n
-:SEE-ALSO `mon-line-strings-to-list', `mon-line-strings-region-delimited'.\n►►►"
-  (interactive "P\np")
+:SEE-ALSO `mon-line-previous-duplicate', `mon-line-get-next',
+`mon-line-strings-to-list', `mon-line-strings-region-delimited'.\n►►►"
+(interactive "P\np")
   (let ((mlsicu-ln-spec
-         (if (looking-at "^$")
-             (error (concat ":FUNCTION `mon-line-string-insert-chars-under' "
-                            "-- no line at point: %d") (point))
-           (bounds-of-thing-at-point 'line)))
+         (save-match-data
+           (if (looking-at-p "^$")
+               (error (concat ":FUNCTION `mon-line-string-insert-chars-under' "
+                              "-- no line at point: %d") (point))
+             (bounds-of-thing-at-point 'line))))
         (w-char (if (and w-char intrp)
                     (read-char (concat ":FUNCTION `mon-line-string-insert-chars-under' "
                                        "-- char to use: "))
                   w-char)))
     (save-excursion
       (end-of-line)
-      (when (= (buffer-end 1)(cdr mlsicu-ln-spec))
+      (when (= (mon-g2be 1 t)
+               (cdr mlsicu-ln-spec))
         (setcdr mlsicu-ln-spec (1+ (cdr mlsicu-ln-spec))))
       (open-line 1)
       (forward-char 1)
@@ -1829,6 +1933,60 @@ Instances of such chars are be skipped.\n
           (while (looking-back "\\s<" (1- (point)))
             (backward-char))
           (skip-chars-backward " \t")))))
+
+
+;;; ==============================
+;;; :CHANGESET 2382
+;;; :CREATED <Timestamp: #{2011-01-07T15:33:33-05:00Z}#{11015} - by MON KEY>
+(defun mon-backspace  ()
+   (interactive)
+   (or (while (memq (char-before (point)) *mon-whitespace-chars*)
+         (delete-backward-char 1))
+       (delete-backward-char 1)))
+
+ 
+;;; ==============================
+;;; :CHANGESET 2379
+;;; :CREATED <Timestamp: #{2011-01-06T13:12:16-05:00Z}#{11014} - by MON KEY>
+(defun mon-goto-line-25% ()
+  "Move point to character at 25% of `point-max' as if by `goto-char'.\n
+Return `line-number-at-pos' moved to.\n
+Like `goto-line' but point is not moved to `line-beginning-position'.\n
+:EXAMPLE\n\n\(mon-goto-line-25%\)\n
+:NOTE Useful for moving point in really large buffers with wrapped lines where
+redisplay is painfully slow.\n
+:ALIASED-BY `goto-line-25%'\n
+:SEE-ALSO `mon-goto-line-25%', `mon-goto-line-50%', `mon-goto-line-75%',
+`mon-g2be', `goto-line', `line-number-at-pos', `count-lines'.\n►►►"
+  (interactive)
+ (line-number-at-pos (goto-char (/ (mon-g2be 1 t) 4))))
+;;
+(defun mon-goto-line-50% ()
+  "Move point to character at 50% of `point-max' as if by `goto-char'.\n
+Return `line-number-at-pos' moved to.\n
+Like `goto-line' but point is not moved to `line-beginning-position'.\n
+:EXAMPLE\n\n\(mon-goto-line-50%\)\n
+:NOTE Useful for moving point in really large buffers with wrapped lines where
+redisplay is painfully slow.\n
+:ALIASED-BY `goto-line-50%'\n
+:SEE-ALSO `mon-goto-line-25%', `mon-goto-line-50%', `mon-goto-line-75%',
+`mon-g2be', `goto-line', `count-lines'.\n►►►"
+  (interactive)
+  (line-number-at-pos (goto-char (/ (mon-g2be 1 t) 2))))
+;;
+(defun mon-goto-line-75% ()
+  "Move point to character at 75% of `point-max' as if by `goto-char'.\n
+Return `line-number-at-pos' moved to.\n
+Like `goto-line' but point is not moved to `line-beginning-position'.\n
+:EXAMPLE\n\n\(mon-goto-line-75%\)\n
+:NOTE Useful for moving point in really large buffers with wrapped lines where
+redisplay is painfully slow.\n
+:ALIASED-BY `goto-line-75%'\n
+:SEE-ALSO `mon-goto-line-25%', `mon-goto-line-50%', `mon-g2be', `goto-line',
+`count-lines'.\n►►►"
+  (interactive)
+  (let ((mgl7-chr-cnt (mon-g2be 1 t)))
+    (line-number-at-pos (goto-char (- mgl7-chr-cnt (/ mgl7-chr-cnt 3))))))
 
 ;;; ==============================
 (provide 'mon-line-utils)

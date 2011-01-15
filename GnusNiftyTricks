@@ -1,6 +1,10 @@
 I've been using Gnus for less than 24 hours... what qualifies as a
 nifty trick, and what is just common knowledge?
 
+See also: EmacsNiftyTricks
+
+== Group Parameters ==
+
 * Group levels?
 * GroupParameters (hit "G p" in the group buffer):
 This is an example of the properties of one of my mailing lists:
@@ -15,7 +19,8 @@ This is an example of the properties of one of my mailing lists:
 
 Basically says "move all articles older than 30 days into old.clug (from mail.clug), and don't prompt me. Don't add gcc headers for this group because I'll get the response back on the list anyway. Set the to-address so that replies will only go to the list and not to the people who sent them, and change my identity so I can track spam --DamienElmes
 
-----
+== Adaptive Scoring ==
+
 AdaptiveScoring demo:
 
  <antifuchs> (defvar gnus-default-adaptive-score-alist
@@ -30,14 +35,18 @@ AdaptiveScoring demo:
  <antifuchs>     (gnus-catchup-mark (subject -1))))
 
 courtesy AndreasFuchs
-----
+
+== Tab Complete Recipients ==
+
 To Add Tab completion to names in the To: field in message,
 
     (add-hook 'message-mode-hook
                 (function (lambda() 
                            (local-set-key (kbd "<tab>") 'bbdb-complete-name)
                          )))
-----
+
+== Use Message X ==
+
 Kai has written message-x.el (http://www.uni-mainz.de/~beigs005/message-x.el) which does better for tab completion.  Basically, it's smart about whether it's in an appropriate header or if it's in the body.  In my .gnus.el I've added these two lines:
 
     (require 'message-x)
@@ -46,9 +55,17 @@ Kai has written message-x.el (http://www.uni-mainz.de/~beigs005/message-x.el) wh
 That sets it to use bbdb-complete-name on a field where I might want to do name expansion or to do hippie-expand in the body.  Note that it just uses the <tab> character.  Using this setup it would be hard to actually insert a <tab> in the buffer. --LathI
 
 <code>C-q TAB</code> should always insert a plain tab --ClausBrunzema
-----
-There are some advantages to storing your replies and sent mail in the same group as the original messages. You preserve threads in personal correspondence and you can use ^ to quickly view the parent. This is how to do it in Gnus.
 
+== No Server ==
+
+* gnus pisses me off by downloading 600k or so each time I start it up, AlexSchroeder showed me that M-x gnus-no-server will start up gnus without downloading the active file, and hitting "3 g" in the groups buffer will update the groups without doing the 600k active file thingie - if only this were the default behaviour!
+* If you ''do'' want to make it the default behaviour,
+
+    (setq gnus-read-active-file 'some)
+
+== Preserve Threads ==
+
+There are some advantages to storing your replies and sent mail in the same group as the original messages. You preserve threads in personal correspondence and you can use ^ to quickly view the parent. This is how to do it in Gnus.
 
     (setq gnus-message-archive-method '(nnml ""))
 
@@ -64,23 +81,16 @@ There are some advantages to storing your replies and sent mail in the same grou
 
 I use nnml for my messages and split all mailing lists off into list.* groups. Add salt and pepper to taste.
 
+
 This snippet is also useful:
 
     (add-hook 'message-sent-hook 'gnus-score-followup-thread)
 
-It scores up replies to my replies. =)
+It scores up replies to my replies.
 
 -- SachaChua
 
-----
-* gnus pisses me off by downloading 600k or so each time I start it up, AlexSchroeder showed me that M-x gnus-no-server will start up gnus without downloading the active file, and hitting "3 g" in the groups buffer will update the groups without doing the 600k active file thingie - if only this were the default behaviour!
-* If you ''do'' want to make it the default behaviour,
-
-    (setq gnus-read-active-file 'some)
-
------
-= Correct message count in IMAP: =
-
+== Correct message count in IMAP: ==
 
 Gnus does not support correct message counts, but imap does.
 Here is a little code that fetches the number of messages in an
@@ -137,9 +147,7 @@ In order to use it, put a "%ut" somewhere in your
 (add-hook 'gnus-after-getting-new-news-hook 'nnimap-message-count-cache-clear)
 }}}
 
------
-= Correct message (and unread) count in IMAP with multiple servers: =
-
+== Correct message (and unread) count in IMAP with multiple servers ==
 
 I found the above very useful, thanks for it!  Though, I had to modify
 it a bit, so it works with multiple servers and also has a new user
@@ -201,9 +209,58 @@ format (%uy), which contains the correct unread count.
 (add-hook 'gnus-after-getting-new-news-hook 'nnimap-message-count-cache-clear)
 }}}
 
+== Keeping IMAP connections alive ==
 
--- ErrGe
+I had problems with our IMAP server closing connections due to inactivity timeout in a way such that openssl's s_client would not notice it.  Consequently, the next command on the IMAP group would hang.
 
-See also: EmacsNiftyTricks
+To avoid the inactivity timeout, I added a timer that periodically issues a "NOOP" IMAP command.  Seems to work nicely up to now.
+
+{{{
+(setq imap-ping-interval (* 10 60))
+(setq imap-ping-timer nil)
+
+(defun imap-ping-handler ()
+  ;; ping all active IMAP servers in `nnimap-server-buffer-alist'
+  (when (boundp 'nnimap-server-buffer-alist)
+    (let ((servers nil))
+      (mapc
+       (lambda (server-buffer)
+         (let ((server (car server-buffer))
+               (buffer (cadr server-buffer)))
+           (when (and (get-buffer buffer) (not (member server servers)))
+             (ignore-errors
+               (with-local-quit
+                 (with-temp-message
+                     (format "Pinging %s..." server)
+                   (imap-send-command-wait "NOOP" buffer)
+                   (message "Pinging %s...done" server))))
+             (setq servers (cons server servers)))))
+       nnimap-server-buffer-alist)))
+
+  (let* ((current (current-time))
+	 (timer imap-ping-timer)
+	 ;; compute the time when this timer will run again
+	 (next-time (timer-relative-time
+		     (list (aref timer 1) (aref timer 2) (aref timer 3))
+		     (* 5 (aref timer 4)) 0)))
+    ;; if the activation time is far in the past, skip executions
+    ;; until we reach a time in the future.  This avoids a long
+    ;; pause if Emacs has been suspended for hours.
+    (or (> (nth 0 next-time) (nth 0 current))
+	(and (= (nth 0 next-time) (nth 0 current))
+	     (> (nth 1 next-time) (nth 1 current)))
+	(and (= (nth 0 next-time) (nth 0 current))
+	     (= (nth 1 next-time) (nth 1 current))
+	     (> (nth 2 next-time) (nth 2 current)))
+	(progn
+	  (timer-set-time timer (timer-next-integral-multiple-of-time
+				 current imap-ping-interval)
+			  imap-ping-handler)
+	  (timer-activate timer)))))
+
+(setq imap-ping-timer
+      (run-at-time t imap-ping-interval 'imap-ping-handler))
+}}}
+
 ----
 CategoryGnus 

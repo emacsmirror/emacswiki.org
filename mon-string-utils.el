@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-string-utils.el
@@ -48,8 +48,10 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
+;; `*mon-string-utils-xrefs*'
 ;;
 ;; GROUPS:
+;; `mon-string-utils'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
 ;; :NOTE Aliases defined in :FILE mon-aliases.el
@@ -152,7 +154,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -164,6 +166,47 @@
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T19:05:30-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-string-utils  nil
+  "Customization group for variables and functions of :FILE mon-string-utils.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-string-utils.el")
+  :link '(emacs-library-link "mon-string-utils.el")
+  :group 'mon-base)
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T19:05:32-05:00Z}#{11022} - by MON KEY>
+(defcustom *mon-string-utils-xrefs* 
+  '(mon-string-split mon-string-spread mon-string-justify-left
+    mon-string-fill-to-col mon-string-index mon-string-upto-index
+    mon-string-after-index mon-string-sort-descending mon-string-position
+    mon-string-has-suffix mon-string-chop-spaces mon-string-ify-list
+    mon-string-split-on-regexp mon-string-replace-char mon-string-sub-old->new
+    mon-string-repeat mon-string-to-hex-list-cln-chars mon-string-to-hex-string
+    mon-string-from-hex-list mon-string-to-hex-list mon-string-infix
+    mon-string-explode mon-string-permute mon-string-permute-line
+    mon-string-splice-sep mon-string->strings-splice-sep mon-string-to-regexp
+    *mon-string-utils-xrefs*)
+  "Xrefing list of mon string related symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-string-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*mon-buffer-utils-xrefs*',
+`*mon-line-utils-xrefs*', `*mon-plist-utils-xrefs*'
+`*mon-seq-utils-xrefs*', `*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-string-utils 
+  :group 'mon-xrefs)
+
+ 
 ;;; ==============================
 ;;; :NOTE Heavily modified version of `dired-split' :SEE :FILE dired-aux.el
 ;;; Which had the comment, "here should be a builtin split function - inverse to mapconcat."
@@ -1213,6 +1256,29 @@ String obtained by splitting read-string from mini-buffer.\n
 ;;;
 ;;; :TEST-ME (call-interactively 'mon-string-to-regexp)
 
+
+;;; ==============================
+;;; :PREFIX "msmil-"
+;;; :NOTE Modelled after `erc-list-match' but using catch/throw instead of memq/mapcar
+;;; :CHANGESET 2365
+;;; :CREATED <Timestamp: #{2010-12-16T14:36:12-05:00Z}#{10504} - by MON KEY>y
+(defun mon-string-match-in-list-p (regexp-lst match-str &optional match-from)
+  "Return non-nil if any regexp in REGEXP-LST matches MATCH-STR.\n
+REGEXP-LST is a list of strings.\n
+MATCH-STR is a string to try matching.\n
+When optional arg MATCH-FROM is non-nil match from position in MATCH-STR as if
+by `string-match-p'.\n
+:EXAMPLE\n\n
+:SEE-ALSO .\n►►►"
+  (assert (and (mon-string-not-null-nor-zerop match-str)
+               (or (not match-from)
+                   (and match-from (<= match-from (length match-from))))))
+  (catch 'msmil-mtched
+    (mapc #'(lambda (regexp)
+              (and (string-match-p regexp match-str)
+                   (throw 'msmil-mtched match-str)))
+          regexp-lst)
+    nil))
 
 ;;; ==============================
 (provide 'mon-string-utils)

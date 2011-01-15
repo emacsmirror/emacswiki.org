@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-macs.el
@@ -52,11 +52,14 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
+;; `*mon-macs-xrefs*',
 ;;
 ;; GROUPS:
+;; `mon-macs'
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
-
+;; :NOTE Aliases defined in :FILE mon-aliases.el
+;; 
 ;; <UNQUALIFIED-ALIAS>                  <PREFIX>-<NON-CORE-SYMBOL>
 ;; `nshuffle-vector'                 -> `mon-nshuffle-vector'
 ;; `with-gensyms'                    -> `mon-with-gensyms'
@@ -134,9 +137,10 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
+ 
 ;;; CODE:
 
 (eval-when-compile (require 'cl))
@@ -152,6 +156,47 @@
 (declare-function mon-mapcar                    "mon-seq-utils" (mapcar-fun mapcar-lst &rest more-lsts))
 (declare-function mon-gensym-counter-randomizer "mon-randomize-utils" (randomize-sym/str))
 
+;;; ==============================
+;;; :CHANGESET 2392
+;;; :CREATED <Timestamp: #{2011-01-14T16:56:07-05:00Z}#{11025} - by MON KEY>
+(defgroup mon-macs nil
+  "Customization group for variables and functions of :FILE mon-macs.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-macs.el')")
+  :link '(emacs-library-link 
+          :tag  ":FILE mon-macs.el" 
+          "mon-macs.el")
+  :group 'mon-base)
+
+
+;;; ==============================
+;;; :CHANGESET 2392
+;;; :CREATED <Timestamp: #{2011-01-14T16:56:04-05:00Z}#{11025} - by MON KEY>
+(defcustom *mon-macs-xrefs* 
+  '(mon-error-protect %mon-format-chk-keys handler-case mon-copy-list-mac
+  mon-mapcar-mac mon-nshuffle-vector mon-list-sift mon-foreach mon-for mon-loop
+  mon-equality-for-type mon-gensym mon-with-gensyms mon-with-print-gensyms
+  defconstant defparameter mon-set-text-properies-region mon-get-face-at-posn
+  mon-with-file-buffer mon-buffer-exists-p mon-with-buffer-undo-disabled
+  mon-print-in-buffer-if-p mon-with-inhibit-buffer-read-only
+  mon-toggle-restore-llm mon-naf-mode-toggle-restore-llm mon-line-dolines
+  mon-cat *mon-macs-xrefs*)
+  "Xrefing list of `mon-*' macros.\n
+The symbols contained of this list are defined in :FILE mon-macs.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-keybindings-xrefs*',
+`*mon-testme-utils-xrefs*', `*mon-button-utils-xrefs*',
+`*mon-buffer-utils-xrefs*', `*mon-error-utils-xrefs*', `*mon-line-utils-xrefs*',
+`*mon-macs-xrefs*', `*mon-plist-utils-xrefs*', `*mon-post-load-hooks-xrefs*', 
+`*mon-seq-utils-xrefs*', `*mon-string-utils-xrefs*', `*mon-type-utils-xrefs*',
+`*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*', `*mon-slime-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-macs
+  :group 'mon-xrefs)
 
 ;;; ==============================
 ;;; :NOTE Appears deceptively simple :O
@@ -189,12 +234,12 @@ ERR-ARG is the form returned from the error condition handler.\n
            'error-but-body-executed\)
     ;; First show what happened inside body:
     \(minibuffer-message pre-error\)\)\)\)\n
-:SEE-ALSO `report-errors', `mon-error', `mon-error-toplevel',`mon-error-gather',
-`mon-error-gather-peek', `mon-error-string-err-format', `mon-message',
-`redirect-debugging-output', `external-debugging-output', `debug-on-signal',
-`debug-on-error', `debug-ignored-errors', `signal-hook-function',
-`*mon-emacs-help-errors*', `mon-help-errors', `Info-no-error',
-`mon-help-CL-error-condition-restart'.\n►►►"
+:SEE-ALSO `stack-trace-on-error', `report-errors', `mon-error',
+`mon-error-toplevel',`mon-error-gather', `mon-error-gather-peek',
+`mon-error-string-err-format', `mon-message', `redirect-debugging-output',
+`external-debugging-output', `debug-on-signal', `debug-on-error',
+`debug-ignored-errors', `signal-hook-function', `*mon-emacs-help-errors*',
+`mon-help-errors', `Info-no-error', `mon-help-CL-error-condition-restart'.\n►►►"
   (let ((bdy-wrap (make-symbol "bdy-wrap")))
     `(let ((,bdy-wrap (or ,@body t)))
        (condition-case nil
@@ -245,7 +290,7 @@ Valid keywords are:\n
                           :w-delim t\)\)\)\n
 ;; Following is without key/value pairs:
 \(pp-macroexpand-expression '\(%mon-format-chk-keys nil\)\)\n
-:SEE-ALSO `destructuring-bind'.\n►►►"
+:SEE-ALSO `destructuring-bind', `edebug-match-&key', `lambda-list-keywords'.\n►►►"
   (declare (indent 0) (debug t))
   (let ((mf-keys (make-symbol "--mf-keys--"))
         (mf-chk-keys '(:w-fun :w-spec :w-args :w-delim))) ;; :w-stream
@@ -274,7 +319,7 @@ CLAUSES ::= <ERROR-CLAUSE> | <NO-ERROR-CLAUSE>
 ERROR-CLAUSE ::= (typespec ([var]) {declaration}* {form}*)
 NO-ERROR-CLAUSE ::= (:no-error LAMBDA-LIST {declaration}* {form}*)
 :EXAMPLE\n\n
-:SEE-ALSO `mon-error-protect'.\n►►►"
+:SEE-ALSO `mon-error-protect', `stack-trace-on-error'.\n►►►"
   ;;  (declare (indent 2) (debug t))
   (let* ((var (edebug-gensym "--mon-")) ;; :WAS `gensym'
          ;; :WAS (neclause (assoc :NO-ERROR clauses))         
@@ -396,7 +441,8 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
                      ,\(equal \(cadddr  \(assq :setfd-tre chk-equal\)\)
                              \(cadddr  \(assq :setfd-mac chk-equal\)\)\)
                      ,@chk-equal\)\)\)\n
-:SEE-ALSO `mon-mapl', `mon-maplist',  `mon-mapcar', `mon-mapcan', `mon-mapcon'.\n►►►"
+:SEE-ALSO `mon-mapl', `mon-maplist',  `mon-mapcar', `mon-mapcan', `mon-mapcon',
+`mon-map'.\n►►►"
   ;; (declare (indent 1) (debug t))
   (let ((mclm-res (make-symbol "mclm-res"))
         (mclm-cpy (make-symbol "mclm-cpy")))
@@ -409,6 +455,7 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
                ;; handling of vectors to the cl mapping fncns but would need to
                ;; record that it occured so we could coerce it back to a vector
                ;; once finished...
+               ;; :NOTE Or, use `mon-sequence-mappable-p'
                (copy-sequence ,mclm-cpy)
              (progn
                (while (consp ,mclm-cpy) (push (pop ,mclm-cpy) ,mclm-res))
@@ -422,9 +469,9 @@ Following checks help verify that list copies returned from `mon-copy-list-mac' 
 ;;; :COURTESY :FILE gnus/gnus-util.el :WAS `gnus-mapcar'
 ;;; :CHANGESET 2112
 ;;; :CREATED <Timestamp: #{2010-09-06T16:36:17-04:00Z}#{10361} - by MON KEY>
-(defmacro mon-mapcar-mac (function seq1 &rest seqs2_n)
-  "Apply FUNCTION to each element of SEQ1 and make a list of the results.\n
-If there are several &rest  sequences, FUNCTION is called with that many arguments.
+(defmacro mon-mapcar-mac (mapmac-fun seq1 &rest seqs2_n)
+  "Apply MAPMAC-FUN to each element of SEQ1 and make a list of the results.\n
+If there are several &rest sequences, MAPMAC-FUN is called with that many arguments.
 Mapping terminates with the shortest sequence.\n
 With just one sequence, this is like `mapcar'.\n
 With several, it is like the Common Lisp `mapcar' function extended to arbitrary
@@ -443,38 +490,38 @@ sequence types.\n
     :MON-MAPCAR/PAIRLIS ,rtn-mon-mapcar :CL-PKG/PAIRLIS ,rtn-pairlis\)\)\n
 :NOTE Last example is basically Emacs lisp's version of Common Lisp's `parilis'.\n
 :SEE-ALSO `mon-mapcar', `mon-map1', `mon-mapcan', `mon-mapcon', `mon-mapl',
-`mon-maplist', `mon-maptree', `mon-map-combine', `mon-map-append'.\n►►►"
+`mon-maplist', `mon-maptree', `mon-map-combine', `mon-map-append', `mon-map'.\n►►►"
   ;; (declare (indent 1) (debug t))
   (if (not seqs2_n)
-      `(mapcar ,function ,seq1)
+      `(mapcar ,mapmac-fun ,seq1)
     (let* ((mmc-seqs      (cons seq1 seqs2_n))
            (mmc-cnt       0)
            (mmc-heads     (mapcar 
                            ;; :NOTE arg MMC-L-1 prevents backquote expansion to: "(lambda nil"
                            #'(lambda (mmc-L-1) 
-                               (make-symbol 
-                                (concat "head" (number-to-string (setq mmc-cnt (1+ mmc-cnt))))))
+                               (make-symbol (concat "--mmc-L-1_" 
+                                                    (number-to-string (setq mmc-cnt (1+ mmc-cnt))))))
                            mmc-seqs))
            (mmc-rslt      (make-symbol "mmc-rslt"))
            (mmc-rslt-tl   (make-symbol "mmc-rslt-tl")))
-      `(let* ,(let* ((bindings  (cons nil nil))
+      `(let* ,(let* ((mmc-bind  (cons nil nil))
                      (mmc-heads  mmc-heads))
-                (nconc bindings (list (list mmc-rslt '(cons nil nil))))
-                (nconc bindings (list (list mmc-rslt-tl mmc-rslt)))
+                (nconc mmc-bind (list (list mmc-rslt '(cons nil nil))))
+                (nconc mmc-bind (list (list mmc-rslt-tl mmc-rslt)))
                 (while mmc-heads
-                  (nconc bindings (list (list (pop mmc-heads) (pop mmc-seqs)))))
-                (cdr bindings))
+                  (nconc mmc-bind (list (list (pop mmc-heads) (pop mmc-seqs)))))
+                (cdr mmc-bind))
          (while (and ,@mmc-heads)
            (setcdr ,mmc-rslt-tl 
-                   (cons 
-                    (funcall ,function ,@(mapcar #'(lambda (mmc-L-2) 
+                   (cons (funcall ,mapmac-fun ,@(mapcar #'(lambda (mmc-L-2)
                                                      (list 'car mmc-L-2))
-                                                 mmc-heads)) 
+                                                      mmc-heads)) 
                     nil))
            (setq ,mmc-rslt-tl (cdr ,mmc-rslt-tl)
-                 ,@(apply 'nconc (mapcar #'(lambda (mmc-L-3) 
-                                             (list mmc-L-3 (list 'cdr mmc-L-3))) 
-                                         mmc-heads))))
+                 ,@(apply #'nconc 
+                          (mapcar #'(lambda (mmc-L-3) 
+                                      (list mmc-L-3 (list 'cdr mmc-L-3))) 
+                                  mmc-heads))))
          (cdr ,mmc-rslt)))))
 ;;
 ;;; (put 'mon-mapcar-mac 'lisp-indent-function <INT>) 
@@ -524,14 +571,15 @@ All permutations are equally likely.\n
 (defmacro mon-list-sift (sift-list &rest sift-tests)
   "SIFT-LIST with SIFT-TESTS.\n
 On a Common Lisp return is as if by values.\n
-:EXAMPLE\n\n
+:EXAMPLE\n
 \(mon-list-sift '\( 1 2 3 4 5 6 7 8 9 10\) #'\(lambda \(x\) \(> x 4\)\)\)
 ;=> \(10 9 8 7 6 5\) \(4 3 2 1\)\n
 \(mon-list-sift '\(1 2 3 -1 -2 -3\) #'oddp #'plusp\)
 ;=> \(-3 -1 3 1\) \(2\) \(-2\)\n
 \(mon-list-sift '\(1 2 3 -1 -2 -3\) #'plusp #'oddp\)
 ;=> \(3 2 1\) \(-3 -1\) \(-2\)\n
-:SEE-ALSO `mon-list-filter', `mon-list-last'.\n►►►"
+:SEE-ALSO `mon-list-filter', `mon-list-last', `mon-delete-first',
+`mon-equality-for-type', `mon-equality-or-predicate', `car-less-than-car'.\n►►►"
   ;; Common Lisp version, note the functional `values' in the tail:
   ;; (defmacro list-sift (sift-list &rest sift-tests)
   ;; (let ((mls-gthr-sftd (mapcar #'(lambda (x) (declare (ignore x))
@@ -621,7 +669,8 @@ On a Common Lisp return is as if by values.\n
 \(pp-macroexpand-expression '\(mon-equality-for-type \"string\"\)\)
 :SEE-ALSO `mon-equality-or-predicate',
 `*mon-equality-or-predicate-function-types*'
-`mon-get-text-properties-parse-prop-val-type-chk', `deftype'.\n►►►"
+`mon-get-text-properties-parse-prop-val-type-chk', `deftype', `type-of',
+`typep', `coerce'.\n►►►"
   (declare (indent 0) (debug t))
   (let ((meft-thing (make-symbol "meft-thing")))
     `(let ((,meft-thing (type-of ,thing)))
@@ -711,7 +760,7 @@ freshly allocated uninterned symbol as returned by `mon-gensym'.\n
 :NOTE `edebug-gensym' is identical to the `gensym' but doesn't sigal a CL
 byte-compiler warning.\n
 :ALIASED-BY `with-gensyms'\n
-:SEE-ALSO `mon-gensym-counter-randomizer', `mon-gensym'.\n"
+:SEE-ALSO `mon-gensym-counter-randomizer', `mon-gensym', `mon-with-print-gensyms'.\n"
   (declare (indent 0) (debug t))
   `(let ,(mapcar #'(lambda (mwg-mks) 
                      `(,mwg-mks (mon-gensym 
@@ -770,7 +819,7 @@ byte-compiler warning.\n
      \(setq hld-buba `\(,\(make-symbol \(format \"not-a-sym-%d\" \(random\)\)\)\)\)
      \(prin1 hld-buba \(current-buffer\)\)\)\)\)\n
 :ALIASED-BY `with-print-gensyms'\n
-:SEE-ALSO `mon-gensym', `print-circle', `read-circle'.\n►►►"
+:SEE-ALSO `mon-gensym', `print-circle', `read-circle', `mon-help-print-functions'.\n►►►"
   (declare (indent 0) (debug t))
   `(let ((print-gensym t))
      ,@body))
@@ -942,8 +991,8 @@ before and after executing BODY.\n
 (defmacro mon-buffer-exists-p (buffer-to-check &optional no-invert)
   "Return buffer-name of BUFFER-TO-CHECK if it exists.\n
 When BUFFER-TO-CHECK is a buffer object return a string.\n
-When BUFFER-TO-CHECK is a strin return a buffer object.\n
-When optional arg NO-INVERT is non-nil the `type-of' BUFFER-TO-CHECK returned
+When BUFFER-TO-CHECK is a string return a buffer object.\n
+When optional arg NO-INVERT is non-nil the `type-of' BUFFER-TO-CHECK is returned
 without inversion.\n
 :EXAMPLE\n\n\(mon-buffer-exists-p \(current-buffer\)\)\n
 \(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\n
@@ -955,6 +1004,10 @@ without inversion.\n
 \(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\n
+\(buffer-live-p
+ \(prog2 \(get-buffer-create \"*BAD-IF-NOT-KILLED*\"\)
+     \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)
+   \(kill-buffer \(mon-buffer-exists-p \"*BAD-IF-NOT-KILLED*\"\)\)\)\)\n
 \(pp-macroexpand-expression '\(mon-buffer-exists-p \(buffer-name \(current-buffer\)\)\)\)\n
 :ALIASED-BY `buffer-exists-p'\n
 :SEE-ALSO `mon-buffer-exists-so-kill', `mon-with-file-buffer',
@@ -1088,7 +1141,7 @@ of `buffer-read-only'.\n
                ,@uninhibited-body)
            (when ,mwibro-re-inhib (set (make-local-variable 'buffer-read-only) t)))))))
 ;;
-;;; (put 'mon-buffer-exists-p 'mon-with-inhibit-buffer-read-only <INT>) 
+;;; (put 'mon-with-inhibit-buffer-read-only 'lisp-indent-function <INT>) 
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-03-12T13:23:06-05:00Z}#{10105} - by MON KEY>

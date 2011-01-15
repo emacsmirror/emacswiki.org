@@ -93,8 +93,11 @@ but not any kind of font information. Any hints?
 : Another way is to type "(frame-parameter nil 'font)" without the quotes to the *scratch* buffer and hit C-j.
 
 : You can display the full set of parameters for the current frame by evaluating <tt>(prin1-to-string (frame-parameters))</tt>. -- MichaelMason
+: A pretty printing version of the above: <tt>(pr-to-string (frame-parameters))</tt>. -- Yamitai
 
 : You can display a list of the available fonts by evaluating <tt>(prin1-to-string (x-list-fonts "*"))</tt>. -- MichaelMason
+
+Note: when you use the "change buffer font" menu, the font selected doesn't affect the frame. Examine the buffer-face-mode-remapping variable for that using C-h v buffer-face-mode-remapping. -- Yamitai
 
 [new:DrewAdams:2004-12-30 03:48 UTC]
 You can see the available fonts, and the effect each has, by cycling through them with command `doremi-font' in library Lisp:doremi-frm.el. -- DrewAdams

@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-region-utils.el
@@ -96,7 +96,7 @@
 ;; THIRD-PARTY-CODE:
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-region-utils.el
-;; FIRST-PUBLISHED:
+;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
 ;;
 ;; EMACSWIKI: { URL of an EmacsWiki describing mon-region-utils. }
 ;;
@@ -136,11 +136,12 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")

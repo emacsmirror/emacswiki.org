@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; no-byte-compile: t; -*-
 
 ;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;; Copyright © 2009-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-default-loads.el
@@ -33,7 +33,7 @@
 ;; `IS-NOT-A-MON-SYSTEM'
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-get-mon-emacsd-paths'
+;; `mon-get-mon-emacsd-paths',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -45,15 +45,17 @@
 ;; CONSTANTS:
 ;; `IS-W32-P', `IS-GNU-P', `IS-BUG-P', `IS-BUG-P-remote', `IS-MON-P-W32',
 ;; `IS-MON-P-GNU', `IS-MON-SYSTEM-P', `IS-MON-P', `IS-NOT-A-MON-SYSTEM',
-
+;;
 ;; `*mon-emacs-root*', `*mon-site-lisp-root*', `*mon-user-emacsd*',
 ;; `*mon-naf-mode-notes*', `*mon-naf-mode-root*', `*mon-ebay-tmplt-mode-root*',
 ;; `*mon-local-emacs-temp-dir*'
 ;;
 ;; VARIABLES:
-;; `*IS-MON-OBARRAY*'
-;; `set-emacs-root', `*mon-default-start-loads-xrefs*'
+;; `*IS-MON-OBARRAY*', `set-emacs-root', `*mon-default-start-loads-xrefs*',
 ;; 
+;; GROUPS:
+;; `mon-default-loads'
+;;
 ;; AIASED/ADVISED/SUBST'D:
 ;; `win32p'     -> `IS-W32-P'
 ;; `gnu-linuxp' -> `IS-GNU-P'
@@ -118,7 +120,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009, 2010 MON KEY 
+;; Copyright © 2009-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -129,17 +131,28 @@
 (require 'mon-default-loads)
 
 (eval-when-compile (require 'cl))
-;; (require 'cl)
 
 (unless (featurep 'mon-site-local-defaults)
   (require 'mon-site-local-defaults nil t))
+
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T15:33:45-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-default-loads nil
+  "Customization group for variables and functions of :FILE mon-default-loads.el\n
+:SEE-ALSO .\n►►►"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-default-loads.el")
+  :link '(emacs-library-link "mon-default-loads.el")
+  :group 'mon-base)
 
 ;;; ==============================
 ;;; :CHANGESET 2291
 ;;; :CREATED <Timestamp: #{2010-11-09T16:53:31-05:00Z}#{10452} - by MON KEY>
 (defvar *IS-MON-OBARRAY* nil
   "Obarray for determining if a system is a MON system.\n
-If present in *IS-MON-OBARRAY* obarray following values will satisfy the form:\n
+If *IS-MON-OBARRAY* is present in obarray following values will satisfy the form:\n
  \(and \(intern-soft <VALUE> *IS-MON-OBARRAY*\)
       \(bound-and-true-p <VALUE>\)\)\n
  `IS-NOT-A-MON-SYSTEM' `IS-MON-SYSTEM-P'
@@ -147,7 +160,7 @@ If present in *IS-MON-OBARRAY* obarray following values will satisfy the form:\n
  `IS-BUG-P'            `IS-BUG-P-REMOTE'
  `IS-GNU-P'            `IS-W32-P'\n
 :EXAMPLE\n\n
-:SEE-ALSO .\n►►►")
+:SEE-ALSO `obarray'.\n►►►")
 ;;
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
@@ -170,38 +183,35 @@ If present in *IS-MON-OBARRAY* obarray following values will satisfy the form:\n
 
 ;;; ==============================
 ;;; :CREATED <Timestamp: #{2010-04-02T22:40:33-04:00Z}#{10136} - by MON KEY>
-(defvar *mon-default-loads-xrefs* nil
-  "*Xrefing list of functions constancts and variables defined in:
-:FILE mon-default-start-loads.el \n
-:EXAMPLE\n\(symbol-value '*mon-default-start-loads-xrefs*\)
+(defcustom *mon-default-loads-xrefs* nil
+  "Xrefing list of symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-default-loads.el\n
+:EXAMPLE\n\n\(symbol-value '*mon-default-start-loads-xrefs*\)\n
 \(symbol-value \(nth 3 *mon-default-start-loads-xrefs*\)\)\n
-:SEE-ALSO `*naf-mode-xref-of-xrefs*'.\n►►►")
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*naf-mode-xref-of-xrefs*'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-default-loads
+  :group 'mon-xrefs)
 ;;
-(eval-after-load "mon-default-start-loads" 
-  '(unless (and (intern-soft "*mon-default-loads-xrefs*" obarray)
-                (bound-and-true-p *mon-default-loads-xrefs*))
-     (setq *mon-default-start-loads-xrefs*
-           '(*mon-default-start-loads-xrefs*
-             mon-get-mon-emacsd-paths
-             set-emacs-root
-             IS-W32-P
-             IS-GNU-P
-             IS-BUG-P
-             IS-BUG-P-REMOTE
-             IS-MON-P-W32
-             IS-MON-P-GNU
-             IS-MON-P
-             IS-NOT-A-MON-SYSTEM
-             IS-MON-SYSTEM-P
-             *IS-MON-OBARRAY-SYMS*
-             *IS-MON-OBARRAY*
-             *mon-emacs-root*
-             *mon-site-lisp-root*
-             *mon-naf-mode-root*
-             *mon-naf-mode-notes*
-             *mon-ebay-tmplt-mode-root*
-             *mon-user-emacsd*
-             *mon-local-emacs-temp-dir*))))
+;; We try to ensure that the symbols contained of `*mon-default-loads-xrefs*'
+;; don't exist at loadtime and delay binding t at top-level until after
+;; "mon-default-start-loads" which only loads after a host of other dependencise
+;; are up and running.
+(eval-after-load "mon-default-loads"
+  '(eval-after-load "mon-default-start-loads" 
+     '(unless (and (intern-soft "*mon-default-loads-xrefs*" obarray) ;; *IS-MON-OBARRAY*
+                   (bound-and-true-p *mon-default-loads-xrefs*))
+        (setq *mon-default-loads-xrefs*
+              '(*mon-default-loads-xrefs* mon-get-mon-emacsd-paths
+                set-emacs-root IS-W32-P IS-GNU-P IS-BUG-P IS-BUG-P-REMOTE
+                IS-MON-P-W32 IS-MON-P-GNU IS-MON-P IS-NOT-A-MON-SYSTEM
+                IS-MON-SYSTEM-P *IS-MON-OBARRAY-SYMS* *IS-MON-OBARRAY*
+                *mon-emacs-root* *mon-site-lisp-root* *mon-naf-mode-root*
+                *mon-naf-mode-notes* *mon-ebay-tmplt-mode-root*
+                *mon-user-emacsd* *mon-local-emacs-temp-dir*))
+        (custom-note-var-changed '*mon-default-start-loads-xrefs*))))
 
 ;;; ==============================
 ;;; :NOTE This gets compiled as `mon-get-emacsd-paths' in mon-utils.el

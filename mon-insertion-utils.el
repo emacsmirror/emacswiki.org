@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;; Copyright © 2009-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-insertion-utils.el
@@ -28,20 +28,27 @@
 ;;
 ;; FUNCTIONS:►►►
 ;; `mon-insert-string-n-fancy-times', `mon-line-number-region',
-;;  `mon-string-incr',
-;; `mon-insert-string-n-times', `mon-lisp-evald', `mon-comment-divider',
+;; `mon-string-incr',
+;; `mon-insert-string-n-times', `mon-comment-divider',
 ;; `mon-comment-divider-to-col-four', `php-comment-divider', `mon-insert-copyright',
-;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', `mon-insert-whitespace',
-;; `mon-insert-newlines', `mon-insert-defclass-template',
-;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template',
-;; `mon-insert-CL-file-template', `mon-insert-lisp-CL-package-template',
-;; `mon-insert-lisp-CL-mode-line-template', `mon-lisp-CL-package-complete'
+;;
+;; `mon-insert-whitespace', `mon-insert-newlines', 
+;; `mon-split-designator',
+;;
+;; `mon-insert-file-in-dirs', `mon-insert-dirs-in-path', 
+;;
 ;; `mon-insert-user-name-cond', `mon-insert-system-type-cond',
 ;; `mon-insert-gnu-licence', `mon-insert-gnu-licence-gfdl' ,
 ;; `mon-build-copyright-string', `mon-comput-33', `mon-comput-45',
-;; `mon-split-designator', 
 ;; `mon-build-copyright-string-license', `mon-insert-lisp-doc-eg-xref',
-;; `mon-insert-jump-lisp-doc', 
+;; `mon-insert-regexp-template-yyyy'`mon-insert-regexp-template',
+;;
+;; `mon-lisp-evald',
+;; `mon-insert-defclass-template',
+;; `mon-insert-CL-file-template', `mon-insert-lisp-CL-package-template',
+;; `mon-insert-lisp-CL-mode-line-template', `mon-lisp-CL-package-complete',
+;; `mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-CL-debug',
+;; `mon-insert-lisp-CL-eval-when',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS: 
@@ -68,10 +75,12 @@
 ;; `mon-lisp-comment-to-col'             -> `mon-comment-lisp-to-col'
 ;; `mon-CL-package-complete'             -> `mon-lisp-CL-package-complete'
 ;; `mon-insert-CL-mode-line-template'    -> `mon-insert-lisp-CL-mode-line-template'
-;; `mon-add-lisp-CL-file-local-prop-template' ->  `mon-insert-lisp-CL-mode-line-template'
 ;; `mon-insert-CL-file-template'         -> `mon-insert-lisp-CL-file-template'
 ;; `mon-insert-CL-package-template'      -> `mon-insert-lisp-CL-package-template'
-;; `mon-buffer-print-in-if'              -> `mon-print-in-buffer-if-p'
+;; `mon-insert-CL-debug'                 -> `mon-insert-lisp-CL-debug'
+;; `mon-insert-CL-eval-when'             -> `mon-insert-lisp-CL-eval-when'
+;; `mon-insert-jump-lisp-doc'            -> `mon-insert-lisp-CL-jump-doc'
+;; `mon-add-lisp-CL-file-local-prop-template' ->  `mon-insert-lisp-CL-mode-line-template'
 ;; `mon-string-n-fancy-times'            -> `mon-insert-string-n-fancy-times'
 ;; `mon-string-insert-n-times'           -> `mon-insert-string-n-times'
 ;;
@@ -173,12 +182,12 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY 
+;; Copyright © 2009-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
-;;; ==============================
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
@@ -186,7 +195,7 @@
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
 ;;; ==============================
-;;; :CALLED-BY Anything that uses a time-stamp.
+;;; :REQUIRED-BY Anything that uses a time-stamp.
 (require 'mon-time-utils) 
 
 (declare-function slime-current-connection "ext:slime.el" t t)
@@ -970,12 +979,13 @@ implementation.\n
                         ;; mcd2c-pad ;; Unused
                         mcd2c-ssf)
                     (insert mcd2c-w/reg)
-                    (goto-char (point-min))
+                    (mon-g2be -1)
                     (insert mcd2c-dvdr)
                     (open-line 1)
-                    (goto-char (point-min))
+                    (mon-g2be -1)
                     (while mcd2c-more
-                      (when (= (point) (point-min)) (indent-to-column mcd2c-2col) (line-move 1 t))
+                      (when (= (point) (mon-g2be -1 t)) 
+                        (indent-to-column mcd2c-2col) (line-move 1 t))
                       (beginning-of-line)
                       (set-marker cln-wspc-s (point))
                       (setq mcd2c-ssf (skip-syntax-forward "-"))
@@ -1128,14 +1138,15 @@ When INSRTP or called-interactively inserts template at point.\n
 ;;; :MODIFICATIONS <Timestamp: #{2009-09-18T15:41:36-04:00Z}#{09385} - by MON KEY>
 (defun mon-insert-regexp-template-yyyy (&optional query-rep insrtp intrp)
   "Insert at point regexps for searching whitespace delimited years 20thC.\n
-Regexps are specific to the range 1900-1999. Returned regexp template
-includes \\nth numbered capture groups. Regexps defaults to insertion
-for  programattic elisp. When INSRTP in non-nil or called-interactively 
-insert a second line beneath the regexp indicating  grouping sections. 
-When QUERY-REP is non-nil returns a regexp to the kill-ring. 
-This regexp will be in the kill ring and is ready formatted for yanking into 
+Regexps are specific to the range 1900-1999.\n
+Returned regexp template includes nth numbered capture groups. Regexps defaults
+to insertion for programmatic elisp.\n
+When INSRTP in non-nil or called-interactively insert a second line beneath the
+regexp indicating grouping sections.\n
+When QUERY-REP is non-nil returns a regexp to the kill-ring.
+The regexp will be in the kill ring and is ready formatted for yanking into 
 the minibuffer of a query-replace-regexp prompt. When query-rep argument is
-non-nil no regexp is inserted into buffer at point. 
+non-nil no regexp is inserted into buffer at point.
 Yank it back from the kill-ring if that is what you want.\n
 :EXAMPLE\n\n\(mon-insert-regexp-template-yyyy\)\n
 :SEE-ALSO `mon-insert-regexp-template', `mon-insert-lisp-stamp',
@@ -1181,9 +1192,12 @@ Attempts to build completions from value of `slime-buffer-package',
 when `slime-current-connection' is non-nil.\n
 :EXAMPLE\n\n\(mon-lisp-CL-package-complete\)\n
 :ALIASED-BY `mon-CL-package-complete'\n
-:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-lisp-CL-file-template',
+:SEE-ALSO `mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-CL-file-template',
 `mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-package-template',
-`quicklisp-system-complete', `mon-help-CL-pkgs'.\n►►►"
+`mon-lisp-CL-package-complete', `mon-insert-lisp-CL-debug',
+`mon-insert-lisp-CL-eval-when', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-jump-doc', `quicklisp-system-complete',
+`mon-help-CL-pkgs'.\n►►►"
   (let ((pkg-cmplt (if (or (slime-current-connection)
                            (buffer-local-value 'slime-mode (current-buffer)))
                        `(,(or slime-buffer-package (slime-current-package))
@@ -1222,8 +1236,10 @@ Strip datestrings from  CL-PACKAGE when it matches the regexp:\n
 :ALIASED-BY `mon-add-lisp-CL-file-local-prop-template'
 :SEE info-node `(emacs)Specifying File Variables'.\n
 :SEE :FILE files-x.el lisp/files.el\n
-:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-cl-file-template',
-`mon-insert-cl-package-template', `mon-lisp-CL-package-complete',
+:SEE-ALSO `mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-CL-debug', `mon-insert-lisp-CL-eval-when'
+`mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-CL-jump-doc',
 `generated-autoload-file', `add-file-local-variable-prop-line',
 `delete-file-local-variable-prop-line',
 `copy-dir-locals-to-file-locals-prop-line', `set-auto-mode', `set-auto-mode-0',
@@ -1301,12 +1317,15 @@ When optional arg W-PKG-NAME is non-nil it is a string or symbol naming a
 package as per `mon-insert-lisp-CL-mode-line-template'.\n
 :EXAMPLE\n\n\(mon-insert-lisp-CL-file-template\)\n
 :ALIASED-BY `mon-insert-CL-file-template'\n
-:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-lisp-CL-package-complete',
-`mon-insert-lisp-stamp', `mon-insert-lisp-testme',
+:SEE-ALSO `mon-lisp-CL-package-complete',
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-CL-debug', `mon-insert-lisp-CL-eval-when'
+`mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-doc-eg-xref',
 `mon-insert-lisp-evald',`mon-insert-copyright', `mon-comment-divider',
-`mon-comment-divider-to-col-four', `mon-stamp', `mon-file-stamp',
-`mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme', `mon-insert-copyright',
-`mon-insert-file-template'.\n►►►"
+`mon-comment-divider-to-col-four', `mon-insert-lisp-stamp', `mon-stamp',
+`mon-file-stamp', `mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
+`mon-insert-copyright', `mon-insert-file-template'.\n►►►"
   (interactive "i\np\nP")
   (let* ((milcft-modln (if (and w-pkg-name current-prefix-arg)
                            (mon-insert-lisp-CL-mode-line-template t t t)
@@ -1326,18 +1345,19 @@ package as per `mon-insert-lisp-CL-mode-line-template'.\n
                        ;; :WAS *mon-gnu-license-header* "\n"
                        (mon-build-copyright-string-license 'bsd) "\n"
                        (mon-insert-gnu-licence-gfdl t) "\n\n"
-                       ";;; CODE:\n\n"
+                       "\xc\n;;; CODE:\n\n"
                        ";;; \n"
+                       "\xc\n"
                        ";;; {...}\n"
                        ";;;\n" 
                        "\xc\n"
                        ";; Local Variables:\n"
                        ;; emacs-lisp/lisp-mode.el has a defalias 'common-lisp-mode -> 'lisp-mode
                        ;; Might as well make use of it :)
-                       ";; mode: common-lisp\n"
+                       ";; mode: COMMON-LISP\n"
                        ;; ";; syntax: Common-Lisp\n"
                        ;; ";; base: 10\n"
-                       ;; "coding: utf-8\n"
+                       ;; ";; coding: utf-8\n"
                        "indent-tabs-mode: nil\n"
                        ";; End:\n"
                        (mon-file-stamp-vrfy-put-eof  nil)
@@ -1345,9 +1365,9 @@ package as per `mon-insert-lisp-CL-mode-line-template'.\n
          (when (or insrtp intrp)
            (progn   
              (save-excursion
-               (goto-char (buffer-end 0))
+               (mon-g2be -1)
                (insert milcft-tmplt)
-               (goto-char (buffer-end 1))
+               (mon-g2be 1)
                ;;(insert "\n"
                )))
            milcft-tmplt))
@@ -1383,11 +1403,12 @@ the date string will be stripped.
 :EXAMPLE\n\n(mon-insert-lisp-CL-package-template)\n
 \(mon-insert-lisp-CL-package-template nil nil nil \"cl-bubba-as-string\"\)\n
 :ALIASED-BY `mon-insert-CL-package-template'\n
-:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-lisp-CL-mode-line-template',
+:SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
 `mon-lisp-CL-package-complete', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-debug', `mon-insert-lisp-CL-eval-when',
 `mon-insert-file-template', `mon-insert-copyright', `mon-insert-lisp-stamp',
-`mon-insert-lisp-doc-eg-xref', `mon-insert-lisp-testme',
-`mon-insert-lisp-evald'.\n►►►"
+`mon-insert-lisp-testme', `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\nP\np")
   (let* ((micpt-fname (cond ((and package-nm intrp (not insrtp))
                              (if (or (stringp package-nm)
@@ -1440,7 +1461,7 @@ the date string will be stripped.
                            (end-of-line)
                            (newline)
                            (insert micpt-tmplt))))))
-                (without-header (goto-char (point-min))
+                (without-header (mon-g2be -1)
                                 ;; To insert a mode-line, don't insert a package name,
                                 ;; and don't look/prompt for it use:
                                 ;; (mon-insert-lisp-CL-mode-line-template t t)
@@ -1455,7 +1476,82 @@ the date string will be stripped.
 ;;; :TEST-ME (call-interactively 'mon-insert-lisp-CL-package-template)
 
 ;;; ==============================
-;;; :KEYBINDING "\C-c\C-dc"
+;;; :CHANGESET 2325
+;;; :CREATED <Timestamp: #{2010-11-21T09:10:46-05:00Z}#{10467} - by MON>
+(defun mon-insert-lisp-CL-eval-when (&optional no-insert)
+  "Insert a Common Lisp `eval-when' template at BOL.\n
+Return inserted template.\n
+If after insertion current sexp is preceded by inserted template indent it as if
+by `indent-for-tab-command' where feasible. Does not move point.\n
+Inserts following form \(including the newline\):\n
+ \"\(eval-when \(:compile-toplevel :load-toplevel :execute\)\\n\"\n
+:EXAMPLE\n\n\(mon-insert-lisp-CL-eval-when t\)\n
+\(mon-with-inhibit-buffer-read-only 
+    \(forward-line 1\)
+    \(mon-insert-lisp-CL-eval-when\)\)\n
+\(mon-with-inhibit-buffer-read-only 
+    \(forward-line 2\)
+    \(mon-insert-lisp-CL-eval-when\)\)
+
+\(this form is indent\)\n
+;; Mimic invocation as command with prefix-arg NO-INSERT non-nil:
+\(let \(\(current-prefix-arg \(kbd \"M-x 2\"\)\)\)
+  \(with-output-to-string 
+    \(call-interactively #'mon-insert-lisp-CL-eval-when nil\)\)\)\n
+:ALIASED-BY `mon-insert-CL-eval-when'\n
+:SEE-ALSO `mon-insert-lisp-CL-mode-line-template',
+`mon-insert-lisp-CL-file-template', `mon-insert-lisp-CL-package-template',
+`mon-lisp-CL-package-complete', `mon-insert-lisp-CL-debug',
+`mon-insert-lisp-CL-eval-when' `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-jump-doc'.\n►►►"
+  (interactive "P")
+  (let ((micew-tmplt "(eval-when (:compile-toplevel :load-toplevel :execute)\n"))
+    (and (or (and (not no-insert)
+                  (save-excursion 
+                    (and (not (bolp)) 
+                         (beginning-of-line))
+                    (insert micew-tmplt)
+                    (indent-for-tab-command)))
+             t)
+         (or (and (called-interactively-p 'interactive)
+                  (or (and current-prefix-arg (prin1 (substring micew-tmplt 0 -1)))
+                      (minibuffer-message (substring micew-tmplt 0 -1))))
+             (substring micew-tmplt 0 -1)))))
+
+;;; ==============================
+;;; :CHANGESET 2325
+;;; :CREATED <Timestamp: #{2010-11-21T15:27:50-05:00Z}#{10467} - by MON>
+(defun mon-insert-lisp-CL-debug (&optional no-insert)
+  "Insert a Common Lisp `eval-when' template at BOL.\n
+Return inserted template. 
+If after insertion current sexp is preceded by inserted template indent it as if
+by `indent-for-tab-command' where feasible. Does not move point.\n
+Inserts following form \(including the newline\):\n
+ \"\(declare \(optimize \(speed 0\) \(safety 0\) \(compilation-speed 0\) \(debug 3\)\)\)\\n\"\n
+:EXAMPLE\n\n
+:ALIASED-BY `mon-insert-CL-debug'\n
+:SEE-ALSO `mon-insert-lisp-CL-eval-when',
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-CL-debug', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-jump-doc'.\n►►►"
+  (interactive "P")
+  (let ((micd-bg 
+         "(declare (optimize (speed 0) (safety 0) (compilation-speed 0) (debug 3)))\n"))
+    (and (or (and (not no-insert)
+                  (save-excursion 
+                    (and (not (bolp)) 
+                         (beginning-of-line))
+                    (insert micd-bg )
+                    (indent-for-tab-command)))
+             t)
+         (or (and (called-interactively-p 'interactive)
+                  (or (and current-prefix-arg (prin1 (substring micd-bg 0 -1)))
+                      (minibuffer-message (substring micd-bg 0 -1))))
+             (substring micd-bg 0 -1)))))
+
+;;; ==============================
+;;; :KEYBINDING "\C-c\C-dc" in :FILE mon-keybindings.el
 ;;; :CREATED <Timestamp: #{2009-10-24T18:33:41-04:00Z}#{09436} - by MON>
 (defun mon-insert-lisp-doc-eg-xref (&optional insrtp intrp as-kill)
   "Return documentation keywords for insertion to dostrings.\n
@@ -1483,8 +1579,9 @@ prefixed with:\n
 With the full return value having the format:\n
  \(setf \(documentation '<SYM> '<DOC-TYPE>\)
      #.\(format nil
-    \" <DOCSTR> ~%
- :EXAMPLE~%~% { ... <EXAMPLE> ... } ~%
+    \" <DOCSTR> ~%~@
+ :EXAMPLE~%~@
+ { ... <EXAMPLE> ... } ~%~@
  :SEE-ALSO `<XREF>'.~%►►►\"\)\)\n
 The slot templates '<SYM> and '<DOC-TYPE> are inserted literally with the intent
 that these be be manually adjusted according to context, such that where <SYM> is
@@ -1504,11 +1601,15 @@ variable or constant.
 The remaining <DOC-TYPE> specifiers are as per the spec.
 :SEE info-node `(ansicl)documentation; (setf documentation)'\n
 :ALIASED-BY `mon-insert-doc-xref-eg'\n
-:SEE-ALSO `mon-insert-jump-lisp-doc', `mon-insert-file-template',
-`mon-insert-lisp-CL-file-template', `mon-insert-copyright',
+:SEE-ALSO `mon-insert-lisp-CL-jump-doc', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-CL-debug', `mon-insert-lisp-CL-eval-when'
 `mon-insert-lisp-stamp', `mon-insert-lisp-testme',
 `mon-insert-lisp-evald'.\n►►►"
   (interactive "i\np\nP")
+  ;; :NOTE Consider refactoring to use following instead: 
+  ;; `mon-buffer-check-local-value', `mon-buffer-check-major-mode', 
   (let* ((not-elisp (case (buffer-local-value 'major-mode (current-buffer))
                       (lisp-interaction-mode t)
                       (lisp-mode t)
@@ -1517,8 +1618,9 @@ The remaining <DOC-TYPE> specifiers are as per the spec.
          (mildeg-xref (if not-elisp
                           (concat "(setf (documentation '<SYM> '<DOC-TYPE>)\n"
                                   "      #.(format nil\n"
-                                  "\" <DOCSTR> ~%\n"
-                                  ":EXAMPLE~%~% { ... <EXAMPLE> ... } ~%\n"
+                                  "\" <DOCSTR> ~%~@\n"
+                                  ":EXAMPLE~%~@\n"
+                                  " { ... <EXAMPLE> ... } ~%~@\n"
                                   ":SEE-ALSO `<XREF>'.~%►►►\"))")
                         (concat "\"\n:EXAMPLE\\n\\n"  "\n" ":SEE-ALSO .\\n►►►\""))))
     (cond (intrp (save-excursion 
@@ -1535,15 +1637,11 @@ The remaining <DOC-TYPE> specifiers are as per the spec.
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref t)
 ;;; :TEST-ME (mon-insert-lisp-doc-eg-xref nil t)
 
-(eval-when-compile (require 'thingatpt))
+
 ;;; ==============================
-;;; `bounds-of-thing-at-point'            <- :FILE thingatpt
-;;; `*regexp-symbol-defs-big*'            <- :FILE mon-regexp-symbols.el
-;;; `mon-g2be'                            <- :FILE mon-utils.el
-;;; `mon-get-text-properties-region-prop' <- :FILE mon-text-property-utils.el
 ;;; :CHANGESET 2170
 ;;; :CREATED <Timestamp: #{2010-10-01T18:19:44-04:00Z}#{10395} - by MON KEY>
-(defun mon-insert-jump-lisp-doc ()  
+(defun mon-insert-lisp-CL-jump-doc ()  
   "Insert or jump to a CL documentation template for symbol at/around point.\n
 Documentation template is as per return value of `mon-insert-lisp-doc-eg-xref'.\n
 If a doc-template is found set register D to position of symbol's defining form
@@ -1554,13 +1652,22 @@ Signal an error if current-buffer's `major-mode' is `emacs-lisp-mode' or if
 `slime-mode' is not enabled or major-mode is not either `lisp-mode' or
 `lisp-interaction-mode'.\n
 When `IS-MON-SYSTEM-P' bound in `slime-mode-map' by `mon-keybind-slime'.\n
-:SEE-ALSO `mon-insert-lisp-CL-package-template', `*regexp-symbol-defs-big*'.\n►►►"
+:ALIASED-BY `mon-insert-jump-lisp-doc'\n
+:SEE-ALSO `mon-insert-lisp-CL-package-template', `*regexp-symbol-defs-big*'
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
+`mon-lisp-CL-package-complete', `mon-insert-lisp-CL-debug',
+`mon-insert-lisp-CL-eval-when', `mon-insert-lisp-doc-eg-xref',
+`mon-insert-lisp-CL-jump-doc'.\n►►►"
   (interactive)
+  (eval-when-compile (require 'thingatpt))
+  ;;
+  ;; :NOTE Consider refactoring to use following instead:
+  ;; `mon-buffer-check-local-value', `mon-buffer-check-major-mode', 
   (unless (and (not (eq major-mode 'emacs-lisp-mode)) 
                (or (buffer-local-value 'slime-mode (current-buffer))
                    (eq major-mode 'lisp-mode)
                    (eq major-mode 'lisp-interaction-mode)))
-    (error (concat ":FUNCTION `mon-insert-jump-lisp-doc' "
+    (error (concat ":FUNCTION `mon-insert-lisp-CL-jump-doc' "
                    "-- current major-mode not relevant to this functions return value")))
   (let ((pre-nrrw-mrk (make-marker))
         (in-nrrw-mrk  (make-marker))
@@ -2278,8 +2385,9 @@ Does not move point.\n
 :EXAMPLE\n\n(mon-insert-defclass-template nil 2)\n
 :SEE-ALSO `mon-insert-naf-mode-class-template', `mon-help-eieio-defclass',
 `mon-insert-lisp-doc-eg-xref', `mon-insert-file-template',
-`mon-insert-lisp-CL-file-template', `mon-insert-lisp-stamp',
-`mon-insert-lisp-evald' `mon-insert-regexp-template',
+`mon-insert-lisp-CL-mode-line-template', `mon-insert-lisp-CL-file-template',
+`mon-insert-lisp-CL-package-template', `mon-lisp-CL-package-complete',
+`mon-insert-lisp-stamp', `mon-insert-lisp-evald' `mon-insert-regexp-template',
 `mon-comment-divider'.\n►►►"
   (interactive "i\nP\ni\np")
   (let ((c-nm (if class-pfx (format "%s" class-pfx) "<CLASS-NAME>"))
@@ -2409,7 +2517,7 @@ buffer to before proceeding with insertion.\n
          (replace-regexp-in-string ":\n.URL.*" " @url{http://www.gnu.org/licenses/fdl-1.3.txt}."
            (replace-regexp-in-string "^;;; " "" (mon-build-copyright-string-license 'gfdl)))))
     (save-excursion
-      ;;(goto-char (point-min))
+      ;; (mon-g2be -1)
       (insert (concat
                "\\input texinfo   @c -*-texinfo-*-
   @c %**start of header

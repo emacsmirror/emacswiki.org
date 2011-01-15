@@ -1,4 +1,4 @@
-Timestamp: Mon Nov 15 14:12:04 GMT 2010
+Timestamp: Fri Jan 14 19:45:46 GMT 2011
 
 This page is based on the EmacsLispList by StephenEglen and updated automatically.
 
@@ -290,6 +290,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 [ftp://dlpx1.dl.ac.uk/fx/emacs/cfengine.el cfengine.el] --- editing CFengine configuration files (by Dave Love)
 
+[http://davin.50webs.com/research/2006/cfm.el.html cfm.el] --- Displays the current function or method (by Davin Pearson)
+
 [http://savannah.gnu.org/cgi-bin/viewcvs/*checkout*/cfs-el/cfs-el/src/cfs.el?rev=HEAD&content-type=text/plain cfs.el] --- A frontend to CFS [cryptographic file system]. (by Marco Parrone)
 
 [http://www.chez.com/emarsden/downloads/cgi.el cgi.el] --- using Emacs for CGI scripting (by Eric Marsden)
@@ -436,6 +438,12 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 
 = D =
 
+[http://davin.50webs.com/research/2010/d-appt.el.html d-appt.el] --- An improved appointment notification system. (by Davin Pearson)
+
+[http://davin.50webs.com/research/2010/d-meal-timer.el.html d-meal-timer.el] --- A meal timer count-down system that improves over appt.el (by Davin Pearson)
+
+[http://davin.50webs.com/research/2010/d-testlinks.el.html d-testlinks.el] --- An automated internal hyperlink checker (by Davin Pearson)
+
 [http://gnufans.net/~deego dabbrev-hover.el] --- Tooltip-show the next completion, as does openoffice (by D. Goel)
 
 [http://www.djefer.com/dacode/ dacode.el] --- Lecture de news dacode (by Alexandre Brillant)
@@ -515,6 +523,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://primate.net/~itz/public/dig-browser.el dig-browser.el] --- a dired-style DNS zone browser (by Ian Zimmerman)
 
 [http://www.eskimo.com/~seldon/diminish.el diminish.el] --- Diminished modes are minor modes with no modeline display (by Will Mengarini)
+
+[http://davin.50webs.com/research/2006/directory-files-deep.el.html directory-files-deep.el] --- Some useful directory functions (by Davin Pearson)
 
 [http://www.emacswiki.org/elisp/dired+.el dired+.el] --- extensions to std libraries `dired.el', `dired-aux.el', `dired-x.el' (by Drew Adams)
 
@@ -1891,6 +1901,8 @@ This page is based on the EmacsLispList by StephenEglen and updated automaticall
 [http://groups.google.com/groups?selm=ypr9u30q9h5h.fsf%40rzstud1.rz.uni-karlsruhe.de&output=gplain rpm.el] --- a dired-like major mode for the "Red Hat Package Manager" (by Detlev Zundel)
 
 [http://theotp1.physik.uni-ulm.de/~ste/comp/emacs/misc/rs-info.el rs-info.el] --- Some info related functions (by Reiner Steib)
+
+[http://davin.50webs.com/research/2010/rsi-brk.el.html rsi-brk.el] --- Periodic R.S.I. typing breakes (by Davin Pearson)
 
 [http://elisp.info/package/rss-helper/rss-helper.el rss-helper.el] --- Utilities for using RSS files with Gnus (by Mark A. Hershberger)
 

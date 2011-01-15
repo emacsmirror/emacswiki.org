@@ -1,8 +1,8 @@
-;;; mon-type-utils-vars.el --- variables useful for interrogating lisp objects
+;;; mon-type-utils-vars.el --- variables useful for interogating lisp objects
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-type-utils-vars.el
@@ -36,13 +36,10 @@
 ;; FACES:
 ;;
 ;; VARIABLES:
-;; `*mon-special-forms-types*'           
-;; `*mon-non-mappable-object-types*'
-;; `*mon-equality-or-predicate-function-types*'
-;; `*mon-function-object-types*'
-;; `*mon-whitespace-chars*'
-;; `*regexp-whitespace-chars*'
-;; `*mon-ascii-alpha-chars*'
+;; `*mon-special-forms-types*', `*mon-non-mappable-object-types*',
+;; `*mon-equality-or-predicate-function-types*', `*mon-function-object-types*',
+;; `*mon-whitespace-chars*', `*regexp-whitespace-chars*',
+;; `*mon-ascii-alpha-chars*',
 ;;
 ;; GROUPS:
 ;;
@@ -73,7 +70,7 @@
 ;; THIRD-PARTY-CODE:
 ;;
 ;; URL: http://www.emacswiki.org/emacs/mon-type-utils-vars.el
-;; FIRST-PUBLISHED:
+;; FIRST-PUBLISHED: <Timestamp: #{2010-11-25T02:27:00-05:00Z}#{10476} - by MON>
 ;;
 ;; EMACSWIKI: { URL of an EmacsWiki describing mon-type-utils-vars. }
 ;;
@@ -113,17 +110,23 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
+;;; ==============================
+;;; :TODO add time related symbols  
+;;; `timer-duration-words'
+
+ 
 ;;; ==============================
 ;;; :CHANGESET 2299
 ;;; :CREATED <Timestamp: #{2010-11-11T17:01:49-05:00Z}#{10454} - by MON KEY>
@@ -142,8 +145,11 @@
     ;; but `describe-function' says they are defined in:
     ;; :FILE lisp/emacs-lisp/byte-run.el
     ;; eval-and-compile eval-when-compile with-no-warnings
+    ;;
+    ;; If elisp had them: 
+    ;; `block' `return' `return-from'
     )
-  "List of Emacs' special forms.\n
+  "List of Emacs lisp special forms.\n
 :NOTE List does not include following symbols:\n
  `eval-and-compile' `eval-when-compile' `with-no-warnings'\n
 These are defined in :FILE lisp/emacs-lisp/byte-run.el\n
@@ -156,6 +162,7 @@ These are defined in :FILE lisp/emacs-lisp/byte-run.el\n
 `*mon-equality-or-predicate-function-types*', `*mon-non-mappable-object-types*',
 `*mon-help-risky-local-variables*', `mon-help-symbol-functions'.\n►►►")
 
+ 
 ;;; ==============================
 ;;; :CHANGESET 2211
 ;;; :CREATED <Timestamp: #{2010-10-27T15:06:17-04:00Z}#{10433} - by MON KEY>
@@ -164,7 +171,7 @@ These are defined in :FILE lisp/emacs-lisp/byte-run.el\n
     hash-table char-table 
     integer marker float
     buffer overlay 
-    frame window window-configuration
+    frame window window-configuration ;; :NTOE A frame-configuration is mappable
     process
     font-entity font-object font-spec
     ;; :NOTE  Don't be tempted to add `symbol` to this list! 
@@ -186,15 +193,17 @@ A \"mappable\" object is one which by can occur as a SEQUENCE arge to:\n
 provided by the current list.\n
 :SEE info node `(elisp)Type Predicates'
 :SEE info node `(elisp) Lisp Data Types'\n
-:SEE-ALSO `mon-sequence-mappable-p', `mon-list-proper-p', `mon-booleanp',
+:SEE-ALSO `mon-sequence-mappable-p', `mon-hash-or-mappable-p',
+`mon-list-proper-p', `mon-booleanp',
 `*mon-equality-or-predicate-function-types*', `*mon-function-object-types*',
-`*mon-special-forms-types*', `*mon-help-emacs-errors*', `*mon-help-side-effect-free*',
-`*mon-help-side-effect-and-error-free*', `*mon-help-pure-functions*',
-`*mon-help-permanent-locals*', `*mon-help-byte-optimizer-vals*',
-`*mon-help-permanent-locals*', `*mon-help-risky-local-variables*',
+`*mon-special-forms-types*', `*mon-help-emacs-errors*',
+`*mon-help-side-effect-free*', `*mon-help-side-effect-and-error-free*',
+`*mon-help-pure-functions*', `*mon-help-permanent-locals*',
+`*mon-help-byte-optimizer-vals*', `*mon-help-risky-local-variables*',
 `byte-boolean-vars', `mon-map-obarray-symbol-plist-props',
 `mon-help-byte-optimizer-find'.\n►►►")
 
+ 
 ;;; ==============================
 ;;; :CHANGESET 2178
 ;;; :CREATED <Timestamp: #{2010-10-04T22:30:10-04:00Z}#{10401} - by MON KEY>
@@ -205,20 +214,34 @@ provided by the current list.\n
     > < <= >= =
     assq assoc rassq rassoc
     assoc-default assoc-ignore-representation
+    ;; would be nice if `compare-strings' could be here as well.
     string-equal string-lessp 
-    string-match-p string-prefix-p
+    string-match-p string-prefix-p 
     equal-including-properties
+    car-less-than-car            ;; IMO this is a horrible name for a predicate.
+    char-equal
     subregexp-context-p
-    time-less-p
     file-attributes-lessp
-    tramp-equal-remote tramp-time-less-p
-    ;; 
+    file-newer-than-file-p
+    bw-eqdir
+    ;; cl
+    equalp subsetp tailp typep
+    ;;
+    time-less-p
+    timer--time-less-p
+    tramp-equal-remote tramp-time-less-p    
+    customize-version-lessp
     version-list-< version-list-=
     version-list-<= version< version<= version=
     face-equal internal-lisp-face-equal-p
-    facemenu-color-equal
-    ;; cl
-    equalp subsetp tailp typep)
+    facemenu-color-equal    
+    ;; 
+    erc-port-equal
+    ;;
+    ediff-mark-if-equal
+    ;;
+    mon-file-older-than-file-p
+    )
   "List of predicates or two argument predicate-like functions.\n
 For use with `mon-equality-or-predicate'.\n
 :EXAMPLE\n\n\(memq 'equalp *mon-equality-or-predicate-function-types*\)\n
@@ -233,8 +256,29 @@ For use with `mon-equality-or-predicate'.\n
 `byte-boolean-vars', `mon-map-obarray-symbol-plist-props',
 `mon-help-byte-optimizer-find'.\n►►►"
   :type  '(repeat symbol)
+  :group 'mon-type-utils)
   :group 'mon-base)
 
+
+ 
+;;; ==============================
+;;; :NOTE The list of possible return values a moving target b/c:
+;;; - Improving/adjusting it
+;;; - Still working out what to do w/ compiled vs. interpretted 
+;;; - Pending lexbind integration might change things...
+;;; :CHANGESET 2211
+;;; :CREATED <Timestamp: #{2010-10-26T16:50:41-04:00Z}#{10432} - by MON KEY>
+(defvar *mon-function-object-types* '(function compiled-function 
+                                      subr macro lambda autoload)
+  "List of return values for `mon-function-object-p' which name function objects.\n
+:EXAMPLE\n\n\(memq 'function *mon-function-object-types*\)\n
+\(car \(memq \(mon-function-object-p 'mon-function-object-p\) 
+           *mon-function-object-types*\)\)\n
+:SEE-ALSO `functionp', `indirect-function', `symbol-function', `apropos-macrop',
+`edebug-macrop', `commandp', `*mon-equality-or-predicate-function-types*',
+`*mon-non-mappable-object-types*', `*mon-help-emacs-errors*'.\n►►►")
+
+ 
 ;;; ==============================
 ;;; :CHANGESET 2325
 ;;; :CREATED <Timestamp: #{2010-11-22T14:51:38-05:00Z}#{10471} - by MON KEY>
@@ -289,22 +333,6 @@ a handle for reductive queries which further filter their return value, e.g.:\n
 `mon-cln-BIG-whitespace' `mon-cln-trail-whitespace', `mon-cln-whitespace',
 `mon-insert-whitespace', `mon-kill-whitespace'.\n►►►")
 
-;;; ==============================
-;;; :NOTE The list of possible return values a moving target b/c:
-;;; - Improving/adjusting it
-;;; - Still working out what to do w/ compiled vs. interpretted 
-;;; - Pending lexbind integration might change things...
-;;; :CHANGESET 2211
-;;; :CREATED <Timestamp: #{2010-10-26T16:50:41-04:00Z}#{10432} - by MON KEY>
-(defvar *mon-function-object-types* '(function compiled-function 
-                                      subr macro lambda autoload)
-  "List of return values for `mon-function-object-p' which name function objects.\n
-:EXAMPLE\n\n\(memq 'function *mon-function-object-types*\)\n
-\(car \(memq \(mon-function-object-p 'mon-function-object-p\) 
-           *mon-function-object-types*\)\)\n
-:SEE-ALSO `functionp', `indirect-function', `symbol-function', `apropos-macrop',
-`edebug-macrop', `commandp', `*mon-equality-or-predicate-function-types*',
-`*mon-non-mappable-object-types*', `*mon-help-emacs-errors*'.\n►►►")
 
 
 ;;; ==============================
@@ -314,6 +342,8 @@ a handle for reductive queries which further filter their return value, e.g.:\n
  
 ;; Local Variables:
 ;; mode: EMACS-LISP
+;; coding: utf-8
+;; generated-autoload-file: "./mon-loaddefs.el"
 ;; End:
 
 ;;; ====================================================================

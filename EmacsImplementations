@@ -1,8 +1,8 @@
 == Locally Documented ==
 Mainstream GNU Emacs and derivates:
-* GnuEmacs -- ([http://www.gnu.org/software/emacs/#Obtaining download])
-* [[XEmacs]] -- formerly LucidEmacs ([http://www.xemacs.org/Download/index.html download])
-* [[SXEmacs]] -- a fork of [[XEmacs]] ([http://www.sxemacs.org/download.html download])
+* GnuEmacs
+* [[XEmacs]] -- formerly LucidEmacs
+* [[SXEmacs]] -- a fork of [[XEmacs]]
 
 Other implementations still alive:
 * GNU [[Zile]] -- a tiny Emacs clone.

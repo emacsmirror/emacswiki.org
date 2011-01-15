@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-aliases.el
@@ -40,6 +40,7 @@
 ;; GROUPS:
 ;;
 ;; ALIASED/ADVISED/SUBST'D:
+;; `menubar-mode'         -> `menu-bar-mode'
 ;; `char-or-stringp'      -> `char-or-string-p'
 ;; `string-or-characterp' -> `char-or-string-p'
 ;; `character-or-strinp'  -> `char-or-string-p'
@@ -241,11 +242,12 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
+ 
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
@@ -295,6 +297,11 @@
 (unless (and (intern-soft "asynchronous-shell-command" obarray) 
              (fboundp 'asynchronous-shell-command))
 (defalias 'asynchronous-shell-command 'shell-command-async))
+;;
+(unless (and (intern-soft "menubar-mode" obarray) 
+             (fboundp 'menubar-mode))
+(defalias 'menubar-mode 'menu-bar-mode))
+
 ;;
 ;;; ==============================
 ;;; :NOTE Is it possible to implement a light-weight CL style `make-array' which
@@ -441,11 +448,9 @@ This uses 'sort so the sorting is destructive.
 \(mon-list-chop '\(a b (c \"c\" \"d\") d e f) '(c \"c\" \"d\"\)\)\n
 \(mon-list-chop '\(a b [c \"c\" \"d\"] d e f\) '[c \"c\" \"d\"]\)
 :SEE-ALSO .\n►►►")))
-
-;;; ==============================
+;;
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "mon-buffer-do-with-undo-disabled" obarray)
              (fboundp (intern-soft "mon-buffer-do-with-undo-disabled" obarray)))
 (defalias 'mon-buffer-do-with-undo-disabled 'mon-with-buffer-undo-disabled))
@@ -502,14 +507,6 @@ This uses 'sort so the sorting is destructive.
              (fboundp 'mon-false-to-zero))
 (defalias 'mon-false-to-zero 'mon-booleanp-to-binary))
 ;;
-
-;;
-
-
-;;
-
-
-;;
 (unless (and (intern-soft "mon-split-string" obarray)
              (fboundp 'mon-split-string))
 (defalias 'mon-split-string 'mon-string-split))
@@ -553,9 +550,7 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-indent-lines-from-to-col" obarray)
              (fboundp 'mon-indent-lines-from-to-col))
 (defalias 'mon-indent-lines-from-to-col 'mon-line-indent-from-to-col))
-;;
-
-;;  :)
+;;  
 (unless (and (intern-soft "mon-generate-wonky" obarray) 
              (fboundp 'mon-generate-wonky))
 (defalias 'mon-generate-wonky 'mon-string-wonkify))
@@ -563,7 +558,6 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-hex-list-as-string" obarray) 
              (fboundp 'mon-hex-list-as-string))
 (defalias 'mon-hex-list-as-string 'mon-string-from-hex-list))
-
 ;;
 (unless (and (intern-soft "mon-string-escape-lisp-region" obarray)
              (fboundp 'mon-string-escape-lisp-region))
@@ -580,9 +574,6 @@ This uses 'sort so the sorting is destructive.
 (unless (and (intern-soft "mon-lisp-unescape-region" obarray)
              (fboundp 'mon-lisp-unescape-region))
 (defalias 'mon-lisp-unescape-region 'mon-unescape-lisp-string-region))
-
-
-
 ;;
 (unless (and (intern-soft "mon-string-ify-current-line" obarray) 
              (fboundp 'mon-string-ify-current-line))
@@ -596,7 +587,7 @@ This uses 'sort so the sorting is destructive.
 ;;; ==============================
 ;;; mon-macs.el►►►
 ;;; ==============================
-
+;;
 ;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "with-print-gensyms" obarray) 
@@ -607,17 +598,23 @@ This uses 'sort so the sorting is destructive.
              (fboundp (intern-soft "nshuffle-vector" obarray)))
 (defalias 'nshuffle-vector 'mon-nshuffle-vector))
 ;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) 
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)   ;; *IS-MON-OBARRAY*
            (not (and (intern-soft "with-gensyms" obarray)
                      (fboundp (intern-soft "with-gensyms" obarray)))))
 (defalias 'with-gensyms 'mon-with-gensyms))
 ;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p IS-MON-SYSTEM-P)
            (if (intern-soft "buffer-exists-p" obarray)
                (not (fboundp (intern-soft "buffer-exists-p" obarray)))
              t))
 (defalias 'buffer-exists-p 'mon-buffer-exists-p))
+;;
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-buffer-print-in-if" obarray)
+             (fboundp  'mon-buffer-print-in-if))
+(defalias 'mon-buffer-print-in-if  'mon-print-in-buffer-if-p))
 
 ;;; ==============================
 ;;; mon-macs.el◄◄◄
@@ -627,11 +624,9 @@ This uses 'sort so the sorting is destructive.
 ;;; ==============================
 ;;; mon-text-property-utils.el►►►
 ;;; ==============================
-
-;;; ==============================
+;;
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "mon-get-text-properties-region->kill-ring" obarray)
              (fboundp 'mon-get-text-properties-region->kill-ring))
 (defalias 'mon-get-text-properties-region->kill-ring 'mon-get-text-properties-region-to-kill-ring))
@@ -664,13 +659,13 @@ This uses 'sort so the sorting is destructive.
 ;;; ==============================
 ;;; mon-error-utils.el►►►
 ;;; ==============================
-
+;;
 ;;; <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "write-string" obarray)
              (fboundp 'write-string))
 (defalias 'write-string 'mon-write-string))
-
+;;
 ;;; <PREFIX>-<QUALIFIED> <CORE-SYMBOL>
 ;;
 ;;; :NOTE To remember function exists. `prin1-char' is defined in lisp-mode.el
@@ -689,10 +684,10 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-buffer-utils.el►►►
 ;;; ==============================
-
+;;
 ;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
-(when (and (intern-soft "IS-MON-SYSTEM-P" obarray)
+(when (and (intern-soft "IS-MON-SYSTEM-P" obarray) ;; *IS-MON-OBARRAY*
            (bound-and-true-p IS-MON-SYSTEM-P))
   (unless (and (intern-soft "buffer-narrowed-p" obarray)
                (fboundp 'buffer-narrowed-p))
@@ -701,6 +696,18 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "get-buffer-window-if" obarray)
              (fboundp (intern-soft "get-buffer-window-if" obarray)))
 (defalias 'get-buffer-window-if 'mon-get-buffer-window-if))
+;;
+(unless (and (intern-soft "goto-line-25%" obarray)
+             (fboundp (intern-soft "goto-line-25%" obarray)))
+(defalias 'goto-line-25% 'mon-goto-line-25%))
+;;
+(unless (and (intern-soft "goto-line-50%" obarray)
+             (fboundp (intern-soft "goto-line-50%" obarray)))
+(defalias 'goto-line-50% 'mon-goto-line-50%))
+;;
+(unless (and (intern-soft "goto-line-75%" obarray)
+             (fboundp (intern-soft "goto-line-75%" obarray)))
+(defalias 'goto-line-75% 'mon-goto-line-75%))
 ;;
 ;;;  <PREFIX>-<QUALIFIED>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
@@ -735,6 +742,14 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-buffer-get-shell" obarray)
              (fboundp 'mon-buffer-get-shell))
 (defalias 'mon-buffer-get-shell 'mon-shell))
+;;
+(unless (and (intern-soft "mon-kill-hidden-buffer-if" obarray)
+             (fboundp 'mon-kill-hidden-buffer-if))
+(defalias 'mon-kill-hidden-buffer-if 'mon-buffer-kill-hidden-if))
+;;
+(unless (and (intern-soft "mon-buffer-get-hidden-if" obarray)
+             (fboundp 'mon-buffer-get-hidden-if))
+(defalias 'mon-buffer-get-hidden-if 'mon-get-buffer-hidden-if))
 
 ;;; ==============================
 ;;; mon-buffer-utils.el◄◄◄
@@ -744,7 +759,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-randomize-utils.el►►►
 ;;; ==============================
-
+;;
 ;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "next-almost-prime" obarray)
@@ -765,7 +780,8 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-rectangle-utils.el►►►
 ;;; ==============================
-
+;;
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "mon-rectangle-kill-w-longest-line" obarray)
              (fboundp 'mon-rectangle-kill-w-longest-line))
@@ -779,7 +795,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-line-utils.el►►►
 ;;; ==============================
-
+;;
 ;;; <PREFIX>-<QUALIFIED> <CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "mon-line-keep-match" obarray) 
@@ -811,7 +827,8 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-window-utils.el►►►
 ;;; ==============================
-
+;;
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "mon-get-window-plist" obarray)
              (fboundp 'mon-get-window-plist))
@@ -853,7 +870,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-seq-utils.el►►►
 ;;; ==============================
-
+;;
 ;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "delq-dups" obarray)
@@ -926,6 +943,14 @@ If char is not a character, return nil.\n
              (fboundp 'mon-map-combine))
 (defalias 'mon-map-combine 'mon-combine))
 ;;
+(unless (and (intern-soft "mon-list-permute-combine" obarray)
+             (fboundp 'mon-list-permute-combine))
+(defalias 'mon-list-permute-combine 'mon-permute-combine))
+;;
+(unless (and (intern-soft "mon-list-permute-combine-1" obarray)
+             (fboundp 'mon-list-permute-combine-1))
+(defalias 'mon-list-permute-combine-1 'mon-permute-combine-1))
+;;
 (unless (and (intern-soft "mon-list-recurse-apply" obarray) 
              (fboundp 'mon-list-recurse-apply)) 
 (defalias 'mon-list-recurse-apply 'mon-recursive-apply))
@@ -953,6 +978,10 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-list-remove-dups" obarray)
              (fboundp 'mon-list-remove-dups))
 (defalias 'mon-list-remove-dups 'mon-remove-dups))
+;;
+(unless (and (intern-soft "mon-list-transpose" obarray)
+             (fboundp 'mon-list-transpose))
+(defalias 'mon-list-transpose 'mon-transpose))
 ;;
 (unless (and (intern-soft "mon-bool-vector-to-list" obarray)
              (fboundp 'mon-bool-vector-to-list))
@@ -993,7 +1022,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-event-utils.el►►►
 ;;; ==============================
-
+;;
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "mon-region-append-to-register" obarray) 
@@ -1024,7 +1053,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-type-utils.el►►►
 ;;; ==============================
-
+;;
 ;;;  <UNQUALIFIED-ALIAS>  <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "alpha-char-p" obarray) 
@@ -1038,8 +1067,10 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "proper-list-p" obarray)
              (fboundp 'proper-list-p))
 (defalias 'proper-list-p 'mon-list-proper-p))
+;;
 (unless (and (intern-soft "string-or-null-and-zerop" obarray) 
              (fboundp 'string-or-null-and-zerop))
+;;
 (defalias 'string-or-null-and-zerop 'mon-string-or-null-and-zerop))
 ;;
 (unless (and (intern-soft "stringp-and-zerop-or-null" obarray) 
@@ -1054,7 +1085,7 @@ If char is not a character, return nil.\n
              (fboundp 'stringp-not-null-nor-zerop))
 (defalias 'stringp-not-null-nor-zerop 'mon-string-not-null-nor-zerop))
 ;;
-;; <PREFIX>-<QUALIFIED>                <PREFIX>-<NON-CORE-SYMBOL>
+;;; <PREFIX>-<QUALIFIED>                <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "mon-is-alpha-char" obarray) 
              (fboundp 'mon-is-alpha-char))
@@ -1063,6 +1094,14 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-proper-list-p" obarray)
              (fboundp 'mon-proper-list-p))
 (defalias 'mon-proper-list-p 'mon-list-proper-p))
+;;
+(unless (and (intern-soft "mon-dotted-list-p" obarray)
+             (fboundp 'mon-dotted-list-p))
+(defalias 'mon-dotted-list-p 'mon-list-dotted-p))
+;;
+(unless (and (intern-soft "mon-list-dotted-and-proper-p" obarray)
+             (fboundp 'mon-list-dotted-and-proper-p))
+(defalias 'mon-list-dotted-and-proper-p 'mon-list-proper-and-dotted-p))
 ;;
 (unless (and (intern-soft "mon-list-mappable-p" obarray) 
              (fboundp 'mon-list-mappable-p))
@@ -1088,18 +1127,21 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-char-coerce")
              (fboundp 'mon-char-coerce))
 (defalias 'mon-char-coerce 'mon-coerce->char))
+;;
+(unless (and (intern-soft "mon-symbol-cells-boundp")
+             (fboundp 'mon-symbol-cells-boundp))
+(defalias 'mon-symbol-cells-boundp 'mon-symbol-cells-bound-p))
 
 ;;; ==============================
 ;;; mon-type-utils.el◄◄◄
 ;;; ==============================
 
 
-
  
 ;;; ==============================
 ;;; mon-region-utils.el►►►
 ;;; ==============================
-
+;;
 ;;; <PREFIX>-<QUALIFIED>       <PREFIX>-<NON-CORE-SYMBOL>
 ;;
 (unless (and (intern-soft "mon-capitalize-region" obarray)
@@ -1176,6 +1218,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 ;;; mon-name-utils.el◄◄◄
 ;;; ==============================
+
  
 ;;; ==============================
 ;;; mon-word-syntax-utils.el►►►
@@ -1206,10 +1249,8 @@ If char is not a character, return nil.\n
 ;;; mon-alphabet-list-utils.el►►►
 ;;; ==============================
 
-;;; ==============================
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "mon-make-list-alphabet" obarray) 
              (fboundp 'mon-make-list-alphabet))
 (defalias 'mon-make-list-alphabet 'mon-alphabet-as-type))
@@ -1223,10 +1264,8 @@ If char is not a character, return nil.\n
 ;;; mon-dir-utils.el►►►
 ;;; ==============================
 
-;;; ==============================
 ;;; <UNQUALIFIED-ALIAS> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "file-truename-p" obarray) 
              (fboundp 'file-truename-p))
 (defalias 'file-truename-p 'mon-file-truename-p))
@@ -1250,11 +1289,9 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "frame-live-visible-graphic-p" obarray)
              (fboundp 'frame-live-visible-graphic-p))
 (defalias 'frame-live-visible-graphic-p 'mon-frame-live-visible-graphic-p))
-
-;;; ==============================
+;;
 ;;; <PREFIX>-<QUALIFIED> <CORE-SYMBOL>
-;;; ==============================
-
+;;
 ;;; ==============================
 ;;; :NOTE For whatever reason I can't recall that rename-file also moves it...
 (unless (and (intern-soft "mon-move-file" obarray) 
@@ -1288,11 +1325,9 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-file-rnm" obarray) 
              (fboundp 'mon-file-rnm))
 (defalias 'mon-file-rnm 'rename-file))
-
-;;; ==============================
+;;
 ;;; <PREFIX>-<NON-CORE-SYMBOL> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "dired-find-file-other-frame" obarray)
              (fboundp 'dired-find-file-other-frame))
 (defalias 'dired-find-file-other-frame 'mon-dired-find-file-other-frame))
@@ -1316,11 +1351,9 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "dired-subdir-uninsert-all" obarray)
              (fboundp 'dired-subdir-uninsert-all))
 (defalias 'dired-subdir-uninsert-all 'mon-dired-uninsert-subdir-all))
-
-;;; ==============================
+;;
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "mon-get-buffer-visiting-other-live-frame" obarray) 
              (fboundp 'mon-get-buffer-visiting-other-live-frame))
 (defalias 'mon-get-buffer-visiting-other-live-frame 'mon-find-buffer-visiting-other-live-frame))
@@ -1452,21 +1485,81 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-directory-du-async" obarray) 
              (fboundp 'mon-directory-du-async))
 (defalias 'mon-directory-du-async 'mon-async-du-dir))
+;;
+(unless (and (intern-soft "mon-du-async-dir" obarray) 
+             (fboundp 'mon-du-async-dir))
+(defalias 'mon-du-async-dir 'mon-async-du-dir))
+
 
 ;;; ==============================
 ;;; mon-dir-utils.el◄◄◄
 ;;; ==============================
 
+ 
+;;; ==============================
+;;; mon-url-utils.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (fboundp 'w3m-copy-this-url-as-kill)
+(defalias 'w3m-copy-this-url-as-kill 'w3m-print-this-url))
+;;
+(unless (fboundp 'w3m-copy-current-url-as-kill)
+(defalias 'w3m-copy-current-url-as-kill 'w3m-print-current-url))
+;;
+(unless (and (intern-soft "mon-url-escape" obarray)
+             (fboundp 'mon-url-escape))
+(defalias 'mon-url-escape 'mon-url-encode))
+;;
+(unless (and (intern-soft "mon-encode-url" obarray)
+             (fboundp 'mon-encode-url))
+(defalias 'mon-encode-url 'mon-url-encode))
+;;
+(unless (and (intern-soft "mon-url-unescape")
+             (fboundp 'mon-url-unescape))
+(defalias 'mon-url-unescape 'mon-url-decode))
+;;
+(unless (and (intern-soft "mon-decode-url")
+             (fboundp 'mon-decode-url))
+(defalias 'mon-decode-url 'mon-url-decode))
+;;
+(unless (and (intern-soft "mon-search-wiki")
+             (fboundp 'mon-search-wiki))
+(defalias 'mon-search-wiki 'mon-search-wikipedia))
+;;
+(unless (and (intern-soft "mon-buffer-get-retrieved-url")
+             (fboundp 'mon-buffer-get-retrieved-url))
+(defalias 'mon-buffer-get-retrieved-url 'mon-url-retrieve-to-new-buffer))
+;;
+(unless (and (intern-soft "mon-get-w3m-dired-file" obarray)
+             (fboundp 'mon-get-w3m-dired-file))
+(defalias 'mon-get-w3m-dired-file  'mon-w3m-dired-file))
+;;
+(unless (and (intern-soft "mon-w3m-get-url-at-point-maybe" obarray)
+             (fboundp 'mon-w3m-get-url-at-point-maybe))
+(defalias 'mon-w3m-get-url-at-point-maybe 'mon-get-w3m-url-at-point-maybe))
+;;
+(unless (and (intern-soft "mon-get-w3m-url-at-point" obarray)
+             (fboundp 'mon-get-w3m-url-at-point))
+(defalias 'mon-w3m-get-url-at-point 'mon-get-w3m-url-at-point))
+;;
+(unless (and (intern-soft "mon-get-w3m-read-gnu-lists-nxt-prv" obarray)
+             (fboundp 'mon-get-w3m-read-gnu-lists-nxt-prv))
+(defalias 'mon-get-w3m-read-gnu-lists-nxt-prv 'mon-w3m-read-gnu-lists-nxt-prv))
+
+
+;;; ==============================
+;;; mon-url-utils.el►►►
+;;; ==============================
 
  
 ;;; ==============================
 ;;; mon-doc-help-utils.el►►►
 ;;; ==============================
 
-;;; ==============================
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "mon-line-strings-region-delimited" obarray)
              (fboundp 'mon-line-strings-region-delimited))
 (defalias 'mon-line-strings-region-delimited 'mon-help-delimited-region))
@@ -1539,6 +1632,10 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "*reference-sheet-help-A-HAWLEY*" obarray)
              (bound-and-true-p *reference-sheet-help-A-HAWLEY*))
 (defvaralias '*reference-sheet-help-A-HAWLEY* '*mon-help-reference-keys*))
+;;
+(unless (and (intern-soft "*doc-cookie*" obarray)
+             (bound-and-true-p *doc-cookie*))
+(defvaralias '*doc-cookie* '*mon-doc-cookie*))
 
 ;;; ==============================
 ;;; mon-doc-help-utils.el◄◄◄
@@ -1546,13 +1643,70 @@ If char is not a character, return nil.\n
 
  
 ;;; ==============================
+;;; mon-doc-help-CL.el►►►
+;;; ==============================
+
+(unless (and (intern-soft "mon-help-cl-packages")
+             (fboundp 'mon-help-cl-packages))
+(defalias 'mon-help-cl-packages 'mon-help-CL-pkgs))
+;;
+(unless (and (intern-soft "mon-help-slime-keys") 
+             (fboundp 'mon-help-slime-keys))
+(defalias 'mon-help-slime-keys 'mon-help-CL-slime-keys))
+;;
+(unless (and (intern-soft "mon-help-swank-functions")
+             (fboundp 'mon-help-swank-functions))
+(defalias 'mon-help-swank-functions 'mon-help-CL-swank-functions))
+;;
+(unless (and (intern-soft "mon-help-cl-symbols")
+             (fboundp 'mon-help-cl-symbols))
+(defalias 'mon-help-cl-symbols 'mon-help-CL-symbols))
+;;
+(unless (and (intern-soft "mon-hyperspec-lookup") 
+             (fboundp 'mon-hyperspec-lookup))
+(defalias 'mon-hyperspec-lookup 'mon-help-CL-symbols))
+
+;;; ==============================
+;;; mon-doc-help-CL.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-doc-help-css.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "mon-help-csstidy" obarray)
+             (fboundp 'mon-help-csstidy)) 
+(defalias 'mon-help-csstidy 'mon-help-css-check))
+
+;;; ==============================
+;;; mon-doc-help-css.el
+;;; ==============================
+
+ 
+;;; ==============================
+;;; mon-bzr-utils.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;; 
+(unless (and (intern-soft "mon-help-bzr-commands" obarray)
+             (fboundp 'mon-help-bzr-commands)) 
+(defalias 'mon-help-bzr-commands 'mon-help-bzr-topics))
+
+;;; ==============================
+;;; mon-bzr-utils.el◄◄◄
+;;; ==============================
+
+ 
+;;; ==============================
 ;;; mon-time-utils.el◄◄◄
 ;;; ==============================
 
-;;; ==============================
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "mon-stamp-date-only" obarray)
              (fboundp 'mon-stamp-date-only)) 
 (defalias 'mon-stamp-date-only 'mon-date-stamp))
@@ -1571,6 +1725,7 @@ If char is not a character, return nil.\n
 ;;; ==============================
 
 ;;; <VARIABLE>
+
 (when (and (and (intern-soft "*emacs2html-temp*" obarray) 
                 (bound-and-true-p *emacs2html-temp*))
            (and (intern-soft "*mon-bind-dir-locals-alist*" obarray)  ;; *IS-MON-OBARRAY* ???
@@ -1593,21 +1748,13 @@ If char is not a character, return nil.\n
 ;;; mon-insertion-utils.el►►►
 ;;; ==============================
 
-;;; ==============================
 ;;; <UNQUALIFIED-ALIAS> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
+;;
 (unless (and (intern-soft "comment-divider" obarray)
              (fboundp 'comment-divider))
 (defalias 'comment-divider 'mon-comment-divider))
 
-;;; ==============================
 ;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
-;;; ==============================
-
-(unless (and (intern-soft "mon-buffer-print-in-if" obarray)
-             (fboundp  'mon-buffer-print-in-if))
-(defalias 'mon-buffer-print-in-if  'mon-print-in-buffer-if-p))
 ;;
 (unless (and (intern-soft "mon-string-insert-n-fancy-times" obarray)
              (fboundp 'mon-string-n-fancy-times))
@@ -1624,6 +1771,10 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-lisp-comment-to-col" obarray) 
              (fboundp 'mon-lisp-comment-to-col))
 (defalias 'mon-lisp-comment-to-col 'mon-comment-lisp-to-col))
+;;
+(unless (and (intern-soft "mon-insert-doc-xref-eg" obarray)
+             (fboundp 'mon-insert-doc-xref-eg))
+(defalias 'mon-insert-doc-xref-eg 'mon-insert-lisp-doc-eg-xref))
 ;;
 (unless (and (intern-soft "mon-CL-package-complete" obarray) 
              (fboundp 'mon-CL-package-complete))
@@ -1644,10 +1795,20 @@ If char is not a character, return nil.\n
 (unless (and (intern-soft "mon-insert-CL-package-template" obarray) 
              (fboundp 'mon-insert-CL-package-template))
 (defalias 'mon-insert-CL-package-template 'mon-insert-lisp-CL-package-template))
+
 ;;
-(unless (and (intern-soft "mon-insert-doc-xref-eg" obarray)
-             (fboundp 'mon-insert-doc-xref-eg))
-(defalias 'mon-insert-doc-xref-eg 'mon-insert-lisp-doc-eg-xref))
+(unless (and (intern-soft "mon-insert-CL-eval-when" obarray) 
+             (fboundp 'mon-insert-CL-eval-when))
+(defalias 'mon-insert-CL-eval-when 'mon-insert-lisp-CL-eval-when))
+;;
+(unless (and (intern-soft "mon-insert-CL-debug" obarray) 
+             (fboundp 'mon-insert-CL-debug))
+(defalias 'mon-insert-CL-debug 'mon-insert-lisp-CL-debug))
+;;
+(unless (and (intern-soft "mon-insert-jump-lisp-doc" obarray) 
+             (fboundp 'mon-insert-jump-lisp-doc))
+(defalias 'mon-insert-jump-lisp-doc 'mon-insert-lisp-CL-jump-doc))
+
 ;;
 ;;; :NOTE It isn't clear if this is prfx-non-core e.g. `bug-reference-*'...
 (unless (and (intern-soft "bug-insert-copyright" obarray) 
@@ -1920,6 +2081,34 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
                   (fboundp 'slot-makunbound))
 (defalias 'slot-makunbound 'slot-makeunbound))))
 
+ 
+;;; ==============================
+;;; slime-loads-GNU-clbuild.el►►►
+;;; ==============================
+
+;;; <PREFIX>-<QUALIFIED> <PREFIX>-<NON-CORE-SYMBOL>
+;;
+(unless (and (intern-soft "slime-next-xref" obarray)
+             (fboundp 'slime-next-xref))
+(defalias 'slime-next-xref 'mon-next-xref-slime))
+;;
+(unless (and (intern-soft "slime-prev-xref" obarray)
+             (fboundp 'slime-prev-xref))
+(defalias 'slime-prev-xref 'mon-prev-xref-slime))
+;;
+(unless (and (intern-soft "mon-slime-insert-arglist" obarray)
+             (fboundp 'mon-slime-insert-arglist))
+(defalias 'mon-slime-insert-arglist 'mon-insert-slime-arglist))
+;;
+(unless (and (intern-soft "mon-slime-quit-description" obarray)
+             (fboundp 'mon-slime-quit-description))
+(defalias 'mon-slime-quit-description 'mon-quit-slime-description-window))
+
+
+;;; ==============================
+;;; slime-loads-GNU-clbuild.el◄◄◄
+;;; ==============================
+
 ;;; ==============================
 (provide 'mon-aliases)
 ;;; ==============================
@@ -1928,6 +2117,7 @@ Conditional upon `IS-BUG-P' returning non-nil.\n
 ;; Local Variables:
 ;; mode: EMACS-LISP
 ;; generated-autoload-file: "./mon-loaddefs.el"
+;; coding: utf-8
 ;; End:
 
 ;;; ====================================================================

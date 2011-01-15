@@ -2,7 +2,7 @@
 ;; -*- mode: EMACS-LISP; -*-
 
 ;;; ================================================================
-;; Copyright © 2010 MON KEY. All rights reserved.
+;; Copyright © 2010-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-type-utils.el
@@ -22,34 +22,17 @@
 ;; mon-type-utils provides procedures for interogating lisp objects
 ;;
 ;; FUNCTIONS:►►►
-;; `mon-function-object-p'
-;; `mon-equality-or-predicate'
-;; `mon-booleanp'
-;; `mon-booleanp-to-binary'
-;; `mon-zero-or-onep'
-;; `mon-string-or-null-and-zerop'
-;; `mon-string-not-null-nor-zerop'
-;; `mon-sequence-all-booleanp'
-;; `mon-list-proper-p'
-;; `mon-list-dotted-p'
-;; `mon-list-proper-and-dotted-p'
-;; `mon-sequence-mappable-p'
-;; `mon-get-bit-table'
-;; `mon-coerce->char'
-;; `mon-char-code'
-;; `mon-is-digit'
-;; `mon-is-letter'
-;; `mon-is-alphanum'
-;; `mon-is-digit-simp'
-;; `mon-is-letter-simp'
-;; `mon-is-alphanum-simp' 
-;; `mon-alpha-char-p'
-;; `mon-symbol-to-string'
-;; `mon-string-to-symbol'
-;; `mon-string-to-sequence'
-;; `mon-string-from-sequence'
-;; `mon-hash-or-mappable-p'
-;;
+;; `mon-function-object-p', `mon-equality-or-predicate', `mon-booleanp',
+;; `mon-booleanp-to-binary', `mon-zero-or-onep', `mon-string-or-null-and-zerop',
+;; `mon-string-not-null-nor-zerop', `mon-sequence-all-booleanp',
+;; `mon-list-proper-p', `mon-list-dotted-p', `mon-list-proper-and-dotted-p',
+;; `mon-sequence-mappable-p', `mon-get-bit-table', `mon-coerce->char',
+;; `mon-char-code', `mon-is-digit', `mon-is-letter', `mon-is-alphanum',
+;; `mon-is-digit-simp', `mon-is-letter-simp', `mon-is-alphanum-simp',
+;; `mon-alpha-char-p', `mon-symbol-to-string', `mon-string-to-symbol',
+;; `mon-string-to-sequence', `mon-string-from-sequence',
+;; `mon-hash-or-mappable-p', `mon-fractionp', `mon-xor', `mon-bitset-ternary',
+;; `mon-symbol-cells-bound-p',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -104,6 +87,7 @@
 ;; `mon-seq->string'                 -> `mon-string-from-sequence'
 ;; `mon-sequence-to-string'          -> `mon-string-from-sequence'
 ;; `mon-list-dotted-and-proper-p'    -> `mon-list-proper-and-dotted-p'
+;; `mon-symbol-cells-boundp'         -> `mon-symbol-cells-bound-p'
 ;;
 ;; DEPRECATED:
 ;;
@@ -139,6 +123,7 @@
 ;; TODO:
 ;;
 ;; NOTES:
+;; This is cool: ((lambda (x) (list x x)) (lambda (x) (list x x)))
 ;;
 ;; SNIPPETS:
 ;;
@@ -187,7 +172,7 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2010 MON KEY 
+;; Copyright © 2010-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
@@ -201,6 +186,49 @@
 
 (require 'mon-type-utils-vars)
 
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T19:08:54-05:00Z}#{11022} - by MON KEY>
+(defgroup mon-type-utils nil
+  "Customization group for variables and functions of :FILE mon-type-utils.el\n
+:SEE-ALSO .\n►►►"
+  ;; :prefix "<PREFIX>"
+  :link '(url-link 
+          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-type-utils.el")
+  :link '(emacs-library-link "mon-type-utils.el")
+  :group 'mon-base)
+
+
+;;; ==============================
+;;; :CHANGESET 2387
+;;; :CREATED <Timestamp: #{2011-01-11T19:08:57-05:00Z}#{11022} - by MON KEY>
+(defcustom *mon-type-utils-xrefs*
+  '(mon-function-object-p mon-symbol-cells-bound-p mon-equality-or-predicate
+    mon-booleanp mon-xor mon-string-or-null-and-zerop
+    mon-string-not-null-nor-zerop mon-zero-or-onep mon-booleanp-to-binary
+    mon-sequence-all-booleanp mon-bitset-ternary mon-list-proper-p mon-list-dotted-p
+    mon-list-proper-and-dotted-p mon-sequence-mappable-p mon-hash-or-mappable-p
+    mon-get-bit-table mon-fractionp mon-char-code mon-alpha-char-p mon-is-digit
+    mon-is-letter mon-is-alphanum mon-is-digit-simp mon-is-letter-simp
+    mon-is-alphanum-simp mon-coerce->char mon-string-to-symbol
+    mon-symbol-to-string mon-string-to-sequence mon-string-from-sequence
+    ;; :VARIABLES
+    *mon-bit-table* *mon-type-utils-xrefs*)
+  "Xrefing list of mon type/predicate symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-type-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-testme-utils-xrefs*',
+`*mon-button-utils-xrefs*', `*mon-buffer-utils-xrefs*',
+`*mon-line-utils-xrefs*', `*mon-plist-utils-xrefs*'
+`*mon-seq-utils-xrefs*', `*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-type-utils
+  :group 'mon-xrefs)
+
+ 
 ;;; ==============================
 ;;; :NOTE :FILE lisp/help-funs.el has this:
 ;;; ,---- 
@@ -273,15 +301,16 @@ An interpreted macro:\n
 An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
  \(autoload  <FILENAME> <DOCSTRING-OFFSET> <INTERACTIVE> <TYPE> \)\n 
 :ALIASED-BY `mon-functionp'\n
-:SEE-ALSO `apropos-macrop', `edebug-macrop', `byte-code-function-p',
-`subr-arity', `find-lisp-object-file-name', `describe-function-1', `functionp',
-`commandp', `subr-name', `subr-arity', `interactive-form', `indirect-variable',
-`user-variable-p', `custom-variable-p', `edebug-lookup-function',
-`edebug-lambda-list-keywordp', `lambda-list-keywords', `help-function-arglist',
-`ad-has-proper-definition', `ad-definition-type', `ad-lambda-p', `ad-macro-p',
-`ad-compiled-p', `ad-subr-p', `ad-special-form-p', `mon-help-function-args',
-`mon-help-function-arity', `mon-help-symbol-functions',
-`mon-help-byte-compile-functions'.\n►►►"
+:SEE-ALSO `mon-symbol-cells-bound-p', `apropos-macrop', `edebug-macrop',
+`byte-code-function-p', `find-lisp-object-file-name', `describe-function-1',
+`functionp', `commandp', `subr-name', `subr-arity', `interactive-form',
+`indirect-variable', `user-variable-p', `custom-variable-p',
+`edebug-lookup-function', `edebug-lambda-list-keywordp', `lambda-list-keywords',
+`help-function-arglist', `ad-has-proper-definition', `ad-definition-type',
+`ad-lambda-p', `ad-macro-p', `ad-compiled-p', `ad-subr-p', `ad-special-form-p',
+`mon-help-function-args', `subr-arity', `debugger-special-form-p',
+`debug-convert-byte-code', `backtrace', `mon-help-function-arity',
+`mon-help-symbol-functions', `mon-help-byte-compile-functions'.\n►►►"
   (or ;; Its a lambda form, e.g.: 
    ;; (indirect-function (lambda (x) x)) (indirect-function #'(lambda (x) x))
    (and (consp fncn-sym) 
@@ -379,13 +408,107 @@ An autoload symbol, note <TYPE> may be a quoted symbol either macro or keymap:\n
          (when (eq (car-safe (indirect-function mfop-lkng t)) 'macro)
            ;; (if (mon-list-proper-p (indirect-function mfop-lkng))
            (setq mfop-cot 'macro)))
-       ;; :TODO This could be an autoload macro! Add recursion.
        (unless mfop-cot 
          (when (eq (car-safe (indirect-function mfop-lkng t)) 'autoload)
-           (setq mfop-cot 'autoload))))
+           (setq mfop-cot 
+                 (or (and (eq (nth 4 mfop-lkng) 'keymap) 'keymap)
+                     (and (eq (nth 4 mfop-lkng) 'macro)  'macro)
+                     'autoload)))))
      (or mfop-cot (type-of mfop-lkng)))))
 
+ 
+;;; ==============================
+;;; :CHANGESET 2372
+;;; :CREATED <Timestamp: #{2010-12-31T16:21:21-05:00Z}#{10525} - by MON KEY>
+(defun mon-symbol-cells-bound-p (sym-string &optional w-obarray)
+  "Check for values of symbol-cells for symbol named by SYM-STRING.\n
+SYM-STRING is a string naming a symbol. Signal an error if SYM-STRING does not satisfy
+`mon-string-not-null-nor-zerop'.\n
+When optional arg W-OBARRAY is non-nil check for values of symbol-cells for
+symbol named by SYM-STRING in some non-standard obarray. Default is `obarray'.\n
+When W-OBARRAY is non-nil it is an obarray or quoted symbol which evaluates to
+one, its value should satisfy `vectorp'.  Signal an error if not.\n
+When SYM-STRING is not interned, return value is a property list comprised of two
+key/value pairs with the format:\n
+ \(:symbol-name       <SYM-STRING>
+  :symbol-obarray    { obarray | <W-OBARRAY> | <VECTOR> }\)\n
+When SYM-STRING is interned return value is property list of comprised of six
+key/value pairs with the format:\n
+ \(:symbol-name       <SYM-STRING>
+  :symbol-p          <SYMBOL>      ;; non-nil when symbol is interned
+  :symbol-value-p    <BOOLEAN>     ;; t when `boundp'
+  :symbol-function-p <BOOLEAN>     ;; t when `indirect-function' is non-nil
+  :symbol-plist-p t  <BOOLEAN>     ;; t when `symbol-plist' is non-nil
+  :symbol-obarray    { obarray | <W-OBARRAY> | <VECTOR> }\)\n
+:EXAMPLE\n\n\(mon-symbol-cells-bound-p \"mon-symbol-cells-bound-p\"\)\n
+\(progn
+  \(intern \"tt--pl\" obarray\)
+  \(setplist 'tt--pl \(mon-alphabet-as-type 'plistD->num\)\)
+  \(mon-symbol-cells-bound-p \"tt--pl\"\)\)\n
+\(let \(\(newob \(make-vector 17 0\)\)\)
+  \(unintern \"tt--pl\" obarray\)
+  \(intern \"tt--pl\" newob\)
+  \(mon-symbol-cells-bound-p \"tt--pl\" 'newob\)\)\n
+\(let \(\(newob \(make-vector 17 0\)\)\)
+  \(unintern \"tt--pl\" obarray\)
+  \(intern \"tt--pl\" newob\)
+  \(mon-symbol-cells-bound-p \"tt--pl\" newob\)\)\n
+\(prog1
+    \(mon-symbol-cells-bound-p \"tt--pl\"\)
+  \(unintern \"tt--pl\" obarray\)\)\n
+\(null \(plist-get \(mon-symbol-cells-bound-p \"tt--pl\"\) :symbol-p\)\)\n
+\(equal \(plist-get \(mon-symbol-cells-bound-p \"tt--pl\"\) :symbol-name\) \"tt--pl\"\)\n
+;; :Following fails successfully:\n
+\(mon-symbol-cells-bound-p \"mon-symbol-cells-bound-p\" 'some-non-existent-obarray\)\n
+:ALIASED-BY `mon-symbol-cells-boundp'\n
+:SEE-ALSO `mon-function-object-p', `symbolp', `boundp', `bound-and-true-p',
+`symbol-value', `indirect-variable', `symbol-function', `indirect-function',
+`symbol-plist', `obarray', `intern', `intern-soft' `make-symbol',
+`mon-help-symbol-functions'.\n►►►"
+  (or (mon-string-not-null-nor-zerop sym-string)
+      (mon-string-not-null-nor-zerop-ERROR :w-error   t
+                                           :fun-name "mon-symbol-cells-bound-p"
+                                           :locus    "sym-string"
+                                           :got-val  sym-string))
+  (let (mscb-is-bnd 
+        mscb-gthr
+        (mscb-ob (or (and w-obarray 
+                          (typecase w-obarray 
+                            (vector (cons nil w-obarray))
+                            (symbol (or 
+                                     (or (and (null (boundp (bound-and-true-p w-obarray)))
+                                              (mon-symbol-void-ERROR :w-error t
+                                                                     :fun-name "mon-symbol-cells-bound-p"
+                                                                     :locus    "w-obarray"
+                                                                     :got-val  (format "%s" w-obarray))))
+                                     (and (vectorp (symbol-value w-obarray))
+                                          (cons (identity w-obarray) (symbol-value w-obarray)))
+                                     (mon-vectorp-ERROR :w-error  t
+                                                        :fun-name "mon-symbol-cells-bound-p"
+                                                        :locus    "w-obarray"
+                                                        :got-val  w-obarray)))
+                            (t (mon-vectorp-ERROR :w-error t
+                                                  :fun-name "mon-symbol-cells-bound-p"
+                                                  :locus    "w-obarray"
+                                                  :got-val  w-obarray))))
+                     (list 'obarray))))
+    (setq mscb-is-bnd (intern-soft sym-string (or (cdr mscb-ob) obarray)))
+    (setq mscb-gthr 
+          (nconc (list :symbol-name sym-string)
+                 (and mscb-is-bnd 
+                      (list :symbol-p mscb-is-bnd
+                            :symbol-value-p (boundp mscb-is-bnd)
+                            :symbol-function-p (and (indirect-function mscb-is-bnd t) t)
+                            :symbol-plist-p 
+                            (and (symbol-plist (intern-soft sym-string (or (cdr mscb-ob) obarray))) t)))
+                 (list :symbol-obarray (or (and (symbolp (car mscb-ob))
+                                                (not (null (car mscb-ob)))
+                                                (car mscb-ob))
+                                           ;; Its a raw vector object
+                                           (cdr mscb-ob)))
+                 mscb-gthr))))
 
+ 
 ;;; ==============================
 ;;; :PREFIX "meop-"
 ;;; :CHANGESET 2178
@@ -404,8 +527,9 @@ PREDICATE is function accepting two args and is either a member of
                                \(compare-strings q 0 1 z 0 1\)\)\)
                        \"bubba\" \"babel\"\)\n
 :SEE-ALSO `mon-equality-for-type', `mon-booleanp',
-`mon-help-byte-optimizer-find', `byte-boolean-vars',
-`mon-get-text-properties-parse-prop-val-type-ckh'.\n►►►"
+`mon-bitset-ternary', `mon-help-byte-optimizer-find', `byte-boolean-vars',
+`mon-get-text-properties-parse-prop-val-type-ckh',
+`mon-symbol-cells-bound-p', `mon-help-symbol-functions'.\n►►►"
   (let ((meop-chk-fun 
          (or (and (consp predicate)
                   (or (eq (car-safe predicate) 'lambda)
@@ -430,6 +554,7 @@ PREDICATE is function accepting two args and is either a member of
       (error (concat ":FUNCTION `mon-equality-or-predicate' "
                      "-- arg PREDICATE not applicable, got: %S") predicate))))
 
+ 
 ;;; ==============================
 ;;; :TODO Define a boolean type w/ `deftype'
 ;;; :SEE (URL `http://lists.gnu.org/archive/html/bug-gnu-emacs/2010-09/msg00488.html')
@@ -460,8 +585,8 @@ Whereas with a two element proper list:\n
      \(and \(cadr \(booleanp query-truth\)\)
           \(not \(car \(booleanp query-truth\)\)\)\)\)\n
 :SEE-ALSO `mon-zero-or-onep', `mon-string-or-null-and-zerop',
-`mon-sequence-all-booleanp' `mon-equality-or-predicate',
-`byte-boolean-vars'.\n►►►"
+`mon-sequence-all-booleanp' `mon-bitset-ternary', `mon-equality-or-predicate',
+`mon-symbol-cells-bound-p', `byte-boolean-vars'.\n►►►"
   ;; :WAS (or (and (eq putative-boolean t)   '(t t))
   ;;          (and (eq putative-boolean nil) '(nil t))
   ;;          '(nil nil)))
@@ -478,6 +603,53 @@ Whereas with a two element proper list:\n
                         (and (eq putative-boolean nil) '(nil t)))
                    (and (eq putative-boolean 'nil) '(nil t)))))
       '(nil nil)))
+
+
+;;; ==============================
+;;; :COURTESY org
+;;; :CHANGESET 2369
+;;; :CREATED <Timestamp: #{2010-12-20T21:32:24-05:00Z}#{10511} - by MON KEY>
+(defun mon-xor (a b)
+  "Exclusive or.\n
+:SEE-ALSO `mon-booleanp', `mon-bitset-ternary', `logior', `logand',
+`mon-help-CL-bit-byte-bool-logic'.\n►►►"
+  (if a (not b) b))
+
+;;; ==============================
+;;; TODO Abstract the functionality of `completion--do-completion' and
+;;; `minibuffer--bitset' to less dedicated feature.
+;;; :COURTESY minibuffer.el `minibuffer--bitset' 
+(defun mon-bitset-ternary (a4/0 b2/0 c1/0)
+  "Return bitwise-or of A4/0 B2/0 C1/0.\n
+        t   nil\n
+ A4/0   4   0
+ B2/0   2   0
+ C1/0   1   0\n
+  A4/0 B2/0 C1/0\n
+ \(t    t    t\)   ;=> 7
+ \(t    t    nil\) ;=> 6
+ \(t    nil  t\)   ;=> 5
+ \(t    nil  nil\) ;=> 4
+ \(nil  t    t\)   ;=> 3
+ \(nil  t    nil\) ;=> 2
+ \(nil  nil  t\)   ;=> 1
+ \(nil  nil  nil\) ;=> 0\n
+:EXAMPLE\n\n\(mapcar #'\(lambda \(mbs\) 
+              `\(#::table ,mbs 
+               #::bitset ,\(apply #'mon-bitset-ternary mbs\)\)\)
+           \(mon-combine '\(t nil\) '\(t nil\) '\(t nil\)\)\)\n
+:NOTE See the interaction of `completion--do-completion' with
+`minibuffer--bitset' for additional implementation examples.
+:SEE-ALSO `mon-booleanp', `mon-xor', `logior', `logand', `mon-bit-table-bits',
+`mon-bool-vector-pp', `mon-string-not-null-nor-zerop', `string-or-null-p',
+`zerop', `mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary',
+`mon-sequence-all-booleanp', `dbus-byte-array-to-string',
+`dbus-string-to-byte-array', `mon-help-binary-representation',
+`mon-help-CL-bit-byte-bool-logic' .\n►►►"
+  (logior
+   (or (and a4/0 4) 0)
+   (or (and b2/0 2) 0)
+   (or (and c1/0 1) 0)))
 
 ;;; ==============================
 ;;; :CHANGESET 2211
@@ -500,7 +672,7 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 :ALIASED-BY `stringp-and-zerop-or-null'\n
 :SEE-ALSO `mon-string-not-null-nor-zerop', `string-or-null-p', `zerop',
 `mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary',
-`mon-sequence-all-booleanp'.\n►►►"
+`mon-sequence-all-booleanp', `mon-bitset-ternary'.\n►►►"
   (and (string-or-null-p maybe-str-or-null-obj)
        (zerop (length maybe-str-or-null-obj))))
 ;;
@@ -520,7 +692,7 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 :ALIASED-BY `string-not-null-or-zerop'\n
 :SEE-ALSO `mon-string-or-null-and-zerop', `string-or-null-p', `zerop',
 `mon-zero-or-onep', `mon-booleanp', `mon-booleanp-to-binary',
-`mon-sequence-all-booleanp'.\n►►►"
+`mon-sequence-all-booleanp', `mon-bitset-ternary'.\n►►►"
   (and (not (mon-string-or-null-and-zerop w-putative-string))
        (stringp w-putative-string)
        w-putative-string))
@@ -553,7 +725,8 @@ Arg MAYBE-STR-OR-NULL-OBJ is an object to interrogate.\n
 :ALIASED-BY `mon-1-or-0-p'
 :ALIASED-BY `mon-0-or-1-p'\n
 :SEE-ALSO `mon-string-or-null-and-zerop', `mon-booleanp-to-binary',
-`mon-booleanp', `mon-sequence-all-booleanp', `mon-equality-or-predicate'.\n►►►"
+`mon-booleanp', `mon-sequence-all-booleanp', `mon-equality-or-predicate',
+`mon-bitset-ternary'.\n►►►"
   (and (wholenump maybe-one-or-zero)
        (or (zerop maybe-one-or-zero)
            (zerop (1- maybe-one-or-zero)))))
@@ -617,9 +790,9 @@ return MAYBE-A-BOOLEAN.\n
 :ALIASED-BY `mon-nil-to-0'
 :ALIASED-BY `mon-true-to-one'
 :ALIASED-BY `mon-false-to-zero'\n
-:SEE-ALSO `mon-one-or-zerop', `mon-string-or-null-and-zerop',
-`mon-sequence-all-booleanp' `mon-bool-vector-pp', `byte-boolean-vars',
-`fillarray'.\n►►►"
+:SEE-ALSO `mon-bitset-ternary', `mon-one-or-zerop',
+`mon-string-or-null-and-zerop', `mon-sequence-all-booleanp'
+`mon-bool-vector-pp', `byte-boolean-vars', `fillarray', `zerop'.\n►►►"
   (let ((myb-bool (mon-booleanp maybe-a-boolean)))
     (or (and (cadr myb-bool)
              (or (and (car myb-bool) 1)
@@ -686,7 +859,8 @@ according to some heuristic per the type indicated at `caar'.\n
 \(mon-sequence-all-booleanp t  #'identity \(current-buffer\)\)\n
 \(mon-sequence-all-booleanp-TEST t\)\n
 :ALIASED-BY `mon-list-all-booleanp'\n
-:SEE-ALSO `mon-booleanp', `mon-booleanp-to-binary', `mon-zero-or-onep', `facemenu-iterate'.\n►►►"
+:SEE-ALSO `mon-booleanp', `mon-booleanp-to-binary', `mon-zero-or-onep',
+`mon-bitset-ternary', `facemenu-iterate'.\n►►►"
   (let ((msab-args (mon-booleanp check-t-or-nil)))
     (and (or (and (cadr msab-args) (progn (setq check-t-or-nil (car msab-args)) t))
              (error (concat ":FUNCTION `mon-sequence-all-booleanp' "
@@ -898,15 +1072,15 @@ Return value when W-RETURN-AS-LIST is non-nil will have one of these forms:\n
 \(mon-sequence-mappable-p \(current-buffer\) nil t\)\n
 :NOTE char-tables and hashtables aren't mappable sequences use:
  `map-char-table', `maphash'\n
-:NOTE This function is `print-gensym' agnostic and while following returns
-correctly reporting  null when the cons is not mappable:\n
+:NOTE This function is `print-gensym' agnostic and following returns
+correctly reporting null when the cons is not mappable e.g.:\n
  \(let \(\(empty-cons  '\(#::not-really-here . #::neither-am-i\)\)\)
   `\(#::was-mappable   ,\(mon-sequence-mappable-p empty-cons\)
     #::was-consp      ,\(consp empty-cons\)
     #::w-empty-cons   ,empty-cons    
     #::car-empty-p ,\(not \(intern-soft \(car empty-cons\)\)\)
     #::cdr-empty-p ,\(not \(intern-soft \(cdr empty-cons\)\)\)\)\)\n
-Its list conterpart however returns non-nil, maybe no what you are expecting:\n
+However, its list conterpart returns non-nil \(maybe no what you are expecting\):\n
  \(mon-with-print-gensyms
    \(let \(\(not-a-sym \(list '#::not-really-here '#::neither-am-i\)\)\)
      \(prin1 \(list '#::was-mappable
@@ -950,12 +1124,12 @@ Its list conterpart however returns non-nil, maybe no what you are expecting:\n
              gthr\)\)\)\n
 :ALIASED-BY `mon-list-mappable-p'
 :ALIASED-BY `mon-mappable-sequence-p'\n
-:SEE-ALSO `mon-list-dotted-p', `mon-list-proper-and-dotted-p',
-`mon-list-string-longest', `mon-map-append', `mon-map-combine', `mon-map1',
-`mon-mapcan', `mon-mapcar', `mon-mapcar-mac', `mon-mapcon', `mon-mapl',
-`mon-maplist', `mon-maptree', `mon-bool-vector-pp', `type-of',
-`mon-get-text-properties-parse-prop-val-type-chk',
-`mon-help-sequence-functions'.\n►►►"
+:SEE-ALSO `mon-hash-or-mappable-p', `mon-list-dotted-p',
+`mon-list-proper-and-dotted-p', `mon-list-string-longest', `mon-map-append',
+`mon-map-combine', `mon-map1', `mon-mapcan', `mon-mapcar', `mon-mapcar-mac',
+`mon-mapcon', `mon-mapl', `mon-maplist', `mon-maptree', `mon-bool-vector-pp',
+`type-of', `mon-get-text-properties-parse-prop-val-type-chk',
+`mon-help-sequence-functions', `*mon-non-mappable-object-types*'.\n►►►"
   (let ((msmp-typ  (type-of seq-putatively-mappable))
         (msmp-bool (mon-booleanp seq-putatively-mappable))
         msmp-mybe-rtn)
@@ -1016,7 +1190,8 @@ Its list conterpart however returns non-nil, maybe no what you are expecting:\n
   "Variable caching the results of `mon-get-bit-table'.\n
 :EXAMPLE\n\n\(mapcar #'\(lambda \(urng\) 
             \(memq :max-unsigned urng\)\) *mon-bit-table*\)\n
-:SEE-ALSO `mon-bool-vector-pp', `mon-help-binary-representation',
+:SEE-ALSO `mon-bool-vector-pp', `mon-bitset-ternary',
+`dbus-byte-array-to-string', `mon-help-binary-representation',
 `mon-help-char-raw-bytes'.\n►►►")
 
 ;;; ==============================
@@ -1045,8 +1220,8 @@ The values of these keys map as follows:\n
 evaluation to the variable `*mon-bit-table*'.\n
 :ALIASED-BY `mon-byte-table-bits'
 :ALIASED-BY `mon-bit-table-bits'\n
-:SEE-ALSO `mon-bool-vector-pp' `mon-help-binary-representation',
-`mon-help-char-raw-bytes', `fillarray'.\n►►►"
+:SEE-ALSO `mon-bool-vector-pp', `mon-bitset-ternary',
+`mon-help-binary-representation', `mon-help-char-raw-bytes', `fillarray'.\n►►►"
   (interactive "i\np")
   (let ((mgbt-gthr (when (bound-and-true-p *mon-bit-table*)
                 *mon-bit-table*)))
@@ -1103,6 +1278,44 @@ evaluation to the variable `*mon-bit-table*'.\n
 ;;; :TEST-ME (assq :bit-29 (mon-get-bit-table))
 ;;; :TEST-ME (memq :max-uint (assq :bit-29 (mon-get-bit-table)))
 
+
+;;; ==============================
+;;; :COURTESY ido.el :WAS `ido-fractionp'
+;;; :CHANGESET 2360
+;;; :CREATED <Timestamp: #{2010-12-13T14:23:28-05:00Z}#{10501} - by MON KEY>
+(defun mon-fractionp (putative-fraction)
+  "Return non-nil when PUTATIVE-FRACTION is in the range -1.0 to 1.0.\n
+PUTATIVE-FRACTION should be a number satisfying `numberp' and not `zerop'.\n
+:EXAMPLE\n\n\(mon-fractionp 0.1\)\n
+\(mon-fractionp 0.5\)\n
+\(mon-fractionp 1.0\)\n
+\(mon-fractionp 1.001\)\n
+\(mon-fractionp -0.1\)\n
+\(mon-fractionp -0.5\)\n
+\(mon-fractionp -1.0\)\n
+\(mon-fractionp -1.001\)\n
+:SEE-ALSO `mon-is-digit-simp', `mon-is-digit', `mon-equality-or-predicate',
+`mon-booleanp', `mon-booleanp-to-binary', `mon-zero-or-onep',
+`mon-string-or-null-and-zerop', `mon-string-not-null-nor-zerop',
+`mon-sequence-all-booleanp', `mon-help-number-functions'.\n►►►"
+  (and (numberp putative-fraction)
+       (not (zerop putative-fraction))
+       (or (and (> putative-fraction 0.0) 
+                (<= putative-fraction 1.0))
+           (and (< putative-fraction 0.0) 
+                (>= putative-fraction -1.0)))))
+
+
+;;; ==============================
+;;; :CHANGESET 2389
+;;; :CREATED <Timestamp: #{2011-01-13T14:22:38-05:00Z}#{11024} - by MON KEY>
+(defun mon-integer-and-chacterp (int-or-char)
+  "Whether INT-OR-CHAR is both an integer and a `characterp'
+Return INT-OR-CHAR if it is `wholenump' and of the range 0 - `max-char'  inclusive."
+  (and (wholenump int-or-char)
+       (<= int-or-char (max-char))
+       int-or-char))
+
 ;;; ==============================
 ;;; :CHANGESET 2142
 ;;; :CREATED <Timestamp: #{2010-09-20T16:06:56-04:00Z}#{10381} - by MON KEY>
@@ -1142,7 +1355,7 @@ MAYBE-ALPHA-CHAR is a string or character.
 \(mon-alpha-char-p ?Á\)\n
 :ALIASED-BY `alpha-char-p'\n
 :SEE-ALSO `mon-is-letter', `*mon-ascii-alpha-chars*', `mon-is-letter-simp',
-`mon-is-alphanum', `mon-is-alphanum-simp'.\n►►►"
+`mon-is-alphanum', `mon-is-alphanum-simp', `mon-help-char-functions'.\n►►►"
   (mon-is-letter maybe-alpha-char t))
 
 ;;; ==============================
@@ -1163,7 +1376,8 @@ MAYBE-DIGIT-CHAR is a character or string when `stringp' it is coerced to a char
 as if by `string-to-char'.\n
 :SEE-ALSO `mon-is-digit-simp', `mon-is-letter', `mon-is-alphanum',
 `mon-string-index', `mon-string-position', `mon-char-code',
-`mon-coerce->char', `mon-alpha-char-p', `digit-char-p'.\n►►►"
+`mon-coerce->char', `mon-alpha-char-p', `digit-char-p',
+`mon-help-number-functions'.\n►►►"
   (eval-when-compile (require 'parse-time))
   (cond ((stringp maybe-digit-char) 
          (mon-is-digit (string-to-char maybe-digit-char)))
@@ -1208,7 +1422,7 @@ ranges 65-90 and 92-122.\n
 characters.\n
 :SEE-ALSO `mon-is-digit', `mon-is-alphanum', `mon-alpha-char-p',
 `mon-string-index', `mon-string-position', `mon-alphabet-as-type',
-`mon-char-code', `mon-coerce->char'.\n►►►"
+`mon-char-code', `mon-coerce->char', `mon-help-char-functions'.\n►►►"
   (cond ((stringp maybe-alpha-char) 
          (mon-is-letter (string-to-char maybe-alpha-char) ascii-only))
         ((natnump maybe-alpha-char)
@@ -1231,7 +1445,7 @@ characters.\n
 \(mon-is-alphanum \(char-after \(point\)\)\)8\n
 :SEE-ALSO `mon-is-digit', `mon-alpha-char-p', `mon-is-digit-simp', `mon-string-index', 
 `mon-string-position', `mon-alphabet-as-type', `mon-char-code',
-`mon-coerce->char'.\n►►►"
+`mon-coerce->char', `mon-help-char-functions'.\n►►►"
   (or (mon-is-letter maybe-alphanum)
       (mon-is-digit  maybe-alphanum)))
 ;;
@@ -1262,7 +1476,7 @@ Wants char literals.\n:EXAMPLE\n\(mon-is-digit-simp ?0\)
 `mon-is-digit', `mon-is-letter', `mon-is-alphanum', `mon-string-index',
 `mon-string-position', `mon-alphabet-as-type', `mon-char-code',
 `mon-coerce->char', `*mon-whitespace-chars*', `*mon-ascii-alpha-chars*',
-`*mon-digit-chars*'.\n►►►"
+`*mon-digit-chars*', `mon-help-number-functions'.\n►►►"
  (and (>= maybe-digit-char ?0) (<= maybe-digit-char ?9)))
 ;;
 ;;; :TEST-ME (mon-is-digit-simp ?0)
@@ -1282,7 +1496,8 @@ Wants char literals.\n
 :SEE-ALSO `mon-is-digit-simp',`mon-is-alphanum-simp'.  `mon-is-letter',
 `mon-is-digit', `mon-alpha-char-p', `mon-string-index', `mon-string-position',
 `mon-alphabet-as-type', `mon-char-code', `mon-coerce->char',
-`*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `*mon-digit-chars*'.\n►►►"
+`*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `*mon-digit-chars*',
+`mon-help-char-functions'.\n►►►"
  (or  (and (>= simp-ltr ?a) (<= simp-ltr ?z))
       (and (>= simp-ltr ?A) (<= simp-ltr ?Z))))
 ;;
@@ -1303,7 +1518,8 @@ Wants char literals.\n
 :SEE-ALSO `mon-is-digit-simp' `mon-is-letter-simp', `mon-string-index',
 `mon-is-digit', `mon-is-letter', `mon-alpha-char-p', `mon-string-position',
 `mon-alphabet-as-type', `mon-char-code', `mon-coerce->char',
-`*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `*mon-digit-chars*'.\n►►►"
+`*mon-whitespace-chars*', `*mon-ascii-alpha-chars*', `*mon-digit-chars*',
+`mon-help-char-functions'.\n►►►"
   (or (mon-is-letter-simp simp-alph)
       (mon-is-digit-simp simp-alph)))
 ;;
@@ -1455,10 +1671,10 @@ list `nil'.\n
                         obarray\)\)
           obarray\) t\)
   \(unintern \"bubb\" obarray\)\)\n
-:SEE-ALSO `mon-symbol-to-string', `mon-string-to-sequence',
-`mon-string-from-sequence', `mon-string-alpha-list',
+:SEE-ALSO `mon-symbol-cells-bound-p', `mon-symbol-to-string',
+`mon-string-to-sequence', `mon-string-from-sequence', `mon-string-alpha-list',
 `mon-string-index', `mon-string-has-suffix', `mon-alphabet-as-type',
-`mon-string-replace-char'.\n►►►"
+`mon-string-replace-char', `mon-help-symbol-functions'.\n►►►"
   ;; :WAS (car (read-from-string str-to-sym start end)))
   (when (or ;;(null str-to-sym) 
          ;; Don't handle the empty string. YUK!
@@ -1517,9 +1733,10 @@ list `nil'.\n
   \(unintern \(intern-soft \"some-uninterned-symbol\" obarray\)\)
   \(mon-symbol-to-string
    \(make-symbol \"some-uninterned-symbol\"\)\)\)\n
-:SEE-ALSO `mon-string-to-symbol', `mon-string-to-sequence',
-`mon-string-from-sequence', `mon-alphabet-as-type',
-`mon-string-split', `mon-string-replace-char', `symbol-name'.\n►►►"
+:SEE-ALSO `mon-symbol-cells-bound-p', `mon-string-to-symbol',
+`mon-string-to-sequence', `mon-string-from-sequence', `mon-alphabet-as-type',
+`mon-string-split', `mon-string-replace-char', `symbol-name'
+`mon-help-symbol-functions'.\n►►►"
   ;; Which is more correct? 
   ;; (format "%s" symbol) 
   ;; (format "%S" symbol-to-frob)
