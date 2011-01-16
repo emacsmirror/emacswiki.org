@@ -61,7 +61,7 @@ C-z is assigned to iconify-or-deiconify-frame (or suspend-emacs),
 however %%ElScreen%% reassigns this key to its prefix key. How can we
 iconify (or suspend) our Emacs?
 
-Ask emacs where iconify-or-deiconify-frame on with "C-h C-w
+Ask emacs where iconify-or-deiconify-frame on with "C-h w
 iconify-or-deiconify", and it will reply with
 "iconify-or-deiconify-frame is on C-x C-z". ... Yes, you can also use
 C-x C-z to iconify-or-deiconify (or suspend-emacs)!

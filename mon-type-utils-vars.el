@@ -256,7 +256,7 @@ For use with `mon-equality-or-predicate'.\n
 `byte-boolean-vars', `mon-map-obarray-symbol-plist-props',
 `mon-help-byte-optimizer-find'.\n►►►"
   :type  '(repeat symbol)
-  :group 'mon-type-utils)
+  :group 'mon-type-utils
   :group 'mon-base)
 
 

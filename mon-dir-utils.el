@@ -1,7 +1,8 @@
 ;;; mon-dir-utils.el --- functions and commands for directories and files
 ;; -*- mode: EMACS-LISP; -*-
+
 ;;; ================================================================
-;; Copyright © 2009, 2010 MON KEY. All rights reserved.
+;; Copyright © 2009-2011 MON KEY. All rights reserved.
 ;;; ================================================================
 
 ;; FILENAME: mon-dir-utils.el
@@ -10,7 +11,7 @@
 ;; CREATED: 2009-05-11T11:13:47-05:00Z
 ;; VERSION: 1.0.0
 ;; COMPATIBILITY: Emacs23.*
-;; KEYWORDS: files, environment, convenience, dired,
+;; KEYWORDS: files, environment, convenience, external, dired,
 
 ;;; ================================================================
 
@@ -45,7 +46,8 @@
 ;; `mon-find-buffer-visiting-other-live-frame',
 ;; `mon-dired-find-file-other-frame', `mon-file-truename-p',
 ;; `%mon-dir-get-subdirs-filter-no-full', `%mon-dir-get-subdirs-filter-full',
-;; `mon-dir-get-subdirs', `mon-async-du-dir',
+;; `mon-dir-get-subdirs', `mon-async-du-dir', `mon-dir-make-xargs-arg-file',
+;; `mon-dired-buffers-complete', `mon-find-file', `mon-file-get-load-history-if',
 ;; FUNCTIONS:◄◄◄
 ;;
 ;; MACROS:
@@ -120,6 +122,7 @@
 ;; `mon-dir-get-subdirs-descend'              -> `mon-add-subdirs-to-list' 
 ;; `mon-dir-async-du'                         -> `mon-async-du-dir'
 ;; `mon-directory-du-async'                   -> `mon-async-du-dir'
+;; `mon-du-async-dir'                         -> `mon-async-du-dir'
 ;;
 ;; DEPRECATED:
 ;;
@@ -231,20 +234,19 @@
 ;; Foundation Web site at:
 ;; (URL `http://www.gnu.org/licenses/fdl-1.3.txt').
 ;;; ==============================
-;; Copyright © 2009, 2010 MON KEY 
+;; Copyright © 2009-2011 MON KEY 
 ;;; ==============================
 
 ;;; CODE:
 
  
-;; :REQUIRED-BY `mon-file-reduce-name'
 (eval-when-compile (require 'cl))
 
 (unless (and (intern-soft "*IS-MON-OBARRAY*")
              (bound-and-true-p *IS-MON-OBARRAY*))
 (setq *IS-MON-OBARRAY* (make-vector 17 nil)))
 
-(declare-function edmacro-subseq              "edmacro" (seq start &optional end))
+(declare-function edmacro-subseq "edmacro" (seq start &optional end))
 
 ;; Make sure `untranslated-canonical-name' is available for w32.
 (declare-function untranslated-canonical-name "dos-w32"  t t)
@@ -270,9 +272,56 @@
   "Defaults for variables accessed by various `mon-*' functions.\n
 :SEE-ALSO .\n►►►"
   :link '(url-link 
-          :tag ":EMACSWIKI-FILE" "http://www.emacswiki.org/emacs/mon-dir-utils.el")
-  :link '(emacs-library-link "mon-dir-utils.el")
+          :tag ":EMACSWIKI-FILE (URL `http://www.emacswiki.org/emacs/mon-dir-utils.el')" 
+          "http://www.emacswiki.org/emacs/mon-dir-utils.el")
+  :link '(emacs-library-link 
+          :tag ":FILE mon-dir-utils.el" 
+          "mon-dir-utils.el")
   :group 'mon-base)
+
+;;; ==============================
+;;; :CHANGESET 2394
+;;; :CREATED <Timestamp: #{2011-01-15T18:07:44-05:00Z}#{11026} - by MON KEY>
+(defcustom *mon-dir-utils-xrefs* 
+  '(%mon-dir-get-subdirs-filter-full mon-dir-get-subdirs-filter-no-full
+    %mon-add-subdirs-to-list mon-async-du-dir mon-buffer-written-p mon-build-path
+    %mon-copy-file-dired-as-list mon-copy-file-dired-as-string
+    %mon-copy-file-multiple mon-copy-file-path mon-copy-files-in-sub-dirs
+    %mon-dir-build-list mon-dir-common-paths mon-dir-get-subdirs
+    %mon-dir-make-xargs-arg-file mon-dired-buffers-complete
+    %mon-dired-find-file-other-frame mon-dired-insert-dirs-recursive
+    %mon-dired-other-window mon-dired-srt-alph mon-dired-srt-chrn mon-dired-srt-type
+    %mon-dired-srt-type-alph mon-dired-srt-type-chrn mon-dired-uninsert-subdir
+    %mon-dired-uninsert-subdir-all mon-dired-unmark-elc
+    %mon-dired-up-directory-this-buffer mon-file-dir-attributes->plist
+    %mon-file-ensure-extension-is-el mon-file-get-load-history-if
+    %mon-file-reduce-name mon-file-truename-p
+    %mon-find-buffer-visiting-other-live-frame mon-find-file
+    %mon-get-buffer-parent-dir mon-get-buffers-directories mon-get-dir-name-absolute
+    %mon-get-dir-size mon-get-dir-subdir-default mon-get-new-buffer-w-stamp
+    %mon-get-proc-buffers-directories mon-get-relative-w-absolute mon-insert-path
+    %mon-insert-subdirs-in-buffer mon-path mon-proc-buffers-directories
+    %mon-rename-file-serial mon-string-split-buffer-name
+    %mon-string-split-buffer-parent-dir mon-string-split-buffer-parent-dir-quick
+    %mon-string-split-dir-recurse mon-toggle-dired-dwim-target
+    ;; :VARIABLES
+    *regexp-add-subdirs-to-list-filter-ignorables*
+    *mon-add-subdirs-to-list-ignorables*
+    *mon-dir-utils-xrefs*)
+  "Xrefing list of `mon-*-<TYP>'symbols, functions constants, and variables.\n
+The symbols contained of this list are defined in :FILE mon-dir-utils.el\n
+:SEE-ALSO `*mon-default-loads-xrefs*', `*mon-default-start-loads-xrefs*',
+`*mon-dir-locals-alist-xrefs*', `*mon-keybindings-xrefs*',
+`*mon-testme-utils-xrefs*', `*mon-button-utils-xrefs*', `*mon-bzr-utils-xrefs*'
+`*mon-buffer-utils-xrefs*', `*mon-error-utils-xrefs*', `*mon-line-utils-xrefs*',
+`*mon-macs-xrefs*', `*mon-plist-utils-xrefs*', `*mon-post-load-hooks-xrefs*', 
+`*mon-seq-utils-xrefs*', `*mon-string-utils-xrefs*', `*mon-type-utils-xrefs*',
+`*mon-window-utils-xrefs*', `*naf-mode-xref-of-xrefs*', `*mon-slime-xrefs*',
+`*naf-mode-faces-xrefs*', `*naf-mode-date-xrefs*', `*mon-ulan-utils-xrefs*',
+`*mon-xrefs-xrefs'.\n►►►"
+  :type '(repeat symbol)
+  :group 'mon-dir-utils
+  :group 'mon-xrefs)
 
 ;;; ==============================
 ;;; :CHANGESET 2261
@@ -283,22 +332,24 @@
   "A list of directory namestring components to filter.\n
 Elements of list will not be appear in return values of:\n
  `mon-add-subdirs-to-list' `mon-dir-get-subdirs'\n
-These are not full paths but only the directory name component of one, e.g.:
- \(file-name-nondirectory \(expand-file-name \".bzr\" default-directory\)\)
+These are not full paths but only the directory name component of one, e.g.:\n
+ \(file-name-nondirectory \(expand-file-name \".bzr\" default-directory\)\)\n
 Where the return value \".bzr\" is the name of a directory \".bzr\".\n
 :SEE-ALSO `%mon-dir-get-subdirs-filter-full',
 `%mon-dir-get-subdirs-filter-no-full',
 `*regexp-add-subdirs-to-list-filter-ignorables*',
 `*mon-add-subdirs-to-list-ignorables*',
-`ido-work-directory-list-ignore-regexps',
-`comint-completion-fignore'.\n►►►"
+`ido-work-directory-list-ignore-regexps', `comint-completion-fignore',
+`completion-ignored-extensions', `dired-trivial-filenames', 
+`dired-re-dot', `dired-subdir-regexp', `directory-listing-before-filename-regexp',
+`emacsw32-eol-file-name-lf-list'.\n►►►"
   :type '(repeat string)
   :group 'mon-dir-utils)
 
 ;;; ==============================
 ;;; :CHANGESET 2261
 ;;; :CREATED <Timestamp: #{2010-11-04T15:21:23-04:00Z}#{10444} - by MON KEY>
-(defvar *regexp-add-subdirs-to-list-filter-ignorables* 
+(defcustom *regexp-add-subdirs-to-list-filter-ignorables* 
   (concat "^.*" (regexp-opt *mon-add-subdirs-to-list-ignorables*) "$")
   "Regexp which filters which subdirectories ignorable directory names.\n
 Generated from value of variable `*mon-add-subdirs-to-list-ignorables*'.\n
@@ -313,10 +364,16 @@ Directory namestrings matched by this regexp are filted from return values of:\n
                 \(directory-files-and-attributes default-directory t\)\)\)
   \(append \(list default-directory\) \(delq nil fltr-if\)\)\)\n
 :NOTE For use with functions which evaluate `directory-files' or
-`directory-files-and-attributes' with optional FULL arg non-nil.
-:SEE-ALSO `%mon-dir-get-subdirs-filter-full', `%mon-dir-get-subdirs-filter-no-full',
+`directory-files-and-attributes' with optional FULL arg non-nil.\n
+:SEE-ALSO `%mon-dir-get-subdirs-filter-full',
+`%mon-dir-get-subdirs-filter-no-full',
 `*regexp-add-subdirs-to-list-filter-ignorables*',
-`*mon-add-subdirs-to-list-ignorables*'.\n►►►")
+`*mon-add-subdirs-to-list-ignorables*', `completion-ignored-extensions',
+`dired-garbage-files-regexp', `dired-trivial-filenames', `dired-re-dot',
+`dired-subdir-regexp', `directory-listing-before-filename-regexp',
+`emacsw32-eol-file-name-lf-list'.\n►►►"
+  :type  'regexp
+  :group 'mon-dir-utils)
 
  
 ;;; ==============================
@@ -410,11 +467,13 @@ more of Emacs' file/path related functions must interact things become slippery:
            \(file-directory-p empty-nm\) \(file-directory-p true-nm\)
            \(file-name-absolute-p empty-nm\) \(file-name-absolute-p true-nm\)
            \(file-truename empty-nm\) \(file-truename true-nm\)\)\)\n
+:NOTE This function is `file-remote-p' agnostic.\n
 :ALIASED-BY `file-truename-p'\n
 :SEE-ALSO `file-accessible-directory-p', `mon-file-dir-attributes->plist',
 `mon-file-reduce-name', `mon-copy-files-in-sub-dirs', `mon-add-subdirs-to-list',
 `mon-build-path', `*mon-add-subdirs-to-list-ignorables*',
-`*regexp-add-subdirs-to-list-filter-ignorables*', `info-file-exists-p'.\n►►►"
+`*regexp-add-subdirs-to-list-filter-ignorables*', `info-file-exists-p'
+`unhandled-file-name-directory', `file-remote-p'.\n►►►"
   (let (mftp-rtn)
     (and 
      (or (mon-string-not-null-nor-zerop w-putative-file-truename)
@@ -472,9 +531,10 @@ Values returned by the time properties `:stat-*time' are in long-iso form e.g.:\
 :SEE-ALSO `mon-file-ensure-extension-is-el', `file-attributes-lessp'.\n►►►"
   (unless (or (file-directory-p file-dir-name)
               (file-exists-p file-dir-name))
-    (error (concat ":FUNCTION `mon-file-dir-attributes->plist' "
-                   "-- arg FILE-DIR-NAME non-existent, got: %S")
-           file-dir-name))
+    (mon-file-non-existent-ERROR :w-error t
+                                 :fun-name "mon-file-dir-attributes->plist'"
+                                 :locus "file-dir-name"
+                                 :got-val file-dir-name))
   (multiple-value-bind  
       (stat-dir-p stat-nlink stat-uid stat-gid stat-atime stat-mtime stat-ctime
        stat-size stat-mode stat-gid-chg-p stat-ino stat-dev)
@@ -486,11 +546,11 @@ Values returned by the time properties `:stat-*time' are in long-iso form e.g.:\
       ,@(and `(,:stat-nlink ,stat-nlink))
       :stat-uid ,stat-uid
       :stat-gid ,stat-gid
-      ,@`(:stat-atime ,(if stat-atime
+      ,@`(:stat-atime ,(and stat-atime
                             (format-time-string "%Y-%m-%dT%T%zZ" stat-atime)))
-      ,@`(:stat-mtime ,(if stat-mtime
+      ,@`(:stat-mtime ,(and stat-mtime
                             (format-time-string "%Y-%m-%dT%T%zZ" stat-mtime)))
-      ,@`(:stat-ctime ,(if stat-ctime
+      ,@`(:stat-ctime ,(and stat-ctime
                             (format-time-string "%Y-%m-%dT%T%zZ" stat-ctime)))
       :stat-size ,stat-size
       :stat-mode ,stat-mode
@@ -517,6 +577,7 @@ Values returned by the time properties `:stat-*time' are in long-iso form e.g.:\
 ;;; extensions, regular with ".el" extension", or compressed with ".el.gz" and
 ;;; ".elc.gz"
 ;;;
+;;; :CHANGESET 2394 <Timestamp: #{2011-01-15T16:42:16-05:00Z}#{11026} - by MON KEY>
 ;;; :CREATED <Timestamp: #{2010-07-10T12:36:32-04:00Z}#{10276} - by MON>
 (defun mon-file-ensure-extension-is-el (w-ensured-file-name)
   "Locate library W-ENSURED-FILE-NAME only if it has an \".el\" extension.\n
@@ -527,10 +588,10 @@ name does not end with one of the following extensions:\n
 :EXAMPLE\n\n(mon-file-ensure-extension-is-el \"ada-mode\"\)\n
 :NOTE For additional discussion w/re the rationale for this function:
 :SEE (URL `http://lists.gnu.org/archive/html/emacs-devel/2010-01/msg01060.html')\n
-:SEE-ALSO `mon-file-truename-p', `mon-file-map-elisp-fileset',
-`get-load-suffixes', `load-suffixes', `file-name-sans-extension',
-`file-name-extension', `mon-help-file-dir-functions',
-`mon-help-file-dir-functions-usage'.\n►►►"
+:SEE-ALSO `mon-file-get-load-history-if', `mon-file-truename-p',
+`mon-file-map-elisp-fileset', `get-load-suffixes', `load-suffixes',
+`file-name-sans-extension', `file-name-extension',
+`mon-help-file-dir-functions', `mon-help-file-dir-functions-usage'.\n►►►"
   (let* ((fnd-lbr-nm (and (stringp w-ensured-file-name)
                           (file-name-sans-extension w-ensured-file-name)))
          (fnd-lbr (locate-library fnd-lbr-nm)))
@@ -544,22 +605,86 @@ name does not end with one of the following extensions:\n
         ;;  b) test if the resulting file ada-mode.elc actually exists
         (unless (null fnd-lbr)
           (when (string-equal (file-name-extension fnd-lbr) "gz")
-            (setq fnd-lbr (if (file-exists-p (file-name-sans-extension fnd-lbr))
-                              (file-name-sans-extension fnd-lbr)
-                            fnd-lbr))))
-        (cond ((and (string-equal (file-name-extension fnd-lbr) "el")
-                    (file-exists-p fnd-lbr)) 
-               (file-truename fnd-lbr))
-              ((or (null fnd-lbr)
-                   (string-equal (file-name-extension fnd-lbr) "elc")
-                   (string-equal (file-name-extension fnd-lbr) "gz"))
-               (error (concat ":FUNCTION `mon-file-ensure-extension-is-el' "
-                              "-- arg W-ENSURED-FILE-NAME does not exist as '%s.el'%s")
-                      fnd-lbr-nm                      
-                       (if (null fnd-lbr)
-                           ""
-                         (format "\n%38cdid locate a similarly named file:\n%38c'%s'"
-                                 32 32 fnd-lbr)))))))))
+            (setq fnd-lbr 
+                  (or (and (file-exists-p (file-name-sans-extension fnd-lbr))
+                           (file-name-sans-extension fnd-lbr))
+                      fnd-lbr))))
+        (or (and (string-equal (file-name-extension fnd-lbr) "el")
+                 (file-exists-p fnd-lbr)
+                 (file-truename fnd-lbr))
+            (and (or (null fnd-lbr)
+                     (string-equal (file-name-extension fnd-lbr) "elc")
+                     (string-equal (file-name-extension fnd-lbr) "gz"))
+                 (mon-format :w-fun #'error
+                             :w-spec '(":FUNCTION `mon-file-ensure-extension-is-el' "
+                                       "-- arg W-ENSURED-FILE-NAME non-existent as :FILE %s.el"
+                                       "%s")
+                             :w-args `(,fnd-lbr-nm 
+                                       ,(setq fnd-lbr
+                                              (or (and (mon-string-or-null-and-zerop fnd-lbr) "")
+                                                  (format "\n%38cdid locate a similarly named file\n%38c:FILE %s"
+                                                          32 32 fnd-lbr)))))))))))
+
+;;; ==============================
+;;; :CREATED <Timestamp: #{2011-01-15T16:04:40-05:00Z}#{11026} - by MON>
+(defun mon-file-get-load-history-if (filename-regex &optional w-display)
+  "Return load-history for file matching FILENAME-REGEX.\n
+FILENAME-REGEX is a regexp as per `load-history-filename-element'. 
+It should satisfy `mon-string-not-null-nor-zerop', signal an error if not.\n
+When optional arg W-DISPLAY is non-nil display pretty printed results in buffer
+with name having the form:\n
+ \"*<FILENAME>-LOAD-HISTORY*\"\n
+:EXAMPLE\n\n\(mon-file-get-load-history-if \"mon-dir-utils\"\)\n
+\(mon-file-get-load-history-if \"mon-dir-utils\" t\)\n
+:SEE-ALSO `mon-file-dir-attributes->plist', `mon-file-truename-p',
+`mon-file-ensure-extension-is-el', `mon-file-map-elisp-fileset',
+`load-history', `load-history-regexp'.\n►►►"
+  (and 
+   (or (mon-string-not-null-nor-zerop filename-regex)
+       (mon-string-not-null-nor-zerop-ERROR :fun-name "mon-file-get-load-history-if"
+                                            :locus  "filename-regex" 
+                                            :got-val filename-regex 
+                                            :w-error t))
+   (setq filename-regex (load-history-filename-element filename-regex))
+   (or 
+    (and w-display
+         ;; Create a buffer name that can't step on the name of an existing
+         ;; buffer already visiting matched file.
+         ;;
+         ;; Strip directory name, file-name-extension, and any trailing
+         ;; compression suffixes.
+         (setq w-display (file-name-sans-extension 
+                          (file-name-sans-extension 
+                           (file-name-nondirectory (car filename-regex)))))
+         (or (and w-display (setq w-display (format "*%s-LOAD-HISTORY*" (upcase w-display))))
+             ;; (mon-format [&keys w-fun <SYMBOL> w-spec <OBJECT> w-args <OBJECT> w-delim
+             ;;                    <STRING>|<BOOLEAN>])
+             (mon-format :w-fun #'error
+                         :w-spec '(":FUNCTION `mon-file-get-load-history-if' "
+                                  "-- arg W-DISPLAY non-nil and FILENAME-REGEX found match "
+                                  "can not create unique buffer-name for display with, "
+                                  ":FILE %S")
+                         :w-args (car filename-regex)))
+         (with-current-buffer (get-buffer-create w-display)
+           (let ((mfglhi-dvdr (concat (mon-comment-divider-w-len 64) "\n"))
+                 (mfglhi-pfx  (concat (make-string 3 59) " ")))
+             (save-excursion 
+               (insert (mon-format :w-spec '("%s%s:LOAD-HISTORY\n%s:FILE %S\n"
+                                             "%s:AS-OF <Timestamp: %s>\n%s\n"
+                                             "%s\n%s%sEOF\n")
+                                   :w-args `(,mfglhi-dvdr 
+                                             ,mfglhi-pfx 
+                                             ,mfglhi-pfx ,(car filename-regex)
+                                             ;;
+                                             ,mfglhi-pfx ,(mon-format-iso-8601-time)
+                                             ,mfglhi-dvdr
+                                             ;;
+                                             ,(pp-to-string (cdr filename-regex))
+                                             ,mfglhi-dvdr
+                                             ,mfglhi-pfx))))
+             (display-buffer (current-buffer) t)))
+         filename-regex)
+    filename-regex)))
 
 ;;; ==============================
 ;;; :PREFIX "mfbvolf-"
@@ -572,7 +697,8 @@ is null return nil.\n
 :ALIASED-BY `find-buffer-visiting-other-live-frame'
 :ALIASED-BY `mon-get-buffer-visiting-other-live-frame'
 :ALIASED-BY `get-buffer-visiting-other-live-frame'\n
-:SEE-ALSO `mon-frame-live-visible-graphic-p'.\n►►►"
+:SEE-ALSO `mon-frame-live-visible-graphic-p', `mon-dired-buffers-complete',
+`mon-dired-find-file-other-frame'.\n►►►"
   (let ((mfbvolf-fbv 
          (find-buffer-visiting 
           file-to-find
@@ -589,8 +715,26 @@ is null return nil.\n
 ;;; ==============================
 ;; :DIRED-RELATED 
 ;;; ==============================
+;; `dired-buffers'
+;; `dired-switches-alist'
+;; `dired-actual-switches'
+;; `dired-ls-sorting-switches'
+;; `dired-sort-by-date-regexp'
+;; `dired-sort-by-name-regexp'
+;; `dired-sort-inhibit'
+;; `dired-listing-switches'
+;; `dired-subdir-switches'
+;; `dired-ls-F-marks-symlinks'
+;; 
+;; `dired-sort-set-modeline'
+;; `dired-sort-toggle-or-edit'
+;; `dired-sort-toggle'
+;; `dired-sort-other'
+;; `dired-sort-R-check'
+;;; ==============================
 
 ;;; ==============================
+;;; :PREFIX "mdffof-"
 ;;; :NOTE when using `ido-mode' with 'everywhere there is a `command-remapping'
 ;;; for `find-file-other-frame' -> `ido-find-file-other-frame' to bind "\C-x5f"
 ;;; you may need to put this on the `dired-mode-hook' first:
@@ -603,35 +747,36 @@ is null return nil.\n
 (defun mon-dired-find-file-other-frame ()
   "In dired-mode buffer visit file-at point in another frame.\n
 :ALIASED-BY `dired-find-file-other-frame'\n
-:SEE-ALSO `mon-find-buffer-visiting-other-live-frame',
+:SEE-ALSO `mon-dired-buffers-complete', `mon-find-buffer-visiting-other-live-frame',
 `mon-frame-live-visible-graphic-p' `dired-get-file-for-visit',
 `dired-find-file-other-window', `find-file-other-frame', `visible-frame-list',
 `find-file', `select-frame-set-input-focus'
 `window--display-buffer-1', `window--display-buffer-2'.\n►►►"
   (interactive)
-  (let ((other-frame-file (dired-get-file-for-visit)))
-    (unless (mon-find-buffer-visiting-other-live-frame other-frame-file)
-      (let ((fnd-bv (find-buffer-visiting other-frame-file))
-            (vfl (visible-frame-list)))
-        (cond ((and fnd-bv (> (length vfl) 1))
+  (let ((mdffof-other-frm-fl (dired-get-file-for-visit)))
+    (unless (mon-find-buffer-visiting-other-live-frame mdffof-other-frm-fl)
+      (let ((mdffof-fnd-bfr-vst (find-buffer-visiting mdffof-other-frm-fl))
+            (mdffof-vis-frm-lst (visible-frame-list)))
+        (cond ((and mdffof-fnd-bfr-vst (> (length mdffof-vis-frm-lst) 1))
                (with-selected-frame (car (remove (selected-frame) (visible-frame-list)))
                  (select-frame-set-input-focus (selected-frame))
-                 (with-current-buffer fnd-bv
+                 (with-current-buffer mdffof-fnd-bfr-vst
                    (switch-to-buffer (current-buffer)))))
-              ((> (length vfl) 1) 
+              ((> (length mdffof-vis-frm-lst) 1) 
                (with-selected-frame (car (remove (selected-frame) (visible-frame-list)))
                  (select-frame-set-input-focus (selected-frame))
-                 (find-file other-frame-file)))
-              (t (find-file-other-frame other-frame-file)))))))
+                 (find-file mdffof-other-frm-fl)))
+              (t (find-file-other-frame mdffof-other-frm-fl)))))))
 
 
 ;;; ==============================
+;;; :PREFIX "mcfdal-"
 ;;; :CREATED <Timestamp: #{2009-10-11T10:18:36-04:00Z}#{09417} - by MON>
-(defun mon-copy-file-dired-as-list (&optional localp intrp)
-  "Copy dired file\(s\) to kill-ring as a list of strings.
-When no file-names are marked copy file-name at point. 
-If one or more file-names are marked copy these to kill-ring.
-When LOCALP is non-nil or called-interactively with prefix arg
+(defun mon-copy-file-dired-as-list (&optional no-local-path intrp)
+  "Copy dired file\(s\) to kill-ring as a list of strings.\n
+When no file-names are marked copy file-name at point.\n
+If one or more file-names are marked copy these to kill-ring.\n
+When NO-LOCAL-PATH is non-nil or called-interactively with prefix arg
 do not copy full path of files to kill-ring.\n
 :ALIASED-BY `mon-dired-kill-files-to-list'\n
 :ALIASED-BY `mon-dired-copy-files-to-list'\n
@@ -642,22 +787,22 @@ do not copy full path of files to kill-ring.\n
   (if (not (mon-buffer-check-major-mode 'dired-mode))
       (progn
         (mon-copy-file-path)
-        (setq localp (list (substring-no-properties (pop kill-ring))))
-        (prog1 localp
-          (kill-new (prin1-to-string localp))))
-    (let ((dgmf (dired-get-marked-files localp)))
+        (setq no-local-path (list (substring-no-properties (pop kill-ring))))
+        (prog1 no-local-path
+          (kill-new (prin1-to-string no-local-path))))
+    (let ((mcfdal-get-mrkd-fls (dired-get-marked-files no-local-path)))
       (if intrp 
-            (kill-new (pp dgmf))
-          dgmf))))
+          (kill-new (pp mcfdal-get-mrkd-fls))
+        mcfdal-get-mrkd-fls))))
 
 ;;; ==============================
 ;;; :PREFIX "mcfdas-"
 ;;; :CREATED <Timestamp: #{2009-10-11T10:18:40-04:00Z}#{09417} - by MON>
-(defun mon-copy-file-dired-as-string (&optional localp qt-strings intrp)
+(defun mon-copy-file-dired-as-string (&optional no-local-path qt-strings intrp)
   "Copy dired file\(s\) to kill-ring.\n
 When no file-names are marked copy file-name at point.\n
 If one or more file-names are marked copy these to kill-ring.\n
-When LOCALP is non-nil do not copy full path of files to kill-ring.\n
+When NO-LOCAL-PATH is non-nil do not copy full path of files to kill-ring.\n
 When QT-STRINGS is non-nil or called-interactively with prefix arg
 copy file-names such that when yanked they are inserted as quoted strings.\n
 When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-path'.\n
@@ -673,7 +818,7 @@ When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-p
                (setq qt-strings (prin1-to-string (mon-copy-file-path)))
                (kill-new qt-strings))
           (mon-copy-file-path))
-    (let ((mcfdas-dir-lst (mon-copy-file-dired-as-list localp)))
+    (let ((mcfdas-dir-lst (mon-copy-file-dired-as-list no-local-path)))
       (setq mcfdas-dir-lst
             (if qt-strings
                 (mapconcat #'(lambda (mcfdas-L-1) 
@@ -700,29 +845,206 @@ When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-p
          (if (bound-and-true-p dired-dwim-target)
              (progn
                (setq dired-dwim-target nil)
-               (when intrp (message (concat "Variable `dired-dwim-target' turned off\n"
-                                            "-- Call `mon-toggle-dired-dwim-target' to toggle on"))))
-             (progn
-               (setq dired-dwim-target t)
-               (when intrp (message (concat "Variable `dired-dwim-target' turned on\n"
-                                            "-- Call `mon-toggle-dired-dwim-target' to toggle off")))))))
+               (when intrp 
+                 (mon-message 
+                  :msg-spec '("Variable `dired-dwim-target' turned off\n"
+                              "-- call `mon-toggle-dired-dwim-target' to toggle on"))))
+           (progn
+             (setq dired-dwim-target t)
+             (when intrp 
+               (mon-message 
+                :msg-spec '("Variable `dired-dwim-target' turned on\n"
+                            "-- call `mon-toggle-dired-dwim-target' to toggle off")))))))
     toggle-dwim-target))
 ;;
 ;;; :TEST-ME (mon-toggle-dired-dwim-target)
 ;;; :TEST-ME (mon-toggle-dired-dwim-target)
+
+
+;;; ==============================
+;;; :CHANGESET 2359
+;;; :CREATED <Timestamp: #{2010-12-09T13:08:08-05:00Z}#{10494} - by MON KEY>
+(defun mon-dired-buffers-complete (&optional other-window/frame)
+  "Switch to a dired-buffer visiting one of the directories of `dired-buffers'.
+When called interactively with prefix arg >= 1 visit dired-buffer in another
+window on selected-frame.\n
+When called interactively with prefix arg < 0 visit dired-buffer on a different
+frame creating one if it doesn't already exist.\n
+Default is to find the dired-buffer in another window other than selected-window.\n
+:EXAMPLE\n\n\(mon-dired-buffers-complete\)
+\(apply  #'mon-dired-buffers-complete\) '\(-1\)\)
+\(apply  #'mon-dired-buffers-complete '\(1\)\)
+\(mon-dired-buffers-complete 'this-window\)\n
+\(mon-dired-buffers-complete 'another-frame\)\n
+Where dired buffer is displayed when called-interactively with prefix or arg
+OTHER-WINDOW/FRAME is `integerp' and passed explicitly:\n
+= 0    another-window
+C-u 0  another-window
+M 0    another-window\n
+< _ 0  another-frame
+M -1   another-frame
+-1     another-frame
+C-u -1 another-frame
+M -    another-frame
+C-u -  another-frame\n
+> _ 0  this-window
+M 1    this-window
+C-u 1  this-window\n
+Where dired buffer is displayed if arg OTHER-WINDOW/FRAME is a quoted symbol:\n
+{ this-window | selected-window | current-window }               this-window
+{ - | new-frame | another-frame | other-frame | not-this-frame } another-frame
+null                                                             this-window\n
+:SEE-ALSO `mon-dired-other-window', `mon-dired-find-file-other-frame',
+`mon-find-buffer-visiting-other-live-frame', `mon-frame-live-visible-graphic-p',
+`visible-frame-list', `mon-dired-uninsert-subdir',
+`mon-dired-uninsert-subdir-all', `ido-dired', `mon-dired-other-window',
+`mon-dired-copy-files-to-list', `mon-dired-copy-files-to-strings',
+`mon-dired-kill-files-to-list', `mon-dired-kill-files-to-strings',
+`mon-dired-nef-dir', `mon-dired-srt-alph', `mon-dired-srt-chrn',
+`mon-dired-srt-type', `mon-dired-srt-type-alph', `mon-dired-srt-type-chrn',
+`mon-dired-unmark-elc'.\n►►►"
+  (interactive "P")
+  (and (null dired-buffers)
+       (mon-format :w-fun #'error
+                   :w-spec '(":FUNCTION `mon-dired-buffers-complete' "
+                             "-- variable `dired-buffers' is null "
+                             "visit a directory in dired first")))
+  (setq other-window/frame 
+        (or (and other-window/frame 
+                 (or 
+                  ;; Argument to OTHER-WINDOW/FRAME or current-prefix-arg was integerp
+                  (and (integerp other-window/frame)
+                       (or (and (zerop other-window/frame) 'another-window) 
+                           (and (< other-window/frame 0)   'another-frame)
+                           (and (> other-window/frame 0)   'this-window)))
+                  (case other-window/frame
+                    ((- new-frame another-frame other-frame not-this-frame) 'another-frame)
+                    ((this-window selected-window current-window)           'this-window)
+                    (t                                                      'another-window))))
+            'another-window))
+  ;; Grab all existing `dired-buffers' into mdbc-bfr-hist except when they are #<killed buffer>.
+  ;; Don't allow exit from `completing-read' unless we got a string.
+  ;; Later we rebind mdbc-bfr-hist to hold values found whil mapping over frames/buffer/windows
+  (let* ((mdbc-bfr-hist 
+         ;; (loop for lb in dired-buffers
+         ;;       when (buffer-live-p (cdr lb)) collect lb))
+         (mapcar #'car dired-buffers))
+        (mdbc-cmplt-rd #'(lambda ()
+                           (completing-read 
+                            (mon-format :w-spec '(":FUNCTION `mon-dired-buffers-complete' " 
+                                                  "-- which dired buffer? "))
+                            mdbc-bfr-hist nil nil nil '(mdbc-bfr-hist . 0))))
+        mdbc-cmplt-ensure)
+    (while (null mdbc-cmplt-ensure)
+      (setq mdbc-cmplt-ensure
+            (mon-string-not-null-nor-zerop (funcall mdbc-cmplt-rd))))
+    (setq mdbc-cmplt-ensure (cdr (assoc-string  mdbc-cmplt-ensure dired-buffers)))
+    (case other-window/frame
+      (this-window (switch-to-buffer mdbc-cmplt-ensure))
+      (another-window (unless (eq (current-buffer) mdbc-cmplt-ensure)
+                        (display-buffer mdbc-cmplt-ensure t)))
+      (another-frame 
+       (or 
+        ;; Easy case -- there is no other frame.
+        ;; Other than `noninteractive' can frame-list ever be non number?
+        ;; Either way, check with `eq' not `=' b/c of (= nil 1)
+        (and (eq (length (frame-list)) 1) 
+             (with-selected-frame 
+                 (with-current-buffer mdbc-cmplt-ensure
+                   (select-frame (make-frame (append default-frame-alist
+                                                     `((name . ,(buffer-name mdbc-cmplt-ensure))))))
+                   (selected-frame))
+               (with-selected-window (frame-selected-window (selected-frame))
+                 (set-frame-selected-window (selected-frame)
+                                            (progn 
+                                              (set-window-buffer 
+                                               (if (window-dedicated-p (selected-window))
+                                                   (get-lru-window (selected-frame))
+                                                 (frame-selected-window (selected-frame)))
+                                               mdbc-cmplt-ensure)
+                                              (frame-selected-window (selected-frame)))
+                                            )) ;; t))
+               (selected-frame)))
+        (and 
+         ;; Else, check for live frames. Presumabley we have at least one :) 
+         ;; Reuse the mdbc-bfr-hist var to hold any valid frames found.
+         (setq mdbc-bfr-hist (filtered-frame-list #'mon-frame-live-visible-graphic-p)) 
+         ;; But don't do anything with selected-frame. `or' keeps us inside this branch.
+         (or (and (> (length mdbc-bfr-hist) 1) 
+                  (setq mdbc-bfr-hist (delq (selected-frame) mdbc-bfr-hist)))
+             t)
+         ;; When we exit the conditional below we'd like to find
+         ;; mdbc-bfr-hist non-nil and holding a cons with a frame object
+         ;; at car and a window object at cdr, e.g. something of the form:
+         ;; ( #<frame {...}> . #<window {...}> ) 
+         ;; If cdr is null then no window on any frame is visiting the buffer.
+         (or ;;`or' keeps us in the `and' branch
+          (setq mdbc-bfr-hist
+                (or 
+                 ;; If there is only one other live frame then don't look further. Do try
+                 ;; to find a window visiting buffer before we select into the frame.
+                 (and (= (length mdbc-bfr-hist) 1)            
+                      (nconc mdbc-bfr-hist 
+                             (car (get-buffer-window-list mdbc-cmplt-ensure nil (car mdbc-bfr-hist)))))
+                 ;; Else, if there are multiple other live frames try to find the first one
+                 ;; with window visiting buffer.  Isn't there a `loop' idiom for non-local exits like this?
+                 ;; loop for buffer|window|frame|screens
+                 (catch 'mdbc-bfr-wdw
+                   (mapc #'(lambda (mdbc-L-1)
+                             (and (memq mdbc-cmplt-ensure
+                                        (assq 'buffer-list (frame-parameters mdbc-L-1)))
+                                  (setq mdbc-L-1 `(,mdbc-L-1 
+                                                   ,(get-buffer-window-list mdbc-cmplt-ensure nil mdbc-L-1)))
+                                  (and (cadr mdbc-L-1) 
+                                       (throw 'mdbc-bfr-wdw `(,(car mdbc-L-1) . ,(caadr mdbc-L-1))))))
+                         mdbc-bfr-hist)
+                   nil)
+                 ;; Else, we have live frames but none has a window visiting buffer. 
+                 ;; Just grab the first frame on the list.
+                 `(,(car mdbc-bfr-hist) . nil)))
+          t)
+         (select-frame-set-input-focus
+          ;;(select-frame
+          (with-selected-frame 
+              (or 
+               ;; car holds some frame we found above.
+               (car mdbc-bfr-hist)
+               ;; We never found a frame above, so make-frame and don't bother
+               ;; trying to raise some other non-visible frame.
+               (select-frame (make-frame (append default-frame-alist 
+                                                 `((name . ,(buffer-name mdbc-cmplt-ensure)))))
+                             t))
+            (set-frame-selected-window 
+             (selected-frame)
+             (with-selected-window 
+                 (select-window 
+                  (or (and (cdr mdbc-bfr-hist) (cdr mdbc-bfr-hist))
+                      (if (window-dedicated-p (selected-window))
+                          (get-lru-window (selected-frame))
+                        (frame-selected-window (selected-frame)))))
+               (set-window-buffer 
+                (selected-window)
+                (or (and (memq (selected-window)
+                               (get-buffer-window-list mdbc-cmplt-ensure nil (selected-frame)))
+                         (current-buffer))
+                    mdbc-cmplt-ensure))
+               (selected-window)))
+            ;; This is not really a very good thing do to:
+            ;; (redirect-frame-focus (selected-frame) (selected-frame))  
+            (selected-frame)))))))))
 
 ;;; ==============================
 ;;; :TODO fix command remapping in docstriing
 ;;; :CREATED <Timestamp: #{2010-03-30T13:54:10-04:00Z}#{10132} - by MON KEY>
 (defun mon-dired-other-window ()
   "Invoke dired with `default-directory' in other-window.\n
-:NOTE globaly bound to C-xd M-o in :FILE mon-keybindings.el.\n
+:NOTE globally bound to C-xd M-o in :FILE mon-keybindings.el.\n
 :SEE-ALSO `mon-dired-uninsert-subdir', `mon-dired-uninsert-subdir-all',
-`ido-dired', `mon-dired-copy-files-to-list', `mon-dired-copy-files-to-strings',
-`mon-dired-kill-files-to-list', `mon-dired-kill-files-to-strings',
-`mon-dired-nef-dir', `mon-dired-srt-alph', `mon-dired-srt-chrn',
-`mon-dired-srt-type', `mon-dired-srt-type-alph', `mon-dired-srt-type-chrn',
-`mon-dired-unmark-elc'.\n►►►"
+`ido-dired', `mon-dired-buffers-complete', `mon-dired-copy-files-to-list',
+`mon-dired-copy-files-to-strings', `mon-dired-kill-files-to-list',
+`mon-dired-kill-files-to-strings', `mon-dired-nef-dir', `mon-dired-srt-alph',
+`mon-dired-srt-chrn', `mon-dired-srt-type', `mon-dired-srt-type-alph',
+`mon-dired-srt-type-chrn', `mon-dired-unmark-elc'.\n►►►"
   (interactive)
   (dired-other-window default-directory))
 
@@ -807,8 +1129,8 @@ When current-buffer is not a dired-mode buffer kill is as if by `mon-copy-file-p
 (defun mon-dired-uninsert-subdir ()
   "Don't show the inserted subdir in dired any longer.
 Dired's API for doing this:
-`dired-do-kill-lines' <- Most fucking moronic fncn name ever IMHO.
-Also, it doesn't DTRT when point is at a file inside subdir. I still wan't the inserted gone!\n
+`dired-do-kill-lines' <-  Say hello to Emacs' most fucking moronic function name!
+Also, it doesn't DTRT when point is at a file inside subdir. I still want the inserted gone!\n
 :ALIASED-BY `dired-uninsert-subdir'
 :ALIASED-BY `dired-subdir-uninsert'\n
 :SEE-ALSO `dired-sort-toggle-or-edit', `mon-dired-srt-alph',
@@ -893,29 +1215,30 @@ When called-interactively with prefix arg or read regexp.\n
 ;;; :PREFIX "madd-"
 ;;; :MODIFICATIONS <Timestamp: #{2010-01-19T18:51:37-05:00Z}#{10032} - by MON>
 ;;; :CREATED <Timestamp: #{2009-12-01T01:12:29-05:00Z}#{09492} - by MON KEY>
-(defun mon-async-du-dir (the-dir)
-  "Return a sorted du \(big->small\)for DIR in buffer `*DU-<DIR>'.\n
+(defun mon-async-du-dir (w-du-dir)
+  "Return a sorted `du` \(big->small\)for W-DU-DIR in buffer `*DU-<DIR>'.\n
 Invoke du as an asynchronous shell command.\n
 :EXAMPLE\n\n\(mon-async-du-dir data-directory)\n
 :ALIASED-BY `mon-dir-async-du'
-:ALIASED-BY `mon-directory-du-async'\n
+:ALIASED-BY `mon-directory-du-async'
+:ALIASED-BY `mon-du-async-dir'\n
 :SEE-ALSO `mon-help-du-incantation', `*regexp-clean-du-flags*',
 `get-free-disk-space', `directory-free-space-program',
-`directory-free-space-args'.\n►►►"
+`directory-free-space-args', `mon-dir-make-xargs-arg-file'.\n►►►"
   ;; (read-directory-name "Directory to du :" nil nil t)))
   (interactive "D:FUNCTION `mon-async-du-dir' -- Directory to du: ") 
   (if (fboundp 'async-shell-command)      
       (let ((madd-dir-du
              (file-name-as-directory
               (file-truename
-               (if (file-name-absolute-p the-dir)
-                   the-dir
-                 (expand-file-name the-dir))))))
+               (if (file-name-absolute-p w-du-dir)
+                   w-du-dir
+                 (expand-file-name w-du-dir))))))
         (async-shell-command 
          (format "du %s | sort -nr" madd-dir-du)
          (get-buffer-create (format "*DU-%s" madd-dir-du))))
-    (message (concat ":FUNCTION `mon-async-du-dir' "
-                      "-- the du command is not available on w32"))))
+    (mon-message :w-spec '(":FUNCTION `mon-async-du-dir' "
+                           "-- the du command is not available on w32"))))
 ;;
 ;;; :TEST-ME (mon-async-du-dir data-directory)
 
@@ -928,18 +1251,23 @@ When called-interactively or optional arg INSRTP non-nil insert DIR size in curr
 Does not move point.\n
 :ALIASED-BY `mon-directory-get-size'\n
 :EXAMPLE\n\n(mon-get-dir-size default-directory)\n
-:SEE-ALSO `mon-file-dir-attributes->plist', `mon-help-du-incantation',
+:SEE-ALSO `mon-async-du-dir', `mon-file-dir-attributes->plist',
+`mon-dir-make-xargs-arg-file', `mon-help-du-incantation',
 `mon-help-unix-commands'./n►►►"
   (interactive "DGet Directory Size: ")
   (if (not (executable-find "du"))
-      (error (concat ":FUNCTION `mon-get-dir-size' "
-                     "-- `du' executable not in path"))
+      (mon-format :w-fun #'error
+                  :w-spec '(":FUNCTION `mon-get-dir-size' "
+                            "-- `du' executable not in path"))
     (let* ((mgds-dir (directory-file-name (file-truename get-dir-size))) ;; (file-directory-p "~/bubba")
            (mgds-size 
             (if (file-directory-p mgds-dir)
                 (shell-command-to-string (format "du -h --max-depth=1 %s" mgds-dir))
-              (error (concat ":FUNCTION `mon-get-dir-size' " 
-                             "-- arg GET-DIR-SIZE does not name exististing directory")))))
+              (mon-format :w-fun #'error
+                          :w-spec '(":FUNCTION `mon-get-dir-size' " 
+                                    "-- arg GET-DIR-SIZE is non-existent directory "
+                                    "got, %s")
+                          :w-args  mgds-dir))))
       (if (or insrtp intrp)
           (save-excursion 
             (newline) 
@@ -948,6 +1276,41 @@ Does not move point.\n
 ;;
 ;;; :TEST-ME (mon-get-dir-size (file-truename "~/mon-scripts/"))
 ;;; :TEST-ME (mon-get-dir-size "~/mon-scripts" t)
+
+;;; ==============================
+;;; :CHANGESET 2360
+;;; :CREATED <Timestamp: #{2010-12-10T19:18:59-05:00Z}#{10495} - by MON KEY> 
+(defun mon-dir-make-xargs-arg-file (dir-list w-base-dir w-file)
+  "Write dirctory names in DIR-LIST to file.\n
+Elts of list DIR-LIST are strings naming a directory without any `/'
+\(slashes\),or leading `.' `..'.\n
+They are written to a file as ASCII null terminated paths and intended for use
+with the `xargs` command:\n
+ shell> xargs -0 --interactive --arg-file=\"<W-BASE-DIR>/<W-FILE>\" mkdir\n
+Each directory name in DIR-LIST is written to W-FILE after expansion as if by
+`expand-file-name' relative to W-BASE-DIR which is the base pathname.\n
+W-BASE-DIR is a string and should name an absolute directory pathname.\n
+W-FILE is a string naming a file to write mapped elements of DIR-LIST to. 
+Its path is also expanded relative to W-BASE-DIR.\n
+:NOTE No pathname validation is performed on any of the supplied arguments.
+Assumes W-BASE-DIR exists. Will \(without prompting\) overwrite as if by
+`write-file' any pre-existing file name at W-BASE-DIR/W-FILE.\n
+:EXAMPLE\n
+\(mon-dir-make-xargs-arg-file '\(\"mum-dir-1600-1699\" \"num-dir-1700-1799\"
+                               \"num-dir-1800-1899\" \"num-dir-1900-1999\"\)
+                             default-dirctory \"mmbd-dir-1600-1999-maker\"\)\n
+:SEE info node `(find)xargs options'\n
+:SEE info node `(coreutils)mkdir invocation'\n
+:SEE-ALSO `mon-get-dir-size', `mon-file-dir-attributes->plist',
+`mon-help-du-incantation', `mon-async-du-dir', `get-free-disk-space',
+`directory-free-space-program', `directory-free-space-args',
+`mon-help-unix-commands'./n►►►"
+  (with-temp-buffer 
+    (insert (mapconcat #'(lambda (mdmbd-L-1)
+                           (expand-file-name mdmbd-L-1 w-base-dir))
+                       dir-list
+                       "\0"))
+    (write-file (expand-file-name  w-file w-base-dir) nil)))
 
 ;;; ==============================
 ;;; :PREFIX "mgnbws-"
@@ -974,18 +1337,22 @@ If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.\n
   (interactive "i\nP\np")
   (let ((mgnbws-nbwn (make-symbol "--mgnbws-nbwn--"))
         mgnbws-nbfr-nm)
-    (setq mgnbws-nbfr-nm (if intrp 
-                      (read-string  (concat ":FUNCTION `mon-get-new-buffer-w-stamp' "
-                                            "-- new buffer-file-name: "))
-                    new-buffer-w-name))
+    (setq mgnbws-nbfr-nm 
+          (or (and intrp 
+                   (while (mon-string-or-null-and-zerop mgnbws-nbfr-nm)
+                     (setq mgnbws-nbfr-nm 
+                           (read-string (concat ":FUNCTION `mon-get-new-buffer-w-stamp' "
+                                                "-- new buffer-file-name: ")))))
+              new-buffer-w-name))
     (if (file-exists-p (concat default-directory mgnbws-nbfr-nm))
-        (error (concat ":FUNCTION `mon-get-new-buffer-w-stamp' "
-                       "-- pre-existing file %s in %s") 
-               mgnbws-nbfr-nm (pwd))
+        (mon-format :w-fun #'error
+                    :w-spec '(":FUNCTION `mon-get-new-buffer-w-stamp' "
+                              "-- pre-existing file %s in %s") 
+                    :w-args `(,mgnbws-nbfr-nm ,(pwd)))
       (setq mgnbws-nbfr-nm (concat (expand-file-name 
-                             (directory-file-name 
-                              (file-name-directory default-directory)))
-                            "/" mgnbws-nbfr-nm)))
+                                    (directory-file-name 
+                                     (file-name-directory default-directory)))
+                                   "/" mgnbws-nbfr-nm)))
     (with-current-buffer (get-buffer-create (format "%s" mgnbws-nbwn))
       (set-visited-file-name mgnbws-nbfr-nm)
       (mon-file-stamp t))
@@ -994,10 +1361,10 @@ If NEW-BUFFER-W-NAME is an existing file in default-directory signal an error.\n
         (progn (write-file (buffer-file-name) t)
                (buffer-file-name))
       (when (yes-or-no-p 
-             (format (concat  ":FUNCTION `mon-get-new-buffer-w-stamp' "
-                              "-- buffer visiting the unwritten file `%s'.\n"
-                              "Save now (Y) or proceed without saving (N)?: ")
-                     (file-relative-name (buffer-file-name) "../")))
+             (mon-format :w-spec '(":FUNCTION `mon-get-new-buffer-w-stamp' "
+                                   "-- buffer visiting unwritten :FILE %s\n"
+                                   "Save now (Y) or proceed without saving (N)?: ")
+                         :w-args (file-relative-name (buffer-file-name) "../")))
         (write-file (buffer-file-name) t)
         (buffer-file-name)))))
 ;;
@@ -1107,22 +1474,27 @@ Return a list of strings informing what happened, elts of list have the form:\n
 `mon-string-split-buffer-parent-dir', `mon-file-dir-attributes->plist',
 `mon-file-ensure-extension-is-el'.\n►►►"
   ;; First, gather sub-dirs.
-  (let* ((mcfisd-gthr-dir (if (and 
-                               (file-exists-p gather-dir) 
-                               (file-directory-p gather-dir)
-                               ;; :ADDED <Timestamp: #{2010-11-03T19:27:17-04:00Z}#{10443} - by MON KEY>
-                               (not (file-symlink-p gather-dir)))
-                       (directory-file-name gather-dir)
-                     (error (concat 
-                             ":FUNCTION `mon-copy-files-in-sub-dirs' "
-                             "-- arg GATHER-DIR non-existent or names a file: \n%s") 
-                            gather-dir)))
-         (mcfisd-to-dir (if (and (file-exists-p destination-dir) (file-directory-p destination-dir))
-                     (directory-file-name destination-dir)
-                   (error (concat 
-                           ":FUNCTION `mon-copy-files-in-sub-dirs' "
-                           "-- arg DESTINATION-DIR non-existent or names a file: \n%s")
-                          destination-dir)))
+  (let* ((mcfisd-gthr-dir 
+          (if (and ;; :NOTE Consider using `mon-file-truename-p'
+               (file-exists-p gather-dir) 
+               (file-directory-p gather-dir)
+               ;; :ADDED <Timestamp: #{2010-11-03T19:27:17-04:00Z}#{10443} - by MON KEY>
+               (not (file-symlink-p gather-dir)))
+              (directory-file-name gather-dir)
+            (mon-format :w-fun  #'error 
+                        :w-spec '(":FUNCTION `mon-copy-files-in-sub-dirs' "
+                                  "-- arg GATHER-DIR non-existent or names a file, "
+                                  "got: %s")
+                        :w-args gather-dir)))
+         (mcfisd-to-dir 
+          (if (and (file-exists-p destination-dir) 
+                   (file-directory-p destination-dir))
+              (directory-file-name destination-dir)
+            (mon-format :w-fun  #'error
+                        :w-spec '(":FUNCTION `mon-copy-files-in-sub-dirs' "
+                                  "-- arg DESTINATION-DIR non-existent or names a file, "
+                                  "got: %s")
+                        :w-args  destination-dir)))
          ;; (mcfisd-to-dir-fname (car (last (split-string mcfisd-to-dir "/" t))))
          (mcfisd-gthr-in mcfisd-gthr-dir)
          (mcfisd-wlk-dir (directory-files mcfisd-gthr-in t))
@@ -1140,7 +1512,6 @@ Return a list of strings informing what happened, elts of list have the form:\n
     (mapc #'(lambda (mcfisd-L-2) 
               (let* ((mcfisd-L-in-dir mcfisd-L-2)
                      (mcfisd-L-wlk-sub (directory-files mcfisd-L-in-dir t)))
-                ;; :WAS (mapcar #'(lambda (mcfisd-L-3)
                 (mapc #'(lambda (mcfisd-L-3)
                           (when (and (not (file-directory-p mcfisd-L-3)) 
                                      (not (or (string= (concat mcfisd-L-in-dir "/" ".") mcfisd-L-3) 
@@ -1253,28 +1624,33 @@ Signal an error if any of the args aren't in the path.\n
 `file-relative-name', `expand-file-name', `file-expand-wildcards',
 `wildcard-to-regexp'.\n►►►"
   (let (mbld-tst-pth mbld-stack-pth mbld-fl-pth)
-    (setq mbld-tst-pth #'(lambda (mbld-L-1-tst &optional mbld-L-1-in-sub) 
-                           (if (and (not (file-symlink-p mbld-L-1-tst))
-                                   (or (file-exists-p mbld-L-1-tst)
-                                       (file-directory-p mbld-L-1-tst)))
-                              t
-                            (cond (mbld-L-1-in-sub 
-                                   (error 
-                                    (concat ":FUNCTION `mon-build-path' "
-                                            "-- dir/file named `%s'\nIsn't in the path, `%s/'" )
-                                    (file-name-nondirectory mbld-L-1-tst) mbld-L-1-in-sub))
-                                  ((not mbld-L-1-in-sub)
-                                   (error 
-                                    (concat ":FUNCTION `mon-build-path' "
-                                            "-- dir/file named `%s' isn't in the path, %s" )
-                                    mbld-L-1-tst mbld-L-1-in-sub))))))
-    (setq mbld-stack-pth  #'(lambda (mbld-L-2-in-pth mbld-L-2-sub-pth)                              
-                             (let* ((t-sub mbld-L-2-sub-pth) ;; not used?
-                                    (mbld-t-whl 
-                                     (concat (directory-file-name mbld-L-2-in-pth)
-                                             "/" mbld-L-2-sub-pth)))
-                               (when (funcall mbld-tst-pth mbld-t-whl mbld-L-2-in-pth)
-                                 (setq mbld-fl-pth mbld-t-whl)))))
+    (setq mbld-tst-pth 
+          #'(lambda (mbld-L-1-tst &optional mbld-L-1-in-sub) 
+              (if (and (not (file-symlink-p mbld-L-1-tst))
+                       (or (file-exists-p mbld-L-1-tst)
+                           (file-directory-p mbld-L-1-tst)))
+                  t
+                (cond (mbld-L-1-in-sub 
+                       (mon-format :w-fun #'error 
+                                   :w-spec '(":FUNCTION `mon-build-path' "
+                                             "-- dir/file with name `%s' "
+                                             "isn't in the path `%s/'" )
+                                   :w-args `(,(file-name-nondirectory mbld-L-1-tst) 
+                                             ,mbld-L-1-in-sub)))
+                      ((not mbld-L-1-in-sub)
+                       (mon-format :w-fun #'error 
+                                   :w-spec '(":FUNCTION `mon-build-path' "
+                                             "-- dir/file with name, `%s' "
+                                             "isn't in the path, %s" )
+                                   :w-args `(,mbld-L-1-tst ,mbld-L-1-in-sub)))))))
+    (setq mbld-stack-pth 
+          #'(lambda (mbld-L-2-in-pth mbld-L-2-sub-pth)
+              (let* ((t-sub mbld-L-2-sub-pth) ;; not used?
+                     (mbld-t-whl 
+                      (concat (directory-file-name mbld-L-2-in-pth)
+                              "/" mbld-L-2-sub-pth)))
+                (when (funcall mbld-tst-pth mbld-t-whl mbld-L-2-in-pth)
+                  (setq mbld-fl-pth mbld-t-whl)))))
     (funcall mbld-stack-pth (directory-file-name expand-path) nil)
     (funcall mbld-stack-pth mbld-fl-pth suffix-path)
     (when more-paths
@@ -1312,14 +1688,16 @@ Signal an error if any of the args aren't in the path.\n
 `mon-file-dir-attributes->plist', `mon-file-ensure-extension-is-el',
 `with-current-buffer', `with-temp-file', `with-temp-buffer'.\n►►►"
   (interactive "P\np")
-  (let* (;; and w/ t is not needed! Why was this here?         
+  (let* ( ;; and w/ t is not needed! Why was this here?         
          ;; :WAS (and (buffer-file-name) t)) 
          (mbwp-written-p (buffer-file-name))
 	 (mbwp-has-or-not (if mbwp-written-p "has or can be"  "_hasn't or can't_ be")))
     (when intrp
-      (message "buffer `%s' %s written to file" (buffer-name) mbwp-has-or-not))
+      (mon-message :w-spec '("buffer `%s' %s written to file")
+                   :w-args  `(,(buffer-name) ,mbwp-has-or-not)))
     (when insrtp 
-      (insert (format "Buffer `%s' %s written to file" (buffer-name) mbwp-has-or-not)))
+      (insert (format "Buffer `%s' %s written to file" 
+                      (buffer-name) mbwp-has-or-not)))
     mbwp-written-p))
 ;;
 ;;; :TEST-ME (mon-buffer-written-p)
@@ -1376,8 +1754,9 @@ insert the split in buffer. Moves point.\n
 `mon-string-split-buffer-parent-dir', `with-current-buffer', `with-temp-file',
 `with-temp-buffer'.\n►►►"
   (interactive "P") 
-  (let ((mss-bpdq (save-match-data
-                    (split-string (directory-file-name (expand-file-name "./"))"/" t ))))
+  (let ((mss-bpdq 
+         (save-match-data
+           (split-string (directory-file-name (expand-file-name "./"))"/" t ))))
     (when insrtp (insert (format "%S" mss-bpdq)))
     mss-bpdq))
 ;;
@@ -1413,14 +1792,14 @@ e.g. \n\(split-string \(directory-file-name \(expand-file-name \"./\"\)\)\"/\" t
                            (split-string (buffer-file-name) "/" t)
                          (split-string default-directory "/" t))))
 	 (mssbpd-last  (if (and 
-		       ;; File exists in dir.
-		       mssbpd-wrtn-p  
-		       ;; Don't delete top level dir.
-		       (not (< (length mssbpd-mod) 1)))
-		      ;; Get count for deleting last string in path.
-		      (nth (- `,(length mssbpd-mod) 1) mssbpd-mod)
-		    ;; Don't remove objects eq nil below.
-		    '()))		
+                            ;; File exists in dir.
+                            mssbpd-wrtn-p  
+                            ;; Don't delete top level dir.
+                            (not (< (length mssbpd-mod) 1)))
+                           ;; Get count for deleting last string in path.
+                           (nth (- `,(length mssbpd-mod) 1) mssbpd-mod)
+                         ;; Don't remove objects eq nil below.
+                         '()))		
 	 mssbpd-rmvd)
     (setq mssbpd-rmvd (remq mssbpd-last mssbpd-mod))
     (when insrtp (insert (format "%S" mssbpd-rmvd)))
@@ -1477,29 +1856,22 @@ It might not.\n
               (file-name-nondirectory 
                (directory-file-name default-directory))))))
     (if mgbpd-is-written
-	;; (progn 
-        ;;   (when (or insrtp intrp)
-        ;;     (message "buffer: `%s' parent dir is `%s'."  (buffer-name) mgbpd-rtn-bfr-dir))
-          (if (or insrtp intrp)
-              (prog1 
-                  (when (or insrtp intrp)
-                    (message (concat ":FUNCTION `mon-get-buffer-parent-dir' "
-                                    "-- :BUFFER `%s' parent dir is `%s'.")
-                            (buffer-name) mgbpd-rtn-bfr-dir))
-                (insert mgbpd-rtn-bfr-dir))
+        (if (or insrtp intrp)
+            (prog1 
+                (when (or insrtp intrp)
+                  (mon-message :msg-spec '(":FUNCTION `mon-get-buffer-parent-dir' "
+                                           "-- :BUFFER `%s' parent dir is `%s'")
+                               :msg-args `(,(buffer-name) ,mgbpd-rtn-bfr-dir))
+                  (insert mgbpd-rtn-bfr-dir))
               mgbpd-rtn-bfr-dir)
-        ;; (prog1
-        ;;   (when (or insrtp intrp)
-        ;;     (message "Buffer: `%s' not written yet, parent of buffer's default-directory is `%s'." 
-        ;;              (buffer-name) mgbpd-rtn-bfr-dir)
           (if (or insrtp intrp)
               (prog1
-                  (message  
-                   (concat ":FUNCTION `mon-get-buffer-parent-dir' "
-                           "-- :BUFFER `%s' not written yet, parent of buffer's default-directory is `%s'." )
-                   (buffer-name) mgbpd-rtn-bfr-dir)
+                  (mon-message :msg-spec '(":FUNCTION `mon-get-buffer-parent-dir' "
+                                           "-- :BUFFER `%s' not written yet, "
+                                           "parent of buffer's default-directory is `%s'" )
+                               :msg-args `(,(buffer-name) ,mgbpd-rtn-bfr-dir))
                 (insert mgbpd-rtn-bfr-dir))
-              mgbpd-rtn-bfr-dir))))
+            mgbpd-rtn-bfr-dir)))))
 ;;
 ;;; :TEST-ME (mon-get-buffer-parent-dir)
 ;;; :TEST-ME (mon-get-buffer-parent-dir t)
@@ -1529,11 +1901,14 @@ Use to walk up the directory or buffers path.
 :ALIASED-BY `mon-buffer-string-split-dir-recurse'\n
 :SEE-ALSO `mon-dir-common-paths', `expand-file-name', `file-expand-wildcards'.\n►►►"
   (interactive)
-  (let* ((mssdr-alt-pth (when alt-path
-                          (if (file-exists-p (directory-file-name alt-path))
-                              (directory-file-name alt-path)
-                            (error (concat ":FUNCTION `mon-string-split-dir-recurse' "
-                                           "-- path name provided non-existent")))))
+  (let* ((mssdr-alt-pth 
+          (when alt-path
+            (if (file-exists-p (directory-file-name alt-path))
+                (directory-file-name alt-path)
+              (mon-file-non-existent-ERROR :w-error t                             
+                                           :fun-name "mon-string-split-dir-recurse"
+                                           :locus    "alt-path"
+                                           :got-val   alt-path))))
 	 (mssdr-wlk-bfr-dirs (if mssdr-alt-pth 
                                  (save-match-data (split-string mssdr-alt-pth "/" t))
                                (mon-string-split-buffer-parent-dir)))
@@ -1575,9 +1950,9 @@ The last elt or return value is least deepest directory.\n
       (setq mdcp-pth-A (cdr mdcp-pth-A)))
     ;; Why are we messaging here?
     (when (not mdcp-got)
-      (message (concat ":FUNCTION `mon-dir-common-paths' "
-                       "-- no common paths for:\n%s and\n %s") 
-               path-is path-in))
+      (mon-message :w-spec '(":FUNCTION `mon-dir-common-paths' "
+                             "-- no common paths for:\n%s and\n %s") 
+                   :w-args `(,path-is ,path-in)))
     mdcp-got))
 ;;
 ;;; :TEST-ME (mon-dir-common-paths *mon-ebay-images-bmp-path* *mon-ebay-images-path*)
@@ -1614,10 +1989,13 @@ In most other situations this argument should normally be ommitted.\n
                  (mapcar (or (and no-full #'%mon-dir-get-subdirs-filter-no-full)
                              #'%mon-dir-get-subdirs-filter-full)
                          (directory-files-and-attributes 
-                          (or (and (car mdgs-dirp) (cadr mdgs-dirp))
-                              (error (concat ":FUNCTION `mon-dir-get-subdirs' "
-                                             "-- arg W-DIR not `mon-file-truename-p', "
-                                             "failed with: %S") (cadr mdgs-dirp)))
+                          (or (and (car mdgs-dirp) 
+                                   (cadr mdgs-dirp))
+                              (mon-format :w-fun #'error
+                                          :w-spec '(":FUNCTION `mon-dir-get-subdirs' "
+                                                    "-- arg W-DIR not `mon-file-truename-p', "
+                                                    "failed with: %S")
+                                          :w-args (cadr mdgs-dirp)))
                           (not no-full))))))))
 
 ;;; ==============================
@@ -1654,7 +2032,6 @@ Return an unqaulified directory namestring component when following are true:\n
                      *mon-add-subdirs-to-list-ignorables*)))
        (car path-attribs)))
 
-
  
 ;;; =======================
 ;;; :TODO Consider adding optional arg W-FULL which would toggle the optional
@@ -1688,17 +2065,18 @@ signal an error.\n
          (list (or (and (file-directory-p w-directory)
                         (or (and w-no-symlinks 
                                  (file-symlink-p w-directory)
-                                 (error 
-                                  (concat ":FUNCTION `mon-add-subdirs-to-list' " 
-                                          "-- arg W-DIRECTORY is `file-symlink-p', "
-                                          " refusing to descend")))
+                                 (mon-format :w-fun #'error 
+                                             :w-spec '(":FUNCTION `mon-add-subdirs-to-list' " 
+                                                       "-- arg W-DIRECTORY is `file-symlink-p', "
+                                                       "refusing to descend")))
                             ;; Make sure we have a directory name ending in "/"
                             (and (or (= (aref w-directory (1- (length w-directory))) 47)
                                      (setq w-directory (concat w-directory "/")))
                                  w-directory)))
-                   (error 
-                    (concat ":FUNCTION `mon-add-subdirs-to-list' " 
-                            "-- arg W-DIRECTORY does not satisfy `file-directory-p'")))))
+                   (mon-format :w-fun #'error 
+                               :w-spec '(":FUNCTION `mon-add-subdirs-to-list' " 
+                                         "-- arg W-DIRECTORY does not satisfy "
+                                         " `file-directory-p'")))))
          mastl-ntlasil ;; `normal-top-level-add-subdirs-inode-list'
          mastl-dirs 
          mastl-attrs)
@@ -1741,6 +2119,30 @@ signal an error.\n
 ;;
 ;;; :TEST-ME (mon-add-subdirs-to-list default-directory)
 ;;; :TEST-ME (let (gets-set) (mon-add-subdirs-to-list default-directory 'gets-set) gets-set)
+
+
+;;; ==============================
+;;; :COURTESY lisp/erc/erc.el :WAS `erc-find-file'
+;;; :CHANGESET 2360
+;;; :CREATED <Timestamp: #{2010-12-17T12:28:53-05:00Z}#{10505} - by MON KEY>
+(defun mon-find-file (file &optional path-lst)
+  "Search for a FILE in the filesystem.\n
+First the `default-directory' is searched for FILE, then any directories
+specified in the list PATH-LST.\n
+If FILE is found, return the path to it.
+:EXAMPLE\n\n
+:SEE-ALSO `mon-add-subdirs-to-list'.\n►►►"
+  (let ((filepath file))
+    (if (file-readable-p filepath) 
+        filepath
+      (progn
+	(while (and path-lst
+		    (progn 
+                      (setq filepath (expand-file-name file (car path-lst)))
+                      (not (file-readable-p filepath))))
+	  (setq path-lst (cdr path-lst)))
+	;; :WAS (if path-lst filepath nil) ))))
+        (and path-lst filepath) ))))
 
 ;;; ================================================================
 ;;; :PREFIX "misib-"
@@ -1832,7 +2234,7 @@ Does not move point.\n
 ;;; :SEE (URL `http://www.emacswiki.org/emacs/SerialRename')
 ;;; :CREATED <Timestamp: Sunday April 05, 2009 @ 01:14.27 PM - by MON>
 (defun mon-rename-file-serial (w-dir w-ext w-name start-num)
-  "Rename sequentially a set of file(s).\n
+  "Rename sequentially a set of file\(s\).\n
 Rename W-NAME and W-EXT in W-DIR from START-NUM number.\n
 :ALIASED-BY `mon-file-rename-serial'\n
 :SEE-ALSO `mon-rename-file', `mon-rename-imgs-in-dir'.\n►►►"
@@ -1858,15 +2260,15 @@ Rename W-NAME and W-EXT in W-DIR from START-NUM number.\n
 
 ;;; ==============================
 ;;; :DEPRECATED use `mon-copy-file-path'
-(defun mon-path (&optional intrp)
-  ":DEPRECATED use `mon-copy-file-path'.\n
+ (defun mon-path (&optional intrp)
+   ":DEPRECATED use `mon-copy-file-path'.\n
 Message user with the the current file's path.\n
 Unlike `mon-copy-file-path' path doesn't copy to file's path kill ring.\n
 :SEE-ALSO `mon-copy-file-path', `mon-insert-path', `mon-add-subdirs-to-list'.\n►►►" 
-  (interactive "p")
-  (if intrp
-      (message "%s" buffer-file-name)
-    (buffer-file-name)))
+   (interactive "p")
+   (if intrp
+       (message "%s" buffer-file-name)
+     (buffer-file-name)))
 ;;
 (make-obsolete 'mon-path 'mon-copy-file-path "2010-03-30")
 ;;
@@ -1898,8 +2300,9 @@ When current-buffer is in dired-mode the kill is as if by
             (kill-new (buffer-file-name))
             (when (or intrp (not insrtp))
               (progn
-                (message (concat ":FUNCTION `mon-copy-file-path' " 
-                                 "-- put current path on kill-ring, path: %s") scfp)
+                (mon-message :w-spec '(":FUNCTION `mon-copy-file-path' " 
+                                       "-- put current path on kill-ring, path: %s")
+                             :w-args scfp)
                 (sit-for 1))))
         (progn
           (setq scfp (buffer-name))
@@ -1907,8 +2310,9 @@ When current-buffer is in dired-mode the kill is as if by
                      "#P/not-written/not-readable/not-exisistent/buffer-name-is/%s" 
                      (buffer-name)))
           (cond ((or intrp (not insrtp))
-                 (message (concat ":FUNCTION `mon-copy-file-path' "
-                                  "-- path non-existent buffer-name is: %s") (buffer-name))
+                 (mon-message :w-spec '(":FUNCTION `mon-copy-file-path' "
+                                        "-- path non-existent buffer-name is: %s")
+                              :w-args (buffer-name))
                  (sit-for 1))
                 ((and insrtp (not intrp))
                  (setq scfp 
@@ -1972,14 +2376,14 @@ For alternative implementation of same:\n
                                      mgbd-df-dir) 
                                  mgbd-df-dir nil t))))
              (setq mgbd-this-dir mgbd-df-dir)))
-          ;; (error (concat ":FUNCTION `mon-get-buffers-directories' "
-          ;;         "-- `%s' directory not associated with or called from unsaved buffer")
-          ;;         (buffer-name))))
 	  (opt-dir 
 	   (if (file-exists-p (file-name-directory (file-name-as-directory opt-dir)))
 	       (setq mgbd-this-dir (file-name-directory  (file-name-as-directory opt-dir)))
-	     (error (concat ":FUNCTION `mon-get-buffers-directories' "
-                            "-- directory non-existent, not readable, or is a file"))))
+             (mon-format :w-fun #'error
+                         :w-spec '(":FUNCTION `mon-get-buffers-directories' "
+                                   "-- directory non-existent, not readable, or is a file, "
+                                   "got: %S")
+                         :w-args opt-dir)))
 	  ((and (not opt-dir) (buffer-file-name))
 	   (setq mgbd-this-dir (file-name-as-directory (file-name-directory buffer-file-name)))))
     (setq mgbd-get-dirs
@@ -2041,9 +2445,7 @@ For alternative implementation of same:\n
 	      (forward-char 1)
 	      (delete-char -2))
 	    (buffer-string)))
-    mpbd-proc-rslt)) ;;(insert mpbd-proc-rslt)))
-;;
-;;;(progn (fmakunbound 'mon-proc-buffers-directories) (unintern "mon-proc-buffers-directories" obarray) )
+    mpbd-proc-rslt))
 
 ;;; ==============================
 ;;; :PREFIX "mgpbd-"
@@ -2063,51 +2465,51 @@ Directory list acquired with `mon-get-buffers-directories' and
   (interactive "p")
   (let ((mgpd-proc (mon-proc-buffers-directories opt-dir))
         mgpd-rslt)
-    ;; :WAS (setq mgpd-proc (mon-proc-buffers-directories opt-dir))
-    (setq mgpd-rslt (with-temp-buffer
-		   (insert mgpd-proc)
-                   (mon-cln-blank-lines (mon-g2be -1 t) (mon-g2be 1 t))
-		   (let* ((file-n (save-match-data (bounds-of-thing-at-point 'filename)))
-			  (bound-s (car file-n))
-			  (bound-e (cdr file-n))
-			  (file-ns (buffer-substring bound-s bound-e))
-			  (file-list) (f-name))
-                     ;; (save-excursion
-                     (mon-g2be 1)
-		     (while (mon-spacep) 
-		       (delete-char -1))
-                     (mon-g2be -1)
-		     (while (mon-spacep nil t)
-		       (delete-char 1))
-                     (mon-g2be -1)
-		     (mon-cln-spc-tab-at-eol-in-region (mon-g2be -1 t) (mon-g2be 1 t))
-                     (mon-g2be -1)
-                     ;; :TODO Seperate to dedicated-function.
-		     (while (search-forward-regexp " " (mon-g2be 1 t) t) 
-		       (if  (not (= (line-end-position)
-                                    (car (cddddr (mon-line-test-content 'whitespace t)))))
-                            (progn    
-                              (beginning-of-line)
-                              (search-forward-regexp 
-                               "\\(\\(\\([[:alnum:]]\\)\\([[:space:]]\\)\\([[:alnum:]]\\)\\)\\{1,1\\}\\)" nil t)
-                              (replace-match "\\3_#_~_#_\\5"))))
-                     (mon-g2be -1)
-		     (setq file-list ())
-		     (while (not (eobp))
-		       (setq f-name (thing-at-point 'filename))
-		       (cond ((or (mon-line-bol-is-eol) (mon-spacep-is-bol))
-			      (forward-thing 'line))
-			     ((string-match
-                               "\\(\\(\\([[:alnum:]]\\)\\(_#_~_#_\\)\\([[:alnum:]]\\)\\)\\{1,1\\}\\)" f-name)
-			      (setq f-name 
-                                    (replace-regexp-in-string 
-                                     "\\(\\(\\([[:alnum:]]\\)\\(_#_~_#_\\)\\([[:alnum:]]\\)\\)\\{1,1\\}\\)" 
-                                     "\\3 \\5"  f-name)))
-			     (t f-name))
-		       (setq file-list (cons f-name file-list))	;; (thing-at-point 'filename) file-list)))
-		       (forward-thing 'line))
-		     (setq file-list (nreverse file-list)) ;; (newline) ;;(prin1 file-list (current-buffer)))
-		     file-list)))
+    (setq mgpd-rslt 
+          (with-temp-buffer
+            (insert mgpd-proc)
+            (mon-cln-blank-lines (mon-g2be -1 t) (mon-g2be 1 t))
+            (let* ((file-n (save-match-data (bounds-of-thing-at-point 'filename)))
+                   (bound-s (car file-n))
+                   (bound-e (cdr file-n))
+                   (file-ns (buffer-substring bound-s bound-e))
+                   (file-list) (f-name))
+              ;; (save-excursion
+              (mon-g2be 1)
+              (while (mon-spacep) 
+                (delete-char -1))
+              (mon-g2be -1)
+              (while (mon-spacep nil t)
+                (delete-char 1))
+              (mon-g2be -1)
+              (mon-cln-spc-tab-at-eol-in-region (mon-g2be -1 t) (mon-g2be 1 t))
+              (mon-g2be -1)
+              ;; :TODO Seperate to dedicated-function.
+              (while (search-forward-regexp " " (mon-g2be 1 t) t) 
+                (if  (not (= (line-end-position)
+                             (car (cddddr (mon-line-test-content 'whitespace t)))))
+                    (progn    
+                      (beginning-of-line)
+                      (search-forward-regexp 
+                       "\\(\\(\\([[:alnum:]]\\)\\([[:space:]]\\)\\([[:alnum:]]\\)\\)\\{1,1\\}\\)" nil t)
+                      (replace-match "\\3_#_~_#_\\5"))))
+              (mon-g2be -1)
+              (setq file-list ())
+              (while (not (eobp))
+                (setq f-name (thing-at-point 'filename))
+                (cond ((or (mon-line-bol-is-eol) (mon-spacep-is-bol))
+                       (forward-thing 'line))
+                      ((string-match
+                        "\\(\\(\\([[:alnum:]]\\)\\(_#_~_#_\\)\\([[:alnum:]]\\)\\)\\{1,1\\}\\)" f-name)
+                       (setq f-name 
+                             (replace-regexp-in-string 
+                              "\\(\\(\\([[:alnum:]]\\)\\(_#_~_#_\\)\\([[:alnum:]]\\)\\)\\{1,1\\}\\)" 
+                              "\\3 \\5"  f-name)))
+                      (t f-name))
+                (setq file-list (cons f-name file-list)) ;; (thing-at-point 'filename) file-list)))
+                (forward-thing 'line))
+              (setq file-list (nreverse file-list)) ;; (newline) ;;(prin1 file-list (current-buffer)))
+              file-list)))
     (if intrp 
 	(progn 
 	  (newline)
@@ -2119,15 +2521,14 @@ Directory list acquired with `mon-get-buffers-directories' and
  
 ;;; ==============================
 ;;; :PREFIX "mdbl-"
-;;; :TODO Should probably be refactored or callers. 
-;;; Could use `mon-add-subdirs-to-list' but that descends.
+;;; :TODO Should probably be refactored or callers 
+;;; could use `mon-add-subdirs-to-list' but that descends.
 ;;; Better to just map over return value of `directory-files-and-attributes'
 ;;; looking for directories at the cadr of each sublist, e.g.:
 ;;; (mapcar #'(lambda (dirp) 
 ;;;             (and (mon-string-not-null-nor-zerop (cadr dirp))
 ;;;                  (car dirp)))
 ;;;         (directory-files-and-attributes default-directory t))
-;;; :THIS Said 
 ;;; :CREATED <Timestamp: Thursday May 21, 2009 @ 08:06.42 PM - by MON>
 (defun mon-dir-build-list (w-dir &optional not-concat-path)
   "Return a _list_ of directories in W-DIR.\n
@@ -2143,7 +2544,9 @@ significant consideration given the value of variables
 `mon-dir-hashed-complete', `mon-dir-hash-images', `directory-files',
 `mon-file-dir-attributes->plist'.\n►►►"
   (save-excursion
-    (save-window-excursion
+    ;; Why are we `save-window-excursion' here? 
+    ;; s-w-e is a bad idean when using multi-frames.
+    (save-window-excursion 
       (let ((mdbl-cur-bfr (get-buffer (current-buffer)))
 	    (mdbl-in-dir w-dir)
             mdbl-tmp-str 
@@ -2158,7 +2561,6 @@ significant consideration given the value of variables
 		  (set-buffer mdbl-lcl1-that-bfr)
                   (setq mdbl-lcl1-bfr-ss (mon-buffer-sub-no-prop))
 		  (set-buffer mdbl-lcl1-this-bfr)
-		  ;; :WAS (kill-buffer mdbl-lcl1-that-bfr)
                   (when (get-buffer mdbl-lcl1-that-bfr) (kill-buffer mdbl-lcl1-that-bfr))
 		  (insert mdbl-lcl1-bfr-ss)
                   (mon-g2be -1)
@@ -2196,7 +2598,6 @@ significant consideration given the value of variables
 ;;
 ;;; :TEST-ME (mon-dir-build-list *mon-emacs-root*)
 ;;; :TEST-ME (mon-dir-build-list *mon-emacs-root* t)
-
 
 ;;; ==============================
 (provide 'mon-dir-utils)
